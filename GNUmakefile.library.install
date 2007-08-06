@@ -1,0 +1,41 @@
+## ===========================================================================
+##  Copyright (c) The ART Development Team
+##  --------------------------------------
+##  
+##  This file is part of the ART libraries. These libraries are free; you can
+##  redistribute them and/or modify them under the terms of the GNU Library
+##  General Public License as published by the Free Software Foundation;
+##  either version 2 of the License, or (at your option) any later version.
+##  
+##  The ART libraries are distributed in the hope that they will be useful,
+##  but WITHOUT ANY WARRANTY;  without even the implied warranty of FITNESS
+##  FOR A PARTICULAR PURPOSE or MERCHANTABILITY.  See the GNU Library General
+##  Public License for more details.
+##  
+##  The precise terms of the license are stated in the file 'LICENSE' which
+##  is distributed with the ART libraries. If you do not find it, write to:
+##  Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+## ===========================================================================
+##  NAME:       Makefile
+##  TYPE:       makefile
+##  PROJECT:    ART - Advanced Rendering Toolkit
+##  CONTENT:    additional makefile using GNUstep makefile system
+## ===========================================================================
+##  AUTHORS:    tg      Thomas Gamper
+## ===========================================================================
+##  HISTORY:
+##
+##  21-Sep-2004 11:14:48  tg     last modification
+##  15-Sep-2004 16:11:00  tg      created
+## ===========================================================================
+after-all::
+	cd $(GNUSTEP_OBJ_DIR); \
+    if [ ! -d $(NP_LIBS_DIR) ] ; then \
+        mkdir $(NP_LIBS_DIR) ; \
+    fi; \
+	echo "$(GNUSTEP_HOST) $(GNUSTEP_HOST_CPU) $(GNUSTEP_HOST_VENDOR) $(GNUSTEP_HOST_OS)"; \
+    cp -d $(LIBRARY_NAME).* $(NP_LIBS_DIR);
+after-clean::
+	if [ -d $(NP_LIBS_DIR) ] ; then \
+        rm $(NP_LIBS_DIR)/$(LIBRARY_NAME).*;\
+    fi;
