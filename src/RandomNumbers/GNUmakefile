@@ -4,10 +4,11 @@ PACKAGE_NAME=RandomNumberGeneration
 LIBRARY_NAME=libRandomNumberGeneration
 
 libRandomNumberGeneration_HEADER_FILES = \
-NPRandomNumberGeneration.h
+NPPRandomNumberGeneration.h \
+NPRandomNumberGenerators.h
 
 libRandomNumberGeneration_OBJC_FILES = \
-NPRandomNumberGeneration.m
+NPRandomNumberGenerators.m
 
 libRandomNumberGeneration_LDFLAGS += -lprng
 

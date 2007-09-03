@@ -1,0 +1,61 @@
+#include "prng.h"
+
+#import "NPRandomNumberGenerators.h"
+
+@implementation NPRandomNumberGenerator
+
+- init
+{
+    self = [ super init ];
+
+	char * rngDescription = (char*)[ NP_RNG_DEFAULT UTF8String ];
+
+    randomNumberGenerator = prng_new(rngDescription);
+
+    return self;
+}
+
+- initWithName
+	: (NSString *) name
+{
+	self = [ super init ];
+
+	char * rngDescription = (char*)[ name UTF8String ];
+
+    randomNumberGenerator = prng_new(rngDescription);
+
+    return self;
+}
+
+- (void) dealloc
+{
+	prng_free(randomNumberGenerator);
+
+	[ super dealloc ];
+}
+
+- (Double) nextUniformFPRandomNumber
+{
+	return prng_get_next(randomNumberGenerator);
+}
+
+- (ULong) nextUniformIntegerRandomNumber
+{
+	return prng_get_next_int(randomNumberGenerator);
+}
+
+- (void) reset
+{
+	prng_reset(randomNumberGenerator);
+}
+
+- (void) reseed
+	: (ULong) seed
+{
+	if ( prng_can_seed(randomNumberGenerator) )
+	{
+		prng_seed(randomNumberGenerator,seed);
+	}
+}
+
+@end
