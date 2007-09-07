@@ -17,6 +17,20 @@
 	return self;
 }
 
+- initWithGenerators
+	: ( NSObject < NPPUniformFPRandomNumber > *) newFirstGenerator
+	: ( NSObject < NPPUniformFPRandomNumber > *) newSecondGenerator
+{
+	self = [ super init ];
+
+	firstGenerator = [ newFirstGenerator retain ];
+	secondGenerator = [ newSecondGenerator retain ];
+
+	useLastValue = NO;
+
+	return self;
+}
+
 - (void) dealloc
 {
 	[ firstGenerator release ];

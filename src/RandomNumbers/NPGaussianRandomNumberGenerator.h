@@ -14,6 +14,11 @@
 
 - init;
 
+- initWithGenerators
+	: ( NSObject < NPPUniformFPRandomNumber > *) firstGenerator
+	: ( NSObject < NPPUniformFPRandomNumber > *) secondGenerator
+	;
+
 - (void) dealloc;
 
 @end
