@@ -33,7 +33,6 @@ after-all::
     if [ ! -d $(NP_LIBS_DIR) ] ; then \
         mkdir $(NP_LIBS_DIR) ; \
     fi; \
-	echo "$(GNUSTEP_HOST) $(GNUSTEP_HOST_CPU) $(GNUSTEP_HOST_VENDOR) $(GNUSTEP_HOST_OS)"; \
     cp -d $(LIBRARY_NAME).* $(NP_LIBS_DIR);
 after-clean::
 	if [ -d $(NP_LIBS_DIR) ] ; then \
