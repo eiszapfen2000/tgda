@@ -1,11 +1,11 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-
-PACKAGE_NAME=GormObjCHeaderParser
+PACKAGE_NAME=Math
 LIBRARY_NAME=libMath
 
 libMath_C_FILES = \
-Random.c
+FVector.c \
+Vector.c
 
 libMath_HEADER_FILES = \
 Constants.h \
@@ -13,11 +13,6 @@ Matrix.h \
 Random.h \
 Vector.h
 
-ADDITIONAL_INCLUDE_DIRS = -I..
-
-
--include GNUmakefile.preamble
-
+include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/library.make
-
--include GNUmakefile.postamble 
+include $(TGDA_DIR)/GNUmakefile.library.install

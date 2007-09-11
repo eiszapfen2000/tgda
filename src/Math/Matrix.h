@@ -1,5 +1,5 @@
-#ifndef _MATRIX_H_
-#define _MATRIX_H_
+#ifndef _NP_MATH_MATRIX_H_
+#define _NP_MATH_MATRIX_H_
 
 #include "Basics/Types.h"
 
