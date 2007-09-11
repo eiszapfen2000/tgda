@@ -3,6 +3,8 @@
 #import "Basics/Types.h"
 #import "NPPRandomNumberGeneration.h"
 
+
+/*! \def */
 #define NP_RNG_TT800	@"tt800"
 #define NP_RNG_CTG		@"ctg"
 #define NP_RNG_MRG		@"mrg"
@@ -12,9 +14,9 @@
 #define NP_RNG_DEFAULT	NP_RNG_TT800
 
 /*! \class NPRandomNumberGenerator
-	\brief nix
+	\brief prng wrapper
 
-	braaaaak
+	RandomGenerator class which encapsulates prng's functionality
 
 */
 
@@ -24,12 +26,16 @@
     struct prng * randomNumberGenerator;
 }
 
+//! Init with a default fixed parameter generator, TT800
 - init;
 
+//! Init with a prng_new compatible string
 - initWithName
 	: (NSString *) name
 	;
 
 - (void) dealloc;
+
+- (NSString *) description;
 
 @end

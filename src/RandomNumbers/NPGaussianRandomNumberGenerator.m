@@ -39,6 +39,11 @@
 	[ super dealloc ];
 }
 
+- (NSString *) description
+{
+	return [ [ firstGenerator description ] stringByAppendingString: [ secondGenerator description ] ];
+}
+
 - (Double) nextUniformFPRandomNumber
 {
 	Double x1, x2, w;
