@@ -16,6 +16,9 @@ typedef signed long long Int64;
 typedef unsigned long long UInt64;
 #endif
 
+typedef unsigned long ULong;
+typedef signed long Long;
+
 typedef float Float;
 typedef double Double;
 

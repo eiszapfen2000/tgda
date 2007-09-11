@@ -1,0 +1,24 @@
+{
+    ApplicationDescription = "Tiled Ocean Solver";
+    ApplicationName = TiledOcean;
+    ApplicationRelease = 0.10;
+    Authors = ( "Thomas Gamper" );
+    Copyright = "Copyright (C) 2007 Thomas Gamper";
+    CopyrightDescription = "Released under GPL.";
+    FullVersionID = 0.10;
+    NSExecutable = TiledOcean;
+    NSMainNibFile = TiledOcean.gorm;
+    NSPrincipalClass = NSApplication;
+    NSRole = Application;
+    NSTypes = (
+        {
+                NSDocumentClass = "TODocument";
+                NSName = "TODocumentType";
+                NSHumanReadableName = "TiledOcean Document";
+                NSUnixExtensions = ( "tod", "" );
+                NSDOSExtensions = ( "tod" );
+                NSRole = Editor;
+        }
+    );
+}
+ 
