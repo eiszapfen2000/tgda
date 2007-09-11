@@ -8,7 +8,7 @@ ifeq ($(GNUSTEP_HOST_CPU),ix86)
 else
 	ifeq ($(GNUSTEP_HOST_CPU),x86_64)
         EXTERNAL_DEPENDENCIES_LIB_DIR = $(TGDA_DIR)/Dependencies/lib64
-        BASIC_DEFINES = _NP_64BIT_SYSTEM_
+        BASIC_DEFINES = -D_NP_64BIT_SYSTEM_
         NP_LIBS_DIR = $(TGDA_DIR)/lib/lib64
     endif
 endif
@@ -22,7 +22,7 @@ ADDITIONAL_LIB_DIRS += \
 	-L$(NP_LIBS_DIR)
 
 ADDITIONAL_CPPFLAGS += \
-    -D$(BASIC_DEFINES)
+    $(BASIC_DEFINES)
 
 BASIC_CFLAGS += \
     -Wall -std=gnu99
