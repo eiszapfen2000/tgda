@@ -1,18 +1,19 @@
-#include <fftw3.h>
-
 #import <Foundation/Foundation.h>
+#import <fftw3.h>
 
-#include "Math/FVector.h"
 #include "Math/Vector.h"
-#include "Math/Matrix.h"
+#import "RandomNumbers/NPGaussianRandomNumberGenerator.h"
 
 @interface TOOceanSurface : NSObject
 {
     // Resolution
-    UInt32 mResX, mResY;
+    UInt64 mResX, mResY;
 
     // Size
-    UInt32 mLength, mWidth;
+    UInt64 mLength, mWidth;
+
+	//Gaussian RandomNumber Generator
+	NPGaussianRandomNumberGenerator * mGaussianGenerator;
 
     Vector3 * mPointArray;
 
@@ -23,10 +24,10 @@
 }
 
 - init
-    : (UInt32) resX
-    : (UInt32) resY
-    : (UInt32) length
-    : (UInt32) width
+    : (UInt64) resX
+    : (UInt64) resY
+    : (UInt64) length
+    : (UInt64) width
     ;
 
 - (Real) kToOmega
@@ -47,16 +48,19 @@
 
     Real mAlpha;
 
-    fftw_complex mH0, mH;
+    fftw_complex * mH0;
+	fftw_complex * mH;
 }
 
 - init
-    : (UInt32) resX
-    : (UInt32) resY
-    : (UInt32) length
-    : (UInt32) width
+    : (UInt64) resX
+    : (UInt64) resY
+    : (UInt64) length
+    : (UInt64) width
     : (Vector2) wind
     ;
+
+- (void) setupH0;
 
 @end
 
@@ -68,10 +72,10 @@
 }
 
 - init
-    : (UInt32) resX
-    : (UInt32) resY
-    : (UInt32) length
-    : (UInt32) width
+    : (UInt64) resX
+    : (UInt64) resY
+    : (UInt64) length
+    : (UInt64) width
     : (Real) U10
     ;
 
@@ -91,10 +95,10 @@
 }
 
 - init
-    : (UInt32) resX
-    : (UInt32) resY
-    : (UInt32) length
-    : (UInt32) width
+    : (UInt64) resX
+    : (UInt64) resY
+    : (UInt64) length
+    : (UInt64) width
     : (Real) U10
     ;
 
@@ -106,10 +110,10 @@
 }
 
 - init
-    : (UInt32) resX
-    : (UInt32) resY
-    : (UInt32) length
-    : (UInt32) width
+    : (UInt64) resX
+    : (UInt64) resY
+    : (UInt64) length
+    : (UInt64) width
     : (Real) U10
     : (Real) fetch
     ;
