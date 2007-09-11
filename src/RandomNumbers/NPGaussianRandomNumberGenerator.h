@@ -21,4 +21,6 @@
 
 - (void) dealloc;
 
+- (NSString *) description;
+
 @end

@@ -34,6 +34,11 @@
 	[ super dealloc ];
 }
 
+- (NSString *) description
+{
+	return [ NSString stringWithCString: prng_long_name(randomNumberGenerator) encoding: NSUTF8StringEncoding ]; 
+}
+
 - (Double) nextUniformFPRandomNumber
 {
 	return prng_get_next(randomNumberGenerator);
@@ -54,7 +59,7 @@
 {
 	if ( prng_can_seed(randomNumberGenerator) )
 	{
-		prng_seed(randomNumberGenerator,seed);
+		prng_seed(randomNumberGenerator, seed);
 	}
 }
 
