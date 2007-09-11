@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 
-#import "Basics/Types.h"
+#include "Basics/Types.h"
+
 #import "NPPRandomNumberGeneration.h"
 
 
