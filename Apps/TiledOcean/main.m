@@ -2,6 +2,7 @@
 #import <AppKit/AppKit.h>
 
 #import "RandomNumbers/NPRandomNumberGenerators.h"
+#import "TOOceanSurface.h"
 
 int main(int argc, const char *argv[])
 {
@@ -36,6 +37,13 @@ int main(int argc, const char *argv[])
 	}
 
 	NSLog(@"%@",nrg2);
+
+	Vector2 k;
+	k.x = k.y = 1.0;
+
+	TOOceanSurfacePhillips * ocean = [ [ TOOceanSurfacePhillips alloc ] init: 8 : 8 : 100 : 100 : k ];
+
+	[ ocean setupH0 ];
 
     return  NSApplicationMain(argc, argv);
 }

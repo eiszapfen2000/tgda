@@ -1,14 +1,17 @@
+#import "TOOceanSurface.h"
+
+#import "RandomNumbers/NPGaussianRandomNumberGenerator.h"
+
 #include "Math/Constants.h"
 
-#import "TOOceanSurface.h"
 
 @implementation TOOceanSurface
 
 - init
-    : (UInt32) resX
-    : (UInt32) resY
-    : (UInt32) length
-    : (UInt32) width
+    : (UInt64) resX
+    : (UInt64) resY
+    : (UInt64) length
+    : (UInt64) width
 {
     self = [ super init ];
 
@@ -47,10 +50,10 @@
 @implementation TOOceanSurfacePhillips
 
 - init
-    : (UInt32) resX
-    : (UInt32) resY
-    : (UInt32) length
-    : (UInt32) width
+    : (UInt64) resX
+    : (UInt64) resY
+    : (UInt64) length
+    : (UInt64) width
     : (Vector2) wind
 {
     self = [ super init
@@ -84,16 +87,12 @@
     v2_v_normalize_v(k,&knorm);
     v2_v_normalize_v(&mWindDirection,&wdirnorm);
 
-    //g2d_v_norm_v(k, &knorm);
-    //g2d_v_norm_v(&wdir, &wdirnorm);
-
     if ( k2 == 0.0 )
     {
         return 0.0;
     }
 
     u2 = v2_v_square_length(&mWindDirection);
-    //u2 = g2d_v_sqrlen(&wdir);
 
     l = u2 / EARTH_ACCELERATION;
 
@@ -102,14 +101,49 @@
     ret  = PHILLIPS_CONSTANT;
     ret *= exp(-1.0 / (k2 * l * l)) / (k2 * k2);
     ret *= pow(v2_vv_dot_product(&knorm, &wdirnorm), 2.0);
-    //ret *= pow(g2d_vv_dot(&knorm, &wdirnorm), 2.0);
-
     ret *= exp(-k2 * j * j);
 
     // empirical (don't you dare say random :) ) damping factor
     ret *= 0.1 * (1.0 / (Real) mLength);
 
     return ret;
+}
+
+- (void) setupH0
+{
+    Double xi_r, xi_i, a;
+    Vector2 k;
+
+	if ( !mH0 )
+	{
+		mH0 = (fftw_complex *)fftw_malloc(sizeof(fftw_complex)*mResX*mResY);
+	}
+
+	NPGaussianRandomNumberGenerator * gaussian = [ [ NPGaussianRandomNumberGenerator alloc ] init ];
+
+    for(UInt64 i = 0; i < mResX; i++)
+    {
+        for(UInt64 j = 0; j < mResY; j++)
+        {
+			xi_r = [ gaussian nextUniformFPRandomNumber ];
+			xi_i = [ gaussian nextUniformFPRandomNumber ];
+
+			NSLog(@"%f %f",xi_r,xi_i);
+
+            k.x = [ self indexToK : i ];
+            k.y = [ self indexToK : j ];
+
+            a = sqrt([ self getAmplitudeAt : &k ]);
+
+			mH0[j + mResY * i][0] = MATH_1_DIV_SQRT_2 * xi_r * a;
+			mH0[j + mResY * i][1] = MATH_1_DIV_SQRT_2 * xi_i * a;
+
+			NSLog(@"%e %e",mH0[j + mResY * i][0],mH0[j + mResY * i][1]);
+
+        }
+    }
+
+    [ gaussian release ];
 }
 
 @end

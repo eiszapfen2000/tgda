@@ -1,12 +1,13 @@
-/* All Rights reserved */
+#import <AppKit/AppKit.h>
 
-#include <AppKit/AppKit.h>
+#import "TOOceanSurface.h"
 
 NSString * TODocumentType = @"TODocumentType";
 
 
 @interface TODocument : NSDocument
 {
+	id mOceanSurface;
 }
 
 - (BOOL) loadDataRepresentation:(NSData*)representation ofType:(NSString*)type;
