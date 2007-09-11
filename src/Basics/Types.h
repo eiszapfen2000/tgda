@@ -1,5 +1,5 @@
-#ifndef _TYPES_H_
-#define _TYPES_H_
+#ifndef _NP_BASICS_TYPES_H_
+#define _NP_BASICS_TYPES_H_
 
 typedef unsigned int UInt32;
 typedef signed int Int32;
