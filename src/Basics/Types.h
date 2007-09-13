@@ -4,6 +4,7 @@
 typedef unsigned int UInt32;
 typedef signed int Int32;
 typedef Int32 Int;
+typedef UInt32 UInt;
 
 typedef unsigned short UInt16;
 typedef signed short Int16;

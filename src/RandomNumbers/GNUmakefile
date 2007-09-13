@@ -6,10 +6,12 @@ LIBRARY_NAME=libRandomNumberGeneration
 libRandomNumberGeneration_HEADER_FILES = \
 NPPRandomNumberGeneration.h \
 NPRandomNumberGenerators.h \
+NPRandomNumberGeneratorsManager.h \
 NPGaussianRandomNumberGenerator.h
 
 libRandomNumberGeneration_OBJC_FILES = \
 NPRandomNumberGenerators.m \
+NPRandomNumberGeneratorsManager.m \
 NPGaussianRandomNumberGenerator.m
 
 libRandomNumberGeneration_LDFLAGS += -lprng
