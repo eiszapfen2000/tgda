@@ -10,7 +10,6 @@
 #define NP_RNG_CTG		@"ctg"
 #define NP_RNG_MRG		@"mrg"
 #define NP_RNG_CMRG		@"cmrg"
-#define NP_RNG_MT19937	@"mt19937"
 
 #define NP_RNG_DEFAULT	NP_RNG_TT800
 
