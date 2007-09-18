@@ -48,6 +48,7 @@
 
 - (NPRandomNumberGenerator *) lcgGenerator
 {
+    return nil;
 }
 
 - (NPRandomNumberGenerator *) lcgGeneratorWithParameters
@@ -70,6 +71,7 @@
 
 - (NPRandomNumberGenerator *) icgGenerator
 {
+    return nil;
 }
 
 - (NPRandomNumberGenerator *) icgGeneratorWithParameters
@@ -91,6 +93,7 @@
 
 - (NPRandomNumberGenerator *) eicgGenerator
 {
+    return nil;
 }
 
 - (NPRandomNumberGenerator *) eicgGeneratorWithParameters
@@ -112,6 +115,7 @@
 
 - (NPRandomNumberGenerator *) meicgGenerator
 {
+    return nil;
 }
 
 - (NPRandomNumberGenerator *) meicgGeneratorWithParameters
@@ -133,6 +137,7 @@
 
 - (NPRandomNumberGenerator *) dicgGenerator
 {
+    return nil;
 }
 
 - (NPRandomNumberGenerator *) dicgGeneratorWithParameters
@@ -154,6 +159,7 @@
 
 - (NPRandomNumberGenerator *) qcgGenerator
 {
+    return nil;
 }
 
 - (NPRandomNumberGenerator *) qcgGeneratorWithParameters

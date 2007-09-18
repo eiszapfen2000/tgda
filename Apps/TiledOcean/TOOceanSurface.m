@@ -4,7 +4,6 @@
 
 #include "Math/Constants.h"
 
-
 @implementation TOOceanSurface
 
 - init
@@ -121,14 +120,16 @@
 
 	NPGaussianRandomNumberGenerator * gaussian = [ [ NPGaussianRandomNumberGenerator alloc ] init ];
 
+    NSLog(@"start");
+
     for(UInt64 i = 0; i < mResX; i++)
     {
         for(UInt64 j = 0; j < mResY; j++)
         {
-			xi_r = [ gaussian nextUniformFPRandomNumber ];
-			xi_i = [ gaussian nextUniformFPRandomNumber ];
+			xi_r = [ gaussian nextGaussianFPRandomNumber ];
+			xi_i = [ gaussian nextGaussianFPRandomNumber ];
 
-			NSLog(@"%f %f",xi_r,xi_i);
+			//NSLog(@"%f %f",xi_r,xi_i);
 
             k.x = [ self indexToK : i ];
             k.y = [ self indexToK : j ];
@@ -138,10 +139,11 @@
 			mH0[j + mResY * i][0] = MATH_1_DIV_SQRT_2 * xi_r * a;
 			mH0[j + mResY * i][1] = MATH_1_DIV_SQRT_2 * xi_i * a;
 
-			NSLog(@"%e %e",mH0[j + mResY * i][0],mH0[j + mResY * i][1]);
-
+			//NSLog(@"%e %e",mH0[j + mResY * i][0],mH0[j + mResY * i][1]);
         }
     }
+
+    NSLog(@"stop");
 
     [ gaussian release ];
 }

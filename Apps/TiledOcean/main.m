@@ -1,7 +1,7 @@
 #include <fftw3.h>
 #import <AppKit/AppKit.h>
 
-#import "RandomNumbers/NPRandomNumberGenerators.h"
+#import "RandomNumbers/NPRandomNumberGeneratorsManager.h"
 #import "TOOceanSurface.h"
 
 int main(int argc, const char *argv[])
@@ -17,33 +17,17 @@ int main(int argc, const char *argv[])
 
 	NSAutoreleasePool * pool = [NSAutoreleasePool new];
 
-	NPRandomNumberGenerator * nrg = [[NPRandomNumberGenerator alloc] init];
+	NPRandomNumberGeneratorsManager * rngManager = [ [ NPRandomNumberGeneratorsManager alloc ] init ];
 
-	NSString * brak = [ NSString stringWithFormat: @"mt19937(%ul)", [ nrg nextUniformIntegerRandomNumber ] ];
-
-	NSLog(brak);
-
-	NPRandomNumberGenerator * nrg2 = [[NPRandomNumberGenerator alloc] initWithName: brak ];
-
-	if(nrg2)
-	{
-		NSLog(@"juhuuuuu");
-	}
-
-	for ( int i = 0; i < 16; i++)
-	{
-		NSLog(@"%f",[nrg nextUniformFPRandomNumber]);
-		NSLog(@"%f",[nrg2 nextUniformFPRandomNumber]);
-	}
-
-	NSLog(@"%@",nrg2);
+	NPRandomNumberGenerator * nrg = [ rngManager mersenneTwisterWithSeed: 1 ];
+	NPRandomNumberGenerator * nrg2 = [ rngManager mersenneTwisterWithSeed: 1 ];
 
 	Vector2 k;
 	k.x = k.y = 1.0;
 
-	TOOceanSurfacePhillips * ocean = [ [ TOOceanSurfacePhillips alloc ] init: 8 : 8 : 100 : 100 : k ];
+	//TOOceanSurfacePhillips * ocean = [ [ TOOceanSurfacePhillips alloc ] init: 4096 : 4096 : 100 : 100 : k ];
 
-	[ ocean setupH0 ];
+	//[ ocean setupH0 ];
 
     return  NSApplicationMain(argc, argv);
 }

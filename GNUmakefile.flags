@@ -25,7 +25,7 @@ ADDITIONAL_CPPFLAGS += \
     $(BASIC_DEFINES)
 
 BASIC_CFLAGS += \
-    -Wall -std=gnu99
+    -Wall -Wextra -std=gnu99
 
 BASIC_OBJCFLAGS += \
     $(BASIC_CFLAGS) \

@@ -44,6 +44,13 @@
 	return prng_get_next(randomNumberGenerator);
 }
 
+- (void) arrayOfUniformFPRandomNumbers
+    : (Double *) array
+    : (UInt64) count
+{
+    prng_get_array(randomNumberGenerator, array, count);
+}
+
 - (ULong) nextUniformIntegerRandomNumber
 {
 	return prng_get_next_int(randomNumberGenerator);
