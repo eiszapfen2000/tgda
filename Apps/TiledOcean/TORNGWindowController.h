@@ -1,7 +1,11 @@
 #import <AppKit/AppKit.h>
 
-@interface TORNGWindowController : NSWindowController
+#import "Basics/Types.h"
 
+@interface TORNGWindowController : NSWindowController
+{
+    NSArray * fixedParameterItemNames;
+}
 - init;
 
 @end

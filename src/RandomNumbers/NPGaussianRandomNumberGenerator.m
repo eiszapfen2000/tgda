@@ -3,6 +3,8 @@
 #import "NPGaussianRandomNumberGenerator.h"
 #import "NPRandomNumberGenerators.h"
 
+#import "Math/Utilities.h"
+
 @implementation NPGaussianRandomNumberGenerator
 
 - init
@@ -44,7 +46,7 @@
 	return [ [ firstGenerator description ] stringByAppendingString: [ secondGenerator description ] ];
 }
 
-- (Double) nextUniformFPRandomNumber
+- (Double) nextGaussianFPRandomNumber
 {
 	Double x1, x2, w;
 

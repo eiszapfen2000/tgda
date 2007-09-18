@@ -2,6 +2,7 @@
 
 #import "NPPRandomNumberGeneration.h"
 #import "NPRandomNumberGenerators.h"
+#import "NPGaussianRandomNumberGenerator.h"
 
 @interface NPRandomNumberGeneratorsManager : NSObject
 {
@@ -11,6 +12,8 @@
 }
 
 - init;
+
+- (NPGaussianRandomNumberGenerator *) gaussianGenerator;
 
 - (NPRandomNumberGenerator *) fixedParameterGeneratorWithString: (NSString *) name;
 

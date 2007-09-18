@@ -2,7 +2,7 @@
 
 #import "NPPRandomNumberGeneration.h"
 
-@interface NPGaussianRandomNumberGenerator : NSObject < NPPUniformFPRandomNumber >
+@interface NPGaussianRandomNumberGenerator : NSObject < NPPGaussianFPRandomNumber >
 {
 	NSObject < NPPUniformFPRandomNumber > * firstGenerator;
 	NSObject < NPPUniformFPRandomNumber > * secondGenerator;
