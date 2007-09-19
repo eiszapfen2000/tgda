@@ -11,6 +11,10 @@
 	    "hideSeed:"
 	);
 	Outlets = (
+	    rngPopUpButtonRight,
+	    rngPopUpButtonLeft,
+	    seedTextFieldLeft,
+	    seedTextFieldRight
 	);
 	Super = NSWindowController;
     };

@@ -4,7 +4,14 @@
 
 @interface TORNGWindowController : NSWindowController
 {
-    NSArray * fixedParameterItemNames;
+    NSArray * fixedParameterRNGItemNames;
+    NSArray * oneParameterRNGItemNames;
+
+    NSPopUpButton * rngPopUpButtonLeft;
+    NSPopUpButton * rngPopUpButtonRight;
+
+    NSTextField * seedTextFieldLeft;
+    NSTextField * seedTextFieldRight;
 }
 - init;
 
