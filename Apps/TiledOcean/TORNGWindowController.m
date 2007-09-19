@@ -6,62 +6,80 @@
 {
 	self = [ super initWithWindowNibName: @"TORNGSettingsWindow" ];
 
-    fixedParameterItemNames = [ [ NSArray alloc ] initWithObjects: @"TT800", @"CTG", @"MRG", @"CMRG", nil ];
+    fixedParameterRNGItemNames = [ [ NSArray alloc ] initWithObjects: @"TT800", @"CTG", @"MRG", @"CMRG", nil ];
+    oneParameterRNGItemNames = [ [ NSArray alloc ] initWithObjects: @"Mersenne Twister", nil ];
 
     return self;
 }
 
 - (void) deactivateSeed: (id) sender
 {
-    NSView * cView = [ [ self window ] contentView ];
-
-    NSView * text = [ cView viewWithTag: 4 ];
-
-    [ text setHidden: YES ];
-    [ text setNeedsDisplay: YES ];
-
-    if ( [ text isHidden ] )
+    if ( [ rngPopUpButtonLeft menu ] == [ sender menu ] )
     {
-            NSLog(@"fgdslfc<");
+        [ seedTextFieldLeft setSelectable: NO ];
+        [ seedTextFieldLeft setEditable: NO ];
+        [ seedTextFieldLeft setTextColor: [ NSColor grayColor ] ];
     }
-    
+    else if ( [ rngPopUpButtonRight menu ] == [ sender menu ] )
+    {
+        [ seedTextFieldRight setSelectable: NO ];
+        [ seedTextFieldRight setEditable: NO ];
+        [ seedTextFieldRight setTextColor: [ NSColor grayColor ] ];
+    }
 }
 
 - (void) activateSeed: (id) sender
 {
-    NSLog(@"gga");
+    if ( [ rngPopUpButtonLeft menu ] == [ sender menu ] )
+    {
+        [ seedTextFieldLeft setSelectable: YES ];
+        [ seedTextFieldLeft setEditable: YES ];
+        [ seedTextFieldLeft setTextColor: [ NSColor blackColor ] ]; 
+    }
+    else if ( [ rngPopUpButtonRight menu ] == [ sender menu ] )
+    {
+        [ seedTextFieldRight setSelectable: YES ];
+        [ seedTextFieldRight setEditable: YES ];
+        [ seedTextFieldRight setTextColor: [ NSColor blackColor ] ];
+    }
 }
 
 - (void) addItemsToPopUpButton: (id) popUpButton
 {
     NSMenuItem * item;
 
-    for ( UInt i = 0; i < [ fixedParameterItemNames count ]; i++ )
+    for ( UInt i = 0; i < [ fixedParameterRNGItemNames count ]; i++ )
     {
-        [ popUpButton addItemWithTitle: [ fixedParameterItemNames objectAtIndex: i ] ];
+        [ popUpButton addItemWithTitle: [ fixedParameterRNGItemNames objectAtIndex: i ] ];
 
-        item = [ popUpButton itemWithTitle: [ fixedParameterItemNames objectAtIndex: i ] ];
+        item = [ popUpButton itemWithTitle: [ fixedParameterRNGItemNames objectAtIndex: i ] ];
 
         [ item setTarget: self ];
         [ item setAction: @selector(deactivateSeed:) ];
     }
+
+    for ( UInt i = 0; i < [ oneParameterRNGItemNames count ]; i++ )
+    {
+        [ popUpButton addItemWithTitle: [ oneParameterRNGItemNames objectAtIndex: i ] ];
+
+        item = [ popUpButton itemWithTitle: [ oneParameterRNGItemNames objectAtIndex: i ] ];
+
+        [ item setTarget: self ];
+        [ item setAction: @selector(activateSeed:) ];
+    }
+
+    
 }
 
 - (void) windowDidLoad
 {
-    NSView * cView = [ [ self window ] contentView];
+    [ rngPopUpButtonLeft removeAllItems ];
 
-    NSPopUpButton * pButton = [ cView viewWithTag: 1 ];
+    [ self addItemsToPopUpButton: rngPopUpButtonLeft ];
 
-    [ pButton removeAllItems ];
+    [ rngPopUpButtonRight removeAllItems ];
 
-    [ self addItemsToPopUpButton: pButton ];
-
-    pButton = [ cView viewWithTag: 2 ];
-
-    [ pButton removeAllItems ];
-
-    [ self addItemsToPopUpButton: pButton ];
+    [ self addItemsToPopUpButton: rngPopUpButtonRight ];
 }
 
 @end
