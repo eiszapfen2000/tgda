@@ -5,11 +5,17 @@ LIBRARY_NAME=libMath
 
 libMath_C_FILES = \
 FVector.c \
+FMatrix.c \
+Matrix.c \
 Vector.c
 
 libMath_HEADER_FILES = \
 Constants.h \
+FMatrix.h \
+FQuaternion.h \
+FVector.h \
 Matrix.h \
+Quaternion.h \
 Random.h \
 Vector.h
 

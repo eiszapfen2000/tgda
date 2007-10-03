@@ -1,5 +1,7 @@
 #include "FVector.h"
 
+#include <math.h>
+
 Float fv2_v_square_length(const FVector2 * const v)
 {
     return (v->x * v->x + v->y * v->y);
