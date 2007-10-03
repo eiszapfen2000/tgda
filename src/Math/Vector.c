@@ -1,5 +1,7 @@
 #include "Vector.h"
 
+#include <math.h>
+
 Double v2_v_square_length(const Vector2 * const v)
 {
     return (v->x * v->x + v->y * v->y);

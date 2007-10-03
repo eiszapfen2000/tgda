@@ -1,8 +1,6 @@
 #ifndef _NP_MATH_FVECTOR_H_
 #define _NP_MATH_FVECTOR_H_
 
-#include <math.h>
-
 #include "Basics/Types.h"
 
 typedef struct
