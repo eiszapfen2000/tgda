@@ -22,6 +22,7 @@ typedef struct
 FMatrix4;
 
 #define FM_ELEMENT(_m2, _col, _row) (_m2).elements[(_col)][(_row)]
+#define FM_E    FM_ELEMENT
 
 void fm2_mm_multiply_m(FMatrix2 * m1, FMatrix2 * m2, FMatrix2 * result);
 void fm3_mm_multiply_m(FMatrix3 * m1, FMatrix3 * m2, FMatrix3 * result);
