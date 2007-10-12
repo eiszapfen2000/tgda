@@ -24,9 +24,19 @@ typedef struct
 Matrix4;
 
 #define M_ELEMENT(_m2, _col, _row) (_m2).elements[(_col)][(_row)]
+#define M_E     M_ELEMENT
 
 void m2_mm_multiply_m(Matrix2 * m1, Matrix2 * m2, Matrix2 * result);
 void m3_mm_multiply_m(Matrix3 * m1, Matrix3 * m2, Matrix3 * result);
 void m4_mm_multiply_m(Matrix4 * m1, Matrix4 * m2, Matrix4 * result);
+
+void m2_mm_add_m(Matrix2 * m1, Matrix2 * m2, Matrix2 * result);
+void m3_mm_add_m(Matrix3 * m1, Matrix3 * m2, Matrix3 * result);
+void m4_mm_add_m(Matrix4 * m1, Matrix4 * m2, Matrix4 * result);
+
+void m2_mm_subtract_m(Matrix2 * m1, Matrix2 * m2, Matrix2 * result);
+void m3_mm_subtract_m(Matrix3 * m1, Matrix3 * m2, Matrix3 * result);
+void m4_mm_subtract_m(Matrix4 * m1, Matrix4 * m2, Matrix4 * result);
+
 
 #endif
