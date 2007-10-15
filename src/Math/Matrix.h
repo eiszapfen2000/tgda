@@ -23,8 +23,16 @@ typedef struct
 }
 Matrix4;
 
-#define M_ELEMENT(_m2, _col, _row) (_m2).elements[(_col)][(_row)]
+#define M_ELEMENT(_m, _col, _row) (_m).elements[(_col)][(_row)]
 #define M_E     M_ELEMENT
+
+void m2_m_set_identity(Matrix2 * m);
+void m3_m_set_identity(Matrix3 * m);
+void m4_m_set_identity(Matrix4 * m);
+
+void m2_m_transpose_m(Matrix2 * m, Matrix2 * transpose);
+void m3_m_transpose_m(Matrix3 * m, Matrix3 * transpose);
+void m4_m_transpose_m(Matrix4 * m, Matrix4 * transpose);
 
 void m2_mm_multiply_m(Matrix2 * m1, Matrix2 * m2, Matrix2 * result);
 void m3_mm_multiply_m(Matrix3 * m1, Matrix3 * m2, Matrix3 * result);
