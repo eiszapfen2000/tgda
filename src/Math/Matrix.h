@@ -3,6 +3,9 @@
 
 #include "Basics/Types.h"
 
+#pragma pack(push)
+#pragma pack(16)
+
 //first index = column
 
 typedef struct
@@ -30,21 +33,21 @@ void m2_m_set_identity(Matrix2 * m);
 void m3_m_set_identity(Matrix3 * m);
 void m4_m_set_identity(Matrix4 * m);
 
-void m2_m_transpose_m(Matrix2 * m, Matrix2 * transpose);
-void m3_m_transpose_m(Matrix3 * m, Matrix3 * transpose);
-void m4_m_transpose_m(Matrix4 * m, Matrix4 * transpose);
+void m2_m_transpose_m(const Matrix2 * m, Matrix2 * transpose);
+void m3_m_transpose_m(const Matrix3 * m, Matrix3 * transpose);
+void m4_m_transpose_m(const Matrix4 * m, Matrix4 * transpose);
 
-void m2_mm_multiply_m(Matrix2 * m1, Matrix2 * m2, Matrix2 * result);
-void m3_mm_multiply_m(Matrix3 * m1, Matrix3 * m2, Matrix3 * result);
-void m4_mm_multiply_m(Matrix4 * m1, Matrix4 * m2, Matrix4 * result);
+void m2_mm_multiply_m(const Matrix2 * m1, const Matrix2 * m2, Matrix2 * result);
+void m3_mm_multiply_m(const Matrix3 * m1, const Matrix3 * m2, Matrix3 * result);
+void m4_mm_multiply_m(const Matrix4 * m1, const Matrix4 * m2, Matrix4 * result);
 
-void m2_mm_add_m(Matrix2 * m1, Matrix2 * m2, Matrix2 * result);
-void m3_mm_add_m(Matrix3 * m1, Matrix3 * m2, Matrix3 * result);
-void m4_mm_add_m(Matrix4 * m1, Matrix4 * m2, Matrix4 * result);
+void m2_mm_add_m(const Matrix2 * m1, const Matrix2 * m2, Matrix2 * result);
+void m3_mm_add_m(const Matrix3 * m1, const Matrix3 * m2, Matrix3 * result);
+void m4_mm_add_m(const Matrix4 * m1, const Matrix4 * m2, Matrix4 * result);
 
-void m2_mm_subtract_m(Matrix2 * m1, Matrix2 * m2, Matrix2 * result);
-void m3_mm_subtract_m(Matrix3 * m1, Matrix3 * m2, Matrix3 * result);
-void m4_mm_subtract_m(Matrix4 * m1, Matrix4 * m2, Matrix4 * result);
+void m2_mm_subtract_m(const Matrix2 * m1, const Matrix2 * m2, Matrix2 * result);
+void m3_mm_subtract_m(const Matrix3 * m1, const Matrix3 * m2, Matrix3 * result);
+void m4_mm_subtract_m(const Matrix4 * m1, const Matrix4 * m2, Matrix4 * result);
 
 
 #endif
