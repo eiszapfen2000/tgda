@@ -7,6 +7,7 @@ libMath_C_FILES = \
 FVector.c \
 FMatrix.c \
 Matrix.c \
+Quaternion.c \
 Vector.c
 
 libMath_HEADER_FILES = \
