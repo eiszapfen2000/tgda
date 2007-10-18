@@ -33,4 +33,4 @@ typedef Double Real;
 #define NP_INT32_MAX       ((Int32) +2147483647L)
 #define NP_UINT32_MAX      ((UInt32) 0xffffffffL)
 
-#endif
+#endif //_NP_BASICS_TYPES_H_
