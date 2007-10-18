@@ -49,5 +49,18 @@ void quat_q_normalise_q(Quaternion * q, Quaternion * normalised)
 
 void quat_qq_multiply_q(Quaternion * q1, Quaternion * q2, Quaternion * result)
 {
+    Q_W(*result) = v3_vv_dot_product( &Q_V(*q1), &Q_V(*q2) );
 
+    Vector3 cross, scale1, scale2;
+
+    v3_vv_cross_product_v( &Q_V(*q1), &Q_V(*q2), &cross);
+
+    v3_sv_scale_v( &Q_W(*q2), &Q_V(*q1), &scale1);
+    v3_sv_scale_v( &Q_W(*q1), &Q_V(*q2), &scale2);
+
+    v3_vv_add_v( &cross, &scale1, &cross);
+    v3_vv_add_v( &cross, &scale2, &Q_V(*result));
+
+    quat_q_normalise(result);
 }
+

@@ -34,8 +34,14 @@ Vector4;
 Double v2_v_square_length(const Vector2 * const v);
 Double v3_v_square_length(const Vector3 * const v);
 
+void v2_v_square_length_s(const Vector2 * const v, Double * sqrlength);
+void v3_v_square_length_s(const Vector3 * const v, Double * sqrlength);
+
 Double v2_v_length(const Vector2 * const v);
 Double v3_v_length(const Vector3 * const v);
+
+void v2_v_length_s(const Vector2 * const v, Double * length);
+void v3_v_length_s(const Vector3 * const v, Double * length);
 
 void v2_v_normalise_v(const Vector2 * const v, Vector2 * normalised);
 void v3_v_normalise_v(const Vector3 * const v, Vector3 * normalised);
@@ -43,8 +49,33 @@ void v3_v_normalise_v(const Vector3 * const v, Vector3 * normalised);
 void v2_v_normalise(Vector2 * v);
 void v3_v_normalise(Vector3 * v);
 
+void v2_sv_scale(Double * scale, Vector2 * v);
+void v3_sv_scale(Double * scale, Vector3 * v);
+
+void v2_sv_scalex(Double * scale, Vector2 * v);
+void v3_sv_scalex(Double * scale, Vector3 * v);
+
+void v2_sv_scaley(Double * scale, Vector2 * v);
+void v3_sv_scaley(Double * scale, Vector3 * v);
+
+void v3_sv_scalez(Double * scale, Vector3 * v);
+
+void v2_sv_scale_v(Double * scale, Vector2 * v, Vector2 * result);
+void v3_sv_scale_v(Double * scale, Vector3 * v, Vector3 * result);
+
+void v2_sv_scalex_v(Double * scale, Vector2 * v, Vector2 * result);
+void v3_sv_scalex_v(Double * scale, Vector3 * v, Vector3 * result);
+
+void v2_sv_scaley_v(Double * scale, Vector2 * v, Vector2 * result);
+void v3_sv_scaley_v(Double * scale, Vector3 * v, Vector3 * result);
+
+void v3_sv_scalez_v(Double * scale, Vector3 * v, Vector3 * result);
+
 Double v2_vv_dot_product(const Vector2 * const v, const Vector2 * const w);
 Double v3_vv_dot_product(const Vector3 * const v, const Vector3 * const w);
+
+void v2_vv_dot_product_s(const Vector2 * const v, const Vector2 * const w, Double * dot);
+void v3_vv_dot_product_s(const Vector3 * const v, const Vector3 * const w, Double * dot);
 
 void v3_vv_cross_product_v(const Vector3 * const v, const Vector3 * const w, Vector3 * result);
 

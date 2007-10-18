@@ -11,11 +11,13 @@ typedef struct
 }
 Quaternion;
 
+#define QUATERNION_V(_q)    (_q).v
 #define QUATERNION_X(_q)    (_q).v.x
 #define QUATERNION_Y(_q)    (_q).v.y
 #define QUATERNION_Z(_q)    (_q).v.z
 #define QUATERNION_W(_q)    (_q).w
 
+#define Q_V QUATERNION_V
 #define Q_X QUATERNION_X
 #define Q_Y QUATERNION_Y
 #define Q_Z QUATERNION_Z
