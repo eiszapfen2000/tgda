@@ -6,7 +6,7 @@
 
 typedef struct NpFreeNode
 {
-    struct NpFreeNode  * next;
+    struct NpFreeNode * next;
 }
 NpFreeNode;
 
@@ -14,12 +14,12 @@ NpFreeNode;
 
 typedef struct NpFreeList
 {
-    NpFreeNode     * free;            /* slot list */
-    NpFreeNode     * node;            /* block list */
-    ULong            elementsize;
-    ULong            blocksize;
+    NpFreeNode     * free;          /* slot list */
+    NpFreeNode     * node;          /* block list */
+    ULong            elementsize;   /* size in Bytes of the stored type */
+    ULong            blocksize;     /* elements per block */
 #ifdef DEBUG
-    ULong           allocated;
+    ULong            allocated;     /* Allocated elements count */
 #endif
 }
 NpFreeList;
@@ -30,8 +30,15 @@ NpFreeList;
 #define NPFREELIST_BLOCK_SIZE(_list)    (_list).blocksize
 
 #ifdef DEBUG
-    #define NPFREELIST_ALLOCATED(_list) (_list).allocated
+    #define NPFREELIST_INC_ALLOCATED(_freelist) (++(_freelist)->allocated)
+    #define NPFREELIST_DEC_ALLOCATED(_freelist) (--(_freelist)->allocated)
+    #define NPFREELIST_ALLOCATED(_freelist)     ((_freelist).allocated)
+#else
+    #define NPFREELIST_INC_ALLOCATED(_freelist)
+    #define NPFREELIST_DEC_ALLOCATED(_freelist)
+    #define NPFREELIST_ALLOCATED(_freelist)     0
 #endif
+
 
 /* ---------------------------------------------------------------------------
     'NPFREELIST'
@@ -45,55 +52,32 @@ NpFreeList;
                 ((NpFreeList){ NULL, NULL, sizeof(_type), (_blocksize) })
 #endif
 
-ArFreeNode * arfreelist_refill(ArFreeList  * freelist);
-
-
-#ifdef DEBUG
-#define NPFREELIST_INC_ALLOCATED(_freelist) (++(_freelist)->allocated)
-#define NPFREELIST_DEC_ALLOCATED(_freelist) (--(_freelist)->allocated)
-#define NPFREELIST_ALLOCATED(_freelist)     ((_freelist).allocated)
-#else
-#define NPFREELIST_INC_ALLOCATED(_freelist)
-#define NPFREELIST_DEC_ALLOCATED(_freelist)
-#define NPFREELIST_ALLOCATED(_freelist)     0
-#endif
-
 
 /* ---------------------------------------------------------------------------
-    'arfreenode_alloc'
+    'npfreenode_alloc'
         Allocate a node by popping it from the freelist.  If the freelist is
         empty a new block of nodes is allocated.
 --------------------------------------------------------------------------- */
-ART_INLINE void * arfreenode_alloc(
-        ArFreeList  * freelist
-        )
-{
-    ArFreeNode * free = freelist->free;
-    if (! free) free = arfreelist_refill(freelist);
-    freelist->free = freelist->free->next;
-    ARFREELIST_INC_ALLOCATED(freelist);
-    return (void *)free;
-}
+void * npfreenode_alloc(NpFreeList  * freelist);
 
 /* ---------------------------------------------------------------------------
-    'arfreenode_fast_free'
+    'npfreenode_fast_free'
         Frees a node by pushing it onto the freelist.  The pointer to the
         node must be valid - it is not checked against 0.
 --------------------------------------------------------------------------- */
-ART_INLINE void * arfreenode_fast_free(
-        void        * node, 
-        ArFreeList  * freelist
-        )
-{
-    ARFREELIST_DEC_ALLOCATED(freelist);
-    ((ArFreeNode *)node)->next = freelist->free;
-    freelist->free = (ArFreeNode *)node;
-    return 0;
-}
+void * npfreenode_fast_free(void * node, NpFreeList  * freelist);
 
-void arfreelist_free(
-        ArFreeList  * freelist
-        );
+/* ---------------------------------------------------------------------------
+    'npfreelist_free'
+        Frees the entire freelist.
+--------------------------------------------------------------------------- */
+void npfreelist_free(NpFreeList * freelist);
+
+/* ---------------------------------------------------------------------------
+    'npfreelist_free'
+        Allocates an additional block.
+--------------------------------------------------------------------------- */
+NpFreeNode * npfreelist_alloc_block(NpFreeList * freelist);
 
 
-#endif
+#endif //_NP_BASICS_FREELIST_H_
