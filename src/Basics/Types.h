@@ -1,6 +1,8 @@
 #ifndef _NP_BASICS_TYPES_H_
 #define _NP_BASICS_TYPES_H_
 
+typedef unsigned char Byte;
+
 typedef unsigned int UInt32;
 typedef signed int Int32;
 typedef Int32 Int;
