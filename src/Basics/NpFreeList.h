@@ -4,6 +4,11 @@
 #include "Types.h"
 #include "Memory.h"
 
+/*! \struct NpFreeNode
+	\brief  Freelist element
+
+    Freelist element, containing a pointer to the next element
+*/
 typedef struct NpFreeNode
 {
     struct NpFreeNode * next;
@@ -12,11 +17,17 @@ NpFreeNode;
 
 #define NPFREENODE_NEXT(_node)  (_node).next
 
+
+/*! \struct NpFreeList
+    \brief  Freelist
+
+    Freelist memory pool
+*/
 typedef struct NpFreeList
 {
     NpFreeNode     * free;          /* slot list */
     NpFreeNode     * node;          /* block list */
-    ULong            elementsize;   /* size in Bytes of the stored type */
+    ULong            elementsize;   /* size in bytes of the stored type */
     ULong            blocksize;     /* elements per block */
 #ifdef DEBUG
     ULong            allocated;     /* Allocated elements count */
@@ -45,13 +56,30 @@ NpFreeList;
         Construct a freelist for a given type and a given blocksize.
 --------------------------------------------------------------------------- */
 #ifdef DEBUG
-#define NPFREELIST(_type,_blocksize) \
+    #define NPFREELIST(_type,_blocksize) \
                 ((NpFreeList){ NULL, NULL, sizeof(_type), (_blocksize), 0 })
 #else
-#define NPFREELIST(_type,_blocksize) \
+    #define NPFREELIST(_type,_blocksize) \
                 ((NpFreeList){ NULL, NULL, sizeof(_type), (_blocksize) })
 #endif
 
+#define NPFREELIST_ALLOC_INIT(_freelist, _type, _blocksize) \
+    (_freelist) = ALLOC(NpFreeList); \
+    (_freelist)->free = (_freelist)->node = NULL; \
+    (_freelist)->elementsize = sizeof(_type); \
+    (_freelist)->blocksize = (_blocksize);
+
+/* ---------------------------------------------------------------------------
+    'npfreelist_free'
+        Allocates an additional block.
+--------------------------------------------------------------------------- */
+NpFreeNode * npfreelist_alloc_block(NpFreeList * freelist);
+
+/* ---------------------------------------------------------------------------
+    'npfreelist_free'
+        Frees the entire freelist.
+--------------------------------------------------------------------------- */
+void npfreelist_free(NpFreeList * freelist);
 
 /* ---------------------------------------------------------------------------
     'npfreenode_alloc'
@@ -66,18 +94,5 @@ void * npfreenode_alloc(NpFreeList  * freelist);
         node must be valid - it is not checked against 0.
 --------------------------------------------------------------------------- */
 void * npfreenode_fast_free(void * node, NpFreeList  * freelist);
-
-/* ---------------------------------------------------------------------------
-    'npfreelist_free'
-        Frees the entire freelist.
---------------------------------------------------------------------------- */
-void npfreelist_free(NpFreeList * freelist);
-
-/* ---------------------------------------------------------------------------
-    'npfreelist_free'
-        Allocates an additional block.
---------------------------------------------------------------------------- */
-NpFreeNode * npfreelist_alloc_block(NpFreeList * freelist);
-
 
 #endif //_NP_BASICS_FREELIST_H_

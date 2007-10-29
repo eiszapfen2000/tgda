@@ -3,7 +3,6 @@ include $(GNUSTEP_MAKEFILES)/common.make
 PACKAGE_NAME = NPLibs
 
 SUBPROJECTS = \
-Basics \
 Math \
 RandomNumbers
 
