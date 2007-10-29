@@ -1,30 +1,5 @@
 #include "NpFreeList.h"
 
-void * npfreenode_alloc(NpFreeList  * freelist)
-{
-    NpFreeNode * free = NPFREELIST_FREE(*freelist);
-
-    if (!free)
-    {
-        free = npfreelist_alloc_block(freelist);
-    }
-
-    NPFREELIST_FREE(*freelist) = NPFREENODE_NEXT(*NPFREELIST_FREE(*freelist));
-    NPFREELIST_INC_ALLOCATED(freelist);
-
-    return (void *)free;
-}
-
-void * npfreenode_fast_free(void * node, NpFreeList  * freelist)
-{
-    NPFREELIST_DEC_ALLOCATED(freelist);
-
-    NPFREENODE_NEXT(*((NpFreeNode *)node)) = NPFREELIST_FREE(*freelist);
-    NPFREELIST_FREE(*freelist) = (NpFreeNode *)node;
-
-    return NULL;
-}
-
 NpFreeNode * npfreelist_alloc_block(NpFreeList * freelist)
 {
     ULong tablelength = NPFREELIST_ELEMENT_SIZE(*freelist) * NPFREELIST_BLOCK_SIZE(*freelist);
@@ -65,3 +40,29 @@ void npfreelist_free(NpFreeList * freelist)
     NPFREELIST_NODE(*freelist) = NULL;
     NPFREELIST_FREE(*freelist) = NULL;
 }
+
+void * npfreenode_alloc(NpFreeList  * freelist)
+{
+    NpFreeNode * free = NPFREELIST_FREE(*freelist);
+
+    if (!free)
+    {
+        free = npfreelist_alloc_block(freelist);
+    }
+
+    NPFREELIST_FREE(*freelist) = NPFREENODE_NEXT(*NPFREELIST_FREE(*freelist));
+    NPFREELIST_INC_ALLOCATED(freelist);
+
+    return (void *)free;
+}
+
+void * npfreenode_fast_free(void * node, NpFreeList  * freelist)
+{
+    NPFREELIST_DEC_ALLOCATED(freelist);
+
+    NPFREENODE_NEXT(*((NpFreeNode *)node)) = NPFREELIST_FREE(*freelist);
+    NPFREELIST_FREE(*freelist) = (NpFreeNode *)node;
+
+    return NULL;
+}
+

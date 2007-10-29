@@ -19,7 +19,7 @@ Resources/TiledOcean.gorm \
 Resources/TODocument.gorm \
 Resources/TORNGSettingsWindow.gorm
 
-ADDITIONAL_GUI_LIBS += -lGL -lGLU -lfftw3_threads -lfftw3 -lRandomNumberGeneration -lMath -lprng
+ADDITIONAL_GUI_LIBS += -lGL -lGLU -lfftw3_threads -lfftw3 -lRandomNumberGeneration -lMath -lBasics -lprng
 
 
 include $(TGDA_DIR)/GNUmakefile.flags

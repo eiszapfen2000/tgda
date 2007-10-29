@@ -2,7 +2,9 @@
 
 #import "RandomNumbers/NPGaussianRandomNumberGenerator.h"
 
-#include "Math/Constants.h"
+#import "Math/Constants.h"
+
+#import <math.h>
 
 @implementation TOOceanSurface
 
@@ -83,8 +85,8 @@
 
     k2 = v2_v_square_length(k);
 
-    v2_v_normalize_v(k,&knorm);
-    v2_v_normalize_v(&mWindDirection,&wdirnorm);
+    v2_v_normalise_v(k,&knorm);
+    v2_v_normalise_v(&mWindDirection,&wdirnorm);
 
     if ( k2 == 0.0 )
     {
