@@ -239,3 +239,17 @@ Vector3 * v3_alloc_init()
     return tmp;
 }
 
+Vector4 * v4_alloc()
+{
+    return (Vector4 *)npfreenode_alloc(NP_VECTOR4_FREELIST);
+}
+
+Vector4 * v4_alloc_init()
+{
+    Vector4 * tmp = npfreenode_alloc(NP_VECTOR4_FREELIST);
+    V_X(*tmp) = V_Y(*tmp) = V_Z(*tmp) = 0.0;
+    V_W(*tmp) = 1.0;
+
+    return tmp;
+}
+

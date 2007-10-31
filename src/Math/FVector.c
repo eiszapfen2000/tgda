@@ -1,10 +1,100 @@
+#include "Basics/Memory.h"
 #include "FVector.h"
 
 #include <math.h>
 
+NpFreeList * NP_FVECTOR2_FREELIST = NULL;
+NpFreeList * NP_FVECTOR3_FREELIST = NULL;
+NpFreeList * NP_FVECTOR4_FREELIST = NULL;
+
+void npmath_fvector_initialise()
+{
+    NPFREELIST_ALLOC_INIT(NP_FVECTOR2_FREELIST,FVector2,512)
+    NPFREELIST_ALLOC_INIT(NP_FVECTOR3_FREELIST,FVector3,512)
+    NPFREELIST_ALLOC_INIT(NP_FVECTOR4_FREELIST,FVector4,512)
+}
+
+void fv2_v_square_length_s(const FVector2 * const v, Float * sqrlength)
+{
+    *sqrlength = FV_X(*v) * FV_X(*v) + FV_Y(*v) * FV_Y(*v);
+}
+
+void fv2_v_length_s(const FVector2 * const v, Float * length)
+{
+    *length = sqrt(FV_X(*v) * FV_X(*v) + FV_Y(*v) * FV_Y(*v));
+}
+
+void fv2_v_normalise_v(const FVector2 * const v, FVector2 * normalised)
+{
+    Float length = fv2_v_length(v);
+    FV_X(*normalised) = FV_X(*v)/length;
+    FV_Y(*normalised) = FV_Y(*v)/length;
+}
+
+void fv2_v_normalise(FVector2 * v)
+{
+    Float length = fv2_v_length(v);
+    FV_X(*v) = FV_X(*v)/length;
+    FV_Y(*v) = FV_Y(*v)/length;
+}
+
+void fv2_sv_scale(FVector2 * v, const Float * const scale)
+{
+    FV_X(*v) *= *scale;
+    FV_Y(*v) *= *scale;
+}
+
+void fv2_sv_scalex(FVector2 * v, const Float * const scale)
+{
+    FV_X(*v) *= *scale;
+}
+
+void fv2_sv_scaley(FVector2 * v, const Float * const scale)
+{
+    FV_Y(*v) *= *scale;
+}
+
+void fv2_sv_scale_v(const FVector2 * const v, const Float * const scale, FVector2 * result)
+{
+    FV_X(*result) = FV_X(*v) * *scale;
+    FV_Y(*result) = FV_Y(*v) * *scale;
+}
+
+void fv2_sv_scalex_v(const FVector2 * const v, const Float * const scale, FVector2 * result)
+{
+    FV_X(*result) = FV_X(*v) * *scale;
+}
+
+void fv2_sv_scaley_v(const FVector2 * const v, const Float * const scale, FVector2 * result)
+{
+    FV_Y(*result) = FV_Y(*v) * *scale;
+}
+
+void fv2_vv_add_v(const FVector2 * const v, const FVector2 * const w, FVector2 * result)
+{
+    FV_X(*result) = FV_X(*v) + FV_X(*w);
+    FV_Y(*result) = FV_Y(*v) + FV_Y(*w);
+}
+
+void fv2_vv_sub_v(const FVector2 * const v, const FVector2 * const w, FVector2 * result)
+{
+    FV_X(*result) = FV_X(*v) - FV_X(*w);
+    FV_Y(*result) = FV_Y(*v) - FV_Y(*w);
+}
+
+void fv2_vv_dot_product_s(const FVector2 * const v, const FVector2 * const w, Float * dot)
+{
+    *dot = FV_X(*v) * FV_X(*w) + FV_Y(*v) * FV_Y(*w);
+}
+
+Float fv2_vv_dot_product(const FVector2 * const v, const FVector2 * const w)
+{
+    return ( FV_X(*v) * FV_X(*w) + FV_Y(*v) * FV_Y(*w) );
+}
+
 Float fv2_v_square_length(const FVector2 * const v)
 {
-    return (v->x * v->x + v->y * v->y);
+    return ( FV_X(*v) * FV_X(*v) + FV_Y(*v) * FV_Y(*v) );
 }
 
 Float fv2_v_length(const FVector2 * const v)
@@ -12,28 +102,118 @@ Float fv2_v_length(const FVector2 * const v)
     return sqrt(fv2_v_square_length(v));
 }
 
-void fv2_v_normalize_v(const FVector2 * const v, FVector2 * n)
+FVector2 * fv2_alloc()
 {
-    Float length = fv2_v_length(v);
-    n->x = v->x/length;
-    n->y = v->y/length;
+    return (FVector2 *)npfreenode_alloc(NP_FVECTOR2_FREELIST);
 }
 
-void fv2_v_normalize(FVector2 * v)
+FVector2 * fv2_alloc_init()
 {
-    Float length = fv2_v_length(v);
-    v->x = v->x/length;
-    v->y = v->y/length;
+    FVector2 * tmp = npfreenode_alloc(NP_FVECTOR2_FREELIST);
+    FV_X(*tmp) = FV_Y(*tmp) = 0.0;
+
+    return tmp;
 }
 
-Float fv2_vv_dot_product(const FVector2 * const v, const FVector2 * const w)
+void fv3_v_square_length_s(const FVector3 * const v, Float * sqrlength)
 {
-    return (v->x * w->x + v->y * w->y);
+    *sqrlength = FV_X(*v) * FV_X(*v) + FV_Y(*v) * FV_Y(*v) + FV_Z(*v) * FV_Z(*v);
+}
+
+void fv3_v_length_s(const FVector3 * const v, Float * length)
+{
+    *length = sqrt(FV_X(*v) * FV_X(*v) + FV_Y(*v) * FV_Y(*v) + FV_Z(*v) * FV_Z(*v));
+}
+
+void fv3_v_normalise_v(const FVector3 * const v, FVector3 * normalised)
+{
+    Float length = fv3_v_length(v);
+    FV_X(*normalised) = FV_X(*v)/length;
+    FV_Y(*normalised) = FV_Y(*v)/length;
+    FV_Z(*normalised) = FV_Z(*v)/length;
+}
+
+void fv3_v_normalise(FVector3 * v)
+{
+    Float length = fv3_v_length(v);
+    FV_X(*v) = FV_X(*v)/length;
+    FV_Y(*v) = FV_Y(*v)/length;
+    FV_Z(*v) = FV_Z(*v)/length;
+}
+
+void fv3_sv_scale(FVector3 * v, const Float * const scale)
+{
+    FV_X(*v) *= *scale;
+    FV_Y(*v) *= *scale;
+    FV_Z(*v) *= *scale;
+}
+
+void fv3_sv_scalex(FVector3 * v, const Float * const scale)
+{
+    FV_X(*v) *= *scale;
+}
+
+void fv3_sv_scaley(FVector3 * v, const Float * const scale)
+{
+    FV_Y(*v) *= *scale;
+}
+
+void fv3_sv_scalez(FVector3 * v, const Float * const scale)
+{
+    FV_Z(*v) *= *scale;
+}
+
+void fv3_sv_scale_v(const FVector3 * const v, const Float * const scale, FVector3 * result)
+{
+    FV_X(*result) = FV_X(*v) * *scale;
+    FV_Y(*result) = FV_Y(*v) * *scale;
+    FV_Z(*result) = FV_Z(*v) * *scale;
+}
+
+void fv3_sv_scalex_v(const FVector3 * const v, const Float * const scale, FVector3 * result)
+{
+    FV_X(*result) = FV_X(*v) * *scale;
+}
+
+void fv3_sv_scaley_v(const FVector3 * const v, const Float * const scale, FVector3 * result)
+{
+    FV_Y(*result) = FV_Y(*v) * *scale;
+}
+
+void fv3_sv_scalez_v(const FVector3 * const v, const Float * const scale, FVector3 * result)
+{
+    FV_Z(*result) = FV_Z(*v) * *scale;
+}
+
+void fv3_vv_add_v(const FVector3 * const v, const FVector3 * const w, FVector3 * result)
+{
+    FV_X(*result) = FV_X(*v) + FV_X(*w);
+    FV_Y(*result) = FV_Y(*v) + FV_Y(*w);
+    FV_Z(*result) = FV_Z(*v) + FV_Z(*w);
+}
+
+void fv3_vv_sub_v(const FVector3 * const v, const FVector3 * const w, FVector3 * result)
+{
+    FV_X(*result) = FV_X(*v) - FV_X(*w);
+    FV_Y(*result) = FV_Y(*v) - FV_Y(*w);
+    FV_Z(*result) = FV_Z(*v) - FV_Z(*w);
+}
+
+void fv3_vv_dot_product_s(const FVector3 * const v, const FVector3 * const w, Float * dot)
+{
+    *dot = FV_X(*v) * FV_X(*w) + FV_Y(*v) * FV_Y(*w) + FV_Z(*v) * FV_Z(*w);
+}
+
+void fv3_vv_cross_product_v(const FVector3 * const v, const FVector3 * const w, FVector3 * cross)
+{
+    FV_X(*cross) = FV_Y(*v) * FV_Z(*w) - FV_Z(*v) * FV_Y(*w);
+    FV_Y(*cross) = FV_Z(*v) * FV_X(*w) - FV_X(*v) * FV_Z(*w);
+    FV_Z(*cross) = FV_X(*v) * FV_Y(*w) - FV_Y(*v) * FV_X(*w);
 }
 
 Float fv3_v_square_length(const FVector3 * const v)
 {
-    return (v->x * v->x + v->y * v->y + v->z * v->z);
+    return ( FV_X(*v) * FV_X(*v) + FV_Y(*v) * FV_Y(*v) + FV_Z(*v) * FV_Z(*v) );
 }
 
 Float fv3_v_length(const FVector3 * const v)
@@ -41,30 +221,35 @@ Float fv3_v_length(const FVector3 * const v)
     return sqrt(fv3_v_square_length(v));
 }
 
-void fv3_v_normalize_v(const FVector3 * const v, FVector3 * n)
-{
-    Float length = fv3_v_length(v);
-    n->x = v->x/length;
-    n->y = v->y/length;
-    n->z = v->z/length;
-}
-
-void fv3_v_normalize(FVector3 * v)
-{
-    Float length = fv3_v_length(v);
-    v->x = v->x/length;
-    v->y = v->y/length;
-    v->z = v->z/length;
-}
-
 Float fv3_vv_dot_product(const FVector3 * const v, const FVector3 * const w)
 {
-    return (v->x * w->x + v->y * w->y + v->z * w->z);
+    return ( FV_X(*v) * FV_X(*w) + FV_Y(*v) * FV_Y(*w) + FV_Z(*v) * FV_Z(*w) );
 }
 
-void fv3_vv_cross_product_v(const FVector3 * const v, const FVector3 * const w, FVector3 * out)
+FVector3 * fv3_alloc()
 {
-    out->x = v->y * w->z - v->z * w->y;
-    out->y = v->z * w->x - v->x * w->z;
-    out->z = v->x * w->y - v->y * w->x;
+    return (FVector3 *)npfreenode_alloc(NP_FVECTOR3_FREELIST);
 }
+
+FVector3 * fv3_alloc_init()
+{
+    FVector3 * tmp = npfreenode_alloc(NP_FVECTOR3_FREELIST);
+    FV_X(*tmp) = FV_Y(*tmp) = FV_Z(*tmp) = 0.0;
+
+    return tmp;
+}
+
+FVector4 * fv4_alloc()
+{
+    return (FVector4 *)npfreenode_alloc(NP_FVECTOR4_FREELIST);
+}
+
+FVector4 * fv4_alloc_init()
+{
+    FVector4 * tmp = npfreenode_alloc(NP_FVECTOR4_FREELIST);
+    FV_X(*tmp) = FV_Y(*tmp) = FV_Z(*tmp) = 0.0;
+    FV_W(*tmp) = 1.0;
+
+    return tmp;
+}
+
