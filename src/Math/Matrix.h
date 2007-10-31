@@ -2,8 +2,14 @@
 #define _NP_MATH_MATRIX_H_
 
 #include "Basics/Types.h"
-
+#include "Basics/NpFreeList.h"
 #include "Vector.h"
+
+extern NpFreeList * NP_MATRIX2_FREELIST;
+extern NpFreeList * NP_MATRIX3_FREELIST;
+extern NpFreeList * NP_MATRIX4_FREELIST;
+
+void npmath_matrix_initialise();
 
 //first index = column
 
@@ -26,34 +32,36 @@ typedef struct Matrix4
 Matrix4;
 
 #define M_ELEMENT(_m, _col, _row) (_m).elements[(_col)][(_row)]
-#define M_E     M_ELEMENT
+#define M_EL     M_ELEMENT
 
-void m2_m_set_identity(Matrix2 * m);
-void m3_m_set_identity(Matrix3 * m);
-void m4_m_set_identity(Matrix4 * m);
+void m2_set_identity(Matrix2 * m);
+void m2_m_transpose_m(const Matrix2 * const m, Matrix2 * transpose);
+void m2_mm_add_m(const Matrix2 * const m1, const Matrix2 * const m2, Matrix2 * result);
+void m2_mm_subtract_m(const Matrix2 * const m1, const Matrix2 * const m2, Matrix2 * result);
+void m2_mm_multiply_m(const Matrix2 * const m1, const Matrix2 * const m2, Matrix2 * result);
+void m2_vm_multiply_v(const Vector2 * const v, const Matrix2 * const m, Vector2 * result);
+void m2_mv_multiply_v(const Matrix2 * const m, const Vector2 * const v, Vector2 * result);
+Matrix2 * m2_alloc();
+Matrix2 * m2_alloc_init();
 
-void m2_m_transpose_m(const Matrix2 * m, Matrix2 * transpose);
-void m3_m_transpose_m(const Matrix3 * m, Matrix3 * transpose);
-void m4_m_transpose_m(const Matrix4 * m, Matrix4 * transpose);
+void m3_set_identity(Matrix3 * m);
+void m3_m_transpose_m(const Matrix3 * const m, Matrix3 * transpose);
+void m3_mm_add_m(const Matrix3 * const m1, const Matrix3 * const m2, Matrix3 * result);
+void m3_mm_subtract_m(const Matrix3 * const m1, const Matrix3 * const m2, Matrix3 * result);
+void m3_mm_multiply_m(const Matrix3 * const m1, const Matrix3 * const m2, Matrix3 * result);
+void m3_vm_multiply_v(const Vector3 * const v, const Matrix3 * const m, Vector3 * result);
+void m3_mv_multiply_v(const Matrix3 * const m, const Vector3 * const v, Vector3 * result);
+Matrix3 * m3_alloc();
+Matrix3 * m3_alloc_init();
 
-void m2_mm_add_m(const Matrix2 * m1, const Matrix2 * m2, Matrix2 * result);
-void m3_mm_add_m(const Matrix3 * m1, const Matrix3 * m2, Matrix3 * result);
-void m4_mm_add_m(const Matrix4 * m1, const Matrix4 * m2, Matrix4 * result);
-
-void m2_mm_subtract_m(const Matrix2 * m1, const Matrix2 * m2, Matrix2 * result);
-void m3_mm_subtract_m(const Matrix3 * m1, const Matrix3 * m2, Matrix3 * result);
-void m4_mm_subtract_m(const Matrix4 * m1, const Matrix4 * m2, Matrix4 * result);
-
-void m2_mm_multiply_m(const Matrix2 * m1, const Matrix2 * m2, Matrix2 * result);
-void m3_mm_multiply_m(const Matrix3 * m1, const Matrix3 * m2, Matrix3 * result);
-void m4_mm_multiply_m(const Matrix4 * m1, const Matrix4 * m2, Matrix4 * result);
-
-void m2_vm_multiply_v(Vector2 * v, Matrix2 * m, Vector2 * result);
-void m3_vm_multiply_v(Vector3 * v, Matrix3 * m, Vector3 * result);
-void m4_vm_multiply_v(Vector4 * v, Matrix4 * m, Vector4 * result);
-
-void m2_mv_multiply_v(Matrix2 * m, Vector2 * v, Vector2 * result);
-void m3_mv_multiply_v(Matrix3 * m, Vector3 * v, Vector3 * result);
-void m4_mv_multiply_v(Matrix4 * m, Vector4 * v, Vector4 * result);
+void m4_set_identity(Matrix4 * m);
+void m4_m_transpose_m(const Matrix4 * const m, Matrix4 * transpose);
+void m4_mm_add_m(const Matrix4 * const m1, const Matrix4 * const m2, Matrix4 * result);
+void m4_mm_subtract_m(const Matrix4 * const m1, const Matrix4 * const m2, Matrix4 * result);
+void m4_mm_multiply_m(const Matrix4 * const m1, const Matrix4 * const m2, Matrix4 * result);
+void m4_vm_multiply_v(const Vector4 * const v, const Matrix4 * const m, Vector4 * result);
+void m4_mv_multiply_v(const Matrix4 * const m, const Vector4 * const v, Vector4 * result);
+Matrix4 * m4_alloc();
+Matrix4 * m4_alloc_init();
 
 #endif

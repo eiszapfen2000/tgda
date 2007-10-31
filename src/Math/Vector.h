@@ -79,5 +79,8 @@ Double v3_vv_dot_product(const Vector3 * const v, const Vector3 * const w);
 Vector3 * v3_alloc();
 Vector3 * v3_alloc_init();
 
+Vector4 * v4_alloc();
+Vector4 * v4_alloc_init();
+
 #endif
 
