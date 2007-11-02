@@ -134,6 +134,7 @@ void quat_m3_to_quaternion_q(const Matrix3 * const m, Quaternion * q)
         if ( M_EL(*m,0,0) > M_EL(*m,1,1) && M_EL(*m,0,0) > M_EL(*m,2,2) )
         {
             s = sqrt( 1.0 + M_EL(*m,0,0) - M_EL(*m,1,1) - M_EL(*m,2,2) ) * 2.0;
+
             Q_X(*q) = 0.5 / s;
             Q_Y(*q) = ( M_EL(*m,1,0) + M_EL(*m,0,1) ) / s;
             Q_Z(*q) = ( M_EL(*m,2,0) + M_EL(*m,0,2) ) / s;
@@ -145,6 +146,7 @@ void quat_m3_to_quaternion_q(const Matrix3 * const m, Quaternion * q)
         if ( M_EL(*m,1,1) > M_EL(*m,0,0) && M_EL(*m,1,1) > M_EL(*m,2,2) )
         {
             s = sqrt( 1.0 + M_EL(*m,1,1) - M_EL(*m,0,0) - M_EL(*m,2,2) ) * 2.0;
+
             Q_X(*q) = ( M_EL(*m,1,0) + M_EL(*m,0,1) ) / s; 
             Q_Y(*q) = 0.5 / s; 
             Q_Z(*q) = ( M_EL(*m,2,1) + M_EL(*m,1,2) ) / s;
@@ -156,6 +158,7 @@ void quat_m3_to_quaternion_q(const Matrix3 * const m, Quaternion * q)
         if ( M_EL(*m,2,2) > M_EL(*m,0,0) && M_EL(*m,2,2) > M_EL(*m,1,1) )
         {
             s = sqrt( 1.0 + M_EL(*m,2,2) - M_EL(*m,1,1) - M_EL(*m,0,0) ) * 2.0;
+
             Q_X(*q) = ( M_EL(*m,2,0) + M_EL(*m,0,2) ) / s;
             Q_Y(*q) = ( M_EL(*m,2,1) + M_EL(*m,1,2) ) / s;
             Q_Z(*q) = 0.5 / s;
@@ -187,6 +190,7 @@ void quat_m4_to_quaternion_q(const Matrix4 * const m, Quaternion * q)
         if ( M_EL(*m,0,0) > M_EL(*m,1,1) && M_EL(*m,0,0) > M_EL(*m,2,2) )
         {
             s = sqrt( 1.0 + M_EL(*m,0,0) - M_EL(*m,1,1) - M_EL(*m,2,2) ) * 2.0;
+
             Q_X(*q) = 0.5 / s;
             Q_Y(*q) = ( M_EL(*m,1,0) + M_EL(*m,0,1) ) / s;
             Q_Z(*q) = ( M_EL(*m,2,0) + M_EL(*m,0,2) ) / s;
@@ -198,6 +202,7 @@ void quat_m4_to_quaternion_q(const Matrix4 * const m, Quaternion * q)
         if ( M_EL(*m,1,1) > M_EL(*m,0,0) && M_EL(*m,1,1) > M_EL(*m,2,2) )
         {
             s = sqrt( 1.0 + M_EL(*m,1,1) - M_EL(*m,0,0) - M_EL(*m,2,2) ) * 2.0;
+
             Q_X(*q) = ( M_EL(*m,1,0) + M_EL(*m,0,1) ) / s; 
             Q_Y(*q) = 0.5 / s; 
             Q_Z(*q) = ( M_EL(*m,2,1) + M_EL(*m,1,2) ) / s;
@@ -209,6 +214,7 @@ void quat_m4_to_quaternion_q(const Matrix4 * const m, Quaternion * q)
         if ( M_EL(*m,2,2) > M_EL(*m,0,0) && M_EL(*m,2,2) > M_EL(*m,1,1) )
         {
             s = sqrt( 1.0 + M_EL(*m,2,2) - M_EL(*m,1,1) - M_EL(*m,0,0) ) * 2.0;
+
             Q_X(*q) = ( M_EL(*m,2,0) + M_EL(*m,0,2) ) / s;
             Q_Y(*q) = ( M_EL(*m,2,1) + M_EL(*m,1,2) ) / s;
             Q_Z(*q) = 0.5 / s;

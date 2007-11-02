@@ -11,6 +11,24 @@ void npmath_matrix_initialise()
     NPFREELIST_ALLOC_INIT(NP_MATRIX4_FREELIST,Matrix4,512)
 }
 
+Matrix2 * m2_alloc()
+{
+    return (Matrix2 *)npfreenode_alloc(NP_MATRIX2_FREELIST);
+}
+
+Matrix2 * m2_alloc_init()
+{
+    Matrix2 * tmp = npfreenode_alloc(NP_MATRIX2_FREELIST);
+    m2_set_identity(tmp);
+
+    return tmp;
+}
+
+Matrix2 * m2_free(Matrix2 * m)
+{
+    return npfreenode_fast_free(m,NP_MATRIX2_FREELIST);
+}
+
 void m2_set_identity(Matrix2 * m)
 {
     M_EL(*m,0,0) = M_EL(*m,1,1) = 1.0;
@@ -62,17 +80,22 @@ void m2_mv_multiply_v(const Matrix2 * const m, const Vector2 * const v, Vector2 
     V_Y(*result) = M_EL(*m,0,1) * V_X(*v) + M_EL(*m,1,1) * V_Y(*v);
 }
 
-Matrix2 * m2_alloc()
+Matrix3 * m3_alloc()
 {
-    return (Matrix2 *)npfreenode_alloc(NP_MATRIX2_FREELIST);
+    return (Matrix3 *)npfreenode_alloc(NP_MATRIX3_FREELIST);
 }
 
-Matrix2 * m2_alloc_init()
+Matrix3 * m3_alloc_init()
 {
-    Matrix2 * tmp = npfreenode_alloc(NP_MATRIX2_FREELIST);
-    m2_set_identity(tmp);
+    Matrix3 * tmp = npfreenode_alloc(NP_MATRIX3_FREELIST);
+    m3_set_identity(tmp);
 
     return tmp;
+}
+
+Matrix3 * m3_free(Matrix3 * m)
+{
+    return npfreenode_fast_free(m,NP_MATRIX3_FREELIST);
 }
 
 void m3_set_identity(Matrix3 * m)
@@ -155,17 +178,22 @@ void m3_mv_multiply_v(const Matrix3 * const m, const Vector3 * const v, Vector3 
     V_Z(*result) = M_EL(*m,0,2) * V_X(*v) + M_EL(*m,1,2) * V_Y(*v) + M_EL(*m,2,2) * V_Z(*v);
 }
 
-Matrix3 * m3_alloc()
+Matrix4 * m4_alloc()
 {
-    return (Matrix3 *)npfreenode_alloc(NP_MATRIX3_FREELIST);
+    return (Matrix4 *)npfreenode_alloc(NP_MATRIX4_FREELIST);
 }
 
-Matrix3 * m3_alloc_init()
+Matrix4 * m4_alloc_init()
 {
-    Matrix3 * tmp = npfreenode_alloc(NP_MATRIX3_FREELIST);
-    m3_set_identity(tmp);
+    Matrix4 * tmp = npfreenode_alloc(NP_MATRIX4_FREELIST);
+    m4_set_identity(tmp);
 
     return tmp;
+}
+
+Matrix4 * m4_free(Matrix4 * m)
+{
+    return npfreenode_fast_free(m,NP_MATRIX4_FREELIST);
 }
 
 void m4_set_identity(Matrix4 * m)
@@ -281,18 +309,5 @@ void m4_mv_multiply_v(const Matrix4 * const m, const Vector4 * const v, Vector4 
     V_Y(*result) = M_EL(*m,0,1) * V_X(*v) + M_EL(*m,1,1) * V_Y(*v) + M_EL(*m,2,1) * V_Z(*v) + M_EL(*m,3,1) * V_W(*v);
     V_Z(*result) = M_EL(*m,0,2) * V_X(*v) + M_EL(*m,1,2) * V_Y(*v) + M_EL(*m,2,2) * V_Z(*v) + M_EL(*m,3,2) * V_W(*v);
     V_W(*result) = M_EL(*m,0,3) * V_X(*v) + M_EL(*m,1,3) * V_Y(*v) + M_EL(*m,2,3) * V_Z(*v) + M_EL(*m,3,3) * V_W(*v);
-}
-
-Matrix4 * m4_alloc()
-{
-    return (Matrix4 *)npfreenode_alloc(NP_MATRIX4_FREELIST);
-}
-
-Matrix4 * m4_alloc_init()
-{
-    Matrix4 * tmp = npfreenode_alloc(NP_MATRIX4_FREELIST);
-    m4_set_identity(tmp);
-
-    return tmp;
 }
 
