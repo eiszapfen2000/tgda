@@ -38,6 +38,9 @@ Vector4;
 #define V_Z VECTOR_Z
 #define V_W VECTOR_W
 
+Vector2 * v2_alloc();
+Vector2 * v2_alloc_init();
+Vector2 * v2_free(Vector2 * v);
 void v2_v_square_length_s(const Vector2 * const v, Double * sqrlength);
 void v2_v_length_s(const Vector2 * const v, Double * length);
 void v2_v_normalise_v(const Vector2 * const v, Vector2 * normalised);
@@ -54,9 +57,10 @@ void v2_vv_dot_product_s(const Vector2 * const v, const Vector2 * const w, Doubl
 Double v2_v_square_length(const Vector2 * const v);
 Double v2_v_length(const Vector2 * const v);
 Double v2_vv_dot_product(const Vector2 * const v, const Vector2 * const w);
-Vector2 * v2_alloc();
-Vector2 * v2_alloc_init();
 
+Vector3 * v3_alloc();
+Vector3 * v3_alloc_init();
+Vector3 * v3_free(Vector3 * v);
 void v3_v_square_length_s(const Vector3 * const v, Double * sqrlength);
 void v3_v_length_s(const Vector3 * const v, Double * length);
 void v3_v_normalise_v(const Vector3 * const v, Vector3 * normalised);
@@ -76,11 +80,10 @@ void v3_vv_cross_product_v(const Vector3 * const v, const Vector3 * const w, Vec
 Double v3_v_square_length(const Vector3 * const v);
 Double v3_v_length(const Vector3 * const v);
 Double v3_vv_dot_product(const Vector3 * const v, const Vector3 * const w);
-Vector3 * v3_alloc();
-Vector3 * v3_alloc_init();
 
 Vector4 * v4_alloc();
 Vector4 * v4_alloc_init();
+Vector4 * v4_free(Vector4 * v);
 
 #endif
 

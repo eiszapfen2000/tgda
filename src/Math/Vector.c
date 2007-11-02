@@ -14,6 +14,24 @@ void npmath_vector_initialise()
     NPFREELIST_ALLOC_INIT(NP_VECTOR4_FREELIST,Vector4,512)
 }
 
+Vector2 * v2_alloc()
+{
+    return (Vector2 *)npfreenode_alloc(NP_VECTOR2_FREELIST);
+}
+
+Vector2 * v2_alloc_init()
+{
+    Vector2 * tmp = npfreenode_alloc(NP_VECTOR2_FREELIST);
+    V_X(*tmp) = V_Y(*tmp) = 0.0;
+
+    return tmp;
+}
+
+Vector2 * v2_free(Vector2 * v)
+{
+    return npfreenode_fast_free(v,NP_VECTOR2_FREELIST);
+}
+
 void v2_v_square_length_s(const Vector2 * const v, Double * sqrlength)
 {
     *sqrlength = V_X(*v) * V_X(*v) + V_Y(*v) * V_Y(*v);
@@ -102,17 +120,22 @@ Double v2_v_length(const Vector2 * const v)
     return sqrt(v2_v_square_length(v));
 }
 
-Vector2 * v2_alloc()
+Vector3 * v3_alloc()
 {
-    return (Vector2 *)npfreenode_alloc(NP_VECTOR2_FREELIST);
+    return (Vector3 *)npfreenode_alloc(NP_VECTOR3_FREELIST);
 }
 
-Vector2 * v2_alloc_init()
+Vector3 * v3_alloc_init()
 {
-    Vector2 * tmp = npfreenode_alloc(NP_VECTOR2_FREELIST);
-    V_X(*tmp) = V_Y(*tmp) = 0.0;
+    Vector3 * tmp = npfreenode_alloc(NP_VECTOR3_FREELIST);
+    V_X(*tmp) = V_Y(*tmp) = V_Z(*tmp) = 0.0;
 
     return tmp;
+}
+
+Vector3 * v3_free(Vector3 * v)
+{
+    return npfreenode_fast_free(v,NP_VECTOR3_FREELIST);
 }
 
 void v3_v_square_length_s(const Vector3 * const v, Double * sqrlength)
@@ -226,19 +249,6 @@ Double v3_vv_dot_product(const Vector3 * const v, const Vector3 * const w)
     return ( V_X(*v) * V_X(*w) + V_Y(*v) * V_Y(*w) + V_Z(*v) * V_Z(*w) );
 }
 
-Vector3 * v3_alloc()
-{
-    return (Vector3 *)npfreenode_alloc(NP_VECTOR3_FREELIST);
-}
-
-Vector3 * v3_alloc_init()
-{
-    Vector3 * tmp = npfreenode_alloc(NP_VECTOR3_FREELIST);
-    V_X(*tmp) = V_Y(*tmp) = V_Z(*tmp) = 0.0;
-
-    return tmp;
-}
-
 Vector4 * v4_alloc()
 {
     return (Vector4 *)npfreenode_alloc(NP_VECTOR4_FREELIST);
@@ -251,5 +261,10 @@ Vector4 * v4_alloc_init()
     V_W(*tmp) = 1.0;
 
     return tmp;
+}
+
+Vector4 * v4_free(Vector4 * v)
+{
+    return npfreenode_fast_free(v,NP_VECTOR4_FREELIST);
 }
 
