@@ -27,6 +27,10 @@
     [ super dealloc ];
 }
 
+- (void) setup
+{
+}
+
 - (NSString *) name
 {
     return name;

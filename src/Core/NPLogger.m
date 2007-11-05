@@ -8,9 +8,15 @@
 
     NSString * path = [ @"~/np.txt" stringByExpandingTildeInPath ];
 
-    [ [ NSFileManager defaultManager ] createFileAtPath:path contents:nil attributes:nil ];
+    if ( [ [ NSFileManager defaultManager ] createFileAtPath:path contents:nil attributes:nil ] == YES )
+    {
+        logFile = [ NSFileHandle fileHandleForWritingAtPath: path ];
 
-    logFile = [ NSFileHandle fileHandleForWritingAtPath: path ];
+    }
+    else
+    {
+        logFile = [ NSFileHandle fileHandleWithStandardOutput ];
+    }
 
     [ path release ];
 
@@ -24,15 +30,21 @@
     [ super dealloc ];
 }
 
+- (void) setup
+{
+    [ self write: @"NPEngine Core Logger up and running" ];
+}
+
 - (void) write: (NSString *) string
 {
     NSString * line = [ string stringByAppendingString: @"\r\n" ]; 
 
-    NSData * data = [ line dataUsingEncoding: NSUnicodeStringEncoding allowLossyConversion: NO ];
+    NSData * data = [ line dataUsingEncoding: NSUTF8StringEncoding allowLossyConversion: YES ];
 
     [ logFile writeData: data ];
     [ logFile synchronizeFile ];
 
+    [ line release ];
     [ data release ];
 }
 
