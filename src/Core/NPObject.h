@@ -9,6 +9,8 @@
 - (id) initWithName: (NSString *) newName;
 - (void) dealloc;
 
+- (void) setup;
+
 - (NSString *) name;
 - (void) setName: (NSString *) newName;
 
