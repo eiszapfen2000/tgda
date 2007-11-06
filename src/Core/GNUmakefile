@@ -5,11 +5,13 @@ LIBRARY_NAME=libNPEngineCore
 
 libNPEngineCore_HEADER_FILES = \
 NPObject.h \
-NPLogger.h
+NPLogger.h \
+NPTimer.h
 
 libNPEngineCore_OBJC_FILES = \
 NPObject.m \
-NPLogger.m
+NPLogger.m \
+NPTimer.m
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/library.make

@@ -4,7 +4,7 @@
 
 - (id) init
 {
-    self = [ super initWithName: @"NPEngine Logger" ];
+    self = [ super initWithName: @"NPCore Logger" ];
 
     NSString * path = [ @"~/np.txt" stringByExpandingTildeInPath ];
 
@@ -43,9 +43,16 @@
 
     [ logFile writeData: data ];
     [ logFile synchronizeFile ];
+}
 
-    [ line release ];
-    [ data release ];
+- (void) writeWarning: (NSString *) string
+{
+    [ self write: [ @"[WARNING]: " stringByAppendingString: string ] ];
+}
+
+- (void) writeError: (NSString *) string
+{
+    [ self write: [ @"[ERROR]: " stringByAppendingString: string ] ];
 }
 
 @end
