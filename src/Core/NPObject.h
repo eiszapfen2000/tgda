@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
 
+#import "Basics/Types.h"
+
 @interface NPObject : NSObject
 {
     NSString * name;
