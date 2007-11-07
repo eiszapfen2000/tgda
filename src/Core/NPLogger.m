@@ -4,9 +4,48 @@
 
 - (id) init
 {
-    self = [ super initWithName: @"NPCore Logger" ];
+    return [ self initWithName:@"NPCore Logger" fileName:@"np.txt" ];
+}
 
-    NSString * path = [ @"~/np.txt" stringByExpandingTildeInPath ];
+- (id) initWithName:(NSString *) newName fileName:(NSString *) newFileName;
+{
+    self = [ super initWithName: newName ];
+
+    pathToHome = [ @"~/" stringByExpandingTildeInPath ];
+    fileName = [ newFileName retain ];
+    logFile = nil;    
+
+    return self;
+}
+
+- (void) dealloc
+{
+    [ fileName release ];
+    [ pathToHome release ];
+    [ logFile closeFile ];
+    [ logFile release ];
+
+    [ super dealloc ];
+}
+
+- (NSString *) fileName
+{
+    return fileName;
+}
+
+- (void) setFileName: (NSString *) newFileName
+{
+    if ( fileName != newFileName )
+    {
+        [ fileName release ];
+
+        fileName = [ newFileName retain ];
+    }
+}
+
+- (void) setup
+{
+    NSString * path = [ pathToHome stringByAppendingString: fileName ];
 
     if ( [ [ NSFileManager defaultManager ] createFileAtPath:path contents:nil attributes:nil ] == YES )
     {
@@ -17,22 +56,6 @@
     {
         logFile = [ NSFileHandle fileHandleWithStandardOutput ];
     }
-
-    [ path release ];
-
-    return self;    
-}
-
-- (void) dealloc
-{
-    [ logFile closeFile ];
-
-    [ super dealloc ];
-}
-
-- (void) setup
-{
-    [ self write: @"NPEngine Core Logger up and running" ];
 }
 
 - (void) write: (NSString *) string

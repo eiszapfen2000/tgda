@@ -4,9 +4,7 @@
 
 - (id) init
 {
-    self = [ super init ];
-
-    name = @"NPObject";
+    self = [ self initWithName: @"" ];
 
     return self;
 }
