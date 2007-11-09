@@ -27,8 +27,12 @@ void npimage_initialise()
 
     ilGenImages(1, &ilImageHandle);
     ilBindImage(ilImageHandle);
-    const char * brak = [ fileName cString ];
-    ilLoadImage(brak);
+
+    if ( !ilLoadImage([ fileName cString ]) )
+    {
+        return -1;
+    }
+
     iluFlipImage();
 
     GLuint glImageHandle = ilutGLBindMipmaps();
