@@ -4,10 +4,12 @@ PACKAGE_NAME=NPEngineImage
 LIBRARY_NAME=libNPEngineImage
 
 libNPEngineImage_HEADER_FILES = \
-NPDevilTexture.h
+NPDevilTexture.h \
+NPImage.h
 
 libNPEngineImage_OBJC_FILES = \
-NPDevilTexture.m
+NPDevilTexture.m \
+NPImage.m
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/library.make
