@@ -1,12 +1,5 @@
 #import "NPDevilTexture.h"
 
-void npimage_initialise()
-{
-    ilInit();
-    iluInit();
-    ilutInit();
-}
-
 @implementation NPDevilTexture
 
 + (void) initIlutGL

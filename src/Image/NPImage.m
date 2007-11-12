@@ -4,6 +4,13 @@
 #import <IL/ilu.h>
 #import <IL/ilut.h>
 
+void npimage_initialise()
+{
+    ilInit();
+    iluInit();
+    ilutInit();
+}
+
 @implementation NPImage
 
 - (id) init
@@ -17,6 +24,7 @@
 
     pixelFormat = NP_PIXELFORMAT_NONE;
     width = height = 0;
+    mipMapLevels = 1;
 
     imageData = [ [ NSMutableArray alloc ] init ];
 
@@ -38,7 +46,12 @@
     return pixelFormat;
 }
 
-- (void)loadImageFromFile:(NSString *)fileName withMipMaps:(BOOL)generateMipMaps
+- (Int) mipMapLevels
+{
+    return mipMapLevels;
+}
+
+- (void) loadImageFromFile:(NSString *)fileName withMipMaps:(BOOL)generateMipMaps
 {
     [ self clear ];
 
@@ -47,6 +60,7 @@
 	ILuint image;
 	ilGenImages(1, &image);
 	ilBindImage(image);
+
 	ILboolean success = ilLoadImage( [ fileName cString ] );
 
     if ( !success )
@@ -146,12 +160,68 @@
             return;
         }
 	}
+
+    if ( generateMipMaps )
+    {
+		iluImageParameter(ILU_FILTER, ILU_BILINEAR);
+
+        Int mipmapwidth = width;
+        Int mipmapheight = height;
+
+        mipMapLevels = 1;
+
+        while ( mipmapwidth > 1 || mipmapheight > 1 )
+        {
+            mipmapheight /= 2;
+            mipmapwidth /= 2;
+
+            mipMapLevels++;
+        }
+    }
+    else
+    {
+        mipMapLevels = 1;
+    }
+
+    Int mipmapwidth = width;
+    Int mipmapheight = height;
+
+    for ( Int i = 0; i < mipMapLevels; i++ )
+    {
+        UInt length = 0;
+
+        if ( type == IL_UNSIGNED_BYTE )
+        {
+            length = mipmapwidth * mipmapheight * bytesperpixel * sizeof(Byte);
+        }
+
+        if ( type == IL_FLOAT )
+        {
+            length = mipmapwidth * mipmapheight * bytesperpixel * sizeof(Float);
+        }
+
+        NSData * tmp = [ [ NSData alloc ] initWithBytes:ilGetData() length:length ];
+
+        [ imageData addObject:tmp ];
+        [ tmp release ];
+
+        mipmapwidth /= 2;
+        mipmapheight /= 2;
+
+        if ( i < mipMapLevels - 1 )
+        {
+            iluScale(mipmapwidth, mipmapheight, 1);
+        }
+    }
+
+	ilDeleteImages(1, &image);
 }
 
 - (void) clear
 {
     pixelFormat = NP_PIXELFORMAT_NONE;
     width = height = 0;
+    mipMapLevels = 1;
 
     [ imageData removeAllObjects ];
 }
