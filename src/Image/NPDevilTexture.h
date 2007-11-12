@@ -5,8 +5,6 @@
 #import <IL/ilu.h>
 #import <IL/ilut.h>
 
-void npimage_initialise();
-
 @interface NPDevilTexture : NPObject
 
 + (void) initIlutGL;

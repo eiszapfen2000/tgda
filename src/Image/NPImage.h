@@ -1,11 +1,14 @@
 #import "Core/NPObject.h"
 #import "NPPixelFormat.h"
 
+void npimage_initialise();
+
 @interface NPImage : NPObject
 {
     NPPixelFormat pixelFormat;
     Int width;
     Int height;
+    Int mipMapLevels;
     
     NSMutableArray * imageData;
 }
@@ -16,8 +19,9 @@
 - (Int) width;
 - (Int) height;
 - (NPPixelFormat) pixelFormat;
+- (Int) mipMapLevels;
 
-- (void)loadImageFromFile:(NSString *)fileName withMipMaps:(BOOL)generateMipMaps;
+- (void) loadImageFromFile:(NSString *)fileName withMipMaps:(BOOL)generateMipMaps;
 
 - (void) clear;
 
