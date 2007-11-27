@@ -21,8 +21,10 @@ void npimage_initialise();
 - (NPPixelFormat) pixelFormat;
 - (Int) mipMapLevels;
 
-- (void) loadImageFromFile:(NSString *)fileName withMipMaps:(BOOL)generateMipMaps;
+- (BOOL) loadImageFromFile:(NSString *)fileName withMipMaps:(BOOL)generateMipMaps;
 
 - (void) clear;
+
+- (NSString *) description;
 
 @end
