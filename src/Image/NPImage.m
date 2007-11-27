@@ -51,7 +51,7 @@ void npimage_initialise()
     return mipMapLevels;
 }
 
-- (void) loadImageFromFile:(NSString *)fileName withMipMaps:(BOOL)generateMipMaps
+- (BOOL) loadImageFromFile:(NSString *)fileName withMipMaps:(BOOL)generateMipMaps
 {
     [ self clear ];
 
@@ -69,7 +69,7 @@ void npimage_initialise()
         NSLog( [ NSString stringWithCString:iluErrorString(error) encoding:NSUTF8StringEncoding ] );
 		NSLog( [ @"Could not load image: " stringByAppendingString: fileName ] );
 
-		return;
+		return NO;
     }
 
 	// Get image information.
@@ -113,7 +113,7 @@ void npimage_initialise()
                 {
                     NSLog(@"Unknown number of bytes per pixel");
 
-                    return;
+                    return NO;
                 }
 			}
 
@@ -147,9 +147,10 @@ void npimage_initialise()
                 {
                     NSLog(@"Unknown number of bytes per pixel");
 
-                    return;
+                    return NO;
                 }
 			}
+
 			break;
 		}
 
@@ -157,16 +158,16 @@ void npimage_initialise()
         {
             NSLog(@"Unknown image type");
 
-            return;
+            return NO;
         }
 	}
+
+    Int mipmapwidth = width;
+    Int mipmapheight = height;
 
     if ( generateMipMaps )
     {
 		iluImageParameter(ILU_FILTER, ILU_BILINEAR);
-
-        Int mipmapwidth = width;
-        Int mipmapheight = height;
 
         mipMapLevels = 1;
 
@@ -183,8 +184,8 @@ void npimage_initialise()
         mipMapLevels = 1;
     }
 
-    Int mipmapwidth = width;
-    Int mipmapheight = height;
+    mipmapwidth = width;
+    mipmapheight = height;
 
     for ( Int i = 0; i < mipMapLevels; i++ )
     {
@@ -215,6 +216,8 @@ void npimage_initialise()
     }
 
 	ilDeleteImages(1, &image);
+
+    return YES;
 }
 
 - (void) clear
@@ -224,6 +227,11 @@ void npimage_initialise()
     mipMapLevels = 1;
 
     [ imageData removeAllObjects ];
+}
+
+- (NSString *) description
+{
+    return @"nix";
 }
 
 
