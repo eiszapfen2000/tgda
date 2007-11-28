@@ -1,8 +1,9 @@
 #import "Core/NPObject/NPObject.h"
+#import "Core/NPObject/NPPCoreProtocols.h"
 
 #import <sys/time.h>
 
-@interface NPTimer : NPObject
+@interface NPTimer : NPObject < NPPInitialStateSetup > 
 {
     struct timeval lastUpdate;
     Double  frameTime;
@@ -21,6 +22,8 @@
 - (Double) totalElapsedTime;
 
 - (void) updateTimer;
+- (void) resetFrameTime;
+- (void) resetTotalElapsedTime;
 - (void) reset;
 - (void) pause;
 - (BOOL) isTimerPaused;

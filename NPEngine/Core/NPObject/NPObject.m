@@ -1,5 +1,7 @@
-#import "NPObject.h"
 #import "Core/Basics/Crc32.h"
+#import "NPObject.h"
+#import "NPObjectManager.h"
+#import "Core/NPEngineCore.h"
 
 @implementation NPObject
 
@@ -28,6 +30,8 @@
 
     objectID = [ self _generateIDFromPointer ];
 
+    [ self addToObjectManager ];
+
     return self;
 } 
 
@@ -37,6 +41,16 @@
     parent = nil;
 
     [ super dealloc ];
+}
+
+- (void) addToObjectManager
+{
+    NPObjectManager * tmp = [ [ NPEngineCore instance ] objectManager ];
+
+    if ( tmp != nil )
+    {
+        [ tmp addObject:self ];
+    }
 }
 
 - (NSString *) name

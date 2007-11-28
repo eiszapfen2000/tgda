@@ -1,6 +1,7 @@
 #import "Core/NPObject/NPObject.h"
+#import "Core/NPObject/NPPCoreProtocols.h"
 
-@interface NPLogger : NPObject
+@interface NPLogger : NPObject < NPPInitialStateSetup >
 {
     NSString * fileName;
     NSString * pathToHome;
@@ -9,8 +10,6 @@
 - (id) init;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent fileName:(NSString *)newFileName;
 - (void) dealloc;
-
-- (void) setup;
 
 - (NSString *) fileName;
 - (void) setFileName: (NSString *) newFileName;
