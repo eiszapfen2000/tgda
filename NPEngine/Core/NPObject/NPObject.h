@@ -14,6 +14,8 @@
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
 
+- (void) addToObjectManager;
+
 - (NSString *) name;
 - (void) setName:(NSString *)newName;
 

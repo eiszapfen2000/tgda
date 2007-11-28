@@ -18,6 +18,22 @@
     return self;
 }
 
+- (void) setupInitialState
+{
+    NSString * path = [ [ NSMutableString alloc ] initWithFormat: @"%@/%@", pathToHome, fileName ];
+
+    if ( [ [ NSFileManager defaultManager ] createFileAtPath:path contents:nil attributes:nil ] == YES )
+    {
+        logFile = [ [ NSFileHandle fileHandleForWritingAtPath: path ] retain ];
+    }
+    else
+    {
+        logFile = [ [ NSFileHandle fileHandleWithStandardOutput ] retain ];
+    }
+
+    [ path release ];
+}
+
 - (void) dealloc
 {
     [ fileName release ];
@@ -41,22 +57,6 @@
 
         fileName = [ newFileName retain ];
     }
-}
-
-- (void) setup
-{
-    NSString * path = [ [ NSMutableString alloc ] initWithFormat: @"%@/%@", pathToHome, fileName ];
-
-    if ( [ [ NSFileManager defaultManager ] createFileAtPath:path contents:nil attributes:nil ] == YES )
-    {
-        logFile = [ [ NSFileHandle fileHandleForWritingAtPath: path ] retain ];
-    }
-    else
-    {
-        logFile = [ [ NSFileHandle fileHandleWithStandardOutput ] retain ];
-    }
-
-    [ path release ];
 }
 
 - (void) write: (NSString *) string

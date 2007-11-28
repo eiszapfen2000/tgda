@@ -6,31 +6,43 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 
 + (NPEngineCore *)instance
 {
-    @synchronized(self)
+    NSLock * lock = [ [ NSLock alloc ] init ];
+
+    if ( [ lock tryLock ] )
     {
         if ( NP_ENGINE_CORE == nil )
         {
             [ [ self alloc ] init ]; // assignment not done here
         }
+
+        [ lock unlock ];
     }
+
+    [ lock release ];
 
     return NP_ENGINE_CORE;
 } 
 
 + (id)allocWithZone:(NSZone *)zone
 {
-    @synchronized(self)
+    NSLock * lock = [ [ NSLock alloc ] init ];
+
+    if ( [ lock tryLock ] )
     {
         if (NP_ENGINE_CORE == nil)
         {
             NP_ENGINE_CORE = [ super allocWithZone:zone ];
 
+            [ lock unlock ];
+            [ lock release ];
+
             return NP_ENGINE_CORE;  // assignment and return on first allocation
         }
     }
 
-    return nil; //on subsequent allocation attempts return nil
+    [ lock release ];
 
+    return nil; //on subsequent allocation attempts return nil
 }
 
 - (id)init
@@ -40,8 +52,24 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     logger = [ [ NPLogger alloc ] initWithName:@"NPEngine Logger" parent:self fileName:@"np.txt" ];
     timer = [ [ NPTimer alloc ] initWithName:@"NPEngine Timer" parent:self ];
 
-    return self;
+    objectManager = [ [ NPObjectManager alloc ] initWithName:@"NPEngine Object Manager" parent:self ];
 
+    return self;
+}
+
+- (NPLogger *)logger
+{
+    return logger;
+}
+
+- (NPTimer *)timer
+{
+    return timer;
+}
+
+- (NPObjectManager *)objectManager
+{
+    return objectManager;
 }
 
 - (id)copyWithZone:(NSZone *)zone

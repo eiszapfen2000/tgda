@@ -3,7 +3,6 @@
 
 #include "HashFunctions.h"
  
-#undef get16bits
 #define get16bits(d) (*((const uint16_t *) (d)))
 
 UInt32 SuperFastHash (const char * data, UInt32 length)
@@ -58,4 +57,7 @@ UInt32 SuperFastHash (const char * data, UInt32 length)
 
     return hash;
 }
+
+#undef get16bits
+
 

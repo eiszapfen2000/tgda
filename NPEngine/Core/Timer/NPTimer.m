@@ -28,6 +28,11 @@
     return self;
 }
 
+- (void) setupInitialState
+{
+    [ self reset ];
+}
+
 - (Double) frameTime
 {
     return frameTime;
@@ -63,6 +68,17 @@
             secondsPassed = totalSeconds;
         }
     }   
+}
+
+- (void) resetFrameTime
+{
+    frameTime = 0.0;
+    gettimeofday(&lastUpdate,0);
+}
+
+- (void) resetTotalElapsedTime
+{
+    totalElapsedTime = 0.0;
 }
 
 - (void) reset
