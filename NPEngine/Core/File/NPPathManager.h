@@ -3,7 +3,13 @@
 
 @interface NPPathManager : NPObject < NPPInitialStateSetup >
 {
-    NSMutableArray * paths;
+    NSFileManager * fileManager;
+
+    //Contains Strings
+    NSMutableArray * localPaths;
+
+    //Contains URLs
+    NSMutableArray * remotePaths;
 }
 
 - (id) init;

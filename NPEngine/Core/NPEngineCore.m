@@ -49,10 +49,9 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 {
     self = [ super initWithName:@"NPEngine Core" ];
 
+    objectManager = [ [ NPObjectManager alloc ] initWithName:@"NPEngine Object Manager" parent:self ];
     logger = [ [ NPLogger alloc ] initWithName:@"NPEngine Logger" parent:self fileName:@"np.txt" ];
     timer = [ [ NPTimer alloc ] initWithName:@"NPEngine Timer" parent:self ];
-
-    objectManager = [ [ NPObjectManager alloc ] initWithName:@"NPEngine Object Manager" parent:self ];
 
     return self;
 }

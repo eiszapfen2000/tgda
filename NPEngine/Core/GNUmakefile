@@ -7,6 +7,7 @@ SUBPROJECTS = \
 	Basics \
 	Math \
 	NPObject \
+    File \
 	Log \
 	Timer
 
