@@ -11,7 +11,10 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    paths = [ [ NSMutableArray alloc ] init ];
+    fileManager = [ NSFileManager defaultManager ];
+
+    localPaths = [ [ NSMutableArray alloc ] init ];
+    remotePaths = [ [ NSMutableArray alloc ] init ];
 
     return self;
 }
@@ -23,12 +26,17 @@
 
 - (void) addLookUpPath:(NSString *)lookupPath
 {
-    [ paths addObject: lookupPath ];
+    [ localPaths addObject: lookupPath ];
 }
 
 - (void) _addApplicationPath
 {
-    [ paths addObject: [ [ NSFileManager defaultManager ] currentDirectoryPath ] ];
+    [ localPaths addObject: [ fileManager currentDirectoryPath ] ];
+}
+
+- (NSString *)description
+{
+    return [ NSString stringWithFormat: @"%@ %@",[localPaths description],[remotePaths description]];
 }
 
 @end
