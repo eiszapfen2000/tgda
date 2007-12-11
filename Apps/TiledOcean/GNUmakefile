@@ -6,7 +6,7 @@ APP_NAME = TiledOcean
 
 TiledOcean_OBJC_FILES = \
 TODocument.m \
-TOOceanSurface.m \
+TODocumentController.m \
 TOOGLWindowController.m \
 TOOpenGLView.m \
 TORNGWindowController.m \
@@ -19,7 +19,7 @@ Resources/TiledOcean.gorm \
 Resources/TODocument.gorm \
 Resources/TORNGSettingsWindow.gorm
 
-ADDITIONAL_GUI_LIBS += -lGL -lGLU -lfftw3_threads -lfftw3 -lRandomNumberGeneration -lMath -lBasics -lNPEngineCore -lNPEngineImage -lIL -lILU -lILUT -lprng
+ADDITIONAL_GUI_LIBS += -lGL -lGLU -lNPEngineCoreLog -lNPEngineCoreNPObject -lNPEngineCoreBasics -lNPEngineCoreTimer -lNPEngineCoreFile -lNPEngineCore
 
 
 include $(TGDA_DIR)/GNUmakefile.flags

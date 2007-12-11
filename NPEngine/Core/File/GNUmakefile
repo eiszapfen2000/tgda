@@ -6,12 +6,17 @@ LIBRARY_NAME=libNPEngineCoreFile
 libNPEngineCoreFile_OBJC_FILES = \
 NPPathManager.m \
 NPLocalPathManager.m \
-NPRemotePathManager.m
+NPRemotePathManager.m \
+NPURLDownload.m \
+NPURLDownloadManager.m
+
 
 libNPEngineCoreFile_HEADER_FILES = \
 NPPathManager.h \
 NPLocalPathManager.h \
-NPRemotePathManager.h
+NPRemotePathManager.h \
+NPURLDownload.h \
+NPURLDownloadManager.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/library.make

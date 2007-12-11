@@ -1,7 +1,7 @@
 #ifndef _NP_MATH_UTILITIES_
 #define _NP_MATH_UTILITIES_
 
-#include "Basics/Types.h"
+#include "Core/Basics/Types.h"
 
 #define IS_INT32_EVEN(_number) \
 ( div(count, 2).rem == 0 )

@@ -9,7 +9,8 @@ SUBPROJECTS = \
 	NPObject \
     File \
 	Log \
-	Timer
+	Timer \
+    RandomNumbers
 
 libNPEngineCore_OBJC_FILES = \
 NPEngineCore.m

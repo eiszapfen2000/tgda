@@ -1,4 +1,5 @@
 #import "TORNGWindowController.h"
+#import "Core/File/NPURLDownload.h"
 
 @implementation TORNGWindowController
 

@@ -29,7 +29,8 @@ BASIC_CFLAGS += \
 
 BASIC_OBJCFLAGS += \
     $(BASIC_CFLAGS) \
-    -Wno-import
+    -Wno-import \
+    -fobjc-exceptions
 
 ADDITIONAL_CFLAGS += $(BASIC_CFLAGS)
 ADDITIONAL_OBJCFLAGS += $(BASIC_OBJCFLAGS)
