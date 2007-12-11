@@ -1,6 +1,6 @@
 #import <AppKit/AppKit.h>
 
-#import "Basics/Types.h"
+#import "Core/Basics/Types.h"
 
 @interface TORNGWindowController : NSWindowController
 {

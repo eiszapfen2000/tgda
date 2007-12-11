@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <fftw3.h>
 
-#include "Math/Vector.h"
-#import "RandomNumbers/NPGaussianRandomNumberGenerator.h"
+#import "Core/Math/Vector.h"
+#import "Core/RandomNumbers/NPGaussianRandomNumberGenerator.h"
 
 @interface TOOceanSurface : NSObject
 {
