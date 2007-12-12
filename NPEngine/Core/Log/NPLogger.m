@@ -13,25 +13,10 @@
 
     pathToHome = [ NSHomeDirectory() retain ];
     fileName = [ newFileName retain ];
-    logFile = nil;    
+
+    [ self _setupFileHandle ];
 
     return self;
-}
-
-- (void) setupInitialState
-{
-    NSString * path = [ [ NSMutableString alloc ] initWithFormat: @"%@/%@", pathToHome, fileName ];
-
-    if ( [ [ NSFileManager defaultManager ] createFileAtPath:path contents:nil attributes:nil ] == YES )
-    {
-        logFile = [ [ NSFileHandle fileHandleForWritingAtPath: path ] retain ];
-    }
-    else
-    {
-        logFile = [ [ NSFileHandle fileHandleWithStandardOutput ] retain ];
-    }
-
-    [ path release ];
 }
 
 - (void) dealloc
@@ -77,6 +62,22 @@
 - (void) writeError: (NSString *) string
 {
     [ self write: [ @"[ERROR]: " stringByAppendingString: string ] ];
+}
+
+- (void) _setupFileHandle
+{
+    NSString * path = [ [ NSString alloc ] initWithFormat: @"%@/%@", pathToHome, fileName ];
+
+    if ( [ [ NSFileManager defaultManager ] createFileAtPath:path contents:nil attributes:nil ] == YES )
+    {
+        logFile = [ [ NSFileHandle fileHandleForWritingAtPath: path ] retain ];
+    }
+    else
+    {
+        logFile = [ [ NSFileHandle fileHandleWithStandardOutput ] retain ];
+    }
+
+    [ path release ];
 }
 
 @end

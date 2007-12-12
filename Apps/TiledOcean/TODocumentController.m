@@ -20,8 +20,6 @@
 
     core = [ NPEngineCore instance ];
 
-    [[[ NPEngineCore instance ] logger ] setupInitialState ];
-
     NPLOG(@"coooooorrrrrr");
 
     return self;

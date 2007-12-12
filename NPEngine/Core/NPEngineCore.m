@@ -71,6 +71,11 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     return objectManager;
 }
 
+- (void) setupInitialState
+{
+    
+}
+
 - (id)copyWithZone:(NSZone *)zone
 {
     return self;

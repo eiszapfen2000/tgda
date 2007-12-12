@@ -1,5 +1,5 @@
 #import "TORNGWindowController.h"
-#import "Core/File/NPURLDownload.h"
+#import "Core/File/NPURLDownloadManager.h"
 
 @implementation TORNGWindowController
 
@@ -81,6 +81,20 @@
     [ rngPopUpButtonRight removeAllItems ];
 
     [ self addItemsToPopUpButton: rngPopUpButtonRight ];
+
+    NSURL * url = [ [ NSURL alloc ] initWithString:@"http://www.cg.tuwien.ac.at/~icicle/uni/unibz-2006-DSCF0019.jpg" ];
+
+    NPURLDownloadManager * downloadManager = [ [ NPURLDownloadManager alloc ] init ];
+
+    [ downloadManager addDownloadFrom:url toFileAtPath:@"/usr/people/icicle/Desktop/huebsch.jpg" ];
+    [ downloadManager addDownloadFrom:url toFileAtPath:@"/usr/people/icicle/Desktop/huebsch.jpg" ];
+
+    /*NPURLDownload * download = [ [ NPURLDownload alloc ] init ];
+    [ download setFileToDownload:url ];
+    [ download setDestinationFileName:@"/usr/people/icicle/Desktop/huebsch.jpg" ];
+
+    [ download startDownloading ];*/
+
 }
 
 @end
