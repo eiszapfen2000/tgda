@@ -4,6 +4,7 @@ PACKAGE_NAME=NPEngineCoreFile
 LIBRARY_NAME=libNPEngineCoreFile
 
 libNPEngineCoreFile_OBJC_FILES = \
+NPFile.m \
 NPPathManager.m \
 NPLocalPathManager.m \
 NPRemotePathManager.m \
@@ -12,6 +13,7 @@ NPURLDownloadManager.m
 
 
 libNPEngineCoreFile_HEADER_FILES = \
+NPFile.h \
 NPPathManager.h \
 NPLocalPathManager.h \
 NPRemotePathManager.h \
