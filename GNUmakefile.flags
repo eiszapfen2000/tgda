@@ -25,7 +25,7 @@ ADDITIONAL_CPPFLAGS += \
     $(BASIC_DEFINES)
 
 BASIC_CFLAGS += \
-    -Wall -Wextra -std=gnu99 -mtune=k8 -O3 -msse3
+    -Wall -Wextra -std=gnu99 -O3
 
 BASIC_OBJCFLAGS += \
     $(BASIC_CFLAGS) \
