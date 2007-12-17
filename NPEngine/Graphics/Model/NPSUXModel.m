@@ -13,6 +13,9 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
+    lods = [ [ NSMutableArray alloc ] init ];
+    materials = [ [ NSMutableArray alloc ] init ];
+
     return self;
 }
 
@@ -32,7 +35,13 @@
 
     NSString * modelName = [ [ file readSUXString ] retain ];
     [ self setName:modelName ];
+    NSLog(modelName);
+
     [ modelName release ];
+
+    Int materialCount = 0;
+    [ file readInt32:&materialCount ];
+    NSLog(@"%d",materialCount);
 }
 
 @end
