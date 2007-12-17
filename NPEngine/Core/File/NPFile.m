@@ -123,14 +123,13 @@
 {
     Int slength;
     [self readInt32:&slength ];
-    NSLog(@"%d",slength);
 
     if ( slength > 0 )
     {
         NSData * data = [ fileHandle readDataOfLength:(UInt)slength ];
         NSString * s = [[NSString alloc] initWithBytes:[data bytes] length:(UInt)slength encoding:NSASCIIStringEncoding ];
 
-        return s;
+        return [ s autorelease ];
     }
 
     return @"";

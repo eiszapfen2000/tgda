@@ -5,10 +5,12 @@ LIBRARY_NAME=libNPEngineGraphicsModel
 
 libNPEngineGraphicsModel_OBJC_FILES = \
 NPSUXModel.m \
+NPSUXModelLod.m \
 NPVertexBuffer.m
 
 libNPEngineGraphicsModel_HEADER_FILES = \
 NPSUXModel.h \
+NPSUXModelLod.h \
 NPVertexBuffer.h
 
 include $(TGDA_DIR)/GNUmakefile.flags

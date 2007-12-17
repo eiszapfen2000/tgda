@@ -22,11 +22,14 @@
 - (void) readInt64:(Int64 *)i;
 - (void) readFloat:(Float *)f;
 - (void) readDouble:(Double *)d;
+
 - (void) readByte:(Byte *)b;
 - (void) readBytes:(Byte *)b withLength:(UInt)length;
+
 - (void) readChar:(Char *)c;
 - (void) readChars:(Char *)c withLength:(UInt)length;
 - (void) readBool:(BOOL *)b;
+
 - (NSString *) readSUXString;
 
 @end
