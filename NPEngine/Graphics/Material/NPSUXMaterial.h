@@ -1,10 +1,8 @@
 #import "Core/NPObject/NPObject.h"
 #import "Core/File/NPFile.h"
 
-@interface NPSUXModel : NPObject
+@interface NPSUXMaterial : NPObject
 {
-    NSMutableArray * lods;
-    NSMutableArray * materials;
 }
 
 - (id) init;
