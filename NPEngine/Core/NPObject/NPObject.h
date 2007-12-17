@@ -28,3 +28,6 @@
 - (UInt32) _generateIDFromPointer;
 
 @end
+
+@interface NPObject ( NPCoding ) < NSCoding > @end
+

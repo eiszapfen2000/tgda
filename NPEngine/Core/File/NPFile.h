@@ -3,7 +3,7 @@
 @interface NPFile : NPObject
 {
     NSString * fileName;
-    NSData * fileContents;
+    NSFileHandle * fileHandle;
 }
 
 - (id) init;
@@ -14,7 +14,19 @@
 - (NSString *) fileName;
 - (void) setFileName:(NSString *)newFileName;
 
+- (void) initFileHandle;
 - (void) clear;
-- (void) readBytesFromFile;
+
+- (void) readInt16:(Int16 *)i;
+- (void) readInt32:(Int32 *)i;
+- (void) readInt64:(Int64 *)i;
+- (void) readFloat:(Float *)f;
+- (void) readDouble:(Double *)d;
+- (void) readByte:(Byte *)b;
+- (void) readBytes:(Byte *)b withLength:(UInt)length;
+- (void) readChar:(Char *)c;
+- (void) readChars:(Char *)c withLength:(UInt)length;
+- (void) readBool:(BOOL *)b;
+- (NSString *) readSUXString;
 
 @end
