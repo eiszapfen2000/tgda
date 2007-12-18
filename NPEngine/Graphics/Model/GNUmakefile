@@ -5,11 +5,13 @@ LIBRARY_NAME=libNPEngineGraphicsModel
 
 libNPEngineGraphicsModel_OBJC_FILES = \
 NPSUXModel.m \
+NPSUXModelGroup.m \
 NPSUXModelLod.m \
 NPVertexBuffer.m
 
 libNPEngineGraphicsModel_HEADER_FILES = \
 NPSUXModel.h \
+NPSUXModelGroup.h \
 NPSUXModelLod.h \
 NPVertexBuffer.h
 

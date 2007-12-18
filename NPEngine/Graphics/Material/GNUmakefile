@@ -4,10 +4,12 @@ PACKAGE_NAME=NPEngineGraphicsMaterial
 LIBRARY_NAME=libNPEngineGraphicsMaterial
 
 libNPEngineGraphicsMaterial_OBJC_FILES = \
-NPSUXMaterial.m
+NPSUXMaterial.m \
+NPSUXMaterialInstance.m
 
 libNPEngineGraphicsMaterial_HEADER_FILES = \
-NPSUXMaterial.h
+NPSUXMaterial.h \
+NPSUXMaterialInstance.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/library.make

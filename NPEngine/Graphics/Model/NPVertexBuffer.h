@@ -1,4 +1,5 @@
 #import "Core/NPObject/NPObject.h"
+#import "Core/File/NPFile.h"
 
 typedef struct NpVertexFormat
 {
@@ -13,11 +14,13 @@ NpVertexFormat;
 typedef struct NpVertices
 {
     NpVertexFormat format;
+    Int primitiveType;
+    BOOL indexed;
     Float * positions;
     Float * normals;
     Float * colors;
     Float * weights;
-    Float ** textureCoordinates;
+    Float * textureCoordinates;
     Int * indices;
     Int maxVertex;
     Int maxIndex;
@@ -37,11 +40,16 @@ NpVertexBuffer;
 
 @interface NPVertexBuffer : NPObject
 {
+    BOOL ready;
+
     NpVertexBuffer vertexBuffer;
     NpVertices vertices;
 }
 
 - (id) init;
+- (id) initWithParent:(NPObject *)newParent;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
+
+- (void) loadFromFile:(NPFile *)file;
 
 @end
