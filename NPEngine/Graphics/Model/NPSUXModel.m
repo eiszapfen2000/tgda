@@ -1,6 +1,8 @@
 #import <string.h>
 
 #import "NPSUXModel.h"
+#import "NPSUXModelLod.h"
+#import "Graphics/Material/NPSUXMaterialInstance.h"
 
 @implementation NPSUXModel
 
@@ -33,15 +35,36 @@
         return;
     }
 
-    NSString * modelName = [ [ file readSUXString ] retain ];
+    NSString * modelName = [ file readSUXString ];
     [ self setName:modelName ];
-    NSLog(modelName);
+    NSLog(@"Model Name: %@",modelName);
 
     [ modelName release ];
 
     Int materialCount = 0;
     [ file readInt32:&materialCount ];
-    NSLog(@"%d",materialCount);
+    NSLog(@"Material Count: %d",materialCount);
+
+    for ( Int i = 0; i < materialCount; i++ )
+    {
+        NPSUXMaterialInstance * materialInstance = [ [ NPSUXMaterialInstance alloc ] init ];
+        [ materialInstance loadFromFile:file ];
+        [ materials addObject:materialInstance ];
+        [ materialInstance release ];
+    }
+
+    Int lodCount = 0;
+    [ file readInt32:&lodCount ];
+    NSLog(@"LOD count: %d",lodCount);
+
+    for ( Int i = 0; i < lodCount; i++ )
+    {
+        NPSUXModelLod * lod = [ [ NPSUXModelLod alloc ] initWithParent:self ];
+        [ lod loadFromFile:file ];
+        [ lods addObject:lod ];
+        [ lod release ];
+    }
+
 }
 
 @end

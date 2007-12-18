@@ -71,6 +71,12 @@
     [ data getBytes:i ];
 }
 
+- (void) readInt32s:(Int32 *)i withLength:(UInt)length
+{
+    NSData * data = [ fileHandle readDataOfLength:(4*length) ];
+    [ data getBytes:i ];
+}
+
 - (void) readInt64:(Int64 *)i;
 {
     NSData * data = [ fileHandle readDataOfLength:8 ];
@@ -80,6 +86,12 @@
 - (void) readFloat:(Float *)f
 {
     NSData * data = [ fileHandle readDataOfLength:4 ];
+    [ data getBytes:f ];
+}
+
+- (void) readFloats:(Float *)f withLength:(UInt)length
+{
+    NSData * data = [ fileHandle readDataOfLength:(4*length) ];
     [ data getBytes:f ];
 }
 
@@ -129,10 +141,57 @@
         NSData * data = [ fileHandle readDataOfLength:(UInt)slength ];
         NSString * s = [[NSString alloc] initWithBytes:[data bytes] length:(UInt)slength encoding:NSASCIIStringEncoding ];
 
-        return [ s autorelease ];
+        return s;
     }
 
     return @"";
+}
+
+- (NSMutableArray *) readSUXScript
+{
+    Int lines;
+    [self readInt32:&lines ];
+
+    NSMutableArray * script = [ [ NSMutableArray alloc ] initWithCapacity:(UInt)lines ];
+
+    for ( Int i = 0; i < lines; i++ )
+    {
+        NSString * line = [ self readSUXString ];
+        [ script addObject: line ];
+        [ line release ];
+    }
+
+    return script;
+}
+
+- (FVector2 *) readFVector2
+{
+    FVector2 * v = fv2_alloc_init();
+    [ self readFloat:&(FV_X(*v)) ];
+    [ self readFloat:&(FV_Y(*v)) ];
+
+    return v;
+}
+
+- (FVector3 *) readFVector3
+{
+    FVector3 * v = fv3_alloc_init();
+    [ self readFloat:&(FV_X(*v)) ];
+    [ self readFloat:&(FV_Y(*v)) ];
+    [ self readFloat:&(FV_Z(*v)) ];
+
+    return v;
+}
+
+- (FVector4 *) readFVector4
+{
+    FVector4 * v = fv4_alloc_init();
+    [ self readFloat:&(FV_X(*v)) ];
+    [ self readFloat:&(FV_Y(*v)) ];
+    [ self readFloat:&(FV_Z(*v)) ];
+    [ self readFloat:&(FV_W(*v)) ];
+
+    return v;
 }
 
 @end
