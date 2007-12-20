@@ -8,7 +8,12 @@
 
 - (id) init
 {
-    return [ self initWithName:@"SUX Model" parent:nil ];
+    return [ self initWithParent:nil ];
+}
+
+- (id) initWithParent:(NPObject *)newParent
+{
+    return [ self initWithName:@"NP SUX Model" parent:newParent ];
 }
 
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
@@ -23,7 +28,7 @@
 
 - (void) loadFromFile:(NPFile *)file
 {
-    Char suxHeader[8] = "SUX____1";
+    Char * suxHeader = "SUX____1";
 
     Char headerFromFile[8];
     [ file readChars:headerFromFile withLength:8 ];
