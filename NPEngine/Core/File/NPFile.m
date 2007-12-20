@@ -157,6 +157,7 @@
     for ( Int i = 0; i < lines; i++ )
     {
         NSString * line = [ self readSUXString ];
+        NSLog(line);
         [ script addObject: line ];
         [ line release ];
     }
@@ -192,6 +193,11 @@
     [ self readFloat:&(FV_W(*v)) ];
 
     return v;
+}
+
+- (NSData *)readEntireFile
+{
+    return [ fileHandle readDataToEndOfFile ];
 }
 
 @end
