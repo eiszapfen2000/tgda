@@ -4,7 +4,12 @@
 
 - (id) init
 {
-    return [ self initWithName:@"NPSUXMaterialInstance" parent:nil ];
+    return [ self initWithParent:nil ];
+}
+
+- (id) initWithParent:(NPObject *)newParent
+{
+    return [ self initWithName:@"NPSUXMaterialInstance" parent:newParent ];
 }
 
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
