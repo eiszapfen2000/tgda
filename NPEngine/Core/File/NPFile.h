@@ -25,7 +25,6 @@
 
 - (void) readFloat:(Float *)f;
 - (void) readFloats:(Float *)f withLength:(UInt)length;
-
 - (void) readDouble:(Double *)d;
 
 - (void) readByte:(Byte *)b;
@@ -41,5 +40,7 @@
 - (FVector2 *) readFVector2;
 - (FVector3 *) readFVector3;
 - (FVector4 *) readFVector4;
+
+- (NSData *)readEntireFile;
 
 @end
