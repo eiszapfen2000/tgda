@@ -4,16 +4,19 @@ PACKAGE_NAME=NPEngineCoreBasics
 LIBRARY_NAME=libNPEngineCoreBasics
 
 libNPEngineCoreBasics_C_FILES = \
-Crc32.c \
+NpBasics.c \
+NpCrc32.c \
 NpFreeList.c \
-SuperFastHash.c
+NpSuperFastHash.c
+
 
 libNPEngineCoreBasics_HEADER_FILES = \
-Crc32.h \
-HashFunctions.h \
-Memory.h \
+NpBasics.h \
+NpCrc32.h \
+NpHashFunctions.h \
+NpMemory.h \
 NpFreeList.h \
-Types.h
+NpTypes.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/library.make

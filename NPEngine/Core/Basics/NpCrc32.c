@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "Crc32.h"
+#include "NpCrc32.h"
 
 void crc32_initialise()
 {
@@ -126,6 +126,160 @@ void crc32_verify_tables()
 	        printf("crc32_8bit_table[0x%udx] == 0x%udx (should be 0x%udx)",
 		            pattern, crc32_8bit_table[pattern], crc);
     }
+}
+
+/* ---------------------------------------------------------------------------
+    'crc32_update_with_...'
+	Update a crc32 value with various different sizes of data.
+--------------------------------------------------------------------------- */
+void crc32_update_with_1bit( UInt32 * crc, unsigned int data )
+{
+    *crc = ((*crc ^ data) & 1) ? (*crc >> 1) ^ CRC32_POLY : (*crc >> 1);
+}
+
+void crc32_update_with_2bits( UInt32 * crc, unsigned int data )
+{
+    *crc = crc32_2bit_table[(*crc ^ data) & 0x3] ^ (*crc >> 2);
+}
+
+void crc32_update_with_4bits( UInt32 * crc, unsigned int data )
+{
+    *crc = crc32_4bit_table[(*crc ^ data) & 0xf] ^ (*crc >> 4);
+}
+
+void crc32_update_with_8bits( UInt32 * crc, unsigned int data )
+{
+    *crc = crc32_8bit_table[(*crc ^ data) & 0xff] ^ (*crc >> 8);
+}
+
+void crc32_update_with_16bits( UInt32 * crc, unsigned int data )
+{
+    crc32_update_with_8bits(crc, data);
+    crc32_update_with_8bits(crc, data >> 8);
+}
+
+void crc32_update_with_32bits( UInt32 * crc, UInt32 data )
+{
+    crc32_update_with_16bits(crc, data);
+    crc32_update_with_16bits(crc, data >> 16);
+}
+
+void crc32_update_with_64bits( UInt32 * crc, UInt64 data )
+{
+    crc32_update_with_32bits(crc, (UInt32) data);
+    crc32_update_with_32bits(crc, (UInt32)(data >> 32));
+}
+
+void crc32_update_with_pointer( UInt32 * crc, void * pointer )
+{
+#ifdef NP_32BIT_LONG
+    crc32_update_with_32bits(crc, (UInt32) pointer);
+#endif
+#ifdef NP_64BIT_LONG
+    crc32_update_with_64bits(crc, (UInt64) pointer);
+#endif
+}
+
+#define crc32_update_with_uint		crc32_update_with_32bits
+#define crc32_update_with_int		crc32_update_with_32bits
+
+#ifdef NP_32BIT_LONG
+#define crc32_update_with_ulong		crc32_update_with_32bits
+#define crc32_update_with_long		crc32_update_with_32bits
+#endif
+
+#ifdef NP_64BIT_LONG
+#define crc32_update_with_ulong		crc32_update_with_64bits
+#define crc32_update_with_long		crc32_update_with_64bits
+#endif
+
+void crc32_update_with_data( UInt32 * crc, const void * pointer, unsigned long length )
+{
+    const Byte * byte_ptr = (const Byte *)pointer;
+    const Byte * stop_ptr = byte_ptr + length;
+
+    while (byte_ptr < stop_ptr)
+    {
+	    crc32_update_with_8bits(crc, *byte_ptr++);
+    }
+}
+
+void crc32_update_with_string( UInt32 * crc, const char * string )
+{
+    const Byte * byte_ptr = (const Byte *)string;
+    char ch;
+
+    while ((ch = *byte_ptr++) != 0)
+    {
+	    crc32_update_with_8bits(crc, ch);
+    }
+}
+
+void crc32_write_to_data( UInt32 crc, void * pointer )
+{
+    Byte * byte_ptr = (Byte *)pointer;
+    *byte_ptr++ = (Byte)crc; crc >>= 8;
+    *byte_ptr++ = (Byte)crc; crc >>= 8;
+    *byte_ptr++ = (Byte)crc; crc >>= 8;
+    *byte_ptr   = (Byte)crc;
+}
+
+/* ---------------------------------------------------------------------------
+    'crc32_of_...'
+	Calculate the crc32 value of various different sizes of data.
+--------------------------------------------------------------------------- */
+UInt32 crc32_of_uint32( UInt32 value )
+{
+    UInt32 crc = CRC32_INITIAL_VALUE;
+    crc32_update_with_32bits(&crc, value);
+
+    return CRC32_VALUE(crc);
+}
+
+UInt32 crc32_of_uint64( UInt64 value )
+{
+    UInt32 crc = CRC32_INITIAL_VALUE;
+    crc32_update_with_64bits(&crc, value);
+
+    return CRC32_VALUE(crc);
+}
+
+UInt32 crc32_of_pointer( const void * pointer )
+{
+#ifdef NP_32BIT_LONG
+    return crc32_of_uint32((UInt32)pointer);
+#endif
+
+#ifdef NP_64BIT_LONG
+    return crc32_of_uint64((UInt64)pointer);
+#endif
+}
+
+#define crc32_of_uint			crc32_of_uint32
+
+#ifdef NP_32BIT_LONG
+#define crc32_of_ulong			crc32_of_uint32
+#endif
+
+#ifdef NP_64BIT_LONG
+#define crc32_of_ulong			crc32_of_uint64
+#endif
+
+
+UInt32 crc32_of_data( const void * pointer,	unsigned long length )
+{
+    UInt32 crc = CRC32_INITIAL_VALUE;
+    crc32_update_with_data(&crc, pointer, length);
+
+    return CRC32_VALUE(crc);
+}
+
+UInt32 crc32_of_string( const char * string )
+{
+    UInt32 crc = CRC32_INITIAL_VALUE;
+    crc32_update_with_string(&crc, string);
+
+    return CRC32_VALUE(crc);
 }
 
 /* ======================================================================== */
