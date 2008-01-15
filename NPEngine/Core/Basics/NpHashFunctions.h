@@ -1,7 +1,7 @@
 #ifndef _NP_HASH_FUNCTIONS_H_
 #define _NP_HASH_FUNCTIONS_H_
 
-#include "Types.h"
+#include "NpTypes.h"
 
 UInt32 SuperFastHash (const char * data, UInt32 length);
 

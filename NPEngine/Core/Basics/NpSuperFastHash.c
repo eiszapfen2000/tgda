@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "HashFunctions.h"
+#include "NpHashFunctions.h"
  
 #define get16bits(d) (*((const uint16_t *) (d)))
 

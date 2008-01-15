@@ -1,8 +1,8 @@
 #ifndef _NP_BASICS_FREELIST_H_
 #define _NP_BASICS_FREELIST_H_
 
-#include "Types.h"
-#include "Memory.h"
+#include "NpTypes.h"
+#include "NpMemory.h"
 
 /*! \struct NpFreeNode
 	\brief  Freelist element
