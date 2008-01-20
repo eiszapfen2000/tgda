@@ -1,7 +1,7 @@
 #ifndef _NP_MATH_QUATERNION_H_
 #define _NP_MATH_QUATERNION_H_
 
-#include "Core/Basics/Types.h"
+#include "Core/Basics/NpTypes.h"
 #include "Core/Basics/NpFreeList.h"
 #include "Vector.h"
 #include "Matrix.h"

@@ -5,11 +5,13 @@ LIBRARY_NAME=libNPEngineGraphicsRenderContext
 
 libNPEngineGraphicsRenderContext_OBJC_FILES = \
 NPOpenGLPixelFormat.m \
-NPOpenGLRenderContext.m
+NPOpenGLRenderContext.m \
+NPOpenGLRenderContextManager.m
 
 libNPEngineGraphicsRenderContext_HEADER_FILES = \
 NPOpenGLPixelFormat.h \
-NPOpenGLRenderContext.h
+NPOpenGLRenderContext.h \
+NPOpenGLRenderContextManager.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/library.make

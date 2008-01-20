@@ -25,12 +25,11 @@ ADDITIONAL_CPPFLAGS += \
     $(BASIC_DEFINES)
 
 BASIC_CFLAGS += \
-    -Wall -Wextra -std=gnu99 -O3
+    -Wall -std=gnu99 -O2
 
 BASIC_OBJCFLAGS += \
     $(BASIC_CFLAGS) \
-    -Wno-import \
-    -fobjc-exceptions
+    -Wno-import
 
 ADDITIONAL_CFLAGS += $(BASIC_CFLAGS)
 ADDITIONAL_OBJCFLAGS += $(BASIC_OBJCFLAGS)

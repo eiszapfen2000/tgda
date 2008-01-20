@@ -4,11 +4,15 @@
 #import "Core/Log/NPLogger.h"
 #import "Core/Timer/NPTimer.h"
 
+#import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
+
 @interface NPEngineCore : NPObject < NPPInitialStateSetup >
 {
     NPLogger * logger;
     NPTimer * timer;
     NPObjectManager * objectManager;
+
+    NPOpenGLRenderContextManager * renderContextManager;
 }
 
 + (NPEngineCore *)instance;
@@ -16,6 +20,7 @@
 - (NPLogger *)logger;
 - (NPTimer *)timer;
 - (NPObjectManager *)objectManager;
+- (NPOpenGLRenderContextManager *)renderContextManager;
 
 @end
 

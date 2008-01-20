@@ -1,6 +1,6 @@
 #import "NPOpenGLPixelFormat.h"
 
-#import "Core/Basics/Memory.h"
+#import "Core/Basics/NpMemory.h"
 
 @implementation NPOpenGLPixelFormat
 
@@ -42,24 +42,24 @@
 - (Int32) countAndCheckAttributes
 {
     // Initialized to 4, because NSOpenGLPFAColorSize and NSOpenGLPFAlphaSize are included;
-    Int32 attributeCounter = 4;
+    Int32 attributeCounter = 3;
 
-    if ( pixelFormatAttributes.fullscreen == YES )
+    /*if ( pixelFormatAttributes.fullscreen == YES )
     {
         attributeCounter++;
-    }
+    }*/
 
     if ( pixelFormatAttributes.doubleBuffered == YES )
     {
         attributeCounter++;
     }
 
-    if ( pixelFormatAttributes.depthBufferPrecision != 24 || pixelFormatAttributes.depthBufferPrecision != 32 )
+    if ( pixelFormatAttributes.depthBufferPrecision != 24 && pixelFormatAttributes.depthBufferPrecision != 32 )
     {
         pixelFormatAttributes.depthBufferPrecision = 32;
-
-        attributeCounter++;
     }
+
+    attributeCounter = attributeCounter + 2;
 
     if ( pixelFormatAttributes.stencilBuffered == YES )
     {
@@ -75,7 +75,7 @@
     {
         attributeCounter++;
 
-        if ( pixelFormatAttributes.sampleCount < 1 || pixelFormatAttributes.sampleCount > 16 )
+        if ( pixelFormatAttributes.sampleCount < 1 && pixelFormatAttributes.sampleCount > 16 )
         {
             pixelFormatAttributes.sampleCount = 4;
         }
@@ -88,29 +88,35 @@
 
 - (NSOpenGLPixelFormatAttribute *)buildAttributes
 {
-    Int32 arraySize = [ self countAndCheckAttributes ];    
+    /*Int32 arraySize = [ self countAndCheckAttributes ]; 
 
-    NSOpenGLPixelFormatAttribute * attributes = ALLOC_ARRAY(NSOpenGLPixelFormatAttribute,arraySize);
+    NSLog(@"%d",(arraySize + 1));
+
+    NSOpenGLPixelFormatAttribute * attributes = ALLOC_ARRAY(NSOpenGLPixelFormatAttribute, arraySize + 1);
     
     Int32 counter = 0;
 
     attributes[counter++] = NSOpenGLPFAColorSize;
     attributes[counter++] = (NSOpenGLPixelFormatAttribute)8;
 
-    attributes[counter++] = NSOpenGLPFAAlphaSize;
-    attributes[counter++] = (NSOpenGLPixelFormatAttribute)8;
+    //attributes[counter++] = NSOpenGLPFAAlphaSize;
+    //attributes[counter++] = (NSOpenGLPixelFormatAttribute)8;
 
 
     if ( pixelFormatAttributes.fullscreen == YES )
     {
         attributes[counter++] = NSOpenGLPFAFullScreen;
     }
+    else
+    {
+        attributes[counter++] = NSOpenGLPFAWindow;
+    }
 
     if ( pixelFormatAttributes.doubleBuffered == YES )
     {
-        attributes[counter++] = NSOpenGLPFADoubleBuffer;
+        attributes[counter++] = NSOpenGLPFADoubleBuffer;  
     }
-
+    
     attributes[counter++] = NSOpenGLPFADepthSize;
     attributes[counter++] = (NSOpenGLPixelFormatAttribute)pixelFormatAttributes.depthBufferPrecision;
     
@@ -129,17 +135,68 @@
         attributes[counter++] = (NSOpenGLPixelFormatAttribute)pixelFormatAttributes.sampleCount;
     }
 
+    attributes[counter] = (NSOpenGLPixelFormatAttribute)0;*/
+
+    //NSLog(@"%d",counter);
+
+    NSOpenGLPixelFormatAttribute * attributes = ALLOC_ARRAY(NSOpenGLPixelFormatAttribute,11);
+
+    if ( pixelFormatAttributes.fullscreen == YES )
+    {
+        NSLog(@"fullscreen");
+    }
+    else
+    {
+        NSLog(@"window");
+        attributes[0] = NSOpenGLPFAWindow;
+    }
+
+    if ( pixelFormatAttributes.doubleBuffered == YES )
+    {
+        NSLog(@"doublebuffer");
+        attributes[1] = NSOpenGLPFADoubleBuffer;
+    }
+    else
+    {
+        attributes[1] = NSOpenGLPFADoubleBuffer;
+    }
+
+    attributes[2] = NSOpenGLPFAColorSize;
+    attributes[3] = 8;
+    attributes[4] = NSOpenGLPFAAlphaSize;
+    attributes[5] = 8;
+    attributes[6] = NSOpenGLPFADepthSize;
+    attributes[7] = 24;
+    //NSLog(@"depth %d",pixelFormatAttributes.depthBufferPrecision);
+    //attributes[5] = pixelFormatAttributes.depthBufferPrecision;
+
+    attributes[8] = NSOpenGLPFAStencilSize;
+    attributes[9] = 8;
+    //attributes[10] = NSOpenGLPFAAccelerated;
+
+    attributes[10] = 0;
+
     return attributes;
 }
 
 - (void) setup
 {
-    pixelFormat = [ [ NSOpenGLPixelFormat alloc ] initWithAttributes:[ self buildAttributes ] ];
+    pixelFormat = [ [ NSOpenGLPixelFormat alloc ] initWithAttributes:[self buildAttributes] ];
+
+    if ( pixelFormat == nil )
+    {
+        NSLog(@"WHAAAAAAAAAAAA");
+    }
 }
 
 - (NSOpenGLPixelFormat *)pixelFormat
 {
     return pixelFormat;
+}
+
+- (void) setPixelFormatAttributes:(NPOpenGLPixelFormatAttributes)newPixelFormatAttributes
+{
+    pixelFormatAttributes = newPixelFormatAttributes;
 }
 
 - (void) setFullScreen:(BOOL)fullscreen

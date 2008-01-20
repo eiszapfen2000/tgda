@@ -53,6 +53,8 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     logger = [ [ NPLogger alloc ] initWithName:@"NPEngine Logger" parent:self fileName:@"np.txt" ];
     timer = [ [ NPTimer alloc ] initWithName:@"NPEngine Timer" parent:self ];
 
+    renderContextManager = [ [ NPOpenGLRenderContextManager alloc ] initWithName:@"NP Engine Core RenderContext Manager" parent:self ];
+
     return self;
 }
 
@@ -69,6 +71,11 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 - (NPObjectManager *)objectManager
 {
     return objectManager;
+}
+
+- (NPOpenGLRenderContextManager *)renderContextManager
+{
+    return renderContextManager;
 }
 
 - (void) setupInitialState

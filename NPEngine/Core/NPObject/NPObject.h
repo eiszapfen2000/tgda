@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-#import "Core/Basics/Types.h"
+#import "Core/Basics/NpTypes.h"
 
 @interface NPObject : NSObject
 {
