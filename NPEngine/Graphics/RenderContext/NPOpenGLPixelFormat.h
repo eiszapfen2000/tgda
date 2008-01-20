@@ -29,6 +29,8 @@ NPOpenGLPixelFormatAttributes;
 
 - (NSOpenGLPixelFormat *)pixelFormat;
 
+- (void) setPixelFormatAttributes:(NPOpenGLPixelFormatAttributes)newPixelFormatAttributes;
+
 - (void) setFullScreen:(BOOL)fullscreen;
 - (BOOL) fullscreen;
 

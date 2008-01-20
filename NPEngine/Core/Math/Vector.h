@@ -1,7 +1,7 @@
 #ifndef _NP_MATH_VECTOR_H_
 #define _NP_MATH_VECTOR_H_
 
-#include "Core/Basics/Types.h"
+#include "Core/Basics/NpTypes.h"
 #include "Core/Basics/NpFreeList.h"
 
 extern NpFreeList * NP_VECTOR2_FREELIST;

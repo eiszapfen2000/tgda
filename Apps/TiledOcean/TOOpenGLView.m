@@ -1,10 +1,10 @@
 /* All Rights reserved */
 
-#include <AppKit/AppKit.h>
+#import <AppKit/AppKit.h>
+#import <GL/gl.h>
 
-#include <GL/gl.h>
-
-#include "TOOpenGLView.h"
+#import "TOOpenGLView.h"
+#import "Graphics/RenderContext/NPOpenGLPixelFormat.h"
 
 @implementation TOOpenGLView
 
@@ -12,7 +12,7 @@
 {
     NSOpenGLPixelFormat * pixelFormat;
 
-    NSOpenGLPixelFormatAttribute attributes[] =
+    /*NSOpenGLPixelFormatAttribute attributes[] =
     {
         NSOpenGLPFAWindow,
         NSOpenGLPFADoubleBuffer,
@@ -22,7 +22,11 @@
         0
     };
 
-    pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes: attributes];
+    pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes: attributes];*/
+
+    NPOpenGLPixelFormat * nppf = [ [ NPOpenGLPixelFormat alloc ] init ];
+    [ nppf setup ];
+    pixelFormat = [ nppf pixelFormat ];
 
     if(!pixelFormat)
     {
@@ -33,7 +37,7 @@
 
     self = [super initWithFrame: frameRect pixelFormat: pixelFormat];
 
-    [pixelFormat release];
+    //[pixelFormat release];
 
     // If there was an error, we again should probably send an error message to the user
     if(!self)
@@ -98,6 +102,8 @@
     NSLog(@"brak");
 
     [[self openGLContext] flushBuffer];
+
+    NSLog(@"flushbuffer");
 }
 
 - (void) reshape

@@ -1,7 +1,7 @@
 #ifndef _NP_MATH_MATRIX_H_
 #define _NP_MATH_MATRIX_H_
 
-#include "Core/Basics/Types.h"
+#include "Core/Basics/NpTypes.h"
 #include "Core/Basics/NpFreeList.h"
 #include "Vector.h"
 

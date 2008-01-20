@@ -1,9 +1,11 @@
 #import <AppKit/AppKit.h>
 
 #import "Core/NPObject/NPObject.h"
+#import "NPOpenGLPixelFormat.h"
 
 @interface NPOpenGLRenderContext : NPObject
 {
+    BOOL active;
     NSOpenGLContext * context;
 }
 
@@ -11,5 +13,18 @@
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
+
+- (NSOpenGLContext *)context;
+
+- (void) setupWithPixelFormat:(NPOpenGLPixelFormat *)pixelFormat;
+
+- (void) connectToView:(NSView *)view;
+- (void) disconnectFromView;
+
+- (void) activate;
+- (void) deactivate;
+- (BOOL) isActive;
+
+- (void) swap;
 
 @end
