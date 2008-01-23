@@ -16,7 +16,7 @@
 
 - (NSOpenGLContext *)context;
 
-- (void) setupWithPixelFormat:(NPOpenGLPixelFormat *)pixelFormat;
+- (BOOL) setupWithPixelFormat:(NPOpenGLPixelFormat *)pixelFormat;
 
 - (void) connectToView:(NSView *)view;
 - (void) disconnectFromView;
