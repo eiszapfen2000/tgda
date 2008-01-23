@@ -24,6 +24,7 @@
 
 - (void) dealloc
 {
+    [ self deactivate ];
     [ context release ];
 
     [ super dealloc ];
@@ -34,30 +35,40 @@
     return context;
 }
 
-
-- (void) setupWithPixelFormat:(NPOpenGLPixelFormat *)pixelFormat
+- (BOOL) setupWithPixelFormat:(NPOpenGLPixelFormat *)pixelFormat
 {
     [ pixelFormat retain ];
 
     context = [ [ NSOpenGLContext alloc ] initWithFormat:[pixelFormat pixelFormat] shareContext:nil ];
 
     [ pixelFormat release ];
+
+    if ( context == nil )
+    {
+        return NO;
+    }
+
+    return YES;
 }
 
 - (void) activate
 {
-    //if ( context != nil )
-    //{
-        //active = YES;
+    if ( context != nil && active != YES )
+    {
         [ context makeCurrentContext ];
-    //}
+
+        active = YES;
+    }
 }
 
 - (void) deactivate
 {
-    [ NSOpenGLContext clearCurrentContext ];
+    if ( context != nil && active == YES )
+    {
+        [ NSOpenGLContext clearCurrentContext ];
 
-    //active = NO;
+        active = NO;
+    }
 }
 
 - (BOOL) isActive
@@ -67,7 +78,7 @@
 
 - (void) swap
 {
-    //if ( context != nil )
+    if ( context != nil && active == YES)
     {
         [ context flushBuffer ];
     }

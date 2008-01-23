@@ -32,14 +32,23 @@
 {
     NPOpenGLPixelFormat * pixelFormat = [ [ NPOpenGLPixelFormat alloc ] init ];
     [ pixelFormat setPixelFormatAttributes:pixelFormatAttributes ];
-    [ pixelFormat setup ];
 
+    if ( [ pixelFormat setup ] == NO )
+    {
+        return nil;
+    }
+    
     NPOpenGLRenderContext * renderContext = [ [ NPOpenGLRenderContext alloc ] initWithName:contextName parent:self ];
-    [ renderContext setupWithPixelFormat:pixelFormat ];
+
+    if ( [ renderContext setupWithPixelFormat:pixelFormat ] == NO )
+    {
+        return nil;
+    }
+
     [ renderContexts setObject:renderContext forKey:contextName ];
 
-    //[ pixelFormat release ];
-    //[ renderContext release ];
+    [ pixelFormat release ];
+    [ renderContext release ];
 
     return renderContext;
 }

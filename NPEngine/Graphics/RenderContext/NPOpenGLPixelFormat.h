@@ -5,6 +5,8 @@
 typedef struct
 {
     BOOL fullscreen;
+    Int32 bitsPerColorChannel;
+    Int32 alphaChannelBits;
     BOOL doubleBuffered;
     Int32 depthBufferPrecision;
     BOOL stencilBuffered;
@@ -25,7 +27,7 @@ NPOpenGLPixelFormatAttributes;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
 
-- (void) setup;
+- (BOOL) setup;
 
 - (NSOpenGLPixelFormat *)pixelFormat;
 
@@ -33,6 +35,12 @@ NPOpenGLPixelFormatAttributes;
 
 - (void) setFullScreen:(BOOL)fullscreen;
 - (BOOL) fullscreen;
+
+- (void) setBitsPerColorChannel:(Int32)newBitsPerColorChannel;
+- (Int32)bitsPerColorChannel;
+
+- (void) setAlphaBits:(Int32)newAlphaChannelBits;
+- (Int32) alphaChannelBits;
 
 - (void) setDepthBufferPrecision:(Int32)newDepthBufferPrecision;
 - (Int32) depthBufferPrecision;
