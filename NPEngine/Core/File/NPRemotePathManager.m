@@ -4,7 +4,12 @@
 
 - (id) init
 {
-    return [ self initWithName:@"NPEngine Local Paths Manager" parent:nil ];
+    return [ self initWithName:@"NPEngine Remote Paths Manager" ];
+}
+
+- (id) initWithName:(NSString *)newName
+{
+    return [ self initWithName:newName parent:nil ];
 }
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
 {
@@ -15,7 +20,14 @@
     return self;
 }
 
-- (void) addURL:(NSURL *)lookUpURL
+- (void) dealloc
+{
+    [ remotePaths release ];
+
+    [ super dealloc ];
+}
+
+- (void) addLookUpURL:(NSURL *)lookUpURL
 {
     [ remotePaths addObject:lookUpURL ];
 }

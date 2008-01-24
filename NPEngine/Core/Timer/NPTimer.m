@@ -28,7 +28,7 @@
     return self;
 }
 
-- (void) setupInitialState
+- (void) setup
 {
     [ self reset ];
 }

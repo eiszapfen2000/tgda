@@ -1,22 +1,24 @@
 #import "Core/NPObject/NPObject.h"
-#import "Core/NPObject/NPPCoreProtocols.h"
+#import "NPLocalPathManager.h"
+#import "NPRemotePathManager.h"
 
-@interface NPPathManager : NPObject < NPPInitialStateSetup >
+@interface NPPathManager : NPObject
 {
     NSFileManager * fileManager;
 
     //Contains Strings
-    NSMutableArray * localPaths;
+    //NSMutableArray * localPaths;
+    NPLocalPathManager * localPathManager;
 
     //Contains URLs
-    NSMutableArray * remotePaths;
+    NPRemotePathManager * remotePathManager;
 }
 
 - (id) init;
+- (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
+- (void) dealloc;
 
-- (void) addLookUpPath:(NSString *)lookupPath;
-
-- (void) _addApplicationPath;
+- (void) addLookUpPath:(NSString *)lookUpPath;
 
 @end
