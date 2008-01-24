@@ -51,6 +51,34 @@
     return YES;
 }
 
+- (void) connectToView:(NSView *)view
+{
+    if ( context != nil )
+    {
+        [ context setView:view ];
+    }
+}
+
+- (void) disconnectFromView
+{
+    if ( context != nil )
+    {
+        [ context clearDrawable ];
+    }
+}
+
+- (NSView *)view
+{
+    if ( context != nil )
+    {
+        return [ context view ];
+    }
+    else
+    {
+        return nil;
+    }
+}
+
 - (void) activate
 {
     if ( context != nil && active != YES )
