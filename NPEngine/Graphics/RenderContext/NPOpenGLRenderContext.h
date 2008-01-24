@@ -20,6 +20,7 @@
 
 - (void) connectToView:(NSView *)view;
 - (void) disconnectFromView;
+- (NSView *)view;
 
 - (void) activate;
 - (void) deactivate;

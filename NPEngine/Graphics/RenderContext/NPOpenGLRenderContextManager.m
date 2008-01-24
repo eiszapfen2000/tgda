@@ -4,7 +4,7 @@
 
 - (id) init
 {
-    return [ self initWithName:@"NP Render Context Manager" ];
+    return [ self initWithName:@"NP RenderContext Manager" ];
 }
 
 - (id) initWithName:(NSString *)newName

@@ -45,14 +45,16 @@
 {
     Int32 attributeCounter = 0;
 
+    //fullscreen attribute
     if ( pixelFormatAttributes.fullscreen == YES )
     {
         attributeCounter++;
     }
 
-    //color and alpha
+    //colorsize and alphasize, 2 attributes each
     attributeCounter = attributeCounter + 4;
 
+    //doublebuffer attribute
     if ( pixelFormatAttributes.doubleBuffered == YES )
     {
         attributeCounter++;
@@ -63,10 +65,10 @@
         pixelFormatAttributes.depthBufferPrecision = 24;
     }
 
-    //depth
+    //depthsize
     attributeCounter = attributeCounter + 2;
 
-    if ( pixelFormatAttributes.stencilBuffered == YES )
+    if ( pixelFormatAttributes.stencilBuffered == YES && pixelFormatAttributes.stencilBufferPrecision > 0 )
     {
         //stencil size
         attributeCounter++;        
@@ -74,6 +76,7 @@
 
     if ( pixelFormatAttributes.multiSampleBuffer == YES )
     {
+        //multisamplebuffer count attribute
         attributeCounter = attributeCounter + 2;
 
         if ( pixelFormatAttributes.sampleCount < 1 && pixelFormatAttributes.sampleCount > 16 )
@@ -81,6 +84,7 @@
             pixelFormatAttributes.sampleCount = 4;
         }
 
+        //samplecount attribute
         attributeCounter = attributeCounter + 2;
     }
 

@@ -1,5 +1,5 @@
 #import "NPVertexBuffer.h"
-#import "Core/Basics/Memory.h"
+#import "Core/Basics/NpMemory.h"
 
 @implementation NPVertexBuffer
 
