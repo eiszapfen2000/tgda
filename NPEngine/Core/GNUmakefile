@@ -7,9 +7,10 @@ SUBPROJECTS = \
 	Basics \
 	Math \
 	NPObject \
-    File \
 	Log \
+    File \
 	Timer \
+    Resource \
     RandomNumbers
 
 libNPEngineCore_OBJC_FILES = \

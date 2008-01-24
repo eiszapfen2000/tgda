@@ -2,6 +2,22 @@
 
 @implementation NPLogger
 
+- (void) _setupFileHandle
+{
+    NSString * path = [ [ NSString alloc ] initWithFormat: @"%@/%@", pathToHome, fileName ];
+
+    if ( [ [ NSFileManager defaultManager ] createFileAtPath:path contents:nil attributes:nil ] == YES )
+    {
+        logFile = [ [ NSFileHandle fileHandleForWritingAtPath: path ] retain ];
+    }
+    else
+    {
+        logFile = [ [ NSFileHandle fileHandleWithStandardOutput ] retain ];
+    }
+
+    [ path release ];
+}
+
 - (id) init
 {
     return [ self initWithName:@"NPCore Logger" parent:nil fileName:@"np.txt" ];
@@ -62,22 +78,6 @@
 - (void) writeError: (NSString *) string
 {
     [ self write: [ @"[ERROR]: " stringByAppendingString: string ] ];
-}
-
-- (void) _setupFileHandle
-{
-    NSString * path = [ [ NSString alloc ] initWithFormat: @"%@/%@", pathToHome, fileName ];
-
-    if ( [ [ NSFileManager defaultManager ] createFileAtPath:path contents:nil attributes:nil ] == YES )
-    {
-        logFile = [ [ NSFileHandle fileHandleForWritingAtPath: path ] retain ];
-    }
-    else
-    {
-        logFile = [ [ NSFileHandle fileHandleWithStandardOutput ] retain ];
-    }
-
-    [ path release ];
 }
 
 @end

@@ -8,6 +8,7 @@
 }
 
 - (id) init;
+- (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent fileName:(NSString *)newFileName;
 - (void) dealloc;

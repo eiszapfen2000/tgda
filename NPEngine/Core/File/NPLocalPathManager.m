@@ -1,50 +1,58 @@
 #import "NPLocalPathManager.h"
+#import "Core/NPEngineCore.h"
 
 @implementation NPLocalPathManager
 
 - (id) init
 {
-    return [ self initWithName:@"NPEngine Local Paths Manager" parent:nil ];
+    return [ self initWithName:@"NPEngine Local Paths Manager" ];
 }
+
+- (id) initWithName:(NSString *)newName
+{
+    return [ self initWithName:newName parent:nil ];
+}
+
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    localPaths = [ [ NSMutableArray alloc ] init ];
     fileManager = [ NSFileManager defaultManager ];
+
+    localPaths = [ [ NSMutableArray alloc ] init ];
 
     return self;
 }
 
-- (void) _addApplicationPath
+- (void) dealloc
 {
-    [ localPaths addObject: [ fileManager currentDirectoryPath ] ];
+    [ localPaths release ];
+
+    [ super dealloc ];
 }
 
-- (void) setupInitialState
+- (void) _addApplicationPath
+{
+    NSString * workingDirectory = [ fileManager currentDirectoryPath ];
+
+    if ( workingDirectory != nil )
+    {
+        [ localPaths addObject:workingDirectory ];
+    }
+    else
+    {
+        NPLOG_ERROR(([ NSString stringWithFormat:@"Working directory not accessible" ]));
+    }
+}
+
+- (void) setup
 {
     [ self _addApplicationPath ];
 }
 
 - (void) addLookUpPath:(NSString *)lookUpPath
 {
-    NSString * expandedPath = [ [ lookUpPath stringByStandardizingPath ] retain ];
-
-    BOOL isDirectory;    
-
-    if ( [ fileManager fileExistsAtPath:expandedPath isDirectory:&isDirectory ] )
-    {
-        if ( isDirectory == YES )
-        {
-            [ localPaths addObject: expandedPath ];
-        }
-        else
-        {
-            NSLog(@"%@ is not a directory", expandedPath);
-        }
-    }
-
-    [ expandedPath release ];
+    [ localPaths addObject:lookUpPath ];
 }
 
 @end

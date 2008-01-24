@@ -78,9 +78,9 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     return renderContextManager;
 }
 
-- (void) setupInitialState
+- (void) setup
 {
-    
+   
 }
 
 - (id)copyWithZone:(NSZone *)zone

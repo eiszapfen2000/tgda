@@ -1,14 +1,15 @@
 #import "Core/NPObject/NPObject.h"
-#import "Core/NPObject/NPPCoreProtocols.h"
 
-@interface NPRemotePathManager : NPObject < NPPInitialStateSetup >
+@interface NPRemotePathManager : NPObject
 {
     NSMutableArray * remotePaths;
 }
 
 - (id) init;
+- (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
+- (void) dealloc;
 
-- (void) addURL:(NSURL *)lookUpURL;
+- (void) addLookUpURL:(NSURL *)lookUpURL;
 
 @end

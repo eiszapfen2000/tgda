@@ -4,6 +4,7 @@ PACKAGE_NAME=NPEngineCoreFile
 LIBRARY_NAME=libNPEngineCoreFile
 
 libNPEngineCoreFile_OBJC_FILES = \
+NPPathUtilities.m \
 NPFile.m \
 NPPathManager.m \
 NPLocalPathManager.m \

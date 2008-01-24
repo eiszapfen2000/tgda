@@ -1,12 +1,11 @@
 #import "Core/NPObject/NPObject.h"
 #import "Core/NPObject/NPObjectManager.h"
-#import "Core/NPObject/NPPCoreProtocols.h"
 #import "Core/Log/NPLogger.h"
 #import "Core/Timer/NPTimer.h"
 
 #import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
 
-@interface NPEngineCore : NPObject < NPPInitialStateSetup >
+@interface NPEngineCore : NPObject
 {
     NPLogger * logger;
     NPTimer * timer;

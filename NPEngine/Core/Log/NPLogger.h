@@ -1,5 +1,4 @@
 #import "Core/NPObject/NPObject.h"
-#import "Core/NPObject/NPPCoreProtocols.h"
 
 @interface NPLogger : NPObject
 {
@@ -17,7 +16,5 @@
 - (void) write: (NSString *) string;
 - (void) writeWarning: (NSString *) string;
 - (void) writeError: (NSString *) string;
-
-- (void) _setupFileHandle;
 
 @end

@@ -4,12 +4,17 @@
 
 - (id) init
 {
-    return [ self initWithName:@"NPFile" parent:nil ];
+    return [ self initWithName:@"NPFile" ];
+}
+
+- (id) initWithName:(NSString *)newName
+{
+    return [ self initWithName:newName parent:nil ];
 }
 
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
 {
-    return [ self initWithName:newName parent:newParent fileName:nil ];
+    return [ self initWithName:newName parent:newParent fileName:@"" ];
 }
 
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent fileName:(NSString *)newFileName
