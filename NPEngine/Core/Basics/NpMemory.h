@@ -11,4 +11,6 @@
 #define ALLOC_ARRAY(_struct,_number)    ((_struct *) malloc(sizeof(_struct) * (_number)))
 #endif
 
+#define FREE(_pointer)		do {void *_ptr=(void *)(_pointer); free(_ptr); _ptr=NULL; } while (0)
+
 #endif //_NP_BASICS_MEMORY_H_

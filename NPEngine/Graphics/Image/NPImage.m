@@ -63,12 +63,16 @@ void npimage_initialise()
     return mipMapLevels;
 }
 
-- (BOOL) loadImageFromFile:(NPFile *)file withMipMaps:(BOOL)generateMipMaps
+- (BOOL) loadFromFile:(NPFile *)file
 {
-    [ self clear ];
+    return [ self loadFromFile:file withMipMaps:NO ];
+}
 
-    NSString * fileName = [ file fileName ];
+- (BOOL) loadFromFile:(NPFile *)file withMipMaps:(BOOL)generateMipMaps
+{
+    [ self reset ];
 
+    [ self setFileName:[ file fileName ] ];
     [ self setName:fileName ];
 
 	ILuint image;
@@ -231,16 +235,25 @@ void npimage_initialise()
 
 	ilDeleteImages(1, &image);
 
+    ready = YES;
+
     return YES;
 }
 
-- (void) clear
+- (void) reset
 {
+    [ super reset ];
+
     pixelFormat = NP_PIXELFORMAT_NONE;
     width = height = 0;
     mipMapLevels = 1;
 
     [ imageData removeAllObjects ];
+}
+
+- (BOOL) isReady
+{
+    return ready;
 }
 
 @end

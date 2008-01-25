@@ -33,9 +33,17 @@
     return self;
 }
 
-- (void) loadFromFile:(NPFile *)file
+- (BOOL) loadFromFile:(NPFile *)file
 {
+    [ self setFileName:[ file fileName ] ];
+
     NSString * lodName = [ file readSUXString ];
+
+    if ( lodName == nil )
+    {
+        return NO;
+    }
+
     [ self setName: lodName ];
     [ lodName release ];
     NSLog(@"LOD Name: %@",lodName);
@@ -50,7 +58,10 @@
     [ file readFloat:&boundingSphereRadius ];
     NSLog(@"Bounding Sphere %f",boundingSphereRadius);
 
-    [ vertexBuffer loadFromFile:file ];
+    if ( [ vertexBuffer loadFromFile:file ] == NO )
+    {
+        return NO;
+    }
 
     [ file readInt32:&groupCount ];
     NSLog(@"Group Count: %d",groupCount);
@@ -58,10 +69,38 @@
     for ( Int i = 0; i < groupCount; i++ )
     {
         NPSUXModelGroup * group = [ [ NPSUXModelGroup alloc ] init ];
-        [ group loadFromFile:file ];
-        [ groups addObject:group ];
+
+        if ( [ group loadFromFile:file ] == YES )
+        {
+            [ groups addObject:group ];
+        }
+
         [ group release ];
     }
+
+    return YES;
+}
+
+- (void) reset
+{
+    [ vertexBuffer release ];
+    [ groups removeAllObjects ];
+
+    autoenable = NO;
+    minDistance = 0;
+    maxDistance = 0;
+
+    FREE(boundingBoxMinimum);
+    FREE(boundingBoxMaximum);
+    boundingSphereRadius = 0;
+    groupCount = 0;
+
+    [ super reset ];
+}
+
+- (BOOL) isReady
+{
+    return ready;
 }
 
 @end

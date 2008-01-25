@@ -2,8 +2,9 @@
 #import "Core/File/NPFile.h"
 #import "Core/Math/FVector.h"
 #import "NPVertexBuffer.h"
+#import "Core/Resource/NPResource.h"
 
-@interface NPSUXModelLod : NPObject
+@interface NPSUXModelLod : NPResource < NPPResource >
 {
     BOOL autoenable;
     Float minDistance;
@@ -23,6 +24,8 @@
 - (id) initWithParent:(NPObject *)newParent;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 
-- (void) loadFromFile:(NPFile *)file;
+- (BOOL) loadFromFile:(NPFile *)file;
+- (void) reset;
+- (BOOL) isReady;
 
 @end

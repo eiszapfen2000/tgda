@@ -26,8 +26,10 @@
     return self;
 }
 
-- (void) loadFromFile:(NPFile *)file
+- (BOOL) loadFromFile:(NPFile *)file
 {
+    [ self setFileName:[ file fileName ] ];
+
     Char * suxHeader = "SUX____1";
 
     Char headerFromFile[8];
@@ -37,13 +39,12 @@
     {
         NSLog(@"wrong header version");
 
-        return;
+        return NO;
     }
 
     NSString * modelName = [ file readSUXString ];
     [ self setName:modelName ];
     NSLog(@"Model Name: %@",modelName);
-
     [ modelName release ];
 
     Int materialCount = 0;
@@ -53,8 +54,12 @@
     for ( Int i = 0; i < materialCount; i++ )
     {
         NPSUXMaterialInstance * materialInstance = [ [ NPSUXMaterialInstance alloc ] init ];
-        [ materialInstance loadFromFile:file ];
-        [ materials addObject:materialInstance ];
+
+        if ( [ materialInstance loadFromFile:file ] == YES )
+        {
+            [ materials addObject:materialInstance ];
+        }
+
         [ materialInstance release ];
     }
 
@@ -65,11 +70,29 @@
     for ( Int i = 0; i < lodCount; i++ )
     {
         NPSUXModelLod * lod = [ [ NPSUXModelLod alloc ] initWithParent:self ];
-        [ lod loadFromFile:file ];
-        [ lods addObject:lod ];
+
+        if ( [ lod loadFromFile:file ] == YES )
+        {
+            [ lods addObject:lod ];
+        }
+
         [ lod release ];
     }
 
+    return YES;
+}
+
+- (void) reset
+{
+    [ lods removeAllObjects ];
+    [ materials removeAllObjects ];
+
+    [ super reset ];
+}
+
+- (BOOL) isReady
+{
+    return ready;
 }
 
 @end

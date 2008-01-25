@@ -1,5 +1,6 @@
 #import "Core/NPObject/NPObject.h"
 #import "Core/File/NPFile.h"
+#import "Core/Resource/NPResource.h"
 
 typedef struct NpVertexFormat
 {
@@ -10,6 +11,8 @@ typedef struct NpVertexFormat
     Int maxTextureCoordinateSet;
 }
 NpVertexFormat;
+
+void reset_npvertexformat(NpVertexFormat * vertex_format);
 
 typedef struct NpVertices
 {
@@ -27,6 +30,8 @@ typedef struct NpVertices
 }
 NpVertices;
 
+void reset_npvertices(NpVertices * vertices);
+
 typedef struct NpVertexBuffer
 {
     UInt positionsID;
@@ -38,10 +43,10 @@ typedef struct NpVertexBuffer
 }
 NpVertexBuffer;
 
-@interface NPVertexBuffer : NPObject
-{
-    BOOL ready;
+void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer);
 
+@interface NPVertexBuffer : NPResource < NPPResource >
+{
     NpVertexBuffer vertexBuffer;
     NpVertices vertices;
 }
@@ -50,6 +55,8 @@ NpVertexBuffer;
 - (id) initWithParent:(NPObject *)newParent;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 
-- (void) loadFromFile:(NPFile *)file;
+- (BOOL) loadFromFile:(NPFile *)file;
+- (void) reset;
+- (BOOL) isReady;
 
 @end

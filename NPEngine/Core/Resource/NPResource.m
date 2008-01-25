@@ -22,6 +22,13 @@
     return self;
 }
 
+- (void) dealloc
+{
+    [ fileName release ];
+
+    [ super dealloc ];
+}
+
 - (void) setFileName:(NSString *)newFileName
 {
     if ( fileName != newFileName )
@@ -39,6 +46,8 @@
 - (void) reset
 {
     ready = NO;
+
+    [ fileName release ];
     fileName = @"";
 }
 

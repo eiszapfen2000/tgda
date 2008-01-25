@@ -36,17 +36,53 @@
     }
 }
 
-- (void) loadFromFile:(NPFile *)file
+- (BOOL) loadFromFile:(NPFile *)file
 {
+    [ self setFileName:[ file fileName ] ];
+
     NSString * materialInstanceName = [ file readSUXString ];
+
+    if ( materialInstanceName == nil )
+    {
+        return NO;
+    }
+
     [ self setName:materialInstanceName ];
     [ materialInstanceName release ];
 
     NSString * materialScriptFileName = [ file readSUXString ];
+
+    if ( materialScriptFileName == nil )
+    {
+        return NO;
+    }
+
     [ self setMaterialFileName:materialScriptFileName ];
     [ materialScriptFileName release ];
 
     materialInstanceScript = [ file readSUXScript ];
+
+    if ( materialInstanceScript == nil )
+    {
+        return NO;
+    }
+
+    return YES;
+}
+
+- (void) reset
+{
+    [ super reset ];
+
+    [ materialFileName release ];
+    materialFileName = @"";
+
+    [ materialInstanceScript removeAllObjects ];
+}
+
+- (BOOL) isReady
+{
+    return ready;
 }
 
 @end
