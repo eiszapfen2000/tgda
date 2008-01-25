@@ -30,9 +30,30 @@
     [ super dealloc ];
 }
 
-- (void) loadFromFile:(NPFile *)file
+- (BOOL) loadFromFile:(NPFile *)file
 {
+    [ self setFileName: [ file fileName ] ];
+
     effect = cgCreateEffect( [ (NPEffectManager *)parent cgContext ], [ [ file readEntireFile ] bytes ], NULL );
+
+    if ( effect == NULL )
+    {
+        return NO;
+    }
+
+    return YES;
+}
+
+- (void) reset
+{
+    cgDestroyEffect(effect);
+
+    [ super reset ];
+}
+
+- (BOOL) isReady
+{
+    return ready;
 }
 
 @end
