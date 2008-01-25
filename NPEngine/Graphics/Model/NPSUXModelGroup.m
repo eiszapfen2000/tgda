@@ -24,10 +24,18 @@
     return self;
 }
 
-- (void) loadFromFile:(NPFile *)file
+- (BOOL) loadFromFile:(NPFile *)file
 {
+    [ self setFileName:[ file fileName ] ];
+
     NSString * groupName = [ file readSUXString ];
     NSLog(groupName);
+
+    if ( groupName == nil )
+    {
+        return NO;
+    }
+
     [ self setName:groupName ];
     [ groupName release ];
 
@@ -35,6 +43,23 @@
     [ file readInt32:&firstIndex ];
     [ file readInt32:&lastIndex ];
     [ file readInt32:&materialInstanceIndex ];
+
+    return YES;
+}
+
+- (void) reset
+{
+    primitiveType = -1;
+    firstIndex = -1;
+    lastIndex = -1;
+    materialInstanceIndex = -1;
+
+    [ super reset ];
+}
+
+- (BOOL) isReady
+{
+    return ready;
 }
 
 @end

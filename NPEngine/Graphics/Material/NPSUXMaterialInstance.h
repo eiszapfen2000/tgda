@@ -1,7 +1,8 @@
 #import "Core/NPObject/NPObject.h"
 #import "Core/File/NPFile.h"
+#import "Core/Resource/NPResource.h"
 
-@interface NPSUXMaterialInstance : NPObject
+@interface NPSUXMaterialInstance : NPResource < NPPResource >
 {
     NSString * materialFileName;
     NSMutableArray * materialInstanceScript;
@@ -14,6 +15,8 @@
 - (NSString *)materialFileName;
 - (void) setMaterialFileName:(NSString *)newMaterialFileName;
 
-- (void) loadFromFile:(NPFile *)file;
+- (BOOL) loadFromFile:(NPFile *)file;
+- (void) reset;
+- (BOOL) isReady;
 
 @end

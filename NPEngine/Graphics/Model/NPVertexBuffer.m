@@ -1,6 +1,76 @@
 #import "NPVertexBuffer.h"
 #import "Core/Basics/NpMemory.h"
 
+void reset_npvertexformat(NpVertexFormat * vertex_format)
+{
+    vertex_format->elementsForNormal = 0;
+    vertex_format->elementsForColor = 0;
+    vertex_format->elementsForWeights = 0;
+
+    for ( Int i = 0; i < 8; i++ )
+    {
+        vertex_format->elementsForTextureCoordinateSet[i] = 0;
+    }
+
+    vertex_format->maxTextureCoordinateSet = 0;
+}
+
+void reset_npvertices(NpVertices * vertices)
+{
+    reset_npvertexformat(&(vertices->format));
+
+    vertices->primitiveType = -1;
+
+    if ( vertices->positions != NULL )
+    {
+        FREE(vertices->positions);
+    }
+
+    if ( vertices->normals != NULL )
+    {
+        FREE(vertices->normals);
+    }
+
+    if ( vertices->colors != NULL )
+    {
+        FREE(vertices->colors);
+    }
+
+    if ( vertices->weights != NULL )
+    {
+        FREE(vertices->weights);
+    }
+
+    if ( vertices->textureCoordinates != NULL )
+    {
+        FREE(vertices->textureCoordinates);
+    }
+
+    if ( vertices->indices != NULL && vertices->indexed == YES )
+    {
+        FREE(vertices->indices);
+    }
+
+    vertices->indexed = NO;
+    vertices->maxVertex = 0;
+    vertices->maxIndex = 0;
+}
+
+void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
+{
+    vertex_buffer->positionsID = -1;
+    vertex_buffer->normalsID = -1;
+    vertex_buffer->colorsID = -1;
+    vertex_buffer->weightsID = -1;
+
+    for ( Int i = 0; i < 8; i++ )
+    {
+        vertex_buffer->textureCoordinatesSetID[i] = -1;
+    }
+
+    vertex_buffer->indicesID = -1;
+}
+
 @implementation NPVertexBuffer
 
 - (id) init
@@ -15,22 +85,24 @@
 
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
 {
-    self = [ super initWithName:newName parent:newParent ];
-
-    ready = NO;
+    self = [ super initWithName:newName parent:newParent ];    
 
     return self;
 }
 
-- (void) loadFromFile:(NPFile *)file
+- (BOOL) loadFromFile:(NPFile *)file
 {
+    [ self setFileName:[ file fileName ] ];
+
     Int indexCount;
     Int vertexCount;
 
     [ file readInt32:&(vertices.format.elementsForNormal) ];
     NSLog(@"Elements for Normal: %d",vertices.format.elementsForNormal);
+
     [ file readInt32:&(vertices.format.elementsForColor) ];
     NSLog(@"Elements for Color: %d",vertices.format.elementsForColor);
+
     [ file readInt32:&(vertices.format.elementsForWeights) ];
     NSLog(@"Elements for Weights: %d",vertices.format.elementsForWeights);
 
@@ -47,12 +119,22 @@
     [ file readInt32:&vertexCount ];
     NSLog(@"Vertex Count: %d",vertexCount);
 
+    if ( vertexCount <= 0 )
+    {
+        return NO;
+    }
+
     if ( vertices.indexed == YES )
     {
         NSLog(@"indexed");
         
         [ file readInt32:&indexCount ];
         NSLog(@"Index count: %d",indexCount);
+
+        if ( indexCount <= 0 )
+        {
+            return NO;
+        }
     }
 
     vertices.positions = ALLOC_ARRAY(Float,(vertexCount*3));
@@ -108,6 +190,21 @@
         vertices.indices = ALLOC_ARRAY(Int,indexCount);
         [ file readInt32s:vertices.indices withLength:(UInt)indexCount ];
     }
+
+    return YES;
+}
+
+- (void) reset
+{
+    reset_npvertexbuffer(&vertexBuffer);
+    reset_npvertices(&vertices);
+
+    [ super reset ];
+}
+
+- (BOOL) isReady
+{
+    return ready;
 }
 
 @end

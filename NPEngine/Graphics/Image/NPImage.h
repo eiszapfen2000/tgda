@@ -1,10 +1,11 @@
 #import "Core/NPObject/NPObject.h"
 #import "Core/File/NPFile.h"
+#import "Core/Resource/NPResource.h"
 #import "NPImagePixelFormat.h"
 
 void npimage_initialise();
 
-@interface NPImage : NPObject
+@interface NPImage : NPResource < NPPResource >
 {
     NPPixelFormat pixelFormat;
     Int width;
@@ -24,8 +25,9 @@ void npimage_initialise();
 - (NPPixelFormat) pixelFormat;
 - (Int) mipMapLevels;
 
-- (BOOL) loadImageFromFile:(NPFile *)file withMipMaps:(BOOL)generateMipMaps;
-
-- (void) clear;
+- (BOOL) loadFromFile:(NPFile *)file;
+- (BOOL) loadFromFile:(NPFile *)file withMipMaps:(BOOL)generateMipMaps;
+- (void) reset;
+- (BOOL) isReady;
 
 @end
