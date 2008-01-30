@@ -34,6 +34,4 @@ NpCgShaderParameterUpdatePolicy;
 - (NpCgShaderParameterUpdatePolicy)shaderParameterUpdatePolicy;
 - (void) setShaderParamterPolicy:(NpCgShaderParameterUpdatePolicy)newShaderParameterUpdatePolicy;
 
-
-
 @end
