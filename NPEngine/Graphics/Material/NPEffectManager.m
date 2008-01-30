@@ -6,15 +6,18 @@
 {
     return [ self initWithParent:nil ];
 }
+
 - (id) initWithParent:(NPObject *)newParent
 {
     return [ self initWithName:@"NPEffectManager" parent:newParent ];
 }
+
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
 {
     self = [ super initWithName:newName parent:newParent ];
 
     cgContext = cgCreateContext();
+    cgGLRegisterStates(cgContext);
 
     cgDebugMode = NO;
     shaderParameterUpdatePolicy = NP_NONE;
@@ -27,6 +30,8 @@
 - (void) dealloc
 {
     [ effects release ];
+
+    cgDestroyContext(cgContext);
 
     [ super dealloc ];
 }
@@ -78,16 +83,18 @@
             case NP_CG_IMMEDIATE_SHADER_PARAMETER_UPDATE:
             {
                 cgSetParameterSettingMode(cgContext,CG_IMMEDIATE_PARAMETER_SETTING);
+                break;
             }
 
             case NP_CG_DEFERRED_SHADER_PARAMETER_UPDATE:
             {
                 cgSetParameterSettingMode(cgContext,CG_DEFERRED_PARAMETER_SETTING);
+                break;
             }
 
             case NP_NONE:
             {
-                return;
+                break;
             }
         }
     }
