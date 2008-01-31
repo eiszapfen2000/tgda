@@ -54,6 +54,7 @@
     NSLog(@"Min Distance:%f Max Distance %f",minDistance,maxDistance);
 
     boundingBoxMinimum = [ file readFVector3 ];
+	NSLog(@"%f %f %f",FV_X(*boundingBoxMinimum),FV_Y(*boundingBoxMinimum),FV_Z(*boundingBoxMinimum));
     boundingBoxMaximum = [ file readFVector3 ];
     [ file readFloat:&boundingSphereRadius ];
     NSLog(@"Bounding Sphere %f",boundingSphereRadius);

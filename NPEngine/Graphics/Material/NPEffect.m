@@ -1,6 +1,8 @@
 #import "NPEffect.h"
 #import "NPEffectManager.h"
 
+#import "Core/NPEngineCore.h"
+
 @implementation NPEffect
 
 - (id) init
@@ -41,6 +43,23 @@
         return NO;
     }
 
+    CGtechnique technique = cgGetFirstTechnique(effect);
+    defaultTechnique = technique;
+
+    while ( technique != NULL )
+    {
+        if ( cgValidateTechnique(technique) == CG_FALSE )
+        {
+            NPLOG_WARNING(([NSString stringWithFormat:@"Technique %s did not validate",cgGetTechniqueName(technique)]));
+        }
+        else
+        {
+            NPLOG(([NSString stringWithFormat:@"Technique %s validated",cgGetTechniqueName(technique)]));
+        }
+
+        technique = cgGetNextTechnique(technique);
+    }
+
     return YES;
 }
 
@@ -55,7 +74,6 @@
 {
     return ready;
 }
-
 
 - (void) uploadFloatParameterWithName:(NSString *)parameterName andValue:(Float *)f
 {
@@ -124,14 +142,50 @@
 
 - (void) uploadFMatrix2ParameterWithName:(NSString *)parameterName andValue:(FMatrix2 *)matrix
 {
+    CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
+
+    if ( parameter != NULL )
+    {
+        if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_MATRIX )
+        {
+            if ( cgGetParameterRows(parameter) == 2 && cgGetParameterColumns(parameter) == 2 )
+            {
+                cgSetMatrixParameterfc(parameter,(const float *)FM_ELEMENTS(*matrix));
+            }
+        }
+    }
 }
 
 - (void) uploadFMatrix3ParameterWithName:(NSString *)parameterName andValue:(FMatrix3 *)matrix
 {
+    CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
+
+    if ( parameter != NULL )
+    {
+        if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_MATRIX )
+        {
+            if ( cgGetParameterRows(parameter) == 3 && cgGetParameterColumns(parameter) == 3 )
+            {
+                cgSetMatrixParameterfc(parameter,(const float *)FM_ELEMENTS(*matrix));
+            }
+        }
+    }
 }
 
 - (void) uploadFMatrix4ParameterWithName:(NSString *)parameterName andValue:(FMatrix4 *)matrix
 {
+    CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
+
+    if ( parameter != NULL )
+    {
+        if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_MATRIX )
+        {
+            if ( cgGetParameterRows(parameter) == 4 && cgGetParameterColumns(parameter) == 4 )
+            {
+                cgSetMatrixParameterfc(parameter,(const float *)FM_ELEMENTS(*matrix));
+            }
+        }
+    }
 }
 
 @end

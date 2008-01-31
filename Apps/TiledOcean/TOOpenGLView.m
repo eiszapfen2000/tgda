@@ -5,11 +5,20 @@
 
 #import "TOOpenGLView.h"
 #import "Graphics/RenderContext/NPOpenGLPixelFormat.h"
+#import "Graphics/Model/NPSUXModel.h"
 
 @implementation TOOpenGLView
 
 - (id)initWithFrame:(NSRect) frameRect
 {
+	npmath_fvector_initialise();
+
+
+	NPSUXModel * model = [ [ NPSUXModel alloc ] init ];
+	NPFile * file = [ [ NPFile alloc ] initWithName:@"fgeug" parent:nil fileName:@"/usr/people/icicle/Desktop/camera.model" ];
+
+	[ model loadFromFile:file ];
+
     NSOpenGLPixelFormat * pixelFormat;
 
     /*NSOpenGLPixelFormatAttribute attributes[] =
@@ -35,7 +44,7 @@
         return nil;
     }
 
-    self = [super initWithFrame: frameRect pixelFormat: pixelFormat];
+    self = [super initWithFrame:frameRect pixelFormat: pixelFormat];
 
     //[pixelFormat release];
 

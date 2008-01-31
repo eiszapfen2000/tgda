@@ -1,4 +1,5 @@
 #import "NPSUXMaterialInstance.h"
+#import "Core/Utilities/NPStringUtilities.h"
 
 @implementation NPSUXMaterialInstance
 
@@ -36,48 +37,44 @@
     }
 }
 
+- (void) parseMaterialInstanceScript
+{
+	NSCharacterSet * set = [ NSCharacterSet whitespaceAndNewlineCharacterSet ];
+
+	for ( Int i = 0; i < [ materialInstanceScript count ]; i++ )
+	{
+		NSMutableArray * elements = splitStringUsingCharacterSet([ materialInstanceScript objectAtIndex:i ], set);
+	}	
+}
+
+
 - (BOOL) loadFromFile:(NPFile *)file
 {
     [ self setFileName:[ file fileName ] ];
 
     NSString * materialInstanceName = [ file readSUXString ];
-
-    if ( materialInstanceName == nil )
-    {
-        return NO;
-    }
-
     [ self setName:materialInstanceName ];
     [ materialInstanceName release ];
 
     NSString * materialScriptFileName = [ file readSUXString ];
-
-    if ( materialScriptFileName == nil )
-    {
-        return NO;
-    }
-
     [ self setMaterialFileName:materialScriptFileName ];
     [ materialScriptFileName release ];
 
     materialInstanceScript = [ file readSUXScript ];
 
-    if ( materialInstanceScript == nil )
-    {
-        return NO;
-    }
+	[ self parseMaterialInstanceScript ];
 
     return YES;
 }
 
 - (void) reset
 {
-    [ super reset ];
-
     [ materialFileName release ];
     materialFileName = @"";
 
     [ materialInstanceScript removeAllObjects ];
+
+    [ super reset ];
 }
 
 - (BOOL) isReady

@@ -10,6 +10,8 @@
 @interface NPEffect : NPResource < NPPResource >
 {
     CGeffect effect;
+
+    CGtechnique defaultTechnique;
 }
 
 - (id) init;
