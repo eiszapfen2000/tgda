@@ -15,6 +15,8 @@ NPEffectManager.h \
 NPSUXMaterial.h \
 NPSUXMaterialInstance.h
 
+libNPEngineGraphicsMaterial_LIBRARIES_DEPEND_UPON += -lNPEngineCoreUtilities
+
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/library.make
 include $(TGDA_DIR)/GNUmakefile.library.install

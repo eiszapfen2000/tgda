@@ -29,7 +29,8 @@ typedef struct FMatrix4
 }
 FMatrix4;
 
-#define FM_ELEMENT(_m2, _col, _row) (_m2).elements[(_col)][(_row)]
+#define FM_ELEMENTS(_m)            (_m).elements
+#define FM_ELEMENT(_m, _col, _row) (_m).elements[(_col)][(_row)]
 #define FM_EL    FM_ELEMENT
 
 void fm2_set_identity(FMatrix2 * m);
