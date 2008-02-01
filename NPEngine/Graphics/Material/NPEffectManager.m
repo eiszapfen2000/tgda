@@ -57,11 +57,13 @@
             case YES:
             {
                 cgGLSetDebugMode( CG_TRUE );
+                break;
             }
 
             case NO:
             {
                 cgGLSetDebugMode( CG_FALSE );
+                break;
             }
         }
     }

@@ -11,7 +11,8 @@ SUBPROJECTS = \
     File \
 	Timer \
     Resource \
-    RandomNumbers
+    RandomNumbers \
+    Utilities
 
 libNPEngineCore_OBJC_FILES = \
 NPEngineCore.m

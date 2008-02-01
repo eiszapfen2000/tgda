@@ -37,14 +37,63 @@
     }
 }
 
+- (BOOL) parseCGFXFileLine:(NSArray *)lineElements
+{
+    if ( [ [ lineElements objectAtIndex:0 ] isEqualToString:@"uses" ] == YES )
+    {
+        NSString * cgfxfileName = removeLeadingAndTrailingQuotes([ lineElements objectAtIndex:1 ]);
+        NSLog(cgfxfileName);
+    }
+    else
+    {
+        
+    }
+
+    return YES;
+}
+
+/*- (BOOL) parseCGFXTechniqueLine
+{
+
+}*/
+
+- (void) removeInvalidLinesFromMaterialInstanceScript
+{
+    NSCharacterSet * set = [ NSCharacterSet whitespaceAndNewlineCharacterSet ];
+    NSMutableArray * validLines = [ [ NSMutableArray alloc ] init ];
+
+    for ( Int i = 0; i < [ materialInstanceScript count ]; i++ )
+    {
+        NSMutableArray * elements = splitStringUsingCharacterSet([ materialInstanceScript objectAtIndex:i ], set);
+
+        if ( [ elements containsObject:@"uses" ] == YES || [ elements containsObject:@"set" ] == YES )
+        {
+            [ validLines addObject:[ materialInstanceScript objectAtIndex:i ] ];
+        }
+
+        [ elements release ];
+    }
+
+    [ materialInstanceScript release ];
+    materialInstanceScript = validLines;
+}
+
 - (void) parseMaterialInstanceScript
 {
-	NSCharacterSet * set = [ NSCharacterSet whitespaceAndNewlineCharacterSet ];
+    [ self removeInvalidLinesFromMaterialInstanceScript ];
 
-	for ( Int i = 0; i < [ materialInstanceScript count ]; i++ )
-	{
-		NSMutableArray * elements = splitStringUsingCharacterSet([ materialInstanceScript objectAtIndex:i ], set);
-	}	
+    NSCharacterSet * set = [ NSCharacterSet whitespaceAndNewlineCharacterSet ];
+    NSMutableArray * cgfxFileLineElements = splitStringUsingCharacterSet([ materialInstanceScript objectAtIndex:0 ], set);
+    NSLog([cgfxFileLineElements description]);
+
+    [ self parseCGFXFileLine:cgfxFileLineElements ];
+
+/*    NSMutableArray * cgfxTchniqueLineElements = splitStringUsingCharacterSet([ materialInstanceScript objectAtIndex:0 ], set);
+
+    for ( Int i = 2; i < [ materialInstanceScript count ]; i++ )
+    {
+        NSMutableArray * elements = splitStringUsingCharacterSet([ materialInstanceScript objectAtIndex:i ], set);
+    }*/
 }
 
 
@@ -62,7 +111,7 @@
 
     materialInstanceScript = [ file readSUXScript ];
 
-	[ self parseMaterialInstanceScript ];
+    [ self parseMaterialInstanceScript ];
 
     return YES;
 }
