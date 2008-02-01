@@ -29,13 +29,6 @@
     [ self setFileName:[ file fileName ] ];
 
     NSString * groupName = [ file readSUXString ];
-    NSLog(groupName);
-
-    if ( groupName == nil )
-    {
-        return NO;
-    }
-
     [ self setName:groupName ];
     [ groupName release ];
 
