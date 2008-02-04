@@ -1,4 +1,10 @@
 #import "NPEngineCore.h"
+#import "Core/Basics/NpBasics.h"
+#import "Core/Math/NpMath.h"
+#import "Core/Log/NPLogger.h"
+#import "Core/Timer/NPTimer.h"
+#import "Core/File/NPPathManager.h"
+#import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
 
 static NPEngineCore * NP_ENGINE_CORE = nil;
 
@@ -47,13 +53,16 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 
 - (id)init
 {
+    npbasics_initialise();
+    npmath_initialise();
+
     self = [ super initWithName:@"NPEngine Core" ];
 
     objectManager = [ [ NPObjectManager alloc ] initWithName:@"NPEngine Object Manager" parent:self ];
-    logger = [ [ NPLogger alloc ] initWithName:@"NPEngine Logger" parent:self fileName:@"np.txt" ];
+    logger = [ [ NPLogger alloc ] initWithName:@"NPEngine Logger" parent:self ];
     timer = [ [ NPTimer alloc ] initWithName:@"NPEngine Timer" parent:self ];
-
-    renderContextManager = [ [ NPOpenGLRenderContextManager alloc ] initWithName:@"NP Engine Core RenderContext Manager" parent:self ];
+    pathManager = [ [ NPPathManager alloc ] initWithName:@"NPEngine Path Manager" parent:self ];
+    renderContextManager = [ [ NPOpenGLRenderContextManager alloc ] initWithName:@"NPEngine Core RenderContext Manager" parent:self ];
 
     return self;
 }
@@ -73,6 +82,11 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     return objectManager;
 }
 
+- (NPPathManager *)pathManager
+{
+    return pathManager;
+}
+
 - (NPOpenGLRenderContextManager *)renderContextManager
 {
     return renderContextManager;
@@ -80,7 +94,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 
 - (void) setup
 {
-   
+    [ pathManager setup ];   
 }
 
 - (id)copyWithZone:(NSZone *)zone

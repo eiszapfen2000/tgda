@@ -5,6 +5,12 @@
 
 @implementation NPObject
 
+//private
+- (UInt32) _generateIDFromPointer
+{
+    return crc32_of_pointer(self);
+}
+
 - (id) init
 {
     self = [ self initWithName:@"" parent:nil ];
@@ -85,11 +91,6 @@
 - (UInt32) objectID
 {
     return objectID;
-}
-
-- (UInt32) _generateIDFromPointer
-{
-    return crc32_of_pointer(self);
 }
 
 - (NSString *) description

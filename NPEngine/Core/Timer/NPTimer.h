@@ -14,7 +14,7 @@
 }
 
 - (id) init;
-- (id) initWithName: (NSString *) newName;
+- (id) initWithName:(NSString *) newName;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 
 - (Double) frameTime;

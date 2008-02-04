@@ -6,6 +6,11 @@
 {
     NSString * path = [ [ NSString alloc ] initWithFormat: @"%@/%@", pathToHome, fileName ];
 
+    if ( logFile != nil )
+    {
+        [ logFile release ];
+    }
+
     if ( [ [ NSFileManager defaultManager ] createFileAtPath:path contents:nil attributes:nil ] == YES )
     {
         logFile = [ [ NSFileHandle fileHandleForWritingAtPath: path ] retain ];
@@ -20,15 +25,20 @@
 
 - (id) init
 {
-    return [ self initWithName:@"NPCore Logger" parent:nil fileName:@"np.txt" ];
+    return [ self initWithName:@"NPCore Logger" ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent fileName:(NSString *)newFileName;
+- (id) initWithName:(NSString *)newName
+{
+    return [ self initWithName:newName parent:nil ];
+}
+
+- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
 {
     self = [ super initWithName:newName parent:newParent ];
 
     pathToHome = [ NSHomeDirectory() retain ];
-    fileName = [ newFileName retain ];
+    fileName = @"np.txt" ;
 
     [ self _setupFileHandle ];
 
@@ -57,6 +67,8 @@
         [ fileName release ];
 
         fileName = [ newFileName retain ];
+
+        [ self _setupFileHandle ];
     }
 }
 

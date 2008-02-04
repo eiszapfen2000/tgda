@@ -1,16 +1,13 @@
 #import "Core/NPObject/NPObject.h"
-#import "NPLocalPathManager.h"
-#import "NPRemotePathManager.h"
+
+@class NPLocalPathManager;
+@class NPRemotePathManager;
 
 @interface NPPathManager : NPObject
 {
     NSFileManager * fileManager;
 
-    //Contains Strings
-    //NSMutableArray * localPaths;
     NPLocalPathManager * localPathManager;
-
-    //Contains URLs
     NPRemotePathManager * remotePathManager;
 }
 
@@ -19,6 +16,11 @@
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
 
+- (void) setup;
+
 - (void) addLookUpPath:(NSString *)lookUpPath;
+- (void) removeLookUpPath:(NSString *)lookUpPath;
+
+- (NSString *) getAbsoluteFilePath:(NSString *)partialPath;
 
 @end

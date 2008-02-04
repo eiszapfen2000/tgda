@@ -11,7 +11,11 @@
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
 
-- (void) addLookUpPath:(NSString *)lookUpPath;
 - (void) setup;
+
+- (void) addLookUpPath:(NSString *)lookUpPath;
+- (void) removeLookUpPath:(NSString *)lookUpPath;
+
+- (NSString *) getAbsoluteFilePath:(NSString *)partialPath;
 
 @end

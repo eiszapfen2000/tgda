@@ -9,7 +9,8 @@ FMatrix.c \
 FQuaternion.c \
 Matrix.c \
 Quaternion.c \
-Vector.c
+Vector.c \
+NpMath.c
 
 libNPEngineCoreMath_HEADER_FILES = \
 Constants.h \
@@ -19,7 +20,8 @@ FVector.h \
 Matrix.h \
 Quaternion.h \
 Random.h \
-Vector.h
+Vector.h \
+NpMath.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/library.make

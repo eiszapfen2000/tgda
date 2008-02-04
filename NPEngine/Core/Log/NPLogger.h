@@ -6,8 +6,10 @@
     NSString * pathToHome;
     NSFileHandle * logFile;
 }
+
 - (id) init;
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent fileName:(NSString *)newFileName;
+- (id) initWithName:(NSString *)newName;
+- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
 
 - (NSString *) fileName;
