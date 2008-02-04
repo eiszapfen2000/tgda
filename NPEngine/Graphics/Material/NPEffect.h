@@ -1,6 +1,6 @@
 #import "Core/NPObject/NPObject.h"
-#import "Core/File/NPFile.h"
 #import "Core/Resource/NPResource.h"
+#import "Core/Resource/NPPResource.h"
 #import "Core/Math/FVector.h"
 #import "Core/Math/FMatrix.h"
 

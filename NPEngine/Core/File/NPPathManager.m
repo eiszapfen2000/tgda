@@ -1,4 +1,6 @@
 #import "NPPathManager.h"
+#import "NPLocalPathManager.h"
+#import "NPRemotePathManager.h"
 #import "NPPathUtilities.h"
 #import "Core/NPEngineCore.h"
 
@@ -20,10 +22,7 @@
 
     fileManager = [ NSFileManager defaultManager ];
 
-    //localPaths = [ [ NSMutableArray alloc ] init ];
     localPathManager = [ [ NPLocalPathManager alloc ] initWithName:@"NPEngine Local Path Manager" parent:self ];
-
-    //remotePaths = [ [ NSMutableArray alloc ] init ];
     remotePathManager = [ [ NPRemotePathManager alloc ] initWithName:@"NPEngine Remote Path Manager" parent:self ];
 
     return self;
@@ -32,6 +31,7 @@
 - (void) dealloc
 {
     [ localPathManager release ];
+    [ remotePathManager release ];
 
     [ super dealloc ];
 }
@@ -61,6 +61,25 @@
     {
         NPLOG(([NSString stringWithFormat:@"%@ is not a valid directory or URL", lookUpPath ]));
     }
+}
+
+- (void) removeLookUpPath:(NSString *)lookUpPath
+{
+    NSString * standardizedLookUpPath = [ lookUpPath stringByStandardizingPath ];
+
+    if ( isDirectory(standardizedLookUpPath) == YES )
+    {
+        [ localPathManager removeLookUpPath:standardizedLookUpPath ];
+    }
+    else if ( isURL(lookUpPath) == YES )
+    {
+        [ remotePathManager removeLookUpURL:[ NSURL URLWithString:lookUpPath ] ];
+    }
+}
+
+- (NSString *) getAbsoluteFilePath:(NSString *)partialPath
+{
+    return [ localPathManager getAbsoluteFilePath:partialPath ];
 }
 
 @end

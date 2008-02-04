@@ -11,6 +11,7 @@
 {
     return [ self initWithName:newName parent:nil ];
 }
+
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
 {
     self = [ super initWithName:newName parent:newParent ];
@@ -30,6 +31,11 @@
 - (void) addLookUpURL:(NSURL *)lookUpURL
 {
     [ remotePaths addObject:lookUpURL ];
+}
+
+- (void) removeLookUpURL:(NSURL *)lookUpURL
+{
+    [ remotePaths removeObject:lookUpURL ];    
 }
 
 @end

@@ -1,5 +1,4 @@
 #import "Core/NPObject/NPObject.h"
-#import "NPPResource.h"
 
 @interface NPResource : NPObject
 {

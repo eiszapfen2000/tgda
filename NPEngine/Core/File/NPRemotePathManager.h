@@ -11,5 +11,6 @@
 - (void) dealloc;
 
 - (void) addLookUpURL:(NSURL *)lookUpURL;
+- (void) removeLookUpURL:(NSURL *)lookUpURL;
 
 @end

@@ -24,9 +24,6 @@
 
 - (UInt32) objectID;
 
-//private
-- (UInt32) _generateIDFromPointer;
-
 @end
 
 @interface NPObject ( NPCoding ) < NSCoding > @end

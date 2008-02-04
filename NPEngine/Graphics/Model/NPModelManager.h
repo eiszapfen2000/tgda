@@ -1,8 +1,8 @@
 #import "Core/NPObject/NPObject.h"
 
-@interface NPObjectManager : NPObject
+@interface NPModelManager : NPObject
 {
-    NSMutableArray * objects;
+    NSMutableDictionary * models;
 }
 
 - (id) init;
@@ -10,6 +10,6 @@
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
 
-- (void) addObject:(NPObject *)newObject;
+- (id) loadModelFromPath:(NSString *)path;
 
 @end

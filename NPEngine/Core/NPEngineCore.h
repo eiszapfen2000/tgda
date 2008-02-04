@@ -1,16 +1,17 @@
 #import "Core/NPObject/NPObject.h"
-#import "Core/NPObject/NPObjectManager.h"
 #import "Core/Log/NPLogger.h"
-#import "Core/Timer/NPTimer.h"
 
-#import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
+@class NPTimer;
+@class NPObjectManager;
+@class NPPathManager;
+@class NPOpenGLRenderContextManager;
 
 @interface NPEngineCore : NPObject
 {
     NPLogger * logger;
     NPTimer * timer;
     NPObjectManager * objectManager;
-
+    NPPathManager * pathManager;
     NPOpenGLRenderContextManager * renderContextManager;
 }
 
@@ -19,7 +20,10 @@
 - (NPLogger *)logger;
 - (NPTimer *)timer;
 - (NPObjectManager *)objectManager;
+- (NPPathManager *)pathManager;
 - (NPOpenGLRenderContextManager *)renderContextManager;
+
+- (void) setup;
 
 @end
 

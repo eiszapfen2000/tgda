@@ -4,7 +4,12 @@
 
 - (id) init
 {
-    return [ self initWithName:@"NPEngine Object Manager" parent:nil ];
+    return [ self initWithName:@"NPEngine Object Manager" ];
+}
+
+- (id) initWithName:(NSString *)newName
+{
+    return [ self initWithName:newName parent:nil ];
 }
 
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
@@ -14,6 +19,13 @@
     objects = [ [ NSMutableArray alloc ] init ];
 
     return self;
+}
+
+- (void) dealloc
+{
+    [ objects release ];
+
+    [ super dealloc ];
 }
 
 - (void) addObject:(NPObject *)newObject
