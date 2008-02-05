@@ -32,14 +32,50 @@
     [ super dealloc ];
 }
 
+- (void) checkForCgErrors
+{
+    char buffer[4096];
+    CGerror error;
+    const char *string = cgGetLastErrorString(&error);
+  
+    if (error != CG_NO_ERROR)
+    {
+        if (error == CG_COMPILER_ERROR)
+        {
+            sprintf(buffer,
+              "Error: %s\n\n"
+              "Cg compiler output...\n",
+              string);
+
+            printf("%s", buffer);
+            printf("%s\n", cgGetLastListing([ (NPEffectManager *)parent cgContext ]));
+        }
+        else
+        {
+            sprintf(buffer,
+              "Error: %s",
+              string);
+
+            printf("%s\n", buffer);
+        }
+    }
+}
+
 - (BOOL) loadFromFile:(NPFile *)file
 {
+    [ self setName: [ file fileName ] ];
     [ self setFileName: [ file fileName ] ];
 
+    //printf([ [ file fileName ] cStringUsingEncoding:NSASCIIStringEncoding ]);
     effect = cgCreateEffect( [ (NPEffectManager *)parent cgContext ], [ [ file readEntireFile ] bytes ], NULL );
+    //effect = cgCreateEffectFromFile( [ (NPEffectManager *)parent cgContext ], [ [ file fileName ] cStringUsingEncoding:NSASCIIStringEncoding ], NULL );
+
+    [ self checkForCgErrors ];
 
     if ( effect == NULL )
     {
+
+        NSLog(@"effect null");
         return NO;
     }
 
@@ -51,10 +87,12 @@
         if ( cgValidateTechnique(technique) == CG_FALSE )
         {
             NPLOG_WARNING(([NSString stringWithFormat:@"Technique %s did not validate",cgGetTechniqueName(technique)]));
+            [ self checkForCgErrors ];
         }
         else
         {
             NPLOG(([NSString stringWithFormat:@"Technique %s validated",cgGetTechniqueName(technique)]));
+            [ self checkForCgErrors ];
         }
 
         technique = cgGetNextTechnique(technique);

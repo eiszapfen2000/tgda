@@ -1,22 +1,18 @@
 #import "Core/NPObject/NPObject.h"
-#import "NPEffect.h"
-
 #import "Cg/cg.h"
 #import "Cg/cgGL.h"
 
-typedef enum
-{
-    NP_NONE = -1,
-    NP_CG_IMMEDIATE_SHADER_PARAMETER_UPDATE = 0,
-    NP_CG_DEFERRED_SHADER_PARAMETER_UPDATE = 1
-}
-NpCgShaderParameterUpdatePolicy;
+#define NP_CG_IMMEDIATE_SHADER_PARAMETER_UPDATE  0
+#define NP_CG_DEFERRED_SHADER_PARAMETER_UPDATE   1
+
+#define NP_CG_DEBUG_MODE_INACTIVE                0
+#define NP_CG_DEBUG_MODE_ACTIVE                  1
 
 @interface NPEffectManager : NPObject
 {
     CGcontext cgContext;
-    BOOL cgDebugMode;
-    NpCgShaderParameterUpdatePolicy shaderParameterUpdatePolicy;
+    NPState cgDebugMode;
+    NPState shaderParameterUpdatePolicy;
 
     NSMutableDictionary * effects;
 }
@@ -28,10 +24,12 @@ NpCgShaderParameterUpdatePolicy;
 
 - (CGcontext)cgContext;
 
-- (BOOL) cgDebugMode;
-- (void) setCgDebugMode:(BOOL)newMode;
+- (NPState) cgDebugMode;
+- (void) setCgDebugMode:(NPState)newMode;
 
-- (NpCgShaderParameterUpdatePolicy)shaderParameterUpdatePolicy;
-- (void) setShaderParamterPolicy:(NpCgShaderParameterUpdatePolicy)newShaderParameterUpdatePolicy;
+- (NPState)shaderParameterUpdatePolicy;
+- (void) setShaderParamterPolicy:(NPState)newShaderParameterUpdatePolicy;
+
+- (id) loadEffectFromPath:(NSString *)path;
 
 @end

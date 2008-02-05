@@ -9,6 +9,10 @@ typedef signed int Int32;
 typedef Int32 Int;
 typedef UInt32 UInt;
 
+#define NP_INT32_MIN       ((Int32) -2147483648L)
+#define NP_INT32_MAX       ((Int32) +2147483647L)
+#define NP_UINT32_MAX      ((UInt32) 0xffffffffL)
+
 typedef unsigned short UInt16;
 typedef signed short Int16;
 
@@ -34,8 +38,8 @@ typedef Float Real;
 typedef Double Real;
 #endif
 
-#define NP_INT32_MIN       ((Int32) -2147483648L)
-#define NP_INT32_MAX       ((Int32) +2147483647L)
-#define NP_UINT32_MAX      ((UInt32) 0xffffffffL)
+typedef Int32 NPState;
+
+#define NP_NONE  -1
 
 #endif //_NP_BASICS_TYPES_H_
