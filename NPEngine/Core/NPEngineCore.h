@@ -4,6 +4,8 @@
 @class NPTimer;
 @class NPObjectManager;
 @class NPPathManager;
+@class NPModelManager;
+@class NPEffectManager;
 @class NPOpenGLRenderContextManager;
 
 @interface NPEngineCore : NPObject
@@ -12,6 +14,8 @@
     NPTimer * timer;
     NPObjectManager * objectManager;
     NPPathManager * pathManager;
+    NPModelManager * modelManager;
+    NPEffectManager * effectManager;
     NPOpenGLRenderContextManager * renderContextManager;
 }
 
@@ -21,6 +25,8 @@
 - (NPTimer *)timer;
 - (NPObjectManager *)objectManager;
 - (NPPathManager *)pathManager;
+- (NPModelManager *)modelManager;
+- (NPEffectManager *)effectManager;
 - (NPOpenGLRenderContextManager *)renderContextManager;
 
 - (void) setup;

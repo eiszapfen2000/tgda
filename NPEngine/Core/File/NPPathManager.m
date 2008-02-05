@@ -77,7 +77,7 @@
     }
 }
 
-- (NSString *) getAbsoluteFilePath:(NSString *)partialPath
+- (NSString *) getAbsoluteFilePath:(NSString *)partialPath;
 {
     return [ localPathManager getAbsoluteFilePath:partialPath ];
 }

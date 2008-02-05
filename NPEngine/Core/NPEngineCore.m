@@ -4,6 +4,8 @@
 #import "Core/Log/NPLogger.h"
 #import "Core/Timer/NPTimer.h"
 #import "Core/File/NPPathManager.h"
+#import "Graphics/Model/NPModelManager.h"
+#import "Graphics/Material/NPEffectManager.h"
 #import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
 
 static NPEngineCore * NP_ENGINE_CORE = nil;
@@ -62,6 +64,9 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     logger = [ [ NPLogger alloc ] initWithName:@"NPEngine Logger" parent:self ];
     timer = [ [ NPTimer alloc ] initWithName:@"NPEngine Timer" parent:self ];
     pathManager = [ [ NPPathManager alloc ] initWithName:@"NPEngine Path Manager" parent:self ];
+
+    modelManager = [ [ NPModelManager alloc ] initWithName:@"NPEngine Model Manager" parent:self ];
+    effectManager = [ [ NPEffectManager alloc ] initWithName:@"NPEngine Effect Manager" parent:self ];
     renderContextManager = [ [ NPOpenGLRenderContextManager alloc ] initWithName:@"NPEngine Core RenderContext Manager" parent:self ];
 
     return self;
@@ -85,6 +90,16 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 - (NPPathManager *)pathManager
 {
     return pathManager;
+}
+
+- (NPModelManager *)modelManager
+{
+    return modelManager;
+}
+
+- (NPEffectManager *)effectManager
+{
+    return effectManager;
 }
 
 - (NPOpenGLRenderContextManager *)renderContextManager

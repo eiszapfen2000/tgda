@@ -1,6 +1,7 @@
 #import "NPModelManager.h"
 #import "NPSUXModel.h"
 #import "Core/File/NPFile.h"
+#import "Core/File/NPPathManager.h"
 #import "Core/NPEngineCore.h"
 
 @implementation NPModelManager
@@ -34,17 +35,35 @@
 - (id) loadModelFromPath:(NSString *)path
 {
     NSString * absolutePath = [ [ [ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
+    NSLog(absolutePath);
 
     if ( [ absolutePath isEqual:path ] == NO )
     {
-        NPFile * file = [ [ NPFile alloc ] initWithName:path parent:self fileName:absolutePath ];
-        NPSUXModel * model = [ [ NPSUXModel alloc ] initWithName:@"" parent:self ];
+        NPSUXModel * model = [ models objectForKey:absolutePath ];
 
-        if ( [ model loadFromFile:file ] == YES )
+        if ( model == nil )
         {
-            [ models setObject:model forKey:absolutePath ];
-            [ models release ];
+            NPFile * file = [ [ NPFile alloc ] initWithName:path parent:self fileName:absolutePath ];
+            model = [ [ NPSUXModel alloc ] initWithName:@"" parent:self ];
 
+            if ( [ model loadFromFile:file ] == YES )
+            {
+                [ models setObject:model forKey:absolutePath ];
+                [ models release ];
+                [ file release ];
+
+                return model;
+            }
+            else
+            {
+                [ model release ];
+                [ file release ];
+
+                return nil;
+            }
+        }
+        else
+        {
             return model;
         }
     }

@@ -1,5 +1,8 @@
 #import "NPSUXMaterialInstance.h"
 #import "Core/Utilities/NPStringUtilities.h"
+#import "Core/NPEngineCore.h"
+#import "NPEffect.h"
+#import "NPEffectManager.h"
 
 @implementation NPSUXMaterialInstance
 
@@ -84,16 +87,17 @@
 
     NSCharacterSet * set = [ NSCharacterSet whitespaceAndNewlineCharacterSet ];
     NSMutableArray * cgfxFileLineElements = splitStringUsingCharacterSet([ materialInstanceScript objectAtIndex:0 ], set);
-    NSLog([cgfxFileLineElements description]);
 
-    [ self parseCGFXFileLine:cgfxFileLineElements ];
+    NSString * fileNameWithoutQuotes =  [ removeLeadingAndTrailingQuotes([ cgfxFileLineElements objectAtIndex:1 ]) retain ];
 
-/*    NSMutableArray * cgfxTchniqueLineElements = splitStringUsingCharacterSet([ materialInstanceScript objectAtIndex:0 ], set);
+    NPEffect * nix = [ [ [ NPEngineCore instance ] effectManager ] loadEffectFromPath:fileNameWithoutQuotes ];
 
-    for ( Int i = 2; i < [ materialInstanceScript count ]; i++ )
-    {
-        NSMutableArray * elements = splitStringUsingCharacterSet([ materialInstanceScript objectAtIndex:i ], set);
-    }*/
+    if ( nix == nil )
+        NSLog(@"GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH");
+
+    //NSLog([cgfxFileLineElements description]);
+
+    //[ self parseCGFXFileLine:cgfxFileLineElements ];
 }
 
 
