@@ -66,7 +66,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     pathManager = [ [ NPPathManager alloc ] initWithName:@"NPEngine Path Manager" parent:self ];
 
     modelManager = [ [ NPModelManager alloc ] initWithName:@"NPEngine Model Manager" parent:self ];
-    effectManager = [ [ NPEffectManager alloc ] initWithName:@"NPEngine Effect Manager" parent:self ];
+    //effectManager = [ [ NPEffectManager alloc ] initWithName:@"NPEngine Effect Manager" parent:self ];
     renderContextManager = [ [ NPOpenGLRenderContextManager alloc ] initWithName:@"NPEngine Core RenderContext Manager" parent:self ];
 
     return self;
