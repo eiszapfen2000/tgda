@@ -30,6 +30,8 @@
 
     pixelFormat = nil;
 
+    ready = NO;
+
     return self;
 }
 
@@ -39,7 +41,6 @@
 
     [ super dealloc ];
 }
-
 
 - (Int32) countAndCheckAttributes
 {
@@ -147,12 +148,19 @@
         return NO;
     }
 
+    ready = YES;
+
     return YES;
 }
 
 - (NSOpenGLPixelFormat *)pixelFormat
 {
     return pixelFormat;
+}
+
+- (BOOL) isReady
+{
+    return ready;
 }
 
 - (void) setPixelFormatAttributes:(NPOpenGLPixelFormatAttributes)newPixelFormatAttributes

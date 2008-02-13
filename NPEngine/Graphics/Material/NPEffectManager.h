@@ -11,6 +11,7 @@
 @interface NPEffectManager : NPObject
 {
     CGcontext cgContext;
+
     NPState cgDebugMode;
     NPState shaderParameterUpdatePolicy;
 
@@ -22,13 +23,15 @@
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
 
+- (void) setup;
+
 - (CGcontext)cgContext;
 
 - (NPState) cgDebugMode;
 - (void) setCgDebugMode:(NPState)newMode;
 
 - (NPState)shaderParameterUpdatePolicy;
-- (void) setShaderParamterPolicy:(NPState)newShaderParameterUpdatePolicy;
+- (void) setShaderParameterPolicy:(NPState)newShaderParameterUpdatePolicy;
 
 - (id) loadEffectFromPath:(NSString *)path;
 
