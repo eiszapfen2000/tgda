@@ -5,6 +5,7 @@
 @interface NPOpenGLRenderContextManager : NPObject
 {
     NSMutableDictionary * renderContexts;
+    NPOpenGLPixelFormat * defaultPixelFormat;
 }
 
 - (id) init;
@@ -12,7 +13,15 @@
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
 
-- (NPOpenGLRenderContext *) createRenderContextWithName:(NSString *)name attributes:(NPOpenGLPixelFormatAttributes)pixelFormatAttributes;
-- (NPOpenGLRenderContext *) getRenderContextByName:(NSString *)contextName;
+- (NPOpenGLPixelFormat *)defaultPixelFormat;
+- (void) setDefaultPixelFormat:(NPOpenGLPixelFormat *)newDefaultPixelFormat;
+
+- (NPOpenGLRenderContext *) createRenderContextWithDefaultPixelFormatAndName:(NSString *)contextName;
+- (NPOpenGLRenderContext *) createRenderContextWithPixelFormat:(NPOpenGLPixelFormat *)pixelFormat andName:(NSString *)contextName;
+- (NPOpenGLRenderContext *) createRenderContextWithAttributes:(NPOpenGLPixelFormatAttributes)pixelFormatAttributes andName:(NSString *)contextName;
+
+- (NPOpenGLRenderContext *) getRenderContextWithName:(NSString *)contextName;
+
+- (void) activateRenderContextWithName:(NSString *)contextName;
 
 @end

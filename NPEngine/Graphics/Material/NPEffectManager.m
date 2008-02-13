@@ -4,36 +4,13 @@
 #import "Core/File/NPPathManager.h"
 #import "Core/NPEngineCore.h"
 
-@implementation NPEffectManager
-
-- (void) checkForCgErrors
+void np_cg_error_callback()
 {
-    char buffer[4096];
-    CGerror error;
-    const char *string = cgGetLastErrorString(&error);
-  
-    if (error != CG_NO_ERROR)
-    {
-        if (error == CG_COMPILER_ERROR)
-        {
-            sprintf(buffer,
-              "Error: %s\n\n"
-              "Cg compiler output...\n",
-              string);
-
-            printf("%s", buffer);
-            printf("%s\n", cgGetLastListing([ (NPEffectManager *)parent cgContext ]));
-        }
-        else
-        {
-            sprintf(buffer,
-              "Error: %s",
-              string);
-
-            printf("%s\n", buffer);
-        }
-    }
+    Int error = cgGetError();
+    NPLOG_ERROR(([NSString stringWithFormat:@"CG ERROR: %s",cgGetErrorString(error)]));
 }
+
+@implementation NPEffectManager
 
 - (id) init
 {
@@ -49,21 +26,25 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    cgContext = cgCreateContext();
-    [ self checkForCgErrors ];
-
-    cgGLRegisterStates(cgContext);
-    [ self checkForCgErrors ];
-
-    cgGLSetManageTextureParameters(cgContext, CG_TRUE);
-    [ self checkForCgErrors ];
-
     cgDebugMode = NP_NONE;
     shaderParameterUpdatePolicy = NP_NONE;
 
     effects = [ [ NSMutableDictionary alloc ] init ];
 
     return self;
+}
+
+- (void) setup
+{
+    cgSetErrorCallback(np_cg_error_callback);
+
+    cgContext = cgCreateContext();
+
+    cgGLRegisterStates(cgContext);
+    cgGLSetManageTextureParameters(cgContext, CG_TRUE);
+
+    [ self setCgDebugMode:NP_CG_DEBUG_MODE_ACTIVE ];
+    [ self setShaderParameterPolicy:NP_CG_DEFERRED_SHADER_PARAMETER_UPDATE ];
 }
 
 - (void) dealloc
@@ -118,7 +99,7 @@
     return shaderParameterUpdatePolicy;
 }
 
-- (void) setShaderParamterPolicy:(NPState)newShaderParameterUpdatePolicy
+- (void) setShaderParameterPolicy:(NPState)newShaderParameterUpdatePolicy
 {
     if ( shaderParameterUpdatePolicy != newShaderParameterUpdatePolicy )
     {
@@ -128,13 +109,13 @@
         {
             case NP_CG_IMMEDIATE_SHADER_PARAMETER_UPDATE:
             {
-                //cgSetParameterSettingMode(cgContext,CG_IMMEDIATE_PARAMETER_SETTING);
+                cgSetParameterSettingMode(cgContext,CG_IMMEDIATE_PARAMETER_SETTING);
                 break;
             }
 
             case NP_CG_DEFERRED_SHADER_PARAMETER_UPDATE:
             {
-                //cgSetParameterSettingMode(cgContext,CG_DEFERRED_PARAMETER_SETTING);
+                cgSetParameterSettingMode(cgContext,CG_DEFERRED_PARAMETER_SETTING);
                 break;
             }
 

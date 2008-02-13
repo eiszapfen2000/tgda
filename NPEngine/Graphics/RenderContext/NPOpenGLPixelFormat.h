@@ -20,6 +20,8 @@ NPOpenGLPixelFormatAttributes;
 {
     NPOpenGLPixelFormatAttributes pixelFormatAttributes;
     NSOpenGLPixelFormat * pixelFormat;
+
+    BOOL ready;
 }
 
 - (id) init;
@@ -30,6 +32,8 @@ NPOpenGLPixelFormatAttributes;
 - (BOOL) setup;
 
 - (NSOpenGLPixelFormat *)pixelFormat;
+
+- (BOOL) isReady;
 
 - (void) setPixelFormatAttributes:(NPOpenGLPixelFormatAttributes)newPixelFormatAttributes;
 
