@@ -4,20 +4,23 @@
 #import <GL/gl.h>
 
 #import "TOOpenGLView.h"
+#import "Core/NPEngineCore.h"
 #import "Graphics/RenderContext/NPOpenGLPixelFormat.h"
 #import "Graphics/Model/NPSUXModel.h"
+#import "Cg/cg.h"
+#import "Cg/cgGL.h"
 
 @implementation TOOpenGLView
 
 - (id)initWithFrame:(NSRect) frameRect
 {
-	npmath_fvector_initialise();
 
+    //[ [ NPEngineCore instance ] setup ];
 
-	NPSUXModel * model = [ [ NPSUXModel alloc ] init ];
-	NPFile * file = [ [ NPFile alloc ] initWithName:@"fgeug" parent:nil fileName:@"/usr/people/icicle/Desktop/camera.model" ];
+	//NPSUXModel * model = [ [ NPSUXModel alloc ] init ];
+	//NPFile * file = [ [ NPFile alloc ] initWithName:@"fgeug" parent:nil fileName:@"/home/icicle/Desktop/DA-Plunder/airconditioner.model" ];
 
-	[ model loadFromFile:file ];
+	//[ model loadFromFile:file ];
 
     NSOpenGLPixelFormat * pixelFormat;
 
@@ -108,11 +111,7 @@
         glVertex3f( 1.0f,-1.0f, 0.0f);
     glEnd();
 
-    NSLog(@"brak");
-
     [[self openGLContext] flushBuffer];
-
-    NSLog(@"flushbuffer");
 }
 
 - (void) reshape

@@ -11,6 +11,7 @@
 	Actions = (
 	);
 	Outlets = (
+	    openglView
 	);
 	Super = NSWindowController;
     };
