@@ -9,4 +9,6 @@
 
 - (id) init;
 
+- (void) newContextReady;
+
 @end
