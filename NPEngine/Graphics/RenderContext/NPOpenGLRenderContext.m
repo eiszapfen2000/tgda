@@ -104,6 +104,11 @@
     return active;
 }
 
+- (void) update
+{
+    [ context update ];
+}
+
 - (void) swap
 {
     if ( context != nil && active == YES)
