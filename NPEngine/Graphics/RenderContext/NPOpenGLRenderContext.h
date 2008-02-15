@@ -25,7 +25,7 @@
 - (void) activate;
 - (void) deactivate;
 - (BOOL) isActive;
-
+- (void) update;
 - (void) swap;
 
 @end

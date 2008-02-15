@@ -17,6 +17,7 @@
     self = [ super initWithName:newName parent:newParent ];
 
     renderContexts = [ [ NSMutableDictionary alloc ] init ];
+    defaultPixelFormat = [ [ NPOpenGLPixelFormat alloc ] init ];
 
     return self;
 }
@@ -46,11 +47,15 @@
 {
     if ( [ defaultPixelFormat isReady ] == NO )
     {
+        NSLog(@"pixelformat not ready");
         if ( [ defaultPixelFormat setup ] == NO )
         {
+            NSLog(@"not able to setup pixelformat");
             return nil;
         }
     }
+
+    NSLog(@"pixelformat ready");
 
     NPOpenGLRenderContext * renderContext = [ [ NPOpenGLRenderContext alloc ] initWithName:contextName parent:self ];
 

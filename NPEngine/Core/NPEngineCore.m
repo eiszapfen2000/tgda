@@ -70,7 +70,26 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     modelManager = [ [ NPModelManager alloc ] initWithName:@"NPEngine Model Manager" parent:self ];
     effectManager = [ [ NPEffectManager alloc ] initWithName:@"NPEngine Effect Manager" parent:self ];
 
+    ready = NO;
+
     return self;
+}
+
+- (void) setup
+{
+    NPLOG(@"NPEngine Core setup....");
+
+    [ pathManager setup ];
+    [ effectManager setup ];
+
+    ready = YES;
+
+    NPLOG(@"done");
+}
+
+- (BOOL)isReady
+{
+    return ready;
 }
 
 - (NPLogger *)logger
@@ -106,12 +125,6 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 - (NPOpenGLRenderContextManager *)renderContextManager
 {
     return renderContextManager;
-}
-
-- (void) setup
-{
-    [ pathManager setup ];
-    [ effectManager setup ];
 }
 
 - (id)copyWithZone:(NSZone *)zone

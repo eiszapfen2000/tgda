@@ -17,10 +17,15 @@
     NPModelManager * modelManager;
     NPEffectManager * effectManager;
     NPOpenGLRenderContextManager * renderContextManager;
+
+    BOOL ready;
 }
 
 + (NPEngineCore *)instance;
 
+- (void)setup;
+
+- (BOOL)isReady;
 - (NPLogger *)logger;
 - (NPTimer *)timer;
 - (NPObjectManager *)objectManager;
@@ -28,8 +33,6 @@
 - (NPModelManager *)modelManager;
 - (NPEffectManager *)effectManager;
 - (NPOpenGLRenderContextManager *)renderContextManager;
-
-- (void) setup;
 
 @end
 
