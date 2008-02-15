@@ -1,18 +1,6 @@
 #import "TODocumentController.h"
 
-//static TODocumentController * sharedController = nil;
-
 @implementation TODocumentController
-
-/*+ (id) sharedDocumentController
-{
-    if (sharedController == nil)
-    {
-        sharedController = [[self alloc] init];
-    }
-
-    return sharedController;
-}*/
 
 - (id) init
 {
@@ -20,9 +8,20 @@
 
     core = [ NPEngineCore instance ];
 
-    NPLOG(@"coooooorrrrrr");
+    [ [ NSNotificationCenter defaultCenter ] addObserver:self
+                                                selector:@selector(newContextReady)
+                                                    name:@"TOOpenGLWindowContextReady"
+                                                  object:nil];
 
     return self;
+}
+
+- (void) newContextReady
+{
+    if ( [ core isReady ] == NO )
+    {
+        [ core setup ];
+    }
 }
 
 @end

@@ -5,57 +5,18 @@
 
 #import "TOOpenGLView.h"
 #import "Core/NPEngineCore.h"
-#import "Graphics/RenderContext/NPOpenGLPixelFormat.h"
-#import "Graphics/Model/NPSUXModel.h"
-#import "Cg/cg.h"
-#import "Cg/cgGL.h"
+#import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
 
 @implementation TOOpenGLView
 
+
 - (id)initWithFrame:(NSRect) frameRect
 {
+    self = [ super initWithFrame:frameRect ];
 
-    //[ [ NPEngineCore instance ] setup ];
-
-	//NPSUXModel * model = [ [ NPSUXModel alloc ] init ];
-	//NPFile * file = [ [ NPFile alloc ] initWithName:@"fgeug" parent:nil fileName:@"/home/icicle/Desktop/DA-Plunder/airconditioner.model" ];
-
-	//[ model loadFromFile:file ];
-
-    NSOpenGLPixelFormat * pixelFormat;
-
-    /*NSOpenGLPixelFormatAttribute attributes[] =
-    {
-        NSOpenGLPFAWindow,
-        NSOpenGLPFADoubleBuffer,
-        NSOpenGLPFAColorSize, 8,
-        NSOpenGLPFADepthSize, 24,
-        NSOpenGLPFAStencilSize, 8,
-        0
-    };
-
-    pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes: attributes];*/
-
-    NPOpenGLPixelFormat * nppf = [ [ NPOpenGLPixelFormat alloc ] init ];
-    [ nppf setup ];
-    pixelFormat = [ nppf pixelFormat ];
-
-    if(!pixelFormat)
-    {
-        NSLog(@"Invalid format... terminating.");
-
-        return nil;
-    }
-
-    self = [super initWithFrame:frameRect pixelFormat: pixelFormat];
-
-    //[pixelFormat release];
-
-    // If there was an error, we again should probably send an error message to the user
     if(!self)
     {
         NSLog(@"Self not created... terminating.");
-
         return nil;
     }
 
@@ -80,14 +41,14 @@
 
 - (void) drawRect: (NSRect) aRect
 {
-    NSOpenGLContext * ctx;
+    NPOpenGLRenderContext * ctx;
 
-    ctx = [self openGLContext];
+    ctx = [ self renderContext];
 
-    if( ctx != [NSOpenGLContext currentContext] )
+    if( [ ctx context ] != [NSOpenGLContext currentContext] )
     {
         NS_DURING
-            [ctx makeCurrentContext];
+            [renderContext activate];
             [self reshape];
         NS_HANDLER
             NSLog(@"Exception");
@@ -111,7 +72,9 @@
         glVertex3f( 1.0f,-1.0f, 0.0f);
     glEnd();
 
-    [[self openGLContext] flushBuffer];
+    [[self renderContext] swap];
+
+    NSLog(@"flushbuffer");
 }
 
 - (void) reshape
@@ -133,5 +96,6 @@
    glLoadIdentity();
    //glTranslatef(0.0, 0.0, -40.0);
 }
+
 
 @end

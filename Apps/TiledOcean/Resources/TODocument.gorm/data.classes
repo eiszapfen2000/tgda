@@ -1,5 +1,12 @@
 {
     "## Comment" = "Do NOT change this file, Gorm maintains it";
+    NPOpenGLView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSView;
+    };
     TODocument = {
 	Actions = (
 	);
@@ -20,6 +27,6 @@
 	);
 	Outlets = (
 	);
-	Super = NSOpenGLView;
+	Super = NPOpenGLView;
     };
 }

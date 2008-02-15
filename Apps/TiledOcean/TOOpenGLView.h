@@ -1,13 +1,11 @@
-/* All Rights reserved */
+#import <AppKit/AppKit.h>
+#import "NPOpenGLView.h"
 
-#include <AppKit/AppKit.h>
-
-@interface TOOpenGLView : NSOpenGLView
+@interface TOOpenGLView : NPOpenGLView
 {
 }
 
 - (id)initWithFrame:(NSRect) frameRect;
-
 - (void)initGL;
 
 @end

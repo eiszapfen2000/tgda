@@ -11,17 +11,18 @@
 {
     NSLog(@"didload");
 
-      timer = [NSTimer scheduledTimerWithTimeInterval:0.015
+    [ [ NSNotificationCenter defaultCenter ] postNotificationName:@"TOOpenGLWindowContextReady" object:self ];
+
+      /*timer = [NSTimer scheduledTimerWithTimeInterval:0.015
                                                target:self
                                              selector:@selector(doDrawingStuff)
                                              userInfo: nil
-                                              repeats: YES ];
+                                              repeats: YES ];*/
 }
 
 - (void) doDrawingStuff
 {
     [ openglView lockFocus ];
-//    [ openglView display ];
     [ openglView drawRect:[openglView frame] ];
     [ openglView unlockFocus ];
 }
