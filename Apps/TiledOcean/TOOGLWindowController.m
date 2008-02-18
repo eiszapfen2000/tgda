@@ -13,7 +13,7 @@
 
     [ [ NSNotificationCenter defaultCenter ] postNotificationName:@"TOOpenGLWindowContextReady" object:self ];
 
-      /*timer = [NSTimer scheduledTimerWithTimeInterval:0.015
+/*      timer = [NSTimer scheduledTimerWithTimeInterval:0.015
                                                target:self
                                              selector:@selector(doDrawingStuff)
                                              userInfo: nil

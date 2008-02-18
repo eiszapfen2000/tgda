@@ -59,7 +59,7 @@
 - (void) dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
-    RELEASE(renderContext);
+    //RELEASE(renderContext);
     NSDebugMLLog(@"GL", @"deallocating");
     [super dealloc];
 }
@@ -70,14 +70,30 @@
 
 - (void) update
 {
+    if( [ renderContext context ] != [NSOpenGLContext currentContext] )
+    {
+        NSLog(@"update: BRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK");
+    }
+    
     [ renderContext update ];
 }
 
 - (void) _frameChanged: (NSNotification *) aNot
 {
+    NSLog(@"framechanged");
     NSDebugMLLog(@"GL", @"our frame has changed");
-    [ self update ];
-    [ self reshape ];
+
+    if( [ renderContext context ] != [NSOpenGLContext currentContext] )
+    {
+        NS_DURING
+            [ renderContext activate ];
+            [ self update ];
+            [ self reshape ];
+        NS_HANDLER
+            NSLog(@"Exception");
+            NS_VOIDRETURN;
+        NS_ENDHANDLER
+    }
 }
 
 - (void) lockFocusInRect: (NSRect) aRect
@@ -86,7 +102,7 @@
 
     if( !renderContext )
     {
-      [self renderContext];
+      renderContext = [self renderContext];
       NSAssert(renderContext, NSInternalInconsistencyException);
     }
 
