@@ -21,7 +21,7 @@
     }
 
     // Finally, we call the initGL method (no need to make this method too long or complex)
-    [self initGL];
+    //[self initGL];
 
     return self;
 }
@@ -49,6 +49,8 @@
     {
         NS_DURING
             [renderContext activate];
+            [ self initGL ];
+            NSLog(@"fuck");
             [self reshape];
         NS_HANDLER
             NSLog(@"Exception");
@@ -73,12 +75,15 @@
     glEnd();
 
     [[self renderContext] swap];
-
-    NSLog(@"flushbuffer");
 }
 
 - (void) reshape
 {
+    if( [ renderContext context ] != [NSOpenGLContext currentContext] )
+    {
+        NSLog(@"reshape: BRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK");
+    }
+
    NSRect fr_rect = [self frame];
    GLint height = (GLint) fr_rect.size.height;
    GLint width =  (GLint) fr_rect.size.width;

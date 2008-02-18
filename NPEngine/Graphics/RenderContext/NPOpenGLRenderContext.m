@@ -81,12 +81,12 @@
 
 - (void) activate
 {
-    if ( context != nil && active != YES )
-    {
+    //if ( context != nil && active != YES )
+    //{
         [ context makeCurrentContext ];
 
-        active = YES;
-    }
+    //    active = YES;
+    //}
 }
 
 - (void) deactivate
@@ -111,10 +111,10 @@
 
 - (void) swap
 {
-    if ( context != nil && active == YES)
-    {
+    //if ( context != nil && active == YES)
+    //{
         [ context flushBuffer ];
-    }
+    //}
 }
 
 @end
