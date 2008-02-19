@@ -6,54 +6,33 @@
 
 @implementation NPOpenGLView
 
-- (void)clearRenderContext
-{
-    if( renderContext != nil )
-    {
-      [ renderContext disconnectFromView ];
-
-      //DESTROY(glcontext);
-    }
-}
-
-- (void)setRenderContext:(NPOpenGLRenderContext *)newRenderContext
-{
-    [ self clearRenderContext ];
-    renderContext = newRenderContext;
-  
-    attached = NO;
-}
-
-/**
-   return the current gl context associated with this view
-*/
 - (NPOpenGLRenderContext *)renderContext;
 {
     if( renderContext == nil )
     {
         renderContext = [ [ [ NPEngineCore instance ] renderContextManager ] createRenderContextWithDefaultPixelFormatAndName:@"brak" ];
-
         [ renderContext connectToView: self];
+        [ renderContext activate ];
+        [ renderContext setupGLEW ];
+        //[ renderContext deactivate ];
         attached = YES;
     }
 
     return renderContext;
 }
 
-
 -(id) initWithFrame: (NSRect)frameRect
 {
-  [super initWithFrame: frameRect];
+    [super initWithFrame: frameRect];
 
-  [self setPostsFrameChangedNotifications: YES];
+    [self setPostsFrameChangedNotifications: YES];
 
-  [[NSNotificationCenter defaultCenter] 
-    addObserver: self
-    selector: @selector(_frameChanged:)
-    name: NSViewFrameDidChangeNotification
-    object: self];
+    [ [ NSNotificationCenter defaultCenter ] addObserver:self
+                                                selector:@selector(frameChanged:)
+                                                    name:NSViewFrameDidChangeNotification
+                                                  object:self ];
 
-  return self;
+    return self;
 }
 
 - (void) dealloc
@@ -78,16 +57,13 @@
     [ renderContext update ];
 }
 
-- (void) _frameChanged: (NSNotification *) aNot
+- (void) frameChanged:(NSNotification *)aNot
 {
-    NSLog(@"framechanged");
-    NSDebugMLLog(@"GL", @"our frame has changed");
-
     if( [ renderContext context ] != [NSOpenGLContext currentContext] )
     {
         NS_DURING
             [ renderContext activate ];
-            NSLog(@"framechanged context fuck");
+            ///NSLog(@"framechanged context fuck");
             [ self update ];
             [ self reshape ];
         NS_HANDLER
@@ -107,19 +83,21 @@
 {
     if( [ renderContext context ] != [NSOpenGLContext currentContext] )
     {
-        NSLog(@"update: BRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK");
+        NSLog(@"lock: BRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK");
     }
 
     [super lockFocusInRect: aRect];
 
     if( !renderContext )
     {
+      NSLog(@"rendercontext erstellen");
       renderContext = [self renderContext];
       NSAssert(renderContext, NSInternalInconsistencyException);
     }
 
     if (attached == NO && renderContext != nil)
     {
+      NSLog(@"rendercontext connect view");
       NSDebugMLLog(@"GL", @"Attaching context to the view");
       [renderContext connectToView: self];
       attached = YES;

@@ -1,8 +1,4 @@
-/* All Rights reserved */
-
-#import <AppKit/AppKit.h>
-#import <GL/gl.h>
-
+//#import <GL/gl.h>
 #import "TOOpenGLView.h"
 #import "Core/NPEngineCore.h"
 #import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
@@ -20,14 +16,12 @@
         return nil;
     }
 
-    // Finally, we call the initGL method (no need to make this method too long or complex)
-    //[self initGL];
-
     return self;
 }
 
 - (void)initGL
 {
+    NSLog(@"initgl");
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     glClearDepth(1.0f);
@@ -49,14 +43,16 @@
     {
         NS_DURING
             [renderContext activate];
-            [ self initGL ];
-            NSLog(@"fuck");
-            [self reshape];
         NS_HANDLER
             NSLog(@"Exception");
             NS_VOIDRETURN;
         NS_ENDHANDLER
     }
+
+    [ self initGL ];
+    NSLog(@"fuck");
+    [ self update ];
+    [self reshape];
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -79,10 +75,10 @@
 
 - (void) reshape
 {
-    //if( [ renderContext context ] != [NSOpenGLContext currentContext] )
-    //{
+    if( [ renderContext context ] != [NSOpenGLContext currentContext] )
+    {
         NSLog(@"reshape: BRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK");
-    //}
+    }
 
    NSRect fr_rect = [self frame];
    GLint height = (GLint) fr_rect.size.height;

@@ -1,4 +1,4 @@
-#import <AppKit/AppKit.h>
+#import <AppKit/NSView.h>
 
 @class NPOpenGLRenderContext;
 
@@ -12,9 +12,7 @@
 - (id)initWithFrame:(NSRect)frameRect;
 - (void) dealloc;
 
-- (void)clearRenderContext;
 - (NPOpenGLRenderContext *)renderContext;
-- (void)setRenderContext:(NPOpenGLRenderContext*)newRenderContext;
 
 - (void) reshape;
 - (void) update;

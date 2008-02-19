@@ -1,4 +1,4 @@
-#import <AppKit/AppKit.h>
+#import <AppKit/NSOpenGL.h>
 
 #import "Core/NPObject/NPObject.h"
 

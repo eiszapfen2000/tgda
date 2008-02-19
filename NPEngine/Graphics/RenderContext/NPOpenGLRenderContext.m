@@ -20,6 +20,7 @@
 
     ready = NO;
     active = NO;
+    glewInitialised = NO;
     context = nil;
 
     return self;
@@ -56,22 +57,34 @@
     return YES;
 }
 
+#define glewGetContext() (&glewContext)
+
 - (void) connectToView:(NSView *)view
 {
-    NSLog(@"connect - not ready");
+    //NSLog(@"connect - not ready");
     if ( ready == YES )
     {
-        NSLog(@"np context connectToView");
+        //NSLog(@"np context connectToView");
         [ context setView:view ];
+
+        /*if ( glewInitialised == NO )
+        {
+            GLenum err = glewInit();
+
+            if (GLEW_OK != err)
+            {
+                NSLog(@"glewInit failed");
+            }
+        }*/
     }
 }
 
 - (void) disconnectFromView
 {
-    NSLog(@"disconnect - not ready");
+    //NSLog(@"disconnect - not ready");
     if ( ready == YES )
     {
-        NSLog(@"np context disconnectFromView");
+        //NSLog(@"np context disconnectFromView");
         [ context clearDrawable ];
     }
 }
@@ -85,6 +98,19 @@
     else
     {
         return nil;
+    }
+}
+
+- (void) setupGLEW
+{
+    if ( glewInitialised == NO )
+    {
+        GLenum err = glewInit();
+
+        if (GLEW_OK != err)
+        {
+            NSLog(@"glewInit failed");
+        }
     }
 }
 
@@ -106,7 +132,7 @@
     NSLog(@"deactivate - not ready or not active");
     if ( ready == YES && active == YES )
     {
-        //[ NSOpenGLContext clearCurrentContext ];
+        [ NSOpenGLContext clearCurrentContext ];
         NSLog(@"np context deactivate");
         active = NO;
     }

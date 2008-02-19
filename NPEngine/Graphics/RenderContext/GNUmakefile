@@ -13,6 +13,8 @@ NPOpenGLPixelFormat.h \
 NPOpenGLRenderContext.h \
 NPOpenGLRenderContextManager.h
 
+libNPEngineGraphicsRenderContext_LIBRARIES_DEPEND_UPON += -lGLEW
+
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/library.make
 include $(TGDA_DIR)/GNUmakefile.library.install
