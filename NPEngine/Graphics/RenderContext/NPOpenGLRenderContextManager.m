@@ -18,6 +18,7 @@
 
     renderContexts = [ [ NSMutableDictionary alloc ] init ];
     defaultPixelFormat = [ [ NPOpenGLPixelFormat alloc ] init ];
+    currentlyActiveRenderContext = nil;
 
     return self;
 }
@@ -43,53 +44,24 @@
     }
 }
 
-- (NPOpenGLRenderContext *) createRenderContextWithDefaultPixelFormatAndName:(NSString *)contextName
+- (NPOpenGLRenderContext *) currentlyActiveRenderContext
 {
-    if ( [ defaultPixelFormat isReady ] == NO )
-    {
-        NSLog(@"pixelformat not ready");
-        if ( [ defaultPixelFormat setup ] == NO )
-        {
-            NSLog(@"not able to setup pixelformat");
-            return nil;
-        }
-    }
-
-    NSLog(@"pixelformat ready");
-
-    NPOpenGLRenderContext * renderContext = [ [ NPOpenGLRenderContext alloc ] initWithName:contextName parent:self ];
-
-    if ( [ renderContext setupWithPixelFormat:defaultPixelFormat ] == NO )
-    {
-        return nil;
-    }
-
-    [ renderContexts setObject:renderContext forKey:contextName ];
-    [ renderContext release ];
-
-    return renderContext;    
+    return currentlyActiveRenderContext;
 }
 
-- (NPOpenGLRenderContext *) createRenderContextWithPixelFormat:(NPOpenGLPixelFormat *)pixelFormat andName:(NSString *)contextName
+- (void) setCurrentlyActiveRenderContext:(NPOpenGLRenderContext *)context
 {
-    if ( [ pixelFormat setup ] == NO )
+    if ( context != currentlyActiveRenderContext )
     {
-        return nil;
+        [ currentlyActiveRenderContext deactivate ];
+        [ currentlyActiveRenderContext release ];
+        currentlyActiveRenderContext = [ context retain ];
     }
-    
-    NPOpenGLRenderContext * renderContext = [ [ NPOpenGLRenderContext alloc ] initWithName:contextName parent:self ];
+}
 
-    if ( [ renderContext setupWithPixelFormat:pixelFormat ] == NO )
-    {
-        return nil;
-    }
-
-    [ renderContexts setObject:renderContext forKey:contextName ];
-
-    [ pixelFormat release ];
-    [ renderContext release ];
-
-    return renderContext;
+- (NPOpenGLRenderContext *) createRenderContextWithDefaultPixelFormatAndName:(NSString *)contextName
+{
+    return [ self createRenderContextWithPixelFormat:defaultPixelFormat andName:contextName ];
 }
 
 - (NPOpenGLRenderContext *) createRenderContextWithAttributes:(NPOpenGLPixelFormatAttributes)pixelFormatAttributes andName:(NSString *)contextName
@@ -97,9 +69,17 @@
     NPOpenGLPixelFormat * pixelFormat = [ [ NPOpenGLPixelFormat alloc ] init ];
     [ pixelFormat setPixelFormatAttributes:pixelFormatAttributes ];
 
-    if ( [ pixelFormat setup ] == NO )
+    return [ self createRenderContextWithPixelFormat:pixelFormat andName:contextName ];
+}
+
+- (NPOpenGLRenderContext *) createRenderContextWithPixelFormat:(NPOpenGLPixelFormat *)pixelFormat andName:(NSString *)contextName
+{
+    if ( [ pixelFormat isReady ] == NO )
     {
-        return nil;
+        if ( [ pixelFormat setup ] == NO )
+        {
+            return nil;
+        }
     }
     
     NPOpenGLRenderContext * renderContext = [ [ NPOpenGLRenderContext alloc ] initWithName:contextName parent:self ];
@@ -110,16 +90,14 @@
     }
 
     [ renderContexts setObject:renderContext forKey:contextName ];
-
-    [ pixelFormat release ];
     [ renderContext release ];
 
     return renderContext;
 }
 
-- (NPOpenGLRenderContext *) getRenderContextWithName:(NSString *)contextName
+- (void) activateRenderContext:(NPOpenGLRenderContext *)context
 {
-    return [ renderContexts objectForKey:contextName ];
+    
 }
 
 - (void) activateRenderContextWithName:(NSString *)contextName

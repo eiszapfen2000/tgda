@@ -2,7 +2,7 @@
 
 #import "Core/NPObject/NPObject.h"
 
-typedef struct
+typedef struct NPOpenGLPixelFormatAttributes
 {
     BOOL fullscreen;
     Int32 bitsPerColorChannel;

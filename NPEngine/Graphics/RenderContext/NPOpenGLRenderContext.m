@@ -1,4 +1,6 @@
 #import "NPOpenGLRenderContext.h"
+#import "NPOpenGLRenderContextManager.h"
+#import "Core/NPEngineCore.h"
 
 @implementation NPOpenGLRenderContext
 
@@ -16,6 +18,7 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
+    ready = NO;
     active = NO;
     context = nil;
 
@@ -48,28 +51,34 @@
         return NO;
     }
 
+    ready = YES;
+
     return YES;
 }
 
 - (void) connectToView:(NSView *)view
 {
-    if ( context != nil )
+    NSLog(@"connect - not ready");
+    if ( ready == YES )
     {
+        NSLog(@"np context connectToView");
         [ context setView:view ];
     }
 }
 
 - (void) disconnectFromView
 {
-    if ( context != nil )
+    NSLog(@"disconnect - not ready");
+    if ( ready == YES )
     {
+        NSLog(@"np context disconnectFromView");
         [ context clearDrawable ];
     }
 }
 
 - (NSView *)view
 {
-    if ( context != nil )
+    if ( ready == YES )
     {
         return [ context view ];
     }
@@ -81,20 +90,24 @@
 
 - (void) activate
 {
-    //if ( context != nil && active != YES )
-    //{
+    NSLog(@"activate - not ready or not active");
+    if ( ready == YES && active == NO )
+    {
+        NSLog(@"np context activate");
+        [[[ NPEngineCore instance ] renderContextManager ] setCurrentlyActiveRenderContext:self ]; 
         [ context makeCurrentContext ];
 
-    //    active = YES;
-    //}
+        active = YES;
+    }
 }
 
 - (void) deactivate
 {
-    if ( context != nil && active == YES )
+    NSLog(@"deactivate - not ready or not active");
+    if ( ready == YES && active == YES )
     {
-        [ NSOpenGLContext clearCurrentContext ];
-
+        //[ NSOpenGLContext clearCurrentContext ];
+        NSLog(@"np context deactivate");
         active = NO;
     }
 }
@@ -104,17 +117,29 @@
     return active;
 }
 
+- (BOOL) isReady
+{
+    return ready;
+}
+
 - (void) update
 {
-    [ context update ];
+    NSLog(@"update - not ready or not active");
+    if ( ready == YES && active == YES )
+    {
+        NSLog(@"np context update");
+        [ context update ];
+    }
 }
 
 - (void) swap
 {
-    //if ( context != nil && active == YES)
-    //{
+    NSLog(@"swap - not ready or not active");
+    if ( ready == YES && active == YES )
+    {
+        NSLog(@"np context swap");
         [ context flushBuffer ];
-    //}
+    }
 }
 
 @end

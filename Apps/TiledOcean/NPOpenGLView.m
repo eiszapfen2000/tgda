@@ -87,6 +87,7 @@
     {
         NS_DURING
             [ renderContext activate ];
+            NSLog(@"framechanged context fuck");
             [ self update ];
             [ self reshape ];
         NS_HANDLER
@@ -94,10 +95,21 @@
             NS_VOIDRETURN;
         NS_ENDHANDLER
     }
+    else
+    {
+        NSLog(@"laalalaalalaalal");
+        [ self update ];
+        [ self reshape ];
+    }
 }
 
 - (void) lockFocusInRect: (NSRect) aRect
 {
+    if( [ renderContext context ] != [NSOpenGLContext currentContext] )
+    {
+        NSLog(@"update: BRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK");
+    }
+
     [super lockFocusInRect: aRect];
 
     if( !renderContext )

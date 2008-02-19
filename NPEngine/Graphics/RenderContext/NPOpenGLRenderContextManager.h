@@ -6,6 +6,7 @@
 {
     NSMutableDictionary * renderContexts;
     NPOpenGLPixelFormat * defaultPixelFormat;
+    NPOpenGLRenderContext * currentlyActiveRenderContext;
 }
 
 - (id) init;
@@ -16,12 +17,14 @@
 - (NPOpenGLPixelFormat *)defaultPixelFormat;
 - (void) setDefaultPixelFormat:(NPOpenGLPixelFormat *)newDefaultPixelFormat;
 
+- (NPOpenGLRenderContext *) currentlyActiveRenderContext;
+- (void) setCurrentlyActiveRenderContext:(NPOpenGLRenderContext *)context;
+
 - (NPOpenGLRenderContext *) createRenderContextWithDefaultPixelFormatAndName:(NSString *)contextName;
 - (NPOpenGLRenderContext *) createRenderContextWithPixelFormat:(NPOpenGLPixelFormat *)pixelFormat andName:(NSString *)contextName;
 - (NPOpenGLRenderContext *) createRenderContextWithAttributes:(NPOpenGLPixelFormatAttributes)pixelFormatAttributes andName:(NSString *)contextName;
 
-- (NPOpenGLRenderContext *) getRenderContextWithName:(NSString *)contextName;
-
+- (void) activateRenderContext:(NPOpenGLRenderContext *)context;
 - (void) activateRenderContextWithName:(NSString *)contextName;
 
 @end

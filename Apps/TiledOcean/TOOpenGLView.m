@@ -79,10 +79,10 @@
 
 - (void) reshape
 {
-    if( [ renderContext context ] != [NSOpenGLContext currentContext] )
-    {
+    //if( [ renderContext context ] != [NSOpenGLContext currentContext] )
+    //{
         NSLog(@"reshape: BRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK");
-    }
+    //}
 
    NSRect fr_rect = [self frame];
    GLint height = (GLint) fr_rect.size.height;
