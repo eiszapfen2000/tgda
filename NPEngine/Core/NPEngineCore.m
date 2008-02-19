@@ -4,9 +4,10 @@
 #import "Core/Log/NPLogger.h"
 #import "Core/Timer/NPTimer.h"
 #import "Core/File/NPPathManager.h"
+#import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
 #import "Graphics/Model/NPModelManager.h"
 #import "Graphics/Material/NPEffectManager.h"
-#import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
+
 
 static NPEngineCore * NP_ENGINE_CORE = nil;
 

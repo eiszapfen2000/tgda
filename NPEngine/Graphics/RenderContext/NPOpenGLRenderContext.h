@@ -1,4 +1,10 @@
-#import <AppKit/AppKit.h>
+#ifndef GLEW_MX
+    #define GLEW_MX
+#endif
+
+#import "GL/glew.h"
+
+#import <AppKit/NSOpenGL.h>
 
 #import "Core/NPObject/NPObject.h"
 #import "NPOpenGLPixelFormat.h"
@@ -7,7 +13,9 @@
 {
     BOOL ready;
     BOOL active;
+    BOOL glewInitialised;
     NSOpenGLContext * context;
+    GLEWContext glewContext;
 }
 
 - (id) init;
@@ -22,6 +30,8 @@
 - (void) connectToView:(NSView *)view;
 - (void) disconnectFromView;
 - (NSView *)view;
+
+- (void) setupGLEW;
 
 - (void) activate;
 - (void) deactivate;
