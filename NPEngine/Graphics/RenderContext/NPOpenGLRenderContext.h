@@ -5,6 +5,7 @@
 
 @interface NPOpenGLRenderContext : NPObject
 {
+    BOOL ready;
     BOOL active;
     NSOpenGLContext * context;
 }
@@ -25,6 +26,7 @@
 - (void) activate;
 - (void) deactivate;
 - (BOOL) isActive;
+- (BOOL) isReady;
 - (void) update;
 - (void) swap;
 
