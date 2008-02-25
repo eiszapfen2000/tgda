@@ -2,6 +2,18 @@
 #import "Core/Resource/NPResource.h"
 #import "Core/Resource/NPPResource.h"
 
+#define NP_VBO_UPLOAD_ONCE_RENDER_OFTEN     0
+#define NP_VBO_UPLOAD_ONCE_RENDER_SELDOM    1
+#define NP_VBO_UPLOAD_OFTEN_RENDER_OFTEN    2
+
+#define NP_VBO_PRIMITIVES_POINTS            0
+#define NP_VBO_PRIMITIVES_LINES             1
+#define NP_VBO_PRIMITIVES_LINE_STRIP        3
+#define NP_VBO_PRIMITIVES_TRIANGLES         4
+#define NP_VBO_PRIMITIVES_TRIANGLE_STRIP    5
+#define NP_VBO_PRIMITIVES_QUADS             7
+#define NP_VBO_PRIMITIVES_QUAD_STRIP        8
+
 @class NPFile;
 
 typedef struct NpVertexFormat
@@ -60,5 +72,10 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer);
 - (BOOL) loadFromFile:(NPFile *)file;
 - (void) reset;
 - (BOOL) isReady;
+
+- (void) uploadVBOWithUsageHint:(NPState)usage;
+- (void) deleteVBO;
+- (void) render;
+- (void) renderElementWithFirstindex:(Int)firstIndex andLastindex:(Int)lastIndex;
 
 @end

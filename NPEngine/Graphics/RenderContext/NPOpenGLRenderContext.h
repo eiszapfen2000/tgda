@@ -1,10 +1,5 @@
-#ifndef GLEW_MX
-    #define GLEW_MX
-#endif
-
-#import "GL/glew.h"
-
 #import <AppKit/NSOpenGL.h>
+#import "Graphics/npgl.h"
 
 #import "Core/NPObject/NPObject.h"
 #import "NPOpenGLPixelFormat.h"
