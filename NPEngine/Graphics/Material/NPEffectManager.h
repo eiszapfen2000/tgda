@@ -1,6 +1,5 @@
 #import "Core/NPObject/NPObject.h"
 #import "Cg/cg.h"
-#import "Cg/cgGL.h"
 
 #define NP_CG_IMMEDIATE_SHADER_PARAMETER_UPDATE  0
 #define NP_CG_DEFERRED_SHADER_PARAMETER_UPDATE   1

@@ -1,3 +1,5 @@
+#import "Graphics/npgl.h"
+#import "Cg/cgGL.h"
 #import "NPEffect.h"
 #import "NPEffectManager.h"
 #import "Core/File/NPFile.h"

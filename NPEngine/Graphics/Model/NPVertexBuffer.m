@@ -1,5 +1,8 @@
 #import "NPVertexBuffer.h"
+#import "Graphics/npgl.h"
 #import "Core/Basics/NpMemory.h"
+#import "Core/NPEngineCore.h"
+
 
 void reset_npvertexformat(NpVertexFormat * vertex_format)
 {
@@ -205,6 +208,197 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 - (BOOL) isReady
 {
     return ready;
+}
+
+- (void) uploadVBOWithUsageHint:(NPState)usage
+{
+    if ( ready == NO )
+    {
+        NPLOG(@"VBO not ready");
+        return;
+    }
+
+    [ self deleteVBO ];
+
+    GLenum vboUsage;
+
+    switch( usage )
+    {
+        case NP_VBO_UPLOAD_ONCE_RENDER_OFTEN:
+        {
+            vboUsage = GL_STATIC_DRAW;
+            break;
+        }
+        case NP_VBO_UPLOAD_ONCE_RENDER_SELDOM:
+        {
+            vboUsage = GL_STREAM_DRAW;
+            break;
+        }
+        case NP_VBO_UPLOAD_OFTEN_RENDER_OFTEN:
+        {
+            vboUsage = GL_DYNAMIC_DRAW;
+            break;
+        }
+        default:
+        {
+            vboUsage = GL_STATIC_DRAW;
+            break;
+        }
+    }
+
+    Int verticesSize = (vertices.maxVertex + 1) * sizeof(Float);
+
+    glGenBuffers(1, &(vertexBuffer.positionsID));
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.positionsID);
+    glBufferDataARB(GL_ARRAY_BUFFER, verticesSize * 3, vertices.positions, vboUsage);
+
+    if ( vertices.format.elementsForNormal > 0 )
+    {
+        glGenBuffers(1, &(vertexBuffer.normalsID));
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.normalsID);
+        glBufferData(GL_ARRAY_BUFFER, verticesSize * vertices.format.elementsForNormal, vertices.normals, vboUsage);
+    }
+
+    if ( vertices.format.elementsForColor > 0 )
+    {
+        glGenBuffers(1, &(vertexBuffer.colorsID));
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.colorsID);
+        glBufferData(GL_ARRAY_BUFFER, verticesSize * vertices.format.elementsForColor, vertices.colors, vboUsage);
+    }
+
+    /*if ( vertices.format.elementsForWeights > 0 )
+    {
+        glGenBuffers(1, &(vertexBuffer.weightsID));
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.weightsID);
+        glBufferData(GL_ARRAY_BUFFER, verticesSize * vertices.format.elementsForWeights, vertices.weights, vboUsage);
+    }*/
+
+    for ( Int i = 0; i < 8; i++)
+    {
+        Float * texCoordPointer = vertices.textureCoordinates;
+
+        if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
+        {
+            glGenBuffers(1, &(vertexBuffer.textureCoordinatesSetID[i]));
+            glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.textureCoordinatesSetID[i]);
+            glBufferData(GL_ARRAY_BUFFER, verticesSize * vertices.format.elementsForTextureCoordinateSet[i], texCoordPointer, vboUsage);
+            texCoordPointer += ((vertices.maxVertex + 1) * vertices.format.elementsForTextureCoordinateSet[i]);
+        }
+    }
+
+    Int indicesSize = (vertices.maxVertex + 1) * sizeof(Int32);
+
+    if ( vertices.indexed == YES )
+    {
+        glGenBuffers(1, &(vertexBuffer.indicesID));
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.indicesID);
+        glBufferData(GL_ARRAY_BUFFER, indicesSize, vertices.indices, vboUsage);
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+- (void) deleteBuffer:(UInt)bufferID
+{
+    if ( bufferID > -1 )
+    {
+        glDeleteBuffers(1,&bufferID);
+    }
+}
+
+- (void) deleteVBO
+{
+    [ self deleteBuffer:vertexBuffer.positionsID ];
+    [ self deleteBuffer:vertexBuffer.normalsID ];
+    [ self deleteBuffer:vertexBuffer.colorsID ];
+    [ self deleteBuffer:vertexBuffer.weightsID ];
+    [ self deleteBuffer:vertexBuffer.indicesID ];
+
+    for ( Int i = 0; i < 8; i++ )
+    {
+        [ self deleteBuffer:vertexBuffer.textureCoordinatesSetID[i] ];
+    }
+}
+
+- (void) render
+{
+    [ self renderElementWithFirstindex:0 andLastindex:vertices.maxIndex ];
+}
+
+- (void) renderElementWithFirstindex:(Int)firstIndex andLastindex:(Int)lastIndex
+{
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.positionsID );
+    glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+    if ( vertices.format.elementsForNormal > 0 )
+    {
+        glEnableClientState(GL_NORMAL_ARRAY);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.normalsID );
+        glNormalPointer(GL_FLOAT, 0, NULL);
+    }
+
+    if ( vertices.format.elementsForColor > 0 )
+    {
+        glEnableClientState(GL_COLOR_ARRAY);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.colorsID );
+        glColorPointer(vertices.format.elementsForColor, GL_FLOAT, 0, NULL);
+    }
+
+    for ( Int i = 0; i < 8; i++)
+    {
+        if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
+        {
+            glActiveTexture(GL_TEXTURE0 + i);
+            glClientActiveTexture(GL_TEXTURE0 + i);
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.textureCoordinatesSetID[i] );
+            glTexCoordPointer(vertices.format.elementsForTextureCoordinateSet[i], GL_FLOAT, 0, NULL);
+        }
+    }
+
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
+    if ( vertices.indexed == YES )
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexBuffer.indicesID);
+        glDrawRangeElements(vertices.primitiveType, 0, vertices.maxVertex, lastIndex - firstIndex + 1,
+                            GL_UNSIGNED_INT, BUFFER_OFFSET(firstIndex*sizeof(UInt32)));
+    }
+    else
+    {
+        NSLog(@"vbo not indexed");
+        return;
+    }
+
+#undef BUFFER_OFFSET
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    if ( vertices.format.elementsForNormal > 0 )
+    {
+        glDisableClientState(GL_NORMAL_ARRAY);
+    }
+
+    if ( vertices.format.elementsForColor > 0 )
+    {
+        glDisableClientState(GL_COLOR_ARRAY);
+    }
+
+    for ( Int i = 0; i < 8; i++)
+    {
+        if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
+        {
+            glClientActiveTexture(GL_TEXTURE0 + i);
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        }
+    }
+
+    glClientActiveTexture(GL_TEXTURE0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 @end
