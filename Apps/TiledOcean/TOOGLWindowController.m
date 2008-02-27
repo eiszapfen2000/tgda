@@ -1,4 +1,6 @@
 #import "TOOGLWindowController.h"
+#import "TODocument.h"
+#import "Core/NPEngineCore.h"
 
 @implementation TOOGLWindowController
 
@@ -7,11 +9,23 @@
 	return  [ super initWithWindowNibName: @"TODocument" ];
 }
 
+- (NPOpenGLView *) openglView;
+{
+    return openglView;
+}
+
 - (void) windowDidLoad
 {
-    NSLog(@"didload");
+//    [ [ NSNotificationCenter defaultCenter ] postNotificationName:@"TOOpenGLWindowContextReady" object:self ];
+//    [ [ NSNotificationCenter defaultCenter ] postNotificationName:@"TODocumentCanLoadResources" object:self ];
 
-    [ [ NSNotificationCenter defaultCenter ] postNotificationName:@"TOOpenGLWindowContextReady" object:self ];
+    if ( [[ NPEngineCore instance ] isReady ] == NO )
+    {
+        [[ NPEngineCore instance ] setup ];
+    }
+
+    [(TODocument *)[ self document ] loadModel ];
+
 
 /*      timer = [NSTimer scheduledTimerWithTimeInterval:0.015
                                                target:self

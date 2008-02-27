@@ -23,9 +23,9 @@
 
 -(id) initWithFrame: (NSRect)frameRect
 {
-    [super initWithFrame: frameRect];
+    [ super initWithFrame: frameRect ];
 
-    [self setPostsFrameChangedNotifications: YES];
+    [ self setPostsFrameChangedNotifications: YES ];
 
     [ [ NSNotificationCenter defaultCenter ] addObserver:self
                                                 selector:@selector(frameChanged:)
