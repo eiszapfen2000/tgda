@@ -71,7 +71,6 @@
         [ name release ];
 
         name = [ newName retain ];
-
     }
 }
 

@@ -60,7 +60,7 @@
     return fileName;
 }
 
-- (void) setFileName: (NSString *) newFileName
+- (void) setFileName:(NSString *)newFileName
 {
     if ( fileName != newFileName )
     {
@@ -72,24 +72,24 @@
     }
 }
 
-- (void) write: (NSString *) string
+- (void) write:(NSString *)string
 {
     NSString * line = [ string stringByAppendingString: @"\r\n" ]; 
 
-    NSData * data = [ line dataUsingEncoding: NSUTF8StringEncoding allowLossyConversion: NO ];
+    NSData * data = [ line dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO ];
 
-    [ logFile writeData: data ];
+    [ logFile writeData:data ];
     [ logFile synchronizeFile ];
 }
 
-- (void) writeWarning: (NSString *) string
+- (void) writeWarning:(NSString *)string
 {
-    [ self write: [ @"[WARNING]: " stringByAppendingString: string ] ];
+    [ self write:[ @"[WARNING]: " stringByAppendingString:string ] ];
 }
 
-- (void) writeError: (NSString *) string
+- (void) writeError:(NSString *)string
 {
-    [ self write: [ @"[ERROR]: " stringByAppendingString: string ] ];
+    [ self write:[ @"[ERROR]: " stringByAppendingString:string ] ];
 }
 
 @end

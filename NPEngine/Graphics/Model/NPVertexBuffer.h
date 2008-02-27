@@ -78,4 +78,10 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer);
 - (void) render;
 - (void) renderElementWithFirstindex:(Int)firstIndex andLastindex:(Int)lastIndex;
 
+- (void) setPositions:(Float *)newPositions;
+- (void) setNormals:(Float *)newNormals withElementsForNormal:(Int)newElementsForNormal;
+- (void) setColors:(Float *)newColors withElementsForColor:(Int)newElementsForColor;
+- (void) setWeights:(Float *)newWeights withElementsForWeights:(Int)newElementsForWeights;
+- (void) setTextureCoordinates:(Float *)textureCoordinates forSet:(Int)textureCoordinateSet;
+
 @end

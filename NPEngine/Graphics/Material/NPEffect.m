@@ -24,6 +24,8 @@
         NPLOG(@"Parent must be of Class NPEffectManager");
     }
 
+    [ self clearDefaultSemantics ];
+
     return self;
 }
 
@@ -41,8 +43,9 @@
 
     effect = cgCreateEffect( [ (NPEffectManager *)parent cgContext ], [ [ file readEntireFile ] bytes ], NULL );
 
-    if ( effect == NULL )
+    if ( cgIsEffect(effect) == CG_FALSE )
     {
+        NPLOG(([NSString stringWithFormat:@"%@: error while creating effect",fileName]));
         return NO;
     }
 
@@ -57,11 +60,13 @@
         }
         else
         {
-            NPLOG(([NSString stringWithFormat:@"Technique %s validated",cgGetTechniqueName(technique)]));
+            NPLOG(([NSString stringWithFormat:@"Technique \"%s\" validated",cgGetTechniqueName(technique)]));
         }
 
         technique = cgGetNextTechnique(technique);
     }
+
+    [ self bindDefaultSemantics ];
 
     ready = YES;
 
@@ -82,13 +87,63 @@
     return ready;
 }
 
+
+- (void) clearDefaultSemantics
+{
+    defaultSemantics.modelMatrix = NULL;
+    defaultSemantics.viewMatrix = NULL;
+    defaultSemantics.projectionMatrix = NULL;
+    defaultSemantics.modelViewProjectionMatrix = NULL;
+
+    for ( Int i = 0; i < 8; i++ )
+    {
+        defaultSemantics.sampler[i] = NULL;
+    }
+}
+
+- (CGparameter) bindDefaultSemantic:(NSString *)semanticName;
+{
+    CGparameter param = cgGetEffectParameterBySemantic(effect, [ semanticName cStringUsingEncoding:NSASCIIStringEncoding ]);
+
+    if ( cgIsParameter(param) == CG_TRUE )
+    {
+        NPLOG(([NSString stringWithFormat:@"%@ found",semanticName]));
+        NPLOG(([NSString stringWithFormat:@"%s ",cgGetTypeString(cgGetParameterType(param))]));
+        return param;
+    }
+
+    return NULL;
+}
+
+- (void) bindDefaultSemantics
+{
+    defaultSemantics.modelMatrix = [ self bindDefaultSemantic:@"NPMODEL" ];
+    defaultSemantics.viewMatrix = [ self bindDefaultSemantic:@"NPVIEW" ];;
+    defaultSemantics.projectionMatrix = [ self bindDefaultSemantic:@"NPPROJECTION" ];;
+    defaultSemantics.modelViewProjectionMatrix = [ self bindDefaultSemantic:@"NPMODELVIEWPROJECTION" ];
+
+    NSString * samplerSemantic = @"COLORMAP";
+
+    for ( Int i = 0; i < 8; i++ )
+    {
+        NSString * ithSampler = [ samplerSemantic stringByAppendingFormat:@"%d",i ];
+        defaultSemantics.sampler[i] = [ self bindDefaultSemantic:ithSampler ];
+    }
+}
+
+- (void) activate
+{
+
+}
+
 - (void) uploadFloatParameterWithName:(NSString *)parameterName andValue:(Float *)f
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
-    if ( parameter != NULL )
+    if ( cgIsParameter(parameter) == CG_TRUE )
     {
-        if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_SCALAR )
+        //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_SCALAR )
+        if ( cgGetParameterType(parameter) == CG_FLOAT )
         {
             cgSetParameter1f(parameter,*f);
         }
@@ -99,9 +154,10 @@
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
-    if ( parameter != NULL )
+    if ( cgIsParameter(parameter) == CG_TRUE )
     {
-        if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_SCALAR )
+        //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_SCALAR )
+        if ( cgGetParameterType(parameter) == CG_INT )
         {
             cgSetParameter1i(parameter,*i);
         }
@@ -112,9 +168,10 @@
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
-    if ( parameter != NULL )
+    if ( cgIsParameter(parameter) == CG_TRUE )
     {
-        if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_VECTOR )
+        //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_VECTOR )
+        if ( cgGetParameterType(parameter) == CG_FLOAT2 )
         {
             cgSetParameter2f(parameter,FV_X(*vector),FV_Y(*vector));
         }
@@ -125,9 +182,10 @@
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
-    if ( parameter != NULL )
+    if ( cgIsParameter(parameter) == CG_TRUE )
     {
-        if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_VECTOR )
+        //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_VECTOR )
+        if ( cgGetParameterType(parameter) == CG_FLOAT3 )
         {
             cgSetParameter3f(parameter,FV_X(*vector),FV_Y(*vector),FV_Z(*vector));
         }
@@ -138,9 +196,10 @@
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
-    if ( parameter != NULL )
+    if ( cgIsParameter(parameter) == CG_TRUE )
     {
-        if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_VECTOR )
+        //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_VECTOR )
+        if ( cgGetParameterType(parameter) == CG_FLOAT4 )
         {
             cgSetParameter4f(parameter,FV_X(*vector),FV_Y(*vector),FV_Z(*vector),FV_W(*vector));
         }
@@ -151,14 +210,15 @@
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
-    if ( parameter != NULL )
+    if ( cgIsParameter(parameter) == CG_TRUE )
     {
-        if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_MATRIX )
+        //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_MATRIX )
+        if ( cgGetParameterType(parameter) == CG_FLOAT2x2 )
         {
-            if ( cgGetParameterRows(parameter) == 2 && cgGetParameterColumns(parameter) == 2 )
-            {
+            //if ( cgGetParameterRows(parameter) == 2 && cgGetParameterColumns(parameter) == 2 )
+            //{
                 cgSetMatrixParameterfc(parameter,(const float *)FM_ELEMENTS(*matrix));
-            }
+            //}
         }
     }
 }
@@ -167,14 +227,15 @@
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
-    if ( parameter != NULL )
+    if ( cgIsParameter(parameter) == CG_TRUE )
     {
-        if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_MATRIX )
+        //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_MATRIX )
+        if ( cgGetParameterType(parameter) == CG_FLOAT3x3 )
         {
-            if ( cgGetParameterRows(parameter) == 3 && cgGetParameterColumns(parameter) == 3 )
-            {
+            //if ( cgGetParameterRows(parameter) == 3 && cgGetParameterColumns(parameter) == 3 )
+            //{
                 cgSetMatrixParameterfc(parameter,(const float *)FM_ELEMENTS(*matrix));
-            }
+            //}
         }
     }
 }
@@ -183,16 +244,28 @@
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
-    if ( parameter != NULL )
+    if ( cgIsParameter(parameter) == CG_TRUE )
     {
-        if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_MATRIX )
+        //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_MATRIX )
+        if ( cgGetParameterType(parameter) == CG_FLOAT4x4 )
         {
-            if ( cgGetParameterRows(parameter) == 4 && cgGetParameterColumns(parameter) == 4 )
-            {
+            //if ( cgGetParameterRows(parameter) == 4 && cgGetParameterColumns(parameter) == 4 )
+            //{
                 cgSetMatrixParameterfc(parameter,(const float *)FM_ELEMENTS(*matrix));
-            }
+            //}
         }
     }
+}
+
+- (void) uploadSampler2DWithParameter:(CGparameter)parameter andID:(GLuint)textureID
+{
+    if ( cgIsParameter(parameter) == CG_TRUE )
+    {
+        if ( cgGetParameterType(parameter) == CG_SAMPLER2D )
+        {
+            cgGLSetupSampler(parameter, textureID);
+        }
+    }    
 }
 
 @end

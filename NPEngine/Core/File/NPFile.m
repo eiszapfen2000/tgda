@@ -162,8 +162,7 @@
     for ( Int i = 0; i < lines; i++ )
     {
         NSString * line = [ self readSUXString ];
-        //NSLog(line);
-        [ script addObject: line ];
+        [ script addObject:line ];
         [ line release ];
     }
 

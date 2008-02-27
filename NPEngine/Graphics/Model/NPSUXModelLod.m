@@ -1,5 +1,6 @@
 #import "NPSUXModelLod.h"
 #import "NPSUXModelGroup.h"
+#import "Core/NPEngineCore.h"
 
 @implementation NPSUXModelLod
 
@@ -38,25 +39,19 @@
     [ self setFileName:[ file fileName ] ];
 
     NSString * lodName = [ file readSUXString ];
-
-    if ( lodName == nil )
-    {
-        return NO;
-    }
-
     [ self setName: lodName ];
     [ lodName release ];
-    NSLog(@"LOD Name: %@",lodName);
+    NPLOG(([NSString stringWithFormat:@"LOD Name: %@", lodName]));
 
     [ file readBool:&autoenable ];
     [ file readFloat:&minDistance ];
     [ file readFloat:&maxDistance ];
-    NSLog(@"Min Distance:%f Max Distance %f",minDistance,maxDistance);
+    NPLOG(([NSString stringWithFormat:@"Min Distance:%f Max Distance %f",minDistance,maxDistance]));
 
     boundingBoxMinimum = [ file readFVector3 ];
     boundingBoxMaximum = [ file readFVector3 ];
     [ file readFloat:&boundingSphereRadius ];
-    NSLog(@"Bounding Sphere %f",boundingSphereRadius);
+    NPLOG(([NSString stringWithFormat:@"Bounding Sphere %f",boundingSphereRadius]));
 
     if ( [ vertexBuffer loadFromFile:file ] == NO )
     {
@@ -64,7 +59,7 @@
     }
 
     [ file readInt32:&groupCount ];
-    NSLog(@"Group Count: %d",groupCount);
+    NPLOG(([NSString stringWithFormat:@"Group Count: %d",groupCount]));
 
     for ( Int i = 0; i < groupCount; i++ )
     {

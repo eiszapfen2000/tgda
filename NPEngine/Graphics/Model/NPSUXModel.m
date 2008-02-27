@@ -3,6 +3,7 @@
 #import "NPSUXModel.h"
 #import "NPSUXModelLod.h"
 #import "Graphics/Material/NPSUXMaterialInstance.h"
+#import "Core/NPEngineCore.h"
 
 @implementation NPSUXModel
 
@@ -37,19 +38,19 @@
 
     if ( strncmp(suxHeader,headerFromFile,8) != 0 )
     {
-        NSLog(@"wrong header version");
+        NPLOG_ERROR(([NSString stringWithFormat:@"%@: wrong header version", [file fileName ]]));
 
         return NO;
     }
 
     NSString * modelName = [ file readSUXString ];
     [ self setName:modelName ];
-    NSLog(@"Model Name: %@",modelName);
     [ modelName release ];
+    NPLOG(([NSString stringWithFormat:@"Model Name: %@", name]));
 
     Int materialCount = 0;
     [ file readInt32:&materialCount ];
-    NSLog(@"Material Count: %d",materialCount);
+    NPLOG(([NSString stringWithFormat:@"Material Count: %d", materialCount]));
 
     for ( Int i = 0; i < materialCount; i++ )
     {
@@ -65,7 +66,7 @@
 
     Int lodCount = 0;
     [ file readInt32:&lodCount ];
-    NSLog(@"LOD count: %d",lodCount);
+    NPLOG(([NSString stringWithFormat:@"LOD count: %d", lodCount]));
 
     for ( Int i = 0; i < lodCount; i++ )
     {
