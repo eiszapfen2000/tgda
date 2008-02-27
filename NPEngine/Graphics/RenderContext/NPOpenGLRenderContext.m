@@ -57,8 +57,6 @@
     return YES;
 }
 
-#define glewGetContext() (&glewContext)
-
 - (void) connectToView:(NSView *)view
 {
     //NSLog(@"connect - not ready");
@@ -66,16 +64,6 @@
     {
         //NSLog(@"np context connectToView");
         [ context setView:view ];
-
-        /*if ( glewInitialised == NO )
-        {
-            GLenum err = glewInit();
-
-            if (GLEW_OK != err)
-            {
-                NSLog(@"glewInit failed");
-            }
-        }*/
     }
 }
 
@@ -105,7 +93,9 @@
 {
     if ( glewInitialised == NO )
     {
+#define glewGetContext() (&glewContext)
         GLenum err = glewInit();
+#undef glewGetContext()
 
         if (GLEW_OK != err)
         {

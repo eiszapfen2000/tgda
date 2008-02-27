@@ -7,13 +7,17 @@ libNPEngineGraphicsMaterial_OBJC_FILES = \
 NPEffect.m \
 NPEffectManager.m \
 NPSUXMaterial.m \
-NPSUXMaterialInstance.m
+NPSUXMaterialInstance.m \
+NPTexture.m \
+NPTextureManager.m
 
 libNPEngineGraphicsMaterial_HEADER_FILES = \
 NPEffect.h \
 NPEffectManager.h \
 NPSUXMaterial.h \
-NPSUXMaterialInstance.h
+NPSUXMaterialInstance.h \
+NPTexture.h \
+NPTextureManager.h
 
 libNPEngineGraphicsMaterial_LIBRARIES_DEPEND_UPON += -lNPEngineCoreUtilities
 

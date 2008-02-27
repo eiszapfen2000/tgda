@@ -101,26 +101,26 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     Int vertexCount;
 
     [ file readInt32:&(vertices.format.elementsForNormal) ];
-    NSLog(@"Elements for Normal: %d",vertices.format.elementsForNormal);
+    NPLOG(([NSString stringWithFormat:@"Elements for Normal: %d",vertices.format.elementsForNormal]));
 
     [ file readInt32:&(vertices.format.elementsForColor) ];
-    NSLog(@"Elements for Color: %d",vertices.format.elementsForColor);
+    NPLOG(([NSString stringWithFormat:@"Elements for Color: %d",vertices.format.elementsForColor]));
 
     [ file readInt32:&(vertices.format.elementsForWeights) ];
-    NSLog(@"Elements for Weights: %d",vertices.format.elementsForWeights);
+    NPLOG(([NSString stringWithFormat:@"Elements for Weights: %d",vertices.format.elementsForWeights]));
 
     for ( Int i = 0; i < 8; i++ )
     {
         [ file readInt32:&(vertices.format.elementsForTextureCoordinateSet[i]) ];
-        NSLog(@"Elements for Texture Coordinate %d: %d",i,vertices.format.elementsForTextureCoordinateSet[i]);
+        NPLOG(([NSString stringWithFormat:@"Elements for Texture Coordinate %d: %d",i,vertices.format.elementsForTextureCoordinateSet[i]]));
     }
 
     [ file readInt32:&(vertices.format.maxTextureCoordinateSet) ];
-    NSLog(@"Max Texture Coordinate Set: %d",vertices.format.maxTextureCoordinateSet);
+    NPLOG(([NSString stringWithFormat:@"Max Texture Coordinate Set: %d",vertices.format.maxTextureCoordinateSet]));
 
     [ file readBool:&(vertices.indexed) ];
     [ file readInt32:&vertexCount ];
-    NSLog(@"Vertex Count: %d",vertexCount);
+    NPLOG(([NSString stringWithFormat:@"Vertex Count: %d",vertexCount]));
 
     if ( vertexCount <= 0 )
     {
@@ -129,10 +129,10 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     if ( vertices.indexed == YES )
     {
-        NSLog(@"indexed");
+        NPLOG(@"indexed");
         
         [ file readInt32:&indexCount ];
-        NSLog(@"Index count: %d",indexCount);
+        NPLOG(([NSString stringWithFormat:@"Index count: %d",indexCount]));
 
         if ( indexCount <= 0 )
         {
@@ -170,8 +170,6 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
             textureCoordinatesCount += (vertexCount * vertices.format.elementsForTextureCoordinateSet[i]);
         }
     }
-
-    NSLog(@"texcoord count: %d",textureCoordinatesCount);
 
     if ( textureCoordinatesCount > 0 )
     {

@@ -13,10 +13,10 @@
 - (void) dealloc;
 
 - (NSString *) fileName;
-- (void) setFileName: (NSString *) newFileName;
+- (void) setFileName:(NSString *)newFileName;
 
-- (void) write: (NSString *) string;
-- (void) writeWarning: (NSString *) string;
-- (void) writeError: (NSString *) string;
+- (void) write:(NSString *)string;
+- (void) writeWarning:(NSString *)string;
+- (void) writeError:(NSString *)string;
 
 @end

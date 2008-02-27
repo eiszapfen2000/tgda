@@ -89,15 +89,9 @@
     NSMutableArray * cgfxFileLineElements = splitStringUsingCharacterSet([ materialInstanceScript objectAtIndex:0 ], set);
 
     NSString * fileNameWithoutQuotes =  [ removeLeadingAndTrailingQuotes([ cgfxFileLineElements objectAtIndex:1 ]) retain ];
+    NPLOG(([NSString stringWithFormat:@"CgFX file: %@", fileNameWithoutQuotes]));
 
-    NPEffect * nix = [ [ [ NPEngineCore instance ] effectManager ] loadEffectFromPath:fileNameWithoutQuotes ];
-
-    if ( nix == nil )
-        NSLog(@"GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH");
-
-    //NSLog([cgfxFileLineElements description]);
-
-    //[ self parseCGFXFileLine:cgfxFileLineElements ];
+    NPEffect * effect = [[[ NPEngineCore instance ] effectManager ] loadEffectFromPath:fileNameWithoutQuotes ];
 }
 
 
@@ -108,10 +102,12 @@
     NSString * materialInstanceName = [ file readSUXString ];
     [ self setName:materialInstanceName ];
     [ materialInstanceName release ];
+    NPLOG(([NSString stringWithFormat:@"Material Instance Name: %@", name]));
 
     NSString * materialScriptFileName = [ file readSUXString ];
     [ self setMaterialFileName:materialScriptFileName ];
     [ materialScriptFileName release ];
+    NPLOG(([NSString stringWithFormat:@"Material Script File: %@", materialFileName]));
 
     materialInstanceScript = [ file readSUXScript ];
 

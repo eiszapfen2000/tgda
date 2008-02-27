@@ -35,7 +35,8 @@
 - (id) loadModelFromPath:(NSString *)path
 {
     NSString * absolutePath = [ [ [ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
-    NSLog(absolutePath);
+
+    NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, absolutePath]));
 
     if ( [ absolutePath isEqual:path ] == NO )
     {

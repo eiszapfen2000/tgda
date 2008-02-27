@@ -7,11 +7,21 @@
 #import "Cg/cg.h"
 #import "Cg/cgGL.h"
 
+typedef struct
+{
+    CGparameter modelMatrix;
+    CGparameter viewMatrix;
+    CGparameter projectionMatrix;
+    CGparameter modelViewProjectionMatrix;
+    CGparameter sampler[8];
+}
+NpDefaultSemantics;
+
 @interface NPEffect : NPResource < NPPResource >
 {
     CGeffect effect;
-
     CGtechnique defaultTechnique;
+    NpDefaultSemantics defaultSemantics;
 }
 
 - (id) init;
@@ -23,6 +33,12 @@
 - (void) reset;
 - (BOOL) isReady;
 
+- (void) clearDefaultSemantics;
+- (CGparameter) bindDefaultSemantic:(NSString *)semanticName;
+- (void) bindDefaultSemantics;
+
+- (void) activate;
+
 - (void) uploadFloatParameterWithName:(NSString *)parameterName andValue:(Float *)f;
 - (void) uploadIntParameterWithName:(NSString *)parameterName andValue:(Int32 *)i;
 
@@ -33,5 +49,7 @@
 - (void) uploadFMatrix2ParameterWithName:(NSString *)parameterName andValue:(FMatrix2 *)matrix;
 - (void) uploadFMatrix3ParameterWithName:(NSString *)parameterName andValue:(FMatrix3 *)matrix;
 - (void) uploadFMatrix4ParameterWithName:(NSString *)parameterName andValue:(FMatrix4 *)matrix;
+
+- (void) uploadSampler2DWithParameter:(CGparameter)parameter andID:(GLuint)textureID;
 
 @end
