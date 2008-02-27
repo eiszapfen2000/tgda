@@ -9,6 +9,6 @@
 
 - (id) init;
 
-- (void) newContextReady;
+- (void) newContextReady:(NSNotification *)aNot;
 
 @end

@@ -3,9 +3,25 @@
 #import "TODocument.h"
 #import "TORNGWindowController.h"
 #import "TOOGLWindowController.h"
+#import "Graphics/RenderContext/NPOpenGLRenderContext.h"
+#import "Graphics/Model/NPModelManager.h"
+#import "Core/NPEngineCore.h"
 
 
 @implementation TODocument
+
+- (id) init
+{
+    NSLog(@"doc");
+    self = [ super init ];
+
+    /*[ [ NSNotificationCenter defaultCenter ] addObserver:self
+                                                selector:@selector(loadModel:)
+                                                    name:@"TODocumentCanLoadResources"
+                                                  object:nil];*/
+
+    return self;
+}
 
 - (BOOL) loadDataRepresentation:(NSData*)representation ofType:(NSString*)type
 {
@@ -19,9 +35,33 @@
 
 - (void) makeWindowControllers
 {
-	[ self addWindowController: [ [ TOOGLWindowController alloc ] init ] ];
+    glWindowController = [ [ TOOGLWindowController alloc ] init ];
+    rngWindowController = [ [ TORNGWindowController alloc ] init ];
 
-	[ self addWindowController: [ [ TORNGWindowController alloc ] init ] ];
+	[ self addWindowController:glWindowController ];
+	[ self addWindowController:rngWindowController];
+
+    NSLog(@"blalvla");
+}
+
+- (id) glWindowController
+{
+    return glWindowController;
+}
+
+- (id) rngWindowController
+{
+    return rngWindowController;
+}
+
+- (void) loadModel
+{
+    NSLog(@"loadModel");
+    [[[ glWindowController openglView ] renderContext ] activate ];
+
+    [[[ NPEngineCore instance ] modelManager ] loadModelFromPath:@"camera.model" ];
+
+
 }
 
 @end

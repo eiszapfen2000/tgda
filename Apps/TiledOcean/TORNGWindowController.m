@@ -74,6 +74,7 @@
 
 - (void) windowDidLoad
 {
+    NSLog(@"rng didload");
     [ rngPopUpButtonLeft removeAllItems ];
 
     [ self addItemsToPopUpButton: rngPopUpButtonLeft ];
