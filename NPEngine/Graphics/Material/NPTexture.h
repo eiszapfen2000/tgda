@@ -3,6 +3,7 @@
 #import "Core/Resource/NPPResource.h"
 
 @class NPFile;
+@class NPImage;
 
 typedef enum NPPixelFormat
 {
@@ -22,12 +23,45 @@ typedef enum NPPixelFormat
 }
 NPPixelFormat;
 
+#define NP_TEXTURE_FILTER_NEAREST                   0
+#define NP_TEXTURE_FILTER_LINEAR                    1
+#define NP_TEXTURE_FILTER_NEAREST_MIPMAP_NEAREST    2
+#define NP_TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST     3
+#define NP_TEXTURE_FILTER_NEAREST_MIPMAP_LINEAR     4
+#define NP_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR      5
+
+#define NP_TEXTURE_WRAPPING_CLAMP                   0
+#define NP_TEXTURE_WRAPPING_CLAMP_TO_EDGE           1
+#define NP_TEXTURE_WRAPPING_CLAMP_TO_BORDER         2
+#define NP_TEXTURE_WRAPPING_REPEAT                  3
+
+typedef struct NpTextureFilterState
+{
+    BOOL mipmapping;
+    Int minFilter;
+    Int magFilter;
+    Float anisotropy;
+}
+NpTextureFilterState;
+
+typedef struct NpTextureWrapState
+{
+    Int wrapS;
+    Int wrapT;
+}
+NpTextureWrapState;
+
+void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState);
+
+void np_texture_filter_state_reset(NpTextureFilterState * textureFilterState);
+
 @interface NPTexture : NPResource < NPPResource >
 {
     NPPixelFormat pixelFormat;
-    Int width;
-    Int height;
+    NpTextureFilterState textureFilterState;
+    NpTextureWrapState textureWrapState;
     UInt textureID;
+    NPImage * image;
 }
 
 - (id) init;
@@ -40,6 +74,16 @@ NPPixelFormat;
 - (void) reset;
 - (BOOL) isReady;
 
+- (void) setTextureFilterState:(NpTextureFilterState)newTextureFilterState;
+- (void) setMipMapping:(BOOL)newMipMapping;
+- (void) setTextureMinFilter:(Int)newTextureMinFilter;
+- (void) setTextureMaxFilter:(Int)newTextureMaxFilter;
+- (void) setTextureAnisotropyFilter:(Float)newTextureAnisotropyFilter;
+- (void) setTextureWrapState:(NpTextureWrapState)newTextureWrapState;
+- (void) setTextureWrapS:(Int)newWrapS;
+- (void) setTextureWrapT:(Int)newWrapT;
+
 - (void) uploadToGL;
 
 @end
+

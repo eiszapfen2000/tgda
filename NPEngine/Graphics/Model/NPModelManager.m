@@ -38,7 +38,7 @@
 
     NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, absolutePath]));
 
-    if ( [ absolutePath isEqual:path ] == NO )
+    if ( [ absolutePath isEqual:@"" ] == NO )
     {
         NPSUXModel * model = [ models objectForKey:absolutePath ];
 

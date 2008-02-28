@@ -4,10 +4,12 @@ PACKAGE_NAME=NPEngineGraphicsImage
 LIBRARY_NAME=libNPEngineGraphicsImage
 
 libNPEngineGraphicsImage_HEADER_FILES = \
-NPImage.h
+NPImage.h \
+NPImageManager.h
 
 libNPEngineGraphicsImage_OBJC_FILES = \
-NPImage.m
+NPImage.m \
+NPImageManager.m
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/library.make

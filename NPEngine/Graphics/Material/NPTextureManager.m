@@ -4,10 +4,6 @@
 #import "Core/File/NPPathManager.h"
 #import "Core/NPEngineCore.h"
 
-#import "IL/il.h"
-#import "IL/ilu.h"
-#import "IL/ilut.h"
-
 @implementation NPTextureManager
 
 - (id) init
@@ -38,13 +34,7 @@
 
 - (void) setup
 {
-    NPLOG(@"NPTextureManager setup...");
 
-    ilInit();
-    iluInit();
-    ilutInit();
-
-    NPLOG(@"...done");
 }
 
 - (id) loadTextureFromPath:(NSString *)path
@@ -52,7 +42,7 @@
     NSString * absolutePath = [ [ [ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
     NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, absolutePath]));
 
-    if ( [ absolutePath isEqual:path ] == NO )
+    if ( [ absolutePath isEqual:@"" ] == NO )
     {
         NPTexture * texture = [ textures objectForKey:absolutePath ];
 

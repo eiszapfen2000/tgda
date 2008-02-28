@@ -1,15 +1,9 @@
 #import "NPImage.h"
+#import "Core/NPEngineCore.h"
 
 #import "IL/il.h"
 #import "IL/ilu.h"
 #import "IL/ilut.h"
-
-void npimage_initialise()
-{
-    ilInit();
-    iluInit();
-    ilutInit();
-}
 
 @implementation NPImage
 
@@ -29,9 +23,8 @@ void npimage_initialise()
 
     pixelFormat = NP_PIXELFORMAT_NONE;
     width = height = 0;
-    mipMapLevels = 1;
 
-    imageData = [ [ NSMutableArray alloc ] init ];
+    imageData = nil;
 
     return self;
 }
@@ -58,11 +51,6 @@ void npimage_initialise()
     return pixelFormat;
 }
 
-- (Int) mipMapLevels
-{
-    return mipMapLevels;
-}
-
 - (BOOL) loadFromFile:(NPFile *)file
 {
     return [ self loadFromFile:file withMipMaps:NO ];
@@ -84,8 +72,8 @@ void npimage_initialise()
     if ( !success )
     {
         ILenum error = ilGetError();
-        NSLog( [ NSString stringWithCString:iluErrorString(error) encoding:NSUTF8StringEncoding ] );
-		NSLog( [ @"Could not load image: " stringByAppendingString: fileName ] );
+        NPLOG(( [ NSString stringWithCString:iluErrorString(error) encoding:NSASCIIStringEncoding ] ));
+		NPLOG(( [ @"Could not load image: " stringByAppendingString: fileName ] ));
 
 		return NO;
     }
@@ -129,7 +117,7 @@ void npimage_initialise()
                 }
 			    default:
                 {
-                    NSLog(@"Unknown number of bytes per pixel");
+                    NPLOG(@"Unknown number of bytes per pixel");
 
                     return NO;
                 }
@@ -163,7 +151,7 @@ void npimage_initialise()
                 }
 			    default:
                 {
-                    NSLog(@"Unknown number of bytes per pixel");
+                    NPLOG(@"Unknown number of bytes per pixel");
 
                     return NO;
                 }
@@ -174,64 +162,25 @@ void npimage_initialise()
 
 	    default:
         {
-            NSLog(@"Unknown image type");
+            NPLOG(@"Unknown image type");
 
             return NO;
         }
 	}
 
-    Int mipmapwidth = width;
-    Int mipmapheight = height;
+    UInt length = 0;
 
-    if ( generateMipMaps )
+    if ( type == IL_UNSIGNED_BYTE )
     {
-		iluImageParameter(ILU_FILTER, ILU_BILINEAR);
-
-        mipMapLevels = 1;
-
-        while ( mipmapwidth > 1 || mipmapheight > 1 )
-        {
-            mipmapheight /= 2;
-            mipmapwidth /= 2;
-
-            mipMapLevels++;
-        }
-    }
-    else
-    {
-        mipMapLevels = 1;
+        length = width * height * bytesperpixel * sizeof(Byte);
     }
 
-    mipmapwidth = width;
-    mipmapheight = height;
-
-    for ( Int i = 0; i < mipMapLevels; i++ )
+    if ( type == IL_FLOAT )
     {
-        UInt length = 0;
-
-        if ( type == IL_UNSIGNED_BYTE )
-        {
-            length = mipmapwidth * mipmapheight * bytesperpixel * sizeof(Byte);
-        }
-
-        if ( type == IL_FLOAT )
-        {
-            length = mipmapwidth * mipmapheight * bytesperpixel * sizeof(Float);
-        }
-
-        NSData * tmp = [ [ NSData alloc ] initWithBytes:ilGetData() length:length ];
-
-        [ imageData addObject:tmp ];
-        [ tmp release ];
-
-        mipmapwidth /= 2;
-        mipmapheight /= 2;
-
-        if ( i < mipMapLevels - 1 )
-        {
-            iluScale(mipmapwidth, mipmapheight, 1);
-        }
+        length = width * height * bytesperpixel * sizeof(Float);
     }
+
+    imageData = [ [ NSData alloc ] initWithBytes:ilGetData() length:length ];
 
 	ilDeleteImages(1, &image);
 
@@ -246,9 +195,8 @@ void npimage_initialise()
 
     pixelFormat = NP_PIXELFORMAT_NONE;
     width = height = 0;
-    mipMapLevels = 1;
 
-    [ imageData removeAllObjects ];
+    [ imageData release ];
 }
 
 - (BOOL) isReady

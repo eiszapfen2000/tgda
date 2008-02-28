@@ -6,6 +6,8 @@
 #import "Core/File/NPPathManager.h"
 #import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
 #import "Graphics/Model/NPModelManager.h"
+#import "Graphics/Image/NPImageManager.h"
+#import "Graphics/Material/NPTextureManager.h"
 #import "Graphics/Material/NPEffectManager.h"
 
 
@@ -69,6 +71,8 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     renderContextManager = [ [ NPOpenGLRenderContextManager alloc ] initWithName:@"NPEngine Core RenderContext Manager" parent:self ];
 
     modelManager = [ [ NPModelManager alloc ] initWithName:@"NPEngine Model Manager" parent:self ];
+    imageManager = [ [ NPImageManager alloc ] initWithName:@"NPEngine Image Manager" parent:self ];
+    textureManager = [ [ NPTextureManager alloc ] initWithName:@"NPEngine Texture Manager" parent:self ];
     effectManager = [ [ NPEffectManager alloc ] initWithName:@"NPEngine Effect Manager" parent:self ];
 
     ready = NO;
@@ -81,6 +85,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     NPLOG(@"NPEngine Core setup....");
 
     [ pathManager setup ];
+    [ imageManager setup ];
     [ effectManager setup ];
 
     ready = YES;
@@ -113,19 +118,29 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     return pathManager;
 }
 
+- (NPOpenGLRenderContextManager *)renderContextManager
+{
+    return renderContextManager;
+}
+
 - (NPModelManager *)modelManager
 {
     return modelManager;
 }
 
+- (NPImageManager *)imageManager
+{
+    return imageManager;
+}
+
+- (NPTextureManager *)textureManager
+{
+    return textureManager;
+}
+
 - (NPEffectManager *)effectManager
 {
     return effectManager;
-}
-
-- (NPOpenGLRenderContextManager *)renderContextManager
-{
-    return renderContextManager;
 }
 
 - (id)copyWithZone:(NSZone *)zone

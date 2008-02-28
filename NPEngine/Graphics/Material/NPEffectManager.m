@@ -138,7 +138,7 @@ void np_cg_error_callback()
     NSString * absolutePath = [ [ [ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
     NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, absolutePath]));
 
-    if ( [ absolutePath isEqual:path ] == NO )
+    if ( [ absolutePath isEqual:@"" ] == NO )
     {
         NPEffect * effect = [ effects objectForKey:absolutePath ];
 

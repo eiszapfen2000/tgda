@@ -4,8 +4,6 @@
 
 @class NPFile;
 
-void npimage_initialise();
-
 typedef enum NPPixelFormat
 {
     NP_PIXELFORMAT_NONE = 0,
@@ -29,9 +27,8 @@ NPPixelFormat;
     NPPixelFormat pixelFormat;
     Int width;
     Int height;
-    Int mipMapLevels;
     
-    NSMutableArray * imageData;
+    NSData * imageData;
 }
 
 - (id) init;
@@ -42,7 +39,6 @@ NPPixelFormat;
 - (Int) width;
 - (Int) height;
 - (NPPixelFormat) pixelFormat;
-- (Int) mipMapLevels;
 
 - (BOOL) loadFromFile:(NPFile *)file;
 - (BOOL) loadFromFile:(NPFile *)file withMipMaps:(BOOL)generateMipMaps;
