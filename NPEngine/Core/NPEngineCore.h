@@ -5,6 +5,8 @@
 @class NPObjectManager;
 @class NPPathManager;
 @class NPModelManager;
+@class NPImageManager;
+@class NPTextureManager;
 @class NPEffectManager;
 @class NPOpenGLRenderContextManager;
 
@@ -14,9 +16,13 @@
     NPTimer * timer;
     NPObjectManager * objectManager;
     NPPathManager * pathManager;
-    NPModelManager * modelManager;
-    NPEffectManager * effectManager;
+
     NPOpenGLRenderContextManager * renderContextManager;
+
+    NPModelManager * modelManager;
+    NPImageManager * imageManager;
+    NPTextureManager * textureManager;
+    NPEffectManager * effectManager;
 
     BOOL ready;
 }
@@ -30,9 +36,11 @@
 - (NPTimer *)timer;
 - (NPObjectManager *)objectManager;
 - (NPPathManager *)pathManager;
-- (NPModelManager *)modelManager;
-- (NPEffectManager *)effectManager;
 - (NPOpenGLRenderContextManager *)renderContextManager;
+- (NPModelManager *)modelManager;
+- (NPImageManager *)imageManager;
+- (NPTextureManager *)textureManager;
+- (NPEffectManager *)effectManager;
 
 @end
 

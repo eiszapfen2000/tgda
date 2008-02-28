@@ -1,10 +1,25 @@
 #import "NPTexture.h"
 #import "Graphics/npgl.h"
+#import "Graphics/Image/NPImageManager.h"
 #import "Core/NPEngineCore.h"
 
 #import "IL/il.h"
 #import "IL/ilu.h"
 #import "IL/ilut.h"
+
+void np_texture_filter_state_reset(NpTextureFilterState * textureFilterState)
+{
+    textureFilterState->mipmapping = NO;
+    textureFilterState->minFilter = NP_TEXTURE_FILTER_NEAREST_MIPMAP_LINEAR;
+    textureFilterState->magFilter = NP_TEXTURE_FILTER_LINEAR;
+    textureFilterState->anisotropy = 1.0f;
+}
+
+void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
+{
+    textureWrapState->wrapS = NP_TEXTURE_WRAPPING_REPEAT;
+    textureWrapState->wrapT = NP_TEXTURE_WRAPPING_REPEAT;
+}
 
 @implementation NPTexture
 
@@ -22,8 +37,11 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    pixelFormat = NP_PIXELFORMAT_NONE;
-    width = height = 0;
+    //equals opengl default states
+    np_texture_filter_state_reset(&textureFilterState);
+    np_texture_wrap_state_reset(&textureWrapState);
+
+    image = nil;
 
     return self;
 }
@@ -47,176 +65,17 @@
     [ self setFileName:[ file fileName ] ];
     [ self setName:fileName ];
 
-	ILuint image;
-	ilGenImages(1, &image);
-	ilBindImage(image);
-
-	ILboolean success = ilLoadImage( [ fileName cString ] );
-
-    if ( !success )
-    {
-        ILenum error = ilGetError();
-        NSLog( [ NSString stringWithCString:iluErrorString(error) encoding:NSUTF8StringEncoding ] );
-		NSLog( [ @"Could not load image: " stringByAppendingString: fileName ] );
-
-		return NO;
-    }
-
-	// Get image information.
-	width = (Int)ilGetInteger(IL_IMAGE_WIDTH);
-	height = (Int)ilGetInteger(IL_IMAGE_HEIGHT);
-
-	ILint type = ilGetInteger(IL_IMAGE_TYPE);
-	ILint bytesperpixel = ilGetInteger(IL_IMAGE_BYTES_PER_PIXEL);
-	ILint format = ilGetInteger(IL_IMAGE_FORMAT);
-
-	// Convert RGB, BGR, or BGRA images to RGBA.
-	if ((type == IL_UNSIGNED_BYTE) && ((bytesperpixel == 3) || (format == IL_BGRA)))
-	{
-		ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-		format = IL_RGBA;
-		bytesperpixel = 4;
-	}
-
-	switch (type)
-	{
-	    case IL_UNSIGNED_BYTE:
-		{
-			switch (bytesperpixel)
-			{
-			    case 1:
-                {
-                    pixelFormat = NP_PIXELFORMAT_BYTE_R;
-                    break;
-                }
-			    case 2:
-                {
-                    pixelFormat = NP_PIXELFORMAT_BYTE_RG;
-                    break;
-                }
-			    case 4:
-                {
-                    pixelFormat = NP_PIXELFORMAT_BYTE_RGBA;
-                    break;
-                }
-			    default:
-                {
-                    NSLog(@"Unknown number of bytes per pixel");
-
-                    return NO;
-                }
-			}
-
-			break;
-		}
-	    case IL_FLOAT:
-		{
-			switch (bytesperpixel)
-			{
-			    case 1:
-                {
-                    pixelFormat = NP_PIXELFORMAT_FLOAT32_R;
-                    break;
-                }
-			    case 2:
-                {
-                    pixelFormat = NP_PIXELFORMAT_FLOAT32_RG;
-                    break;
-                }
-			    case 3:
-                {
-                    pixelFormat = NP_PIXELFORMAT_FLOAT32_RGB;
-                    break;
-                }
-			    case 4:
-                {
-                    pixelFormat = NP_PIXELFORMAT_FLOAT32_RGBA;
-                    break;
-                }
-			    default:
-                {
-                    NPLOG(([NSString stringWithFormat:@"%@: unknown number of bytes per pixel",fileName]));
-
-                    return NO;
-                }
-			}
-
-			break;
-		}
-
-	    default:
-        {
-            NPLOG(([NSString stringWithFormat:@"%@: unknown image type",fileName]));
-
-            return NO;
-        }
-	}
-
-    /*Int mipmapwidth = width;
-    Int mipmapheight = height;
-
-    if ( generateMipMaps )
-    {
-		iluImageParameter(ILU_FILTER, ILU_BILINEAR);
-
-        mipMapLevels = 1;
-
-        while ( mipmapwidth > 1 || mipmapheight > 1 )
-        {
-            mipmapheight /= 2;
-            mipmapwidth /= 2;
-
-            mipMapLevels++;
-        }
-    }
-    else
-    {
-        mipMapLevels = 1;
-    }
-
-    mipmapwidth = width;
-    mipmapheight = height;
-
-    for ( Int i = 0; i < mipMapLevels; i++ )
-    {
-        UInt length = 0;
-
-        if ( type == IL_UNSIGNED_BYTE )
-        {
-            length = mipmapwidth * mipmapheight * bytesperpixel * sizeof(Byte);
-        }
-
-        if ( type == IL_FLOAT )
-        {
-            length = mipmapwidth * mipmapheight * bytesperpixel * sizeof(Float);
-        }
-
-        NSData * tmp = [ [ NSData alloc ] initWithBytes:ilGetData() length:length ];
-
-        [ imageData addObject:tmp ];
-        [ tmp release ];
-
-        mipmapwidth /= 2;
-        mipmapheight /= 2;
-
-        if ( i < mipMapLevels - 1 )
-        {
-            iluScale(mipmapwidth, mipmapheight, 1);
-        }
-    }*/
-
-	ilDeleteImages(1, &image);
-
-    ready = YES;
+    image = [[[[NPEngineCore instance ] imageManager ] loadImageUsingFileHandle:file ] retain ];
 
 	return YES;
 }
 
 - (void) reset
 {
-    pixelFormat = NP_PIXELFORMAT_NONE;
-    width = height = 0;
     glDeleteTextures(1, &textureID);
+
+    np_texture_filter_state_reset(&textureFilterState);
+    np_texture_wrap_state_reset(&textureWrapState);
 
     [ super reset ];
 }
@@ -224,6 +83,67 @@
 - (BOOL) isReady
 {
     return ready;
+}
+
+- (void) setTextureFilterState:(NpTextureFilterState)newTextureFilterState
+{
+    textureFilterState = newTextureFilterState;
+}
+
+- (void) setMipMapping:(BOOL)newMipMapping
+{
+    if ( textureFilterState.mipmapping != newMipMapping )
+    {
+        textureFilterState.mipmapping = newMipMapping;
+        
+    }
+}
+
+- (void) setTextureMinFilter:(Int)newTextureMinFilter
+{
+    if ( textureFilterState.minFilter != newTextureMinFilter )
+    {
+        textureFilterState.minFilter = newTextureMinFilter;
+        
+    }
+}
+
+- (void) setTextureMaxFilter:(Int)newTextureMaxFilter
+{
+    if ( textureFilterState.magFilter != newTextureMaxFilter )
+    {
+        textureFilterState.magFilter = newTextureMaxFilter;
+        
+    }
+}
+
+- (void) setTextureAnisotropyFilter:(Float)newTextureAnisotropyFilter
+{
+    if ( textureFilterState.anisotropy != newTextureAnisotropyFilter )
+    {
+        textureFilterState.anisotropy = newTextureAnisotropyFilter;        
+    }
+}
+
+- (void) setTextureWrapState:(NpTextureWrapState)newTextureWrapState
+{
+    textureWrapState = newTextureWrapState;
+}
+
+- (void) setTextureWrapS:(Int)newWrapS
+{
+    if ( textureWrapState.wrapS != newWrapS )
+    {
+        textureWrapState.wrapS = newWrapS;
+    }
+}
+
+- (void) setTextureWrapT:(Int)newWrapT
+{
+    if ( textureWrapState.wrapT != newWrapT )
+    {
+        textureWrapState.wrapT = newWrapT;
+    }
 }
 
 - (void) uploadToGL

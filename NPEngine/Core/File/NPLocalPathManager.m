@@ -68,7 +68,6 @@
     for ( Int i = 0; i < [ localPaths count ]; i++ )
     {
         absolutePath = [ [ [ localPaths objectAtIndex:i ] stringByAppendingPathComponent:partialPath ] retain ];
-        NSLog(absolutePath);
 
         if ( isFile(absolutePath) == YES )
         {
@@ -76,7 +75,7 @@
         }
     }
 
-    return partialPath;
+    return @"";
 }
 
 @end
