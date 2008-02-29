@@ -6,6 +6,7 @@ LIBRARY_NAME=libNPEngineGraphicsMaterial
 libNPEngineGraphicsMaterial_OBJC_FILES = \
 NPEffect.m \
 NPEffectManager.m \
+NPEffectTechnique.m \
 NPSUXMaterial.m \
 NPSUXMaterialInstance.m \
 NPTexture.m \
@@ -14,6 +15,7 @@ NPTextureManager.m
 libNPEngineGraphicsMaterial_HEADER_FILES = \
 NPEffect.h \
 NPEffectManager.h \
+NPEffectTechnique.h \
 NPSUXMaterial.h \
 NPSUXMaterialInstance.h \
 NPTexture.h \

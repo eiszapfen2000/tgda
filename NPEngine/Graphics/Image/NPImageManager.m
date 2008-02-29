@@ -62,13 +62,11 @@
         if ( image == nil )
         {
             NPFile * file = [ [ NPFile alloc ] initWithName:path parent:self fileName:path ];
+            image = [ self loadImageUsingFileHandle:file ];
+            [ file release ];
+        }
 
-            return [ self loadImageUsingFileHandle:file ];
-        }
-        else
-        {
-            return image;
-        }
+        return image;
     }
 
     return nil;    
@@ -82,14 +80,12 @@
     {
         [ images setObject:image forKey:[file fileName] ];
         [ image release ];
-        [ file release ];
 
         return image;
     }
     else
     {
         [ image release ];
-        [ file release ];
 
         return nil;
     }    

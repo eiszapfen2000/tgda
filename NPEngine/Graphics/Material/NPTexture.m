@@ -1,5 +1,6 @@
 #import "NPTexture.h"
 #import "Graphics/npgl.h"
+#import "Graphics/Image/NPImage.h"
 #import "Graphics/Image/NPImageManager.h"
 #import "Core/NPEngineCore.h"
 
@@ -55,11 +56,6 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 
 - (BOOL) loadFromFile:(NPFile *)file
 {
-    return [ self loadFromFile:file withMipMaps:YES ];
-}
-
-- (BOOL) loadFromFile:(NPFile *)file withMipMaps:(BOOL)generateMipMaps
-{
     [ self reset ];
 
     [ self setFileName:[ file fileName ] ];
@@ -83,6 +79,11 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 - (BOOL) isReady
 {
     return ready;
+}
+
+- (void) activate
+{
+    glBindTexture(GL_TEXTURE_2D, textureID);    
 }
 
 - (void) setTextureFilterState:(NpTextureFilterState)newTextureFilterState
@@ -146,9 +147,62 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     }
 }
 
+- (void) setupGLWrapState
+{
+    GLint glWrapS;
+
+    switch (textureWrapState.wrapS)
+    {
+        case NP_TEXTURE_WRAPPING_CLAMP:
+        {
+            glWrapS = GL_CLAMP;
+            break;
+        }
+        case NP_TEXTURE_WRAPPING_CLAMP_TO_EDGE:
+        {
+            glWrapS = GL_CLAMP_TO_EDGE;
+            break;
+        }
+        case NP_TEXTURE_WRAPPING_CLAMP_TO_BORDER:
+        {
+            glWrapS = GL_CLAMP_TO_BORDER;
+            break;
+        }
+        case NP_TEXTURE_WRAPPING_REPEAT:
+        {
+            glWrapS = GL_REPEAT;
+            break;
+        }
+        default:
+        {
+            glWrapS = GL_REPEAT;
+            break;
+        }
+    }
+}
+
+- (void) setupGLFilterState
+{
+}
+
+- (void) setupGLFilterAndWrapState
+{
+
+}
+
 - (void) uploadToGL
 {
     glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    if (textureFilterState.mipmapping == YES )
+    {
+        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+    }
+
+    glTexImage2D(GL_TEXTURE_2D, 0, 4, [image width], [image height], 0, GL_RGBA, GL_UNSIGNED_BYTE, [[image imageData] bytes]);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 }
 
 @end

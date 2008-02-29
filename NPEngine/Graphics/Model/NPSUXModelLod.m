@@ -1,5 +1,6 @@
 #import "NPSUXModelLod.h"
 #import "NPSUXModelGroup.h"
+#import "NPVertexBuffer.h"
 #import "Core/NPEngineCore.h"
 
 @implementation NPSUXModelLod
@@ -26,7 +27,7 @@
     boundingBoxMaximum = NULL;
     boundingSphereRadius = 0;
 
-    vertexBuffer = [ [ NPVertexBuffer alloc ] initWithParent:self ];
+    vertexBuffer = nil;
 
     groupCount = 0;
     groups = [ [ NSMutableArray alloc ] init ];
@@ -53,6 +54,8 @@
     [ file readFloat:&boundingSphereRadius ];
     NPLOG(([NSString stringWithFormat:@"Bounding Sphere %f",boundingSphereRadius]));
 
+    vertexBuffer = [ [ NPVertexBuffer alloc ] initWithParent:self ];
+
     if ( [ vertexBuffer loadFromFile:file ] == NO )
     {
         return NO;
@@ -63,7 +66,7 @@
 
     for ( Int i = 0; i < groupCount; i++ )
     {
-        NPSUXModelGroup * group = [ [ NPSUXModelGroup alloc ] init ];
+        NPSUXModelGroup * group = [ [ NPSUXModelGroup alloc ] initWithParent:self ];
 
         if ( [ group loadFromFile:file ] == YES )
         {
@@ -96,6 +99,27 @@
 - (BOOL) isReady
 {
     return ready;
+}
+
+- (NPVertexBuffer *) vertexBuffer
+{
+    return vertexBuffer;
+}
+
+- (void) uploadToGL
+{
+    [ vertexBuffer uploadVBOWithUsageHint:NP_VBO_UPLOAD_ONCE_RENDER_OFTEN ];
+}
+
+- (void) render
+{
+    NSEnumerator * enumerator = [ groups objectEnumerator ];
+    NPSUXModelGroup * group;
+
+    while ( group = [ enumerator nextObject ] )
+    {
+        [ group render ];
+    }
 }
 
 @end

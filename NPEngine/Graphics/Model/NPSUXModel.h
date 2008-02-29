@@ -18,4 +18,7 @@
 - (void) reset;
 - (BOOL) isReady;
 
+- (void) uploadToGL;
+- (void) render;
+
 @end

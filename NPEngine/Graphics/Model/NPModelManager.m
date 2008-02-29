@@ -50,7 +50,7 @@
             if ( [ model loadFromFile:file ] == YES )
             {
                 [ models setObject:model forKey:absolutePath ];
-                [ models release ];
+                [ model release ];
                 [ file release ];
 
                 return model;

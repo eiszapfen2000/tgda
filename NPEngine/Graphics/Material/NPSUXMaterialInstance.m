@@ -91,7 +91,11 @@
     NSString * fileNameWithoutQuotes =  [ removeLeadingAndTrailingQuotes([ cgfxFileLineElements objectAtIndex:1 ]) retain ];
     NPLOG(([NSString stringWithFormat:@"CgFX file: %@", fileNameWithoutQuotes]));
 
-    NPEffect * effect = [[[ NPEngineCore instance ] effectManager ] loadEffectFromPath:fileNameWithoutQuotes ];
+    NPEffect * effect = [[[[ NPEngineCore instance ] effectManager ] loadEffectFromPath:fileNameWithoutQuotes ] retain ];
+
+    NSMutableArray * cgfxTechniqueLineElements = splitStringUsingCharacterSet([ materialInstanceScript objectAtIndex:1 ], set);
+    NSString * techniqueNameWithoutQuotes =  [ removeLeadingAndTrailingQuotes([ cgfxTechniqueLineElements objectAtIndex:2 ]) retain ];
+
 }
 
 

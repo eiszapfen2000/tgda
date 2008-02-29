@@ -1,4 +1,6 @@
 #import "NPSUXModelGroup.h"
+#import "Graphics/Model/NPVertexBuffer.h"
+#import "Graphics/Model/NPSUXModelLod.h"
 #import "Core/NPEngineCore.h"
 
 @implementation NPSUXModelGroup
@@ -60,6 +62,11 @@
 - (BOOL) isReady
 {
     return ready;
+}
+
+- (void) render
+{
+    [[(NPSUXModelLod *)parent vertexBuffer ] renderElementWithFirstindex:firstIndex andLastindex:lastIndex ];
 }
 
 @end
