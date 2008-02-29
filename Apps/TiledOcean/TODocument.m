@@ -4,6 +4,7 @@
 #import "TORNGWindowController.h"
 #import "TOOGLWindowController.h"
 #import "Graphics/RenderContext/NPOpenGLRenderContext.h"
+#import "Graphics/Model/NPSUXModel.h"
 #import "Graphics/Model/NPModelManager.h"
 #import "Core/NPEngineCore.h"
 
@@ -59,9 +60,8 @@
     NSLog(@"loadModel");
     [[[ glWindowController openglView ] renderContext ] activate ];
 
-    [[[ NPEngineCore instance ] modelManager ] loadModelFromPath:@"camera.model" ];
-
-
+    NPSUXModel * model = [[[ NPEngineCore instance ] modelManager ] loadModelFromPath:@"camera.model" ];
+    [ model uploadToGL ];
 }
 
 @end

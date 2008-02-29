@@ -29,4 +29,9 @@
 - (void) reset;
 - (BOOL) isReady;
 
+- (NPVertexBuffer *) vertexBuffer;
+
+- (void) uploadToGL;
+- (void) render;
+
 @end

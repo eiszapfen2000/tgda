@@ -96,4 +96,14 @@
     return ready;
 }
 
+- (void) uploadToGL
+{
+    [[lods objectAtIndex:0 ] uploadToGL ];
+}
+
+- (void) render
+{
+    [[lods objectAtIndex:0 ] render ];
+}
+
 @end

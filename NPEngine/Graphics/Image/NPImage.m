@@ -51,6 +51,11 @@
     return pixelFormat;
 }
 
+- (NSData *) imageData
+{
+    return imageData;
+}
+
 - (BOOL) loadFromFile:(NPFile *)file
 {
     return [ self loadFromFile:file withMipMaps:NO ];

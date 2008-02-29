@@ -20,4 +20,6 @@
 - (void) reset;
 - (BOOL) isReady;
 
+- (void) render;
+
 @end

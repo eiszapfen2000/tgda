@@ -39,6 +39,7 @@ NPPixelFormat;
 - (Int) width;
 - (Int) height;
 - (NPPixelFormat) pixelFormat;
+- (NSData *) imageData;
 
 - (BOOL) loadFromFile:(NPFile *)file;
 - (BOOL) loadFromFile:(NPFile *)file withMipMaps:(BOOL)generateMipMaps;

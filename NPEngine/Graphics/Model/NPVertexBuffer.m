@@ -192,6 +192,8 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         [ file readInt32s:vertices.indices withLength:(UInt)indexCount ];
     }
 
+    ready = YES;
+
     return YES;
 }
 
@@ -295,6 +297,13 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    GLenum error = glGetError();
+
+    if ( error != GL_NO_ERROR )
+    {
+        NPLOG(([ NSString stringWithFormat:@"%s",gluErrorString(error)]));
+    }
 }
 
 - (void) deleteBuffer:(UInt)bufferID
