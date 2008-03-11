@@ -1,3 +1,4 @@
+#import "Graphics/npgl.h"
 #import "NPTextureManager.h"
 #import "NPTexture.h"
 #import "Core/File/NPFile.h"
@@ -37,43 +38,84 @@
 
 }
 
+- (void) activateTexture:(NPTexture *)texture
+{
+    if ( [ textures objectForKey:[ texture fileName ] ] != nil )
+    {
+        glBindTexture(GL_TEXTURE_2D, [texture textureID]);
+        currentActivetexture = texture;
+    }
+    else
+    {
+        NPLOG_WARNING(([NSString stringWithFormat:@"%@ not known by texture manager",[ texture fileName ]]));
+    }
+}
+
+- (void) activateTextureUsingFileName:(NSString *)fileName
+{
+    NPTexture * texture = [ textures objectForKey:fileName ];
+
+    if ( texture != nil )
+    {
+        [ texture activate ];
+        currentActivetexture = texture;
+    }
+    else
+    {
+        NPLOG_WARNING(([NSString stringWithFormat:@"%@ not known by texture manager",fileName]));
+    }
+}
+
+- (id) currentActivetexture
+{
+    return currentActivetexture;
+}
+
 - (id) loadTextureFromPath:(NSString *)path
 {
     NSString * absolutePath = [ [ [ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
-    NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, absolutePath]));
 
-    if ( [ absolutePath isEqual:@"" ] == NO )
+    return [ self loadTextureFromAbsolutePath:absolutePath ];
+}
+
+- (id) loadTextureFromAbsolutePath:(NSString *)path
+{
+    NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, path]));
+
+    if ( [ path isEqual:@"" ] == NO )
     {
-        NPTexture * texture = [ textures objectForKey:absolutePath ];
+        NPTexture * texture = [ textures objectForKey:path ];
 
         if ( texture == nil )
         {
-            NPFile * file = [ [ NPFile alloc ] initWithName:path parent:self fileName:absolutePath ];
-            texture = [ [ NPTexture alloc ] initWithName:@"" parent:self ];
-
-            if ( [ texture loadFromFile:file ] == YES )
-            {
-                [ textures setObject:texture forKey:absolutePath ];
-                [ texture release ];
-                [ file release ];
-
-                return texture;
-            }
-            else
-            {
-                [ texture release ];
-                [ file release ];
-
-                return nil;
-            }
+            NPFile * file = [ [ NPFile alloc ] initWithName:path parent:self fileName:path ];
+            texture = [ self loadTextureUsingFileHandle:file ];
+            [ file release ];
         }
-        else
-        {
-            return texture;
-        }
+
+        return texture;
     }
 
-    return nil;
+    return nil;    
+}
+
+- (id) loadTextureUsingFileHandle:(NPFile *)file
+{
+    NPTexture * texture = [ [ NPTexture alloc ] initWithName:@"" parent:self ];
+
+    if ( [ texture loadFromFile:file ] == YES )
+    {
+        [ textures setObject:texture forKey:[file fileName] ];
+        [ texture release ];
+
+        return texture;
+    }
+    else
+    {
+        [ texture release ];
+
+        return nil;
+    }    
 }
 
 @end

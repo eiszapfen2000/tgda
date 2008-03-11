@@ -95,7 +95,7 @@
     {
 #define glewGetContext() (&glewContext)
         GLenum err = glewInit();
-#undef glewGetContext()
+#undef  glewGetContext
 
         if (GLEW_OK != err)
         {
