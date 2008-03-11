@@ -61,7 +61,17 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     [ self setFileName:[ file fileName ] ];
     [ self setName:fileName ];
 
-    image = [[[[NPEngineCore instance ] imageManager ] loadImageUsingFileHandle:file ] retain ];
+    glGenTextures(1, &textureID);
+    
+    image = [[[NPEngineCore instance ] imageManager ] loadImageUsingFileHandle:file ];
+
+    if ( image == nil )
+    {
+        return NO;
+    }
+
+    [ image retain ];
+    ready = YES;
 
 	return YES;
 }
@@ -91,38 +101,78 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     textureFilterState = newTextureFilterState;
 }
 
-- (void) setMipMapping:(BOOL)newMipMapping
+- (void) setMipMapping:(NPState)newMipMapping
 {
     if ( textureFilterState.mipmapping != newMipMapping )
     {
         textureFilterState.mipmapping = newMipMapping;
-        
+
+        GLint value;
+        switch ( newMipMapping )
+        {
+            case NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE:{value = GL_TRUE; break;}
+            case NP_TEXTURE_FILTER_MIPMAPPING_INACTIVE:{value = GL_FALSE; break;}
+        }
+
+        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, value);
     }
 }
 
-- (void) setTextureMinFilter:(Int)newTextureMinFilter
+- (void) setTextureMinFilter:(NPState)newTextureMinFilter
 {
     if ( textureFilterState.minFilter != newTextureMinFilter )
     {
         textureFilterState.minFilter = newTextureMinFilter;
-        
+
+        GLint value;
+        switch ( newTextureMinFilter )
+        {
+            case NP_TEXTURE_FILTER_NEAREST:{value = GL_NEAREST; break;}
+            case NP_TEXTURE_FILTER_LINEAR:{value = GL_LINEAR; break;}
+            case NP_TEXTURE_FILTER_NEAREST_MIPMAP_NEAREST:{value = GL_NEAREST_MIPMAP_NEAREST; break;}
+            case NP_TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST:{value = GL_LINEAR_MIPMAP_NEAREST; break;}
+            case NP_TEXTURE_FILTER_NEAREST_MIPMAP_LINEAR:{value = GL_NEAREST_MIPMAP_LINEAR; break;}
+            case NP_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR:{value = GL_LINEAR_MIPMAP_LINEAR; break;}
+        }
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, value);       
     }
 }
 
-- (void) setTextureMaxFilter:(Int)newTextureMaxFilter
+- (void) setTextureMaxFilter:(NPState)newTextureMagFilter
 {
-    if ( textureFilterState.magFilter != newTextureMaxFilter )
+    if ( textureFilterState.magFilter != newTextureMagFilter )
     {
-        textureFilterState.magFilter = newTextureMaxFilter;
-        
+        textureFilterState.magFilter = newTextureMagFilter;
+
+        GLint value;
+        switch ( newTextureMagFilter )
+        {
+            case NP_TEXTURE_FILTER_NEAREST:{value = GL_NEAREST; break;}
+            case NP_TEXTURE_FILTER_LINEAR:{value = GL_LINEAR; break;}
+        }
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, value);        
     }
 }
 
-- (void) setTextureAnisotropyFilter:(Float)newTextureAnisotropyFilter
+- (void) setTextureAnisotropyFilter:(NPState)newTextureAnisotropyFilter
 {
     if ( textureFilterState.anisotropy != newTextureAnisotropyFilter )
     {
-        textureFilterState.anisotropy = newTextureAnisotropyFilter;        
+        textureFilterState.anisotropy = newTextureAnisotropyFilter;
+
+        GLfloat value;
+        switch ( newTextureAnisotropyFilter )
+        {
+            case NP_TEXTURE_FILTER_ANISOTROPY_1X:{value = 1.0; break;}
+            case NP_TEXTURE_FILTER_ANISOTROPY_2X:{value = 2.0; break;}
+            case NP_TEXTURE_FILTER_ANISOTROPY_4X:{value = 4.0; break;}
+            case NP_TEXTURE_FILTER_ANISOTROPY_8X:{value = 8.0; break;}
+            case NP_TEXTURE_FILTER_ANISOTROPY_16X:{value = 16.0; break;}
+        }
+
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, value);
     }
 }
 
@@ -131,68 +181,49 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     textureWrapState = newTextureWrapState;
 }
 
-- (void) setTextureWrapS:(Int)newWrapS
+- (void) setTextureWrap:(NPState)textureCoordinate withValue:(NPState)newTextureWrapValue
+{
+    GLenum textureParameterValue;
+    switch ( textureCoordinate )
+    {
+        case NP_TEXTURE_WRAP_S:{textureParameterValue = GL_TEXTURE_WRAP_S; break;}
+        case NP_TEXTURE_WRAP_T:{textureParameterValue = GL_TEXTURE_WRAP_T; break;}
+    }
+
+    GLint wrapValue;
+    switch (newTextureWrapValue)
+    {
+        case NP_TEXTURE_WRAPPING_CLAMP:{wrapValue = GL_CLAMP; break;}
+        case NP_TEXTURE_WRAPPING_CLAMP_TO_EDGE:{wrapValue = GL_CLAMP_TO_EDGE; break;}
+        case NP_TEXTURE_WRAPPING_CLAMP_TO_BORDER:{wrapValue = GL_CLAMP_TO_BORDER; break;}
+        case NP_TEXTURE_WRAPPING_REPEAT:{wrapValue = GL_REPEAT; break;}
+    }
+
+    glTexParameteri(GL_TEXTURE_2D, textureParameterValue, wrapValue);
+}
+
+- (void) setTextureWrapS:(NPState)newWrapS
 {
     if ( textureWrapState.wrapS != newWrapS )
     {
         textureWrapState.wrapS = newWrapS;
+
+        [ self setTextureWrap:NP_TEXTURE_WRAP_S withValue:newWrapS ];
     }
 }
 
-- (void) setTextureWrapT:(Int)newWrapT
+- (void) setTextureWrapT:(NPState)newWrapT
 {
     if ( textureWrapState.wrapT != newWrapT )
     {
         textureWrapState.wrapT = newWrapT;
+
+        [ self setTextureWrap:NP_TEXTURE_WRAP_T withValue:newWrapT ];
     }
-}
-
-- (void) setupGLWrapState
-{
-    GLint glWrapS;
-
-    switch (textureWrapState.wrapS)
-    {
-        case NP_TEXTURE_WRAPPING_CLAMP:
-        {
-            glWrapS = GL_CLAMP;
-            break;
-        }
-        case NP_TEXTURE_WRAPPING_CLAMP_TO_EDGE:
-        {
-            glWrapS = GL_CLAMP_TO_EDGE;
-            break;
-        }
-        case NP_TEXTURE_WRAPPING_CLAMP_TO_BORDER:
-        {
-            glWrapS = GL_CLAMP_TO_BORDER;
-            break;
-        }
-        case NP_TEXTURE_WRAPPING_REPEAT:
-        {
-            glWrapS = GL_REPEAT;
-            break;
-        }
-        default:
-        {
-            glWrapS = GL_REPEAT;
-            break;
-        }
-    }
-}
-
-- (void) setupGLFilterState
-{
-}
-
-- (void) setupGLFilterAndWrapState
-{
-
 }
 
 - (void) uploadToGL
 {
-    glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);
 
     if (textureFilterState.mipmapping == YES )

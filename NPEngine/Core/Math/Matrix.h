@@ -31,6 +31,7 @@ typedef struct Matrix4
 }
 Matrix4;
 
+#define M_ELEMENTS(_m)            (_m).elements
 #define M_ELEMENT(_m, _col, _row) (_m).elements[(_col)][(_row)]
 #define M_EL     M_ELEMENT
 
