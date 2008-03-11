@@ -1,4 +1,5 @@
 #import "NPTexture.h"
+#import "NPTextureManager.h"
 #import "Graphics/npgl.h"
 #import "Graphics/Image/NPImage.h"
 #import "Graphics/Image/NPImageManager.h"
@@ -59,9 +60,9 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     [ self reset ];
 
     [ self setFileName:[ file fileName ] ];
-    [ self setName:fileName ];
+    [ self setName:[ file fileName ] ];
 
-    glGenTextures(1, &textureID);
+    [ self generateGLTextureID ];
     
     image = [[[NPEngineCore instance ] imageManager ] loadImageUsingFileHandle:file ];
 
@@ -71,6 +72,9 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     }
 
     [ image retain ];
+
+    [ self setupInternalFormat ];
+
     ready = YES;
 
 	return YES;
@@ -91,9 +95,38 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     return ready;
 }
 
+- (UInt) textureID
+{
+    return textureID;
+}
+
+- (void) generateGLTextureID
+{
+    glGenTextures(1, &textureID);
+}
+
 - (void) activate
 {
-    glBindTexture(GL_TEXTURE_2D, textureID);    
+    [ (NPTextureManager *)parent activateTexture:self ];
+}
+
+- (void) setupInternalFormat
+{
+    switch ( [ image pixelFormat ] )
+    {
+        case NP_PIXELFORMAT_BYTE_R:{internalFormat = 1; break;}
+        case NP_PIXELFORMAT_BYTE_RG:{internalFormat = 2; break;}
+        case NP_PIXELFORMAT_BYTE_RGB:{internalFormat = GL_RGB8; break;}
+        case NP_PIXELFORMAT_BYTE_RGBA:{internalFormat = GL_RGBA8; break;}
+        case NP_PIXELFORMAT_FLOAT16_R:{internalFormat = 1; break;}
+        case NP_PIXELFORMAT_FLOAT16_RG:{internalFormat = 2; break;}
+        case NP_PIXELFORMAT_FLOAT16_RGB:{internalFormat = GL_RGB16F_ARB; break;}
+        case NP_PIXELFORMAT_FLOAT16_RGBA:{internalFormat = GL_RGBA16F_ARB; break;}
+        case NP_PIXELFORMAT_FLOAT32_R:{internalFormat = 1; break;}
+        case NP_PIXELFORMAT_FLOAT32_RG:{internalFormat = 2; break;}
+        case NP_PIXELFORMAT_FLOAT32_RGB:{internalFormat = GL_RGB32F_ARB; break;}
+        case NP_PIXELFORMAT_FLOAT32_RGBA:{internalFormat = GL_RGBA32F_ARB; break;}
+    }
 }
 
 - (void) setTextureFilterState:(NpTextureFilterState)newTextureFilterState
@@ -224,16 +257,7 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 
 - (void) uploadToGL
 {
-    glBindTexture(GL_TEXTURE_2D, textureID);
-
-    if (textureFilterState.mipmapping == YES )
-    {
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-    }
-
-    glTexImage2D(GL_TEXTURE_2D, 0, 4, [image width], [image height], 0, GL_RGBA, GL_UNSIGNED_BYTE, [[image imageData] bytes]);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, [image width], [image height], 0, GL_RGBA, GL_UNSIGNED_BYTE, [[image imageData] bytes]);
 }
 
 @end

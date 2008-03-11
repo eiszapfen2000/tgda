@@ -31,9 +31,9 @@
 
 typedef struct NpTextureFilterState
 {
-    BOOL mipmapping;
-    Int minFilter;
-    Int magFilter;
+    NPState mipmapping;
+    NPState minFilter;
+    NPState magFilter;
     Float anisotropy;
 }
 NpTextureFilterState;
@@ -42,18 +42,28 @@ void np_texture_filter_state_reset(NpTextureFilterState * textureFilterState);
 
 typedef struct NpTextureWrapState
 {
-    Int wrapS;
-    Int wrapT;
+    NPState wrapS;
+    NPState wrapT;
 }
 NpTextureWrapState;
 
 void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState);
 
+typedef struct
+{
+    GLint internalFormat;
+    GLenum pixelDataFormat;
+    GLenum pixelDataType;
+}
+NpTextureFormat;
+
 @interface NPTexture : NPResource < NPPResource >
 {
     NpTextureFilterState textureFilterState;
     NpTextureWrapState textureWrapState;
+    NpTextureFormat textureFormat;
     UInt textureID;
+    Int internalFormat;
     NPImage * image;
 }
 
@@ -66,7 +76,11 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState);
 - (void) reset;
 - (BOOL) isReady;
 
+- (UInt) textureID;
+- (void) generateGLTextureID;
 - (void) activate;
+
+- (void) setupInternalFormat;
 
 - (void) setTextureFilterState:(NpTextureFilterState)newTextureFilterState;
 - (void) setMipMapping:(NPState)newMipMapping;
