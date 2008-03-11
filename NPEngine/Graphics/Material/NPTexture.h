@@ -5,6 +5,9 @@
 @class NPFile;
 @class NPImage;
 
+#define NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE         0
+#define NP_TEXTURE_FILTER_MIPMAPPING_INACTIVE       1
+
 #define NP_TEXTURE_FILTER_NEAREST                   0
 #define NP_TEXTURE_FILTER_LINEAR                    1
 #define NP_TEXTURE_FILTER_NEAREST_MIPMAP_NEAREST    2
@@ -12,10 +15,19 @@
 #define NP_TEXTURE_FILTER_NEAREST_MIPMAP_LINEAR     4
 #define NP_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR      5
 
+#define NP_TEXTURE_WRAP_S                           0
+#define NP_TEXTURE_WRAP_T                           1
+
 #define NP_TEXTURE_WRAPPING_CLAMP                   0
 #define NP_TEXTURE_WRAPPING_CLAMP_TO_EDGE           1
 #define NP_TEXTURE_WRAPPING_CLAMP_TO_BORDER         2
 #define NP_TEXTURE_WRAPPING_REPEAT                  3
+
+#define NP_TEXTURE_FILTER_ANISOTROPY_1X             0
+#define NP_TEXTURE_FILTER_ANISOTROPY_2X             1
+#define NP_TEXTURE_FILTER_ANISOTROPY_4X             2
+#define NP_TEXTURE_FILTER_ANISOTROPY_8X             3
+#define NP_TEXTURE_FILTER_ANISOTROPY_16X            4
 
 typedef struct NpTextureFilterState
 {
@@ -57,18 +69,16 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState);
 - (void) activate;
 
 - (void) setTextureFilterState:(NpTextureFilterState)newTextureFilterState;
-- (void) setMipMapping:(BOOL)newMipMapping;
-- (void) setTextureMinFilter:(Int)newTextureMinFilter;
-- (void) setTextureMaxFilter:(Int)newTextureMaxFilter;
-- (void) setTextureAnisotropyFilter:(Float)newTextureAnisotropyFilter;
+- (void) setMipMapping:(NPState)newMipMapping;
+- (void) setTextureMinFilter:(NPState)newTextureMinFilter;
+- (void) setTextureMaxFilter:(NPState)newTextureMagFilter;
+- (void) setTextureAnisotropyFilter:(NPState)newTextureAnisotropyFilter;
 - (void) setTextureWrapState:(NpTextureWrapState)newTextureWrapState;
-- (void) setTextureWrapS:(Int)newWrapS;
-- (void) setTextureWrapT:(Int)newWrapT;
+- (void) setTextureWrapS:(NPState)newWrapS;
+- (void) setTextureWrapT:(NPState)newWrapT;
 
-- (void) setupGLWrapState;
-- (void) setupGLFilterState;
-- (void) setupGLFilterAndWrapState;
 - (void) uploadToGL;
 
 @end
+
 

@@ -36,10 +36,10 @@
 {
     NSString * absolutePath = [ [ [ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
 
-    NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, absolutePath]));
-
     if ( [ absolutePath isEqual:@"" ] == NO )
     {
+        NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, absolutePath]));
+
         NPSUXModel * model = [ models objectForKey:absolutePath ];
 
         if ( model == nil )
@@ -68,6 +68,8 @@
             return model;
         }
     }
+
+    NPLOG(([NSString stringWithFormat:@"%@ not found",path]));
 
     return nil;
 }
