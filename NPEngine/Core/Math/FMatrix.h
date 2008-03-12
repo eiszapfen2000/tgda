@@ -63,4 +63,6 @@ void fm4_mv_multiply_v(const FMatrix4 * const m, const FVector4 * const v, FVect
 FMatrix4 * fm4_alloc();
 FMatrix4 * fm4_alloc_init();
 
+void fm4_m_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegrees, Float nearplane, Float farplane);
+
 #endif

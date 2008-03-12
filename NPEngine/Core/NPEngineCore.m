@@ -9,6 +9,7 @@
 #import "Graphics/Image/NPImageManager.h"
 #import "Graphics/Material/NPTextureManager.h"
 #import "Graphics/Material/NPEffectManager.h"
+#import "Graphics/Camera/NPCameraManager.h"
 
 
 static NPEngineCore * NP_ENGINE_CORE = nil;
@@ -74,6 +75,8 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     imageManager = [ [ NPImageManager alloc ] initWithName:@"NPEngine Image Manager" parent:self ];
     textureManager = [ [ NPTextureManager alloc ] initWithName:@"NPEngine Texture Manager" parent:self ];
     effectManager = [ [ NPEffectManager alloc ] initWithName:@"NPEngine Effect Manager" parent:self ];
+
+    cameraManager = [ [ NPCameraManager alloc ] initWithName:@"NPEngine Camera Manager" parent:self ];
 
     ready = NO;
 
@@ -141,6 +144,11 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 - (NPEffectManager *)effectManager
 {
     return effectManager;
+}
+
+- (NPCameraManager *)cameraManager
+{
+    return cameraManager;
 }
 
 - (id)copyWithZone:(NSZone *)zone

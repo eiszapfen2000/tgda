@@ -1,4 +1,6 @@
 #import "NPCamera.h"
+#import "NPCameraManager.h"
+#import "Core/NPEngineCore.h"
 
 @implementation NPCamera
 
@@ -100,5 +102,24 @@
     V_Z(*position) = V_Z(*newPosition);
 }
 
+- (void) update
+{
+    [ self updateViewMatrix ];
+    [ self updateProjectionMatrix ];
+}
+
+- (void) updateViewMatrix
+{
+}
+
+- (void) updateProjectionMatrix
+{
+}
+
+- (void) activate
+{
+    [ [ [ NPEngineCore instance ] cameraManager ] setCurrentActiveCamera:self ];
+    [ self update ];
+}
 
 @end
