@@ -6,11 +6,21 @@ NpFreeList * NP_FVECTOR2_FREELIST = NULL;
 NpFreeList * NP_FVECTOR3_FREELIST = NULL;
 NpFreeList * NP_FVECTOR4_FREELIST = NULL;
 
+FVector3 * NP_WORLDF_X_AXIS = NULL;
+FVector3 * NP_WORLDF_Y_AXIS = NULL;
+FVector3 * NP_WORLDF_Z_AXIS = NULL;
+FVector3 * NP_WORLDF_FORWARD_VECTOR = NULL;
+
 void npmath_fvector_initialise()
 {
     NPFREELIST_ALLOC_INIT(NP_FVECTOR2_FREELIST,FVector2,512)
     NPFREELIST_ALLOC_INIT(NP_FVECTOR3_FREELIST,FVector3,512)
     NPFREELIST_ALLOC_INIT(NP_FVECTOR4_FREELIST,FVector4,512)
+
+    NP_WORLDF_X_AXIS = fv3_alloc_init(); FV_X(*NP_WORLDF_X_AXIS) = 1.0f;
+    NP_WORLDF_Y_AXIS = fv3_alloc_init(); FV_Y(*NP_WORLDF_Y_AXIS) = 1.0f;
+    NP_WORLDF_Z_AXIS = fv3_alloc_init(); FV_Z(*NP_WORLDF_Z_AXIS) = 1.0f;
+    NP_WORLDF_FORWARD_VECTOR = fv3_alloc_init(); FV_Z(*NP_WORLDF_FORWARD_VECTOR) = -1.0f;
 }
 
 void fv2_v_square_length_s(const FVector2 * const v, Float * sqrlength)

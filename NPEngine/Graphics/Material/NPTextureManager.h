@@ -20,6 +20,7 @@
 - (void) activateTextureUsingFileName:(NSString *)fileName;
 - (id) currentActivetexture;
 
+
 - (id) loadTextureFromPath:(NSString *)path;
 - (id) loadTextureFromAbsolutePath:(NSString *)path;
 - (id) loadTextureUsingFileHandle:(NPFile *)file;

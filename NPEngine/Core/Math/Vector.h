@@ -38,6 +38,11 @@ Vector4;
 #define V_Z VECTOR_Z
 #define V_W VECTOR_W
 
+extern Vector3 * NP_WORLD_X_AXIS;
+extern Vector3 * NP_WORLD_Y_AXIS;
+extern Vector3 * NP_WORLD_Z_AXIS;
+extern Vector3 * NP_WORLD_FORWARD_VECTOR;
+
 Vector2 * v2_alloc();
 Vector2 * v2_alloc_init();
 Vector2 * v2_free(Vector2 * v);
@@ -77,9 +82,11 @@ void v3_vv_add_v(const Vector3 * const v, const Vector3 * const w, Vector3 * res
 void v3_vv_sub_v(const Vector3 * const v, const Vector3 * const w, Vector3 * result);
 void v3_vv_dot_product_s(const Vector3 * const v, const Vector3 * const w, Double * dot);
 void v3_vv_cross_product_v(const Vector3 * const v, const Vector3 * const w, Vector3 * cross);
+void v3_v_zeros(Vector3 * v);
 Double v3_v_square_length(const Vector3 * const v);
 Double v3_v_length(const Vector3 * const v);
 Double v3_vv_dot_product(const Vector3 * const v, const Vector3 * const w);
+
 
 Vector4 * v4_alloc();
 Vector4 * v4_alloc_init();
