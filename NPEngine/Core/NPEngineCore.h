@@ -9,6 +9,7 @@
 @class NPTextureManager;
 @class NPEffectManager;
 @class NPOpenGLRenderContextManager;
+@class NPCameraManager;
 
 @interface NPEngineCore : NPObject
 {
@@ -23,6 +24,8 @@
     NPImageManager * imageManager;
     NPTextureManager * textureManager;
     NPEffectManager * effectManager;
+
+    NPCameraManager * cameraManager;
 
     BOOL ready;
 }
@@ -41,6 +44,7 @@
 - (NPImageManager *)imageManager;
 - (NPTextureManager *)textureManager;
 - (NPEffectManager *)effectManager;
+- (NPCameraManager *)cameraManager;
 
 @end
 

@@ -33,4 +33,10 @@
 - (Vector3 *) position;
 - (void) setPosition:(Vector3 *)newPosition;
 
+- (void) update;
+- (void) updateViewMatrix;
+- (void) updateProjectionMatrix;
+
+- (void) activate;
+
 @end

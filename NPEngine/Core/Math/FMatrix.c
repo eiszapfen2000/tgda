@@ -1,4 +1,5 @@
 #include "FMatrix.h"
+#include <math.h>
 
 NpFreeList * NP_FMATRIX2_FREELIST = NULL;
 NpFreeList * NP_FMATRIX3_FREELIST = NULL;
@@ -294,5 +295,10 @@ FMatrix4 * fm4_alloc_init()
     fm4_set_identity(tmp);
 
     return tmp;
+}
+
+void fm4_m_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegrees, Float nearplane, Float farplane)
+{
+
 }
 
