@@ -38,6 +38,11 @@ FVector4;
 #define FV_Z FVECTOR_Z
 #define FV_W FVECTOR_W
 
+extern FVector3 * NP_WORLDF_X_AXIS;
+extern FVector3 * NP_WORLDF_Y_AXIS;
+extern FVector3 * NP_WORLDF_Z_AXIS;
+extern FVector3 * NP_WORLDF_FORWARD_VECTOR;
+
 void fv2_v_square_length_s(const FVector2 * const v, Float * sqrlength);
 void fv2_v_length_s(const FVector2 * const v, Float * length);
 void fv2_v_normalise_v(const FVector2 * const v, FVector2 * normalised);

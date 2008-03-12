@@ -1,6 +1,7 @@
 #include <math.h>
 
 #include "Quaternion.h"
+#include "Utilities.h"
 
 NpFreeList * NP_QUATERNION_FREELIST = NULL;
 
@@ -21,6 +22,84 @@ Quaternion * quat_alloc_init()
     Q_W(*tmp) = 1.0;
 
     return tmp;
+}
+
+Quaternion * quat_alloc_init_with_axis_and_degrees(Vector3 * axis, Double * degrees)
+{
+    Quaternion * q = quat_alloc();
+    quat_q_init_with_axis_and_degrees(q, axis, degrees);
+
+    return q;
+}
+
+Quaternion * quat_alloc_init_with_axis_and_radians(Vector3 * axis, Double * radians)
+{
+    Quaternion * q = quat_alloc();
+    quat_q_init_with_axis_and_radians(q, axis, radians);
+
+    return q;
+}
+
+Quaternion * q_free(Quaternion * q)
+{
+    return npfreenode_fast_free(q, NP_QUATERNION_FREELIST);
+}
+
+void quat_set_identity(Quaternion * q)
+{
+    Q_X(*q) = Q_Y(*q) = Q_Z(*q) = 0.0;
+    Q_W(*q) = 1.0;
+}
+
+void quat_q_init_with_axis_and_degrees(Quaternion * q, Vector3 * axis, Double * degrees)
+{
+    Double angle = DEGREE_TO_RADIANS(*degrees);
+    Double sin_angle = sin(angle/2);
+    Double cos_angle = cos(angle/2);
+
+    Vector3 * tmp;
+
+    if ( v3_v_length(axis) != 1.0 )
+    {
+        tmp = v3_alloc_init();
+        v3_v_normalise_v(axis,tmp);
+    }
+    else
+    {
+        tmp = axis;
+    }
+
+    Q_X(*q) = V_X(*tmp) * sin_angle;
+    Q_Y(*q) = V_Y(*tmp) * sin_angle;
+    Q_Z(*q) = V_Z(*tmp) * sin_angle;
+    Q_W(*q) = cos_angle;
+
+    quat_q_normalise(q);
+}
+
+void quat_q_init_with_axis_and_radians(Quaternion * q, Vector3 * axis, Double * radians)
+{
+    Double sin_angle = sin((*radians)/2);
+    Double cos_angle = cos((*radians)/2);
+
+    Vector3 * tmp;
+
+    if ( v3_v_length(axis) != 1.0 )
+    {
+        tmp = v3_alloc_init();
+        v3_v_normalise_v(axis,tmp);
+    }
+    else
+    {
+        tmp = axis;
+    }
+
+    Q_X(*q) = V_X(*tmp) * sin_angle;
+    Q_Y(*q) = V_Y(*tmp) * sin_angle;
+    Q_Z(*q) = V_Z(*tmp) * sin_angle;
+    Q_W(*q) = cos_angle;
+
+    quat_q_normalise(q);
 }
 
 void quat_q_conjugate(Quaternion * q)
@@ -79,6 +158,53 @@ void quat_qq_multiply_q(const Quaternion * const q1, const Quaternion * const q2
 
     quat_q_normalise(result);
 }
+
+void quat_qv_multiply_v(const Quaternion * const q, const Vector3 * const v, Vector3 * result)
+{
+	V_X(*result) = Q_W(*q) * Q_W(*q) * V_X(*v) + 2 * Q_Y(*q) * Q_W(*q) * V_Z(*v)
+                   - 2 * Q_Z(*q) * Q_W(*q) * V_Y(*v) + Q_X(*q) * Q_X(*q) * V_X(*v) + 2 * Q_Y(*q) * Q_X(*q) * V_Y(*v)
+                   + 2 * Q_Z(*q) * Q_X(*q) * V_Z(*v) - Q_Z(*q) * Q_Z(*q) * V_X(*v) - Q_Y(*q) * Q_Y(*q) * V_X(*v);
+	V_Y(*result) = 2 * Q_X(*q) * Q_Y(*q) * V_X(*v) + Q_Y(*q) * Q_Y(*q) * V_Y(*v)
+                   + 2 * Q_Z(*q) * Q_Y(*q) * V_Z(*v) + 2 * Q_W(*q) * Q_Z(*q) * V_X(*v) - Q_Z(*q) * Q_Z(*q) * V_Y(*v)
+                   + Q_W(*q) * Q_W(*q) * V_Y(*v) - 2 * Q_X(*q) * Q_W(*q) * V_Z(*v) - Q_X(*q) * Q_X(*q) * V_Y(*v);
+	V_Z(*result) = 2 * Q_X(*q) * Q_Z(*q) * V_X(*v) + 2 * Q_Y(*q) * Q_Z(*q) * V_Y(*v)
+                   + Q_Z(*q) * Q_Z(*q) * V_Z(*v) - 2 * Q_W(*q) * Q_Y(*q) * V_X(*v) - Q_Y(*q) * Q_Y(*q) * V_Z(*v)
+                   + 2 * Q_W(*q) * Q_X(*q) * V_Y(*v) - Q_X(*q) * Q_X(*q) * V_Z(*v) + Q_W(*q) * Q_W(*q) * V_Z(*v);
+}
+
+void quat_q_rotatex(Quaternion * q, Double * degrees)
+{
+    Quaternion * rotatex = quat_alloc_init_with_axis_and_degrees(NP_WORLD_X_AXIS, degrees);
+    quat_qq_multiply_q(q,rotatex,q);
+}
+
+void quat_q_rotatey(Quaternion * q, Double * degrees)
+{
+    Quaternion * rotatey = quat_alloc_init_with_axis_and_degrees(NP_WORLD_Y_AXIS, degrees);
+    quat_qq_multiply_q(q,rotatey,q);
+}
+
+void quat_q_rotatez(Quaternion * q, Double * degrees)
+{
+    Quaternion * rotatez = quat_alloc_init_with_axis_and_degrees(NP_WORLD_Z_AXIS, degrees);
+    quat_qq_multiply_q(q,rotatez,q);
+}
+
+void quat_q_forward_vector_v(Quaternion * q, Vector3 * v)
+{
+    quat_qv_multiply_v(q,NP_WORLD_FORWARD_VECTOR,v);
+}
+
+void quat_q_up_vector_v(Quaternion * q, Vector3 * v)
+{
+    quat_qv_multiply_v(q,NP_WORLD_Y_AXIS,v);
+}
+
+void quat_q_right_vector_v(Quaternion * q, Vector3 * v)
+{
+    quat_qv_multiply_v(q,NP_WORLD_X_AXIS,v);
+}
+
 
 void quat_q_to_matrix3_m(const Quaternion * const q, Matrix3 * m)
 {

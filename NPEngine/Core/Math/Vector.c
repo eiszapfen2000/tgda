@@ -6,11 +6,22 @@ NpFreeList * NP_VECTOR2_FREELIST = NULL;
 NpFreeList * NP_VECTOR3_FREELIST = NULL;
 NpFreeList * NP_VECTOR4_FREELIST = NULL;
 
+Vector3 * NP_WORLD_X_AXIS = NULL;
+Vector3 * NP_WORLD_Y_AXIS = NULL;
+Vector3 * NP_WORLD_Z_AXIS = NULL;
+Vector3 * NP_WORLD_FORWARD_VECTOR = NULL;
+
+
 void npmath_vector_initialise()
 {
     NPFREELIST_ALLOC_INIT(NP_VECTOR2_FREELIST,Vector2,512)
     NPFREELIST_ALLOC_INIT(NP_VECTOR3_FREELIST,Vector3,512)
     NPFREELIST_ALLOC_INIT(NP_VECTOR4_FREELIST,Vector4,512)
+
+    NP_WORLD_X_AXIS = v3_alloc_init(); V_X(*NP_WORLD_X_AXIS) = 1.0;
+    NP_WORLD_Y_AXIS = v3_alloc_init(); V_Y(*NP_WORLD_Y_AXIS) = 1.0;
+    NP_WORLD_Z_AXIS = v3_alloc_init(); V_Z(*NP_WORLD_Z_AXIS) = 1.0;
+    NP_WORLD_FORWARD_VECTOR = v3_alloc_init(); V_Z(*NP_WORLD_FORWARD_VECTOR) = -1.0;
 }
 
 Vector2 * v2_alloc()
@@ -231,6 +242,11 @@ void v3_vv_cross_product_v(const Vector3 * const v, const Vector3 * const w, Vec
     V_X(*cross) = V_Y(*v) * V_Z(*w) - V_Z(*v) * V_Y(*w);
     V_Y(*cross) = V_Z(*v) * V_X(*w) - V_X(*v) * V_Z(*w);
     V_Z(*cross) = V_X(*v) * V_Y(*w) - V_Y(*v) * V_X(*w);
+}
+
+void v3_v_zeros(Vector3 * v)
+{
+    V_X(*v) = V_Y(*v) = V_Z(*v) = 0.0;
 }
 
 Double v3_v_square_length(const Vector3 * const v)

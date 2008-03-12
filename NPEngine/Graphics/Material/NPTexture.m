@@ -1,6 +1,5 @@
 #import "NPTexture.h"
 #import "NPTextureManager.h"
-#import "Graphics/npgl.h"
 #import "Graphics/Image/NPImage.h"
 #import "Graphics/Image/NPImageManager.h"
 #import "Core/NPEngineCore.h"
