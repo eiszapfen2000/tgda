@@ -53,7 +53,7 @@ void fm3_mv_multiply_v(const FMatrix3 * const m, const FVector3 * const v, FVect
 FMatrix3 * fm3_alloc();
 FMatrix3 * fm3_alloc_init();
 
-void fm4_set_identity(FMatrix4 * m);
+void fm4_m_set_identity(FMatrix4 * m);
 void fm4_m_transpose_m(const FMatrix4 * const m, FMatrix4 * transpose);
 void fm4_mm_add_m(const FMatrix4 * const m1, const FMatrix4 * const m2, FMatrix4 * result);
 void fm4_mm_subtract_m(const FMatrix4 * const m1, const FMatrix4 * const m2, FMatrix4 * result);
@@ -63,6 +63,8 @@ void fm4_mv_multiply_v(const FMatrix4 * const m, const FVector4 * const v, FVect
 FMatrix4 * fm4_alloc();
 FMatrix4 * fm4_alloc_init();
 
-void fm4_m_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegrees, Float nearplane, Float farplane);
+void fm4_mv_translation_matrix(FMatrix4 * m, FVector3 * v);
+void fm4_msss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegrees, Float nearplane, Float farplane);
+//void fm4_m_view_matrix(FMatrix4 * m, FVector3 * rightvector, FVector3 * upvector, FVector3 * rightvector)
 
 #endif

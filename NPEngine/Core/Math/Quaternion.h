@@ -5,6 +5,7 @@
 #include "Core/Basics/NpFreeList.h"
 #include "Vector.h"
 #include "Matrix.h"
+#include "FMatrix.h"
 
 extern NpFreeList * NP_QUATERNION_FREELIST;
 
@@ -57,7 +58,9 @@ void quat_q_up_vector_v(Quaternion * q, Vector3 * v);
 void quat_q_right_vector_v(Quaternion * q, Vector3 * v);
 
 void quat_q_to_matrix3_m(const Quaternion * const q, Matrix3 * m);
+void quat_q_to_fmatrix3_m(const Quaternion * const q, FMatrix3 * m);
 void quat_q_to_matrix4_m(const Quaternion * const q, Matrix4 * m);
+void quat_q_to_fmatrix4_m(const Quaternion * const q, FMatrix4 * m);
 void quat_m3_to_quaternion_q(const Matrix3 * const m, Quaternion * q);
 void quat_m4_to_quaternion_q(const Matrix4 * const m, Quaternion * q);
 

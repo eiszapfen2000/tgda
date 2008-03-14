@@ -1,5 +1,6 @@
 #import "NPCamera.h"
 #import "NPCameraManager.h"
+#import "Graphics/npgl.h"
 #import "Core/NPEngineCore.h"
 
 @implementation NPCamera
@@ -22,7 +23,7 @@
     projection = fm4_alloc();
 
     orientation = quat_alloc();
-    position = v3_alloc();
+    position = fv3_alloc();
 
     [ self reset ];
 
@@ -36,7 +37,7 @@
     nearPlane = 0.5f;
     farPlane = 100.0f;
 
-    v3_v_zeros(position);
+    fv3_v_zeros(position);
 
     [ self resetMatrices ];
     [ self resetOrientation ];
@@ -44,8 +45,8 @@
 
 - (void) resetMatrices
 {
-    fm4_set_identity(view);
-    fm4_set_identity(projection);
+    fm4_m_set_identity(view);
+    fm4_m_set_identity(projection);
 }
 
 - (void) resetOrientation
@@ -90,30 +91,56 @@
     }
 }
 
-- (Vector3 *) position
+- (FVector3 *) position
 {
     return position;
 }
 
-- (void) setPosition:(Vector3 *)newPosition
+- (void) setPosition:(FVector3 *)newPosition
 {
-    V_X(*position) = V_X(*newPosition);    
-    V_Y(*position) = V_Y(*newPosition);
-    V_Z(*position) = V_Z(*newPosition);
+    FV_X(*position) = FV_X(*newPosition);    
+    FV_Y(*position) = FV_Y(*newPosition);
+    FV_Z(*position) = FV_Z(*newPosition);
 }
 
 - (void) update
 {
-    [ self updateViewMatrix ];
     [ self updateProjectionMatrix ];
+    [ self updateViewMatrix ];
 }
 
 - (void) updateViewMatrix
 {
+    fm4_m_set_identity(view);
+
+    Quaternion q;
+    quat_q_conjugate_q(orientation, &q);
+
+    FMatrix4 rotate;
+    quat_q_to_fmatrix4_m(&q, &rotate);
+
+    FMatrix4 tmp;
+    fm4_mm_multiply_m(view,&rotate,&tmp);
+
+    FVector3 invpos;
+    fv3_v_invert_v(position,&invpos);
+
+    FMatrix4 trans;
+    fm4_mv_translation_matrix(&trans,&invpos);
+
+    fm4_mm_multiply_m(&tmp,&trans,view);
+
+    glLoadMatrixf((Float *)(FM_ELEMENTS(*view)));
 }
 
 - (void) updateProjectionMatrix
 {
+    glMatrixMode(GL_PROJECTION);
+
+    fm4_msss_projection_matrix(projection,aspectRatio,fieldOfView,nearPlane,farPlane);
+
+    glLoadMatrixf((Float *)(FM_ELEMENTS(*projection)));
+    glMatrixMode(GL_MODELVIEW);
 }
 
 - (void) activate

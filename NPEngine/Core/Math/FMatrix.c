@@ -1,4 +1,5 @@
 #include "FMatrix.h"
+#include "Utilities.h"
 #include <math.h>
 
 NpFreeList * NP_FMATRIX2_FREELIST = NULL;
@@ -169,7 +170,7 @@ FMatrix3 * fm3_alloc_init()
     return tmp;
 }
 
-void fm4_set_identity(FMatrix4 * m)
+void fm4_m_set_identity(FMatrix4 * m)
 {
     FM_EL(*m,0,0) = FM_EL(*m,1,1) = FM_EL(*m,2,2) = FM_EL(*m,3,3) = 1.0;
     FM_EL(*m,0,1) = FM_EL(*m,0,2) = FM_EL(*m,0,3) = FM_EL(*m,1,0) = FM_EL(*m,1,2) = FM_EL(*m,1,3) =
@@ -292,13 +293,29 @@ FMatrix4 * fm4_alloc()
 FMatrix4 * fm4_alloc_init()
 {
     FMatrix4 * tmp = npfreenode_alloc(NP_FMATRIX4_FREELIST);
-    fm4_set_identity(tmp);
+    fm4_m_set_identity(tmp);
 
     return tmp;
 }
 
-void fm4_m_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegrees, Float nearplane, Float farplane)
+void fm4_mv_translation_matrix(FMatrix4 * m, FVector3 * v)
 {
+    fm4_m_set_identity(m);
+    FM_EL(*m,3,0) = FV_X(*v);
+    FM_EL(*m,3,1) = FV_Y(*v);
+    FM_EL(*m,3,2) = FV_Z(*v);
+}
 
+void fm4_msss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegrees, Float nearplane, Float farplane)
+{
+    Float fovradians = DEGREE_TO_RADIANS(fovdegrees);
+    Float f = 1.0f/tan(fovradians/2.0f);
+
+    FM_EL(*m,0,0) = f/aspectratio;
+    FM_EL(*m,1,1) = f;
+    FM_EL(*m,2,2) = (nearplane + farplane)/(nearplane - farplane);
+    FM_EL(*m,2,3) = 1.0f;
+    FM_EL(*m,3,2) = (2.0f*nearplane*farplane)/(nearplane - farplane);
+    FM_EL(*m,3,3) = 0.0f;
 }
 
