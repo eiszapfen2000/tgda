@@ -62,6 +62,9 @@ Float fv2_vv_dot_product(const FVector2 * const v, const FVector2 * const w);
 FVector2 * fv2_alloc();
 FVector2 * fv2_alloc_init();
 
+void fv3_v_zeros(FVector3 * v);
+void fv3_v_invert(FVector3 * v);
+void fv3_v_invert_v(FVector3 * v, FVector3 * w);
 void fv3_v_square_length_s(const FVector3 * const v, Float * sqrlength);
 void fv3_v_length_s(const FVector3 * const v, Float * length);
 void fv3_v_normalise_v(const FVector3 * const v, FVector3 * normalised);
@@ -86,6 +89,8 @@ FVector3 * fv3_alloc_init();
 
 FVector4 * fv4_alloc();
 FVector4 * fv4_alloc_init();
+FVector4 * fv4_alloc_init_with_fvector3(FVector3 * v);
+void fv4_vv_load_fv3(FVector4 * v, const FVector3 * const w);
 
 #endif
 

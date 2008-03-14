@@ -124,6 +124,25 @@ FVector2 * fv2_alloc_init()
     return tmp;
 }
 
+void fv3_v_zeros(FVector3 * v)
+{
+    FV_X(*v) = FV_Y(*v) = FV_Z(*v) = 0.0f;
+}
+
+void fv3_v_invert(FVector3 * v)
+{
+    FV_X(*v) = -FV_X(*v);
+    FV_Y(*v) = -FV_Y(*v);
+    FV_Z(*v) = -FV_Z(*v);
+}
+
+void fv3_v_invert_v(FVector3 * v, FVector3 * w)
+{
+    FV_X(*w) = -FV_X(*v);
+    FV_Y(*w) = -FV_Y(*v);
+    FV_Z(*w) = -FV_Z(*v);    
+}
+
 void fv3_v_square_length_s(const FVector3 * const v, Float * sqrlength)
 {
     *sqrlength = FV_X(*v) * FV_X(*v) + FV_Y(*v) * FV_Y(*v) + FV_Z(*v) * FV_Z(*v);
@@ -260,5 +279,22 @@ FVector4 * fv4_alloc_init()
     FV_W(*tmp) = 1.0;
 
     return tmp;
+}
+
+FVector4 * fv4_alloc_init_with_fvector3(FVector3 * v)
+{
+    FVector4 * tmp = npfreenode_alloc(NP_FVECTOR4_FREELIST);
+    FV_X(*tmp) = FV_X(*v);
+    FV_Y(*tmp) = FV_Y(*v);
+    FV_Z(*tmp) = FV_Z(*v);
+
+    return tmp;
+}
+
+void fv4_vv_load_fv3(FVector4 * v, const FVector3 * const w)
+{
+    FV_X(*v) = FV_X(*w);
+    FV_Y(*v) = FV_Y(*w);
+    FV_Z(*v) = FV_Z(*w);    
 }
 

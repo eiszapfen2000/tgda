@@ -7,7 +7,7 @@
     FMatrix4 * projection;
 
     Quaternion * orientation;
-    Vector3 * position;
+    FVector3 * position;
 
     Float fieldOfView;
     Float aspectRatio;
@@ -30,8 +30,8 @@
 - (void) rotateY:(Double)degrees;
 - (void) rotateZ:(Double)degrees;
 
-- (Vector3 *) position;
-- (void) setPosition:(Vector3 *)newPosition;
+- (FVector3 *) position;
+- (void) setPosition:(FVector3 *)newPosition;
 
 - (void) update;
 - (void) updateViewMatrix;
