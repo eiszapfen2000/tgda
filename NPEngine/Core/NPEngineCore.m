@@ -4,6 +4,7 @@
 #import "Core/Log/NPLogger.h"
 #import "Core/Timer/NPTimer.h"
 #import "Core/File/NPPathManager.h"
+#import "Core/World/NPTransformationStateManager.h"
 #import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
 #import "Graphics/Model/NPModelManager.h"
 #import "Graphics/Image/NPImageManager.h"
@@ -69,6 +70,8 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     timer = [ [ NPTimer alloc ] initWithName:@"NPEngine Timer" parent:self ];
     pathManager = [ [ NPPathManager alloc ] initWithName:@"NPEngine Path Manager" parent:self ];
 
+    transformationStateManager = [ [ NPTransformationStateManager alloc ] initWithName:@"NPEngine Core Transformation State Manager" parent:self ];
+
     renderContextManager = [ [ NPOpenGLRenderContextManager alloc ] initWithName:@"NPEngine Core RenderContext Manager" parent:self ];
 
     modelManager = [ [ NPModelManager alloc ] initWithName:@"NPEngine Model Manager" parent:self ];
@@ -119,6 +122,11 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 - (NPPathManager *)pathManager
 {
     return pathManager;
+}
+
+- (NPTransformationStateManager *)transformationStateManager
+{
+    return transformationStateManager;
 }
 
 - (NPOpenGLRenderContextManager *)renderContextManager

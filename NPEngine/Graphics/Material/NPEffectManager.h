@@ -33,5 +33,7 @@
 - (void) setShaderParameterPolicy:(NPState)newShaderParameterUpdatePolicy;
 
 - (id) loadEffectFromPath:(NSString *)path;
+- (id) loadEffectFromAbsolutePath:(NSString *)path;
+- (id) loadEffectUsingFileHandle:(NPFile *)file;
 
 @end

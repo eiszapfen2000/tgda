@@ -136,40 +136,48 @@ void np_cg_error_callback()
 - (id) loadEffectFromPath:(NSString *)path
 {
     NSString * absolutePath = [ [ [ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
-    NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, absolutePath]));
 
-    if ( [ absolutePath isEqual:@"" ] == NO )
+    return [ self loadEffectFromAbsolutePath:absolutePath ];
+}
+
+- (id) loadEffectFromAbsolutePath:(NSString *)path
+{
+    NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, path]));
+
+    if ( [ path isEqual:@"" ] == NO )
     {
-        NPEffect * effect = [ effects objectForKey:absolutePath ];
+        NPEffect * effect = [ effects objectForKey:path ];
 
         if ( effect == nil )
         {
-            NPFile * file = [ [ NPFile alloc ] initWithName:path parent:self fileName:absolutePath ];
-            effect = [ [ NPEffect alloc ] initWithName:@"" parent:self ];
-
-            if ( [ effect loadFromFile:file ] == YES )
-            {
-                [ effects setObject:effect forKey:absolutePath ];
-                [ effect release ];
-                [ file release ];
-
-                return effect;
-            }
-            else
-            {
-                [ effect release ];
-                [ file release ];
-
-                return nil;
-            }
+            NPFile * file = [ [ NPFile alloc ] initWithName:path parent:self fileName:path ];
+            effect = [ self loadEffectUsingFileHandle:file ];
+            [ effect release ];
         }
-        else
-        {
-            return effect;
-        }
+
+        return effect;
     }
 
     return nil;
+}
+
+- (id) loadEffectUsingFileHandle:(NPFile *)file
+{
+    NPEffect * effect = [ [ NPEffect alloc ] initWithName:@"" parent:self ];
+
+    if ( [ effect loadFromFile:file ] == YES )
+    {
+        [ effects setObject:effect forKey:[file fileName] ];
+        [ effect release ];
+
+        return effect;
+    }
+    else
+    {
+        [ effect release ];
+
+        return nil;
+    }
 }
 
 @end

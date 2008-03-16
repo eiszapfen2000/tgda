@@ -23,6 +23,24 @@ void npmath_fvector_initialise()
     NP_WORLDF_FORWARD_VECTOR = fv3_alloc_init(); FV_Z(*NP_WORLDF_FORWARD_VECTOR) = -1.0f;
 }
 
+FVector2 * fv2_alloc()
+{
+    return (FVector2 *)npfreenode_alloc(NP_FVECTOR2_FREELIST);
+}
+
+FVector2 * fv2_alloc_init()
+{
+    FVector2 * tmp = npfreenode_alloc(NP_FVECTOR2_FREELIST);
+    FV_X(*tmp) = FV_Y(*tmp) = 0.0;
+
+    return tmp;
+}
+
+FVector2 * fv2_free(FVector2 * v)
+{
+    return npfreenode_fast_free(v,NP_FVECTOR2_FREELIST);
+}
+
 void fv2_v_square_length_s(const FVector2 * const v, Float * sqrlength)
 {
     *sqrlength = FV_X(*v) * FV_X(*v) + FV_Y(*v) * FV_Y(*v);
@@ -111,17 +129,23 @@ Float fv2_v_length(const FVector2 * const v)
     return sqrt(fv2_v_square_length(v));
 }
 
-FVector2 * fv2_alloc()
+
+FVector3 * fv3_alloc()
 {
-    return (FVector2 *)npfreenode_alloc(NP_FVECTOR2_FREELIST);
+    return (FVector3 *)npfreenode_alloc(NP_FVECTOR3_FREELIST);
 }
 
-FVector2 * fv2_alloc_init()
+FVector3 * fv3_alloc_init()
 {
-    FVector2 * tmp = npfreenode_alloc(NP_FVECTOR2_FREELIST);
-    FV_X(*tmp) = FV_Y(*tmp) = 0.0;
+    FVector3 * tmp = npfreenode_alloc(NP_FVECTOR3_FREELIST);
+    FV_X(*tmp) = FV_Y(*tmp) = FV_Z(*tmp) = 0.0;
 
     return tmp;
+}
+
+FVector3 * fv3_free(FVector3 * v)
+{
+    return npfreenode_fast_free(v,NP_FVECTOR3_FREELIST);
 }
 
 void fv3_v_zeros(FVector3 * v)
@@ -254,19 +278,6 @@ Float fv3_vv_dot_product(const FVector3 * const v, const FVector3 * const w)
     return ( FV_X(*v) * FV_X(*w) + FV_Y(*v) * FV_Y(*w) + FV_Z(*v) * FV_Z(*w) );
 }
 
-FVector3 * fv3_alloc()
-{
-    return (FVector3 *)npfreenode_alloc(NP_FVECTOR3_FREELIST);
-}
-
-FVector3 * fv3_alloc_init()
-{
-    FVector3 * tmp = npfreenode_alloc(NP_FVECTOR3_FREELIST);
-    FV_X(*tmp) = FV_Y(*tmp) = FV_Z(*tmp) = 0.0;
-
-    return tmp;
-}
-
 FVector4 * fv4_alloc()
 {
     return (FVector4 *)npfreenode_alloc(NP_FVECTOR4_FREELIST);
@@ -279,6 +290,11 @@ FVector4 * fv4_alloc_init()
     FV_W(*tmp) = 1.0;
 
     return tmp;
+}
+
+FVector4 * fv4_free(FVector4 * v)
+{
+    return npfreenode_fast_free(v,NP_FVECTOR4_FREELIST);
 }
 
 FVector4 * fv4_alloc_init_with_fvector3(FVector3 * v)
