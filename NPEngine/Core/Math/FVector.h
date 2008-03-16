@@ -43,6 +43,9 @@ extern FVector3 * NP_WORLDF_Y_AXIS;
 extern FVector3 * NP_WORLDF_Z_AXIS;
 extern FVector3 * NP_WORLDF_FORWARD_VECTOR;
 
+FVector2 * fv2_alloc();
+FVector2 * fv2_alloc_init();
+FVector2 * fv2_free(FVector2 * v);
 void fv2_v_square_length_s(const FVector2 * const v, Float * sqrlength);
 void fv2_v_length_s(const FVector2 * const v, Float * length);
 void fv2_v_normalise_v(const FVector2 * const v, FVector2 * normalised);
@@ -59,9 +62,10 @@ void fv2_vv_dot_product_s(const FVector2 * const v, const FVector2 * const w, Fl
 Float fv2_v_square_length(const FVector2 * const v);
 Float fv2_v_length(const FVector2 * const v);
 Float fv2_vv_dot_product(const FVector2 * const v, const FVector2 * const w);
-FVector2 * fv2_alloc();
-FVector2 * fv2_alloc_init();
 
+FVector3 * fv3_alloc();
+FVector3 * fv3_alloc_init();
+FVector3 * fv3_free(FVector3 * v);
 void fv3_v_zeros(FVector3 * v);
 void fv3_v_invert(FVector3 * v);
 void fv3_v_invert_v(FVector3 * v, FVector3 * w);
@@ -84,11 +88,10 @@ void fv3_vv_cross_product_v(const FVector3 * const v, const FVector3 * const w, 
 Float fv3_v_square_length(const FVector3 * const v);
 Float fv3_v_length(const FVector3 * const v);
 Float fv3_vv_dot_product(const FVector3 * const v, const FVector3 * const w);
-FVector3 * fv3_alloc();
-FVector3 * fv3_alloc_init();
 
 FVector4 * fv4_alloc();
 FVector4 * fv4_alloc_init();
+FVector4 * fv4_free(FVector4 * v);
 FVector4 * fv4_alloc_init_with_fvector3(FVector3 * v);
 void fv4_vv_load_fv3(FVector4 * v, const FVector3 * const w);
 

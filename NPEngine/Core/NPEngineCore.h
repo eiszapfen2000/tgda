@@ -4,6 +4,7 @@
 @class NPTimer;
 @class NPObjectManager;
 @class NPPathManager;
+@class NPTransformationStateManager;
 @class NPModelManager;
 @class NPImageManager;
 @class NPTextureManager;
@@ -17,6 +18,8 @@
     NPTimer * timer;
     NPObjectManager * objectManager;
     NPPathManager * pathManager;
+
+    NPTransformationStateManager * transformationStateManager;
 
     NPOpenGLRenderContextManager * renderContextManager;
 
@@ -39,6 +42,7 @@
 - (NPTimer *)timer;
 - (NPObjectManager *)objectManager;
 - (NPPathManager *)pathManager;
+- (NPTransformationStateManager *)transformationStateManager;
 - (NPOpenGLRenderContextManager *)renderContextManager;
 - (NPModelManager *)modelManager;
 - (NPImageManager *)imageManager;

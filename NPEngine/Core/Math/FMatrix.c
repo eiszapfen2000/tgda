@@ -13,6 +13,24 @@ void npmath_fmatrix_initialise()
     NPFREELIST_ALLOC_INIT(NP_FMATRIX4_FREELIST,FMatrix4,512)
 }
 
+FMatrix2 * fm2_alloc()
+{
+    return (FMatrix2 *)npfreenode_alloc(NP_FMATRIX2_FREELIST);
+}
+
+FMatrix2 * fm2_alloc_init()
+{
+    FMatrix2 * tmp = npfreenode_alloc(NP_FMATRIX2_FREELIST);
+    fm2_set_identity(tmp);
+
+    return tmp;
+}
+
+FMatrix2 * fm2_free(FMatrix2 * v)
+{
+    return npfreenode_fast_free(v,NP_FMATRIX2_FREELIST);
+}
+
 void fm2_set_identity(FMatrix2 * m)
 {
     FM_EL(*m,0,0) = FM_EL(*m,1,1) = 1.0;
@@ -64,17 +82,22 @@ void fm2_mv_multiply_v(const FMatrix2 * const m, const FVector2 * const v, FVect
     FV_Y(*result) = FM_EL(*m,0,1) * FV_X(*v) + FM_EL(*m,1,1) * FV_Y(*v);
 }
 
-FMatrix2 * fm2_alloc()
+FMatrix3 * fm3_alloc()
 {
-    return (FMatrix2 *)npfreenode_alloc(NP_FMATRIX2_FREELIST);
+    return (FMatrix3 *)npfreenode_alloc(NP_FMATRIX3_FREELIST);
 }
 
-FMatrix2 * fm2_alloc_init()
+FMatrix3 * fm3_alloc_init()
 {
-    FMatrix2 * tmp = npfreenode_alloc(NP_FMATRIX2_FREELIST);
-    fm2_set_identity(tmp);
+    FMatrix3 * tmp = npfreenode_alloc(NP_FMATRIX3_FREELIST);
+    fm3_set_identity(tmp);
 
     return tmp;
+}
+
+FMatrix3 * fm3_free(FMatrix3 * v)
+{
+    return npfreenode_fast_free(v,NP_FMATRIX3_FREELIST);
 }
 
 void fm3_set_identity(FMatrix3 * m)
@@ -157,17 +180,22 @@ void fm3_mv_multiply_v(const FMatrix3 * const m, const FVector3 * const v, FVect
     FV_Z(*result) = FM_EL(*m,0,2) * FV_X(*v) + FM_EL(*m,1,2) * FV_Y(*v) + FM_EL(*m,2,2) * FV_Z(*v);
 }
 
-FMatrix3 * fm3_alloc()
+FMatrix4 * fm4_alloc()
 {
-    return (FMatrix3 *)npfreenode_alloc(NP_FMATRIX3_FREELIST);
+    return (FMatrix4 *)npfreenode_alloc(NP_FMATRIX4_FREELIST);
 }
 
-FMatrix3 * fm3_alloc_init()
+FMatrix4 * fm4_alloc_init()
 {
-    FMatrix3 * tmp = npfreenode_alloc(NP_FMATRIX3_FREELIST);
-    fm3_set_identity(tmp);
+    FMatrix4 * tmp = npfreenode_alloc(NP_FMATRIX4_FREELIST);
+    fm4_m_set_identity(tmp);
 
     return tmp;
+}
+
+FMatrix4 * fm4_free(FMatrix4 * v)
+{
+    return npfreenode_fast_free(v,NP_FMATRIX4_FREELIST);
 }
 
 void fm4_m_set_identity(FMatrix4 * m)
@@ -283,19 +311,6 @@ void fm4_mv_multiply_v(const FMatrix4 * const m, const FVector4 * const v, FVect
     FV_Y(*result) = FM_EL(*m,0,1) * FV_X(*v) + FM_EL(*m,1,1) * FV_Y(*v) + FM_EL(*m,2,1) * FV_Z(*v) + FM_EL(*m,3,1) * FV_W(*v);
     FV_Z(*result) = FM_EL(*m,0,2) * FV_X(*v) + FM_EL(*m,1,2) * FV_Y(*v) + FM_EL(*m,2,2) * FV_Z(*v) + FM_EL(*m,3,2) * FV_W(*v);
     FV_W(*result) = FM_EL(*m,0,3) * FV_X(*v) + FM_EL(*m,1,3) * FV_Y(*v) + FM_EL(*m,2,3) * FV_Z(*v) + FM_EL(*m,3,3) * FV_W(*v);
-}
-
-FMatrix4 * fm4_alloc()
-{
-    return (FMatrix4 *)npfreenode_alloc(NP_FMATRIX4_FREELIST);
-}
-
-FMatrix4 * fm4_alloc_init()
-{
-    FMatrix4 * tmp = npfreenode_alloc(NP_FMATRIX4_FREELIST);
-    fm4_m_set_identity(tmp);
-
-    return tmp;
 }
 
 void fm4_mv_translation_matrix(FMatrix4 * m, FVector3 * v)
