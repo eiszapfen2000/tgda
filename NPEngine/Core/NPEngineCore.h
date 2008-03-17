@@ -8,6 +8,7 @@
 @class NPModelManager;
 @class NPImageManager;
 @class NPTextureManager;
+@class NPTextureBindingStateManager;
 @class NPEffectManager;
 @class NPOpenGLRenderContextManager;
 @class NPCameraManager;
@@ -26,6 +27,7 @@
     NPModelManager * modelManager;
     NPImageManager * imageManager;
     NPTextureManager * textureManager;
+    NPTextureBindingStateManager * textureBindingStateManager;
     NPEffectManager * effectManager;
 
     NPCameraManager * cameraManager;
@@ -47,6 +49,7 @@
 - (NPModelManager *)modelManager;
 - (NPImageManager *)imageManager;
 - (NPTextureManager *)textureManager;
+- (NPTextureBindingStateManager *)textureBindingStateManager;
 - (NPEffectManager *)effectManager;
 - (NPCameraManager *)cameraManager;
 

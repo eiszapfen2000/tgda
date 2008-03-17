@@ -9,7 +9,9 @@ NPEffectManager.m \
 NPSUXMaterial.m \
 NPSUXMaterialInstance.m \
 NPTexture.m \
-NPTextureManager.m
+NPTextureManager.m \
+NPTextureBindingState.m \
+NPTextureBindingStateManager.m
 
 libNPEngineGraphicsMaterial_HEADER_FILES = \
 NPEffect.h \
@@ -17,7 +19,9 @@ NPEffectManager.h \
 NPSUXMaterial.h \
 NPSUXMaterialInstance.h \
 NPTexture.h \
-NPTextureManager.h
+NPTextureManager.h \
+NPTextureBindingState.h \
+NPTextureBindingStateManager.h
 
 libNPEngineGraphicsMaterial_LIBRARIES_DEPEND_UPON += -lNPEngineCoreUtilities
 
