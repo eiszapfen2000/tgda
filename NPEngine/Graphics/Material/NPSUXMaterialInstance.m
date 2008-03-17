@@ -96,6 +96,8 @@
     NSMutableArray * cgfxTechniqueLineElements = splitStringUsingCharacterSet([ materialInstanceScript objectAtIndex:1 ], set);
     NSString * techniqueNameWithoutQuotes =  [ removeLeadingAndTrailingQuotes([ cgfxTechniqueLineElements objectAtIndex:2 ]) retain ];
 
+    
+
 }
 
 

@@ -77,6 +77,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     modelManager = [ [ NPModelManager alloc ] initWithName:@"NPEngine Model Manager" parent:self ];
     imageManager = [ [ NPImageManager alloc ] initWithName:@"NPEngine Image Manager" parent:self ];
     textureManager = [ [ NPTextureManager alloc ] initWithName:@"NPEngine Texture Manager" parent:self ];
+    textureBindingStateManager = [ [ NPTextureBindingStateManager alloc ] initWithName:@"NPEngine Texture Binding Manager" parent:self ];
     effectManager = [ [ NPEffectManager alloc ] initWithName:@"NPEngine Effect Manager" parent:self ];
 
     cameraManager = [ [ NPCameraManager alloc ] initWithName:@"NPEngine Camera Manager" parent:self ];
@@ -147,6 +148,11 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 - (NPTextureManager *)textureManager
 {
     return textureManager;
+}
+
+- (NPTextureBindingStateManager *)textureBindingStateManager
+{
+    return textureBindingStateManager;
 }
 
 - (NPEffectManager *)effectManager
