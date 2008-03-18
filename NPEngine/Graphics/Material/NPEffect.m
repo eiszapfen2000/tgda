@@ -87,6 +87,25 @@
     return ready;
 }
 
+- (CGeffect) effect
+{
+    return effect;
+}
+
+- (CGtechnique) defaultTechnique
+{
+    return defaultTechnique;
+}
+
+- (void) setDefaultTechnique:(CGtechnique)newDefaultTechnique
+{
+    defaultTechnique = newDefaultTechnique;
+}
+
+- (NpDefaultSemantics *) defaultSemantics
+{
+    return &defaultSemantics;
+}
 
 - (void) clearDefaultSemantics
 {
@@ -107,7 +126,7 @@
 
     if ( cgIsParameter(param) == CG_TRUE )
     {
-        NPLOG(([NSString stringWithFormat:@"%@ found",semanticName]));
+        NPLOG(([NSString stringWithFormat:@"%@ with name %s found",semanticName,cgGetParameterName(param)]));
         NPLOG(([NSString stringWithFormat:@"%s ",cgGetTypeString(cgGetParameterType(param))]));
         return param;
     }
@@ -129,6 +148,19 @@
         NSString * ithSampler = [ samplerSemantic stringByAppendingFormat:@"%d",i ];
         defaultSemantics.sampler[i] = [ self bindDefaultSemantic:ithSampler ];
     }
+
+    /*for ( Int i = 0; i < 8; i++ )
+    {
+        if ( defaultSemantics.sampler[i] == NULL )
+        {
+            NPLOG(@"NULL");
+        }
+        else
+        {
+            NPLOG(([NSString stringWithFormat:@"%s ",cgGetParameterName(defaultSemantics.sampler[i])]));
+        }
+        //NPLOG(([NSString stringWithFormat:@"%s",cgGetParameterName(defaultSemantics.sampler[i])]));
+    }*/
 }
 
 - (void) activate

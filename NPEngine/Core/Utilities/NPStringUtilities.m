@@ -4,18 +4,17 @@ NSString * removeLeadingAndTrailingQuotes(NSString * string)
 {
     NSRange range;
     range.location = 0;
-    range.length = [ string length ] - 1;
+    range.length = [ string length ];
 
     if ( [ string characterAtIndex:0 ] == '"' )
     {
         range.location = 1; //skip first character
-        NSLog(@"head found");
+        range.length = range.length - 1;
     }
 
     if ( [ string characterAtIndex:([ string length ] - 1) ] == '"' )
     {
-        range.length = [ string length ] - 2; //skip last character
-        NSLog(@"tail found");
+        range.length = range.length - 1; //skip last character
     } 
 
     return [ string substringWithRange:range ];
@@ -35,5 +34,5 @@ NSMutableArray * splitStringUsingCharacterSet(NSString * string, NSCharacterSet 
         }
 	}
 
-	return array;
+	return [ array autorelease ];
 }

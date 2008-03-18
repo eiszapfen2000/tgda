@@ -38,39 +38,6 @@
 
 }
 
-- (void) activateTexture:(NPTexture *)texture
-{
-    if ( [ textures objectForKey:[ texture fileName ] ] != nil )
-    {
-        glBindTexture(GL_TEXTURE_2D, [texture textureID]);
-        currentActivetexture = texture;
-    }
-    else
-    {
-        NPLOG_WARNING(([NSString stringWithFormat:@"%@ not known by texture manager",[ texture fileName ]]));
-    }
-}
-
-- (void) activateTextureUsingFileName:(NSString *)fileName
-{
-    NPTexture * texture = [ textures objectForKey:fileName ];
-
-    if ( texture != nil )
-    {
-        [ texture activate ];
-        currentActivetexture = texture;
-    }
-    else
-    {
-        NPLOG_WARNING(([NSString stringWithFormat:@"%@ not known by texture manager",fileName]));
-    }
-}
-
-- (id) currentActivetexture
-{
-    return currentActivetexture;
-}
-
 - (id) loadTextureFromPath:(NSString *)path
 {
     NSString * absolutePath = [ [ [ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
