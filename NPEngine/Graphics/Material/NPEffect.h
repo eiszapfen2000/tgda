@@ -33,6 +33,11 @@ NpDefaultSemantics;
 - (void) reset;
 - (BOOL) isReady;
 
+- (CGeffect) effect;
+- (CGtechnique) defaultTechnique;
+- (void) setDefaultTechnique:(CGtechnique)newDefaultTechnique;
+
+- (NpDefaultSemantics *) defaultSemantics;
 - (void) clearDefaultSemantics;
 - (CGparameter) bindDefaultSemantic:(NSString *)semanticName;
 - (void) bindDefaultSemantics;

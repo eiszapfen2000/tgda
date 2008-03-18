@@ -3,11 +3,17 @@
 #import "Core/Resource/NPPResource.h"
 
 @class NPFile;
+@class NPEffect;
 
 @interface NPSUXMaterialInstance : NPResource < NPPResource >
 {
     NSString * materialFileName;
     NSMutableArray * materialInstanceScript;
+    NSMutableDictionary * textureNameToSemantic;
+    NSMutableDictionary * textureNameToTextureFileName;
+    NSMutableDictionary * textureFileNameToTexture;
+    NSMutableDictionary * textureToSemantic;
+    NPEffect * effect;
 }
 
 - (id) init;

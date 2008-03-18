@@ -106,11 +106,13 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 
 - (void) activate
 {
-    [ (NPTextureManager *)parent activateTexture:self ];
+
 }
 
 - (void) setupInternalFormat
 {
+    NPLOG(([NSString stringWithFormat:@"internal format %d", [image pixelFormat]]));
+
     switch ( [ image pixelFormat ] )
     {
         case NP_PIXELFORMAT_BYTE_R:{internalFormat = 1; break;}
