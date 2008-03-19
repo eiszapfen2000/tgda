@@ -7,6 +7,8 @@
 #define NP_CG_DEBUG_MODE_INACTIVE                0
 #define NP_CG_DEBUG_MODE_ACTIVE                  1
 
+@class NPEffect;
+
 @interface NPEffectManager : NPObject
 {
     CGcontext cgContext;
@@ -15,6 +17,7 @@
     NPState shaderParameterUpdatePolicy;
 
     NSMutableDictionary * effects;
+    NPEffect * currentActiveEffect;
 }
 
 - (id) init;
@@ -31,6 +34,9 @@
 
 - (NPState)shaderParameterUpdatePolicy;
 - (void) setShaderParameterPolicy:(NPState)newShaderParameterUpdatePolicy;
+
+- (NPEffect *) currentActiveEffect;
+- (void) setCurrentActiveEffect:(NPEffect *)newCurrentActiveEffect;
 
 - (id) loadEffectFromPath:(NSString *)path;
 - (id) loadEffectFromAbsolutePath:(NSString *)path;

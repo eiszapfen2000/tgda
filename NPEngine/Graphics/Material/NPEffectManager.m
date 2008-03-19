@@ -133,6 +133,20 @@ void np_cg_error_callback()
     }
 }
 
+- (NPEffect *) currentActiveEffect
+{
+    return currentActiveEffect;
+}
+
+- (void) setCurrentActiveEffect:(NPEffect *)newCurrentActiveEffect
+{
+    if ( currentActiveEffect != newCurrentActiveEffect )
+    {
+        [ currentActiveEffect release ];
+        currentActiveEffect = [ newCurrentActiveEffect retain ];
+    }
+}
+
 - (id) loadEffectFromPath:(NSString *)path
 {
     NSString * absolutePath = [ [ [ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
