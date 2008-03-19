@@ -76,6 +76,8 @@
         [ group release ];
     }
 
+    ready = YES;
+
     return YES;
 }
 
@@ -108,15 +110,27 @@
 
 - (void) uploadToGL
 {
+    if ( ready == NO )
+    {
+        NPLOG(@"lod not ready");
+        return;
+    }
+
     [ vertexBuffer uploadVBOWithUsageHint:NP_VBO_UPLOAD_ONCE_RENDER_OFTEN ];
 }
 
 - (void) render
 {
+    if ( ready == NO )
+    {
+        NPLOG(@"lod not ready");
+        return;
+    }
+
     NSEnumerator * enumerator = [ groups objectEnumerator ];
     NPSUXModelGroup * group;
 
-    while ( group = [ enumerator nextObject ] )
+    while ( (group = [ enumerator nextObject ]) )
     {
         [ group render ];
     }

@@ -26,7 +26,7 @@
     materialInstanceScript = nil;
     textureNameToSemantic = [ [ NSMutableDictionary alloc ] init ];
     textureNameToTextureFileName = [ [ NSMutableDictionary alloc ] init ];
-    textureFileNameToTexture = [ [ NSMutableDictionary alloc ] init ];
+    textureNameToTexture = [ [ NSMutableDictionary alloc ] init ];
     textureToSemantic = [ [ NSMutableDictionary alloc ] init ];
 
     effect = nil;
@@ -82,20 +82,21 @@
 
     while ( ( textureName = [ enumerator nextObject ] ) )
     {
-        Int i = 0;
-        while ( effectSemantics->sampler[i] != NULL )
+        for ( Int i = 0; i < 8; i++ )
         {
-            NSString * parameterName = [ [ NSString alloc ] initWithFormat:@"%s", cgGetParameterName(effectSemantics->sampler[i]) ];
-
-            if ( [ textureName isEqual:parameterName ] == YES )
+            if ( effectSemantics->sampler[i] != NULL )
             {
-                [ validTextureNameToTextureFileName setObject:[textureNameToTextureFileName objectForKey:textureName] forKey:textureName ];
+                NSString * parameterName = [ [ NSString alloc ] initWithFormat:@"%s", cgGetParameterName(effectSemantics->sampler[i]) ];
+
+                if ( [ textureName isEqual:parameterName ] == YES )
+                {
+                    [ textureNameToSemantic setObject:NP_GRAPHICS_MATERIAL_COLORMAP_SEMANTIC(i) forKey:textureName ];
+                    [ validTextureNameToTextureFileName setObject:[textureNameToTextureFileName objectForKey:textureName] forKey:textureName ];
+                }
+
+                [ parameterName release ];
             }
-
-            [ parameterName release ];
-
-            i++;
-        }
+        }        
     }
 
     [ textureNameToTextureFileName release ];
@@ -105,7 +106,6 @@
 
 - (void) parseMaterialInstanceScriptLines
 {
-    NSMutableDictionary * textureFileNameToTextureName = [ [ NSMutableDictionary alloc ] init ];
     NSCharacterSet * set = [ NSCharacterSet whitespaceAndNewlineCharacterSet ];
 
     NSEnumerator * enumerator = [ materialInstanceScript objectEnumerator ];
@@ -156,17 +156,29 @@
     }
 }
 
-/*- (void) loadTextures:(NSDictionary *)textureFileNameToTextureName
+- (void) loadTextures
 {
-    NSEnumerator * enumerator = [ textureFileNameToTextureName objectEnumerator ];
-    NSString * textureFileName;
+    NSEnumerator * enumerator = [ textureNameToTextureFileName keyEnumerator ];
+    NSString * textureName;
 
-    while ( ( textureFileName = [ enumerator nextObject ] ) )
+    while ( ( textureName = [ enumerator nextObject ] ) )
     {
-        NPTexture * texture = [[[ NPEngineCore instance ] textureManager ] loadTextureFromPath:textureFileName ];
-        [ textures addObject:texture ];
+        NPTexture * texture = [[[ NPEngineCore instance ] textureManager ] loadTextureFromPath:[textureNameToTextureFileName objectForKey:textureName] ];
+        [ textureNameToTexture setObject:texture forKey:textureName ];
+        [ texture release ];
     }
-}*/
+}
+
+- (void) matchTexturesToSemantics
+{
+    NSEnumerator * enumerator = [ textureNameToTexture keyEnumerator ];
+    NSString * textureName;
+
+    while ( ( textureName = [ enumerator nextObject ] ) )
+    {
+        [ textureToSemantic setObject:[textureNameToTexture objectForKey:textureName] forKey:[textureNameToSemantic objectForKey:textureName] ];
+    }
+}
 
 - (BOOL) parseMaterialInstanceScript
 {
@@ -180,8 +192,13 @@
 
     [ self filterTextureNamesNotUsedInEffect ];
     NPLOG(([NSString stringWithFormat:@"%@", [ textureNameToTextureFileName description ]]));
+    NPLOG(([NSString stringWithFormat:@"%@", [ textureNameToSemantic description ]]));
 
-    //[ self loadTextures:validTextureFileNameToTextureName ];
+    [ self loadTextures ];
+    NPLOG(([NSString stringWithFormat:@"%@", [ textureNameToTexture description ]]));
+
+    [ self matchTexturesToSemantics ];
+    NPLOG(([NSString stringWithFormat:@"%@", [ textureToSemantic description ]]));
 
     return YES;
 }
@@ -202,11 +219,13 @@
 
     materialInstanceScript = [ file readSUXScript ];
 
-    BOOL parseSucces = [ self parseMaterialInstanceScript ];
+    if ( [ self parseMaterialInstanceScript ] == YES )
+    {
+        ready = YES;
+        return YES;
+    }
 
-    ready = YES;
-
-    return YES;
+    return NO;
 }
 
 - (void) reset
@@ -222,6 +241,11 @@
 - (BOOL) isReady
 {
     return ready;
+}
+
+- (NSArray *) textures
+{
+    return [ textureToSemantic allValues ]; 
 }
 
 @end

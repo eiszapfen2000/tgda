@@ -3,6 +3,7 @@
 #import "NPSUXModel.h"
 #import "NPSUXModelLod.h"
 #import "Graphics/Material/NPSUXMaterialInstance.h"
+#import "Graphics/Material/NPTexture.h"
 #import "Core/NPEngineCore.h"
 
 @implementation NPSUXModel
@@ -80,6 +81,8 @@
         [ lod release ];
     }
 
+    ready = YES;
+
     return YES;
 }
 
@@ -96,13 +99,50 @@
     return ready;
 }
 
+- (NSArray *) materials
+{
+    return materials;
+}
+
 - (void) uploadToGL
 {
-    [[lods objectAtIndex:0 ] uploadToGL ];
+    if ( ready == NO )
+    {
+        NPLOG(@"model not ready");
+        return;
+    }
+
+    NSEnumerator * lodEnumerator = [ lods objectEnumerator ];
+    NPSUXModelLod * lod;
+
+    while ( ( lod = [ lodEnumerator nextObject ] ) )
+    {
+        [ lod uploadToGL ];
+    }
+
+    NSEnumerator * materialEnumerator = [ materials objectEnumerator ];
+    NPSUXMaterialInstance * materialInstance;
+
+    while ( ( materialInstance = [ materialEnumerator nextObject ] ) )
+    {
+        NSEnumerator * textureEnumerator = [ [ materialInstance textures ] objectEnumerator ];
+        NPTexture * texture;
+
+        while ( ( texture = [ textureEnumerator nextObject ] ) )
+        {
+            [ texture uploadToGL ];
+        }
+    }
 }
 
 - (void) render
 {
+    if ( ready == NO )
+    {
+        NPLOG(@"model not ready");
+        return;
+    }
+
     [[lods objectAtIndex:0 ] render ];
 }
 

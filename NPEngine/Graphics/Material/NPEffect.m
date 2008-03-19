@@ -136,36 +136,22 @@
 
 - (void) bindDefaultSemantics
 {
-    defaultSemantics.modelMatrix = [ self bindDefaultSemantic:@"NPMODEL" ];
-    defaultSemantics.viewMatrix = [ self bindDefaultSemantic:@"NPVIEW" ];;
-    defaultSemantics.projectionMatrix = [ self bindDefaultSemantic:@"NPPROJECTION" ];;
-    defaultSemantics.modelViewProjectionMatrix = [ self bindDefaultSemantic:@"NPMODELVIEWPROJECTION" ];
+    defaultSemantics.modelMatrix = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_MODEL_MATRIX_SEMANTIC ];
+    defaultSemantics.viewMatrix = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_VIEW_MATRIX_SEMANTIC ];
+    defaultSemantics.projectionMatrix = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_PROJECTION_MATRIX_SEMANTIC ];
+    defaultSemantics.modelViewProjectionMatrix = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_MODELVIEWPROJECTION_MATRIX_SEMANTIC ];
 
     NSString * samplerSemantic = @"COLORMAP";
 
     for ( Int i = 0; i < 8; i++ )
     {
-        NSString * ithSampler = [ samplerSemantic stringByAppendingFormat:@"%d",i ];
-        defaultSemantics.sampler[i] = [ self bindDefaultSemantic:ithSampler ];
+        defaultSemantics.sampler[i] = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_COLORMAP_SEMANTIC(i) ];
     }
-
-    /*for ( Int i = 0; i < 8; i++ )
-    {
-        if ( defaultSemantics.sampler[i] == NULL )
-        {
-            NPLOG(@"NULL");
-        }
-        else
-        {
-            NPLOG(([NSString stringWithFormat:@"%s ",cgGetParameterName(defaultSemantics.sampler[i])]));
-        }
-        //NPLOG(([NSString stringWithFormat:@"%s",cgGetParameterName(defaultSemantics.sampler[i])]));
-    }*/
 }
 
 - (void) activate
 {
-
+    [[[NPEngineCore instance ] effectManager ] setCurrentActiveEffect:self ];
 }
 
 - (void) uploadFloatParameterWithName:(NSString *)parameterName andValue:(Float *)f

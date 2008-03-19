@@ -11,7 +11,7 @@
     NSMutableArray * materialInstanceScript;
     NSMutableDictionary * textureNameToSemantic;
     NSMutableDictionary * textureNameToTextureFileName;
-    NSMutableDictionary * textureFileNameToTexture;
+    NSMutableDictionary * textureNameToTexture;
     NSMutableDictionary * textureToSemantic;
     NPEffect * effect;
 }
@@ -26,5 +26,7 @@
 - (BOOL) loadFromFile:(NPFile *)file;
 - (void) reset;
 - (BOOL) isReady;
+
+- (NSArray *) textures;
 
 @end
