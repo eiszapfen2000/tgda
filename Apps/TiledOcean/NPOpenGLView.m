@@ -61,15 +61,15 @@
 {
     if( [ renderContext context ] != [NSOpenGLContext currentContext] )
     {
-        NS_DURING
+        //NS_DURING
             [ renderContext activate ];
             ///NSLog(@"framechanged context fuck");
             [ self update ];
             [ self reshape ];
-        NS_HANDLER
-            NSLog(@"Exception");
-            NS_VOIDRETURN;
-        NS_ENDHANDLER
+        //NS_HANDLER
+        //    NSLog(@"Exception");
+        //    NS_VOIDRETURN;
+        //NS_ENDHANDLER
     }
     else
     {

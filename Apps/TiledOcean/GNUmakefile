@@ -20,7 +20,7 @@ Resources/TiledOcean.gorm \
 Resources/TODocument.gorm \
 Resources/TORNGSettingsWindow.gorm
 
-ADDITIONAL_GUI_LIBS += -lGL -lGLU -lNPEngineCoreLog -lNPEngineCoreResource -lNPEngineCoreNPObject -lNPEngineCoreBasics -lNPEngineCoreTimer -lNPEngineCoreFile -lNPEngineCoreMath -lNPEngineCoreUtilities -lNPEngineCore -lNPEngineGraphicsRenderContext -lNPEngineGraphicsModel -lNPEngineGraphicsMaterial -lNPEngineGraphicsImage -lCg -lCgGL -lGLEW -lIL -lILU -lILUT
+ADDITIONAL_GUI_LIBS += -lGL -lGLU -lNPEngineCoreLog -lNPEngineCoreResource -lNPEngineCoreNPObject -lNPEngineCoreBasics -lNPEngineCoreTimer -lNPEngineCoreFile -lNPEngineCoreMath -lNPEngineCoreUtilities -lNPEngineCoreWorld -lNPEngineCore -lNPEngineGraphicsRenderContext -lNPEngineGraphicsModel -lNPEngineGraphicsMaterial -lNPEngineGraphicsImage -lNPEngineGraphicsCamera -lCg -lCgGL -lGLEW -lIL -lILU -lILUT
 
 
 include $(TGDA_DIR)/GNUmakefile.flags

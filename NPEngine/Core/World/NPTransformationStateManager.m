@@ -1,4 +1,5 @@
 #import "NPTransformationStateManager.h"
+#import "NPTransformationState.h"
 
 @implementation NPTransformationStateManager
 
@@ -28,6 +29,14 @@
     [ transformationStates release ];
 
     [ super dealloc ];
+}
+
+- (void) setup
+{
+    NPTransformationState * transformationState = [[ NPTransformationState alloc ] initWithName:@"" parent:self ];
+    [ transformationStates addObject:transformationState ];
+    [ self setCurrentActiveTransformationState:transformationState ];
+    [ transformationState release ];
 }
 
 - (NPTransformationState *) currentActiveTransformationState

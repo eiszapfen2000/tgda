@@ -13,6 +13,8 @@
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
 
+- (void) setup;
+
 - (NPTextureBindingState *)currentTextureBindingState;
 - (void) setCurrentTextureBindingState:(NPTextureBindingState *)newCurrentTextureBindingState;
 

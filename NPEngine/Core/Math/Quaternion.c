@@ -40,7 +40,7 @@ Quaternion * quat_alloc_init_with_axis_and_radians(Vector3 * axis, Double * radi
     return q;
 }
 
-Quaternion * q_free(Quaternion * q)
+Quaternion * quat_free(Quaternion * q)
 {
     return npfreenode_fast_free(q, NP_QUATERNION_FREELIST);
 }

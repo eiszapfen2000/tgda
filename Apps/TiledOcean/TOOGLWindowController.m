@@ -1,5 +1,6 @@
 #import "TOOGLWindowController.h"
 #import "TODocument.h"
+#import "TOOpenGLView.h"
 #import "Core/NPEngineCore.h"
 
 @implementation TOOGLWindowController
@@ -24,20 +25,25 @@
         [[ NPEngineCore instance ] setup ];
     }
 
-    [(TODocument *)[ self document ] loadModel ];
+    //[(TODocument *)[ self document ] loadModel ];
+    [(TOOpenGLView *)openglView loadModel ];
 
-
-/*      timer = [NSTimer scheduledTimerWithTimeInterval:0.015
+    timer = [NSTimer scheduledTimerWithTimeInterval:0.1
                                                target:self
                                              selector:@selector(doDrawingStuff)
                                              userInfo: nil
-                                              repeats: YES ];*/
+                                              repeats: YES ];
+    NSLog(@"windwodidload");
 }
 
 - (void) doDrawingStuff
 {
     [ openglView lockFocus ];
-    [ openglView drawRect:[openglView frame] ];
+
+    
+
+    [ (TOOpenGLView *)openglView drawModel ];
+
     [ openglView unlockFocus ];
 }
 

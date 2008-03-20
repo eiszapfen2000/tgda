@@ -3,6 +3,8 @@
 #import "Core/Resource/NPPResource.h"
 
 @class NPFile;
+@class NPSUXModel;
+@class NPSUXMaterialInstance;
 
 @interface NPSUXModelGroup : NPResource < NPPResource >
 {
@@ -10,6 +12,9 @@
     Int firstIndex;
     Int lastIndex;
     Int materialInstanceIndex;
+
+    NPSUXModel * model;
+    NPSUXMaterialInstance * material;
 }
 
 - (id) init;

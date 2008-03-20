@@ -55,13 +55,4 @@
     return rngWindowController;
 }
 
-- (void) loadModel
-{
-    NSLog(@"loadModel");
-    [[[ glWindowController openglView ] renderContext ] activate ];
-
-    NPSUXModel * model = [[[ NPEngineCore instance ] modelManager ] loadModelFromPath:@"camera.model" ];
-    [ model uploadToGL ];
-}
-
 @end

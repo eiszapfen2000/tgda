@@ -23,6 +23,22 @@
     return self;
 }
 
+- (void) dealloc
+{
+    [ currentActiveCamera release ];
+    [ cameras release ];
+
+    [ super dealloc ];
+}
+
+- (void) setup
+{
+    NPCamera * camera = [[ NPCamera alloc ] initWithName:@"" parent:self ];
+    [ cameras addObject:camera ];
+    [ self setCurrentActiveCamera:camera ];
+    [ camera release ];
+}
+
 - (NPCamera *) currentActiveCamera
 {
     return currentActiveCamera;

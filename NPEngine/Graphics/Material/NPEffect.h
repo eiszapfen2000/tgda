@@ -28,6 +28,7 @@ NpDefaultSemantics;
 {
     CGeffect effect;
     CGtechnique defaultTechnique;
+    //NPEffectTechnique * defaultTechnqiue;
     NpDefaultSemantics defaultSemantics;
 }
 
@@ -51,17 +52,28 @@ NpDefaultSemantics;
 
 - (void) activate;
 
+- (void) uploadDefaultSemantics;
+
 - (void) uploadFloatParameterWithName:(NSString *)parameterName andValue:(Float *)f;
+- (void) upLoadFloatParameter:(CGparameter)parameter andValue:(Float *)f;
 - (void) uploadIntParameterWithName:(NSString *)parameterName andValue:(Int32 *)i;
+- (void) upLoadIntParameter:(CGparameter)parameter andValue:(Int32 *)i;
 
 - (void) uploadFVector2ParameterWithName:(NSString *)parameterName andValue:(FVector2 *)vector;
+- (void) uploadFVector2Parameter:(CGparameter)parameter andValue:(FVector2 *)vector;
 - (void) uploadFVector3ParameterWithName:(NSString *)parameterName andValue:(FVector3 *)vector;
+- (void) uploadFVector3Parameter:(CGparameter)parameter andValue:(FVector3 *)vector;
 - (void) uploadFVector4ParameterWithName:(NSString *)parameterName andValue:(FVector4 *)vector;
+- (void) uploadFVector4Parameter:(CGparameter)parameter andValue:(FVector4 *)vector;
 
 - (void) uploadFMatrix2ParameterWithName:(NSString *)parameterName andValue:(FMatrix2 *)matrix;
+- (void) uploadFMatrix2Parameter:(CGparameter)parameter andValue:(FMatrix2 *)matrix;
 - (void) uploadFMatrix3ParameterWithName:(NSString *)parameterName andValue:(FMatrix3 *)matrix;
+- (void) uploadFMatrix3Parameter:(CGparameter)parameter andValue:(FMatrix3 *)matrix;
 - (void) uploadFMatrix4ParameterWithName:(NSString *)parameterName andValue:(FMatrix4 *)matrix;
+- (void) uploadFMatrix4Parameter:(CGparameter)parameter andValue:(FMatrix4 *)matrix;
 
+- (void) uploadSampler2DWithParameterName:(NSString *)parameterName andID:(GLuint)textureID;
 - (void) uploadSampler2DWithParameter:(CGparameter)parameter andID:(GLuint)textureID;
 
 @end
