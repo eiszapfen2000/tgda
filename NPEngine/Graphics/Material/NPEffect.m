@@ -1,5 +1,10 @@
+#import "NPTexture.h"
+#import "NPTextureBindingState.h"
+#import "NPTextureBindingStateManager.h"
 #import "NPEffect.h"
 #import "NPEffectManager.h"
+#import "Core/World/NPTransformationState.h"
+#import "Core/World/NPTransformationStateManager.h"
 
 #import "Core/NPEngineCore.h"
 
@@ -141,8 +146,6 @@
     defaultSemantics.projectionMatrix = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_PROJECTION_MATRIX_SEMANTIC ];
     defaultSemantics.modelViewProjectionMatrix = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_MODELVIEWPROJECTION_MATRIX_SEMANTIC ];
 
-    NSString * samplerSemantic = @"COLORMAP";
-
     for ( Int i = 0; i < 8; i++ )
     {
         defaultSemantics.sampler[i] = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_COLORMAP_SEMANTIC(i) ];
@@ -152,12 +155,56 @@
 - (void) activate
 {
     [[[NPEngineCore instance ] effectManager ] setCurrentActiveEffect:self ];
+
+    [ self uploadDefaultSemantics ];
+}
+
+- (void) uploadDefaultSemantics
+{
+    if ( defaultSemantics.modelMatrix != NULL )
+    {
+        FMatrix4 * modelMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentActiveTransformationState ] modelMatrix ];
+        [ self uploadFMatrix4Parameter:defaultSemantics.modelMatrix andValue:modelMatrix ];
+    }
+
+    if ( defaultSemantics.viewMatrix != NULL )
+    {
+        FMatrix4 * viewMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentActiveTransformationState ] viewMatrix ];
+        [ self uploadFMatrix4Parameter:defaultSemantics.viewMatrix andValue:viewMatrix ];
+    }
+
+    if ( defaultSemantics.projectionMatrix != NULL )
+    {
+        FMatrix4 * projectionMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentActiveTransformationState ] projectionMatrix ];
+        [ self uploadFMatrix4Parameter:defaultSemantics.projectionMatrix andValue:projectionMatrix ];
+    }
+
+    if ( defaultSemantics.modelViewProjectionMatrix != NULL )
+    {
+    }
+
+    NPTextureBindingState * textureBindingState = [[[NPEngineCore instance ] textureBindingStateManager ] currentTextureBindingState ];
+
+    for ( Int i = 0; i < 8; i++ )
+    {
+        if ( defaultSemantics.sampler[i] != NULL )
+        {
+            NPTexture * texture = [ textureBindingState textureForKey:NP_GRAPHICS_MATERIAL_COLORMAP_SEMANTIC(i) ];
+
+            [ self uploadSampler2DWithParameter:defaultSemantics.sampler[i] andID:[texture textureID] ];
+        }
+    }
 }
 
 - (void) uploadFloatParameterWithName:(NSString *)parameterName andValue:(Float *)f
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
+    [ self upLoadFloatParameter:parameter andValue:f ];
+}
+
+- (void) upLoadFloatParameter:(CGparameter)parameter andValue:(Float *)f
+{
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
         //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_SCALAR )
@@ -172,6 +219,11 @@
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
+    [ self upLoadIntParameter:parameter andValue:i ];
+}
+
+- (void) upLoadIntParameter:(CGparameter)parameter andValue:(Int32 *)i
+{
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
         //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_SCALAR )
@@ -186,6 +238,11 @@
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
+    [ self uploadFVector2Parameter:parameter andValue:vector ];
+}
+
+- (void) uploadFVector2Parameter:(CGparameter)parameter andValue:(FVector2 *)vector
+{
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
         //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_VECTOR )
@@ -200,6 +257,11 @@
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
+    [ self uploadFVector3Parameter:parameter andValue:vector ];
+}
+
+- (void) uploadFVector3Parameter:(CGparameter)parameter andValue:(FVector3 *)vector
+{
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
         //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_VECTOR )
@@ -214,6 +276,11 @@
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
+    [ self uploadFVector4Parameter:parameter andValue:vector ];
+}
+
+- (void) uploadFVector4Parameter:(CGparameter)parameter andValue:(FVector4 *)vector
+{
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
         //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_VECTOR )
@@ -228,6 +295,11 @@
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
+    [ self uploadFMatrix2Parameter:parameter andValue:matrix ];
+}
+
+- (void) uploadFMatrix2Parameter:(CGparameter)parameter andValue:(FMatrix2 *)matrix
+{
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
         //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_MATRIX )
@@ -245,6 +317,11 @@
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
+    [ self uploadFMatrix3Parameter:parameter andValue:matrix ];
+}
+
+- (void) uploadFMatrix3Parameter:(CGparameter)parameter andValue:(FMatrix3 *)matrix
+{
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
         //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_MATRIX )
@@ -262,6 +339,11 @@
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
+    [ self uploadFMatrix4Parameter:parameter andValue:matrix ];
+}
+
+- (void) uploadFMatrix4Parameter:(CGparameter)parameter andValue:(FMatrix4 *)matrix
+{
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
         //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_MATRIX )
@@ -273,6 +355,13 @@
             //}
         }
     }
+}
+
+- (void) uploadSampler2DWithParameterName:(NSString *)parameterName andID:(GLuint)textureID
+{
+    CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
+
+    [ self uploadSampler2DWithParameter:parameter andID:textureID ];
 }
 
 - (void) uploadSampler2DWithParameter:(CGparameter)parameter andID:(GLuint)textureID

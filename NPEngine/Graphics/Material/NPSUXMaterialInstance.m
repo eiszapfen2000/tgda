@@ -2,6 +2,8 @@
 #import "Core/Utilities/NPStringUtilities.h"
 #import "NPTexture.h"
 #import "NPTextureManager.h"
+#import "NPTextureBindingState.h"
+#import "NPTextureBindingStateManager.h"
 #import "NPEffect.h"
 #import "NPEffectManager.h"
 #import "Core/NPEngineCore.h"
@@ -246,6 +248,31 @@
 - (NSArray *) textures
 {
     return [ textureToSemantic allValues ]; 
+}
+
+- (NPEffect *) effect
+{
+    return effect;
+}
+
+- (void) updateTextureBindingState
+{
+    NPTextureBindingState * t = [[[ NPEngineCore instance ] textureBindingStateManager ] currentTextureBindingState ];
+
+    NSEnumerator * enumerator = [ textureToSemantic keyEnumerator ];
+    NSString * semantic;
+
+    while ( ( semantic = [ enumerator nextObject ] ) )
+    {
+        [ t setTexture:[textureToSemantic objectForKey:semantic] forKey:semantic ];
+    }
+}
+
+- (void) activate
+{
+    [ self updateTextureBindingState ];
+
+    [ effect activate ];
 }
 
 @end

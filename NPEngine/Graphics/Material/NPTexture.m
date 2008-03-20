@@ -258,7 +258,8 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 
 - (void) uploadToGL
 {
-    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, [image width], [image height], 0, GL_RGBA, GL_UNSIGNED_BYTE, [[image imageData] bytes]);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, [image width], [image height], 0, GL_RGBA, GL_UNSIGNED_BYTE, [[image imageData] bytes]);
 }
 
 @end

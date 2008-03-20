@@ -1,5 +1,7 @@
 #import "NPCamera.h"
 #import "NPCameraManager.h"
+#import "Core/World/NPTransformationState.h"
+#import "Core/World/NPTransformationStateManager.h"
 #import "Graphics/npgl.h"
 #import "Core/NPEngineCore.h"
 
@@ -28,6 +30,16 @@
     [ self reset ];
 
     return self;
+}
+
+- (void) dealloc
+{
+    view = fm4_free(view);
+    projection = fm4_free(projection);
+    orientation = quat_free(orientation);
+    position = fv3_free(position);
+
+    [ super dealloc ];
 }
 
 - (void) reset
@@ -147,6 +159,13 @@
 {
     [ [ [ NPEngineCore instance ] cameraManager ] setCurrentActiveCamera:self ];
     [ self update ];
+}
+
+- (void) render
+{
+    NPTransformationState * trafo = [[[ NPEngineCore instance ] transformationStateManager ] currentActiveTransformationState ];
+    [ trafo setViewMatrix:view ];
+    [ trafo setProjectionMatrix:projection ];
 }
 
 @end

@@ -2,6 +2,8 @@
 #import "Graphics/Model/NPVertexBuffer.h"
 #import "Graphics/Model/NPSUXModelLod.h"
 #import "Graphics/Model/NPSUXModel.h"
+#import "Graphics/Material/NPSUXMaterialInstance.h"
+#import "Graphics/Material/NPEffect.h"
 #import "Core/NPEngineCore.h"
 
 @implementation NPSUXModelGroup
@@ -25,6 +27,9 @@
     lastIndex = -1;
     materialInstanceIndex = -1;
 
+    model = nil;
+    material = nil;
+
     return self;
 }
 
@@ -46,6 +51,9 @@
 
     [ file readInt32:&materialInstanceIndex ];
     NPLOG(([NSString stringWithFormat:@"Material Instance Index: %d", materialInstanceIndex]));
+
+    model = (NPSUXModel *)[ parent parent ];
+    material = [[ model materials ] objectAtIndex:materialInstanceIndex ];
 
     ready = YES;
 
@@ -75,9 +83,19 @@
         return;
     }
 
-    [[ (NPSUXModel *)[ parent parent ] materials ] objectAtIndex:materialInstanceIndex ];
+    [  material activate ];
 
-    [[(NPSUXModelLod *)parent vertexBuffer ] renderElementWithFirstindex:firstIndex andLastindex:lastIndex ];
+    CGpass pass = cgGetFirstPass([[ material effect ] defaultTechnique]);
+
+    while (pass)
+    {
+        cgSetPassState(pass);
+
+        [[(NPSUXModelLod *)parent vertexBuffer ] renderElementWithFirstindex:firstIndex andLastindex:lastIndex ];
+
+        cgResetPassState(pass);
+        pass = cgGetNextPass(pass);
+    }
 }
 
 @end

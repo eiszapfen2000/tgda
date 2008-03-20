@@ -12,6 +12,8 @@
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
 
+- (void) setup;
+
 - (NPTransformationState *) currentActiveTransformationState;
 - (void) setCurrentActiveTransformationState:(NPTransformationState *)newCurrentActiveTransformationState;
 

@@ -34,7 +34,7 @@ Quaternion * quat_alloc();
 Quaternion * quat_alloc_init();
 Quaternion * quat_alloc_init_with_axis_and_degrees(Vector3 * axis, Double * degrees);
 Quaternion * quat_alloc_init_with_axis_and_radians(Vector3 * axis, Double * radians);
-Quaternion * q_free(Quaternion * q);
+Quaternion * quat_free(Quaternion * q);
 
 void quat_set_identity(Quaternion * q);
 

@@ -22,6 +22,4 @@
 - (id) glWindowController;
 - (id) rngWindowController;
 
-- (void) loadModel;
-
 @end

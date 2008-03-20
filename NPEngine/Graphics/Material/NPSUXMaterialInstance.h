@@ -9,10 +9,12 @@
 {
     NSString * materialFileName;
     NSMutableArray * materialInstanceScript;
+
     NSMutableDictionary * textureNameToSemantic;
     NSMutableDictionary * textureNameToTextureFileName;
     NSMutableDictionary * textureNameToTexture;
     NSMutableDictionary * textureToSemantic;
+
     NPEffect * effect;
 }
 
@@ -28,5 +30,8 @@
 - (BOOL) isReady;
 
 - (NSArray *) textures;
+- (NPEffect *) effect;
+
+- (void) activate;
 
 @end

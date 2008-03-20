@@ -30,6 +30,14 @@
     [ super dealloc ];
 }
 
+- (void) setup
+{
+    NPTextureBindingState * textureBindingState = [ [ NPTextureBindingState alloc ] initWithName:@"" parent:self ];
+    [ textureBindingStates addObject:textureBindingState ];
+    [ self setCurrentTextureBindingState:textureBindingState ];
+    [ textureBindingState release ];
+}
+
 - (NPTextureBindingState *)currentTextureBindingState
 {
     return currentTextureBindingState;
