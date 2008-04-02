@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+#include <stdio.h>
 #include <math.h>
 
 #include "Quaternion.h"
@@ -387,5 +389,17 @@ void quat_m4_to_quaternion_q(const Matrix4 * const m, Quaternion * q)
 Double quat_q_magnitude(const Quaternion * const q)
 {
     return sqrt( Q_X(*q) * Q_X(*q) + Q_Y(*q) * Q_Y(*q) + Q_Z(*q) * Q_Z(*q) + Q_W(*q) * Q_W(*q) );
+}
+
+const char * quat_q_to_string(Quaternion * q)
+{
+    char * quatstring;
+
+    if ( asprintf(&quatstring, "%f %f %f %f\n",Q_X(*q),Q_Y(*q),Q_Z(*q),Q_W(*q)) < 0)
+    {
+        return NULL;
+    }
+
+    return quatstring;
 }
 

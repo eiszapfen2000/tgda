@@ -5,10 +5,6 @@
 #include "Core/Basics/NpFreeList.h"
 #include "Vector.h"
 
-extern NpFreeList * NP_MATRIX2_FREELIST;
-extern NpFreeList * NP_MATRIX3_FREELIST;
-extern NpFreeList * NP_MATRIX4_FREELIST;
-
 void npmath_matrix_initialise();
 
 //first index = column

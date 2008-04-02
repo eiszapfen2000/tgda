@@ -5,10 +5,6 @@
 #include "Core/Basics/NpFreeList.h"
 #include "FVector.h"
 
-extern NpFreeList * NP_FMATRIX2_FREELIST;
-extern NpFreeList * NP_FMATRIX3_FREELIST;
-extern NpFreeList * NP_FMATRIX4_FREELIST;
-
 void npmath_fmatrix_initialise();
 
 typedef struct FMatrix2
@@ -43,6 +39,7 @@ void fm2_mm_subtract_m(const FMatrix2 * const m1, const FMatrix2 * const m2, FMa
 void fm2_mm_multiply_m(const FMatrix2 * const m1, const FMatrix2 * const m2, FMatrix2 * result);
 void fm2_vm_multiply_v(const FVector2 * const v, const FMatrix2 * const m, FVector2 * result);
 void fm2_mv_multiply_v(const FMatrix2 * const m, const FVector2 * const v, FVector2 * result);
+const char * fm2_m_to_string(FMatrix2 * m);
 
 FMatrix3 * fm3_alloc();
 FMatrix3 * fm3_alloc_init();
@@ -54,6 +51,7 @@ void fm3_mm_subtract_m(const FMatrix3 * const m1, const FMatrix3 * const m2, FMa
 void fm3_mm_multiply_m(const FMatrix3 * const m1, const FMatrix3 * const m2, FMatrix3 * result);
 void fm3_vm_multiply_v(const FVector3 * const v, const FMatrix3 * const m, FVector3 * result);
 void fm3_mv_multiply_v(const FMatrix3 * const m, const FVector3 * const v, FVector3 * result);
+const char * fm3_m_to_string(FMatrix3 * m);
 
 FMatrix4 * fm4_alloc();
 FMatrix4 * fm4_alloc_init();
@@ -68,5 +66,6 @@ void fm4_mv_multiply_v(const FMatrix4 * const m, const FVector4 * const v, FVect
 void fm4_mv_translation_matrix(FMatrix4 * m, FVector3 * v);
 void fm4_msss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegrees, Float nearplane, Float farplane);
 //void fm4_m_view_matrix(FMatrix4 * m, FVector3 * rightvector, FVector3 * upvector, FVector3 * rightvector)
+const char * fm4_m_to_string(FMatrix4 * m);
 
 #endif

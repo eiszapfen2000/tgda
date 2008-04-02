@@ -1,6 +1,9 @@
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <math.h>
+
 #include "FMatrix.h"
 #include "Utilities.h"
-#include <math.h>
 
 NpFreeList * NP_FMATRIX2_FREELIST = NULL;
 NpFreeList * NP_FMATRIX3_FREELIST = NULL;
@@ -80,6 +83,20 @@ void fm2_mv_multiply_v(const FMatrix2 * const m, const FVector2 * const v, FVect
 {
     FV_X(*result) = FM_EL(*m,0,0) * FV_X(*v) + FM_EL(*m,1,0) * FV_Y(*v);
     FV_Y(*result) = FM_EL(*m,0,1) * FV_X(*v) + FM_EL(*m,1,1) * FV_Y(*v);
+}
+
+const char * fm2_m_to_string(FMatrix2 * m)
+{
+    char * fm2string;
+
+    if ( asprintf(&fm2string, "%f %f\n%f %f\n",
+                  FM_EL(*m,0,0),FM_EL(*m,1,0),
+                  FM_EL(*m,0,1),FM_EL(*m,1,1)) < 0)
+    {
+        return NULL;
+    }
+
+    return fm2string;
 }
 
 FMatrix3 * fm3_alloc()
@@ -178,6 +195,21 @@ void fm3_mv_multiply_v(const FMatrix3 * const m, const FVector3 * const v, FVect
     FV_X(*result) = FM_EL(*m,0,0) * FV_X(*v) + FM_EL(*m,1,0) * FV_Y(*v) + FM_EL(*m,2,0) * FV_Z(*v);
     FV_Y(*result) = FM_EL(*m,0,1) * FV_X(*v) + FM_EL(*m,1,1) * FV_Y(*v) + FM_EL(*m,2,1) * FV_Z(*v);
     FV_Z(*result) = FM_EL(*m,0,2) * FV_X(*v) + FM_EL(*m,1,2) * FV_Y(*v) + FM_EL(*m,2,2) * FV_Z(*v);
+}
+
+const char * fm3_m_to_string(FMatrix3 * m)
+{
+    char * fm3string;
+
+    if ( asprintf(&fm3string, "%f %f %f\n%f %f %f\n%f %f %f\n",
+                  FM_EL(*m,0,0),FM_EL(*m,1,0),FM_EL(*m,2,0),
+                  FM_EL(*m,0,1),FM_EL(*m,1,1),FM_EL(*m,2,1),
+                  FM_EL(*m,0,2),FM_EL(*m,1,2),FM_EL(*m,2,2)) < 0)
+    {
+        return NULL;
+    }
+
+    return fm3string;
 }
 
 FMatrix4 * fm4_alloc()
@@ -323,8 +355,8 @@ void fm4_mv_translation_matrix(FMatrix4 * m, FVector3 * v)
 
 void fm4_msss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegrees, Float nearplane, Float farplane)
 {
-    Float fovradians = DEGREE_TO_RADIANS(fovdegrees);
-    Float f = 1.0f/tan(fovradians/2.0f);
+    Float fovradians = DEGREE_TO_RADIANS(fovdegrees/2.0f);
+    Float f = 1.0f/tan(fovradians);
 
     FM_EL(*m,0,0) = f/aspectratio;
     FM_EL(*m,1,1) = f;
@@ -332,5 +364,21 @@ void fm4_msss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegree
     FM_EL(*m,2,3) = 1.0f;
     FM_EL(*m,3,2) = (2.0f*nearplane*farplane)/(nearplane - farplane);
     FM_EL(*m,3,3) = 0.0f;
+}
+
+const char * fm4_m_to_string(FMatrix4 * m)
+{
+    char * fm4string;
+
+    if ( asprintf(&fm4string, "%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n",
+                  FM_EL(*m,0,0),FM_EL(*m,1,0),FM_EL(*m,2,0),FM_EL(*m,3,0),
+                  FM_EL(*m,0,1),FM_EL(*m,1,1),FM_EL(*m,2,1),FM_EL(*m,3,1),
+                  FM_EL(*m,0,2),FM_EL(*m,1,2),FM_EL(*m,2,2),FM_EL(*m,3,2),
+                  FM_EL(*m,0,3),FM_EL(*m,1,3),FM_EL(*m,2,3),FM_EL(*m,3,3) ) < 0)
+    {
+        return NULL;
+    }
+
+    return fm4string;
 }
 

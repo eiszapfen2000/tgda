@@ -1,6 +1,8 @@
-#include "FVector.h"
-
+#define _GNU_SOURCE
+#include <stdio.h>
 #include <math.h>
+
+#include "FVector.h"
 
 NpFreeList * NP_FVECTOR2_FREELIST = NULL;
 NpFreeList * NP_FVECTOR3_FREELIST = NULL;
@@ -127,6 +129,18 @@ Float fv2_v_square_length(const FVector2 * const v)
 Float fv2_v_length(const FVector2 * const v)
 {
     return sqrt(fv2_v_square_length(v));
+}
+
+const char * fv2_v_to_string(FVector2 * v)
+{
+    char * fv2string;
+
+    if ( asprintf(&fv2string, "%f %f\n",FV_X(*v),FV_Y(*v)) < 0)
+    {
+        return NULL;
+    }
+
+    return fv2string;
 }
 
 
@@ -278,6 +292,18 @@ Float fv3_vv_dot_product(const FVector3 * const v, const FVector3 * const w)
     return ( FV_X(*v) * FV_X(*w) + FV_Y(*v) * FV_Y(*w) + FV_Z(*v) * FV_Z(*w) );
 }
 
+const char * fv3_v_to_string(FVector3 * v)
+{
+    char * fv3string;
+
+    if ( asprintf(&fv3string, "%f %f %f\n",FV_X(*v),FV_Y(*v),FV_Z(*v)) < 0)
+    {
+        return NULL;
+    }
+
+    return fv3string;
+}
+
 FVector4 * fv4_alloc()
 {
     return (FVector4 *)npfreenode_alloc(NP_FVECTOR4_FREELIST);
@@ -313,4 +339,17 @@ void fv4_vv_load_fv3(FVector4 * v, const FVector3 * const w)
     FV_Y(*v) = FV_Y(*w);
     FV_Z(*v) = FV_Z(*w);    
 }
+
+const char * fv4_v_to_string(FVector4 * v)
+{
+    char * fv4string;
+
+    if ( asprintf(&fv4string, "%f %f %f %f\n",FV_X(*v),FV_Y(*v),FV_Z(*v),FV_W(*v)) < 0)
+    {
+        return NULL;
+    }
+
+    return fv4string;
+}
+
 

@@ -106,10 +106,8 @@
 
 - (void) activate
 {
-    NSLog(@"activate - not ready or not active");
     if ( ready == YES && active == NO )
     {
-        NSLog(@"np context activate");
         [[[ NPEngineCore instance ] renderContextManager ] setCurrentlyActiveRenderContext:self ]; 
         [ context makeCurrentContext ];
 
@@ -119,11 +117,9 @@
 
 - (void) deactivate
 {
-    NSLog(@"deactivate - not ready or not active");
     if ( ready == YES && active == YES )
     {
         [ NSOpenGLContext clearCurrentContext ];
-        NSLog(@"np context deactivate");
         active = NO;
     }
 }
@@ -140,20 +136,16 @@
 
 - (void) update
 {
-    NSLog(@"update - not ready or not active");
     if ( ready == YES && active == YES )
     {
-        NSLog(@"np context update");
         [ context update ];
     }
 }
 
 - (void) swap
 {
-    NSLog(@"swap - not ready or not active");
     if ( ready == YES && active == YES )
     {
-        NSLog(@"np context swap");
         [ context flushBuffer ];
     }
 }

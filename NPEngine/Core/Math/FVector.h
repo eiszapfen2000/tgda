@@ -4,10 +4,6 @@
 #include "Core/Basics/NpTypes.h"
 #include "Core/Basics/NpFreeList.h"
 
-extern NpFreeList * NP_FVECTOR2_FREELIST;
-extern NpFreeList * NP_FVECTOR3_FREELIST;
-extern NpFreeList * NP_FVECTOR4_FREELIST;
-
 void npmath_fvector_initialise();
 
 typedef struct FVector2
@@ -62,6 +58,7 @@ void fv2_vv_dot_product_s(const FVector2 * const v, const FVector2 * const w, Fl
 Float fv2_v_square_length(const FVector2 * const v);
 Float fv2_v_length(const FVector2 * const v);
 Float fv2_vv_dot_product(const FVector2 * const v, const FVector2 * const w);
+const char * fv2_v_to_string(FVector2 * v);
 
 FVector3 * fv3_alloc();
 FVector3 * fv3_alloc_init();
@@ -88,12 +85,14 @@ void fv3_vv_cross_product_v(const FVector3 * const v, const FVector3 * const w, 
 Float fv3_v_square_length(const FVector3 * const v);
 Float fv3_v_length(const FVector3 * const v);
 Float fv3_vv_dot_product(const FVector3 * const v, const FVector3 * const w);
+const char * fv3_v_to_string(FVector3 * v);
 
 FVector4 * fv4_alloc();
 FVector4 * fv4_alloc_init();
 FVector4 * fv4_free(FVector4 * v);
 FVector4 * fv4_alloc_init_with_fvector3(FVector3 * v);
 void fv4_vv_load_fv3(FVector4 * v, const FVector3 * const w);
+const char * fv4_v_to_string(FVector4 * v);
 
 #endif
 

@@ -7,8 +7,6 @@
 #include "Matrix.h"
 #include "FMatrix.h"
 
-extern NpFreeList * NP_QUATERNION_FREELIST;
-
 void npmath_quaternion_initialise();
 
 typedef struct
@@ -64,8 +62,8 @@ void quat_q_to_fmatrix4_m(const Quaternion * const q, FMatrix4 * m);
 void quat_m3_to_quaternion_q(const Matrix3 * const m, Quaternion * q);
 void quat_m4_to_quaternion_q(const Matrix4 * const m, Quaternion * q);
 
-
-
 Double quat_q_magnitude(const Quaternion * const q);
+
+const char * quat_q_to_string(Quaternion * q);
 
 #endif
