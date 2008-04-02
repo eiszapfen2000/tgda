@@ -4,10 +4,6 @@
 #include "Core/Basics/NpTypes.h"
 #include "Core/Basics/NpFreeList.h"
 
-extern NpFreeList * NP_VECTOR2_FREELIST;
-extern NpFreeList * NP_VECTOR3_FREELIST;
-extern NpFreeList * NP_VECTOR4_FREELIST;
-
 void npmath_vector_initialise();
 
 typedef struct Vector2

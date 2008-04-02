@@ -1,6 +1,8 @@
-#include "FQuaternion.h"
-
+#define _GNU_SOURCE
+#include <stdio.h>
 #include <math.h>
+
+#include "FQuaternion.h"
 
 NpFreeList * NP_FQUATERNION_FREELIST = NULL;
 
@@ -70,3 +72,16 @@ void fquat_qq_multiply_q(const FQuaternion * const q1, const FQuaternion * const
 
     fquat_q_normalise(result);
 }
+
+const char * fquat_q_to_string(FQuaternion * q)
+{
+    char * fquatstring;
+
+    if ( asprintf(&fquatstring, "%f %f %f %f\n",FQ_X(*q),FQ_Y(*q),FQ_Z(*q),FQ_W(*q)) < 0)
+    {
+        return NULL;
+    }
+
+    return fquatstring;
+}
+

@@ -5,8 +5,6 @@
 #include "Core/Basics/NpFreeList.h"
 #include "FVector.h"
 
-extern NpFreeList * NP_FQUATERNION_FREELIST;
-
 void npmath_fquaternion_initialise();
 
 typedef struct FQuaternion
@@ -35,5 +33,6 @@ void fquat_q_normalise(FQuaternion * q);
 void fquat_q_normalise_q(const FQuaternion * const q, FQuaternion * normalised);
 void fquat_qq_multiply_q(const FQuaternion * const q1, const FQuaternion * const q2, FQuaternion * result);
 Float fquat_q_magnitude(const FQuaternion * const q);
+const char * fquat_q_to_string(FQuaternion * q);
 
 #endif
