@@ -266,12 +266,12 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         glBufferData(GL_ARRAY_BUFFER, verticesSize * vertices.format.elementsForColor, vertices.colors, vboUsage);
     }
 
-    /*if ( vertices.format.elementsForWeights > 0 )
+    if ( vertices.format.elementsForWeights > 0 )
     {
         glGenBuffers(1, &(vertexBuffer.weightsID));
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.weightsID);
         glBufferData(GL_ARRAY_BUFFER, verticesSize * vertices.format.elementsForWeights, vertices.weights, vboUsage);
-    }*/
+    }
 
     for ( Int i = 0; i < 8; i++)
     {
@@ -406,6 +406,84 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+- (Float *) positions
+{
+     return vertices.positions;
+}
+
+- (void) setPositions:(Float *)newPositions
+{
+    if ( vertices.positions != NULL )
+    {
+        FREE(vertices.positions);
+    }
+
+    vertices.positions = newPositions;
+}
+
+- (Float *) normals
+{
+    return vertices.normals;
+}
+
+- (void) setNormals:(Float *)newNormals withElementsForNormal:(Int)newElementsForNormal
+{
+    if ( vertices.normals != NULL )
+    {
+        FREE(vertices.normals);
+    }
+
+    vertices.format.elementsForNormal = newElementsForNormal;
+    vertices.normals = newNormals;
+}
+
+- (Float *) colors
+{
+    return vertices.colors;
+}
+
+- (void) setColors:(Float *)newColors withElementsForColor:(Int)newElementsForColor
+{
+    if ( vertices.colors != NULL )
+    {
+        FREE(vertices.colors);
+    }
+
+    vertices.format.elementsForColor = newElementsForColor;
+    vertices.normals = newColors;
+}
+
+- (Float *) weights
+{
+    return vertices.weights;
+}
+
+- (void) setWeights:(Float *)newWeights withElementsForWeights:(Int)newElementsForWeights
+{
+    if ( vertices.weights != NULL )
+    {
+        FREE(vertices.weights);
+    }
+
+    vertices.format.elementsForWeights = newElementsForWeights;
+    vertices.normals = newWeights;
+}
+
+- (Int *) indices
+{
+    return vertices.indices;
+}
+
+- (void) setIndices:(Int *)newIndices
+{
+    if ( vertices.indices != NULL )
+    {
+        FREE(vertices.indices);
+    }
+
+    vertices.indices = newIndices;
 }
 
 @end
