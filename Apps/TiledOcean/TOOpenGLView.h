@@ -9,6 +9,8 @@
     NPSUXModel * model;
     NPEffect * effect;
     NPTexture * texture;
+
+    BOOL loaded;
 }
 
 - (id)initWithFrame:(NSRect) frameRect;

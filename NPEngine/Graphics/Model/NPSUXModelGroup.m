@@ -91,7 +91,7 @@
     {
         cgSetPassState(pass);
 
-        [[(NPSUXModelLod *)parent vertexBuffer ] renderElementWithFirstindex:firstIndex andLastindex:lastIndex ];
+        [[(NPSUXModelLod *)parent vertexBuffer ] renderElementWithPrimitiveType:primitiveType firstIndex:firstIndex andLastIndex:lastIndex ];
 
         cgResetPassState(pass);
         pass = cgGetNextPass(pass);

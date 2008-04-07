@@ -361,7 +361,7 @@ void fm4_msss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegree
     FM_EL(*m,0,0) = f/aspectratio;
     FM_EL(*m,1,1) = f;
     FM_EL(*m,2,2) = (nearplane + farplane)/(nearplane - farplane);
-    FM_EL(*m,2,3) = 1.0f;
+    FM_EL(*m,2,3) = -1.0f;
     FM_EL(*m,3,2) = (2.0f*nearplane*farplane)/(nearplane - farplane);
     FM_EL(*m,3,3) = 0.0f;
 }
