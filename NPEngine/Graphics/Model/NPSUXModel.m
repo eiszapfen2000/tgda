@@ -99,6 +99,11 @@
     return ready;
 }
 
+- (NSArray *) lods
+{
+    return lods;
+}
+
 - (NSArray *) materials
 {
     return materials;
@@ -130,7 +135,11 @@
 
         while ( ( texture = [ textureEnumerator nextObject ] ) )
         {
+            glBindTexture(GL_TEXTURE_2D,[texture textureID]);
+            [ texture setMipMapping:NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE ];
             [ texture uploadToGL ];
+            [ texture setTextureMaxFilter:NP_TEXTURE_FILTER_LINEAR ];
+            [ texture setTextureMinFilter:NP_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR ];
         }
     }
 }

@@ -18,6 +18,7 @@
 - (void) reset;
 - (BOOL) isReady;
 
+- (NSArray *) lods;
 - (NSArray *) materials;
 
 - (void) uploadToGL;

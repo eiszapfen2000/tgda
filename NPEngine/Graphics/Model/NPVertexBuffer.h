@@ -76,7 +76,8 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer);
 - (void) uploadVBOWithUsageHint:(NPState)usage;
 - (void) deleteVBO;
 - (void) render;
-- (void) renderElementWithFirstindex:(Int)firstIndex andLastindex:(Int)lastIndex;
+- (void) renderElementWithFirstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;
+- (void) renderElementWithPrimitiveType:(Int)primitiveType firstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;
 
 - (Float *) positions;
 - (void) setPositions:(Float *)newPositions;

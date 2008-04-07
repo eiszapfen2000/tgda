@@ -5,6 +5,8 @@
 #import "Graphics/Material/NPTextureBindingState.h"
 #import "Graphics/Material/NPTextureBindingStateManager.h"
 #import "Graphics/Model/NPSUXModel.h"
+#import "Graphics/Model/NPSUXModelLod.h"
+#import "Graphics/Model/NPVertexBuffer.h"
 #import "Graphics/Model/NPModelManager.h"
 #import "Graphics/Camera/NPCamera.h"
 #import "Graphics/Camera/NPCameraManager.h"
@@ -27,13 +29,15 @@
         return nil;
     }
 
+    loaded = NO;
+
     return self;
 }
 
 - (void)initGL
 {
     NSLog(@"initgl");
-    glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     glClearDepth(1.0f);
     glDepthFunc(GL_LEQUAL);
@@ -47,8 +51,6 @@
 
 - (void) drawRect:(NSRect) aRect
 {
-    /*NSLog(@"draw");
-
     NPOpenGLRenderContext * ctx;
 
     ctx = [ self renderContext];
@@ -64,7 +66,7 @@
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glMatrixMode(GL_MODELVIEW);
+/*    glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
     glTranslatef(-1.5f,0.0f,-2.0f);
@@ -76,9 +78,9 @@
         glVertex3f(-1.0f,-1.0f, 0.0f);
         glColor3f(0.0f,0.0f,1.0f);
         glVertex3f( 1.0f,-1.0f, 0.0f);
-    glEnd();
+    glEnd();*/
 
-    [[self renderContext] swap];*/
+    [[self renderContext] swap];
 }
 
 - (void) reshape
@@ -96,31 +98,28 @@
    glViewport(0, 0, (GLint) width, (GLint) height);
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
-   /* fit width and height */
-   /*if (h >= 1.0)
-     glFrustum(-1.0, 1.0, -h, h, 1.0, 100.0);
-   else
-     glFrustum(-1.0/h, 1.0/h, -1.0, 1.0, 1.0, 100.0);*/
+
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
-   //glTranslatef(0.0, 0.0, -40.0);
+
 }
 
 - (void) loadModel
 {
+    NSLog(@"load");
     [[self renderContext ] activate ];
 
-    //model = [[[ NPEngineCore instance ] modelManager ] loadModelFromPath:@"camera.model" ];
+    model = [[[ NPEngineCore instance ] modelManager ] loadModelFromPath:@"camera.model" ];
 
-    //[ model uploadToGL ];
+    [ model uploadToGL ];
 
-    effect = [[[ NPEngineCore instance ] effectManager ] loadEffectFromPath:@"camera.cgfx" ];
+    /*effect = [[[ NPEngineCore instance ] effectManager ] loadEffectFromPath:@"camera.cgfx" ];
     texture = [[[ NPEngineCore instance ] textureManager ] loadTextureFromPath:@"editorobjects.jpg" ];
     glBindTexture(GL_TEXTURE_2D,[texture textureID]);
     [ texture setTextureMinFilter:NP_TEXTURE_FILTER_LINEAR ];
     [ texture setTextureMaxFilter:NP_TEXTURE_FILTER_LINEAR ];
     [ texture uploadToGL ];
-    glBindTexture(GL_TEXTURE_2D,0);
+    glBindTexture(GL_TEXTURE_2D,0);*/
 
     GLenum glError = glGetError();
 
@@ -132,38 +131,42 @@
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glMatrixMode(GL_PROJECTION);
+    /*glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+
+    gluPerspective(45.0,1.0,0.1,50.0);
+    FMatrix4 proj;
+    glGetFloatv(GL_PROJECTION_MATRIX,(float *)proj.elements);
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    //NPTextureBindingState * t = [[[ NPEngineCore instance ] textureBindingStateManager ] currentTextureBindingState ];
-    //[ t setTexture:texture forKey:@"NPCOLORMAP0" ];
+    gluLookAt(0.0,0.0,2.0,0.0,0.0,0.0,0.0,1.0,0.0);
+    FMatrix4 view;
+    glGetFloatv(GL_MODELVIEW_MATRIX,(float *)view.elements);*/
 
-    [ effect uploadSampler2DWithParameterName:@"colormap" andID:[texture textureID] ];
+    //[ model render ];
 
-    /*NPCamera * camera = [[[ NPEngineCore instance ] cameraManager ] currentActiveCamera ];
 
+    //NPCamera * camera = [[[ NPEngineCore instance ] cameraManager ] currentActiveCamera ];
+
+    //[ camera setProjection:&proj ];
+    //[ camera setView:&view ];
+
+    //[ camera render ];
+    //[ model render ];
+    
+    NPCamera * camera = [[[ NPEngineCore instance ] cameraManager ] currentActiveCamera ];
+    
     FVector3 pos;
-    FV_Z(pos) = 10.0f;
+    FV_Z(pos) = 5.0f;
 
     [ camera setPosition:&pos ];
-    [ camera rotateY:10.0f ];
+    [ camera rotateY:10.0 ];
     [ camera update ];
 
     [ camera render ];
-    [ model render ];*/
-
-    CGpass pass;
-    pass = cgGetFirstPass([effect defaultTechnique]);
-    while (pass) {
-    cgSetPassState(pass);
-
-    glRectf(-1,-1,1,1);
-
-    cgResetPassState(pass);
-    pass = cgGetNextPass(pass);
-    }
+    [ model render ];
 
     GLenum glError = glGetError();
 

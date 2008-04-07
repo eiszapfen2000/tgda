@@ -25,7 +25,9 @@
 - (void) resetOrientation;
 
 - (FMatrix4 *) view;
+- (void) setView:(FMatrix4 *)newView;
 - (FMatrix4 *) projection;
+- (void) setProjection:(FMatrix4 *)newProjection;
 
 - (void) rotateX:(Double)degrees;
 - (void) rotateY:(Double)degrees;

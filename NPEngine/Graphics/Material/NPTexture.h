@@ -6,8 +6,8 @@
 @class NPFile;
 @class NPImage;
 
-#define NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE         0
-#define NP_TEXTURE_FILTER_MIPMAPPING_INACTIVE       1
+#define NP_TEXTURE_FILTER_MIPMAPPING_INACTIVE       0
+#define NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE         1
 
 #define NP_TEXTURE_FILTER_NEAREST                   0
 #define NP_TEXTURE_FILTER_LINEAR                    1

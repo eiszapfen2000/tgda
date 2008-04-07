@@ -56,8 +56,8 @@ void quat_set_identity(Quaternion * q)
 void quat_q_init_with_axis_and_degrees(Quaternion * q, Vector3 * axis, Double * degrees)
 {
     Double angle = DEGREE_TO_RADIANS(*degrees);
-    Double sin_angle = sin(angle/2);
-    Double cos_angle = cos(angle/2);
+    Double sin_angle = sin(angle/2.0);
+    Double cos_angle = cos(angle/2.0);
 
     Vector3 * tmp;
 
@@ -81,8 +81,8 @@ void quat_q_init_with_axis_and_degrees(Quaternion * q, Vector3 * axis, Double * 
 
 void quat_q_init_with_axis_and_radians(Quaternion * q, Vector3 * axis, Double * radians)
 {
-    Double sin_angle = sin((*radians)/2);
-    Double cos_angle = cos((*radians)/2);
+    Double sin_angle = sin((*radians)/2.0);
+    Double cos_angle = cos((*radians)/2.0);
 
     Vector3 * tmp;
 
@@ -146,17 +146,10 @@ void quat_q_normalise_q(const Quaternion * const q, Quaternion * normalised)
 
 void quat_qq_multiply_q(const Quaternion * const q1, const Quaternion * const q2, Quaternion * result)
 {
-    Q_W(*result) = v3_vv_dot_product( &Q_V(*q1), &Q_V(*q2) );
-
-    Vector3 cross, scale1, scale2;
-
-    v3_vv_cross_product_v( &Q_V(*q1), &Q_V(*q2), &cross);
-
-    v3_sv_scale_v( &Q_V(*q1), &Q_W(*q2), &scale1);
-    v3_sv_scale_v( &Q_V(*q2), &Q_W(*q1), &scale2);
-
-    v3_vv_add_v( &cross, &scale1, &cross);
-    v3_vv_add_v( &cross, &scale2, &Q_V(*result));
+    Q_X(*result) = Q_W(*q1) * Q_X(*q2) + Q_X(*q1) * Q_W(*q2) + Q_Y(*q1) * Q_Z(*q2) - Q_Z(*q1) * Q_Y(*q2);
+    Q_Y(*result) = Q_W(*q1) * Q_Y(*q2) - Q_X(*q1) * Q_Z(*q2) + Q_Y(*q1) * Q_W(*q2) + Q_Z(*q1) * Q_X(*q2);
+    Q_Z(*result) = Q_W(*q1) * Q_Z(*q2) + Q_X(*q1) * Q_Y(*q2) - Q_Y(*q1) * Q_X(*q2) + Q_Z(*q1) * Q_W(*q2);
+    Q_W(*result) = Q_W(*q1) * Q_W(*q2) - Q_X(*q1) * Q_X(*q2) - Q_Y(*q1) * Q_Y(*q2) - Q_Z(*q1) * Q_Z(*q2);
 
     quat_q_normalise(result);
 }
@@ -182,8 +175,17 @@ void quat_q_rotatex(Quaternion * q, Double * degrees)
 
 void quat_q_rotatey(Quaternion * q, Double * degrees)
 {
+    printf("q: %s",quat_q_to_string(q));
+
     Quaternion * rotatey = quat_alloc_init_with_axis_and_degrees(NP_WORLD_Y_AXIS, degrees);
-    quat_qq_multiply_q(q,rotatey,q);
+    printf("rotatey: %s",quat_q_to_string(rotatey));
+
+    Quaternion * tmp = quat_alloc();
+    quat_qq_multiply_q(q,rotatey,tmp);
+    printf("tmp: %s",quat_q_to_string(tmp));
+
+    q = quat_free(q);
+    q = tmp;
 }
 
 void quat_q_rotatez(Quaternion * q, Double * degrees)

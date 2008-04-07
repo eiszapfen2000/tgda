@@ -147,8 +147,6 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
             case NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE:{value = GL_TRUE; break;}
             case NP_TEXTURE_FILTER_MIPMAPPING_INACTIVE:{value = GL_FALSE; break;}
         }
-
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, value);
     }
 }
 
@@ -259,7 +257,15 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 - (void) uploadToGL
 {
     glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, [image width], [image height], 0, GL_RGBA, GL_UNSIGNED_BYTE, [[image imageData] bytes]);
+
+    if ( textureFilterState.mipmapping == NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE )
+    {
+        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA8, [image width], [image height], GL_RGBA, GL_UNSIGNED_BYTE, [[image imageData] bytes]);
+    }
+    else
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, [image width], [image height], 0, GL_RGBA, GL_UNSIGNED_BYTE, [[image imageData] bytes]);
+    }
 }
 
 @end

@@ -121,6 +121,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     [ file readBool:&(vertices.indexed) ];
     [ file readInt32:&vertexCount ];
     NPLOG(([NSString stringWithFormat:@"Vertex Count: %d",vertexCount]));
+    vertices.maxVertex = vertexCount -1;
 
     if ( vertexCount <= 0 )
     {
@@ -133,6 +134,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         
         [ file readInt32:&indexCount ];
         NPLOG(([NSString stringWithFormat:@"Index count: %d",indexCount]));
+        vertices.maxIndex = indexCount - 1;
 
         if ( indexCount <= 0 )
         {
@@ -168,6 +170,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
         {
             textureCoordinatesCount += (vertexCount * vertices.format.elementsForTextureCoordinateSet[i]);
+            NPLOG(([NSString stringWithFormat:@"texcoord count %d",textureCoordinatesCount]));
         }
     }
 
@@ -250,7 +253,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     glGenBuffers(1, &(vertexBuffer.positionsID));
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.positionsID);
-    glBufferDataARB(GL_ARRAY_BUFFER, verticesSize * 3, vertices.positions, vboUsage);
+    glBufferData(GL_ARRAY_BUFFER, verticesSize * 3, vertices.positions, vboUsage);
 
     if ( vertices.format.elementsForNormal > 0 )
     {
@@ -286,7 +289,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         }
     }
 
-    Int indicesSize = (vertices.maxVertex + 1) * sizeof(Int32);
+    Int indicesSize = (vertices.maxIndex + 1) * sizeof(Int32);
 
     if ( vertices.indexed == YES )
     {
@@ -330,10 +333,15 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
 - (void) render
 {
-    [ self renderElementWithFirstindex:0 andLastindex:vertices.maxIndex ];
+    [ self renderElementWithFirstIndex:0 andLastIndex:vertices.maxIndex ];
 }
 
-- (void) renderElementWithFirstindex:(Int)firstIndex andLastindex:(Int)lastIndex
+- (void) renderElementWithFirstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex
+{
+    [ self renderElementWithPrimitiveType:vertices.primitiveType firstIndex:firstIndex andLastIndex:lastIndex ];
+}
+
+- (void) renderElementWithPrimitiveType:(Int)primitiveType firstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;
 {
     glEnableClientState(GL_VERTEX_ARRAY);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.positionsID );
@@ -370,7 +378,8 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     if ( vertices.indexed == YES )
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexBuffer.indicesID);
-        glDrawRangeElements(vertices.primitiveType, 0, vertices.maxVertex, lastIndex - firstIndex + 1,
+        //glDrawElements(vertices.primitiveType, lastIndex - firstIndex + 1, GL_UNSIGNED_INT, 0);
+        glDrawRangeElements(primitiveType, 0, vertices.maxVertex, lastIndex - firstIndex + 1,
                             GL_UNSIGNED_INT, BUFFER_OFFSET(firstIndex*sizeof(UInt32)));
     }
     else
@@ -410,7 +419,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
 - (Float *) positions
 {
-     return vertices.positions;
+    return vertices.positions;
 }
 
 - (void) setPositions:(Float *)newPositions
