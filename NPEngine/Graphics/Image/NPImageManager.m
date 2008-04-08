@@ -6,7 +6,6 @@
 
 #import "IL/il.h"
 #import "IL/ilu.h"
-#import "IL/ilut.h"
 
 @implementation NPImageManager
 
@@ -38,9 +37,21 @@
 
 - (void) setup
 {
+    NPLOG(@"NPImageManager setup...");
+    NPLOG(@"Initialising DevIL...");
+
+    Int devilVersion = ilGetInteger(IL_VERSION_NUM);
+    NPLOG(([NSString stringWithFormat:@"DevIL version is %d",devilVersion ]));
+
+    if ( devilVersion < IL_VERSION)
+    {
+        NPLOG_WARNING(([NSString stringWithFormat:@"DevIL library version %d does not match DevIL header version %d",devilVersion,IL_VERSION]));
+    }
+
     ilInit();
     iluInit();
-    ilutInit();
+
+    NPLOG(@"NPImageManager ready");
 }
 
 - (id) loadImageFromPath:(NSString *)path

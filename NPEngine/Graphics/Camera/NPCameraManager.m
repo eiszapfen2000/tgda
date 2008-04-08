@@ -1,5 +1,6 @@
 #import "NPCameraManager.h"
 #import "NPCamera.h"
+#import "Core/NPEngineCore.h"
 
 @implementation NPCameraManager
 
@@ -10,7 +11,7 @@
 
 - (id) initWithParent:(NPObject *)newParent
 {
-    return [ self initWithName:@"NP Camera Manager" parent:newParent ];
+    return [ self initWithName:@"NPEngine Camera Manager" parent:newParent ];
 }
 
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
@@ -33,10 +34,16 @@
 
 - (void) setup
 {
+    NPLOG(@"NPCameraManager setup...");
+
+    NPLOG(@"Creating Camera...");
     NPCamera * camera = [[ NPCamera alloc ] initWithName:@"" parent:self ];
     [ cameras addObject:camera ];
     [ self setCurrentActiveCamera:camera ];
     [ camera release ];
+    NPLOG(@"Camera created");
+
+    NPLOG(@"NPCameraManager ready");
 }
 
 - (NPCamera *) currentActiveCamera

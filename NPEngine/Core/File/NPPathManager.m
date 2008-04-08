@@ -38,8 +38,12 @@
 
 - (void) setup
 {
+    NPLOG(@"NPPathManager setup...");
+
     [ localPathManager setup ];
     //[ remotePathManager setup ];
+
+    NPLOG(@"NPPathManager ready");
 }
 
 - (void) addLookUpPath:(NSString *)lookUpPath

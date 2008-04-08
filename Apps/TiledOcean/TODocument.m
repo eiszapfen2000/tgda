@@ -13,13 +13,17 @@
 
 - (id) init
 {
-    NSLog(@"doc");
     self = [ super init ];
 
-    /*[ [ NSNotificationCenter defaultCenter ] addObserver:self
+    [ [ NSNotificationCenter defaultCenter ] addObserver:self
                                                 selector:@selector(loadModel:)
                                                     name:@"TODocumentCanLoadResources"
-                                                  object:nil];*/
+                                                  object:nil];
+
+    modelLoaded = NO;
+    model = nil;
+    glWindowController = nil;
+    rngWindowController = nil;
 
     return self;
 }
@@ -36,13 +40,11 @@
 
 - (void) makeWindowControllers
 {
-    glWindowController = [ [ TOOGLWindowController alloc ] init ];
-    rngWindowController = [ [ TORNGWindowController alloc ] init ];
+    glWindowController = [[ TOOGLWindowController alloc ] init ];
+    rngWindowController = [[ TORNGWindowController alloc ] init ];
 
 	[ self addWindowController:glWindowController ];
 	[ self addWindowController:rngWindowController];
-
-    NSLog(@"blalvla");
 }
 
 - (id) glWindowController
@@ -53,6 +55,21 @@
 - (id) rngWindowController
 {
     return rngWindowController;
+}
+
+- (void) loadModel:(NSNotification *)aNot
+{
+
+}
+
+- (void) loadModel
+{
+    NSLog(@"loadmodel");
+    if ( modelLoaded == NO )
+    {
+        model = [[[[ NPEngineCore instance ] modelManager ] loadModelFromPath:@"camera.model" ] retain ];
+        modelLoaded = YES;
+    }    
 }
 
 @end

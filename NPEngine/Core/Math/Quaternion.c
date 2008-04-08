@@ -175,14 +175,10 @@ void quat_q_rotatex(Quaternion * q, Double * degrees)
 
 void quat_q_rotatey(Quaternion * q, Double * degrees)
 {
-    printf("q: %s",quat_q_to_string(q));
-
     Quaternion * rotatey = quat_alloc_init_with_axis_and_degrees(NP_WORLD_Y_AXIS, degrees);
-    printf("rotatey: %s",quat_q_to_string(rotatey));
-
     Quaternion * tmp = quat_alloc();
+
     quat_qq_multiply_q(q,rotatey,tmp);
-    printf("tmp: %s",quat_q_to_string(tmp));
 
     q = quat_free(q);
     q = tmp;
