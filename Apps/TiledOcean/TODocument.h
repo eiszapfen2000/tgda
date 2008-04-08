@@ -1,16 +1,16 @@
 #import <AppKit/AppKit.h>
 
-#import "TOOceanSurface.h"
+//#import "TOOceanSurface.h"
 
-//NSString * TODocumentType = @"TODocumentType";
-
+@class NPSUXModel;
 
 @interface TODocument : NSDocument
 {
-	id mOceanSurface;
-
     id glWindowController;
     id rngWindowController;
+
+    BOOL modelLoaded;
+    NPSUXModel * model;
 }
 
 - (id) init;
@@ -21,5 +21,8 @@
 - (void) makeWindowControllers;
 - (id) glWindowController;
 - (id) rngWindowController;
+
+- (void) loadModel:(NSNotification *)aNot;
+- (void) loadModel;
 
 @end

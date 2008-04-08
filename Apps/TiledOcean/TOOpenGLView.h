@@ -6,17 +6,11 @@
 
 @interface TOOpenGLView : NPOpenGLView
 {
-    NPSUXModel * model;
-    NPEffect * effect;
-    NPTexture * texture;
-
-    BOOL loaded;
+    BOOL glReady;
 }
 
-- (id)initWithFrame:(NSRect) frameRect;
-- (void)initGL;
+- (id) initWithFrame:(NSRect)frameRect;
 
-- (void) loadModel;
-- (void) drawModel;
+- (void) setupGLState;
 
 @end

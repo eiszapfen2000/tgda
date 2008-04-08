@@ -3,7 +3,6 @@
 
 #import "IL/il.h"
 #import "IL/ilu.h"
-#import "IL/ilut.h"
 
 @implementation NPImage
 

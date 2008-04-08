@@ -15,7 +15,7 @@
 
 - (id) initWithParent:(NPObject *)newParent
 {
-    return [ self initWithName:@"NP Camera" parent:newParent ];
+    return [ self initWithName:@"NPCamera" parent:newParent ];
 }
 
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
@@ -29,8 +29,6 @@
     position = fv3_alloc_init();
 
     [ self reset ];
-
-    NPLOG(([NSString stringWithFormat:@"%s",quat_q_to_string(orientation)]));
 
     return self;
 }

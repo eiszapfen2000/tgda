@@ -65,22 +65,21 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 
     self = [ super initWithName:@"NPEngine Core" ];
 
-    objectManager = [ [ NPObjectManager alloc ] initWithName:@"NPEngine Object Manager" parent:self ];
-    logger = [ [ NPLogger alloc ] initWithName:@"NPEngine Logger" parent:self ];
-    timer = [ [ NPTimer alloc ] initWithName:@"NPEngine Timer" parent:self ];
-    pathManager = [ [ NPPathManager alloc ] initWithName:@"NPEngine Path Manager" parent:self ];
+    objectManager = [[ NPObjectManager alloc ] initWithName:@"NPEngine Object Manager" parent:self ];
+    logger = [[ NPLogger alloc ] initWithName:@"NPEngine Logger" parent:self ];
+    timer = [[ NPTimer alloc ] initWithName:@"NPEngine Timer" parent:self ];
+    pathManager = [[ NPPathManager alloc ] initWithName:@"NPEngine Path Manager" parent:self ];
+    transformationStateManager = [[ NPTransformationStateManager alloc ] initWithName:@"NPEngine Transformation State Manager" parent:self ];
 
-    transformationStateManager = [ [ NPTransformationStateManager alloc ] initWithName:@"NPEngine Core Transformation State Manager" parent:self ];
+    renderContextManager = [[ NPOpenGLRenderContextManager alloc ] initWithName:@"NPEngine RenderContext Manager" parent:self ];
 
-    renderContextManager = [ [ NPOpenGLRenderContextManager alloc ] initWithName:@"NPEngine Core RenderContext Manager" parent:self ];
+    modelManager = [[ NPModelManager alloc ] initWithName:@"NPEngine Model Manager" parent:self ];
+    imageManager = [[ NPImageManager alloc ] initWithName:@"NPEngine Image Manager" parent:self ];
+    textureManager = [[ NPTextureManager alloc ] initWithName:@"NPEngine Texture Manager" parent:self ];
+    textureBindingStateManager = [[ NPTextureBindingStateManager alloc ] initWithName:@"NPEngine Texture Binding Manager" parent:self ];
+    effectManager = [[ NPEffectManager alloc ] initWithName:@"NPEngine Effect Manager" parent:self ];
 
-    modelManager = [ [ NPModelManager alloc ] initWithName:@"NPEngine Model Manager" parent:self ];
-    imageManager = [ [ NPImageManager alloc ] initWithName:@"NPEngine Image Manager" parent:self ];
-    textureManager = [ [ NPTextureManager alloc ] initWithName:@"NPEngine Texture Manager" parent:self ];
-    textureBindingStateManager = [ [ NPTextureBindingStateManager alloc ] initWithName:@"NPEngine Texture Binding Manager" parent:self ];
-    effectManager = [ [ NPEffectManager alloc ] initWithName:@"NPEngine Effect Manager" parent:self ];
-
-    cameraManager = [ [ NPCameraManager alloc ] initWithName:@"NPEngine Camera Manager" parent:self ];
+    cameraManager = [[ NPCameraManager alloc ] initWithName:@"NPEngine Camera Manager" parent:self ];
 
     ready = NO;
 
@@ -100,7 +99,8 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 
     ready = YES;
 
-    NPLOG(@"done");
+    NPLOG(@"NPEngine Core ready");
+    NPLOG(@"");
 }
 
 - (BOOL)isReady

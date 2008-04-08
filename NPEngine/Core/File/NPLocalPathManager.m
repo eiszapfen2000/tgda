@@ -32,9 +32,11 @@
     [ super dealloc ];
 }
 
-- (void) _addApplicationPath
+- (void) addApplicationPath
 {
     NSString * workingDirectory = [ fileManager currentDirectoryPath ];
+
+    NPLOG(([NSString stringWithFormat:@"Adding application directory %@ to local paths", workingDirectory]));
 
     if ( workingDirectory != nil )
     {
@@ -48,7 +50,11 @@
 
 - (void) setup
 {
-    [ self _addApplicationPath ];
+    NPLOG(@"NPLocalPathManager setup...");
+
+    [ self addApplicationPath ];
+
+    NPLOG(@"NPLocalPathManager ready");
 }
 
 - (void) addLookUpPath:(NSString *)lookUpPath

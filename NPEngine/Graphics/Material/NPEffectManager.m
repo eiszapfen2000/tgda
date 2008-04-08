@@ -40,17 +40,26 @@ void np_cg_error_callback()
 {
     NPLOG(@"NPEffectManager setup...");
 
+    NPLOG(([NSString stringWithFormat:@"Using CG %s",cgGetString(CG_VERSION)]));
+
     cgSetErrorCallback(np_cg_error_callback);
 
+    NPLOG(@"Creating CG Context...");
     cgContext = cgCreateContext();
+    NPLOG(@"...done");
 
+    NPLOG(@"Register GL States with CG...");
     cgGLRegisterStates(cgContext);
+    NPLOG(@"...done");
+
+    NPLOG(@"Activate CG Texture Parameter Management...");
     cgGLSetManageTextureParameters(cgContext, CG_TRUE);
+    NPLOG(@"...done");
 
     [ self setCgDebugMode:NP_CG_DEBUG_MODE_ACTIVE ];
     [ self setShaderParameterPolicy:NP_CG_DEFERRED_SHADER_PARAMETER_UPDATE ];
 
-    NPLOG(@"done");
+    NPLOG(@"Effect Manager ready");
 }
 
 - (void) dealloc
