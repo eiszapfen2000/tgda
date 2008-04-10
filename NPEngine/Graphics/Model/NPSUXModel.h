@@ -3,6 +3,7 @@
 #import "Core/Resource/NPPResource.h"
 
 @class NPFile;
+@class NPSUXModelLod;
 
 @interface NPSUXModel : NPResource < NPPResource >
 {
@@ -20,6 +21,8 @@
 
 - (NSArray *) lods;
 - (NSArray *) materials;
+
+- (void) addLod:(NPSUXModelLod *)newLod;
 
 - (void) uploadToGL;
 - (void) render;

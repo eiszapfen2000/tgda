@@ -2,27 +2,28 @@
 
 //#import "TOOceanSurface.h"
 
-@class NPSUXModel;
+@class TOScene;
 
 @interface TODocument : NSDocument
 {
     id glWindowController;
     id rngWindowController;
 
-    BOOL modelLoaded;
-    NPSUXModel * model;
+    TOScene * scene;
 }
 
 - (id) init;
+- (void) dealloc;
 
 - (BOOL) loadDataRepresentation:(NSData*)representation ofType:(NSString*)type;
 - (NSData*) dataRepresentationOfType: (NSString*)type;
+
+- (void) setup;
 
 - (void) makeWindowControllers;
 - (id) glWindowController;
 - (id) rngWindowController;
 
-- (void) loadModel:(NSNotification *)aNot;
-- (void) loadModel;
+- (TOScene *)scene;
 
 @end

@@ -84,4 +84,9 @@
     [ self addItemsToPopUpButton: rngPopUpButtonRight ];
 }
 
+- (void)windowDidBecomeKey:(NSNotification *)notification
+{
+    NSLog(@"rngkey");
+}
+
 @end

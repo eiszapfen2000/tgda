@@ -30,6 +30,11 @@
     [ super dealloc ];
 }
 
+- (NSDictionary *) renderContexts
+{
+    return renderContexts;
+}
+
 - (NPOpenGLPixelFormat *)defaultPixelFormat
 {
     return defaultPixelFormat;

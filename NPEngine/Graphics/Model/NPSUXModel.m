@@ -109,6 +109,11 @@
     return materials;
 }
 
+- (void) addLod:(NPSUXModelLod *)newLod
+{
+    [ lods addObject:newLod ];
+}
+
 - (void) uploadToGL
 {
     if ( ready == NO )

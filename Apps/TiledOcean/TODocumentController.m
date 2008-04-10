@@ -8,10 +8,10 @@
 
     core = [ NPEngineCore instance ];
 
-    [[ NSNotificationCenter defaultCenter ]  addObserver:self
+    /*[[ NSNotificationCenter defaultCenter ]  addObserver:self
                                                 selector:@selector(newContextReady:)
                                                     name:@"TOOpenGLWindowContextReady"
-                                                  object:nil ];
+                                                  object:nil ];*/
 
     return self;
 }

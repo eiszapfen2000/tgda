@@ -11,6 +11,7 @@ TODocumentController.m \
 TOOGLWindowController.m \
 TOOpenGLView.m \
 TORNGWindowController.m \
+TOScene.m \
 main.m
 
 
