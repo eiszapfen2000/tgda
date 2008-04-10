@@ -24,8 +24,7 @@
     return self;
 }
 
-- (Real) kToOmega
-    : (Vector2 *) k
+- (Real) kToOmega:(Vector2 *)k
 {
     Real length = v2_v_length(k);
 
@@ -37,8 +36,7 @@
     return sqrt( EARTH_ACCELERATION * (MATH_2_MUL_PI / length) );
 }
 
-- (Real) indexToK
-    : (Int) index
+- (Real) indexToK:(Int)index
 {
     Real N = - ( mResX / 2.0 );
     N += index;
@@ -71,8 +69,7 @@
     return self;
 }
 
-- (Real) getAmplitudeAt
-    : (Vector2 *) k
+- (Real) getAmplitudeAt:(Vector2 *)k
 {
     /* alpha is highly dependent on the the grid resolution, wind
     velocity and grid length. so this spectrum more or less is

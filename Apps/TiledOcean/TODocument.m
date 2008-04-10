@@ -6,6 +6,8 @@
 #import "Graphics/RenderContext/NPOpenGLRenderContext.h"
 #import "Graphics/Model/NPSUXModel.h"
 #import "Graphics/Model/NPModelManager.h"
+#import "Graphics/Camera/NPCamera.h"
+#import "Graphics/Camera/NPCameraManager.h"
 #import "Core/NPEngineCore.h"
 
 
@@ -15,17 +17,26 @@
 {
     self = [ super init ];
 
-    [ [ NSNotificationCenter defaultCenter ] addObserver:self
-                                                selector:@selector(loadModel:)
-                                                    name:@"TODocumentCanLoadResources"
-                                                  object:nil];
+    /*[[ NSNotificationCenter defaultCenter ] addObserver:self
+                                               selector:@selector(loadModel:)
+                                                   name:@"TODocumentCanLoadResources"
+                                                 object:nil];*/
 
-    modelLoaded = NO;
-    model = nil;
     glWindowController = nil;
     rngWindowController = nil;
 
+    scene = [[ TOScene alloc ] initWithName:[self displayName] parent:self ];
+
     return self;
+}
+
+- (void) dealloc
+{
+    [ glWindowController release ];
+    [ rngWindowController release ];
+    [ scene release ];
+
+    [ super dealloc ];
 }
 
 - (BOOL) loadDataRepresentation:(NSData*)representation ofType:(NSString*)type
@@ -38,13 +49,23 @@
     return nil;
 }
 
+- (void) setup
+{
+    if ( [[ NPEngineCore instance ] isReady ] == NO )
+    {
+        [[ NPEngineCore instance ] setup ];
+    }
+
+    [ scene setup ];
+}
+
 - (void) makeWindowControllers
 {
-    glWindowController = [[ TOOGLWindowController alloc ] init ];
     rngWindowController = [[ TORNGWindowController alloc ] init ];
+    glWindowController = [[ TOOGLWindowController alloc ] init ];
 
-	[ self addWindowController:glWindowController ];
 	[ self addWindowController:rngWindowController];
+	[ self addWindowController:glWindowController ];
 }
 
 - (id) glWindowController
@@ -57,19 +78,9 @@
     return rngWindowController;
 }
 
-- (void) loadModel:(NSNotification *)aNot
+- (TOScene *)scene
 {
-
-}
-
-- (void) loadModel
-{
-    NSLog(@"loadmodel");
-    if ( modelLoaded == NO )
-    {
-        model = [[[[ NPEngineCore instance ] modelManager ] loadModelFromPath:@"camera.model" ] retain ];
-        modelLoaded = YES;
-    }    
+    return scene;
 }
 
 @end

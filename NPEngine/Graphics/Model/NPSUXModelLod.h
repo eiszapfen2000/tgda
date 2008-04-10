@@ -4,6 +4,7 @@
 
 @class NPFile;
 @class NPVertexBuffer;
+@class NPSUXModelGroup;
 
 @interface NPSUXModelLod : NPResource < NPPResource >
 {
@@ -30,6 +31,10 @@
 - (BOOL) isReady;
 
 - (NPVertexBuffer *) vertexBuffer;
+- (void) setVertexBuffer:(NPVertexBuffer *)newVertexBuffer;
+
+- (NSArray *) groups;
+- (void) addGroup:(NPSUXModelGroup *)newGroup;
 
 - (void) uploadToGL;
 - (void) render;

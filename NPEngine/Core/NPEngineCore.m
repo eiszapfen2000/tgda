@@ -90,6 +90,19 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 {
     NPLOG(@"NPEngine Core setup....");
 
+    NPLOG(@"Checking for Rendercontext...");
+
+    UInt rcCount = [[ renderContextManager renderContexts ] count ];
+    if ( rcCount == 0 )
+    {
+        NPLOG_ERROR(@"No RenderContext found, bailing out");
+        return;
+    }
+    else
+    {
+        NPLOG(@"Rendercontext available");
+    }
+
     [ pathManager setup ];
     [ imageManager setup ];
     [ transformationStateManager setup ];

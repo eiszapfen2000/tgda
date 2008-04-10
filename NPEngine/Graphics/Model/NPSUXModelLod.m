@@ -108,6 +108,26 @@
     return vertexBuffer;
 }
 
+- (void) setVertexBuffer:(NPVertexBuffer *)newVertexBuffer
+{
+    if ( vertexBuffer != newVertexBuffer )
+    {
+        [ vertexBuffer release ];
+        vertexBuffer = [ newVertexBuffer retain ];
+    }
+}
+
+- (NSArray *) groups
+{
+    return groups;
+}
+
+- (void) addGroup:(NPSUXModelGroup *)newGroup
+{
+    [ groups addObject:newGroup ];
+    groupCount = [ groups count ];
+}
+
 - (void) uploadToGL
 {
     if ( ready == NO )

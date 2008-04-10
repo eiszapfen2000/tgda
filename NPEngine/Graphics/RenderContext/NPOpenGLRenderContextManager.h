@@ -14,6 +14,8 @@
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
 
+- (NSDictionary *) renderContexts;
+
 - (NPOpenGLPixelFormat *)defaultPixelFormat;
 - (void) setDefaultPixelFormat:(NPOpenGLPixelFormat *)newDefaultPixelFormat;
 

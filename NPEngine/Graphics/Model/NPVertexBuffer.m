@@ -88,7 +88,9 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
 {
-    self = [ super initWithName:newName parent:newParent ];    
+    self = [ super initWithName:newName parent:newParent ];
+
+    [ self reset ];
 
     return self;
 }
