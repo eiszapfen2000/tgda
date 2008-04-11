@@ -18,4 +18,6 @@
 - (NPCamera *) currentActiveCamera;
 - (void) setCurrentActiveCamera:(NPCamera *)newCurrentActiveCamera;
 
+- (NPCamera *) createCamera;
+
 @end

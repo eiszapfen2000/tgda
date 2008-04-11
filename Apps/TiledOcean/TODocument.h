@@ -1,14 +1,14 @@
 #import <AppKit/AppKit.h>
 
-//#import "TOOceanSurface.h"
-
 @class TOScene;
+@class TOOceanSurface;
 
 @interface TODocument : NSDocument
 {
     id glWindowController;
     id rngWindowController;
 
+    TOOceanSurface * oceanSurface;
     TOScene * scene;
 }
 
@@ -24,6 +24,7 @@
 - (id) glWindowController;
 - (id) rngWindowController;
 
+- (TOOceanSurface *) oceanSurface;
 - (TOScene *)scene;
 
 @end
