@@ -1,6 +1,8 @@
 #import <AppKit/AppKit.h>
 
 #import "TODocument.h"
+#import "TOScene.h"
+#import "TOOceanSurface.h"
 #import "TORNGWindowController.h"
 #import "TOOGLWindowController.h"
 #import "Graphics/RenderContext/NPOpenGLRenderContext.h"
@@ -25,6 +27,7 @@
     glWindowController = nil;
     rngWindowController = nil;
 
+    oceanSurface = [[ TOOceanSurface alloc ] initWithName:[self displayName] parent:self ];
     scene = [[ TOScene alloc ] initWithName:[self displayName] parent:self ];
 
     return self;
@@ -56,6 +59,7 @@
         [[ NPEngineCore instance ] setup ];
     }
 
+    [ oceanSurface setup ];
     [ scene setup ];
 }
 
@@ -76,6 +80,11 @@
 - (id) rngWindowController
 {
     return rngWindowController;
+}
+
+- (TOOceanSurface *) oceanSurface
+{
+    return oceanSurface;
 }
 
 - (TOScene *)scene

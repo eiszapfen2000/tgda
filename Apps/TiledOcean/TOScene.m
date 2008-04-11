@@ -1,7 +1,7 @@
 #import "TOScene.h"
 
 #import "Graphics/Model/NPVertexBuffer.h"
-#import "Graphics/Model/NPSUXGroup.h"
+#import "Graphics/Model/NPSUXModelGroup.h"
 #import "Graphics/Model/NPSUXModelLod.h"
 #import "Graphics/Model/NPSUXModel.h"
 #import "Graphics/Model/NPModelManager.h"
@@ -43,6 +43,13 @@
 - (void) setup
 {
     surface = [[ NPSUXModel alloc ] initWithParent:self ];
+    surfaceLod = [[ NPSUXModelLod alloc ] initWithParent:surface ];
+    surfaceGroup = [[ NPSUXModelGroup alloc ] initWithParent:surfaceLod ];
+    surfaceVBO = [[ NPVertexBuffer alloc ] initWithParent:surfaceLod ];
+
+    [ surfaceLod setVertexBuffer:surfaceVBO ];
+    [ surfaceLod addGroup:surfaceGroup ];
+    [ surface addLod:surfaceLod ];
 }
 
 - (void) update

@@ -12,6 +12,7 @@ TOOGLWindowController.m \
 TOOpenGLView.m \
 TORNGWindowController.m \
 TOScene.m \
+TOOceanSurface.m \
 main.m
 
 

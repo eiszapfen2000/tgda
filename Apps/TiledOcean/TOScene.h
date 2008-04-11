@@ -1,12 +1,19 @@
 #import "Core/NPObject/NPObject.h"
 
 @class NPCamera;
-@class NPModel;
+@class NPSUXModel;
+@class NPSUXModelLod;
+@class NPSUXModelGroup;
+@class NPVertexBuffer;
 
 @interface TOScene : NPObject
 {
     NPCamera * camera;
-    NPModel * surface;
+
+    NPSUXModel * surface;
+    NPSUXModelLod * surfaceLod;
+    NPSUXModelGroup * surfaceGroup;
+    NPVertexBuffer * surfaceVBO;
 
     BOOL ready;
 }

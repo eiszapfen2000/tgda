@@ -37,7 +37,7 @@
     NPLOG(@"NPCameraManager setup...");
 
     NPLOG(@"Creating Camera...");
-    NPCamera * camera = [[ NPCamera alloc ] initWithName:@"" parent:self ];
+    NPCamera * camera = [[ NPCamera alloc ] initWithName:@"Default Camera" parent:self ];
     [ cameras addObject:camera ];
     [ self setCurrentActiveCamera:camera ];
     [ camera release ];
@@ -60,5 +60,13 @@
     }
 }
 
+- (NPCamera *) createCamera
+{
+    NPCamera * camera = [[ NPCamera alloc ] initWithParent:self ];
+    [ cameras addObject:camera ];
+    [ camera release ];
+
+    return camera;
+}
 
 @end
