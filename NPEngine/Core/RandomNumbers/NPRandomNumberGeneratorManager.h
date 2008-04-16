@@ -17,6 +17,8 @@
 - (void) dealloc;
 
 - (NPGaussianRandomNumberGenerator *) gaussianGenerator;
+- (NPGaussianRandomNumberGenerator *) gaussianGeneratorWithFirstGenerator:(NPRandomNumberGenerator *)firstGenerator
+                                                       andSecondGenerator:(NPRandomNumberGenerator *)secondGenerator;
 
 - (NPRandomNumberGenerator *) fixedParameterGeneratorWithRNGName:(NSString *)rngName;
 

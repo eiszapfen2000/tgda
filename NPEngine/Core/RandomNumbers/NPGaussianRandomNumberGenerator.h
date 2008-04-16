@@ -7,6 +7,7 @@
 	NPRandomNumberGenerator * firstGenerator;
     NPRandomNumberGenerator * secondGenerator;
 
+    BOOL ready;
 	BOOL useLastValue;
 
 	Double firstValue, secondValue;
@@ -21,6 +22,14 @@
     secondGenerator:(NPRandomNumberGenerator *)newSecondGenerator
                    ;
 - (void) dealloc;
+
+- (NPRandomNumberGenerator *)firstGenerator;
+- (void) setFirstGenerator:(NPRandomNumberGenerator *)newFirstGenerator;
+- (NPRandomNumberGenerator *)secondGenerator;
+- (void) setSecondGenerator:(NPRandomNumberGenerator *)newSecondGenerator;
+
+- (BOOL) ready;
+- (void) checkForSubGenerators;
 
 - (Double) nextGaussianFPRandomNumber;
 

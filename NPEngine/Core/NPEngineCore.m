@@ -4,6 +4,7 @@
 #import "Core/Log/NPLogger.h"
 #import "Core/Timer/NPTimer.h"
 #import "Core/File/NPPathManager.h"
+#import "Core/RandomNumbers/NPRandomNumberGeneratorManager.h"
 #import "Core/World/NPTransformationStateManager.h"
 #import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
 #import "Graphics/Model/NPModelManager.h"
@@ -69,6 +70,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     logger = [[ NPLogger alloc ] initWithName:@"NPEngine Logger" parent:self ];
     timer = [[ NPTimer alloc ] initWithName:@"NPEngine Timer" parent:self ];
     pathManager = [[ NPPathManager alloc ] initWithName:@"NPEngine Path Manager" parent:self ];
+    randomNumberGeneratorManager = [[ NPRandomNumberGeneratorManager alloc ] initWithName:@"NPEngine RandomNumberGenerator Manager" parent:self ];
     transformationStateManager = [[ NPTransformationStateManager alloc ] initWithName:@"NPEngine Transformation State Manager" parent:self ];
 
     renderContextManager = [[ NPOpenGLRenderContextManager alloc ] initWithName:@"NPEngine RenderContext Manager" parent:self ];
@@ -139,6 +141,11 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 - (NPPathManager *)pathManager
 {
     return pathManager;
+}
+
+- (NPRandomNumberGeneratorManager *) randomNumberGeneratorManager
+{
+    return randomNumberGeneratorManager;
 }
 
 - (NPTransformationStateManager *)transformationStateManager

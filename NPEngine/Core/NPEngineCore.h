@@ -4,6 +4,7 @@
 @class NPTimer;
 @class NPObjectManager;
 @class NPPathManager;
+@class NPRandomNumberGeneratorManager;
 @class NPTransformationStateManager;
 @class NPModelManager;
 @class NPImageManager;
@@ -19,6 +20,8 @@
     NPTimer * timer;
     NPObjectManager * objectManager;
     NPPathManager * pathManager;
+
+    NPRandomNumberGeneratorManager * randomNumberGeneratorManager;
 
     NPTransformationStateManager * transformationStateManager;
 
@@ -44,6 +47,7 @@
 - (NPTimer *)timer;
 - (NPObjectManager *)objectManager;
 - (NPPathManager *)pathManager;
+- (NPRandomNumberGeneratorManager *) randomNumberGeneratorManager;
 - (NPTransformationStateManager *)transformationStateManager;
 - (NPOpenGLRenderContextManager *)renderContextManager;
 - (NPModelManager *)modelManager;

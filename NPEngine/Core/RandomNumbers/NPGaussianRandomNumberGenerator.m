@@ -3,6 +3,8 @@
 #import "NPGaussianRandomNumberGenerator.h"
 #import "NPRandomNumberGenerator.h"
 
+#import "Core/NPEngineCore.h"
+
 @implementation NPGaussianRandomNumberGenerator
 
 - init
@@ -17,7 +19,7 @@
 
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
 {
-    return [ self initWithName:newName parent:newParent ];
+    return [ self initWithName:newName parent:newParent firstGenerator:nil secondGenerator:nil ];
 }
 
 - (id) initWithName:(NSString *)newName
@@ -27,8 +29,17 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    [ firstGenerator retain ];
-    [ secondGenerator retain ];
+    if ( newFirstGenerator != nil )
+    {
+        firstGenerator = [ newFirstGenerator retain ];
+    }
+
+    if ( newSecondGenerator != nil )
+    {
+        secondGenerator = [ newSecondGenerator retain ];
+    }
+
+    [ self checkForSubGenerators ];
 
 	useLastValue = NO;
 
@@ -43,39 +54,90 @@
 	[ super dealloc ];
 }
 
-- (NSString *) description
+- (NPRandomNumberGenerator *)firstGenerator
 {
-	return [ [ firstGenerator description ] stringByAppendingString: [ secondGenerator description ] ];
+    return firstGenerator;
+}
+
+- (void) setFirstGenerator:(NPRandomNumberGenerator *)newFirstGenerator
+{
+    if ( firstGenerator != newFirstGenerator )
+    {
+        [ firstGenerator release ];
+        firstGenerator = [ newFirstGenerator retain ];
+    }
+
+    [ self checkForSubGenerators ];
+}
+
+- (NPRandomNumberGenerator *)secondGenerator
+{
+    return secondGenerator;
+}
+
+- (void) setSecondGenerator:(NPRandomNumberGenerator *)newSecondGenerator
+{
+    if ( secondGenerator != newSecondGenerator )
+    {
+        [ secondGenerator release ];
+        secondGenerator = [ newSecondGenerator retain ];
+    }
+
+    [ self checkForSubGenerators ];
+}
+
+- (BOOL) ready
+{
+    return ready;
+}
+
+- (void) checkForSubGenerators
+{
+    if ( firstGenerator != nil && secondGenerator != nil )
+    {
+        ready = YES;
+    }
 }
 
 - (Double) nextGaussianFPRandomNumber
 {
-	Double x1, x2, w;
+    if ( ready == YES )
+    {
+	    Double x1, x2, w;
 
-	if ( useLastValue )
-	{
-		firstValue = secondValue;
-		useLastValue = NO;
-	}
-	else
-	{
-		do
-		{
-			x1 = 2.0 * [ firstGenerator nextUniformFPRandomNumber ] - 1.0;
-			x2 = 2.0 * [ secondGenerator nextUniformFPRandomNumber ] - 1.0;
-			w = x1 * x1 + x2 * x2;
-		}
-		while ( w >= 1.0 || w == 0.0 );
+	    if ( useLastValue )
+	    {
+		    firstValue = secondValue;
+		    useLastValue = NO;
+	    }
+	    else
+	    {
+		    do
+		    {
+			    x1 = 2.0 * [ firstGenerator nextUniformFPRandomNumber ] - 1.0;
+			    x2 = 2.0 * [ secondGenerator nextUniformFPRandomNumber ] - 1.0;
+			    w = x1 * x1 + x2 * x2;
+		    }
+		    while ( w >= 1.0 || w == 0.0 );
 
-		w = sqrt( (-2.0 * log( w ) ) / w );
+		    w = sqrt( (-2.0 * log( w ) ) / w );
 
-		firstValue = x1 * w;
-		secondValue = x2 * w;
+		    firstValue = x1 * w;
+		    secondValue = x2 * w;
 
-		useLastValue = YES; 
-	}
+		    useLastValue = YES; 
+	    }
 
-	return firstValue;
+	    return firstValue;
+    }
+
+    NPLOG(@"Generator not ready, returning 0");
+    return 0.0;
+}
+
+- (NSString *) description
+{
+	return [ [ firstGenerator description ] stringByAppendingString: [ secondGenerator description ] ];
 }
 
 @end
