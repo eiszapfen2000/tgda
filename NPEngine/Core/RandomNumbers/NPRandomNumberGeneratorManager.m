@@ -24,6 +24,37 @@
     return self;
 }
 
+- (void) dealloc
+{
+	[ generators release ];
+    [ fixedParameterGeneratorNames release ];
+
+	[ super dealloc ];
+}
+
+- (NPGaussianRandomNumberGenerator *) gaussianGenerator
+{
+    NPGaussianRandomNumberGenerator * generator = [[ NPGaussianRandomNumberGenerator alloc ] initWithName:@"" parent:self ];
+	[ generators addObject: generator ];
+	[ generator release ];
+    
+    return generator;
+}
+
+- (NPGaussianRandomNumberGenerator *) gaussianGeneratorWithFirstGenerator:(NPRandomNumberGenerator *)firstGenerator
+                                                       andSecondGenerator:(NPRandomNumberGenerator *)secondGenerator
+{
+    NPGaussianRandomNumberGenerator * generator = [[ NPGaussianRandomNumberGenerator alloc ] initWithName:@"" 
+                                                                                                   parent:self
+                                                                                           firstGenerator:firstGenerator
+                                                                                          secondGenerator:secondGenerator ];
+	[ generators addObject: generator ];
+	[ generator release ];
+    
+    return generator;
+}
+
+
 - (NPRandomNumberGenerator *) fixedParameterGeneratorWithRNGName:(NSString *)rngName;
 {
 	NPRandomNumberGenerator * generator = nil;
@@ -180,14 +211,6 @@
     [ parameters release ];
 
     return generator;
-}
-
-- (void) dealloc
-{
-	[ generators release ];
-    [ fixedParameterGeneratorNames release ];
-
-	[ super dealloc ];
 }
 
 @end
