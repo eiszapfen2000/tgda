@@ -1,10 +1,16 @@
 #import "TODocumentController.h"
+#import "fftw3.h"
 
 @implementation TODocumentController
 
 - (id) init
 {
     self = [ super init ];
+
+    if ( fftw_init_threads() == 0 )
+    {
+        NPLOG(@"FFTW initialisation failed");
+    }
 
     core = [ NPEngineCore instance ];
 

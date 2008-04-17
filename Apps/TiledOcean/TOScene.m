@@ -40,6 +40,26 @@
     [ super dealloc ];
 }
 
+- (NPSUXModel *) surface
+{
+    return surface;
+}
+
+- (NPSUXModelLod *) surfaceLod
+{
+    return surfaceLod;
+}
+
+- (NPSUXModelGroup *) surfaceGroup
+{
+    return surfaceGroup;
+}
+
+- (NPVertexBuffer *) surfaceVBO
+{
+    return surfaceVBO;
+}
+
 - (void) setup
 {
     surface = [[ NPSUXModel alloc ] initWithParent:self ];

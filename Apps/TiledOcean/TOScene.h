@@ -23,6 +23,11 @@
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
 
+- (NPSUXModel *) surface;
+- (NPSUXModelLod *) surfaceLod;
+- (NPSUXModelGroup *) surfaceGroup;
+- (NPVertexBuffer *) surfaceVBO;
+
 - (void) setup;
 
 - (void) update;

@@ -10,9 +10,9 @@ TODocument.m \
 TODocumentController.m \
 TOOGLWindowController.m \
 TOOpenGLView.m \
-TORNGWindowController.m \
 TOScene.m \
-TOOceanSurface.m \
+TOOceanSurfaceGeneratorSettingsWindowController.m \
+TOOceanSurfaceGenerator.m \
 main.m
 
 
@@ -20,9 +20,9 @@ TiledOcean_RESOURCE_FILES = \
 Info-gnustep.plist \
 Resources/TiledOcean.gorm \
 Resources/TODocument.gorm \
-Resources/TORNGSettingsWindow.gorm
+Resources/TOOceanSurfaceGeneratorSettingsWindow.gorm
 
-ADDITIONAL_GUI_LIBS += -lGL -lGLU -lNPEngineCoreLog -lNPEngineCoreResource -lNPEngineCoreNPObject -lNPEngineCoreBasics -lNPEngineCoreTimer -lNPEngineCoreFile -lNPEngineCoreMath -lNPEngineCoreUtilities -lNPEngineCoreWorld -lNPEngineCore -lNPEngineGraphicsRenderContext -lNPEngineGraphicsModel -lNPEngineGraphicsMaterial -lNPEngineGraphicsImage -lNPEngineGraphicsCamera -lCg -lCgGL -lGLEW -lIL -lILU -lILUT
+ADDITIONAL_GUI_LIBS += -lGL -lGLU -lNPEngineCoreLog -lNPEngineCoreResource -lNPEngineCoreNPObject -lNPEngineCoreBasics -lNPEngineCoreTimer -lNPEngineCoreFile -lNPEngineCoreMath -lNPEngineCoreUtilities -lNPEngineCoreWorld -lNPEnginCoreRandomNumberGeneration -lNPEngineCore -lNPEngineGraphicsRenderContext -lNPEngineGraphicsModel -lNPEngineGraphicsMaterial -lNPEngineGraphicsImage -lNPEngineGraphicsCamera -lCg -lCgGL -lGLEW -lIL -lILU -lfftw3 -lfftw3_threads
 
 
 include $(TGDA_DIR)/GNUmakefile.flags
