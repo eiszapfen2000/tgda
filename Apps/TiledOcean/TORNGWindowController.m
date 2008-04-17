@@ -74,19 +74,18 @@
 
 - (void) windowDidLoad
 {
-    NSLog(@"rng didload");
     [ rngPopUpButtonLeft removeAllItems ];
-
     [ self addItemsToPopUpButton: rngPopUpButtonLeft ];
+    [ rngPopUpButtonLeft setPreferredEdge:NSMinYEdge ];
 
     [ rngPopUpButtonRight removeAllItems ];
-
     [ self addItemsToPopUpButton: rngPopUpButtonRight ];
+    [ rngPopUpButtonRight setPreferredEdge:NSMinYEdge ];
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)notification
 {
-    NSLog(@"rngkey");
+
 }
 
 @end

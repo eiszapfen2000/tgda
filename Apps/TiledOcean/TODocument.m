@@ -2,9 +2,9 @@
 
 #import "TODocument.h"
 #import "TOScene.h"
-#import "TOOceanSurface.h"
-#import "TORNGWindowController.h"
+#import "TOOceanSurfaceGenerator.h"
 #import "TOOGLWindowController.h"
+#import "TOOceanSurfaceGeneratorSettingsWindowController.h"
 #import "Graphics/RenderContext/NPOpenGLRenderContext.h"
 #import "Graphics/Model/NPSUXModel.h"
 #import "Graphics/Model/NPModelManager.h"
@@ -25,18 +25,21 @@
                                                  object:nil];*/
 
     glWindowController = nil;
-    rngWindowController = nil;
+    oceanSurfaceGeneratorSettingsWindowController = nil;
 
-    oceanSurface = [[ TOOceanSurface alloc ] initWithName:[self displayName] parent:self ];
+    oceanSurfaceGenerator = [[ TOOceanSurfaceGenerator alloc ] initWithName:[self displayName] parent:self ];
     scene = [[ TOScene alloc ] initWithName:[self displayName] parent:self ];
+
+
+    NSLog(@"test");
 
     return self;
 }
 
 - (void) dealloc
 {
-    [ glWindowController release ];
-    [ rngWindowController release ];
+    [ oceanSurfaceGeneratorSettingsWindowController release ];
+    [ oceanSurfaceGenerator release ];
     [ scene release ];
 
     [ super dealloc ];
@@ -59,17 +62,19 @@
         [[ NPEngineCore instance ] setup ];
     }
 
-    [ oceanSurface setup ];
+    //[ oceanSurfaceGenerator setup ];
     [ scene setup ];
 }
 
 - (void) makeWindowControllers
 {
-    rngWindowController = [[ TORNGWindowController alloc ] init ];
     glWindowController = [[ TOOGLWindowController alloc ] init ];
+    oceanSurfaceGeneratorSettingsWindowController = [[ TOOceanSurfaceGeneratorSettingsWindowController alloc ] init ];
 
-	[ self addWindowController:rngWindowController];
+    [ self addWindowController:oceanSurfaceGeneratorSettingsWindowController ];
 	[ self addWindowController:glWindowController ];
+
+    [ oceanSurfaceGeneratorSettingsWindowController setOceanSurfaceGenerator:oceanSurfaceGenerator ];
 }
 
 - (id) glWindowController
@@ -77,14 +82,14 @@
     return glWindowController;
 }
 
-- (id) rngWindowController
+- (id) oceanSurfaceGeneratorSettingsWindowController
 {
-    return rngWindowController;
+    return oceanSurfaceGeneratorSettingsWindowController;
 }
 
-- (TOOceanSurface *) oceanSurface
+- (TOOceanSurfaceGenerator *) oceanSurfaceGenerator
 {
-    return oceanSurface;
+    return oceanSurfaceGenerator;
 }
 
 - (TOScene *)scene

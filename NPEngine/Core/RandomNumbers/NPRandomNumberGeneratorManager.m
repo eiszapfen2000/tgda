@@ -59,7 +59,7 @@
 {
 	NPRandomNumberGenerator * generator = nil;
 
-	if ( [ fixedParameterGeneratorNames containsObject:rngName ] )
+	if ( [ fixedParameterGeneratorNames containsObject:rngName ] == YES )
 	{
 		generator = [[ NPRandomNumberGenerator alloc ] initWithName:@"" parent:self parameters:rngName ];
 		[ generators addObject: generator ];
