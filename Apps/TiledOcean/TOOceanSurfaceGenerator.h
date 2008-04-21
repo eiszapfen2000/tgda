@@ -4,38 +4,46 @@
 
 #import "fftw3.h"
 
+typedef enum
+{
+    ToPhillipsSpectrum = 1,
+    ToSWOPSpectrum = 2,
+    ToPiersmosSpectrum = 3,
+    ToJONSWAPSpectrum = 4    
+}
+ToSpectrum;
+
 @class NPRandomNumberGenerator;
 @class NPGaussianRandomNumberGenerator;
 
 @interface TOOceanSurfaceGenerator : NPObject
 {
-    // Resolution
     Int resX, resY;
-
-    // Size
     Int length, width;
 
-    NPRandomNumberGenerator * generatorOne;
-    NPRandomNumberGenerator * generatorTwo;
-	//Gaussian RandomNumber Generator
+    ToSpectrum spectrum;
+
+    NSMutableDictionary * firstGenerators;
+    NSMutableDictionary * secondGenerators;
 	NPGaussianRandomNumberGenerator * gaussianGenerator;
+
+    BOOL ready;
 
     Vector3 * pointArray;
 
     long * pointIndexArray;
 
     Real * h;
-
 }
 
-- init
-    :(Int)newResX
-    :(Int)newResY
-    :(Int)newLength
-    :(Int)newWidth
-    ;
+- (id) init;
+- (id) initWithParent:(NPObject *)newParent;
+- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
+- (void) dealloc;
 
-- (void) setup;
+- (void) reset;
+
+- (void) createGeneratorsForDictionary:(NSMutableDictionary *)dictionary;
 
 - (Int)resX;
 - (void) setResX:(Int)newResX;

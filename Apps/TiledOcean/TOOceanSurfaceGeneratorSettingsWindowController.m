@@ -12,7 +12,7 @@
 	self = [ super initWithWindowNibName: @"TOOceanSurfaceGeneratorSettingsWindow" ];
 
     surfaceGeneratorTypeNames = [[ NSArray alloc ] initWithObjects:@"Phillips", @"SWOP", @"Piersmos", @"JONSWAP", nil ];
-    rngTypeNames = [[ NSArray alloc ] initWithObjects:@"TT800", @"CTG", @"MRG", @"CMRG", @"Mersenne Twister", nil ];
+    rngTypeNames = [[ NSArray alloc ] initWithObjects:@"TT800", @"CTG", @"MRG", @"CMRG", nil ];
 
     resolutionNotPowerOfTwo = [[ NSAlert alloc ] init ];
     [ resolutionNotPowerOfTwo setAlertStyle:NSWarningAlertStyle ];

@@ -13,6 +13,7 @@ TOOpenGLView.m \
 TOScene.m \
 TOOceanSurfaceGeneratorSettingsWindowController.m \
 TOOceanSurfaceGenerator.m \
+TOFrequencySpectrumGenerator.m \
 main.m
 
 
