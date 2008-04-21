@@ -7,31 +7,59 @@
 
 @implementation TOOceanSurfaceGenerator
 
-- init
-    :(Int)newResX
-    :(Int)newResY
-    :(Int)newLength
-    :(Int)newWidth
+- (id) init
 {
-    self = [ super init ];
+    return [ self initWithParent:nil ];
+}
 
-    resX = newResX;
-    resY = newResY;
-    length = newLength;
-    width = newWidth;
+- (id) initWithParent:(NPObject *)newParent
+{
+    return [ self initWithName:@"TOOceanSurfaceGenerator" parent:newParent ];
+}
 
-    generatorOne = [[[[ NPEngineCore instance ] randomNumberGeneratorManager ] fixedParameterGeneratorWithRNGName:NP_RNG_TT800 ] retain ];
-    generatorTwo = [[[[ NPEngineCore instance ] randomNumberGeneratorManager ] fixedParameterGeneratorWithRNGName:NP_RNG_TT800 ] retain ];
+- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
+{
+    self = [ super initWithName:newName parent:newParent ];
+
+    firstGenerators = [[ NSMutableDictionary alloc ] init ];
+    secondGenerators = [[ NSMutableDictionary alloc ] init ];
+
+    [ self createGeneratorsForDictionary:firstGenerators ];
+    [ self createGeneratorsForDictionary:secondGenerators ];
+
     gaussianGenerator = [[[[ NPEngineCore instance ] randomNumberGeneratorManager ] gaussianGenerator ] retain ];
-    [ gaussianGenerator setFirstGenerator:generatorOne ];
-    [ gaussianGenerator setSecondGenerator:generatorTwo ];
+
+    [ self reset ];
 
     return self;
 }
 
-- (void) setup
+- (void) dealloc
 {
+    [ firstGenerators release ];
+    [ secondGenerators release ];
+    [ gaussianGenerator release ];
+
+    [ super dealloc ];
+}
+
+- (void) reset
+{
+    resX = resY = -1;
+    length = width = -1;
+
+    [ gaussianGenerator setFirstGenerator:[firstGenerators objectForKey:NP_RNG_TT800] ];
+    [ gaussianGenerator setSecondGenerator:[secondGenerators objectForKey:NP_RNG_TT800] ];
     
+    ready = NO;
+}
+
+- (void) createGeneratorsForDictionary:(NSMutableDictionary *)dictionary
+{
+    [ dictionary setObject:[[[ NPEngineCore instance ] randomNumberGeneratorManager ] fixedParameterGeneratorWithRNGName:NP_RNG_TT800 ] forKey:NP_RNG_TT800 ];
+    [ dictionary setObject:[[[ NPEngineCore instance ] randomNumberGeneratorManager ] fixedParameterGeneratorWithRNGName:NP_RNG_CTG ] forKey:NP_RNG_CTG ];
+    [ dictionary setObject:[[[ NPEngineCore instance ] randomNumberGeneratorManager ] fixedParameterGeneratorWithRNGName:NP_RNG_MRG ] forKey:NP_RNG_MRG ];
+    [ dictionary setObject:[[[ NPEngineCore instance ] randomNumberGeneratorManager ] fixedParameterGeneratorWithRNGName:NP_RNG_CMRG ] forKey:NP_RNG_CMRG ];
 }
 
 - (Int)resX
