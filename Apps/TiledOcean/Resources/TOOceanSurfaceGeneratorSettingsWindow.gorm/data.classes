@@ -5,7 +5,8 @@
 	    "commitResolutionX:",
 	    "commitResolutionY:",
 	    "commitSizeX:",
-	    "commitSizeY:"
+	    "commitSizeY:",
+	    "generate:"
 	);
 	Super = NSObject;
     };
@@ -14,7 +15,8 @@
 	    "commitResolutionX:",
 	    "commitResolutionY:",
 	    "commitSizeX:",
-	    "commitSizeY:"
+	    "commitSizeY:",
+	    "generate:"
 	);
 	Outlets = (
 	    generateButton,

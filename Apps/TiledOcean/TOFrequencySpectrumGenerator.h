@@ -4,6 +4,12 @@
 
 #import "fftw3.h"
 
+#define TO_FSG_PHILLIPS     @"PHILLIPS"
+#define TO_FSG_SWOP         @"SWOP"
+#define TO_FSG_PIERSMOS     @"PIERSMOS"
+#define TO_FSG_JONSWOP      @"JONSWOP"
+
+
 @class NPGaussianRandomNumberGenerator;
 
 @interface TOFrequencySpectrumGenerator : NPObject
@@ -43,7 +49,6 @@
 
 @interface TOPhillipsFrequencySpectrumGenerator : TOFrequencySpectrumGenerator
 {
-    Double U10;
     Vector2 windDirection;
 
     Double alpha;

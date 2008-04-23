@@ -124,5 +124,9 @@
     [ oceanSurfaceGenerator setWidth:value ];
 }
 
+- (void) generate:(id)sender
+{
+    [ oceanSurfaceGenerator generateHeightfield ];
+}
 
 @end
