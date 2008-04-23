@@ -193,7 +193,6 @@
 
 - (void) reset
 {
-    U10 = -1;
     V_X(windDirection) = V_Y(windDirection) = 0.0;
     windOK = NO;
 
@@ -214,6 +213,7 @@
 {
     if ( V_X(windDirection) != 0.0 && V_Y(windDirection) != 0.0 )
     {
+        NSLog(@"windok");
         windOK = YES;
     }
 }
@@ -230,6 +230,12 @@
     windDirection = *newWindDirection;
 
     [ self checkWindDirectionForReadiness ];
+}
+
+// dispersion relation
+- (Double) kToOmega:(Vector2 *)k
+{
+    return sqrt(EARTH_ACCELERATION * v2_v_length(k));
 }
 
 - (Double) indexToKx:(Int)index
@@ -251,6 +257,12 @@
 - (Double) getAmplitudeAt:(Vector2 *)k
 {
     Double kSquareLength = v2_v_square_length(k);
+
+    if ( kSquareLength == 0.0 )
+    {
+        return 0.0;
+    }
+
     Double windDirectionSquareLength = v2_v_square_length(&windDirection);
 
     Vector2 windDirectionNormalised;
@@ -286,13 +298,21 @@
 			xi_r = [ gaussianRNG nextGaussianFPRandomNumber ];
 			xi_i = [ gaussianRNG nextGaussianFPRandomNumber ];
 
+//            NSLog(@"rn: %f %f",xi_r,xi_i);
+
             k.x = [ self indexToKx:i ];
             k.y = [ self indexToKy:j ];
 
+//            NSLog(@"k: %f %f",k.x,k.y);
+
             a = sqrt([ self getAmplitudeAt:&k ]);
+
+//            NSLog(@"a: %f",a);
 
 			H0[j + resY * i][0] = MATH_1_DIV_SQRT_2 * xi_r * a;
 			H0[j + resY * i][1] = MATH_1_DIV_SQRT_2 * xi_i * a;
+
+//            NSLog(@"H0: %f %f", H0[j + resY * i][0],H0[j + resY * i][1]);
         }
     }
 }
@@ -307,7 +327,7 @@
 
     for ( Int i = 0; i < gridRes / 2; i++ )
     {
-        for ( j = 0; j < gridRes; j++ )
+        for ( Int j = 0; j < gridRes; j++ )
         {
             index = i * gridRes + j;
 
@@ -346,11 +366,87 @@
     }
 }*/
 
+- (void) generateH
+{
+    Vector2 k;
+    Double omega;
+    fftw_complex expOmega, expMinusOmega, H0expOmega, H0expMinusOmega;
+    Int indexForK, indexForMinusK;
+    Int ni, nj;
+
+	if ( !H )
+	{
+		H = (fftw_complex *)fftw_malloc(sizeof(fftw_complex)*resX*resY);
+	}
+
+    for ( Int i = 0; i < resX / 2; i++ )
+    {
+        for ( Int j = 0; j < resY; j++ )
+        {
+            indexForK = j + resY * i;
+
+            ni = (resX - 1) - i;
+            nj = (resY - 1) - j;
+            indexForMinusK = ni * resY + nj;
+
+            k.x = [ self indexToKx:i ];
+            k.y = [ self indexToKy:j ];
+            //NSLog(@"k: %f %f",k.x,k.y);
+
+            omega = [ self kToOmega:&k ];
+            //NSLog(@"omega: %f",omega);
+
+            // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
+            expOmega[0] = cos(omega);
+            expOmega[1] = sin(omega);
+
+            // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
+            expMinusOmega[0] = cos(omega);
+            expMinusOmega[1] = -sin(omega);
+
+            /* complex multiplication
+               x = a + i*b
+               y = c + i*d
+               xy = (ac-bd) + i(ad+bc)
+            */
+
+            // H0[indexForK] * exp(i*omega*t)
+            H0expOmega[0] = H0[indexForK][0] * expOmega[0] - H0[indexForK][1] * expOmega[1];
+            H0expOmega[1] = H0[indexForK][0] * expOmega[1] + H0[indexForK][1] * expOmega[0];
+
+            // H0[indexForMinusK] * exp(-i*omega*t)
+            H0expMinusOmega[0] = H0[indexForMinusK][0] * expMinusOmega[0] - H0[indexForMinusK][1] * expMinusOmega[1];
+            H0expMinusOmega[1] = H0[indexForMinusK][0] * expMinusOmega[1] + H0[indexForMinusK][1] * expMinusOmega[0];
+
+            /* complex addition
+               x = a + i*b
+               y = c + i*d
+               x+y = (a+c)+i(b+d)
+            */
+
+            // H = H0expOmega + H0expMinusomega
+            H[indexForK][0] = H0expOmega[0] + H0expMinusOmega[0];
+            H[indexForK][1] = H0expOmega[1] + H0expMinusOmega[1];
+
+            //NSLog(@"H: %f %f",H[indexForK][0],H[indexForK][1]);
+
+            // H(-k) = conjugate of H(k)
+            H[indexForMinusK][0] = H[indexForK][0];
+            H[indexForMinusK][1] = -H[indexForK][1];
+            //NSLog(@"Hc: %f %f",H[indexForMinusK][0],H[indexForMinusK][1]);
+        }
+    }    
+} 
+
 - (void) generateFrequencySpectrum
 {
     if ( [ self ready ] == YES )
     {
+        NSLog(@"start");
         [ self generateH0 ];
+        [ self generateH ];
+        frequencySpectrum = H;
+        NSLog(@"stop");
     }
 }
 

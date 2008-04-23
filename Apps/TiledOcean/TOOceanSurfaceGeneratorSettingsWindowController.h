@@ -38,4 +38,6 @@
 - (void) commitSizeX:(id)sender;
 - (void) commitSizeY:(id)sender;
 
+- (void) generate:(id)sender;
+
 @end
