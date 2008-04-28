@@ -64,6 +64,8 @@
 
     //[ oceanSurfaceGenerator setup ];
     [ scene setup ];
+
+    [ self updateChangeCount:NSChangeDone ];
 }
 
 - (void) makeWindowControllers

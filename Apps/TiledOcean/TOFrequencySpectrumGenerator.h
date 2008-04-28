@@ -65,7 +65,6 @@
 - (void) dealloc;
 
 - (void) resetH0;
-- (void) resetH;
 - (void) reset;
 
 - (void) setWindDirection:(Vector2 *)newWindDirection;

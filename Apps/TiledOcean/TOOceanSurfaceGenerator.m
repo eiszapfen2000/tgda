@@ -136,6 +136,9 @@
     heights = ALLOC_ARRAY(Double,resX*resY);
 
     fftw_plan plan;
+
+    fftw_plan_with_nthreads(2);
+
     plan = fftw_plan_dft_c2r_2d(resX,resY,[fsg frequencySpectrum],heights,FFTW_ESTIMATE);
 
     NSLog(@"execute");

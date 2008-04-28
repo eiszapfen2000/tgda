@@ -62,6 +62,36 @@
     [ surfaceGeneratorTypePopUpButton setPreferredEdge:NSMinYEdge ];
     [ rng1TypePopUpButton setPreferredEdge:NSMinYEdge ];
     [ rng2TypePopUpButton setPreferredEdge:NSMinYEdge ];
+
+    //[[ resolutionXTextField cell ] setSendsActionOnEndEditing:YES ];
+    //[[ resolutionYTextField cell ]setSendsActionOnEndEditing:YES ];
+    //[[ sizeXTextField cell ] setSendsActionOnEndEditing:YES ];
+    //[[ sizeYTextField cell ]setSendsActionOnEndEditing:YES ];
+
+    [ resolutionXTextField setDelegate:self ];
+}
+
+- (void)controlTextDidEndEditing:(NSNotification *)aNotification
+{
+    NSLog(@"juhu");
+
+    id textMovement;
+
+    textMovement = [[aNotification userInfo] objectForKey: @"NSTextMovement"];
+
+    if (textMovement)
+    {
+        switch ([(NSNumber *)textMovement intValue])
+        {
+            case NSReturnTextMovement:
+            break;
+            case NSTabTextMovement:
+            [[aNotification object] sendAction: [[aNotification object] action] to: [[aNotification object] target]];
+            break;
+            case NSBacktabTextMovement:
+            break;
+        }
+    }
 }
 
 - (void) commitResolutionX:(id)sender
@@ -126,6 +156,7 @@
 
 - (void) generate:(id)sender
 {
+    NSLog(@"did it");
     [ oceanSurfaceGenerator generateHeightfield ];
 }
 
