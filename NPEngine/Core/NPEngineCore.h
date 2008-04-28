@@ -40,6 +40,8 @@
 
 + (NPEngineCore *)instance;
 
+- (void) dealloc;
+
 - (void)setup;
 
 - (BOOL)isReady;

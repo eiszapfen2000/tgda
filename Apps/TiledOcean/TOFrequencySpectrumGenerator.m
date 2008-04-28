@@ -158,7 +158,6 @@
     self = [ super initWithName:newName parent:newParent ];
 
     H0 = NULL;
-    H = NULL;
 
     [ self reset ];
 
@@ -167,7 +166,6 @@
 
 - (void) dealloc
 {
-    [ self resetH ];
     [ self resetH0 ];
 
     [ super dealloc ];
@@ -182,15 +180,6 @@
     }
 }
 
-- (void) resetH
-{
-    if ( H != NULL )
-    {
-        fftw_free(H);
-        H = NULL;
-    }
-}
-
 - (void) reset
 {
     V_X(windDirection) = V_Y(windDirection) = 0.0;
@@ -198,7 +187,6 @@
 
     alpha = PHILLIPS_CONSTANT;
 
-    [ self resetH ];
     [ self resetH0 ];
 
     [ super reset ];
@@ -213,7 +201,6 @@
 {
     if ( V_X(windDirection) != 0.0 && V_Y(windDirection) != 0.0 )
     {
-        NSLog(@"windok");
         windOK = YES;
     }
 }
@@ -374,9 +361,9 @@
     Int indexForK, indexForMinusK;
     Int ni, nj;
 
-	if ( !H )
+	if ( !frequencySpectrum )
 	{
-		H = (fftw_complex *)fftw_malloc(sizeof(fftw_complex)*resX*resY);
+		frequencySpectrum = (fftw_complex *)fftw_malloc(sizeof(fftw_complex)*resX*resY);
 	}
 
     for ( Int i = 0; i < resX / 2; i++ )
@@ -425,14 +412,14 @@
             */
 
             // H = H0expOmega + H0expMinusomega
-            H[indexForK][0] = H0expOmega[0] + H0expMinusOmega[0];
-            H[indexForK][1] = H0expOmega[1] + H0expMinusOmega[1];
+            frequencySpectrum[indexForK][0] = H0expOmega[0] + H0expMinusOmega[0];
+            frequencySpectrum[indexForK][1] = H0expOmega[1] + H0expMinusOmega[1];
 
             //NSLog(@"H: %f %f",H[indexForK][0],H[indexForK][1]);
 
             // H(-k) = conjugate of H(k)
-            H[indexForMinusK][0] = H[indexForK][0];
-            H[indexForMinusK][1] = -H[indexForK][1];
+            frequencySpectrum[indexForMinusK][0] =  frequencySpectrum[indexForK][0];
+            frequencySpectrum[indexForMinusK][1] = -frequencySpectrum[indexForK][1];
             //NSLog(@"Hc: %f %f",H[indexForMinusK][0],H[indexForMinusK][1]);
         }
     }    
@@ -445,7 +432,6 @@
         NSLog(@"start");
         [ self generateH0 ];
         [ self generateH ];
-        frequencySpectrum = H;
         NSLog(@"stop");
     }
 }

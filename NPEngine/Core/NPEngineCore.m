@@ -88,6 +88,23 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     return self;
 }
 
+- (void) dealloc
+{
+    [ cameraManager release ];
+    [ effectManager release ];
+    [ textureBindingStateManager release ];
+    [ textureManager release ];
+    [ imageManager release ];
+    [ modelManager release ];
+    [ renderContextManager release ];
+    [ transformationStateManager release ];
+    [ randomNumberGeneratorManager release ];
+    [ pathManager release ];
+    [ timer release ];
+    [ logger release ];
+    [ objectManager release ];
+}
+
 - (void) setup
 {
     NPLOG(@"NPEngine Core setup....");
