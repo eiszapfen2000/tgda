@@ -35,7 +35,9 @@
 
 - (BOOL) ready;
 
+- (Int) resX;
 - (void) setResX:(Int)newResX;
+- (Int) resY;
 - (void) setResY:(Int)newResY;
 - (void) setWidth:(Int)newWidth;
 - (void) setLength:(Int)newLength;
@@ -54,7 +56,6 @@
     Double alpha;
 
     fftw_complex * H0;
-	fftw_complex * H;
 
     BOOL windOK;
 }

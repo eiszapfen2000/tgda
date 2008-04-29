@@ -62,19 +62,10 @@
     [ surfaceGeneratorTypePopUpButton setPreferredEdge:NSMinYEdge ];
     [ rng1TypePopUpButton setPreferredEdge:NSMinYEdge ];
     [ rng2TypePopUpButton setPreferredEdge:NSMinYEdge ];
-
-    //[[ resolutionXTextField cell ] setSendsActionOnEndEditing:YES ];
-    //[[ resolutionYTextField cell ]setSendsActionOnEndEditing:YES ];
-    //[[ sizeXTextField cell ] setSendsActionOnEndEditing:YES ];
-    //[[ sizeYTextField cell ]setSendsActionOnEndEditing:YES ];
-
-    [ resolutionXTextField setDelegate:self ];
 }
 
 - (void)controlTextDidEndEditing:(NSNotification *)aNotification
 {
-    NSLog(@"juhu");
-
     id textMovement;
 
     textMovement = [[aNotification userInfo] objectForKey: @"NSTextMovement"];
@@ -154,9 +145,18 @@
     [ oceanSurfaceGenerator setWidth:value ];
 }
 
+- (void) commitWindX:(id)sender
+{
+    [ oceanSurfaceGenerator setWindX:[sender doubleValue] ];    
+}
+
+- (void) commitWindY:(id)sender
+{
+    [ oceanSurfaceGenerator setWindY:[sender doubleValue] ];
+}
+
 - (void) generate:(id)sender
 {
-    NSLog(@"did it");
     [ oceanSurfaceGenerator generateHeightfield ];
 }
 

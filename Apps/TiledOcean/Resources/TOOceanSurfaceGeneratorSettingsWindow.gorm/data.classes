@@ -6,7 +6,9 @@
 	    "commitResolutionY:",
 	    "commitSizeX:",
 	    "commitSizeY:",
-	    "generate:"
+	    "commitWindX:",
+	    "generate:",
+	    "commitWindY:"
 	);
 	Super = NSObject;
     };
@@ -16,7 +18,9 @@
 	    "commitResolutionY:",
 	    "commitSizeX:",
 	    "commitSizeY:",
-	    "generate:"
+	    "generate:",
+	    "commitWindX:",
+	    "commitWindY:"
 	);
 	Outlets = (
 	    generateButton,
@@ -29,7 +33,11 @@
 	    rng2TypePopUpButton,
 	    sizeXTextField,
 	    sizeYTextField,
-	    surfaceGeneratorTypePopUpButton
+	    surfaceGeneratorTypePopUpButton,
+	    useCUDARadioButton,
+	    numberOfThreadsTextField,
+	    windXTextField,
+	    windYTextField
 	);
 	Super = NSWindowController;
     };

@@ -21,6 +21,7 @@ ToSpectrum;
 {
     Int resX, resY;
     Int length, width;
+    Vector2 wind;
 
     NSMutableDictionary * firstRNGs;
     NSMutableDictionary * secondRNGs;
@@ -35,8 +36,6 @@ ToSpectrum;
     //Vector3 * pointArray;
 
     //long * pointIndexArray;
-
-    Real * h;
 }
 
 - (id) init;
@@ -57,6 +56,9 @@ ToSpectrum;
 - (void) setLength:(Int)newLength;
 - (Int) width;
 - (void) setWidth:(Int)newWidth;
+
+- (void) setWindX:(Double)newWindX;
+- (void) setWindY:(Double)newWindY;
 
 - (void) generateHeightfield;
 
