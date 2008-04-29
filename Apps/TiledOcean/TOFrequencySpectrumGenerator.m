@@ -86,11 +86,21 @@
     [ self checkGaussianRNGForReadiness ];
 }
 
+- (Int) resX
+{
+    return resX;
+}
+
 - (void) setResX:(Int)newResX
 {
     resX = newResX;
 
     [ self checkResolutionForReadiness ];
+}
+
+- (Int) resY
+{
+    return resY;
 }
 
 - (void) setResY:(Int)newResY

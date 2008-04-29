@@ -51,6 +51,7 @@
 {
     resX = resY = -1;
     length = width = -1;
+    wind.x = wind.y = 0.0;
 
     [ gaussianRNG setFirstGenerator:[firstRNGs objectForKey:NP_RNG_TT800] ];
     [ gaussianRNG setSecondGenerator:[secondRNGs objectForKey:NP_RNG_TT800] ];
@@ -118,33 +119,47 @@
     width = newWidth;
 }
 
-- (void) generateHeightfield
+- (void) setWindX:(Double)newWindX
 {
-    Vector2 wind;
-    wind.x = 10.0;
-    wind.y = 9.0;
+    wind.x = newWindX;
+}
 
-    TOPhillipsFrequencySpectrumGenerator * fsg = [ frequencySpectrumGenerators objectForKey:TO_FSG_PHILLIPS ];
+- (void) setWindY:(Double)newWindY
+{
+    wind.y = newWindY;
+}
+
+- (void) setFrequencySpectrumGeneratorParameters:(TOPhillipsFrequencySpectrumGenerator *)fsg
+{
     [ fsg setResX:resX ];
     [ fsg setResY:resY ];
     [ fsg setWidth:width ];
     [ fsg setLength:length ];
     [ fsg setGaussianRNG:gaussianRNG ];
     [ fsg setWindDirection:&wind ];
+}
+
+- (void) brak:(TOPhillipsFrequencySpectrumGenerator *)fsg
+{
+    NSLog(@"thread");
     [ fsg generateFrequencySpectrum ];
+
+    fftw_plan plan;
+    fftw_plan_with_nthreads(2);
+    plan = fftw_plan_dft_c2r_2d([fsg resX],[fsg resY],[fsg frequencySpectrum],heights,FFTW_ESTIMATE);
+    fftw_execute(plan);
+    fftw_destroy_plan(plan);
+    NSLog(@"thread done");
+}
+
+- (void) generateHeightfield
+{
+    TOPhillipsFrequencySpectrumGenerator * fsg = [ frequencySpectrumGenerators objectForKey:TO_FSG_PHILLIPS ];
+    [ self setFrequencySpectrumGeneratorParameters:fsg ];
 
     heights = ALLOC_ARRAY(Double,resX*resY);
 
-    fftw_plan plan;
-
-    fftw_plan_with_nthreads(2);
-
-    plan = fftw_plan_dft_c2r_2d(resX,resY,[fsg frequencySpectrum],heights,FFTW_ESTIMATE);
-
-    NSLog(@"execute");
-    fftw_execute(plan);
-    NSLog(@"done");
-    fftw_destroy_plan(plan);
+    [ NSThread detachNewThreadSelector:@selector(brak:) toTarget:self withObject:fsg ];
 }
 
 @end

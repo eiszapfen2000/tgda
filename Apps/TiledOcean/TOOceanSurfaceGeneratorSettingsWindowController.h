@@ -11,6 +11,12 @@
 
     id surfaceGeneratorTypePopUpButton;
 
+    id windXTextField;
+    id windYTextField;
+
+    id numberOfThreadsTextField;
+    id useCUDARadioButton;
+
     id rng1TypePopUpButton;
     id rng2TypePopUpButton;
     id rng1SeedTextField;
@@ -37,6 +43,8 @@
 - (void) commitResolutionY:(id)sender;
 - (void) commitSizeX:(id)sender;
 - (void) commitSizeY:(id)sender;
+- (void) commitWindX:(id)sender;
+- (void) commitWindY:(id)sender;
 
 - (void) generate:(id)sender;
 
