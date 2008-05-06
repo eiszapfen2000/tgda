@@ -27,4 +27,6 @@
 - (TOOceanSurfaceGenerator *) oceanSurfaceGenerator;
 - (TOScene *)scene;
 
+- (void) oceanSurfaceGenerationDidEnd:(NSNotification *)aNot;
+
 @end

@@ -9,6 +9,9 @@
 #define TO_FSG_PIERSMOS     @"PIERSMOS"
 #define TO_FSG_JONSWOP      @"JONSWOP"
 
+#define PHILLIPS_CONSTANT       0.0081
+#define SWOP_CONSTANT           0.763
+
 
 @class NPGaussianRandomNumberGenerator;
 
@@ -16,6 +19,7 @@
 {
     Int resX, resY;
     Int width, length;
+    Int numberOfThreads;
 
     NPGaussianRandomNumberGenerator * gaussianRNG;
 
@@ -24,6 +28,7 @@
     BOOL resOK;
     BOOL sizeOK;
     BOOL rngOK;
+    BOOL threadsOK;
 }
 
 - (id) init;
@@ -41,6 +46,7 @@
 - (void) setResY:(Int)newResY;
 - (void) setWidth:(Int)newWidth;
 - (void) setLength:(Int)newLength;
+- (void) setNumberOfThreads:(Int)newNumberOfThreads;
 
 - (void) setGaussianRNG:(NPGaussianRandomNumberGenerator *)newGaussianRNG;
 
@@ -83,12 +89,20 @@
 {
     Double U10;
     Double L, X;
+
+    BOOL LXOK;
+    BOOL U10OK;
 }
 
 - (id) init;
 - (id) initWithParent:(NPObject *)newParent;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
+
+- (void) setU10:(Double)newU10;
+- (void) setL:(Double)newL;
+- (void) setX:(Double)newX;
+- (void) setWindDirection:(Vector2 *)newWindDirection;
 
 - (void) generateFrequencySpectrum;
 

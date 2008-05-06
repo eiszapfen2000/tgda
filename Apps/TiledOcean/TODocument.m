@@ -19,10 +19,10 @@
 {
     self = [ super init ];
 
-    /*[[ NSNotificationCenter defaultCenter ] addObserver:self
-                                               selector:@selector(loadModel:)
-                                                   name:@"TODocumentCanLoadResources"
-                                                 object:nil];*/
+    [[ NSNotificationCenter defaultCenter ] addObserver:self
+                                               selector:@selector(oceanSurfaceGenerationDidEnd:)
+                                                   name:@"TOOceanSurfaceGenerationDidEnd"
+                                                 object:oceanSurfaceGenerator];
 
     glWindowController = nil;
     oceanSurfaceGeneratorSettingsWindowController = nil;
@@ -97,6 +97,11 @@
 - (TOScene *)scene
 {
     return scene;
+}
+
+- (void) oceanSurfaceGenerationDidEnd:(NSNotification *)aNot
+{
+    
 }
 
 @end

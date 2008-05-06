@@ -6,6 +6,12 @@
 
 void npmath_vector_initialise();
 
+typedef struct IVector2
+{
+    Int x, y;
+}
+IVector2;
+
 typedef struct Vector2
 {
     Double x, y;

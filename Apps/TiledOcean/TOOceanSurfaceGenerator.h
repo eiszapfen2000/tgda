@@ -13,23 +13,37 @@ typedef enum
 }
 ToSpectrum;
 
+typedef struct
+{
+    Int resX, resY;
+    Int length, width;
+    Vector2 wind;
+}
+ToOceanSurface;
+
 @class NPRandomNumberGenerator;
 @class NPGaussianRandomNumberGenerator;
 
 
 @interface TOOceanSurfaceGenerator : NPObject
 {
-    Int resX, resY;
-    Int length, width;
+    IVector2 resolution;
+    IVector2 size;
     Vector2 wind;
+
+    Int numberOfThreads;
 
     NSMutableDictionary * firstRNGs;
     NSMutableDictionary * secondRNGs;
 	NPGaussianRandomNumberGenerator * gaussianRNG;
 
     NSMutableDictionary * frequencySpectrumGenerators;
+    NSString * currentFSGTypeName;
 
-    BOOL ready;
+    BOOL resOK;
+    BOOL sizeOK;
+    BOOL rngOK;
+    BOOL threadsOK;
 
     Double * heights;
 
@@ -45,22 +59,25 @@ ToSpectrum;
 
 - (void) reset;
 
+- (BOOL) ready;
+
 - (void) createRNGsForDictionary:(NSMutableDictionary *)dictionary;
 - (void) createFSGsForDictionary:(NSMutableDictionary *)dictionary;
 
-- (Int) resX;
 - (void) setResX:(Int)newResX;
-- (Int) resY;
 - (void) setResY:(Int)newResY;
-- (Int) length;
 - (void) setLength:(Int)newLength;
-- (Int) width;
 - (void) setWidth:(Int)newWidth;
+
+- (void) setCurrentFSGTypeName:(NSString *)newCurrentFSGTypeName;
 
 - (void) setWindX:(Double)newWindX;
 - (void) setWindY:(Double)newWindY;
+- (void) setNumberOfThreads:(Int)newNumberOfThreads;
 
 - (void) generateHeightfield;
+
+- (void) buildVertexArray;
 
 @end
 
