@@ -36,7 +36,5 @@
 // m/s²
 #define EARTH_ACCELERATION      9.80665
 
-#define PHILLIPS_CONSTANT       0.0081
-
 #endif
 

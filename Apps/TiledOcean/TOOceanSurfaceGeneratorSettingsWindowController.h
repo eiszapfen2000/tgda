@@ -30,6 +30,8 @@
 
     NSAlert * resolutionNotPowerOfTwo;
     NSAlert * sizeNegative;
+    NSAlert * numberOfThreadsNegative;
+    NSAlert * parametersMissing;
 
     TOOceanSurfaceGenerator * oceanSurfaceGenerator;
 }
@@ -43,8 +45,10 @@
 - (void) commitResolutionY:(id)sender;
 - (void) commitSizeX:(id)sender;
 - (void) commitSizeY:(id)sender;
+- (void) commitFSGType:(id)sender;
 - (void) commitWindX:(id)sender;
 - (void) commitWindY:(id)sender;
+- (void) commitNumberOfThreads:(id)sender;
 
 - (void) generate:(id)sender;
 

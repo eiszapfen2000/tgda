@@ -2,13 +2,15 @@
     "## Comment" = "Do NOT change this file, Gorm maintains it";
     FirstResponder = {
 	Actions = (
+	    "commitFSGType:",
 	    "commitResolutionX:",
 	    "commitResolutionY:",
 	    "commitSizeX:",
 	    "commitSizeY:",
 	    "commitWindX:",
+	    "commitWindY:",
 	    "generate:",
-	    "commitWindY:"
+	    "commitNumberOfThreads:"
 	);
 	Super = NSObject;
     };
@@ -20,7 +22,9 @@
 	    "commitSizeY:",
 	    "generate:",
 	    "commitWindX:",
-	    "commitWindY:"
+	    "commitWindY:",
+	    "commitFSGType:",
+	    "commitNumberOfThreads:"
 	);
 	Outlets = (
 	    generateButton,

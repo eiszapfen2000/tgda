@@ -24,6 +24,16 @@
     [ sizeNegative setMessageText:@"Size must be positive" ];
     [ sizeNegative addButtonWithTitle:@"OK" ];
 
+    numberOfThreadsNegative = [[ NSAlert alloc ] init ];
+    [ numberOfThreadsNegative setAlertStyle:NSWarningAlertStyle ];
+    [ numberOfThreadsNegative setMessageText:@"Number of Threads must be positive" ];
+    [ numberOfThreadsNegative addButtonWithTitle:@"OK" ];
+
+    parametersMissing = [[ NSAlert alloc ] init ];
+    [ parametersMissing setAlertStyle:NSWarningAlertStyle ];
+    [ parametersMissing setMessageText:@"There are parameters missing" ];
+    [ parametersMissing addButtonWithTitle:@"OK" ];
+
     oceanSurfaceGenerator = nil;
 
     return self;
@@ -77,7 +87,7 @@
             case NSReturnTextMovement:
             break;
             case NSTabTextMovement:
-            [[aNotification object] sendAction: [[aNotification object] action] to: [[aNotification object] target]];
+            [[aNotification object] sendAction:[[aNotification object] action] to:[[aNotification object] target]];
             break;
             case NSBacktabTextMovement:
             break;
@@ -145,6 +155,12 @@
     [ oceanSurfaceGenerator setWidth:value ];
 }
 
+- (void) commitFSGType:(id)sender
+{
+    NSLog([ sender titleOfSelectedItem ]);
+    [ oceanSurfaceGenerator setCurrentFSGTypeName:[ sender titleOfSelectedItem ] ];
+}
+
 - (void) commitWindX:(id)sender
 {
     [ oceanSurfaceGenerator setWindX:[sender doubleValue] ];    
@@ -155,8 +171,30 @@
     [ oceanSurfaceGenerator setWindY:[sender doubleValue] ];
 }
 
+- (void) commitNumberOfThreads:(id)sender
+{
+    NSLog(@"not");
+    Int value = [sender intValue];
+
+    if ( value < 1 )
+    {
+        [ numberOfThreadsNegative runModal ];
+        [ numberOfThreadsTextField setStringValue:@"" ];
+
+        return;
+    }
+
+    [ oceanSurfaceGenerator setNumberOfThreads:value ];    
+}
+
 - (void) generate:(id)sender
 {
+    if ( [ oceanSurfaceGenerator ready ] == NO )
+    {
+        [ parametersMissing runModal ];
+        return;
+    }
+
     [ oceanSurfaceGenerator generateHeightfield ];
 }
 

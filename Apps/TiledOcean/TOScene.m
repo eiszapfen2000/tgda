@@ -72,6 +72,10 @@
     [ surface addLod:surfaceLod ];
 }
 
+- (void) buildVBOFromHeights:(Double *)heights
+{
+}
+
 - (void) update
 {
     [ camera update ];

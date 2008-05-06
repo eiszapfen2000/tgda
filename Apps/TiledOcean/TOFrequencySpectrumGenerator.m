@@ -33,6 +33,7 @@
 {
     resX = resY = -1;
     width = length = -1;
+    numberOfThreads = -1;
 
     if ( gaussianRNG != nil )
     {
@@ -45,11 +46,12 @@
     resOK = NO;
     sizeOK = NO;
     rngOK = NO;
+    threadsOK = NO;
 }
 
 - (BOOL) ready
 {
-    return ( resOK && sizeOK && rngOK );
+    return ( resOK && sizeOK && rngOK && threadsOK );
 }
 
 - (void) checkResolutionForReadiness
@@ -79,11 +81,20 @@
     }
 }
 
+- (void) checkThreadsForReadiness
+{
+    if ( numberOfThreads > 0 )
+    {
+        threadsOK = YES;
+    }
+}
+
 - (void) checkForReadiness
 {
     [ self checkSizeForReadiness ];
     [ self checkResolutionForReadiness ];
     [ self checkGaussianRNGForReadiness ];
+    [ self checkThreadsForReadiness ];
 }
 
 - (Int) resX
@@ -122,6 +133,13 @@
     length = newLength;
 
     [ self checkSizeForReadiness ];
+}
+
+- (void) setNumberOfThreads:(Int)newNumberOfThreads
+{
+    numberOfThreads = newNumberOfThreads;
+
+    [ self checkThreadsForReadiness ];
 }
 
 - (void) setGaussianRNG:(NPGaussianRandomNumberGenerator *)newGaussianRNG
@@ -314,55 +332,6 @@
     }
 }
 
-/*- (void) generateH
-{
-    int i, j, index;
-    int ni, nj, nindex;
-    ArFFTReal e1r, e1i, e2r, e2i, c1r, c1i, c2r, c2i;
-    Vec2D k;
-    double w;
-
-    for ( Int i = 0; i < gridRes / 2; i++ )
-    {
-        for ( Int j = 0; j < gridRes; j++ )
-        {
-            index = i * gridRes + j;
-
-            ni = (gridRes - 1) - i;
-            nj = (gridRes - 1) - j;
-            nindex = ni * gridRes + nj;
-
-            XC(k) = [ self index_to_k : i ];
-            //printf("index_to_k %f\n",XC(k));
-            YC(k) = [ self index_to_k : j ];
-            //printf("index_to_k %f\n",YC(k));
-
-            w = [ self k_to_omega : &k ];
-            //printf("k_to_omega %f\n",w);
-
-            e1r = cos(w * t);
-            e1i = sin(w * t);
-
-            e2r = e1r;
-            e2i = -e1i;
-
-            c1r = H0r[index] * e1r - H0i[index] * e1i;
-            c1i = H0r[index] * e1i + H0i[index] * e1r;
-
-            c2r = H0r[nindex] * e2r - H0i[nindex] * e2i;
-            c2i = H0r[nindex] * e2i + H0i[nindex] * e2r;
-
-            Hr[index] = c1r + c2r;
-            Hi[index] = c1i + c2i;
-            //printf("Hr %f Hi %f\n",Hr[index],Hi[index]);
-
-            Hr[nindex] = Hr[index];
-            Hi[nindex] = -Hi[index];
-            //printf("n Hr %f Hi %f\n",Hr[nindex],Hi[nindex]);
-        }
-    }
-}*/
-
 - (void) generateH
 {
     Vector2 k;
@@ -437,12 +406,187 @@
 
 - (void) generateFrequencySpectrum
 {
+    //NSLog(@"generate");
     if ( [ self ready ] == YES )
     {
-        NSLog(@"start");
+        //NSLog(@"start");
         [ self generateH0 ];
         [ self generateH ];
-        NSLog(@"stop");
+        //NSLog(@"stop");
+    }
+}
+
+@end
+
+@implementation TOSWOPFrequencySpectrumGenerator
+
+- (id) init
+{
+    return [ self initWithParent:nil ];
+}
+
+- (id) initWithParent:(NPObject *)newParent
+{
+    return [ self initWithName:@"TOSWOPFrequencySpectrumGenerator" parent:newParent ];
+}
+
+- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
+{
+    self = [ super initWithName:newName parent:newParent ];
+
+    [ self reset ];
+
+    return self;
+}
+
+- (void) dealloc
+{
+    [ super dealloc ];
+}
+
+- (void) reset
+{
+    U10 = -1.0;
+    L = X = -1.0;
+    LXOK = NO;
+    U10OK = NO;
+
+    [ super reset ];
+}
+
+- (BOOL) ready
+{
+    return [ super ready ] && LXOK && U10OK;
+}
+
+- (void) checkU10ForReadiness
+{
+    if ( U10 != 0.0 )
+    {
+        U10OK = YES;
+    }
+}
+
+- (void) checkLXForReadiness
+{
+    if ( L != 0.0 && X != 0.0 )
+    {
+        LXOK = YES;
+    }
+}
+
+- (void) setU10:(Double)newU10
+{
+    U10 = newU10;
+
+    [ self checkU10ForReadiness ];
+}
+
+- (void) setWindDirection:(Vector2 *)newWindDirection
+{
+    U10 = v2_v_length(newWindDirection);
+
+    [ self checkU10ForReadiness ];
+}
+
+- (void) setL:(Double)newL
+{
+    L = newL;
+
+    [ self checkLXForReadiness ];
+}
+
+- (void) setX:(Double)newX
+{
+    X = newX;
+
+    [ self checkLXForReadiness ];
+}
+
+- (Double) getFAtSigma:(Double)sigma andPhi:(Double)phi
+{
+    Double E = exp(-0.5 * pow((sigma*U10) / EARTH_ACCELERATION, 4.0));
+    Double f = 1.0 + (0.5 + 0.82 * E) * cos(2 * sigma) + 0.32 * E * cos(4 * sigma);
+    Double tmp = exp(-2.0 * pow(EARTH_ACCELERATION / (sigma * U10), -2.0));
+
+    return SWOP_CONSTANT * pow(sigma, -6.0) * tmp * f;
+}
+
+- (Double) getAmplitudeAt:(Vector2 *)k
+{
+    Double kLength = v2_v_length(k);
+
+    if ( kLength == 0.0 )
+    {
+        return 0.0;
+    }
+
+    Double sigma = sqrt(EARTH_ACCELERATION * kLength);
+    Double phi = atan2(V_Y(*k), V_X(*k));
+
+    Double tmp = (EARTH_ACCELERATION * EARTH_ACCELERATION) / (2 * pow(sigma, 3.0));
+
+    return tmp * [ self getFAtSigma:sigma andPhi:phi ];
+}
+
+- (void) generateAmplitudes
+{
+	if ( !frequencySpectrum )
+	{
+        NSLog(@"alloc");
+		frequencySpectrum = (fftw_complex *)fftw_malloc(sizeof(fftw_complex)*resX*resY);
+	}
+
+    Int index = 0;
+
+    Double u, v;
+    Double ui, vj;
+    Double phase;
+    Vector2 k;
+    Double xi_r, xi_i;
+    Double amplitude;
+
+    // deltau and deltav are the same
+    Double deltau = MATH_2_MUL_PI / ((2.0 * L + 1.0) * (X / L));
+
+    for ( Int i = 0; i < resX / 2; i++ )
+    {
+        for ( Int j = 0; j < resY; j++ )
+        {
+            index = j + resY * i;
+
+            u = (i - L);
+            v = (j - L);
+
+            ui = u * (u * (L / X));
+            vj = v * (v * (L / X));
+
+            phase = MATH_2_MUL_PI * (ui / (2.0 * L + 1.0)) * (vj / (2.0 * L + 1.0));
+
+            V_X(k) = u * deltau;
+            V_Y(k) = v * deltau;
+
+			xi_r = [ gaussianRNG nextGaussianFPRandomNumber ];
+			xi_i = [ gaussianRNG nextGaussianFPRandomNumber ];
+
+            amplitude = [self getAmplitudeAt:&k ] * deltau * deltau;
+
+            frequencySpectrum[index][0] = xi_r * amplitude * cos(phase);
+            frequencySpectrum[index][1] = xi_i * amplitude * sin(phase);
+        }
+    }
+}
+
+- (void) generateFrequencySpectrum
+{
+    L = (Double)resX / 2.0;
+    X = (Double)length / 2.0;
+
+    [ self checkLXForReadiness ];
+
+    if ( [ self ready ] == YES )
+    {
+        [ self generateAmplitudes ];
     }
 }
 

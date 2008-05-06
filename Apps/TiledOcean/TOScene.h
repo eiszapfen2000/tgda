@@ -30,6 +30,8 @@
 
 - (void) setup;
 
+- (void) buildVBOFromHeights:(Double *)heights;
+
 - (void) update;
 - (void) render;
 
