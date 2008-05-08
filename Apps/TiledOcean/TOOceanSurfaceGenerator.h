@@ -77,7 +77,8 @@ ToOceanSurface;
 
 - (void) generateHeightfield;
 
-- (void) buildVertexArrayUsingFSG:(TOFrequencySpectrumGenerator *)fsg;
+- (Float *) buildVertexArrayUsingFSG:(TOFrequencySpectrumGenerator *)fsg;
+- (Int *) buildIndexArrayUsingFSG:(TOFrequencySpectrumGenerator *)fsg;
 
 @end
 
