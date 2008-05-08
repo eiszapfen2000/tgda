@@ -252,8 +252,11 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     }
 
     Int verticesSize = (vertices.maxVertex + 1) * sizeof(Float);
+    NPLOG(([NSString stringWithFormat:@"verticesSize %d",verticesSize]));
 
+    NPLOG(([NSString stringWithFormat:@"positionsID %d",vertexBuffer.positionsID]));
     glGenBuffers(1, &(vertexBuffer.positionsID));
+    NSLog(@"genbuffer");
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.positionsID);
     glBufferData(GL_ARRAY_BUFFER, verticesSize * 3, vertices.positions, vboUsage);
 
@@ -495,6 +498,31 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     }
 
     vertices.indices = newIndices;
+}
+
+- (void) setIndexed:(BOOL)newIndexed
+{
+    vertices.indexed = newIndexed;
+}
+
+- (void) setMaxVertex:(Int)newMaxVertex
+{
+    vertices.maxVertex = newMaxVertex;
+}
+
+- (void) setMaxIndex:(Int)newMaxIndex
+{
+    vertices.maxIndex = newMaxIndex;
+}
+
+- (void) setPrimitiveType:(Int)newPrimitiveType
+{
+    vertices.primitiveType = newPrimitiveType;
+}
+
+- (void) setReady:(BOOL)newReady
+{
+    ready = newReady;
 }
 
 @end

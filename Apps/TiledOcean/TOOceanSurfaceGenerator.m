@@ -1,3 +1,5 @@
+#import <AppKit/AppKit.h>
+
 #import "TOOceanSurfaceGenerator.h"
 #import "TOFrequencySpectrumGenerator.h"
 
@@ -195,7 +197,9 @@
 
 - (void) brak:(TOPhillipsFrequencySpectrumGenerator *)fsg
 {
-    [[ NSNotificationCenter defaultCenter ] postNotificationName:@"TOOceanSurfaceGenerationDidStart" object:self ];
+    NSAutoreleasePool * apool = [[ NSAutoreleasePool alloc ] init ];
+
+    //[[ NSNotificationCenter defaultCenter ] postNotificationName:@"TOOceanSurfaceGenerationDidStart" object:self ];
 
     NSLog(@"thread");
 
@@ -211,8 +215,15 @@
 
     NSMutableDictionary * d = [[ NSMutableDictionary alloc ] init ];
     [ d setObject:fsg forKey:@"FSG" ];
-    [[ NSNotificationCenter defaultCenter ] postNotificationName:@"TOOceanSurfaceGenerationDidEnd" object:self userInfo:d ];
+    NSNotification * anot = [ NSNotification notificationWithName:@"TOOceanSurfaceGenerationDidEnd" object:self userInfo:d ];
+
+    [[NSNotificationCenter defaultCenter] performSelectorOnMainThread:@selector(postNotification:)
+                    withObject:anot
+                 waitUntilDone:NO];
+
     [ d release ];
+
+    [ apool release ];
 }
 
 - (void) generateHeightfield
@@ -228,8 +239,9 @@
     }
 }
 
-- (void) buildVertexArrayUsingFSG:(TOFrequencySpectrumGenerator *)fsg
+- (Float *) buildVertexArrayUsingFSG:(TOFrequencySpectrumGenerator *)fsg
 {
+    NSLog(@"creating vertex array");
     Float * vertexArray = ALLOC_ARRAY(Float, [fsg resX] * [fsg resY] * 3);
     Float xStep = (Float)V_X(resolution) / (Float)V_X(size);
     Float yStep = (Float)V_Y(resolution) / (Float)V_Y(size);
@@ -249,6 +261,71 @@
             vertexArray[index+2] = (Float)heights[index];
         }
     }
+    NSLog(@"done");
+
+    return vertexArray;
+}
+
+- (Int *) buildIndexArrayUsingFSG:(TOFrequencySpectrumGenerator *)fsg
+{
+    NSLog(@"build index array");
+    Int resY = [ fsg resY ];
+    Int resX = [ fsg resX ];
+
+    Int triangleCount = (resX-1) * (resY-1) * 2;
+    NSLog(@"tris: %d",triangleCount);
+    Int indexCount = triangleCount * 3;
+    NSLog(@"indices: %d",indexCount);
+
+    Int * indexArray = ALLOC_ARRAY(Int, indexCount);
+
+    Int baseIndex;
+    Int indicesQuad[4];
+    Float heightDifferenceOne;
+    Float heightDifferenceTwo;
+
+    for ( Int i = 0; i < (resX-1); i++ )
+    {
+        for ( Int j = 0; j < (resY-1); j++ )
+        {
+            NSLog(@"%d %d",i,j);
+            baseIndex = (i*(resY-1) + j) * 6;
+            NSLog(@"%d",baseIndex);
+
+            indicesQuad[0] = i*resY + j;
+            indicesQuad[1] = i*resY + j + 1;
+            indicesQuad[2] = (i+1)*resY + j;
+            indicesQuad[3] = (i+1)*resY + j + 1;
+            NSLog(@"%d %d %d %d",indicesQuad[0],indicesQuad[1],indicesQuad[2],indicesQuad[3]);
+
+            heightDifferenceOne = (Float)fabs(heights[indicesQuad[0]] - heights[indicesQuad[3]]);
+            heightDifferenceTwo = (Float)fabs(heights[indicesQuad[2]] - heights[indicesQuad[1]]);
+
+            //First Triangle
+            indexArray[baseIndex] = indicesQuad[0];
+            indexArray[baseIndex+1] = indicesQuad[1];
+
+            if ( heightDifferenceOne < heightDifferenceTwo )
+            {
+                indexArray[baseIndex+2] = indicesQuad[2];
+                indexArray[baseIndex+4] = indicesQuad[1];
+            }
+            else
+            {
+                indexArray[baseIndex+2] = indicesQuad[3];
+                indexArray[baseIndex+4] = indicesQuad[0];
+            }
+
+            //Second Triangle
+            indexArray[baseIndex+3] = indicesQuad[3];
+            indexArray[baseIndex+4] = indicesQuad[2];
+            NSLog(@"lol");
+        }
+    }
+
+    NSLog(@"done");
+
+    return indexArray;
 }
 
 @end

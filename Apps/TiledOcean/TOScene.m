@@ -9,6 +9,8 @@
 #import "Graphics/Camera/NPCamera.h"
 #import "Graphics/Camera/NPCameraManager.h"
 
+#import "Core/NPEngineCore.h"
+
 @implementation TOScene
 
 - (id) init
@@ -70,6 +72,14 @@
     [ surfaceLod setVertexBuffer:surfaceVBO ];
     [ surfaceLod addGroup:surfaceGroup ];
     [ surface addLod:surfaceLod ];
+
+    camera = [[[ NPEngineCore instance ] cameraManager ] currentActiveCamera ];
+    FVector3 pos;
+    FV_X(pos) = 0.0f;
+    FV_Y(pos) = 5.0f;
+    FV_Z(pos) = 5.0f;
+
+    [ camera rotateX:20.0f ];
 }
 
 - (void) buildVBOFromHeights:(Double *)heights
@@ -84,7 +94,7 @@
 - (void) render
 {
     [ camera render ];
-    [ surface render ];
+    [ surfaceVBO render ];
 }
 
 @end

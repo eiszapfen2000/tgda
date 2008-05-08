@@ -88,8 +88,13 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer);
 - (Float *) weights;
 - (void) setWeights:(Float *)newWeights withElementsForWeights:(Int)newElementsForWeights;
 - (void) setTextureCoordinates:(Float *)textureCoordinates forSet:(Int)textureCoordinateSet;
-
 - (Int *) indices;
 - (void) setIndices:(Int *)newIndices;
+
+- (void) setIndexed:(BOOL)newIndexed;
+- (void) setMaxVertex:(Int)newMaxVertex;
+- (void) setMaxIndex:(Int)newMaxIndex;
+- (void) setPrimitiveType:(Int)newPrimitiveType;
+- (void) setReady:(BOOL)newReady;
 
 @end
