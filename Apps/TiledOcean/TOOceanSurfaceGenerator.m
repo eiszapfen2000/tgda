@@ -50,7 +50,7 @@
 - (void) reset
 {
     V_X(resolution) = V_Y(resolution) = -1;
-    V_X(size) = V_Y(size) = -1;
+    V_X(size) = V_Y(size) = -1.0;
     wind.x = wind.y = 0.0;
     numberOfThreads = -1;
 
@@ -142,14 +142,14 @@
     [ self checkResolutionForReadiness ];
 }
 
-- (void) setLength:(Int)newLength
+- (void) setLength:(Double)newLength
 {
     V_X(size) = newLength;
 
     [ self checkSizeForReadiness ];
 }
 
-- (void) setWidth:(Int)newWidth
+- (void) setWidth:(Double)newWidth
 {
     V_Y(size) = newWidth;
 
@@ -195,6 +195,8 @@
 
 - (void) brak:(TOPhillipsFrequencySpectrumGenerator *)fsg
 {
+    [[ NSNotificationCenter defaultCenter ] postNotificationName:@"TOOceanSurfaceGenerationDidStart" object:self ];
+
     NSLog(@"thread");
 
     [ fsg generateFrequencySpectrum ];
@@ -207,7 +209,10 @@
 
     NSLog(@"thread done");
 
-    [[ NSNotificationCenter defaultCenter ] postNotificationName:@"TOOceanSurfaceGenerationDidEnd" object:self ];
+    NSMutableDictionary * d = [[ NSMutableDictionary alloc ] init ];
+    [ d setObject:fsg forKey:@"FSG" ];
+    [[ NSNotificationCenter defaultCenter ] postNotificationName:@"TOOceanSurfaceGenerationDidEnd" object:self userInfo:d ];
+    [ d release ];
 }
 
 - (void) generateHeightfield
@@ -223,9 +228,27 @@
     }
 }
 
-- (void) buildVertexArray
+- (void) buildVertexArrayUsingFSG:(TOFrequencySpectrumGenerator *)fsg
 {
+    Float * vertexArray = ALLOC_ARRAY(Float, [fsg resX] * [fsg resY] * 3);
+    Float xStep = (Float)V_X(resolution) / (Float)V_X(size);
+    Float yStep = (Float)V_Y(resolution) / (Float)V_Y(size);
 
+    Int resY = [ fsg resY ];
+    Int resX = [ fsg resX ];
+
+    Int index = 0;
+
+    for ( Int i = 0; i < resX; i++ )
+    {
+        for ( Int j = 0; j < resY; j++ )
+        {
+            index = (resY * i + j) * 3;
+            vertexArray[index]   = (Float)i * xStep;
+            vertexArray[index+1] = (Float)j * yStep;
+            vertexArray[index+2] = (Float)heights[index];
+        }
+    }
 }
 
 @end

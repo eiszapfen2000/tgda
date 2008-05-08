@@ -127,7 +127,7 @@
 
 - (void) commitSizeX:(id)sender
 {
-    Int value = [sender intValue];
+    Double value = [sender doubleValue];
 
     if ( value < 0 )
     {
@@ -142,7 +142,7 @@
 
 - (void) commitSizeY:(id)sender
 {
-    Int value = [sender intValue];
+    Double value = [sender doubleValue];
 
     if ( value < 0 )
     {
