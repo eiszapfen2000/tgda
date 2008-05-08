@@ -23,12 +23,12 @@ ToOceanSurface;
 
 @class NPRandomNumberGenerator;
 @class NPGaussianRandomNumberGenerator;
-
+@class TOFrequencySpectrumGenerator;
 
 @interface TOOceanSurfaceGenerator : NPObject
 {
     IVector2 resolution;
-    IVector2 size;
+    Vector2 size;
     Vector2 wind;
 
     Int numberOfThreads;
@@ -66,8 +66,8 @@ ToOceanSurface;
 
 - (void) setResX:(Int)newResX;
 - (void) setResY:(Int)newResY;
-- (void) setLength:(Int)newLength;
-- (void) setWidth:(Int)newWidth;
+- (void) setLength:(Double)newLength;
+- (void) setWidth:(Double)newWidth;
 
 - (void) setCurrentFSGTypeName:(NSString *)newCurrentFSGTypeName;
 
@@ -77,7 +77,7 @@ ToOceanSurface;
 
 - (void) generateHeightfield;
 
-- (void) buildVertexArray;
+- (void) buildVertexArrayUsingFSG:(TOFrequencySpectrumGenerator *)fsg;
 
 @end
 

@@ -21,6 +21,11 @@
 
     [[ NSNotificationCenter defaultCenter ] addObserver:self
                                                selector:@selector(oceanSurfaceGenerationDidEnd:)
+                                                   name:@"TOOceanSurfaceGenerationDidStart"
+                                                 object:oceanSurfaceGenerator];
+
+    [[ NSNotificationCenter defaultCenter ] addObserver:self
+                                               selector:@selector(oceanSurfaceGenerationDidEnd:)
                                                    name:@"TOOceanSurfaceGenerationDidEnd"
                                                  object:oceanSurfaceGenerator];
 
@@ -29,9 +34,6 @@
 
     oceanSurfaceGenerator = [[ TOOceanSurfaceGenerator alloc ] initWithName:[self displayName] parent:self ];
     scene = [[ TOScene alloc ] initWithName:[self displayName] parent:self ];
-
-
-    NSLog(@"test");
 
     return self;
 }
@@ -101,7 +103,8 @@
 
 - (void) oceanSurfaceGenerationDidEnd:(NSNotification *)aNot
 {
-    
+    if ( [[ aNot userInfo ] objectForKey:@"FSG" ] != nil )
+        NSLog(@"succeed");
 }
 
 @end
