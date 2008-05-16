@@ -15,6 +15,11 @@
     core = [ NPEngineCore instance ];
 
     [[ NSNotificationCenter defaultCenter ] addObserver:self
+                                               selector:@selector(newContextReady:)
+                                                   name:@"TOOpenGLWindowContextReady"
+                                                 object:nil ];
+
+    [[ NSNotificationCenter defaultCenter ] addObserver:self
                                                selector:@selector(killNPEngine:)
                                                    name:NSApplicationWillTerminateNotification
                                                  object:nil ];

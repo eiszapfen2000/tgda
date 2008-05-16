@@ -10,6 +10,8 @@
 
     TOOceanSurfaceGenerator * oceanSurfaceGenerator;
     TOScene * scene;
+
+    NSTimer * timer;
 }
 
 - (id) init;
@@ -18,7 +20,9 @@
 - (BOOL) loadDataRepresentation:(NSData*)representation ofType:(NSString*)type;
 - (NSData*) dataRepresentationOfType: (NSString*)type;
 
-- (void) setup;
+//- (void) setup;
+
+- (void) updateAndRender:(NSTimer *)theTimer;
 
 - (void) makeWindowControllers;
 - (id) glWindowController;

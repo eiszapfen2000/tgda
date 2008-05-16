@@ -7,6 +7,8 @@
 @interface TOOpenGLView : NPOpenGLView
 {
     BOOL glReady;
+
+    float rotY;
 }
 
 - (id) initWithFrame:(NSRect)frameRect;
