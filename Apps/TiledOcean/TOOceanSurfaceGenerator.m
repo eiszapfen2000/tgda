@@ -242,6 +242,7 @@
 - (Float *) buildVertexArrayUsingFSG:(TOFrequencySpectrumGenerator *)fsg
 {
     NSLog(@"creating vertex array");
+    //NSLog(@"%d %d %d",[fsg resX],[fsg resY], [fsg resX] * [fsg resY] * 3);
     Float * vertexArray = ALLOC_ARRAY(Float, [fsg resX] * [fsg resY] * 3);
     Float xStep = (Float)V_X(resolution) / (Float)V_X(size);
     Float yStep = (Float)V_Y(resolution) / (Float)V_Y(size);
@@ -256,9 +257,11 @@
         for ( Int j = 0; j < resY; j++ )
         {
             index = (resY * i + j) * 3;
+            //NSLog(@"%d",index);
             vertexArray[index]   = (Float)i * xStep;
             vertexArray[index+1] = (Float)j * yStep;
-            vertexArray[index+2] = (Float)heights[index];
+            vertexArray[index+2] = (Float)heights[(resY * i + j)];
+
         }
     }
     NSLog(@"done");
@@ -273,9 +276,9 @@
     Int resX = [ fsg resX ];
 
     Int triangleCount = (resX-1) * (resY-1) * 2;
-    NSLog(@"tris: %d",triangleCount);
+    //NSLog(@"tris: %d",triangleCount);
     Int indexCount = triangleCount * 3;
-    NSLog(@"indices: %d",indexCount);
+    //NSLog(@"indices: %d",indexCount);
 
     Int * indexArray = ALLOC_ARRAY(Int, indexCount);
 
@@ -288,15 +291,15 @@
     {
         for ( Int j = 0; j < (resY-1); j++ )
         {
-            NSLog(@"%d %d",i,j);
+            //NSLog(@"%d %d",i,j);
             baseIndex = (i*(resY-1) + j) * 6;
-            NSLog(@"%d",baseIndex);
+            //NSLog(@"%d",baseIndex);
 
             indicesQuad[0] = i*resY + j;
             indicesQuad[1] = i*resY + j + 1;
             indicesQuad[2] = (i+1)*resY + j;
             indicesQuad[3] = (i+1)*resY + j + 1;
-            NSLog(@"%d %d %d %d",indicesQuad[0],indicesQuad[1],indicesQuad[2],indicesQuad[3]);
+            //NSLog(@"%d %d %d %d",indicesQuad[0],indicesQuad[1],indicesQuad[2],indicesQuad[3]);
 
             heightDifferenceOne = (Float)fabs(heights[indicesQuad[0]] - heights[indicesQuad[3]]);
             heightDifferenceTwo = (Float)fabs(heights[indicesQuad[2]] - heights[indicesQuad[1]]);
@@ -319,7 +322,7 @@
             //Second Triangle
             indexArray[baseIndex+3] = indicesQuad[3];
             indexArray[baseIndex+4] = indicesQuad[2];
-            NSLog(@"lol");
+            //NSLog(@"lol");
         }
     }
 

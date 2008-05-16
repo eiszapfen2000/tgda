@@ -8,6 +8,8 @@
 
 #import "Graphics/Camera/NPCamera.h"
 #import "Graphics/Camera/NPCameraManager.h"
+#import "Graphics/RenderContext/NPOpenGLRenderContext.h"
+#import "Core/NPEngineCore.h"
 
 #import "Core/NPEngineCore.h"
 
@@ -42,6 +44,15 @@
     [ super dealloc ];
 }
 
+- (void) setRenderContext:(NPOpenGLRenderContext *)newRenderContext
+{
+    if ( renderContext != newRenderContext )
+    {
+        [ renderContext release ];
+        renderContext = [ newRenderContext retain ];
+    }
+}
+
 - (NPSUXModel *) surface
 {
     return surface;
@@ -74,16 +85,16 @@
     [ surface addLod:surfaceLod ];
 
     camera = [[[ NPEngineCore instance ] cameraManager ] currentActiveCamera ];
+
     FVector3 pos;
     FV_X(pos) = 0.0f;
-    FV_Y(pos) = 5.0f;
-    FV_Z(pos) = 5.0f;
+    FV_Y(pos) = 0.0f;
+    FV_Z(pos) = -5.0f;
 
-    [ camera rotateX:20.0f ];
-}
+    [ camera setPosition:&pos ];
 
-- (void) buildVBOFromHeights:(Double *)heights
-{
+    //[ camera rotateX:20.0f ];
+
 }
 
 - (void) update
@@ -93,8 +104,21 @@
 
 - (void) render
 {
+    if( [ renderContext context ] != [NSOpenGLContext currentContext] )
+    {
+        [ renderContext activate ];
+    }
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     [ camera render ];
-    [ surfaceVBO render ];
+
+    if ( [ surfaceVBO isReady ] == YES )
+    {
+        [ surfaceVBO render ];
+    }
+
+    [ renderContext swap ];
 }
 
 @end

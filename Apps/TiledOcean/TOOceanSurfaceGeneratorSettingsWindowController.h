@@ -48,6 +48,7 @@
 - (void) commitFSGType:(id)sender;
 - (void) commitWindX:(id)sender;
 - (void) commitWindY:(id)sender;
+- (void) commitFSGType:(id)sender;
 - (void) commitNumberOfThreads:(id)sender;
 
 - (void) generate:(id)sender;

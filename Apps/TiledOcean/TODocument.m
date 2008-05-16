@@ -22,6 +22,11 @@
     self = [ super init ];
 
     [[ NSNotificationCenter defaultCenter ] addObserver:self
+                                               selector:@selector(setup:)
+                                                   name:@"TODocumentCanLoadResources"
+                                                 object:nil];
+
+    [[ NSNotificationCenter defaultCenter ] addObserver:self
                                                selector:@selector(oceanSurfaceGenerationDidStart:)
                                                    name:@"TOOceanSurfaceGenerationDidStart"
                                                  object:oceanSurfaceGenerator];
@@ -59,17 +64,25 @@
     return nil;
 }
 
-- (void) setup
+- (void) setup:(NSNotification *)aNot
 {
-    if ( [[ NPEngineCore instance ] isReady ] == NO )
-    {
-        [[ NPEngineCore instance ] setup ];
-    }
-
     //[ oceanSurfaceGenerator setup ];
     [ scene setup ];
+    [ scene setRenderContext:[[glWindowController openglView] renderContext]];
 
-    [ self updateChangeCount:NSChangeDone ];
+    timer = [ NSTimer scheduledTimerWithTimeInterval:1.0/60.0
+                                              target:self
+                                            selector:@selector(updateAndRender:)
+                                            userInfo:nil
+                                             repeats:YES ];
+
+    //[ self updateChangeCount:NSChangeDone ];
+}
+
+- (void) updateAndRender:(NSTimer *)theTimer
+{
+    [ scene update ];
+    [ scene render ];
 }
 
 - (void) makeWindowControllers

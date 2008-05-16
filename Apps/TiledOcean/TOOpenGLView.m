@@ -2,6 +2,8 @@
 #import "TOOpenGLView.h"
 #import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
 #import "Core/NPEngineCore.h"
+#import "Graphics/Camera/NPCamera.h"
+#import "Graphics/Camera/NPCameraManager.h"
 
 
 @implementation TOOpenGLView
@@ -13,7 +15,52 @@
 
     glReady = NO;
 
+    rotY = 0.0f;
+
     return self;
+}
+
+- (BOOL) acceptsFirstResponder
+{
+    return YES;
+}
+
+- (void)keyDown:(NSEvent *)theEvent
+{
+    NSLog(@"keydown");
+
+    NSString *theArrow = [theEvent charactersIgnoringModifiers];
+    unichar keyChar = 0;
+
+    if ( [theArrow length] == 0 )
+        return;
+
+    if ( [theArrow length] == 1 )
+    {
+        keyChar = [theArrow characterAtIndex:0];
+
+        if ( keyChar == NSLeftArrowFunctionKey )
+        {
+            NSLog(@"left");
+            rotY += 10.0f;
+            [[[[ NPEngineCore instance ] cameraManager ] currentActiveCamera ] rotateY:rotY ];
+        }
+
+        if ( keyChar == NSRightArrowFunctionKey )
+        {
+            NSLog(@"right");
+        }
+
+        if ( keyChar == NSUpArrowFunctionKey )
+        {
+            NSLog(@"up");
+        }
+
+        if ( keyChar == NSDownArrowFunctionKey )
+        {
+            NSLog(@"down");
+        }
+    }
 }
 
 - (void)mouseDown:(NSEvent *)theEvent
