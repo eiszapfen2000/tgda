@@ -78,6 +78,11 @@
     NSLog(@"dragster");
 }
 
+- (void)mouseMoved:(NSEvent *)theEvent
+{
+	NSLog(@"mouse moved");
+}
+
 - (void) setupGLState
 {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

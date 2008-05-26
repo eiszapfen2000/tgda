@@ -6,6 +6,7 @@ APP_NAME = TiledOcean
 
 TiledOcean_OBJC_FILES = \
 NPOpenGLView.m \
+TOCamera.m \
 TODocument.m \
 TODocumentController.m \
 TOOGLWindowController.m \
