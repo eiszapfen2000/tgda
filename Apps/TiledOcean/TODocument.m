@@ -39,8 +39,8 @@
     glWindowController = nil;
     oceanSurfaceGeneratorSettingsWindowController = nil;
 
-    oceanSurfaceGenerator = [[ TOOceanSurfaceGenerator alloc ] initWithName:[self displayName] parent:self ];
-    scene = [[ TOScene alloc ] initWithName:[self displayName] parent:self ];
+    oceanSurfaceGenerator = [[ TOOceanSurfaceGenerator alloc ] initWithName:[self displayName] parent:nil ];
+    scene = [[ TOScene alloc ] initWithName:[self displayName] parent:nil ];
 
     return self;
 }
@@ -66,7 +66,6 @@
 
 - (void) setup:(NSNotification *)aNot
 {
-    //[ oceanSurfaceGenerator setup ];
     [ scene setup ];
     [ scene setRenderContext:[[glWindowController openglView] renderContext]];
 

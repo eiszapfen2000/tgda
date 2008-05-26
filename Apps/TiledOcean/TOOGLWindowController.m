@@ -21,7 +21,6 @@
     [[ NSNotificationCenter defaultCenter ] postNotificationName:@"TOOpenGLWindowContextReady" object:self ];
     [[ NSNotificationCenter defaultCenter ] postNotificationName:@"TODocumentCanLoadResources" object:self ];
     //[(TODocument *)[ self document ] setup ];
-
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)notification
