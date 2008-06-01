@@ -176,12 +176,7 @@ void quat_q_rotatex(Quaternion * q, Double * degrees)
 void quat_q_rotatey(Quaternion * q, Double * degrees)
 {
     Quaternion * rotatey = quat_alloc_init_with_axis_and_degrees(NP_WORLD_Y_AXIS, degrees);
-    Quaternion * tmp = quat_alloc();
-
-    quat_qq_multiply_q(q,rotatey,tmp);
-
-    q = quat_free(q);
-    q = tmp;
+    quat_qq_multiply_q(q,rotatey,q);
 }
 
 void quat_q_rotatez(Quaternion * q, Double * degrees)

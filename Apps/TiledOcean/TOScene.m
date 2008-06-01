@@ -44,13 +44,18 @@
     [ super dealloc ];
 }
 
-- (void) setRenderContext:(NPOpenGLRenderContext *)newRenderContext
+/*- (void) setRenderContext:(NPOpenGLRenderContext *)newRenderContext
 {
     if ( renderContext != newRenderContext )
     {
         [ renderContext release ];
         renderContext = [ newRenderContext retain ];
     }
+}*/
+
+- (TOCamera *) camera
+{
+    return camera;
 }
 
 - (NPSUXModel *) surface
@@ -75,6 +80,7 @@
 
 - (void) setup
 {
+    NSLog(@"scene setup");
     surface = [[ NPSUXModel alloc ] initWithParent:self ];
     surfaceLod = [[ NPSUXModelLod alloc ] initWithParent:surface ];
     surfaceGroup = [[ NPSUXModelGroup alloc ] initWithParent:surfaceLod ];
@@ -84,12 +90,37 @@
     [ surfaceLod addGroup:surfaceGroup ];
     [ surface addLod:surfaceLod ];
 
-    camera = [[[ NPEngineCore instance ] cameraManager ] currentActiveCamera ];
+
+    triangleVBO = [[ NPVertexBuffer alloc ] init ];
+
+    Float brak[] = {-0.5f,0.0f,0.0f,0.5f,0.0f,0.0f,0.0f,0.5f,0.0f};
+    Int brak2[] = {0,1,2};
+
+    [ triangleVBO setPositions:brak ];
+    [ triangleVBO setIndices:brak2 ];
+    [ triangleVBO setIndexed:YES ];
+    [ triangleVBO setMaxVertex:2 ];
+    [ triangleVBO setMaxIndex:2 ];
+    [ triangleVBO setPrimitiveType:NP_VBO_PRIMITIVES_TRIANGLES ];
+    [ triangleVBO setReady:YES ];
+
+    [ triangleVBO uploadVBOWithUsageHint:NP_VBO_UPLOAD_ONCE_RENDER_OFTEN ];
+
+    testCamera = [[[ NPEngineCore instance ] modelManager ] loadModelFromPath:@"camera.model" ];
+    [ testCamera uploadToGL ];
+
+    if ( testCamera == nil )
+    {
+        NSLog(@"holy shit");
+    }
+
+    //camera = [[[ NPEngineCore instance ] cameraManager ] currentActiveCamera ];
+    camera = [[ TOCamera alloc ] init ];
 
     FVector3 pos;
     FV_X(pos) = 0.0f;
     FV_Y(pos) = 0.0f;
-    FV_Z(pos) = -5.0f;
+    FV_Z(pos) = 5.0f;
 
     [ camera setPosition:&pos ];
 
@@ -104,21 +135,39 @@
 
 - (void) render
 {
-    if( [ renderContext context ] != [NSOpenGLContext currentContext] )
-    {
-        [ renderContext activate ];
-    }
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    /*glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45.0,1.0,0.1,50.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();*/
+
     [ camera render ];
+    //gluLookAt(0.0f,0.0f,12.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
+
+    /*glBegin(GL_TRIANGLES);
+        glColor3f(1.0f,0.0f,0.0f);
+        glVertex3f(-0.5f,0.0f,0.0f);
+        glVertex3f(0.5f,0.0f,0.0f);
+        glVertex3f(0.0f,0.5f,0.0f);
+    glEnd();*/
+
+    if ( [ triangleVBO isReady ] == YES )
+    {
+        //NSLog(@"brak");
+        [ triangleVBO render ];
+    }
 
     if ( [ surfaceVBO isReady ] == YES )
     {
+        NSLog(@"brak");
         [ surfaceVBO render ];
     }
 
-    [ renderContext swap ];
+    [ testCamera render ];
+
+    //[ renderContext swap ];
 }
 
 @end

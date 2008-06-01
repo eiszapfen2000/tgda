@@ -13,6 +13,10 @@
 	Float nearPlane;
 	Float farPlane;
 	Float aspectRatio;
+
+    Double yaw;
+    Double pitch;
+    Vector3 * forward;
 }
 
 - (id) init;
@@ -28,6 +32,13 @@
 - (void) setNearPlane:(Float)newNearPlane;
 - (void) setFarPlane:(Float)newFarPlane;
 - (void) setAspectRatio:(Float)newAspectRatio;
+
+/*- (void) rotateX:(Double)degrees;
+- (void) rotateY:(Double)degrees;
+- (void) rotateZ:(Double)degrees;*/
+- (void) cameraRotateUsingYaw:(Double)yawDegrees andPitch:(Double)pitchDegrees;
+- (void) moveForward;
+- (void) moveBackward;
 
 - (void) updateProjection;
 - (void) updateView;

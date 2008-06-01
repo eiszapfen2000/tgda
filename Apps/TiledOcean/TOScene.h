@@ -6,17 +6,23 @@
 @class NPSUXModelGroup;
 @class NPVertexBuffer;
 @class NPOpenGLRenderContext;
+@class TOCamera;
 
 @interface TOScene : NPObject
 {
     NPOpenGLRenderContext * renderContext;
 
-    NPCamera * camera;
+    //NPCamera * camera;
+    TOCamera * camera;
 
     NPSUXModel * surface;
     NPSUXModelLod * surfaceLod;
     NPSUXModelGroup * surfaceGroup;
     NPVertexBuffer * surfaceVBO;
+
+    NPVertexBuffer * triangleVBO;
+
+    NPSUXModel * testCamera;
 
     BOOL ready;
 }
@@ -26,8 +32,9 @@
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
 
-- (void) setRenderContext:(NPOpenGLRenderContext *)newRenderContext;
+//- (void) setRenderContext:(NPOpenGLRenderContext *)newRenderContext;
 
+- (TOCamera *) camera;
 - (NPSUXModel *) surface;
 - (NPSUXModelLod *) surfaceLod;
 - (NPSUXModelGroup *) surfaceGroup;
