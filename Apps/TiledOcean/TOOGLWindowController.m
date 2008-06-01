@@ -11,7 +11,7 @@
 	return  [ super initWithWindowNibName: @"TODocument" ];
 }
 
-- (NPOpenGLView *) openglView;
+- (TOOpenGLView *) openglView;
 {
     return openglView;
 }

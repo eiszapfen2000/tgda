@@ -26,6 +26,16 @@
 	orientation = quat_alloc_init();
 	position = fv3_alloc_init();
 
+    fov = 45.0f;
+    nearPlane = 0.1f;
+    farPlane = 50.0f;
+    aspectRatio = 1.0f;
+
+    yaw = 0.0;
+    pitch = 0.0;
+    forward = v3_alloc_init();
+    V_Z(*forward) = -1.0;
+
 	return self;
 }
 
@@ -77,6 +87,100 @@
 - (void) setAspectRatio:(Float)newAspectRatio
 {
 	aspectRatio = newAspectRatio;
+}
+
+/*- (void) rotateX:(Double)degrees
+{
+    if ( degrees != 0.0 )
+    {
+        //degrees = -degrees;
+
+        quat_q_rotatex(orientation, &degrees);
+    }
+}
+
+- (void) rotateY:(Double)degrees
+{
+    if ( degrees != 0.0 )
+    {
+        degrees = -degrees;
+
+        quat_q_rotatey(orientation, &degrees);
+    }
+}
+
+- (void) rotateZ:(Double)degrees
+{
+    if ( degrees != 0.0 )
+    {
+        degrees = -degrees;
+        quat_q_rotatez(orientation, &degrees);
+    }
+}*/
+
+- (void) updateYaw:(Double)degrees
+{
+    if ( degrees != 0.0 )
+    {
+        yaw += degrees;
+
+        if ( yaw < -360.0 )
+        {
+            yaw += 360.0;
+        }
+
+        if ( yaw > 360.0 )
+        {
+            yaw -= 360.0;
+        }
+    }
+}
+
+- (void) updatePitch:(Double)degrees
+{
+    if ( degrees != 0.0 )
+    {
+        pitch += degrees;
+
+        if ( pitch < -360.0 )
+        {
+            pitch += 360.0;
+        }
+
+        if ( pitch > 360.0 )
+        {
+            pitch -= 360.0;
+        }
+
+        NSLog(@"%f",pitch);
+    }
+}
+
+- (void) cameraRotateUsingYaw:(Double)yawDegrees andPitch:(Double)pitchDegrees
+{
+    [ self updateYaw:yawDegrees ];
+    [ self updatePitch:pitchDegrees ];
+
+    quat_q_init_with_axis_and_degrees(orientation,NP_WORLD_Y_AXIS,&yaw);
+    quat_q_rotatex(orientation,&pitch);
+}
+
+- (void) moveForward
+{
+    quat_q_forward_vector_v(orientation,forward);
+
+    FV_X(*position) += V_X(*forward);
+    FV_Y(*position) += V_Y(*forward);
+    FV_Z(*position) += V_Z(*forward);
+}
+
+- (void) moveBackward
+{
+    quat_q_forward_vector_v(orientation,forward);
+
+    FV_X(*position) -= V_X(*forward);
+    FV_Y(*position) -= V_Y(*forward);
+    FV_Z(*position) -= V_Z(*forward);
 }
 
 - (void) updateProjection

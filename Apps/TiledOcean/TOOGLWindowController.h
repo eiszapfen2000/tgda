@@ -1,14 +1,16 @@
 #import <AppKit/AppKit.h>
-#import "NPOpenGLView.h"
+//#import "NPOpenGLView.h"
+#import "TOOpenGLView.h"
 
 @interface TOOGLWindowController : NSWindowController
 {
-    NPOpenGLView * openglView;
+    //NPOpenGLView * openglView;
+    TOOpenGLView * openglView;
 }
 
 - init;
 
-- (NPOpenGLView *) openglView;
+- (TOOpenGLView *) openglView;
 - (void) windowDidLoad;
 
 @end
