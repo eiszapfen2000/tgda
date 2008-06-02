@@ -91,11 +91,11 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 - (void) dealloc
 {
     [ cameraManager release ];
-    [ effectManager release ];
+    [ modelManager release ];
     [ textureBindingStateManager release ];
     [ textureManager release ];
     [ imageManager release ];
-    [ modelManager release ];
+    [ effectManager release ];
     [ renderContextManager release ];
     [ transformationStateManager release ];
     [ randomNumberGeneratorManager release ];

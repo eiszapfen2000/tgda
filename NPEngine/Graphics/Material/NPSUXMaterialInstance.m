@@ -36,6 +36,19 @@
     return self;
 }
 
+- (void) dealloc
+{
+	[ materialFileName release ];
+	[ materialInstanceScript release ];
+	[ textureNameToSemantic release ];
+	[ textureNameToTextureFileName release ];
+	[ textureNameToTexture release ];
+	[ textureToSemantic release ];
+	[ effect release ];
+
+	[ super dealloc ];
+}
+
 - (NSString *)materialFileName
 {
     return materialFileName;

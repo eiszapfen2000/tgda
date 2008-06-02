@@ -156,16 +156,16 @@
     if ( [ triangleVBO isReady ] == YES )
     {
         //NSLog(@"brak");
-        [ triangleVBO render ];
+        //[ triangleVBO render ];
     }
 
     if ( [ surfaceVBO isReady ] == YES )
     {
-        NSLog(@"brak");
+        //NSLog(@"brak");
         [ surfaceVBO render ];
     }
 
-    [ testCamera render ];
+    //[ testCamera render ];
 
     //[ renderContext swap ];
 }
