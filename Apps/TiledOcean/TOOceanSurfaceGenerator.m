@@ -244,8 +244,9 @@
     NSLog(@"creating vertex array");
     //NSLog(@"%d %d %d",[fsg resX],[fsg resY], [fsg resX] * [fsg resY] * 3);
     Float * vertexArray = ALLOC_ARRAY(Float, [fsg resX] * [fsg resY] * 3);
-    Float xStep = (Float)V_X(resolution) / (Float)V_X(size);
-    Float yStep = (Float)V_Y(resolution) / (Float)V_Y(size);
+//    Float xStep = (Float)V_X(resolution) / (Float)V_X(size);
+    Float xStep = (Float)V_X(size) / (Float)V_X(resolution);
+    Float yStep = (Float)V_Y(size) / (Float)V_Y(resolution);
 
     Int resY = [ fsg resY ];
     Int resX = [ fsg resX ];
@@ -259,9 +260,9 @@
             index = (resY * i + j) * 3;
             //NSLog(@"%d",index);
             vertexArray[index]   = (Float)i * xStep;
-            vertexArray[index+1] = (Float)j * yStep;
-            vertexArray[index+2] = (Float)heights[(resY * i + j)];
-
+            vertexArray[index+1] = (Float)heights[(resY * i + j)];
+            vertexArray[index+2] = (Float)j * yStep;
+			//NSLog(@"%f %f %f",vertexArray[index],vertexArray[index+1],vertexArray[index+2]);
         }
     }
     NSLog(@"done");
@@ -311,12 +312,12 @@
             if ( heightDifferenceOne < heightDifferenceTwo )
             {
                 indexArray[baseIndex+2] = indicesQuad[2];
-                indexArray[baseIndex+4] = indicesQuad[1];
+                indexArray[baseIndex+5] = indicesQuad[1];
             }
             else
             {
                 indexArray[baseIndex+2] = indicesQuad[3];
-                indexArray[baseIndex+4] = indicesQuad[0];
+                indexArray[baseIndex+5] = indicesQuad[0];
             }
 
             //Second Triangle

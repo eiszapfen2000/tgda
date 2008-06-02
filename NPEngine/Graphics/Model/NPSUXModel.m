@@ -28,6 +28,14 @@
     return self;
 }
 
+- (void) dealloc
+{
+	[ materials release ];
+	[ lods release ];
+
+	[ super dealloc ];
+}
+
 - (BOOL) loadFromFile:(NPFile *)file
 {
     [ self setFileName:[ file fileName ] ];
