@@ -150,20 +150,22 @@
 
 - (void) setupGLState
 {
-    glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     glClearDepth(1.0f);
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_DEPTH_TEST);
 
-    glCullFace(GL_BACK);
-    glEnable(GL_CULL_FACE);
+    //glCullFace(GL_BACK);
+    //glEnable(GL_CULL_FACE);
 
     glEnable(GL_TEXTURE_2D);
 
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
     glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+
+	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 }
 
 - (void) drawRect:(NSRect)aRect
