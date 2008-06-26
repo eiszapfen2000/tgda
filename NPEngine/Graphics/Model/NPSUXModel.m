@@ -138,7 +138,7 @@
         [ lod uploadToGL ];
     }
 
-    NSEnumerator * materialEnumerator = [ materials objectEnumerator ];
+    /*NSEnumerator * materialEnumerator = [ materials objectEnumerator ];
     NPSUXMaterialInstance * materialInstance;
 
     while ( ( materialInstance = [ materialEnumerator nextObject ] ) )
@@ -154,7 +154,7 @@
             [ texture setTextureMaxFilter:NP_TEXTURE_FILTER_LINEAR ];
             [ texture setTextureMinFilter:NP_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR ];
         }
-    }
+    }*/
 }
 
 - (void) render
