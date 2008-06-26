@@ -1,4 +1,5 @@
 #import "NPOpenGLRenderContextManager.h"
+#import "Core/NPEngineCore.h"
 
 @implementation NPOpenGLRenderContextManager
 
@@ -83,6 +84,7 @@
     {
         if ( [ pixelFormat setup ] == NO )
         {
+			NPLOG(@"pixelformat hinig");
             return nil;
         }
     }
@@ -91,6 +93,7 @@
 
     if ( [ renderContext setupWithPixelFormat:pixelFormat ] == NO )
     {
+		NPLOG(@"rendercontext hinig");
         return nil;
     }
 
