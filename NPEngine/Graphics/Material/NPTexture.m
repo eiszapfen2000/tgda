@@ -2,6 +2,8 @@
 #import "NPTextureManager.h"
 #import "Graphics/Image/NPImage.h"
 #import "Graphics/Image/NPImageManager.h"
+#import "Graphics/RenderContext/NPOpenGLRenderContext.h"
+#import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
 #import "Core/NPEngineCore.h"
 
 #import "IL/il.h"
@@ -42,7 +44,10 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     np_texture_filter_state_reset(&textureFilterState);
     np_texture_wrap_state_reset(&textureWrapState);
 
-    image = nil;
+    dataFormat = NP_NONE;
+    pixelFormat = NP_NONE;
+
+    width = height = -1;
 
     return self;
 }
@@ -63,18 +68,21 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 
     [ self generateGLTextureID ];
     
-    image = [[[NPEngineCore instance ] imageManager ] loadImageUsingFileHandle:file ];
-
-    if ( image == nil )
+    NPImage * image = [[ NPImage alloc ] init ];
+    if ( [ image loadFromFile:file ] == NO )
     {
         return NO;
     }
 
-    [ image retain ];
-
-    [ self setupInternalFormat ];
+    dataFormat = [ image dataFormat ];
+    pixelFormat = [ image pixelFormat ];
+    width = [ image width ];
+    height = [ image height ];
 
     ready = YES;
+
+    [ self uploadToGLUsingImage:image ];
+    [ image release ];
 
 	return YES;
 }
@@ -104,168 +112,222 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     glGenTextures(1, &textureID);
 }
 
-- (void) activate
-{
-
-}
-
-- (void) setupInternalFormat
-{
-    NPLOG(([NSString stringWithFormat:@"internal format %d", [image pixelFormat]]));
-
-    switch ( [ image pixelFormat ] )
-    {
-        case NP_PIXELFORMAT_BYTE_R:{internalFormat = 1; break;}
-        case NP_PIXELFORMAT_BYTE_RG:{internalFormat = 2; break;}
-        case NP_PIXELFORMAT_BYTE_RGB:{internalFormat = GL_RGB8; break;}
-        case NP_PIXELFORMAT_BYTE_RGBA:{internalFormat = GL_RGBA8; break;}
-        case NP_PIXELFORMAT_FLOAT16_R:{internalFormat = 1; break;}
-        case NP_PIXELFORMAT_FLOAT16_RG:{internalFormat = 2; break;}
-        case NP_PIXELFORMAT_FLOAT16_RGB:{internalFormat = GL_RGB16F_ARB; break;}
-        case NP_PIXELFORMAT_FLOAT16_RGBA:{internalFormat = GL_RGBA16F_ARB; break;}
-        case NP_PIXELFORMAT_FLOAT32_R:{internalFormat = 1; break;}
-        case NP_PIXELFORMAT_FLOAT32_RG:{internalFormat = 2; break;}
-        case NP_PIXELFORMAT_FLOAT32_RGB:{internalFormat = GL_RGB32F_ARB; break;}
-        case NP_PIXELFORMAT_FLOAT32_RGBA:{internalFormat = GL_RGBA32F_ARB; break;}
-    }
-}
-
-- (void) setTextureFilterState:(NpTextureFilterState)newTextureFilterState
-{
-    textureFilterState = newTextureFilterState;
-}
-
 - (void) setMipMapping:(NPState)newMipMapping
 {
-    if ( textureFilterState.mipmapping != newMipMapping )
-    {
-        textureFilterState.mipmapping = newMipMapping;
-
-        GLint value;
-        switch ( newMipMapping )
-        {
-            case NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE:{value = GL_TRUE; break;}
-            case NP_TEXTURE_FILTER_MIPMAPPING_INACTIVE:{value = GL_FALSE; break;}
-        }
-    }
+    textureFilterState.mipmapping = newMipMapping;
 }
 
 - (void) setTextureMinFilter:(NPState)newTextureMinFilter
 {
-    if ( textureFilterState.minFilter != newTextureMinFilter )
-    {
-        textureFilterState.minFilter = newTextureMinFilter;
+    textureFilterState.minFilter = newTextureMinFilter;
 
-        GLint value;
-        switch ( newTextureMinFilter )
-        {
-            case NP_TEXTURE_FILTER_NEAREST:{value = GL_NEAREST; break;}
-            case NP_TEXTURE_FILTER_LINEAR:{value = GL_LINEAR; break;}
-            case NP_TEXTURE_FILTER_NEAREST_MIPMAP_NEAREST:{value = GL_NEAREST_MIPMAP_NEAREST; break;}
-            case NP_TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST:{value = GL_LINEAR_MIPMAP_NEAREST; break;}
-            case NP_TEXTURE_FILTER_NEAREST_MIPMAP_LINEAR:{value = GL_NEAREST_MIPMAP_LINEAR; break;}
-            case NP_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR:{value = GL_LINEAR_MIPMAP_LINEAR; break;}
-        }
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, value);       
-    }
+    [ self updateGLTextureState ];
 }
 
-- (void) setTextureMaxFilter:(NPState)newTextureMagFilter
+- (void) setTextureMagFilter:(NPState)newTextureMagFilter
 {
-    if ( textureFilterState.magFilter != newTextureMagFilter )
-    {
-        textureFilterState.magFilter = newTextureMagFilter;
+    textureFilterState.magFilter = newTextureMagFilter;
 
-        GLint value;
-        switch ( newTextureMagFilter )
-        {
-            case NP_TEXTURE_FILTER_NEAREST:{value = GL_NEAREST; break;}
-            case NP_TEXTURE_FILTER_LINEAR:{value = GL_LINEAR; break;}
-        }
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, value);        
-    }
+    [ self updateGLTextureState ];
 }
 
 - (void) setTextureAnisotropyFilter:(NPState)newTextureAnisotropyFilter
 {
-    if ( textureFilterState.anisotropy != newTextureAnisotropyFilter )
-    {
-        textureFilterState.anisotropy = newTextureAnisotropyFilter;
+    textureFilterState.anisotropy = newTextureAnisotropyFilter;
 
-        GLfloat value;
-        switch ( newTextureAnisotropyFilter )
-        {
-            case NP_TEXTURE_FILTER_ANISOTROPY_1X:{value = 1.0; break;}
-            case NP_TEXTURE_FILTER_ANISOTROPY_2X:{value = 2.0; break;}
-            case NP_TEXTURE_FILTER_ANISOTROPY_4X:{value = 4.0; break;}
-            case NP_TEXTURE_FILTER_ANISOTROPY_8X:{value = 8.0; break;}
-            case NP_TEXTURE_FILTER_ANISOTROPY_16X:{value = 16.0; break;}
-        }
-
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, value);
-    }
-}
-
-- (void) setTextureWrapState:(NpTextureWrapState)newTextureWrapState
-{
-    textureWrapState = newTextureWrapState;
-}
-
-- (void) setTextureWrap:(NPState)textureCoordinate withValue:(NPState)newTextureWrapValue
-{
-    GLenum textureParameterValue;
-    switch ( textureCoordinate )
-    {
-        case NP_TEXTURE_WRAP_S:{textureParameterValue = GL_TEXTURE_WRAP_S; break;}
-        case NP_TEXTURE_WRAP_T:{textureParameterValue = GL_TEXTURE_WRAP_T; break;}
-    }
-
-    GLint wrapValue;
-    switch (newTextureWrapValue)
-    {
-        case NP_TEXTURE_WRAPPING_CLAMP:{wrapValue = GL_CLAMP; break;}
-        case NP_TEXTURE_WRAPPING_CLAMP_TO_EDGE:{wrapValue = GL_CLAMP_TO_EDGE; break;}
-        case NP_TEXTURE_WRAPPING_CLAMP_TO_BORDER:{wrapValue = GL_CLAMP_TO_BORDER; break;}
-        case NP_TEXTURE_WRAPPING_REPEAT:{wrapValue = GL_REPEAT; break;}
-    }
-
-    glTexParameteri(GL_TEXTURE_2D, textureParameterValue, wrapValue);
+    [ self updateGLTextureState ];
 }
 
 - (void) setTextureWrapS:(NPState)newWrapS
 {
-    if ( textureWrapState.wrapS != newWrapS )
-    {
-        textureWrapState.wrapS = newWrapS;
+    textureWrapState.wrapS = newWrapS;
 
-        [ self setTextureWrap:NP_TEXTURE_WRAP_S withValue:newWrapS ];
-    }
+    [ self updateGLTextureState ];
 }
 
 - (void) setTextureWrapT:(NPState)newWrapT
 {
-    if ( textureWrapState.wrapT != newWrapT )
-    {
-        textureWrapState.wrapT = newWrapT;
+    textureWrapState.wrapT = newWrapT;
 
-        [ self setTextureWrap:NP_TEXTURE_WRAP_T withValue:newWrapT ];
+    [ self updateGLTextureState ];
+}
+
+- (void) computeGLDataType:(NPState *)glDataType pixelFormat:(NPState *)glPixelFormat
+{
+    switch ( dataFormat )
+    {
+        case ( NP_TEXTURE_DATAFORMAT_BYTE ):
+        {
+            *glDataType = GL_UNSIGNED_BYTE;
+            switch (pixelFormat)
+            {
+                case ( NP_TEXTURE_PIXELFORMAT_R )    : { *glPixelFormat = GL_LUMINANCE; }
+                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { *glPixelFormat = GL_LUMINANCE_ALPHA; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { *glPixelFormat = GL_RGB; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { *glPixelFormat = GL_RGBA; }
+            }
+        }
+        case ( NP_TEXTURE_DATAFORMAT_HALF ):
+        {
+            *glDataType = GL_HALF_FLOAT_ARB;
+            switch (pixelFormat)
+            {
+                case ( NP_TEXTURE_PIXELFORMAT_R )    : { *glPixelFormat = GL_LUMINANCE; }
+                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { *glPixelFormat = GL_LUMINANCE_ALPHA; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { *glPixelFormat = GL_RGB; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { *glPixelFormat = GL_RGBA; }
+            }
+        }
+        case ( NP_TEXTURE_DATAFORMAT_FLOAT ):
+        {
+            *glDataType = GL_FLOAT;
+            switch (pixelFormat)
+            {
+                case ( NP_TEXTURE_PIXELFORMAT_R )    : { *glPixelFormat = GL_LUMINANCE; }
+                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { *glPixelFormat = GL_LUMINANCE_ALPHA; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { *glPixelFormat = GL_RGB; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { *glPixelFormat = GL_RGBA; }
+            }
+        }
     }
 }
 
-- (void) uploadToGL
+- (Int) computeGLInternalTextureFormatUsingDataFormat:(NPState)glDataFormat pixelFormat:(NPState)glPixelFormat
 {
+    Int textureFormat = -1;
+
+    switch ( glDataFormat )
+    {
+        case ( NP_TEXTURE_DATAFORMAT_BYTE ):
+        {
+            switch ( glPixelFormat )
+            {
+                case ( NP_TEXTURE_PIXELFORMAT_R )    : { textureFormat = GL_LUMINANCE; }
+                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { textureFormat = GL_LUMINANCE_ALPHA; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { textureFormat = GL_RGB; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { textureFormat = GL_RGBA; }
+            }
+        }
+        case ( NP_TEXTURE_DATAFORMAT_HALF ):
+        {
+            switch ( glPixelFormat )
+            {
+                case ( NP_TEXTURE_PIXELFORMAT_R )    : { textureFormat = GL_LUMINANCE16F_ARB; }
+                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { textureFormat = GL_LUMINANCE_ALPHA16F_ARB; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { textureFormat = GL_RGB16F_ARB; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { textureFormat = GL_RGBA16F_ARB; }
+            }
+        }
+        case ( NP_TEXTURE_DATAFORMAT_FLOAT ):
+        {
+            switch ( glPixelFormat )
+            {
+                case ( NP_TEXTURE_PIXELFORMAT_R )    : { textureFormat = GL_LUMINANCE32F_ARB; }
+                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { textureFormat = GL_LUMINANCE_ALPHA32F_ARB; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { textureFormat = GL_RGB32F_ARB; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { textureFormat = GL_RGBA32F_ARB; }
+            }
+        }
+    }
+
+    return textureFormat;
+}
+
+- (void) uploadToGLUsingImage:(NPImage *)image
+{
+    Int glInternalFormat;
+    NPState glDataType = NP_NONE;
+    NPState glPixelFormat = NP_NONE;
+
+    [ self computeGLDataType:&glDataType pixelFormat:&glPixelFormat];
+    glInternalFormat = [ self computeGLInternalTextureFormatUsingDataFormat:(NPState)dataFormat pixelFormat:(NPState)pixelFormat ];
+
     glBindTexture(GL_TEXTURE_2D, textureID);
 
     if ( textureFilterState.mipmapping == NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE )
     {
-        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA8, [image width], [image height], GL_RGBA, GL_UNSIGNED_BYTE, [[image imageData] bytes]);
+        if ( glewIsSupported("GL_SGIS_generate_mipmap") )
+        {
+            glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, 1);
+            glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, [image width], [image height], 0, glPixelFormat, glDataType, [[image imageData] bytes]);
+            glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, 0);
+        }
+        else
+        {
+            gluBuild2DMipmaps(GL_TEXTURE_2D, glInternalFormat, [image width], [image height], glPixelFormat, glDataType, [[image imageData] bytes]);
+        }
     }
     else
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, [image width], [image height], 0, GL_RGBA, GL_UNSIGNED_BYTE, [[image imageData] bytes]);
+        glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, [image width], [image height], 0, glPixelFormat, glDataType, [[image imageData] bytes]);
     }
+
+    [ self updateGLTextureState ];
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+- (void)  updateGLTextureFilterState
+{
+    NPState value = NP_NONE;
+    switch ( textureFilterState.magFilter )
+    {
+        case NP_TEXTURE_FILTER_NEAREST:{value = GL_NEAREST; break;}
+        case NP_TEXTURE_FILTER_LINEAR:{value = GL_LINEAR; break;}
+    }
+
+    if ( value != NP_NONE )
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, value);
+
+    value = NP_NONE;
+    switch ( textureFilterState.minFilter )
+    {
+        case NP_TEXTURE_FILTER_NEAREST:{value = GL_NEAREST; break;}
+        case NP_TEXTURE_FILTER_LINEAR:{value = GL_LINEAR; break;}
+        case NP_TEXTURE_FILTER_NEAREST_MIPMAP_NEAREST:{value = GL_NEAREST_MIPMAP_NEAREST; break;}
+        case NP_TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST:{value = GL_LINEAR_MIPMAP_NEAREST; break;}
+        case NP_TEXTURE_FILTER_NEAREST_MIPMAP_LINEAR:{value = GL_NEAREST_MIPMAP_LINEAR; break;}
+        case NP_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR:{value = GL_LINEAR_MIPMAP_LINEAR; break;}
+    }
+
+    if ( value != NP_NONE )
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, value);
+}
+
+- (void) updateGLTextureAnisotropy
+{
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, textureFilterState.anisotropy);
+}
+
+- (void) updateGLTextureWrapState
+{
+    NPState wrapS = NP_NONE;
+    switch (textureWrapState.wrapS)
+    {
+        case NP_TEXTURE_WRAPPING_CLAMP:{wrapS = GL_CLAMP; break;}
+        case NP_TEXTURE_WRAPPING_CLAMP_TO_EDGE:{wrapS = GL_CLAMP_TO_EDGE; break;}
+        case NP_TEXTURE_WRAPPING_CLAMP_TO_BORDER:{wrapS = GL_CLAMP_TO_BORDER; break;}
+        case NP_TEXTURE_WRAPPING_REPEAT:{wrapS = GL_REPEAT; break;}
+    }
+
+    NPState wrapT = NP_NONE;
+    switch (textureWrapState.wrapS)
+    {
+        case NP_TEXTURE_WRAPPING_CLAMP:{wrapT = GL_CLAMP; break;}
+        case NP_TEXTURE_WRAPPING_CLAMP_TO_EDGE:{wrapT = GL_CLAMP_TO_EDGE; break;}
+        case NP_TEXTURE_WRAPPING_CLAMP_TO_BORDER:{wrapT = GL_CLAMP_TO_BORDER; break;}
+        case NP_TEXTURE_WRAPPING_REPEAT:{wrapT = GL_REPEAT; break;}
+    }
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
+}
+
+- (void) updateGLTextureState
+{
+    [ self updateGLTextureFilterState ];
+    [ self updateGLTextureAnisotropy ];
+    [ self updateGLTextureWrapState ];
 }
 
 @end

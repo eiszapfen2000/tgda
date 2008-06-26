@@ -93,15 +93,19 @@
 {
     if ( glewInitialised == NO )
     {
-#define glewGetContext() (&glewContext)
+//#define glewGetContext() (&glewContext)
         GLenum err = glewInit();
-#undef  glewGetContext
 
         if (GLEW_OK != err)
         {
             NSLog(@"glewInit failed");
         }
     }
+}
+
+- (GLEWContext *)glewContext
+{
+    return &glewContext;
 }
 
 - (void) activate

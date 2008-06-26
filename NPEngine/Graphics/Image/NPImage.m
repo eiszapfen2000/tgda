@@ -20,7 +20,8 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    pixelFormat = NP_PIXELFORMAT_NONE;
+    dataFormat = NP_NONE;
+    pixelFormat = NP_NONE;
     width = height = 0;
 
     imageData = nil;
@@ -45,7 +46,12 @@
     return height;
 }
 
-- (NPPixelFormat) pixelFormat
+- (NPState) dataFormat
+{
+    return dataFormat;
+}
+
+- (NPState) pixelFormat
 {
     return pixelFormat;
 }
@@ -102,21 +108,22 @@
 	{
 	    case IL_UNSIGNED_BYTE:
 		{
+            dataFormat = NP_IMAGE_DATAFORMAT_BYTE;
 			switch (bytesperpixel)
 			{
 			    case 1:
                 {
-                    pixelFormat = NP_PIXELFORMAT_BYTE_R;
+                    pixelFormat = NP_IMAGE_PIXELFORMAT_R;
                     break;
                 }
 			    case 2:
                 {
-                    pixelFormat = NP_PIXELFORMAT_BYTE_RG;
+                    pixelFormat = NP_IMAGE_PIXELFORMAT_RG;
                     break;
                 }
 			    case 4:
                 {
-                    pixelFormat = NP_PIXELFORMAT_BYTE_RGBA;
+                    pixelFormat = NP_IMAGE_PIXELFORMAT_RGBA;
                     break;
                 }
 			    default:
@@ -131,26 +138,27 @@
 		}
 	    case IL_FLOAT:
 		{
+            dataFormat = NP_IMAGE_DATAFORMAT_FLOAT;
 			switch (bytesperpixel)
 			{
 			    case 1:
                 {
-                    pixelFormat = NP_PIXELFORMAT_FLOAT32_R;
+                    pixelFormat = NP_IMAGE_PIXELFORMAT_R;
                     break;
                 }
 			    case 2:
                 {
-                    pixelFormat = NP_PIXELFORMAT_FLOAT32_RG;
+                    pixelFormat = NP_IMAGE_PIXELFORMAT_RG;
                     break;
                 }
 			    case 3:
                 {
-                    pixelFormat = NP_PIXELFORMAT_FLOAT32_RGB;
+                    pixelFormat = NP_IMAGE_PIXELFORMAT_RGB;
                     break;
                 }
 			    case 4:
                 {
-                    pixelFormat = NP_PIXELFORMAT_FLOAT32_RGBA;
+                    pixelFormat = NP_IMAGE_PIXELFORMAT_RGBA;
                     break;
                 }
 			    default:
@@ -197,7 +205,8 @@
 {
     [ super reset ];
 
-    pixelFormat = NP_PIXELFORMAT_NONE;
+    dataFormat = NP_NONE;
+    pixelFormat = NP_NONE;
     width = height = 0;
 
     [ imageData release ];

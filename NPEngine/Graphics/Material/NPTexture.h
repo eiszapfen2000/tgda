@@ -6,6 +6,15 @@
 @class NPFile;
 @class NPImage;
 
+#define NP_TEXTURE_DATAFORMAT_BYTE                  0
+#define NP_TEXTURE_DATAFORMAT_HALF                  1
+#define NP_TEXTURE_DATAFORMAT_FLOAT                 2
+
+#define NP_TEXTURE_PIXELFORMAT_R                    0
+#define NP_TEXTURE_PIXELFORMAT_RG                   1
+#define NP_TEXTURE_PIXELFORMAT_RGB                  2
+#define NP_TEXTURE_PIXELFORMAT_RGBA                 3
+
 #define NP_TEXTURE_FILTER_MIPMAPPING_INACTIVE       0
 #define NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE         1
 
@@ -24,18 +33,18 @@
 #define NP_TEXTURE_WRAPPING_CLAMP_TO_BORDER         2
 #define NP_TEXTURE_WRAPPING_REPEAT                  3
 
-#define NP_TEXTURE_FILTER_ANISOTROPY_1X             0
-#define NP_TEXTURE_FILTER_ANISOTROPY_2X             1
-#define NP_TEXTURE_FILTER_ANISOTROPY_4X             2
-#define NP_TEXTURE_FILTER_ANISOTROPY_8X             3
-#define NP_TEXTURE_FILTER_ANISOTROPY_16X            4
+#define NP_TEXTURE_FILTER_ANISOTROPY_1X             1
+#define NP_TEXTURE_FILTER_ANISOTROPY_2X             2
+#define NP_TEXTURE_FILTER_ANISOTROPY_4X             4
+#define NP_TEXTURE_FILTER_ANISOTROPY_8X             8
+#define NP_TEXTURE_FILTER_ANISOTROPY_16X            16
 
 typedef struct NpTextureFilterState
 {
     NPState mipmapping;
     NPState minFilter;
     NPState magFilter;
-    Float anisotropy;
+    Int anisotropy;
 }
 NpTextureFilterState;
 
@@ -50,22 +59,18 @@ NpTextureWrapState;
 
 void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState);
 
-typedef struct
-{
-    GLint internalFormat;
-    GLenum pixelDataFormat;
-    GLenum pixelDataType;
-}
-NpTextureFormat;
-
 @interface NPTexture : NPResource < NPPResource >
 {
     NpTextureFilterState textureFilterState;
     NpTextureWrapState textureWrapState;
-    NpTextureFormat textureFormat;
+
+    NPState dataFormat;
+    NPState pixelFormat;
+
+    Int width;
+    Int height;
+
     UInt textureID;
-    Int internalFormat;
-    NPImage * image;
 }
 
 - (id) init;
@@ -79,20 +84,16 @@ NpTextureFormat;
 
 - (UInt) textureID;
 - (void) generateGLTextureID;
-- (void) activate;
 
-- (void) setupInternalFormat;
-
-- (void) setTextureFilterState:(NpTextureFilterState)newTextureFilterState;
 - (void) setMipMapping:(NPState)newMipMapping;
 - (void) setTextureMinFilter:(NPState)newTextureMinFilter;
-- (void) setTextureMaxFilter:(NPState)newTextureMagFilter;
+- (void) setTextureMagFilter:(NPState)newTextureMagFilter;
 - (void) setTextureAnisotropyFilter:(NPState)newTextureAnisotropyFilter;
-- (void) setTextureWrapState:(NpTextureWrapState)newTextureWrapState;
 - (void) setTextureWrapS:(NPState)newWrapS;
 - (void) setTextureWrapT:(NPState)newWrapT;
 
-- (void) uploadToGL;
+- (void) uploadToGLUsingImage:(NPImage *)image;
+- (void) updateGLTextureState;
 
 @end
 

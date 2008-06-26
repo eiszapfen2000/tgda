@@ -27,6 +27,7 @@
 - (NSView *)view;
 
 - (void) setupGLEW;
+- (GLEWContext *)glewContext;
 
 - (void) activate;
 - (void) deactivate;
