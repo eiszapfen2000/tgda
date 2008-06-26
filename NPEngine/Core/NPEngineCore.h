@@ -64,5 +64,3 @@
 #define NPLOG(_logmessage)  [[[ NPEngineCore instance ] logger ] write:(_logmessage)]
 #define NPLOG_WARNING(_warning)  [[[ NPEngineCore instance ] logger ] writeWarning:(_warning)]
 #define NPLOG_ERROR(_error)  [[[ NPEngineCore instance ] logger ] writeError:(_error)]
-
-#define glewGetContext() [[[[ NPEngineCore instance ] renderContextManager ] currentlyActiveRenderContext ] glewContext ]

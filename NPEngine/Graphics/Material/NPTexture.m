@@ -246,13 +246,13 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 
     if ( textureFilterState.mipmapping == NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE )
     {
-        if ( glewIsSupported("GL_SGIS_generate_mipmap") )
+        /*if ( glewIsSupported("GL_SGIS_generate_mipmap") )
         {
             glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, 1);
             glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, [image width], [image height], 0, glPixelFormat, glDataType, [[image imageData] bytes]);
             glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, 0);
         }
-        else
+        else*/
         {
             gluBuild2DMipmaps(GL_TEXTURE_2D, glInternalFormat, [image width], [image height], glPixelFormat, glDataType, [[image imageData] bytes]);
         }
