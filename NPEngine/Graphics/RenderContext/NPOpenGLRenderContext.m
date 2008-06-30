@@ -95,7 +95,7 @@
     {
 #define glewGetContext() (&glewContext)
         GLenum err = glewInit();
-#undef glewGetContext
+
         if (GLEW_OK != err)
         {
             NSLog(@"glewInit failed");
@@ -154,4 +154,24 @@
     }
 }
 
+- (BOOL) isExtensionSupported:(NSString *)extensionString
+{
+    const char * extensionCString = [ extensionString cStringUsingEncoding:NSUTF8StringEncoding ];
+
+    BOOL tmp = glewIsSupported(extensionCString);
+
+    if ( tmp == YES )
+    {
+        NPLOG(([NSString stringWithFormat:@"%@: extension %@ supported",name,extensionString]));
+    }
+    else
+    {
+        NPLOG(([NSString stringWithFormat:@"%@: extension %@ not supported",name,extensionString]));
+    }
+
+    return tmp;
+}
+
 @end
+
+#undef glewGetContext

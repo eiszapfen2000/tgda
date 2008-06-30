@@ -79,6 +79,14 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     width = [ image width ];
     height = [ image height ];
 
+    textureFilterState.mipmapping = NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE;
+    textureFilterState.minFilter = NP_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR;
+    textureFilterState.magFilter = NP_TEXTURE_FILTER_LINEAR;
+    textureFilterState.anisotropy = [[[ NPEngineCore instance ] textureManager ] maxAnisotropy ];
+
+    textureWrapState.wrapS = NP_TEXTURE_WRAPPING_REPEAT;
+    textureWrapState.wrapT = NP_TEXTURE_WRAPPING_REPEAT;
+
     ready = YES;
 
     [ self uploadToGLUsingImage:image ];
@@ -161,33 +169,36 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
             *glDataType = GL_UNSIGNED_BYTE;
             switch (pixelFormat)
             {
-                case ( NP_TEXTURE_PIXELFORMAT_R )    : { *glPixelFormat = GL_LUMINANCE; }
-                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { *glPixelFormat = GL_LUMINANCE_ALPHA; }
-                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { *glPixelFormat = GL_RGB; }
-                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { *glPixelFormat = GL_RGBA; }
+                case ( NP_TEXTURE_PIXELFORMAT_R )    : { *glPixelFormat = GL_LUMINANCE; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { *glPixelFormat = GL_LUMINANCE_ALPHA; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { *glPixelFormat = GL_RGB; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { *glPixelFormat = GL_RGBA; break; }
             }
+            break;
         }
         case ( NP_TEXTURE_DATAFORMAT_HALF ):
         {
             *glDataType = GL_HALF_FLOAT_ARB;
             switch (pixelFormat)
             {
-                case ( NP_TEXTURE_PIXELFORMAT_R )    : { *glPixelFormat = GL_LUMINANCE; }
-                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { *glPixelFormat = GL_LUMINANCE_ALPHA; }
-                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { *glPixelFormat = GL_RGB; }
-                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { *glPixelFormat = GL_RGBA; }
+                case ( NP_TEXTURE_PIXELFORMAT_R )    : { *glPixelFormat = GL_LUMINANCE; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { *glPixelFormat = GL_LUMINANCE_ALPHA; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { *glPixelFormat = GL_RGB; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { *glPixelFormat = GL_RGBA; break; }
             }
+            break;
         }
         case ( NP_TEXTURE_DATAFORMAT_FLOAT ):
         {
             *glDataType = GL_FLOAT;
             switch (pixelFormat)
             {
-                case ( NP_TEXTURE_PIXELFORMAT_R )    : { *glPixelFormat = GL_LUMINANCE; }
-                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { *glPixelFormat = GL_LUMINANCE_ALPHA; }
-                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { *glPixelFormat = GL_RGB; }
-                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { *glPixelFormat = GL_RGBA; }
+                case ( NP_TEXTURE_PIXELFORMAT_R )    : { *glPixelFormat = GL_LUMINANCE; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { *glPixelFormat = GL_LUMINANCE_ALPHA; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { *glPixelFormat = GL_RGB; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { *glPixelFormat = GL_RGBA; break; }
             }
+            break;
         }
     }
 }
@@ -246,20 +257,20 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 
     if ( textureFilterState.mipmapping == NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE )
     {
-        /*if ( glewIsSupported("GL_SGIS_generate_mipmap") )
+        if ( [[[[ NPEngineCore instance ] renderContextManager ] currentlyActiveRenderContext ] isExtensionSupported:@"GL_SGIS_generate_mipmap" ] == YES )
         {
             glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, 1);
-            glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, [image width], [image height], 0, glPixelFormat, glDataType, [[image imageData] bytes]);
+            glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, glPixelFormat, glDataType, [[image imageData] bytes]);
             glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, 0);
         }
-        else*/
+        else
         {
             gluBuild2DMipmaps(GL_TEXTURE_2D, glInternalFormat, [image width], [image height], glPixelFormat, glDataType, [[image imageData] bytes]);
         }
     }
     else
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, [image width], [image height], 0, glPixelFormat, glDataType, [[image imageData] bytes]);
+        glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, glPixelFormat, glDataType, [[image imageData] bytes]);
     }
 
     [ self updateGLTextureState ];
