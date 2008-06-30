@@ -125,6 +125,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     [ pathManager setup ];
     [ imageManager setup ];
     [ transformationStateManager setup ];
+    [ textureManager setup ];
     [ textureBindingStateManager setup ];
     [ effectManager setup ];
     [ cameraManager setup ];

@@ -27,7 +27,6 @@
 - (NSView *)view;
 
 - (void) setupGLEW;
-- (GLEWContext *)glewContext;
 
 - (void) activate;
 - (void) deactivate;
@@ -35,5 +34,7 @@
 - (BOOL) isReady;
 - (void) update;
 - (void) swap;
+
+- (BOOL) isExtensionSupported:(NSString *)extensionString;
 
 @end

@@ -6,6 +6,7 @@
 @interface NPTextureManager : NPObject
 {
     NSMutableDictionary * textures;
+    Int maxAnisotropy;
 }
 
 - (id) init;
@@ -14,6 +15,8 @@
 - (void) dealloc;
 
 - (void) setup;
+
+- (Int) maxAnisotropy;
 
 - (id) loadTextureFromPath:(NSString *)path;
 - (id) loadTextureFromAbsolutePath:(NSString *)path;

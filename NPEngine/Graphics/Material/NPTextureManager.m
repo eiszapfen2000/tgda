@@ -3,6 +3,8 @@
 #import "NPTexture.h"
 #import "Core/File/NPFile.h"
 #import "Core/File/NPPathManager.h"
+#import "Graphics/RenderContext/NPOpenGLRenderContext.h"
+#import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
 #import "Core/NPEngineCore.h"
 
 @implementation NPTextureManager
@@ -22,6 +24,7 @@
     self = [ super initWithName:newName parent:newParent ];
 
     textures = [ [ NSMutableDictionary alloc ] init ];
+    maxAnisotropy = 1;
 
     return self;
 }
@@ -35,7 +38,15 @@
 
 - (void) setup
 {
+    if ( [[[[ NPEngineCore instance ] renderContextManager ] currentlyActiveRenderContext ] isExtensionSupported:@"GL_EXT_texture_filter_anisotropic" ] == YES )
+    {
+        glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&maxAnisotropy);
+    }
+}
 
+- (Int) maxAnisotropy
+{
+    return maxAnisotropy;
 }
 
 - (id) loadTextureFromPath:(NSString *)path
