@@ -158,30 +158,33 @@
         {
             switch(format)
             {
-	            case NP_RENDERBUFFER_DEPTH16:{internalFormat = GL_DEPTH_COMPONENT16;}
-	            case NP_RENDERBUFFER_DEPTH24:{internalFormat = GL_DEPTH_COMPONENT24;}
-	            case NP_RENDERBUFFER_DEPTH32:{internalFormat = GL_DEPTH_COMPONENT32;}
+	            case NP_RENDERBUFFER_DEPTH16:{internalFormat = GL_DEPTH_COMPONENT16; break;}
+	            case NP_RENDERBUFFER_DEPTH24:{internalFormat = GL_DEPTH_COMPONENT24; break;}
+	            case NP_RENDERBUFFER_DEPTH32:{internalFormat = GL_DEPTH_COMPONENT32; break;}
             }
         }
+        break;
 
         case NP_RENDERBUFFER_STENCIL_TYPE:
         {
             switch(format)
             {
-	            case NP_RENDERBUFFER_STENCIL1:{internalFormat = GL_STENCIL_INDEX1_EXT;}
-	            case NP_RENDERBUFFER_STENCIL4:{internalFormat = GL_STENCIL_INDEX4_EXT;}
-	            case NP_RENDERBUFFER_STENCIL8:{internalFormat = GL_STENCIL_INDEX8_EXT;}
-	            case NP_RENDERBUFFER_STENCIL16:{internalFormat = GL_STENCIL_INDEX16_EXT;}
+	            case NP_RENDERBUFFER_STENCIL1:{internalFormat = GL_STENCIL_INDEX1_EXT; break;}
+	            case NP_RENDERBUFFER_STENCIL4:{internalFormat = GL_STENCIL_INDEX4_EXT; break;}
+	            case NP_RENDERBUFFER_STENCIL8:{internalFormat = GL_STENCIL_INDEX8_EXT; break;}
+	            case NP_RENDERBUFFER_STENCIL16:{internalFormat = GL_STENCIL_INDEX16_EXT; break;}
             }
         }
+        break;
 
         case NP_RENDERBUFFER_DEPTH_STENCIL_TYPE:
         {
             switch(format)
             {
-	            case NP_RENDERBUFFER_DEPTH24_STENCIL8:{internalFormat = GL_DEPTH24_STENCIL8_EXT;}
+	            case NP_RENDERBUFFER_DEPTH24_STENCIL8:{internalFormat = GL_DEPTH24_STENCIL8_EXT; break;}
             }
         }
+        break;
     }
 
     return internalFormat;
@@ -205,8 +208,8 @@
     GLenum attachment;
     switch ( type )
     {
-       case NP_RENDERBUFFER_DEPTH_TYPE:{attachment = GL_DEPTH_ATTACHMENT_EXT;}
-       case NP_RENDERBUFFER_STENCIL_TYPE:{attachment = GL_STENCIL_ATTACHMENT_EXT;}
+       case NP_RENDERBUFFER_DEPTH_TYPE:{attachment = GL_DEPTH_ATTACHMENT_EXT; break;}
+       case NP_RENDERBUFFER_STENCIL_TYPE:{attachment = GL_STENCIL_ATTACHMENT_EXT; break;}
     }
 
     return attachment;
@@ -236,9 +239,9 @@
     }    
 }
 
-- (void) unbindFromRenderTargetConfiguration:(NPRenderTargetConfiguration *)newConfiguration
+- (void) unbindFromRenderTargetConfiguration
 {
-    if ( configuration == newConfiguration )
+    if ( configuration != nil )
     {
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ configuration fboID ]);
 

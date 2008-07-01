@@ -25,7 +25,7 @@ ADDITIONAL_CPPFLAGS += \
     $(BASIC_DEFINES)
 
 BASIC_CFLAGS += \
-    -Wall -std=gnu99 -O2
+    -Wall -std=gnu99
 BASIC_OBJCFLAGS += \
     $(BASIC_CFLAGS) \
     -Wno-import
