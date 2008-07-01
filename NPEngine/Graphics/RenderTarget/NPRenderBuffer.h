@@ -53,6 +53,6 @@
 - (void) uploadToGL;
 
 - (void) bindToRenderTargetConfiguration:(NPRenderTargetConfiguration *)newConfiguration;
-- (void) unbindFromRenderTargetConfiguration:(NPRenderTargetConfiguration *)newConfiguration;
+- (void) unbindFromRenderTargetConfiguration;
 
 @end

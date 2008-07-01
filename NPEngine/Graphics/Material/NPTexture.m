@@ -176,6 +176,7 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
             }
             break;
         }
+
         case ( NP_TEXTURE_DATAFORMAT_HALF ):
         {
             *glDataType = GL_HALF_FLOAT_ARB;
@@ -213,31 +214,34 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
         {
             switch ( glPixelFormat )
             {
-                case ( NP_TEXTURE_PIXELFORMAT_R )    : { textureFormat = GL_LUMINANCE; }
-                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { textureFormat = GL_LUMINANCE_ALPHA; }
-                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { textureFormat = GL_RGB; }
-                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { textureFormat = GL_RGBA; }
+                case ( NP_TEXTURE_PIXELFORMAT_R )    : { textureFormat = GL_LUMINANCE; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { textureFormat = GL_LUMINANCE_ALPHA; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { textureFormat = GL_RGB; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { textureFormat = GL_RGBA; break; }
             }
+            break;
         }
         case ( NP_TEXTURE_DATAFORMAT_HALF ):
         {
             switch ( glPixelFormat )
             {
-                case ( NP_TEXTURE_PIXELFORMAT_R )    : { textureFormat = GL_LUMINANCE16F_ARB; }
-                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { textureFormat = GL_LUMINANCE_ALPHA16F_ARB; }
-                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { textureFormat = GL_RGB16F_ARB; }
-                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { textureFormat = GL_RGBA16F_ARB; }
+                case ( NP_TEXTURE_PIXELFORMAT_R )    : { textureFormat = GL_LUMINANCE16F_ARB; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { textureFormat = GL_LUMINANCE_ALPHA16F_ARB; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { textureFormat = GL_RGB16F_ARB; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { textureFormat = GL_RGBA16F_ARB; break; }
             }
+            break;
         }
         case ( NP_TEXTURE_DATAFORMAT_FLOAT ):
         {
             switch ( glPixelFormat )
             {
-                case ( NP_TEXTURE_PIXELFORMAT_R )    : { textureFormat = GL_LUMINANCE32F_ARB; }
-                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { textureFormat = GL_LUMINANCE_ALPHA32F_ARB; }
-                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { textureFormat = GL_RGB32F_ARB; }
-                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { textureFormat = GL_RGBA32F_ARB; }
+                case ( NP_TEXTURE_PIXELFORMAT_R )    : { textureFormat = GL_LUMINANCE32F_ARB; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RG )   : { textureFormat = GL_LUMINANCE_ALPHA32F_ARB; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGB )  : { textureFormat = GL_RGB32F_ARB; break; }
+                case ( NP_TEXTURE_PIXELFORMAT_RGBA ) : { textureFormat = GL_RGBA32F_ARB; break; }
             }
+            break;
         }
     }
 
@@ -265,7 +269,7 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
         }
         else
         {
-            gluBuild2DMipmaps(GL_TEXTURE_2D, glInternalFormat, [image width], [image height], glPixelFormat, glDataType, [[image imageData] bytes]);
+            gluBuild2DMipmaps(GL_TEXTURE_2D, glInternalFormat, width, height, glPixelFormat, glDataType, [[image imageData] bytes]);
         }
     }
     else

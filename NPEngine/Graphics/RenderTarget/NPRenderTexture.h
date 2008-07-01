@@ -6,6 +6,8 @@
 {
 	UInt renderTextureID;
 
+    NPTexture * texture;
+
     Int width;
     Int height;
 
@@ -38,5 +40,6 @@
 - (void) uploadToGL;
 
 - (void) bindToRenderTargetConfiguration:(NPRenderTargetConfiguration *)newConfiguration;
+- (void) unbindFromRenderTargetConfiguration;
 
 @end
