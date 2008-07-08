@@ -5,10 +5,12 @@ LIBRARY_NAME=libNPEngineGraphicsRenderTarget
 
 libNPEngineGraphicsRenderTarget_HEADER_FILES = \
 NPRenderBuffer.h \
+NPRenderTexture.h \
 NPRenderTargetConfiguration.h
 
 libNPEngineGraphicsRenderTarget_OBJC_FILES = \
 NPRenderBuffer.m \
+NPRenderTexture.m \
 NPRenderTargetConfiguration.m
 
 include $(TGDA_DIR)/GNUmakefile.flags
