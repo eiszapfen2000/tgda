@@ -25,13 +25,16 @@
 - (BOOL) ready;
 
 - (void) generateGLFBOID;
-
 - (UInt) fboID;
 
 - (void) setDepthRenderTarget:(NPRenderBuffer *)newDepthRenderTarget;
 - (void) setStencilRenderTarget:(NPRenderBuffer *)newStencilRenderTarget;
 - (void) setDepthStencilRenderTarget:(NPRenderBuffer *)newDepthStencilRenderTarget;
-- (void) setColorRenderTarget:(NPRenderTexture *)newColorRenderTarget atIndex:(Int)index;
-- (void) addColorRenderTarget:(NPRenderTexture *)newColorRenderTarget;
+- (void) setColorRenderTarget:(NPRenderTexture *)newColorRenderTarget atIndex:(Int)colorBufferIndex;
+
+- (BOOL) checkFrameBufferCompleteness;
+
+- (void) activate;
+- (void) deactivate;
 
 @end

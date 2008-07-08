@@ -2,11 +2,6 @@
 #import "NPRenderTargetConfiguration.h"
 #import "Graphics/npgl.h"
 
-
-
-
-
-
 @implementation NPRenderBuffer
 
 + (id) renderBufferWithName:(NSString *)name type:(NPState)type format:(NPState)format width:(Int)width height:(Int)height
