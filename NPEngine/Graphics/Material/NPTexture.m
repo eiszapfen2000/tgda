@@ -120,6 +120,38 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     glGenTextures(1, &textureID);
 }
 
+- (void) setDataFormat:(NPState)newDataFormat
+{
+    if ( dataFormat != newDataFormat )
+    {
+        dataFormat = newDataFormat;
+    }
+}
+
+- (void) setPixelFormat:(NPState)newPixelFormat
+{
+    if ( pixelFormat != newPixelFormat )
+    {
+        pixelFormat = newPixelFormat;
+    }
+}
+
+- (void) setWidth:(Int)newWidth
+{
+    if ( width != newWidth )
+    {
+        width = newWidth;
+    }
+}
+
+- (void) setHeight:(Int)newHeight
+{
+    if ( height != newHeight )
+    {
+        height = newHeight;
+    }
+}
+
 - (void) setMipMapping:(NPState)newMipMapping
 {
     textureFilterState.mipmapping = newMipMapping;
@@ -246,6 +278,16 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     }
 
     return textureFormat;
+}
+
+- (void) uploadToGLWithoutImageData
+{
+    NSData * emptyData = [[ NSData alloc ] init ];
+    NPImage * dummyImage = [[ NPImage alloc ] init ];
+    [ dummyImage setImageData:emptyData ];
+
+    [ self uploadToGLUsingImage:dummyImage ];
+    [ dummyImage release ];
 }
 
 - (void) uploadToGLUsingImage:(NPImage *)image

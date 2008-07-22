@@ -1,6 +1,7 @@
 #import "NPRenderBuffer.h"
 #import "NPRenderTargetConfiguration.h"
 #import "Graphics/npgl.h"
+#import "Core/NPEngineCore.h"
 
 @implementation NPRenderBuffer
 
@@ -11,7 +12,6 @@
     [ renderBuffer setFormat:format ];
     [ renderBuffer setWidth:width ];
     [ renderBuffer setHeight:height ];
-    [ renderBuffer checkForReadiness ];
     [ renderBuffer uploadToGL ];
 
     return [ renderBuffer autorelease ];
@@ -40,8 +40,6 @@
 
     configuration = nil;
 
-    ready = NO;
-
     return self;
 }
 
@@ -53,43 +51,6 @@
 - (void) generateGLRenderBufferID
 {
 	glGenRenderbuffersEXT(1, &renderBufferID);
-}
-
-
-- (BOOL) checkIfRenderBufferTypeIsValid
-{
-    if ( type > NP_NONE && type <= NP_RENDERBUFFER_DEPTH_STENCIL_TYPE )
-    {
-        return YES;
-    }
-
-    return NO;
-}
-
-- (BOOL) checkIfRenderBufferFormatIsValid
-{
-    if ( format > NP_NONE && format <= NP_RENDERBUFFER_DEPTH24_STENCIL8 )
-    {
-        return YES;
-    }
-
-    return NO;
-}
-
-- (void) checkForReadiness
-{
-    BOOL validType = [ self checkIfRenderBufferTypeIsValid ];
-    BOOL validFormat = [ self checkIfRenderBufferFormatIsValid ];
-
-    if ( width > 0 && height > 0 && validType && validFormat )
-    {
-        ready = YES;
-    }
-}
-
-- (BOOL) ready
-{
-    return ready;
 }
 
 - (Int) width
@@ -156,6 +117,7 @@
 	            case NP_RENDERBUFFER_DEPTH16:{internalFormat = GL_DEPTH_COMPONENT16; break;}
 	            case NP_RENDERBUFFER_DEPTH24:{internalFormat = GL_DEPTH_COMPONENT24; break;}
 	            case NP_RENDERBUFFER_DEPTH32:{internalFormat = GL_DEPTH_COMPONENT32; break;}
+                default                     :{NPLOG_ERROR(@"RenderBuffer: Unknown depth format"); break;}
             }
         }
         break;
@@ -164,10 +126,11 @@
         {
             switch(format)
             {
-	            case NP_RENDERBUFFER_STENCIL1:{internalFormat = GL_STENCIL_INDEX1_EXT; break;}
-	            case NP_RENDERBUFFER_STENCIL4:{internalFormat = GL_STENCIL_INDEX4_EXT; break;}
-	            case NP_RENDERBUFFER_STENCIL8:{internalFormat = GL_STENCIL_INDEX8_EXT; break;}
+	            case NP_RENDERBUFFER_STENCIL1 :{internalFormat = GL_STENCIL_INDEX1_EXT; break;}
+	            case NP_RENDERBUFFER_STENCIL4 :{internalFormat = GL_STENCIL_INDEX4_EXT; break;}
+	            case NP_RENDERBUFFER_STENCIL8 :{internalFormat = GL_STENCIL_INDEX8_EXT; break;}
 	            case NP_RENDERBUFFER_STENCIL16:{internalFormat = GL_STENCIL_INDEX16_EXT; break;}
+                default                       :{NPLOG_ERROR(@"RenderBuffer: Unknown stencil format"); break;}
             }
         }
         break;
@@ -177,9 +140,12 @@
             switch(format)
             {
 	            case NP_RENDERBUFFER_DEPTH24_STENCIL8:{internalFormat = GL_DEPTH24_STENCIL8_EXT; break;}
+                default                              :{NPLOG_ERROR(@"RenderBuffer: Unknown depth-stencil format"); break;}
             }
         }
         break;
+
+        default:{NPLOG_ERROR(@"RenderBuffer: Unknown type"); break;}
     }
 
     return internalFormat;
@@ -187,15 +153,12 @@
 
 - (void) uploadToGL
 {
-    if ( ready == YES )
-    {
-	    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, renderBufferID);
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, renderBufferID);
 
-        GLenum internalFormat = [ self computeInternalFormat ];
+    GLenum internalFormat = [ self computeInternalFormat ];
 
-	    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, internalFormat, width, height);
-	    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
-    }
+    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, internalFormat, width, height);
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
 }
 
 - (GLenum) computeAttachment
@@ -203,8 +166,9 @@
     GLenum attachment;
     switch ( type )
     {
-       case NP_RENDERBUFFER_DEPTH_TYPE:{attachment = GL_DEPTH_ATTACHMENT_EXT; break;}
-       case NP_RENDERBUFFER_STENCIL_TYPE:{attachment = GL_STENCIL_ATTACHMENT_EXT; break;}
+        case NP_RENDERBUFFER_DEPTH_TYPE  :{attachment = GL_DEPTH_ATTACHMENT_EXT; break;}
+        case NP_RENDERBUFFER_STENCIL_TYPE:{attachment = GL_STENCIL_ATTACHMENT_EXT; break;}
+        default                          :{NPLOG_ERROR(@"RenderBuffer: Unknow attachment"); break;}
     }
 
     return attachment;

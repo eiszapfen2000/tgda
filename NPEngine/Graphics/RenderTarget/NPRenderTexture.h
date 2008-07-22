@@ -38,8 +38,6 @@
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
 
-- (void) checkForReadiness;
-- (BOOL) ready;
 - (Int) width;
 - (void) setWidth:(Int)newWidth;
 - (Int) height;
@@ -53,7 +51,6 @@
 - (NPTexture *)texture;
 
 - (void) createTexture;
-- (void) uploadToGL;
 
 - (void) bindToRenderTargetConfiguration:(NPRenderTargetConfiguration *)newConfiguration colorBufferIndex:(Int)newColorBufferIndex;
 - (void) unbindFromRenderTargetConfiguration;

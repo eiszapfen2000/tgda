@@ -33,11 +33,11 @@
 - (NPState) pixelFormat;
 - (Int) width;
 - (Int) height;
+- (void) setImageData:(NSData *)newImageData;
 - (NSData *) imageData;
 
 - (BOOL) loadFromFile:(NPFile *)file;
 - (BOOL) loadFromFile:(NPFile *)file withMipMaps:(BOOL)generateMipMaps;
 - (void) reset;
-- (BOOL) isReady;
 
 @end

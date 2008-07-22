@@ -26,8 +26,6 @@
 	NPState format;
 
     NPRenderTargetConfiguration * configuration;
-
-    BOOL ready;
 }
 
 + (id) renderBufferWithName:(NSString *)name type:(NPState)type format:(NPState)format width:(Int)width height:(Int)height;
@@ -39,8 +37,6 @@
 
 - (void) generateGLRenderBufferID;
 
-- (void) checkForReadiness;
-- (BOOL) ready;
 - (Int) width;
 - (void) setWidth:(Int)newWidth;
 - (Int) height;

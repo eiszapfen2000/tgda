@@ -60,26 +60,24 @@
 
 - (void) setDepthRenderTarget:(NPRenderBuffer *)newDepthRenderTarget
 {
-    if ( depth != newDepthRenderTarget && [ newDepthRenderTarget ready ] == YES )
+    if ( depth != newDepthRenderTarget )
     {
         if ( [ newDepthRenderTarget type ] == NP_RENDERBUFFER_DEPTH_TYPE )
         {
-            [ depth release ];
+            TEST_RELEASE(depth);
             depth = [ newDepthRenderTarget retain ];
             [ depth bindToRenderTargetConfiguration:self ];
-
-            ready = NO;
         }
     }
 }
 
 - (void) setStencilRenderTarget:(NPRenderBuffer *)newStencilRenderTarget
 {
-    if ( stencil != newStencilRenderTarget && [ newStencilRenderTarget ready ] == YES )
+    if ( stencil != newStencilRenderTarget )
     {
         if ( [ newStencilRenderTarget type ] == NP_RENDERBUFFER_STENCIL_TYPE )
         {
-            [ stencil release ];
+            TEST_RELEASE(stencil);
             stencil = [ newStencilRenderTarget retain ];
             [ stencil bindToRenderTargetConfiguration:self ];
         }
@@ -88,12 +86,12 @@
 
 - (void) setDepthStencilRenderTarget:(NPRenderBuffer *)newDepthStencilRenderTarget
 {
-    if ( stencil != newDepthStencilRenderTarget && depth != newDepthStencilRenderTarget && [ newDepthStencilRenderTarget ready ] == YES )
+    if ( stencil != newDepthStencilRenderTarget && depth != newDepthStencilRenderTarget )
     {
         if ( [ newDepthStencilRenderTarget type ] == NP_RENDERBUFFER_DEPTH_STENCIL_TYPE )
         {
-            [ depth release ];
-            [ stencil release ];
+            TEST_RELEASE(depth);
+            TEST_RELEASE(stencil);
             depth = [ newDepthStencilRenderTarget retain ];
             stencil = [ newDepthStencilRenderTarget retain ];
             [ depth bindToRenderTargetConfiguration:self ];
@@ -127,7 +125,7 @@
         }
     }
 
-    glDrawBuffers(bufferCount,buffers);
+    glDrawBuffers(bufferCount, buffers);
 }
 
 - (void) deactivate
@@ -140,30 +138,30 @@
 {
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboID);
 
+    NSString * message = @"";
+    ready = NO;
+
     NPState status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
-
-    NSString * message;
-
-    BOOL tmp = NO;
-
     switch ( status )
     {
-        case GL_FRAMEBUFFER_COMPLETE_EXT: { message = @"FBO OK"; tmp = YES; break; }
+        case GL_FRAMEBUFFER_COMPLETE_EXT: { ready = YES; break; }
         case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT: { message = @"FBO Attachment error"; break; }
         case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT: { message = @"FBO missing attachment"; break; }
-        case GL_FRAMEBUFFER_INCOMPLETE_DUPLICATE_ATTACHMENT_EXT: { message = @"FBO duplicate attachment"; break; }
         case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT: { message = @"FBO wrong dimensions"; break; }
         case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT: { message = @"FBO wrong format"; break; }
         case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT: { message = @"FBO draw buffer error"; break; }
         case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT: { message = @"FBO read buffer error"; break; }
         case GL_FRAMEBUFFER_UNSUPPORTED_EXT: { message = @"FBO unsupported format"; break; }
-        case GL_FRAMEBUFFER_STATUS_ERROR_EXT: { message = @"FBO status error"; break; }
     }
 
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
-    NPLOG_ERROR(message);
-    return tmp;
+    if ( ready == NO )
+    {
+        NPLOG_ERROR(message);
+    }
+
+    return ready;
 }
 
 
