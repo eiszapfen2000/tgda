@@ -56,6 +56,15 @@
     return pixelFormat;
 }
 
+- (void) setImageData:(NSData *)newImageData
+{
+    if ( imageData != newImageData )
+    {
+        TEST_RELEASE(imageData);
+        imageData = [ newImageData retain ];
+    }
+}
+
 - (NSData *) imageData
 {
     return imageData;
@@ -82,8 +91,8 @@
     if ( !success )
     {
         ILenum error = ilGetError();
-        NPLOG(( [ NSString stringWithCString:iluErrorString(error) encoding:NSASCIIStringEncoding ] ));
-		NPLOG(( [ @"Could not load image: " stringByAppendingString: fileName ] ));
+        NPLOG_ERROR(( [ NSString stringWithCString:iluErrorString(error) encoding:NSASCIIStringEncoding ] ));
+		NPLOG_ERROR(( [ @"Could not load image: " stringByAppendingString: fileName ] ));
 
 		return NO;
     }
@@ -128,7 +137,7 @@
                 }
 			    default:
                 {
-                    NPLOG(@"Unknown number of bytes per pixel");
+                    NPLOG_ERROR(@"Unknown number of bytes per pixel");
 
                     return NO;
                 }
@@ -163,7 +172,7 @@
                 }
 			    default:
                 {
-                    NPLOG(@"Unknown number of bytes per pixel");
+                    NPLOG_ERROR(@"Unknown number of bytes per pixel");
 
                     return NO;
                 }
@@ -174,7 +183,7 @@
 
 	    default:
         {
-            NPLOG(@"Unknown image type");
+            NPLOG_ERROR(@"Unknown image type");
 
             return NO;
         }
@@ -210,11 +219,6 @@
     width = height = 0;
 
     [ imageData release ];
-}
-
-- (BOOL) isReady
-{
-    return ready;
 }
 
 @end

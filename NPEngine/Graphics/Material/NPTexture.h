@@ -85,6 +85,10 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState);
 - (UInt) textureID;
 - (void) generateGLTextureID;
 
+- (void) setDataFormat:(NPState)newDataFormat;
+- (void) setPixelFormat:(NPState)newPixelFormat;
+- (void) setWidth:(Int)newWidth;
+- (void) setHeight:(Int)newHeight;
 - (void) setMipMapping:(NPState)newMipMapping;
 - (void) setTextureMinFilter:(NPState)newTextureMinFilter;
 - (void) setTextureMagFilter:(NPState)newTextureMagFilter;
@@ -92,6 +96,7 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState);
 - (void) setTextureWrapS:(NPState)newWrapS;
 - (void) setTextureWrapT:(NPState)newWrapT;
 
+- (void) uploadToGLWithoutImageData;
 - (void) uploadToGLUsingImage:(NPImage *)image;
 - (void) updateGLTextureState;
 

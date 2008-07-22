@@ -8,7 +8,8 @@ SUBPROJECTS = \
     Image \
 	Material \
 	Model \
-	RenderContext
+	RenderContext \
+    RenderTarget
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/aggregate.make

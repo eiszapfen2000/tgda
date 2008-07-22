@@ -38,26 +38,26 @@
     BOOL ready;
 }
 
-+ (NPEngineCore *)instance;
++ (NPEngineCore *) instance;
 
 - (void) dealloc;
 
-- (void)setup;
+- (void) setup;
 
-- (BOOL)isReady;
-- (NPLogger *)logger;
-- (NPTimer *)timer;
-- (NPObjectManager *)objectManager;
-- (NPPathManager *)pathManager;
+- (BOOL) ready;
+- (NPLogger *) logger;
+- (NPTimer *) timer;
+- (NPObjectManager *) objectManager;
+- (NPPathManager *) pathManager;
 - (NPRandomNumberGeneratorManager *) randomNumberGeneratorManager;
-- (NPTransformationStateManager *)transformationStateManager;
-- (NPOpenGLRenderContextManager *)renderContextManager;
-- (NPModelManager *)modelManager;
-- (NPImageManager *)imageManager;
-- (NPTextureManager *)textureManager;
-- (NPTextureBindingStateManager *)textureBindingStateManager;
-- (NPEffectManager *)effectManager;
-- (NPCameraManager *)cameraManager;
+- (NPTransformationStateManager *) transformationStateManager;
+- (NPOpenGLRenderContextManager *) renderContextManager;
+- (NPModelManager *) modelManager;
+- (NPImageManager *) imageManager;
+- (NPTextureManager *) textureManager;
+- (NPTextureBindingStateManager *) textureBindingStateManager;
+- (NPEffectManager *) effectManager;
+- (NPCameraManager *) cameraManager;
 
 @end
 
