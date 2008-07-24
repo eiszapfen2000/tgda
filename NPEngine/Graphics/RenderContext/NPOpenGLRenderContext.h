@@ -11,6 +11,7 @@
     BOOL glewInitialised;
     NSOpenGLContext * context;
     GLEWContext glewContext;
+    GLXEWContext glxewContext; 
 }
 
 - (id) init;

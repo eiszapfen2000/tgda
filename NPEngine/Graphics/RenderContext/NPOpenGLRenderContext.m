@@ -69,10 +69,8 @@
 
 - (void) disconnectFromView
 {
-    //NSLog(@"disconnect - not ready");
     if ( ready == YES )
     {
-        //NSLog(@"np context disconnectFromView");
         [ context clearDrawable ];
     }
 }
@@ -94,11 +92,20 @@
     if ( glewInitialised == NO )
     {
 #define glewGetContext() (&glewContext)
+#define glxewGetContext() (&glxewContext)
+
         GLenum err = glewInit();
 
         if (GLEW_OK != err)
         {
-            NSLog(@"glewInit failed");
+            NPLOG_ERROR(@"glewInit failed");
+        }
+
+        err = glxewInit();
+
+        if (GLEW_OK != err)
+        {
+            NPLOG_ERROR(@"glxewInit failed");
         }
     }
 }
@@ -175,3 +182,4 @@
 @end
 
 #undef glewGetContext
+#undef glxewGetContext

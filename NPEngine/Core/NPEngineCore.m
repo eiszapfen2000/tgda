@@ -136,7 +136,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     NPLOG(@"");
 }
 
-- (BOOL)isReady
+- (BOOL) ready
 {
     return ready;
 }
