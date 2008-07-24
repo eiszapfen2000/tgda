@@ -6,5 +6,6 @@
 #endif
 
 #include "GL/glew.h"
+#include "GL/glxew.h"
 
 #endif
