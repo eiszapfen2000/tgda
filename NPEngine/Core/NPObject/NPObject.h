@@ -7,14 +7,13 @@
     UInt32 objectID;
     NSString * name;
     NPObject * parent;
+    NSValue * pointer;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
-
-- (void) addToObjectManager;
 
 - (NSString *) name;
 - (void) setName:(NSString *)newName;

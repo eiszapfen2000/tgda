@@ -26,7 +26,9 @@
 
 - (void) dealloc
 {
+    TEST_RELEASE(currentlyActiveRenderContext);
     [ renderContexts release ];
+    [ defaultPixelFormat release ];
 
     [ super dealloc ];
 }
@@ -80,20 +82,17 @@
 
 - (NPOpenGLRenderContext *) createRenderContextWithPixelFormat:(NPOpenGLPixelFormat *)pixelFormat andName:(NSString *)contextName
 {
-    if ( [ pixelFormat isReady ] == NO )
+    if ( [ pixelFormat setup ] == NO )
     {
-        if ( [ pixelFormat setup ] == NO )
-        {
-			NPLOG(@"pixelformat hinig");
-            return nil;
-        }
+        NPLOG_ERROR(@"pixelformat hinig");
+        return nil;
     }
     
     NPOpenGLRenderContext * renderContext = [ [ NPOpenGLRenderContext alloc ] initWithName:contextName parent:self ];
 
     if ( [ renderContext setupWithPixelFormat:pixelFormat ] == NO )
     {
-		NPLOG(@"rendercontext hinig");
+		NPLOG_ERROR(@"rendercontext hinig");
         return nil;
     }
 

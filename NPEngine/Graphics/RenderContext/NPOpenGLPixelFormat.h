@@ -27,17 +27,30 @@ NPOpenGLPixelFormatAttributes;
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
+- (id) initWithName:(NSString *)newName 
+             parent:(NPObject *)newParent
+         fullscreen:(BOOL)fullscreen
+bitsPerColorChannel:(Int32)colorBits
+   alphaChannelBits:(Int32)alphaBits
+     doubleBuffered:(BOOL)doubleBuffer
+    depthBufferBits:(Int32)depthBits
+    stencilBuffered:(BOOL)stencilBuffer
+  stencilBufferBits:(Int32)stencilBits
+               FSAA:(BOOL)multisampling
+        sampleCount:(Int32)samples
+                   ;
+
 - (void) dealloc;
 
 - (BOOL) setup;
 
 - (NSOpenGLPixelFormat *)pixelFormat;
 
-- (BOOL) isReady;
+- (BOOL) ready;
 
 - (void) setPixelFormatAttributes:(NPOpenGLPixelFormatAttributes)newPixelFormatAttributes;
 
-- (void) setFullScreen:(BOOL)fullscreen;
+- (void) setFullscreen:(BOOL)fullscreen;
 - (BOOL) fullscreen;
 
 - (void) setBitsPerColorChannel:(Int32)newBitsPerColorChannel;
@@ -52,13 +65,9 @@ NPOpenGLPixelFormatAttributes;
 - (void) setDoubleBuffer:(BOOL)doubleBuffered;
 - (BOOL) doubleBuffered;
 
-- (void) setStencilBuffer:(BOOL)stencilBuffered;
-- (BOOL) stencilBuffered;
 - (void) setStencilBufferPrecision:(Int32)newStencilBufferPrecision;
 - (Int32) stencilBufferPrecision;
 
-- (void) setMultiSampleBuffer:(BOOL)multiSampled;
-- (BOOL) multiSampled;
 - (void) setSampleCount:(Int32)newSampleCount;
 - (Int32) sampleCount;
 

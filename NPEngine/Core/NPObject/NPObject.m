@@ -6,7 +6,7 @@
 @implementation NPObject
 
 //private
-- (UInt32) _generateIDFromPointer
+- (UInt32) generateIDFromPointer
 {
     return crc32_of_pointer(self);
 }
@@ -34,9 +34,10 @@
     //Weak reference
     parent = newParent;
 
-    objectID = [ self _generateIDFromPointer ];
+    objectID = [ self generateIDFromPointer ];
+    pointer = [[ NSValue alloc ] initWithBytes:&self objCType:@encode(void *) ];
 
-    [ self addToObjectManager ];
+    [[[ NPEngineCore instance ] objectManager ] addObject:pointer ];
 
     return self;
 } 
@@ -46,17 +47,10 @@
     [ name release ];
     parent = nil;
 
+    [[[ NPEngineCore instance ] objectManager ] removeObject:pointer ];
+    [ pointer release ];
+
     [ super dealloc ];
-}
-
-- (void) addToObjectManager
-{
-    NPObjectManager * tmp = [ [ NPEngineCore instance ] objectManager ];
-
-    if ( tmp != nil )
-    {
-        [ tmp addObject:self ];
-    }
 }
 
 - (NSString *) name
@@ -130,7 +124,7 @@
         parent = [ coder decodeObject ];
     }
 
-    objectID = [ self _generateIDFromPointer ];
+    objectID = [ self generateIDFromPointer ];
 
     return self;
 }

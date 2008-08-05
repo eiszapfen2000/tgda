@@ -25,6 +25,7 @@
 
 - (void) dealloc
 {
+    TEST_RELEASE(currentTextureBindingState);
     [ textureBindingStates release ];
 
     [ super dealloc ];

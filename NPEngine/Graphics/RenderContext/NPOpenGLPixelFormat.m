@@ -16,17 +16,42 @@
 
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
 {
+    return [ self initWithName:newName
+                        parent:newParent
+                    fullscreen:NO
+           bitsPerColorChannel:8
+              alphaChannelBits:8
+                doubleBuffered:YES
+               depthBufferBits:24
+               stencilBuffered:NO
+             stencilBufferBits:0
+                          FSAA:NO
+                   sampleCount:0 ];
+}
+
+- (id) initWithName:(NSString *)newName 
+             parent:(NPObject *)newParent
+         fullscreen:(BOOL)fullscreen
+bitsPerColorChannel:(Int32)colorBits
+   alphaChannelBits:(Int32)alphaBits
+     doubleBuffered:(BOOL)doubleBuffer
+    depthBufferBits:(Int32)depthBits
+    stencilBuffered:(BOOL)stencilBuffer
+  stencilBufferBits:(Int32)stencilBits
+               FSAA:(BOOL)multisampling
+        sampleCount:(Int32)samples
+{
     self = [ super initWithName:newName parent:newParent ];
 
-    pixelFormatAttributes.fullscreen = NO;
-    pixelFormatAttributes.bitsPerColorChannel = 8;
-    pixelFormatAttributes.alphaChannelBits = 8;
-    pixelFormatAttributes.doubleBuffered = YES;
-    pixelFormatAttributes.depthBufferPrecision = 24;
-    pixelFormatAttributes.stencilBuffered = NO;
-    pixelFormatAttributes.stencilBufferPrecision = 0;
-    pixelFormatAttributes.multiSampleBuffer = NO;
-    pixelFormatAttributes.sampleCount = 1;
+    pixelFormatAttributes.fullscreen = fullscreen;
+    pixelFormatAttributes.bitsPerColorChannel = colorBits;
+    pixelFormatAttributes.alphaChannelBits = alphaBits;
+    pixelFormatAttributes.doubleBuffered = doubleBuffer;
+    pixelFormatAttributes.depthBufferPrecision = depthBits;
+    pixelFormatAttributes.stencilBuffered = stencilBuffer;
+    pixelFormatAttributes.stencilBufferPrecision = stencilBits;
+    pixelFormatAttributes.multiSampleBuffer = multisampling;
+    pixelFormatAttributes.sampleCount = samples;
 
     pixelFormat = nil;
 
@@ -141,6 +166,9 @@
 
 - (BOOL) setup
 {
+    ready = NO;
+    TEST_RELEASE(pixelFormat);
+
     pixelFormat = [ [ NSOpenGLPixelFormat alloc ] initWithAttributes:[self buildAttributes] ];
 
     if ( pixelFormat == nil )
@@ -158,7 +186,7 @@
     return pixelFormat;
 }
 
-- (BOOL) isReady
+- (BOOL) ready
 {
     return ready;
 }
@@ -168,7 +196,7 @@
     pixelFormatAttributes = newPixelFormatAttributes;
 }
 
-- (void) setFullScreen:(BOOL)fullscreen
+- (void) setFullscreen:(BOOL)fullscreen
 {
     if ( pixelFormatAttributes.fullscreen != fullscreen )
     {
@@ -189,7 +217,7 @@
     }
 }
 
-- (Int32)bitsPerColorChannel
+- (Int32) bitsPerColorChannel
 {
     return pixelFormatAttributes.bitsPerColorChannel;
 }
@@ -222,7 +250,7 @@
 
 - (void) setDepthBufferPrecision:(Int32)newDepthBufferPrecision
 {
-    if ( pixelFormatAttributes.depthBufferPrecision != newDepthBufferPrecision )
+    if ( newDepthBufferPrecision == 24 || newDepthBufferPrecision == 16 )
     {
         pixelFormatAttributes.depthBufferPrecision = newDepthBufferPrecision;
     }     
@@ -233,25 +261,18 @@
     return pixelFormatAttributes.depthBufferPrecision;
 }
 
-- (void) setStencilBuffer:(BOOL)stencilBuffered
-{
-    if ( pixelFormatAttributes.stencilBuffered != stencilBuffered )
-    {
-        pixelFormatAttributes.stencilBuffered = stencilBuffered;
-    } 
-}
-
-- (BOOL) stencilBuffered
-{
-    return pixelFormatAttributes.stencilBuffered;
-}
-
 - (void) setStencilBufferPrecision:(Int32)newStencilBufferPrecision
 {
-    if ( pixelFormatAttributes.stencilBufferPrecision != newStencilBufferPrecision )
+    if ( newStencilBufferPrecision > 0 )
     {
         pixelFormatAttributes.stencilBufferPrecision = newStencilBufferPrecision;
-    }     
+        pixelFormatAttributes.stencilBuffered = YES;
+    }
+    else
+    {
+        pixelFormatAttributes.stencilBufferPrecision = 0;
+        pixelFormatAttributes.stencilBuffered = NO;
+    }
 }
 
 - (Int32) stencilBufferPrecision
@@ -259,24 +280,17 @@
     return pixelFormatAttributes.stencilBufferPrecision;
 }
 
-- (void) setMultiSampleBuffer:(BOOL)multiSampled
-{
-    if ( pixelFormatAttributes.multiSampleBuffer != multiSampled )
-    {
-        pixelFormatAttributes.multiSampleBuffer = multiSampled;
-    }  
-}
-
-- (BOOL) multiSampled
-{
-    return pixelFormatAttributes.multiSampleBuffer;
-}
-
 - (void) setSampleCount:(Int32)newSampleCount
 {
-    if ( pixelFormatAttributes.sampleCount != newSampleCount )
+    if ( newSampleCount > 0 )
     {
         pixelFormatAttributes.sampleCount = newSampleCount;
+        pixelFormatAttributes.multiSampleBuffer = YES;
+    }
+    else
+    {
+        pixelFormatAttributes.sampleCount = 0;
+        pixelFormatAttributes.multiSampleBuffer = NO;
     }
 }
 

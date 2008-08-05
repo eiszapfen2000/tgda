@@ -41,10 +41,10 @@
 
 - (BOOL) setupWithPixelFormat:(NPOpenGLPixelFormat *)pixelFormat
 {
+    ready = NO;
+
     [ pixelFormat retain ];
-
     context = [ [ NSOpenGLContext alloc ] initWithFormat:[pixelFormat pixelFormat] shareContext:nil ];
-
     [ pixelFormat release ];
 
     if ( context == nil )
@@ -59,10 +59,8 @@
 
 - (void) connectToView:(NSView *)view
 {
-    //NSLog(@"connect - not ready");
     if ( ready == YES )
     {
-        //NSLog(@"np context connectToView");
         [ context setView:view ];
     }
 }
@@ -84,6 +82,14 @@
     else
     {
         return nil;
+    }
+}
+
+- (void) setFullscreen
+{
+    if ( ready == YES )
+    {
+        [ context setFullScreen ];
     }
 }
 
@@ -169,11 +175,11 @@
 
     if ( tmp == YES )
     {
-        NPLOG(([NSString stringWithFormat:@"%@: extension %@ supported",name,extensionString]));
+        NPLOG(([NSString stringWithFormat:@"%@: extension %@ supported", name, extensionString]));
     }
     else
     {
-        NPLOG(([NSString stringWithFormat:@"%@: extension %@ not supported",name,extensionString]));
+        NPLOG(([NSString stringWithFormat:@"%@: extension %@ not supported", name, extensionString]));
     }
 
     return tmp;
