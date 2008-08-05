@@ -14,15 +14,16 @@
 @class NPOpenGLRenderContextManager;
 @class NPCameraManager;
 
-@interface NPEngineCore : NPObject
+@interface NPEngineCore : NSObject < NPPObject >
 {
+    UInt32 objectID;
+    NSString * name;
+
     NPLogger * logger;
     NPTimer * timer;
     NPObjectManager * objectManager;
     NPPathManager * pathManager;
-
     NPRandomNumberGeneratorManager * randomNumberGeneratorManager;
-
     NPTransformationStateManager * transformationStateManager;
 
     NPOpenGLRenderContextManager * renderContextManager;
@@ -32,7 +33,6 @@
     NPTextureManager * textureManager;
     NPTextureBindingStateManager * textureBindingStateManager;
     NPEffectManager * effectManager;
-
     NPCameraManager * cameraManager;
 
     BOOL ready;
@@ -40,9 +40,20 @@
 
 + (NPEngineCore *) instance;
 
+- (id) init;
+- (id) initWithName:(NSString *)newName;
+- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
 
 - (void) setup;
+
+- (NSString *) name;
+- (void) setName:(NSString *)newName;
+
+- (NPObject *) parent;
+- (void) setParent:(NPObject *)newParent;
+
+- (UInt32) objectID;
 
 - (BOOL) ready;
 - (NPLogger *) logger;
