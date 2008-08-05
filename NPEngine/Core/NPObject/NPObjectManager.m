@@ -4,10 +4,14 @@
 
 - (id) init
 {
-    return [ self initWithName:@"NPEngine Object Manager" ];
+    self = [ super init ];
+
+    objects = [[ NSMutableArray alloc ] init ];
+
+    return self;
 }
 
-- (id) initWithName:(NSString *)newName
+/*- (id) initWithName:(NSString *)newName
 {
     return [ self initWithName:newName parent:nil ];
 }
@@ -16,10 +20,10 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    objects = [ [ NSMutableArray alloc ] init ];
+    objects = [[ NSMutableArray alloc ] init ];
 
     return self;
-}
+}*/
 
 - (void) dealloc
 {
@@ -28,14 +32,35 @@
     [ super dealloc ];
 }
 
-- (void) addObject:(NPObject *)newObject
+- (void) addObject:(NSValue *)newObject
 {
-    [ objects addObject: newObject ];
+    [ objects addObject:newObject ];
 }
 
-- (NSString *)description
+- (void) removeObject:(NSValue *)object
 {
-    return [ objects description ];
+    if ( [ objects indexOfObjectIdenticalTo:object ] == NSNotFound )
+    {
+        NSLog(@"object not found");
+    }
+
+    [ objects removeObjectIdenticalTo:object ];
+}
+
+- (NSString *)descriptions
+{
+    //return [ objects description ];
+    NSMutableArray * objectDescriptions = [[ NSMutableArray alloc ] init ];
+
+    NSEnumerator * enumerator = [ objects objectEnumerator ];
+    NSValue * pointer;
+
+    while ( (pointer = [ enumerator nextObject ]) )
+    {
+        [ objectDescriptions addObject:[[ pointer pointerValue ] description ]];
+    }
+
+    return objectDescriptions;
 }
 
 @end

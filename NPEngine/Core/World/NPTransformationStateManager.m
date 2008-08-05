@@ -26,6 +26,7 @@
 
 - (void) dealloc
 {
+    TEST_RELEASE(currentActiveTransformationState);
     [ transformationStates release ];
 
     [ super dealloc ];

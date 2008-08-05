@@ -26,6 +26,7 @@
 - (void) connectToView:(NSView *)view;
 - (void) disconnectFromView;
 - (NSView *)view;
+- (void) setFullscreen;
 
 - (void) setupGLEW;
 

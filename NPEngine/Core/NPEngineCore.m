@@ -66,7 +66,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 
     self = [ super initWithName:@"NPEngine Core" ];
 
-    objectManager = [[ NPObjectManager alloc ] initWithName:@"NPEngine Object Manager" parent:self ];
+    objectManager = [[ NPObjectManager alloc ] init ];
     logger = [[ NPLogger alloc ] initWithName:@"NPEngine Logger" parent:self ];
     timer = [[ NPTimer alloc ] initWithName:@"NPEngine Timer" parent:self ];
     pathManager = [[ NPPathManager alloc ] initWithName:@"NPEngine Path Manager" parent:self ];
@@ -102,7 +102,12 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     [ pathManager release ];
     [ timer release ];
     [ logger release ];
+
+    NSLog(@"%@",[objectManager description]);
+
     [ objectManager release ];
+
+    //[ super dealloc ];
 }
 
 - (void) setup
