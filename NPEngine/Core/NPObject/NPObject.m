@@ -5,24 +5,14 @@
 
 @implementation NPObject
 
-//private
-- (UInt32) generateIDFromPointer
-{
-    return crc32_of_pointer(self);
-}
-
 - (id) init
 {
-    self = [ self initWithName:@"" parent:nil ];
-
-    return self;
+    return [ self initWithName:@"" parent:nil ];
 }
 
 - (id) initWithName:(NSString *)newName
 {
-    self = [ self initWithName:newName parent:nil ];
-
-    return self;
+    return [ self initWithName:newName parent:nil ];
 }
 
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
@@ -34,7 +24,7 @@
     //Weak reference
     parent = newParent;
 
-    objectID = [ self generateIDFromPointer ];
+    objectID = crc32_of_pointer(self);
     pointer = [[ NSValue alloc ] initWithBytes:&self objCType:@encode(void *) ];
 
     [[[ NPEngineCore instance ] objectManager ] addObject:pointer ];
@@ -124,7 +114,7 @@
         parent = [ coder decodeObject ];
     }
 
-    objectID = [ self generateIDFromPointer ];
+    objectID = crc32_of_pointer(self);
 
     return self;
 }

@@ -1,8 +1,9 @@
 #import <Foundation/Foundation.h>
 
 #import "Core/Basics/NpTypes.h"
+#import "NPPCoreProtocols.h"
 
-@interface NPObject : NSObject
+@interface NPObject : NSObject < NPPObject >
 {
     UInt32 objectID;
     NSString * name;

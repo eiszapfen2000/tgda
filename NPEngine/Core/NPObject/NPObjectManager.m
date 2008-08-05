@@ -1,32 +1,37 @@
 #import "NPObjectManager.h"
+#import "Core/Basics/NpCrc32.h"
 
 @implementation NPObjectManager
 
 - (id) init
 {
-    self = [ super init ];
-
-    objects = [[ NSMutableArray alloc ] init ];
-
-    return self;
+    return [ self initWithName:@"" parent:nil ];
 }
 
-/*- (id) initWithName:(NSString *)newName
+- (id) initWithName:(NSString *)newName
 {
     return [ self initWithName:newName parent:nil ];
 }
 
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
 {
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super init ];
 
+    name = [ newName retain ];
+
+    //Weak reference
+    parent = newParent;
+
+    objectID = crc32_of_pointer(self);
     objects = [[ NSMutableArray alloc ] init ];
 
     return self;
-}*/
+}
 
 - (void) dealloc
 {
+    [ name release ];
+    parent = nil;
     [ objects release ];
 
     [ super dealloc ];
@@ -39,28 +44,45 @@
 
 - (void) removeObject:(NSValue *)object
 {
-    if ( [ objects indexOfObjectIdenticalTo:object ] == NSNotFound )
+    /*if ( [ objects indexOfObjectIdenticalTo:object ] == NSNotFound )
     {
         NSLog(@"object not found");
-    }
+    }*/
 
     [ objects removeObjectIdenticalTo:object ];
 }
 
-- (NSString *)descriptions
+- (NSString *) name
 {
-    //return [ objects description ];
-    NSMutableArray * objectDescriptions = [[ NSMutableArray alloc ] init ];
+    return name;
+}
 
-    NSEnumerator * enumerator = [ objects objectEnumerator ];
-    NSValue * pointer;
-
-    while ( (pointer = [ enumerator nextObject ]) )
+- (void) setName:(NSString *)newName
+{
+    if ( name != newName )
     {
-        [ objectDescriptions addObject:[[ pointer pointerValue ] description ]];
-    }
+        [ name release ];
 
-    return objectDescriptions;
+        name = [ newName retain ];
+    }
+}
+
+- (NPObject *) parent
+{
+    return parent;
+}
+
+- (void) setParent:(NPObject *)newParent
+{
+    if ( parent != newParent )
+    {
+        parent = newParent;
+    }
+}
+
+- (UInt32) objectID
+{
+    return objectID;
 }
 
 @end

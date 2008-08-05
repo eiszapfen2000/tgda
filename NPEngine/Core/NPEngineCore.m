@@ -59,12 +59,25 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     return nil; //on subsequent allocation attempts return nil
 }
 
-- (id)init
+- (id) init
+{
+    return [ self initWithName:@"NPEngine Core" parent:nil ];
+}
+
+- (id) initWithName:(NSString *)newName
+{
+    return [ self initWithName:newName parent:nil ];
+}
+
+- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 {
     npbasics_initialise();
     npmath_initialise();
 
-    self = [ super initWithName:@"NPEngine Core" ];
+    self = [ super init ];
+
+    name = [ newName retain ];
+    objectID = crc32_of_pointer(self);
 
     objectManager = [[ NPObjectManager alloc ] init ];
     logger = [[ NPLogger alloc ] initWithName:@"NPEngine Logger" parent:self ];
@@ -102,12 +115,11 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     [ pathManager release ];
     [ timer release ];
     [ logger release ];
-
-    NSLog(@"%@",[objectManager description]);
-
     [ objectManager release ];
 
-    //[ super dealloc ];
+    [ name release ];
+
+    [ super dealloc ];
 }
 
 - (void) setup
@@ -139,6 +151,35 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 
     NPLOG(@"NPEngine Core ready");
     NPLOG(@"");
+}
+
+- (NSString *) name
+{
+    return name;
+}
+
+- (void) setName:(NSString *)newName
+{
+    if ( name != newName )
+    {
+        [ name release ];
+
+        name = [ newName retain ];
+    }
+}
+
+- (NPObject *) parent
+{
+    return nil;
+}
+
+- (void) setParent:(NPObject *)newParent
+{
+}
+
+- (UInt32) objectID
+{
+    return objectID;
 }
 
 - (BOOL) ready
