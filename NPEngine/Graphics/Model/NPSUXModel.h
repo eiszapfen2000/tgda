@@ -5,7 +5,7 @@
 @class NPFile;
 @class NPSUXModelLod;
 
-@interface NPSUXModel : NPResource < NPPResource >
+@interface NPSUXModel : NPResource
 {
     NSMutableArray * lods;
     NSMutableArray * materials;

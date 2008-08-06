@@ -1,6 +1,7 @@
 #import "Core/NPObject/NPObject.h"
+#import "NPPResource.h"
 
-@interface NPResource : NPObject
+@interface NPResource : NPObject < NPPResource >
 {
     NSString * fileName;
     BOOL ready;
@@ -14,7 +15,8 @@
 - (void) setFileName:(NSString *)newFileName;
 - (NSString *)fileName;
 
+- (BOOL) loadFromFile:(NPFile *)file;
 - (void) reset;
-- (BOOL) isReady;
+- (BOOL) ready;
 
 @end

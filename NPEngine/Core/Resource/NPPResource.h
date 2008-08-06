@@ -4,6 +4,6 @@
 
 - (BOOL) loadFromFile:(NPFile *)file;
 - (void) reset;
-- (BOOL) isReady;
+- (BOOL) ready;
 
 @end

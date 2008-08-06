@@ -6,7 +6,7 @@
 @class NPVertexBuffer;
 @class NPSUXModelGroup;
 
-@interface NPSUXModelLod : NPResource < NPPResource >
+@interface NPSUXModelLod : NPResource
 {
     BOOL autoenable;
     Float minDistance;

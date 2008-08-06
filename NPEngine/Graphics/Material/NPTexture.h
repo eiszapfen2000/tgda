@@ -59,7 +59,7 @@ NpTextureWrapState;
 
 void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState);
 
-@interface NPTexture : NPResource < NPPResource >
+@interface NPTexture : NPResource
 {
     NpTextureFilterState textureFilterState;
     NpTextureWrapState textureWrapState;

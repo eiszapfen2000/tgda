@@ -24,7 +24,7 @@ typedef struct
 }
 NpDefaultSemantics;
 
-@interface NPEffect : NPResource < NPPResource >
+@interface NPEffect : NPResource
 {
     CGeffect effect;
     CGtechnique defaultTechnique;
