@@ -5,7 +5,7 @@
 @class NPFile;
 @class NPEffect;
 
-@interface NPSUXMaterialInstance : NPResource < NPPResource >
+@interface NPSUXMaterialInstance : NPResource
 {
     NSString * materialFileName;
     NSMutableArray * materialInstanceScript;

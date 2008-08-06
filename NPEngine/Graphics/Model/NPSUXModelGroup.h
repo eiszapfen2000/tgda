@@ -6,7 +6,7 @@
 @class NPSUXModel;
 @class NPSUXMaterialInstance;
 
-@interface NPSUXModelGroup : NPResource < NPPResource >
+@interface NPSUXModelGroup : NPResource
 {
     Int primitiveType;
     Int firstIndex;

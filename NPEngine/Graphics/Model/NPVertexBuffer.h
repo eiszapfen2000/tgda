@@ -59,7 +59,7 @@ NpVertexBuffer;
 
 void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer);
 
-@interface NPVertexBuffer : NPResource < NPPResource >
+@interface NPVertexBuffer : NPResource
 {
     NpVertexBuffer vertexBuffer;
     NpVertices vertices;

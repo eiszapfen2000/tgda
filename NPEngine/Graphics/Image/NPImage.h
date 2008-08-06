@@ -13,7 +13,7 @@
 #define    NP_IMAGE_PIXELFORMAT_RGB     2
 #define    NP_IMAGE_PIXELFORMAT_RGBA    3
 
-@interface NPImage : NPResource < NPPResource >
+@interface NPImage : NPResource
 {
     NPState dataFormat;
     NPState pixelFormat;

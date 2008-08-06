@@ -43,6 +43,11 @@
     return fileName;
 }
 
+- (BOOL) loadFromFile:(NPFile *)file
+{
+    return NO;
+}
+
 - (void) reset
 {
     ready = NO;
@@ -51,7 +56,7 @@
     fileName = @"";
 }
 
-- (BOOL) isReady
+- (BOOL) ready
 {
     return ready;
 }
