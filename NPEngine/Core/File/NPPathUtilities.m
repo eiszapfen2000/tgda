@@ -4,7 +4,7 @@ BOOL isFile(NSString * path)
 {
     BOOL isDirectory;
 
-    if ( [ [ NSFileManager defaultManager ] fileExistsAtPath:path isDirectory:&isDirectory ] == YES )
+    if ( [[ NSFileManager defaultManager ] fileExistsAtPath:path isDirectory:&isDirectory ] == YES )
     {
         if ( isDirectory == NO )
         {
@@ -19,7 +19,7 @@ BOOL isDirectory(NSString * path)
 {
     BOOL isDirectory;
 
-    if ( [ [ NSFileManager defaultManager ] fileExistsAtPath:path isDirectory:&isDirectory ] == YES )
+    if ( [[ NSFileManager defaultManager ] fileExistsAtPath:path isDirectory:&isDirectory ] == YES )
     {
         if ( isDirectory == YES )
         {
@@ -40,5 +40,10 @@ BOOL isURL(NSString * path)
     }
 
     return NO;
+}
+
+BOOL createEmptyFile(NSString * path)
+{
+    return [[ NSFileManager defaultManager ] createFileAtPath:path contents:nil attributes:nil ];
 }
 

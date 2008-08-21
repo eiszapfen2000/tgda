@@ -73,7 +73,7 @@
 
     for ( Int i = 0; i < [ localPaths count ]; i++ )
     {
-        absolutePath = [ [ [ localPaths objectAtIndex:i ] stringByAppendingPathComponent:partialPath ] retain ];
+        absolutePath = [[[ localPaths objectAtIndex:i ] stringByAppendingPathComponent:partialPath ] retain ];
 
         if ( isFile(absolutePath) == YES )
         {

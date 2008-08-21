@@ -22,8 +22,8 @@
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 
 - (BOOL) loadFromFile:(NPFile *)file;
+- (BOOL) saveToFile:(NPFile *)file;
 - (void) reset;
-- (BOOL) isReady;
 
 - (void) render;
 

@@ -20,17 +20,17 @@
     self = [ super initWithName:newName parent:newParent ];
 
     autoenable = NO;
-    minDistance = 0;
-    maxDistance = 0;
+    minDistance = 0.0f;
+    maxDistance = 0.0f;
 
-    boundingBoxMinimum = NULL;
-    boundingBoxMaximum = NULL;
-    boundingSphereRadius = 0;
+    boundingBoxMinimum = fv3_alloc_init();
+    boundingBoxMaximum = fv3_alloc_init();
+    boundingSphereRadius = 0.0f;
 
     vertexBuffer = nil;
 
     groupCount = 0;
-    groups = [ [ NSMutableArray alloc ] init ];
+    groups = [[ NSMutableArray alloc ] init ];
 
     return self;
 }
@@ -54,7 +54,7 @@
     [ file readFloat:&boundingSphereRadius ];
     NPLOG(([NSString stringWithFormat:@"Bounding Sphere %f",boundingSphereRadius]));
 
-    vertexBuffer = [ [ NPVertexBuffer alloc ] initWithParent:self ];
+    vertexBuffer = [[ NPVertexBuffer alloc ] initWithParent:self ];
 
     if ( [ vertexBuffer loadFromFile:file ] == NO )
     {
@@ -66,7 +66,7 @@
 
     for ( Int i = 0; i < groupCount; i++ )
     {
-        NPSUXModelGroup * group = [ [ NPSUXModelGroup alloc ] initWithParent:self ];
+        NPSUXModelGroup * group = [[ NPSUXModelGroup alloc ] initWithParent:self ];
 
         if ( [ group loadFromFile:file ] == YES )
         {
@@ -77,6 +77,41 @@
     }
 
     ready = YES;
+
+    return YES;
+}
+
+- (BOOL) saveToFile:(NPFile *)file
+{
+    if ( ready == NO )
+    {
+        return NO;
+    }
+
+    [ file writeSUXString:name ];
+    [ file writeBool:&autoenable ];
+    [ file writeFloat:&minDistance ];
+    [ file writeFloat:&maxDistance ];
+    [ file writeFVector3:boundingBoxMinimum ];
+    [ file writeFVector3:boundingBoxMaximum ];
+    [ file writeFloat:&boundingSphereRadius ];
+
+    if ( [ vertexBuffer saveToFile:file ] == NO )
+    {
+        return NO;
+    }
+
+    [ file writeInt32:&groupCount ];
+
+    for ( Int i = 0; i < groupCount; i++ )
+    {
+        NPSUXModelGroup * group = [ groups objectAtIndex:i ];
+
+        if ( [ group saveToFile:file ] == NO )
+        {
+            return NO;
+        }
+    }
 
     return YES;
 }
@@ -96,11 +131,6 @@
     groupCount = 0;
 
     [ super reset ];
-}
-
-- (BOOL) isReady
-{
-    return ready;
 }
 
 - (NPVertexBuffer *) vertexBuffer

@@ -47,14 +47,12 @@
     context = [ [ NSOpenGLContext alloc ] initWithFormat:[pixelFormat pixelFormat] shareContext:nil ];
     [ pixelFormat release ];
 
-    if ( context == nil )
+    if ( context != nil )
     {
-        return NO;
+        ready = YES;
     }
 
-    ready = YES;
-
-    return YES;
+    return ready;
 }
 
 - (void) connectToView:(NSView *)view
@@ -73,7 +71,7 @@
     }
 }
 
-- (NSView *)view
+- (NSView *) view
 {
     if ( ready == YES )
     {
@@ -82,14 +80,6 @@
     else
     {
         return nil;
-    }
-}
-
-- (void) setFullscreen
-{
-    if ( ready == YES )
-    {
-        [ context setFullScreen ];
     }
 }
 
@@ -141,12 +131,12 @@
     }
 }
 
-- (BOOL) isActive
+- (BOOL) active
 {
     return active;
 }
 
-- (BOOL) isReady
+- (BOOL) ready
 {
     return ready;
 }

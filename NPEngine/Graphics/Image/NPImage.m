@@ -92,7 +92,7 @@
     {
         ILenum error = ilGetError();
         NPLOG_ERROR(( [ NSString stringWithCString:iluErrorString(error) encoding:NSASCIIStringEncoding ] ));
-		NPLOG_ERROR(( [ @"Could not load image: " stringByAppendingString: fileName ] ));
+		NPLOG_ERROR(( [ @"Could not load image: " stringByAppendingString:fileName ] ));
 
 		return NO;
     }
@@ -201,11 +201,39 @@
         length = width * height * bytesperpixel * sizeof(Float);
     }
 
-    imageData = [ [ NSData alloc ] initWithBytes:ilGetData() length:length ];
+    imageData = [[ NSData alloc ] initWithBytes:ilGetData() length:length ];
 
 	ilDeleteImages(1, &image);
 
     ready = YES;
+
+    return YES;
+}
+
+- (BOOL) saveToFile:(NPFile *)file
+{
+    if ( imageData == nil || ready == NO )
+    {
+        return NO;
+    }
+
+	ILuint image;
+	ilGenImages(1, &image);
+	ilBindImage(image);
+    ilLoadL( IL_TYPE_UNKNOWN , [ imageData bytes ], [ imageData length] );
+    ilEnable(IL_FILE_OVERWRITE);
+    ILboolean success = ilSaveImage( [[ file fileName ] cString ] );
+
+    if ( !success )
+    {
+        ILenum error = ilGetError();
+        NPLOG_ERROR(( [ NSString stringWithCString:iluErrorString(error) encoding:NSASCIIStringEncoding ] ));
+		NPLOG_ERROR(( [ @"Could not save image: " stringByAppendingString:fileName ] ));
+
+		return NO;
+    }
+
+    ilDisable(IL_FILE_OVERWRITE);
 
     return YES;
 }

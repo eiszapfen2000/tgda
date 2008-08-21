@@ -16,7 +16,7 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    textureBindings = [ [ NSMutableDictionary alloc ] init ];
+    textureBindings = [[ NSMutableDictionary alloc ] init ];
 
     return self;
 }

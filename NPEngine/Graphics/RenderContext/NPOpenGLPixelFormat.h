@@ -4,14 +4,11 @@
 
 typedef struct NPOpenGLPixelFormatAttributes
 {
-    BOOL fullscreen;
     Int32 bitsPerColorChannel;
     Int32 alphaChannelBits;
     BOOL doubleBuffered;
     Int32 depthBufferPrecision;
-    BOOL stencilBuffered;
     Int32 stencilBufferPrecision;
-    BOOL multiSampleBuffer;
     Int32 sampleCount;
 }
 NPOpenGLPixelFormatAttributes;
@@ -29,29 +26,23 @@ NPOpenGLPixelFormatAttributes;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (id) initWithName:(NSString *)newName 
              parent:(NPObject *)newParent
-         fullscreen:(BOOL)fullscreen
 bitsPerColorChannel:(Int32)colorBits
    alphaChannelBits:(Int32)alphaBits
      doubleBuffered:(BOOL)doubleBuffer
     depthBufferBits:(Int32)depthBits
-    stencilBuffered:(BOOL)stencilBuffer
   stencilBufferBits:(Int32)stencilBits
-               FSAA:(BOOL)multisampling
-        sampleCount:(Int32)samples
+               FSAA:(Int32)samples
                    ;
 
 - (void) dealloc;
 
-- (BOOL) setup;
+- (BOOL) chooseMatchingPixelFormat;
 
 - (NSOpenGLPixelFormat *)pixelFormat;
 
 - (BOOL) ready;
 
 - (void) setPixelFormatAttributes:(NPOpenGLPixelFormatAttributes)newPixelFormatAttributes;
-
-- (void) setFullscreen:(BOOL)fullscreen;
-- (BOOL) fullscreen;
 
 - (void) setBitsPerColorChannel:(Int32)newBitsPerColorChannel;
 - (Int32)bitsPerColorChannel;

@@ -38,6 +38,7 @@
 
 - (BOOL) loadFromFile:(NPFile *)file;
 - (BOOL) loadFromFile:(NPFile *)file withMipMaps:(BOOL)generateMipMaps;
+- (BOOL) saveToFile:(NPFile *)file;
 - (void) reset;
 
 @end

@@ -103,6 +103,8 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 
 - (void) dealloc
 {
+    NPLOG(@"Dealloc");
+
     [ cameraManager release ];
     [ modelManager release ];
     [ textureBindingStateManager release ];

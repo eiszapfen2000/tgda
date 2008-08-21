@@ -80,7 +80,6 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState);
 
 - (BOOL) loadFromFile:(NPFile *)file;
 - (void) reset;
-- (BOOL) isReady;
 
 - (UInt) textureID;
 - (void) generateGLTextureID;

@@ -70,8 +70,8 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer);
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 
 - (BOOL) loadFromFile:(NPFile *)file;
+- (BOOL) saveToFile:(NPFile *)file;
 - (void) reset;
-- (BOOL) isReady;
 
 - (void) uploadVBOWithUsageHint:(NPState)usage;
 - (void) deleteVBO;

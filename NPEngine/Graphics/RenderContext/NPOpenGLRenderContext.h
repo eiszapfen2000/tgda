@@ -26,14 +26,13 @@
 - (void) connectToView:(NSView *)view;
 - (void) disconnectFromView;
 - (NSView *)view;
-- (void) setFullscreen;
 
 - (void) setupGLEW;
 
 - (void) activate;
 - (void) deactivate;
-- (BOOL) isActive;
-- (BOOL) isReady;
+- (BOOL) active;
+- (BOOL) ready;
 - (void) update;
 - (void) swap;
 

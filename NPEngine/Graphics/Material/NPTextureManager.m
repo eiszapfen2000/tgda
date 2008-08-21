@@ -23,7 +23,7 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    textures = [ [ NSMutableDictionary alloc ] init ];
+    textures = [[ NSMutableDictionary alloc ] init ];
     maxAnisotropy = 1;
 
     return self;
@@ -31,7 +31,10 @@
 
 - (void) dealloc
 {
+    NSLog(@"%@ dealloc",[self name]);
+    NSLog(@"%@ dealloc",[textures retainCount]);
     [ textures release ];
+    NSLog(@"done");
 
     [ super dealloc ];
 }
@@ -51,7 +54,7 @@
 
 - (id) loadTextureFromPath:(NSString *)path
 {
-    NSString * absolutePath = [ [ [ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
+    NSString * absolutePath = [[[ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
 
     return [ self loadTextureFromAbsolutePath:absolutePath ];
 }
@@ -79,7 +82,7 @@
 
 - (id) loadTextureUsingFileHandle:(NPFile *)file
 {
-    NPTexture * texture = [ [ NPTexture alloc ] initWithName:@"" parent:self ];
+    NPTexture * texture = [[ NPTexture alloc ] initWithName:@"" parent:self ];
 
     if ( [ texture loadFromFile:file ] == YES )
     {

@@ -1,7 +1,6 @@
 #import "Core/NPObject/NPObject.h"
 
 @class NPFile;
-@class NPTexture;
 
 @interface NPTextureManager : NPObject
 {

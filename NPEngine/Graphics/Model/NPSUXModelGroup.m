@@ -60,6 +60,22 @@
     return YES;
 }
 
+- (BOOL) saveToFile:(NPFile *)file
+{
+    if ( ready == NO )
+    {
+        return NO;
+    }
+
+    [ file writeSUXString:name ];
+    [ file writeInt32:&primitiveType ];
+    [ file writeInt32:&firstIndex ];
+    [ file writeInt32:&lastIndex ];
+    [ file writeInt32:&materialInstanceIndex ];
+
+    return YES;
+}
+
 - (void) reset
 {
     primitiveType = -1;
@@ -68,11 +84,6 @@
     materialInstanceIndex = -1;
 
     [ super reset ];
-}
-
-- (BOOL) isReady
-{
-    return ready;
 }
 
 - (void) render

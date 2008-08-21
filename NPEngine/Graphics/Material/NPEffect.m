@@ -26,7 +26,7 @@
 
     if ( [ newParent isMemberOfClass:[ NPEffectManager class ] ] == NO )
     {
-        NPLOG(@"Parent must be of Class NPEffectManager");
+        NPLOG_ERROR(@"Parent must be of Class NPEffectManager");
     }
 
     [ self clearDefaultSemantics ];
@@ -36,6 +36,8 @@
 
 - (void) dealloc
 {
+    NSLog(@"%@ dealloc",[self name]);
+
     cgDestroyEffect(effect);
 
     [ super dealloc ];
@@ -46,7 +48,7 @@
     [ self setName: [ file fileName ] ];
     [ self setFileName: [ file fileName ] ];
 
-    effect = cgCreateEffect( [ (NPEffectManager *)parent cgContext ], [ [ file readEntireFile ] bytes ], NULL );
+    effect = cgCreateEffect( [ (NPEffectManager *)parent cgContext ], [[ file readEntireFile ] bytes ], NULL );
 
     if ( cgIsEffect(effect) == CG_FALSE )
     {
@@ -61,11 +63,11 @@
     {
         if ( cgValidateTechnique(technique) == CG_FALSE )
         {
-            NPLOG_WARNING(([NSString stringWithFormat:@"Technique %s did not validate",cgGetTechniqueName(technique)]));
+            NPLOG_WARNING(([NSString stringWithFormat:@"Technique %s did not validate", cgGetTechniqueName(technique)]));
         }
         else
         {
-            NPLOG(([NSString stringWithFormat:@"Technique \"%s\" validated",cgGetTechniqueName(technique)]));
+            NPLOG(([NSString stringWithFormat:@"Technique \"%s\" validated", cgGetTechniqueName(technique)]));
         }
 
         technique = cgGetNextTechnique(technique);
@@ -85,11 +87,6 @@
     defaultTechnique = NULL;
 
     [ super reset ];
-}
-
-- (BOOL) isReady
-{
-    return ready;
 }
 
 - (CGeffect) effect

@@ -1,5 +1,8 @@
 #import "Core/NPObject/NPObject.h"
 
+@class NPFile;
+@class NPSUXModel;
+
 @interface NPModelManager : NPObject
 {
     NSMutableDictionary * models;
@@ -11,5 +14,9 @@
 - (void) dealloc;
 
 - (id) loadModelFromPath:(NSString *)path;
+- (id) loadModelFromAbsolutePath:(NSString *)path;
+- (id) loadModelUsingFileHandle:(NPFile *)file;
+
+- (BOOL) saveModel:(NPSUXModel *)model atAbsolutePath:(NSString *)path;
 
 @end

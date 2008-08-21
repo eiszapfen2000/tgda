@@ -39,7 +39,6 @@ NpDefaultSemantics;
 
 - (BOOL) loadFromFile:(NPFile *)file;
 - (void) reset;
-- (BOOL) isReady;
 
 - (CGeffect) effect;
 - (CGtechnique) defaultTechnique;

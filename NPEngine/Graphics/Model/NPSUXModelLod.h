@@ -27,8 +27,8 @@
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 
 - (BOOL) loadFromFile:(NPFile *)file;
+- (BOOL) saveToFile:(NPFile *)file;
 - (void) reset;
-- (BOOL) isReady;
 
 - (NPVertexBuffer *) vertexBuffer;
 - (void) setVertexBuffer:(NPVertexBuffer *)newVertexBuffer;

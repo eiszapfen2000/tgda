@@ -202,17 +202,80 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     return YES;
 }
 
+- (BOOL) saveToFile:(NPFile *)file
+{
+    if ( ready == NO )
+    {
+        return NO;
+    }
+
+    Int32 vertexCount = 0;
+    Int32 indexCount = 0;
+
+    [ file writeInt32:&(vertices.format.elementsForNormal) ];
+    [ file writeInt32:&(vertices.format.elementsForColor) ];
+    [ file writeInt32:&(vertices.format.elementsForWeights) ];
+
+    for ( Int i = 0; i < 8; i++ )
+    {
+        [ file writeInt32:&(vertices.format.elementsForTextureCoordinateSet[i]) ];
+    }
+
+    [ file writeInt32:&(vertices.format.maxTextureCoordinateSet) ];
+    [ file writeBool:&(vertices.indexed) ];
+
+    vertexCount = vertices.maxVertex + 1;
+    [ file writeInt32:&vertexCount ];
+
+    if ( vertices.indexed == YES )
+    {
+        indexCount = vertices.maxIndex + 1;
+        [ file writeInt32:&indexCount ];
+    }
+
+    [ file writeFloats:vertices.positions withLength:(vertexCount*3) ];
+
+    if ( vertices.format.elementsForNormal > 0 )
+    {
+        [ file writeFloats:vertices.normals withLength:(vertexCount*vertices.format.elementsForNormal) ];
+    }
+
+    if ( vertices.format.elementsForColor > 0 )
+    {
+        [ file writeFloats:vertices.colors withLength:(vertexCount*vertices.format.elementsForColor) ];
+    }
+
+    if ( vertices.format.elementsForWeights > 0 )
+    {
+        [ file writeFloats:vertices.weights withLength:(vertexCount*vertices.format.elementsForWeights) ];
+    }
+
+
+    Float * texCoordPointer = vertices.textureCoordinates;
+
+    for ( Int i = 0; i < 8; i++ )
+    {
+        if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
+        {
+            [ file writeFloats:texCoordPointer withLength:(vertexCount * vertices.format.elementsForTextureCoordinateSet[i]) ];
+            texCoordPointer += (vertexCount * vertices.format.elementsForTextureCoordinateSet[i]);
+        }
+    }    
+
+    if ( vertices.indexed == YES )
+    {
+        [ file writeInt32s:vertices.indices withLength:(UInt)indexCount ];
+    }
+
+    return YES;
+}
+
 - (void) reset
 {
     reset_npvertexbuffer(&vertexBuffer);
     reset_npvertices(&vertices);
 
     [ super reset ];
-}
-
-- (BOOL) isReady
-{
-    return ready;
 }
 
 - (void) uploadVBOWithUsageHint:(NPState)usage
@@ -256,7 +319,6 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     NPLOG(([NSString stringWithFormat:@"positionsID %d",vertexBuffer.positionsID]));
     glGenBuffers(1, &(vertexBuffer.positionsID));
-    NSLog(@"genbuffer");
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.positionsID);
     glBufferData(GL_ARRAY_BUFFER, verticesSize * 3, vertices.positions, vboUsage);
 

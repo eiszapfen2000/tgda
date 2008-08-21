@@ -116,7 +116,6 @@
 
     [ textureNameToTextureFileName release ];
     textureNameToTextureFileName = validTextureNameToTextureFileName;
-
 }
 
 - (void) parseMaterialInstanceScriptLines
@@ -149,7 +148,7 @@
                 NSString * techniqueNameWithoutQuotes =  [ removeLeadingAndTrailingQuotes([ elements objectAtIndex:2 ]) retain ];
                 NPLOG(([NSString stringWithFormat:@"Technique: %@", techniqueNameWithoutQuotes]));
 
-                CGtechnique technique = cgGetNamedTechnique([effect effect],[techniqueNameWithoutQuotes cStringUsingEncoding:NSASCIIStringEncoding]);
+                CGtechnique technique = cgGetNamedTechnique([effect effect], [techniqueNameWithoutQuotes cStringUsingEncoding:NSASCIIStringEncoding]);
                 [ effect setDefaultTechnique:technique];
 
                 [ techniqueNameWithoutQuotes release ];
@@ -178,7 +177,7 @@
 
     while ( ( textureName = [ enumerator nextObject ] ) )
     {
-        NPTexture * texture = [[[ NPEngineCore instance ] textureManager ] loadTextureFromPath:[textureNameToTextureFileName objectForKey:textureName] ];
+        NPTexture * texture = [[[[ NPEngineCore instance ] textureManager ] loadTextureFromPath:[textureNameToTextureFileName objectForKey:textureName] ] retain ];
         [ textureNameToTexture setObject:texture forKey:textureName ];
         [ texture release ];
     }
@@ -243,6 +242,20 @@
     return NO;
 }
 
+- (BOOL) saveToFile:(NPFile *)file
+{
+    if ( ready == NO )
+    {
+        return NO;
+    }
+
+    [ file writeSUXString:name ];
+    [ file writeSUXString:materialFileName ];
+    [ file writeSUXScript:materialInstanceScript ];
+
+    return YES;
+}
+
 - (void) reset
 {
     [ materialFileName release ];
@@ -251,11 +264,6 @@
     [ materialInstanceScript removeAllObjects ];
 
     [ super reset ];
-}
-
-- (BOOL) isReady
-{
-    return ready;
 }
 
 - (NSArray *) textures

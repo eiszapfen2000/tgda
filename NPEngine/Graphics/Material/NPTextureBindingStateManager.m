@@ -33,7 +33,7 @@
 
 - (void) setup
 {
-    NPTextureBindingState * textureBindingState = [ [ NPTextureBindingState alloc ] initWithName:@"" parent:self ];
+    NPTextureBindingState * textureBindingState = [[ NPTextureBindingState alloc ] initWithName:@"" parent:self ];
     [ textureBindingStates addObject:textureBindingState ];
     [ self setCurrentTextureBindingState:textureBindingState ];
     [ textureBindingState release ];
