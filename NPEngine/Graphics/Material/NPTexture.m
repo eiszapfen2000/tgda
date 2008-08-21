@@ -54,7 +54,8 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 
 - (void) dealloc
 {
-    [ self reset ];    
+    NSLog(@"%d dealloc",[self name]);
+    [ self reset ];   
 
     [ super dealloc ];
 }
@@ -103,11 +104,6 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     np_texture_wrap_state_reset(&textureWrapState);
 
     [ super reset ];
-}
-
-- (BOOL) isReady
-{
-    return ready;
 }
 
 - (UInt) textureID

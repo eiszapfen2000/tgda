@@ -17,8 +17,8 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    renderContexts = [ [ NSMutableDictionary alloc ] init ];
-    defaultPixelFormat = [ [ NPOpenGLPixelFormat alloc ] init ];
+    renderContexts = [[ NSMutableDictionary alloc ] init ];
+    defaultPixelFormat = [[ NPOpenGLPixelFormat alloc ] init ];
     currentlyActiveRenderContext = nil;
 
     return self;
@@ -74,7 +74,7 @@
 
 - (NPOpenGLRenderContext *) createRenderContextWithAttributes:(NPOpenGLPixelFormatAttributes)pixelFormatAttributes andName:(NSString *)contextName
 {
-    NPOpenGLPixelFormat * pixelFormat = [ [ NPOpenGLPixelFormat alloc ] init ];
+    NPOpenGLPixelFormat * pixelFormat = [[ NPOpenGLPixelFormat alloc ] init ];
     [ pixelFormat setPixelFormatAttributes:pixelFormatAttributes ];
 
     return [ self createRenderContextWithPixelFormat:pixelFormat andName:contextName ];
@@ -82,7 +82,7 @@
 
 - (NPOpenGLRenderContext *) createRenderContextWithPixelFormat:(NPOpenGLPixelFormat *)pixelFormat andName:(NSString *)contextName
 {
-    if ( [ pixelFormat setup ] == NO )
+    if ( [ pixelFormat chooseMatchingPixelFormat ] == NO )
     {
         NPLOG_ERROR(@"pixelformat hinig");
         return nil;

@@ -205,7 +205,7 @@ void np_cg_error_callback()
         {
             NPFile * file = [ [ NPFile alloc ] initWithName:path parent:self fileName:path ];
             effect = [ self loadEffectUsingFileHandle:file ];
-            [ effect release ];
+            [ file release ];
         }
 
         return effect;

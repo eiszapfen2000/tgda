@@ -22,8 +22,8 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    lods = [ [ NSMutableArray alloc ] init ];
-    materials = [ [ NSMutableArray alloc ] init ];
+    lods = [[ NSMutableArray alloc ] init ];
+    materials = [[ NSMutableArray alloc ] init ];
 
     return self;
 }
@@ -45,7 +45,7 @@
     Char headerFromFile[8];
     [ file readChars:headerFromFile withLength:8 ];
 
-    if ( strncmp(suxHeader,headerFromFile,8) != 0 )
+    if ( strncmp(suxHeader, headerFromFile, 8) != 0 )
     {
         NPLOG_ERROR(([NSString stringWithFormat:@"%@: wrong header version", [file fileName ]]));
 
@@ -63,7 +63,7 @@
 
     for ( Int i = 0; i < materialCount; i++ )
     {
-        NPSUXMaterialInstance * materialInstance = [ [ NPSUXMaterialInstance alloc ] init ];
+        NPSUXMaterialInstance * materialInstance = [[ NPSUXMaterialInstance alloc ] init ];
 
         if ( [ materialInstance loadFromFile:file ] == YES )
         {
@@ -94,17 +94,48 @@
     return YES;
 }
 
+- (BOOL) saveToFile:(NPFile *)file
+{
+    Char suxHeader[8] = "SUX____1";
+    [ file writeChars:suxHeader withLength:8 ];
+
+    [ file writeSUXString:name ];
+
+    Int32 materialCount = (Int32)[ materials count ];
+    [ file writeInt32:&materialCount ];
+
+    for ( Int i = 0; i < materialCount; i++ )
+    {
+        NPSUXMaterialInstance * materialInstance = [ materials objectAtIndex:i ];
+
+        if ( [ materialInstance saveToFile:file ] == NO )
+        {
+            return NO;
+        }
+    }
+
+    Int32 lodCount = (Int32)[ lods count ];
+    [ file writeInt32:&lodCount ];
+
+    for ( Int i = 0; i < lodCount; i++ )
+    {
+        NPSUXModelLod * lod = [ lods objectAtIndex:i ];
+
+        if ( [ lod saveToFile:file ] == NO )
+        {
+            return NO;
+        }
+    }
+
+    return YES;
+}
+
 - (void) reset
 {
     [ lods removeAllObjects ];
     [ materials removeAllObjects ];
 
     [ super reset ];
-}
-
-- (BOOL) isReady
-{
-    return ready;
 }
 
 - (NSArray *) lods

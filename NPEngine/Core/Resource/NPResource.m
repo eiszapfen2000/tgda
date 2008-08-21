@@ -48,6 +48,11 @@
     return NO;
 }
 
+- (BOOL) saveToFile:(NPFile *)file
+{
+    return NO;
+}
+
 - (void) reset
 {
     ready = NO;

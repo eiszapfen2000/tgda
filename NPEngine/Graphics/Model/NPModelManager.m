@@ -2,6 +2,7 @@
 #import "NPSUXModel.h"
 #import "Core/File/NPFile.h"
 #import "Core/File/NPPathManager.h"
+#import "Core/File/NPPathUtilities.h"
 #import "Core/NPEngineCore.h"
 
 @implementation NPModelManager
@@ -34,44 +35,86 @@
 
 - (id) loadModelFromPath:(NSString *)path
 {
-    NSString * absolutePath = [ [ [ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
+    NSString * absolutePath = [[[ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
 
-    if ( [ absolutePath isEqual:@"" ] == NO )
+    return [ self loadModelFromAbsolutePath:absolutePath ];
+}
+
+- (id) loadModelFromAbsolutePath:(NSString *)path
+{
+    NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, path]));
+
+    if ( [ path isEqual:@"" ] == NO )
     {
-        NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, absolutePath]));
-
-        NPSUXModel * model = [ models objectForKey:absolutePath ];
+        NPSUXModel * model = [ models objectForKey:path ];
 
         if ( model == nil )
         {
-            NPFile * file = [ [ NPFile alloc ] initWithName:path parent:self fileName:absolutePath ];
-            model = [ [ NPSUXModel alloc ] initWithName:@"" parent:self ];
-
-            if ( [ model loadFromFile:file ] == YES )
-            {
-                [ models setObject:model forKey:absolutePath ];
-                [ model release ];
-                [ file release ];
-
-                return model;
-            }
-            else
-            {
-                [ model release ];
-                [ file release ];
-
-                return nil;
-            }
+            NPFile * file = [[ NPFile alloc ] initWithName:path parent:self fileName:path ];
+            model = [ self loadModelUsingFileHandle:file ];
+            [ file release ];
         }
-        else
+
+        return model;
+    }
+
+    return nil;
+}
+
+- (id) loadModelUsingFileHandle:(NPFile *)file
+{
+    NPSUXModel * model = [[ NPSUXModel alloc ] initWithName:@"" parent:self ];
+
+    if ( [ model loadFromFile:file ] == YES )
+    {
+        [ models setObject:model forKey:[file fileName] ];
+        [ model release ];
+
+        return model;
+    }
+    else
+    {
+        [ model release ];
+
+        return nil;
+    } 
+}
+
+- (BOOL) saveModel:(NPSUXModel *)model atAbsolutePath:(NSString *)path
+{
+    NPState mode = NP_FILE_WRITING;
+
+    if ( isDirectory(path) == YES )
+    {
+        NPLOG_WARNING(([NSString stringWithFormat:@"%@ is a directory", path]));
+        return NO;
+    }
+
+    if ( isFile(path) == YES )
+    {
+        NPLOG(([NSString stringWithFormat:@"%@ already exist, overwriting...", path]));
+        mode = NP_FILE_UPDATING;        
+    }
+    else
+    {
+        if ( createEmptyFile(path) == NO )
         {
-            return model;
+            NPLOG_WARNING(([NSString stringWithFormat:@"Could not create file %@", path]));
+            return NO;
         }
     }
 
-    NPLOG(([NSString stringWithFormat:@"%@ not found",path]));
+    NPFile * file = [[ NPFile alloc ] initWithName:@"" parent:self fileName:path mode:mode ];
 
-    return nil;
+    if ( [ model saveToFile:file ] == NO )
+    {
+        [ file release ];
+        return NO;
+    }
+
+    [ file release ];
+
+    return YES;
 }
 
 @end

@@ -1,22 +1,30 @@
 #import "Core/NPObject/NPObject.h"
 #import "Core/Math/FVector.h"
 
+#define NP_FILE_READING     0
+#define NP_FILE_UPDATING    1
+#define NP_FILE_WRITING     2
+
 @interface NPFile : NPObject
 {
     NSString * fileName;
     NSFileHandle * fileHandle;
+    NPState mode;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent fileName:(NSString *)newFileName;
+- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent fileName:(NSString *)newFileName mode:(NPState)newMode;
 - (void) dealloc;
 
 - (NSString *) fileName;
 - (void) setFileName:(NSString *)newFileName;
 
-- (void) initFileHandle;
+- (NPState) mode;
+
+- (void) initFileHandleWithMode:(NPState)newMode;
 - (void) clear;
 
 - (void) readInt16:(Int16 *)i;
@@ -43,5 +51,28 @@
 - (FVector4 *) readFVector4;
 
 - (NSData *)readEntireFile;
+
+- (void) writeInt16:(Int16 *)i;
+- (void) writeInt32:(Int32 *)i;
+- (void) writeInt32s:(Int32 *)i withLength:(UInt)length;
+- (void) writeInt64:(Int64 *)i;
+
+- (void) writeFloat:(Float *)f;
+- (void) writeFloats:(Float *)f withLength:(UInt)length;
+- (void) writeDouble:(Double *)d;
+
+- (void) writeByte:(Byte *)b;
+- (void) writeBytes:(Byte *)b withLength:(UInt)length;
+
+- (void) writeChar:(Char *)c;
+- (void) writeChars:(Char *)c withLength:(UInt)length;
+- (void) writeBool:(BOOL *)b;
+
+- (void) writeSUXString:(NSString *)s;
+- (void) writeSUXScript:(NSArray *)script;
+
+- (void) writeFVector2:(FVector2 *)v;
+- (void) writeFVector3:(FVector3 *)v;
+- (void) writeFVector4:(FVector4 *)v;
 
 @end

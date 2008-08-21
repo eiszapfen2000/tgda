@@ -17,8 +17,8 @@
 - (void) dealloc;
 
 - (BOOL) loadFromFile:(NPFile *)file;
+- (BOOL) saveToFile:(NPFile *)file;
 - (void) reset;
-- (BOOL) isReady;
 
 - (NSArray *) lods;
 - (NSArray *) materials;

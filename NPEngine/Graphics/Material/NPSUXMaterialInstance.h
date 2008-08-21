@@ -27,8 +27,8 @@
 - (void) setMaterialFileName:(NSString *)newMaterialFileName;
 
 - (BOOL) loadFromFile:(NPFile *)file;
+- (BOOL) saveToFile:(NPFile *)file;
 - (void) reset;
-- (BOOL) isReady;
 
 - (NSArray *) textures;
 - (NPEffect *) effect;
