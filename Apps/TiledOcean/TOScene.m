@@ -39,19 +39,17 @@
 - (void) dealloc
 {
     [ camera release ];
+    [ surfaceVBO release ];
+    [ surfaceGroup release ];
+    [ surfaceLod release ];
     [ surface release ];
+    [ triangleVBO release ];
+    [ testCamera release ];
+
+    NSLog(@"scene dealloc%d",[testCamera retainCount]);
 
     [ super dealloc ];
 }
-
-/*- (void) setRenderContext:(NPOpenGLRenderContext *)newRenderContext
-{
-    if ( renderContext != newRenderContext )
-    {
-        [ renderContext release ];
-        renderContext = [ newRenderContext retain ];
-    }
-}*/
 
 - (TOCamera *) camera
 {
@@ -106,8 +104,10 @@
 
     [ triangleVBO uploadVBOWithUsageHint:NP_VBO_UPLOAD_ONCE_RENDER_OFTEN ];
 
-    testCamera = [[[ NPEngineCore instance ] modelManager ] loadModelFromPath:@"camera.model" ];
+    testCamera = [[[[ NPEngineCore instance ] modelManager ] loadModelFromPath:@"camera.model" ] retain ];
     [ testCamera uploadToGL ];
+
+    NPSUXModel * ocean = [[[[ NPEngineCore instance ] modelManager ] loadModelFromAbsolutePath:@"/home/icicle/ocean.model" ] retain ];
 
     if ( testCamera == nil )
     {
@@ -135,7 +135,7 @@
 
 - (void) render
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     /*glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -143,7 +143,7 @@
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();*/
 
-    [ camera render ];
+    //[ camera render ];
     //gluLookAt(0.0f,0.0f,12.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
 
     /*glBegin(GL_TRIANGLES);
@@ -153,13 +153,13 @@
         glVertex3f(0.0f,0.5f,0.0f);
     glEnd();*/
 
-    if ( [ triangleVBO isReady ] == YES )
+    if ( [ triangleVBO ready ] == YES )
     {
         //NSLog(@"brak");
-        //[ triangleVBO render ];
+        [ triangleVBO render ];
     }
 
-    if ( [ surfaceVBO isReady ] == YES )
+    if ( [ surfaceVBO ready ] == YES )
     {
         //NSLog(@"brak");
         [ surfaceVBO render ];

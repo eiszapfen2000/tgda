@@ -79,6 +79,7 @@
 - (Double) indexToKx:(Int)index;
 - (Double) indexToKy:(Int)index;
 
+- (void) printFrequencySpectrumAtPath:(NSString *)path;
 - (void) generateH0;
 - (void) generateH;
 - (void) generateFrequencySpectrum;

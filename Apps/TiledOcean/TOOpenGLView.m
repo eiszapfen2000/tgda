@@ -1,13 +1,15 @@
-//#import <GL/gl.h>
 #import "TOOpenGLView.h"
 #import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
 #import "Graphics/Model/NPVertexBuffer.h"
+#import "Graphics/RenderTarget/NPRenderBuffer.h"
+#import "Graphics/RenderTarget/NPRenderTexture.h"
+#import "Graphics/RenderTarget/NPRenderTargetConfiguration.h"
+#import "Graphics/Material/NPTexture.h"
 #import "Core/NPEngineCore.h"
-//#import "Graphics/Camera/NPCamera.h"
-//#import "Graphics/Camera/NPCameraManager.h"
 #import "TOCamera.h"
 #import "TOScene.h"
 
+#import <GNUstepGUI/GSDisplayServer.h>
 
 @implementation TOOpenGLView
 
@@ -25,10 +27,19 @@
 
     glStateInitialised = NO;
     rotY = 0.0f;
+    rotz = 0.2f;
 
     reference.x = reference.y = 0.0f;
 
     return self;
+}
+
+- (void) dealloc
+{
+    NSLog(@"glview dealloc");
+    [ scene release ];
+
+    [ super dealloc ];
 }
 
 - (void) setup:(NSNotification *)aNot
@@ -44,15 +55,30 @@
 
 - (void) updateAndRender:(NSTimer *)theTimer
 {
-    [ scene update ];
-
     NPOpenGLRenderContext * ctx = [ self renderContext];
 
-    /*if( [ ctx context ] != [NSOpenGLContext currentContext] )
-    {
-        [ renderContext activate ];
-    }*/
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    /*glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glRotatef(rotz,0.0f,0.0f,1.0f);
+
+    glBegin(GL_TRIANGLES);
+        glColor3f(1.0f,0.0f,0.0f);
+        //glTexCoord2f(0.0f,0.0f);
+        glVertex2f(-1.0f,0.0f);
+        //glTexCoord2f(1.0f,0.0f);
+        glVertex2f(1.0f,0.0f);
+        //glTexCoord2f(0.5f,1.0f);
+        glVertex2f(0.0f,1.0f);
+    glEnd();
+
+    rotz += 0.2f;*/
+
+    [ scene update ];
     [ scene render ];
 
     GLenum error = glGetError();
@@ -61,7 +87,6 @@
     {NSLog(@"%s",gluErrorString(error));}
 
     [ ctx swap ];
-    //NSLog(@"swap");
 }
 
 - (BOOL) acceptsFirstResponder
@@ -150,22 +175,23 @@
 
 - (void) setupGLState
 {
+    glXSwapIntervalSGI(1);
+
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     glClearDepth(1.0f);
     glDepthFunc(GL_LEQUAL);
-    glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_DEPTH_TEST);
 
     //glCullFace(GL_BACK);
     //glEnable(GL_CULL_FACE);
 
     glEnable(GL_TEXTURE_2D);
+    glEnable(GL_MULTISAMPLE_ARB);
 
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-
-	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+    [ self reshape ];
 }
 
 - (void) drawRect:(NSRect)aRect
@@ -173,23 +199,11 @@
     NSLog(@"drawrect");
     NPOpenGLRenderContext * ctx = [ self renderContext];
 
-    /*if( [ ctx context ] != [NSOpenGLContext currentContext] )
-    {
-        [ renderContext activate ];
-    }*/
-
     if ( glStateInitialised == NO )
     {
         [ self setupGLState ];
         glStateInitialised = YES;
     }
-
-    //[ self update ];
-    //[ self reshape ];
-
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    //[[self renderContext] swap];
 }
 
 - (void) reshape
@@ -199,10 +213,45 @@
     GLint height = (GLint)fr_rect.size.height;
     GLint width =  (GLint)fr_rect.size.width;
 
+    NSLog(@"%d %d",width,height);
+
     Float aspectRatio = (Float)width/(Float)height;
-    [[ scene camera ] setAspectRatio:aspectRatio ];
+    //[[ scene camera ] setAspectRatio:aspectRatio ];
 
     glViewport(0, 0, width, height);
+
+    NSWindow * brak = [ self window ];
+    GSDisplayServer * server = GSServerForWindow(brak);
+    NSRect bounds = [ server windowbounds:[brak windowNumber ]];
+    NSLog(@"%f %f %f %f",bounds.origin.x,bounds.origin.y,bounds.size.width,bounds.size.height);
+
+    NSRect rect;
+    if ([server handlesWindowDecorations] == YES)
+    {
+      /* The window manager handles window decorations, so the
+       * the parent X window is equal to the content view and
+       * we must therefore use content view coordinates.
+       */
+      rect = [self convertRect: [self bounds]
+                   toView: [[self window] contentView]];
+    }
+    else
+    {
+      /* The GUI library handles window decorations, so the
+       * the parent X window is equal to the NSWindow frame
+       * and we can use window base coordinates.
+       */
+      rect = [self convertRect: [self bounds] toView: nil];
+    }
+
+    NSLog(@"%f %f %f %f",rect.origin.x,rect.origin.y,rect.size.width,rect.size.height);
+
+    //gswindow_device_t *win_info = [server _windowWithTag:[brak windowNumber]];
+    float x = NSMinX(rect);
+    //float y = NSHeight(win_info->xframe) - NSMaxY(rect);
+    float xwidth = NSWidth(rect);
+    float xheight = NSHeight(rect);
+    NSLog(@"%f %f %f",x,xwidth,xheight);
 }
 
 - (TOScene *) scene

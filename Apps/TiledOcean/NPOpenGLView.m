@@ -12,8 +12,16 @@
     {
         NSLog(@"create damn fucking render context");
 
-        renderContext = [[[[ NPEngineCore instance ] renderContextManager ] createRenderContextWithDefaultPixelFormatAndName:@"brak" ] retain ];
-        [ renderContext connectToView: self];
+        NSDictionary * settings = [ NSDictionary dictionaryWithContentsOfFile:@"settings.plist" ];
+        BOOL fullscreen = [[ settings objectForKey:@"Fullscreen" ] boolValue ];
+        Int32 samples = [[ settings objectForKey:@"FSAA" ] intValue ];
+
+        NPOpenGLPixelFormat * pixelFormat = [[ NPOpenGLPixelFormat alloc ] init ];
+        [ pixelFormat setSampleCount:samples ];
+
+        renderContext = [[[[ NPEngineCore instance ] renderContextManager ] createRenderContextWithPixelFormat:pixelFormat andName:@"NPOpenGLViewRC" ] retain ];
+
+        [ renderContext connectToView:self ];
         [ renderContext activate ];
         [ renderContext setupGLEW ];
 
@@ -71,7 +79,7 @@
     }
 }
 
-- (void) lockFocusInRect: (NSRect) aRect
+/*- (void) lockFocusInRect: (NSRect) aRect
 {
     if( [ renderContext context ] != [NSOpenGLContext currentContext] )
     {
@@ -96,6 +104,6 @@
     }
 
     NSLog(@"lock done");
-}
+}*/
 
 @end

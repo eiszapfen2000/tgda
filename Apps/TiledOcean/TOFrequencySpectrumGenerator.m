@@ -263,8 +263,8 @@
 
 - (Double) indexToKy:(Int)index
 {
-    Double m = -(resY / 2.0);
-    m = m + (Double)index;
+    Double m = (resY / 2.0);
+    m = m - (Double)index;
 
     return (MATH_2_MUL_PI * m) / length;
 }
@@ -291,7 +291,11 @@
     Double amplitude = PHILLIPS_CONSTANT;
     amplitude = amplitude * ( 1.0 / (kSquareLength * kSquareLength) );
     amplitude = amplitude * exp( -1.0 / (kSquareLength * L * L) );
-    amplitude = amplitude * pow(v2_vv_dot_product(&kNormalised, &windDirectionNormalised), 2.0);
+
+    Double kdotw = v2_vv_dot_product(&kNormalised, &windDirectionNormalised);
+    NSLog(@"knorm:%f %f wind:%f %f dot:%f",kNormalised.x,kNormalised.y,windDirectionNormalised.x,windDirectionNormalised.y,kdotw);
+
+    amplitude = amplitude * pow(kdotw, 2.0);
 
     return amplitude;
 }
@@ -318,7 +322,7 @@
             k.x = [ self indexToKx:i ];
             k.y = [ self indexToKy:j ];
 
-//            NSLog(@"k: %f %f",k.x,k.y);
+            NSLog(@"k: %f %f",k.x,k.y);
 
             a = sqrt([ self getAmplitudeAt:&k ]);
 
@@ -327,12 +331,12 @@
 			H0[j + resY * i][0] = MATH_1_DIV_SQRT_2 * xi_r * a;
 			H0[j + resY * i][1] = MATH_1_DIV_SQRT_2 * xi_i * a;
 
-//            NSLog(@"H0: %f %f", H0[j + resY * i][0],H0[j + resY * i][1]);
+            NSLog(@"H0: %f %f", H0[j + resY * i][0],H0[j + resY * i][1]);
         }
     }
 }
 
-- (void) generateH
+/*- (void) generateH
 {
     Vector2 k;
     Double omega;
@@ -370,6 +374,65 @@
             expMinusOmega[0] = cos(omega);
             expMinusOmega[1] = -sin(omega);
 
+
+            // H0[indexForK] * exp(i*omega*t)
+            H0expOmega[0] = H0[indexForK][0] * expOmega[0] - H0[indexForK][1] * expOmega[1];
+            H0expOmega[1] = H0[indexForK][0] * expOmega[1] + H0[indexForK][1] * expOmega[0];
+
+            // H0[indexForMinusK] * exp(-i*omega*t)
+            H0expMinusOmega[0] = H0[indexForMinusK][0] * expMinusOmega[0] - H0[indexForMinusK][1] * expMinusOmega[1];
+            H0expMinusOmega[1] = H0[indexForMinusK][0] * expMinusOmega[1] + H0[indexForMinusK][1] * expMinusOmega[0];
+
+
+            // H = H0expOmega + H0expMinusomega
+            frequencySpectrum[indexForK][0] = H0expOmega[0] + H0expMinusOmega[0];
+            frequencySpectrum[indexForK][1] = H0expOmega[1] + H0expMinusOmega[1];
+
+            //NSLog(@"H: %f %f",H[indexForK][0],H[indexForK][1]);
+
+            // H(-k) = conjugate of H(k)
+            frequencySpectrum[indexForMinusK][0] =  frequencySpectrum[indexForK][0];
+            frequencySpectrum[indexForMinusK][1] = -frequencySpectrum[indexForK][1];
+            //NSLog(@"Hc: %f %f",H[indexForMinusK][0],H[indexForMinusK][1]);
+        }
+    }    
+}*/
+
+- (void) generateH
+{
+    Vector2 k;
+    Double omega;
+    fftw_complex expOmega, expMinusOmega, H0expOmega, H0expMinusOmega, H0conjugate;
+    Int indexForK, indexForConjugate;
+
+	if ( !frequencySpectrum )
+	{
+		frequencySpectrum = (fftw_complex *)fftw_malloc(sizeof(fftw_complex)*resX*resY);
+	}
+
+    for ( Int i = 0; i < resX; i++ )
+    {
+        for ( Int j = 0; j < resY; j++ )
+        {
+            indexForK = j + resY * i;
+            indexForConjugate = ((resY - j) % resY) + resY * ((resX - i) % resX);
+            NSLog(@"indexfc: %d",indexForConjugate);
+
+            k.x = [ self indexToKx:i ];
+            k.y = [ self indexToKy:j ];
+            //NSLog(@"k: %f %f",k.x,k.y);
+
+            omega = [ self kToOmega:&k ];
+            //NSLog(@"omega: %f",omega);
+
+            // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
+            expOmega[0] = cos(omega);
+            expOmega[1] = sin(omega);
+
+            // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
+            expMinusOmega[0] = cos(omega);
+            expMinusOmega[1] = -sin(omega);
+
             /* complex multiplication
                x = a + i*b
                y = c + i*d
@@ -380,9 +443,14 @@
             H0expOmega[0] = H0[indexForK][0] * expOmega[0] - H0[indexForK][1] * expOmega[1];
             H0expOmega[1] = H0[indexForK][0] * expOmega[1] + H0[indexForK][1] * expOmega[0];
 
-            // H0[indexForMinusK] * exp(-i*omega*t)
-            H0expMinusOmega[0] = H0[indexForMinusK][0] * expMinusOmega[0] - H0[indexForMinusK][1] * expMinusOmega[1];
-            H0expMinusOmega[1] = H0[indexForMinusK][0] * expMinusOmega[1] + H0[indexForMinusK][1] * expMinusOmega[0];
+
+            H0conjugate[0] = H0[indexForConjugate][0];
+            H0conjugate[1] = -H0[indexForConjugate][1];
+
+            // H0[indexForConjugate] * exp(-i*omega*t)
+            
+            H0expMinusOmega[0] = H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1];
+            H0expMinusOmega[1] = H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0];
 
             /* complex addition
                x = a + i*b
@@ -397,22 +465,103 @@
             //NSLog(@"H: %f %f",H[indexForK][0],H[indexForK][1]);
 
             // H(-k) = conjugate of H(k)
-            frequencySpectrum[indexForMinusK][0] =  frequencySpectrum[indexForK][0];
-            frequencySpectrum[indexForMinusK][1] = -frequencySpectrum[indexForK][1];
+
+            //frequencySpectrum[indexForConjugate][0] =  frequencySpectrum[indexForK][0];
+            //frequencySpectrum[indexForConjugate][1] = -frequencySpectrum[indexForK][1];
             //NSLog(@"Hc: %f %f",H[indexForMinusK][0],H[indexForMinusK][1]);
         }
     }    
-} 
+}
+
+/*
+Frequeny Spectrum Quadrant Layout
+
+---------
+| 1 | 2 |
+---------
+| 4 | 3 |
+---------
+
+*/
+
+
+#define QUADRANT_1_AND_3     1
+#define QUADRANT_2_AND_4    -1
+
+- (void) swapFrequencySpectrumQuadrants:(NPState)quadrants
+{
+    fftw_complex tmp;
+    Int index, oppositeQuadrantIndex;
+
+    Int startX = 0;
+    Int endX = resX / 2;
+    Int startY, endY;
+
+    switch ( quadrants )
+    {
+        case QUADRANT_1_AND_3:
+        {
+            startY = 0;
+            endY = resY/2;
+            break;
+        }
+        case QUADRANT_2_AND_4:
+        {
+            startY = resY/2;
+            endY = resY;
+            break;
+        }
+    }
+
+    for ( Int i = startX; i < endX; i++ )
+    {
+        for ( Int j = startY; j < endY; j++ )
+        {
+            index = j + resY * i;
+            oppositeQuadrantIndex = (j + ((resY/2) * quadrants)) + resY * (i + resX/2);
+
+            tmp[0] = frequencySpectrum[index][0];
+            tmp[1] = frequencySpectrum[index][1];
+
+            frequencySpectrum[index][0] = frequencySpectrum[oppositeQuadrantIndex][0];
+            frequencySpectrum[index][1] = frequencySpectrum[oppositeQuadrantIndex][1];
+
+            frequencySpectrum[oppositeQuadrantIndex][0] = tmp[0];
+            frequencySpectrum[oppositeQuadrantIndex][1] = tmp[1];
+        }
+    }
+}
+
+- (void) printFrequencySpectrumAtPath:(NSString *)path
+{
+    NSMutableString * frequencyString = [[NSMutableString alloc] init];
+    for ( Int i = 0; i < resX; i++ )
+    {
+        for ( Int j = 0; j < resY; j++ )
+        {
+            NSString * tmp = [ NSString stringWithFormat:@"%f %f ",frequencySpectrum[i+j*resY][0],frequencySpectrum[i+j*resY][1] ];
+            [ frequencyString appendString:tmp ];
+        }
+        [ frequencyString appendFormat:@"\n" ];
+    }
+    [ frequencyString writeToFile:path atomically:YES ];
+    [ frequencyString release ];
+}
 
 - (void) generateFrequencySpectrum
 {
-    //NSLog(@"generate");
     if ( [ self ready ] == YES )
     {
-        //NSLog(@"start");
         [ self generateH0 ];
         [ self generateH ];
-        //NSLog(@"stop");
+
+        [ self printFrequencySpectrumAtPath:@"Frequency.txt" ];
+
+        [ self swapFrequencySpectrumQuadrants:QUADRANT_1_AND_3 ];
+        [ self swapFrequencySpectrumQuadrants:QUADRANT_2_AND_4 ];
+
+        [ self printFrequencySpectrumAtPath:@"FrequencyShifted.txt" ];
+
     }
 }
 

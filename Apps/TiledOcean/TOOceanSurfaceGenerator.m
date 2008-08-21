@@ -205,23 +205,60 @@
 
     [ fsg generateFrequencySpectrum ];
 
+    fftw_complex * complexHeights = (fftw_complex *)fftw_malloc(sizeof(fftw_complex)*[fsg resX]*[fsg resY]);
+    //fftw_complex * complexHeights = (fftw_complex *)fftw_malloc(sizeof(fftw_complex)*[fsg resY]);
+
     fftw_plan plan;
     fftw_plan_with_nthreads(numberOfThreads);
-    plan = fftw_plan_dft_c2r_2d([fsg resX],[fsg resY],[fsg frequencySpectrum],heights,FFTW_ESTIMATE);
+    plan = fftw_plan_dft_2d([fsg resX], [fsg resY], [fsg frequencySpectrum], complexHeights, FFTW_BACKWARD, FFTW_ESTIMATE);
     fftw_execute(plan);
     fftw_destroy_plan(plan);
 
+/*    fftw_plan plan;
+    fftw_plan_with_nthreads(numberOfThreads);
+    plan = fftw_plan_dft_1d([fsg resY], [fsg frequencySpectrum], complexHeights, FFTW_BACKWARD, FFTW_ESTIMATE);
+    fftw_execute(plan);
+    fftw_destroy_plan(plan);*/
+
     NSLog(@"thread done");
 
-    NSMutableDictionary * d = [[ NSMutableDictionary alloc ] init ];
-    [ d setObject:fsg forKey:@"FSG" ];
-    NSNotification * anot = [ NSNotification notificationWithName:@"TOOceanSurfaceGenerationDidEnd" object:self userInfo:d ];
+    NSMutableString * heightString = [[NSMutableString alloc] init];
 
-    [[NSNotificationCenter defaultCenter] performSelectorOnMainThread:@selector(postNotification:)
+    for ( Int i = 0; i < [ fsg resX ]; i++ )
+    {
+        for ( Int j = 0; j < [ fsg resY ]; j++ )
+        {
+            NSLog(@"%f %f", complexHeights[j + [ fsg resY ] * i][0], complexHeights[j + [ fsg resY ] * i][1]);
+            heights[j + [ fsg resY ] * i] = complexHeights[j + [ fsg resY ] * i][0];
+        }
+    }
+
+
+
+    for ( Int i = 0; i < [ fsg resX ]; i++ )
+    {
+        for ( Int j = 0; j < [ fsg resY ]; j++ )
+        {
+            //heights[j + resY * i] = complexHeights[j + resY * i][0];
+            NSString * tmp = [ NSString stringWithFormat:@"%f ",heights[i+j*[fsg resY]] ];
+            [ heightString appendString:tmp ];
+        }
+
+        [ heightString appendFormat:@"\n" ];
+    }
+
+    //NSLog(heightString);
+    [ heightString writeToFile:@"heights.txt" atomically:YES ];
+
+    //NSMutableDictionary * userInfo = [[ NSMutableDictionary alloc ] init ];
+    //[ userInfo setObject:fsg forKey:@"FSG" ];
+    //NSNotification * anot = [ NSNotification notificationWithName:@"TOOceanSurfaceGenerationDidEnd" object:self userInfo:userInfo ];
+
+    /*[[NSNotificationCenter defaultCenter] performSelectorOnMainThread:@selector(postNotification:)
                     withObject:anot
-                 waitUntilDone:NO];
+                 waitUntilDone:NO];*/
 
-    [ d release ];
+    //[ userInfo release ];
 
     [ apool release ];
 }

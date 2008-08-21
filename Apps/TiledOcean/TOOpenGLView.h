@@ -2,6 +2,9 @@
 #import "NPOpenGLView.h"
 
 @class TOScene;
+@class NPRenderBuffer;
+@class NPRenderTexture;
+@class NPRenderTargetConfiguration;
 
 @interface TOOpenGLView : NPOpenGLView
 {
@@ -11,11 +14,17 @@
     BOOL glStateInitialised;
 
     float rotY;
+    float rotz;
 
     NSPoint reference;
+
+    NPRenderBuffer * renderBuffer;
+    NPRenderTexture * renderTexture;
+    NPRenderTargetConfiguration * renderTargetConfiguration;
 }
 
 - (id) initWithFrame:(NSRect)frameRect;
+- (void) dealloc;
 
 - (void) setup:(NSNotification *)aNot;
 
