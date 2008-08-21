@@ -21,11 +21,6 @@
 {
     self = [ super init ];
 
-    /*[[ NSNotificationCenter defaultCenter ] addObserver:self
-                                               selector:@selector(setup:)
-                                                   name:@"TODocumentCanLoadResources"
-                                                 object:nil];*/
-
     [[ NSNotificationCenter defaultCenter ] addObserver:self
                                                selector:@selector(oceanSurfaceGenerationDidStart:)
                                                    name:@"TOOceanSurfaceGenerationDidStart"
@@ -40,48 +35,21 @@
     oceanSurfaceGeneratorSettingsWindowController = nil;
 
     oceanSurfaceGenerator = [[ TOOceanSurfaceGenerator alloc ] initWithName:[self displayName] parent:nil ];
-    //scene = [[ TOScene alloc ] initWithName:[self displayName] parent:nil ];
+
+    [ self updateChangeCount:NSChangeDone ];
 
     return self;
 }
 
-- (void) dealloc
-{
-    [ oceanSurfaceGeneratorSettingsWindowController release ];
-    [ oceanSurfaceGenerator release ];
-    //[ scene release ];
 
-    [ super dealloc ];
-}
-
-- (BOOL) loadDataRepresentation:(NSData*)representation ofType:(NSString*)type
+/*- (BOOL) loadDataRepresentation:(NSData*)representation ofType:(NSString*)type
 {
     return NO;
 }
 
-- (NSData*) dataRepresentationOfType:(NSString*)type
+- (NSData *) dataRepresentationOfType:(NSString*) type
 {
     return nil;
-}
-
-- (void) setup:(NSNotification *)aNot
-{
-    //[ scene setup ];
-    //[ scene setRenderContext:[[glWindowController openglView] renderContext]];
-
-    /*timer = [ NSTimer scheduledTimerWithTimeInterval:1.0/60.0
-                                              target:self
-                                            selector:@selector(updateAndRender:)
-                                            userInfo:nil
-                                             repeats:YES ];*/
-
-    //[ self updateChangeCount:NSChangeDone ];
-}
-
-/*- (void) updateAndRender:(NSTimer *)theTimer
-{
-    [ scene update ];
-    [ scene render ];
 }*/
 
 - (void) makeWindowControllers
@@ -91,6 +59,9 @@
 
     [ self addWindowController:oceanSurfaceGeneratorSettingsWindowController ];
 	[ self addWindowController:glWindowController ];
+
+    [ glWindowController release ];
+    [ oceanSurfaceGeneratorSettingsWindowController release ];
 
     [ oceanSurfaceGeneratorSettingsWindowController setOceanSurfaceGenerator:oceanSurfaceGenerator ];
 }
@@ -117,31 +88,24 @@
 
 - (void) oceanSurfaceGenerationDidEnd:(NSNotification *)aNot;
 {
-    //NPVertexBuffer * vbo = [ scene surfaceVBO ];
     TOFrequencySpectrumGenerator * fsg = [[ aNot userInfo ] objectForKey:@"FSG" ];
 
     Float * vertexArray = [ oceanSurfaceGenerator buildVertexArrayUsingFSG:fsg ];
-    //[ vbo setPositions:vertexArray ];
     Int * indexArray = [ oceanSurfaceGenerator buildIndexArrayUsingFSG:fsg ];
-    //[ vbo setIndices:indexArray ];
-
-    //[ vbo setIndexed:YES ];
-
     Int maxVertex = [ fsg resX ]*[ fsg resY ] - 1;
-    //[ vbo setMaxVertex:maxVertex ];
-
     Int maxIndex = ([ fsg resX ]-1) * ([fsg resY]-1) * 6;
-    //[ vbo setMaxIndex:maxIndex ];
-
-    //[ vbo setPrimitiveType:NP_VBO_PRIMITIVES_TRIANGLES ];
-    //[ vbo setReady:YES ];
-
-    //[ vbo uploadVBOWithUsageHint:NP_VBO_UPLOAD_ONCE_RENDER_OFTEN ];
 
     [[ glWindowController openglView ] buildVBOUsingVertexArray:vertexArray
                                                      indexArray:indexArray
                                                       maxVertex:maxVertex
                                                        maxIndex:maxIndex ];
+}
+
+- (BOOL)writeToFile: (NSString *)fileName ofType: (NSString *)type
+{
+    NSLog(@"rudsfisdgfisdgfifao");
+
+    return [[[ NPEngineCore instance ] modelManager ] saveModel:[[[ glWindowController openglView ] scene ] surface ] atAbsolutePath:fileName ];
 }
 
 @end

@@ -1,5 +1,6 @@
 #import <AppKit/AppKit.h>
-#import "Core/File/NPURLDownload.h"
+#import "TODocumentController.h"
+#import "Core/NPEngineCore.h"
 
 int main(int argc, const char *argv[])
 {

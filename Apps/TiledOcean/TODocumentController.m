@@ -18,30 +18,20 @@
                                                selector:@selector(newContextReady:)
                                                    name:@"TOOpenGLWindowContextReady"
                                                  object:nil ];
-
-    [[ NSNotificationCenter defaultCenter ] addObserver:self
-                                               selector:@selector(killNPEngine:)
-                                                   name:NSApplicationWillTerminateNotification
-                                                 object:nil ];
-
     return self;
 }
 
 - (void) newContextReady:(NSNotification *)aNot
 {
-    if ( [ core isReady ] == NO )
+    if ( [ core ready ] == NO )
     {
         [ core setup ];
     }
 }
 
-- (void) killNPEngine:(NSNotification *)sender
+- (void) close:(id)sender
 {
-    NSLog(@"terminate");
-
-    [[ NPEngineCore instance ] dealloc ];
-
-    NSLog(@"engine killed");
+    [[ self currentDocument ] close ];
 }
 
 @end

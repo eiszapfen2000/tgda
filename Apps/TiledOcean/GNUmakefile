@@ -20,11 +20,12 @@ main.m
 
 TiledOcean_RESOURCE_FILES = \
 Info-gnustep.plist \
+settings.plist \
 Resources/TiledOcean.gorm \
 Resources/TODocument.gorm \
 Resources/TOOceanSurfaceGeneratorSettingsWindow.gorm
 
-ADDITIONAL_GUI_LIBS += -lGL -lGLU -lNPEngineCoreLog -lNPEngineCoreResource -lNPEngineCoreNPObject -lNPEngineCoreBasics -lNPEngineCoreTimer -lNPEngineCoreFile -lNPEngineCoreMath -lNPEngineCoreUtilities -lNPEngineCoreWorld -lNPEnginCoreRandomNumberGeneration -lNPEngineCore -lNPEngineGraphicsRenderContext -lNPEngineGraphicsModel -lNPEngineGraphicsMaterial -lNPEngineGraphicsImage -lNPEngineGraphicsCamera -lCg -lCgGL -lGLEW -lIL -lILU -lfftw3 -lfftw3_threads
+ADDITIONAL_GUI_LIBS += -lGL -lGLU -lNPEngineCoreLog -lNPEngineCoreResource -lNPEngineCoreNPObject -lNPEngineCoreBasics -lNPEngineCoreTimer -lNPEngineCoreFile -lNPEngineCoreMath -lNPEngineCoreUtilities -lNPEngineCoreWorld -lNPEnginCoreRandomNumberGeneration -lNPEngineCore -lNPEngineGraphicsRenderContext -lNPEngineGraphicsModel -lNPEngineGraphicsMaterial -lNPEngineGraphicsImage -lNPEngineGraphicsCamera -lNPEngineGraphicsRenderTarget -lCg -lCgGL -lGLEW -lIL -lILU -lfftw3 -lfftw3_threads
 
 
 include $(TGDA_DIR)/GNUmakefile.flags
