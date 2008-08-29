@@ -113,9 +113,9 @@
 
 - (void) activate
 {
-    if ( ready == YES && active == NO )
+    //if ( ready == YES && active == NO )
     {
-        [[[ NPEngineCore instance ] renderContextManager ] setCurrentlyActiveRenderContext:self ]; 
+        [[[ NPEngineCore instance ] renderContextManager ] setCurrentRenderContext:self ]; 
         [ context makeCurrentContext ];
 
         active = YES;
@@ -124,8 +124,9 @@
 
 - (void) deactivate
 {
-    if ( ready == YES && active == YES )
+    //if ( ready == YES && active == YES )
     {
+        [[[ NPEngineCore instance ] renderContextManager ] setCurrentRenderContext:nil ]; 
         [ NSOpenGLContext clearCurrentContext ];
         active = NO;
     }
@@ -143,7 +144,7 @@
 
 - (void) update
 {
-    if ( ready == YES && active == YES )
+    //if ( ready == YES && active == YES )
     {
         [ context update ];
     }
@@ -151,7 +152,7 @@
 
 - (void) swap
 {
-    if ( ready == YES && active == YES )
+    //if ( ready == YES && active == YES )
     {
         [ context flushBuffer ];
     }

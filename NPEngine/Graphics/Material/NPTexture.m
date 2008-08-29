@@ -299,7 +299,7 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 
     if ( textureFilterState.mipmapping == NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE )
     {
-        if ( [[[[ NPEngineCore instance ] renderContextManager ] currentlyActiveRenderContext ] isExtensionSupported:@"GL_SGIS_generate_mipmap" ] == YES )
+        if ( [[[[ NPEngineCore instance ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_SGIS_generate_mipmap" ] == YES )
         {
             glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, 1);
             glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, glPixelFormat, glDataType, [[image imageData] bytes]);

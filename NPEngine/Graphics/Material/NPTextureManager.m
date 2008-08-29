@@ -31,17 +31,14 @@
 
 - (void) dealloc
 {
-    NSLog(@"%@ dealloc",[self name]);
-    NSLog(@"%@ dealloc",[textures retainCount]);
     [ textures release ];
-    NSLog(@"done");
 
     [ super dealloc ];
 }
 
 - (void) setup
 {
-    if ( [[[[ NPEngineCore instance ] renderContextManager ] currentlyActiveRenderContext ] isExtensionSupported:@"GL_EXT_texture_filter_anisotropic" ] == YES )
+    if ( [[[[ NPEngineCore instance ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_EXT_texture_filter_anisotropic" ] == YES )
     {
         glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&maxAnisotropy);
     }
