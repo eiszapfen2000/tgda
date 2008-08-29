@@ -19,14 +19,14 @@
 
     renderContexts = [[ NSMutableDictionary alloc ] init ];
     defaultPixelFormat = [[ NPOpenGLPixelFormat alloc ] init ];
-    currentlyActiveRenderContext = nil;
+    currentRenderContext = nil;
 
     return self;
 }
 
 - (void) dealloc
 {
-    TEST_RELEASE(currentlyActiveRenderContext);
+    TEST_RELEASE(currentRenderContext);
     [ renderContexts release ];
     [ defaultPixelFormat release ];
 
@@ -52,18 +52,17 @@
     }
 }
 
-- (NPOpenGLRenderContext *) currentlyActiveRenderContext
+- (NPOpenGLRenderContext *) currentRenderContext
 {
-    return currentlyActiveRenderContext;
+    return currentRenderContext;
 }
 
-- (void) setCurrentlyActiveRenderContext:(NPOpenGLRenderContext *)context
+- (void) setCurrentRenderContext:(NPOpenGLRenderContext *)context
 {
-    if ( context != currentlyActiveRenderContext )
+    if ( context != currentRenderContext )
     {
-        [ currentlyActiveRenderContext deactivate ];
-        [ currentlyActiveRenderContext release ];
-        currentlyActiveRenderContext = [ context retain ];
+        [ currentRenderContext release ];
+        currentRenderContext = [ context retain ];
     }
 }
 

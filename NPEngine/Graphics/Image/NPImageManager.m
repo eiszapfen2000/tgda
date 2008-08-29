@@ -59,7 +59,6 @@
     NSString * absolutePath = [ [ [ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
 
     return [ self loadImageFromAbsolutePath:absolutePath ];
-
 }
 
 - (id) loadImageFromAbsolutePath:(NSString *)path;
@@ -100,6 +99,42 @@
 
         return nil;
     }    
+}
+
+- (NPImage *) scaleImage:(NPImage *)sourceImage withFilter:(NPState)scalingFilter targetWidth:(Int)newWidth targetHeight:(Int)newHeight
+{
+	UInt image = [ sourceImage prepareForProcessingWithDevil ];
+
+    if (  [ sourceImage setupDevilImageData ] == NO )
+    {
+        [ sourceImage endProcessingWithDevil:image ];
+
+        return nil;
+    }
+
+    iluImageParameter(ILU_FILTER, scalingFilter);
+    ILboolean success = iluScale(newWidth, newHeight, 1);
+    if ( !success )
+    {
+        ILenum error = ilGetError();
+        NPLOG_ERROR(( [ NSString stringWithCString:iluErrorString(error) encoding:NSASCIIStringEncoding ] ));
+		NPLOG_ERROR(( [ @"Could not scale image: " stringByAppendingString:name ] ));
+        [ sourceImage endProcessingWithDevil:image ];
+
+		return nil;
+    }
+
+    UInt length = calculateImageByteCount(newWidth, newHeight, [ sourceImage pixelFormat ], [ sourceImage dataFormat ]);
+    NSData * imageData = [[ NSData alloc ] initWithBytes:ilGetData() length:length ];
+
+    [ sourceImage endProcessingWithDevil:image ];
+
+    return [ NPImage imageWithName:@""
+                             width:newWidth
+                            height:newHeight
+                       pixelFormat:[sourceImage pixelFormat] 
+                        dataFormat:[sourceImage dataFormat] 
+                        imageData:imageData ];
 }
 
 @end
