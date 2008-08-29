@@ -107,7 +107,7 @@
     testCamera = [[[[ NPEngineCore instance ] modelManager ] loadModelFromPath:@"camera.model" ] retain ];
     [ testCamera uploadToGL ];
 
-    NPSUXModel * ocean = [[[[ NPEngineCore instance ] modelManager ] loadModelFromAbsolutePath:@"/home/icicle/ocean.model" ] retain ];
+    //NPSUXModel * ocean = [[[[ NPEngineCore instance ] modelManager ] loadModelFromAbsolutePath:@"/home/icicle/ocean.model" ] retain ];
 
     if ( testCamera == nil )
     {
@@ -143,7 +143,7 @@
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();*/
 
-    //[ camera render ];
+    [ camera render ];
     //gluLookAt(0.0f,0.0f,12.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
 
     /*glBegin(GL_TRIANGLES);
@@ -165,7 +165,7 @@
         [ surfaceVBO render ];
     }
 
-    //[ testCamera render ];
+    [ testCamera render ];
 
     //[ renderContext swap ];
 }
