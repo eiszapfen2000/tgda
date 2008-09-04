@@ -39,6 +39,8 @@ void fm2_mm_subtract_m(const FMatrix2 * const m1, const FMatrix2 * const m2, FMa
 void fm2_mm_multiply_m(const FMatrix2 * const m1, const FMatrix2 * const m2, FMatrix2 * result);
 void fm2_vm_multiply_v(const FVector2 * const v, const FMatrix2 * const m, FVector2 * result);
 void fm2_mv_multiply_v(const FMatrix2 * const m, const FVector2 * const v, FVector2 * result);
+void fm2_m_inverse_m(const FMatrix2 * const m1, FMatrix2 * m2);
+Float fm2_determinant(const FMatrix2 * const m);
 const char * fm2_m_to_string(FMatrix2 * m);
 
 FMatrix3 * fm3_alloc();
@@ -51,6 +53,8 @@ void fm3_mm_subtract_m(const FMatrix3 * const m1, const FMatrix3 * const m2, FMa
 void fm3_mm_multiply_m(const FMatrix3 * const m1, const FMatrix3 * const m2, FMatrix3 * result);
 void fm3_vm_multiply_v(const FVector3 * const v, const FMatrix3 * const m, FVector3 * result);
 void fm3_mv_multiply_v(const FMatrix3 * const m, const FVector3 * const v, FVector3 * result);
+void fm3_m_inverse_m(const FMatrix3 * const m1, FMatrix3 * m2);
+Float fm3_determinant(const FMatrix3 * const m);
 const char * fm3_m_to_string(FMatrix3 * m);
 
 FMatrix4 * fm4_alloc();
@@ -66,6 +70,9 @@ void fm4_mv_multiply_v(const FMatrix4 * const m, const FVector4 * const v, FVect
 void fm4_mv_translation_matrix(FMatrix4 * m, FVector3 * v);
 void fm4_msss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegrees, Float nearplane, Float farplane);
 //void fm4_m_view_matrix(FMatrix4 * m, FVector3 * rightvector, FVector3 * upvector, FVector3 * rightvector)
+void fm4_mss_sub_matrix_m(const FMatrix4 * const m, const Int row, const Int column, FMatrix3 * result);
+void fm4_m_inverse_m(const FMatrix4 * const m, FMatrix4 * result);
+Float fm4_determinant(const FMatrix4 * const m);
 const char * fm4_m_to_string(FMatrix4 * m);
 
 #endif

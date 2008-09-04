@@ -85,6 +85,28 @@ void fm2_mv_multiply_v(const FMatrix2 * const m, const FVector2 * const v, FVect
     FV_Y(*result) = FM_EL(*m,0,1) * FV_X(*v) + FM_EL(*m,1,1) * FV_Y(*v);
 }
 
+void fm2_m_inverse_m(const FMatrix2 * const m1, FMatrix2 * m2)
+{
+    Float determinant = fm2_determinant(m1);
+
+    if ( determinant == 0.0f )
+    {
+        return;
+    }
+
+    Float scalar = 1.0f/determinant;
+
+    FM_EL(*m2,0,0) = scalar * FM_EL(*m1,1,1);
+    FM_EL(*m2,0,1) = scalar * -FM_EL(*m1,0,1);
+    FM_EL(*m2,1,0) = scalar * -FM_EL(*m1,1,0);
+    FM_EL(*m2,1,1) = scalar * FM_EL(*m1,0,0);
+}
+
+Float fm2_determinant(const FMatrix2 * const m)
+{
+    return FM_EL(*m,0,0) * FM_EL(*m,1,1) - FM_EL(*m,0,1)*FM_EL(*m,1,0);
+}
+
 const char * fm2_m_to_string(FMatrix2 * m)
 {
     char * fm2string;
@@ -195,6 +217,61 @@ void fm3_mv_multiply_v(const FMatrix3 * const m, const FVector3 * const v, FVect
     FV_X(*result) = FM_EL(*m,0,0) * FV_X(*v) + FM_EL(*m,1,0) * FV_Y(*v) + FM_EL(*m,2,0) * FV_Z(*v);
     FV_Y(*result) = FM_EL(*m,0,1) * FV_X(*v) + FM_EL(*m,1,1) * FV_Y(*v) + FM_EL(*m,2,1) * FV_Z(*v);
     FV_Z(*result) = FM_EL(*m,0,2) * FV_X(*v) + FM_EL(*m,1,2) * FV_Y(*v) + FM_EL(*m,2,2) * FV_Z(*v);
+}
+
+/*
+  Providing that the determinant is non-zero, then the inverse is
+  calculated as:
+
+     -1     1     |   EI-FH  -(BI-HC)   BF-EC  |
+    M   = ----- . | -(DI-FG)   AI-GC  -(AF-DC) |
+          det M   |   DH-GE  -(AH-GB)   AE-BD  |
+*/
+
+void fm3_m_inverse_m(const FMatrix3 * const m1, FMatrix3 * m2)
+{
+    Float determinant = fm3_determinant(m1);
+
+    if ( fabs(determinant) < MATH_FLOAT_EPSILON )
+    {
+        return;
+    }
+
+    Float scalar = 1.0f/determinant;
+
+    FM_EL(*m2,0,0) = scalar *   ( FM_EL(*m1,1,1)*FM_EL(*m1,2,2) - FM_EL(*m1,2,1)*FM_EL(*m1,1,2) );
+    FM_EL(*m2,0,1) = scalar * (-( FM_EL(*m1,0,1)*FM_EL(*m1,2,2) - FM_EL(*m1,2,1)*FM_EL(*m1,0,2) ));
+    FM_EL(*m2,0,2) = scalar *   ( FM_EL(*m1,0,1)*FM_EL(*m1,1,2) - FM_EL(*m1,0,2)*FM_EL(*m1,1,1) );
+
+    FM_EL(*m2,1,0) = scalar * (-( FM_EL(*m1,1,0)*FM_EL(*m1,2,2) - FM_EL(*m1,1,2)*FM_EL(*m1,2,0) ));
+    FM_EL(*m2,1,1) = scalar *   ( FM_EL(*m1,0,0)*FM_EL(*m1,2,2) - FM_EL(*m1,0,2)*FM_EL(*m1,2,0) );
+    FM_EL(*m2,1,2) = scalar * (-( FM_EL(*m1,0,0)*FM_EL(*m1,1,2) - FM_EL(*m1,0,2)*FM_EL(*m1,1,0) ));
+
+    FM_EL(*m2,2,0) = scalar *   ( FM_EL(*m1,1,0)*FM_EL(*m1,2,1) - FM_EL(*m1,1,1)*FM_EL(*m1,2,0) );
+    FM_EL(*m2,2,1) = scalar * (-( FM_EL(*m1,0,0)*FM_EL(*m1,2,1) - FM_EL(*m1,0,1)*FM_EL(*m1,2,0) ));
+    FM_EL(*m2,2,2) = scalar *   ( FM_EL(*m1,0,0)*FM_EL(*m1,1,1) - FM_EL(*m1,1,0)*FM_EL(*m1,0,1) );
+}
+
+
+/*
+  If Kramer's rule is applied to a matrix M:
+
+        | A B C |
+    M = | D E F |
+        | G H I |
+
+  then the determinant is calculated as follows:
+
+    det M = A * (EI - HF) - B * (DI - GF) + C * (DH - GE)
+*/
+
+Float fm3_determinant(const FMatrix3 * const m)
+{
+    Float EIminusHF = FM_EL(*m,1,1)*FM_EL(*m,2,2) - FM_EL(*m,1,2)*FM_EL(*m,2,1);
+    Float DIminusGF = FM_EL(*m,0,1)*FM_EL(*m,2,2) - FM_EL(*m,0,2)*FM_EL(*m,2,1);
+    Float DHminusGE = FM_EL(*m,0,1)*FM_EL(*m,1,2) - FM_EL(*m,0,2)*FM_EL(*m,1,1);
+
+    return FM_EL(*m,0,0) * EIminusHF - FM_EL(*m,1,0) * DIminusGF + FM_EL(*m,2,0) * DHminusGE;
 }
 
 const char * fm3_m_to_string(FMatrix3 * m)
@@ -366,9 +443,85 @@ void fm4_msss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegree
     FM_EL(*m,3,3) = 0.0f;
 }
 
+void fm4_mss_sub_matrix_m(const FMatrix4 * const m, Int row, Int column, FMatrix3 * result)
+{
+    Int columnIndex = 0;
+    Int rowIndex = 0;
+
+    for ( Int i = 0; i < 4; i++ )
+    {
+        if ( i == column )
+        {
+            continue;
+        }
+
+        for ( Int j = 0; j < 4; j++ )
+        {
+            if ( j == row )
+            {
+                continue;
+            }
+
+            FM_EL(*result,columnIndex,rowIndex) = FM_EL(*m,i,j);
+            rowIndex++;
+        }
+
+        columnIndex++;
+        rowIndex = 0;
+    }
+}
+
+
+void fm4_m_inverse_m(const FMatrix4 * const m, FMatrix4 * result)
+{
+    Float determinant = fm4_determinant(m);
+
+    if ( fabs(determinant) < MATH_FLOAT_EPSILON )
+    {
+        return;
+    }
+
+    Float scalar = 1.0f/determinant;
+    FMatrix3 * subMatrix = fm3_alloc_init();
+    Int sign;
+
+    for ( Int i = 0; i < 4; i++ )
+    {
+        for ( Int j = 0; j < 4; j++ )
+        {
+            sign = 1 - ( (i + j) % 2 ) * 2;
+            fm4_mss_sub_matrix_m(m,i,j,subMatrix);
+            Float subMatrixDeterminant = fm3_determinant(subMatrix);
+            FM_EL(*result,i,j) = subMatrixDeterminant * sign * scalar;
+        }
+    }
+
+    fm3_free(subMatrix);
+
+}
+
+Float fm4_determinant(const FMatrix4 * const m)
+{
+    Float subMatrixDeterminant, determinant = 0.0f;
+    FMatrix3 * subMatrix = fm3_alloc_init();
+    Int scalar = 1;
+
+    for ( Int x = 0; x < 4; x++ )
+    {
+        fm4_mss_sub_matrix_m(m, 0, x, subMatrix);
+        subMatrixDeterminant = fm3_determinant(subMatrix);
+        determinant += FM_EL(*m,x,0) * subMatrixDeterminant * scalar;
+        scalar *= -1;
+    }
+
+    fm3_free(subMatrix);
+
+    return determinant;
+}
+
 const char * fm4_m_to_string(FMatrix4 * m)
 {
-    char * fm4string;
+    char * fm4string = NULL;
 
     if ( asprintf(&fm4string, "%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n",
                   FM_EL(*m,0,0),FM_EL(*m,1,0),FM_EL(*m,2,0),FM_EL(*m,3,0),
