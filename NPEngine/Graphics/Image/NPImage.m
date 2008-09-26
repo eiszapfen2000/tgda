@@ -1,81 +1,17 @@
 #import "NPImage.h"
+#import "NPImageManager.h"
 #import "Core/NPEngineCore.h"
 
 #import "IL/il.h"
 #import "IL/ilu.h"
-
-Int dataFormatByteCount(NPState dataFormat)
-{
-    Int dataFormatByteCount = 0;
-    switch ( dataFormat )
-    {
-        case NP_IMAGE_DATAFORMAT_BYTE:{dataFormatByteCount = 1; break;}
-        case NP_IMAGE_DATAFORMAT_HALF:{dataFormatByteCount = 2; break;}
-        case NP_IMAGE_DATAFORMAT_FLOAT:{dataFormatByteCount = 4; break;}
-    }
-
-    return dataFormatByteCount;
-}
-
-Int pixelFormatChannelCount(NPState pixelFormat)
-{
-    Int pixelFormatChannelCount = 0;
-    switch ( pixelFormat )
-    {
-        case NP_IMAGE_PIXELFORMAT_R:{pixelFormatChannelCount = 1; break;}
-        case NP_IMAGE_PIXELFORMAT_RG:{pixelFormatChannelCount = 2; break;}
-        case NP_IMAGE_PIXELFORMAT_RGB:{pixelFormatChannelCount = 3; break;}
-        case NP_IMAGE_PIXELFORMAT_RGBA:{pixelFormatChannelCount = 4; break;}
-    }
-
-    return pixelFormatChannelCount;
-}
-
-Int calculateImageByteCount(Int width, Int height, NPState pixelFormat, NPState dataFormat)
-{
-    Int dataFormatSize = dataFormatByteCount(dataFormat);
-    Int pixelFormatSize = pixelFormatChannelCount(pixelFormat);
-
-    return width*height*dataFormatSize*pixelFormatSize;
-}
-
-Int pixelFormatToDevilFormat(NPState pixelFormat)
-{
-    Int devilFormat = 0;
-
-    switch ( pixelFormat )
-    {
-        case NP_IMAGE_PIXELFORMAT_R: { devilFormat = IL_LUMINANCE; break; }
-        case NP_IMAGE_PIXELFORMAT_RG: { devilFormat = IL_LUMINANCE_ALPHA; break; }
-        case NP_IMAGE_PIXELFORMAT_RGB: { devilFormat = IL_RGB; break; }
-        case NP_IMAGE_PIXELFORMAT_RGBA: { devilFormat = IL_RGBA; break; }
-    }
-
-    return devilFormat;
-}
-
-Int dataFormatToDevilType(NPState dataFormat)
-{
-    Int devilType = 0;
-
-    switch ( dataFormat )
-    {
-        case NP_IMAGE_DATAFORMAT_BYTE: { devilType = IL_UNSIGNED_BYTE; break; }
-        case NP_IMAGE_DATAFORMAT_HALF: { devilType = IL_UNSIGNED_SHORT; break; }
-        case NP_IMAGE_DATAFORMAT_FLOAT: { devilType = IL_FLOAT; break; }
-    }
-
-    return devilType;
-}
-
 
 @implementation NPImage
 
 + (id) imageWithName:(NSString *)name 
                width:(Int)width 
               height:(Int)height
-         pixelFormat:(NPState)pixelFormat
-          dataFormat:(NPState)dataFormat 
+         pixelFormat:(NpState)pixelFormat
+          dataFormat:(NpState)dataFormat 
            imageData:(NSData *)imageData
 {
     NPImage * image = [[ NPImage alloc ] initWithName:name ];
@@ -139,22 +75,22 @@ Int dataFormatToDevilType(NPState dataFormat)
     height = newHeight;
 }
 
-- (NPState) dataFormat
+- (NpState) dataFormat
 {
     return dataFormat;
 }
 
-- (void) setDataFormat:(NPState)newDataFormat
+- (void) setDataFormat:(NpState)newDataFormat
 {
     dataFormat = newDataFormat;
 }
 
-- (NPState) pixelFormat
+- (NpState) pixelFormat
 {
     return pixelFormat;
 }
 
-- (void) setPixelFormat:(NPState)newPixelFormat
+- (void) setPixelFormat:(NpState)newPixelFormat
 {
     pixelFormat = newPixelFormat;
 }
@@ -166,7 +102,7 @@ Int dataFormatToDevilType(NPState dataFormat)
 
 - (void) setImageData:(NSData *)newImageData
 {
-    Int bytesCount = calculateImageByteCount(width, height, pixelFormat, dataFormat);
+    Int bytesCount = [[[ NPEngineCore instance ] imageManager ] calculateImageByteCountUsingWidth:width height:height pixelFormat:pixelFormat dataFormat:dataFormat ];
 
     if ( bytesCount != (Int)[newImageData length ] )
     {
@@ -198,9 +134,11 @@ Int dataFormatToDevilType(NPState dataFormat)
         return NO;
     }
 
-    Int devilFormat = pixelFormatToDevilFormat(pixelFormat);
-    Int devilType = dataFormatToDevilType(dataFormat);
-    Int bpp = dataFormatByteCount(dataFormat) * pixelFormatChannelCount(pixelFormat);
+    Int devilFormat = [[[ NPEngineCore instance ] imageManager ] calculateDevilPixelFormat:pixelFormat ];
+    Int devilType = [[[ NPEngineCore instance ] imageManager ] calculateDevilDataType:dataFormat ];
+    Int dataFormatByteCount = [[[ NPEngineCore instance ] imageManager ] calculateDataFormatByteCount:dataFormat ];
+    Int pixelFormatChannelCount = [[[ NPEngineCore instance ] imageManager ] calculatePixelFormatChannelCount:pixelFormat ];
+    Int bpp = dataFormatByteCount * pixelFormatChannelCount;
     ILboolean success = ilTexImage(width, height, 1, bpp, devilFormat, devilType, (ILvoid *)[imageData bytes]);
 
     if ( !success )

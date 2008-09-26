@@ -181,7 +181,7 @@
 
 - (void) render
 {
-    NPTransformationState * trafo = [[[ NPEngineCore instance ] transformationStateManager ] currentActiveTransformationState ];
+    NPTransformationState * trafo = [[[ NPEngineCore instance ] transformationStateManager ] currentTransformationState ];
     [ trafo setViewMatrix:view ];
     [ trafo setProjectionMatrix:projection ];
 }

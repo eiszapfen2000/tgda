@@ -5,7 +5,7 @@
 
 @implementation NPRenderBuffer
 
-+ (id) renderBufferWithName:(NSString *)name type:(NPState)type format:(NPState)format width:(Int)width height:(Int)height
++ (id) renderBufferWithName:(NSString *)name type:(NpState)type format:(NpState)format width:(Int)width height:(Int)height
 {
     NPRenderBuffer * renderBuffer = [[ NPRenderBuffer alloc ] initWithName:name ];
     [ renderBuffer setType:type ];
@@ -79,12 +79,12 @@
     }
 }
 
-- (NPState) type
+- (NpState) type
 {
     return type;
 }
 
-- (void) setType:(NPState)newType
+- (void) setType:(NpState)newType
 {
     if ( type != newType )
     {
@@ -92,12 +92,12 @@
     }
 }
 
-- (NPState) format
+- (NpState) format
 {
 	return format;
 }
 
-- (void) setFormat:(NPState)newFormat
+- (void) setFormat:(NpState)newFormat
 {
 	if ( format != newFormat )
 	{

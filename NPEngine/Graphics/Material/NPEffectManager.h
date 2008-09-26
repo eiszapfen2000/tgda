@@ -13,8 +13,8 @@
 {
     CGcontext cgContext;
 
-    NPState cgDebugMode;
-    NPState shaderParameterUpdatePolicy;
+    NpState cgDebugMode;
+    NpState shaderParameterUpdatePolicy;
 
     NSMutableDictionary * effects;
     NPEffect * currentActiveEffect;
@@ -29,11 +29,11 @@
 
 - (CGcontext)cgContext;
 
-- (NPState) cgDebugMode;
-- (void) setCgDebugMode:(NPState)newMode;
+- (NpState) cgDebugMode;
+- (void) setCgDebugMode:(NpState)newMode;
 
-- (NPState)shaderParameterUpdatePolicy;
-- (void) setShaderParameterPolicy:(NPState)newShaderParameterUpdatePolicy;
+- (NpState)shaderParameterUpdatePolicy;
+- (void) setShaderParameterPolicy:(NpState)newShaderParameterUpdatePolicy;
 
 - (NPEffect *) currentActiveEffect;
 - (void) setCurrentActiveEffect:(NPEffect *)newCurrentActiveEffect;

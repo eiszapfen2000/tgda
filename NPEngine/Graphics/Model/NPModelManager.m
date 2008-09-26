@@ -82,7 +82,7 @@
 
 - (BOOL) saveModel:(NPSUXModel *)model atAbsolutePath:(NSString *)path
 {
-    NPState mode = NP_FILE_WRITING;
+    NpState mode = NP_FILE_WRITING;
 
     if ( isDirectory(path) == YES )
     {

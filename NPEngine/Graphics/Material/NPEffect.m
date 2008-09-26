@@ -160,19 +160,19 @@
 {
     if ( defaultSemantics.modelMatrix != NULL )
     {
-        FMatrix4 * modelMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentActiveTransformationState ] modelMatrix ];
+        FMatrix4 * modelMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentTransformationState ] modelMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.modelMatrix andValue:modelMatrix ];
     }
 
     if ( defaultSemantics.viewMatrix != NULL )
     {
-        FMatrix4 * viewMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentActiveTransformationState ] viewMatrix ];
+        FMatrix4 * viewMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentTransformationState ] viewMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.viewMatrix andValue:viewMatrix ];
     }
 
     if ( defaultSemantics.projectionMatrix != NULL )
     {
-        FMatrix4 * projectionMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentActiveTransformationState ] projectionMatrix ];
+        FMatrix4 * projectionMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentTransformationState ] projectionMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.projectionMatrix andValue:projectionMatrix ];
     }
 

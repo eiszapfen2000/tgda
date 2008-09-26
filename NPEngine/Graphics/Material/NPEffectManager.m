@@ -57,7 +57,7 @@ void np_cg_error_callback()
     cgDebugMode = NP_NONE;
     shaderParameterUpdatePolicy = NP_NONE;
 
-    effects = [ [ NSMutableDictionary alloc ] init ];
+    effects = [[ NSMutableDictionary alloc ] init ];
 
     return self;
 }
@@ -90,13 +90,10 @@ void np_cg_error_callback()
 
 - (void) dealloc
 {
-	[ currentActiveEffect release ];
+	TEST_RELEASE(currentActiveEffect);
     [ effects release ];
 
-	np_cg_error_callback();
-	NSLog(@"destroy cg context");
     cgDestroyContext(cgContext);
-	NSLog(@"killed cg context");
 
     [ super dealloc ];
 }
@@ -106,12 +103,12 @@ void np_cg_error_callback()
     return cgContext;
 }
 
-- (NPState) cgDebugMode
+- (NpState) cgDebugMode
 {
     return cgDebugMode;
 }
 
-- (void) setCgDebugMode:(NPState)newMode
+- (void) setCgDebugMode:(NpState)newMode
 {
     if ( cgDebugMode != newMode )
     {
@@ -139,12 +136,12 @@ void np_cg_error_callback()
     }
 }
 
-- (NPState)shaderParameterUpdatePolicy
+- (NpState)shaderParameterUpdatePolicy
 {
     return shaderParameterUpdatePolicy;
 }
 
-- (void) setShaderParameterPolicy:(NPState)newShaderParameterUpdatePolicy
+- (void) setShaderParameterPolicy:(NpState)newShaderParameterUpdatePolicy
 {
     if ( shaderParameterUpdatePolicy != newShaderParameterUpdatePolicy )
     {

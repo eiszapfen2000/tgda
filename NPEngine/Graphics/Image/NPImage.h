@@ -13,16 +13,10 @@
 #define    NP_IMAGE_PIXELFORMAT_RGB     2
 #define    NP_IMAGE_PIXELFORMAT_RGBA    3
 
-Int dataFormatByteCount(NPState dataFormat);
-Int pixelFormatChannelCount(NPState pixelFormat);
-Int calculateImageByteCount(Int width, Int height, NPState pixelFormat, NPState dataFormat);
-Int pixelFormatToDevilFormat(NPState pixelFormat);
-Int dataFormatToDevilType(NPState dataFormat);
-
 @interface NPImage : NPResource
 {
-    NPState dataFormat;
-    NPState pixelFormat;
+    NpState dataFormat;
+    NpState pixelFormat;
 
     Int width;
     Int height;
@@ -33,8 +27,8 @@ Int dataFormatToDevilType(NPState dataFormat);
 + (id) imageWithName:(NSString *)name 
                width:(Int)width 
               height:(Int)height
-         pixelFormat:(NPState)pixelFormat
-          dataFormat:(NPState)dataFormat 
+         pixelFormat:(NpState)pixelFormat
+          dataFormat:(NpState)dataFormat 
            imageData:(NSData *)imageData;
 
 - (id) init;
@@ -42,10 +36,10 @@ Int dataFormatToDevilType(NPState dataFormat);
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (void) dealloc;
 
-- (NPState) dataFormat;
-- (void) setDataFormat:(NPState)newDataFormat;
-- (NPState) pixelFormat;
-- (void) setPixelFormat:(NPState)newPixelFormat;
+- (NpState) dataFormat;
+- (void) setDataFormat:(NpState)newDataFormat;
+- (NpState) pixelFormat;
+- (void) setPixelFormat:(NpState)newPixelFormat;
 - (Int) width;
 - (void) setWidth:(Int)newWidth;
 - (Int) height;
@@ -61,7 +55,5 @@ Int dataFormatToDevilType(NPState dataFormat);
 - (BOOL) loadFromFile:(NPFile *)file withMipMaps:(BOOL)generateMipMaps;
 - (BOOL) saveToFile:(NPFile *)file;
 - (void) reset;
-
-
 
 @end

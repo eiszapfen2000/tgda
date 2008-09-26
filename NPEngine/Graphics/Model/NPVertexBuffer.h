@@ -73,7 +73,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer);
 - (BOOL) saveToFile:(NPFile *)file;
 - (void) reset;
 
-- (void) uploadVBOWithUsageHint:(NPState)usage;
+- (void) uploadVBOWithUsageHint:(NpState)usage;
 - (void) deleteVBO;
 - (void) render;
 - (void) renderElementWithFirstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;

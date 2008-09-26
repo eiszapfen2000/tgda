@@ -15,10 +15,10 @@
     Int width;
     Int height;
 
-    NPState type;
+    NpState type;
 
-	NPState pixelFormat;
-    NPState dataFormat;
+	NpState pixelFormat;
+    NpState dataFormat;
 
     NPRenderTargetConfiguration * configuration;
     Int colorBufferIndex;
@@ -27,9 +27,9 @@
 }
 
 + (id) renderTextureWithName:(NSString *)name
-                        type:(NPState)type
-                  dataFormat:(NPState)dataFormat
-                 pixelFormat:(NPState)pixelFormat
+                        type:(NpState)type
+                  dataFormat:(NpState)dataFormat
+                 pixelFormat:(NpState)pixelFormat
                        width:(Int)width
                       height:(Int)height;
 
@@ -42,12 +42,12 @@
 - (void) setWidth:(Int)newWidth;
 - (Int) height;
 - (void) setHeight:(Int)newHeight;
-- (NPState) type;
-- (void) setType:(NPState)newType;
-- (NPState) pixelFormat;
-- (void) setPixelFormat:(NPState)newPixelFormat;
-- (NPState) dataFormat;
-- (void) setDataFormat:(NPState)newDataFormat;
+- (NpState) type;
+- (void) setType:(NpState)newType;
+- (NpState) pixelFormat;
+- (void) setPixelFormat:(NpState)newPixelFormat;
+- (NpState) dataFormat;
+- (void) setDataFormat:(NpState)newDataFormat;
 - (NPTexture *)texture;
 
 - (void) createTexture;
