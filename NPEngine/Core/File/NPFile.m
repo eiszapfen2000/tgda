@@ -22,7 +22,7 @@
     return [ self initWithName:newName parent:newParent fileName:newFileName mode:NP_FILE_READING ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent fileName:(NSString *)newFileName mode:(NPState)newMode
+- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent fileName:(NSString *)newFileName mode:(NpState)newMode
 {
     self = [ super initWithName:newName parent:newParent ];
 
@@ -54,12 +54,12 @@
     }
 }
 
-- (NPState) mode
+- (NpState) mode
 {
     return mode;
 }
 
-- (void) initFileHandleWithMode:(NPState)newMode
+- (void) initFileHandleWithMode:(NpState)newMode
 {
     if ( fileHandle != nil )
     {

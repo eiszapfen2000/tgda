@@ -10,4 +10,6 @@ void npmath_initialise()
     npmath_quaternion_initialise();
     npmath_vector_initialise();
 
+    npmath_plane_initialise();
+    npmath_ray_initialise();
 }

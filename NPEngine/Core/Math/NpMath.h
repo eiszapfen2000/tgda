@@ -14,6 +14,9 @@
 #include "Quaternion.h"
 #include "Vector.h"
 
+#include "NpRay.h"
+#include "NpPlane.h"
+
 void npmath_initialise();
 
 #endif

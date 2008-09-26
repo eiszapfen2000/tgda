@@ -4,7 +4,7 @@
 @interface NPTransformationStateManager : NPObject
 {
     NSMutableArray * transformationStates;
-    NPTransformationState * currentActiveTransformationState;
+    NPTransformationState * currentTransformationState;
 }
 
 - (id) init;
@@ -14,7 +14,7 @@
 
 - (void) setup;
 
-- (NPTransformationState *) currentActiveTransformationState;
-- (void) setCurrentActiveTransformationState:(NPTransformationState *)newCurrentActiveTransformationState;
+- (NPTransformationState *) currentTransformationState;
+- (void) setCurrentTransformationState:(NPTransformationState *)newCurrentTransformationState;
 
 @end
