@@ -116,7 +116,7 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     glGenTextures(1, &textureID);
 }
 
-- (void) setDataFormat:(NPState)newDataFormat
+- (void) setDataFormat:(NpState)newDataFormat
 {
     if ( dataFormat != newDataFormat )
     {
@@ -124,7 +124,7 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     }
 }
 
-- (void) setPixelFormat:(NPState)newPixelFormat
+- (void) setPixelFormat:(NpState)newPixelFormat
 {
     if ( pixelFormat != newPixelFormat )
     {
@@ -148,47 +148,47 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     }
 }
 
-- (void) setMipMapping:(NPState)newMipMapping
+- (void) setMipMapping:(NpState)newMipMapping
 {
     textureFilterState.mipmapping = newMipMapping;
 }
 
-- (void) setTextureMinFilter:(NPState)newTextureMinFilter
+- (void) setTextureMinFilter:(NpState)newTextureMinFilter
 {
     textureFilterState.minFilter = newTextureMinFilter;
 
     [ self updateGLTextureState ];
 }
 
-- (void) setTextureMagFilter:(NPState)newTextureMagFilter
+- (void) setTextureMagFilter:(NpState)newTextureMagFilter
 {
     textureFilterState.magFilter = newTextureMagFilter;
 
     [ self updateGLTextureState ];
 }
 
-- (void) setTextureAnisotropyFilter:(NPState)newTextureAnisotropyFilter
+- (void) setTextureAnisotropyFilter:(NpState)newTextureAnisotropyFilter
 {
     textureFilterState.anisotropy = newTextureAnisotropyFilter;
 
     [ self updateGLTextureState ];
 }
 
-- (void) setTextureWrapS:(NPState)newWrapS
+- (void) setTextureWrapS:(NpState)newWrapS
 {
     textureWrapState.wrapS = newWrapS;
 
     [ self updateGLTextureState ];
 }
 
-- (void) setTextureWrapT:(NPState)newWrapT
+- (void) setTextureWrapT:(NpState)newWrapT
 {
     textureWrapState.wrapT = newWrapT;
 
     [ self updateGLTextureState ];
 }
 
-- (void) computeGLDataType:(NPState *)glDataType pixelFormat:(NPState *)glPixelFormat
+- (void) computeGLDataType:(NpState *)glDataType pixelFormat:(NpState *)glPixelFormat
 {
     switch ( dataFormat )
     {
@@ -232,7 +232,7 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     }
 }
 
-- (Int) computeGLInternalTextureFormatUsingDataFormat:(NPState)glDataFormat pixelFormat:(NPState)glPixelFormat
+- (Int) computeGLInternalTextureFormatUsingDataFormat:(NpState)glDataFormat pixelFormat:(NpState)glPixelFormat
 {
     Int textureFormat = -1;
 
@@ -289,11 +289,11 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 - (void) uploadToGLUsingImage:(NPImage *)image
 {
     Int glInternalFormat;
-    NPState glDataType = NP_NONE;
-    NPState glPixelFormat = NP_NONE;
+    NpState glDataType = NP_NONE;
+    NpState glPixelFormat = NP_NONE;
 
     [ self computeGLDataType:&glDataType pixelFormat:&glPixelFormat];
-    glInternalFormat = [ self computeGLInternalTextureFormatUsingDataFormat:(NPState)dataFormat pixelFormat:(NPState)pixelFormat ];
+    glInternalFormat = [ self computeGLInternalTextureFormatUsingDataFormat:(NpState)dataFormat pixelFormat:(NpState)pixelFormat ];
 
     glBindTexture(GL_TEXTURE_2D, textureID);
 
@@ -322,7 +322,7 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 
 - (void)  updateGLTextureFilterState
 {
-    NPState value = NP_NONE;
+    NpState value = NP_NONE;
     switch ( textureFilterState.magFilter )
     {
         case NP_TEXTURE_FILTER_NEAREST:{value = GL_NEAREST; break;}
@@ -354,7 +354,7 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 
 - (void) updateGLTextureWrapState
 {
-    NPState wrapS = NP_NONE;
+    NpState wrapS = NP_NONE;
     switch (textureWrapState.wrapS)
     {
         case NP_TEXTURE_WRAPPING_CLAMP:{wrapS = GL_CLAMP; break;}
@@ -363,7 +363,7 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
         case NP_TEXTURE_WRAPPING_REPEAT:{wrapS = GL_REPEAT; break;}
     }
 
-    NPState wrapT = NP_NONE;
+    NpState wrapT = NP_NONE;
     switch (textureWrapState.wrapS)
     {
         case NP_TEXTURE_WRAPPING_CLAMP:{wrapT = GL_CLAMP; break;}

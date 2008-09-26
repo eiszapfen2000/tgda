@@ -137,7 +137,7 @@
             NSString * fileNameWithoutQuotes =  [ removeLeadingAndTrailingQuotes(secondElement) retain ];
             NPLOG(([NSString stringWithFormat:@"CgFX file: %@", fileNameWithoutQuotes]));
 
-            effect = [[[ NPEngineCore instance ] effectManager ] loadEffectFromPath:fileNameWithoutQuotes ];
+            effect = [[[[ NPEngineCore instance ] effectManager ] loadEffectFromPath:fileNameWithoutQuotes ] retain ];
 
             [ fileNameWithoutQuotes release ];
         }

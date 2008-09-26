@@ -41,9 +41,9 @@
 
 typedef struct NpTextureFilterState
 {
-    NPState mipmapping;
-    NPState minFilter;
-    NPState magFilter;
+    NpState mipmapping;
+    NpState minFilter;
+    NpState magFilter;
     Int anisotropy;
 }
 NpTextureFilterState;
@@ -52,8 +52,8 @@ void np_texture_filter_state_reset(NpTextureFilterState * textureFilterState);
 
 typedef struct NpTextureWrapState
 {
-    NPState wrapS;
-    NPState wrapT;
+    NpState wrapS;
+    NpState wrapT;
 }
 NpTextureWrapState;
 
@@ -64,8 +64,8 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState);
     NpTextureFilterState textureFilterState;
     NpTextureWrapState textureWrapState;
 
-    NPState dataFormat;
-    NPState pixelFormat;
+    NpState dataFormat;
+    NpState pixelFormat;
 
     Int width;
     Int height;
@@ -84,16 +84,16 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState);
 - (UInt) textureID;
 - (void) generateGLTextureID;
 
-- (void) setDataFormat:(NPState)newDataFormat;
-- (void) setPixelFormat:(NPState)newPixelFormat;
+- (void) setDataFormat:(NpState)newDataFormat;
+- (void) setPixelFormat:(NpState)newPixelFormat;
 - (void) setWidth:(Int)newWidth;
 - (void) setHeight:(Int)newHeight;
-- (void) setMipMapping:(NPState)newMipMapping;
-- (void) setTextureMinFilter:(NPState)newTextureMinFilter;
-- (void) setTextureMagFilter:(NPState)newTextureMagFilter;
-- (void) setTextureAnisotropyFilter:(NPState)newTextureAnisotropyFilter;
-- (void) setTextureWrapS:(NPState)newWrapS;
-- (void) setTextureWrapT:(NPState)newWrapT;
+- (void) setMipMapping:(NpState)newMipMapping;
+- (void) setTextureMinFilter:(NpState)newTextureMinFilter;
+- (void) setTextureMagFilter:(NpState)newTextureMagFilter;
+- (void) setTextureAnisotropyFilter:(NpState)newTextureAnisotropyFilter;
+- (void) setTextureWrapS:(NpState)newWrapS;
+- (void) setTextureWrapT:(NpState)newWrapT;
 
 - (void) uploadToGLWithoutImageData;
 - (void) uploadToGLUsingImage:(NPImage *)image;

@@ -141,7 +141,7 @@
     NSString * message = @"";
     ready = NO;
 
-    NPState status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+    NpState status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
     switch ( status )
     {
         case GL_FRAMEBUFFER_COMPLETE_EXT: { ready = YES; break; }

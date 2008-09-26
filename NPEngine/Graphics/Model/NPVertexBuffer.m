@@ -278,7 +278,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     [ super reset ];
 }
 
-- (void) uploadVBOWithUsageHint:(NPState)usage
+- (void) uploadVBOWithUsageHint:(NpState)usage
 {
     if ( ready == NO )
     {

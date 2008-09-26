@@ -45,7 +45,7 @@
 
     if ( devilVersion < IL_VERSION)
     {
-        NPLOG_WARNING(([NSString stringWithFormat:@"DevIL library version %d does not match DevIL header version %d",devilVersion,IL_VERSION]));
+        NPLOG_WARNING(([NSString stringWithFormat:@"DevIL library version %d does not match DevIL header version %d", devilVersion, IL_VERSION]));
     }
 
     ilInit();
@@ -101,7 +101,76 @@
     }    
 }
 
-- (NPImage *) scaleImage:(NPImage *)sourceImage withFilter:(NPState)scalingFilter targetWidth:(Int)newWidth targetHeight:(Int)newHeight
+- (Int) calculateDataFormatByteCount:(NpState)dataFormat
+{
+    Int dataFormatByteCount = 0;
+    switch ( dataFormat )
+    {
+        case NP_IMAGE_DATAFORMAT_BYTE:{dataFormatByteCount = 1; break;}
+        case NP_IMAGE_DATAFORMAT_HALF:{dataFormatByteCount = 2; break;}
+        case NP_IMAGE_DATAFORMAT_FLOAT:{dataFormatByteCount = 4; break;}
+    }
+
+    return dataFormatByteCount;
+}
+
+- (Int) calculatePixelFormatChannelCount:(NpState)pixelFormat
+{
+    Int pixelFormatChannelCount = 0;
+    switch ( pixelFormat )
+    {
+        case NP_IMAGE_PIXELFORMAT_R:{pixelFormatChannelCount = 1; break;}
+        case NP_IMAGE_PIXELFORMAT_RG:{pixelFormatChannelCount = 2; break;}
+        case NP_IMAGE_PIXELFORMAT_RGB:{pixelFormatChannelCount = 3; break;}
+        case NP_IMAGE_PIXELFORMAT_RGBA:{pixelFormatChannelCount = 4; break;}
+    }
+
+    return pixelFormatChannelCount;
+}
+
+- (Int) calculateImageByteCount:(NPImage *)image
+{
+    return [ self calculateImageByteCountUsingWidth:[image width] height:[image height] pixelFormat:[image pixelFormat] dataFormat:[image dataFormat] ];
+}
+
+- (Int) calculateImageByteCountUsingWidth:(Int)width height:(Int)height pixelFormat:(NpState)pixelFormat dataFormat:(NpState)dataFormat
+{
+    Int dataFormatSize = [ self calculateDataFormatByteCount:dataFormat ];
+    Int pixelFormatSize = [ self calculatePixelFormatChannelCount:pixelFormat ];
+
+    return width*height*dataFormatSize*pixelFormatSize;
+}
+
+- (Int) calculateDevilPixelFormat:(NpState)pixelFormat
+{
+    Int devilFormat = 0;
+
+    switch ( pixelFormat )
+    {
+        case NP_IMAGE_PIXELFORMAT_R: { devilFormat = IL_LUMINANCE; break; }
+        case NP_IMAGE_PIXELFORMAT_RG: { devilFormat = IL_LUMINANCE_ALPHA; break; }
+        case NP_IMAGE_PIXELFORMAT_RGB: { devilFormat = IL_RGB; break; }
+        case NP_IMAGE_PIXELFORMAT_RGBA: { devilFormat = IL_RGBA; break; }
+    }
+
+    return devilFormat;
+}
+
+- (Int) calculateDevilDataType:(NpState)dataFormat
+{
+    Int devilType = 0;
+
+    switch ( dataFormat )
+    {
+        case NP_IMAGE_DATAFORMAT_BYTE: { devilType = IL_UNSIGNED_BYTE; break; }
+        case NP_IMAGE_DATAFORMAT_HALF: { devilType = IL_UNSIGNED_SHORT; break; }
+        case NP_IMAGE_DATAFORMAT_FLOAT: { devilType = IL_FLOAT; break; }
+    }
+
+    return devilType;
+}
+
+- (NPImage *) scaleImage:(NPImage *)sourceImage withFilter:(NpState)scalingFilter targetWidth:(Int)newWidth targetHeight:(Int)newHeight
 {
 	UInt image = [ sourceImage prepareForProcessingWithDevil ];
 
@@ -124,7 +193,7 @@
 		return nil;
     }
 
-    UInt length = calculateImageByteCount(newWidth, newHeight, [ sourceImage pixelFormat ], [ sourceImage dataFormat ]);
+    UInt length = [self calculateImageByteCountUsingWidth:newWidth height:newHeight pixelFormat:[ sourceImage pixelFormat ] dataFormat:[ sourceImage dataFormat ] ];
     NSData * imageData = [[ NSData alloc ] initWithBytes:ilGetData() length:length ];
 
     [ sourceImage endProcessingWithDevil:image ];

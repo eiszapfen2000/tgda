@@ -22,13 +22,13 @@
     Int width;
     Int height;
 
-    NPState type;
-	NPState format;
+    NpState type;
+	NpState format;
 
     NPRenderTargetConfiguration * configuration;
 }
 
-+ (id) renderBufferWithName:(NSString *)name type:(NPState)type format:(NPState)format width:(Int)width height:(Int)height;
++ (id) renderBufferWithName:(NSString *)name type:(NpState)type format:(NpState)format width:(Int)width height:(Int)height;
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
@@ -41,10 +41,10 @@
 - (void) setWidth:(Int)newWidth;
 - (Int) height;
 - (void) setHeight:(Int)newHeight;
-- (NPState) type;
-- (void) setType:(NPState)newType;
-- (NPState) format;
-- (void) setFormat:(NPState)newFormat;
+- (NpState) type;
+- (void) setType:(NpState)newType;
+- (NpState) format;
+- (void) setFormat:(NpState)newFormat;
 
 - (void) uploadToGL;
 

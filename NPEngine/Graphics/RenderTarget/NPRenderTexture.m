@@ -6,9 +6,9 @@
 @implementation NPRenderTexture
 
 + (id) renderTextureWithName:(NSString *)name
-                        type:(NPState)type
-                  dataFormat:(NPState)dataFormat
-                 pixelFormat:(NPState)pixelFormat
+                        type:(NpState)type
+                  dataFormat:(NpState)dataFormat
+                 pixelFormat:(NpState)pixelFormat
                        width:(Int)width
                       height:(Int)height;
 {
@@ -83,12 +83,12 @@
     }
 }
 
-- (NPState) type
+- (NpState) type
 {
     return type;
 }
 
-- (void) setType:(NPState)newType
+- (void) setType:(NpState)newType
 {
     if ( type != newType )
     {
@@ -96,12 +96,12 @@
     }
 }
 
-- (NPState) pixelFormat
+- (NpState) pixelFormat
 {
     return pixelFormat;
 }
 
-- (void) setPixelFormat:(NPState)newPixelFormat
+- (void) setPixelFormat:(NpState)newPixelFormat
 {
     if ( pixelFormat != newPixelFormat )
     {
@@ -109,12 +109,12 @@
     }
 }
 
-- (NPState) dataFormat
+- (NpState) dataFormat
 {
     return dataFormat;
 }
 
-- (void) setDataFormat:(NPState)newDataFormat
+- (void) setDataFormat:(NpState)newDataFormat
 {
     if ( dataFormat != newDataFormat )
     {
