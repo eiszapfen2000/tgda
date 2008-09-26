@@ -19,14 +19,14 @@
 
     transformationStates = [ [ NSMutableArray alloc ] init ];
 
-    currentActiveTransformationState = nil;
+    currentTransformationState = nil;
 
     return self;
 }
 
 - (void) dealloc
 {
-    TEST_RELEASE(currentActiveTransformationState);
+    TEST_RELEASE(currentTransformationState);
     [ transformationStates release ];
 
     [ super dealloc ];
@@ -36,22 +36,18 @@
 {
     NPTransformationState * transformationState = [[ NPTransformationState alloc ] initWithName:@"" parent:self ];
     [ transformationStates addObject:transformationState ];
-    [ self setCurrentActiveTransformationState:transformationState ];
+    [ self setCurrentTransformationState:transformationState ];
     [ transformationState release ];
 }
 
-- (NPTransformationState *) currentActiveTransformationState
+- (NPTransformationState *) currentTransformationState
 {
-    return currentActiveTransformationState;
+    return currentTransformationState;
 }
 
-- (void) setCurrentActiveTransformationState:(NPTransformationState *)newCurrentActiveTransformationState
+- (void) setCurrentTransformationState:(NPTransformationState *)newCurrentTransformationState
 {
-    if ( currentActiveTransformationState != newCurrentActiveTransformationState )
-    {
-        [ currentActiveTransformationState release ];
-        currentActiveTransformationState = [ newCurrentActiveTransformationState retain ];
-    }
+    ASSIGN(currentTransformationState,newCurrentTransformationState);
 }
 
 @end

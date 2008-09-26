@@ -143,6 +143,16 @@ Vector3 * v3_alloc_init()
     return tmp;
 }
 
+Vector3 * v3_alloc_init_with_v3(Vector3 * v)
+{
+    Vector3 * tmp = npfreenode_alloc(NP_VECTOR3_FREELIST);
+    V_X(*tmp) = V_X(*v);
+    V_Y(*tmp) = V_Y(*v);
+    V_Z(*tmp) = V_Z(*v);
+
+    return tmp;
+}
+
 Vector3 * v3_free(Vector3 * v)
 {
     return npfreenode_fast_free(v,NP_VECTOR3_FREELIST);
@@ -174,46 +184,46 @@ void v3_v_normalise(Vector3 * v)
     V_Z(*v) = V_Z(*v)/length;
 }
 
-void v3_sv_scale(Vector3 * v, const Double * const scale)
+void v3_sv_scale(const Double * const scale, Vector3 * v)
 {
     V_X(*v) *= *scale;
     V_Y(*v) *= *scale;
     V_Z(*v) *= *scale;
 }
 
-void v3_sv_scalex(Vector3 * v, const Double * const scale)
+void v3_sv_scalex(const Double * const scale, Vector3 * v)
 {
     V_X(*v) *= *scale;
 }
 
-void v3_sv_scaley(Vector3 * v, const Double * const scale)
+void v3_sv_scaley(const Double * const scale, Vector3 * v)
 {
     V_Y(*v) *= *scale;
 }
 
-void v3_sv_scalez(Vector3 * v, const Double * const scale)
+void v3_sv_scalez(const Double * const scale, Vector3 * v)
 {
     V_Z(*v) *= *scale;
 }
 
-void v3_sv_scale_v(const Vector3 * const v, const Double * const scale, Vector3 * result)
+void v3_sv_scale_v(const Double * const scale, const Vector3 * const v, Vector3 * result)
 {
     V_X(*result) = V_X(*v) * *scale;
     V_Y(*result) = V_Y(*v) * *scale;
     V_Z(*result) = V_Z(*v) * *scale;
 }
 
-void v3_sv_scalex_v(const Vector3 * const v, const Double * const scale, Vector3 * result)
+void v3_sv_scalex_v(const Double * const scale, const Vector3 * const v, Vector3 * result)
 {
     V_X(*result) = V_X(*v) * *scale;
 }
 
-void v3_sv_scaley_v(const Vector3 * const v, const Double * const scale, Vector3 * result)
+void v3_sv_scaley_v(const Double * const scale, const Vector3 * const v, Vector3 * result)
 {
     V_Y(*result) = V_Y(*v) * *scale;
 }
 
-void v3_sv_scalez_v(const Vector3 * const v, const Double * const scale, Vector3 * result)
+void v3_sv_scalez_v(const Double * const scale, const Vector3 * const v, Vector3 * result)
 {
     V_Z(*result) = V_Z(*v) * *scale;
 }

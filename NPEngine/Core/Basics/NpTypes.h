@@ -38,7 +38,7 @@ typedef Float Real;
 typedef Double Real;
 #endif
 
-typedef Int32 NPState;
+typedef Int32 NpState;
 
 #define NP_NONE  -1
 

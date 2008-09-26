@@ -10,6 +10,8 @@ FQuaternion.c \
 Matrix.c \
 Quaternion.c \
 Vector.c \
+NpPlane.c \
+NpRay.c \
 NpMath.c
 
 libNPEngineCoreMath_HEADER_FILES = \

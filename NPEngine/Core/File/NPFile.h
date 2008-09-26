@@ -9,22 +9,22 @@
 {
     NSString * fileName;
     NSFileHandle * fileHandle;
-    NPState mode;
+    NpState mode;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent fileName:(NSString *)newFileName;
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent fileName:(NSString *)newFileName mode:(NPState)newMode;
+- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent fileName:(NSString *)newFileName mode:(NpState)newMode;
 - (void) dealloc;
 
 - (NSString *) fileName;
 - (void) setFileName:(NSString *)newFileName;
 
-- (NPState) mode;
+- (NpState) mode;
 
-- (void) initFileHandleWithMode:(NPState)newMode;
+- (void) initFileHandleWithMode:(NpState)newMode;
 - (void) clear;
 
 - (void) readInt16:(Int16 *)i;
