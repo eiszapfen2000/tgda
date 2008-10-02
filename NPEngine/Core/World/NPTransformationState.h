@@ -6,6 +6,10 @@
     FMatrix4 * modelMatrix;
     FMatrix4 * viewMatrix;
     FMatrix4 * projectionMatrix;
+    FMatrix4 * modelViewMatrix;
+    FMatrix4 * viewProjectionMatrix;
+    FMatrix4 * modelViewProjectionMatrix;
+    FMatrix4 * inverseViewProjectionMatrix;
 }
 
 - (id) init;
@@ -19,5 +23,13 @@
 - (void) setViewMatrix:(FMatrix4 *)newViewMatrix;
 - (FMatrix4 *)projectionMatrix;
 - (void) setProjectionMatrix:(FMatrix4 *)newProjectionMatrix;
+
+- (FMatrix4 *) modelViewMatrix;
+- (FMatrix4 *) viewProjectionMatrix;
+- (FMatrix4 *) modelViewProjectionMatrix;
+- (FMatrix4 *) inverseViewProjectionMatrix;
+
+
+- (void) computeCombinedMatrices;
 
 @end

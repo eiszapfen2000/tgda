@@ -78,7 +78,7 @@
 
 - (NSString *) description
 {
-    return [ NSString stringWithFormat: @"ID:%ud Name:%@", objectID, name ];
+    return [ NSString stringWithFormat: @"ID:%ud %u Name:%@", objectID, [ self retainCount], name ];
 }
 
 @end

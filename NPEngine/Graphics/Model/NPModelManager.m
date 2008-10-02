@@ -21,13 +21,14 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    models = [ [ NSMutableDictionary alloc ] init ];
+    models = [[ NSMutableDictionary alloc ] init ];
 
     return self;
 }
 
 - (void) dealloc
 {
+    [ models removeAllObjects ];
     [ models release ];
 
     [ super dealloc ];

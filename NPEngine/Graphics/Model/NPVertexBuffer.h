@@ -28,6 +28,7 @@ NpVertexFormat;
 
 void reset_npvertexformat(NpVertexFormat * vertex_format);
 
+
 typedef struct NpVertices
 {
     NpVertexFormat format;
@@ -45,9 +46,11 @@ typedef struct NpVertices
 NpVertices;
 
 void reset_npvertices(NpVertices * vertices);
+void init_empty_npvertices(NpVertices * vertices);
 
 typedef struct NpVertexBuffer
 {
+    BOOL hasVBO;
     UInt positionsID;
     UInt normalsID;
     UInt colorsID;
@@ -58,6 +61,7 @@ typedef struct NpVertexBuffer
 NpVertexBuffer;
 
 void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer);
+void init_empty_npvertexbuffer(NpVertexBuffer * vertex_buffer);
 
 @interface NPVertexBuffer : NPResource
 {
@@ -76,20 +80,30 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer);
 - (void) uploadVBOWithUsageHint:(NpState)usage;
 - (void) deleteVBO;
 - (void) render;
+- (void) renderWithPrimitiveType:(Int)primitiveType firstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;
 - (void) renderElementWithFirstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;
 - (void) renderElementWithPrimitiveType:(Int)primitiveType firstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;
+- (void) renderFromMemoryWithFirstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;
+- (void) renderFromMemoryWithPrimitiveType:(Int)primitiveType firstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;
 
 - (Float *) positions;
 - (void) setPositions:(Float *)newPositions;
+- (void) setPositions:(Float *)newPositions vertexCount:(Int)newVertexCount;
+
 - (Float *) normals;
 - (void) setNormals:(Float *)newNormals withElementsForNormal:(Int)newElementsForNormal;
+
 - (Float *) colors;
 - (void) setColors:(Float *)newColors withElementsForColor:(Int)newElementsForColor;
+
 - (Float *) weights;
 - (void) setWeights:(Float *)newWeights withElementsForWeights:(Int)newElementsForWeights;
+
 - (void) setTextureCoordinates:(Float *)textureCoordinates forSet:(Int)textureCoordinateSet;
+
 - (Int *) indices;
 - (void) setIndices:(Int *)newIndices;
+- (void) setIndices:(Int *)newIndices indexCount:(Int)newIndexCount;
 
 - (void) setIndexed:(BOOL)newIndexed;
 - (void) setMaxVertex:(Int)newMaxVertex;

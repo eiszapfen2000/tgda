@@ -66,4 +66,20 @@
     return ready;
 }
 
+/*- (id) retain
+{
+    id tmp = [ super retain ];
+
+    NSLog(@"retain %@ %@ %d",[self name],[self className],[self retainCount]);
+
+    return tmp;
+}
+
+- (oneway void) release
+{
+    NSLog(@"release %@ %@ %d",[self name],[self className],[self retainCount]);
+
+    [ super release ];
+}*/
+
 @end

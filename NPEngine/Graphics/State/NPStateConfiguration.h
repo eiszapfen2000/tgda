@@ -1,14 +1,16 @@
 #import "NPAlphaTestState.h"
 #import "NPDepthTestState.h"
 #import "NPCullingState.h"
+#import "NPBlendingState.h"
 
 @interface NPStateConfiguration : NPObject
 {
     BOOL locked;
 
     NPAlphaTestState * alphaTestState;
-    NPDepthTestState * depthTestState;
+    NPBlendingState  * blendingState;
     NPCullingState   * cullingState;
+    NPDepthTestState * depthTestState;
 }
 
 - (id) init;
@@ -18,6 +20,11 @@
 
 - (BOOL) locked;
 - (void) setLocked:(BOOL)newLocked;
+
+- (id) alphaTestState;
+- (id) blendingState;
+- (id) cullingState;
+- (id) depthTestState;
 
 - (void) activate;
 - (void) deactivate;

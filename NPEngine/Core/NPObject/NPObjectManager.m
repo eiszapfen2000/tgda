@@ -1,5 +1,6 @@
 #import "NPObjectManager.h"
 #import "Core/Basics/NpCrc32.h"
+#import "Core/NPEngineCore.h"
 
 @implementation NPObjectManager
 
@@ -32,6 +33,18 @@
 {
     [ name release ];
     parent = nil;
+
+    if ( [ objects count ] > 0 )
+    {
+        NSEnumerator * e = [ objects objectEnumerator ];
+        NSValue * o;
+
+        while (( o = [ e nextObject ] ))
+        {
+            NSLog(@"%@ %@ %d",[(id)[o pointerValue] className], [(id)[o pointerValue] name],[(id)[o pointerValue] retainCount]);
+        }
+    }
+
     [ objects release ];
 
     [ super dealloc ];
@@ -44,11 +57,6 @@
 
 - (void) removeObject:(NSValue *)object
 {
-    /*if ( [ objects indexOfObjectIdenticalTo:object ] == NSNotFound )
-    {
-        NSLog(@"object not found");
-    }*/
-
     [ objects removeObjectIdenticalTo:object ];
 }
 

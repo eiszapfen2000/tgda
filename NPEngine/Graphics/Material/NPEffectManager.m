@@ -18,17 +18,9 @@ void np_cg_error_callback()
 			const char * cgListing = cgGetLastListing([[[NPEngineCore instance] effectManager] cgContext]);
 
 		    NPLOG_ERROR(([NSString stringWithFormat:@"CG ERROR: %s \n Cg Compiler Output: %s", string, cgListing]));
-
-			/*tmp << "Situation: " << situation << std::endl
-				<< "Error: " << string << "\n\nCg compiler output...\n" 
-				<< cgListing << std::endl;
-			tuft2::base::EngineCore::instance().getLogger()->printLine(tmp.str());*/
 		} 
 		else 
 		{
-			/*tmp << "Situation: " << situation 
-				<< "\nError: " << string << std::endl;
-			tuft2::base::EngineCore::instance().getLogger()->printLine(tmp.str());*/
 		    NPLOG_ERROR(([NSString stringWithFormat:@"CG ERROR: %s", string]));
 		}
 
@@ -91,6 +83,7 @@ void np_cg_error_callback()
 - (void) dealloc
 {
 	TEST_RELEASE(currentActiveEffect);
+    [ effects removeAllObjects ];
     [ effects release ];
 
     cgDestroyContext(cgContext);

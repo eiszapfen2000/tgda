@@ -7,6 +7,7 @@
 #import "Core/RandomNumbers/NPRandomNumberGeneratorManager.h"
 #import "Core/World/NPTransformationStateManager.h"
 #import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
+#import "Graphics/State/NPStateConfiguration.h"
 #import "Graphics/Model/NPModelManager.h"
 #import "Graphics/Image/NPImageManager.h"
 #import "Graphics/Material/NPTextureManager.h"
@@ -20,13 +21,13 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 
 + (NPEngineCore *)instance
 {
-    NSLock * lock = [ [ NSLock alloc ] init ];
+    NSLock * lock = [[ NSLock alloc ] init ];
 
     if ( [ lock tryLock ] )
     {
         if ( NP_ENGINE_CORE == nil )
         {
-            [ [ self alloc ] init ]; // assignment not done here
+            [[ self alloc ] init ]; // assignment not done here
         }
 
         [ lock unlock ];
@@ -39,7 +40,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 
 + (id)allocWithZone:(NSZone *)zone
 {
-    NSLock * lock = [ [ NSLock alloc ] init ];
+    NSLock * lock = [[ NSLock alloc ] init ];
 
     if ( [ lock tryLock ] )
     {
@@ -80,19 +81,22 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     objectID = crc32_of_pointer(self);
 
     objectManager = [[ NPObjectManager alloc ] init ];
-    logger = [[ NPLogger alloc ] initWithName:@"NPEngine Logger" parent:self ];
-    timer = [[ NPTimer alloc ] initWithName:@"NPEngine Timer" parent:self ];
-    pathManager = [[ NPPathManager alloc ] initWithName:@"NPEngine Path Manager" parent:self ];
+    logger        = [[ NPLogger        alloc ] initWithName:@"NPEngine Logger"       parent:self ];
+    timer         = [[ NPTimer         alloc ] initWithName:@"NPEngine Timer"        parent:self ];
+    pathManager   = [[ NPPathManager   alloc ] initWithName:@"NPEngine Path Manager" parent:self ];
+
     randomNumberGeneratorManager = [[ NPRandomNumberGeneratorManager alloc ] initWithName:@"NPEngine RandomNumberGenerator Manager" parent:self ];
-    transformationStateManager = [[ NPTransformationStateManager alloc ] initWithName:@"NPEngine Transformation State Manager" parent:self ];
+    transformationStateManager   = [[ NPTransformationStateManager   alloc ] initWithName:@"NPEngine Transformation State Manager"  parent:self ];
 
     renderContextManager = [[ NPOpenGLRenderContextManager alloc ] initWithName:@"NPEngine RenderContext Manager" parent:self ];
 
-    modelManager = [[ NPModelManager alloc ] initWithName:@"NPEngine Model Manager" parent:self ];
-    imageManager = [[ NPImageManager alloc ] initWithName:@"NPEngine Image Manager" parent:self ];
+    modelManager   = [[ NPModelManager   alloc ] initWithName:@"NPEngine Model Manager"   parent:self ];
+    imageManager   = [[ NPImageManager   alloc ] initWithName:@"NPEngine Image Manager"   parent:self ];
     textureManager = [[ NPTextureManager alloc ] initWithName:@"NPEngine Texture Manager" parent:self ];
+    effectManager = [[ NPEffectManager   alloc ] initWithName:@"NPEngine Effect Manager"  parent:self ];
+
+    stateConfiguration         = [[ NPStateConfiguration         alloc ] initWithName:@"NPEngine GPU States"              parent:self ];
     textureBindingStateManager = [[ NPTextureBindingStateManager alloc ] initWithName:@"NPEngine Texture Binding Manager" parent:self ];
-    effectManager = [[ NPEffectManager alloc ] initWithName:@"NPEngine Effect Manager" parent:self ];
 
     cameraManager = [[ NPCameraManager alloc ] initWithName:@"NPEngine Camera Manager" parent:self ];
 
@@ -111,6 +115,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     [ textureManager release ];
     [ imageManager release ];
     [ effectManager release ];
+    [ stateConfiguration release ];
     [ renderContextManager release ];
     [ transformationStateManager release ];
     [ randomNumberGeneratorManager release ];
@@ -142,12 +147,17 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     }
 
     [ pathManager setup ];
-    [ imageManager setup ];
     [ transformationStateManager setup ];
+
+    [ imageManager   setup ];
     [ textureManager setup ];
+    [ effectManager  setup ];
+
     [ textureBindingStateManager setup ];
-    [ effectManager setup ];
+
     [ cameraManager setup ];
+
+    [ stateConfiguration activate ];
 
     ready = YES;
 
@@ -222,6 +232,11 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 - (NPOpenGLRenderContextManager *)renderContextManager
 {
     return renderContextManager;
+}
+
+- (NPStateConfiguration *) stateConfiguration
+{
+    return stateConfiguration;
 }
 
 - (NPModelManager *)modelManager

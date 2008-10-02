@@ -31,6 +31,7 @@
 
 - (void) dealloc
 {
+    [ textures removeAllObjects ];
     [ textures release ];
 
     [ super dealloc ];

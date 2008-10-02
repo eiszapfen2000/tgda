@@ -20,7 +20,7 @@
 
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent configuration:(NPStateConfiguration *)newConfiguration
 {
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName parent:newParent configuration:newConfiguration ];
 
     enabled          = NO;
     defaultEnabled   = NO;
@@ -143,13 +143,13 @@
 
             switch ( comparisonFunction )
             {
-                case NP_COMPARISON_NEVER        : { comparison = GL_NEVER; break; }
-                case NP_COMPARISON_ALWAYS       : { comparison = GL_ALWAYS; break; }
-                case NP_COMPARISON_LESS         : { comparison = GL_LESS; break; }
-                case NP_COMPARISON_LESS_EQUAL   : { comparison = GL_LEQUAL; break; }
-                case NP_COMPARISON_EQUAL        : { comparison = GL_EQUAL; break; }
+                case NP_COMPARISON_NEVER        : { comparison = GL_NEVER;   break; }
+                case NP_COMPARISON_ALWAYS       : { comparison = GL_ALWAYS;  break; }
+                case NP_COMPARISON_LESS         : { comparison = GL_LESS;    break; }
+                case NP_COMPARISON_LESS_EQUAL   : { comparison = GL_LEQUAL;  break; }
+                case NP_COMPARISON_EQUAL        : { comparison = GL_EQUAL;   break; }
                 case NP_COMPARISON_GREATER      : { comparison = GL_GREATER; break; }
-                case NP_COMPARISON_GREATER_EQUAL: { comparison = GL_GEQUAL; break; }
+                case NP_COMPARISON_GREATER_EQUAL: { comparison = GL_GEQUAL;  break; }
                 default: { NPLOG_ERROR(@"Unknown alpha test function"); break; }
             }
 

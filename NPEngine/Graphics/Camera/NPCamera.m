@@ -121,9 +121,9 @@
 
 - (void) setPosition:(FVector3 *)newPosition
 {
-    FV_X(*position) = FV_X(*newPosition);    
-    FV_Y(*position) = FV_Y(*newPosition);
-    FV_Z(*position) = FV_Z(*newPosition);
+    V_X(*position) = V_X(*newPosition);    
+    V_Y(*position) = V_Y(*newPosition);
+    V_Z(*position) = V_Z(*newPosition);
 }
 
 - (void) update
@@ -160,7 +160,7 @@
     fm4_mm_multiply_m(&tmp,&trans,view);
     //NPLOG(([NSString stringWithFormat:@"%s",fm4_m_to_string(view)]));
 
-    glLoadMatrixf((Float *)(FM_ELEMENTS(*view)));
+    glLoadMatrixf((Float *)(M_ELEMENTS(*view)));
 }
 
 - (void) updateProjectionMatrix
@@ -169,7 +169,7 @@
 
     fm4_msss_projection_matrix(projection,aspectRatio,fieldOfView,nearPlane,farPlane);
 
-    glLoadMatrixf((Float *)(FM_ELEMENTS(*projection)));
+    glLoadMatrixf((Float *)(M_ELEMENTS(*projection)));
     glMatrixMode(GL_MODELVIEW);
 }
 

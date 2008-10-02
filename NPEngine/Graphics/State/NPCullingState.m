@@ -20,7 +20,7 @@
 
 - (id) initWithName:(NSString *)newName parent:(NPObject *)newParent configuration:(NPStateConfiguration *)newConfiguration
 {
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName parent:newParent configuration:newConfiguration ];
 
     enabled          = NO;
     defaultEnabled   = NO;
