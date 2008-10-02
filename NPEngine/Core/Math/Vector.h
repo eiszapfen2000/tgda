@@ -3,14 +3,9 @@
 
 #include "Core/Basics/NpTypes.h"
 #include "Core/Basics/NpFreeList.h"
+#include "Accessors.h"
 
 void npmath_vector_initialise();
-
-typedef struct IVector2
-{
-    Int x, y;
-}
-IVector2;
 
 typedef struct Vector2
 {
@@ -29,16 +24,6 @@ typedef struct Vector4
     Double x, y, z, w;
 }
 Vector4;
-
-#define VECTOR_X(_v)    (_v).x
-#define VECTOR_Y(_v)    (_v).y
-#define VECTOR_Z(_v)    (_v).z
-#define VECTOR_W(_v)    (_v).w
-
-#define V_X VECTOR_X
-#define V_Y VECTOR_Y
-#define V_Z VECTOR_Z
-#define V_W VECTOR_W
 
 extern Vector3 * NP_WORLD_X_AXIS;
 extern Vector3 * NP_WORLD_Y_AXIS;
@@ -69,6 +54,7 @@ Vector3 * v3_alloc();
 Vector3 * v3_alloc_init();
 Vector3 * v3_alloc_init_with_v3(Vector3 * v);
 Vector3 * v3_free(Vector3 * v);
+void v3_vv_init_with_fv3(Vector3 * v1, Vector3 * v2);
 void v3_v_square_length_s(const Vector3 * const v, Double * sqrlength);
 void v3_v_length_s(const Vector3 * const v, Double * length);
 void v3_v_normalise_v(const Vector3 * const v, Vector3 * normalised);

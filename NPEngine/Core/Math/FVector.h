@@ -3,6 +3,7 @@
 
 #include "Core/Basics/NpTypes.h"
 #include "Core/Basics/NpFreeList.h"
+#include "Accessors.h"
 
 void npmath_fvector_initialise();
 
@@ -23,16 +24,6 @@ typedef struct FVector4
     Float x, y, z, w;
 }
 FVector4;
-
-#define FVECTOR_X(_v)    (_v).x
-#define FVECTOR_Y(_v)    (_v).y
-#define FVECTOR_Z(_v)    (_v).z
-#define FVECTOR_W(_v)    (_v).w
-
-#define FV_X FVECTOR_X
-#define FV_Y FVECTOR_Y
-#define FV_Z FVECTOR_Z
-#define FV_W FVECTOR_W
 
 extern FVector3 * NP_WORLDF_X_AXIS;
 extern FVector3 * NP_WORLDF_Y_AXIS;
@@ -62,22 +53,24 @@ const char * fv2_v_to_string(FVector2 * v);
 
 FVector3 * fv3_alloc();
 FVector3 * fv3_alloc_init();
+FVector3 * fv3_alloc_init_with_fv3(FVector3 * v);
 FVector3 * fv3_free(FVector3 * v);
 void fv3_v_zeros(FVector3 * v);
+void fv3_vv_init_with_fv3(FVector3 * v1, FVector3 * v2);
 void fv3_v_invert(FVector3 * v);
 void fv3_v_invert_v(FVector3 * v, FVector3 * w);
 void fv3_v_square_length_s(const FVector3 * const v, Float * sqrlength);
 void fv3_v_length_s(const FVector3 * const v, Float * length);
 void fv3_v_normalise_v(const FVector3 * const v, FVector3 * normalised);
 void fv3_v_normalise(FVector3 * v);
-void fv3_sv_scale(FVector3 * v, const Float * const scale);
-void fv3_sv_scalex(FVector3 * v, const Float * const scale);
-void fv3_sv_scaley(FVector3 * v, const Float * const scale);
-void fv3_sv_scalez(FVector3 * v, const Float * const scale);
-void fv3_sv_scale_v(const FVector3 * const v, const Float * const scale, FVector3 * result);
-void fv3_sv_scalex_v(const FVector3 * const v, const Float * const scale, FVector3 * result);
-void fv3_sv_scaley_v(const FVector3 * const v, const Float * const scale, FVector3 * result);
-void fv3_sv_scalez_v(const FVector3 * const v, const Float * const scale, FVector3 * result);
+void fv3_sv_scale(const Float * const scale, FVector3 * v);
+void fv3_sv_scalex(const Float * const scale,  FVector3 * v);
+void fv3_sv_scaley(const Float * const scale,  FVector3 * v);
+void fv3_sv_scalez(const Float * const scale,  FVector3 * v);
+void fv3_sv_scale_v(const Float * const scale, const FVector3 * const v, FVector3 * result);
+void fv3_sv_scalex_v(const Float * const scale, const FVector3 * const v, FVector3 * result);
+void fv3_sv_scaley_v(const Float * const scale, const FVector3 * const v, FVector3 * result);
+void fv3_sv_scalez_v(const Float * const scale, const FVector3 * const v, FVector3 * result);
 void fv3_vv_add_v(const FVector3 * const v, const FVector3 * const w, FVector3 * result);
 void fv3_vv_sub_v(const FVector3 * const v, const FVector3 * const w, FVector3 * result);
 void fv3_vv_dot_product_s(const FVector3 * const v, const FVector3 * const w, Float * dot);
