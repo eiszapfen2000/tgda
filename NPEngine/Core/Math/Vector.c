@@ -158,6 +158,11 @@ Vector3 * v3_free(Vector3 * v)
     return npfreenode_fast_free(v,NP_VECTOR3_FREELIST);
 }
 
+void v3_vv_init_with_fv3(Vector3 * v1, Vector3 * v2)
+{
+    *v1 = *v2;
+}
+
 void v3_v_square_length_s(const Vector3 * const v, Double * sqrlength)
 {
     *sqrlength = V_X(*v) * V_X(*v) + V_Y(*v) * V_Y(*v) + V_Z(*v) * V_Z(*v);

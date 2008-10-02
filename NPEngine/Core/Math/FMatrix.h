@@ -3,6 +3,7 @@
 
 #include "Core/Basics/NpTypes.h"
 #include "Core/Basics/NpFreeList.h"
+#include "Accessors.h"
 #include "FVector.h"
 
 void npmath_fmatrix_initialise();
@@ -24,10 +25,6 @@ typedef struct FMatrix4
     Float elements[4][4];
 }
 FMatrix4;
-
-#define FM_ELEMENTS(_m)            (_m).elements
-#define FM_ELEMENT(_m, _col, _row) (_m).elements[(_col)][(_row)]
-#define FM_EL    FM_ELEMENT
 
 FMatrix2 * fm2_alloc();
 FMatrix2 * fm2_alloc_init();
