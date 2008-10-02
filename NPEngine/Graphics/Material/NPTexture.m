@@ -54,7 +54,6 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 
 - (void) dealloc
 {
-    NSLog(@"%d dealloc",[self name]);
     [ self reset ];   
 
     [ super dealloc ];

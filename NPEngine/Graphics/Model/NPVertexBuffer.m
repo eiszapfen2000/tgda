@@ -6,8 +6,8 @@
 
 void reset_npvertexformat(NpVertexFormat * vertex_format)
 {
-    vertex_format->elementsForNormal = 0;
-    vertex_format->elementsForColor = 0;
+    vertex_format->elementsForNormal  = 0;
+    vertex_format->elementsForColor   = 0;
     vertex_format->elementsForWeights = 0;
 
     for ( Int i = 0; i < 8; i++ )
@@ -18,6 +18,22 @@ void reset_npvertexformat(NpVertexFormat * vertex_format)
     vertex_format->maxTextureCoordinateSet = 0;
 }
 
+void init_empty_npvertices(NpVertices * vertices)
+{
+    reset_npvertexformat(&(vertices->format));
+
+    vertices->primitiveType      = -1;
+    vertices->positions          = NULL;
+    vertices->normals            = NULL;
+    vertices->colors             = NULL;
+    vertices->weights            = NULL;
+    vertices->textureCoordinates = NULL;
+    vertices->indices            = NULL;
+    vertices->indexed            = NO;
+    vertices->maxVertex          = 0;
+    vertices->maxIndex           = 0;
+}
+
 void reset_npvertices(NpVertices * vertices)
 {
     reset_npvertexformat(&(vertices->format));
@@ -26,7 +42,7 @@ void reset_npvertices(NpVertices * vertices)
 
     if ( vertices->positions != NULL )
     {
-        FREE(vertices->positions);
+        free(vertices->positions);
     }
 
     if ( vertices->normals != NULL )
@@ -54,17 +70,18 @@ void reset_npvertices(NpVertices * vertices)
         FREE(vertices->indices);
     }
 
-    vertices->indexed = NO;
+    vertices->indexed   = NO;
     vertices->maxVertex = 0;
-    vertices->maxIndex = 0;
+    vertices->maxIndex  = 0;
 }
 
 void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 {
+    vertex_buffer->hasVBO      = NO;
     vertex_buffer->positionsID = -1;
-    vertex_buffer->normalsID = -1;
-    vertex_buffer->colorsID = -1;
-    vertex_buffer->weightsID = -1;
+    vertex_buffer->normalsID   = -1;
+    vertex_buffer->colorsID    = -1;
+    vertex_buffer->weightsID   = -1;
 
     for ( Int i = 0; i < 8; i++ )
     {
@@ -90,9 +107,22 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    [ self reset ];
+    reset_npvertexbuffer(&vertexBuffer);
+    init_empty_npvertices(&vertices);
 
     return self;
+}
+
+- (void) dealloc
+{
+    if ( vertexBuffer.hasVBO == YES )
+    {
+        [ self deleteVBO ];
+    }
+
+    [ self reset ];
+
+    [ super dealloc ];
 }
 
 - (BOOL) loadFromFile:(NPFile *)file
@@ -282,11 +312,14 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 {
     if ( ready == NO )
     {
-        NPLOG(@"VBO not ready");
+        NPLOG_ERROR(@"VBO not ready");
         return;
     }
 
-    [ self deleteVBO ];
+    if ( vertexBuffer.hasVBO == YES )
+    {
+        [ self deleteVBO ];
+    }
 
     GLenum vboUsage;
 
@@ -315,9 +348,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     }
 
     Int verticesSize = (vertices.maxVertex + 1) * sizeof(Float);
-    NPLOG(([NSString stringWithFormat:@"verticesSize %d",verticesSize]));
 
-    NPLOG(([NSString stringWithFormat:@"positionsID %d",vertexBuffer.positionsID]));
     glGenBuffers(1, &(vertexBuffer.positionsID));
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.positionsID);
     glBufferData(GL_ARRAY_BUFFER, verticesSize * 3, vertices.positions, vboUsage);
@@ -372,8 +403,10 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     if ( error != GL_NO_ERROR )
     {
-        NPLOG(([ NSString stringWithFormat:@"%s",gluErrorString(error)]));
+        NPLOG_ERROR(([ NSString stringWithFormat:@"%s",gluErrorString(error)]));
     }
+
+    vertexBuffer.hasVBO = YES;
 }
 
 - (void) deleteBuffer:(UInt)bufferID
@@ -400,7 +433,26 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
 - (void) render
 {
-    [ self renderElementWithFirstIndex:0 andLastIndex:vertices.maxIndex ];
+    if ( vertexBuffer.hasVBO == YES )
+    {
+        [ self renderElementWithFirstIndex:0 andLastIndex:vertices.maxIndex ];
+    }
+    else
+    {
+        [self renderFromMemoryWithFirstIndex:0 andLastIndex:vertices.maxIndex ];
+    }
+}
+
+- (void) renderWithPrimitiveType:(Int)primitiveType firstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex
+{
+    if ( vertexBuffer.hasVBO == YES )
+    {
+        [ self renderElementWithPrimitiveType:primitiveType firstIndex:firstIndex andLastIndex:vertices.maxIndex ];
+    }
+    else
+    {
+        [self renderFromMemoryWithPrimitiveType:primitiveType firstIndex:firstIndex andLastIndex:vertices.maxIndex ];
+    }
 }
 
 - (void) renderElementWithFirstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex
@@ -410,10 +462,6 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
 - (void) renderElementWithPrimitiveType:(Int)primitiveType firstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;
 {
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.positionsID );
-    glVertexPointer(3, GL_FLOAT, 0, NULL);
-
     if ( vertices.format.elementsForNormal > 0 )
     {
         glEnableClientState(GL_NORMAL_ARRAY);
@@ -440,19 +488,21 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         }
     }
 
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.positionsID );
+    glVertexPointer(3, GL_FLOAT, 0, NULL);
+
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
     if ( vertices.indexed == YES )
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexBuffer.indicesID);
-        //glDrawElements(vertices.primitiveType, lastIndex - firstIndex + 1, GL_UNSIGNED_INT, 0);
         glDrawRangeElements(primitiveType, 0, vertices.maxVertex, lastIndex - firstIndex + 1,
                             GL_UNSIGNED_INT, BUFFER_OFFSET(firstIndex*sizeof(UInt32)));
     }
     else
     {
-        NSLog(@"vbo not indexed");
-        return;
+        glDrawArrays(primitiveType, 0, vertices.maxVertex + 1);
     }
 
 #undef BUFFER_OFFSET
@@ -484,6 +534,77 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+- (void) renderFromMemoryWithFirstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex
+{
+    [ self renderFromMemoryWithPrimitiveType:vertices.primitiveType firstIndex:firstIndex andLastIndex:lastIndex ];
+}
+
+- (void) renderFromMemoryWithPrimitiveType:(Int)primitiveType firstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex
+{
+    if ( vertices.format.elementsForNormal > 0 )
+    {
+        glEnableClientState(GL_NORMAL_ARRAY);
+        glNormalPointer(GL_FLOAT, 0, vertices.normals);
+    }
+
+    if ( vertices.format.elementsForColor > 0 )
+    {
+        glEnableClientState(GL_COLOR_ARRAY);
+        glColorPointer(vertices.format.elementsForColor, GL_FLOAT, 0, vertices.colors);
+    }
+
+    for ( Int i = 0; i < 8; i++)
+    {
+        Float * texCoordPointer = vertices.textureCoordinates;
+
+        if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
+        {
+            glActiveTexture(GL_TEXTURE0 + i);
+            glClientActiveTexture(GL_TEXTURE0 + i);
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glTexCoordPointer(vertices.format.elementsForTextureCoordinateSet[i], GL_FLOAT, 0, texCoordPointer);
+            texCoordPointer += ((vertices.maxVertex + 1) * vertices.format.elementsForTextureCoordinateSet[i]);
+        }
+    }
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, vertices.positions);
+
+    if ( vertices.indexed == YES )
+    {
+        glDrawRangeElements(primitiveType, 0, vertices.maxVertex, lastIndex - firstIndex + 1,
+                            GL_UNSIGNED_INT, vertices.indices);
+    }
+    else
+    {
+        glDrawArrays(primitiveType, 0, vertices.maxVertex + 1);
+    }
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    if ( vertices.format.elementsForNormal > 0 )
+    {
+        glDisableClientState(GL_NORMAL_ARRAY);
+    }
+
+    if ( vertices.format.elementsForColor > 0 )
+    {
+        glDisableClientState(GL_COLOR_ARRAY);
+    }
+
+    for ( Int i = 0; i < 8; i++)
+    {
+        if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
+        {
+            glClientActiveTexture(GL_TEXTURE0 + i);
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        }
+    }
+
+    glClientActiveTexture(GL_TEXTURE0);
+
+}
+
 - (Float *) positions
 {
     return vertices.positions;
@@ -497,6 +618,17 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     }
 
     vertices.positions = newPositions;
+}
+
+- (void) setPositions:(Float *)newPositions vertexCount:(Int)newVertexCount
+{
+    /*if ( vertices.positions != NULL )
+    {
+        FREE(vertices.positions);
+    }*/
+
+    vertices.positions = newPositions;
+    vertices.maxVertex = newVertexCount - 1;
 }
 
 - (Float *) normals
@@ -560,6 +692,18 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     }
 
     vertices.indices = newIndices;
+}
+
+- (void) setIndices:(Int *)newIndices indexCount:(Int)newIndexCount
+{
+    if ( vertices.indices != NULL )
+    {
+        FREE(vertices.indices);
+    }
+
+    vertices.indices  = newIndices;
+    vertices.indexed  = YES;
+    vertices.maxIndex = newIndexCount - 1;
 }
 
 - (void) setIndexed:(BOOL)newIndexed

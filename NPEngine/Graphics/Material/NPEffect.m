@@ -36,8 +36,6 @@
 
 - (void) dealloc
 {
-    NSLog(@"%@ dealloc",[self name]);
-
     cgDestroyEffect(effect);
 
     [ super dealloc ];
@@ -82,7 +80,10 @@
 
 - (void) reset
 {
-    cgDestroyEffect(effect);
+    if ( cgIsEffect(effect) )
+    {
+        //cgDestroyEffect(effect);
+    }
     effect = NULL;
     defaultTechnique = NULL;
 
@@ -138,10 +139,13 @@
 
 - (void) bindDefaultSemantics
 {
-    defaultSemantics.modelMatrix = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_MODEL_MATRIX_SEMANTIC ];
-    defaultSemantics.viewMatrix = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_VIEW_MATRIX_SEMANTIC ];
-    defaultSemantics.projectionMatrix = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_PROJECTION_MATRIX_SEMANTIC ];
-    defaultSemantics.modelViewProjectionMatrix = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_MODELVIEWPROJECTION_MATRIX_SEMANTIC ];
+    defaultSemantics.modelMatrix                 = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_MODEL_MATRIX_SEMANTIC ];
+    defaultSemantics.viewMatrix                  = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_VIEW_MATRIX_SEMANTIC ];
+    defaultSemantics.projectionMatrix            = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_PROJECTION_MATRIX_SEMANTIC ];
+    defaultSemantics.modelViewMatrix             = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_MODELVIEW_MATRIX_SEMANTIC ];
+    defaultSemantics.viewProjectionMatrix        = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_VIEWPROJECTION_MATRIX_SEMANTIC ];
+    defaultSemantics.modelViewProjectionMatrix   = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_MODELVIEWPROJECTION_MATRIX_SEMANTIC ];
+    defaultSemantics.inverseViewProjectionMatrix = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_INVERSEVIEWPROJECTION_MATRIX_SEMANTIC ];
 
     for ( Int i = 0; i < 8; i++ )
     {
@@ -176,12 +180,31 @@
         [ self uploadFMatrix4Parameter:defaultSemantics.projectionMatrix andValue:projectionMatrix ];
     }
 
+    if ( defaultSemantics.modelViewMatrix != NULL )
+    {
+        FMatrix4 * modelViewMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentTransformationState ] modelViewMatrix ];
+        [ self uploadFMatrix4Parameter:defaultSemantics.modelViewMatrix andValue:modelViewMatrix ];
+    }
+
+    if ( defaultSemantics.viewProjectionMatrix != NULL )
+    {
+        FMatrix4 * viewProjectionMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentTransformationState ] viewProjectionMatrix ];
+        [ self uploadFMatrix4Parameter:defaultSemantics.viewProjectionMatrix andValue:viewProjectionMatrix ];
+    }
+
     if ( defaultSemantics.modelViewProjectionMatrix != NULL )
     {
+        FMatrix4 * modelViewProjectionMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentTransformationState ] modelViewProjectionMatrix ];
+        [ self uploadFMatrix4Parameter:defaultSemantics.modelViewProjectionMatrix andValue:modelViewProjectionMatrix ];
+    }
+
+    if ( defaultSemantics.inverseViewProjectionMatrix != NULL )
+    {
+        FMatrix4 * inverseViewProjectionMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentTransformationState ] inverseViewProjectionMatrix ];
+        [ self uploadFMatrix4Parameter:defaultSemantics.inverseViewProjectionMatrix andValue:inverseViewProjectionMatrix ];
     }
 
     NPTextureBindingState * textureBindingState = [[[NPEngineCore instance ] textureBindingStateManager ] currentTextureBindingState ];
-
     for ( Int i = 0; i < 8; i++ )
     {
         if ( defaultSemantics.sampler[i] != NULL )
@@ -245,7 +268,7 @@
         //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_VECTOR )
         if ( cgGetParameterType(parameter) == CG_FLOAT2 )
         {
-            cgSetParameter2f(parameter,FV_X(*vector),FV_Y(*vector));
+            cgSetParameter2f(parameter,V_X(*vector),V_Y(*vector));
         }
     }
 }
@@ -264,7 +287,7 @@
         //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_VECTOR )
         if ( cgGetParameterType(parameter) == CG_FLOAT3 )
         {
-            cgSetParameter3f(parameter,FV_X(*vector),FV_Y(*vector),FV_Z(*vector));
+            cgSetParameter3f(parameter,V_X(*vector),V_Y(*vector),V_Z(*vector));
         }
     }
 }
@@ -283,7 +306,7 @@
         //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_VECTOR )
         if ( cgGetParameterType(parameter) == CG_FLOAT4 )
         {
-            cgSetParameter4f(parameter,FV_X(*vector),FV_Y(*vector),FV_Z(*vector),FV_W(*vector));
+            cgSetParameter4f(parameter,V_X(*vector),V_Y(*vector),V_Z(*vector),V_W(*vector));
         }
     }
 }
@@ -304,7 +327,7 @@
         {
             //if ( cgGetParameterRows(parameter) == 2 && cgGetParameterColumns(parameter) == 2 )
             //{
-                cgSetMatrixParameterfc(parameter,(const float *)FM_ELEMENTS(*matrix));
+                cgSetMatrixParameterfc(parameter,(const float *)M_ELEMENTS(*matrix));
             //}
         }
     }
@@ -326,7 +349,7 @@
         {
             //if ( cgGetParameterRows(parameter) == 3 && cgGetParameterColumns(parameter) == 3 )
             //{
-                cgSetMatrixParameterfc(parameter,(const float *)FM_ELEMENTS(*matrix));
+                cgSetMatrixParameterfc(parameter,(const float *)M_ELEMENTS(*matrix));
             //}
         }
     }
@@ -348,7 +371,7 @@
         {
             //if ( cgGetParameterRows(parameter) == 4 && cgGetParameterColumns(parameter) == 4 )
             //{
-                cgSetMatrixParameterfc(parameter,(const float *)FM_ELEMENTS(*matrix));
+                cgSetMatrixParameterfc(parameter,(const float *)M_ELEMENTS(*matrix));
             //}
         }
     }

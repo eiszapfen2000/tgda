@@ -13,6 +13,7 @@
 @class NPEffectManager;
 @class NPOpenGLRenderContextManager;
 @class NPCameraManager;
+@class NPStateConfiguration;
 
 @interface NPEngineCore : NSObject < NPPObject >
 {
@@ -28,6 +29,7 @@
 
     NPOpenGLRenderContextManager * renderContextManager;
 
+    NPStateConfiguration * stateConfiguration;
     NPModelManager * modelManager;
     NPImageManager * imageManager;
     NPTextureManager * textureManager;
@@ -63,6 +65,7 @@
 - (NPRandomNumberGeneratorManager *) randomNumberGeneratorManager;
 - (NPTransformationStateManager *) transformationStateManager;
 - (NPOpenGLRenderContextManager *) renderContextManager;
+- (NPStateConfiguration *) stateConfiguration;
 - (NPModelManager *) modelManager;
 - (NPImageManager *) imageManager;
 - (NPTextureManager *) textureManager;

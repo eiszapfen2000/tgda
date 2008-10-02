@@ -21,12 +21,14 @@
     alphaTestState = [[ NPAlphaTestState alloc ] initWithName:@"NP Alpha Test State" parent:self configuration:self ];
     depthTestState = [[ NPDepthTestState alloc ] initWithName:@"NP Depth Test State" parent:self configuration:self ];
     cullingState   = [[ NPCullingState   alloc ] initWithName:@"NP Culling State"    parent:self configuration:self ];
+    blendingState  = [[ NPBlendingState  alloc ] initWithName:@"NP Blending State"   parent:self configuration:self ];
 
     return self;
 }
 
 - (void) dealloc
 {
+    [ blendingState  release ];
     [ cullingState   release ];
     [ depthTestState release ];
     [ alphaTestState release ];
@@ -42,6 +44,26 @@
 - (void) setLocked:(BOOL)newLocked
 {
     locked = newLocked;
+}
+
+- (id) alphaTestState
+{
+    return alphaTestState;
+}
+
+- (id) blendingState
+{
+    return blendingState;
+}
+
+- (id) cullingState
+{
+    return cullingState;
+}
+
+- (id) depthTestState
+{
+    return depthTestState;
 }
 
 - (void) activate

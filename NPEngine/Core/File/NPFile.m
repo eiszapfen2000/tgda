@@ -220,8 +220,8 @@
 - (FVector2 *) readFVector2
 {
     FVector2 * v = fv2_alloc_init();
-    [ self readFloat:&(FV_X(*v)) ];
-    [ self readFloat:&(FV_Y(*v)) ];
+    [ self readFloat:&(V_X(*v)) ];
+    [ self readFloat:&(V_Y(*v)) ];
 
     return v;
 }
@@ -229,9 +229,9 @@
 - (FVector3 *) readFVector3
 {
     FVector3 * v = fv3_alloc_init();
-    [ self readFloat:&(FV_X(*v)) ];
-    [ self readFloat:&(FV_Y(*v)) ];
-    [ self readFloat:&(FV_Z(*v)) ];
+    [ self readFloat:&(V_X(*v)) ];
+    [ self readFloat:&(V_Y(*v)) ];
+    [ self readFloat:&(V_Z(*v)) ];
 
     return v;
 }
@@ -239,10 +239,10 @@
 - (FVector4 *) readFVector4
 {
     FVector4 * v = fv4_alloc_init();
-    [ self readFloat:&(FV_X(*v)) ];
-    [ self readFloat:&(FV_Y(*v)) ];
-    [ self readFloat:&(FV_Z(*v)) ];
-    [ self readFloat:&(FV_W(*v)) ];
+    [ self readFloat:&(V_X(*v)) ];
+    [ self readFloat:&(V_Y(*v)) ];
+    [ self readFloat:&(V_Z(*v)) ];
+    [ self readFloat:&(V_W(*v)) ];
 
     return v;
 }
@@ -349,23 +349,23 @@
 
 - (void) writeFVector2:(FVector2 *)v
 {
-    [ self writeFloat:&(FV_X(*v)) ];
-    [ self writeFloat:&(FV_Y(*v)) ];
+    [ self writeFloat:&(V_X(*v)) ];
+    [ self writeFloat:&(V_Y(*v)) ];
 }
 
 - (void) writeFVector3:(FVector3 *)v
 {
-    [ self writeFloat:&(FV_X(*v)) ];
-    [ self writeFloat:&(FV_Y(*v)) ];
-    [ self writeFloat:&(FV_Z(*v)) ];
+    [ self writeFloat:&(V_X(*v)) ];
+    [ self writeFloat:&(V_Y(*v)) ];
+    [ self writeFloat:&(V_Z(*v)) ];
 }
 
 - (void) writeFVector4:(FVector4 *)v
 {
-    [ self writeFloat:&(FV_X(*v)) ];
-    [ self writeFloat:&(FV_Y(*v)) ];
-    [ self writeFloat:&(FV_Z(*v)) ];
-    [ self writeFloat:&(FV_W(*v)) ];
+    [ self writeFloat:&(V_X(*v)) ];
+    [ self writeFloat:&(V_Y(*v)) ];
+    [ self writeFloat:&(V_Z(*v)) ];
+    [ self writeFloat:&(V_W(*v)) ];
 }
 
 @end

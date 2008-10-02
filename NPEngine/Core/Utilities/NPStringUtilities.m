@@ -34,5 +34,6 @@ NSMutableArray * splitStringUsingCharacterSet(NSString * string, NSCharacterSet 
         }
 	}
 
-	return [ array autorelease ];
+	//return [ array autorelease ];
+    return array;
 }

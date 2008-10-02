@@ -30,7 +30,9 @@
 
 - (void) dealloc
 {
+    [ materials removeAllObjects ];
 	[ materials release ];
+    [ lods removeAllObjects ];
 	[ lods release ];
 
 	[ super dealloc ];
@@ -81,12 +83,14 @@
     {
         NPSUXModelLod * lod = [ [ NPSUXModelLod alloc ] initWithParent:self ];
 
+
         if ( [ lod loadFromFile:file ] == YES )
         {
             [ lods addObject:lod ];
         }
 
         [ lod release ];
+
     }
 
     ready = YES;
@@ -168,6 +172,10 @@
     {
         [ lod uploadToGL ];
     }
+
+    //NSLog(@"%d",[lods retainCount]);
+    //[ lods release ];
+    //NSLog(@"%d",[lods retainCount]);
 
     /*NSEnumerator * materialEnumerator = [ materials objectEnumerator ];
     NPSUXMaterialInstance * materialInstance;

@@ -35,6 +35,18 @@
     return self;
 }
 
+- (void) dealloc
+{
+    boundingBoxMinimum = fv3_free(boundingBoxMinimum);
+    boundingBoxMaximum = fv3_free(boundingBoxMaximum);
+
+    [ vertexBuffer release ];
+    [ groups release ];
+
+    [ super dealloc ];
+}
+
+
 - (BOOL) loadFromFile:(NPFile *)file
 {
     [ self setFileName:[ file fileName ] ];

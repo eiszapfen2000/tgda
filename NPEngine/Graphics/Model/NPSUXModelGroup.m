@@ -90,7 +90,7 @@
 {
     if ( ready == NO )
     {
-        NPLOG(@"group not ready");
+        NPLOG_WARNING(@"group not ready");
         return;
     }
 
@@ -102,7 +102,7 @@
     {
         cgSetPassState(pass);
 
-        [[(NPSUXModelLod *)parent vertexBuffer ] renderElementWithPrimitiveType:primitiveType firstIndex:firstIndex andLastIndex:lastIndex ];
+        [[(NPSUXModelLod *)parent vertexBuffer ] renderWithPrimitiveType:primitiveType firstIndex:firstIndex andLastIndex:lastIndex ];
 
         cgResetPassState(pass);
         pass = cgGetNextPass(pass);
