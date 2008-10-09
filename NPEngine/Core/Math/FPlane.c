@@ -46,6 +46,19 @@ FPlane * fplane_alloc_init_with_normal_and_scalar(FVector3 * normal, Float scala
     return plane;
 }
 
+FPlane * fplane_alloc_init_with_components(Float x, Float y, Float z, Float scalar)
+{
+    FPlane * plane = npfreenode_alloc(NP_FPLANE_FREELIST);
+    plane->normal.x = x;
+    plane->normal.y = y;
+    plane->normal.z = z;
+    plane->d = scalar;
+
+    fv3_v_normalise(&(plane->normal));
+
+    return plane;
+}
+
 FPlane * fplane_free(FPlane * p)
 {
     return npfreenode_fast_free(p,NP_FPLANE_FREELIST);

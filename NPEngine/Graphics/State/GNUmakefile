@@ -9,6 +9,7 @@ NPAlphaTestState.h \
 NPDepthTestState.h \
 NPCullingState.h \
 NPBlendingState.h \
+NPPolygonFillState.h \
 NPStateConfiguration.h \
 NPStateSet.h
 
@@ -18,6 +19,7 @@ NPAlphaTestState.m \
 NPDepthTestState.m \
 NPCullingState.m \
 NPBlendingState.m \
+NPPolygonFillState.m \
 NPStateConfiguration.m \
 NPStateSet.m
 

@@ -175,7 +175,7 @@ void fv3_v_zeros(FVector3 * v)
     V_X(*v) = V_Y(*v) = V_Z(*v) = 0.0f;
 }
 
-void fv3_vv_init_with_fv3(FVector3 * v1, FVector3 * v2)
+void fv3_v_init_with_fv3(FVector3 * v1, FVector3 * v2)
 {
     *v1 = *v2;
 }
@@ -336,7 +336,7 @@ FVector4 * fv4_free(FVector4 * v)
     return npfreenode_fast_free(v,NP_FVECTOR4_FREELIST);
 }
 
-FVector4 * fv4_alloc_init_with_fvector3(FVector3 * v)
+FVector4 * fv4_alloc_init_with_fv3(FVector3 * v)
 {
     FVector4 * tmp = npfreenode_alloc(NP_FVECTOR4_FREELIST);
     V_X(*tmp) = V_X(*v);
@@ -346,11 +346,57 @@ FVector4 * fv4_alloc_init_with_fvector3(FVector3 * v)
     return tmp;
 }
 
+FVector4 * fv4_alloc_init_with_fv4(FVector4 * v)
+{
+    FVector4 * tmp = npfreenode_alloc(NP_FVECTOR4_FREELIST);
+    V_X(*tmp) = V_X(*v);
+    V_Y(*tmp) = V_Y(*v);
+    V_Z(*tmp) = V_Z(*v);
+    V_W(*tmp) = V_W(*v);
+
+    return tmp;
+}
+
+FVector4 * fv4_alloc_init_with_components(Float x, Float y, Float z, Float w)
+{
+    FVector4 * tmp = npfreenode_alloc(NP_FVECTOR4_FREELIST);
+    V_X(*tmp) = x;
+    V_Y(*tmp) = y;
+    V_Z(*tmp) = z;
+    V_W(*tmp) = w;
+
+    return tmp;
+}
+
 void fv4_vv_load_fv3(FVector4 * v, const FVector3 * const w)
 {
     V_X(*v) = V_X(*w);
     V_Y(*v) = V_Y(*w);
     V_Z(*v) = V_Z(*w);    
+}
+
+void fv4_sv_scale(const Float * const scale, FVector4 * v)
+{
+    V_X(*v) = V_X(*v) * *scale;
+    V_Y(*v) = V_Y(*v) * *scale;
+    V_Z(*v) = V_Z(*v) * *scale;
+    V_W(*v) = V_W(*v) * *scale;
+}
+
+void fv4_vv_add_v(const FVector4 * const v, const FVector4 * const w, FVector4 * result)
+{
+    V_X(*result) = V_X(*v) + V_X(*w);
+    V_Y(*result) = V_Y(*v) + V_Y(*w);
+    V_Z(*result) = V_Z(*v) + V_Z(*w);
+    V_W(*result) = V_W(*v) + V_W(*w);
+}
+
+void fv4_vv_sub_v(const FVector4 * const v, const FVector4 * const w, FVector4 * result)
+{
+    V_X(*result) = V_X(*v) - V_X(*w);
+    V_Y(*result) = V_Y(*v) - V_Y(*w);
+    V_Z(*result) = V_Z(*v) - V_Z(*w);
+    V_W(*result) = V_W(*v) - V_W(*w);
 }
 
 const char * fv4_v_to_string(FVector4 * v)

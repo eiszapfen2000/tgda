@@ -433,13 +433,27 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
 - (void) render
 {
-    if ( vertexBuffer.hasVBO == YES )
+    if ( vertices.indexed == YES )
     {
-        [ self renderElementWithFirstIndex:0 andLastIndex:vertices.maxIndex ];
+        if ( vertexBuffer.hasVBO == YES )
+        {
+            [ self renderElementWithPrimitiveType:vertices.primitiveType firstIndex:0 andLastIndex:vertices.maxIndex ];
+        }
+        else
+        {
+            [self renderFromMemoryWithPrimitiveType:vertices.primitiveType firstIndex:0 andLastIndex:vertices.maxIndex ];
+        }
     }
     else
     {
-        [self renderFromMemoryWithFirstIndex:0 andLastIndex:vertices.maxIndex ];
+        if ( vertexBuffer.hasVBO == YES )
+        {
+            [ self renderElementWithPrimitiveType:vertices.primitiveType firstIndex:0 andLastIndex:vertices.maxVertex ];
+        }
+        else
+        {
+            [self renderFromMemoryWithPrimitiveType:vertices.primitiveType firstIndex:0 andLastIndex:vertices.maxVertex ];
+        }
     }
 }
 
@@ -447,17 +461,12 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 {
     if ( vertexBuffer.hasVBO == YES )
     {
-        [ self renderElementWithPrimitiveType:primitiveType firstIndex:firstIndex andLastIndex:vertices.maxIndex ];
+        [ self renderElementWithPrimitiveType:primitiveType firstIndex:firstIndex andLastIndex:lastIndex ];
     }
     else
     {
-        [self renderFromMemoryWithPrimitiveType:primitiveType firstIndex:firstIndex andLastIndex:vertices.maxIndex ];
+        [self renderFromMemoryWithPrimitiveType:primitiveType firstIndex:firstIndex andLastIndex:lastIndex ];
     }
-}
-
-- (void) renderElementWithFirstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex
-{
-    [ self renderElementWithPrimitiveType:vertices.primitiveType firstIndex:firstIndex andLastIndex:lastIndex ];
 }
 
 - (void) renderElementWithPrimitiveType:(Int)primitiveType firstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;
@@ -502,7 +511,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     }
     else
     {
-        glDrawArrays(primitiveType, 0, vertices.maxVertex + 1);
+        glDrawArrays(primitiveType, 0, lastIndex - firstIndex + 1);
     }
 
 #undef BUFFER_OFFSET
@@ -532,11 +541,6 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-- (void) renderFromMemoryWithFirstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex
-{
-    [ self renderFromMemoryWithPrimitiveType:vertices.primitiveType firstIndex:firstIndex andLastIndex:lastIndex ];
 }
 
 - (void) renderFromMemoryWithPrimitiveType:(Int)primitiveType firstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex
@@ -577,7 +581,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     }
     else
     {
-        glDrawArrays(primitiveType, 0, vertices.maxVertex + 1);
+        glDrawArrays(primitiveType, firstIndex, lastIndex - firstIndex + 1);
     }
 
     glDisableClientState(GL_VERTEX_ARRAY);
@@ -622,10 +626,10 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
 - (void) setPositions:(Float *)newPositions vertexCount:(Int)newVertexCount
 {
-    /*if ( vertices.positions != NULL )
+    if ( vertices.positions != NULL && vertices.positions != newPositions )
     {
         FREE(vertices.positions);
-    }*/
+    }
 
     vertices.positions = newPositions;
     vertices.maxVertex = newVertexCount - 1;
@@ -638,7 +642,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
 - (void) setNormals:(Float *)newNormals withElementsForNormal:(Int)newElementsForNormal
 {
-    if ( vertices.normals != NULL )
+    if ( vertices.normals != NULL && vertices.normals != newNormals )
     {
         FREE(vertices.normals);
     }
@@ -654,7 +658,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
 - (void) setColors:(Float *)newColors withElementsForColor:(Int)newElementsForColor
 {
-    if ( vertices.colors != NULL )
+    if ( vertices.colors != NULL && vertices.colors != newColors )
     {
         FREE(vertices.colors);
     }
@@ -670,7 +674,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
 - (void) setWeights:(Float *)newWeights withElementsForWeights:(Int)newElementsForWeights
 {
-    if ( vertices.weights != NULL )
+    if ( vertices.weights != NULL && vertices.weights != newWeights )
     {
         FREE(vertices.weights);
     }
@@ -696,7 +700,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
 - (void) setIndices:(Int *)newIndices indexCount:(Int)newIndexCount
 {
-    if ( vertices.indices != NULL )
+    if ( vertices.indices != NULL && vertices.indices != newIndices)
     {
         FREE(vertices.indices);
     }

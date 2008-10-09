@@ -5,6 +5,11 @@
 
 #define NP_FRONT_FACE               0
 #define NP_BACK_FACE                1
+#define NP_FRONT_AND_BACK_FACE      2
+
+#define NP_POLYGON_FILL_POINT       0
+#define NP_POLYGON_FILL_LINE        1
+#define NP_POLYGON_FILL_FACE        2
 
 #define NP_COMPARISON_NEVER         0
 #define NP_COMPARISON_ALWAYS        1

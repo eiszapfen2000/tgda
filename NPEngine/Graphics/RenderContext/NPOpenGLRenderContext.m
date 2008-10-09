@@ -44,7 +44,7 @@
     ready = NO;
 
     [ pixelFormat retain ];
-    context = [ [ NSOpenGLContext alloc ] initWithFormat:[pixelFormat pixelFormat] shareContext:nil ];
+    context = [[ NSOpenGLContext alloc ] initWithFormat:[pixelFormat pixelFormat] shareContext:nil ];
     [ pixelFormat release ];
 
     if ( context != nil )
