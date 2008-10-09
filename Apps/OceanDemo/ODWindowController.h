@@ -1,11 +1,8 @@
 #import <AppKit/AppKit.h>
 
-@interface ODWindowController : NSObject
-{
-    NSTimer * timer;
-}
+@class ODScene;
 
-- (void) setupRenderLoopInView:(id)view;
+@interface ODWindowController : NSObject
 
 - (void) windowWillClose:(NSNotification *)aNotification;
 

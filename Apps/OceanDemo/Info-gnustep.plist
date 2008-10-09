@@ -8,7 +8,7 @@
     FullVersionID = 0.10;
     NSExecutable = OceanDemo;
     NSMainNibFile = OceanDemo.gorm;
-    NSPrincipalClass = NSApplication;
+    NSPrincipalClass = ODApplication;
     NSRole = Application;
 }
  
