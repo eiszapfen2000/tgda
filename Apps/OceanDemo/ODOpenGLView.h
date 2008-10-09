@@ -12,9 +12,6 @@
 
 - (void) setup;
 - (void) shutdown;
-
 - (void) update;
-
-- (NPOpenGLRenderContext *)renderContext;
 
 @end

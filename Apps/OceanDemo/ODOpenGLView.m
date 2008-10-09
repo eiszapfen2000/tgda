@@ -1,4 +1,6 @@
 #import "ODOpenGLView.h"
+#import "ODScene.h"
+#import "ODDemo.h"
 
 #import "Core/NPEngineCore.h"
 #import "Graphics/RenderContext/NPOpenGLRenderContext.h"
@@ -33,12 +35,22 @@
 
     [ pixelFormat release ];
 
+    BOOL fullscreen = [[ settings objectForKey:@"Fullscreen" ] boolValue ];
+
+    if ( fullscreen == NO )
+    {
+        /*[[ NSNotificationCenter defaultCenter ] addObserver:self
+                                                   selector:@selector(frameChanged:)
+                                                       name:NSViewFrameDidChangeNotification
+                                                     object:self ];*/
+    }
+
     [[ NPEngineCore instance ] setup ];
+    glXSwapIntervalSGI(1);
 }
 
 - (void) shutdown
 {
-    NSLog(@"shutdown");
     [ renderContext deactivate ];
     [ renderContext disconnectFromView ];
     [ renderContext release ];
@@ -49,53 +61,57 @@
     return YES;
 }
 
-- (void) reshape
+- (void)keyDown:(NSEvent *)theEvent
 {
+    NSString * key  = [theEvent charactersIgnoringModifiers];
+    unichar keyChar = [key characterAtIndex:0];
+
+    switch ( keyChar )
+    {
+        case 'w': { [[[ ODDemo instance ] currentScene ] activateForwardMovement ]; break; }
+        case 's': { [[[ ODDemo instance ] currentScene ] activateBackwardMovement ]; break; }
+        case 'a': { [[[ ODDemo instance ] currentScene ] activateStrafeLeft ]; break; }
+        case 'd': { [[[ ODDemo instance ] currentScene ] activateStrafeRight ]; break; }
+
+    }    
+}
+
+- (void)keyUp:(NSEvent *)theEvent
+{
+    NSString * key  = [theEvent charactersIgnoringModifiers];
+    unichar keyChar = [key characterAtIndex:0];
+
+    switch ( keyChar )
+    {
+        case 'w': { [[[ ODDemo instance ] currentScene ] deactivateForwardMovement ]; break; }
+        case 's': { [[[ ODDemo instance ] currentScene ] deactivateBackwardMovement ]; break; }
+        case 'a': { [[[ ODDemo instance ] currentScene ] deactivateStrafeLeft ]; break; }
+        case 'd': { [[[ ODDemo instance ] currentScene ] deactivateStrafeRight ]; break; }
+
+    }
+}
+
+- (void)mouseDown:(NSEvent *)theEvent
+{
+    //NSLog(@"mouseDown");
+}
+
+- (void)mouseUp:(NSEvent *)theEvent
+{
+    //NSLog(@"mouseUp");
+}
+
+- (void)mouseDragged:(NSEvent *)theEvent
+{
+    //NSLog(@"mouseDragged %f %f",[theEvent deltaX],[theEvent deltaY]);
+    [[[ ODDemo instance ] currentScene ] cameraRotateUsingYaw:[theEvent deltaX] andPitch:[theEvent deltaY] ];
+
 }
 
 - (void) update
 {
     [ renderContext update ];
 }
-
-- (void) updateAndRender:(NSNotification *)aNotification
-{
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT );
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glBegin(GL_TRIANGLES);
-        glColor3f(1.0f,0.0f,0.0f);
-        //glTexCoord2f(0.0f,0.0f);
-        glVertex2f(-1.0f,0.0f);
-        //glTexCoord2f(1.0f,0.0f);
-        glVertex2f(1.0f,0.0f);
-        //glTexCoord2f(0.5f,1.0f);
-        glVertex2f(0.0f,1.0f);
-    glEnd();
-
-    [ renderContext swap ];
-}
-
-/*- (void) frameChanged:(NSNotification *)aNot
-{
-    NSLog(@"framchanged");
-    if( [ renderContext context ] != [NSOpenGLContext currentContext] )
-    {
-        [ renderContext activate ];
-        [ self reshape ];
-        [ self update ];
-    }
-    else
-    {
-        [ self reshape ];
-        [ self update ];
-    }
-}*/
 
 - (void) drawRect:(NSRect)aRect
 {

@@ -3,8 +3,11 @@
 #import "ODApplicationController.h"
 #import "ODWindowController.h"
 #import "ODOpenGLView.h"
+#import "ODDemo.h"
 
 #import "Core/NPEngineCore.h"
+
+#import <unistd.h>
 
 @implementation ODApplicationController
 
@@ -46,7 +49,7 @@
     {
         windowRect = NSMakeRect(100,100,width,height);
         styleMask = NSTitledWindowMask;
-        windowLevel = NSNormalWindowLevel;
+        windowLevel = NSModalPanelWindowLevel;
     }
 
     window = [[NSWindow alloc] initWithContentRect:windowRect
@@ -65,24 +68,31 @@
 
     ODOpenGLView * view = [[ ODOpenGLView alloc ] initWithFrame:windowRect ];
     [ window setContentView:view ];
-    [ view release ];
     [ view setup ];
     [ view update ];
+    [ view release ];
 
-    [ windowController setupRenderLoopInView:view ];
+    ODScene * scene = [[ ODScene alloc ] init ];
+    [ scene setup ];
+
+    ODDemo * demo = [ ODDemo instance ];
+    [ demo setCurrentScene:scene ];
+    [ scene release ];
+
+    [ window makeFirstResponder:view ];
+
+    [ demo setupRenderLoop ];
 }
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
 {
-    NSLog(@"app should terminate");
     return NSTerminateNow;
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification
 {
-    NSLog(@"will terminate");
     [ NSApp setDelegate:nil ];
-    [ self autorelease ];
+    //[ self autorelease ];
 }
 
 @end
