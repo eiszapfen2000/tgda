@@ -2,15 +2,17 @@
 #import "NPDepthTestState.h"
 #import "NPCullingState.h"
 #import "NPBlendingState.h"
+#import "NPPolygonFillState.h"
 
 @interface NPStateConfiguration : NPObject
 {
     BOOL locked;
 
-    NPAlphaTestState * alphaTestState;
-    NPBlendingState  * blendingState;
-    NPCullingState   * cullingState;
-    NPDepthTestState * depthTestState;
+    NPAlphaTestState   * alphaTestState;
+    NPBlendingState    * blendingState;
+    NPCullingState     * cullingState;
+    NPDepthTestState   * depthTestState;
+    NPPolygonFillState * polygonFillState;
 }
 
 - (id) init;
@@ -25,6 +27,7 @@
 - (id) blendingState;
 - (id) cullingState;
 - (id) depthTestState;
+- (id) polygonFillState;
 
 - (void) activate;
 - (void) deactivate;

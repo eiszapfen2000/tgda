@@ -81,9 +81,7 @@ void init_empty_npvertexbuffer(NpVertexBuffer * vertex_buffer);
 - (void) deleteVBO;
 - (void) render;
 - (void) renderWithPrimitiveType:(Int)primitiveType firstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;
-- (void) renderElementWithFirstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;
 - (void) renderElementWithPrimitiveType:(Int)primitiveType firstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;
-- (void) renderFromMemoryWithFirstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;
 - (void) renderFromMemoryWithPrimitiveType:(Int)primitiveType firstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;
 
 - (Float *) positions;

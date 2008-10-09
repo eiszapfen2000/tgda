@@ -18,20 +18,22 @@
 
     locked = NO;
 
-    alphaTestState = [[ NPAlphaTestState alloc ] initWithName:@"NP Alpha Test State" parent:self configuration:self ];
-    depthTestState = [[ NPDepthTestState alloc ] initWithName:@"NP Depth Test State" parent:self configuration:self ];
-    cullingState   = [[ NPCullingState   alloc ] initWithName:@"NP Culling State"    parent:self configuration:self ];
-    blendingState  = [[ NPBlendingState  alloc ] initWithName:@"NP Blending State"   parent:self configuration:self ];
+    alphaTestState   = [[ NPAlphaTestState   alloc ] initWithName:@"NP Alpha Test State"   parent:self configuration:self ];
+    depthTestState   = [[ NPDepthTestState   alloc ] initWithName:@"NP Depth Test State"   parent:self configuration:self ];
+    cullingState     = [[ NPCullingState     alloc ] initWithName:@"NP Culling State"      parent:self configuration:self ];
+    blendingState    = [[ NPBlendingState    alloc ] initWithName:@"NP Blending State"     parent:self configuration:self ];
+    polygonFillState = [[ NPPolygonFillState alloc ] initWithName:@"NP Polygon Fill State" parent:self configuration:self ];
 
     return self;
 }
 
 - (void) dealloc
 {
-    [ blendingState  release ];
-    [ cullingState   release ];
-    [ depthTestState release ];
-    [ alphaTestState release ];
+    [ blendingState    release ];
+    [ cullingState     release ];
+    [ depthTestState   release ];
+    [ alphaTestState   release ];
+    [ polygonFillState release ];
 
     [ super dealloc ];
 }
@@ -66,13 +68,20 @@
     return depthTestState;
 }
 
+- (id) polygonFillState
+{
+    return polygonFillState;
+}
+
 - (void) activate
 {
     if ( locked == NO )
     {
-        [ alphaTestState activate ];
-        [ depthTestState activate ];
-        [ cullingState   activate ];
+        [ alphaTestState   activate ];
+        [ depthTestState   activate ];
+        [ cullingState     activate ];
+        [ blendingState    activate ];
+        [ polygonFillState activate ];
     }
 }
 
@@ -80,9 +89,11 @@
 {
     if ( locked == NO )
     {
-        [ alphaTestState deactivate ];
-        [ depthTestState deactivate ];
-        [ cullingState   deactivate ];        
+        [ alphaTestState   deactivate ];
+        [ depthTestState   deactivate ];
+        [ cullingState     deactivate ];
+        [ blendingState    deactivate ];
+        [ polygonFillState deactivate ];
     }
 }
 
@@ -90,11 +101,12 @@
 {
     if ( locked == NO )
     {
-        [ alphaTestState reset ];
-        [ depthTestState reset ];
-        [ cullingState   reset ]; 
+        [ alphaTestState   reset ];
+        [ depthTestState   reset ];
+        [ cullingState     reset ];
+        [ blendingState    reset ];
+        [ polygonFillState reset ];
     }
 }
-
 
 @end

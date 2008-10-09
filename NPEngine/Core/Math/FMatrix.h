@@ -56,8 +56,10 @@ const char * fm3_m_to_string(FMatrix3 * m);
 
 FMatrix4 * fm4_alloc();
 FMatrix4 * fm4_alloc_init();
+FMatrix4 * fm4_alloc_init_with_fm4(FMatrix4 * m);
 FMatrix4 * fm4_free(FMatrix4 * v);
 void fm4_m_set_identity(FMatrix4 * m);
+void fm4_m_init_with_fm4(FMatrix4 * destination, FMatrix4 * source);
 void fm4_m_transpose_m(const FMatrix4 * const m, FMatrix4 * transpose);
 void fm4_mm_add_m(const FMatrix4 * const m1, const FMatrix4 * const m2, FMatrix4 * result);
 void fm4_mm_subtract_m(const FMatrix4 * const m1, const FMatrix4 * const m2, FMatrix4 * result);

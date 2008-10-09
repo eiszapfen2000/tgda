@@ -18,6 +18,7 @@ FPlane * fplane_alloc();
 FPlane * fplane_alloc_init();
 FPlane * fplane_alloc_init_with_normal(FVector3 * normal);
 FPlane * fplane_alloc_init_with_normal_and_scalar(FVector3 * normal, Float scalar);
+FPlane * fplane_alloc_init_with_components(Float x, Float y, Float z, Float scalar);
 FPlane * fplane_free(FPlane * p);
 
 Int fplane_pr_intersect_with_ray_v(FPlane * plane, FRay * ray, FVector3 * result);

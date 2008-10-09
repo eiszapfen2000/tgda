@@ -302,6 +302,14 @@ FMatrix4 * fm4_alloc_init()
     return tmp;
 }
 
+FMatrix4 * fm4_alloc_init_with_fm4(FMatrix4 * m)
+{
+    FMatrix4 * tmp = npfreenode_alloc(NP_FMATRIX4_FREELIST);
+    *tmp = *m;
+
+    return tmp;
+}
+
 FMatrix4 * fm4_free(FMatrix4 * v)
 {
     return npfreenode_fast_free(v,NP_FMATRIX4_FREELIST);
@@ -312,6 +320,11 @@ void fm4_m_set_identity(FMatrix4 * m)
     M_EL(*m,0,0) = M_EL(*m,1,1) = M_EL(*m,2,2) = M_EL(*m,3,3) = 1.0;
     M_EL(*m,0,1) = M_EL(*m,0,2) = M_EL(*m,0,3) = M_EL(*m,1,0) = M_EL(*m,1,2) = M_EL(*m,1,3) =
     M_EL(*m,2,0) = M_EL(*m,2,1) = M_EL(*m,2,3) = M_EL(*m,3,0) = M_EL(*m,3,1) = M_EL(*m,3,2) = 0.0;
+}
+
+void fm4_m_init_with_fm4(FMatrix4 * destination, FMatrix4 * source)
+{
+    *destination = *source;
 }
 
 void fm4_m_transpose_m(const FMatrix4 * const m, FMatrix4 * transpose)

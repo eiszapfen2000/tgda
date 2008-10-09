@@ -117,7 +117,7 @@
             {
                 case NP_FRONT_FACE : { face = GL_FRONT; break; }
                 case NP_BACK_FACE  : { face = GL_BACK;  break; }
-                default: { NPLOG_ERROR(@"Unknown cull face parameter"); break; }
+                default: { NPLOG_ERROR(@"Unknown cull face parameter"); return; }
             }
 
             glCullFace(face);

@@ -157,7 +157,7 @@
                 case NP_COMPARISON_EQUAL        : { comparison = GL_EQUAL;   break; }
                 case NP_COMPARISON_GREATER      : { comparison = GL_GREATER; break; }
                 case NP_COMPARISON_GREATER_EQUAL: { comparison = GL_GEQUAL;  break; }
-                default: { NPLOG_ERROR(@"Unknown alpha test function"); break; }
+                default: { NPLOG_ERROR(@"Unknown alpha test function"); return; }
             }
 
             glDepthFunc(comparison);
