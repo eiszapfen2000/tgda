@@ -119,9 +119,11 @@
                    farPlane:(Float)farPlane
                 aspectRatio:(Float)aspectRatio
 {
-    nearPlaneHeight = 2.0f * tanf(fov/2.0f) * nearPlane;
+    Float fovradians = DEGREE_TO_RADIANS(fov/2.0f);
+
+    nearPlaneHeight = 2.0f * tanf(fovradians) * nearPlane;
     nearPlaneWidth  = nearPlaneHeight * aspectRatio;
-    farPlaneHeight  = 2.0f * tanf(fov/2.0f) * farPlane;
+    farPlaneHeight  = 2.0f * tanf(fovradians) * farPlane;
     farPlaneWidth   = farPlaneHeight * aspectRatio;
 
     nearPlaneHalfHeight = nearPlaneHeight / 2.0f;
