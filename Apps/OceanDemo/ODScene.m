@@ -48,29 +48,29 @@
 - (void) setup
 {
     camera    = [[ ODCamera    alloc ] initWithName:@"RenderingCamera" parent:self ];
-    //projector = [[ ODProjector alloc ] initWithName:@"Projector"       parent:self ];
+    projector = [[ ODProjector alloc ] initWithName:@"Projector"       parent:self ];
 
     FVector3 pos;
     V_X(pos) = 0.0f;
-    V_Y(pos) = 0.0f;
+    V_Y(pos) = 2.0f;
     V_Z(pos) = 5.0f;
 
     [ camera setPosition:&pos ];
     //[ camera cameraRotateUsingYaw:0.0f andPitch:-30.0f ];
 
-    //V_Y(pos) = 3.0f;
-    //V_Z(pos) = 0.0f;
+    V_Y(pos) = 3.0f;
+    V_Z(pos) = 0.0f;
 
-    //[ projector setPosition:&pos ];
-    //[ projector cameraRotateUsingYaw:0.0f andPitch:-30.0f ];
-    //[ projector setRenderFrustum:YES ];
+    [ projector setPosition:&pos ];
+    [ projector cameraRotateUsingYaw:0.0f andPitch:-30.0f ];
+    [ projector setRenderFrustum:YES ];
 
     skybox = [[[[ NPEngineCore instance ] modelManager ] loadModelFromPath:@"skybox.model" ] retain];
     [ skybox uploadToGL ];
 
-   // IVector2 res;
-    //res.x = res.y = 4;
-   // surface = [[ ODSurface alloc ] initWithName:@"WaterSurface" parent:self resolution:&res ];
+    IVector2 res;
+    res.x = res.y = 4;
+    surface = [[ ODSurface alloc ] initWithName:@"WaterSurface" parent:self resolution:&res ];
 }
 
 - (ODSurface *) surface
@@ -148,33 +148,21 @@
     {[ camera moveRight];}
 
     [ camera    update ];
-    //[ projector update ];
-    //[ surface   update ];
+    [ projector update ];
+    [ surface   update ];
 }
 
 - (void) render
 {
-    glClearColor(1.0f,1.0f,0.0f,0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    glDisable(GL_CULL_FACE);
 
     [ camera render ];
-    //[ projector render ];
-    [ skybox render ];
+    [ projector render ];
+    //[ skybox render ];
 
-    /*glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    [ surface render ];
 
-    glBegin(GL_TRIANGLES);
-    glVertex2f(0.0f,0.0f);
-    glVertex2f(1.0f,0.0f);
-    glVertex2f(0.0f,1.0f);
-
-    glEnd();*/
-
-    //[ surface render ];
+    
 
     GLenum error;
     error = glGetError();
