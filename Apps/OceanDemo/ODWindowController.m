@@ -2,7 +2,7 @@
 #import "ODOpenGLView.h"
 #import "ODScene.h"
 #import "ODDemo.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 
 @implementation ODWindowController
@@ -15,7 +15,8 @@
     [ window setDelegate:nil ];
 
     [[ ODDemo instance ] dealloc ];
-    [[ NPEngineCore instance ] dealloc ];
+    [[ NP Graphics ] dealloc ];
+    [[ NP Core ] dealloc ];
 
     //[ self autorelease ];
 }

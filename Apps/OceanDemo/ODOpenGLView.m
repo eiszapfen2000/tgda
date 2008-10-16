@@ -2,9 +2,9 @@
 #import "ODScene.h"
 #import "ODDemo.h"
 
-#import "Core/NPEngineCore.h"
-#import "Graphics/RenderContext/NPOpenGLRenderContext.h"
-#import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
+#import "NP.h"
+//#import "Graphics/RenderContext/NPOpenGLRenderContext.h"
+//#import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
 
 @implementation ODOpenGLView
 
@@ -28,7 +28,7 @@
     NPOpenGLPixelFormat * pixelFormat = [[ NPOpenGLPixelFormat alloc ] init ];
     [ pixelFormat setSampleCount:sampleCount ];
 
-    renderContext = [[[[ NPEngineCore instance ] renderContextManager ] createRenderContextWithPixelFormat:pixelFormat andName:@"NPOpenGLViewRC" ] retain ];
+    renderContext = [[[[ NP Graphics ] renderContextManager ] createRenderContextWithPixelFormat:pixelFormat andName:@"NPOpenGLViewRC" ] retain ];
     [ renderContext connectToView:self ];
     [ renderContext activate ];
     [ renderContext setupGLEW ];
@@ -45,7 +45,7 @@
                                                      object:self ];*/
     }
 
-    [[ NPEngineCore instance ] setup ];
+    [[ NP Graphics ] setup ];
     glXSwapIntervalSGI(1);
 }
 
