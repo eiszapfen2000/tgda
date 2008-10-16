@@ -1,7 +1,7 @@
 #import <AppKit/NSOpenGL.h>
-#import "Graphics/npgl.h"
 
 #import "Core/NPObject/NPObject.h"
+#import "Graphics/npgl.h"
 #import "NPOpenGLPixelFormat.h"
 
 @interface NPOpenGLRenderContext : NPObject

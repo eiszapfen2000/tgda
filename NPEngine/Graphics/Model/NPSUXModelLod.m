@@ -1,7 +1,5 @@
 #import "NPSUXModelLod.h"
-#import "NPSUXModelGroup.h"
-#import "NPVertexBuffer.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPSUXModelLod
 

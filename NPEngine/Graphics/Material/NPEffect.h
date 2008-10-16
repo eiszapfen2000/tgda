@@ -1,11 +1,8 @@
 #import "Core/NPObject/NPObject.h"
 #import "Core/Resource/NPResource.h"
-#import "Core/Resource/NPPResource.h"
-#import "Core/Math/FVector.h"
-#import "Core/Math/FMatrix.h"
+#import "Core/Math/NpMath.h"
+#import "Graphics/npgl.h"
 
-#import "Cg/cg.h"
-#import "Cg/cgGL.h"
 
 #define NP_GRAPHICS_MATERIAL_MODEL_MATRIX_SEMANTIC                  @"NPMODEL"
 #define NP_GRAPHICS_MATERIAL_VIEW_MATRIX_SEMANTIC                   @"NPVIEW"

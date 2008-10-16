@@ -1,7 +1,7 @@
 #import "NPRenderBuffer.h"
 #import "NPRenderTargetConfiguration.h"
 #import "Graphics/npgl.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPRenderBuffer
 

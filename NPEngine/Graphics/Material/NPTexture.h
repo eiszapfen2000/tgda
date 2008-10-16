@@ -1,7 +1,7 @@
 #import "Core/NPObject/NPObject.h"
-#import "Graphics/npgl.h"
 #import "Core/Resource/NPResource.h"
-#import "Core/Resource/NPPResource.h"
+#import "Graphics/npgl.h"
+
 
 @class NPFile;
 @class NPImage;

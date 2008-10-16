@@ -1,12 +1,5 @@
 #import "NPSUXMaterialInstance.h"
-#import "Core/Utilities/NPStringUtilities.h"
-#import "NPTexture.h"
-#import "NPTextureManager.h"
-#import "NPTextureBindingState.h"
-#import "NPTextureBindingStateManager.h"
-#import "NPEffect.h"
-#import "NPEffectManager.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPSUXMaterialInstance
 
@@ -26,10 +19,10 @@
 
     materialFileName = @"";
     materialInstanceScript = nil;
-    textureNameToSemantic = [ [ NSMutableDictionary alloc ] init ];
-    textureNameToTextureFileName = [ [ NSMutableDictionary alloc ] init ];
-    textureNameToTexture = [ [ NSMutableDictionary alloc ] init ];
-    textureToSemantic = [ [ NSMutableDictionary alloc ] init ];
+    textureNameToSemantic = [[ NSMutableDictionary alloc ] init ];
+    textureNameToTextureFileName = [[ NSMutableDictionary alloc ] init ];
+    textureNameToTexture = [[ NSMutableDictionary alloc ] init ];
+    textureToSemantic = [[ NSMutableDictionary alloc ] init ];
 
     effect = nil;
 
@@ -137,7 +130,7 @@
             NSString * fileNameWithoutQuotes =  [ removeLeadingAndTrailingQuotes(secondElement) retain ];
             NPLOG(([NSString stringWithFormat:@"CgFX file: %@", fileNameWithoutQuotes]));
 
-            effect = [[[[ NPEngineCore instance ] effectManager ] loadEffectFromPath:fileNameWithoutQuotes ] retain ];
+            effect = [[[[ NP Graphics ] effectManager ] loadEffectFromPath:fileNameWithoutQuotes ] retain ];
 
             [ fileNameWithoutQuotes release ];
         }
@@ -177,7 +170,7 @@
 
     while ( ( textureName = [ enumerator nextObject ] ) )
     {
-        NPTexture * texture = [[[[ NPEngineCore instance ] textureManager ] loadTextureFromPath:[textureNameToTextureFileName objectForKey:textureName] ] retain ];
+        NPTexture * texture = [[[[ NP Graphics ] textureManager ] loadTextureFromPath:[textureNameToTextureFileName objectForKey:textureName] ] retain ];
         [ textureNameToTexture setObject:texture forKey:textureName ];
         [ texture release ];
     }
@@ -278,7 +271,7 @@
 
 - (void) updateTextureBindingState
 {
-    NPTextureBindingState * t = [[[ NPEngineCore instance ] textureBindingStateManager ] currentTextureBindingState ];
+    NPTextureBindingState * t = [[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ];
 
     NSEnumerator * enumerator = [ textureToSemantic keyEnumerator ];
     NSString * semantic;

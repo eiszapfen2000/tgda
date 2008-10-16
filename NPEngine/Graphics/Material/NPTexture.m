@@ -1,10 +1,5 @@
 #import "NPTexture.h"
-#import "NPTextureManager.h"
-#import "Graphics/Image/NPImage.h"
-#import "Graphics/Image/NPImageManager.h"
-#import "Graphics/RenderContext/NPOpenGLRenderContext.h"
-#import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 #import "IL/il.h"
 #import "IL/ilu.h"
@@ -82,7 +77,7 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     textureFilterState.mipmapping = NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE;
     textureFilterState.minFilter = NP_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR;
     textureFilterState.magFilter = NP_TEXTURE_FILTER_LINEAR;
-    textureFilterState.anisotropy = [[[ NPEngineCore instance ] textureManager ] maxAnisotropy ];
+    textureFilterState.anisotropy = [[[ NP Graphics ] textureManager ] maxAnisotropy ];
 
     textureWrapState.wrapS = NP_TEXTURE_WRAPPING_REPEAT;
     textureWrapState.wrapT = NP_TEXTURE_WRAPPING_REPEAT;
@@ -298,7 +293,7 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 
     if ( textureFilterState.mipmapping == NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE )
     {
-        if ( [[[[ NPEngineCore instance ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_SGIS_generate_mipmap" ] == YES )
+        if ( [[[[ NP Graphics ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_SGIS_generate_mipmap" ] == YES )
         {
             glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, 1);
             glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, width, height, 0, glPixelFormat, glDataType, [[image imageData] bytes]);

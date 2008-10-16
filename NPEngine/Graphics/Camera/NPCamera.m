@@ -1,10 +1,7 @@
 #import "NPCamera.h"
 #import "NPCameraManager.h"
-#import "Core/World/NPTransformationState.h"
-#import "Core/World/NPTransformationStateManager.h"
-#import "Graphics/npgl.h"
-#import "Core/NPEngineCore.h"
-#import "Core/Math/NpMath.h"
+
+#import "NP.h"
 
 @implementation NPCamera
 
@@ -138,27 +135,20 @@
 
     Quaternion q;
     quat_q_conjugate_q(orientation, &q);
-    //NPLOG(([NSString stringWithFormat:@"%s",quat_q_to_string(&q)]));
 
     FMatrix4 rotate;
     quat_q_to_fmatrix4_m(&q, &rotate);
-    //NPLOG(([NSString stringWithFormat:@"%s",fm4_m_to_string(&rotate)]));
 
     FMatrix4 tmp;
     fm4_mm_multiply_m(view,&rotate,&tmp);
-    //NPLOG(([NSString stringWithFormat:@"%s",fm4_m_to_string(view)]));
-    //NPLOG(([NSString stringWithFormat:@"%s",fm4_m_to_string(&tmp)]));
 
     FVector3 invpos;
     fv3_v_invert_v(position,&invpos);
-    //NPLOG(([NSString stringWithFormat:@"%s",fv3_v_to_string(&invpos)]));
 
     FMatrix4 trans;
     fm4_mv_translation_matrix(&trans,&invpos);
-    //NPLOG(([NSString stringWithFormat:@"%s",fm4_m_to_string(&trans)]));
 
     fm4_mm_multiply_m(&tmp,&trans,view);
-    //NPLOG(([NSString stringWithFormat:@"%s",fm4_m_to_string(view)]));
 
     glLoadMatrixf((Float *)(M_ELEMENTS(*view)));
 }
@@ -175,13 +165,13 @@
 
 - (void) activate
 {
-    [ [ [ NPEngineCore instance ] cameraManager ] setCurrentActiveCamera:self ];
+    [[[ NP Graphics ] cameraManager ] setCurrentActiveCamera:self ];
     [ self update ];
 }
 
 - (void) render
 {
-    NPTransformationState * trafo = [[[ NPEngineCore instance ] transformationStateManager ] currentTransformationState ];
+    NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
     [ trafo setViewMatrix:view ];
     [ trafo setProjectionMatrix:projection ];
 }

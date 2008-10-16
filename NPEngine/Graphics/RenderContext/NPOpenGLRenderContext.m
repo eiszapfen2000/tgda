@@ -1,6 +1,6 @@
 #import "NPOpenGLRenderContext.h"
 #import "NPOpenGLRenderContextManager.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPOpenGLRenderContext
 
@@ -115,7 +115,7 @@
 {
     //if ( ready == YES && active == NO )
     {
-        [[[ NPEngineCore instance ] renderContextManager ] setCurrentRenderContext:self ]; 
+        [[[ NP Graphics] renderContextManager ] setCurrentRenderContext:self ]; 
         [ context makeCurrentContext ];
 
         active = YES;
@@ -126,7 +126,7 @@
 {
     //if ( ready == YES && active == YES )
     {
-        [[[ NPEngineCore instance ] renderContextManager ] setCurrentRenderContext:nil ]; 
+        [[[ NP Graphics ] renderContextManager ] setCurrentRenderContext:nil ]; 
         [ NSOpenGLContext clearCurrentContext ];
         active = NO;
     }

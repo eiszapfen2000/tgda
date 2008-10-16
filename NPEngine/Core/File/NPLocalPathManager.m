@@ -1,6 +1,6 @@
 #import "NPLocalPathManager.h"
 #import "NPPathUtilities.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPLocalPathManager
 
@@ -19,8 +19,9 @@
     self = [ super initWithName:newName parent:newParent ];
 
     fileManager = [ NSFileManager defaultManager ];
-
     localPaths = [[ NSMutableArray alloc ] init ];
+
+    [ self addApplicationPath ];
 
     return self;
 }
@@ -46,15 +47,6 @@
     {
         NPLOG_ERROR(@"Working directory not accessible");
     }
-}
-
-- (void) setup
-{
-    NPLOG(@"NPLocalPathManager setup...");
-
-    [ self addApplicationPath ];
-
-    NPLOG(@"NPLocalPathManager ready");
 }
 
 - (void) addLookUpPath:(NSString *)lookUpPath

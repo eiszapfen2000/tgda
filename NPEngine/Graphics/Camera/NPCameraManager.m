@@ -1,6 +1,7 @@
 #import "NPCameraManager.h"
 #import "NPCamera.h"
-#import "Core/NPEngineCore.h"
+
+#import "NP.h"
 
 @implementation NPCameraManager
 

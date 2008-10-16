@@ -1,5 +1,5 @@
 #import "NPBlendingState.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPBlendingState
 
@@ -122,7 +122,7 @@
                 case NP_BLENDING_NEGATIVE: { blendEquation = GL_FUNC_SUBTRACT; sourceFactor = GL_SRC_ALPHA; destinationFactor = GL_ONE;                 break; }
                 case NP_BLENDING_MIN     : { blendEquation = GL_MIN;           sourceFactor = GL_SRC_COLOR; destinationFactor = GL_DST_COLOR;           break; }
                 case NP_BLENDING_MAX     : { blendEquation = GL_MAX;           sourceFactor = GL_SRC_COLOR; destinationFactor = GL_DST_COLOR;           break; }
-                default:{NPLOG_ERROR(@"Unknown blending mode specified"); break; }
+                default:{NPLOG_ERROR(@"Unknown blending mode specified"); return; }
             }
 
             glBlendEquation(blendEquation);

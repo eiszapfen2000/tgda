@@ -16,8 +16,6 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
-- (void) setup;
-
 - (void) addLookUpPath:(NSString *)lookUpPath;
 - (void) removeLookUpPath:(NSString *)lookUpPath;
 

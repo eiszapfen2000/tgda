@@ -2,7 +2,7 @@
 #import "NPRenderBuffer.h"
 #import "NPRenderTexture.h"
 #import "Graphics/npgl.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPRenderTargetConfiguration
 

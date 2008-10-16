@@ -1,5 +1,5 @@
 #import "NPDepthTestState.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPDepthTestState
 
