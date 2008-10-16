@@ -5,7 +5,7 @@
 #import "ODOpenGLView.h"
 #import "ODDemo.h"
 
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 #import <unistd.h>
 
@@ -28,7 +28,7 @@
 
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    [ NPEngineCore instance ];
+    [ NP Core ];
 
     NSDictionary * settings = [ NSDictionary dictionaryWithContentsOfFile:@"settings.plist" ];
     BOOL fullscreen = [[ settings objectForKey:@"Fullscreen" ] boolValue ];

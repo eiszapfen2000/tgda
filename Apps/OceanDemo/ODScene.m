@@ -1,11 +1,4 @@
-#import "Graphics/npgl.h"
-
-#import "Core/NPEngineCore.h"
-#import "Graphics/Model/NPSUXModel.h"
-#import "Graphics/Model/NPModelManager.h"
-#import "Graphics/RenderContext/NPOpenGLRenderContext.h"
-#import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
-
+#import "NP.h"
 #import "ODScene.h"
 #import "ODCamera.h"
 #import "ODProjector.h"
@@ -65,7 +58,7 @@
     [ projector cameraRotateUsingYaw:0.0f andPitch:-30.0f ];
     [ projector setRenderFrustum:YES ];
 
-    skybox = [[[[ NPEngineCore instance ] modelManager ] loadModelFromPath:@"skybox.model" ] retain];
+    skybox = [[[[ NP Graphics ] modelManager ] loadModelFromPath:@"skybox.model" ] retain];
     [ skybox uploadToGL ];
 
     IVector2 res;
@@ -172,7 +165,7 @@
         NPLOG_ERROR(([NSString stringWithFormat:@"%s",gluErrorString(error)]));
     }
 
-    [[[[ NPEngineCore instance ] renderContextManager ] currentRenderContext ] swap ];
+    [[[[ NP Graphics ] renderContextManager ] currentRenderContext ] swap ];
 }
 
 @end
