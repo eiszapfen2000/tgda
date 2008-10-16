@@ -6,7 +6,7 @@
 }
 
 - (id) init;
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 
 - (void) loadFromFile:(NPFile *)file;
 

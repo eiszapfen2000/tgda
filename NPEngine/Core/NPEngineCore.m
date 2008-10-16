@@ -70,7 +70,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     return [ self initWithName:newName parent:nil ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 {
     npbasics_initialise();
     npmath_initialise();

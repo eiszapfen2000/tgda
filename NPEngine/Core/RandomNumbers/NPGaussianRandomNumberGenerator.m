@@ -17,13 +17,13 @@
     return [ self initWithName:newName parent:nil ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
 {
     return [ self initWithName:newName parent:newParent firstGenerator:nil secondGenerator:nil ];
 }
 
 - (id) initWithName:(NSString *)newName
-             parent:(NPObject *)newParent
+             parent:(id <NPPObject> )newParent
      firstGenerator:(NPRandomNumberGenerator *)newFirstGenerator
     secondGenerator:(NPRandomNumberGenerator *)newSecondGenerator
 {

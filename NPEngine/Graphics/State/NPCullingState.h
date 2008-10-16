@@ -14,8 +14,8 @@
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent configuration:(NPStateConfiguration *)newConfiguration;
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent configuration:(NPStateConfiguration *)newConfiguration;
 - (void) dealloc;
 
 - (BOOL) enabled;

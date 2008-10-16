@@ -37,12 +37,12 @@ void np_cg_error_callback()
     return [ self initWithParent:nil ];
 }
 
-- (id) initWithParent:(NPObject *)newParent
+- (id) initWithParent:(id <NPPObject> )newParent
 {
     return [ self initWithName:@"NPEffectManager" parent:newParent ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
 {
     self = [ super initWithName:newName parent:newParent ];
 

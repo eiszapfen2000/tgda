@@ -1,11 +1,31 @@
+#import "Core/Basics/NpBasics.h"
+#import "Core/Math/NpMath.h"
+
 #import "Core/NPObject/NPObject.h"
+#import "Core/NPObject/NPObjectManager.h"
+
+#import "Core/File/NpFile.h"
+
 #import "Core/Log/NPLogger.h"
 
-@class NPTimer;
-@class NPObjectManager;
-@class NPPathManager;
-@class NPRandomNumberGeneratorManager;
-@class NPTransformationStateManager;
+#import "Core/RandomNumbers/NPRandomNumberGenerator.h"
+#import "Core/RandomNumbers/NPGaussianRandomNumberGenerator.h"
+#import "Core/RandomNumbers/NPRandomNumberGeneratorManager.h"
+
+#import "Core/Resource/NPResource.h"
+
+#import "Core/Timer/NPTimer.h"
+
+#import "Core/Utilities/NPStringUtilities.h"
+
+#import "Core/World/NPTransformationState.h"
+#import "Core/World/NPTransformationStateManager.h"
+
+//@class NPTimer;
+//@class NPObjectManager;
+//@class NPPathManager;
+//@class NPRandomNumberGeneratorManager;
+//@class NPTransformationStateManager;
 @class NPModelManager;
 @class NPImageManager;
 @class NPTextureManager;
@@ -44,7 +64,7 @@
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
 - (void) setup;

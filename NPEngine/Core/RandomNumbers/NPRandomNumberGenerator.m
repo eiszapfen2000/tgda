@@ -15,12 +15,12 @@
     return [ self initWithName:newName parent:nil ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
 {
     return [ self initWithName:newName parent:newParent parameters:NP_RNG_DEFAULT];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent parameters:(NSString *)rngParameters
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent parameters:(NSString *)rngParameters
 {
     self = [ super initWithName:newName parent:newParent ];
 

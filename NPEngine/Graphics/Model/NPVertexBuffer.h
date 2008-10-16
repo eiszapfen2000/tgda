@@ -70,8 +70,8 @@ void init_empty_npvertexbuffer(NpVertexBuffer * vertex_buffer);
 }
 
 - (id) init;
-- (id) initWithParent:(NPObject *)newParent;
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
+- (id) initWithParent:(id <NPPObject> )newParent;
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 
 - (BOOL) loadFromFile:(NPFile *)file;
 - (BOOL) saveToFile:(NPFile *)file;

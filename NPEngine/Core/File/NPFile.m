@@ -12,17 +12,17 @@
     return [ self initWithName:newName parent:nil ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
 {
     return [ self initWithName:newName parent:newParent fileName:@"" ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent fileName:(NSString *)newFileName
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent fileName:(NSString *)newFileName
 {
     return [ self initWithName:newName parent:newParent fileName:newFileName mode:NP_FILE_READING ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent fileName:(NSString *)newFileName mode:(NpState)newMode
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent fileName:(NSString *)newFileName mode:(NpState)newMode
 {
     self = [ super initWithName:newName parent:newParent ];
 

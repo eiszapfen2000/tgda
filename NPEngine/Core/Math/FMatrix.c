@@ -454,6 +454,8 @@ void fm4_msss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegree
     M_EL(*m,2,3) = -1.0f;
     M_EL(*m,3,2) = (2.0f*nearplane*farplane)/(nearplane - farplane);
     M_EL(*m,3,3) = 0.0f;
+
+    printf("%f %f",M_EL(*m,0,0),M_EL(*m,1,1));fflush(stdout);
 }
 
 void fm4_mss_sub_matrix_m(const FMatrix4 * const m, Int row, Int column, FMatrix3 * result)

@@ -2,7 +2,7 @@
 
 @class NPObject;
 
-@protocol NPPObject
+@protocol NPPObject < NSObject >
 
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
@@ -10,7 +10,7 @@
 - (NSString *) name;
 - (void) setName:(NSString *)newName;
 
-- (NPObject *) parent;
+- (id <NPPObject>) parent;
 - (void) setParent:(id <NPPObject> )newParent;
 
 - (UInt32) objectID;
