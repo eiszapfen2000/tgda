@@ -1,12 +1,5 @@
-#import "NPTexture.h"
-#import "NPTextureBindingState.h"
-#import "NPTextureBindingStateManager.h"
 #import "NPEffect.h"
-#import "NPEffectManager.h"
-#import "Core/World/NPTransformationState.h"
-#import "Core/World/NPTransformationStateManager.h"
-
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPEffect
 
@@ -155,7 +148,7 @@
 
 - (void) activate
 {
-    [[[NPEngineCore instance ] effectManager ] setCurrentActiveEffect:self ];
+    [[[ NP Graphics ] effectManager ] setCurrentActiveEffect:self ];
 
     [ self uploadDefaultSemantics ];
 }
@@ -164,47 +157,47 @@
 {
     if ( defaultSemantics.modelMatrix != NULL )
     {
-        FMatrix4 * modelMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentTransformationState ] modelMatrix ];
+        FMatrix4 * modelMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] modelMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.modelMatrix andValue:modelMatrix ];
     }
 
     if ( defaultSemantics.viewMatrix != NULL )
     {
-        FMatrix4 * viewMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentTransformationState ] viewMatrix ];
+        FMatrix4 * viewMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] viewMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.viewMatrix andValue:viewMatrix ];
     }
 
     if ( defaultSemantics.projectionMatrix != NULL )
     {
-        FMatrix4 * projectionMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentTransformationState ] projectionMatrix ];
+        FMatrix4 * projectionMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] projectionMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.projectionMatrix andValue:projectionMatrix ];
     }
 
     if ( defaultSemantics.modelViewMatrix != NULL )
     {
-        FMatrix4 * modelViewMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentTransformationState ] modelViewMatrix ];
+        FMatrix4 * modelViewMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] modelViewMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.modelViewMatrix andValue:modelViewMatrix ];
     }
 
     if ( defaultSemantics.viewProjectionMatrix != NULL )
     {
-        FMatrix4 * viewProjectionMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentTransformationState ] viewProjectionMatrix ];
+        FMatrix4 * viewProjectionMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] viewProjectionMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.viewProjectionMatrix andValue:viewProjectionMatrix ];
     }
 
     if ( defaultSemantics.modelViewProjectionMatrix != NULL )
     {
-        FMatrix4 * modelViewProjectionMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentTransformationState ] modelViewProjectionMatrix ];
+        FMatrix4 * modelViewProjectionMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] modelViewProjectionMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.modelViewProjectionMatrix andValue:modelViewProjectionMatrix ];
     }
 
     if ( defaultSemantics.inverseViewProjectionMatrix != NULL )
     {
-        FMatrix4 * inverseViewProjectionMatrix = [[[[ NPEngineCore instance ] transformationStateManager ] currentTransformationState ] inverseViewProjectionMatrix ];
+        FMatrix4 * inverseViewProjectionMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] inverseViewProjectionMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.inverseViewProjectionMatrix andValue:inverseViewProjectionMatrix ];
     }
 
-    NPTextureBindingState * textureBindingState = [[[NPEngineCore instance ] textureBindingStateManager ] currentTextureBindingState ];
+    NPTextureBindingState * textureBindingState = [[[ NP Core ] textureBindingStateManager ] currentTextureBindingState ];
     for ( Int i = 0; i < 8; i++ )
     {
         if ( defaultSemantics.sampler[i] != NULL )

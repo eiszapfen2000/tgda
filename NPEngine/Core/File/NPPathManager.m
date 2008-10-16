@@ -2,7 +2,7 @@
 #import "NPLocalPathManager.h"
 #import "NPRemotePathManager.h"
 #import "NPPathUtilities.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPPathManager
 
@@ -34,16 +34,6 @@
     [ remotePathManager release ];
 
     [ super dealloc ];
-}
-
-- (void) setup
-{
-    NPLOG(@"NPPathManager setup...");
-
-    [ localPathManager setup ];
-    //[ remotePathManager setup ];
-
-    NPLOG(@"NPPathManager ready");
 }
 
 - (void) addLookUpPath:(NSString *)lookUpPath

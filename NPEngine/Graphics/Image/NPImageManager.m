@@ -1,8 +1,6 @@
 #import "NPImageManager.h"
 #import "NPImage.h"
-#import "Core/File/NPFile.h"
-#import "Core/File/NPPathManager.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 #import "IL/il.h"
 #import "IL/ilu.h"
@@ -23,7 +21,7 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    images = [ [ NSMutableDictionary alloc ] init ];
+    images = [[ NSMutableDictionary alloc ] init ];
 
     return self;
 }

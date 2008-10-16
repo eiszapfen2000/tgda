@@ -1,6 +1,6 @@
 #import "NPImage.h"
 #import "NPImageManager.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 #import "IL/il.h"
 #import "IL/ilu.h"
@@ -102,7 +102,7 @@
 
 - (void) setImageData:(NSData *)newImageData
 {
-    Int bytesCount = [[[ NPEngineCore instance ] imageManager ] calculateImageByteCountUsingWidth:width height:height pixelFormat:pixelFormat dataFormat:dataFormat ];
+    Int bytesCount = [[[ NP Graphics ] imageManager ] calculateImageByteCountUsingWidth:width height:height pixelFormat:pixelFormat dataFormat:dataFormat ];
 
     if ( bytesCount != (Int)[newImageData length ] )
     {
@@ -134,10 +134,10 @@
         return NO;
     }
 
-    Int devilFormat = [[[ NPEngineCore instance ] imageManager ] calculateDevilPixelFormat:pixelFormat ];
-    Int devilType = [[[ NPEngineCore instance ] imageManager ] calculateDevilDataType:dataFormat ];
-    Int dataFormatByteCount = [[[ NPEngineCore instance ] imageManager ] calculateDataFormatByteCount:dataFormat ];
-    Int pixelFormatChannelCount = [[[ NPEngineCore instance ] imageManager ] calculatePixelFormatChannelCount:pixelFormat ];
+    Int devilFormat = [[[ NP Graphics ] imageManager ] calculateDevilPixelFormat:pixelFormat ];
+    Int devilType = [[[ NP Graphics ] imageManager ] calculateDevilDataType:dataFormat ];
+    Int dataFormatByteCount = [[[ NP Graphics ] imageManager ] calculateDataFormatByteCount:dataFormat ];
+    Int pixelFormatChannelCount = [[[ NP Graphics ] imageManager ] calculatePixelFormatChannelCount:pixelFormat ];
     Int bpp = dataFormatByteCount * pixelFormatChannelCount;
     ILboolean success = ilTexImage(width, height, 1, bpp, devilFormat, devilType, (ILvoid *)[imageData bytes]);
 

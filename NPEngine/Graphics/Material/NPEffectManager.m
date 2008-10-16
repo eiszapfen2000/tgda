@@ -1,10 +1,5 @@
-#import "Graphics/npgl.h"
-#import "Cg/cgGL.h"
-#import "NPEffect.h"
 #import "NPEffectManager.h"
-#import "Core/File/NPFile.h"
-#import "Core/File/NPPathManager.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 void np_cg_error_callback()
 {
@@ -15,7 +10,7 @@ void np_cg_error_callback()
 	{
 		if (error == CG_COMPILER_ERROR) 
 		{
-			const char * cgListing = cgGetLastListing([[[NPEngineCore instance] effectManager] cgContext]);
+			const char * cgListing = cgGetLastListing([[[ NP Graphics ] effectManager] cgContext]);
 
 		    NPLOG_ERROR(([NSString stringWithFormat:@"CG ERROR: %s \n Cg Compiler Output: %s", string, cgListing]));
 		} 
@@ -178,7 +173,7 @@ void np_cg_error_callback()
 
 - (id) loadEffectFromPath:(NSString *)path
 {
-    NSString * absolutePath = [ [ [ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
+    NSString * absolutePath = [[[ NP Core ] pathManager ] getAbsoluteFilePath:path ];
 
     return [ self loadEffectFromAbsolutePath:absolutePath ];
 }
@@ -193,7 +188,7 @@ void np_cg_error_callback()
 
         if ( effect == nil )
         {
-            NPFile * file = [ [ NPFile alloc ] initWithName:path parent:self fileName:path ];
+            NPFile * file = [[ NPFile alloc ] initWithName:path parent:self fileName:path ];
             effect = [ self loadEffectUsingFileHandle:file ];
             [ file release ];
         }
@@ -206,7 +201,7 @@ void np_cg_error_callback()
 
 - (id) loadEffectUsingFileHandle:(NPFile *)file
 {
-    NPEffect * effect = [ [ NPEffect alloc ] initWithName:@"" parent:self ];
+    NPEffect * effect = [[ NPEffect alloc ] initWithName:@"" parent:self ];
 
     if ( [ effect loadFromFile:file ] == YES )
     {

@@ -1,9 +1,5 @@
 #import "NPModelManager.h"
-#import "NPSUXModel.h"
-#import "Core/File/NPFile.h"
-#import "Core/File/NPPathManager.h"
-#import "Core/File/NPPathUtilities.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPModelManager
 
@@ -36,7 +32,7 @@
 
 - (id) loadModelFromPath:(NSString *)path
 {
-    NSString * absolutePath = [[[ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
+    NSString * absolutePath = [[[ NP Core ] pathManager ] getAbsoluteFilePath:path ];
 
     return [ self loadModelFromAbsolutePath:absolutePath ];
 }

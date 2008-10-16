@@ -1,11 +1,6 @@
 #import "Graphics/npgl.h"
 #import "NPTextureManager.h"
-#import "NPTexture.h"
-#import "Core/File/NPFile.h"
-#import "Core/File/NPPathManager.h"
-#import "Graphics/RenderContext/NPOpenGLRenderContext.h"
-#import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPTextureManager
 
@@ -39,7 +34,7 @@
 
 - (void) setup
 {
-    if ( [[[[ NPEngineCore instance ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_EXT_texture_filter_anisotropic" ] == YES )
+    if ( [[[[ NP Graphics ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_EXT_texture_filter_anisotropic" ] == YES )
     {
         glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&maxAnisotropy);
     }
@@ -52,7 +47,7 @@
 
 - (id) loadTextureFromPath:(NSString *)path
 {
-    NSString * absolutePath = [[[ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
+    NSString * absolutePath = [[[ NP Core ] pathManager ] getAbsoluteFilePath:path ];
 
     return [ self loadTextureFromAbsolutePath:absolutePath ];
 }
@@ -67,7 +62,7 @@
 
         if ( texture == nil )
         {
-            NPFile * file = [ [ NPFile alloc ] initWithName:path parent:self fileName:path ];
+            NPFile * file = [[ NPFile alloc ] initWithName:path parent:self fileName:path ];
             texture = [ self loadTextureUsingFileHandle:file ];
             [ file release ];
         }

@@ -1,19 +1,5 @@
 #import "NPEngineCore.h"
-#import "Core/Basics/NpBasics.h"
-#import "Core/Math/NpMath.h"
-#import "Core/Log/NPLogger.h"
-#import "Core/Timer/NPTimer.h"
-#import "Core/File/NPPathManager.h"
-#import "Core/RandomNumbers/NPRandomNumberGeneratorManager.h"
-#import "Core/World/NPTransformationStateManager.h"
-#import "Graphics/RenderContext/NPOpenGLRenderContextManager.h"
-#import "Graphics/State/NPStateConfiguration.h"
-#import "Graphics/Model/NPModelManager.h"
-#import "Graphics/Image/NPImageManager.h"
-#import "Graphics/Material/NPTextureManager.h"
-#import "Graphics/Material/NPEffectManager.h"
-#import "Graphics/Camera/NPCameraManager.h"
-
+#import "NP.h"
 
 static NPEngineCore * NP_ENGINE_CORE = nil;
 
@@ -88,20 +74,6 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     randomNumberGeneratorManager = [[ NPRandomNumberGeneratorManager alloc ] initWithName:@"NPEngine RandomNumberGenerator Manager" parent:self ];
     transformationStateManager   = [[ NPTransformationStateManager   alloc ] initWithName:@"NPEngine Transformation State Manager"  parent:self ];
 
-    renderContextManager = [[ NPOpenGLRenderContextManager alloc ] initWithName:@"NPEngine RenderContext Manager" parent:self ];
-
-    modelManager   = [[ NPModelManager   alloc ] initWithName:@"NPEngine Model Manager"   parent:self ];
-    imageManager   = [[ NPImageManager   alloc ] initWithName:@"NPEngine Image Manager"   parent:self ];
-    textureManager = [[ NPTextureManager alloc ] initWithName:@"NPEngine Texture Manager" parent:self ];
-    effectManager = [[ NPEffectManager   alloc ] initWithName:@"NPEngine Effect Manager"  parent:self ];
-
-    stateConfiguration         = [[ NPStateConfiguration         alloc ] initWithName:@"NPEngine GPU States"              parent:self ];
-    textureBindingStateManager = [[ NPTextureBindingStateManager alloc ] initWithName:@"NPEngine Texture Binding Manager" parent:self ];
-
-    cameraManager = [[ NPCameraManager alloc ] initWithName:@"NPEngine Camera Manager" parent:self ];
-
-    ready = NO;
-
     return self;
 }
 
@@ -109,60 +81,15 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 {
     NPLOG(@"Dealloc");
 
-    [ cameraManager release ];
-    [ modelManager release ];
-    [ textureBindingStateManager release ];
-    [ textureManager release ];
-    [ imageManager release ];
-    [ effectManager release ];
-    [ stateConfiguration release ];
-    [ renderContextManager release ];
     [ transformationStateManager release ];
     [ randomNumberGeneratorManager release ];
     [ pathManager release ];
     [ timer release ];
     [ logger release ];
     [ objectManager release ];
-
     [ name release ];
 
     [ super dealloc ];
-}
-
-- (void) setup
-{
-    NPLOG(@"NPEngine Core setup....");
-
-    NPLOG(@"Checking for Rendercontext...");
-
-    UInt rcCount = [[ renderContextManager renderContexts ] count ];
-    if ( rcCount == 0 )
-    {
-        NPLOG_ERROR(@"No RenderContext found, bailing out");
-        return;
-    }
-    else
-    {
-        NPLOG(@"Rendercontext available");
-    }
-
-    [ pathManager setup ];
-    [ transformationStateManager setup ];
-
-    [ imageManager   setup ];
-    [ textureManager setup ];
-    [ effectManager  setup ];
-
-    [ textureBindingStateManager setup ];
-
-    [ cameraManager setup ];
-
-    [ stateConfiguration activate ];
-
-    ready = YES;
-
-    NPLOG(@"NPEngine Core ready");
-    NPLOG(@"");
 }
 
 - (NSString *) name
@@ -194,11 +121,6 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     return objectID;
 }
 
-- (BOOL) ready
-{
-    return ready;
-}
-
 - (NPLogger *)logger
 {
     return logger;
@@ -227,46 +149,6 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 - (NPTransformationStateManager *)transformationStateManager
 {
     return transformationStateManager;
-}
-
-- (NPOpenGLRenderContextManager *)renderContextManager
-{
-    return renderContextManager;
-}
-
-- (NPStateConfiguration *) stateConfiguration
-{
-    return stateConfiguration;
-}
-
-- (NPModelManager *)modelManager
-{
-    return modelManager;
-}
-
-- (NPImageManager *)imageManager
-{
-    return imageManager;
-}
-
-- (NPTextureManager *)textureManager
-{
-    return textureManager;
-}
-
-- (NPTextureBindingStateManager *)textureBindingStateManager
-{
-    return textureBindingStateManager;
-}
-
-- (NPEffectManager *)effectManager
-{
-    return effectManager;
-}
-
-- (NPCameraManager *)cameraManager
-{
-    return cameraManager;
 }
 
 - (id)copyWithZone:(NSZone *)zone

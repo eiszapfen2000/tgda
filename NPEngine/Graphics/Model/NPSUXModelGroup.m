@@ -1,10 +1,5 @@
 #import "NPSUXModelGroup.h"
-#import "Graphics/Model/NPVertexBuffer.h"
-#import "Graphics/Model/NPSUXModelLod.h"
-#import "Graphics/Model/NPSUXModel.h"
-#import "Graphics/Material/NPSUXMaterialInstance.h"
-#import "Graphics/Material/NPEffect.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPSUXModelGroup
 

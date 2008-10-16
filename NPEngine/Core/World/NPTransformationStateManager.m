@@ -17,9 +17,12 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    transformationStates = [ [ NSMutableArray alloc ] init ];
+    transformationStates = [[ NSMutableArray alloc ] init ];
 
-    currentTransformationState = nil;
+    NPTransformationState * transformationState = [[ NPTransformationState alloc ] initWithName:@"Default Transformation State" parent:self ];
+    [ transformationStates addObject:transformationState ];
+    currentTransformationState = [ transformationState retain ];
+    [ transformationState release ];
 
     return self;
 }
@@ -30,14 +33,6 @@
     [ transformationStates release ];
 
     [ super dealloc ];
-}
-
-- (void) setup
-{
-    NPTransformationState * transformationState = [[ NPTransformationState alloc ] initWithName:@"" parent:self ];
-    [ transformationStates addObject:transformationState ];
-    [ self setCurrentTransformationState:transformationState ];
-    [ transformationState release ];
 }
 
 - (NPTransformationState *) currentTransformationState

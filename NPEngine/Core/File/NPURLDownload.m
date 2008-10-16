@@ -1,5 +1,5 @@
 #import "NPURLDownload.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPURLDownload
 

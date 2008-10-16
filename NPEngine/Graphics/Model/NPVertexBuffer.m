@@ -1,7 +1,5 @@
 #import "NPVertexBuffer.h"
-#import "Graphics/npgl.h"
-#import "Core/Basics/NpMemory.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 
 void reset_npvertexformat(NpVertexFormat * vertex_format)

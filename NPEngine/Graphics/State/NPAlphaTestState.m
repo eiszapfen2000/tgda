@@ -1,5 +1,5 @@
 #import "NPAlphaTestState.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPAlphaTestState
 

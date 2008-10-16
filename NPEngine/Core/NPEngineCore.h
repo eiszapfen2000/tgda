@@ -21,20 +21,6 @@
 #import "Core/World/NPTransformationState.h"
 #import "Core/World/NPTransformationStateManager.h"
 
-//@class NPTimer;
-//@class NPObjectManager;
-//@class NPPathManager;
-//@class NPRandomNumberGeneratorManager;
-//@class NPTransformationStateManager;
-@class NPModelManager;
-@class NPImageManager;
-@class NPTextureManager;
-@class NPTextureBindingStateManager;
-@class NPEffectManager;
-@class NPOpenGLRenderContextManager;
-@class NPCameraManager;
-@class NPStateConfiguration;
-
 @interface NPEngineCore : NSObject < NPPObject >
 {
     UInt32 objectID;
@@ -46,18 +32,6 @@
     NPPathManager * pathManager;
     NPRandomNumberGeneratorManager * randomNumberGeneratorManager;
     NPTransformationStateManager * transformationStateManager;
-
-    NPOpenGLRenderContextManager * renderContextManager;
-
-    NPStateConfiguration * stateConfiguration;
-    NPModelManager * modelManager;
-    NPImageManager * imageManager;
-    NPTextureManager * textureManager;
-    NPTextureBindingStateManager * textureBindingStateManager;
-    NPEffectManager * effectManager;
-    NPCameraManager * cameraManager;
-
-    BOOL ready;
 }
 
 + (NPEngineCore *) instance;
@@ -67,8 +41,6 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
-- (void) setup;
-
 - (NSString *) name;
 - (void) setName:(NSString *)newName;
 
@@ -77,24 +49,12 @@
 
 - (UInt32) objectID;
 
-- (BOOL) ready;
 - (NPLogger *) logger;
 - (NPTimer *) timer;
 - (NPObjectManager *) objectManager;
 - (NPPathManager *) pathManager;
 - (NPRandomNumberGeneratorManager *) randomNumberGeneratorManager;
 - (NPTransformationStateManager *) transformationStateManager;
-- (NPOpenGLRenderContextManager *) renderContextManager;
-- (NPStateConfiguration *) stateConfiguration;
-- (NPModelManager *) modelManager;
-- (NPImageManager *) imageManager;
-- (NPTextureManager *) textureManager;
-- (NPTextureBindingStateManager *) textureBindingStateManager;
-- (NPEffectManager *) effectManager;
-- (NPCameraManager *) cameraManager;
 
 @end
 
-#define NPLOG(_logmessage)  [[[ NPEngineCore instance ] logger ] write:(_logmessage)]
-#define NPLOG_WARNING(_warning)  [[[ NPEngineCore instance ] logger ] writeWarning:(_warning)]
-#define NPLOG_ERROR(_error)  [[[ NPEngineCore instance ] logger ] writeError:(_error)]

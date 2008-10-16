@@ -1,5 +1,5 @@
 #import "NPOpenGLRenderContextManager.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPOpenGLRenderContextManager
 

@@ -2,9 +2,7 @@
 
 #import "NPSUXModel.h"
 #import "NPSUXModelLod.h"
-#import "Graphics/Material/NPSUXMaterialInstance.h"
-#import "Graphics/Material/NPTexture.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPSUXModel
 
@@ -81,7 +79,7 @@
 
     for ( Int i = 0; i < lodCount; i++ )
     {
-        NPSUXModelLod * lod = [ [ NPSUXModelLod alloc ] initWithParent:self ];
+        NPSUXModelLod * lod = [[ NPSUXModelLod alloc ] initWithParent:self ];
 
 
         if ( [ lod loadFromFile:file ] == YES )
@@ -172,28 +170,6 @@
     {
         [ lod uploadToGL ];
     }
-
-    //NSLog(@"%d",[lods retainCount]);
-    //[ lods release ];
-    //NSLog(@"%d",[lods retainCount]);
-
-    /*NSEnumerator * materialEnumerator = [ materials objectEnumerator ];
-    NPSUXMaterialInstance * materialInstance;
-
-    while ( ( materialInstance = [ materialEnumerator nextObject ] ) )
-    {
-        NSEnumerator * textureEnumerator = [ [ materialInstance textures ] objectEnumerator ];
-        NPTexture * texture;
-
-        while ( ( texture = [ textureEnumerator nextObject ] ) )
-        {
-            glBindTexture(GL_TEXTURE_2D,[texture textureID]);
-            [ texture setMipMapping:NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE ];
-            [ texture uploadToGL ];
-            [ texture setTextureMaxFilter:NP_TEXTURE_FILTER_LINEAR ];
-            [ texture setTextureMinFilter:NP_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR ];
-        }
-    }*/
 }
 
 - (void) render

@@ -1,5 +1,5 @@
 #import "NPCullingState.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPCullingState
 

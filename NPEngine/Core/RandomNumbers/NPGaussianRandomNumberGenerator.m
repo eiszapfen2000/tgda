@@ -3,7 +3,7 @@
 #import "NPGaussianRandomNumberGenerator.h"
 #import "NPRandomNumberGenerator.h"
 
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPGaussianRandomNumberGenerator
 
@@ -137,7 +137,7 @@
 
 - (NSString *) description
 {
-	return [ [ firstGenerator description ] stringByAppendingString: [ secondGenerator description ] ];
+	return [[ firstGenerator description ] stringByAppendingString: [ secondGenerator description ] ];
 }
 
 @end
