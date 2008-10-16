@@ -14,13 +14,13 @@
     return [ self initWithName:newName parent:nil ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
 {
     self = [ super initWithName:newName parent:newParent ];
 
     fileManager = [ NSFileManager defaultManager ];
 
-    localPaths = [ [ NSMutableArray alloc ] init ];
+    localPaths = [[ NSMutableArray alloc ] init ];
 
     return self;
 }

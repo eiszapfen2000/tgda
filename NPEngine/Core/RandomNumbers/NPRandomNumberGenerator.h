@@ -22,8 +22,8 @@
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent parameters:(NSString *)rngParameters;
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent parameters:(NSString *)rngParameters;
 - (void) dealloc;
 
 - (Double) nextUniformFPRandomNumber;

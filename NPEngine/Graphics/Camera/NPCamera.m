@@ -13,12 +13,12 @@
     return [ self initWithParent:nil ];
 }
 
-- (id) initWithParent:(NPObject *)newParent
+- (id) initWithParent:(id <NPPObject> )newParent
 {
     return [ self initWithName:@"NPCamera" parent:newParent ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
 {
     self = [ super initWithName:newName parent:newParent ];
 

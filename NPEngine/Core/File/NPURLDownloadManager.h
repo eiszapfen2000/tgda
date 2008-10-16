@@ -6,7 +6,7 @@
 }
 
 - (id) init;
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
 - (void)addDownloadFrom:(NSURL *)url toFileAtPath:(NSString *)path;

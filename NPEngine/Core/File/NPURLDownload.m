@@ -8,7 +8,7 @@
     return [ self initWithName:@"NPEngine URL Download" parent:nil ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
 {
     self = [ super initWithName:newName parent:newParent ];
 

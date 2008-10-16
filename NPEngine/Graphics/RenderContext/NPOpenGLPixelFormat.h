@@ -23,9 +23,9 @@ NPOpenGLPixelFormatAttributes;
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (id) initWithName:(NSString *)newName 
-             parent:(NPObject *)newParent
+             parent:(id <NPPObject> )newParent
 bitsPerColorChannel:(Int32)colorBits
    alphaChannelBits:(Int32)alphaBits
      doubleBuffered:(BOOL)doubleBuffer

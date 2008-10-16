@@ -39,8 +39,8 @@ NpDefaultSemantics;
 }
 
 - (id) init;
-- (id) initWithParent:(NPObject *)newParent;
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
+- (id) initWithParent:(id <NPPObject> )newParent;
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
 - (BOOL) loadFromFile:(NPFile *)file;
