@@ -5,12 +5,17 @@
 
 
 #define NP_GRAPHICS_MATERIAL_MODEL_MATRIX_SEMANTIC                  @"NPMODEL"
+#define NP_GRAPHICS_MATERIAL_INVERSE_MODEL_MATRIX_SEMANTIC          @"NPINVERSEMODEL"
 #define NP_GRAPHICS_MATERIAL_VIEW_MATRIX_SEMANTIC                   @"NPVIEW"
+#define NP_GRAPHICS_MATERIAL_INVERSE_VIEW_MATRIX_SEMANTIC           @"NPINVERSEVIEW"
 #define NP_GRAPHICS_MATERIAL_PROJECTION_MATRIX_SEMANTIC             @"NPPROJECTION"
+#define NP_GRAPHICS_MATERIAL_INVERSE_PROJECTION_MATRIX_SEMANTIC     @"NPINVERSEPROJECTION"
 #define NP_GRAPHICS_MATERIAL_MODELVIEW_MATRIX_SEMANTIC              @"NPMODELVIEW"
+#define NP_GRAPHICS_MATERIAL_INVERSE_MODELVIEW_MATRIX_SEMANTIC      @"NPINVERSEMODELVIEW"
 #define NP_GRAPHICS_MATERIAL_VIEWPROJECTION_MATRIX_SEMANTIC         @"NPVIEWPROJECTION"
-#define NP_GRAPHICS_MATERIAL_MODELVIEWPROJECTION_MATRIX_SEMANTIC    @"NPMODELVIEWPROJECTION"
 #define NP_GRAPHICS_MATERIAL_INVERSEVIEWPROJECTION_MATRIX_SEMANTIC  @"NPINVERSEVIEWPROJECTION"
+#define NP_GRAPHICS_MATERIAL_MODELVIEWPROJECTION_MATRIX_SEMANTIC    @"NPMODELVIEWPROJECTION"
+#define NP_GRAPHICS_MATERIAL_INVERSE_MODELVIEWPROJECTION_MATRIX_SEMANTIC    @"NPINVERSEMODELVIEWPROJECTION"
 
 #define NP_GRAPHICS_MATERIAL_COLORMAP_BASE_SEMANTIC                 @"NPCOLORMAP"
 #define NP_GRAPHICS_MATERIAL_COLORMAP_SEMANTIC(_index)              [ NP_GRAPHICS_MATERIAL_COLORMAP_BASE_SEMANTIC stringByAppendingFormat:@"%d",_index ]
@@ -18,12 +23,17 @@
 typedef struct
 {
     CGparameter modelMatrix;
+    CGparameter inverseModelMatrix;
     CGparameter viewMatrix;
+    CGparameter inverseViewMatrix;
     CGparameter projectionMatrix;
+    CGparameter inverseProjectionMatrix;
     CGparameter modelViewMatrix;
+    CGparameter inverseModelViewMatrix;
     CGparameter viewProjectionMatrix;
-    CGparameter modelViewProjectionMatrix;
     CGparameter inverseViewProjectionMatrix;
+    CGparameter modelViewProjectionMatrix;
+    CGparameter inverseModelViewProjectionMatrix;
     CGparameter sampler[8];
 }
 NpDefaultSemantics;
@@ -32,6 +42,7 @@ NpDefaultSemantics;
 {
     CGeffect effect;
     CGtechnique defaultTechnique;
+    NSMutableDictionary * techniques;
     NpDefaultSemantics defaultSemantics;
 }
 
@@ -44,6 +55,7 @@ NpDefaultSemantics;
 - (void) reset;
 
 - (CGeffect) effect;
+- (CGtechnique) techniqueWithName:(NSString *)techniqueName;
 - (CGtechnique) defaultTechnique;
 - (void) setDefaultTechnique:(CGtechnique)newDefaultTechnique;
 
