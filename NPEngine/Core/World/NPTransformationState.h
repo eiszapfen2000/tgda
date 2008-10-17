@@ -4,12 +4,27 @@
 @interface NPTransformationState : NPObject
 {
     FMatrix4 * modelMatrix;
+    FMatrix4 * inverseModelMatrix;
     FMatrix4 * viewMatrix;
+    FMatrix4 * inverseViewMatrix;
     FMatrix4 * projectionMatrix;
+    FMatrix4 * inverseProjectionMatrix;
     FMatrix4 * modelViewMatrix;
+    FMatrix4 * inverseModelViewMatrix;
     FMatrix4 * viewProjectionMatrix;
-    FMatrix4 * modelViewProjectionMatrix;
     FMatrix4 * inverseViewProjectionMatrix;
+    FMatrix4 * modelViewProjectionMatrix;
+    FMatrix4 * inverseModelViewProjectionMatrix;
+
+    BOOL recomputeInverseModelMatrix;
+    BOOL recomputeInverseViewMatrix;
+    BOOL recomputeInverseProjectionMatrix;
+    BOOL recomputeModelViewMatrix;
+    BOOL recomputeInverseModelViewMatrix;
+    BOOL recomputeViewProjectionMatrix;
+    BOOL recomputeInverseViewProjectionMatrix;
+    BOOL recomputeModelViewProjectionMatrix;
+    BOOL recomputeInverseModelViewProjectionMatrix;
 }
 
 - (id) init;
@@ -17,19 +32,31 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
-- (FMatrix4 *)modelMatrix;
+- (FMatrix4 *) modelMatrix;
+- (FMatrix4 *) inverseModelMatrix;
+- (FMatrix4 *) viewMatrix;
+- (FMatrix4 *) inverseViewMatrix;
+- (FMatrix4 *) projectionMatrix;
+- (FMatrix4 *) inverseProjectionMatrix;
+- (FMatrix4 *) modelViewMatrix;
+- (FMatrix4 *) inverseModelViewMatrix;
+- (FMatrix4 *) viewProjectionMatrix;
+- (FMatrix4 *) inverseViewProjectionMatrix;
+- (FMatrix4 *) modelViewProjectionMatrix;
+- (FMatrix4 *) inverseModelViewProjectionMatrix;
+
 - (void) setModelMatrix:(FMatrix4 *)newModelMatrix;
-- (FMatrix4 *)viewMatrix;
 - (void) setViewMatrix:(FMatrix4 *)newViewMatrix;
-- (FMatrix4 *)projectionMatrix;
 - (void) setProjectionMatrix:(FMatrix4 *)newProjectionMatrix;
 
-- (FMatrix4 *) modelViewMatrix;
-- (FMatrix4 *) viewProjectionMatrix;
-- (FMatrix4 *) modelViewProjectionMatrix;
-- (FMatrix4 *) inverseViewProjectionMatrix;
-
-
-- (void) computeCombinedMatrices;
+- (void) computeInverseModelMatrix;
+- (void) computeInverseViewMatrix;
+- (void) computeInverseProjectionMatrix;
+- (void) computeModelViewMatrix;
+- (void) computeInverseModelViewMatrix;
+- (void) computeViewProjectionMatrix;
+- (void) computeInverseViewProjectionMatrix;
+- (void) computeModelViewProjectionMatrix;
+- (void) computeInverseModelViewProjectionMatrix;
 
 @end
