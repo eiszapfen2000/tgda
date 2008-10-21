@@ -65,10 +65,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
     renderContextManager = [[ NPOpenGLRenderContextManager alloc ] initWithName:@"NPEngine RenderContext Manager" parent:self ];
 
-    modelManager   = [[ NPModelManager   alloc ] initWithName:@"NPEngine Model Manager"   parent:self ];
-    imageManager   = [[ NPImageManager   alloc ] initWithName:@"NPEngine Image Manager"   parent:self ];
-    textureManager = [[ NPTextureManager alloc ] initWithName:@"NPEngine Texture Manager" parent:self ];
-    effectManager = [[ NPEffectManager   alloc ] initWithName:@"NPEngine Effect Manager"  parent:self ];
+    modelManager    = [[ NPModelManager    alloc ] initWithName:@"NPEngine Model Manager"    parent:self ];
+    imageManager    = [[ NPImageManager    alloc ] initWithName:@"NPEngine Image Manager"    parent:self ];
+    textureManager  = [[ NPTextureManager  alloc ] initWithName:@"NPEngine Texture Manager"  parent:self ];
+    effectManager   = [[ NPEffectManager   alloc ] initWithName:@"NPEngine Effect Manager"   parent:self ];
+    stateSetManager = [[ NPStateSetManager alloc ] initWithName:@"NPEngine StateSet Manager" parent:self ];
 
     stateConfiguration         = [[ NPStateConfiguration         alloc ] initWithName:@"NPEngine GPU States"              parent:self ];
     textureBindingStateManager = [[ NPTextureBindingStateManager alloc ] initWithName:@"NPEngine Texture Binding Manager" parent:self ];
@@ -90,6 +91,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     [ textureManager release ];
     [ imageManager release ];
     [ effectManager release ];
+    [ stateSetManager release ];
     [ stateConfiguration release ];
     [ renderContextManager release ];
     [ name release ];
@@ -171,6 +173,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 - (NPStateConfiguration *) stateConfiguration
 {
     return stateConfiguration;
+}
+
+- (NPStateSetManager *) stateSetManager
+{
+    return stateSetManager;
 }
 
 - (NPModelManager *) modelManager

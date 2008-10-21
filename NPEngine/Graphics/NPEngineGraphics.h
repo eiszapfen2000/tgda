@@ -28,6 +28,7 @@
     NPOpenGLRenderContextManager * renderContextManager;
 
     NPStateConfiguration * stateConfiguration;
+    NPStateSetManager * stateSetManager;
     NPModelManager * modelManager;
     NPImageManager * imageManager;
     NPTextureManager * textureManager;
@@ -59,6 +60,7 @@
 
 - (NPOpenGLRenderContextManager *) renderContextManager;
 - (NPStateConfiguration *) stateConfiguration;
+- (NPStateSetManager *) stateSetManager;
 - (NPModelManager *) modelManager;
 - (NPImageManager *) imageManager;
 - (NPTextureManager *) textureManager;
