@@ -11,7 +11,8 @@ NPCullingState.h \
 NPBlendingState.h \
 NPPolygonFillState.h \
 NPStateConfiguration.h \
-NPStateSet.h
+NPStateSet.h \
+NPStateSetManager.h
 
 libNPEngineGraphicsState_OBJC_FILES = \
 NPState.m \
@@ -21,7 +22,8 @@ NPCullingState.m \
 NPBlendingState.m \
 NPPolygonFillState.m \
 NPStateConfiguration.m \
-NPStateSet.m
+NPStateSet.m \
+NPStateSetManager.m
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/library.make

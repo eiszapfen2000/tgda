@@ -6,3 +6,4 @@
 #import "NPPolygonFillState.h"
 #import "NPStateConfiguration.h"
 #import "NPStateSet.h"
+#import "NPStateSetManager.h"

@@ -41,7 +41,18 @@
     [ self setName: [ file fileName ] ];
     [ self setFileName: [ file fileName ] ];
 
-    effect = cgCreateEffect( [ (NPEffectManager *)parent cgContext ], [[ file readEntireFile ] bytes ], NULL );
+    NSData * data = [ file readEntireFile ];
+    NSMutableData * mData = [ NSMutableData data ];
+    [ mData appendData:data ];
+    char c = 0;
+    [ mData appendBytes:&c length:1 ];
+
+    NSString * tmp = [ NSString stringWithUTF8String:[ mData bytes ]];
+
+    //NSLog(@"%s",[tmp cStringUsingEncoding:NSASCIIStringEncoding ]);
+    //effect = cgCreateEffectFromFile([ (NPEffectManager *)parent cgContext ],[[file fileName] cStringUsingEncoding:NSASCIIStringEncoding ],NULL);
+
+    effect = cgCreateEffect( [ (NPEffectManager *)parent cgContext ], [tmp cStringUsingEncoding:NSASCIIStringEncoding ], NULL );
 
     if ( cgIsEffect(effect) == CG_FALSE )
     {
@@ -256,7 +267,7 @@
         [ self uploadFMatrix4Parameter:defaultSemantics.inverseModelViewProjectionMatrix andValue:inverseModelViewProjectionMatrix ];
     }
 
-    NPTextureBindingState * textureBindingState = [[[ NP Core ] textureBindingStateManager ] currentTextureBindingState ];
+    NPTextureBindingState * textureBindingState = [[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ];
     for ( Int i = 0; i < 8; i++ )
     {
         if ( defaultSemantics.sampler[i] != NULL )

@@ -27,6 +27,7 @@
     self = [ super initWithName:newName parent:newParent ];
 
     fileName = [ newFileName retain ];
+    fileHandle = nil;
 
     [ self initFileHandleWithMode:newMode ];
 
