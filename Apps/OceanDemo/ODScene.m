@@ -35,6 +35,8 @@
     [ camera    release ];
     [ surface   release ];
 
+    [ skyboxStateSet dealloc ];
+
     [ super dealloc ];
 }
 
@@ -59,11 +61,20 @@
     [ projector setRenderFrustum:YES ];
 
     skybox = [[[[ NP Graphics ] modelManager ] loadModelFromPath:@"skybox.model" ] retain];
-    [ skybox uploadToGL ];
+    //skyboxStateSet = [[[ NP Graphics ] stateSetManager ] loadStateSetFromPath:@"skybox.stateset" ];
+
+    NPEffect * effect  = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"skybox.cgfx" ];
+    NPEffect * effect2 = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"test.cgfx" ];
+    //[ effect release ];
+    //NPSUXModel * brak = [[[[ NP Graphics ] modelManager ] loadModelFromPath:@"skybox2.model" ] retain];
+
+
+    //[ skybox uploadToGL ];
 
     IVector2 res;
     res.x = res.y = 4;
     surface = [[ ODSurface alloc ] initWithName:@"WaterSurface" parent:self resolution:&res ];
+
 }
 
 - (ODSurface *) surface
@@ -151,6 +162,8 @@
 
     [ camera render ];
     [ projector render ];
+
+    //[ skyboxStateSet activate ];
     //[ skybox render ];
 
     [ surface render ];

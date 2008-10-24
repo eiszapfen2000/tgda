@@ -4,6 +4,7 @@
 @class ODCamera;
 @class ODSurface;
 @class ODProjector;
+@class NPStateSet;
 
 typedef struct ODSceneMovement
 {
@@ -18,8 +19,10 @@ ODSceneMovement;
 {
     ODCamera    * camera;
     ODProjector * projector;
-    NPSUXModel  * skybox;
     ODSurface   * surface;
+
+    NPSUXModel  * skybox;
+    NPStateSet * skyboxStateSet;
 
     ODSceneMovement movement;
 }

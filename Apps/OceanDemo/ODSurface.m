@@ -320,7 +320,7 @@
             worldSpacePositions[index+1] = wPosition.y;
             worldSpacePositions[index+2] = wPosition.z;
 
-            NSLog(@"world %f %f %f",wPosition.x,wPosition.y,wPosition.z);
+            //NSLog(@"world %f %f %f",wPosition.x,wPosition.y,wPosition.z);
         }
     }
 
@@ -356,7 +356,7 @@
             ray.direction.z = resultF.z / resultF.w - ray.point.z;
 
             fplane_pr_intersect_with_ray_v(basePlane, &ray, &wPosition);
-            NSLog(@"screen %f %f %f",wPosition.x,wPosition.y,wPosition.z);
+            //NSLog(@"screen %f %f %f",wPosition.x,wPosition.y,wPosition.z);
         }
     }
 }
