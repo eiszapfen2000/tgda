@@ -1,7 +1,6 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-PACKAGE_NAME=NPEngineGraphicsState
-LIBRARY_NAME=libNPEngineGraphicsState
+SUBPROJECT_NAME=libNPEngineGraphicsState
 
 libNPEngineGraphicsState_HEADER_FILES = \
 NPState.h \
@@ -26,5 +25,5 @@ NPStateSet.m \
 NPStateSetManager.m
 
 include $(TGDA_DIR)/GNUmakefile.flags
-include $(GNUSTEP_MAKEFILES)/library.make
-include $(TGDA_DIR)/GNUmakefile.library.install
+include $(GNUSTEP_MAKEFILES)/subproject.make
+

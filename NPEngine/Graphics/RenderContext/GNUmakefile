@@ -1,7 +1,6 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-PACKAGE_NAME=NPEngineGraphicsRenderContext
-LIBRARY_NAME=libNPEngineGraphicsRenderContext
+SUBPROJECT_NAME=libNPEngineGraphicsRenderContext
 
 libNPEngineGraphicsRenderContext_OBJC_FILES = \
 NPOpenGLPixelFormat.m \
@@ -16,5 +15,5 @@ NPOpenGLRenderContextManager.h
 libNPEngineGraphicsRenderContext_LIBRARIES_DEPEND_UPON += -lGLEW
 
 include $(TGDA_DIR)/GNUmakefile.flags
-include $(GNUSTEP_MAKEFILES)/library.make
-include $(TGDA_DIR)/GNUmakefile.library.install
+include $(GNUSTEP_MAKEFILES)/subproject.make
+

@@ -1,9 +1,8 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-PACKAGE_NAME=NPEngineCore
-LIBRARY_NAME=libNPEngineCore
+SUBPROJECT_NAME=libNPEngineCore
 
-SUBPROJECTS = \
+libNPEngineCore_SUBPROJECTS = \
 	Basics \
 	Math \
 	NPObject \
@@ -22,6 +21,5 @@ libNPEngineCore_HEADER_FILES = \
 NPEngineCore.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
-include $(GNUSTEP_MAKEFILES)/aggregate.make
-include $(GNUSTEP_MAKEFILES)/library.make
-include $(TGDA_DIR)/GNUmakefile.library.install
+include $(GNUSTEP_MAKEFILES)/subproject.make
+
