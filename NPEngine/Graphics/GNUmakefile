@@ -1,9 +1,8 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-PACKAGE_NAME=NPEngineGraphics
-LIBRARY_NAME=libNPEngineGraphics
+SUBPROJECT_NAME=libNPEngineGraphics
 
-SUBPROJECTS = \
+libNPEngineGraphics_SUBPROJECTS = \
     Camera \
     Image \
 	Material \
@@ -19,7 +18,7 @@ libNPEngineGraphics_HEADER_FILES = \
 NPEngineGraphics.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
-include $(GNUSTEP_MAKEFILES)/aggregate.make
-include $(GNUSTEP_MAKEFILES)/library.make
-include $(TGDA_DIR)/GNUmakefile.library.install
+include $(GNUSTEP_MAKEFILES)/subproject.make
+
+
 

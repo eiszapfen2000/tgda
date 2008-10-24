@@ -1,7 +1,6 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-PACKAGE_NAME=NPEngineCoreBasics
-LIBRARY_NAME=libNPEngineCoreBasics
+SUBPROJECT_NAME=libNPEngineCoreBasics
 
 libNPEngineCoreBasics_C_FILES = \
 NpBasics.c \
@@ -19,5 +18,6 @@ NpFreeList.h \
 NpTypes.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
-include $(GNUSTEP_MAKEFILES)/library.make
-include $(TGDA_DIR)/GNUmakefile.library.install
+include $(GNUSTEP_MAKEFILES)/subproject.make
+
+

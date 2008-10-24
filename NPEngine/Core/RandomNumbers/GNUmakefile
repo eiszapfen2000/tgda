@@ -1,7 +1,6 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-PACKAGE_NAME=RandomNumberGeneration
-LIBRARY_NAME=libNPEnginCoreRandomNumberGeneration
+SUBPROJECT_NAME=libNPEnginCoreRandomNumberGeneration
 
 libNPEnginCoreRandomNumberGeneration_HEADER_FILES = \
 NPRandomNumberGenerator.h \
@@ -13,8 +12,8 @@ NPRandomNumberGenerator.m \
 NPGaussianRandomNumberGenerator.m \
 NPRandomNumberGeneratorManager.m
 
-libNPEnginCoreRandomNumberGeneration_LDFLAGS += -lprng
+libNPEnginCoreRandomNumberGeneration_LIBRARIES_DEPEND_UPON += -lprng
 
 include $(TGDA_DIR)/GNUmakefile.flags
-include $(GNUSTEP_MAKEFILES)/library.make
-include $(TGDA_DIR)/GNUmakefile.library.install
+include $(GNUSTEP_MAKEFILES)/subproject.make
+
