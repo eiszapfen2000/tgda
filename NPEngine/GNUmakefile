@@ -4,7 +4,8 @@ NATIVE_LIBRARY_NAME=libNPEngine
 
 libNPEngine_SUBPROJECTS = \
     Core \
-    Graphics
+    Graphics \
+    Application
 
 libNPEngine_OBJC_FILES = \
 NP.m
