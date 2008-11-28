@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "Core/NPEngineCore.h"
 #import "Graphics/NPEngineGraphics.h"
+#import "Application/NpApplication.h"
 
 @interface NP : NSObject
 
