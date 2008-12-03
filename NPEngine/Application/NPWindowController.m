@@ -11,6 +11,7 @@
     [ (NPOpenGLView *)[ window contentView ] shutdown ];
     [ window setDelegate:nil ];
 
+    [[ NP Input ] dealloc ];
     [[ NP Graphics ] dealloc ];
     [[ NP Core ] dealloc ];
 }

@@ -9,6 +9,7 @@
 }
 - (void) run;
 - (void) launch;
+- (void) sendEvent:(NSEvent *)theEvent;
 
 @end
 

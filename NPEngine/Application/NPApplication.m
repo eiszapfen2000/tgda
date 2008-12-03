@@ -23,7 +23,7 @@
         {
             NSEventType type = [ e type ];
 
-            [ super sendEvent:e ];
+            [ self sendEvent:e ];
 
             // update (en/disable) the services menu's items
             if (type != NSPeriodic && type != NSMouseMoved)
@@ -96,6 +96,77 @@
         }
 
         DESTROY(_runLoopPool);
+    }
+}
+
+- (void) sendEvent:(NSEvent *)theEvent
+{
+    [[ NP Input ] processEvent:theEvent ];
+
+    NSEventType type = [ theEvent type ];
+    switch (type)
+    {
+        case NSPeriodic:	/* NSApplication traps the periodic events	*/
+            break;
+
+        case NSKeyDown:
+        {
+            NSDebugLLog(@"NSEvent", @"send key down event\n");
+
+            if ([[self mainMenu] performKeyEquivalent:theEvent] == NO
+                && [[self keyWindow] performKeyEquivalent:theEvent] == NO)
+            {
+                [[ theEvent window ] sendEvent:theEvent ];
+            }
+
+                /*NSString * characters = [ theEvent characters ];
+                if ([characters length])
+                {
+                    unichar character = [characters characterAtIndex:0];
+                    NSLog(@"%C",character);
+                }
+                NSLog(@"%d %d",[theEvent keyCode],[theEvent modifierFlags]);*/
+
+            break;
+        }
+
+        case NSKeyUp:
+        {
+            NSDebugLLog(@"NSEvent", @"send key up event\n");
+            //[[ theEvent window ] sendEvent:theEvent ];
+
+            break;
+        }
+
+        default:	/* pass all other events to the event's window	*/
+        {
+            NSWindow * window = [ theEvent window ];
+
+            if (!theEvent)
+            {
+                NSDebugLLog(@"NSEvent", @"NSEvent is nil!\n");
+            }
+
+            if (type == NSMouseMoved)
+            {
+                NSDebugLLog(@"NSMotionEvent", @"Send move (%d) to window %d", 
+                            type, [window windowNumber]);
+            }
+            else
+            {
+                NSDebugLLog(@"NSEvent", @"Send NSEvent type: %d to window %d", 
+                            type, [window windowNumber]);
+            }
+
+            if (window)
+            {
+                [ window sendEvent:theEvent];
+            }
+            else if (type == NSRightMouseDown)
+            {
+                [ super rightMouseDown:theEvent ];
+            }
+        }
     }
 }
 

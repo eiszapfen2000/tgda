@@ -3,9 +3,10 @@ include $(GNUSTEP_MAKEFILES)/common.make
 NATIVE_LIBRARY_NAME=libNPEngine
 
 libNPEngine_SUBPROJECTS = \
+    Application \
     Core \
     Graphics \
-    Application
+    Input
 
 libNPEngine_OBJC_FILES = \
 NP.m
