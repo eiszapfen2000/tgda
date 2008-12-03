@@ -12,4 +12,9 @@
     return [ NPEngineGraphics instance ];
 }
 
++ (id) Input
+{
+    return [ NPEngineInput instance ];
+}
+
 @end
