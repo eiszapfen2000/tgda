@@ -113,7 +113,7 @@
 
 - (void) activate
 {
-    //if ( ready == YES && active == NO )
+    if ( ready == YES && active == NO )
     {
         [[[ NP Graphics] renderContextManager ] setCurrentRenderContext:self ]; 
         [ context makeCurrentContext ];
@@ -124,7 +124,7 @@
 
 - (void) deactivate
 {
-    //if ( ready == YES && active == YES )
+    if ( ready == YES && active == YES )
     {
         [[[ NP Graphics ] renderContextManager ] setCurrentRenderContext:nil ]; 
         [ NSOpenGLContext clearCurrentContext ];
@@ -152,7 +152,7 @@
 
 - (void) swap
 {
-    //if ( ready == YES && active == YES )
+    if ( ready == YES && active == YES )
     {
         [ context flushBuffer ];
     }
@@ -161,7 +161,6 @@
 - (BOOL) isExtensionSupported:(NSString *)extensionString
 {
     const char * extensionCString = [ extensionString cStringUsingEncoding:NSUTF8StringEncoding ];
-
     BOOL tmp = glewIsSupported(extensionCString);
 
     if ( tmp == YES )

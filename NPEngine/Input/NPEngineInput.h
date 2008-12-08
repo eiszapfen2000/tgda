@@ -1,6 +1,8 @@
 #import "Core/NPObject/NPObject.h"
 #import "NPKeyboard.h"
 #import "NPMouse.h"
+#import "NPInputAction.h"
+#import "NPInputActions.h"
 
 @class NSEvent;
 
@@ -11,6 +13,7 @@
 
     NPKeyboard * keyboard;
     NPMouse * mouse;
+    NPInputActions * inputActions;
 }
 
 + (NPEngineInput *) instance;
@@ -27,7 +30,11 @@
 - (NPObject *) parent;
 - (void) setParent:(NPObject *)newParent;
 - (UInt32) objectID;
+- (id) keyboard;
+- (id) mouse;
 
 - (void) processEvent:(NSEvent *)event;
+
+- (void) update;
 
 @end

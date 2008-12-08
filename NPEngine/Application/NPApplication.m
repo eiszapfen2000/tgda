@@ -15,7 +15,7 @@
         _runLoopPool = [ NSAutoreleasePool new ];
 
         e = [ super nextEventMatchingMask:NSAnyEventMask
-                                untilDate:distantFuture
+                                untilDate:[ NSDate date ]
                                    inMode:NSDefaultRunLoopMode
                                   dequeue:YES ];
 
@@ -161,10 +161,6 @@
             if (window)
             {
                 [ window sendEvent:theEvent];
-            }
-            else if (type == NSRightMouseDown)
-            {
-                [ super rightMouseDown:theEvent ];
             }
         }
     }

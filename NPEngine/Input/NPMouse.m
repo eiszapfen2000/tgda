@@ -37,7 +37,36 @@ void reset_mouse_state(NpMouseState * mouseState)
 
 - (void) processEvent:(NSEvent *)event
 {
-    NSLog(@"Button %d",[event clickCount]);
+    //NSLog(@"%d down",[event buttonNumber]);
+    switch ( [ event type ] )
+    {
+        case NSLeftMouseDown:
+        {
+            break;
+        }
+
+        case NSLeftMouseUp:
+        {
+            break;
+        }
+
+        case NSRightMouseDown:
+        {
+            break;
+        }
+
+        case NSRightMouseUp:
+        {
+            break;
+        }
+
+        case NSMouseMoved:
+        {
+    NSLog(@"%f %f",[event deltaX],[event deltaY]);
+            break;
+        }
+    }
+    //NSLog(@"Button %d",[event buttonNumber]);
 }
 
 - (BOOL) isButtonPressed:(NpState)button

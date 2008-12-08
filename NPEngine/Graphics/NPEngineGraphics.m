@@ -210,6 +210,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     return cameraManager;
 }
 
+- (void) swapBuffers
+{
+    [[ renderContextManager currentRenderContext ] swap ];
+}
+
 - (id)copyWithZone:(NSZone *)zone
 {
     return self;

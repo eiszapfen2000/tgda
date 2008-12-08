@@ -18,7 +18,7 @@
     self = [ super initWithName:newName parent:newParent ];
 
     renderContexts = [[ NSMutableDictionary alloc ] init ];
-    defaultPixelFormat = [[ NPOpenGLPixelFormat alloc ] init ];
+    defaultPixelFormat = [[ NPOpenGLPixelFormat alloc ] initWithName:@"Default Pixel Format" parent:self ];
     currentRenderContext = nil;
 
     return self;

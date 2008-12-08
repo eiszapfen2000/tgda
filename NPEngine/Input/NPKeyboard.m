@@ -1,12 +1,33 @@
 #import <AppKit/NSEvent.h>
 #import "NPKeyboard.h"
 
-
 void reset_keyboard_state(NpKeyboardState * keyboardState)
 {
-    for ( Int i = 0; i < 256; i++ )
+    for ( Int i = 0; i < 128; i++ )
     {
         keyboardState->keys[i] = NO;
+    }
+}
+
+void keyboard_state_key_down(NpKeyboardState * keyboardState, NpState key)
+{
+    keyboardState->keys[key] = YES;
+}
+
+void keyboard_state_key_up(NpKeyboardState * keyboardState, NpState key)
+{
+    keyboardState->keys[key] = NO;
+}
+
+void keyboard_state_modifier_key(NpKeyboardState * keyboardState, NpState key)
+{
+    if ( keyboardState->keys[key] == NO )
+    {
+        keyboardState->keys[key] = YES;
+    }
+    else
+    {
+        keyboardState->keys[key] = NO;
     }
 }
 
@@ -38,7 +59,35 @@ void reset_keyboard_state(NpKeyboardState * keyboardState)
 
 - (void) processEvent:(NSEvent *)event
 {
-    NSLog(@"BRAAAAK %d",[event keyCode]);
+    switch ( [ event type ] )
+    {
+        case NSKeyDown:
+        {
+            if ( [ event isARepeat ] == NO )
+            {
+                keyboard_state_key_down(&keyboardState,(NpState)[event keyCode]);
+            }
+            break;
+        }
+        case NSKeyUp:
+        {
+            if ( [ event isARepeat ] == NO )
+            {
+                keyboard_state_key_up(&keyboardState,(NpState)[event keyCode]);
+            }
+            break;
+        }
+        case NSFlagsChanged:
+        {
+            keyboard_state_modifier_key(&keyboardState,(NpState)[event keyCode]);
+            break;
+        }
+
+        default:
+        {
+            break;
+        }
+    }
 }
 
 - (BOOL) isKeyPressed:(NpState)key
