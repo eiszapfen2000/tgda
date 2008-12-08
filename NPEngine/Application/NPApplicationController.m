@@ -17,6 +17,7 @@
 {
     // Initialise NPEngine Core
     [ NP Core ];
+    [ NP Input ];
 
     // Load settings from Info-gnustep.plist
     id infoDictionary = [[ NSBundle mainBundle ] infoDictionary ];
@@ -70,6 +71,7 @@
     [ view release ];
 
     [ window makeFirstResponder:view ];
+    [ window setIgnoresMouseEvents:YES ];
 }
 
 @end

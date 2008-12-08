@@ -20,7 +20,7 @@
     id infoDictionary = [[ NSBundle mainBundle ] infoDictionary ];
     Int sampleCount = [[ infoDictionary objectForKey:@"FSAA" ] intValue ];
 
-    NPOpenGLPixelFormat * pixelFormat = [[ NPOpenGLPixelFormat alloc ] init ];
+    NPOpenGLPixelFormat * pixelFormat = [[ NPOpenGLPixelFormat alloc ] initWithName:@"Application PixelFormat" parent:nil ];
     [ pixelFormat setSampleCount:sampleCount ];
 
     renderContext = [[[[ NP Graphics ] renderContextManager ] createRenderContextWithPixelFormat:pixelFormat andName:@"NPOpenGLViewRC" ] retain ];
@@ -41,7 +41,7 @@
     }
 
     [[ NP Graphics ] setup ];
-    glXSwapIntervalSGI(1);
+    glXSwapIntervalSGI(0);
 }
 
 - (void) shutdown
@@ -53,13 +53,17 @@
 
 - (BOOL) acceptsFirstResponder
 {
-    return YES;
+    return NO;
 }
 
 - (void) update
 {
     [ renderContext update ];
 }
+
+/*- (void)rightMouseDown:(NSEvent *)theEvent
+{
+}*/
 
 - (void) drawRect:(NSRect)aRect
 {

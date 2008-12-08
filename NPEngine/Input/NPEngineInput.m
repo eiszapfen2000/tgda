@@ -1,3 +1,4 @@
+#import <AppKit/NSEvent.h>
 #import "NPEngineInput.h"
 #import "NP.h"
 
@@ -66,6 +67,8 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
     keyboard = [[ NPKeyboard alloc ] initWithName:@"NP Engine Input Keyboard" parent:self ];
     mouse = [[ NPMouse alloc ] initWithName:@"NP Engine Input Mouse" parent:self ];
 
+    inputActions = [[ NPInputActions alloc ] initWithName:@"NP Engine Input Actions" parent:self ];
+
     return self;
 }
 
@@ -73,6 +76,7 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
 {
     NPLOG(@"NP Engine Input Dealloc");
 
+    [ inputActions release ];
     [ mouse release ];
     [ keyboard release ];
     [ name release ];
@@ -114,6 +118,21 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
 - (UInt32) objectID
 {
     return objectID;
+}
+
+- (id) keyboard
+{
+    return keyboard;
+}
+
+- (id) mouse
+{
+    return mouse;
+}
+
+- (void) update
+{
+    [ inputActions update ];
 }
 
 - (id)copyWithZone:(NSZone *)zone

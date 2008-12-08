@@ -68,4 +68,6 @@
 - (NPEffectManager *) effectManager;
 - (NPCameraManager *) cameraManager;
 
+- (void) swapBuffers;
+
 @end

@@ -27,6 +27,8 @@
     objectID = crc32_of_pointer(self);
     pointer = [[ NSValue alloc ] initWithBytes:&self objCType:@encode(void *) ];
 
+//    NSLog(([NSString stringWithFormat:@"%@ register",name]));
+
     [[[ NPEngineCore instance ] objectManager ] addObject:pointer ];
 
     return self;
@@ -37,6 +39,7 @@
     [ name release ];
     parent = nil;
 
+//    NSLog(([NSString stringWithFormat:@"%@ deregister",name]));
     [[[ NPEngineCore instance ] objectManager ] removeObject:pointer ];
     [ pointer release ];
 
