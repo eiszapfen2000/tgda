@@ -30,8 +30,10 @@
 - (NPObject *) parent;
 - (void) setParent:(NPObject *)newParent;
 - (UInt32) objectID;
+
 - (id) keyboard;
 - (id) mouse;
+- (id) inputActions;
 
 - (void) processEvent:(NSEvent *)event;
 
