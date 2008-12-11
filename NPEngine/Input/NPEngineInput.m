@@ -130,6 +130,11 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
     return mouse;
 }
 
+- (id) inputActions
+{
+    return inputActions;
+}
+
 - (void) update
 {
     [ inputActions update ];

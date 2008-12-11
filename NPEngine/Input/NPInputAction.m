@@ -84,6 +84,12 @@
         return [[[ NP Input ] keyboard ] isKeyPressed:event ];
     }
 
+    // mouse event
+    if ( event > 255 && event < 263 )
+    {
+        return [[[ NP Input ] mouse ] isButtonPressed:event ];
+    }
+
     return NO;
 }
 

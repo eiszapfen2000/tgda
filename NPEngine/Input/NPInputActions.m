@@ -25,6 +25,7 @@
 
 - (void) dealloc
 {
+    [ inputActions removeAllObjects ];
     [ inputActions release ];
 
     [ super dealloc ];

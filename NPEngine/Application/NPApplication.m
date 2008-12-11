@@ -6,13 +6,22 @@
 - (void) run
 {
     NSEvent * e;
-    id distantFuture = [ NSDate distantFuture ];
 
     _app_is_running = YES;
 
     while (_app_is_running)
     {
         _runLoopPool = [ NSAutoreleasePool new ];
+
+        if ( updateImplemented == YES )
+        {
+            [ _delegate update ];
+        }
+
+        if ( renderImplemented == YES )
+        {
+            [ _delegate render ];
+        }
 
         e = [ super nextEventMatchingMask:NSAnyEventMask
                                 untilDate:[ NSDate date ]
@@ -37,16 +46,6 @@
         if ( _windows_need_update )
         {
             [ super updateWindows ];
-        }
-
-        if ( updateImplemented == YES )
-        {
-            [ _delegate update ];
-        }
-
-        if ( renderImplemented == YES )
-        {
-            [ _delegate render ];
         }
 
         DESTROY(_runLoopPool);
