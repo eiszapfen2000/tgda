@@ -22,7 +22,7 @@
 
 - (void) setup;
 
-- (void) updateTimer;
+- (void) update;
 - (void) resetFrameTime;
 - (void) resetTotalElapsedTime;
 - (void) reset;

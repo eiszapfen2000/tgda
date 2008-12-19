@@ -10,10 +10,9 @@ void reset_mouse_state(NpMouseState * mouseState)
         mouseState->buttons[i] = NO;
     }
 
-    mouseState->deltaX = 0.0f;
-    mouseState->deltaY = 0.0f;
-    mouseState->scrollWheel = 0.0;
-    mouseState->scrollWheelLastFrame = 0.0;
+    mouseState->deltaX = 0;
+    mouseState->deltaY = 0;
+    mouseState->scrollWheel = 0;
 }
 
 @implementation NPMouse
@@ -33,6 +32,8 @@ void reset_mouse_state(NpMouseState * mouseState)
     self = [ super initWithName:newName parent:newParent ];
 
     reset_mouse_state(&mouseState);
+    scrollWheelLastFrame = 0;
+    deltaX = deltaY = 0;
 
     return self;
 }
@@ -42,10 +43,22 @@ void reset_mouse_state(NpMouseState * mouseState)
     [ super dealloc ];
 }
 
+- (Int) deltaX
+{
+    return deltaX;
+}
+
+- (Int) deltaY
+{
+    return deltaY;
+}
+
 - (void) processEvent:(NSEvent *)event
 {
-    Int buttonIndex;
+    //mouseState.deltaX = 0;
+    //mouseState.deltaY = 0;
 
+    Int buttonIndex;
     switch ( [ event type ] )
     {
         case NSLeftMouseDown:
@@ -95,7 +108,6 @@ void reset_mouse_state(NpMouseState * mouseState)
 
         case NSScrollWheel:
         {
-            mouseState.scrollWheelLastFrame = mouseState.scrollWheel;
             mouseState.scrollWheel = (Int)[ event deltaY ];
         }
 
@@ -106,10 +118,20 @@ void reset_mouse_state(NpMouseState * mouseState)
     }
 }
 
+- (void) update
+{
+    scrollWheelLastFrame = mouseState.scrollWheel;
+    deltaX = mouseState.deltaX;
+    deltaY = mouseState.deltaY;
+
+    mouseState.scrollWheel = 0;
+    mouseState.deltaX = 0;
+    mouseState.deltaY = 0;
+}
+
 - (BOOL) isAnyButtonPressed
 {
     BOOL result = NO;
-
     for ( Int i = NP_INPUT_MOUSE_BUTTON_LEFT; i <= NP_INPUT_MOUSE_WHEEL_DOWN; i++ )
     {
         result = ( result || [ self isButtonPressed:i ] );
@@ -133,11 +155,11 @@ void reset_mouse_state(NpMouseState * mouseState)
 
         case NP_INPUT_MOUSE_WHEEL_UP:
         {
-            return ( (mouseState.scrollWheel - mouseState.scrollWheelLastFrame) > 0 );
+            return ( (mouseState.scrollWheel - scrollWheelLastFrame) > 0 );
         }
         case NP_INPUT_MOUSE_WHEEL_DOWN:
         {
-            return ( (mouseState.scrollWheel - mouseState.scrollWheelLastFrame) < 0 );
+            return ( (mouseState.scrollWheel - scrollWheelLastFrame) < 0 );
         }
     }
 

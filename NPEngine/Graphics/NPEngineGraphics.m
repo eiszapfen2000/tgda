@@ -64,7 +64,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     objectID = crc32_of_pointer(self);
 
     renderContextManager = [[ NPOpenGLRenderContextManager alloc ] initWithName:@"NPEngine RenderContext Manager" parent:self ];
-
+    viewportManager = [[ NPViewportManager alloc ] initWithName:@"NPEngine Viewport Manager" parent:self ];
     modelManager    = [[ NPModelManager    alloc ] initWithName:@"NPEngine Model Manager"    parent:self ];
     imageManager    = [[ NPImageManager    alloc ] initWithName:@"NPEngine Image Manager"    parent:self ];
     textureManager  = [[ NPTextureManager  alloc ] initWithName:@"NPEngine Texture Manager"  parent:self ];
@@ -93,13 +93,14 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     [ effectManager release ];
     [ stateSetManager release ];
     [ stateConfiguration release ];
+    [ viewportManager release ];
     [ renderContextManager release ];
     [ name release ];
 
     [ super dealloc ];
 }
 
-- (void) setup
+- (void) setupWithViewportSize:(IVector2)viewportSize
 {
     NPLOG(@"NPEngine Graphics setup....");
     NPLOG(@"Checking for Rendercontext...");
@@ -115,12 +116,12 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         NPLOG(@"Rendercontext available");
     }
 
+    [[ viewportManager currentViewport ] setViewportSize:viewportSize ];
+
     [ imageManager   setup ];
     [ textureManager setup ];
     [ effectManager  setup ];
-
     [ textureBindingStateManager setup ];
-
     [ cameraManager setup ];
 
     [ stateConfiguration activate ];
@@ -170,6 +171,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     return renderContextManager;
 }
 
+- (NPViewportManager *) viewportManager
+{
+    return viewportManager;
+}
+
 - (NPStateConfiguration *) stateConfiguration
 {
     return stateConfiguration;
@@ -208,6 +214,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 - (NPCameraManager *) cameraManager
 {
     return cameraManager;
+}
+
+- (void) render
+{
+    [ viewportManager render ];
 }
 
 - (void) swapBuffers

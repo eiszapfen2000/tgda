@@ -43,10 +43,8 @@
 
 - (NSString *) name;
 - (void) setName:(NSString *)newName;
-
 - (NPObject *) parent;
 - (void) setParent:(NPObject *)newParent;
-
 - (UInt32) objectID;
 
 - (NPLogger *) logger;
@@ -55,6 +53,8 @@
 - (NPPathManager *) pathManager;
 - (NPRandomNumberGeneratorManager *) randomNumberGeneratorManager;
 - (NPTransformationStateManager *) transformationStateManager;
+
+- (void) update;
 
 @end
 

@@ -7,7 +7,6 @@ typedef struct NpMouseState
     Int deltaX;
     Int deltaY;
     Int scrollWheel;
-    Int scrollWheelLastFrame;
 }
 NpMouseState;
 
@@ -18,16 +17,24 @@ void reset_mouse_state(NpMouseState * mouseState);
 @interface NPMouse : NPObject
 {
     NpMouseState mouseState;
+    Int scrollWheelLastFrame;
+    Int deltaX;
+    Int deltaY;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 
+- (Int) deltaX;
+- (Int) deltaY;
+
 - (void) processEvent:(NSEvent *)event;
 
 - (BOOL) isAnyButtonPressed;
 - (BOOL) isButtonPressed:(NpState)button;
 - (NpState *) pressedButtons:(Int *)numberOfPressedButtons;
+
+- (void) update;
 
 @end

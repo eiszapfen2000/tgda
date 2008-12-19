@@ -15,10 +15,10 @@
 - (id) inputActions;
 - (id) inputActionWithName:(NSString *)inputActionName;
 
-- (void) addInputActionWithName:(NSString *)inputActionName
+- (id) addInputActionWithName:(NSString *)inputActionName
              primaryInputAction:(NpState)primaryInputAction;
 
-- (void) addInputActionWithName:(NSString *)inputActionName
+- (id) addInputActionWithName:(NSString *)inputActionName
              primaryInputAction:(NpState)primaryInputAction
            secondaryInputAction:(NpState)secondaryInputAction;
 

@@ -40,7 +40,7 @@
     [ keywordMappings setObject:[ NSNumber numberWithInt:0] forKey:@"Front" ];
     [ keywordMappings setObject:[ NSNumber numberWithInt:1] forKey:@"Back" ];
 
-    stateSets       = [[ NSMutableDictionary alloc ] init ];
+    stateSets = [[ NSMutableDictionary alloc ] init ];
 
     return self;
 }
@@ -85,6 +85,8 @@
         {
             stateSet = [[ NPStateSet alloc ] initWithName:path parent:self ];
             [ stateSet loadFromFile:path ];
+            [ stateSets setObject:stateSet forKey:path ];
+            [ stateSet release ];
         }
 
         return stateSet;

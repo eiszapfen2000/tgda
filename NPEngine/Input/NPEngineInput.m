@@ -135,9 +135,34 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
     return inputActions;
 }
 
+// updates keyboard and mouse states
+- (void) processEvent:(NSEvent *)event
+{
+    UInt eventMask = NSEventMaskFromType([ event type ]);
+
+    if ( eventMask & GSKeyEventMask )
+    {
+        [ keyboard processEvent:event ];
+    }
+
+    if ( eventMask & GSMouseEventMask )
+    {
+        [ mouse processEvent:event ];
+    }
+}
+
 - (void) update
 {
+    [ mouse update ];
     [ inputActions update ];
+}
+
+- (BOOL) isAnythingPressed
+{
+    BOOL mouseButtonPressed = [ mouse isAnyButtonPressed ];
+    BOOL keyPressed = [ keyboard isAnyKeyPressed ];
+
+    return ( mouseButtonPressed || keyPressed );
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -163,45 +188,6 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
 - (id)autorelease
 {
     return self;
-}
-
-// updates keyboard and mouse states
-- (void) processEvent:(NSEvent *)event
-{
-    UInt eventMask = NSEventMaskFromType([ event type ]);
-
-    if ( eventMask & GSKeyEventMask )
-    {
-        [ keyboard processEvent:event ];
-    }
-
-    if ( eventMask & GSMouseEventMask )
-    {
-        [ mouse processEvent:event ];
-    }
-
-    /*
-    switch ( eventType )
-    {
-        case NSKeyDown:{ break; }
-        case NSKeyUp:{ break; }
-
-        case NSLeftMouseDown:
-        case NSRightMouseDown:
-        case NSOtherMouseDown:{ break; }
-
-        case NSLeftMouseUp:
-        case NSRightMouseUp:
-        case NSOtherMouseUp:{ break; }
-
-        case NSMouseMoved:{ break; }
-
-        case NSScrollWheel:{ break; }
-
-        case NSFlagsChanged:{ break; }
-
-        default:{ break; }
-    }*/
 }
 
 @end
