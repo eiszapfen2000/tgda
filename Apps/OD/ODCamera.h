@@ -1,0 +1,60 @@
+#import "Core/Math/NpMath.h"
+#import "Core/NPObject/NPObject.h"
+
+@interface ODCamera : NPObject
+{
+	FMatrix4 * view;
+	FMatrix4 * projection;
+
+    FQuaternion * orientation;
+    FVector3 * position;
+
+	Float fov;
+	Float nearPlane;
+	Float farPlane;
+	Float aspectRatio;
+
+    Float yaw;
+    Float pitch;
+    FVector3 * forward;
+
+    id forwardMovementAction;
+    id backwardMovementAction;
+    id strafeLeftAction;
+    id strafeRightAction;
+}
+
+- (id) init;
+- (id) initWithParent:(NPObject *)newParent;
+- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
+- (void) dealloc;
+
+- (void) reset;
+
+- (FVector3 *) position;
+- (void) setPosition:(FVector3 *)newPosition;
+
+- (FMatrix4 *) projection;
+
+- (Float) fov;
+- (void)  setFov:(Float)newFov;
+- (Float) nearPlane;
+- (void)  setNearPlane:(Float)newNearPlane;
+- (Float) farPlane;
+- (void)  setFarPlane:(Float)newFarPlane;
+- (Float) aspectRatio;
+- (void)  setAspectRatio:(Float)newAspectRatio;
+
+- (void) cameraRotateUsingYaw:(Float)yawDegrees andPitch:(Float)pitchDegrees;
+- (void) moveForward;
+- (void) moveBackward;
+- (void) moveLeft;
+- (void) moveRight;
+
+- (void) updateProjection;
+- (void) updateView;
+- (void) update;
+
+- (void) render;
+
+@end

@@ -1,0 +1,18 @@
+{
+    ApplicationDescription = OceanDemo;
+    ApplicationName = OceanDemo;
+    ApplicationRelease = 0.10;
+    Authors = ( "Thomas Gamper" );
+    Copyright = "Copyright (C) 2008 Thomas Gamper";
+    FullVersionID = 0.10;
+    NSExecutable = OceanDemo;
+    NSMainNibFile = OceanDemo.gorm;
+    NSPrincipalClass = NPApplication;
+    NSRole = Application;
+    Fullscreen = NO;
+    Width = 800;
+    Height = 600;
+    FSAA = 0;
+    VSync = YES;
+}
+ 
