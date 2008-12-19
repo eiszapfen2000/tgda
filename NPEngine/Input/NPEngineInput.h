@@ -39,4 +39,6 @@
 
 - (void) update;
 
+- (BOOL) isAnythingPressed;
+
 @end

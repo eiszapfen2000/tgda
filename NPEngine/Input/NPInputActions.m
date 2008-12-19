@@ -46,15 +46,15 @@
     return [ inputActions objectForKey:inputActionName ];
 }
 
-- (void) addInputActionWithName:(NSString *)inputActionName
+- (id) addInputActionWithName:(NSString *)inputActionName
              primaryInputAction:(NpState)primaryInputAction
 {
-    [ self addInputActionWithName:inputActionName
-               primaryInputAction:primaryInputAction
-             secondaryInputAction:NP_INPUT_NONE ];
+    return [ self addInputActionWithName:inputActionName
+                      primaryInputAction:primaryInputAction
+                    secondaryInputAction:NP_INPUT_NONE ];
 }
 
-- (void) addInputActionWithName:(NSString *)inputActionName
+- (id) addInputActionWithName:(NSString *)inputActionName
              primaryInputAction:(NpState)primaryInputAction
            secondaryInputAction:(NpState)secondaryInputAction
 {
@@ -67,11 +67,12 @@
                                                             secondaryAction:secondaryInputAction ];
 
         [ inputActions setObject:inputAction forKey:inputActionName ];
-        [ inputAction release ];
+        return [ inputAction autorelease ];
     }
     else
     {
         NPLOG_WARNING(([NSString stringWithFormat:@"Input Action with name %@ already exists",inputActionName]));
+        return nil;
     }    
 }
 

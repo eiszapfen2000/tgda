@@ -20,6 +20,9 @@
 
 #import "Graphics/State/NpState.h"
 
+#import "Graphics/Viewport/NPViewport.h"
+#import "Graphics/Viewport/NPViewportManager.h"
+
 @interface NPEngineGraphics : NSObject < NPPObject >
 {
     UInt32 objectID;
@@ -27,6 +30,7 @@
 
     NPOpenGLRenderContextManager * renderContextManager;
 
+    NPViewportManager * viewportManager;
     NPStateConfiguration * stateConfiguration;
     NPStateSetManager * stateSetManager;
     NPModelManager * modelManager;
@@ -46,19 +50,18 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
-- (void) setup;
+- (void) setupWithViewportSize:(IVector2)viewportSize;
 
 - (NSString *) name;
 - (void) setName:(NSString *)newName;
-
 - (NPObject *) parent;
 - (void) setParent:(NPObject *)newParent;
-
 - (UInt32) objectID;
 
 - (BOOL) ready;
 
 - (NPOpenGLRenderContextManager *) renderContextManager;
+- (NPViewportManager *) viewportManager;
 - (NPStateConfiguration *) stateConfiguration;
 - (NPStateSetManager *) stateSetManager;
 - (NPModelManager *) modelManager;
@@ -67,6 +70,8 @@
 - (NPTextureBindingStateManager *) textureBindingStateManager;
 - (NPEffectManager *) effectManager;
 - (NPCameraManager *) cameraManager;
+
+- (void) render;
 
 - (void) swapBuffers;
 

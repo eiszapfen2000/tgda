@@ -43,7 +43,7 @@
     return totalElapsedTime;
 }
 
-- (void) updateTimer
+- (void) update
 {
     if ( paused == NO )
     {

@@ -151,6 +151,11 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     return transformationStateManager;
 }
 
+- (void) update
+{
+    [ timer update ];
+}
+
 - (id)copyWithZone:(NSZone *)zone
 {
     return self;

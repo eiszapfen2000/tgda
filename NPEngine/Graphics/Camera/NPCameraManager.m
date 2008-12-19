@@ -47,12 +47,12 @@
     NPLOG(@"NPCameraManager ready");
 }
 
-- (NPCamera *) currentActiveCamera
+- (id) currentActiveCamera
 {
     return currentActiveCamera;
 }
 
-- (void) setCurrentActiveCamera:(NPCamera *)newCurrentActiveCamera
+- (void) setCurrentActiveCamera:(id)newCurrentActiveCamera
 {
     if ( currentActiveCamera != newCurrentActiveCamera )
     {
@@ -61,7 +61,7 @@
     }
 }
 
-- (NPCamera *) createCamera
+- (id) createCamera
 {
     NPCamera * camera = [[ NPCamera alloc ] initWithParent:self ];
     [ cameras addObject:camera ];

@@ -9,7 +9,8 @@ libNPEngineGraphics_SUBPROJECTS = \
 	Model \
 	RenderContext \
     RenderTarget \
-    State
+    State \
+    Viewport
 
 libNPEngineGraphics_OBJC_FILES = \
 NPEngineGraphics.m

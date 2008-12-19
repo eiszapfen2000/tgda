@@ -30,17 +30,12 @@
 
     [ pixelFormat release ];
 
-    BOOL fullscreen = [[ infoDictionary objectForKey:@"Fullscreen" ] boolValue ];
+    NSRect rect = [ self bounds ];
+    IVector2 viewport = { rect.size.width, rect.size.height };
 
-    if ( fullscreen == NO )
-    {
-        /*[[ NSNotificationCenter defaultCenter ] addObserver:self
-                                                   selector:@selector(frameChanged:)
-                                                       name:NSViewFrameDidChangeNotification
-                                                     object:self ];*/
-    }
+    //NSLog(@"%f %f",rect.size.width,rect.size.height);
 
-    [[ NP Graphics ] setup ];
+    [[ NP Graphics ] setupWithViewportSize:viewport ];
     glXSwapIntervalSGI(0);
 }
 

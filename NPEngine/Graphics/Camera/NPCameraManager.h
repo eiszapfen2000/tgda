@@ -5,7 +5,7 @@
 @interface NPCameraManager : NPObject
 {
     NSMutableArray * cameras;
-    NPCamera * currentActiveCamera;
+    id currentActiveCamera;
 }
 
 - (id) init;
@@ -15,9 +15,9 @@
 
 - (void) setup;
 
-- (NPCamera *) currentActiveCamera;
-- (void) setCurrentActiveCamera:(NPCamera *)newCurrentActiveCamera;
+- (id) currentActiveCamera;
+- (void) setCurrentActiveCamera:(id)newCurrentActiveCamera;
 
-- (NPCamera *) createCamera;
+- (id) createCamera;
 
 @end
