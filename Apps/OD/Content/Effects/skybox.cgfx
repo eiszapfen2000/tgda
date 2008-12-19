@@ -1,0 +1,56 @@
+float4x4 modelmatrix : NPMODEL;
+float4x4 viewmatrix : NPVIEW;
+float4x4 projectionmatrix : NPPROJECTION;
+
+sampler2D colormap : NPCOLORMAP0;
+
+struct INPUTDATA
+{
+	float4 position			: POSITION;
+	float2 texcoord			: TEXCOORD0;
+};
+
+struct VOUTPUTDATA
+{
+	float4 position			: POSITION;
+	float2 texcoord			: TEXCOORD0;
+};
+
+VOUTPUTDATA mvertexshader(INPUTDATA input)
+{
+	VOUTPUTDATA output;
+
+	float4x4 mvp = mul(projectionmatrix,mul(viewmatrix,modelmatrix));
+
+	output.position = mul(mvp, input.position);
+	output.texcoord = input.texcoord;
+	
+	return output;
+}
+
+struct FOUTPUTDATA
+{
+	float4 color			: COLOR0;
+};
+
+FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
+{
+	FOUTPUTDATA output;
+
+	float4 diffusecolor = tex2D(colormap, input.texcoord);
+
+    output.color = diffusecolor;
+    //output.color = float4(1.0,0.0,0.0,0.0);
+
+	return output;
+}
+
+technique skybox
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mfragmentshader();
+		VertexProgram = compile vp40 mvertexshader();
+	}
+}
+

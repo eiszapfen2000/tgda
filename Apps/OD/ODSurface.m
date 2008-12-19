@@ -9,8 +9,6 @@
 #import "Graphics/State/NPStateSet.h"
 #import "Graphics/State/NPState.h"
 
-
-
 @implementation ODSurface
 
 - (id) init
@@ -50,7 +48,7 @@
     [ states setCullingEnabled:NO ];
 
     surfaceGeometry = [[ NPVertexBuffer alloc ] initWithName:@"SG" parent:self ];
-//    [ surfaceGeometry setPrimitiveType:NP_VBO_PRIMITIVES_TRIANGLES ];
+    //[ surfaceGeometry setPrimitiveType:NP_VBO_PRIMITIVES_TRIANGLES ];
 
     return self;
 }
@@ -378,13 +376,11 @@
     [ self calculateBasePlanePositions ];
 
     Int vertexCount = V_X(*currentResolution)*V_Y(*currentResolution);
-    [ surfaceGeometry setPositions:worldSpacePositions vertexCount:vertexCount ];
+    [ surfaceGeometry setPositions:worldSpacePositions elementsForPosition:3 vertexCount:vertexCount ];
 }
 
 - (void) render
 {
-    glColor3f(1.0f,0.0f,1.0f);
-
     //[ states activate ];
 
    [ surfaceGeometry render ];

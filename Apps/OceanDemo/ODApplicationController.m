@@ -91,6 +91,7 @@
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification
 {
+    NSLog(@"brak");
     [ NSApp setDelegate:nil ];
     //[ self autorelease ];
 }

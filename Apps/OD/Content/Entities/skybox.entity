@@ -1,0 +1,7 @@
+{
+    Name = "Skybox";
+    Model = "skybox.model";
+    States = "skybox.stateset";
+    Position = ( "0.5", "0", "0" );
+}
+ 
