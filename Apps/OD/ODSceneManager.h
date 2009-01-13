@@ -8,10 +8,16 @@
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 - (void) dealloc;
 
 - (id) loadSceneFromPath:(NSString *)path;
 - (id) loadSceneFromAbsolutePath:(NSString *)path;
+
+- (id) currentScene;
+- (void) setCurrentScene:(id)newCurrentScene;
+
+- (void) update;
+- (void) render;
 
 @end
