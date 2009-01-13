@@ -8,6 +8,7 @@ libNPEngineGraphics_SUBPROJECTS = \
 	Material \
 	Model \
 	RenderContext \
+    R2VB \
     RenderTarget \
     State \
     Viewport
@@ -16,7 +17,8 @@ libNPEngineGraphics_OBJC_FILES = \
 NPEngineGraphics.m
 
 libNPEngineGraphics_HEADER_FILES = \
-NPEngineGraphics.h
+NPEngineGraphics.h \
+NPEngineGraphicsConstants.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make

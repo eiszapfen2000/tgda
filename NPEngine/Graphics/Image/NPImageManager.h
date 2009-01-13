@@ -23,10 +23,10 @@
 
 - (id) loadImageFromPath:(NSString *)path;
 - (id) loadImageFromAbsolutePath:(NSString *)path;
-- (id) loadImageUsingFileHandle:(NPFile *)file;
 
 - (Int) calculateDataFormatByteCount:(NpState)dataFormat;
 - (Int) calculatePixelFormatChannelCount:(NpState)pixelFormat;
+- (Int) calculatePixelByteCountUsingDataFormat:(NpState)dataFormat pixelFormat:(NpState)pixelFormat;
 - (Int) calculateImageByteCount:(NPImage *)image;
 - (Int) calculateImageByteCountUsingWidth:(Int)width height:(Int)height pixelFormat:(NpState)pixelFormat dataFormat:(NpState)dataFormat;
 - (Int) calculateDevilPixelFormat:(NpState)pixelFormat;

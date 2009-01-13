@@ -1,3 +1,4 @@
+#import <AppKit/NSWindow.h>
 #import "NPWindowController.h"
 #import "NPOpenGLView.h"
 #import "NP.h"

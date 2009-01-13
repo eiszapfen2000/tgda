@@ -1,4 +1,4 @@
-#import <AppKit/AppKit.h>
+#import <AppKit/NSView.h>
 
 @class NPOpenGLRenderContext;
 

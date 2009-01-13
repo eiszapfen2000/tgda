@@ -1,4 +1,5 @@
-#import <AppKit/AppKit.h>
+#import <AppKit/NSApplication.h>
+#import <AppKit/NSEvent.h>
 #import <GNUstepGUI/GSServicesManager.h>
 
 @interface NPApplication : NSApplication

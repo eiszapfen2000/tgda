@@ -2,12 +2,6 @@
 #import "Core/File/NpFile.h"
 #import "Graphics/npgl.h"
 
-#define NP_CG_IMMEDIATE_SHADER_PARAMETER_UPDATE  0
-#define NP_CG_DEFERRED_SHADER_PARAMETER_UPDATE   1
-
-#define NP_CG_DEBUG_MODE_INACTIVE                0
-#define NP_CG_DEBUG_MODE_ACTIVE                  1
-
 @class NPEffect;
 
 @interface NPEffectManager : NPObject

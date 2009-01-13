@@ -63,7 +63,7 @@
 {
     NSString * absolutePath;
 
-    for ( Int i = 0; i < [ localPaths count ]; i++ )
+    for ( Int i = 0; i < (Int)[ localPaths count ]; i++ )
     {
         absolutePath = [[[ localPaths objectAtIndex:i ] stringByAppendingPathComponent:partialPath ] retain ];
 

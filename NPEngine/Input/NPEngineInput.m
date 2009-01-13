@@ -120,12 +120,12 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
     return objectID;
 }
 
-- (id) keyboard
+- (NPKeyboard *) keyboard
 {
     return keyboard;
 }
 
-- (id) mouse
+- (NPMouse *) mouse
 {
     return mouse;
 }

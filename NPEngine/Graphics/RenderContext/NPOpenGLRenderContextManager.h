@@ -26,7 +26,4 @@
 - (NPOpenGLRenderContext *) createRenderContextWithPixelFormat:(NPOpenGLPixelFormat *)pixelFormat andName:(NSString *)contextName;
 - (NPOpenGLRenderContext *) createRenderContextWithAttributes:(NPOpenGLPixelFormatAttributes)pixelFormatAttributes andName:(NSString *)contextName;
 
-- (void) activateRenderContext:(NPOpenGLRenderContext *)context;
-- (void) activateRenderContextWithName:(NSString *)contextName;
-
 @end

@@ -10,16 +10,15 @@
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 - (void) dealloc;
 
 - (NSString *) name;
-- (void) setName:(NSString *)newName;
-
-- (NPObject *) parent;
-- (void) setParent:(NPObject *)newParent;
-
+- (id <NPPObject>) parent;
 - (UInt32) objectID;
+
+- (void) setName:(NSString *)newName;
+- (void) setParent:(id <NPPObject>)newParent;
 
 - (void) addObject:(NSValue *)newObject;
 - (void) removeObject:(NSValue *)object;

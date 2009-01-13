@@ -39,7 +39,7 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    dataFormat = NP_NONE;
+    dataFormat  = NP_NONE;
     pixelFormat = NP_NONE;
     width = height = 0;
 
@@ -60,19 +60,14 @@
     return width;
 }
 
-- (void) setWidth:(Int)newWidth
-{
-    width = newWidth;
-}
-
 - (Int) height
 {
     return height;
 }
 
-- (void) setHeight:(Int)newHeight
+- (Int) pixelCount
 {
-    height = newHeight;
+    return width * height;
 }
 
 - (NpState) dataFormat
@@ -80,24 +75,34 @@
     return dataFormat;
 }
 
-- (void) setDataFormat:(NpState)newDataFormat
-{
-    dataFormat = newDataFormat;
-}
-
 - (NpState) pixelFormat
 {
     return pixelFormat;
 }
 
-- (void) setPixelFormat:(NpState)newPixelFormat
-{
-    pixelFormat = newPixelFormat;
-}
-
 - (NSData *) imageData
 {
     return imageData;
+}
+
+- (void) setWidth:(Int)newWidth
+{
+    width = newWidth;
+}
+
+- (void) setHeight:(Int)newHeight
+{
+    height = newHeight;
+}
+
+- (void) setDataFormat:(NpState)newDataFormat
+{
+    dataFormat = newDataFormat;
+}
+
+- (void) setPixelFormat:(NpState)newPixelFormat
+{
+    pixelFormat = newPixelFormat;
 }
 
 - (void) setImageData:(NSData *)newImageData
@@ -134,13 +139,11 @@
         return NO;
     }
 
-    Int devilFormat = [[[ NP Graphics ] imageManager ] calculateDevilPixelFormat:pixelFormat ];
-    Int devilType = [[[ NP Graphics ] imageManager ] calculateDevilDataType:dataFormat ];
-    Int dataFormatByteCount = [[[ NP Graphics ] imageManager ] calculateDataFormatByteCount:dataFormat ];
-    Int pixelFormatChannelCount = [[[ NP Graphics ] imageManager ] calculatePixelFormatChannelCount:pixelFormat ];
-    Int bpp = dataFormatByteCount * pixelFormatChannelCount;
-    ILboolean success = ilTexImage(width, height, 1, bpp, devilFormat, devilType, (ILvoid *)[imageData bytes]);
+    Int devilFormat   = [[[ NP Graphics ] imageManager ] calculateDevilPixelFormat:pixelFormat ];
+    Int devilType     = [[[ NP Graphics ] imageManager ] calculateDevilDataType:dataFormat ];
+    Int bytesPerPixel = [[[ NP Graphics ] imageManager ] calculatePixelByteCountUsingDataFormat:dataFormat pixelFormat:pixelFormat ];
 
+    ILboolean success = ilTexImage(width, height, 1, bytesPerPixel, devilFormat, devilType, (ILvoid *)[imageData bytes]);
     if ( !success )
     {
         ILenum error = ilGetError();
@@ -153,21 +156,21 @@
     return YES;
 }
 
-- (BOOL) loadFromFile:(NPFile *)file
+- (BOOL) loadFromPath:(NSString *)path
 {
-    return [ self loadFromFile:file withMipMaps:NO ];
+    return [ self loadFromPath:path withMipMaps:NO ];
 }
 
-- (BOOL) loadFromFile:(NPFile *)file withMipMaps:(BOOL)generateMipMaps
+- (BOOL) loadFromPath:(NSString *)path withMipMaps:(BOOL)generateMipMaps
 {
     [ self reset ];
 
-    [ self setFileName:[ file fileName ] ];
-    [ self setName:fileName ];
+    [ self setFileName:path ];
+    [ self setName:path ];
 
     UInt image = [ self prepareForProcessingWithDevil ];
 
-	ILboolean success = ilLoadImage( [ fileName cString ] );
+	ILboolean success = ilLoadImage( [ path cString ] );
     if ( !success )
     {
         ILenum error = ilGetError();
@@ -179,12 +182,13 @@
     }
 
 	// Get image information.
-	width = (Int)ilGetInteger(IL_IMAGE_WIDTH);
+	width  = (Int)ilGetInteger(IL_IMAGE_WIDTH);
 	height = (Int)ilGetInteger(IL_IMAGE_HEIGHT);
 
-	ILint type = ilGetInteger(IL_IMAGE_TYPE);
+	ILint type          = ilGetInteger(IL_IMAGE_TYPE);
+	ILint format        = ilGetInteger(IL_IMAGE_FORMAT);
 	ILint bytesperpixel = ilGetInteger(IL_IMAGE_BYTES_PER_PIXEL);
-	ILint format = ilGetInteger(IL_IMAGE_FORMAT);
+
 
 	// Convert RGB, BGR, or BGRA images to RGBA.
 	if ((type == IL_UNSIGNED_BYTE) && ((bytesperpixel == 3) || (format == IL_BGRA)))
@@ -198,12 +202,12 @@
 	{
 	    case IL_UNSIGNED_BYTE:
 		{
-            dataFormat = NP_IMAGE_DATAFORMAT_BYTE;
-			switch (bytesperpixel)
+            dataFormat = NP_GRAPHICS_IMAGE_DATAFORMAT_BYTE;
+			switch ( bytesperpixel )
 			{
-			    case 1: { pixelFormat = NP_IMAGE_PIXELFORMAT_R; break; }
-			    case 2: { pixelFormat = NP_IMAGE_PIXELFORMAT_RG; break; }
-			    case 4: { pixelFormat = NP_IMAGE_PIXELFORMAT_RGBA; break; }
+			    case 1: { pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_R;    break; }
+			    case 2: { pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_RG;   break; }
+			    case 4: { pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_RGBA; break; }
 			    default: { NPLOG_ERROR(@"Unknown number of bytes per pixel"); return NO; }
 			}
 
@@ -211,13 +215,13 @@
 		}
 	    case IL_FLOAT:
 		{
-            dataFormat = NP_IMAGE_DATAFORMAT_FLOAT;
+            dataFormat = NP_GRAPHICS_IMAGE_DATAFORMAT_FLOAT;
 			switch (bytesperpixel)
 			{
-			    case 1: { pixelFormat = NP_IMAGE_PIXELFORMAT_R; break; }
-			    case 2: { pixelFormat = NP_IMAGE_PIXELFORMAT_RG; break; }
-			    case 3: { pixelFormat = NP_IMAGE_PIXELFORMAT_RGB; break; }
-			    case 4: { pixelFormat = NP_IMAGE_PIXELFORMAT_RGBA; break; }
+			    case 1: { pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_R;    break; }
+			    case 2: { pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_RG;   break; }
+			    case 3: { pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_RGB;  break; }
+			    case 4: { pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_RGBA; break; }
 			    default: { NPLOG_ERROR(@"Unknown number of bytes per pixel"); return NO; }
 			}
 

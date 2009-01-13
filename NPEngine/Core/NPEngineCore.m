@@ -79,7 +79,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 
 - (void) dealloc
 {
-    NPLOG(@"Dealloc");
+    NPLOG(@"NP Engine Core Dealloc");
 
     [ transformationStateManager release ];
     [ randomNumberGeneratorManager release ];

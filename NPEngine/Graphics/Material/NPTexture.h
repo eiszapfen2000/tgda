@@ -2,7 +2,6 @@
 #import "Core/Resource/NPResource.h"
 #import "Graphics/npgl.h"
 
-
 @class NPFile;
 @class NPImage;
 

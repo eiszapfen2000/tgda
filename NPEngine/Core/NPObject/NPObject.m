@@ -15,7 +15,7 @@
     return [ self initWithName:newName parent:nil ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent
 {
     self = [ super init ];
 
@@ -25,10 +25,8 @@
     parent = newParent;
 
     objectID = crc32_of_pointer(self);
+
     pointer = [[ NSValue alloc ] initWithBytes:&self objCType:@encode(void *) ];
-
-//    NSLog(([NSString stringWithFormat:@"%@ register",name]));
-
     [[[ NPEngineCore instance ] objectManager ] addObject:pointer ];
 
     return self;
@@ -39,7 +37,6 @@
     [ name release ];
     parent = nil;
 
-//    NSLog(([NSString stringWithFormat:@"%@ deregister",name]));
     [[[ NPEngineCore instance ] objectManager ] removeObject:pointer ];
     [ pointer release ];
 
@@ -49,6 +46,16 @@
 - (NSString *) name
 {
     return name;
+}
+
+- (id <NPPObject>) parent
+{
+    return parent;
+}
+
+- (UInt32) objectID
+{
+    return objectID;
 }
 
 - (void) setName:(NSString *)newName
@@ -61,12 +68,7 @@
     }
 }
 
-- (NPObject *) parent
-{
-    return parent;
-}
-
-- (void) setParent:(NPObject *)newParent
+- (void) setParent:(id <NPPObject>)newParent
 {
     if ( parent != newParent )
     {
@@ -74,14 +76,9 @@
     }
 }
 
-- (UInt32) objectID
-{
-    return objectID;
-}
-
 - (NSString *) description
 {
-    return [ NSString stringWithFormat: @"ID:%ud %u Name:%@", objectID, [ self retainCount], name ];
+    return [ NSString stringWithFormat: @"ID:%ud retainCount:%u Name:%@ Class:%@", objectID, [ self retainCount], name, NSStringFromClass([self class]) ];
 }
 
 @end

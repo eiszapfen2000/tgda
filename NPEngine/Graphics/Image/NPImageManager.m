@@ -28,6 +28,7 @@
 
 - (void) dealloc
 {
+    [ images removeAllObjects ];
     [ images release ];
 
     [ super dealloc ];
@@ -69,9 +70,21 @@
 
         if ( image == nil )
         {
-            NPFile * file = [ [ NPFile alloc ] initWithName:path parent:self fileName:path ];
-            image = [ self loadImageUsingFileHandle:file ];
-            [ file release ];
+            NPImage * image = [[ NPImage alloc ] initWithName:@"" parent:self ];
+
+            if ( [ image loadFromPath:path ] == YES )
+            {
+                [ images setObject:image forKey:path ];
+                [ image release ];
+
+                return image;
+            }
+            else
+            {
+                [ image release ];
+
+                return nil;
+            }
         }
 
         return image;
@@ -80,33 +93,15 @@
     return nil;    
 }
 
-- (id) loadImageUsingFileHandle:(NPFile *)file
-{
-    NPImage * image = [ [ NPImage alloc ] initWithName:@"" parent:self ];
-
-    if ( [ image loadFromFile:file ] == YES )
-    {
-        [ images setObject:image forKey:[file fileName] ];
-        [ image release ];
-
-        return image;
-    }
-    else
-    {
-        [ image release ];
-
-        return nil;
-    }    
-}
-
 - (Int) calculateDataFormatByteCount:(NpState)dataFormat
 {
     Int dataFormatByteCount = 0;
     switch ( dataFormat )
     {
-        case NP_IMAGE_DATAFORMAT_BYTE:{dataFormatByteCount = 1; break;}
-        case NP_IMAGE_DATAFORMAT_HALF:{dataFormatByteCount = 2; break;}
-        case NP_IMAGE_DATAFORMAT_FLOAT:{dataFormatByteCount = 4; break;}
+        case NP_GRAPHICS_IMAGE_DATAFORMAT_BYTE :{ dataFormatByteCount = 1; break; }
+        case NP_GRAPHICS_IMAGE_DATAFORMAT_HALF :{ dataFormatByteCount = 2; break; }
+        case NP_GRAPHICS_IMAGE_DATAFORMAT_FLOAT:{ dataFormatByteCount = 4; break; }
+        default:{ NPLOG_ERROR(@"Unknown image data format"); break; }
     }
 
     return dataFormatByteCount;
@@ -117,13 +112,22 @@
     Int pixelFormatChannelCount = 0;
     switch ( pixelFormat )
     {
-        case NP_IMAGE_PIXELFORMAT_R:{pixelFormatChannelCount = 1; break;}
-        case NP_IMAGE_PIXELFORMAT_RG:{pixelFormatChannelCount = 2; break;}
-        case NP_IMAGE_PIXELFORMAT_RGB:{pixelFormatChannelCount = 3; break;}
-        case NP_IMAGE_PIXELFORMAT_RGBA:{pixelFormatChannelCount = 4; break;}
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_R   :{ pixelFormatChannelCount = 1; break; }
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RG  :{ pixelFormatChannelCount = 2; break; }
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RGB :{ pixelFormatChannelCount = 3; break; }
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RGBA:{ pixelFormatChannelCount = 4; break; }
+        default:{ NPLOG_ERROR(@"Unknown image pixel format"); break; }
     }
 
     return pixelFormatChannelCount;
+}
+
+- (Int) calculatePixelByteCountUsingDataFormat:(NpState)dataFormat pixelFormat:(NpState)pixelFormat
+{
+    Int dataFormatByteCount = [ self calculateDataFormatByteCount:dataFormat ];
+    Int channelCount = [ self calculatePixelFormatChannelCount:pixelFormat ];
+
+    return dataFormatByteCount * channelCount;
 }
 
 - (Int) calculateImageByteCount:(NPImage *)image
@@ -133,7 +137,7 @@
 
 - (Int) calculateImageByteCountUsingWidth:(Int)width height:(Int)height pixelFormat:(NpState)pixelFormat dataFormat:(NpState)dataFormat
 {
-    Int dataFormatSize = [ self calculateDataFormatByteCount:dataFormat ];
+    Int dataFormatSize  = [ self calculateDataFormatByteCount:dataFormat ];
     Int pixelFormatSize = [ self calculatePixelFormatChannelCount:pixelFormat ];
 
     return width*height*dataFormatSize*pixelFormatSize;
@@ -145,10 +149,11 @@
 
     switch ( pixelFormat )
     {
-        case NP_IMAGE_PIXELFORMAT_R: { devilFormat = IL_LUMINANCE; break; }
-        case NP_IMAGE_PIXELFORMAT_RG: { devilFormat = IL_LUMINANCE_ALPHA; break; }
-        case NP_IMAGE_PIXELFORMAT_RGB: { devilFormat = IL_RGB; break; }
-        case NP_IMAGE_PIXELFORMAT_RGBA: { devilFormat = IL_RGBA; break; }
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_R   : { devilFormat = IL_LUMINANCE;       break; }
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RG  : { devilFormat = IL_LUMINANCE_ALPHA; break; }
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RGB : { devilFormat = IL_RGB;             break; }
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RGBA: { devilFormat = IL_RGBA;            break; }
+        default: { NPLOG_ERROR(@"Unknown image pixel format"); break; }
     }
 
     return devilFormat;
@@ -160,9 +165,10 @@
 
     switch ( dataFormat )
     {
-        case NP_IMAGE_DATAFORMAT_BYTE: { devilType = IL_UNSIGNED_BYTE; break; }
-        case NP_IMAGE_DATAFORMAT_HALF: { devilType = IL_UNSIGNED_SHORT; break; }
-        case NP_IMAGE_DATAFORMAT_FLOAT: { devilType = IL_FLOAT; break; }
+        case NP_GRAPHICS_IMAGE_DATAFORMAT_BYTE : { devilType = IL_UNSIGNED_BYTE;  break; }
+        case NP_GRAPHICS_IMAGE_DATAFORMAT_HALF : { devilType = IL_UNSIGNED_SHORT; break; }
+        case NP_GRAPHICS_IMAGE_DATAFORMAT_FLOAT: { devilType = IL_FLOAT;          break; }
+        default: { NPLOG_ERROR(@"Unknown image data format"); break; }
     }
 
     return devilType;
@@ -172,7 +178,7 @@
 {
 	UInt image = [ sourceImage prepareForProcessingWithDevil ];
 
-    if (  [ sourceImage setupDevilImageData ] == NO )
+    if ( [ sourceImage setupDevilImageData ] == NO )
     {
         [ sourceImage endProcessingWithDevil:image ];
 

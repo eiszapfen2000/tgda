@@ -74,6 +74,10 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     stateConfiguration         = [[ NPStateConfiguration         alloc ] initWithName:@"NPEngine GPU States"              parent:self ];
     textureBindingStateManager = [[ NPTextureBindingStateManager alloc ] initWithName:@"NPEngine Texture Binding Manager" parent:self ];
 
+    renderTargetManager = [[ NPRenderTargetManager alloc ] initWithName:@"NPEngine Rendertarget Manager" parent:self ];
+    pixelBufferManager  = [[ NPPixelBufferManager  alloc ] initWithName:@"NPEngine Pixelbuffer Manager"  parent:self ];
+    r2vbManager =[[ NPR2VBManager alloc ] initWithName:@"NPEngine Render 2 Vertexbuffer Manager" parent:self ];
+
     cameraManager = [[ NPCameraManager alloc ] initWithName:@"NPEngine Camera Manager" parent:self ];
 
     ready = NO;
@@ -83,9 +87,12 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
 - (void) dealloc
 {
-    NPLOG(@"Dealloc");
+    NPLOG(@"NP Engine Graphics Dealloc");
 
     [ cameraManager release ];
+    [ r2vbManager release ];
+    [ pixelBufferManager release ];
+    [ renderTargetManager release ];
     [ modelManager release ];
     [ textureBindingStateManager release ];
     [ textureManager release ];
@@ -121,6 +128,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     [ imageManager   setup ];
     [ textureManager setup ];
     [ effectManager  setup ];
+    [ renderTargetManager setup ];
     [ textureBindingStateManager setup ];
     [ cameraManager setup ];
 
@@ -211,9 +219,34 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     return effectManager;
 }
 
+- (NPPixelBufferManager *) pixelBufferManager
+{
+    return pixelBufferManager;
+}
+
+- (NPRenderTargetManager *) renderTargetManager
+{
+    return renderTargetManager;
+}
+
+- (NPR2VBManager *) r2vbManager
+{
+    return r2vbManager;
+}
+
 - (NPCameraManager *) cameraManager
 {
     return cameraManager;
+}
+
+- (id) window
+{
+    return window;
+}
+
+- (void) setWindow:(id)newWindow
+{
+    window = newWindow;
 }
 
 - (void) render
