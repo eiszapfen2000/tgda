@@ -2,6 +2,7 @@
 
 #import "Graphics/npgl.h"
 #import "Graphics/Model/NPVertexBuffer.h"
+#import "Graphics/NPEngineGraphics.h"
 
 @implementation ODFrustum
 
@@ -15,7 +16,7 @@
     return [ self initWithName:newName parent:nil ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent
 {
     self =  [ super initWithName:newName parent:newParent ];
 
@@ -193,7 +194,7 @@
 
 - (void) render
 {
-    [ frustumGeometry renderWithPrimitiveType:NP_VBO_PRIMITIVES_LINES ];
+    [ frustumGeometry renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_LINES ];
 }
 
 @end

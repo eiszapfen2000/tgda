@@ -17,7 +17,7 @@
 	return [ self initWithName:@"OD Projector" parent:newParent ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent
 {
 	self = [ super initWithName:newName parent:newParent ];
 

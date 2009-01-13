@@ -29,9 +29,9 @@
 }
 
 - (id) init;
-- (id) initWithParent:(NPObject *)newParent;
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent resolution:(IVector2 *)newResolution ;
+- (id) initWithName:(NSString *)newName;
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent resolution:(IVector2 *)newResolution ;
 - (void) dealloc;
 
 - (IVector2 *) resolution;

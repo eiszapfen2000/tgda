@@ -13,10 +13,11 @@
     return [ self initWithName:newName parent:nil ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent
 {
     self =  [ super initWithName:newName parent:newParent ];
 
+    modelMatrix = fm4_alloc_init();
     position = fv3_alloc();
 
     return self;
@@ -34,18 +35,14 @@
 {
     config = [[ NSMutableDictionary alloc ] initWithContentsOfFile:path ];
 
-    NSString * entityName = [ config objectForKey:@"Name" ];
-    NSString * modelPath = [ config objectForKey:@"Model" ];
-    NSString * statesetPath = [ config objectForKey:@"States" ];
-    NSArray * positionStrings = [ config objectForKey:@"Position" ];
-
-    NSLog(@"%@",[positionStrings description]);
+    NSString * entityName      = [ config objectForKey:@"Name"     ];
+    NSString * modelPath       = [ config objectForKey:@"Model"    ];
+    NSString * statesetPath    = [ config objectForKey:@"States"   ];
+    NSArray  * positionStrings = [ config objectForKey:@"Position" ];
 
     V_X(*position) = [[ positionStrings objectAtIndex:0 ] floatValue ];
     V_Y(*position) = [[ positionStrings objectAtIndex:1 ] floatValue ];
     V_Z(*position) = [[ positionStrings objectAtIndex:2 ] floatValue ];
-
-    NSLog(@"%f %f %f",V_X(*position),V_Y(*position),V_Z(*position));
 
     if ( modelPath == nil || statesetPath == nil || entityName == nil )
     {
@@ -54,7 +51,7 @@
 
     [ self setName:entityName ];
 
-    model = [[[[ NP Graphics ] modelManager ] loadModelFromPath:modelPath ] retain ];
+    model    = [[[[ NP Graphics ] modelManager    ] loadModelFromPath:modelPath       ] retain ];
     stateset = [[[[ NP Graphics ] stateSetManager ] loadStateSetFromPath:statesetPath ] retain ];
 
     if ( model == nil || stateset == nil )
@@ -63,6 +60,30 @@
     }
 
     return YES;
+}
+
+- (FVector3 *) position
+{
+    return position;
+}
+
+- (void) setPosition:(FVector3 *)newPosition
+{
+    *position = *newPosition;
+}
+
+- (void) update
+{
+
+}
+
+- (void) render
+{
+    fm4_mv_translation_matrix(modelMatrix,position);
+    [[[[ NP Core ] transformationStateManager ] currentTransformationState ] setModelMatrix:modelMatrix ];
+
+    [ stateset activate ];
+    [ model render ];
 }
 
 @end

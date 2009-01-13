@@ -5,15 +5,15 @@
 
 - (id) init
 {
-	return [ self initWithParent:nil ];
+	return [ self initWithName:@"ODCamera" ];
 }
 
-- (id) initWithParent:(NPObject *)newParent
+- (id) initWithName:(NSString *)newName;
 {
-	return [ self initWithName:@"ODCamera" parent:newParent ];
+	return [ self initWithName:newName parent:nil ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 {
 	self = [ super initWithName:newName parent:newParent ];
 
@@ -34,10 +34,10 @@
     forward = fv3_alloc_init();
     V_Z(*forward) = -1.0;
 
-    forwardMovementAction  = [[[ NP Input ] inputActions ] addInputActionWithName:@"Forward" primaryInputAction:NP_INPUT_KEYBOARD_UP    ];
-    backwardMovementAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"Forward" primaryInputAction:NP_INPUT_KEYBOARD_DOWN  ];
-    strafeLeftAction       = [[[ NP Input ] inputActions ] addInputActionWithName:@"Forward" primaryInputAction:NP_INPUT_KEYBOARD_LEFT  ];
-    strafeRightAction      = [[[ NP Input ] inputActions ] addInputActionWithName:@"Forward" primaryInputAction:NP_INPUT_KEYBOARD_RIGHT ];
+    forwardMovementAction  = [[[ NP Input ] inputActions ] addInputActionWithName:@"Forward"     primaryInputAction:NP_INPUT_KEYBOARD_UP    ];
+    backwardMovementAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"Backward"    primaryInputAction:NP_INPUT_KEYBOARD_DOWN  ];
+    strafeLeftAction       = [[[ NP Input ] inputActions ] addInputActionWithName:@"StrafeLeft"  primaryInputAction:NP_INPUT_KEYBOARD_LEFT  ];
+    strafeRightAction      = [[[ NP Input ] inputActions ] addInputActionWithName:@"StrafeRight" primaryInputAction:NP_INPUT_KEYBOARD_RIGHT ];
 
 	return self;
 }
@@ -168,9 +168,9 @@
 
     Float frametime = (Float)[[[ NP Core ] timer ] frameTime ];
 
-    V_X(*position) += (forward->x * frametime);
-    V_Y(*position) += (forward->y * frametime);
-    V_Z(*position) += (forward->z * frametime);
+    V_X(*position) += (forward->x);// * frametime);
+    V_Y(*position) += (forward->y);// * frametime);
+    V_Z(*position) += (forward->z);// * frametime);
 }
 
 - (void) moveBackward
@@ -179,9 +179,9 @@
 
     Float frametime = (Float)[[[ NP Core ] timer ] frameTime ];
 
-    V_X(*position) -= (forward->x * frametime);
-    V_Y(*position) -= (forward->y * frametime);
-    V_Z(*position) -= (forward->z * frametime);
+    V_X(*position) -= (forward->x);// * frametime);
+    V_Y(*position) -= (forward->y);// * frametime);
+    V_Z(*position) -= (forward->z);// * frametime);
 }
 
 - (void) moveLeft
@@ -191,9 +191,9 @@
 
     Float frametime = (Float)[[[ NP Core ] timer ] frameTime ];
 
-    V_X(*position) -= (left.x * frametime);
-    V_Y(*position) -= (left.y * frametime);
-    V_Z(*position) -= (left.z * frametime);
+    V_X(*position) -= (left.x);// * frametime);
+    V_Y(*position) -= (left.y);// * frametime);
+    V_Z(*position) -= (left.z);// * frametime);
 }
 
 - (void) moveRight
@@ -203,9 +203,9 @@
 
     Float frametime = (Float)[[[ NP Core ] timer ] frameTime ];
 
-    V_X(*position) += (right.x * frametime);
-    V_Y(*position) += (right.y * frametime);
-    V_Z(*position) += (right.z * frametime);
+    V_X(*position) += (right.x );// * frametime);
+    V_Y(*position) += (right.y );// * frametime);
+    V_Z(*position) += (right.z );//* frametime);
 }
 
 - (void) updateProjection
@@ -267,12 +267,13 @@
 
     // rotation update
     id mouse = [[ NP Input ] mouse ];
-    Float deltaX = (Float)[ mouse deltaX ];
-    Float deltaY = (Float)[ mouse deltaY ];
+    Float deltaX = [ mouse deltaX ];
+    Float deltaY = [ mouse deltaY ];
+    //NSLog(@"%f %f",deltaX,deltaY);
 
     if ( deltaX != 0.0f || deltaY != 0.0f )
     {
-        [ self cameraRotateUsingYaw:-deltaX*0.2f andPitch:deltaY*0.2f ];
+        [ self cameraRotateUsingYaw:-deltaX*0.3f andPitch:deltaY*0.3f ];
     }
 
     // update matrices

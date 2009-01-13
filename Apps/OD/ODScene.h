@@ -1,8 +1,10 @@
 #import "Core/NPObject/NPObject.h"
 
+@class ODCamera;
+
 @interface ODScene : NPObject
 {
-    id camera;
+    ODCamera * camera;
     id projector;
     id skybox;
     id entities;
@@ -10,12 +12,13 @@
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent;
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 - (void) dealloc;
 
 - (BOOL) loadFromPath:(NSString *)path;
 
-- (void) setup;
+- (void) activate;
+- (void) deactivate;
 
 - (id) camera;
 - (id) projector;

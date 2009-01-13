@@ -4,9 +4,6 @@
 {
     id entityManager;
     id sceneManager;
-
-    double t0, t, dt;
-    int frames;
 }
 
 - (void) configureResourcePaths;

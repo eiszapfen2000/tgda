@@ -14,7 +14,7 @@
     return [ self initWithName:newName parent:nil ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent
 {
     self =  [ super initWithName:newName parent:newParent ];
 
@@ -26,6 +26,7 @@
 
 - (void) dealloc
 {
+    TEST_RELEASE(currentScene);
     [ scenes removeAllObjects ];
     [ scenes release ];
 
@@ -70,6 +71,26 @@
     }
 
     return nil;
+}
+
+- (id) currentScene
+{
+    return currentScene;
+}
+
+- (void) setCurrentScene:(id)newCurrentScene
+{
+    ASSIGN(currentScene,newCurrentScene);
+}
+
+- (void) update
+{
+    [ currentScene update ];
+}
+
+- (void) render
+{
+    [ currentScene render ];
 }
 
 @end

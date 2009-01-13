@@ -13,20 +13,20 @@
 
 - (id) init
 {
-    return [ self initWithParent:nil ];
+    return [ self initWithName:@"ODSurface" ];
 }
-- (id) initWithParent:(NPObject *)newParent
+- (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:@"OD Surface" parent:newParent ];
+    return [ self initWithName:newName parent:nil ];
 }
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent
 {
     IVector2 tmp;
     tmp.x = tmp.y = 512;
 
     return [ self initWithName:newName parent:newParent resolution:&tmp ];
 }
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent resolution:(IVector2 *)newResolution
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent resolution:(IVector2 *)newResolution
 {
     self = [ super initWithName:newName parent:newParent ];
 
