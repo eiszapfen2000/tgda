@@ -33,9 +33,13 @@
 {
 	[ materialFileName release ];
 	[ materialInstanceScript release ];
+    [ textureNameToSemantic removeAllObjects ];
 	[ textureNameToSemantic release ];
+	[ textureNameToTextureFileName removeAllObjects ];
 	[ textureNameToTextureFileName release ];
+	[ textureNameToTexture removeAllObjects ];
 	[ textureNameToTexture release ];
+	[ textureToSemantic removeAllObjects ];
 	[ textureToSemantic release ];
 	[ effect release ];
 
@@ -49,17 +53,13 @@
 
 - (void) setMaterialFileName:(NSString *)newMaterialFileName
 {
-    if ( materialFileName != newMaterialFileName )
-    {
-        [ materialFileName release ];
-        materialFileName = [ newMaterialFileName retain ];
-    }
+    ASSIGN(materialFileName,newMaterialFileName);
 }
 
 - (void) removeInvalidLinesFromMaterialInstanceScript
 {
     NSCharacterSet * set = [ NSCharacterSet whitespaceAndNewlineCharacterSet ];
-    NSMutableArray * validLines = [ [ NSMutableArray alloc ] init ];
+    NSMutableArray * validLines = [[ NSMutableArray alloc ] init ];
 
     NSEnumerator * enumerator = [ materialInstanceScript objectEnumerator ];
     NSString * materialInstanceScriptLine;

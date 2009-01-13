@@ -101,14 +101,4 @@
     return renderContext;
 }
 
-- (void) activateRenderContext:(NPOpenGLRenderContext *)context
-{
-    
-}
-
-- (void) activateRenderContextWithName:(NSString *)contextName
-{
-    [ [ renderContexts objectForKey:contextName ] activate ];
-}
-
 @end

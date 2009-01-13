@@ -1,18 +1,6 @@
 #import "Core/NPObject/NPObject.h"
 #import "Core/Resource/NPResource.h"
 
-#define NP_VBO_UPLOAD_ONCE_RENDER_OFTEN     0
-#define NP_VBO_UPLOAD_ONCE_RENDER_SELDOM    1
-#define NP_VBO_UPLOAD_OFTEN_RENDER_OFTEN    2
-
-#define NP_VBO_PRIMITIVES_POINTS            0
-#define NP_VBO_PRIMITIVES_LINES             1
-#define NP_VBO_PRIMITIVES_LINE_STRIP        3
-#define NP_VBO_PRIMITIVES_TRIANGLES         4
-#define NP_VBO_PRIMITIVES_TRIANGLE_STRIP    5
-#define NP_VBO_PRIMITIVES_QUADS             7
-#define NP_VBO_PRIMITIVES_QUAD_STRIP        8
-
 @class NPFile;
 
 typedef struct NpVertexFormat
@@ -72,6 +60,7 @@ void init_empty_npvertexbuffer(NpVertexBuffer * vertex_buffer);
 - (id) init;
 - (id) initWithParent:(id <NPPObject> )newParent;
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
+- (void) dealloc;
 
 - (BOOL) loadFromFile:(NPFile *)file;
 - (BOOL) saveToFile:(NPFile *)file;

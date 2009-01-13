@@ -1,29 +1,14 @@
 #import "Core/NPObject/NPObject.h"
 
-#define NP_RENDERBUFFER_DEPTH_TYPE          0
-#define NP_RENDERBUFFER_STENCIL_TYPE        1
-#define NP_RENDERBUFFER_DEPTH_STENCIL_TYPE  2
-
-#define NP_RENDERBUFFER_DEPTH16 		    0
-#define NP_RENDERBUFFER_DEPTH24 		    1
-#define NP_RENDERBUFFER_DEPTH32 		    2
-#define NP_RENDERBUFFER_STENCIL1            3
-#define NP_RENDERBUFFER_STENCIL4            4
-#define NP_RENDERBUFFER_STENCIL8            5
-#define NP_RENDERBUFFER_STENCIL16           6
-#define NP_RENDERBUFFER_DEPTH24_STENCIL8	7
-
 @class NPRenderTargetConfiguration;
 
 @interface NPRenderBuffer : NPObject
 {
 	UInt renderBufferID;
-
-    Int width;
-    Int height;
-
     NpState type;
 	NpState format;
+    Int width;
+    Int height;
 
     NPRenderTargetConfiguration * configuration;
 }
@@ -38,12 +23,13 @@
 - (void) generateGLRenderBufferID;
 
 - (Int) width;
-- (void) setWidth:(Int)newWidth;
 - (Int) height;
-- (void) setHeight:(Int)newHeight;
 - (NpState) type;
-- (void) setType:(NpState)newType;
 - (NpState) format;
+
+- (void) setWidth:(Int)newWidth;
+- (void) setHeight:(Int)newHeight;
+- (void) setType:(NpState)newType;
 - (void) setFormat:(NpState)newFormat;
 
 - (void) uploadToGL;

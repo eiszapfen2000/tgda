@@ -81,7 +81,6 @@
     {
         NPSUXModelLod * lod = [[ NPSUXModelLod alloc ] initWithParent:self ];
 
-
         if ( [ lod loadFromFile:file ] == YES )
         {
             [ lods addObject:lod ];
@@ -180,7 +179,7 @@
         return;
     }
 
-    [[lods objectAtIndex:0 ] render ];
+    [[ lods objectAtIndex:0 ] render ];
 }
 
 @end

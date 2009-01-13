@@ -3,15 +3,6 @@
 
 @class NPFile;
 
-#define    NP_IMAGE_DATAFORMAT_BYTE     0
-#define    NP_IMAGE_DATAFORMAT_HALF     1
-#define    NP_IMAGE_DATAFORMAT_FLOAT    2
-
-#define    NP_IMAGE_PIXELFORMAT_R       0
-#define    NP_IMAGE_PIXELFORMAT_RG      1
-#define    NP_IMAGE_PIXELFORMAT_RGB     2
-#define    NP_IMAGE_PIXELFORMAT_RGBA    3
-
 @interface NPImage : NPResource
 {
     NpState dataFormat;
@@ -35,24 +26,28 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
+- (void) reset;
+
 - (NpState) dataFormat;
-- (void) setDataFormat:(NpState)newDataFormat;
 - (NpState) pixelFormat;
-- (void) setPixelFormat:(NpState)newPixelFormat;
 - (Int) width;
-- (void) setWidth:(Int)newWidth;
 - (Int) height;
-- (void) setHeight:(Int)newHeight;
+- (Int) pixelCount;
 - (NSData *) imageData;
+
+- (void) setPixelFormat:(NpState)newPixelFormat;
+- (void) setDataFormat:(NpState)newDataFormat;
+- (void) setWidth:(Int)newWidth;
+- (void) setHeight:(Int)newHeight;
 - (void) setImageData:(NSData *)newImageData;
 
 - (UInt) prepareForProcessingWithDevil;
 - (void) endProcessingWithDevil:(UInt)image;
 - (BOOL) setupDevilImageData;
 
-- (BOOL) loadFromFile:(NPFile *)file;
-- (BOOL) loadFromFile:(NPFile *)file withMipMaps:(BOOL)generateMipMaps;
+- (BOOL) loadFromPath:(NSString *)path;
+- (BOOL) loadFromPath:(NSString *)path withMipMaps:(BOOL)generateMipMaps;
+
 - (BOOL) saveToFile:(NPFile *)file;
-- (void) reset;
 
 @end

@@ -1,4 +1,5 @@
-#import <AppKit/AppKit.h>
+#import <Foundation/Foundation.h>
+#import <AppKit/NSApplication.h>
 
 @interface NPApplicationController : NSObject
 {

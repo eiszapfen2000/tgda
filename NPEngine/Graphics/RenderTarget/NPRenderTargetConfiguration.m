@@ -25,6 +25,12 @@
 	width = height = -1;
 
 	colorTargets = [[ NSMutableArray alloc ] initWithCapacity:8 ];
+
+    for ( Int i = 0; i < 8; i++ )
+    {
+        [ colorTargets addObject:[NSNull null] ];
+    }
+
 	depth = stencil = nil;
 
 	ready = NO;
@@ -35,8 +41,6 @@
 - (void) dealloc
 {
 	[ colorTargets release ];
-	[ depth release ];
-    [ stencil release ];
 
 	glDeleteFramebuffersEXT(1, &fboID);
 
@@ -58,11 +62,43 @@
 	return ready;
 }
 
+- (UInt) colorBufferIndexForRenderTexture:(NPRenderTexture *)renderTexture
+{
+    return [ colorTargets indexOfObject:renderTexture ];
+}
+
+- (void) clear
+{
+    NSEnumerator * e = [ colorTargets objectEnumerator ];
+    id renderTarget;
+
+    while (( renderTarget = [ e nextObject ] ))
+    {
+        if ( renderTarget != [ NSNull null ] )
+        {
+            [ renderTarget unbindFromRenderTargetConfiguration ];
+        }
+    }
+
+    [ colorTargets removeAllObjects ];
+
+    if ( depth != nil )
+    {
+        [ depth unbindFromRenderTargetConfiguration ];
+        [ depth release ];
+    }
+
+    if ( stencil != nil )
+    {
+        [ stencil release ];
+    }
+}
+
 - (void) setDepthRenderTarget:(NPRenderBuffer *)newDepthRenderTarget
 {
     if ( depth != newDepthRenderTarget )
     {
-        if ( [ newDepthRenderTarget type ] == NP_RENDERBUFFER_DEPTH_TYPE )
+        if ( [ newDepthRenderTarget type ] == NP_GRAPHICS_RENDERBUFFER_DEPTH_TYPE )
         {
             TEST_RELEASE(depth);
             depth = [ newDepthRenderTarget retain ];
@@ -75,7 +111,7 @@
 {
     if ( stencil != newStencilRenderTarget )
     {
-        if ( [ newStencilRenderTarget type ] == NP_RENDERBUFFER_STENCIL_TYPE )
+        if ( [ newStencilRenderTarget type ] == NP_GRAPHICS_RENDERBUFFER_STENCIL_TYPE )
         {
             TEST_RELEASE(stencil);
             stencil = [ newStencilRenderTarget retain ];
@@ -88,7 +124,7 @@
 {
     if ( stencil != newDepthStencilRenderTarget && depth != newDepthStencilRenderTarget )
     {
-        if ( [ newDepthStencilRenderTarget type ] == NP_RENDERBUFFER_DEPTH_STENCIL_TYPE )
+        if ( [ newDepthStencilRenderTarget type ] == NP_GRAPHICS_RENDERBUFFER_DEPTH_STENCIL_TYPE )
         {
             TEST_RELEASE(depth);
             TEST_RELEASE(stencil);
@@ -101,10 +137,9 @@
 
 - (void) setColorRenderTarget:(NPRenderTexture *)newColorRenderTarget atIndex:(Int)colorBufferIndex
 {
-    if ( [ newColorRenderTarget type ] == NP_RENDERTEXTURE_COLOR_TYPE )
+    if ( [ newColorRenderTarget type ] == NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE )
     {
-        [ colorTargets insertObject:newColorRenderTarget atIndex:colorBufferIndex ];
-
+        [ colorTargets replaceObjectAtIndex:colorBufferIndex withObject:newColorRenderTarget ];
         [ newColorRenderTarget bindToRenderTargetConfiguration:self colorBufferIndex:colorBufferIndex ];
     }
 }
@@ -116,9 +151,9 @@
 
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboID);
 
-    for ( Int i = 0; i < [ colorTargets count ]; i++ )
+    for ( Int i = 0; i < (Int)[ colorTargets count ]; i++ )
     {
-        if ( [ colorTargets objectAtIndex:i ] != nil )
+        if ( [ colorTargets objectAtIndex:i ] != [ NSNull null ] )
         {
             buffers[bufferCount] = GL_COLOR_ATTACHMENT0_EXT + i;
             bufferCount++;

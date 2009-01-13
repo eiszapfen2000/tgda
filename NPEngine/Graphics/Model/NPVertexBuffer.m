@@ -1,7 +1,6 @@
 #import "NPVertexBuffer.h"
 #import "NP.h"
 
-
 void reset_npvertexformat(NpVertexFormat * vertex_format)
 {
     vertex_format->elementsForPosition = 3;
@@ -77,10 +76,10 @@ void reset_npvertices(NpVertices * vertices)
 void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 {
     vertex_buffer->hasVBO      = NO;
-    vertex_buffer->positionsID = -1;
-    vertex_buffer->normalsID   = -1;
-    vertex_buffer->colorsID    = -1;
-    vertex_buffer->weightsID   = -1;
+    vertex_buffer->positionsID = 0;
+    vertex_buffer->normalsID   = 0;
+    vertex_buffer->colorsID    = 0;
+    vertex_buffer->weightsID   = 0;
 
     for ( Int i = 0; i < 8; i++ )
     {
@@ -351,17 +350,17 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     switch( usage )
     {
-        case NP_VBO_UPLOAD_ONCE_RENDER_OFTEN:
+        case NP_GRAPHICS_VBO_UPLOAD_ONCE_RENDER_OFTEN:
         {
             vboUsage = GL_STATIC_DRAW;
             break;
         }
-        case NP_VBO_UPLOAD_ONCE_RENDER_SELDOM:
+        case NP_GRAPHICS_VBO_UPLOAD_ONCE_RENDER_SELDOM:
         {
             vboUsage = GL_STREAM_DRAW;
             break;
         }
-        case NP_VBO_UPLOAD_OFTEN_RENDER_OFTEN:
+        case NP_GRAPHICS_VBO_UPLOAD_OFTEN_RENDER_OFTEN:
         {
             vboUsage = GL_DYNAMIC_DRAW;
             break;
@@ -418,8 +417,8 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     if ( vertices.indexed == YES )
     {
         glGenBuffers(1, &(vertexBuffer.indicesID));
-        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.indicesID);
-        glBufferData(GL_ARRAY_BUFFER, indicesSize, vertices.indices, vboUsage);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexBuffer.indicesID);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesSize, vertices.indices, vboUsage);
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -437,7 +436,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
 - (void) deleteBuffer:(UInt)bufferID
 {
-    if ( bufferID > -1 )
+    if ( bufferID > 0 )
     {
         glDeleteBuffers(1,&bufferID);
     }

@@ -37,12 +37,10 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    width = height = -1;
-
     type = NP_NONE;
-
 	pixelFormat = NP_NONE;
     dataFormat = NP_NONE;
+    width = height = -1;
 
     configuration = nil;
     colorBufferIndex = -1;
@@ -54,6 +52,9 @@
 
 - (void) dealloc
 {
+    [ texture reset ];
+    [ texture release ];
+
     [ super dealloc ];
 }
 
@@ -62,25 +63,9 @@
     return width;
 }
 
-- (void) setWidth:(Int)newWidth
-{
-    if ( width != newWidth )
-    {
-        width = newWidth;
-    }
-}
-
 - (Int) height
 {
     return height;
-}
-
-- (void) setHeight:(Int)newHeight
-{
-    if ( height != newHeight )
-    {
-        height = newHeight;
-    }
 }
 
 - (NpState) type
@@ -88,25 +73,9 @@
     return type;
 }
 
-- (void) setType:(NpState)newType
-{
-    if ( type != newType )
-    {
-        type = newType;
-    }
-}
-
 - (NpState) pixelFormat
 {
     return pixelFormat;
-}
-
-- (void) setPixelFormat:(NpState)newPixelFormat
-{
-    if ( pixelFormat != newPixelFormat )
-    {
-        pixelFormat = newPixelFormat;
-    }
 }
 
 - (NpState) dataFormat
@@ -114,17 +83,39 @@
     return dataFormat;
 }
 
-- (void) setDataFormat:(NpState)newDataFormat
+- (void) setWidth:(Int)newWidth
 {
-    if ( dataFormat != newDataFormat )
-    {
-        dataFormat = newDataFormat;
-    }
+    width = newWidth;
 }
 
 - (NPTexture *)texture
 {
     return texture;
+}
+
+- (UInt) colorBufferIndex
+{
+    return [ configuration colorBufferIndexForRenderTexture:self ];
+}
+
+- (void) setHeight:(Int)newHeight
+{
+    height = newHeight;
+}
+
+- (void) setType:(NpState)newType
+{
+    type = newType;
+}
+
+- (void) setPixelFormat:(NpState)newPixelFormat
+{
+    pixelFormat = newPixelFormat;
+}
+
+- (void) setDataFormat:(NpState)newDataFormat
+{
+    dataFormat = newDataFormat;
 }
 
 - (void) createTexture

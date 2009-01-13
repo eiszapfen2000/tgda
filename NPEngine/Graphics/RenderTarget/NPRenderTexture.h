@@ -1,25 +1,18 @@
 #import "Core/NPObject/NPObject.h"
 
-#define NP_RENDERTEXTURE_COLOR_TYPE     0
-
-
 @class NPTexture;
 @class NPRenderTargetConfiguration;
 
 @interface NPRenderTexture : NPObject
 {
 	UInt renderTextureID;
-
-    NPTexture * texture;
-
+    NpState type;
+	NpState pixelFormat;
+    NpState dataFormat;
     Int width;
     Int height;
 
-    NpState type;
-
-	NpState pixelFormat;
-    NpState dataFormat;
-
+    NPTexture * texture;
     NPRenderTargetConfiguration * configuration;
     Int colorBufferIndex;
 
@@ -39,16 +32,18 @@
 - (void) dealloc;
 
 - (Int) width;
-- (void) setWidth:(Int)newWidth;
 - (Int) height;
-- (void) setHeight:(Int)newHeight;
 - (NpState) type;
-- (void) setType:(NpState)newType;
 - (NpState) pixelFormat;
-- (void) setPixelFormat:(NpState)newPixelFormat;
 - (NpState) dataFormat;
-- (void) setDataFormat:(NpState)newDataFormat;
 - (NPTexture *)texture;
+- (UInt) colorBufferIndex;
+
+- (void) setWidth:(Int)newWidth;
+- (void) setHeight:(Int)newHeight;
+- (void) setType:(NpState)newType;
+- (void) setPixelFormat:(NpState)newPixelFormat;
+- (void) setDataFormat:(NpState)newDataFormat;
 
 - (void) createTexture;
 

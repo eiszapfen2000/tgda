@@ -14,7 +14,7 @@
     return [ self initWithName:newName parent:nil ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(NPObject *)newParent
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent
 {
     self = [ super init ];
 
@@ -65,6 +65,16 @@
     return name;
 }
 
+- (id <NPPObject>) parent
+{
+    return parent;
+}
+
+- (UInt32) objectID
+{
+    return objectID;
+}
+
 - (void) setName:(NSString *)newName
 {
     if ( name != newName )
@@ -75,22 +85,12 @@
     }
 }
 
-- (NPObject *) parent
-{
-    return parent;
-}
-
-- (void) setParent:(NPObject *)newParent
+- (void) setParent:(id <NPPObject>)newParent
 {
     if ( parent != newParent )
     {
         parent = newParent;
     }
-}
-
-- (UInt32) objectID
-{
-    return objectID;
 }
 
 @end

@@ -38,6 +38,8 @@
     {
         glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&maxAnisotropy);
     }
+
+    glEnable(GL_TEXTURE_2D);
 }
 
 - (Int) maxAnisotropy

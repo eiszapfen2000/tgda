@@ -1,4 +1,6 @@
 #import <AppKit/NSEvent.h>
+#import <AppKit/NSWindow.h>
+#import <GNUstepGUI/GSDisplayServer.h>
 #import "Core/Basics/NpBasics.h"
 #import "NPInputConstants.h"
 #import "NPMouse.h"
@@ -10,8 +12,8 @@ void reset_mouse_state(NpMouseState * mouseState)
         mouseState->buttons[i] = NO;
     }
 
-    mouseState->deltaX = 0;
-    mouseState->deltaY = 0;
+    mouseState->x = 0.0f;
+    mouseState->y = 0.0f;
     mouseState->scrollWheel = 0;
 }
 
@@ -33,7 +35,8 @@ void reset_mouse_state(NpMouseState * mouseState)
 
     reset_mouse_state(&mouseState);
     scrollWheelLastFrame = 0;
-    deltaX = deltaY = 0;
+    x = y = 0.0f;
+    xLastFrame = yLastFrame = 0.0f;
 
     return self;
 }
@@ -43,20 +46,39 @@ void reset_mouse_state(NpMouseState * mouseState)
     [ super dealloc ];
 }
 
-- (Int) deltaX
+- (id) window
 {
-    return deltaX;
+    return window;
 }
 
-- (Int) deltaY
+- (void) setWindow:(id)newWindow
 {
-    return deltaY;
+    window = newWindow;
+
+    NSPoint mousePoint = [ window mouseLocationOutsideOfEventStream ];
+    //NSPoint newMousePoint = [ window convertScreenToBase:mousePoint ];
+    mouseState.x = mousePoint.x;
+    mouseState.y = mousePoint.y;
+    x = xLastFrame = mouseState.x;
+    y = yLastFrame = mouseState.y;
+    //NSLog(@"window %f %f",x,y);
+}
+
+- (Float) deltaX
+{
+    //NSLog(@"%f",(x - xLastFrame));
+    return x - xLastFrame;
+}
+
+- (Float) deltaY
+{
+    //NSLog(@"%f",(y - yLastFrame));
+    return y - yLastFrame;
 }
 
 - (void) processEvent:(NSEvent *)event
 {
-    //mouseState.deltaX = 0;
-    //mouseState.deltaY = 0;
+    mouseState.scrollWheel = 0;
 
     Int buttonIndex;
     switch ( [ event type ] )
@@ -101,8 +123,30 @@ void reset_mouse_state(NpMouseState * mouseState)
 
         case NSMouseMoved:
         {
-            mouseState.deltaX = (Int)[ event deltaX ];
-            mouseState.deltaY = (Int)[ event deltaY ];
+            /*mouseState.xLastFrame = mouseState.x;
+            mouseState.yLastFrame = mouseState.y;
+            //NSLog(@"%f %f",mouseState.x,mouseState.y);*/
+
+            NSPoint mouseLocationInWindow = [ event locationInWindow ];
+            //NSLog(@"Loc %f %f",mouseLocationInWindow.x,mouseLocationInWindow.y);
+            //NSLog(@"Delta %f %f",[ event deltaX ], [ event deltaY ]);
+            
+            mouseState.x = mouseLocationInWindow.x;
+            mouseState.y = mouseLocationInWindow.y;
+            //NSLog(@"moved %f %f",mouseState.x,mouseState.y);
+
+            /*if ( useLastFrameDeltas == NO )
+            {
+                mouseState.deltaXLastFrame = mouseState.deltaX;
+                mouseState.deltaYLastFrame = mouseState.deltaY;
+                mouseState.deltaX = mouseState.x - mouseState.xLastFrame;
+                mouseState.deltaY = mouseState.y - mouseState.yLastFrame;
+            }
+            else
+            {
+                mouseState.deltaX = mouseState.deltaXLastFrame;
+                mouseState.deltaY = mouseState.deltaYLastFrame;
+            }*/
             break;
         }
 
@@ -117,16 +161,37 @@ void reset_mouse_state(NpMouseState * mouseState)
         }
     }
 }
+- (void) setPosition:(NSPoint)newPosition
+{
+    /*mouseState.x = newPosition.x;
+    mouseState.y = newPosition.y;
+    mouseState.xLastFrame = newPosition.x;
+    mouseState.yLastFrame = newPosition.y;*/
+
+    //x = xLastFrame = newPosition.x;
+    //y = yLastFrame = newPosition.y;
+
+    if ( x > 800.0f || x <= 200.0f || y > 650.0f || y < 150.0f )
+    {
+        [ GSCurrentServer() setmouseposition:newPosition.x :newPosition.y :[ window windowNumber ] ];
+    }
+
+    //useLastFrameDeltas = YES;
+}
 
 - (void) update
 {
     scrollWheelLastFrame = mouseState.scrollWheel;
-    deltaX = mouseState.deltaX;
-    deltaY = mouseState.deltaY;
+    xLastFrame = x;
+    yLastFrame = y;
 
-    mouseState.scrollWheel = 0;
-    mouseState.deltaX = 0;
-    mouseState.deltaY = 0;
+    x = mouseState.x;
+    y = mouseState.y;
+
+    /*NSPoint mousePoint = [ window mouseLocationOutsideOfEventStream ];
+    x = mousePoint.x;
+    y = mousePoint.y;*/
+    //NSLog(@"%f %f",x,y);
 }
 
 - (BOOL) isAnyButtonPressed

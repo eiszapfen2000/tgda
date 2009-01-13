@@ -1,3 +1,7 @@
+#import <Foundation/NSBundle.h>
+#import <GNUstepGUI/GSDisplayServer.h>
+#import <AppKit/NSWindow.h>
+#import <AppKit/NSScreen.h>
 #import "NPApplicationController.h"
 #import "NP.h"
 
@@ -59,6 +63,11 @@
     [ window setReleasedWhenClosed:YES ];
     [ window makeKeyAndOrderFront:nil ];
 
+    [[[ NP Input ] mouse ] setWindow:window ];
+
+//    [ GSCurrentServer() setmouseposition:600 :300 :[ window windowNumber ] ];
+//    [ NSCursor hide ];
+
     // Create the opengl view which contains the rendering context
     NPOpenGLView * view = [[ NPOpenGLView alloc ] initWithFrame:windowRect ];
     [ window setContentView:view ];
@@ -72,6 +81,8 @@
 
     [ window makeFirstResponder:view ];
     [ window setIgnoresMouseEvents:YES ];
+
+    [[ NP Graphics ] setWindow:window ];
 }
 
 @end

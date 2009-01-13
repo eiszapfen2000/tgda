@@ -39,11 +39,12 @@
     boundingBoxMaximum = fv3_free(boundingBoxMaximum);
 
     [ vertexBuffer release ];
+
+    [ groups removeAllObjects ];
     [ groups release ];
 
     [ super dealloc ];
 }
-
 
 - (BOOL) loadFromFile:(NPFile *)file
 {
@@ -176,7 +177,7 @@
         return;
     }
 
-    [ vertexBuffer uploadVBOWithUsageHint:NP_VBO_UPLOAD_ONCE_RENDER_OFTEN ];
+    [ vertexBuffer uploadVBOWithUsageHint:NP_GRAPHICS_VBO_UPLOAD_ONCE_RENDER_OFTEN ];
 }
 
 - (void) render

@@ -22,10 +22,12 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
-- (BOOL) ready;
+- (void) clear;
 
 - (void) generateGLFBOID;
+- (BOOL) ready;
 - (UInt) fboID;
+- (UInt) colorBufferIndexForRenderTexture:(NPRenderTexture *)renderTexture;
 
 - (void) setDepthRenderTarget:(NPRenderBuffer *)newDepthRenderTarget;
 - (void) setStencilRenderTarget:(NPRenderBuffer *)newStencilRenderTarget;

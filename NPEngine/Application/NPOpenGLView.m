@@ -1,3 +1,4 @@
+#import <AppKit/NSOpenGL.h>
 #import "NPOpenGLView.h"
 #import "NP.h"
 
@@ -54,14 +55,6 @@
 - (void) update
 {
     [ renderContext update ];
-}
-
-/*- (void)rightMouseDown:(NSEvent *)theEvent
-{
-}*/
-
-- (void) drawRect:(NSRect)aRect
-{
 }
 
 @end
