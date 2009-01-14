@@ -47,6 +47,81 @@
     return maxAnisotropy;
 }
 
+- (GLenum) computeGLDataFormat:(NpState)dataFormat
+{
+    GLenum gldataformat = 0;
+
+    switch ( dataFormat )
+    {
+        case ( NP_GRAPHICS_TEXTURE_DATAFORMAT_BYTE ) :{ gldataformat = GL_UNSIGNED_BYTE;  break; }
+        case ( NP_GRAPHICS_TEXTURE_DATAFORMAT_HALF ) :{ gldataformat = GL_HALF_FLOAT_ARB; break; }
+        case ( NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT ):{ gldataformat = GL_FLOAT;          break; }
+    }
+
+    return gldataformat;
+}
+
+- (GLenum) computeGLPixelFormat:(NpState)pixelFormat
+{
+    GLenum glpixelformat = 0;
+
+    switch ( pixelFormat )
+    {
+        case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_R )    : { glpixelformat = GL_LUMINANCE;       break; }
+        case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RG )   : { glpixelformat = GL_LUMINANCE_ALPHA; break; }
+        case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGB )  : { glpixelformat = GL_RGB;             break; }
+        case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ) : { glpixelformat = GL_RGBA;            break; }
+    }
+
+    return glpixelformat;
+}
+
+- (GLint) computeGLInternalTextureFormatUsingDataFormat:(NpState)dataFormat pixelFormat:(NpState)pixelFormat
+{
+    GLint glinternalformat = 0;
+
+    switch ( dataFormat )
+    {
+        case ( NP_GRAPHICS_TEXTURE_DATAFORMAT_BYTE ):
+        {
+            switch ( pixelFormat )
+            {
+                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_R )    : { glinternalformat = GL_LUMINANCE;       break; }
+                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RG )   : { glinternalformat = GL_LUMINANCE_ALPHA; break; }
+                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGB )  : { glinternalformat = GL_RGB;             break; }
+                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ) : { glinternalformat = GL_RGBA;            break; }
+            }
+            break;
+        }
+
+        case ( NP_GRAPHICS_TEXTURE_DATAFORMAT_HALF ):
+        {
+            switch ( pixelFormat )
+            {
+                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_R )    : { glinternalformat = GL_LUMINANCE16F_ARB;       break; }
+                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RG )   : { glinternalformat = GL_LUMINANCE_ALPHA16F_ARB; break; }
+                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGB )  : { glinternalformat = GL_RGB16F_ARB;             break; }
+                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ) : { glinternalformat = GL_RGBA16F_ARB;            break; }
+            }
+            break;
+        }
+
+        case ( NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT ):
+        {
+            switch ( pixelFormat )
+            {
+                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_R )    : { glinternalformat = GL_LUMINANCE32F_ARB;       break; }
+                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RG )   : { glinternalformat = GL_LUMINANCE_ALPHA32F_ARB; break; }
+                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGB )  : { glinternalformat = GL_RGB32F_ARB;             break; }
+                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ) : { glinternalformat = GL_RGBA32F_ARB;            break; }
+            }
+            break;
+        }
+    }
+
+    return glinternalformat;
+}
+
 - (id) loadTextureFromPath:(NSString *)path
 {
     NSString * absolutePath = [[[ NP Core ] pathManager ] getAbsoluteFilePath:path ];

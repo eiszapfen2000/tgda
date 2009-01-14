@@ -17,6 +17,10 @@
 
 - (Int) maxAnisotropy;
 
+- (GLenum) computeGLDataFormat:(NpState)dataFormat;
+- (GLenum) computeGLPixelFormat:(NpState)pixelFormat;
+- (GLint)  computeGLInternalTextureFormatUsingDataFormat:(NpState)dataFormat pixelFormat:(NpState)pixelFormat;
+
 - (id) loadTextureFromPath:(NSString *)path;
 - (id) loadTextureFromAbsolutePath:(NSString *)path;
 - (id) loadTextureUsingFileHandle:(NPFile *)file;
