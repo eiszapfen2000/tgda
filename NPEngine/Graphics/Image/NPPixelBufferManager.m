@@ -79,10 +79,9 @@
     return glframebuffer;
 }
 
-- (NPPixelBuffer *) createPBOUsingImage:(NPImage *)image
+- (NPPixelBuffer *) createPBOCompatibleWithImage:(NPImage *)image
 {
     NSString * pboName = [ NSString stringWithFormat:@"PBOFrom%@", [ image name ]];
-
     NPPixelBuffer * pixelBuffer = [[ NPPixelBuffer alloc ] initWithName:pboName
                                                                  parent:self
                                                                    mode:NP_GRAPHICS_PBO_AS_DATA_SOURCE
@@ -91,17 +90,14 @@
                                                                dataType:[image dataFormat]
                                                             pixelFormat:[image pixelFormat]
                                                                   usage:NP_GRAPHICS_PBO_UPLOAD_ONCE_USE_OFTEN ];
-
-    [ pixelBuffer uploadToGLUsingData:[image imageData]];
     [ pixelBuffers addObject:pixelBuffer ];    
 
     return [ pixelBuffer autorelease ];
 }
 
-- (NPPixelBuffer *) createPBOUsingRenderTexture:(NPRenderTexture *)renderTexture
+- (NPPixelBuffer *) createPBOCompatibleWithRenderTexture:(NPRenderTexture *)renderTexture
 {
     NSString * pboName = [ NSString stringWithFormat:@"PBOFrom%@", [ renderTexture name ]];
-
     NPPixelBuffer * pixelBuffer = [[ NPPixelBuffer alloc ] initWithName:pboName
                                                                  parent:self
                                                                    mode:NP_GRAPHICS_PBO_AS_DATA_SOURCE
@@ -110,11 +106,77 @@
                                                                dataType:[renderTexture dataFormat]
                                                             pixelFormat:[renderTexture pixelFormat]
                                                                   usage:NP_GRAPHICS_PBO_UPLOAD_ONCE_USE_OFTEN ];
-
-    //[ pixelBuffer uploadToGLUsingData:[image imageData]];
     [ pixelBuffers addObject:pixelBuffer ];    
 
     return [ pixelBuffer autorelease ];
 }
+
+- (NPPixelBuffer *) createPBOCompatibleWithFramebuffer
+{
+    IVector2 nativeViewport = [[[[ NP Graphics ] viewportManager ] nativeViewport ] viewportSize ];
+    NPPixelBuffer * pixelBuffer = [[ NPPixelBuffer alloc ] initWithName:@"PBOFromFramebuffer"
+                                                                 parent:self
+                                                                   mode:NP_GRAPHICS_PBO_AS_DATA_SOURCE
+                                                                  width:nativeViewport.x
+                                                                 height:nativeViewport.y
+                                                               dataType:NP_GRAPHICS_PBO_DATAFORMAT_BYTE
+                                                            pixelFormat:NP_GRAPHICS_PBO_PIXELFORMAT_RGBA
+                                                                  usage:NP_GRAPHICS_PBO_UPLOAD_ONCE_USE_OFTEN ];
+    [ pixelBuffers addObject:pixelBuffer ];    
+
+    return [ pixelBuffer autorelease ];
+}
+
+- (void) copyImage:(NPImage *)image toPBO:(NPPixelBuffer *)pbo
+{
+    if ( [ pbo isCompatibleWithImage:image ] == YES )
+    {
+        [ pbo uploadToGLUsingData:[image imageData]];
+    }
+}
+
+- (void) copyRenderTexture:(NPRenderTexture *)renderTexture toPBO:(NPPixelBuffer *)pbo
+{
+    if ( [ pbo isCompatibleWithRenderTexture:renderTexture ] == YES )
+    {
+        NpState colorbuffer = (NpState)[ renderTexture colorBufferIndex ];
+        GLenum glcolorbuffer = [ self computeGLColorBuffer:colorbuffer ];
+        glReadBuffer(glcolorbuffer);
+
+        GLenum gldataformat  = [[[ NP Graphics ] textureManager ] computeGLDataFormat :[renderTexture dataFormat ]];
+        GLenum glpixelformat = [[[ NP Graphics ] textureManager ] computeGLPixelFormat:[renderTexture pixelFormat]];
+
+        [ pbo activateForWriting ];
+        glReadPixels(0, 0, [pbo width], [pbo height], glpixelformat, gldataformat, 0);
+        [ pbo deactivate ];
+
+        glReadBuffer(GL_NONE);
+    }
+}
+
+- (void) copyFramebuffer:(NpState)framebuffer toPBO:(NPPixelBuffer *)pbo
+{
+    if ( [ pbo isCompatibleWithFramebuffer ] == YES )
+    {
+        GLenum glframebuffer = [ self computeGLFrameBuffer:framebuffer ];
+        glReadBuffer(glframebuffer);
+
+        [ pbo activateForWriting ];
+        glReadPixels(0, 0, [pbo width], [pbo height], GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        [ pbo deactivate ];
+
+        glReadBuffer(GL_NONE);
+    }
+}
+
+- (void) copyPBO:(NPPixelBuffer *)pbo toTexture:(NPTexture *)texture
+{
+    if ( [ pbo isCompatibleWithTexture:texture ] == YES )
+    {
+        [ pbo activateForReading ];
+        [ pbo deactivate ];
+    }
+}
+
 
 @end

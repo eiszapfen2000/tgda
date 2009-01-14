@@ -73,6 +73,51 @@
     pixelFormat = NP_NONE;
 }
 
+- (Int) width
+{
+    return width;
+}
+
+- (Int) height
+{
+    return height;
+}
+
+- (BOOL) isCompatibleWithImage:(NPImage *)image
+{
+    return ( (dataType    != [image dataFormat])  ||
+             (pixelFormat != [image pixelFormat]) ||
+             (width       != [image width])       ||
+             (height      != [image height]) );
+}
+
+- (BOOL) isCompatibleWithRenderTexture:(NPRenderTexture *)renderTexture
+{
+    return ( (dataType    != [renderTexture dataFormat])  || 
+             (pixelFormat != [renderTexture pixelFormat]) ||
+             (width       != [renderTexture width])       ||
+             (height      != [renderTexture height]) );
+}
+
+- (BOOL) isCompatibleWithTexture:(NPTexture *)texture
+{
+    return ( (dataType    != [texture dataFormat])  || 
+             (pixelFormat != [texture pixelFormat]) ||
+             (width       != [texture width])       ||
+             (height      != [texture height]) );
+}
+
+- (BOOL) isCompatibleWithFramebuffer
+{
+    IVector2 nativeViewport = [[[[ NP Graphics ] viewportManager ] nativeViewport ] viewportSize ];
+
+    return ( (dataType    != NP_GRAPHICS_PBO_DATAFORMAT_BYTE)  || 
+             (pixelFormat != NP_GRAPHICS_PBO_PIXELFORMAT_RGBA) ||
+             (width       != nativeViewport.x)                 ||
+             (height      != nativeViewport.y) );
+}
+
+
 - (GLenum) calculatePBOTarget
 {
     GLenum target = 0;

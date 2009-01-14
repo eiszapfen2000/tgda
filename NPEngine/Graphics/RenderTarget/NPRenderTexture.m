@@ -2,6 +2,7 @@
 #import "NPRenderTargetConfiguration.h"
 #import "Graphics/Material/NPTexture.h"
 #import "Graphics/npgl.h"
+#import "Graphics/NPEngineGraphicsConstants.h"
 
 @implementation NPRenderTexture
 
@@ -132,11 +133,11 @@
     [ texture setHeight:height ];
     [ texture setDataFormat:dataFormat ];
     [ texture setPixelFormat:pixelFormat ];
-    [ texture setMipMapping:NP_TEXTURE_FILTER_MIPMAPPING_INACTIVE ];
-    [ texture setTextureMinFilter:NP_TEXTURE_FILTER_NEAREST ];
-    [ texture setTextureMagFilter:NP_TEXTURE_FILTER_NEAREST ];
-    [ texture setTextureWrapS:NP_TEXTURE_WRAPPING_CLAMP ];
-    [ texture setTextureWrapT:NP_TEXTURE_WRAPPING_CLAMP ];
+    [ texture setMipMapping:NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE ];
+    [ texture setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    [ texture setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    [ texture setTextureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
+    [ texture setTextureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
     [ texture uploadToGLWithoutImageData ];
 
     renderTextureID = [ texture textureID ];

@@ -123,6 +123,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         NPLOG(@"Rendercontext available");
     }
 
+    [[ viewportManager nativeViewport  ] setViewportSize:viewportSize ];
     [[ viewportManager currentViewport ] setViewportSize:viewportSize ];
 
     [ imageManager   setup ];
@@ -150,17 +151,16 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     if ( name != newName )
     {
         [ name release ];
-
         name = [ newName retain ];
     }
 }
 
-- (NPObject *) parent
+- (id <NPPObject>) parent
 {
     return nil;
 }
 
-- (void) setParent:(NPObject *)newParent
+- (void) setParent:(id <NPPObject>)newParent
 {
 }
 
@@ -237,16 +237,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 - (NPCameraManager *) cameraManager
 {
     return cameraManager;
-}
-
-- (id) window
-{
-    return window;
-}
-
-- (void) setWindow:(id)newWindow
-{
-    window = newWindow;
 }
 
 - (void) render

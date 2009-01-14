@@ -51,8 +51,6 @@
     NPR2VBManager * r2vbManager;
     NPCameraManager * cameraManager;
 
-    id window;
-
     BOOL ready;
 }
 
@@ -66,10 +64,11 @@
 - (void) setupWithViewportSize:(IVector2)viewportSize;
 
 - (NSString *) name;
-- (void) setName:(NSString *)newName;
-- (NPObject *) parent;
-- (void) setParent:(NPObject *)newParent;
+- (id <NPPObject>) parent;
 - (UInt32) objectID;
+
+- (void) setName:(NSString *)newName;
+- (void) setParent:(id <NPPObject>)newParent;
 
 - (BOOL) ready;
 
@@ -86,9 +85,6 @@
 - (NPPixelBufferManager *) pixelBufferManager;
 - (NPR2VBManager *) r2vbManager;
 - (NPCameraManager *) cameraManager;
-
-- (id) window;
-- (void) setWindow:(id)newWindow;
 
 - (void) render;
 
