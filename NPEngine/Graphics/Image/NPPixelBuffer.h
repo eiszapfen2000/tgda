@@ -1,6 +1,8 @@
 #import "Core/NPObject/NPObject.h"
 
 @class NPImage;
+@class NPTexture;
+@class NPRenderTexture;
 
 @interface NPPixelBuffer : NPObject
 {
@@ -29,6 +31,14 @@
 - (void) dealloc;
 
 - (void) reset;
+
+- (Int) width;
+- (Int) height;
+
+- (BOOL) isCompatibleWithImage:(NPImage *)image;
+- (BOOL) isCompatibleWithRenderTexture:(NPRenderTexture *)renderTexture;
+- (BOOL) isCompatibleWithTexture:(NPTexture *)texture;
+- (BOOL) isCompatibleWithFramebuffer;
 
 - (void) generateGLBufferID;
 - (void) uploadToGLWithoutData;

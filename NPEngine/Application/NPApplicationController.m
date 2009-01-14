@@ -82,7 +82,7 @@
     [ window makeFirstResponder:view ];
     [ window setIgnoresMouseEvents:YES ];
 
-    [[ NP Graphics ] setWindow:window ];
+    //[[ NP Graphics ] setWindow:window ];
 }
 
 @end
