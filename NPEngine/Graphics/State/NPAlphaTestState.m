@@ -15,7 +15,7 @@
 
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
 {
-    return [ self initWithName:newName parent:nil configuration:nil ];
+    return [ self initWithName:newName parent:newParent configuration:nil ];
 }
 
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent configuration:(NPStateConfiguration *)newConfiguration
