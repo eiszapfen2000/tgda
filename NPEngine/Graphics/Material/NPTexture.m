@@ -295,9 +295,13 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 
 - (void) updateGLTextureState
 {
+    glBindTexture(GL_TEXTURE_2D,textureID);
+
     [ self updateGLTextureFilterState ];
     [ self updateGLTextureAnisotropy ];
     [ self updateGLTextureWrapState ];
+
+    glBindTexture(GL_TEXTURE_2D,0);
 }
 
 @end
