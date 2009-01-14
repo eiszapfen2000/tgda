@@ -5,39 +5,6 @@
 @class NPFile;
 @class NPImage;
 
-/*#define NP_TEXTURE_DATAFORMAT_BYTE                  0
-#define NP_TEXTURE_DATAFORMAT_HALF                  1
-#define NP_TEXTURE_DATAFORMAT_FLOAT                 2
-
-#define NP_TEXTURE_PIXELFORMAT_R                    0
-#define NP_TEXTURE_PIXELFORMAT_RG                   1
-#define NP_TEXTURE_PIXELFORMAT_RGB                  2
-#define NP_TEXTURE_PIXELFORMAT_RGBA                 3
-
-#define NP_TEXTURE_FILTER_MIPMAPPING_INACTIVE       0
-#define NP_TEXTURE_FILTER_MIPMAPPING_ACTIVE         1
-
-#define NP_TEXTURE_FILTER_NEAREST                   0
-#define NP_TEXTURE_FILTER_LINEAR                    1
-#define NP_TEXTURE_FILTER_NEAREST_MIPMAP_NEAREST    2
-#define NP_TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST     3
-#define NP_TEXTURE_FILTER_NEAREST_MIPMAP_LINEAR     4
-#define NP_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR      5
-
-#define NP_TEXTURE_WRAP_S                           0
-#define NP_TEXTURE_WRAP_T                           1
-
-#define NP_TEXTURE_WRAPPING_CLAMP                   0
-#define NP_TEXTURE_WRAPPING_CLAMP_TO_EDGE           1
-#define NP_TEXTURE_WRAPPING_CLAMP_TO_BORDER         2
-#define NP_TEXTURE_WRAPPING_REPEAT                  3
-
-#define NP_TEXTURE_FILTER_ANISOTROPY_1X             1
-#define NP_TEXTURE_FILTER_ANISOTROPY_2X             2
-#define NP_TEXTURE_FILTER_ANISOTROPY_4X             4
-#define NP_TEXTURE_FILTER_ANISOTROPY_8X             8
-#define NP_TEXTURE_FILTER_ANISOTROPY_16X            16*/
-
 typedef struct NpTextureFilterState
 {
     NpState mipmapping;

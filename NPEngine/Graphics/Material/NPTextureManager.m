@@ -169,4 +169,38 @@
     }    
 }
 
+- (id) createTextureWithName:(NSString *)textureName
+                       width:(Int)width 
+                      height:(Int)height
+                  dataFormat:(NpState)dataFormat
+                 pixelFormat:(NpState)pixelFormat
+
+{
+    return [ self createTextureWithName:textureName
+                                  width:width
+                                 height:height
+                             dataFormat:dataFormat
+                            pixelFormat:pixelFormat
+                             mipMapping:NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE ];
+}
+
+- (id) createTextureWithName:(NSString *)textureName
+                       width:(Int)width 
+                      height:(Int)height
+                  dataFormat:(NpState)dataFormat
+                 pixelFormat:(NpState)pixelFormat
+                  mipMapping:(NpState)mipMapping
+{
+    NPTexture * texture = [[ NPTexture alloc ] initWithName:textureName parent:self ];
+    [ texture setWidth:width ];
+    [ texture setHeight:height ];
+    [ texture setDataFormat:dataFormat ];
+    [ texture setPixelFormat:pixelFormat ];
+    [ texture setMipMapping:mipMapping ];
+
+    [ textures setObject:texture forKey:textureName ];
+
+    return [ texture autorelease ];
+}
+
 @end

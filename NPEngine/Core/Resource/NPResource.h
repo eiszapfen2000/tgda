@@ -15,7 +15,7 @@
 - (void) setFileName:(NSString *)newFileName;
 - (NSString *)fileName;
 
-- (BOOL) loadFromFile:(NPFile *)file;
+- (BOOL) loadFromPath:(NSString *)path;
 - (void) reset;
 - (BOOL) ready;
 

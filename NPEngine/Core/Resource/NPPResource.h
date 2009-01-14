@@ -2,7 +2,7 @@
 
 @protocol NPPResource
 
-- (BOOL) loadFromFile:(NPFile *)file;
+- (BOOL) loadFromPath:(NSString *)path;
 - (BOOL) saveToFile:(NPFile *)file;
 - (void) reset;
 - (BOOL) ready;

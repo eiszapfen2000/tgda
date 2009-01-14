@@ -25,4 +25,19 @@
 - (id) loadTextureFromAbsolutePath:(NSString *)path;
 - (id) loadTextureUsingFileHandle:(NPFile *)file;
 
+- (id) createTextureWithName:(NSString *)textureName
+                       width:(Int)width 
+                      height:(Int)height
+                  dataFormat:(NpState)dataFormat
+                 pixelFormat:(NpState)pixelFormat
+                             ;
+
+- (id) createTextureWithName:(NSString *)textureName
+                       width:(Int)width 
+                      height:(Int)height
+                  dataFormat:(NpState)dataFormat
+                 pixelFormat:(NpState)pixelFormat
+                  mipMapping:(NpState)mipMapping
+                             ;
+
 @end
