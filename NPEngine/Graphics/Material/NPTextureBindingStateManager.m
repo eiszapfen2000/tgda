@@ -57,9 +57,8 @@
 {
     NPTextureBindingState * textureBindingState = [ [ NPTextureBindingState alloc ] initWithName:@"" parent:self ];
     [ textureBindingStates addObject:textureBindingState ];
-    [ textureBindingState release ];
 
-    return textureBindingState;
+    return [ textureBindingState autorelease ];
 }
 
 @end

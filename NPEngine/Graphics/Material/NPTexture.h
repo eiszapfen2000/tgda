@@ -5,7 +5,7 @@
 @class NPFile;
 @class NPImage;
 
-#define NP_TEXTURE_DATAFORMAT_BYTE                  0
+/*#define NP_TEXTURE_DATAFORMAT_BYTE                  0
 #define NP_TEXTURE_DATAFORMAT_HALF                  1
 #define NP_TEXTURE_DATAFORMAT_FLOAT                 2
 
@@ -36,7 +36,7 @@
 #define NP_TEXTURE_FILTER_ANISOTROPY_2X             2
 #define NP_TEXTURE_FILTER_ANISOTROPY_4X             4
 #define NP_TEXTURE_FILTER_ANISOTROPY_8X             8
-#define NP_TEXTURE_FILTER_ANISOTROPY_16X            16
+#define NP_TEXTURE_FILTER_ANISOTROPY_16X            16*/
 
 typedef struct NpTextureFilterState
 {
@@ -77,11 +77,15 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState);
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
-- (BOOL) loadFromFile:(NPFile *)file;
+- (void) generateGLTextureID;
+
 - (void) reset;
 
 - (UInt) textureID;
-- (void) generateGLTextureID;
+- (NpState) dataFormat;
+- (NpState) pixelFormat;
+- (Int) width;
+- (Int) height;
 
 - (void) setDataFormat:(NpState)newDataFormat;
 - (void) setPixelFormat:(NpState)newPixelFormat;
@@ -93,6 +97,8 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState);
 - (void) setTextureAnisotropyFilter:(NpState)newTextureAnisotropyFilter;
 - (void) setTextureWrapS:(NpState)newWrapS;
 - (void) setTextureWrapT:(NpState)newWrapT;
+
+- (BOOL) loadFromFile:(NPFile *)file;
 
 - (void) uploadToGLWithoutImageData;
 - (void) uploadToGLUsingImage:(NPImage *)image;
