@@ -74,6 +74,9 @@
 - (void) activate
 {
     [ (ODSceneManager *)parent setCurrentScene:self ];
+    rtconfig = [ (ODSceneManager *)parent renderTargetConfiguration ];
+    pbo = [ (ODSceneManager *)parent pbo ];
+    tex = [[[ NP Graphics ] pixelBufferManager ] createTextureCompatibleWithPBO:pbo ];
 
     camera    = [[ ODCamera    alloc ] initWithName:@"RenderingCamera" parent:self ];
     projector = [[ ODProjector alloc ] initWithName:@"Projector"       parent:self ];
@@ -87,7 +90,7 @@
 
     //[ projector setPosition:&pos ];
     [ projector cameraRotateUsingYaw:0.0f andPitch:-30.0f ];
-    [ projector setRenderFrustum:YES ];
+    [ projector setRenderFrustum:NO ];
 
     /*NSPoint p = { 1024.0f/2.0f, 768.0f/2.0f };
     [[[ NP Input ] mouse ] setPosition:p ];*/
@@ -95,6 +98,8 @@
 
 - (void) deactivate
 {
+    [ (ODSceneManager *)parent setCurrentScene:nil ];
+    rtconfig = nil;
 }
 
 - (id) camera
@@ -122,13 +127,75 @@
 
 - (void) render
 {
+    // clear framebuffer/depthbuffer
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
+
+    // set viewport
     [[ NP Graphics ] render ];
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);        
+    // activate FBO
+    [ rtconfig activate ];
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
-    [ skybox    render ];
+    // set FBO viewport
+    [[ NP Graphics ] render ];
+
     [ camera    render ];
+    [ skybox    render ];
     //[ projector render ];
+
+    [[[ NP Graphics ] pixelBufferManager ] copyRenderTexture:[rtconfig renderTextureAtIndex:0 ] toPBO:pbo ];
+
+    [ rtconfig deactivate ];
+
+    [[ NP Graphics ] render ];
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glBindTexture(GL_TEXTURE_2D,[[rtconfig renderTextureAtIndex:0 ] renderTextureID ]);
+
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0f,0.0f);
+        glVertex2f(-1.0f,-1.0f);
+        glTexCoord2f(1.0f,0.0f);
+        glVertex2f(1.0f,-1.0f);
+        glTexCoord2f(1.0f,1.0f);
+        glVertex2f(1.0f,0.0f);
+        glTexCoord2f(0.0f,1.0f);
+        glVertex2f(-1.0f,0.0f);
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D,0);
+
+    //[[[ NP Graphics ] pixelBufferManager ] copyRenderTexture:[rtconfig renderTextureAtIndex:0 ] toPBO:pbo ];
+    [[[ NP Graphics ] pixelBufferManager ] copyPBO:pbo toTexture:tex ];
+
+    glBindTexture(GL_TEXTURE_2D,[tex textureID ]);
+
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0f,0.0f);
+        glVertex2f(-1.0f,0.0f);
+        glTexCoord2f(1.0f,0.0f);
+        glVertex2f(1.0f,0.0f);
+        glTexCoord2f(1.0f,1.0f);
+        glVertex2f(1.0f,1.0f);
+        glTexCoord2f(0.0f,1.0f);
+        glVertex2f(-1.0f,1.0f);
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D,0);
+
+    GLenum error;
+    error = glGetError();
+    while ( error != GL_NO_ERROR )
+    //if ( error != GL_NO_ERROR )
+    {
+        NPLOG_ERROR(([NSString stringWithFormat:@"main render %s",gluErrorString(error)]));
+        error = glGetError();
+    }
 
     [[ NP Graphics ] swapBuffers ];
 }

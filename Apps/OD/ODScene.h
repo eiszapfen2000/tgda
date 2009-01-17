@@ -1,13 +1,21 @@
 #import "Core/NPObject/NPObject.h"
 
 @class ODCamera;
+@class ODProjector;
+@class NPRenderTargetConfiguration;
+@class NPPixelBuffer;
+@class NPTexture;
 
 @interface ODScene : NPObject
 {
     ODCamera * camera;
-    id projector;
+    ODProjector * projector;
     id skybox;
     id entities;
+
+    NPRenderTargetConfiguration * rtconfig;
+    NPPixelBuffer * pbo;
+    NPTexture * tex;
 }
 
 - (id) init;
