@@ -20,7 +20,7 @@
                           mode:NP_NONE
                          width:-1
                         height:-1
-                      dataType:NP_NONE
+                    dataFormat:NP_NONE
                    pixelFormat:NP_NONE
                          usage:NP_NONE ];
 }
@@ -30,10 +30,9 @@
                mode:(NpState)newMode
               width:(Int)newWidth
              height:(Int)newHeight
-           dataType:(NpState)newDataType
+         dataFormat:(NpState)newDataFormat
         pixelFormat:(NpState)newPixelFormat
               usage:(NpState)newUsage
-                   ;
 {
     self = [ super initWithName:newName parent:newParent ];
 
@@ -42,9 +41,10 @@
     mode = newMode;
     width = newWidth;
     height = newHeight;
-    dataType = newDataType;
+    dataFormat = newDataFormat;
     pixelFormat = newPixelFormat;
     usage = newUsage;
+    currentTarget = GL_NONE;
 
     return self;
 }
@@ -69,7 +69,7 @@
 
     width = height = -1;
     mode = NP_NONE;
-    dataType = NP_NONE;
+    dataFormat = NP_NONE;
     pixelFormat = NP_NONE;
 }
 
@@ -83,9 +83,19 @@
     return height;
 }
 
+- (NpState) dataFormat
+{
+    return dataFormat;
+}
+
+- (NpState) pixelFormat
+{
+    return pixelFormat;
+}
+
 - (BOOL) isCompatibleWithImage:(NPImage *)image
 {
-    return ( (dataType    != [image dataFormat])  ||
+    return ( (dataFormat  != [image dataFormat])  ||
              (pixelFormat != [image pixelFormat]) ||
              (width       != [image width])       ||
              (height      != [image height]) );
@@ -93,43 +103,39 @@
 
 - (BOOL) isCompatibleWithRenderTexture:(NPRenderTexture *)renderTexture
 {
-    return ( (dataType    != [renderTexture dataFormat])  || 
-             (pixelFormat != [renderTexture pixelFormat]) ||
-             (width       != [renderTexture width])       ||
-             (height      != [renderTexture height]) );
+    return ( (dataFormat  == [renderTexture dataFormat])  &&
+             (pixelFormat == [renderTexture pixelFormat]) &&
+             (width       == [renderTexture width])       &&
+             (height      == [renderTexture height]) );
 }
 
 - (BOOL) isCompatibleWithTexture:(NPTexture *)texture
 {
-    return ( (dataType    != [texture dataFormat])  || 
-             (pixelFormat != [texture pixelFormat]) ||
-             (width       != [texture width])       ||
-             (height      != [texture height]) );
+    return ( (dataFormat  == [texture dataFormat])  && 
+             (pixelFormat == [texture pixelFormat]) &&
+             (width       == [texture width])       &&
+             (height      == [texture height]) );
 }
 
 - (BOOL) isCompatibleWithFramebuffer
 {
     IVector2 nativeViewport = [[[[ NP Graphics ] viewportManager ] nativeViewport ] viewportSize ];
 
-    return ( (dataType    != NP_GRAPHICS_PBO_DATAFORMAT_BYTE)  || 
-             (pixelFormat != NP_GRAPHICS_PBO_PIXELFORMAT_RGBA) ||
-             (width       != nativeViewport.x)                 ||
-             (height      != nativeViewport.y) );
+    return ( (dataFormat  == NP_GRAPHICS_PBO_DATAFORMAT_BYTE)  && 
+             (pixelFormat == NP_GRAPHICS_PBO_PIXELFORMAT_RGBA) &&
+             (width       == nativeViewport.x)                 &&
+             (height      == nativeViewport.y) );
 }
 
 
-- (GLenum) calculatePBOTarget
+- (void) calculatePBOTarget
 {
-    GLenum target = 0;
-
     switch ( mode )
     {
-        case NP_GRAPHICS_PBO_AS_DATA_TARGET:{ mode = GL_PIXEL_PACK_BUFFER; break; }
-        case NP_GRAPHICS_PBO_AS_DATA_SOURCE:{ mode = GL_PIXEL_UNPACK_BUFFER; break; }
+        case NP_GRAPHICS_PBO_AS_DATA_TARGET:{ currentTarget = GL_PIXEL_PACK_BUFFER; break; }
+        case NP_GRAPHICS_PBO_AS_DATA_SOURCE:{ currentTarget = GL_PIXEL_UNPACK_BUFFER; break; }
         default:{ NPLOG(([NSString stringWithFormat:@"Invalid mode specified for %@",name])); }
     }
-
-    return target;
 }
 
 - (void) uploadToGLWithoutData
@@ -141,46 +147,47 @@
 
 - (void) uploadToGLUsingData:(NSData *)data
 {
-    UInt byteCount = width * height * [[[ NP Graphics ] imageManager ] calculatePixelByteCountUsingDataFormat:dataType pixelFormat:pixelFormat ];
+    UInt byteCount = width * height * [[[ NP Graphics ] imageManager ] calculatePixelByteCountUsingDataFormat:dataFormat pixelFormat:pixelFormat ];
 
-    if ( byteCount != [ data length ] )
+    /*if ( byteCount != [ data length ] )
     {
         NPLOG_ERROR(([ NSString stringWithFormat:@"%@ byte count does not match supplied data byte count",name ]));
         return;
-    }
+    }*/
 
-    GLenum target = [ self calculatePBOTarget ];
-    glBindBuffer(target, pixelBufferID);
-    glBufferData(target, byteCount, [data bytes], GL_DYNAMIC_DRAW);
-    glBindBuffer(target, 0);
+    [ self calculatePBOTarget ];
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, pixelBufferID);
+    glBufferData(GL_PIXEL_PACK_BUFFER, byteCount, [data bytes], GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 }
 
 - (void) activate
 {
     [[[ NP Graphics ] pixelBufferManager ] setCurrentPixelBuffer:self ];
 
-    GLenum target = [ self calculatePBOTarget ];
-    glBindBuffer(target, pixelBufferID);
+    [ self calculatePBOTarget ];
+    glBindBuffer(currentTarget, pixelBufferID);
 }
 
 - (void) activateForReading
 {
     [[[ NP Graphics ] pixelBufferManager ] setCurrentPixelBuffer:self ];
 
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pixelBufferID);
+    currentTarget = GL_PIXEL_UNPACK_BUFFER;
+    glBindBuffer(currentTarget, pixelBufferID);
 }
 
 - (void) activateForWriting
 {
     [[[ NP Graphics ] pixelBufferManager ] setCurrentPixelBuffer:self ];
 
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, pixelBufferID);
+    currentTarget = GL_PIXEL_PACK_BUFFER;
+    glBindBuffer(currentTarget, pixelBufferID);
 }
 
 - (void) deactivate
 {
-    GLenum target = [ self calculatePBOTarget ];
-    glBindBuffer(target, 0);
+    glBindBuffer(currentTarget, 0);
 
     [[[ NP Graphics ] pixelBufferManager ] setCurrentPixelBuffer:nil ];
 }

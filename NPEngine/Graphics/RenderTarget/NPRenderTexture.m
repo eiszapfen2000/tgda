@@ -94,6 +94,11 @@
     return texture;
 }
 
+- (UInt) renderTextureID
+{
+    return renderTextureID;
+}
+
 - (UInt) colorBufferIndex
 {
     return [ configuration colorBufferIndexForRenderTexture:self ];

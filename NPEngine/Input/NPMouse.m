@@ -56,7 +56,6 @@ void reset_mouse_state(NpMouseState * mouseState)
     window = newWindow;
 
     NSPoint mousePoint = [ window mouseLocationOutsideOfEventStream ];
-    //NSPoint newMousePoint = [ window convertScreenToBase:mousePoint ];
     mouseState.x = mousePoint.x;
     mouseState.y = mousePoint.y;
     x = xLastFrame = mouseState.x;
@@ -123,30 +122,11 @@ void reset_mouse_state(NpMouseState * mouseState)
 
         case NSMouseMoved:
         {
-            /*mouseState.xLastFrame = mouseState.x;
-            mouseState.yLastFrame = mouseState.y;
-            //NSLog(@"%f %f",mouseState.x,mouseState.y);*/
-
             NSPoint mouseLocationInWindow = [ event locationInWindow ];
-            //NSLog(@"Loc %f %f",mouseLocationInWindow.x,mouseLocationInWindow.y);
-            //NSLog(@"Delta %f %f",[ event deltaX ], [ event deltaY ]);
             
             mouseState.x = mouseLocationInWindow.x;
             mouseState.y = mouseLocationInWindow.y;
-            //NSLog(@"moved %f %f",mouseState.x,mouseState.y);
 
-            /*if ( useLastFrameDeltas == NO )
-            {
-                mouseState.deltaXLastFrame = mouseState.deltaX;
-                mouseState.deltaYLastFrame = mouseState.deltaY;
-                mouseState.deltaX = mouseState.x - mouseState.xLastFrame;
-                mouseState.deltaY = mouseState.y - mouseState.yLastFrame;
-            }
-            else
-            {
-                mouseState.deltaX = mouseState.deltaXLastFrame;
-                mouseState.deltaY = mouseState.deltaYLastFrame;
-            }*/
             break;
         }
 
@@ -163,20 +143,7 @@ void reset_mouse_state(NpMouseState * mouseState)
 }
 - (void) setPosition:(NSPoint)newPosition
 {
-    /*mouseState.x = newPosition.x;
-    mouseState.y = newPosition.y;
-    mouseState.xLastFrame = newPosition.x;
-    mouseState.yLastFrame = newPosition.y;*/
-
-    //x = xLastFrame = newPosition.x;
-    //y = yLastFrame = newPosition.y;
-
-    if ( x > 800.0f || x <= 200.0f || y > 650.0f || y < 150.0f )
-    {
-        [ GSCurrentServer() setmouseposition:newPosition.x :newPosition.y :[ window windowNumber ] ];
-    }
-
-    //useLastFrameDeltas = YES;
+    [ GSCurrentServer() setmouseposition:newPosition.x :newPosition.y :[ window windowNumber ]];
 }
 
 - (void) update
@@ -187,11 +154,6 @@ void reset_mouse_state(NpMouseState * mouseState)
 
     x = mouseState.x;
     y = mouseState.y;
-
-    /*NSPoint mousePoint = [ window mouseLocationOutsideOfEventStream ];
-    x = mousePoint.x;
-    y = mousePoint.y;*/
-    //NSLog(@"%f %f",x,y);
 }
 
 - (BOOL) isAnyButtonPressed

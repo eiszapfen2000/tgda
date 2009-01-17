@@ -12,7 +12,7 @@
     NpState shaderParameterUpdatePolicy;
 
     NSMutableDictionary * effects;
-    NPEffect * currentActiveEffect;
+    NPEffect * currentEffect;
 }
 
 - (id) init;
@@ -23,15 +23,13 @@
 - (void) setup;
 
 - (CGcontext)cgContext;
-
 - (NpState) cgDebugMode;
+- (NpState) shaderParameterUpdatePolicy;
+- (NPEffect *) currentEffect;
+
 - (void) setCgDebugMode:(NpState)newMode;
-
-- (NpState)shaderParameterUpdatePolicy;
 - (void) setShaderParameterPolicy:(NpState)newShaderParameterUpdatePolicy;
-
-- (NPEffect *) currentActiveEffect;
-- (void) setCurrentActiveEffect:(NPEffect *)newCurrentActiveEffect;
+- (void) setCurrentEffect:(NPEffect *)newCurrentEffect;
 
 - (id) loadEffectFromPath:(NSString *)path;
 - (id) loadEffectFromAbsolutePath:(NSString *)path;

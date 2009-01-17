@@ -87,7 +87,7 @@
                                                                    mode:NP_GRAPHICS_PBO_AS_DATA_SOURCE
                                                                   width:[image width]
                                                                  height:[image height]
-                                                               dataType:[image dataFormat]
+                                                             dataFormat:[image dataFormat]
                                                             pixelFormat:[image pixelFormat]
                                                                   usage:NP_GRAPHICS_PBO_UPLOAD_ONCE_USE_OFTEN ];
     [ pixelBuffers addObject:pixelBuffer ];    
@@ -97,7 +97,7 @@
 
 - (NPPixelBuffer *) createPBOCompatibleWithRenderTexture:(NPRenderTexture *)renderTexture
 {
-    NSString * pboName = [ NSString stringWithFormat:@"PBOFrom%@", [ renderTexture name ]];
+    /*NSString * pboName = [ NSString stringWithFormat:@"PBOFrom%@", [ renderTexture name ]];
     NPPixelBuffer * pixelBuffer = [[ NPPixelBuffer alloc ] initWithName:pboName
                                                                  parent:self
                                                                    mode:NP_GRAPHICS_PBO_AS_DATA_SOURCE
@@ -105,6 +105,24 @@
                                                                  height:[renderTexture height]
                                                                dataType:[renderTexture dataFormat]
                                                             pixelFormat:[renderTexture pixelFormat]
+                                                                  usage:NP_GRAPHICS_PBO_UPLOAD_ONCE_USE_OFTEN ];
+    [ pixelBuffers addObject:pixelBuffer ];    
+
+    return [ pixelBuffer autorelease ];*/
+
+    return [ self createPBOCompatibleWithTexture:[renderTexture texture]];
+}
+
+- (NPPixelBuffer *) createPBOCompatibleWithTexture:(NPTexture *)texture
+{
+    NSString * pboName = [ NSString stringWithFormat:@"PBOFrom%@", [ texture name ]];
+    NPPixelBuffer * pixelBuffer = [[ NPPixelBuffer alloc ] initWithName:pboName
+                                                                 parent:self
+                                                                   mode:NP_GRAPHICS_PBO_AS_DATA_SOURCE
+                                                                  width:[texture width]
+                                                                 height:[texture height]
+                                                             dataFormat:[texture dataFormat]
+                                                            pixelFormat:[texture pixelFormat]
                                                                   usage:NP_GRAPHICS_PBO_UPLOAD_ONCE_USE_OFTEN ];
     [ pixelBuffers addObject:pixelBuffer ];    
 
@@ -119,12 +137,46 @@
                                                                    mode:NP_GRAPHICS_PBO_AS_DATA_SOURCE
                                                                   width:nativeViewport.x
                                                                  height:nativeViewport.y
-                                                               dataType:NP_GRAPHICS_PBO_DATAFORMAT_BYTE
+                                                             dataFormat:NP_GRAPHICS_PBO_DATAFORMAT_BYTE
                                                             pixelFormat:NP_GRAPHICS_PBO_PIXELFORMAT_RGBA
                                                                   usage:NP_GRAPHICS_PBO_UPLOAD_ONCE_USE_OFTEN ];
     [ pixelBuffers addObject:pixelBuffer ];    
 
     return [ pixelBuffer autorelease ];
+}
+
+- (NPTexture *) createTextureCompatibleWithPBO:(NPPixelBuffer *)pbo
+{
+    NSString * textureName = [ NSString stringWithFormat:@"TextureFrom%@", [ pbo name ]];
+    NPTexture * texture = [[ NPTexture alloc ] initWithName:textureName parent:self ];
+    [ texture generateGLTextureID ];
+    [ texture setWidth:[pbo width]];
+    [ texture setHeight:[pbo height]];
+    [ texture setDataFormat:[pbo dataFormat]];
+    [ texture setPixelFormat:[pbo pixelFormat]];
+    [ texture setMipMapping:NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE ];
+    [ texture setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    [ texture setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    [ texture setTextureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
+    [ texture setTextureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
+    [ texture uploadToGLWithoutImageData ];
+
+/*
+    texture = [[ NPTexture alloc ] initWithName:@"RenderTexture" parent:self ];
+    [ texture generateGLTextureID ];
+    [ texture setWidth:width ];
+    [ texture setHeight:height ];
+    [ texture setDataFormat:dataFormat ];
+    [ texture setPixelFormat:pixelFormat ];
+    [ texture setMipMapping:NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE ];
+    [ texture setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    [ texture setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    [ texture setTextureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
+    [ texture setTextureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
+    [ texture uploadToGLWithoutImageData ];
+*/
+
+    return texture;   
 }
 
 - (void) copyImage:(NPImage *)image toPBO:(NPPixelBuffer *)pbo
@@ -147,7 +199,9 @@
         GLenum glpixelformat = [[[ NP Graphics ] textureManager ] computeGLPixelFormat:[renderTexture pixelFormat]];
 
         [ pbo activateForWriting ];
+
         glReadPixels(0, 0, [pbo width], [pbo height], glpixelformat, gldataformat, 0);
+
         [ pbo deactivate ];
 
         glReadBuffer(GL_NONE);
@@ -173,8 +227,11 @@
 {
     if ( [ pbo isCompatibleWithTexture:texture ] == YES )
     {
+        glBindTexture(GL_TEXTURE_2D, [texture textureID]);
         [ pbo activateForReading ];
+        [ texture uploadToGLWithoutImageData ];
         [ pbo deactivate ];
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 }
 

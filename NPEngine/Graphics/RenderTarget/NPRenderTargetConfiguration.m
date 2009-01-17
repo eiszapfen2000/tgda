@@ -25,7 +25,6 @@
 	width = height = -1;
 
 	colorTargets = [[ NSMutableArray alloc ] initWithCapacity:8 ];
-
     for ( Int i = 0; i < 8; i++ )
     {
         [ colorTargets addObject:[NSNull null] ];
@@ -67,6 +66,11 @@
     return [ colorTargets indexOfObject:renderTexture ];
 }
 
+- (NPRenderTexture *) renderTextureAtIndex:(Int)colorBufferIndex
+{
+    return [ colorTargets objectAtIndex:colorBufferIndex ];
+}
+
 - (void) clear
 {
     NSEnumerator * e = [ colorTargets objectEnumerator ];
@@ -102,6 +106,13 @@
         {
             TEST_RELEASE(depth);
             depth = [ newDepthRenderTarget retain ];
+
+            if ( [ depth width ] > width || [ depth height ] > height )
+            {
+                width  = [ depth width  ];
+                height = [ depth height ];
+            }
+
             [ depth bindToRenderTargetConfiguration:self ];
         }
     }
@@ -115,6 +126,13 @@
         {
             TEST_RELEASE(stencil);
             stencil = [ newStencilRenderTarget retain ];
+
+            if ( [ stencil width ] > width || [ stencil height ] > height )
+            {
+                width  = [ stencil width  ];
+                height = [ stencil height ];
+            }
+
             [ stencil bindToRenderTargetConfiguration:self ];
         }
     }
@@ -130,6 +148,13 @@
             TEST_RELEASE(stencil);
             depth = [ newDepthStencilRenderTarget retain ];
             stencil = [ newDepthStencilRenderTarget retain ];
+
+            if ( [ stencil width ] > width || [ stencil height ] > height )
+            {
+                width  = [ stencil width  ];
+                height = [ stencil height ];
+            }
+
             [ depth bindToRenderTargetConfiguration:self ];
         }
     }
@@ -140,6 +165,13 @@
     if ( [ newColorRenderTarget type ] == NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE )
     {
         [ colorTargets replaceObjectAtIndex:colorBufferIndex withObject:newColorRenderTarget ];
+
+        if ( [ newColorRenderTarget width ] > width || [ newColorRenderTarget height ] > height )
+        {
+            width  = [ newColorRenderTarget width  ];
+            height = [ newColorRenderTarget height ];
+        }
+
         [ newColorRenderTarget bindToRenderTargetConfiguration:self colorBufferIndex:colorBufferIndex ];
     }
 }
@@ -161,6 +193,9 @@
     }
 
     glDrawBuffers(bufferCount, buffers);
+
+    IVector2 rtv = { width, height };
+    [[[[ NP Graphics ] viewportManager ] currentViewport ] setRenderTargetSize:rtv ];
 }
 
 - (void) deactivate

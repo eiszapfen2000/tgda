@@ -13,7 +13,12 @@
     NPRenderTargetConfiguration * configuration;
 }
 
-+ (id) renderBufferWithName:(NSString *)name type:(NpState)type format:(NpState)format width:(Int)width height:(Int)height;
++ (id) renderBufferWithName:(NSString *)name 
+                       type:(NpState)type 
+                     format:(NpState)format
+                      width:(Int)width 
+                     height:(Int)height
+                           ;
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
