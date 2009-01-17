@@ -1,5 +1,5 @@
 float4x4 modelmatrix : NPMODEL;
-float4x4 viewmatrix : NPVIEW;
+float4x4 viewmatrix  : NPVIEW;
 float4x4 projectionmatrix : NPPROJECTION;
 
 sampler2D colormap : NPCOLORMAP0;
