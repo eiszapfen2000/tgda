@@ -77,7 +77,7 @@ void np_cg_error_callback()
 
 - (void) dealloc
 {
-	TEST_RELEASE(currentActiveEffect);
+	TEST_RELEASE(currentEffect);
     [ effects removeAllObjects ];
     [ effects release ];
 
@@ -96,6 +96,16 @@ void np_cg_error_callback()
     return cgDebugMode;
 }
 
+- (NpState)shaderParameterUpdatePolicy
+{
+    return shaderParameterUpdatePolicy;
+}
+
+- (NPEffect *) currentEffect;
+{
+    return currentEffect;
+}
+
 - (void) setCgDebugMode:(NpState)newMode
 {
     if ( cgDebugMode != newMode )
@@ -104,29 +114,11 @@ void np_cg_error_callback()
 
         switch ( newMode )
         {
-            case NP_CG_DEBUG_MODE_ACTIVE:
-            {
-                cgGLSetDebugMode( CG_TRUE );
-                break;
-            }
-
-            case NP_CG_DEBUG_MODE_INACTIVE:
-            {
-                cgGLSetDebugMode( CG_FALSE );
-                break;
-            }
-
-            case NP_NONE:
-            {
-                break;
-            }
+            case NP_CG_DEBUG_MODE_ACTIVE  :{ cgGLSetDebugMode( CG_TRUE );  break; }
+            case NP_CG_DEBUG_MODE_INACTIVE:{ cgGLSetDebugMode( CG_FALSE ); break; }
+            case NP_NONE:{ break; }
         }
     }
-}
-
-- (NpState)shaderParameterUpdatePolicy
-{
-    return shaderParameterUpdatePolicy;
 }
 
 - (void) setShaderParameterPolicy:(NpState)newShaderParameterUpdatePolicy
@@ -157,18 +149,9 @@ void np_cg_error_callback()
     }
 }
 
-- (NPEffect *) currentActiveEffect
+- (void) setCurrentEffect:(NPEffect *)newCurrentEffect
 {
-    return currentActiveEffect;
-}
-
-- (void) setCurrentActiveEffect:(NPEffect *)newCurrentActiveEffect
-{
-    if ( currentActiveEffect != newCurrentActiveEffect )
-    {
-        [ currentActiveEffect release ];
-        currentActiveEffect = [ newCurrentActiveEffect retain ];
-    }
+    ASSIGN(currentEffect,newCurrentEffect);
 }
 
 - (id) loadEffectFromPath:(NSString *)path

@@ -48,10 +48,6 @@
     [ mData appendBytes:&c length:1 ];
 
     NSString * tmp = [ NSString stringWithUTF8String:[ mData bytes ]];
-
-    //NSLog(@"%s",[tmp cStringUsingEncoding:NSASCIIStringEncoding ]);
-    //effect = cgCreateEffectFromFile([ (NPEffectManager *)parent cgContext ],[[file fileName] cStringUsingEncoding:NSASCIIStringEncoding ],NULL);
-
     effect = cgCreateEffect( [ (NPEffectManager *)parent cgContext ], [tmp cStringUsingEncoding:NSASCIIStringEncoding ], NULL );
 
     if ( cgIsEffect(effect) == CG_FALSE )
@@ -94,6 +90,7 @@
     {
         cgDestroyEffect(effect);
     }
+
     effect = NULL;
     defaultTechnique = NULL;
 
@@ -178,7 +175,7 @@
     defaultSemantics.viewProjectionMatrix        = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_VIEWPROJECTION_MATRIX_SEMANTIC ];
     defaultSemantics.inverseViewProjectionMatrix = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_INVERSEVIEWPROJECTION_MATRIX_SEMANTIC ];
     defaultSemantics.modelViewProjectionMatrix   = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_MODELVIEWPROJECTION_MATRIX_SEMANTIC ];
-    defaultSemantics.inverseModelViewProjectionMatrix   = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_INVERSE_MODELVIEWPROJECTION_MATRIX_SEMANTIC ];
+    defaultSemantics.inverseModelViewProjectionMatrix = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_INVERSE_MODELVIEWPROJECTION_MATRIX_SEMANTIC ];
 
     for ( Int i = 0; i < 8; i++ )
     {
@@ -188,7 +185,7 @@
 
 - (void) activate
 {
-    [[[ NP Graphics ] effectManager ] setCurrentActiveEffect:self ];
+    [[[ NP Graphics ] effectManager ] setCurrentEffect:self ];
 
     [ self uploadDefaultSemantics ];
 }
@@ -290,7 +287,6 @@
 {
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
-        //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_SCALAR )
         if ( cgGetParameterType(parameter) == CG_FLOAT )
         {
             cgSetParameter1f(parameter,*f);
@@ -309,7 +305,6 @@
 {
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
-        //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_SCALAR )
         if ( cgGetParameterType(parameter) == CG_INT )
         {
             cgSetParameter1i(parameter,*i);
@@ -328,7 +323,6 @@
 {
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
-        //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_VECTOR )
         if ( cgGetParameterType(parameter) == CG_FLOAT2 )
         {
             cgSetParameter2f(parameter,V_X(*vector),V_Y(*vector));
@@ -347,7 +341,6 @@
 {
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
-        //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_VECTOR )
         if ( cgGetParameterType(parameter) == CG_FLOAT3 )
         {
             cgSetParameter3f(parameter,V_X(*vector),V_Y(*vector),V_Z(*vector));
@@ -366,7 +359,6 @@
 {
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
-        //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_VECTOR )
         if ( cgGetParameterType(parameter) == CG_FLOAT4 )
         {
             cgSetParameter4f(parameter,V_X(*vector),V_Y(*vector),V_Z(*vector),V_W(*vector));
@@ -385,13 +377,9 @@
 {
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
-        //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_MATRIX )
         if ( cgGetParameterType(parameter) == CG_FLOAT2x2 )
         {
-            //if ( cgGetParameterRows(parameter) == 2 && cgGetParameterColumns(parameter) == 2 )
-            //{
-                cgSetMatrixParameterfc(parameter,(const float *)M_ELEMENTS(*matrix));
-            //}
+            cgSetMatrixParameterfc(parameter,(const float *)M_ELEMENTS(*matrix));
         }
     }
 }
@@ -407,13 +395,9 @@
 {
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
-        //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_MATRIX )
         if ( cgGetParameterType(parameter) == CG_FLOAT3x3 )
         {
-            //if ( cgGetParameterRows(parameter) == 3 && cgGetParameterColumns(parameter) == 3 )
-            //{
-                cgSetMatrixParameterfc(parameter,(const float *)M_ELEMENTS(*matrix));
-            //}
+            cgSetMatrixParameterfc(parameter,(const float *)M_ELEMENTS(*matrix));
         }
     }
 }
@@ -429,13 +413,9 @@
 {
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
-        //if ( cgGetParameterClass(parameter) == CG_PARAMETERCLASS_MATRIX )
         if ( cgGetParameterType(parameter) == CG_FLOAT4x4 )
         {
-            //if ( cgGetParameterRows(parameter) == 4 && cgGetParameterColumns(parameter) == 4 )
-            //{
-                cgSetMatrixParameterfc(parameter,(const float *)M_ELEMENTS(*matrix));
-            //}
+            cgSetMatrixParameterfc(parameter,(const float *)M_ELEMENTS(*matrix));
         }
     }
 }
@@ -453,7 +433,10 @@
     {
         if ( cgGetParameterType(parameter) == CG_SAMPLER2D )
         {
-            cgGLSetupSampler(parameter, textureID);
+            cgGLSetTextureParameter(parameter,textureID);
+            //cgGLEnableTextureParameter(parameter);
+            //GLenum nix = cgGLGetTextureEnum(parameter);
+//            cgGLSetupSampler(parameter, textureID);
         }
     }    
 }

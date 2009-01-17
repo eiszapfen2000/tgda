@@ -28,6 +28,7 @@
 - (BOOL) ready;
 - (UInt) fboID;
 - (UInt) colorBufferIndexForRenderTexture:(NPRenderTexture *)renderTexture;
+- (NPRenderTexture *) renderTextureAtIndex:(Int)colorBufferIndex;
 
 - (void) setDepthRenderTarget:(NPRenderBuffer *)newDepthRenderTarget;
 - (void) setStencilRenderTarget:(NPRenderBuffer *)newStencilRenderTarget;

@@ -37,6 +37,7 @@
 - (NpState) pixelFormat;
 - (NpState) dataFormat;
 - (NPTexture *)texture;
+- (UInt) renderTextureID;
 - (UInt) colorBufferIndex;
 
 - (void) setWidth:(Int)newWidth;

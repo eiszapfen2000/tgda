@@ -519,7 +519,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     {
         if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
         {
-            glActiveTexture(GL_TEXTURE0 + i);
+            //glActiveTexture(GL_TEXTURE0 + i);
             glClientActiveTexture(GL_TEXTURE0 + i);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.textureCoordinatesSetID[i] );

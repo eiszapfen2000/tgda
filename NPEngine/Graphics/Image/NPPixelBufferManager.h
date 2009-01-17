@@ -21,7 +21,10 @@
 
 - (NPPixelBuffer *) createPBOCompatibleWithImage:(NPImage *)image;
 - (NPPixelBuffer *) createPBOCompatibleWithRenderTexture:(NPRenderTexture *)renderTexture;
+- (NPPixelBuffer *) createPBOCompatibleWithTexture:(NPTexture *)texture;
 - (NPPixelBuffer *) createPBOCompatibleWithFramebuffer;
+
+- (NPTexture *) createTextureCompatibleWithPBO:(NPPixelBuffer *)pbo;
 
 - (void) copyImage:(NPImage *)image toPBO:(NPPixelBuffer *)pbo;
 - (void) copyRenderTexture:(NPRenderTexture *)renderTexture toPBO:(NPPixelBuffer *)pbo;

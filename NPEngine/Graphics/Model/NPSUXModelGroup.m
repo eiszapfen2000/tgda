@@ -18,11 +18,11 @@
     self = [ super initWithName:newName parent:newParent ];
 
     primitiveType = -1;
-    firstIndex = -1;
-    lastIndex = -1;
+    firstIndex    = -1;
+    lastIndex     = -1;
     materialInstanceIndex = -1;
 
-    model = nil;
+    model    = nil;
     material = nil;
 
     return self;
@@ -74,8 +74,8 @@
 - (void) reset
 {
     primitiveType = -1;
-    firstIndex = -1;
-    lastIndex = -1;
+    firstIndex    = -1;
+    lastIndex     = -1;
     materialInstanceIndex = -1;
 
     [ super reset ];
@@ -93,7 +93,7 @@
 
     CGpass pass = cgGetFirstPass([[ material effect ] defaultTechnique]);
 
-    while (pass)
+    while ( pass )
     {
         cgSetPassState(pass);
 

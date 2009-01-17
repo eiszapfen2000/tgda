@@ -1,4 +1,5 @@
 #import "Core/NPObject/NPObject.h"
+#import "Graphics/npgl.h"
 
 @class NPImage;
 @class NPTexture;
@@ -11,9 +12,11 @@
     NpState mode;
     Int width;
     Int height;
-    NpState dataType;
+    NpState dataFormat;
     NpState pixelFormat;
     NpState usage;
+
+    GLenum currentTarget;
 }
 
 - (id) init;
@@ -24,7 +27,7 @@
                mode:(NpState)newMode
               width:(Int)newWidth
              height:(Int)newHeight
-           dataType:(NpState)newDataType
+         dataFormat:(NpState)newDataFormat
         pixelFormat:(NpState)newPixelFormat
               usage:(NpState)newUsage
                    ;
@@ -34,6 +37,8 @@
 
 - (Int) width;
 - (Int) height;
+- (NpState) dataFormat;
+- (NpState) pixelFormat;
 
 - (BOOL) isCompatibleWithImage:(NPImage *)image;
 - (BOOL) isCompatibleWithRenderTexture:(NPRenderTexture *)renderTexture;

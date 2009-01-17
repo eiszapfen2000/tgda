@@ -107,14 +107,6 @@
 
 - (void) setImageData:(NSData *)newImageData
 {
-    Int bytesCount = [[[ NP Graphics ] imageManager ] calculateImageByteCountUsingWidth:width height:height pixelFormat:pixelFormat dataFormat:dataFormat ];
-
-    if ( bytesCount != (Int)[newImageData length ] )
-    {
-        NPLOG_ERROR(@"NPImage setImageData: wrong dataSize");
-        return;
-    }
-
     ASSIGN(imageData,newImageData);
 }
 

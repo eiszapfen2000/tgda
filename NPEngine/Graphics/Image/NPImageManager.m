@@ -101,7 +101,7 @@
         case NP_GRAPHICS_IMAGE_DATAFORMAT_BYTE :{ dataFormatByteCount = 1; break; }
         case NP_GRAPHICS_IMAGE_DATAFORMAT_HALF :{ dataFormatByteCount = 2; break; }
         case NP_GRAPHICS_IMAGE_DATAFORMAT_FLOAT:{ dataFormatByteCount = 4; break; }
-        default:{ NPLOG_ERROR(@"Unknown image data format"); break; }
+        default:{ NPLOG_ERROR(([NSString stringWithFormat:@"Unknown image data format %d",dataFormat])); break; }
     }
 
     return dataFormatByteCount;
@@ -116,7 +116,7 @@
         case NP_GRAPHICS_IMAGE_PIXELFORMAT_RG  :{ pixelFormatChannelCount = 2; break; }
         case NP_GRAPHICS_IMAGE_PIXELFORMAT_RGB :{ pixelFormatChannelCount = 3; break; }
         case NP_GRAPHICS_IMAGE_PIXELFORMAT_RGBA:{ pixelFormatChannelCount = 4; break; }
-        default:{ NPLOG_ERROR(@"Unknown image pixel format"); break; }
+        default:{ NPLOG_ERROR(([NSString stringWithFormat:@"Unknown image pixel format %d",pixelFormat])); break; }
     }
 
     return pixelFormatChannelCount;
