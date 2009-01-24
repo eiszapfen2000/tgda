@@ -3,7 +3,7 @@
 #import "Core/Math/NpMath.h"
 #import "Graphics/npgl.h"
 
-typedef struct
+typedef struct NpDefaultSemantics
 {
     CGparameter modelMatrix;
     CGparameter inverseModelMatrix;
@@ -17,7 +17,9 @@ typedef struct
     CGparameter inverseViewProjectionMatrix;
     CGparameter modelViewProjectionMatrix;
     CGparameter inverseModelViewProjectionMatrix;
-    CGparameter sampler[8];
+    CGparameter sampler1D[8];
+    CGparameter sampler2D[8];
+    CGparameter sampler3D[8];
 }
 NpDefaultSemantics;
 
@@ -72,5 +74,7 @@ NpDefaultSemantics;
 
 - (void) uploadSampler2DWithParameterName:(NSString *)parameterName andID:(GLuint)textureID;
 - (void) uploadSampler2DWithParameter:(CGparameter)parameter andID:(GLuint)textureID;
+- (void) uploadSampler3DWithParameterName:(NSString *)parameterName andID:(GLuint)textureID;
+- (void) uploadSampler3DWithParameter:(CGparameter)parameter andID:(GLuint)textureID;
 
 @end

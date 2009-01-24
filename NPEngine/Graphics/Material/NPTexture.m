@@ -1,24 +1,6 @@
 #import "NPTexture.h"
 #import "NP.h"
 
-#import "IL/il.h"
-#import "IL/ilu.h"
-#import "IL/ilut.h"
-
-void np_texture_filter_state_reset(NpTextureFilterState * textureFilterState)
-{
-    textureFilterState->mipmapping = NO;
-    textureFilterState->minFilter = NP_GRAPHICS_TEXTURE_FILTER_NEAREST_MIPMAP_LINEAR;
-    textureFilterState->magFilter = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
-    textureFilterState->anisotropy = 1.0f;
-}
-
-void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
-{
-    textureWrapState->wrapS = NP_GRAPHICS_TEXTURE_WRAPPING_REPEAT;
-    textureWrapState->wrapT = NP_GRAPHICS_TEXTURE_WRAPPING_REPEAT;
-}
-
 @implementation NPTexture
 
 - (id) init
@@ -35,33 +17,44 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 {
     self = [ super initWithName:newName parent:newParent ];
 
+    textureID = [[[ NP Graphics ] textureManager ] generateGLTextureID ];
+    width = height = -1;
+    dataFormat  = NP_NONE;
+    pixelFormat = NP_NONE;
+
     //equals opengl default states
     np_texture_filter_state_reset(&textureFilterState);
     np_texture_wrap_state_reset(&textureWrapState);
-
-    dataFormat = NP_NONE;
-    pixelFormat = NP_NONE;
-
-    width = height = -1;
 
     return self;
 }
 
 - (void) dealloc
 {
-    [ self reset ];   
+    [ self clear ];   
 
     [ super dealloc ];
 }
 
-- (void) generateGLTextureID
+- (void) clear
 {
-    glGenTextures(1, &textureID);
+    if ( textureID > 0 )
+    {
+        glDeleteTextures(1, &textureID);
+    }
 }
 
 - (void) reset
 {
-    glDeleteTextures(1, &textureID);
+    if ( textureID > 0 )
+    {
+        glDeleteTextures(1, &textureID);
+        textureID = [[[ NP Graphics ] textureManager ] generateGLTextureID ];
+    }
+
+    width = height = -1;
+    dataFormat  = NP_NONE;
+    pixelFormat = NP_NONE;   
 
     np_texture_filter_state_reset(&textureFilterState);
     np_texture_wrap_state_reset(&textureWrapState);
@@ -161,8 +154,6 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     [ self setFileName:[ file fileName ]];
     [ self setName:[ file fileName ]];
 
-    [ self generateGLTextureID ];
-    
     NPImage * image = [[ NPImage alloc ] init ];
     if ( [ image loadFromPath:[file fileName]] == NO )
     {
@@ -210,6 +201,8 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     glpixelformat = [[[ NP Graphics ] textureManager ] computeGLPixelFormat:pixelFormat ];
     glinternalformat = [[[ NP Graphics ] textureManager ] computeGLInternalTextureFormatUsingDataFormat:dataFormat pixelFormat:pixelFormat ];
 
+    [[[ NP Graphics ] textureManager ] setTexture2DMode ];
+
     glBindTexture(GL_TEXTURE_2D, textureID);
 
     if ( textureFilterState.mipmapping == NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_ACTIVE )
@@ -243,10 +236,10 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
     {
         case NP_GRAPHICS_TEXTURE_FILTER_NEAREST:{ value = GL_NEAREST; break; }
         case NP_GRAPHICS_TEXTURE_FILTER_LINEAR :{ value = GL_LINEAR;  break; }
+        default: { NPLOG_ERROR(@"%@ unknown mag filter %d",self,textureFilterState.magFilter); break; }
     }
 
-    if ( value != GL_NONE )
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, value);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, value);
 
     value = GL_NONE;
     switch ( textureFilterState.minFilter )
@@ -257,10 +250,10 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
         case NP_GRAPHICS_TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST :{ value = GL_LINEAR_MIPMAP_NEAREST;  break; }
         case NP_GRAPHICS_TEXTURE_FILTER_NEAREST_MIPMAP_LINEAR :{ value = GL_NEAREST_MIPMAP_LINEAR;  break; }
         case NP_GRAPHICS_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR  :{ value = GL_LINEAR_MIPMAP_LINEAR;   break; }
+        default: { NPLOG_ERROR(@"%@ unknown min filter %d",self,textureFilterState.minFilter); break; }
     }
 
-    if ( value != GL_NONE )
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, value);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, value);
 }
 
 - (void) updateGLTextureAnisotropy
@@ -270,31 +263,19 @@ void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)
 
 - (void) updateGLTextureWrapState
 {
-    GLenum wrapS = GL_NONE;
-    switch (textureWrapState.wrapS)
-    {
-        case NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP :{ wrapS = GL_CLAMP;  break; }
-        case NP_GRAPHICS_TEXTURE_WRAPPING_REPEAT:{ wrapS = GL_REPEAT; break; }
-        case NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE  :{ wrapS = GL_CLAMP_TO_EDGE;   break; }
-        case NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_BORDER:{ wrapS = GL_CLAMP_TO_BORDER; break; }
-    }
-
-    GLenum wrapT = GL_NONE;
-    switch (textureWrapState.wrapS)
-    {
-        case NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP :{ wrapT = GL_CLAMP;  break; }
-        case NP_GRAPHICS_TEXTURE_WRAPPING_REPEAT:{ wrapT = GL_REPEAT; break; }
-        case NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE  :{ wrapT = GL_CLAMP_TO_EDGE;   break; }
-        case NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_BORDER:{ wrapT = GL_CLAMP_TO_BORDER; break; }
-
-    }
+    GLenum wrapS = [[[ NP Graphics ] textureManager ] computeGLWrap:textureWrapState.wrapS ];
+    GLenum wrapT = [[[ NP Graphics ] textureManager ] computeGLWrap:textureWrapState.wrapT ];
+    GLenum wrapR = [[[ NP Graphics ] textureManager ] computeGLWrap:textureWrapState.wrapR ];
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrapR);
 }
 
 - (void) updateGLTextureState
 {
+    [[[ NP Graphics ] textureManager ] setTexture2DMode ];
+
     glBindTexture(GL_TEXTURE_2D,textureID);
 
     [ self updateGLTextureFilterState ];

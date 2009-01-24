@@ -48,7 +48,7 @@
 
 - (void) dealloc
 {
-	[ firstGenerator release ];
+	[ firstGenerator  release ];
 	[ secondGenerator release ];
 
 	[ super dealloc ];
@@ -61,11 +61,7 @@
 
 - (void) setFirstGenerator:(NPRandomNumberGenerator *)newFirstGenerator
 {
-    if ( firstGenerator != newFirstGenerator )
-    {
-        [ firstGenerator release ];
-        firstGenerator = [ newFirstGenerator retain ];
-    }
+    ASSIGN(firstGenerator,newFirstGenerator);
 
     [ self checkForSubGenerators ];
 }
@@ -77,11 +73,7 @@
 
 - (void) setSecondGenerator:(NPRandomNumberGenerator *)newSecondGenerator
 {
-    if ( secondGenerator != newSecondGenerator )
-    {
-        [ secondGenerator release ];
-        secondGenerator = [ newSecondGenerator retain ];
-    }
+    ASSIGN(secondGenerator,newSecondGenerator);
 
     [ self checkForSubGenerators ];
 }
@@ -131,13 +123,13 @@
 	    return firstValue;
     }
 
-    NPLOG(@"Generator not ready, returning 0");
+    NPLOG_WARNING(@"Generator not ready, returning 0");
     return 0.0;
 }
 
 - (NSString *) description
 {
-	return [[ firstGenerator description ] stringByAppendingString: [ secondGenerator description ] ];
+	return [[ firstGenerator description ] stringByAppendingString: [ secondGenerator description ]];
 }
 
 @end

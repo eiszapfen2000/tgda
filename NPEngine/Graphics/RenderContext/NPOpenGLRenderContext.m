@@ -165,11 +165,11 @@
 
     if ( tmp == YES )
     {
-        NPLOG(([NSString stringWithFormat:@"%@: extension %@ supported", name, extensionString]));
+        NPLOG(@"%@: extension %@ supported", name, extensionString);
     }
     else
     {
-        NPLOG(([NSString stringWithFormat:@"%@: extension %@ not supported", name, extensionString]));
+        NPLOG(@"%@: extension %@ not supported", name, extensionString);
     }
 
     return tmp;

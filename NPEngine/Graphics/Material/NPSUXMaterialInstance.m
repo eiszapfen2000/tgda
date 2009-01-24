@@ -92,9 +92,9 @@
     {
         for ( Int i = 0; i < 8; i++ )
         {
-            if ( effectSemantics->sampler[i] != NULL )
+            if ( effectSemantics->sampler2D[i] != NULL )
             {
-                NSString * parameterName = [ [ NSString alloc ] initWithFormat:@"%s", cgGetParameterName(effectSemantics->sampler[i]) ];
+                NSString * parameterName = [ [ NSString alloc ] initWithFormat:@"%s", cgGetParameterName(effectSemantics->sampler2D[i]) ];
 
                 if ( [ textureName isEqual:parameterName ] == YES )
                 {
@@ -128,7 +128,7 @@
         if ( [ firstElement isEqual:@"uses" ] == YES )
         {
             NSString * fileNameWithoutQuotes =  [ removeLeadingAndTrailingQuotes(secondElement) retain ];
-            NPLOG(([NSString stringWithFormat:@"CgFX file: %@", fileNameWithoutQuotes]));
+            NPLOG(@"CgFX file: %@", fileNameWithoutQuotes);
 
             effect = [[[[ NP Graphics ] effectManager ] loadEffectFromPath:fileNameWithoutQuotes ] retain ];
 
@@ -139,7 +139,7 @@
             if ( [ secondElement isEqual:@"technique" ] == YES )
             {
                 NSString * techniqueNameWithoutQuotes =  [ removeLeadingAndTrailingQuotes([ elements objectAtIndex:2 ]) retain ];
-                NPLOG(([NSString stringWithFormat:@"Technique: %@", techniqueNameWithoutQuotes]));
+                NPLOG(@"Technique: %@", techniqueNameWithoutQuotes);
 
                 CGtechnique technique = cgGetNamedTechnique([effect effect], [techniqueNameWithoutQuotes cStringUsingEncoding:NSASCIIStringEncoding]);
                 [ effect setDefaultTechnique:technique];
@@ -149,10 +149,10 @@
             else if ( [ secondElement isEqual:@"texture2D" ] == YES )
             {
                 NSString * textureName = [ removeLeadingAndTrailingQuotes([ elements objectAtIndex:2 ]) retain ];
-                NPLOG(([NSString stringWithFormat:@"TextureName: %@", textureName]));
+                NPLOG(@"TextureName: %@", textureName);
 
                 NSString * textureFileName = [ removeLeadingAndTrailingQuotes([ elements objectAtIndex:3 ]) retain ];
-                NPLOG(([NSString stringWithFormat:@"TextureFileName: %@", textureFileName]));
+                NPLOG(@"TextureFileName: %@", textureFileName);
 
                 [ textureNameToTextureFileName setObject:textureFileName forKey:textureName];
 
@@ -198,14 +198,14 @@
     }
 
     [ self filterTextureNamesNotUsedInEffect ];
-    NPLOG(([NSString stringWithFormat:@"%@", [ textureNameToTextureFileName description ]]));
-    NPLOG(([NSString stringWithFormat:@"%@", [ textureNameToSemantic description ]]));
+    NPLOG(@"%@", [ textureNameToTextureFileName description ]);
+    NPLOG(@"%@", [ textureNameToSemantic description ]);
 
     [ self loadTextures ];
-    NPLOG(([NSString stringWithFormat:@"%@", [ textureNameToTexture description ]]));
+    NPLOG(@"%@", [ textureNameToTexture description ]);
 
     [ self matchTexturesToSemantics ];
-    NPLOG(([NSString stringWithFormat:@"%@", [ textureToSemantic description ]]));
+    NPLOG(@"%@", [ textureToSemantic description ]);
 
     return YES;
 }
@@ -217,12 +217,12 @@
     NSString * materialInstanceName = [ file readSUXString ];
     [ self setName:materialInstanceName ];
     [ materialInstanceName release ];
-    NPLOG(([NSString stringWithFormat:@"Material Instance Name: %@", name]));
+    NPLOG(@"Material Instance Name: %@", name);
 
     NSString * materialScriptFileName = [ file readSUXString ];
     [ self setMaterialFileName:materialScriptFileName ];
     [ materialScriptFileName release ];
-    NPLOG(([NSString stringWithFormat:@"Material Script File: %@", materialFileName]));
+    NPLOG(@"Material Script File: %@", materialFileName);
 
     materialInstanceScript = [ file readSUXScript ];
 

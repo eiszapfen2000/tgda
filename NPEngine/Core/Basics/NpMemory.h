@@ -17,5 +17,6 @@
 
 
 #define FREE(_pointer)		do {void *_ptr=(void *)(_pointer); free(_ptr); _ptr=NULL; } while (0)
+#define SAFE_FREE(_pointer) { if ( (_pointer) != NULL ) FREE((_pointer)); }
 
 #endif //_NP_BASICS_MEMORY_H_

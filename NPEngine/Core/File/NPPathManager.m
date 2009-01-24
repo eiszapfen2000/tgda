@@ -22,8 +22,8 @@
 
     fileManager = [ NSFileManager defaultManager ];
 
-    localPathManager = [ [ NPLocalPathManager alloc ] initWithName:@"NPEngine Local Path Manager" parent:self ];
-    remotePathManager = [ [ NPRemotePathManager alloc ] initWithName:@"NPEngine Remote Path Manager" parent:self ];
+    localPathManager  = [[ NPLocalPathManager alloc  ] initWithName:@"NPEngine Local Path Manager"  parent:self ];
+    remotePathManager = [[ NPRemotePathManager alloc ] initWithName:@"NPEngine Remote Path Manager" parent:self ];
 
     return self;
 }
@@ -39,21 +39,21 @@
 - (void) addLookUpPath:(NSString *)lookUpPath
 {
     NSString * standardizedLookUpPath = [ lookUpPath stringByStandardizingPath ];
-    NPLOG(([ NSString stringWithFormat:@"%@ expand to %@", lookUpPath, standardizedLookUpPath ]));
+    NPLOG(@"%@ expand to %@", lookUpPath, standardizedLookUpPath);
 
     if ( isDirectory(standardizedLookUpPath) == YES )
     {
         [ localPathManager addLookUpPath:standardizedLookUpPath ];
-        NPLOG(([ NSString stringWithFormat:@"%@ added to lookup paths", standardizedLookUpPath ]));
+        NPLOG(@"%@ added to lookup paths", standardizedLookUpPath);
     }
     else if ( isURL(lookUpPath) == YES )
     {
         [ remotePathManager addLookUpURL:[ NSURL URLWithString:lookUpPath ] ];
-        NPLOG(([ NSString stringWithFormat:@"%@ added to lookup URLs", lookUpPath ]));
+        NPLOG(@"%@ added to lookup URLs", lookUpPath);
     }
     else
     {
-        NPLOG(([NSString stringWithFormat:@"%@ is not a valid directory or URL", lookUpPath ]));
+        NPLOG(@"%@ is not a valid directory or URL", lookUpPath);
     }
 }
 

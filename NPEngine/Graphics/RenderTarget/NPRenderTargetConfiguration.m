@@ -178,6 +178,8 @@
 
 - (void) activate
 {
+    [[[ NP Graphics ] renderTargetManager ] setCurrentRenderTargetConfiguration:self ];
+
     GLenum buffers[8];
     Int bufferCount = 0;
 
@@ -202,6 +204,8 @@
 {
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     glDrawBuffer(GL_BACK);
+
+    [[[ NP Graphics ] renderTargetManager ] setCurrentRenderTargetConfiguration:nil ];
 }
 
 - (BOOL) checkFrameBufferCompleteness

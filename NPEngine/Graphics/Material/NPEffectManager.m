@@ -12,11 +12,11 @@ void np_cg_error_callback()
 		{
 			const char * cgListing = cgGetLastListing([[[ NP Graphics ] effectManager] cgContext]);
 
-		    NPLOG_ERROR(([NSString stringWithFormat:@"CG ERROR: %s \n Cg Compiler Output: %s", string, cgListing]));
+		    NPLOG_ERROR(@"CG ERROR: %s \n Cg Compiler Output: %s", string, cgListing);
 		} 
 		else 
 		{
-		    NPLOG_ERROR(([NSString stringWithFormat:@"CG ERROR: %s", string]));
+		    NPLOG_ERROR(@"CG ERROR: %s", string);
 		}
 
 		error = cgGetError();
@@ -163,7 +163,7 @@ void np_cg_error_callback()
 
 - (id) loadEffectFromAbsolutePath:(NSString *)path
 {
-    NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, path]));
+    NPLOG(@"%@: loading %@", name, path);
 
     if ( [ path isEqual:@"" ] == NO )
     {

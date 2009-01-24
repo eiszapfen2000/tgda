@@ -50,9 +50,9 @@
         struct timeval updateTime;
         gettimeofday(&updateTime,0);
 
-        Double lastUpdateInSeconds = (Double)lastUpdate.tv_sec + (Double)lastUpdate.tv_usec / (1000000);
-        Double updateTimeInSeconds = (Double)updateTime.tv_sec + (Double)updateTime.tv_usec / (1000000);
-        frameTime = updateTimeInSeconds - lastUpdateInSeconds;
+        Double lastUpdateInSeconds = (Double)lastUpdate.tv_sec + (Double)lastUpdate.tv_usec / (1000000.0);
+        Double updateTimeInSeconds = (Double)updateTime.tv_sec + (Double)updateTime.tv_usec / (1000000.0);
+        frameTime  = updateTimeInSeconds - lastUpdateInSeconds;
         lastUpdate = updateTime;
 
         totalElapsedTime += frameTime;

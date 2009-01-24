@@ -38,17 +38,23 @@
 
     NPOpenGLRenderContextManager * renderContextManager;
 
-    NPViewportManager * viewportManager;
     NPStateConfiguration * stateConfiguration;
-    NPStateSetManager * stateSetManager;
-    NPModelManager * modelManager;
-    NPImageManager * imageManager;
-    NPTextureManager * textureManager;
+    NPStateSetManager    * stateSetManager;
+
     NPTextureBindingStateManager * textureBindingStateManager;
-    NPEffectManager * effectManager;
+
+    NPVertexBufferManager * vertexBufferManager;
+    NPImageManager   * imageManager;
+    NPTextureManager * textureManager;
+    NPEffectManager  * effectManager;
+    NPModelManager   * modelManager;
+
     NPRenderTargetManager * renderTargetManager;
-    NPPixelBufferManager * pixelBufferManager;
-    NPR2VBManager * r2vbManager;
+    NPPixelBufferManager  * pixelBufferManager;
+    NPR2VBManager         * r2vbManager;
+
+    NPViewportManager * viewportManager;
+
     NPCameraManager * cameraManager;
 
     BOOL ready;
@@ -73,17 +79,18 @@
 - (BOOL) ready;
 
 - (NPOpenGLRenderContextManager *) renderContextManager;
-- (NPViewportManager *) viewportManager;
 - (NPStateConfiguration *) stateConfiguration;
 - (NPStateSetManager *) stateSetManager;
-- (NPModelManager *) modelManager;
+- (NPTextureBindingStateManager *) textureBindingStateManager;
+- (NPVertexBufferManager *) vertexBufferManager;
 - (NPImageManager *) imageManager;
 - (NPTextureManager *) textureManager;
-- (NPTextureBindingStateManager *) textureBindingStateManager;
 - (NPEffectManager *) effectManager;
+- (NPModelManager *) modelManager;
 - (NPRenderTargetManager *) renderTargetManager;
 - (NPPixelBufferManager *) pixelBufferManager;
 - (NPR2VBManager *) r2vbManager;
+- (NPViewportManager *) viewportManager;
 - (NPCameraManager *) cameraManager;
 
 - (void) render;

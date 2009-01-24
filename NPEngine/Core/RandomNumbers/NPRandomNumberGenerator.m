@@ -1,5 +1,3 @@
-#include "prng.h"
-
 #import "NPRandomNumberGenerator.h"
 
 @implementation NPRandomNumberGenerator

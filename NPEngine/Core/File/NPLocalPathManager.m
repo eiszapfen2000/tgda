@@ -37,7 +37,7 @@
 {
     NSString * workingDirectory = [ fileManager currentDirectoryPath ];
 
-    NPLOG(([NSString stringWithFormat:@"Adding application directory %@ to local paths", workingDirectory]));
+    NPLOG(@"Adding application directory %@ to local paths", workingDirectory);
 
     if ( workingDirectory != nil )
     {

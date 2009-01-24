@@ -6,6 +6,8 @@
 {
     NSMutableDictionary * textures;
     Int maxAnisotropy;
+    BOOL nonPOTSupport;
+    NpState textureMode;
 }
 
 - (id) init;
@@ -16,7 +18,16 @@
 - (void) setup;
 
 - (Int) maxAnisotropy;
+- (BOOL) nonPOTSupport;
+- (NpState) textureMode;
 
+- (void) setTextureMode:(NpState)newTextureMode;
+- (void) setTexture2DMode;
+- (void) setTexture3DMode;
+
+- (UInt) generateGLTextureID;
+
+- (GLenum) computeGLWrap:(NpState)wrap;
 - (GLenum) computeGLDataFormat:(NpState)dataFormat;
 - (GLenum) computeGLPixelFormat:(NpState)pixelFormat;
 - (GLint)  computeGLInternalTextureFormatUsingDataFormat:(NpState)dataFormat pixelFormat:(NpState)pixelFormat;
@@ -39,5 +50,13 @@
                  pixelFormat:(NpState)pixelFormat
                   mipMapping:(NpState)mipMapping
                              ;
+
+- (id) createTexture3DWithName:(NSString *)textureName
+                         width:(Int)width 
+                        height:(Int)height
+                         depth:(Int)depth
+                    dataFormat:(NpState)dataFormat
+                   pixelFormat:(NpState)pixelFormat
+                              ;
 
 @end

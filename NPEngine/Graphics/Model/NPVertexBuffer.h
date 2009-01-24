@@ -5,28 +5,37 @@
 
 typedef struct NpVertexFormat
 {
+    NpState positionsDataFormat; // SUX Models use Float
+    NpState normalsDataFormat;   // SUX Models use Float
+    NpState colorsDataFormat;    // SUX Models use Float
+    NpState weightsDataFormat;   // SUX Models use Float
+    NpState textureCoordinatesDataFormat[8];  // SUX Models use Float
+
     Int elementsForPosition; // SUX Models use 3
     Int elementsForNormal;
     Int elementsForColor;
     Int elementsForWeights;
     Int elementsForTextureCoordinateSet[8];
+
     Int maxTextureCoordinateSet;
 }
 NpVertexFormat;
 
 void reset_npvertexformat(NpVertexFormat * vertex_format);
 
-
 typedef struct NpVertices
 {
     NpVertexFormat format;
     Int primitiveType;
     BOOL indexed;
+
+    // These will only be used if we load a SUX model, otherwise they should be NULL
     Float * positions;
     Float * normals;
     Float * colors;
     Float * weights;
-    Float * textureCoordinates;
+    Float * textureCoordinates[8];
+
     Int * indices;
     Int maxVertex;
     Int maxIndex;
@@ -75,14 +84,18 @@ void init_empty_npvertexbuffer(NpVertexBuffer * vertex_buffer);
 - (void) renderElementWithPrimitiveType:(NpState)primitiveType firstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;
 - (void) renderFromMemoryWithPrimitiveType:(NpState)primitiveType firstIndex:(Int)firstIndex andLastIndex:(Int)lastIndex;
 
-- (Int) elementsForPosition;
+- (BOOL) hasVBO;
+- (NpVertexFormat *) vertexFormat;
+- (NpVertexBuffer *) vertexBuffer;
 - (Int) vertexCount;
-
 - (Float *) positions;
 - (Float *) normals;
 - (Float *) colors;
 - (Float *) weights;
 - (Int *) indices;
+
+- (void) setVertexFormat:(NpVertexFormat *)newVertexFormat;
+- (void) setVertexCount:(Int)newVertexCount;
 
 - (void) setPositions:(Float *)newPositions elementsForPosition:(Int)newElementsForPosition vertexCount:(Int)newVertexCount;
 - (void) setNormals:(Float *)newNormals withElementsForNormal:(Int)newElementsForNormal;

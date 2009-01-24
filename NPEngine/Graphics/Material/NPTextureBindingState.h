@@ -12,7 +12,7 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
-- (NPTexture *) textureForKey:(NSString *)colormapSemantic;
-- (void) setTexture:(NPTexture *)texture forKey:(NSString *)colormapSemantic;
+- (id) textureForKey:(NSString *)colormapSemantic;
+- (void) setTexture:(id)texture forKey:(NSString *)colormapSemantic;
 
 @end
