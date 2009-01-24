@@ -71,7 +71,7 @@
     }
     else
     {
-        NPLOG_WARNING(([NSString stringWithFormat:@"Input Action with name %@ already exists",inputActionName]));
+        NPLOG_WARNING(@"Input Action with name %@ already exists",inputActionName);
         return nil;
     }    
 }

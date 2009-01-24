@@ -20,6 +20,8 @@
 
     textures = [[ NSMutableDictionary alloc ] init ];
     maxAnisotropy = 1;
+    nonPOTSupport = NO;
+    textureMode = NP_NONE;
 
     return self;
 }
@@ -39,12 +41,75 @@
         glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&maxAnisotropy);
     }
 
-    glEnable(GL_TEXTURE_2D);
+    if ( [[[[ NP Graphics ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_ARB_texture_non_power_of_two" ] == YES )
+    {
+        nonPOTSupport = YES;
+    }
+
+    [ self setTexture2DMode ];
 }
 
 - (Int) maxAnisotropy
 {
     return maxAnisotropy;
+}
+
+- (BOOL) nonPOTSupport
+{
+    return nonPOTSupport;
+}
+
+- (NpState) textureMode
+{
+    return textureMode;
+}
+
+- (void) setTextureMode:(NpState)newTextureMode
+{
+    if ( textureMode != newTextureMode )
+    {
+        switch ( newTextureMode )
+        {
+            case NP_GRAPHICS_TEXTURE_MODE_2D:{ textureMode = newTextureMode; glEnable(GL_TEXTURE_2D); break; }
+            case NP_GRAPHICS_TEXTURE_MODE_3D:{ textureMode = newTextureMode; glEnable(GL_TEXTURE_3D); break; }
+            default: { NPLOG_ERROR(([NSString stringWithFormat:@"%@: unknow texture mode %d",name,newTextureMode])); break; }
+        }
+    }
+}
+
+- (void) setTexture2DMode
+{
+    textureMode = NP_GRAPHICS_TEXTURE_MODE_2D;
+    glEnable(GL_TEXTURE_2D);
+}
+
+- (void) setTexture3DMode
+{
+    textureMode = NP_GRAPHICS_TEXTURE_MODE_3D;
+    glEnable(GL_TEXTURE_3D);
+}
+
+- (UInt) generateGLTextureID
+{
+    UInt textureID = NP_NONE;
+    glGenTextures(1, &textureID);
+
+    return textureID;
+}
+
+- (GLenum) computeGLWrap:(NpState)wrap
+{
+    GLenum glwrap = GL_NONE;
+    switch ( wrap )
+    {
+        case NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP :{ glwrap = GL_CLAMP;  break; }
+        case NP_GRAPHICS_TEXTURE_WRAPPING_REPEAT:{ glwrap = GL_REPEAT; break; }
+        case NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE  :{ glwrap = GL_CLAMP_TO_EDGE;   break; }
+        case NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_BORDER:{ glwrap = GL_CLAMP_TO_BORDER; break; }
+        default: { NPLOG_ERROR(@"%@ unknown wrap %d",name,wrap); break; }
+    }
+
+    return glwrap;
 }
 
 - (GLenum) computeGLDataFormat:(NpState)dataFormat
@@ -56,6 +121,7 @@
         case ( NP_GRAPHICS_TEXTURE_DATAFORMAT_BYTE ) :{ gldataformat = GL_UNSIGNED_BYTE;  break; }
         case ( NP_GRAPHICS_TEXTURE_DATAFORMAT_HALF ) :{ gldataformat = GL_HALF_FLOAT_ARB; break; }
         case ( NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT ):{ gldataformat = GL_FLOAT;          break; }
+        default:{ NPLOG_ERROR(@"%@: Unknown data format %d",name,dataFormat); break; }
     }
 
     return gldataformat;
@@ -71,6 +137,7 @@
         case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RG )   : { glpixelformat = GL_LUMINANCE_ALPHA; break; }
         case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGB )  : { glpixelformat = GL_RGB;             break; }
         case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ) : { glpixelformat = GL_RGBA;            break; }
+        default:{ NPLOG_ERROR(@"%@: Unknown pixel format %d",name,pixelFormat); break; }
     }
 
     return glpixelformat;
@@ -131,7 +198,7 @@
 
 - (id) loadTextureFromAbsolutePath:(NSString *)path
 {
-    NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, path]));
+    NPLOG(@"%@: loading %@", name, path);
 
     if ( [ path isEqual:@"" ] == NO )
     {
@@ -197,6 +264,25 @@
     [ texture setDataFormat:dataFormat ];
     [ texture setPixelFormat:pixelFormat ];
     [ texture setMipMapping:mipMapping ];
+
+    [ textures setObject:texture forKey:textureName ];
+
+    return [ texture autorelease ];
+}
+
+- (id) createTexture3DWithName:(NSString *)textureName
+                         width:(Int)width 
+                        height:(Int)height
+                         depth:(Int)depth
+                    dataFormat:(NpState)dataFormat
+                   pixelFormat:(NpState)pixelFormat
+{
+    NPTexture3D * texture = [[ NPTexture3D alloc ] initWithName:textureName parent:self ];
+    [ texture setWidth:width ];
+    [ texture setHeight:height ];
+    [ texture setDepth:depth ];
+    [ texture setDataFormat:dataFormat ];
+    [ texture setPixelFormat:pixelFormat ];
 
     [ textures setObject:texture forKey:textureName ];
 

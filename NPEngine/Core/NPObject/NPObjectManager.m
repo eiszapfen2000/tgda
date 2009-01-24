@@ -1,6 +1,6 @@
 #import "NPObjectManager.h"
 #import "Core/Basics/NpCrc32.h"
-#import "Core/NPEngineCore.h"
+#import "NP.h"
 
 @implementation NPObjectManager
 
@@ -36,6 +36,8 @@
 
     if ( [ objects count ] > 0 )
     {
+        NSLog(@"Memory leak, listing leaked objects:");
+
         NSEnumerator * e = [ objects objectEnumerator ];
         NSValue * o;
 

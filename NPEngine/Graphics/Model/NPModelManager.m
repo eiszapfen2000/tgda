@@ -5,7 +5,7 @@
 
 - (id) init
 {
-    return [ self initWithName:@"NPEngine Pathmanager" ];
+    return [ self initWithName:@"NPEngine Model Manager" ];
 }
 
 - (id) initWithName:(NSString *)newName
@@ -39,7 +39,7 @@
 
 - (id) loadModelFromAbsolutePath:(NSString *)path
 {
-    NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, path]));
+    NPLOG(@"%@: loading %@", name, path);
 
     if ( [ path isEqual:@"" ] == NO )
     {
@@ -83,20 +83,20 @@
 
     if ( isDirectory(path) == YES )
     {
-        NPLOG_WARNING(([NSString stringWithFormat:@"%@ is a directory", path]));
+        NPLOG_WARNING(@"%@ is a directory", path);
         return NO;
     }
 
     if ( isFile(path) == YES )
     {
-        NPLOG(([NSString stringWithFormat:@"%@ already exist, overwriting...", path]));
+        NPLOG(@"%@ already exist, overwriting...", path);
         mode = NP_FILE_UPDATING;        
     }
     else
     {
         if ( createEmptyFile(path) == NO )
         {
-            NPLOG_WARNING(([NSString stringWithFormat:@"Could not create file %@", path]));
+            NPLOG_WARNING(@"Could not create file %@", path);
             return NO;
         }
     }

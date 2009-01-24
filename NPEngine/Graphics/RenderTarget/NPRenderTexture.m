@@ -133,7 +133,6 @@
     }
 
     texture = [[ NPTexture alloc ] initWithName:@"RenderTexture" parent:self ];
-    [ texture generateGLTextureID ];
     [ texture setWidth:width ];
     [ texture setHeight:height ];
     [ texture setDataFormat:dataFormat ];

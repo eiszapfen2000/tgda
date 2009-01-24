@@ -54,11 +54,7 @@
 
 - (void) setCurrentActiveCamera:(id)newCurrentActiveCamera
 {
-    if ( currentActiveCamera != newCurrentActiveCamera )
-    {
-        [ currentActiveCamera release ];
-        currentActiveCamera = [ newCurrentActiveCamera retain ];
-    }
+    ASSIGN(currentActiveCamera,newCurrentActiveCamera);
 }
 
 - (id) createCamera

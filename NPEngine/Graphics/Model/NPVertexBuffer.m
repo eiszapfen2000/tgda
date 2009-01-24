@@ -3,6 +3,16 @@
 
 void reset_npvertexformat(NpVertexFormat * vertex_format)
 {
+    vertex_format->positionsDataFormat = NP_NONE;
+    vertex_format->normalsDataFormat   = NP_NONE;
+    vertex_format->colorsDataFormat    = NP_NONE;
+    vertex_format->weightsDataFormat   = NP_NONE;
+
+    for ( Int i = 0; i < 8; i++ )
+    {
+        vertex_format->textureCoordinatesDataFormat[i] = NP_NONE;
+    }
+
     vertex_format->elementsForPosition = 3;
     vertex_format->elementsForNormal   = 0;
     vertex_format->elementsForColor    = 0;
@@ -20,57 +30,42 @@ void init_empty_npvertices(NpVertices * vertices)
 {
     reset_npvertexformat(&(vertices->format));
 
-    vertices->primitiveType      = -1;
-    vertices->positions          = NULL;
-    vertices->normals            = NULL;
-    vertices->colors             = NULL;
-    vertices->weights            = NULL;
-    vertices->textureCoordinates = NULL;
-    vertices->indices            = NULL;
-    vertices->indexed            = NO;
-    vertices->maxVertex          = 0;
-    vertices->maxIndex           = 0;
+    vertices->primitiveType = NP_NONE;
+    vertices->positions     = NULL;
+    vertices->normals       = NULL;
+    vertices->colors        = NULL;
+    vertices->weights       = NULL;
+    vertices->indices       = NULL;
+    vertices->indexed       = NO;
+    vertices->maxVertex     = 0;
+    vertices->maxIndex      = 0;
+
+    for ( Int i = 0; i < 8; i++ )
+    {
+        vertices->textureCoordinates[i] = 0;
+    }
 }
 
 void reset_npvertices(NpVertices * vertices)
 {
     reset_npvertexformat(&(vertices->format));
 
-    vertices->primitiveType = -1;
+    vertices->primitiveType = NP_NONE;
 
-    if ( vertices->positions != NULL )
-    {
-        free(vertices->positions);
-    }
-
-    if ( vertices->normals != NULL )
-    {
-        FREE(vertices->normals);
-    }
-
-    if ( vertices->colors != NULL )
-    {
-        FREE(vertices->colors);
-    }
-
-    if ( vertices->weights != NULL )
-    {
-        FREE(vertices->weights);
-    }
-
-    if ( vertices->textureCoordinates != NULL )
-    {
-        FREE(vertices->textureCoordinates);
-    }
-
-    if ( vertices->indices != NULL && vertices->indexed == YES )
-    {
-        FREE(vertices->indices);
-    }
+    SAFE_FREE(vertices->positions);
+    SAFE_FREE(vertices->normals);
+    SAFE_FREE(vertices->colors);
+    SAFE_FREE(vertices->weights);
+    SAFE_FREE(vertices->indices);
 
     vertices->indexed   = NO;
     vertices->maxVertex = 0;
     vertices->maxIndex  = 0;
+
+    for ( Int i = 0; i < 8; i++ )
+    {
+        SAFE_FREE(vertices->textureCoordinates[i]);
+    }
 }
 
 void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
@@ -83,10 +78,10 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     for ( Int i = 0; i < 8; i++ )
     {
-        vertex_buffer->textureCoordinatesSetID[i] = -1;
+        vertex_buffer->textureCoordinatesSetID[i] = NP_NONE;
     }
 
-    vertex_buffer->indicesID = -1;
+    vertex_buffer->indicesID = NP_NONE;
 }
 
 @implementation NPVertexBuffer
@@ -117,43 +112,53 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     [ super dealloc ];
 }
 
+- (void *) allocArray:(NpState)dataFormat numberOfElements:(Int)numberOfElements
+{
+    switch ( dataFormat )
+    {
+        case NP_GRAPHICS_VBO_DATAFORMAT_INT  :{ return ALLOC_ARRAY(Int,   numberOfElements); }
+        case NP_GRAPHICS_VBO_DATAFORMAT_HALF :{ return ALLOC_ARRAY(UInt16,numberOfElements); }
+        case NP_GRAPHICS_VBO_DATAFORMAT_FLOAT:{ return ALLOC_ARRAY(Float, numberOfElements); }
+        default:{ NPLOG_ERROR(@"%@: Unknown data format %d",name,dataFormat); return NULL; }
+    }
+}
+
 - (void) allocArrays
 {
     Int size = vertices.maxVertex + 1;
-    vertices.positions = ALLOC_ARRAY(Float,(size*vertices.format.elementsForPosition));
+    vertices.positions = [ self allocArray:vertices.format.positionsDataFormat numberOfElements:size*vertices.format.elementsForPosition ];
 
     if ( vertices.format.elementsForNormal > 0 )
     {
-        vertices.normals = ALLOC_ARRAY(Float,size*vertices.format.elementsForNormal);
+        vertices.normals = [ self allocArray:vertices.format.normalsDataFormat 
+                            numberOfElements:size*vertices.format.elementsForNormal ];
     }
 
     if ( vertices.format.elementsForColor > 0 )
     {
-        vertices.colors = ALLOC_ARRAY(Float,size*vertices.format.elementsForColor);
+        vertices.colors = [ self allocArray:vertices.format.colorsDataFormat 
+                           numberOfElements:size*vertices.format.elementsForColor ];
     }
 
     if ( vertices.format.elementsForWeights > 0 )
     {
-        vertices.weights = ALLOC_ARRAY(Float,size*vertices.format.elementsForWeights);
+        vertices.weights = [ self allocArray:vertices.format.weightsDataFormat 
+                            numberOfElements:size*vertices.format.elementsForWeights ];
     }
 
-    Int textureCoordinatesCount = 0;
     for ( Int i = 0; i < 8; i++ )
     {
         if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
         {
-            textureCoordinatesCount += (size * vertices.format.elementsForTextureCoordinateSet[i]);
+            vertices.textureCoordinates[i] = [ self allocArray:vertices.format.textureCoordinatesDataFormat[i]
+                                              numberOfElements:size*vertices.format.elementsForTextureCoordinateSet[i] ];
         }
-    }
-
-    if ( textureCoordinatesCount > 0 )
-    {
-        vertices.textureCoordinates = ALLOC_ARRAY(Float,textureCoordinatesCount);
     }
 
     if ( vertices.maxIndex > 0 )
     {
-        vertices.indices = ALLOC_ARRAY(Int,vertices.maxIndex + 1);
+        vertices.indices = [ self allocArray:NP_GRAPHICS_VBO_DATAFORMAT_INT
+                            numberOfElements:(vertices.maxIndex + 1) ];
     }
 }
 
@@ -166,19 +171,28 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 - (void) allocVertexBufferStorage:(Int)vertexCount indexCount:(Int)indexCount
 {
     vertices.maxVertex = vertexCount - 1;
-    vertices.maxIndex = indexCount - 1;
+    vertices.maxIndex  = indexCount  - 1;
     [ self allocArrays ];
 }
 
 - (BOOL) loadFromFile:(NPFile *)file
 {
-    [ self setFileName:[ file fileName ] ];
+    [ self setFileName:[ file fileName ]];
 
     Int indexCount;
     Int vertexCount;
 
-    vertices.format.elementsForPosition = 3;
+    vertices.format.positionsDataFormat = NP_GRAPHICS_VBO_DATAFORMAT_FLOAT;
+    vertices.format.normalsDataFormat   = NP_GRAPHICS_VBO_DATAFORMAT_FLOAT;
+    vertices.format.colorsDataFormat    = NP_GRAPHICS_VBO_DATAFORMAT_FLOAT;
+    vertices.format.weightsDataFormat   = NP_GRAPHICS_VBO_DATAFORMAT_FLOAT;
 
+    for ( Int i = 0; i < 8; i++ )
+    {
+        vertices.format.textureCoordinatesDataFormat[i] = NP_GRAPHICS_VBO_DATAFORMAT_FLOAT;
+    }
+
+    vertices.format.elementsForPosition = 3;
     [ file readInt32:&(vertices.format.elementsForNormal) ];
     [ file readInt32:&(vertices.format.elementsForColor) ];
     [ file readInt32:&(vertices.format.elementsForWeights) ];
@@ -221,26 +235,12 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         [ file readFloats:vertices.weights withLength:(vertexCount*vertices.format.elementsForWeights) ];
     }
 
-    Int textureCoordinatesCount = 0;
     for ( Int i = 0; i < 8; i++ )
     {
         if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
         {
-            textureCoordinatesCount += (vertexCount * vertices.format.elementsForTextureCoordinateSet[i]);
+            [ file readFloats:vertices.textureCoordinates[i] withLength:(vertexCount * vertices.format.elementsForTextureCoordinateSet[i]) ];
         }
-    }
-
-    if ( textureCoordinatesCount > 0 )
-    {
-        Float * texCoordPointer = vertices.textureCoordinates;
-        for ( Int i = 0; i < 8; i++ )
-        {
-            if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
-            {
-                [ file readFloats:texCoordPointer withLength:(vertexCount * vertices.format.elementsForTextureCoordinateSet[i]) ];
-                texCoordPointer += (vertexCount * vertices.format.elementsForTextureCoordinateSet[i]);
-            }
-        }        
     }
 
     if ( vertices.indexed == YES )
@@ -301,14 +301,11 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         [ file writeFloats:vertices.weights withLength:(vertexCount*vertices.format.elementsForWeights) ];
     }
 
-    Float * texCoordPointer = vertices.textureCoordinates;
-
     for ( Int i = 0; i < 8; i++ )
     {
         if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
         {
-            [ file writeFloats:texCoordPointer withLength:(vertexCount * vertices.format.elementsForTextureCoordinateSet[i]) ];
-            texCoordPointer += (vertexCount * vertices.format.elementsForTextureCoordinateSet[i]);
+            [ file writeFloats:vertices.textureCoordinates[i] withLength:(vertexCount * vertices.format.elementsForTextureCoordinateSet[i]) ];
         }
     }    
 
@@ -346,33 +343,10 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         [ self deleteVBO ];
     }
 
-    GLenum vboUsage;
+    GLenum vboUsage = [[[ NP Graphics ] vertexBufferManager ] computeGLUsage:usage ];
 
-    switch( usage )
-    {
-        case NP_GRAPHICS_VBO_UPLOAD_ONCE_RENDER_OFTEN:
-        {
-            vboUsage = GL_STATIC_DRAW;
-            break;
-        }
-        case NP_GRAPHICS_VBO_UPLOAD_ONCE_RENDER_SELDOM:
-        {
-            vboUsage = GL_STREAM_DRAW;
-            break;
-        }
-        case NP_GRAPHICS_VBO_UPLOAD_OFTEN_RENDER_OFTEN:
-        {
-            vboUsage = GL_DYNAMIC_DRAW;
-            break;
-        }
-        default:
-        {
-            vboUsage = GL_STATIC_DRAW;
-            break;
-        }
-    }
-
-    Int verticesSize = (vertices.maxVertex + 1) * sizeof(Float);
+    Int vertexCount  = vertices.maxVertex + 1;
+    Int verticesSize = vertexCount * [[[ NP Graphics ] vertexBufferManager ] computeDataFormatByteCount:vertices.format.positionsDataFormat ];
 
     glGenBuffers(1, &(vertexBuffer.positionsID));
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.positionsID);
@@ -380,35 +354,40 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     if ( vertices.format.elementsForNormal > 0 )
     {
+        Int normalsSize = vertexCount * [[[ NP Graphics ] vertexBufferManager ] computeDataFormatByteCount:vertices.format.normalsDataFormat ];
+
         glGenBuffers(1, &(vertexBuffer.normalsID));
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.normalsID);
-        glBufferData(GL_ARRAY_BUFFER, verticesSize * vertices.format.elementsForNormal, vertices.normals, vboUsage);
+        glBufferData(GL_ARRAY_BUFFER, normalsSize * vertices.format.elementsForNormal, vertices.normals, vboUsage);
     }
 
     if ( vertices.format.elementsForColor > 0 )
     {
+        Int colorsSize = vertexCount * [[[ NP Graphics ] vertexBufferManager ] computeDataFormatByteCount:vertices.format.colorsDataFormat ];
+
         glGenBuffers(1, &(vertexBuffer.colorsID));
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.colorsID);
-        glBufferData(GL_ARRAY_BUFFER, verticesSize * vertices.format.elementsForColor, vertices.colors, vboUsage);
+        glBufferData(GL_ARRAY_BUFFER, colorsSize * vertices.format.elementsForColor, vertices.colors, vboUsage);
     }
 
     if ( vertices.format.elementsForWeights > 0 )
     {
+        Int weightsSize = vertexCount * [[[ NP Graphics ] vertexBufferManager ] computeDataFormatByteCount:vertices.format.weightsDataFormat ];
+
         glGenBuffers(1, &(vertexBuffer.weightsID));
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.weightsID);
-        glBufferData(GL_ARRAY_BUFFER, verticesSize * vertices.format.elementsForWeights, vertices.weights, vboUsage);
+        glBufferData(GL_ARRAY_BUFFER, weightsSize * vertices.format.elementsForWeights, vertices.weights, vboUsage);
     }
 
     for ( Int i = 0; i < 8; i++)
     {
-        Float * texCoordPointer = vertices.textureCoordinates;
-
         if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
         {
+            Int texCoordsSize = vertexCount * [[[ NP Graphics ] vertexBufferManager ] computeDataFormatByteCount:vertices.format.textureCoordinatesDataFormat[i] ];
+
             glGenBuffers(1, &(vertexBuffer.textureCoordinatesSetID[i]));
             glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.textureCoordinatesSetID[i]);
-            glBufferData(GL_ARRAY_BUFFER, verticesSize * vertices.format.elementsForTextureCoordinateSet[i], texCoordPointer, vboUsage);
-            texCoordPointer += ((vertices.maxVertex + 1) * vertices.format.elementsForTextureCoordinateSet[i]);
+            glBufferData(GL_ARRAY_BUFFER, texCoordsSize * vertices.format.elementsForTextureCoordinateSet[i], vertices.textureCoordinates[i], vboUsage);
         }
     }
 
@@ -426,9 +405,10 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     GLenum error = glGetError();
 
-    if ( error != GL_NO_ERROR )
+    while ( error != GL_NO_ERROR )
     {
         NPLOG_ERROR(([ NSString stringWithFormat:@"%s",gluErrorString(error)]));
+        error = glGetError();
     }
 
     vertexBuffer.hasVBO = YES;
@@ -589,15 +569,12 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     for ( Int i = 0; i < 8; i++)
     {
-        Float * texCoordPointer = vertices.textureCoordinates;
-
         if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
         {
-            glActiveTexture(GL_TEXTURE0 + i);
+            //glActiveTexture(GL_TEXTURE0 + i);
             glClientActiveTexture(GL_TEXTURE0 + i);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-            glTexCoordPointer(vertices.format.elementsForTextureCoordinateSet[i], GL_FLOAT, 0, texCoordPointer);
-            texCoordPointer += ((vertices.maxVertex + 1) * vertices.format.elementsForTextureCoordinateSet[i]);
+            glTexCoordPointer(vertices.format.elementsForTextureCoordinateSet[i], GL_FLOAT, 0, vertices.textureCoordinates[i]);
         }
     }
 
@@ -636,17 +613,21 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     }
 
     glClientActiveTexture(GL_TEXTURE0);
-
 }
 
-- (Float *) positions
+- (BOOL) hasVBO
 {
-    return vertices.positions;
+    return vertexBuffer.hasVBO;
 }
 
-- (Int) elementsForPosition
+- (NpVertexFormat *) vertexFormat
 {
-    return vertices.format.elementsForPosition;
+    return &(vertices.format);
+}
+
+- (NpVertexBuffer *) vertexBuffer
+{
+    return &vertexBuffer;
 }
 
 - (Int) vertexCount
@@ -654,33 +635,63 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     return ( vertices.maxVertex + 1);
 }
 
-- (void) setPositions:(Float *)newPositions elementsForPosition:(Int)newElementsForPosition vertexCount:(Int)newVertexCount;
+- (Float *) positions
 {
-    if ( newElementsForPosition < 1 || newElementsForPosition > 4 )
-    {
-        NPLOG_WARNING(([NSString stringWithFormat:@"Invalid positions element count %d",newElementsForPosition]));
-        return;
-    }
-
-    if ( newVertexCount < 1 )
-    {
-        NPLOG_WARNING(([NSString stringWithFormat:@"Invalid vertex count %d",newElementsForPosition]));
-        return;
-    }
-
-    if ( vertices.positions != NULL && vertices.positions != newPositions )
-    {
-        FREE(vertices.positions);
-    }
-
-    vertices.positions = newPositions;
-    vertices.format.elementsForPosition = newElementsForPosition;
-    vertices.maxVertex = newVertexCount - 1;
+    return vertices.positions;
 }
 
 - (Float *) normals
 {
     return vertices.normals;
+}
+
+- (Float *) colors
+{
+    return vertices.colors;
+}
+
+- (Float *) weights
+{
+    return vertices.weights;
+}
+
+- (Int *) indices
+{
+    return vertices.indices;
+}
+
+- (void) setVertexFormat:(NpVertexFormat *)newVertexFormat
+{
+    vertices.format = *newVertexFormat;
+}
+
+- (void) setVertexCount:(Int)newVertexCount
+{
+    vertices.maxVertex = newVertexCount - 1;
+}
+
+- (void) setPositions:(Float *)newPositions elementsForPosition:(Int)newElementsForPosition vertexCount:(Int)newVertexCount;
+{
+    if ( newElementsForPosition < 1 || newElementsForPosition > 4 )
+    {
+        NPLOG_WARNING(@"Invalid positions element count %d",newElementsForPosition);
+        return;
+    }
+
+    if ( newVertexCount < 1 )
+    {
+        NPLOG_WARNING(@"Invalid vertex count %d",newElementsForPosition);
+        return;
+    }
+
+    if ( vertices.positions != NULL && vertices.positions != newPositions )
+    {
+        SAFE_FREE(vertices.positions);
+    }
+
+    vertices.positions = newPositions;
+    vertices.format.elementsForPosition = newElementsForPosition;
+    vertices.maxVertex = newVertexCount - 1;
 }
 
 - (void) setNormals:(Float *)newNormals withElementsForNormal:(Int)newElementsForNormal
@@ -694,11 +705,6 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     vertices.normals = newNormals;
 }
 
-- (Float *) colors
-{
-    return vertices.colors;
-}
-
 - (void) setColors:(Float *)newColors withElementsForColor:(Int)newElementsForColor
 {
     if ( vertices.colors != NULL && vertices.colors != newColors )
@@ -710,11 +716,6 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     vertices.normals = newColors;
 }
 
-- (Float *) weights
-{
-    return vertices.weights;
-}
-
 - (void) setWeights:(Float *)newWeights withElementsForWeights:(Int)newElementsForWeights
 {
     if ( vertices.weights != NULL && vertices.weights != newWeights )
@@ -724,11 +725,6 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     vertices.format.elementsForWeights = newElementsForWeights;
     vertices.normals = newWeights;
-}
-
-- (Int *) indices
-{
-    return vertices.indices;
 }
 
 - (void) setIndices:(Int *)newIndices indexCount:(Int)newIndexCount

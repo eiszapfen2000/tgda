@@ -12,6 +12,7 @@
 
 @end
 
-#define NPLOG(_logmessage)       [[[ NP Core ] logger ] write:(_logmessage)]
-#define NPLOG_WARNING(_warning)  [[[ NP Core ] logger ] writeWarning:(_warning)]
-#define NPLOG_ERROR(_error)      [[[ NP Core ] logger ] writeError:(_error)]
+#define NPLOG(_logmessage,args...)         [[[ NP Core ] logger ] write:       [ NSString stringWithFormat:_logmessage, ## args]]
+#define NPLOG_WARNING(_logmessage,args...) [[[ NP Core ] logger ] writeWarning:[ NSString stringWithFormat:_logmessage, ## args]]
+#define NPLOG_ERROR(_logmessage,args...)   [[[ NP Core ] logger ] writeError:  [ NSString stringWithFormat:_logmessage, ## args]]
+

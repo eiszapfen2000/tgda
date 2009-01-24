@@ -43,6 +43,21 @@
     ASSIGN(currentPixelBuffer,newCurrentPixelBuffer);
 }
 
+- (GLenum) computeGLUsage:(NpState)usage
+{
+    GLenum pboUsage = GL_NONE;
+
+    switch( usage )
+    {
+        case NP_GRAPHICS_PBO_UPLOAD_ONCE_USE_OFTEN :{ pboUsage = GL_STATIC_DRAW;  break; }
+        case NP_GRAPHICS_PBO_UPLOAD_ONCE_USE_SELDOM:{ pboUsage = GL_STREAM_DRAW;  break; }
+        case NP_GRAPHICS_PBO_UPLOAD_OFTEN_USE_OFTEN:{ pboUsage = GL_DYNAMIC_DRAW; break; }
+        default: { pboUsage = GL_STATIC_DRAW; break; }
+    }
+
+    return pboUsage;
+}
+
 - (GLenum) computeGLColorBuffer:(NpState)colorbuffer
 {
     GLenum glcolorbuffer = 0;
@@ -56,7 +71,7 @@
         }
         else
         {
-            NPLOG_ERROR(([NSString stringWithFormat:@"Unknown colorbuffer %d",colorbuffer]));
+            NPLOG_ERROR(@"%@: Unknown colorbuffer %d",name,colorbuffer);
         }
     }
 
@@ -73,7 +88,7 @@
     }
     else
     {
-        NPLOG_ERROR(([NSString stringWithFormat:@"Unknown framebuffer %d",framebuffer]));
+        NPLOG_ERROR(@"%@: Unknown framebuffer %d",name,framebuffer);
     }
 
     return glframebuffer;
@@ -97,19 +112,6 @@
 
 - (NPPixelBuffer *) createPBOCompatibleWithRenderTexture:(NPRenderTexture *)renderTexture
 {
-    /*NSString * pboName = [ NSString stringWithFormat:@"PBOFrom%@", [ renderTexture name ]];
-    NPPixelBuffer * pixelBuffer = [[ NPPixelBuffer alloc ] initWithName:pboName
-                                                                 parent:self
-                                                                   mode:NP_GRAPHICS_PBO_AS_DATA_SOURCE
-                                                                  width:[renderTexture width]
-                                                                 height:[renderTexture height]
-                                                               dataType:[renderTexture dataFormat]
-                                                            pixelFormat:[renderTexture pixelFormat]
-                                                                  usage:NP_GRAPHICS_PBO_UPLOAD_ONCE_USE_OFTEN ];
-    [ pixelBuffers addObject:pixelBuffer ];    
-
-    return [ pixelBuffer autorelease ];*/
-
     return [ self createPBOCompatibleWithTexture:[renderTexture texture]];
 }
 
@@ -145,11 +147,86 @@
     return [ pixelBuffer autorelease ];
 }
 
+- (NSDictionary *) createPBOsSharingDataWithVBO:(NPVertexBuffer *)vbo
+{
+    NSMutableDictionary * pbos = [[ NSMutableDictionary alloc ] init ];
+
+    if ( [ vbo hasVBO ] == YES )
+    {
+        Int vertexCount = [ vbo vertexCount ];
+        NpVertexFormat * vertexFormat = [ vbo vertexFormat ];
+        NpVertexBuffer * vertexBuffer = [ vbo vertexBuffer ];
+
+        if ( vertexFormat->elementsForPosition > 0 )
+        {
+            NSString * pboName = [ NSString stringWithFormat:@"PBO_%@_Position",[vbo name]];
+            NPPixelBuffer * pbo = [[ NPPixelBuffer alloc ] initWithName:pboName parent:self ];
+            [ pbo setPixelBufferID:vertexBuffer->positionsID ];
+            [ pbo setDataFormat:vertexFormat->positionsDataFormat ];
+            [ pbo setPixelFormat:(vertexFormat->elementsForPosition-1) ];
+            [ pbos setObject:pbo forKey:@"Positions" ];
+            [ pbo release ];
+        }
+
+        if ( vertexFormat->elementsForNormal > 0 )
+        {
+            NSString * pboName = [ NSString stringWithFormat:@"PBO_%@_Normal",[vbo name]];
+            NPPixelBuffer * pbo = [[ NPPixelBuffer alloc ] initWithName:pboName parent:self ];
+            [ pbo setPixelBufferID:vertexBuffer->normalsID ];
+            [ pbo setDataFormat:vertexFormat->normalsDataFormat ];
+            [ pbo setPixelFormat:(vertexFormat->elementsForNormal-1) ];
+            [ pbos setObject:pbo forKey:@"Normals" ];
+            [ pbo release ];
+        }
+
+        if ( vertexFormat->elementsForColor > 0 )
+        {
+            NSString * pboName = [ NSString stringWithFormat:@"PBO_%@_Color",[vbo name]];
+            NPPixelBuffer * pbo = [[ NPPixelBuffer alloc ] initWithName:pboName parent:self ];
+            [ pbo setPixelBufferID:vertexBuffer->colorsID ];
+            [ pbo setDataFormat:vertexFormat->colorsDataFormat ];
+            [ pbo setPixelFormat:(vertexFormat->elementsForColor-1) ];
+            [ pbos setObject:pbo forKey:@"Colors" ];
+            [ pbo release ];
+        }
+
+        if ( vertexFormat->elementsForColor > 0 )
+        {
+            NSString * pboName = [ NSString stringWithFormat:@"PBO_%@_Weight",[vbo name]];
+            NPPixelBuffer * pbo = [[ NPPixelBuffer alloc ] initWithName:pboName parent:self ];
+            [ pbo setPixelBufferID:vertexBuffer->weightsID ];
+            [ pbo setDataFormat:vertexFormat->weightsDataFormat ];
+            [ pbo setPixelFormat:(vertexFormat->elementsForWeights-1) ];
+            [ pbos setObject:pbo forKey:@"Weights" ];
+            [ pbo release ];
+        }
+
+        for ( Int i = 0; i < 8; i++ )
+        {
+            if ( vertexFormat->elementsForTextureCoordinateSet[i] > 0 )
+            {
+                NSString * pboName = [ NSString stringWithFormat:@"PBO_%@_Texcoord%d",[vbo name],i];
+                NPPixelBuffer * pbo = [[ NPPixelBuffer alloc ] initWithName:pboName parent:self ];
+                [ pbo setPixelBufferID:vertexBuffer->textureCoordinatesSetID[i] ];
+                [ pbo setDataFormat:vertexFormat->textureCoordinatesDataFormat[i] ];
+                [ pbo setPixelFormat:(vertexFormat->elementsForTextureCoordinateSet[i]-1) ];
+                [ pbos setObject:pbo forKey:[NSString stringWithFormat:@"Texcoord%d",i]];
+                [ pbo release ];
+            }
+        }
+    }
+    else
+    {
+        NPLOG_ERROR(@"%@: %@ not uploaded to GL",name,[vbo name]);
+    }
+
+    return pbos;
+}
+
 - (NPTexture *) createTextureCompatibleWithPBO:(NPPixelBuffer *)pbo
 {
     NSString * textureName = [ NSString stringWithFormat:@"TextureFrom%@", [ pbo name ]];
     NPTexture * texture = [[ NPTexture alloc ] initWithName:textureName parent:self ];
-    [ texture generateGLTextureID ];
     [ texture setWidth:[pbo width]];
     [ texture setHeight:[pbo height]];
     [ texture setDataFormat:[pbo dataFormat]];
@@ -160,21 +237,6 @@
     [ texture setTextureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
     [ texture setTextureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
     [ texture uploadToGLWithoutImageData ];
-
-/*
-    texture = [[ NPTexture alloc ] initWithName:@"RenderTexture" parent:self ];
-    [ texture generateGLTextureID ];
-    [ texture setWidth:width ];
-    [ texture setHeight:height ];
-    [ texture setDataFormat:dataFormat ];
-    [ texture setPixelFormat:pixelFormat ];
-    [ texture setMipMapping:NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE ];
-    [ texture setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    [ texture setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    [ texture setTextureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
-    [ texture setTextureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
-    [ texture uploadToGLWithoutImageData ];
-*/
 
     return texture;   
 }
@@ -191,20 +253,27 @@
 {
     if ( [ pbo isCompatibleWithRenderTexture:renderTexture ] == YES )
     {
-        NpState colorbuffer = (NpState)[ renderTexture colorBufferIndex ];
-        GLenum glcolorbuffer = [ self computeGLColorBuffer:colorbuffer ];
-        glReadBuffer(glcolorbuffer);
+        if ( [[[ NP Graphics ] renderTargetManager ] currentRenderTargetConfiguration ] != nil )
+        {
+            NpState colorbuffer = (NpState)[ renderTexture colorBufferIndex ];
+            GLenum glcolorbuffer = [ self computeGLColorBuffer:colorbuffer ];
+            glReadBuffer(glcolorbuffer);
 
-        GLenum gldataformat  = [[[ NP Graphics ] textureManager ] computeGLDataFormat :[renderTexture dataFormat ]];
-        GLenum glpixelformat = [[[ NP Graphics ] textureManager ] computeGLPixelFormat:[renderTexture pixelFormat]];
+            GLenum gldataformat  = [[[ NP Graphics ] textureManager ] computeGLDataFormat :[renderTexture dataFormat ]];
+            GLenum glpixelformat = [[[ NP Graphics ] textureManager ] computeGLPixelFormat:[renderTexture pixelFormat]];
 
-        [ pbo activateForWriting ];
+            [ pbo activateForWriting ];
 
-        glReadPixels(0, 0, [pbo width], [pbo height], glpixelformat, gldataformat, 0);
+            glReadPixels(0, 0, [renderTexture width], [renderTexture height], glpixelformat, gldataformat, 0);
 
-        [ pbo deactivate ];
+            [ pbo deactivate ];
 
-        glReadBuffer(GL_NONE);
+            glReadBuffer(GL_NONE);
+        }
+        else
+        {
+            NPLOG_ERROR(@"No RenderTexture active");
+        }
     }
 }
 

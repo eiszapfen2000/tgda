@@ -73,6 +73,11 @@
     pixelFormat = NP_NONE;
 }
 
+- (UInt) pixelBufferID
+{
+    return pixelBufferID;
+}
+
 - (Int) width
 {
     return width;
@@ -91,6 +96,36 @@
 - (NpState) pixelFormat
 {
     return pixelFormat;
+}
+
+- (void) setPixelBufferID:(UInt)newPixelBufferID
+{
+    if ( pixelBufferID > 0 )
+    {
+        glDeleteBuffers(1,&pixelBufferID);
+    }
+
+    pixelBufferID = newPixelBufferID;
+}
+
+- (void) setWidth:(Int)newWidth
+{
+    width = newWidth;
+}
+
+- (void) setHeight:(Int)newHeight
+{
+    height = newHeight;
+}
+
+- (void) setDataFormat:(NpState)newDataFormat
+{
+    dataFormat = newDataFormat;
+}
+
+- (void) setPixelFormat:(NpState)newPixelFormat
+{
+    pixelFormat = newPixelFormat;
 }
 
 - (BOOL) isCompatibleWithImage:(NPImage *)image
@@ -134,7 +169,7 @@
     {
         case NP_GRAPHICS_PBO_AS_DATA_TARGET:{ currentTarget = GL_PIXEL_PACK_BUFFER; break; }
         case NP_GRAPHICS_PBO_AS_DATA_SOURCE:{ currentTarget = GL_PIXEL_UNPACK_BUFFER; break; }
-        default:{ NPLOG(([NSString stringWithFormat:@"Invalid mode specified for %@",name])); }
+        default:{ NPLOG(@"Invalid mode specified for PBO %@",name); }
     }
 }
 
@@ -149,15 +184,17 @@
 {
     UInt byteCount = width * height * [[[ NP Graphics ] imageManager ] calculatePixelByteCountUsingDataFormat:dataFormat pixelFormat:pixelFormat ];
 
-    /*if ( byteCount != [ data length ] )
-    {
-        NPLOG_ERROR(([ NSString stringWithFormat:@"%@ byte count does not match supplied data byte count",name ]));
-        return;
-    }*/
+    [ self uploadToGLUsingData:data byteCount:byteCount ];
+}
 
-    [ self calculatePBOTarget ];
+- (void) uploadToGLUsingData:(NSData *)data byteCount:(UInt)byteCount
+{
+    //[ self calculatePBOTarget ];
+
+    GLenum glusage = [[[ NP Graphics ] pixelBufferManager ] computeGLUsage:usage ];
+
     glBindBuffer(GL_PIXEL_PACK_BUFFER, pixelBufferID);
-    glBufferData(GL_PIXEL_PACK_BUFFER, byteCount, [data bytes], GL_DYNAMIC_DRAW);
+    glBufferData(GL_PIXEL_PACK_BUFFER, byteCount, [data bytes], glusage);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 }
 

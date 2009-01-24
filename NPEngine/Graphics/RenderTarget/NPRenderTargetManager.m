@@ -47,8 +47,8 @@
         glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &maxRenderBufferSize);
     }
 
-    NPLOG(([NSString stringWithFormat:@"Maximum supported color buffer count: %d",colorBufferCount]));
-    NPLOG(([NSString stringWithFormat:@"Maximum supported render buffer size: %d",maxRenderBufferSize]));
+    NPLOG(@"Maximum supported color buffer count: %d",colorBufferCount);
+    NPLOG(@"Maximum supported render buffer size: %d",maxRenderBufferSize);
 }
 
 - (Int) colorBufferCount

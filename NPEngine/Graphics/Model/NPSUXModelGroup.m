@@ -35,17 +35,17 @@
     NSString * groupName = [ file readSUXString ];
     [ self setName:groupName ];
     [ groupName release ];
-    NPLOG(([NSString stringWithFormat:@"Group Name: %@", name]));
+    NPLOG(@"Group Name: %@", name);
 
     [ file readInt32:&primitiveType ];
 
     [ file readInt32:&firstIndex ];
-    NPLOG(([NSString stringWithFormat:@"First Index: %d", firstIndex]));
+    NPLOG(@"First Index: %d", firstIndex);
     [ file readInt32:&lastIndex ];
-    NPLOG(([NSString stringWithFormat:@"Last Index: %d", lastIndex]));
+    NPLOG(@"Last Index: %d", lastIndex);
 
     [ file readInt32:&materialInstanceIndex ];
-    NPLOG(([NSString stringWithFormat:@"Material Instance Index: %d", materialInstanceIndex]));
+    NPLOG(@"Material Instance Index: %d", materialInstanceIndex);
 
     model = (NPSUXModel *)[ parent parent ];
     material = [[ model materials ] objectAtIndex:materialInstanceIndex ];

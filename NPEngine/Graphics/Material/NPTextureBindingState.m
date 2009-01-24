@@ -28,12 +28,12 @@
     [ super dealloc ];
 }
 
-- (NPTexture *) textureForKey:(NSString *)colormapSemantic
+- (id) textureForKey:(NSString *)colormapSemantic
 {
     return [ textureBindings objectForKey:colormapSemantic ];
 }
 
-- (void) setTexture:(NPTexture *)texture forKey:(NSString *)colormapSemantic
+- (void) setTexture:(id)texture forKey:(NSString *)colormapSemantic
 {
     [ textureBindings setObject:texture forKey:colormapSemantic ];
 }

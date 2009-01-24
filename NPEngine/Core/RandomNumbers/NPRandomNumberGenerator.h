@@ -1,4 +1,5 @@
 #import "Core/NPObject/NPObject.h"
+#import "prng.h"
 
 /*! \def */
 #define NP_RNG_TT800	@"tt800"

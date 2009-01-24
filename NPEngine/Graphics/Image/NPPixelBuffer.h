@@ -35,10 +35,17 @@
 
 - (void) reset;
 
+- (UInt) pixelBufferID;
 - (Int) width;
 - (Int) height;
 - (NpState) dataFormat;
 - (NpState) pixelFormat;
+
+- (void) setPixelBufferID:(UInt)newPixelBufferID;
+- (void) setWidth:(Int)newWidth;
+- (void) setHeight:(Int)newHeight;
+- (void) setDataFormat:(NpState)newDataFormat;
+- (void) setPixelFormat:(NpState)newPixelFormat;
 
 - (BOOL) isCompatibleWithImage:(NPImage *)image;
 - (BOOL) isCompatibleWithRenderTexture:(NPRenderTexture *)renderTexture;
@@ -48,12 +55,11 @@
 - (void) generateGLBufferID;
 - (void) uploadToGLWithoutData;
 - (void) uploadToGLUsingData:(NSData *)data;
+- (void) uploadToGLUsingData:(NSData *)data byteCount:(UInt)byteCount;
 
 - (void) activate;
 - (void) activateForReading;
 - (void) activateForWriting;
 - (void) deactivate;
-
-// copy data from framebuffer, colorbuffer
 
 @end

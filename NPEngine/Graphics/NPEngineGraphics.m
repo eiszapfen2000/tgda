@@ -64,21 +64,24 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     objectID = crc32_of_pointer(self);
 
     renderContextManager = [[ NPOpenGLRenderContextManager alloc ] initWithName:@"NPEngine RenderContext Manager" parent:self ];
-    viewportManager = [[ NPViewportManager alloc ] initWithName:@"NPEngine Viewport Manager" parent:self ];
-    modelManager    = [[ NPModelManager    alloc ] initWithName:@"NPEngine Model Manager"    parent:self ];
-    imageManager    = [[ NPImageManager    alloc ] initWithName:@"NPEngine Image Manager"    parent:self ];
-    textureManager  = [[ NPTextureManager  alloc ] initWithName:@"NPEngine Texture Manager"  parent:self ];
-    effectManager   = [[ NPEffectManager   alloc ] initWithName:@"NPEngine Effect Manager"   parent:self ];
-    stateSetManager = [[ NPStateSetManager alloc ] initWithName:@"NPEngine StateSet Manager" parent:self ];
 
-    stateConfiguration         = [[ NPStateConfiguration         alloc ] initWithName:@"NPEngine GPU States"              parent:self ];
+    stateConfiguration = [[ NPStateConfiguration alloc ] initWithName:@"NPEngine GPU States"       parent:self ];
+    stateSetManager    = [[ NPStateSetManager    alloc ] initWithName:@"NPEngine StateSet Manager" parent:self ];
+
     textureBindingStateManager = [[ NPTextureBindingStateManager alloc ] initWithName:@"NPEngine Texture Binding Manager" parent:self ];
+
+    vertexBufferManager = [[ NPVertexBufferManager alloc ] initWithName:@"NPEngine VertexBuffer Manager" parent:self ];
+    imageManager        = [[ NPImageManager        alloc ] initWithName:@"NPEngine Image Manager"        parent:self ];
+    textureManager      = [[ NPTextureManager      alloc ] initWithName:@"NPEngine Texture Manager"      parent:self ];
+    effectManager       = [[ NPEffectManager       alloc ] initWithName:@"NPEngine Effect Manager"       parent:self ];
+    modelManager        = [[ NPModelManager        alloc ] initWithName:@"NPEngine Model Manager"        parent:self ];
 
     renderTargetManager = [[ NPRenderTargetManager alloc ] initWithName:@"NPEngine Rendertarget Manager" parent:self ];
     pixelBufferManager  = [[ NPPixelBufferManager  alloc ] initWithName:@"NPEngine Pixelbuffer Manager"  parent:self ];
-    r2vbManager =[[ NPR2VBManager alloc ] initWithName:@"NPEngine Render 2 Vertexbuffer Manager" parent:self ];
+    r2vbManager         = [[ NPR2VBManager         alloc ] initWithName:@"NPEngine R2VB Manager"         parent:self ];
 
-    cameraManager = [[ NPCameraManager alloc ] initWithName:@"NPEngine Camera Manager" parent:self ];
+    viewportManager = [[ NPViewportManager alloc ] initWithName:@"NPEngine Viewport Manager" parent:self ];
+    cameraManager   = [[ NPCameraManager   alloc ] initWithName:@"NPEngine Camera Manager"   parent:self ];
 
     ready = NO;
 
@@ -90,17 +93,19 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     NPLOG(@"NP Engine Graphics Dealloc");
 
     [ cameraManager release ];
+    [ viewportManager release ];
     [ r2vbManager release ];
     [ pixelBufferManager release ];
     [ renderTargetManager release ];
     [ modelManager release ];
-    [ textureBindingStateManager release ];
+    [ effectManager release ];
     [ textureManager release ];
     [ imageManager release ];
-    [ effectManager release ];
+    [ vertexBufferManager release ];
+    [ textureBindingStateManager release ];
     [ stateSetManager release ];
     [ stateConfiguration release ];
-    [ viewportManager release ];
+
     [ renderContextManager release ];
     [ name release ];
 
@@ -126,11 +131,15 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     [[ viewportManager nativeViewport  ] setViewportSize:viewportSize ];
     [[ viewportManager currentViewport ] setViewportSize:viewportSize ];
 
+    [ textureBindingStateManager setup ];
+
+    [ vertexBufferManager setup ];
     [ imageManager   setup ];
     [ textureManager setup ];
     [ effectManager  setup ];
+
     [ renderTargetManager setup ];
-    [ textureBindingStateManager setup ];
+
     [ cameraManager setup ];
 
     [ stateConfiguration activate ];
@@ -179,11 +188,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     return renderContextManager;
 }
 
-- (NPViewportManager *) viewportManager
-{
-    return viewportManager;
-}
-
 - (NPStateConfiguration *) stateConfiguration
 {
     return stateConfiguration;
@@ -194,9 +198,14 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     return stateSetManager;
 }
 
-- (NPModelManager *) modelManager
+- (NPTextureBindingStateManager *) textureBindingStateManager
 {
-    return modelManager;
+    return textureBindingStateManager;
+}
+
+- (NPVertexBufferManager *) vertexBufferManager
+{
+    return vertexBufferManager;
 }
 
 - (NPImageManager *) imageManager
@@ -209,19 +218,14 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     return textureManager;
 }
 
-- (NPTextureBindingStateManager *) textureBindingStateManager
-{
-    return textureBindingStateManager;
-}
-
 - (NPEffectManager *) effectManager
 {
     return effectManager;
 }
 
-- (NPPixelBufferManager *) pixelBufferManager
+- (NPModelManager *) modelManager
 {
-    return pixelBufferManager;
+    return modelManager;
 }
 
 - (NPRenderTargetManager *) renderTargetManager
@@ -229,9 +233,19 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     return renderTargetManager;
 }
 
+- (NPPixelBufferManager *) pixelBufferManager
+{
+    return pixelBufferManager;
+}
+
 - (NPR2VBManager *) r2vbManager
 {
     return r2vbManager;
+}
+
+- (NPViewportManager *) viewportManager
+{
+    return viewportManager;
 }
 
 - (NPCameraManager *) cameraManager

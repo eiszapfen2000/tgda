@@ -41,6 +41,7 @@
     [ self setName: [ file fileName ] ];
     [ self setFileName: [ file fileName ] ];
 
+    // Hack because of buggy cg character encoding/line termination 
     NSData * data = [ file readEntireFile ];
     NSMutableData * mData = [ NSMutableData data ];
     [ mData appendData:data ];
@@ -52,7 +53,7 @@
 
     if ( cgIsEffect(effect) == CG_FALSE )
     {
-        NPLOG(([NSString stringWithFormat:@"%@: error while creating effect",fileName]));
+        NPLOG(@"%@: error while creating effect",fileName);
         return NO;
     }
 
@@ -63,7 +64,7 @@
     {
         if ( cgValidateTechnique(technique) == CG_FALSE )
         {
-            NPLOG_WARNING(([NSString stringWithFormat:@"Technique %s did not validate", cgGetTechniqueName(technique)]));
+            NPLOG_WARNING(@"Technique %s did not validate", cgGetTechniqueName(technique));
         }
         else
         {
@@ -71,7 +72,7 @@
             [ techniques setObject:techniqueValue forKey:[NSString stringWithFormat:@"%s",cgGetTechniqueName(technique)]];
             [ techniqueValue release ];
 
-            NPLOG(([NSString stringWithFormat:@"Technique \"%s\" validated", cgGetTechniqueName(technique)]));
+            NPLOG(@"Technique \"%s\" validated", cgGetTechniqueName(technique));
         }
 
         technique = cgGetNextTechnique(technique);
@@ -144,7 +145,9 @@
 
     for ( Int i = 0; i < 8; i++ )
     {
-        defaultSemantics.sampler[i] = NULL;
+        defaultSemantics.sampler1D[i] = NULL;
+        defaultSemantics.sampler2D[i] = NULL;
+        defaultSemantics.sampler3D[i] = NULL;
     }
 }
 
@@ -154,8 +157,8 @@
 
     if ( cgIsParameter(param) == CG_TRUE )
     {
-        NPLOG(([NSString stringWithFormat:@"%@ with name %s found",semanticName,cgGetParameterName(param)]));
-        NPLOG(([NSString stringWithFormat:@"%s ",cgGetTypeString(cgGetParameterType(param))]));
+        NPLOG(@"%@ with name %s found",semanticName,cgGetParameterName(param));
+        NPLOG(@"%s ",cgGetTypeString(cgGetParameterType(param)));
         return param;
     }
 
@@ -179,7 +182,8 @@
 
     for ( Int i = 0; i < 8; i++ )
     {
-        defaultSemantics.sampler[i] = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_COLORMAP_SEMANTIC(i) ];
+        defaultSemantics.sampler2D[i] = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_COLORMAP_SEMANTIC(i)  ];
+        defaultSemantics.sampler3D[i] = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_VOLUMEMAP_SEMANTIC(i) ];
     }
 }
 
@@ -267,11 +271,18 @@
     NPTextureBindingState * textureBindingState = [[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ];
     for ( Int i = 0; i < 8; i++ )
     {
-        if ( defaultSemantics.sampler[i] != NULL )
+        if ( defaultSemantics.sampler2D[i] != NULL )
         {
             NPTexture * texture = [ textureBindingState textureForKey:NP_GRAPHICS_MATERIAL_COLORMAP_SEMANTIC(i) ];
 
-            [ self uploadSampler2DWithParameter:defaultSemantics.sampler[i] andID:[texture textureID] ];
+            [ self uploadSampler2DWithParameter:defaultSemantics.sampler2D[i] andID:[texture textureID] ];
+        }
+
+        if ( defaultSemantics.sampler3D[i] != NULL )
+        {
+            NPTexture3D * texture3D = [ textureBindingState textureForKey:NP_GRAPHICS_MATERIAL_VOLUMEMAP_SEMANTIC(i) ];
+
+            [ self uploadSampler3DWithParameter:defaultSemantics.sampler3D[i] andID:[texture3D textureID] ];
         }
     }
 }
@@ -433,10 +444,27 @@
     {
         if ( cgGetParameterType(parameter) == CG_SAMPLER2D )
         {
-            cgGLSetTextureParameter(parameter,textureID);
-            //cgGLEnableTextureParameter(parameter);
-            //GLenum nix = cgGLGetTextureEnum(parameter);
-//            cgGLSetupSampler(parameter, textureID);
+            //cgGLSetTextureParameter(parameter,textureID);
+            cgGLSetupSampler(parameter, textureID);
+        }
+    }    
+}
+
+- (void) uploadSampler3DWithParameterName:(NSString *)parameterName andID:(GLuint)textureID
+{
+    CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
+
+    [ self uploadSampler3DWithParameter:parameter andID:textureID ];
+}
+
+- (void) uploadSampler3DWithParameter:(CGparameter)parameter andID:(GLuint)textureID
+{
+    if ( cgIsParameter(parameter) == CG_TRUE )
+    {
+        if ( cgGetParameterType(parameter) == CG_SAMPLER3D )
+        {
+            //cgGLSetTextureParameter(parameter,textureID);
+            cgGLSetupSampler(parameter, textureID);
         }
     }    
 }
