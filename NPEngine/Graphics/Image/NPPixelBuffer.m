@@ -58,11 +58,12 @@
 - (void) generateGLBufferID
 {
     glGenBuffers(1, &pixelBufferID);
+    ownsBuffer = YES;
 }
 
 - (void) reset
 {
-    if ( pixelBufferID > 0 )
+    if ( pixelBufferID > 0 && ownsBuffer == YES )
     {
         glDeleteBuffers(1,&pixelBufferID);
     }
@@ -106,6 +107,7 @@
     }
 
     pixelBufferID = newPixelBufferID;
+    ownsBuffer = NO;
 }
 
 - (void) setWidth:(Int)newWidth
