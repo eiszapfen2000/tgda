@@ -142,7 +142,7 @@
                                                              dataFormat:NP_GRAPHICS_PBO_DATAFORMAT_BYTE
                                                             pixelFormat:NP_GRAPHICS_PBO_PIXELFORMAT_RGBA
                                                                   usage:NP_GRAPHICS_PBO_UPLOAD_ONCE_USE_OFTEN ];
-    [ pixelBuffers addObject:pixelBuffer ];    
+    [ pixelBuffers addObject:pixelBuffer ];
 
     return [ pixelBuffer autorelease ];
 }
@@ -153,7 +153,6 @@
 
     if ( [ vbo hasVBO ] == YES )
     {
-        Int vertexCount = [ vbo vertexCount ];
         NpVertexFormat * vertexFormat = [ vbo vertexFormat ];
         NpVertexBuffer * vertexBuffer = [ vbo vertexBuffer ];
 
@@ -165,6 +164,7 @@
             [ pbo setDataFormat:vertexFormat->positionsDataFormat ];
             [ pbo setPixelFormat:(vertexFormat->elementsForPosition-1) ];
             [ pbos setObject:pbo forKey:@"Positions" ];
+            [ pixelBuffers addObject:pbo ];
             [ pbo release ];
         }
 
@@ -176,6 +176,7 @@
             [ pbo setDataFormat:vertexFormat->normalsDataFormat ];
             [ pbo setPixelFormat:(vertexFormat->elementsForNormal-1) ];
             [ pbos setObject:pbo forKey:@"Normals" ];
+            [ pixelBuffers addObject:pbo ];
             [ pbo release ];
         }
 
@@ -187,6 +188,7 @@
             [ pbo setDataFormat:vertexFormat->colorsDataFormat ];
             [ pbo setPixelFormat:(vertexFormat->elementsForColor-1) ];
             [ pbos setObject:pbo forKey:@"Colors" ];
+            [ pixelBuffers addObject:pbo ];
             [ pbo release ];
         }
 
@@ -198,6 +200,7 @@
             [ pbo setDataFormat:vertexFormat->weightsDataFormat ];
             [ pbo setPixelFormat:(vertexFormat->elementsForWeights-1) ];
             [ pbos setObject:pbo forKey:@"Weights" ];
+            [ pixelBuffers addObject:pbo ];
             [ pbo release ];
         }
 
@@ -211,6 +214,7 @@
                 [ pbo setDataFormat:vertexFormat->textureCoordinatesDataFormat[i] ];
                 [ pbo setPixelFormat:(vertexFormat->elementsForTextureCoordinateSet[i]-1) ];
                 [ pbos setObject:pbo forKey:[NSString stringWithFormat:@"Texcoord%d",i]];
+                [ pixelBuffers addObject:pbo ];
                 [ pbo release ];
             }
         }
@@ -220,7 +224,7 @@
         NPLOG_ERROR(@"%@: %@ not uploaded to GL",name,[vbo name]);
     }
 
-    return pbos;
+    return [ pbos autorelease ];
 }
 
 - (NPTexture *) createTextureCompatibleWithPBO:(NPPixelBuffer *)pbo

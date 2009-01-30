@@ -8,6 +8,7 @@
 @interface NPPixelBuffer : NPObject
 {
     UInt pixelBufferID;
+    BOOL ownsBuffer;
 
     NpState mode;
     Int width;
