@@ -1,7 +1,12 @@
 #import <Foundation/Foundation.h>
 
-BOOL isFile(NSString * path);
-BOOL isDirectory(NSString * path);
-BOOL isURL(NSString * path);
+@interface NSFileManager ( NPEngine )
 
-BOOL createEmptyFile(NSString * path);
+- (BOOL) isFile:(NSString *)path;
+- (BOOL) isDirectory:(NSString *)path;
+- (BOOL) isURL:(NSString *)path;
+
+- (BOOL) createEmptyFileAtPath:(NSString *)path;
+
+@end
+

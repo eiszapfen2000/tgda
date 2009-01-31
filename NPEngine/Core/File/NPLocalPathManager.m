@@ -37,7 +37,7 @@
 {
     NSString * workingDirectory = [ fileManager currentDirectoryPath ];
 
-    NPLOG(@"Adding application directory %@ to local paths", workingDirectory);
+    NPLOG(@"%@: Adding application directory %@ to local paths", name, workingDirectory);
 
     if ( workingDirectory != nil )
     {
@@ -45,17 +45,19 @@
     }
     else
     {
-        NPLOG_ERROR(@"Working directory not accessible");
+        NPLOG_ERROR(@"%@: Working directory not accessible", name);
     }
 }
 
 - (void) addLookUpPath:(NSString *)lookUpPath
 {
+    NPLOG(@"%@: Adding %@", name, lookUpPath);
     [ localPaths addObject:lookUpPath ];
 }
 
 - (void) removeLookUpPath:(NSString *)lookUpPath
 {
+    NPLOG(@"%@: Removing %@", name, lookUpPath);
     [ localPaths removeObject:lookUpPath ];
 }
 
@@ -67,7 +69,7 @@
     {
         absolutePath = [[[ localPaths objectAtIndex:i ] stringByAppendingPathComponent:partialPath ] retain ];
 
-        if ( isFile(absolutePath) == YES )
+        if ( [[ NSFileManager defaultManager ] isFile:absolutePath ] == YES )
         {
             return absolutePath;
         }

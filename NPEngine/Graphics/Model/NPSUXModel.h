@@ -20,11 +20,13 @@
 - (void) reset;
 
 - (NSArray *) lods;
+- (NPSUXModelLod *) lodAtIndex:(Int)index;
 - (NSArray *) materials;
 
 - (void) addLod:(NPSUXModelLod *)newLod;
 
 - (void) uploadToGL;
 - (void) render;
+- (void) renderLod:(Int)index;
 
 @end

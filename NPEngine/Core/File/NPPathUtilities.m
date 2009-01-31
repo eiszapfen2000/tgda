@@ -1,10 +1,12 @@
 #import "NPPathUtilities.h"
 
-BOOL isFile(NSString * path)
+@implementation NSFileManager ( NPEngine )
+
+- (BOOL) isFile:(NSString *)path
 {
     BOOL isDirectory;
 
-    if ( [[ NSFileManager defaultManager ] fileExistsAtPath:path isDirectory:&isDirectory ] == YES )
+    if ( [ self fileExistsAtPath:path isDirectory:&isDirectory ] == YES )
     {
         if ( isDirectory == NO )
         {
@@ -15,11 +17,11 @@ BOOL isFile(NSString * path)
     return NO;
 }
 
-BOOL isDirectory(NSString * path)
+- (BOOL) isDirectory:(NSString *)path
 {
     BOOL isDirectory;
 
-    if ( [[ NSFileManager defaultManager ] fileExistsAtPath:path isDirectory:&isDirectory ] == YES )
+    if ( [ self fileExistsAtPath:path isDirectory:&isDirectory ] == YES )
     {
         if ( isDirectory == YES )
         {
@@ -30,7 +32,7 @@ BOOL isDirectory(NSString * path)
     return NO;
 }
 
-BOOL isURL(NSString * path)
+- (BOOL) isURL:(NSString *)path
 {
     NSURL * url = [ NSURL URLWithString:path ];
 
@@ -42,8 +44,10 @@ BOOL isURL(NSString * path)
     return NO;
 }
 
-BOOL createEmptyFile(NSString * path)
+- (BOOL) createEmptyFileAtPath:(NSString *)path
 {
-    return [[ NSFileManager defaultManager ] createFileAtPath:path contents:nil attributes:nil ];
+    return [ self createFileAtPath:path contents:nil attributes:nil ];
 }
+
+@end
 

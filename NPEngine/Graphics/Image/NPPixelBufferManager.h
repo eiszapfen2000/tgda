@@ -6,6 +6,8 @@
 @class NPTexture;
 @class NPRenderTexture;
 @class NPVertexBuffer;
+@class NPSUXModelLod;
+@class NPSUXModel;
 
 @interface NPPixelBufferManager : NPObject
 {
@@ -28,6 +30,8 @@
 - (NPPixelBuffer *) createPBOCompatibleWithTexture:(NPTexture *)texture;
 - (NPPixelBuffer *) createPBOCompatibleWithFramebuffer;
 - (NSDictionary *) createPBOsSharingDataWithVBO:(NPVertexBuffer *)vbo;
+- (NSDictionary *) createPBOsSharingDataWithLOD:(NPSUXModelLod *)lod;
+- (NSDictionary *) createPBOsSharingDataWithModel:(NPSUXModel *)model lodIndex:(Int)lodIndex;
 
 - (NPTexture *) createTextureCompatibleWithPBO:(NPPixelBuffer *)pbo;
 

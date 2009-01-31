@@ -39,21 +39,20 @@
 - (void) addLookUpPath:(NSString *)lookUpPath
 {
     NSString * standardizedLookUpPath = [ lookUpPath stringByStandardizingPath ];
-    NPLOG(@"%@ expand to %@", lookUpPath, standardizedLookUpPath);
+    //NPLOG(@"%@ expand to %@", lookUpPath, standardizedLookUpPath);
 
-    if ( isDirectory(standardizedLookUpPath) == YES )
+    if ( [[ NSFileManager defaultManager ] isDirectory:standardizedLookUpPath ] == YES )
     {
         [ localPathManager addLookUpPath:standardizedLookUpPath ];
-        NPLOG(@"%@ added to lookup paths", standardizedLookUpPath);
     }
-    else if ( isURL(lookUpPath) == YES )
+    else if ( [[ NSFileManager defaultManager ] isURL:lookUpPath ] == YES )
     {
         [ remotePathManager addLookUpURL:[ NSURL URLWithString:lookUpPath ] ];
         NPLOG(@"%@ added to lookup URLs", lookUpPath);
     }
     else
     {
-        NPLOG(@"%@ is not a valid directory or URL", lookUpPath);
+        NPLOG(@"%@: %@ is not a valid directory or URL", name, lookUpPath);
     }
 }
 
@@ -61,11 +60,11 @@
 {
     NSString * standardizedLookUpPath = [ lookUpPath stringByStandardizingPath ];
 
-    if ( isDirectory(standardizedLookUpPath) == YES )
+    if ( [[ NSFileManager defaultManager ] isDirectory:standardizedLookUpPath ] == YES )
     {
         [ localPathManager removeLookUpPath:standardizedLookUpPath ];
     }
-    else if ( isURL(lookUpPath) == YES )
+    else if ( [[ NSFileManager defaultManager ] isURL:lookUpPath ] == YES )
     {
         [ remotePathManager removeLookUpURL:[ NSURL URLWithString:lookUpPath ] ];
     }
