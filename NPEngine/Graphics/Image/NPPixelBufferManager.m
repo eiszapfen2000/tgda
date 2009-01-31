@@ -227,6 +227,16 @@
     return [ pbos autorelease ];
 }
 
+- (NSDictionary *) createPBOsSharingDataWithLOD:(NPSUXModelLod *)lod
+{
+    return [ self createPBOsSharingDataWithVBO:[lod vertexBuffer]];
+}
+
+- (NSDictionary *) createPBOsSharingDataWithModel:(NPSUXModel *)model lodIndex:(Int)lodIndex
+{
+    return [ self createPBOsSharingDataWithLOD:[ model lodAtIndex:lodIndex ]];
+}
+
 - (NPTexture *) createTextureCompatibleWithPBO:(NPPixelBuffer *)pbo
 {
     NSString * textureName = [ NSString stringWithFormat:@"TextureFrom%@", [ pbo name ]];
@@ -276,7 +286,7 @@
         }
         else
         {
-            NPLOG_ERROR(@"No RenderTexture active");
+            NPLOG_ERROR(@"%@: No RenderTexture active, cannot copy",name);
         }
     }
 }

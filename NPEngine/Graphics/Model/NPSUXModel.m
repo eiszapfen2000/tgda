@@ -47,7 +47,7 @@
 
     if ( strncmp(suxHeader, headerFromFile, 8) != 0 )
     {
-        NPLOG_ERROR(@"%@: wrong header version", [file fileName ]);
+        NPLOG_ERROR(@"%@: wrong header version", [file fileName]);
 
         return NO;
     }
@@ -144,6 +144,11 @@
     return lods;
 }
 
+- (NPSUXModelLod *) lodAtIndex:(Int)index
+{
+    return [ lods objectAtIndex:index ];
+}
+
 - (NSArray *) materials
 {
     return materials;
@@ -158,7 +163,7 @@
 {
     if ( ready == NO )
     {
-        NPLOG(@"model not ready");
+        NPLOG_ERROR(@"%@ not ready, cannot upload to GL", name);
         return;
     }
 
@@ -173,13 +178,18 @@
 
 - (void) render
 {
+    [ self renderLod:0 ];
+}
+
+- (void) renderLod:(Int)index
+{
     if ( ready == NO )
     {
-        NPLOG(@"model not ready");
+        NPLOG_ERROR(@"%@ not ready, cannot render", name);
         return;
     }
 
-    [[ lods objectAtIndex:0 ] render ];
+    [[ lods objectAtIndex:index ] render ];
 }
 
 @end

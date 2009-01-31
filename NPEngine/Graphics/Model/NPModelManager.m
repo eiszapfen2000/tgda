@@ -81,20 +81,20 @@
 {
     NpState mode = NP_FILE_WRITING;
 
-    if ( isDirectory(path) == YES )
+    if ( [[ NSFileManager defaultManager ] isDirectory:path ] == YES )
     {
         NPLOG_WARNING(@"%@ is a directory", path);
         return NO;
     }
 
-    if ( isFile(path) == YES )
+    if ( [[ NSFileManager defaultManager ] isFile:path ] == YES )
     {
         NPLOG(@"%@ already exist, overwriting...", path);
         mode = NP_FILE_UPDATING;        
     }
     else
     {
-        if ( createEmptyFile(path) == NO )
+        if ( [[ NSFileManager defaultManager ] createEmptyFileAtPath:path ] == NO )
         {
             NPLOG_WARNING(@"Could not create file %@", path);
             return NO;

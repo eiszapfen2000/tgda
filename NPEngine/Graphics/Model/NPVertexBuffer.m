@@ -407,7 +407,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     while ( error != GL_NO_ERROR )
     {
-        NPLOG_ERROR(([ NSString stringWithFormat:@"%s",gluErrorString(error)]));
+        NPLOG_ERROR(([ NSString stringWithFormat:@"%@: %s",name,gluErrorString(error)]));
         error = glGetError();
     }
 

@@ -112,20 +112,37 @@
         return;
     }
 
+    NSEnumerator * sourcesEnumerator = [ sources objectEnumerator ];
+    NSEnumerator * targetsEnumerator = [ targets objectEnumerator ];
+    id source, target;
+
     switch ( mode )
     {
         case NP_GRAPHICS_R2VB_FRAMEBUFFER_MODE:
         {
-            for ( UInt i = 0; i < sourcesCount; i++ )
+            while (( source = [ sourcesEnumerator nextObject ] ) && ( target = [ targetsEnumerator nextObject ] ))
             {
-//                [[[ NP Graphics ] pixelBufferManager ] copyFramebuffer:
+                [[[ NP Graphics ] pixelBufferManager ] copyFramebuffer:[ source intValue ]
+                                                                 toPBO:target ];
             }
 
             break;
         }
+
         case NP_GRAPHICS_R2VB_RENDERTEXTURE_MODE:
         {
+            while (( source = [ sourcesEnumerator nextObject ] ) && ( target = [ targetsEnumerator nextObject ] ))
+            {
+                [[[ NP Graphics ] pixelBufferManager ] copyRenderTexture:source
+                                                                   toPBO:target ];
+            }
             
+            break;
+        }
+
+        default:
+        {
+            NPLOG_ERROR(@"%@: invalid mode %d specified",name,mode);
             break;
         }
     }
