@@ -4,6 +4,7 @@ SUBPROJECT_NAME=libNPEngineGraphicsMaterial
 
 libNPEngineGraphicsMaterial_OBJC_FILES = \
 NPEffect.m \
+NPEffectTechnique.m \
 NPEffectManager.m \
 NPSUXMaterialInstance.m \
 NPTexture.m \
@@ -17,6 +18,7 @@ NpTexture.c
 
 libNPEngineGraphicsMaterial_HEADER_FILES = \
 NPEffect.h \
+NPEffectTechnique.h \
 NPEffectManager.h \
 NPSUXMaterialInstance.h \
 NPTexture.h \

@@ -1,5 +1,6 @@
 #import "NpTexture.h"
 #import "NPEffect.h"
+#import "NPEffectTechnique.h"
 #import "NPEffectManager.h"
 #import "NPSUXMaterialInstance.h"
 #import "NPTexture.h"

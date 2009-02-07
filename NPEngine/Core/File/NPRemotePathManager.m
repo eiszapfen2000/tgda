@@ -16,7 +16,7 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    remotePaths = [ [ NSMutableArray alloc ] init ];
+    remotePaths = [[ NSMutableArray alloc ] init ];
 
     return self;
 }

@@ -35,17 +35,11 @@
     NSString * groupName = [ file readSUXString ];
     [ self setName:groupName ];
     [ groupName release ];
-    NPLOG(@"Group Name: %@", name);
 
     [ file readInt32:&primitiveType ];
-
     [ file readInt32:&firstIndex ];
-    NPLOG(@"First Index: %d", firstIndex);
     [ file readInt32:&lastIndex ];
-    NPLOG(@"Last Index: %d", lastIndex);
-
     [ file readInt32:&materialInstanceIndex ];
-    NPLOG(@"Material Instance Index: %d", materialInstanceIndex);
 
     model = (NPSUXModel *)[ parent parent ];
     material = [[ model materials ] objectAtIndex:materialInstanceIndex ];
@@ -85,13 +79,13 @@
 {
     if ( ready == NO )
     {
-        NPLOG_WARNING(@"group not ready");
+        NPLOG_WARNING(@"%@: group not ready, cannot render", name);
         return;
     }
 
     [  material activate ];
 
-    CGpass pass = cgGetFirstPass([[ material effect ] defaultTechnique]);
+    CGpass pass = [[[ material effect ] defaultTechnique ] firstPass ];
 
     while ( pass )
     {

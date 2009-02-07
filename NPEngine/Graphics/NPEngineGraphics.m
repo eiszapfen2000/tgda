@@ -90,6 +90,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
 - (void) dealloc
 {
+    NPLOG(@"");
     NPLOG(@"NP Engine Graphics Dealloc");
 
     [ cameraManager release ];
@@ -113,7 +114,8 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 }
 
 - (void) setupWithViewportSize:(IVector2)viewportSize
-{
+{   
+    NPLOG(@"");
     NPLOG(@"NPEngine Graphics setup....");
     NPLOG(@"Checking for Rendercontext...");
 

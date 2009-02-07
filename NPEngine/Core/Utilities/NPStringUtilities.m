@@ -1,39 +1,43 @@
 #import "NPStringUtilities.h"
 
-NSString * removeLeadingAndTrailingQuotes(NSString * string)
+@implementation NSString ( NPEngine )
+
+- (NSString *) removeLeadingAndTrailingQuotes
 {
     NSRange range;
     range.location = 0;
-    range.length = [ string length ];
+    range.length = [ self length ];
 
-    if ( [ string characterAtIndex:0 ] == '"' )
+    if ( [ self characterAtIndex:0 ] == '"' )
     {
         range.location = 1; //skip first character
         range.length = range.length - 1;
     }
 
-    if ( [ string characterAtIndex:([ string length ] - 1) ] == '"' )
+    if ( [ self characterAtIndex:([ self length ] - 1) ] == '"' )
     {
         range.length = range.length - 1; //skip last character
     } 
 
-    return [ string substringWithRange:range ];
+    return [ self substringWithRange:range ];
 }
 
-NSMutableArray * splitStringUsingCharacterSet(NSString * string, NSCharacterSet * characterset)
+- (NSArray *) splitUsingCharacterSet:(NSCharacterSet *)characterSet
 {
 	NSString * temp;
-	NSMutableArray * array = [ [ NSMutableArray alloc ] init ];
-	NSScanner * scanner = [ NSScanner scannerWithString:string ];
+	NSMutableArray * array = [[ NSMutableArray alloc ] init ];
+	NSScanner * scanner = [ NSScanner scannerWithString:self ];
 
 	while ( [scanner isAtEnd] == NO )
 	{
-		if ( [ scanner scanUpToCharactersFromSet:characterset intoString:&temp ] == YES )
+		if ( [ scanner scanUpToCharactersFromSet:characterSet intoString:&temp ] == YES )
         {
 		    [ array addObject:temp ];
         }
 	}
 
-	//return [ array autorelease ];
-    return array;
+	return [ array autorelease ];
 }
+
+@end
+
