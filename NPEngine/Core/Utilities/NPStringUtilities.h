@@ -1,4 +1,9 @@
 #import <Foundation/Foundation.h>
 
-NSString * removeLeadingAndTrailingQuotes(NSString * string);
-NSMutableArray * splitStringUsingCharacterSet(NSString * string, NSCharacterSet * characterset);
+@interface NSString ( NPEngine )
+
+- (NSString *) removeLeadingAndTrailingQuotes;
+- (NSArray *) splitUsingCharacterSet:(NSCharacterSet *)characterSet;
+
+@end
+

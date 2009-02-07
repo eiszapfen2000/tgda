@@ -3,6 +3,8 @@
 #import "Core/Math/NpMath.h"
 #import "Graphics/npgl.h"
 
+@class NPEffectTechnique;
+
 typedef struct NpDefaultSemantics
 {
     CGparameter modelMatrix;
@@ -26,7 +28,7 @@ NpDefaultSemantics;
 @interface NPEffect : NPResource
 {
     CGeffect effect;
-    CGtechnique defaultTechnique;
+    NPEffectTechnique * defaultTechnique;
     NSMutableDictionary * techniques;
     NpDefaultSemantics defaultSemantics;
 }
@@ -39,12 +41,12 @@ NpDefaultSemantics;
 - (BOOL) loadFromFile:(NPFile *)file;
 - (void) reset;
 
-- (CGeffect) effect;
-- (CGtechnique) techniqueWithName:(NSString *)techniqueName;
-- (CGtechnique) defaultTechnique;
-- (void) setDefaultTechnique:(CGtechnique)newDefaultTechnique;
-
 - (NpDefaultSemantics *) defaultSemantics;
+- (NPEffectTechnique *) defaultTechnique;
+- (NPEffectTechnique *) techniqueWithName:(NSString *)techniqueName;
+
+- (void) setDefaultTechnique:(NPEffectTechnique *)newDefaultTechnique;
+
 - (void) clearDefaultSemantics;
 - (CGparameter) bindDefaultSemantic:(NSString *)semanticName;
 - (void) bindDefaultSemantics;
@@ -53,10 +55,10 @@ NpDefaultSemantics;
 
 - (void) uploadDefaultSemantics;
 
-- (void) uploadFloatParameterWithName:(NSString *)parameterName andValue:(Float *)f;
-- (void) upLoadFloatParameter:(CGparameter)parameter andValue:(Float *)f;
-- (void) uploadIntParameterWithName:(NSString *)parameterName andValue:(Int32 *)i;
-- (void) upLoadIntParameter:(CGparameter)parameter andValue:(Int32 *)i;
+- (void) uploadFloatParameterWithName:(NSString *)parameterName andValue:(Float)f;
+- (void) upLoadFloatParameter:(CGparameter)parameter andValue:(Float)f;
+- (void) uploadIntParameterWithName:(NSString *)parameterName andValue:(Int32)i;
+- (void) upLoadIntParameter:(CGparameter)parameter andValue:(Int32)i;
 
 - (void) uploadFVector2ParameterWithName:(NSString *)parameterName andValue:(FVector2 *)vector;
 - (void) uploadFVector2Parameter:(CGparameter)parameter andValue:(FVector2 *)vector;

@@ -55,7 +55,7 @@
 
 - (id) loadImageFromPath:(NSString *)path
 {
-    NSString * absolutePath = [ [ [ NPEngineCore instance ] pathManager ] getAbsoluteFilePath:path ];
+    NSString * absolutePath = [[[ NP Core ] pathManager ] getAbsoluteFilePath:path ];
 
     return [ self loadImageFromAbsolutePath:absolutePath ];
 }

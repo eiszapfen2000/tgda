@@ -1,4 +1,5 @@
 #import "NPRandomNumberGenerator.h"
+#import "NP.h"
 
 @implementation NPRandomNumberGenerator
 
@@ -56,6 +57,10 @@
 	{
 		prng_seed(randomNumberGenerator, seed);
 	}
+    else
+    {
+        NPLOG_WARNING(@"%@: unable to seed",name);
+    }
 }
 
 - (void) reset

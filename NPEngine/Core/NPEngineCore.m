@@ -67,18 +67,24 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     objectID = crc32_of_pointer(self);
 
     objectManager = [[ NPObjectManager alloc ] init ];
-    logger        = [[ NPLogger        alloc ] initWithName:@"NPEngine Logger"       parent:self ];
-    timer         = [[ NPTimer         alloc ] initWithName:@"NPEngine Timer"        parent:self ];
-    pathManager   = [[ NPPathManager   alloc ] initWithName:@"NPEngine Path Manager" parent:self ];
+    logger        = [[ NPLogger        alloc ] initWithName:@"NPEngine Logger" parent:self ];
+
+    NPLOG(@"%@ initialising...", name);
+
+    timer         = [[ NPTimer       alloc ] initWithName:@"NPEngine Timer"        parent:self ];
+    pathManager   = [[ NPPathManager alloc ] initWithName:@"NPEngine Path Manager" parent:self ];
 
     randomNumberGeneratorManager = [[ NPRandomNumberGeneratorManager alloc ] initWithName:@"NPEngine RandomNumberGenerator Manager" parent:self ];
     transformationStateManager   = [[ NPTransformationStateManager   alloc ] initWithName:@"NPEngine Transformation State Manager"  parent:self ];
+
+    NPLOG(@"%@ up and running", name);
 
     return self;
 }
 
 - (void) dealloc
 {
+    NPLOG(@"");
     NPLOG(@"NP Engine Core Dealloc");
 
     [ transformationStateManager release ];

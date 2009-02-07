@@ -1,4 +1,5 @@
 #import "NPEffect.h"
+#import "NPEffectTechnique.h"
 #import "NP.h"
 
 @implementation NPEffect
@@ -17,6 +18,7 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
+    defaultTechnique = nil;
     techniques = [[ NSMutableDictionary alloc ] init ];
     [ self clearDefaultSemantics ];
 
@@ -30,6 +32,7 @@
         cgDestroyEffect(effect);
     }
 
+    TEST_RELEASE(defaultTechnique);
     [ techniques removeAllObjects ];
     [ techniques release ];
 
@@ -49,7 +52,7 @@
     [ mData appendBytes:&c length:1 ];
 
     NSString * tmp = [ NSString stringWithUTF8String:[ mData bytes ]];
-    effect = cgCreateEffect( [ (NPEffectManager *)parent cgContext ], [tmp cStringUsingEncoding:NSASCIIStringEncoding ], NULL );
+    effect = cgCreateEffect( [ (NPEffectManager *)parent cgContext ], [ tmp cStringUsingEncoding:NSASCIIStringEncoding ], NULL );
 
     if ( cgIsEffect(effect) == CG_FALSE )
     {
@@ -58,21 +61,23 @@
     }
 
     CGtechnique technique = cgGetFirstTechnique(effect);
-    defaultTechnique = technique;
-
     while ( technique != NULL )
     {
+        NSString * techniqueName = [ NSString stringWithFormat:@"%s", cgGetTechniqueName(technique) ];
+
         if ( cgValidateTechnique(technique) == CG_FALSE )
         {
-            NPLOG_WARNING(@"Technique %s did not validate", cgGetTechniqueName(technique));
+            NPLOG_WARNING(@"Technique \"%@\" did not validate", techniqueName );
         }
         else
         {
-            NSValue * techniqueValue = [[ NSValue alloc ] initWithBytes:&technique objCType:@encode(CGtechnique) ];
-            [ techniques setObject:techniqueValue forKey:[NSString stringWithFormat:@"%s",cgGetTechniqueName(technique)]];
-            [ techniqueValue release ];
+            NPEffectTechnique * effectTechnique = [[ NPEffectTechnique alloc ] initWithName:techniqueName
+                                                                                parent:self
+                                                                             technique:technique ];
+            [ techniques setObject:effectTechnique forKey:techniqueName ];
+            [ effectTechnique release ];
 
-            NPLOG(@"Technique \"%s\" validated", cgGetTechniqueName(technique));
+            NPLOG(@"Technique \"%@\" validated", techniqueName);
         }
 
         technique = cgGetNextTechnique(technique);
@@ -100,32 +105,24 @@
     [ super reset ];
 }
 
-- (CGeffect) effect
+- (NpDefaultSemantics *) defaultSemantics
 {
-    return effect;
+    return &defaultSemantics;
 }
 
-- (CGtechnique) techniqueWithName:(NSString *)techniqueName
-{
-    CGtechnique tmp;
-    [[ techniques objectForKey:techniqueName ] getValue:&tmp ];
-
-    return tmp;
-}
-
-- (CGtechnique) defaultTechnique
+- (NPEffectTechnique *) defaultTechnique
 {
     return defaultTechnique;
 }
 
-- (void) setDefaultTechnique:(CGtechnique)newDefaultTechnique
+- (NPEffectTechnique *) techniqueWithName:(NSString *)techniqueName
 {
-    defaultTechnique = newDefaultTechnique;
+    return [ techniques objectForKey:techniqueName ];
 }
 
-- (NpDefaultSemantics *) defaultSemantics
+- (void) setDefaultTechnique:(NPEffectTechnique *)newDefaultTechnique
 {
-    return &defaultSemantics;
+    ASSIGN(defaultTechnique, newDefaultTechnique);
 }
 
 - (void) clearDefaultSemantics
@@ -158,7 +155,7 @@
     if ( cgIsParameter(param) == CG_TRUE )
     {
         NPLOG(@"%@ with name %s found",semanticName,cgGetParameterName(param));
-        NPLOG(@"%s ",cgGetTypeString(cgGetParameterType(param)));
+        //NPLOG(@"%s ",cgGetTypeString(cgGetParameterType(param)));
         return param;
     }
 
@@ -287,38 +284,38 @@
     }
 }
 
-- (void) uploadFloatParameterWithName:(NSString *)parameterName andValue:(Float *)f
+- (void) uploadFloatParameterWithName:(NSString *)parameterName andValue:(Float)f
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
     [ self upLoadFloatParameter:parameter andValue:f ];
 }
 
-- (void) upLoadFloatParameter:(CGparameter)parameter andValue:(Float *)f
+- (void) upLoadFloatParameter:(CGparameter)parameter andValue:(Float)f
 {
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
         if ( cgGetParameterType(parameter) == CG_FLOAT )
         {
-            cgSetParameter1f(parameter,*f);
+            cgSetParameter1f(parameter,f);
         }
     }
 }
 
-- (void) uploadIntParameterWithName:(NSString *)parameterName andValue:(Int32 *)i
+- (void) uploadIntParameterWithName:(NSString *)parameterName andValue:(Int32)i
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
     [ self upLoadIntParameter:parameter andValue:i ];
 }
 
-- (void) upLoadIntParameter:(CGparameter)parameter andValue:(Int32 *)i
+- (void) upLoadIntParameter:(CGparameter)parameter andValue:(Int32)i
 {
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
         if ( cgGetParameterType(parameter) == CG_INT )
         {
-            cgSetParameter1i(parameter,*i);
+            cgSetParameter1i(parameter,i);
         }
     }
 }

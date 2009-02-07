@@ -38,24 +38,22 @@
 
 - (NPGaussianRandomNumberGenerator *) gaussianGenerator
 {
-    NPGaussianRandomNumberGenerator * generator = [[ NPGaussianRandomNumberGenerator alloc ] initWithName:@"" parent:self ];
+    NPGaussianRandomNumberGenerator * generator = [[ NPGaussianRandomNumberGenerator alloc ] initWithName:@"Gaussian" parent:self ];
 	[ generators addObject:generator ];
-	[ generator release ];
-    
-    return generator;
+
+    return [ generator autorelease ];
 }
 
 - (NPGaussianRandomNumberGenerator *) gaussianGeneratorWithFirstGenerator:(NPRandomNumberGenerator *)firstGenerator
                                                        andSecondGenerator:(NPRandomNumberGenerator *)secondGenerator
 {
-    NPGaussianRandomNumberGenerator * generator = [[ NPGaussianRandomNumberGenerator alloc ] initWithName:@"" 
+    NPGaussianRandomNumberGenerator * generator = [[ NPGaussianRandomNumberGenerator alloc ] initWithName:@"Gaussian" 
                                                                                                    parent:self
                                                                                            firstGenerator:firstGenerator
                                                                                           secondGenerator:secondGenerator ];
 	[ generators addObject:generator ];
-	[ generator release ];
-    
-    return generator;
+
+    return [ generator autorelease ];
 }
 
 
@@ -65,13 +63,13 @@
 
 	if ( [ fixedParameterGeneratorNames containsObject:rngName ] == YES )
 	{
-		generator = [[ NPRandomNumberGenerator alloc ] initWithName:@"" parent:self parameters:rngName ];
+		generator = [[ NPRandomNumberGenerator alloc ] initWithName:rngName parent:self parameters:rngName ];
 		[ generators addObject:generator ];
 		[ generator release ];
 	}
     else
     {
-        NPLOG_WARNING(@"Wrong rng name, returning nil");
+        NPLOG_WARNING(@"Invalid fixed parameter rng name %@, returning nil",rngName);
     }
 
 	return generator;
@@ -79,14 +77,12 @@
 
 - (NPRandomNumberGenerator *) mersenneTwisterWithSeed:(ULong)seed
 {
-    NSString * parameters = [[ NSString alloc ] initWithFormat: @"mt19937(%ul)", seed ];
+    NSString * parameters = [ NSString stringWithFormat: @"mt19937(%ul)", seed ];
 
-    NPRandomNumberGenerator * generator = [[ NPRandomNumberGenerator alloc ] initWithName:@"" parent:self parameters:parameters ];
+    NPRandomNumberGenerator * generator = [[ NPRandomNumberGenerator alloc ] initWithName:@"MersenneTwister" parent:self parameters:parameters ];
 	[ generators addObject:generator ];
-	[ generator  release ];
-    [ parameters release ];
 
-    return generator;
+    return [ generator autorelease ];
 }
 
 - (NPRandomNumberGenerator *) lcgGenerator
@@ -100,14 +96,12 @@
     :(ULong)a
     :(ULong)b
 {
-    NSString * parameters = [[ NSString alloc ] initWithFormat: @"lcg(%ul,%ul,%ul,%ul)", periodLength, a, b, seed ];
+    NSString * parameters = [ NSString stringWithFormat: @"lcg(%ul,%ul,%ul,%ul)", periodLength, a, b, seed ];
 
-    NPRandomNumberGenerator * generator = [[ NPRandomNumberGenerator alloc ] initWithName:@"" parent:self parameters:parameters ];
+    NPRandomNumberGenerator * generator = [[ NPRandomNumberGenerator alloc ] initWithName:@"lcg" parent:self parameters:parameters ];
 	[ generators addObject:generator ];
-	[ generator  release ];
-    [ parameters release ];
 
-    return generator;
+    return [ generator autorelease ];
 }
 
 
@@ -122,14 +116,12 @@
     :(ULong)a
     :(ULong)b
 {
-    NSString * parameters = [[ NSString alloc ] initWithFormat: @"icg(%ul,%ul,%ul,%ul)", periodLength, a, b, seed ];
+    NSString * parameters = [ NSString stringWithFormat: @"icg(%ul,%ul,%ul,%ul)", periodLength, a, b, seed ];
 
-    NPRandomNumberGenerator * generator = [[ NPRandomNumberGenerator alloc ] initWithName:@"" parent:self parameters:parameters ];
+    NPRandomNumberGenerator * generator = [[ NPRandomNumberGenerator alloc ] initWithName:@"icg" parent:self parameters:parameters ];
 	[ generators addObject:generator ];
-	[ generator  release ];
-    [ parameters release ];
 
-    return generator;
+    return [ generator autorelease ];
 }
 
 - (NPRandomNumberGenerator *) eicgGenerator
@@ -143,14 +135,12 @@
     :(ULong)a
     :(ULong)b
 {
-    NSString * parameters = [[ NSString alloc ] initWithFormat: @"eicg(%ul,%ul,%ul,%ul)", periodLength, a, b, seed ];
+    NSString * parameters = [ NSString stringWithFormat: @"eicg(%ul,%ul,%ul,%ul)", periodLength, a, b, seed ];
 
-    NPRandomNumberGenerator * generator = [[ NPRandomNumberGenerator alloc ] initWithName:@"" parent:self parameters:parameters ];
+    NPRandomNumberGenerator * generator = [[ NPRandomNumberGenerator alloc ] initWithName:@"eicg" parent:self parameters:parameters ];
 	[ generators addObject:generator ];
-	[ generator  release ];
-    [ parameters release ];
 
-    return generator;
+    return [ generator autorelease ];
 }
 
 - (NPRandomNumberGenerator *) meicgGenerator
@@ -164,14 +154,12 @@
     :(ULong)a
     :(ULong)b
 {
-    NSString * parameters = [[ NSString alloc ] initWithFormat: @"meicg(%ul,%ul,%ul,%ul)", periodLength, a, b, seed ];
+    NSString * parameters = [ NSString stringWithFormat: @"meicg(%ul,%ul,%ul,%ul)", periodLength, a, b, seed ];
 
-    NPRandomNumberGenerator * generator = [[ NPRandomNumberGenerator alloc ] initWithName:@"" parent:self parameters:parameters ];
+    NPRandomNumberGenerator * generator = [[ NPRandomNumberGenerator alloc ] initWithName:@"meicg" parent:self parameters:parameters ];
 	[ generators addObject:generator ];
-	[ generator  release ];
-    [ parameters release ];
 
-    return generator;
+    return [ generator autorelease ];
 }
 
 - (NPRandomNumberGenerator *) dicgGenerator
@@ -185,14 +173,12 @@
     :(ULong)a
     :(ULong)b
 {
-    NSString * parameters = [[ NSString alloc ] initWithFormat: @"dicg(%ul,%ul,%ul,%ul)", periodExponent, a, b, seed ];
+    NSString * parameters = [ NSString stringWithFormat: @"dicg(%ul,%ul,%ul,%ul)", periodExponent, a, b, seed ];
 
-    NPRandomNumberGenerator * generator = [[ NPRandomNumberGenerator alloc ] initWithName:@"" parent:self parameters:parameters ];
+    NPRandomNumberGenerator * generator = [[ NPRandomNumberGenerator alloc ] initWithName:@"dicg" parent:self parameters:parameters ];
 	[ generators addObject:generator ];
-	[ generator  release ];
-    [ parameters release ];
 
-    return generator;
+    return [ generator autorelease ];
 }
 
 - (NPRandomNumberGenerator *) qcgGenerator
@@ -207,14 +193,12 @@
     :(ULong)b
     :(ULong)c
 {
-    NSString * parameters = [[ NSString alloc ] initWithFormat: @"qcg(%ul,%ul,%ul,%ul,%ul)", periodLength, a, b, c, seed ];
+    NSString * parameters = [ NSString stringWithFormat: @"qcg(%ul,%ul,%ul,%ul,%ul)", periodLength, a, b, c, seed ];
 
-     NPRandomNumberGenerator * generator = [[ NPRandomNumberGenerator alloc ] initWithName:@"" parent:self parameters:parameters ];
+     NPRandomNumberGenerator * generator = [[ NPRandomNumberGenerator alloc ] initWithName:@"qcg" parent:self parameters:parameters ];
 	[ generators addObject:generator ];
-	[ generator  release ];
-    [ parameters release ];
 
-    return generator;
+    return [ generator autorelease ];
 }
 
 @end
