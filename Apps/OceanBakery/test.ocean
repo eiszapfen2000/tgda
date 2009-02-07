@@ -1,0 +1,10 @@
+{
+    Resolution = ( "8", "8" );
+    Size = ( "2", "2" );
+    Generator = "Phillips";
+    WindDirection = ( "0.5", "0.5" );
+    RNG = { FirstGenerator = "ctg"; FirstSeed = "12345"; SecondGenerator = "tt800"; SecondSeed = "0" };
+    Threads = "2";
+    Output = "test.odata"
+}
+ 
