@@ -7,8 +7,9 @@
 - (void) setSize:(IVector2 *)newSize;
 - (void) setResolution:(IVector2 *)newResolution;
 - (void) setWindDirection:(FVector2 *)newWindDirection;
-- (void) setNumberOfThreads:(Int)newNumberOfThreads;
-- (void) generateFrequencySpectrum;
+- (void) setGaussianRNG:(id)newGaussianRNG;
+- (void) generateTimeIndependentFrequencySpectrum;
+- (void) generateFrequencySpectrumAtTime:(Float)time;
 - (fftwf_complex *) frequencySpectrum;
 
 @end

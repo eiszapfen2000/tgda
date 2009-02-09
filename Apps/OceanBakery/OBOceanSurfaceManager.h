@@ -1,10 +1,13 @@
 #import "Core/NPObject/NPObject.h"
 
+@class OBOceanSurface;
+@class NPFile;
+
 @interface OBOceanSurfaceManager : NPObject
 {
     NSMutableDictionary * frequencySpectrumGenerators;
     NSMutableDictionary * configurations;
-    id currentConfiguration;
+    NSMutableArray * oceanSurfaces;
     NSUInteger processorCount;
 
 }
@@ -15,11 +18,12 @@
 - (void) dealloc;
 
 - (id) frequencySpectrumGenerators;
-- (id) currentConfiguration;
-- (void) setCurrentConfiguration:(id)newCurrentConfiguration;
 
-- (id) loadFromPath:(NSString *)path;
-- (id) loadFromAbsolutePath:(NSString *)path;
+- (id) loadOceanSurfaceGenerationConfigurationFromPath:(NSString *)path;
+- (id) loadOceanSurfaceGenerationConfigurationFromAbsolutePath:(NSString *)path;
+
+- (void) saveOceanSurface:(OBOceanSurface *)oceanSurface atAbsolutePath:(NSString *)path;
+- (void) saveOceanSurface:(OBOceanSurface *)oceanSurface toFile:(NPFile *)file;
 
 - (void) processConfigurations;
 

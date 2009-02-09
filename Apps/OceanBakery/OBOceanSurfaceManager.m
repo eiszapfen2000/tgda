@@ -1,5 +1,6 @@
 #import "OBOceanSurfaceManager.h"
 #import "OBOceanSurfaceGenerationConfiguration.h"
+#import "OBOceanSurface.h"
 #import "OBPhillipsSpectrum.h"
 #import "fftw3.h"
 #import "NP.h"
@@ -29,11 +30,13 @@
 
     frequencySpectrumGenerators = [[ NSMutableDictionary alloc ] init ];
     configurations = [[ NSMutableDictionary alloc ] init ];
-    currentConfiguration = nil;
+    oceanSurfaces = [[ NSMutableArray alloc ] init ];
+
     processorCount = [[ NSProcessInfo processInfo ] processorCount ];
     NPLOG(@"%@: %u processors detected",name,processorCount);
 
     int result = fftwf_init_threads();
+
     if ( result == 0 )
     {
         NPLOG_WARNING(@"%@: no fftw thread support",name);
@@ -50,10 +53,11 @@
 
 - (void) dealloc
 {
+    [ oceanSurfaces removeAllObjects ];
+    [ oceanSurfaces release ];
+
     [ frequencySpectrumGenerators removeAllObjects ];
     [ frequencySpectrumGenerators release ];
-
-    TEST_RELEASE(currentConfiguration);
 
     [ configurations removeAllObjects ];
     [ configurations release ];
@@ -68,24 +72,14 @@
     return frequencySpectrumGenerators;
 }
 
-- (id) currentConfiguration
-{
-    return currentConfiguration;
-}
-
-- (void) setCurrentConfiguration:(id)newCurrentConfiguration
-{
-    ASSIGN(currentConfiguration,newCurrentConfiguration);
-}
-
-- (id) loadFromPath:(NSString *)path
+- (id) loadOceanSurfaceGenerationConfigurationFromPath:(NSString *)path
 {
     NSString * absolutePath = [[[ NP Core ] pathManager ] getAbsoluteFilePath:path ];
 
-    return [ self loadFromAbsolutePath:absolutePath ];
+    return [ self loadOceanSurfaceGenerationConfigurationFromAbsolutePath:absolutePath ];
 }
 
-- (id) loadFromAbsolutePath:(NSString *)path
+- (id) loadOceanSurfaceGenerationConfigurationFromAbsolutePath:(NSString *)path
 {
     NPLOG(@"%@: loading %@", name, path);
 
@@ -115,7 +109,30 @@
         return config;
     }
 
-    return nil; 
+    return nil;
+}
+
+- (void) saveOceanSurface:(OBOceanSurface *)oceanSurface atAbsolutePath:(NSString *)path
+{
+    if ( [[ NSFileManager defaultManager ] createEmptyFileAtPath:path ] == YES )
+    {
+        NPFile * file = [[ NPFile alloc ] initWithName:[oceanSurface name]
+                                                parent:self
+                                              fileName:path
+                                                  mode:NP_FILE_UPDATING ];
+
+        [ self saveOceanSurface:oceanSurface toFile:file ];
+        [ file release ];
+    }
+    else
+    {
+        NPLOG_ERROR(@"%@ failed to create file %@",name,path);
+    }
+}
+
+- (void) saveOceanSurface:(OBOceanSurface *)oceanSurface toFile:(NPFile *)file
+{
+    [ oceanSurface saveToFile:file ];
 }
 
 - (void) processConfigurations
@@ -125,8 +142,16 @@
 
     while (( config = [ configEnumerator nextObject ] ))
     {
-        [ config process ];
+        OBOceanSurface * tmp = [ config process ];
+        NSString * path = [NSHomeDirectory() stringByAppendingPathComponent:[config outputFileName]];
+        //NSLog(path);
+
+        [ self saveOceanSurface:tmp atAbsolutePath:path];
+
+        //[ oceanSurfaces addObject:[ config process ]];
     }
+
+    //NSEnumerator * surfaceEnumerator = [ oceanSurfaces objectEnumerator ];
 }
 
 @end

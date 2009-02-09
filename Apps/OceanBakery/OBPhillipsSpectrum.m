@@ -26,7 +26,8 @@
     size          = iv2_alloc_init();
     windDirection = fv2_alloc_init();
 
-    numberOfThreads = 1;
+    needsUpdate = YES;
+    lastTime = 0.0f;
 
     gaussianRNG = nil;
     H0 = NULL;
@@ -60,6 +61,8 @@
     {
         size->x = newSize->x;
         size->y = newSize->y;
+
+        needsUpdate = YES;
     }
 }
 
@@ -69,14 +72,8 @@
     {
         resolution->x = newResolution->x;
         resolution->y = newResolution->y;
-    }
-}
 
-- (void) setNumberOfThreads:(Int)newNumberOfThreads
-{
-    if ( newNumberOfThreads > 0 )
-    {
-        numberOfThreads = newNumberOfThreads;
+        needsUpdate = YES;
     }
 }
 
@@ -84,11 +81,15 @@
 {
     windDirection->x = newWindDirection->x;
     windDirection->y = newWindDirection->y;
+
+    needsUpdate = YES;
 }
 
 - (void) setGaussianRNG:(id)newGaussianRNG
 {
     ASSIGN(gaussianRNG,newGaussianRNG);
+
+    needsUpdate = YES;
 }
 
 - (Float) omegaForK:(FVector2 *)k
@@ -146,91 +147,102 @@
     Float xi_r, xi_i, a;
     FVector2 k;
 
-	if ( !H0 )
+	if ( needsUpdate == YES )
 	{
-		H0 = (fftwf_complex *)fftwf_malloc(sizeof(fftwf_complex)*resolution->x*resolution->y);
-	}
+        FFTWF_SAFE_FREE(H0);
 
-    for ( Int i = 0; i < resolution->x; i++ )
-    {
-        for ( Int j = 0; j < resolution->y; j++ )
+		H0 = fftwf_malloc(sizeof(fftwf_complex) * resolution->x * resolution->y);
+
+        for ( Int i = 0; i < resolution->x; i++ )
         {
-			xi_r = [ gaussianRNG nextGaussianFPRandomNumber ];
-			xi_i = [ gaussianRNG nextGaussianFPRandomNumber ];
+            for ( Int j = 0; j < resolution->y; j++ )
+            {
+			    xi_r = [ gaussianRNG nextGaussianFPRandomNumber ];
+			    xi_i = [ gaussianRNG nextGaussianFPRandomNumber ];
 
-            k.x = [ self indexToKx:i ];
-            k.y = [ self indexToKy:j ];
+                k.x = [ self indexToKx:i ];
+                k.y = [ self indexToKy:j ];
 
-            a = sqrt([ self getAmplitudeAt:&k ]);
+                a = sqrt([ self getAmplitudeAt:&k ]);
 
-			H0[j + resolution->y * i][0] = MATH_1_DIV_SQRT_2 * xi_r * a;
-			H0[j + resolution->y * i][1] = MATH_1_DIV_SQRT_2 * xi_i * a;
+			    H0[j + resolution->y * i][0] = MATH_1_DIV_SQRT_2 * xi_r * a;
+			    H0[j + resolution->y * i][1] = MATH_1_DIV_SQRT_2 * xi_i * a;
+            }
         }
     }
 }
 
-- (void) generateH
+- (void) generateHAtTime:(Float)time
 {
     FVector2 k;
     Float omega;
     fftwf_complex expOmega, expMinusOmega, H0expOmega, H0expMinusOmega, H0conjugate;
     Int indexForK, indexForConjugate;
 
-	if ( !frequencySpectrum )
+	if ( time != lastTime )
 	{
-		frequencySpectrum = (fftwf_complex *)fftwf_malloc(sizeof(fftwf_complex)*resolution->x*resolution->y);
-	}
+        FFTWF_SAFE_FREE(frequencySpectrum);
 
-    for ( Int i = 0; i < resolution->x; i++ )
-    {
-        for ( Int j = 0; j < resolution->y; j++ )
+		frequencySpectrum = fftwf_malloc(sizeof(fftwf_complex) * resolution->x * resolution->y);
+
+        for ( Int i = 0; i < resolution->x; i++ )
         {
-            indexForK = j + resolution->y * i;
-            indexForConjugate = ((resolution->y - j) % resolution->y) + resolution->y * ((resolution->x - i) % resolution->x);
+            for ( Int j = 0; j < resolution->y; j++ )
+            {
+                indexForK = j + resolution->y * i;
+                indexForConjugate = ((resolution->y - j) % resolution->y) + resolution->y * ((resolution->x - i) % resolution->x);
 
-            k.x = [ self indexToKx:i ];
-            k.y = [ self indexToKy:j ];
+                k.x = [ self indexToKx:i ];
+                k.y = [ self indexToKy:j ];
 
-            omega = [ self omegaForK:&k ];
+                omega = [ self omegaForK:&k ];
 
-            // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
-            expOmega[0] = cos(omega);
-            expOmega[1] = sin(omega);
+                // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
+                expOmega[0] = cos(omega * time);
+                expOmega[1] = sin(omega * time);
 
-            // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
-            expMinusOmega[0] = cos(omega);
-            expMinusOmega[1] = -sin(omega);
+                // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
+                expMinusOmega[0] = cos(omega * time);
+                expMinusOmega[1] = -sin(omega * time);
 
-            /* complex multiplication
-               x = a + i*b
-               y = c + i*d
-               xy = (ac-bd) + i(ad+bc)
-            */
+                /* complex multiplication
+                   x = a + i*b
+                   y = c + i*d
+                   xy = (ac-bd) + i(ad+bc)
+                */
 
-            // H0[indexForK] * exp(i*omega*t)
-            H0expOmega[0] = H0[indexForK][0] * expOmega[0] - H0[indexForK][1] * expOmega[1];
-            H0expOmega[1] = H0[indexForK][0] * expOmega[1] + H0[indexForK][1] * expOmega[0];
+                // H0[indexForK] * exp(i*omega*t)
+                H0expOmega[0] = H0[indexForK][0] * expOmega[0] - H0[indexForK][1] * expOmega[1];
+                H0expOmega[1] = H0[indexForK][0] * expOmega[1] + H0[indexForK][1] * expOmega[0];
 
 
-            H0conjugate[0] = H0[indexForConjugate][0];
-            H0conjugate[1] = -H0[indexForConjugate][1];
+                H0conjugate[0] = H0[indexForConjugate][0];
+                H0conjugate[1] = -H0[indexForConjugate][1];
 
-            // H0[indexForConjugate] * exp(-i*omega*t)
-            
-            H0expMinusOmega[0] = H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1];
-            H0expMinusOmega[1] = H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0];
+                // H0[indexForConjugate] * exp(-i*omega*t)
+                
+                H0expMinusOmega[0] = H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1];
+                H0expMinusOmega[1] = H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0];
 
-            /* complex addition
-               x = a + i*b
-               y = c + i*d
-               x+y = (a+c)+i(b+d)
-            */
+                /* complex addition
+                   x = a + i*b
+                   y = c + i*d
+                   x+y = (a+c)+i(b+d)
+                */
 
-            // H = H0expOmega + H0expMinusomega
-            frequencySpectrum[indexForK][0] = H0expOmega[0] + H0expMinusOmega[0];
-            frequencySpectrum[indexForK][1] = H0expOmega[1] + H0expMinusOmega[1];
+                // H = H0expOmega + H0expMinusomega
+                frequencySpectrum[indexForK][0] = H0expOmega[0] + H0expMinusOmega[0];
+                frequencySpectrum[indexForK][1] = H0expOmega[1] + H0expMinusOmega[1];
+            }
         }
-    }    
+
+        lastTime = time;
+    }
+}
+
+- (void) generateTimeIndependentH
+{
+    [ self generateHAtTime:1.0f ];
 }
 
 /*
@@ -243,7 +255,6 @@ Frequeny Spectrum Quadrant Layout
 ---------
 
 */
-
 
 #define QUADRANT_1_AND_3     1
 #define QUADRANT_2_AND_4    -1
@@ -292,10 +303,19 @@ Frequeny Spectrum Quadrant Layout
     }
 }
 
-- (void) generateFrequencySpectrum
+- (void) generateTimeIndependentFrequencySpectrum
 {
     [ self generateH0 ];
-    [ self generateH ];
+    [ self generateTimeIndependentH ];
+
+    [ self swapFrequencySpectrumQuadrants:QUADRANT_1_AND_3 ];
+    [ self swapFrequencySpectrumQuadrants:QUADRANT_2_AND_4 ];
+}
+
+- (void) generateFrequencySpectrumAtTime:(Float)time
+{
+    [ self generateH0 ];
+    [ self generateHAtTime:time ];
 
     [ self swapFrequencySpectrumQuadrants:QUADRANT_1_AND_3 ];
     [ self swapFrequencySpectrumQuadrants:QUADRANT_2_AND_4 ];

@@ -7,26 +7,23 @@ int main (void)
 {
     NSAutoreleasePool * pool = [[ NSAutoreleasePool alloc ] init ];
     [ NP Core ];
+    NSAutoreleasePool * innerPool = [[ NSAutoreleasePool alloc ] init ];
 
-    id manager = [[ OBOceanSurfaceManager alloc ] init ];
+    OBOceanSurfaceManager * manager = [[ OBOceanSurfaceManager alloc ] init ];
 
     NSArray * arguments = [[ NSProcessInfo processInfo ] arguments ];
     if ( [ arguments count ] > 1 )
     {
         NSEnumerator * argumentsEnumerator = [ arguments objectEnumerator ];
-        id file = [ argumentsEnumerator nextObject ] ;
-
-        NSAutoreleasePool * innerPool = [[ NSAutoreleasePool alloc ] init ];
+        id file = [ argumentsEnumerator nextObject ];
 
         while (( file = [ argumentsEnumerator nextObject ] ))
         {
             if ( [ file isAbsolutePath ] == YES && [[ NSFileManager defaultManager ] fileExistsAtPath:file ] == YES )
             {
-                id config = [ manager loadFromAbsolutePath:file ];
+                id config = [ manager loadOceanSurfaceGenerationConfigurationFromAbsolutePath:file ];
             }
         }
-
-        [ innerPool release ];
 
         [ manager processConfigurations ];
     }
@@ -36,6 +33,8 @@ int main (void)
     }
 
     [ manager release ];
+
+    [ innerPool release ];
     [[ NP Core ] dealloc ];
     [ pool release ];
 
