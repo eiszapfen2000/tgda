@@ -57,6 +57,11 @@
 - (void) writeInt32s:(Int32 *)i withLength:(UInt)length;
 - (void) writeInt64:(Int64 *)i;
 
+- (void) writeUInt16:(UInt16 *)u;
+- (void) writeUInt32:(UInt32 *)u;
+- (void) writeUInt32s:(UInt32 *)u withLength:(UInt)length;
+- (void) writeUInt64:(UInt64 *)u;
+
 - (void) writeFloat:(Float *)f;
 - (void) writeFloats:(Float *)f withLength:(UInt)length;
 - (void) writeDouble:(Double *)d;

@@ -276,6 +276,29 @@
     [ fileHandle writeData:data ];
 }
 
+- (void) writeUInt16:(UInt16 *)u
+{
+    NSData * data = [ NSData dataWithBytes:u length:2 ];
+    [ fileHandle writeData:data ];
+}
+- (void) writeUInt32:(UInt32 *)u
+{
+    NSData * data = [ NSData dataWithBytes:u length:4 ];
+    [ fileHandle writeData:data ];
+}
+
+- (void) writeUInt32s:(UInt32 *)u withLength:(UInt)length
+{
+    NSData * data = [ NSData dataWithBytes:u length:4*length ];
+    [ fileHandle writeData:data ];
+}
+
+- (void) writeUInt64:(UInt64 *)u
+{
+    NSData * data = [ NSData dataWithBytes:u length:8 ];
+    [ fileHandle writeData:data ];
+}
+
 - (void) writeFloat:(Float *)f
 {
     NSData * data = [ NSData dataWithBytes:f length:4 ];
