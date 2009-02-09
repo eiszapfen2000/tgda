@@ -1,5 +1,7 @@
 #import "OBOceanSurfaceGenerationConfiguration.h"
 #import "OBOceanSurfaceManager.h"
+#import "OBOceanSurface.h"
+#import "OBOceanSurfaceSlice.h"
 #import "OBPFrequencySpectrumGeneration.h"
 #import "NP.h"
 
@@ -30,7 +32,19 @@
 
 - (void) dealloc
 {
+    iv2_free(resolution);
+    iv2_free(size);
+    fv2_free(windDirection);
+
+    TEST_RELEASE(generatorName);
+    TEST_RELEASE(outputFileName);
+
     [ super dealloc ];
+}
+
+- (NSString *) outputFileName
+{
+    return outputFileName;
 }
 
 - (BOOL) loadFromPath:(NSString *)path
@@ -64,6 +78,7 @@
     NSString * secondGeneratorName = [ gaussianRNGConfig objectForKey:@"SecondGenerator" ];
     NSString * firstGeneratorSeed  = [ gaussianRNGConfig objectForKey:@"FirstSeed"  ];
     NSString * secondGeneratorSeed = [ gaussianRNGConfig objectForKey:@"SecondSeed" ];
+
     id firstGenerator  = [[[ NP Core ] randomNumberGeneratorManager ] fixedParameterGeneratorWithRNGName:firstGeneratorName  ];
     id secondGenerator = [[[ NP Core ] randomNumberGeneratorManager ] fixedParameterGeneratorWithRNGName:secondGeneratorName ];
     [ firstGenerator  reseed:[firstGeneratorSeed  integerValue]];
@@ -73,60 +88,62 @@
                                                                                 andSecondGenerator:secondGenerator ];
 
 
+    numberOfSlices  = [[ config objectForKey:@"Slices" ] intValue  ];
     numberOfThreads = [[ config objectForKey:@"Threads" ] intValue ];
-    NPLOG(@"Number of Threads: %d",numberOfThreads);
+    NPLOG(@"Number of Slices: %d", numberOfSlices);
+    NPLOG(@"Number of Threads: %d", numberOfThreads);
 
     outputFileName = [[ config objectForKey:@"Output" ] retain ];
 
     return YES;
 }
 
-- (void) activate
-{
-    [(OBOceanSurfaceManager *)parent setCurrentConfiguration:self ];    
-}
-
-- (void) deactivate
-{
-    [(OBOceanSurfaceManager *)parent setCurrentConfiguration:nil ];
-}
-
-- (void) process
+- (OBOceanSurface *) process
 {
     id <OBPFrequencySpectrumGeneration> generator = [[(OBOceanSurfaceManager *)parent frequencySpectrumGenerators ] objectForKey:generatorName ];
     [ generator setSize:size ];
     [ generator setResolution:resolution ];
     [ generator setWindDirection:windDirection ];
     [ generator setGaussianRNG:gaussianRNG ];
-    [ generator setNumberOfThreads:numberOfThreads ];
-    [ generator generateFrequencySpectrum ];
 
+    OBOceanSurface * oceanSurface = [[ OBOceanSurface alloc ] initWithName:@"" parent:nil resolution:resolution ];
+
+    fftwf_plan_with_nthreads(numberOfThreads);
     fftwf_complex * complexHeights = fftwf_malloc(sizeof(fftwf_complex) * resolution->x * resolution->y);
 
-    fftwf_plan plan;
-    fftwf_plan_with_nthreads(numberOfThreads);
-
-    plan = fftwf_plan_dft_2d(resolution->x,
-                             resolution->y,
-                             [generator frequencySpectrum],
-                             complexHeights,
-                             FFTW_BACKWARD,
-                             FFTW_ESTIMATE);
-    fftwf_execute(plan);
-    fftwf_destroy_plan(plan);
-
-    Float * heights = ALLOC_ARRAY(Float,resolution->x*resolution->y);
-
-    for ( Int i = 0; i < resolution->x; i++ )
+    for ( Int i = 0; i < numberOfSlices; i++ )
     {
-        for ( Int j = 0; j < resolution->y; j++ )
+        [ generator generateTimeIndependentFrequencySpectrum ];
+
+        fftwf_plan plan;
+        plan = fftwf_plan_dft_2d(resolution->x,
+                                 resolution->y,
+                                 [generator frequencySpectrum],
+                                 complexHeights,
+                                 FFTW_BACKWARD,
+                                 FFTW_ESTIMATE);
+        fftwf_execute(plan);
+        fftwf_destroy_plan(plan);
+
+        Float * heights = ALLOC_ARRAY(Float,resolution->x*resolution->y);
+
+        for ( Int j = 0; j < resolution->x; j++ )
         {
-            NSLog(@"%f %f", complexHeights[j + resolution->y * i][0], complexHeights[j + resolution->y * i][1]);
-            heights[j + resolution->y * i] = complexHeights[j + resolution->y * i][0];
+            for ( Int k = 0; k < resolution->y; k++ )
+            {
+                heights[k + resolution->y * j] = complexHeights[k + resolution->y * j][0];
+            }
         }
+
+        OBOceanSurfaceSlice * slice = [[ OBOceanSurfaceSlice alloc ] initWithName:[NSString stringWithFormat:@"%d",i] parent:nil ];
+        [ slice setHeights:heights elementCount:(UInt)(resolution->x * resolution->y) ];
+        [ oceanSurface addSlice:slice ];
+        [ slice release ];
     }
 
     fftwf_free(complexHeights);
+
+    return [ oceanSurface autorelease ];
 }
 
 @end

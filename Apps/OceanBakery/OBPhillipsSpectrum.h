@@ -6,13 +6,17 @@
 
 @interface OBPhillipsSpectrum : NPObject < OBPFrequencySpectrumGeneration >
 {
+    Float alpha;
+
     IVector2 * resolution;
     IVector2 * size;
-    Int numberOfThreads;
+    FVector2 * windDirection;
+
     id gaussianRNG;
 
-    FVector2 * windDirection;
-    Float alpha;
+    BOOL needsUpdate;
+    Float lastTime;
+
     fftwf_complex * H0;
     fftwf_complex * frequencySpectrum;
 }
@@ -21,9 +25,6 @@
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
-
-- (void) setWindDirection:(FVector2 *)newWindDirection;
-- (void) setGaussianRNG:(id)newGaussianRNG;
 
 - (Float) omegaForK:(FVector2 *)k;
 - (Float) indexToKx:(Int)index;

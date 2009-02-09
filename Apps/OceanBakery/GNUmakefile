@@ -5,11 +5,15 @@ TOOL_NAME=OceanBakery
 OceanBakery_HEADER_FILES = \
 OBOceanSurfaceGenerationConfiguration.h \
 OBOceanSurfaceManager.h \
+OBOceanSurface.h \
+OBOceanSurfaceSlice.h \
 OBPhillipsSpectrum.h
 
 OceanBakery_OBJC_FILES = \
 OBOceanSurfaceGenerationConfiguration.m \
 OBOceanSurfaceManager.m \
+OBOceanSurface.m \
+OBOceanSurfaceSlice.m \
 OBPhillipsSpectrum.m \
 main.m
 
