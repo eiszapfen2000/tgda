@@ -33,17 +33,17 @@
     oceanSurfaces = [[ NSMutableArray alloc ] init ];
 
     processorCount = [[ NSProcessInfo processInfo ] processorCount ];
-    NPLOG(@"%@: %u processors detected",name,processorCount);
+    NPLOG(@"%@: %u processors detected", name, processorCount);
 
     int result = fftwf_init_threads();
 
     if ( result == 0 )
     {
-        NPLOG_WARNING(@"%@: no fftw thread support",name);
+        NPLOG_WARNING(@"%@: no fftw thread support", name);
     }
     else
     {
-        NPLOG(@"%@: fftw thread support up and running",name);
+        NPLOG(@"%@: fftw thread support up and running", name);
     }
 
     [ self createFrequencySpectrumGenerators ];
@@ -119,14 +119,14 @@
         NPFile * file = [[ NPFile alloc ] initWithName:[oceanSurface name]
                                                 parent:self
                                               fileName:path
-                                                  mode:NP_FILE_UPDATING ];
+                                                  mode:NP_FILE_WRITING ];
 
         [ self saveOceanSurface:oceanSurface toFile:file ];
         [ file release ];
     }
     else
     {
-        NPLOG_ERROR(@"%@ failed to create file %@",name,path);
+        NPLOG_ERROR(@"%@ failed to create file %@", name, path);
     }
 }
 
@@ -143,15 +143,10 @@
     while (( config = [ configEnumerator nextObject ] ))
     {
         OBOceanSurface * tmp = [ config process ];
-        NSString * path = [NSHomeDirectory() stringByAppendingPathComponent:[config outputFileName]];
-        //NSLog(path);
+        NSString * path = [[[ NSFileManager defaultManager ] currentDirectoryPath ] stringByAppendingPathComponent:[config outputFileName]];
 
         [ self saveOceanSurface:tmp atAbsolutePath:path];
-
-        //[ oceanSurfaces addObject:[ config process ]];
     }
-
-    //NSEnumerator * surfaceEnumerator = [ oceanSurfaces objectEnumerator ];
 }
 
 @end

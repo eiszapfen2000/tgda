@@ -26,6 +26,7 @@
     windDirection = fv2_alloc_init();
     generatorName = nil;
     outputFileName = nil;
+    timeStamps = NULL;
 
     return self;
 }
@@ -38,6 +39,8 @@
 
     TEST_RELEASE(generatorName);
     TEST_RELEASE(outputFileName);
+
+    SAFE_FREE(timeStamps);
 
     [ super dealloc ];
 }
@@ -93,6 +96,21 @@
     NPLOG(@"Number of Slices: %d", numberOfSlices);
     NPLOG(@"Number of Threads: %d", numberOfThreads);
 
+    NSArray * timeStampArray = [ config objectForKey:@"TimeStamps" ];
+    Int timeStampCount = (Int)[ timeStampArray count ];
+
+    if ( timeStampCount != numberOfSlices )
+    {
+        NPLOG_WARNING(@"Timestamp element count does not match number of slices");
+        numberOfSlices = timeStampCount;
+    }
+
+    timeStamps = ALLOC_ARRAY(Float, timeStampCount);
+    for ( int i = 0; i < timeStampCount; i++ )
+    {
+        timeStamps[i] = [[ timeStampArray objectAtIndex:i ] floatValue ];
+    }
+
     outputFileName = [[ config objectForKey:@"Output" ] retain ];
 
     return YES;
@@ -113,7 +131,7 @@
 
     for ( Int i = 0; i < numberOfSlices; i++ )
     {
-        [ generator generateTimeIndependentFrequencySpectrum ];
+        [ generator generateFrequencySpectrumAtTime:timeStamps[i] ];
 
         fftwf_plan plan;
         plan = fftwf_plan_dft_2d(resolution->x,

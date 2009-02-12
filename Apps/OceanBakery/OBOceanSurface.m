@@ -50,8 +50,7 @@
 - (void) saveToFile:(NPFile *)file
 {
     [ file writeSUXString:@"OceanSurface" ];
-    [ file writeInt32:&(resolution->x) ];
-    [ file writeInt32:&(resolution->y) ];
+    [ file writeIVector2:resolution ];
 
     UInt32 numberOfSlices = [ slices count ];
     [ file writeUInt32:&numberOfSlices ];
