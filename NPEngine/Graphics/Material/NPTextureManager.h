@@ -7,6 +7,7 @@
     NSMutableDictionary * textures;
     Int maxAnisotropy;
     BOOL nonPOTSupport;
+    BOOL hardwareMipMapGenerationSupport;
     NpState textureMode;
 }
 
@@ -19,6 +20,7 @@
 
 - (Int) maxAnisotropy;
 - (BOOL) nonPOTSupport;
+- (BOOL) hardwareMipMapGenerationSupport;
 - (NpState) textureMode;
 
 - (void) setTextureMode:(NpState)newTextureMode;

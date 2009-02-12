@@ -46,6 +46,12 @@
         nonPOTSupport = YES;
     }
 
+    if ( [[[[ NP Graphics ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_SGIS_generate_mipmap" ] == YES )
+    {
+        hardwareMipMapGenerationSupport = YES;
+    }
+
+
     [ self setTexture2DMode ];
 }
 
@@ -57,6 +63,11 @@
 - (BOOL) nonPOTSupport
 {
     return nonPOTSupport;
+}
+
+- (BOOL) hardwareMipMapGenerationSupport
+{
+    return hardwareMipMapGenerationSupport;
 }
 
 - (NpState) textureMode

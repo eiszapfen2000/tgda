@@ -1,4 +1,5 @@
 #import "NPFile.h"
+#import "NP.h"
 
 @implementation NPFile
 
@@ -97,6 +98,11 @@
             break;
         }
     }
+
+    if ( fileHandle == nil )
+    {
+        NPLOG_ERROR(@"%@: cannot open file %@ for processing", name, fileName);
+    }
 }
 
 - (void) clear
@@ -113,43 +119,67 @@
 
 - (void) readInt16:(Int16 *)i
 {
-    NSData * data = [ fileHandle readDataOfLength:2 ];
+    NSData * data = [ fileHandle readDataOfLength:sizeof(Int16) ];
     [ data getBytes:i ];
 }
 
 - (void) readInt32:(Int32 *)i
 {
-    NSData * data = [ fileHandle readDataOfLength:4 ];
+    NSData * data = [ fileHandle readDataOfLength:sizeof(Int32) ];
     [ data getBytes:i ];
 }
 
 - (void) readInt32s:(Int32 *)i withLength:(UInt)length
 {
-    NSData * data = [ fileHandle readDataOfLength:(4*length) ];
+    NSData * data = [ fileHandle readDataOfLength:(sizeof(Int32)*length) ];
     [ data getBytes:i ];
 }
 
 - (void) readInt64:(Int64 *)i;
 {
-    NSData * data = [ fileHandle readDataOfLength:8 ];
+    NSData * data = [ fileHandle readDataOfLength:sizeof(Int64) ];
+    [ data getBytes:i ];
+}
+
+- (void) readUInt16:(UInt16 *)i
+{
+    NSData * data = [ fileHandle readDataOfLength:sizeof(UInt16) ];
+    [ data getBytes:i ];
+}
+
+- (void) readUInt32:(UInt32 *)i
+{
+    NSData * data = [ fileHandle readDataOfLength:sizeof(UInt32) ];
+    [ data getBytes:i ];
+}
+
+- (void) readUInt32s:(UInt32 *)i withLength:(UInt)length
+{
+    NSData * data = [ fileHandle readDataOfLength:(sizeof(UInt32)*length) ];
+    [ data getBytes:i ];
+}
+
+- (void) readUInt64:(UInt64 *)i;
+{
+    NSData * data = [ fileHandle readDataOfLength:sizeof(UInt64) ];
     [ data getBytes:i ];
 }
 
 - (void) readFloat:(Float *)f
 {
-    NSData * data = [ fileHandle readDataOfLength:4 ];
+    NSData * data = [ fileHandle readDataOfLength:sizeof(Float) ];
     [ data getBytes:f ];
 }
 
 - (void) readFloats:(Float *)f withLength:(UInt)length
 {
-    NSData * data = [ fileHandle readDataOfLength:(4*length) ];
+    NSData * data = [ fileHandle readDataOfLength:(sizeof(Float)*length) ];
     [ data getBytes:f ];
 }
 
 - (void) readDouble:(Double *)d
 {
-    NSData * data = [ fileHandle readDataOfLength:8 ];
+    NSData * data = [ fileHandle readDataOfLength:sizeof(Double) ];
     [ data getBytes:d ];
 }
 
@@ -248,6 +278,15 @@
     return v;
 }
 
+- (IVector2 *) readIVector2
+{
+    IVector2 * v = iv2_alloc_init();
+    [ self readInt32:&(V_X(*v)) ];
+    [ self readInt32:&(V_Y(*v)) ];
+
+    return v;
+}
+
 - (NSData *) readEntireFile
 {
     return [ fileHandle readDataToEndOfFile ];
@@ -255,65 +294,65 @@
 
 - (void) writeInt16:(Int16 *)i
 {
-    NSData * data = [ NSData dataWithBytes:i length:2 ];
+    NSData * data = [ NSData dataWithBytes:i length:sizeof(Int16) ];
     [ fileHandle writeData:data ];
 }
 - (void) writeInt32:(Int32 *)i
 {
-    NSData * data = [ NSData dataWithBytes:i length:4 ];
+    NSData * data = [ NSData dataWithBytes:i length:sizeof(Int32) ];
     [ fileHandle writeData:data ];
 }
 
 - (void) writeInt32s:(Int32 *)i withLength:(UInt)length
 {
-    NSData * data = [ NSData dataWithBytes:i length:4*length ];
+    NSData * data = [ NSData dataWithBytes:i length:sizeof(Int32)*length ];
     [ fileHandle writeData:data ];
 }
 
 - (void) writeInt64:(Int64 *)i
 {
-    NSData * data = [ NSData dataWithBytes:i length:8 ];
+    NSData * data = [ NSData dataWithBytes:i length:sizeof(Int64) ];
     [ fileHandle writeData:data ];
 }
 
 - (void) writeUInt16:(UInt16 *)u
 {
-    NSData * data = [ NSData dataWithBytes:u length:2 ];
+    NSData * data = [ NSData dataWithBytes:u length:sizeof(UInt16) ];
     [ fileHandle writeData:data ];
 }
 - (void) writeUInt32:(UInt32 *)u
 {
-    NSData * data = [ NSData dataWithBytes:u length:4 ];
+    NSData * data = [ NSData dataWithBytes:u length:sizeof(UInt32) ];
     [ fileHandle writeData:data ];
 }
 
 - (void) writeUInt32s:(UInt32 *)u withLength:(UInt)length
 {
-    NSData * data = [ NSData dataWithBytes:u length:4*length ];
+    NSData * data = [ NSData dataWithBytes:u length:sizeof(UInt32)*length ];
     [ fileHandle writeData:data ];
 }
 
 - (void) writeUInt64:(UInt64 *)u
 {
-    NSData * data = [ NSData dataWithBytes:u length:8 ];
+    NSData * data = [ NSData dataWithBytes:u length:sizeof(UInt64) ];
     [ fileHandle writeData:data ];
 }
 
 - (void) writeFloat:(Float *)f
 {
-    NSData * data = [ NSData dataWithBytes:f length:4 ];
+    NSData * data = [ NSData dataWithBytes:f length:sizeof(Float) ];
     [ fileHandle writeData:data ];
 }
 
 - (void) writeFloats:(Float *)f withLength:(UInt)length
 {
-    NSData * data = [ NSData dataWithBytes:f length:4*length ];
+    NSData * data = [ NSData dataWithBytes:f length:sizeof(Float)*length ];
     [ fileHandle writeData:data ];
 }
 
 - (void) writeDouble:(Double *)d
 {
-    NSData * data = [ NSData dataWithBytes:d length:8 ];
+    NSData * data = [ NSData dataWithBytes:d length:sizeof(Double) ];
     [ fileHandle writeData:data ];
 }
 
@@ -352,11 +391,9 @@
 {
     UInt32 ulength = [ s lengthOfBytesUsingEncoding:NSASCIIStringEncoding ];
     Int32 length = (Int32)ulength;
-
     [ self writeInt32:&length ];
 
     char * cstring = (char *)[ s cStringUsingEncoding:NSASCIIStringEncoding ];
-
     [ self writeChars:cstring withLength:ulength ];
 }
 
@@ -391,5 +428,11 @@
     [ self writeFloat:&(V_Z(*v)) ];
     [ self writeFloat:&(V_W(*v)) ];
 }
+
+- (void) writeIVector2:(IVector2 *)v
+{
+    [ self writeInt32:&(V_X(*v)) ];
+    [ self writeInt32:&(V_Y(*v)) ];
+} 
 
 @end

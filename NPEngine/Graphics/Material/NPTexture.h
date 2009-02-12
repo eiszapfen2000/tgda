@@ -47,8 +47,10 @@
 
 - (BOOL) loadFromFile:(NPFile *)file;
 
-- (void) uploadToGLWithoutImageData;
+- (void) uploadToGLWithoutData;
 - (void) uploadToGLUsingImage:(NPImage *)image;
+- (void) uploadToGLWithData:(NSData *)data;
+
 - (void) updateGLTextureState;
 
 @end

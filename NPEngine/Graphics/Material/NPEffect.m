@@ -75,6 +75,7 @@
                                                                                 parent:self
                                                                              technique:technique ];
             [ techniques setObject:effectTechnique forKey:techniqueName ];
+            defaultTechnique = [ effectTechnique retain ];
             [ effectTechnique release ];
 
             NPLOG(@"Technique \"%@\" validated", techniqueName);
@@ -98,7 +99,7 @@
     }
 
     effect = NULL;
-    defaultTechnique = NULL;
+    defaultTechnique = nil;
 
     [ techniques removeAllObjects ];
 
@@ -154,7 +155,7 @@
 
     if ( cgIsParameter(param) == CG_TRUE )
     {
-        NPLOG(@"%@ with name %s found",semanticName,cgGetParameterName(param));
+        NPLOG(@"%@ with name %s found", semanticName, cgGetParameterName(param));
         //NPLOG(@"%s ",cgGetTypeString(cgGetParameterType(param)));
         return param;
     }
