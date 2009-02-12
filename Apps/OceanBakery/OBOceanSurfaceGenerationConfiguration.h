@@ -13,6 +13,7 @@
     id gaussianRNG;
     Int numberOfThreads;
     Int numberOfSlices;
+    Float * timeStamps;
 }
 
 - (id) init;

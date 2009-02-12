@@ -9,6 +9,8 @@ int main (void)
     [ NP Core ];
     NSAutoreleasePool * innerPool = [[ NSAutoreleasePool alloc ] init ];
 
+    NSLog([[ NSBundle mainBundle ] bundlePath ]);
+
     OBOceanSurfaceManager * manager = [[ OBOceanSurfaceManager alloc ] init ];
 
     NSArray * arguments = [[ NSProcessInfo processInfo ] arguments ];
@@ -19,9 +21,13 @@ int main (void)
 
         while (( file = [ argumentsEnumerator nextObject ] ))
         {
-            if ( [ file isAbsolutePath ] == YES && [[ NSFileManager defaultManager ] fileExistsAtPath:file ] == YES )
+            if ( [ file isAbsolutePath ] == YES && [[ NSFileManager defaultManager ] isFile:file ] == YES )
             {
                 id config = [ manager loadOceanSurfaceGenerationConfigurationFromAbsolutePath:file ];
+            }
+            else
+            {
+                NSLog(@"%@ is not a file", file);
             }
         }
 

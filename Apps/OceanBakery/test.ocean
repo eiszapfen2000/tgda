@@ -1,11 +1,12 @@
 {
-    Resolution = ( "8", "8" );
+    Resolution = ( "64", "64" );
     Size = ( "2", "2" );
     Generator = "Phillips";
     WindDirection = ( "0.5", "0.5" );
     RNG = { FirstGenerator = "ctg"; FirstSeed = "12345"; SecondGenerator = "tt800"; SecondSeed = "0" };
     Threads = "2";
     Slices = "8";
+    TimeStamps = ( "1.0", "1.333", "1.666", "2.0", "2.333", "2.666", "3.0", "3.333");
     Output = "test.odata"
 }
  
