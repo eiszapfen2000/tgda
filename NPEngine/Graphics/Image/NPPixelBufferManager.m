@@ -250,7 +250,7 @@
     [ texture setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
     [ texture setTextureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
     [ texture setTextureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
-    [ texture uploadToGLWithoutImageData ];
+    [ texture uploadToGLWithoutData ];
 
     return texture;   
 }
@@ -312,7 +312,7 @@
     {
         glBindTexture(GL_TEXTURE_2D, [texture textureID]);
         [ pbo activateForReading ];
-        [ texture uploadToGLWithoutImageData ];
+        [ texture uploadToGLWithoutData ];
         [ pbo deactivate ];
         glBindTexture(GL_TEXTURE_2D, 0);
     }

@@ -142,7 +142,7 @@
     [ texture setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
     [ texture setTextureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
     [ texture setTextureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
-    [ texture uploadToGLWithoutImageData ];
+    [ texture uploadToGLWithoutData ];
 
     renderTextureID = [ texture textureID ];
 }

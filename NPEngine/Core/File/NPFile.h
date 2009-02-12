@@ -1,5 +1,5 @@
 #import "Core/NPObject/NPObject.h"
-#import "Core/Math/FVector.h"
+#import "Core/Math/NpMath.h"
 
 #define NP_FILE_READING     0
 #define NP_FILE_UPDATING    1
@@ -32,6 +32,11 @@
 - (void) readInt32s:(Int32 *)i withLength:(UInt)length;
 - (void) readInt64:(Int64 *)i;
 
+- (void) readUInt16:(UInt16 *)i;
+- (void) readUInt32:(UInt32 *)i;
+- (void) readUInt32s:(UInt32 *)i withLength:(UInt)length;
+- (void) readUInt64:(UInt64 *)i;
+
 - (void) readFloat:(Float *)f;
 - (void) readFloats:(Float *)f withLength:(UInt)length;
 - (void) readDouble:(Double *)d;
@@ -49,6 +54,7 @@
 - (FVector2 *) readFVector2;
 - (FVector3 *) readFVector3;
 - (FVector4 *) readFVector4;
+- (IVector2 *) readIVector2;
 
 - (NSData *)readEntireFile;
 
@@ -79,5 +85,6 @@
 - (void) writeFVector2:(FVector2 *)v;
 - (void) writeFVector3:(FVector3 *)v;
 - (void) writeFVector4:(FVector4 *)v;
+- (void) writeIVector2:(IVector2 *)v;
 
 @end

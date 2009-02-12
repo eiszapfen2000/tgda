@@ -181,17 +181,18 @@
 	return YES;
 }
 
-- (void) uploadToGLWithoutImageData
+- (void) uploadToGLWithoutData
 {
-    NSData * emptyData = [[ NSData alloc ] init ];
-    NPImage * dummyImage = [[ NPImage alloc ] init ];
-    [ dummyImage setImageData:emptyData ];
-
-    [ self uploadToGLUsingImage:dummyImage ];
-    [ dummyImage release ];
+    NSData * emptyData = [ NSData data ];
+    [ self uploadToGLWithData:emptyData ];
 }
 
 - (void) uploadToGLUsingImage:(NPImage *)image
+{
+    [ self uploadToGLWithData:[image imageData]];
+}
+
+- (void) uploadToGLWithData:(NSData *)data
 {
     GLint glinternalformat;
     GLenum gldataformat;
@@ -207,20 +208,20 @@
 
     if ( textureFilterState.mipmapping == NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_ACTIVE )
     {
-        if ( [[[[ NP Graphics ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_SGIS_generate_mipmap" ] == YES )
+        if ( [[[ NP Graphics ] textureManager ] hardwareMipMapGenerationSupport ] == YES )
         {
             glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, 1);
-            glTexImage2D(GL_TEXTURE_2D, 0, glinternalformat, width, height, 0, glpixelformat, gldataformat, [[image imageData] bytes]);
+            glTexImage2D(GL_TEXTURE_2D, 0, glinternalformat, width, height, 0, glpixelformat, gldataformat, [data bytes]);
             glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, 0);
         }
         else
         {
-            gluBuild2DMipmaps(GL_TEXTURE_2D, glinternalformat, width, height, glpixelformat, gldataformat, [[image imageData] bytes]);
+            gluBuild2DMipmaps(GL_TEXTURE_2D, glinternalformat, width, height, glpixelformat, gldataformat, [data bytes]);
         }
     }
     else
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, glinternalformat, width, height, 0, glpixelformat, gldataformat, [[image imageData] bytes]);
+        glTexImage2D(GL_TEXTURE_2D, 0, glinternalformat, width, height, 0, glpixelformat, gldataformat, [data bytes]);
     }
 
     [ self updateGLTextureState ];
@@ -236,7 +237,7 @@
     {
         case NP_GRAPHICS_TEXTURE_FILTER_NEAREST:{ value = GL_NEAREST; break; }
         case NP_GRAPHICS_TEXTURE_FILTER_LINEAR :{ value = GL_LINEAR;  break; }
-        default: { NPLOG_ERROR(@"%@ unknown mag filter %d",self,textureFilterState.magFilter); break; }
+        default: { NPLOG_ERROR(@"%@ unknown mag filter %d", name, textureFilterState.magFilter); break; }
     }
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, value);
@@ -250,7 +251,7 @@
         case NP_GRAPHICS_TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST :{ value = GL_LINEAR_MIPMAP_NEAREST;  break; }
         case NP_GRAPHICS_TEXTURE_FILTER_NEAREST_MIPMAP_LINEAR :{ value = GL_NEAREST_MIPMAP_LINEAR;  break; }
         case NP_GRAPHICS_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR  :{ value = GL_LINEAR_MIPMAP_LINEAR;   break; }
-        default: { NPLOG_ERROR(@"%@ unknown min filter %d",self,textureFilterState.minFilter); break; }
+        default: { NPLOG_ERROR(@"%@ unknown min filter %d", name, textureFilterState.minFilter); break; }
     }
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, value);
