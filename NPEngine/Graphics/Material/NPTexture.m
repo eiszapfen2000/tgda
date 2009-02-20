@@ -266,11 +266,11 @@
 {
     GLenum wrapS = [[[ NP Graphics ] textureManager ] computeGLWrap:textureWrapState.wrapS ];
     GLenum wrapT = [[[ NP Graphics ] textureManager ] computeGLWrap:textureWrapState.wrapT ];
-    GLenum wrapR = [[[ NP Graphics ] textureManager ] computeGLWrap:textureWrapState.wrapR ];
+    //GLenum wrapR = [[[ NP Graphics ] textureManager ] computeGLWrap:textureWrapState.wrapR ];
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrapR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrapR);
 }
 
 - (void) updateGLTextureState

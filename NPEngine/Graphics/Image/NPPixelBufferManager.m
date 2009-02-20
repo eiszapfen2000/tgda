@@ -133,12 +133,12 @@
 
 - (NPPixelBuffer *) createPBOCompatibleWithFramebuffer
 {
-    IVector2 nativeViewport = [[[[ NP Graphics ] viewportManager ] nativeViewport ] viewportSize ];
+    IVector2 * nativeViewport = [[[[ NP Graphics ] viewportManager ] currentViewport ] controlSize ];
     NPPixelBuffer * pixelBuffer = [[ NPPixelBuffer alloc ] initWithName:@"PBOFromFramebuffer"
                                                                  parent:self
                                                                    mode:NP_GRAPHICS_PBO_AS_DATA_SOURCE
-                                                                  width:nativeViewport.x
-                                                                 height:nativeViewport.y
+                                                                  width:nativeViewport->x
+                                                                 height:nativeViewport->y
                                                              dataFormat:NP_GRAPHICS_PBO_DATAFORMAT_BYTE
                                                             pixelFormat:NP_GRAPHICS_PBO_PIXELFORMAT_RGBA
                                                                   usage:NP_GRAPHICS_PBO_UPLOAD_ONCE_USE_OFTEN ];

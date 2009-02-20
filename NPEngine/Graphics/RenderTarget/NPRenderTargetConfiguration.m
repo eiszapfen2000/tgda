@@ -197,7 +197,7 @@
     glDrawBuffers(bufferCount, buffers);
 
     IVector2 rtv = { width, height };
-    [[[[ NP Graphics ] viewportManager ] currentViewport ] setRenderTargetSize:rtv ];
+    [[[[ NP Graphics ] viewportManager ] currentViewport ] setViewportSize:&rtv ];
 }
 
 - (void) deactivate
@@ -205,6 +205,7 @@
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     glDrawBuffer(GL_BACK);
 
+    [[[[ NP Graphics ] viewportManager ] currentViewport ] setToControlSize ];
     [[[ NP Graphics ] renderTargetManager ] setCurrentRenderTargetConfiguration:nil ];
 }
 

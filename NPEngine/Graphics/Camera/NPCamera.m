@@ -157,7 +157,7 @@
 {
     glMatrixMode(GL_PROJECTION);
 
-    fm4_msss_projection_matrix(projection,aspectRatio,fieldOfView,nearPlane,farPlane);
+    fm4_mssss_projection_matrix(projection,aspectRatio,fieldOfView,nearPlane,farPlane);
 
     glLoadMatrixf((Float *)(M_ELEMENTS(*projection)));
     glMatrixMode(GL_MODELVIEW);
