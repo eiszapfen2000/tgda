@@ -75,7 +75,6 @@
                                                                                 parent:self
                                                                              technique:technique ];
             [ techniques setObject:effectTechnique forKey:techniqueName ];
-            defaultTechnique = [ effectTechnique retain ];
             [ effectTechnique release ];
 
             NPLOG(@"Technique \"%@\" validated", techniqueName);
@@ -83,6 +82,9 @@
 
         technique = cgGetNextTechnique(technique);
     }
+
+    NSEnumerator * e = [ techniques objectEnumerator ];
+    defaultTechnique = [[ e nextObject ] retain ];
 
     [ self bindDefaultSemantics ];
 
@@ -178,11 +180,20 @@
     defaultSemantics.modelViewProjectionMatrix   = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_MODELVIEWPROJECTION_MATRIX_SEMANTIC ];
     defaultSemantics.inverseModelViewProjectionMatrix = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_INVERSE_MODELVIEWPROJECTION_MATRIX_SEMANTIC ];
 
+    //Int fontSamplerSlot = -1;
     for ( Int i = 0; i < 8; i++ )
     {
         defaultSemantics.sampler2D[i] = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_COLORMAP_SEMANTIC(i)  ];
         defaultSemantics.sampler3D[i] = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_VOLUMEMAP_SEMANTIC(i) ];
+
+        // Font uses a sampler2d, so we look for the first unused texel unit sampler
+        /*if ( defaultSemantics.sampler2D[i] == NULL && fontSamplerSlot != -1 )
+        {
+            fontSamplerSlot = i;
+        }*/
     }
+
+    //defaultSemantics.sampler2D[fontSamplerSlot] = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_FONT_SEMANTIC ];
 }
 
 - (void) activate

@@ -1,6 +1,6 @@
 #import "npgl.h"
-
 #import "NPEngineGraphicsConstants.h"
+#import "NPOrthographicRendering.h"
 
 #import "Graphics/Camera/NPCamera.h"
 #import "Graphics/Camera/NPCameraManager.h"
@@ -9,6 +9,9 @@
 #import "Graphics/Image/NPImageManager.h"
 #import "Graphics/Image/NPPixelBuffer.h"
 #import "Graphics/Image/NPPixelBufferManager.h"
+
+#import "Graphics/Font/NPFont.h"
+#import "Graphics/Font/NPFontManager.h"
 
 #import "Graphics/Material/NpMaterial.h"
 
@@ -48,6 +51,7 @@
     NPTextureManager * textureManager;
     NPEffectManager  * effectManager;
     NPModelManager   * modelManager;
+    NPFontManager    * fontManager;
 
     NPRenderTargetManager * renderTargetManager;
     NPPixelBufferManager  * pixelBufferManager;
@@ -56,6 +60,8 @@
     NPViewportManager * viewportManager;
 
     NPCameraManager * cameraManager;
+
+    NPOrthographicRendering * orthographicRendering;
 
     BOOL ready;
 }
@@ -87,11 +93,13 @@
 - (NPTextureManager *) textureManager;
 - (NPEffectManager *) effectManager;
 - (NPModelManager *) modelManager;
+- (NPFontManager *) fontManager;
 - (NPRenderTargetManager *) renderTargetManager;
 - (NPPixelBufferManager *) pixelBufferManager;
 - (NPR2VBManager *) r2vbManager;
 - (NPViewportManager *) viewportManager;
 - (NPCameraManager *) cameraManager;
+- (NPOrthographicRendering *) orthographicRendering;
 
 - (void) render;
 

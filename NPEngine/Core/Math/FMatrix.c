@@ -443,8 +443,17 @@ void fm4_mv_translation_matrix(FMatrix4 * m, FVector3 * v)
     M_EL(*m,3,2) = V_Z(*v);
 }
 
-void fm4_msss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegrees, Float nearplane, Float farplane)
+void fm4_mv_scale_matrix(FMatrix4 * m, FVector3 * v)
 {
+    fm4_m_set_identity(m);
+    M_EL(*m,0,0) = v->x;
+    M_EL(*m,1,1) = v->y;
+    M_EL(*m,2,2) = v->z;
+}
+
+void fm4_mssss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegrees, Float nearplane, Float farplane)
+{
+    fm4_m_set_identity(m);
     Float fovradians = DEGREE_TO_RADIANS(fovdegrees/2.0f);
     Float f = 1.0f/tan(fovradians);
 
@@ -454,6 +463,13 @@ void fm4_msss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegree
     M_EL(*m,2,3) = -1.0f;
     M_EL(*m,3,2) = (2.0f*nearplane*farplane)/(nearplane - farplane);
     M_EL(*m,3,3) = 0.0f;
+}
+
+void fm4_ms_orthographic_projection_matrix(FMatrix4 * m, Float aspectratio)
+{
+    fm4_m_set_identity(m);
+    FVector3 tmp = { 1.0f/aspectratio, 1.0f, 1.0f };
+    fm4_mv_scale_matrix(m, &tmp);
 }
 
 void fm4_mss_sub_matrix_m(const FMatrix4 * const m, Int row, Int column, FMatrix3 * result)

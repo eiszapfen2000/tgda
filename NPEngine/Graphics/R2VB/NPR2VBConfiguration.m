@@ -84,10 +84,10 @@
             {
                 [ sources setObject:[NSNumber numberWithInt:frameBuffer] forKey:targetBuffer ];
 
-                IVector2 nativeViewport = [[[[ NP Graphics ] viewportManager ] nativeViewport ] viewportSize ];
+                IVector2 * nativeViewport = [[[[ NP Graphics ] viewportManager ] currentViewport ] controlSize ];
 
-                [ pbo setWidth :nativeViewport.x ];
-                [ pbo setHeight:nativeViewport.y ];
+                [ pbo setWidth :nativeViewport->x ];
+                [ pbo setHeight:nativeViewport->y ];
             }
             else
             {

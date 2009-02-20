@@ -156,12 +156,12 @@
 
 - (BOOL) isCompatibleWithFramebuffer
 {
-    IVector2 nativeViewport = [[[[ NP Graphics ] viewportManager ] nativeViewport ] viewportSize ];
+    IVector2 * nativeViewport = [[[[ NP Graphics ] viewportManager ] currentViewport ] controlSize ];
 
     return ( (dataFormat  == NP_GRAPHICS_PBO_DATAFORMAT_BYTE)  && 
              (pixelFormat == NP_GRAPHICS_PBO_PIXELFORMAT_RGBA) &&
-             (width       == nativeViewport.x)                 &&
-             (height      == nativeViewport.y) );
+             (width       == nativeViewport->x)                 &&
+             (height      == nativeViewport->y) );
 }
 
 

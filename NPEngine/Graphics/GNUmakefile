@@ -6,6 +6,7 @@ libNPEngineGraphics_SUBPROJECTS = \
     Camera \
     Image \
 	Material \
+    Font \
 	Model \
 	RenderContext \
     R2VB \
@@ -14,11 +15,13 @@ libNPEngineGraphics_SUBPROJECTS = \
     Viewport
 
 libNPEngineGraphics_OBJC_FILES = \
-NPEngineGraphics.m
+NPEngineGraphics.m \
+NPOrthographicRendering.m
 
 libNPEngineGraphics_HEADER_FILES = \
 NPEngineGraphics.h \
-NPEngineGraphicsConstants.h
+NPEngineGraphicsConstants.h \
+NPOrthographicRendering.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make

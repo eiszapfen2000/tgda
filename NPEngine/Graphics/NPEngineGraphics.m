@@ -75,6 +75,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     textureManager      = [[ NPTextureManager      alloc ] initWithName:@"NPEngine Texture Manager"      parent:self ];
     effectManager       = [[ NPEffectManager       alloc ] initWithName:@"NPEngine Effect Manager"       parent:self ];
     modelManager        = [[ NPModelManager        alloc ] initWithName:@"NPEngine Model Manager"        parent:self ];
+    fontManager         = [[ NPFontManager         alloc ] initWithName:@"NPEngine Font Manager"         parent:self ];
 
     renderTargetManager = [[ NPRenderTargetManager alloc ] initWithName:@"NPEngine Rendertarget Manager" parent:self ];
     pixelBufferManager  = [[ NPPixelBufferManager  alloc ] initWithName:@"NPEngine Pixelbuffer Manager"  parent:self ];
@@ -82,6 +83,8 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
     viewportManager = [[ NPViewportManager alloc ] initWithName:@"NPEngine Viewport Manager" parent:self ];
     cameraManager   = [[ NPCameraManager   alloc ] initWithName:@"NPEngine Camera Manager"   parent:self ];
+
+    orthographicRendering = [[ NPOrthographicRendering alloc ] initWithName:@"NPEngine Ortho" parent:self ];
 
     ready = NO;
 
@@ -93,11 +96,13 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     NPLOG(@"");
     NPLOG(@"NP Engine Graphics Dealloc");
 
+    [ orthographicRendering release ];
     [ cameraManager release ];
     [ viewportManager release ];
     [ r2vbManager release ];
     [ pixelBufferManager release ];
     [ renderTargetManager release ];
+    [ fontManager release ];
     [ modelManager release ];
     [ effectManager release ];
     [ textureManager release ];
@@ -130,8 +135,8 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         NPLOG(@"Rendercontext available");
     }
 
-    [[ viewportManager nativeViewport  ] setViewportSize:viewportSize ];
-    [[ viewportManager currentViewport ] setViewportSize:viewportSize ];
+    [[ viewportManager currentViewport ] setControlSize :&viewportSize ];
+    [[ viewportManager currentViewport ] setViewportSize:&viewportSize ];
 
     [ textureBindingStateManager setup ];
 
@@ -230,6 +235,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     return modelManager;
 }
 
+- (NPFontManager *) fontManager
+{
+    return fontManager;
+}
+
 - (NPRenderTargetManager *) renderTargetManager
 {
     return renderTargetManager;
@@ -255,9 +265,14 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     return cameraManager;
 }
 
+- (NPOrthographicRendering *) orthographicRendering
+{
+    return orthographicRendering;
+}
+
 - (void) render
 {
-    [ viewportManager render ];
+    //[ viewportManager render ];
 }
 
 - (void) clearFrameBuffer:(BOOL)clearFrameBuffer

@@ -4,7 +4,7 @@
 void np_texture_filter_state_reset(NpTextureFilterState * textureFilterState)
 {
     textureFilterState->mipmapping = 0;
-    textureFilterState->minFilter  = NP_GRAPHICS_TEXTURE_FILTER_NEAREST_MIPMAP_LINEAR;
+    textureFilterState->minFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
     textureFilterState->magFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
     textureFilterState->anisotropy = 1.0f;
 }
