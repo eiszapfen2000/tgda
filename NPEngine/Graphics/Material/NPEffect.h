@@ -52,6 +52,7 @@ NpDefaultSemantics;
 - (void) bindDefaultSemantics;
 
 - (void) activate;
+- (void) deactivate;
 
 - (void) uploadDefaultSemantics;
 
