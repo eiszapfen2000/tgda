@@ -203,6 +203,11 @@
     [ self uploadDefaultSemantics ];
 }
 
+- (void) deactivate
+{
+    [[[ NP Graphics ] effectManager ] setCurrentEffect:nil ];
+}
+
 - (void) uploadDefaultSemantics
 {
     if ( defaultSemantics.modelMatrix != NULL )
