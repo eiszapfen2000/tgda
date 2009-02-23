@@ -17,6 +17,7 @@
 - (id) initWithName:(NSString *) newName;
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 
+- (Int) fps;
 - (Double) frameTime;
 - (Double) totalElapsedTime;
 

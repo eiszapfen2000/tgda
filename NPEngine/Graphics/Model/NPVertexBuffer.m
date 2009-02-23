@@ -334,7 +334,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 {
     if ( ready == NO )
     {
-        NPLOG_ERROR(@"VBO not ready");
+        NPLOG_ERROR(@"%@: VBO not ready", name);
         return;
     }
 
@@ -670,7 +670,10 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     vertices.maxVertex = newVertexCount - 1;
 }
 
-- (void) setPositions:(Float *)newPositions elementsForPosition:(Int)newElementsForPosition vertexCount:(Int)newVertexCount;
+- (void) setPositions:(Float *)newPositions
+  elementsForPosition:(Int)newElementsForPosition
+           dataFormat:(NpState)newDataFormat
+          vertexCount:(Int)newVertexCount
 {
     if ( newElementsForPosition < 1 || newElementsForPosition > 4 )
     {
@@ -691,10 +694,13 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     vertices.positions = newPositions;
     vertices.format.elementsForPosition = newElementsForPosition;
+    vertices.format.positionsDataFormat = newDataFormat;
     vertices.maxVertex = newVertexCount - 1;
 }
 
-- (void) setNormals:(Float *)newNormals withElementsForNormal:(Int)newElementsForNormal
+- (void) setNormals:(Float *)newNormals
+  elementsForNormal:(Int)newElementsForNormal
+         dataFormat:(NpState)newDataFormat
 {
     if ( vertices.normals != NULL && vertices.normals != newNormals )
     {
@@ -702,10 +708,13 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     }
 
     vertices.format.elementsForNormal = newElementsForNormal;
+    vertices.format.normalsDataFormat = newDataFormat;
     vertices.normals = newNormals;
 }
 
-- (void) setColors:(Float *)newColors withElementsForColor:(Int)newElementsForColor
+- (void) setColors:(Float *)newColors 
+  elementsForColor:(Int)newElementsForColor
+        dataFormat:(NpState)newDataFormat
 {
     if ( vertices.colors != NULL && vertices.colors != newColors )
     {
@@ -713,10 +722,13 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     }
 
     vertices.format.elementsForColor = newElementsForColor;
+    vertices.format.colorsDataFormat = newDataFormat;
     vertices.normals = newColors;
 }
 
-- (void) setWeights:(Float *)newWeights withElementsForWeights:(Int)newElementsForWeights
+- (void) setWeights:(Float *)newWeights
+ elementsForWeights:(Int)newElementsForWeights
+         dataFormat:(NpState)newDataFormat
 {
     if ( vertices.weights != NULL && vertices.weights != newWeights )
     {
@@ -724,10 +736,27 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     }
 
     vertices.format.elementsForWeights = newElementsForWeights;
+    vertices.format.weightsDataFormat = newDataFormat;
     vertices.normals = newWeights;
 }
 
-- (void) setIndices:(Int *)newIndices indexCount:(Int)newIndexCount
+- (void) setTextureCoordinates   :(Float *)newTextureCoordinates 
+    elementsForTextureCoordinates:(Int)newElementsForTextureCoordinates
+                       dataFormat:(NpState)newDataFormat
+                           forSet:(Int)textureCoordinateSet
+{
+    if ( vertices.textureCoordinates[textureCoordinateSet] != NULL && vertices.textureCoordinates[textureCoordinateSet] != newTextureCoordinates )
+    {
+        FREE(vertices.textureCoordinates[textureCoordinateSet]);
+    }
+
+    vertices.format.elementsForTextureCoordinateSet[textureCoordinateSet] = newElementsForTextureCoordinates;
+    vertices.format.textureCoordinatesDataFormat[textureCoordinateSet] = newDataFormat;
+    vertices.textureCoordinates[textureCoordinateSet] = newTextureCoordinates;
+}
+
+- (void) setIndices:(Int *)newIndices
+         indexCount:(Int)newIndexCount
 {
     if ( vertices.indices != NULL && vertices.indices != newIndices)
     {

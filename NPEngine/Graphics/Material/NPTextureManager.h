@@ -5,7 +5,8 @@
 @interface NPTextureManager : NPObject
 {
     NSMutableDictionary * textures;
-    Int maxAnisotropy;
+    NpState maxAnisotropy;
+    NpState anisotropy;
     BOOL nonPOTSupport;
     BOOL hardwareMipMapGenerationSupport;
     NpState textureMode;
@@ -18,11 +19,13 @@
 
 - (void) setup;
 
-- (Int) maxAnisotropy;
+- (NpState) anisotropy;
+- (NpState) maxAnisotropy;
 - (BOOL) nonPOTSupport;
 - (BOOL) hardwareMipMapGenerationSupport;
 - (NpState) textureMode;
 
+- (void) setAnisotropy:(NpState)newAnisotropy;;
 - (void) setTextureMode:(NpState)newTextureMode;
 - (void) setTexture2DMode;
 - (void) setTexture3DMode;

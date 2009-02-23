@@ -97,11 +97,35 @@ void init_empty_npvertexbuffer(NpVertexBuffer * vertex_buffer);
 - (void) setVertexFormat:(NpVertexFormat *)newVertexFormat;
 - (void) setVertexCount:(Int)newVertexCount;
 
-- (void) setPositions:(Float *)newPositions elementsForPosition:(Int)newElementsForPosition vertexCount:(Int)newVertexCount;
-- (void) setNormals:(Float *)newNormals withElementsForNormal:(Int)newElementsForNormal;
-- (void) setColors:(Float *)newColors withElementsForColor:(Int)newElementsForColor;
-- (void) setWeights:(Float *)newWeights withElementsForWeights:(Int)newElementsForWeights;
-- (void) setTextureCoordinates:(Float *)textureCoordinates forSet:(Int)textureCoordinateSet;
-- (void) setIndices:(Int *)newIndices indexCount:(Int)newIndexCount;
+- (void) setPositions:(Float *)newPositions
+  elementsForPosition:(Int)newElementsForPosition
+           dataFormat:(NpState)newDataFormat
+          vertexCount:(Int)newVertexCount
+                     ;
+
+- (void) setNormals:(Float *)newNormals
+  elementsForNormal:(Int)newElementsForNormal
+         dataFormat:(NpState)newDataFormat
+                   ;
+
+- (void) setColors:(Float *)newColors 
+  elementsForColor:(Int)newElementsForColor
+        dataFormat:(NpState)newDataFormat
+                  ;
+
+- (void) setWeights:(Float *)newWeights
+ elementsForWeights:(Int)newElementsForWeights
+         dataFormat:(NpState)newDataFormat
+                   ;
+
+- (void) setTextureCoordinates   :(Float *)newTextureCoordinates 
+    elementsForTextureCoordinates:(Int)newElementsForTextureCoordinates
+                       dataFormat:(NpState)newDataFormat
+                           forSet:(Int)textureCoordinateSet
+                                 ;
+
+- (void) setIndices:(Int *)newIndices
+         indexCount:(Int)newIndexCount
+                   ;
 
 @end

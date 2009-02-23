@@ -19,7 +19,7 @@
     self = [ super initWithName:newName parent:newParent ];
 
     textures = [[ NSMutableDictionary alloc ] init ];
-    maxAnisotropy = 1;
+    maxAnisotropy = anisotropy = 1;
     nonPOTSupport = NO;
     textureMode = NP_NONE;
 
@@ -39,6 +39,7 @@
     if ( [[[[ NP Graphics ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_EXT_texture_filter_anisotropic" ] == YES )
     {
         glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&maxAnisotropy);
+        NPLOG(@"%@: maximum anisotropy %d", name, maxAnisotropy);
     }
 
     if ( [[[[ NP Graphics ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_ARB_texture_non_power_of_two" ] == YES )
@@ -55,7 +56,12 @@
     [ self setTexture2DMode ];
 }
 
-- (Int) maxAnisotropy
+- (NpState) anisotropy
+{
+    return anisotropy;
+}
+
+- (NpState) maxAnisotropy
 {
     return maxAnisotropy;
 }
@@ -75,6 +81,14 @@
     return textureMode;
 }
 
+- (void) setAnisotropy:(NpState)newAnisotropy
+{
+    if ( newAnisotropy <= maxAnisotropy )
+    {
+        anisotropy = newAnisotropy;
+    }
+}
+
 - (void) setTextureMode:(NpState)newTextureMode
 {
     if ( textureMode != newTextureMode )
@@ -83,7 +97,7 @@
         {
             case NP_GRAPHICS_TEXTURE_MODE_2D:{ textureMode = newTextureMode; glEnable(GL_TEXTURE_2D); break; }
             case NP_GRAPHICS_TEXTURE_MODE_3D:{ textureMode = newTextureMode; glEnable(GL_TEXTURE_3D); break; }
-            default: { NPLOG_ERROR(([NSString stringWithFormat:@"%@: unknow texture mode %d",name,newTextureMode])); break; }
+            default: { NPLOG_ERROR(([NSString stringWithFormat:@"%@: unknow texture mode %d", name, newTextureMode])); break; }
         }
     }
 }

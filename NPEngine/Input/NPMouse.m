@@ -63,6 +63,16 @@ void reset_mouse_state(NpMouseState * mouseState)
     //NSLog(@"window %f %f",x,y);
 }
 
+- (Float) x
+{
+    return x;
+}
+
+- (Float) y
+{
+    return y;
+}
+
 - (Float) deltaX
 {
     //NSLog(@"%f",(x - xLastFrame));
@@ -144,6 +154,9 @@ void reset_mouse_state(NpMouseState * mouseState)
 - (void) setPosition:(NSPoint)newPosition
 {
     [ GSCurrentServer() setmouseposition:newPosition.x :newPosition.y :[ window windowNumber ]];
+
+    x = xLastFrame = newPosition.x;
+    y = yLastFrame = newPosition.y;
 }
 
 - (void) update

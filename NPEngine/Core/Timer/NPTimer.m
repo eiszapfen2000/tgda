@@ -33,6 +33,11 @@
     [ self reset ];
 }
 
+- (Int) fps
+{
+    return fps;
+}
+
 - (Double) frameTime
 {
     return frameTime;
