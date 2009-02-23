@@ -4,8 +4,11 @@
 #import "ODProjector.h"
 #import "ODSurface.h"
 #import "ODApplicationController.h"
+#import "ODEntity.h"
+#import "ODOceanEntity.h"
 #import "ODEntityManager.h"
 #import "ODSceneManager.h"
+#import "ODPerlinNoise.h"
 
 @implementation ODScene
 
@@ -32,6 +35,8 @@
 {
     [ entities removeAllObjects ];
 
+//    [ pbos removeAllObjects ];
+//    [ pbos release ];
     [ projector release ];
     [ camera    release ];
     [ skybox    release ];
@@ -50,7 +55,7 @@
 
     if ( sceneName == nil || entityFiles == nil || skyboxEntityFile == nil )
     {
-        NPLOG_ERROR(([NSString stringWithFormat:@"Scene file %@ is incomplete",path]));
+        NPLOG_ERROR(([NSString stringWithFormat:@"Scene file %@ is incomplete", path]));
         return NO;
     }
 
@@ -58,7 +63,7 @@
 
     skybox = [[[(ODApplicationController *)[ NSApp delegate ] entityManager ] loadEntityFromPath:skyboxEntityFile ] retain ];
 
-    NSEnumerator * entityFilesEnumerator = [ entityFiles objectEnumerator ];
+    /*NSEnumerator * entityFilesEnumerator = [ entityFiles objectEnumerator ];
     id entityFile;
     id entity;
 
@@ -66,17 +71,21 @@
     {
         entity = [[(ODApplicationController *)[ NSApp delegate ] entityManager ] loadEntityFromPath:entityFile ];
         [ entities addObject:entity ];
-    }
+    }*/
 
+    ocean = [[(ODApplicationController *)[ NSApp delegate ] entityManager ] loadEntityFromPath:@"test.odata" ];
+
+    font = [[[ NP Graphics ] fontManager ] loadFontFromPath:@"tahoma.font" ];
+/*
+    ODOceanEntity * ocean = [[ ODOceanEntity alloc ] initWithName:@"ocean" parent:self ];
+    [ ocean loadFromPath:@"/home/icicle/tgda/Apps/OD/Content/Entities/test.odata" ];
+*/
     return YES;
 }
 
 - (void) activate
 {
     [ (ODSceneManager *)parent setCurrentScene:self ];
-    rtconfig = [ (ODSceneManager *)parent renderTargetConfiguration ];
-    pbo = [ (ODSceneManager *)parent pbo ];
-    tex = [[[ NP Graphics ] pixelBufferManager ] createTextureCompatibleWithPBO:pbo ];
 
     camera    = [[ ODCamera    alloc ] initWithName:@"RenderingCamera" parent:self ];
     projector = [[ ODProjector alloc ] initWithName:@"Projector"       parent:self ];
@@ -92,14 +101,13 @@
     [ projector cameraRotateUsingYaw:0.0f andPitch:-30.0f ];
     [ projector setRenderFrustum:NO ];
 
-    /*NSPoint p = { 1024.0f/2.0f, 768.0f/2.0f };
-    [[[ NP Input ] mouse ] setPosition:p ];*/
+    [[ skybox model ] uploadToGL ];
+//    pbos = [[[[ NP Graphics ] pixelBufferManager ] createPBOsSharingDataWithVBO:[[[[skybox model] lods] objectAtIndex:0] vertexBuffer]] retain ];
 }
 
 - (void) deactivate
 {
     [ (ODSceneManager *)parent setCurrentScene:nil ];
-    rtconfig = nil;
 }
 
 - (id) camera
@@ -112,17 +120,11 @@
     return projector;
 }
 
-- (void) update
+- (void) update:(Float)frameTime
 {
-    [[ NP Core  ] update ];
-    [[ NP Input ] update ];
-
-    [ camera    update ];
+    [ camera    update:frameTime ];
     [ projector update ];
     //[ skybox setPosition:[camera position] ];
-
-    /*NSPoint p = { 1024.0f/2.0f, 768.0f/2.0f };
-    [[[ NP Input ] mouse ] setPosition:p ];*/
 }
 
 - (void) render
@@ -130,74 +132,20 @@
     // clear framebuffer/depthbuffer
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
-    // set viewport
-    [[ NP Graphics ] render ];
-
-    // activate FBO
-    [ rtconfig activate ];
-    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
-
-    // set FBO viewport
-    [[ NP Graphics ] render ];
-
     [ camera    render ];
     [ skybox    render ];
+    //[ ocean     render ];
     //[ projector render ];
 
-    [[[ NP Graphics ] pixelBufferManager ] copyRenderTexture:[rtconfig renderTextureAtIndex:0 ] toPBO:pbo ];
+    FMatrix4 matrix;
+    fm4_m_set_identity(&matrix);
+    NPTransformationState * t = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
+    [ t setModelMatrix:&matrix ];
+    [ t setViewMatrix:&matrix ];
+    [ t setProjectionMatrix:&matrix ];
 
-    [ rtconfig deactivate ];
-
-    [[ NP Graphics ] render ];
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glBindTexture(GL_TEXTURE_2D,[[rtconfig renderTextureAtIndex:0 ] renderTextureID ]);
-
-    glBegin(GL_QUADS);
-        glTexCoord2f(0.0f,0.0f);
-        glVertex2f(-1.0f,-1.0f);
-        glTexCoord2f(1.0f,0.0f);
-        glVertex2f(1.0f,-1.0f);
-        glTexCoord2f(1.0f,1.0f);
-        glVertex2f(1.0f,0.0f);
-        glTexCoord2f(0.0f,1.0f);
-        glVertex2f(-1.0f,0.0f);
-    glEnd();
-
-    glBindTexture(GL_TEXTURE_2D,0);
-
-    //[[[ NP Graphics ] pixelBufferManager ] copyRenderTexture:[rtconfig renderTextureAtIndex:0 ] toPBO:pbo ];
-    [[[ NP Graphics ] pixelBufferManager ] copyPBO:pbo toTexture:tex ];
-
-    glBindTexture(GL_TEXTURE_2D,[tex textureID ]);
-
-    glBegin(GL_QUADS);
-        glTexCoord2f(0.0f,0.0f);
-        glVertex2f(-1.0f,0.0f);
-        glTexCoord2f(1.0f,0.0f);
-        glVertex2f(1.0f,0.0f);
-        glTexCoord2f(1.0f,1.0f);
-        glVertex2f(1.0f,1.0f);
-        glTexCoord2f(0.0f,1.0f);
-        glVertex2f(-1.0f,1.0f);
-    glEnd();
-
-    glBindTexture(GL_TEXTURE_2D,0);
-
-    GLenum error;
-    error = glGetError();
-    while ( error != GL_NO_ERROR )
-    //if ( error != GL_NO_ERROR )
-    {
-        NPLOG_ERROR(([NSString stringWithFormat:@"main render %s",gluErrorString(error)]));
-        error = glGetError();
-    }
-
-    [[ NP Graphics ] swapBuffers ];
+    FVector2 pos = {-1.0f, 1.0f };
+    [ font renderString:[NSString stringWithFormat:@"%d",[[[ NP Core ] timer ] fps ]] atPosition:&pos withSize:0.05f ];
 }
 
 @end

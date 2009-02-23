@@ -1,5 +1,6 @@
 #import "ODEntityManager.h"
 #import "ODEntity.h"
+#import "ODOceanEntity.h"
 #import "NP.h"
 
 @implementation ODEntityManager
@@ -19,6 +20,12 @@
     self =  [ super initWithName:newName parent:newParent ];
 
     entities = [[ NSMutableDictionary alloc ] init ];
+    extensionToEntityClass = [[ NSMutableDictionary alloc ] init ];
+
+    Class entity = [ ODEntity      class ];
+    Class ocean  = [ ODOceanEntity class ];
+    [ extensionToEntityClass setObject:entity forKey:@"entity" ];
+    [ extensionToEntityClass setObject:ocean  forKey:@"odata" ];
 
     return self;
 }
@@ -48,7 +55,14 @@
 
         if ( entity == nil )
         {
-            entity = [[ ODEntity alloc ] initWithName:@"" parent:self ];
+            Class entityClass = [ extensionToEntityClass objectForKey:[ path pathExtension ]];
+
+            if ( entityClass == Nil )
+            {
+                return nil;
+            }
+
+            entity = [[ entityClass alloc ] initWithName:@"" parent:self ];
 
             if ( [ entity loadFromPath:path ] == YES )
             {
@@ -59,6 +73,7 @@
             }
             else
             {
+                NPLOG_ERROR(@"%@: failed to load %@", name, path);
                 [ entity release ];
 
                 return nil;
