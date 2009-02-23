@@ -1,7 +1,8 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
+#import "ODPEntity.h"
 
-@interface ODEntity : NPObject
+@interface ODEntity : NPObject < ODPEntity >
 {
     id config;
     id model;
@@ -15,13 +16,9 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 - (void) dealloc;
 
-- (BOOL) loadFromPath:(NSString *)path;
-
+- (id) model;
 - (FVector3 *) position;
 - (void) setPosition:(FVector3 *)newPosition;
-
-- (void) update;
-- (void) render;
 
 @end
 

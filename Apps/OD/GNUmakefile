@@ -11,8 +11,10 @@ ODFrustum.m \
 ODScene.m \
 ODSceneManager.m \
 ODEntity.m \
+ODOceanEntity.m \
 ODEntityManager.m \
-ODSurface.m
+ODSurface.m \
+ODPerlinNoise.m
 
 OceanDemo_RESOURCE_FILES = \
 Info-gnustep.plist \

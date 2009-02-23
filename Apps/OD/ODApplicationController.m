@@ -15,12 +15,14 @@
     NSString * scenesPath   = [contentPath stringByAppendingPathComponent:@"Scenes"   ];
     NSString * effectPath   = [contentPath stringByAppendingPathComponent:@"Effects"  ];
     NSString * statesetPath = [contentPath stringByAppendingPathComponent:@"Statesets"];
+    NSString * fontsPath    = [contentPath stringByAppendingPathComponent:@"Fonts"];
 
     [[[ NP Core ] pathManager ] addLookUpPath:modelPath    ];
     [[[ NP Core ] pathManager ] addLookUpPath:entitiesPath ];
     [[[ NP Core ] pathManager ] addLookUpPath:scenesPath   ];
     [[[ NP Core ] pathManager ] addLookUpPath:effectPath   ];
     [[[ NP Core ] pathManager ] addLookUpPath:statesetPath ];
+    [[[ NP Core ] pathManager ] addLookUpPath:fontsPath ];
 }
 
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotification
@@ -72,12 +74,35 @@
 
 - (void) update
 {
-    [ sceneManager update ];
+    [[ NP Core  ] update ];
+    [[ NP Input ] update ];
+
+    Float frameTime = (Float)[[[ NP Core ] timer ] frameTime ];
+
+    [ sceneManager update:frameTime ];
+
+    NSRect windowRect = [ window frame ];
+    if ( [[[ NP Input ] mouse ] x ] < (windowRect.size.width /4.0f) || [[[ NP Input ] mouse ] x ] > (windowRect.size.width  * 3.0/4.0f) ||
+         [[[ NP Input ] mouse ] y ] < (windowRect.size.height/4.0f) || [[[ NP Input ] mouse ] y ] > (windowRect.size.height * 3.0/4.0f) )
+    {
+        NSPoint point = { windowRect.size.width/2.0f, windowRect.size.height/2.0f };
+        [[[ NP Input ] mouse ] setPosition:point ];
+    }
 }
 
 - (void) render
 {
     [ sceneManager render ];
+
+    GLenum error;
+    error = glGetError();
+    while ( error != GL_NO_ERROR )
+    {
+        NPLOG_ERROR(([NSString stringWithFormat:@"%s", gluErrorString(error)]));
+        error = glGetError();
+    }
+
+    [[ NP Graphics ] swapBuffers ];
 }
 
 @end

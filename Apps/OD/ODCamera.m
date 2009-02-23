@@ -162,57 +162,49 @@
     fquat_q_rotatex(orientation,&pitch);
 }
 
-- (void) moveForward
+- (void) moveForward:(Float)frameTime
 {
     fquat_q_forward_vector_v(orientation,forward);
 
-    Float frametime = (Float)[[[ NP Core ] timer ] frameTime ];
-
-    V_X(*position) += (forward->x);// * frametime);
-    V_Y(*position) += (forward->y);// * frametime);
-    V_Z(*position) += (forward->z);// * frametime);
+    V_X(*position) += (forward->x * frameTime);
+    V_Y(*position) += (forward->y * frameTime);
+    V_Z(*position) += (forward->z * frameTime);
 }
 
-- (void) moveBackward
+- (void) moveBackward:(Float)frameTime
 {
     fquat_q_forward_vector_v(orientation,forward);
 
-    Float frametime = (Float)[[[ NP Core ] timer ] frameTime ];
-
-    V_X(*position) -= (forward->x);// * frametime);
-    V_Y(*position) -= (forward->y);// * frametime);
-    V_Z(*position) -= (forward->z);// * frametime);
+    V_X(*position) -= (forward->x * frameTime);
+    V_Y(*position) -= (forward->y * frameTime);
+    V_Z(*position) -= (forward->z * frameTime);
 }
 
-- (void) moveLeft
+- (void) moveLeft:(Float)frameTime
 {
     FVector3 left;
     fquat_q_right_vector_v(orientation,&left);
 
-    Float frametime = (Float)[[[ NP Core ] timer ] frameTime ];
-
-    V_X(*position) -= (left.x);// * frametime);
-    V_Y(*position) -= (left.y);// * frametime);
-    V_Z(*position) -= (left.z);// * frametime);
+    V_X(*position) -= (left.x * frameTime);
+    V_Y(*position) -= (left.y * frameTime);
+    V_Z(*position) -= (left.z * frameTime);
 }
 
-- (void) moveRight
+- (void) moveRight:(Float)frameTime
 {
     FVector3 right;
     fquat_q_right_vector_v(orientation,&right);
 
-    Float frametime = (Float)[[[ NP Core ] timer ] frameTime ];
-
-    V_X(*position) += (right.x );// * frametime);
-    V_Y(*position) += (right.y );// * frametime);
-    V_Z(*position) += (right.z );//* frametime);
+    V_X(*position) += (right.x * frameTime);
+    V_Y(*position) += (right.y * frameTime);
+    V_Z(*position) += (right.z * frameTime);
 }
 
 - (void) updateProjection
 {
     glMatrixMode(GL_PROJECTION);
 
-    fm4_msss_projection_matrix(projection, aspectRatio, fov, nearPlane, farPlane);
+    fm4_mssss_projection_matrix(projection, aspectRatio, fov, nearPlane, farPlane);
 
     glLoadMatrixf((Float *)(M_ELEMENTS(*projection)));
     glMatrixMode(GL_MODELVIEW);
@@ -242,27 +234,27 @@
     glLoadMatrixf((Float *)(M_ELEMENTS(*view)));
 }
 
-- (void) update
+- (void) update:(Float)frameTime
 {
     // position update
     if ( [ forwardMovementAction active ] == YES )
     {
-        [ self moveForward ];
+        [ self moveForward:(Float)frameTime ];
     }
 
     if ( [ backwardMovementAction active ] == YES )
     {
-        [ self moveBackward ];
+        [ self moveBackward:(Float)frameTime ];
     }
 
     if ( [ strafeLeftAction active ] == YES )
     {
-        [ self moveLeft ];
+        [ self moveLeft:(Float)frameTime ];
     }
 
     if ( [ strafeRightAction active ] == YES )
     {
-        [ self moveRight ];
+        [ self moveRight:(Float)frameTime ];
     }
 
     // rotation update

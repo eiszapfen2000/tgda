@@ -5,17 +5,18 @@
 @class NPRenderTargetConfiguration;
 @class NPPixelBuffer;
 @class NPTexture;
+@class NPTexture3D;
+@class ODEntity;
 
 @interface ODScene : NPObject
 {
     ODCamera * camera;
     ODProjector * projector;
-    id skybox;
-    id entities;
-
-    NPRenderTargetConfiguration * rtconfig;
-    NPPixelBuffer * pbo;
-    NPTexture * tex;
+    ODEntity * skybox;
+    NSMutableArray * entities;
+    id font;
+    id ocean;
+    id pbos;
 }
 
 - (id) init;
@@ -31,7 +32,7 @@
 - (id) camera;
 - (id) projector;
 
-- (void) update;
+- (void) update:(Float)frameTime;
 - (void) render;
 
 @end

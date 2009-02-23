@@ -2,6 +2,7 @@
 
 @interface ODEntityManager : NPObject
 {
+    id extensionToEntityClass;
     id entities;
 }
 

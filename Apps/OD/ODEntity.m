@@ -62,6 +62,11 @@
     return YES;
 }
 
+- (id) model
+{
+    return model;
+}
+
 - (FVector3 *) position
 {
     return position;

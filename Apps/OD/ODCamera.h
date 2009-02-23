@@ -46,14 +46,14 @@
 - (void)  setAspectRatio:(Float)newAspectRatio;
 
 - (void) cameraRotateUsingYaw:(Float)yawDegrees andPitch:(Float)pitchDegrees;
-- (void) moveForward;
-- (void) moveBackward;
-- (void) moveLeft;
-- (void) moveRight;
+- (void) moveForward:(Float)frameTime;
+- (void) moveBackward:(Float)frameTime;
+- (void) moveLeft:(Float)frameTime;
+- (void) moveRight:(Float)frameTime;
 
 - (void) updateProjection;
 - (void) updateView;
-- (void) update;
+- (void) update:(Float)frameTime;
 
 - (void) render;
 
