@@ -27,6 +27,8 @@ void reset_mouse_state(NpMouseState * mouseState);
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 
+- (Float) x;
+- (Float) y;
 - (Float) deltaX;
 - (Float) deltaY;
 

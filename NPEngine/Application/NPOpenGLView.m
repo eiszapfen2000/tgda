@@ -33,11 +33,13 @@
 
     NSRect rect = [ self bounds ];
     IVector2 viewport = { rect.size.width, rect.size.height };
-
-    //NSLog(@"%f %f",rect.size.width,rect.size.height);
-
     [[ NP Graphics ] setupWithViewportSize:viewport ];
-    glXSwapIntervalSGI(0);
+
+    Int anisotropy = [[ infoDictionary objectForKey:@"Anisotropy" ] intValue ];
+    [[[ NP Graphics ] textureManager ] setAnisotropy:anisotropy ];
+
+    BOOL vsync = [[ infoDictionary objectForKey:@"VSync" ] boolValue ];
+    glXSwapIntervalSGI(vsync);
 }
 
 - (void) shutdown

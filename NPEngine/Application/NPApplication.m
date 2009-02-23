@@ -13,16 +13,6 @@
     {
         _runLoopPool = [ NSAutoreleasePool new ];
 
-        if ( updateImplemented == YES )
-        {
-            [ _delegate update ];
-        }
-
-        if ( renderImplemented == YES )
-        {
-            [ _delegate render ];
-        }
-
         e = [ super nextEventMatchingMask:NSAnyEventMask
                                 untilDate:[ NSDate date ]
                                    inMode:NSDefaultRunLoopMode
@@ -46,6 +36,16 @@
         if ( _windows_need_update )
         {
             [ super updateWindows ];
+        }
+
+        if ( updateImplemented == YES )
+        {
+            [ _delegate update ];
+        }
+
+        if ( renderImplemented == YES )
+        {
+            [ _delegate render ];
         }
 
         DESTROY(_runLoopPool);

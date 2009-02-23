@@ -168,7 +168,7 @@
     textureFilterState.mipmapping = NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_ACTIVE;
     textureFilterState.minFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR;
     textureFilterState.magFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
-    textureFilterState.anisotropy = [[[ NP Graphics ] textureManager ] maxAnisotropy ];
+    textureFilterState.anisotropy = [[[ NP Graphics ] textureManager ] anisotropy ];
 
     textureWrapState.wrapS = NP_GRAPHICS_TEXTURE_WRAPPING_REPEAT;
     textureWrapState.wrapT = NP_GRAPHICS_TEXTURE_WRAPPING_REPEAT;

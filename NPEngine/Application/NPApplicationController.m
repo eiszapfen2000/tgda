@@ -65,9 +65,6 @@
 
     [[[ NP Input ] mouse ] setWindow:window ];
 
-//    [ GSCurrentServer() setmouseposition:600 :300 :[ window windowNumber ] ];
-//    [ NSCursor hide ];
-
     // Create the opengl view which contains the rendering context
     NPOpenGLView * view = [[ NPOpenGLView alloc ] initWithFrame:windowRect ];
     [ window setContentView:view ];
@@ -81,8 +78,6 @@
 
     [ window makeFirstResponder:view ];
     [ window setIgnoresMouseEvents:YES ];
-
-    //[[ NP Graphics ] setWindow:window ];
 }
 
 @end
