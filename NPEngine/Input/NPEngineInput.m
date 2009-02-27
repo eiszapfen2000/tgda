@@ -74,6 +74,7 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
 
 - (void) dealloc
 {
+    NPLOG(@"");
     NPLOG(@"NP Engine Input Dealloc");
 
     [ inputActions release ];
