@@ -59,21 +59,20 @@ void fquat_q_init_with_axis_and_degrees(FQuaternion * q, FVector3 * axis, Float 
     Float sin_angle = sin(angle/2.0);
     Float cos_angle = cos(angle/2.0);
 
-    FVector3 * tmp;
+    FVector3 tmp;
 
-    if ( fv3_v_length(axis) != 1.0 )
+    if ( fv3_v_length(axis) != 1.0f )
     {
-        tmp = fv3_alloc_init();
-        fv3_v_normalise_v(axis,tmp);
+        fv3_v_normalise_v(axis,&tmp);
     }
     else
     {
-        tmp = axis;
+        tmp = *axis;
     }
 
-    Q_X(*q) = V_X(*tmp) * sin_angle;
-    Q_Y(*q) = V_Y(*tmp) * sin_angle;
-    Q_Z(*q) = V_Z(*tmp) * sin_angle;
+    Q_X(*q) = V_X(tmp) * sin_angle;
+    Q_Y(*q) = V_Y(tmp) * sin_angle;
+    Q_Z(*q) = V_Z(tmp) * sin_angle;
     Q_W(*q) = cos_angle;
 
     fquat_q_normalise(q);
@@ -84,21 +83,20 @@ void fquat_q_init_with_axis_and_radians(FQuaternion * q, FVector3 * axis, Float 
     Float sin_angle = sin((*radians)/2.0);
     Float cos_angle = cos((*radians)/2.0);
 
-    FVector3 * tmp;
+    FVector3 tmp;
 
-    if ( fv3_v_length(axis) != 1.0 )
+    if ( fv3_v_length(axis) != 1.0f )
     {
-        tmp = fv3_alloc_init();
-        fv3_v_normalise_v(axis,tmp);
+        fv3_v_normalise_v(axis,&tmp);
     }
     else
     {
-        tmp = axis;
+        tmp = *axis;
     }
 
-    Q_X(*q) = V_X(*tmp) * sin_angle;
-    Q_Y(*q) = V_Y(*tmp) * sin_angle;
-    Q_Z(*q) = V_Z(*tmp) * sin_angle;
+    Q_X(*q) = V_X(tmp) * sin_angle;
+    Q_Y(*q) = V_Y(tmp) * sin_angle;
+    Q_Z(*q) = V_Z(tmp) * sin_angle;
     Q_W(*q) = cos_angle;
 
     fquat_q_normalise(q);
@@ -170,19 +168,22 @@ void fquat_qv_multiply_v(const FQuaternion * const q, const FVector3 * const v, 
 void fquat_q_rotatex(FQuaternion * q, Float * degrees)
 {
     FQuaternion * rotatex = fquat_alloc_init_with_axis_and_degrees(NP_WORLDF_X_AXIS, degrees);
-    fquat_qq_multiply_q(q,rotatex,q);
+    FQuaternion tmp = *q;
+    fquat_qq_multiply_q(&tmp,rotatex,q);
 }
 
 void fquat_q_rotatey(FQuaternion * q, Float * degrees)
 {
     FQuaternion * rotatey = fquat_alloc_init_with_axis_and_degrees(NP_WORLDF_Y_AXIS, degrees);
-    fquat_qq_multiply_q(q,rotatey,q);
+    FQuaternion tmp = *q;
+    fquat_qq_multiply_q(&tmp,rotatey,q);
 }
 
 void fquat_q_rotatez(FQuaternion * q, Float * degrees)
 {
     FQuaternion * rotatez = fquat_alloc_init_with_axis_and_degrees(NP_WORLDF_Z_AXIS, degrees);
-    fquat_qq_multiply_q(q,rotatez,q);
+    FQuaternion tmp = *q;
+    fquat_qq_multiply_q(&tmp,rotatez,q);
 }
 
 void fquat_q_forward_vector_v(FQuaternion * q, FVector3 * v)

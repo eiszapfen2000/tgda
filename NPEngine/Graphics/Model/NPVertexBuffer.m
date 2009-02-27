@@ -407,7 +407,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     while ( error != GL_NO_ERROR )
     {
-        NPLOG_ERROR(([ NSString stringWithFormat:@"%@: %s",name,gluErrorString(error)]));
+        NPLOG_ERROR(([ NSString stringWithFormat:@"%@: %s", name, gluErrorString(error)]));
         error = glGetError();
     }
 
@@ -677,17 +677,17 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 {
     if ( newElementsForPosition < 1 || newElementsForPosition > 4 )
     {
-        NPLOG_WARNING(@"Invalid positions element count %d",newElementsForPosition);
+        NPLOG_WARNING(@"%@: Invalid positions element count %d", name, newElementsForPosition);
         return;
     }
 
     if ( newVertexCount < 1 )
     {
-        NPLOG_WARNING(@"Invalid vertex count %d",newElementsForPosition);
+        NPLOG_WARNING(@"%@: Invalid vertex count %d", name, newElementsForPosition);
         return;
     }
 
-    if ( vertices.positions != NULL && vertices.positions != newPositions )
+    if ( vertices.positions != newPositions )
     {
         SAFE_FREE(vertices.positions);
     }
@@ -696,13 +696,20 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     vertices.format.elementsForPosition = newElementsForPosition;
     vertices.format.positionsDataFormat = newDataFormat;
     vertices.maxVertex = newVertexCount - 1;
+    ready = YES;
 }
 
 - (void) setNormals:(Float *)newNormals
   elementsForNormal:(Int)newElementsForNormal
          dataFormat:(NpState)newDataFormat
 {
-    if ( vertices.normals != NULL && vertices.normals != newNormals )
+    if ( newElementsForNormal < 1 || newElementsForNormal > 4 )
+    {
+        NPLOG_WARNING(@"%@: Invalid normals element count %d", name, newElementsForNormal);
+        return;
+    }
+
+    if ( vertices.normals != newNormals )
     {
         FREE(vertices.normals);
     }
@@ -716,7 +723,13 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
   elementsForColor:(Int)newElementsForColor
         dataFormat:(NpState)newDataFormat
 {
-    if ( vertices.colors != NULL && vertices.colors != newColors )
+    if ( newElementsForColor < 1 || newElementsForColor > 4 )
+    {
+        NPLOG_WARNING(@"%@: Invalid colors element count %d", name, newElementsForColor);
+        return;
+    }
+
+    if ( vertices.colors != newColors )
     {
         FREE(vertices.colors);
     }
@@ -730,7 +743,13 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
  elementsForWeights:(Int)newElementsForWeights
          dataFormat:(NpState)newDataFormat
 {
-    if ( vertices.weights != NULL && vertices.weights != newWeights )
+    if ( newElementsForWeights < 1 || newElementsForWeights > 4 )
+    {
+        NPLOG_WARNING(@"%@: Invalid colors element count %d", name, newElementsForWeights);
+        return;
+    }
+
+    if ( vertices.weights != newWeights )
     {
         FREE(vertices.weights);
     }
@@ -745,9 +764,21 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
                        dataFormat:(NpState)newDataFormat
                            forSet:(Int)textureCoordinateSet
 {
-    if ( vertices.textureCoordinates[textureCoordinateSet] != NULL && vertices.textureCoordinates[textureCoordinateSet] != newTextureCoordinates )
+    if ( newElementsForTextureCoordinates < 1 || newElementsForTextureCoordinates > 4 )
     {
-        FREE(vertices.textureCoordinates[textureCoordinateSet]);
+        NPLOG_WARNING(@"%@: Invalid texture coordinates element count %d", name, newElementsForTextureCoordinates);
+        return;
+    }
+
+    if ( textureCoordinateSet < 0 || textureCoordinateSet > 8 )
+    {
+        NPLOG_WARNING(@"%@: Invalid texture coordinate set %d", name, textureCoordinateSet);
+        return;
+    }
+
+    if ( vertices.textureCoordinates[textureCoordinateSet] != newTextureCoordinates )
+    {
+        SAFE_FREE(vertices.textureCoordinates[textureCoordinateSet]);
     }
 
     vertices.format.elementsForTextureCoordinateSet[textureCoordinateSet] = newElementsForTextureCoordinates;
