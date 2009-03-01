@@ -5,6 +5,7 @@
 #import "ODFrustum.h"
 
 #import "Graphics/npgl.h"
+#import "Graphics/NPEngineGraphicsConstants.h"
 #import "Graphics/Model/NPVertexBuffer.h"
 #import "Graphics/State/NPStateSet.h"
 #import "Graphics/State/NPState.h"
@@ -376,7 +377,7 @@
     [ self calculateBasePlanePositions ];
 
     Int vertexCount = V_X(*currentResolution)*V_Y(*currentResolution);
-    [ surfaceGeometry setPositions:worldSpacePositions elementsForPosition:3 vertexCount:vertexCount ];
+    [ surfaceGeometry setPositions:worldSpacePositions elementsForPosition:3 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT vertexCount:vertexCount ];
 }
 
 - (void) render

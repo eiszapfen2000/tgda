@@ -26,7 +26,7 @@
     fov         = 45.0f;
     nearPlane   = 0.1f;
     farPlane    = 50.0f;
-    aspectRatio = 4.0f/3.0f;
+    aspectRatio = [[[[ NP Graphics ] viewportManager ] currentViewport ] aspectRatio ];
 
     yaw   = 0.0f;
     pitch = 0.0f;
@@ -261,7 +261,6 @@
     id mouse = [[ NP Input ] mouse ];
     Float deltaX = [ mouse deltaX ];
     Float deltaY = [ mouse deltaY ];
-    //NSLog(@"%f %f",deltaX,deltaY);
 
     if ( deltaX != 0.0f || deltaY != 0.0f )
     {

@@ -1,0 +1,68 @@
+float4x4 vp : NPVIEWPROJECTION;
+sampler2D colormap : NPCOLORMAP0;
+
+float4x4 projectorIMVP;
+
+struct INPUTDATA
+{
+	float2 position			: POSITION;
+	float2 texcoord			: TEXCOORD0;
+};
+
+struct VOUTPUTDATA
+{
+	float4 position			: POSITION;
+	float2 texcoord0		: TEXCOORD0;
+};
+
+VOUTPUTDATA mvertexshader(INPUTDATA input)
+{
+	VOUTPUTDATA output;
+
+    float4 tmpF  = mul(projectorIMVP, float4(input.position,  1.0f, 1.0f));
+    float4 tmpN  = mul(projectorIMVP, float4(input.position, -1.0f, 1.0f));
+    //float3 tmp = tmpN.xyz / tmpN.w;
+
+    float3 point = tmpF.xyz / tmpF.w;
+    float3 direction = (tmpN.xyz / tmpN.w) - point.xyz;
+
+    float raypoint_dot_planenormal = dot(point,float3(0.0f,1.0f,0.0f));
+    float raydirection_dot_planenormal = dot(direction,float3(0.0f,1.0f,0.0f));
+
+    float t = ( -1.0f - raypoint_dot_planenormal ) / raydirection_dot_planenormal;
+    float3 result = direction.xyz * t + point.xyz;
+
+
+	//output.position = input.position;
+    output.position = mul(vp,float4(result.xyz,1.0f));
+    //output.position = mul(vp,float4(tmp.xyz,1.0f));
+	output.texcoord0 = input.texcoord;
+	
+	return output;
+}
+
+struct FOUTPUTDATA
+{
+	float4 color			: COLOR0;
+};
+
+FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
+{
+	FOUTPUTDATA output;
+
+    //float4 tex = tex2D(colormap,input.texcoord0);
+    output.color = float4(1.0,0.0f,0.0f,1.0f);
+    //output.color = tex;
+
+	return output;
+}
+
+technique ocean
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mfragmentshader();
+		VertexProgram = compile vp40 mvertexshader();
+	}
+}
+

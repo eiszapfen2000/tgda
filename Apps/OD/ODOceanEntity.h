@@ -1,5 +1,6 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
+#import "Graphics/npgl.h"
 #import "ODPEntity.h"
 
 @class NPVertexBuffer;
@@ -9,11 +10,16 @@
 {
     IVector2 * resolution;
     UInt32 numberOfSlices;
+    Float * times;
     Float ** heights;
 
     NPEffect * effect;
     NSMutableArray * textures;
-    NPVertexBuffer * vertexBuffer;
+    NPVertexBuffer * nearPlaneGrid;
+    NPVertexBuffer * projectedGrid;
+    NSDictionary * projectedGridPBOs;
+
+    CGparameter projectorIMVP;
 }
 
 - (id) init;

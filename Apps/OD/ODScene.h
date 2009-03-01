@@ -26,11 +26,11 @@
 
 - (BOOL) loadFromPath:(NSString *)path;
 
-- (void) activate;
-- (void) deactivate;
-
 - (id) camera;
 - (id) projector;
+
+- (void) activate;
+- (void) deactivate;
 
 - (void) update:(Float)frameTime;
 - (void) render;

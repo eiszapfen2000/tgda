@@ -39,7 +39,7 @@
     frustumIndices[13] = frustumIndices[14] = frustumIndices[23] = 7;
 
     [ frustumGeometry setIndices:frustumIndices indexCount:24 ];
-    [ frustumGeometry setPositions:frustumVertices elementsForPosition:3 vertexCount:8 ];
+    [ frustumGeometry setPositions:frustumVertices elementsForPosition:3 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT vertexCount:8 ];
     //[ frustumGeometry setPrimitiveType:NP_VBO_PRIMITIVES_LINES ];
 
     nearPlaneHalfHeight = 0.0f;
