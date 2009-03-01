@@ -1,5 +1,10 @@
-#import "ODOceanEntity.h"
 #import "NP.h"
+#import "ODScene.h"
+#import "ODSceneManager.h"
+#import "ODOceanEntity.h"
+#import "ODProjector.h"
+#import "ODCore.h"
+
 
 @implementation ODOceanEntity
 
@@ -28,7 +33,10 @@
     [ textures removeAllObjects ];
     [ textures release ];
 
-    [ vertexBuffer release ];
+    TEST_RELEASE(projectedGridPBOs);
+    TEST_RELEASE(nearPlaneGrid);
+    TEST_RELEASE(projectedGrid);
+
 
     for ( UInt i = 0; i < numberOfSlices; i++ )
     {
@@ -55,6 +63,7 @@
     NPLOG(@"Resolution: %d x %d", resolution->x, resolution->y);
     NPLOG(@"Number of slices: %u", numberOfSlices);
 
+    times = ALLOC_ARRAY(Float, numberOfSlices);
     heights = ALLOC_ARRAY(Float *, numberOfSlices);
 
     for ( UInt i = 0; i < numberOfSlices; i++ )
@@ -63,6 +72,7 @@
         heights[i] = ALLOC_ARRAY(Float, elementCount);
         UInt32 slice;
         [ file readUInt32:&slice ];
+        [ file readFloat:&(times[i]) ];
         [ file readFloats:heights[i] withLength:elementCount ];
     }
 
@@ -87,6 +97,14 @@
 
     effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"ocean.cgfx" ];
 
+    projectorIMVP = [ effect parameterWithName:@"projectorIMVP" ];
+    if ( projectorIMVP == NULL )
+    {
+        NPLOG_ERROR(@"Parameter \"projectorIMVP\" not found");
+    }
+
+    NPLOG(@"Done loading ocean effect");
+
 //--------------------------------------------//
 
     //IVector2 * viewportSize = [[[[ NP Graphics ] viewportManager ] currentViewport ] viewportSize ];
@@ -97,7 +115,8 @@
     Int indexCount = (viewportSize->x - 1) * (viewportSize->y - 1) * 6;
     Float * positions = ALLOC_ARRAY(Float, positionCount * 2);
     Float * texCoords = ALLOC_ARRAY(Float, positionCount * 2);
-    Int * indices = ALLOC_ARRAY(Int, indexCount);
+    Int32 * nearPlaneGridIndices = ALLOC_ARRAY(Int32, indexCount);
+    Int32 * projectedGridIndices = ALLOC_ARRAY(Int32, indexCount);
 
     // memory layout pbo vs vbo?
 
@@ -113,46 +132,45 @@
             positions[index]   = -1.0f + j * deltaX;
             positions[index+1] =  1.0f - i * deltaY;
 
-            NSLog(@"%f %f",positions[index],positions[index+1]);
+            //NSLog(@"%f %f",positions[index],positions[index+1]);
 
             texCoords[index]   =  0.0f + j * deltaX;
             texCoords[index+1] =  0.0f + i * deltaY;
         }
     }
 
-    //Int triangleCount = (viewportSize->x - 1) * (viewportSize->y - 1) * 2;
-
     for ( Int i = 0; i < viewportSize->y - 1; i++ )
     {
         for ( Int j = 0; j < viewportSize->x - 1; j++ )
         {
             Int index = (i * ( viewportSize->x - 1) + j) * 6;
-//            NSLog(@"index %d",index);
 
-            indices[index] = i * viewportSize->x + j;
-            indices[index+1] = (i + 1) * viewportSize->x + j;
-            indices[index+2] = i * viewportSize->x + j + 1;
+            nearPlaneGridIndices[index] = i * viewportSize->x + j;
+            nearPlaneGridIndices[index+1] = (i + 1) * viewportSize->x + j;
+            nearPlaneGridIndices[index+2] = i * viewportSize->x + j + 1;
 
-//            NSLog(@"%d %d %d",indices[index],indices[index+1],indices[index+2]);
-
-            indices[index+3] = (i + 1) * viewportSize->x + j;
-            indices[index+4] = (i + 1) * viewportSize->x + j + 1;
-            indices[index+5] = i * viewportSize->x + j + 1;
-
-//            NSLog(@"%d %d %d",indices[index+3],indices[index+4],indices[index+5]);
+            nearPlaneGridIndices[index+3] = (i + 1) * viewportSize->x + j;
+            nearPlaneGridIndices[index+4] = (i + 1) * viewportSize->x + j + 1;
+            nearPlaneGridIndices[index+5] = i * viewportSize->x + j + 1;
         }
     }
 
-/*    for ( Int i = 0; i < indexCount; i++ )
-    {
-        NSLog(@"%d",indices[i]);
-    }*/
+    COPY_ARRAY(nearPlaneGridIndices,projectedGridIndices,Int32,indexCount);
 
-    vertexBuffer = [[ NPVertexBuffer alloc ] initWithName:@"Ocean" parent:self ];
-    [ vertexBuffer setPositions:positions elementsForPosition:2 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT vertexCount:positionCount ];
-    [ vertexBuffer setTextureCoordinates:texCoords elementsForTextureCoordinates:2 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT forSet:0 ];
-    [ vertexBuffer setIndices:indices indexCount:indexCount ];
-    //[ vertexBuffer uploadVBOWithUsageHint:NP_GRAPHICS_VBO_UPLOAD_OFTEN_RENDER_OFTEN ];
+    nearPlaneGrid = [[ NPVertexBuffer alloc ] initWithName:@"Grid" parent:self ];
+    [ nearPlaneGrid setPositions:positions elementsForPosition:2 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT vertexCount:positionCount ];
+    [ nearPlaneGrid setTextureCoordinates:texCoords elementsForTextureCoordinates:2 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT forSet:0 ];
+    [ nearPlaneGrid setIndices:nearPlaneGridIndices indexCount:indexCount ];
+    [ nearPlaneGrid uploadVBOWithUsageHint:NP_GRAPHICS_VBO_UPLOAD_OFTEN_RENDER_OFTEN ];
+
+    projectedGrid = [[ NPVertexBuffer alloc ] initWithName:@"ProjectedGrid" parent:self ];
+    [ projectedGrid setPositions:NULL elementsForPosition:4 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT vertexCount:positionCount ];
+    [ projectedGrid setTextureCoordinates:NULL elementsForTextureCoordinates:2 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT forSet:0 ];
+    [ projectedGrid setIndices:projectedGridIndices indexCount:indexCount ];
+    [ projectedGrid uploadVBOWithUsageHint:NP_GRAPHICS_VBO_UPLOAD_OFTEN_RENDER_OFTEN ];
+
+    projectedGridPBOs = [[[[ NP Graphics ] pixelBufferManager ] createPBOsSharingDataWithVBO:projectedGrid ] retain ];
+    //NSLog([projectedGridPBOs description]);
 
     // create vbo the size of viewportSize, needs positions and texcoords
     // create corresponding pbos
@@ -174,33 +192,19 @@
     return result;
 }
 
-- (void) update
+- (void) update:(Float)frameTime
 {
 }
 
 - (void) render
 {
-    //glMatrixMode(GL_PROJECTION);
-    //glLoadIdentity();
-    //glMatrixMode(GL_MODELVIEW);
-    //glLoadIdentity();
-
     NPTextureBindingState * t = [[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ];
     [ t setTexture:[textures objectAtIndex:0] forKey:@"NPCOLORMAP0" ];
 
-    //[[[ NP Graphics ] orthographicRendering ] activate ];
-
-    [[[[ NP Graphics ] stateConfiguration ] cullingState ] setEnabled:NO ];
-    [[[ NP Graphics ] stateConfiguration ] activate ];
-
     [ effect activate ];
 
-    /*FMatrix4 brak;
-    fm4_m_set_identity(&brak);
-    [[[[ NP Core ] transformationStateManager ] currentTransformationState ] setModelMatrix:&brak ];
-    [[[[ NP Core ] transformationStateManager ] currentTransformationState ] setViewMatrix:&brak ];
-    [[[[ NP Core ] transformationStateManager ] currentTransformationState ] setProjectionMatrix:&brak ];*/
-
+    ODProjector * projector = [[[[ NP applicationController ] sceneManager ] currentScene ] projector ];
+    [ effect uploadFMatrix4Parameter:projectorIMVP andValue:[ projector inverseModelViewProjection]];
 
     CGpass pass = [[ effect defaultTechnique ] firstPass ];
 
@@ -220,17 +224,13 @@
         glEnd();*/
 
         //glColor3f(1.0f,1.0f,1.0f);
-        [ vertexBuffer renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
+        [ nearPlaneGrid renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
 
         cgResetPassState(pass);
         pass = cgGetNextPass(pass);
     }
 
     [ effect deactivate ];
-
-    [[[ NP Graphics ] stateConfiguration ] deactivate ];
-
-    //[[[ NP Graphics ] orthographicRendering ] activate ];
 }
 
 @end

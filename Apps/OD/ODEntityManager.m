@@ -47,6 +47,7 @@
 
 - (id) loadEntityFromAbsolutePath:(NSString *)path
 {
+    NPLOG(@"");
     NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, path]));
 
     if ( [ path isEqual:@"" ] == NO )
@@ -59,6 +60,7 @@
 
             if ( entityClass == Nil )
             {
+                NPLOG_ERROR(@"%@: Unknown entity type, skipping", name);
                 return nil;
             }
 

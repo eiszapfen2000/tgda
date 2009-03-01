@@ -21,10 +21,11 @@
 {
 	self = [ super initWithName:newName parent:newParent ];
 
+    model = fm4_alloc_init();
 	view = fm4_alloc_init();
     projection = fm4_alloc_init();
-    viewProjection = fm4_alloc_init();
-    inverseViewProjection = fm4_alloc_init();
+    modelViewProjection = fm4_alloc_init();
+    inverseModelViewProjection = fm4_alloc_init();
 
 	orientation = fquat_alloc_init();
 	position = fv3_alloc_init();
@@ -40,14 +41,21 @@
     renderFrustum = NO;
     frustum = [[ ODFrustum alloc ] initWithName:@"Projector Frustum" parent:self ];
 
+    pitchMinusAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"PitchMinus" primaryInputAction:NP_INPUT_KEYBOARD_S ];
+    pitchPlusAction  = [[[ NP Input ] inputActions ] addInputActionWithName:@"PitchPlus"  primaryInputAction:NP_INPUT_KEYBOARD_W ];
+    yawMinusAction   = [[[ NP Input ] inputActions ] addInputActionWithName:@"YawMinus"   primaryInputAction:NP_INPUT_KEYBOARD_A ];
+    yawPlusAction    = [[[ NP Input ] inputActions ] addInputActionWithName:@"YawPlus"    primaryInputAction:NP_INPUT_KEYBOARD_D ];
+
+
 	return self;
 }
 
 - (void) dealloc
 {
+    model = fm4_free(model);
 	view = fm4_free(view);
-	viewProjection = fm4_free(viewProjection);
-    inverseViewProjection = fm4_free(inverseViewProjection);
+	modelViewProjection = fm4_free(modelViewProjection);
+    inverseModelViewProjection = fm4_free(inverseModelViewProjection);
 
 	orientation = fquat_free(orientation);
 	position = fv3_free(position);
@@ -63,10 +71,11 @@
 
 - (void) reset
 {
+	fm4_m_set_identity(model);
 	fm4_m_set_identity(view);
 	fm4_m_set_identity(projection);
-	fm4_m_set_identity(viewProjection);
-	fm4_m_set_identity(inverseViewProjection);
+	fm4_m_set_identity(modelViewProjection);
+	fm4_m_set_identity(inverseModelViewProjection);
 
 	fquat_set_identity(orientation);
 	fv3_v_zeros(position);
@@ -75,16 +84,6 @@
 - (FVector3 *) position
 {
 	return position;
-}
-
-- (void) setPosition:(FVector3 *)newPosition
-{
-	*position = *newPosition;
-}
-
-- (void) setRenderFrustum:(BOOL)newRenderFrustum
-{
-    renderFrustum = newRenderFrustum;
 }
 
 - (ODFrustum *) frustum
@@ -97,14 +96,19 @@
     return projection;
 }
 
-- (FMatrix4 *) viewProjection
+- (FMatrix4 *) inverseModelViewProjection
 {
-    return viewProjection;
+    return inverseModelViewProjection;
 }
 
-- (FMatrix4 *) inverseViewProjection
+- (void) setPosition:(FVector3 *)newPosition
 {
-    return inverseViewProjection;
+	*position = *newPosition;
+}
+
+- (void) setRenderFrustum:(BOOL)newRenderFrustum
+{
+    renderFrustum = newRenderFrustum;
 }
 
 - (void) updateYaw:(Float)degrees
@@ -204,10 +208,38 @@
     fm4_mm_multiply_m(&tmp, &trans, view);
 }
 
+- (void) updateModel
+{
+    model->elements[3][0] = position->x;
+    model->elements[3][1] = position->y;
+    model->elements[3][2] = position->z;
+}
+
 - (void) update
 {
+    if ( [ pitchMinusAction active ] == YES )
+    {
+        [ self cameraRotateUsingYaw:0.0f andPitch:-1.0f ];
+    }
+
+    if ( [ pitchPlusAction active ] == YES )
+    {
+        [ self cameraRotateUsingYaw:0.0f andPitch:1.0f ];
+    }
+
+    if ( [ yawMinusAction active ] == YES )
+    {
+        [ self cameraRotateUsingYaw:-1.0f andPitch:0.0f ];
+    }
+
+    if ( [ yawPlusAction active ] == YES )
+    {
+        [ self cameraRotateUsingYaw:1.0f andPitch:0.0f ];
+    }
+
     [ self updateProjection ];
 	[ self updateView ];
+    [ self updateModel ];
     [ frustum updateWithPosition:position
                      orientation:orientation
                              fov:fov
@@ -215,14 +247,17 @@
                         farPlane:farPlane
                      aspectRatio:aspectRatio ];
 
-    fm4_mm_multiply_m(projection, view, viewProjection);
-    fm4_m_inverse_m(viewProjection, inverseViewProjection);
+    FMatrix4 modelView;
+    fm4_mm_multiply_m(view, model, &modelView);
+    fm4_mm_multiply_m(projection, &modelView, modelViewProjection);
+    fm4_m_inverse_m(modelViewProjection, inverseModelViewProjection);
 }
 
 - (void) render
 {
     if ( renderFrustum == YES )
     {
+        //glColor3f(1.0f,0.0f,0.0f);
         [ frustum render ];
     }
 }

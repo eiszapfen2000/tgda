@@ -77,7 +77,7 @@
     *position = *newPosition;
 }
 
-- (void) update
+- (void) update:(Float)frameTime
 {
 
 }

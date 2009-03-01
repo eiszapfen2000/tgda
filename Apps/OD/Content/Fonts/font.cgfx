@@ -1,0 +1,68 @@
+float4x4 modelViewProjection : NPMODELVIEWPROJECTION;
+
+sampler2D font : NPCOLORMAP0;
+
+struct INPUTDATA
+{
+	float3 position		: POSITION;
+	float2 texcoord		: TEXCOORD0;
+};
+
+struct VOUTPUTDATA
+{
+	float4 position			: POSITION;
+	float2 texcoord			: TEXCOORD0;
+};
+
+struct FOUTPUTDATA
+{
+	float4 color		: COLOR0;
+};
+
+
+//--------------------------------------------------------------------------------------
+// Vertex Shaders
+//--------------------------------------------------------------------------------------
+
+
+VOUTPUTDATA mvertexshader(INPUTDATA IN)
+{
+	VOUTPUTDATA OUT;
+	
+	OUT.position = mul(float4(IN.position.xyz, 1.0), modelViewProjection);
+	OUT.texcoord = IN.texcoord;
+	
+	return OUT;
+}
+
+
+//--------------------------------------------------------------------------------------
+// Pixel Shaders
+//--------------------------------------------------------------------------------------
+
+
+FOUTPUTDATA mfragmentshader(VOUTPUTDATA IN)
+{
+	FOUTPUTDATA OUT;
+	
+	float4 fontcolor = tex2D(font, IN.texcoord);
+    OUT.color = fontcolor;
+
+    return OUT;
+}
+
+
+//--------------------------------------------------------------------------------------
+// Techniques
+//--------------------------------------------------------------------------------------
+
+
+technique render
+{
+    pass
+    {
+		FragmentProgram = compile fp40 mfragmentshader();
+		VertexProgram = compile vp40 mvertexshader();
+    }
+}
+

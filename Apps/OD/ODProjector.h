@@ -15,10 +15,11 @@
 
 @interface ODProjector : NPObject
 {
+    FMatrix4 * model;
 	FMatrix4 * view;
     FMatrix4 * projection;
-    FMatrix4 * viewProjection;
-    FMatrix4 * inverseViewProjection;
+    FMatrix4 * modelViewProjection;
+    FMatrix4 * inverseModelViewProjection;
 
     FQuaternion * orientation;
     FVector3 * position;
@@ -36,6 +37,11 @@
 
     BOOL renderFrustum;
     ODFrustum * frustum;
+
+    id pitchMinusAction;
+    id pitchPlusAction;
+    id yawMinusAction;
+    id yawPlusAction;
 }
 
 - (id) init;
@@ -46,14 +52,12 @@
 - (void) reset;
 
 - (FVector3 *) position;
-- (void) setPosition:(FVector3 *)newPosition;
-
-- (void) setRenderFrustum:(BOOL)newRenderFrustum;
-
 - (ODFrustum *) frustum;
 - (FMatrix4 *) projection;
-- (FMatrix4 *) viewProjection;
-- (FMatrix4 *) inverseViewProjection;
+- (FMatrix4 *) inverseModelViewProjection;
+
+- (void) setPosition:(FVector3 *)newPosition;
+- (void) setRenderFrustum:(BOOL)newRenderFrustum;
 
 - (void) cameraRotateUsingYaw:(Float)yawDegrees andPitch:(Float)pitchDegrees;
 - (void) moveForward;
