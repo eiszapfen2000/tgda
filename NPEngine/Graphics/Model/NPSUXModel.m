@@ -40,6 +40,8 @@
 {
     [ self setFileName:[ file fileName ] ];
 
+    [[[ NP Core ] logger ] pushPrefix:@"  " ];
+
     Char * suxHeader = "SUX____1";
 
     Char headerFromFile[8];
@@ -89,6 +91,8 @@
         [ lod release ];
 
     }
+
+    [[[ NP Core ] logger ] popPrefix ];
 
     ready = YES;
 

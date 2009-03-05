@@ -44,6 +44,7 @@ NpDefaultSemantics;
 - (NpDefaultSemantics *) defaultSemantics;
 - (NPEffectTechnique *) defaultTechnique;
 - (NPEffectTechnique *) techniqueWithName:(NSString *)techniqueName;
+- (CGparameter) parameterWithName:(NSString *)parameterName;
 
 - (void) setDefaultTechnique:(NPEffectTechnique *)newDefaultTechnique;
 

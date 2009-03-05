@@ -16,7 +16,7 @@ void np_cg_error_callback()
 		} 
 		else 
 		{
-		    NPLOG_ERROR(@"CG ERROR: %s", string);
+		    NPLOG_ERROR(@"CG ERROR: %s \n %s", string);
 		}
 
 		error = cgGetError();

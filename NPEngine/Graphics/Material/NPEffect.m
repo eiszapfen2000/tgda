@@ -41,8 +41,10 @@
 
 - (BOOL) loadFromFile:(NPFile *)file
 {
-    [ self setName: [ file fileName ] ];
-    [ self setFileName: [ file fileName ] ];
+    [ self setName:[ file fileName ]];
+    [ self setFileName:[ file fileName ]];
+
+    [[[ NP Core ] logger ] pushPrefix:@"  " ];
 
     // Hack because of buggy cg character encoding/line termination 
     NSData * data = [ file readEntireFile ];
@@ -50,13 +52,32 @@
     [ mData appendData:data ];
     char c = 0;
     [ mData appendBytes:&c length:1 ];
-
     NSString * tmp = [ NSString stringWithUTF8String:[ mData bytes ]];
-    effect = cgCreateEffect( [ (NPEffectManager *)parent cgContext ], [ tmp cStringUsingEncoding:NSASCIIStringEncoding ], NULL );
 
+    // cg compiler flags
+    char ** args = ALLOC_ARRAY(char *,2);
+    args[0] = "-strict";
+    args[1] = NULL;
+
+    effect = cgCreateEffect( [[[ NP Graphics ] effectManager ] cgContext ], [ tmp cStringUsingEncoding:NSASCIIStringEncoding ], (const char**)args );
+
+    SAFE_FREE(args);
+
+    // This is needed for cg compiler warnings, there is no callback for them
+    const char * listing = NULL;
+    const char * nextListing = cgGetLastListing([[[ NP Graphics ] effectManager ] cgContext ]);
+
+    while ( listing != nextListing )
+    {
+        listing = nextListing;
+        NPLOG(@"%s", listing);
+        nextListing = cgGetLastListing([[[ NP Graphics ] effectManager ] cgContext ]);
+    }
+
+    // Just to be sure
     if ( cgIsEffect(effect) == CG_FALSE )
     {
-        NPLOG(@"%@: error while creating effect",fileName);
+        NPLOG(@"%@: error while creating effect", fileName);
         return NO;
     }
 
@@ -72,8 +93,8 @@
         else
         {
             NPEffectTechnique * effectTechnique = [[ NPEffectTechnique alloc ] initWithName:techniqueName
-                                                                                parent:self
-                                                                             technique:technique ];
+                                                                                     parent:self
+                                                                                  technique:technique ];
             [ techniques setObject:effectTechnique forKey:techniqueName ];
             [ effectTechnique release ];
 
@@ -87,6 +108,8 @@
     defaultTechnique = [[ e nextObject ] retain ];
 
     [ self bindDefaultSemantics ];
+
+    [[[ NP Core ] logger ] popPrefix ];
 
     ready = YES;
 
@@ -123,6 +146,11 @@
     return [ techniques objectForKey:techniqueName ];
 }
 
+- (CGparameter) parameterWithName:(NSString *)parameterName
+{
+    return cgGetNamedEffectParameter(effect,[parameterName cString]);
+}
+
 - (void) setDefaultTechnique:(NPEffectTechnique *)newDefaultTechnique
 {
     ASSIGN(defaultTechnique, newDefaultTechnique);
@@ -157,7 +185,7 @@
 
     if ( cgIsParameter(param) == CG_TRUE )
     {
-        NPLOG(@"%@ with name %s found", semanticName, cgGetParameterName(param));
+        NPLOG(@"%@ with \"name\" %s found", semanticName, cgGetParameterName(param));
         //NPLOG(@"%s ",cgGetTypeString(cgGetParameterType(param)));
         return param;
     }
@@ -180,20 +208,11 @@
     defaultSemantics.modelViewProjectionMatrix   = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_MODELVIEWPROJECTION_MATRIX_SEMANTIC ];
     defaultSemantics.inverseModelViewProjectionMatrix = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_INVERSE_MODELVIEWPROJECTION_MATRIX_SEMANTIC ];
 
-    //Int fontSamplerSlot = -1;
     for ( Int i = 0; i < 8; i++ )
     {
         defaultSemantics.sampler2D[i] = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_COLORMAP_SEMANTIC(i)  ];
         defaultSemantics.sampler3D[i] = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_VOLUMEMAP_SEMANTIC(i) ];
-
-        // Font uses a sampler2d, so we look for the first unused texel unit sampler
-        /*if ( defaultSemantics.sampler2D[i] == NULL && fontSamplerSlot != -1 )
-        {
-            fontSamplerSlot = i;
-        }*/
     }
-
-    //defaultSemantics.sampler2D[fontSamplerSlot] = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_FONT_SEMANTIC ];
 }
 
 - (void) activate

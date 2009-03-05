@@ -5,6 +5,8 @@
     NSString * fileName;
     NSString * pathToHome;
     NSFileHandle * logFile;
+    NSMutableArray * prefixes;
+    NSString * prefixString;
 }
 
 - (id) init;
@@ -14,6 +16,9 @@
 
 - (NSString *) fileName;
 - (void) setFileName:(NSString *)newFileName;
+
+- (void) pushPrefix:(NSString *)prefix;
+- (void) popPrefix;
 
 - (void) write:(NSString *)string;
 - (void) writeWarning:(NSString *)string;
