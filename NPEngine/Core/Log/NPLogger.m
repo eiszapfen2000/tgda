@@ -39,6 +39,8 @@
 
     pathToHome = [ NSHomeDirectory() retain ];
     fileName = @"np.txt" ;
+    prefixes = [[ NSMutableArray alloc ] init ];
+    prefixString = @"";
 
     [ self _setupFileHandle ];
 
@@ -47,6 +49,8 @@
 
 - (void) dealloc
 {
+    [ prefixes removeAllObjects ];
+    [ prefixes release ];
     [ fileName release ];
     [ pathToHome release ];
     [ logFile closeFile ];
@@ -72,9 +76,37 @@
     }
 }
 
+- (void) updatePrefixString
+{
+    NSEnumerator * enumerator = [ prefixes objectEnumerator ];
+    NSString * prefix = @"";
+    NSString * tmp;
+
+    while (( tmp = [ enumerator nextObject ] ))
+    {
+        prefix = [ prefix stringByAppendingString:tmp ];
+    }
+
+    prefixString = [ prefix retain ];
+}
+
+- (void) pushPrefix:(NSString *)prefix
+{
+    [ prefixes insertObject:prefix atIndex:0 ];
+
+    [ self updatePrefixString ];
+}
+
+- (void) popPrefix
+{
+    [ prefixes removeObjectAtIndex:0 ];
+
+    [ self updatePrefixString ];
+}
+
 - (void) write:(NSString *)string
 {
-    NSString * line = [ string stringByAppendingString: @"\r\n" ]; 
+    NSString * line = [[ prefixString stringByAppendingString:string ] stringByAppendingString: @"\r\n" ]; 
 
     NSData * data = [ line dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO ];
 
@@ -84,12 +116,12 @@
 
 - (void) writeWarning:(NSString *)string
 {
-    [ self write:[ @"[WARNING]: " stringByAppendingString:string ] ];
+    [ self write:[ @"[WARNING]: " stringByAppendingString:string ]];
 }
 
 - (void) writeError:(NSString *)string
 {
-    [ self write:[ @"[ERROR]: " stringByAppendingString:string ] ];
+    [ self write:[ @"[ERROR]: " stringByAppendingString:string ]];
 }
 
 @end
