@@ -1,0 +1,7 @@
+{
+    Type = "Terrain";
+    Name = "Test";
+    Image = "Test2.pgm";
+    H = "0.5";
+    Iterations = "5";
+}
