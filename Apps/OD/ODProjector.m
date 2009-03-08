@@ -239,7 +239,7 @@
 
     [ self updateProjection ];
 	[ self updateView ];
-    [ self updateModel ];
+    //[ self updateModel ];
     [ frustum updateWithPosition:position
                      orientation:orientation
                              fov:fov

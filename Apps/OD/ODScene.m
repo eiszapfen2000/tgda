@@ -129,7 +129,7 @@
     // clear framebuffer/depthbuffer
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
-    [[[[ NP Graphics ] stateConfiguration ] cullingState ] setEnabled:NO ];
+    [[[[ NP Graphics ] stateConfiguration ] cullingState ] setEnabled:YES ];
     [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setWriteEnabled:YES ];
     [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setComparisonFunction:NP_COMPARISON_LESS_EQUAL ];
     [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:YES ];

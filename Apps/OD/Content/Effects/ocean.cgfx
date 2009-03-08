@@ -29,7 +29,7 @@ VOUTPUTDATA mvertexshader(INPUTDATA input)
     float raypoint_dot_planenormal = dot(point,float3(0.0f,1.0f,0.0f));
     float raydirection_dot_planenormal = dot(direction,float3(0.0f,1.0f,0.0f));
 
-    float t = ( -1.0f - raypoint_dot_planenormal ) / raydirection_dot_planenormal;
+    float t = ( 0.0f - raypoint_dot_planenormal ) / raydirection_dot_planenormal;
     float3 result = direction.xyz * t + point.xyz;
 
 
