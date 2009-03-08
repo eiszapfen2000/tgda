@@ -1,0 +1,69 @@
+float4x4 modelmatrix : NPMODEL;
+float4x4 viewmatrix  : NPVIEW;
+float4x4 projectionmatrix : NPPROJECTION;
+
+float3 lightPosition;
+
+//sampler2D colormap : NPCOLORMAP0;
+
+struct INPUTDATA
+{
+	float4 position			: POSITION;
+    float3 normal           : NORMAL;
+	//float2 texcoord		: TEXCOORD0;
+};
+
+struct VOUTPUTDATA
+{
+	float4 position			: POSITION;
+    float3 normal           : TEXCOORD0;
+    float3 worldPosition    : TEXCOORD1;
+	//float2 texcoord			: TEXCOORD0;
+};
+
+VOUTPUTDATA mvertexshader(INPUTDATA input)
+{
+	VOUTPUTDATA output;
+
+	float4x4 mvp = mul(projectionmatrix,mul(viewmatrix,modelmatrix));
+
+	output.position = mul(mvp, input.position);
+    output.normal   = input.normal;
+    output.worldPosition = input.position.xyz;
+	//output.texcoord = input.texcoord;
+	
+	return output;
+}
+
+struct FOUTPUTDATA
+{
+	float4 color			: COLOR0;
+};
+
+FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
+{
+	FOUTPUTDATA output;
+
+    float3 normal = normalize(input.normal);
+    float3 lightVector = lightPosition - input.worldPosition.xyz;
+    float3 nLightVector = normalize(lightVector);
+
+    float factor = max(0.0f,dot(normal,nLightVector));
+
+	//float4 diffusecolor = tex2D(colormap, input.texcoord);
+
+    //output.color = diffusecolor;
+    output.color = float4(1.0*factor,0.0,0.0,0.0);
+
+	return output;
+}
+
+technique terrain
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mfragmentshader();
+		VertexProgram = compile vp40 mvertexshader();
+	}
+}
+

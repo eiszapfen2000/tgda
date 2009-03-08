@@ -1,0 +1,19 @@
+{
+    ApplicationDescription = OceanDemo;
+    ApplicationName = OceanDemo;
+    ApplicationRelease = 0.10;
+    Authors = ( "Thomas Gamper" );
+    Copyright = "Copyright (C) 2009 Thomas Gamper";
+    FullVersionID = 0.10;
+    NSExecutable = Fraktale;
+    NSMainNibFile = Fraktale.gorm;
+    NSPrincipalClass = NPApplication;
+    NSRole = Application;
+    Fullscreen = NO;
+    Width = 1280;
+    Height = 720;
+    FSAA = 0;
+    Anisotropy = 1;
+    VSync = NO;
+}
+ 
