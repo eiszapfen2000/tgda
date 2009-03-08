@@ -109,7 +109,8 @@
 
     //IVector2 * viewportSize = [[[[ NP Graphics ] viewportManager ] currentViewport ] viewportSize ];
     IVector2 * viewportSize = iv2_alloc_init();
-    viewportSize->x = viewportSize->y = 4;
+    viewportSize->x = 128;
+    viewportSize->y = 256;
 
     Int positionCount = viewportSize->x * viewportSize->y;
     Int indexCount = (viewportSize->x - 1) * (viewportSize->y - 1) * 6;
