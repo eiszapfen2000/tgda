@@ -16,11 +16,11 @@
 - (id) inputActionWithName:(NSString *)inputActionName;
 
 - (id) addInputActionWithName:(NSString *)inputActionName
-             primaryInputAction:(NpState)primaryInputAction;
+           primaryInputAction:(NpState)primaryInputAction;
 
 - (id) addInputActionWithName:(NSString *)inputActionName
-             primaryInputAction:(NpState)primaryInputAction
-           secondaryInputAction:(NpState)secondaryInputAction;
+           primaryInputAction:(NpState)primaryInputAction
+         secondaryInputAction:(NpState)secondaryInputAction;
 
 - (void) update;
 

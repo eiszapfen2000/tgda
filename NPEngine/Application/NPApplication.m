@@ -13,12 +13,16 @@
     {
         _runLoopPool = [ NSAutoreleasePool new ];
 
+        //FIXME drain event pool when using vsync
+
+        NSDate * now = [ NSDate date ];
+
         e = [ super nextEventMatchingMask:NSAnyEventMask
-                                untilDate:[ NSDate date ]
+                                untilDate:now
                                    inMode:NSDefaultRunLoopMode
                                   dequeue:YES ];
 
-        if (e != nil )
+        while ( e != nil )
         {
             NSEventType type = [ e type ];
 
@@ -30,6 +34,11 @@
                 [ _listener updateServicesMenu ];
                 [ _main_menu update ];
             }
+
+            e = [ super nextEventMatchingMask:NSAnyEventMask
+                        untilDate:now
+                           inMode:NSDefaultRunLoopMode
+                          dequeue:YES ];
         }
 
         // send an update message to all visible windows
@@ -117,14 +126,6 @@
             {
                 [[ theEvent window ] sendEvent:theEvent ];
             }
-
-                /*NSString * characters = [ theEvent characters ];
-                if ([characters length])
-                {
-                    unichar character = [characters characterAtIndex:0];
-                    NSLog(@"%C",character);
-                }
-                NSLog(@"%d %d",[theEvent keyCode],[theEvent modifierFlags]);*/
 
             break;
         }

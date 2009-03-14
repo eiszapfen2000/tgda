@@ -32,6 +32,7 @@
 - (void) checkForSubGenerators;
 
 - (Double) nextGaussianFPRandomNumber;
+- (Double) nextGaussianFPRandomNumberWithMean:(Double)mean andStandardDeviation:(Double)standardDeviation;
 
 - (NSString *) description;
 
