@@ -105,16 +105,20 @@ NpState * keyboard_state_get_pressed_keys(NpKeyboardState * keyboardState, Int *
             {
                 keyboard_state_key_down(&keyboardState,(NpState)[event keyCode]);
             }
+
             break;
         }
+
         case NSKeyUp:
         {
             if ( [ event isARepeat ] == NO )
             {
                 keyboard_state_key_up(&keyboardState,(NpState)[event keyCode]);
             }
+
             break;
         }
+
         case NSFlagsChanged:
         {
             keyboard_state_modifier_key(&keyboardState,(NpState)[event keyCode]);

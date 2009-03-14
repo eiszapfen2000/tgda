@@ -93,6 +93,11 @@
 
 - (Double) nextGaussianFPRandomNumber
 {
+    return [ self nextGaussianFPRandomNumberWithMean:0.0 andStandardDeviation:1.0 ];
+}
+
+- (Double) nextGaussianFPRandomNumberWithMean:(Double)mean andStandardDeviation:(Double)standardDeviation
+{
     if ( ready == YES )
     {
 	    Double x1, x2, w;
@@ -120,7 +125,7 @@
 		    useLastValue = YES; 
 	    }
 
-	    return firstValue;
+	    return mean + firstValue * standardDeviation;
     }
 
     NPLOG_WARNING(@"Generator not ready, returning 0");

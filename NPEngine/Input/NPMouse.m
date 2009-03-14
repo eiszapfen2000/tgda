@@ -60,7 +60,6 @@ void reset_mouse_state(NpMouseState * mouseState)
     mouseState.y = mousePoint.y;
     x = xLastFrame = mouseState.x;
     y = yLastFrame = mouseState.y;
-    //NSLog(@"window %f %f",x,y);
 }
 
 - (Float) x
@@ -75,13 +74,11 @@ void reset_mouse_state(NpMouseState * mouseState)
 
 - (Float) deltaX
 {
-    //NSLog(@"%f",(x - xLastFrame));
     return x - xLastFrame;
 }
 
 - (Float) deltaY
 {
-    //NSLog(@"%f",(y - yLastFrame));
     return y - yLastFrame;
 }
 
