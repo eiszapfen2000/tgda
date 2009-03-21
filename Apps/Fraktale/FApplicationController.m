@@ -27,7 +27,7 @@
     FScene * scene = [ sceneManager loadSceneFromPath:@"Test.scene" ];
     [ scene activate ];
 
-    [ NSCursor hide ];
+    //[ NSCursor hide ];
 
     // scene alloc init
     //[ scene activate ];

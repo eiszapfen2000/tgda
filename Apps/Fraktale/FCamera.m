@@ -124,7 +124,7 @@
     {
         yaw += degrees;
 
-        if ( yaw < -360.0f )
+        /*if ( yaw < -360.0f )
         {
             yaw += 360.0f;
         }
@@ -132,7 +132,7 @@
         if ( yaw > 360.0f )
         {
             yaw -= 360.0f;
-        }
+        }*/
     }
 }
 
@@ -142,7 +142,7 @@
     {
         pitch += degrees;
 
-        if ( pitch < -360.0f )
+        /*if ( pitch < -360.0f )
         {
             pitch += 360.0f;
         }
@@ -150,7 +150,7 @@
         if ( pitch > 360.0f )
         {
             pitch -= 360.0f;
-        }
+        }*/
     }
 }
 

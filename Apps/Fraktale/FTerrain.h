@@ -4,18 +4,38 @@
 
 @class FPGMImage;
 @class NPVertexBuffer;
+@class NPSUXModel;
 @class NPEffect;
+@class NPTexture;
+@class NPAction;
+@class NPGaussianRandomNumberGenerator;
 
 @interface FTerrain : NPObject
 {
+    IVector2 * size;
+    IVector2 * baseResolution;
+    IVector2 * currentResolution;
+    IVector2 * lastResolution;
+
     FPGMImage * image;
     Float H;
-    Int32 iterations;
+    Float variance;
 
-    NPVertexBuffer * geometry;
+    Int32 iterations;
+    Int32 currentIteration;
+    Int32 iterationsDone;
+    Int32 baseIterations;
+
     NPEffect * effect;
+    NPTexture * texture;
+    NSMutableArray * lods;
+
     FVector3 * lightPosition;
     CGparameter lightPositionParameter;
+
+    NPGaussianRandomNumberGenerator * rng;
+
+    NPAction * subdivideAction;
 }
 
 - (id) init;
@@ -25,6 +45,7 @@
 
 - (BOOL) loadFromPath:(NSString *)path;
 
+- (void) updateGeometry;
 - (void) update:(Float)frameTime;
 - (void) render;
 
