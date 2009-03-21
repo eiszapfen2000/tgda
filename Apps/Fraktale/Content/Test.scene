@@ -1,7 +1,8 @@
 {
     Type = "Terrain";
     Name = "Test";
-    Image = "Test2.pgm";
-    H = "0.5";
-    Iterations = "5";
+    Texture = "Terrain0.jpg";
+    Size = ("20", "20");
+    H = "0.8";
+    Iterations = "1";
 }

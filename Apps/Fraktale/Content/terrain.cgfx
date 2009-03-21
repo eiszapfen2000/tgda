@@ -4,21 +4,21 @@ float4x4 projectionmatrix : NPPROJECTION;
 
 float3 lightPosition;
 
-//sampler2D colormap : NPCOLORMAP0;
+sampler2D colormap : NPCOLORMAP0;
 
 struct INPUTDATA
 {
 	float4 position			: POSITION;
     float3 normal           : NORMAL;
-	//float2 texcoord		: TEXCOORD0;
+	float2 texcoord		    : TEXCOORD0;
 };
 
 struct VOUTPUTDATA
 {
 	float4 position			: POSITION;
-    float3 normal           : TEXCOORD0;
-    float3 worldPosition    : TEXCOORD1;
-	//float2 texcoord			: TEXCOORD0;
+	float2 texcoord			: TEXCOORD0;
+    float3 normal           : TEXCOORD1;
+    float3 worldPosition    : TEXCOORD2;
 };
 
 VOUTPUTDATA mvertexshader(INPUTDATA input)
@@ -28,9 +28,9 @@ VOUTPUTDATA mvertexshader(INPUTDATA input)
 	float4x4 mvp = mul(projectionmatrix,mul(viewmatrix,modelmatrix));
 
 	output.position = mul(mvp, input.position);
+    output.texcoord = input.texcoord;
     output.normal   = input.normal;
     output.worldPosition = input.position.xyz;
-	//output.texcoord = input.texcoord;
 	
 	return output;
 }
@@ -49,11 +49,10 @@ FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
     float3 nLightVector = normalize(lightVector);
 
     float factor = max(0.0f,dot(normal,nLightVector));
+    float4 diffusecolor = tex2D(colormap, input.texcoord);
 
-	//float4 diffusecolor = tex2D(colormap, input.texcoord);
-
-    //output.color = diffusecolor;
-    output.color = float4(1.0*factor,0.0,0.0,0.0);
+    output.color = factor * diffusecolor;
+    //output.color = float4(1.0*factor,0.0,0.0,0.0);
 
 	return output;
 }

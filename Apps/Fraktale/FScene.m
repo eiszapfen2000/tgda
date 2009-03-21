@@ -76,6 +76,11 @@
 - (void) update:(Float)frameTime
 {
     [ camera update:frameTime ];
+
+    if ( terrain != nil )
+    {
+        [ terrain update:frameTime ];
+    }
 }
 
 - (void) render
