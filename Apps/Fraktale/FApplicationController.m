@@ -1,5 +1,6 @@
 #import <AppKit/NSCursor.h>
 #import "FApplicationController.h"
+#import "FWindowController.h"
 #import "FScene.h"
 #import "FSceneManager.h"
 #import "NP.h"
@@ -16,9 +17,12 @@
 
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    [ super createRenderWindow ];
+    [ self createRenderWindow ];
 
     [ self configureResourcePaths ];
+
+    attributesWindowController = [[ FWindowController alloc ] init ];
+    [ attributesWindowController showWindow:nil ];
 
     glClearColor(0.0f,0.0f,0.0f,1.0f);
     glClearDepth(1);
@@ -28,9 +32,6 @@
     [ scene activate ];
 
     //[ NSCursor hide ];
-
-    // scene alloc init
-    //[ scene activate ];
 }
 
 - (NSApplicationTerminateReply) applicationShouldTerminate:(NSApplication *)sender
@@ -57,7 +58,14 @@
 
 - (void) dealloc
 {
+    [ attributesWindowController autorelease ];
+
     [ super dealloc ];
+}
+
+- (id) attributesWindowController
+{
+    return attributesWindowController;
 }
 
 - (id) sceneManager
@@ -74,13 +82,13 @@
 
     [ sceneManager update:frameTime ];
 
-    NSRect windowRect = [ window frame ];
+    /*NSRect windowRect = [ window frame ];
     if ( [[[ NP Input ] mouse ] x ] < (windowRect.size.width /4.0f) || [[[ NP Input ] mouse ] x ] > (windowRect.size.width  * 3.0/4.0f) ||
          [[[ NP Input ] mouse ] y ] < (windowRect.size.height/4.0f) || [[[ NP Input ] mouse ] y ] > (windowRect.size.height * 3.0/4.0f) )
     {
         NSPoint point = { windowRect.size.width/2.0f, windowRect.size.height/2.0f };
         [[[ NP Input ] mouse ] setPosition:point ];
-    }
+    }*/
 }
 
 - (void) render

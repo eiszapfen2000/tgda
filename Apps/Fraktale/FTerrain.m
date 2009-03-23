@@ -1,6 +1,7 @@
 #import "FTerrain.h"
 #import "FPGMImage.h"
 #import "NP.h"
+#import "FCore.h"
 
 @implementation FTerrain
 
@@ -18,6 +19,24 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
+    rngs = [[ NSMutableDictionary alloc ] init ];
+
+    NPRandomNumberGenerator * g;
+    g = [[[ NP Core ] randomNumberGeneratorManager ] fixedParameterGeneratorWithRNGName:NP_RNG_TT800 ];
+    [ rngs setObject:g forKey:NP_RNG_TT800 ];
+
+    g = [[[ NP Core ] randomNumberGeneratorManager ] fixedParameterGeneratorWithRNGName:NP_RNG_CTG ];
+    [ rngs setObject:g forKey:NP_RNG_CTG ];
+
+    g = [[[ NP Core ] randomNumberGeneratorManager ] fixedParameterGeneratorWithRNGName:NP_RNG_MRG ];
+    [ rngs setObject:g forKey:NP_RNG_MRG ];
+
+    g = [[[ NP Core ] randomNumberGeneratorManager ] fixedParameterGeneratorWithRNGName:NP_RNG_CMRG ];
+    [ rngs setObject:g forKey:NP_RNG_CMRG ];
+
+    g = [[[ NP Core ] randomNumberGeneratorManager ] mersenneTwisterWithSeed:0L ];
+    [ rngs setObject:g forKey:@"mersenne" ];
+
     size = iv2_alloc_init();
     size->x = size->y = -1;
 
@@ -29,16 +48,22 @@
     baseResolution->x = baseResolution->y = -1;
 
     H = 0.5f;
+    sigma = 1.0f;
     variance = 1.0f;
+    minimumHeight = 0.0f;
+    maximumHeight = 1.0f;
+
     iterations = 0;
     baseIterations = 0;
     currentIteration = 0;
     iterationsDone = 0;
+    currentLod = 0;
+
     lightPosition = fv3_alloc_init();
 
     lods = [[ NSMutableArray alloc ] init ];
 
-    rng = [[[ NP Core ] randomNumberGeneratorManager ] gaussianGeneratorWithName:@"Gaussian"
+    gaussianRng = [[[ NP Core ] randomNumberGeneratorManager ] gaussianGeneratorWithName:@"Gaussian"
                                                     firstFixedParameterGenerator:NP_RNG_TT800
                                                    secondFixedParameterGenerator:NP_RNG_CTG ];
 
@@ -49,6 +74,9 @@
 
 - (void) dealloc
 {
+    [ rngs removeAllObjects ];
+    [ rngs release ];
+
     size = iv2_free(size);
     baseResolution = iv2_free(baseResolution);
     currentResolution = iv2_free(currentResolution);
@@ -62,6 +90,103 @@
 
     [ super dealloc ];
 }
+
+- (Int) width
+{
+    return size->x;
+}
+
+- (Int) length
+{
+    return size->y;
+}
+
+- (Float) H
+{
+    return H;
+}
+
+- (Float) sigma
+{
+    return sigma;
+}
+
+- (Float) minimumHeight
+{
+    return minimumHeight;
+}
+
+- (Float) maximumHeight
+{
+    return maximumHeight;
+}
+
+- (Int32) currentLod
+{
+    return currentLod;
+}
+
+- (void) setCurrentLod:(Int32)newCurrentLod
+{
+    currentLod = newCurrentLod;
+}
+
+- (void) setWidth:(Int32)newWidth
+{
+    size->x = newWidth;
+}
+
+- (void) setLength:(Int32)newLength
+{
+    size->y = newLength;
+}
+
+- (void) setMinimumHeight:(Float)newMinimumHeight
+{
+    minimumHeight = newMinimumHeight;
+}
+
+- (void) setMaximumHeight:(Float)newMaximumHeight
+{
+    maximumHeight = newMaximumHeight;
+}
+
+- (void) setRngOneUsingName:(NSString *)newRngOneName
+{
+    [ gaussianRng setFirstGenerator:[rngs objectForKey:newRngOneName]];
+}
+
+- (void) setRngTwoUsingName:(NSString *)newRngTwoName
+{
+    [ gaussianRng setSecondGenerator:[rngs objectForKey:newRngTwoName]];
+}
+
+- (void) setRngOneSeed:(ULong)newSeed
+{
+    [[ gaussianRng firstGenerator ] reseed:newSeed ];
+}
+
+- (void) setRngTwoSeed:(ULong)newSeed
+{
+    [[ gaussianRng secondGenerator ] reseed:newSeed ];
+}
+
+- (void) setH:(Float)newH
+{
+    H = newH;
+}
+
+- (void) setSigma:(Float)newSigma
+{
+    sigma = newSigma;
+}
+
+- (void) setIterations:(Int32)newIterations
+{
+    iterations = newIterations;
+}
+
+
 
 - (BOOL) loadFromPath:(NSString *)path
 {
@@ -128,6 +253,7 @@
 
     iterationsDone = baseIterations;
     currentIteration = baseIterations;
+    currentLod = currentIteration - baseIterations;
 
     NSString * texturePath = [ sceneConfig objectForKey:@"Texture" ];
     if ( texturePath == nil )
@@ -153,25 +279,68 @@
     size->x = [[ terrainSizeStrings objectAtIndex:0 ] intValue ];
     size->y = [[ terrainSizeStrings objectAtIndex:1 ] intValue ];
 
+    NSString * minimumHeightString = [ sceneConfig objectForKey:@"MinimumHeight" ];
+    if ( minimumHeightString == nil )
+    {
+        NPLOG_WARNING(@"%@: MinimumHeight missing, using default", path);
+        minimumHeightString = [ NSString stringWithFormat:@"%f", minimumHeight ];
+    }
+    else
+    {
+        minimumHeight = [ minimumHeightString floatValue ];
+    }
+
+    NSString * maximumHeightString = [ sceneConfig objectForKey:@"MaximumHeight" ];
+    if ( maximumHeightString == nil )
+    {
+        NPLOG_WARNING(@"%@: MaximumHeight missing, using default", path);
+        maximumHeightString = [ NSString stringWithFormat:@"%f", maximumHeight ];
+    }
+    else
+    {
+        maximumHeight = [ minimumHeightString floatValue ];
+    }
+
     NSString * HString = [ sceneConfig objectForKey:@"H" ];
     if ( HString == nil )
     {
         NPLOG_WARNING(@"%@: H missing, using default", path);
+        HString = [ NSString stringWithFormat:@"%f", H ];
     }
     else
     {
         H = [ HString floatValue ];
     }
 
+    NSString * sigmaString = [ sceneConfig objectForKey:@"Sigma" ];
+    if ( sigmaString == nil )
+    {
+        NPLOG_WARNING(@"%@: Sigma missing, using default", path);
+        sigmaString = [ NSString stringWithFormat:@"%f", sigma ];
+    }
+    else
+    {
+        sigma = [ sigmaString floatValue ];
+    }
+
     NSString * iterationsString = [ sceneConfig objectForKey:@"Iterations" ];
     if ( iterationsString == nil )
     {
         NPLOG_WARNING(@"%@: Iterations missing, using default", path);
+        iterationsString = [ NSString stringWithFormat:@"%d", iterations ];
     }
     else
     {
         iterations = [ iterationsString intValue ];
     }
+
+    [[ NP attributesWindowController ] setWidthTextfieldString :[ terrainSizeStrings objectAtIndex:0 ]];
+    [[ NP attributesWindowController ] setLengthTextfieldString:[ terrainSizeStrings objectAtIndex:1 ]];
+    [[ NP attributesWindowController ] setMinimumHeightTextfieldString:minimumHeightString ];
+    [[ NP attributesWindowController ] setMaximumHeightTextfieldString:maximumHeightString ];
+    [[ NP attributesWindowController ] setHTextfieldString:HString ];
+    [[ NP attributesWindowController ] setSigmaTextfieldString:sigmaString ];
+    [[ NP attributesWindowController ] setIterationsTextfieldString:sigmaString ];
 
     [ self updateGeometry ];
 
@@ -264,8 +433,8 @@
         }
     }
 
-    Int lodIndex = currentIteration - baseIterations;
-    [[ lods objectAtIndex:lodIndex ] setTextureCoordinates:texCoords 
+    //Int lodIndex = currentIteration - baseIterations;
+    [[ lods objectAtIndex:currentLod ] setTextureCoordinates:texCoords 
                              elementsForTextureCoordinates:2
                                                 dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                     forSet:0 ]; 
@@ -276,8 +445,8 @@
     Int numberOfVertices = currentResolution->x * currentResolution->y;
     Float * normals = ALLOC_ARRAY(Float, numberOfVertices * 3);
 
-    Int lodIndex = currentIteration - baseIterations;
-    Float * vertexPositions = [[ lods objectAtIndex:lodIndex ] positions ];
+    //Int lodIndex = currentIteration - baseIterations;
+    Float * vertexPositions = [[ lods objectAtIndex:currentLod ] positions ];
 
     //Corners
     normals[0] = normals[2] = 0.0f;
@@ -482,7 +651,12 @@
         }
     }
 
-    [[ lods objectAtIndex:lodIndex ] setNormals:normals elementsForNormal:3 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT ];
+    [[ lods objectAtIndex:currentLod ] setNormals:normals elementsForNormal:3 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT ];
+}
+
+- (void) updateAO
+{
+    
 }
 
 - (void) updateIndices
@@ -506,13 +680,14 @@
         }
     }
 
-    Int lodIndex = currentIteration - baseIterations;
-    [[ lods objectAtIndex:lodIndex ] setIndices:indices indexCount:numberOfIndices ];
+    //Int lodIndex = currentIteration - baseIterations;
+    [[ lods objectAtIndex:currentLod ] setIndices:indices indexCount:numberOfIndices ];
 }
 
 - (void) subdivide
 {
     currentIteration = currentIteration + 1;
+    currentLod = currentIteration - baseIterations;
 
     lastResolution->x = currentResolution->x;
     lastResolution->y = currentResolution->y;
@@ -548,7 +723,7 @@
 
             diamondPositions[index] = (currentPositions[index0] + currentPositions[index1] +
                                       currentPositions[index2] + currentPositions[index3]) / 4.0f +
-                                      [ rng nextGaussianFPRandomNumberWithMean:0.0f andVariance:rngVariance ];
+                                      [ gaussianRng nextGaussianFPRandomNumberWithMean:0.0f andVariance:rngVariance ];
                                       
         }
     }
@@ -602,7 +777,7 @@
                     }
 
                     positions[index+1] = ( west + east + north + south ) / 4.0f +
-                                         [ rng nextGaussianFPRandomNumberWithMean:0.0f andVariance:rngVariance ];
+                                         [ gaussianRng nextGaussianFPRandomNumberWithMean:0.0f andVariance:rngVariance ];
                 }
                 else if ( (j % 2 == 0) && (i % 2 == 1) )
                 {
@@ -627,7 +802,7 @@
                     }
 
                     positions[index+1] = ( west + east + north + south ) / 4.0f +
-                                         [ rng nextGaussianFPRandomNumberWithMean:0.0f andVariance:rngVariance ];
+                                         [ gaussianRng nextGaussianFPRandomNumberWithMean:0.0f andVariance:rngVariance ];
 
                 }
                 else
@@ -672,6 +847,8 @@
         [ self updateTextureCoordinates ];
         [ self updateNormals ];
         [ self updateIndices ];
+
+        [[ NP attributesWindowController ] addLodPopUpItemWithNumber:0 ];
     }
 
     /*while ( iterations > iterationsDone )
@@ -702,6 +879,9 @@
         [ self updateTextureCoordinates ];
         [ self updateNormals ];
         [ self updateIndices ];
+
+        [[ NP attributesWindowController ] addLodPopUpItemWithNumber  :currentLod ];
+        [[ NP attributesWindowController ] selectLodPopUpItemWithIndex:currentLod ];
     }
 }
 
@@ -719,8 +899,8 @@
     {
         cgSetPassState(pass);
 
-        Int lodIndex = currentIteration - baseIterations;
-        [[ lods objectAtIndex:lodIndex ] renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
+        //Int lodIndex = currentIteration - baseIterations;
+        [[ lods objectAtIndex:currentLod ] renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
 
         cgResetPassState(pass);
         pass = cgGetNextPass(pass);

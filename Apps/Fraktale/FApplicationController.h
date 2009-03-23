@@ -2,6 +2,7 @@
 
 @interface FApplicationController : NPApplicationController
 {
+    id attributesWindowController;
     id sceneManager;
 }
 
@@ -13,6 +14,7 @@
 
 - (void) dealloc;
 
+- (id) attributesWindowController;
 - (id) sceneManager;
 
 - (void) update;
