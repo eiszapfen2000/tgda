@@ -6,6 +6,7 @@ Fraktale_OBJC_FILES = \
 main.m \
 FCore.m \
 FApplicationController.m \
+FWindowController.m \
 FSceneManager.m \
 FScene.m \
 FTerrain.m \
@@ -15,6 +16,7 @@ FCamera.m
 Fraktale_RESOURCE_FILES = \
 Info-gnustep.plist \
 Fraktale.gorm \
+FAttributesWindow.gorm \
 Content
 
 ADDITIONAL_GUI_LIBS += -lGL -lGLU -lNPEngine -lCg -lCgGL -lGLEW -lIL -lILU -lprng

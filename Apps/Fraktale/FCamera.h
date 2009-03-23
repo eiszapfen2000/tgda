@@ -18,6 +18,12 @@
     Float pitch;
     FVector3 * forward;
 
+    id leftClickAction;
+    id wheelDownAction;
+    id wheelUpAction;
+
+    id controlAction;
+
     id forwardMovementAction;
     id backwardMovementAction;
     id strafeLeftAction;
@@ -46,10 +52,13 @@
 - (void)  setAspectRatio:(Float)newAspectRatio;
 
 - (void) cameraRotateUsingYaw:(Float)yawDegrees andPitch:(Float)pitchDegrees;
+
+/*
 - (void) moveForward:(Float)frameTime;
 - (void) moveBackward:(Float)frameTime;
 - (void) moveLeft:(Float)frameTime;
 - (void) moveRight:(Float)frameTime;
+*/
 
 - (void) updateProjection;
 - (void) updateView;

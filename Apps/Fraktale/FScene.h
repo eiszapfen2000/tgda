@@ -14,6 +14,8 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 - (void) dealloc;
 
+- (FTerrain *) terrain;
+
 - (BOOL) loadFromPath:(NSString *)path;
 
 - (void) activate;

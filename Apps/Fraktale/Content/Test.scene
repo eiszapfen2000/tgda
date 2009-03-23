@@ -2,7 +2,10 @@
     Type = "Terrain";
     Name = "Test";
     Texture = "Terrain0.jpg";
-    Size = ("20", "20");
     H = "0.8";
+    Sigma = "1.0";
     Iterations = "1";
+    Size = ("20", "20");
+    MinimumHeight = "0.0";
+    MaximumHeight = "1.0";
 }

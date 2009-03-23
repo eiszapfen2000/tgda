@@ -34,6 +34,12 @@
     forward = fv3_alloc_init();
     V_Z(*forward) = -1.0;
 
+    leftClickAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"LeftClick" primaryInputAction:NP_INPUT_MOUSE_BUTTON_LEFT ];
+    wheelDownAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"ZoomIn"    primaryInputAction:NP_INPUT_MOUSE_WHEEL_DOWN  ];
+    wheelUpAction   = [[[ NP Input ] inputActions ] addInputActionWithName:@"ZoomOut"   primaryInputAction:NP_INPUT_MOUSE_WHEEL_UP    ];
+
+    controlAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"Control" primaryInputAction:NP_INPUT_KEYBOARD_LEFT_CONTROL ];
+
     forwardMovementAction  = [[[ NP Input ] inputActions ] addInputActionWithName:@"Forward"     primaryInputAction:NP_INPUT_KEYBOARD_UP    ];
     backwardMovementAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"Backward"    primaryInputAction:NP_INPUT_KEYBOARD_DOWN  ];
     strafeLeftAction       = [[[ NP Input ] inputActions ] addInputActionWithName:@"StrafeLeft"  primaryInputAction:NP_INPUT_KEYBOARD_LEFT  ];
@@ -163,6 +169,7 @@
     fquat_q_rotatex(orientation,&pitch);
 }
 
+/*
 - (void) moveForward:(Float)frameTime
 {
     fquat_q_forward_vector_v(orientation,forward);
@@ -199,6 +206,17 @@
     V_X(*position) += (right.x * frameTime);
     V_Y(*position) += (right.y * frameTime);
     V_Z(*position) += (right.z * frameTime);
+}
+*/
+
+- (void) strafe:(Float)strafe
+{
+    FVector3 right;
+    fquat_q_right_vector_v(orientation,&right);
+
+    V_X(*position) += (right.x * strafe);
+    V_Y(*position) += (right.y * strafe);
+    V_Z(*position) += (right.z * strafe);
 }
 
 - (void) updateProjection
@@ -238,7 +256,7 @@
 - (void) update:(Float)frameTime
 {
     // position update
-    if ( [ forwardMovementAction active ] == YES )
+    /*if ( [ forwardMovementAction active ] == YES )
     {
         [ self moveForward:(Float)frameTime ];
     }
@@ -256,16 +274,50 @@
     if ( [ strafeRightAction active ] == YES )
     {
         [ self moveRight:(Float)frameTime ];
-    }
+    }*/
 
     // rotation update
-    id mouse = [[ NP Input ] mouse ];
-    Float deltaX = [ mouse deltaX ];
-    Float deltaY = [ mouse deltaY ];
-
-    if ( deltaX != 0.0f || deltaY != 0.0f )
+    if ( [ leftClickAction active ] == YES )
     {
-        [ self cameraRotateUsingYaw:-deltaX*0.3f andPitch:deltaY*0.3f ];
+        id mouse = [[ NP Input ] mouse ];
+        Float deltaX = [ mouse deltaX ];
+        Float deltaY = [ mouse deltaY ];
+
+        if ( [ controlAction active ] == YES )
+        {
+            if ( deltaX != 0.0f )
+            {
+                [ self strafe:(deltaX/2.0f) ];
+            }
+        }
+        else
+        {
+            if ( deltaX != 0.0f || deltaY != 0.0f )
+            {
+                [ self cameraRotateUsingYaw:-deltaX*0.3f andPitch:deltaY*0.3f ];
+            }
+        }
+    }
+
+    if ( [ wheelDownAction activated ] == YES )
+    {
+        //NSLog(@"wheel down");
+        fquat_q_forward_vector_v(orientation,forward);
+
+        V_X(*position) += (forward->x * 2.0f);
+        V_Y(*position) += (forward->y * 2.0f);
+        V_Z(*position) += (forward->z * 2.0f);        
+
+    }
+
+    if ( [ wheelUpAction activated ] == YES )
+    {
+        //NSLog(@"wheel up");
+        fquat_q_forward_vector_v(orientation,forward);
+
+        V_X(*position) -= (forward->x * 2.0f);
+        V_Y(*position) -= (forward->y * 2.0f);
+        V_Z(*position) -= (forward->z * 2.0f);
     }
 
     // update matrices

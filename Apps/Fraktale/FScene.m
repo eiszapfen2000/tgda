@@ -31,6 +31,11 @@
     [ super dealloc ];
 }
 
+- (FTerrain *) terrain
+{
+    return terrain;
+}
+
 - (BOOL) loadFromPath:(NSString *)path
 {
     NSDictionary * sceneConfig = [ NSDictionary dictionaryWithContentsOfFile:path ];
