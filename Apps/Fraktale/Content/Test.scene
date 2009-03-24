@@ -4,7 +4,7 @@
     Texture = "Terrain0.jpg";
     H = "0.8";
     Sigma = "1.0";
-    Iterations = "1";
+    Iterations = "0";
     Size = ("20", "20");
     MinimumHeight = "0.0";
     MaximumHeight = "1.0";

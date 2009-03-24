@@ -14,7 +14,7 @@
     return  [ super initWithWindowNibName: @"FAttributesWindow" ];
 }
 
-- (void) initRNGPopUpButtons
+- (void) initPopUpButtons
 {
     [ rngOnePopUp removeAllItems ];
     [ rngTwoPopUp removeAllItems ];
@@ -29,22 +29,14 @@
     [ rngTwoPopUp addItemWithTitle:NP_RNG_CMRG ];
     [ rngOnePopUp addItemWithTitle:@"mersenne" ];
     [ rngTwoPopUp addItemWithTitle:@"mersenne" ];
+
+    [ lodPopUp removeAllItems ];
+    [ lodPopUp setPreferredEdge:NSMinYEdge ];
 }
 
 - (void) windowDidLoad
 {
-    [ lodPopUp removeAllItems ];
-    [ lodPopUp setPreferredEdge:NSMinYEdge ];
-
-    [ self initRNGPopUpButtons ];
-
-    [[ widthTextfield         cell ] setSendsActionOnEndEditing:YES ];
-    [[ lengthTextfield        cell ] setSendsActionOnEndEditing:YES ];
-    [[ minimumHeightTextfield cell ] setSendsActionOnEndEditing:YES ];
-    [[ maximumHeightTextfield cell ] setSendsActionOnEndEditing:YES ];
-    [[ sigmaTextfield         cell ] setSendsActionOnEndEditing:YES ];
-    [[ hTextfield             cell ] setSendsActionOnEndEditing:YES ];
-    [[ iterationsTextfield    cell ] setSendsActionOnEndEditing:YES ];
+    [ self initPopUpButtons ];
 }
 
 - (void)controlTextDidEndEditing:(NSNotification *)aNotification
@@ -106,6 +98,11 @@
 - (void) addLodPopUpItemWithNumber:(Int32)number
 {
     [ lodPopUp addItemWithTitle:[NSString stringWithFormat:@"LOD%d",number]];
+}
+
+- (void) removeLodPopUpItemWithNumber:(Int32)number
+{
+    [ lodPopUp removeItemAtIndex:number ];
 }
 
 - (void) selectLodPopUpItemWithIndex:(Int32)index
@@ -231,12 +228,18 @@
     }
 
     [ sender setBackgroundColor:[NSColor whiteColor]];
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setIterations:iterations ];
+    [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setIterationsToDo:iterations ];
+}
+
+- (void) reset:(id)sender
+{
+    //NSLog(@"reset");
+    [[ NP applicationController ] reloadScene ];
 }
 
 - (void) generate:(id)sender
 {
-    NSLog(@"generate");
+    [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] updateGeometry ];
 }
 
 @end

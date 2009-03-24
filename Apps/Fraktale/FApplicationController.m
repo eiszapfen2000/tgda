@@ -63,6 +63,15 @@
     [ super dealloc ];
 }
 
+- (void) reloadScene
+{
+    [ attributesWindowController initPopUpButtons ];
+
+    [ sceneManager clear ];
+    FScene * scene = [ sceneManager loadSceneFromPath:@"Test.scene" ];
+    [ scene activate ];
+}
+
 - (id) attributesWindowController
 {
     return attributesWindowController;

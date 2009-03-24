@@ -23,6 +23,8 @@
     id generateButton;
 }
 
+- (void) initPopUpButtons;
+
 - (void) setWidthTextfieldString:(NSString *)newString;
 - (void) setLengthTextfieldString:(NSString *)newString;
 - (void) setMinimumHeightTextfieldString:(NSString *)newString;
@@ -32,6 +34,7 @@
 - (void) setIterationsTextfieldString:(NSString *)newString;
 
 - (void) addLodPopUpItemWithNumber:(Int32)number;
+- (void) removeLodPopUpItemWithNumber:(Int32)number;
 - (void) selectLodPopUpItemWithIndex:(Int32)index;
 
 - (void) selectLod:(id)sender;
@@ -46,6 +49,8 @@
 - (void) setSigma:(id)sender;
 - (void) setH:(id)sender;
 - (void) setIterations:(id)sender;
+
+- (void) reset:(id)sender;
 - (void) generate:(id)sender;
 
 @end
