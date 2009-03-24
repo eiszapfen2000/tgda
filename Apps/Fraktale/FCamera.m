@@ -57,6 +57,16 @@
 	position = fv3_free(position);
 	forward = fv3_free(forward);
 
+    [[[ NP Input ] inputActions ] removeInputAction:leftClickAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:wheelDownAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:wheelUpAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:controlAction ];
+
+    [[[ NP Input ] inputActions ] removeInputAction:forwardMovementAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:backwardMovementAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:strafeLeftAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:strafeRightAction ];
+
 	[ super dealloc ];
 }
 

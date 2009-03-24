@@ -29,7 +29,8 @@
 
     Int32 iterations;
     Int32 currentIteration;
-    Int32 iterationsDone;
+    //Int32 iterationsDone;
+    Int32 iterationsToDo;
     Int32 baseIterations;
     Int32 currentLod;
 
@@ -69,10 +70,11 @@
 - (void) setRngTwoSeed:(ULong)newSeed;
 - (void) setH:(Float)newH;
 - (void) setSigma:(Float)newSigma;
-- (void) setIterations:(Int32)newIterations;
-
+- (void) setIterationsToDo:(Int32)newIterationsToDo;
 
 - (BOOL) loadFromPath:(NSString *)path;
+
+- (void) reset;
 
 - (void) updateGeometry;
 - (void) update:(Float)frameTime;

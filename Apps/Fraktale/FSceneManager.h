@@ -11,6 +11,8 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 - (void) dealloc;
 
+- (void) clear;
+
 - (id) loadSceneFromPath:(NSString *)path;
 - (id) loadSceneFromAbsolutePath:(NSString *)path;
 

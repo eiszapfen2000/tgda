@@ -14,6 +14,8 @@
 
 - (void) dealloc;
 
+- (void) reloadScene;
+
 - (id) attributesWindowController;
 - (id) sceneManager;
 

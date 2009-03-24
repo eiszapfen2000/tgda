@@ -56,7 +56,8 @@
     iterations = 0;
     baseIterations = 0;
     currentIteration = 0;
-    iterationsDone = 0;
+//    iterationsDone = 0;
+    iterationsToDo = 0;
     currentLod = 0;
 
     lightPosition = fv3_alloc_init();
@@ -129,6 +130,15 @@
 - (void) setCurrentLod:(Int32)newCurrentLod
 {
     currentLod = newCurrentLod;
+    currentIteration = newCurrentLod;
+
+    currentResolution->x = (Int)(pow(2.0,(Double)currentLod)) + 1;
+    currentResolution->y = (Int)(pow(2.0,(Double)currentLod)) + 1;
+
+    lastResolution->x = (currentResolution->x - 1) / 2;
+    lastResolution->y = (currentResolution->y - 1) / 2;
+
+//    NSLog(@"%d %d %d %d", currentResolution->x, currentResolution->y, lastResolution->x, lastResolution->y);
 }
 
 - (void) setWidth:(Int32)newWidth
@@ -181,12 +191,10 @@
     sigma = newSigma;
 }
 
-- (void) setIterations:(Int32)newIterations
+- (void) setIterationsToDo:(Int32)newIterationsToDo
 {
-    iterations = newIterations;
+    iterationsToDo = newIterationsToDo;
 }
-
-
 
 - (BOOL) loadFromPath:(NSString *)path
 {
@@ -251,7 +259,7 @@
     currentResolution->x = baseResolution->x;
     currentResolution->y = baseResolution->y;
 
-    iterationsDone = baseIterations;
+//    iterationsDone = baseIterations;
     currentIteration = baseIterations;
     currentLod = currentIteration - baseIterations;
 
@@ -331,7 +339,7 @@
     }
     else
     {
-        iterations = [ iterationsString intValue ];
+        iterationsToDo = [ iterationsString intValue ];
     }
 
     [[ NP attributesWindowController ] setWidthTextfieldString :[ terrainSizeStrings objectAtIndex:0 ]];
@@ -340,7 +348,7 @@
     [[ NP attributesWindowController ] setMaximumHeightTextfieldString:maximumHeightString ];
     [[ NP attributesWindowController ] setHTextfieldString:HString ];
     [[ NP attributesWindowController ] setSigmaTextfieldString:sigmaString ];
-    [[ NP attributesWindowController ] setIterationsTextfieldString:sigmaString ];
+    [[ NP attributesWindowController ] setIterationsTextfieldString:iterationsString ];
 
     [ self updateGeometry ];
 
@@ -357,6 +365,10 @@
     }
 
     return YES;
+}
+
+- (void) reset
+{
 }
 
 // creates base LOD which uses the heightmap as basis for its geometry
@@ -688,6 +700,7 @@
 {
     currentIteration = currentIteration + 1;
     currentLod = currentIteration - baseIterations;
+    //NSLog(@"%d",currentLod);
 
     lastResolution->x = currentResolution->x;
     lastResolution->y = currentResolution->y;
@@ -699,8 +712,8 @@
     Int numberOfVertices = currentResolution->x * currentResolution->y;
     Float * positions = ALLOC_ARRAY(Float, numberOfVertices * 3);
 
-    Int lodIndex = currentIteration - baseIterations - 1;
-    Float * currentPositions = [[ lods objectAtIndex:lodIndex ] positions ];
+    //Int lodIndex = currentIteration - baseIterations - 1;
+    Float * currentPositions = [[ lods objectAtIndex:currentLod-1 ] positions ];
 
     Float rngVariance = variance/(Float)pow(2.0,(Double)(currentIteration)*(Double)H);
     //NSLog(@"variance %f",rngVariance);
@@ -824,7 +837,7 @@
     [ lods addObject:buffer ];
     [ buffer release ];
 
-    iterationsDone = iterationsDone + 1;
+    //iterationsDone = iterationsDone + 1;
 }
 
 - (void) updateGeometry
@@ -851,29 +864,14 @@
         [[ NP attributesWindowController ] addLodPopUpItemWithNumber:0 ];
     }
 
-    /*while ( iterations > iterationsDone )
+    for ( Int i = currentLod + 1; i < (Int)[ lods count ]; i++ )
     {
-        [ self subdivide ];
-        [ self updateTextureCoordinates ];
-        [ self updateNormals ];
-        [ self updateIndices ];
-    }*/
-    
-
-    /*if ( currentIteration > iterationsDone )
-    {
-        //subdivide
+        [ lods removeObjectAtIndex:i ];
+        [[ NP attributesWindowController ] removeLodPopUpItemWithNumber:i ];
     }
 
-    if ( currentIteration < iterationsDone )
-    {
-        // make lesser lod current
-    }*/
-}
-
-- (void) update:(Float)frameTime
-{
-    if ( [ subdivideAction activated ] == YES )
+    Int iterationsDone = 0;
+    while ( iterationsToDo > iterationsDone )
     {
         [ self subdivide ];
         [ self updateTextureCoordinates ];
@@ -882,7 +880,25 @@
 
         [[ NP attributesWindowController ] addLodPopUpItemWithNumber  :currentLod ];
         [[ NP attributesWindowController ] selectLodPopUpItemWithIndex:currentLod ];
+
+        iterationsDone = iterationsDone + 1;
     }
+
+    //currentIteration = 0;
+}
+
+- (void) update:(Float)frameTime
+{
+    /*if ( [ subdivideAction activated ] == YES )
+    {
+        [ self subdivide ];
+        [ self updateTextureCoordinates ];
+        [ self updateNormals ];
+        [ self updateIndices ];
+
+        [[ NP attributesWindowController ] addLodPopUpItemWithNumber  :currentLod ];
+        [[ NP attributesWindowController ] selectLodPopUpItemWithIndex:currentLod ];
+    }*/
 }
 
 - (void) render

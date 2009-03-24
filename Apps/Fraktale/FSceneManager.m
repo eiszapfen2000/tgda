@@ -26,11 +26,18 @@
 
 - (void) dealloc
 {
-    TEST_RELEASE(currentScene);
-    [ scenes removeAllObjects ];
+    [ self clear ];
     [ scenes release ];
 
     [ super dealloc ];
+}
+
+- (void) clear
+{
+    [ currentScene deactivate ];
+    DESTROY(currentScene);
+    //currentScene = nil;
+    [ scenes removeAllObjects ];
 }
 
 - (id) loadSceneFromPath:(NSString *)path
