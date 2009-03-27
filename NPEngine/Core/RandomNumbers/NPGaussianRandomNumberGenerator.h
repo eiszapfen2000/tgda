@@ -23,16 +23,16 @@
                    ;
 - (void) dealloc;
 
-- (NPRandomNumberGenerator *)firstGenerator;
+- (NPRandomNumberGenerator *) firstGenerator;
+- (NPRandomNumberGenerator *) secondGenerator;
 - (void) setFirstGenerator:(NPRandomNumberGenerator *)newFirstGenerator;
-- (NPRandomNumberGenerator *)secondGenerator;
 - (void) setSecondGenerator:(NPRandomNumberGenerator *)newSecondGenerator;
 
 - (BOOL) ready;
 - (void) checkForSubGenerators;
 
 - (Double) nextGaussianFPRandomNumber;
-- (Double) nextGaussianFPRandomNumberWithMean:(Double)mean andStandardDeviation:(Double)standardDeviation;
+- (Double) nextGaussianFPRandomNumberWithMean:(Double)mean andVariance:(Double)variance;
 
 - (NSString *) description;
 

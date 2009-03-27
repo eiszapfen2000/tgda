@@ -44,10 +44,14 @@
     return [ generator autorelease ];
 }
 
-- (NPGaussianRandomNumberGenerator *) gaussianGeneratorWithFirstGenerator:(NPRandomNumberGenerator *)firstGenerator
-                                                       andSecondGenerator:(NPRandomNumberGenerator *)secondGenerator
+- (NPGaussianRandomNumberGenerator *) gaussianGeneratorWithName:(NSString *)gaussianName
+                                   firstFixedParameterGenerator:(NSString *)first
+                                  secondFixedParameterGenerator:(NSString *)second
 {
-    NPGaussianRandomNumberGenerator * generator = [[ NPGaussianRandomNumberGenerator alloc ] initWithName:@"Gaussian" 
+    id firstGenerator  = [ self fixedParameterGeneratorWithRNGName:first  ];
+    id secondGenerator = [ self fixedParameterGeneratorWithRNGName:second ];
+
+    NPGaussianRandomNumberGenerator * generator = [[ NPGaussianRandomNumberGenerator alloc ] initWithName:gaussianName
                                                                                                    parent:self
                                                                                            firstGenerator:firstGenerator
                                                                                           secondGenerator:secondGenerator ];
@@ -55,7 +59,6 @@
 
     return [ generator autorelease ];
 }
-
 
 - (NPRandomNumberGenerator *) fixedParameterGeneratorWithRNGName:(NSString *)rngName;
 {

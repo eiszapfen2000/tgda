@@ -2,6 +2,7 @@
 #import <AppKit/NSWindow.h>
 #import <GNUstepGUI/GSDisplayServer.h>
 #import "Core/Basics/NpBasics.h"
+#import "Application/NpApplication.h"
 #import "NPInputConstants.h"
 #import "NPMouse.h"
 
@@ -12,8 +13,6 @@ void reset_mouse_state(NpMouseState * mouseState)
         mouseState->buttons[i] = NO;
     }
 
-    mouseState->x = 0.0f;
-    mouseState->y = 0.0f;
     mouseState->scrollWheel = 0;
 }
 
@@ -56,10 +55,13 @@ void reset_mouse_state(NpMouseState * mouseState)
     window = newWindow;
 
     NSPoint mousePoint = [ window mouseLocationOutsideOfEventStream ];
-    mouseState.x = mousePoint.x;
-    mouseState.y = mousePoint.y;
-    x = xLastFrame = mouseState.x;
-    y = yLastFrame = mouseState.y;
+    x = xLastFrame = mousePoint.x;
+    y = yLastFrame = mousePoint.y;
+}
+
+- (void) resetCursorPosition
+{
+    x = y = xLastFrame = yLastFrame = 0.0f;
 }
 
 - (Float) x
@@ -92,6 +94,7 @@ void reset_mouse_state(NpMouseState * mouseState)
         case NSLeftMouseDown:
         {
             mouseState.buttons[0] = YES;
+
             break;
         }
 
@@ -129,10 +132,19 @@ void reset_mouse_state(NpMouseState * mouseState)
 
         case NSMouseMoved:
         {
-            NSPoint mouseLocationInWindow = [ event locationInWindow ];
-            
-            mouseState.x = mouseLocationInWindow.x;
-            mouseState.y = mouseLocationInWindow.y;
+            break;
+        }
+
+        case NSLeftMouseDragged:
+        {
+            mouseState.buttons[0] = YES;
+
+            break;
+        }
+
+        case NSRightMouseDragged:
+        {
+            mouseState.buttons[2] = YES;
 
             break;
         }
@@ -148,6 +160,7 @@ void reset_mouse_state(NpMouseState * mouseState)
         }
     }
 }
+
 - (void) setPosition:(NSPoint)newPosition
 {
     [ GSCurrentServer() setmouseposition:newPosition.x :newPosition.y :[ window windowNumber ]];
@@ -159,11 +172,23 @@ void reset_mouse_state(NpMouseState * mouseState)
 - (void) update
 {
     scrollWheelLastFrame = mouseState.scrollWheel;
-    xLastFrame = x;
-    yLastFrame = y;
+    mouseState.scrollWheel = 0;
 
-    x = mouseState.x;
-    y = mouseState.y;
+    NSPoint mouse = [[[ NSApp delegate ] window ] mouseLocationOutsideOfEventStream ];
+
+    if ( [[ NSApp delegate ] renderWindowActivated ] == YES )
+    {
+        x = xLastFrame = mouse.x;
+        y = yLastFrame = mouse.y;
+    }
+    else
+    {
+        xLastFrame = x;
+        yLastFrame = y;
+
+        x = mouse.x;
+        y = mouse.y;
+    }
 }
 
 - (BOOL) isAnyButtonPressed
