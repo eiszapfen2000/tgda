@@ -4,8 +4,6 @@
 typedef struct NpMouseState
 {
     BOOL buttons[5];
-    Float x;
-    Float y;
     Int scrollWheel;
 }
 NpMouseState;
@@ -34,6 +32,8 @@ void reset_mouse_state(NpMouseState * mouseState);
 
 - (id) window;
 - (void) setWindow:(id)newWindow;
+
+- (void) resetCursorPosition;
 
 - (void) processEvent:(NSEvent *)event;
 

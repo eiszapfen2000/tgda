@@ -22,6 +22,9 @@
            primaryInputAction:(NpState)primaryInputAction
          secondaryInputAction:(NpState)secondaryInputAction;
 
+- (void) removeInputActionWithName:(NSString *)inputActionName;
+- (void) removeInputAction:(id)inputAction;
+
 - (void) update;
 
 @end

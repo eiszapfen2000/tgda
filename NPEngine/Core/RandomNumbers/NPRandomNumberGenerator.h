@@ -27,11 +27,12 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent parameters:(NSString *)rngParameters;
 - (void) dealloc;
 
+- (void) reset;
+
 - (Double) nextUniformFPRandomNumber;
 - (void) arrayOfUniformFPRandomNumbers:(Double *)array count:(UInt64)count;
 - (ULong) nextUniformIntegerRandomNumber;
 - (void) reseed:(ULong)seed;
-- (void) reset;
 
 - (NSString *) description;
 

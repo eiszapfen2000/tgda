@@ -17,4 +17,9 @@
     [[ NP Core ] dealloc ];
 }
 
+- (void)windowDidResignKey:(NSNotification *)notification
+{
+    NSLog(@"resign");
+}
+
 @end

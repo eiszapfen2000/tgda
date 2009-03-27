@@ -143,6 +143,11 @@
     [ super reset ];
 }
 
+- (UInt) lodCount
+{
+    return (UInt)[ lods count ];
+}
+
 - (NSArray *) lods
 {
     return lods;

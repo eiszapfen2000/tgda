@@ -76,6 +76,16 @@
     }    
 }
 
+- (void) removeInputActionWithName:(NSString *)inputActionName
+{
+    [ inputActions removeObjectForKey:inputActionName ];
+}
+
+- (void) removeInputAction:(id)inputAction
+{
+    [ inputActions removeObjectForKey:[inputAction name]];
+}
+
 - (void) update
 {
     NSEnumerator * actionEnumerator = [ inputActions objectEnumerator ];

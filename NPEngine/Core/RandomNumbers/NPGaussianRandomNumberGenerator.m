@@ -59,16 +59,16 @@
     return firstGenerator;
 }
 
+- (NPRandomNumberGenerator *)secondGenerator
+{
+    return secondGenerator;
+}
+
 - (void) setFirstGenerator:(NPRandomNumberGenerator *)newFirstGenerator
 {
     ASSIGN(firstGenerator,newFirstGenerator);
 
     [ self checkForSubGenerators ];
-}
-
-- (NPRandomNumberGenerator *)secondGenerator
-{
-    return secondGenerator;
 }
 
 - (void) setSecondGenerator:(NPRandomNumberGenerator *)newSecondGenerator
@@ -93,10 +93,10 @@
 
 - (Double) nextGaussianFPRandomNumber
 {
-    return [ self nextGaussianFPRandomNumberWithMean:0.0 andStandardDeviation:1.0 ];
+    return [ self nextGaussianFPRandomNumberWithMean:0.0 andVariance:1.0 ];
 }
 
-- (Double) nextGaussianFPRandomNumberWithMean:(Double)mean andStandardDeviation:(Double)standardDeviation
+- (Double) nextGaussianFPRandomNumberWithMean:(Double)mean andVariance:(Double)variance
 {
     if ( ready == YES )
     {
@@ -125,7 +125,7 @@
 		    useLastValue = YES; 
 	    }
 
-	    return mean + firstValue * standardDeviation;
+	    return mean + firstValue * variance;
     }
 
     NPLOG_WARNING(@"Generator not ready, returning 0");

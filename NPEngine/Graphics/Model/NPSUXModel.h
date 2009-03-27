@@ -19,6 +19,7 @@
 - (BOOL) saveToFile:(NPFile *)file;
 - (void) reset;
 
+- (UInt) lodCount;
 - (NSArray *) lods;
 - (NPSUXModelLod *) lodAtIndex:(Int)index;
 - (NSArray *) materials;

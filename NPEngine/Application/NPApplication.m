@@ -13,7 +13,6 @@
     {
         _runLoopPool = [ NSAutoreleasePool new ];
 
-        //FIXME drain event pool when using vsync
 
         NSDate * now = [ NSDate date ];
 
@@ -109,8 +108,6 @@
 
 - (void) sendEvent:(NSEvent *)theEvent
 {
-    [[ NP Input ] processEvent:theEvent ];
-
     NSEventType type = [ theEvent type ];
     switch (type)
     {
@@ -163,6 +160,11 @@
                 [ window sendEvent:theEvent];
             }
         }
+    }
+
+    if ( [ _delegate renderWindowActive ] == YES ) //&& [ _delegate renderWindowActivated ] == NO )
+    {
+        [[ NP Input ] processEvent:theEvent ];
     }
 }
 

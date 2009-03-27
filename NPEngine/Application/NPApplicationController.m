@@ -12,7 +12,6 @@
     self = [ super init ];
 
     window = nil;
-    windowController = nil;
 
     return self;
 }
@@ -55,8 +54,7 @@
 
     // The window controller's job is to close the window properly, that means
     // deactivating the rendercontext and shutting down the engine
-    windowController = [[ NPWindowController alloc ] init ];
-    [ window setDelegate:windowController ];
+    [ window setDelegate:self ];
 
     [ window setLevel:windowLevel ];
     [ window setBackgroundColor:[NSColor clearColor]];
@@ -78,6 +76,55 @@
 
     [ window makeFirstResponder:view ];
     [ window setIgnoresMouseEvents:YES ];
+
+    renderWindowActiveLastFrame = YES;
+    renderWindowActive = YES;
+}
+
+- (id) window
+{
+    return window;
+}
+
+- (BOOL) renderWindowActive
+{
+    return renderWindowActive;
+}
+
+- (BOOL) renderWindowActivated
+{
+    return ( renderWindowActive && (!renderWindowActiveLastFrame) );
+}
+
+- (BOOL) renderWindowDeactivated
+{
+    return ( (!renderWindowActive) && renderWindowActiveLastFrame );
+}
+
+- (void) windowWillClose:(NSNotification *)aNotification
+{
+    id w = [ aNotification object ];
+
+    [ (NPOpenGLView *)[ w contentView ] shutdown ];
+    [ w setDelegate:nil ];
+
+    [[ NP Input ] dealloc ];
+    [[ NP Graphics ] dealloc ];
+    [[ NP Core ] dealloc ];
+}
+
+- (void) windowDidBecomeKey:(NSNotification *)notification
+{
+    renderWindowActiveLastFrame = NO;
+    renderWindowActive = YES;
+}
+
+- (void)windowDidResignKey:(NSNotification *)notification
+{
+    renderWindowActiveLastFrame = YES;
+    renderWindowActive = NO;
+
+    //[[[ NP Input ] mouse ] resetCursorPosition ];
 }
 
 @end
