@@ -91,13 +91,7 @@
 
     [ sceneManager update:frameTime ];
 
-    /*NSRect windowRect = [ window frame ];
-    if ( [[[ NP Input ] mouse ] x ] < (windowRect.size.width /4.0f) || [[[ NP Input ] mouse ] x ] > (windowRect.size.width  * 3.0/4.0f) ||
-         [[[ NP Input ] mouse ] y ] < (windowRect.size.height/4.0f) || [[[ NP Input ] mouse ] y ] > (windowRect.size.height * 3.0/4.0f) )
-    {
-        NSPoint point = { windowRect.size.width/2.0f, windowRect.size.height/2.0f };
-        [[[ NP Input ] mouse ] setPosition:point ];
-    }*/
+    renderWindowActiveLastFrame = renderWindowActive;
 }
 
 - (void) render

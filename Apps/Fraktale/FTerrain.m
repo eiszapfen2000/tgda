@@ -189,6 +189,7 @@
 - (void) setSigma:(Float)newSigma
 {
     sigma = newSigma;
+    variance = sigma * sigma;
 }
 
 - (void) setIterationsToDo:(Int32)newIterationsToDo
