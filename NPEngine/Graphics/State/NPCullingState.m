@@ -109,7 +109,7 @@
     {
         GLenum face = GL_BACK;
 
-        if ( currentCullFace != cullFace )
+        //if ( currentCullFace != cullFace )
         {
             currentCullFace = cullFace;
 
