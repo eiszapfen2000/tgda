@@ -56,9 +56,13 @@
     iterations = 0;
     baseIterations = 0;
     currentIteration = 0;
-//    iterationsDone = 0;
     iterationsToDo = 0;
     currentLod = 0;
+
+    gaussKernelSigma = 0.5f;
+    gaussKernel = NULL;
+
+    [ self setupGaussianKernelForAO ];
 
     lightPosition = fv3_alloc_init();
 
@@ -195,6 +199,56 @@
 - (void) setIterationsToDo:(Int32)newIterationsToDo
 {
     iterationsToDo = newIterationsToDo;
+}
+
+- (void) setupGaussianKernelForAO
+{
+    [ self setupGaussianKernelForAOWithSigma:gaussKernelSigma ];
+}
+
+- (void) setupGaussianKernelForAOWithSigma:(Float)kernelSigma
+{
+    SAFE_FREE(gaussKernel);
+
+    Float gaussianDieOff = 0.0001f;
+	Float sigmaSquare = kernelSigma * kernelSigma;
+	Int width = 1;
+
+	for ( Int i = 0; i < 32; i++ )
+	{
+		Float isquare = (Float)(i * i);
+		Float tmp = exp(-(isquare)/(2.0f*sigmaSquare));
+
+		if ( tmp > gaussianDieOff )
+		{
+            NSLog(@"%f",tmp);
+			width = i;
+		}
+	}
+
+    gaussKernelWidth = 2*width+1;
+    //NSLog(@"%d %d",gaussKernelWidth,width );
+
+    gaussKernel = ALLOC_ARRAY(Float,gaussKernelWidth*gaussKernelWidth);
+
+	for ( Int i = 0; i < gaussKernelWidth; i++ )
+	{
+		for ( Int j = 0; j < gaussKernelWidth; j++ )
+		{
+			float x = (float)(j - width);
+			float y = (float)(i - width);
+			
+			Int index = i * (2 * width + 1) + j;
+
+			gaussKernel[index] = (Float)exp(-(Double)(x * x + y * y)/(2.0 * (Double)sigmaSquare))/(2.0 * 3.14 * (Double)sigmaSquare);
+		}
+	}
+
+    for ( Int i = 0; i < gaussKernelWidth * gaussKernelWidth; i++ )
+    {
+        gaussKernel[i] = gaussKernel[i] / gaussKernel[width * gaussKernelWidth + width];
+        //NSLog(@"%f",gaussKernel[i]);
+    }
 }
 
 - (BOOL) loadFromPath:(NSString *)path
@@ -388,7 +442,7 @@
         {
             Int index = (i * baseResolution->x + j) * 3;
             vertexPositions[index]   = (Float)(-size->x)/2.0f + (Float)j * deltaX;            
-            vertexPositions[index+2] = (Float)( size->y)/2.0f - (Float)i * deltaY;
+            vertexPositions[index+2] = (Float)(-size->y)/2.0f + (Float)i * deltaY;
             vertexPositions[index+1] = (Float)heights[i * baseResolution->x + j]/255.0f;
         }
     }
@@ -415,8 +469,11 @@
         {
             Int index = (i * baseResolution->x + j) * 3;
             vertexPositions[index]   = (Float)(-size->x)/2.0f + (Float)j * deltaX;            
-            vertexPositions[index+2] = (Float)( size->y)/2.0f - (Float)i * deltaY;
+            vertexPositions[index+2] = (Float)(-size->y)/2.0f + (Float)i * deltaY;
             vertexPositions[index+1] = 0.0f;
+
+            //NSLog(@"%f %f %f",vertexPositions[index],vertexPositions[index+1],vertexPositions[index+2]);
+
         }
     }
 
@@ -661,6 +718,11 @@
             normals[index] = sum.x;
             normals[index+1] = sum.y;
             normals[index+2] = sum.z;
+
+            //if ( sum.y <= 0.0f )
+            //{
+            //    NSLog(@"kaputt");
+            //}
         }
     }
 
@@ -669,7 +731,67 @@
 
 - (void) updateAO
 {
-    
+    Int numberOfVertices = currentResolution->x * currentResolution->y;
+    Float * colors = ALLOC_ARRAY(Float, numberOfVertices*3);
+    Float * vertexPositions = [[ lods objectAtIndex:currentLod ] positions ];
+
+    for ( Int i = 0; i < numberOfVertices * 3; i++ )
+    {
+        colors[i] = 0.0f;
+    }
+
+    div_t d = div(gaussKernelWidth,2);
+
+    for ( Int i = d.quot; i < currentResolution->y - d.quot; i++ )
+    {
+        for ( Int j = d.quot; j < currentResolution->x - d.quot; j++ )
+        {
+            Int vertexOfInterestIndex = (i * currentResolution->x + j) * 3;
+            //NSLog(@"%d",vertexOfInterestIndex);
+
+            Float average = 0.0f;
+
+            for ( Int k = 0; k < gaussKernelWidth; k++ )
+            {
+                for ( Int l = 0; l < gaussKernelWidth; l++ )
+                {
+                    Int kernelElementIndex = k * gaussKernelWidth + l;
+                    Int offsetK = k - d.quot;
+                    Int offsetL = l - d.quot;
+                    Int vertexIndexOffset = (offsetK * currentResolution->x + offsetL) * 3;
+                    Int vertexIndexForKernelElement = vertexOfInterestIndex + vertexIndexOffset;
+                    //NSLog(@"k %d",vertexIndexForKernelElement);
+
+                    average = average + (vertexPositions[vertexIndexForKernelElement+1] * gaussKernel[kernelElementIndex]); 
+                }
+            }
+
+            //Float AO = average - vertexPositions[vertexOfInterestIndex+1];
+            colors[vertexOfInterestIndex] = average - vertexPositions[vertexOfInterestIndex+1];
+            //colors[vertexOfInterestIndex] = 0.0f;
+            NSLog(@"%f %f %f",average,vertexPositions[vertexOfInterestIndex+1],colors[vertexOfInterestIndex]);
+        }
+    }
+
+    for ( Int i = 0; i < d.quot; i ++ )
+    {
+        for ( Int j = 0; j < currentResolution->x; j++ )
+        {
+            colors[(i * currentResolution->x + j) * 3] = 1.0f;
+            colors[((currentResolution->y - 1 - i) * (currentResolution->x) + j) * 3] = 1.0f;
+        }
+    }
+
+    for ( Int i = 0; i < d.quot; i ++ )
+    {
+        for ( Int j = 0; j < currentResolution->y; j++ )
+        {
+            colors[(j * currentResolution->x + i) * 3] = 1.0f;
+            colors[(j * currentResolution->x + currentResolution->x - 1 - i) * 3] = 1.0f;
+        }
+    }
+
+    [[ lods objectAtIndex:currentLod ] setColors:colors elementsForColor:3 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT ];
 }
 
 - (void) updateIndices
@@ -690,6 +812,9 @@
             indices[index+3] = (i + 1) * currentResolution->x + j;
             indices[index+4] = (i + 1) * currentResolution->x + j + 1;
             indices[index+5] = i * currentResolution->x + j + 1;
+
+            //NSLog(@"%d %d %d",indices[index],indices[index+1],indices[index+2]);
+            //NSLog(@"%d %d %d",indices[index+3],indices[index+4],indices[index+5]);
         }
     }
 
@@ -716,7 +841,7 @@
     //Int lodIndex = currentIteration - baseIterations - 1;
     Float * currentPositions = [[ lods objectAtIndex:currentLod-1 ] positions ];
 
-    Float rngVariance = variance/(Float)pow(2.0,(Double)(currentIteration)*(Double)H);
+    Float rngVariance = variance/(Float)pow(2.0,(Double)(currentIteration-1)*(Double)H);
     //NSLog(@"variance %f",rngVariance);
 
     // diamond step
@@ -753,7 +878,7 @@
         {
             Int index = (i * currentResolution->x + j) * 3;
             positions[index]   = (Float)(-size->x)/2.0f + (Float)j * deltaX;            
-            positions[index+2] = (Float)( size->y)/2.0f - (Float)i * deltaY;
+            positions[index+2] = (Float)(-size->y)/2.0f + (Float)i * deltaY;
 
             if ( (j % 2 == 0) && (i % 2 == 0) )
             {
@@ -860,6 +985,7 @@
 
         [ self updateTextureCoordinates ];
         [ self updateNormals ];
+        [ self updateAO ];
         [ self updateIndices ];
 
         [[ NP attributesWindowController ] addLodPopUpItemWithNumber:0 ];
@@ -877,6 +1003,7 @@
         [ self subdivide ];
         [ self updateTextureCoordinates ];
         [ self updateNormals ];
+        [ self updateAO ];
         [ self updateIndices ];
 
         [[ NP attributesWindowController ] addLodPopUpItemWithNumber  :currentLod ];
@@ -916,8 +1043,19 @@
     {
         cgSetPassState(pass);
 
-        //Int lodIndex = currentIteration - baseIterations;
+        Int lodIndex = currentIteration - baseIterations;
         [[ lods objectAtIndex:currentLod ] renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
+
+        /*glColor3f(1.0f,0.0f,0.0f);
+        glBegin(GL_TRIANGLES);
+
+            glVertex3f(-10.0f,5.0f,-10.0f);
+            glVertex3f(-10.0f,-5.0f,-10.0f);
+            glVertex3f(10.0f,5.0f,-10.0f);
+            //glVertex3f(10.0f,-5.0f,10.0f);
+
+
+        glEnd();*/
 
         cgResetPassState(pass);
         pass = cgGetNextPass(pass);

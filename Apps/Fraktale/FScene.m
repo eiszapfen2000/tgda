@@ -2,6 +2,7 @@
 #import "FCore.h"
 #import "FScene.h"
 #import "FSceneManager.h"
+#import "FCamera.h"
 #import "FTerrain.h"
 
 
@@ -67,8 +68,9 @@
 
     camera = [[ FCamera alloc ] initWithName:@"Camera" parent:self ];
 
-    FVector3 pos = { 0.0f, 3.0f, 3.0f };
+    FVector3 pos = { 0.0f, 3.0f, 0.0f };
     [ camera setPosition:&pos ];
+    //[ camera cameraRotateUsingYaw:90.0f andPitch:0.0f ];
 }
 
 - (void) deactivate
@@ -90,14 +92,29 @@
 
 - (void) render
 {
+    //glFrontFace(GL_CCW);
+
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
+    [[[[ NP Graphics ] stateConfiguration ] cullingState ] setCullFace:NP_BACK_FACE ];
+    [[[[ NP Graphics ] stateConfiguration ] cullingState ] setEnabled:YES ];
     [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setWriteEnabled:YES ];
     [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:YES ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:NO ];
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
+    //glCullFace(GL_BACK);
+    //glEnable(GL_CULL_FACE);
+
+
     [ camera render ];
+
+    /*glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45.0f,4.0f/3.0f,0.1f,50.0f);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(0.0f,3.0f,0.0f,0.0f,3.0f,-50.0f,0.0f,1.0f,0.0f);*/
 
     if ( terrain != nil )
         [ terrain render ];
