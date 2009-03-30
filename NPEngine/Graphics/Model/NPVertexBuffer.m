@@ -42,7 +42,7 @@ void init_empty_npvertices(NpVertices * vertices)
 
     for ( Int i = 0; i < 8; i++ )
     {
-        vertices->textureCoordinates[i] = 0;
+        vertices->textureCoordinates[i] = NULL;
     }
 }
 
@@ -581,6 +581,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(vertices.format.elementsForPosition, GL_FLOAT, 0, vertices.positions);
 
+
     if ( vertices.indexed == YES )
     {
         glDrawRangeElements(primitiveType, 0, vertices.maxVertex, lastIndex - firstIndex + 1,
@@ -711,7 +712,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     if ( vertices.normals != newNormals )
     {
-        FREE(vertices.normals);
+        SAFE_FREE(vertices.normals);
     }
 
     vertices.format.elementsForNormal = newElementsForNormal;
@@ -731,12 +732,12 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     if ( vertices.colors != newColors )
     {
-        FREE(vertices.colors);
+        SAFE_FREE(vertices.colors);
     }
 
     vertices.format.elementsForColor = newElementsForColor;
     vertices.format.colorsDataFormat = newDataFormat;
-    vertices.normals = newColors;
+    vertices.colors = newColors;
 }
 
 - (void) setWeights:(Float *)newWeights
@@ -751,12 +752,12 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     if ( vertices.weights != newWeights )
     {
-        FREE(vertices.weights);
+        SAFE_FREE(vertices.weights);
     }
 
     vertices.format.elementsForWeights = newElementsForWeights;
     vertices.format.weightsDataFormat = newDataFormat;
-    vertices.normals = newWeights;
+    vertices.weights = newWeights;
 }
 
 - (void) setTextureCoordinates   :(Float *)newTextureCoordinates 
@@ -791,7 +792,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 {
     if ( vertices.indices != NULL && vertices.indices != newIndices)
     {
-        FREE(vertices.indices);
+        SAFE_FREE(vertices.indices);
     }
 
     vertices.indices  = newIndices;

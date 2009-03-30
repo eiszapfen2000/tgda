@@ -189,6 +189,7 @@ int NPApplicationMain(int argc, const char **argv)
 
     [ appClass sharedApplication ];
     [ (NPApplication *)NSApp launch ];
+
     [ NSApp run ];
 
     DESTROY(NSApp);
