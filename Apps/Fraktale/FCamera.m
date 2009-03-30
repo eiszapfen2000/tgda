@@ -25,7 +25,7 @@
 
     fov         = 45.0f;
     nearPlane   = 0.1f;
-    farPlane    = 50.0f;
+    farPlane    = 100.0f;
     aspectRatio = [[[[ NP Graphics ] viewportManager ] currentViewport ] aspectRatio ];
 
     yaw   = 0.0f;
@@ -333,6 +333,8 @@
     // update matrices
 	[ self updateProjection ];
 	[ self updateView ];
+
+//    NSLog(@"%f %f %f",forward->x,forward->y,forward->z);
 }
 
 - (void) render

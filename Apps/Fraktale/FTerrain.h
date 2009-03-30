@@ -20,6 +20,7 @@
     IVector2 * lastResolution;
 
     FPGMImage * image;
+
     Float H;
     Float sigma;
     Float variance;
@@ -29,10 +30,13 @@
 
     Int32 iterations;
     Int32 currentIteration;
-    //Int32 iterationsDone;
     Int32 iterationsToDo;
     Int32 baseIterations;
     Int32 currentLod;
+
+    Int gaussKernelWidth;
+    Float gaussKernelSigma;
+    Float * gaussKernel;
 
     NPEffect * effect;
     NPTexture * texture;
@@ -72,6 +76,9 @@
 - (void) setSigma:(Float)newSigma;
 - (void) setIterationsToDo:(Int32)newIterationsToDo;
 
+- (void) setupGaussianKernelForAO;
+- (void) setupGaussianKernelForAOWithSigma:(Float)kernelSigma;
+
 - (BOOL) loadFromPath:(NSString *)path;
 
 - (void) reset;
@@ -81,3 +88,4 @@
 - (void) render;
 
 @end
+
