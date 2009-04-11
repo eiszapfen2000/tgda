@@ -1,0 +1,26 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    NPApplication = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSApplication;
+    };
+    NPApplicationController = {
+	Actions = (
+	);
+	Outlets = (
+	    window
+	);
+	Super = NSObject;
+    };
+    RTVApplicationController = {
+	Actions = (
+	);
+	Outlets = (
+	    sceneManager
+	);
+	Super = NPApplicationController;
+    };
+}
