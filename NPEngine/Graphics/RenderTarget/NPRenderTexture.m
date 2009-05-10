@@ -1,6 +1,7 @@
 #import "NPRenderTexture.h"
 #import "NPRenderTargetConfiguration.h"
 #import "Graphics/Material/NPTexture.h"
+#import "Graphics/Image/NPImage.h"
 #import "Graphics/npgl.h"
 #import "Graphics/NPEngineGraphicsConstants.h"
 
@@ -8,10 +9,10 @@
 
 + (id) renderTextureWithName:(NSString *)name
                         type:(NpState)type
+                       width:(Int)width
+                      height:(Int)height
                   dataFormat:(NpState)dataFormat
                  pixelFormat:(NpState)pixelFormat
-                       width:(Int)width
-                      height:(Int)height;
 {
     NPRenderTexture * renderTexture = [[ NPRenderTexture alloc ] initWithName:name ];
     [ renderTexture setType:type ];
@@ -20,6 +21,32 @@
     [ renderTexture setWidth:width ];
     [ renderTexture setHeight:height ];
     [ renderTexture createTexture ];
+
+    return [ renderTexture autorelease ];
+}
+
++ (id) renderTextureWithName:(NSString *)name
+                        type:(NpState)type
+                       width:(Int)width
+                      height:(Int)height
+                  dataFormat:(NpState)dataFormat
+                 pixelFormat:(NpState)pixelFormat
+            textureMinFilter:(NpState)textureMinFilter
+            textureMagFilter:(NpState)textureMagFilter
+                textureWrapS:(NpState)textureWrapS
+                textureWrapT:(NpState)textureWrapT
+{
+    NPRenderTexture * renderTexture = [[ NPRenderTexture alloc ] initWithName:name ];
+    [ renderTexture setType:type ];
+    [ renderTexture setDataFormat:dataFormat ];
+    [ renderTexture setPixelFormat:pixelFormat ];
+    [ renderTexture setWidth:width ];
+    [ renderTexture setHeight:height ];
+
+    [ renderTexture createTextureWithTextureMinFilter:textureMinFilter
+                                     textureMagFilter:textureMagFilter
+                                         textureWrapS:textureWrapS
+                                         textureWrapT:textureWrapT ];
 
     return [ renderTexture autorelease ];
 }
@@ -124,7 +151,10 @@
     dataFormat = newDataFormat;
 }
 
-- (void) createTexture
+- (void) createTextureWithTextureMinFilter:(NpState)textureMinFilter
+                          textureMagFilter:(NpState)textureMagFilter
+                              textureWrapS:(NpState)textureWrapS
+                              textureWrapT:(NpState)textureWrapT
 {
     if ( texture != nil )
     {
@@ -138,13 +168,46 @@
     [ texture setDataFormat:dataFormat ];
     [ texture setPixelFormat:pixelFormat ];
     [ texture setMipMapping:NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE ];
-    [ texture setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    [ texture setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    [ texture setTextureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
-    [ texture setTextureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
-    [ texture uploadToGLWithoutData ];
+    [ texture setTextureMinFilter:textureMinFilter ];
+    [ texture setTextureMagFilter:textureMagFilter ];
+    [ texture setTextureWrapS:textureWrapS ];
+    [ texture setTextureWrapT:textureWrapT ];
+
+    NPImage * emptyImage = [ NPImage imageWithName:@""
+                                             width:width
+                                            height:height
+                                       pixelFormat:pixelFormat
+                                        dataFormat:dataFormat ];
+
+    switch ( dataFormat )
+    {
+        case NP_GRAPHICS_TEXTURE_DATAFORMAT_BYTE:
+        {
+            [ emptyImage fillWithByteValue:0 ];
+        }
+
+        case NP_GRAPHICS_TEXTURE_DATAFORMAT_HALF:
+        {
+            [ emptyImage fillWithHalfValue:0 ];
+        }
+
+        case NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT:
+        {
+            [ emptyImage fillWithFloatValue:0.0f ];
+        }
+    }
+
+    [ texture uploadToGLUsingImage:emptyImage ];
 
     renderTextureID = [ texture textureID ];
+}
+
+- (void) createTexture
+{
+    [ self createTextureWithTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                            textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP
+                                textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
 }
 
 - (void) bindToRenderTargetConfiguration:(NPRenderTargetConfiguration *)newConfiguration colorBufferIndex:(Int)newColorBufferIndex

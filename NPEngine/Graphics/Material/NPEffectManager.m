@@ -70,7 +70,7 @@ void np_cg_error_callback()
     NPLOG(@"...done");
 
     [ self setCgDebugMode:NP_CG_DEBUG_MODE_ACTIVE ];
-    [ self setShaderParameterPolicy:NP_CG_DEFERRED_SHADER_PARAMETER_UPDATE ];
+    [ self setShaderParameterPolicy:NP_CG_IMMEDIATE_SHADER_PARAMETER_UPDATE ];
 
     NPLOG(@"Effect Manager ready");
 }

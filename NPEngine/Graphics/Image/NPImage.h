@@ -19,7 +19,7 @@
               height:(Int)height
          pixelFormat:(NpState)pixelFormat
           dataFormat:(NpState)dataFormat 
-           imageData:(NSData *)imageData;
+                    ;
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
@@ -49,5 +49,10 @@
 - (BOOL) loadFromPath:(NSString *)path withMipMaps:(BOOL)generateMipMaps;
 
 - (BOOL) saveToFile:(NPFile *)file;
+
+- (void) fillWithFloatValue:(Float)value;
+- (void) fillWithHalfValue:(UInt16)value;
+- (void) fillWithByteValue:(Byte)value;
+
 
 @end
