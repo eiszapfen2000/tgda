@@ -12,18 +12,15 @@
               height:(Int)height
          pixelFormat:(NpState)pixelFormat
           dataFormat:(NpState)dataFormat 
-           imageData:(NSData *)imageData
 {
     NPImage * image = [[ NPImage alloc ] initWithName:name ];
     [ image setWidth:width ];
     [ image setHeight:height ];
     [ image setPixelFormat:pixelFormat ];
     [ image setDataFormat:dataFormat ];
-    [ image setImageData:imageData ];
 
     return [ image autorelease ];
 }
-
 
 - (id) init
 {
@@ -283,6 +280,83 @@
     width = height = 0;
 
     DESTROY(imageData);
+}
+
+- (void) fillWithFloatValue:(Float)value
+{
+    if ( dataFormat != NP_GRAPHICS_IMAGE_DATAFORMAT_FLOAT )
+    {
+        NPLOG_ERROR(@"%@: image dataformat is not float", name);
+        return;
+    }
+
+    Int channelCount = [[[ NP Graphics ] imageManager ] calculatePixelFormatChannelCount:pixelFormat ];
+    Int elementCount = width * height * channelCount;
+
+    Float * imageFloatData = ALLOC_ARRAY(Float, elementCount);
+
+    for ( Int i = 0; i < height; i++ )
+    {
+        for ( Int j = 0; j < width; j++ )
+        {
+            imageFloatData[i * width + j] = value;
+        }
+    }
+
+    imageData = [[ NSData alloc ] initWithBytesNoCopy:imageFloatData length:elementCount*4 freeWhenDone:YES ];   
+}
+
+- (void) fillWithHalfValue:(UInt16)value
+{
+    if ( dataFormat != NP_GRAPHICS_IMAGE_DATAFORMAT_HALF )
+    {
+        NPLOG_ERROR(@"%@: image dataformat is not half", name);
+        return;
+    } 
+
+    if ( value != 0 )
+    {
+        NPLOG_ERROR(@"%@: no half support for filling", name);
+    }
+
+    Int channelCount = [[[ NP Graphics ] imageManager ] calculatePixelFormatChannelCount:pixelFormat ];
+    Int elementCount = width * height * channelCount;
+
+    UInt16 * imageHalfData = ALLOC_ARRAY(UInt16, elementCount);
+
+    for ( Int i = 0; i < height; i++ )
+    {
+        for ( Int j = 0; j < width; j++ )
+        {
+            imageHalfData[i * width + j] = value;
+        }
+    }
+
+    imageData = [[ NSData alloc ] initWithBytesNoCopy:imageHalfData length:elementCount*2 freeWhenDone:YES ];    
+}
+
+- (void) fillWithByteValue:(Byte)value
+{
+    if ( dataFormat != NP_GRAPHICS_IMAGE_DATAFORMAT_BYTE )
+    {
+        NPLOG_ERROR(@"%@: image dataformat is not byte", name);
+        return;
+    } 
+
+    Int channelCount = [[[ NP Graphics ] imageManager ] calculatePixelFormatChannelCount:pixelFormat ];
+    Int elementCount = width * height * channelCount;
+
+    Byte * imageByteData = ALLOC_ARRAY(Byte, elementCount);
+
+    for ( Int i = 0; i < height; i++ )
+    {
+        for ( Int j = 0; j < width; j++ )
+        {
+            imageByteData[i * width + j] = value;
+        }
+    }
+
+    imageData = [[ NSData alloc ] initWithBytesNoCopy:imageByteData length:elementCount freeWhenDone:YES ];
 }
 
 @end

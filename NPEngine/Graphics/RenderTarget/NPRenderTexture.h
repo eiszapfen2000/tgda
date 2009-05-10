@@ -21,10 +21,25 @@
 
 + (id) renderTextureWithName:(NSString *)name
                         type:(NpState)type
+                       width:(Int)width
+                      height:(Int)height
                   dataFormat:(NpState)dataFormat
                  pixelFormat:(NpState)pixelFormat
+                            ;
+
+
++ (id) renderTextureWithName:(NSString *)name
+                        type:(NpState)type
                        width:(Int)width
-                      height:(Int)height;
+                      height:(Int)height
+                  dataFormat:(NpState)dataFormat
+                 pixelFormat:(NpState)pixelFormat
+            textureMinFilter:(NpState)textureMinFilter
+            textureMagFilter:(NpState)textureMagFilter
+                textureWrapS:(NpState)textureWrapS
+                textureWrapT:(NpState)textureWrapT
+                            ;
+
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
@@ -47,6 +62,11 @@
 - (void) setDataFormat:(NpState)newDataFormat;
 
 - (void) createTexture;
+- (void) createTextureWithTextureMinFilter:(NpState)textureMinFilter
+                          textureMagFilter:(NpState)textureMagFilter
+                              textureWrapS:(NpState)textureWrapS
+                              textureWrapT:(NpState)textureWrapT
+                                          ;
 
 - (void) bindToRenderTargetConfiguration:(NPRenderTargetConfiguration *)newConfiguration colorBufferIndex:(Int)newColorBufferIndex;
 - (void) unbindFromRenderTargetConfiguration;

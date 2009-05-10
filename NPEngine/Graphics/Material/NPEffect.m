@@ -1,3 +1,4 @@
+#import "Core/Math/NpMath.h"
 #import "NPEffect.h"
 #import "NPEffectTechnique.h"
 #import "NP.h"
@@ -54,8 +55,8 @@
     [ mData appendBytes:&c length:1 ];
     NSString * tmp = [ NSString stringWithUTF8String:[ mData bytes ]];
 
-    // cg compiler flags
-    char ** args = ALLOC_ARRAY(char *,2);
+    // cg compiler flags, so that the damn thing actually warns at least about something
+    char ** args = ALLOC_ARRAY(char *, 2);
     args[0] = "-strict";
     args[1] = NULL;
 
@@ -97,6 +98,37 @@
                                                                                   technique:technique ];
             [ techniques setObject:effectTechnique forKey:techniqueName ];
             [ effectTechnique release ];
+
+            /*CGpass pass = cgGetFirstPass(technique);
+	        while(pass != 0)
+	        {
+		        // Find the fragment program state
+		        CGstateassignment stateAssignment = cgGetNamedStateAssignment(pass, "FragmentProgram");
+		        if(stateAssignment != 0)
+		        {
+			        // Get the program
+			        CGprogram program = cgGetProgramStateAssignmentValue(stateAssignment);
+			        if(program != 0)
+			        {
+                        CGparameter param = cgGetFirstParameter( program, CG_GLOBAL );
+                        while ( param )
+                        {
+                            //NSLog(@"%s", cgGetParameterName(param));
+
+                            if ( cgGetParameterType(param) == CG_SAMPLER2D )
+                            {
+                                NSLog(@"fucking sampler2d");
+                            }
+
+                            param = cgGetNextParameter( param );
+                        }
+			        }
+		        }
+
+		        // Proceed to the next pass
+		        pass = cgGetNextPass(pass);
+	        }*/
+
 
             NPLOG(@"Technique \"%@\" validated", techniqueName);
         }
@@ -170,6 +202,8 @@
     defaultSemantics.inverseViewProjectionMatrix = NULL;
     defaultSemantics.modelViewProjectionMatrix = NULL;
     defaultSemantics.inverseModelViewProjectionMatrix = NULL;
+    defaultSemantics.viewportSize = NULL;
+    defaultSemantics.rViewportSize = NULL;
 
     for ( Int i = 0; i < 8; i++ )
     {
@@ -185,8 +219,16 @@
 
     if ( cgIsParameter(param) == CG_TRUE )
     {
-        NPLOG(@"%@ with \"name\" %s found", semanticName, cgGetParameterName(param));
-        //NPLOG(@"%s ",cgGetTypeString(cgGetParameterType(param)));
+        NPLOG(@"%@ with name \"%s\" found", semanticName, cgGetParameterName(param));
+
+        /*int nParams = cgGetNumConnectedToParameters( param );
+
+        for ( int i=0; i < nParams; ++i )
+        {
+            CGparameter toParam = cgGetConnectedToParameter( param, i );
+            NSLog(@"connected: %s",cgGetParameterName(toParam));           
+        }*/
+        
         return param;
     }
 
@@ -207,6 +249,8 @@
     defaultSemantics.inverseViewProjectionMatrix = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_INVERSEVIEWPROJECTION_MATRIX_SEMANTIC ];
     defaultSemantics.modelViewProjectionMatrix   = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_MODELVIEWPROJECTION_MATRIX_SEMANTIC ];
     defaultSemantics.inverseModelViewProjectionMatrix = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_INVERSE_MODELVIEWPROJECTION_MATRIX_SEMANTIC ];
+    defaultSemantics.viewportSize                = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_VIEWPORTSIZE_SEMANTIC ];
+    defaultSemantics.rViewportSize               = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_RVIEWPORTSIZE_SEMANTIC ];
 
     for ( Int i = 0; i < 8; i++ )
     {
@@ -220,10 +264,52 @@
     [[[ NP Graphics ] effectManager ] setCurrentEffect:self ];
 
     [ self uploadDefaultSemantics ];
+
+    activePass = [ defaultTechnique firstPass ];
+    cgSetPassState(activePass);
+}
+
+- (void) activateTechnique:(NPEffectTechnique *)technique
+{
+    [[[ NP Graphics ] effectManager ] setCurrentEffect:self ];
+
+    [ self uploadDefaultSemantics ];
+
+    activePass = [ technique firstPass ];
+    cgSetPassState(activePass);
+}
+
+- (void) activateTechniqueWithName:(NSString *)techniqueName
+{
+    NPEffectTechnique * technique = [ techniques objectForKey:techniqueName ];
+
+    [ self activateTechnique:technique ];
 }
 
 - (void) deactivate
 {
+    cgResetPassState(activePass);
+
+    //#pragma warn FIXME
+    /*for ( Int i = 0; i < 8; i++ )
+    {
+        glActiveTexture(GL_TEXTURE0 + i);
+
+        if ( defaultSemantics.sampler2D[i] != NULL )
+        {
+            glBindTexture(GL_TEXTURE_2D, 0);
+//            cgGLDisableTextureParameter(defaultSemantics.sampler2D[i]);
+        }
+
+        if ( defaultSemantics.sampler3D[i] != NULL )
+        {
+            glBindTexture(GL_TEXTURE_2D, 0);
+//            cgGLDisableTextureParameter(defaultSemantics.sampler3D[i]);
+        }
+    }
+
+    glActiveTexture(GL_TEXTURE0);*/
+
     [[[ NP Graphics ] effectManager ] setCurrentEffect:nil ];
 }
 
@@ -299,6 +385,28 @@
     {
         FMatrix4 * inverseModelViewProjectionMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] inverseModelViewProjectionMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.inverseModelViewProjectionMatrix andValue:inverseModelViewProjectionMatrix ];
+    }
+
+    if ( defaultSemantics.viewportSize != NULL )
+    {
+        IVector2 * viewportSize = [[[[ NP Graphics ] viewportManager ] currentViewport ] viewportSize ];
+
+        FVector2 fViewportSize;
+        fViewportSize.x = (Float)viewportSize->x;
+        fViewportSize.y = (Float)viewportSize->y;
+
+        [ self uploadFVector2Parameter:defaultSemantics.viewportSize andValue:&fViewportSize ];
+    }
+
+    if ( defaultSemantics.rViewportSize != NULL )
+    {
+        IVector2 * viewportSize = [[[[ NP Graphics ] viewportManager ] currentViewport ] viewportSize ];
+
+        FVector2 rViewportSize;
+        rViewportSize.x = 1.0f/(Float)viewportSize->x;
+        rViewportSize.y = 1.0f/(Float)viewportSize->y;
+
+        [ self uploadFVector2Parameter:defaultSemantics.viewportSize andValue:&rViewportSize ];        
     }
 
     NPTextureBindingState * textureBindingState = [[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ];
@@ -477,7 +585,9 @@
     {
         if ( cgGetParameterType(parameter) == CG_SAMPLER2D )
         {
-            //cgGLSetTextureParameter(parameter,textureID);
+            //NSLog(@"%d",textureID);
+//            cgGLSetTextureParameter(parameter,textureID);
+//            cgGLEnableTextureParameter(parameter);
             cgGLSetupSampler(parameter, textureID);
         }
     }    

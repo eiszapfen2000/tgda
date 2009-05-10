@@ -19,6 +19,8 @@ typedef struct NpDefaultSemantics
     CGparameter inverseViewProjectionMatrix;
     CGparameter modelViewProjectionMatrix;
     CGparameter inverseModelViewProjectionMatrix;
+    CGparameter viewportSize;
+    CGparameter rViewportSize;
     CGparameter sampler1D[8];
     CGparameter sampler2D[8];
     CGparameter sampler3D[8];
@@ -28,6 +30,7 @@ NpDefaultSemantics;
 @interface NPEffect : NPResource
 {
     CGeffect effect;
+    CGpass activePass;
     NPEffectTechnique * defaultTechnique;
     NSMutableDictionary * techniques;
     NpDefaultSemantics defaultSemantics;
@@ -53,6 +56,8 @@ NpDefaultSemantics;
 - (void) bindDefaultSemantics;
 
 - (void) activate;
+- (void) activateTechnique:(NPEffectTechnique *)technique;
+- (void) activateTechniqueWithName:(NSString *)techniqueName;
 - (void) deactivate;
 
 - (void) uploadDefaultSemantics;

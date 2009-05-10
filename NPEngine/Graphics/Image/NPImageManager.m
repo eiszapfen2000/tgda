@@ -174,7 +174,7 @@
     return devilType;
 }
 
-- (NPImage *) scaleImage:(NPImage *)sourceImage withFilter:(NpState)scalingFilter targetWidth:(Int)newWidth targetHeight:(Int)newHeight
+/*- (NPImage *) scaleImage:(NPImage *)sourceImage withFilter:(NpState)scalingFilter targetWidth:(Int)newWidth targetHeight:(Int)newHeight
 {
 	UInt image = [ sourceImage prepareForProcessingWithDevil ];
 
@@ -208,6 +208,6 @@
                        pixelFormat:[sourceImage pixelFormat] 
                         dataFormat:[sourceImage dataFormat] 
                         imageData:imageData ];
-}
+}*/
 
 @end

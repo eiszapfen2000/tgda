@@ -32,7 +32,7 @@
 - (Int) calculateDevilPixelFormat:(NpState)pixelFormat;
 - (Int) calculateDevilDataType:(NpState)dataFormat;
 
-- (NPImage *) scaleImage:(NPImage *)sourceImage withFilter:(NpState)scalingFilter targetWidth:(Int)newWidth targetHeight:(Int)newHeight;
+//- (NPImage *) scaleImage:(NPImage *)sourceImage withFilter:(NpState)scalingFilter targetWidth:(Int)newWidth targetHeight:(Int)newHeight;
 
 
 @end
