@@ -54,9 +54,11 @@ void reset_mouse_state(NpMouseState * mouseState)
 {
     window = newWindow;
 
-    NSPoint mousePoint = [ window mouseLocationOutsideOfEventStream ];
-    x = xLastFrame = mousePoint.x;
-    y = yLastFrame = mousePoint.y;
+    NSPoint mousePointInWindow  = [ window mouseLocationOutsideOfEventStream ];
+    NSPoint mousePointInControl = [[ window contentView ] convertPoint:mousePointInWindow fromView:nil];
+
+    x = xLastFrame = mousePointInControl.x;
+    y = yLastFrame = mousePointInControl.y;
 }
 
 - (void) resetCursorPosition
@@ -174,20 +176,21 @@ void reset_mouse_state(NpMouseState * mouseState)
     scrollWheelLastFrame = mouseState.scrollWheel;
     mouseState.scrollWheel = 0;
 
-    NSPoint mouse = [[[ NSApp delegate ] window ] mouseLocationOutsideOfEventStream ];
+    NSPoint mousePointInWindow  = [ window mouseLocationOutsideOfEventStream ];
+    NSPoint mousePointInControl = [[ window contentView ] convertPoint:mousePointInWindow fromView:nil];
 
     if ( [[ NSApp delegate ] renderWindowActivated ] == YES )
     {
-        x = xLastFrame = mouse.x;
-        y = yLastFrame = mouse.y;
+        x = xLastFrame = mousePointInControl.x;
+        y = yLastFrame = mousePointInControl.y;
     }
     else
     {
         xLastFrame = x;
         yLastFrame = y;
 
-        x = mouse.x;
-        y = mouse.y;
+        x = mousePointInControl.x;
+        y = mousePointInControl.y;
     }
 }
 
