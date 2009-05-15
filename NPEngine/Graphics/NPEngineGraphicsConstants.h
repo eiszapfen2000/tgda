@@ -1,3 +1,6 @@
+#define NP_GRAPHICS_SAMPLER_COUNT       8
+#define NP_GRAPHICS_DRAWBUFFERS_COUNT   8
+
 // texture manager
 #define NP_GRAPHICS_TEXTURE_MODE_2D                         0
 #define NP_GRAPHICS_TEXTURE_MODE_3D                         1

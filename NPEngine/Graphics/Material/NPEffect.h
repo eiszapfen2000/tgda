@@ -1,6 +1,7 @@
 #import "Core/NPObject/NPObject.h"
 #import "Core/Resource/NPResource.h"
 #import "Core/Math/NpMath.h"
+#import "Graphics/NPEngineGraphicsConstants.h"
 #import "Graphics/npgl.h"
 
 @class NPEffectTechnique;
@@ -21,9 +22,9 @@ typedef struct NpDefaultSemantics
     CGparameter inverseModelViewProjectionMatrix;
     CGparameter viewportSize;
     CGparameter rViewportSize;
-    CGparameter sampler1D[8];
-    CGparameter sampler2D[8];
-    CGparameter sampler3D[8];
+    CGparameter sampler1D[NP_GRAPHICS_SAMPLER_COUNT];
+    CGparameter sampler2D[NP_GRAPHICS_SAMPLER_COUNT];
+    CGparameter sampler3D[NP_GRAPHICS_SAMPLER_COUNT];
 }
 NpDefaultSemantics;
 
@@ -63,9 +64,9 @@ NpDefaultSemantics;
 - (void) uploadDefaultSemantics;
 
 - (void) uploadFloatParameterWithName:(NSString *)parameterName andValue:(Float)f;
-- (void) upLoadFloatParameter:(CGparameter)parameter andValue:(Float)f;
+- (void) uploadFloatParameter:(CGparameter)parameter andValue:(Float)f;
 - (void) uploadIntParameterWithName:(NSString *)parameterName andValue:(Int32)i;
-- (void) upLoadIntParameter:(CGparameter)parameter andValue:(Int32)i;
+- (void) uploadIntParameter:(CGparameter)parameter andValue:(Int32)i;
 
 - (void) uploadFVector2ParameterWithName:(NSString *)parameterName andValue:(FVector2 *)vector;
 - (void) uploadFVector2Parameter:(CGparameter)parameter andValue:(FVector2 *)vector;

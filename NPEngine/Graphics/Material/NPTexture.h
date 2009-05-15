@@ -53,6 +53,8 @@
 
 - (void) updateGLTextureState;
 
+- (void) activateAtColorMapIndex:(Int32)index;
+
 @end
 
 

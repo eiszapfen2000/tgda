@@ -80,6 +80,11 @@
 
 - (void) dealloc
 {
+    if ( configuration != nil )
+    {
+        [ configuration release ];
+    }
+
     [ texture reset ];
     [ texture release ];
 

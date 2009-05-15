@@ -99,37 +99,6 @@
             [ techniques setObject:effectTechnique forKey:techniqueName ];
             [ effectTechnique release ];
 
-            /*CGpass pass = cgGetFirstPass(technique);
-	        while(pass != 0)
-	        {
-		        // Find the fragment program state
-		        CGstateassignment stateAssignment = cgGetNamedStateAssignment(pass, "FragmentProgram");
-		        if(stateAssignment != 0)
-		        {
-			        // Get the program
-			        CGprogram program = cgGetProgramStateAssignmentValue(stateAssignment);
-			        if(program != 0)
-			        {
-                        CGparameter param = cgGetFirstParameter( program, CG_GLOBAL );
-                        while ( param )
-                        {
-                            //NSLog(@"%s", cgGetParameterName(param));
-
-                            if ( cgGetParameterType(param) == CG_SAMPLER2D )
-                            {
-                                NSLog(@"fucking sampler2d");
-                            }
-
-                            param = cgGetNextParameter( param );
-                        }
-			        }
-		        }
-
-		        // Proceed to the next pass
-		        pass = cgGetNextPass(pass);
-	        }*/
-
-
             NPLOG(@"Technique \"%@\" validated", techniqueName);
         }
 
@@ -205,7 +174,7 @@
     defaultSemantics.viewportSize = NULL;
     defaultSemantics.rViewportSize = NULL;
 
-    for ( Int i = 0; i < 8; i++ )
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
         defaultSemantics.sampler1D[i] = NULL;
         defaultSemantics.sampler2D[i] = NULL;
@@ -221,14 +190,6 @@
     {
         NPLOG(@"%@ with name \"%s\" found", semanticName, cgGetParameterName(param));
 
-        /*int nParams = cgGetNumConnectedToParameters( param );
-
-        for ( int i=0; i < nParams; ++i )
-        {
-            CGparameter toParam = cgGetConnectedToParameter( param, i );
-            NSLog(@"connected: %s",cgGetParameterName(toParam));           
-        }*/
-        
         return param;
     }
 
@@ -252,7 +213,7 @@
     defaultSemantics.viewportSize                = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_VIEWPORTSIZE_SEMANTIC ];
     defaultSemantics.rViewportSize               = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_RVIEWPORTSIZE_SEMANTIC ];
 
-    for ( Int i = 0; i < 8; i++ )
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
         defaultSemantics.sampler2D[i] = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_COLORMAP_SEMANTIC(i)  ];
         defaultSemantics.sampler3D[i] = [ self bindDefaultSemantic:NP_GRAPHICS_MATERIAL_VOLUMEMAP_SEMANTIC(i) ];
@@ -289,26 +250,6 @@
 - (void) deactivate
 {
     cgResetPassState(activePass);
-
-    //#pragma warn FIXME
-    /*for ( Int i = 0; i < 8; i++ )
-    {
-        glActiveTexture(GL_TEXTURE0 + i);
-
-        if ( defaultSemantics.sampler2D[i] != NULL )
-        {
-            glBindTexture(GL_TEXTURE_2D, 0);
-//            cgGLDisableTextureParameter(defaultSemantics.sampler2D[i]);
-        }
-
-        if ( defaultSemantics.sampler3D[i] != NULL )
-        {
-            glBindTexture(GL_TEXTURE_2D, 0);
-//            cgGLDisableTextureParameter(defaultSemantics.sampler3D[i]);
-        }
-    }
-
-    glActiveTexture(GL_TEXTURE0);*/
 
     [[[ NP Graphics ] effectManager ] setCurrentEffect:nil ];
 }
@@ -410,7 +351,8 @@
     }
 
     NPTextureBindingState * textureBindingState = [[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ];
-    for ( Int i = 0; i < 8; i++ )
+
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
         if ( defaultSemantics.sampler2D[i] != NULL )
         {
@@ -432,10 +374,10 @@
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
-    [ self upLoadFloatParameter:parameter andValue:f ];
+    [ self uploadFloatParameter:parameter andValue:f ];
 }
 
-- (void) upLoadFloatParameter:(CGparameter)parameter andValue:(Float)f
+- (void) uploadFloatParameter:(CGparameter)parameter andValue:(Float)f
 {
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
@@ -450,10 +392,10 @@
 {
     CGparameter parameter = cgGetNamedEffectParameter(effect,[parameterName cString]);
 
-    [ self upLoadIntParameter:parameter andValue:i ];
+    [ self uploadIntParameter:parameter andValue:i ];
 }
 
-- (void) upLoadIntParameter:(CGparameter)parameter andValue:(Int32)i
+- (void) uploadIntParameter:(CGparameter)parameter andValue:(Int32)i
 {
     if ( cgIsParameter(parameter) == CG_TRUE )
     {
@@ -585,9 +527,6 @@
     {
         if ( cgGetParameterType(parameter) == CG_SAMPLER2D )
         {
-            //NSLog(@"%d",textureID);
-//            cgGLSetTextureParameter(parameter,textureID);
-//            cgGLEnableTextureParameter(parameter);
             cgGLSetupSampler(parameter, textureID);
         }
     }    
@@ -606,7 +545,6 @@
     {
         if ( cgGetParameterType(parameter) == CG_SAMPLER3D )
         {
-            //cgGLSetTextureParameter(parameter,textureID);
             cgGLSetupSampler(parameter, textureID);
         }
     }    
