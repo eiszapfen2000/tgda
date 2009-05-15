@@ -50,5 +50,7 @@
 - (void) uploadToGLWithData:(NSData *)data;
 - (void) updateGLTextureState;
 
+- (void) activateAtVolumeMapIndex:(Int32)index;
+
 @end
 

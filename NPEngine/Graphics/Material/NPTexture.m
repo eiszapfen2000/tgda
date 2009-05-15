@@ -286,4 +286,9 @@
     glBindTexture(GL_TEXTURE_2D,0);
 }
 
+- (void) activateAtColorMapIndex:(Int32)index
+{
+    [[[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ] setTexture:self forKey:NP_GRAPHICS_MATERIAL_COLORMAP_SEMANTIC(index) ];
+}
+
 @end

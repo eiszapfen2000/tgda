@@ -24,8 +24,8 @@
 
 	width = height = -1;
 
-	colorTargets = [[ NSMutableArray alloc ] initWithCapacity:8 ];
-    for ( Int i = 0; i < 8; i++ )
+	colorTargets = [[ NSMutableArray alloc ] initWithCapacity:NP_GRAPHICS_SAMPLER_COUNT ];
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
         [ colorTargets addObject:[NSNull null] ];
     }
@@ -180,7 +180,7 @@
 {
     [[[ NP Graphics ] renderTargetManager ] setCurrentRenderTargetConfiguration:self ];
 
-    GLenum buffers[8];
+    GLenum buffers[NP_GRAPHICS_DRAWBUFFERS_COUNT];
     Int bufferCount = 0;
 
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboID);

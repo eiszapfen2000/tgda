@@ -8,7 +8,7 @@ void reset_npvertexformat(NpVertexFormat * vertex_format)
     vertex_format->colorsDataFormat    = NP_NONE;
     vertex_format->weightsDataFormat   = NP_NONE;
 
-    for ( Int i = 0; i < 8; i++ )
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
         vertex_format->textureCoordinatesDataFormat[i] = NP_NONE;
     }
@@ -18,7 +18,7 @@ void reset_npvertexformat(NpVertexFormat * vertex_format)
     vertex_format->elementsForColor    = 0;
     vertex_format->elementsForWeights  = 0;
 
-    for ( Int i = 0; i < 8; i++ )
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
         vertex_format->elementsForTextureCoordinateSet[i] = 0;
     }
@@ -40,7 +40,7 @@ void init_empty_npvertices(NpVertices * vertices)
     vertices->maxVertex     = 0;
     vertices->maxIndex      = 0;
 
-    for ( Int i = 0; i < 8; i++ )
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
         vertices->textureCoordinates[i] = NULL;
     }
@@ -62,7 +62,7 @@ void reset_npvertices(NpVertices * vertices)
     vertices->maxVertex = 0;
     vertices->maxIndex  = 0;
 
-    for ( Int i = 0; i < 8; i++ )
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
         SAFE_FREE(vertices->textureCoordinates[i]);
     }
@@ -76,7 +76,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     vertex_buffer->colorsID    = 0;
     vertex_buffer->weightsID   = 0;
 
-    for ( Int i = 0; i < 8; i++ )
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
         vertex_buffer->textureCoordinatesSetID[i] = NP_NONE;
     }
@@ -146,7 +146,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
                             numberOfElements:size*vertices.format.elementsForWeights ];
     }
 
-    for ( Int i = 0; i < 8; i++ )
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
         if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
         {
@@ -187,7 +187,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     vertices.format.colorsDataFormat    = NP_GRAPHICS_VBO_DATAFORMAT_FLOAT;
     vertices.format.weightsDataFormat   = NP_GRAPHICS_VBO_DATAFORMAT_FLOAT;
 
-    for ( Int i = 0; i < 8; i++ )
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
         vertices.format.textureCoordinatesDataFormat[i] = NP_GRAPHICS_VBO_DATAFORMAT_FLOAT;
     }
@@ -197,7 +197,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     [ file readInt32:&(vertices.format.elementsForColor) ];
     [ file readInt32:&(vertices.format.elementsForWeights) ];
 
-    for ( Int i = 0; i < 8; i++ )
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
         [ file readInt32:&(vertices.format.elementsForTextureCoordinateSet[i]) ];
     }
@@ -235,7 +235,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         [ file readFloats:vertices.weights withLength:(vertexCount*vertices.format.elementsForWeights) ];
     }
 
-    for ( Int i = 0; i < 8; i++ )
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
         if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
         {
@@ -267,7 +267,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     [ file writeInt32:&(vertices.format.elementsForColor) ];
     [ file writeInt32:&(vertices.format.elementsForWeights) ];
 
-    for ( Int i = 0; i < 8; i++ )
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
         [ file writeInt32:&(vertices.format.elementsForTextureCoordinateSet[i]) ];
     }
@@ -301,7 +301,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         [ file writeFloats:vertices.weights withLength:(vertexCount*vertices.format.elementsForWeights) ];
     }
 
-    for ( Int i = 0; i < 8; i++ )
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
         if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
         {
@@ -379,7 +379,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         glBufferData(GL_ARRAY_BUFFER, weightsSize * vertices.format.elementsForWeights, vertices.weights, vboUsage);
     }
 
-    for ( Int i = 0; i < 8; i++)
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++)
     {
         if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
         {
@@ -430,7 +430,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     [ self deleteBuffer:vertexBuffer.weightsID ];
     [ self deleteBuffer:vertexBuffer.indicesID ];
 
-    for ( Int i = 0; i < 8; i++ )
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
         [ self deleteBuffer:vertexBuffer.textureCoordinatesSetID[i] ];
     }
@@ -495,7 +495,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         glColorPointer(vertices.format.elementsForColor, GL_FLOAT, 0, NULL);
     }
 
-    for ( Int i = 0; i < 8; i++)
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++)
     {
         if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
         {
@@ -538,7 +538,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         glDisableClientState(GL_COLOR_ARRAY);
     }
 
-    for ( Int i = 0; i < 8; i++)
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++)
     {
         if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
         {
@@ -567,7 +567,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         glColorPointer(vertices.format.elementsForColor, GL_FLOAT, 0, vertices.colors);
     }
 
-    for ( Int i = 0; i < 8; i++)
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++)
     {
         if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
         {
@@ -604,7 +604,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         glDisableClientState(GL_COLOR_ARRAY);
     }
 
-    for ( Int i = 0; i < 8; i++)
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++)
     {
         if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
         {
@@ -771,7 +771,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         return;
     }
 
-    if ( textureCoordinateSet < 0 || textureCoordinateSet > 8 )
+    if ( textureCoordinateSet < 0 || textureCoordinateSet > NP_GRAPHICS_SAMPLER_COUNT )
     {
         NPLOG_WARNING(@"%@: Invalid texture coordinate set %d", name, textureCoordinateSet);
         return;

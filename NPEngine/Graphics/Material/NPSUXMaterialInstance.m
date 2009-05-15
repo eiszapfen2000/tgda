@@ -87,7 +87,7 @@
 
     while ( ( textureName = [ enumerator nextObject ] ) )
     {
-        for ( Int i = 0; i < 8; i++ )
+        for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
         {
             if ( effectSemantics->sampler2D[i] != NULL )
             {

@@ -23,6 +23,7 @@
 
 - (void) dealloc
 {
+    [ textureBindings removeAllObjects ];
     [ textureBindings release ];
 
     [ super dealloc ];

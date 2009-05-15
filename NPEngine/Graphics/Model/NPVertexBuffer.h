@@ -1,5 +1,6 @@
 #import "Core/NPObject/NPObject.h"
 #import "Core/Resource/NPResource.h"
+#import "Graphics/NPEngineGraphicsConstants.h"
 
 @class NPFile;
 
@@ -9,13 +10,13 @@ typedef struct NpVertexFormat
     NpState normalsDataFormat;   // SUX Models use Float
     NpState colorsDataFormat;    // SUX Models use Float
     NpState weightsDataFormat;   // SUX Models use Float
-    NpState textureCoordinatesDataFormat[8];  // SUX Models use Float
+    NpState textureCoordinatesDataFormat[NP_GRAPHICS_SAMPLER_COUNT];  // SUX Models use Float
 
     Int elementsForPosition; // SUX Models use 3
     Int elementsForNormal;
     Int elementsForColor;
     Int elementsForWeights;
-    Int elementsForTextureCoordinateSet[8];
+    Int elementsForTextureCoordinateSet[NP_GRAPHICS_SAMPLER_COUNT];
 
     Int maxTextureCoordinateSet;
 }
@@ -34,7 +35,7 @@ typedef struct NpVertices
     Float * normals;
     Float * colors;
     Float * weights;
-    Float * textureCoordinates[8];
+    Float * textureCoordinates[NP_GRAPHICS_SAMPLER_COUNT];
 
     Int * indices;
     Int maxVertex;
@@ -52,7 +53,7 @@ typedef struct NpVertexBuffer
     UInt normalsID;
     UInt colorsID;
     UInt weightsID;
-    UInt textureCoordinatesSetID[8];
+    UInt textureCoordinatesSetID[NP_GRAPHICS_SAMPLER_COUNT];
     UInt indicesID;    
 }
 NpVertexBuffer;

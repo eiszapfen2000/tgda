@@ -6,7 +6,7 @@ void np_texture_filter_state_reset(NpTextureFilterState * textureFilterState)
     textureFilterState->mipmapping = 0;
     textureFilterState->minFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
     textureFilterState->magFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
-    textureFilterState->anisotropy = 1.0;
+    textureFilterState->anisotropy = 1;
 }
 
 void np_texture3d_filter_state_reset(NpTextureFilterState * textureFilterState)
@@ -14,7 +14,7 @@ void np_texture3d_filter_state_reset(NpTextureFilterState * textureFilterState)
     textureFilterState->mipmapping = 0;
     textureFilterState->minFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
     textureFilterState->magFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
-    textureFilterState->anisotropy = 1.0;
+    textureFilterState->anisotropy = 1;
 }
 
 void np_texture_wrap_state_reset(NpTextureWrapState * textureWrapState)

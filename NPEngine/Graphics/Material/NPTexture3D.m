@@ -217,4 +217,9 @@
     glBindTexture(GL_TEXTURE_3D,0);
 }
 
+- (void) activateAtVolumeMapIndex:(Int32)index
+{
+    [[[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ] setTexture:self forKey:NP_GRAPHICS_MATERIAL_VOLUMEMAP_SEMANTIC(index) ];
+}
+
 @end
