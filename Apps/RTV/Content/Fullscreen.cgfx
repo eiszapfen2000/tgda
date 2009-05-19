@@ -1,0 +1,51 @@
+float4x4 mvpmatrix : NPMODELVIEWPROJECTION;
+sampler2D colormap   : NPCOLORMAP0;
+
+struct INPUTDATA
+{
+	float4 position			: POSITION;
+    float2 texcoord         : TEXCOORD0;
+};
+
+struct VOUTPUTDATA
+{
+	float4 position			: POSITION;
+    float2 texcoord         : TEXCOORD0;
+};
+
+VOUTPUTDATA mvertexshader(INPUTDATA input)
+{
+	VOUTPUTDATA output;
+
+	output.position = mul(mvpmatrix, input.position);
+    output.texcoord = input.texcoord;
+	
+	return output;
+}
+
+struct FOUTPUTDATA
+{
+	float4 color			: COLOR0;
+};
+
+FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
+{
+	FOUTPUTDATA output;
+
+//    output.color = tex2D(colormap, input.texcoord) + float4(input.color.xyz,1.0f);
+      //output.color = float4(0.0f,1.0f,0.0f,0.0f);
+//    output.color = float4(input.texcoord.x, input.texcoord.y,0.0f,0.0f);
+    output.color = tex2D(colormap, input.texcoord);
+
+	return output;
+}
+
+technique fullscreen
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mfragmentshader();
+		VertexProgram = compile vp40 mvertexshader();
+	}
+}
+

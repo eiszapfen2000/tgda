@@ -1,0 +1,34 @@
+{
+    AlphaTest =
+    {
+        Enabled = "NO";
+        Threshold = "0.5";
+        ComparisonFunction = "GreaterEqual";
+    };
+
+    Blending = 
+    {
+        Enabled = "YES";
+        Mode = "Additive";
+    };
+
+    Culling =
+    {
+        Enabled = "YES";
+        CullFace = "Back";
+    };
+
+    Depth =
+    {
+        DepthTestEnabled = "NO";
+        DepthWriteEnabled = "NO";
+        ComparisonFunction = "LessEqual";
+    };
+
+    PolygonFill =
+    {
+        Front = "Face";
+        Back = "Face";
+    };
+}
+ 

@@ -19,10 +19,12 @@
 
     [ self configureResourcePaths ];
 
-    sceneManager = [[ RTVSceneManager alloc ] init ];
-
-    glClearColor(0.0f,0.0f,0.0f,1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClearDepth(1);
+
+    sceneManager = [[ RTVSceneManager alloc ] init ];
+    id scene = [ sceneManager loadSceneFromPath:@"Test.scene" ];
+    [ scene activate ];
 }
 
 - (NSApplicationTerminateReply) applicationShouldTerminate:(NSApplication *)sender
@@ -58,14 +60,14 @@
 
     Float frameTime = (Float)[[[ NP Core ] timer ] frameTime ];
 
-    //[ sceneManager update:frameTime ];
+    [ sceneManager update:frameTime ];
 
     renderWindowActiveLastFrame = renderWindowActive;
 }
 
 - (void) render
 {
-    //[ sceneManager render ];
+    [ sceneManager render ];
 
     GLenum error;
     error = glGetError();

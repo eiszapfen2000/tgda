@@ -1,6 +1,6 @@
 {
-    ApplicationDescription = OceanDemo;
-    ApplicationName = OceanDemo;
+    ApplicationDescription = "Realtime Visualisation Demo";
+    ApplicationName = RTV;
     ApplicationRelease = 0.10;
     Authors = ( "Thomas Gamper" );
     Copyright = "Copyright (C) 2009 Thomas Gamper";
@@ -10,10 +10,10 @@
     NSPrincipalClass = NPApplication;
     NSRole = Application;
     Fullscreen = NO;
-    Width = 800;
-    Height = 600;
+    Width = 1024;
+    Height = 768;
     FSAA = 0;
     Anisotropy = 1;
-    VSync = YES;
+    VSync = NO;
 }
  
