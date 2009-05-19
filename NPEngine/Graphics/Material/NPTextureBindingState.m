@@ -1,4 +1,7 @@
 #import "NPTextureBindingState.h"
+#import "NPTexture.h"
+#import "NPTexture3D.h"
+#import "Graphics/npgl.h"
 
 @implementation NPTextureBindingState
 
@@ -36,7 +39,13 @@
 
 - (void) setTexture:(id)texture forKey:(NSString *)colormapSemantic
 {
-    [ textureBindings setObject:texture forKey:colormapSemantic ];
+    [ textureBindings setObject:texture forKey:colormapSemantic ]; 
+}
+
+- (void) setTexture:(id)texture forTexelUnit:(Int)texelUnit
+{
+    glActiveTexture(GL_TEXTURE0 + texelUnit);
+    glBindTexture(GL_TEXTURE_2D, [ texture textureID ]);
 }
 
 @end

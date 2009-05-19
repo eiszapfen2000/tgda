@@ -45,13 +45,10 @@
     tmpViewMatrix = [ transformationStateToModifiy viewMatrix ];
     tmpProjectionMatrix = [ transformationStateToModifiy projectionMatrix ];
 
-    #pragma warn FIXME
+    #warning "FIXME"
 
     //fm4_ms_orthographic_projection_matrix(projectionMatrix,[[[[ NP Graphics ] viewportManager ] currentViewport ] aspectRatio]);
     fm4_ms_orthographic_projection_matrix(projectionMatrix, 1.0f);
-
-    //NSLog(@"%f", [[[[ NP Graphics ] viewportManager ] currentViewport ] aspectRatio]);
-    //NSLog(@"%s", fm4_m_to_string(projectionMatrix));
 
     [ transformationStateToModifiy setModelMatrix:modelMatrix ];
     [ transformationStateToModifiy setViewMatrix:viewMatrix ];

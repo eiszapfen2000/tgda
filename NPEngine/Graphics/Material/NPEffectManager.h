@@ -3,6 +3,7 @@
 #import "Graphics/npgl.h"
 
 @class NPEffect;
+@class NPEffectTechnique;
 
 @interface NPEffectManager : NPObject
 {
@@ -13,6 +14,7 @@
 
     NSMutableDictionary * effects;
     NPEffect * currentEffect;
+    NPEffectTechnique * currentTechnique;
 }
 
 - (id) init;
@@ -26,10 +28,12 @@
 - (NpState) cgDebugMode;
 - (NpState) shaderParameterUpdatePolicy;
 - (NPEffect *) currentEffect;
+- (NPEffectTechnique *) currentTechnique;
 
 - (void) setCgDebugMode:(NpState)newMode;
 - (void) setShaderParameterPolicy:(NpState)newShaderParameterUpdatePolicy;
 - (void) setCurrentEffect:(NPEffect *)newCurrentEffect;
+- (void) setCurrentTechnique:(NPEffectTechnique *)newCurrentEffectTechnique;
 
 - (id) loadEffectFromPath:(NSString *)path;
 - (id) loadEffectFromAbsolutePath:(NSString *)path;

@@ -222,12 +222,7 @@
 
 - (void) activate
 {
-    [[[ NP Graphics ] effectManager ] setCurrentEffect:self ];
-
-    [ self uploadDefaultSemantics ];
-
-    activePass = [ defaultTechnique firstPass ];
-    cgSetPassState(activePass);
+    [ self activateTechnique:defaultTechnique ];
 }
 
 - (void) activateTechnique:(NPEffectTechnique *)technique
@@ -236,8 +231,13 @@
 
     [ self uploadDefaultSemantics ];
 
-    activePass = [ technique firstPass ];
-    cgSetPassState(activePass);
+    // Does not work because of fucking cgfx sampler management
+    //if ( [[[ NP Graphics ] effectManager ] currentTechnique ] != technique )
+    {
+        [[[ NP Graphics ] effectManager ] setCurrentTechnique:technique ];
+        activePass = [ technique firstPass ];
+        cgSetPassState(activePass);
+    }
 }
 
 - (void) activateTechniqueWithName:(NSString *)techniqueName
@@ -347,7 +347,7 @@
         rViewportSize.x = 1.0f/(Float)viewportSize->x;
         rViewportSize.y = 1.0f/(Float)viewportSize->y;
 
-        [ self uploadFVector2Parameter:defaultSemantics.viewportSize andValue:&rViewportSize ];        
+        [ self uploadFVector2Parameter:defaultSemantics.rViewportSize andValue:&rViewportSize ];        
     }
 
     NPTextureBindingState * textureBindingState = [[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ];

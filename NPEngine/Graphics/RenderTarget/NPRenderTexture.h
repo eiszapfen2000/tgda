@@ -68,6 +68,8 @@
                               textureWrapT:(NpState)textureWrapT
                                           ;
 
+- (void) attachToColorBufferIndex:(Int)newColorBufferIndex;
+- (void) detach;
 - (void) bindToRenderTargetConfiguration:(NPRenderTargetConfiguration *)newConfiguration colorBufferIndex:(Int)newColorBufferIndex;
 - (void) unbindFromRenderTargetConfiguration;
 
