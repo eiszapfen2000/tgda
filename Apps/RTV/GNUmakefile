@@ -7,11 +7,15 @@ main.m \
 RTVCore.m \
 RTVApplicationController.m \
 RTVSceneManager.m \
-RTVScene.m
+RTVScene.m \
+RTVAdvection.m \
+RTVDiffusion.m \
+RTVInputForce.m
 
 RTV_RESOURCE_FILES = \
 Info-gnustep.plist \
-RTV.gorm
+RTV.gorm \
+Content
 
 ADDITIONAL_GUI_LIBS += -lGL -lGLU -lNPEngine -lCg -lCgGL -lGLEW -lIL -lILU -lprng
 

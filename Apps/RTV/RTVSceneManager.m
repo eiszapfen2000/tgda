@@ -58,7 +58,7 @@
 
         if ( scene == nil )
         {
-            scene = [[ FScene alloc ] initWithName:@"" parent:self ];
+            scene = [[ RTVScene alloc ] initWithName:@"" parent:self ];
 
             if ( [ scene loadFromPath:path ] == YES )
             {
