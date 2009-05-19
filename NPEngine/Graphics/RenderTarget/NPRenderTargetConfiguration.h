@@ -22,6 +22,13 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
+- (Int) width;
+- (Int) height;
+- (NSMutableArray *) colorTargets;
+
+- (void) setWidth:(Int)newWidth;
+- (void) setHeight:(Int)newHeight;
+
 - (void) clear;
 
 - (void) generateGLFBOID;
@@ -36,6 +43,11 @@
 - (void) setColorRenderTarget:(NPRenderTexture *)newColorRenderTarget atIndex:(Int)colorBufferIndex;
 
 - (BOOL) checkFrameBufferCompleteness;
+
+- (void) bindFBO;
+- (void) unbindFBO;
+- (void) activateDrawBuffers;
+- (void) deactivateDrawBuffers;
 
 - (void) activate;
 - (void) deactivate;

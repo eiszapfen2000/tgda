@@ -77,6 +77,7 @@ void np_cg_error_callback()
 
 - (void) dealloc
 {
+	TEST_RELEASE(currentTechnique);
 	TEST_RELEASE(currentEffect);
     [ effects removeAllObjects ];
     [ effects release ];
@@ -104,6 +105,11 @@ void np_cg_error_callback()
 - (NPEffect *) currentEffect;
 {
     return currentEffect;
+}
+
+- (NPEffectTechnique *) currentTechnique
+{
+    return currentTechnique;
 }
 
 - (void) setCgDebugMode:(NpState)newMode
@@ -152,6 +158,11 @@ void np_cg_error_callback()
 - (void) setCurrentEffect:(NPEffect *)newCurrentEffect
 {
     ASSIGN(currentEffect,newCurrentEffect);
+}
+
+- (void) setCurrentTechnique:(NPEffectTechnique *)newCurrentEffectTechnique
+{
+    ASSIGN(currentTechnique, newCurrentEffectTechnique);
 }
 
 - (id) loadEffectFromPath:(NSString *)path

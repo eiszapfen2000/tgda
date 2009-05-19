@@ -215,6 +215,19 @@
                                 textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
 }
 
+- (void) attachToColorBufferIndex:(Int)newColorBufferIndex
+{
+        colorBufferIndex = newColorBufferIndex;
+        GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
+        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, renderTextureID, 0);
+}
+
+- (void) detach
+{
+        GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
+        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, 0, 0);
+}
+
 - (void) bindToRenderTargetConfiguration:(NPRenderTargetConfiguration *)newConfiguration colorBufferIndex:(Int)newColorBufferIndex
 {
     if ( configuration != newConfiguration )

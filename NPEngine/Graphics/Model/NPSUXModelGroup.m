@@ -75,7 +75,7 @@
     [ super reset ];
 }
 
-#pragma warn FIXME
+#warning "FIXME"
 
 - (void) render
 {
