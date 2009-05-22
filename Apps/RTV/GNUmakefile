@@ -10,7 +10,9 @@ RTVSceneManager.m \
 RTVScene.m \
 RTVAdvection.m \
 RTVDiffusion.m \
-RTVInputForce.m
+RTVInputForce.m \
+RTVDivergence.m \
+RTVFluid.m
 
 RTV_RESOURCE_FILES = \
 Info-gnustep.plist \

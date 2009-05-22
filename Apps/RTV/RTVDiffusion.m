@@ -18,15 +18,17 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    IVector2 * v = [[[[ NP Graphics ] viewportManager ] currentViewport ] viewportSize ];
+    currentResolution = iv2_alloc_init();
+    resolutionLastFrame = iv2_alloc_init();
 
     diffusionEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Diffusion.cgfx" ];
-    diffusionRenderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"DiffusionRT" parent:self ];
-    [ diffusionRenderTargetConfiguration setWidth :v->x ];
-    [ diffusionRenderTargetConfiguration setHeight:v->y ];
-
     alpha = [ diffusionEffect parameterWithName:@"alpha" ];
     rBeta = [ diffusionEffect parameterWithName:@"rBeta" ];
+
+    diffusionRenderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"DiffusionRT" parent:self ];
+//    [ diffusionRenderTargetConfiguration setWidth :v->x ];
+//    [ diffusionRenderTargetConfiguration setHeight:v->y ];
+
 
     numberOfIterations = 20;
 
@@ -35,24 +37,47 @@
 
 - (void) dealloc
 {
+    iv2_free(currentResolution);
+    iv2_free(resolutionLastFrame);
+
     [ diffusionRenderTargetConfiguration clear ];
     [ diffusionRenderTargetConfiguration release ];
 
     [ super dealloc ];
 }
 
+- (Int32) numberOfIterations
+{
+    return numberOfIterations;
+}
+
+- (IVector2) resolution
+{
+    return *currentResolution;
+}
+
+- (void) setNumberOfIterations:(Int32)newNumberOfIterations
+{
+    numberOfIterations = newNumberOfIterations;
+}
+
+- (void) setResolution:(IVector2)newResolution
+{
+    currentResolution->x = newResolution.x;
+    currentResolution->y = newResolution.y;
+
+    [ diffusionRenderTargetConfiguration setWidth :currentResolution->x ];
+    [ diffusionRenderTargetConfiguration setHeight:currentResolution->y ];
+}
+
 - (void) diffuseQuantityFrom:(id)quantitySource to:(id)quantityTarget
 {
-    /*[ diffusionRenderTargetConfiguration clear ];
-    [ diffusionRenderTargetConfiguration setColorRenderTarget:quantityTarget atIndex:0 ];
-    [ diffusionRenderTargetConfiguration activate ];
-    [ advectionRenderTargetConfiguration checkFrameBufferCompleteness ];*/
-
     id source = quantitySource;
     id target = quantityTarget;
     id tmp;
 
     [ diffusionRenderTargetConfiguration bindFBO ];
+    [ diffusionRenderTargetConfiguration activateViewport ];
     [ diffusionEffect uploadFloatParameter:alpha andValue:1.0f ];
     [ diffusionEffect uploadFloatParameter:rBeta andValue:1.0f ];
 
@@ -82,32 +107,16 @@
     }
 
     [ diffusionRenderTargetConfiguration unbindFBO ];
+    [ diffusionRenderTargetConfiguration deactivateDrawBuffers ];
+    [ diffusionRenderTargetConfiguration deactivateViewport ];
+}
 
-/*    [[ diffusionRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:quantityTarget ];
-    [ diffusionRenderTargetConfiguration bindFBO ];
-    [ quantityTarget attachToColorBufferIndex:0 ];
-    [ diffusionRenderTargetConfiguration activateDrawBuffers ];
-    [ diffusionRenderTargetConfiguration checkFrameBufferCompleteness ];
+- (void) update:(Float)frameTime
+{
+}
 
-    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
-
-    [[ quantitySource texture ] activateAtColorMapIndex:0 ];
-    [ diffusionEffect activateTechniqueWithName:@"diffuse" ];
-    [ diffusionEffect uploadFloatParameter:alpha andValue:1.0f ];
-    [ diffusionEffect uploadFloatParameter:rBeta andValue:1.0f ];
-
-    glBegin(GL_QUADS);
-        glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
-        glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
-        glVertex4f( 1.0f, -1.0f, 0.0f, 1.0f);
-        glVertex4f( 1.0f,  1.0f, 0.0f, 1.0f);
-    glEnd();
-
-    [ diffusionEffect deactivate ];
-
-    //[ diffusionRenderTargetConfiguration deactivate ];
-
-    [ diffusionRenderTargetConfiguration unbindFBO ];*/
+- (void) render
+{
 }
 
 @end

@@ -4,6 +4,7 @@
 #import "RTVAdvection.h"
 #import "RTVDiffusion.h"
 #import "RTVInputForce.h"
+#import "RTVFluid.h"
 #import "RTVScene.h"
 
 @implementation RTVScene
@@ -22,95 +23,53 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
+    font = [[[ NP Graphics ] fontManager ] loadFontFromPath:@"tahoma.font" ];
+
     fullscreenEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Fullscreen.cgfx" ];
 
-    IVector2 * v = [[[[ NP Graphics ] viewportManager ] currentViewport ] viewportSize ];
-
-    id componentOne = [ NPRenderTexture renderTextureWithName:@"ComponentOne"
-                                                        type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
-                                                       width:v->x
-                                                      height:v->y
-                                                  dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
-                                                 pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                            textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                            textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
-                                                textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
-
-    id componentTwo = [ NPRenderTexture renderTextureWithName:@"ComponentTwo"
-                                                         type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
-                                                        width:v->x
-                                                       height:v->y
-                                                   dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
-                                                  pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                             textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                             textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                 textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
-                                                 textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
-
-    componentSource = [ componentOne retain ];
-    componentTarget = [ componentTwo retain ];
+    fluid = [[ RTVFluid alloc ] initWithName:@"Fluid" parent:self ];
 
     return self;
 }
 
 - (void) dealloc
 {
-    [ componentSource release ];
-    [ componentTarget release ];
+    DESTROY(fluid);
 
     [ super dealloc ];
 }
 
-- (id) advection
-{
-    return advection;
-}
-
-- (id) inputForce
-{
-    return inputForce;
-}
-
 - (BOOL) loadFromPath:(NSString *)path
 {
-    NSDictionary * sceneConfig = [ NSDictionary dictionaryWithContentsOfFile:path ];
+    //NSDictionary * sceneConfig = [ NSDictionary dictionaryWithContentsOfFile:path ];
 
-    return YES;
+    return [ fluid loadFromPath:path ];
+
+//    return YES;
 }
 
 - (void) activate
 {
     [[[ NP applicationController ] sceneManager ] setCurrentScene:self ];
-
-    advection  = [[ RTVAdvection  alloc ] initWithName:@"Advection"  parent:self ];
-    diffusion  = [[ RTVDiffusion  alloc ] initWithName:@"Diffusion"  parent:self ];
-    inputForce = [[ RTVInputForce alloc ] initWithName:@"InputForce" parent:self ];
 }
 
 - (void) deactivate
 {
-    DESTROY(inputForce);
-    DESTROY(diffusion);
-    DESTROY(advection);
-
     [[[ NP applicationController ] sceneManager ] setCurrentScene:nil ];
 }
 
 - (void) update:(Float)frameTime
 {
-    [ advection advectQuantityFrom :componentSource to:componentTarget ];
-    [ diffusion diffuseQuantityFrom:componentTarget to:componentSource ];
-    //[ advection  update:frameTime ];
-    //[ inputForce update:frameTime ];
+    [ fluid update:frameTime ];
 }
 
 - (void) render
 {
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
-    [[[ NP Graphics ] stateConfiguration ] activate ];
 
-    [[ componentSource texture ] activateAtColorMapIndex:0 ];
+    //[[[ NP Graphics ] stateConfiguration ] activate ];
+
+    [[[ fluid velocityTarget ] texture ] activateAtColorMapIndex:0 ];
     [ fullscreenEffect activate ];
 
     glBegin(GL_QUADS);
@@ -129,9 +88,11 @@
 
     [ fullscreenEffect deactivate ];
 
-    [[[ NP Graphics ] stateConfiguration ] deactivate ];
 
-    NSLog(@"%d",[[[ NP Core ] timer ] fps ]);
+    FVector2 pos = {-1.0f, 1.0f };
+    [ font renderString:[NSString stringWithFormat:@"%d",[[[ NP Core ] timer ] fps ]] atPosition:&pos withSize:0.05f ];
+
+    [[[ NP Graphics ] stateConfiguration ] deactivate ];
 }
 
 @end

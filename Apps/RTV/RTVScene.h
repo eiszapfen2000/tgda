@@ -2,22 +2,16 @@
 
 @interface RTVScene : NPObject
 {
-    id advection;
-    id diffusion;
-    id inputForce;
+    id font;
     id fullscreenEffect;
 
-    id componentSource;
-    id componentTarget;
+    id fluid;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 - (void) dealloc;
-
-- (id) advection;
-- (id) inputForce;
 
 - (BOOL) loadFromPath:(NSString *)path;
 

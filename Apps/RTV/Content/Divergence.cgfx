@@ -1,0 +1,55 @@
+sampler2D velocity : NPCOLORMAP0;
+float2 rViewport   : NPRVIEWPORTSIZE;
+
+float rHalfDX;
+
+struct DivergenceVInput
+{
+	float4 position : POSITION;
+};
+
+struct DivergenceVOutput
+{
+	float4 position : POSITION;
+};
+
+DivergenceVOutput divergence_vertexshader(in DivergenceVInput input)
+{
+	DivergenceVOutput output;
+
+    output.position = input.position;
+	
+	return output;
+}
+
+struct DivergenceFOutput
+{
+    float4 divergence : COLOR0;
+};
+
+DivergenceFOutput divergence_fragmentshader(in DivergenceVOutput input,
+                                            in float4 rasterPos : WPOS)
+{
+	DivergenceFOutput output;
+
+    float2 texcoord = rasterPos.xy * rViewport;
+
+    float4 xL = tex2D(velocity, texcoord - float2(rViewport.x, 0.0f));
+    float4 xR = tex2D(velocity, texcoord + float2(rViewport.x, 0.0f));
+    float4 xB = tex2D(velocity, texcoord - float2(0.0f, rViewport.y));
+    float4 xT = tex2D(velocity, texcoord + float2(0.0f, rViewport.y));
+
+    output.divergence = ((xR - xL) + (xT - xB)) * rHalfDX;
+
+	return output;
+}
+
+technique divergence
+{
+	pass
+	{
+		FragmentProgram = compile fp40 divergence_fragmentshader();
+		VertexProgram   = compile vp40 divergence_vertexshader();
+	}
+}
+

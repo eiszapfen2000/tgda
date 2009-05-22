@@ -1,8 +1,10 @@
-sampler2D velocity  : TEXUNIT0;
-sampler2D quantity  : TEXUNIT1;
+sampler2D velocity  : NPCOLORMAP0;
+sampler2D quantity  : NPCOLORMAP1;
 float2 rViewport    : NPRVIEWPORTSIZE;
 
-float timestep;
+float  timestep;
+
+/*-----------------------------------------------------------------------*/
 
 struct AdvectVInput
 {
@@ -24,15 +26,38 @@ AdvectVOutput advection_vertexshader(in AdvectVInput input)
 	return output;
 }
 
-struct AdvectFOutput
+/*-----------------------------------------------------------------------*/
+
+struct BorderVInput
 {
-	float4 temp			: COLOR0;
-    float4 advected     : COLOR1;
+	float4 position			: POSITION;
+    float2 texcoord         : TEXCOORD0;
 };
 
-struct BorderFOutput
+struct BorderVOutput
 {
-	float4 color		: COLOR0;
+	float4 position			: POSITION;
+    float2 texcoord         : TEXCOORD0;
+};
+
+BorderVOutput border_vertexshader(in BorderVInput input)
+{
+	BorderVOutput output;
+
+	//output.position = mul(mvpmatrix, input.position);
+    output.position = input.position;
+    output.texcoord = input.texcoord;
+	
+	return output;
+}
+
+/*-----------------------------------------------------------------------*/
+
+
+struct AdvectFOutput
+{
+	float4 advected		: COLOR0;
+    float4 temp         : COLOR1;
 };
 
 AdvectFOutput advection_fragmentshader(in AdvectVOutput input,
@@ -45,20 +70,31 @@ AdvectFOutput advection_fragmentshader(in AdvectVOutput input,
 
     float4 result = tex2D(quantity, lookup);
 
-    //output.temp = float4(lookup.x,lookup.y, 0.0f, 0.0f);
-    //output.advected = float4(lookup.x,lookup.y, 0.0f, 0.0f);
+    output.temp = float4(lookup.x,lookup.y, 0.0f, 0.0f);
+    output.advected = float4(lookup.x,lookup.y, 0.0f, 0.0f);
 
-    output.temp = result;
-    output.advected = result;
+    //output.temp = result;
+    //output.advected = result;
 
 	return output;
 }
 
-BorderFOutput border_fragmentshader(in AdvectVOutput input)
+/*-----------------------------------------------------------------------*/
+
+struct BorderFOutput
+{
+	float4 color		: COLOR0;
+};
+
+BorderFOutput border_fragmentshader(in BorderVOutput input,
+                                    in float4 rasterPos : WPOS)
 {
 	BorderFOutput output;
 
-    //output.color = tex2D(colormap, rasterPos);
+    //float2 texcoord = rasterPos.xy * rViewport + offset;
+    float2 texcoord = rasterPos.xy * rViewport + input.texcoord;
+
+    //output.color = tex2D(velocity, texcoord);
     output.color = float4(0.0f,0.0f,1.0f,0.0f);
 
 	return output;
@@ -78,7 +114,7 @@ technique border
     pass
     {
 		FragmentProgram = compile fp40 border_fragmentshader();
-		VertexProgram   = compile vp40 advection_vertexshader();
+		VertexProgram   = compile vp40 border_vertexshader();
     }
 }
 
