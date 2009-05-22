@@ -1,4 +1,4 @@
-sampler2D velocity : TEXUNIT0;
+sampler2D velocity : NPCOLORMAP0;
 float2 rViewport   : NPRVIEWPORTSIZE;
 
 float alpha;

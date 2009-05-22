@@ -1,6 +1,6 @@
 {
-    Type = "Terrain";
     Name = "Test";
+    FluidResolution = ("512", "512" );
     Texture = "Terrain0.jpg";
     H = "0.8";
     Sigma = "1.0";

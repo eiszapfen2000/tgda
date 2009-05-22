@@ -1,12 +1,12 @@
 #import "NP.h"
 #import "RTVCore.h"
-#import "RTVAdvection.h"
+#import "RTVDivergence.h"
 
-@implementation RTVAdvection
+@implementation RTVDivergence
 
 - (id) init
 {
-    return [ self initWithName:@"Advection" ];
+    return [ self initWithName:@"Divergence" ];
 }
 
 - (id) initWithName:(NSString *)newName
@@ -20,12 +20,11 @@
 
     currentResolution = iv2_alloc_init();
     resolutionLastFrame = iv2_alloc_init();
-    offsetVector = fv2_alloc_init();
 
-    advectionEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Advection.cgfx" ];
-    timestep = [ advectionEffect parameterWithName:@"timestep" ];
+    divergenceEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Divergence.cgfx" ];
+    //timestep = [ advectionEffect parameterWithName:@"timestep" ];
 
-    advectionRenderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"AdvectionRT" parent:self ];
+    divergenceRenderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"DivergenceRT" parent:self ];
 
     return self;
 }
@@ -34,12 +33,9 @@
 {
     iv2_free(currentResolution);
     iv2_free(resolutionLastFrame);
-    fv2_free(offsetVector);
 
-    DESTROY(temporaryStorage);
-
-    [ advectionRenderTargetConfiguration clear ];
-    [ advectionRenderTargetConfiguration release ];
+    [ divergenceRenderTargetConfiguration clear ];
+    [ divergenceRenderTargetConfiguration release ];
 
     [ super dealloc ];
 }
@@ -55,13 +51,11 @@
     currentResolution->y = newResolution.y;
 }
 
-- (void) advectQuantityFrom:(id)quantitySource
-                         to:(id)quantityTarget
-              usingVelocity:(id)velocity
+- (void) computeDivergenceFrom:(id)source to:(id)target;
 {
     #warning "Timestep missing"
 
-    FVector2 pixelSize;
+    /*FVector2 pixelSize;
     FVector2 innerQuadUpperLeft;
     FVector2 innerQuadLowerRight;
 
@@ -141,38 +135,15 @@
 
     [ advectionRenderTargetConfiguration unbindFBO ];
     [ advectionRenderTargetConfiguration deactivateDrawBuffers ];
-    [ advectionRenderTargetConfiguration deactivateViewport ];
-}
-
-- (void) updateRenderTextures
-{
-    if ( temporaryStorage != nil )
-    {
-        DESTROY(temporaryStorage);
-    }
-
-    id tempRenderTexture = [ NPRenderTexture renderTextureWithName:@"Temp"
-                                                              type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
-                                                             width:currentResolution->x
-                                                            height:currentResolution->y
-                                                        dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
-                                                       pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                                  textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                  textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                      textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
-                                                      textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
-
-    temporaryStorage = [ tempRenderTexture retain ];
+    [ advectionRenderTargetConfiguration deactivateViewport ];*/
 }
 
 - (void) update:(Float)frameTime
 {
     if ( (currentResolution->x != resolutionLastFrame->x) || (currentResolution->y != resolutionLastFrame->y) )
     {
-        [ self updateRenderTextures ];
-
-        [ advectionRenderTargetConfiguration setWidth :currentResolution->x ];
-        [ advectionRenderTargetConfiguration setHeight:currentResolution->y ];
+        [ divergenceRenderTargetConfiguration setWidth :currentResolution->x ];
+        [ divergenceRenderTargetConfiguration setHeight:currentResolution->y ];
 
         resolutionLastFrame->x = currentResolution->x;
         resolutionLastFrame->y = currentResolution->y;
