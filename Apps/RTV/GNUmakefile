@@ -12,6 +12,7 @@ RTVAdvection.m \
 RTVDiffusion.m \
 RTVInputForce.m \
 RTVDivergence.m \
+RTVPressure.m \
 RTVFluid.m
 
 RTV_RESOURCE_FILES = \

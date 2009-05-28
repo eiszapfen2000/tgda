@@ -1,6 +1,7 @@
 sampler2D velocity  : NPCOLORMAP0;
 sampler2D quantity  : NPCOLORMAP1;
 float2 rViewport    : NPRVIEWPORTSIZE;
+float4x4 mvpmatrix  : NPMODELVIEWPROJECTION;
 
 float  timestep;
 
@@ -20,8 +21,7 @@ AdvectVOutput advection_vertexshader(in AdvectVInput input)
 {
 	AdvectVOutput output;
 
-	//output.position = mul(mvpmatrix, input.position);
-    output.position = input.position;
+	output.position = mul(mvpmatrix, input.position);
 	
 	return output;
 }
@@ -44,8 +44,7 @@ BorderVOutput border_vertexshader(in BorderVInput input)
 {
 	BorderVOutput output;
 
-	//output.position = mul(mvpmatrix, input.position);
-    output.position = input.position;
+	output.position = mul(mvpmatrix, input.position);
     output.texcoord = input.texcoord;
 	
 	return output;
@@ -66,15 +65,16 @@ AdvectFOutput advection_fragmentshader(in AdvectVOutput input,
 	AdvectFOutput output;
 
     float2 texcoord = rasterPos.xy * rViewport;
-    float2 lookup   = texcoord - tex2D(velocity, texcoord).xy;
+    float2 lookup   = texcoord - timestep * tex2D(velocity, texcoord).xy;
+    float4 result   = tex2D(velocity, texcoord);
 
-    float4 result = tex2D(quantity, lookup);
+    //float4 result = float4(lookup.x, lookup.y, 0.0f, 0.0f);
 
-    output.temp = float4(lookup.x,lookup.y, 0.0f, 0.0f);
-    output.advected = float4(lookup.x,lookup.y, 0.0f, 0.0f);
+    output.temp = result;
+    output.advected = result;
 
-    //output.temp = result;
-    //output.advected = result;
+    //output.temp = float4(texcoord.x, texcoord.y, 0.0f, 0.0f);
+    //output.advected = float4(texcoord.x, texcoord.y, 0.0f, 0.0f);
 
 	return output;
 }

@@ -24,7 +24,7 @@ VOUTPUTDATA mvertexshader(in INPUTDATA input)
 
 struct FOUTPUTDATA
 {
-	float4 color			: COLOR0;
+	float4 color : COLOR0;
 };
 
 
@@ -45,7 +45,7 @@ FOUTPUTDATA mfragmentshader(in VOUTPUTDATA input,
     else
         output.color = float4(0.0f,0.0f,1.0f,0.0f);*/
 
-    output.color = float4(brak/4.0f,brak/4.0f,brak/4.0f,0.0f);
+    output.color = float4(0.3f, 0.0f, 0.0f,1.0f);
 
 	return output;
 }
