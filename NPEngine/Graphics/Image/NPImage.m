@@ -295,12 +295,9 @@
 
     Float * imageFloatData = ALLOC_ARRAY(Float, elementCount);
 
-    for ( Int i = 0; i < height; i++ )
+    for ( Int i = 0; i < elementCount; i++ )
     {
-        for ( Int j = 0; j < width; j++ )
-        {
-            imageFloatData[i * width + j] = value;
-        }
+        imageFloatData[elementCount] = value;
     }
 
     imageData = [[ NSData alloc ] initWithBytesNoCopy:imageFloatData length:elementCount*4 freeWhenDone:YES ];   

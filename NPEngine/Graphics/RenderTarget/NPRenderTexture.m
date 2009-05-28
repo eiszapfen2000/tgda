@@ -178,31 +178,7 @@
     [ texture setTextureWrapS:textureWrapS ];
     [ texture setTextureWrapT:textureWrapT ];
 
-    NPImage * emptyImage = [ NPImage imageWithName:@""
-                                             width:width
-                                            height:height
-                                       pixelFormat:pixelFormat
-                                        dataFormat:dataFormat ];
-
-    switch ( dataFormat )
-    {
-        case NP_GRAPHICS_TEXTURE_DATAFORMAT_BYTE:
-        {
-            [ emptyImage fillWithByteValue:0 ];
-        }
-
-        case NP_GRAPHICS_TEXTURE_DATAFORMAT_HALF:
-        {
-            [ emptyImage fillWithHalfValue:0 ];
-        }
-
-        case NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT:
-        {
-            [ emptyImage fillWithFloatValue:0.0f ];
-        }
-    }
-
-    [ texture uploadToGLUsingImage:emptyImage ];
+    [ texture uploadToGLWithoutData ];
 
     renderTextureID = [ texture textureID ];
 }

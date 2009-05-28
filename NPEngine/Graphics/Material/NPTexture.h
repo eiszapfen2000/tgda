@@ -51,9 +51,14 @@
 - (void) uploadToGLUsingImage:(NPImage *)image;
 - (void) uploadToGLWithData:(NSData *)data;
 
+- (void) uploadImage:(NPImage *)image toMipmapLevel:(Int32)level;
+- (void) uploadData:(NSData *)data toMipmapLevel:(Int32)level;
+
 - (void) updateGLTextureState;
 
 - (void) activateAtColorMapIndex:(Int32)index;
+- (void) activateAtTexelUnit:(Int32)texelUnit;
+- (void) deactivate;
 
 @end
 

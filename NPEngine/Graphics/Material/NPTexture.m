@@ -229,6 +229,47 @@
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+- (void) uploadImage:(NPImage *)image toMipmapLevel:(Int32)level
+{
+    [ self uploadData:[image imageData] toMipmapLevel:level ];
+}
+
+- (void) uploadData:(NSData *)data toMipmapLevel:(Int32)level
+{
+	#define NP_MAX(_a,_b) ((_a > _b )? _a:_b)
+
+    Int32 numberOfLevels = 1 + floor(logb(NP_MAX(width, height)));
+
+    if ( level < 0 || level > numberOfLevels )
+    {
+        return;
+    }
+
+    GLint glinternalformat;
+    GLenum gldataformat;
+    GLenum glpixelformat;
+
+    gldataformat  = [[[ NP Graphics ] textureManager ] computeGLDataFormat :dataFormat  ];
+    glpixelformat = [[[ NP Graphics ] textureManager ] computeGLPixelFormat:pixelFormat ];
+    glinternalformat = [[[ NP Graphics ] textureManager ] computeGLInternalTextureFormatUsingDataFormat:dataFormat pixelFormat:pixelFormat ];
+
+    Int32 mipLevelWidth = width;
+    Int32 mipLevelHeight = height;
+    Int32 nextMipLevelWidth;
+    Int32 nextMipLevelHeight;
+
+    for ( Int32 i = 0; i < level; i++ )
+    {
+        nextMipLevelWidth = NP_MAX(1, mipLevelWidth >> 1);
+        nextMipLevelHeight = NP_MAX(1, mipLevelHeight >> 1);
+
+        mipLevelWidth = nextMipLevelWidth;
+        mipLevelHeight = nextMipLevelHeight;
+    }
+
+    glTexSubImage2D(GL_TEXTURE_2D, level, 0, 0, mipLevelWidth, mipLevelHeight, glpixelformat, glpixelformat, [data bytes]);
+}
+
 - (void)  updateGLTextureFilterState
 {
     GLenum value = GL_NONE;
@@ -289,6 +330,16 @@
 - (void) activateAtColorMapIndex:(Int32)index
 {
     [[[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ] setTexture:self forKey:NP_GRAPHICS_MATERIAL_COLORMAP_SEMANTIC(index) ];
+}
+
+- (void) activateAtTexelUnit:(Int32)texelUnit
+{
+    [[[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ] setTexture:self forTexelUnit:texelUnit ];
+}
+
+- (void) deactivate
+{
+    [[[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ] deactivateTexelUnitForTexture:self ];
 }
 
 @end

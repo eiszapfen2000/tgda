@@ -59,4 +59,9 @@
     [ renderContext update ];
 }
 
+// Deactivates right click context menu
+- (void) rightMouseDown:(NSEvent *)theEvent
+{
+}
+
 @end

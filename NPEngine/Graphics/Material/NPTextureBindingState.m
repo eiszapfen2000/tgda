@@ -2,6 +2,7 @@
 #import "NPTexture.h"
 #import "NPTexture3D.h"
 #import "Graphics/npgl.h"
+#import "Graphics/NPEngineGraphicsConstants.h"
 
 @implementation NPTextureBindingState
 
@@ -20,16 +21,37 @@
     self = [ super initWithName:newName parent:newParent ];
 
     textureBindings = [[ NSMutableDictionary alloc ] init ];
+    textureUnits = [[ NSMutableArray alloc ] initWithCapacity:NP_GRAPHICS_SAMPLER_COUNT ];
+
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
+    {
+        [ textureUnits addObject:[NSNull null] ];
+    }
 
     return self;
 }
 
 - (void) dealloc
 {
+    [ textureUnits removeAllObjects ];
+    [ textureUnits release ];
     [ textureBindings removeAllObjects ];
     [ textureBindings release ];
 
     [ super dealloc ];
+}
+
+- (void) clear
+{
+    [ textureUnits removeAllObjects ];
+
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
+    {
+        [ textureUnits replaceObjectAtIndex:i withObject:[NSNull null] ];
+
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, 0);       
+    }
 }
 
 - (id) textureForKey:(NSString *)colormapSemantic
@@ -42,10 +64,28 @@
     [ textureBindings setObject:texture forKey:colormapSemantic ]; 
 }
 
-- (void) setTexture:(id)texture forTexelUnit:(Int)texelUnit
+- (void) setTexture:(id)texture forTexelUnit:(Int32)texelUnit
 {
-    glActiveTexture(GL_TEXTURE0 + texelUnit);
-    glBindTexture(GL_TEXTURE_2D, [ texture textureID ]);
+    if ( texture != nil && texture != [ NSNull null ] )
+    {
+        [ textureUnits replaceObjectAtIndex:texelUnit withObject:texture ];
+
+        glActiveTexture(GL_TEXTURE0 + texelUnit);
+        glBindTexture(GL_TEXTURE_2D, [ texture textureID ]);
+    }
+}
+
+- (void) deactivateTexelUnitForTexture:(id)texture
+{
+    NSUInteger index = [ textureUnits indexOfObject:texture ];
+
+    if ( index == NSNotFound )
+        NSLog(@"BRAK");
+
+    glActiveTexture(GL_TEXTURE0 + index);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    [ textureUnits replaceObjectAtIndex:index withObject:[NSNull null] ]; 
 }
 
 @end

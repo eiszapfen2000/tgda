@@ -39,6 +39,7 @@
 
 - (void) dealloc
 {
+    [ colorTargets removeAllObjects ];
 	[ colorTargets release ];
 
 	glDeleteFramebuffersEXT(1, &fboID);
@@ -109,11 +110,7 @@
         }
     }
 
-    //[ colorTargets removeAllObjects ];
-    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
-    {
-        [ colorTargets replaceObjectAtIndex:i withObject:[NSNull null] ];
-    }
+    [ self resetColorTargetsArray ];
 
     if ( depth != nil )
     {
@@ -125,6 +122,30 @@
     {
         [ stencil release ];
     }
+}
+
+- (void) resetColorTargetsArray
+{
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
+    {
+        [ colorTargets replaceObjectAtIndex:i withObject:[NSNull null] ];
+    }
+}
+
+- (void) copyColorBuffer:(Int)colorBufferIndex toTexture:(NPTexture *)texture
+{
+    GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
+    glReadBuffer(attachment);
+
+    if ( (width != [ texture width ]) || (height != [ texture height ]) )
+    {
+        NPLOG_WARNING(@"%@: resolution mismatch between RT Config and texture to copy", name);
+        return;
+    }
+
+    glBindTexture(GL_TEXTURE_2D, [ texture textureID ]);
+    glCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, width, height );
+    glBindTexture( GL_TEXTURE_2D, 0 );
 }
 
 - (void) setDepthRenderTarget:(NPRenderBuffer *)newDepthRenderTarget
@@ -235,6 +256,17 @@
 - (void) deactivateDrawBuffers
 {
     glDrawBuffer(GL_BACK);
+}
+
+- (void) activateViewport
+{
+    IVector2 rtv = { width, height };
+    [[[[ NP Graphics ] viewportManager ] currentViewport ] setViewportSize:&rtv ];
+}
+
+- (void) deactivateViewport
+{
+    [[[[ NP Graphics ] viewportManager ] currentViewport ] setToControlSize ];
 }
 
 - (void) activate

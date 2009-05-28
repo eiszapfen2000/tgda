@@ -118,54 +118,42 @@
     NPTextureBindingState * t = [[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ];
     [ t setTexture:texture forKey:@"NPCOLORMAP0" ];
 
-    for ( UInt i = 0; i < [ string length ]; i++ )
+    /*for ( UInt i = 0; i < [ string length ]; i++ )
     {
         unichar c = [ string characterAtIndex:i ];
         Int row = c / 16;
         Int column = c % 16;
         //NSLog(@"%d %d",row,column);
-    }
+    }*/
 
     FVector2 pos = *position;
 
-
     [ effect activate ];
 
-    CGpass pass = [[ effect defaultTechnique ] firstPass ];
-
-    while ( pass )
+    for ( UInt i = 0; i < [ string length ]; i++ )
     {
-        cgSetPassState(pass);
+        unichar u = [ string characterAtIndex:i ];
+        Int row = u / 16;
+        Int column = u % 16;
+        Float tmp = 1.0f/16.0f;
+        Float r = (Float)row * tmp;
+        Float c = (Float)column * tmp;
 
-        for ( UInt i = 0; i < [ string length ]; i++ )
-        {
-            unichar u = [ string characterAtIndex:i ];
-            Int row = u / 16;
-            Int column = u % 16;
-            Float tmp = 1.0f/16.0f;
-            Float r = (Float)row * tmp;
-            Float c = (Float)column * tmp;
+        glBegin(GL_QUADS);
+            glTexCoord2f(c,r);
+            glVertex4f(pos.x, pos.y, 0.0f, 1.0f);
 
-            glBegin(GL_QUADS);
-                glTexCoord2f(c,r);
-                //glVertex2f(-1.0f, 0.5f);
-                glVertex2f(pos.x, pos.y);
-                glTexCoord2f(c,r+tmp);
-                //glVertex2f(-1.0f, -0.5f);
-                glVertex2f(pos.x, pos.y-1.0f*size);
-                glTexCoord2f(c+tmp,r+tmp);
-                //glVertex2f(0.0f, -0.5f);
-                glVertex2f(pos.x+1.0f*size, pos.y-1.0f*size);
-                glTexCoord2f(c+tmp,r);
-                //glVertex2f(0.0f, 0.5);
-                glVertex2f(pos.x+1.0f*size, pos.y);
-            glEnd();
+            glTexCoord2f(c,r+tmp);
+            glVertex4f(pos.x, pos.y-1.0f*size, 0.0f, 1.0f);
 
-            pos.x = pos.x + 1.0f*size;
-        }
+            glTexCoord2f(c+tmp,r+tmp);
+            glVertex4f(pos.x+1.0f*size, pos.y-1.0f*size, 0.0f, 1.0f);
 
-        cgResetPassState(pass);
-        pass = cgGetNextPass(pass);
+            glTexCoord2f(c+tmp,r);
+            glVertex4f(pos.x+1.0f*size, pos.y, 0.0f, 1.0f);
+        glEnd();
+
+        pos.x = pos.x + 1.0f*size;
     }
 
     [ effect deactivate ];
