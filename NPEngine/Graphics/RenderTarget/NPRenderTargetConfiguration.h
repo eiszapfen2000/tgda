@@ -2,6 +2,7 @@
 
 @class NPRenderBuffer;
 @class NPRenderTexture;
+@class NPTexture;
 
 @interface NPRenderTargetConfiguration : NPObject
 {
@@ -30,12 +31,15 @@
 - (void) setHeight:(Int)newHeight;
 
 - (void) clear;
+- (void) resetColorTargetsArray;
 
 - (void) generateGLFBOID;
 - (BOOL) ready;
 - (UInt) fboID;
 - (UInt) colorBufferIndexForRenderTexture:(NPRenderTexture *)renderTexture;
 - (NPRenderTexture *) renderTextureAtIndex:(Int)colorBufferIndex;
+
+- (void) copyColorBuffer:(Int)colorBufferIndex toTexture:(NPTexture *)texture;
 
 - (void) setDepthRenderTarget:(NPRenderBuffer *)newDepthRenderTarget;
 - (void) setStencilRenderTarget:(NPRenderBuffer *)newStencilRenderTarget;
@@ -48,6 +52,8 @@
 - (void) unbindFBO;
 - (void) activateDrawBuffers;
 - (void) deactivateDrawBuffers;
+- (void) activateViewport;
+- (void) deactivateViewport;
 
 - (void) activate;
 - (void) deactivate;

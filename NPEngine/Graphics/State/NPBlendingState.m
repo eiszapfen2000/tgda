@@ -28,7 +28,7 @@
 
     blendingMode        = NP_BLENDING_AVERAGE;
     defaultBlendingMode = NP_BLENDING_AVERAGE;
-    currentBlendingMode = NP_BLENDING_ADDITIVE;
+    currentBlendingMode = NP_NONE;
 
     return self;
 }

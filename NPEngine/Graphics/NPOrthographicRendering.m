@@ -48,7 +48,7 @@
     #warning "FIXME"
 
     //fm4_ms_orthographic_projection_matrix(projectionMatrix,[[[[ NP Graphics ] viewportManager ] currentViewport ] aspectRatio]);
-    fm4_ms_orthographic_projection_matrix(projectionMatrix, 1.0f);
+    fm4_ms_simple_orthographic_projection_matrix(projectionMatrix, 1.0f);
 
     [ transformationStateToModifiy setModelMatrix:modelMatrix ];
     [ transformationStateToModifiy setViewMatrix:viewMatrix ];

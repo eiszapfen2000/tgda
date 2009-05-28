@@ -69,7 +69,9 @@ void fm4_mv_multiply_v(const FMatrix4 * const m, const FVector4 * const v, FVect
 void fm4_mv_translation_matrix(FMatrix4 * m, FVector3 * v);
 void fm4_mv_scale_matrix(FMatrix4 * m, FVector3 * v);
 void fm4_mssss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegrees, Float nearplane, Float farplane);
-void fm4_ms_orthographic_projection_matrix(FMatrix4 * m, Float aspectratio);
+void fm4_ms_simple_orthographic_projection_matrix(FMatrix4 * m, Float aspectratio);
+void fm4_mssssss_orthographic_projection_matrix(FMatrix4 * m, Float left, Float right, Float bottom, Float top, Float near, Float far);
+void fm4_mssss_orthographic_2d_projection_matrix(FMatrix4 * m, Float left, Float right, Float bottom, Float top);
 void fm4_mss_sub_matrix_m(const FMatrix4 * const m, const Int row, const Int column, FMatrix3 * result);
 void fm4_m_inverse_m(const FMatrix4 * const m, FMatrix4 * result);
 Float fm4_determinant(const FMatrix4 * const m);

@@ -160,7 +160,7 @@
 
     return ( (dataFormat  == NP_GRAPHICS_PBO_DATAFORMAT_BYTE)  && 
              (pixelFormat == NP_GRAPHICS_PBO_PIXELFORMAT_RGBA) &&
-             (width       == nativeViewport->x)                 &&
+             (width       == nativeViewport->x)                &&
              (height      == nativeViewport->y) );
 }
 

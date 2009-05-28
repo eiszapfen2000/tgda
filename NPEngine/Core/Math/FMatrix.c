@@ -465,11 +465,29 @@ void fm4_mssss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegre
     M_EL(*m,3,3) = 0.0f;
 }
 
-void fm4_ms_orthographic_projection_matrix(FMatrix4 * m, Float aspectratio)
+void fm4_ms_simple_orthographic_projection_matrix(FMatrix4 * m, Float aspectratio)
 {
     fm4_m_set_identity(m);
     FVector3 tmp = { 1.0f/aspectratio, 1.0f, 1.0f };
     fm4_mv_scale_matrix(m, &tmp);
+}
+
+void fm4_mssssss_orthographic_projection_matrix(FMatrix4 * m, Float left, Float right, Float bottom, Float top, Float near, Float far)
+{
+    fm4_m_set_identity(m);
+
+    M_EL(*m,0,0) =  2.0f / (right - left);
+    M_EL(*m,1,1) =  2.0f / (top - bottom);
+    M_EL(*m,2,2) = -2.0f / (far - near);
+    M_EL(*m,3,0) = -((right + left) / (right - left));
+    M_EL(*m,3,1) = -((top + bottom) / (top - bottom));
+    M_EL(*m,3,2) = -((far + near) / (far - near));
+    M_EL(*m,3,3) =  1.0f;
+}
+
+void fm4_mssss_orthographic_2d_projection_matrix(FMatrix4 * m, Float left, Float right, Float bottom, Float top)
+{
+    fm4_mssssss_orthographic_projection_matrix(m, left, right, bottom, top, -1.0f, 1.0f);
 }
 
 void fm4_mss_sub_matrix_m(const FMatrix4 * const m, Int row, Int column, FMatrix3 * result)
