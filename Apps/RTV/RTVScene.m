@@ -60,21 +60,48 @@
 
 - (void) update:(Float)frameTime
 {
+    //[[[ NP Graphics ] stateConfiguration ] activate ];
+
     [ fluid update:frameTime ];
+
+    //[[[ NP Graphics ] stateConfiguration ] deactivate ];
 }
 
 - (void) render
 {
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
-    //[[[ NP Graphics ] stateConfiguration ] activate ];
+    ///[[[ NP Graphics ] stateConfiguration ] activate ];
 
-    [[[ fluid velocityTarget ] texture ] activateAtColorMapIndex:0 ];
+//    [[[ fluid inkTarget ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+//    [[[ fluid inkTarget ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+    [[ fluid velocityBiLerp ] activateAtColorMapIndex:0 ];
+
     [ fullscreenEffect activate ];
 
     glBegin(GL_QUADS);
         glTexCoord2f(0.0f,1.0f);            
         glVertex4f(-1.0f,1.0f,0.0f,1.0f);
+
+        glTexCoord2f(0.0f,0.0f);
+        glVertex4f(-1.0f,0.0f,0.0f,1.0f);
+
+        glTexCoord2f(1.0f,0.0f);
+        glVertex4f(1.0f,0.0f,0.0f,1.0f);
+
+        glTexCoord2f(1.0f,1.0f);
+        glVertex4f(1.0f,1.0f,0.0f,1.0f);
+    glEnd();
+
+    [ fullscreenEffect deactivate ];
+
+    [[[ fluid inkTarget ] texture ] activateAtColorMapIndex:0 ];
+
+    [ fullscreenEffect activate ];
+
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0f,1.0f);            
+        glVertex4f(-1.0f,0.0f,0.0f,1.0f);
 
         glTexCoord2f(0.0f,0.0f);
         glVertex4f(-1.0f,-1.0f,0.0f,1.0f);
@@ -83,16 +110,19 @@
         glVertex4f(1.0f,-1.0f,0.0f,1.0f);
 
         glTexCoord2f(1.0f,1.0f);
-        glVertex4f(1.0f,1.0f,0.0f,1.0f);
+        glVertex4f(1.0f,0.0f,0.0f,1.0f);
     glEnd();
 
     [ fullscreenEffect deactivate ];
 
+//    [[[ fluid inkTarget ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+//    [[[ fluid inkTarget ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+
 
     FVector2 pos = {-1.0f, 1.0f };
-    [ font renderString:[NSString stringWithFormat:@"%d",[[[ NP Core ] timer ] fps ]] atPosition:&pos withSize:0.05f ];
+    [ font renderString:[NSString stringWithFormat:@"%d %f",[[[ NP Core ] timer ] fps ],[[[ NP Core ] timer ] frameTime ] ] atPosition:&pos withSize:0.05f ];
 
-    [[[ NP Graphics ] stateConfiguration ] deactivate ];
+    //[[[ NP Graphics ] stateConfiguration ] deactivate ];
 }
 
 @end

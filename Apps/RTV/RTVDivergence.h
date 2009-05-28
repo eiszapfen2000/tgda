@@ -9,6 +9,7 @@
 
     id divergenceRenderTargetConfiguration;
     id divergenceEffect;
+    CGparameter rHalfDX;
 }
 
 - (id) init;

@@ -5,6 +5,10 @@
     IVector2 * currentResolution;
     IVector2 * resolutionLastFrame;
 
+    FVector2 * innerQuadUpperLeft;
+    FVector2 * innerQuadLowerRight;
+    FVector2 * pixelSize;
+
     id diffusionRenderTargetConfiguration;
 
     id diffusionEffect;

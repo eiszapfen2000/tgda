@@ -22,7 +22,7 @@
     resolutionLastFrame = iv2_alloc_init();
 
     divergenceEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Divergence.cgfx" ];
-    //timestep = [ advectionEffect parameterWithName:@"timestep" ];
+    rHalfDX = [ divergenceEffect parameterWithName:@"rHalfDX" ];
 
     divergenceRenderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"DivergenceRT" parent:self ];
 

@@ -1,18 +1,31 @@
+#import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
+
 
 @interface RTVFluid : NPObject
 {
     IVector2 * currentResolution;
     IVector2 * resolutionLastFrame;
 
+    FMatrix4 * projection;
+    FMatrix4 * identity;
+
     id advection;
     id diffusion;
     id inputForce;
     id divergence;
+    id pressure;
 
     id velocitySource;
     id velocityTarget;
-    id ink;
+    id velocityBiLerp;
+    id inkSource;
+    id inkTarget;
+
+    id addVelocityAction;
+    id addInkAction;
+
+    id fluidRenderTargetConfiguration;
 }
 
 - (id) init;
@@ -30,7 +43,13 @@
 - (id) diffusion;
 - (id) inputForce;
 - (id) divergence;
+- (id) pressure;
+
+- (id) velocitySource;
 - (id) velocityTarget;
+- (id) velocityBiLerp;
+- (id) inkSource;
+- (id) inkTarget;
 
 - (void) setResolution:(IVector2)newResolution;
 

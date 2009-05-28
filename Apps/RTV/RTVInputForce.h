@@ -1,16 +1,26 @@
 #import "Core/NPObject/NPObject.h"
+#import "Core/Math/NpMath.h"
 #import "Graphics/npgl.h"
 
 @interface RTVInputForce : NPObject
 {
-    id inputEffect;
+    IVector2 * currentResolution;
+    IVector2 * resolutionLastFrame;
+
+    FVector2 * innerQuadUpperLeft;
+    FVector2 * innerQuadLowerRight;
+    FVector2 * pixelSize;
+
     id inputForceRenderTargetConfiguration;
 
-    id leftClickAction;
-    id stateSet;
-
+    id inputEffect;
     CGparameter clickPosition;
     CGparameter radius;
+
+    id stateset;
+
+    id leftClickAction;
+    Float clickRadius;
 }
 
 - (id) init;
@@ -18,6 +28,10 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 - (void) dealloc;
 
+- (IVector2) resolution;
+- (void) setResolution:(IVector2)newResolution;
+
+- (void) addGaussianSplatToQuantity:(id)quantity;
 - (void) update:(Float)frameTime;
 - (void) render;
 

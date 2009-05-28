@@ -6,7 +6,10 @@
 {
     IVector2 * currentResolution;
     IVector2 * resolutionLastFrame;
-    FVector2 * offsetVector;
+
+    FVector2 * innerQuadUpperLeft;
+    FVector2 * innerQuadLowerRight;
+    FVector2 * pixelSize;
 
     id advectionRenderTargetConfiguration;
     id temporaryStorage;
@@ -21,11 +24,14 @@
 - (void) dealloc;
 
 - (IVector2) resolution;
+- (id) temporaryStorage;
+
 - (void) setResolution:(IVector2)newResolution;
 
 - (void) advectQuantityFrom:(id)quantitySource
                          to:(id)quantityTarget
               usingVelocity:(id)velocity
+               andFrameTime:(Float)frameTime
                            ;
 
 - (void) update:(Float)frameTime;

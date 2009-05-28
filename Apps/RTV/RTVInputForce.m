@@ -19,87 +19,120 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    inputEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Input.cgfx" ];
+    currentResolution   = iv2_alloc_init();
+    resolutionLastFrame = iv2_alloc_init();
+
+    innerQuadUpperLeft  = fv2_alloc_init();
+    innerQuadLowerRight = fv2_alloc_init();
+    pixelSize = fv2_alloc_init();
+
     inputForceRenderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"InputForceRT" parent:self ];
 
-    leftClickAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"LeftClick" primaryInputAction:NP_INPUT_MOUSE_BUTTON_LEFT ];
-
-    stateSet = [[[ NP Graphics ] stateSetManager ] loadStateSetFromPath:@"input.stateset" ];
-
+    inputEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Input.cgfx" ];
     clickPosition = [ inputEffect parameterWithName:@"clickPosition" ];
     radius        = [ inputEffect parameterWithName:@"radius" ];
+
+    stateset = [[[ NP Graphics ] stateSetManager ] loadStateSetFromPath:@"input.stateset" ];
 
     return self;
 }
 
 - (void) dealloc
 {
+    iv2_free(currentResolution);
+    iv2_free(resolutionLastFrame);
+
+    fv2_free(innerQuadUpperLeft);
+    fv2_free(innerQuadUpperLeft);
+    fv2_free(pixelSize);
+
     [ inputForceRenderTargetConfiguration clear ];
     [ inputForceRenderTargetConfiguration release ];
 
     [ super dealloc ];
 }
 
+- (IVector2) resolution
+{
+    return *currentResolution;
+}
+
+- (void) setResolution:(IVector2)newResolution
+{
+    currentResolution->x = newResolution.x;
+    currentResolution->y = newResolution.y;
+}
+
+- (void) addGaussianSplatToQuantity:(id)quantity
+{
+    IVector2 * controlSize = [[[ NP Graphics ] viewportManager ] currentControlSize ];
+
+    Float mouseX = [[[ NP Input ] mouse ] x ];
+    Float mouseY = [[[ NP Input ] mouse ] y ];
+
+    FVector2 normalisedMousePosition;
+
+    // shift to pixel center using + 0.5
+    normalisedMousePosition.x = (mouseX + 0.5) / (Float)(controlSize->x);
+    normalisedMousePosition.y = (mouseY + 0.5) / (Float)(controlSize->y);
+
+    FVector2 mouseFragmentPosition;
+    mouseFragmentPosition.x = normalisedMousePosition.x * currentResolution->x;
+    mouseFragmentPosition.y = normalisedMousePosition.y * currentResolution->y;
+
+    clickRadius = 20.0f;
+
+    [[ inputForceRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:quantity ];
+    [ inputForceRenderTargetConfiguration bindFBO ];
+    [ quantity attachToColorBufferIndex:0 ];
+    [ inputForceRenderTargetConfiguration activateDrawBuffers ];
+    [ inputForceRenderTargetConfiguration activateViewport ];
+    [ inputForceRenderTargetConfiguration checkFrameBufferCompleteness ];
+
+    [ stateset activate ];
+
+    [ inputEffect uploadFloatParameter:radius andValue:clickRadius ];
+    [ inputEffect uploadFVector2Parameter:clickPosition andValue:&mouseFragmentPosition ];
+    [ inputEffect activate ];
+
+    glBegin(GL_QUADS);
+        glVertex4f(innerQuadUpperLeft->x,  innerQuadUpperLeft->y,  0.0f, 1.0f);
+        glVertex4f(innerQuadUpperLeft->x,  innerQuadLowerRight->y, 0.0f, 1.0f);
+        glVertex4f(innerQuadLowerRight->x, innerQuadLowerRight->y, 0.0f, 1.0f);
+        glVertex4f(innerQuadLowerRight->x, innerQuadUpperLeft->y,  0.0f, 1.0f);
+    glEnd();
+
+    [ inputEffect deactivate ];
+
+    [ stateset deactivate ];
+
+    [ inputForceRenderTargetConfiguration unbindFBO ];
+    [ inputForceRenderTargetConfiguration deactivateDrawBuffers ];
+    [ inputForceRenderTargetConfiguration deactivateViewport ];
+}
+
+- (void) updateInnerQuadCoordinates
+{
+    pixelSize->x = 1.0f/(Float)(currentResolution->x);
+    pixelSize->y = 1.0f/(Float)(currentResolution->y);
+
+    innerQuadUpperLeft->x  = pixelSize->x;
+    innerQuadUpperLeft->y  = 1.0f - pixelSize->y;
+    innerQuadLowerRight->x = 1.0f - pixelSize->x;
+    innerQuadLowerRight->y = pixelSize->y;
+}
+
 - (void) update:(Float)frameTime
 {
-    if ( [ leftClickAction active ] == YES )
+    if ( (currentResolution->x != resolutionLastFrame->x) || (currentResolution->y != resolutionLastFrame->y) )
     {
-        IVector2 * controlSize = [[[ NP Graphics ] viewportManager ] currentControlSize ];
+        [ self updateInnerQuadCoordinates ];
 
-        Float mouseX = [[[ NP Input ] mouse ] x ];
-        Float mouseY = [[[ NP Input ] mouse ] y ];
+        [ inputForceRenderTargetConfiguration setWidth :currentResolution->x ];
+        [ inputForceRenderTargetConfiguration setHeight:currentResolution->y ];
 
-        FVector2 normalisedMousePosition;
-
-        // shift to pixel center using + 0.5
-        normalisedMousePosition.x = (mouseX + 0.5) / (Float)(controlSize->x);
-        normalisedMousePosition.y = (mouseY + 0.5) / (Float)(controlSize->y);
-
-        FVector2 mouseFragmentPosition;
-        mouseFragmentPosition.x = mouseX + 0.5f;
-        mouseFragmentPosition.y = mouseY + 0.5f;
-
-        FVector2 preProjectionMousePosition;
-        preProjectionMousePosition.x = normalisedMousePosition.x * 2.0f - 1.0f;
-        preProjectionMousePosition.y = normalisedMousePosition.y * 2.0f - 1.0f;
-        Float clickRadius = 20.0f;
-
-        FVector2 upperLeft;
-        FVector2 lowerRight;
-        upperLeft.x  = preProjectionMousePosition.x - (clickRadius/(Float)(controlSize->x));
-        upperLeft.y  = preProjectionMousePosition.y + (clickRadius/(Float)(controlSize->y));
-        lowerRight.x = preProjectionMousePosition.x + (clickRadius/(Float)(controlSize->x));
-        lowerRight.y = preProjectionMousePosition.y - (clickRadius/(Float)(controlSize->y));
-
-        id velocitySource = [[(RTVScene *)parent advection ] velocitySource ];
-        //id velocityTarget = [[(RTVScene *)parent advection ] velocityTarget ];
-
-        [ inputForceRenderTargetConfiguration setColorRenderTarget:velocitySource atIndex:0 ];
-        [ inputForceRenderTargetConfiguration checkFrameBufferCompleteness ];
-        [ inputForceRenderTargetConfiguration activate ];
-
-        // Activates additive blending
-        [ stateSet activate ];
-
-        id texture = [ velocitySource texture ];
-        [[[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ] setTexture:texture forKey:@"NPCOLORMAP0" ];
-
-        [ inputEffect uploadFloatParameter:radius andValue:clickRadius ];
-        [ inputEffect uploadFVector2Parameter:clickPosition andValue:&mouseFragmentPosition ];
-        [ inputEffect activate ];
-
-        glBegin(GL_QUADS);
-            glVertex4f(upperLeft.x , upperLeft.y , 0.0f, 1.0f);
-            glVertex4f(upperLeft.x , lowerRight.y, 0.0f, 1.0f);
-            glVertex4f(lowerRight.x, lowerRight.y, 0.0f, 1.0f);
-            glVertex4f(lowerRight.x, upperLeft.y , 0.0f, 1.0f);
-        glEnd();
-
-        [ inputEffect deactivate ];
-
-        [ inputForceRenderTargetConfiguration deactivate ];
-
-        //[[(RTVScene *)parent advection ] swapVelocityRenderTextures ];
+        resolutionLastFrame->x = currentResolution->x;
+        resolutionLastFrame->y = currentResolution->y;
     }
 }
 
