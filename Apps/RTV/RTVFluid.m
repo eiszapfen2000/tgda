@@ -30,6 +30,9 @@
     identity   = fm4_alloc_init();
     fm4_mssss_orthographic_2d_projection_matrix(projection, 0.0f, 1.0f, 0.0f, 1.0f);
 
+    deltaX = deltaY = 1.0f;
+    viscosity = 0.1;
+
     advection  = [[ RTVAdvection  alloc ] initWithName:@"Advection"  parent:self ];
     diffusion  = [[ RTVDiffusion  alloc ] initWithName:@"Diffusion"  parent:self ];
     inputForce = [[ RTVInputForce alloc ] initWithName:@"InputForce" parent:self ];
@@ -62,6 +65,9 @@
     DESTROY(inkTarget);
     DESTROY(velocitySource);
     DESTROY(velocityTarget);
+    DESTROY(divergenceTarget);
+    DESTROY(pressureSource);
+    DESTROY(pressureTarget);
 
     [ fluidRenderTargetConfiguration clear ];
     DESTROY(fluidRenderTargetConfiguration);
@@ -142,6 +148,21 @@
     return inkTarget;
 }
 
+- (id) divergenceTarget
+{
+    return divergenceTarget;
+}
+
+- (id) pressureSource
+{
+    return pressureSource;
+}
+
+- (id) pressureTarget
+{
+    return pressureTarget;
+}
+
 - (void) setResolution:(IVector2)newResolution
 {
     currentResolution->x = newResolution.x;
@@ -201,7 +222,26 @@
         }
     }
 
-    [ diffusion setNumberOfIterations:diffusionIterations ];
+    [ diffusion setNumberOfIterations:diffusionIterations ];    
+
+    Int32 pressureIterations;
+    NSString * pressureIterationsString = [ sceneConfig objectForKey:@"PressureIterations" ];
+    if ( pressureIterationsString == nil )
+    {
+        NPLOG_WARNING(@"%@: Pressure Iterations missing, using default", path);
+        pressureIterations = 21;
+    }
+    else
+    {
+        pressureIterations = [ pressureIterationsString intValue ];
+
+        if ( pressureIterations % 2 == 0 )
+        {
+            pressureIterations = diffusionIterations + 1;
+        }
+    }
+
+    [ pressure setNumberOfIterations:pressureIterations ];
 
     return YES;
 }
@@ -216,7 +256,26 @@
 
 }
 
-- (void) updateRenderTextures
+- (void) updateVelocityBiLerp
+{
+    [ fluidRenderTargetConfiguration resetColorTargetsArray ];
+    [[ fluidRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:velocitySource ];
+    [ fluidRenderTargetConfiguration bindFBO ];
+    [ velocitySource attachToColorBufferIndex:0 ];
+    [ fluidRenderTargetConfiguration activateDrawBuffers ];
+    [ fluidRenderTargetConfiguration activateViewport ];
+    [ fluidRenderTargetConfiguration checkFrameBufferCompleteness ];
+
+    [ fluidRenderTargetConfiguration copyColorBuffer:0 toTexture:velocityBiLerp ];
+
+    [ velocitySource detach ];
+    [ fluidRenderTargetConfiguration unbindFBO ];
+    [ fluidRenderTargetConfiguration deactivateDrawBuffers ];
+    [ fluidRenderTargetConfiguration deactivateViewport ];
+    [ fluidRenderTargetConfiguration resetColorTargetsArray ];
+}
+
+- (void) createVelocityRenderTextures
 {
     if ( velocitySource != nil )
     {
@@ -232,17 +291,6 @@
     {
         DESTROY(velocityBiLerp);
     }
-
-    if ( inkSource != nil )
-    {
-        DESTROY(inkSource);
-    }
-
-    if ( inkTarget != nil )
-    {
-        DESTROY(inkTarget);
-    }
-
 
     id velocitySourceRenderTexture = [ NPRenderTexture renderTextureWithName:@"VelocityOne"
                                                                         type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
@@ -273,11 +321,27 @@
                                                                   pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
                                                                    mipMapping:NO ];
 
-    [ velocityBiLerp setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    [ velocityBiLerp setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    [ velocityBiLerp setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+    [ velocityBiLerp setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
     [ velocityBiLerp setTextureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
     [ velocityBiLerp setTextureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
     [ velocityBiLerp uploadToGLWithoutData ];
+
+    velocitySource = [ velocitySourceRenderTexture retain ];
+    velocityTarget = [ velocityTargetRenderTexture retain ];
+}
+
+- (void) createInkRenderTextures
+{
+    if ( inkSource != nil )
+    {
+        DESTROY(inkSource);
+    }
+
+    if ( inkTarget != nil )
+    {
+        DESTROY(inkTarget);
+    }
 
     id inkSourceRenderTexture = [ NPRenderTexture renderTextureWithName:@"InkSource"
                                                                    type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
@@ -301,23 +365,78 @@
                                                            textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
                                                            textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
-    velocitySource = [ velocitySourceRenderTexture retain ];
-    velocityTarget = [ velocityTargetRenderTexture retain ];
     inkSource = [ inkSourceRenderTexture retain ];
     inkTarget = [ inkTargetRenderTexture retain ];
+}
+
+- (void) createDivergenceRenderTexture
+{
+    if ( divergenceTarget != nil )
+    {
+        DESTROY(divergenceTarget);
+    }
+
+    id divergenceRenderTexture = [ NPRenderTexture renderTextureWithName:@"DivergenceTarget"
+                                                                    type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
+                                                                   width:currentResolution->x
+                                                                  height:currentResolution->y
+                                                              dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
+                                                             pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
+                                                        textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                        textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                            textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
+                                                            textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+
+    divergenceTarget = [ divergenceRenderTexture retain ];
+}
+
+- (void) createPressureRenderTextures
+{
+    if ( pressureSource != nil )
+    {
+        DESTROY(pressureSource);
+    }
+
+    if ( pressureTarget != nil )
+    {
+        DESTROY(pressureTarget);
+    }
+
+    id pressureSourceRenderTexture = [ NPRenderTexture renderTextureWithName:@"PressureSource"
+                                                                   type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
+                                                                  width:currentResolution->x
+                                                                 height:currentResolution->y
+                                                             dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
+                                                            pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
+                                                       textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                       textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                           textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
+                                                           textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+
+    id pressureTargetRenderTexture = [ NPRenderTexture renderTextureWithName:@"PressureTarget"
+                                                                   type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
+                                                                  width:currentResolution->x
+                                                                 height:currentResolution->y
+                                                             dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
+                                                            pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
+                                                       textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                       textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                           textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
+                                                           textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+
+    pressureSource = [ pressureSourceRenderTexture retain ];
+    pressureTarget = [ pressureTargetRenderTexture retain ];
+}
+
+- (void) clearVelocityRenderTextures
+{
+    [ fluidRenderTargetConfiguration resetColorTargetsArray ];
 
     [[ fluidRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:velocitySource ];
     [[ fluidRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:1 withObject:velocityTarget ];
-    [[ fluidRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:2 withObject:inkSource ];
-    [[ fluidRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:3 withObject:inkTarget ];
-
     [ fluidRenderTargetConfiguration bindFBO ];
-
     [ velocitySource attachToColorBufferIndex:0 ];
     [ velocityTarget attachToColorBufferIndex:1 ];
-    [ inkSource attachToColorBufferIndex:2 ];
-    [ inkTarget attachToColorBufferIndex:3 ];
-
     [ fluidRenderTargetConfiguration activateDrawBuffers ];
     [ fluidRenderTargetConfiguration activateViewport ];
     [ fluidRenderTargetConfiguration checkFrameBufferCompleteness ];
@@ -326,28 +445,102 @@
 
     [ velocitySource detach ];
     [ velocityTarget detach ];
+
+    [ fluidRenderTargetConfiguration unbindFBO ];
+    [ fluidRenderTargetConfiguration deactivateDrawBuffers ];
+    [ fluidRenderTargetConfiguration deactivateViewport ];
+
+    [ fluidRenderTargetConfiguration resetColorTargetsArray ];
+
+    [ self updateVelocityBiLerp ];
+}
+
+- (void) clearInkRenderTextures
+{
+    [ fluidRenderTargetConfiguration resetColorTargetsArray ];
+
+    [[ fluidRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:inkSource ];
+    [[ fluidRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:1 withObject:inkTarget ];
+
+    [ fluidRenderTargetConfiguration bindFBO ];
+    [ inkSource attachToColorBufferIndex:0 ];
+    [ inkTarget attachToColorBufferIndex:1 ];
+    [ fluidRenderTargetConfiguration activateDrawBuffers ];
+    [ fluidRenderTargetConfiguration activateViewport ];
+    [ fluidRenderTargetConfiguration checkFrameBufferCompleteness ];
+
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
     [ inkSource detach ];
     [ inkTarget detach ];
 
     [ fluidRenderTargetConfiguration unbindFBO ];
     [ fluidRenderTargetConfiguration deactivateDrawBuffers ];
     [ fluidRenderTargetConfiguration deactivateViewport ];
+
+    [ fluidRenderTargetConfiguration resetColorTargetsArray ];
+}
+
+- (void) clearDivergenceRenderTexture
+{
     [ fluidRenderTargetConfiguration resetColorTargetsArray ];
 
-    [[ fluidRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:velocitySource ];
+    [[ fluidRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:divergenceTarget ];
+
     [ fluidRenderTargetConfiguration bindFBO ];
-    [ velocitySource attachToColorBufferIndex:0 ];
+    [ divergenceTarget attachToColorBufferIndex:0 ];
     [ fluidRenderTargetConfiguration activateDrawBuffers ];
     [ fluidRenderTargetConfiguration activateViewport ];
     [ fluidRenderTargetConfiguration checkFrameBufferCompleteness ];
 
-    [ fluidRenderTargetConfiguration copyColorBuffer:0 toTexture:velocityBiLerp ];
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
 
-    [ velocitySource detach ];
+    [ divergenceTarget detach ];
+
     [ fluidRenderTargetConfiguration unbindFBO ];
     [ fluidRenderTargetConfiguration deactivateDrawBuffers ];
     [ fluidRenderTargetConfiguration deactivateViewport ];
+
     [ fluidRenderTargetConfiguration resetColorTargetsArray ];
+}
+
+- (void) clearPressureRenderTextures
+{
+    [ fluidRenderTargetConfiguration resetColorTargetsArray ];
+
+    [[ fluidRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:pressureSource ];
+    [[ fluidRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:1 withObject:pressureTarget ];
+
+    [ fluidRenderTargetConfiguration bindFBO ];
+    [ pressureSource attachToColorBufferIndex:0 ];
+    [ pressureTarget attachToColorBufferIndex:1 ];
+    [ fluidRenderTargetConfiguration activateDrawBuffers ];
+    [ fluidRenderTargetConfiguration activateViewport ];
+    [ fluidRenderTargetConfiguration checkFrameBufferCompleteness ];
+
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
+    [ pressureSource detach ];
+    [ pressureTarget detach ];
+
+    [ fluidRenderTargetConfiguration unbindFBO ];
+    [ fluidRenderTargetConfiguration deactivateDrawBuffers ];
+    [ fluidRenderTargetConfiguration deactivateViewport ];
+
+    [ fluidRenderTargetConfiguration resetColorTargetsArray ];
+}
+
+- (void) updateRenderTextures
+{
+    [ self createVelocityRenderTextures ];
+    [ self createInkRenderTextures ];
+    [ self createDivergenceRenderTexture ];
+    [ self createPressureRenderTextures ];
+
+    [ self clearVelocityRenderTextures ];
+    [ self clearInkRenderTextures ];
+    [ self clearDivergenceRenderTexture ];
+    [ self clearPressureRenderTextures ];
 }
 
 - (void) update:(Float)frameTime
@@ -360,34 +553,79 @@
         resolutionLastFrame->y = currentResolution->y;
     }
 
+    // Updates rendertarget resolution and other stuff
     [ advection  update:frameTime ];
     [ inputForce update:frameTime ];
     [ diffusion  update:frameTime ];
+    [ divergence update:frameTime ];
 
+    // Ortho projection
     NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
     [ trafo setProjectionMatrix:projection ];
 
+    // Fluid Dynamics start here
 
-    /*[ advection advectQuantityFrom:inkSource
+    // Copy velocity texture, so that we have a nearest neighbor sampled and a bilinear filtered velocity texture
+    [ self updateVelocityBiLerp ];
+
+    // Advect velocity
+
+    [ advection advectQuantityFrom:velocityBiLerp
+                                to:velocityTarget
+                     usingVelocity:[velocitySource texture]
+                      andFrameTime:frameTime ];
+
+    // Advect ink
+
+    [ advection advectQuantityFrom:[inkSource texture]
                                 to:inkTarget
-                     usingVelocity:velocitySource
-                      andFrameTime:frameTime ];*/
+                     usingVelocity:[velocitySource texture]
+                      andFrameTime:frameTime ];
 
+    // Diffuse velocity
 
-    //[ diffusion diffuseQuantityFrom:inkTarget to:inkSource ];
+    [ diffusion diffuseQuantityFrom:velocityTarget
+                                 to:velocitySource
+                        usingDeltaX:deltaX
+                             deltaY:deltaY
+                          viscosity:viscosity
+                       andFrameTime:frameTime ];
+
+    // Diffuse ink
+
+    [ diffusion diffuseQuantityFrom:inkTarget
+                                 to:inkSource
+                        usingDeltaX:deltaX
+                             deltaY:deltaY
+                          viscosity:viscosity
+                       andFrameTime:frameTime ];
+
+    // Add input force
 
     if ( [ addVelocityAction active ] == YES )
     {
-        //[ inputForce addGaussianSplatToQuantity:inkSource ];
+        [ inputForce addGaussianSplatToQuantity:velocitySource ];
     }
 
     if ( [ addInkAction active ] == YES )
     {
-        //NSLog(@"Ink");
+        [ inputForce addGaussianSplatToQuantity:inkSource ];
     }
 
+    // Compute divergence
 
+    [ divergence computeDivergenceFrom:[velocitySource texture]
+                                    to:divergenceTarget
+                           usingDeltaX:deltaX ];
 
+    /*[ pressure computePressureFrom:pressureSource 
+                                to:pressureTarget
+                   usingDivergence:divergenceTarget
+                            deltaX:deltaX
+                            deltaY:deltaY
+                      andFrameTime:frameTime ];*/
+
+    // Reset projection
     [ trafo setProjectionMatrix:identity ];
 }
 

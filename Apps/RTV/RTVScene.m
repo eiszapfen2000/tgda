@@ -73,9 +73,7 @@
 
     ///[[[ NP Graphics ] stateConfiguration ] activate ];
 
-//    [[[ fluid inkTarget ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
-//    [[[ fluid inkTarget ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
-    [[ fluid velocityBiLerp ] activateAtColorMapIndex:0 ];
+    [[[ fluid divergenceTarget ] texture ] activateAtColorMapIndex:0 ];
 
     [ fullscreenEffect activate ];
 
@@ -84,40 +82,16 @@
         glVertex4f(-1.0f,1.0f,0.0f,1.0f);
 
         glTexCoord2f(0.0f,0.0f);
-        glVertex4f(-1.0f,0.0f,0.0f,1.0f);
-
-        glTexCoord2f(1.0f,0.0f);
-        glVertex4f(1.0f,0.0f,0.0f,1.0f);
-
-        glTexCoord2f(1.0f,1.0f);
-        glVertex4f(1.0f,1.0f,0.0f,1.0f);
-    glEnd();
-
-    [ fullscreenEffect deactivate ];
-
-    [[[ fluid inkTarget ] texture ] activateAtColorMapIndex:0 ];
-
-    [ fullscreenEffect activate ];
-
-    glBegin(GL_QUADS);
-        glTexCoord2f(0.0f,1.0f);            
-        glVertex4f(-1.0f,0.0f,0.0f,1.0f);
-
-        glTexCoord2f(0.0f,0.0f);
         glVertex4f(-1.0f,-1.0f,0.0f,1.0f);
 
         glTexCoord2f(1.0f,0.0f);
         glVertex4f(1.0f,-1.0f,0.0f,1.0f);
 
         glTexCoord2f(1.0f,1.0f);
-        glVertex4f(1.0f,0.0f,0.0f,1.0f);
+        glVertex4f(1.0f,1.0f,0.0f,1.0f);
     glEnd();
 
     [ fullscreenEffect deactivate ];
-
-//    [[[ fluid inkTarget ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-//    [[[ fluid inkTarget ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-
 
     FVector2 pos = {-1.0f, 1.0f };
     [ font renderString:[NSString stringWithFormat:@"%d %f",[[[ NP Core ] timer ] fps ],[[[ NP Core ] timer ] frameTime ] ] atPosition:&pos withSize:0.05f ];

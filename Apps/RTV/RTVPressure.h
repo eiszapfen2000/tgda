@@ -1,6 +1,8 @@
 #import "Core/NPObject/NPObject.h"
+#import "Core/Math/NpMath.h"
+#import "Graphics/npgl.h"
 
-@interface RTVDiffusion : NPObject
+@interface RTVPressure : NPObject
 {
     IVector2 * currentResolution;
     IVector2 * resolutionLastFrame;
@@ -9,9 +11,9 @@
     FVector2 * innerQuadLowerRight;
     FVector2 * pixelSize;
 
-    id diffusionRenderTargetConfiguration;
+    id pressureRenderTargetConfiguration;
+    id pressureEffect;
 
-    id diffusionEffect;
     CGparameter alpha;
     CGparameter rBeta;
 
@@ -29,11 +31,11 @@
 - (void) setNumberOfIterations:(Int32)newNumberOfIterations;
 - (void) setResolution:(IVector2)newResolution;
 
-- (void) diffuseQuantityFrom:(id)quantitySource
-                          to:(id)quantityTarget
-                 usingDeltaX:(Float)deltaX
+- (void) computePressureFrom:(id)pressureSource 
+                          to:(id)pressureTarget
+             usingDivergence:(id)divergence
+                      deltaX:(Float)deltaX
                       deltaY:(Float)deltaY
-                   viscosity:(Float)viscosity
                 andFrameTime:(Float)frameTime
                             ;
 

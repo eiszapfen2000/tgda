@@ -2,10 +2,17 @@
 #import "Core/Math/NpMath.h"
 #import "Graphics/npgl.h"
 
+@class NPTexture;
+@class NPRenderTexture;
+
 @interface RTVDivergence : NPObject
 {
     IVector2 * currentResolution;
     IVector2 * resolutionLastFrame;
+
+    FVector2 * innerQuadUpperLeft;
+    FVector2 * innerQuadLowerRight;
+    FVector2 * pixelSize;
 
     id divergenceRenderTargetConfiguration;
     id divergenceEffect;
@@ -20,7 +27,10 @@
 - (IVector2) resolution;
 - (void) setResolution:(IVector2)newResolution;
 
-- (void) computeDivergenceFrom:(id)source to:(id)target;
+- (void) computeDivergenceFrom:(NPTexture *)source
+                            to:(NPRenderTexture *)target
+                   usingDeltaX:(Float)deltaX
+                              ;
 
 - (void) update:(Float)frameTime;
 - (void) render;

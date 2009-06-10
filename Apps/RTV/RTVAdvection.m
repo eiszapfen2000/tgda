@@ -66,14 +66,11 @@
     currentResolution->y = newResolution.y;
 }
 
-- (void) advectQuantityFrom:(id)quantitySource
-                         to:(id)quantityTarget
-              usingVelocity:(id)velocity
+- (void) advectQuantityFrom:(NPTexture *)quantitySource
+                         to:(NPRenderTexture *)quantityTarget
+              usingVelocity:(NPTexture *)velocity
                andFrameTime:(Float)frameTime
 {
-    //[[ quantitySource texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
-    //[[ quantitySource texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
-
     [[ advectionRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:quantityTarget   ];
     [[ advectionRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:1 withObject:temporaryStorage ];
     [ advectionRenderTargetConfiguration bindFBO ];
@@ -85,8 +82,8 @@
 
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
 
-    [[ velocity       texture ] activateAtColorMapIndex:0 ];
-    [[ quantitySource texture ] activateAtColorMapIndex:1 ];
+    [ velocity       activateAtColorMapIndex:0 ];
+    [ quantitySource activateAtColorMapIndex:1 ];
 
     [ advectionEffect uploadFloatParameter:timestep andValue:frameTime ];
     [ advectionEffect activateTechniqueWithName:@"advect" ];

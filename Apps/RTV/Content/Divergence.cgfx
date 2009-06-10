@@ -1,5 +1,6 @@
 sampler2D velocity : NPCOLORMAP0;
 float2 rViewport   : NPRVIEWPORTSIZE;
+float4x4 mvpmatrix : NPMODELVIEWPROJECTION;
 
 float rHalfDX;
 
@@ -17,7 +18,7 @@ DivergenceVOutput divergence_vertexshader(in DivergenceVInput input)
 {
 	DivergenceVOutput output;
 
-    output.position = input.position;
+	output.position = mul(mvpmatrix, input.position);
 	
 	return output;
 }
@@ -34,12 +35,13 @@ DivergenceFOutput divergence_fragmentshader(in DivergenceVOutput input,
 
     float2 texcoord = rasterPos.xy * rViewport;
 
-    float4 xL = tex2D(velocity, texcoord - float2(rViewport.x, 0.0f));
-    float4 xR = tex2D(velocity, texcoord + float2(rViewport.x, 0.0f));
-    float4 xB = tex2D(velocity, texcoord - float2(0.0f, rViewport.y));
-    float4 xT = tex2D(velocity, texcoord + float2(0.0f, rViewport.y));
+    float2 xL = tex2D(velocity, texcoord - float2(rViewport.x, 0.0f)).xy;
+    float2 xR = tex2D(velocity, texcoord + float2(rViewport.x, 0.0f)).xy;
+    float2 xB = tex2D(velocity, texcoord - float2(0.0f, rViewport.y)).xy;
+    float2 xT = tex2D(velocity, texcoord + float2(0.0f, rViewport.y)).xy;
 
-    output.divergence = ((xR - xL) + (xT - xB)) * rHalfDX;
+    output.divergence = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    output.divergence.xy = ((xR.x - xL.x) + (xT.y - xB.y)) * rHalfDX;
 
 	return output;
 }
