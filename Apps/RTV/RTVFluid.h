@@ -10,6 +10,10 @@
     FMatrix4 * projection;
     FMatrix4 * identity;
 
+    Float deltaX;
+    Float deltaY;
+    Float viscosity;
+
     id advection;
     id diffusion;
     id inputForce;
@@ -21,6 +25,9 @@
     id velocityBiLerp;
     id inkSource;
     id inkTarget;
+    id divergenceTarget;
+    id pressureSource;
+    id pressureTarget;
 
     id addVelocityAction;
     id addInkAction;
@@ -50,6 +57,9 @@
 - (id) velocityBiLerp;
 - (id) inkSource;
 - (id) inkTarget;
+- (id) divergenceTarget;
+- (id) pressureSource;
+- (id) pressureTarget;
 
 - (void) setResolution:(IVector2)newResolution;
 

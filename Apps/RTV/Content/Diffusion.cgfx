@@ -1,5 +1,6 @@
 sampler2D velocity : NPCOLORMAP0;
 float2 rViewport   : NPRVIEWPORTSIZE;
+float4x4 mvpmatrix  : NPMODELVIEWPROJECTION;
 
 float alpha;
 float rBeta;
@@ -18,7 +19,7 @@ DiffuseVOutput diffusion_vertexshader(in DiffuseVInput input)
 {
 	DiffuseVOutput output;
 
-    output.position = input.position;
+	output.position = mul(mvpmatrix, input.position);
 	
 	return output;
 }
@@ -43,7 +44,7 @@ DiffuseFOutput diffusion_fragmentshader(in DiffuseVOutput input,
     float4 bC = tex2D(velocity, texcoord);
 
     output.diffused = (xL + xR + xB + xT + alpha * bC) * rBeta;
-//  output.diffused = float4(1.0f, 0.0f, 0.0f, 0.0f);
+    //output.diffused = float4(0.0f, 1.0f, 0.0f, 0.0f);
 
 	return output;
 }

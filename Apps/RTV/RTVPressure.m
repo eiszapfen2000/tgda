@@ -1,12 +1,12 @@
 #import "NP.h"
 #import "RTVCore.h"
-#import "RTVDiffusion.h"
+#import "RTVPressure.h"
 
-@implementation RTVDiffusion
+@implementation RTVPressure
 
 - (id) init
 {
-    return [ self initWithName:@"Diffusion" ];
+    return [ self initWithName:@"Pressure" ];
 }
 
 - (id) initWithName:(NSString *)newName
@@ -25,11 +25,11 @@
     innerQuadLowerRight = fv2_alloc_init();
     pixelSize = fv2_alloc_init();
 
-    diffusionEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Diffusion.cgfx" ];
-    alpha = [ diffusionEffect parameterWithName:@"alpha" ];
-    rBeta = [ diffusionEffect parameterWithName:@"rBeta" ];
+    pressureEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Pressure.cgfx" ];
+    alpha = [ pressureEffect parameterWithName:@"alpha" ];
+    rBeta = [ pressureEffect parameterWithName:@"rBeta" ];
 
-    diffusionRenderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"DiffusionRT" parent:self ];
+    pressureRenderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"PressureRT" parent:self ];
 
     numberOfIterations = 1;
 
@@ -45,8 +45,8 @@
     fv2_free(innerQuadUpperLeft);
     fv2_free(pixelSize);
 
-    [ diffusionRenderTargetConfiguration clear ];
-    [ diffusionRenderTargetConfiguration release ];
+    [ pressureRenderTargetConfiguration clear ];
+    [ pressureRenderTargetConfiguration release ];
 
     [ super dealloc ];
 }
@@ -72,36 +72,39 @@
     currentResolution->y = newResolution.y;
 }
 
-- (void) diffuseQuantityFrom:(id)quantitySource
-                          to:(id)quantityTarget
-                 usingDeltaX:(Float)deltaX
+- (void) computePressureFrom:(id)pressureSource 
+                          to:(id)pressureTarget
+             usingDivergence:(id)divergence
+                      deltaX:(Float)deltaX
                       deltaY:(Float)deltaY
-                   viscosity:(Float)viscosity
                 andFrameTime:(Float)frameTime
 {
-    id source = quantitySource;
-    id target = quantityTarget;
+    #warning FIXME clear pressure every frame
+
+    id source = pressureSource;
+    id target = pressureTarget;
     id tmp;
 
-    Float alphaValue = (deltaX * deltaY) / (viscosity * frameTime);
-    Float rBetaValue = 1.0f / (4.0f + alphaValue);
+    Float alphaValue = -(deltaX * deltaY);
+    Float rBetaValue = 1.0f / 4.0f;
 
-    [ diffusionRenderTargetConfiguration bindFBO ];
-    [ diffusionRenderTargetConfiguration activateViewport ];
+    [ pressureRenderTargetConfiguration bindFBO ];
+    [ pressureRenderTargetConfiguration activateViewport ];
 
-    [ diffusionEffect uploadFloatParameter:alpha andValue:alphaValue  ];
-    [ diffusionEffect uploadFloatParameter:rBeta andValue:rBetaValue ];
+    [ pressureEffect uploadFloatParameter:alpha andValue:alphaValue  ];
+    [ pressureEffect uploadFloatParameter:rBeta andValue:rBetaValue ];
 
     for ( Int i = 0; i < numberOfIterations; i++ )
     {
-        [[ diffusionRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:target ];
+        [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:target ];
         [ target attachToColorBufferIndex:0 ];
-        [ diffusionRenderTargetConfiguration activateDrawBuffers ];
+        [ pressureRenderTargetConfiguration activateDrawBuffers ];
 
         [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
 
-        [[ source texture ] activateAtColorMapIndex:0 ];
-        [ diffusionEffect activateTechniqueWithName:@"diffuse" ];
+        [[ source texture ]     activateAtColorMapIndex:0 ];
+        [[ divergence texture ] activateAtColorMapIndex:1 ];
+        [ pressureEffect activateTechniqueWithName:@"compute_pressure" ];
 
         glBegin(GL_QUADS);
             glVertex4f(innerQuadUpperLeft->x,  innerQuadUpperLeft->y,  0.0f, 1.0f);
@@ -110,16 +113,16 @@
             glVertex4f(innerQuadLowerRight->x, innerQuadUpperLeft->y,  0.0f, 1.0f);
         glEnd();
 
-        [ diffusionEffect deactivate ];
+        [ pressureEffect deactivate ];
 
         tmp = source;
         source = target;
         target = tmp;
     }
 
-    [ diffusionRenderTargetConfiguration unbindFBO ];
-    [ diffusionRenderTargetConfiguration deactivateDrawBuffers ];
-    [ diffusionRenderTargetConfiguration deactivateViewport ];
+    [ pressureRenderTargetConfiguration unbindFBO ];
+    [ pressureRenderTargetConfiguration deactivateDrawBuffers ];
+    [ pressureRenderTargetConfiguration deactivateViewport ];
 }
 
 - (void) updateInnerQuadCoordinates
@@ -139,8 +142,8 @@
     {
         [ self updateInnerQuadCoordinates ];
 
-        [ diffusionRenderTargetConfiguration setWidth :currentResolution->x ];
-        [ diffusionRenderTargetConfiguration setHeight:currentResolution->y ];
+        [ pressureRenderTargetConfiguration setWidth :currentResolution->x ];
+        [ pressureRenderTargetConfiguration setHeight:currentResolution->y ];
 
         resolutionLastFrame->x = currentResolution->x;
         resolutionLastFrame->y = currentResolution->y;
@@ -149,6 +152,7 @@
 
 - (void) render
 {
+
 }
 
 @end

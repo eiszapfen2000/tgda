@@ -2,6 +2,9 @@
 #import "Core/Math/NpMath.h"
 #import "Graphics/npgl.h"
 
+@class NPTexture;
+@class NPRenderTexture;
+
 @interface RTVAdvection : NPObject
 {
     IVector2 * currentResolution;
@@ -28,9 +31,9 @@
 
 - (void) setResolution:(IVector2)newResolution;
 
-- (void) advectQuantityFrom:(id)quantitySource
-                         to:(id)quantityTarget
-              usingVelocity:(id)velocity
+- (void) advectQuantityFrom:(NPTexture *)quantitySource
+                         to:(NPRenderTexture *)quantityTarget
+              usingVelocity:(NPTexture *)velocity
                andFrameTime:(Float)frameTime
                            ;
 
