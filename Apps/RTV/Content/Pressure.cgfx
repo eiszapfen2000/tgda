@@ -1,0 +1,62 @@
+sampler2D pressure   : NPCOLORMAP0;
+sampler2D divergence : NPCOLORMAP1;
+float4x4 mvp        : NPMODELVIEWPROJECTION;
+float2 rViewport    : NPRVIEWPORTSIZE;
+
+float alpha;
+float rBeta;
+
+struct PressureVInput
+{
+	float4 position : POSITION;
+};
+
+struct PressureVOutput
+{
+	float4 position : POSITION;
+};
+
+PressureVOutput pressure_vertexshader(in PressureVInput input)
+{
+	PressureVOutput output;
+
+    output.position = mul(mvp, input.position);
+	
+	return output;
+}
+
+struct PressureFOutput
+{
+    float4 diffused : COLOR0;
+};
+
+PressureFOutput pressure_fragmentshader(in PressureVOutput input,
+                                        in float4 rasterPos : WPOS)
+{
+	PressureFOutput output;
+
+    float2 texcoord = rasterPos.xy * rViewport;
+
+    float4 xL = tex2D(pressure, texcoord - float2(rViewport.x, 0.0f));
+    float4 xR = tex2D(pressure, texcoord + float2(rViewport.x, 0.0f));
+    float4 xB = tex2D(pressure, texcoord - float2(0.0f, rViewport.y));
+    float4 xT = tex2D(pressure, texcoord + float2(0.0f, rViewport.y));
+
+    float4 bC = tex2D(divergence, texcoord);
+
+    output.diffused = (xL + xR + xB + xT + alpha * bC) * rBeta;
+    //output.diffused = float4(1.0f, 0.0f, 0.0f, 0.0f);
+
+	return output;
+}
+
+technique compute_pressure
+{
+	pass
+	{
+		FragmentProgram = compile fp40 pressure_fragmentshader();
+		VertexProgram   = compile vp40 pressure_vertexshader();
+	}
+}
+
+
