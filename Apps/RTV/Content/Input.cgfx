@@ -40,12 +40,7 @@ FOUTPUTDATA mfragmentshader(in VOUTPUTDATA input,
 
     float brak = exp(-exponent);
 
-    /*if ( sourceVelocity.r > 0.0f )
-        output.color = float4(brak/4.0f,0.0f,0.0f,0.0f);
-    else
-        output.color = float4(0.0f,0.0f,1.0f,0.0f);*/
-
-    output.color = float4(brak, brak, 0.0f,1.0f);
+    output.color = float4(brak, brak, 0.0f, 1.0f);
 
 	return output;
 }

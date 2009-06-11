@@ -2,6 +2,9 @@
 #import "Core/Math/NpMath.h"
 #import "Graphics/npgl.h"
 
+@class NPTexture;
+@class NPRenderTexture;
+
 @interface RTVPressure : NPObject
 {
     IVector2 * currentResolution;
@@ -13,9 +16,11 @@
 
     id pressureRenderTargetConfiguration;
     id pressureEffect;
+    id gradientSubtractionEffect;
 
     CGparameter alpha;
     CGparameter rBeta;
+    CGparameter rHalfDX;
 
     Int32 numberOfIterations;
 }
@@ -31,13 +36,19 @@
 - (void) setNumberOfIterations:(Int32)newNumberOfIterations;
 - (void) setResolution:(IVector2)newResolution;
 
-- (void) computePressureFrom:(id)pressureSource 
+- (void) computePressureFrom:(id)pressureSource
                           to:(id)pressureTarget
              usingDivergence:(id)divergence
                       deltaX:(Float)deltaX
                       deltaY:(Float)deltaY
-                andFrameTime:(Float)frameTime
                             ;
+
+- (void) subtractGradientFromVelocity:(NPTexture *)velocitySource
+                                   to:(NPRenderTexture *)velocityTarget
+                        usingPressure:(NPTexture *)pressure
+                               deltaX:(Float)deltaX
+                                     ;
+
 
 - (void) update:(Float)frameTime;
 - (void) render;
