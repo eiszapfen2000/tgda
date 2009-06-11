@@ -1,6 +1,6 @@
 {
     Name = "Test";
-    FluidResolution = ("256", "256" );
+    FluidResolution = ("512", "512" );
     DiffusionIterations = "21";
     PressureIterations = "21";
 }

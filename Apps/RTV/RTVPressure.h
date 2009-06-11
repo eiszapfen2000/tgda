@@ -14,6 +14,7 @@
     FVector2 * innerQuadLowerRight;
     FVector2 * pixelSize;
 
+    id temporaryStorage;
     id pressureRenderTargetConfiguration;
     id pressureEffect;
     id gradientSubtractionEffect;

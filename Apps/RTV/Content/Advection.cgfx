@@ -91,11 +91,9 @@ BorderFOutput border_fragmentshader(in BorderVOutput input,
 {
 	BorderFOutput output;
 
-    //float2 texcoord = rasterPos.xy * rViewport + offset;
     float2 texcoord = rasterPos.xy * rViewport + input.texcoord;
 
-    //output.color = tex2D(velocity, texcoord);
-    output.color = float4(0.0f,0.0f,1.0f,0.0f);
+    output.color = -tex2D(velocity, texcoord);
 
 	return output;
 }

@@ -14,8 +14,8 @@
     FVector2 * innerQuadLowerRight;
     FVector2 * pixelSize;
 
-    id advectionRenderTargetConfiguration;
     id temporaryStorage;
+    id advectionRenderTargetConfiguration;
 
     id advectionEffect;
     CGparameter timestep;
