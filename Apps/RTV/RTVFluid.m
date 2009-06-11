@@ -558,6 +558,7 @@
     [ inputForce update:frameTime ];
     [ diffusion  update:frameTime ];
     [ divergence update:frameTime ];
+    [ pressure   update:frameTime ];
 
     // Ortho projection
     NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
@@ -609,6 +610,7 @@
 
     if ( [ addInkAction active ] == YES )
     {
+        NSLog(@"addInk");
         [ inputForce addGaussianSplatToQuantity:inkSource ];
     }
 
@@ -618,12 +620,22 @@
                                     to:divergenceTarget
                            usingDeltaX:deltaX ];
 
-    /*[ pressure computePressureFrom:pressureSource 
+    // Compute pressure
+
+    [ pressure computePressureFrom:pressureSource 
                                 to:pressureTarget
                    usingDivergence:divergenceTarget
                             deltaX:deltaX
-                            deltaY:deltaY
-                      andFrameTime:frameTime ];*/
+                            deltaY:deltaY ];
+
+    [ pressure subtractGradientFromVelocity:[velocitySource texture]
+                                         to:velocityTarget
+                              usingPressure:[ pressureTarget texture ]
+                                     deltaX:deltaX ];
+
+    id tmp = velocitySource;
+    velocitySource = velocityTarget;
+    velocityTarget = tmp;
 
     // Reset projection
     [ trafo setProjectionMatrix:identity ];

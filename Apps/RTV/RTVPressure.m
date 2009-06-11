@@ -28,6 +28,8 @@
     pressureEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Pressure.cgfx" ];
     alpha = [ pressureEffect parameterWithName:@"alpha" ];
     rBeta = [ pressureEffect parameterWithName:@"rBeta" ];
+    gradientSubtractionEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"GradientSubtraction.cgfx" ];
+    rHalfDX = [ gradientSubtractionEffect parameterWithName:@"rHalfDX" ];
 
     pressureRenderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"PressureRT" parent:self ];
 
@@ -77,7 +79,6 @@
              usingDivergence:(id)divergence
                       deltaX:(Float)deltaX
                       deltaY:(Float)deltaY
-                andFrameTime:(Float)frameTime
 {
     #warning FIXME clear pressure every frame
 
@@ -120,6 +121,43 @@
         target = tmp;
     }
 
+    [ pressureRenderTargetConfiguration unbindFBO ];
+    [ pressureRenderTargetConfiguration deactivateDrawBuffers ];
+    [ pressureRenderTargetConfiguration deactivateViewport ];
+}
+
+- (void) subtractGradientFromVelocity:(NPTexture *)velocitySource
+                                   to:(NPRenderTexture *)velocityTarget
+                        usingPressure:(NPTexture *)pressure
+                               deltaX:(Float)deltaX
+{
+    Float rHalfDXValue = (1.0f / deltaX) * 0.5f;
+
+    [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:velocityTarget ];
+    [ pressureRenderTargetConfiguration bindFBO ];
+    [ velocityTarget attachToColorBufferIndex:0 ];
+    [ pressureRenderTargetConfiguration activateDrawBuffers ];
+    [ pressureRenderTargetConfiguration activateViewport ];
+    [ pressureRenderTargetConfiguration checkFrameBufferCompleteness ];
+
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
+    [ pressure       activateAtColorMapIndex:0 ];
+    [ velocitySource activateAtColorMapIndex:1 ];
+
+    [ gradientSubtractionEffect uploadFloatParameter:rHalfDX andValue:rHalfDXValue  ];
+    [ gradientSubtractionEffect activateTechniqueWithName:@"gradient_subtraction" ];
+
+    glBegin(GL_QUADS);
+        glVertex4f(innerQuadUpperLeft->x,  innerQuadUpperLeft->y,  0.0f, 1.0f);
+        glVertex4f(innerQuadUpperLeft->x,  innerQuadLowerRight->y, 0.0f, 1.0f);
+        glVertex4f(innerQuadLowerRight->x, innerQuadLowerRight->y, 0.0f, 1.0f);
+        glVertex4f(innerQuadLowerRight->x, innerQuadUpperLeft->y,  0.0f, 1.0f);
+    glEnd();
+
+    [ gradientSubtractionEffect deactivate ];
+
+    [ velocityTarget detach ]; 
     [ pressureRenderTargetConfiguration unbindFBO ];
     [ pressureRenderTargetConfiguration deactivateDrawBuffers ];
     [ pressureRenderTargetConfiguration deactivateViewport ];
