@@ -97,7 +97,7 @@
 
     [ advectionEffect deactivate ];
 
-    /*[[ advectionRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:quantityTarget ];
+    [[ advectionRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:quantityTarget ];
     [[ advectionRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:1 withObject:[NSNull null]  ];
     [ temporaryStorage detach ];
     [ advectionRenderTargetConfiguration activateDrawBuffers ];
@@ -135,16 +135,12 @@
         glVertex4f(1.0f, pixelSize->y*0.5f, 0.0f, 1.0f);
     glEnd();
 
-    [ advectionEffect deactivate ];*/
+    [ advectionEffect deactivate ];
 
-    [ temporaryStorage detach ];
     [ quantityTarget detach ];    
     [ advectionRenderTargetConfiguration unbindFBO ];
     [ advectionRenderTargetConfiguration deactivateDrawBuffers ];
     [ advectionRenderTargetConfiguration deactivateViewport ];
-
-    //[[ quantitySource texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    //[[ quantitySource texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
 }
 
 - (void) updateInnerQuadCoordinates

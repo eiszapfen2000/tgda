@@ -40,7 +40,7 @@ FOUTPUTDATA mfragmentshader(in VOUTPUTDATA input,
 
     float brak = exp(-exponent);
 
-    output.color = float4(brak, brak, 0.0f, 1.0f);
+    output.color = float4(brak, brak, brak, 1.0f);
 
 	return output;
 }

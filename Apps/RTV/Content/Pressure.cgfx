@@ -6,6 +6,8 @@ float2 rViewport    : NPRVIEWPORTSIZE;
 float alpha;
 float rBeta;
 
+/*-----------------------------------------------------------------------*/
+
 struct PressureVInput
 {
 	float4 position : POSITION;
@@ -25,9 +27,36 @@ PressureVOutput pressure_vertexshader(in PressureVInput input)
 	return output;
 }
 
+/*-----------------------------------------------------------------------*/
+
+struct BorderVInput
+{
+	float4 position			: POSITION;
+    float2 texcoord         : TEXCOORD0;
+};
+
+struct BorderVOutput
+{
+	float4 position			: POSITION;
+    float2 texcoord         : TEXCOORD0;
+};
+
+BorderVOutput border_vertexshader(in BorderVInput input)
+{
+	BorderVOutput output;
+
+	output.position = mul(mvp, input.position);
+    output.texcoord = input.texcoord;
+	
+	return output;
+}
+
+/*-----------------------------------------------------------------------*/
+
 struct PressureFOutput
 {
-    float4 diffused : COLOR0;
+    float4 pressure : COLOR0;
+    float4 temp     : COLOR1;
 };
 
 PressureFOutput pressure_fragmentshader(in PressureVOutput input,
@@ -44,11 +73,34 @@ PressureFOutput pressure_fragmentshader(in PressureVOutput input,
 
     float4 bC = tex2D(divergence, texcoord);
 
-    output.diffused = (xL + xR + xB + xT + alpha * bC) * rBeta;
-    //output.diffused = float4(1.0f, 0.0f, 0.0f, 0.0f);
+    float4 result = (xL + xR + xB + xT + alpha * bC) * rBeta;
+
+    output.pressure = result;
+    output.temp     = result;
 
 	return output;
 }
+
+/*-----------------------------------------------------------------------*/
+
+struct BorderFOutput
+{
+	float4 color		: COLOR0;
+};
+
+BorderFOutput border_fragmentshader(in BorderVOutput input,
+                                    in float4 rasterPos : WPOS)
+{
+	BorderFOutput output;
+
+    float2 texcoord = rasterPos.xy * rViewport + input.texcoord;
+
+    output.color = tex2D(pressure, texcoord);
+
+	return output;
+}
+
+/*-----------------------------------------------------------------------*/
 
 technique compute_pressure
 {
@@ -57,6 +109,15 @@ technique compute_pressure
 		FragmentProgram = compile fp40 pressure_fragmentshader();
 		VertexProgram   = compile vp40 pressure_vertexshader();
 	}
+}
+
+technique border
+{
+    pass
+    {
+		FragmentProgram = compile fp40 border_fragmentshader();
+		VertexProgram   = compile vp40 border_vertexshader();
+    }
 }
 
 

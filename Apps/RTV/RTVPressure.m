@@ -47,6 +47,8 @@
     fv2_free(innerQuadUpperLeft);
     fv2_free(pixelSize);
 
+    DESTROY(temporaryStorage);
+
     [ pressureRenderTargetConfiguration clear ];
     [ pressureRenderTargetConfiguration release ];
 
@@ -98,8 +100,11 @@
     for ( Int i = 0; i < numberOfIterations; i++ )
     {
         [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:target ];
+        [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:1 withObject:temporaryStorage ];
         [ target attachToColorBufferIndex:0 ];
+        [ temporaryStorage attachToColorBufferIndex:1 ];
         [ pressureRenderTargetConfiguration activateDrawBuffers ];
+        [ pressureRenderTargetConfiguration checkFrameBufferCompleteness ];
 
         [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
 
@@ -115,6 +120,48 @@
         glEnd();
 
         [ pressureEffect deactivate ];
+
+        [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:target ];
+        [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:1 withObject:[NSNull null]  ];
+        [ temporaryStorage detach ];
+        [ pressureRenderTargetConfiguration activateDrawBuffers ];
+        [ pressureRenderTargetConfiguration checkFrameBufferCompleteness ];
+
+        [[ temporaryStorage texture ] activateAtColorMapIndex:0 ];
+
+        [ pressureEffect activateTechniqueWithName:@"border" ];
+
+        glBegin(GL_LINES);
+            glTexCoord2f(pixelSize->x, 0.0f);
+            glVertex4f(pixelSize->x*0.5f, 1.0f, 0.0f, 1.0f);
+            glTexCoord2f(pixelSize->x, 0.0f);
+            glVertex4f(pixelSize->x*0.5f, 0.0f, 0.0f, 1.0f);
+        glEnd();
+
+        glBegin(GL_LINES);
+            glTexCoord2f(-pixelSize->x, 0.0f);
+            glVertex4f(1.0f-pixelSize->x*0.5f, 1.0f, 0.0f, 1.0f);
+            glTexCoord2f(-pixelSize->x, 0.0f);
+            glVertex4f(1.0f-pixelSize->x*0.5f, 0.0f, 0.0f, 1.0f);
+        glEnd();
+
+        glBegin(GL_LINES);
+            glTexCoord2f(0.0f, -pixelSize->y);
+            glVertex4f(0.0f, 1.0f-pixelSize->y*0.5f, 0.0f, 1.0f);
+            glTexCoord2f(0.0f, -pixelSize->y);
+            glVertex4f(1.0f, 1.0f-pixelSize->y*0.5f, 0.0f, 1.0f);
+        glEnd();
+
+        glBegin(GL_LINES);
+            glTexCoord2f(0.0f, pixelSize->y);
+            glVertex4f(0.0f, pixelSize->y*0.5f, 0.0f, 1.0f);
+            glTexCoord2f(0.0f, pixelSize->y);
+            glVertex4f(1.0f, pixelSize->y*0.5f, 0.0f, 1.0f);
+        glEnd();
+
+        [ pressureEffect deactivate ];
+
+        [ target detach ];
 
         tmp = source;
         source = target;
@@ -174,10 +221,32 @@
     innerQuadLowerRight->y = pixelSize->y;
 }
 
+- (void) updateRenderTextures
+{
+    if ( temporaryStorage != nil )
+    {
+        DESTROY(temporaryStorage);
+    }
+
+    id tempRenderTexture = [ NPRenderTexture renderTextureWithName:@"Temp"
+                                                              type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
+                                                             width:currentResolution->x
+                                                            height:currentResolution->y
+                                                        dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
+                                                       pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
+                                                  textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                  textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                      textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
+                                                      textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+
+    temporaryStorage = [ tempRenderTexture retain ];
+}
+
 - (void) update:(Float)frameTime
 {
     if ( (currentResolution->x != resolutionLastFrame->x) || (currentResolution->y != resolutionLastFrame->y) )
     {
+        [ self updateRenderTextures ];
         [ self updateInnerQuadCoordinates ];
 
         [ pressureRenderTargetConfiguration setWidth :currentResolution->x ];
