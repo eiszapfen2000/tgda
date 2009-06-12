@@ -73,7 +73,7 @@
 
     ///[[[ NP Graphics ] stateConfiguration ] activate ];
 
-    [[[ fluid velocityTarget ] texture ] activateAtColorMapIndex:0 ];
+    [[[ fluid inkSource ] texture ] activateAtColorMapIndex:0 ];
 
     [ fullscreenEffect activate ];
 

@@ -30,7 +30,8 @@
 
     inputEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Input.cgfx" ];
     clickPosition = [ inputEffect parameterWithName:@"clickPosition" ];
-    radius        = [ inputEffect parameterWithName:@"radius" ];
+    radius = [ inputEffect parameterWithName:@"radius" ];
+    color  = [ inputEffect parameterWithName:@"color"  ];
 
     stateset = [[[ NP Graphics ] stateSetManager ] loadStateSetFromPath:@"input.stateset" ];
 
@@ -64,6 +65,9 @@
 }
 
 - (void) addGaussianSplatToQuantity:(id)quantity
+                        usingRadius:(Float)splatRadius
+                              scale:(Float)scale
+                              color:(FVector4 *)splatColor
 {
     IVector2 * controlSize = [[[ NP Graphics ] viewportManager ] currentControlSize ];
 
@@ -80,8 +84,6 @@
     mouseFragmentPosition.x = normalisedMousePosition.x * currentResolution->x;
     mouseFragmentPosition.y = normalisedMousePosition.y * currentResolution->y;
 
-    clickRadius = 20.0f;
-
     [[ inputForceRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:quantity ];
     [ inputForceRenderTargetConfiguration bindFBO ];
     [ quantity attachToColorBufferIndex:0 ];
@@ -91,9 +93,18 @@
 
     [ stateset activate ];
 
-    [ inputEffect uploadFloatParameter:radius andValue:clickRadius ];
+    [ inputEffect uploadFloatParameter:radius andValue:splatRadius ];
     [ inputEffect uploadFVector2Parameter:clickPosition andValue:&mouseFragmentPosition ];
-    [ inputEffect activate ];
+
+    if ( splatColor != NULL )
+    {
+        [ inputEffect uploadFVector4Parameter:color andValue:splatColor ];
+        [ inputEffect activateTechniqueWithName:@"input_ink" ];
+    }
+    else
+    {
+        [ inputEffect activateTechniqueWithName:@"input_velocity" ];
+    }    
 
     glBegin(GL_QUADS);
         glVertex4f(innerQuadUpperLeft->x,  innerQuadUpperLeft->y,  0.0f, 1.0f);

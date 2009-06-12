@@ -2,6 +2,7 @@ float4x4 mvpmatrix : NPMODELVIEWPROJECTION;
 
 float2 clickPosition;
 float  radius;
+float4 color;
 
 struct INPUTDATA
 {
@@ -35,22 +36,46 @@ FOUTPUTDATA mfragmentshader(in VOUTPUTDATA input,
 {
 	FOUTPUTDATA output;
 
-    float2 squareDistance = pow(rasterPos.xy - clickPosition.xy, 2.0f);
-    float  exponent = (squareDistance.x + squareDistance.y) / radius;
+    float2 distance = rasterPos.xy - clickPosition.xy;
+    float  squareDistance = dot(distance, distance);
+    float  exponent = -squareDistance / radius;
+    float brak = exp(exponent);
 
-    float brak = exp(-exponent);
-
-    output.color = float4(brak, brak, brak, 1.0f);
+    output.color = float4(brak, brak, 0.0f, 1.0f);
 
 	return output;
 }
 
-technique input
+FOUTPUTDATA ink_mfragmentshader(in VOUTPUTDATA input,
+                            in float4 rasterPos : WPOS)
+{
+	FOUTPUTDATA output;
+
+    float2 distance = rasterPos.xy - clickPosition.xy;
+    float  squareDistance = dot(distance, distance);
+    float  exponent = -squareDistance / radius;
+    float  brak = exp(exponent);
+
+    output.color = color * brak;
+
+	return output;
+}
+
+technique input_ink
+{
+	pass
+	{
+		FragmentProgram = compile fp40 ink_mfragmentshader();
+		VertexProgram   = compile vp40 mvertexshader();
+	}
+}
+
+technique input_velocity
 {
 	pass
 	{
 		FragmentProgram = compile fp40 mfragmentshader();
-		VertexProgram = compile vp40 mvertexshader();
+		VertexProgram   = compile vp40 mvertexshader();
 	}
 }
 

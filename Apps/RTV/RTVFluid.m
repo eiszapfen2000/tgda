@@ -349,8 +349,8 @@
                                                                  height:currentResolution->y
                                                              dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                             pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                                       textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                       textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                       textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR
+                                                       textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR
                                                            textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
                                                            textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
@@ -360,8 +360,8 @@
                                                                  height:currentResolution->y
                                                              dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                             pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                                       textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                       textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                       textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR
+                                                       textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR
                                                            textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
                                                            textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
@@ -594,24 +594,30 @@
 
     // Diffuse ink
 
-    [ diffusion diffuseQuantityFrom:inkTarget
+    /*[ diffusion diffuseQuantityFrom:inkTarget
                                  to:inkSource
                         usingDeltaX:deltaX
                              deltaY:deltaY
                           viscosity:viscosity
-                       andFrameTime:frameTime ];
+                       andFrameTime:frameTime ];*/
 
     // Add input force
 
     if ( [ addVelocityAction active ] == YES )
     {
-        [ inputForce addGaussianSplatToQuantity:velocitySource ];
+        [ inputForce addGaussianSplatToQuantity:velocitySource
+                                    usingRadius:41.0f
+                                          scale:1.0f
+                                          color:NULL ];
     }
 
     if ( [ addInkAction active ] == YES )
     {
-        NSLog(@"addInk");
-        [ inputForce addGaussianSplatToQuantity:inkSource ];
+        FVector4 brak = { 0.2f, 0.3f, 1.0f, 1.0f };
+        [ inputForce addGaussianSplatToQuantity:inkTarget
+                                    usingRadius:21.0f
+                                          scale:1.0f
+                                          color:&brak ];
     }
 
     // Compute divergence
@@ -636,6 +642,10 @@
     id tmp = velocitySource;
     velocitySource = velocityTarget;
     velocityTarget = tmp;
+
+    tmp = inkSource;
+    inkSource = inkTarget;
+    inkTarget = tmp;
 
     // Reset projection
     [ trafo setProjectionMatrix:identity ];
