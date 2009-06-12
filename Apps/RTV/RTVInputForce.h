@@ -16,6 +16,8 @@
     id inputEffect;
     CGparameter clickPosition;
     CGparameter radius;
+    CGparameter scale;
+    CGparameter color;
 
     id stateset;
 
@@ -31,7 +33,12 @@
 - (IVector2) resolution;
 - (void) setResolution:(IVector2)newResolution;
 
-- (void) addGaussianSplatToQuantity:(id)quantity;
+- (void) addGaussianSplatToQuantity:(id)quantity
+                        usingRadius:(Float)splatRadius
+                              scale:(Float)scale
+                              color:(FVector4 *)splatColor
+                                   ;
+
 - (void) update:(Float)frameTime;
 - (void) render;
 

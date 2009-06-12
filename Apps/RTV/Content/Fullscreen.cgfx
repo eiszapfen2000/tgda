@@ -33,7 +33,7 @@ FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
 	FOUTPUTDATA output;
 
     //output.color = float4(1.0f, 0.0f, 0.0f, 0.0f);
-    output.color = tex2D(colormap, input.texcoord);
+    output.color = abs(tex2D(colormap, input.texcoord))* 5.0f;
 
 	return output;
 }

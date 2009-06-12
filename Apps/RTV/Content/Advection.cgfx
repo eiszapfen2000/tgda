@@ -66,15 +66,12 @@ AdvectFOutput advection_fragmentshader(in AdvectVOutput input,
 
     float2 texcoord = rasterPos.xy * rViewport;
     float2 lookup   = texcoord - timestep * tex2D(velocity, texcoord).xy;
-    float4 result   = tex2D(velocity, lookup);
+    float4 result   = tex2D(quantity, lookup);
 
     //float4 result = float4(lookup.x, lookup.y, 0.0f, 0.0f);
 
     output.temp = result;
     output.advected = result;
-
-    //output.temp = float4(texcoord.x, texcoord.y, 0.0f, 0.0f);
-    //output.advected = float4(texcoord.x, texcoord.y, 0.0f, 0.0f);
 
 	return output;
 }
