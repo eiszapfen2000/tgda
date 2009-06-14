@@ -5,6 +5,7 @@
 #import "RTVInputForce.h"
 #import "RTVDivergence.h"
 #import "RTVPressure.h"
+#import "RTVArbitraryBoundaries.h"
 #import "RTVFluid.h"
 
 @implementation RTVFluid
@@ -31,13 +32,14 @@
     fm4_mssss_orthographic_2d_projection_matrix(projection, 0.0f, 1.0f, 0.0f, 1.0f);
 
     deltaX = deltaY = 1.0f;
-    viscosity = 0.001;
+    viscosity = 0.1;
 
     advection  = [[ RTVAdvection  alloc ] initWithName:@"Advection"  parent:self ];
     diffusion  = [[ RTVDiffusion  alloc ] initWithName:@"Diffusion"  parent:self ];
     inputForce = [[ RTVInputForce alloc ] initWithName:@"InputForce" parent:self ];
     divergence = [[ RTVDivergence alloc ] initWithName:@"Divergence" parent:self ];
     pressure   = [[ RTVPressure   alloc ] initWithName:@"Pressure"   parent:self ];
+    arbitraryBoundaries = [[ RTVArbitraryBoundaries alloc ] initWithName:@"ArbitraryBoundaries" parent:self ];
 
     addVelocityAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"AddVelocity" primaryInputAction:NP_INPUT_MOUSE_BUTTON_LEFT   ];
     addInkAction      = [[[ NP Input ] inputActions ] addInputActionWithName:@"AddInk"      primaryInputAction:NP_INPUT_MOUSE_BUTTON_RIGHT  ];
@@ -61,6 +63,7 @@
     DESTROY(inputForce);
     DESTROY(divergence);
     DESTROY(pressure);
+    DESTROY(arbitraryBoundaries);
 
     DESTROY(inkSource);
     DESTROY(inkTarget);
@@ -69,6 +72,8 @@
     DESTROY(divergenceTarget);
     DESTROY(pressureSource);
     DESTROY(pressureTarget);
+    DESTROY(arbitraryBoundariesSource);
+    DESTROY(arbitraryBoundariesTarget);
 
     [ fluidRenderTargetConfiguration clear ];
     DESTROY(fluidRenderTargetConfiguration);
@@ -164,6 +169,16 @@
     return pressureTarget;
 }
 
+- (id) arbitraryBoundariesSource
+{
+    return arbitraryBoundariesSource;
+}
+
+- (id) arbitraryBoundariesTarget
+{
+    return arbitraryBoundariesTarget;
+}
+
 - (void) setResolution:(IVector2)newResolution
 {
     currentResolution->x = newResolution.x;
@@ -177,6 +192,7 @@
     [ diffusion  setResolution:newResolution ];
     [ divergence setResolution:newResolution ];
     [ pressure   setResolution:newResolution ];
+    [ arbitraryBoundaries setResolution:newResolution ];
 }
 
 - (BOOL) loadFromPath:(NSString *)path
@@ -561,6 +577,7 @@
     [ diffusion  update:frameTime ];
     [ divergence update:frameTime ];
     [ pressure   update:frameTime ];
+    [ arbitraryBoundaries update:frameTime ];
 
     // Ortho projection
     NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
@@ -608,14 +625,14 @@
     if ( [ addVelocityAction active ] == YES )
     {
         [ inputForce addGaussianSplatToQuantity:velocitySource
-                                    usingRadius:41.0f
+                                    usingRadius:21.0f
                                           scale:1.0f
                                           color:NULL ];
     }
 
     if ( [ addInkAction active ] == YES )
     {
-        FVector4 brak = { 0.2f, 0.3f, 1.0f, 1.0f };
+        FVector4 brak = { 0.2f, 1.0f, 0.2f, 1.0f };
         [ inputForce addGaussianSplatToQuantity:inkSource
                                     usingRadius:21.0f
                                           scale:1.0f
@@ -624,7 +641,7 @@
 
     if ( [ addBoundaryAction active ] == YES )
     {
-
+        [ inputForce addBoundaryBlockToQuantity:arbitraryBoundariesSource ];
     }
 
     // Compute divergence

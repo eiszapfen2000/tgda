@@ -31,8 +31,8 @@ struct FOUTPUTDATA
 
 // WPOS semantic, origin (0,0) = lower left
 
-FOUTPUTDATA mfragmentshader(in VOUTPUTDATA input,
-                            in float4 rasterPos : WPOS)
+FOUTPUTDATA velocity_mfragmentshader(in VOUTPUTDATA input,
+                                     in float4 rasterPos : WPOS)
 {
 	FOUTPUTDATA output;
 
@@ -73,6 +73,15 @@ FOUTPUTDATA ink_mfragmentshader(in VOUTPUTDATA input,
 	return output;
 }
 
+FOUTPUTDATA boundaries_mfragmentshader(in VOUTPUTDATA input)
+{
+	FOUTPUTDATA output;
+
+    output.color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	return output;
+}
+
 technique input_ink
 {
 	pass
@@ -86,7 +95,16 @@ technique input_velocity
 {
 	pass
 	{
-		FragmentProgram = compile fp40 mfragmentshader();
+		FragmentProgram = compile fp40 velocity_mfragmentshader();
+		VertexProgram   = compile vp40 mvertexshader();
+	}
+}
+
+technique input_boundaries
+{
+	pass
+	{
+		FragmentProgram = compile fp40 boundaries_mfragmentshader();
 		VertexProgram   = compile vp40 mvertexshader();
 	}
 }
