@@ -28,9 +28,13 @@
     id divergenceTarget;
     id pressureSource;
     id pressureTarget;
+    id arbitraryBoundariesSource;
+    id arbitraryBoundariesTarget;
+    id arbitraryBoundariesPrecomputedScaleAndOffset;
 
     id addVelocityAction;
     id addInkAction;
+    id addBoundaryAction;
 
     id fluidRenderTargetConfiguration;
 }
