@@ -41,6 +41,18 @@ FOUTPUTDATA mfragmentshader(in VOUTPUTDATA input,
     float  exponent = -squareDistance / radius;
     float brak = exp(exponent);
 
+    /*float2 distance = (rasterPos.xy - clickPosition.xy);
+    float4 result = float4(0.0f, 0.0f, 0.0f, 1.0f);
+
+    float2 r2 = float2(radius, radius);
+
+    if ( abs(distance).x <= radius && abs(distance).y <= radius )
+    {
+        result.xy = distance / 512.0f;
+    }
+
+    output.color = result.xyzw;*/
+
     output.color = float4(brak, brak, 0.0f, 1.0f);
 
 	return output;

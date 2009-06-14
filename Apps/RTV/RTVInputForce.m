@@ -74,6 +74,8 @@
     Float mouseX = [[[ NP Input ] mouse ] x ];
     Float mouseY = [[[ NP Input ] mouse ] y ];
 
+    //NSLog(@"%f %f", mouseX, mouseY);
+
     FVector2 normalisedMousePosition;
 
     // shift to pixel center using + 0.5
