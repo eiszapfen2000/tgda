@@ -19,7 +19,8 @@
     CGparameter scale;
     CGparameter color;
 
-    id stateset;
+    id velocityAndInkStateSet;
+    id boundariesStateSet;
 
     id leftClickAction;
     Float clickRadius;
@@ -38,6 +39,8 @@
                               scale:(Float)scale
                               color:(FVector4 *)splatColor
                                    ;
+
+- (void) addBoundaryBlockToQuantity:(id)quantity;
 
 - (void) update:(Float)frameTime;
 - (void) render;

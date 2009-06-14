@@ -33,7 +33,8 @@
     radius = [ inputEffect parameterWithName:@"radius" ];
     color  = [ inputEffect parameterWithName:@"color"  ];
 
-    stateset = [[[ NP Graphics ] stateSetManager ] loadStateSetFromPath:@"input.stateset" ];
+    velocityAndInkStateSet = [[[ NP Graphics ] stateSetManager ] loadStateSetFromPath:@"input.stateset"      ];
+    boundariesStateSet     = [[[ NP Graphics ] stateSetManager ] loadStateSetFromPath:@"boundaries.stateset" ];
 
     return self;
 }
@@ -93,7 +94,7 @@
     [ inputForceRenderTargetConfiguration activateViewport ];
     [ inputForceRenderTargetConfiguration checkFrameBufferCompleteness ];
 
-    [ stateset activate ];
+    [ velocityAndInkStateSet activate ];
 
     [ inputEffect uploadFloatParameter:radius andValue:splatRadius ];
     [ inputEffect uploadFVector2Parameter:clickPosition andValue:&mouseFragmentPosition ];
@@ -117,7 +118,47 @@
 
     [ inputEffect deactivate ];
 
-    [ stateset deactivate ];
+    [ velocityAndInkStateSet deactivate ];
+
+    [ inputForceRenderTargetConfiguration unbindFBO ];
+    [ inputForceRenderTargetConfiguration deactivateDrawBuffers ];
+    [ inputForceRenderTargetConfiguration deactivateViewport ];
+}
+
+- (void) addBoundaryBlockToQuantity:(id)quantity
+{
+    IVector2 * controlSize = [[[ NP Graphics ] viewportManager ] currentControlSize ];
+
+    Float mouseX = [[[ NP Input ] mouse ] x ];
+    Float mouseY = [[[ NP Input ] mouse ] y ];
+
+    FVector2 normalisedMousePosition;
+
+    // shift to pixel center using + 0.5
+    normalisedMousePosition.x = (mouseX + 0.5) / (Float)(controlSize->x);
+    normalisedMousePosition.y = (mouseY + 0.5) / (Float)(controlSize->y);
+
+    [[ inputForceRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:quantity ];
+    [ inputForceRenderTargetConfiguration bindFBO ];
+    [ quantity attachToColorBufferIndex:0 ];
+    [ inputForceRenderTargetConfiguration activateDrawBuffers ];
+    [ inputForceRenderTargetConfiguration activateViewport ];
+    [ inputForceRenderTargetConfiguration checkFrameBufferCompleteness ];
+
+    [ boundariesStateSet activate ];
+
+    [ inputEffect activateTechniqueWithName:@"input_boundaries" ];
+
+    glBegin(GL_QUADS);
+        glVertex4f(normalisedMousePosition.x - pixelSize->x, normalisedMousePosition.y + pixelSize->y, 0.0f, 1.0f);
+        glVertex4f(normalisedMousePosition.x - pixelSize->x, normalisedMousePosition.y - pixelSize->y, 0.0f, 1.0f);
+        glVertex4f(normalisedMousePosition.x + pixelSize->x, normalisedMousePosition.y - pixelSize->y, 0.0f, 1.0f);
+        glVertex4f(normalisedMousePosition.x + pixelSize->x, normalisedMousePosition.y + pixelSize->y, 0.0f, 1.0f);
+    glEnd();
+
+    [ inputEffect deactivate ];
+
+    [ boundariesStateSet deactivate ];
 
     [ inputForceRenderTargetConfiguration unbindFBO ];
     [ inputForceRenderTargetConfiguration deactivateDrawBuffers ];

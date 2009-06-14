@@ -13,6 +13,7 @@ RTVDiffusion.m \
 RTVInputForce.m \
 RTVDivergence.m \
 RTVPressure.m \
+RTVArbitraryBoundaries.m \
 RTVFluid.m
 
 RTV_RESOURCE_FILES = \

@@ -19,6 +19,7 @@
     id inputForce;
     id divergence;
     id pressure;
+    id arbitraryBoundaries;
 
     id velocitySource;
     id velocityTarget;
@@ -30,7 +31,6 @@
     id pressureTarget;
     id arbitraryBoundariesSource;
     id arbitraryBoundariesTarget;
-    id arbitraryBoundariesPrecomputedScaleAndOffset;
 
     id addVelocityAction;
     id addInkAction;
@@ -64,6 +64,8 @@
 - (id) divergenceTarget;
 - (id) pressureSource;
 - (id) pressureTarget;
+- (id) arbitraryBoundariesSource;
+- (id) arbitraryBoundariesTarget;
 
 - (void) setResolution:(IVector2)newResolution;
 
