@@ -25,7 +25,7 @@
     innerQuadLowerRight = fv2_alloc_init();
     pixelSize = fv2_alloc_init();
 
-    arbitraryBoundariesEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Advection.cgfx" ];
+    arbitraryBoundariesEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"ArbitraryBoundaries.cgfx" ];
     arbitraryBoundariesRenderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"ArbitraryBoundariesRT" parent:self ];
 
     [ self setupScaleAndOffsetTextures ];
@@ -50,37 +50,37 @@
 
 - (void) setupScaleAndOffsetTextures
 {
-    if ( velocityScaleAndOffset != nil )
+    if ( velocityScaleAndOffsetLookUp != nil )
     {
-        DESTROY(velocityScaleAndOffset);
+        DESTROY(velocityScaleAndOffsetLookUp);
     }
 
-    if ( pressureScaleAndOffset != nil )
+    if ( pressureScaleAndOffsetLookUp != nil )
     {
-        DESTROY(pressureScaleAndOffset);
+        DESTROY(pressureScaleAndOffsetLookUp);
     }
 
-    velocityScaleAndOffset = [[[ NP Graphics ] textureManager ] createTextureWithName:@"VelScaleOffset"
+    velocityScaleAndOffsetLookUp = [[[ NP Graphics ] textureManager ] createTextureWithName:@"VelScaleOffset"
                                                                                 width:34
                                                                                 height:1
                                                                             dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                                            pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ];
 
-    pressureScaleAndOffset = [[[ NP Graphics ] textureManager ] createTextureWithName:@"PreScaleOffset"
+    pressureScaleAndOffsetLookUp = [[[ NP Graphics ] textureManager ] createTextureWithName:@"PreScaleOffset"
                                                                                 width:34
                                                                                 height:1
                                                                             dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                                            pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ];
 
-    [ velocityScaleAndOffset setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    [ velocityScaleAndOffset setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    [ velocityScaleAndOffset setTextureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
-    [ velocityScaleAndOffset setTextureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+    [ velocityScaleAndOffsetLookUp setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    [ velocityScaleAndOffsetLookUp setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    [ velocityScaleAndOffsetLookUp setTextureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+    [ velocityScaleAndOffsetLookUp setTextureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
-    [ pressureScaleAndOffset setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    [ pressureScaleAndOffset setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    [ pressureScaleAndOffset setTextureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
-    [ pressureScaleAndOffset setTextureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+    [ pressureScaleAndOffsetLookUp setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    [ pressureScaleAndOffsetLookUp setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    [ pressureScaleAndOffsetLookUp setTextureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+    [ pressureScaleAndOffsetLookUp setTextureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
     Float velocityData[136] = 
     {
@@ -122,7 +122,7 @@
      0,  0,  0,  0    // Unused
     };
 
-    [ velocityScaleAndOffset uploadToGLWithData:[NSData dataWithBytesNoCopy:velocityData length:sizeof(velocityData) freeWhenDone:NO ]];
+    [ velocityScaleAndOffsetLookUp uploadToGLWithData:[NSData dataWithBytesNoCopy:velocityData length:sizeof(velocityData) freeWhenDone:NO ]];
 
     Float pressureData[136] = 
     {
@@ -164,7 +164,7 @@
      0,  0,  0,  0   // Unused
     };
 
-    [ pressureScaleAndOffset uploadToGLWithData:[NSData dataWithBytesNoCopy:pressureData length:sizeof(pressureData) freeWhenDone:NO ]];
+    [ pressureScaleAndOffsetLookUp uploadToGLWithData:[NSData dataWithBytesNoCopy:pressureData length:sizeof(pressureData) freeWhenDone:NO ]];
 }
 
 - (IVector2) resolution
@@ -176,6 +176,55 @@
 {
     currentResolution->x = newResolution.x;
     currentResolution->y = newResolution.y;
+}
+
+- (void) computeVelocityScaleAndOffsetFromBoundaries:(NPTexture *)boundaries
+                                                  to:(NPRenderTexture *)scaleAndOffset
+{
+    [ self computeScaleAndOffsetFromBoundaries:boundaries
+                                            to:scaleAndOffset
+                              usingLookUpTable:velocityScaleAndOffsetLookUp ];
+}
+
+- (void) computePressureScaleAndOffsetFromBoundaries:(NPTexture *)boundaries
+                                                  to:(NPRenderTexture *)scaleAndOffset
+{
+    [ self computeScaleAndOffsetFromBoundaries:boundaries
+                                            to:scaleAndOffset
+                              usingLookUpTable:pressureScaleAndOffsetLookUp ];
+}
+
+- (void) computeScaleAndOffsetFromBoundaries:(NPTexture *)boundaries
+                                          to:(NPRenderTexture *)scaleAndOffset
+                            usingLookUpTable:(NPTexture *)lookUpTable
+{
+    [[ arbitraryBoundariesRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:scaleAndOffset ];
+    [ arbitraryBoundariesRenderTargetConfiguration bindFBO ];
+    [ scaleAndOffset attachToColorBufferIndex:0 ];
+    [ arbitraryBoundariesRenderTargetConfiguration activateDrawBuffers ];
+    [ arbitraryBoundariesRenderTargetConfiguration activateViewport ];
+    [ arbitraryBoundariesRenderTargetConfiguration checkFrameBufferCompleteness ];
+
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
+    [ boundaries  activateAtColorMapIndex:0 ];
+    [ lookUpTable activateAtColorMapIndex:1 ];
+
+    [ arbitraryBoundariesEffect activateTechniqueWithName:@"updateOffsets" ];
+
+    glBegin(GL_QUADS);
+        glVertex4f(innerQuadUpperLeft->x,  innerQuadUpperLeft->y,  0.0f, 1.0f);
+        glVertex4f(innerQuadUpperLeft->x,  innerQuadLowerRight->y, 0.0f, 1.0f);
+        glVertex4f(innerQuadLowerRight->x, innerQuadLowerRight->y, 0.0f, 1.0f);
+        glVertex4f(innerQuadLowerRight->x, innerQuadUpperLeft->y,  0.0f, 1.0f);
+    glEnd();
+
+    [ arbitraryBoundariesEffect deactivate ];
+
+    [ scaleAndOffset detach ]; 
+    [ arbitraryBoundariesRenderTargetConfiguration unbindFBO ];
+    [ arbitraryBoundariesRenderTargetConfiguration deactivateDrawBuffers ];
+    [ arbitraryBoundariesRenderTargetConfiguration deactivateViewport ];
 }
 
 - (void) updateInnerQuadCoordinates

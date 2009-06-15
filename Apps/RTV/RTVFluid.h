@@ -29,8 +29,9 @@
     id divergenceTarget;
     id pressureSource;
     id pressureTarget;
-    id arbitraryBoundariesSource;
-    id arbitraryBoundariesTarget;
+    id arbitraryBoundariesPaint;
+    id arbitraryBoundariesVelocity;
+    id arbitraryBoundariesPressure;
 
     id addVelocityAction;
     id addInkAction;
@@ -64,8 +65,7 @@
 - (id) divergenceTarget;
 - (id) pressureSource;
 - (id) pressureTarget;
-- (id) arbitraryBoundariesSource;
-- (id) arbitraryBoundariesTarget;
+- (id) arbitraryBoundariesPaint;
 
 - (void) setResolution:(IVector2)newResolution;
 

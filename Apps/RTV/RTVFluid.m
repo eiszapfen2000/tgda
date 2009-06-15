@@ -32,7 +32,7 @@
     fm4_mssss_orthographic_2d_projection_matrix(projection, 0.0f, 1.0f, 0.0f, 1.0f);
 
     deltaX = deltaY = 1.0f;
-    viscosity = 0.1;
+    viscosity = 0.001;
 
     advection  = [[ RTVAdvection  alloc ] initWithName:@"Advection"  parent:self ];
     diffusion  = [[ RTVDiffusion  alloc ] initWithName:@"Diffusion"  parent:self ];
@@ -72,8 +72,9 @@
     DESTROY(divergenceTarget);
     DESTROY(pressureSource);
     DESTROY(pressureTarget);
-    DESTROY(arbitraryBoundariesSource);
-    DESTROY(arbitraryBoundariesTarget);
+    DESTROY(arbitraryBoundariesPaint);
+    DESTROY(arbitraryBoundariesVelocity);
+    DESTROY(arbitraryBoundariesPressure);
 
     [ fluidRenderTargetConfiguration clear ];
     DESTROY(fluidRenderTargetConfiguration);
@@ -169,14 +170,9 @@
     return pressureTarget;
 }
 
-- (id) arbitraryBoundariesSource
+- (id) arbitraryBoundariesPaint
 {
-    return arbitraryBoundariesSource;
-}
-
-- (id) arbitraryBoundariesTarget
-{
-    return arbitraryBoundariesTarget;
+    return arbitraryBoundariesPaint;
 }
 
 - (void) setResolution:(IVector2)newResolution
@@ -447,18 +443,23 @@
 
 - (void) createArbitraryBoundariesRenderTextures
 {
-    if ( arbitraryBoundariesSource != nil )
+    if ( arbitraryBoundariesPaint != nil )
     {
-        DESTROY(arbitraryBoundariesSource);
+        DESTROY(arbitraryBoundariesPaint);
     }
 
-    if ( arbitraryBoundariesTarget != nil )
+    if ( arbitraryBoundariesVelocity != nil )
     {
-        DESTROY(arbitraryBoundariesTarget);
+        DESTROY(arbitraryBoundariesVelocity);
     }
 
-    id arbitraryBoundariesSourceRenderTexture = 
-    [ NPRenderTexture renderTextureWithName:@"BoundariesSource"
+    if ( arbitraryBoundariesPressure != nil )
+    {
+        DESTROY(arbitraryBoundariesPressure);
+    }
+
+    id arbitraryBoundariesPaintRenderTexture = 
+    [ NPRenderTexture renderTextureWithName:@"BoundariesPaint"
                                        type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
                                       width:currentResolution->x
                                      height:currentResolution->y
@@ -469,8 +470,8 @@
                                textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
                                textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
-    id arbitraryBoundariesTargetRenderTexture =
-    [ NPRenderTexture renderTextureWithName:@"BoundariesTarget"
+    id arbitraryBoundariesVelocityRenderTexture =
+    [ NPRenderTexture renderTextureWithName:@"BoundariesVelocity"
                                        type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
                                       width:currentResolution->x
                                      height:currentResolution->y
@@ -481,8 +482,21 @@
                                textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
                                textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
-    arbitraryBoundariesSource = [ arbitraryBoundariesSourceRenderTexture retain ];
-    arbitraryBoundariesTarget = [ arbitraryBoundariesTargetRenderTexture retain ];
+    id arbitraryBoundariesPressureRenderTexture =
+    [ NPRenderTexture renderTextureWithName:@"BoundariesPressure"
+                                       type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
+                                      width:currentResolution->x
+                                     height:currentResolution->y
+                                 dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
+                                pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
+                           textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                           textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                               textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
+                               textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+
+    arbitraryBoundariesPaint    = [ arbitraryBoundariesPaintRenderTexture retain    ];
+    arbitraryBoundariesVelocity = [ arbitraryBoundariesVelocityRenderTexture retain ];
+    arbitraryBoundariesPressure = [ arbitraryBoundariesPressureRenderTexture retain ];
 }
 
 - (void) clearRenderTextures:(NSArray *)renderTextures
@@ -543,7 +557,7 @@
 
 - (void) clearArbitraryBoundariesRenderTextures
 {
-    [ self clearRenderTextures:[NSArray arrayWithObjects:arbitraryBoundariesSource, arbitraryBoundariesTarget, nil] ];
+    [ self clearRenderTextures:[NSArray arrayWithObjects:arbitraryBoundariesPaint, arbitraryBoundariesVelocity, arbitraryBoundariesPressure, nil] ];
 }
 
 - (void) updateRenderTextures
@@ -625,23 +639,26 @@
     if ( [ addVelocityAction active ] == YES )
     {
         [ inputForce addGaussianSplatToQuantity:velocitySource
-                                    usingRadius:21.0f
+                                    usingRadius:11.0f
                                           scale:1.0f
                                           color:NULL ];
     }
 
     if ( [ addInkAction active ] == YES )
     {
-        FVector4 brak = { 0.2f, 1.0f, 0.2f, 1.0f };
+        FVector4 brak = { 0.2f, 0.3f, 1.0f, 1.0f };
         [ inputForce addGaussianSplatToQuantity:inkSource
-                                    usingRadius:21.0f
+                                    usingRadius:11.0f
                                           scale:1.0f
                                           color:&brak ];
     }
 
     if ( [ addBoundaryAction active ] == YES )
     {
-        [ inputForce addBoundaryBlockToQuantity:arbitraryBoundariesSource ];
+        [ inputForce addBoundaryBlockToQuantity:arbitraryBoundariesPaint ];
+
+        /*[ arbitraryBoundaries computeVelocityScaleAndOffsetFromBoundaries:[ arbitraryBoundariesSource texture ]
+                                                                       to:arbitraryBoundariesTarget ];*/
     }
 
     // Compute divergence
