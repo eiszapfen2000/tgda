@@ -14,8 +14,8 @@
     FVector2 * innerQuadLowerRight;
     FVector2 * pixelSize;
 
-    id velocityScaleAndOffset;
-    id pressureScaleAndOffset;
+    id velocityScaleAndOffsetLookUp;
+    id pressureScaleAndOffsetLookUp;
 
     id arbitraryBoundariesEffect;
     id arbitraryBoundariesRenderTargetConfiguration;
@@ -27,6 +27,19 @@
 - (void) dealloc;
 
 - (void) setupScaleAndOffsetTextures;
+
+- (void) computeVelocityScaleAndOffsetFromBoundaries:(NPTexture *)boundaries
+                                                  to:(NPRenderTexture *)scaleAndOffset
+                                                    ;
+
+- (void) computePressureScaleAndOffsetFromBoundaries:(NPTexture *)boundaries
+                                                  to:(NPRenderTexture *)scaleAndOffset
+                                                    ;
+
+- (void) computeScaleAndOffsetFromBoundaries:(NPTexture *)boundaries
+                                          to:(NPRenderTexture *)scaleAndOffset
+                            usingLookUpTable:(NPTexture *)lookUpTable
+                                            ;
 
 - (IVector2) resolution;
 - (void) setResolution:(IVector2)newResolution;
