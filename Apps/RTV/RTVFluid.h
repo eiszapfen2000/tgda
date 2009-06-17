@@ -38,15 +38,14 @@
     id addBoundaryAction;
 
     id fluidRenderTargetConfiguration;
+
+    BOOL useArbitraryBoundaries;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 - (void) dealloc;
-
-- (void) clear;
-- (void) setup;
 
 - (IVector2) resolution;
 - (Int32) width;
@@ -66,13 +65,12 @@
 - (id) pressureSource;
 - (id) pressureTarget;
 - (id) arbitraryBoundariesPaint;
+- (id) arbitraryBoundariesVelocity;
+- (id) arbitraryBoundariesPressure;
 
 - (void) setResolution:(IVector2)newResolution;
 
 - (BOOL) loadFromPath:(NSString *)path;
-
-- (void) activate;
-- (void) deactivate;
 
 - (void) update:(Float)frameTime;
 - (void) render;

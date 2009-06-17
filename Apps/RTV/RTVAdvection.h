@@ -28,8 +28,12 @@
 
 - (IVector2) resolution;
 - (id) temporaryStorage;
-
 - (void) setResolution:(IVector2)newResolution;
+
+- (void) computeArbitraryBordersFrom:(NPTexture *)velocitySource
+                                  to:(NPRenderTexture *)velocityTarget
+                 usingScaleAndOffset:(NPTexture *)scaleAndOffset
+                                    ;
 
 - (void) advectQuantityFrom:(NPTexture *)quantitySource
                          to:(NPRenderTexture *)quantityTarget

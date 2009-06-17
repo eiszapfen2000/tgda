@@ -66,6 +66,41 @@
     currentResolution->y = newResolution.y;
 }
 
+- (void) computeArbitraryBordersFrom:(NPTexture *)velocitySource
+                                  to:(NPRenderTexture *)velocityTarget
+                 usingScaleAndOffset:(NPTexture *)scaleAndOffset
+{
+    [ advectionRenderTargetConfiguration resetColorTargetsArray ];
+    [[ advectionRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:velocityTarget   ];
+    [ advectionRenderTargetConfiguration bindFBO ];
+    [ velocityTarget attachToColorBufferIndex:0 ];
+    [ advectionRenderTargetConfiguration activateDrawBuffers ];
+    [ advectionRenderTargetConfiguration activateViewport ];
+    [ advectionRenderTargetConfiguration checkFrameBufferCompleteness ];
+
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
+    [ velocitySource activateAtColorMapIndex:0 ];
+    [ scaleAndOffset activateAtColorMapIndex:1 ];
+
+    [ advectionEffect activateTechniqueWithName:@"arbitraryBorders" ];
+
+    glBegin(GL_QUADS);
+        glVertex4f(innerQuadUpperLeft->x,  innerQuadUpperLeft->y,  0.0f, 1.0f);
+        glVertex4f(innerQuadUpperLeft->x,  innerQuadLowerRight->y, 0.0f, 1.0f);
+        glVertex4f(innerQuadLowerRight->x, innerQuadLowerRight->y, 0.0f, 1.0f);
+        glVertex4f(innerQuadLowerRight->x, innerQuadUpperLeft->y,  0.0f, 1.0f);
+    glEnd();
+
+    [ advectionEffect deactivate ];
+
+    [ velocityTarget detach ];
+
+    [ advectionRenderTargetConfiguration unbindFBO ];
+    [ advectionRenderTargetConfiguration deactivateDrawBuffers ];
+    [ advectionRenderTargetConfiguration deactivateViewport ];
+}
+
 - (void) advectQuantityFrom:(NPTexture *)quantitySource
                          to:(NPRenderTexture *)quantityTarget
               usingVelocity:(NPTexture *)velocity
