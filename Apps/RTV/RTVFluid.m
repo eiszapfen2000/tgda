@@ -508,7 +508,7 @@
                                textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
                                textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
-    arbitraryBoundariesPaint    = [ arbitraryBoundariesPaintRenderTexture retain    ];
+    arbitraryBoundariesPaint    = [ arbitraryBoundariesPaintRenderTexture    retain ];
     arbitraryBoundariesVelocity = [ arbitraryBoundariesVelocityRenderTexture retain ];
     arbitraryBoundariesPressure = [ arbitraryBoundariesPressureRenderTexture retain ];
 }
@@ -613,33 +613,27 @@
 
     // Fluid Dynamics start here
 
-    if ( useArbitraryBoundaries == YES )
-    {
-        [ advection computeArbitraryBordersFrom:[velocitySource texture]
-                                             to:velocityTarget
-                            usingScaleAndOffset:[arbitraryBoundariesVelocity texture]];
-
-        id tmp = velocitySource;
-        velocitySource = velocityTarget;
-        velocityTarget = tmp;
-    }
-
     // Copy velocity texture, so that we have a nearest neighbor sampled and a bilinear filtered velocity texture
-    [ self updateVelocityBiLerp ];
+//    [ self updateVelocityBiLerp ];
 
     // Advect velocity
 
-    [ advection advectQuantityFrom:velocityBiLerp
+    [ advection advectQuantityFrom:velocitySource
                                 to:velocityTarget
-                     usingVelocity:[velocitySource texture]
-                      andFrameTime:frameTime ];
+                     usingVelocity:velocitySource
+                         frameTime:frameTime
+               arbitraryBoundaries:useArbitraryBoundaries
+                 andScaleAndOffset:arbitraryBoundariesVelocity ];
+
 
     // Advect ink
 
-    [ advection advectQuantityFrom:[inkSource texture]
+    [ advection advectQuantityFrom:inkSource
                                 to:inkTarget
-                     usingVelocity:[velocitySource texture]
-                      andFrameTime:frameTime ];
+                     usingVelocity:velocitySource
+                         frameTime:frameTime
+               arbitraryBoundaries:NO
+                 andScaleAndOffset:nil ];
 
     // Diffuse velocity
 
@@ -698,11 +692,19 @@
 
     // Compute pressure
 
-    [ pressure computePressureFrom:pressureSource 
+    /*[ pressure computePressureFrom:pressureSource 
                                 to:pressureTarget
                    usingDivergence:divergenceTarget
                             deltaX:deltaX
-                            deltaY:deltaY ];
+                            deltaY:deltaY ];*/
+
+    [ pressure computePressureFrom:pressureSource
+                                to:pressureTarget
+                   usingDivergence:divergenceTarget
+                            deltaX:deltaX
+                            deltaY:deltaY
+               arbitraryBoundaries:useArbitraryBoundaries
+                 andScaleAndOffset:arbitraryBoundariesPressure ];
 
     [ pressure subtractGradientFromVelocity:[velocitySource texture]
                                          to:velocityTarget

@@ -44,6 +44,15 @@
                       deltaY:(Float)deltaY
                             ;
 
+- (void) computePressureFrom:(NPRenderTexture *)pressureSource
+                          to:(NPRenderTexture *)pressureTarget
+             usingDivergence:(NPRenderTexture *)divergence
+                      deltaX:(Float)deltaX
+                      deltaY:(Float)deltaY
+         arbitraryBoundaries:(BOOL)arbitraryBoundaries
+           andScaleAndOffset:(NPRenderTexture *)scaleAndOffset
+                            ;
+
 - (void) subtractGradientFromVelocity:(NPTexture *)velocitySource
                                    to:(NPRenderTexture *)velocityTarget
                         usingPressure:(NPTexture *)pressure

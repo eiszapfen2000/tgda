@@ -15,6 +15,7 @@
     FVector2 * pixelSize;
 
     id temporaryStorage;
+    id quantityBiLerp;
     id advectionRenderTargetConfiguration;
 
     id advectionEffect;
@@ -30,16 +31,14 @@
 - (id) temporaryStorage;
 - (void) setResolution:(IVector2)newResolution;
 
-- (void) computeArbitraryBordersFrom:(NPTexture *)velocitySource
-                                  to:(NPRenderTexture *)velocityTarget
-                 usingScaleAndOffset:(NPTexture *)scaleAndOffset
-                                    ;
-
-- (void) advectQuantityFrom:(NPTexture *)quantitySource
+- (void) advectQuantityFrom:(NPRenderTexture *)quantitySource
                          to:(NPRenderTexture *)quantityTarget
-              usingVelocity:(NPTexture *)velocity
-               andFrameTime:(Float)frameTime
+              usingVelocity:(NPRenderTexture *)velocity
+                  frameTime:(Float)frameTime
+        arbitraryBoundaries:(BOOL)arbitraryBoundaries
+          andScaleAndOffset:(NPRenderTexture *)scaleAndOffset
                            ;
+
 
 - (void) update:(Float)frameTime;
 - (void) render;

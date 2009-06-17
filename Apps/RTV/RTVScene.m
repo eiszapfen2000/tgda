@@ -60,11 +60,11 @@
 
 - (void) update:(Float)frameTime
 {
-    //[[[ NP Graphics ] stateConfiguration ] activate ];
+    [[[ NP Graphics ] stateConfiguration ] activate ];
 
     [ fluid update:frameTime ];
 
-    //[[[ NP Graphics ] stateConfiguration ] deactivate ];
+    [[[ NP Graphics ] stateConfiguration ] deactivate ];
 }
 
 - (void) render
@@ -73,7 +73,8 @@
 
     ///[[[ NP Graphics ] stateConfiguration ] activate ];
 
-//    [[[ fluid arbitraryBoundariesTarget ] texture ] activateAtColorMapIndex:0 ];
+    //[[[ fluid inkSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+    //[[[ fluid inkSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
     [[[ fluid velocitySource ] texture ] activateAtColorMapIndex:0 ];
 
     [ fullscreenEffect activate ];
@@ -93,6 +94,9 @@
     glEnd();
 
     [ fullscreenEffect deactivate ];
+
+    //[[[ fluid inkSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    //[[[ fluid inkSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
 
     FVector2 pos = {-1.0f, 1.0f };
     [ font renderString:[NSString stringWithFormat:@"%d %f",[[[ NP Core ] timer ] fps ],[[[ NP Core ] timer ] frameTime ] ] atPosition:&pos withSize:0.05f ];
