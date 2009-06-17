@@ -32,7 +32,7 @@
     fm4_mssss_orthographic_2d_projection_matrix(projection, 0.0f, 1.0f, 0.0f, 1.0f);
 
     deltaX = deltaY = 1.0f;
-    viscosity = 0.001;
+    viscosity = 0.005;
 
     advection  = [[ RTVAdvection  alloc ] initWithName:@"Advection"  parent:self ];
     diffusion  = [[ RTVDiffusion  alloc ] initWithName:@"Diffusion"  parent:self ];
@@ -80,14 +80,6 @@
     DESTROY(fluidRenderTargetConfiguration);
 
     [ super dealloc ];
-}
-
-- (void) clear
-{
-}
-
-- (void) setup
-{
 }
 
 - (IVector2) resolution
@@ -175,6 +167,16 @@
     return arbitraryBoundariesPaint;
 }
 
+- (id) arbitraryBoundariesVelocity
+{
+    return arbitraryBoundariesVelocity;
+}
+
+- (id) arbitraryBoundariesPressure
+{
+    return arbitraryBoundariesPressure;
+}
+
 - (void) setResolution:(IVector2)newResolution
 {
     currentResolution->x = newResolution.x;
@@ -256,17 +258,29 @@
 
     [ pressure setNumberOfIterations:pressureIterations ];
 
+    NSString * viscosityString = [ sceneConfig objectForKey:@"Viscosity" ];
+    if ( viscosityString == nil )
+    {
+        NPLOG_WARNING(@"%@: Viscosity missing, using default", path);
+        viscosity = 0.1f;
+    }
+    else
+    {
+        viscosity = [ viscosityString floatValue ];
+    }
+
+    NSString * arbitraryBoundariesString = [ sceneConfig objectForKey:@"ArbitraryBoundaries" ];
+    if ( arbitraryBoundariesString == nil )
+    {
+        NPLOG_WARNING(@"%@: ArbitraryBoundaries missing, using default", path);
+        useArbitraryBoundaries = NO;
+    }
+    else
+    {
+        useArbitraryBoundaries = [ arbitraryBoundariesString boolValue ];
+    }
+
     return YES;
-}
-
-- (void) activate
-{
-
-}
-
-- (void) deactivate
-{
-
 }
 
 - (void) updateVelocityBiLerp
@@ -599,6 +613,17 @@
 
     // Fluid Dynamics start here
 
+    if ( useArbitraryBoundaries == YES )
+    {
+        [ advection computeArbitraryBordersFrom:[velocitySource texture]
+                                             to:velocityTarget
+                            usingScaleAndOffset:[arbitraryBoundariesVelocity texture]];
+
+        id tmp = velocitySource;
+        velocitySource = velocityTarget;
+        velocityTarget = tmp;
+    }
+
     // Copy velocity texture, so that we have a nearest neighbor sampled and a bilinear filtered velocity texture
     [ self updateVelocityBiLerp ];
 
@@ -653,12 +678,16 @@
                                           color:&brak ];
     }
 
-    if ( [ addBoundaryAction active ] == YES )
+    if ( [ addBoundaryAction active ] == YES && useArbitraryBoundaries == YES )
     {
         [ inputForce addBoundaryBlockToQuantity:arbitraryBoundariesPaint ];
 
-        /*[ arbitraryBoundaries computeVelocityScaleAndOffsetFromBoundaries:[ arbitraryBoundariesSource texture ]
-                                                                       to:arbitraryBoundariesTarget ];*/
+        [ arbitraryBoundaries computeVelocityScaleAndOffsetFromBoundaries:[ arbitraryBoundariesPaint texture ]
+                                                                       to:arbitraryBoundariesVelocity ];
+
+        [ arbitraryBoundaries computePressureScaleAndOffsetFromBoundaries:[ arbitraryBoundariesPaint texture ]
+                                                                       to:arbitraryBoundariesPressure ];
+
     }
 
     // Compute divergence

@@ -95,6 +95,28 @@ BorderFOutput border_fragmentshader(in BorderVOutput input,
 	return output;
 }
 
+/*-----------------------------------------------------------------------*/
+
+BorderFOutput arbitraryborders_fragmentshader(in AdvectVOutput input,
+                                        in float4 rasterPos : WPOS)
+{
+	BorderFOutput output;
+
+    float2 texcoord = rasterPos.xy * rViewport;
+
+    float4 scaleoffset = tex2D(quantity, texcoord);
+
+    float4 result = float4(0.0f, 0.0f, 0.0f, 1.0f);
+    result.x = scaleoffset.x * tex2D(velocity, texcoord + float2(0, scaleoffset.y)).x;
+    result.y = scaleoffset.z * tex2D(velocity, texcoord + float2(scaleoffset.w, 0)).y;
+
+    output.color = result;
+
+	return output;
+}
+
+/*-----------------------------------------------------------------------*/
+
 technique advect
 {
 	pass
@@ -112,4 +134,15 @@ technique border
 		VertexProgram   = compile vp40 border_vertexshader();
     }
 }
+
+technique arbitraryBorders
+{
+    pass
+    {
+		FragmentProgram = compile fp40 arbitraryborders_fragmentshader();
+		VertexProgram   = compile vp40 advection_vertexshader();
+    }
+}
+
+
 
