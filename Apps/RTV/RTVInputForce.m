@@ -150,10 +150,10 @@
     [ inputEffect activateTechniqueWithName:@"input_boundaries" ];
 
     glBegin(GL_QUADS);
-        glVertex4f(normalisedMousePosition.x - pixelSize->x, normalisedMousePosition.y + pixelSize->y, 0.0f, 1.0f);
-        glVertex4f(normalisedMousePosition.x - pixelSize->x, normalisedMousePosition.y - pixelSize->y, 0.0f, 1.0f);
-        glVertex4f(normalisedMousePosition.x + pixelSize->x, normalisedMousePosition.y - pixelSize->y, 0.0f, 1.0f);
-        glVertex4f(normalisedMousePosition.x + pixelSize->x, normalisedMousePosition.y + pixelSize->y, 0.0f, 1.0f);
+        glVertex4f(normalisedMousePosition.x - 5.0f * pixelSize->x, normalisedMousePosition.y + 5.0f * pixelSize->y, 0.0f, 1.0f);
+        glVertex4f(normalisedMousePosition.x - 5.0f * pixelSize->x, normalisedMousePosition.y - 5.0f * pixelSize->y, 0.0f, 1.0f);
+        glVertex4f(normalisedMousePosition.x + 5.0f * pixelSize->x, normalisedMousePosition.y - 5.0f * pixelSize->y, 0.0f, 1.0f);
+        glVertex4f(normalisedMousePosition.x + 5.0f * pixelSize->x, normalisedMousePosition.y + 5.0f * pixelSize->y, 0.0f, 1.0f);
     glEnd();
 
     [ inputEffect deactivate ];

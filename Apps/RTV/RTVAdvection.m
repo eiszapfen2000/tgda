@@ -42,7 +42,8 @@
     fv2_free(innerQuadUpperLeft);
     fv2_free(pixelSize);
 
-    DESTROY(temporaryStorage);
+    [ temporaryStorage release ];
+    DESTROY(quantityBiLerp);
 
     [ advectionRenderTargetConfiguration clear ];
     [ advectionRenderTargetConfiguration release ];
@@ -66,59 +67,69 @@
     currentResolution->y = newResolution.y;
 }
 
-- (void) computeArbitraryBordersFrom:(NPTexture *)velocitySource
-                                  to:(NPRenderTexture *)velocityTarget
-                 usingScaleAndOffset:(NPTexture *)scaleAndOffset
+- (void) advectQuantityFrom:(NPRenderTexture *)quantitySource
+                         to:(NPRenderTexture *)quantityTarget
+              usingVelocity:(NPRenderTexture *)velocity
+                  frameTime:(Float)frameTime
+        arbitraryBoundaries:(BOOL)arbitraryBoundaries
+          andScaleAndOffset:(NPRenderTexture *)scaleAndOffset
 {
     [ advectionRenderTargetConfiguration resetColorTargetsArray ];
-    [[ advectionRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:velocityTarget   ];
     [ advectionRenderTargetConfiguration bindFBO ];
-    [ velocityTarget attachToColorBufferIndex:0 ];
-    [ advectionRenderTargetConfiguration activateDrawBuffers ];
-    [ advectionRenderTargetConfiguration activateViewport ];
-    [ advectionRenderTargetConfiguration checkFrameBufferCompleteness ];
 
-    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+    if ( arbitraryBoundaries == NO )
+    {
 
-    [ velocitySource activateAtColorMapIndex:0 ];
-    [ scaleAndOffset activateAtColorMapIndex:1 ];
+        [[ advectionRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:quantitySource ];
+        [ quantitySource attachToColorBufferIndex:0 ];
+        [ advectionRenderTargetConfiguration activateDrawBuffers ];
+        [ advectionRenderTargetConfiguration activateViewport ];
+        [ advectionRenderTargetConfiguration checkFrameBufferCompleteness ];
 
-    [ advectionEffect activateTechniqueWithName:@"arbitraryBorders" ];
+        [ advectionRenderTargetConfiguration copyColorBuffer:0 toTexture:[quantityBiLerp texture] ];
 
-    glBegin(GL_QUADS);
-        glVertex4f(innerQuadUpperLeft->x,  innerQuadUpperLeft->y,  0.0f, 1.0f);
-        glVertex4f(innerQuadUpperLeft->x,  innerQuadLowerRight->y, 0.0f, 1.0f);
-        glVertex4f(innerQuadLowerRight->x, innerQuadLowerRight->y, 0.0f, 1.0f);
-        glVertex4f(innerQuadLowerRight->x, innerQuadUpperLeft->y,  0.0f, 1.0f);
-    glEnd();
+        [ quantitySource detach ];
+    }
+    else
+    {
+        [[ advectionRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:quantityBiLerp ];
+        [ quantityBiLerp attachToColorBufferIndex:0 ];
+        [ advectionRenderTargetConfiguration activateDrawBuffers ];
+        [ advectionRenderTargetConfiguration activateViewport ];
+        [ advectionRenderTargetConfiguration checkFrameBufferCompleteness ];
 
-    [ advectionEffect deactivate ];
+        [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
 
-    [ velocityTarget detach ];
+        [[ velocity       texture ] activateAtColorMapIndex:0 ];
+        [[ scaleAndOffset texture ] activateAtColorMapIndex:1 ];
 
-    [ advectionRenderTargetConfiguration unbindFBO ];
-    [ advectionRenderTargetConfiguration deactivateDrawBuffers ];
-    [ advectionRenderTargetConfiguration deactivateViewport ];
-}
+        [ advectionEffect activateTechniqueWithName:@"arbitrary_borders" ];
 
-- (void) advectQuantityFrom:(NPTexture *)quantitySource
-                         to:(NPRenderTexture *)quantityTarget
-              usingVelocity:(NPTexture *)velocity
-               andFrameTime:(Float)frameTime
-{
+        glBegin(GL_QUADS);
+            glVertex4f(innerQuadUpperLeft->x,  innerQuadUpperLeft->y,  0.0f, 1.0f);
+            glVertex4f(innerQuadUpperLeft->x,  innerQuadLowerRight->y, 0.0f, 1.0f);
+            glVertex4f(innerQuadLowerRight->x, innerQuadLowerRight->y, 0.0f, 1.0f);
+            glVertex4f(innerQuadLowerRight->x, innerQuadUpperLeft->y,  0.0f, 1.0f);
+        glEnd();
+
+        [ advectionEffect deactivate ];
+
+        [ advectionRenderTargetConfiguration copyColorBuffer:0 toTexture:[velocity texture] ];
+
+        [ quantityBiLerp detach ];
+    }
+
     [[ advectionRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:quantityTarget   ];
     [[ advectionRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:1 withObject:temporaryStorage ];
-    [ advectionRenderTargetConfiguration bindFBO ];
     [ quantityTarget   attachToColorBufferIndex:0 ];
     [ temporaryStorage attachToColorBufferIndex:1 ];
     [ advectionRenderTargetConfiguration activateDrawBuffers ];
-    [ advectionRenderTargetConfiguration activateViewport ];
     [ advectionRenderTargetConfiguration checkFrameBufferCompleteness ];
 
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
 
-    [ velocity       activateAtColorMapIndex:0 ];
-    [ quantitySource activateAtColorMapIndex:1 ];
+    [[ velocity       texture ] activateAtColorMapIndex:0 ];
+    [[ quantityBiLerp texture ] activateAtColorMapIndex:1 ];
 
     [ advectionEffect uploadFloatParameter:timestep andValue:frameTime ];
     [ advectionEffect activateTechniqueWithName:@"advect" ];
@@ -178,6 +189,7 @@
     [ advectionRenderTargetConfiguration deactivateViewport ];
 }
 
+
 - (void) updateInnerQuadCoordinates
 {
     pixelSize->x = 1.0f/(Float)(currentResolution->x);
@@ -196,7 +208,12 @@
         DESTROY(temporaryStorage);
     }
 
-    id tempRenderTexture = [ NPRenderTexture renderTextureWithName:@"Temp"
+    if ( quantityBiLerp != nil )
+    {
+        DESTROY(quantityBiLerp);
+    }
+
+    id tempRenderTexture = [ NPRenderTexture renderTextureWithName:@"ATemp"
                                                               type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
                                                              width:currentResolution->x
                                                             height:currentResolution->y
@@ -208,6 +225,46 @@
                                                       textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
     temporaryStorage = [ tempRenderTexture retain ];
+
+
+
+    id quantityBiLerpRenderTexture = [ NPRenderTexture renderTextureWithName:@"QuantityBiLerp"
+                                                                        type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
+                                                                       width:currentResolution->x
+                                                                      height:currentResolution->y
+                                                                  dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
+                                                                 pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
+                                                            textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR
+                                                            textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR
+                                                                textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
+                                                                textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+
+    quantityBiLerp   = [ quantityBiLerpRenderTexture retain ];
+
+    // Clear render textures
+    [ advectionRenderTargetConfiguration resetColorTargetsArray ];
+    [[ advectionRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:temporaryStorage ];
+    [[ advectionRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:1 withObject:quantityBiLerp   ];
+
+    [ advectionRenderTargetConfiguration bindFBO ];
+
+    [ temporaryStorage attachToColorBufferIndex:0 ];
+    [ quantityBiLerp   attachToColorBufferIndex:1 ];
+
+    [ advectionRenderTargetConfiguration activateDrawBuffers ];
+    [ advectionRenderTargetConfiguration activateViewport ];
+    [ advectionRenderTargetConfiguration checkFrameBufferCompleteness ];
+
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
+    [ temporaryStorage detach ];
+    [ quantityBiLerp   detach ];
+
+    [ advectionRenderTargetConfiguration unbindFBO ];
+    [ advectionRenderTargetConfiguration deactivateDrawBuffers ];
+    [ advectionRenderTargetConfiguration deactivateViewport ];
+
+    [ advectionRenderTargetConfiguration resetColorTargetsArray ];
 }
 
 - (void) update:(Float)frameTime
