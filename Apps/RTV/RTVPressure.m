@@ -335,21 +335,28 @@
 
         [ pressureEffect activateTechniqueWithName:@"arbitrary_borders" ];
 
-        glBegin(GL_QUADS);
+        /*glBegin(GL_QUADS);
             glVertex4f(innerQuadUpperLeft->x,  innerQuadUpperLeft->y,  0.0f, 1.0f);
             glVertex4f(innerQuadUpperLeft->x,  innerQuadLowerRight->y, 0.0f, 1.0f);
             glVertex4f(innerQuadLowerRight->x, innerQuadLowerRight->y, 0.0f, 1.0f);
             glVertex4f(innerQuadLowerRight->x, innerQuadUpperLeft->y,  0.0f, 1.0f);
+        glEnd();*/
+
+        glBegin(GL_QUADS);
+            glVertex4f(0.0f, 1.0f,  0.0f, 1.0f);
+            glVertex4f(0.0f, 0.0f, 0.0f, 1.0f);
+            glVertex4f(1.0f, 0.0f, 0.0f, 1.0f);
+            glVertex4f(1.0f, 1.0f,  0.0f, 1.0f);
         glEnd();
 
         [ pressureEffect deactivate ];
 
         [ temporaryStorage detach ];
 
-        [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:pressureTarget ];
-        [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:1 withObject:pressureSource ];
-        [ pressureTarget attachToColorBufferIndex:0 ];
-        [ pressureSource attachToColorBufferIndex:1 ];
+        [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:target ];
+        [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:1 withObject:source ];
+        [ target attachToColorBufferIndex:0 ];
+        [ source attachToColorBufferIndex:1 ];
         [ pressureRenderTargetConfiguration activateDrawBuffers ];
         [ pressureRenderTargetConfiguration checkFrameBufferCompleteness ];
 
@@ -369,7 +376,7 @@
 
         [ pressureEffect deactivate ];
 
-        [ pressureSource detach ];
+        [ source detach ];
         [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:1 withObject:[NSNull null] ];
         [ pressureRenderTargetConfiguration activateDrawBuffers ];
         [ pressureRenderTargetConfiguration checkFrameBufferCompleteness ];
@@ -497,6 +504,9 @@
         source = target;
         target = tmp;*/
     }
+
+    //if ( tmp == pressureSource ) NSLog(@"Source");
+    //if ( tmp == pressureTarget ) NSLog(@"Target");
 
     [ pressureRenderTargetConfiguration unbindFBO ];
     [ pressureRenderTargetConfiguration deactivateDrawBuffers ];

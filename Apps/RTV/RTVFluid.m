@@ -641,7 +641,7 @@
     [ self clearDivergenceRenderTexture ];
     [ self clearPressureRenderTextures ];
     [ self clearArbitraryBoundariesRenderTextures ];
-    [ self initArbitraryBoundariesPaintRenderTexture ];
+    //[ self initArbitraryBoundariesPaintRenderTexture ];
 }
 
 - (void) update:(Float)frameTime
@@ -751,7 +751,7 @@
                    usingDivergence:divergenceTarget
                             deltaX:deltaX
                             deltaY:deltaY
-               arbitraryBoundaries:NO
+               arbitraryBoundaries:useArbitraryBoundaries
                  andScaleAndOffset:arbitraryBoundariesPressure ];
 
     [ pressure subtractGradientFromVelocity:[velocitySource texture]
@@ -762,6 +762,10 @@
     id tmp = velocitySource;
     velocitySource = velocityTarget;
     velocityTarget = tmp;
+
+    tmp = pressureSource;
+    pressureSource = pressureTarget;
+    pressureTarget = tmp;
 
     /*tmp = inkSource;
     inkSource = inkTarget;

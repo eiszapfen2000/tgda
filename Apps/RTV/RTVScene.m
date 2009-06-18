@@ -73,8 +73,8 @@
 
     ///[[[ NP Graphics ] stateConfiguration ] activate ];
 
-    [[[ fluid inkSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
-    [[[ fluid inkSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+//    [[[ fluid inkSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+//    [[[ fluid inkSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
     [[[ fluid inkSource ] texture ] activateAtColorMapIndex:0 ];
 
     [ fullscreenEffect activate ];
@@ -95,8 +95,8 @@
 
     [ fullscreenEffect deactivate ];
 
-    [[[ fluid inkSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    [[[ fluid inkSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+ //   [[[ fluid inkSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+ //   [[[ fluid inkSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
 
     FVector2 pos = {-1.0f, 1.0f };
     [ font renderString:[NSString stringWithFormat:@"%d %f",[[[ NP Core ] timer ] fps ],[[[ NP Core ] timer ] frameTime ] ] atPosition:&pos withSize:0.05f ];
