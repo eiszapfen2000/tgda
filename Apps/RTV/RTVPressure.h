@@ -53,6 +53,22 @@
            andScaleAndOffset:(NPRenderTexture *)scaleAndOffset
                             ;
 
+
+- (void) normalPressureFrom:(NPRenderTexture *)pressureSource
+                         to:(NPRenderTexture *)pressureTarget
+            usingDivergence:(NPRenderTexture *)divergence
+                     deltaX:(Float)deltaX
+                     deltaY:(Float)deltaY
+                           ;
+
+- (void) arbitraryBoundariesPressureFrom:(NPRenderTexture *)pressureSource
+                                      to:(NPRenderTexture *)pressureTarget
+                         usingDivergence:(NPRenderTexture *)divergence
+                                  deltaX:(Float)deltaX
+                                  deltaY:(Float)deltaY
+                       andScaleAndOffset:(NPRenderTexture *)scaleAndOffset
+                                        ;
+
 - (void) subtractGradientFromVelocity:(NPTexture *)velocitySource
                                    to:(NPRenderTexture *)velocityTarget
                         usingPressure:(NPTexture *)pressure

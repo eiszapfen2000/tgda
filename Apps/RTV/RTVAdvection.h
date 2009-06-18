@@ -28,8 +28,10 @@
 - (void) dealloc;
 
 - (IVector2) resolution;
+- (id) quantityBiLerp;
 - (id) temporaryStorage;
 - (void) setResolution:(IVector2)newResolution;
+
 
 - (void) advectQuantityFrom:(NPRenderTexture *)quantitySource
                          to:(NPRenderTexture *)quantityTarget
@@ -39,6 +41,26 @@
           andScaleAndOffset:(NPRenderTexture *)scaleAndOffset
                            ;
 
+
+- (void) normalQuantityAdvectionFrom:(NPRenderTexture *)quantitySource
+                                  to:(NPRenderTexture *)quantityTarget
+                       usingVelocity:(NPRenderTexture *)velocity
+                           frameTime:(Float)frameTime
+                                    ;
+
+- (void) arbitraryBoundariesAdvectionFrom:(NPRenderTexture *)quantitySource
+                                       to:(NPRenderTexture *)quantityTarget
+                            usingVelocity:(NPRenderTexture *)velocity
+                                frameTime:(Float)frameTime
+                        andScaleAndOffset:(NPRenderTexture *)scaleAndOffset
+                                         ;
+
+//THIS IS A HACK, THIS SHOULD NOT BE HERE
+- (void) updateQuantityBoundariesFrom:(NPRenderTexture *)quantitySource
+                                   to:(NPRenderTexture *)quantityTarget
+                  arbitraryBoundaries:(BOOL)arbitraryBoundaries
+                    andScaleAndOffset:(NPRenderTexture *)scaleAndOffset
+                                     ;
 
 - (void) update:(Float)frameTime;
 - (void) render;

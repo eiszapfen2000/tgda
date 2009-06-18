@@ -41,7 +41,7 @@ DivergenceFOutput divergence_fragmentshader(in DivergenceVOutput input,
     float2 xT = tex2D(velocity, texcoord + float2(0.0f, rViewport.y)).xy;
 
     output.divergence = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    output.divergence.xy = ((xR.x - xL.x) + (xT.y - xB.y)) * rHalfDX;
+    output.divergence.x = ((xR.x - xL.x) + (xT.y - xB.y)) * rHalfDX;
 
 	return output;
 }
