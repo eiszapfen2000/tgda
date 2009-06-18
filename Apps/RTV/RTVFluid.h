@@ -6,6 +6,7 @@
 {
     IVector2 * currentResolution;
     IVector2 * resolutionLastFrame;
+    FVector2 * pixelSize;
 
     FMatrix4 * projection;
     FMatrix4 * identity;
@@ -37,6 +38,7 @@
     id addInkAction;
     id addBoundaryAction;
 
+    id effect;
     id fluidRenderTargetConfiguration;
 
     BOOL useArbitraryBoundaries;

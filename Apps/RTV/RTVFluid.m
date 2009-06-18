@@ -26,6 +26,7 @@
 
     currentResolution = iv2_alloc_init();
     resolutionLastFrame = iv2_alloc_init();
+    pixelSize = fv2_alloc_init();
 
     projection = fm4_alloc_init();
     identity   = fm4_alloc_init();
@@ -45,6 +46,7 @@
     addInkAction      = [[[ NP Input ] inputActions ] addInputActionWithName:@"AddInk"      primaryInputAction:NP_INPUT_MOUSE_BUTTON_RIGHT  ];
     addBoundaryAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"AddBoundary" primaryInputAction:NP_INPUT_MOUSE_BUTTON_MIDDLE ];
 
+    effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Fluid.cgfx" ];
     fluidRenderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"FluidRT" parent:self ];
 
     return self;
@@ -54,6 +56,7 @@
 {
     iv2_free(currentResolution);
     iv2_free(resolutionLastFrame);
+    fv2_free(pixelSize);
 
     fm4_free(projection);
     fm4_free(identity);
@@ -574,6 +577,57 @@
     [ self clearRenderTextures:[NSArray arrayWithObjects:arbitraryBoundariesPaint, arbitraryBoundariesVelocity, arbitraryBoundariesPressure, nil] ];
 }
 
+- (void) initArbitraryBoundariesPaintRenderTexture
+{
+    [ fluidRenderTargetConfiguration resetColorTargetsArray ];
+    [ fluidRenderTargetConfiguration bindFBO ];
+    [[ fluidRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:arbitraryBoundariesPaint ];
+    [ arbitraryBoundariesPaint attachToColorBufferIndex:0 ];
+    [ fluidRenderTargetConfiguration activateDrawBuffers ];
+    [ fluidRenderTargetConfiguration activateViewport ];
+    [ fluidRenderTargetConfiguration checkFrameBufferCompleteness ];
+
+    NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
+    [ trafo setProjectionMatrix:projection ];
+
+    [ effect activate ];
+
+    glBegin(GL_LINES);
+        glTexCoord2f(pixelSize->x, 0.0f);
+        glVertex4f(pixelSize->x*0.5f, 1.0f, 0.0f, 1.0f);
+        glTexCoord2f(pixelSize->x, 0.0f);
+        glVertex4f(pixelSize->x*0.5f, 0.0f, 0.0f, 1.0f);
+    glEnd();
+
+    glBegin(GL_LINES);
+        glTexCoord2f(-pixelSize->x, 0.0f);
+        glVertex4f(1.0f-pixelSize->x*0.5f, 1.0f, 0.0f, 1.0f);
+        glTexCoord2f(-pixelSize->x, 0.0f);
+        glVertex4f(1.0f-pixelSize->x*0.5f, 0.0f, 0.0f, 1.0f);
+    glEnd();
+
+    glBegin(GL_LINES);
+        glTexCoord2f(0.0f, -pixelSize->y);
+        glVertex4f(0.0f, 1.0f-pixelSize->y*0.5f, 0.0f, 1.0f);
+        glTexCoord2f(0.0f, -pixelSize->y);
+        glVertex4f(1.0f, 1.0f-pixelSize->y*0.5f, 0.0f, 1.0f);
+    glEnd();
+
+    glBegin(GL_LINES);
+        glTexCoord2f(0.0f, pixelSize->y);
+        glVertex4f(0.0f, pixelSize->y*0.5f, 0.0f, 1.0f);
+        glTexCoord2f(0.0f, pixelSize->y);
+        glVertex4f(1.0f, pixelSize->y*0.5f, 0.0f, 1.0f);
+    glEnd();
+
+    [ effect deactivate ];
+
+    [ arbitraryBoundariesPaint detach ];
+    [ fluidRenderTargetConfiguration unbindFBO ];
+    [ fluidRenderTargetConfiguration deactivateDrawBuffers ];
+    [ fluidRenderTargetConfiguration deactivateViewport ];
+}
+
 - (void) updateRenderTextures
 {
     [ self createVelocityRenderTextures ];
@@ -587,12 +641,16 @@
     [ self clearDivergenceRenderTexture ];
     [ self clearPressureRenderTextures ];
     [ self clearArbitraryBoundariesRenderTextures ];
+    [ self initArbitraryBoundariesPaintRenderTexture ];
 }
 
 - (void) update:(Float)frameTime
 {
     if ( (currentResolution->x != resolutionLastFrame->x) || (currentResolution->y != resolutionLastFrame->y) )
     {
+        pixelSize->x = 1.0f/(Float)(currentResolution->x);
+        pixelSize->y = 1.0f/(Float)(currentResolution->y);
+
         [ self updateRenderTextures ];
 
         resolutionLastFrame->x = currentResolution->x;
@@ -613,9 +671,6 @@
 
     // Fluid Dynamics start here
 
-    // Copy velocity texture, so that we have a nearest neighbor sampled and a bilinear filtered velocity texture
-//    [ self updateVelocityBiLerp ];
-
     // Advect velocity
 
     [ advection advectQuantityFrom:velocitySource
@@ -624,7 +679,6 @@
                          frameTime:frameTime
                arbitraryBoundaries:useArbitraryBoundaries
                  andScaleAndOffset:arbitraryBoundariesVelocity ];
-
 
     // Advect ink
 
@@ -692,18 +746,12 @@
 
     // Compute pressure
 
-    /*[ pressure computePressureFrom:pressureSource 
-                                to:pressureTarget
-                   usingDivergence:divergenceTarget
-                            deltaX:deltaX
-                            deltaY:deltaY ];*/
-
     [ pressure computePressureFrom:pressureSource
                                 to:pressureTarget
                    usingDivergence:divergenceTarget
                             deltaX:deltaX
                             deltaY:deltaY
-               arbitraryBoundaries:useArbitraryBoundaries
+               arbitraryBoundaries:NO
                  andScaleAndOffset:arbitraryBoundariesPressure ];
 
     [ pressure subtractGradientFromVelocity:[velocitySource texture]

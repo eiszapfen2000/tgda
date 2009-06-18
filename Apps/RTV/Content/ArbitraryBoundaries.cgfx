@@ -45,7 +45,7 @@ FOutput updateOffsets_mfragmentshader(in VOutput input,
 
     float xC = tex2D(boundaries, texcoord).x;
 
-    float index = (3.0f * xN + xE + 5.0f * xS + 7.0f * xW + 17.0f * xC)/34.0f;
+    float index = (3.0f * xN + xE + 5.0f * xS + 7.0f * xW + 17.0f * xC)/34.0f + 1.0f/68.0f;
 
     output.color = tex2D(lookupTable, float2(index, 0.5f));
 

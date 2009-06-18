@@ -183,6 +183,33 @@
 {
     #warning FIXME clear pressure every frame
 
+    if ( arbitraryBoundaries == YES )
+    {
+        [ self arbitraryBoundariesPressureFrom:pressureSource
+                                            to:pressureTarget
+                               usingDivergence:divergence
+                                        deltaX:deltaX
+                                        deltaY:deltaY
+                             andScaleAndOffset:scaleAndOffset ];
+    }
+    else
+    {
+        [ self normalPressureFrom:pressureSource
+                               to:pressureTarget
+                  usingDivergence:divergence
+                           deltaX:deltaX
+                           deltaY:deltaY ];
+    }
+}
+
+- (void) normalPressureFrom:(NPRenderTexture *)pressureSource
+                         to:(NPRenderTexture *)pressureTarget
+            usingDivergence:(NPRenderTexture *)divergence
+                     deltaX:(Float)deltaX
+                     deltaY:(Float)deltaY
+{
+    #warning FIXME clear pressure every frame
+
     id source = pressureSource;
     id target = pressureTarget;
     id tmp;
@@ -199,33 +226,6 @@
 
     for ( Int i = 0; i < numberOfIterations; i++ )
     {
-        if ( arbitraryBoundaries == YES )
-        {
-            [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:target ];
-            [ target attachToColorBufferIndex:0 ];
-            [ pressureRenderTargetConfiguration activateDrawBuffers ];
-            [ pressureRenderTargetConfiguration activateViewport ];
-            [ pressureRenderTargetConfiguration checkFrameBufferCompleteness ];
-
-            [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
-
-            [[ source         texture ] activateAtColorMapIndex:0 ];
-            [[ scaleAndOffset texture ] activateAtColorMapIndex:1 ];
-
-            [ pressureEffect activateTechniqueWithName:@"arbitrary_borders" ];
-
-            glBegin(GL_QUADS);
-                glVertex4f(innerQuadUpperLeft->x,  innerQuadUpperLeft->y,  0.0f, 1.0f);
-                glVertex4f(innerQuadUpperLeft->x,  innerQuadLowerRight->y, 0.0f, 1.0f);
-                glVertex4f(innerQuadLowerRight->x, innerQuadLowerRight->y, 0.0f, 1.0f);
-                glVertex4f(innerQuadLowerRight->x, innerQuadUpperLeft->y,  0.0f, 1.0f);
-            glEnd();
-
-            [ pressureEffect deactivate ];
-
-            [ pressureRenderTargetConfiguration copyColorBuffer:0 toTexture:[source texture] ];
-        }
-
         [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:target ];
         [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:1 withObject:temporaryStorage ];
         [ target           attachToColorBufferIndex:0 ];
@@ -248,13 +248,133 @@
 
         [ pressureEffect deactivate ];
 
-        [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:target ];
-        [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:1 withObject:[NSNull null]  ];
         [ temporaryStorage detach ];
+        [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:1 withObject:[NSNull null] ];
         [ pressureRenderTargetConfiguration activateDrawBuffers ];
         [ pressureRenderTargetConfiguration checkFrameBufferCompleteness ];
 
         [[ temporaryStorage texture ] activateAtColorMapIndex:0 ];
+
+        [ pressureEffect activateTechniqueWithName:@"border" ];
+
+        glBegin(GL_LINES);
+            glTexCoord2f(pixelSize->x, 0.0f);
+            glVertex4f(pixelSize->x*0.5f, 1.0f, 0.0f, 1.0f);
+            glTexCoord2f(pixelSize->x, 0.0f);
+            glVertex4f(pixelSize->x*0.5f, 0.0f, 0.0f, 1.0f);
+        glEnd();
+
+        glBegin(GL_LINES);
+            glTexCoord2f(-pixelSize->x, 0.0f);
+            glVertex4f(1.0f-pixelSize->x*0.5f, 1.0f, 0.0f, 1.0f);
+            glTexCoord2f(-pixelSize->x, 0.0f);
+            glVertex4f(1.0f-pixelSize->x*0.5f, 0.0f, 0.0f, 1.0f);
+        glEnd();
+
+        glBegin(GL_LINES);
+            glTexCoord2f(0.0f, -pixelSize->y);
+            glVertex4f(0.0f, 1.0f-pixelSize->y*0.5f, 0.0f, 1.0f);
+            glTexCoord2f(0.0f, -pixelSize->y);
+            glVertex4f(1.0f, 1.0f-pixelSize->y*0.5f, 0.0f, 1.0f);
+        glEnd();
+
+        glBegin(GL_LINES);
+            glTexCoord2f(0.0f, pixelSize->y);
+            glVertex4f(0.0f, pixelSize->y*0.5f, 0.0f, 1.0f);
+            glTexCoord2f(0.0f, pixelSize->y);
+            glVertex4f(1.0f, pixelSize->y*0.5f, 0.0f, 1.0f);
+        glEnd();
+
+        [ pressureEffect deactivate ];
+        [ target detach ];
+
+        tmp = source;
+        source = target;
+        target = tmp;
+    }
+
+    [ pressureRenderTargetConfiguration unbindFBO ];
+    [ pressureRenderTargetConfiguration deactivateDrawBuffers ];
+    [ pressureRenderTargetConfiguration deactivateViewport ];
+}
+
+- (void) arbitraryBoundariesPressureFrom:(NPRenderTexture *)pressureSource
+                                      to:(NPRenderTexture *)pressureTarget
+                         usingDivergence:(NPRenderTexture *)divergence
+                                  deltaX:(Float)deltaX
+                                  deltaY:(Float)deltaY
+                       andScaleAndOffset:(NPRenderTexture *)scaleAndOffset
+{
+    #warning FIXME clear pressure every frame
+
+    id source = pressureSource;
+    id target = pressureTarget;
+    id tmp;
+
+    Float alphaValue = -(deltaX * deltaY);
+    Float rBetaValue = 1.0f / 4.0f;
+
+    [ pressureRenderTargetConfiguration resetColorTargetsArray ];
+    [ pressureRenderTargetConfiguration bindFBO ];
+    [ pressureRenderTargetConfiguration activateViewport ];
+
+    [ pressureEffect uploadFloatParameter:alpha andValue:alphaValue ];
+    [ pressureEffect uploadFloatParameter:rBeta andValue:rBetaValue ];
+
+    for ( Int i = 0; i < numberOfIterations; i++ )
+    {
+        [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:temporaryStorage ];
+        [ temporaryStorage attachToColorBufferIndex:0 ];
+        [ pressureRenderTargetConfiguration activateDrawBuffers ];
+        [ pressureRenderTargetConfiguration checkFrameBufferCompleteness ];
+
+        [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
+        [[ source         texture ] activateAtColorMapIndex:0 ];
+        [[ scaleAndOffset texture ] activateAtColorMapIndex:1 ];
+
+        [ pressureEffect activateTechniqueWithName:@"arbitrary_borders" ];
+
+        glBegin(GL_QUADS);
+            glVertex4f(innerQuadUpperLeft->x,  innerQuadUpperLeft->y,  0.0f, 1.0f);
+            glVertex4f(innerQuadUpperLeft->x,  innerQuadLowerRight->y, 0.0f, 1.0f);
+            glVertex4f(innerQuadLowerRight->x, innerQuadLowerRight->y, 0.0f, 1.0f);
+            glVertex4f(innerQuadLowerRight->x, innerQuadUpperLeft->y,  0.0f, 1.0f);
+        glEnd();
+
+        [ pressureEffect deactivate ];
+
+        [ temporaryStorage detach ];
+
+        [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:pressureTarget ];
+        [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:1 withObject:pressureSource ];
+        [ pressureTarget attachToColorBufferIndex:0 ];
+        [ pressureSource attachToColorBufferIndex:1 ];
+        [ pressureRenderTargetConfiguration activateDrawBuffers ];
+        [ pressureRenderTargetConfiguration checkFrameBufferCompleteness ];
+
+        [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
+        [[ temporaryStorage texture ] activateAtColorMapIndex:0 ];
+        [[ divergence       texture ] activateAtColorMapIndex:1 ];
+
+        [ pressureEffect activateTechniqueWithName:@"compute_pressure" ];
+
+        glBegin(GL_QUADS);
+            glVertex4f(innerQuadUpperLeft->x,  innerQuadUpperLeft->y,  0.0f, 1.0f);
+            glVertex4f(innerQuadUpperLeft->x,  innerQuadLowerRight->y, 0.0f, 1.0f);
+            glVertex4f(innerQuadLowerRight->x, innerQuadLowerRight->y, 0.0f, 1.0f);
+            glVertex4f(innerQuadLowerRight->x, innerQuadUpperLeft->y,  0.0f, 1.0f);
+        glEnd();
+
+        [ pressureEffect deactivate ];
+
+        [ pressureSource detach ];
+        [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:1 withObject:[NSNull null] ];
+        [ pressureRenderTargetConfiguration activateDrawBuffers ];
+        [ pressureRenderTargetConfiguration checkFrameBufferCompleteness ];
+
+        [[ source texture ] activateAtColorMapIndex:0 ];
 
         [ pressureEffect activateTechniqueWithName:@"border" ];
 
@@ -293,6 +413,89 @@
         tmp = source;
         source = target;
         target = tmp;
+
+        // Compute borders
+
+        /*[[ source texture ] activateAtColorMapIndex:0 ];
+
+        [ pressureEffect activateTechniqueWithName:@"border" ];
+
+        glBegin(GL_LINES);
+            glTexCoord2f(pixelSize->x, 0.0f);
+            glVertex4f(pixelSize->x*0.5f, 1.0f, 0.0f, 1.0f);
+            glTexCoord2f(pixelSize->x, 0.0f);
+            glVertex4f(pixelSize->x*0.5f, 0.0f, 0.0f, 1.0f);
+        glEnd();
+
+        glBegin(GL_LINES);
+            glTexCoord2f(-pixelSize->x, 0.0f);
+            glVertex4f(1.0f-pixelSize->x*0.5f, 1.0f, 0.0f, 1.0f);
+            glTexCoord2f(-pixelSize->x, 0.0f);
+            glVertex4f(1.0f-pixelSize->x*0.5f, 0.0f, 0.0f, 1.0f);
+        glEnd();
+
+        glBegin(GL_LINES);
+            glTexCoord2f(0.0f, -pixelSize->y);
+            glVertex4f(0.0f, 1.0f-pixelSize->y*0.5f, 0.0f, 1.0f);
+            glTexCoord2f(0.0f, -pixelSize->y);
+            glVertex4f(1.0f, 1.0f-pixelSize->y*0.5f, 0.0f, 1.0f);
+        glEnd();
+
+        glBegin(GL_LINES);
+            glTexCoord2f(0.0f, pixelSize->y);
+            glVertex4f(0.0f, pixelSize->y*0.5f, 0.0f, 1.0f);
+            glTexCoord2f(0.0f, pixelSize->y);
+            glVertex4f(1.0f, pixelSize->y*0.5f, 0.0f, 1.0f);
+        glEnd();
+
+        [ pressureEffect deactivate ];
+
+        // Arbitrary Borders
+
+        [[ source         texture ] activateAtColorMapIndex:0 ];
+        [[ scaleAndOffset texture ] activateAtColorMapIndex:1 ];
+
+        [ pressureEffect activateTechniqueWithName:@"arbitrary_borders" ];
+
+        glBegin(GL_QUADS);
+            glVertex4f(innerQuadUpperLeft->x,  innerQuadUpperLeft->y,  0.0f, 1.0f);
+            glVertex4f(innerQuadUpperLeft->x,  innerQuadLowerRight->y, 0.0f, 1.0f);
+            glVertex4f(innerQuadLowerRight->x, innerQuadLowerRight->y, 0.0f, 1.0f);
+            glVertex4f(innerQuadLowerRight->x, innerQuadUpperLeft->y,  0.0f, 1.0f);
+        glEnd();
+
+        [ pressureEffect deactivate ];
+
+        [ temporaryStorage detach ];
+
+        // Compute Poisson pressure iteration
+
+        [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:target ];
+        [ target attachToColorBufferIndex:0 ];
+        [ pressureRenderTargetConfiguration activateDrawBuffers ];
+        [ pressureRenderTargetConfiguration checkFrameBufferCompleteness ];
+
+        [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
+        [[ temporaryStorage texture ] activateAtColorMapIndex:0 ];
+        [[ divergence       texture ] activateAtColorMapIndex:1 ];
+
+        [ pressureEffect activateTechniqueWithName:@"compute_pressure" ];
+
+        glBegin(GL_QUADS);
+            glVertex4f(innerQuadUpperLeft->x,  innerQuadUpperLeft->y,  0.0f, 1.0f);
+            glVertex4f(innerQuadUpperLeft->x,  innerQuadLowerRight->y, 0.0f, 1.0f);
+            glVertex4f(innerQuadLowerRight->x, innerQuadLowerRight->y, 0.0f, 1.0f);
+            glVertex4f(innerQuadLowerRight->x, innerQuadUpperLeft->y,  0.0f, 1.0f);
+        glEnd();
+
+        [ pressureEffect deactivate ];
+
+        [ target detach ];
+
+        tmp = source;
+        source = target;
+        target = tmp;*/
     }
 
     [ pressureRenderTargetConfiguration unbindFBO ];
@@ -367,6 +570,28 @@
                                                       textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
     temporaryStorage = [ tempRenderTexture retain ];
+
+    // Clear render textures
+    [ pressureRenderTargetConfiguration resetColorTargetsArray ];
+    [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:temporaryStorage ];
+
+    [ pressureRenderTargetConfiguration bindFBO ];
+
+    [ temporaryStorage attachToColorBufferIndex:0 ];
+
+    [ pressureRenderTargetConfiguration activateDrawBuffers ];
+    [ pressureRenderTargetConfiguration activateViewport ];
+    [ pressureRenderTargetConfiguration checkFrameBufferCompleteness ];
+
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
+    [ temporaryStorage detach ];
+
+    [ pressureRenderTargetConfiguration unbindFBO ];
+    [ pressureRenderTargetConfiguration deactivateDrawBuffers ];
+    [ pressureRenderTargetConfiguration deactivateViewport ];
+
+    [ pressureRenderTargetConfiguration resetColorTargetsArray ];
 }
 
 - (void) update:(Float)frameTime

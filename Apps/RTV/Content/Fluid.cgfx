@@ -1,56 +1,45 @@
-float4x4 mvpmatrix : NPMODELVIEWPROJECTION;
-//float4x4 viewmatrix  : NPVIEW;
-//float4x4 projectionmatrix : NPPROJECTION;
+float4x4 mvp : NPMODELVIEWPROJECTION;
 
-sampler2D colormap  : NPCOLORMAP0;
-//float2    rasterPos : WPOS;
-//float2    grid      : NPRVIEWPORTSIZE;
-
-struct INPUTDATA
+struct VInput
 {
-	float4 position			: POSITION;
-    float4 color            : COLOR0;
+	float4 position : POSITION;
 };
 
-struct VOUTPUTDATA
+struct VOutput
 {
-	float4 position			: POSITION;
-    float4 color            : COLOR0;
+	float4 position : POSITION;
 };
 
-VOUTPUTDATA mvertexshader(INPUTDATA input)
+VOutput mvertexshader(in VInput input)
 {
-	VOUTPUTDATA output;
+	VOutput output;
 
-	//float4x4 mvp = mul(projectionmatrix,mul(viewmatrix,modelmatrix));
-
-	output.position = mul(mvpmatrix, input.position);
-    output.color = input.color;
+    output.position = mul(mvp, input.position);
 	
 	return output;
 }
 
-struct FOUTPUTDATA
+struct FOutput
 {
-	float4 color			: COLOR0;
+    float4 color : COLOR0;
 };
 
-FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
+FOutput mfragmentshader(in VOutput input,
+                                            in float4 rasterPos : WPOS)
 {
-	FOUTPUTDATA output;
+	FOutput output;
 
-    //output.color = tex2D(colormap, rasterPos);
-    output.color = input.color;
+    output.color = float4(1.0f,1.0f,1.0f,1.0f);
 
-	return output;
+    return output;
 }
 
-technique advect
+technique render
 {
 	pass
 	{
 		FragmentProgram = compile fp40 mfragmentshader();
-		VertexProgram = compile vp40 mvertexshader();
+		VertexProgram   = compile vp40 mvertexshader();
 	}
 }
 

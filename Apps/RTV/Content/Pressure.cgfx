@@ -85,7 +85,7 @@ PressureFOutput pressure_fragmentshader(in PressureVOutput input,
 
 struct BorderFOutput
 {
-	float4 color		: COLOR0;
+    float4 color : COLOR0;
 };
 
 BorderFOutput border_fragmentshader(in BorderVOutput input,
@@ -103,16 +103,19 @@ BorderFOutput border_fragmentshader(in BorderVOutput input,
 /*-----------------------------------------------------------------------*/
 
 BorderFOutput arbitraryborders_fragmentshader(in PressureVOutput input,
-                                               in float4 rasterPos : WPOS)
+                                              in float4 rasterPos : WPOS)
 {
 	BorderFOutput output;
 
     float2 texcoord = rasterPos.xy * rViewport;
 
     float4 scaleoffset = tex2D(divergence, texcoord);
+    scaleoffset.xy *= rViewport;
+    scaleoffset.zw *= rViewport;
 
-    float4 result = float4(0.0f, 0.0f, 0.0f, 1.0f);
+    float4 result = float4(0.0f, 0.0f, 0.0f, 0.0f);
     result.x = 0.5f * ( tex2D(pressure, texcoord + scaleoffset.xy).x + tex2D(pressure, texcoord + scaleoffset.zw).x );
+    //result.x = 0.5f * ( tex2D(pressure, texcoord).x + tex2D(pressure, texcoord).x );
 
     output.color = result;
 

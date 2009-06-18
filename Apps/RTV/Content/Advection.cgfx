@@ -52,7 +52,6 @@ BorderVOutput border_vertexshader(in BorderVInput input)
 
 /*-----------------------------------------------------------------------*/
 
-
 struct AdvectFOutput
 {
 	float4 advected		: COLOR0;
@@ -70,8 +69,8 @@ AdvectFOutput advection_fragmentshader(in AdvectVOutput input,
 
     //float4 result = float4(lookup.x, lookup.y, 0.0f, 0.0f);
 
-    output.temp = result;
     output.advected = result;
+    output.temp     = result;
 
 	return output;
 }
@@ -97,10 +96,10 @@ BorderFOutput border_fragmentshader(in BorderVOutput input,
 
 /*-----------------------------------------------------------------------*/
 
-BorderFOutput arbitraryborders_fragmentshader(in AdvectVOutput input,
-                                        in float4 rasterPos : WPOS)
+AdvectFOutput arbitraryborders_fragmentshader(in AdvectVOutput input,
+                                              in float4 rasterPos : WPOS)
 {
-	BorderFOutput output;
+	AdvectFOutput output;
 
     float2 texcoord = rasterPos.xy * rViewport;
 
@@ -111,7 +110,8 @@ BorderFOutput arbitraryborders_fragmentshader(in AdvectVOutput input,
     result.x = scaleoffset.x * tex2D(velocity, texcoord + float2(0.0f, scaleoffset.y)).x;
     result.y = scaleoffset.z * tex2D(velocity, texcoord + float2(scaleoffset.w, 0.0f)).y;
 
-    output.color = result;
+    output.advected = result;
+    output.temp     = result;
 
 	return output;
 }
