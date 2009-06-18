@@ -212,11 +212,18 @@
 
     [ advectionEffect activateTechniqueWithName:@"arbitrary_borders" ];
 
-    glBegin(GL_QUADS);
+    /*glBegin(GL_QUADS);
         glVertex4f(innerQuadUpperLeft->x,  innerQuadUpperLeft->y,  0.0f, 1.0f);
         glVertex4f(innerQuadUpperLeft->x,  innerQuadLowerRight->y, 0.0f, 1.0f);
         glVertex4f(innerQuadLowerRight->x, innerQuadLowerRight->y, 0.0f, 1.0f);
         glVertex4f(innerQuadLowerRight->x, innerQuadUpperLeft->y,  0.0f, 1.0f);
+    glEnd();*/
+
+    glBegin(GL_QUADS);
+        glVertex4f(0.0f, 1.0f, 0.0f, 1.0f);
+        glVertex4f(0.0f, 0.0f, 0.0f, 1.0f);
+        glVertex4f(1.0f, 0.0f, 0.0f, 1.0f);
+        glVertex4f(1.0f, 1.0f, 0.0f, 1.0f);
     glEnd();
 
     [ advectionEffect deactivate ];

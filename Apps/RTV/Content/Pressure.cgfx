@@ -96,6 +96,7 @@ BorderFOutput border_fragmentshader(in BorderVOutput input,
     float2 texcoord = rasterPos.xy * rViewport + input.texcoord;
 
     output.color = tex2D(pressure, texcoord);
+    //output.color = float4(1.0f,1.0f,1.0f,1.0f);
 
 	return output;
 }
