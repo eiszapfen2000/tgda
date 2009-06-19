@@ -76,7 +76,7 @@
     currentResolution->y = newResolution.y;
 }
 
-- (void) computePressureFrom:(id)pressureSource 
+/*- (void) computePressureFrom:(id)pressureSource 
                           to:(id)pressureTarget
              usingDivergence:(id)divergence
                       deltaX:(Float)deltaX
@@ -171,7 +171,7 @@
     [ pressureRenderTargetConfiguration unbindFBO ];
     [ pressureRenderTargetConfiguration deactivateDrawBuffers ];
     [ pressureRenderTargetConfiguration deactivateViewport ];
-}
+}*/
 
 - (void) computePressureFrom:(NPRenderTexture *)pressureSource
                           to:(NPRenderTexture *)pressureTarget
@@ -181,8 +181,6 @@
          arbitraryBoundaries:(BOOL)arbitraryBoundaries
            andScaleAndOffset:(NPRenderTexture *)scaleAndOffset
 {
-    #warning FIXME clear pressure every frame
-
     if ( arbitraryBoundaries == YES )
     {
         [ self arbitraryBoundariesPressureFrom:pressureSource
@@ -208,8 +206,6 @@
                      deltaX:(Float)deltaX
                      deltaY:(Float)deltaY
 {
-    #warning FIXME clear pressure every frame
-
     id source = pressureSource;
     id target = pressureTarget;
     id tmp;
@@ -305,8 +301,6 @@
                                   deltaY:(Float)deltaY
                        andScaleAndOffset:(NPRenderTexture *)scaleAndOffset
 {
-    #warning FIXME clear pressure every frame
-
     id source = pressureSource;
     id target = pressureTarget;
     id tmp;

@@ -5,6 +5,8 @@
     id font;
     id fullscreenEffect;
 
+    id menu;
+
     id fluid;
 }
 

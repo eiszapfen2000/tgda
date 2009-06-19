@@ -14,7 +14,8 @@ RTVInputForce.m \
 RTVDivergence.m \
 RTVPressure.m \
 RTVArbitraryBoundaries.m \
-RTVFluid.m
+RTVFluid.m \
+RTVMenu.m
 
 RTV_RESOURCE_FILES = \
 Info-gnustep.plist \
