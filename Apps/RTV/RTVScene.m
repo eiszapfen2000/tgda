@@ -5,6 +5,7 @@
 #import "RTVDiffusion.h"
 #import "RTVInputForce.h"
 #import "RTVFluid.h"
+#import "RTVMenu.h"
 #import "RTVScene.h"
 
 @implementation RTVScene
@@ -27,6 +28,8 @@
 
     fullscreenEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Fullscreen.cgfx" ];
 
+    menu = [[ RTVMenu alloc ] initWithName:@"Menu" parent:self ];
+
     fluid = [[ RTVFluid alloc ] initWithName:@"Fluid" parent:self ];
 
     return self;
@@ -35,6 +38,7 @@
 - (void) dealloc
 {
     DESTROY(fluid);
+    DESTROY(menu);
 
     [ super dealloc ];
 }
@@ -63,6 +67,7 @@
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
     [ fluid update:frameTime ];
+    [ menu  update:frameTime ];
 
     [[[ NP Graphics ] stateConfiguration ] deactivate ];
 }
@@ -71,10 +76,6 @@
 {
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
-    ///[[[ NP Graphics ] stateConfiguration ] activate ];
-
-//    [[[ fluid inkSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
-//    [[[ fluid inkSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
     [[[ fluid inkSource ] texture ] activateAtColorMapIndex:0 ];
 
     [ fullscreenEffect activate ];
@@ -84,10 +85,30 @@
         glVertex4f(-1.0f,1.0f,0.0f,1.0f);
 
         glTexCoord2f(0.0f,0.0f);
-        glVertex4f(-1.0f,-1.0f,0.0f,1.0f);
+        glVertex4f(-1.0f,0.0f,0.0f,1.0f);
 
         glTexCoord2f(1.0f,0.0f);
-        glVertex4f(1.0f,-1.0f,0.0f,1.0f);
+        glVertex4f(0.0f,0.0f,0.0f,1.0f);
+
+        glTexCoord2f(1.0f,1.0f);
+        glVertex4f(0.0f,1.0f,0.0f,1.0f);
+    glEnd();
+
+    [ fullscreenEffect deactivate ];
+
+    [[[ fluid velocitySource ] texture ] activateAtColorMapIndex:0 ];
+
+    [ fullscreenEffect activate ];
+
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0f,1.0f);            
+        glVertex4f(0.0f,1.0f,0.0f,1.0f);
+
+        glTexCoord2f(0.0f,0.0f);
+        glVertex4f(0.0f,0.0f,0.0f,1.0f);
+
+        glTexCoord2f(1.0f,0.0f);
+        glVertex4f(1.0f,0.0f,0.0f,1.0f);
 
         glTexCoord2f(1.0f,1.0f);
         glVertex4f(1.0f,1.0f,0.0f,1.0f);
@@ -95,13 +116,36 @@
 
     [ fullscreenEffect deactivate ];
 
- //   [[[ fluid inkSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
- //   [[[ fluid inkSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    [[[ fluid pressureSource ] texture ] activateAtColorMapIndex:0 ];
 
-    FVector2 pos = {-1.0f, 1.0f };
+    [ fullscreenEffect activate ];
+
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0f,1.0f);            
+        glVertex4f(-1.0f,0.0f,0.0f,1.0f);
+
+        glTexCoord2f(0.0f,0.0f);
+        glVertex4f(-1.0f,-1.0f,0.0f,1.0f);
+
+        glTexCoord2f(1.0f,0.0f);
+        glVertex4f(0.0f,-1.0f,0.0f,1.0f);
+
+        glTexCoord2f(1.0f,1.0f);
+        glVertex4f(0.0f,0.0f,0.0f,1.0f);
+    glEnd();
+
+    [ fullscreenEffect deactivate ];
+
+    /*[[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] activate ];
+
+    FVector2 pos = {-1.0f, 1.0f };    
     [ font renderString:[NSString stringWithFormat:@"%d %f",[[[ NP Core ] timer ] fps ],[[[ NP Core ] timer ] frameTime ] ] atPosition:&pos withSize:0.05f ];
 
-    //[[[ NP Graphics ] stateConfiguration ] deactivate ];
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] deactivate ];*/
+
+    [ menu render ];
 }
 
 @end

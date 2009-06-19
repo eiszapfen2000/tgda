@@ -37,12 +37,14 @@
 - (void) setNumberOfIterations:(Int32)newNumberOfIterations;
 - (void) setResolution:(IVector2)newResolution;
 
+/*
 - (void) computePressureFrom:(id)pressureSource
                           to:(id)pressureTarget
              usingDivergence:(id)divergence
                       deltaX:(Float)deltaX
                       deltaY:(Float)deltaY
                             ;
+*/
 
 - (void) computePressureFrom:(NPRenderTexture *)pressureSource
                           to:(NPRenderTexture *)pressureTarget
