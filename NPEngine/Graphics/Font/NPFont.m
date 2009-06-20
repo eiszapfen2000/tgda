@@ -181,13 +181,11 @@
         Int column = character % 16;
 
         texCoordUpperLeft.x = (Float)column / 16.0f;
-        texCoordUpperLeft.y = ( (Float)row / 16.0f );
+        texCoordUpperLeft.y = 1.0f - ( (Float)row / 16.0f );
         texCoordLowerRight.x = (Float)(column + 1) / 16.0f;
-        texCoordLowerRight.y = ( (Float)(row + 1) / 16.0f );
+        texCoordLowerRight.y = 1.0f - ( (Float)(row + 1) / 16.0f );
 
         pos.x = pos.x + characterWidth;
-
-#warning FIXME vertex winding
 
         glBegin(GL_QUADS);
 
