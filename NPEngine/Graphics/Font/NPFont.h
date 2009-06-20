@@ -6,7 +6,7 @@
 
 @interface NPFont : NPObject
 {
-    Float * characterWidths;
+    Byte * characterWidths;
     NPEffect * effect;
     NPTexture * texture;
 }
@@ -21,6 +21,10 @@
 - (void) setEffect:(NPEffect *)newEffect;
 
 - (BOOL) loadFromPath:(NSString *)path;
+
+- (Float) calculateTextWidth:(NSString *)text
+                  usingSize:(Float)size
+                            ;
 
 - (void) renderString:(NSString *)string atPosition:(FVector2 *)position withSize:(Float)size;
 - (void) renderString:(NSString *)string

@@ -126,7 +126,7 @@
             }
 
             glBlendEquation(blendEquation);
-            glBlendFunc(sourceFactor,destinationFactor); 
+            glBlendFunc(sourceFactor, destinationFactor); 
         }
     }
 }
