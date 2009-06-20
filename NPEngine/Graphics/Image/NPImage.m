@@ -157,6 +157,19 @@
     [ self setFileName:path ];
     [ self setName:path ];
 
+    NSString * pathExtension = [ path pathExtension ];
+    if ( [ pathExtension isEqual:@"" ] == YES )
+    {
+        return NO;
+    }
+
+    BOOL flipImage = NO;
+
+    if ( [ pathExtension isEqual:@"png" ] == YES || [ pathExtension isEqual:@"jpg" ] == YES )
+    {
+        flipImage = YES;
+    }
+
     UInt image = [ self prepareForProcessingWithDevil ];
 
 	ILboolean success = ilLoadImage( [ path cString ] );
@@ -169,6 +182,8 @@
 
 		return NO;
     }
+
+    #warning Check image flipping
 
 	// Get image information.
 	width  = (Int)ilGetInteger(IL_IMAGE_WIDTH);
@@ -230,6 +245,11 @@
     if ( type == IL_FLOAT )
     {
         length = width * height * bytesperpixel;// * sizeof(Float);
+    }
+
+    if ( flipImage == YES )
+    {
+        iluFlipImage();
     }
 
     imageData = [[ NSData alloc ] initWithBytes:ilGetData() length:length ];
