@@ -17,9 +17,7 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    characterWidths = ALLOC_ARRAY(Float, 256);
-    effect  = nil;
-    texture = nil;
+    characterWidths = ALLOC_ARRAY(Byte, 256);
 
     return self;
 }
@@ -62,7 +60,6 @@
     for ( Int i = 0; i < 16; i++ )
     {
         NSArray * characterWidthsLine = [ config objectForKey:[NSString stringWithFormat:@"CharWidths%d", i ]];
-        //NSLog([characterWidthsLine description]);
 
         if ( [ characterWidthsLine count ] != 16 )
         {
@@ -70,19 +67,33 @@
             return NO;
         }
 
-        Float textureWidth = (Float)[ texture width ];
-
         for ( Int j = 0; j < 16; j++ )
         {
             Int index = i * 16 + j;
-            characterWidths[index] = ([[ characterWidthsLine objectAtIndex:j ] floatValue ] / textureWidth) * 16.0f;
-            //NSLog(@"%f",characterWidths[index]);
+            characterWidths[index] = (Byte)[[ characterWidthsLine objectAtIndex:j ] intValue ];
         }
     }
 
     [ config release ];
 
     return YES;
+}
+
+- (Float) calculateTextWidth:(NSString *)text
+                  usingSize:(Float)size
+{
+    Float width = 0.0f;
+
+    div_t tmp = div([ texture width ], 16);
+    Float widthInTexture = (Float)tmp.quot;
+
+    for ( UInt i = 0; i < [ text length ]; i++ )
+    {
+        unichar u = [ text characterAtIndex:i ];
+        width = width + ( (Float)characterWidths[u] / widthInTexture ) * 2.0f;
+    }
+
+    return width * size;
 }
 
 - (void) renderString:(NSString *)string atPosition:(FVector2 *)position withSize:(Float)size
@@ -115,45 +126,86 @@
         return;
     }
 
+    FVector2 origin = *position;
+
+    switch ( alignment )
+    {
+        case NP_GRAPHICS_FONT_ALIGNMENT_LEFT:
+        {
+            break;
+        }
+
+        case NP_GRAPHICS_FONT_ALIGNMENT_CENTER:
+        {
+            origin.x = origin.x - [ self calculateTextWidth:string usingSize:size ] * 0.5f;
+            break;
+        }
+
+        case NP_GRAPHICS_FONT_ALIGNMENT_RIGHT:
+        {
+            origin.x = origin.x - [ self calculateTextWidth:string usingSize:size ];
+            break;
+        }
+
+        default:
+        {
+            NPLOG_ERROR(@"%@: Unknown text alignment", name);
+            return;
+        }
+    }
+
     NPTextureBindingState * t = [[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ];
     [ t setTexture:texture forKey:@"NPCOLORMAP0" ];
 
-    /*for ( UInt i = 0; i < [ string length ]; i++ )
-    {
-        unichar c = [ string characterAtIndex:i ];
-        Int row = c / 16;
-        Int column = c % 16;
-        //NSLog(@"%d %d",row,column);
-    }*/
-
-    FVector2 pos = *position;
-
     [ effect activate ];
 
-    for ( UInt i = 0; i < [ string length ]; i++ )
+    unichar character;
+    Float characterWidth;
+    FVector2 texCoordUpperLeft;
+    FVector2 texCoordLowerRight;
+
+    div_t tmp = div([ texture width ], 16);
+    Float characterWidthInTexture = (Float)tmp.quot;
+
+    FVector2 pos = origin;
+
+    UInt characterCount = [ string length ];
+
+    for ( UInt i = 0; i < characterCount; i++ )
     {
-        unichar u = [ string characterAtIndex:i ];
-        Int row = u / 16;
-        Int column = u % 16;
-        Float tmp = 1.0f/16.0f;
-        Float r = (Float)row * tmp;
-        Float c = (Float)column * tmp;
+        character = [ string characterAtIndex:i ];
+        characterWidth = ( (Float)characterWidths[character] / characterWidthInTexture ) * size;
+
+        tmp = div(character, 16);
+        Int row = tmp.quot;
+        Int column = character % 16;
+
+        texCoordUpperLeft.x = (Float)column / 16.0f;
+        texCoordUpperLeft.y = ( (Float)row / 16.0f );
+        texCoordLowerRight.x = (Float)(column + 1) / 16.0f;
+        texCoordLowerRight.y = ( (Float)(row + 1) / 16.0f );
+
+        pos.x = pos.x + characterWidth;
+
+#warning FIXME vertex winding
 
         glBegin(GL_QUADS);
-            glTexCoord2f(c,r);
-            glVertex4f(pos.x, pos.y, 0.0f, 1.0f);
 
-            glTexCoord2f(c,r+tmp);
-            glVertex4f(pos.x, pos.y-1.0f*size, 0.0f, 1.0f);
+            glTexCoord2f(texCoordUpperLeft.x, texCoordUpperLeft.y);
+            glVertex2f(pos.x - size, pos.y + size);
 
-            glTexCoord2f(c+tmp,r+tmp);
-            glVertex4f(pos.x+1.0f*size, pos.y-1.0f*size, 0.0f, 1.0f);
+            glTexCoord2f(texCoordLowerRight.x, texCoordUpperLeft.y);
+            glVertex2f(pos.x + size, pos.y + size);
 
-            glTexCoord2f(c+tmp,r);
-            glVertex4f(pos.x+1.0f*size, pos.y, 0.0f, 1.0f);
+            glTexCoord2f(texCoordLowerRight.x, texCoordLowerRight.y);
+            glVertex2f(pos.x + size, pos.y - size);
+
+            glTexCoord2f(texCoordUpperLeft.x, texCoordLowerRight.y);
+            glVertex2f(pos.x - size, pos.y - size);
+
         glEnd();
 
-        pos.x = pos.x + 1.0f*size;
+        pos.x = pos.x + characterWidth;
     }
 
     [ effect deactivate ];
