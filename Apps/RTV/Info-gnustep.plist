@@ -10,8 +10,8 @@
     NSPrincipalClass = NPApplication;
     NSRole = Application;
     Fullscreen = NO;
-    Width = 1024;
-    Height = 1024;
+    Width = 800;
+    Height = 800;
     FSAA = 0;
     Anisotropy = 1;
     VSync = YES;
