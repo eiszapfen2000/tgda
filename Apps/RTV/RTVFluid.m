@@ -28,10 +28,6 @@
     resolutionLastFrame = iv2_alloc_init();
     pixelSize = fv2_alloc_init();
 
-    projection = fm4_alloc_init();
-    identity   = fm4_alloc_init();
-    fm4_mssss_orthographic_2d_projection_matrix(projection, 0.0f, 1.0f, 0.0f, 1.0f);
-
     deltaX = deltaY = 1.0f;
     viscosity = 0.005;
 
@@ -57,9 +53,6 @@
     iv2_free(currentResolution);
     iv2_free(resolutionLastFrame);
     fv2_free(pixelSize);
-
-    fm4_free(projection);
-    fm4_free(identity);
 
     DESTROY(advection);
     DESTROY(diffusion);
@@ -587,9 +580,6 @@
     [ fluidRenderTargetConfiguration activateViewport ];
     [ fluidRenderTargetConfiguration checkFrameBufferCompleteness ];
 
-    NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
-    [ trafo setProjectionMatrix:projection ];
-
     [ effect activate ];
 
     glBegin(GL_LINES);
@@ -664,10 +654,6 @@
     [ divergence update:frameTime ];
     [ pressure   update:frameTime ];
     [ arbitraryBoundaries update:frameTime ];
-
-    // Ortho projection
-    NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
-    [ trafo setProjectionMatrix:projection ];
 
     // Fluid Dynamics start here
 
@@ -770,9 +756,6 @@
     /*tmp = inkSource;
     inkSource = inkTarget;
     inkTarget = tmp;*/
-
-    // Reset projection
-    [ trafo setProjectionMatrix:identity ];
 }
 
 - (void) render

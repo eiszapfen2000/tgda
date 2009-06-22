@@ -1,12 +1,17 @@
+#import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
+
+@class RTVCheckBoxItem;
 
 @interface RTVScene : NPObject
 {
+    FMatrix4 * projection;
+    FMatrix4 * identity;
+
     id font;
     id fullscreenEffect;
 
     id menu;
-
     id fluid;
 }
 

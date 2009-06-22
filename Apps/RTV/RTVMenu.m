@@ -1,5 +1,6 @@
 #import "NP.h"
 #import "RTVCore.h"
+#import "RTVCheckBoxItem.h"
 #import "RTVMenu.h"
 
 @implementation RTVMenu
@@ -22,11 +23,15 @@
     identity   = fm4_alloc_init();
     fm4_mssss_orthographic_2d_projection_matrix(projection, 0.0f, 1.0f, 0.0f, 1.0f);
 
+    menuItems = [[ NSMutableArray alloc ] init ];
+
     menuEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Menu.cgfx" ];
     scale = [ menuEffect parameterWithName:@"scale" ];
 
-    menuAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"Menu" primaryInputAction:NP_INPUT_KEYBOARD_M ];
+    menuActivationAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"MenuActivation" primaryInputAction:NP_INPUT_KEYBOARD_M ];
     menuActive = NO;
+
+    menuClickAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"MenuClick" primaryInputAction:NP_INPUT_MOUSE_BUTTON_LEFT ];
 
     blendTime = 1.0f;
     currentBlendTime = 0.0f;
@@ -37,15 +42,55 @@
 
 - (void) dealloc
 {
+    [ menuItems removeAllObjects ];
+    [ menuItems release ];
+
     fm4_free(projection);
     fm4_free(identity);
 
     [ super dealloc ];
 }
 
+- (BOOL) loadFromPath:(NSString *)path
+{
+    NSString * absolutePath = [[[ NP Core ] pathManager ] getAbsoluteFilePath:path ];
+
+    if ( [ absolutePath isEqual:@"" ] == YES )
+    {
+        return NO;
+    }
+
+    NSDictionary * menu = [ NSDictionary dictionaryWithContentsOfFile:absolutePath ];
+
+    NSEnumerator * keyEnumerator = [ menu keyEnumerator ];
+    NSString *  key;
+    NSDictionary * itemData;
+    NSString * itemType;
+    Class itemClass;
+
+    while ( (key = [ keyEnumerator nextObject ]) )
+    {
+        itemData = [ menu objectForKey:key ];
+
+        itemType = [ itemData objectForKey:@"Type" ];
+        itemClass = NSClassFromString(itemType);
+
+        id item = [[ itemClass alloc ] initWithName:key parent:self ];
+
+        if ( [ item loadFromDictionary:itemData ] == YES )
+        {
+            [ menuItems addObject:item ];
+        }
+
+        [ item release ];
+    }
+
+    return YES;    
+}
+
 - (void) update:(Float)frameTime
 {
-    if ( [ menuAction activated ] == YES )
+    if ( [ menuActivationAction activated ] == YES )
     {
         if ( menuActive == NO )
         {
@@ -60,7 +105,33 @@
 
     if ( menuActive == YES )
     {
-        currentBlendTime += frameTime;
+        if ( [ menuClickAction activated ] )
+        {
+            IVector2 * controlSize = [[[ NP Graphics ] viewportManager ] currentControlSize ];
+
+            Float mouseX = [[[ NP Input ] mouse ] x ];
+            Float mouseY = [[[ NP Input ] mouse ] y ];
+
+            FVector2 normalisedMousePosition;
+
+            // shift to pixel center using + 0.5
+            normalisedMousePosition.x = (mouseX + 0.5) / (Float)(controlSize->x);
+            normalisedMousePosition.y = (mouseY + 0.5) / (Float)(controlSize->y);
+
+            NSEnumerator * menuItemEnumerator = [ menuItems objectEnumerator ];
+            id menuItem;
+            BOOL foundHit = NO;
+
+            while ( (menuItem = [ menuItemEnumerator nextObject ]) && foundHit == NO )
+            {
+                foundHit = [ menuItem mouseHit:normalisedMousePosition ];
+
+                if ( foundHit == YES )
+                {
+                    [ menuItem onClick:normalisedMousePosition ];
+                }
+            }
+        }
     }
 }
 
@@ -68,17 +139,13 @@
 {
     if ( menuActive == YES )
     {
-        NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
-        [ trafo setProjectionMatrix:projection ];
+        NSEnumerator * menuItemEnumerator = [ menuItems objectEnumerator ];
+        id menuItem;
 
-        [ menuEffect uploadFloatParameter:scale andValue:currentBlendTime ];
-        [ menuEffect activate ];
-
-        
-
-        [ menuEffect deactivate ];
-
-        [ trafo setProjectionMatrix:identity ];
+        while ( (menuItem = [ menuItemEnumerator nextObject ]) )
+        {
+            [ menuItem render ];
+        }
     }
 }
 

@@ -8,9 +8,6 @@
     IVector2 * resolutionLastFrame;
     FVector2 * pixelSize;
 
-    FMatrix4 * projection;
-    FMatrix4 * identity;
-
     Float deltaX;
     Float deltaY;
     Float viscosity;

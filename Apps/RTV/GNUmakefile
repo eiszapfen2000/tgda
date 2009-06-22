@@ -15,7 +15,10 @@ RTVDivergence.m \
 RTVPressure.m \
 RTVArbitraryBoundaries.m \
 RTVFluid.m \
-RTVMenu.m
+RTVMenu.m \
+RTVCheckBoxItem.m \
+RTVSelectionGroup.m \
+RTVSliderItem.m
 
 RTV_RESOURCE_FILES = \
 Info-gnustep.plist \

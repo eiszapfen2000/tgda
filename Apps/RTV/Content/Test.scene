@@ -4,5 +4,5 @@
     DiffusionIterations = "41";
     PressureIterations = "41";
     Viscosity = "0.01";
-    ArbitraryBoundaries = "YES";
+    ArbitraryBoundaries = "NO";
 }
