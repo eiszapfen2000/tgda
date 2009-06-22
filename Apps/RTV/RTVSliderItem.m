@@ -52,10 +52,6 @@
     headSize->x = [[ headSizeStrings objectAtIndex:0 ] floatValue ];
     headSize->y = [[ headSizeStrings objectAtIndex:1 ] floatValue ];
 
-    NSArray * startPositionStrings = [ dictionary objectForKey:@"StartPosition" ];
-    sliderPosition->x = [[ startPositionStrings objectAtIndex:0 ] floatValue ];
-    sliderPosition->y = [[ startPositionStrings objectAtIndex:1 ] floatValue ];
-
     NSString * sliderLineTextureString = [ dictionary objectForKey:@"SliderLine" ];
     lineTexture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:sliderLineTextureString ];
 
@@ -63,7 +59,27 @@
     headTexture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:sliderHeadTextureString ];
 
     NSString * effectString = [ dictionary objectForKey:@"Effect" ];
-    effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:effectString ];    
+    effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:effectString ];
+
+    NSString * startPositionString = [ dictionary objectForKey:@"StartPosition" ];
+
+    if ( [ startPositionString isEqual:@"Left" ] == YES )
+    {
+        sliderPosition->x = position->x - headSize->x * 0.5f;
+        sliderPosition->y = position->y;
+    }
+
+    if ( [ startPositionString isEqual:@"Center" ] == YES )
+    {
+        sliderPosition->x = position->x + lineSize->x * 0.5f;
+        sliderPosition->y = position->y;
+    }
+
+    if ( [ startPositionString isEqual:@"Right" ] == YES )
+    {
+        sliderPosition->x = position->x + lineSize->x;
+        sliderPosition->y = position->y;
+    }
 
     return YES;
 }
@@ -148,16 +164,16 @@
     glBegin(GL_QUADS);
 
         glTexCoord2f(0.0f, 1.0f);
-        glVertex4f(position->x, position->y, 0.0f, 1.0f);
+        glVertex4f(sliderPosition->x, sliderPosition->y, 0.0f, 1.0f);
 
         glTexCoord2f(0.0f, 0.0f);
-        glVertex4f(position->x, position->y - headSize->y, 0.0f, 1.0f);
+        glVertex4f(sliderPosition->x, sliderPosition->y - headSize->y, 0.0f, 1.0f);
 
         glTexCoord2f(1.0f, 0.0f);
-        glVertex4f(position->x + headSize->x, position->y - headSize->y, 0.0f, 1.0f);
+        glVertex4f(sliderPosition->x + headSize->x * 0.5f, sliderPosition->y - headSize->y, 0.0f, 1.0f);
 
         glTexCoord2f(1.0f, 1.0f);
-        glVertex4f(position->x + headSize->x, position->y, 0.0f, 1.0f);
+        glVertex4f(sliderPosition->x + headSize->x * 0.5f, sliderPosition->y, 0.0f, 1.0f);
 
     glEnd();
 

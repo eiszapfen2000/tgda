@@ -28,8 +28,10 @@
     resolutionLastFrame = iv2_alloc_init();
     pixelSize = fv2_alloc_init();
 
+    inkColor = fv4_alloc_init();
+
     deltaX = deltaY = 1.0f;
-    viscosity = 0.005;
+    viscosity = 0.001;
 
     advection  = [[ RTVAdvection  alloc ] initWithName:@"Advection"  parent:self ];
     diffusion  = [[ RTVDiffusion  alloc ] initWithName:@"Diffusion"  parent:self ];
@@ -171,6 +173,11 @@
 - (id) arbitraryBoundariesPressure
 {
     return arbitraryBoundariesPressure;
+}
+
+- (void) setInkColor:(FVector4)newInkColor
+{
+    *inkColor = newInkColor;
 }
 
 - (void) setResolution:(IVector2)newResolution
@@ -372,8 +379,8 @@
                                                                  height:currentResolution->y
                                                              dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                             pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                                       textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR
-                                                       textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR
+                                                       textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                       textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
                                                            textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
                                                            textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
@@ -383,8 +390,8 @@
                                                                  height:currentResolution->y
                                                              dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                             pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                                       textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR
-                                                       textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR
+                                                       textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                       textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
                                                            textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
                                                            textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
@@ -709,7 +716,7 @@
         [ inputForce addGaussianSplatToQuantity:inkSource
                                     usingRadius:11.0f
                                           scale:1.0f
-                                          color:&brak ];
+                                          color:inkColor ];
     }
 
     if ( [ addBoundaryAction active ] == YES && useArbitraryBoundaries == YES )

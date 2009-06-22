@@ -7,7 +7,9 @@
     FMatrix4 * projection;
     FMatrix4 * identity;
 
-    NSMutableArray * menuItems;
+    id font;
+
+    NSMutableDictionary * menuItems;
 
     id menuActivationAction;
     id menuClickAction;
@@ -26,6 +28,8 @@
 - (void) dealloc;
 
 - (BOOL) loadFromPath:(NSString *)path;
+
+- (id) menuItemWithName:(NSString *)itemName;
 
 - (void) update:(Float)frameTime;
 - (void) render;

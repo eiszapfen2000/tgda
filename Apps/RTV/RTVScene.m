@@ -29,8 +29,6 @@
     identity   = fm4_alloc_init();
     fm4_mssss_orthographic_2d_projection_matrix(projection, 0.0f, 1.0f, 0.0f, 1.0f);
 
-    font = [[[ NP Graphics ] fontManager ] loadFontFromPath:@"tahoma.font" ];
-
     fullscreenEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Fullscreen.cgfx" ];
 
     menu = [[ RTVMenu alloc ] initWithName:@"Menu" parent:self ];
@@ -61,6 +59,11 @@
 //    return YES;
 }
 
+- (id) fluid
+{
+    return fluid;
+}
+
 - (void) activate
 {
     [[[ NP applicationController ] sceneManager ] setCurrentScene:self ];
@@ -78,8 +81,13 @@
     NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
     [ trafo setProjectionMatrix:projection ];
 
+    [ menu update:frameTime ];
+
+    //RTVSelectionGroup * inkColors = [ menu menuItemWithName:@"InkColors" ];
+    //Int32 activeItem = [ inkColors activeItem ];
+    
+
     [ fluid update:frameTime ];
-    [ menu  update:frameTime ];
 
     [ trafo setProjectionMatrix:identity ];
 
@@ -93,7 +101,31 @@
     NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
     [ trafo setProjectionMatrix:projection ];
 
+    [[[ fluid inkSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+    [[[ fluid inkSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
     [[[ fluid inkSource ] texture ] activateAtColorMapIndex:0 ];
+    [ fullscreenEffect activate ];
+
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0f,1.0f);            
+        glVertex4f(0.0f,1.0f,0.0f,1.0f);
+
+        glTexCoord2f(0.0f,0.0f);
+        glVertex4f(0.0f,0.0,0.0f,1.0f);
+
+        glTexCoord2f(1.0f,0.0f);
+        glVertex4f(1.0f,0.0f,0.0f,1.0f);
+
+        glTexCoord2f(1.0f,1.0f);
+        glVertex4f(1.0f,1.0f,0.0f,1.0f);
+    glEnd();
+
+    [ fullscreenEffect deactivate ];
+
+    [[[ fluid inkSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    [[[ fluid inkSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+
+/*    [[[ fluid inkSource ] texture ] activateAtColorMapIndex:0 ];
     [ fullscreenEffect activate ];
 
     glBegin(GL_QUADS);
@@ -150,16 +182,13 @@
     glEnd();
 
     [ fullscreenEffect deactivate ];
+*/
 
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] activate ];
 
     [ menu render ];
-
-    FVector2 pos = {0.0f, 0.0f };
-
-    [ font renderString:[NSString stringWithFormat:@"%d",[[[ NP Core ] timer ] fps ]] atPosition:&pos withSize:0.02f ];
 
     [ trafo setProjectionMatrix:identity ];
 

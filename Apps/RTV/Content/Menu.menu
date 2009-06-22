@@ -1,0 +1,49 @@
+{
+    ArbitraryBoundaries =
+    {
+        Type = "RTVCheckBoxItem";
+        Position = ("0.5", "0.1" );
+        Size = ( "0.02", "0.02" );
+        CheckedTexture = "CheckBox_Checked.png";
+        UncheckedTexture = "CheckBox_Unchecked.png";
+        Effect = "Menu.cgfx";
+        Checked = "NO";
+    };
+
+    Boundaries =
+    {
+        Type = "RTVCheckBoxItem";
+        Position = ("0.6", "0.1" );
+        Size = ( "0.02", "0.02" );
+        CheckedTexture = "CheckBox_Checked.png";
+        UncheckedTexture = "CheckBox_Unchecked.png";
+        Effect = "Menu.cgfx";
+        Checked = "NO";
+    };
+
+    InkColors =
+    {
+        Type = "RTVSelectionGroup";
+        Position = ("0.02", "0.95" );
+        ItemSize = ( "0.04", "0.04" );
+        Spacing = ( "0.01", "0.01" );
+        Rows = "2";
+        Columns = "2";
+        Selection = "Selected.png";
+        Textures = ( "Red.png", "Blue.png", "Green.png", "Yellow.png" );
+        Effect = "Menu.cgfx";
+    };
+
+    Slider =
+    {
+        Type = "RTVSliderItem";
+        Position = ("0.3", "0.5" );
+        LineSize = ("0.1", "0.025" );
+        HeadSize = ("0.02", "0.04" );
+        SliderLine = "Slider_Line.png";
+        SliderHead = "Slider_Head.png";
+        StartPosition = "Left";
+        Effect = "Menu.cgfx";
+    };
+}
+ 

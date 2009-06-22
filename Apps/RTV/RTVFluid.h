@@ -8,6 +8,8 @@
     IVector2 * resolutionLastFrame;
     FVector2 * pixelSize;
 
+    FVector4 * inkColor;
+
     Float deltaX;
     Float deltaY;
     Float viscosity;
@@ -67,6 +69,7 @@
 - (id) arbitraryBoundariesVelocity;
 - (id) arbitraryBoundariesPressure;
 
+- (void) setInkColor:(FVector4)newInkColor;
 - (void) setResolution:(IVector2)newResolution;
 
 - (BOOL) loadFromPath:(NSString *)path;

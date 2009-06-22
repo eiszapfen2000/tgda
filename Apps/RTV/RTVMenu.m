@@ -1,6 +1,10 @@
 #import "NP.h"
 #import "RTVCore.h"
 #import "RTVCheckBoxItem.h"
+#import "RTVSelectionGroup.h"
+#import "RTVSliderItem.h"
+#import "RTVFluid.h"
+#import "RTVScene.h"
 #import "RTVMenu.h"
 
 @implementation RTVMenu
@@ -23,7 +27,9 @@
     identity   = fm4_alloc_init();
     fm4_mssss_orthographic_2d_projection_matrix(projection, 0.0f, 1.0f, 0.0f, 1.0f);
 
-    menuItems = [[ NSMutableArray alloc ] init ];
+    menuItems = [[ NSMutableDictionary alloc ] init ];
+
+    font = [[[ NP Graphics ] fontManager ] loadFontFromPath:@"tahoma.font" ];
 
     menuEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Menu.cgfx" ];
     scale = [ menuEffect parameterWithName:@"scale" ];
@@ -79,13 +85,18 @@
 
         if ( [ item loadFromDictionary:itemData ] == YES )
         {
-            [ menuItems addObject:item ];
+            [ menuItems setObject:item forKey:key ];
         }
 
         [ item release ];
     }
 
     return YES;    
+}
+
+- (id) menuItemWithName:(NSString *)itemName
+{
+    return [ menuItems objectForKey:itemName ];
 }
 
 - (void) update:(Float)frameTime
@@ -132,6 +143,50 @@
                 }
             }
         }
+
+        Int32 activeItem = [[ menuItems objectForKey:@"InkColors" ] activeItem ];
+        FVector4 color;
+
+        switch ( activeItem )
+        {
+            case 0:
+            {
+                color.x = 1.0f;
+                color.y = 0.2f;
+                color.z = 0.1f;
+                color.w = 1.0f;
+                break;
+            }
+
+            case 1:
+            {
+                color.x = 0.2f;
+                color.y = 0.3f;
+                color.z = 1.0f;
+                color.w = 1.0f;
+                break;
+            }
+
+            case 2:
+            {
+                color.x = 0.2f;
+                color.y = 1.0f;
+                color.z = 0.3f;
+                color.w = 1.0f;
+                break;
+            }
+
+            case 3:
+            {
+                color.x = 1.0f;
+                color.y = 1.0f;
+                color.z = 0.2f;
+                color.w = 1.0f;
+                break;
+            }
+        }
+
+        [[(RTVScene *)parent fluid ] setInkColor:color ];
     }
 }
 
@@ -146,6 +201,13 @@
         {
             [ menuItem render ];
         }
+
+        FVector2 fpsPosition = {0.9f, 0.95f };
+        [ font renderString:[ NSString stringWithFormat:@"%d", [[[ NP Core ] timer ] fps ]] atPosition:&fpsPosition withSize:0.04f ];
+
+        FVector2 colorPosition = {-0.95f, 0.95f};
+        [ font renderString:@"Ink Color" atPosition:&colorPosition withSize:0.04f ];
+
     }
 }
 

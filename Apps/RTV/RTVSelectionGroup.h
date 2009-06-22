@@ -29,6 +29,7 @@
 
 - (BOOL) loadFromDictionary:(NSDictionary *)dictionary;
 
+- (Int32) activeItem;
 - (FVector2) position;
 - (FVector2) itemSize;
 - (void) setPosition:(FVector2)newPosition;
