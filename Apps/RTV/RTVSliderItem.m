@@ -142,6 +142,25 @@
 
     glEnd();
 
+    [ headTexture activateAtColorMapIndex:0 ];
+    [ effect activate ];
+
+    glBegin(GL_QUADS);
+
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex4f(position->x, position->y, 0.0f, 1.0f);
+
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex4f(position->x, position->y - headSize->y, 0.0f, 1.0f);
+
+        glTexCoord2f(1.0f, 0.0f);
+        glVertex4f(position->x + headSize->x, position->y - headSize->y, 0.0f, 1.0f);
+
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex4f(position->x + headSize->x, position->y, 0.0f, 1.0f);
+
+    glEnd();
+
     [ effect deactivate ];
 }
 
