@@ -100,7 +100,14 @@
     size->x = width;
     size->y = height;
 
+    activeItem = 0;
+
     return YES;
+}
+
+- (Int32) activeItem
+{
+    return activeItem;
 }
 
 - (FVector2) position

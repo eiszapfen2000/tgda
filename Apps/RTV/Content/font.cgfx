@@ -1,5 +1,3 @@
-float4x4 modelViewProjection : NPMODELVIEWPROJECTION;
-
 sampler2D font : NPCOLORMAP0;
 
 struct INPUTDATA
@@ -29,7 +27,7 @@ VOUTPUTDATA mvertexshader(INPUTDATA IN)
 {
 	VOUTPUTDATA OUT;
 	
-	OUT.position = mul(IN.position, modelViewProjection);
+    OUT.position = IN.position;
 	OUT.texcoord = IN.texcoord;
 	
 	return OUT;
@@ -46,6 +44,7 @@ FOUTPUTDATA mfragmentshader(VOUTPUTDATA IN)
 	FOUTPUTDATA OUT;
 	
 	float4 fontcolor = tex2D(font, IN.texcoord);
+    //OUT.color = float4(1.0f, 0.0f, 0.0f, 1.0f);
     OUT.color = fontcolor;
 
     return OUT;
