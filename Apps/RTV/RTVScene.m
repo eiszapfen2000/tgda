@@ -64,6 +64,11 @@
     return fluid;
 }
 
+- (id) menu
+{
+    return menu;
+}
+
 - (void) activate
 {
     [[[ NP applicationController ] sceneManager ] setCurrentScene:self ];
@@ -101,88 +106,158 @@
     NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
     [ trafo setProjectionMatrix:projection ];
 
-    [[[ fluid inkSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
-    [[[ fluid inkSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
-    [[[ fluid inkSource ] texture ] activateAtColorMapIndex:0 ];
-    [ fullscreenEffect activate ];
+    if ( [[ menu menuItemWithName:@"DataArrays" ] checked ] == NO )
+    {
+        [[[ fluid inkSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+        [[[ fluid inkSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+        [[[ fluid inkSource ] texture ] activateAtColorMapIndex:0 ];
+        [ fullscreenEffect activateTechniqueWithName:@"fullscreen" ];
 
-    glBegin(GL_QUADS);
-        glTexCoord2f(0.0f,1.0f);            
-        glVertex4f(0.0f,1.0f,0.0f,1.0f);
+        glBegin(GL_QUADS);
+            glTexCoord2f(0.0f,1.0f);            
+            glVertex4f(0.0f,1.0f,0.0f,1.0f);
 
-        glTexCoord2f(0.0f,0.0f);
-        glVertex4f(0.0f,0.0,0.0f,1.0f);
+            glTexCoord2f(0.0f,0.0f);
+            glVertex4f(0.0f,0.0,0.0f,1.0f);
 
-        glTexCoord2f(1.0f,0.0f);
-        glVertex4f(1.0f,0.0f,0.0f,1.0f);
+            glTexCoord2f(1.0f,0.0f);
+            glVertex4f(1.0f,0.0f,0.0f,1.0f);
 
-        glTexCoord2f(1.0f,1.0f);
-        glVertex4f(1.0f,1.0f,0.0f,1.0f);
-    glEnd();
+            glTexCoord2f(1.0f,1.0f);
+            glVertex4f(1.0f,1.0f,0.0f,1.0f);
+        glEnd();
 
-    [ fullscreenEffect deactivate ];
+        [ fullscreenEffect deactivate ];
 
-    [[[ fluid inkSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    [[[ fluid inkSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+        [[[ fluid inkSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+        [[[ fluid inkSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
 
-/*    [[[ fluid inkSource ] texture ] activateAtColorMapIndex:0 ];
-    [ fullscreenEffect activate ];
+        if ( [ fluid useArbitraryBoundaries ] == YES )
+        {
+            [[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_ADDITIVE ];
+            [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];
+            [[[[ NP Graphics ] stateConfiguration ] blendingState ] activate ];
 
-    glBegin(GL_QUADS);
-        glTexCoord2f(0.0f,1.0f);            
-        glVertex4f(0.0f,1.0f,0.0f,1.0f);
+            [[[ fluid arbitraryBoundariesPaint ] texture ] activateAtColorMapIndex:0 ];
+            [ fullscreenEffect activate ];//TechniqueWithName:@"boundaries" ];
 
-        glTexCoord2f(0.0f,0.0f);
-        glVertex4f(0.0f,0.5f,0.0f,1.0f);
+            glBegin(GL_QUADS);
+                glTexCoord2f(0.0f,1.0f);            
+                glVertex4f(0.0f,1.0f,0.0f,1.0f);
 
-        glTexCoord2f(1.0f,0.0f);
-        glVertex4f(0.5f,0.5f,0.0f,1.0f);
+                glTexCoord2f(0.0f,0.0f);
+                glVertex4f(0.0f,0.0,0.0f,1.0f);
 
-        glTexCoord2f(1.0f,1.0f);
-        glVertex4f(0.5f,1.0f,0.0f,1.0f);
-    glEnd();
+                glTexCoord2f(1.0f,0.0f);
+                glVertex4f(1.0f,0.0f,0.0f,1.0f);
 
-    [ fullscreenEffect deactivate ];
+                glTexCoord2f(1.0f,1.0f);
+                glVertex4f(1.0f,1.0f,0.0f,1.0f);
+            glEnd();
 
-    [[[ fluid velocitySource ] texture ] activateAtColorMapIndex:0 ];
-    [ fullscreenEffect activate ];
+            [ fullscreenEffect deactivate ];
 
-    glBegin(GL_QUADS);
-        glTexCoord2f(0.0f,1.0f);            
-        glVertex4f(0.5f,1.0f,0.0f,1.0f);
+            [[[[ NP Graphics ] stateConfiguration ] blendingState ] deactivate ];
+        }        
+    }
+    else
+    {
+        [[[ fluid inkSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+        [[[ fluid inkSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+        [[[ fluid inkSource ] texture ] activateAtColorMapIndex:0 ];
+        [ fullscreenEffect activateTechniqueWithName:@"fullscreen" ];
 
-        glTexCoord2f(0.0f,0.0f);
-        glVertex4f(0.5f,0.5f,0.0f,1.0f);
+        glBegin(GL_QUADS);
+            glTexCoord2f(0.0f,1.0f);            
+            glVertex4f(0.0f,1.0f,0.0f,1.0f);
 
-        glTexCoord2f(1.0f,0.0f);
-        glVertex4f(1.0f,0.5f,0.0f,1.0f);
+            glTexCoord2f(0.0f,0.0f);
+            glVertex4f(0.0f,0.5f,0.0f,1.0f);
 
-        glTexCoord2f(1.0f,1.0f);
-        glVertex4f(1.0f,1.0f,0.0f,1.0f);
-    glEnd();
+            glTexCoord2f(1.0f,0.0f);
+            glVertex4f(0.5f,0.5f,0.0f,1.0f);
 
-    [ fullscreenEffect deactivate ];
+            glTexCoord2f(1.0f,1.0f);
+            glVertex4f(0.5f,1.0f,0.0f,1.0f);
+        glEnd();
 
-    [[[ fluid pressureSource ] texture ] activateAtColorMapIndex:0 ];
+        [ fullscreenEffect deactivate ];
 
-    [ fullscreenEffect activate ];
+        [[[ fluid inkSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+        [[[ fluid inkSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
 
-    glBegin(GL_QUADS);
-        glTexCoord2f(0.0f,1.0f);            
-        glVertex4f(0.0f,0.5f,0.0f,1.0f);
+        [[[ fluid velocitySource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+        [[[ fluid velocitySource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+        [[[ fluid velocitySource ] texture ] activateAtColorMapIndex:0 ];
+        [ fullscreenEffect activateTechniqueWithName:@"fullscreen" ];
 
-        glTexCoord2f(0.0f,0.0f);
-        glVertex4f(0.0f,0.0f,0.0f,1.0f);
+        glBegin(GL_QUADS);
+            glTexCoord2f(0.0f,1.0f);            
+            glVertex4f(0.5f,1.0f,0.0f,1.0f);
 
-        glTexCoord2f(1.0f,0.0f);
-        glVertex4f(0.5f,0.0f,0.0f,1.0f);
+            glTexCoord2f(0.0f,0.0f);
+            glVertex4f(0.5f,0.5f,0.0f,1.0f);
 
-        glTexCoord2f(1.0f,1.0f);
-        glVertex4f(0.5f,0.5f,0.0f,1.0f);
-    glEnd();
+            glTexCoord2f(1.0f,0.0f);
+            glVertex4f(1.0f,0.5f,0.0f,1.0f);
 
-    [ fullscreenEffect deactivate ];
-*/
+            glTexCoord2f(1.0f,1.0f);
+            glVertex4f(1.0f,1.0f,0.0f,1.0f);
+        glEnd();
+
+        [ fullscreenEffect deactivate ];
+
+        [[[ fluid velocitySource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+        [[[ fluid velocitySource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+
+        [[[ fluid pressureSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+        [[[ fluid pressureSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+        [[[ fluid pressureSource ] texture ] activateAtColorMapIndex:0 ];
+        [ fullscreenEffect activateTechniqueWithName:@"fullscreen" ];
+
+        glBegin(GL_QUADS);
+            glTexCoord2f(0.0f,1.0f);            
+            glVertex4f(0.0f,0.5f,0.0f,1.0f);
+
+            glTexCoord2f(0.0f,0.0f);
+            glVertex4f(0.0f,0.0f,0.0f,1.0f);
+
+            glTexCoord2f(1.0f,0.0f);
+            glVertex4f(0.5f,0.0f,0.0f,1.0f);
+
+            glTexCoord2f(1.0f,1.0f);
+            glVertex4f(0.5f,0.5f,0.0f,1.0f);
+        glEnd();
+
+        [ fullscreenEffect deactivate ];
+
+        [[[ fluid pressureSource ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+        [[[ fluid pressureSource ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+
+        [[[ fluid arbitraryBoundariesPaint ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+        [[[ fluid arbitraryBoundariesPaint ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+        [[[ fluid arbitraryBoundariesPaint ] texture ] activateAtColorMapIndex:0 ];
+        [ fullscreenEffect activateTechniqueWithName:@"fullscreen" ];
+
+        glBegin(GL_QUADS);
+            glTexCoord2f(0.0f,1.0f);            
+            glVertex4f(0.5f,0.5f,0.0f,1.0f);
+
+            glTexCoord2f(0.0f,0.0f);
+            glVertex4f(0.5f,0.0f,0.0f,1.0f);
+
+            glTexCoord2f(1.0f,0.0f);
+            glVertex4f(1.0f,0.0f,0.0f,1.0f);
+
+            glTexCoord2f(1.0f,1.0f);
+            glVertex4f(1.0f,0.5f,0.0f,1.0f);
+        glEnd();
+
+        [ fullscreenEffect deactivate ];
+
+        [[[ fluid arbitraryBoundariesPaint ] texture ] setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+        [[[ fluid arbitraryBoundariesPaint ] texture ] setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    }
 
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];

@@ -9,6 +9,7 @@
     FVector2 * pixelSize;
 
     FVector4 * inkColor;
+    Float inputRadius;
 
     Float deltaX;
     Float deltaY;
@@ -51,6 +52,7 @@
 - (IVector2) resolution;
 - (Int32) width;
 - (Int32) height;
+- (BOOL) useArbitraryBoundaries;
 - (id) advection;
 - (id) diffusion;
 - (id) inputForce;
@@ -69,8 +71,11 @@
 - (id) arbitraryBoundariesVelocity;
 - (id) arbitraryBoundariesPressure;
 
+- (void) setArbitraryBoundaries:(BOOL)newArbitraryBoundaries;
 - (void) setInkColor:(FVector4)newInkColor;
+- (void) setInputRadius:(Float)newInputRadius;
 - (void) setResolution:(IVector2)newResolution;
+- (void) setViscosity:(Float)newViscosity;
 
 - (BOOL) loadFromPath:(NSString *)path;
 

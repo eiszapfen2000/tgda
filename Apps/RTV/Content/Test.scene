@@ -1,8 +1,8 @@
 {
     Name = "Test";
-    FluidResolution = ("512", "512" );
+    FluidResolution = ("256", "256" );
     DiffusionIterations = "41";
     PressureIterations = "41";
-    Viscosity = "0.001";
+    Viscosity = "0.1";
     ArbitraryBoundaries = "NO";
 }

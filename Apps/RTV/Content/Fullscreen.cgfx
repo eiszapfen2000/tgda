@@ -33,16 +33,43 @@ FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
 	FOUTPUTDATA output;
 
     //output.color = float4(1.0f, 0.0f, 0.0f, 0.0f);
-    output.color = abs(tex2D(colormap, input.texcoord))*5.0f;
+    output.color = abs(tex2D(colormap, input.texcoord))*2.0f;
 
 	return output;
 }
+
+FOUTPUTDATA boundaries_paint_mfragmentshader(VOUTPUTDATA input)
+{
+	FOUTPUTDATA output;
+
+    //output.color = float4(1.0f, 0.0f, 0.0f, 0.0f);
+    float4 color = tex2D(colormap, input.texcoord);
+
+    if ( color.x > 0.0f )
+    {
+        color.r = color.b = 0.8f;
+        color.g = 0.7f;
+    }
+
+    output.color = color;
+	return output;
+}
+
 
 technique fullscreen
 {
 	pass
 	{
 		FragmentProgram = compile fp40 mfragmentshader();
+		VertexProgram = compile vp40 mvertexshader();
+	}
+}
+
+technique boundaries
+{
+	pass
+	{
+		FragmentProgram = compile fp40 boundaries_paint_mfragmentshader();
 		VertexProgram = compile vp40 mvertexshader();
 	}
 }

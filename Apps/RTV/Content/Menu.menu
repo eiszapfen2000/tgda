@@ -2,19 +2,19 @@
     ArbitraryBoundaries =
     {
         Type = "RTVCheckBoxItem";
-        Position = ("0.5", "0.1" );
-        Size = ( "0.02", "0.02" );
+        Position = ("0.05", "0.48" );
+        Size = ( "0.04", "0.04" );
         CheckedTexture = "CheckBox_Checked.png";
         UncheckedTexture = "CheckBox_Unchecked.png";
         Effect = "Menu.cgfx";
         Checked = "NO";
     };
 
-    Boundaries =
+    DataArrays =
     {
         Type = "RTVCheckBoxItem";
-        Position = ("0.6", "0.1" );
-        Size = ( "0.02", "0.02" );
+        Position = ("0.05", "0.35" );
+        Size = ( "0.04", "0.04" );
         CheckedTexture = "CheckBox_Checked.png";
         UncheckedTexture = "CheckBox_Unchecked.png";
         Effect = "Menu.cgfx";
@@ -34,15 +34,28 @@
         Effect = "Menu.cgfx";
     };
 
-    Slider =
+    InputRadius =
+    {
+        Type = "RTVSelectionGroup";
+        Position = ("0.02", "0.75" );
+        ItemSize = ( "0.04", "0.04" );
+        Spacing = ( "0.01", "0.01" );
+        Rows = "1";
+        Columns = "3";
+        Selection = "Selected.png";
+        Textures = ( "Radius_Small.png", "Radius_Middle.png", "Radius_Large.png" );
+        Effect = "Menu.cgfx";
+    };
+
+    ViscositySlider =
     {
         Type = "RTVSliderItem";
-        Position = ("0.3", "0.5" );
+        Position = ("0.02", "0.6" );
         LineSize = ("0.1", "0.025" );
         HeadSize = ("0.02", "0.04" );
         SliderLine = "Slider_Line.png";
         SliderHead = "Slider_Head.png";
-        StartPosition = "Left";
+        StartPosition = "Center";
         Effect = "Menu.cgfx";
     };
 }

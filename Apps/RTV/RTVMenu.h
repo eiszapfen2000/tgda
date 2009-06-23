@@ -7,6 +7,8 @@
     FMatrix4 * projection;
     FMatrix4 * identity;
 
+    BOOL foundHit;
+
     id font;
 
     NSMutableDictionary * menuItems;
@@ -29,6 +31,7 @@
 
 - (BOOL) loadFromPath:(NSString *)path;
 
+- (BOOL) foundHit;
 - (id) menuItemWithName:(NSString *)itemName;
 
 - (void) update:(Float)frameTime;
