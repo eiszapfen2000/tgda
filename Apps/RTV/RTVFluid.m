@@ -6,6 +6,8 @@
 #import "RTVDivergence.h"
 #import "RTVPressure.h"
 #import "RTVArbitraryBoundaries.h"
+#import "RTVScene.h"
+#import "RTVMenu.h"
 #import "RTVFluid.h"
 
 @implementation RTVFluid
@@ -29,6 +31,12 @@
     pixelSize = fv2_alloc_init();
 
     inkColor = fv4_alloc_init();
+    inkColor->x = 1.0f;
+    inkColor->y = 0.2f;
+    inkColor->z = 0.1f;
+    inkColor->w = 1.0f;
+
+    inputRadius = 5.0f;
 
     deltaX = deltaY = 1.0f;
     viscosity = 0.001;
@@ -93,6 +101,11 @@
 - (Int32) height
 {
     return currentResolution->y;
+}
+
+- (BOOL) useArbitraryBoundaries
+{
+    return useArbitraryBoundaries;
 }
 
 - (id) advection
@@ -175,9 +188,28 @@
     return arbitraryBoundariesPressure;
 }
 
+- (void) setArbitraryBoundaries:(BOOL)newArbitraryBoundaries
+{
+    useArbitraryBoundaries = newArbitraryBoundaries;
+
+    if ( useArbitraryBoundaries == YES )
+    {
+        [ arbitraryBoundaries computeVelocityScaleAndOffsetFromBoundaries:[ arbitraryBoundariesPaint texture ]
+                                                                       to:arbitraryBoundariesVelocity ];
+
+        [ arbitraryBoundaries computePressureScaleAndOffsetFromBoundaries:[ arbitraryBoundariesPaint texture ]
+                                                                       to:arbitraryBoundariesPressure ];
+    }
+}
+
 - (void) setInkColor:(FVector4)newInkColor
 {
     *inkColor = newInkColor;
+}
+
+- (void) setInputRadius:(Float)newInputRadius
+{
+    inputRadius = newInputRadius;
 }
 
 - (void) setResolution:(IVector2)newResolution
@@ -194,6 +226,11 @@
     [ divergence setResolution:newResolution ];
     [ pressure   setResolution:newResolution ];
     [ arbitraryBoundaries setResolution:newResolution ];
+}
+
+- (void) setViscosity:(Float)newViscosity
+{
+    viscosity = newViscosity;
 }
 
 - (BOOL) loadFromPath:(NSString *)path
@@ -702,10 +739,12 @@
 
     // Add input force
 
-    if ( [ addVelocityAction active ] == YES )
+    BOOL menuHit = [[ (RTVScene *)parent menu ] foundHit ];
+
+    if ( [ addVelocityAction active ] == YES && menuHit == NO )
     {
         [ inputForce addGaussianSplatToQuantity:velocitySource
-                                    usingRadius:11.0f
+                                    usingRadius:inputRadius
                                           scale:1.0f
                                           color:NULL ];
     }
@@ -714,7 +753,7 @@
     {
         FVector4 brak = { 0.2f, 0.3f, 1.0f, 1.0f };
         [ inputForce addGaussianSplatToQuantity:inkSource
-                                    usingRadius:11.0f
+                                    usingRadius:inputRadius
                                           scale:1.0f
                                           color:inkColor ];
     }

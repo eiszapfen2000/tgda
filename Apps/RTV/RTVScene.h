@@ -20,6 +20,7 @@
 - (BOOL) loadFromPath:(NSString *)path;
 
 - (id) fluid;
+- (id) menu;
 
 - (void) activate;
 - (void) deactivate;

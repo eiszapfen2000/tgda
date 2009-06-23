@@ -65,7 +65,7 @@
 
     if ( [ startPositionString isEqual:@"Left" ] == YES )
     {
-        sliderPosition->x = position->x - headSize->x * 0.5f;
+        sliderPosition->x = position->x;// - headSize->x * 0.5f;
         sliderPosition->y = position->y;
     }
 
@@ -96,7 +96,8 @@
 
 - (Float) scaleFactor
 {
-    return scaleFactor;
+    //return 100.0f / lineSize->x * sliderPosition->x;
+    return (sliderPosition->x - position->x)/lineSize->x;
 }
 
 - (void) setPosition:(FVector2)newPosition
@@ -113,8 +114,8 @@
 {
     BOOL result = NO;
 
-    if ( mousePosition.x > position->x && mousePosition.x < position->x + size->x &&
-         mousePosition.y < position->y && mousePosition.y > position->y - size->y )
+    if ( mousePosition.x > position->x && mousePosition.x < position->x + lineSize->x &&
+         mousePosition.y < position->y && mousePosition.y > position->y - lineSize->y )
     {
         result = YES;
     }
@@ -124,7 +125,7 @@
 
 - (void) onClick:(FVector2)mousePosition
 {
-
+    sliderPosition->x = mousePosition.x;
 }
 
 - (void) update:(Float)frameTime
