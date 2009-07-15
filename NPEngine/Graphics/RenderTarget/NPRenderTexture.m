@@ -211,13 +211,9 @@
         TEST_RELEASE(configuration);
         configuration = [ newConfiguration retain ];
 
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ configuration fboID ]);
-
-        colorBufferIndex = newColorBufferIndex;
-        GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
-        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, renderTextureID, 0);
-
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        [ configuration bindFBO ];
+        [ self attachToColorBufferIndex:newColorBufferIndex ];
+        [ configuration unbindFBO ];
     }
 }
 
@@ -225,12 +221,9 @@
 {
     if ( configuration != nil )
     {
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ configuration fboID ]);
-
-        GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
-        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, 0, 0);
-
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        [ configuration bindFBO ];
+        [ self detach ];
+        [ configuration unbindFBO ];
 
         [ configuration release ];
         configuration = nil;
