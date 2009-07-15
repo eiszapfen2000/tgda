@@ -283,6 +283,7 @@
     if ( defaultSemantics.projectionMatrix != NULL )
     {
         FMatrix4 * projectionMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] projectionMatrix ];
+
         [ self uploadFMatrix4Parameter:defaultSemantics.projectionMatrix andValue:projectionMatrix ];
     }
 

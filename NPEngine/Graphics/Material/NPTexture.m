@@ -112,6 +112,55 @@
     textureFilterState.mipmapping = newMipMapping;
 }
 
+- (void) setTextureFilter:(NpState)newTextureFilter
+{
+    switch ( newTextureFilter )
+    {
+        case NP_GRAPHICS_TEXTURE_FILTER_NEAREST:
+        {
+            textureFilterState.minFilter = NP_GRAPHICS_TEXTURE_FILTER_NEAREST;
+            textureFilterState.magFilter = NP_GRAPHICS_TEXTURE_FILTER_NEAREST;
+            textureFilterState.mipmapping = NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE;
+
+            break;
+        }
+
+        case NP_GRAPHICS_TEXTURE_FILTER_LINEAR:
+        {
+            textureFilterState.minFilter = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
+            textureFilterState.magFilter = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
+            textureFilterState.mipmapping = NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE;
+
+            break;
+        }
+
+        case NP_GRAPHICS_TEXTURE_FILTER_LINEAR_MIPMAPPING:
+        {
+            textureFilterState.minFilter = NP_GRAPHICS_TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST;
+            textureFilterState.magFilter = NP_GRAPHICS_TEXTURE_FILTER_NEAREST;
+            textureFilterState.mipmapping = NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_ACTIVE;
+
+            break;
+        }
+
+        case NP_GRAPHICS_TEXTURE_FILTER_TRILINEAR:
+        {
+            textureFilterState.minFilter = NP_GRAPHICS_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR;
+            textureFilterState.magFilter = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
+            textureFilterState.mipmapping = NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_ACTIVE;
+
+            break;
+        }
+
+        default:
+        {
+            NPLOG_WARNING(@"%@: Unknown texture filter %d", name, newTextureFilter);
+        }
+    }
+
+    [ self updateGLTextureState ];
+}
+
 - (void) setTextureMinFilter:(NpState)newTextureMinFilter
 {
     textureFilterState.minFilter = newTextureMinFilter;
@@ -129,6 +178,14 @@
 - (void) setTextureAnisotropyFilter:(NpState)newTextureAnisotropyFilter
 {
     textureFilterState.anisotropy = newTextureAnisotropyFilter;
+
+    [ self updateGLTextureState ];
+}
+
+- (void) setTextureWrap:(NpState)newWrap
+{
+    textureWrapState.wrapS = newWrap;
+    textureWrapState.wrapT = newWrap;
 
     [ self updateGLTextureState ];
 }
@@ -318,13 +375,13 @@
 {
     [[[ NP Graphics ] textureManager ] setTexture2DMode ];
 
-    glBindTexture(GL_TEXTURE_2D,textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
 
     [ self updateGLTextureFilterState ];
     [ self updateGLTextureAnisotropy ];
     [ self updateGLTextureWrapState ];
 
-    glBindTexture(GL_TEXTURE_2D,0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 - (void) activateAtColorMapIndex:(Int32)index

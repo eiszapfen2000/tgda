@@ -39,9 +39,11 @@
 - (void) setWidth:(Int)newWidth;
 - (void) setHeight:(Int)newHeight;
 - (void) setMipMapping:(NpState)newMipMapping;
+- (void) setTextureFilter:(NpState)newTextureFilter;
 - (void) setTextureMinFilter:(NpState)newTextureMinFilter;
 - (void) setTextureMagFilter:(NpState)newTextureMagFilter;
 - (void) setTextureAnisotropyFilter:(NpState)newTextureAnisotropyFilter;
+- (void) setTextureWrap:(NpState)newWrap;
 - (void) setTextureWrapS:(NpState)newWrapS;
 - (void) setTextureWrapT:(NpState)newWrapT;
 

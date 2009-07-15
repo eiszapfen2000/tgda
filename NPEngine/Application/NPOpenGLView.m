@@ -39,6 +39,9 @@
     [[[ NP Graphics ] textureManager ] setAnisotropy:anisotropy ];
 
     BOOL vsync = [[ infoDictionary objectForKey:@"VSync" ] boolValue ];
+
+    NSLog(@"VSYNC: %d",(int)vsync);
+
     glXSwapIntervalSGI(vsync);
 }
 
