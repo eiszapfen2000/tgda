@@ -190,16 +190,20 @@
         glBegin(GL_QUADS);
 
             glTexCoord2f(texCoordUpperLeft.x, texCoordUpperLeft.y);
-            glVertex2f(pos.x - size, pos.y + size);
+            glVertex4f(pos.x - size, pos.y + size, 0.0f, 1.0f);
+            //NSLog(@"1 %f %f",pos.x - size,pos.x + size);
 
             glTexCoord2f(texCoordLowerRight.x, texCoordUpperLeft.y);
-            glVertex2f(pos.x + size, pos.y + size);
+            glVertex4f(pos.x + size, pos.y + size, 0.0f, 1.0f);
+            //NSLog(@"2 %f %f",pos.x + size,pos.x + size);
 
             glTexCoord2f(texCoordLowerRight.x, texCoordLowerRight.y);
-            glVertex2f(pos.x + size, pos.y - size);
+            glVertex4f(pos.x + size, pos.y - size, 0.0f, 1.0f);
+            //NSLog(@"3 %f %f",pos.x + size,pos.x - size);
 
             glTexCoord2f(texCoordUpperLeft.x, texCoordLowerRight.y);
-            glVertex2f(pos.x - size, pos.y - size);
+            glVertex4f(pos.x - size, pos.y - size, 0.0f, 1.0f);
+            //NSLog(@"4 %f %f",pos.x - size,pos.x - size);
 
         glEnd();
 

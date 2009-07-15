@@ -246,8 +246,9 @@
 
 - (void) computeModelViewProjectionMatrix
 {
-    fm4_mm_multiply_m(projectionMatrix, viewMatrix, modelViewProjectionMatrix);
-    fm4_mm_multiply_m(modelViewProjectionMatrix, modelMatrix, modelViewProjectionMatrix);
+    FMatrix4 tmp;
+    fm4_mm_multiply_m(projectionMatrix, viewMatrix, &tmp);
+    fm4_mm_multiply_m(&tmp, modelMatrix, modelViewProjectionMatrix);
     recomputeModelViewProjectionMatrix = NO;
 }
 
