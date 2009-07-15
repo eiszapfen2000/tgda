@@ -178,7 +178,7 @@
         {
             switch ( pixelFormat )
             {
-                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_R )    : { glinternalformat = GL_LUMINANCE;           break; }
+                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_R )    : { glinternalformat = GL_LUMINANCE;       break; }
                 case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RG )   : { glinternalformat = GL_LUMINANCE_ALPHA; break; }
                 case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGB )  : { glinternalformat = GL_RGB;             break; }
                 case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ) : { glinternalformat = GL_RGBA;            break; }
@@ -190,7 +190,7 @@
         {
             switch ( pixelFormat )
             {
-                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_R )    : { glinternalformat = GL_LUMINANCE16F_ARB;           break; }
+                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_R )    : { glinternalformat = GL_LUMINANCE16F_ARB;       break; }
                 case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RG )   : { glinternalformat = GL_LUMINANCE_ALPHA16F_ARB; break; }
                 case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGB )  : { glinternalformat = GL_RGB16F_ARB;             break; }
                 case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ) : { glinternalformat = GL_RGBA16F_ARB;            break; }
@@ -223,14 +223,14 @@
 
 - (id) loadTextureFromAbsolutePath:(NSString *)path
 {
-    NPLOG(@"%@: loading %@", name, path);
-
     if ( [ path isEqual:@"" ] == NO )
     {
         NPTexture * texture = [ textures objectForKey:path ];
 
         if ( texture == nil )
         {
+            NPLOG(@"%@: loading %@", name, path);
+
             NPFile * file = [[ NPFile alloc ] initWithName:path parent:self fileName:path ];
             texture = [ self loadTextureUsingFileHandle:file ];
             [ file release ];

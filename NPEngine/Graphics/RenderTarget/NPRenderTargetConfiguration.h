@@ -14,8 +14,6 @@
 	NSMutableArray * colorTargets;
 	NPRenderBuffer * depth;
     NPRenderBuffer * stencil;
-
-	BOOL ready;
 }
 
 - (id) init;
@@ -34,7 +32,6 @@
 - (void) resetColorTargetsArray;
 
 - (void) generateGLFBOID;
-- (BOOL) ready;
 - (UInt) fboID;
 - (UInt) colorBufferIndexForRenderTexture:(NPRenderTexture *)renderTexture;
 - (NPRenderTexture *) renderTextureAtIndex:(Int)colorBufferIndex;

@@ -32,8 +32,6 @@
 
 	depth = stencil = nil;
 
-	ready = NO;
-
     return self;
 }
 
@@ -80,11 +78,6 @@
 - (UInt) fboID
 {
     return fboID;
-}
-
-- (BOOL) ready
-{
-	return ready;
 }
 
 - (UInt) colorBufferIndexForRenderTexture:(NPRenderTexture *)renderTexture
@@ -273,41 +266,24 @@
 {
     [[[ NP Graphics ] renderTargetManager ] setCurrentRenderTargetConfiguration:self ];
 
-    GLenum buffers[NP_GRAPHICS_DRAWBUFFERS_COUNT];
-    Int bufferCount = 0;
-
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboID);
-
-    for ( Int i = 0; i < (Int)[ colorTargets count ]; i++ )
-    {
-        if ( [ colorTargets objectAtIndex:i ] != [ NSNull null ] )
-        {
-            buffers[bufferCount] = GL_COLOR_ATTACHMENT0_EXT + i;
-            bufferCount++;
-        }
-    }
-
-    glDrawBuffers(bufferCount, buffers);
-
-    IVector2 rtv = { width, height };
-    [[[[ NP Graphics ] viewportManager ] currentViewport ] setViewportSize:&rtv ];
+    [ self bindFBO ];
+    [ self activateDrawBuffers ];
+    [ self activateViewport ];
 }
 
 - (void) deactivate
 {
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-    glDrawBuffer(GL_BACK);
+    [ self unbindFBO ];
+    [ self deactivateDrawBuffers ];
+    [ self deactivateViewport ];
 
-    [[[[ NP Graphics ] viewportManager ] currentViewport ] setToControlSize ];
     [[[ NP Graphics ] renderTargetManager ] setCurrentRenderTargetConfiguration:nil ];
 }
 
 - (BOOL) checkFrameBufferCompleteness
 {
-    //glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboID);
-
     NSString * message = @"";
-    ready = NO;
+    BOOL ready = NO;
 
     NpState status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
     switch ( status )
@@ -321,8 +297,6 @@
         case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT: { message = @"FBO read buffer error"; break; }
         case GL_FRAMEBUFFER_UNSUPPORTED_EXT: { message = @"FBO unsupported format"; break; }
     }
-
-    //glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
     if ( ready == NO )
     {

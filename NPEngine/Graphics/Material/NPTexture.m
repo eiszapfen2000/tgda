@@ -118,8 +118,8 @@
     {
         case NP_GRAPHICS_TEXTURE_FILTER_NEAREST:
         {
-            textureFilterState.minFilter = NP_GRAPHICS_TEXTURE_FILTER_NEAREST;
-            textureFilterState.magFilter = NP_GRAPHICS_TEXTURE_FILTER_NEAREST;
+            textureFilterState.minFilter  = NP_GRAPHICS_TEXTURE_FILTER_NEAREST;
+            textureFilterState.magFilter  = NP_GRAPHICS_TEXTURE_FILTER_NEAREST;
             textureFilterState.mipmapping = NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE;
 
             break;
@@ -127,8 +127,8 @@
 
         case NP_GRAPHICS_TEXTURE_FILTER_LINEAR:
         {
-            textureFilterState.minFilter = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
-            textureFilterState.magFilter = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
+            textureFilterState.minFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
+            textureFilterState.magFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
             textureFilterState.mipmapping = NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE;
 
             break;
@@ -136,8 +136,8 @@
 
         case NP_GRAPHICS_TEXTURE_FILTER_LINEAR_MIPMAPPING:
         {
-            textureFilterState.minFilter = NP_GRAPHICS_TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST;
-            textureFilterState.magFilter = NP_GRAPHICS_TEXTURE_FILTER_NEAREST;
+            textureFilterState.minFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST;
+            textureFilterState.magFilter  = NP_GRAPHICS_TEXTURE_FILTER_NEAREST;
             textureFilterState.mipmapping = NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_ACTIVE;
 
             break;
@@ -145,8 +145,8 @@
 
         case NP_GRAPHICS_TEXTURE_FILTER_TRILINEAR:
         {
-            textureFilterState.minFilter = NP_GRAPHICS_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR;
-            textureFilterState.magFilter = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
+            textureFilterState.minFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR;
+            textureFilterState.magFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
             textureFilterState.mipmapping = NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_ACTIVE;
 
             break;
@@ -364,11 +364,9 @@
 {
     GLenum wrapS = [[[ NP Graphics ] textureManager ] computeGLWrap:textureWrapState.wrapS ];
     GLenum wrapT = [[[ NP Graphics ] textureManager ] computeGLWrap:textureWrapState.wrapT ];
-    //GLenum wrapR = [[[ NP Graphics ] textureManager ] computeGLWrap:textureWrapState.wrapR ];
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrapR);
 }
 
 - (void) updateGLTextureState
