@@ -34,10 +34,8 @@
                       height:(Int)height
                   dataFormat:(NpState)dataFormat
                  pixelFormat:(NpState)pixelFormat
-            textureMinFilter:(NpState)textureMinFilter
-            textureMagFilter:(NpState)textureMagFilter
-                textureWrapS:(NpState)textureWrapS
-                textureWrapT:(NpState)textureWrapT
+            textureFilter:(NpState)textureFilter
+              textureWrap:(NpState)textureWrap
                             ;
 
 
@@ -62,15 +60,16 @@
 - (void) setDataFormat:(NpState)newDataFormat;
 
 - (void) createTexture;
-- (void) createTextureWithTextureMinFilter:(NpState)textureMinFilter
-                          textureMagFilter:(NpState)textureMagFilter
-                              textureWrapS:(NpState)textureWrapS
-                              textureWrapT:(NpState)textureWrapT
-                                          ;
+- (void) createTextureWithTextureFilter:(NpState)textureFilter
+                            textureWrap:(NpState)textureWrap
+                                       ;
 
 - (void) attachToColorBufferIndex:(Int)newColorBufferIndex;
 - (void) detach;
-- (void) bindToRenderTargetConfiguration:(NPRenderTargetConfiguration *)newConfiguration colorBufferIndex:(Int)newColorBufferIndex;
+
+- (void) bindToRenderTargetConfiguration:(NPRenderTargetConfiguration *)newConfiguration
+                        colorBufferIndex:(Int)newColorBufferIndex
+                                        ;
 - (void) unbindFromRenderTargetConfiguration;
 
 @end

@@ -31,11 +31,11 @@
                       height:(Int)height
                   dataFormat:(NpState)dataFormat
                  pixelFormat:(NpState)pixelFormat
-            textureMinFilter:(NpState)textureMinFilter
-            textureMagFilter:(NpState)textureMagFilter
-                textureWrapS:(NpState)textureWrapS
-                textureWrapT:(NpState)textureWrapT
+               textureFilter:(NpState)textureFilter
+                 textureWrap:(NpState)textureWrap
 {
+    #warning FIXME Handle mipmaps
+
     NPRenderTexture * renderTexture = [[ NPRenderTexture alloc ] initWithName:name ];
     [ renderTexture setType:type ];
     [ renderTexture setDataFormat:dataFormat ];
@@ -43,10 +43,8 @@
     [ renderTexture setWidth:width ];
     [ renderTexture setHeight:height ];
 
-    [ renderTexture createTextureWithTextureMinFilter:textureMinFilter
-                                     textureMagFilter:textureMagFilter
-                                         textureWrapS:textureWrapS
-                                         textureWrapT:textureWrapT ];
+    [ renderTexture createTextureWithTextureFilter:textureFilter
+                                       textureWrap:textureWrap ];
 
     return [ renderTexture autorelease ];
 }
@@ -156,10 +154,8 @@
     dataFormat = newDataFormat;
 }
 
-- (void) createTextureWithTextureMinFilter:(NpState)textureMinFilter
-                          textureMagFilter:(NpState)textureMagFilter
-                              textureWrapS:(NpState)textureWrapS
-                              textureWrapT:(NpState)textureWrapT
+- (void) createTextureWithTextureFilter:(NpState)textureFilter
+                            textureWrap:(NpState)textureWrap
 {
     if ( texture != nil )
     {
@@ -172,11 +168,8 @@
     [ texture setHeight:height ];
     [ texture setDataFormat:dataFormat ];
     [ texture setPixelFormat:pixelFormat ];
-    [ texture setMipMapping:NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE ];
-    [ texture setTextureMinFilter:textureMinFilter ];
-    [ texture setTextureMagFilter:textureMagFilter ];
-    [ texture setTextureWrapS:textureWrapS ];
-    [ texture setTextureWrapT:textureWrapT ];
+    [ texture setTextureFilter:textureFilter ];
+    [ texture setTextureWrap:textureWrap ];
 
     [ texture uploadToGLWithoutData ];
 
@@ -185,10 +178,8 @@
 
 - (void) createTexture
 {
-    [ self createTextureWithTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                            textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP
-                                textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
+    [ self createTextureWithTextureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                              textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
 }
 
 - (void) attachToColorBufferIndex:(Int)newColorBufferIndex
@@ -204,7 +195,8 @@
         glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, 0, 0);
 }
 
-- (void) bindToRenderTargetConfiguration:(NPRenderTargetConfiguration *)newConfiguration colorBufferIndex:(Int)newColorBufferIndex
+- (void) bindToRenderTargetConfiguration:(NPRenderTargetConfiguration *)newConfiguration
+                        colorBufferIndex:(Int)newColorBufferIndex
 {
     if ( configuration != newConfiguration )
     {
