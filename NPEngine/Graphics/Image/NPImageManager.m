@@ -62,14 +62,14 @@
 
 - (id) loadImageFromAbsolutePath:(NSString *)path;
 {
-    NPLOG(@"%@: loading %@", name, path);
-
     if ( [ path isEqual:@"" ] == NO )
     {
         NPImage * image = [ images objectForKey:path ];
 
         if ( image == nil )
         {
+            NPLOG(@"%@: loading %@", name, path);
+
             NPImage * image = [[ NPImage alloc ] initWithName:@"" parent:self ];
 
             if ( [ image loadFromPath:path ] == YES )

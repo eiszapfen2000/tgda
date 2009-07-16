@@ -174,14 +174,14 @@ void np_cg_error_callback()
 
 - (id) loadEffectFromAbsolutePath:(NSString *)path
 {
-    NPLOG(@"%@: loading %@", name, path);
-
     if ( [ path isEqual:@"" ] == NO )
     {
         NPEffect * effect = [ effects objectForKey:path ];
 
         if ( effect == nil )
         {
+            NPLOG(@"%@: loading %@", name, path);
+
             NPFile * file = [[ NPFile alloc ] initWithName:path parent:self fileName:path ];
             effect = [ self loadEffectUsingFileHandle:file ];
             [ file release ];

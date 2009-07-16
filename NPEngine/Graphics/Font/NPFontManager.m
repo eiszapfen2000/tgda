@@ -41,14 +41,14 @@
 
 - (id) loadFontFromAbsolutePath:(NSString *)path
 {
-    NPLOG(@"%@: loading %@", name, path);
-
     if ( [ path isEqual:@"" ] == NO )
     {
         NPFont * font = [ fonts objectForKey:path ];
 
         if ( font == nil )
         {
+            NPLOG(@"%@: loading %@", name, path);
+
             NPFont * font = [[ NPFont alloc ] initWithName:@"" parent:self ];
 
             if ( [ font loadFromPath:path ] == YES )

@@ -75,14 +75,14 @@
 
 - (id) loadStateSetFromAbsolutePath:(NSString *)path
 {
-    NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, path]));
-
     if ( [ path isEqual:@"" ] == NO )
     {
         NPStateSet * stateSet = [ stateSets objectForKey:path ];
 
         if ( stateSet == nil )
         {
+            NPLOG(@"%@: loading %@", name, path);
+
             stateSet = [[ NPStateSet alloc ] initWithName:path parent:self ];
             [ stateSet loadFromFile:path ];
             [ stateSets setObject:stateSet forKey:path ];
