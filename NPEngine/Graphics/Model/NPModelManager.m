@@ -39,14 +39,14 @@
 
 - (id) loadModelFromAbsolutePath:(NSString *)path
 {
-    NPLOG(@"%@: loading %@", name, path);
-
     if ( [ path isEqual:@"" ] == NO )
     {
         NPSUXModel * model = [ models objectForKey:path ];
 
         if ( model == nil )
         {
+            NPLOG(@"%@: loading %@", name, path);
+
             NPFile * file = [[ NPFile alloc ] initWithName:path parent:self fileName:path ];
             model = [ self loadModelUsingFileHandle:file ];
             [ file release ];
