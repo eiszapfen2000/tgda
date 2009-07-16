@@ -486,10 +486,8 @@
                                                             height:currentResolution->y
                                                         dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                        pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                                  textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                  textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                      textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
-                                                      textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+                                                     textureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                       textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
     temporaryStorage = [ tempRenderTexture retain ];
 
@@ -501,10 +499,8 @@
                                                                       height:currentResolution->y
                                                                   dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                                  pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                                            textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR
-                                                            textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR
-                                                                textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
-                                                                textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+                                                               textureFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR
+                                                                 textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
     quantityBiLerp   = [ quantityBiLerpRenderTexture retain ];
 

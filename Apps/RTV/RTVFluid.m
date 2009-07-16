@@ -365,10 +365,8 @@
                                                                       height:currentResolution->y
                                                                   dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                                  pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                                            textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                            textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                                textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
-                                                                textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+                                                               textureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                                 textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
     id velocityTargetRenderTexture = [ NPRenderTexture renderTextureWithName:@"VelocityTwo"
                                                                         type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
@@ -376,10 +374,8 @@
                                                                       height:currentResolution->y
                                                                   dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                                  pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                                            textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                            textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                                textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
-                                                                textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+                                                               textureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                                 textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
     velocityBiLerp = [[[ NP Graphics ] textureManager ] createTextureWithName:@"VelocityBilinear"
                                                                         width:currentResolution->x
@@ -388,10 +384,8 @@
                                                                   pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
                                                                    mipMapping:NO ];
 
-    [ velocityBiLerp setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
-    [ velocityBiLerp setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
-    [ velocityBiLerp setTextureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
-    [ velocityBiLerp setTextureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+    [ velocityBiLerp setTextureFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+    [ velocityBiLerp setTextureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
     [ velocityBiLerp uploadToGLWithoutData ];
 
     velocitySource = [ velocitySourceRenderTexture retain ];
@@ -416,10 +410,8 @@
                                                                  height:currentResolution->y
                                                              dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                             pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                                       textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                       textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                           textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
-                                                           textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+                                                          textureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                            textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
     id inkTargetRenderTexture = [ NPRenderTexture renderTextureWithName:@"InkTarget"
                                                                    type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
@@ -427,10 +419,8 @@
                                                                  height:currentResolution->y
                                                              dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                             pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                                       textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                       textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                           textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
-                                                           textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+                                                          textureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                            textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
     inkSource = [ inkSourceRenderTexture retain ];
     inkTarget = [ inkTargetRenderTexture retain ];
@@ -449,10 +439,8 @@
                                                                   height:currentResolution->y
                                                               dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                              pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                                        textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                        textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                            textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
-                                                            textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+                                                           textureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                             textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
     divergenceTarget = [ divergenceRenderTexture retain ];
 }
@@ -475,10 +463,8 @@
                                                                  height:currentResolution->y
                                                              dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                             pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                                       textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                       textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                           textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
-                                                           textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+                                                          textureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                            textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
     id pressureTargetRenderTexture = [ NPRenderTexture renderTextureWithName:@"PressureTarget"
                                                                    type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
@@ -486,10 +472,9 @@
                                                                  height:currentResolution->y
                                                              dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                             pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                                       textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                       textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                           textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
-                                                           textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+                                                          textureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                            textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+
 
     pressureSource = [ pressureSourceRenderTexture retain ];
     pressureTarget = [ pressureTargetRenderTexture retain ];
@@ -519,10 +504,9 @@
                                      height:currentResolution->y
                                  dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                 pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                           textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                           textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                               textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
-                               textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+                              textureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+
 
     id arbitraryBoundariesVelocityRenderTexture =
     [ NPRenderTexture renderTextureWithName:@"BoundariesVelocity"
@@ -531,10 +515,8 @@
                                      height:currentResolution->y
                                  dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                 pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                           textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                           textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                               textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
-                               textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+                              textureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
     id arbitraryBoundariesPressureRenderTexture =
     [ NPRenderTexture renderTextureWithName:@"BoundariesPressure"
@@ -543,10 +525,8 @@
                                      height:currentResolution->y
                                  dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                 pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                           textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                           textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                               textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
-                               textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+                              textureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
     arbitraryBoundariesPaint    = [ arbitraryBoundariesPaintRenderTexture    retain ];
     arbitraryBoundariesVelocity = [ arbitraryBoundariesVelocityRenderTexture retain ];
@@ -751,7 +731,6 @@
 
     if ( [ addInkAction active ] == YES )
     {
-        FVector4 brak = { 0.2f, 0.3f, 1.0f, 1.0f };
         [ inputForce addGaussianSplatToQuantity:inkSource
                                     usingRadius:inputRadius
                                           scale:1.0f

@@ -72,15 +72,11 @@
                                                                             dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                                            pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ];
 
-    [ velocityScaleAndOffsetLookUp setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    [ velocityScaleAndOffsetLookUp setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    [ velocityScaleAndOffsetLookUp setTextureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
-    [ velocityScaleAndOffsetLookUp setTextureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+    [ velocityScaleAndOffsetLookUp setTextureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    [ velocityScaleAndOffsetLookUp setTextureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
-    [ pressureScaleAndOffsetLookUp setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    [ pressureScaleAndOffsetLookUp setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    [ pressureScaleAndOffsetLookUp setTextureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
-    [ pressureScaleAndOffsetLookUp setTextureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+    [ pressureScaleAndOffsetLookUp setTextureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    [ pressureScaleAndOffsetLookUp setTextureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
     Float velocityData[136] = 
     {
