@@ -99,45 +99,49 @@
 
 - (GLenum) computeInternalFormat
 {
-    GLenum internalFormat;
+    GLenum internalFormat = GL_NONE;
+
     switch ( type )
     {
         case NP_GRAPHICS_RENDERBUFFER_DEPTH_TYPE:
         {
             switch(format)
             {
-	            case NP_GRAPHICS_RENDERBUFFER_DEPTH16:{internalFormat = GL_DEPTH_COMPONENT16; break;}
-	            case NP_GRAPHICS_RENDERBUFFER_DEPTH24:{internalFormat = GL_DEPTH_COMPONENT24; break;}
-	            case NP_GRAPHICS_RENDERBUFFER_DEPTH32:{internalFormat = GL_DEPTH_COMPONENT32; break;}
-                default                     :{NPLOG_ERROR(@"RenderBuffer: Unknown depth format"); break;}
+	            case NP_GRAPHICS_RENDERBUFFER_DEPTH16: {internalFormat = GL_DEPTH_COMPONENT16; break;}
+	            case NP_GRAPHICS_RENDERBUFFER_DEPTH24: {internalFormat = GL_DEPTH_COMPONENT24; break;}
+	            case NP_GRAPHICS_RENDERBUFFER_DEPTH32: {internalFormat = GL_DEPTH_COMPONENT32; break;}
+                default: {NPLOG_ERROR(@"RenderBuffer: Unknown depth format"); break;}
             }
+
+            break;
         }
-        break;
 
         case NP_GRAPHICS_RENDERBUFFER_STENCIL_TYPE:
         {
             switch(format)
             {
-	            case NP_GRAPHICS_RENDERBUFFER_STENCIL1 :{internalFormat = GL_STENCIL_INDEX1_EXT; break;}
-	            case NP_GRAPHICS_RENDERBUFFER_STENCIL4 :{internalFormat = GL_STENCIL_INDEX4_EXT; break;}
-	            case NP_GRAPHICS_RENDERBUFFER_STENCIL8 :{internalFormat = GL_STENCIL_INDEX8_EXT; break;}
-	            case NP_GRAPHICS_RENDERBUFFER_STENCIL16:{internalFormat = GL_STENCIL_INDEX16_EXT; break;}
-                default                       :{NPLOG_ERROR(@"RenderBuffer: Unknown stencil format"); break;}
+	            case NP_GRAPHICS_RENDERBUFFER_STENCIL1 : {internalFormat = GL_STENCIL_INDEX1_EXT;  break;}
+	            case NP_GRAPHICS_RENDERBUFFER_STENCIL4 : {internalFormat = GL_STENCIL_INDEX4_EXT;  break;}
+	            case NP_GRAPHICS_RENDERBUFFER_STENCIL8 : {internalFormat = GL_STENCIL_INDEX8_EXT;  break;}
+	            case NP_GRAPHICS_RENDERBUFFER_STENCIL16: {internalFormat = GL_STENCIL_INDEX16_EXT; break;}
+                default: {NPLOG_ERROR(@"RenderBuffer: Unknown stencil format"); break;}
             }
+
+            break;
         }
-        break;
 
         case NP_GRAPHICS_RENDERBUFFER_DEPTH_STENCIL_TYPE:
         {
             switch(format)
             {
-	            case NP_GRAPHICS_RENDERBUFFER_DEPTH24_STENCIL8:{internalFormat = GL_DEPTH24_STENCIL8_EXT; break;}
-                default                              :{NPLOG_ERROR(@"RenderBuffer: Unknown depth-stencil format"); break;}
+	            case NP_GRAPHICS_RENDERBUFFER_DEPTH24_STENCIL8: {internalFormat = GL_DEPTH24_STENCIL8_EXT; break;}
+                default: {NPLOG_ERROR(@"RenderBuffer: Unknown depth-stencil format"); break;}
             }
-        }
-        break;
 
-        default:{NPLOG_ERROR(@"RenderBuffer: Unknown type"); break;}
+            break;
+        }
+
+        default: {NPLOG_ERROR(@"RenderBuffer: Unknown type"); break;}
     }
 
     return internalFormat;
@@ -155,12 +159,13 @@
 
 - (GLenum) computeAttachment
 {
-    GLenum attachment = 0;
+    GLenum attachment = GL_NONE;
+
     switch ( type )
     {
-        case NP_GRAPHICS_RENDERBUFFER_DEPTH_TYPE  :{attachment = GL_DEPTH_ATTACHMENT_EXT; break;}
-        case NP_GRAPHICS_RENDERBUFFER_STENCIL_TYPE:{attachment = GL_STENCIL_ATTACHMENT_EXT; break;}
-        default                          :{NPLOG_ERROR(@"RenderBuffer: Unknow attachment"); break;}
+        case NP_GRAPHICS_RENDERBUFFER_DEPTH_TYPE  : {attachment = GL_DEPTH_ATTACHMENT_EXT;   break;}
+        case NP_GRAPHICS_RENDERBUFFER_STENCIL_TYPE: {attachment = GL_STENCIL_ATTACHMENT_EXT; break;}
+        default: {NPLOG_ERROR(@"RenderBuffer: Unknow attachment"); break;}
     }
 
     return attachment;
