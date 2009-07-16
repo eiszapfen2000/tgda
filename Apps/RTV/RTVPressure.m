@@ -414,93 +414,7 @@
         tmp = source;
         source = target;
         target = tmp;
-
-        // Compute borders
-
-        /*[[ source texture ] activateAtColorMapIndex:0 ];
-
-        [ pressureEffect activateTechniqueWithName:@"border" ];
-
-        glBegin(GL_LINES);
-            glTexCoord2f(pixelSize->x, 0.0f);
-            glVertex4f(pixelSize->x*0.5f, 1.0f, 0.0f, 1.0f);
-            glTexCoord2f(pixelSize->x, 0.0f);
-            glVertex4f(pixelSize->x*0.5f, 0.0f, 0.0f, 1.0f);
-        glEnd();
-
-        glBegin(GL_LINES);
-            glTexCoord2f(-pixelSize->x, 0.0f);
-            glVertex4f(1.0f-pixelSize->x*0.5f, 1.0f, 0.0f, 1.0f);
-            glTexCoord2f(-pixelSize->x, 0.0f);
-            glVertex4f(1.0f-pixelSize->x*0.5f, 0.0f, 0.0f, 1.0f);
-        glEnd();
-
-        glBegin(GL_LINES);
-            glTexCoord2f(0.0f, -pixelSize->y);
-            glVertex4f(0.0f, 1.0f-pixelSize->y*0.5f, 0.0f, 1.0f);
-            glTexCoord2f(0.0f, -pixelSize->y);
-            glVertex4f(1.0f, 1.0f-pixelSize->y*0.5f, 0.0f, 1.0f);
-        glEnd();
-
-        glBegin(GL_LINES);
-            glTexCoord2f(0.0f, pixelSize->y);
-            glVertex4f(0.0f, pixelSize->y*0.5f, 0.0f, 1.0f);
-            glTexCoord2f(0.0f, pixelSize->y);
-            glVertex4f(1.0f, pixelSize->y*0.5f, 0.0f, 1.0f);
-        glEnd();
-
-        [ pressureEffect deactivate ];
-
-        // Arbitrary Borders
-
-        [[ source         texture ] activateAtColorMapIndex:0 ];
-        [[ scaleAndOffset texture ] activateAtColorMapIndex:1 ];
-
-        [ pressureEffect activateTechniqueWithName:@"arbitrary_borders" ];
-
-        glBegin(GL_QUADS);
-            glVertex4f(innerQuadUpperLeft->x,  innerQuadUpperLeft->y,  0.0f, 1.0f);
-            glVertex4f(innerQuadUpperLeft->x,  innerQuadLowerRight->y, 0.0f, 1.0f);
-            glVertex4f(innerQuadLowerRight->x, innerQuadLowerRight->y, 0.0f, 1.0f);
-            glVertex4f(innerQuadLowerRight->x, innerQuadUpperLeft->y,  0.0f, 1.0f);
-        glEnd();
-
-        [ pressureEffect deactivate ];
-
-        [ temporaryStorage detach ];
-
-        // Compute Poisson pressure iteration
-
-        [[ pressureRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:target ];
-        [ target attachToColorBufferIndex:0 ];
-        [ pressureRenderTargetConfiguration activateDrawBuffers ];
-        [ pressureRenderTargetConfiguration checkFrameBufferCompleteness ];
-
-        [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
-
-        [[ temporaryStorage texture ] activateAtColorMapIndex:0 ];
-        [[ divergence       texture ] activateAtColorMapIndex:1 ];
-
-        [ pressureEffect activateTechniqueWithName:@"compute_pressure" ];
-
-        glBegin(GL_QUADS);
-            glVertex4f(innerQuadUpperLeft->x,  innerQuadUpperLeft->y,  0.0f, 1.0f);
-            glVertex4f(innerQuadUpperLeft->x,  innerQuadLowerRight->y, 0.0f, 1.0f);
-            glVertex4f(innerQuadLowerRight->x, innerQuadLowerRight->y, 0.0f, 1.0f);
-            glVertex4f(innerQuadLowerRight->x, innerQuadUpperLeft->y,  0.0f, 1.0f);
-        glEnd();
-
-        [ pressureEffect deactivate ];
-
-        [ target detach ];
-
-        tmp = source;
-        source = target;
-        target = tmp;*/
     }
-
-    //if ( tmp == pressureSource ) NSLog(@"Source");
-    //if ( tmp == pressureTarget ) NSLog(@"Target");
 
     [ pressureRenderTargetConfiguration unbindFBO ];
     [ pressureRenderTargetConfiguration deactivateDrawBuffers ];
@@ -568,10 +482,8 @@
                                                             height:currentResolution->y
                                                         dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                        pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                                  textureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                  textureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                      textureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE
-                                                      textureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+                                                     textureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                       textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
     temporaryStorage = [ tempRenderTexture retain ];
 
