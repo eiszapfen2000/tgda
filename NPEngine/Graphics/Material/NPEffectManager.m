@@ -182,9 +182,13 @@ void np_cg_error_callback()
         {
             NPLOG(@"%@: loading %@", name, path);
 
+            [[[ NP Core ] logger ] pushPrefix:@"  " ];
+
             NPFile * file = [[ NPFile alloc ] initWithName:path parent:self fileName:path ];
             effect = [ self loadEffectUsingFileHandle:file ];
             [ file release ];
+
+            [[[ NP Core ] logger ] popPrefix ];
         }
 
         return effect;
