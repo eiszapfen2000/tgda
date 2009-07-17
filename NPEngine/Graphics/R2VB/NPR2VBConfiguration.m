@@ -62,13 +62,13 @@
             }
             else
             {
-                NPLOG_ERROR(@"%@: invalid buffer %@ specified",name,targetBuffer);
+                NPLOG_ERROR(@"%@: invalid buffer %@ specified", name, targetBuffer);
             }
         }
     }
     else
     {
-        NPLOG_ERROR(@"%@: wrong mode %d",name,mode);
+        NPLOG_ERROR(@"%@: wrong mode %d", name, mode);
     }
 }
 
@@ -91,13 +91,13 @@
             }
             else
             {
-                NPLOG_ERROR(@"%@: invalid buffer %@ specified",name,targetBuffer);
+                NPLOG_ERROR(@"%@: invalid buffer %@ specified", name, targetBuffer);
             }
         }
     }
     else
     {
-        NPLOG_ERROR(@"%@: wrong mode %d",name,mode);
+        NPLOG_ERROR(@"%@: wrong mode %d", name, mode);
     }
 }
 
@@ -108,7 +108,8 @@
 
     if ( sourcesCount != targetsCount )
     {
-        NPLOG_ERROR(@"%@: %d sources vs %d targets",name,sourcesCount,targetsCount);
+        NPLOG_ERROR(@"%@: %d sources vs %d targets", name, sourcesCount, targetsCount);
+
         return;
     }
 

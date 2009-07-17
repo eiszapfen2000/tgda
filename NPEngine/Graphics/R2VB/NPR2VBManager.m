@@ -52,12 +52,13 @@
 
 - (void) setCurrentConfiguration:(NPR2VBConfiguration *)newCurrentConfiguration
 {
-    ASSIGN(currentConfiguration,newCurrentConfiguration);
+    ASSIGN(currentConfiguration, newCurrentConfiguration);
 }
 
 - (GLenum) glBufferIdentifierFromNPBufferIdentifier:(NSNumber *)bufferIdentifier
 {
-    GLenum buffer = 0;
+    GLenum buffer = GL_NONE;
+
     switch ( [ bufferIdentifier intValue ] )
     {
         case NP_READ_BUFFER_FRAMEBUFFER_BACK       :{ buffer = GL_BACK;        break; }
@@ -66,7 +67,7 @@
         case NP_READ_BUFFER_FRAMEBUFFER_FRONT      :{ buffer = GL_FRONT;       break; }
         case NP_READ_BUFFER_FRAMEBUFFER_LEFT_FRONT :{ buffer = GL_FRONT_LEFT;  break; }
         case NP_READ_BUFFER_FRAMEBUFFER_RIGHT_FRONT:{ buffer = GL_FRONT_RIGHT; break; }
-        default:{ NPLOG_ERROR(@"Unknown Color Buffer"); break; }
+        default:{ NPLOG_ERROR(@"%@: Unknown Color Buffer", name); break; }
     }
 
     return buffer;

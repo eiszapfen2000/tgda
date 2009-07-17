@@ -17,9 +17,9 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    tmpModelMatrix = NULL;
-    tmpViewMatrix  = NULL;
-    tmpProjectionMatrix = NULL;
+    tmpModelMatrix = fm4_alloc_init();;
+    tmpViewMatrix  = fm4_alloc_init();;
+    tmpProjectionMatrix = fm4_alloc_init();;
 
     modelMatrix = fm4_alloc_init();
     viewMatrix  = fm4_alloc_init();
@@ -41,14 +41,11 @@
 {
     transformationStateToModifiy = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
 
-    tmpModelMatrix = [ transformationStateToModifiy modelMatrix ];
-    tmpViewMatrix = [ transformationStateToModifiy viewMatrix ];
-    tmpProjectionMatrix = [ transformationStateToModifiy projectionMatrix ];
+    *tmpModelMatrix = *[ transformationStateToModifiy modelMatrix ];
+    *tmpViewMatrix = *[ transformationStateToModifiy viewMatrix ];
+    *tmpProjectionMatrix = *[ transformationStateToModifiy projectionMatrix ];
 
-    #warning "FIXME"
-
-    //fm4_ms_orthographic_projection_matrix(projectionMatrix,[[[[ NP Graphics ] viewportManager ] currentViewport ] aspectRatio]);
-    fm4_ms_simple_orthographic_projection_matrix(projectionMatrix, 1.0f);
+    fm4_mssss_orthographic_2d_projection_matrix(projectionMatrix, 0.0f, 1.0f, 0.0f, 1.0f);
 
     [ transformationStateToModifiy setModelMatrix:modelMatrix ];
     [ transformationStateToModifiy setViewMatrix:viewMatrix ];

@@ -45,8 +45,6 @@
     [ self setName:[ file fileName ]];
     [ self setFileName:[ file fileName ]];
 
-    [[[ NP Core ] logger ] pushPrefix:@"  " ];
-
     // Hack because of buggy cg character encoding/line termination 
     NSData * data = [ file readEntireFile ];
     NSMutableData * mData = [ NSMutableData data ];
@@ -109,8 +107,6 @@
     defaultTechnique = [[ e nextObject ] retain ];
 
     [ self bindDefaultSemantics ];
-
-    [[[ NP Core ] logger ] popPrefix ];
 
     ready = YES;
 

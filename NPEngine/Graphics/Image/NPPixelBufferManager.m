@@ -40,7 +40,7 @@
 
 - (void) setCurrentPixelBuffer:(NPPixelBuffer *)newCurrentPixelBuffer
 {
-    ASSIGN(currentPixelBuffer,newCurrentPixelBuffer);
+    ASSIGN(currentPixelBuffer, newCurrentPixelBuffer);
 }
 
 - (GLenum) computeGLUsage:(NpState)usage
@@ -71,7 +71,7 @@
         }
         else
         {
-            NPLOG_ERROR(@"%@: Unknown colorbuffer %d",name,colorbuffer);
+            NPLOG_ERROR(@"%@: Unknown colorbuffer %d", name, colorbuffer);
         }
     }
 
@@ -88,7 +88,7 @@
     }
     else
     {
-        NPLOG_ERROR(@"%@: Unknown framebuffer %d",name,framebuffer);
+        NPLOG_ERROR(@"%@: Unknown framebuffer %d", name, framebuffer);
     }
 
     return glframebuffer;
@@ -221,7 +221,7 @@
     }
     else
     {
-        NPLOG_ERROR(@"%@: %@ not uploaded to GL",name,[vbo name]);
+        NPLOG_ERROR(@"%@: %@ not uploaded to GL", name, [vbo name]);
     }
 
     return [ pbos autorelease ];
@@ -246,10 +246,9 @@
     [ texture setDataFormat:[pbo dataFormat]];
     [ texture setPixelFormat:[pbo pixelFormat]];
     [ texture setMipMapping:NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE ];
-    [ texture setTextureMinFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    [ texture setTextureMagFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
-    [ texture setTextureWrapS:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
-    [ texture setTextureWrapT:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
+    [ texture setTextureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    [ texture setTextureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
+
     [ texture uploadToGLWithoutData ];
 
     return texture;   
@@ -286,7 +285,7 @@
         }
         else
         {
-            NPLOG_ERROR(@"%@: No RenderTexture active, cannot copy",name);
+            NPLOG_ERROR(@"%@: No RenderTexture active, cannot copy", name);
         }
     }
 }
@@ -299,7 +298,9 @@
         glReadBuffer(glframebuffer);
 
         [ pbo activateForWriting ];
+
         glReadPixels(0, 0, [pbo width], [pbo height], GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
         [ pbo deactivate ];
 
         glReadBuffer(GL_NONE);
@@ -311,9 +312,11 @@
     if ( [ pbo isCompatibleWithTexture:texture ] == YES )
     {
         glBindTexture(GL_TEXTURE_2D, [texture textureID]);
+
         [ pbo activateForReading ];
         [ texture uploadToGLWithoutData ];
         [ pbo deactivate ];
+
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 }
