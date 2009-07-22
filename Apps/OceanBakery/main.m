@@ -9,7 +9,7 @@ int main (void)
     [ NP Core ];
     NSAutoreleasePool * innerPool = [[ NSAutoreleasePool alloc ] init ];
 
-    NSLog([[ NSBundle mainBundle ] bundlePath ]);
+    //NSLog([[ NSBundle mainBundle ] bundlePath ]);
 
     OBOceanSurfaceManager * manager = [[ OBOceanSurfaceManager alloc ] init ];
 

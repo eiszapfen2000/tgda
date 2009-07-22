@@ -18,6 +18,7 @@
     self = [ super initWithName:newName parent:newParent ];
 
     elementCount = 0;
+    time = 0.0f;
     heights = NULL;
 
     return self;
@@ -30,6 +31,11 @@
     [ super dealloc ];
 }
 
+- (void) setTime:(Float)newTime
+{
+    time = newTime;
+}
+
 - (void) setHeights:(Float *)newHeights elementCount:(UInt)count
 {
     heights = newHeights;
@@ -40,6 +46,7 @@
 {
     if ( heights != NULL )
     {
+        [ file writeFloat:&time ];
         [ file writeFloats:heights withLength:elementCount ];
     }
 }

@@ -1,8 +1,8 @@
 #import "OBPhillipsSpectrum.h"
 #import "NP.h"
 
-#define FFTWF_FREE(_pointer)		 do {void *_ptr=(void *)(_pointer); fftwf_free(_ptr); _ptr=NULL; } while (0)
-#define FFTWF_SAFE_FREE(_pointer) { if ( (_pointer) != NULL ) FFTWF_FREE((_pointer)); }
+#define FFTWF_FREE(_pointer)        do {void *_ptr=(void *)(_pointer); fftwf_free(_ptr); _ptr=NULL; } while (0)
+#define FFTWF_SAFE_FREE(_pointer)   { if ( (_pointer) != NULL ) FFTWF_FREE((_pointer)); }
 
 @implementation OBPhillipsSpectrum
 
@@ -23,7 +23,7 @@
     alpha = PHILLIPS_CONSTANT;
 
     resolution    = iv2_alloc_init();
-    size          = iv2_alloc_init();
+    size          = fv2_alloc_init();
     windDirection = fv2_alloc_init();
 
     needsUpdate = YES;
@@ -43,7 +43,7 @@
     FFTWF_SAFE_FREE(frequencySpectrum);
     FFTWF_SAFE_FREE(H0);
 
-    iv2_free(size);
+    fv2_free(size);
     iv2_free(resolution);
     fv2_free(windDirection);
 
@@ -55,9 +55,9 @@
     return frequencySpectrum;
 }
 
-- (void) setSize:(IVector2 *)newSize
+- (void) setSize:(FVector2 *)newSize
 {
-    if ( newSize->x > 0 && newSize->y > 0 )
+    if ( newSize->x > 0.0f && newSize->y > 0.0f )
     {
         size->x = newSize->x;
         size->y = newSize->y;

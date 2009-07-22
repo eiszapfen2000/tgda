@@ -7,6 +7,7 @@
 @interface OBOceanSurfaceSlice : NPObject
 {
     UInt elementCount;
+    Float time;
     Float * heights;
 }
 
@@ -15,6 +16,7 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
+- (void) setTime:(Float)newTime;
 - (void) setHeights:(Float *)newHeights elementCount:(UInt)count;
 
 - (void) saveToFile:(NPFile *)file;
