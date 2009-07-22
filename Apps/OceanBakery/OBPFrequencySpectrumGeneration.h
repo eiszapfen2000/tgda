@@ -4,7 +4,7 @@
 
 @protocol OBPFrequencySpectrumGeneration
 
-- (void) setSize:(IVector2 *)newSize;
+- (void) setSize:(FVector2 *)newSize;
 - (void) setResolution:(IVector2 *)newResolution;
 - (void) setWindDirection:(FVector2 *)newWindDirection;
 - (void) setGaussianRNG:(id)newGaussianRNG;

@@ -81,14 +81,14 @@
 
 - (id) loadOceanSurfaceGenerationConfigurationFromAbsolutePath:(NSString *)path
 {
-    NPLOG(@"%@: loading %@", name, path);
-
     if ( [ path isEqual:@"" ] == NO )
     {
         OBOceanSurfaceGenerationConfiguration * config = [ configurations objectForKey:path ];
 
         if ( config == nil )
         {
+            NPLOG(@"%@: loading %@", name, path);
+
             OBOceanSurfaceGenerationConfiguration * config = [[ OBOceanSurfaceGenerationConfiguration alloc ] initWithName:@"" parent:self ];
 
             if ( [ config loadFromPath:path ] == YES )

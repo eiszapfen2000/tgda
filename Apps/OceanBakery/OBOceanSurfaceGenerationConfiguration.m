@@ -22,7 +22,7 @@
     self = [ super initWithName:newName parent:newParent ];
 
     resolution = iv2_alloc_init();
-    size = iv2_alloc_init();
+    size = fv2_alloc_init();
     windDirection = fv2_alloc_init();
     generatorName = nil;
     outputFileName = nil;
@@ -34,11 +34,12 @@
 - (void) dealloc
 {
     iv2_free(resolution);
-    iv2_free(size);
+    fv2_free(size);
     fv2_free(windDirection);
 
     TEST_RELEASE(generatorName);
     TEST_RELEASE(outputFileName);
+    TEST_RELEASE(gaussianRNG);
 
     SAFE_FREE(timeStamps);
 
@@ -59,22 +60,22 @@
     NSString * resY = [[ config objectForKey:@"Resolution" ] objectAtIndex:1 ];
     resolution->x = [ resX intValue ];
     resolution->y = [ resY intValue ];
-    NPLOG(@"Resolution: %d x %d",resolution->x,resolution->y);
+    NPLOG(@"Resolution: %d x %d", resolution->x, resolution->y);
 
     NSString * width  = [[ config objectForKey:@"Size" ] objectAtIndex:0 ];
     NSString * length = [[ config objectForKey:@"Size" ] objectAtIndex:1 ];
-    size->x = [ width  intValue ];
-    size->y = [ length intValue ];
-    NPLOG(@"Size: %d km x %d km",size->x,size->y);
+    size->x = [ width  floatValue ];
+    size->y = [ length floatValue ];
+    NPLOG(@"Size: %f km x %f km", size->x, size->y);
 
     generatorName = [[ config objectForKey:@"Generator" ] retain ];
-    NPLOG(@"Frequency Spectrum Generator: %@",generatorName);
+    NPLOG(@"Frequency Spectrum Generator: %@", generatorName);
 
     NSString * windX = [[ config objectForKey:@"WindDirection" ] objectAtIndex:0 ];
     NSString * windY = [[ config objectForKey:@"WindDirection" ] objectAtIndex:1 ];
     windDirection->x = [ windX floatValue ];
     windDirection->y = [ windY floatValue ];
-    NPLOG(@"Wind Direction: ( %f, %f )",windDirection->x,windDirection->y);
+    NPLOG(@"Wind Direction: ( %f, %f )", windDirection->x, windDirection->y);
 
     id gaussianRNGConfig = [ config objectForKey:@"RNG" ];
     NSString * firstGeneratorName  = [ gaussianRNGConfig objectForKey:@"FirstGenerator"  ];
@@ -87,11 +88,12 @@
     [ firstGenerator  reseed:[firstGeneratorSeed  integerValue]];
     [ secondGenerator reseed:[secondGeneratorSeed integerValue]];
 
-    gaussianRNG = [[[ NP Core ] randomNumberGeneratorManager ] gaussianGeneratorWithFirstGenerator:firstGenerator
-                                                                                andSecondGenerator:secondGenerator ];
+    gaussianRNG = [[ NPGaussianRandomNumberGenerator alloc ] initWithName:@"Gaussian"
+                                                                   parent:self
+                                                           firstGenerator:firstGenerator
+                                                          secondGenerator:secondGenerator ];
 
-
-    numberOfSlices  = [[ config objectForKey:@"Slices" ] intValue  ];
+    numberOfSlices  = [[ config objectForKey:@"Slices"  ] intValue ];
     numberOfThreads = [[ config objectForKey:@"Threads" ] intValue ];
     NPLOG(@"Number of Slices: %d", numberOfSlices);
     NPLOG(@"Number of Threads: %d", numberOfThreads);
@@ -153,7 +155,8 @@
             }
         }
 
-        OBOceanSurfaceSlice * slice = [[ OBOceanSurfaceSlice alloc ] initWithName:[NSString stringWithFormat:@"%d",i] parent:nil ];
+        OBOceanSurfaceSlice * slice = [[ OBOceanSurfaceSlice alloc ] initWithName:[NSString stringWithFormat:@"%d", i] parent:nil ];
+        [ slice setTime:timeStamps[i] ];
         [ slice setHeights:heights elementCount:(UInt)(resolution->x * resolution->y) ];
         [ oceanSurface addSlice:slice ];
         [ slice release ];

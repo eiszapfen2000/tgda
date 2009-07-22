@@ -9,7 +9,7 @@
     Float alpha;
 
     IVector2 * resolution;
-    IVector2 * size;
+    FVector2 * size;
     FVector2 * windDirection;
 
     id gaussianRNG;
