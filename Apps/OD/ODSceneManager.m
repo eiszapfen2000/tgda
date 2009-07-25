@@ -42,14 +42,14 @@
 
 - (id) loadSceneFromAbsolutePath:(NSString *)path
 {
-    NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, path]));
-
     if ( [ path isEqual:@"" ] == NO )
     {
         id scene = [ scenes objectForKey:path ];
 
         if ( scene == nil )
         {
+            NPLOG(@"%@: loading %@", name, path);
+
             scene = [[ ODScene alloc ] initWithName:@"" parent:self ];
 
             if ( [ scene loadFromPath:path ] == YES )
@@ -80,7 +80,7 @@
 
 - (void) setCurrentScene:(id)newCurrentScene
 {
-    ASSIGN(currentScene,newCurrentScene);
+    ASSIGN(currentScene, newCurrentScene);
 }
 
 - (void) update:(Float)frameTime

@@ -91,6 +91,16 @@
     return frustum;
 }
 
+- (FMatrix4 *) model
+{
+    return model;
+}
+
+- (FMatrix4 *) view
+{
+    return view;
+}
+
 - (FMatrix4 *) projection
 {
     return projection;
@@ -174,16 +184,31 @@
     V_Z(*position) -= V_Z(*forward);
 }
 
+- (void) activate
+{
+    NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
+    [ trafo setViewMatrix:view ];
+    [ trafo setProjectionMatrix:projection ];
+}
+
 - (void) updateProjection
 {
     ODCamera * camera = [ (ODScene *)parent camera ];
+
+    /*if ( GSObjCFindVariable((id)camera,"projection",NULL,NULL,NULL) == YES )
+    {
+        NSLog(@"BRAK");
+    }*/
 
     fov         = [ camera fov ];
     nearPlane   = [ camera nearPlane ];
     farPlane    = [ camera farPlane ];
     aspectRatio = [ camera aspectRatio];
 
-    fm4_m_init_with_fm4(projection,[ camera projection ]);
+    aspectRatio = 1.0f;
+
+    fm4_mssss_projection_matrix(projection, aspectRatio, fov, nearPlane, farPlane);
+    //fm4_m_init_with_fm4(projection,[ camera projection ]);
 }
 
 - (void) updateView
@@ -240,6 +265,7 @@
     [ self updateProjection ];
 	[ self updateView ];
     //[ self updateModel ];
+
     [ frustum updateWithPosition:position
                      orientation:orientation
                              fov:fov

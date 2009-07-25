@@ -2,6 +2,9 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 APP_NAME = OceanDemo
 
+OceanDemo_SUBPROJECTS = \
+    Menu
+
 OceanDemo_OBJC_FILES = \
 main.m \
 ODApplicationController.m  \
@@ -25,4 +28,5 @@ ADDITIONAL_GUI_LIBS += -lGL -lGLU -lNPEngine -lCg -lCgGL -lGLEW -lIL -lILU -lprn
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/application.make
+
 

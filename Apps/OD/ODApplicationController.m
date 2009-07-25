@@ -16,6 +16,7 @@
     NSString * effectPath   = [contentPath stringByAppendingPathComponent:@"Effects"  ];
     NSString * statesetPath = [contentPath stringByAppendingPathComponent:@"Statesets"];
     NSString * fontsPath    = [contentPath stringByAppendingPathComponent:@"Fonts"];
+    NSString * menuPath     = [contentPath stringByAppendingPathComponent:@"Menu"];
 
     [[[ NP Core ] pathManager ] addLookUpPath:modelPath    ];
     [[[ NP Core ] pathManager ] addLookUpPath:entitiesPath ];
@@ -23,6 +24,7 @@
     [[[ NP Core ] pathManager ] addLookUpPath:effectPath   ];
     [[[ NP Core ] pathManager ] addLookUpPath:statesetPath ];
     [[[ NP Core ] pathManager ] addLookUpPath:fontsPath ];
+    [[[ NP Core ] pathManager ] addLookUpPath:menuPath ];
 }
 
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotification
@@ -33,8 +35,6 @@
 
     entityManager = [[ ODEntityManager alloc ] init ];
     sceneManager  = [[ ODSceneManager  alloc ] init ];
-
-    [ NSCursor hide ];
 
     id scene = [ sceneManager loadSceneFromPath:@"test.scene" ];
     [ scene activate ];
@@ -81,13 +81,13 @@
 
     [ sceneManager update:frameTime ];
 
-    NSRect windowRect = [ window frame ];
+    /*NSRect windowRect = [ window frame ];
     if ( [[[ NP Input ] mouse ] x ] < (windowRect.size.width /4.0f) || [[[ NP Input ] mouse ] x ] > (windowRect.size.width  * 3.0/4.0f) ||
          [[[ NP Input ] mouse ] y ] < (windowRect.size.height/4.0f) || [[[ NP Input ] mouse ] y ] > (windowRect.size.height * 3.0/4.0f) )
     {
         NSPoint point = { windowRect.size.width/2.0f, windowRect.size.height/2.0f };
         [[[ NP Input ] mouse ] setPosition:point ];
-    }
+    }*/
 }
 
 - (void) render
@@ -98,7 +98,7 @@
     error = glGetError();
     while ( error != GL_NO_ERROR )
     {
-        NPLOG_ERROR(([NSString stringWithFormat:@"%s", gluErrorString(error)]));
+        NPLOG_ERROR(@"%s", gluErrorString(error));
         error = glGetError();
     }
 

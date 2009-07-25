@@ -1,68 +1,174 @@
 float4x4 vp : NPVIEWPROJECTION;
 sampler2D colormap : NPCOLORMAP0;
-
+sampler2D test : NPCOLORMAP1;
 float4x4 projectorIMVP;
 
-struct INPUTDATA
+struct vinput_vtf
 {
-	float2 position			: POSITION;
-	float2 texcoord			: TEXCOORD0;
+	float2 position	: POSITION;
+	float2 texcoord	: TEXCOORD0;
 };
 
-struct VOUTPUTDATA
+struct voutput_vtf
 {
-	float4 position			: POSITION;
-	float2 texcoord0		: TEXCOORD0;
+	float4 position	: POSITION;
+	float2 texcoord	: TEXCOORD0;
 };
 
-VOUTPUTDATA mvertexshader(INPUTDATA input)
+voutput_vtf mvertexshader_vtf(vinput_vtf input)
 {
-	VOUTPUTDATA output;
+	voutput_vtf output;
 
     float4 tmpF  = mul(projectorIMVP, float4(input.position,  1.0f, 1.0f));
     float4 tmpN  = mul(projectorIMVP, float4(input.position, -1.0f, 1.0f));
-    //float3 tmp = tmpN.xyz / tmpN.w;
 
     float3 point = tmpF.xyz / tmpF.w;
     float3 direction = (tmpN.xyz / tmpN.w) - point.xyz;
 
-    float raypoint_dot_planenormal = dot(point,float3(0.0f,1.0f,0.0f));
-    float raydirection_dot_planenormal = dot(direction,float3(0.0f,1.0f,0.0f));
+    float raypoint_dot_planenormal = dot(point,float3(0.0f, 1.0f, 0.0f));
+    float raydirection_dot_planenormal = dot(direction, float3(0.0f, 1.0f, 0.0f));
 
     float t = ( 0.0f - raypoint_dot_planenormal ) / raydirection_dot_planenormal;
-    float3 result = direction.xyz * t + point.xyz;
+    float4 result = float4(direction.xyz * t + point.xyz, 1.0f);
+    result.y += tex2Dlod(colormap, float4(input.texcoord.x, input.texcoord.y, 0.0f, 0.0f)).x * 10.0f;
+    //result.y = 0.0f;
 
+    output.position = mul(vp, result);
+	output.texcoord = input.texcoord;
 
-	//output.position = input.position;
-    output.position = mul(vp,float4(result.xyz,1.0f));
-    //output.position = mul(vp,float4(tmp.xyz,1.0f));
-	output.texcoord0 = input.texcoord;
+    //output.position = mul(vp, float4(input.position, 0.0f, 1.0f));
+	//output.texcoord0 = input.texcoord;
 	
 	return output;
 }
 
-struct FOUTPUTDATA
+/*----------------------------------------------------------------------------------------------------------*/
+
+struct voutput_r2vb
 {
-	float4 color			: COLOR0;
+	float4 position	: POSITION;
+	float2 texcoord	: TEXCOORD0;
+    float2 pos      : TEXCOORD1;
 };
 
-FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
+voutput_r2vb mvertexshader_r2vb(vinput_vtf input)
 {
-	FOUTPUTDATA output;
+	voutput_r2vb output;
 
-    //float4 tex = tex2D(colormap,input.texcoord0);
-    output.color = float4(1.0,0.0f,0.0f,1.0f);
-    //output.color = tex;
+    output.position = float4(input.position, 0.0f, 1.0f);
+    output.texcoord = input.texcoord;
+    output.pos = input.position;
+	
+	return output;
+}
+
+/*----------------------------------------------------------------------------------------------------------*/
+
+struct vinput_simple
+{
+	float4 position	: POSITION;
+};
+
+struct voutput_simple
+{
+	float4 position	: POSITION;
+};
+
+voutput_simple mvertexshader_simple(vinput_simple input)
+{
+	voutput_simple output;
+
+    output.position = mul(vp, input.position);
+	
+	return output;
+}
+
+/*----------------------------------------------------------------------------------------------------------*/
+
+struct foutput_vtf
+{
+	float4 color : COLOR0;
+};
+
+foutput_vtf mfragmentshader_vtf(voutput_vtf input)
+{
+	foutput_vtf output;
+
+    float4 tex = tex2D(colormap, input.texcoord);
+    float4 tex2 = tex2D(test, input.texcoord);
+    //output.color = float4(0.2f, 0.3f, 0.25f, 1.0f);
+    //output.color = abs(tex)*30.0f + 0.2f;
+    output.color = (abs(tex) * 30.0f + 0.2f) * 0.5f + 0.1f * (tex2);
+    //output.color = float4(input.texcoord, 0.0f, 1.0f);
 
 	return output;
 }
 
-technique ocean
+/*----------------------------------------------------------------------------------------------------------*/
+
+foutput_vtf mfragmentshader_r2vb(voutput_r2vb input)
+{
+	foutput_vtf output;
+
+    float4 tmpF  = mul(projectorIMVP, float4(input.pos,  1.0f, 1.0f));
+    float4 tmpN  = mul(projectorIMVP, float4(input.pos, -1.0f, 1.0f));
+
+    float3 point     = tmpF.xyz / tmpF.w;
+    float3 direction = (tmpN.xyz / tmpN.w) - point.xyz;
+
+    float raypoint_dot_planenormal     = dot(point, float3(0.0f, 1.0f, 0.0f));
+    float raydirection_dot_planenormal = dot(direction, float3(0.0f, 1.0f, 0.0f));
+
+    float t = ( 0.0f - raypoint_dot_planenormal ) / raydirection_dot_planenormal;
+
+    float4 result = float4(direction.xyz * t + point.xyz, 1.0f);
+    result.y += tex2D(colormap, input.texcoord).x * 10.0f;
+    result.w = 1.0f;
+
+    output.color = result;
+
+    //output.color = float4(1.0f, 1.0f, 0.0f, 1.0f);
+
+	return output;
+}
+
+/*----------------------------------------------------------------------------------------------------------*/
+
+foutput_vtf mfragmentshader_simple(voutput_simple input)
+{
+	foutput_vtf output;
+
+    output.color = float4(1.0f, 1.0f, 0.0f, 1.0f);
+
+	return output;
+}
+
+/*----------------------------------------------------------------------------------------------------------*/
+
+technique ocean_vtf
 {
 	pass
 	{
-		FragmentProgram = compile fp40 mfragmentshader();
-		VertexProgram = compile vp40 mvertexshader();
+		FragmentProgram = compile fp40 mfragmentshader_vtf();
+		VertexProgram = compile vp40 mvertexshader_vtf();
+	}
+}
+
+technique ocean_r2vb
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mfragmentshader_r2vb();
+		VertexProgram = compile vp40 mvertexshader_r2vb();
+	}
+}
+
+technique ocean_simple
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mfragmentshader_simple();
+		VertexProgram = compile vp40 mvertexshader_simple();
 	}
 }
 

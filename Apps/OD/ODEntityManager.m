@@ -47,26 +47,32 @@
 
 - (id) loadEntityFromAbsolutePath:(NSString *)path
 {
-    NPLOG(@"");
-    NPLOG(([NSString stringWithFormat:@"%@: loading %@", name, path]));
-
     if ( [ path isEqual:@"" ] == NO )
     {
         id entity = [ entities objectForKey:path ];
 
         if ( entity == nil )
         {
+            NPLOG(@"");
+            NPLOG(@"%@: loading %@", name, path);
+
             Class entityClass = [ extensionToEntityClass objectForKey:[ path pathExtension ]];
 
             if ( entityClass == Nil )
             {
                 NPLOG_ERROR(@"%@: Unknown entity type, skipping", name);
+
                 return nil;
             }
 
-            entity = [[ entityClass alloc ] initWithName:@"" parent:self ];
+            [[[ NP Core ] logger ] pushPrefix:@"  " ];
 
-            if ( [ entity loadFromPath:path ] == YES )
+            entity = [[ entityClass alloc ] initWithName:@"" parent:self ];
+            BOOL result = [ entity loadFromPath:path ];
+
+            [[[ NP Core ] logger ] popPrefix ];
+
+            if ( result == YES )
             {
                 [ entities setObject:entity forKey:path ];
                 [ entity release ];

@@ -26,7 +26,7 @@
     }
 
     frustumGeometry = [[ NPVertexBuffer alloc ] initWithName:@"Projector Geometry" parent:self ];
-    frustumVertices = ALLOC_ARRAY(Float,24);
+    frustumVertices = ALLOC_ARRAY(Float, 24);
 
     frustumIndices = ALLOC_ARRAY(Int,24);
     frustumIndices[0] = frustumIndices[7] = frustumIndices[16] = 0;

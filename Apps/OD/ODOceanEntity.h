@@ -14,18 +14,24 @@
     Float ** heights;
 
     NPEffect * effect;
+    CGparameter projectorIMVP;
+
+    id wtexture;
+
+    id renderTargetConfiguration;
+    id r2vbConfiguration;
+
     NSMutableArray * textures;
     NPVertexBuffer * nearPlaneGrid;
     NPVertexBuffer * projectedGrid;
-    NSDictionary * projectedGridPBOs;
-
-    CGparameter projectorIMVP;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 - (void) dealloc;
+
+- (id) renderTexture;
 
 @end
 
