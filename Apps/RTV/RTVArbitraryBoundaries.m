@@ -168,10 +168,10 @@
     return *currentResolution;
 }
 
-- (void) setResolution:(IVector2)newResolution
+- (void) setResolution:(IVector2 *)newResolution
 {
-    currentResolution->x = newResolution.x;
-    currentResolution->y = newResolution.y;
+    currentResolution->x = newResolution->x;
+    currentResolution->y = newResolution->y;
 }
 
 - (void) computeVelocityScaleAndOffsetFromBoundaries:(NPTexture *)boundaries

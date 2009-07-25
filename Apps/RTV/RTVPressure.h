@@ -35,7 +35,7 @@
 - (IVector2) resolution;
 
 - (void) setNumberOfIterations:(Int32)newNumberOfIterations;
-- (void) setResolution:(IVector2)newResolution;
+- (void) setResolution:(IVector2 *)newResolution;
 
 /*
 - (void) computePressureFrom:(id)pressureSource

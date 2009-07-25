@@ -42,7 +42,7 @@
                                             ;
 
 - (IVector2) resolution;
-- (void) setResolution:(IVector2)newResolution;
+- (void) setResolution:(IVector2 *)newResolution;
 
 - (void) update:(Float)frameTime;
 - (void) render;

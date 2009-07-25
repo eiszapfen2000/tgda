@@ -30,7 +30,7 @@
 - (IVector2) resolution;
 - (id) quantityBiLerp;
 - (id) temporaryStorage;
-- (void) setResolution:(IVector2)newResolution;
+- (void) setResolution:(IVector2 *)newResolution;
 
 
 - (void) advectQuantityFrom:(NPRenderTexture *)quantitySource
