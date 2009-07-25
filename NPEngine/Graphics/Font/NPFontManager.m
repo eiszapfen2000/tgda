@@ -47,6 +47,7 @@
 
         if ( font == nil )
         {
+            NPLOG(@"");
             NPLOG(@"%@: loading %@", name, path);
 
             NPFont * font = [[ NPFont alloc ] initWithName:@"" parent:self ];

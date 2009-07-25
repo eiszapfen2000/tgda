@@ -91,7 +91,7 @@
          return;
     }
 
-    if ( currentlyEnabled != enabled )
+    //if ( currentlyEnabled != enabled )
     {
         currentlyEnabled = enabled;
 

@@ -67,6 +67,7 @@
         case NP_READ_BUFFER_FRAMEBUFFER_FRONT      :{ buffer = GL_FRONT;       break; }
         case NP_READ_BUFFER_FRAMEBUFFER_LEFT_FRONT :{ buffer = GL_FRONT_LEFT;  break; }
         case NP_READ_BUFFER_FRAMEBUFFER_RIGHT_FRONT:{ buffer = GL_FRONT_RIGHT; break; }
+
         default:{ NPLOG_ERROR(@"%@: Unknown Color Buffer", name); break; }
     }
 

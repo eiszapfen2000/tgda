@@ -3,7 +3,6 @@ include $(GNUSTEP_MAKEFILES)/common.make
 SUBPROJECT_NAME=libNPEngineGraphics
 
 libNPEngineGraphics_SUBPROJECTS = \
-    Camera \
     Image \
 	Material \
     Font \

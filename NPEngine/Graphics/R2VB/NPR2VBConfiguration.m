@@ -49,7 +49,12 @@
 
 - (void) setRenderTextureSource:(NPRenderTexture *)renderTexture forTargetBuffer:(NSString *)targetBuffer
 {
-    if ( mode != NP_NONE && mode != NP_GRAPHICS_R2VB_FRAMEBUFFER_MODE )
+    if ( mode == NP_NONE )
+    {
+        mode = NP_GRAPHICS_R2VB_RENDERTEXTURE_MODE;
+    }
+
+    if ( mode != NP_GRAPHICS_R2VB_FRAMEBUFFER_MODE )
     {
         if ( [[[[ NP Graphics ] r2vbManager ] bufferKeys ] containsObject:targetBuffer ] == YES )
         {
@@ -75,7 +80,12 @@
 //FIXME
 - (void) setFrameBufferSource:(NpState)frameBuffer forTargetBuffer:(NSString *)targetBuffer
 {
-    if ( mode != NP_NONE && mode != NP_GRAPHICS_R2VB_RENDERTEXTURE_MODE )
+    if ( mode == NP_NONE )
+    {
+        mode = NP_GRAPHICS_R2VB_FRAMEBUFFER_MODE;
+    }
+
+    if ( mode != NP_GRAPHICS_R2VB_RENDERTEXTURE_MODE )
     {
         if ( [[[ NP Graphics ] r2vbManager ] isValidBufferKey:targetBuffer ] == YES )
         {
@@ -106,7 +116,7 @@
     UInt sourcesCount = [ sources count ];
     UInt targetsCount = [ targets count ];
 
-    if ( sourcesCount != targetsCount )
+    if ( sourcesCount > targetsCount )
     {
         NPLOG_ERROR(@"%@: %d sources vs %d targets", name, sourcesCount, targetsCount);
 
@@ -143,7 +153,7 @@
 
         default:
         {
-            NPLOG_ERROR(@"%@: invalid mode %d specified",name,mode);
+            NPLOG_ERROR(@"%@: invalid mode %d specified", name, mode);
             break;
         }
     }

@@ -38,6 +38,7 @@
 - (void) setPixelFormat:(NpState)newPixelFormat;
 - (void) setWidth:(Int)newWidth;
 - (void) setHeight:(Int)newHeight;
+- (void) setResolution:(IVector2 *)newResolution;
 - (void) setMipMapping:(NpState)newMipMapping;
 - (void) setTextureFilter:(NpState)newTextureFilter;
 - (void) setTextureMinFilter:(NpState)newTextureMinFilter;
@@ -59,8 +60,6 @@
 - (void) updateGLTextureState;
 
 - (void) activateAtColorMapIndex:(Int32)index;
-- (void) activateAtTexelUnit:(Int32)texelUnit;
-- (void) deactivate;
 
 @end
 

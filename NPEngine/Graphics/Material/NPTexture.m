@@ -107,6 +107,12 @@
     height = newHeight;
 }
 
+- (void) setResolution:(IVector2 *)newResolution
+{
+    width = newResolution->x;
+    height = newResolution->y;
+}
+
 - (void) setMipMapping:(NpState)newMipMapping
 {
     textureFilterState.mipmapping = newMipMapping;
@@ -385,16 +391,6 @@
 - (void) activateAtColorMapIndex:(Int32)index
 {
     [[[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ] setTexture:self forKey:NP_GRAPHICS_MATERIAL_COLORMAP_SEMANTIC(index) ];
-}
-
-- (void) activateAtTexelUnit:(Int32)texelUnit
-{
-    [[[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ] setTexture:self forTexelUnit:texelUnit ];
-}
-
-- (void) deactivate
-{
-    [[[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ] deactivateTexelUnitForTexture:self ];
 }
 
 @end

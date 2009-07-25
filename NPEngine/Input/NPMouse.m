@@ -163,7 +163,7 @@ void reset_mouse_state(NpMouseState * mouseState)
     }
 }
 
-- (void) setPosition:(NSPoint)newPosition
+- (void) setPositionInWindow:(NSPoint)newPosition
 {
     [ GSCurrentServer() setmouseposition:newPosition.x :newPosition.y :[ window windowNumber ]];
 
