@@ -212,20 +212,20 @@
     inputRadius = newInputRadius;
 }
 
-- (void) setResolution:(IVector2)newResolution
+- (void) setResolution:(IVector2 *)newResolution
 {
-    currentResolution->x = newResolution.x;
-    currentResolution->y = newResolution.y;
+    currentResolution->x = newResolution->x;
+    currentResolution->y = newResolution->y;
 
-    [ fluidRenderTargetConfiguration setWidth :newResolution.x ];
-    [ fluidRenderTargetConfiguration setHeight:newResolution.y ];
+    [ fluidRenderTargetConfiguration setWidth :newResolution->x ];
+    [ fluidRenderTargetConfiguration setHeight:newResolution->y ];
 
-    [ advection  setResolution:newResolution ];
-    [ inputForce setResolution:newResolution ];
-    [ diffusion  setResolution:newResolution ];
-    [ divergence setResolution:newResolution ];
-    [ pressure   setResolution:newResolution ];
-    [ arbitraryBoundaries setResolution:newResolution ];
+    [ advection  setResolution:currentResolution ];
+    [ inputForce setResolution:currentResolution ];
+    [ diffusion  setResolution:currentResolution ];
+    [ divergence setResolution:currentResolution ];
+    [ pressure   setResolution:currentResolution ];
+    [ arbitraryBoundaries setResolution:currentResolution ];
 }
 
 - (void) setViscosity:(Float)newViscosity
@@ -258,7 +258,7 @@
         tmp.y = [[ fluidResolutionStrings objectAtIndex:1 ] intValue ];
     }
 
-    [ self setResolution:tmp ];
+    [ self setResolution:&tmp ];
 
     Int32 diffusionIterations;
     NSString * diffusionIterationsString = [ sceneConfig objectForKey:@"DiffusionIterations" ];

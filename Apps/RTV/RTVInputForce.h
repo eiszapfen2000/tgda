@@ -32,7 +32,7 @@
 - (void) dealloc;
 
 - (IVector2) resolution;
-- (void) setResolution:(IVector2)newResolution;
+- (void) setResolution:(IVector2 *)newResolution;
 
 - (void) addGaussianSplatToQuantity:(id)quantity
                         usingRadius:(Float)splatRadius

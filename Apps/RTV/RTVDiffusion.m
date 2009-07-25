@@ -66,10 +66,10 @@
     numberOfIterations = newNumberOfIterations;
 }
 
-- (void) setResolution:(IVector2)newResolution
+- (void) setResolution:(IVector2 *)newResolution
 {
-    currentResolution->x = newResolution.x;
-    currentResolution->y = newResolution.y;
+    currentResolution->x = newResolution->x;
+    currentResolution->y = newResolution->y;
 }
 
 - (void) diffuseQuantityFrom:(id)quantitySource

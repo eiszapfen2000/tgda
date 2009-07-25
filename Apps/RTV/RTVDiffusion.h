@@ -27,7 +27,7 @@
 - (IVector2) resolution;
 
 - (void) setNumberOfIterations:(Int32)newNumberOfIterations;
-- (void) setResolution:(IVector2)newResolution;
+- (void) setResolution:(IVector2 *)newResolution;
 
 - (void) diffuseQuantityFrom:(id)quantitySource
                           to:(id)quantityTarget

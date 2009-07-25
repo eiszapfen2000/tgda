@@ -74,7 +74,7 @@
 - (void) setArbitraryBoundaries:(BOOL)newArbitraryBoundaries;
 - (void) setInkColor:(FVector4)newInkColor;
 - (void) setInputRadius:(Float)newInputRadius;
-- (void) setResolution:(IVector2)newResolution;
+- (void) setResolution:(IVector2 *)newResolution;
 - (void) setViscosity:(Float)newViscosity;
 
 - (BOOL) loadFromPath:(NSString *)path;
