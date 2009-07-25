@@ -2,8 +2,8 @@
 #import "NPEngineGraphicsConstants.h"
 #import "NPOrthographicRendering.h"
 
-#import "Graphics/Camera/NPCamera.h"
-#import "Graphics/Camera/NPCameraManager.h"
+//#import "Graphics/Camera/NPCamera.h"
+//#import "Graphics/Camera/NPCameraManager.h"
 
 #import "Graphics/Image/NPImage.h"
 #import "Graphics/Image/NPImageManager.h"
@@ -59,7 +59,7 @@
 
     NPViewportManager * viewportManager;
 
-    NPCameraManager * cameraManager;
+//    NPCameraManager * cameraManager;
 
     NPOrthographicRendering * orthographicRendering;
 
@@ -98,7 +98,7 @@
 - (NPPixelBufferManager *) pixelBufferManager;
 - (NPR2VBManager *) r2vbManager;
 - (NPViewportManager *) viewportManager;
-- (NPCameraManager *) cameraManager;
+//- (NPCameraManager *) cameraManager;
 - (NPOrthographicRendering *) orthographicRendering;
 
 - (void) render;

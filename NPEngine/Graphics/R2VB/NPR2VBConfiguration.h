@@ -37,4 +37,6 @@
 - (void) setTarget:(NPVertexBuffer *)newTarget;
 - (void) setRenderTextureSource:(NPRenderTexture *)renderTexture forTargetBuffer:(NSString *)targetBuffer;
 
+- (void) copyBuffers;
+
 @end

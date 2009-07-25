@@ -158,8 +158,8 @@
 
         if ( vertexFormat->elementsForPosition > 0 )
         {
-            NSString * pboName = [ NSString stringWithFormat:@"PBO_%@_Position",[vbo name]];
-            NPPixelBuffer * pbo = [[ NPPixelBuffer alloc ] initWithName:pboName parent:self ];
+            //NSString * pboName = [ NSString stringWithFormat:@"PBO_%@_Position",[vbo name]];
+            NPPixelBuffer * pbo = [[ NPPixelBuffer alloc ] initWithName:@"Positions" parent:self ];
             [ pbo setPixelBufferID:vertexBuffer->positionsID ];
             [ pbo setDataFormat:vertexFormat->positionsDataFormat ];
             [ pbo setPixelFormat:(vertexFormat->elementsForPosition-1) ];
@@ -170,8 +170,8 @@
 
         if ( vertexFormat->elementsForNormal > 0 )
         {
-            NSString * pboName = [ NSString stringWithFormat:@"PBO_%@_Normal",[vbo name]];
-            NPPixelBuffer * pbo = [[ NPPixelBuffer alloc ] initWithName:pboName parent:self ];
+            //NSString * pboName = [ NSString stringWithFormat:@"PBO_%@_Normal",[vbo name]];
+            NPPixelBuffer * pbo = [[ NPPixelBuffer alloc ] initWithName:@"Normals" parent:self ];
             [ pbo setPixelBufferID:vertexBuffer->normalsID ];
             [ pbo setDataFormat:vertexFormat->normalsDataFormat ];
             [ pbo setPixelFormat:(vertexFormat->elementsForNormal-1) ];
@@ -182,8 +182,8 @@
 
         if ( vertexFormat->elementsForColor > 0 )
         {
-            NSString * pboName = [ NSString stringWithFormat:@"PBO_%@_Color",[vbo name]];
-            NPPixelBuffer * pbo = [[ NPPixelBuffer alloc ] initWithName:pboName parent:self ];
+            //NSString * pboName = [ NSString stringWithFormat:@"PBO_%@_Color",[vbo name]];
+            NPPixelBuffer * pbo = [[ NPPixelBuffer alloc ] initWithName:@"Colors" parent:self ];
             [ pbo setPixelBufferID:vertexBuffer->colorsID ];
             [ pbo setDataFormat:vertexFormat->colorsDataFormat ];
             [ pbo setPixelFormat:(vertexFormat->elementsForColor-1) ];
@@ -194,8 +194,8 @@
 
         if ( vertexFormat->elementsForColor > 0 )
         {
-            NSString * pboName = [ NSString stringWithFormat:@"PBO_%@_Weight",[vbo name]];
-            NPPixelBuffer * pbo = [[ NPPixelBuffer alloc ] initWithName:pboName parent:self ];
+            //NSString * pboName = [ NSString stringWithFormat:@"PBO_%@_Weight",[vbo name]];
+            NPPixelBuffer * pbo = [[ NPPixelBuffer alloc ] initWithName:@"Weights" parent:self ];
             [ pbo setPixelBufferID:vertexBuffer->weightsID ];
             [ pbo setDataFormat:vertexFormat->weightsDataFormat ];
             [ pbo setPixelFormat:(vertexFormat->elementsForWeights-1) ];
@@ -208,7 +208,8 @@
         {
             if ( vertexFormat->elementsForTextureCoordinateSet[i] > 0 )
             {
-                NSString * pboName = [ NSString stringWithFormat:@"PBO_%@_Texcoord%d",[vbo name],i];
+                //NSString * pboName = [ NSString stringWithFormat:@"PBO_%@_Texcoord%d",[vbo name],i];
+                NSString * pboName = [ NSString stringWithFormat:@"Texcoord%d", i];
                 NPPixelBuffer * pbo = [[ NPPixelBuffer alloc ] initWithName:pboName parent:self ];
                 [ pbo setPixelBufferID:vertexBuffer->textureCoordinatesSetID[i] ];
                 [ pbo setDataFormat:vertexFormat->textureCoordinatesDataFormat[i] ];

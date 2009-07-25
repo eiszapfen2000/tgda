@@ -14,6 +14,15 @@
     id transformationStateToModifiy;    
 }
 
++ (Float) top;
++ (Float) bottom;
++ (Float) left;
++ (Float) right;
++ (FVector2) alignTop:(FVector2)vector;
++ (FVector2) alignBottom:(FVector2)vector;
++ (FVector2) alignLeft:(FVector2)vector;
++ (FVector2) alignRight:(FVector2)vector;
+
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;

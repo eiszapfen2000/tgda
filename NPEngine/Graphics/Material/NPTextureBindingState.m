@@ -64,28 +64,4 @@
     [ textureBindings setObject:texture forKey:colormapSemantic ]; 
 }
 
-- (void) setTexture:(id)texture forTexelUnit:(Int32)texelUnit
-{
-    if ( texture != nil && texture != [ NSNull null ] )
-    {
-        [ textureUnits replaceObjectAtIndex:texelUnit withObject:texture ];
-
-        glActiveTexture(GL_TEXTURE0 + texelUnit);
-        glBindTexture(GL_TEXTURE_2D, [ texture textureID ]);
-    }
-}
-
-- (void) deactivateTexelUnitForTexture:(id)texture
-{
-    NSUInteger index = [ textureUnits indexOfObject:texture ];
-
-    if ( index == NSNotFound )
-        NSLog(@"BRAK");
-
-    glActiveTexture(GL_TEXTURE0 + index);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    [ textureUnits replaceObjectAtIndex:index withObject:[NSNull null] ]; 
-}
-
 @end

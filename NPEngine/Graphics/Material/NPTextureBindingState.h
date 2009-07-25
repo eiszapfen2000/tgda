@@ -17,7 +17,5 @@
 
 - (id) textureForKey:(NSString *)colormapSemantic;
 - (void) setTexture:(id)texture forKey:(NSString *)colormapSemantic;
-- (void) setTexture:(id)texture forTexelUnit:(Int32)texelUnit;
-- (void) deactivateTexelUnitForTexture:(id)texture;
 
 @end

@@ -43,6 +43,6 @@ void reset_mouse_state(NpMouseState * mouseState);
 
 - (void) update;
 
-- (void) setPosition:(NSPoint)newPosition;
+- (void) setPositionInWindow:(NSPoint)newPosition;
 
 @end

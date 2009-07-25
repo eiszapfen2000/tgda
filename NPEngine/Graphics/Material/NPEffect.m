@@ -53,6 +53,8 @@
     [ mData appendBytes:&c length:1 ];
     NSString * tmp = [ NSString stringWithUTF8String:[ mData bytes ]];
 
+    //NSLog(tmp);
+
     // cg compiler flags, so that the damn thing actually warns at least about something
     char ** args = ALLOC_ARRAY(char *, 2);
     args[0] = "-strict";
@@ -223,17 +225,23 @@
 
 - (void) activateTechnique:(NPEffectTechnique *)technique
 {
+    NPEffect * currentEffect = [[[ NP Graphics ] effectManager ] currentEffect ];
+
+    if ( (currentEffect != nil) && (currentEffect != self) )
+    {
+        NPEffectTechnique * currentTechnique = [[[ NP Graphics ] effectManager ] currentTechnique ];
+        cgResetPassState([currentTechnique firstPass]);
+        [[[ NP Graphics ] effectManager ] setCurrentTechnique:nil ];
+    }
+
     [[[ NP Graphics ] effectManager ] setCurrentEffect:self ];
+
 
     [ self uploadDefaultSemantics ];
 
-    // Does not work because of fucking cgfx sampler management
-    //if ( [[[ NP Graphics ] effectManager ] currentTechnique ] != technique )
-    {
-        [[[ NP Graphics ] effectManager ] setCurrentTechnique:technique ];
-        activePass = [ technique firstPass ];
-        cgSetPassState(activePass);
-    }
+    [[[ NP Graphics ] effectManager ] setCurrentTechnique:technique ];
+    activePass = [ technique firstPass ];
+    cgSetPassState(activePass);
 }
 
 - (void) activateTechniqueWithName:(NSString *)techniqueName
@@ -245,9 +253,9 @@
 
 - (void) deactivate
 {
-    cgResetPassState(activePass);
+    //cgResetPassState(activePass);
 
-    [[[ NP Graphics ] effectManager ] setCurrentEffect:nil ];
+    //[[[ NP Graphics ] effectManager ] setCurrentEffect:nil ];
 }
 
 - (void) uploadDefaultSemantics

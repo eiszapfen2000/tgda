@@ -82,7 +82,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     r2vbManager         = [[ NPR2VBManager         alloc ] initWithName:@"NPEngine R2VB Manager"         parent:self ];
 
     viewportManager = [[ NPViewportManager alloc ] initWithName:@"NPEngine Viewport Manager" parent:self ];
-    cameraManager   = [[ NPCameraManager   alloc ] initWithName:@"NPEngine Camera Manager"   parent:self ];
+    //cameraManager   = [[ NPCameraManager   alloc ] initWithName:@"NPEngine Camera Manager"   parent:self ];
 
     orthographicRendering = [[ NPOrthographicRendering alloc ] initWithName:@"NPEngine Ortho" parent:self ];
 
@@ -97,7 +97,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     NPLOG(@"NP Engine Graphics Dealloc");
 
     [ orthographicRendering release ];
-    [ cameraManager release ];
+    //[ cameraManager release ];
     [ viewportManager release ];
     [ r2vbManager release ];
     [ pixelBufferManager release ];
@@ -147,7 +147,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
     [ renderTargetManager setup ];
 
-    [ cameraManager setup ];
+//    [ cameraManager setup ];
 
     [ stateConfiguration activate ];
 
@@ -260,10 +260,10 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     return viewportManager;
 }
 
-- (NPCameraManager *) cameraManager
+/*- (NPCameraManager *) cameraManager
 {
     return cameraManager;
-}
+}*/
 
 - (NPOrthographicRendering *) orthographicRendering
 {

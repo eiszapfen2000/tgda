@@ -52,7 +52,6 @@
         hardwareMipMapGenerationSupport = YES;
     }
 
-
     [ self setTexture2DMode ];
 }
 
