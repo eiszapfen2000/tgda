@@ -25,18 +25,42 @@
     textures = [[ NSMutableArray alloc ] init ];
     numberOfSlices = 0;
 
+    effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"ocean.cgfx" ];
+    projectorIMVP = [ effect parameterWithName:@"projectorIMVP" ];
+    NSAssert(projectorIMVP != NULL, @"Parameter \"projectorIMVP\" not found");
+
+    wtexture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:@"wasser.jpg" ];
+
+    renderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC" parent:self ];
+
+    id tempRenderTexture = [ NPRenderTexture renderTextureWithName:@"RT"
+                                                              type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
+                                                             width:256
+                                                            height:256
+                                                        dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
+                                                       pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
+                                                     textureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                       textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
+
+    [ renderTargetConfiguration setColorRenderTarget:tempRenderTexture atIndex:0 ];
+
+    r2vbConfiguration = [[ NPR2VBConfiguration alloc ] initWithName:@"R2VB" parent:self ];
+
     return self;
 }
 
 - (void) dealloc
 {
+    [ r2vbConfiguration release ];
+
     [ textures removeAllObjects ];
     [ textures release ];
 
-    TEST_RELEASE(projectedGridPBOs);
+    [ renderTargetConfiguration clear ];
+    [ renderTargetConfiguration release ];
+
     TEST_RELEASE(nearPlaneGrid);
     TEST_RELEASE(projectedGrid);
-
 
     for ( UInt i = 0; i < numberOfSlices; i++ )
     {
@@ -48,6 +72,11 @@
     [ super dealloc ];
 }
 
+- (id) renderTexture
+{
+    return [ renderTargetConfiguration renderTextureAtIndex:0 ];
+}
+
 - (BOOL) loadFromFile:(NPFile *)file
 {
     NSString * header = [ file readSUXString ];
@@ -55,15 +84,17 @@
     if ( [ header isEqual:@"OceanSurface" ] == NO )
     {
         NPLOG_ERROR(@"%@: invalid header", [file name]);
+
         return NO;
     }
 
     resolution = [ file readIVector2 ];
     [ file readUInt32:&numberOfSlices ];
+
     NPLOG(@"Resolution: %d x %d", resolution->x, resolution->y);
     NPLOG(@"Number of slices: %u", numberOfSlices);
 
-    times = ALLOC_ARRAY(Float, numberOfSlices);
+    times   = ALLOC_ARRAY(Float  , numberOfSlices);
     heights = ALLOC_ARRAY(Float *, numberOfSlices);
 
     for ( UInt i = 0; i < numberOfSlices; i++ )
@@ -81,35 +112,31 @@
 
     for ( UInt i = 0; i < numberOfSlices; i++ )
     {
-        id texture = [[[ NP Graphics ] textureManager ] createTextureWithName:[NSString stringWithFormat:@"Slice%d",i]
-                                                                        width:resolution->x
-                                                                       height:resolution->y
-                                                                   dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
-                                                                  pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_R ];
+        NPTexture * texture = [[ NPTexture alloc ] initWithName:[NSString stringWithFormat:@"Slice%d", i]
+                                                         parent:self ];
+        [ texture setResolution:resolution ];
+        [ texture setDataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT ];
+        [ texture setPixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_R ];
+        [ texture setMipMapping:NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE ];
+        [ texture setTextureFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+        [ texture setTextureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_REPEAT ];
 
-        NSData * data = [ NSData dataWithBytesNoCopy:heights[i] length:sizeof(Float)*resolution->x*resolution->y freeWhenDone:NO ];
+        NSData * data = [ NSData dataWithBytesNoCopy:heights[i] 
+                                              length:sizeof(Float)*resolution->x*resolution->y
+                                        freeWhenDone:NO ];
+
         [ texture uploadToGLWithData:data ];
         [ textures addObject:texture ];
+        [ texture release ];
     }
 
     NPLOG(@"Done creating textures");
-    NPLOG(@"Loading ocean effect");
-
-    effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"ocean.cgfx" ];
-
-    projectorIMVP = [ effect parameterWithName:@"projectorIMVP" ];
-    if ( projectorIMVP == NULL )
-    {
-        NPLOG_ERROR(@"Parameter \"projectorIMVP\" not found");
-    }
-
-    NPLOG(@"Done loading ocean effect");
 
 //--------------------------------------------//
 
     //IVector2 * viewportSize = [[[[ NP Graphics ] viewportManager ] currentViewport ] viewportSize ];
     IVector2 * viewportSize = iv2_alloc_init();
-    viewportSize->x = 128;
+    viewportSize->x = 256;
     viewportSize->y = 256;
 
     Int positionCount = viewportSize->x * viewportSize->y;
@@ -124,19 +151,20 @@
     Float deltaX = 2.0f/(Float)(viewportSize->x - 1);
     Float deltaY = 2.0f/(Float)(viewportSize->y - 1);
 
+    Float tdeltaX = 1.0f/(Float)(viewportSize->x - 1);
+    Float tdeltaY = 1.0f/(Float)(viewportSize->y - 1);
+
     // left to right, top to bottom
     for ( Int i = 0; i < viewportSize->y; i++ )
     {
         for ( Int j = 0; j < viewportSize->x; j++ )
         {
-            Int index = (i*viewportSize->x+j)*2;
+            Int index = (i * viewportSize->x + j) * 2;
             positions[index]   = -1.0f + j * deltaX;
             positions[index+1] =  1.0f - i * deltaY;
 
-            //NSLog(@"%f %f",positions[index],positions[index+1]);
-
-            texCoords[index]   =  0.0f + j * deltaX;
-            texCoords[index+1] =  0.0f + i * deltaY;
+            texCoords[index]   =  0.0f + j * tdeltaX;
+            texCoords[index+1] =  1.0f - i * tdeltaY;
         }
     }
 
@@ -156,7 +184,23 @@
         }
     }
 
-    COPY_ARRAY(nearPlaneGridIndices,projectedGridIndices,Int32,indexCount);
+    for ( Int i = 0; i < viewportSize->y - 1; i++ )
+    {
+        for ( Int j = 0; j < viewportSize->x - 1; j++ )
+        {
+            Int index = (i * ( viewportSize->x - 1) + j) * 6;
+
+            projectedGridIndices[index] = i * viewportSize->x + j;
+            projectedGridIndices[index+2] = (i + 1) * viewportSize->x + j;
+            projectedGridIndices[index+1] = i * viewportSize->x + j + 1;
+
+            projectedGridIndices[index+3] = (i + 1) * viewportSize->x + j;
+            projectedGridIndices[index+5] = (i + 1) * viewportSize->x + j + 1;
+            projectedGridIndices[index+4] = i * viewportSize->x + j + 1;
+        }
+    }
+
+    //COPY_ARRAY(nearPlaneGridIndices, projectedGridIndices, Int32, indexCount);
 
     nearPlaneGrid = [[ NPVertexBuffer alloc ] initWithName:@"Grid" parent:self ];
     [ nearPlaneGrid setPositions:positions elementsForPosition:2 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT vertexCount:positionCount ];
@@ -166,20 +210,15 @@
 
     projectedGrid = [[ NPVertexBuffer alloc ] initWithName:@"ProjectedGrid" parent:self ];
     [ projectedGrid setPositions:NULL elementsForPosition:4 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT vertexCount:positionCount ];
-    [ projectedGrid setTextureCoordinates:NULL elementsForTextureCoordinates:2 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT forSet:0 ];
+    //[ projectedGrid setTextureCoordinates:NULL elementsForTextureCoordinates:2 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT forSet:0 ];
     [ projectedGrid setIndices:projectedGridIndices indexCount:indexCount ];
     [ projectedGrid uploadVBOWithUsageHint:NP_GRAPHICS_VBO_UPLOAD_OFTEN_RENDER_OFTEN ];
 
-    projectedGridPBOs = [[[[ NP Graphics ] pixelBufferManager ] createPBOsSharingDataWithVBO:projectedGrid ] retain ];
+    [ r2vbConfiguration setTarget:projectedGrid ];
+    [ r2vbConfiguration setRenderTextureSource:[renderTargetConfiguration renderTextureAtIndex:0] forTargetBuffer:@"Positions" ];
+
+    //projectedGridPBOs = [[[[ NP Graphics ] pixelBufferManager ] createPBOsSharingDataWithVBO:projectedGrid ] retain ];
     //NSLog([projectedGridPBOs description]);
-
-    // create vbo the size of viewportSize, needs positions and texcoords
-    // create corresponding pbos
-
-    // render vbo using a shader which projects the grid on the nearplane to the y = 0 plane, then adds height from the
-    // textures loaded
-    // copy fbo color texture to pbo, now we have transformed the vbo positions
-    // render vbo
 
     return YES;
 }
@@ -197,41 +236,54 @@
 {
 }
 
+- (void) renderWithR2VB
+{
+    // create vbo the size of viewportSize, needs positions and texcoords
+    // create corresponding pbos
+
+    // render vbo using a shader which projects the grid on the nearplane to the y = 0 plane, then adds height from the
+    // textures loaded
+    // copy fbo color texture to pbo, now we have transformed the vbo positions
+    // render vbo
+}
+
+- (void) renderWithVertexTextureFetch
+{
+
+}
+
 - (void) render
 {
-    NPTextureBindingState * t = [[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ];
-    [ t setTexture:[textures objectAtIndex:0] forKey:@"NPCOLORMAP0" ];
+    [ renderTargetConfiguration activate ];
+    [ renderTargetConfiguration checkFrameBufferCompleteness ];
 
-    [ effect activate ];
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
+    //[ wtexture activateAtColorMapIndex:1 ];
+    [[textures objectAtIndex:0] activateAtColorMapIndex:0 ];
 
     ODProjector * projector = [[[[ NP applicationController ] sceneManager ] currentScene ] projector ];
-    [ effect uploadFMatrix4Parameter:projectorIMVP andValue:[ projector inverseModelViewProjection]];
+    [ effect uploadFMatrix4Parameter:projectorIMVP andValue:[projector inverseModelViewProjection]];
+    [ effect activateTechniqueWithName:@"ocean_r2vb" ];
 
-    CGpass pass = [[ effect defaultTechnique ] firstPass ];
+    //[ r2vbEffect uploadFMatrix4Parameter:r2vbProjectorIMVP andValue:[projector inverseModelViewProjection]];
+    //[ r2vbEffect activateTechniqueWithName:@"ocean" ];
 
-    while ( pass )
-    {
-        cgSetPassState(pass);
-
-        /*glBegin(GL_QUADS);
-            glTexCoord2f(0.0f,0.0f);
-            glVertex2f(-0.5f, 0.5f);
-            glTexCoord2f(0.0f,1.0f);
-            glVertex2f(-0.5f, -0.5f);
-            glTexCoord2f(1.0f,1.0f);
-            glVertex2f(0.5f, -0.5f);
-            glTexCoord2f(1.0f,0.0f);
-            glVertex2f(0.5f, 0.5);
-        glEnd();*/
-
-        //glColor3f(1.0f,1.0f,1.0f);
-        [ nearPlaneGrid renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
-
-        cgResetPassState(pass);
-        pass = cgGetNextPass(pass);
-    }
+    [ nearPlaneGrid renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
 
     [ effect deactivate ];
+
+    [ r2vbConfiguration copyBuffers ];
+
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
+    [ effect activateTechniqueWithName:@"ocean_simple" ];
+
+    [ projectedGrid renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
+
+    [ effect deactivate ];
+
+    [ renderTargetConfiguration deactivate ];    
 }
 
 @end

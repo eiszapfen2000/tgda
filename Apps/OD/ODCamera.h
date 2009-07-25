@@ -18,10 +18,13 @@
     Float pitch;
     FVector3 * forward;
 
+    id leftClickAction;
     id forwardMovementAction;
     id backwardMovementAction;
     id strafeLeftAction;
     id strafeRightAction;
+    id wheelDownAction;
+    id wheelUpAction;
 }
 
 - (id) init;

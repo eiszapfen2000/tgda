@@ -1,22 +1,19 @@
 #import "Core/NPObject/NPObject.h"
 
-@class ODCamera;
-@class ODProjector;
-@class NPRenderTargetConfiguration;
-@class NPPixelBuffer;
-@class NPTexture;
-@class NPTexture3D;
-@class ODEntity;
-
 @interface ODScene : NPObject
 {
-    ODCamera * camera;
-    ODProjector * projector;
-    ODEntity * skybox;
     NSMutableArray * entities;
+
+    id camera;
+    id projector;
+
     id font;
     id ocean;
-    id pbos;
+
+    id fullscreenEffect;
+    id texture;
+
+    id menu;
 }
 
 - (id) init;

@@ -53,6 +53,8 @@
 
 - (FVector3 *) position;
 - (ODFrustum *) frustum;
+- (FMatrix4 *) model;
+- (FMatrix4 *) view;
 - (FMatrix4 *) projection;
 - (FMatrix4 *) inverseModelViewProjection;
 
@@ -62,6 +64,8 @@
 - (void) cameraRotateUsingYaw:(Float)yawDegrees andPitch:(Float)pitchDegrees;
 - (void) moveForward;
 - (void) moveBackward;
+
+- (void) activate;
 
 - (void) updateProjection;
 - (void) updateView;
