@@ -22,6 +22,8 @@
     id r2vbConfiguration;
 
     NSMutableArray * textures;
+    id texture3D;
+
     NPVertexBuffer * nearPlaneGrid;
     NPVertexBuffer * projectedGrid;
 }

@@ -191,12 +191,12 @@
             Int index = (i * ( viewportSize->x - 1) + j) * 6;
 
             projectedGridIndices[index] = i * viewportSize->x + j;
-            projectedGridIndices[index+2] = (i + 1) * viewportSize->x + j;
             projectedGridIndices[index+1] = i * viewportSize->x + j + 1;
+            projectedGridIndices[index+2] = (i + 1) * viewportSize->x + j;
 
-            projectedGridIndices[index+3] = (i + 1) * viewportSize->x + j;
-            projectedGridIndices[index+5] = (i + 1) * viewportSize->x + j + 1;
-            projectedGridIndices[index+4] = i * viewportSize->x + j + 1;
+            projectedGridIndices[index+3] = i * viewportSize->x + j + 1;
+            projectedGridIndices[index+4] = (i + 1) * viewportSize->x + j + 1;
+            projectedGridIndices[index+5] = (i + 1) * viewportSize->x + j;
         }
     }
 
