@@ -27,7 +27,7 @@
     windDirection = fv2_alloc_init();
 
     needsUpdate = YES;
-    lastTime = 0.0f;
+    lastTime = -1.0;
 
     gaussianRNG = nil;
     H0 = NULL;

@@ -16,16 +16,11 @@
 
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
 {
-    IVector2 tmp = { 0, 0 };
-
-    return [ self initWithName:newName parent:newParent resolution:&tmp ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent resolution:(IVector2 *)newResolution
-{
     self = [ super initWithName:newName parent:newParent ];
 
-    resolution = iv2_alloc_init_with_iv2(newResolution);
+    resolution = iv2_alloc_init();
+    size = fv2_alloc_init();
+    windDirection = fv2_alloc_init();
     slices = [[ NSMutableArray alloc ] init ];
 
     return self;
@@ -41,6 +36,21 @@
     [ super dealloc ];
 }
 
+- (void) setResolution:(IVector2 *)newResolution
+{
+    *resolution = *newResolution;
+}
+
+- (void) setSize:(FVector2 *)newSize
+{
+    *size = *newSize;
+}
+
+- (void) setWindDirection:(FVector2 *)newWindDirection
+{
+    *windDirection = *newWindDirection;
+}
+
 - (void) addSlice:(OBOceanSurfaceSlice *)slice
 {
     [ slices addObject:slice ];
@@ -50,20 +60,40 @@
 - (void) saveToFile:(NPFile *)file
 {
     [ file writeSUXString:@"OceanSurface" ];
-    [ file writeIVector2:resolution ];
 
     UInt32 numberOfSlices = [ slices count ];
-    [ file writeUInt32:&numberOfSlices ];
+    NSAssert(numberOfSlices > 0, @"No Slices");
 
-    NSEnumerator * sliceEnumerator = [ slices objectEnumerator ];
-    OBOceanSurfaceSlice * slice;
-
-    while (( slice = [ sliceEnumerator nextObject ] ))
+    BOOL animated = NO;
+    if ( numberOfSlices > 1 )
     {
-        UInt32 index = [ slices indexOfObject:slice ];
-        [ file writeUInt32:&index ];
+        animated = YES;
+    }
 
-        [ slice saveToFile:file ];
+    [ file writeBool:&animated ];
+
+    [ file writeIVector2:resolution ];
+    [ file writeFVector2:size ];
+    [ file writeFVector2:windDirection ];
+
+    if ( animated == NO )
+    {
+        [[ slices objectAtIndex:0 ] saveToFile:file ];
+    }
+    else
+    {
+        [ file writeUInt32:&numberOfSlices ];
+
+        NSEnumerator * sliceEnumerator = [ slices objectEnumerator ];
+        OBOceanSurfaceSlice * slice;
+
+        while (( slice = [ sliceEnumerator nextObject ] ))
+        {
+            UInt32 index = [ slices indexOfObject:slice ];
+            [ file writeUInt32:&index ];
+
+            [ slice saveToFile:file ];
+        }
     }
 }
 
