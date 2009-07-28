@@ -44,7 +44,7 @@
 
     fullscreenEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Fullscreen.cgfx" ];
 
-    ocean = [[[ NP applicationController ] entityManager ] loadEntityFromPath:@"test.odata" ];
+    //ocean = [[[ NP applicationController ] entityManager ] loadEntityFromPath:@"test.odata" ];
 
     return self;
 }
@@ -71,11 +71,24 @@
 
     if ( sceneName == nil || entityFiles == nil || skyboxEntityFile == nil )
     {
-        NPLOG_ERROR(([NSString stringWithFormat:@"Scene file %@ is incomplete", path]));
+        NPLOG_ERROR(@"Scene file %@ is incomplete", path);
         return NO;
     }
 
     [ self setName:sceneName ];
+
+    NSEnumerator * entityFilesEnumerator = [ entityFiles objectEnumerator ];
+    id entityFileName;
+
+    while ( (entityFileName = [ entityFilesEnumerator nextObject ]) )
+    {
+        id entity = [[[ NP applicationController ] entityManager ] loadEntityFromPath:entityFileName ];
+
+        if ( entity != nil )
+        {
+            [ entities addObject:entity ];
+        }
+    }
 
     font = [[[ NP Graphics ] fontManager ] loadFontFromPath:@"tahoma.font" ];
 
@@ -130,7 +143,7 @@
     [[[[ NP Graphics ] stateConfiguration ] cullingState ] setEnabled:YES ];
     [[[[ NP Graphics ] stateConfiguration ] cullingState ] activate ];
 
-    [ ocean render ];
+    //[ ocean render ];
 
 
 

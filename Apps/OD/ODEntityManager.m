@@ -20,12 +20,6 @@
     self =  [ super initWithName:newName parent:newParent ];
 
     entities = [[ NSMutableDictionary alloc ] init ];
-    extensionToEntityClass = [[ NSMutableDictionary alloc ] init ];
-
-    Class entity = [ ODEntity      class ];
-    Class ocean  = [ ODOceanEntity class ];
-    [ extensionToEntityClass setObject:entity forKey:@"entity" ];
-    [ extensionToEntityClass setObject:ocean  forKey:@"odata" ];
 
     return self;
 }
@@ -56,35 +50,40 @@
             NPLOG(@"");
             NPLOG(@"%@: loading %@", name, path);
 
-            Class entityClass = [ extensionToEntityClass objectForKey:[ path pathExtension ]];
+            NSDictionary * config = [ NSDictionary dictionaryWithContentsOfFile:path ];
+            NSString * typeClassString = [ config objectForKey:@"Type" ];
 
-            if ( entityClass == Nil )
+            if ( typeClassString != nil )
             {
-                NPLOG_ERROR(@"%@: Unknown entity type, skipping", name);
+                Class entityClass = NSClassFromString(typeClassString);
+                if ( entityClass == Nil )
+                {
+                    NPLOG_ERROR(@"%@: Unknown entity type, skipping", name);
 
-                return nil;
-            }
+                    return nil;
+                }
 
-            [[[ NP Core ] logger ] pushPrefix:@"  " ];
+                [[[ NP Core ] logger ] pushPrefix:@"  " ];
 
-            entity = [[ entityClass alloc ] initWithName:@"" parent:self ];
-            BOOL result = [ entity loadFromPath:path ];
+                entity = [[ entityClass alloc ] initWithName:@"" parent:self ];
+                BOOL result = [ entity loadFromDictionary:config ];
 
-            [[[ NP Core ] logger ] popPrefix ];
+                [[[ NP Core ] logger ] popPrefix ];
 
-            if ( result == YES )
-            {
-                [ entities setObject:entity forKey:path ];
-                [ entity release ];
+                if ( result == YES )
+                {
+                    [ entities setObject:entity forKey:path ];
+                    [ entity release ];
 
-                return entity;
-            }
-            else
-            {
-                NPLOG_ERROR(@"%@: failed to load %@", name, path);
-                [ entity release ];
+                    return entity;
+                }
+                else
+                {
+                    NPLOG_ERROR(@"%@: failed to load %@", name, path);
+                    [ entity release ];
 
-                return nil;
+                    return nil;
+                }
             }
         }
 

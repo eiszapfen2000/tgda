@@ -31,10 +31,8 @@
     [ super dealloc ];
 }
 
-- (BOOL) loadFromPath:(NSString *)path
+- (BOOL) loadFromDictionary:(NSDictionary *)config
 {
-    config = [[ NSMutableDictionary alloc ] initWithContentsOfFile:path ];
-
     NSString * entityName      = [ config objectForKey:@"Name"     ];
     NSString * modelPath       = [ config objectForKey:@"Model"    ];
     NSString * statesetPath    = [ config objectForKey:@"States"   ];
