@@ -9,7 +9,7 @@ NpFreeList * NP_FQUATERNION_FREELIST = NULL;
 
 void npmath_fquaternion_initialise()
 {
-    NPFREELIST_ALLOC_INIT(NP_FQUATERNION_FREELIST,FQuaternion,512)
+    NPFREELIST_ALLOC_INIT(NP_FQUATERNION_FREELIST, FQuaternion, 512)
 }
 
 FQuaternion * fquat_alloc()
@@ -44,7 +44,7 @@ FQuaternion * fquat_alloc_init_with_axis_and_radians(FVector3 * axis, Float * ra
 
 FQuaternion * fquat_free(FQuaternion * q)
 {
-    return npfreenode_fast_free(q, NP_FQUATERNION_FREELIST);
+    return npfreenode_free(q, NP_FQUATERNION_FREELIST);
 }
 
 void fquat_set_identity(FQuaternion * q)

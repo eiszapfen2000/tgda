@@ -6,9 +6,9 @@ NpFreeList * NP_IVECTOR4_FREELIST = NULL;
 
 void npmath_ivector_initialise()
 {
-    NPFREELIST_ALLOC_INIT(NP_IVECTOR2_FREELIST,IVector2,512)
-    NPFREELIST_ALLOC_INIT(NP_IVECTOR3_FREELIST,IVector3,512)
-    NPFREELIST_ALLOC_INIT(NP_IVECTOR4_FREELIST,IVector4,512)
+    NPFREELIST_ALLOC_INIT(NP_IVECTOR2_FREELIST, IVector2, 512)
+    NPFREELIST_ALLOC_INIT(NP_IVECTOR3_FREELIST, IVector3, 512)
+    NPFREELIST_ALLOC_INIT(NP_IVECTOR4_FREELIST, IVector4, 512)
 }
 
 IVector2 * iv2_alloc()
@@ -44,5 +44,5 @@ IVector2 * iv2_alloc_init_with_components(Int x, Int y)
 
 IVector2 * iv2_free(IVector2 * v)
 {
-    return npfreenode_fast_free(v,NP_IVECTOR2_FREELIST);
+    return npfreenode_free(v, NP_IVECTOR2_FREELIST);
 }

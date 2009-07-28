@@ -9,7 +9,7 @@ NpFreeList * NP_QUATERNION_FREELIST = NULL;
 
 void npmath_quaternion_initialise()
 {
-    NPFREELIST_ALLOC_INIT(NP_QUATERNION_FREELIST,Quaternion,512)
+    NPFREELIST_ALLOC_INIT(NP_QUATERNION_FREELIST, Quaternion, 512)
 }
 
 Quaternion * quat_alloc()
@@ -44,7 +44,7 @@ Quaternion * quat_alloc_init_with_axis_and_radians(Vector3 * axis, Double * radi
 
 Quaternion * quat_free(Quaternion * q)
 {
-    return npfreenode_fast_free(q, NP_QUATERNION_FREELIST);
+    return npfreenode_free(q, NP_QUATERNION_FREELIST);
 }
 
 void quat_set_identity(Quaternion * q)

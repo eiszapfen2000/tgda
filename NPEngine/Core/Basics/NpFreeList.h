@@ -104,4 +104,10 @@ void * npfreenode_alloc(NpFreeList  * freelist);
 --------------------------------------------------------------------------- */
 void * npfreenode_fast_free(void * node, NpFreeList  * freelist);
 
+/* ---------------------------------------------------------------------------
+    'npfreenode_free'
+        Frees a node by pushing it onto the freelist.
+--------------------------------------------------------------------------- */
+void * npfreenode_free(void * node, NpFreeList  * freelist);
+
 #endif //_NP_BASICS_FREELIST_H_

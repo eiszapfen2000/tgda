@@ -7,7 +7,7 @@ NpFreeList * NP_FPLANE_FREELIST = NULL;
 
 void npmath_fplane_initialise()
 {
-    NPFREELIST_ALLOC_INIT(NP_FPLANE_FREELIST,FPlane,512);
+    NPFREELIST_ALLOC_INIT(NP_FPLANE_FREELIST, FPlane, 512);
 }
 
 FPlane * fplane_alloc()
@@ -61,7 +61,7 @@ FPlane * fplane_alloc_init_with_components(Float x, Float y, Float z, Float scal
 
 FPlane * fplane_free(FPlane * p)
 {
-    return npfreenode_fast_free(p,NP_FPLANE_FREELIST);
+    return npfreenode_free(p, NP_FPLANE_FREELIST);
 }
 
 Int fplane_pr_intersect_with_ray_v(FPlane * plane, FRay * ray, FVector3 * result)

@@ -14,9 +14,9 @@ Vector3 * NP_WORLD_FORWARD_VECTOR = NULL;
 
 void npmath_vector_initialise()
 {
-    NPFREELIST_ALLOC_INIT(NP_VECTOR2_FREELIST,Vector2,512)
-    NPFREELIST_ALLOC_INIT(NP_VECTOR3_FREELIST,Vector3,512)
-    NPFREELIST_ALLOC_INIT(NP_VECTOR4_FREELIST,Vector4,512)
+    NPFREELIST_ALLOC_INIT(NP_VECTOR2_FREELIST, Vector2, 512)
+    NPFREELIST_ALLOC_INIT(NP_VECTOR3_FREELIST, Vector3, 512)
+    NPFREELIST_ALLOC_INIT(NP_VECTOR4_FREELIST, Vector4, 512)
 
     NP_WORLD_X_AXIS = v3_alloc_init(); V_X(*NP_WORLD_X_AXIS) = 1.0;
     NP_WORLD_Y_AXIS = v3_alloc_init(); V_Y(*NP_WORLD_Y_AXIS) = 1.0;
@@ -39,7 +39,7 @@ Vector2 * v2_alloc_init()
 
 Vector2 * v2_free(Vector2 * v)
 {
-    return npfreenode_fast_free(v,NP_VECTOR2_FREELIST);
+    return npfreenode_free(v, NP_VECTOR2_FREELIST);
 }
 
 void v2_v_square_length_s(const Vector2 * const v, Double * sqrlength)
@@ -155,7 +155,7 @@ Vector3 * v3_alloc_init_with_v3(Vector3 * v)
 
 Vector3 * v3_free(Vector3 * v)
 {
-    return npfreenode_fast_free(v,NP_VECTOR3_FREELIST);
+    return npfreenode_free(v, NP_VECTOR3_FREELIST);
 }
 
 void v3_vv_init_with_fv3(Vector3 * v1, Vector3 * v2)
@@ -295,6 +295,6 @@ Vector4 * v4_alloc_init()
 
 Vector4 * v4_free(Vector4 * v)
 {
-    return npfreenode_fast_free(v,NP_VECTOR4_FREELIST);
+    return npfreenode_free(v, NP_VECTOR4_FREELIST);
 }
 
