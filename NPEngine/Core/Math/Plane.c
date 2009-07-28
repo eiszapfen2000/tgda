@@ -8,7 +8,7 @@ NpFreeList * NP_PLANE_FREELIST = NULL;
 
 void npmath_plane_initialise()
 {
-    NPFREELIST_ALLOC_INIT(NP_PLANE_FREELIST,Plane,512);
+    NPFREELIST_ALLOC_INIT(NP_PLANE_FREELIST, Plane, 512);
 }
 
 Plane * plane_alloc()
@@ -49,7 +49,7 @@ Plane * plane_alloc_init_with_normal_and_scalar(Vector3 * normal, Double scalar)
 
 Plane * plane_free(Plane * p)
 {
-    return npfreenode_fast_free(p,NP_PLANE_FREELIST);
+    return npfreenode_free(p, NP_PLANE_FREELIST);
 }
 
 Int plane_pr_intersect_with_ray_v(Plane * plane, Ray * ray, Vector3 * result)

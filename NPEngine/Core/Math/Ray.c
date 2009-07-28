@@ -4,7 +4,7 @@ NpFreeList * NP_RAY_FREELIST = NULL;
 
 void npmath_ray_initialise()
 {
-    NPFREELIST_ALLOC_INIT(NP_RAY_FREELIST,Ray,512);
+    NPFREELIST_ALLOC_INIT(NP_RAY_FREELIST, Ray, 512);
 }
 
 Ray * ray_alloc()
@@ -32,5 +32,5 @@ Ray * ray_alloc_init_with_point_and_direction(Vector3 * point, Vector3 * directi
 
 Ray * ray_free(Ray * r)
 {
-    return npfreenode_fast_free(r,NP_RAY_FREELIST);
+    return npfreenode_free(r, NP_RAY_FREELIST);
 }

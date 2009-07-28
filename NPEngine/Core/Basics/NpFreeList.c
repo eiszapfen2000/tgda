@@ -66,3 +66,15 @@ void * npfreenode_fast_free(void * node, NpFreeList  * freelist)
     return NULL;
 }
 
+void * npfreenode_free(void * node, NpFreeList  * freelist)
+{
+    void * result = NULL;
+
+    if ( node != NULL && freelist != NULL )
+    {
+        result = npfreenode_fast_free(node, freelist);
+    }
+
+    return result;
+}
+

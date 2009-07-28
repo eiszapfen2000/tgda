@@ -4,7 +4,7 @@ NpFreeList * NP_FRAY_FREELIST = NULL;
 
 void npmath_fray_initialise()
 {
-    NPFREELIST_ALLOC_INIT(NP_FRAY_FREELIST,FRay,512);
+    NPFREELIST_ALLOC_INIT(NP_FRAY_FREELIST, FRay, 512);
 }
 
 FRay * fray_alloc()
@@ -32,5 +32,5 @@ FRay * fray_alloc_init_with_point_and_direction(FVector3 * point, FVector3 * dir
 
 FRay * fray_free(FRay * r)
 {
-    return npfreenode_fast_free(r,NP_FRAY_FREELIST);
+    return npfreenode_free(r, NP_FRAY_FREELIST);
 }

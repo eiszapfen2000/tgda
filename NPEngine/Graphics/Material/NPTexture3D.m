@@ -178,7 +178,7 @@
     {
         case NP_GRAPHICS_TEXTURE_FILTER_NEAREST:{ value = GL_NEAREST; break; }
         case NP_GRAPHICS_TEXTURE_FILTER_LINEAR :{ value = GL_LINEAR;  break; }
-        default: { NPLOG_ERROR(@"%@ unknown mag filter %d",name,textureFilterState.magFilter); break; }
+        default: { NPLOG_ERROR(@"%@ unknown mag filter %d", name, textureFilterState.magFilter); break; }
     }
 
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, value);
@@ -188,7 +188,7 @@
     {
         case NP_GRAPHICS_TEXTURE_FILTER_NEAREST:{ value = GL_NEAREST; break; }
         case NP_GRAPHICS_TEXTURE_FILTER_LINEAR :{ value = GL_LINEAR;  break; }
-        default: { NPLOG_ERROR(@"%@ unknown min filter %d",name,textureFilterState.minFilter); break; }
+        default: { NPLOG_ERROR(@"%@ unknown min filter %d", name, textureFilterState.minFilter); break; }
     }
 
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, value);
