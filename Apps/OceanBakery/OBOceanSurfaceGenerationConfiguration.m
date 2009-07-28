@@ -111,6 +111,7 @@
     for ( int i = 0; i < timeStampCount; i++ )
     {
         timeStamps[i] = [[ timeStampArray objectAtIndex:i ] floatValue ];
+        NPLOG(@"%f", timeStamps[i]);
     }
 
     outputFileName = [[ config objectForKey:@"Output" ] retain ];
@@ -126,7 +127,10 @@
     [ generator setWindDirection:windDirection ];
     [ generator setGaussianRNG:gaussianRNG ];
 
-    OBOceanSurface * oceanSurface = [[ OBOceanSurface alloc ] initWithName:@"" parent:nil resolution:resolution ];
+    OBOceanSurface * oceanSurface = [[ OBOceanSurface alloc ] initWithName:@"" parent:nil ];
+    [ oceanSurface setResolution:resolution ];
+    [ oceanSurface setSize:size ];
+    [ oceanSurface setWindDirection:windDirection ];
 
     fftwf_plan_with_nthreads(numberOfThreads);
     fftwf_complex * complexHeights = fftwf_malloc(sizeof(fftwf_complex) * resolution->x * resolution->y);
