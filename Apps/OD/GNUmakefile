@@ -15,6 +15,8 @@ ODScene.m \
 ODSceneManager.m \
 ODEntity.m \
 ODOceanEntity.m \
+ODOceanTile.m \
+ODOceanAnimatedTile.m \
 ODEntityManager.m \
 ODPerlinNoise.m \
 ODCore.m

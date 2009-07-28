@@ -4,7 +4,6 @@
 
 @interface ODEntity : NPObject < ODPEntity >
 {
-    id config;
     id model;
     id stateset;
     FMatrix4 * modelMatrix;

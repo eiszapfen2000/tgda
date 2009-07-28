@@ -1,4 +1,5 @@
 {
+    Type = "ODEntity";
     Name = "Skybox";
     Model = "skybox.model";
     States = "skybox.stateset";

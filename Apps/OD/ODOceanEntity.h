@@ -9,20 +9,15 @@
 @interface ODOceanEntity : NPObject < ODPEntity >
 {
     IVector2 * resolution;
-    UInt32 numberOfSlices;
-    Float * times;
-    Float ** heights;
+
+    NSMutableArray * staticTiles;
+    NSMutableArray * animatedTiles;
 
     NPEffect * effect;
     CGparameter projectorIMVP;
 
-    id wtexture;
-
     id renderTargetConfiguration;
     id r2vbConfiguration;
-
-    NSMutableArray * textures;
-    id texture3D;
 
     NPVertexBuffer * nearPlaneGrid;
     NPVertexBuffer * projectedGrid;
