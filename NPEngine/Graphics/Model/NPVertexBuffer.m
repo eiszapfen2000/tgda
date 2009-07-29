@@ -81,7 +81,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         vertex_buffer->textureCoordinatesSetID[i] = NP_NONE;
     }
 
-    vertex_buffer->indicesID = NP_NONE;
+    vertex_buffer->indicesID = 0;
 }
 
 @implementation NPVertexBuffer
@@ -746,7 +746,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 {
     if ( newElementsForWeights < 1 || newElementsForWeights > 4 )
     {
-        NPLOG_WARNING(@"%@: Invalid colors element count %d", name, newElementsForWeights);
+        NPLOG_WARNING(@"%@: Invalid weights element count %d", name, newElementsForWeights);
         return;
     }
 

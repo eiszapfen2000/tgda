@@ -27,13 +27,20 @@
 
 - (void) dealloc
 {
-    [ targets removeAllObjects ];
-    [ sources removeAllObjects ];
+    [ self clear ];
 
     [ targets release ];
     [ sources release ];
 
     [ super dealloc ];
+}
+
+- (void) clear
+{
+    [ targets removeAllObjects ];
+    [ sources removeAllObjects ];
+
+    mode = NP_NONE;
 }
 
 - (void) setTarget:(NPVertexBuffer *)newTarget
