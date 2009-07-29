@@ -31,4 +31,6 @@ IVector2 * iv2_alloc_init_with_iv2(IVector2 * v);
 IVector2 * iv2_alloc_init_with_components(Int x, Int y);
 IVector2 * iv2_free(IVector2 * v);
 
+void iv2_v_copy_v(IVector2 * source, IVector2 * target);
+
 #endif

@@ -42,6 +42,12 @@ IVector2 * iv2_alloc_init_with_components(Int x, Int y)
     return tmp;
 }
 
+void iv2_v_copy_v(IVector2 * source, IVector2 * target)
+{
+    V_X(*source) = V_X(*target);
+    V_Y(*source) = V_Y(*target);
+}
+
 IVector2 * iv2_free(IVector2 * v)
 {
     return npfreenode_free(v, NP_IVECTOR2_FREELIST);

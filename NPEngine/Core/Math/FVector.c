@@ -135,7 +135,7 @@ const char * fv2_v_to_string(FVector2 * v)
 {
     char * fv2string;
 
-    if ( asprintf(&fv2string, "%f %f\n",V_X(*v),V_Y(*v)) < 0)
+    if ( asprintf(&fv2string, "(%f, %f)",V_X(*v),V_Y(*v)) < 0)
     {
         return NULL;
     }
@@ -309,7 +309,7 @@ const char * fv3_v_to_string(FVector3 * v)
 {
     char * fv3string;
 
-    if ( asprintf(&fv3string, "%f %f %f\n",V_X(*v),V_Y(*v),V_Z(*v)) < 0)
+    if ( asprintf(&fv3string, "(%f, %f, %f)",V_X(*v),V_Y(*v),V_Z(*v)) < 0)
     {
         return NULL;
     }
@@ -403,7 +403,7 @@ const char * fv4_v_to_string(FVector4 * v)
 {
     char * fv4string;
 
-    if ( asprintf(&fv4string, "%f %f %f %f\n",V_X(*v),V_Y(*v),V_Z(*v),V_W(*v)) < 0)
+    if ( asprintf(&fv4string, "(%f, %f, %f, %f)",V_X(*v),V_Y(*v),V_Z(*v),V_W(*v)) < 0)
     {
         return NULL;
     }

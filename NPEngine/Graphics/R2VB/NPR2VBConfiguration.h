@@ -34,6 +34,8 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
+- (void) clear;
+
 - (void) setTarget:(NPVertexBuffer *)newTarget;
 - (void) setRenderTextureSource:(NPRenderTexture *)renderTexture forTargetBuffer:(NSString *)targetBuffer;
 
