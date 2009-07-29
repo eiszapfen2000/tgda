@@ -6,10 +6,18 @@
 @class NPVertexBuffer;
 @class NPEffect;
 
+#define ODOCEAN_STATIC  0
+#define ODOCEAN_DYNAMIC 1
+
 @interface ODOceanEntity : NPObject < ODPEntity >
 {
-    IVector2 * resolution;
+    IVector2 * projectedGridResolution;
+    IVector2 * projectedGridResolutionLastFrame;
 
+    NpState mode;
+
+    id currentStaticTile;
+    id currentAnimatedTile;
     NSMutableArray * staticTiles;
     NSMutableArray * animatedTiles;
 
@@ -28,7 +36,12 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 - (void) dealloc;
 
+- (NpState) mode;
+- (IVector2) projectedGridResolution;
 - (id) renderTexture;
+
+- (void) setMode:(NpState)newMode;
+- (void) setProjectedGridResolution:(IVector2)newProjectedGridResolution;
 
 @end
 

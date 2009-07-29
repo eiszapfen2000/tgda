@@ -126,6 +126,14 @@
     [ camera update:frameTime ];
     [ projector update ];
 
+    NSEnumerator * entityEnumerator = [ entities objectEnumerator ];
+    id entity;
+
+    while ( (entity = [ entityEnumerator nextObject ]) )
+    {
+        [ entity update:frameTime ];
+    }
+
     [ menu update:frameTime ];
 }
 
@@ -145,7 +153,13 @@
 
     //[ ocean render ];
 
+    NSEnumerator * entityEnumerator = [ entities objectEnumerator ];
+    id entity;
 
+    while ( (entity = [ entityEnumerator nextObject ]) )
+    {
+        [ entity render ];
+    }
 
     FMatrix4 identity;
     fm4_m_set_identity(&identity);
@@ -154,7 +168,8 @@
     [ trafo setViewMatrix:&identity ];
     [ trafo setProjectionMatrix:&identity ];
 
-    [[[ ocean renderTexture] texture ] activateAtColorMapIndex:0 ];
+    [[[[ entities objectAtIndex:0 ] renderTexture ] texture ] activateAtColorMapIndex:0 ];
+    //[[[ ocean renderTexture] texture ] activateAtColorMapIndex:0 ];
 
     [ fullscreenEffect activate ];
 
@@ -176,7 +191,7 @@
 
     [ fullscreenEffect deactivate ];
 
-    /*[[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] activate ];
 
@@ -187,7 +202,7 @@
 
     [ menu render ];
 
-    [[[ NP Graphics ] orthographicRendering ] deactivate ];*/
+    [[[ NP Graphics ] orthographicRendering ] deactivate ];
 
     [[[ NP Graphics ] stateConfiguration ] deactivate ];
 }
