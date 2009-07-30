@@ -23,10 +23,8 @@
     pixelFormat = NP_NONE;
 
     //equals opengl default states
-    np_texture_filter_state_reset(&textureFilterState);
+    np_texture3d_filter_state_reset(&textureFilterState);
     np_texture_wrap_state_reset(&textureWrapState);
-
-    textureFilterState.minFilter = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
 
     return self;
 }
@@ -117,6 +115,35 @@
     depth = newDepth;
 }
 
+- (void) setResolution:(IVector3 *)newResolution
+{
+    width  = newResolution->x;
+    height = newResolution->y;
+    depth  = newResolution->z;
+}
+
+- (void) setTextureFilter:(NpState)newTextureFilter
+{
+    switch ( newTextureFilter )
+    {
+        case NP_GRAPHICS_TEXTURE_FILTER_LINEAR:
+        {
+            textureFilterState.minFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
+            textureFilterState.magFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
+            textureFilterState.mipmapping = NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE;
+
+            break;
+        }
+
+        default:
+        {
+            NPLOG_WARNING(@"%@: Unknown texture filter %d", name, newTextureFilter);
+        }
+    }
+
+    [ self updateGLTextureState ];
+}
+
 - (void) setTextureMinFilter:(NpState)newTextureMinFilter
 {
     textureFilterState.minFilter = newTextureMinFilter;
@@ -127,6 +154,15 @@
 - (void) setTextureMagFilter:(NpState)newTextureMagFilter
 {
     textureFilterState.magFilter = newTextureMagFilter;
+
+    [ self updateGLTextureState ];
+}
+
+- (void) setTextureWrap:(NpState)newWrap
+{
+    textureWrapState.wrapR = newWrap;
+    textureWrapState.wrapS = newWrap;
+    textureWrapState.wrapT = newWrap;
 
     [ self updateGLTextureState ];
 }
@@ -149,6 +185,8 @@
 {
     [ self uploadToGLWithData:[NSData data]];
 }
+
+#warning FIXME implement mipmapping
 
 - (void) uploadToGLWithData:(NSData *)data
 {
@@ -209,12 +247,12 @@
 {
     [[[ NP Graphics ] textureManager ] setTexture3DMode ];
 
-    glBindTexture(GL_TEXTURE_3D,textureID);
+    glBindTexture(GL_TEXTURE_3D, textureID);
 
     [ self updateGLTextureFilterState ];
     [ self updateGLTextureWrapState   ];
 
-    glBindTexture(GL_TEXTURE_3D,0);
+    glBindTexture(GL_TEXTURE_3D, 0);
 }
 
 - (void) activateAtVolumeMapIndex:(Int32)index
