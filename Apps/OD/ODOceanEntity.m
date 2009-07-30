@@ -33,7 +33,10 @@
 
     effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"ocean.cgfx" ];
     projectorIMVP = [ effect parameterWithName:@"projectorIMVP" ];
-    NSAssert(projectorIMVP != NULL, @"Parameter \"projectorIMVP\" not found");
+    deltaTime     = [ effect parameterWithName:@"deltaTime" ];
+    NSAssert(projectorIMVP != NULL && deltaTime != NULL, @"Parameter \"projectorIMVP\" not found");
+
+    periodTime = 0.0f;
 
     renderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC" parent:self ];
     r2vbConfiguration = [[ NPR2VBConfiguration alloc ] initWithName:@"R2VB" parent:self ];
@@ -304,6 +307,8 @@
 
         iv2_v_copy_v(projectedGridResolution, projectedGridResolutionLastFrame);
     }
+
+    periodTime += frameTime;
 }
 
 - (void) renderStatic
@@ -313,7 +318,7 @@
 
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
 
-    [[currentStaticTile texture] activateAtColorMapIndex:0 ];
+    [[ currentStaticTile texture ] activateAtColorMapIndex:0 ];
 
     ODProjector * projector = [[[[ NP applicationController ] sceneManager ] currentScene ] projector ];
     [ effect uploadFMatrix4Parameter:projectorIMVP andValue:[projector inverseModelViewProjection]];
@@ -334,11 +339,35 @@
 
 - (void) renderAnimated
 {
+    [ renderTargetConfiguration activate ];
+    [ renderTargetConfiguration checkFrameBufferCompleteness ];
+
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
+//    [[ currentAnimatedTile sliceAtIndex:2 ] activateAtColorMapIndex:0 ];
+    [[ currentAnimatedTile texture3D ] activateAtVolumeMapIndex:0 ];
+
+    ODProjector * projector = [[[[ NP applicationController ] sceneManager ] currentScene ] projector ];
+    [ effect uploadFMatrix4Parameter:projectorIMVP andValue:[projector inverseModelViewProjection]];
+    [ effect uploadFloatParameter:deltaTime andValue:periodTime];
+    [ effect activateTechniqueWithName:@"ocean_r2vb_animated" ];
+    [ nearPlaneGrid renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
+    [ effect deactivate ];
+
+    [ r2vbConfiguration copyBuffers ];
+
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
+    [ effect activateTechniqueWithName:@"ocean_simple" ];
+    [ projectedGrid renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
+    [ effect deactivate ];
+
+    [ renderTargetConfiguration deactivate ];
 }
 
 - (void) render
 {
-    [ self renderStatic ];
+    [ self renderAnimated ];
 }
 
 @end

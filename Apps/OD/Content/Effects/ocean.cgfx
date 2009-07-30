@@ -1,7 +1,9 @@
 float4x4 vp : NPVIEWPROJECTION;
 sampler2D colormap : NPCOLORMAP0;
 sampler2D test : NPCOLORMAP1;
+sampler3D anim : NPVOLUMEMAP0;
 float4x4 projectorIMVP;
+float deltaTime;
 
 struct vinput_vtf
 {
@@ -134,6 +136,34 @@ foutput_vtf mfragmentshader_r2vb(voutput_r2vb input)
 
 /*----------------------------------------------------------------------------------------------------------*/
 
+foutput_vtf mfragmentshader_r2vb_animated(voutput_r2vb input)
+{
+	foutput_vtf output;
+
+    float4 tmpF  = mul(projectorIMVP, float4(input.pos,  1.0f, 1.0f));
+    float4 tmpN  = mul(projectorIMVP, float4(input.pos, -1.0f, 1.0f));
+
+    float3 point     = tmpF.xyz / tmpF.w;
+    float3 direction = (tmpN.xyz / tmpN.w) - point.xyz;
+
+    float raypoint_dot_planenormal     = dot(point, float3(0.0f, 1.0f, 0.0f));
+    float raydirection_dot_planenormal = dot(direction, float3(0.0f, 1.0f, 0.0f));
+
+    float t = ( 0.0f - raypoint_dot_planenormal ) / raydirection_dot_planenormal;
+
+    float4 result = float4(direction.xyz * t + point.xyz, 1.0f);
+    result.y += tex3D(anim, float3(input.texcoord, deltaTime)).x * 10.0f;
+    result.w = 1.0f;
+
+    output.color = result;
+
+    //output.color = float4(1.0f, 1.0f, 0.0f, 1.0f);
+
+	return output;
+}
+
+/*----------------------------------------------------------------------------------------------------------*/
+
 foutput_vtf mfragmentshader_simple(voutput_simple input)
 {
 	foutput_vtf output;
@@ -159,6 +189,15 @@ technique ocean_r2vb
 	pass
 	{
 		FragmentProgram = compile fp40 mfragmentshader_r2vb();
+		VertexProgram = compile vp40 mvertexshader_r2vb();
+	}
+}
+
+technique ocean_r2vb_animated
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mfragmentshader_r2vb_animated();
 		VertexProgram = compile vp40 mvertexshader_r2vb();
 	}
 }

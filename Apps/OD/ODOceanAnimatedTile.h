@@ -3,6 +3,7 @@
 #import "ODPEntity.h"
 
 @class NPFile;
+@class NPTexture2D;
 @class NPTexture3D;
 
 @interface ODOceanAnimatedTile : NPObject
@@ -23,6 +24,9 @@
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 - (void) dealloc;
+
+- (NPTexture3D *) texture3D;
+- (NPTexture2D *) sliceAtIndex:(UInt32)index;
 
 - (BOOL) loadFromFile:(NPFile *)file;
 

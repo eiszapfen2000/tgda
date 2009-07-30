@@ -31,11 +31,23 @@
     [ textures2D removeAllObjects ];
     [ textures2D release ];
 
+    [ texture3D release ];
+
     resolution = iv2_free(resolution);
     size = fv2_free(size);
     windDirection = fv2_free(windDirection);
 
     [ super dealloc ];
+}
+
+- (NPTexture3D *) texture3D
+{
+    return texture3D;
+}
+
+- (NPTexture2D *) sliceAtIndex:(UInt32)index
+{
+    return [ textures2D objectAtIndex:index ];
 }
 
 - (BOOL) loadFromFile:(NPFile *)file
@@ -84,6 +96,29 @@
         [ textures2D addObject:texture ];
         [ texture release ];
     }
+
+    Float * heights3D = ALLOC_ARRAY(Float, numberOfSlices * elementCount);
+    for ( UInt i = 0; i < numberOfSlices; i++ )
+    {
+        COPY_ARRAY(heights[i], &(heights3D[i * elementCount]), Float, elementCount);
+    }
+
+    texture3D = [[ NPTexture3D alloc ] initWithName:@"Volume" parent:self ];
+
+    IVector3 resolution3D = { resolution->x, resolution->y, numberOfSlices };
+    [ texture3D setResolution:&resolution3D ];
+    [ texture3D setDataFormat   :NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT ];
+    [ texture3D setPixelFormat  :NP_GRAPHICS_TEXTURE_PIXELFORMAT_R ];
+    [ texture3D setTextureFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+    [ texture3D setTextureWrap  :NP_GRAPHICS_TEXTURE_WRAPPING_REPEAT ];
+
+    NSData * data3D = [ NSData dataWithBytesNoCopy:heights3D 
+                                            length:sizeof(Float)*resolution->x*resolution->y*numberOfSlices
+                                      freeWhenDone:NO ];
+
+    [ texture3D uploadToGLWithData:data3D ];
+
+    FREE(heights3D);
 
     return YES;
 }
