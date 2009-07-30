@@ -23,6 +23,9 @@
 
     NPEffect * effect;
     CGparameter projectorIMVP;
+    CGparameter deltaTime;
+
+    Float periodTime;
 
     id renderTargetConfiguration;
     id r2vbConfiguration;
