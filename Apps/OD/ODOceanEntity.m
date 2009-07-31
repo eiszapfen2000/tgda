@@ -6,6 +6,7 @@
 #import "ODOceanAnimatedTile.h"
 #import "ODCore.h"
 #import "ODProjector.h"
+#import "ODProjectedGridCPU.h"
 
 @implementation ODOceanEntity
 
@@ -23,12 +24,14 @@
 {
     self =  [ super initWithName:newName parent:newParent ];
 
-    projectedGridResolution = iv2_alloc_init();
+    projectedGridResolution          = iv2_alloc_init();
     projectedGridResolutionLastFrame = iv2_alloc_init();
 
     mode = NP_NONE;
 
-    staticTiles = [[ NSMutableArray alloc ] init ];
+    projectedGridCPU = [[ ODProjectedGridCPU alloc ] initWithName:@"CPU" parent:self ];
+
+    staticTiles   = [[ NSMutableArray alloc ] init ];
     animatedTiles = [[ NSMutableArray alloc ] init ];
 
     effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"ocean.cgfx" ];
@@ -39,6 +42,7 @@
     periodTime = 0.0f;
 
     renderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC" parent:self ];
+
     r2vbConfiguration = [[ NPR2VBConfiguration alloc ] initWithName:@"R2VB" parent:self ];
 
     return self;
@@ -46,6 +50,8 @@
 
 - (void) dealloc
 {
+    [ projectedGridCPU release ];
+
     [ staticTiles removeAllObjects ];
     [ staticTiles release ];
 
@@ -114,6 +120,8 @@
     projectedGridResolution->x = [[ projectedGridResolutionStrings objectAtIndex:0 ] intValue ];
     projectedGridResolution->y = [[ projectedGridResolutionStrings objectAtIndex:1 ] intValue ];
     NSAssert1(projectedGridResolution->x > 0 && projectedGridResolution->y > 0, @"%@: Invalid resolution", name);
+
+    [ projectedGridCPU setProjectedGridResolution:*projectedGridResolution ];
 
     NPLOG(@"");
     NPLOG(@"Projected grid resolution: %d x %d", projectedGridResolution->x, projectedGridResolution->y);
@@ -308,6 +316,8 @@
         iv2_v_copy_v(projectedGridResolution, projectedGridResolutionLastFrame);
     }
 
+    [ projectedGridCPU update ];
+
     periodTime += frameTime;
 }
 
@@ -321,7 +331,7 @@
     [[ currentStaticTile texture ] activateAtColorMapIndex:0 ];
 
     ODProjector * projector = [[[[ NP applicationController ] sceneManager ] currentScene ] projector ];
-    [ effect uploadFMatrix4Parameter:projectorIMVP andValue:[projector inverseModelViewProjection]];
+    [ effect uploadFMatrix4Parameter:projectorIMVP andValue:[projector inverseViewProjection]];
     [ effect activateTechniqueWithName:@"ocean_r2vb" ];
     [ nearPlaneGrid renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
     [ effect deactivate ];
@@ -348,7 +358,7 @@
     [[ currentAnimatedTile texture3D ] activateAtVolumeMapIndex:0 ];
 
     ODProjector * projector = [[[[ NP applicationController ] sceneManager ] currentScene ] projector ];
-    [ effect uploadFMatrix4Parameter:projectorIMVP andValue:[projector inverseModelViewProjection]];
+    [ effect uploadFMatrix4Parameter:projectorIMVP andValue:[projector inverseViewProjection]];
     [ effect uploadFloatParameter:deltaTime andValue:periodTime];
     [ effect activateTechniqueWithName:@"ocean_r2vb_animated" ];
     [ nearPlaneGrid renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
@@ -365,9 +375,23 @@
     [ renderTargetConfiguration deactivate ];
 }
 
+- (void) renderCPU
+{
+    [ renderTargetConfiguration activate ];
+    [ renderTargetConfiguration checkFrameBufferCompleteness ];
+
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
+    [ effect activateTechniqueWithName:@"ocean_cpu" ];
+    [ projectedGridCPU render ];
+    [ effect deactivate ];
+
+    [ renderTargetConfiguration deactivate ];
+}
+
 - (void) render
 {
-    [ self renderAnimated ];
+    [ self renderCPU ];
 }
 
 @end

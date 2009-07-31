@@ -16,6 +16,8 @@
 
     NpState mode;
 
+    id projectedGridCPU;
+
     id currentStaticTile;
     id currentAnimatedTile;
     NSMutableArray * staticTiles;

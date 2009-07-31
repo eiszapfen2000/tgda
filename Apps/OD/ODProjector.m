@@ -21,11 +21,10 @@
 {
 	self = [ super initWithName:newName parent:newParent ];
 
-    model = fm4_alloc_init();
 	view = fm4_alloc_init();
     projection = fm4_alloc_init();
-    modelViewProjection = fm4_alloc_init();
-    inverseModelViewProjection = fm4_alloc_init();
+    viewProjection = fm4_alloc_init();
+    inverseViewProjection = fm4_alloc_init();
 
 	orientation = fquat_alloc_init();
 	position = fv3_alloc_init();
@@ -52,10 +51,9 @@
 
 - (void) dealloc
 {
-    model = fm4_free(model);
 	view = fm4_free(view);
-	modelViewProjection = fm4_free(modelViewProjection);
-    inverseModelViewProjection = fm4_free(inverseModelViewProjection);
+	viewProjection = fm4_free(viewProjection);
+    inverseViewProjection = fm4_free(inverseViewProjection);
 
 	orientation = fquat_free(orientation);
 	position = fv3_free(position);
@@ -71,11 +69,10 @@
 
 - (void) reset
 {
-	fm4_m_set_identity(model);
 	fm4_m_set_identity(view);
 	fm4_m_set_identity(projection);
-	fm4_m_set_identity(modelViewProjection);
-	fm4_m_set_identity(inverseModelViewProjection);
+	fm4_m_set_identity(viewProjection);
+	fm4_m_set_identity(inverseViewProjection);
 
 	fquat_set_identity(orientation);
 	fv3_v_zeros(position);
@@ -91,11 +88,6 @@
     return frustum;
 }
 
-- (FMatrix4 *) model
-{
-    return model;
-}
-
 - (FMatrix4 *) view
 {
     return view;
@@ -106,9 +98,9 @@
     return projection;
 }
 
-- (FMatrix4 *) inverseModelViewProjection
+- (FMatrix4 *) inverseViewProjection
 {
-    return inverseModelViewProjection;
+    return inverseViewProjection;
 }
 
 - (void) setPosition:(FVector3 *)newPosition
@@ -162,8 +154,8 @@
     [ self updateYaw:yawDegrees ];
     [ self updatePitch:pitchDegrees ];
 
-    fquat_q_init_with_axis_and_degrees(orientation,NP_WORLDF_Y_AXIS,&yaw);
-    fquat_q_rotatex(orientation,&pitch);
+    fquat_q_init_with_axis_and_degrees(orientation,NP_WORLDF_Y_AXIS, &yaw);
+    fquat_q_rotatex(orientation, &pitch);
 }
 
 - (void) moveForward
@@ -177,7 +169,7 @@
 
 - (void) moveBackward
 {
-    fquat_q_forward_vector_v(orientation,forward);
+    fquat_q_forward_vector_v(orientation, forward);
 
     V_X(*position) -= V_X(*forward);
     V_Y(*position) -= V_Y(*forward);
@@ -199,6 +191,8 @@
     {
         NSLog(@"BRAK");
     }*/
+
+#warning FIXME
 
     fov         = [ camera fov ];
     nearPlane   = [ camera nearPlane ];
@@ -233,13 +227,6 @@
     fm4_mm_multiply_m(&tmp, &trans, view);
 }
 
-- (void) updateModel
-{
-    model->elements[3][0] = position->x;
-    model->elements[3][1] = position->y;
-    model->elements[3][2] = position->z;
-}
-
 - (void) update
 {
     if ( [ pitchMinusAction active ] == YES )
@@ -264,7 +251,6 @@
 
     [ self updateProjection ];
 	[ self updateView ];
-    //[ self updateModel ];
 
     [ frustum updateWithPosition:position
                      orientation:orientation
@@ -273,10 +259,8 @@
                         farPlane:farPlane
                      aspectRatio:aspectRatio ];
 
-    FMatrix4 modelView;
-    fm4_mm_multiply_m(view, model, &modelView);
-    fm4_mm_multiply_m(projection, &modelView, modelViewProjection);
-    fm4_m_inverse_m(modelViewProjection, inverseModelViewProjection);
+    fm4_mm_multiply_m(projection, view, viewProjection);
+    fm4_m_inverse_m(viewProjection, inverseViewProjection);
 }
 
 - (void) render
