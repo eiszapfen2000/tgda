@@ -121,7 +121,9 @@
     projectedGridResolution->y = [[ projectedGridResolutionStrings objectAtIndex:1 ] intValue ];
     NSAssert1(projectedGridResolution->x > 0 && projectedGridResolution->y > 0, @"%@: Invalid resolution", name);
 
-    [ projectedGridCPU setProjectedGridResolution:*projectedGridResolution ];
+    IVector2 hack = { 4, 4 };
+//    [ projectedGridCPU setProjectedGridResolution:*projectedGridResolution ];
+    [ projectedGridCPU setProjectedGridResolution:hack ];
 
     NPLOG(@"");
     NPLOG(@"Projected grid resolution: %d x %d", projectedGridResolution->x, projectedGridResolution->y);

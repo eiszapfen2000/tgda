@@ -94,6 +94,7 @@
     SAFE_FREE(farPlaneWorldSpacePositions);
     SAFE_FREE(worldSpacePositions);
     SAFE_FREE(indices);
+    SAFE_FREE(normals);
 
     Int vertexCount = V_X(*projectedGridResolution) * V_Y(*projectedGridResolution);
     Int indexCount  = (V_X(*projectedGridResolution) - 1) * (V_Y(*projectedGridResolution) - 1) * 2 * 3;
@@ -102,6 +103,7 @@
     nearPlanePostProjectionPositions = ALLOC_ARRAY(Float, vertexCount * 4);
     farPlaneWorldSpacePositions      = ALLOC_ARRAY(Float, vertexCount * 3);
     worldSpacePositions              = ALLOC_ARRAY(Float, vertexCount * 3);
+    normals                          = ALLOC_ARRAY(Float, vertexCount * 3);
     indices                          = ALLOC_ARRAY(Int, indexCount);
 
     Int subIndices[4];
@@ -109,6 +111,7 @@
 
     // origin lower left
 
+    // Index layout
     // 3 --- 2
     // |     |
     // 0 --- 1
@@ -149,6 +152,17 @@
             nearPlanePostProjectionPositions[index+1] = -1.0f + i*deltaY;
             nearPlanePostProjectionPositions[index+2] = -1.0f;
             nearPlanePostProjectionPositions[index+3] =  1.0f;
+        }
+    }
+
+    for ( Int i = 0; i < V_Y(*projectedGridResolution); i++ )
+    {
+        for ( Int j = 0; j < V_X(*projectedGridResolution); j++ )
+        {
+            index = (i * V_X(*projectedGridResolution) + j) * 3;
+            normals[index]   = 0.0f;
+            normals[index+1] = 1.0f;
+            normals[index+2] = 0.0f;
         }
     }
 }
@@ -272,6 +286,31 @@
     }
 }
 
+- (void) calculateNormals
+{
+    for ( Int i = 1; i < V_Y(*projectedGridResolution) - 1; i++ )
+    {
+        for ( Int j = 1; j < V_X(*projectedGridResolution) - 1; j++ )
+        {
+            Int indexLeftX   = (i * V_X(*projectedGridResolution) + j - 1) * 3;
+            Int indexRightX  = (i * V_X(*projectedGridResolution) + j + 1) * 3;
+            Int indexTopY    = ((i + 1) * V_X(*projectedGridResolution) + j) * 3;
+            Int indexBottomY = ((i - 1) * V_X(*projectedGridResolution) + j) * 3;
+            
+            FVector3 a = { worldSpacePositions[indexRightX] - worldSpacePositions[indexLeftX] , 0.0f, 0.0f };
+            FVector3 b = { 0.0f, 0.0f, worldSpacePositions[indexTopY+2]  - worldSpacePositions[indexBottomY+2] };
+
+            FVector3 normal;
+            fv3_vv_cross_product_v(&a, &b, &normal);
+
+            Int index = (i * V_X(*projectedGridResolution) + j) * 3;
+            normals[index]   = normal.x;
+            normals[index+1] = normal.y;
+            normals[index+2] = normal.z;
+        }
+    }
+}
+
 - (void) update
 {
     if ( V_X(*projectedGridResolution) != V_X(*projectedGridResolutionLastFrame) ||
@@ -286,9 +325,14 @@
                    elementsForPosition:3 
                             dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT
                            vertexCount:vertexCount ];
+
+        [ surfaceGeometry setNormals:normals
+                   elementsForNormal:3 
+                          dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT ];
     }
 
     [ self calculateBasePlanePositionsUsingInterpolation ];
+    [ self calculateNormals ];
 }
 
 - (void) render
