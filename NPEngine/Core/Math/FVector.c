@@ -383,6 +383,14 @@ void fv4_sv_scale(const Float * const scale, FVector4 * v)
     V_W(*v) = V_W(*v) * *scale;
 }
 
+void fv4_sv_scale_v(const Float * const scale, const FVector4 * const v, FVector4 * result)
+{
+    V_X(*result) = V_X(*v) * *scale;
+    V_Y(*result) = V_Y(*v) * *scale;
+    V_Z(*result) = V_Z(*v) * *scale;
+    V_W(*result) = V_W(*v) * *scale;
+}
+
 void fv4_vv_add_v(const FVector4 * const v, const FVector4 * const w, FVector4 * result)
 {
     V_X(*result) = V_X(*v) + V_X(*w);
