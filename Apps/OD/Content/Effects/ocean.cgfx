@@ -90,13 +90,21 @@ voutput_simple mvertexshader_simple(vinput_simple input)
 struct vinput_cpu
 {
 	float3 position	: POSITION;
+    float3 normal   : NORMAL;
 };
 
-voutput_simple mvertexshader_cpu(vinput_cpu input)
+struct voutput_cpu
 {
-	voutput_simple output;
+	float4 position	: POSITION;
+    float3 normal   : TEXCOORD0;
+};
+
+voutput_cpu mvertexshader_cpu(vinput_cpu input)
+{
+	voutput_cpu output;
 
     output.position = mul(vp, float4(input.position, 1.0f));
+    output.normal = input.normal;
 	
 	return output;
 }
@@ -180,11 +188,11 @@ foutput_vtf mfragmentshader_r2vb_animated(voutput_r2vb input)
 
 /*----------------------------------------------------------------------------------------------------------*/
 
-foutput_vtf mfragmentshader_simple(voutput_simple input)
+foutput_vtf mfragmentshader_simple(voutput_cpu input)
 {
 	foutput_vtf output;
 
-    output.color = float4(1.0f, 0.2f, 0.3f, 1.0f);
+    output.color = float4(normalize(input.normal), 1.0f);
 
 	return output;
 }

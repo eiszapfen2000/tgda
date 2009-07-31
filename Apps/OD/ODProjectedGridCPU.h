@@ -24,6 +24,7 @@
     Float * nearPlanePostProjectionPositions;
     Float * farPlaneWorldSpacePositions;
     Float * worldSpacePositions;
+    Float * normals;
 }
 
 - (id) init;
