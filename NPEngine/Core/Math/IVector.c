@@ -44,8 +44,8 @@ IVector2 * iv2_alloc_init_with_components(Int x, Int y)
 
 void iv2_v_copy_v(IVector2 * source, IVector2 * target)
 {
-    V_X(*source) = V_X(*target);
-    V_Y(*source) = V_Y(*target);
+    V_X(*target) = V_X(*source);
+    V_Y(*target) = V_Y(*source);
 }
 
 IVector2 * iv2_free(IVector2 * v)
@@ -89,9 +89,9 @@ IVector3 * iv3_alloc_init_with_components(Int x, Int y, Int z)
 
 void iv3_v_copy_v(IVector3 * source, IVector3 * target)
 {
-    V_X(*source) = V_X(*target);
-    V_Y(*source) = V_Y(*target);
-    V_Z(*source) = V_Z(*target);
+    V_X(*target) = V_X(*source);
+    V_Y(*target) = V_Y(*source);
+    V_Z(*target) = V_Z(*source);
 }
 
 IVector3 * iv3_free(IVector3 * v)
