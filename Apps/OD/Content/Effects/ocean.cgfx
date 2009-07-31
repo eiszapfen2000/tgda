@@ -87,6 +87,22 @@ voutput_simple mvertexshader_simple(vinput_simple input)
 
 /*----------------------------------------------------------------------------------------------------------*/
 
+struct vinput_cpu
+{
+	float3 position	: POSITION;
+};
+
+voutput_simple mvertexshader_cpu(vinput_cpu input)
+{
+	voutput_simple output;
+
+    output.position = mul(vp, float4(input.position, 1.0f));
+	
+	return output;
+}
+
+/*----------------------------------------------------------------------------------------------------------*/
+
 struct foutput_vtf
 {
 	float4 color : COLOR0;
@@ -168,7 +184,7 @@ foutput_vtf mfragmentshader_simple(voutput_simple input)
 {
 	foutput_vtf output;
 
-    output.color = float4(1.0f, 1.0f, 0.0f, 1.0f);
+    output.color = float4(1.0f, 0.2f, 0.3f, 1.0f);
 
 	return output;
 }
@@ -208,6 +224,15 @@ technique ocean_simple
 	{
 		FragmentProgram = compile fp40 mfragmentshader_simple();
 		VertexProgram = compile vp40 mvertexshader_simple();
+	}
+}
+
+technique ocean_cpu
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mfragmentshader_simple();
+		VertexProgram = compile vp40 mvertexshader_cpu();
 	}
 }
 

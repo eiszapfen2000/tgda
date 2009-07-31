@@ -15,11 +15,10 @@
 
 @interface ODProjector : NPObject
 {
-    FMatrix4 * model;
 	FMatrix4 * view;
     FMatrix4 * projection;
-    FMatrix4 * modelViewProjection;
-    FMatrix4 * inverseModelViewProjection;
+    FMatrix4 * viewProjection;
+    FMatrix4 * inverseViewProjection;
 
     FQuaternion * orientation;
     FVector3 * position;
@@ -53,10 +52,9 @@
 
 - (FVector3 *) position;
 - (ODFrustum *) frustum;
-- (FMatrix4 *) model;
 - (FMatrix4 *) view;
 - (FMatrix4 *) projection;
-- (FMatrix4 *) inverseModelViewProjection;
+- (FMatrix4 *) inverseViewProjection;
 
 - (void) setPosition:(FVector3 *)newPosition;
 - (void) setRenderFrustum:(BOOL)newRenderFrustum;

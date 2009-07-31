@@ -19,6 +19,7 @@ ODOceanTile.m \
 ODOceanAnimatedTile.m \
 ODEntityManager.m \
 ODPerlinNoise.m \
+ODProjectedGridCPU.m \
 ODCore.m
 
 OceanDemo_RESOURCE_FILES = \
