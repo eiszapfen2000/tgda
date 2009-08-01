@@ -1,9 +1,13 @@
 float4x4 vp : NPVIEWPROJECTION;
+
 sampler2D colormap : NPCOLORMAP0;
 sampler2D test : NPCOLORMAP1;
 sampler3D anim : NPVOLUMEMAP0;
+
 float4x4 projectorIMVP;
 float deltaTime;
+
+float4 lowerLeft, lowerRight, upperRight, upperLeft;
 
 struct vinput_vtf
 {
@@ -91,12 +95,14 @@ struct vinput_cpu
 {
 	float3 position	: POSITION;
     float3 normal   : NORMAL;
+    float2 texcoord : TEXCOORD0;
 };
 
 struct voutput_cpu
 {
 	float4 position	: POSITION;
     float3 normal   : TEXCOORD0;
+    float2 texcoord : TEXCOORD1;
 };
 
 voutput_cpu mvertexshader_cpu(vinput_cpu input)
@@ -105,6 +111,7 @@ voutput_cpu mvertexshader_cpu(vinput_cpu input)
 
     output.position = mul(vp, float4(input.position, 1.0f));
     output.normal = input.normal;
+    output.texcoord = input.texcoord;
 	
 	return output;
 }
@@ -188,11 +195,30 @@ foutput_vtf mfragmentshader_r2vb_animated(voutput_r2vb input)
 
 /*----------------------------------------------------------------------------------------------------------*/
 
-foutput_vtf mfragmentshader_simple(voutput_cpu input)
+foutput_vtf mfragmentshader_simple(voutput_simple input)
 {
 	foutput_vtf output;
 
-    output.color = float4(normalize(input.normal), 1.0f);
+    float3 x = float3(1.0f, 0.0f, 0.0f);
+    float3 y = float3(0.0f, 1.0f, 0.0f);
+
+//    output.color = float4(normalize(input.normal), 1.0f);
+    output.color = float4(lerp(x,y,0.5f), 1.0f);
+
+	return output;
+}
+
+/*----------------------------------------------------------------------------------------------------------*/
+
+foutput_vtf mfragmentshader_cpu(voutput_cpu input)
+{
+	foutput_vtf output;
+
+    float3 x = float3(1.0f, 0.0f, 0.0f);
+    float3 y = float3(0.0f, 1.0f, 0.0f);
+
+//    output.color = float4(normalize(input.normal), 1.0f);
+    output.color = float4((input.texcoord + 1.0f)/2.0f, 0.0f, 1.0f);
 
 	return output;
 }
@@ -239,7 +265,7 @@ technique ocean_cpu
 {
 	pass
 	{
-		FragmentProgram = compile fp40 mfragmentshader_simple();
+		FragmentProgram = compile fp40 mfragmentshader_cpu();
 		VertexProgram = compile vp40 mvertexshader_cpu();
 	}
 }

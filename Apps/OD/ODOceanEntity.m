@@ -30,6 +30,7 @@
     mode = NP_NONE;
 
     projectedGridCPU = [[ ODProjectedGridCPU alloc ] initWithName:@"CPU" parent:self ];
+    [ projectedGridCPU setMode:OD_PROJECT_CPU_CORNERS_GPU_INTERPOLATION];
 
     staticTiles   = [[ NSMutableArray alloc ] init ];
     animatedTiles = [[ NSMutableArray alloc ] init ];
@@ -121,9 +122,10 @@
     projectedGridResolution->y = [[ projectedGridResolutionStrings objectAtIndex:1 ] intValue ];
     NSAssert1(projectedGridResolution->x > 0 && projectedGridResolution->y > 0, @"%@: Invalid resolution", name);
 
-    IVector2 hack = { 4, 4 };
-//    [ projectedGridCPU setProjectedGridResolution:*projectedGridResolution ];
-    [ projectedGridCPU setProjectedGridResolution:hack ];
+//    IVector2 hack = { 4, 4 };
+//    [ projectedGridCPU setProjectedGridResolution:hack ];
+
+    [ projectedGridCPU setProjectedGridResolution:*projectedGridResolution ];
 
     NPLOG(@"");
     NPLOG(@"Projected grid resolution: %d x %d", projectedGridResolution->x, projectedGridResolution->y);
@@ -384,9 +386,9 @@
 
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
 
-    [ effect activateTechniqueWithName:@"ocean_cpu" ];
+    //[ effect activateTechniqueWithName:@"ocean_cpu" ];
     [ projectedGridCPU render ];
-    [ effect deactivate ];
+    //[ effect deactivate ];
 
     [ renderTargetConfiguration deactivate ];
 }

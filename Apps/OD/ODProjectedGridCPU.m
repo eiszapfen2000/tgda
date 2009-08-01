@@ -25,15 +25,22 @@
     projectedGridResolution          = iv2_alloc_init();
     projectedGridResolutionLastFrame = iv2_alloc_init();
 
+    mode = NP_NONE;
+
     basePlaneHeight   =  0.0f;
     upperSurfaceBound =  1.0f;
     lowerSurfaceBound = -1.0f;
     basePlane = fplane_alloc_init_with_components(0.0f, 1.0f, 0.0f, basePlaneHeight);
 
-    nearPlaneWorldSpacePositions = NULL;
-    worldSpacePositions = NULL;
-
     surfaceGeometry = [[ NPVertexBuffer alloc ] initWithName:@"SG" parent:self ];
+
+    effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"ocean_cpu.cgfx" ];
+    lowerLeftCornerParameter  = [ effect parameterWithName:@"lowerLeft"  ];
+    lowerRightCornerParameter = [ effect parameterWithName:@"lowerRight" ];
+    upperRightCornerParameter = [ effect parameterWithName:@"upperRight" ];
+    upperLeftCornerParameter  = [ effect parameterWithName:@"upperLeft"  ];
+    NSAssert(lowerLeftCornerParameter != NULL && lowerRightCornerParameter != NULL &&
+             upperRightCornerParameter != NULL && upperLeftCornerParameter != NULL, @"Corner parameter missing");
 
     return self;
 }
@@ -48,9 +55,19 @@
     [ super dealloc ];
 }
 
+- (NpState) mode
+{
+    return mode;
+}
+
 - (IVector2) projectedGridResolution
 {
     return *projectedGridResolution;
+}
+
+- (void) setMode:(NpState)newMode
+{
+    mode = newMode;
 }
 
 - (void) setProjectedGridResolution:(IVector2)newProjectedGridResolution
@@ -90,20 +107,19 @@
 
 - (void) updateGeometryResolution
 {
-    SAFE_FREE(nearPlaneWorldSpacePositions);
-    SAFE_FREE(farPlaneWorldSpacePositions);
+    SAFE_FREE(nearPlanePostProjectionPositions);
     SAFE_FREE(worldSpacePositions);
     SAFE_FREE(indices);
     SAFE_FREE(normals);
+    SAFE_FREE(texCoords);
 
     Int vertexCount = V_X(*projectedGridResolution) * V_Y(*projectedGridResolution);
     Int indexCount  = (V_X(*projectedGridResolution) - 1) * (V_Y(*projectedGridResolution) - 1) * 2 * 3;
 
-    nearPlaneWorldSpacePositions     = ALLOC_ARRAY(Float, vertexCount * 3);
     nearPlanePostProjectionPositions = ALLOC_ARRAY(Float, vertexCount * 4);
-    farPlaneWorldSpacePositions      = ALLOC_ARRAY(Float, vertexCount * 3);
     worldSpacePositions              = ALLOC_ARRAY(Float, vertexCount * 3);
     normals                          = ALLOC_ARRAY(Float, vertexCount * 3);
+    texCoords                        = ALLOC_ARRAY(Float, vertexCount * 2);
     indices                          = ALLOC_ARRAY(Int, indexCount);
 
     Int subIndices[4];
@@ -153,6 +169,26 @@
             nearPlanePostProjectionPositions[index+2] = -1.0f;
             nearPlanePostProjectionPositions[index+3] =  1.0f;
         }
+    }
+
+    Float u = -1.0f;
+    Float v = -1.0f;
+
+    for ( Int i = 0; i < V_Y(*projectedGridResolution); i++ )
+    {
+        u = -1.0f;
+
+        for ( Int j = 0; j < V_X(*projectedGridResolution); j++ )
+        {
+            index = (i * V_X(*projectedGridResolution) + j) * 2;
+
+            texCoords[index]   = u;
+            texCoords[index+1] = v;
+
+            u = u + deltaX;
+        }
+
+        v = v + deltaY;
     }
 
     for ( Int i = 0; i < V_Y(*projectedGridResolution); i++ )
@@ -329,15 +365,79 @@
         [ surfaceGeometry setNormals:normals
                    elementsForNormal:3 
                           dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT ];
+
+        [ surfaceGeometry setTextureCoordinates:texCoords
+                  elementsForTextureCoordinates:2
+                                     dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT
+                                         forSet:0 ];
     }
 
-    [ self calculateBasePlanePositionsUsingInterpolation ];
-    [ self calculateNormals ];
+    switch ( mode )
+    {
+        case OD_PROJECT_ENTIRE_MESH_ON_CPU:
+        {
+            [ self calculateBasePlanePositions ];
+            [ self calculateNormals ];
+
+            break;
+        }
+
+        case OD_PROJECT_USING_INTERPOLATION_ON_CPU:
+        {
+            [ self calculateBasePlanePositionsUsingInterpolation ];
+            [ self calculateNormals ];
+
+            break;
+        }
+
+        case OD_PROJECT_CPU_CORNERS_GPU_INTERPOLATION:
+        {
+            break;
+        }
+
+        default:
+        {
+            NPLOG_ERROR(@"%@: Invalid mode %d", name, mode);
+
+            break;
+        }
+
+    }
 }
 
 - (void) render
 {
-   [ surfaceGeometry renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
+    switch ( mode )
+    {
+        case OD_PROJECT_ENTIRE_MESH_ON_CPU:
+        case OD_PROJECT_USING_INTERPOLATION_ON_CPU:
+        {
+            [ effect activateTechniqueWithName:@"ocean_cpu" ];
+            [ surfaceGeometry renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
+            [ effect deactivate ];
+
+            break;
+        }
+
+        case OD_PROJECT_CPU_CORNERS_GPU_INTERPOLATION:
+        {
+            FVector4 upperLeftCorner  = [ self unprojectX:-1.0f andY: 1.0f ];
+            FVector4 lowerLeftCorner  = [ self unprojectX:-1.0f andY:-1.0f ];
+            FVector4 upperRightCorner = [ self unprojectX: 1.0f andY: 1.0f ];
+            FVector4 lowerRightCorner = [ self unprojectX: 1.0f andY:-1.0f ];
+
+            [ effect uploadFVector4Parameter:lowerLeftCornerParameter  andValue:&lowerLeftCorner  ];
+            [ effect uploadFVector4Parameter:lowerRightCornerParameter andValue:&lowerRightCorner ];
+            [ effect uploadFVector4Parameter:upperRightCornerParameter andValue:&upperRightCorner ];
+            [ effect uploadFVector4Parameter:upperLeftCornerParameter  andValue:&upperLeftCorner  ];
+
+            [ effect activateTechniqueWithName:@"ocean_interpolate" ];
+            [ surfaceGeometry renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
+            [ effect deactivate ];
+
+            break;
+        }
+    }
 }
 
 @end
