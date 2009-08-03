@@ -169,6 +169,8 @@
 			    H0[j + resolution->y * i][1] = MATH_1_DIV_SQRT_2 * xi_i * a;
             }
         }
+
+        needsUpdate = NO;
     }
 }
 
