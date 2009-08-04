@@ -183,7 +183,7 @@ foutput_vtf mfragmentshader_r2vb_animated(voutput_r2vb input)
     float t = ( 0.0f - raypoint_dot_planenormal ) / raydirection_dot_planenormal;
 
     float4 result = float4(direction.xyz * t + point.xyz, 1.0f);
-    result.y += tex3D(anim, float3(input.texcoord, deltaTime)).x * 10.0f;
+    result.y += tex3D(anim, float3(input.texcoord, deltaTime)).x * 300.0f;
     result.w = 1.0f;
 
     output.color = result;

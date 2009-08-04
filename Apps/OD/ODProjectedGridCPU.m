@@ -39,8 +39,11 @@
     lowerRightCornerParameter = [ effect parameterWithName:@"lowerRight" ];
     upperRightCornerParameter = [ effect parameterWithName:@"upperRight" ];
     upperLeftCornerParameter  = [ effect parameterWithName:@"upperLeft"  ];
+    deltaParameter = [ effect parameterWithName:@"delta" ];
+
     NSAssert(lowerLeftCornerParameter != NULL && lowerRightCornerParameter != NULL &&
-             upperRightCornerParameter != NULL && upperLeftCornerParameter != NULL, @"Corner parameter missing");
+             upperRightCornerParameter != NULL && upperLeftCornerParameter != NULL &&
+             deltaParameter != NULL, @"Corner parameter missing");
 
     return self;
 }
@@ -171,12 +174,15 @@
         }
     }
 
-    Float u = -1.0f;
-    Float v = -1.0f;
+    deltaX = 1.0f/(V_X(*projectedGridResolution) - 1.0f);
+    deltaY = 1.0f/(V_Y(*projectedGridResolution) - 1.0f);
+
+    Float u = 0.0f;
+    Float v = 0.0f;
 
     for ( Int i = 0; i < V_Y(*projectedGridResolution); i++ )
     {
-        u = -1.0f;
+        u = 0.0f;
 
         for ( Int j = 0; j < V_X(*projectedGridResolution); j++ )
         {
@@ -375,13 +381,6 @@
     switch ( mode )
     {
         case OD_PROJECT_ENTIRE_MESH_ON_CPU:
-        {
-            [ self calculateBasePlanePositions ];
-            [ self calculateNormals ];
-
-            break;
-        }
-
         case OD_PROJECT_USING_INTERPOLATION_ON_CPU:
         {
             [ self calculateBasePlanePositionsUsingInterpolation ];
@@ -426,10 +425,13 @@
             FVector4 upperRightCorner = [ self unprojectX: 1.0f andY: 1.0f ];
             FVector4 lowerRightCorner = [ self unprojectX: 1.0f andY:-1.0f ];
 
+            FVector2 delta = { 1.0f/(V_X(*projectedGridResolution) - 1.0f), 1.0f/(V_Y(*projectedGridResolution) - 1.0f)}; 
+
             [ effect uploadFVector4Parameter:lowerLeftCornerParameter  andValue:&lowerLeftCorner  ];
             [ effect uploadFVector4Parameter:lowerRightCornerParameter andValue:&lowerRightCorner ];
             [ effect uploadFVector4Parameter:upperRightCornerParameter andValue:&upperRightCorner ];
             [ effect uploadFVector4Parameter:upperLeftCornerParameter  andValue:&upperLeftCorner  ];
+            [ effect uploadFVector2Parameter:deltaParameter            andValue:&delta            ];
 
             [ effect activateTechniqueWithName:@"ocean_interpolate" ];
             [ surfaceGeometry renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];

@@ -6,6 +6,7 @@
 #import "ODSurface.h"
 #import "ODEntity.h"
 #import "ODOceanEntity.h"
+#import "ODPreethamSkylight.h"
 #import "ODEntityManager.h"
 #import "ODSceneManager.h"
 #import "Menu/ODMenu.h"
@@ -77,6 +78,8 @@
 
     [ self setName:sceneName ];
 
+    skybox = [[[ NP applicationController ] entityManager ] loadEntityFromPath:skyboxEntityFile ];
+
     NSEnumerator * entityFilesEnumerator = [ entityFiles objectEnumerator ];
     id entityFileName;
 
@@ -126,6 +129,8 @@
     [ camera update:frameTime ];
     [ projector update ];
 
+    [ skybox update:frameTime ];
+
     NSEnumerator * entityEnumerator = [ entities objectEnumerator ];
     id entity;
 
@@ -147,7 +152,9 @@
     [ camera render ];
     [ projector render ];
 
-    [[[[ NP Graphics ] stateConfiguration ] cullingState ] setCullFace:NP_BACK_FACE ];
+    [ skybox render ];
+
+    /*[[[[ NP Graphics ] stateConfiguration ] cullingState ] setCullFace:NP_BACK_FACE ];
     [[[[ NP Graphics ] stateConfiguration ] cullingState ] setEnabled:YES ];
     [[[[ NP Graphics ] stateConfiguration ] cullingState ] activate ];
 
@@ -202,7 +209,7 @@
 
     [ menu render ];
 
-    [[[ NP Graphics ] orthographicRendering ] deactivate ];
+    [[[ NP Graphics ] orthographicRendering ] deactivate ];*/
 
     [[[ NP Graphics ] stateConfiguration ] deactivate ];
 }

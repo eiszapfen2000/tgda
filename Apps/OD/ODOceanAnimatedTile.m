@@ -21,6 +21,8 @@
     size = fv2_alloc_init();
     windDirection = fv2_alloc_init();
 
+    minimumTime = maximumTime = animationDuration = 0.0f;
+
     textures2D = [[ NSMutableArray alloc ] init ];
 
     return self;
@@ -38,6 +40,21 @@
     windDirection = fv2_free(windDirection);
 
     [ super dealloc ];
+}
+
+- (Float) minimumTime
+{
+    return minimumTime;
+}
+
+- (Float) maximumTime
+{
+    return maximumTime;
+}
+
+- (Float) animationDuration
+{
+    return animationDuration;
 }
 
 - (NPTexture3D *) texture3D
@@ -76,6 +93,18 @@
         [ file readFloat:&(times[i]) ];
         [ file readFloats:heights[i] withLength:elementCount ];
     }
+
+    for ( UInt i = 0; i < numberOfSlices; i++ )
+    {
+        minimumTime = MIN(minimumTime, times[i]);
+        maximumTime = MAX(maximumTime, times[i]);
+    }
+
+    animationDuration = maximumTime - minimumTime;
+
+    NPLOG(@"Minimum Time: %f", minimumTime);
+    NPLOG(@"Maximum Time: %f", maximumTime);
+    NPLOG(@"Animation Duration: %f", animationDuration);
 
     for ( UInt i = 0; i < numberOfSlices; i++ )
     {

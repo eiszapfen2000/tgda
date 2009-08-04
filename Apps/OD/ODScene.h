@@ -8,12 +8,11 @@
     id projector;
 
     id font;
-    id ocean;
+    id menu;
 
     id fullscreenEffect;
-    id texture;
 
-    id menu;
+    id skybox;
 }
 
 - (id) init;

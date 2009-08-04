@@ -1,0 +1,7 @@
+{
+    Type = "ODPreethamSkylight";
+    Name = "Sky";
+    Model = "sky.model";
+    States = "preetham.stateset";
+}
+ 

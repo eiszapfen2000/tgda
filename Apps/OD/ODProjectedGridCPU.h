@@ -32,6 +32,7 @@
     CGparameter lowerRightCornerParameter;
     CGparameter upperRightCornerParameter;
     CGparameter upperLeftCornerParameter;
+    CGparameter deltaParameter;
 }
 
 - (id) init;

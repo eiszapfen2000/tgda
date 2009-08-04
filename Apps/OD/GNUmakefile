@@ -15,6 +15,7 @@ ODScene.m \
 ODSceneManager.m \
 ODEntity.m \
 ODOceanEntity.m \
+ODPreethamSkylight.m \
 ODOceanTile.m \
 ODOceanAnimatedTile.m \
 ODEntityManager.m \
