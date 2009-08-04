@@ -255,6 +255,9 @@
         }
     }
 
+    
+    // Vertices have another memory layout after copying from FBO
+    // they start from bottom left, hence another index array is needed
     for ( Int i = 0; i < projectedGridResolution->y - 1; i++ )
     {
         for ( Int j = 0; j < projectedGridResolution->x - 1; j++ )
@@ -323,6 +326,12 @@
     [ projectedGridCPU update ];
 
     periodTime += frameTime;
+    Float animationDuration = [ currentAnimatedTile animationDuration ];
+
+    if ( periodTime > animationDuration )
+    {
+        periodTime = periodTime - animationDuration;
+    }
 }
 
 - (void) renderStatic
@@ -363,7 +372,7 @@
 
     ODProjector * projector = [[[[ NP applicationController ] sceneManager ] currentScene ] projector ];
     [ effect uploadFMatrix4Parameter:projectorIMVP andValue:[projector inverseViewProjection]];
-    [ effect uploadFloatParameter:deltaTime andValue:periodTime];
+    [ effect uploadFloatParameter:deltaTime andValue:periodTime/11.0f];
     [ effect activateTechniqueWithName:@"ocean_r2vb_animated" ];
     [ nearPlaneGrid renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
     [ effect deactivate ];
@@ -395,7 +404,7 @@
 
 - (void) render
 {
-    [ self renderCPU ];
+    [ self renderAnimated ];
 }
 
 @end

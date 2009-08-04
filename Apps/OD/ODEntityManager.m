@@ -1,6 +1,7 @@
 #import "ODEntityManager.h"
 #import "ODEntity.h"
 #import "ODOceanEntity.h"
+#import "ODPreethamSkylight.h"
 #import "NP.h"
 
 @implementation ODEntityManager
