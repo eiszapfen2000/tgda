@@ -1,10 +1,4 @@
 #import "NPRenderTexture.h"
-#import "NPRenderTargetConfiguration.h"
-#import "Graphics/Material/NPTexture.h"
-#import "Graphics/Image/NPImage.h"
-#import "Graphics/npgl.h"
-#import "Graphics/NPEngineGraphicsConstants.h"
-
 #import "NP.h"
 
 @implementation NPRenderTexture
@@ -231,6 +225,8 @@
 {
     ASSIGN(configuration, [[[ NP Graphics ] renderTargetManager ] currentRenderTargetConfiguration ]);
 
+    [[ configuration colorTargets ] replaceObjectAtIndex:newColorBufferIndex withObject:self ];
+
     colorBufferIndex = newColorBufferIndex;
     GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, renderTextureID, 0);
@@ -240,6 +236,8 @@
 {
     GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, 0, 0);
+
+    [[ configuration colorTargets ] replaceObjectAtIndex:colorBufferIndex withObject:[ NSNull null ]];
 
     ASSIGN(configuration, nil);
 }
