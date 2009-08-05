@@ -207,7 +207,7 @@
 {
     if ( [ newColorRenderTarget type ] == NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE )
     {
-        [ colorTargets replaceObjectAtIndex:colorBufferIndex withObject:newColorRenderTarget ];
+        //[ colorTargets replaceObjectAtIndex:colorBufferIndex withObject:newColorRenderTarget ];
 
         if ( [ newColorRenderTarget width ] > width || [ newColorRenderTarget height ] > height )
         {
