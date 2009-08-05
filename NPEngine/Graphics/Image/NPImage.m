@@ -163,13 +163,6 @@
         return NO;
     }
 
-    BOOL flipImage = NO;
-
-    if ( [ pathExtension isEqual:@"png" ] == YES || [ pathExtension isEqual:@"jpg" ] == YES )
-    {
-        flipImage = YES;
-    }
-
     UInt image = [ self prepareForProcessingWithDevil ];
 
 	ILboolean success = ilLoadImage( [ path cString ] );
@@ -183,16 +176,22 @@
 		return NO;
     }
 
-    #warning Check image flipping
-
-	// Get image information.
+    // Get image information.
 	width  = (Int)ilGetInteger(IL_IMAGE_WIDTH);
 	height = (Int)ilGetInteger(IL_IMAGE_HEIGHT);
+
+    BOOL flipImage = NO;
+
+    // OpenGL needs the origin to be at the lower left
+    Int origin = (Int)ilGetInteger(IL_IMAGE_ORIGIN);
+    if ( origin == IL_ORIGIN_UPPER_LEFT )
+    {
+        flipImage = YES;
+    }
 
 	ILint type          = ilGetInteger(IL_IMAGE_TYPE);
 	ILint format        = ilGetInteger(IL_IMAGE_FORMAT);
 	ILint bytesperpixel = ilGetInteger(IL_IMAGE_BYTES_PER_PIXEL);
-
 
 	// Convert RGB, BGR, or BGRA images to RGBA.
 	if ((type == IL_UNSIGNED_BYTE) && ((bytesperpixel == 3) || (format == IL_BGRA)))
