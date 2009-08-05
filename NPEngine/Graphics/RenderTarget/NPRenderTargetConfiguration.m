@@ -221,12 +221,16 @@
 
 - (void) bindFBO
 {
+    [[[ NP Graphics ] renderTargetManager ] setCurrentRenderTargetConfiguration:self ];
+
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboID);
 }
 
 - (void) unbindFBO
 {
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+    [[[ NP Graphics ] renderTargetManager ] setCurrentRenderTargetConfiguration:nil ];
 }
 
 - (void) activateDrawBuffers
@@ -264,8 +268,6 @@
 
 - (void) activate
 {
-    [[[ NP Graphics ] renderTargetManager ] setCurrentRenderTargetConfiguration:self ];
-
     [ self bindFBO ];
     [ self activateDrawBuffers ];
     [ self activateViewport ];
@@ -276,8 +278,6 @@
     [ self unbindFBO ];
     [ self deactivateDrawBuffers ];
     [ self deactivateViewport ];
-
-    [[[ NP Graphics ] renderTargetManager ] setCurrentRenderTargetConfiguration:nil ];
 }
 
 - (BOOL) checkFrameBufferCompleteness

@@ -5,6 +5,8 @@
 #import "Graphics/npgl.h"
 #import "Graphics/NPEngineGraphicsConstants.h"
 
+#import "NP.h"
+
 @implementation NPRenderTexture
 
 + (id) renderTextureWithName:(NSString *)name
@@ -34,8 +36,6 @@
                textureFilter:(NpState)textureFilter
                  textureWrap:(NpState)textureWrap
 {
-    #warning FIXME Handle mipmaps
-
     NPRenderTexture * renderTexture = [[ NPRenderTexture alloc ] initWithName:name ];
     [ renderTexture setType:type ];
     [ renderTexture setDataFormat:dataFormat ];
@@ -168,10 +168,44 @@
     [ texture setHeight:height ];
     [ texture setDataFormat:dataFormat ];
     [ texture setPixelFormat:pixelFormat ];
-    [ texture setTextureFilter:textureFilter ];
     [ texture setTextureWrap:textureWrap ];
 
     [ texture uploadToGLWithoutData ];
+
+    NpTextureFilterState * textureFilterState = [ texture textureFilterState ];
+
+    switch ( textureFilter )
+    {
+        case NP_GRAPHICS_TEXTURE_FILTER_LINEAR_MIPMAPPING:
+        {
+            textureFilterState->minFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST;
+            textureFilterState->magFilter  = NP_GRAPHICS_TEXTURE_FILTER_NEAREST;
+
+            glBindTexture(GL_TEXTURE_2D, [ texture textureID ]);
+            glGenerateMipmapEXT(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            break;
+        }
+
+        case NP_GRAPHICS_TEXTURE_FILTER_TRILINEAR:
+        {
+            textureFilterState->minFilter = NP_GRAPHICS_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR;
+            textureFilterState->magFilter = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
+
+            glBindTexture(GL_TEXTURE_2D, [ texture textureID ]);
+            glGenerateMipmapEXT(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            break;
+        }
+
+        default:
+        {
+            [ texture setTextureFilter:textureFilter ];
+            break;
+        }
+    }
 
     renderTextureID = [ texture textureID ];
 }
@@ -182,17 +216,32 @@
                               textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP ];
 }
 
+- (void) generateMipMaps
+{
+    if ( configuration != [[[ NP Graphics ] renderTargetManager ] currentRenderTargetConfiguration ] )
+    {
+        #warning FIXME Possible clash with 3D texture mode
+        glBindTexture(GL_TEXTURE_2D, renderTextureID);
+        glGenerateMipmapEXT(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+}
+
 - (void) attachToColorBufferIndex:(Int)newColorBufferIndex
 {
-        colorBufferIndex = newColorBufferIndex;
-        GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
-        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, renderTextureID, 0);
+    ASSIGN(configuration, [[[ NP Graphics ] renderTargetManager ] currentRenderTargetConfiguration ]);
+
+    colorBufferIndex = newColorBufferIndex;
+    GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
+    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, renderTextureID, 0);
 }
 
 - (void) detach
 {
-        GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
-        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, 0, 0);
+    GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
+    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, 0, 0);
+
+    ASSIGN(configuration, nil);
 }
 
 - (void) bindToRenderTargetConfiguration:(NPRenderTargetConfiguration *)newConfiguration
@@ -200,9 +249,6 @@
 {
     if ( configuration != newConfiguration )
     {
-        TEST_RELEASE(configuration);
-        configuration = [ newConfiguration retain ];
-
         [ configuration bindFBO ];
         [ self attachToColorBufferIndex:newColorBufferIndex ];
         [ configuration unbindFBO ];
@@ -216,9 +262,6 @@
         [ configuration bindFBO ];
         [ self detach ];
         [ configuration unbindFBO ];
-
-        [ configuration release ];
-        configuration = nil;
     }
 }
 
