@@ -64,6 +64,8 @@
                             textureWrap:(NpState)textureWrap
                                        ;
 
+- (void) generateMipMaps;
+
 - (void) attachToColorBufferIndex:(Int)newColorBufferIndex;
 - (void) detach;
 
