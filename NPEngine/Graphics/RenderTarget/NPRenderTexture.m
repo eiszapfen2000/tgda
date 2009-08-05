@@ -223,10 +223,6 @@
 
 - (void) attachToColorBufferIndex:(Int)newColorBufferIndex
 {
-    ASSIGN(configuration, [[[ NP Graphics ] renderTargetManager ] currentRenderTargetConfiguration ]);
-
-    [[ configuration colorTargets ] replaceObjectAtIndex:newColorBufferIndex withObject:self ];
-
     colorBufferIndex = newColorBufferIndex;
     GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, renderTextureID, 0);
@@ -236,10 +232,6 @@
 {
     GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, 0, 0);
-
-    [[ configuration colorTargets ] replaceObjectAtIndex:colorBufferIndex withObject:[ NSNull null ]];
-
-    ASSIGN(configuration, nil);
 }
 
 - (void) bindToRenderTargetConfiguration:(NPRenderTargetConfiguration *)newConfiguration
@@ -247,6 +239,8 @@
 {
     if ( configuration != newConfiguration )
     {
+        ASSIGN(configuration, newConfiguration);
+
         [ configuration bindFBO ];
         [ self attachToColorBufferIndex:newColorBufferIndex ];
         [ configuration unbindFBO ];
@@ -260,6 +254,8 @@
         [ configuration bindFBO ];
         [ self detach ];
         [ configuration unbindFBO ];
+
+        ASSIGN(configuration, nil);
     }
 }
 
