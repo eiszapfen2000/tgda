@@ -44,8 +44,31 @@
     //[ projector setRenderFrustum:YES ];
 
     fullscreenEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Fullscreen.cgfx" ];
+    mipLevel = [ fullscreenEffect parameterWithName:@"mipLevel" ];
 
-    //ocean = [[[ NP applicationController ] entityManager ] loadEntityFromPath:@"test.odata" ];
+    IVector2 * resolution = [[[ NP Graphics ] viewportManager ] currentControlSize ];
+    renderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Config" parent:self ];
+
+    sceneRenderTexture = [[ NPRenderTexture renderTextureWithName:@"SceneRT"
+                                                             type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
+                                                            width:resolution->x
+                                                           height:resolution->y
+                                                       dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
+                                                      pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
+                                                    textureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
+                                                      textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ] retain ];
+
+    luminanceRenderTexture = [[ NPRenderTexture renderTextureWithName:@"LuminanceRT"
+                                                                 type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
+                                                                width:resolution->x
+                                                               height:resolution->y
+                                                           dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
+                                                          pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_R
+                                                        textureFilter:NP_GRAPHICS_TEXTURE_FILTER_TRILINEAR
+                                                          textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ] retain ];
+
+    luminanceMaxMipMapLevel = 1 + floor(log2(MAX(resolution->x, resolution->y)));
+
 
     return self;
 }
@@ -55,6 +78,13 @@
     [ menu      release ];
     [ projector release ];
     [ camera    release ];
+
+    [ sceneRenderTexture     release ];
+    [ luminanceRenderTexture release ];
+
+    [ renderTargetConfiguration resetColorTargetsArray ];
+    [ renderTargetConfiguration clear ];
+    [ renderTargetConfiguration release ];
 
     [ entities removeAllObjects ];
     [ entities release ];
@@ -149,36 +179,40 @@
 
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
+    [ renderTargetConfiguration resetColorTargetsArray ];
+    [[ renderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:sceneRenderTexture ];
+    [ renderTargetConfiguration bindFBO ];
+    [ sceneRenderTexture attachToColorBufferIndex:0 ];
+    [ renderTargetConfiguration activateDrawBuffers ];
+    [ renderTargetConfiguration activateViewport ];
+
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
     [ camera render ];
     [ projector render ];
 
     [ skybox render ];
 
-    /*[[[[ NP Graphics ] stateConfiguration ] cullingState ] setCullFace:NP_BACK_FACE ];
-    [[[[ NP Graphics ] stateConfiguration ] cullingState ] setEnabled:YES ];
-    [[[[ NP Graphics ] stateConfiguration ] cullingState ] activate ];
-
-    //[ ocean render ];
-
-    NSEnumerator * entityEnumerator = [ entities objectEnumerator ];
-    id entity;
-
-    while ( (entity = [ entityEnumerator nextObject ]) )
-    {
-        [ entity render ];
-    }
+    //[ sceneRenderTexture detach ];
+    //[ renderTargetConfiguration unbindFBO ];
+    //[ renderTargetConfiguration deactivateDrawBuffers ];
+    //[ renderTargetConfiguration deactivateViewport ];
 
     FMatrix4 identity;
     fm4_m_set_identity(&identity);
 
     NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
+    [ trafo setModelMatrix:&identity ];
     [ trafo setViewMatrix:&identity ];
     [ trafo setProjectionMatrix:&identity ];
 
-    [[[[ entities objectAtIndex:0 ] renderTexture ] texture ] activateAtColorMapIndex:0 ];
-    //[[[ ocean renderTexture] texture ] activateAtColorMapIndex:0 ];
+    [[ renderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:luminanceRenderTexture ];
+    [ luminanceRenderTexture attachToColorBufferIndex:0 ];
+    [ renderTargetConfiguration activateDrawBuffers ];
+    [ renderTargetConfiguration activateViewport ];
 
-    [ fullscreenEffect activate ];
+    [[ sceneRenderTexture texture ] activateAtColorMapIndex:0 ];
+    [ fullscreenEffect activateTechniqueWithName:@"luminance" ];
 
     glBegin(GL_QUADS);
 
@@ -198,7 +232,38 @@
 
     [ fullscreenEffect deactivate ];
 
-    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
+    [ luminanceRenderTexture detach ];
+    [ renderTargetConfiguration unbindFBO ];
+    [ renderTargetConfiguration deactivateDrawBuffers ];
+    [ renderTargetConfiguration deactivateViewport ];
+
+    [ luminanceRenderTexture generateMipMaps ];
+
+    [[ sceneRenderTexture texture ] activateAtColorMapIndex:0 ];
+    [[ luminanceRenderTexture texture ] activateAtColorMapIndex:1 ];
+    [ fullscreenEffect uploadFloatParameter:mipLevel andValue:(Float)luminanceMaxMipMapLevel ];
+    [ fullscreenEffect activateTechniqueWithName:@"tonemap" ];
+
+    glBegin(GL_QUADS);
+
+            glTexCoord2f(0.0f,1.0f);            
+            glVertex4f(-1.0f,1.0f,0.0f,1.0f);
+
+            glTexCoord2f(0.0f,0.0f);
+            glVertex4f(-1.0f,-1.0,0.0f,1.0f);
+
+            glTexCoord2f(1.0f,0.0f);
+            glVertex4f(1.0f,-1.0f,0.0f,1.0f);
+
+            glTexCoord2f(1.0f,1.0f);
+            glVertex4f(1.0f,1.0f,0.0f,1.0f);
+
+    glEnd();
+
+    [ fullscreenEffect deactivate ];
+
+   
+    /*[[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] activate ];
 

@@ -316,14 +316,14 @@
     if ( (projectedGridResolution->x != projectedGridResolutionLastFrame->x) ||
          (projectedGridResolution->y != projectedGridResolutionLastFrame->y) )
     {
-        [ self updateGeometry ];
-        [ self updateRenderTargets ];
-        [ self updateR2VB ];
+        //[ self updateGeometry ];
+        //[ self updateRenderTargets ];
+        //[ self updateR2VB ];
 
         iv2_v_copy_v(projectedGridResolution, projectedGridResolutionLastFrame);
     }
 
-    [ projectedGridCPU update ];
+    //[ projectedGridCPU update ];
 
     periodTime += frameTime;
     Float animationDuration = [ currentAnimatedTile animationDuration ];

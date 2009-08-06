@@ -1,18 +1,24 @@
 #import "Core/NPObject/NPObject.h"
+#import "Graphics/npgl.h"
 
 @interface ODScene : NPObject
 {
-    NSMutableArray * entities;
-
     id camera;
     id projector;
+
+    id skybox;
+    NSMutableArray * entities;
 
     id font;
     id menu;
 
     id fullscreenEffect;
 
-    id skybox;
+    id renderTargetConfiguration;
+    id sceneRenderTexture;
+    id luminanceRenderTexture;
+    Int32 luminanceMaxMipMapLevel;
+    CGparameter mipLevel;
 }
 
 - (id) init;
