@@ -65,8 +65,7 @@ FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
 {
 	FOUTPUTDATA output;
 
-//    output.color = float4(1.0,0.0,0.0,1.0);
-    output.color = log(input.color);
+    output.color = (input.color);
 
 	return output;
 }
