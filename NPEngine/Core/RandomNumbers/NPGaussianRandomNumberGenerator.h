@@ -28,6 +28,8 @@
 - (void) setFirstGenerator:(NPRandomNumberGenerator *)newFirstGenerator;
 - (void) setSecondGenerator:(NPRandomNumberGenerator *)newSecondGenerator;
 
+- (void) reset;
+
 - (BOOL) ready;
 - (void) checkForSubGenerators;
 

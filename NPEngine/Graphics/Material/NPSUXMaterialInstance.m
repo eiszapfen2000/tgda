@@ -53,7 +53,7 @@
 
 - (void) setMaterialFileName:(NSString *)newMaterialFileName
 {
-    ASSIGN(materialFileName,newMaterialFileName);
+    ASSIGN(materialFileName, newMaterialFileName);
 }
 
 - (void) removeInvalidLinesFromMaterialInstanceScript

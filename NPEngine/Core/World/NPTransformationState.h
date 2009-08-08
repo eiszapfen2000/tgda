@@ -32,6 +32,8 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
+- (void) reset;
+
 - (FMatrix4 *) modelMatrix;
 - (FMatrix4 *) inverseModelMatrix;
 - (FMatrix4 *) viewMatrix;

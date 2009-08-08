@@ -21,6 +21,8 @@
 #include "Plane.h"
 #include "FPlane.h"
 
+#include "FRectangle.h"
+
 void npmath_initialise();
 
 #endif

@@ -66,16 +66,25 @@
 
 - (void) setFirstGenerator:(NPRandomNumberGenerator *)newFirstGenerator
 {
-    ASSIGN(firstGenerator,newFirstGenerator);
+    ASSIGN(firstGenerator, newFirstGenerator);
 
     [ self checkForSubGenerators ];
 }
 
 - (void) setSecondGenerator:(NPRandomNumberGenerator *)newSecondGenerator
 {
-    ASSIGN(secondGenerator,newSecondGenerator);
+    ASSIGN(secondGenerator, newSecondGenerator);
 
     [ self checkForSubGenerators ];
+}
+
+- (void) reset
+{
+    if ( firstGenerator != nil && secondGenerator != nil )
+    {
+        [ firstGenerator  reset ];
+        [ secondGenerator reset ];
+    }
 }
 
 - (BOOL) ready

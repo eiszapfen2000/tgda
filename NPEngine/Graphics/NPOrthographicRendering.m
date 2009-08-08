@@ -26,28 +26,48 @@
 + (FVector2) alignTop:(FVector2)vector
 {
     FVector2 aligned = { vector.x, [ self top ] - vector.y };
-
     return aligned;
 }
 
 + (FVector2) alignBottom:(FVector2)vector
 {
     FVector2 aligned = { vector.x, [ self bottom ] + vector.y };
-
     return aligned;
 }
 
 + (FVector2) alignLeft:(FVector2)vector
 {
     FVector2 aligned = { [ self left ] + vector.x, vector.y };
-
     return aligned;
 }
 
 + (FVector2) alignRight:(FVector2)vector
 {
     FVector2 aligned = { [ self right ] - vector.x, vector.y };
+    return aligned;
+}
 
++ (FVector2) alignTopLeft:(FVector2)vector
+{
+    FVector2 aligned = { [ self left ] + vector.x, [ self top ] - vector.y };
+    return aligned;
+}
+
++ (FVector2) alignTopRight:(FVector2)vector
+{
+    FVector2 aligned = { [ self right ] - vector.x, [ self top ] - vector.y };
+    return aligned;
+}
+
++ (FVector2) alignBottomLeft:(FVector2)vector
+{
+    FVector2 aligned = { [ self left ] + vector.x, [ self bottom ] + vector.y };
+    return aligned;
+}
+
++ (FVector2) alignBottomRight:(FVector2)vector
+{
+    FVector2 aligned = { [ self right ] - vector.x, [ self bottom ] + vector.y };
     return aligned;
 }
 

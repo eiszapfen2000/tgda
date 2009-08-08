@@ -33,6 +33,7 @@
 - (NpState) pixelFormat;
 - (Int) width;
 - (Int) height;
+- (NpTextureFilterState *) textureFilterState;
 
 - (void) setDataFormat:(NpState)newDataFormat;
 - (void) setPixelFormat:(NpState)newPixelFormat;

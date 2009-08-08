@@ -11,7 +11,8 @@ libNPEngineGraphics_SUBPROJECTS = \
     R2VB \
     RenderTarget \
     State \
-    Viewport
+    Utilities \
+    Viewport \
 
 libNPEngineGraphics_OBJC_FILES = \
 NPEngineGraphics.m \
