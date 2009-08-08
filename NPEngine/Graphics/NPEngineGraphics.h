@@ -31,6 +31,8 @@
 
 #import "Graphics/State/NpState.h"
 
+#import "Utilities/NPPrimitivesRendering.h"
+
 #import "Graphics/Viewport/NPViewport.h"
 #import "Graphics/Viewport/NPViewportManager.h"
 

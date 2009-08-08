@@ -14,6 +14,7 @@ Plane.c \
 FPlane.c \
 Ray.c \
 FRay.c \
+FRectangle.c \
 NpMath.c
 
 libNPEngineCoreMath_HEADER_FILES = \
@@ -25,6 +26,7 @@ Matrix.h \
 Quaternion.h \
 Random.h \
 Vector.h \
+FRectangle.h \
 NpMath.h
 
 include $(TGDA_DIR)/GNUmakefile.flags

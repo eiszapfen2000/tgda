@@ -16,4 +16,6 @@ void npmath_initialise()
     npmath_fplane_initialise();
     npmath_ray_initialise();
     npmath_fray_initialise();
+
+    npmath_frectangle_initialise();
 }

@@ -87,6 +87,11 @@
     return height;
 }
 
+- (NpTextureFilterState *) textureFilterState
+{
+    return &textureFilterState;
+}
+
 - (void) setDataFormat:(NpState)newDataFormat
 {
     dataFormat = newDataFormat;

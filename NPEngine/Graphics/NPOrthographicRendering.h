@@ -22,6 +22,10 @@
 + (FVector2) alignBottom:(FVector2)vector;
 + (FVector2) alignLeft:(FVector2)vector;
 + (FVector2) alignRight:(FVector2)vector;
++ (FVector2) alignTopLeft:(FVector2)vector;
++ (FVector2) alignTopRight:(FVector2)vector;
++ (FVector2) alignBottomLeft:(FVector2)vector;
++ (FVector2) alignBottomRight:(FVector2)vector;
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;

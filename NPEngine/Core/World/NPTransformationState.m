@@ -60,6 +60,23 @@
     [ super dealloc ];
 }
 
+- (void) reset
+{
+    fm4_m_set_identity(modelMatrix);
+    fm4_m_set_identity(viewMatrix);
+    fm4_m_set_identity(projectionMatrix);
+
+    recomputeInverseModelMatrix = YES;
+    recomputeInverseViewMatrix = YES;
+    recomputeInverseProjectionMatrix = YES;
+    recomputeModelViewMatrix = YES;
+    recomputeInverseModelViewMatrix = YES;
+    recomputeViewProjectionMatrix = YES;
+    recomputeInverseViewProjectionMatrix = YES;
+    recomputeModelViewProjectionMatrix = YES;
+    recomputeInverseModelViewProjectionMatrix = YES;
+}
+
 - (FMatrix4 *) modelMatrix
 {
     return modelMatrix;
