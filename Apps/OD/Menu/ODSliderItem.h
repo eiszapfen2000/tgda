@@ -14,6 +14,10 @@
     id effect;
 
     Float scaleFactor;
+
+    id target;
+    unsigned int size;
+    int offset;
 }
 
 - (id) init;

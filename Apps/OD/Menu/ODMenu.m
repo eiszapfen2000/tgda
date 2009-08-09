@@ -4,6 +4,92 @@
 
 @implementation ODMenu
 
++ (FVector2) calculatePosition:(FVector2)position forAlignment:(NpState)alignment
+{
+    FVector2 result;
+
+    switch ( alignment )
+    {
+        case OD_MENUITEM_ALIGNMENT_TOPLEFT:    { result = [ NPOrthographicRendering alignTopLeft:position     ]; break; }
+        case OD_MENUITEM_ALIGNMENT_TOP:        { result = [ NPOrthographicRendering alignTop:position         ]; break; }
+        case OD_MENUITEM_ALIGNMENT_TOPRIGHT:   { result = [ NPOrthographicRendering alignTopRight:position    ]; break; }
+        case OD_MENUITEM_ALIGNMENT_RIGHT:      { result = [ NPOrthographicRendering alignRight:position       ]; break; }
+        case OD_MENUITEM_ALIGNMENT_BOTTOMRIGHT:{ result = [ NPOrthographicRendering alignBottomRight:position ]; break; }
+        case OD_MENUITEM_ALIGNMENT_BOTTOM:     { result = [ NPOrthographicRendering alignBottom:position      ]; break; }
+        case OD_MENUITEM_ALIGNMENT_BOTTOMLEFT: { result = [ NPOrthographicRendering alignBottomLeft:position  ]; break; }
+        case OD_MENUITEM_ALIGNMENT_LEFT:       { result = [ NPOrthographicRendering alignLeft:position        ]; break; }
+    }
+
+    return result;
+}
+
++ (void) alignRectangle:(FRectangle *)rectangle withAlignment:(NpState)alignment
+{
+    FVector2 alignedMin;
+    FVector2 alignedMax;
+
+    switch ( alignment )
+    {
+        case OD_MENUITEM_ALIGNMENT_TOPLEFT:
+        {
+            rectangle->min = [ NPOrthographicRendering alignTopLeft:rectangle->min ];
+            rectangle->max = [ NPOrthographicRendering alignTopLeft:rectangle->max ];
+            break;
+        }
+
+        case OD_MENUITEM_ALIGNMENT_TOP:
+        {
+            rectangle->min = [ NPOrthographicRendering alignTop:rectangle->min ];
+            rectangle->max = [ NPOrthographicRendering alignTop:rectangle->max ];
+            break;
+        }
+
+        case OD_MENUITEM_ALIGNMENT_TOPRIGHT:
+        {
+            rectangle->min = [ NPOrthographicRendering alignTopRight:rectangle->min ];
+            rectangle->max = [ NPOrthographicRendering alignTopRight:rectangle->max ];
+            break;
+        }
+
+        case OD_MENUITEM_ALIGNMENT_RIGHT:
+        {
+            rectangle->min = [ NPOrthographicRendering alignRight:rectangle->min ];
+            rectangle->max = [ NPOrthographicRendering alignRight:rectangle->max ];
+            break;
+        }
+
+        case OD_MENUITEM_ALIGNMENT_BOTTOMRIGHT:
+        {
+            rectangle->min = [ NPOrthographicRendering alignBottomRight:rectangle->min ];
+            rectangle->max = [ NPOrthographicRendering alignBottomRight:rectangle->max ];
+            break;
+        }
+
+        case OD_MENUITEM_ALIGNMENT_BOTTOM:
+        {
+            rectangle->min = [ NPOrthographicRendering alignBottom:rectangle->min ];
+            rectangle->max = [ NPOrthographicRendering alignBottom:rectangle->max ];
+            break;
+        }
+
+        case OD_MENUITEM_ALIGNMENT_BOTTOMLEFT:
+        {
+            rectangle->min = [ NPOrthographicRendering alignBottomLeft:rectangle->min ];
+            rectangle->max = [ NPOrthographicRendering alignBottomLeft:rectangle->max ];
+            break;
+        }
+
+        case OD_MENUITEM_ALIGNMENT_LEFT:
+        {
+            rectangle->min = [ NPOrthographicRendering alignLeft:rectangle->min ];
+            rectangle->max = [ NPOrthographicRendering alignLeft:rectangle->max ];
+            break;
+        }
+    }
+
+    frectangle_r_recalculate_min_max(rectangle);
+}
+
 - (id) init
 {
     return [ self initWithName:@"Menu" ];
@@ -20,14 +106,14 @@
 
     keywordMappings = [[ NSMutableDictionary alloc ] init ];
 
-    [ keywordMappings setObject:[ NSNumber numberWithInt:0] forKey:@"Left" ];
-    [ keywordMappings setObject:[ NSNumber numberWithInt:1] forKey:@"Bottom" ];
-    [ keywordMappings setObject:[ NSNumber numberWithInt:2] forKey:@"Right" ];
-    [ keywordMappings setObject:[ NSNumber numberWithInt:3] forKey:@"Top" ];
-    [ keywordMappings setObject:[ NSNumber numberWithInt:4] forKey:@"TopLeft" ];
-    [ keywordMappings setObject:[ NSNumber numberWithInt:5] forKey:@"TopRight" ];
-    [ keywordMappings setObject:[ NSNumber numberWithInt:6] forKey:@"BottomLeft" ];
-    [ keywordMappings setObject:[ NSNumber numberWithInt:7] forKey:@"BottomRight" ];
+    [ keywordMappings setObject:[NSNumber numberWithInt:0] forKey:@"TopLeft" ];
+    [ keywordMappings setObject:[NSNumber numberWithInt:1] forKey:@"Top" ];
+    [ keywordMappings setObject:[NSNumber numberWithInt:2] forKey:@"TopRight" ];
+    [ keywordMappings setObject:[NSNumber numberWithInt:3] forKey:@"Right" ];
+    [ keywordMappings setObject:[NSNumber numberWithInt:4] forKey:@"BottomRight" ];
+    [ keywordMappings setObject:[NSNumber numberWithInt:5] forKey:@"Bottom" ];
+    [ keywordMappings setObject:[NSNumber numberWithInt:6] forKey:@"BottomLeft" ];
+    [ keywordMappings setObject:[NSNumber numberWithInt:7] forKey:@"Left" ];
 
     textures = [[ NSMutableDictionary alloc ] init ];
 
