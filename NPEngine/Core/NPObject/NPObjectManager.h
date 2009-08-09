@@ -22,5 +22,6 @@
 
 - (void) addObject:(NSValue *)newObject;
 - (void) removeObject:(NSValue *)object;
+- (id <NPPObject>) objectByName:(NSString *)objectName;
 
 @end
