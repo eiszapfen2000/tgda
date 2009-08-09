@@ -62,6 +62,25 @@
     [ objects removeObjectIdenticalTo:object ];
 }
 
+- (id <NPPObject>) objectByName:(NSString *)objectName
+{
+    NSEnumerator * objectsEnumerator = [ objects objectEnumerator ];
+    NSValue * value;
+    id <NPPObject> object;
+
+    while ( (value = [ objectsEnumerator nextObject ]) )
+    {
+        object = (id <NPPObject>)[ value pointerValue ];
+
+        if ( [[ object name ] isEqual:objectName ] == YES )
+        {
+            return object;
+        }
+    }
+
+    return nil;
+}
+
 - (NSString *) name
 {
     return name;

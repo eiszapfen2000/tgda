@@ -1,4 +1,9 @@
+#define _GNU_SOURCE
+#include <stdio.h>
 #include "FRectangle.h"
+
+#define MIN(_a,_b) ((_a < _b )? _a:_b)
+#define MAX(_a,_b) ((_a > _b )? _a:_b)
 
 NpFreeList * NP_FRECTANGLE_FREELIST = NULL;
 
@@ -41,6 +46,45 @@ void frectangle_vv_init_with_min_and_size_r(FVector2 * min, FVector2 * size, FRe
     rectangle->min.y = min->y;
     rectangle->max.x = min->x + size->x;
     rectangle->max.y = min->y + size->y;
+}
+
+void frectangle_r_recalculate_min_max(FRectangle * rectangle)
+{
+    Float minX = MIN(rectangle->min.x, rectangle->max.x);
+    Float minY = MIN(rectangle->min.y, rectangle->max.y);
+    Float maxX = MAX(rectangle->min.x, rectangle->max.x);
+    Float maxY = MAX(rectangle->min.y, rectangle->max.y);
+
+    rectangle->min.x = minX;
+    rectangle->min.y = minY;
+    rectangle->max.x = maxX;
+    rectangle->max.y = maxY;
+}
+
+Float frectangle_r_calculate_width(FRectangle * rectangle)
+{
+    return rectangle->max.x - rectangle->min.x;
+}
+
+Float frectangle_r_calculate_height(FRectangle * rectangle)
+{
+    return rectangle->max.y - rectangle->min.y;
+}
+
+Float frectangle_r_calculate_x_center(FRectangle * rectangle)
+{
+    return rectangle->min.x + (rectangle->max.x - rectangle->min.x) * 0.5f;
+}
+
+Float frectangle_r_calculate_y_center(FRectangle * rectangle)
+{
+    return rectangle->min.y + (rectangle->max.y - rectangle->min.y) * 0.5f;
+}
+
+void frectangle_r_calculate_center_v(FRectangle * rectangle, FVector2 * result)
+{
+    result->x = frectangle_r_calculate_x_center(rectangle);
+    result->y = frectangle_r_calculate_y_center(rectangle);
 }
 
 Int32 frectangle_vr_is_point_inside(FVector2 * point, FRectangle * rectangle)
