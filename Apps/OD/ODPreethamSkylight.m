@@ -86,7 +86,7 @@
     *position = *[[[[[ NP applicationController ] sceneManager ] currentScene ] camera ] position ];
 
     lightDirection->x = 0.0f;
-    lightDirection->y = 1.0f;
+    lightDirection->y = 0.1f;
     lightDirection->z = -1.0f;
     fv3_v_normalise(lightDirection);
 

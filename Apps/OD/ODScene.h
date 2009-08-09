@@ -17,8 +17,11 @@
     id renderTargetConfiguration;
     id sceneRenderTexture;
     id luminanceRenderTexture;
+
     Int32 luminanceMaxMipMapLevel;
-    CGparameter mipLevel;
+    Float referenceWhite;
+    Float key;
+    CGparameter toneMappingParameters;
 }
 
 - (id) init;

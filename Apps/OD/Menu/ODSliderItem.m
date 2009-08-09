@@ -40,7 +40,11 @@
     NSArray * lineSizeStrings = [ dictionary objectForKey:@"LineSize" ];
     NSArray * headSizeStrings = [ dictionary objectForKey:@"HeadSize" ];
 
-    if ( positionStrings == nil || lineSizeStrings == nil || headSizeStrings == nil )
+    NSString * alignmentString     = [ dictionary objectForKey:@"Alignment" ];
+    NSString * startPositionString = [ dictionary objectForKey:@"StartPosition" ];
+
+    if ( positionStrings == nil || lineSizeStrings == nil || headSizeStrings == nil ||
+         alignmentString == nil || startPositionString == nil )
     {
         NPLOG_ERROR(@"Dictionary incomplete");
         return NO;
@@ -55,10 +59,15 @@
     headSize.x = [[ headSizeStrings objectAtIndex:0 ] floatValue ];
     headSize.y = [[ headSizeStrings objectAtIndex:1 ] floatValue ];
 
-    frectangle_vv_init_with_min_and_size_r(&position, &lineSize, lineGeometry);
+    alignment  = [[ (ODMenu *)parent valueForKeyword:alignmentString ] intValue ];
 
-    FVector2 sliderPosition = position;
-    NSString * startPositionString = [ dictionary objectForKey:@"StartPosition" ];
+    frectangle_vv_init_with_min_and_size_r(&position, &lineSize, lineGeometry);
+    [ ODMenu alignRectangle:lineGeometry withAlignment:alignment ];
+
+    Float halfHeadWidth = headSize.x * 0.5f;
+    FVector2 sliderPosition = lineGeometry->min;
+    sliderPosition.x -= halfHeadWidth;
+
     if ( [ startPositionString isEqual:@"Center" ] == YES )
     {
         sliderPosition.x += lineSize.x * 0.5f;
@@ -73,18 +82,25 @@
 
     lineTexture = [ (ODMenu *)parent textureForKey:@"SliderLine" ];
     headTexture = [ (ODMenu *)parent textureForKey:@"SliderHead" ];
-    effect = [ (ODMenu *)parent menuEffect ];
+    effect      = [ (ODMenu *)parent menuEffect ];
 
-    /*NSString * alignmentString = [ dictionary objectForKey:@"Alignment" ];
-    alignment = [[ (ODMenu *)parent valueForKeyword:alignmentString ] intValue ];*/
+    NSString * targetObjectString   = [ dictionary objectForKey:@"TargetObject" ];
+    target = [[[ NP Core ] objectManager ] objectByName:targetObjectString ];
+    NSAssert1(target != nil, @"%@ not found", targetObjectString);
+
+    NSString * targetPropertyString = [ dictionary objectForKey:@"TargetProperty" ];
+    BOOL propertyFound = GSObjCFindVariable(target, [ targetPropertyString cStringUsingEncoding:NSASCIIStringEncoding ], NULL, &size, &offset );
+    NSAssert1(propertyFound != NO, @"Property with Name \"%@\" not found", targetPropertyString);
 
     return YES;
 }
 
 - (Float) scaleFactor
 {
-    return 1.0f;
-//    return (sliderPosition->x - position->x) / lineSize->x;
+    Float headCenter = frectangle_r_calculate_x_center(headGeometry);
+    Float lineWidth  = frectangle_r_calculate_width(lineGeometry);
+
+    return (headCenter - lineGeometry->min.x) / lineWidth;
 }
 
 - (BOOL) mouseHit:(FVector2)mousePosition
@@ -101,7 +117,14 @@
 
 - (void) onClick:(FVector2)mousePosition
 {
-    //sliderPosition->x = mousePosition.x;
+    Float width = frectangle_r_calculate_width(headGeometry);
+
+    headGeometry->min.x = mousePosition.x - width * 0.5f;
+    headGeometry->max.x = mousePosition.x + width * 0.5f;
+
+    Float brak = [ self scaleFactor ];
+
+    GSObjCSetVariable(target, offset, size, &brak);
 }
 
 - (void) update:(Float)frameTime

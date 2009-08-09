@@ -44,10 +44,14 @@
     //[ projector setRenderFrustum:YES ];
 
     fullscreenEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Fullscreen.cgfx" ];
-    mipLevel = [ fullscreenEffect parameterWithName:@"mipLevel" ];
+    toneMappingParameters = [ fullscreenEffect parameterWithName:@"toneMappingParameters" ];
+    NSAssert1(toneMappingParameters != NULL, @"%@ missing \"toneMappingParameters\"", [ fullscreenEffect name ]);
 
     IVector2 * resolution = [[[ NP Graphics ] viewportManager ] currentControlSize ];
-    renderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Config" parent:self ];
+    renderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTConfig" parent:self ];
+    [ renderTargetConfiguration setWidth:resolution->x ];
+    [ renderTargetConfiguration setHeight:resolution->y ];
+
 
     sceneRenderTexture = [[ NPRenderTexture renderTextureWithName:@"SceneRT"
                                                              type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
@@ -68,7 +72,8 @@
                                                           textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ] retain ];
 
     luminanceMaxMipMapLevel = 1 + floor(log2(MAX(resolution->x, resolution->y)));
-
+    referenceWhite = 1.5f;
+    key = 1.0f;
 
     return self;
 }
@@ -193,18 +198,7 @@
 
     [ skybox render ];
 
-    //[ sceneRenderTexture detach ];
-    //[ renderTargetConfiguration unbindFBO ];
-    //[ renderTargetConfiguration deactivateDrawBuffers ];
-    //[ renderTargetConfiguration deactivateViewport ];
-
-    FMatrix4 identity;
-    fm4_m_set_identity(&identity);
-
-    NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
-    [ trafo setModelMatrix:&identity ];
-    [ trafo setViewMatrix:&identity ];
-    [ trafo setProjectionMatrix:&identity ];
+    [[[[ NP Core ] transformationStateManager ] currentTransformationState ] reset ];
 
     [[ renderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:luminanceRenderTexture ];
     [ luminanceRenderTexture attachToColorBufferIndex:0 ];
@@ -232,7 +226,7 @@
 
     [ fullscreenEffect deactivate ];
 
-    [ luminanceRenderTexture detach ];
+    //[ luminanceRenderTexture detach ];
     [ renderTargetConfiguration unbindFBO ];
     [ renderTargetConfiguration deactivateDrawBuffers ];
     [ renderTargetConfiguration deactivateViewport ];
@@ -241,12 +235,14 @@
 
     [[ sceneRenderTexture texture ] activateAtColorMapIndex:0 ];
     [[ luminanceRenderTexture texture ] activateAtColorMapIndex:1 ];
-    [ fullscreenEffect uploadFloatParameter:mipLevel andValue:(Float)luminanceMaxMipMapLevel ];
+
+    FVector3 toneMappingParameterVector = { (Float)luminanceMaxMipMapLevel, referenceWhite, key };
+    [ fullscreenEffect uploadFVector3Parameter:toneMappingParameters andValue:&toneMappingParameterVector ];
     [ fullscreenEffect activateTechniqueWithName:@"tonemap" ];
 
     glBegin(GL_QUADS);
 
-            glTexCoord2f(0.0f,1.0f);            
+            glTexCoord2f(0.0f,1.0f);
             glVertex4f(-1.0f,1.0f,0.0f,1.0f);
 
             glTexCoord2f(0.0f,0.0f);
@@ -263,18 +259,18 @@
     [ fullscreenEffect deactivate ];
 
    
-    /*[[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] activate ];
 
     [[[ NP Graphics ] orthographicRendering ] activate ];
 
-    //FVector2 fpsPosition = {0.0f, 0.1f };
-    //[ font renderString:[ NSString stringWithFormat:@"%d", [[[ NP Core ] timer ] fps ]] atPosition:&fpsPosition withSize:0.05f ];
+    FVector2 fpsPosition = {0.0f, 0.1f };
+    [ font renderString:[ NSString stringWithFormat:@"%d", [[[ NP Core ] timer ] fps ]] atPosition:&fpsPosition withSize:0.05f ];
 
     [ menu render ];
 
-    [[[ NP Graphics ] orthographicRendering ] deactivate ];*/
+    [[[ NP Graphics ] orthographicRendering ] deactivate ];
 
     [[[ NP Graphics ] stateConfiguration ] deactivate ];
 }

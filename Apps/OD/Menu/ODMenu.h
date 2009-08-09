@@ -2,6 +2,15 @@
 #import "Core/Math/NpMath.h"
 #import "Graphics/npgl.h"
 
+#define OD_MENUITEM_ALIGNMENT_TOPLEFT       0
+#define OD_MENUITEM_ALIGNMENT_TOP           1
+#define OD_MENUITEM_ALIGNMENT_TOPRIGHT      2
+#define OD_MENUITEM_ALIGNMENT_RIGHT         3
+#define OD_MENUITEM_ALIGNMENT_BOTTOMRIGHT   4
+#define OD_MENUITEM_ALIGNMENT_BOTTOM        5
+#define OD_MENUITEM_ALIGNMENT_BOTTOMLEFT    6
+#define OD_MENUITEM_ALIGNMENT_LEFT          7
+
 @interface ODMenu : NPObject
 {
     NSMutableDictionary * keywordMappings;
@@ -16,6 +25,9 @@
 
     id menuEffect;
 }
+
++ (FVector2) calculatePosition:(FVector2)position forAlignment:(NpState)alignment;
++ (void) alignRectangle:(FRectangle *)rectangle withAlignment:(NpState)alignment;
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
