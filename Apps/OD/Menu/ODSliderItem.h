@@ -4,6 +4,8 @@
 
 @interface ODSliderItem : NPObject
 {
+    NSString * description;
+
     FRectangle * lineGeometry;
     FRectangle * headGeometry;
 
@@ -13,7 +15,8 @@
     id headTexture;
     id effect;
 
-    Float scaleFactor;
+    Float minimumValue;
+    Float maximumValue;
 
     id target;
     unsigned int size;
@@ -27,7 +30,7 @@
 
 - (BOOL) loadFromDictionary:(NSDictionary *)dictionary;
 
-- (Float) scaleFactor;
+- (Float) scaledValue;
 
 - (BOOL) mouseHit:(FVector2)mousePosition;
 - (void) onClick:(FVector2)mousePosition;

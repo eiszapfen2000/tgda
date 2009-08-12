@@ -36,6 +36,8 @@
 
 - (BOOL) loadFromDictionary:(NSDictionary *)dictionary
 {
+    description = [[ dictionary objectForKey:@"Description" ] retain ];
+
     NSArray * positionStrings = [ dictionary objectForKey:@"Position" ];
     NSArray * lineSizeStrings = [ dictionary objectForKey:@"LineSize" ];
     NSArray * headSizeStrings = [ dictionary objectForKey:@"HeadSize" ];
@@ -43,8 +45,12 @@
     NSString * alignmentString     = [ dictionary objectForKey:@"Alignment" ];
     NSString * startPositionString = [ dictionary objectForKey:@"StartPosition" ];
 
+    NSString * minimumValueString = [ dictionary objectForKey:@"MinimumValue" ];
+    NSString * maximumValueString = [ dictionary objectForKey:@"MaximumValue" ];
+
     if ( positionStrings == nil || lineSizeStrings == nil || headSizeStrings == nil ||
-         alignmentString == nil || startPositionString == nil )
+         alignmentString == nil || startPositionString == nil || minimumValueString == nil ||
+         maximumValueString == nil || description == nil )
     {
         NPLOG_ERROR(@"Dictionary incomplete");
         return NO;
@@ -80,10 +86,6 @@
 
     frectangle_vv_init_with_min_and_size_r(&sliderPosition, &headSize, headGeometry);
 
-    lineTexture = [ (ODMenu *)parent textureForKey:@"SliderLine" ];
-    headTexture = [ (ODMenu *)parent textureForKey:@"SliderHead" ];
-    effect      = [ (ODMenu *)parent menuEffect ];
-
     NSString * targetObjectString   = [ dictionary objectForKey:@"TargetObject" ];
     target = [[[ NP Core ] objectManager ] objectByName:targetObjectString ];
     NSAssert1(target != nil, @"%@ not found", targetObjectString);
@@ -92,15 +94,23 @@
     BOOL propertyFound = GSObjCFindVariable(target, [ targetPropertyString cStringUsingEncoding:NSASCIIStringEncoding ], NULL, &size, &offset );
     NSAssert1(propertyFound != NO, @"Property with Name \"%@\" not found", targetPropertyString);
 
+    minimumValue = [ minimumValueString floatValue ];
+    maximumValue = [ maximumValueString floatValue ];
+
+    lineTexture = [ (ODMenu *)parent textureForKey:@"SliderLine" ];
+    headTexture = [ (ODMenu *)parent textureForKey:@"SliderHead" ];
+    effect      = [ (ODMenu *)parent effect ];
+
     return YES;
 }
 
-- (Float) scaleFactor
+- (Float) scaledValue
 {
     Float headCenter = frectangle_r_calculate_x_center(headGeometry);
     Float lineWidth  = frectangle_r_calculate_width(lineGeometry);
+    Float normalisedScale = (headCenter - lineGeometry->min.x) / lineWidth;
 
-    return (headCenter - lineGeometry->min.x) / lineWidth;
+    return normalisedScale * ( maximumValue - minimumValue ) + minimumValue;
 }
 
 - (BOOL) mouseHit:(FVector2)mousePosition
@@ -122,9 +132,9 @@
     headGeometry->min.x = mousePosition.x - width * 0.5f;
     headGeometry->max.x = mousePosition.x + width * 0.5f;
 
-    Float brak = [ self scaleFactor ];
+    Float scaledValue = [ self scaledValue ];
 
-    GSObjCSetVariable(target, offset, size, &brak);
+    GSObjCSetVariable(target, offset, size, &scaledValue);
 }
 
 - (void) update:(Float)frameTime
@@ -138,6 +148,9 @@
     {
         return;
     }
+
+    FVector2 position = { lineGeometry->min.x, lineGeometry->max.y + 0.035f };
+    [[ (ODMenu *)parent font ] renderString:description atPosition:&position withSize:0.035f ];
 
     [ lineTexture activateAtColorMapIndex:0 ];
     [ effect activate ];

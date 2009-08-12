@@ -35,14 +35,15 @@
     surfaceGeometry = [[ NPVertexBuffer alloc ] initWithName:@"SG" parent:self ];
 
     effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"ocean_cpu.cgfx" ];
+
     lowerLeftCornerParameter  = [ effect parameterWithName:@"lowerLeft"  ];
     lowerRightCornerParameter = [ effect parameterWithName:@"lowerRight" ];
     upperRightCornerParameter = [ effect parameterWithName:@"upperRight" ];
     upperLeftCornerParameter  = [ effect parameterWithName:@"upperLeft"  ];
-    deltaParameter = [ effect parameterWithName:@"delta" ];
+    deltaParameter            = [ effect parameterWithName:@"delta"      ];
 
-    NSAssert(lowerLeftCornerParameter != NULL && lowerRightCornerParameter != NULL &&
-             upperRightCornerParameter != NULL && upperLeftCornerParameter != NULL &&
+    NSAssert(lowerLeftCornerParameter  != NULL && lowerRightCornerParameter != NULL &&
+             upperRightCornerParameter != NULL && upperLeftCornerParameter  != NULL &&
              deltaParameter != NULL, @"Corner parameter missing");
 
     return self;
@@ -233,7 +234,7 @@
 
             tmp.z = 1.0f;
 
-            fm4_mv_multiply_v(inverseViewProjection,&tmp,&resultF);
+            fm4_mv_multiply_v(inverseViewProjection, &tmp, &resultF);
 
             ray.point.x = resultN.x / resultN.w;
             ray.point.y = resultN.y / resultN.w;
