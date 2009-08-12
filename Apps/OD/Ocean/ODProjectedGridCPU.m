@@ -1,11 +1,13 @@
 #import "NP.h"
 
 #import "ODProjectedGridCPU.h"
+
+#import "Entities/ODCamera.h"
+#import "Entities/ODProjector.h"
+#import "Utilities/ODFrustum.h"
+
 #import "ODScene.h"
 #import "ODSceneManager.h"
-#import "ODCamera.h"
-#import "ODProjector.h"
-#import "ODFrustum.h"
 #import "ODCore.h"
 
 @implementation ODProjectedGridCPU

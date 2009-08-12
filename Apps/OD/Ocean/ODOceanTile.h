@@ -1,6 +1,5 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
-#import "ODPEntity.h"
 
 @class NPFile;
 @class NPTexture;

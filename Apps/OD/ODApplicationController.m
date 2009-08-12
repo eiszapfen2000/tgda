@@ -1,7 +1,7 @@
 #import <AppKit/NSCursor.h>
 #import "ODApplicationController.h"
 #import "ODSceneManager.h"
-#import "ODEntityManager.h"
+#import "Entities/ODEntityManager.h"
 #import "NP.h"
 
 @implementation ODApplicationController
