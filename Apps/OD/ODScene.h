@@ -13,6 +13,7 @@
     id menu;
 
     id fullscreenEffect;
+    id fullscreenQuad;
 
     id renderTargetConfiguration;
     id sceneRenderTexture;

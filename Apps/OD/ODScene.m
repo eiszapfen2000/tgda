@@ -43,6 +43,8 @@
     [ projector cameraRotateUsingYaw:-0.0f andPitch:-90.0f ];
     //[ projector setRenderFrustum:YES ];
 
+    fullscreenQuad = [[ NPFullscreenQuad alloc ] initWithName:@"Quad" parent:self ];
+
     fullscreenEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Fullscreen.cgfx" ];
     toneMappingParameters = [ fullscreenEffect parameterWithName:@"toneMappingParameters" ];
     NSAssert1(toneMappingParameters != NULL, @"%@ missing \"toneMappingParameters\"", [ fullscreenEffect name ]);
@@ -72,7 +74,7 @@
                                                           textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ] retain ];
 
     luminanceMaxMipMapLevel = 1 + floor(log2(MAX(resolution->x, resolution->y)));
-    referenceWhite = 1.5f;
+    referenceWhite = 2.5f;
     key = 1.0f;
 
     return self;
@@ -80,6 +82,8 @@
 
 - (void) dealloc
 {
+    [ fullscreenQuad release ];
+
     [ menu      release ];
     [ projector release ];
     [ camera    release ];
@@ -182,8 +186,10 @@
     // clear framebuffer/depthbuffer
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
+    // Set initial states
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
+    // Bind FBO and attach float color scene texture
     [ renderTargetConfiguration resetColorTargetsArray ];
     [[ renderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:sceneRenderTexture ];
     [ renderTargetConfiguration bindFBO ];
@@ -191,87 +197,64 @@
     [ renderTargetConfiguration activateDrawBuffers ];
     [ renderTargetConfiguration activateViewport ];
 
+    // Clear rendertexture(s)
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
 
+    // Render scene
     [ camera render ];
     [ projector render ];
 
     [ skybox render ];
 
+    // Reset matrices (model, view, projection) to identity
     [[[[ NP Core ] transformationStateManager ] currentTransformationState ] reset ];
 
+    // Detach float color scene texture, attach luminance float texture
     [[ renderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:luminanceRenderTexture ];
     [ luminanceRenderTexture attachToColorBufferIndex:0 ];
     [ renderTargetConfiguration activateDrawBuffers ];
     [ renderTargetConfiguration activateViewport ];
 
+    // Render to luminance texture, converting the source scene color to luminance
+    // during the process
     [[ sceneRenderTexture texture ] activateAtColorMapIndex:0 ];
     [ fullscreenEffect activateTechniqueWithName:@"luminance" ];
 
-    glBegin(GL_QUADS);
-
-            glTexCoord2f(0.0f,1.0f);            
-            glVertex4f(-1.0f,1.0f,0.0f,1.0f);
-
-            glTexCoord2f(0.0f,0.0f);
-            glVertex4f(-1.0f,-1.0,0.0f,1.0f);
-
-            glTexCoord2f(1.0f,0.0f);
-            glVertex4f(1.0f,-1.0f,0.0f,1.0f);
-
-            glTexCoord2f(1.0f,1.0f);
-            glVertex4f(1.0f,1.0f,0.0f,1.0f);
-
-    glEnd();
+    [ fullscreenQuad render ];
 
     [ fullscreenEffect deactivate ];
 
-    //[ luminanceRenderTexture detach ];
+    // Deactivate FBO
     [ renderTargetConfiguration unbindFBO ];
     [ renderTargetConfiguration deactivateDrawBuffers ];
     [ renderTargetConfiguration deactivateViewport ];
 
+    // Generate mipmaps for luminance texture, since we want only the highest mipmaplevel
+    // as an approximation to the average luminance of the scene
     [ luminanceRenderTexture generateMipMaps ];
 
-    [[ sceneRenderTexture texture ] activateAtColorMapIndex:0 ];
+    // Bind scene and luminance texture, and do tonemapping
+    [[ sceneRenderTexture     texture ] activateAtColorMapIndex:0 ];
     [[ luminanceRenderTexture texture ] activateAtColorMapIndex:1 ];
 
     FVector3 toneMappingParameterVector = { (Float)luminanceMaxMipMapLevel, referenceWhite, key };
     [ fullscreenEffect uploadFVector3Parameter:toneMappingParameters andValue:&toneMappingParameterVector ];
     [ fullscreenEffect activateTechniqueWithName:@"tonemap" ];
 
-    glBegin(GL_QUADS);
-
-            glTexCoord2f(0.0f,1.0f);
-            glVertex4f(-1.0f,1.0f,0.0f,1.0f);
-
-            glTexCoord2f(0.0f,0.0f);
-            glVertex4f(-1.0f,-1.0,0.0f,1.0f);
-
-            glTexCoord2f(1.0f,0.0f);
-            glVertex4f(1.0f,-1.0f,0.0f,1.0f);
-
-            glTexCoord2f(1.0f,1.0f);
-            glVertex4f(1.0f,1.0f,0.0f,1.0f);
-
-    glEnd();
+    [ fullscreenQuad render ];
 
     [ fullscreenEffect deactivate ];
 
-   
+    // Activate blending for menu rendering
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] activate ];
 
     [[[ NP Graphics ] orthographicRendering ] activate ];
-
-    FVector2 fpsPosition = {0.0f, 0.1f };
-    [ font renderString:[ NSString stringWithFormat:@"%d", [[[ NP Core ] timer ] fps ]] atPosition:&fpsPosition withSize:0.05f ];
-
     [ menu render ];
-
     [[[ NP Graphics ] orthographicRendering ] deactivate ];
 
+    // Reset states
     [[[ NP Graphics ] stateConfiguration ] deactivate ];
 }
 

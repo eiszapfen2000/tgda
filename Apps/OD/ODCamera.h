@@ -34,19 +34,18 @@
 
 - (void) reset;
 
+- (Float) fov;
+- (Float) aspectRatio;
+- (Float) nearPlane;
+- (Float) farPlane;
 - (FVector3 *) position;
-- (void) setPosition:(FVector3 *)newPosition;
-
 - (FMatrix4 *) projection;
 
-- (Float) fov;
-- (void)  setFov:(Float)newFov;
-- (Float) nearPlane;
-- (void)  setNearPlane:(Float)newNearPlane;
-- (Float) farPlane;
-- (void)  setFarPlane:(Float)newFarPlane;
-- (Float) aspectRatio;
-- (void)  setAspectRatio:(Float)newAspectRatio;
+- (void) setFov:(Float)newFov;
+- (void) setNearPlane:(Float)newNearPlane;
+- (void) setFarPlane:(Float)newFarPlane;
+- (void) setAspectRatio:(Float)newAspectRatio;
+- (void) setPosition:(FVector3 *)newPosition;
 
 - (void) cameraRotateUsingYaw:(Float)yawDegrees andPitch:(Float)pitchDegrees;
 - (void) moveForward:(Float)frameTime;

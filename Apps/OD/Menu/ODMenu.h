@@ -23,7 +23,8 @@
 
     BOOL foundHit;
 
-    id menuEffect;
+    id font;
+    id effect;
 }
 
 + (FVector2) calculatePosition:(FVector2)position forAlignment:(NpState)alignment;
@@ -36,7 +37,8 @@
 
 - (BOOL) loadFromPath:(NSString *)path;
 
-- (id) menuEffect;
+- (id) font;
+- (id) effect;
 - (id) textureForKey:(NSString *)key;
 
 - (BOOL) foundHit;

@@ -25,9 +25,6 @@
 
 + (void) alignRectangle:(FRectangle *)rectangle withAlignment:(NpState)alignment
 {
-    FVector2 alignedMin;
-    FVector2 alignedMax;
-
     switch ( alignment )
     {
         case OD_MENUITEM_ALIGNMENT_TOPLEFT:
@@ -121,7 +118,7 @@
 
     menuItems = [[ NSMutableDictionary alloc ] init ];
 
-    menuClickAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"MenuClick" primaryInputAction:NP_INPUT_MOUSE_BUTTON_LEFT ];
+    menuClickAction      = [[[ NP Input ] inputActions ] addInputActionWithName:@"MenuClick" primaryInputAction:NP_INPUT_MOUSE_BUTTON_LEFT ];
     menuActivationAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"MenuActivation" primaryInputAction:NP_INPUT_KEYBOARD_M ];
     menuActive = NO;
 
@@ -153,16 +150,27 @@
 
     NSDictionary * menu = [ NSDictionary dictionaryWithContentsOfFile:absolutePath ];
 
-    NSString * menuEffectString = [ menu objectForKey:@"Effect" ];
-    if ( menuEffectString == nil )
+    NSString * effectString = [ menu objectForKey:@"Effect" ];
+    NSString * fontString   = [ menu objectForKey:@"Font" ];
+    NSDictionary * texturesDictionary = [ menu objectForKey:@"Textures" ];
+    NSDictionary * items = [ menu objectForKey:@"Items" ];
+
+    if ( effectString == nil )
     {
         NPLOG_ERROR(@"%@: Effect missing", name);
         return NO;
     }
 
-    menuEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:menuEffectString ];
+    effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:effectString ];
 
-    NSDictionary * texturesDictionary = [ menu objectForKey:@"Textures" ];
+    if ( fontString == nil )
+    {
+        NPLOG_ERROR(@"%@: Font missing", name);
+        return NO;
+    }
+
+    font = [[[ NP Graphics ] fontManager ] loadFontFromPath:fontString ];
+
     if ( texturesDictionary == nil )
     {
         NPLOG_ERROR(@"%@: Textures missing", name);
@@ -183,7 +191,6 @@
         }
     }
 
-    NSDictionary * items = [ menu objectForKey:@"Items" ];
     if ( items == nil )
     {
         NPLOG_ERROR(@"%@: Items missing", name);
@@ -216,9 +223,14 @@
     return YES;    
 }
 
-- (id) menuEffect
+- (id) font
 {
-    return menuEffect;
+    return font;
+}
+
+- (id) effect
+{
+    return effect;
 }
 
 - (id) textureForKey:(NSString *)key

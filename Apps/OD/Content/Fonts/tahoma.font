@@ -1,6 +1,6 @@
 {
     Name = "Tahoma";
-    Effect = "font.cgfx";
+    Effect = "Menu.cgfx";
     Texture = "tahoma.texture.tga";
 
     CharWidths0 = ("47","47","47","47","47","53","53","54","54","10","10","10","10","10","10","10");

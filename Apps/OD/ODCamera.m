@@ -72,49 +72,9 @@
 	fv3_v_zeros(position);
 }
 
-- (FVector3 *) position
-{
-	return position;
-}
-
-- (void) setPosition:(FVector3 *)newPosition
-{
-	*position = *newPosition;
-}
-
-- (FMatrix4 *) projection
-{
-    return projection;
-}
-
 - (Float) fov
 {
     return fov;
-}
-
-- (void) setFov:(Float)newFov
-{
-	fov = newFov;
-}
-
-- (Float) nearPlane
-{
-    return nearPlane;
-}
-
-- (void) setNearPlane:(Float)newNearPlane
-{
-	nearPlane = newNearPlane;
-}
-
-- (Float) farPlane
-{
-    return farPlane;
-}
-
-- (void) setFarPlane:(Float)newFarPlane
-{
-	farPlane = newFarPlane;
 }
 
 - (Float) aspectRatio
@@ -122,10 +82,51 @@
     return aspectRatio;
 }
 
+- (Float) nearPlane
+{
+    return nearPlane;
+}
+
+- (Float) farPlane
+{
+    return farPlane;
+}
+
+- (FVector3 *) position
+{
+	return position;
+}
+
+- (FMatrix4 *) projection
+{
+    return projection;
+}
+
+- (void) setFov:(Float)newFov
+{
+	fov = newFov;
+}
+
 - (void) setAspectRatio:(Float)newAspectRatio
 {
 	aspectRatio = newAspectRatio;
 }
+
+- (void) setNearPlane:(Float)newNearPlane
+{
+	nearPlane = newNearPlane;
+}
+
+- (void) setFarPlane:(Float)newFarPlane
+{
+	farPlane = newFarPlane;
+}
+
+- (void) setPosition:(FVector3 *)newPosition
+{
+	*position = *newPosition;
+}
+
 
 - (void) updateYaw:(Float)degrees
 {
@@ -282,7 +283,6 @@
 
     if ( [ wheelDownAction activated ] == YES )
     {
-        //NSLog(@"wheel down");
         fquat_q_forward_vector_v(orientation,forward);
 
         V_X(*position) += (forward->x * 2.0f);
@@ -293,7 +293,6 @@
 
     if ( [ wheelUpAction activated ] == YES )
     {
-        //NSLog(@"wheel up");
         fquat_q_forward_vector_v(orientation,forward);
 
         V_X(*position) -= (forward->x * 2.0f);
