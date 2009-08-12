@@ -1,15 +1,15 @@
 #import "NP.h"
 #import "ODCore.h"
 #import "ODScene.h"
-#import "ODCamera.h"
-#import "ODProjector.h"
-#import "ODSurface.h"
-#import "ODEntity.h"
-#import "ODOceanEntity.h"
-#import "ODPreethamSkylight.h"
-#import "ODEntityManager.h"
-#import "ODSceneManager.h"
+
+#import "Entities/ODCamera.h"
+#import "Entities/ODProjector.h"
+#import "Entities/ODEntity.h"
+#import "Entities/ODPreethamSkylight.h"
+#import "Entities/ODEntityManager.h"
 #import "Menu/ODMenu.h"
+
+#import "ODSceneManager.h"
 
 @implementation ODScene
 

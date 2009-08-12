@@ -3,24 +3,16 @@ include $(GNUSTEP_MAKEFILES)/common.make
 APP_NAME = OceanDemo
 
 OceanDemo_SUBPROJECTS = \
-    Menu
+    Entities \
+    Menu \
+    Ocean \
+    Utilities
 
 OceanDemo_OBJC_FILES = \
 main.m \
 ODApplicationController.m  \
-ODCamera.m \
-ODProjector.m \
-ODFrustum.m \
 ODScene.m \
 ODSceneManager.m \
-ODEntity.m \
-ODOceanEntity.m \
-ODPreethamSkylight.m \
-ODOceanTile.m \
-ODOceanAnimatedTile.m \
-ODEntityManager.m \
-ODPerlinNoise.m \
-ODProjectedGridCPU.m \
 ODCore.m
 
 OceanDemo_RESOURCE_FILES = \

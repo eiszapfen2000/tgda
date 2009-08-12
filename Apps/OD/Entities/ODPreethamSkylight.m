@@ -53,6 +53,7 @@
 
     if ( modelPath == nil || statesetPath == nil || entityName == nil )
     {
+        NPLOG_ERROR(@"%@: Dictionary incomplete.", name);
         return NO;
     }
 
@@ -89,7 +90,6 @@
     lightDirection->y = 0.1f;
     lightDirection->z = -1.0f;
     fv3_v_normalise(lightDirection);
-
 
     turbidity = 3.0f;
 
@@ -173,16 +173,6 @@
     [ effect uploadFVector2Parameter:thetaSunP andValue:sunTheta ];
     [ effect uploadFVector3Parameter:zenithColorP andValue:zenithColor ];
 
-/*
-	mEffect->setVariableVector3("LightDirection", D().getScene().getLight().getDirection());
-	mEffect->setVariableVector2("ThetaSun", sun_theta);
-	mEffect->setVariableVector3("ZenithColor", zenithColor);
-	mEffect->setVariableVector3("AColor",FVector3((FFloat)ABCDE_x[0], (FFloat)ABCDE_y[0], (FFloat)ABCDE_Y[0]));
-	mEffect->setVariableVector3("BColor",FVector3((FFloat)ABCDE_x[1], (FFloat)ABCDE_y[1], (FFloat)ABCDE_Y[1]));
-	mEffect->setVariableVector3("CColor",FVector3((FFloat)ABCDE_x[2], (FFloat)ABCDE_y[2], (FFloat)ABCDE_Y[2]));
-	mEffect->setVariableVector3("DColor",FVector3((FFloat)ABCDE_x[3], (FFloat)ABCDE_y[3], (FFloat)ABCDE_Y[3]));
-	mEffect->setVariableVector3("EColor",FVector3((FFloat)ABCDE_x[4], (FFloat)ABCDE_y[4], (FFloat)ABCDE_Y[4]));
-*/
     //[ stateset activate ];
     [ model render ];
 }
