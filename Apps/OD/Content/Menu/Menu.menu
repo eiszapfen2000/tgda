@@ -1,0 +1,60 @@
+{
+    Effect = "Menu.cgfx";
+    Font = "tahoma.font";
+
+    Textures = 
+    {
+        SliderLine = "Slider_Line.png";
+        SliderHead = "Slider_Head.png";
+        SelectedItem  = "Selected.png";
+    };
+
+    Items =
+    {
+        ToneMappingKeySlider =
+        {
+            Type = "ODSliderItem";
+            Description = "Key";
+            Alignment = "TopLeft";
+            Position = ("0.1", "0.1"  );
+            LineSize = ("0.2",  "0.05" );
+            HeadSize = ("0.04", "0.05" );
+            StartPosition = "Right";
+            MinimumValue = "0.0f";
+            MaximumValue = "1.0f";
+            TargetObject = "TestScene";
+            TargetProperty = "key";
+        };
+
+        ToneMappingReferenceWhiteSlider =
+        {
+            Type = "ODSliderItem";
+            Description = "Reference White";
+            Alignment = "TopLeft";
+            Position = ("0.1", "0.3"  );
+            LineSize = ("0.2",  "0.05" );
+            HeadSize = ("0.04", "0.05" );
+            StartPosition = "Center";
+            MinimumValue = "0.0f";
+            MaximumValue = "5.0f";
+            TargetObject = "TestScene";
+            TargetProperty = "referenceWhite";
+        };
+
+        InkColors =
+        {
+            Type = "ODSelectionGroup";
+            Description = "Group";
+            Alignment = "Left";
+            Position = ("0.1", "0.4" );
+            ItemSize = ( "0.08", "0.08" );
+            ItemSpacing = ( "0.01", "0.01" );
+            Rows = "2";
+            Columns = "2";
+            Selection = "Selected.png";
+            Textures = ( "Red.png", "Blue.png", "Green.png", "Yellow.png" );
+        };
+    };
+}
+ 
+
