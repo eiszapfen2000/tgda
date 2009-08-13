@@ -27,7 +27,7 @@
     id effect;
 }
 
-+ (FVector2) calculatePosition:(FVector2)position forAlignment:(NpState)alignment;
+//+ (FVector2) calculatePosition:(FVector2)position forAlignment:(NpState)alignment;
 + (void) alignRectangle:(FRectangle *)rectangle withAlignment:(NpState)alignment;
 
 - (id) init;

@@ -1,4 +1,5 @@
 #import "NP.h"
+#import "ODMenu.h"
 #import "ODSelectionGroup.h"
 
 @implementation ODSelectionGroup
@@ -17,14 +18,10 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    position = fv2_alloc_init();
-    size = fv2_alloc_init();
-    itemSize = fv2_alloc_init();
-    spacing = fv2_alloc_init();
+    boundingRectangle = frectangle_alloc_init();
+    rows = columns = activeItem = -1;
 
     textures = [[ NSMutableArray alloc ] init ];
-
-    rows = columns = activeItem = -1;
 
     return self;
 }
@@ -34,39 +31,88 @@
     [ textures removeAllObjects ];
     [ textures release ];
 
-    fv2_free(position);
-    fv2_free(size);
-    fv2_free(itemSize);
-    fv2_free(spacing);
+    SAFE_FREE(items);
+
+    frectangle_free(boundingRectangle);
 
     [ super dealloc ];
 }
 
 - (BOOL) loadFromDictionary:(NSDictionary *)dictionary
 {
-    NSArray * positionStrings = [ dictionary objectForKey:@"Position" ];
-    position->x = [[ positionStrings objectAtIndex:0 ] floatValue ];
-    position->y = [[ positionStrings objectAtIndex:1 ] floatValue ];
+    description = [[ dictionary objectForKey:@"Description" ] retain ];
 
-    NSArray * sizeStrings = [ dictionary objectForKey:@"ItemSize" ];
-    itemSize->x = [[ sizeStrings objectAtIndex:0 ] floatValue ];
-    itemSize->y = [[ sizeStrings objectAtIndex:1 ] floatValue ];
+    NSArray * positionStrings    = [ dictionary objectForKey:@"Position" ];
+    NSArray * itemSizeStrings    = [ dictionary objectForKey:@"ItemSize" ];
+    NSArray * itemSpacingStrings = [ dictionary objectForKey:@"ItemSpacing" ];
+    NSArray * textureStrings     = [ dictionary objectForKey:@"Textures" ];
 
-    NSArray * spacingStrings = [ dictionary objectForKey:@"Spacing" ];
-    spacing->x = [[ spacingStrings objectAtIndex:0 ] floatValue ];
-    spacing->y = [[ spacingStrings objectAtIndex:1 ] floatValue ];
+    NSString * rowsString      = [ dictionary objectForKey:@"Rows" ];
+    NSString * columnsString   = [ dictionary objectForKey:@"Columns" ];
+    NSString * alignmentString = [ dictionary objectForKey:@"Alignment" ];
 
-    NSString * rowsString = [ dictionary objectForKey:@"Rows" ];
-    NSString * columnsString = [ dictionary objectForKey:@"Columns" ];
+    if ( positionStrings == nil || itemSizeStrings == nil || itemSpacingStrings == nil ||
+         textureStrings == nil || rowsString == nil || columnsString == nil || alignmentString == nil )
+    {
+        NPLOG_ERROR(@"%@: Dictionary incomplete.", name);
+        return NO;
+    }
 
-    rows = [ rowsString intValue ];
+    FVector2 position, itemSize, itemSpacing;
+
+    position.x = [[ positionStrings objectAtIndex:0 ] floatValue ];
+    position.y = [[ positionStrings objectAtIndex:1 ] floatValue ];
+    itemSize.x = [[ itemSizeStrings objectAtIndex:0 ] floatValue ];
+    itemSize.y = [[ itemSizeStrings objectAtIndex:1 ] floatValue ];
+    itemSpacing.x = [[ itemSpacingStrings objectAtIndex:0 ] floatValue ];
+    itemSpacing.y = [[ itemSpacingStrings objectAtIndex:1 ] floatValue ];
+
+    rows    = [ rowsString    intValue ];
     columns = [ columnsString intValue ];
 
-    NSString * selectionTextureString = [ dictionary objectForKey:@"Selection" ];
-    selectionTexture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:selectionTextureString ];
+    alignment = [[ (ODMenu *)parent valueForKeyword:alignmentString ] intValue ];
 
-    NSArray * itemTextureStrings = [ dictionary objectForKey:@"Textures" ];
-    NSEnumerator * textureStringEnumerator = [ itemTextureStrings objectEnumerator ];
+    // calculate size and init bounding rectangle
+    FVector2 size = { 0.0f, 0.0f };
+    FVector2 boundingRectangleLowerLeft = position;
+
+    for ( Int32 j = 0; j < columns; j++ )
+    {
+        size.x = size.x + itemSize.x + itemSpacing.x;
+    }
+
+    for ( Int32 i = 0; i < rows; i++ )
+    {
+        boundingRectangleLowerLeft.y = boundingRectangleLowerLeft.y - (i * (itemSize.y + itemSpacing.y));
+        size.y = size.y + itemSize.y + itemSpacing.y;
+    }
+
+    frectangle_vv_init_with_min_and_size_r(&boundingRectangleLowerLeft, &size, boundingRectangle);
+    [ ODMenu alignRectangle:boundingRectangle withAlignment:alignment ];
+
+    // Alloc items geometry and calculate coordinates
+    Int32 numberOfItems = rows * columns;
+    items = ALLOC_ARRAY(FRectangle, numberOfItems);
+
+    FVector2 lowerLeft = position;
+
+    for ( Int32 i = 0; i < rows; i++ )
+    {
+        lowerLeft.x = position.x;
+        lowerLeft.y = lowerLeft.y - (i * (itemSize.y + itemSpacing.y));
+
+        for ( Int32 j = 0; j < columns; j++ )
+        {
+            Int32 index = i * columns + j;
+            frectangle_vv_init_with_min_and_size_r(&lowerLeft, &itemSize, &(items[index]));
+            [ ODMenu alignRectangle:&(items[index]) withAlignment:alignment ];
+
+            lowerLeft.x = lowerLeft.x + itemSize.x + itemSpacing.x;
+        }
+    }
+
+    // Load textures
+    NSEnumerator * textureStringEnumerator = [ textureStrings objectEnumerator ];
     NSString * textureString = nil;
 
     while ( (textureString = [ textureStringEnumerator nextObject ]) )
@@ -79,25 +125,8 @@
         }
     }
 
-    NSString * effectString = [ dictionary objectForKey:@"Effect" ];
-    effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:effectString ];
-
-    // calculate size
-
-    Float width = 0.0;
-    for ( Int32 j = 0; j < columns; j++ )
-    {
-        width = width + itemSize->x + spacing->x;
-    }
-
-    Float height = 0.0f;
-    for ( Int32 i = 0; i < rows; i++ )
-    {
-        height = height + itemSize->y + spacing->y;
-    }
-
-    size->x = width;
-    size->y = height;
+    selectionTexture = [ (ODMenu *)parent textureForKey:@"SelectedItem" ];
+    effect = [ (ODMenu *)parent effect ];
 
     activeItem = 0;
 
@@ -109,32 +138,11 @@
     return activeItem;
 }
 
-- (FVector2) position
-{
-    return *position;
-}
-
-- (FVector2) itemSize
-{
-    return *itemSize;
-}
-
-- (void) setPosition:(FVector2)newPosition
-{
-    *position = newPosition;
-}
-
-- (void) setItemSize:(FVector2)newItemSize
-{
-    *itemSize = newItemSize;
-}
-
 - (BOOL) mouseHit:(FVector2)mousePosition
 {
     BOOL result = NO;
 
-    if ( mousePosition.x > position->x && mousePosition.x < position->x + size->x &&
-         mousePosition.y < position->y && mousePosition.y > position->y - size->y )
+    if ( frectangle_vr_is_point_inside(&mousePosition, boundingRectangle) == 1 )
     {
         result = YES;
     }
@@ -144,28 +152,17 @@
 
 - (void) onClick:(FVector2)mousePosition
 {
-    FVector2 upperLeft = *position;
-    FVector2 lowerRight;
-
     for ( Int32 i = 0; i < rows; i++ )
     {
         for ( Int32 j = 0; j < columns; j++ )
         {
-            Int32 index = i * rows + j;
-            lowerRight.x = upperLeft.x + itemSize->x;
-            lowerRight.y = upperLeft.y - itemSize->y;
+            Int32 index = i * columns + j;
 
-            if ( mousePosition.x > upperLeft.x && mousePosition.x < lowerRight.x &&
-                 mousePosition.y < upperLeft.y && mousePosition.y > lowerRight.y )
+            if ( frectangle_vr_is_point_inside(&mousePosition, &(items[index])) == 1 )
             {
                 activeItem = index;
             }
-
-            upperLeft.x = upperLeft.x + itemSize->x + spacing->x;
         }
-
-        upperLeft.x = position->x;
-        upperLeft.y = upperLeft.y - itemSize->y - spacing->y;
     }
 }
 
@@ -181,66 +178,33 @@
         return;
     }
 
-    FVector2 upperLeft = *position;
-    FVector2 lowerRight;
+    FVector2 position = { boundingRectangle->min.x, boundingRectangle->max.y + 0.035f };
+    [[ (ODMenu *)parent font ] renderString:description atPosition:&position withSize:0.035f ];
 
     for ( Int32 i = 0; i < rows; i++ )
     {
         for ( Int32 j = 0; j < columns; j++ )
         {
-            Int32 index = i * rows + j;
+            Int32 index = i * columns + j;
+
             [[ textures objectAtIndex:index ] activateAtColorMapIndex:0 ];
             [ effect activate ];
 
-            lowerRight.x = upperLeft.x + itemSize->x;
-            lowerRight.y = upperLeft.y - itemSize->y;
+            [ NPPrimitivesRendering renderFRectangle:&(items[index]) ];
 
-            glBegin(GL_QUADS);
-
-            glTexCoord2f(0.0f, 1.0f);
-            glVertex4f(upperLeft.x, upperLeft.y, 0.0f, 1.0f);
-
-            glTexCoord2f(0.0f, 0.0f);
-            glVertex4f(upperLeft.x, lowerRight.y, 0.0f, 1.0f);
-
-            glTexCoord2f(1.0f, 0.0f);
-            glVertex4f(lowerRight.x, lowerRight.y, 0.0f, 1.0f);
-
-            glTexCoord2f(1.0f, 1.0f);
-            glVertex4f(lowerRight.x, upperLeft.y, 0.0f, 1.0f);
-
-            glEnd();
+            [ effect deactivate ];
 
             if ( index == activeItem )
             {
                 [ selectionTexture activateAtColorMapIndex:0 ];
                 [ effect activate ];
 
-                glBegin(GL_QUADS);
+                [ NPPrimitivesRendering renderFRectangle:&(items[index]) ];
 
-                glTexCoord2f(0.0f, 1.0f);
-                glVertex4f(upperLeft.x, upperLeft.y, 0.0f, 1.0f);
-
-                glTexCoord2f(0.0f, 0.0f);
-                glVertex4f(upperLeft.x, lowerRight.y, 0.0f, 1.0f);
-
-                glTexCoord2f(1.0f, 0.0f);
-                glVertex4f(lowerRight.x, lowerRight.y, 0.0f, 1.0f);
-
-                glTexCoord2f(1.0f, 1.0f);
-                glVertex4f(lowerRight.x, upperLeft.y, 0.0f, 1.0f);
-
-                glEnd();
+                [ effect deactivate ];
             }
-
-            upperLeft.x = upperLeft.x + itemSize->x + spacing->x;
         }
-
-        upperLeft.x = position->x;
-        upperLeft.y = upperLeft.y - itemSize->y - spacing->y;
     }
-
-    [ effect deactivate ];
 }
 
 @end

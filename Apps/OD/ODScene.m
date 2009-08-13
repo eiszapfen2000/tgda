@@ -1,6 +1,7 @@
 #import "NP.h"
 #import "ODCore.h"
 #import "ODScene.h"
+#import "ODSceneManager.h"
 
 #import "Entities/ODCamera.h"
 #import "Entities/ODProjector.h"
@@ -8,8 +9,6 @@
 #import "Entities/ODPreethamSkylight.h"
 #import "Entities/ODEntityManager.h"
 #import "Menu/ODMenu.h"
-
-#import "ODSceneManager.h"
 
 @implementation ODScene
 
@@ -28,20 +27,6 @@
     self =  [ super initWithName:newName parent:newParent ];
 
     entities = [[ NSMutableArray alloc ] init ];
-
-    camera    = [[ ODCamera    alloc ] initWithName:@"RenderingCamera" parent:self ];
-    projector = [[ ODProjector alloc ] initWithName:@"Projector"       parent:self ];
-
-    FVector3 pos = { 0.0f, 2.0f, 5.0f };
-
-    [ camera setPosition:&pos ];
-
-    pos.y = 5.0f;
-    pos.z = 0.0f;
-
-    [ projector setPosition:&pos ];
-    [ projector cameraRotateUsingYaw:-0.0f andPitch:-90.0f ];
-    //[ projector setRenderFrustum:YES ];
 
     fullscreenQuad = [[ NPFullscreenQuad alloc ] initWithName:@"Quad" parent:self ];
 
@@ -85,8 +70,6 @@
     [ fullscreenQuad release ];
 
     [ menu      release ];
-    [ projector release ];
-    [ camera    release ];
 
     [ sceneRenderTexture     release ];
     [ luminanceRenderTexture release ];
@@ -105,11 +88,14 @@
 {
     NSDictionary * config = [ NSDictionary dictionaryWithContentsOfFile:path ];
 
-    NSString * sceneName        = [ config objectForKey:@"Name"     ];
-    NSArray  * entityFiles      = [ config objectForKey:@"Entities" ];
-    NSString * skyboxEntityFile = [ config objectForKey:@"Skybox"   ];
+    NSString * sceneName           = [ config objectForKey:@"Name" ];
+    NSString * skyboxEntityFile    = [ config objectForKey:@"Skybox" ];
+    NSString * cameraEntityFile    = [ config objectForKey:@"Camera" ];
+    NSString * projectorEntityFile = [ config objectForKey:@"Projector" ];
+    NSArray  * entityFiles         = [ config objectForKey:@"Entities" ];
 
-    if ( sceneName == nil || entityFiles == nil || skyboxEntityFile == nil )
+    if ( sceneName == nil || entityFiles == nil || skyboxEntityFile == nil ||
+         cameraEntityFile == nil || projectorEntityFile == nil )
     {
         NPLOG_ERROR(@"Scene file %@ is incomplete", path);
         return NO;
@@ -117,7 +103,9 @@
 
     [ self setName:sceneName ];
 
-    skybox = [[[ NP applicationController ] entityManager ] loadEntityFromPath:skyboxEntityFile ];
+    skybox    = [[[ NP applicationController ] entityManager ] loadEntityFromPath:skyboxEntityFile ];
+    camera    = [[[ NP applicationController ] entityManager ] loadEntityFromPath:cameraEntityFile ];
+    projector = [[[ NP applicationController ] entityManager ] loadEntityFromPath:projectorEntityFile ];
 
     NSEnumerator * entityFilesEnumerator = [ entityFiles objectEnumerator ];
     id entityFileName;
@@ -166,7 +154,7 @@
 - (void) update:(Float)frameTime
 {
     [ camera update:frameTime ];
-    [ projector update ];
+    [ projector update:frameTime ];
 
     [ skybox update:frameTime ];
 
@@ -201,7 +189,7 @@
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
 
     // Render scene
-    [ camera render ];
+    [ camera    render ];
     [ projector render ];
 
     [ skybox render ];
@@ -250,6 +238,7 @@
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] activate ];
 
+    // Render menu
     [[[ NP Graphics ] orthographicRendering ] activate ];
     [ menu render ];
     [[[ NP Graphics ] orthographicRendering ] deactivate ];

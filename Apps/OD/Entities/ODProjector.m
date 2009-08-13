@@ -1,8 +1,10 @@
 #import "NP.h"
+#import "ODCore.h"
 #import "Utilities/ODFrustum.h"
 #import "ODProjector.h"
 #import "ODCamera.h"
 #import "ODScene.h"
+#import "ODSceneManager.h"
 
 @implementation ODProjector
 
@@ -37,7 +39,7 @@
     V_Z(*forward) = -1.0;
 
     renderFrustum = NO;
-    frustum = [[ ODFrustum alloc ] initWithName:@"Projector Frustum" parent:self ];
+    frustum = [[ ODFrustum alloc ] initWithName:@"ProjectorFrustum" parent:self ];
 
     pitchMinusAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"PitchMinus" primaryInputAction:NP_INPUT_KEYBOARD_S ];
     pitchPlusAction  = [[[ NP Input ] inputActions ] addInputActionWithName:@"PitchPlus"  primaryInputAction:NP_INPUT_KEYBOARD_W ];
@@ -64,6 +66,11 @@
     [ frustum release ];
 
 	[ super dealloc ];
+}
+
+- (BOOL) loadFromDictionary:(NSDictionary *)config
+{
+    return YES;
 }
 
 - (void) reset
@@ -184,12 +191,7 @@
 
 - (void) updateProjection
 {
-    ODCamera * camera = [ (ODScene *)parent camera ];
-
-    /*if ( GSObjCFindVariable((id)camera,"projection",NULL,NULL,NULL) == YES )
-    {
-        NSLog(@"BRAK");
-    }*/
+    ODCamera * camera = [[[[ NP applicationController ] sceneManager ] currentScene ] camera ];
 
 #warning FIXME
 
@@ -226,7 +228,7 @@
     fm4_mm_multiply_m(&tmp, &trans, view);
 }
 
-- (void) update
+- (void) update:(Float)frameTime
 {
     if ( [ pitchMinusAction active ] == YES )
     {
@@ -266,7 +268,6 @@
 {
     if ( renderFrustum == YES )
     {
-        //glColor3f(1.0f,0.0f,0.0f);
         [ frustum render ];
     }
 }

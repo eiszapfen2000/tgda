@@ -33,9 +33,6 @@
 
 - (void) dealloc
 {
-    [ stateset release ];
-    [ model    release ];
-
     modelMatrix = fm4_free(modelMatrix);
     position = fv3_free(position);
     sunTheta = fv2_free(sunTheta);
@@ -59,8 +56,8 @@
 
     [ self setName:entityName ];
 
-    model    = [[[[ NP Graphics ] modelManager    ] loadModelFromPath:modelPath       ] retain ];
-    stateset = [[[[ NP Graphics ] stateSetManager ] loadStateSetFromPath:statesetPath ] retain ];
+    model    = [[[ NP Graphics ] modelManager    ] loadModelFromPath:modelPath       ];
+    stateset = [[[ NP Graphics ] stateSetManager ] loadStateSetFromPath:statesetPath ];
 
     if ( model == nil || stateset == nil )
     {
@@ -173,7 +170,7 @@
     [ effect uploadFVector2Parameter:thetaSunP andValue:sunTheta ];
     [ effect uploadFVector3Parameter:zenithColorP andValue:zenithColor ];
 
-    //[ stateset activate ];
+    [ stateset activate ];
     [ model render ];
 }
 

@@ -20,7 +20,7 @@
 
     Depth =
     {
-        DepthTestEnabled = "NO";
+        DepthTestEnabled = "YES";
         DepthWriteEnabled = "NO";
         ComparisonFunction = "LessEqual";
     };

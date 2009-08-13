@@ -2,7 +2,7 @@
 
 @protocol ODPEntity
 
-- (BOOL) loadFromDictionary:(NSDictionary *)path;
+- (BOOL) loadFromDictionary:(NSDictionary *)config;
 - (void) update:(Float)frameTime;
 - (void) render;
 

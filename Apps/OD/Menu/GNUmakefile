@@ -4,10 +4,12 @@ SUBPROJECT_NAME=ODMenu
 
 ODMenu_HEADER_FILES = \
 ODSliderItem.h \
+ODSelectionGroup.h \
 ODMenu.h
 
 ODMenu_OBJC_FILES = \
 ODSliderItem.m \
+ODSelectionGroup.m \
 ODMenu.m
 
 include $(TGDA_DIR)/GNUmakefile.flags

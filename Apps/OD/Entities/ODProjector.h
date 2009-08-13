@@ -1,5 +1,6 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
+#import "ODPEntity.h"
 
 @class NPVertexBuffer;
 @class ODFrustum;
@@ -13,7 +14,7 @@
 #define FARPLANE_UPPERRIGHT    6
 #define FARPLANE_UPPERLEFT     7
 
-@interface ODProjector : NPObject
+@interface ODProjector : NPObject < ODPEntity >
 {
 	FMatrix4 * view;
     FMatrix4 * projection;
@@ -67,8 +68,5 @@
 
 - (void) updateProjection;
 - (void) updateView;
-- (void) update;
-
-- (void) render;
 
 @end

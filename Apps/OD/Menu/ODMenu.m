@@ -1,10 +1,11 @@
 #import "NP.h"
 #import "ODSliderItem.h"
+#import "ODSelectionGroup.h"
 #import "ODMenu.h"
 
 @implementation ODMenu
 
-+ (FVector2) calculatePosition:(FVector2)position forAlignment:(NpState)alignment
+/*+ (FVector2) calculatePosition:(FVector2)position forAlignment:(NpState)alignment
 {
     FVector2 result;
 
@@ -21,7 +22,7 @@
     }
 
     return result;
-}
+}*/
 
 + (void) alignRectangle:(FRectangle *)rectangle withAlignment:(NpState)alignment
 {
