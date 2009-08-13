@@ -63,6 +63,26 @@
 	[ super dealloc ];
 }
 
+- (BOOL) loadFromDictionary:(NSDictionary *)config
+{
+    NSString * cameraName      = [ config objectForKey:@"Name" ];
+    NSArray  * positionStrings = [ config objectForKey:@"Position" ];
+
+    if ( cameraName == nil || positionStrings == nil )
+    {
+        NPLOG_ERROR(@"%@: Dictionary incomplete", name);
+        return NO;
+    }
+
+    [ self setName:cameraName ];
+
+    position->x = [[ positionStrings objectAtIndex:0 ] floatValue ];
+    position->y = [[ positionStrings objectAtIndex:1 ] floatValue ];
+    position->z = [[ positionStrings objectAtIndex:2 ] floatValue ];
+
+    return YES;
+}
+
 - (void) reset
 {
 	fm4_m_set_identity(view);

@@ -1,7 +1,8 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
+#import "ODPEntity.h"
 
-@interface ODCamera : NPObject
+@interface ODCamera : NPObject < ODPEntity >
 {
 	FMatrix4 * view;
 	FMatrix4 * projection;
@@ -55,8 +56,5 @@
 
 - (void) updateProjection;
 - (void) updateView;
-- (void) update:(Float)frameTime;
-
-- (void) render;
 
 @end

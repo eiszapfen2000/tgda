@@ -1,8 +1,12 @@
-#import "ODEntityManager.h"
-#import "ODEntity.h"
-#import "ODOceanEntity.h"
-#import "ODPreethamSkylight.h"
 #import "NP.h"
+
+#import "ODEntityManager.h"
+#import "ODCamera.h"
+#import "ODProjector.h"
+#import "ODEntity.h"
+//#import "ODOceanEntity.h"
+#import "ODPreethamSkylight.h"
+
 
 @implementation ODEntityManager
 
@@ -59,7 +63,7 @@
                 Class entityClass = NSClassFromString(typeClassString);
                 if ( entityClass == Nil )
                 {
-                    NPLOG_ERROR(@"%@: Unknown entity type, skipping", name);
+                    NPLOG_ERROR(@"%@: Unknown entity type \"%@\", skipping", name, typeClassString);
 
                     return nil;
                 }
