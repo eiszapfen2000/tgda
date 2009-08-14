@@ -53,6 +53,7 @@
             Columns = "2";
             Selection = "Selected.png";
             Textures = ( "Red.png", "Blue.png", "Green.png", "Yellow.png" );
+            TargetObject = "TestScene";
         };
     };
 }
