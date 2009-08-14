@@ -23,6 +23,8 @@
 
     alignment = NP_NONE;
 
+    offset = size = -1;
+
     return self;
 }
 
@@ -47,6 +49,9 @@
 
     NSString * minimumValueString = [ dictionary objectForKey:@"MinimumValue" ];
     NSString * maximumValueString = [ dictionary objectForKey:@"MaximumValue" ];
+
+    NSString * targetObjectString   = [ dictionary objectForKey:@"TargetObject" ];
+    NSString * targetPropertyString = [ dictionary objectForKey:@"TargetProperty" ];
 
     if ( positionStrings == nil || lineSizeStrings == nil || headSizeStrings == nil ||
          alignmentString == nil || startPositionString == nil || minimumValueString == nil ||
@@ -86,13 +91,17 @@
 
     frectangle_vv_init_with_min_and_size_r(&sliderPosition, &headSize, headGeometry);
 
-    NSString * targetObjectString   = [ dictionary objectForKey:@"TargetObject" ];
-    target = [[[ NP Core ] objectManager ] objectByName:targetObjectString ];
-    NSAssert1(target != nil, @"%@ not found", targetObjectString);
+    if ( targetObjectString != nil )
+    {
+        target = [[[ NP Core ] objectManager ] objectByName:targetObjectString ];
+        NSAssert1(target != nil, @"Object with name \"%@\" not found", targetObjectString);
 
-    NSString * targetPropertyString = [ dictionary objectForKey:@"TargetProperty" ];
-    BOOL propertyFound = GSObjCFindVariable(target, [ targetPropertyString cStringUsingEncoding:NSASCIIStringEncoding ], NULL, &size, &offset );
-    NSAssert1(propertyFound != NO, @"Property with Name \"%@\" not found", targetPropertyString);
+        if ( targetPropertyString != nil )
+        {
+            BOOL propertyFound = GSObjCFindVariable(target, [ targetPropertyString cStringUsingEncoding:NSASCIIStringEncoding ], NULL, &size, &offset );
+            NSAssert1(propertyFound != NO, @"Property with name \"%@\" not found", targetPropertyString);
+        }
+    }
 
     minimumValue = [ minimumValueString floatValue ];
     maximumValue = [ maximumValueString floatValue ];
@@ -132,14 +141,11 @@
     headGeometry->min.x = mousePosition.x - width * 0.5f;
     headGeometry->max.x = mousePosition.x + width * 0.5f;
 
-    Float scaledValue = [ self scaledValue ];
-
-    GSObjCSetVariable(target, offset, size, &scaledValue);
-}
-
-- (void) update:(Float)frameTime
-{
-
+    if ( target != nil && size > 0 )
+    {
+        Float scaledValue = [ self scaledValue ];
+        GSObjCSetVariable(target, offset, size, &scaledValue);
+    }
 }
 
 - (void) render

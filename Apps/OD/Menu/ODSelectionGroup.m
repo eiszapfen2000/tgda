@@ -51,6 +51,9 @@
     NSString * columnsString   = [ dictionary objectForKey:@"Columns" ];
     NSString * alignmentString = [ dictionary objectForKey:@"Alignment" ];
 
+    NSString * targetObjectString   = [ dictionary objectForKey:@"TargetObject" ];
+    NSString * targetPropertyString = [ dictionary objectForKey:@"TargetProperty" ];
+
     if ( positionStrings == nil || itemSizeStrings == nil || itemSpacingStrings == nil ||
          textureStrings == nil || rowsString == nil || columnsString == nil || alignmentString == nil )
     {
@@ -73,21 +76,22 @@
     alignment = [[ (ODMenu *)parent valueForKeyword:alignmentString ] intValue ];
 
     // calculate size and init bounding rectangle
-    FVector2 size = { 0.0f, 0.0f };
-    FVector2 boundingRectangleLowerLeft = position;
-
+    FVector2 boundingRectangleSize = { 0.0f, 0.0f };
     for ( Int32 j = 0; j < columns; j++ )
     {
-        size.x = size.x + itemSize.x + itemSpacing.x;
+        boundingRectangleSize.x = boundingRectangleSize.x + itemSize.x + itemSpacing.x;
     }
 
     for ( Int32 i = 0; i < rows; i++ )
     {
-        boundingRectangleLowerLeft.y = boundingRectangleLowerLeft.y - (i * (itemSize.y + itemSpacing.y));
-        size.y = size.y + itemSize.y + itemSpacing.y;
+        boundingRectangleSize.y = boundingRectangleSize.y + itemSize.y + itemSpacing.y;
     }
 
-    frectangle_vv_init_with_min_and_size_r(&boundingRectangleLowerLeft, &size, boundingRectangle);
+    FVector2 boundingRectangleLowerLeft;
+    boundingRectangleLowerLeft.x = position.x;
+    boundingRectangleLowerLeft.y = position.y - ((rows - 1) * (itemSize.y + itemSpacing.y));
+
+    frectangle_vv_init_with_min_and_size_r(&boundingRectangleLowerLeft, &boundingRectangleSize, boundingRectangle);
     [ ODMenu alignRectangle:boundingRectangle withAlignment:alignment ];
 
     // Alloc items geometry and calculate coordinates
@@ -108,6 +112,19 @@
             [ ODMenu alignRectangle:&(items[index]) withAlignment:alignment ];
 
             lowerLeft.x = lowerLeft.x + itemSize.x + itemSpacing.x;
+        }
+    }
+
+    // Reflection stuff
+    if ( targetObjectString != nil )
+    {
+        target = [[[ NP Core ] objectManager ] objectByName:targetObjectString ];
+        NSAssert1(target != nil, @"Object with name \"%@\" not found", targetObjectString);
+
+        if ( targetPropertyString != nil )
+        {
+            BOOL propertyFound = GSObjCFindVariable(target, [ targetPropertyString cStringUsingEncoding:NSASCIIStringEncoding ], NULL, &size, &offset );
+            NSAssert1(propertyFound != NO, @"Property with name \"%@\" not found", targetPropertyString);
         }
     }
 
@@ -166,11 +183,6 @@
     }
 }
 
-- (void) update:(Float)frameTime
-{
-
-}
-
 - (void) render
 {
     if ( effect == nil || [ textures count ] == 0)
@@ -178,9 +190,11 @@
         return;
     }
 
+    // Render description
     FVector2 position = { boundingRectangle->min.x, boundingRectangle->max.y + 0.035f };
     [[ (ODMenu *)parent font ] renderString:description atPosition:&position withSize:0.035f ];
 
+    // Render items
     for ( Int32 i = 0; i < rows; i++ )
     {
         for ( Int32 j = 0; j < columns; j++ )
@@ -193,18 +207,16 @@
             [ NPPrimitivesRendering renderFRectangle:&(items[index]) ];
 
             [ effect deactivate ];
-
-            if ( index == activeItem )
-            {
-                [ selectionTexture activateAtColorMapIndex:0 ];
-                [ effect activate ];
-
-                [ NPPrimitivesRendering renderFRectangle:&(items[index]) ];
-
-                [ effect deactivate ];
-            }
         }
     }
+
+    // Render highlight for activa item
+    [ selectionTexture activateAtColorMapIndex:0 ];
+    [ effect activate ];
+
+    [ NPPrimitivesRendering renderFRectangle:&(items[activeItem]) ];
+
+    [ effect deactivate ];
 }
 
 @end

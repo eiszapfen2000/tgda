@@ -35,7 +35,6 @@
 - (BOOL) mouseHit:(FVector2)mousePosition;
 - (void) onClick:(FVector2)mousePosition;
 
-- (void) update:(Float)frameTime;
 - (void) render;
 
 @end

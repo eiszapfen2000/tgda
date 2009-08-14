@@ -22,6 +22,10 @@
     NSMutableArray * textures;
 
     NPEffect * effect;
+
+    id target;
+    unsigned int size;
+    int offset;
 }
 
 - (id) init;
@@ -36,7 +40,6 @@
 - (BOOL) mouseHit:(FVector2)mousePosition;
 - (void) onClick:(FVector2)mousePosition;
 
-- (void) update:(Float)frameTime;
 - (void) render;
 
 @end

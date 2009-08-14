@@ -5,25 +5,6 @@
 
 @implementation ODMenu
 
-/*+ (FVector2) calculatePosition:(FVector2)position forAlignment:(NpState)alignment
-{
-    FVector2 result;
-
-    switch ( alignment )
-    {
-        case OD_MENUITEM_ALIGNMENT_TOPLEFT:    { result = [ NPOrthographicRendering alignTopLeft:position     ]; break; }
-        case OD_MENUITEM_ALIGNMENT_TOP:        { result = [ NPOrthographicRendering alignTop:position         ]; break; }
-        case OD_MENUITEM_ALIGNMENT_TOPRIGHT:   { result = [ NPOrthographicRendering alignTopRight:position    ]; break; }
-        case OD_MENUITEM_ALIGNMENT_RIGHT:      { result = [ NPOrthographicRendering alignRight:position       ]; break; }
-        case OD_MENUITEM_ALIGNMENT_BOTTOMRIGHT:{ result = [ NPOrthographicRendering alignBottomRight:position ]; break; }
-        case OD_MENUITEM_ALIGNMENT_BOTTOM:     { result = [ NPOrthographicRendering alignBottom:position      ]; break; }
-        case OD_MENUITEM_ALIGNMENT_BOTTOMLEFT: { result = [ NPOrthographicRendering alignBottomLeft:position  ]; break; }
-        case OD_MENUITEM_ALIGNMENT_LEFT:       { result = [ NPOrthographicRendering alignLeft:position        ]; break; }
-    }
-
-    return result;
-}*/
-
 + (void) alignRectangle:(FRectangle *)rectangle withAlignment:(NpState)alignment
 {
     switch ( alignment )
