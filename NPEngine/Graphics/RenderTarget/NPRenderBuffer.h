@@ -39,6 +39,9 @@
 
 - (void) uploadToGL;
 
+- (void) attach;
+- (void) detach;
+
 - (void) bindToRenderTargetConfiguration:(NPRenderTargetConfiguration *)newConfiguration;
 - (void) unbindFromRenderTargetConfiguration;
 
