@@ -18,6 +18,9 @@
     id renderTargetConfiguration;
     id sceneRenderTexture;
     id luminanceRenderTexture;
+    id depthRenderBuffer;
+
+    id defaultStateSet;
 
     Int32 luminanceMaxMipMapLevel;
     Float referenceWhite;

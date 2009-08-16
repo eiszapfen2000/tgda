@@ -82,9 +82,10 @@
 - (void) update:(Float)frameTime
 {
     *position = *[[[[[ NP applicationController ] sceneManager ] currentScene ] camera ] position ];
+    position->y += 8.0f;
 
-    lightDirection->x = 0.0f;
-    lightDirection->y = 0.1f;
+    lightDirection->x = -1.0f;
+    lightDirection->y = 0.5f;
     lightDirection->z = -1.0f;
     fv3_v_normalise(lightDirection);
 

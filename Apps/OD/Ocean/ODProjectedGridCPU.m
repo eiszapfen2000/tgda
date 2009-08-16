@@ -212,6 +212,8 @@
     }
 }
 
+
+// Project the grid on the nearplane to the baseplane using raycasting
 - (void) calculateBasePlanePositions
 {
     ODProjector * projector = [[[[ NP applicationController ] sceneManager ] currentScene ] projector ];
@@ -280,6 +282,8 @@
     return result;
 }
 
+// Project the near plane's grid four corner vertices to the baseplane,
+// then interpolate the rest of the geometry using those.
 - (void) calculateBasePlanePositionsUsingInterpolation
 {
     FVector4 upperLeftCorner  = [ self unprojectX:-1.0f andY: 1.0f ];

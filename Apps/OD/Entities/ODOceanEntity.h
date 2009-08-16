@@ -17,23 +17,12 @@
     NpState mode;
 
     id projectedGridCPU;
+    id projectedGridR2VB;
 
     id currentStaticTile;
     id currentAnimatedTile;
     NSMutableArray * staticTiles;
     NSMutableArray * animatedTiles;
-
-    NPEffect * effect;
-    CGparameter projectorIMVP;
-    CGparameter deltaTime;
-
-    Float periodTime;
-
-    id renderTargetConfiguration;
-    id r2vbConfiguration;
-
-    NPVertexBuffer * nearPlaneGrid;
-    NPVertexBuffer * projectedGrid;
 }
 
 - (id) init;
@@ -43,7 +32,6 @@
 
 - (NpState) mode;
 - (IVector2) projectedGridResolution;
-- (id) renderTexture;
 
 - (void) setMode:(NpState)newMode;
 - (void) setProjectedGridResolution:(IVector2)newProjectedGridResolution;
