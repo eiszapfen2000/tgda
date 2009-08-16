@@ -70,6 +70,21 @@
 
 - (BOOL) loadFromDictionary:(NSDictionary *)config
 {
+    NSString * projectorName   = [ config objectForKey:@"Name" ];
+    NSArray  * positionStrings = [ config objectForKey:@"Position" ];
+
+    if ( projectorName == nil || positionStrings == nil )
+    {
+        NPLOG_ERROR(@"%@: Dictionary incomplete", name);
+        return NO;
+    }
+
+    [ self setName:projectorName ];
+
+    position->x = [[ positionStrings objectAtIndex:0 ] floatValue ];
+    position->y = [[ positionStrings objectAtIndex:1 ] floatValue ];
+    position->z = [[ positionStrings objectAtIndex:2 ] floatValue ];
+
     return YES;
 }
 
@@ -193,9 +208,10 @@
 {
     ODCamera * camera = [[[[ NP applicationController ] sceneManager ] currentScene ] camera ];
 
-#warning FIXME
+#warning FIXME parameter tuning
 
-    fov         = [ camera fov ];
+    //fov         = [ camera fov ];
+    fov         = 60.0f;
     nearPlane   = [ camera nearPlane ];
     farPlane    = [ camera farPlane ];
     aspectRatio = [ camera aspectRatio];
@@ -268,7 +284,7 @@
 {
     if ( renderFrustum == YES )
     {
-        [ frustum render ];
+        //[ frustum render ];
     }
 }
 

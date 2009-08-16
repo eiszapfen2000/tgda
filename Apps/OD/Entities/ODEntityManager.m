@@ -4,7 +4,7 @@
 #import "ODCamera.h"
 #import "ODProjector.h"
 #import "ODEntity.h"
-//#import "ODOceanEntity.h"
+#import "ODOceanEntity.h"
 #import "ODPreethamSkylight.h"
 
 

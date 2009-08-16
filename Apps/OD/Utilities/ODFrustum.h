@@ -10,9 +10,12 @@
 #define FARPLANE_UPPERRIGHT    6
 #define FARPLANE_UPPERLEFT     7
 
+@class NPEffect;
+@class NPVertexBuffer;
+
 @interface ODFrustum : NPObject
 {
-    id frustumGeometry;
+    NPVertexBuffer * frustumGeometry;
     Float * frustumVertices;
     Int   * frustumIndices;
 
@@ -39,6 +42,8 @@
     FVector3 * forward;
     FVector3 * up;
     FVector3 * right;
+
+    NPEffect * frustumEffect;
 }
 
 - (id) init;

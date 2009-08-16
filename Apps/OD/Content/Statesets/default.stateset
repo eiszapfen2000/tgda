@@ -14,14 +14,14 @@
 
     Culling =
     {
-        Enabled = "NO";
+        Enabled = "YES";
         CullFace = "Back";
     };
 
     Depth =
     {
-        DepthTestEnabled = "NO";
-        DepthWriteEnabled = "NO";
+        DepthTestEnabled = "YES";
+        DepthWriteEnabled = "YES";
         ComparisonFunction = "LessEqual";
     };
 

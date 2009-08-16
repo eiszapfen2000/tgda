@@ -58,6 +58,16 @@
                                                         textureFilter:NP_GRAPHICS_TEXTURE_FILTER_TRILINEAR
                                                           textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ] retain ];
 
+    depthRenderBuffer = [[ NPRenderBuffer renderBufferWithName:@"DepthBuffer"
+                                                          type:NP_GRAPHICS_RENDERBUFFER_DEPTH_TYPE
+                                                        format:NP_GRAPHICS_RENDERBUFFER_DEPTH24
+                                                         width:resolution->x
+                                                        height:resolution->y ] retain ];
+
+    [ depthRenderBuffer uploadToGL ];
+
+    defaultStateSet = [[[ NP Graphics ] stateSetManager ] loadStateSetFromPath:@"default.stateset" ];
+
     luminanceMaxMipMapLevel = 1 + floor(log2(MAX(resolution->x, resolution->y)));
     referenceWhite = 2.5f;
     key = 1.0f;
@@ -69,8 +79,9 @@
 {
     [ fullscreenQuad release ];
 
-    [ menu      release ];
+    [ menu release ];
 
+    [ depthRenderBuffer      release ];
     [ sceneRenderTexture     release ];
     [ luminanceRenderTexture release ];
 
@@ -106,6 +117,9 @@
     skybox    = [[[ NP applicationController ] entityManager ] loadEntityFromPath:skyboxEntityFile ];
     camera    = [[[ NP applicationController ] entityManager ] loadEntityFromPath:cameraEntityFile ];
     projector = [[[ NP applicationController ] entityManager ] loadEntityFromPath:projectorEntityFile ];
+
+    [ projector cameraRotateUsingYaw:-0.0f andPitch:-90.0f ];
+    [ projector setRenderFrustum:YES ];
 
     NSEnumerator * entityFilesEnumerator = [ entityFiles objectEnumerator ];
     id entityFileName;
@@ -153,13 +167,13 @@
 
 - (void) update:(Float)frameTime
 {
-    [ camera update:frameTime ];
+    [ camera    update:frameTime ];
     [ projector update:frameTime ];
 
     [ skybox update:frameTime ];
 
     NSEnumerator * entityEnumerator = [ entities objectEnumerator ];
-    id entity;
+    id <ODPEntity> entity;
 
     while ( (entity = [ entityEnumerator nextObject ]) )
     {
@@ -182,11 +196,14 @@
     [[ renderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:sceneRenderTexture ];
     [ renderTargetConfiguration bindFBO ];
     [ sceneRenderTexture attachToColorBufferIndex:0 ];
+    [ depthRenderBuffer attach ];
     [ renderTargetConfiguration activateDrawBuffers ];
     [ renderTargetConfiguration activateViewport ];
 
+    [ renderTargetConfiguration checkFrameBufferCompleteness ];
+
     // Clear rendertexture(s)
-    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
     // Render scene
     [ camera    render ];
@@ -194,14 +211,30 @@
 
     [ skybox render ];
 
+    [ defaultStateSet activate ];
+
+    [[ projector frustum ] render ];
+
+
+    NSEnumerator * entityEnumerator = [ entities objectEnumerator ];
+    id <ODPEntity> entity;
+
+    while ( (entity = [ entityEnumerator nextObject ]) )
+    {
+        [ entity render ];
+    }
+
     // Reset matrices (model, view, projection) to identity
     [[[[ NP Core ] transformationStateManager ] currentTransformationState ] reset ];
 
     // Detach float color scene texture, attach luminance float texture
     [[ renderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:luminanceRenderTexture ];
+    [ depthRenderBuffer detach ];
     [ luminanceRenderTexture attachToColorBufferIndex:0 ];
     [ renderTargetConfiguration activateDrawBuffers ];
     [ renderTargetConfiguration activateViewport ];
+
+    [ renderTargetConfiguration checkFrameBufferCompleteness ];
 
     // Render to luminance texture, converting the source scene color to luminance
     // during the process

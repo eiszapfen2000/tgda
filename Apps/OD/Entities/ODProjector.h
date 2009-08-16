@@ -2,7 +2,7 @@
 #import "Core/NPObject/NPObject.h"
 #import "ODPEntity.h"
 
-@class NPVertexBuffer;
+@class NPEffect;
 @class ODFrustum;
 
 #define NEARPLANE_LOWERLEFT    0

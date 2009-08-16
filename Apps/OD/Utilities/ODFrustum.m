@@ -1,8 +1,6 @@
-#import "ODFrustum.h"
+#import "NP.h"
 
-#import "Graphics/npgl.h"
-#import "Graphics/Model/NPVertexBuffer.h"
-#import "Graphics/NPEngineGraphics.h"
+#import "ODFrustum.h"
 
 @implementation ODFrustum
 
@@ -58,6 +56,8 @@
     forward = fv3_alloc_init();
     up      = fv3_alloc_init();
     right   = fv3_alloc_init();
+
+    frustumEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"default.cgfx" ];
 
     return self;
 }
@@ -185,8 +185,6 @@
         frustumVertices[i*3]   = frustumCornerPositions[i]->x;
         frustumVertices[i*3+1] = frustumCornerPositions[i]->y;
         frustumVertices[i*3+2] = frustumCornerPositions[i]->z;
-
-        //NSLog(@"corner %f %f %f",frustumCornerPositions[i]->x,frustumCornerPositions[i]->y,frustumCornerPositions[i]->z);
     }
 
     tmp = fv3_free(tmp);
@@ -194,7 +192,11 @@
 
 - (void) render
 {
+    [[[[ NP Core ] transformationStateManager ] currentTransformationState ] resetModelMatrix ];
+
+    [ frustumEffect activate ];
     [ frustumGeometry renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_LINES ];
+    [ frustumEffect deactivate ];
 }
 
 @end

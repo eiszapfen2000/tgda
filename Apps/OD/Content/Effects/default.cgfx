@@ -1,0 +1,44 @@
+float4x4 mvp : NPMODELVIEWPROJECTION;
+
+struct INPUTDATA
+{
+	float4 position	: POSITION;
+};
+
+struct VOUTPUTDATA
+{
+	float4 position	: POSITION;
+};
+
+VOUTPUTDATA mvertexshader(INPUTDATA input)
+{
+	VOUTPUTDATA output;
+
+    output.position = mul(mvp, input.position);
+	
+	return output;
+}
+
+struct FOUTPUTDATA
+{
+	float4 color : COLOR0;
+};
+
+FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
+{
+	FOUTPUTDATA output;
+
+    output.color = float4(1.0, 1.0f, 1.0f, 1.0f);
+
+	return output;
+}
+
+technique render
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mfragmentshader();
+		VertexProgram = compile vp40 mvertexshader();
+	}
+}
+
