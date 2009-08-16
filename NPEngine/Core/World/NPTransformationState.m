@@ -77,6 +77,43 @@
     recomputeInverseModelViewProjectionMatrix = YES;
 }
 
+- (void) resetModelMatrix
+{
+    fm4_m_set_identity(modelMatrix);
+
+    recomputeInverseModelMatrix = YES;
+    recomputeModelViewMatrix = YES;
+    recomputeInverseModelViewMatrix = YES;
+    recomputeModelViewProjectionMatrix = YES;
+    recomputeInverseModelViewProjectionMatrix = YES;
+}
+
+- (void) resetViewMatrix
+{
+    fm4_m_set_identity(viewMatrix);
+
+    recomputeInverseViewMatrix = YES;
+    recomputeInverseProjectionMatrix = YES;
+    recomputeModelViewMatrix = YES;
+    recomputeInverseModelViewMatrix = YES;
+    recomputeViewProjectionMatrix = YES;
+    recomputeInverseViewProjectionMatrix = YES;
+    recomputeModelViewProjectionMatrix = YES;
+    recomputeInverseModelViewProjectionMatrix = YES;
+}
+
+- (void) resetProjectionMatrix
+{
+    fm4_m_set_identity(projectionMatrix);
+
+    recomputeInverseProjectionMatrix = YES;
+    recomputeViewProjectionMatrix = YES;
+    recomputeInverseViewProjectionMatrix = YES;
+    recomputeModelViewProjectionMatrix = YES;
+    recomputeInverseModelViewProjectionMatrix = YES;
+}
+
+
 - (FMatrix4 *) modelMatrix
 {
     return modelMatrix;

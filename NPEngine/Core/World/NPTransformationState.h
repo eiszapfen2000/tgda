@@ -33,6 +33,9 @@
 - (void) dealloc;
 
 - (void) reset;
+- (void) resetModelMatrix;
+- (void) resetViewMatrix;
+- (void) resetProjectionMatrix;
 
 - (FMatrix4 *) modelMatrix;
 - (FMatrix4 *) inverseModelMatrix;

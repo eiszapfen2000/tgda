@@ -45,4 +45,24 @@
     ASSIGN(currentTransformationState,newCurrentTransformationState);
 }
 
+- (void) resetCurrentTransformationState
+{
+    [ currentTransformationState reset ];
+}
+
+- (void) resetCurrentModelMatrix
+{
+    [ currentTransformationState resetModelMatrix ];
+}
+
+- (void) resetCurrentViewMatrix
+{
+    [ currentTransformationState resetViewMatrix ];
+}
+
+- (void) resetCurrentProjectionMatrix
+{
+    [ currentTransformationState resetProjectionMatrix ];
+}
+
 @end

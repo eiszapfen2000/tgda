@@ -15,4 +15,9 @@
 - (NPTransformationState *) currentTransformationState;
 - (void) setCurrentTransformationState:(NPTransformationState *)newCurrentTransformationState;
 
+- (void) resetCurrentTransformationState;
+- (void) resetCurrentModelMatrix;
+- (void) resetCurrentViewMatrix;
+- (void) resetCurrentProjectionMatrix;
+
 @end
