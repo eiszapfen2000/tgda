@@ -171,16 +171,45 @@
     return attachment;
 }
 
+- (void) attach
+{
+    if ( type == NP_GRAPHICS_RENDERBUFFER_DEPTH_STENCIL_TYPE )
+    {
+        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT  , GL_RENDERBUFFER_EXT, renderBufferID);
+        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, renderBufferID);
+    }
+    else
+    {
+        GLenum attachment = [ self computeAttachment ];
+        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, attachment, GL_RENDERBUFFER_EXT, renderBufferID);
+    }
+}
+
+- (void) detach
+{
+    if ( type == NP_GRAPHICS_RENDERBUFFER_DEPTH_STENCIL_TYPE )
+    {
+        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT  , GL_RENDERBUFFER_EXT, 0);
+        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, 0);
+    }
+    else
+    {
+        GLenum attachment = [ self computeAttachment ];
+        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, attachment, GL_RENDERBUFFER_EXT, 0);
+    }
+}
+
 - (void) bindToRenderTargetConfiguration:(NPRenderTargetConfiguration *)newConfiguration
 {
     if ( configuration != newConfiguration )
     {
-        [ configuration release ];
-        configuration = [ newConfiguration retain ];
+        ASSIGN(configuration, newConfiguration);
 
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ configuration fboID ]);
+        [ configuration bindFBO ];
 
-        if ( type == NP_GRAPHICS_RENDERBUFFER_DEPTH_STENCIL_TYPE )
+        //glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ configuration fboID ]);
+
+        /*if ( type == NP_GRAPHICS_RENDERBUFFER_DEPTH_STENCIL_TYPE )
         {
             glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, renderBufferID);
             glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, renderBufferID);
@@ -189,9 +218,13 @@
         {
             GLenum attachment = [ self computeAttachment ];
             glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, attachment, GL_RENDERBUFFER_EXT, renderBufferID);
-        }
+        }*/
 
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        [ self attach ];
+
+        //glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+        [ configuration unbindFBO ];
     }    
 }
 
@@ -199,9 +232,11 @@
 {
     if ( configuration != nil )
     {
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ configuration fboID ]);
+        [ configuration bindFBO ];
 
-        if ( type == NP_GRAPHICS_RENDERBUFFER_DEPTH_STENCIL_TYPE )
+        //glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ configuration fboID ]);
+
+        /*if ( type == NP_GRAPHICS_RENDERBUFFER_DEPTH_STENCIL_TYPE )
         {
             glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, 0);
             glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, 0);
@@ -210,12 +245,15 @@
         {
             GLenum attachment = [ self computeAttachment ];
             glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, attachment, GL_RENDERBUFFER_EXT, 0);
-        }
+        }*/
 
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        [ self detach ];
 
-        [ configuration release ];
-        configuration = nil;
+        //glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+        [ configuration unbindFBO ];
+
+        ASSIGN(configuration, nil);
     }
 }
 
