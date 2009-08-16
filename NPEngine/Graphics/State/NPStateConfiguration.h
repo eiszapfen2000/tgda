@@ -1,5 +1,6 @@
 #import "NPAlphaTestState.h"
 #import "NPDepthTestState.h"
+#import "NPColorWriteState.h"
 #import "NPCullingState.h"
 #import "NPBlendingState.h"
 #import "NPPolygonFillState.h"
@@ -11,6 +12,7 @@
     NPAlphaTestState   * alphaTestState;
     NPBlendingState    * blendingState;
     NPCullingState     * cullingState;
+    NPColorWriteState  * colorWriteState;
     NPDepthTestState   * depthTestState;
     NPPolygonFillState * polygonFillState;
 }
@@ -25,6 +27,7 @@
 
 - (id) alphaTestState;
 - (id) blendingState;
+- (id) colorWriteState;
 - (id) cullingState;
 - (id) depthTestState;
 - (id) polygonFillState;

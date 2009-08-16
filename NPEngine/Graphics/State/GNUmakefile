@@ -9,6 +9,7 @@ NPDepthTestState.h \
 NPCullingState.h \
 NPBlendingState.h \
 NPPolygonFillState.h \
+NPColorWriteState.h \
 NPStateConfiguration.h \
 NPStateSet.h \
 NPStateSetManager.h
@@ -20,6 +21,7 @@ NPDepthTestState.m \
 NPCullingState.m \
 NPBlendingState.m \
 NPPolygonFillState.m \
+NPColorWriteState.m \
 NPStateConfiguration.m \
 NPStateSet.m \
 NPStateSetManager.m
