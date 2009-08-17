@@ -117,6 +117,11 @@
 	return position;
 }
 
+- (FMatrix4 *) view
+{
+    return view;
+}
+
 - (FMatrix4 *) projection
 {
     return projection;

@@ -46,6 +46,7 @@
     yawMinusAction   = [[[ NP Input ] inputActions ] addInputActionWithName:@"YawMinus"   primaryInputAction:NP_INPUT_KEYBOARD_A ];
     yawPlusAction    = [[[ NP Input ] inputActions ] addInputActionWithName:@"YawPlus"    primaryInputAction:NP_INPUT_KEYBOARD_D ];
 
+    connectedToCamera = YES;
 
 	return self;
 }
@@ -208,40 +209,51 @@
 {
     ODCamera * camera = [[[[ NP applicationController ] sceneManager ] currentScene ] camera ];
 
-#warning FIXME parameter tuning
-
-    //fov         = [ camera fov ];
-    fov         = 60.0f;
+    fov         = [ camera fov ];
     nearPlane   = [ camera nearPlane ];
     farPlane    = [ camera farPlane ];
     aspectRatio = [ camera aspectRatio];
 
-    aspectRatio = 1.0f;
+    if ( connectedToCamera == YES )
+    {
+        fm4_m_init_with_fm4(projection,[ camera projection ]);
+    }
+    else
+    {
+        fm4_mssss_projection_matrix(projection, aspectRatio, fov, nearPlane, farPlane);
+    }
 
-    fm4_mssss_projection_matrix(projection, aspectRatio, fov, nearPlane, farPlane);
-    //fm4_m_init_with_fm4(projection,[ camera projection ]);
 }
 
 - (void) updateView
 {
-    fm4_m_set_identity(view);
+    if ( connectedToCamera == YES )
+    {
+        ODCamera * camera = [[[[ NP applicationController ] sceneManager ] currentScene ] camera ];
+        fm4_m_init_with_fm4(view,[ camera view ]);
+        fv3_v_init_with_fv3(position, [ camera position ]);
+    }
+    else
+    {
+        fm4_m_set_identity(view);
 
-    FQuaternion q;
-    fquat_q_conjugate_q(orientation, &q);
+        FQuaternion q;
+        fquat_q_conjugate_q(orientation, &q);
 
-    FMatrix4 rotate;
-    fquat_q_to_fmatrix4_m(&q, &rotate);
+        FMatrix4 rotate;
+        fquat_q_to_fmatrix4_m(&q, &rotate);
 
-    FMatrix4 tmp;
-    fm4_mm_multiply_m(view, &rotate, &tmp);
+        FMatrix4 tmp;
+        fm4_mm_multiply_m(view, &rotate, &tmp);
 
-    FVector3 invpos;
-    fv3_v_invert_v(position, &invpos);
+        FVector3 invpos;
+        fv3_v_invert_v(position, &invpos);
 
-    FMatrix4 trans;
-    fm4_mv_translation_matrix(&trans, &invpos);
+        FMatrix4 trans;
+        fm4_mv_translation_matrix(&trans, &invpos);
 
-    fm4_mm_multiply_m(&tmp, &trans, view);
+        fm4_mm_multiply_m(&tmp, &trans, view);
+    }
 }
 
 - (void) update:(Float)frameTime
@@ -267,7 +279,7 @@
     }
 
     [ self updateProjection ];
-	[ self updateView ];
+    [ self updateView ];
 
     [ frustum updateWithPosition:position
                      orientation:orientation
@@ -284,7 +296,7 @@
 {
     if ( renderFrustum == YES )
     {
-        //[ frustum render ];
+        [ frustum render ];
     }
 }
 

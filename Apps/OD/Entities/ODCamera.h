@@ -40,6 +40,7 @@
 - (Float) nearPlane;
 - (Float) farPlane;
 - (FVector3 *) position;
+- (FMatrix4 *) view;
 - (FMatrix4 *) projection;
 
 - (void) setFov:(Float)newFov;

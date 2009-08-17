@@ -34,7 +34,7 @@
     mode = NP_NONE;
 
     projectedGridCPU = [[ ODProjectedGridCPU alloc ] initWithName:@"CPU" parent:self ];
-    [ projectedGridCPU setMode:OD_PROJECT_CPU_CORNERS_GPU_INTERPOLATION];
+    [ projectedGridCPU setMode:OD_PROJECT_ENTIRE_MESH_ON_CPU ];
 
     projectedGridR2VB = [[ ODProjectedGridR2VB alloc ] initWithName:@"R2VB" parent:self ];
 
@@ -105,11 +105,12 @@
     projectedGridResolution->y = [[ projectedGridResolutionStrings objectAtIndex:1 ] intValue ];
     NSAssert1(projectedGridResolution->x > 0 && projectedGridResolution->y > 0, @"%@: Invalid resolution", name);
 
-//    IVector2 hack = { 4, 4 };
+    IVector2 hack = { 8, 8 };
 //    [ projectedGridCPU setProjectedGridResolution:hack ];
 
-    [ projectedGridCPU  setProjectedGridResolution:*projectedGridResolution ];
-    [ projectedGridR2VB setProjectedGridResolution:*projectedGridResolution ];
+    *projectedGridResolution = hack;
+    [ projectedGridCPU  setProjectedGridResolution:hack ];
+    [ projectedGridR2VB setProjectedGridResolution:hack ];
 
     NPLOG(@"");
     NPLOG(@"Projected grid resolution: %d x %d", projectedGridResolution->x, projectedGridResolution->y);

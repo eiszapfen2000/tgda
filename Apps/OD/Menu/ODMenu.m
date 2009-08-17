@@ -1,4 +1,5 @@
 #import "NP.h"
+#import "ODCheckBoxItem.h"
 #import "ODSliderItem.h"
 #import "ODSelectionGroup.h"
 #import "ODMenu.h"

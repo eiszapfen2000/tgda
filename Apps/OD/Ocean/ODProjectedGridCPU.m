@@ -391,7 +391,7 @@
         case OD_PROJECT_USING_INTERPOLATION_ON_CPU:
         {
             [ self calculateBasePlanePositionsUsingInterpolation ];
-            [ self calculateNormals ];
+            //[ self calculateNormals ];
 
             break;
         }

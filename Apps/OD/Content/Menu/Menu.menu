@@ -7,6 +7,8 @@
         SliderLine = "Slider_Line.png";
         SliderHead = "Slider_Head.png";
         SelectedItem  = "Selected.png";
+        Checked = "CheckBox_Checked.png";
+        Unchecked = "CheckBox_Unchecked.png";
     };
 
     Items =
@@ -54,6 +56,18 @@
             Selection = "Selected.png";
             Textures = ( "Red.png", "Blue.png", "Green.png", "Yellow.png" );
             TargetObject = "TestScene";
+        };
+
+        PConnection =
+        {
+            Type = "ODCheckBoxItem";
+            Description = "Nix";
+            Alignment = "Left";
+            Position = ("0.1", "0.2" );
+            Size = ( "0.08", "0.08" );
+            Checked = "YES";
+            TargetObject = "Projector";
+            TargetProperty = "connectedToCamera";
         };
     };
 }
