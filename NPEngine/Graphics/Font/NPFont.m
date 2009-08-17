@@ -54,6 +54,7 @@
 
     NSString * textureFileName = [ config objectForKey:@"Texture" ];
     NSString * effectFileName  = [ config objectForKey:@"Effect"  ];
+
     texture = [[[[ NP Graphics ] textureManager ] loadTextureFromPath:textureFileName ] retain ];
     effect  = [[[[ NP Graphics ] effectManager  ] loadEffectFromPath :effectFileName  ] retain ];
 
@@ -155,15 +156,13 @@
     }
 
     [ texture activateAtColorMapIndex:0 ];
-//    NPTextureBindingState * t = [[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ];
-//    [ t setTexture:texture forKey:@"NPCOLORMAP0" ];
-
     [ effect activate ];
 
     unichar character;
     Float characterWidth;
-    FVector2 texCoordUpperLeft;
-    FVector2 texCoordLowerRight;
+
+    FRectangle geometry;
+    FRectangle texCoords;
 
     div_t tmp = div([ texture width ], 16);
     Float characterWidthInTexture = (Float)tmp.quot;
@@ -181,28 +180,19 @@
         Int row = tmp.quot;
         Int column = character % 16;
 
-        texCoordUpperLeft.x = (Float)column / 16.0f;
-        texCoordUpperLeft.y = 1.0f - ( (Float)row / 16.0f );
-        texCoordLowerRight.x = (Float)(column + 1) / 16.0f;
-        texCoordLowerRight.y = 1.0f - ( (Float)(row + 1) / 16.0f );
+        texCoords.min.x = (Float)column / 16.0f;
+        texCoords.min.y = 1.0f - ( (Float)(row + 1) / 16.0f );
+        texCoords.max.x = (Float)(column + 1) / 16.0f;
+        texCoords.max.y = 1.0f - ( (Float)row / 16.0f );
 
         pos.x = pos.x + characterWidth;
 
-        glBegin(GL_QUADS);
+        geometry.min.x = pos.x - size;
+        geometry.min.y = pos.y - size;
+        geometry.max.x = pos.x + size;
+        geometry.max.y = pos.y + size;
 
-            glTexCoord2f(texCoordUpperLeft.x, texCoordUpperLeft.y);
-            glVertex4f(pos.x - size, pos.y + size, 0.0f, 1.0f);
-
-            glTexCoord2f(texCoordLowerRight.x, texCoordUpperLeft.y);
-            glVertex4f(pos.x + size, pos.y + size, 0.0f, 1.0f);
-
-            glTexCoord2f(texCoordLowerRight.x, texCoordLowerRight.y);
-            glVertex4f(pos.x + size, pos.y - size, 0.0f, 1.0f);
-
-            glTexCoord2f(texCoordUpperLeft.x, texCoordLowerRight.y);
-            glVertex4f(pos.x - size, pos.y - size, 0.0f, 1.0f);
-
-        glEnd();
+        [ NPPrimitivesRendering renderFRectangleGeometry:&geometry withTexCoords:&texCoords ];
 
         pos.x = pos.x + characterWidth;
     }
