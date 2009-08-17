@@ -31,6 +31,7 @@
 
 #import "Graphics/State/NpState.h"
 
+#import "Utilities/NPFullscreenQuad.h"
 #import "Utilities/NPPrimitivesRendering.h"
 
 #import "Graphics/Viewport/NPViewport.h"
