@@ -42,7 +42,7 @@
     V_Y(*position) = [[ positionStrings objectAtIndex:1 ] floatValue ];
     V_Z(*position) = [[ positionStrings objectAtIndex:2 ] floatValue ];
 
-    if ( modelPath == nil || statesetPath == nil || entityName == nil )
+    if ( modelPath == nil || entityName == nil )
     {
         return NO;
     }
@@ -50,9 +50,13 @@
     [ self setName:entityName ];
 
     model    = [[[[ NP Graphics ] modelManager    ] loadModelFromPath:modelPath       ] retain ];
-    stateset = [[[[ NP Graphics ] stateSetManager ] loadStateSetFromPath:statesetPath ] retain ];
 
-    if ( model == nil || stateset == nil )
+    if ( statesetPath != nil )
+    {
+        stateset = [[[[ NP Graphics ] stateSetManager ] loadStateSetFromPath:statesetPath ] retain ];
+    }
+
+    if ( model == nil )
     {
         return NO;
     }
@@ -82,10 +86,14 @@
 
 - (void) render
 {
-    fm4_mv_translation_matrix(modelMatrix,position);
+    fm4_mv_translation_matrix(modelMatrix, position);
     [[[[ NP Core ] transformationStateManager ] currentTransformationState ] setModelMatrix:modelMatrix ];
 
-    [ stateset activate ];
+    if ( stateset != nil )
+    {
+        [ stateset activate ];
+    }
+
     [ model render ];
 }
 

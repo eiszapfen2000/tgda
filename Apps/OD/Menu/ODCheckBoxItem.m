@@ -18,11 +18,8 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    position = fv2_alloc_init();
-    size = fv2_alloc_init();
-
+    geometry = frectangle_alloc_init();
     alignment = NP_NONE;
-
     checked = NO;
 
     return self;
@@ -30,36 +27,60 @@
 
 - (void) dealloc
 {
-    fv2_free(position);
-    fv2_free(size);
+    frectangle_free(geometry);
 
     [ super dealloc ];
 }
 
 - (BOOL) loadFromDictionary:(NSDictionary *)dictionary
 {
+    description = [[ dictionary objectForKey:@"Description" ] retain ];
+
     NSArray * positionStrings = [ dictionary objectForKey:@"Position" ];
-    position->x = [[ positionStrings objectAtIndex:0 ] floatValue ];
-    position->y = [[ positionStrings objectAtIndex:1 ] floatValue ];
+    NSArray * sizeStrings     = [ dictionary objectForKey:@"Size" ];
 
     NSString * alignmentString = [ dictionary objectForKey:@"Alignment" ];
+    NSString * checkedString   = [ dictionary objectForKey:@"Checked" ];
+
+    NSString * targetObjectString   = [ dictionary objectForKey:@"TargetObject" ];
+    NSString * targetPropertyString = [ dictionary objectForKey:@"TargetProperty" ];
+
+    if ( positionStrings == nil || sizeStrings == nil || alignmentString == nil ||
+         checkedString == nil || description == nil )
+    {
+        NPLOG_ERROR(@"Dictionary incomplete");
+        return NO;
+    }
+
+    FVector2 position, checkBoxSize;
+
+    position.x = [[ positionStrings objectAtIndex:0 ] floatValue ];
+    position.y = [[ positionStrings objectAtIndex:1 ] floatValue ];
+
+    checkBoxSize.x = [[ sizeStrings objectAtIndex:0 ] floatValue ];
+    checkBoxSize.y = [[ sizeStrings objectAtIndex:1 ] floatValue ];
+
     alignment = [[ (ODMenu *)parent valueForKeyword:alignmentString ] intValue ];
-
-    NSArray * sizeStrings = [ dictionary objectForKey:@"Size" ];
-    size->x = [[ sizeStrings objectAtIndex:0 ] floatValue ];
-    size->y = [[ sizeStrings objectAtIndex:1 ] floatValue ];
-
-    NSString * checkedTextureString = [ dictionary objectForKey:@"CheckedTexture" ];
-    NSString * uncheckedTextureString = [ dictionary objectForKey:@"UncheckedTexture" ];
-
-    checkedTexture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:checkedTextureString ];
-    uncheckedTexture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:uncheckedTextureString ];
-
-    NSString * effectString = [ dictionary objectForKey:@"Effect" ];
-    effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:effectString ];    
-
-    NSString * checkedString = [ dictionary objectForKey:@"Checked" ];
     checked = [ checkedString boolValue ];
+
+    frectangle_vv_init_with_min_and_size_r(&position, &checkBoxSize, geometry);
+    [ ODMenu alignRectangle:geometry withAlignment:alignment ];
+
+    if ( targetObjectString != nil )
+    {
+        target = [[[ NP Core ] objectManager ] objectByName:targetObjectString ];
+        NSAssert1(target != nil, @"Object with name \"%@\" not found", targetObjectString);
+
+        if ( targetPropertyString != nil )
+        {
+            BOOL propertyFound = GSObjCFindVariable(target, [ targetPropertyString cStringUsingEncoding:NSASCIIStringEncoding ], NULL, &size, &offset );
+            NSAssert1(propertyFound != NO, @"Property with name \"%@\" not found", targetPropertyString);
+        }
+    }
+
+    checkedTexture   = [ (ODMenu *)parent textureForKey:@"Checked" ];
+    uncheckedTexture = [ (ODMenu *)parent textureForKey:@"Unchecked" ];
+    effect = [ (ODMenu *)parent effect ];
 
     return YES;
 }
@@ -69,37 +90,16 @@
     return checked;
 }
 
-- (FVector2) position
-{
-    return *position;
-}
-
-- (FVector2) size
-{
-    return *size;
-}
-
 - (void) setChecked:(BOOL)newChecked
 {
     checked = newChecked;
-}
-
-- (void) setPosition:(FVector2)newPosition
-{
-    *position = newPosition;
-}
-
-- (void) setSize:(FVector2)newSize
-{
-    *size = newSize;
 }
 
 - (BOOL) mouseHit:(FVector2)mousePosition
 {
     BOOL result = NO;
 
-    if ( mousePosition.x > position->x && mousePosition.x < position->x + size->x &&
-         mousePosition.y < position->y && mousePosition.y > position->y - size->y )
+    if ( frectangle_vr_is_point_inside(&mousePosition, geometry) == 1 )
     {
         result = YES;
     }
@@ -111,18 +111,17 @@
 {
     if ( checked == NO )
     {
-
         checked = YES;
     }
     else
     {
         checked = NO;
     }
-}
 
-- (void) update:(Float)frameTime
-{
-
+    if ( target != nil && size > 0 )
+    {
+        GSObjCSetVariable(target, offset, size, &checked);
+    }
 }
 
 - (void) render
@@ -132,7 +131,7 @@
         return;
     }
 
-    id texture = nil;
+    NPTexture * texture = nil;
 
     if ( checked == YES )
     {
@@ -143,25 +142,12 @@
         texture = uncheckedTexture;
     }
 
+    FVector2 position = { geometry->min.x, geometry->max.y + 0.035f };
+    [[ (ODMenu *)parent font ] renderString:description atPosition:&position withSize:0.035f ];
+
     [ texture activateAtColorMapIndex:0 ];
     [ effect activate ];
-
-    glBegin(GL_QUADS);
-
-        glTexCoord2f(0.0f, 1.0f);
-        glVertex4f(position->x, position->y, 0.0f, 1.0f);
-
-        glTexCoord2f(0.0f, 0.0f);
-        glVertex4f(position->x, position->y - size->y, 0.0f, 1.0f);
-
-        glTexCoord2f(1.0f, 0.0f);
-        glVertex4f(position->x + size->x, position->y - size->y, 0.0f, 1.0f);
-
-        glTexCoord2f(1.0f, 1.0f);
-        glVertex4f(position->x + size->x, position->y, 0.0f, 1.0f);
-
-    glEnd();
-
+    [ NPPrimitivesRendering renderFRectangle:geometry ];
     [ effect deactivate ];
 }
 

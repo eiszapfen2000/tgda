@@ -118,7 +118,7 @@
     camera    = [[[ NP applicationController ] entityManager ] loadEntityFromPath:cameraEntityFile ];
     projector = [[[ NP applicationController ] entityManager ] loadEntityFromPath:projectorEntityFile ];
 
-    [ projector cameraRotateUsingYaw:-0.0f andPitch:-90.0f ];
+    //[ projector cameraRotateUsingYaw:-0.0f andPitch:-90.0f ];
     [ projector setRenderFrustum:YES ];
 
     NSEnumerator * entityFilesEnumerator = [ entityFiles objectEnumerator ];
@@ -191,8 +191,8 @@
     // Set initial states
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
-    // Bind FBO and attach float color scene texture
-    [ renderTargetConfiguration resetColorTargetsArray ];
+    // Bind FBO, attach float color scene texture and depth renderbuffer
+    /*[ renderTargetConfiguration resetColorTargetsArray ];
     [[ renderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:sceneRenderTexture ];
     [ renderTargetConfiguration bindFBO ];
     [ sceneRenderTexture attachToColorBufferIndex:0 ];
@@ -200,20 +200,18 @@
     [ renderTargetConfiguration activateDrawBuffers ];
     [ renderTargetConfiguration activateViewport ];
 
-    [ renderTargetConfiguration checkFrameBufferCompleteness ];
+    [ renderTargetConfiguration checkFrameBufferCompleteness ];*/
 
     // Clear rendertexture(s)
-    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
+//    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
     // Render scene
-    [ camera    render ];
-    [ projector render ];
-
+    [[[ NP Core ] transformationStateManager ] resetCurrentTransformationState ];
+    [ camera render ];
     [ skybox render ];
 
     [ defaultStateSet activate ];
 
-    [[ projector frustum ] render ];
 
 
     NSEnumerator * entityEnumerator = [ entities objectEnumerator ];
@@ -224,10 +222,16 @@
         [ entity render ];
     }
 
-    // Reset matrices (model, view, projection) to identity
-    [[[[ NP Core ] transformationStateManager ] currentTransformationState ] reset ];
+    [[[ NP Core ] transformationStateManager ] resetCurrentModelMatrix ];
 
-    // Detach float color scene texture, attach luminance float texture
+    // Render projector frustum
+    [ projector render ];
+
+    // Reset matrices (model, view, projection) to identity
+    [[[ NP Core ] transformationStateManager ] resetCurrentTransformationState ];
+
+    /*
+    // Detach float color scene texture and depth render buffer, attach luminance float texture
     [[ renderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:luminanceRenderTexture ];
     [ depthRenderBuffer detach ];
     [ luminanceRenderTexture attachToColorBufferIndex:0 ];
@@ -264,8 +268,9 @@
 
     [ fullscreenQuad render ];
 
-    [ fullscreenEffect deactivate ];
+    [ fullscreenEffect deactivate ];*/
 
+    
     // Activate blending for menu rendering
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];

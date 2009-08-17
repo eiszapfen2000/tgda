@@ -12,6 +12,11 @@
         Mode = "Additive";
     };
 
+    ColorWrite =
+    {
+        Enabled = "YES";
+    };
+
     Culling =
     {
         Enabled = "YES";
@@ -20,8 +25,8 @@
 
     Depth =
     {
-        DepthTestEnabled = "YES";
-        DepthWriteEnabled = "YES";
+        DepthTestEnabled = "NO";
+        DepthWriteEnabled = "NO";
         ComparisonFunction = "LessEqual";
     };
 

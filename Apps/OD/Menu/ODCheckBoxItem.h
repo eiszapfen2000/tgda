@@ -9,8 +9,9 @@
 
 @interface ODCheckBoxItem : NPObject
 {
-    FVector2 * position; //upper left
-    FVector2 * size; //upper left
+    NSString * description;
+
+    FRectangle * geometry;
 
     NpState alignment;
 
@@ -19,6 +20,10 @@
     id effect;
 
     BOOL checked;
+
+    id target;
+    unsigned int size;
+    int offset;
 }
 
 - (id) init;
@@ -29,17 +34,11 @@
 - (BOOL) loadFromDictionary:(NSDictionary *)dictionary;
 
 - (BOOL) checked;
-- (FVector2) position;
-- (FVector2) size;
-
 - (void) setChecked:(BOOL)newChecked;
-- (void) setPosition:(FVector2)newPosition;
-- (void) setSize:(FVector2)newSize;
 
 - (BOOL) mouseHit:(FVector2)mousePosition;
 - (void) onClick:(FVector2)mousePosition;
 
-- (void) update:(Float)frameTime;
 - (void) render;
 
 @end

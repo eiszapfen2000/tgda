@@ -42,6 +42,8 @@
     id pitchPlusAction;
     id yawMinusAction;
     id yawPlusAction;
+
+    BOOL connectedToCamera;
 }
 
 - (id) init;
