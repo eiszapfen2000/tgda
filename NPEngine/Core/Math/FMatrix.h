@@ -68,6 +68,8 @@ void fm4_vm_multiply_v(const FVector4 * const v, const FMatrix4 * const m, FVect
 void fm4_mv_multiply_v(const FMatrix4 * const m, const FVector4 * const v, FVector4 * result);
 void fm4_mv_translation_matrix(FMatrix4 * m, FVector3 * v);
 void fm4_mv_scale_matrix(FMatrix4 * m, FVector3 * v);
+void fm4_vvv_look_at_matrix_m(FVector3 * eyePosition, FVector3 * lookAtPosition, FVector3 * upVector, FMatrix4 * result);
+void fm4_vvvv_look_at_matrix_m(FVector3 * rightVector, FVector3 * upVector, FVector3 * forwardVector, FVector3 * position, FMatrix4 * result);
 void fm4_mssss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegrees, Float nearplane, Float farplane);
 void fm4_ms_simple_orthographic_projection_matrix(FMatrix4 * m, Float aspectratio);
 void fm4_mssssss_orthographic_projection_matrix(FMatrix4 * m, Float left, Float right, Float bottom, Float top, Float near, Float far);

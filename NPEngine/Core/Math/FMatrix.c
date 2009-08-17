@@ -451,6 +451,52 @@ void fm4_mv_scale_matrix(FMatrix4 * m, FVector3 * v)
     M_EL(*m,2,2) = v->z;
 }
 
+void fm4_vvv_look_at_matrix_m(FVector3 * eyePosition, FVector3 * lookAtPosition, FVector3 * upVector, FMatrix4 * result)
+{
+    fm4_m_set_identity(result);
+
+    FVector3 lookAtVector;
+    fv3_vv_sub_v(lookAtPosition, eyePosition, &lookAtVector);
+    fv3_v_normalise(&lookAtVector);
+
+    FVector3 normalisedUpVector;
+    fv3_v_normalise_v(upVector, &normalisedUpVector);
+
+    FVector3 rightVector;
+    fv3_vv_cross_product_v(&lookAtVector, &normalisedUpVector, &rightVector);
+    fv3_v_normalise(&rightVector);
+
+    fv3_vv_cross_product_v(&rightVector, &lookAtVector, &normalisedUpVector);
+
+    fm4_vvvv_look_at_matrix_m(&rightVector, &normalisedUpVector, &lookAtVector, eyePosition, result);
+}
+
+void fm4_vvvv_look_at_matrix_m(FVector3 * rightVector, FVector3 * upVector, FVector3 * forwardVector, FVector3 * position, FMatrix4 * result)
+{
+    FMatrix4 rotation;
+    fm4_m_set_identity(&rotation);
+
+    M_EL(rotation, 0, 0) = rightVector->x;
+    M_EL(rotation, 1, 0) = rightVector->y;
+    M_EL(rotation, 2, 0) = rightVector->z;
+
+    M_EL(rotation, 0, 1) = upVector->x;
+    M_EL(rotation, 1, 1) = upVector->y;
+    M_EL(rotation, 2, 1) = upVector->z;
+
+    M_EL(rotation, 0, 2) = -forwardVector->x;
+    M_EL(rotation, 1, 2) = -forwardVector->y;
+    M_EL(rotation, 2, 2) = -forwardVector->z;
+
+    FVector3 inversePosition;
+    fv3_v_invert_v(position, &inversePosition);
+
+    FMatrix4 translation;
+    fm4_mv_translation_matrix(&translation, &inversePosition);
+    
+    fm4_mm_multiply_m(&rotation, &translation, result);
+}
+
 void fm4_mssss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegrees, Float nearplane, Float farplane)
 {
     fm4_m_set_identity(m);
