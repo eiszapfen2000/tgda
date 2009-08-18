@@ -15,6 +15,7 @@ FPlane.c \
 Ray.c \
 FRay.c \
 FRectangle.c \
+FVertex.c \
 NpMath.c
 
 libNPEngineCoreMath_HEADER_FILES = \
