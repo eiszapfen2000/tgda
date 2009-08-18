@@ -43,6 +43,11 @@ FVector2 * fv2_free(FVector2 * v)
     return npfreenode_free(v, NP_FVECTOR2_FREELIST);
 }
 
+void fv2_v_zeros(FVector2 * v)
+{
+    V_X(*v) = V_Y(*v) = 0.0f;
+}
+
 void fv2_v_square_length_s(const FVector2 * const v, Float * sqrlength)
 {
     *sqrlength = V_X(*v) * V_X(*v) + V_Y(*v) * V_Y(*v);
@@ -366,6 +371,11 @@ FVector4 * fv4_alloc_init_with_components(Float x, Float y, Float z, Float w)
     V_W(*tmp) = w;
 
     return tmp;
+}
+
+void fv4_v_zeros(FVector4 * v)
+{
+    V_X(*v) = V_Y(*v) = V_Z(*v) = V_W(*v) = 0.0f;
 }
 
 void fv4_vv_load_fv3(FVector4 * v, const FVector3 * const w)

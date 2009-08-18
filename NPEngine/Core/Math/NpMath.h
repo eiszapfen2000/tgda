@@ -23,6 +23,8 @@
 
 #include "FRectangle.h"
 
+#include "FVertex.h"
+
 void npmath_initialise();
 
 #endif
