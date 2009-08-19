@@ -208,11 +208,9 @@
     // Render scene
     [[[ NP Core ] transformationStateManager ] resetCurrentTransformationState ];
     [ camera render ];
-    [ skybox render ];
+    //[ skybox render ];
 
     [ defaultStateSet activate ];
-
-
 
     NSEnumerator * entityEnumerator = [ entities objectEnumerator ];
     id <ODPEntity> entity;
@@ -221,8 +219,6 @@
     {
         [ entity render ];
     }
-
-    [[[ NP Core ] transformationStateManager ] resetCurrentModelMatrix ];
 
     // Render projector frustum
     [ projector render ];
@@ -275,6 +271,9 @@
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] activate ];
+
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:NO ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] activate ];
 
     // Render menu
     [[[ NP Graphics ] orthographicRendering ] activate ];

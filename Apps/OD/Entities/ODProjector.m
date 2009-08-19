@@ -210,8 +210,10 @@
     ODCamera * camera = [[[[ NP applicationController ] sceneManager ] currentScene ] camera ];
 
     fov         = [ camera fov ];
+    fov         = 25.0f;
     nearPlane   = [ camera nearPlane ];
     farPlane    = [ camera farPlane ];
+    farPlane    = 10.0f;
     aspectRatio = [ camera aspectRatio];
 
     if ( connectedToCamera == YES )
@@ -296,6 +298,7 @@
 {
     if ( renderFrustum == YES )
     {
+        [[[ NP Core ] transformationStateManager ] resetCurrentModelMatrix ];
         [ frustum render ];
     }
 }
