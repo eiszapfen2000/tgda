@@ -112,6 +112,11 @@
     return farPlane;
 }
 
+- (FVector3 *) forward
+{
+    return forward;
+}
+
 - (FVector3 *) position
 {
 	return position;

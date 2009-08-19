@@ -25,8 +25,8 @@
 
     Depth =
     {
-        DepthTestEnabled = "NO";
-        DepthWriteEnabled = "NO";
+        DepthTestEnabled = "YES";
+        DepthWriteEnabled = "YES";
         ComparisonFunction = "LessEqual";
     };
 

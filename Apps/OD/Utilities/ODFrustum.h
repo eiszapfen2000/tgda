@@ -10,16 +10,29 @@
 #define FARPLANE_UPPERRIGHT    6
 #define FARPLANE_UPPERLEFT     7
 
+#define FRUSTUM_FRONT   0
+#define FRUSTUM_BACK    1
+#define FRUSTUM_TOP     2
+#define FRUSTUM_BOTTOM  3
+#define FRUSTUM_LEFT    4
+#define FRUSTUM_RIGHT   5 
+
 @class NPEffect;
 @class NPVertexBuffer;
 
 @interface ODFrustum : NPObject
 {
-    NPVertexBuffer * frustumGeometry;
-    Float * frustumVertices;
-    Int   * frustumIndices;
+    NPVertexBuffer * frustumFaceGeometry;
+    NPVertexBuffer * frustumLineGeometry;
 
-    FVector3 * frustumCornerPositions[8];
+    Float * frustumFaceVertices;
+    Float * frustumLineVertices;
+
+    Int   * frustumFaceIndices;
+    Int   * defaultFaceIndices;
+    Int   * frustumLineIndices;
+
+    FVertex3 * frustumCornerPositions;
 
     Float nearPlaneHeight;
     Float nearPlaneWidth;
@@ -51,7 +64,6 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 - (void) dealloc;
 
-- (FVector3 **) frustumCornerPositions;
 - (Float) nearPlaneHeight;
 - (Float) nearPlaneWidth;
 - (Float) farPlaneHeight;

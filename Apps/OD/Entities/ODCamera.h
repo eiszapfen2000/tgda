@@ -39,6 +39,7 @@
 - (Float) aspectRatio;
 - (Float) nearPlane;
 - (Float) farPlane;
+- (FVector3 *) forward;
 - (FVector3 *) position;
 - (FMatrix4 *) view;
 - (FMatrix4 *) projection;
