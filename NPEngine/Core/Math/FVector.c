@@ -295,6 +295,22 @@ void fv3_vv_cross_product_v(const FVector3 * const v, const FVector3 * const w, 
     V_Z(*cross) = V_X(*v) * V_Y(*w) - V_Y(*v) * V_X(*w);
 }
 
+Float fv3_vv_square_distance(const FVector3 * const v, const FVector3 * const w)
+{
+    FVector3 sub;
+    fv3_vv_sub_v(v, w, &sub);
+
+    return fv3_v_square_length(&sub);
+}
+
+Float fv3_vv_distance(const FVector3 * const v, const FVector3 * const w)
+{
+    FVector3 sub;
+    fv3_vv_sub_v(v, w, &sub);
+
+    return fv3_v_length(&sub);
+}
+
 Float fv3_v_square_length(const FVector3 * const v)
 {
     return ( V_X(*v) * V_X(*v) + V_Y(*v) * V_Y(*v) + V_Z(*v) * V_Z(*v) );

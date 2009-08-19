@@ -76,6 +76,8 @@ void fv3_vv_add_v(const FVector3 * const v, const FVector3 * const w, FVector3 *
 void fv3_vv_sub_v(const FVector3 * const v, const FVector3 * const w, FVector3 * result);
 void fv3_vv_dot_product_s(const FVector3 * const v, const FVector3 * const w, Float * dot);
 void fv3_vv_cross_product_v(const FVector3 * const v, const FVector3 * const w, FVector3 * cross);
+Float fv3_vv_square_distance(const FVector3 * const v, const FVector3 * const w);
+Float fv3_vv_distance(const FVector3 * const v, const FVector3 * const w);
 Float fv3_v_square_length(const FVector3 * const v);
 Float fv3_v_length(const FVector3 * const v);
 Float fv3_vv_dot_product(const FVector3 * const v, const FVector3 * const w);
