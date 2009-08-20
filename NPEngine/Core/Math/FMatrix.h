@@ -52,6 +52,9 @@ void fm3_vm_multiply_v(const FVector3 * const v, const FMatrix3 * const m, FVect
 void fm3_mv_multiply_v(const FMatrix3 * const m, const FVector3 * const v, FVector3 * result);
 void fm3_m_inverse_m(const FMatrix3 * const m1, FMatrix3 * m2);
 Float fm3_determinant(const FMatrix3 * const m);
+void fm3_m_get_right_vector_v(const FMatrix3 * const m, FVector3 * right);
+void fm3_m_get_up_vector_v(const FMatrix3 * const m, FVector3 * up);
+void fm3_m_get_forward_vector_v(const FMatrix3 * const m, FVector3 * forward);
 const char * fm3_m_to_string(FMatrix3 * m);
 
 FMatrix4 * fm4_alloc();
@@ -77,6 +80,9 @@ void fm4_mssss_orthographic_2d_projection_matrix(FMatrix4 * m, Float left, Float
 void fm4_mss_sub_matrix_m(const FMatrix4 * const m, const Int row, const Int column, FMatrix3 * result);
 void fm4_m_inverse_m(const FMatrix4 * const m, FMatrix4 * result);
 Float fm4_determinant(const FMatrix4 * const m);
+void fm4_m_get_right_vector_v(const FMatrix4 * const m, FVector3 * right);
+void fm4_m_get_up_vector_v(const FMatrix4 * const m, FVector3 * up);
+void fm4_m_get_forward_vector_v(const FMatrix4 * const m, FVector3 * forward);
 const char * fm4_m_to_string(FMatrix4 * m);
 
 #endif

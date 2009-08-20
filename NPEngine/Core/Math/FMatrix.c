@@ -274,6 +274,27 @@ Float fm3_determinant(const FMatrix3 * const m)
     return M_EL(*m,0,0) * EIminusHF - M_EL(*m,1,0) * DIminusGF + M_EL(*m,2,0) * DHminusGE;
 }
 
+void fm3_m_get_right_vector_v(const FMatrix3 * const m, FVector3 * right)
+{
+    right->x = M_EL(*m,0,0);
+    right->y = M_EL(*m,1,0);
+    right->z = M_EL(*m,2,0);
+}
+
+void fm3_m_get_up_vector_v(const FMatrix3 * const m, FVector3 * up)
+{
+    up->x = M_EL(*m,0,1);
+    up->y = M_EL(*m,1,1);
+    up->z = M_EL(*m,2,1);
+}
+
+void fm3_m_get_forward_vector_v(const FMatrix3 * const m, FVector3 * forward)
+{
+    forward->x = -M_EL(*m,0,2);
+    forward->y = -M_EL(*m,1,2);
+    forward->z = -M_EL(*m,2,2);
+}
+
 const char * fm3_m_to_string(FMatrix3 * m)
 {
     char * fm3string;
@@ -610,6 +631,27 @@ Float fm4_determinant(const FMatrix4 * const m)
     fm3_free(subMatrix);
 
     return determinant;
+}
+
+void fm4_m_get_right_vector_v(const FMatrix4 * const m, FVector3 * right)
+{
+    right->x = M_EL(*m,0,0);
+    right->y = M_EL(*m,1,0);
+    right->z = M_EL(*m,2,0);
+}
+
+void fm4_m_get_up_vector_v(const FMatrix4 * const m, FVector3 * up)
+{
+    up->x = M_EL(*m,0,1);
+    up->y = M_EL(*m,1,1);
+    up->z = M_EL(*m,2,1);
+}
+
+void fm4_m_get_forward_vector_v(const FMatrix4 * const m, FVector3 * forward)
+{
+    forward->x = -M_EL(*m,0,2);
+    forward->y = -M_EL(*m,1,2);
+    forward->z = -M_EL(*m,2,2);
 }
 
 const char * fm4_m_to_string(FMatrix4 * m)

@@ -268,7 +268,7 @@ void fquat_q_to_fmatrix4_m(const FQuaternion * const q, FMatrix4 * m)
     M_EL(*m,3,3) = 1.0;
 }
 
-void fquat_m3_to_FQuaternion_q(const Matrix3 * const m, FQuaternion * q)
+void fquat_m3_to_FQuaternion_q(const FMatrix3 * const m, FQuaternion * q)
 {
     Float trace = M_EL(*m,0,0) + M_EL(*m,1,1) + M_EL(*m,2,2) + 1.0;
     Float s;
@@ -324,7 +324,7 @@ void fquat_m3_to_FQuaternion_q(const Matrix3 * const m, FQuaternion * q)
     }
 }
 
-void fquat_m4_to_FQuaternion_q(const Matrix4 * const m, FQuaternion * q)
+void fquat_m4_to_FQuaternion_q(const FMatrix4 * const m, FQuaternion * q)
 {
     Float trace = M_EL(*m,0,0) + M_EL(*m,1,1) + M_EL(*m,2,2) + 1.0;
     Float s;
