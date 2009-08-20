@@ -88,10 +88,10 @@ int compare_floats (const float * a, const float * b)
     defaultFaceIndices[15] = 4;
 
     // Left quad
-    defaultFaceIndices[16]  = 0;
-    defaultFaceIndices[17]  = 3;
-    defaultFaceIndices[18] = 7;
-    defaultFaceIndices[19] = 4;
+    defaultFaceIndices[16]  = 3;
+    defaultFaceIndices[17]  = 0;
+    defaultFaceIndices[18] = 4;
+    defaultFaceIndices[19] = 7;
 
     //Right Quad
     defaultFaceIndices[20] = 1;
@@ -258,7 +258,6 @@ int compare_floats (const float * a, const float * b)
 - (void) render
 {
     ODCamera * camera = [[[[ NP applicationController ] sceneManager ] currentScene ] camera ];
-    FVector3 * forward  = [ camera forward  ];
     FVector3 * position = [ camera position ];
 
     Float squareDistances[6];
@@ -275,13 +274,14 @@ int compare_floats (const float * a, const float * b)
 
     for ( Int i = 0; i < 6; i++ )
     {
-        Int32 index;
+        Int32 index = -1;
 
         for ( Int j = 0; j < 6; j++ )
         {
-            if ( sortedSquareDistances[i] == squareDistances[j] )
+            if ( (sortedSquareDistances[i] == squareDistances[j]) && (index == -1))
             {
                 index = j;
+                squareDistances[j] = 0.0f;
             }
         }
 
@@ -300,14 +300,24 @@ int compare_floats (const float * a, const float * b)
     [[[[ NP Graphics ] stateConfiguration ] cullingState ] setEnabled:NO ];
     [[[[ NP Graphics ] stateConfiguration ] cullingState ] activate ];
 
-    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:NO ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:YES ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setWriteEnabled:NO ];
     [[[[ NP Graphics ] stateConfiguration ] depthTestState ] activate ];
 
     glLineWidth(5.0f);
 
-    [ frustumEffect activateTechniqueWithName:@"render_transparent" ];
+    FVector4 color = { 0.0f, 1.0f, 0.0f, 0.5f };
+    [ frustumEffect uploadFVector4ParameterWithName:@"color" andValue:&color ];
+
+    [ frustumEffect activateTechniqueWithName:@"render" ];
     [ frustumFaceGeometry renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_QUADS ];
+
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:NO ];
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] activate ];
+
+    [ frustumEffect activateTechniqueWithName:@"render" ];
     [ frustumLineGeometry renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_LINES ];
+
     [ frustumEffect deactivate ];
 
     glLineWidth(1.0f);

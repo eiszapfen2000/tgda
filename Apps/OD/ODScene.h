@@ -37,6 +37,7 @@
 
 - (id) camera;
 - (id) projector;
+- (id) entityWithName:(NSString *)entityName;
 
 - (void) activate;
 - (void) deactivate;

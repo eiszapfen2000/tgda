@@ -165,6 +165,22 @@
     return projector;
 }
 
+- (id) entityWithName:(NSString *)entityName
+{
+    NSEnumerator * entitiesEnumerator = [ entities objectEnumerator ];
+    id entity;
+
+    while ( (entity = [ entitiesEnumerator nextObject ]) )
+    {
+        if ( [[ entity name ] isEqual:entityName ] == YES )
+        {
+            return entity;
+        }
+    }
+
+    return nil;
+}
+
 - (void) update:(Float)frameTime
 {
     [ camera    update:frameTime ];
@@ -183,13 +199,54 @@
     [ menu update:frameTime ];
 }
 
-- (void) render
+- (void) renderScene
 {
-    // clear framebuffer/depthbuffer
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
+    // Render scene
+    [[[ NP Core ] transformationStateManager ] resetCurrentTransformationState ];
+    [ camera render ];
+
+    NSEnumerator * entityEnumerator = [ entities objectEnumerator ];
+    id <ODPEntity> entity;
+
+    while ( (entity = [ entityEnumerator nextObject ]) )
+    {
+        [ entity render ];
+    }
+
+    [ projector render ];
+}
+
+- (void) renderMenu
+{
+    // Activate blending for menu rendering
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] activate ];
+
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:NO ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] activate ];
+
+    // Render menu
+    [[[ NP Graphics ] orthographicRendering ] activate ];
+    [ menu render ];
+    [[[ NP Graphics ] orthographicRendering ] deactivate ];
+}
+
+
+
+- (void) render
+{
     // Set initial states
-    [[[ NP Graphics ] stateConfiguration ] activate ];
+    [ defaultStateSet activate ];
+
+    // clear framebuffer/depthbuffer
+    //[[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
+
+    [ self renderScene ];
+    [ self renderMenu  ];
+
 
     // Bind FBO, attach float color scene texture and depth renderbuffer
     /*[ renderTargetConfiguration resetColorTargetsArray ];
@@ -204,27 +261,6 @@
 
     // Clear rendertexture(s)
 //    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
-
-    // Render scene
-    [[[ NP Core ] transformationStateManager ] resetCurrentTransformationState ];
-    [ camera render ];
-    //[ skybox render ];
-
-    [ defaultStateSet activate ];
-
-    NSEnumerator * entityEnumerator = [ entities objectEnumerator ];
-    id <ODPEntity> entity;
-
-    while ( (entity = [ entityEnumerator nextObject ]) )
-    {
-        [ entity render ];
-    }
-
-    // Render projector frustum
-    [ projector render ];
-
-    // Reset matrices (model, view, projection) to identity
-    [[[ NP Core ] transformationStateManager ] resetCurrentTransformationState ];
 
     /*
     // Detach float color scene texture and depth render buffer, attach luminance float texture
@@ -265,20 +301,6 @@
     [ fullscreenQuad render ];
 
     [ fullscreenEffect deactivate ];*/
-
-    
-    // Activate blending for menu rendering
-    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
-    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];
-    [[[[ NP Graphics ] stateConfiguration ] blendingState ] activate ];
-
-    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:NO ];
-    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] activate ];
-
-    // Render menu
-    [[[ NP Graphics ] orthographicRendering ] activate ];
-    [ menu render ];
-    [[[ NP Graphics ] orthographicRendering ] deactivate ];
 
     // Reset states
     [[[ NP Graphics ] stateConfiguration ] deactivate ];

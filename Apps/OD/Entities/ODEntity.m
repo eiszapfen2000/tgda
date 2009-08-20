@@ -94,6 +94,9 @@
         [ stateset activate ];
     }
 
+    FVector4 color = { 1.0f, 0.0f, 0.0f, 1.0f };
+    [[[[ model materials ] objectAtIndex:0 ] effect ] uploadFVector4ParameterWithName:@"color" andValue:&color ];
+
     [ model render ];
 }
 

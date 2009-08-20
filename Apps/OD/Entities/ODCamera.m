@@ -199,8 +199,8 @@
     [ self updateYaw:yawDegrees ];
     [ self updatePitch:pitchDegrees ];
 
-    fquat_q_init_with_axis_and_degrees(orientation,NP_WORLDF_Y_AXIS,&yaw);
-    fquat_q_rotatex(orientation,&pitch);
+    fquat_q_init_with_axis_and_degrees(orientation, NP_WORLDF_Y_AXIS, &yaw);
+    fquat_q_rotatex(orientation, &pitch);
 }
 
 - (void) moveForward:(Float)frameTime
@@ -214,7 +214,7 @@
 
 - (void) moveBackward:(Float)frameTime
 {
-    fquat_q_forward_vector_v(orientation,forward);
+    fquat_q_forward_vector_v(orientation, forward);
 
     V_X(*position) -= (forward->x * frameTime);
     V_Y(*position) -= (forward->y * frameTime);
@@ -224,7 +224,7 @@
 - (void) moveLeft:(Float)frameTime
 {
     FVector3 left;
-    fquat_q_right_vector_v(orientation,&left);
+    fquat_q_right_vector_v(orientation, &left);
 
     V_X(*position) -= (left.x * frameTime);
     V_Y(*position) -= (left.y * frameTime);
@@ -234,7 +234,7 @@
 - (void) moveRight:(Float)frameTime
 {
     FVector3 right;
-    fquat_q_right_vector_v(orientation,&right);
+    fquat_q_right_vector_v(orientation, &right);
 
     V_X(*position) += (right.x * frameTime);
     V_Y(*position) += (right.y * frameTime);
@@ -254,6 +254,8 @@
 - (void) updateView
 {
     fm4_m_set_identity(view);
+
+    fquat_q_forward_vector_v(orientation,forward);
 
     FQuaternion q;
     fquat_q_conjugate_q(orientation, &q);
