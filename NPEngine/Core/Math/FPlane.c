@@ -79,7 +79,13 @@ Int fplane_pr_intersect_with_ray_v(FPlane * plane, FRay * ray, FVector3 * result
     fv3_sv_scale_v(&t, &(ray->direction), result);
     fv3_vv_add_v(result, &(ray->point), result);
 
-    return 1;
+    Int r = 1;
+    if ( t < 0.0f )
+    {
+        r = -1;
+    }
+
+    return r;
 }
 
 Float fplane_pv_distance_from_plane_s(FPlane * plane, FVector3 * point)
