@@ -3,6 +3,7 @@
 #import "Utilities/ODFrustum.h"
 #import "ODProjector.h"
 #import "ODCamera.h"
+#import "ODOceanEntity.h"
 #import "ODScene.h"
 #import "ODSceneManager.h"
 
@@ -210,15 +211,13 @@
     ODCamera * camera = [[[[ NP applicationController ] sceneManager ] currentScene ] camera ];
 
     fov         = [ camera fov ];
-    fov         = 25.0f;
     nearPlane   = [ camera nearPlane ];
     farPlane    = [ camera farPlane ];
-    farPlane    = 10.0f;
     aspectRatio = [ camera aspectRatio];
 
     if ( connectedToCamera == YES )
     {
-        fm4_m_init_with_fm4(projection,[ camera projection ]);
+        fm4_m_init_with_fm4(projection, [ camera projection ]);
     }
     else
     {
@@ -232,8 +231,51 @@
     if ( connectedToCamera == YES )
     {
         ODCamera * camera = [[[[ NP applicationController ] sceneManager ] currentScene ] camera ];
-        fm4_m_init_with_fm4(view,[ camera view ]);
+        fm4_m_init_with_fm4(view, [ camera view ]);
         fv3_v_init_with_fv3(position, [ camera position ]);
+
+        fquat_m4_to_FQuaternion_q(view, orientation);
+        fquat_q_normalise(orientation);
+        fquat_q_conjugate(orientation);
+
+        id ocean = [[[[ NP applicationController ] sceneManager ] currentScene ] entityWithName:@"Ocean" ] ;
+        Float basePlaneHeight = [ ocean basePlaneHeight ];
+
+        FVector3 cameraForward;
+        FVector3 cameraPosition;
+
+        fv3_v_init_with_fv3(&cameraForward,  [ camera forward  ]);
+        fv3_v_init_with_fv3(&cameraPosition, [ camera position ]);
+
+        FRay ray;
+        ray.point     = *[ camera position ];
+        ray.direction = *[ camera forward  ];
+
+        FPlane * basePlane = [ ocean basePlane ];
+
+        FVector3 intersection;
+        Int intersectionState = fplane_pr_intersect_with_ray_v(basePlane, &ray, &intersection);
+
+        switch ( intersectionState )
+        {
+            // Intersection behind us, means we are looking upwards
+            case -1:
+            {
+                break;
+            }
+
+            // No intersection, we are looking to the horizon
+            case  0:
+            {
+                break;
+            }
+
+            // Intersection in front of us, we are looking downwards
+            case  1:
+            {
+                break;
+            }
+        }
     }
     else
     {
@@ -244,6 +286,8 @@
 
         FMatrix4 rotate;
         fquat_q_to_fmatrix4_m(&q, &rotate);
+
+        fquat_m4_to_FQuaternion_q(&rotate, &q);
 
         FMatrix4 tmp;
         fm4_mm_multiply_m(view, &rotate, &tmp);
@@ -296,7 +340,7 @@
 
 - (void) render
 {
-    if ( renderFrustum == YES )
+    if ( renderFrustum == YES && connectedToCamera == NO)
     {
         [[[ NP Core ] transformationStateManager ] resetCurrentModelMatrix ];
         [ frustum render ];

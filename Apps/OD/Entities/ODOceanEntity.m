@@ -33,6 +33,11 @@
 
     mode = NP_NONE;
 
+    basePlaneHeight = 0.0f;
+    upperSurfaceBound = 1.0f;
+    lowerSurfaceBound = -1.0f;
+    basePlane = fplane_alloc_init_with_components(0.0f, 1.0f, 0.0f, basePlaneHeight);
+
     projectedGridCPU = [[ ODProjectedGridCPU alloc ] initWithName:@"CPU" parent:self ];
     [ projectedGridCPU setMode:OD_PROJECT_ENTIRE_MESH_ON_CPU ];
 
@@ -58,12 +63,34 @@
     projectedGridResolution = iv2_free(projectedGridResolution);
     projectedGridResolutionLastFrame = iv2_free(projectedGridResolutionLastFrame);
 
+    fplane_free(basePlane);
+
     [ super dealloc ];
 }
 
 - (NpState) mode
 {
     return mode;
+}
+
+- (Float) basePlaneHeight
+{
+    return basePlaneHeight;
+}
+
+- (Float) upperSurfaceBound
+{
+    return upperSurfaceBound;
+}
+
+- (Float) lowerSurfaceBound
+{
+    return lowerSurfaceBound;
+}
+
+- (FPlane *) basePlane
+{
+    return basePlane;
 }
 
 - (IVector2) projectedGridResolution
@@ -105,7 +132,7 @@
     projectedGridResolution->y = [[ projectedGridResolutionStrings objectAtIndex:1 ] intValue ];
     NSAssert1(projectedGridResolution->x > 0 && projectedGridResolution->y > 0, @"%@: Invalid resolution", name);
 
-    IVector2 hack = { 8, 8 };
+    IVector2 hack = { 4, 4 };
 //    [ projectedGridCPU setProjectedGridResolution:hack ];
 
     *projectedGridResolution = hack;
@@ -266,7 +293,15 @@
 
 - (void) render
 {
+    //[[[[ NP Graphics ] stateConfiguration ] polygonFillState ] setFrontFaceFill:NP_POLYGON_FILL_LINE];
+    //[[[[ NP Graphics ] stateConfiguration ] polygonFillState ] setBackFaceFill:NP_POLYGON_FILL_LINE];
+    //[[[[ NP Graphics ] stateConfiguration ] polygonFillState ] activate ];
+
     [ projectedGridCPU render ];
+
+    //[[[[ NP Graphics ] stateConfiguration ] polygonFillState ] setFrontFaceFill:NP_POLYGON_FILL_FACE];
+    //[[[[ NP Graphics ] stateConfiguration ] polygonFillState ] setBackFaceFill:NP_POLYGON_FILL_FACE];
+    //[[[[ NP Graphics ] stateConfiguration ] polygonFillState ] activate ];
 }
 
 @end

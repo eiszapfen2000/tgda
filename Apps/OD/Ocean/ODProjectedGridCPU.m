@@ -248,7 +248,7 @@
             ray.direction.y = resultF.y / resultF.w - ray.point.y;
             ray.direction.z = resultF.z / resultF.w - ray.point.z;
 
-            fplane_pr_intersect_with_ray_v(basePlane, &ray, &wPosition);
+            Int r = fplane_pr_intersect_with_ray_v(basePlane, &ray, &wPosition);
 
             index = (i * V_X(*projectedGridResolution) + j) * 3;
 
@@ -390,7 +390,7 @@
         case OD_PROJECT_ENTIRE_MESH_ON_CPU:
         case OD_PROJECT_USING_INTERPOLATION_ON_CPU:
         {
-            [ self calculateBasePlanePositionsUsingInterpolation ];
+            [ self calculateBasePlanePositions ];
             //[ self calculateNormals ];
 
             break;

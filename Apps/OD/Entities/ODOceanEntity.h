@@ -16,6 +16,11 @@
 
     NpState mode;
 
+    Float basePlaneHeight;
+    Float upperSurfaceBound;
+    Float lowerSurfaceBound;
+    FPlane * basePlane;
+
     id projectedGridCPU;
     id projectedGridR2VB;
 
@@ -31,6 +36,10 @@
 - (void) dealloc;
 
 - (NpState) mode;
+- (Float) basePlaneHeight;
+- (Float) upperSurfaceBound;
+- (Float) lowerSurfaceBound;
+- (FPlane *) basePlane;
 - (IVector2) projectedGridResolution;
 
 - (void) setMode:(NpState)newMode;
