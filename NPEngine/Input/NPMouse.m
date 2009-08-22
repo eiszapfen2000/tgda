@@ -50,7 +50,7 @@ void reset_mouse_state(NpMouseState * mouseState)
     return window;
 }
 
-- (void) setWindow:(id)newWindow
+- (void) setWindow:(NSWindow *)newWindow
 {
     window = newWindow;
 

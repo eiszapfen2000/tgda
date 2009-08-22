@@ -88,6 +88,13 @@ Int fplane_pr_intersect_with_ray_v(FPlane * plane, FRay * ray, FVector3 * result
     return r;
 }
 
+Float fplane_pv_signed_distance_from_plane_s(FPlane * plane, FVector3 * point)
+{
+    Float tmp = fv3_vv_dot_product(&(plane->normal), point);
+
+    return tmp + plane->d;
+}
+
 Float fplane_pv_distance_from_plane_s(FPlane * plane, FVector3 * point)
 {
     Float tmp = fv3_vv_dot_product(&(plane->normal), point);
