@@ -39,6 +39,7 @@
 - (Float) basePlaneHeight;
 - (Float) upperSurfaceBound;
 - (Float) lowerSurfaceBound;
+- (Float) distanceBetweenBasePlaneAndPositon:(FVector3 *)position;
 - (FPlane *) basePlane;
 - (IVector2) projectedGridResolution;
 
