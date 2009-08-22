@@ -13,7 +13,6 @@
     {
         _runLoopPool = [ NSAutoreleasePool new ];
 
-
         NSDate * now = [ NSDate date ];
 
         e = [ super nextEventMatchingMask:NSAnyEventMask

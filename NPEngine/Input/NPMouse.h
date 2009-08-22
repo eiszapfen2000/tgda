@@ -11,6 +11,7 @@ NpMouseState;
 void reset_mouse_state(NpMouseState * mouseState);
 
 @class NSEvent;
+@class NSWindow;
 
 @interface NPMouse : NPObject
 {
@@ -18,7 +19,7 @@ void reset_mouse_state(NpMouseState * mouseState);
     Int scrollWheelLastFrame;
     Float x ,y;
     Float xLastFrame, yLastFrame;
-    id window;
+    NSWindow * window;
 }
 
 - (id) init;
@@ -31,7 +32,7 @@ void reset_mouse_state(NpMouseState * mouseState);
 - (Float) deltaY;
 
 - (id) window;
-- (void) setWindow:(id)newWindow;
+- (void) setWindow:(NSWindow *)newWindow;
 
 - (void) resetCursorPosition;
 

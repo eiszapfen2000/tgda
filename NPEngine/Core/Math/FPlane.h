@@ -22,6 +22,7 @@ FPlane * fplane_alloc_init_with_components(Float x, Float y, Float z, Float scal
 FPlane * fplane_free(FPlane * p);
 
 Int fplane_pr_intersect_with_ray_v(FPlane * plane, FRay * ray, FVector3 * result);
+Float fplane_pv_signed_distance_from_plane_s(FPlane * plane, FVector3 * point);
 Float fplane_pv_distance_from_plane_s(FPlane * plane, FVector3 * point);
 
 #endif

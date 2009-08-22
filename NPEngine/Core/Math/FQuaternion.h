@@ -48,8 +48,8 @@ void fquat_q_to_matrix3_m(const FQuaternion * const q, Matrix3 * m);
 void fquat_q_to_fmatrix3_m(const FQuaternion * const q, FMatrix3 * m);
 void fquat_q_to_matrix4_m(const FQuaternion * const q, Matrix4 * m);
 void fquat_q_to_fmatrix4_m(const FQuaternion * const q, FMatrix4 * m);
-void fquat_m3_to_FQuaternion_q(const FMatrix3 * const m, FQuaternion * q);
-void fquat_m4_to_FQuaternion_q(const FMatrix4 * const m, FQuaternion * q);
+void fquat_m3_to_quaternion_q(const FMatrix3 * const m, FQuaternion * q);
+void fquat_m4_to_quaternion_q(const FMatrix4 * const m, FQuaternion * q);
 
 Float fquat_q_magnitude(const FQuaternion * const q);
 
