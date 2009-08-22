@@ -3,6 +3,7 @@
 #import "ODPEntity.h"
 
 @class NPEffect;
+@class NPInputAction;
 @class ODFrustum;
 
 #define NEARPLANE_LOWERLEFT    0
@@ -38,12 +39,14 @@
     BOOL renderFrustum;
     ODFrustum * frustum;
 
-    id pitchMinusAction;
-    id pitchPlusAction;
-    id yawMinusAction;
-    id yawPlusAction;
+    NPInputAction * pitchMinusAction;
+    NPInputAction * pitchPlusAction;
+    NPInputAction * yawMinusAction;
+    NPInputAction * yawPlusAction;
 
     BOOL connectedToCamera;
+
+    Float projectorLookAtDistance;
 }
 
 - (id) init;

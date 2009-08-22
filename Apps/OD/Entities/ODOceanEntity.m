@@ -88,6 +88,11 @@
     return lowerSurfaceBound;
 }
 
+- (Float) distanceBetweenBasePlaneAndPositon:(FVector3 *)position
+{
+    return fplane_pv_signed_distance_from_plane_s(basePlane, position);
+}
+
 - (FPlane *) basePlane
 {
     return basePlane;
@@ -132,7 +137,7 @@
     projectedGridResolution->y = [[ projectedGridResolutionStrings objectAtIndex:1 ] intValue ];
     NSAssert1(projectedGridResolution->x > 0 && projectedGridResolution->y > 0, @"%@: Invalid resolution", name);
 
-    IVector2 hack = { 4, 4 };
+    IVector2 hack = { 8, 8 };
 //    [ projectedGridCPU setProjectedGridResolution:hack ];
 
     *projectedGridResolution = hack;

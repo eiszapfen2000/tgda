@@ -2,6 +2,8 @@
 #import "Core/NPObject/NPObject.h"
 #import "ODPEntity.h"
 
+@class NPInputAction;
+
 @interface ODCamera : NPObject < ODPEntity >
 {
 	FMatrix4 * view;
@@ -19,13 +21,13 @@
     Float pitch;
     FVector3 * forward;
 
-    id leftClickAction;
-    id forwardMovementAction;
-    id backwardMovementAction;
-    id strafeLeftAction;
-    id strafeRightAction;
-    id wheelDownAction;
-    id wheelUpAction;
+    NPInputAction * leftClickAction;
+    NPInputAction * forwardMovementAction;
+    NPInputAction * backwardMovementAction;
+    NPInputAction * strafeLeftAction;
+    NPInputAction * strafeRightAction;
+    NPInputAction * wheelDownAction;
+    NPInputAction * wheelUpAction;
 }
 
 - (id) init;
