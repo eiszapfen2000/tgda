@@ -1,0 +1,123 @@
+\chapapp{Chapter}
+ 
+\usepackage{amsmath}
+%\usepackage{times} % default roman
+%\usepackage{helvet} % default sans-serif
+\usepackage{courier} % default monospace
+\usepackage{verbatim}
+\usepackage[pdftex]{graphicx}
+\usepackage{type1cm} %% for watermark
+\usepackage{eso-pic} %% for watermark
+\usepackage{subfigure}
+\usepackage{color}
+\usepackage[english, german]{babel}
+\usepackage{datetime} %% for watermark
+\usepackage[latin1]{inputenc}
+%\DeclareGraphicsExtensions{.png,.jpg,.eps}
+\usepackage{listings}
+\usepackage{float}
+\usepackage[pdftex,colorlinks=true,linkcolor=black,citecolor=black,filecolor=black,urlcolor=black]{hyperref}
+
+\floatstyle{plain}
+\newfloat{program}{thp}{lop}
+\floatname{program}{Program}
+
+% Different font in captions
+\newcommand{\captionfonts}{\small}
+
+\makeatletter  % Allow the use of @ in command names
+\long\def\@makecaption#1#2{%
+  \vskip\abovecaptionskip
+  \sbox\@tempboxa{{\captionfonts #1: #2}}%
+  \ifdim \wd\@tempboxa >\hsize
+    {\captionfonts #1: #2\par}
+  \else
+    \hbox to\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi
+  \vskip\belowcaptionskip}
+\makeatother   % Cancel the effect of \makeatletter
+
+\newdateformat{dashdate}{%
+\THEYEAR-\twodigit{\THEMONTH}-\twodigit{\THEDAY}}
+
+% TODO: uncomment in final
+%% BEGIN DRAFT WATERMARK - REMOVE IN FINAL VERSION
+\begin{comment}
+\makeatletter
+\AddToShipoutPicture{%
+            \setlength{\@tempdimb}{.15\paperwidth}%
+            \setlength{\@tempdimc}{.9\paperheight}%
+             \setlength{\unitlength}{1pt}%
+            \put(\strip@pt\@tempdimb,\strip@pt\@tempdimc){%
+        \makebox(0,0){\rotatebox{45}{\textcolor[gray]{0.75}%
+       {\fontsize{1.5cm}{1.5cm}\selectfont{DRAFT}}}}%
+       
+       \makebox(-40,30){\rotatebox{45}{\textcolor[gray]{0.25}%
+       {\fontsize{0.5cm}{0.5cm}\selectfont{\dashdate\today\ \settimeformat{xxivtime}\currenttime}}}}%
+            }%
+}
+\makeatother
+\end{comment}
+%% END DRAFT WATERMARK - REMOVE IN FINAL VERSION
+
+\definecolor{LightViolet}{rgb}{0.9,0.9,0.99}
+\definecolor{DarkBlue}{rgb}{0,0.0,0.8}
+\definecolor{Orange}{rgb}{0.9,0.55,0}
+\definecolor{Red}{rgb}{0.8,0,0}
+\definecolor{DarkRed}{rgb}{0.4,0,0}
+\definecolor{Green}{rgb}{0,0.8,0}
+\definecolor{DarkGreen}{rgb}{0,0.4,0}
+\definecolor{Yellow}{rgb}{0.9,0.9,0}
+\definecolor{Violet}{rgb}{0.7,0,0.7}
+\definecolor{Gray}{gray}{0.7}
+
+\newcommand{\sketchtext}[1]{{\sffamily{#1}}}
+
+%\newcommand{\code}[1]{{\textit{#1}}}
+\newcommand{\code}[1]{{\ttfamily{\mbox{#1}}}}
+%\newcommand{\url}[1]{{\ttfamily\small{#1}}}
+
+\newcommand{\myurl}[1]{{\footnotesize\url{#1}}}
+
+\lstset{=\ttfamily\color{DarkGreen}}
+\lstset{basicstyle=\ttfamily\small}
+\lstset{keywordstyle=\ttfamily\color{DarkBlue}\bfseries}
+\lstset{stringstyle=\ttfamily\color{DarkRed}}
+\lstset{breaklines=true}
+\lstset{captionpos=b}
+\lstset{framexleftmargin=5mm, frame=shadowbox, rulesepcolor=\color{Gray}}
+\lstset{xleftmargin=15pt}
+\renewcommand{\lstlistlistingname}{List of Listings}
+
+\newcommand{\pentag}{Penta~G}
+\newcommand{\gxengine}{GebauzEngine}
+
+%% define Gx material script language
+\lstdefinelanguage{gxmaterial}
+{
+morekeywords={uses, set, float, float2, float3, float4, int, bool, technique, texture2d, textureCube, transparent, alphatest},
+morecomment=[l]{//},
+morestring=[b]",
+}
+
+
+
+% Alter some LaTeX defaults for better treatment of figures:
+    % See p.105 of "TeX Unbound" for suggested values.
+    % See pp. 199-200 of Lamport's "LaTeX" book for details.
+    %   General parameters, for ALL pages:
+    \renewcommand{\topfraction}{0.9}	% max fraction of floats at top
+    \renewcommand{\bottomfraction}{0.8}	% max fraction of floats at bottom
+    %   Parameters for TEXT pages (not float pages):
+    \setcounter{topnumber}{2}
+    \setcounter{bottomnumber}{2}
+    \setcounter{totalnumber}{4}     % 2 may work better
+    \setcounter{dbltopnumber}{2}    % for 2-column pages
+    \renewcommand{\dbltopfraction}{0.9}	% fit big float above 2-col. text
+    \renewcommand{\textfraction}{0.07}	% allow minimal text w. figs
+    %   Parameters for FLOAT pages (not text pages):
+    \renewcommand{\floatpagefraction}{0.7}	% require fuller float pages
+	% N.B.: floatpagefraction MUST be less than topfraction !!
+    \renewcommand{\dblfloatpagefraction}{0.7}	% require fuller float pages
+
+	% remember to use [htp] or [htpb] for placement

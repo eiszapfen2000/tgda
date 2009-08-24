@@ -1,0 +1,193 @@
+\chapter{Implementation}
+
+Development on Ubuntu 32 and 64 using gcc.
+FFTW for Fourier stuff
+
+\section{Rendering Framework}
+
+For the implementation of the Demo application a lightweight realtime
+rendering framework has been developed from scratch. It is written in
+\textit{Objective-C} and uses \textit{GNUstep} as basis.
+
+\subsection{Objective-C}
+
+Objective-C has been designed as an object-oriented extension to the
+\textit{C} programming language. As such it is a very thin layer on top of, as
+well as a strict superset of C. As a result Objective-C can freely include C
+code within it's classes, and the Objective-C compiler is able to compile any
+existing C code. Five reasons that make Objective-C most suiting for the task
+at hand:
+
+\begin{itemize}
+ \item \textit{Messages}
+ \item \textit{Protocols}
+ \item \textit{Categories}
+ \item \textit{Dynamic typing}
+ \item \textit{Reflection}
+\end{itemize}
+
+\subsubsection{Messages}
+Objective-C inherits it's object-oriented model from Smalltalk, which is based
+on sending messages to object instances. There is a fundamental difference
+between calling a method and sending a message. The former implies more or less
+hardwiring between a method name and a section of code at compile time, while
+the latter remains a name which is resolved at runtime. Basically it is the
+receiving object's job to interpret the messages which get sent to it. As a
+consequence the message passing system has no type checking: the receiving
+object is not guaranteed to be able to respond to a certain message, in the
+case it does not it ignores the message and returns a null pointer.
+
+\lstset{language=[Objective]C}
+\begin{lstlisting}[captionpos=b, caption=An Objective-C message send,
+label=lst_objcmsgsend]{}
+[ object method:parameter ];
+\end{lstlisting}
+
+\subsubsection{Protocols}
+Protocols are similar to \textit{Java} and \textit{C\#} \textit{Interfaces}.
+A protocol defines a set of methods which any class can declare itself to
+implement.
+
+\lstset{language=[Objective]C}
+\begin{lstlisting}[captionpos=b, caption=An Objective-C protocol and a
+class adopting it.,
+label=lst_objcprotocol]{}
+@protocol MyProtocol
+- (id) aMethod:(id)aParameter;
+- (id) anotherMethod:(id)anotherParameter;
+@end
+
+@interface MyClass : NSObject < MyProtocol >
+@end
+\end{lstlisting}
+
+\subsubsection{Categories}
+
+Categories make it possible to distribute the implementation of a single class
+to different files. Therefore the developer can group related methods into a
+category to achieve better readability. For instance, one could create a
+\textit{Splitting} category on the \textit{NSString} class, collecting all of
+the string splitting methods in one place.
+Furthermore a categories methods are added to a class at runtime, thus
+removing the need to recompile that class or even have access to its source
+code. By using categories the developer is given a tool to extend existing
+classes without resorting to modify the original class or to create a subclass.
+Moreover, due to the runtime resolve of categories, it is possible to overwrite
+the existing methods of a class. Category methods are generally preferred over
+the original methods, providing a way to modify existing classes.
+Categories can only add new methods to a class, but not new instance variables.
+
+Protocols are fine in the case the programmer wants to define functionality
+independently from the class hierarchy. But in the case he wants to specialise
+or extend the funcionality of an existing class, protocols are of little use
+since they have to be \textit{attached} to a class interface. Categories
+provide the means to extend/replace functionality of a class without even
+knowing the corresponding class' interface, thus removing the need to
+implement a subclass.
+
+\lstset{language=[Objective]C}
+\begin{lstlisting}[captionpos=b, caption=An Objective-C category added to the
+NSString class., label=lst_objccategory]{}
+@interface NSString (MyCategory)
+- (id) appendInteger:(int)anInteger;
+@end
+\end{lstlisting}
+
+By using categories the programmer is able to modifiy the original class'
+behaviour as well as extending it. If a category defines a method with the same
+signature as the original class interface, the categories' implementation is
+used at runtime.
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet}}
+\begin{lstlisting}[captionpos=b, caption=Attaching a protocol to an existing
+class by the means of a category., label=lst_objccategoryprotocol]{}
+
+@protocol CategoryProtocol
+- (id) aMethod:(id)aParameter;
+@end
+
+@interface MyClass (MyCategory) < CategoryProtcol >
+@end
+
+\end{lstlisting}
+
+
+
+
+Objective-C has been designed as an object-oriented extension to the
+\textit{C} programming language. As such it is a very thin layer on top of, as
+well as a strict superset of C. As a result Objective-C can freely include C
+code within it's classes, and the Objective-C compiler is able to compile any
+existing C code. The object-oriented features are modeled after Smalltalk, hence
+based on sending messages to object instances. The programmer does not call
+methods on objects, he sends them messages. There is a fundamental difference
+between calling a method and sending a message. The former implies hardwiring
+between a method name and a section of code, while the latter remains a name
+which is resolved at runtime. Basically it is the object's job to interprete
+the messages which get sent to it. The process of an object looking up it's
+implementation for a specific message at runtime is called dynamic binding. This
+is the first of three major features which make Objective-C a simple yet
+powerful programming language.
+
+\lstset{language=[Objective]C}
+\begin{lstlisting}[captionpos=b, caption=An Objective-C message send,
+label=lst_objcmsgsend]{}
+
+[ object method:parameter ];
+
+\end{lstlisting}
+
+The second feature are \textit{protocols}. Simply put, a protocol specifies a
+list of methods which a class can implement. They are similar to \textit{C\#}
+and \textit{Java} \textit{interfaces}.
+
+
+
+
+\subsection{GNUstep}
+GNUstep is an open source implementation of the OpenStep
+specification\cite{misc:OpenStepSpec} by NeXT Computer Inc.\cite{misc:NeXT}. In
+1996 Apple bought NeXT and based it's new operating system Mac OS X, which has
+been released in 2001, on the OpenStep specification. What once was called
+OpenStep is now known by the name Cocoa. Like Cocoa GNUstep consists of two
+large components, the Foundation and the AppKit.
+
+\begin{itemize}
+
+\item The Foundation provides basic data structures like strings and a multitude
+of containers e.g. arrays, sets and dictionaries. Additionally the Foundation
+places file management, interthread as well as interprocess communication and
+high-level networking at the developers disposal.
+
+\item The AppKit provides all graphical user interface releated data
+structures, like windows, views, tables, buttons and so on. What makes AppKit
+outstanding is the capability to load user interfaces at runtime, and it's
+connection mechanism. DETAILS!!!!
+
+\end{itemize}
+
+\subsection{Other Libraries}
+
+Furthermore NPEngine uses OpenGL for rendering, DevIL for image loading and
+NVIDIA Cg as shader compiler.
+NPEngine
+NVIDIA Cg
+DevIL
+OpenGL
+GNUstep
+GCC
+
+\section{Projected Grid}
+Viewing Pipeline
+Projected Grid
+
+\section{R2VB}
+Render to VertexBuffer
+
+\section{Lighting}
+Reflection
+Refraction
+
+\section{Animation}
+3D Texture
+CUDA
