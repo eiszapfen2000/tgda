@@ -35,9 +35,9 @@ the latter remains a name which is resolved at runtime. Basically it is the
 receiving object's job to interpret the messages which get sent to it. As a
 consequence the message passing system has no type checking: the receiving
 object is not guaranteed to be able to respond to a certain message, in the
-case it does not it ignores the message and returns a null pointer.
+case it does not ,it ignores the message and returns a null pointer.
 
-\lstset{language=[Objective]C}
+\lstset{language=[Objective]C, , backgroundcolor=\color{LightViolet}}
 \begin{lstlisting}[captionpos=b, caption=An Objective-C message send,
 label=lst_objcmsgsend]{}
 [ object method:parameter ];
@@ -46,9 +46,11 @@ label=lst_objcmsgsend]{}
 \subsubsection{Protocols}
 Protocols are similar to \textit{Java} and \textit{C\#} \textit{Interfaces}.
 A protocol defines a set of methods which any class can declare itself to
-implement.
+implement, listing~\ref{lst_objcprotocol} shows a simple exmaple. Protocols,
+like Interfaces, are a neat way to decouple functionality from the class
+hierarchy.
 
-\lstset{language=[Objective]C}
+\lstset{language=[Objective]C, , backgroundcolor=\color{LightViolet}}
 \begin{lstlisting}[captionpos=b, caption=An Objective-C protocol and a
 class adopting it.,
 label=lst_objcprotocol]{}
@@ -62,7 +64,6 @@ label=lst_objcprotocol]{}
 \end{lstlisting}
 
 \subsubsection{Categories}
-
 Categories make it possible to distribute the implementation of a single class
 to different files. Therefore the developer can group related methods into a
 category to achieve better readability. For instance, one could create a
@@ -74,18 +75,11 @@ code. By using categories the developer is given a tool to extend existing
 classes without resorting to modify the original class or to create a subclass.
 Moreover, due to the runtime resolve of categories, it is possible to overwrite
 the existing methods of a class. Category methods are generally preferred over
-the original methods, providing a way to modify existing classes.
-Categories can only add new methods to a class, but not new instance variables.
+the original methods, providing a way to modify existing classes. Categories are
+only able to add new methods to a class, but not new instance variables.
+Listing~\ref{lst_objccategory} shows how to define a simple category.
 
-Protocols are fine in the case the programmer wants to define functionality
-independently from the class hierarchy. But in the case he wants to specialise
-or extend the funcionality of an existing class, protocols are of little use
-since they have to be \textit{attached} to a class interface. Categories
-provide the means to extend/replace functionality of a class without even
-knowing the corresponding class' interface, thus removing the need to
-implement a subclass.
-
-\lstset{language=[Objective]C}
+\lstset{language=[Objective]C, , backgroundcolor=\color{LightViolet}}
 \begin{lstlisting}[captionpos=b, caption=An Objective-C category added to the
 NSString class., label=lst_objccategory]{}
 @interface NSString (MyCategory)
@@ -93,10 +87,8 @@ NSString class., label=lst_objccategory]{}
 @end
 \end{lstlisting}
 
-By using categories the programmer is able to modifiy the original class'
-behaviour as well as extending it. If a category defines a method with the same
-signature as the original class interface, the categories' implementation is
-used at runtime.
+Categories also make it possible to attach protocols to a class outside of its
+main interface, listing~\ref{lst_objccategoryprotocol} shows a minimal example.
 
 \lstset{language=[Objective]C, backgroundcolor=\color{LightViolet}}
 \begin{lstlisting}[captionpos=b, caption=Attaching a protocol to an existing
@@ -110,6 +102,79 @@ class by the means of a category., label=lst_objccategoryprotocol]{}
 @end
 
 \end{lstlisting}
+
+\subsubsection{Dynamic typing}
+Objective-C, like Smalltalk, makes heavy use of dynamic typing: every message
+can be sent to every object, without even knowing if the receiving object is
+able to respond, the message is not interpreted until runtime anyway, because
+of the dynamic dispatching mechanism. This provides the means for some
+interesting design decisions in \textit{Foundation} and \textit{AppKit}, which
+are discussed later. \FIXME{Add references to sections.}
+The developer may add static type information to variables too, this
+information is then checked at compile runtime. It is the developer's task to
+find a sane balance between untyped and typed information, since both have their
+assets and drawbacks. Listing~\ref{lst_objctypesnoinfo},
+\ref{lst_objctypesprotocolinfo} and \ref{lst_objctypesclasslinfo} show the same
+method with increasing type information for it's argument.
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet}}
+\begin{lstlisting}[captionpos=b, caption=Argument without type information.,
+label=lst_objctypesnoinfo]{}
+- (void) setValue:(id)newValue;
+\end{lstlisting}
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet}}
+\begin{lstlisting}[captionpos=b, caption=Argument with protocol type
+information.,
+label=lst_objctypesprotocolinfo]{}
+- (void) setValue:(id <SomeProtocol>)newValue;
+\end{lstlisting}
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet}}
+\begin{lstlisting}[captionpos=b, caption=Argument with class type information.,
+label=lst_objctypesclasslinfo]{}
+- (void) setValue:(NSNumber *)newValue;
+\end{lstlisting}
+
+\subsubsection{Reflection}
+The Objective-C runtime provides support for some reflective features: objects
+can be asked about their class, the methods they implement and even what member
+variables they have. If the developer puts this features to use in a sensible
+manner, he can e.g. completely remove the need for an abstract factory, or even
+implement something like scripting in really short time.
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet},
+morecomment=[s]{@"}{"}}
+\begin{lstlisting}[captionpos=b, caption=Argument with class type information.,
+label=lst_objcclassfromstring, morekeywords={Class}]{}
+    Class myClass = NSClassFromString(@"MyClass");
+    id myObject = [[ myClass alloc ] init ];
+\end{lstlisting}
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet},
+commentstyle=\color{DarkGreen}}
+\begin{lstlisting}[captionpos=b, caption=Argument with class type information.,
+label=lst_objcinstancerespindstoselector]{}
+if ( [ myObject respondsToSelector:@selector(myMethod:) ] == YES )
+{
+    // do something
+}
+\end{lstlisting}
+
+Protocols are fine in the case the programmer wants to define functionality
+independently from the class hierarchy. But in the case he wants to specialise
+or extend the funcionality of an existing class, protocols are of little use
+since they have to be \textit{attached} to a class interface. Categories
+provide the means to extend/replace functionality of a class without even
+knowing the corresponding class' interface, thus removing the need to
+implement a subclass.
+
+By using categories the programmer is able to modifiy the original class'
+behaviour as well as extending it. If a category defines a method with the same
+signature as the original class interface, the categories' implementation is
+used at runtime.
+
+
 
 
 
@@ -129,28 +194,17 @@ implementation for a specific message at runtime is called dynamic binding. This
 is the first of three major features which make Objective-C a simple yet
 powerful programming language.
 
-\lstset{language=[Objective]C}
-\begin{lstlisting}[captionpos=b, caption=An Objective-C message send,
-label=lst_objcmsgsend]{}
-
-[ object method:parameter ];
-
-\end{lstlisting}
-
-The second feature are \textit{protocols}. Simply put, a protocol specifies a
-list of methods which a class can implement. They are similar to \textit{C\#}
-and \textit{Java} \textit{interfaces}.
-
-
-
-
 \subsection{GNUstep}
 GNUstep is an open source implementation of the OpenStep
 specification\cite{misc:OpenStepSpec} by NeXT Computer Inc.\cite{misc:NeXT}. In
 1996 Apple bought NeXT and based it's new operating system Mac OS X, which has
 been released in 2001, on the OpenStep specification. What once was called
 OpenStep is now known by the name Cocoa. Like Cocoa GNUstep consists of two
-large components, the Foundation and the AppKit.
+large components, the \textit{Foundation} and the \textit{AppKit}.
+
+\subsubsection{Foundation}
+
+\subsubsection{AppKit}
 
 \begin{itemize}
 
