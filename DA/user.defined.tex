@@ -73,6 +73,8 @@
 
 \newcommand{\sketchtext}[1]{{\sffamily{#1}}}
 
+\newcommand{\FIXME}[1]{\textcolor{Red}{FIXME:{#1}}}
+
 %\newcommand{\code}[1]{{\textit{#1}}}
 \newcommand{\code}[1]{{\ttfamily{\mbox{#1}}}}
 %\newcommand{\url}[1]{{\ttfamily\small{#1}}}
@@ -83,14 +85,13 @@
 \lstset{basicstyle=\ttfamily\small}
 \lstset{keywordstyle=\ttfamily\color{DarkBlue}\bfseries}
 \lstset{stringstyle=\ttfamily\color{DarkRed}}
+\lstset{commentstyle=\color{DarkRed}}
+\lstset{morecomment=[s]{\@"}{"}}
 \lstset{breaklines=true}
 \lstset{captionpos=b}
-\lstset{framexleftmargin=5mm, frame=shadowbox, rulesepcolor=\color{Gray}}
-\lstset{xleftmargin=15pt}
+\lstset{framexleftmargin=3mm, frame=shadowbox, rulesepcolor=\color{Gray}}
+\lstset{xleftmargin=10pt}
 \renewcommand{\lstlistlistingname}{List of Listings}
-
-\newcommand{\pentag}{Penta~G}
-\newcommand{\gxengine}{GebauzEngine}
 
 %% define Gx material script language
 \lstdefinelanguage{gxmaterial}
