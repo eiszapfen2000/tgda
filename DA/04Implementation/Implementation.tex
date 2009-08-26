@@ -15,8 +15,8 @@ Objective-C has been designed as an object-oriented extension to the
 \textit{C} programming language. As such it is a very thin layer on top of, as
 well as a strict superset of C. As a result Objective-C can freely include C
 code within it's classes, and the Objective-C compiler is able to compile any
-existing C code. Five reasons that make Objective-C most suiting for the task
-at hand:
+existing C code. 
+Five reasons that make Objective-C most suiting for the task at hand:
 
 \begin{itemize}
  \item \textit{Messages}
@@ -34,8 +34,8 @@ hardwiring between a method name and a section of code at compile time, while
 the latter remains a name which is resolved at runtime. Basically it is the
 receiving object's job to interpret the messages which get sent to it. As a
 consequence the message passing system has no type checking: the receiving
-object is not guaranteed to be able to respond to a certain message, in the
-case it does not ,it ignores the message and returns a null pointer.
+object is not guaranteed to be able to respond to a certain message; in the
+case it does not, it ignores the message and returns a null pointer.
 
 \lstset{language=[Objective]C, , backgroundcolor=\color{LightViolet}}
 \begin{lstlisting}[captionpos=b, caption=An Objective-C message send,
@@ -106,12 +106,18 @@ class by the means of a category., label=lst_objccategoryprotocol]{}
 \subsubsection{Dynamic typing}
 Objective-C, like Smalltalk, makes heavy use of dynamic typing: every message
 can be sent to every object, without even knowing if the receiving object is
-able to respond, the message is not interpreted until runtime anyway, because
+able to respond; the message is not interpreted until runtime anyway, because
 of the dynamic dispatching mechanism. This provides the means for some
 interesting design decisions in \textit{Foundation} and \textit{AppKit}, which
 are discussed later. \FIXME{Add references to sections.}
-The developer may add static type information to variables too, this
-information is then checked at compile runtime. It is the developer's task to
+Objective-C makes heavy use of the \textit{id} type. Simply put, id is a pointer
+to an object, no matter what the actual type of the object pointed to is. By
+using id the compiler can not make any assumptions about the object pointed to,
+meaning the compiler does not know to which messages the object pointed to is
+acutally able to respond. In that case all responsibility lies with the runtime.
+
+On the other hand, the developer may add static type information to variables,
+this information is then checked at compile time. It is the developer's task to
 find a sane balance between untyped and typed information, since both have their
 assets and drawbacks. Listing~\ref{lst_objctypesnoinfo},
 \ref{lst_objctypesprotocolinfo} and \ref{lst_objctypesclasslinfo} show the same
@@ -138,22 +144,26 @@ label=lst_objctypesclasslinfo]{}
 
 \subsubsection{Reflection}
 The Objective-C runtime provides support for some reflective features: objects
-can be asked about their class, the methods they implement and even what member
-variables they have. If the developer puts this features to use in a sensible
-manner, he can e.g. completely remove the need for an abstract factory, or even
-implement something like scripting in really short time.
+can be asked about their class, the methods they implement, the protocols they
+implement, and even what member variables they have. Those features are made
+possible due every object having a pointer to the \textit{Class} object it was
+created by. \textit{Class} objects are structs holding all information about an
+implemented class, like member variables, methods and protocols. It is even
+possible to use those class objects in actual code,
+listing~\ref{lst_objcclassfromstring} shows a simple example.
 
 \lstset{language=[Objective]C, backgroundcolor=\color{LightViolet},
 morecomment=[s]{@"}{"}}
-\begin{lstlisting}[captionpos=b, caption=Argument with class type information.,
-label=lst_objcclassfromstring, morekeywords={Class}]{}
+\begin{lstlisting}[captionpos=b, caption=Creating an object of a class given
+only the class name., label=lst_objcclassfromstring, morekeywords={Class}]{}
     Class myClass = NSClassFromString(@"MyClass");
     id myObject = [[ myClass alloc ] init ];
 \end{lstlisting}
 
 \lstset{language=[Objective]C, backgroundcolor=\color{LightViolet},
 commentstyle=\color{DarkGreen}}
-\begin{lstlisting}[captionpos=b, caption=Argument with class type information.,
+\begin{lstlisting}[captionpos=b, caption=Check if an object responds to a
+specific message.,
 label=lst_objcinstancerespindstoselector]{}
 if ( [ myObject respondsToSelector:@selector(myMethod:) ] == YES )
 {
@@ -161,75 +171,92 @@ if ( [ myObject respondsToSelector:@selector(myMethod:) ] == YES )
 }
 \end{lstlisting}
 
-Protocols are fine in the case the programmer wants to define functionality
-independently from the class hierarchy. But in the case he wants to specialise
-or extend the funcionality of an existing class, protocols are of little use
-since they have to be \textit{attached} to a class interface. Categories
-provide the means to extend/replace functionality of a class without even
-knowing the corresponding class' interface, thus removing the need to
-implement a subclass.
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet},
+commentstyle=\color{DarkGreen}}
+\begin{lstlisting}[captionpos=b, caption=Check if an object implements a
+specific protocol.,
+label=lst_objcinstanceimplementsprotocol]{}
+if ( [ myObject conformsToProtocol:@protocol(MyProtocol) ] == YES )
+{
+    // do something
+}
+\end{lstlisting}
 
-By using categories the programmer is able to modifiy the original class'
-behaviour as well as extending it. If a category defines a method with the same
-signature as the original class interface, the categories' implementation is
-used at runtime.
-
-
-
-
-
-
-Objective-C has been designed as an object-oriented extension to the
-\textit{C} programming language. As such it is a very thin layer on top of, as
-well as a strict superset of C. As a result Objective-C can freely include C
-code within it's classes, and the Objective-C compiler is able to compile any
-existing C code. The object-oriented features are modeled after Smalltalk, hence
-based on sending messages to object instances. The programmer does not call
-methods on objects, he sends them messages. There is a fundamental difference
-between calling a method and sending a message. The former implies hardwiring
-between a method name and a section of code, while the latter remains a name
-which is resolved at runtime. Basically it is the object's job to interprete
-the messages which get sent to it. The process of an object looking up it's
-implementation for a specific message at runtime is called dynamic binding. This
-is the first of three major features which make Objective-C a simple yet
-powerful programming language.
+Actually getting information about member variables is more difficult, one has
+to dive deeper in the runtime to be able to retrieve it. There are rare cases
+where this kind of object introspection is really needed, the most prominent
+being the user interface loading mechanism in AppKit, where one objects needs
+to be connected to a member variable of another object, but no setter method is
+available. Another use case the author can think of, would be a scripting
+mechnism. One could probably get away by just constructing message identifiers
+(selectors) using strings, on the other hand direct member variable access
+through the use of strings would imply less message sending overhead.
 
 \subsection{GNUstep}
 GNUstep is an open source implementation of the OpenStep
-specification\cite{misc:OpenStepSpec} by NeXT Computer Inc.\cite{misc:NeXT}. In
+specification\cite{misc:OpenStepSpec} by NeXT Computer Inc.\cite{misc:NeXT}.
+OpenStep is based heavily on Objective-C, placing two separate libraries at
+the developers disposal: the \textit{Foundation} and the \textit{AppKit}. In
 1996 Apple bought NeXT and based it's new operating system Mac OS X, which has
 been released in 2001, on the OpenStep specification. What once was called
-OpenStep is now known by the name Cocoa. Like Cocoa GNUstep consists of two
-large components, the \textit{Foundation} and the \textit{AppKit}.
+OpenStep is now known by the name Cocoa. Cocoa has undergone major improvements
+during the further development of Mac OS X, which as of now has reached version
+10.6. GNUstep is an open-source implementation of OpenStep which runs on a
+number of different platforms, including the major Unices and Windows. Since
+the release of Mac OS X the GNUstep project tries to implement most of the
+extension Apple made to the original OpenStep.
 
 \subsubsection{Foundation}
 
+The foundation contains a set of non-graphical Objective-C classes which deal
+with strings, containers, date and time, distributed objects, networking,
+threading,  interthread and interprocess communication, file management and
+much more.
+
+Collections, that is what containers are called in Foundation, have a rather
+unusual property: they do not have to be homogenous, meaning that one instance
+of a collection can not hold just one type of objects, it can hold everything
+as long as it is an object. Listing~\ref{lst_objcheterocontainer} shows an
+example. The downside is, the developer can not use these collections for
+integral types such as int or float.
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet},
+commentstyle=\color{DarkGreen}}
+\begin{lstlisting}[captionpos=b, caption=Argument with class type information.,
+label=lst_objcheterocontainer]{}
+NSArray * array = [NSArray arrayWithObjects:[NSDate
+date], [NSData data], @"MyString", nil];
+\end{lstlisting}
+
+Due the heterogeneous property of collections the developer is not forced to
+implement a common superclass for all objects he wants to put in one concrete
+instance of a container anymore.
+
 \subsubsection{AppKit}
 
-\begin{itemize}
+The AppKit provides classes aimed at the development of graphical apllications.
+The most interesting concept of AppKit is that it does not represent graphical
+user interfaces as code. Instead, a graphical user interface created in
+Interface Builder/Gorm is saved as a bunch of serialised objects and their
+connections to each other. This is possible due the dynamic and reflective
+nature of Objective-C. When a GUI gets loaded, all objects in it get
+deserialised, then all connections are set up by simply using the names of
+member variables and messages. \FIXME{Explain.}
 
-\item The Foundation provides basic data structures like strings and a multitude
-of containers e.g. arrays, sets and dictionaries. Additionally the Foundation
-places file management, interthread as well as interprocess communication and
-high-level networking at the developers disposal.
-
-\item The AppKit provides all graphical user interface releated data
-structures, like windows, views, tables, buttons and so on. What makes AppKit
-outstanding is the capability to load user interfaces at runtime, and it's
-connection mechanism. DETAILS!!!!
-
-\end{itemize}
+\subsection{OpenGL}
+OpenGL is a set of specifications defining a 3D application programming
+interface. OpenGL was first released to the public in 1992 by SGI, as a
+successor to the company's internally used IrisGL. Additionally the OpenGL
+architectural review board (ARB) was founded, in independent consortium con
+sisting of a group of companies that would maintain and expand the OpenGL
+standard. In 2006 further development of the OpenGL standard has been taken over
+by the \textit{Khronos Group}, bringing significant advancements to the OpenGL
+standard since then.
 
 \subsection{Other Libraries}
-
-Furthermore NPEngine uses OpenGL for rendering, DevIL for image loading and
-NVIDIA Cg as shader compiler.
-NPEngine
-NVIDIA Cg
-DevIL
-OpenGL
-GNUstep
-GCC
+Furthermore NPEngine uses \textit{OpenIL}\cite{misc:devil}, also known as
+\textit{DevIL}, for image loading and \textit{NVIDIA Cg Toolkit}\cite{misc:nvcg}
+as shader compiler.
 
 \section{Projected Grid}
 Viewing Pipeline
