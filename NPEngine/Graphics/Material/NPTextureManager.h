@@ -9,6 +9,7 @@
     NpState anisotropy;
     BOOL nonPOTSupport;
     BOOL hardwareMipMapGenerationSupport;
+    BOOL srgbTextureSupport;
     NpState textureMode;
 }
 
@@ -41,27 +42,37 @@
 - (id) loadTextureFromAbsolutePath:(NSString *)path;
 - (id) loadTextureUsingFileHandle:(NPFile *)file;
 
-- (id) createTextureWithName:(NSString *)textureName
-                       width:(Int)width 
-                      height:(Int)height
-                  dataFormat:(NpState)dataFormat
-                 pixelFormat:(NpState)pixelFormat
-                             ;
+- (id) textureWithName:(NSString *)textureName
+                 width:(Int)width 
+                height:(Int)height
+            dataFormat:(NpState)dataFormat
+           pixelFormat:(NpState)pixelFormat
+                      ;
 
-- (id) createTextureWithName:(NSString *)textureName
-                       width:(Int)width 
-                      height:(Int)height
-                  dataFormat:(NpState)dataFormat
-                 pixelFormat:(NpState)pixelFormat
-                  mipMapping:(NpState)mipMapping
-                             ;
+- (id) textureWithName:(NSString *)textureName
+                 width:(Int)width 
+                height:(Int)height
+            dataFormat:(NpState)dataFormat
+           pixelFormat:(NpState)pixelFormat
+            mipMapping:(NpState)mipMapping
+                      ;
 
-- (id) createTexture3DWithName:(NSString *)textureName
-                         width:(Int)width 
-                        height:(Int)height
-                         depth:(Int)depth
-                    dataFormat:(NpState)dataFormat
-                   pixelFormat:(NpState)pixelFormat
-                              ;
+- (id) texture3DWithName:(NSString *)textureName
+                   width:(Int)width 
+                  height:(Int)height
+                   depth:(Int)depth
+              dataFormat:(NpState)dataFormat
+             pixelFormat:(NpState)pixelFormat
+                        ;
+
+- (id) texture3DWithName:(NSString *)textureName
+                   width:(Int)width 
+                  height:(Int)height
+                   depth:(Int)depth
+              dataFormat:(NpState)dataFormat
+             pixelFormat:(NpState)pixelFormat
+              mipmapping:(NpState)mipMapping
+                        ;
+
 
 @end

@@ -21,6 +21,7 @@
     textures = [[ NSMutableDictionary alloc ] init ];
     maxAnisotropy = anisotropy = 1;
     nonPOTSupport = NO;
+    srgbTextureSupport = NO;
     textureMode = NP_NONE;
 
     return self;
@@ -45,11 +46,19 @@
     if ( [[[[ NP Graphics ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_ARB_texture_non_power_of_two" ] == YES )
     {
         nonPOTSupport = YES;
+        NPLOG(@"%@: Non power of two textures supported", name);
     }
 
     if ( [[[[ NP Graphics ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_SGIS_generate_mipmap" ] == YES )
     {
         hardwareMipMapGenerationSupport = YES;
+        NPLOG(@"%@: Hardware mipmap generation supported", name);
+    }
+
+    if ( [[[[ NP Graphics ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_EXT_texture_sRGB" ] == YES )
+    {
+        srgbTextureSupport = YES;
+        NPLOG(@"%@: sRGB sampler supported", name);
     }
 
     [ self setTexture2DMode ];
@@ -157,11 +166,35 @@
 
     switch ( pixelFormat )
     {
-        case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_R )    : { glpixelformat = GL_LUMINANCE;       break; }
-        case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RG )   : { glpixelformat = GL_LUMINANCE_ALPHA; break; }
-        case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGB )  : { glpixelformat = GL_RGB;             break; }
-        case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ) : { glpixelformat = GL_RGBA;            break; }
-        default:{ NPLOG_ERROR(@"%@: Unknown pixel format %d",name,pixelFormat); break; }
+        case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_R )  :
+        case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_sR ) :
+        {
+            glpixelformat = GL_LUMINANCE;
+            break;
+        }
+
+        case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RG )  :
+        case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_sRG ) :
+        {
+            glpixelformat = GL_LUMINANCE_ALPHA;
+            break;
+        }
+
+        case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGB )  :
+        case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_sRGB ) :
+        {
+            glpixelformat = GL_RGB;
+            break;
+        }
+
+        case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ) :
+        case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_sRGB_LINEAR_ALPHA ) :
+        {
+            glpixelformat = GL_RGBA;
+            break;
+        }
+
+        default:{ NPLOG_ERROR(@"%@: Unknown pixel format %d", name, pixelFormat); break; }
     }
 
     return glpixelformat;
@@ -175,13 +208,55 @@
     {
         case ( NP_GRAPHICS_TEXTURE_DATAFORMAT_BYTE ):
         {
-            switch ( pixelFormat )
+            if ( srgbTextureSupport == NO )
             {
-                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_R )    : { glinternalformat = GL_LUMINANCE;       break; }
-                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RG )   : { glinternalformat = GL_LUMINANCE_ALPHA; break; }
-                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGB )  : { glinternalformat = GL_RGB;             break; }
-                case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ) : { glinternalformat = GL_RGBA;            break; }
+                switch ( pixelFormat )
+                {
+                    case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_R )  :
+                    case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_sR ) :
+                    {
+                        glinternalformat = GL_LUMINANCE;
+                        break;
+                    }
+
+                    case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RG )  :
+                    case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_sRG ) :
+                    {
+                        glinternalformat = GL_LUMINANCE_ALPHA;
+                        break;
+                    }
+
+                    case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGB )  :
+                    case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_sRGB ) :
+                    {
+                        glinternalformat = GL_RGB;
+                        break;
+                    }
+
+                    case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ) :
+                    case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_sRGB_LINEAR_ALPHA ) :
+                    {
+                        glinternalformat = GL_RGBA;
+                        break;
+                    }
+                }
             }
+            else
+            {
+                switch ( pixelFormat )
+                {
+                    case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_R )    : { glinternalformat = GL_LUMINANCE;       break; }
+                    case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RG )   : { glinternalformat = GL_LUMINANCE_ALPHA; break; }
+                    case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGB )  : { glinternalformat = GL_RGB;             break; }
+                    case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ) : { glinternalformat = GL_RGBA;            break; }
+
+                    case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_sR )    : { glinternalformat = GL_SLUMINANCE;       break; }
+                    case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_sRG )   : { glinternalformat = GL_SLUMINANCE_ALPHA; break; }
+                    case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_sRGB )  : { glinternalformat = GL_SRGB;             break; }
+                    case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_sRGB_LINEAR_ALPHA ) : { glinternalformat = GL_SRGB_ALPHA; break; }
+                }
+            }
+
             break;
         }
 
@@ -194,6 +269,7 @@
                 case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGB )  : { glinternalformat = GL_RGB16F_ARB;             break; }
                 case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ) : { glinternalformat = GL_RGBA16F_ARB;            break; }
             }
+
             break;
         }
 
@@ -206,6 +282,7 @@
                 case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGB )  : { glinternalformat = GL_RGB32F_ARB;             break; }
                 case ( NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ) : { glinternalformat = GL_RGBA32F_ARB;            break; }
             }
+
             break;
         }
     }
@@ -260,27 +337,27 @@
     }    
 }
 
-- (id) createTextureWithName:(NSString *)textureName
-                       width:(Int)width 
-                      height:(Int)height
-                  dataFormat:(NpState)dataFormat
-                 pixelFormat:(NpState)pixelFormat
+- (id) textureWithName:(NSString *)textureName
+                 width:(Int)width 
+                height:(Int)height
+            dataFormat:(NpState)dataFormat
+           pixelFormat:(NpState)pixelFormat
 
 {
-    return [ self createTextureWithName:textureName
-                                  width:width
-                                 height:height
-                             dataFormat:dataFormat
-                            pixelFormat:pixelFormat
-                             mipMapping:NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE ];
+    return [ self textureWithName:textureName
+                            width:width
+                           height:height
+                       dataFormat:dataFormat
+                      pixelFormat:pixelFormat
+                       mipMapping:NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE ];
 }
 
-- (id) createTextureWithName:(NSString *)textureName
-                       width:(Int)width 
-                      height:(Int)height
-                  dataFormat:(NpState)dataFormat
-                 pixelFormat:(NpState)pixelFormat
-                  mipMapping:(NpState)mipMapping
+- (id) textureWithName:(NSString *)textureName
+                 width:(Int)width 
+                height:(Int)height
+            dataFormat:(NpState)dataFormat
+           pixelFormat:(NpState)pixelFormat
+            mipMapping:(NpState)mipMapping
 {
     NPTexture * texture = [[ NPTexture alloc ] initWithName:textureName parent:self ];
     [ texture setWidth:width ];
@@ -294,12 +371,12 @@
     return [ texture autorelease ];
 }
 
-- (id) createTexture3DWithName:(NSString *)textureName
-                         width:(Int)width 
-                        height:(Int)height
-                         depth:(Int)depth
-                    dataFormat:(NpState)dataFormat
-                   pixelFormat:(NpState)pixelFormat
+- (id) texture3DWithName:(NSString *)textureName
+                   width:(Int)width 
+                  height:(Int)height
+                   depth:(Int)depth
+              dataFormat:(NpState)dataFormat
+             pixelFormat:(NpState)pixelFormat
 {
     NPTexture3D * texture = [[ NPTexture3D alloc ] initWithName:textureName parent:self ];
     [ texture setWidth:width ];
@@ -311,6 +388,17 @@
     [ textures setObject:texture forKey:textureName ];
 
     return [ texture autorelease ];
+}
+
+- (id) texture3DWithName:(NSString *)textureName
+                   width:(Int)width 
+                  height:(Int)height
+                   depth:(Int)depth
+              dataFormat:(NpState)dataFormat
+             pixelFormat:(NpState)pixelFormat
+              mipmapping:(NpState)mipMapping
+{
+    return nil;
 }
 
 @end
