@@ -44,11 +44,11 @@ label=lst_objcmsgsend]{}
 \end{lstlisting}
 
 \subsubsection{Protocols}
-Protocols are similar to \textit{Java} and \textit{C\#} \textit{Interfaces}.
-A protocol defines a set of methods which any class can declare itself to
-implement, listing~\ref{lst_objcprotocol} shows a simple exmaple. Protocols,
-like Interfaces, are a neat way to decouple functionality from the class
-hierarchy.
+Protocols are similar to \textit{Java}\cite{book:java-language} and
+\textit{C\#}\cite{book:csharp-language} \textit{Interfaces}. A protocol defines
+a set of methods which any class can declare itself to implement,
+listing~\ref{lst_objcprotocol} shows a simple example. Protocols, like
+Interfaces, are a neat way to decouple functionality from the class hierarchy.
 
 \lstset{language=[Objective]C, , backgroundcolor=\color{LightViolet}}
 \begin{lstlisting}[captionpos=b, caption=An Objective-C protocol and a
@@ -203,8 +203,8 @@ OpenStep is now known by the name Cocoa. Cocoa has undergone major improvements
 during the further development of Mac OS X, which as of now has reached version
 10.6. GNUstep is an open-source implementation of OpenStep which runs on a
 number of different platforms, including the major Unices and Windows. Since
-the release of Mac OS X the GNUstep project tries to implement most of the
-extension Apple made to the original OpenStep.
+the release of Mac OS X the GNUstep project seeks to implement most of the
+extensions Apple made to the original OpenStep.
 
 \subsubsection{Foundation}
 
@@ -246,17 +246,31 @@ member variables and messages. \FIXME{Explain.}
 \subsection{OpenGL}
 OpenGL is a set of specifications defining a 3D application programming
 interface. OpenGL was first released to the public in 1992 by SGI, as a
-successor to the company's internally used IrisGL. Additionally the OpenGL
-architectural review board (ARB) was founded, in independent consortium con
-sisting of a group of companies that would maintain and expand the OpenGL
-standard. In 2006 further development of the OpenGL standard has been taken over
-by the \textit{Khronos Group}, bringing significant advancements to the OpenGL
+successor to the company's internally developed IrisGL. In addition the OpenGL
+architectural review board (ARB)\cite{misc:opengl-arb} was founded, an
+independent consortium consisting of a group of companies that would maintain
+and expand the OpenGL standard. In 2006 further development of the OpenGL
+standard has been taken over by the \textit{KhronosGroup}
+\cite{misc:opengl-khronos}, bringing significant advancements to the OpenGL
 standard since then.
 
 \subsection{Other Libraries}
-Furthermore NPEngine uses \textit{OpenIL}\cite{misc:devil}, also known as
-\textit{DevIL}, for image loading and \textit{NVIDIA Cg Toolkit}\cite{misc:nvcg}
-as shader compiler.
+
+NPEngine uses the following libraries:
+
+\begin{itemize}
+ \item \textit{DevIL}\cite{misc:devil} is a popular library, which is able to
+load, convert and save a wide variety of image formats, making it an adequate
+tool for texture loading.
+ \item \textit{PRNG}\cite{misc:prng} is a collection of random number generators
+implemented as a highly portable C library.
+ \item \textit{NVIDIA Cg}\cite{misc:nvcg} is a toolkit which provides a high
+level programming interface for GPU shader programs, similar to the
+\textit{DirectX Effect Framework}\cite{misc:directx}\cite{book:effect-hlsl}.
+\end{itemize}
+
+Additionally the preprocessing tool which generates the wave data uses the FFTW
+library\cite{misc:fftw} for the fourier transforms.
 
 \section{Projected Grid}
 Viewing Pipeline
@@ -272,3 +286,8 @@ Refraction
 \section{Animation}
 3D Texture
 CUDA
+
+\section{Color management}
+color profiles
+gamma
+srgb sampler/framebuffer
