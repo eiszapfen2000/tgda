@@ -30,30 +30,51 @@ Equation~\eqref{eq:ising} expresses the energy of a configuration
 of spins in the Ising model.
 
 \section{The Rendering Pipeline}
-%BLABLA
-%
-\begin{figure}[h]
+The rendering pipeline constitutes the core of real-time graphics. It's task
+consists in generating, or rendering, a two-dimensional output image given a
+virtual camera, scene geometry, materials and
+lightsources\cite{book:akenine-rtr}. As shown in Figure~\ref{fig:RAGR} the
+rendering pipeline can be divided into three conceptual stages:
+\begin{itemize}
+ \item The \textit{application stage} holds all necessary information to break
+down the scene geometry into smaller chunks which actually are passed on to the
+geometry stage.
+ \item The \textit{geometry stage} transforms the input geometry to a
+two-dimensional output coordinate system.
+ \item The \textit{rasterizer stage} fills the primitives output by the
+geometry stage with color.
+\end{itemize}
+
+\begin{figure}
 \begin{center}
-\includegraphics[scale=1.0]{Images/Rendering-Pipeline-AGR.pdf}
+\includegraphics[scale=0.8]{Images/Rendering-Pipeline-AGR.pdf}
+\caption{The three stages of the rendering pipeline.}
+\label{fig:RAGR}
 \end{center}
 \end{figure}
-\begin{figure}[t]
-\begin{center}
-\includegraphics[scale=0.5]{Images/Geometry-Stage.pdf}
-\end{center}
-\end{figure}
-%
-%\begin{itemize}
-% \item The \textit{application stage}
-% \item The \textit{geometry stage}
-% \item The \textit{rasterizer stage}
-%\end{itemize}
 
 \subsection{Application Stage}
-
+The application stage implements the whole program logic, user input and
+consequently the application's internal state is managed by the application
+stage. It's main responsibility lies in deciding what is actually to be
+visualised and therefore feeding the geometry stage with the selected data.
+The actual implementation of the application stage is entirely dependent on
+it's task. 
+A common task which resides in the application stage is \textit{collision
+detection and response}: to detect if two objects collide and update their
+internal state accordingly. Nowadays this is often done by a physics library
+tailored to this task, such as NVIDIA PhysX\cite{misc:ageia-physx} and Havok
+Physics\cite{misc:havok}. Those libraries are capable of complex physics
+simulations, their collision detection and respinse capabilities are a mere,
+but rather welcome, side effect.
+Whereas the geometry and rasterizer stages are to be found on the graphics
+hardware, the application stage is executed in software on the CPU side.
 software stage, excempt hardware accelerated physics and sound
 holds high level scene information
 prepares data to be processed by geometry stage
+collision detection
+physics
+visibility culling
 
 \subsection{Geometry Stage}
 
@@ -66,9 +87,16 @@ projection matrix
 clip coordinates, cube
 clipping
 perspective division
-normalized device coordinates
+normalized device coordinates, unit cube
 viewport transformation
 window coordinates
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Images/Geometry-Stage.pdf}
+\caption{The Geometry stage.}
+\label{fig:GeometryStage}
+\end{center}
+\end{figure}
 
 
 \subsection{Rasterizer Stage}
@@ -76,6 +104,13 @@ window coordinates
 triangle setup
 scan conversion and interpolation
 per fragment operations (texturing, ummadumshadern)
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Images/Rasterizer-Stage.pdf}
+\caption{The Rasterizer stage.}
+\label{fig:RasterizerStage}
+\end{center}
+\end{figure}
 
 \section{The Projected Grid}
 
