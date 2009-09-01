@@ -54,29 +54,75 @@ geometry stage with color.
 \end{figure}
 
 \subsection{Application Stage}
-The application stage implements the whole program logic, user input and
-consequently the application's internal state is managed by the application
-stage. It's main responsibility lies in deciding what is actually to be
-visualised and therefore feeding the geometry stage with the selected data.
-The actual implementation of the application stage is entirely dependent on
-it's task. 
+The application stage implements the whole program logic. It's structure and
+implementation is entirely dependent on the the task it should perform. One
+such a task could be a simple triangle mesh visualisation, another, more
+complex one, a complete 3D computer game. What these tasks have in common, is
+that all of them require the application stage to provide the geometry stage
+with appropriately prepared data for further processing.
+
+Usually the application stage's main task is broken down into three subtasks:
+\begin{itemize}
+ \item Take \textit{user input}
+ \item \textit{Update} the internal state
+ \item \textit{Render} by feeding data to the next stage
+\end{itemize}
+
 A common task which resides in the application stage is \textit{collision
 detection and response}: to detect if two objects collide and update their
-internal state accordingly. Nowadays this is often done by a physics library
-tailored to this task, such as NVIDIA PhysX\cite{misc:ageia-physx} and Havok
-Physics\cite{misc:havok}. Those libraries are capable of complex physics
-simulations, their collision detection and respinse capabilities are a mere,
-but rather welcome, side effect.
+internal state accordingly. Nowadays this is often done by a physics library,
+such as \textit{NVIDIA PhysX}\cite{misc:ageia-physx} or \textit{Havok
+Physics}\cite{misc:havok}.
+
+In the case the application stage deals with large amounts of geometric
+objects in a scene, it may prove necessary to reduce the amount of data which
+is sent to the geometry stage. This is done by discarding objects invisible to
+the viewer before they are actually handed over to the geometry stage,
+effectively reducing the geometry stage's workload.
+
 Whereas the geometry and rasterizer stages are to be found on the graphics
-hardware, the application stage is executed in software on the CPU side.
-software stage, excempt hardware accelerated physics and sound
-holds high level scene information
-prepares data to be processed by geometry stage
-collision detection
-physics
-visibility culling
+hardware, the application stage is typically executed in software on the CPU;
+known exceptions are e.g. hardware accelerated physics and sound.
 
 \subsection{Geometry Stage}
+The geometry stage takes geometric primitives as input from the application
+stage and processes them, so that the next stage, the rasterizer stage, may
+calculate the final color for a pixel or fragment. In order to do that, the
+geometric primitives have to be \textit{transformed} through several
+\textit{coordinate systems}, eventually reaching the \textit{post-projection
+space}. Transformations, such as rotation, translation, scaling and shearing,
+usually are represented by matrices. For a three-dimensional space 4x4 matrices
+are needed to be able to specify the aforementioned transformations. In
+addition those transformations can be concatenated by multiplying the matrices
+together, thereby reducing the arithmetic workload to compute multiple
+transformations.
+
+The \textit{model space} serves as starting point, as each model resides
+therein, simply meaning that no transformation has been applied to the model
+coordinates. By orienting and positioning such a model in the world, it gets
+transformed to \textit{world space}. There may be more instances of the same
+model in the world, possibly differing in orientation and position. The world
+space itself is unique, all models are transformed with their respective model
+transform and thereafter all are located in the world space. The next
+coordinate system in the pipeline is the \textit{view space}, also known as
+\textit{eye space}, which represents all objects or models in the world relative
+to the camera position and camera viewing direction. The camera itself is able
+to capture only a part of the world, depending on the camera's field of view
+and viewing range. The volume the camera is actually able to see is called the
+\textit{viewing volume}, better known as \textit{camera frustum}.
+\FIXME{Coordinate frames and frustum illustration}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Images/ModelSpace.pdf}
+\caption{The Model Space.}
+\label{fig:ModelSpace}
+\end{center}
+\end{figure}
+
+parallel projection, parallel lines remain parallel
+perspective projection parallel lines intersect each other at the vanishing
+point
 
 model coordinates
 model matrix
@@ -104,6 +150,9 @@ window coordinates
 triangle setup
 scan conversion and interpolation
 per fragment operations (texturing, ummadumshadern)
+alpha test
+depth test
+stencil test
 \begin{figure}
 \begin{center}
 \includegraphics[scale=0.5]{Images/Rasterizer-Stage.pdf}
