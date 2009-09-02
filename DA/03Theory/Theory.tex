@@ -110,15 +110,66 @@ to the camera position and camera viewing direction. The camera itself is able
 to capture only a part of the world, depending on the camera's field of view
 and viewing range. The volume the camera is actually able to see is called the
 \textit{viewing volume}, better known as \textit{camera frustum}.
-\FIXME{Coordinate frames and frustum illustration}
+Figure~\ref{fig:ModelWorldView} shows the steps from model to view space.
+
+\begin{figure}[t]
+\centering
+\subfigure[Model Space]
+{
+  \includegraphics[scale=0.7]{Images/ModelSpace.pdf}
+  \label{fig:subfigmodelspace}
+}
+\subfigure[World Space]
+{
+  \includegraphics[scale=0.7]{Images/WorldSpace.pdf}
+  \label{fig:subfigworldspace}
+}
+\subfigure[Camera Frustum]
+{
+  \includegraphics[scale=0.7]{Images/WorldSpaceWithCamera.pdf}
+  \label{fig:subfigworldspacewithcamera}
+}
+\subfigure[View Space]
+{
+  \includegraphics[scale=0.7]{Images/ViewSpace.pdf}
+  \label{fig:subfigviewspace}
+}
+\caption[Model, World and View space]{The transformation pipeline
+illustrated: starting point is the model space~\subref{fig:subfigmodelspace},
+next our sample model ist rotated and positioned in the world
+\subref{fig:subfigworldspace}. Since we want to view the scene from within world
+space we add an observing camera~\subref{fig:subfigworldspacewithcamera}. The
+camera frustum is highlighted in red. At last, ~\subref{fig:subfigviewspace}
+shows the world relative to the camera.}
+\label{fig:ModelWorldView}
+\end{figure}
+
+The geometry stage's target space actually is two-dimensional, but the view
+space is a three-dimensional space still. So the taks of the next transform
+is to map all models in view space on the two-dimensional\textit{image plane},
+this process is called the \textit{projection}.
 
 \begin{figure}
-\begin{center}
-\includegraphics[scale=0.8]{Images/ModelSpace.pdf}
-\caption{The Model Space.}
-\label{fig:ModelSpace}
-\end{center}
+\centering
+\subfigure[View frustum]
+{
+  \includegraphics[scale=1.1]{Images/Frustum.pdf}
+  \label{fig:subfigviewfrustum}
+}
+\subfigure[Canonical Cube]
+{
+  \includegraphics[scale=1.0]{Images/CanonicalCube.pdf}
+  \label{fig:subfigcanonicalcube}
+}
+\caption[View frustum, canonical cube]{Blabla ~\subref{fig:subfigviewfrustum},
+and blabla \subref{fig:subfigcanonicalcube}.}
+\label{fig:ViewToNDC}
 \end{figure}
+
+\FIXME{Images showing parallel and perspective projection conceptually and
+actual samples.}
+\FIXME{Images showing camera frustum for parallel and perspective projection}
+
 
 parallel projection, parallel lines remain parallel
 perspective projection parallel lines intersect each other at the vanishing
@@ -153,13 +204,13 @@ per fragment operations (texturing, ummadumshadern)
 alpha test
 depth test
 stencil test
-\begin{figure}
-\begin{center}
-\includegraphics[scale=0.5]{Images/Rasterizer-Stage.pdf}
-\caption{The Rasterizer stage.}
-\label{fig:RasterizerStage}
-\end{center}
-\end{figure}
+%\begin{figure}
+%\begin{center}
+%\includegraphics[scale=0.5]{Images/Rasterizer-Stage.pdf}
+%\caption{The Rasterizer stage.}
+%\label{fig:RasterizerStage}
+%\end{center}
+%\end{figure}
 
 \section{The Projected Grid}
 
