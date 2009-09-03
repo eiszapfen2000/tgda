@@ -108,9 +108,9 @@ coordinate system in the pipeline is the \textit{view space}, also known as
 \textit{eye space}, which represents all objects or models in the world relative
 to the camera position and camera viewing direction. The camera itself is able
 to capture only a part of the world, depending on the camera's field of view
-and viewing range. The volume the camera is actually able to see is called the
-\textit{viewing volume}, better known as \textit{camera frustum}.
-Figure~\ref{fig:ModelWorldView} shows the steps from model to view space.
+and viewing range. The subvolume of the world the camera is actually able to see
+is called the \textit{view frustum}. Figure~\ref{fig:ModelWorldView} shows the
+steps from model to view space in a simplified manner.
 
 \begin{figure}[t]
 \centering
@@ -134,36 +134,75 @@ Figure~\ref{fig:ModelWorldView} shows the steps from model to view space.
   \includegraphics[scale=0.7]{Images/ViewSpace.pdf}
   \label{fig:subfigviewspace}
 }
-\caption[Model, World and View space]{The transformation pipeline
-illustrated: starting point is the model space~\subref{fig:subfigmodelspace},
-next our sample model ist rotated and positioned in the world
-\subref{fig:subfigworldspace}. Since we want to view the scene from within world
-space we add an observing camera~\subref{fig:subfigworldspacewithcamera}. The
-camera frustum is highlighted in red. At last, ~\subref{fig:subfigviewspace}
-shows the world relative to the camera.}
+\caption[Model, World and View space]{Starting point is the model
+space~\subref{fig:subfigmodelspace}, next our sample model ist rotated and
+positioned in the world \subref{fig:subfigworldspace}. Since we want to view the
+scene from within world space we add an observing camera
+\subref{fig:subfigworldspacewithcamera}. The view frustum is highlighted in
+red. At last, ~\subref{fig:subfigviewspace} shows the world relative to the
+camera.}
 \label{fig:ModelWorldView}
 \end{figure}
 
 The geometry stage's target space actually is two-dimensional, but the view
-space is a three-dimensional space still. So the taks of the next transform
-is to map all models in view space on the two-dimensional\textit{image plane},
-this process is called the \textit{projection}.
+space is a three-dimensional space still. The next steps in the geometry stage
+complete the transformation from three-dimensional eye coordinates to
+two-dimensional \textit{window coordinates}. The first step is done by the
+\textit{projection}, which transforms coordinates from eye space into clip
+space. As pinpointed before, the camera is only able to depict a part of the
+world, Figure \ref{fig:ViewFrustum3D} illustrates details.
+
+\begin{figure}[b]
+\begin{center}
+ \includegraphics[scale=1.0]{Images/Frustum.pdf}
+ \caption{The far plane, which represents the camera's viewing range is shown
+in blue. The near plane, which is the plane where the objects in the scene get
+projected onto, is highlighted in red. The green line depicts the viewing
+direction, intersecting the center of the near and far plane. The camera is to
+be found at the intersection of the delimiting black lines. Only objects inside
+the volume bounded by near and far plane are projected onto the image plane.}
+ \label{fig:ViewFrustum3D}
+\end{center} 
+\end{figure}
 
 \begin{figure}
 \centering
-\subfigure[View frustum]
+\subfigure[Ortho frustum]
 {
-  \includegraphics[scale=1.1]{Images/Frustum.pdf}
-  \label{fig:subfigviewfrustum}
+  \includegraphics[scale=0.8]{Images/OrthoFrustum.pdf}
+  \label{fig:subfigorthofrustum}
+}
+\subfigure[Perspective frustum]
+{
+  \includegraphics[scale=0.8]{Images/PerspectiveFrustum.pdf}
+  \label{fig:subfigperspectivefrustum}
 }
 \subfigure[Canonical Cube]
 {
-  \includegraphics[scale=1.0]{Images/CanonicalCube.pdf}
+  \includegraphics[scale=0.8]{Images/CanonicalCube.pdf}
   \label{fig:subfigcanonicalcube}
 }
-\caption[View frustum, canonical cube]{Blabla ~\subref{fig:subfigviewfrustum},
+\caption[View frustum, canonical cube]{Blabla ~\subref{fig:subfigorthofrustum},
 and blabla \subref{fig:subfigcanonicalcube}.}
 \label{fig:ViewToNDC}
+\end{figure}
+
+\begin{figure}
+\centering
+\subfigure[Parallel Projection 2D]
+{
+  \includegraphics[scale=1.1]{Images/ParallelProjection2D.pdf}
+  \label{fig:subfigparallelprojection2d}
+}
+\subfigure[Perspective Projection 2D]
+{
+  \includegraphics[scale=1.1]{Images/PerspectiveProjection2D.pdf}
+  \label{fig:subfigperspectiveprojection2d}
+}
+\caption[View frustum, canonical cube]{Blabla
+~\subref{fig:subfigparallelprojection2d},
+and blabla \subref{fig:subfigperspectiveprojection2d}.}
+\label{fig:Schmorrn}
 \end{figure}
 
 \FIXME{Images showing parallel and perspective projection conceptually and
