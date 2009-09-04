@@ -85,17 +85,36 @@ hardware, the application stage is typically executed in software on the CPU;
 known exceptions are e.g. hardware accelerated physics and sound.
 
 \subsection{Geometry Stage}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Images/Geometry-Stage.pdf}
+\caption{The Geometry stage.}
+\label{fig:GeometryStage}
+\end{center}
+\end{figure}
+
 The geometry stage takes geometric primitives as input from the application
 stage and processes them, so that the next stage, the rasterizer stage, may
-calculate the final color for a pixel or fragment. In order to do that, the
-geometric primitives have to be \textit{transformed} through several
-\textit{coordinate systems}, eventually reaching the \textit{post-projection
-space}. Transformations, such as rotation, translation, scaling and shearing,
-usually are represented by matrices. For a three-dimensional space 4x4 matrices
-are needed to be able to specify the aforementioned transformations. In
-addition those transformations can be concatenated by multiplying the matrices
-together, thereby reducing the arithmetic workload to compute multiple
-transformations.
+calculate the final color for a pixel or fragment. Figure
+\ref{fig:GeometryStage} shows all coordinate systems and operations involved. In
+order to do that, the geometric primitives have to be \textit{transformed}
+through several \textit{coordinate systems}, eventually reaching the
+\textit{image space}. Transformations, such as rotation, translation,
+scaling and shearing, usually are represented by matrices. For a
+three-dimensional space 4x4 matrices are needed to be able to specify the
+aforementioned transformations. In addition those transformations can be
+concatenated by multiplying the matrices together, thereby reducing the
+arithmetic workload to compute multiple transformations.
+The geometry stage can be broken up in two larger parts:
+\begin{itemize}
+ \item  the model-view stage, which is concerned with the setup of a scene by
+positioning different models and the camera
+ \item the projection stage, which has to depict the assembled scene onto the
+image plane
+\end{itemize}
+
+\subsubsection{The Model-View Transformation}
 
 The \textit{model space} serves as starting point, as each model resides
 therein, simply meaning that no transformation has been applied to the model
@@ -106,10 +125,10 @@ space itself is unique, all models are transformed with their respective model
 transform and thereafter all are located in the world space. The next
 coordinate system in the pipeline is the \textit{view space}, also known as
 \textit{eye space}, which represents all objects or models in the world relative
-to the camera position and camera viewing direction. The camera itself is able
-to capture only a part of the world, depending on the camera's field of view
-and viewing range. The subvolume of the world the camera is actually able to see
-is called the \textit{view frustum}. Figure~\ref{fig:ModelWorldView} shows the
+to the camera. The camera itself is able to capture only a part of the world,
+depending on the camera's position, viewing direction, field of view and viewing
+range. The subvolume of the world the camera is actually able to see is called
+the \textit{view frustum}. Figure~\ref{fig:ModelWorldView} shows the
 steps from model to view space in a simplified manner.
 
 \begin{figure}[t]
@@ -139,30 +158,77 @@ space~\subref{fig:subfigmodelspace}, next our sample model ist rotated and
 positioned in the world \subref{fig:subfigworldspace}. Since we want to view the
 scene from within world space we add an observing camera
 \subref{fig:subfigworldspacewithcamera}. The view frustum is highlighted in
-red. At last, ~\subref{fig:subfigviewspace} shows the world relative to the
+red. At last, \subref{fig:subfigviewspace} shows the world relative to the
 camera.}
 \label{fig:ModelWorldView}
 \end{figure}
 
-The geometry stage's target space actually is two-dimensional, but the view
-space is a three-dimensional space still. The next steps in the geometry stage
-complete the transformation from three-dimensional eye coordinates to
-two-dimensional \textit{window coordinates}. The first step is done by the
-\textit{projection}, which transforms coordinates from eye space into clip
-space. As pinpointed before, the camera is only able to depict a part of the
-world, Figure \ref{fig:ViewFrustum3D} illustrates details.
+\subsubsection{The Projection}
 
-\begin{figure}[b]
+The projection's task is to transform objects or models from three-dimensional
+view space onto a two-dimensional image plane. On current graphics hardware the
+task at hand consists of four steps in the following order:
+\begin{itemize}
+ \item the \textit{projection}
+ \item \textit{viewport clipping}
+ \item the \textit{perspective division}
+ \item the \textit{viewport transform}
+\end{itemize}
+
+The projection in combination with the perspective division transforms
+coordinates from view space into \textit{normalised device coordinates},
+\textit{NDC} in short. NDC lie in a space called \textit{the canonical view
+volume}, see Figure~\ref{fig:canonicalviewvolume}. The target volume is a cube,
+but the source volume, meaning the view frustum, depends on the actual
+projection. Figure~\ref{fig:viewfrustum3d} shows a possible view frustum in
+detail. There are a couple of different projections to be found in computer
+graphics, but the two most common types are the \textit{parallel projection} and
+the \textit{perspective projection}. Figure~\ref{fig:projections2d} illustrates
+their working principle, Figure~\ref{fig:parallelandperspectivefrustum} shows
+their view frusta.
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Images/CanonicalCube.pdf}
+\caption{The canonical view volume ranging from lower left (-1, -1, -1) to
+uppper right (1, 1, 1). As opposed to the model, world and view space,
+normalised device coordinates are lefthanded, with the positive z axis
+pointing away from the viewer. The nearplane lies at z = -1, the far plane at z
+= 1.}
+\label{fig:canonicalviewvolume}
+\end{center}
+\end{figure}
+
+\begin{figure}
 \begin{center}
  \includegraphics[scale=1.0]{Images/Frustum.pdf}
  \caption{The far plane, which represents the camera's viewing range is shown
 in blue. The near plane, which is the plane where the objects in the scene get
 projected onto, is highlighted in red. The green line depicts the viewing
 direction, intersecting the center of the near and far plane. The camera is to
-be found at the intersection of the delimiting black lines. Only objects inside
-the volume bounded by near and far plane are projected onto the image plane.}
- \label{fig:ViewFrustum3D}
+be found at the intersection of the delimiting black lines.}
+ \label{fig:viewfrustum3d}
 \end{center} 
+\end{figure}
+
+\begin{figure}
+\centering
+\subfigure[Parallel Projection]
+{
+  \includegraphics[scale=1.1]{Images/ParallelProjection2D.pdf}
+  \label{fig:subfigparallelprojection2d}
+}
+\subfigure[Perspective Projection]
+{
+  \includegraphics[scale=1.1]{Images/PerspectiveProjection2D.pdf}
+  \label{fig:subfigperspectiveprojection2d}
+}
+\caption[View frustum, canonical cube]{Parallel lines are still parallel
+after parallel projection~\subref{fig:subfigparallelprojection2d}, but not
+after perspective projection~\subref{fig:subfigperspectiveprojection2d}.
+The key property of the perspective projection is that objects that lie
+farther away are depicted smaller than objects which lie near the image plane.}
+\label{fig:projections2d}
 \end{figure}
 
 \begin{figure}
@@ -177,63 +243,22 @@ the volume bounded by near and far plane are projected onto the image plane.}
   \includegraphics[scale=0.8]{Images/PerspectiveFrustum.pdf}
   \label{fig:subfigperspectivefrustum}
 }
-\subfigure[Canonical Cube]
-{
-  \includegraphics[scale=0.8]{Images/CanonicalCube.pdf}
-  \label{fig:subfigcanonicalcube}
-}
 \caption[View frustum, canonical cube]{Blabla ~\subref{fig:subfigorthofrustum},
-and blabla \subref{fig:subfigcanonicalcube}.}
-\label{fig:ViewToNDC}
+and blabla \subref{fig:subfigperspectivefrustum}.}
+\label{fig:parallelandperspectivefrustum}
 \end{figure}
 
-\begin{figure}
-\centering
-\subfigure[Parallel Projection 2D]
-{
-  \includegraphics[scale=1.1]{Images/ParallelProjection2D.pdf}
-  \label{fig:subfigparallelprojection2d}
-}
-\subfigure[Perspective Projection 2D]
-{
-  \includegraphics[scale=1.1]{Images/PerspectiveProjection2D.pdf}
-  \label{fig:subfigperspectiveprojection2d}
-}
-\caption[View frustum, canonical cube]{Blabla
-~\subref{fig:subfigparallelprojection2d},
-and blabla \subref{fig:subfigperspectiveprojection2d}.}
-\label{fig:Schmorrn}
-\end{figure}
-
-\FIXME{Images showing parallel and perspective projection conceptually and
-actual samples.}
-\FIXME{Images showing camera frustum for parallel and perspective projection}
-
-
-parallel projection, parallel lines remain parallel
-perspective projection parallel lines intersect each other at the vanishing
-point
-
-model coordinates
-model matrix
-world coordinates
-view matrix
-view coordinates
-projection matrix
-clip coordinates, cube
-clipping
-perspective division
-normalized device coordinates, unit cube
-viewport transformation
-window coordinates
-\begin{figure}
-\begin{center}
-\includegraphics[scale=0.5]{Images/Geometry-Stage.pdf}
-\caption{The Geometry stage.}
-\label{fig:GeometryStage}
-\end{center}
-\end{figure}
-
+Clipping does a rather simple but important job: remove all primitives which lie
+outside the frustum and clip those which are partially inside to the frustum's
+border. This way only visible primitives are passed on to the rasterizer stage,
+thus minimising it's workload. Clipping is done in \textit{clip space}, right
+after the projection, but before the perspective division. As mentioned before,
+after the perspective division coordinates are in NDC, but they are still not
+related to the output window, which is what the user actually will be able to
+see on the output device. The viewport transform is the missing piece, it takes
+NDC as input, discards the depth coordinate, and transforms the remaining
+two-dimensional coordinates to window coordinates using the size and origin of
+the current viewport as parameters.
 
 \subsection{Rasterizer Stage}
 
