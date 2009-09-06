@@ -3,7 +3,7 @@ img_extIsRegExp=false
 img_extensions=.eps .jpg .jpeg .png .pdf .ps .fig .gif
 kileprversion=2
 kileversion=2.0
-lastDocument=03Theory/Theory.tex
+lastDocument=user.defined.tex
 masterDocument=
 name=DA
 pkg_extIsRegExp=false
@@ -62,12 +62,12 @@ order=5
 
 [item:06AppendixA/AppendixA.tex]
 archive=true
-column=28
+column=0
 encoding=UTF-8
 highlight=LaTeX
-line=16
-open=false
-order=3
+line=12
+open=true
+order=6
 
 [item:Images/Frustum.pdf]
 archive=true
@@ -224,9 +224,9 @@ order=1
 
 [item:user.defined.tex]
 archive=true
-column=73
+column=29
 encoding=UTF-8
 highlight=LaTeX
-line=116
+line=71
 open=true
 order=1

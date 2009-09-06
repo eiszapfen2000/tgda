@@ -178,14 +178,16 @@ task at hand consists of four steps in the following order:
 The projection in combination with the perspective division transforms
 coordinates from view space into \textit{normalised device coordinates},
 \textit{NDC} in short. NDC lie in a space called \textit{the canonical view
-volume}, see Figure~\ref{fig:canonicalviewvolume}. The target volume is a cube,
-but the source volume, meaning the view frustum, depends on the actual
-projection. Figure~\ref{fig:viewfrustum3d} shows a possible view frustum in
-detail. There are a couple of different projections to be found in computer
-graphics, but the two most common types are the \textit{parallel projection} and
-the \textit{perspective projection}. Figure~\ref{fig:projections2d} illustrates
-their working principle, Figure~\ref{fig:parallelandperspectivefrustum} shows
-their view frusta.
+volume}, see Figure~\ref{fig:canonicalviewvolume}. The target volume is
+represented by a cube, but the shape of the source volume, meaning the view
+frustum, depends on the actual projection. Figure~\ref{fig:viewfrustum3d} shows
+a possible view frustum in detail. There are a couple of different projections
+to be found in computer graphics, the two most common types are the
+\textit{parallel projection} and the \textit{perspective projection}.
+Figure~\ref{fig:projections2d} illustrates their working principle,
+Figure~\ref{fig:parallelandperspectivefrustum} shows their associated view
+frusta. In short, the projection in combination with the perspective division
+warps the view frustum into a cube.
 
 \begin{figure}
 \begin{center}
@@ -205,8 +207,7 @@ pointing away from the viewer. The nearplane lies at z = -1, the far plane at z
  \caption{The far plane, which represents the camera's viewing range is shown
 in blue. The near plane, which is the plane where the objects in the scene get
 projected onto, is highlighted in red. The green line depicts the viewing
-direction, intersecting the center of the near and far plane. The camera is to
-be found at the intersection of the delimiting black lines.}
+direction, intersecting the center of the near and far plane.}
  \label{fig:viewfrustum3d}
 \end{center} 
 \end{figure}
@@ -233,9 +234,9 @@ farther away are depicted smaller than objects which lie near the image plane.}
 
 \begin{figure}
 \centering
-\subfigure[Ortho frustum]
+\subfigure[Parallel frustum]
 {
-  \includegraphics[scale=0.8]{Images/OrthoFrustum.pdf}
+  \includegraphics[scale=0.8]{Images/ParallelFrustum.pdf}
   \label{fig:subfigorthofrustum}
 }
 \subfigure[Perspective frustum]
@@ -243,22 +244,29 @@ farther away are depicted smaller than objects which lie near the image plane.}
   \includegraphics[scale=0.8]{Images/PerspectiveFrustum.pdf}
   \label{fig:subfigperspectivefrustum}
 }
-\caption[View frustum, canonical cube]{Blabla ~\subref{fig:subfigorthofrustum},
-and blabla \subref{fig:subfigperspectivefrustum}.}
+\caption[Parallel and Perspective Frustum]{The parallel frustum shown
+in~\subref{fig:subfigorthofrustum} is a rectangular box, the perspective 
+frustum in \subref{fig:subfigperspectivefrustum} resembles a truncated
+pyramid. The paramters \textit{n} and \textit{f} stand for the distance from the
+camera to the near and far plane. \textit{t}, \textit{b}, \textit{l} and
+\textit{r} are derived from the camera's field of view as well as the image
+plane's aspect ratio.}
 \label{fig:parallelandperspectivefrustum}
 \end{figure}
 
-Clipping does a rather simple but important job: remove all primitives which lie
-outside the frustum and clip those which are partially inside to the frustum's
-border. This way only visible primitives are passed on to the rasterizer stage,
-thus minimising it's workload. Clipping is done in \textit{clip space}, right
-after the projection, but before the perspective division. As mentioned before,
-after the perspective division coordinates are in NDC, but they are still not
-related to the output window, which is what the user actually will be able to
-see on the output device. The viewport transform is the missing piece, it takes
-NDC as input, discards the depth coordinate, and transforms the remaining
-two-dimensional coordinates to window coordinates using the size and origin of
-the current viewport as parameters.
+What happens to objects outside or partially inside the view frustum, though?
+Clipping does take care of such primitives - it removes all primitives which
+lie outside the view frustum and clips those which are partially inside to the
+frustum's border. This way only primitives inside the canonical view volume are
+passed on to the rasterizer stage, thus minimising it's workload. Clipping is
+done in \textit{clip space}, right after the projection, but before the
+perspective division. As mentioned before, after the perspective division
+coordinates are in NDC, but they are still not related to the output window,
+which is what the user actually will be able to see on the output device. The
+viewport transform is the missing piece, it takes NDC as input, discards the
+depth coordinate, and transforms the remaining two-dimensional coordinates to
+window coordinates using the size and origin of the current viewport as
+parameters.
 
 \subsection{Rasterizer Stage}
 
@@ -268,13 +276,13 @@ per fragment operations (texturing, ummadumshadern)
 alpha test
 depth test
 stencil test
-%\begin{figure}
-%\begin{center}
-%\includegraphics[scale=0.5]{Images/Rasterizer-Stage.pdf}
-%\caption{The Rasterizer stage.}
-%\label{fig:RasterizerStage}
-%\end{center}
-%\end{figure}
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{Images/Rasterizer-Stage.pdf}
+\caption{The Rasterizer stage.}
+\label{fig:RasterizerStage}
+\end{center}
+\end{figure}
 
 \section{The Projected Grid}
 
