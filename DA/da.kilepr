@@ -3,7 +3,7 @@ img_extIsRegExp=false
 img_extensions=.eps .jpg .jpeg .png .pdf .ps .fig .gif
 kileprversion=2
 kileversion=2.0
-lastDocument=user.defined.tex
+lastDocument=03Theory/Theory.tex
 masterDocument=
 name=DA
 pkg_extIsRegExp=false
@@ -20,8 +20,8 @@ archive=true
 column=0
 encoding=UTF-8
 highlight=LaTeX
-line=16
-open=true
+line=17
+open=false
 order=4
 
 [item:02STAR/StateoftheArt.tex]
@@ -38,17 +38,17 @@ archive=true
 column=0
 encoding=UTF-8
 highlight=LaTeX
-line=249
+line=324
 open=true
-order=5
+order=0
 
 [item:04Implementation/Implementation.tex]
 archive=true
 column=0
 encoding=UTF-8
 highlight=LaTeX
-line=277
-open=true
+line=2
+open=false
 order=0
 
 [item:05Summary/Summary.tex]
@@ -66,7 +66,7 @@ column=0
 encoding=UTF-8
 highlight=LaTeX
 line=12
-open=true
+open=false
 order=6
 
 [item:Images/Frustum.pdf]
@@ -170,28 +170,28 @@ order=-1
 
 [item:abstract.tex]
 archive=true
-column=5
+column=0
 encoding=UTF-8
 highlight=LaTeX
-line=2
+line=1
 open=false
 order=5
 
 [item:cg.bib]
 archive=true
-column=43
+column=30
 encoding=UTF-8
 highlight=BibTeX
-line=182
-open=true
-order=3
+line=100
+open=false
+order=1
 
 [item:credits.tex]
 archive=true
-column=38
+column=8
 encoding=UTF-8
 highlight=LaTeX
-line=27
+line=7
 open=false
 order=7
 
@@ -209,9 +209,9 @@ archive=true
 column=0
 encoding=UTF-8
 highlight=LaTeX
-line=27
+line=46
 open=true
-order=2
+order=1
 
 [item:titel.tex]
 archive=true
@@ -224,9 +224,9 @@ order=1
 
 [item:user.defined.tex]
 archive=true
-column=29
+column=0
 encoding=UTF-8
 highlight=LaTeX
-line=71
-open=true
-order=1
+line=14
+open=false
+order=2
