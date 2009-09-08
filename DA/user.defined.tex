@@ -1,13 +1,9 @@
 \chapapp{Chapter}
  
 \usepackage{amsmath}
-%\usepackage{times} % default roman
-%\usepackage{helvet} % default sans-serif
-\usepackage{courier} % default monospace
+\usepackage{times} % default roman
 \usepackage{verbatim}
 \usepackage[pdftex]{graphicx}
-\usepackage{type1cm} %% for watermark
-\usepackage{eso-pic} %% for watermark
 \usepackage{subfigure}
 \usepackage{color}
 \usepackage[english, german]{babel}
@@ -39,26 +35,6 @@
 
 \newdateformat{dashdate}{%
 \THEYEAR-\twodigit{\THEMONTH}-\twodigit{\THEDAY}}
-
-% TODO: uncomment in final
-%% BEGIN DRAFT WATERMARK - REMOVE IN FINAL VERSION
-\begin{comment}
-\makeatletter
-\AddToShipoutPicture{%
-            \setlength{\@tempdimb}{.15\paperwidth}%
-            \setlength{\@tempdimc}{.9\paperheight}%
-             \setlength{\unitlength}{1pt}%
-            \put(\strip@pt\@tempdimb,\strip@pt\@tempdimc){%
-        \makebox(0,0){\rotatebox{45}{\textcolor[gray]{0.75}%
-       {\fontsize{1.5cm}{1.5cm}\selectfont{DRAFT}}}}%
-       
-       \makebox(-40,30){\rotatebox{45}{\textcolor[gray]{0.25}%
-       {\fontsize{0.5cm}{0.5cm}\selectfont{\dashdate\today\ \settimeformat{xxivtime}\currenttime}}}}%
-            }%
-}
-\makeatother
-\end{comment}
-%% END DRAFT WATERMARK - REMOVE IN FINAL VERSION
 
 \definecolor{LightViolet}{rgb}{0.9,0.9,0.99}
 \definecolor{DarkBlue}{rgb}{0,0.0,0.8}
@@ -92,33 +68,3 @@
 \lstset{framexleftmargin=3mm, frame=shadowbox, rulesepcolor=\color{Gray}}
 \lstset{xleftmargin=10pt}
 \renewcommand{\lstlistlistingname}{List of Listings}
-
-%% define Gx material script language
-\lstdefinelanguage{gxmaterial}
-{
-morekeywords={uses, set, float, float2, float3, float4, int, bool, technique, texture2d, textureCube, transparent, alphatest},
-morecomment=[l]{//},
-morestring=[b]",
-}
-
-
-
-% Alter some LaTeX defaults for better treatment of figures:
-    % See p.105 of "TeX Unbound" for suggested values.
-    % See pp. 199-200 of Lamport's "LaTeX" book for details.
-    %   General parameters, for ALL pages:
-    \renewcommand{\topfraction}{0.9}	% max fraction of floats at top
-    \renewcommand{\bottomfraction}{0.8}	% max fraction of floats at bottom
-    %   Parameters for TEXT pages (not float pages):
-    \setcounter{topnumber}{2}
-    \setcounter{bottomnumber}{2}
-    \setcounter{totalnumber}{4}     % 2 may work better
-    \setcounter{dbltopnumber}{2}    % for 2-column pages
-    \renewcommand{\dbltopfraction}{0.9}	% fit big float above 2-col. text
-    \renewcommand{\textfraction}{0.07}	% allow minimal text w. figs
-    %   Parameters for FLOAT pages (not text pages):
-    \renewcommand{\floatpagefraction}{0.7}	% require fuller float pages
-	% N.B.: floatpagefraction MUST be less than topfraction !!
-    \renewcommand{\dblfloatpagefraction}{0.7}	% require fuller float pages
-
-	% remember to use [htp] or [htpb] for placement

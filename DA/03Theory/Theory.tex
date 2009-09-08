@@ -1,5 +1,5 @@
 \chapter{Theory}
-
+\label{Theory}
 
 \section{Wave Theory}
 
@@ -84,7 +84,7 @@ Whereas the geometry and rasterizer stages are to be found on the graphics
 hardware, the application stage is typically executed in software on the CPU;
 known exceptions are e.g. hardware accelerated physics and sound.
 
-\subsection{Geometry Stage}
+\subsection{The Geometry Stage}
 
 \begin{figure}
 \begin{center}
@@ -192,11 +192,11 @@ warps the view frustum into a cube.
 \begin{figure}
 \begin{center}
 \includegraphics[scale=0.8]{Images/CanonicalCube.pdf}
-\caption{The canonical view volume ranging from lower left (-1, -1, -1) to
-uppper right (1, 1, 1). As opposed to the model, world and view space,
-normalised device coordinates are lefthanded, with the positive z axis
-pointing away from the viewer. The nearplane lies at z = -1, the far plane at z
-= 1.}
+\caption[The canonical view volume]{The canonical view volume ranging from lower
+left (-1, -1, -1) to uppper right (1, 1, 1). As opposed to the model, world and
+view space, normalised device coordinates are lefthanded, with the positive z
+axis pointing away from the viewer. The nearplane lies at z = -1, the far plane
+at z = 1.}
 \label{fig:canonicalviewvolume}
 \end{center}
 \end{figure}
@@ -204,10 +204,10 @@ pointing away from the viewer. The nearplane lies at z = -1, the far plane at z
 \begin{figure}
 \begin{center}
  \includegraphics[scale=1.0]{Images/Frustum.pdf}
- \caption{The far plane, which represents the camera's viewing range is shown
-in blue. The near plane, which is the plane where the objects in the scene get
-projected onto, is highlighted in red. The green line depicts the viewing
-direction, intersecting the center of the near and far plane.}
+ \caption[The view frustum]{The far plane, which represents the camera's viewing
+range is shown in blue. The near plane, which is the plane where the objects in
+the scene get projected onto, is highlighted in red. The green line depicts the
+viewing direction, intersecting the center of the near and far plane.}
  \label{fig:viewfrustum3d}
 \end{center} 
 \end{figure}
@@ -268,14 +268,12 @@ depth coordinate, and transforms the remaining two-dimensional coordinates to
 window coordinates using the size and origin of the current viewport as
 parameters.
 
-\subsection{Rasterizer Stage}
-
-triangle setup
-scan conversion and interpolation
-per fragment operations (texturing, ummadumshadern)
-alpha test
-depth test
-stencil test
+\subsection{The Rasterizer Stage}
+The rasterizer stage takes input data from the geometry stage and processes it
+in order to output pixel color values. As there is no guarantee that the color
+value computed for a pixel at this stage will actually be displayed on screen,
+such \textit{pre-display} pixels may be called \textit{fragments}. Figure
+\ref{fig:RasterizerStage} shows the rough structure of the rasterizer stage.
 \begin{figure}[h]
 \begin{center}
 \includegraphics[scale=0.5]{Images/Rasterizer-Stage.pdf}
@@ -283,6 +281,46 @@ stencil test
 \label{fig:RasterizerStage}
 \end{center}
 \end{figure}
+
+All the geometry stage did was transforming vertex coordinates to
+two-dimensional window coordinates. Now the rasterizer stage needs to connect
+those coordinates to form an actual primitive; today's graphics hardware usually
+represents primitives as triangles. The process of forming these triangles is
+called \textit{triangle setup}. The triangles on screen still are just a bunch
+of point coordinates , they do not cover any area on screen. That is what
+actually happens next, determine what pixels in the rendering window are covered
+by each triangle's area. The operation which converts triangles defined by
+vertices to actual pixels is called \textit{Scanline conversion},
+Figure~\ref{fig:rasteriser} illustrates an example. In parallel to the scanline
+conversion additional vertex attributes are interpolated across pixels. At this
+point the transition from \textit{per-vertex operations} to \textit{per-fragment
+operations} is complete.
+\begin{figure}[b]
+\centering
+\subfigure
+{
+  \includegraphics[scale=1.0]{Images/Rasteriser1.pdf}
+  \label{fig:subfigrasteriser1}
+}
+\subfigure
+{
+  \includegraphics[scale=1.0]{Images/Rasteriser2.pdf}
+  \label{fig:subfigrasteriser2}
+}
+\caption[Triangle Rasterisation]{The figure on the left shows a triangle in
+window coordinates lying on the image plane, the figure on the right shows the
+triangle after rasterisation.}
+\label{fig:rasteriser}
+\end{figure}
+
+Henceforward operations are done per fragment by using \textit{fragment
+programs}. Fragment programs define an usually not overly complex program which
+is executed per fragment, using the interpolated per-vertex data, textures and
+data global to the fragment program as input. In contrast to the classic
+\textit{fixed-function pipeline}, which implements transforming and lighting
+directly and exposes a set of parameters for the developer to tweak, the
+programmable pipeline nowadays places much more direct control at the
+developer's disposal.
 
 \section{The Projected Grid}
 
