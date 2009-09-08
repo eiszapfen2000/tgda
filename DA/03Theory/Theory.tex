@@ -96,16 +96,15 @@ known exceptions are e.g. hardware accelerated physics and sound.
 
 The geometry stage takes geometric primitives as input from the application
 stage and processes them, so that the next stage, the rasterizer stage, may
-calculate the final color for a pixel or fragment. Figure
-\ref{fig:GeometryStage} shows all coordinate systems and operations involved. In
-order to do that, the geometric primitives have to be \textit{transformed}
-through several \textit{coordinate systems}, eventually reaching the
-\textit{image space}. Transformations, such as rotation, translation,
-scaling and shearing, usually are represented by matrices. For a
-three-dimensional space 4x4 matrices are needed to be able to specify the
-aforementioned transformations. In addition those transformations can be
-concatenated by multiplying the matrices together, thereby reducing the
-arithmetic workload to compute multiple transformations.
+calculate the final color for a pixel or fragment. To achieve this, the
+geometric primitives have to be \textit{transformed} through several
+\textit{coordinate systems}, eventually reaching the \textit{image space}.
+Figure \ref{fig:GeometryStage} shows all coordinate systems and operations
+involved. Transformations, such as rotation, translation, scaling and shearing,
+usually are represented by matrices. For a three-dimensional space 4x4 matrices
+are needed to be able to specify the aforementioned transformations. In addition
+those transformations can be concatenated by multiplying the matrices together,
+thereby reducing the arithmetic workload to compute multiple transformations.
 The geometry stage can be broken up in two larger parts:
 \begin{itemize}
  \item  the model-view stage, which is concerned with the setup of a scene by
@@ -224,7 +223,7 @@ viewing direction, intersecting the center of the near and far plane.}
   \includegraphics[scale=1.1]{Images/PerspectiveProjection2D.pdf}
   \label{fig:subfigperspectiveprojection2d}
 }
-\caption[View frustum, canonical cube]{Parallel lines are still parallel
+\caption[Parallel and Perspective Projection]{Parallel lines are still parallel
 after parallel projection~\subref{fig:subfigparallelprojection2d}, but not
 after perspective projection~\subref{fig:subfigperspectiveprojection2d}.
 The key property of the perspective projection is that objects that lie
@@ -264,7 +263,7 @@ perspective division. As mentioned before, after the perspective division
 coordinates are in NDC, but they are still not related to the output window,
 which is what the user actually will be able to see on the output device. The
 viewport transform is the missing piece, it takes NDC as input, discards the
-depth coordinate, and transforms the remaining two-dimensional coordinates to
+depth coordinate, and maps the remaining two-dimensional coordinates to
 window coordinates using the size and origin of the current viewport as
 parameters.
 
@@ -287,7 +286,7 @@ two-dimensional window coordinates. Now the rasterizer stage needs to connect
 those coordinates to form an actual primitive; today's graphics hardware usually
 represents primitives as triangles. The process of forming these triangles is
 called \textit{triangle setup}. The triangles on screen still are just a bunch
-of point coordinates , they do not cover any area on screen. That is what
+of point coordinates, they do not cover any area on screen. That is what
 actually happens next, determine what pixels in the rendering window are covered
 by each triangle's area. The operation which converts triangles defined by
 vertices to actual pixels is called \textit{Scanline conversion},
@@ -339,7 +338,10 @@ do some modifications to the mesh vertex distribution
 reference to original paper from 2004 + persistent grid mapping
 
 \section{Water optics}
-BRAK
+reflection
+refraction
+transmittance
+depth
 
 \section{Colour Management}
 
