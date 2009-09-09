@@ -12,24 +12,24 @@ Simple Wave Theory
 \subsection{SWAP}
 \subsection{JONSWAP}
 
-
-Energy Spectrum
-
-$\int x(t) dt$
-
-$k=\frac{\pi}{\mathbf y}$
-
-\begin{equation}\label{eq:test} x = y \end{equation}
-
-We can give an equation a label so that we can refer to it later.
-\begin{equation}
-\label{eq:ising}
-E = -J \sum_{i=1}^N s_i s_{i+1} ,
-\end{equation}
-Equation~\eqref{eq:ising} expresses the energy of a configuration
-of spins in the Ising model.
+%Energy Spectrum
+%
+%$\int x(t) dt$
+%
+%$k=\frac{\pi}{\mathbf y}$
+%
+%\begin{equation}\label{eq:test} x = y \end{equation}
+%
+%We can give an equation a label so that we can refer to it later.
+%\begin{equation}
+%\label{eq:ising}
+%E = -J \sum_{i=1}^N s_i s_{i+1} ,
+%\end{equation}
+%Equation~\eqref{eq:ising} expresses the energy of a configuration
+%of spins in the Ising model.
 
 \section{The Rendering Pipeline}
+\label{RenderingPipelineS}
 The rendering pipeline constitutes the core of real-time graphics. It's task
 consists in generating, or rendering, a two-dimensional output image given a
 virtual camera, scene geometry, materials and
@@ -44,6 +44,13 @@ two-dimensional output coordinate system.
  \item The \textit{rasterizer stage} fills the primitives output by the
 geometry stage with color.
 \end{itemize}
+
+Whereas the geometry and rasterizer stages are to be found on the graphics
+hardware, the application stage is typically executed in software on the CPU.
+Ever since the release of \textit{DirectX 9} and compatible hardware in 2002
+parts of the geometry and rasterizer stage have become programmable in order
+to place more finegrained control over the graphics hardware at the developers
+disposal.
 
 \begin{figure}
 \begin{center}
@@ -80,37 +87,52 @@ is sent to the geometry stage. This is done by discarding objects invisible to
 the viewer before they are actually handed over to the geometry stage,
 effectively reducing the geometry stage's workload.
 
-Whereas the geometry and rasterizer stages are to be found on the graphics
-hardware, the application stage is typically executed in software on the CPU;
-known exceptions are e.g. hardware accelerated physics and sound.
+As already stated before, the application stage is typically executed in
+software on the CPU, but there are known exceptions e.g. hardware accelerated
+physics and sound.
 
 \subsection{The Geometry Stage}
 
 \begin{figure}
 \begin{center}
 \includegraphics[scale=0.5]{Images/Geometry-Stage.pdf}
-\caption{The Geometry stage.}
+\caption[The Geometry Stage]{Coordinate systems and operations which make up the
+Geometry stage. All substages up to and including the perspective transformation
+are programmable, the subsequent parts starting from clip coordinates are not.}
 \label{fig:GeometryStage}
 \end{center}
 \end{figure}
 
 The geometry stage takes geometric primitives as input from the application
 stage and processes them, so that the next stage, the rasterizer stage, may
-calculate the final color for a pixel or fragment. To achieve this, the
-geometric primitives have to be \textit{transformed} through several
-\textit{coordinate systems}, eventually reaching the \textit{image space}.
-Figure \ref{fig:GeometryStage} shows all coordinate systems and operations
+calculate the final color for a pixel or fragment. As today's graphics
+hardware is entirely tailored to triangle processing, \textit{primitives} may 
+be equated to \textit{triangles} in the remainder of this text. All geometry
+sent from the application to the geometry stage has to consist of triangle
+primitives. The \textit{OpenGL} programming interface may pose an exception,
+since it accepts other primitives, decomposing them internally to triangles
+though.
+
+For the geometry primitives to reach image space they have to be
+\textit{transformed} through several \textit{coordinate systems}. Figure
+\ref{fig:GeometryStage} shows all coordinate systems and operations
 involved. Transformations, such as rotation, translation, scaling and shearing,
 usually are represented by matrices. For a three-dimensional space 4x4 matrices
 are needed to be able to specify the aforementioned transformations. In addition
 those transformations can be concatenated by multiplying the matrices together,
 thereby reducing the arithmetic workload to compute multiple transformations.
-The geometry stage can be broken up in two larger parts:
+As aforementioned in \ref{RenderingPipelineS}, parts of the geometry stage are
+programmable through the use of \textit{vertex programs}. Vertex programs are
+responsible for transforming vertices properly to \textit{clip space}, they
+may compute additional per-vertex information too, such as basic lighting, which
+are passed on to the resterizer stage.
+
+The geometry stage can be broken down into two larger parts:
 \begin{itemize}
- \item  the model-view stage, which is concerned with the setup of a scene by
-positioning different models and the camera
- \item the projection stage, which has to depict the assembled scene onto the
-image plane
+ \item the \textit{model-view stage}, which is concerned with the setup of a
+scene by positioning different models and the camera
+ \item the \textit{projection stage}, which has to depict the assembled scene
+onto the image plane
 \end{itemize}
 
 \subsubsection{The Model-View Transformation}
@@ -127,9 +149,8 @@ coordinate system in the pipeline is the \textit{view space}, also known as
 to the camera. The camera itself is able to capture only a part of the world,
 depending on the camera's position, viewing direction, field of view and viewing
 range. The subvolume of the world the camera is actually able to see is called
-the \textit{view frustum}. Figure~\ref{fig:ModelWorldView} shows the
+the \textit{view frustum}. Figure~\ref{fig:ModelWorldView} pictures the
 steps from model to view space in a simplified manner.
-
 \begin{figure}[t]
 \centering
 \subfigure[Model Space]
@@ -176,8 +197,8 @@ task at hand consists of four steps in the following order:
 
 The projection in combination with the perspective division transforms
 coordinates from view space into \textit{normalised device coordinates},
-\textit{NDC} in short. NDC lie in a space called \textit{the canonical view
-volume}, see Figure~\ref{fig:canonicalviewvolume}. The target volume is
+\textit{NDC} in short. NDC are located in a space called \textit{the canonical
+view volume}, see Figure~\ref{fig:canonicalviewvolume}. The target volume is
 represented by a cube, but the shape of the source volume, meaning the view
 frustum, depends on the actual projection. Figure~\ref{fig:viewfrustum3d} shows
 a possible view frustum in detail. There are a couple of different projections
@@ -187,7 +208,6 @@ Figure~\ref{fig:projections2d} illustrates their working principle,
 Figure~\ref{fig:parallelandperspectivefrustum} shows their associated view
 frusta. In short, the projection in combination with the perspective division
 warps the view frustum into a cube.
-
 \begin{figure}
 \begin{center}
 \includegraphics[scale=0.8]{Images/CanonicalCube.pdf}
@@ -199,7 +219,6 @@ at z = 1.}
 \label{fig:canonicalviewvolume}
 \end{center}
 \end{figure}
-
 \begin{figure}
 \begin{center}
  \includegraphics[scale=1.0]{Images/Frustum.pdf}
@@ -210,7 +229,6 @@ viewing direction, intersecting the center of the near and far plane.}
  \label{fig:viewfrustum3d}
 \end{center} 
 \end{figure}
-
 \begin{figure}
 \centering
 \subfigure[Parallel Projection]
@@ -230,7 +248,6 @@ The key property of the perspective projection is that objects that lie
 farther away are depicted smaller than objects which lie near the image plane.}
 \label{fig:projections2d}
 \end{figure}
-
 \begin{figure}
 \centering
 \subfigure[Parallel frustum]
@@ -253,19 +270,17 @@ plane's aspect ratio.}
 \label{fig:parallelandperspectivefrustum}
 \end{figure}
 
-What happens to objects outside or partially inside the view frustum, though?
-Clipping does take care of such primitives - it removes all primitives which
-lie outside the view frustum and clips those which are partially inside to the
-frustum's border. This way only primitives inside the canonical view volume are
-passed on to the rasterizer stage, thus minimising it's workload. Clipping is
-done in \textit{clip space}, right after the projection, but before the
-perspective division. As mentioned before, after the perspective division
-coordinates are in NDC, but they are still not related to the output window,
-which is what the user actually will be able to see on the output device. The
-viewport transform is the missing piece, it takes NDC as input, discards the
-depth coordinate, and maps the remaining two-dimensional coordinates to
-window coordinates using the size and origin of the current viewport as
-parameters.
+Clipping removes all primitives which lie outside the view frustum and clips
+those which are partially inside to the frustum's border. This way only
+primitives inside the canonical view volume are passed on to the rasterizer
+stage, thus minimising it's workload. Clipping is done in clip space, right
+after the projection, but before the perspective division. As mentioned before,
+after the perspective division coordinates are in NDC, but they are still not
+related to the output window, which is what the user actually will be able to
+see on the output device. The viewport transform is the missing piece, it takes
+NDC as input, discards the depth coordinate, and maps the remaining
+two-dimensional coordinates to window coordinates using the size and origin of
+the current viewport as parameters.
 
 \subsection{The Rasterizer Stage}
 The rasterizer stage takes input data from the geometry stage and processes it
@@ -273,22 +288,20 @@ in order to output pixel color values. As there is no guarantee that the color
 value computed for a pixel at this stage will actually be displayed on screen,
 such \textit{pre-display} pixels may be called \textit{fragments}. Figure
 \ref{fig:RasterizerStage} shows the rough structure of the rasterizer stage.
-\begin{figure}[h]
+\begin{figure}
 \begin{center}
 \includegraphics[scale=0.5]{Images/Rasterizer-Stage.pdf}
 \caption{The Rasterizer stage.}
 \label{fig:RasterizerStage}
 \end{center}
 \end{figure}
-
 All the geometry stage did was transforming vertex coordinates to
 two-dimensional window coordinates. Now the rasterizer stage needs to connect
-those coordinates to form an actual primitive; today's graphics hardware usually
-represents primitives as triangles. The process of forming these triangles is
-called \textit{triangle setup}. The triangles on screen still are just a bunch
-of point coordinates, they do not cover any area on screen. That is what
-actually happens next, determine what pixels in the rendering window are covered
-by each triangle's area. The operation which converts triangles defined by
+those coordinates to form an actual primitive. The process of forming these
+triangles is called \textit{triangle setup}. The triangles on screen still are
+an aggregation of point coordinates, they do not cover any area. Hence it has
+to be determined what pixels in the rendering window are covered by the area
+a triangle defines. The operation which converts primitves defined by
 vertices to actual pixels is called \textit{Scanline conversion},
 Figure~\ref{fig:rasteriser} illustrates an example. In parallel to the scanline
 conversion additional vertex attributes are interpolated across pixels. At this
@@ -313,13 +326,13 @@ triangle after rasterisation.}
 \end{figure}
 
 Henceforward operations are done per fragment by using \textit{fragment
-programs}. Fragment programs define an usually not overly complex program which
-is executed per fragment, using the interpolated per-vertex data, textures and
-data global to the fragment program as input. In contrast to the classic
-\textit{fixed-function pipeline}, which implements transforming and lighting
-directly and exposes a set of parameters for the developer to tweak, the
-programmable pipeline nowadays places much more direct control at the
-developer's disposal.
+programs} to calculate actual color values. Fragment programs define an usually
+not overly complex program which is executed per fragment, using the
+interpolated per-vertex data, textures and data global to the fragment program
+as input. In contrast to the classic \textit{fixed-function pipeline}, which
+implements transforming and lighting directly and exposes a set of parameters
+for the developer to tweak, the programmable pipeline nowadays places much more
+direct control at the developer's disposal.
 
 \section{The Projected Grid}
 
