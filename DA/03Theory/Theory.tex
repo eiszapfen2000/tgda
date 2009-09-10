@@ -263,7 +263,7 @@ farther away are depicted smaller than objects which lie near the image plane.}
 \caption[Parallel and Perspective Frustum]{The parallel frustum shown
 in~\subref{fig:subfigorthofrustum} is a rectangular box, the perspective 
 frustum in \subref{fig:subfigperspectivefrustum} resembles a truncated
-pyramid. The paramters \textit{n} and \textit{f} stand for the distance from the
+pyramid. The paramters \textit{n} and \textit{f} represent the distance from the
 camera to the near and far plane. \textit{t}, \textit{b}, \textit{l} and
 \textit{r} are derived from the camera's field of view as well as the image
 plane's aspect ratio.}
@@ -271,7 +271,7 @@ plane's aspect ratio.}
 \end{figure}
 
 Clipping removes all primitives which lie outside the view frustum and clips
-those which are partially inside to the frustum's border. This way only
+those which are partially inside to the frustum's border. Hence only
 primitives inside the canonical view volume are passed on to the rasterizer
 stage, thus minimising it's workload. Clipping is done in clip space, right
 after the projection, but before the perspective division. As mentioned before,
@@ -307,7 +307,7 @@ Figure~\ref{fig:rasteriser} illustrates an example. In parallel to the scanline
 conversion additional vertex attributes are interpolated across pixels. At this
 point the transition from \textit{per-vertex operations} to \textit{per-fragment
 operations} is complete.
-\begin{figure}[b]
+\begin{figure}
 \centering
 \subfigure
 {
@@ -325,17 +325,46 @@ triangle after rasterisation.}
 \label{fig:rasteriser}
 \end{figure}
 
-Henceforward operations are done per fragment by using \textit{fragment
-programs} to calculate actual color values. Fragment programs define an usually
-not overly complex program which is executed per fragment, using the
-interpolated per-vertex data, textures and data global to the fragment program
-as input. In contrast to the classic \textit{fixed-function pipeline}, which
-implements transforming and lighting directly and exposes a set of parameters
-for the developer to tweak, the programmable pipeline nowadays places much more
-direct control at the developer's disposal.
+Henceforward operations are done per fragment through the use of
+\textit{fragment programs} to calculate actual color values. Fragment programs
+define an usually not overly complex program which is executed per fragment,
+using the interpolated per-vertex data, textures and data global to the fragment
+program as input. In contrast to the classic \textit{fixed-function pipeline},
+which implements transforming and lighting directly and exposes a set of
+parameters for the developer to tweak, the programmable pipeline nowadays places
+much more direct control at the developer's disposal.
 
 \section{The Projected Grid}
-
+The projected grid has been developed in order to enable today's graphics
+hardware to render large terrainscapes without the need for complex
+level-of-detail (LOD) schemes. Typically large terrains and water surfaces are
+represented as a rectangular grid in worldspace. Due the perspective nature of
+the camera's projection the grid is not spread uniformly throughout the view
+frustum, as a consequence surface details are high near the camera, but low at
+larger distances. In order to cope with the issue at hand, LOD schemes are
+applied. The surface is split into a set of patches, data for each patch is
+made available at multiple resolutions. At rendering time the actual resolution
+used for each patch is determined based on the distance to the viewer. Figure
+\ref{fig:lodscheme} depicts a possible instance of a LOD scheme.
+\begin{figure}
+\begin{center}
+\includegraphics[scale=1.0]{Images/LODScheme.pdf}
+\caption[LOD scheme]{A possible LOD scheme: near the viewer high resolution
+patches may be used, decreasing as the distance to the viewer increases. }
+\label{fig:lodscheme}
+\end{center}
+\end{figure}
+The application of such LOD schemes typically brings additional computational
+complexity and memory usage. Patches at different resolutions have to be held
+in memory, either directly on the GPU or on the CPU, the latter would imply an
+additional overhead of transfering the necessary data to the GPU every frame.
+In addition the patches' visibility has to be computed in order not to draw the
+invisible parts of the grid. Other drawbacks include the need to stitch patches
+with different resolutions somehow together at their common border. \FIXME{}
+patches with different solutions have to be stitched together
+need for quadtree, or something to select visible patches
+worldspace terrain and water surface rendering
+uses lod schemes
 postprojection coordinates transformed to worldspace
 grid on near and far plane, intersection with the y=0 plane
 decouple projector from camera
@@ -357,7 +386,6 @@ transmittance
 depth
 
 \section{Colour Management}
-
 Explain color and gamma problem
 linear vs nonlinear space
 
@@ -369,5 +397,3 @@ do tonemapping sRGB -> XYZ -> xyY -> modify Y -> XYZ -> sRGB
 \subsection{device calibration}
 short explanation of monitor calibration and so on
 tools available
-
-
