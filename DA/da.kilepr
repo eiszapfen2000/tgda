@@ -35,10 +35,10 @@ order=4
 
 [item:03Theory/Theory.tex]
 archive=true
-column=22
+column=12
 encoding=UTF-8
 highlight=LaTeX
-line=352
+line=368
 open=true
 order=0
 
