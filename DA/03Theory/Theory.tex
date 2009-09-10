@@ -342,10 +342,11 @@ represented as a rectangular grid in worldspace. Due the perspective nature of
 the camera's projection the grid is not spread uniformly throughout the view
 frustum, as a consequence surface details are high near the camera, but low at
 larger distances. In order to cope with the issue at hand, LOD schemes are
-applied. The surface is split into a set of patches, data for each patch is
+applied. The surface is split into a set of patches and data for each patch is
 made available at multiple resolutions. At rendering time the actual resolution
-used for each patch is determined based on the distance to the viewer. Figure
-\ref{fig:lodscheme} depicts a possible instance of a LOD scheme.
+used for each patch is determined based on some criteria, usually the distance
+to the viewer. Figure \ref{fig:lodscheme} depicts a possible instance of a LOD
+scheme.
 \begin{figure}
 \begin{center}
 \includegraphics[scale=1.0]{Images/LODScheme.pdf}
@@ -359,12 +360,13 @@ complexity and memory usage. Patches at different resolutions have to be held
 in memory, either directly on the GPU or on the CPU, the latter would imply an
 additional overhead of transfering the necessary data to the GPU every frame.
 In addition the patches' visibility has to be computed in order not to draw the
-invisible parts of the grid. Other drawbacks include the need to stitch patches
-with different resolutions somehow together at their common border. \FIXME{}
-patches with different solutions have to be stitched together
-need for quadtree, or something to select visible patches
-worldspace terrain and water surface rendering
-uses lod schemes
+parts of the grid invisible to the viewer. Another drawback may be so called
+\textit{popping artifacts} caused by switching between different levels of
+detail of a patch. As such a change of resolution happens instantaneously as
+well as frequently in the case of a moving camera, it is often noticable for an
+actual observer. Furthermore the LOD approach described has to deal with
+discontinuities at the border between two adjacent patches with different
+resolutions.
 postprojection coordinates transformed to worldspace
 grid on near and far plane, intersection with the y=0 plane
 decouple projector from camera
