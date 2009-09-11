@@ -60,7 +60,7 @@ disposal.
 \end{center}
 \end{figure}
 
-\subsection{Application Stage}
+\subsection{The Application Stage}
 The application stage implements the whole program logic. It's structure and
 implementation is entirely dependent on the the task it should perform. One
 such a task could be a simple triangle mesh visualisation, another, more
@@ -344,12 +344,12 @@ frustum, as a consequence surface details are high near the camera, but low at
 larger distances. In order to cope with the issue at hand, LOD schemes are
 applied. The surface is split into a set of patches and data for each patch is
 made available at multiple resolutions. At rendering time the actual resolution
-used for each patch is determined based on some criteria, usually the distance
-to the viewer. Figure \ref{fig:lodscheme} depicts a possible instance of a LOD
-scheme.
+used for each patch is determined based on some criteria usually dependent on
+the distance to the viewer. Figure \ref{fig:lodscheme} depicts a possible
+instance of a LOD scheme.
 \begin{figure}
 \begin{center}
-\includegraphics[scale=1.0]{Images/LODScheme.pdf}
+\includegraphics[scale=0.8]{Images/LODScheme.pdf}
 \caption[LOD scheme]{A possible LOD scheme: near the viewer high resolution
 patches may be used, decreasing as the distance to the viewer increases. }
 \label{fig:lodscheme}
@@ -367,6 +367,30 @@ well as frequently in the case of a moving camera, it is often noticable for an
 actual observer. Furthermore the LOD approach described has to deal with
 discontinuities at the border between two adjacent patches with different
 resolutions.
+
+The projected grid is based on a rather simple concept: create an uniformly
+spaced grid in post-perspective space and transform it to world space. By this
+means two issues of classic LOD schemes may be sorted out:
+\begin{itemize}
+ \item render only visible parts of the grid without the need for complex
+visibility computations
+ \item keep the grid's level of detail consistent throughout the entire view
+frustum
+\end{itemize}
+
+\FIXME{Figures showing the projected grid principle}
+\FIXME{Show (x,y) = line in canonical cube problem}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=1.0]{Images/ProjectedGridSenkrecht.pdf}
+\caption[Projected Grid Vertical]{A possible LOD scheme: near the viewer high
+resolution patches may be used, decreasing as the distance to the viewer
+increases. }
+\label{fig:projgridv}
+\end{center}
+\end{figure}
+
 postprojection coordinates transformed to worldspace
 grid on near and far plane, intersection with the y=0 plane
 decouple projector from camera
