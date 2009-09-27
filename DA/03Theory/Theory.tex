@@ -1,16 +1,5 @@
-\chapter{Theory}
-\label{Theory}
-
-\section{Wave Theory}
-
-Simple Wave Theory
-
-\section{Energy Spectra}
-
-\subsection{Phillips Spectrum}
-\subsection{Mobley Spectrum}
-\subsection{SWAP}
-\subsection{JONSWAP}
+\chapter{Background}
+\label{Background}
 
 %Energy Spectrum
 %
@@ -44,14 +33,12 @@ two-dimensional output coordinate system.
  \item The \textit{rasterizer stage} fills the primitives output by the
 geometry stage with color.
 \end{itemize}
-
 Whereas the geometry and rasterizer stages are to be found on the graphics
 hardware, the application stage is typically executed in software on the CPU.
 Ever since the release of \textit{DirectX 9} and compatible hardware in 2002
 parts of the geometry and rasterizer stage have become programmable in order
 to place more finegrained control over the graphics hardware at the developers
 disposal.
-
 \begin{figure}
 \begin{center}
 \includegraphics[scale=0.8]{Images/Rendering-Pipeline-AGR.pdf}
@@ -92,7 +79,6 @@ software on the CPU, but there are known exceptions e.g. hardware accelerated
 physics and sound.
 
 \subsection{The Geometry Stage}
-
 \begin{figure}
 \begin{center}
 \includegraphics[scale=0.5]{Images/Geometry-Stage.pdf}
@@ -336,20 +322,24 @@ much more direct control at the developer's disposal.
 
 \section{The Projected Grid}
 The projected grid has been developed in order to enable today's graphics
-hardware to render large terrainscapes without need for complex
-level-of-detail (LOD) schemes. Typically large terrains and water surfaces are
-represented as a rectangular grid in worldspace. Due the perspective nature of
-the camera's projection the grid is not spread uniformly throughout the view
-frustum, as a consequence surface details are high near the camera, but low at
-larger distances. In order to cope with the issue at hand, LOD schemes are
+hardware to render large terrainscapes without the need for complex
+level-of-detail (\textit{LOD}) schemes, potentially decreasing algorithmic
+complexity while increasing optical fidelity.
+
+\subsection{Classic LOD schemes}
+Typically large terrains and water surfaces are represented as a rectangular
+grid in worldspace. Due the perspective nature of the camera's projection the
+grid is not spread uniformly throughout the view frustum, surface details are
+high near the camera, but low at larger distances. \FIXME{does that apply to
+parallel projection?} In order to cope with the issue at hand, LOD schemes are
 applied. The surface is split into a set of patches and data for each patch is
 made available at multiple resolutions. At rendering time the actual resolution
-used for each patch is determined based on some criteria usually dependent on
-the distance to the viewer. Figure \ref{fig:lodscheme} depicts a possible
-instance of a LOD scheme.
-\begin{figure}
+used for each patch is determined based on criteria usually dependent on the
+distance to the viewer. Figure \ref{fig:lodscheme} depicts a possible instance
+of a LOD scheme.
+\begin{figure}[h]
 \begin{center}
-\includegraphics[scale=0.8]{Images/LODScheme.pdf}
+\includegraphics[scale=0.6]{Images/LODScheme.pdf}
 \caption[LOD scheme]{A possible LOD scheme: near the viewer high resolution
 patches may be used, decreasing as the distance to the viewer increases. }
 \label{fig:lodscheme}
@@ -368,16 +358,12 @@ actual observer. Furthermore the LOD approach described has to deal with
 discontinuities at the border between two adjacent patches with different
 resolutions.
 
-The projected grid is based on a rather simple concept: create an uniformly
-spaced grid in post-perspective space and transform it to world space. By
-this means two issues of classic LOD schemes may be sorted out:
-\begin{itemize}
- \item render only visible parts of the grid without the need for complex
-visibility computations
- \item keep the grid's level of detail consistent throughout the entire view
-frustum
-\end{itemize}
-
+\subsection{The Projected Grid Concept}
+The projected grid is based on a simple concept: in order to achieve an
+uniform distribution of details on the image plane, an uniformly spaced grid is
+created in post-perspective space and transformed back to world space.
+Figure~\ref{fig:projectedgrid} illustrates the difference between a classic
+world space approach and the projected grid.
 \begin{figure}
 \centering
 \subfigure[]
@@ -390,15 +376,25 @@ frustum
   \includegraphics[scale=0.75]{Images/ProjectedGridUniform.pdf}
   \label{fig:subfigprojgrid2}
 }
-\caption[The Projected Grid Concept]{\subref{fig:subfigprojgrid1} shows an
-uniform grid in worldspace, after projection it's not uniform anymore.
-\subref{fig:subfigprojgrid2} on the other hand depicts an uniform grid on the
-image plane and it's associated non-uniform spaced world space positions.}
+\caption[The Projected Grid Concept]{The image on the left
+\subref{fig:subfigprojgrid1} shows an uniform grid in worldspace, it's
+projection onto the image plane is not uniformly spaced though. The image on the
+right \subref{fig:subfigprojgrid2} on the other hand depicts an uniform grid on
+the image plane and it's associated non-uniform spaced world space positions.}
 \label{fig:projectedgrid}
 \end{figure}
-Figure~\ref{fig:projectedgrid} illustrates the basic concept behind the
-projected grid compared to a classic world space LOD approach. The algorithm
-used for the projected grid can be broken down into the following steps:
+
+%By the means of starting in post-projection space two issues of classic LOD
+%schemes may be sorted out:
+%\begin{itemize}
+% \item render only visible parts of the grid without the need for complex
+%visibility computations 
+% \item keep the grid's level of detail consistent throughout the entire view
+%frustum
+%\end{itemize}
+%As the grid geometry is created in normalised device coordinates 
+The algorithm used for the projected grid can be broken down into the following
+steps:
 \begin{itemize}
  \item create an uniformly spaced grid orthogonal to the viewer using normalised
 device coordinates
@@ -415,10 +411,10 @@ application of the following matrix:
  \mathbf{M_{vp}} = \mathbf{M_{proj}} \cdot \mathbf{M_{view}}
 \end{equation}
 
-The complete transformation looks like the following:
+The transformed vertices may be calculated like the following:
 \begin{equation}
-\label{ViewProjectionMatrix}
- \mathbf{x_{c}} = \mathbf{M_{vp}} \cdot x_{w}
+\label{ViewProjectionMatrixX}
+ \mathbf{x_{c}} = \mathbf{M_{vp}} \cdot \mathbf{x_{w}}
 \end{equation}
 
 The projected grid on the other hand starts inside the canonical view volume,
@@ -428,11 +424,15 @@ herefore may look like the following:
  \mathbf{M_{inv}} = (\mathbf{M_{proj}} \cdot \mathbf{M_{view}})^{-1}
 \end{equation}
 
-Transform the vertices:
+Apply the matrix to the vertices:
 \begin{equation}
- \mathbf{x_{w}} = \mathbf{M_{inv}} \cdot x_{c}
+ \mathbf{x_{w}} = \mathbf{M_{inv}} \cdot \mathbf{x_{c}}
 \end{equation}
 
+Homogenize the coordinates:
+\begin{equation}
+ \mathbf{x_{h}} = (x_{w}/w_{w}, y_{w}/w_{w}, z_{w}/w_{w})
+\end{equation}
 
 To simplify matters the grid may be consist of vertices defined by
 two-dimensional normalised device coordinates. In order to project the grid
@@ -470,3 +470,14 @@ do tonemapping sRGB -> XYZ -> xyY -> modify Y -> XYZ -> sRGB
 \subsection{device calibration}
 short explanation of monitor calibration and so on
 tools available
+
+\section{Wave Theory}
+
+Simple Wave Theory
+
+\section{Energy Spectra}
+
+\subsection{Phillips Spectrum}
+\subsection{Mobley Spectrum}
+\subsection{SWAP}
+\subsection{JONSWAP}

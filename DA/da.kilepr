@@ -4,7 +4,7 @@ img_extensions=.eps .jpg .jpeg .png .pdf .ps .fig .gif
 kileprversion=2
 kileversion=2.0
 lastDocument=03Theory/Theory.tex
-masterDocument=
+masterDocument=gamper.diploma.thesis.tex
 name=DA
 pkg_extIsRegExp=false
 pkg_extensions=.cls .sty
@@ -13,7 +13,7 @@ src_extensions=.tex .ltx .latex .dtx .ins
 
 [Tools]
 MakeIndex=
-QuickBuild=
+QuickBuild=PDFLaTeX+ViewPDF
 
 [item:01Introduction/Introduction.tex]
 archive=true
@@ -22,7 +22,7 @@ encoding=UTF-8
 highlight=LaTeX
 line=12
 open=true
-order=2
+order=1
 
 [item:02STAR/StateoftheArt.tex]
 archive=true
@@ -35,10 +35,10 @@ order=4
 
 [item:03Theory/Theory.tex]
 archive=true
-column=11
+column=26
 encoding=UTF-8
 highlight=LaTeX
-line=387
+line=444
 open=true
 order=0
 
@@ -48,8 +48,8 @@ column=0
 encoding=UTF-8
 highlight=LaTeX
 line=2
-open=false
-order=0
+open=true
+order=5
 
 [item:05Summary/Summary.tex]
 archive=true
@@ -175,7 +175,7 @@ encoding=UTF-8
 highlight=LaTeX
 line=6
 open=true
-order=3
+order=2
 
 [item:cg.bib]
 archive=true
@@ -184,7 +184,7 @@ encoding=UTF-8
 highlight=BibTeX
 line=100
 open=false
-order=1
+order=4
 
 [item:credits.tex]
 archive=true
@@ -209,15 +209,15 @@ archive=true
 column=0
 encoding=UTF-8
 highlight=LaTeX
-line=16
+line=1
 open=true
-order=1
+order=4
 
 [item:user.defined.tex]
 archive=true
-column=0
+column=28
 encoding=UTF-8
 highlight=LaTeX
-line=14
-open=false
-order=2
+line=2
+open=true
+order=3
