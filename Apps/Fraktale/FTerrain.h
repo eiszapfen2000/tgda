@@ -46,8 +46,6 @@
     CGparameter lightPositionParameter;
 
     NPGaussianRandomNumberGenerator * gaussianRng;
-
-    NPAction * subdivideAction;
 }
 
 - (id) init;
@@ -79,6 +77,7 @@
 - (void) setupGaussianKernelForAO;
 - (void) setupGaussianKernelForAOWithSigma:(Float)kernelSigma;
 
+- (BOOL) loadFromDictionary:(NSDictionary *)dictionary;
 - (BOOL) loadFromPath:(NSString *)path;
 
 - (void) reset;

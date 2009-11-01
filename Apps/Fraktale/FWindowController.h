@@ -3,6 +3,7 @@
 
 @interface FWindowController : NSWindowController
 {
+    // Terrain Stuff
     id lodPopUp;
 
     id widthTextfield;
@@ -20,11 +21,29 @@
 
     id iterationsTextfield;
 
+    // Attractor stuff
+    id typePopUp;
+
+    id aTextfield;
+    id bTextfield;
+    id cTextfield;
+    id rTextfield;
+    id attractorSigmaTextfield;
+
+    id startingPointXTextfield;
+    id startingPointYTextfield;
+    id startingPointZTextfield;
+
+    id attractorIterationsTextfield;
+
+    // Buttons on the bottom
+    id resetButton;
     id generateButton;
 }
 
 - (void) initPopUpButtons;
 
+// Terrain
 - (void) setWidthTextfieldString:(NSString *)newString;
 - (void) setLengthTextfieldString:(NSString *)newString;
 - (void) setMinimumHeightTextfieldString:(NSString *)newString;
@@ -37,6 +56,18 @@
 - (void) removeLodPopUpItemWithNumber:(Int32)number;
 - (void) selectLodPopUpItemWithIndex:(Int32)index;
 
+// Attractor
+- (void) setATextfieldString:(NSString *)newString;
+- (void) setBTextfieldString:(NSString *)newString;
+- (void) setCTextfieldString:(NSString *)newString;
+- (void) setRTextfieldString:(NSString *)newString;
+- (void) setAttractorSigmaTextfieldString:(NSString *)newString;
+- (void) setAttractorIterationsTextfieldString:(NSString *)newString;
+- (void) setStartingPointXTextfield:(NSString *)newString;
+- (void) setStartingPointYTextfield:(NSString *)newString;
+- (void) setStartingPointZTextfield:(NSString *)newString;
+
+// Terrain
 - (void) selectLod:(id)sender;
 - (void) setWidth:(id)sender;
 - (void) setLength:(id)sender;
@@ -50,6 +81,18 @@
 - (void) setH:(id)sender;
 - (void) setIterations:(id)sender;
 
+// Attractor
+- (void) setA:(id)sender;
+- (void) setB:(id)sender;
+- (void) setC:(id)sender;
+- (void) setR:(id)sender;
+- (void) setLorentzSigma:(id)sender;
+- (void) setStartingPointX:(id)sender;
+- (void) setStartingPointY:(id)sender;
+- (void) setStartingPointZ:(id)sender;
+- (void) setNumberOfIterations:(id)sender;
+
+// Buttons
 - (void) reset:(id)sender;
 - (void) generate:(id)sender;
 
