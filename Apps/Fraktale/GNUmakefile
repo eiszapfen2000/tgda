@@ -11,10 +11,10 @@ FSceneManager.m \
 FScene.m \
 FTerrain.m \
 FPGMImage.m \
-FCamera.m
+FCamera.m \
+FAttractor.m
 
 Fraktale_RESOURCE_FILES = \
-Info-gnustep.plist \
 Fraktale.gorm \
 FAttributesWindow.gorm \
 Content

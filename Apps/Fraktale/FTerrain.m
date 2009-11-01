@@ -35,16 +35,17 @@
     [ rngs setObject:g forKey:NP_RNG_CMRG ];
 
     g = [[[ NP Core ] randomNumberGeneratorManager ] mersenneTwisterWithSeed:0L ];
-    [ rngs setObject:g forKey:@"mersenne" ];
+    [ rngs setObject:g forKey:NP_RNG_MERSENNE ];
 
     size = iv2_alloc_init();
     size->x = size->y = -1;
 
     currentResolution = iv2_alloc_init();
-    currentResolution->x = currentResolution->y = -1;
     lastResolution = iv2_alloc_init();
-    lastResolution->x = lastResolution->y = -1;
     baseResolution = iv2_alloc_init();
+
+    currentResolution->x = currentResolution->y = -1;   
+    lastResolution->x = lastResolution->y = -1;    
     baseResolution->x = baseResolution->y = -1;
 
     H = 0.5f;
@@ -59,20 +60,21 @@
     iterationsToDo = 0;
     currentLod = 0;
 
-    gaussKernelSigma = 0.5f;
+    gaussKernelSigma = 0.75f;
     gaussKernel = NULL;
 
     [ self setupGaussianKernelForAO ];
 
     lightPosition = fv3_alloc_init();
+    lightPosition->x = 0.0f;
+    lightPosition->z = 5.0f;
+    lightPosition->y = 10.0f;
 
     lods = [[ NSMutableArray alloc ] init ];
 
     gaussianRng = [[[ NP Core ] randomNumberGeneratorManager ] gaussianGeneratorWithName:@"Gaussian"
                                                     firstFixedParameterGenerator:NP_RNG_TT800
-                                                   secondFixedParameterGenerator:NP_RNG_CTG ];
-
-    subdivideAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"Subdivide" primaryInputAction:NP_INPUT_KEYBOARD_PLUS ];
+                                                   secondFixedParameterGenerator:NP_RNG_TT800 ];
 
     return self;
 }
@@ -141,8 +143,6 @@
 
     lastResolution->x = (currentResolution->x - 1) / 2;
     lastResolution->y = (currentResolution->y - 1) / 2;
-
-//    NSLog(@"%d %d %d %d", currentResolution->x, currentResolution->y, lastResolution->x, lastResolution->y);
 }
 
 - (void) setWidth:(Int32)newWidth
@@ -210,61 +210,146 @@
 {
     SAFE_FREE(gaussKernel);
 
-    Float gaussianDieOff = 0.0001f;
-	Float sigmaSquare = kernelSigma * kernelSigma;
+    Double gaussianDieOff = 0.0001f;
+	Double sigmaSquare = kernelSigma * kernelSigma;
 	Int width = 1;
 
 	for ( Int i = 0; i < 32; i++ )
 	{
-		Float isquare = (Float)(i * i);
-		Float tmp = exp(-(isquare)/(2.0f*sigmaSquare));
+		Double isquare = (Double)(i * i);
+		Double tmp = exp(-(isquare) / (2.0 * sigmaSquare));
 
 		if ( tmp > gaussianDieOff )
 		{
-            NSLog(@"%f",tmp);
 			width = i;
 		}
 	}
 
-    gaussKernelWidth = 2*width+1;
-    //NSLog(@"%d %d",gaussKernelWidth,width );
-
-    gaussKernel = ALLOC_ARRAY(Float,gaussKernelWidth*gaussKernelWidth);
+    gaussKernelWidth = 2 * width + 1;
+    gaussKernel = ALLOC_ARRAY(Float, gaussKernelWidth * gaussKernelWidth);
 
 	for ( Int i = 0; i < gaussKernelWidth; i++ )
 	{
 		for ( Int j = 0; j < gaussKernelWidth; j++ )
 		{
-			float x = (float)(j - width);
-			float y = (float)(i - width);
+			Double x = (Double)(j - width);
+			Double y = (Double)(i - width);
 			
 			Int index = i * (2 * width + 1) + j;
 
-			gaussKernel[index] = (Float)exp(-(Double)(x * x + y * y)/(2.0 * (Double)sigmaSquare))/(2.0 * 3.14 * (Double)sigmaSquare);
+			gaussKernel[index] = (Float)exp(-(x * x + y * y)/(2.0 * sigmaSquare))/(2.0 * MATH_PI * sigmaSquare);
 		}
 	}
 
-    for ( Int i = 0; i < gaussKernelWidth * gaussKernelWidth; i++ )
+    /*for ( Int i = 0; i < gaussKernelWidth * gaussKernelWidth; i++ )
     {
         gaussKernel[i] = gaussKernel[i] / gaussKernel[width * gaussKernelWidth + width];
-        //NSLog(@"%f",gaussKernel[i]);
+    }*/
+}
+
+- (BOOL) loadFromDictionary:(NSDictionary *)dictionary
+{
+    NSString * sceneName = [ dictionary objectForKey:@"Name" ];
+    [ self setName:sceneName ];
+
+    // Base LOD, 2x2 vertices
+    baseResolution->x = baseResolution->y = 2;
+    baseIterations = 0;
+
+    currentResolution->x = baseResolution->x;
+    currentResolution->y = baseResolution->y;
+
+    currentIteration = baseIterations;
+    currentLod = currentIteration - baseIterations;
+
+    // Terrain texture
+    NSString * texturePath = [ dictionary objectForKey:@"Texture" ];
+    texture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:texturePath ];
+    if ( texture == nil )
+    {
+        NPLOG_ERROR(@"Failed to load texture");
+        return NO;
     }
+
+    NSArray * terrainSizeStrings = [ dictionary objectForKey:@"Size" ];
+    if ( terrainSizeStrings == nil )
+    {
+        NPLOG_WARNING(@"%@: Size missing, using default", name);
+        size->x = size->y = 10;
+    }
+
+    size->x = [[ terrainSizeStrings objectAtIndex:0 ] intValue ];
+    size->y = [[ terrainSizeStrings objectAtIndex:1 ] intValue ];
+
+    NSString * minimumHeightString = [ dictionary objectForKey:@"MinimumHeight" ];
+    if ( minimumHeightString == nil )
+    {
+        NPLOG_WARNING(@"%@: MinimumHeight missing, using default", name);
+        minimumHeightString = [ NSString stringWithFormat:@"%f", minimumHeight ];
+    }
+
+    minimumHeight = [ minimumHeightString floatValue ];
+
+    NSString * maximumHeightString = [ dictionary objectForKey:@"MaximumHeight" ];
+    if ( maximumHeightString == nil )
+    {
+        NPLOG_WARNING(@"%@: MaximumHeight missing, using default", name);
+        maximumHeightString = [ NSString stringWithFormat:@"%f", maximumHeight ];
+    }
+
+    maximumHeight = [ minimumHeightString floatValue ];
+
+    NSString * HString = [ dictionary objectForKey:@"H" ];
+    if ( HString == nil )
+    {
+        NPLOG_WARNING(@"%@: H missing, using default", name);
+        HString = [ NSString stringWithFormat:@"%f", H ];
+    }
+
+    H = [ HString floatValue ];
+
+    NSString * sigmaString = [ dictionary objectForKey:@"Sigma" ];
+    if ( sigmaString == nil )
+    {
+        NPLOG_WARNING(@"%@: Sigma missing, using default", name);
+        sigmaString = [ NSString stringWithFormat:@"%f", sigma ];
+    }
+
+    sigma = [ sigmaString floatValue ];
+
+    NSString * iterationsString = [ dictionary objectForKey:@"Iterations" ];
+    if ( iterationsString == nil )
+    {
+        NPLOG_WARNING(@"%@: Iterations missing, using default", name);
+        iterationsString = [ NSString stringWithFormat:@"%d", iterations ];
+    }
+
+    iterationsToDo = [ iterationsString intValue ];
+
+    [[ NP attributesWindowController ] setWidthTextfieldString :[ terrainSizeStrings objectAtIndex:0 ]];
+    [[ NP attributesWindowController ] setLengthTextfieldString:[ terrainSizeStrings objectAtIndex:1 ]];
+    [[ NP attributesWindowController ] setMinimumHeightTextfieldString:minimumHeightString ];
+    [[ NP attributesWindowController ] setMaximumHeightTextfieldString:maximumHeightString ];
+    [[ NP attributesWindowController ] setHTextfieldString:HString ];
+    [[ NP attributesWindowController ] setSigmaTextfieldString:sigmaString ];
+    [[ NP attributesWindowController ] setIterationsTextfieldString:iterationsString ];
+
+    [ self updateGeometry ];
+
+    effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"terrain.cgfx" ];
+    lightPositionParameter = [ effect parameterWithName:@"lightPosition" ];
+    NSAssert(lightPositionParameter != NULL, @"Light position parameter not found");
+
+    return YES;
 }
 
 - (BOOL) loadFromPath:(NSString *)path
 {
     NSDictionary * sceneConfig = [ NSDictionary dictionaryWithContentsOfFile:path ];
 
-    NSString * sceneName = [ sceneConfig objectForKey:@"Name" ];
-    if ( sceneName == nil )
-    {
-        NPLOG_ERROR(@"%@: Name missing", path);
-        return NO;
-    }
+    return [ self loadFromDictionary:sceneConfig ];
 
-    [ self setName:sceneName ];
-
-    NSString * imagePath = [ sceneConfig objectForKey:@"Image" ];
+    /*NSString * imagePath = [ sceneConfig objectForKey:@"Image" ];
     if ( imagePath != nil )
     {
         NSString * imageAbsolutePath = [[[ NP Core ] pathManager ] getAbsoluteFilePath:imagePath ];
@@ -304,122 +389,7 @@
         baseIterations = cTmp;
 
         NSLog(@"levels: %d",cTmp);
-    }
-    else
-    {
-        baseResolution->x = baseResolution->y = 2;
-        baseIterations = 0;
-    }
-
-    currentResolution->x = baseResolution->x;
-    currentResolution->y = baseResolution->y;
-
-//    iterationsDone = baseIterations;
-    currentIteration = baseIterations;
-    currentLod = currentIteration - baseIterations;
-
-    NSString * texturePath = [ sceneConfig objectForKey:@"Texture" ];
-    if ( texturePath == nil )
-    {
-        NPLOG_ERROR(@"%@: Texture missing", path);
-        return NO;
-    }    
-
-    texture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:texturePath ];
-    if ( texture == nil )
-    {
-        NPLOG_ERROR(@"Failed to load texture");
-        return NO;
-    }
-
-    NSArray * terrainSizeStrings = [ sceneConfig objectForKey:@"Size" ];
-    if ( terrainSizeStrings == nil )
-    {
-        NPLOG_WARNING(@"%@: Size missing, using default", path);
-        size->x = size->y = 10;
-    }
-
-    size->x = [[ terrainSizeStrings objectAtIndex:0 ] intValue ];
-    size->y = [[ terrainSizeStrings objectAtIndex:1 ] intValue ];
-
-    NSString * minimumHeightString = [ sceneConfig objectForKey:@"MinimumHeight" ];
-    if ( minimumHeightString == nil )
-    {
-        NPLOG_WARNING(@"%@: MinimumHeight missing, using default", path);
-        minimumHeightString = [ NSString stringWithFormat:@"%f", minimumHeight ];
-    }
-    else
-    {
-        minimumHeight = [ minimumHeightString floatValue ];
-    }
-
-    NSString * maximumHeightString = [ sceneConfig objectForKey:@"MaximumHeight" ];
-    if ( maximumHeightString == nil )
-    {
-        NPLOG_WARNING(@"%@: MaximumHeight missing, using default", path);
-        maximumHeightString = [ NSString stringWithFormat:@"%f", maximumHeight ];
-    }
-    else
-    {
-        maximumHeight = [ minimumHeightString floatValue ];
-    }
-
-    NSString * HString = [ sceneConfig objectForKey:@"H" ];
-    if ( HString == nil )
-    {
-        NPLOG_WARNING(@"%@: H missing, using default", path);
-        HString = [ NSString stringWithFormat:@"%f", H ];
-    }
-    else
-    {
-        H = [ HString floatValue ];
-    }
-
-    NSString * sigmaString = [ sceneConfig objectForKey:@"Sigma" ];
-    if ( sigmaString == nil )
-    {
-        NPLOG_WARNING(@"%@: Sigma missing, using default", path);
-        sigmaString = [ NSString stringWithFormat:@"%f", sigma ];
-    }
-    else
-    {
-        sigma = [ sigmaString floatValue ];
-    }
-
-    NSString * iterationsString = [ sceneConfig objectForKey:@"Iterations" ];
-    if ( iterationsString == nil )
-    {
-        NPLOG_WARNING(@"%@: Iterations missing, using default", path);
-        iterationsString = [ NSString stringWithFormat:@"%d", iterations ];
-    }
-    else
-    {
-        iterationsToDo = [ iterationsString intValue ];
-    }
-
-    [[ NP attributesWindowController ] setWidthTextfieldString :[ terrainSizeStrings objectAtIndex:0 ]];
-    [[ NP attributesWindowController ] setLengthTextfieldString:[ terrainSizeStrings objectAtIndex:1 ]];
-    [[ NP attributesWindowController ] setMinimumHeightTextfieldString:minimumHeightString ];
-    [[ NP attributesWindowController ] setMaximumHeightTextfieldString:maximumHeightString ];
-    [[ NP attributesWindowController ] setHTextfieldString:HString ];
-    [[ NP attributesWindowController ] setSigmaTextfieldString:sigmaString ];
-    [[ NP attributesWindowController ] setIterationsTextfieldString:iterationsString ];
-
-    [ self updateGeometry ];
-
-    lightPosition->x = 0.0f;
-    lightPosition->z = 0.0f;
-    lightPosition->y = 10.0f;
-
-    effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"terrain.cgfx" ];
-    lightPositionParameter = [ effect parameterWithName:@"lightPosition" ];
-    if ( lightPositionParameter == NULL )
-    {
-        NPLOG_ERROR(@"Light position parameter not found");
-        return NO;
-    }
-
-    return YES;
+    }*/
 }
 
 - (void) reset
@@ -455,6 +425,7 @@
                 vertexCount:numberOfVertices ];
 }
 
+// initialise base lod without heightmap
 - (void) initialiseEmptyBaseLodPositions
 {
     Int numberOfVertices = 4;
@@ -471,9 +442,6 @@
             vertexPositions[index]   = (Float)(-size->x)/2.0f + (Float)j * deltaX;            
             vertexPositions[index+2] = (Float)(-size->y)/2.0f + (Float)i * deltaY;
             vertexPositions[index+1] = 0.0f;
-
-            //NSLog(@"%f %f %f",vertexPositions[index],vertexPositions[index+1],vertexPositions[index+2]);
-
         }
     }
 
@@ -488,7 +456,7 @@
 - (void) updateTextureCoordinates
 {
     Int numberOfVertices = currentResolution->x * currentResolution->y;
-    Float * texCoords = ALLOC_ARRAY(Float, numberOfVertices * 2);
+    FTexCoord2 * texCoords = ALLOC_ARRAY(FTexCoord2, numberOfVertices);
 
     Float texDeltaX = 1.0f / (Float)(currentResolution->x - 1);
     Float texDeltaY = 1.0f / (Float)(currentResolution->y - 1);
@@ -497,25 +465,73 @@
     {
         for ( Int j = 0; j < currentResolution->x; j++ )
         {
-            Int index = (i * currentResolution->x + j) * 2;
-            texCoords[index]   = 0.0f + (Float)j * texDeltaX;
-            texCoords[index+1] = 0.0f + (Float)i * texDeltaY;
+            Int index = i * currentResolution->x + j;
+            texCoords[index].u = 0.0f + (Float)j * texDeltaX;
+            texCoords[index].v = 0.0f + (Float)i * texDeltaY;
         }
     }
 
-    //Int lodIndex = currentIteration - baseIterations;
-    [[ lods objectAtIndex:currentLod ] setTextureCoordinates:texCoords 
+    [[ lods objectAtIndex:currentLod ] setTextureCoordinates:(Float *)texCoords 
                              elementsForTextureCoordinates:2
                                                 dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
-                                                    forSet:0 ]; 
+                                                    forSet:0 ];
 }
 
 - (void) updateNormals
 {
-    Int numberOfVertices = currentResolution->x * currentResolution->y;
-    Float * normals = ALLOC_ARRAY(Float, numberOfVertices * 3);
+    FVector3 * vertexPositions = (FVector3 *)[[ lods objectAtIndex:currentLod ] positions ];
 
-    //Int lodIndex = currentIteration - baseIterations;
+    Int numberOfVertices = currentResolution->x * currentResolution->y;
+    FNormal * normals = ALLOC_ARRAY(FNormal, numberOfVertices);
+
+    FNormal cornerNormal = {0.0f, 1.0f, 0.0f};
+
+    //normals[0] = cornerNormal;
+    //normals[currentResolution->x - 1] = cornerNormal;
+    //normals[currentResolution->x * (currentResolution->y - 1)] = cornerNormal;
+    //normals[numberOfVertices - 1] = cornerNormal;
+
+    for ( Int i = 0; i < numberOfVertices; i++ )
+    {
+        normals[i] = cornerNormal;
+    }
+
+    // inner faces
+    for ( Int i = 1; i < currentResolution->y - 1; i++ )
+    {
+        for ( Int j = 1; j < currentResolution->x - 1; j++ )
+        {
+            FVector3 north, south, west, east;
+            Int index = i * currentResolution->x + j;
+            Int indexNorth = (i - 1) * currentResolution->x + j;
+            Int indexSouth = (i + 1) * currentResolution->x + j;
+            Int indexWest  = i * currentResolution->x + j - 1;
+            Int indexEast  = i * currentResolution->x + j + 1;
+
+            fv3_vv_sub_v(&(vertexPositions[indexNorth]), &(vertexPositions[index]), &north);
+            fv3_vv_sub_v(&(vertexPositions[indexSouth]), &(vertexPositions[index]), &south);
+            fv3_vv_sub_v(&(vertexPositions[indexWest ]), &(vertexPositions[index]), &west);
+            fv3_vv_sub_v(&(vertexPositions[indexEast ]), &(vertexPositions[index]), &east);
+
+            FVector3 northWestNormal, northEastNormal, southWestNormal, southEastNormal;
+            fv3_vv_cross_product_v(&north, &west,  &northWestNormal);
+            fv3_vv_cross_product_v(&east,  &north, &northEastNormal);
+            fv3_vv_cross_product_v(&west,  &south, &southWestNormal);
+            fv3_vv_cross_product_v(&south, &east,  &southEastNormal);
+
+            FVector3 tmp, sum;
+            fv3_vv_add_v(&northWestNormal, &northEastNormal, &sum);
+            fv3_vv_add_v(&sum, &southWestNormal, &tmp);
+            fv3_vv_add_v(&tmp, &southEastNormal, &sum);
+
+            fv3_v_normalise(&sum);
+
+            normals[index] = sum;
+        }
+    }
+    
+
+    /*Float * normals = ALLOC_ARRAY(Float, numberOfVertices * 3);
     Float * vertexPositions = [[ lods objectAtIndex:currentLod ] positions ];
 
     //Corners
@@ -554,13 +570,22 @@
         east.y = vertexPositions[indexEast+1] - vertexPositions[index+1];
         east.z = vertexPositions[indexEast+2] - vertexPositions[index+2];
 
+        //NSLog(@"%s %s %s", fv3_v_to_string(&south), fv3_v_to_string(&west), fv3_v_to_string(&east));
+
         FVector3 southWestNormal, southEastNormal;
-        fv3_vv_cross_product_v(&south, &west, &southWestNormal);
-        fv3_vv_cross_product_v(&east, &south, &southEastNormal);
+        fv3_vv_cross_product_v(&west, &south, &southWestNormal);
+        fv3_vv_cross_product_v(&south, &east, &southEastNormal);
+
+        //NSLog(@"%s %s", fv3_v_to_string(&southWestNormal), fv3_v_to_string(&southEastNormal));
 
         FVector3 sum;
         fv3_vv_add_v(&southWestNormal, &southEastNormal, &sum);
         fv3_v_normalise(&sum);
+
+        if ( sum.y <= 0.0f )
+        {
+            NSLog(@"Upper");
+        }
 
         normals[index] = sum.x;
         normals[index+1] = sum.y;
@@ -588,13 +613,23 @@
         east.y = vertexPositions[indexEast+1] - vertexPositions[index+1];
         east.z = vertexPositions[indexEast+2] - vertexPositions[index+2];
 
+        //NSLog(@"%s %s %s", fv3_v_to_string(&north), fv3_v_to_string(&west), fv3_v_to_string(&east));
+
         FVector3 northWestNormal, northEastNormal;
-        fv3_vv_cross_product_v(&west, &north, &northWestNormal);
-        fv3_vv_cross_product_v(&north, &east, &northEastNormal);
+        fv3_vv_cross_product_v(&north, &west, &northWestNormal);
+        fv3_vv_cross_product_v(&east, &north, &northEastNormal);
+
+        //NSLog(@"%s %s", fv3_v_to_string(&northWestNormal), fv3_v_to_string(&northEastNormal));
 
         FVector3 sum;
         fv3_vv_add_v(&northWestNormal, &northEastNormal, &sum);
         fv3_v_normalise(&sum);
+
+        if ( sum.y <= 0.0f )
+        {
+            NSLog(@"Lower");
+        }
+
 
         normals[index]   = sum.x;
         normals[index+1] = sum.y;
@@ -622,13 +657,23 @@
         east.y = vertexPositions[indexEast+1] - vertexPositions[index+1];
         east.z = vertexPositions[indexEast+2] - vertexPositions[index+2];
 
+        //NSLog(@"%s %s %s", fv3_v_to_string(&north), fv3_v_to_string(&south), fv3_v_to_string(&east));
+
         FVector3 northEastNormal, southEastNormal;
-        fv3_vv_cross_product_v(&north, &east, &northEastNormal);
-        fv3_vv_cross_product_v(&east, &south, &southEastNormal);
+        fv3_vv_cross_product_v(&east, &north, &northEastNormal);
+        fv3_vv_cross_product_v(&south, &east, &southEastNormal);
+
+        //NSLog(@"%s %s", fv3_v_to_string(&northEastNormal), fv3_v_to_string(&southEastNormal));
 
         FVector3 sum;
         fv3_vv_add_v(&northEastNormal, &southEastNormal, &sum);
         fv3_v_normalise(&sum);
+
+        if ( sum.y <= 0.0f )
+        {
+            NSLog(@"Left");
+        }
+
 
         normals[index]   = sum.x;
         normals[index+1] = sum.y;
@@ -656,77 +701,29 @@
         west.y = vertexPositions[indexWest+1] - vertexPositions[index+1];
         west.z = vertexPositions[indexWest+2] - vertexPositions[index+2];
 
+        //NSLog(@"%s %s %s", fv3_v_to_string(&north), fv3_v_to_string(&south), fv3_v_to_string(&west));
+
         FVector3 northWestNormal, southWestNormal;
-        fv3_vv_cross_product_v(&west, &north, &northWestNormal);
-        fv3_vv_cross_product_v(&south, &west, &southWestNormal);
+        fv3_vv_cross_product_v(&north, &west, &northWestNormal);
+        fv3_vv_cross_product_v(&west, &south, &southWestNormal);
+
+        //NSLog(@"%s %s", fv3_v_to_string(&northWestNormal), fv3_v_to_string(&southWestNormal));
 
         FVector3 sum;
         fv3_vv_add_v(&northWestNormal, &southWestNormal, &sum);
         fv3_v_normalise(&sum);
 
+        if ( sum.y <= 0.0f )
+        {
+            NSLog(@"Right");
+        }
+
         normals[index]   = sum.x;
         normals[index+1] = sum.y;
         normals[index+2] = sum.z;
-    }
+    }*/
 
-    // inner faces
-
-    for ( Int i = 1; i < currentResolution->y -1; i++ )
-    {
-        for ( Int j = 1; j < currentResolution->x - 1; j++ )
-        {
-            FVector3 north, south, west, east;
-            Int index = (i * currentResolution->x + j) * 3;
-            Int indexNorth = ((i - 1) * currentResolution->x + j) * 3;
-            Int indexSouth = ((i + 1) * currentResolution->x + j) * 3;
-            Int indexWest  = (i * currentResolution->x + j - 1) * 3;
-            Int indexEast  = (i * currentResolution->x + j + 1) * 3;
-
-            north.x = vertexPositions[indexNorth]   - vertexPositions[index];
-            north.y = vertexPositions[indexNorth+1] - vertexPositions[index+1];
-            north.z = vertexPositions[indexNorth+2] - vertexPositions[index+2];
-
-            south.x = vertexPositions[indexSouth]   - vertexPositions[index];
-            south.y = vertexPositions[indexSouth+1] - vertexPositions[index+1];
-            south.z = vertexPositions[indexSouth+2] - vertexPositions[index+2];
-
-            west.x = vertexPositions[indexWest]   - vertexPositions[index];
-            west.y = vertexPositions[indexWest+1] - vertexPositions[index+1];
-            west.z = vertexPositions[indexWest+2] - vertexPositions[index+2];
-
-            east.x = vertexPositions[indexEast]   - vertexPositions[index];
-            east.y = vertexPositions[indexEast+1] - vertexPositions[index+1];
-            east.z = vertexPositions[indexEast+2] - vertexPositions[index+2];
-
-            FVector3 northWestNormal, northEastNormal, southWestNormal, southEastNormal;
-            fv3_vv_cross_product_v(&west, &north, &northWestNormal);
-            fv3_vv_cross_product_v(&north, &east, &northEastNormal);
-            fv3_vv_cross_product_v(&south, &west, &southWestNormal);
-            fv3_vv_cross_product_v(&east, &south, &southEastNormal);
-            fv3_v_normalise(&northWestNormal);
-            fv3_v_normalise(&northEastNormal);
-            fv3_v_normalise(&southWestNormal);
-            fv3_v_normalise(&southEastNormal);
-
-            FVector3 tmp, sum;
-            fv3_vv_add_v(&northWestNormal, &northEastNormal, &sum);
-            fv3_vv_add_v(&sum, &southWestNormal, &tmp);
-            fv3_vv_add_v(&tmp, &southEastNormal, &sum);
-
-            fv3_v_normalise(&sum);
-
-            normals[index] = sum.x;
-            normals[index+1] = sum.y;
-            normals[index+2] = sum.z;
-
-            //if ( sum.y <= 0.0f )
-            //{
-            //    NSLog(@"kaputt");
-            //}
-        }
-    }
-
-    [[ lods objectAtIndex:currentLod ] setNormals:normals elementsForNormal:3 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT ];
+    [[ lods objectAtIndex:currentLod ] setNormals:(Float *)normals elementsForNormal:3 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT ];
 }
 
 - (void) updateAO
@@ -737,57 +734,54 @@
 
     for ( Int i = 0; i < numberOfVertices * 3; i++ )
     {
-        colors[i] = 0.0f;
+        colors[i] = 0.1f;
     }
 
-    div_t d = div(gaussKernelWidth,2);
+    div_t d = div(gaussKernelWidth, 2);
 
-    for ( Int i = d.quot; i < currentResolution->y - d.quot; i++ )
+    if ( currentResolution->y - d.quot > d.quot )
     {
-        for ( Int j = d.quot; j < currentResolution->x - d.quot; j++ )
+        for ( Int i = d.quot; i < currentResolution->y - d.quot; i++ )
         {
-            Int vertexOfInterestIndex = (i * currentResolution->x + j) * 3;
-            //NSLog(@"%d",vertexOfInterestIndex);
-
-            Float average = 0.0f;
-
-            for ( Int k = 0; k < gaussKernelWidth; k++ )
+            for ( Int j = d.quot; j < currentResolution->x - d.quot; j++ )
             {
-                for ( Int l = 0; l < gaussKernelWidth; l++ )
+                Int vertexOfInterestIndex = (i * currentResolution->x + j) * 3;
+                Float average = 0.0f;
+
+                for ( Int k = 0; k < gaussKernelWidth; k++ )
                 {
-                    Int kernelElementIndex = k * gaussKernelWidth + l;
-                    Int offsetK = k - d.quot;
-                    Int offsetL = l - d.quot;
-                    Int vertexIndexOffset = (offsetK * currentResolution->x + offsetL) * 3;
-                    Int vertexIndexForKernelElement = vertexOfInterestIndex + vertexIndexOffset;
-                    //NSLog(@"k %d",vertexIndexForKernelElement);
+                    for ( Int l = 0; l < gaussKernelWidth; l++ )
+                    {
+                        Int kernelElementIndex = k * gaussKernelWidth + l;
+                        Int offsetK = k - d.quot;
+                        Int offsetL = l - d.quot;
+                        Int vertexIndexOffset = (offsetK * currentResolution->x + offsetL) * 3;
+                        Int vertexIndexForKernelElement = vertexOfInterestIndex + vertexIndexOffset;
 
-                    average = average + (vertexPositions[vertexIndexForKernelElement+1] * gaussKernel[kernelElementIndex]); 
+                        average = average + (vertexPositions[vertexIndexForKernelElement + 1] * gaussKernel[kernelElementIndex]); 
+                    }
                 }
+
+                colors[vertexOfInterestIndex] = MAX(0.1f, average);
             }
-
-            //Float AO = average - vertexPositions[vertexOfInterestIndex+1];
-            colors[vertexOfInterestIndex] = average - vertexPositions[vertexOfInterestIndex+1];
-            //colors[vertexOfInterestIndex] = 0.0f;
-            NSLog(@"%f %f %f",average,vertexPositions[vertexOfInterestIndex+1],colors[vertexOfInterestIndex]);
         }
-    }
 
-    for ( Int i = 0; i < d.quot; i ++ )
-    {
-        for ( Int j = 0; j < currentResolution->x; j++ )
+        for ( Int i = 0; i < d.quot; i ++ )
         {
-            colors[(i * currentResolution->x + j) * 3] = 1.0f;
-            colors[((currentResolution->y - 1 - i) * (currentResolution->x) + j) * 3] = 1.0f;
+            for ( Int j = 0; j < currentResolution->x; j++ )
+            {
+                colors[(i * currentResolution->x + j) * 3] = 1.0f;
+                colors[((currentResolution->y - 1 - i) * (currentResolution->x) + j) * 3] = 1.0f;
+            }
         }
-    }
 
-    for ( Int i = 0; i < d.quot; i ++ )
-    {
-        for ( Int j = 0; j < currentResolution->y; j++ )
+        for ( Int i = 0; i < d.quot; i ++ )
         {
-            colors[(j * currentResolution->x + i) * 3] = 1.0f;
-            colors[(j * currentResolution->x + currentResolution->x - 1 - i) * 3] = 1.0f;
+            for ( Int j = 0; j < currentResolution->y; j++ )
+            {
+                colors[(j * currentResolution->x + i) * 3] = 1.0f;
+                colors[(j * currentResolution->x + currentResolution->x - 1 - i) * 3] = 1.0f;
+            }
         }
     }
 
@@ -812,13 +806,9 @@
             indices[index+3] = (i + 1) * currentResolution->x + j;
             indices[index+4] = (i + 1) * currentResolution->x + j + 1;
             indices[index+5] = i * currentResolution->x + j + 1;
-
-            //NSLog(@"%d %d %d",indices[index],indices[index+1],indices[index+2]);
-            //NSLog(@"%d %d %d",indices[index+3],indices[index+4],indices[index+5]);
         }
     }
 
-    //Int lodIndex = currentIteration - baseIterations;
     [[ lods objectAtIndex:currentLod ] setIndices:indices indexCount:numberOfIndices ];
 }
 
@@ -826,23 +816,19 @@
 {
     currentIteration = currentIteration + 1;
     currentLod = currentIteration - baseIterations;
-    //NSLog(@"%d",currentLod);
 
     lastResolution->x = currentResolution->x;
     lastResolution->y = currentResolution->y;
 
     currentResolution->x = (lastResolution->x - 1) * 2 + 1;
     currentResolution->y = (lastResolution->y - 1) * 2 + 1;
-    //NSLog(@"res %d %d",currentResolution->x,currentResolution->y);
 
     Int numberOfVertices = currentResolution->x * currentResolution->y;
     Float * positions = ALLOC_ARRAY(Float, numberOfVertices * 3);
 
-    //Int lodIndex = currentIteration - baseIterations - 1;
     Float * currentPositions = [[ lods objectAtIndex:currentLod-1 ] positions ];
 
-    Float rngVariance = variance/(Float)pow(2.0,(Double)(currentIteration-1)*(Double)H);
-    //NSLog(@"variance %f",rngVariance);
+    Float rngVariance = variance / (Float)pow(2.0, (Double)(currentIteration - 1) * (Double)H);
 
     // diamond step
 
@@ -901,7 +887,6 @@
                     if ( i == 0 )
                     {
                         north = diamondPositions[(lastResolution->y-2)*(lastResolution->x-1)+(j/2)];
-                        //south = diamondPositions[(lastResolution->x-1)+(j/2)];
                         south = diamondPositions[(j/2)];
                     }
                     else if ( i == currentResolution->y - 1)
@@ -1011,8 +996,6 @@
 
         iterationsDone = iterationsDone + 1;
     }
-
-    //currentIteration = 0;
 }
 
 - (void) update:(Float)frameTime
@@ -1037,29 +1020,7 @@
     [ effect activate ];
     [ effect uploadFVector3Parameter:lightPositionParameter andValue:lightPosition ];
 
-    CGpass pass = [[ effect defaultTechnique ] firstPass ];
-
-    while ( pass )
-    {
-        cgSetPassState(pass);
-
-        Int lodIndex = currentIteration - baseIterations;
-        [[ lods objectAtIndex:currentLod ] renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
-
-        /*glColor3f(1.0f,0.0f,0.0f);
-        glBegin(GL_TRIANGLES);
-
-            glVertex3f(-10.0f,5.0f,-10.0f);
-            glVertex3f(-10.0f,-5.0f,-10.0f);
-            glVertex3f(10.0f,5.0f,-10.0f);
-            //glVertex3f(10.0f,-5.0f,10.0f);
-
-
-        glEnd();*/
-
-        cgResetPassState(pass);
-        pass = cgGetNextPass(pass);
-    }
+    [[ lods objectAtIndex:currentLod ] renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
 
     [ effect deactivate ];
 }

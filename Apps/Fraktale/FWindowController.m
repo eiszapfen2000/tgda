@@ -6,12 +6,13 @@
 #import "FSceneManager.h"
 #import "FScene.h"
 #import "FTerrain.h"
+#import "FAttractor.h"
 
 @implementation FWindowController
 
 - (id) init
 {
-    return  [ super initWithWindowNibName: @"FAttributesWindow" ];
+    return [ super initWithWindowNibName:@"FAttributesWindow" ];
 }
 
 - (void) initPopUpButtons
@@ -27,11 +28,16 @@
     [ rngTwoPopUp addItemWithTitle:NP_RNG_MRG ];
     [ rngOnePopUp addItemWithTitle:NP_RNG_CMRG ];
     [ rngTwoPopUp addItemWithTitle:NP_RNG_CMRG ];
-    [ rngOnePopUp addItemWithTitle:@"mersenne" ];
-    [ rngTwoPopUp addItemWithTitle:@"mersenne" ];
+    [ rngOnePopUp addItemWithTitle:NP_RNG_MERSENNE ];
+    [ rngTwoPopUp addItemWithTitle:NP_RNG_MERSENNE ];
 
     [ lodPopUp removeAllItems ];
     [ lodPopUp setPreferredEdge:NSMinYEdge ];
+
+    [ typePopUp removeAllItems ];
+    [ typePopUp setPreferredEdge:NSMinYEdge ];
+    [ typePopUp addItemWithTitle:@"Lorentz"  ];
+    [ typePopUp addItemWithTitle:@"Roessler" ];
 }
 
 - (void) windowDidLoad
@@ -50,12 +56,20 @@
         switch ([(NSNumber *)textMovement intValue])
         {
             case NSReturnTextMovement:
-            break;
+            {
+                break;
+            }
+
             case NSTabTextMovement:
-            [[aNotification object] sendAction:[[aNotification object] action] to:[[aNotification object] target]];
-            break;
+            {
+                [[aNotification object] sendAction:[[aNotification object] action] to:[[aNotification object] target]];
+                break;
+            }
+
             case NSBacktabTextMovement:
-            break;
+            {
+                break;
+            }
         }
     }
 }
@@ -108,6 +122,51 @@
 - (void) selectLodPopUpItemWithIndex:(Int32)index
 {
    [ lodPopUp selectItemAtIndex:index ]; 
+}
+
+- (void) setATextfieldString:(NSString *)newString
+{
+    [[ aTextfield cell ] setStringValue:newString ];
+}
+
+- (void) setBTextfieldString:(NSString *)newString
+{
+    [[ bTextfield cell ] setStringValue:newString ];
+}
+
+- (void) setCTextfieldString:(NSString *)newString
+{
+    [[ cTextfield cell ] setStringValue:newString ];
+}
+
+- (void) setRTextfieldString:(NSString *)newString
+{
+    [[ rTextfield cell ] setStringValue:newString ];
+}
+
+- (void) setAttractorSigmaTextfieldString:(NSString *)newString
+{
+    [[ attractorSigmaTextfield cell ] setStringValue:newString ];
+}
+
+- (void) setAttractorIterationsTextfieldString:(NSString *)newString
+{
+    [[ attractorIterationsTextfield cell ] setStringValue:newString ];
+}
+
+- (void) setStartingPointXTextfield:(NSString *)newString
+{
+    [[ startingPointXTextfield cell ] setStringValue:newString ];
+}
+
+- (void) setStartingPointYTextfield:(NSString *)newString
+{
+    [[ startingPointYTextfield cell ] setStringValue:newString ];
+}
+
+- (void) setStartingPointZTextfield:(NSString *)newString
+{
+    [[ startingPointZTextfield cell ] setStringValue:newString ];
 }
 
 - (void) selectLod:(id)sender
@@ -231,9 +290,67 @@
     [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setIterationsToDo:iterations ];
 }
 
+- (void) setA:(id)sender
+{
+    Float a = [[ sender cell ] floatValue ];
+
+    [[[[[ NP applicationController ] sceneManager ] currentScene ] attractor ] setA:a ];
+}
+
+- (void) setB:(id)sender
+{
+    Float b = [[ sender cell ] floatValue ];
+
+    [[[[[ NP applicationController ] sceneManager ] currentScene ] attractor ] setB:b ];
+}
+
+- (void) setC:(id)sender
+{
+    Float c = [[ sender cell ] floatValue ];
+
+    [[[[[ NP applicationController ] sceneManager ] currentScene ] attractor ] setC:c ];
+}
+
+- (void) setR:(id)sender
+{
+    Float r = [[ sender cell ] floatValue ];
+
+    [[[[[ NP applicationController ] sceneManager ] currentScene ] attractor ] setR:r ];
+}
+
+- (void) setLorentzSigma:(id)sender
+{
+    Float sigma = [[ sender cell ] floatValue ];
+
+    [[[[[ NP applicationController ] sceneManager ] currentScene ] attractor ] setSigma:sigma ];
+}
+
+- (void) setStartingPointX:(id)sender
+{
+    Float startingPointX = [[ sender cell ] floatValue ];
+
+//    [[[[[ NP applicationController ] sceneManager ] currentScene ] attractor ] setSigma:sigma ];
+}
+
+- (void) setStartingPointY:(id)sender
+{
+    Float startingPointY = [[ sender cell ] floatValue ];
+}
+
+- (void) setStartingPointZ:(id)sender
+{
+    Float startingPointY = [[ sender cell ] floatValue ];
+}
+
+- (void) setNumberOfIterations:(id)sender
+{
+    Int32 numberOfIterations = [[ sender cell ] intValue ];
+
+    [[[[[ NP applicationController ] sceneManager ] currentScene ] attractor ] setNumberOfIterations:numberOfIterations ];
+}
+
 - (void) reset:(id)sender
 {
-    //NSLog(@"reset");
     [[ NP applicationController ] reloadScene ];
 }
 

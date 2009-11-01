@@ -8,4 +8,23 @@
     Size = ("20", "20");
     MinimumHeight = "0.0";
     MaximumHeight = "1.0";
+    Terrain = 
+    {
+        Texture = "Terrain0.jpg";
+        H = "0.8";
+        Sigma = "1.0";
+        Iterations = "0";
+        Size = ("20", "20");
+        MinimumHeight = "0.0";
+        MaximumHeight = "1.0";
+    };
+    Attractor = 
+    {
+        Type = "Lorentz";
+        Sigma = "0.0";
+        B = "0.0";
+        R = "0.0";
+        Iterations = "10";
+        StartingPoint = ("0.0", "0.0", "0.0");
+    };
 }

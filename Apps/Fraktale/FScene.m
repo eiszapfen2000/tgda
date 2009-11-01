@@ -3,8 +3,8 @@
 #import "FScene.h"
 #import "FSceneManager.h"
 #import "FCamera.h"
+#import "FAttractor.h"
 #import "FTerrain.h"
-
 
 @implementation FScene
 
@@ -27,9 +27,15 @@
 
 - (void) dealloc
 {
+    TEST_RELEASE(attractor);
     TEST_RELEASE(terrain);
 
     [ super dealloc ];
+}
+
+- (FAttractor *) attractor
+{
+    return attractor;
 }
 
 - (FTerrain *) terrain
@@ -41,22 +47,22 @@
 {
     NSDictionary * sceneConfig = [ NSDictionary dictionaryWithContentsOfFile:path ];
 
-    NSString * typeName = [ sceneConfig objectForKey:@"Type" ];
-    if ( typeName == nil )
+    NSDictionary * terrainConfig   = [ sceneConfig objectForKey:@"Terrain"   ];
+    NSDictionary * attractorConfig = [ sceneConfig objectForKey:@"Attractor" ];
+
+    terrain   = [[ FTerrain   alloc ] init ];
+    attractor = [[ FAttractor alloc ] init ];
+
+    if ( [ terrain loadFromDictionary:terrainConfig ] == NO )
     {
-        NPLOG_ERROR(@"%@: Type missing, bailing out", path);
+        NPLOG_ERROR(@"Failed to load Terrain");
         return NO;
     }
 
-    if ( [ typeName isEqual:@"Terrain" ] == YES )
+    if ( [ attractor loadFromDictionary:attractorConfig ] == NO )
     {
-        terrain = [[ FTerrain alloc ] init ];
-        
-        if ( [ terrain loadFromPath:path ] == NO )
-        {
-            NPLOG_ERROR(@"BRAK");
-            return NO;
-        }
+        NPLOG_ERROR(@"Failed to load Attractor");
+        return NO;
     }
 
     return YES;
