@@ -6,9 +6,6 @@
 
 @interface FAttractor : NPObject
 {
-    Float a, b, c;
-    Float sigma, r;
-    Int32 numberOfIterations;
     FVector3 * startingPoint;
 
     NPEffect * effect;
@@ -23,16 +20,9 @@
 - (BOOL) loadFromDictionary:(NSDictionary *)dictionary;
 - (void) reset;
 
-- (void) setA:(Float)newA;
-- (void) setB:(Float)newB;
-- (void) setC:(Float)newC;
-- (void) setR:(Float)newR;
-- (void) setSigma:(Float)newSigma;
-- (void) setNumberOfIterations:(Int32)newNumberOfIterations;
-
 - (void) setupCoordinateCross;
 
-/*
+
 - (FVector3) generateLorentzDerivativeWithParametersSigma:(Float)sigma
                                                         B:(Float)b
                                                         R:(Float)r
@@ -58,7 +48,6 @@
                                numberOfIterations:(UInt32)numberOfIterations
                                     startingPoint:(FVector3)startingPoint
                                                  ;
-*/
 
 - (void) update:(Float)frameTime;
 - (void) render;

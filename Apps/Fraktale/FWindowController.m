@@ -47,6 +47,8 @@
 
 - (void)controlTextDidEndEditing:(NSNotification *)aNotification
 {
+    NSLog(@"LAALAA");
+
     id textMovement;
 
     textMovement = [[aNotification userInfo] objectForKey: @"NSTextMovement"];
@@ -124,49 +126,49 @@
    [ lodPopUp selectItemAtIndex:index ]; 
 }
 
-- (void) setATextfieldString:(NSString *)newString
+- (void) setATextfieldString:(Float)newValue
 {
-    [[ aTextfield cell ] setStringValue:newString ];
+    [[ aTextfield cell ] setFloatValue:newValue ];
 }
 
-- (void) setBTextfieldString:(NSString *)newString
+- (void) setBTextfieldString:(Float)newValue
 {
-    [[ bTextfield cell ] setStringValue:newString ];
+    [[ bTextfield cell ] setFloatValue:newValue ];
 }
 
-- (void) setCTextfieldString:(NSString *)newString
+- (void) setCTextfieldString:(Float)newValue
 {
-    [[ cTextfield cell ] setStringValue:newString ];
+    [[ cTextfield cell ] setFloatValue:newValue ];
 }
 
-- (void) setRTextfieldString:(NSString *)newString
+- (void) setRTextfieldString:(Float)newValue
 {
-    [[ rTextfield cell ] setStringValue:newString ];
+    [[ rTextfield cell ] setFloatValue:newValue ];
 }
 
-- (void) setAttractorSigmaTextfieldString:(NSString *)newString
+- (void) setAttractorSigmaTextfieldString:(Float)newValue
 {
-    [[ attractorSigmaTextfield cell ] setStringValue:newString ];
+    [[ attractorSigmaTextfield cell ] setFloatValue:newValue ];
 }
 
-- (void) setAttractorIterationsTextfieldString:(NSString *)newString
+- (void) setAttractorIterationsTextfieldString:(Int32)newValue
 {
-    [[ attractorIterationsTextfield cell ] setStringValue:newString ];
+    [[ attractorIterationsTextfield cell ] setIntValue:newValue ];
 }
 
-- (void) setStartingPointXTextfield:(NSString *)newString
+- (void) setStartingPointXTextfieldString:(Float)newValue
 {
-    [[ startingPointXTextfield cell ] setStringValue:newString ];
+    [[ startingPointXTextfield cell ] setFloatValue:newValue ];
 }
 
-- (void) setStartingPointYTextfield:(NSString *)newString
+- (void) setStartingPointYTextfieldString:(Float)newValue
 {
-    [[ startingPointYTextfield cell ] setStringValue:newString ];
+    [[ startingPointYTextfield cell ] setFloatValue:newValue ];
 }
 
-- (void) setStartingPointZTextfield:(NSString *)newString
+- (void) setStartingPointZTextfieldString:(Float)newValue
 {
-    [[ startingPointZTextfield cell ] setStringValue:newString ];
+    [[ startingPointZTextfield cell ] setFloatValue:newValue ];
 }
 
 - (void) selectLod:(id)sender
@@ -174,7 +176,7 @@
     [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setCurrentLod:[ sender indexOfSelectedItem]];
 }
 
-- (void) setWidth:(id)sender
+/*- (void) setWidth:(id)sender
 {
     Int32 width = [[ sender cell ] intValue ];
 
@@ -186,9 +188,9 @@
 
     [ sender setBackgroundColor:[NSColor whiteColor]];
     [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setWidth:width ];
-}
+}*/
 
-- (void) setLength:(id)sender
+/*- (void) setLength:(id)sender
 {
     Int32 length = [[ sender cell ] intValue ];
 
@@ -200,8 +202,9 @@
 
     [ sender setBackgroundColor:[NSColor whiteColor]];
     [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setLength:length ];
-}
+}*/
 
+/*
 - (void) setMaximumHeight:(id)sender
 {
 }
@@ -209,6 +212,7 @@
 - (void) setMinimumHeight:(id)sender
 {
 }
+*/
 
 - (void) selectRngOne:(id)sender
 {
@@ -248,6 +252,7 @@
     [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setRngTwoSeed:(ULong)seed ];
 }
 
+/*
 - (void) setSigma:(id)sender
 {
     Float sigma = [[ sender cell ] floatValue ];
@@ -288,65 +293,38 @@
 
     [ sender setBackgroundColor:[NSColor whiteColor]];
     [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setIterationsToDo:iterations ];
-}
+}*/
 
-- (void) setA:(id)sender
+- (void) selectAttractorType:(id)sender
 {
-    Float a = [[ sender cell ] floatValue ];
+    Int32 index = [ sender indexOfSelectedItem];
 
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] attractor ] setA:a ];
-}
+    if ( index == 0 )
+    {
+        [ aTextfield setEditable:NO ];
+        [ cTextfield setEditable:NO ];
+        [ aTextfield setBackgroundColor:[NSColor grayColor]];
+        [ cTextfield setBackgroundColor:[NSColor grayColor]];
 
-- (void) setB:(id)sender
-{
-    Float b = [[ sender cell ] floatValue ];
+        [ rTextfield setEditable:YES ];
+        [ attractorSigmaTextfield setEditable:YES ];
+        [ rTextfield setBackgroundColor:[NSColor whiteColor]];
+        [ attractorSigmaTextfield setBackgroundColor:[NSColor whiteColor]];
 
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] attractor ] setB:b ];
-}
+    }
 
-- (void) setC:(id)sender
-{
-    Float c = [[ sender cell ] floatValue ];
+    if ( index == 1 )
+    {
+        [ rTextfield setEditable:NO ];
+        [ attractorSigmaTextfield setEditable:NO ];
+        [ rTextfield setBackgroundColor:[NSColor grayColor]];
+        [ attractorSigmaTextfield setBackgroundColor:[NSColor grayColor]];
 
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] attractor ] setC:c ];
-}
-
-- (void) setR:(id)sender
-{
-    Float r = [[ sender cell ] floatValue ];
-
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] attractor ] setR:r ];
-}
-
-- (void) setLorentzSigma:(id)sender
-{
-    Float sigma = [[ sender cell ] floatValue ];
-
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] attractor ] setSigma:sigma ];
-}
-
-- (void) setStartingPointX:(id)sender
-{
-    Float startingPointX = [[ sender cell ] floatValue ];
-
-//    [[[[[ NP applicationController ] sceneManager ] currentScene ] attractor ] setSigma:sigma ];
-}
-
-- (void) setStartingPointY:(id)sender
-{
-    Float startingPointY = [[ sender cell ] floatValue ];
-}
-
-- (void) setStartingPointZ:(id)sender
-{
-    Float startingPointY = [[ sender cell ] floatValue ];
-}
-
-- (void) setNumberOfIterations:(id)sender
-{
-    Int32 numberOfIterations = [[ sender cell ] intValue ];
-
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] attractor ] setNumberOfIterations:numberOfIterations ];
+        [ aTextfield setEditable:YES ];
+        [ cTextfield setEditable:YES ];
+        [ aTextfield setBackgroundColor:[NSColor whiteColor]];
+        [ cTextfield setBackgroundColor:[NSColor whiteColor]];
+    }
 }
 
 - (void) reset:(id)sender
@@ -356,7 +334,7 @@
 
 - (void) generate:(id)sender
 {
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] updateGeometry ];
+    //[[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] updateGeometry ];
 }
 
 @end
