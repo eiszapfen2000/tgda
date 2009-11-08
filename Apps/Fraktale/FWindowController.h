@@ -57,40 +57,25 @@
 - (void) selectLodPopUpItemWithIndex:(Int32)index;
 
 // Attractor
-- (void) setATextfieldString:(NSString *)newString;
-- (void) setBTextfieldString:(NSString *)newString;
-- (void) setCTextfieldString:(NSString *)newString;
-- (void) setRTextfieldString:(NSString *)newString;
-- (void) setAttractorSigmaTextfieldString:(NSString *)newString;
-- (void) setAttractorIterationsTextfieldString:(NSString *)newString;
-- (void) setStartingPointXTextfield:(NSString *)newString;
-- (void) setStartingPointYTextfield:(NSString *)newString;
-- (void) setStartingPointZTextfield:(NSString *)newString;
+- (void) setATextfieldString:(Float)newValue;
+- (void) setBTextfieldString:(Float)newValue;
+- (void) setCTextfieldString:(Float)newValue;
+- (void) setRTextfieldString:(Float)newValue;
+- (void) setAttractorSigmaTextfieldString:(Float)newValue;
+- (void) setAttractorIterationsTextfieldString:(Int32)newValue;
+- (void) setStartingPointXTextfieldString:(Float)newValue;
+- (void) setStartingPointYTextfieldString:(Float)newValue;
+- (void) setStartingPointZTextfieldString:(Float)newValue;
 
 // Terrain
 - (void) selectLod:(id)sender;
-- (void) setWidth:(id)sender;
-- (void) setLength:(id)sender;
-- (void) setMaximumHeight:(id)sender;
-- (void) setMinimumHeight:(id)sender;
 - (void) selectRngOne:(id)sender;
 - (void) selectRngTwo:(id)sender;
 - (void) setRngOneSeed:(id)sender;
 - (void) setRngTwoSeed:(id)sender;
-- (void) setSigma:(id)sender;
-- (void) setH:(id)sender;
-- (void) setIterations:(id)sender;
 
 // Attractor
-- (void) setA:(id)sender;
-- (void) setB:(id)sender;
-- (void) setC:(id)sender;
-- (void) setR:(id)sender;
-- (void) setLorentzSigma:(id)sender;
-- (void) setStartingPointX:(id)sender;
-- (void) setStartingPointY:(id)sender;
-- (void) setStartingPointZ:(id)sender;
-- (void) setNumberOfIterations:(id)sender;
+- (void) selectAttractorType:(id)sender;
 
 // Buttons
 - (void) reset:(id)sender;

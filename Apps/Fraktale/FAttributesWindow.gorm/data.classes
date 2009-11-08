@@ -1,0 +1,68 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FWindowController = {
+	Actions = (
+	    "selectLod:",
+	    "setWidth:",
+	    "setLength:",
+	    "setMaximumHeight:",
+	    "setMinimumHeight:",
+	    "selectRngOne:",
+	    "selectRngTwo:",
+	    "setRngOneSeed:",
+	    "setRngTwoSeed:",
+	    "setSigma:",
+	    "setH:",
+	    "generate:",
+	    "setIterations:",
+	    "reset:",
+	    "selectAttractorType:"
+	);
+	Outlets = (
+	    lodPopUp,
+	    widthTextfield,
+	    lengthTextfield,
+	    minimumHeightTextfield,
+	    maximumHeightTextfield,
+	    rngOnePopUp,
+	    rngTwoPopUp,
+	    rngOneSeedTextfield,
+	    rngTwoSeedTextfield,
+	    sigmaTextfield,
+	    hTextfield,
+	    iterationsTextfield,
+	    generateButton,
+	    aTextfield,
+	    attractorSigmaTextfield,
+	    bTextfield,
+	    cTextfield,
+	    attractorIterationsTextfield,
+	    rTextfield,
+	    startingPointXTextfield,
+	    startingPointYTextfield,
+	    startingPointZTextfield,
+	    typePopUp
+	);
+	Super = NSWindowController;
+    };
+    FirstResponder = {
+	Actions = (
+	    "generate:",
+	    "selectAttractorType:",
+	    "reset:",
+	    "selectLod:",
+	    "selectRngOne:",
+	    "selectRngTwo:",
+	    "setH:",
+	    "setIterations:",
+	    "setLength:",
+	    "setMaximumHeight:",
+	    "setMinimumHeight:",
+	    "setRngOneSeed:",
+	    "setRngTwoSeed:",
+	    "setSigma:",
+	    "setWidth:"
+	);
+	Super = NSObject;
+    };
+}

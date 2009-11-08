@@ -1,4 +1,5 @@
 #import "NP.h"
+#import "FCore.h"
 #import "FAttractor.h"
 
 @implementation FAttractor
@@ -39,30 +40,45 @@
 
     if ( [ attractorTypeName isEqual:@"Lorentz" ] )
     {
-        sigma = [[ dictionary objectForKey:@"Sigma" ] floatValue ];
-        b = [[ dictionary objectForKey:@"B" ] floatValue ];
-        r = [[ dictionary objectForKey:@"R" ] floatValue ];
-        numberOfIterations = [[ dictionary objectForKey:@"Iterations" ] intValue ];
+        Float sigma = [[ dictionary objectForKey:@"Sigma" ] floatValue ];
+        Float b = [[ dictionary objectForKey:@"B" ] floatValue ];
+        Float r = [[ dictionary objectForKey:@"R" ] floatValue ];
+        Int32 numberOfIterations = [[ dictionary objectForKey:@"Iterations" ] intValue ];
 
         NSArray * startingPointStrings = [ dictionary objectForKey:@"StartingPoint" ];
         startingPoint->x = [[ startingPointStrings objectAtIndex:0 ] floatValue ];
         startingPoint->y = [[ startingPointStrings objectAtIndex:1 ] floatValue ];
         startingPoint->z = [[ startingPointStrings objectAtIndex:2 ] floatValue ];
+
+        [[ NP attributesWindowController ] setAttractorSigmaTextfieldString:sigma ];
+        [[ NP attributesWindowController ] setBTextfieldString:b ];
+        [[ NP attributesWindowController ] setRTextfieldString:r ];
+        [[ NP attributesWindowController ] setStartingPointXTextfieldString:startingPoint->x ];
+        [[ NP attributesWindowController ] setStartingPointYTextfieldString:startingPoint->y ];
+        [[ NP attributesWindowController ] setStartingPointZTextfieldString:startingPoint->z ];
+        [[ NP attributesWindowController ] setAttractorIterationsTextfieldString:numberOfIterations ];
 
         return YES;
     }
-
-    if ( [ attractorTypeName isEqual:@"Roessler" ] )
+    else if ( [ attractorTypeName isEqual:@"Roessler" ] )
     {
-        a = [[ dictionary objectForKey:@"A" ] floatValue ];
-        b = [[ dictionary objectForKey:@"B" ] floatValue ];
-        c = [[ dictionary objectForKey:@"C" ] floatValue ];
-        numberOfIterations = [[ dictionary objectForKey:@"Iterations" ] intValue ];
+        Float a = [[ dictionary objectForKey:@"A" ] floatValue ];
+        Float b = [[ dictionary objectForKey:@"B" ] floatValue ];
+        Float c = [[ dictionary objectForKey:@"C" ] floatValue ];
+        Int32 numberOfIterations = [[ dictionary objectForKey:@"Iterations" ] intValue ];
 
         NSArray * startingPointStrings = [ dictionary objectForKey:@"StartingPoint" ];
         startingPoint->x = [[ startingPointStrings objectAtIndex:0 ] floatValue ];
         startingPoint->y = [[ startingPointStrings objectAtIndex:1 ] floatValue ];
         startingPoint->z = [[ startingPointStrings objectAtIndex:2 ] floatValue ];
+
+        [[ NP attributesWindowController ] setATextfieldString:a ];
+        [[ NP attributesWindowController ] setBTextfieldString:b ];
+        [[ NP attributesWindowController ] setCTextfieldString:c ];
+        [[ NP attributesWindowController ] setStartingPointXTextfieldString:startingPoint->x ];
+        [[ NP attributesWindowController ] setStartingPointYTextfieldString:startingPoint->y ];
+        [[ NP attributesWindowController ] setStartingPointZTextfieldString:startingPoint->z ];
+        [[ NP attributesWindowController ] setAttractorIterationsTextfieldString:numberOfIterations ];
 
         return YES;
     }
@@ -73,36 +89,6 @@
 - (void) reset
 {
 
-}
-
-- (void) setA:(Float)newA
-{
-    a = newA;
-}
-
-- (void) setB:(Float)newB
-{
-    b = newB;
-}
-
-- (void) setC:(Float)newC
-{
-    c = newC;
-}
-
-- (void) setR:(Float)newR
-{
-    r = newR;
-}
-
-- (void) setSigma:(Float)newSigma
-{
-    sigma = newSigma;
-}
-
-- (void) setNumberOfIterations:(Int32)newNumberOfIterations
-{
-    numberOfIterations = newNumberOfIterations;
 }
 
 - (void) setupCoordinateCross
@@ -150,7 +136,7 @@
                       indexCount:6 ];
 }
 
-/*- (FVector3) generateLorentzDerivativeWithParametersSigma:(Float)sigma
+- (FVector3) generateLorentzDerivativeWithParametersSigma:(Float)sigma
                                                         B:(Float)b
                                                         R:(Float)r
                                              currentPoint:(FVector3)currentPoint
@@ -191,7 +177,7 @@
                                     startingPoint:(FVector3)startingPoint
 {
 }
-*/
+
 
 - (void) update:(Float)frameTime
 {
