@@ -6,6 +6,7 @@
 #define NP_RNG_CTG		@"ctg"
 #define NP_RNG_MRG		@"mrg"
 #define NP_RNG_CMRG		@"cmrg"
+#define NP_RNG_MERSENNE @"mersenne"
 
 #define NP_RNG_DEFAULT	NP_RNG_TT800
 

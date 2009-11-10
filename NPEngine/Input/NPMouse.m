@@ -1,5 +1,6 @@
 #import <AppKit/NSEvent.h>
 #import <AppKit/NSWindow.h>
+#import <AppKit/NSScreen.h>
 #import <GNUstepGUI/GSDisplayServer.h>
 #import "Core/Basics/NpBasics.h"
 #import "Application/NpApplication.h"
@@ -165,7 +166,10 @@ void reset_mouse_state(NpMouseState * mouseState)
 
 - (void) setPositionInWindow:(NSPoint)newPosition
 {
-    [ GSCurrentServer() setmouseposition:newPosition.x :newPosition.y :[ window windowNumber ]];
+    NSPoint mousePointInWindow = [[ window contentView ] convertPoint:newPosition toView:nil ];
+    NSPoint mousePointOnScreen = [ window convertBaseToScreen:mousePointInWindow ];
+
+    [ GSCurrentServer() setMouseLocation:mousePointOnScreen onScreen:[[ NSScreen mainScreen ] screenNumber ]];
 
     x = xLastFrame = newPosition.x;
     y = yLastFrame = newPosition.y;

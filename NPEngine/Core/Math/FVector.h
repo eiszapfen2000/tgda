@@ -19,6 +19,8 @@ typedef struct FVector3
 }
 FVector3;
 
+typedef FVector3 FNormal;
+
 typedef struct FVector4
 {
     Float x, y, z, w;
