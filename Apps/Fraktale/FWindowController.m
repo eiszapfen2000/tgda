@@ -1,6 +1,8 @@
 #import <Foundation/NSString.h>
 #import <AppKit/NSPopUpButton.h>
 #import <AppKit/NSTextField.h>
+#import <AppKit/NSTabViewItem.h>
+#import <AppKit/NSTabView.h>
 #import "NP.h"
 #import "FCore.h"
 #import "FSceneManager.h"
@@ -47,7 +49,7 @@
 
 - (void)controlTextDidEndEditing:(NSNotification *)aNotification
 {
-    NSLog(@"LAALAA");
+//    NSLog(@"LAALAA");
 
     id textMovement;
 
@@ -297,10 +299,12 @@
 
 - (void) selectAttractorType:(id)sender
 {
+    FAttractor * attractor = [[[[ NP applicationController ] sceneManager ] currentScene ] attractor ];
     Int32 index = [ sender indexOfSelectedItem];
 
-    if ( index == 0 )
+    if ( index == ATTRACTOR_LORENTZ )
     {
+        // Lorentz
         [ aTextfield setEditable:NO ];
         [ cTextfield setEditable:NO ];
         [ aTextfield setBackgroundColor:[NSColor grayColor]];
@@ -311,10 +315,12 @@
         [ rTextfield setBackgroundColor:[NSColor whiteColor]];
         [ attractorSigmaTextfield setBackgroundColor:[NSColor whiteColor]];
 
+        [ attractor setMode:ATTRACTOR_LORENTZ ];
     }
 
-    if ( index == 1 )
+    if ( index == ATTRACTOR_ROESSLER )
     {
+        // Rössler
         [ rTextfield setEditable:NO ];
         [ attractorSigmaTextfield setEditable:NO ];
         [ rTextfield setBackgroundColor:[NSColor grayColor]];
@@ -324,6 +330,8 @@
         [ cTextfield setEditable:YES ];
         [ aTextfield setBackgroundColor:[NSColor whiteColor]];
         [ cTextfield setBackgroundColor:[NSColor whiteColor]];
+
+        [ attractor setMode:ATTRACTOR_ROESSLER ];
     }
 }
 
@@ -334,7 +342,40 @@
 
 - (void) generate:(id)sender
 {
-    //[[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] updateGeometry ];
+    NSString * tabViewItemLabel = [[ tabView selectedTabViewItem ] label ];
+
+    if ( [ tabViewItemLabel isEqual:@"Terrain" ] )
+    {
+        //[[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] updateGeometry ];
+    }
+    // Just to be sure
+    else if ( [ tabViewItemLabel isEqual:@"Attractor" ] )
+    {
+        FAttractor * attractor = [[[[ NP applicationController ] sceneManager ] currentScene ] attractor ];
+
+        Float sigma = [attractorSigmaTextfield floatValue];
+        Float a = [aTextfield floatValue];
+        Float b = [bTextfield floatValue];
+        Float c = [cTextfield floatValue];
+        Float r = [rTextfield floatValue];
+
+        UInt32 numberOfIterations = [ attractorIterationsTextfield intValue ];
+
+        FVector3 startingPoint;
+        startingPoint.x = [ startingPointXTextfield floatValue ];
+        startingPoint.y = [ startingPointYTextfield floatValue ];
+        startingPoint.z = [ startingPointZTextfield floatValue ];
+
+        NSLog(@"%f %f %f %f %f %u %f %f %f", a, b, c, r, sigma, numberOfIterations, startingPoint.x, startingPoint.y, startingPoint.z);
+
+        [ attractor generateAttractorWithParametersA:a
+                                                   B:b
+                                                   C:c
+                                                   R:r
+                                               Sigma:sigma
+                                  numberOfIterations:numberOfIterations
+                                       startingPoint:startingPoint ];
+    }
 }
 
 @end

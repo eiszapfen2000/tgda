@@ -122,8 +122,10 @@
     glLoadIdentity();
     gluLookAt(0.0f,3.0f,0.0f,0.0f,3.0f,-50.0f,0.0f,1.0f,0.0f);*/
 
-    if ( terrain != nil )
-        [ terrain render ];
+    //if ( terrain != nil )
+    //    [ terrain render ];
+
+    [ attractor render ];
 }
 
 @end

@@ -18,8 +18,9 @@
 {
 	self = [ super initWithName:newName parent:newParent ];
 
-    //effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"attractor.cgfx" ];
-    startingPoint = fv3_alloc_init();
+    mode = -1;
+
+    effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"attractor.cgfx" ];
 
     [ self setupCoordinateCross ];
 
@@ -28,8 +29,9 @@
 
 - (void) dealloc
 {
-    startingPoint = fv3_free(startingPoint);
     [ coordinateCross release ];
+    [ roesslerAttractor release ];
+    [ lorentzAttractor release ];
 
 	[ super dealloc ];
 }
@@ -37,6 +39,8 @@
 - (BOOL) loadFromDictionary:(NSDictionary *)dictionary
 {
     NSString * attractorTypeName = [ dictionary objectForKey:@"Type" ];
+
+    FVector3 startingPoint;
 
     if ( [ attractorTypeName isEqual:@"Lorentz" ] )
     {
@@ -46,16 +50,16 @@
         Int32 numberOfIterations = [[ dictionary objectForKey:@"Iterations" ] intValue ];
 
         NSArray * startingPointStrings = [ dictionary objectForKey:@"StartingPoint" ];
-        startingPoint->x = [[ startingPointStrings objectAtIndex:0 ] floatValue ];
-        startingPoint->y = [[ startingPointStrings objectAtIndex:1 ] floatValue ];
-        startingPoint->z = [[ startingPointStrings objectAtIndex:2 ] floatValue ];
+        startingPoint.x = [[ startingPointStrings objectAtIndex:0 ] floatValue ];
+        startingPoint.y = [[ startingPointStrings objectAtIndex:1 ] floatValue ];
+        startingPoint.z = [[ startingPointStrings objectAtIndex:2 ] floatValue ];
 
         [[ NP attributesWindowController ] setAttractorSigmaTextfieldString:sigma ];
         [[ NP attributesWindowController ] setBTextfieldString:b ];
         [[ NP attributesWindowController ] setRTextfieldString:r ];
-        [[ NP attributesWindowController ] setStartingPointXTextfieldString:startingPoint->x ];
-        [[ NP attributesWindowController ] setStartingPointYTextfieldString:startingPoint->y ];
-        [[ NP attributesWindowController ] setStartingPointZTextfieldString:startingPoint->z ];
+        [[ NP attributesWindowController ] setStartingPointXTextfieldString:startingPoint.x ];
+        [[ NP attributesWindowController ] setStartingPointYTextfieldString:startingPoint.y ];
+        [[ NP attributesWindowController ] setStartingPointZTextfieldString:startingPoint.z ];
         [[ NP attributesWindowController ] setAttractorIterationsTextfieldString:numberOfIterations ];
 
         return YES;
@@ -68,16 +72,16 @@
         Int32 numberOfIterations = [[ dictionary objectForKey:@"Iterations" ] intValue ];
 
         NSArray * startingPointStrings = [ dictionary objectForKey:@"StartingPoint" ];
-        startingPoint->x = [[ startingPointStrings objectAtIndex:0 ] floatValue ];
-        startingPoint->y = [[ startingPointStrings objectAtIndex:1 ] floatValue ];
-        startingPoint->z = [[ startingPointStrings objectAtIndex:2 ] floatValue ];
+        startingPoint.x = [[ startingPointStrings objectAtIndex:0 ] floatValue ];
+        startingPoint.y = [[ startingPointStrings objectAtIndex:1 ] floatValue ];
+        startingPoint.z = [[ startingPointStrings objectAtIndex:2 ] floatValue ];
 
         [[ NP attributesWindowController ] setATextfieldString:a ];
         [[ NP attributesWindowController ] setBTextfieldString:b ];
         [[ NP attributesWindowController ] setCTextfieldString:c ];
-        [[ NP attributesWindowController ] setStartingPointXTextfieldString:startingPoint->x ];
-        [[ NP attributesWindowController ] setStartingPointYTextfieldString:startingPoint->y ];
-        [[ NP attributesWindowController ] setStartingPointZTextfieldString:startingPoint->z ];
+        [[ NP attributesWindowController ] setStartingPointXTextfieldString:startingPoint.x ];
+        [[ NP attributesWindowController ] setStartingPointYTextfieldString:startingPoint.y ];
+        [[ NP attributesWindowController ] setStartingPointZTextfieldString:startingPoint.z ];
         [[ NP attributesWindowController ] setAttractorIterationsTextfieldString:numberOfIterations ];
 
         return YES;
@@ -89,6 +93,16 @@
 - (void) reset
 {
 
+}
+
+- (NpState) mode
+{
+    return mode;
+}
+
+- (void) setMode:(NpState)newMode
+{
+    mode = newMode;
 }
 
 - (void) setupCoordinateCross
@@ -155,6 +169,40 @@
                                   numberOfIterations:(UInt32)numberOfIterations
                                        startingPoint:(FVector3)startingPoint
 {
+    TEST_RELEASE(lorentzAttractor);
+    lorentzAttractor  = [[ NPVertexBuffer alloc ] initWithName:@"Lorentz"  parent:self ];
+
+    FVector3 * positions = ALLOC_ARRAY(FVector3, numberOfIterations);
+    Int32 * indices = ALLOC_ARRAY(Int32, numberOfIterations);
+
+    float factor = 0.01f;
+
+//    FVector3 lastPosition = startingPoint;
+//    FVector3 lastDerivative = [ self generateLorentzDerivativeWithParametersSigma:sigma B:b R:r currentPoint:lastPosition ];
+
+    FVector3 currentPosition = startingPoint;
+    FVector3 currentDerivative = [ self generateLorentzDerivativeWithParametersSigma:sigma B:b R:r currentPoint:currentPosition ];
+
+    for ( UInt32 i = 0; i < numberOfIterations; i++ )
+    {
+        positions[i] = currentPosition;
+
+        //NSLog(@"%f %f %f", currentPosition.x, currentPosition.y, currentPosition.z);
+
+        indices[i] = i;
+
+        currentDerivative = [ self generateLorentzDerivativeWithParametersSigma:sigma B:b R:r currentPoint:currentPosition ];
+        currentPosition.x = currentPosition.x + factor * currentDerivative.x;
+        currentPosition.y = currentPosition.y + factor * currentDerivative.y;
+        currentPosition.z = currentPosition.z + factor * currentDerivative.z;        
+    }
+
+    [ lorentzAttractor setPositions:(Float *)positions
+                elementsForPosition:3
+                         dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT
+                        vertexCount:numberOfIterations ];
+
+    [ lorentzAttractor setIndices:indices indexCount:numberOfIterations ];
 }
 
 - (FVector3) generateRoesslerDerivativeWithParametersA:(Float)a
@@ -176,6 +224,34 @@
                                numberOfIterations:(UInt32)numberOfIterations
                                     startingPoint:(FVector3)startingPoint
 {
+    TEST_RELEASE(roesslerAttractor);
+    roesslerAttractor = [[ NPVertexBuffer alloc ] initWithName:@"Roessler" parent:self ];
+}
+
+- (void) generateAttractorWithParametersA:(Float)a
+                                        B:(Float)b
+                                        C:(Float)c
+                                        R:(Float)r
+                                      Sigma:(Float)sigma
+                         numberOfIterations:(UInt32)numberOfIterations
+                              startingPoint:(FVector3)startingPoint
+{
+    if ( mode == ATTRACTOR_LORENTZ )
+    {
+        [ self generateLorentzAttractorWithParametersSigma:sigma
+                                                         B:b
+                                                         R:r
+                                        numberOfIterations:numberOfIterations
+                                             startingPoint:startingPoint ];
+    }
+    else if ( mode == ATTRACTOR_ROESSLER )
+    {
+        [ self generateRoesslerAttractorWithParametersA:a
+                                                      B:b
+                                                      C:c
+                                     numberOfIterations:numberOfIterations
+                                          startingPoint:startingPoint ];
+    }
 }
 
 
@@ -186,6 +262,24 @@
 
 - (void) render
 {
+    [ effect activateTechniqueWithName:@"coordinate_cross" ];
+    [ coordinateCross renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_LINES ];
+    [ effect deactivate ];
+
+    if ( (mode == ATTRACTOR_LORENTZ) && (lorentzAttractor != nil) )
+    {
+        [ effect activateTechniqueWithName:@"attractor" ];
+        [ lorentzAttractor renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_LINE_STRIP ];
+        [ effect deactivate ];
+    }
+
+    if ( (mode == ATTRACTOR_ROESSLER) && (roesslerAttractor != nil) )
+    {
+        [ effect activateTechniqueWithName:@"attractor" ];
+        [ roesslerAttractor renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_LINE_STRIP ];
+        [ effect deactivate ];
+    }
+
     //[ coordinateCross render ];
 }
 

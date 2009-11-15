@@ -41,7 +41,8 @@
 	    startingPointXTextfield,
 	    startingPointYTextfield,
 	    startingPointZTextfield,
-	    typePopUp
+	    typePopUp,
+	    tabView
 	);
 	Super = NSWindowController;
     };

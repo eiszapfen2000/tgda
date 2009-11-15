@@ -3,6 +3,8 @@
 
 @interface FWindowController : NSWindowController
 {
+    id tabView;
+
     // Terrain Stuff
     id lodPopUp;
 

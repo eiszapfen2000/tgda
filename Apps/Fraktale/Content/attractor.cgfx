@@ -1,0 +1,90 @@
+float4x4 modelmatrix : NPMODEL;
+float4x4 viewmatrix  : NPVIEW;
+float4x4 projectionmatrix : NPPROJECTION;
+
+struct CINPUTDATA
+{
+	float3 position			: POSITION;
+	float3 color		    : COLOR0;
+};
+
+struct CVOUTPUTDATA
+{
+	float4 position			: POSITION;
+	float3 color			: COLOR0;
+};
+
+CVOUTPUTDATA mvertexshader_coordinate_cross(CINPUTDATA input)
+{
+	CVOUTPUTDATA output;
+
+	float4x4 mvp = mul(projectionmatrix,mul(viewmatrix,modelmatrix));
+
+	output.position = mul(mvp, float4(input.position, 1.0f));
+    output.color = input.color;
+	
+	return output;
+}
+
+struct AINPUTDATA
+{
+	float3 position			: POSITION;
+};
+
+struct AVOUTPUTDATA
+{
+	float4 position			: POSITION;
+};
+
+AVOUTPUTDATA mvertexshader_attractor(AINPUTDATA input)
+{
+	AVOUTPUTDATA output;
+
+	float4x4 mvp = mul(projectionmatrix,mul(viewmatrix,modelmatrix));
+
+	output.position = mul(mvp, float4(input.position, 1.0f));
+	
+	return output;
+}
+
+struct FOUTPUTDATA
+{
+	float4 color			: COLOR0;
+};
+
+FOUTPUTDATA mfragmentshader_coordinate_cross(CVOUTPUTDATA input)
+{
+	FOUTPUTDATA output;
+
+    output.color = float4(input.color, 1.0f);
+
+	return output;
+}
+
+FOUTPUTDATA mfragmentshader_attractor(AVOUTPUTDATA input)
+{
+	FOUTPUTDATA output;
+
+    output.color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	return output;
+}
+
+technique coordinate_cross
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mfragmentshader_coordinate_cross();
+		VertexProgram = compile vp40 mvertexshader_coordinate_cross();
+	}
+}
+
+technique attractor
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mfragmentshader_attractor();
+		VertexProgram = compile vp40 mvertexshader_attractor();
+	}
+}
+
