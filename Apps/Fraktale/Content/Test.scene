@@ -20,11 +20,11 @@
     };
     Attractor = 
     {
-        Type = "Roessler";
-        A = "5.0";
-        B = "10.0";
-        C = "20.0";
+        Type = "Lorentz";
+        Sigma = "10.0";
+        B = "2.6666";
+        R = "28.0";
         Iterations = "10";
-        StartingPoint = ("5.0", "2.0", "3.0");
+        StartingPoint = ("0.0", "0.0", "0.0");
     };
 }

@@ -4,12 +4,16 @@
 @class NPVertexBuffer;
 @class NPEffect;
 
+#define ATTRACTOR_LORENTZ   0
+#define ATTRACTOR_ROESSLER  1
+
 @interface FAttractor : NPObject
 {
-    FVector3 * startingPoint;
-
+    NpState mode;
     NPEffect * effect;
     NPVertexBuffer * coordinateCross;
+    NPVertexBuffer * lorentzAttractor;
+    NPVertexBuffer * roesslerAttractor;
 }
 
 - (id) init;
@@ -20,8 +24,10 @@
 - (BOOL) loadFromDictionary:(NSDictionary *)dictionary;
 - (void) reset;
 
-- (void) setupCoordinateCross;
+- (NpState) mode;
+- (void) setMode:(NpState)newMode;
 
+- (void) setupCoordinateCross;
 
 - (FVector3) generateLorentzDerivativeWithParametersSigma:(Float)sigma
                                                         B:(Float)b
@@ -48,6 +54,15 @@
                                numberOfIterations:(UInt32)numberOfIterations
                                     startingPoint:(FVector3)startingPoint
                                                  ;
+
+- (void) generateAttractorWithParametersA:(Float)a
+                                        B:(Float)b
+                                        C:(Float)c
+                                        R:(Float)r
+                                      Sigma:(Float)sigma
+                         numberOfIterations:(UInt32)numberOfIterations
+                              startingPoint:(FVector3)startingPoint
+                                           ;
 
 - (void) update:(Float)frameTime;
 - (void) render;
