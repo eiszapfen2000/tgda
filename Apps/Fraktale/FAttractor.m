@@ -177,18 +177,12 @@
 
     float factor = 0.01f;
 
-//    FVector3 lastPosition = startingPoint;
-//    FVector3 lastDerivative = [ self generateLorentzDerivativeWithParametersSigma:sigma B:b R:r currentPoint:lastPosition ];
-
     FVector3 currentPosition = startingPoint;
     FVector3 currentDerivative = [ self generateLorentzDerivativeWithParametersSigma:sigma B:b R:r currentPoint:currentPosition ];
 
     for ( UInt32 i = 0; i < numberOfIterations; i++ )
     {
         positions[i] = currentPosition;
-
-        //NSLog(@"%f %f %f", currentPosition.x, currentPosition.y, currentPosition.z);
-
         indices[i] = i;
 
         currentDerivative = [ self generateLorentzDerivativeWithParametersSigma:sigma B:b R:r currentPoint:currentPosition ];
@@ -226,6 +220,32 @@
 {
     TEST_RELEASE(roesslerAttractor);
     roesslerAttractor = [[ NPVertexBuffer alloc ] initWithName:@"Roessler" parent:self ];
+
+    FVector3 * positions = ALLOC_ARRAY(FVector3, numberOfIterations);
+    Int32 * indices = ALLOC_ARRAY(Int32, numberOfIterations);
+
+    float factor = 0.01f;
+
+    FVector3 currentPosition = startingPoint;
+    FVector3 currentDerivative = [ self generateRoesslerDerivativeWithParametersA:a B:b C:c currentPoint:currentPosition ];
+
+    for ( UInt32 i = 0; i < numberOfIterations; i++ )
+    {
+        positions[i] = currentPosition;
+        indices[i] = i;
+
+        currentDerivative = [ self generateRoesslerDerivativeWithParametersA:a B:b C:c currentPoint:currentPosition ];
+        currentPosition.x = currentPosition.x + factor * currentDerivative.x;
+        currentPosition.y = currentPosition.y + factor * currentDerivative.y;
+        currentPosition.z = currentPosition.z + factor * currentDerivative.z;        
+    }
+
+    [ roesslerAttractor setPositions:(Float *)positions
+                elementsForPosition:3
+                         dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT
+                        vertexCount:numberOfIterations ];
+
+    [ roesslerAttractor setIndices:indices indexCount:numberOfIterations ];
 }
 
 - (void) generateAttractorWithParametersA:(Float)a
