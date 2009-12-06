@@ -366,8 +366,6 @@
         startingPoint.y = [ startingPointYTextfield floatValue ];
         startingPoint.z = [ startingPointZTextfield floatValue ];
 
-        NSLog(@"%f %f %f %f %f %u %f %f %f", a, b, c, r, sigma, numberOfIterations, startingPoint.x, startingPoint.y, startingPoint.z);
-
         [ attractor generateAttractorWithParametersA:a
                                                    B:b
                                                    C:c

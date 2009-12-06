@@ -74,7 +74,7 @@
 
     camera = [[ FCamera alloc ] initWithName:@"Camera" parent:self ];
 
-    FVector3 pos = { 0.0f, 3.0f, 0.0f };
+    FVector3 pos = { 0.0f, 0.2f, 0.0f };
     [ camera setPosition:&pos ];
     //[ camera cameraRotateUsingYaw:90.0f andPitch:0.0f ];
 }
