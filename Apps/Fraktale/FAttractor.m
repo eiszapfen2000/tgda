@@ -207,7 +207,7 @@
     FVector3 result;
     result.x = -currentPoint.y - currentPoint.z;
     result.y = currentPoint.x + a * currentPoint.y;
-    result.z = b * currentPoint.z * ( currentPoint.x - c );
+    result.z = b + currentPoint.z * ( currentPoint.x - c );
 
     return result;
 }
@@ -218,6 +218,8 @@
                                numberOfIterations:(UInt32)numberOfIterations
                                     startingPoint:(FVector3)startingPoint
 {
+    // starting point 0.5 0.5 0.5 gives good results
+
     TEST_RELEASE(roesslerAttractor);
     roesslerAttractor = [[ NPVertexBuffer alloc ] initWithName:@"Roessler" parent:self ];
 
@@ -282,12 +284,18 @@
 
 - (void) render
 {
+    [[[ NP Core ] transformationStateManager ] resetCurrentModelMatrix ];
     [ effect activateTechniqueWithName:@"coordinate_cross" ];
     [ coordinateCross renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_LINES ];
     [ effect deactivate ];
 
+    FMatrix4 scale;
+
     if ( (mode == ATTRACTOR_LORENTZ) && (lorentzAttractor != nil) )
     {
+        fm4_msss_scale_matrix_xyz(&scale, 0.1f, 0.1f, 0.1f);
+        [[[[ NP Core ] transformationStateManager ] currentTransformationState ] setModelMatrix:&scale ];
+
         [ effect activateTechniqueWithName:@"attractor" ];
         [ lorentzAttractor renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_LINE_STRIP ];
         [ effect deactivate ];
@@ -295,12 +303,13 @@
 
     if ( (mode == ATTRACTOR_ROESSLER) && (roesslerAttractor != nil) )
     {
+        fm4_msss_scale_matrix_xyz(&scale, 0.5f, 0.5f, 0.5f);
+        [[[[ NP Core ] transformationStateManager ] currentTransformationState ] setModelMatrix:&scale ];
+
         [ effect activateTechniqueWithName:@"attractor" ];
         [ roesslerAttractor renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_LINE_STRIP ];
         [ effect deactivate ];
     }
-
-    //[ coordinateCross render ];
 }
 
 @end
