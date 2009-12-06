@@ -505,6 +505,32 @@ void fm4_mv_scale_matrix(FMatrix4 * m, FVector3 * v)
     M_EL(*m,2,2) = v->z;
 }
 
+void fm4_ms_scale_matrix_x(FMatrix4 * m, Float x)
+{
+    fm4_m_set_identity(m);
+    M_EL(*m,0,0) = x;
+}
+
+void fm4_ms_scale_matrix_y(FMatrix4 * m, Float y)
+{
+    fm4_m_set_identity(m);
+    M_EL(*m,1,1) = y;
+}
+
+void fm4_ms_scale_matrix_z(FMatrix4 * m, Float z)
+{
+    fm4_m_set_identity(m);
+    M_EL(*m,2,2) = z;
+}
+
+void fm4_msss_scale_matrix_xyz(FMatrix4 * m, Float x, Float y, Float z)
+{
+    fm4_m_set_identity(m);
+    M_EL(*m,0,0) = x;
+    M_EL(*m,1,1) = y;
+    M_EL(*m,2,2) = z;
+}
+
 void fm4_vvv_look_at_matrix_m(FVector3 * eyePosition, FVector3 * lookAtPosition, FVector3 * upVector, FMatrix4 * result)
 {
     fm4_m_set_identity(result);
