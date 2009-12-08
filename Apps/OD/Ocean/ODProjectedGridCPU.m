@@ -273,10 +273,11 @@
 
     fv4_vv_sub_v(&resultF, &resultN, &resultF);
 
+    #warning FIXME This works for y = 0 only
     Float t = (resultN.w * basePlane->d - resultN.y) / ( resultF.y - resultF.w * basePlane->d );
 
     FVector4 result;
-    fv4_sv_scale_v(&t, &resultF, &result);
+    fv4_sv_scale_v(t, &resultF, &result);
     fv4_vv_add_v(&result, &resultN, &result);
 
     return result;

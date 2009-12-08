@@ -9,9 +9,9 @@
 
 #import "ODFrustum.h"
 
-int compare_floats (const float * a, const float * b)
+int compare_floats (const void * a, const void * b)
 {
-    float temp = *a - *b;
+    float temp = *((float *)a) - *((float *)b);
 
     if (temp > 0.0f)
     {
@@ -206,22 +206,22 @@ int compare_floats (const float * a, const float * b)
     fv3_v_normalise(right);
 
     FVector3 * tmp = fv3_alloc_init_with_fv3(forward);
-    fv3_sv_scale(&farPlane, tmp);
+    fv3_sv_scale(farPlane, tmp);
     fv3_vv_add_v(position, tmp, positionToFarPlaneCenter);
 
-    fv3_v_init_with_fv3(tmp,forward);
-    fv3_sv_scale(&nearPlane, tmp);
+    fv3_vv_init_with_fv3(tmp,forward);
+    fv3_sv_scale(nearPlane, tmp);
     fv3_vv_add_v(position, tmp, positionToNearPlaneCenter);
 
-    fv3_v_init_with_fv3(farPlaneHalfWidthV, right);
-    fv3_v_init_with_fv3(nearPlaneHalfWidthV, right);
-    fv3_v_init_with_fv3(farPlaneHalfHeightV, up);
-    fv3_v_init_with_fv3(nearPlaneHalfHeightV, up);
+    fv3_vv_init_with_fv3(farPlaneHalfWidthV, right);
+    fv3_vv_init_with_fv3(nearPlaneHalfWidthV, right);
+    fv3_vv_init_with_fv3(farPlaneHalfHeightV, up);
+    fv3_vv_init_with_fv3(nearPlaneHalfHeightV, up);
 
-    fv3_sv_scale(&farPlaneHalfWidth , farPlaneHalfWidthV);
-    fv3_sv_scale(&nearPlaneHalfWidth, nearPlaneHalfWidthV);
-    fv3_sv_scale(&farPlaneHalfHeight, farPlaneHalfHeightV);
-    fv3_sv_scale(&nearPlaneHalfHeight, nearPlaneHalfHeightV);
+    fv3_sv_scale(farPlaneHalfWidth , farPlaneHalfWidthV);
+    fv3_sv_scale(nearPlaneHalfWidth, nearPlaneHalfWidthV);
+    fv3_sv_scale(farPlaneHalfHeight, farPlaneHalfHeightV);
+    fv3_sv_scale(nearPlaneHalfHeight, nearPlaneHalfHeightV);
 
     // near plane stuff
     fv3_vv_add_v(nearPlaneHalfHeightV, nearPlaneHalfWidthV, tmp);
