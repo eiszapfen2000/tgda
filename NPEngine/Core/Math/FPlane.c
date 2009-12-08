@@ -76,7 +76,7 @@ Int fplane_pr_intersect_with_ray_v(FPlane * plane, FRay * ray, FVector3 * result
 
     Float t = ( plane->d - raypoint_dot_planenormal ) / raydirection_dot_planenormal;
 
-    fv3_sv_scale_v(&t, &(ray->direction), result);
+    fv3_sv_scale_v(t, &(ray->direction), result);
     fv3_vv_add_v(result, &(ray->point), result);
 
     Int r = 1;

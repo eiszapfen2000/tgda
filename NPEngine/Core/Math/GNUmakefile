@@ -16,6 +16,8 @@ Ray.c \
 FRay.c \
 FRectangle.c \
 FVertex.c \
+Pluecker.c \
+FPluecker.c \
 NpMath.c
 
 libNPEngineCoreMath_HEADER_FILES = \
@@ -28,6 +30,8 @@ Quaternion.h \
 Random.h \
 Vector.h \
 FRectangle.h \
+Pluecker.h \
+FPluecker.h \
 NpMath.h
 
 include $(TGDA_DIR)/GNUmakefile.flags

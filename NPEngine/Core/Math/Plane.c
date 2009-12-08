@@ -64,7 +64,7 @@ Int plane_pr_intersect_with_ray_v(Plane * plane, Ray * ray, Vector3 * result)
 
     Double t = ( plane->d - raypoint_dot_planenormal ) / raydirection_dot_planenormal;
 
-    v3_sv_scale_v(&t, &(ray->direction), result);
+    v3_sv_scale_v(t, &(ray->direction), result);
     v3_vv_add_v(result, &(ray->point), result);
 
     return 1;

@@ -26,6 +26,9 @@
 #include "FTexCoord.h"
 #include "FVertex.h"
 
+#include "Pluecker.h"
+#include "FPluecker.h"
+
 void npmath_initialise();
 
 #endif
