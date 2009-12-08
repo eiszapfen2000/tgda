@@ -24,7 +24,7 @@ FMatrix2 * fm2_alloc()
 FMatrix2 * fm2_alloc_init()
 {
     FMatrix2 * tmp = npfreenode_alloc(NP_FMATRIX2_FREELIST);
-    fm2_set_identity(tmp);
+    fm2_m_set_identity(tmp);
 
     return tmp;
 }
@@ -34,7 +34,7 @@ FMatrix2 * fm2_free(FMatrix2 * v)
     return npfreenode_free(v, NP_FMATRIX2_FREELIST);
 }
 
-void fm2_set_identity(FMatrix2 * m)
+void fm2_m_set_identity(FMatrix2 * m)
 {
     M_EL(*m,0,0) = M_EL(*m,1,1) = 1.0;
     M_EL(*m,0,1) = M_EL(*m,1,0) = 0.0;
@@ -107,6 +107,110 @@ Float fm2_determinant(const FMatrix2 * const m)
     return M_EL(*m,0,0) * M_EL(*m,1,1) - M_EL(*m,0,1)*M_EL(*m,1,0);
 }
 
+FMatrix2 fm2_m_transposed(const FMatrix2 const * m)
+{
+    FMatrix2 transpose;
+    fm2_m_transpose_m(m, &transpose);
+    
+    return transpose;
+}
+
+FMatrix2 fm2_mm_add(const FMatrix2 * const m1, const FMatrix2 * const m2)
+{
+    FMatrix2 result;
+    fm2_mm_add_m(m1, m2, &result);
+
+    return result;
+}
+
+FMatrix2 fm2_mm_subtract(const FMatrix2 * const m1, const FMatrix2 * const m2)
+{
+    FMatrix2 result;
+    fm2_mm_subtract_m(m1, m2, &result);
+
+    return result;
+}
+
+FMatrix2 fm2_mm_multiply(const FMatrix2 * const m1, const FMatrix2 * const m2)
+{
+    FMatrix2 result;
+    fm2_mm_multiply_m(m1, m2, &result);
+
+    return result;
+}
+
+FVector2 fm2_vm_multiply(const FVector2 * const v, const FMatrix2 * const m)
+{
+    FVector2 result;
+    fm2_vm_multiply_v(v, m, &result);
+
+    return result;
+}
+
+FVector2 fm2_mv_multiply(const FMatrix2 * const m, const FVector2 * const v)
+{
+    FVector2 result;
+    fm2_mv_multiply_v(m, v, &result);
+
+    return result;
+}
+
+FMatrix2 fm2_m_inverse(const FMatrix2 * const m)
+{
+    FMatrix2 result;
+    fm2_m_inverse_m(m, &result);
+
+    return result;
+}
+
+FVector3 fm3_m_get_right_vector(const FMatrix3 * const m)
+{
+    FVector3 right;
+    fm3_m_get_right_vector_v(m, &right);
+
+    return right;
+}
+
+FVector3 fm3_m_get_up_vector(const FMatrix3 * const m)
+{
+    FVector3 up;
+    fm3_m_get_up_vector_v(m, &up);
+
+    return up;
+}
+
+FVector3 fm3_m_get_forward_vector(const FMatrix3 * const m)
+{
+    FVector3 forward;
+    fm3_m_get_forward_vector_v(m, &forward);
+
+    return forward;
+}
+
+FMatrix3 fm3_s_rotatex(Float degree)
+{
+    FMatrix3 rotate;
+    fm3_s_rotatex_m(degree, &rotate);
+
+    return rotate;
+}
+
+FMatrix3 fm3_s_rotatey(Float degree)
+{
+    FMatrix3 rotate;
+    fm3_s_rotatey_m(degree, &rotate);
+
+    return rotate;
+}
+
+FMatrix3 fm3_s_rotatez(Float degree)
+{
+    FMatrix3 rotate;
+    fm3_s_rotatez_m(degree, &rotate);
+
+    return rotate;
+}
+
 const char * fm2_m_to_string(FMatrix2 * m)
 {
     char * fm2string;
@@ -120,6 +224,8 @@ const char * fm2_m_to_string(FMatrix2 * m)
 
     return fm2string;
 }
+
+//-----------------------------------------------------------------------------
 
 FMatrix3 * fm3_alloc()
 {
@@ -252,28 +358,6 @@ void fm3_m_inverse_m(const FMatrix3 * const m1, FMatrix3 * m2)
     M_EL(*m2,2,2) = scalar *   ( M_EL(*m1,0,0)*M_EL(*m1,1,1) - M_EL(*m1,1,0)*M_EL(*m1,0,1) );
 }
 
-
-/*
-  If Kramer's rule is applied to a matrix M:
-
-        | A B C |
-    M = | D E F |
-        | G H I |
-
-  then the determinant is calculated as follows:
-
-    det M = A * (EI - HF) - B * (DI - GF) + C * (DH - GE)
-*/
-
-Float fm3_m_determinant(const FMatrix3 * const m)
-{
-    Float EIminusHF = M_EL(*m,1,1)*M_EL(*m,2,2) - M_EL(*m,1,2)*M_EL(*m,2,1);
-    Float DIminusGF = M_EL(*m,0,1)*M_EL(*m,2,2) - M_EL(*m,0,2)*M_EL(*m,2,1);
-    Float DHminusGE = M_EL(*m,0,1)*M_EL(*m,1,2) - M_EL(*m,0,2)*M_EL(*m,1,1);
-
-    return M_EL(*m,0,0) * EIminusHF - M_EL(*m,1,0) * DIminusGF + M_EL(*m,2,0) * DHminusGE;
-}
-
 void fm3_m_get_right_vector_v(const FMatrix3 * const m, FVector3 * right)
 {
     right->x = M_EL(*m,0,0);
@@ -326,6 +410,83 @@ void fm3_s_rotatez_m(Float degree, FMatrix3 * result)
     M_EL(*result,0,0) = M_EL(*result,1,1) = cos(angle);
     M_EL(*result,0,1) = sin(angle);
     M_EL(*result,1,0) = -M_EL(*result,0,1);
+}
+
+/*
+  If Kramer's rule is applied to a matrix M:
+
+        | A B C |
+    M = | D E F |
+        | G H I |
+
+  then the determinant is calculated as follows:
+
+    det M = A * (EI - HF) - B * (DI - GF) + C * (DH - GE)
+*/
+
+Float fm3_m_determinant(const FMatrix3 * const m)
+{
+    Float EIminusHF = M_EL(*m,1,1)*M_EL(*m,2,2) - M_EL(*m,1,2)*M_EL(*m,2,1);
+    Float DIminusGF = M_EL(*m,0,1)*M_EL(*m,2,2) - M_EL(*m,0,2)*M_EL(*m,2,1);
+    Float DHminusGE = M_EL(*m,0,1)*M_EL(*m,1,2) - M_EL(*m,0,2)*M_EL(*m,1,1);
+
+    return M_EL(*m,0,0) * EIminusHF - M_EL(*m,1,0) * DIminusGF + M_EL(*m,2,0) * DHminusGE;
+}
+
+FMatrix3 fm3_m_transposed(const FMatrix3 const * m)
+{
+    FMatrix3 transpose;
+    fm3_m_transpose_m(m, &transpose);
+
+    return transpose;
+}
+
+FMatrix3 fm3_mm_add(const FMatrix3 * const m1, const FMatrix3 * const m2)
+{
+    FMatrix3 result;
+    fm3_mm_add_m(m1, m2, &result);
+
+    return result;
+}
+
+FMatrix3 fm3_mm_subtract(const FMatrix3 * const m1, const FMatrix3 * const m2)
+{
+    FMatrix3 result;
+    fm3_mm_subtract_m(m1, m2, &result);
+
+    return result;
+}
+
+FMatrix3 fm3_mm_multiply(const FMatrix3 * const m1, const FMatrix3 * const m2)
+{
+    FMatrix3 result;
+    fm3_mm_multiply_m(m1, m2, &result);
+
+    return result;
+}
+
+FVector3 fm3_vm_multiply(const FVector3 * const v, const FMatrix3 * const m)
+{
+    FVector3 result;
+    fm3_vm_multiply_v(v, m, &result);
+
+    return result;
+}
+
+FVector3 fm3_mv_multiply(const FMatrix3 * const m, const FVector3 * const v)
+{
+    FVector3 result;
+    fm3_mv_multiply_v(m, v, &result);
+
+    return result;
+}
+
+FMatrix3 fm3_m_inverse(const FMatrix3 * const m)
+{
+    FMatrix3 result;
+    fm3_m_inverse_m(m, &result);
+
+    return result;
 }
 
 const char * fm3_m_to_string(FMatrix3 * m)
