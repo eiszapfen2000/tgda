@@ -72,6 +72,8 @@
     referenceWhite = 2.5f;
     key = 1.0f;
 
+    gammaTexture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:@"SunDown.jpg" ];
+
     return self;
 }
 
@@ -244,8 +246,29 @@
     // clear framebuffer/depthbuffer
     //[[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
-    [ self renderScene ];
-    [ self renderMenu  ];
+    //[ self renderScene ];
+    //[ self renderMenu  ];
+
+    [[[ NP Graphics ] orthographicRendering ] activate ];
+
+    FRectangle rect;
+    rect.min.x = -0.5f;
+    rect.min.y = -0.5f;
+    rect.max.x = 1.0f;
+    rect.max.y = 1.0f;
+
+    FRectangle texCoords;
+    texCoords.min.x = texCoords.min.y = 0.0f;
+    texCoords.max.x = texCoords.max.y = 1.0f;
+
+    [ gammaTexture activateAtColorMapIndex:0 ];
+    [ fullscreenEffect activateTechniqueWithName:@"fullscreen" ];
+
+    [ NPPrimitivesRendering renderFRectangleGeometry:&rect withTexCoords:&texCoords ];
+
+    [ fullscreenEffect deactivate ];
+
+    [[[ NP Graphics ] orthographicRendering ] deactivate ];
 
 
     // Bind FBO, attach float color scene texture and depth renderbuffer

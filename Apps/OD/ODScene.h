@@ -26,6 +26,8 @@
     Float referenceWhite;
     Float key;
     CGparameter toneMappingParameters;
+
+    id gammaTexture;
 }
 
 - (id) init;

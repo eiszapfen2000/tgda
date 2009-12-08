@@ -89,7 +89,7 @@
 	fm4_m_set_identity(projection);
 
 	fquat_set_identity(orientation);
-	fv3_v_zeros(position);
+	fv3_v_init_with_zeros(position);
 }
 
 - (Float) fov

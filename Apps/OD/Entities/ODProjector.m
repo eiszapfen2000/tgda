@@ -100,7 +100,7 @@
 	fm4_m_set_identity(inverseViewProjection);
 
 	fquat_set_identity(orientation);
-	fv3_v_zeros(position);
+	fv3_v_init_with_zeros(position);
 }
 
 - (FVector3 *) position
@@ -234,12 +234,12 @@
         ODOceanEntity * ocean = [[[[ NP applicationController ] sceneManager ] currentScene ] entityWithName:@"Ocean" ] ;
         ODCamera * camera = [[[[ NP applicationController ] sceneManager ] currentScene ] camera ];
 
-        fv3_v_init_with_fv3(position, [ camera position ]);
+        fv3_vv_init_with_fv3(position, [ camera position ]);
 
         FVector3 cameraForward;
         FVector3 cameraPosition;
-        fv3_v_init_with_fv3(&cameraForward,  [ camera forward  ]);
-        fv3_v_init_with_fv3(&cameraPosition, [ camera position ]);
+        fv3_vv_init_with_fv3(&cameraForward,  [ camera forward  ]);
+        fv3_vv_init_with_fv3(&cameraPosition, [ camera position ]);
 
         FVector3 cameraForwardProjectedOnBasePlane = { cameraForward.x, 0.0f, cameraForward.z };
         fv3_v_normalise(&cameraForward);
