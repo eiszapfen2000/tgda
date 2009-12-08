@@ -15,8 +15,8 @@ Ray * ray_alloc()
 Ray * ray_alloc_init()
 {
     Ray * ray    = npfreenode_alloc(NP_RAY_FREELIST);
-    v3_v_zeros(&(ray->point));
-    v3_v_zeros(&(ray->direction));
+    v3_v_init_with_zeros(&(ray->point));
+    v3_v_init_with_zeros(&(ray->direction));
 
     return ray;
 }

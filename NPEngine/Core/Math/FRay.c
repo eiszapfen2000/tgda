@@ -15,8 +15,8 @@ FRay * fray_alloc()
 FRay * fray_alloc_init()
 {
     FRay * ray    = npfreenode_alloc(NP_FRAY_FREELIST);
-    fv3_v_zeros(&(ray->point));
-    fv3_v_zeros(&(ray->direction));
+    fv3_v_init_with_zeros(&(ray->point));
+    fv3_v_init_with_zeros(&(ray->direction));
 
     return ray;
 }

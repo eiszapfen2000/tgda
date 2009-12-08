@@ -3,7 +3,7 @@
 FVertex2 fvertex_as_calculateMassCenter2D(FVertex2 * vertices, UInt32 numberOfVertices)
 {
     FVertex2 result;
-    fv2_v_zeros(&result);
+    fv2_v_init_with_zeros(&result);
 
     for ( UInt32 i = 0; i < numberOfVertices; i++ )
     {
@@ -20,7 +20,7 @@ FVertex2 fvertex_as_calculateMassCenter2D(FVertex2 * vertices, UInt32 numberOfVe
 FVertex3 fvertex_as_calculateMassCenter3D(FVertex3 * vertices, UInt32 numberOfVertices)
 {
     FVertex3 result;
-    fv3_v_zeros(&result);
+    fv3_v_init_with_zeros(&result);
 
     for ( UInt32 i = 0; i < numberOfVertices; i++ )
     {
@@ -39,7 +39,7 @@ FVertex3 fvertex_as_calculateMassCenter3D(FVertex3 * vertices, UInt32 numberOfVe
 FVertex4 fvertex_as_calculateMassCenter4D(FVertex4 * vertices, UInt32 numberOfVertices)
 {
     FVertex4 result;
-    fv4_v_zeros(&result);
+    fv4_v_init_with_zeros(&result);
 
     for ( UInt32 i = 0; i < numberOfVertices; i++ )
     {
@@ -60,7 +60,7 @@ FVertex4 fvertex_as_calculateMassCenter4D(FVertex4 * vertices, UInt32 numberOfVe
 FVertex2 fvertex_aass_calculate_indexed_MassCenter2D(FVertex2 * vertices, Int32 * indices, UInt32 numberOfVertices, UInt32 numberOfIndices)
 {
     FVertex2 result;
-    fv2_v_zeros(&result);
+    fv2_v_init_with_zeros(&result);
 
     for ( UInt32 i = 0; i < numberOfIndices; i++ )
     {
@@ -82,7 +82,7 @@ FVertex2 fvertex_aass_calculate_indexed_MassCenter2D(FVertex2 * vertices, Int32 
 FVertex3 fvertex_aass_calculate_indexed_MassCenter3D(FVertex3 * vertices, Int32 * indices, UInt32 numberOfVertices, UInt32 numberOfIndices)
 {
     FVertex3 result;
-    fv3_v_zeros(&result);
+    fv3_v_init_with_zeros(&result);
 
     for ( UInt32 i = 0; i < numberOfIndices; i++ )
     {
@@ -106,7 +106,7 @@ FVertex3 fvertex_aass_calculate_indexed_MassCenter3D(FVertex3 * vertices, Int32 
 FVertex4 fvertex_aass_calculate_indexed_MassCenter4D(FVertex4 * vertices, Int32 * indices, UInt32 numberOfVertices, UInt32 numberOfIndices)
 {
     FVertex4 result;
-    fv4_v_zeros(&result);
+    fv4_v_init_with_zeros(&result);
 
     for ( UInt32 i = 0; i < numberOfIndices; i++ )
     {
