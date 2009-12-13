@@ -1,4 +1,6 @@
-#import <Foundation/Foundation.h>
+#import <Foundation/NSArray.h>
+#import <Foundation/NSCharacterSet.h>
+#import <Foundation/NSString.h>
 
 @interface NSString ( NPEngine )
 

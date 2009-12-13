@@ -2,9 +2,6 @@
 #import "NPEngineGraphicsConstants.h"
 #import "NPOrthographicRendering.h"
 
-//#import "Graphics/Camera/NPCamera.h"
-//#import "Graphics/Camera/NPCameraManager.h"
-
 #import "Graphics/Image/NPImage.h"
 #import "Graphics/Image/NPImageManager.h"
 #import "Graphics/Image/NPPixelBuffer.h"
@@ -47,7 +44,7 @@
     NPStateConfiguration * stateConfiguration;
     NPStateSetManager    * stateSetManager;
 
-    NPTextureBindingStateManager * textureBindingStateManager;
+    NPTextureBindingState * textureBindingState;
 
     NPVertexBufferManager * vertexBufferManager;
     NPImageManager   * imageManager;
@@ -90,7 +87,7 @@
 - (NPOpenGLRenderContextManager *) renderContextManager;
 - (NPStateConfiguration *) stateConfiguration;
 - (NPStateSetManager *) stateSetManager;
-- (NPTextureBindingStateManager *) textureBindingStateManager;
+- (NPTextureBindingState *) textureBindingState;
 - (NPVertexBufferManager *) vertexBufferManager;
 - (NPImageManager *) imageManager;
 - (NPTextureManager *) textureManager;

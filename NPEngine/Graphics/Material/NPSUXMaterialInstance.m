@@ -257,7 +257,7 @@
 
 - (void) updateTextureBindingState
 {
-    NPTextureBindingState * t = [[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ];
+    NPTextureBindingState * t = [[ NP Graphics ] textureBindingState ];
 
     NSEnumerator * enumerator = [ textureToSemantic keyEnumerator ];
     NSString * semantic;

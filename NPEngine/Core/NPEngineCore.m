@@ -7,43 +7,29 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 
 + (NPEngineCore *)instance
 {
-    NSLock * lock = [[ NSLock alloc ] init ];
-
-    if ( [ lock tryLock ] )
+    @synchronized(self)
     {
         if ( NP_ENGINE_CORE == nil )
         {
-            [[ self alloc ] init ]; // assignment not done here
+            [[ self alloc ] init ];
         }
-
-        [ lock unlock ];
     }
-
-    [ lock release ];
 
     return NP_ENGINE_CORE;
 } 
 
 + (id)allocWithZone:(NSZone *)zone
 {
-    NSLock * lock = [[ NSLock alloc ] init ];
-
-    if ( [ lock tryLock ] )
+    @synchronized(self)
     {
         if (NP_ENGINE_CORE == nil)
         {
             NP_ENGINE_CORE = [ super allocWithZone:zone ];
-
-            [ lock unlock ];
-            [ lock release ];
-
-            return NP_ENGINE_CORE;  // assignment and return on first allocation
+            return NP_ENGINE_CORE;
         }
     }
 
-    [ lock release ];
-
-    return nil; //on subsequent allocation attempts return nil
+    return nil;
 }
 
 - (id) init
@@ -75,7 +61,8 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     pathManager   = [[ NPPathManager alloc ] initWithName:@"NPEngine Path Manager" parent:self ];
 
     randomNumberGeneratorManager = [[ NPRandomNumberGeneratorManager alloc ] initWithName:@"NPEngine RandomNumberGenerator Manager" parent:self ];
-    transformationStateManager   = [[ NPTransformationStateManager   alloc ] initWithName:@"NPEngine Transformation State Manager"  parent:self ];
+
+    transformationState = [[ NPTransformationState alloc ] initWithName:@"NPEngine Transformation State"  parent:self ];
 
     NPLOG(@"%@ up and running", name);
 
@@ -87,7 +74,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     NPLOG(@"");
     NPLOG(@"NP Engine Core Dealloc");
 
-    [ transformationStateManager release ];
+    [ transformationState release ];
     [ randomNumberGeneratorManager release ];
     [ pathManager release ];
     [ timer release ];
@@ -152,9 +139,9 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     return randomNumberGeneratorManager;
 }
 
-- (NPTransformationStateManager *)transformationStateManager
+- (NPTransformationState *)transformationState
 {
-    return transformationStateManager;
+    return transformationState;
 }
 
 - (void) update

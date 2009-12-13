@@ -1,3 +1,4 @@
+#import <Foundation/NSScanner.h>
 #import "NPStringUtilities.h"
 
 @implementation NSString ( NPEngine )

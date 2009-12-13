@@ -1,4 +1,3 @@
-#import <Foundation/Foundation.h>
 #import "Application/NpApplication.h"
 #import "Core/NPEngineCore.h"
 #import "Graphics/NPEngineGraphics.h"

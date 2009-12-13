@@ -1,4 +1,5 @@
-#import <Foundation/Foundation.h>
+#import <Foundation/NSObject.h>
+#import <Foundation/NSNotification.h>
 #import <AppKit/NSApplication.h>
 
 @interface NPApplicationController : NSObject

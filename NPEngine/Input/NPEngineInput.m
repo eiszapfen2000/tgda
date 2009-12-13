@@ -8,43 +8,29 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
 
 + (NPEngineInput *)instance
 {
-    NSLock * lock = [[ NSLock alloc ] init ];
-
-    if ( [ lock tryLock ] )
+    @synchronized(self)
     {
         if ( NP_ENGINE_INPUT == nil )
         {
-            [[ self alloc ] init ]; // assignment not done here
+            [[ self alloc ] init ];
         }
-
-        [ lock unlock ];
     }
-
-    [ lock release ];
 
     return NP_ENGINE_INPUT;
 } 
 
 + (id)allocWithZone:(NSZone *)zone
 {
-    NSLock * lock = [[ NSLock alloc ] init ];
-
-    if ( [ lock tryLock ] )
+    @synchronized(self)
     {
         if (NP_ENGINE_INPUT == nil)
         {
             NP_ENGINE_INPUT = [ super allocWithZone:zone ];
-
-            [ lock unlock ];
-            [ lock release ];
-
-            return NP_ENGINE_INPUT;  // assignment and return on first allocation
+            return NP_ENGINE_INPUT;
         }
     }
 
-    [ lock release ];
-
-    return nil; //on subsequent allocation attempts return nil
+    return nil;
 }
 
 - (id) init

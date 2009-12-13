@@ -7,43 +7,29 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
 + (NPEngineGraphics *)instance
 {
-    NSLock * lock = [[ NSLock alloc ] init ];
-
-    if ( [ lock tryLock ] )
+    @synchronized(self)
     {
         if ( NP_ENGINE_GRAPHICS == nil )
         {
-            [[ self alloc ] init ]; // assignment not done here
+            [[ self alloc ] init ];
         }
-
-        [ lock unlock ];
     }
-
-    [ lock release ];
 
     return NP_ENGINE_GRAPHICS;
 } 
 
 + (id)allocWithZone:(NSZone *)zone
 {
-    NSLock * lock = [[ NSLock alloc ] init ];
-
-    if ( [ lock tryLock ] )
+    @synchronized(self)
     {
         if (NP_ENGINE_GRAPHICS == nil)
         {
             NP_ENGINE_GRAPHICS = [ super allocWithZone:zone ];
-
-            [ lock unlock ];
-            [ lock release ];
-
-            return NP_ENGINE_GRAPHICS;  // assignment and return on first allocation
+            return NP_ENGINE_GRAPHICS;
         }
     }
 
-    [ lock release ];
-
-    return nil; //on subsequent allocation attempts return nil
+    return nil;
 }
 
 - (id) init
@@ -68,7 +54,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     stateConfiguration = [[ NPStateConfiguration alloc ] initWithName:@"NPEngine GPU States"       parent:self ];
     stateSetManager    = [[ NPStateSetManager    alloc ] initWithName:@"NPEngine StateSet Manager" parent:self ];
 
-    textureBindingStateManager = [[ NPTextureBindingStateManager alloc ] initWithName:@"NPEngine Texture Binding Manager" parent:self ];
+    textureBindingState = [[ NPTextureBindingState alloc ] initWithName:@"NPEngine Texture Binding State" parent:self ];
 
     vertexBufferManager = [[ NPVertexBufferManager alloc ] initWithName:@"NPEngine VertexBuffer Manager" parent:self ];
     imageManager        = [[ NPImageManager        alloc ] initWithName:@"NPEngine Image Manager"        parent:self ];
@@ -108,7 +94,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     [ textureManager release ];
     [ imageManager release ];
     [ vertexBufferManager release ];
-    [ textureBindingStateManager release ];
+    [ textureBindingState release ];
     [ stateSetManager release ];
     [ stateConfiguration release ];
 
@@ -138,7 +124,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     [[ viewportManager currentViewport ] setControlSize :&viewportSize ];
     [[ viewportManager currentViewport ] setViewportSize:&viewportSize ];
 
-    [ textureBindingStateManager setup ];
+//    [ textureBindingStateManager setup ];
 
     [ vertexBufferManager setup ];
     [ imageManager   setup ];
@@ -205,9 +191,9 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     return stateSetManager;
 }
 
-- (NPTextureBindingStateManager *) textureBindingStateManager
+- (NPTextureBindingState *) textureBindingState
 {
-    return textureBindingStateManager;
+    return textureBindingState;
 }
 
 - (NPVertexBufferManager *) vertexBufferManager

@@ -1,4 +1,6 @@
-#import <Foundation/Foundation.h>
+#import <Foundation/NSFileManager.h>
+#import <Foundation/NSString.h>
+#import <Foundation/NSURL.h>
 
 @interface NSFileManager ( NPEngine )
 

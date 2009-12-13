@@ -83,6 +83,7 @@
 
 @end
 
+/*
 @implementation NPObject ( NPCoding )
 
 - (void) encodeWithCoder:(NSCoder *)coder
@@ -120,3 +121,4 @@
 }
 
 @end
+*/

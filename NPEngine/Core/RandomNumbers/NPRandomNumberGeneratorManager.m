@@ -2,8 +2,6 @@
 #import "NPRandomNumberGenerator.h"
 #import "NPGaussianRandomNumberGenerator.h"
 
-#import "NP.h"
-
 @implementation NPRandomNumberGeneratorManager
 
 - init
@@ -72,7 +70,8 @@
 	}
     else
     {
-        NPLOG_WARNING(@"Invalid fixed parameter rng name %@, returning nil",rngName);
+        //NPLOG_WARNING(@"Invalid fixed parameter rng name %@, returning nil",rngName);
+        NSLog(@"Invalid fixed parameter rng name %@, returning nil", rngName);
     }
 
 	return generator;
