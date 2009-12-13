@@ -10,8 +10,6 @@
     FMatrix4 * modelMatrix;
     FMatrix4 * viewMatrix;
     FMatrix4 * projectionMatrix;
-
-    id transformationStateToModifiy;    
 }
 
 + (Float) top;

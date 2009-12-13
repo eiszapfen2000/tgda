@@ -12,3 +12,4 @@
 - (void)addDownloadFrom:(NSURL *)url toFileAtPath:(NSString *)path;
 
 @end
+

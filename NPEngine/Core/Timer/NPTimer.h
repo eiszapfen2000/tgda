@@ -1,6 +1,5 @@
-#import "Core/NPObject/NPObject.h"
-
 #import <sys/time.h>
+#import "Core/NPObject/NPObject.h"
 
 @interface NPTimer : NPObject
 {

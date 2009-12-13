@@ -41,7 +41,6 @@
 - (void) setWidth:(Int)newWidth;
 - (void) setHeight:(Int)newHeight;
 - (void) setDepth:(Int)newDepth;
-- (void) setResolution:(IVector3 *)newResolution;
 - (void) setTextureFilter:(NpState)newTextureFilter;
 - (void) setTextureMinFilter:(NpState)newTextureMinFilter;
 - (void) setTextureMagFilter:(NpState)newTextureMagFilter;

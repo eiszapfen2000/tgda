@@ -1,4 +1,5 @@
-#import <Foundation/Foundation.h>
+#import <Foundation/NSObject.h>
+#import <Foundation/NSString.h>
 
 @class NPObject;
 

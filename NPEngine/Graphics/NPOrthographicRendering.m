@@ -107,25 +107,23 @@
 
 - (void) activate
 {
-    transformationStateToModifiy = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
-
-    *tmpModelMatrix      = *[ transformationStateToModifiy modelMatrix ];
-    *tmpViewMatrix       = *[ transformationStateToModifiy viewMatrix ];
-    *tmpProjectionMatrix = *[ transformationStateToModifiy projectionMatrix ];
+    *tmpModelMatrix      = *[[[ NP Core ] transformationState ] modelMatrix ];
+    *tmpViewMatrix       = *[[[ NP Core ] transformationState ] viewMatrix ];
+    *tmpProjectionMatrix = *[[[ NP Core ] transformationState ] projectionMatrix ];
 
     Float aspectRatio = [[[[ NP Graphics ] viewportManager ] currentViewport ] aspectRatio ];
     fm4_ms_simple_orthographic_projection_matrix(projectionMatrix, aspectRatio);
 
-    [ transformationStateToModifiy setModelMatrix:modelMatrix ];
-    [ transformationStateToModifiy setViewMatrix:viewMatrix ];
-    [ transformationStateToModifiy setProjectionMatrix:projectionMatrix ];
+    [[[ NP Core ] transformationState ] setModelMatrix:modelMatrix ];
+    [[[ NP Core ] transformationState ] setViewMatrix:viewMatrix ];
+    [[[ NP Core ] transformationState ] setProjectionMatrix:projectionMatrix ];
 }
 
 - (void) deactivate
 {
-    [ transformationStateToModifiy setModelMatrix:tmpModelMatrix ];
-    [ transformationStateToModifiy setViewMatrix:tmpViewMatrix ];
-    [ transformationStateToModifiy setProjectionMatrix:tmpProjectionMatrix ]; 
+    [[[ NP Core ] transformationState ] setModelMatrix:tmpModelMatrix ];
+    [[[ NP Core ] transformationState ] setViewMatrix:tmpViewMatrix ];
+    [[[ NP Core ] transformationState ] setProjectionMatrix:tmpProjectionMatrix ]; 
 }
 
 @end

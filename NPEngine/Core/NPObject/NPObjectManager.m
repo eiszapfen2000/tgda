@@ -1,6 +1,5 @@
 #import "NPObjectManager.h"
 #import "Core/Basics/NpCrc32.h"
-#import "NP.h"
 
 @implementation NPObjectManager
 

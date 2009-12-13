@@ -10,8 +10,7 @@ NPSUXMaterialInstance.m \
 NPTexture.m \
 NPTexture3D.m \
 NPTextureManager.m \
-NPTextureBindingState.m \
-NPTextureBindingStateManager.m
+NPTextureBindingState.m
 
 libNPEngineGraphicsMaterial_C_FILES = \
 NpTexture.c
@@ -24,8 +23,7 @@ NPSUXMaterialInstance.h \
 NPTexture.h \
 NPTexture3D.h \
 NPTextureManager.h \
-NPTextureBindingState.h \
-NPTextureBindingStateManager.h
+NPTextureBindingState.h
 
 libNPEngineGraphicsMaterial_LIBRARIES_DEPEND_UPON += -lCg -lCgGL
 

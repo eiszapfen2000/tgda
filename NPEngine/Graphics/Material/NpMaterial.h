@@ -7,4 +7,4 @@
 #import "NPTexture3D.h"
 #import "NPTextureManager.h"
 #import "NPTextureBindingState.h"
-#import "NPTextureBindingStateManager.h"
+//#import "NPTextureBindingStateManager.h"

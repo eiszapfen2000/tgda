@@ -262,74 +262,74 @@
 {
     if ( defaultSemantics.modelMatrix != NULL )
     {
-        FMatrix4 * modelMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] modelMatrix ];
+        FMatrix4 * modelMatrix = [[[ NP Core ] transformationState ] modelMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.modelMatrix andValue:modelMatrix ];
     }
 
     if ( defaultSemantics.inverseModelMatrix != NULL )
     {
-        FMatrix4 * inverseModelMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] inverseModelMatrix ];
+        FMatrix4 * inverseModelMatrix = [[[ NP Core ] transformationState ] inverseModelMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.inverseModelMatrix andValue:inverseModelMatrix ];
     }
 
     if ( defaultSemantics.viewMatrix != NULL )
     {
-        FMatrix4 * viewMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] viewMatrix ];
+        FMatrix4 * viewMatrix = [[[ NP Core ] transformationState ] viewMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.viewMatrix andValue:viewMatrix ];
     }
 
     if ( defaultSemantics.inverseViewMatrix != NULL )
     {
-        FMatrix4 * inverseViewMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] inverseViewMatrix ];
+        FMatrix4 * inverseViewMatrix = [[[ NP Core ] transformationState ] inverseViewMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.inverseViewMatrix andValue:inverseViewMatrix ];
     }
 
     if ( defaultSemantics.projectionMatrix != NULL )
     {
-        FMatrix4 * projectionMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] projectionMatrix ];
+        FMatrix4 * projectionMatrix = [[[ NP Core ] transformationState ] projectionMatrix ];
 
         [ self uploadFMatrix4Parameter:defaultSemantics.projectionMatrix andValue:projectionMatrix ];
     }
 
     if ( defaultSemantics.inverseProjectionMatrix != NULL )
     {
-        FMatrix4 * inverseProjectionMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] inverseProjectionMatrix ];
+        FMatrix4 * inverseProjectionMatrix = [[[ NP Core ] transformationState ] inverseProjectionMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.inverseProjectionMatrix andValue:inverseProjectionMatrix ];
     }
 
     if ( defaultSemantics.modelViewMatrix != NULL )
     {
-        FMatrix4 * modelViewMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] modelViewMatrix ];
+        FMatrix4 * modelViewMatrix = [[[ NP Core ] transformationState ] modelViewMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.modelViewMatrix andValue:modelViewMatrix ];
     }
 
     if ( defaultSemantics.inverseModelViewMatrix != NULL )
     {
-        FMatrix4 * inverseModelViewMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] inverseModelViewMatrix ];
+        FMatrix4 * inverseModelViewMatrix = [[[ NP Core ] transformationState ] inverseModelViewMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.inverseModelViewMatrix andValue:inverseModelViewMatrix ];
     }
 
     if ( defaultSemantics.viewProjectionMatrix != NULL )
     {
-        FMatrix4 * viewProjectionMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] viewProjectionMatrix ];
+        FMatrix4 * viewProjectionMatrix = [[[ NP Core ] transformationState ] viewProjectionMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.viewProjectionMatrix andValue:viewProjectionMatrix ];
     }
 
     if ( defaultSemantics.inverseViewProjectionMatrix != NULL )
     {
-        FMatrix4 * inverseViewProjectionMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] inverseViewProjectionMatrix ];
+        FMatrix4 * inverseViewProjectionMatrix = [[[ NP Core ] transformationState ] inverseViewProjectionMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.inverseViewProjectionMatrix andValue:inverseViewProjectionMatrix ];
     }
 
     if ( defaultSemantics.modelViewProjectionMatrix != NULL )
     {
-        FMatrix4 * modelViewProjectionMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] modelViewProjectionMatrix ];
+        FMatrix4 * modelViewProjectionMatrix = [[[ NP Core ] transformationState ] modelViewProjectionMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.modelViewProjectionMatrix andValue:modelViewProjectionMatrix ];
     }
 
     if ( defaultSemantics.inverseModelViewProjectionMatrix != NULL )
     {
-        FMatrix4 * inverseModelViewProjectionMatrix = [[[[ NP Core ] transformationStateManager ] currentTransformationState ] inverseModelViewProjectionMatrix ];
+        FMatrix4 * inverseModelViewProjectionMatrix = [[[ NP Core ] transformationState ] inverseModelViewProjectionMatrix ];
         [ self uploadFMatrix4Parameter:defaultSemantics.inverseModelViewProjectionMatrix andValue:inverseModelViewProjectionMatrix ];
     }
 
@@ -355,7 +355,7 @@
         [ self uploadFVector2Parameter:defaultSemantics.rViewportSize andValue:&rViewportSize ];        
     }
 
-    NPTextureBindingState * textureBindingState = [[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ];
+    NPTextureBindingState * textureBindingState = [[ NP Graphics ] textureBindingState ];
 
     for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {

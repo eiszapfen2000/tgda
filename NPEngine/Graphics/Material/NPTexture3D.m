@@ -115,13 +115,6 @@
     depth = newDepth;
 }
 
-- (void) setResolution:(IVector3 *)newResolution
-{
-    width  = newResolution->x;
-    height = newResolution->y;
-    depth  = newResolution->z;
-}
-
 - (void) setTextureFilter:(NpState)newTextureFilter
 {
     switch ( newTextureFilter )
@@ -257,7 +250,7 @@
 
 - (void) activateAtVolumeMapIndex:(Int32)index
 {
-    [[[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ] setTexture:self forKey:NP_GRAPHICS_MATERIAL_VOLUMEMAP_SEMANTIC(index) ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:self forKey:NP_GRAPHICS_MATERIAL_VOLUMEMAP_SEMANTIC(index) ];
 }
 
 @end

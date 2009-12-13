@@ -19,7 +19,6 @@
 #import "Core/Utilities/NPStringUtilities.h"
 
 #import "Core/World/NPTransformationState.h"
-#import "Core/World/NPTransformationStateManager.h"
 
 @interface NPEngineCore : NSObject < NPPObject >
 {
@@ -31,7 +30,7 @@
     NPObjectManager * objectManager;
     NPPathManager * pathManager;
     NPRandomNumberGeneratorManager * randomNumberGeneratorManager;
-    NPTransformationStateManager * transformationStateManager;
+    NPTransformationState * transformationState;
 }
 
 + (NPEngineCore *) instance;
@@ -52,7 +51,7 @@
 - (NPObjectManager *) objectManager;
 - (NPPathManager *) pathManager;
 - (NPRandomNumberGeneratorManager *) randomNumberGeneratorManager;
-- (NPTransformationStateManager *) transformationStateManager;
+- (NPTransformationState *) transformationState;
 
 - (void) update;
 
