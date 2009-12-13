@@ -650,7 +650,7 @@ void fm4_mv_multiply_v(const FMatrix4 * const m, const FVector4 * const v, FVect
     V_W(*result) = M_EL(*m,0,3) * V_X(*v) + M_EL(*m,1,3) * V_Y(*v) + M_EL(*m,2,3) * V_Z(*v) + M_EL(*m,3,3) * V_W(*v);
 }
 
-void fm4_mv_translation_matrix(FMatrix4 * m, FVector3 * v)
+void fm4_mv_translation_matrix(FMatrix4 * m, const FVector3 * const v)
 {
     fm4_m_set_identity(m);
     M_EL(*m,3,0) = V_X(*v);
@@ -658,7 +658,7 @@ void fm4_mv_translation_matrix(FMatrix4 * m, FVector3 * v)
     M_EL(*m,3,2) = V_Z(*v);
 }
 
-void fm4_mv_scale_matrix(FMatrix4 * m, FVector3 * v)
+void fm4_mv_scale_matrix(FMatrix4 * m, const FVector3 * const v)
 {
     fm4_m_set_identity(m);
     M_EL(*m,0,0) = v->x;
@@ -696,19 +696,15 @@ void fm4_vvv_look_at_matrix_m(FVector3 * eyePosition, FVector3 * lookAtPosition,
 {
     fm4_m_set_identity(result);
 
-    FVector3 lookAtVector;
-    fv3_vv_sub_v(lookAtPosition, eyePosition, &lookAtVector);
+    FVector3 lookAtVector = fv3_vv_sub(lookAtPosition, eyePosition);
     fv3_v_normalise(&lookAtVector);
 
-    FVector3 normalisedUpVector;
-    fv3_v_normalise_v(upVector, &normalisedUpVector);
+    FVector3 normalisedUpVector = fv3_v_normalised(upVector);
 
-    FVector3 rightVector;
-    fv3_vv_cross_product_v(&lookAtVector, &normalisedUpVector, &rightVector);
+    FVector3 rightVector = fv3_vv_cross_product(&lookAtVector, &normalisedUpVector);
     fv3_v_normalise(&rightVector);
 
     fv3_vv_cross_product_v(&rightVector, &lookAtVector, &normalisedUpVector);
-
     fm4_vvvv_look_at_matrix_m(&rightVector, &normalisedUpVector, &lookAtVector, eyePosition, result);
 }
 
@@ -730,11 +726,8 @@ void fm4_vvvv_look_at_matrix_m(FVector3 * rightVector, FVector3 * upVector, FVec
     M_EL(rotation, 1, 2) = -forwardVector->y;
     M_EL(rotation, 2, 2) = -forwardVector->z;
 
-    FVector3 inversePosition;
-    fv3_v_invert_v(position, &inversePosition);
-
-    FMatrix4 translation;
-    fm4_mv_translation_matrix(&translation, &inversePosition);
+    FVector3 inversePosition = fv3_v_inverted(position);
+    FMatrix4 translation = fm4_v_translation_matrix(&inversePosition);
     
     fm4_mm_multiply_m(&rotation, &translation, result);
 }
@@ -743,7 +736,7 @@ void fm4_mssss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegre
 {
     fm4_m_set_identity(m);
     Float fovradians = DEGREE_TO_RADIANS(fovdegrees/2.0f);
-    Float f = 1.0f/tan(fovradians);
+    Float f = 1.0f / tan(fovradians);
 
     M_EL(*m,0,0) = f/aspectratio;
     M_EL(*m,1,1) = f;
@@ -835,25 +828,6 @@ void fm4_m_inverse_m(const FMatrix4 * const m, FMatrix4 * result)
 
 }
 
-Float fm4_m_determinant(const FMatrix4 * const m)
-{
-    Float subMatrixDeterminant, determinant = 0.0f;
-    FMatrix3 * subMatrix = fm3_alloc_init();
-    Int scalar = 1;
-
-    for ( Int x = 0; x < 4; x++ )
-    {
-        fm4_mss_sub_matrix_m(m, 0, x, subMatrix);
-        subMatrixDeterminant = fm3_m_determinant(subMatrix);
-        determinant += M_EL(*m,x,0) * subMatrixDeterminant * scalar;
-        scalar *= -1;
-    }
-
-    fm3_free(subMatrix);
-
-    return determinant;
-}
-
 void fm4_m_get_right_vector_v(const FMatrix4 * const m, FVector3 * right)
 {
     right->x = M_EL(*m,0,0);
@@ -908,15 +882,90 @@ void fm4_s_rotatez_m(Float degree, FMatrix4 * result)
     M_EL(*result,1,0) = -M_EL(*result,0,1);
 }
 
+Float fm4_m_determinant(const FMatrix4 * const m)
+{
+    Float subMatrixDeterminant, determinant = 0.0f;
+    FMatrix3 * subMatrix = fm3_alloc_init();
+    Int scalar = 1;
+
+    for ( Int x = 0; x < 4; x++ )
+    {
+        fm4_mss_sub_matrix_m(m, 0, x, subMatrix);
+        subMatrixDeterminant = fm3_m_determinant(subMatrix);
+        determinant += M_EL(*m,x,0) * subMatrixDeterminant * scalar;
+        scalar *= -1;
+    }
+
+    fm3_free(subMatrix);
+
+    return determinant;
+}
+
+FMatrix4 fm4_m_transposed(const FMatrix4 * const m)
+{
+    FMatrix4 result;
+    fm4_m_transpose_m(m, &result);
+
+    return result;
+}
+
+FMatrix4 fm4_mm_add(const FMatrix4 * const m1, const FMatrix4 * const m2)
+{
+    FMatrix4 result;
+    fm4_mm_add_m(m1, m2, &result);
+
+    return result;
+}
+
+FMatrix4 fm4_mm_subtract(const FMatrix4 * const m1, const FMatrix4 * const m2)
+{
+    FMatrix4 result;
+    fm4_mm_subtract_m(m1, m2, &result);
+
+    return result;
+}
+
+FMatrix4 fm4_mm_multiply(const FMatrix4 * const m1, const FMatrix4 * const m2)
+{
+    FMatrix4 result;
+    fm4_mm_multiply_m(m1, m2, &result);
+
+    return result;
+}
+
+FVector4 fm4_vm_multiply(const FVector4 * const v, const FMatrix4 * const m)
+{
+    FVector4 result;
+    fm4_vm_multiply_v(v, m, &result);
+
+    return result;
+}
+
+FVector4 fm4_mv_multiply(const FMatrix4 * const m, const FVector4 * const v)
+{
+    FVector4 result;
+    fm4_mv_multiply_v(m, v, &result);
+
+    return result;
+}
+
+FMatrix4 fm4_v_translation_matrix(const FVector3 * const v)
+{
+    FMatrix4 result;
+    fm4_mv_translation_matrix(&result, v);
+
+    return result;    
+}
+
 const char * fm4_m_to_string(FMatrix4 * m)
 {
     char * fm4string = NULL;
 
     if ( asprintf(&fm4string, "%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n",
-                  M_EL(*m,0,0),M_EL(*m,1,0),M_EL(*m,2,0),M_EL(*m,3,0),
-                  M_EL(*m,0,1),M_EL(*m,1,1),M_EL(*m,2,1),M_EL(*m,3,1),
-                  M_EL(*m,0,2),M_EL(*m,1,2),M_EL(*m,2,2),M_EL(*m,3,2),
-                  M_EL(*m,0,3),M_EL(*m,1,3),M_EL(*m,2,3),M_EL(*m,3,3) ) < 0)
+                  M_EL(*m,0,0), M_EL(*m,1,0), M_EL(*m,2,0), M_EL(*m,3,0),
+                  M_EL(*m,0,1), M_EL(*m,1,1), M_EL(*m,2,1), M_EL(*m,3,1),
+                  M_EL(*m,0,2), M_EL(*m,1,2), M_EL(*m,2,2), M_EL(*m,3,2),
+                  M_EL(*m,0,3), M_EL(*m,1,3), M_EL(*m,2,3), M_EL(*m,3,3) ) < 0 )
     {
         return NULL;
     }

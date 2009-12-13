@@ -18,6 +18,8 @@ FPluecker * fpluecker_alloc_init();
 FPluecker * fpluecker_alloc_init_with_points(const FVector3 const * p1, const FVector3 const * p2);
 FPluecker * fpluecker_alloc_init_with_point_and_direction(const FVector3 const * point, const FVector3 const * direction);
 FPluecker * fpluecker_free(FPluecker * p);
+void fpluecker_init_with_points(FPluecker * pl, const FVector3 const * p1, const FVector3 const * p2);
+void fpluecker_init_with_point_and_direction(FPluecker * pl, const FVector3 const * point, const FVector3 const * direction);
 
 Int fpluecker_plp_intersect_with_plane_v(const FPluecker const * fpluecker, const FPlane const * p, FVector3 * result);
 

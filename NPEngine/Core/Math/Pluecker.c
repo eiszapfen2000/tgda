@@ -52,6 +52,18 @@ Pluecker * pluecker_free(Pluecker * p)
     return npfreenode_free(p, NP_PLUECKER_FREELIST);
 }
 
+void pluecker_init_with_points(Pluecker * pl, const Vector3 const * p1, const Vector3 const * p2)
+{
+    v3_vv_sub_v(p2, p1, &(pl->U));
+    v3_vv_cross_product_v(p2, p1, &(pl->V));
+}
+
+void pluecker_init_with_point_and_direction(Pluecker * pl, const Vector3 const * point, const Vector3 const * direction)
+{
+    v3_vv_init_with_v3(&(pl->U), direction);
+    v3_vv_cross_product_v(direction, point, &(pl->V));
+}
+
 Int pluecker_plp_intersect_with_plane_v(const Pluecker const * pluecker, const Plane const * p, Vector3 * result)
 {
     Double dot = v3_vv_dot_product(&(pluecker->U), &(p->normal));

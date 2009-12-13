@@ -502,6 +502,22 @@ void v4_vssss_init_with_components(Vector4 * v, Double x, Double y, Double z, Do
     V_W(*v) = w;
 }
 
+void v4_v_homogenise(Vector4 * v)
+{
+    V_X(*v) = V_X(*v) / V_W(*v);
+    V_Y(*v) = V_Y(*v) / V_W(*v);
+    V_Z(*v) = V_Z(*v) / V_W(*v);
+    V_W(*v) = 1.0;
+}
+
+void v4_v_homogenise_v(const Vector4 const * v, Vector4 * result)
+{
+    V_X(*result) = V_X(*v) / V_W(*v);
+    V_Y(*result) = V_Y(*v) / V_W(*v);
+    V_Z(*result) = V_Z(*v) / V_W(*v);
+    V_W(*result) = 1.0;
+}
+
 void v4_sv_scale(Double scale, Vector4 * v)
 {
     V_X(*v) = V_X(*v) * scale;
@@ -516,6 +532,12 @@ void v4_sv_scale_v(Double scale, const Vector4 * const v, Vector4 * result)
     V_Y(*result) = V_Y(*v) * scale;
     V_Z(*result) = V_Z(*v) * scale;
     V_W(*result) = V_W(*v) * scale;
+}
+
+Vector4 v4_v_homogenised(const Vector4 const * v)
+{
+    return (Vector4){ V_X(*v) / V_W(*v), V_Y(*v) / V_W(*v),
+                       V_Z(*v) / V_W(*v), 1.0 };
 }
 
 Vector4 v4_vv_add(const Vector4 * const v, const Vector4 * const w)
