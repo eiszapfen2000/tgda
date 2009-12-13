@@ -56,24 +56,23 @@ void quat_set_identity(Quaternion * q)
 void quat_q_init_with_axis_and_degrees(Quaternion * q, Vector3 * axis, Double * degrees)
 {
     Double angle = DEGREE_TO_RADIANS(*degrees);
-    Double sin_angle = sin(angle/2.0);
-    Double cos_angle = cos(angle/2.0);
+    Double sin_angle = sin(angle / 2.0);
+    Double cos_angle = cos(angle / 2.0);
 
-    Vector3 * tmp;
+    Vector3 tmp;
 
     if ( v3_v_length(axis) != 1.0 )
     {
-        tmp = v3_alloc_init();
-        v3_v_normalise_v(axis,tmp);
+        v3_v_normalise_v(axis, &tmp);
     }
     else
     {
-        tmp = axis;
+        tmp = *axis;
     }
 
-    Q_X(*q) = V_X(*tmp) * sin_angle;
-    Q_Y(*q) = V_Y(*tmp) * sin_angle;
-    Q_Z(*q) = V_Z(*tmp) * sin_angle;
+    Q_X(*q) = V_X(tmp) * sin_angle;
+    Q_Y(*q) = V_Y(tmp) * sin_angle;
+    Q_Z(*q) = V_Z(tmp) * sin_angle;
     Q_W(*q) = cos_angle;
 
     quat_q_normalise(q);
@@ -81,24 +80,23 @@ void quat_q_init_with_axis_and_degrees(Quaternion * q, Vector3 * axis, Double * 
 
 void quat_q_init_with_axis_and_radians(Quaternion * q, Vector3 * axis, Double * radians)
 {
-    Double sin_angle = sin((*radians)/2.0);
-    Double cos_angle = cos((*radians)/2.0);
+    Double sin_angle = sin((*radians) / 2.0);
+    Double cos_angle = cos((*radians) / 2.0);
 
-    Vector3 * tmp;
+    Vector3 tmp;
 
     if ( v3_v_length(axis) != 1.0 )
     {
-        tmp = v3_alloc_init();
-        v3_v_normalise_v(axis,tmp);
+        v3_v_normalise_v(axis, &tmp);
     }
     else
     {
-        tmp = axis;
+        tmp = *axis;
     }
 
-    Q_X(*q) = V_X(*tmp) * sin_angle;
-    Q_Y(*q) = V_Y(*tmp) * sin_angle;
-    Q_Z(*q) = V_Z(*tmp) * sin_angle;
+    Q_X(*q) = V_X(tmp) * sin_angle;
+    Q_Y(*q) = V_Y(tmp) * sin_angle;
+    Q_Z(*q) = V_Z(tmp) * sin_angle;
     Q_W(*q) = cos_angle;
 
     quat_q_normalise(q);
@@ -169,35 +167,41 @@ void quat_qv_multiply_v(const Quaternion * const q, const Vector3 * const v, Vec
 
 void quat_q_rotatex(Quaternion * q, Double * degrees)
 {
-    Quaternion * rotatex = quat_alloc_init_with_axis_and_degrees(NP_WORLD_X_AXIS, degrees);
-    quat_qq_multiply_q(q,rotatex,q);
+    Quaternion rotatex;
+    quat_q_init_with_axis_and_degrees(&rotatex, NP_WORLD_X_AXIS, degrees);
+    Quaternion tmp = *q;
+    quat_qq_multiply_q(&tmp, &rotatex, q);
 }
 
 void quat_q_rotatey(Quaternion * q, Double * degrees)
 {
-    Quaternion * rotatey = quat_alloc_init_with_axis_and_degrees(NP_WORLD_Y_AXIS, degrees);
-    quat_qq_multiply_q(q,rotatey,q);
+    Quaternion rotatey;
+    quat_q_init_with_axis_and_degrees(&rotatey, NP_WORLD_Y_AXIS, degrees);
+    Quaternion tmp = *q;
+    quat_qq_multiply_q(&tmp, &rotatey, q);
 }
 
 void quat_q_rotatez(Quaternion * q, Double * degrees)
 {
-    Quaternion * rotatez = quat_alloc_init_with_axis_and_degrees(NP_WORLD_Z_AXIS, degrees);
-    quat_qq_multiply_q(q,rotatez,q);
+    Quaternion rotatez;
+    quat_q_init_with_axis_and_degrees(&rotatez, NP_WORLD_Z_AXIS, degrees);
+    Quaternion tmp = *q;
+    quat_qq_multiply_q(&tmp, &rotatez, q);
 }
 
 void quat_q_forward_vector_v(Quaternion * q, Vector3 * v)
 {
-    quat_qv_multiply_v(q,NP_WORLD_FORWARD_VECTOR,v);
+    quat_qv_multiply_v(q, NP_WORLD_FORWARD_VECTOR, v);
 }
 
 void quat_q_up_vector_v(Quaternion * q, Vector3 * v)
 {
-    quat_qv_multiply_v(q,NP_WORLD_Y_AXIS,v);
+    quat_qv_multiply_v(q, NP_WORLD_Y_AXIS, v);
 }
 
 void quat_q_right_vector_v(Quaternion * q, Vector3 * v)
 {
-    quat_qv_multiply_v(q,NP_WORLD_X_AXIS,v);
+    quat_qv_multiply_v(q, NP_WORLD_X_AXIS, v);
 }
 
 
@@ -384,11 +388,112 @@ Double quat_q_magnitude(const Quaternion * const q)
     return sqrt( Q_X(*q) * Q_X(*q) + Q_Y(*q) * Q_Y(*q) + Q_Z(*q) * Q_Z(*q) + Q_W(*q) * Q_W(*q) );
 }
 
+Quaternion quat_q_conjugated(const Quaternion * const q)
+{
+    return (Quaternion){{ -Q_X(*q), -Q_Y(*q), -Q_Z(*q) }, Q_W(*q) };
+}
+
+Quaternion quat_q_normalised(const Quaternion * const q)
+{
+    Double magnitude = quat_q_magnitude(q);
+
+    return (Quaternion){{ Q_X(*q) / magnitude, Q_Y(*q) / magnitude, Q_Z(*q) / magnitude }, Q_W(*q) / magnitude };
+}
+
+
+Quaternion quat_qq_multiply(const Quaternion * const q1, const Quaternion * const q2)
+{
+    Quaternion result;
+    quat_qq_multiply_q(q1, q2, &result);
+
+    return result;
+}
+
+Vector3 quat_qv_multiply(const Quaternion * const q, const Vector3 * const v)
+{
+    Vector3 result;
+    quat_qv_multiply_v(q, v, &result);
+
+    return result;
+}
+
+Vector3 quat_q_forward_vector(const Quaternion * const q)
+{
+    Vector3 forwardVector;
+    quat_qv_multiply_v(q, NP_WORLD_FORWARD_VECTOR, &forwardVector);
+
+    return forwardVector;
+}
+
+Vector3 quat_q_up_vector(const Quaternion * const q)
+{
+    Vector3 upVector;
+    quat_qv_multiply_v(q, NP_WORLD_Y_AXIS, &upVector);
+
+    return upVector;
+}
+
+Vector3 quat_q_right_vector(const Quaternion * const q)
+{
+    Vector3 rightVector;
+    quat_qv_multiply_v(q, NP_WORLD_X_AXIS, &rightVector);
+
+    return rightVector;
+}
+
+Matrix3 quat_q_to_matrix3(const Quaternion * const q)
+{
+    Matrix3 result;
+    quat_q_to_matrix3_m(q, &result);
+
+    return result;
+}
+
+FMatrix3 quat_q_to_fmatrix3(const Quaternion * const q)
+{
+    FMatrix3 result;
+    quat_q_to_fmatrix3_m(q, &result);
+
+    return result;    
+}
+
+Matrix4 quat_q_to_matrix4(const Quaternion * const q)
+{
+    Matrix4 result;
+    quat_q_to_matrix4_m(q, &result);
+
+    return result;    
+}
+
+FMatrix4 quat_q_to_fmatrix4(const Quaternion * const q)
+{
+    FMatrix4 result;
+    quat_q_to_fmatrix4_m(q, &result);
+
+    return result;    
+}
+
+Quaternion quat_m3_to_quaternion(const Matrix3 * const m)
+{
+    Quaternion result;
+    quat_m3_to_quaternion_q(m, &result);
+
+    return result;
+}
+
+Quaternion quat_m4_to_quaternion(const Matrix4 * const m)
+{
+    Quaternion result;
+    quat_m4_to_quaternion_q(m, &result);
+
+    return result;
+}
+
 const char * quat_q_to_string(Quaternion * q)
 {
     char * quatstring;
 
-    if ( asprintf(&quatstring, "%f %f %f %f\n",Q_X(*q),Q_Y(*q),Q_Z(*q),Q_W(*q)) < 0)
+    if ( asprintf(&quatstring, "%f %f %f %f\n", Q_X(*q), Q_Y(*q), Q_Z(*q), Q_W(*q)) < 0 )
     {
         return NULL;
     }

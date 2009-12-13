@@ -53,6 +53,22 @@ void fquat_m4_to_quaternion_q(const FMatrix4 * const m, FQuaternion * q);
 
 Float fquat_q_magnitude(const FQuaternion * const q);
 
+FQuaternion fquat_q_conjugated(const FQuaternion * const q);
+FQuaternion fquat_q_normalised(const FQuaternion * const q);
+FQuaternion fquat_qq_multiply(const FQuaternion * const q1, const FQuaternion * const q2);
+FVector3 fquat_qv_multiply(const FQuaternion * const q, const FVector3 * const v);
+
+FVector3 fquat_q_forward_vector(const FQuaternion * const q);
+FVector3 fquat_q_up_vector(const FQuaternion * const q);
+FVector3 fquat_q_right_vector(const FQuaternion * const q);
+
+Matrix3 fquat_q_to_matrix3(const FQuaternion * const q);
+FMatrix3 fquat_q_to_fmatrix3(const FQuaternion * const q);
+Matrix4 fquat_q_to_matrix4(const FQuaternion * const q);
+FMatrix4 fquat_q_to_fmatrix4(const FQuaternion * const q);
+FQuaternion fquat_m3_to_quaternion(const FMatrix3 * const m);
+FQuaternion fquat_m4_to_quaternion(const FMatrix4 * const m);
+
 const char * fquat_q_to_string(FQuaternion * q);
 
 #endif

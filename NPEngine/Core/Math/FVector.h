@@ -53,13 +53,14 @@ void fv2_vv_sub_v(const FVector2 * const v, const FVector2 * const w, FVector2 *
 Float fv2_vv_dot_product(const FVector2 * const v, const FVector2 * const w);
 Float fv2_v_square_length(const FVector2 * const v);
 Float fv2_v_length(const FVector2 * const v);
-FVector2 fv2_v_inverted(FVector2 * v);
+FVector2 fv2_v_inverted(const FVector2 * const v);
+FVector2 fv2_v_normalised(const FVector2 * const v);
 FVector2 fv2_vv_add(const FVector2 * const v, const FVector2 * const w);
 FVector2 fv2_vv_sub(const FVector2 * const v, const FVector2 * const w);
 FVector2 fv2_sv_scaled(Float scale, const FVector2 const * v);
 FVector2 fv2_sv_scaledx(Float scale, const FVector2 const * v);
 FVector2 fv2_sv_scaledy(Float scale, const FVector2 const * v);
-const char * fv2_v_to_string(FVector2 * v);
+const char * fv2_v_to_string(const FVector2 * const v);
 
 FVector3 * fv3_alloc();
 FVector3 * fv3_alloc_init();
@@ -88,7 +89,8 @@ Float fv3_v_square_length(const FVector3 * const v);
 Float fv3_v_length(const FVector3 * const v);
 Float fv3_vv_square_distance(const FVector3 * const v, const FVector3 * const w);
 Float fv3_vv_distance(const FVector3 * const v, const FVector3 * const w);
-FVector3 fv3_v_inverted(FVector3 * v);
+FVector3 fv3_v_inverted(const FVector3 * const v);
+FVector3 fv3_v_normalised(const FVector3 * const v);
 FVector3 fv3_vv_add(const FVector3 * const v, const FVector3 * const w);
 FVector3 fv3_vv_sub(const FVector3 * const v, const FVector3 * const w);
 FVector3 fv3_vv_cross_product(const FVector3 * const v, const FVector3 * const w);
@@ -96,7 +98,7 @@ FVector3 fv3_sv_scaled(Float scale, const FVector3 const * v);
 FVector3 fv3_sv_scaledx(Float scale, const FVector3 const * v);
 FVector3 fv3_sv_scaledy(Float scale, const FVector3 const * v);
 FVector3 fv3_sv_scaledz(Float scale, const FVector3 const * v);
-const char * fv3_v_to_string(FVector3 * v);
+const char * fv3_v_to_string(const FVector3 * const v);
 
 FVector4 * fv4_alloc();
 FVector4 * fv4_alloc_init();
@@ -107,13 +109,16 @@ FVector4 * fv4_free(FVector4 * v);
 void fv4_v_init_with_zeros(FVector4 * v);
 void fv4_vv_init_with_fv3(FVector4 * v1, const FVector3 const * v2);
 void fv4_vssss_init_with_components(FVector4 * v, Double x, Double y, Double z, Double w);
+void fv4_v_homogenise(FVector4 * v);
+void fv4_v_homogenise_v(const FVector4 const * v, FVector4 * result);
 void fv4_sv_scale(Float scale, FVector4 * v);
 void fv4_sv_scale_v(Float scale, const FVector4 * const v, FVector4 * result);
 void fv4_vv_sub_v(const FVector4 * const v, const FVector4 * const w, FVector4 * result);
 void fv4_vv_add_v(const FVector4 * const v, const FVector4 * const w, FVector4 * result);
+FVector4 fv4_v_homogenised(const FVector4 const * v);
 FVector4 fv4_vv_add(const FVector4 * const v, const FVector4 * const w);
 FVector4 fv4_vv_sub(const FVector4 * const v, const FVector4 * const w);
-const char * fv4_v_to_string(FVector4 * v);
+const char * fv4_v_to_string(const FVector4 * const v);
 
 #endif
 

@@ -92,8 +92,8 @@ void fm4_mm_subtract_m(const FMatrix4 * const m1, const FMatrix4 * const m2, FMa
 void fm4_mm_multiply_m(const FMatrix4 * const m1, const FMatrix4 * const m2, FMatrix4 * result);
 void fm4_vm_multiply_v(const FVector4 * const v, const FMatrix4 * const m, FVector4 * result);
 void fm4_mv_multiply_v(const FMatrix4 * const m, const FVector4 * const v, FVector4 * result);
-void fm4_mv_translation_matrix(FMatrix4 * m, FVector3 * v);
-void fm4_mv_scale_matrix(FMatrix4 * m, FVector3 * v);
+void fm4_mv_translation_matrix(FMatrix4 * m, const FVector3 * const v);
+void fm4_mv_scale_matrix(FMatrix4 * m, const FVector3 * const v);
 void fm4_ms_scale_matrix_x(FMatrix4 * m, Float x);
 void fm4_ms_scale_matrix_y(FMatrix4 * m, Float y);
 void fm4_ms_scale_matrix_z(FMatrix4 * m, Float z);
@@ -113,6 +113,13 @@ void fm4_s_rotatex_m(Float degree, FMatrix4 * result);
 void fm4_s_rotatey_m(Float degree, FMatrix4 * result);
 void fm4_s_rotatez_m(Float degree, FMatrix4 * result);
 Float fm4_m_determinant(const FMatrix4 * const m);
+FMatrix4 fm4_m_transposed(const FMatrix4 * const m);
+FMatrix4 fm4_mm_add(const FMatrix4 * const m1, const FMatrix4 * const m2);
+FMatrix4 fm4_mm_subtract(const FMatrix4 * const m1, const FMatrix4 * const m2);
+FMatrix4 fm4_mm_multiply(const FMatrix4 * const m1, const FMatrix4 * const m2);
+FVector4 fm4_vm_multiply(const FVector4 * const v, const FMatrix4 * const m);
+FVector4 fm4_mv_multiply(const FMatrix4 * const m, const FVector4 * const v);
+FMatrix4 fm4_v_translation_matrix(const FVector3 * const v);
 const char * fm4_m_to_string(FMatrix4 * m);
 
 #endif
