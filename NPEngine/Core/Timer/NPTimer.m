@@ -43,6 +43,11 @@
     return frameTime;
 }
 
+- (Double) reciprocalFrameTime
+{
+    return 1.0 / frameTime;
+}
+
 - (Double) totalElapsedTime
 {
     return totalElapsedTime;

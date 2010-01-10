@@ -17,4 +17,9 @@
     return [ NPEngineInput instance ];
 }
 
++ (id) Sound
+{
+    return [ NPEngineSound instance ];
+}
+
 @end
