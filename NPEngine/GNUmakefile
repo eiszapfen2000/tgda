@@ -6,7 +6,8 @@ libNPEngine_SUBPROJECTS = \
     Application \
     Core \
     Graphics \
-    Input
+    Input \
+    Sound
 
 libNPEngine_OBJC_FILES = \
 NP.m

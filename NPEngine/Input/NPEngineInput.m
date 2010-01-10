@@ -86,11 +86,7 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
 
 - (void) setName:(NSString *)newName
 {
-    if ( name != newName )
-    {
-        [ name release ];
-        name = [ newName retain ];
-    }
+    ASSIGN(name, newName);
 }
 
 - (NPObject *) parent
@@ -162,7 +158,7 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
     return self;
 }
 
-- (unsigned)retainCount
+- (NSUInteger)retainCount
 {
     return UINT_MAX;  //denotes an object that cannot be released
 } 

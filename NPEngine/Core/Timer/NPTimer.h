@@ -18,6 +18,7 @@
 
 - (Int) fps;
 - (Double) frameTime;
+- (Double) reciprocalFrameTime;
 - (Double) totalElapsedTime;
 
 - (void) setup;

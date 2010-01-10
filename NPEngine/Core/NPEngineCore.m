@@ -159,7 +159,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     return self;
 }
 
-- (unsigned)retainCount
+- (NSUInteger)retainCount
 {
     return UINT_MAX;  //denotes an object that cannot be released
 } 
