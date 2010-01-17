@@ -15,20 +15,23 @@ endif
 
 ADDITIONAL_INCLUDE_DIRS += \
     -I$(TGDA_DIR)/NPEngine \
-    -I$(TGDA_DIR)/Dependencies/include
+    -I$(TGDA_DIR)/Dependencies/include \
+    -I/usr/local/include
 
 ADDITIONAL_LIB_DIRS += \
     -L$(EXTERNAL_DEPENDENCIES_LIB_DIR) \
-	-L$(NP_LIBS_DIR)
+	-L$(NP_LIBS_DIR) \
+    -L/usr/local/lib
 
 ADDITIONAL_CPPFLAGS += \
     $(BASIC_DEFINES)
 
 BASIC_CFLAGS += \
-    -Wall -std=gnu99
+    -Wall -Wextra -std=gnu99
 BASIC_OBJCFLAGS += \
     $(BASIC_CFLAGS) \
-    -Wno-import
+    -Wno-import \
+    -Wstrict-selector-match
 
 ADDITIONAL_CFLAGS += $(BASIC_CFLAGS)
 ADDITIONAL_OBJCFLAGS += $(BASIC_OBJCFLAGS)

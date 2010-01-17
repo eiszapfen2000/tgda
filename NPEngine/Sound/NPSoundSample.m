@@ -1,3 +1,5 @@
+#import <vorbis/vorbisfile.h>
+#import <sys/stat.h>
 #import "NPSoundSample.h"
 #import "NP.h"
 
@@ -20,13 +22,9 @@
     alID = UINT_MAX;
     volume = 1.0f;
     length = 0.0f;
+    range = 1.0f;
 
     return self;
-}
-
-- (void) dealloc
-{
-    [ super dealloc ];
 }
 
 - (void) deleteALBuffer
@@ -36,6 +34,13 @@
         alDeleteBuffers(1, &alID);
         alID = UINT_MAX;
     }
+}
+
+- (void) dealloc
+{
+    [ self deleteALBuffer ];
+
+    [ super dealloc ];
 }
 
 - (void) generateALBuffer
@@ -74,12 +79,94 @@
 {
     [ self setName:path ];
 
+    FILE * file = fopen([path fileSystemRepresentation], "rb");
+    if ( file == NULL )
+    {
+        NPLOG_ERROR(@"Unable to open file %@", path);
+        return NO;
+    }
+
+    //int fileDescriptor = fileno(file);
+    //struct stat attributes;
+    //fstat(fileDescriptor, &attributes);
+    //NPLOG(@"File size: %lu", attributes.st_size);
+
+    vorbis_info * info;
+    OggVorbis_File oggFile;
+
+    if ( ov_open(file, &oggFile, NULL, 0) < 0 )
+    {
+        NPLOG_ERROR(@"VorbisFile failed to open file %@", path);
+        fclose(file);
+        return NO;
+    }
+
+    //double time = ov_time_total(&oggFile, -1);
+    //NPLOG(@"Total time: %f", time);
+
+    info = ov_info(&oggFile, -1);
+
+    NPLOG(@"Number of Streams: %ld", ov_streams(&oggFile));
+    NPLOG(@"Number of Channels: %d", info->channels);
+    NPLOG(@"Sampling Rate: %ld", info->rate);
+    NPLOG(@"Maximum Bit Rate: %ld", info->bitrate_upper);
+    NPLOG(@"Minimum Bit Rate: %ld", info->bitrate_lower);
+    NPLOG(@"Average Bit Rate: %ld", ov_bitrate(&oggFile, -1));
+
     ALenum format;
-    Byte * data = NULL;
     ALsizei size;
     ALsizei frequency;
     ALboolean loop;
     ALint bitDepth;
+
+    if ( info->channels == 1 )
+    {
+        format = AL_FORMAT_MONO16;
+    }
+    else if ( info->channels == 2 )
+    {
+        format = AL_FORMAT_STEREO16;
+    }
+
+    frequency = info->rate;
+
+    NSMutableData * data = [[ NSMutableData alloc ] init ];
+
+    #define BUFFER_SIZE     32768       // 32 KB buffers
+
+    long bytesRead;
+    int stream;
+    char buffer[BUFFER_SIZE];
+
+    do
+    {
+        bytesRead = ov_read(&oggFile, buffer, BUFFER_SIZE, 0, 2, 1, &stream);
+
+        [ data appendBytes:buffer length:bytesRead ];
+    }
+    while ( bytesRead > 0 );
+
+    ov_clear(&oggFile);
+
+    NPLOG(@"Uncompressed Size: %lu", [data length]);
+
+    [ self generateALBuffer ];
+
+    alBufferData(alID, format, [ data bytes ], [data length], frequency);
+
+    [ data release ];
+
+    /*
+    ALint value;
+    alGetBufferi(alID, AL_FREQUENCY, &value);
+    NPLOG(@"Buffer frequency %d", value);
+    alGetBufferi(alID, AL_BITS, &value);
+    NPLOG(@"Buffer bits %d", value);
+    alGetBufferi(alID, AL_CHANNELS, &value);
+    NPLOG(@"Buffer channels %d", value);
+    alGetBufferi(alID, AL_SIZE, &value);
+    NPLOG(@"Buffer size %d", value);
+    */
 
     return YES;
 }

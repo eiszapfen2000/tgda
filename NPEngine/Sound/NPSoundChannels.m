@@ -1,3 +1,4 @@
+#import "NPSoundSample.h"
 #import "NPSoundChannel.h"
 #import "NPSoundChannels.h"
 #import "NP.h"
@@ -96,6 +97,14 @@
     {
         [ channel resume ];
     }
+}
+
+- (NPSoundChannel *) play:(NPSoundSample *)sample
+{
+    NPSoundChannel * result = [ channels objectAtIndex:0 ];
+    [ result play:sample ];
+
+    return result;
 }
 
 - (void) update
