@@ -81,17 +81,6 @@
     ALboolean loop;
     ALint bitDepth;
 
-    const char * string = [ path cStringUsingEncoding:NSASCIIStringEncoding ];
-    alutLoadWAVFile((char *)string, &format, (void **)(&data), &size, &frequency, &loop);
-
-    [ self generateALBuffer ];
-    alBufferData(alID, format, data, size, frequency);
-
-    alutUnloadWAV(format, data, size, frequency);
-
-    alGetBufferi(alID, AL_BITS, &bitDepth);
-    length = ldiv((size * 8), bitDepth).quot / frequency;
-
     return YES;
 }
 
