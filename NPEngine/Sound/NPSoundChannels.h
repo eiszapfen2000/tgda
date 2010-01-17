@@ -4,6 +4,9 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
 
+@class NPSoundChannel;
+@class NPSoundSample;
+
 @interface NPSoundChannels : NPObject
 {
     NSMutableArray * channels;
@@ -18,5 +21,7 @@
 - (void) stopAllChannels;
 - (void) resumeAllChannels;
 - (void) update;
+
+- (NPSoundChannel *) play:(NPSoundSample *)sample;
 
 @end

@@ -1,3 +1,4 @@
+#import "NPSoundSample.h"
 #import "NPSoundChannel.h"
 #import "NP.h"
 
@@ -90,8 +91,18 @@
     alSourcePlay(alID);
 }
 
-- (void) play
+- (void) play:(NPSoundSample *)sample
 {
+    if ( sample == NULL )
+    {
+        return;
+    }
+
+    alSourcei(alID, AL_BUFFER, [ sample alID ]);
+    alSourcef(alID, AL_ROLLOFF_FACTOR, [ sample range ]);
+    alSourcePlay(alID);
+
+    [ self setDefaultValues ];
 }
 
 - (UInt32) alID

@@ -3,6 +3,8 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
 
+@class NPSoundSample;
+
 @interface NPSoundChannel : NPObject
 {
     UInt32 channelIndex;
@@ -35,7 +37,7 @@
 - (void) pause;
 - (void) stop;
 - (void) resume;
-- (void) play;
+- (void) play:(NPSoundSample *)sample;
 
 - (UInt32) alID;
 - (void) setPosition:(const FVector3 const *)newPosition;

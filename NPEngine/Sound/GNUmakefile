@@ -14,7 +14,7 @@ NPSoundChannel.m \
 NPSoundChannels.m \
 NPSoundSample.m
 
-libNPEngineSound_LIBRARIES_DEPEND_UPON += -lopenal -lalut
+libNPEngineSound_LIBRARIES_DEPEND_UPON += -lopenal -lvorbis -lvorbisfile
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make
