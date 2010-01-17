@@ -1,4 +1,4 @@
-#import <AL/al.h>
+#import "AL/al.h"
 #import "Core/NPObject/NPObject.h"
 
 @interface NPSoundSample : NPObject

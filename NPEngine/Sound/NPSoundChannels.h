@@ -1,6 +1,6 @@
-#import <AL/al.h>
-#import <AL/alc.h>
 #import <Foundation/NSArray.h>
+#import "AL/al.h"
+#import "AL/alc.h"
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
 

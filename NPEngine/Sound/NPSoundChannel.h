@@ -1,5 +1,5 @@
-#import <AL/al.h>
-#import <AL/alc.h>
+#import "AL/al.h"
+#import "AL/alc.h"
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
 
