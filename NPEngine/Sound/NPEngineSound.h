@@ -1,6 +1,6 @@
-#import <AL/al.h>
-#import <AL/alc.h>
-#import <AL/alext.h>
+#import "AL/al.h"
+#import "AL/alc.h"
+#import "AL/alext.h"
 #import "Core/NPObject/NPObject.h"
 
 @interface NPEngineSound : NSObject < NPPObject >
