@@ -1,9 +1,15 @@
+#import <AL/al.h>
+#import <AL/alc.h>
+#import <AL/alext.h>
 #import "Core/NPObject/NPObject.h"
 
 @interface NPEngineSound : NSObject < NPPObject >
 {
     UInt32 objectID;
     NSString * name;
+
+    ALCdevice * device;
+    ALCcontext * context;
 }
 
 + (NPEngineSound *) instance;
@@ -21,6 +27,7 @@
 - (void) setParent:(NPObject *)newParent;
 - (UInt32) objectID;
 
+- (void) checkForALErrors;
 - (void) update;
 
 @end

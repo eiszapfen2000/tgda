@@ -49,13 +49,67 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     name = [ newName retain ];
     objectID = crc32_of_pointer(self);
 
+    NPLOG(@"%@ initialising...", name);
+
+    NPLOG_PUSH_PREFIX(@"    ");
+    NPLOG(@"Opening default OpenAL device");
+
+    device = alcOpenDevice(NULL);
+    if ( device == NULL )
+    {
+        NPLOG_ERROR(@"Failed to open OpenAL device");
+        [ self checkForALErrors ];
+
+        return self;
+    }
+
+    NPLOG(@"Default device: %s", alcGetString(device, ALC_DEFAULT_DEVICE_SPECIFIER));
+
+    ALCint major, minor;
+    alcGetIntegerv(device, ALC_MAJOR_VERSION, 1, &major);
+    alcGetIntegerv(device, ALC_MINOR_VERSION, 1, &minor);
+
+    NPLOG(@"ALC version: %d.%d", (int)major, (int)minor);
+
+    context = alcCreateContext(device, NULL);
+    if ( context == NULL )
+    {
+        NPLOG_ERROR(@"Failed to create OpenAL context");
+        [ self checkForALErrors ];
+
+        return self;
+    }
+
+    ALCboolean success = alcMakeContextCurrent(context);
+    if ( success == ALC_FALSE )
+    {
+        [ self checkForALErrors ];
+    }
+
+    NPLOG(@"OpenAL vendor string: %s", alGetString(AL_VENDOR));
+    NPLOG(@"OpenAL renderer string: %s", alGetString(AL_RENDERER));
+    NPLOG(@"OpenAL version string: %s", alGetString(AL_VERSION));
+
+    NPLOG_POP_PREFIX();
+    NPLOG(@"%@ up and running", name);
+    NPLOG(@"");
+
+    [ self checkForALErrors ];
+
     return self;
 }
 
 - (void) dealloc
 {
     NPLOG(@"");
-    NPLOG(@"NP Engine Sound Dealloc");
+    NPLOG(@"%@ Dealloc", name);
+
+    alcMakeContextCurrent(NULL);
+    alcDestroyContext(context);
+    context = NULL;
+
+    alcCloseDevice(device);
+    device = NULL;
 
     [ name release ];
 
@@ -64,10 +118,7 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 
 - (void) setup
 {
-    NPLOG(@"NPEngine Sound setup....");
 
-    NPLOG(@"NPEngine Sound ready");
-    NPLOG(@"");
 }
 
 - (NSString *) name
@@ -92,6 +143,24 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 - (UInt32) objectID
 {
     return objectID;
+}
+
+- (void) checkForALErrors
+{
+    if ( device != NULL )
+    {
+        ALCenum error = alcGetError(device);
+        if( error != ALC_NO_ERROR )
+        {
+            NPLOG_ERROR(@"%s", (const char*)alcGetString(device, error));
+        }
+    }
+
+    ALenum error = alGetError();
+    if( error != AL_NO_ERROR )
+    {
+        NPLOG_ERROR(@"%s", (const char*)alGetString(error));
+    }
 }
 
 - (void) update
