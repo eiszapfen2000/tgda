@@ -40,6 +40,8 @@
 - (void) play:(NPSoundSample *)sample;
 
 - (UInt32) alID;
+- (BOOL) paused;
+- (BOOL) playing;
 - (void) setPosition:(const FVector3 const *)newPosition;
 - (void) setVolume:(Float)newVolume;
 - (void) setPitch:(Float)newPitch;

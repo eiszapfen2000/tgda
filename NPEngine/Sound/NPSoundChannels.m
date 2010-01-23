@@ -7,7 +7,7 @@
 
 - (id) init
 {
-    return [ self initWithName:@"Sound Channels" ];
+    return [ self initWithName:@"NP Sound Channels" ];
 }
 
 - (id) initWithName:(NSString *)newName
@@ -66,6 +66,33 @@
     [ super dealloc ];
 }
 
+- (UInt32) numberOfChannels
+{
+    return [ channels count ];
+}
+
+- (NPSoundChannel *) channelAtIndex:(UInt32)index
+{
+    return [ channels objectAtIndex:index ];
+}
+
+- (NPSoundChannel *) firstFreeChannel
+{
+    NSEnumerator * enumerator = [ channels objectEnumerator ];
+    NPSoundChannel * channel;
+
+    while (( channel = [ enumerator nextObject ] ))
+    {
+        if (( [ channel playing ] == NO ) &&
+            ( [ channel locked  ] == NO ))
+        {
+            return channel;
+        }
+    }
+
+    return nil;
+}
+
 - (void) pauseAllChannels
 {
     NSEnumerator * enumerator = [ channels objectEnumerator ];
@@ -99,12 +126,28 @@
     }
 }
 
+- (NPSoundChannel *) reserveChannel
+{
+    NPSoundChannel * channel = [ self firstFreeChannel ];
+
+    if ( channel != nil )
+    {
+        [ channel lock ];
+    }
+
+    return channel;
+}
+
 - (NPSoundChannel *) play:(NPSoundSample *)sample
 {
-    NPSoundChannel * result = [ channels objectAtIndex:0 ];
-    [ result play:sample ];
+    NPSoundChannel * channel = [ self firstFreeChannel ];
 
-    return result;
+    if ( channel != nil )
+    {
+        [ channel play:sample ];
+    }
+
+    return channel;
 }
 
 - (void) update

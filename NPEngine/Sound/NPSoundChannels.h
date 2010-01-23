@@ -17,11 +17,17 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
+- (UInt32) numberOfChannels;
+- (NPSoundChannel *) channelAtIndex:(UInt32)index;
+- (NPSoundChannel *) firstFreeChannel;
+
 - (void) pauseAllChannels;
 - (void) stopAllChannels;
 - (void) resumeAllChannels;
-- (void) update;
 
+- (NPSoundChannel *) reserveChannel;
 - (NPSoundChannel *) play:(NPSoundSample *)sample;
+
+- (void) update;
 
 @end
