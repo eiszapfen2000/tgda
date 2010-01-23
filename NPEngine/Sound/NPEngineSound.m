@@ -96,6 +96,8 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 
     [ self checkForALErrors ];
 
+    channels = [[ NPSoundChannels alloc ] init ];
+
     return self;
 }
 
@@ -103,6 +105,8 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 {
     NPLOG(@"");
     NPLOG(@"%@ Dealloc", name);
+
+    [ channels release ];
 
     alcMakeContextCurrent(NULL);
     alcDestroyContext(context);
@@ -114,11 +118,6 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     [ name release ];
 
     [ super dealloc ];
-}
-
-- (void) setup
-{
-
 }
 
 - (NSString *) name
@@ -165,7 +164,9 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 
 - (void) update
 {
+    [ channels update ];
 
+    [ self checkForALErrors ];
 }
 
 - (id)copyWithZone:(NSZone *)zone

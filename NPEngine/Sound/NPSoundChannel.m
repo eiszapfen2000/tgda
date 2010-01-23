@@ -110,6 +110,22 @@
     return alID;
 }
 
+- (BOOL) paused
+{
+    ALint state;
+    alGetSourcei(alID, AL_SOURCE_STATE, &state);
+
+    return ( state == AL_PAUSED );
+}
+
+- (BOOL) playing
+{
+    ALint state;
+    alGetSourcei(alID, AL_SOURCE_STATE, &state);
+
+    return ((state == AL_PLAYING) || (state == AL_PAUSED));
+}
+
 - (void) setPosition:(const FVector3 const *)newPosition
 {
     fv3_vv_init_with_fv3(position, newPosition);

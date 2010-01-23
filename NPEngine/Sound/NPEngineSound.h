@@ -2,6 +2,8 @@
 #import "AL/alc.h"
 #import "AL/alext.h"
 #import "Core/NPObject/NPObject.h"
+#import "NPSoundChannel.h"
+#import "NPSoundChannels.h"
 
 @interface NPEngineSound : NSObject < NPPObject >
 {
@@ -10,6 +12,8 @@
 
     ALCdevice * device;
     ALCcontext * context;
+
+    NPSoundChannels * channels;
 }
 
 + (NPEngineSound *) instance;
@@ -18,8 +22,6 @@
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
-
-- (void) setup;
 
 - (NSString *) name;
 - (void) setName:(NSString *)newName;
