@@ -4,6 +4,7 @@
 #import "Core/NPObject/NPObject.h"
 #import "NPSoundChannel.h"
 #import "NPSoundChannels.h"
+#import "NPSoundManager.h"
 
 @interface NPEngineSound : NSObject < NPPObject >
 {
@@ -14,6 +15,7 @@
     ALCcontext * context;
 
     NPSoundChannels * channels;
+    NPSoundManager * soundManager;
 }
 
 + (NPEngineSound *) instance;

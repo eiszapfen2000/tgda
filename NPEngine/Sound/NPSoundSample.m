@@ -86,11 +86,6 @@
         return NO;
     }
 
-    //int fileDescriptor = fileno(file);
-    //struct stat attributes;
-    //fstat(fileDescriptor, &attributes);
-    //NPLOG(@"File size: %lu", attributes.st_size);
-
     vorbis_info * info;
     OggVorbis_File oggFile;
 
@@ -100,9 +95,6 @@
         fclose(file);
         return NO;
     }
-
-    //double time = ov_time_total(&oggFile, -1);
-    //NPLOG(@"Total time: %f", time);
 
     info = ov_info(&oggFile, -1);
 
@@ -155,18 +147,6 @@
     alBufferData(alID, format, [ data bytes ], [data length], frequency);
 
     [ data release ];
-
-    /*
-    ALint value;
-    alGetBufferi(alID, AL_FREQUENCY, &value);
-    NPLOG(@"Buffer frequency %d", value);
-    alGetBufferi(alID, AL_BITS, &value);
-    NPLOG(@"Buffer bits %d", value);
-    alGetBufferi(alID, AL_CHANNELS, &value);
-    NPLOG(@"Buffer channels %d", value);
-    alGetBufferi(alID, AL_SIZE, &value);
-    NPLOG(@"Buffer size %d", value);
-    */
 
     return YES;
 }

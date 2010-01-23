@@ -96,7 +96,8 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 
     [ self checkForALErrors ];
 
-    channels = [[ NPSoundChannels alloc ] init ];
+    channels = [[ NPSoundChannels alloc ] initWithName:@"NP Sound Channels" parent:self ];
+    soundManager = [[ NPSoundManager alloc ] initWithName:@"NP Sound Manager" parent:self ];    
 
     return self;
 }
@@ -106,6 +107,7 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     NPLOG(@"");
     NPLOG(@"%@ Dealloc", name);
 
+    [ soundManager release ];
     [ channels release ];
 
     alcMakeContextCurrent(NULL);
@@ -169,27 +171,27 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     [ self checkForALErrors ];
 }
 
-- (id)copyWithZone:(NSZone *)zone
+- (id) copyWithZone:(NSZone *)zone
 {
     return self;
 }
 
-- (id)retain
+- (id) retain
 {
     return self;
 }
 
-- (NSUInteger)retainCount
+- (NSUInteger) retainCount
 {
     return UINT_MAX;  //denotes an object that cannot be released
 } 
 
-- (void)release
+- (void) release
 {
     //do nothing
 } 
 
-- (id)autorelease
+- (id) autorelease
 {
     return self;
 }
