@@ -6,13 +6,17 @@ libNPEngineSound_HEADER_FILES = \
 NPEngineSound.h \
 NPSoundChannel.h \
 NPSoundChannels.h \
-NPSoundSample.h
+NPSoundSample.h \
+NPSoundManager.h \
+NPSoundWorld.h
 
 libNPEngineSound_OBJC_FILES = \
 NPEngineSound.m \
 NPSoundChannel.m \
 NPSoundChannels.m \
-NPSoundSample.m
+NPSoundSample.m \
+NPSoundManager.m \
+NPSoundWorld.m
 
 libNPEngineSound_LIBRARIES_DEPEND_UPON += -lopenal -lvorbis -lvorbisfile
 
