@@ -1,4 +1,5 @@
 #import "NPSoundWorld.h"
+#import "NP.h"
 
 @implementation NPSoundWorld
 
@@ -40,6 +41,43 @@
 - (void) setListenerOrientation:(FQuaternion)newListenerOrientation
 {
     *listenerRotation = newListenerOrientation;
+}
+
+- (void) update
+{
+    Float volume = [[ NP Sound ] volume ];
+
+    FVector3 velocity = fv3_vv_sub(listenerPosition, listenerPositionLastFrame);
+    velocity = fv3_sv_scaled([[[ NP Core ] timer ] reciprocalFrameTime ], &velocity);
+
+    FVector3 forward = fquat_q_forward_vector(listenerRotation);
+    FVector3 up = fquat_q_up_vector(listenerRotation);
+
+    Float alOrientation[6];
+    alOrientation[0] = forward.x;
+    alOrientation[1] = forward.y;
+    alOrientation[2] = forward.z;
+    alOrientation[3] = up.x;
+    alOrientation[4] = up.y;
+    alOrientation[5] = up.z;
+
+    Float alPosition[3];
+    alPosition[0] = listenerPosition->x;
+    alPosition[1] = listenerPosition->y;
+    alPosition[2] = listenerPosition->z;
+
+    Float alVelocity[3];
+    alVelocity[0] = velocity.x;
+    alVelocity[1] = velocity.y;
+    alVelocity[2] = velocity.z;
+
+    // Update listener position in OpenAL.
+    alListenerf(AL_GAIN, volume);
+    alListenerfv(AL_POSITION, alPosition);
+    alListenerfv(AL_ORIENTATION, alOrientation);
+    alListenerfv(AL_VELOCITY, alVelocity);
+
+    *listenerPositionLastFrame = *listenerPosition;
 }
 
 

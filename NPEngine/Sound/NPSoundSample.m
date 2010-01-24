@@ -1,5 +1,4 @@
 #import <vorbis/vorbisfile.h>
-#import <sys/stat.h>
 #import "NPSoundSample.h"
 #import "NP.h"
 
@@ -138,14 +137,14 @@
     }
     while ( bytesRead > 0 );
 
+    #undef BUFFER_SIZE
+
     ov_clear(&oggFile);
 
     NPLOG(@"Uncompressed Size: %lu", [data length]);
 
     [ self generateALBuffer ];
-
     alBufferData(alID, format, [ data bytes ], [data length], frequency);
-
     [ data release ];
 
     return YES;

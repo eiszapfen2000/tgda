@@ -8,7 +8,8 @@ NPSoundChannel.h \
 NPSoundChannels.h \
 NPSoundSample.h \
 NPSoundManager.h \
-NPSoundWorld.h
+NPSoundWorld.h \
+NPSoundStream.h
 
 libNPEngineSound_OBJC_FILES = \
 NPEngineSound.m \
@@ -16,7 +17,8 @@ NPSoundChannel.m \
 NPSoundChannels.m \
 NPSoundSample.m \
 NPSoundManager.m \
-NPSoundWorld.m
+NPSoundWorld.m \
+NPSoundStream.m
 
 libNPEngineSound_LIBRARIES_DEPEND_UPON += -lopenal -lvorbis -lvorbisfile
 

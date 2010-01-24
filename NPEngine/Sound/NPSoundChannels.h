@@ -17,6 +17,8 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
+- (void) setup;
+
 - (UInt32) numberOfChannels;
 - (NPSoundChannel *) channelAtIndex:(UInt32)index;
 - (NPSoundChannel *) firstFreeChannel;
