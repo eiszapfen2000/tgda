@@ -5,6 +5,7 @@
 #import "NPSoundChannel.h"
 #import "NPSoundChannels.h"
 #import "NPSoundManager.h"
+#import "NPSoundWorld.h"
 
 @interface NPEngineSound : NSObject < NPPObject >
 {
@@ -16,6 +17,9 @@
 
     NPSoundChannels * channels;
     NPSoundManager * soundManager;
+    NPSoundWorld * world;    
+
+    Float volume;
 }
 
 + (NPEngineSound *) instance;
@@ -25,11 +29,16 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
+- (void) setup;
+
 - (NSString *) name;
-- (void) setName:(NSString *)newName;
 - (NPObject *) parent;
-- (void) setParent:(NPObject *)newParent;
 - (UInt32) objectID;
+- (NPSoundChannels *) channels;
+- (Float) volume;
+- (void) setName:(NSString *)newName;
+- (void) setParent:(NPObject *)newParent;
+- (void) setVolume:(Float)newVolume;
 
 - (void) checkForALErrors;
 - (void) update;

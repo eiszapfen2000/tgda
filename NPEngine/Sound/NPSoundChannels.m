@@ -21,6 +21,19 @@
 
     channels = [[ NSMutableArray alloc ] init ];
 
+    return self;
+}
+
+- (void) dealloc
+{
+    [ channels removeAllObjects ];
+    [ channels release ];
+
+    [ super dealloc ];
+}
+
+- (void) setupChannels
+{
     UInt32 alID;
     UInt32 index = 0;
     BOOL outOfChannels = NO;
@@ -54,16 +67,11 @@
         index++;
     }
     while ( outOfChannels == NO && index <= 127 );
-
-    return self;
 }
 
-- (void) dealloc
+- (void) setup
 {
-    [ channels removeAllObjects ];
-    [ channels release ];
-
-    [ super dealloc ];
+    [ self setupChannels ];
 }
 
 - (UInt32) numberOfChannels

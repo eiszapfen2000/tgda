@@ -19,4 +19,6 @@
 - (void) setListenerPosition:(FVector3)newListenerPosition;
 - (void) setListenerOrientation:(FQuaternion)newListenerOrientation;
 
+- (void) update;
+
 @end

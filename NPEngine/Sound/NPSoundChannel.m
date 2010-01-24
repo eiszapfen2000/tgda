@@ -46,6 +46,8 @@
     position = fv3_alloc_init();
     positionLastFrame = fv3_alloc_init();
 
+    currentSample = nil;
+
     locked = NO;
 
     [ self  setDefaultValues ];
@@ -55,6 +57,8 @@
 
 - (void) dealloc
 {
+    TEST_RELEASE(currentSample);
+
     position = fv3_free(position);
     positionLastFrame = fv3_free(positionLastFrame);
 
@@ -97,6 +101,8 @@
     {
         return;
     }
+
+    ASSIGN(currentSample, sample);
 
     alSourcei(alID, AL_BUFFER, [ sample alID ]);
     alSourcef(alID, AL_ROLLOFF_FACTOR, [ sample range ]);
@@ -157,8 +163,18 @@
     FVector3 velocity = fv3_vv_sub(position, positionLastFrame);
     fv3_sv_scale([[[ NP Core ] timer ] reciprocalFrameTime ], &velocity);
 
-    alSourcefv(alID, AL_POSITION, (ALfloat*)position);
-    alSourcefv(alID, AL_VELOCITY, (ALfloat*)(&velocity));
+    Float alPosition[3];
+    alPosition[0] = position->x;
+    alPosition[1] = position->y;
+    alPosition[2] = position->z;
+
+    Float alVelocity[3];
+    alVelocity[0] = velocity.x;
+    alVelocity[1] = velocity.y;
+    alVelocity[2] = velocity.z;
+
+    alSourcefv(alID, AL_POSITION, alPosition);
+    alSourcefv(alID, AL_VELOCITY, alVelocity);
     alSourcef(alID, AL_PITCH, pitch + pitchVariation);
     alSourcef(alID, AL_GAIN, volume + volumeVariation);
 

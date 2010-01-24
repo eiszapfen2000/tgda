@@ -49,9 +49,43 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     name = [ newName retain ];
     objectID = crc32_of_pointer(self);
 
-    NPLOG(@"%@ initialising...", name);
+    channels = [[ NPSoundChannels alloc ] initWithName:@"NP Sound Channels" parent:self ];
+    soundManager = [[ NPSoundManager alloc ] initWithName:@"NP Sound Manager" parent:self ];
+    world = [[ NPSoundWorld alloc ] initWithName:@"NP Sound World" parent:self ];
 
-    NPLOG_PUSH_PREFIX(@"    ");
+    volume = 1.0f;
+
+    return self;
+}
+
+- (void) shutdownOpenAL
+{
+    alcMakeContextCurrent(NULL);
+    alcDestroyContext(context);
+    context = NULL;
+
+    alcCloseDevice(device);
+    device = NULL;
+}
+
+- (void) dealloc
+{
+    NPLOG(@"");
+    NPLOG(@"%@ Dealloc", name);
+
+    [ world release ];
+    [ soundManager release ];
+    [ channels release ];
+
+    [ self shutdownOpenAL ];
+
+    [ name release ];
+
+    [ super dealloc ];
+}
+
+- (void) setupOpenAL
+{
     NPLOG(@"Opening default OpenAL device");
 
     device = alcOpenDevice(NULL);
@@ -60,7 +94,7 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
         NPLOG_ERROR(@"Failed to open OpenAL device");
         [ self checkForALErrors ];
 
-        return self;
+        return;
     }
 
     NPLOG(@"Default device: %s", alcGetString(device, ALC_DEFAULT_DEVICE_SPECIFIER));
@@ -77,7 +111,7 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
         NPLOG_ERROR(@"Failed to create OpenAL context");
         [ self checkForALErrors ];
 
-        return self;
+        return;
     }
 
     ALCboolean success = alcMakeContextCurrent(context);
@@ -90,36 +124,20 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     NPLOG(@"OpenAL renderer string: %s", alGetString(AL_RENDERER));
     NPLOG(@"OpenAL version string: %s", alGetString(AL_VERSION));
 
+    [ self checkForALErrors ];
+}
+
+- (void) setup
+{
+    NPLOG(@"%@ initialising...", name);
+    NPLOG_PUSH_PREFIX(@"    ");
+
+    [ self setupOpenAL ];
+    [ channels setup ];
+
     NPLOG_POP_PREFIX();
     NPLOG(@"%@ up and running", name);
     NPLOG(@"");
-
-    [ self checkForALErrors ];
-
-    channels = [[ NPSoundChannels alloc ] initWithName:@"NP Sound Channels" parent:self ];
-    soundManager = [[ NPSoundManager alloc ] initWithName:@"NP Sound Manager" parent:self ];    
-
-    return self;
-}
-
-- (void) dealloc
-{
-    NPLOG(@"");
-    NPLOG(@"%@ Dealloc", name);
-
-    [ soundManager release ];
-    [ channels release ];
-
-    alcMakeContextCurrent(NULL);
-    alcDestroyContext(context);
-    context = NULL;
-
-    alcCloseDevice(device);
-    device = NULL;
-
-    [ name release ];
-
-    [ super dealloc ];
 }
 
 - (NSString *) name
@@ -127,23 +145,38 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     return name;
 }
 
-- (void) setName:(NSString *)newName
-{
-    ASSIGN(name, newName);
-}
-
 - (NPObject *) parent
 {
     return nil;
+}
+
+- (UInt32) objectID
+{
+    return objectID;
+}
+
+- (Float) volume
+{
+    return volume;
+}
+
+- (NPSoundChannels *) channels
+{
+    return channels;
+}
+
+- (void) setName:(NSString *)newName
+{
+    ASSIGN(name, newName);
 }
 
 - (void) setParent:(NPObject *)newParent
 {
 }
 
-- (UInt32) objectID
+- (void) setVolume:(Float)newVolume
 {
-    return objectID;
+    volume = newVolume;
 }
 
 - (void) checkForALErrors
@@ -166,6 +199,7 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 
 - (void) update
 {
+    [ world update];
     [ channels update ];
 
     [ self checkForALErrors ];

@@ -18,6 +18,7 @@
     BOOL is3DSource;
     BOOL loop;
     BOOL locked;
+    NPSoundSample * currentSample;
 }
 
 - (id) init;
