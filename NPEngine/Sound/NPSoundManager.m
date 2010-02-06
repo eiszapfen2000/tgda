@@ -35,14 +35,14 @@
     [ super dealloc ];
 }
 
-- (id) loadSampleFromPath:(NSString *)path
+- (NPSoundSample *) loadSampleFromPath:(NSString *)path
 {
     NSString * absolutePath = [[[ NP Core ] pathManager ] getAbsoluteFilePath:path ];
 
     return [ self loadSampleFromAbsolutePath:absolutePath ];
 }
 
-- (id) loadSampleFromAbsolutePath:(NSString *)path
+- (NPSoundSample *) loadSampleFromAbsolutePath:(NSString *)path
 {
     if ( [ path isEqual:@"" ] == NO )
     {
@@ -50,7 +50,7 @@
 
         if ( sample == nil )
         {
-            NPLOG(@"%@: loading %@", name, path);
+            NPLOG(@"%@: loading sound sample from %@", name, path);
 
             NPLOG_PUSH_PREFIX(@"  ");
 
@@ -76,8 +76,56 @@
     return nil;
 }
 
+- (NPSoundStream *) loadStreamFromPath:(NSString *)path
+{
+    NSString * absolutePath = [[[ NP Core ] pathManager ] getAbsoluteFilePath:path ];
+
+    return [ self loadStreamFromAbsolutePath:absolutePath ];
+}
+
+- (NPSoundStream *) loadStreamFromAbsolutePath:(NSString *)path
+{
+    if ( [ path isEqual:@"" ] == NO )
+    {
+        NPSoundStream * stream = [ streams objectForKey:path ];
+
+        if ( stream == nil )
+        {
+            NPLOG(@"%@: loading sound stream from %@", name, path);
+
+            NPLOG_PUSH_PREFIX(@"  ");
+
+            stream = [[ NPSoundStream alloc ] initWithName:@"" parent:self ];
+
+            if ( [ stream loadFromPath:path ] == YES )
+            {
+                [ streams setObject:stream forKey:path ];
+                [ stream release ];
+            }
+            else
+            {
+                [ stream release ];
+                stream = nil;
+            }
+
+            NPLOG_POP_PREFIX();
+        }
+
+        return stream;
+    }
+
+    return nil;
+}
+
 - (void) update
 {
+    NSEnumerator * enumerator = [ streams objectEnumerator ];
+    NPSoundStream * stream;
+
+    while (( stream = [ enumerator nextObject ] ))
+    {
+        [ stream update ];
+    }
 }
 
 @end

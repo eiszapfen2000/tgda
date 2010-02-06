@@ -4,6 +4,7 @@
 #import "Core/NPObject/NPObject.h"
 
 @class NPSoundSample;
+@class NPSoundStream;
 
 @interface NPSoundManager : NPObject
 {
@@ -16,8 +17,11 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
-- (id) loadSampleFromPath:(NSString *)path;
-- (id) loadSampleFromAbsolutePath:(NSString *)path;
+- (NPSoundSample *) loadSampleFromPath:(NSString *)path;
+- (NPSoundSample *) loadSampleFromAbsolutePath:(NSString *)path;
+
+- (NPSoundStream *) loadStreamFromPath:(NSString *)path;
+- (NPSoundStream *) loadStreamFromAbsolutePath:(NSString *)path;
 
 - (void) update;
 

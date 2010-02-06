@@ -50,7 +50,7 @@
 
     locked = NO;
 
-    [ self  setDefaultValues ];
+    [ self setDefaultValues ];
 
     return self;
 }
