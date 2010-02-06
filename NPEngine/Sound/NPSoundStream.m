@@ -205,10 +205,13 @@
             alSourceUnqueueBuffers(channelALId, 1, &buffer);
             [[ NP Sound ] checkForALErrors ];
 
-            [ self streamData:buffer ];
+            if ( [ self streamData:buffer ] == NO )
+            {
+                playing = NO;
+                break;
+            }
 
             alSourceQueueBuffers(channelALId, 1, &buffer);
-
             processed = processed - 1;
         }
         while ( processed > 0 );
@@ -217,7 +220,10 @@
 
 - (void) update
 {
-    [ self updateStream ];
+    if ( playing == YES )
+    {
+        [ self updateStream ];
+    }
 }
 
 @end

@@ -49,9 +49,9 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     name = [ newName retain ];
     objectID = crc32_of_pointer(self);
 
+    world = [[ NPSoundWorld alloc ] initWithName:@"NP Sound World" parent:self ];
     channels = [[ NPSoundChannels alloc ] initWithName:@"NP Sound Channels" parent:self ];
     soundManager = [[ NPSoundManager alloc ] initWithName:@"NP Sound Manager" parent:self ];
-    world = [[ NPSoundWorld alloc ] initWithName:@"NP Sound World" parent:self ];
 
     volume = 1.0f;
 
@@ -160,9 +160,19 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     return volume;
 }
 
+- (NPSoundWorld *) world
+{
+    return world;
+}
+
 - (NPSoundChannels *) channels
 {
     return channels;
+}
+
+- (NPSoundManager *) soundManager
+{
+    return soundManager;
 }
 
 - (void) setName:(NSString *)newName
@@ -201,6 +211,7 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 {
     [ world update];
     [ channels update ];
+    [ soundManager update ];
 
     [ self checkForALErrors ];
 }

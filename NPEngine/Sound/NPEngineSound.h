@@ -15,9 +15,9 @@
     ALCdevice * device;
     ALCcontext * context;
 
+    NPSoundWorld * world;
     NPSoundChannels * channels;
     NPSoundManager * soundManager;
-    NPSoundWorld * world;    
 
     Float volume;
 }
@@ -34,7 +34,9 @@
 - (NSString *) name;
 - (NPObject *) parent;
 - (UInt32) objectID;
+- (NPSoundWorld *) world;
 - (NPSoundChannels *) channels;
+- (NPSoundManager *) soundManager;
 - (Float) volume;
 - (void) setName:(NSString *)newName;
 - (void) setParent:(NPObject *)newParent;
