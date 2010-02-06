@@ -96,19 +96,18 @@
     }
 
     info = ov_info(&oggFile, -1);
+    length = ov_time_total(&oggFile, -1);
 
     NPLOG(@"Number of Streams: %ld", ov_streams(&oggFile));
     NPLOG(@"Number of Channels: %d", info->channels);
+    NPLOG(@"Length in Seconds: %f", length);
     NPLOG(@"Sampling Rate: %ld", info->rate);
     NPLOG(@"Maximum Bit Rate: %ld", info->bitrate_upper);
     NPLOG(@"Minimum Bit Rate: %ld", info->bitrate_lower);
     NPLOG(@"Average Bit Rate: %ld", ov_bitrate(&oggFile, -1));
 
-    ALenum format;
-    ALsizei size;
-    ALsizei frequency;
-    ALboolean loop;
-    ALint bitDepth;
+    ALsizei frequency = info->rate;
+    ALenum format = AL_NONE;
 
     if ( info->channels == 1 )
     {
@@ -118,8 +117,6 @@
     {
         format = AL_FORMAT_STEREO16;
     }
-
-    frequency = info->rate;
 
     NSMutableData * data = [[ NSMutableData alloc ] init ];
 

@@ -66,7 +66,7 @@
 
         index++;
     }
-    while ( outOfChannels == NO && index <= 127 );
+    while ( outOfChannels == NO && index <= 31 );
 }
 
 - (void) setup
