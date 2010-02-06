@@ -32,4 +32,6 @@
 
 - (BOOL) loadFromPath:(NSString *)path;
 
+- (void) update;
+
 @end
