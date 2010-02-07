@@ -1,9 +1,17 @@
 \chapter{Implementation}
 
-Development on Ubuntu 32 and 64 using gcc.
-FFTW for Fourier stuff
+This chapter discusses all software modules implemented during the
+development of the demo application, as well as the design decisions made in
+the process.
 
-\section{Rendering Framework}
+\begin{itemize}
+ \item \textit{NPEngine}, a realtime rendering framework
+ \item \textit{Ocean Bakery}, a preprocessing tool which bakes all
+necessary ocean data
+ \item \textit{Demo Application}, shaders an ocean
+\end{itemize}
+
+\section{NPEngine}
 
 For the implementation of the Demo application a lightweight realtime
 rendering framework has been developed from scratch. It is written in
@@ -37,7 +45,7 @@ consequence the message passing system has no type checking: the receiving
 object is not guaranteed to be able to respond to a certain message; in the
 case it does not, it ignores the message and returns a null pointer.
 
-\lstset{language=[Objective]C, , backgroundcolor=\color{LightViolet}}
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet}}
 \begin{lstlisting}[captionpos=b, caption=An Objective-C message send,
 label=lst_objcmsgsend]{}
 [ object method:parameter ];
@@ -50,7 +58,7 @@ a set of methods which any class can declare itself to implement,
 listing~\ref{lst_objcprotocol} shows a simple example. Protocols, like
 Interfaces, are a neat way to decouple functionality from the class hierarchy.
 
-\lstset{language=[Objective]C, , backgroundcolor=\color{LightViolet}}
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet}}
 \begin{lstlisting}[captionpos=b, caption=An Objective-C protocol and a
 class adopting it.,
 label=lst_objcprotocol]{}
@@ -79,7 +87,7 @@ the original methods, providing a way to modify existing classes. Categories are
 only able to add new methods to a class, but not new instance variables.
 Listing~\ref{lst_objccategory} shows how to define a simple category.
 
-\lstset{language=[Objective]C, , backgroundcolor=\color{LightViolet}}
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet}}
 \begin{lstlisting}[captionpos=b, caption=An Objective-C category added to the
 NSString class., label=lst_objccategory]{}
 @interface NSString (MyCategory)
@@ -211,7 +219,7 @@ extensions Apple made to the original OpenStep.
 The foundation contains a set of non-graphical Objective-C classes which deal
 with strings, containers, date and time, distributed objects, networking,
 threading,  interthread and interprocess communication, file management and
-much more.
+more.
 
 Collections, that is what containers are called in Foundation, have a rather
 unusual property: they do not have to be homogenous, meaning that one instance
@@ -234,7 +242,7 @@ instance of a container anymore.
 
 \subsubsection{AppKit}
 
-The AppKit provides classes aimed at the development of graphical apllications.
+The AppKit provides classes aimed at the development of graphical applications.
 The most interesting concept of AppKit is that it does not represent graphical
 user interfaces as code. Instead, a graphical user interface created in
 Interface Builder/Gorm is saved as a bunch of serialised objects and their
@@ -252,25 +260,62 @@ independent consortium consisting of a group of companies that would maintain
 and expand the OpenGL standard. In 2006 further development of the OpenGL
 standard has been taken over by the \textit{KhronosGroup}
 \cite{misc:opengl-khronos}, bringing significant advancements to the OpenGL
-standard since then.
+standard since then. \FIXME{Mehr BlaBla}
 
 \subsection{Other Libraries}
 
-NPEngine uses the following libraries:
+In addition to GNUstep as class library and OpenGL for rendering, NPEngine
+integrates several other libraries and frameworks either at engine or at
+application level.
 
-\begin{itemize}
- \item \textit{DevIL}\cite{misc:devil} is a popular library, which is able to
-load, convert and save a wide variety of image formats, making it an adequate
-tool for texture loading.
- \item \textit{PRNG}\cite{misc:prng} is a collection of random number generators
+\subsubsection{DevIL}
+
+The \textit{Developer's Image Library}\cite{misc:devil} allows for loading and
+storing of a large set of image file formats, qualifiying it as an adequate
+tool for texture loading. Furthermore \textit{DevIL} provides an OpenGL like
+interface, hence upvalueing it's ease of use in the context of a framework
+mostly based on OpenGL.
+
+\subsubsection{OpenAL}
+
+\textit{NPEngine}'s sound subsystem uses \textit{OpenAL}, a free
+cross-platform 3D audio API currently maintained by \textit{Creative Labs}, for
+playing sound. As its name may suggest, OpenAL's programming interface is
+similar to the one of OpenGL. In addition to the default OpenAL implementation
+by Creative Labs there is also \textit{OpenAL Soft}, another implementation
+based on the one by Creative Labs. Currently it is actively maintained and
+provides more functionality as well as sound backends. \FIXME{References}
+
+\subsubsection{Ogg Vorbis}
+
+The \textit{Ogg Vorbis} library is used to decode Ogg sound files. Vorbis is an
+open standard codec for lossy audio compression on par with \textit{MPEG Layer
+3} regarding quality and compression ratio. Ogg is the associated
+multimedia container format which may encapsulates the Vorbis data stream as
+well as other data streams such as \textit{Theora}. The NPEngine sound system
+uses Ogg Vorbis files both as sample or as continous stream for playing audio.
+\FIXME{References}
+
+\subsubsection{NVIDIA Cg}
+
+\textit{NVIDIA Cg}\cite{misc:nvcg} is a toolkit which places a high
+level programming interface for GPU shader programs at the programmer's
+disposal. Cg is similar in functionality to the \textit{DirectX Effect
+Framework}\cite{misc:directx}\cite{book:effect-hlsl}, as it gives the
+shader programmer the means to group different vertex, geometry and fragment
+programs to so called \textit{techniques}. A technique consists of one or more
+\textit{pass(es)}, each of which is made up of an optional set of state
+assignements and a set of programs.
+
+\subsubsection{PRNG}
+
+\textit{PRNG}\cite{misc:prng} is a collection of random number generators
 implemented as a highly portable C library.
- \item \textit{NVIDIA Cg}\cite{misc:nvcg} is a toolkit which provides a high
-level programming interface for GPU shader programs, similar to the
-\textit{DirectX Effect Framework}\cite{misc:directx}\cite{book:effect-hlsl}.
-\end{itemize}
 
-Additionally the preprocessing tool which generates the wave data uses the FFTW
-library\cite{misc:fftw} for the fourier transforms.
+\subsubsection{FFTW}
+Additionally the preprocessing tool which generates the wave data uses the
+\textit{Fastest Fourier Transform in the West} library\cite{misc:fftw} for all
+of its fourier based computations.
 
 \section{Projected Grid}
 Viewing Pipeline

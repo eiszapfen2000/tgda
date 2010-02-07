@@ -3,7 +3,7 @@ img_extIsRegExp=false
 img_extensions=.eps .jpg .jpeg .png .pdf .ps .fig .gif
 kileprversion=2
 kileversion=2.0
-lastDocument=03Theory/Theory.tex
+lastDocument=04Implementation/Implementation.tex
 masterDocument=gamper.diploma.thesis.tex
 name=DA
 pkg_extIsRegExp=false
@@ -22,7 +22,7 @@ encoding=UTF-8
 highlight=LaTeX
 line=12
 open=true
-order=1
+order=0
 
 [item:02STAR/StateoftheArt.tex]
 archive=true
@@ -35,21 +35,21 @@ order=4
 
 [item:03Theory/Theory.tex]
 archive=true
-column=26
+column=0
 encoding=UTF-8
 highlight=LaTeX
-line=444
-open=true
+line=435
+open=false
 order=0
 
 [item:04Implementation/Implementation.tex]
 archive=true
-column=0
+column=9
 encoding=UTF-8
 highlight=LaTeX
-line=2
+line=307
 open=true
-order=5
+order=1
 
 [item:05Summary/Summary.tex]
 archive=true
@@ -62,12 +62,12 @@ order=5
 
 [item:06AppendixA/AppendixA.tex]
 archive=true
-column=0
+column=36
 encoding=UTF-8
 highlight=LaTeX
-line=12
-open=false
-order=6
+line=6
+open=true
+order=2
 
 [item:Images/Frustum.pdf]
 archive=true
@@ -174,17 +174,17 @@ column=23
 encoding=UTF-8
 highlight=LaTeX
 line=6
-open=true
+open=false
 order=2
 
 [item:cg.bib]
 archive=true
-column=30
+column=70
 encoding=UTF-8
 highlight=BibTeX
-line=100
-open=false
-order=4
+line=291
+open=true
+order=3
 
 [item:credits.tex]
 archive=true
@@ -210,14 +210,14 @@ column=0
 encoding=UTF-8
 highlight=LaTeX
 line=1
-open=true
+open=false
 order=4
 
 [item:user.defined.tex]
 archive=true
-column=28
+column=27
 encoding=UTF-8
 highlight=LaTeX
-line=2
-open=true
+line=10
+open=false
 order=3
