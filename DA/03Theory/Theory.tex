@@ -187,7 +187,7 @@ coordinates from view space into \textit{normalised device coordinates},
 view volume}, see Figure~\ref{fig:canonicalviewvolume}. The target volume is
 represented by a cube, but the shape of the source volume, meaning the view
 frustum, depends on the actual projection. Figure~\ref{fig:viewfrustum3d} shows
-a possible view frustum in detail. There are a couple of different projections
+a possible view frustum in detail. There are a variety of different projections
 to be found in computer graphics, the two most common types are the
 \textit{parallel projection} and the \textit{perspective projection}.
 Figure~\ref{fig:projections2d} illustrates their working principle,
@@ -380,7 +380,7 @@ world space approach and the projected grid.
 \subref{fig:subfigprojgrid1} shows an uniform grid in worldspace, it's
 projection onto the image plane is not uniformly spaced though. The image on the
 right \subref{fig:subfigprojgrid2} on the other hand depicts an uniform grid on
-the image plane and it's associated non-uniform spaced world space positions.}
+the image plane and it's associated non-uniform spaced worldspace positions.}
 \label{fig:projectedgrid}
 \end{figure}
 
@@ -429,9 +429,9 @@ Apply the matrix to the vertices:
  \mathbf{x_{w}} = \mathbf{M_{inv}} \cdot \mathbf{x_{c}}
 \end{equation}
 
-Homogenize the coordinates:
+Homogenise the coordinates:
 \begin{equation}
- \mathbf{x_{h}} = (x_{w}/w_{w}, y_{w}/w_{w}, z_{w}/w_{w})
+ \mathbf{x_{h}} = (x_{w}/w_{w}, y_{w}/w_{w}, z_{w}/w_{w}, w_{w}/w_{w})
 \end{equation}
 
 To simplify matters the grid may be consist of vertices defined by
