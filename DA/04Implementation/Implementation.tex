@@ -252,15 +252,38 @@ deserialised, then all connections are set up by simply using the names of
 member variables and messages. \FIXME{Explain.}
 
 \subsection{OpenGL}
-OpenGL is a set of specifications defining a 3D application programming
-interface. OpenGL was first released to the public in 1992 by SGI, as a
-successor to the company's internally developed IrisGL. In addition the OpenGL
-architectural review board (ARB)\cite{misc:opengl-arb} was founded, an
-independent consortium consisting of a group of companies that would maintain
-and expand the OpenGL standard. In 2006 further development of the OpenGL
-standard has been taken over by the \textit{KhronosGroup}
-\cite{misc:opengl-khronos}, bringing significant advancements to the OpenGL
-standard since then. \FIXME{Mehr BlaBla}
+OpenGL, short for \textit{Open Graphics Library}, is a specification defining a
+platform-independent 3D application programming interface. OpenGL was first
+released to the public in 1992 by SGI, as a successor to the company's
+internally developed IrisGL. OpenGL is designed to standardise access to
+graphics hardware, pushing the development responsibility for hardware interface
+programs, also known as device drivers, to hardware manufacturers. After the
+release of OpenGL to the public, SGI led the creation of the OpenGL
+architectural review board (OpenGL ARB)\cite{misc:opengl-arb}, an independent
+consortium consisting of a group of companies that would maintain and expand the
+OpenGL standard. In 2006 further development of the OpenGL standard has been
+taken over by the \textit{KhronosGroup} \cite{misc:opengl-khronos}, bringing
+significant advancements to the OpenGL standard since then.
+
+OpenGL consists of two separate parts, the platform-independent core API and a
+platform-dependent layer. The core API gives programmers access to all
+rendering pipeline stages described in Section \ref{RenderingPipelineS}. The
+platform-dependent layer establishes a connection between an OpenGL
+\textit{rendering context} and the operating system's actual windowing system.
+Prominent examples for such an platform-dependent OpenGL layer are \textit{WGL}
+on Microsoft Windows and \textit{GLX} on the X Windowing System.
+
+OpenGL is designed as an extensible API. Each vendor who provides an actual
+OpenGL implementation, be it in software or hardware accelerated, is given the
+means to augment his implementation of the OpenGL standard through the use of
+OpenGL \textit{extensions}. Extensions as such are addenda to the OpenGL
+specification, usually implementing new features not yet included in the OpenGL
+core. A list of all OpenGL extensions and their textual additions to the
+standard are to be found in the OpenGL \textit{extension
+registry} \cite{misc:opengl-registry}. Each new release of the OpenGL core
+specification incorporates a set of extensions in order to integrate new
+functionality. At the time of writing, the current version of the OpenGL
+standard was 3.2.
 
 \subsection{Other Libraries}
 
@@ -278,13 +301,14 @@ mostly based on OpenGL.
 
 \subsubsection{OpenAL}
 
-\textit{NPEngine}'s sound subsystem uses \textit{OpenAL}, a free
-cross-platform 3D audio API currently maintained by \textit{Creative Labs}, for
-playing sound. As its name may suggest, OpenAL's programming interface is
-similar to the one of OpenGL. In addition to the default OpenAL implementation
-by Creative Labs there is also \textit{OpenAL Soft}, another implementation
-based on the one by Creative Labs. Currently it is actively maintained and
-provides more functionality as well as sound backends. \FIXME{References}
+\textit{NPEngine}'s sound system uses \textit{OpenAL}, a free
+cross-platform 3D audio API for playing sound, currently maintained by
+\textit{Creative Labs}. As the name may suggest, OpenAL's programming interface
+is similar to the one of OpenGL. In addition to the default OpenAL
+implementation by Creative Labs there is also \textit{OpenAL Soft}, another
+implementation based on the one by Creative Labs. Currently it is actively
+maintained and provides more functionality as well as sound backends.
+\FIXME{References}
 
 \subsubsection{Ogg Vorbis}
 
