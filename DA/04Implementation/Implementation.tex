@@ -279,11 +279,10 @@ means to augment his implementation of the OpenGL standard through the use of
 OpenGL \textit{extensions}. Extensions as such are addenda to the OpenGL
 specification, usually implementing new features not yet included in the OpenGL
 core. A list of all OpenGL extensions and their textual additions to the
-standard are to be found in the OpenGL \textit{extension
-registry} \cite{misc:opengl-registry}. Each new release of the OpenGL core
-specification incorporates a set of extensions in order to integrate new
-functionality. At the time of writing, the current version of the OpenGL
-standard was 3.2.
+standard are to be found in the OpenGL \textit{extension registry}
+\cite{misc:opengl-registry}. Each new release of the OpenGL core specification
+incorporates a set of extensions in order to integrate new functionality. At the
+time of writing, the current version of the OpenGL standard was 3.2.
 
 \subsection{Other Libraries}
 
@@ -301,24 +300,32 @@ mostly based on OpenGL.
 
 \subsubsection{OpenAL}
 
-\textit{NPEngine}'s sound system uses \textit{OpenAL}, a free
-cross-platform 3D audio API for playing sound, currently maintained by
-\textit{Creative Labs}. As the name may suggest, OpenAL's programming interface
-is similar to the one of OpenGL. In addition to the default OpenAL
-implementation by Creative Labs there is also \textit{OpenAL Soft}, another
-implementation based on the one by Creative Labs. Currently it is actively
-maintained and provides more functionality as well as sound backends.
-\FIXME{References}
+\textit{NPEngine}'s sound system uses \textit{OpenAL}~\cite{misc:openal}, a free
+cross-platform 3D audio API for playing sound, maintained by
+\textit{Creative}~\cite{misc:creative}. As the name may suggest, OpenAL's
+programming interface is similar to the one of OpenGL. OpenAL also inherits
+the implementation philosophy behind OpenGL: the specification has to be
+implemented in it's entirety, but it does not matter which parts run in software
+or are hardware accelerated. Furthermore the concept of extensions has been
+adopted too, making it easy for vendors to implement new features.
+
+Creative does provide an OpenAL sample implementation, which at the time of
+writing is already deprecated and replaced by either \textit{OpenAL
+Soft}~\cite{misc:openal-soft} or vendor specific implementations. In contrast to
+some vendor implementations of OpenAL, OpenAL Soft is a pure software
+implementation unable to take advantage of any hardware acceleration. On the
+other hand it does implement most of the existing extensions, hence making
+developers less dependent on specific hardware|implementation combinations.
 
 \subsubsection{Ogg Vorbis}
 
-The \textit{Ogg Vorbis} library is used to decode Ogg sound files. Vorbis is an
-open standard codec for lossy audio compression on par with \textit{MPEG Layer
-3} regarding quality and compression ratio. Ogg is the associated
-multimedia container format which may encapsulates the Vorbis data stream as
-well as other data streams such as \textit{Theora}. The NPEngine sound system
-uses Ogg Vorbis files both as sample or as continous stream for playing audio.
-\FIXME{References}
+The \textit{Ogg Vorbis}~\cite{misc:ogg-vorbis} library is used to decode Ogg
+sound files. Vorbis is an open, patent- and royalty-free, compressed audio
+codec, for lossy audio compression on par with \textit{MPEG Layer 3} regarding
+quality and compression ratio. Ogg is the associated multimedia container format
+which may encapsulates the Vorbis data stream as well as other data streams such
+as \textit{Theora}\cite{misc:ogg-theora}. The NPEngine sound system uses Ogg
+Vorbis files both as fixed-size sample or as continous stream for playing audio.
 
 \subsubsection{NVIDIA Cg}
 
@@ -329,7 +336,7 @@ Framework}\cite{misc:directx}\cite{book:effect-hlsl}, as it gives the
 shader programmer the means to group different vertex, geometry and fragment
 programs to so called \textit{techniques}. A technique consists of one or more
 \textit{pass(es)}, each of which is made up of an optional set of state
-assignements and a set of programs.
+assignements and a set of programs.\FIXME{}
 
 \subsubsection{PRNG}
 
