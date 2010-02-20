@@ -246,10 +246,19 @@ The AppKit provides classes aimed at the development of graphical applications.
 The most interesting concept of AppKit is that it does not represent graphical
 user interfaces as code. Instead, a graphical user interface created in
 Interface Builder/Gorm is saved as a bunch of serialised objects and their
-connections to each other. This is possible due the dynamic and reflective
-nature of Objective-C. When a GUI gets loaded, all objects in it get
-deserialised, then all connections are set up by simply using the names of
-member variables and messages. \FIXME{Explain.}
+connections to each other. There are two distinct connection types:
+\begin{itemize}
+ \item \textit{Outlets} assign a GUI element to a member variable of a
+controlling object instance.
+ \item \textit{Actions} do consist of a \textit{target} and a message which
+gets sent to the target.
+\end{itemize}
+
+Typically at program startup the file containing the GUI gets loaded, meaning
+that the objects contained are deserialised and afterwards all connections are
+setup using names of member variables and messages in conjunction with the
+Objective-C reflection system. In the case a message or a member variable can
+not be found, related connections are simply not setup, but all others are.
 
 \subsection{OpenGL}
 OpenGL, short for \textit{Open Graphics Library}, is a specification defining a
@@ -315,38 +324,53 @@ Soft}~\cite{misc:openal-soft} or vendor specific implementations. In contrast to
 some vendor implementations of OpenAL, OpenAL Soft is a pure software
 implementation unable to take advantage of any hardware acceleration. On the
 other hand it does implement most of the existing extensions, hence making
-developers less dependent on specific hardware|implementation combinations.
+developers less dependent on specific (hardware, implementation) combinations.
 
 \subsubsection{Ogg Vorbis}
 
 The \textit{Ogg Vorbis}~\cite{misc:ogg-vorbis} library is used to decode Ogg
 sound files. Vorbis is an open, patent- and royalty-free, compressed audio
-codec, for lossy audio compression on par with \textit{MPEG Layer 3} regarding
-quality and compression ratio. Ogg is the associated multimedia container format
-which may encapsulates the Vorbis data stream as well as other data streams such
-as \textit{Theora}\cite{misc:ogg-theora}. The NPEngine sound system uses Ogg
-Vorbis files both as fixed-size sample or as continous stream for playing audio.
+codec, for lossy audio compression on par with \textit{MPEG-4
+AAC}\cite{misc:mpeg-aac}~\cite{misc:mpeg-aac-standard} regarding quality and
+compression ratio. Ogg is the associated multimedia container format which may
+encapsulates the Vorbis data stream as well as other data streams such as
+\textit{Theora}\cite{misc:ogg-theora}. The NPEngine sound system uses Ogg Vorbis
+files both as fixed-size samples and as continuous streams for playing audio.
 
-\subsubsection{NVIDIA Cg}
+\subsubsection{NVIDIA CgFX}
 
-\textit{NVIDIA Cg}\cite{misc:nvcg} is a toolkit which places a high
+\textit{NVIDIA CgFX}\cite{misc:nvcg} is a toolkit which places a high
 level programming interface for GPU shader programs at the programmer's
-disposal. Cg is similar in functionality to the \textit{DirectX Effect
+disposal. CgFX is similar in functionality to the \textit{DirectX Effect
 Framework}\cite{misc:directx}\cite{book:effect-hlsl}, as it gives the
 shader programmer the means to group different vertex, geometry and fragment
 programs to so called \textit{techniques}. A technique consists of one or more
 \textit{pass(es)}, each of which is made up of an optional set of state
-assignements and a set of programs.\FIXME{}
+assignments and a set of programs. CgFX's goal is to reduce complexity on the
+implementation side and add it to the shader authoring side. One can create
+rather complex rendering passes consisting of various vertex, geometry and
+fragment programs as well as render state changes just by writing a CgFX shader.
+
+There are a number of downsides to CgFX, the most disturbing one of them is that
+CgFX takes away a lot of control from the actual programmer, especially texture
+unit management is completely taken over by CgFX. Additionally CgFX is known to
+be overly CPU intensive and generally prone to regressions regarding performance
+and feature completeness. Additionally CgFX is a library maintained by NVIDIA,
+so there is no guarantee that CgFX will work as well on rivaling hardware as on
+the own.
 
 \subsubsection{PRNG}
 
-\textit{PRNG}\cite{misc:prng} is a collection of random number generators
-implemented as a highly portable C library.
+\textit{PRNG}\cite{misc:prng} is a collection of state-of-the-art random number
+generators implemented as a highly portable C library. The library is used to
+generate gaussian random numbers for all wave spectra computations in the
+preprocessing tool.
 
 \subsubsection{FFTW}
-Additionally the preprocessing tool which generates the wave data uses the
-\textit{Fastest Fourier Transform in the West} library\cite{misc:fftw} for all
-of its fourier based computations.
+The \textit{Fastest Fourier Transform in the West} library\cite{misc:fftw} is an
+open source C library for computing the discrete Fourier transform in one or
+more dimensions. The preprocessing tool employs FFTW to transform the wave
+spectra from frequency domain to spatial domain.
 
 \section{Projected Grid}
 Viewing Pipeline
