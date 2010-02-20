@@ -17,10 +17,10 @@ QuickBuild=PDFLaTeX+ViewPDF
 
 [item:01Introduction/Introduction.tex]
 archive=true
-column=35
+column=0
 encoding=UTF-8
 highlight=LaTeX
-line=12
+line=23
 open=true
 order=0
 
@@ -38,16 +38,16 @@ archive=true
 column=0
 encoding=UTF-8
 highlight=LaTeX
-line=435
-open=false
-order=0
+line=24
+open=true
+order=3
 
 [item:04Implementation/Implementation.tex]
 archive=true
-column=9
+column=75
 encoding=UTF-8
 highlight=LaTeX
-line=307
+line=260
 open=true
 order=1
 
@@ -179,12 +179,12 @@ order=2
 
 [item:cg.bib]
 archive=true
-column=70
+column=28
 encoding=UTF-8
 highlight=BibTeX
-line=291
+line=275
 open=true
-order=3
+order=4
 
 [item:credits.tex]
 archive=true
@@ -209,15 +209,15 @@ archive=true
 column=0
 encoding=UTF-8
 highlight=LaTeX
-line=1
-open=false
-order=4
+line=45
+open=true
+order=5
 
 [item:user.defined.tex]
 archive=true
-column=27
+column=17
 encoding=UTF-8
 highlight=LaTeX
-line=10
-open=false
-order=3
+line=3
+open=true
+order=6
