@@ -40,7 +40,8 @@
     BOOL longLiteralMarker;
     BOOL ignoreMarker;
     BOOL insideLongLiteral = NO;
-    NSString * currentString = @"";
+    NSMutableString * currentString = [ NSMutableString string ];
+    [ currentString setString:@"" ];
     NSUInteger i = 0;
 
     do
@@ -61,10 +62,10 @@
         {
             if ( [ currentString length ] > 0 )
             {
-                [ array addObject:currentString ];
+                [ array addObject:[NSString stringWithString:currentString] ];
             }
 
-            currentString = @"";
+            [ currentString setString:@"" ];
             insideLongLiteral = !insideLongLiteral;
             separator = YES;
             separatorToStore = NO;
@@ -76,10 +77,10 @@
             {
                 if ( [ currentString length ] > 0 )
                 {
-                    [ array addObject:currentString ];
+                    [ array addObject:[NSString stringWithString:currentString] ];
                 }
 
-                currentString = @"";
+                [ currentString setString:@"" ];
                 
                 if ( separatorToStore == YES )
                 {
@@ -88,14 +89,14 @@
             }
             else
             {
-                currentString = [ currentString stringByAppendingFormat:@"%C", character ];
+                [ currentString appendFormat:@"%C", character ];
             }
         }
         else
         {
             if ( longLiteralMarker == NO )
             {
-                currentString = [ currentString stringByAppendingFormat:@"%C", character ];
+                [ currentString appendFormat:@"%C", character ];
             }
         }
 
@@ -105,7 +106,7 @@
 
     if ( [ currentString length ] > 0 )
     {
-        [ array addObject:currentString ];
+        [ array addObject:[NSString stringWithString:currentString] ];
     }
 
     return array;
