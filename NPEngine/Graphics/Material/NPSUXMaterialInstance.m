@@ -66,7 +66,7 @@
 
     while ( (materialInstanceScriptLine = [ enumerator nextObject ]) )
     {
-        NSArray * elements = [ materialInstanceScriptLine splitUsingCharacterSet:set ];
+        NSArray * elements = [ materialInstanceScriptLine componentsSeparatedByCharactersInSet:set ];
 
         if ( [ elements containsObject:@"uses" ] == YES || [ elements containsObject:@"set" ] == YES )
         {
@@ -114,14 +114,14 @@
 
     while ( (materialInstanceScriptLine = [ enumerator nextObject ]) )
     {
-        NSArray * elements = [ materialInstanceScriptLine splitUsingCharacterSet:set ];
+        NSArray * elements = [ materialInstanceScriptLine componentsSeparatedByCharactersInSet:set ];
 
         NSString * firstElement  = [ elements objectAtIndex:0 ];
         NSString * secondElement = [ elements objectAtIndex:1 ];
 
         if ( [ firstElement isEqual:@"uses" ] == YES )
         {
-            NSString * fileNameWithoutQuotes =  [ secondElement removeLeadingAndTrailingQuotes ];
+            NSString * fileNameWithoutQuotes =  [ secondElement stringByRemovingLeadingAndTrailingQuotes ];
             //NPLOG(@"CgFX file: %@", fileNameWithoutQuotes);
 
             effect = [[[[ NP Graphics ] effectManager ] loadEffectFromPath:fileNameWithoutQuotes ] retain ];
@@ -130,7 +130,7 @@
         {
             if ( [ secondElement isEqual:@"technique" ] == YES )
             {
-                NSString * techniqueNameWithoutQuotes =  [[ elements objectAtIndex:2 ] removeLeadingAndTrailingQuotes ];
+                NSString * techniqueNameWithoutQuotes =  [[ elements objectAtIndex:2 ] stringByRemovingLeadingAndTrailingQuotes ];
                 //NPLOG(@"Technique: %@", techniqueNameWithoutQuotes);
 
                 NPEffectTechnique * effectTechnique = [ effect techniqueWithName:techniqueNameWithoutQuotes ];
@@ -138,10 +138,10 @@
             }
             else if ( [ secondElement isEqual:@"texture2D" ] == YES )
             {
-                NSString * textureName = [[ elements objectAtIndex:2 ] removeLeadingAndTrailingQuotes ];
+                NSString * textureName = [[ elements objectAtIndex:2 ] stringByRemovingLeadingAndTrailingQuotes ];
                 //NPLOG(@"TextureName: %@", textureName);
 
-                NSString * textureFileName = [[ elements objectAtIndex:3 ] removeLeadingAndTrailingQuotes ];
+                NSString * textureFileName = [[ elements objectAtIndex:3 ] stringByRemovingLeadingAndTrailingQuotes ];
                 //NPLOG(@"TextureFileName: %@", textureFileName);
 
                 [ textureNameToTextureFileName setObject:textureFileName forKey:textureName];

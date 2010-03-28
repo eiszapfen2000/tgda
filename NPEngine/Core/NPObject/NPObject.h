@@ -11,6 +11,7 @@
 #import <Foundation/NSPathUtilities.h>
 #import <Foundation/NSSet.h>
 #import <Foundation/NSString.h>
+#import <Foundation/NSCharacterSet.h>
 #import <Foundation/NSURL.h>
 #import <Foundation/NSValue.h>
 
