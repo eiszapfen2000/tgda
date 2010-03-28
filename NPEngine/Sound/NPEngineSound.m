@@ -131,6 +131,7 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 
 - (void) setup
 {
+    NPLOG(@"");
     NPLOG(@"%@ initialising...", name);
     NPLOG_PUSH_PREFIX(@"    ");
 
