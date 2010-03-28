@@ -5,31 +5,33 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 
 @implementation NPEngineCore
 
-+ (NPEngineCore *)instance
++ (void) initialize
 {
-    @synchronized(self)
+	if ( [ NPEngineCore class ] == self )
+	{
+		[[ self alloc ] init ];
+	}
+}
+
++ (NPEngineCore *) instance
+{
+    return NP_ENGINE_CORE;
+}
+
++ (id) allocWithZone:(NSZone*)zone
+{
+    if ( self != [ NPEngineCore class ] )
     {
-        if ( NP_ENGINE_CORE == nil )
-        {
-            [[ self alloc ] init ];
-        }
+        [ NSException raise:NSInvalidArgumentException
+	                 format:@"Illegal attempt to subclass NPEngineCore as %@", self ];
+    }
+
+    if ( NP_ENGINE_CORE == nil )
+    {
+        NP_ENGINE_CORE = [ super allocWithZone:zone ];
     }
 
     return NP_ENGINE_CORE;
-} 
-
-+ (id)allocWithZone:(NSZone *)zone
-{
-    @synchronized(self)
-    {
-        if (NP_ENGINE_CORE == nil)
-        {
-            NP_ENGINE_CORE = [ super allocWithZone:zone ];
-            return NP_ENGINE_CORE;
-        }
-    }
-
-    return nil;
 }
 
 - (id) init

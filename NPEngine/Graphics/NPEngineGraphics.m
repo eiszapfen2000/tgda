@@ -5,31 +5,33 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
 @implementation NPEngineGraphics
 
++ (void) initialize
+{
+	if ( [ NPEngineGraphics class ] == self )
+	{
+		[[ self alloc ] init ];
+	}
+}
+
 + (NPEngineGraphics *)instance
 {
-    @synchronized(self)
-    {
-        if ( NP_ENGINE_GRAPHICS == nil )
-        {
-            [[ self alloc ] init ];
-        }
-    }
-
     return NP_ENGINE_GRAPHICS;
 } 
 
 + (id)allocWithZone:(NSZone *)zone
 {
-    @synchronized(self)
+    if ( self != [ NPEngineGraphics class ] )
     {
-        if (NP_ENGINE_GRAPHICS == nil)
-        {
-            NP_ENGINE_GRAPHICS = [ super allocWithZone:zone ];
-            return NP_ENGINE_GRAPHICS;
-        }
+        [ NSException raise:NSInvalidArgumentException
+	                 format:@"Illegal attempt to subclass NPEngineGraphics as %@", self ];
     }
 
-    return nil;
+    if ( NP_ENGINE_GRAPHICS == nil )
+    {
+        NP_ENGINE_GRAPHICS = [ super allocWithZone:zone ];
+    }
+
+    return NP_ENGINE_GRAPHICS;
 }
 
 - (id) init

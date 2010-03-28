@@ -5,31 +5,33 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 
 @implementation NPEngineSound
 
++ (void) initialize
+{
+	if ( [ NPEngineSound class ] == self )
+	{
+		[[ self alloc ] init ];
+	}
+}
+
 + (NPEngineSound *)instance
 {
-    @synchronized(self)
-    {
-        if ( NP_ENGINE_SOUND == nil )
-        {
-            [[ self alloc ] init ];
-        }
-    }
-
     return NP_ENGINE_SOUND;
 } 
 
-+ (id)allocWithZone:(NSZone *)zone
++ (id) allocWithZone:(NSZone*)zone
 {
-    @synchronized(self)
+    if ( self != [ NPEngineSound class ] )
     {
-        if (NP_ENGINE_SOUND == nil)
-        {
-            NP_ENGINE_SOUND = [ super allocWithZone:zone ];
-            return NP_ENGINE_SOUND;
-        }
+        [ NSException raise:NSInvalidArgumentException
+	                 format:@"Illegal attempt to subclass NPEngineSound as %@", self ];
     }
 
-    return nil;
+    if ( NP_ENGINE_SOUND == nil )
+    {
+        NP_ENGINE_SOUND = [ super allocWithZone:zone ];
+    }
+
+    return NP_ENGINE_SOUND;
 }
 
 - (id) init
