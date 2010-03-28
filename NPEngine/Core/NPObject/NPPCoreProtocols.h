@@ -1,8 +1,6 @@
 #import <Foundation/NSObject.h>
 #import <Foundation/NSString.h>
 
-@class NPObject;
-
 @protocol NPPObject < NSObject >
 
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;

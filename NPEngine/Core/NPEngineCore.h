@@ -1,23 +1,15 @@
 #import "Core/Basics/NpBasics.h"
 #import "Core/Math/NpMath.h"
-
 #import "Core/NPObject/NPObject.h"
 #import "Core/NPObject/NPObjectManager.h"
-
 #import "Core/File/NpFile.h"
-
 #import "Core/Log/NPLogger.h"
-
 #import "Core/RandomNumbers/NPRandomNumberGenerator.h"
 #import "Core/RandomNumbers/NPGaussianRandomNumberGenerator.h"
 #import "Core/RandomNumbers/NPRandomNumberGeneratorManager.h"
-
 #import "Core/Resource/NPResource.h"
-
 #import "Core/Timer/NPTimer.h"
-
-#import "Core/Utilities/NPStringUtilities.h"
-
+#import "Core/Utilities/NSString+NPEngine.h"
 #import "Core/World/NPTransformationState.h"
 
 @interface NPEngineCore : NSObject < NPPObject >

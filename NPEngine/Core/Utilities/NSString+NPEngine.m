@@ -109,7 +109,8 @@
         [ array addObject:[NSString stringWithString:currentString] ];
     }
 
-    return array;
+    // Return an autoreleased immutable copy of the array
+    return [[ array copy ] autorelease ];
 }
 
 @end
