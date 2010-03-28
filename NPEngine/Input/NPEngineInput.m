@@ -6,31 +6,33 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
 
 @implementation NPEngineInput
 
++ (void) initialize
+{
+	if ( [ NPEngineInput class ] == self )
+	{
+		[[ self alloc ] init ];
+	}
+}
+
 + (NPEngineInput *)instance
 {
-    @synchronized(self)
-    {
-        if ( NP_ENGINE_INPUT == nil )
-        {
-            [[ self alloc ] init ];
-        }
-    }
-
     return NP_ENGINE_INPUT;
 } 
 
 + (id)allocWithZone:(NSZone *)zone
 {
-    @synchronized(self)
+    if ( self != [ NPEngineInput class ] )
     {
-        if (NP_ENGINE_INPUT == nil)
-        {
-            NP_ENGINE_INPUT = [ super allocWithZone:zone ];
-            return NP_ENGINE_INPUT;
-        }
+        [ NSException raise:NSInvalidArgumentException
+	                 format:@"Illegal attempt to subclass NPEngineInput as %@", self ];
     }
 
-    return nil;
+    if ( NP_ENGINE_INPUT == nil )
+    {
+        NP_ENGINE_INPUT = [ super allocWithZone:zone ];
+    }
+
+    return NP_ENGINE_INPUT;
 }
 
 - (id) init
