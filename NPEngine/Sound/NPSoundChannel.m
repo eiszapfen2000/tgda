@@ -62,6 +62,8 @@
     position = fv3_free(position);
     positionLastFrame = fv3_free(positionLastFrame);
 
+    alDeleteSources(1, &alID);
+
     [ super dealloc ];
 }
 

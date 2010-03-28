@@ -1,3 +1,4 @@
+#include <unistd.h>
 #import "NPSoundStream.h"
 #import "NP.h"
 
@@ -40,8 +41,19 @@
     {
         [ channel stop ];
 
-        alSourceUnqueueBuffers([channel alID], 2, alBuffers);
-        [[ NP Sound ] checkForALErrors ];
+        ALint q, p;
+        alGetSourcei([channel alID], AL_BUFFERS_QUEUED, &q);
+        alGetSourcei([channel alID], AL_BUFFERS_PROCESSED, &p);
+
+        ALint * queuedBuffers = ALLOC_ARRAY(ALint, q);
+        alGetSourceiv([channel alID], AL_BUFFER, queuedBuffers);
+
+        for (Int32 i = 0; i < q; i++ )
+        {
+            UInt32 bufferID = (UInt32)(queuedBuffers[i]);
+            alSourceUnqueueBuffers([channel alID], 1, &bufferID);
+            [[ NP Sound ] checkForALErrors ];
+        }
 
         alDeleteBuffers(2, alBuffers);
         [[ NP Sound ] checkForALErrors ];
@@ -61,6 +73,11 @@
     channel = nil;
 
     [ super dealloc ];
+}
+
+- (BOOL) playing
+{
+    return playing;
 }
 
 - (BOOL) streamData:(ALuint)buffer
@@ -139,6 +156,11 @@
     else if ( oggInfo->channels == 2 )
     {
         format = AL_FORMAT_STEREO16;
+    }
+
+    if ( length < (float)bufferLength )
+    {
+        bufferLength = (UInt32)(ceil(length)) / 2;
     }
 
     bufferSize = bufferLength * oggInfo->rate * oggInfo->channels * sizeof(UInt16);

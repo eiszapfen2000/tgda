@@ -30,6 +30,8 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
+- (BOOL) playing;
+
 - (BOOL) loadFromPath:(NSString *)path;
 
 - (void) update;
