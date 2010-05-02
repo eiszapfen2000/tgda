@@ -86,6 +86,7 @@
     Float alphaValue = (deltaX * deltaY) / (viscosity * frameTime);
     Float rBetaValue = 1.0f / (4.0f + alphaValue);
 
+    [ diffusionRenderTargetConfiguration resetColorTargetsArray ];
     [ diffusionRenderTargetConfiguration bindFBO ];
     [ diffusionRenderTargetConfiguration activateViewport ];
 

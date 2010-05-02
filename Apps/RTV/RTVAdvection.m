@@ -391,7 +391,7 @@
                   arbitraryBoundaries:(BOOL)arbitraryBoundaries
                     andScaleAndOffset:(NPRenderTexture *)scaleAndOffset
 {
-    [[ advectionRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:quantityTarget ];
+    //[[ advectionRenderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:quantityTarget ];
     [ advectionRenderTargetConfiguration bindFBO ];
     [ quantityTarget attachToColorBufferIndex:0 ];
     [ advectionRenderTargetConfiguration activateDrawBuffers ];

@@ -83,7 +83,7 @@
 {
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
-    NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
+    NPTransformationState * trafo = [[ NP Core ] transformationState ];
     [ trafo setProjectionMatrix:projection ];
 
     [ menu update:frameTime ];
@@ -103,7 +103,7 @@
 {
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
-    NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
+    NPTransformationState * trafo = [[ NP Core ] transformationState ];
     [ trafo setProjectionMatrix:projection ];
 
     if ( [[ menu menuItemWithName:@"DataArrays" ] checked ] == NO )

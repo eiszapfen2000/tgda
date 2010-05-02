@@ -9,11 +9,5 @@
     NSMainNibFile = RTV.gorm;
     NSPrincipalClass = NPApplication;
     NSRole = Application;
-    Fullscreen = NO;
-    Width = 800;
-    Height = 800;
-    FSAA = 0;
-    Anisotropy = 1;
-    VSync = YES;
 }
  

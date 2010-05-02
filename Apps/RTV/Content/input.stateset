@@ -12,6 +12,11 @@
         Mode = "Additive";
     };
 
+    ColorWrite =
+    {
+        Enabled = "YES";
+    };
+
     Culling =
     {
         Enabled = "YES";

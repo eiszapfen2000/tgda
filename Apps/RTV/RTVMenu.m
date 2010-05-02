@@ -109,7 +109,7 @@
 - (void) updateInkColor
 {
         Int32 activeItem = [[ menuItems objectForKey:@"InkColors" ] activeItem ];
-        FVector4 color;
+        FVector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
         switch ( activeItem )
         {
@@ -156,7 +156,7 @@
 - (void) updateInputRadius
 {
         Int32 activeItem = [[ menuItems objectForKey:@"InputRadius" ] activeItem ];
-        Float inputRadius;
+        Float inputRadius = 0.0f;
 
         switch ( activeItem )
         {
