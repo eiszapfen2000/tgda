@@ -377,12 +377,12 @@
                                                                textureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
                                                                  textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];
 
-    velocityBiLerp = [[[ NP Graphics ] textureManager ] createTextureWithName:@"VelocityBilinear"
-                                                                        width:currentResolution->x
-                                                                       height:currentResolution->y
-                                                                   dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
-                                                                  pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                                                   mipMapping:NO ];
+    velocityBiLerp = [[[ NP Graphics ] textureManager ] textureWithName:@"VelocityBilinear"
+                                                                  width:currentResolution->x
+                                                                 height:currentResolution->y
+                                                             dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
+                                                            pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
+                                                             mipMapping:NO ];
 
     [ velocityBiLerp setTextureFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
     [ velocityBiLerp setTextureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ];

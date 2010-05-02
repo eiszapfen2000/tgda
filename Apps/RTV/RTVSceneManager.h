@@ -1,9 +1,11 @@
 #import "Core/NPObject/NPObject.h"
 
+@class RTVScene;
+
 @interface RTVSceneManager : NPObject
 {
-    id scenes;
-    id currentScene;
+    NSMutableDictionary * scenes;
+    RTVScene * currentScene;
 }
 
 - (id) init;
@@ -16,8 +18,8 @@
 - (id) loadSceneFromPath:(NSString *)path;
 - (id) loadSceneFromAbsolutePath:(NSString *)path;
 
-- (id) currentScene;
-- (void) setCurrentScene:(id)newCurrentScene;
+- (RTVScene *) currentScene;
+- (void) setCurrentScene:(RTVScene *)newCurrentScene;
 
 - (void) update:(Float)frameTime;
 - (void) render;

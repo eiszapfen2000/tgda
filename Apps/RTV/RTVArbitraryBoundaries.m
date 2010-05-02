@@ -60,13 +60,13 @@
         DESTROY(pressureScaleAndOffsetLookUp);
     }
 
-    velocityScaleAndOffsetLookUp = [[[ NP Graphics ] textureManager ] createTextureWithName:@"VelScaleOffset"
+    velocityScaleAndOffsetLookUp = [[[ NP Graphics ] textureManager ] textureWithName:@"VelScaleOffset"
                                                                                 width:34
                                                                                 height:1
                                                                             dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
                                                                            pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ];
 
-    pressureScaleAndOffsetLookUp = [[[ NP Graphics ] textureManager ] createTextureWithName:@"PreScaleOffset"
+    pressureScaleAndOffsetLookUp = [[[ NP Graphics ] textureManager ] textureWithName:@"PreScaleOffset"
                                                                                 width:34
                                                                                 height:1
                                                                             dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT

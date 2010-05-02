@@ -12,6 +12,11 @@
         Mode = "Max";
     };
 
+    ColorWrite =
+    {
+        Enabled = "YES";
+    };
+
     Culling =
     {
         Enabled = "YES";

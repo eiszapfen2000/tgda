@@ -81,12 +81,12 @@
     return nil;
 }
 
-- (id) currentScene
+- (RTVScene *) currentScene
 {
     return currentScene;
 }
 
-- (void) setCurrentScene:(id)newCurrentScene
+- (void) setCurrentScene:(RTVScene *)newCurrentScene
 {
     ASSIGN(currentScene, newCurrentScene);
 }
