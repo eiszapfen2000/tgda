@@ -56,14 +56,14 @@
     return colorBufferCount;
 }
 
-- (id) currentRenderTargetConfiguration
+- (NPRenderTargetConfiguration *) currentRenderTargetConfiguration
 {
     return currentRenderTargetConfiguration;
 }
 
-- (void) setCurrentRenderTargetConfiguration:(id)newRenderTargetConfiguration
+- (void) setCurrentRenderTargetConfiguration:(NPRenderTargetConfiguration *)newRenderTargetConfiguration
 {
-    ASSIGN(currentRenderTargetConfiguration,newRenderTargetConfiguration);
+    ASSIGN(currentRenderTargetConfiguration, newRenderTargetConfiguration);
 }
 
 @end

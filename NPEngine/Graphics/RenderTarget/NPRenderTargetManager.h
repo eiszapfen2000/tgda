@@ -1,11 +1,13 @@
 #import "Core/NPObject/NPObject.h"
 
+@class NPRenderTargetConfiguration;
+
 @interface NPRenderTargetManager : NPObject
 {
     Int colorBufferCount;
     Int maxRenderBufferSize;
-    id renderTargetConfigurations;
-    id currentRenderTargetConfiguration;
+    NSMutableArray * renderTargetConfigurations;
+    NPRenderTargetConfiguration * currentRenderTargetConfiguration;
 }
 
 - (id) init;
@@ -16,7 +18,7 @@
 - (void) setup;
 
 - (Int) colorBufferCount;
-- (id) currentRenderTargetConfiguration;
-- (void) setCurrentRenderTargetConfiguration:(id)newRenderTargetConfiguration;
+- (NPRenderTargetConfiguration *) currentRenderTargetConfiguration;
+- (void) setCurrentRenderTargetConfiguration:(NPRenderTargetConfiguration *)newRenderTargetConfiguration;
 
 @end

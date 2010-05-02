@@ -23,7 +23,7 @@
     [ NP Input ];
 
     // Load settings from Info-gnustep.plist
-    id infoDictionary = [[ NSBundle mainBundle ] infoDictionary ];
+    NSDictionary * infoDictionary = [[ NSBundle mainBundle ] infoDictionary ];
     BOOL fullscreen = [[ infoDictionary objectForKey:@"Fullscreen" ] boolValue ];
     Int width       = [[ infoDictionary objectForKey:@"Width"  ] intValue ];
     Int height      = [[ infoDictionary objectForKey:@"Height" ] intValue ];

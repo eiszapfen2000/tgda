@@ -18,7 +18,7 @@
 
 - (void) setup
 {
-    id infoDictionary = [[ NSBundle mainBundle ] infoDictionary ];
+    NSDictionary * infoDictionary = [[ NSBundle mainBundle ] infoDictionary ];
     Int sampleCount = [[ infoDictionary objectForKey:@"FSAA" ] intValue ];
 
     NPOpenGLPixelFormat * pixelFormat = [[ NPOpenGLPixelFormat alloc ] initWithName:@"Application PixelFormat" parent:nil ];
