@@ -11,11 +11,25 @@
 @class NPEffect;
 @class NPFullscreenQuad;
 
+typedef struct FBloomSettings
+{
+    float bloomThreshold;
+    float bloomIntensity;
+    float bloomSaturation;
+    float sceneIntensity;
+    float sceneSaturation;
+}
+FBloomSettings;
+
+void fbloomsettings_init(FBloomSettings * bloomSettings);
+
 @interface FScene : NPObject
 {
     FAttractor * attractor;
     FTerrain * terrain;
     FCamera * camera;
+
+    FBloomSettings bloomSettings;
 
     NPEffect * fullscreenEffect;
     CGparameter bloomThresholdParameter;
