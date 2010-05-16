@@ -38,4 +38,13 @@
         Iterations = "10000";
         StartingPoint = ("0.1", "0.1", "0.1");
     };
+
+    Bloom =
+    {
+        BloomThreshold = "0.75";
+        BloomIntensity = "1.25";
+        BloomSaturation = "2.0";
+        SceneIntensity = "1.0";
+        SceneSaturation = "1.0";
+    };
 }

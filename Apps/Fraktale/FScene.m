@@ -6,6 +6,15 @@
 #import "FAttractor.h"
 #import "FTerrain.h"
 
+void fbloomsettings_init(FBloomSettings * bloomSettings)
+{
+    bloomSettings->bloomThreshold  = 0.75f;
+    bloomSettings->bloomIntensity  = 1.25f;
+    bloomSettings->bloomSaturation = 2.00f;
+    bloomSettings->sceneIntensity  = 1.00f;
+    bloomSettings->sceneSaturation = 1.00f;    
+}
+
 @implementation FScene
 
 - (id) init
@@ -22,6 +31,8 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
+    fbloomsettings_init(&bloomSettings);
+
     fullscreenEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Fullscreen.cgfx" ];
     bloomThresholdParameter  = [ fullscreenEffect parameterWithName:@"bloomThreshold"  ];
     bloomIntensityParameter  = [ fullscreenEffect parameterWithName:@"bloomIntensity"  ];
@@ -37,8 +48,6 @@
     IVector2 * resolution = [[[ NP Graphics ] viewportManager ] currentControlSize ];
 
     attractorRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"AttractorRT" parent:self ];
-    [ attractorRTC setWidth:resolution->x ];
-    [ attractorRTC setHeight:resolution->y ];
 
     depthBuffer = [[ NPRenderBuffer renderBufferWithName:@"Depth"
                                                     type:NP_GRAPHICS_RENDERBUFFER_DEPTH_TYPE
@@ -107,6 +116,7 @@
 
     NSDictionary * terrainConfig   = [ sceneConfig objectForKey:@"Terrain"   ];
     NSDictionary * attractorConfig = [ sceneConfig objectForKey:@"Attractor" ];
+    NSDictionary * bloomConfig     = [ sceneConfig objectForKey:@"Bloom"     ];
 
     terrain   = [[ FTerrain   alloc ] init ];
     attractor = [[ FAttractor alloc ] init ];
@@ -122,6 +132,12 @@
         NPLOG_ERROR(@"Failed to load Attractor");
         return NO;
     }
+
+    bloomSettings.bloomThreshold  = [[ bloomConfig objectForKey:@"BloomThreshold"  ] floatValue ];
+    bloomSettings.bloomIntensity  = [[ bloomConfig objectForKey:@"BloomIntensity"  ] floatValue ];
+    bloomSettings.bloomSaturation = [[ bloomConfig objectForKey:@"BloomSaturation" ] floatValue ];
+    bloomSettings.sceneIntensity  = [[ bloomConfig objectForKey:@"SceneIntensity"  ] floatValue ];
+    bloomSettings.sceneSaturation = [[ bloomConfig objectForKey:@"SceneSaturation" ] floatValue ];
 
     return YES;
 }
@@ -202,7 +218,7 @@
     [[[ NP Core ] transformationState ] reset ];
 
     // set reolution to actual renderexture size
-    [ attractorRTC setWidth:resolution->x / 2 ];
+    [ attractorRTC setWidth :resolution->x / 2 ];
     [ attractorRTC setHeight:resolution->y / 2 ];
 
     // prepare colorTargetOne
@@ -214,7 +230,7 @@
 
     // extract values of interest into bloom colorTargetOne
     [[ originalScene texture ] activateAtColorMapIndex:0 ];
-    [ fullscreenEffect uploadFloatParameter:bloomThresholdParameter andValue:0.75f ];
+    [ fullscreenEffect uploadFloatParameter:bloomThresholdParameter andValue:bloomSettings.bloomThreshold ];
     [ fullscreenEffect activateTechniqueWithName:@"bloomextract" ];
     [ fullscreenQuad render ];
     [ colorTargetOne detach ];
@@ -250,75 +266,16 @@
     [ attractorRTC deactivateDrawBuffers ];
     [ attractorRTC deactivateViewport ];
 
+    // render combined scene
     [[ originalScene texture  ] activateAtColorMapIndex:0 ];
     [[ colorTargetOne texture ] activateAtColorMapIndex:1 ];
-    [ fullscreenEffect uploadFloatParameter:bloomIntensityParameter andValue:1.25f ];
-    [ fullscreenEffect uploadFloatParameter:bloomSaturationParameter andValue:1.0f ];
-    [ fullscreenEffect uploadFloatParameter:sceneIntensityParameter andValue:1.0f ];
-    [ fullscreenEffect uploadFloatParameter:sceneSaturationParameter andValue:1.0f ];
+    [ fullscreenEffect uploadFloatParameter:bloomIntensityParameter  andValue:bloomSettings.bloomIntensity  ];
+    [ fullscreenEffect uploadFloatParameter:bloomSaturationParameter andValue:bloomSettings.bloomSaturation ];
+    [ fullscreenEffect uploadFloatParameter:sceneIntensityParameter  andValue:bloomSettings.sceneIntensity  ];
+    [ fullscreenEffect uploadFloatParameter:sceneSaturationParameter andValue:bloomSettings.sceneSaturation ];
     [ fullscreenEffect activateTechniqueWithName:@"combine" ];
     [ fullscreenQuad render ];
     [ fullscreenEffect deactivate ];
-
-
-    /*
-    // setup colorTargetOne, we draw the attractor to this target and blur the resulting image
-    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:colorTargetOne ];
-    [ colorTargetOne attachToColorBufferIndex:0 ];
-    [ attractorRTC activateDrawBuffers ];
-    [ attractorRTC checkFrameBufferCompleteness ];
-    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
-    [ attractor render:NO ];
-    [ colorTargetOne detach ];
-
-    // prepare for horizontal filter
-    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:colorTargetTwo ];
-    [ colorTargetTwo attachToColorBufferIndex:0 ];
-    [ attractorRTC activateDrawBuffers ];
-    [ attractorRTC checkFrameBufferCompleteness ];
-
-    // reset  matrices, bind colorTargetOne, activate horizontalbloom
-    [[[ NP Core ] transformationState ] reset ];
-    [[ colorTargetOne texture ] activateAtColorMapIndex:0 ];
-    [ fullscreenEffect activateTechniqueWithName:@"horizontalbloom" ];
-    [ fullscreenQuad render ];
-    [ fullscreenEffect deactivate ];
-    [ colorTargetTwo detach ];
-
-    // prepare for vertical filter
-    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:colorTargetOne   ];
-    [ colorTargetOne attachToColorBufferIndex:0 ];
-    [ attractorRTC activateDrawBuffers ];
-    [ attractorRTC checkFrameBufferCompleteness ];
-
-    // bind colorTargetTwo, activate horizontalbloom
-    [[ colorTargetTwo texture ] activateAtColorMapIndex:0 ];
-    [ fullscreenEffect activateTechniqueWithName:@"horizontalbloom" ];
-    [ fullscreenQuad render ];
-    [ fullscreenEffect deactivate ];
-    [ colorTargetOne detach ];
-
-    // deactivate render targets
-    [ attractorRTC unbindFBO ];
-    [ attractorRTC deactivateDrawBuffers ];
-    [ attractorRTC deactivateViewport ];
-
-    // draw originalScene and colorTargetOne blent on top of it
-    [[[ NP Core ] transformationState ] reset ];
-    [[ originalScene texture ] activateAtColorMapIndex:0 ];
-    [ fullscreenEffect activateTechniqueWithName:@"fullscreen" ];
-    [ fullscreenQuad render ];
-
-    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
-    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];
-    [[[[ NP Graphics ] stateConfiguration ] blendingState ] activate ];
-
-    [[ colorTargetOne texture ] activateAtColorMapIndex:0 ];
-    [ fullscreenEffect activateTechniqueWithName:@"fullscreen" ];
-    [ fullscreenQuad render ];
-
-    [ fullscreenEffect deactivate ];
-    */
 }
 
 @end
