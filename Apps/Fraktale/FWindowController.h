@@ -38,6 +38,9 @@
 
     id attractorIterationsTextfield;
 
+    Double bLorentzValue;
+    Double bRoesslerValue;
+
     // Buttons on the bottom
     id resetButton;
     id generateButton;
