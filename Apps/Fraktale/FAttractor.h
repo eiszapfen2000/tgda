@@ -55,14 +55,15 @@
                                     startingPoint:(FVector3)startingPoint
                                                  ;
 
-- (void) generateAttractorWithParametersA:(Float)a
-                                        B:(Float)b
-                                        C:(Float)c
-                                        R:(Float)r
-                                      Sigma:(Float)sigma
-                         numberOfIterations:(UInt32)numberOfIterations
-                              startingPoint:(FVector3)startingPoint
-                                           ;
+- (void) generateAttractorOfType:(NpState)Type
+                 withParametersA:(Float)a
+                               B:(Float)b
+                               C:(Float)c
+                               R:(Float)r
+                           Sigma:(Float)sigma
+              numberOfIterations:(UInt32)numberOfIterations
+                   startingPoint:(FVector3)startingPoint
+                                ;
 
 - (void) update:(Float)frameTime;
 - (void) render;

@@ -76,7 +76,7 @@
 	fm4_m_set_identity(projection);
 
 	fquat_set_identity(orientation);
-	fv3_v_zeros(position);
+	fv3_v_init_with_zeros(position);
 }
 
 - (FVector3 *) position
@@ -221,8 +221,7 @@
 
 - (void) strafe:(Float)strafe
 {
-    FVector3 right;
-    fquat_q_right_vector_v(orientation,&right);
+    FVector3 right = fquat_q_right_vector(orientation);
 
     V_X(*position) += (right.x * strafe);
     V_Y(*position) += (right.y * strafe);
@@ -243,20 +242,11 @@
 {
     fm4_m_set_identity(view);
 
-    FQuaternion q;
-    fquat_q_conjugate_q(orientation, &q);
-
-    FMatrix4 rotate;
-    fquat_q_to_fmatrix4_m(&q, &rotate);
-
-    FMatrix4 tmp;
-    fm4_mm_multiply_m(view, &rotate, &tmp);
-
-    FVector3 invpos;
-    fv3_v_invert_v(position, &invpos);
-
-    FMatrix4 trans;
-    fm4_mv_translation_matrix(&trans, &invpos);
+    FQuaternion q = fquat_q_conjugated(orientation);
+    FMatrix4 rotate = fquat_q_to_fmatrix4(&q);
+    FMatrix4 tmp = fm4_mm_multiply(view, &rotate);
+    FVector3 invpos = fv3_v_inverted(position);
+    FMatrix4 trans = fm4_v_translation_matrix(&invpos);
 
     fm4_mm_multiply_m(&tmp, &trans, view);
 
@@ -289,7 +279,7 @@
     // rotation update
     if ( [ leftClickAction active ] == YES )
     {
-        id mouse = [[ NP Input ] mouse ];
+        NPMouse * mouse = [[ NP Input ] mouse ];
         Float deltaX = [ mouse deltaX ];
         Float deltaY = [ mouse deltaY ];
 
@@ -311,8 +301,7 @@
 
     if ( [ wheelDownAction activated ] == YES )
     {
-        //NSLog(@"wheel down");
-        fquat_q_forward_vector_v(orientation,forward);
+        fquat_q_forward_vector_v(orientation, forward);
 
         V_X(*position) += (forward->x * 2.0f);
         V_Y(*position) += (forward->y * 2.0f);
@@ -322,8 +311,7 @@
 
     if ( [ wheelUpAction activated ] == YES )
     {
-        //NSLog(@"wheel up");
-        fquat_q_forward_vector_v(orientation,forward);
+        fquat_q_forward_vector_v(orientation, forward);
 
         V_X(*position) -= (forward->x * 2.0f);
         V_Y(*position) -= (forward->y * 2.0f);
@@ -333,13 +321,11 @@
     // update matrices
 	[ self updateProjection ];
 	[ self updateView ];
-
-//    NSLog(@"%f %f %f",forward->x,forward->y,forward->z);
 }
 
 - (void) render
 {
-    NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
+    NPTransformationState * trafo = [[ NP Core ] transformationState ];
     [ trafo setViewMatrix:view ];
     [ trafo setProjectionMatrix:projection ];
 }

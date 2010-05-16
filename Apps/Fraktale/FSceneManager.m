@@ -80,14 +80,14 @@
     return nil;
 }
 
-- (id) currentScene
+- (FScene *) currentScene
 {
     return currentScene;
 }
 
-- (void) setCurrentScene:(id)newCurrentScene
+- (void) setCurrentScene:(FScene *)newCurrentScene
 {
-    ASSIGN(currentScene,newCurrentScene);
+    ASSIGN(currentScene, newCurrentScene);
 }
 
 - (void) update:(Float)frameTime

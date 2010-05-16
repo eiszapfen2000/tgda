@@ -18,13 +18,24 @@
         MinimumHeight = "0.0";
         MaximumHeight = "1.0";
     };
+
     Attractor = 
     {
-        Type = "Lorentz";
-        Sigma = "10.0";
-        B = "2.6666";
-        R = "28.0";
-        Iterations = "10";
-        StartingPoint = ("0.0", "0.0", "0.0");
+        Lorentz =
+        {
+            Sigma = "10.0";
+            B = "2.6666";
+            R = "28.0";
+        };
+
+        Roessler =
+        {
+            A = "0.375";
+            B = "2.0";
+            C = "4.0";
+        };
+
+        Iterations = "10000";
+        StartingPoint = ("0.1", "0.1", "0.1");
     };
 }

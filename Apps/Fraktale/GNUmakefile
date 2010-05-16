@@ -19,7 +19,7 @@ Fraktale.gorm \
 FAttributesWindow.gorm \
 Content
 
-ADDITIONAL_GUI_LIBS += -lGL -lGLU -lNPEngine -lCg -lCgGL -lGLEW -lIL -lILU -lprng
+ADDITIONAL_GUI_LIBS += -lGL -lGLU -lNPEngine -lCg -lCgGL -lGLEW -lIL -lILU -lprng -lopenal -lvorbis -lvorbisfile
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/application.make

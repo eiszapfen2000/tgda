@@ -31,6 +31,10 @@
     FScene * scene = [ sceneManager loadSceneFromPath:@"Test.scene" ];
     [ scene activate ];
 
+    NSString * pathToDictionary = [[[ NP Core ] pathManager ] getAbsoluteFilePath:@"Test.scene" ];
+    NSDictionary * sceneConfig = [ NSDictionary dictionaryWithContentsOfFile:pathToDictionary ];
+    [ attributesWindowController initialiseSettingsUsingDictionary:sceneConfig ];
+
     //[ NSCursor hide ];
 }
 

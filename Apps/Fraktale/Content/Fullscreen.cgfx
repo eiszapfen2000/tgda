@@ -1,0 +1,101 @@
+float4x4 mvpmatrix   : NPMODELVIEWPROJECTION;
+sampler2D colormap   : NPCOLORMAP0;
+float2 rViewport     : NPRVIEWPORTSIZE;
+
+struct INPUTDATA
+{
+	float4 position			: POSITION;
+    float2 texcoord         : TEXCOORD0;
+};
+
+struct VOUTPUTDATA
+{
+	float4 position			: POSITION;
+    float2 texcoord         : TEXCOORD0;
+};
+
+VOUTPUTDATA mvertexshader(INPUTDATA input)
+{
+	VOUTPUTDATA output;
+
+	output.position = mul(mvpmatrix, input.position);
+    output.texcoord = input.texcoord;
+	
+	return output;
+}
+
+struct FOUTPUTDATA
+{
+	float4 color			: COLOR0;
+};
+
+FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
+{
+	FOUTPUTDATA output;
+
+    output.color = tex2D(colormap, input.texcoord);
+
+	return output;
+}
+
+FOUTPUTDATA mhorizontalbloom(VOUTPUTDATA input)
+{
+	FOUTPUTDATA output;
+
+    float2 samplePosition;
+    float4 sum = float4(0.0, 0.0, 0.0, 0.0);
+
+    for ( float i = -1.0f; i <= 1.0f; i += 1.0f )
+    {
+        samplePosition = input.texcoord + float2(i * rViewport.x, 0.0f);
+        sum += 1.0f/9.0f * tex2D(colormap, samplePosition);
+    }
+
+    output.color = float4(sum.rgb, 1.0);
+	return output;
+}
+
+FOUTPUTDATA mverticalbloom(VOUTPUTDATA input)
+{
+	FOUTPUTDATA output;
+
+    float2 samplePosition;
+    float4 sum = float4(0.0, 0.0, 0.0, 0.0);
+
+    for ( float i = -1.0f; i <= 1.0f; i += 1.0f )
+    {
+        samplePosition = input.texcoord + float2(0.0f, i * rViewport.y);
+        sum += 1.0f/9.0f * tex2D(colormap, samplePosition);
+    }
+
+    output.color = float4(sum.rgb, 1.0);
+	return output;
+}
+
+technique fullscreen
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mfragmentshader();
+		VertexProgram = compile vp40 mvertexshader();
+	}
+}
+
+technique horizontalbloom
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mhorizontalbloom();
+		VertexProgram = compile vp40 mvertexshader();
+	}
+}
+
+technique verticalbloom
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mverticalbloom();
+		VertexProgram = compile vp40 mvertexshader();
+	}
+}
+
