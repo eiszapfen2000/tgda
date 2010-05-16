@@ -1,4 +1,5 @@
 #import "Core/NPObject/NPObject.h"
+#import "Graphics/npgl.h"
 
 @class FAttractor;
 @class FTerrain;
@@ -16,12 +17,20 @@
     FTerrain * terrain;
     FCamera * camera;
 
-    NPFullscreenQuad * fullscreenQuad;
     NPEffect * fullscreenEffect;
+    CGparameter bloomThresholdParameter;
+    CGparameter bloomIntensityParameter;
+    CGparameter bloomSaturationParameter;
+    CGparameter sceneIntensityParameter;
+    CGparameter sceneSaturationParameter;
+
     NPRenderTargetConfiguration * attractorRTC;
+    NPRenderTexture * originalScene;
     NPRenderTexture * colorTargetOne;
     NPRenderTexture * colorTargetTwo;
     NPRenderBuffer * depthBuffer;
+
+    NPFullscreenQuad * fullscreenQuad;
 }
 
 - (id) init;

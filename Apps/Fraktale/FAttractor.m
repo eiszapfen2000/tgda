@@ -251,12 +251,16 @@
 
 }
 
-- (void) render
+- (void) render:(BOOL)drawCoordinateCross
 {
     [[[ NP Core ] transformationState ] resetModelMatrix ];
-    [ effect activateTechniqueWithName:@"coordinate_cross" ];
-    [ coordinateCross renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_LINES ];
-    [ effect deactivate ];
+
+    if ( drawCoordinateCross == YES )
+    {
+        [ effect activateTechniqueWithName:@"coordinate_cross" ];
+        [ coordinateCross renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_LINES ];
+        [ effect deactivate ];
+    }
 
     FMatrix4 scale;
 

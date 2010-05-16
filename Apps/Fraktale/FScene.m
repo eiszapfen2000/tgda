@@ -22,8 +22,17 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
     fullscreenEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Fullscreen.cgfx" ];
+    bloomThresholdParameter  = [ fullscreenEffect parameterWithName:@"bloomThreshold"  ];
+    bloomIntensityParameter  = [ fullscreenEffect parameterWithName:@"bloomIntensity"  ];
+    bloomSaturationParameter = [ fullscreenEffect parameterWithName:@"bloomSaturation" ];
+    sceneIntensityParameter  = [ fullscreenEffect parameterWithName:@"sceneIntensity"  ];
+    sceneSaturationParameter = [ fullscreenEffect parameterWithName:@"sceneSaturation" ];
+
+    NSAssert(bloomThresholdParameter  != NULL && bloomIntensityParameter != NULL &&
+             bloomSaturationParameter != NULL && sceneIntensityParameter != NULL &&
+             sceneSaturationParameter != NULL, @"Parameters not found");
+
 
     IVector2 * resolution = [[[ NP Graphics ] viewportManager ] currentControlSize ];
 
@@ -37,19 +46,29 @@
                                                    width:resolution->x
                                                   height:resolution->y ] retain ];
 
+    originalScene = [[ NPRenderTexture renderTextureWithName:@"Original"
+                                                        type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
+                                                       width:resolution->x
+                                                      height:resolution->y
+                                                  dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_BYTE
+                                                 pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ] retain ];
+
+
     colorTargetOne = [[ NPRenderTexture renderTextureWithName:@"Color1"
                                                          type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
-                                                        width:resolution->x
-                                                       height:resolution->y
+                                                        width:resolution->x / 2
+                                                       height:resolution->y / 2
                                                    dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_BYTE
                                                   pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ] retain ];
 
     colorTargetTwo = [[ NPRenderTexture renderTextureWithName:@"Color2"
                                                          type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
-                                                        width:resolution->x
-                                                       height:resolution->y
+                                                        width:resolution->x / 2
+                                                       height:resolution->y / 2
                                                    dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_BYTE
                                                   pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ] retain ];
+
+    fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
 
     return self;
 }
@@ -58,6 +77,7 @@
 {
     RELEASE(colorTargetTwo);
     RELEASE(colorTargetOne);
+    RELEASE(originalScene);
     RELEASE(depthBuffer);
 
     [ attractorRTC clear ];
@@ -139,18 +159,22 @@
     // Clear back buffer and depth buffer
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
+    IVector2 * resolution = [[[ NP Graphics ] viewportManager ] currentControlSize ];
+
     // setup fbo
+    [ attractorRTC setWidth:resolution->x ];
+    [ attractorRTC setHeight:resolution->y ];
     [ attractorRTC resetColorTargetsArray ];
     [ attractorRTC bindFBO ];
 
-    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:colorTargetOne   ];
-    [ colorTargetOne attachToColorBufferIndex:0 ];
+    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:originalScene   ];
+    [ originalScene attachToColorBufferIndex:0 ];
     [ depthBuffer attach ];
     [ attractorRTC activateViewport ];
     [ attractorRTC activateDrawBuffers ];
     [ attractorRTC checkFrameBufferCompleteness ];
 
-    // clear colorTargetOne and depthBuffer
+    // clear originalScene and depthBuffer
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
     // initialise state
@@ -163,18 +187,92 @@
 
     // render scene
     [ camera render ];
-    [ attractor render ];
+    [ attractor render:YES ];
 
     // detach targets    
-    [ colorTargetOne detach ];
+    [ originalScene detach ];
     [ depthBuffer detach ];
 
+    // deactivate depth test
     [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setWriteEnabled:NO ];
     [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:NO ];
     [[[[ NP Graphics ] stateConfiguration ] depthTestState ] activate ];
 
+    // reset matrices
+    [[[ NP Core ] transformationState ] reset ];
+
+    // set reolution to actual renderexture size
+    [ attractorRTC setWidth:resolution->x / 2 ];
+    [ attractorRTC setHeight:resolution->y / 2 ];
+
+    // prepare colorTargetOne
+    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:colorTargetOne ];
+    [ colorTargetOne attachToColorBufferIndex:0 ];
+    [ attractorRTC activateViewport ];
+    [ attractorRTC activateDrawBuffers ];
+    [ attractorRTC checkFrameBufferCompleteness ];
+
+    // extract values of interest into bloom colorTargetOne
+    [[ originalScene texture ] activateAtColorMapIndex:0 ];
+    [ fullscreenEffect uploadFloatParameter:bloomThresholdParameter andValue:0.75f ];
+    [ fullscreenEffect activateTechniqueWithName:@"bloomextract" ];
+    [ fullscreenQuad render ];
+    [ colorTargetOne detach ];
+
+    // prepare colorTargetTwo
+    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:colorTargetTwo ];
+    [ colorTargetTwo attachToColorBufferIndex:0 ];
+    [ attractorRTC activateDrawBuffers ];
+    [ attractorRTC checkFrameBufferCompleteness ];
+
+    // horizontal filter
+    [[ colorTargetOne texture ] activateAtColorMapIndex:0 ];
+    [ fullscreenEffect activateTechniqueWithName:@"horizontalbloom" ];
+    [ fullscreenQuad render ];
+    [ fullscreenEffect deactivate ];
+    [ colorTargetTwo detach ];
+
+    // prepare colorTargetOne
+    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:colorTargetOne ];
+    [ colorTargetOne attachToColorBufferIndex:0 ];
+    [ attractorRTC activateDrawBuffers ];
+    [ attractorRTC checkFrameBufferCompleteness ];
+
+    // vertical filter
+    [[ colorTargetTwo texture ] activateAtColorMapIndex:0 ];
+    [ fullscreenEffect activateTechniqueWithName:@"verticalbloom" ];
+    [ fullscreenQuad render ];
+    [ fullscreenEffect deactivate ];
+    [ colorTargetOne detach ];
+
+    // deactivate render targets
+    [ attractorRTC unbindFBO ];
+    [ attractorRTC deactivateDrawBuffers ];
+    [ attractorRTC deactivateViewport ];
+
+    [[ originalScene texture  ] activateAtColorMapIndex:0 ];
+    [[ colorTargetOne texture ] activateAtColorMapIndex:1 ];
+    [ fullscreenEffect uploadFloatParameter:bloomIntensityParameter andValue:1.25f ];
+    [ fullscreenEffect uploadFloatParameter:bloomSaturationParameter andValue:1.0f ];
+    [ fullscreenEffect uploadFloatParameter:sceneIntensityParameter andValue:1.0f ];
+    [ fullscreenEffect uploadFloatParameter:sceneSaturationParameter andValue:1.0f ];
+    [ fullscreenEffect activateTechniqueWithName:@"combine" ];
+    [ fullscreenQuad render ];
+    [ fullscreenEffect deactivate ];
+
+
+    /*
+    // setup colorTargetOne, we draw the attractor to this target and blur the resulting image
+    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:colorTargetOne ];
+    [ colorTargetOne attachToColorBufferIndex:0 ];
+    [ attractorRTC activateDrawBuffers ];
+    [ attractorRTC checkFrameBufferCompleteness ];
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+    [ attractor render:NO ];
+    [ colorTargetOne detach ];
+
     // prepare for horizontal filter
-    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:colorTargetTwo   ];
+    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:colorTargetTwo ];
     [ colorTargetTwo attachToColorBufferIndex:0 ];
     [ attractorRTC activateDrawBuffers ];
     [ attractorRTC checkFrameBufferCompleteness ];
@@ -200,17 +298,27 @@
     [ fullscreenEffect deactivate ];
     [ colorTargetOne detach ];
 
+    // deactivate render targets
     [ attractorRTC unbindFBO ];
     [ attractorRTC deactivateDrawBuffers ];
     [ attractorRTC deactivateViewport ];
 
+    // draw originalScene and colorTargetOne blent on top of it
     [[[ NP Core ] transformationState ] reset ];
+    [[ originalScene texture ] activateAtColorMapIndex:0 ];
+    [ fullscreenEffect activateTechniqueWithName:@"fullscreen" ];
+    [ fullscreenQuad render ];
+
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] activate ];
+
     [[ colorTargetOne texture ] activateAtColorMapIndex:0 ];
     [ fullscreenEffect activateTechniqueWithName:@"fullscreen" ];
-
     [ fullscreenQuad render ];
 
     [ fullscreenEffect deactivate ];
+    */
 }
 
 @end
