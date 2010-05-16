@@ -8,6 +8,7 @@
 @class NPRenderTexture;
 @class NPRenderBuffer;
 @class NPEffect;
+@class NPFullscreenQuad;
 
 @interface FScene : NPObject
 {
@@ -15,6 +16,7 @@
     FTerrain * terrain;
     FCamera * camera;
 
+    NPFullscreenQuad * fullscreenQuad;
     NPEffect * fullscreenEffect;
     NPRenderTargetConfiguration * attractorRTC;
     NPRenderTexture * colorTargetOne;

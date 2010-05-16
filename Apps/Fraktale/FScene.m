@@ -22,11 +22,14 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
+    fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
     fullscreenEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Fullscreen.cgfx" ];
 
     IVector2 * resolution = [[[ NP Graphics ] viewportManager ] currentControlSize ];
 
     attractorRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"AttractorRT" parent:self ];
+    [ attractorRTC setWidth:resolution->x ];
+    [ attractorRTC setHeight:resolution->y ];
 
     depthBuffer = [[ NPRenderBuffer renderBufferWithName:@"Depth"
                                                     type:NP_GRAPHICS_RENDERBUFFER_DEPTH_TYPE
@@ -59,6 +62,8 @@
 
     [ attractorRTC clear ];
     RELEASE(attractorRTC);
+
+    RELEASE(fullscreenQuad);
 
     TEST_RELEASE(attractor);
     TEST_RELEASE(terrain);
@@ -131,20 +136,24 @@
 
 - (void) render
 {
+    // Clear back buffer and depth buffer
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
+    // setup fbo
     [ attractorRTC resetColorTargetsArray ];
     [ attractorRTC bindFBO ];
-    [ attractorRTC activateViewport ];
 
     [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:colorTargetOne   ];
     [ colorTargetOne attachToColorBufferIndex:0 ];
     [ depthBuffer attach ];
+    [ attractorRTC activateViewport ];
     [ attractorRTC activateDrawBuffers ];
     [ attractorRTC checkFrameBufferCompleteness ];
 
+    // clear colorTargetOne and depthBuffer
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
+    // initialise state
     [[[[ NP Graphics ] stateConfiguration ] cullingState ] setCullFace:NP_BACK_FACE ];
     [[[[ NP Graphics ] stateConfiguration ] cullingState ] setEnabled:YES ];
     [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setWriteEnabled:YES ];
@@ -152,11 +161,45 @@
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:NO ];
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
+    // render scene
     [ camera render ];
     [ attractor render ];
 
+    // detach targets    
     [ colorTargetOne detach ];
     [ depthBuffer detach ];
+
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setWriteEnabled:NO ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:NO ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] activate ];
+
+    // prepare for horizontal filter
+    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:colorTargetTwo   ];
+    [ colorTargetTwo attachToColorBufferIndex:0 ];
+    [ attractorRTC activateDrawBuffers ];
+    [ attractorRTC checkFrameBufferCompleteness ];
+
+    // reset  matrices, bind colorTargetOne, activate horizontalbloom
+    [[[ NP Core ] transformationState ] reset ];
+    [[ colorTargetOne texture ] activateAtColorMapIndex:0 ];
+    [ fullscreenEffect activateTechniqueWithName:@"horizontalbloom" ];
+    [ fullscreenQuad render ];
+    [ fullscreenEffect deactivate ];
+    [ colorTargetTwo detach ];
+
+    // prepare for vertical filter
+    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:colorTargetOne   ];
+    [ colorTargetOne attachToColorBufferIndex:0 ];
+    [ attractorRTC activateDrawBuffers ];
+    [ attractorRTC checkFrameBufferCompleteness ];
+
+    // bind colorTargetTwo, activate horizontalbloom
+    [[ colorTargetTwo texture ] activateAtColorMapIndex:0 ];
+    [ fullscreenEffect activateTechniqueWithName:@"horizontalbloom" ];
+    [ fullscreenQuad render ];
+    [ fullscreenEffect deactivate ];
+    [ colorTargetOne detach ];
+
     [ attractorRTC unbindFBO ];
     [ attractorRTC deactivateDrawBuffers ];
     [ attractorRTC deactivateViewport ];
@@ -165,19 +208,7 @@
     [[ colorTargetOne texture ] activateAtColorMapIndex:0 ];
     [ fullscreenEffect activateTechniqueWithName:@"fullscreen" ];
 
-        glBegin(GL_QUADS);
-            glTexCoord2f(0.0f,1.0f);            
-            glVertex4f(-1.0f,1.0f,0.0f,1.0f);
-
-            glTexCoord2f(0.0f,0.0f);
-            glVertex4f(-1.0f,-1.0,0.0f,1.0f);
-
-            glTexCoord2f(1.0f,0.0f);
-            glVertex4f(1.0f,-1.0f,0.0f,1.0f);
-
-            glTexCoord2f(1.0f,1.0f);
-            glVertex4f(1.0f,1.0f,0.0f,1.0f);
-        glEnd();
+    [ fullscreenQuad render ];
 
     [ fullscreenEffect deactivate ];
 }

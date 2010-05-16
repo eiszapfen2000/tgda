@@ -26,6 +26,7 @@
 
     glClearColor(0.0f,0.0f,0.0f,1.0f);
     glClearDepth(1);
+    glLineWidth(2.0);
 
     sceneManager = [[ FSceneManager alloc ] init ];
     FScene * scene = [ sceneManager loadSceneFromPath:@"Test.scene" ];
