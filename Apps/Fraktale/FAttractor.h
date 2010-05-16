@@ -66,6 +66,6 @@
                                 ;
 
 - (void) update:(Float)frameTime;
-- (void) render;
+- (void) render:(BOOL)drawCoordinateCross;
 
 @end

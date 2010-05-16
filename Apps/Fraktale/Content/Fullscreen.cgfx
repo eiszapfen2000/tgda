@@ -1,6 +1,32 @@
 float4x4 mvpmatrix   : NPMODELVIEWPROJECTION;
-sampler2D colormap   : NPCOLORMAP0;
+sampler2D colormap0  : NPCOLORMAP0;
+sampler2D colormap1  : NPCOLORMAP1;
 float2 rViewport     : NPRVIEWPORTSIZE;
+
+float bloomThreshold;
+float bloomIntensity;
+float bloomSaturation;
+float sceneIntensity;
+float sceneSaturation;
+
+static const float gauss15x15[15] =
+{
+    0.000004964030580,
+    0.000089220150510,
+    0.001028185997527,
+    0.007597324015865,
+    0.035993977675459,
+    0.109340049783996,
+    0.212965337014902,
+    0.265961520267622,
+    0.212965337014902,
+    0.109340049783996,
+    0.035993977675459,
+    0.007597324015865,
+    0.001028185997527,
+    0.000089220150510,
+    0.000004964030580
+};
 
 struct INPUTDATA
 {
@@ -33,7 +59,20 @@ FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
 {
 	FOUTPUTDATA output;
 
-    output.color = tex2D(colormap, input.texcoord);
+    output.color = tex2D(colormap0, input.texcoord);
+
+	return output;
+}
+
+FOUTPUTDATA mbloomextract(VOUTPUTDATA input)
+{
+	FOUTPUTDATA output;
+
+    // Look up the original image color.
+    float4 color = tex2D(colormap0, input.texcoord);
+
+    // Adjust it to keep only values brighter than the specified threshold.
+    output.color = saturate((color - bloomThreshold) / (1.0f - bloomThreshold));
 
 	return output;
 }
@@ -43,16 +82,15 @@ FOUTPUTDATA mhorizontalbloom(VOUTPUTDATA input)
 	FOUTPUTDATA output;
 
     float2 samplePosition;
-    float4 sum = float4(0.0, 0.0, 0.0, 0.0);
+    float4 sum = float4(0.0f);
 
-    for ( float i = -1.0f; i <= 1.0f; i += 1.0f )
+    for ( float i = -7.0f; i <= 7.0f; i += 1.0f )
     {
         samplePosition = input.texcoord + float2(i * rViewport.x, 0.0f);
-        sum += (1.0f/3.0f * tex2D(colormap, samplePosition));
+        sum += (gauss15x15[i+7] * tex2D(colormap0, samplePosition));
     }
 
     output.color = float4(sum.rgb, 1.0);
-    //output.color = tex2D(colormap, input.texcoord);
 	return output;
 }
 
@@ -61,16 +99,51 @@ FOUTPUTDATA mverticalbloom(VOUTPUTDATA input)
 	FOUTPUTDATA output;
 
     float2 samplePosition;
-    float4 sum = float4(0.0, 0.0, 0.0, 0.0);
+    float4 sum = float4(0.0f);
 
-    for ( float i = -1.0f; i <= 1.0f; i += 1.0f )
+    for ( float i = -7.0f; i <= 7.0f; i += 1.0f )
     {
         samplePosition = input.texcoord + float2(0.0f, i * rViewport.y);
-        sum += (1.0f/3.0f * tex2D(colormap, samplePosition));
+        sum += (gauss15x15[i+7] * tex2D(colormap0, samplePosition));
     }
 
     output.color = float4(sum.rgb, 1.0);
 	return output;
+}
+
+// Helper for modifying the saturation of a color.
+float4 AdjustSaturation(float4 color, float saturation)
+{
+    // The constants 0.3, 0.59, and 0.11 are chosen because the
+    // human eye is more sensitive to green light, and less to blue.
+    float grey = dot(color.rgb, float3(0.3, 0.59, 0.11));
+
+    return lerp(float4(grey), color, saturation);
+}
+
+FOUTPUTDATA mcombine(VOUTPUTDATA input)
+{
+	FOUTPUTDATA output;
+
+    /*
+    float3 originalSample = tex2D(colormap0, input.texcoord).rgb;
+    float3 bloomSample = tex2D(colormap1, input.texcoord).rgb;
+    float3 result = lerp(bloomSample,originalSample,0.35f);
+
+    output.color = float4(result, 1.0);
+	return output;
+    */
+
+    float4 sceneSample = tex2D(colormap0, input.texcoord);
+    float4 bloomSample = tex2D(colormap1, input.texcoord);
+
+    sceneSample = AdjustSaturation(sceneSample, sceneSaturation) * sceneIntensity;
+    bloomSample = AdjustSaturation(bloomSample, bloomSaturation) * bloomIntensity;
+
+    sceneSample *= (1.0f - saturate(bloomSample));
+
+    output.color = sceneSample + bloomSample;
+    return output;
 }
 
 technique fullscreen
@@ -78,6 +151,15 @@ technique fullscreen
 	pass
 	{
 		FragmentProgram = compile fp40 mfragmentshader();
+		VertexProgram = compile vp40 mvertexshader();
+	}
+}
+
+technique bloomextract
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mbloomextract();
 		VertexProgram = compile vp40 mvertexshader();
 	}
 }
@@ -96,6 +178,15 @@ technique verticalbloom
 	pass
 	{
 		FragmentProgram = compile fp40 mverticalbloom();
+		VertexProgram = compile vp40 mvertexshader();
+	}
+}
+
+technique combine
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mcombine();
 		VertexProgram = compile vp40 mvertexshader();
 	}
 }

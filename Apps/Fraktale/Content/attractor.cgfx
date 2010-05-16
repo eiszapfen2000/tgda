@@ -65,7 +65,7 @@ FOUTPUTDATA mfragmentshader_attractor(AVOUTPUTDATA input)
 {
 	FOUTPUTDATA output;
 
-    output.color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+    output.color = float4(0.8f, 0.85f, 1.0f, 1.0f);
 
 	return output;
 }
