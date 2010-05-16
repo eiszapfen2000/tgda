@@ -109,11 +109,13 @@
     {
         [ depth unbindFromRenderTargetConfiguration ];
         [ depth release ];
+        depth = nil;
     }
 
     if ( stencil != nil )
     {
         [ stencil release ];
+        stencil = nil;
     }
 }
 
@@ -189,7 +191,8 @@
         {
             TEST_RELEASE(depth);
             TEST_RELEASE(stencil);
-            depth = [ newDepthStencilRenderTarget retain ];
+
+            depth   = [ newDepthStencilRenderTarget retain ];
             stencil = [ newDepthStencilRenderTarget retain ];
 
             if ( [ stencil width ] > width || [ stencil height ] > height )
@@ -258,6 +261,7 @@
 - (void) activateViewport
 {
     IVector2 rtv = { width, height };
+
     [[[[ NP Graphics ] viewportManager ] currentViewport ] setViewportSize:&rtv ];
 }
 

@@ -17,4 +17,6 @@
                   maxTextureCoordinate:(FVector2)maxTextureCoordinate
                                       ;
 
+- (void) render;
+
 @end
