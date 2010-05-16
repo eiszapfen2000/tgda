@@ -43,7 +43,7 @@
     {
         windowRect = NSMakeRect(100,100,width,height);
         styleMask = NSTitledWindowMask;
-        windowLevel = NSModalPanelWindowLevel;
+        windowLevel = NSNormalWindowLevel;
     }
 
     window = [[NSWindow alloc] initWithContentRect:windowRect
