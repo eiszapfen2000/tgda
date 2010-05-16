@@ -4,11 +4,22 @@
 @class FTerrain;
 @class FCamera;
 
+@class NPRenderTargetConfiguration;
+@class NPRenderTexture;
+@class NPRenderBuffer;
+@class NPEffect;
+
 @interface FScene : NPObject
 {
     FAttractor * attractor;
     FTerrain * terrain;
     FCamera * camera;
+
+    NPEffect * fullscreenEffect;
+    NPRenderTargetConfiguration * attractorRTC;
+    NPRenderTexture * colorTargetOne;
+    NPRenderTexture * colorTargetTwo;
+    NPRenderBuffer * depthBuffer;
 }
 
 - (id) init;

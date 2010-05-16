@@ -1014,7 +1014,7 @@
 
 - (void) render
 {
-    NPTextureBindingState * t = [[[ NP Graphics ] textureBindingStateManager ] currentTextureBindingState ];
+    NPTextureBindingState * t = [[ NP Graphics ] textureBindingState ];
     [ t setTexture:texture forKey:@"NPCOLORMAP0" ];
 
     [ effect activate ];

@@ -43,7 +43,11 @@
     id generateButton;
 }
 
+// populate popup buttons
 - (void) initPopUpButtons;
+
+// initialise text field values
+- (void) initialiseSettingsUsingDictionary:(NSDictionary *)dictionary;
 
 // Terrain
 - (void) setWidthTextfieldString:(NSString *)newString;
@@ -57,17 +61,6 @@
 - (void) addLodPopUpItemWithNumber:(Int32)number;
 - (void) removeLodPopUpItemWithNumber:(Int32)number;
 - (void) selectLodPopUpItemWithIndex:(Int32)index;
-
-// Attractor
-- (void) setATextfieldString:(Float)newValue;
-- (void) setBTextfieldString:(Float)newValue;
-- (void) setCTextfieldString:(Float)newValue;
-- (void) setRTextfieldString:(Float)newValue;
-- (void) setAttractorSigmaTextfieldString:(Float)newValue;
-- (void) setAttractorIterationsTextfieldString:(Int32)newValue;
-- (void) setStartingPointXTextfieldString:(Float)newValue;
-- (void) setStartingPointYTextfieldString:(Float)newValue;
-- (void) setStartingPointZTextfieldString:(Float)newValue;
 
 // Terrain
 - (void) selectLod:(id)sender;

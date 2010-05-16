@@ -1,9 +1,11 @@
 #import "Core/NPObject/NPObject.h"
 
+@class FScene;
+
 @interface FSceneManager : NPObject
 {
-    id scenes;
-    id currentScene;
+    NSMutableDictionary * scenes;
+    FScene * currentScene;
 }
 
 - (id) init;
@@ -16,8 +18,8 @@
 - (id) loadSceneFromPath:(NSString *)path;
 - (id) loadSceneFromAbsolutePath:(NSString *)path;
 
-- (id) currentScene;
-- (void) setCurrentScene:(id)newCurrentScene;
+- (FScene *) currentScene;
+- (void) setCurrentScene:(FScene *)newCurrentScene;
 
 - (void) update:(Float)frameTime;
 - (void) render;

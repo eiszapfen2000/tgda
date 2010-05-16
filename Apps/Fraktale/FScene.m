@@ -22,11 +22,44 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
+    fullscreenEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Fullscreen.cgfx" ];
+
+    IVector2 * resolution = [[[ NP Graphics ] viewportManager ] currentControlSize ];
+
+    attractorRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"AttractorRT" parent:self ];
+
+    depthBuffer = [[ NPRenderBuffer renderBufferWithName:@"Depth"
+                                                    type:NP_GRAPHICS_RENDERBUFFER_DEPTH_TYPE
+                                                  format:NP_GRAPHICS_RENDERBUFFER_DEPTH24
+                                                   width:resolution->x
+                                                  height:resolution->y ] retain ];
+
+    colorTargetOne = [[ NPRenderTexture renderTextureWithName:@"Color1"
+                                                         type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
+                                                        width:resolution->x
+                                                       height:resolution->y
+                                                   dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_BYTE
+                                                  pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ] retain ];
+
+    colorTargetTwo = [[ NPRenderTexture renderTextureWithName:@"Color2"
+                                                         type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
+                                                        width:resolution->x
+                                                       height:resolution->y
+                                                   dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_BYTE
+                                                  pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ] retain ];
+
     return self;
 }
 
 - (void) dealloc
 {
+    RELEASE(colorTargetTwo);
+    RELEASE(colorTargetOne);
+    RELEASE(depthBuffer);
+
+    [ attractorRTC clear ];
+    RELEASE(attractorRTC);
+
     TEST_RELEASE(attractor);
     TEST_RELEASE(terrain);
 
@@ -98,7 +131,17 @@
 
 - (void) render
 {
-    //glFrontFace(GL_CCW);
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
+
+    [ attractorRTC resetColorTargetsArray ];
+    [ attractorRTC bindFBO ];
+    [ attractorRTC activateViewport ];
+
+    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:colorTargetOne   ];
+    [ colorTargetOne attachToColorBufferIndex:0 ];
+    [ depthBuffer attach ];
+    [ attractorRTC activateDrawBuffers ];
+    [ attractorRTC checkFrameBufferCompleteness ];
 
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
@@ -109,23 +152,34 @@
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:NO ];
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
-    //glCullFace(GL_BACK);
-    //glEnable(GL_CULL_FACE);
-
-
     [ camera render ];
-
-    /*glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45.0f,4.0f/3.0f,0.1f,50.0f);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0.0f,3.0f,0.0f,0.0f,3.0f,-50.0f,0.0f,1.0f,0.0f);*/
-
-    //if ( terrain != nil )
-    //    [ terrain render ];
-
     [ attractor render ];
+
+    [ colorTargetOne detach ];
+    [ depthBuffer detach ];
+    [ attractorRTC unbindFBO ];
+    [ attractorRTC deactivateDrawBuffers ];
+    [ attractorRTC deactivateViewport ];
+
+    [[[ NP Core ] transformationState ] reset ];
+    [[ colorTargetOne texture ] activateAtColorMapIndex:0 ];
+    [ fullscreenEffect activateTechniqueWithName:@"fullscreen" ];
+
+        glBegin(GL_QUADS);
+            glTexCoord2f(0.0f,1.0f);            
+            glVertex4f(-1.0f,1.0f,0.0f,1.0f);
+
+            glTexCoord2f(0.0f,0.0f);
+            glVertex4f(-1.0f,-1.0,0.0f,1.0f);
+
+            glTexCoord2f(1.0f,0.0f);
+            glVertex4f(1.0f,-1.0f,0.0f,1.0f);
+
+            glTexCoord2f(1.0f,1.0f);
+            glVertex4f(1.0f,1.0f,0.0f,1.0f);
+        glEnd();
+
+    [ fullscreenEffect deactivate ];
 }
 
 @end

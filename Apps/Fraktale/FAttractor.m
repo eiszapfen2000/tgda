@@ -38,56 +38,7 @@
 
 - (BOOL) loadFromDictionary:(NSDictionary *)dictionary
 {
-    NSString * attractorTypeName = [ dictionary objectForKey:@"Type" ];
-
-    FVector3 startingPoint;
-
-    if ( [ attractorTypeName isEqual:@"Lorentz" ] )
-    {
-        Float sigma = [[ dictionary objectForKey:@"Sigma" ] floatValue ];
-        Float b = [[ dictionary objectForKey:@"B" ] floatValue ];
-        Float r = [[ dictionary objectForKey:@"R" ] floatValue ];
-        Int32 numberOfIterations = [[ dictionary objectForKey:@"Iterations" ] intValue ];
-
-        NSArray * startingPointStrings = [ dictionary objectForKey:@"StartingPoint" ];
-        startingPoint.x = [[ startingPointStrings objectAtIndex:0 ] floatValue ];
-        startingPoint.y = [[ startingPointStrings objectAtIndex:1 ] floatValue ];
-        startingPoint.z = [[ startingPointStrings objectAtIndex:2 ] floatValue ];
-
-        [[ NP attributesWindowController ] setAttractorSigmaTextfieldString:sigma ];
-        [[ NP attributesWindowController ] setBTextfieldString:b ];
-        [[ NP attributesWindowController ] setRTextfieldString:r ];
-        [[ NP attributesWindowController ] setStartingPointXTextfieldString:startingPoint.x ];
-        [[ NP attributesWindowController ] setStartingPointYTextfieldString:startingPoint.y ];
-        [[ NP attributesWindowController ] setStartingPointZTextfieldString:startingPoint.z ];
-        [[ NP attributesWindowController ] setAttractorIterationsTextfieldString:numberOfIterations ];
-
-        return YES;
-    }
-    else if ( [ attractorTypeName isEqual:@"Roessler" ] )
-    {
-        Float a = [[ dictionary objectForKey:@"A" ] floatValue ];
-        Float b = [[ dictionary objectForKey:@"B" ] floatValue ];
-        Float c = [[ dictionary objectForKey:@"C" ] floatValue ];
-        Int32 numberOfIterations = [[ dictionary objectForKey:@"Iterations" ] intValue ];
-
-        NSArray * startingPointStrings = [ dictionary objectForKey:@"StartingPoint" ];
-        startingPoint.x = [[ startingPointStrings objectAtIndex:0 ] floatValue ];
-        startingPoint.y = [[ startingPointStrings objectAtIndex:1 ] floatValue ];
-        startingPoint.z = [[ startingPointStrings objectAtIndex:2 ] floatValue ];
-
-        [[ NP attributesWindowController ] setATextfieldString:a ];
-        [[ NP attributesWindowController ] setBTextfieldString:b ];
-        [[ NP attributesWindowController ] setCTextfieldString:c ];
-        [[ NP attributesWindowController ] setStartingPointXTextfieldString:startingPoint.x ];
-        [[ NP attributesWindowController ] setStartingPointYTextfieldString:startingPoint.y ];
-        [[ NP attributesWindowController ] setStartingPointZTextfieldString:startingPoint.z ];
-        [[ NP attributesWindowController ] setAttractorIterationsTextfieldString:numberOfIterations ];
-
-        return YES;
-    }
-
-    return NO;
+    return YES;
 }
 
 - (void) reset
@@ -250,29 +201,47 @@
     [ roesslerAttractor setIndices:indices indexCount:numberOfIterations ];
 }
 
-- (void) generateAttractorWithParametersA:(Float)a
-                                        B:(Float)b
-                                        C:(Float)c
-                                        R:(Float)r
-                                      Sigma:(Float)sigma
-                         numberOfIterations:(UInt32)numberOfIterations
-                              startingPoint:(FVector3)startingPoint
+- (void) generateAttractorOfType:(NpState)Type
+                 withParametersA:(Float)a
+                               B:(Float)b
+                               C:(Float)c
+                               R:(Float)r
+                           Sigma:(Float)sigma
+              numberOfIterations:(UInt32)numberOfIterations
+                   startingPoint:(FVector3)startingPoint
 {
-    if ( mode == ATTRACTOR_LORENTZ )
+    switch ( Type )
     {
-        [ self generateLorentzAttractorWithParametersSigma:sigma
-                                                         B:b
-                                                         R:r
-                                        numberOfIterations:numberOfIterations
-                                             startingPoint:startingPoint ];
-    }
-    else if ( mode == ATTRACTOR_ROESSLER )
-    {
-        [ self generateRoesslerAttractorWithParametersA:a
-                                                      B:b
-                                                      C:c
-                                     numberOfIterations:numberOfIterations
-                                          startingPoint:startingPoint ];
+        case ATTRACTOR_LORENTZ:
+        {
+            [ self generateLorentzAttractorWithParametersSigma:sigma
+                                                             B:b
+                                                             R:r
+                                            numberOfIterations:numberOfIterations
+                                                 startingPoint:startingPoint ];
+
+            mode = ATTRACTOR_LORENTZ;
+
+            break;
+        }
+
+        case ATTRACTOR_ROESSLER:
+        {
+            [ self generateRoesslerAttractorWithParametersA:a
+                                                          B:b
+                                                          C:c
+                                         numberOfIterations:numberOfIterations
+                                              startingPoint:startingPoint ];
+
+            mode = ATTRACTOR_ROESSLER;
+            break;
+        }
+
+        default:
+        {
+            NSLog(@"Unknown attractor type %d", Type);
+        }
+
     }
 }
 
@@ -284,7 +253,7 @@
 
 - (void) render
 {
-    [[[ NP Core ] transformationStateManager ] resetCurrentModelMatrix ];
+    [[[ NP Core ] transformationState ] resetModelMatrix ];
     [ effect activateTechniqueWithName:@"coordinate_cross" ];
     [ coordinateCross renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_LINES ];
     [ effect deactivate ];
@@ -294,7 +263,7 @@
     if ( (mode == ATTRACTOR_LORENTZ) && (lorentzAttractor != nil) )
     {
         fm4_msss_scale_matrix_xyz(&scale, 0.1f, 0.1f, 0.1f);
-        [[[[ NP Core ] transformationStateManager ] currentTransformationState ] setModelMatrix:&scale ];
+        [[[ NP Core ] transformationState ] setModelMatrix:&scale ];
 
         [ effect activateTechniqueWithName:@"attractor" ];
         [ lorentzAttractor renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_LINE_STRIP ];
@@ -304,7 +273,7 @@
     if ( (mode == ATTRACTOR_ROESSLER) && (roesslerAttractor != nil) )
     {
         fm4_msss_scale_matrix_xyz(&scale, 0.5f, 0.5f, 0.5f);
-        [[[[ NP Core ] transformationStateManager ] currentTransformationState ] setModelMatrix:&scale ];
+        [[[ NP Core ] transformationState ] setModelMatrix:&scale ];
 
         [ effect activateTechniqueWithName:@"attractor" ];
         [ roesslerAttractor renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_LINE_STRIP ];

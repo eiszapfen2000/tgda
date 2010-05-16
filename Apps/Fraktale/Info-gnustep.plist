@@ -1,6 +1,6 @@
 {
-    ApplicationDescription = OceanDemo;
-    ApplicationName = OceanDemo;
+    ApplicationDescription = Fraktale;
+    ApplicationName = Fraktale;
     ApplicationRelease = 0.10;
     Authors = ( "Thomas Gamper" );
     Copyright = "Copyright (C) 2009 Thomas Gamper";

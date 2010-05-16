@@ -42,18 +42,38 @@
     [ typePopUp addItemWithTitle:@"Roessler" ];
 }
 
-- (void) windowDidLoad
+- (void) awakeFromNib
 {
     [ self initPopUpButtons ];
 }
 
+- (void) initialiseSettingsUsingDictionary:(NSDictionary *)dictionary
+{
+    NSDictionary * attractorConfig = [ dictionary objectForKey:@"Attractor" ];
+    NSDictionary * lorentzConfig   = [ attractorConfig objectForKey:@"Lorentz"  ];
+    NSDictionary * roesslerConfig  = [ attractorConfig objectForKey:@"Roessler" ];
+
+    [[ attractorSigmaTextfield cell ] setStringValue:[ lorentzConfig objectForKey:@"Sigma" ]];
+    [[ bTextfield cell ] setStringValue:[ lorentzConfig objectForKey:@"B" ]];
+    [[ rTextfield cell ] setStringValue:[ lorentzConfig objectForKey:@"R" ]];
+
+    [[ aTextfield cell ] setStringValue:[ roesslerConfig objectForKey:@"A" ]];
+    [[ bTextfield cell ] setStringValue:[ roesslerConfig objectForKey:@"B" ]];
+    [[ cTextfield cell ] setStringValue:[ roesslerConfig objectForKey:@"C" ]];
+
+    NSArray * startingPointStrings = [ attractorConfig objectForKey:@"StartingPoint" ];
+    [[ startingPointXTextfield cell ] setStringValue:[ startingPointStrings objectAtIndex:0 ]];
+    [[ startingPointYTextfield cell ] setStringValue:[ startingPointStrings objectAtIndex:1 ]];
+    [[ startingPointZTextfield cell ] setStringValue:[ startingPointStrings objectAtIndex:2 ]];
+
+    [[ attractorIterationsTextfield cell ] setStringValue:[ attractorConfig objectForKey:@"Iterations" ]];
+
+    [ typePopUp sendAction:[typePopUp action] to:[typePopUp target]];
+}
+
 - (void)controlTextDidEndEditing:(NSNotification *)aNotification
 {
-//    NSLog(@"LAALAA");
-
-    id textMovement;
-
-    textMovement = [[aNotification userInfo] objectForKey: @"NSTextMovement"];
+    id textMovement = [[aNotification userInfo] objectForKey: @"NSTextMovement"];
 
     if (textMovement)
     {
@@ -126,51 +146,6 @@
 - (void) selectLodPopUpItemWithIndex:(Int32)index
 {
    [ lodPopUp selectItemAtIndex:index ]; 
-}
-
-- (void) setATextfieldString:(Float)newValue
-{
-    [[ aTextfield cell ] setFloatValue:newValue ];
-}
-
-- (void) setBTextfieldString:(Float)newValue
-{
-    [[ bTextfield cell ] setFloatValue:newValue ];
-}
-
-- (void) setCTextfieldString:(Float)newValue
-{
-    [[ cTextfield cell ] setFloatValue:newValue ];
-}
-
-- (void) setRTextfieldString:(Float)newValue
-{
-    [[ rTextfield cell ] setFloatValue:newValue ];
-}
-
-- (void) setAttractorSigmaTextfieldString:(Float)newValue
-{
-    [[ attractorSigmaTextfield cell ] setFloatValue:newValue ];
-}
-
-- (void) setAttractorIterationsTextfieldString:(Int32)newValue
-{
-    [[ attractorIterationsTextfield cell ] setIntValue:newValue ];
-}
-
-- (void) setStartingPointXTextfieldString:(Float)newValue
-{
-    [[ startingPointXTextfield cell ] setFloatValue:newValue ];
-}
-
-- (void) setStartingPointYTextfieldString:(Float)newValue
-{
-    [[ startingPointYTextfield cell ] setFloatValue:newValue ];
-}
-
-- (void) setStartingPointZTextfieldString:(Float)newValue
-{
-    [[ startingPointZTextfield cell ] setFloatValue:newValue ];
 }
 
 - (void) selectLod:(id)sender
@@ -353,6 +328,7 @@
     {
         FAttractor * attractor = [[[[ NP applicationController ] sceneManager ] currentScene ] attractor ];
 
+        Int32 type = [ typePopUp indexOfSelectedItem];
         Float sigma = [attractorSigmaTextfield floatValue];
         Float a = [aTextfield floatValue];
         Float b = [bTextfield floatValue];
@@ -366,13 +342,17 @@
         startingPoint.y = [ startingPointYTextfield floatValue ];
         startingPoint.z = [ startingPointZTextfield floatValue ];
 
-        [ attractor generateAttractorWithParametersA:a
-                                                   B:b
-                                                   C:c
-                                                   R:r
-                                               Sigma:sigma
-                                  numberOfIterations:numberOfIterations
-                                       startingPoint:startingPoint ];
+        //NSLog(@"%f %f %f %f %f %u %f %f %f", a, b, c, sigma, r,
+        //         numberOfIterations, startingPoint.x, startingPoint.y, startingPoint.z);
+
+        [ attractor generateAttractorOfType:type
+                            withParametersA:a
+                                          B:b
+                                          C:c
+                                          R:r
+                                      Sigma:sigma
+                         numberOfIterations:numberOfIterations
+                              startingPoint:startingPoint ];
     }
 }
 
