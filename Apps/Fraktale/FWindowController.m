@@ -54,12 +54,14 @@
     NSDictionary * roesslerConfig  = [ attractorConfig objectForKey:@"Roessler" ];
 
     [[ attractorSigmaTextfield cell ] setStringValue:[ lorentzConfig objectForKey:@"Sigma" ]];
-    [[ bTextfield cell ] setStringValue:[ lorentzConfig objectForKey:@"B" ]];
     [[ rTextfield cell ] setStringValue:[ lorentzConfig objectForKey:@"R" ]];
+    [[ bTextfield cell ] setStringValue:[ lorentzConfig objectForKey:@"B" ]];
+    bLorentzValue = [[ lorentzConfig objectForKey:@"B" ] doubleValue ];
 
     [[ aTextfield cell ] setStringValue:[ roesslerConfig objectForKey:@"A" ]];
     [[ bTextfield cell ] setStringValue:[ roesslerConfig objectForKey:@"B" ]];
     [[ cTextfield cell ] setStringValue:[ roesslerConfig objectForKey:@"C" ]];
+    bRoesslerValue = [[ roesslerConfig objectForKey:@"B" ] doubleValue ];
 
     NSArray * startingPointStrings = [ attractorConfig objectForKey:@"StartingPoint" ];
     [[ startingPointXTextfield cell ] setStringValue:[ startingPointStrings objectAtIndex:0 ]];
@@ -290,6 +292,13 @@
         [ rTextfield setBackgroundColor:[NSColor whiteColor]];
         [ attractorSigmaTextfield setBackgroundColor:[NSColor whiteColor]];
 
+        if ( [ attractor mode ] == ATTRACTOR_ROESSLER )
+        {
+            bRoesslerValue = [[ bTextfield cell ] doubleValue ];
+        }
+
+        [[ bTextfield cell ] setDoubleValue:bLorentzValue ];
+
         [ attractor setMode:ATTRACTOR_LORENTZ ];
     }
 
@@ -305,6 +314,13 @@
         [ cTextfield setEditable:YES ];
         [ aTextfield setBackgroundColor:[NSColor whiteColor]];
         [ cTextfield setBackgroundColor:[NSColor whiteColor]];
+
+        if ( [ attractor mode ] == ATTRACTOR_LORENTZ )
+        {
+            bLorentzValue = [[ bTextfield cell ] doubleValue ];
+        }
+
+        [[ bTextfield cell ] setDoubleValue:bRoesslerValue ];
 
         [ attractor setMode:ATTRACTOR_ROESSLER ];
     }
