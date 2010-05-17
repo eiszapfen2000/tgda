@@ -2,7 +2,6 @@
 #import "FApplicationController.h"
 #import "FWindowController.h"
 #import "FScene.h"
-#import "FSceneManager.h"
 #import "NP.h"
 
 @implementation FApplicationController
@@ -18,7 +17,6 @@
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     [ self createRenderWindow ];
-
     [ self configureResourcePaths ];
 
     attributesWindowController = [[ FWindowController alloc ] init ];
@@ -28,11 +26,11 @@
     glClearDepth(1);
     glLineWidth(2.0f);
 
-    sceneManager = [[ FSceneManager alloc ] init ];
-    FScene * scene = [ sceneManager loadSceneFromPath:@"Test.scene" ];
+    NSString * pathToDictionary = [[[ NP Core ] pathManager ] getAbsoluteFilePath:@"Test.scene" ];
+    scene = [[ FScene alloc ] init ];
+    NSAssert([ scene loadFromPath:pathToDictionary ] == YES, @"Unable to load scene");
     [ scene activate ];
 
-    NSString * pathToDictionary = [[[ NP Core ] pathManager ] getAbsoluteFilePath:@"Test.scene" ];
     NSDictionary * sceneConfig = [ NSDictionary dictionaryWithContentsOfFile:pathToDictionary ];
     [ attributesWindowController initialiseSettingsUsingDictionary:sceneConfig ];
 
@@ -43,11 +41,7 @@
 {
     // Delete resources here....
 
-    FScene * currentScene = [ sceneManager currentScene ];
-    if ( currentScene != nil )
-    {
-        [ currentScene deactivate ];
-    }
+    [ scene deactivate ];
 
     return NSTerminateNow;
 }
@@ -56,7 +50,7 @@
 {
     // .... or here
 
-    TEST_RELEASE(sceneManager);
+    TEST_RELEASE(scene);
 
     [ NSApp setDelegate:nil ];
 }
@@ -72,9 +66,12 @@
 {
     [ attributesWindowController initPopUpButtons ];
 
-    [ sceneManager clear ];
-    FScene * scene = [ sceneManager loadSceneFromPath:@"Test.scene" ];
-    [ scene activate ];
+    DESTROY(scene);
+
+    NSString * pathToDictionary = [[[ NP Core ] pathManager ] getAbsoluteFilePath:@"Test.scene" ];
+    scene = [[ FScene alloc ] init ];
+    [ scene loadFromPath:pathToDictionary ];
+    [ scene activate ];    
 }
 
 - (id) attributesWindowController
@@ -82,9 +79,9 @@
     return attributesWindowController;
 }
 
-- (id) sceneManager
+- (FScene *) scene
 {
-    return sceneManager;
+    return scene;
 }
 
 - (void) update
@@ -94,14 +91,14 @@
 
     Float frameTime = (Float)[[[ NP Core ] timer ] frameTime ];
 
-    [ sceneManager update:frameTime ];
+    [ scene update:frameTime ];
 
     renderWindowActiveLastFrame = renderWindowActive;
 }
 
 - (void) render
 {
-    [ sceneManager render ];
+    [ scene render ];
 
     GLenum error;
     error = glGetError();

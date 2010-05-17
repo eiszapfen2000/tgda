@@ -1,7 +1,6 @@
 #import "NP.h"
 #import "FCore.h"
 #import "FScene.h"
-#import "FSceneManager.h"
 #import "FCamera.h"
 #import "FAttractor.h"
 #import "FTerrain.h"
@@ -32,6 +31,8 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     self = [ super initWithName:newName parent:newParent ];
 
     fbloomsettings_init(&bloomSettings);
+
+    activeScene = NP_NONE;
 
     fullscreenEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Fullscreen.cgfx" ];
     bloomThresholdParameter  = [ fullscreenEffect parameterWithName:@"bloomThreshold"  ];
@@ -110,6 +111,16 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     return terrain;
 }
 
+- (NpState) activeScene
+{
+    return activeScene;
+}
+
+- (void) setActiveScene:(NpState)newActiveScene
+{
+    activeScene = newActiveScene;
+}
+
 - (BOOL) loadFromPath:(NSString *)path
 {
     NSDictionary * sceneConfig = [ NSDictionary dictionaryWithContentsOfFile:path ];
@@ -144,8 +155,6 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
 
 - (void) activate
 {
-    [[[ NP applicationController ] sceneManager ] setCurrentScene:self ];
-
     camera = [[ FCamera alloc ] initWithName:@"Camera" parent:self ];
 
     FVector3 pos = { 0.0f, 0.2f, 0.0f };
@@ -155,8 +164,6 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
 
 - (void) deactivate
 {
-    [[[ NP applicationController ] sceneManager ] setCurrentScene:nil ];
-
     DESTROY(camera);
 }
 
@@ -203,7 +210,11 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
 
     // render scene
     [ camera render ];
-    [ attractor render:YES ];
+
+    if ( activeScene == FSCENE_DRAW_ATTRACTOR )
+    {
+        [ attractor render:YES ];
+    }
 
     // detach targets    
     [ originalScene detach ];

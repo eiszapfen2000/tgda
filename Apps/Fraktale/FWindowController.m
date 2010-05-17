@@ -45,10 +45,26 @@
 - (void) awakeFromNib
 {
     [ self initPopUpButtons ];
+    [ tabView selectFirstTabViewItem:self ];
 }
 
 - (void) initialiseSettingsUsingDictionary:(NSDictionary *)dictionary
 {
+    // Terrain stuff
+    NSDictionary * terrainConfig = [ dictionary objectForKey:@"Terrain" ];
+
+    [[ minimumHeightTextfield cell ] setStringValue:[ terrainConfig objectForKey:@"MinimumHeight" ]];
+    [[ maximumHeightTextfield cell ] setStringValue:[ terrainConfig objectForKey:@"MaximumHeight" ]];
+
+    [[ sigmaTextfield cell ] setStringValue:[ terrainConfig objectForKey:@"Sigma" ]];
+    [[ hTextfield cell ] setStringValue:[ terrainConfig objectForKey:@"H" ]];
+    [[ iterationsTextfield cell ] setStringValue:[ terrainConfig objectForKey:@"Iterations" ]];
+
+    NSArray * terrainSizeStrings = [ terrainConfig objectForKey:@"Size" ];
+    [[ widthTextfield  cell ] setStringValue:[ terrainSizeStrings objectAtIndex:0 ]];
+    [[ lengthTextfield cell ] setStringValue:[ terrainSizeStrings objectAtIndex:1 ]];
+
+    // Attractor stuff
     NSDictionary * attractorConfig = [ dictionary objectForKey:@"Attractor" ];
     NSDictionary * lorentzConfig   = [ attractorConfig objectForKey:@"Lorentz"  ];
     NSDictionary * roesslerConfig  = [ attractorConfig objectForKey:@"Roessler" ];
@@ -100,39 +116,20 @@
     }
 }
 
-- (void) setWidthTextfieldString:(NSString *)newString
+- (void)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem
 {
-    [[ widthTextfield cell ] setStringValue:newString ];
-}
-
-- (void) setLengthTextfieldString:(NSString *)newString
-{
-    [[ lengthTextfield cell ] setStringValue:newString ];
-}
-
-- (void) setMinimumHeightTextfieldString:(NSString *)newString
-{
-    [[ minimumHeightTextfield cell ] setStringValue:newString ];
-}
-
-- (void) setMaximumHeightTextfieldString:(NSString *)newString
-{
-    [[ maximumHeightTextfield cell ] setStringValue:newString ];
-}
-
-- (void) setSigmaTextfieldString:(NSString *)newString
-{
-    [[ sigmaTextfield cell ] setStringValue:newString ];
-}
-
-- (void) setHTextfieldString:(NSString *)newString
-{
-    [[ hTextfield cell ] setStringValue:newString ];
-}
-
-- (void) setIterationsTextfieldString:(NSString *)newString
-{
-    [[ iterationsTextfield cell ] setStringValue:newString ];
+    if ( [[ tabViewItem label ] isEqual:@"Terrain" ] == YES )
+    {
+        [[[ NP applicationController ] scene ] setActiveScene:FSCENE_DRAW_TERRAIN ];
+    }
+    else if ( [[ tabViewItem label ] isEqual:@"Attractor" ] == YES )
+    {
+        [[[ NP applicationController ] scene ] setActiveScene:FSCENE_DRAW_ATTRACTOR ];
+    }
+    else
+    {
+        NSLog(@"KABUMM");
+    }
 }
 
 - (void) addLodPopUpItemWithNumber:(Int32)number
@@ -152,7 +149,7 @@
 
 - (void) selectLod:(id)sender
 {
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setCurrentLod:[ sender indexOfSelectedItem]];
+    [[[[ NP applicationController ] scene ] terrain ] setCurrentLod:[ sender indexOfSelectedItem]];
 }
 
 /*- (void) setWidth:(id)sender
@@ -195,12 +192,12 @@
 
 - (void) selectRngOne:(id)sender
 {
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setRngOneUsingName:[sender titleOfSelectedItem]];
+    [[[[ NP applicationController ] scene ] terrain ] setRngOneUsingName:[sender titleOfSelectedItem]];
 }
 
 - (void) selectRngTwo:(id)sender
 {
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setRngTwoUsingName:[sender titleOfSelectedItem]];
+    [[[[ NP applicationController ] scene ] terrain ] setRngTwoUsingName:[sender titleOfSelectedItem]];
 }
 
 - (void) setRngOneSeed:(id)sender
@@ -214,7 +211,7 @@
     }
 
     [ sender setBackgroundColor:[NSColor whiteColor]];
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setRngOneSeed:(ULong)seed ];
+    [[[[ NP applicationController ] scene ] terrain ] setRngOneSeed:(ULong)seed ];
 }
 
 - (void) setRngTwoSeed:(id)sender
@@ -228,7 +225,7 @@
     }
 
     [ sender setBackgroundColor:[NSColor whiteColor]];
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setRngTwoSeed:(ULong)seed ];
+    [[[[ NP applicationController ] scene ] terrain ] setRngTwoSeed:(ULong)seed ];
 }
 
 /*
@@ -276,7 +273,7 @@
 
 - (void) selectAttractorType:(id)sender
 {
-    FAttractor * attractor = [[[[ NP applicationController ] sceneManager ] currentScene ] attractor ];
+    FAttractor * attractor = [[[ NP applicationController ] scene ] attractor ];
     Int32 index = [ sender indexOfSelectedItem];
 
     if ( index == ATTRACTOR_LORENTZ )
@@ -337,12 +334,26 @@
 
     if ( [ tabViewItemLabel isEqual:@"Terrain" ] )
     {
-        //[[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] updateGeometry ];
+        FTerrain * terrain = [[[ NP applicationController ] scene ] terrain ];
+
+        Int32 width  = [ widthTextfield  intValue ];
+        Int32 length = [ lengthTextfield intValue ];
+        Float sigma = [ sigmaTextfield floatValue];
+        Float H = [ hTextfield floatValue];
+        Float minimumHeight = [ minimumHeightTextfield floatValue ];
+        Float maximumHeight = [ maximumHeightTextfield floatValue ];
+        UInt32 numberOfIterations = [ iterationsTextfield intValue ];
+
+        [ terrain updateGeometryUsingSize:(IVector2){width, length}
+                              heightRange:(FVector2){minimumHeight, maximumHeight}
+                       numberOfIterations:numberOfIterations
+                                    sigma:sigma
+                                        H:H ];
     }
     // Just to be sure
     else if ( [ tabViewItemLabel isEqual:@"Attractor" ] )
     {
-        FAttractor * attractor = [[[[ NP applicationController ] sceneManager ] currentScene ] attractor ];
+        FAttractor * attractor = [[[ NP applicationController ] scene ] attractor ];
 
         Int32 type = [ typePopUp indexOfSelectedItem];
         Float sigma = [attractorSigmaTextfield floatValue];

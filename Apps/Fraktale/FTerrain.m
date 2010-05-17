@@ -90,8 +90,6 @@
     lastResolution = iv2_free(lastResolution);
     lightPosition = fv3_free(lightPosition);
 
-    TEST_RELEASE(image);
-
     [ lods removeAllObjects ];
     [ lods release ];
 
@@ -240,18 +238,10 @@
 			gaussKernel[index] = (Float)exp(-(x * x + y * y)/(2.0 * sigmaSquare))/(2.0 * MATH_PI * sigmaSquare);
 		}
 	}
-
-    /*for ( Int i = 0; i < gaussKernelWidth * gaussKernelWidth; i++ )
-    {
-        gaussKernel[i] = gaussKernel[i] / gaussKernel[width * gaussKernelWidth + width];
-    }*/
 }
 
 - (BOOL) loadFromDictionary:(NSDictionary *)dictionary
 {
-    NSString * sceneName = [ dictionary objectForKey:@"Name" ];
-    [ self setName:sceneName ];
-
     // Base LOD, 2x2 vertices
     baseResolution->x = baseResolution->y = 2;
     baseIterations = 0;
@@ -262,77 +252,15 @@
     currentIteration = baseIterations;
     currentLod = currentIteration - baseIterations;
 
-    // Terrain texture
-    NSString * texturePath = [ dictionary objectForKey:@"Texture" ];
-    texture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:texturePath ];
-    if ( texture == nil )
-    {
-        NPLOG_ERROR(@"Failed to load texture");
-        return NO;
-    }
-
     NSArray * terrainSizeStrings = [ dictionary objectForKey:@"Size" ];
-    if ( terrainSizeStrings == nil )
-    {
-        NPLOG_WARNING(@"%@: Size missing, using default", name);
-        size->x = size->y = 10;
-    }
-
     size->x = [[ terrainSizeStrings objectAtIndex:0 ] intValue ];
     size->y = [[ terrainSizeStrings objectAtIndex:1 ] intValue ];
 
-    NSString * minimumHeightString = [ dictionary objectForKey:@"MinimumHeight" ];
-    if ( minimumHeightString == nil )
-    {
-        NPLOG_WARNING(@"%@: MinimumHeight missing, using default", name);
-        minimumHeightString = [ NSString stringWithFormat:@"%f", minimumHeight ];
-    }
-
-    minimumHeight = [ minimumHeightString floatValue ];
-
-    NSString * maximumHeightString = [ dictionary objectForKey:@"MaximumHeight" ];
-    if ( maximumHeightString == nil )
-    {
-        NPLOG_WARNING(@"%@: MaximumHeight missing, using default", name);
-        maximumHeightString = [ NSString stringWithFormat:@"%f", maximumHeight ];
-    }
-
-    maximumHeight = [ minimumHeightString floatValue ];
-
-    NSString * HString = [ dictionary objectForKey:@"H" ];
-    if ( HString == nil )
-    {
-        NPLOG_WARNING(@"%@: H missing, using default", name);
-        HString = [ NSString stringWithFormat:@"%f", H ];
-    }
-
-    H = [ HString floatValue ];
-
-    NSString * sigmaString = [ dictionary objectForKey:@"Sigma" ];
-    if ( sigmaString == nil )
-    {
-        NPLOG_WARNING(@"%@: Sigma missing, using default", name);
-        sigmaString = [ NSString stringWithFormat:@"%f", sigma ];
-    }
-
-    sigma = [ sigmaString floatValue ];
-
-    NSString * iterationsString = [ dictionary objectForKey:@"Iterations" ];
-    if ( iterationsString == nil )
-    {
-        NPLOG_WARNING(@"%@: Iterations missing, using default", name);
-        iterationsString = [ NSString stringWithFormat:@"%d", iterations ];
-    }
-
-    iterationsToDo = [ iterationsString intValue ];
-
-    [[ NP attributesWindowController ] setWidthTextfieldString :[ terrainSizeStrings objectAtIndex:0 ]];
-    [[ NP attributesWindowController ] setLengthTextfieldString:[ terrainSizeStrings objectAtIndex:1 ]];
-    [[ NP attributesWindowController ] setMinimumHeightTextfieldString:minimumHeightString ];
-    [[ NP attributesWindowController ] setMaximumHeightTextfieldString:maximumHeightString ];
-    [[ NP attributesWindowController ] setHTextfieldString:HString ];
-    [[ NP attributesWindowController ] setSigmaTextfieldString:sigmaString ];
-    [[ NP attributesWindowController ] setIterationsTextfieldString:iterationsString ];
+    minimumHeight = [[ dictionary objectForKey:@"MinimumHeight" ] floatValue ];
+    maximumHeight = [[ dictionary objectForKey:@"MaximumHeight" ] floatValue ];
+    iterationsToDo = [[ dictionary objectForKey:@"Iterations" ] intValue ];
+    sigma = [[ dictionary objectForKey:@"Sigma" ] floatValue ];
+    H = [[ dictionary objectForKey:@"H" ] floatValue ];
 
     [ self updateGeometry ];
 
@@ -348,81 +276,10 @@
     NSDictionary * sceneConfig = [ NSDictionary dictionaryWithContentsOfFile:path ];
 
     return [ self loadFromDictionary:sceneConfig ];
-
-    /*NSString * imagePath = [ sceneConfig objectForKey:@"Image" ];
-    if ( imagePath != nil )
-    {
-        NSString * imageAbsolutePath = [[[ NP Core ] pathManager ] getAbsoluteFilePath:imagePath ];
-        if ( [ imageAbsolutePath isEqual:@"" ] == YES )
-        {
-            NPLOG_ERROR(@"Could not find image file %@", imagePath);
-            return NO;
-        }    
-
-        image = [[ FPGMImage alloc ] init ];
-        if ( [ image loadFromPath:imageAbsolutePath ] == NO )
-        {
-            NPLOG_ERROR(@"%@: failed to load", imageAbsolutePath);
-            return NO;
-        }
-
-        div_t w = div([image width]  - 1, 2);
-        div_t h = div([image height] - 1, 2);
-
-        if ( w.rem != 0 || h.rem != 0 )
-        {
-            NPLOG_ERROR(@"Image needs dimensions in the form of 2^n + 1");
-            return NO;
-        }
-
-        baseResolution->x = [ image width  ];
-        baseResolution->y = [ image height ];
-
-        Int tmp = 1;
-        Int cTmp = 0;
-        while ( tmp + 1 != [ image width ] )
-        {
-            tmp = tmp * 2;
-            cTmp = cTmp + 1;
-        }
-
-        baseIterations = cTmp;
-
-        NSLog(@"levels: %d",cTmp);
-    }*/
 }
 
 - (void) reset
 {
-}
-
-// creates base LOD which uses the heightmap as basis for its geometry
-- (void) initialiseBaseLodPositions
-{
-    Int numberOfVertices = baseResolution->x * baseResolution->y;
-    Float * vertexPositions = ALLOC_ARRAY(Float, numberOfVertices * 3);
-    Byte * heights = [ image imageData ];
-
-    Float deltaX = (Float)size->x / (Float)(baseResolution->x - 1);
-    Float deltaY = (Float)size->y / (Float)(baseResolution->y - 1);
-
-    for ( Int i = 0; i < baseResolution->y; i++ )
-    {
-        for ( Int j = 0; j < baseResolution->x; j++ )
-        {
-            Int index = (i * baseResolution->x + j) * 3;
-            vertexPositions[index]   = (Float)(-size->x)/2.0f + (Float)j * deltaX;            
-            vertexPositions[index+2] = (Float)(-size->y)/2.0f + (Float)i * deltaY;
-            vertexPositions[index+1] = (Float)heights[i * baseResolution->x + j]/255.0f;
-        }
-    }
-
-    NPVertexBuffer * base = [ lods objectAtIndex:0 ];
-
-    [ base setPositions:vertexPositions 
-        elementsForPosition:3 
-                 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT
-                vertexCount:numberOfVertices ];
 }
 
 // initialise base lod without heightmap
@@ -486,11 +343,6 @@
 
     FNormal cornerNormal = {0.0f, 1.0f, 0.0f};
 
-    //normals[0] = cornerNormal;
-    //normals[currentResolution->x - 1] = cornerNormal;
-    //normals[currentResolution->x * (currentResolution->y - 1)] = cornerNormal;
-    //normals[numberOfVertices - 1] = cornerNormal;
-
     for ( Int i = 0; i < numberOfVertices; i++ )
     {
         normals[i] = cornerNormal;
@@ -529,201 +381,10 @@
             normals[index] = sum;
         }
     }
-    
 
-    /*Float * normals = ALLOC_ARRAY(Float, numberOfVertices * 3);
-    Float * vertexPositions = [[ lods objectAtIndex:currentLod ] positions ];
-
-    //Corners
-    normals[0] = normals[2] = 0.0f;
-    normals[1] = 1.0f;
-
-    normals[(currentResolution->x-1)*3] = normals[(currentResolution->x-1)*3+2] = 0.0f;
-    normals[(currentResolution->x-1)*3+1] = 1.0f;
-
-    normals[currentResolution->x*(currentResolution->y-1)*3] = 
-    normals[currentResolution->x*(currentResolution->y-1)*3+2] = 0.0f;
-    normals[currentResolution->x*(currentResolution->y-1)*3+1] = 1.0f;
-
-    normals[(currentResolution->x*(currentResolution->y-1)+currentResolution->x-1)*3] = 
-    normals[(currentResolution->x*(currentResolution->y-1)+currentResolution->x-1)*3+2] = 0.0f;
-    normals[(currentResolution->x*(currentResolution->y-1)+currentResolution->x-1)*3+1] = 1.0f;
-
-    // Upper Border
-    for ( Int j = 1; j < currentResolution->x - 1; j++ )
-    {
-        FVector3 south, west, east;
-        Int index = j * 3;
-        Int indexSouth = (currentResolution->x + j) * 3;
-        Int indexWest  = (j - 1) * 3;
-        Int indexEast  = (j + 1) * 3;
-
-        south.x = vertexPositions[indexSouth]   - vertexPositions[index];
-        south.y = vertexPositions[indexSouth+1] - vertexPositions[index+1];
-        south.z = vertexPositions[indexSouth+2] - vertexPositions[index+2];
-
-        west.x = vertexPositions[indexWest]   - vertexPositions[index];
-        west.y = vertexPositions[indexWest+1] - vertexPositions[index+1];
-        west.z = vertexPositions[indexWest+2] - vertexPositions[index+2];
-
-        east.x = vertexPositions[indexEast]   - vertexPositions[index];
-        east.y = vertexPositions[indexEast+1] - vertexPositions[index+1];
-        east.z = vertexPositions[indexEast+2] - vertexPositions[index+2];
-
-        //NSLog(@"%s %s %s", fv3_v_to_string(&south), fv3_v_to_string(&west), fv3_v_to_string(&east));
-
-        FVector3 southWestNormal, southEastNormal;
-        fv3_vv_cross_product_v(&west, &south, &southWestNormal);
-        fv3_vv_cross_product_v(&south, &east, &southEastNormal);
-
-        //NSLog(@"%s %s", fv3_v_to_string(&southWestNormal), fv3_v_to_string(&southEastNormal));
-
-        FVector3 sum;
-        fv3_vv_add_v(&southWestNormal, &southEastNormal, &sum);
-        fv3_v_normalise(&sum);
-
-        if ( sum.y <= 0.0f )
-        {
-            NSLog(@"Upper");
-        }
-
-        normals[index] = sum.x;
-        normals[index+1] = sum.y;
-        normals[index+2] = sum.z;
-    }
-
-    // Lower Border
-    for ( Int j = 1; j < currentResolution->x - 1; j++ )
-    {
-        FVector3 north, west, east;
-        Int index = ((currentResolution->y - 1) * currentResolution->x + j) * 3;
-        Int indexNorth = ((currentResolution->y - 2) * currentResolution->x + j) * 3;
-        Int indexWest  = ((currentResolution->y - 1) * currentResolution->x + j - 1) * 3;
-        Int indexEast  = ((currentResolution->y - 1) * currentResolution->x + j + 1) * 3;
-
-        north.x = vertexPositions[indexNorth]   - vertexPositions[index];
-        north.y = vertexPositions[indexNorth+1] - vertexPositions[index+1];
-        north.z = vertexPositions[indexNorth+2] - vertexPositions[index+2];
-
-        west.x = vertexPositions[indexWest]   - vertexPositions[index];
-        west.y = vertexPositions[indexWest+1] - vertexPositions[index+1];
-        west.z = vertexPositions[indexWest+2] - vertexPositions[index+2];
-
-        east.x = vertexPositions[indexEast]   - vertexPositions[index];
-        east.y = vertexPositions[indexEast+1] - vertexPositions[index+1];
-        east.z = vertexPositions[indexEast+2] - vertexPositions[index+2];
-
-        //NSLog(@"%s %s %s", fv3_v_to_string(&north), fv3_v_to_string(&west), fv3_v_to_string(&east));
-
-        FVector3 northWestNormal, northEastNormal;
-        fv3_vv_cross_product_v(&north, &west, &northWestNormal);
-        fv3_vv_cross_product_v(&east, &north, &northEastNormal);
-
-        //NSLog(@"%s %s", fv3_v_to_string(&northWestNormal), fv3_v_to_string(&northEastNormal));
-
-        FVector3 sum;
-        fv3_vv_add_v(&northWestNormal, &northEastNormal, &sum);
-        fv3_v_normalise(&sum);
-
-        if ( sum.y <= 0.0f )
-        {
-            NSLog(@"Lower");
-        }
-
-
-        normals[index]   = sum.x;
-        normals[index+1] = sum.y;
-        normals[index+2] = sum.z;
-    }
-
-    // Left Border
-    for ( Int i = 1; i < currentResolution->y -1; i++ )
-    {
-        FVector3 north, south, east;
-        Int index = (i * currentResolution->x) * 3;
-        Int indexNorth = ((i - 1) * currentResolution->x) * 3;
-        Int indexSouth = ((i + 1) * currentResolution->x) * 3;
-        Int indexEast  = (i * currentResolution->x + 1) * 3;
-
-        north.x = vertexPositions[indexNorth]   - vertexPositions[index];
-        north.y = vertexPositions[indexNorth+1] - vertexPositions[index+1];
-        north.z = vertexPositions[indexNorth+2] - vertexPositions[index+2];
-
-        south.x = vertexPositions[indexSouth]   - vertexPositions[index];
-        south.y = vertexPositions[indexSouth+1] - vertexPositions[index+1];
-        south.z = vertexPositions[indexSouth+2] - vertexPositions[index+2];
-
-        east.x = vertexPositions[indexEast]   - vertexPositions[index];
-        east.y = vertexPositions[indexEast+1] - vertexPositions[index+1];
-        east.z = vertexPositions[indexEast+2] - vertexPositions[index+2];
-
-        //NSLog(@"%s %s %s", fv3_v_to_string(&north), fv3_v_to_string(&south), fv3_v_to_string(&east));
-
-        FVector3 northEastNormal, southEastNormal;
-        fv3_vv_cross_product_v(&east, &north, &northEastNormal);
-        fv3_vv_cross_product_v(&south, &east, &southEastNormal);
-
-        //NSLog(@"%s %s", fv3_v_to_string(&northEastNormal), fv3_v_to_string(&southEastNormal));
-
-        FVector3 sum;
-        fv3_vv_add_v(&northEastNormal, &southEastNormal, &sum);
-        fv3_v_normalise(&sum);
-
-        if ( sum.y <= 0.0f )
-        {
-            NSLog(@"Left");
-        }
-
-
-        normals[index]   = sum.x;
-        normals[index+1] = sum.y;
-        normals[index+2] = sum.z;
-    }
-
-    // Right border
-    for ( Int i = 1; i < currentResolution->y -1; i++ )
-    {
-        FVector3 north, south, west;
-        Int index = (i * currentResolution->x + currentResolution->x - 1) * 3;
-        Int indexNorth = ((i - 1) * currentResolution->x + currentResolution->x - 1) * 3;
-        Int indexSouth = ((i + 1) * currentResolution->x + currentResolution->x - 1) * 3;
-        Int indexWest  = (i * currentResolution->x + currentResolution->x - 2) * 3;
-
-        north.x = vertexPositions[indexNorth]   - vertexPositions[index];
-        north.y = vertexPositions[indexNorth+1] - vertexPositions[index+1];
-        north.z = vertexPositions[indexNorth+2] - vertexPositions[index+2];
-
-        south.x = vertexPositions[indexSouth]   - vertexPositions[index];
-        south.y = vertexPositions[indexSouth+1] - vertexPositions[index+1];
-        south.z = vertexPositions[indexSouth+2] - vertexPositions[index+2];
-
-        west.x = vertexPositions[indexWest]   - vertexPositions[index];
-        west.y = vertexPositions[indexWest+1] - vertexPositions[index+1];
-        west.z = vertexPositions[indexWest+2] - vertexPositions[index+2];
-
-        //NSLog(@"%s %s %s", fv3_v_to_string(&north), fv3_v_to_string(&south), fv3_v_to_string(&west));
-
-        FVector3 northWestNormal, southWestNormal;
-        fv3_vv_cross_product_v(&north, &west, &northWestNormal);
-        fv3_vv_cross_product_v(&west, &south, &southWestNormal);
-
-        //NSLog(@"%s %s", fv3_v_to_string(&northWestNormal), fv3_v_to_string(&southWestNormal));
-
-        FVector3 sum;
-        fv3_vv_add_v(&northWestNormal, &southWestNormal, &sum);
-        fv3_v_normalise(&sum);
-
-        if ( sum.y <= 0.0f )
-        {
-            NSLog(@"Right");
-        }
-
-        normals[index]   = sum.x;
-        normals[index+1] = sum.y;
-        normals[index+2] = sum.z;
-    }*/
-
-    [[ lods objectAtIndex:currentLod ] setNormals:(Float *)normals elementsForNormal:3 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT ];
+    [[ lods objectAtIndex:currentLod ] setNormals:(Float *)normals 
+                                elementsForNormal:3
+                                       dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT ];
 }
 
 - (void) updateAO
@@ -951,6 +612,14 @@
     //iterationsDone = iterationsDone + 1;
 }
 
+- (void) updateGeometryUsingSize:(IVector2)size
+                     heightRange:(FVector2)heightRange
+              numberOfIterations:(UInt32)numberOfIterations
+                           sigma:(Float)sigma
+                               H:(Float)H
+{
+}
+
 - (void) updateGeometry
 {
     if ( [ lods count ] == 0 )
@@ -959,15 +628,7 @@
         [ lods addObject:base ];
         [ base release ];
 
-        if ( image != nil )
-        {
-            [ self initialiseBaseLodPositions ];
-        }
-        else
-        {
-            [ self initialiseEmptyBaseLodPositions ];
-        }
-
+        [ self initialiseEmptyBaseLodPositions ];
         [ self updateTextureCoordinates ];
         [ self updateNormals ];
         [ self updateAO ];
@@ -1000,28 +661,15 @@
 
 - (void) update:(Float)frameTime
 {
-    /*if ( [ subdivideAction activated ] == YES )
-    {
-        [ self subdivide ];
-        [ self updateTextureCoordinates ];
-        [ self updateNormals ];
-        [ self updateIndices ];
 
-        [[ NP attributesWindowController ] addLodPopUpItemWithNumber  :currentLod ];
-        [[ NP attributesWindowController ] selectLodPopUpItemWithIndex:currentLod ];
-    }*/
 }
 
 - (void) render
 {
-    NPTextureBindingState * t = [[ NP Graphics ] textureBindingState ];
-    [ t setTexture:texture forKey:@"NPCOLORMAP0" ];
-
-    [ effect activate ];
+    [ texture activateAtColorMapIndex:0 ];
     [ effect uploadFVector3Parameter:lightPositionParameter andValue:lightPosition ];
-
+    [ effect activate ];
     [[ lods objectAtIndex:currentLod ] renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
-
     [ effect deactivate ];
 }
 

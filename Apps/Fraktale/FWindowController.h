@@ -53,14 +53,6 @@
 - (void) initialiseSettingsUsingDictionary:(NSDictionary *)dictionary;
 
 // Terrain
-- (void) setWidthTextfieldString:(NSString *)newString;
-- (void) setLengthTextfieldString:(NSString *)newString;
-- (void) setMinimumHeightTextfieldString:(NSString *)newString;
-- (void) setMaximumHeightTextfieldString:(NSString *)newString;
-- (void) setSigmaTextfieldString:(NSString *)newString;
-- (void) setHTextfieldString:(NSString *)newString;
-- (void) setIterationsTextfieldString:(NSString *)newString;
-
 - (void) addLodPopUpItemWithNumber:(Int32)number;
 - (void) removeLodPopUpItemWithNumber:(Int32)number;
 - (void) selectLodPopUpItemWithIndex:(Int32)index;
