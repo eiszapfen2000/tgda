@@ -1,9 +1,11 @@
 #import "Application/NPApplicationController.h"
 
+@class FScene;
+
 @interface FApplicationController : NPApplicationController
 {
     id attributesWindowController;
-    id sceneManager;
+    FScene * scene;
 }
 
 - (void) configureResourcePaths;
@@ -17,7 +19,7 @@
 - (void) reloadScene;
 
 - (id) attributesWindowController;
-- (id) sceneManager;
+- (FScene *) scene;
 
 - (void) update;
 - (void) render;

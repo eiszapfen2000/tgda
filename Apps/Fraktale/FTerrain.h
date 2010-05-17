@@ -19,8 +19,6 @@
     IVector2 * currentResolution;
     IVector2 * lastResolution;
 
-    FPGMImage * image;
-
     Float H;
     Float sigma;
     Float variance;
@@ -81,6 +79,13 @@
 - (BOOL) loadFromPath:(NSString *)path;
 
 - (void) reset;
+
+- (void) updateGeometryUsingSize:(IVector2)size
+                     heightRange:(FVector2)heightRange
+              numberOfIterations:(UInt32)numberOfIterations
+                           sigma:(Float)sigma
+                               H:(Float)H
+                                ;
 
 - (void) updateGeometry;
 - (void) update:(Float)frameTime;

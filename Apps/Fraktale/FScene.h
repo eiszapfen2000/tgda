@@ -23,6 +23,9 @@ FBloomSettings;
 
 void fbloomsettings_init(FBloomSettings * bloomSettings);
 
+#define FSCENE_DRAW_TERRAIN     0
+#define FSCENE_DRAW_ATTRACTOR   1
+
 @interface FScene : NPObject
 {
     FAttractor * attractor;
@@ -30,6 +33,8 @@ void fbloomsettings_init(FBloomSettings * bloomSettings);
     FCamera * camera;
 
     FBloomSettings bloomSettings;
+
+    NpState activeScene;
 
     NPEffect * fullscreenEffect;
     CGparameter bloomThresholdParameter;
@@ -54,6 +59,9 @@ void fbloomsettings_init(FBloomSettings * bloomSettings);
 
 - (FAttractor *) attractor;
 - (FTerrain *) terrain;
+
+- (NpState) activeScene;
+- (void) setActiveScene:(NpState)neewActiveScene;
 
 - (BOOL) loadFromPath:(NSString *)path;
 
