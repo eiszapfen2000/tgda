@@ -37,25 +37,27 @@
 
 - (void) setup
 {
-    if ( [[[[ NP Graphics ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_EXT_texture_filter_anisotropic" ] == YES )
+    NPOpenGLRenderContext * context = [[[ NP Graphics ] renderContextManager ] currentRenderContext ];
+
+    if ( [ context isExtensionSupported:@"GL_EXT_texture_filter_anisotropic" ] == YES )
     {
         glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&maxAnisotropy);
         NPLOG(@"%@: maximum anisotropy %d", name, maxAnisotropy);
     }
 
-    if ( [[[[ NP Graphics ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_ARB_texture_non_power_of_two" ] == YES )
+    if ( [ context isExtensionSupported:@"GL_ARB_texture_non_power_of_two" ] == YES )
     {
         nonPOTSupport = YES;
         NPLOG(@"%@: Non power of two textures supported", name);
     }
 
-    if ( [[[[ NP Graphics ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_SGIS_generate_mipmap" ] == YES )
+    if ( [ context isExtensionSupported:@"GL_SGIS_generate_mipmap" ] == YES )
     {
         hardwareMipMapGenerationSupport = YES;
         NPLOG(@"%@: Hardware mipmap generation supported", name);
     }
 
-    if ( [[[[ NP Graphics ] renderContextManager ] currentRenderContext ] isExtensionSupported:@"GL_EXT_texture_sRGB" ] == YES )
+    if ( [ context isExtensionSupported:@"GL_EXT_texture_sRGB" ] == YES )
     {
         srgbTextureSupport = YES;
         NPLOG(@"%@: sRGB sampler supported", name);
