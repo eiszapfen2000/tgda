@@ -1,4 +1,3 @@
-#import <Foundation/NSArray.h>
 #import "Core/NPObject/NPObject.h"
 
 @interface NPStringList : NPObject
@@ -20,8 +19,12 @@
 - (void) dealloc;
 
 - (void) clear;
-- (void) addString:(NSString *)string;
-
 - (BOOL) loadFromPath:(NSString *)path;
+
+- (NSUInteger) count;
+- (void) addString:(NSString *)string;
+- (void) addStringsFromArray:(NSArray *)array;
+- (NSString *) stringAtIndex:(NSUInteger)index;
+
 
 @end
