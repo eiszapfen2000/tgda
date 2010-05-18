@@ -1,5 +1,4 @@
 #import <Foundation/NSScanner.h>
-#import "Core/File/NPPathUtilities.h"
 #import "NPStringList.h"
 
 @implementation NPStringList
@@ -50,6 +49,36 @@
     [ lines removeAllObjects ];
 }
 
+- (BOOL) loadFromPath:(NSString *)path
+{
+    NSString * fileContents = [ NSString stringWithContentsOfFile:path ];
+    if ( fileContents == nil )
+    {
+        return NO;
+    }
+
+    [ self clear ];
+
+    NSCharacterSet * newlineSet = [ NSCharacterSet newlineCharacterSet ];
+    NSScanner * scanner = [ NSScanner scannerWithString:fileContents ];
+
+    while ( [ scanner isAtEnd ] == NO )
+    {
+        NSString * string;
+        if ( [ scanner scanUpToCharactersFromSet:newlineSet  intoString:&string ] == YES )
+        {
+            [ self addString:string ];
+        }
+    }
+
+    return YES;
+}
+
+- (NSUInteger) count
+{
+    return [ lines count ];
+}
+
 - (void) addString:(NSString *)string
 {
     if ( allowDuplicates == NO &&
@@ -67,30 +96,21 @@
     [ lines addObject:string ];
 }
 
-- (BOOL) loadFromPath:(NSString *)path
+- (void) addStringsFromArray:(NSArray *)array
 {
-    NSString * fileContents = [ NSString stringWithContentsOfFile:path ];
+    [ lines addObjectsFromArray:array ];
+}
 
-    if ( fileContents == nil )
-    {
-        return NO;
-    }
+- (NSString *) stringAtIndex:(NSUInteger)index
+{
+    NSAssert(index < [ lines count ], @"Index out of bounds");
 
-    NSCharacterSet * newlineSet = [ NSCharacterSet newlineCharacterSet ];
-    NSScanner * scanner = [ NSScanner scannerWithString:fileContents ];
+    return [ lines objectAtIndex:index ];
+}
 
-    while ( [ scanner isAtEnd ] == NO )
-    {
-        NSString * string;
-        if ( [ scanner scanUpToCharactersFromSet:newlineSet  intoString:&string ] == YES )
-        {
-            [ self addString:string ];
-        }
-    }
-
-    NSLog([lines description]);
-
-    return YES;
+- (NSString *) description
+{
+    return [ lines description ];
 }
 
 @end
