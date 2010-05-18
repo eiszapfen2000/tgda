@@ -208,9 +208,9 @@
             dataFormat = NP_GRAPHICS_IMAGE_DATAFORMAT_BYTE;
 			switch ( bytesperpixel )
 			{
-			    case 1: { pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_sR;    break; }
-			    case 2: { pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_sRG;   break; }
-			    case 4: { pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_sRGBA; break; }
+			    case 1: { pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_R;    break; }
+			    case 2: { pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_RG;   break; }
+			    case 4: { pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_RGBA; break; }
 			    default: { NPLOG_ERROR(@"Unknown number of bytes per pixel"); return NO; }
 			}
 
