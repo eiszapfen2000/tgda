@@ -7,6 +7,7 @@ NPEffect.m \
 NPEffectTechnique.m \
 NPEffectManager.m \
 NPSUXMaterialInstance.m \
+NPSUXMaterialInstanceCompiler.m \
 NPTexture.m \
 NPTexture3D.m \
 NPTextureManager.m \
@@ -20,6 +21,7 @@ NPEffect.h \
 NPEffectTechnique.h \
 NPEffectManager.h \
 NPSUXMaterialInstance.h \
+NPSUXMaterialInstanceCompiler.h \
 NPTexture.h \
 NPTexture3D.h \
 NPTextureManager.h \
