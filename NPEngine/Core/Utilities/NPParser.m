@@ -242,8 +242,6 @@
             [ literals release ];
         }
     }
-
-    NSLog([lines description]);
 }
 
 - (BOOL) loadFromPath:(NSString *)path
