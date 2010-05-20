@@ -6,7 +6,7 @@
 
 - (void) run
 {
-    NSEvent * e;
+    NSEvent * e = nil;
 
     if (_runLoopPool != nil)
     {
@@ -70,6 +70,7 @@
             // update (en/disable) the services menu's items
             if (type != NSPeriodic && type != NSMouseMoved)
             {
+                NSDebugLLog(@"run", @"menu");
                 [ _listener updateServicesMenu ];
                 [ _main_menu update ];
             }
@@ -81,6 +82,7 @@
         }
 
         // send an update message to all visible windows
+
         if ( _windows_need_update )
         {
             [ super updateWindows ];
@@ -132,7 +134,7 @@
         case NSKeyUp:
         {
             NSDebugLLog(@"NSEvent", @"send key up event\n");
-            //[[ theEvent window ] sendEvent:theEvent ];
+            [[ theEvent window ] sendEvent:theEvent ];
 
             break;
         }
@@ -161,6 +163,10 @@
             {
                 [ window sendEvent:theEvent];
             }
+	        else if ( type == NSRightMouseDown )
+            {
+    	        [self rightMouseDown: theEvent];
+            }
         }
     }
 
@@ -174,33 +180,6 @@
 
 int NPApplicationMain(int argc, const char **argv)
 {
-    /*
-    NSDictionary * infoDictionary;
-    NSString * className;
-    Class appClass;
-    CREATE_AUTORELEASE_POOL(pool);
-
-    infoDictionary = [[ NSBundle mainBundle ] infoDictionary ];
-    className = [ infoDictionary objectForKey:@"NSPrincipalClass" ];
-    appClass = NSClassFromString(className);
-
-    if (appClass == 0)
-    {
-        NSLog(@"Bad application class '%@' specified", className);
-        appClass = [ NPApplication class ];
-    }
-
-    [ appClass sharedApplication ];
-    [ (NPApplication *)NSApp launch ];
-
-    [ NSApp run ];
-
-    DESTROY(NSApp);
-    RELEASE(pool);
-
-    return 0;
-    */
-
     NSDictionary * infoDictionary;
     NSString * mainModelFile;
     NSString * className;
