@@ -32,6 +32,14 @@
 - (NSArray *) textures;
 - (NPEffect *) effect;
 
+- (void) addEffectFromPath:(NSString *)path;
+- (void) setEffectTechniqueByName:(NSString *)techniqueName;
+
+- (void) addTexture2DWithName:(NSString *)samplerName
+                     fromPath:(NSString *)path
+                         sRGB:(BOOL)sRGB
+                             ;
+
 - (void) activate;
 
 @end

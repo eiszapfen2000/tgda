@@ -49,8 +49,10 @@ NpDefaultSemantics;
 - (NPEffectTechnique *) defaultTechnique;
 - (NPEffectTechnique *) techniqueWithName:(NSString *)techniqueName;
 - (CGparameter) parameterWithName:(NSString *)parameterName;
+- (Int) colormapIndexForSamplerWithName:(NSString *)samplerName;
 
 - (void) setDefaultTechnique:(NPEffectTechnique *)newDefaultTechnique;
+- (void) setDefaultTechniqueByName:(NSString *)techniqueName;
 
 - (void) clearDefaultSemantics;
 - (CGparameter) bindDefaultSemantic:(NSString *)semanticName;

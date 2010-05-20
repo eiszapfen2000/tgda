@@ -34,6 +34,7 @@
                         fromLine:lineIndex
                       atPosition:1 ] == YES )
     {
+        [ materialInstanceToCompile addEffectFromPath:effectFileName ];
     }
 }
 
@@ -53,34 +54,57 @@
                                  fromLine:lineIndex
                                atPosition:2 ] == YES )
             {
-                // set technique
+                [ materialInstanceToCompile setEffectTechniqueByName:techniqueName ];
             }
         }
         else
         {
-            if ( [ token isEqual:@"texture1D" ] == YES )
+            BOOL sRGB = NO;
+            NSRange range = [ token rangeOfString:@"sRGB" ];
+            if ( range.location != NSNotFound )
             {
+                sRGB = YES;
             }
-            if ( [ token isEqual:@"texture1DsRGB" ] == YES )
+
+            NSString * textureVariableName = nil;
+            NSString * textureFileName = nil;
+
+            BOOL foundTextureVariableName = 
+                    [ self getTokenAsString:&textureVariableName
+                                   fromLine:lineIndex
+                                 atPosition:2 ];
+
+            BOOL foundTextureFileName = 
+                     [ self getTokenAsString:&textureFileName
+                                    fromLine:lineIndex
+                                  atPosition:3 ];
+            
+            if ( foundTextureVariableName == YES && foundTextureFileName == YES )
             {
-            }
-            else if ( [ token isEqual:@"texture2D" ] == YES )
-            {
-            }
-            else if ( [ token isEqual:@"texture2DsRGB" ] == YES )
-            {
-            }
-            else if ( [ token isEqual:@"texture3D" ] == YES )
-            {
-            }
-            else if ( [ token isEqual:@"textureCUBE" ] == YES )
-            {
-            }
-            else if ( [ token isEqual:@"textureCUBEsRGB" ] == YES )
-            {
+                if ( [ token isEqual:@"texture1D" ] == YES ||
+                     [ token isEqual:@"texture1DsRGB" ] == YES )
+                {
+
+                }
+                else if ( [ token isEqual:@"texture2D" ] == YES ||
+                          [ token isEqual:@"texture2DsRGB" ] == YES  )
+                {
+                    [ materialInstanceToCompile addTexture2DWithName:textureVariableName
+                                                            fromPath:textureFileName
+                                                                sRGB:sRGB ];
+                }
+                /*
+                else if ( [ token isEqual:@"texture3D" ] == YES )
+                {
+                }
+                else if ( [ token isEqual:@"textureCUBE" ] == YES ||
+                          [ token isEqual:@"textureCUBEsRGB" ] == YES )
+                {
+                }
+                */
             }
         }
-    }
+    }   
 }
 
 - (void) parseStatements
@@ -120,7 +144,11 @@
         return;
     }
 
+    materialInstanceToCompile = [ materialInstance retain ];
+
     [ self parse:inputScript ];
+
+    DESTROY(materialInstanceToCompile);
 
 }
 

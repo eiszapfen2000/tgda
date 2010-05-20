@@ -53,14 +53,14 @@
     [ mData appendBytes:&c length:1 ];
     NSString * tmp = [ NSString stringWithUTF8String:[ mData bytes ]];
 
-    //NSLog(tmp);
-
     // cg compiler flags, so that the damn thing actually warns at least about something
     char ** args = ALLOC_ARRAY(char *, 2);
     args[0] = "-strict";
     args[1] = NULL;
 
-    effect = cgCreateEffect( [[[ NP Graphics ] effectManager ] cgContext ], [ tmp cStringUsingEncoding:NSASCIIStringEncoding ], (const char**)args );
+    effect = cgCreateEffect([[[ NP Graphics ] effectManager ] cgContext ], 
+                            [ tmp cStringUsingEncoding:NSASCIIStringEncoding ],
+                            (const char**)args );
 
     SAFE_FREE(args);
 
@@ -78,7 +78,7 @@
     // Just to be sure
     if ( cgIsEffect(effect) == CG_FALSE )
     {
-        NPLOG(@"%@: error while creating effect", fileName);
+        NPLOG_ERROR(@"%@: error while creating effect", fileName);
         return NO;
     }
 
@@ -93,9 +93,11 @@
         }
         else
         {
-            NPEffectTechnique * effectTechnique = [[ NPEffectTechnique alloc ] initWithName:techniqueName
-                                                                                     parent:self
-                                                                                  technique:technique ];
+            NPEffectTechnique * effectTechnique =
+                    [[ NPEffectTechnique alloc ] initWithName:techniqueName
+                                                       parent:self
+                                                    technique:technique ];
+
             [ techniques setObject:effectTechnique forKey:techniqueName ];
             [ effectTechnique release ];
 
@@ -147,12 +149,41 @@
 
 - (CGparameter) parameterWithName:(NSString *)parameterName
 {
-    return cgGetNamedEffectParameter(effect,[parameterName cString]);
+    return cgGetNamedEffectParameter(effect, [parameterName cStringUsingEncoding:NSASCIIStringEncoding]);
+}
+
+- (Int) colormapIndexForSamplerWithName:(NSString *)samplerName
+{
+    for ( Int i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
+    {
+        if ( defaultSemantics.sampler2D[i] != NULL )
+        {
+            const char * cParameterName = cgGetParameterName(defaultSemantics.sampler2D[i]);
+            NSString * parameterName = [ NSString stringWithFormat:@"%s", cParameterName ];
+
+            if ( [ samplerName isEqual:parameterName ] == YES )
+            {
+                return i;
+            }
+        }
+    }
+
+    return -1;
 }
 
 - (void) setDefaultTechnique:(NPEffectTechnique *)newDefaultTechnique
 {
     ASSIGN(defaultTechnique, newDefaultTechnique);
+}
+
+- (void) setDefaultTechniqueByName:(NSString *)techniqueName
+{
+    NPEffectTechnique * technique = [ self techniqueWithName:techniqueName ];
+
+    if ( technique != nil )
+    {
+        ASSIGN(defaultTechnique, technique);
+    }
 }
 
 - (void) clearDefaultSemantics
@@ -235,7 +266,6 @@
     }
 
     [[[ NP Graphics ] effectManager ] setCurrentEffect:self ];
-
 
     [ self uploadDefaultSemantics ];
 
