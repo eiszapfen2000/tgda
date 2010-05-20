@@ -147,10 +147,10 @@
 
 - (BOOL) loadFromPath:(NSString *)path
 {
-    return [ self loadFromPath:path withMipMaps:NO ];
+    return [ self loadFromPath:path sRGB:NO ];
 }
 
-- (BOOL) loadFromPath:(NSString *)path withMipMaps:(BOOL)generateMipMaps
+- (BOOL) loadFromPath:(NSString *)path sRGB:(BOOL)sRGB;
 {
     [ self reset ];
 
@@ -165,7 +165,7 @@
 
     UInt image = [ self prepareForProcessingWithDevil ];
 
-	ILboolean success = ilLoadImage( [ path cString ] );
+	ILboolean success = ilLoadImage( [ path cStringUsingEncoding:NSUTF8StringEncoding ] );
     if ( !success )
     {
         ILenum error = ilGetError();
@@ -208,14 +208,54 @@
             dataFormat = NP_GRAPHICS_IMAGE_DATAFORMAT_BYTE;
 			switch ( bytesperpixel )
 			{
-			    case 1: { pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_R;    break; }
-			    case 2: { pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_RG;   break; }
-			    case 4: { pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_RGBA; break; }
+			    case 1:
+                {
+                    if ( sRGB == YES )
+                    {
+                        pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_sR;
+                    }
+                    else
+                    {
+                        pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_R;
+                    }
+
+                    break;
+                }
+
+			    case 2:
+                {
+                    if ( sRGB == YES )
+                    {
+                        pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_sRG;
+                    }
+                    else
+                    {
+                        pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_RG;
+                    }
+
+                    break;
+                }
+
+			    case 4:
+                {
+                    if ( sRGB == YES )
+                    {
+                        pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_sRGB_LINEAR_ALPHA;
+                    }
+                    else
+                    {
+                        pixelFormat = NP_GRAPHICS_IMAGE_PIXELFORMAT_RGBA;
+                    }
+
+                    break;
+                }
+
 			    default: { NPLOG_ERROR(@"Unknown number of bytes per pixel"); return NO; }
 			}
 
 			break;
 		}
+
 	    case IL_FLOAT:
 		{
             dataFormat = NP_GRAPHICS_IMAGE_DATAFORMAT_FLOAT;

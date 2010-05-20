@@ -46,8 +46,7 @@
 - (BOOL) setupDevilImageData;
 
 - (BOOL) loadFromPath:(NSString *)path;
-- (BOOL) loadFromPath:(NSString *)path withMipMaps:(BOOL)generateMipMaps;
-
+- (BOOL) loadFromPath:(NSString *)path sRGB:(BOOL)sRGB;
 - (BOOL) saveToFile:(NPFile *)file;
 
 - (void) fillWithFloatValue:(Float)value;

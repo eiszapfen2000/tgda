@@ -55,12 +55,22 @@
 
 - (id) loadImageFromPath:(NSString *)path
 {
-    NSString * absolutePath = [[[ NP Core ] pathManager ] getAbsoluteFilePath:path ];
-
-    return [ self loadImageFromAbsolutePath:absolutePath ];
+    return [ self loadImageFromPath:path sRGB:NO ];
 }
 
-- (id) loadImageFromAbsolutePath:(NSString *)path;
+- (id) loadImageFromPath:(NSString *)path sRGB:(BOOL)sRGB
+{
+    NSString * absolutePath = [[[ NP Core ] pathManager ] getAbsoluteFilePath:path ];
+
+    return [ self loadImageFromAbsolutePath:absolutePath sRGB:sRGB];
+}
+
+- (id) loadImageFromAbsolutePath:(NSString *)path
+{
+    return [ self loadImageFromAbsolutePath:path sRGB:NO ];
+}
+
+- (id) loadImageFromAbsolutePath:(NSString *)path sRGB:(BOOL)sRGB
 {
     if ( [ path isEqual:@"" ] == NO )
     {
@@ -72,7 +82,7 @@
 
             NPImage * image = [[ NPImage alloc ] initWithName:@"" parent:self ];
 
-            if ( [ image loadFromPath:path ] == YES )
+            if ( [ image loadFromPath:path sRGB:sRGB ] == YES )
             {
                 [ images setObject:image forKey:path ];
                 [ image release ];
@@ -112,35 +122,66 @@
     Int pixelFormatChannelCount = 0;
     switch ( pixelFormat )
     {
-        case NP_GRAPHICS_IMAGE_PIXELFORMAT_R   :{ pixelFormatChannelCount = 1; break; }
-        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RG  :{ pixelFormatChannelCount = 2; break; }
-        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RGB :{ pixelFormatChannelCount = 3; break; }
-        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RGBA:{ pixelFormatChannelCount = 4; break; }
-        default:{ NPLOG_ERROR(@"Unknown image pixel format %d",pixelFormat); break; }
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_R  :
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_sR :
+        {
+            pixelFormatChannelCount = 1;
+            break;
+        }
+
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RG  :
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_sRG :
+        {
+            pixelFormatChannelCount = 2;
+            break;
+        }
+
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RGB  :
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_sRGB :
+        {
+            pixelFormatChannelCount = 3;
+            break;
+        }
+
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RGBA:
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_sRGB_LINEAR_ALPHA:
+        {
+            pixelFormatChannelCount = 4;
+            break;
+        }
+
+        default:{ NPLOG_ERROR(@"Unknown image pixel format %d", pixelFormat); break; }
     }
 
     return pixelFormatChannelCount;
 }
 
-- (Int) calculatePixelByteCountUsingDataFormat:(NpState)dataFormat pixelFormat:(NpState)pixelFormat
+- (Int) calculatePixelByteCountUsingDataFormat:(NpState)dataFormat
+                                   pixelFormat:(NpState)pixelFormat
 {
-    Int dataFormatByteCount = [ self calculateDataFormatByteCount:dataFormat ];
-    Int channelCount = [ self calculatePixelFormatChannelCount:pixelFormat ];
+    Int dataFormatByteCount     = [ self calculateDataFormatByteCount:dataFormat ];
+    Int pixelFormatchannelCount = [ self calculatePixelFormatChannelCount:pixelFormat ];
 
-    return dataFormatByteCount * channelCount;
+    return dataFormatByteCount * pixelFormatchannelCount;
 }
 
 - (Int) calculateImageByteCount:(NPImage *)image
 {
-    return [ self calculateImageByteCountUsingWidth:[image width] height:[image height] pixelFormat:[image pixelFormat] dataFormat:[image dataFormat] ];
+    return [ self calculateImageByteCountUsingWidth:[image width]
+                                             height:[image height]
+                                        pixelFormat:[image pixelFormat]
+                                         dataFormat:[image dataFormat] ];
 }
 
-- (Int) calculateImageByteCountUsingWidth:(Int)width height:(Int)height pixelFormat:(NpState)pixelFormat dataFormat:(NpState)dataFormat
+- (Int) calculateImageByteCountUsingWidth:(Int)width
+                                   height:(Int)height
+                              pixelFormat:(NpState)pixelFormat
+                               dataFormat:(NpState)dataFormat
 {
     Int dataFormatSize  = [ self calculateDataFormatByteCount:dataFormat ];
     Int pixelFormatSize = [ self calculatePixelFormatChannelCount:pixelFormat ];
 
-    return width*height*dataFormatSize*pixelFormatSize;
+    return width * height * dataFormatSize * pixelFormatSize;
 }
 
 - (Int) calculateDevilPixelFormat:(NpState)pixelFormat
@@ -149,11 +190,35 @@
 
     switch ( pixelFormat )
     {
-        case NP_GRAPHICS_IMAGE_PIXELFORMAT_R   : { devilFormat = IL_LUMINANCE;       break; }
-        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RG  : { devilFormat = IL_LUMINANCE_ALPHA; break; }
-        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RGB : { devilFormat = IL_RGB;             break; }
-        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RGBA: { devilFormat = IL_RGBA;            break; }
-        default: { NPLOG_ERROR(@"Unknown image pixel format"); break; }
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_R  :
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_sR :
+        {
+            devilFormat = IL_LUMINANCE;
+            break;
+        }
+
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RG  :
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_sRG :
+        {
+            devilFormat = IL_LUMINANCE_ALPHA;
+            break;
+        }
+
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RGB  :
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_sRGB :
+        {
+            devilFormat = IL_RGB;
+            break;
+        }
+
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_RGBA:
+        case NP_GRAPHICS_IMAGE_PIXELFORMAT_sRGB_LINEAR_ALPHA:
+        {
+            devilFormat = IL_RGBA;
+            break;
+        }
+
+        default: { NPLOG_ERROR(@"Unknown image pixel format %d", pixelFormat); break; }
     }
 
     return devilFormat;
@@ -173,41 +238,5 @@
 
     return devilType;
 }
-
-/*- (NPImage *) scaleImage:(NPImage *)sourceImage withFilter:(NpState)scalingFilter targetWidth:(Int)newWidth targetHeight:(Int)newHeight
-{
-	UInt image = [ sourceImage prepareForProcessingWithDevil ];
-
-    if ( [ sourceImage setupDevilImageData ] == NO )
-    {
-        [ sourceImage endProcessingWithDevil:image ];
-
-        return nil;
-    }
-
-    iluImageParameter(ILU_FILTER, scalingFilter);
-    ILboolean success = iluScale(newWidth, newHeight, 1);
-    if ( !success )
-    {
-        ILenum error = ilGetError();
-        NPLOG_ERROR(( [ NSString stringWithCString:iluErrorString(error) encoding:NSASCIIStringEncoding ] ));
-		NPLOG_ERROR(( [ @"Could not scale image: " stringByAppendingString:name ] ));
-        [ sourceImage endProcessingWithDevil:image ];
-
-		return nil;
-    }
-
-    UInt length = [self calculateImageByteCountUsingWidth:newWidth height:newHeight pixelFormat:[ sourceImage pixelFormat ] dataFormat:[ sourceImage dataFormat ] ];
-    NSData * imageData = [[ NSData alloc ] initWithBytes:ilGetData() length:length ];
-
-    [ sourceImage endProcessingWithDevil:image ];
-
-    return [ NPImage imageWithName:@""
-                             width:newWidth
-                            height:newHeight
-                       pixelFormat:[sourceImage pixelFormat] 
-                        dataFormat:[sourceImage dataFormat] 
-                        imageData:imageData ];
-}*/
 
 @end
