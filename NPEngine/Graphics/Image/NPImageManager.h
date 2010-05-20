@@ -22,17 +22,25 @@
 - (void) setup;
 
 - (id) loadImageFromPath:(NSString *)path;
+- (id) loadImageFromPath:(NSString *)path sRGB:(BOOL)sRGB;
 - (id) loadImageFromAbsolutePath:(NSString *)path;
+- (id) loadImageFromAbsolutePath:(NSString *)path sRGB:(BOOL)sRGB;
 
 - (Int) calculateDataFormatByteCount:(NpState)dataFormat;
 - (Int) calculatePixelFormatChannelCount:(NpState)pixelFormat;
-- (Int) calculatePixelByteCountUsingDataFormat:(NpState)dataFormat pixelFormat:(NpState)pixelFormat;
+- (Int) calculatePixelByteCountUsingDataFormat:(NpState)dataFormat
+                                   pixelFormat:(NpState)pixelFormat
+                                              ;
+
 - (Int) calculateImageByteCount:(NPImage *)image;
-- (Int) calculateImageByteCountUsingWidth:(Int)width height:(Int)height pixelFormat:(NpState)pixelFormat dataFormat:(NpState)dataFormat;
+- (Int) calculateImageByteCountUsingWidth:(Int)width 
+                                   height:(Int)height
+                              pixelFormat:(NpState)pixelFormat
+                               dataFormat:(NpState)dataFormat
+                                         ;
+
 - (Int) calculateDevilPixelFormat:(NpState)pixelFormat;
 - (Int) calculateDevilDataType:(NpState)dataFormat;
-
-//- (NPImage *) scaleImage:(NPImage *)sourceImage withFilter:(NpState)scalingFilter targetWidth:(Int)newWidth targetHeight:(Int)newHeight;
 
 
 @end
