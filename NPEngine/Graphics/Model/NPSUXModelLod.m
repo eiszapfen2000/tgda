@@ -52,7 +52,6 @@
 
     NSString * lodName = [ file readSUXString ];
     [ self setName: lodName ];
-    [ lodName release ];
     NPLOG(@"LOD Name: %@", lodName);
 
     [ file readBool:&autoenable ];

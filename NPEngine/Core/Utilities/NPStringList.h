@@ -1,5 +1,7 @@
 #import "Core/NPObject/NPObject.h"
 
+@class NPFile;
+
 @interface NPStringList : NPObject
 {
     NSMutableArray * lines;
@@ -18,13 +20,19 @@
                    ;
 - (void) dealloc;
 
-- (void) clear;
-- (BOOL) loadFromPath:(NSString *)path;
-
+- (BOOL) allowDuplicates;
+- (BOOL) allowEmptyStrings;
 - (NSUInteger) count;
-- (void) addString:(NSString *)string;
-- (void) addStringsFromArray:(NSArray *)array;
 - (NSString *) stringAtIndex:(NSUInteger)index;
 
+- (void) setAllowDuplicates:(BOOL)newAllowDuplicates;
+- (void) setAllowEmptyStrings:(BOOL)newAllowEmptyStrings;
+
+- (void) clear;
+- (BOOL) loadFromFile:(NPFile *)file;
+- (BOOL) loadFromPath:(NSString *)path;
+
+- (void) addString:(NSString *)string;
+- (void) addStringsFromArray:(NSArray *)array;
 
 @end

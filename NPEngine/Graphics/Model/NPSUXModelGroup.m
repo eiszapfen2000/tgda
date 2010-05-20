@@ -34,7 +34,6 @@
 
     NSString * groupName = [ file readSUXString ];
     [ self setName:groupName ];
-    [ groupName release ];
 
     [ file readInt32:&primitiveType ];
     [ file readInt32:&firstIndex ];

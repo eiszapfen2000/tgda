@@ -18,12 +18,19 @@
     return [ self initWithName:newName parent:newParent fileName:@"" ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent fileName:(NSString *)newFileName
+- (id) initWithName:(NSString *)newName
+             parent:(id <NPPObject> )newParent
+           fileName:(NSString *)newFileName
 {
-    return [ self initWithName:newName parent:newParent fileName:newFileName mode:NP_FILE_READING ];
+    return [ self initWithName:newName 
+                        parent:newParent
+                      fileName:newFileName mode:NP_FILE_READING ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent fileName:(NSString *)newFileName mode:(NpState)newMode
+- (id) initWithName:(NSString *)newName
+             parent:(id <NPPObject> )newParent
+           fileName:(NSString *)newFileName
+               mode:(NpState)newMode
 {
     self = [ super initWithName:newName parent:newParent ];
 
@@ -223,29 +230,33 @@
     if ( slength > 0 )
     {
         NSData * data = [ fileHandle readDataOfLength:(UInt)slength ];
-        NSString * s = [[ NSString alloc] initWithBytes:[data bytes] length:(UInt)slength encoding:NSASCIIStringEncoding ];
 
-        return s;
+        NSString * s = [[ NSString alloc] initWithBytes:[data bytes]
+                                                 length:(UInt)slength
+                                               encoding:NSASCIIStringEncoding ];
+
+        return [ s autorelease ];
     }
 
     return @"";
 }
 
-- (NSMutableArray *) readSUXScript
+- (NPStringList *) readSUXScript
 {
-    Int lines;
+    Int lines = 0;
     [self readInt32:&lines ];
 
-    NSMutableArray * script = [[ NSMutableArray alloc ] initWithCapacity:(UInt)lines ];
+    NPStringList * script = [[ NPStringList alloc ] init ];
+    [ script setAllowDuplicates:YES ];
+    [ script setAllowEmptyStrings:YES ];
 
     for ( Int i = 0; i < lines; i++ )
     {
         NSString * line = [ self readSUXString ];
-        [ script addObject:line ];
-        [ line release ];
+        [ script addString:line ];
     }
 
-    return script;
+    return [ script autorelease ];
 }
 
 - (FVector2 *) readFVector2
@@ -397,14 +408,14 @@
     [ self writeChars:cstring withLength:ulength ];
 }
 
-- (void) writeSUXScript:(NSArray *)script
+- (void) writeSUXScript:(NPStringList *)script
 {
     Int32 lines = (Int32)[ script count ];
     [ self writeInt32:&lines ];
 
     for ( Int i = 0; i < lines; i++ )
     {
-        [ self writeSUXString:[ script objectAtIndex:i ]];
+        [ self writeSUXString:[ script stringAtIndex:i ]];
     }
 }
 
