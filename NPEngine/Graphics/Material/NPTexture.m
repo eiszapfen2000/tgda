@@ -211,13 +211,18 @@
 
 - (BOOL) loadFromFile:(NPFile *)file
 {
+    return [ self loadFromFile:file sRGB:NO ];
+}
+
+- (BOOL) loadFromFile:(NPFile *)file sRGB:(BOOL)sRGB
+{
     [ self reset ];
 
     [ self setFileName:[ file fileName ]];
     [ self setName:[ file fileName ]];
 
     NPImage * image = [[ NPImage alloc ] init ];
-    if ( [ image loadFromPath:[file fileName]] == NO )
+    if ( [ image loadFromPath:[file fileName] sRGB:sRGB ] == NO )
     {
         return NO;
     }

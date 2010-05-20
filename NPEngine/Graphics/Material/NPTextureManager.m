@@ -294,12 +294,22 @@
 
 - (id) loadTextureFromPath:(NSString *)path
 {
+    return [ self loadTextureFromPath:path sRGB:NO ];
+}
+
+- (id) loadTextureFromPath:(NSString *)path sRGB:(BOOL)sRGB
+{
     NSString * absolutePath = [[[ NP Core ] pathManager ] getAbsoluteFilePath:path ];
 
-    return [ self loadTextureFromAbsolutePath:absolutePath ];
+    return [ self loadTextureFromAbsolutePath:absolutePath sRGB:sRGB];
 }
 
 - (id) loadTextureFromAbsolutePath:(NSString *)path
+{
+    return [ self loadTextureFromAbsolutePath:path sRGB:NO ];
+}
+
+- (id) loadTextureFromAbsolutePath:(NSString *)path sRGB:(BOOL)sRGB
 {
     if ( [ path isEqual:@"" ] == NO )
     {
@@ -310,7 +320,7 @@
             NPLOG(@"%@: loading %@", name, path);
 
             NPFile * file = [[ NPFile alloc ] initWithName:path parent:self fileName:path ];
-            texture = [ self loadTextureUsingFileHandle:file ];
+            texture = [ self loadTextureUsingFileHandle:file sRGB:sRGB ];
             [ file release ];
         }
 
@@ -322,11 +332,16 @@
 
 - (id) loadTextureUsingFileHandle:(NPFile *)file
 {
+    return [ self loadTextureUsingFileHandle:file sRGB:NO ];
+}
+
+- (id) loadTextureUsingFileHandle:(NPFile *)file sRGB:(BOOL)sRGB
+{
     NPTexture * texture = [[ NPTexture alloc ] initWithName:@"" parent:self ];
 
-    if ( [ texture loadFromFile:file ] == YES )
+    if ( [ texture loadFromFile:file sRGB:sRGB ] == YES )
     {
-        [ textures setObject:texture forKey:[file fileName] ];
+        [ textures setObject:texture forKey:[ file fileName ]];
         [ texture release ];
 
         return texture;
@@ -390,17 +405,6 @@
     [ textures setObject:texture forKey:textureName ];
 
     return [ texture autorelease ];
-}
-
-- (id) texture3DWithName:(NSString *)textureName
-                   width:(Int)width 
-                  height:(Int)height
-                   depth:(Int)depth
-              dataFormat:(NpState)dataFormat
-             pixelFormat:(NpState)pixelFormat
-              mipmapping:(NpState)mipMapping
-{
-    return nil;
 }
 
 @end
