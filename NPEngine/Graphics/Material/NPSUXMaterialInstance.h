@@ -1,5 +1,7 @@
 #import "Core/NPObject/NPObject.h"
+#import "Core/Utilities/NPStringList.h"
 #import "Core/Resource/NPResource.h"
+#import "Graphics/NPEngineGraphicsConstants.h"
 
 @class NPFile;
 @class NPEffect;
@@ -7,14 +9,11 @@
 @interface NPSUXMaterialInstance : NPResource
 {
     NSString * materialFileName;
-    NSMutableArray * materialInstanceScript;
-
-    NSMutableDictionary * textureNameToSemantic;
-    NSMutableDictionary * textureNameToTextureFileName;
-    NSMutableDictionary * textureNameToTexture;
-    NSMutableDictionary * textureToSemantic;
-
+    NPStringList * materialInstanceScript;
     NPEffect * effect;
+
+    //Int32  colormapIndices[NP_GRAPHICS_SAMPLER_COUNT];
+    NSMutableArray * textures2D;
 }
 
 - (id) init;
@@ -22,15 +21,14 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
-- (NSString *)materialFileName;
+- (NPEffect *) effect;
+- (NSString *) materialFileName;
+
 - (void) setMaterialFileName:(NSString *)newMaterialFileName;
 
 - (BOOL) loadFromFile:(NPFile *)file;
 - (BOOL) saveToFile:(NPFile *)file;
 - (void) reset;
-
-- (NSArray *) textures;
-- (NPEffect *) effect;
 
 - (void) addEffectFromPath:(NSString *)path;
 - (void) setEffectTechniqueByName:(NSString *)techniqueName;

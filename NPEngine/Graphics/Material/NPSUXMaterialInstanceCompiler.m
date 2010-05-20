@@ -42,9 +42,9 @@
 {
     NSString * token = nil;
 
-    if ( [ self getTokenAsLowerCaseString:&token
-                                 fromLine:lineIndex
-                               atPosition:1 ] == YES )
+    if ( [ self getTokenAsString:&token
+                        fromLine:lineIndex
+                      atPosition:1 ] == YES )
     {
         if ( [ token isEqual:@"technique" ] == YES )
         {
@@ -78,16 +78,16 @@
                      [ self getTokenAsString:&textureFileName
                                     fromLine:lineIndex
                                   atPosition:3 ];
-            
-            if ( foundTextureVariableName == YES && foundTextureFileName == YES )
+
+            if ( (foundTextureVariableName == YES) && (foundTextureFileName == YES) )
             {
-                if ( [ token isEqual:@"texture1D" ] == YES ||
-                     [ token isEqual:@"texture1DsRGB" ] == YES )
+                if ( ([ token isEqual:@"texture1D" ] == YES) ||
+                     ([ token isEqual:@"texture1DsRGB" ] == YES) )
                 {
 
                 }
-                else if ( [ token isEqual:@"texture2D" ] == YES ||
-                          [ token isEqual:@"texture2DsRGB" ] == YES  )
+                else if ( ([ token isEqual:@"texture2D" ] == YES) ||
+                          ([ token isEqual:@"texture2DsRGB" ] == YES) )
                 {
                     [ materialInstanceToCompile addTexture2DWithName:textureVariableName
                                                             fromPath:textureFileName
@@ -134,19 +134,20 @@
 {
     if ( materialInstance == nil )
     {
-        NPLOG_ERROR(@"%s - No target material instance supplied", __PRETTY_FUNCTION__);
+        NPLOG_ERROR(@"No target material instance supplied");
         return;
     }
 
     if ( inputScript == nil )
     {
-        NPLOG_ERROR(@"%s - No input script supplied", __PRETTY_FUNCTION__);
+        NPLOG_ERROR(@"No input script supplied");
         return;
     }
 
     materialInstanceToCompile = [ materialInstance retain ];
 
     [ self parse:inputScript ];
+    [ self parseStatements ];
 
     DESTROY(materialInstanceToCompile);
 
