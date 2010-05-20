@@ -219,7 +219,7 @@
 {
     if ( inputScript == nil )
     {
-        NPLOG_ERROR(@"parse - No inputScript defined");
+        NPLOG_ERROR(@"No inputScript defined");
         return;
     }
 

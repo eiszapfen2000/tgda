@@ -1,3 +1,4 @@
+#import "NPSUXMaterialInstanceCompiler.h"
 #import "NPSUXMaterialInstance.h"
 #import "NP.h"
 
@@ -253,6 +254,39 @@
 - (NPEffect *) effect
 {
     return effect;
+}
+
+- (void) addEffectFromPath:(NSString *)path
+{
+    TEST_RELEASE(effect);
+
+    effect = [[[[ NP Graphics ] effectManager ] loadEffectFromPath:path ] retain ];
+}
+
+- (void) setEffectTechniqueByName:(NSString *)techniqueName
+{
+    if ( effect == nil )
+    {
+        NPLOG_ERROR(@"Effect missing");
+        return;
+    }
+
+    [ effect setDefaultTechniqueByName:techniqueName ];
+}
+
+- (void) addTexture2DWithName:(NSString *)samplerName
+                     fromPath:(NSString *)path
+                         sRGB:(BOOL)sRGB
+{
+    Int colormapIndex = [ effect colormapIndexForSamplerWithName:samplerName ];
+
+    if ( colormapIndex < 0 )
+    {
+        NPLOG_ERROR(@"No match for \"%@\" found in \"%@\"", samplerName, [ effect name ]);
+        return;
+    }
+
+    NPTexture * texture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:path sRGB:sRGB ];
 }
 
 - (void) updateTextureBindingState

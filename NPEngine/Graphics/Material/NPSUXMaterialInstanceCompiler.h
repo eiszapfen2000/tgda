@@ -5,6 +5,7 @@
 
 @interface NPSUXMaterialInstanceCompiler : NPParser
 {
+    NPSUXMaterialInstance * materialInstanceToCompile;
 }
 
 - (id) init;
