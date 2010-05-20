@@ -42,6 +42,11 @@
 - (id) loadTextureFromAbsolutePath:(NSString *)path;
 - (id) loadTextureUsingFileHandle:(NPFile *)file;
 
+- (id) loadTextureFromPath:(NSString *)path sRGB:(BOOL)sRGB;
+- (id) loadTextureFromAbsolutePath:(NSString *)path sRGB:(BOOL)sRGB;
+- (id) loadTextureUsingFileHandle:(NPFile *)file sRGB:(BOOL)sRGB;
+
+
 - (id) textureWithName:(NSString *)textureName
                  width:(Int)width 
                 height:(Int)height
@@ -64,15 +69,5 @@
               dataFormat:(NpState)dataFormat
              pixelFormat:(NpState)pixelFormat
                         ;
-
-- (id) texture3DWithName:(NSString *)textureName
-                   width:(Int)width 
-                  height:(Int)height
-                   depth:(Int)depth
-              dataFormat:(NpState)dataFormat
-             pixelFormat:(NpState)pixelFormat
-              mipmapping:(NpState)mipMapping
-                        ;
-
 
 @end

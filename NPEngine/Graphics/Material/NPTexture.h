@@ -49,6 +49,7 @@
 - (void) setTextureWrapT:(NpState)newWrapT;
 
 - (BOOL) loadFromFile:(NPFile *)file;
+- (BOOL) loadFromFile:(NPFile *)file sRGB:(BOOL)sRGB;
 
 - (void) uploadToGLWithoutData;
 - (void) uploadToGLUsingImage:(NPImage *)image;
