@@ -148,11 +148,13 @@
 
 - (void) activate
 {
+    id n = [ NSNull null ];
+
     for (Int32 i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
         id t = [ textures2D objectAtIndex:i ];
 
-        if ( t != [ NSNull null ] )
+        if ( t != n )
         {
             [ t activateAtColorMapIndex:i ];
         }
