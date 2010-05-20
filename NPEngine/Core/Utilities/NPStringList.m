@@ -1,4 +1,5 @@
 #import <Foundation/NSScanner.h>
+#import "Core/File/NPFile.h"
 #import "NPStringList.h"
 
 @implementation NPStringList
@@ -44,9 +45,65 @@
     [ super dealloc ];
 }
 
+- (BOOL) allowDuplicates
+{
+    return allowDuplicates;
+}
+
+- (BOOL) allowEmptyStrings
+{
+    return allowEmptyStrings;
+}
+
+- (NSUInteger) count
+{
+    return [ lines count ];
+}
+
+- (NSString *) stringAtIndex:(NSUInteger)index
+{
+    NSAssert(index < [ lines count ], @"Index out of bounds");
+
+    return [ lines objectAtIndex:index ];
+}
+
+- (void) setAllowDuplicates:(BOOL)newAllowDuplicates
+{
+    allowDuplicates = newAllowDuplicates;
+}
+
+- (void) setAllowEmptyStrings:(BOOL)newAllowEmptyStrings
+{
+    allowEmptyStrings = newAllowEmptyStrings;
+}
+
 - (void) clear
 {
     [ lines removeAllObjects ];
+}
+
+- (BOOL) loadFromFile:(NPFile *)file
+{
+    [ self clear ];
+
+    Int32 numberOfLines = 0;
+    [ file readInt32:&numberOfLines ];
+
+    for ( Int32 i = 0; i < numberOfLines; i++ )
+    {
+        [ self addString:[ file readSUXString ]];
+    }
+
+    //NSLog([lines description]);
+
+    return YES;
+}
+
+- (BOOL) saveToFile:(NPFile *)file
+{
+    [ file writeSUXScript:self ];
+
+    return YES;
 }
 
 - (BOOL) loadFromPath:(NSString *)path
@@ -74,11 +131,6 @@
     return YES;
 }
 
-- (NSUInteger) count
-{
-    return [ lines count ];
-}
-
 - (void) addString:(NSString *)string
 {
     if ( allowDuplicates == NO &&
@@ -99,13 +151,6 @@
 - (void) addStringsFromArray:(NSArray *)array
 {
     [ lines addObjectsFromArray:array ];
-}
-
-- (NSString *) stringAtIndex:(NSUInteger)index
-{
-    NSAssert(index < [ lines count ], @"Index out of bounds");
-
-    return [ lines objectAtIndex:index ];
 }
 
 - (NSString *) description

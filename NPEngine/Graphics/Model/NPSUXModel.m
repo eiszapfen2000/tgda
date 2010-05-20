@@ -56,7 +56,6 @@
 
     NSString * modelName = [ file readSUXString ];
     [ self setName:modelName ];
-    [ modelName release ];
     NPLOG(@"Model Name: %@", name);
 
     Int materialCount = 0;

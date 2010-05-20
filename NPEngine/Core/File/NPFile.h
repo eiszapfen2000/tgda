@@ -1,4 +1,5 @@
 #import "Core/NPObject/NPObject.h"
+#import "Core/Utilities/NPStringList.h"
 #import "Core/Math/NpMath.h"
 
 #define NP_FILE_READING     0
@@ -49,7 +50,7 @@
 - (void) readBool:(BOOL *)b;
 
 - (NSString *) readSUXString;
-- (NSMutableArray *) readSUXScript;
+- (NPStringList *) readSUXScript;
 
 - (FVector2 *) readFVector2;
 - (FVector3 *) readFVector3;
@@ -80,7 +81,7 @@
 - (void) writeBool:(BOOL *)b;
 
 - (void) writeSUXString:(NSString *)s;
-- (void) writeSUXScript:(NSArray *)script;
+- (void) writeSUXScript:(NPStringList *)script;
 
 - (void) writeFVector2:(FVector2 *)v;
 - (void) writeFVector3:(FVector3 *)v;
