@@ -8,9 +8,13 @@
 
 - (id) init;
 - (id) initWithParent:(id <NPPObject> )newParent;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent technique:(CGtechnique)newTechnique;
-- (void) dealloc;
+- (id) initWithName:(NSString *)newName
+             parent:(id <NPPObject> )newParent
+                   ;
+
+- (id) initWithName:(NSString *)newName
+             parent:(id <NPPObject> )newParent
+          technique:(CGtechnique)newTechnique;
 
 - (CGpass) firstPass;
 

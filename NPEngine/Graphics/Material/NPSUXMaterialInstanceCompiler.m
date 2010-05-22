@@ -42,9 +42,9 @@
 {
     NSString * token = nil;
 
-    if ( [ self getTokenAsString:&token
-                        fromLine:lineIndex
-                      atPosition:1 ] == YES )
+    if ( [ self getTokenAsLowerCaseString:&token
+                                 fromLine:lineIndex
+                               atPosition:1 ] == YES )
     {
         if ( [ token isEqual:@"technique" ] == YES )
         {
@@ -81,13 +81,13 @@
 
             if ( (foundTextureVariableName == YES) && (foundTextureFileName == YES) )
             {
-                if ( ([ token isEqual:@"texture1D" ] == YES) ||
-                     ([ token isEqual:@"texture1DsRGB" ] == YES) )
+                if ( ([ token isEqual:@"texture1d" ] == YES) ||
+                     ([ token isEqual:@"texture1dsrgb" ] == YES) )
                 {
 
                 }
-                else if ( ([ token isEqual:@"texture2D" ] == YES) ||
-                          ([ token isEqual:@"texture2DsRGB" ] == YES) )
+                else if ( ([ token isEqual:@"texture2d" ] == YES) ||
+                          ([ token isEqual:@"texture2Dsrgb" ] == YES) )
                 {
                     [ materialInstanceToCompile addTexture2DWithName:textureVariableName
                                                             fromPath:textureFileName

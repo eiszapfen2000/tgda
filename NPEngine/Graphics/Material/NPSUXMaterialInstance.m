@@ -34,11 +34,11 @@
 
 - (void) dealloc
 {
-	DESTROY(effect);
+	TEST_RELEASE(effect);
     [ textures2D removeAllObjects ];
-    DESTROY(textures2D);
-    DESTROY(materialInstanceScript);
-	DESTROY(materialFileName);
+    [ textures2D release ];
+    [ materialInstanceScript release ];
+	[ materialFileName release ];
 
 	[ super dealloc ];
 }
@@ -59,11 +59,9 @@
 
     NSString * materialInstanceName = [ file readSUXString ];
     [ self setName:materialInstanceName ];
-    //NSLog(@"Material Instance Name: %@", name);
 
     NSString * materialScriptFileName = [ file readSUXString ];
     [ self setMaterialFileName:materialScriptFileName ];
-    //NSLog(@"Material Script File: %@", materialFileName);
 
     if ( [ materialInstanceScript loadFromFile:file ] == NO )
     {
@@ -97,6 +95,9 @@
 
 - (void) reset
 {
+    TEST_RELEASE(effect);
+    effect = nil;
+
     DESTROY(materialFileName);
     materialFileName = @"";
 
@@ -142,21 +143,21 @@
     NPTexture * texture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:path sRGB:sRGB ];
     if ( texture != nil )
     {
-        [ textures2D insertObject:texture atIndex:colormapIndex ];
+        [ textures2D replaceObjectAtIndex:colormapIndex withObject:texture];
     }
 }
 
 - (void) activate
 {
-    id n = [ NSNull null ];
+    id null = [ NSNull null ];
 
     for (Int32 i = 0; i < NP_GRAPHICS_SAMPLER_COUNT; i++ )
     {
-        id t = [ textures2D objectAtIndex:i ];
+        id texture2D = [ textures2D objectAtIndex:i ];
 
-        if ( t != n )
+        if ( texture2D != null )
         {
-            [ t activateAtColorMapIndex:i ];
+            [ texture2D activateAtColorMapIndex:i ];
         }
     }    
 

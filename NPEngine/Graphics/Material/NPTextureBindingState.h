@@ -5,15 +5,12 @@
 @interface NPTextureBindingState : NPObject
 {
     NSMutableDictionary * textureBindings;
-    NSMutableArray * textureUnits;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
-
-- (void) clear;
 
 - (id) textureForKey:(NSString *)colormapSemantic;
 - (void) setTexture:(id)texture forKey:(NSString *)colormapSemantic;

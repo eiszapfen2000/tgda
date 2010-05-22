@@ -12,23 +12,21 @@
     return [ self initWithName:@"NPEffectTechnique" parent:newParent ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
+- (id) initWithName:(NSString *)newName
+             parent:(id <NPPObject> )newParent
 {
     return [ self initWithName:newName parent:newParent technique:NULL ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent technique:(CGtechnique)newTechnique
+- (id) initWithName:(NSString *)newName
+             parent:(id <NPPObject> )newParent
+          technique:(CGtechnique)newTechnique
 {
     self = [ super initWithName:newName parent:newParent ];
 
     technique = newTechnique;
 
     return self;    
-}
-
-- (void) dealloc
-{
-    [ super dealloc ];
 }
 
 - (CGpass) firstPass
