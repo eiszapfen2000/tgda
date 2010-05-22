@@ -132,7 +132,7 @@
     Int devilType     = [[[ NP Graphics ] imageManager ] calculateDevilDataType:dataFormat ];
     Int bytesPerPixel = [[[ NP Graphics ] imageManager ] calculatePixelByteCountUsingDataFormat:dataFormat pixelFormat:pixelFormat ];
 
-    ILboolean success = ilTexImage(width, height, 1, bytesPerPixel, devilFormat, devilType, (ILvoid *)[imageData bytes]);
+    ILboolean success = ilTexImage(width, height, 1, bytesPerPixel, devilFormat, devilType, (void *)[imageData bytes]);
     if ( !success )
     {
         ILenum error = ilGetError();
