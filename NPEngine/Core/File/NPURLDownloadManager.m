@@ -12,13 +12,14 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    urlDownloads = [ [ NSMutableDictionary alloc ] init ];
+    urlDownloads = [[ NSMutableDictionary alloc ] init ];
 
     return self;
 }
 
 - (void) dealloc
 {
+    [ urlDownloads removeAllObjects ];
     [ urlDownloads release ];
 
     [ super dealloc ];
@@ -28,7 +29,7 @@
 {
     if ( [ urlDownloads objectForKey:url ] == nil )
     {
-        NPURLDownload * download = [ [ NPURLDownload alloc ] initWithName:[ url absoluteString ] parent:self ];
+        NPURLDownload * download = [[ NPURLDownload alloc ] initWithName:[ url absoluteString ] parent:self ];
         [ download setFileToDownload:url ];
         [ download setDestinationFileName:path ];
 

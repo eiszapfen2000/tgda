@@ -23,6 +23,7 @@
 
 - (void) dealloc
 {
+    [ remotePaths removeAllObjects ];
     [ remotePaths release ];
 
     [ super dealloc ];

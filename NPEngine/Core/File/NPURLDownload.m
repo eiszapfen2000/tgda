@@ -30,12 +30,7 @@
 
 - (void) setFileToDownload:(NSURL *)newFileToDownload
 {
-    if ( fileToDownload != newFileToDownload )
-    {
-        [ fileToDownload release ];
-
-        fileToDownload = newFileToDownload;
-    }
+    ASSIGN(fileToDownload, newFileToDownload);
 }
 
 - (NSString *) destinationFileName
@@ -45,12 +40,7 @@
 
 - (void) setDestinationFileName:(NSString *)newDestinationFileName
 {
-    if ( destinationFileName != newDestinationFileName )
-    {
-        [ destinationFileName release ];
-
-        destinationFileName = [ newDestinationFileName retain ];
-    }
+    ASSIGN(destinationFileName, newDestinationFileName);
 }
 
 - (void) startDownloading
@@ -60,7 +50,7 @@
     [ fileToDownload loadResourceDataNotifyingClient:self usingCache:YES ];
 }
 
-- (void)URLResourceDidFinishLoading:(NSURL *)sender
+- (void) URLResourceDidFinishLoading:(NSURL *)sender
 {
     NPLOG([@"Done downloading " stringByAppendingString:[ sender description ] ]);
 
@@ -72,12 +62,12 @@
     }
 }
 
-- (void)URLResourceDidCancelLoading:(NSURL *)sender
+- (void) URLResourceDidCancelLoading:(NSURL *)sender
 {
    NPLOG([@"Download canceled " stringByAppendingString:[ sender description ] ]);
 }
 
-- (void)URL:(NSURL *)sender resourceDidFailLoadingWithReason:(NSString *)reason
+- (void) URL:(NSURL *)sender resourceDidFailLoadingWithReason:(NSString *)reason
 {
     NSString * message = [ NSString stringWithFormat:@"%@ failed to download with reason %@",[ sender description ],reason ];
     NPLOG(message);
