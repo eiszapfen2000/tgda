@@ -79,6 +79,20 @@
     return YES;
 }
 
+- (BOOL) loadFromPath:(NSString *)path
+{
+    NPFile * file = [[ NPFile alloc ] initWithName:@""
+                                            parent:self
+                                          fileName:path
+                                              mode:NP_FILE_READING ];
+
+    BOOL result = [ self loadFromFile:file ];
+
+    [ file release ];
+
+    return result;
+}
+
 - (BOOL) saveToFile:(NPFile *)file
 {
     if ( ready == NO )
