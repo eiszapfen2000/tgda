@@ -46,7 +46,6 @@
 
     NPTextureBindingState * textureBindingState;
 
-    NPVertexBufferManager * vertexBufferManager;
     NPImageManager   * imageManager;
     NPTextureManager * textureManager;
     NPEffectManager  * effectManager;
@@ -58,8 +57,6 @@
     NPR2VBManager         * r2vbManager;
 
     NPViewportManager * viewportManager;
-
-//    NPCameraManager * cameraManager;
 
     NPOrthographicRendering * orthographicRendering;
 
@@ -88,7 +85,6 @@
 - (NPStateConfiguration *) stateConfiguration;
 - (NPStateSetManager *) stateSetManager;
 - (NPTextureBindingState *) textureBindingState;
-- (NPVertexBufferManager *) vertexBufferManager;
 - (NPImageManager *) imageManager;
 - (NPTextureManager *) textureManager;
 - (NPEffectManager *) effectManager;
@@ -98,7 +94,6 @@
 - (NPPixelBufferManager *) pixelBufferManager;
 - (NPR2VBManager *) r2vbManager;
 - (NPViewportManager *) viewportManager;
-//- (NPCameraManager *) cameraManager;
 - (NPOrthographicRendering *) orthographicRendering;
 
 - (void) render;

@@ -86,6 +86,57 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
 @implementation NPVertexBuffer
 
++ (GLenum) computeGLUsage:(NpState)bufferUsage
+{
+    GLenum result = GL_NONE;
+
+    switch ( bufferUsage )
+    {
+        case NP_GRAPHICS_VBO_UPLOAD_ONCE_RENDER_OFTEN:
+        {
+            result = GL_STATIC_DRAW;
+            break;
+        }
+
+        case NP_GRAPHICS_VBO_UPLOAD_ONCE_RENDER_SELDOM:
+        {
+            result = GL_STREAM_DRAW;
+            break;
+        }
+
+        case NP_GRAPHICS_VBO_UPLOAD_OFTEN_RENDER_OFTEN:
+        {
+            result = GL_DYNAMIC_DRAW;
+            break;
+        }
+
+        default:
+        {
+            NPLOG_ERROR(@"Invalid buffer usage %d specified", bufferUsage);
+            break;
+        }
+    }
+
+    return result;
+}
+
++ (Int32) computeDataFormatByteCount:(NpState)dataFormat
+{
+    Int32 result = 0;
+
+    switch ( dataFormat )
+    {
+        case NP_GRAPHICS_VBO_DATAFORMAT_BYTE:{ result = 1; break; }
+        case NP_GRAPHICS_VBO_DATAFORMAT_HALF:{ result = 2; break; }
+        case NP_GRAPHICS_VBO_DATAFORMAT_FLOAT:{ result = 4; break; }
+        case NP_GRAPHICS_VBO_DATAFORMAT_SHORT:{ result = 2; break; }
+        case NP_GRAPHICS_VBO_DATAFORMAT_INT:{ result = 4; break; }
+        default:{ NPLOG_ERROR(@"Invalid data format %d specified", dataFormat); break; }
+    }
+
+    return result;
+}
+
 - (id) init
 {
     return [ self initWithParent:nil ];
@@ -343,10 +394,10 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
         [ self deleteVBO ];
     }
 
-    GLenum vboUsage = [[[ NP Graphics ] vertexBufferManager ] computeGLUsage:usage ];
+    GLenum vboUsage = [ NPVertexBuffer computeGLUsage:usage ];
 
     Int vertexCount  = vertices.maxVertex + 1;
-    Int verticesSize = vertexCount * [[[ NP Graphics ] vertexBufferManager ] computeDataFormatByteCount:vertices.format.positionsDataFormat ];
+    Int verticesSize = vertexCount * [ NPVertexBuffer computeDataFormatByteCount:vertices.format.positionsDataFormat ];
 
     glGenBuffers(1, &(vertexBuffer.positionsID));
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.positionsID);
@@ -354,7 +405,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     if ( vertices.format.elementsForNormal > 0 )
     {
-        Int normalsSize = vertexCount * [[[ NP Graphics ] vertexBufferManager ] computeDataFormatByteCount:vertices.format.normalsDataFormat ];
+        Int normalsSize = vertexCount * [ NPVertexBuffer computeDataFormatByteCount:vertices.format.normalsDataFormat ];
 
         glGenBuffers(1, &(vertexBuffer.normalsID));
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.normalsID);
@@ -363,7 +414,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     if ( vertices.format.elementsForColor > 0 )
     {
-        Int colorsSize = vertexCount * [[[ NP Graphics ] vertexBufferManager ] computeDataFormatByteCount:vertices.format.colorsDataFormat ];
+        Int colorsSize = vertexCount * [ NPVertexBuffer computeDataFormatByteCount:vertices.format.colorsDataFormat ];
 
         glGenBuffers(1, &(vertexBuffer.colorsID));
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.colorsID);
@@ -372,7 +423,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
 
     if ( vertices.format.elementsForWeights > 0 )
     {
-        Int weightsSize = vertexCount * [[[ NP Graphics ] vertexBufferManager ] computeDataFormatByteCount:vertices.format.weightsDataFormat ];
+        Int weightsSize = vertexCount * [ NPVertexBuffer computeDataFormatByteCount:vertices.format.weightsDataFormat ];
 
         glGenBuffers(1, &(vertexBuffer.weightsID));
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.weightsID);
@@ -383,7 +434,7 @@ void reset_npvertexbuffer(NpVertexBuffer * vertex_buffer)
     {
         if ( vertices.format.elementsForTextureCoordinateSet[i] > 0 )
         {
-            Int texCoordsSize = vertexCount * [[[ NP Graphics ] vertexBufferManager ] computeDataFormatByteCount:vertices.format.textureCoordinatesDataFormat[i] ];
+            Int texCoordsSize = vertexCount * [ NPVertexBuffer computeDataFormatByteCount:vertices.format.textureCoordinatesDataFormat[i] ];
 
             glGenBuffers(1, &(vertexBuffer.textureCoordinatesSetID[i]));
             glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.textureCoordinatesSetID[i]);

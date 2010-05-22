@@ -2,5 +2,4 @@
 #import "NPSUXModelGroup.h"
 #import "NPSUXModelLod.h"
 #import "NPVertexBuffer.h"
-#import "NPVertexBufferManager.h"
 #import "NPModelManager.h"

@@ -7,16 +7,14 @@ NPSUXModel.m \
 NPSUXModelGroup.m \
 NPSUXModelLod.m \
 NPVertexBuffer.m \
-NPModelManager.m \
-NPVertexBufferManager.m
+NPModelManager.m
 
 libNPEngineGraphicsModel_HEADER_FILES = \
 NPSUXModel.h \
 NPSUXModelGroup.h \
 NPSUXModelLod.h \
 NPVertexBuffer.h \
-NPModelManager.h \
-NPVertexBufferManager.h
+NPModelManager.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make
