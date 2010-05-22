@@ -87,28 +87,16 @@
 {
     if ( glewInitialised == NO )
     {
-#define glewGetContext() (&glewContext)
-#define glxewGetContext() (&glxewContext)
-
         GLenum err = glewInit();
 
         if (GLEW_OK != err)
         {
             NPLOG_ERROR(@"glewInit failed");
+            return;
         }
 
-        err = glxewInit();
-
-        if (GLEW_OK != err)
-        {
-            NPLOG_ERROR(@"glxewInit failed");
-        }
+        glewInitialised = YES;
     }
-}
-
-- (GLEWContext *)glewContext
-{
-    return &glewContext;
 }
 
 - (void) activate
@@ -177,5 +165,3 @@
 
 @end
 
-#undef glewGetContext
-#undef glxewGetContext
