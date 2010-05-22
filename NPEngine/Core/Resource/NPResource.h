@@ -15,8 +15,4 @@
 - (void) setFileName:(NSString *)newFileName;
 - (NSString *)fileName;
 
-- (BOOL) loadFromPath:(NSString *)path;
-- (void) reset;
-- (BOOL) ready;
-
 @end

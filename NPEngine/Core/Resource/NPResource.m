@@ -31,11 +31,7 @@
 
 - (void) setFileName:(NSString *)newFileName
 {
-    if ( fileName != newFileName )
-    {
-        [ fileName release ];
-        fileName = [ newFileName retain ];
-    }
+    ASSIGN(fileName, newFileName);
 }
 
 - (NSString *)fileName
