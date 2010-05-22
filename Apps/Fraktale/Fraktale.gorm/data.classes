@@ -4,6 +4,7 @@
 	Actions = (
 	);
 	Outlets = (
+	    attributesWindowController
 	);
 	Super = NPApplicationController;
     };
