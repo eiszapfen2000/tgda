@@ -400,7 +400,7 @@ struct prng *prng_external_init(struct prng_definition *def);
 /* INLINE fnk def. for mult_mod, I don't know if this works for non-GCC */
 
 #ifdef __GNUC__
-extern __inline__ prng_num mult_mod(prng_num s,struct mult_mod_struct *mm)
+extern __attribute__ ((gnu_inline)) inline prng_num mult_mod(prng_num s,struct mult_mod_struct *mm)
 {
 s_prng_num s_tmp;
 
