@@ -26,9 +26,11 @@
 
 - (void) setMaterialFileName:(NSString *)newMaterialFileName;
 
-- (BOOL) loadFromFile:(NPFile *)file;
-- (BOOL) saveToFile:(NPFile *)file;
 - (void) reset;
+- (BOOL) loadFromFile:(NPFile *)file;
+- (BOOL) loadFromPath:(NSString *)path;
+- (BOOL) saveToFile:(NPFile *)file;
+
 
 - (void) addEffectFromPath:(NSString *)path;
 - (void) setEffectTechniqueByName:(NSString *)techniqueName;
