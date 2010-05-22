@@ -1,6 +1,7 @@
 #import "Core/NPObject/NPObject.h"
 #import "Core/Resource/NPResource.h"
 #import "Graphics/NPEngineGraphicsConstants.h"
+#import "Graphics/npgl.h"
 
 @class NPFile;
 
@@ -66,6 +67,9 @@ void init_empty_npvertexbuffer(NpVertexBuffer * vertex_buffer);
     NpVertexBuffer vertexBuffer;
     NpVertices vertices;
 }
+
++ (GLenum) computeGLUsage:(NpState)bufferUsage;
++ (Int32) computeDataFormatByteCount:(NpState)dataFormat;
 
 - (id) init;
 - (id) initWithParent:(id <NPPObject> )newParent;

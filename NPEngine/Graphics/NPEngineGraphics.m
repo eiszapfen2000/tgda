@@ -58,7 +58,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
     textureBindingState = [[ NPTextureBindingState alloc ] initWithName:@"NPEngine Texture Binding State" parent:self ];
 
-    vertexBufferManager = [[ NPVertexBufferManager alloc ] initWithName:@"NPEngine VertexBuffer Manager" parent:self ];
     imageManager        = [[ NPImageManager        alloc ] initWithName:@"NPEngine Image Manager"        parent:self ];
     textureManager      = [[ NPTextureManager      alloc ] initWithName:@"NPEngine Texture Manager"      parent:self ];
     effectManager       = [[ NPEffectManager       alloc ] initWithName:@"NPEngine Effect Manager"       parent:self ];
@@ -70,7 +69,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     r2vbManager         = [[ NPR2VBManager         alloc ] initWithName:@"NPEngine R2VB Manager"         parent:self ];
 
     viewportManager = [[ NPViewportManager alloc ] initWithName:@"NPEngine Viewport Manager" parent:self ];
-    //cameraManager   = [[ NPCameraManager   alloc ] initWithName:@"NPEngine Camera Manager"   parent:self ];
 
     orthographicRendering = [[ NPOrthographicRendering alloc ] initWithName:@"NPEngine Ortho" parent:self ];
 
@@ -85,7 +83,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     NPLOG(@"NP Engine Graphics Dealloc");
 
     [ orthographicRendering release ];
-    //[ cameraManager release ];
     [ viewportManager release ];
     [ r2vbManager release ];
     [ pixelBufferManager release ];
@@ -95,7 +92,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     [ effectManager release ];
     [ textureManager release ];
     [ imageManager release ];
-    [ vertexBufferManager release ];
     [ textureBindingState release ];
     [ stateSetManager release ];
     [ stateConfiguration release ];
@@ -126,16 +122,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     [[ viewportManager currentViewport ] setControlSize :&viewportSize ];
     [[ viewportManager currentViewport ] setViewportSize:&viewportSize ];
 
-//    [ textureBindingStateManager setup ];
-
-    [ vertexBufferManager setup ];
     [ imageManager   setup ];
     [ textureManager setup ];
     [ effectManager  setup ];
 
     [ renderTargetManager setup ];
-
-//    [ cameraManager setup ];
 
     [ stateConfiguration activate ];
 
@@ -152,11 +143,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
 - (void) setName:(NSString *)newName
 {
-    if ( name != newName )
-    {
-        [ name release ];
-        name = [ newName retain ];
-    }
+    ASSIGN(name, newName);
 }
 
 - (id <NPPObject>) parent
@@ -196,11 +183,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 - (NPTextureBindingState *) textureBindingState
 {
     return textureBindingState;
-}
-
-- (NPVertexBufferManager *) vertexBufferManager
-{
-    return vertexBufferManager;
 }
 
 - (NPImageManager *) imageManager
@@ -248,11 +230,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     return viewportManager;
 }
 
-/*- (NPCameraManager *) cameraManager
-{
-    return cameraManager;
-}*/
-
 - (NPOrthographicRendering *) orthographicRendering
 {
     return orthographicRendering;
@@ -292,27 +269,27 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     [[ renderContextManager currentRenderContext ] swap ];
 }
 
-- (id)copyWithZone:(NSZone *)zone
+- (id) copyWithZone:(NSZone *)zone
 {
     return self;
 }
 
-- (id)retain
+- (id) retain
 {
     return self;
 }
 
-- (NSUInteger)retainCount
+- (NSUInteger) retainCount
 {
     return UINT_MAX;  //denotes an object that cannot be released
 } 
 
-- (void)release
+- (void) release
 {
     //do nothing
 } 
 
-- (id)autorelease
+- (id) autorelease
 {
     return self;
 }
