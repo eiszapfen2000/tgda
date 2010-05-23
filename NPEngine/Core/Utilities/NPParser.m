@@ -156,6 +156,26 @@
     return NO;
 }
 
+- (BOOL) getTokenAsDouble:(double *)doubleValue
+                 fromLine:(NSUInteger)lineIndex
+               atPosition:(NSUInteger)tokenIndex
+{
+    NPStringList * tokensForLine = [ self getTokensForLine:lineIndex ];
+
+    if ( tokenIndex < [ tokensForLine count ] )
+    {
+        const char * cString = [[ tokensForLine stringAtIndex:tokenIndex ] cStringUsingEncoding:NSUTF8StringEncoding ];
+        
+        if ( sscanf(cString, "%lf", doubleValue) == 1 )
+        {
+            return YES;
+        }
+    }
+
+    *doubleValue = 0.0f;
+    return NO;
+}
+
 - (BOOL) getTokenAsBool:(BOOL *)boolValue
                fromLine:(NSUInteger)lineIndex
              atPosition:(NSUInteger)tokenIndex
@@ -164,7 +184,7 @@
 
     if ( tokenIndex < [ tokensForLine count ] )
     {
-        NSArray * trueArray  = [ NSArray arrayWithObjects:@"on", @"true", @"1", nil ];
+        NSArray * trueArray  = [ NSArray arrayWithObjects:@"on",  @"true",  @"1", nil ];
         NSArray * falseArray = [ NSArray arrayWithObjects:@"off", @"false", @"0", nil ];
 
         NSString * token = [ tokensForLine stringAtIndex:tokenIndex ];

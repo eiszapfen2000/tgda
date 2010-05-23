@@ -48,6 +48,11 @@
               atPosition:(NSUInteger)tokenIndex
                         ;
 
+- (BOOL) getTokenAsDouble:(double *)doubleValue
+                 fromLine:(NSUInteger)lineIndex
+               atPosition:(NSUInteger)tokenIndex
+                         ;
+
 - (BOOL) getTokenAsBool:(BOOL *)boolValue
                fromLine:(NSUInteger)lineIndex
              atPosition:(NSUInteger)tokenIndex
