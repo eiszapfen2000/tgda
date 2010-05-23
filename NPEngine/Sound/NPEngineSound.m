@@ -13,7 +13,7 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 	}
 }
 
-+ (NPEngineSound *)instance
++ (NPEngineSound *) instance
 {
     return NP_ENGINE_SOUND;
 } 

@@ -14,12 +14,12 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
 	}
 }
 
-+ (NPEngineInput *)instance
++ (NPEngineInput *) instance
 {
     return NP_ENGINE_INPUT;
 } 
 
-+ (id)allocWithZone:(NSZone *)zone
++ (id) allocWithZone:(NSZone *)zone
 {
     if ( self != [ NPEngineInput class ] )
     {
@@ -150,27 +150,27 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
     return ( mouseButtonPressed || keyPressed );
 }
 
-- (id)copyWithZone:(NSZone *)zone
+- (id) copyWithZone:(NSZone *)zone
 {
     return self;
 }
 
-- (id)retain
+- (id) retain
 {
     return self;
 }
 
-- (NSUInteger)retainCount
+- (NSUInteger) retainCount
 {
     return UINT_MAX;  //denotes an object that cannot be released
 } 
 
-- (void)release
+- (void) release
 {
     //do nothing
 } 
 
-- (id)autorelease
+- (id) autorelease
 {
     return self;
 }

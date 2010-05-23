@@ -64,7 +64,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 
     randomNumberGeneratorManager = [[ NPRandomNumberGeneratorManager alloc ] initWithName:@"NPEngine RandomNumberGenerator Manager" parent:self ];
 
-    transformationState = [[ NPTransformationState alloc ] initWithName:@"NPEngine Transformation State"  parent:self ];
+    transformationState = [[ NPTransformationState alloc ] initWithName:@"NPEngine Transformation State" parent:self ];
 
     NPLOG(@"%@ up and running", name);
 
@@ -116,22 +116,22 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     return objectID;
 }
 
-- (NPLogger *)logger
+- (NPLogger *) logger
 {
     return logger;
 }
 
-- (NPTimer *)timer
+- (NPTimer *) timer
 {
     return timer;
 }
 
-- (NPObjectManager *)objectManager
+- (NPObjectManager *) objectManager
 {
     return objectManager;
 }
 
-- (NPPathManager *)pathManager
+- (NPPathManager *) pathManager
 {
     return pathManager;
 }
@@ -141,7 +141,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     return randomNumberGeneratorManager;
 }
 
-- (NPTransformationState *)transformationState
+- (NPTransformationState *) transformationState
 {
     return transformationState;
 }
@@ -151,27 +151,27 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     [ timer update ];
 }
 
-- (id)copyWithZone:(NSZone *)zone
+- (id) copyWithZone:(NSZone *)zone
 {
     return self;
 }
 
-- (id)retain
+- (id) retain
 {
     return self;
 }
 
-- (NSUInteger)retainCount
+- (NSUInteger) retainCount
 {
     return UINT_MAX;  //denotes an object that cannot be released
 } 
 
-- (void)release
+- (void) release
 {
     //do nothing
 } 
 
-- (id)autorelease
+- (id) autorelease
 {
     return self;
 }
