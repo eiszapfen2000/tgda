@@ -2,8 +2,8 @@
     Terrain = 
     {
         Texture = "Terrain0.jpg";
-        H = "0.8";
-        Sigma = "1.0";
+        H = "1.0";
+        Sigma = "1.25";
         Iterations = "0";
         Size = ("20", "20");
         MinimumHeight = "0.0";

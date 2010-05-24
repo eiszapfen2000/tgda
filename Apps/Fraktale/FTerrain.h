@@ -60,17 +60,10 @@
 - (Int32) currentLod;
 
 - (void) setCurrentLod:(Int32)newCurrentLod;
-- (void) setWidth:(Int32)newWidth;
-- (void) setLength:(Int32)newLength;
-- (void) setMinimumHeight:(Float)newMinimumHeight;
-- (void) setMaximumHeight:(Float)newMaximumHeight;
 - (void) setRngOneUsingName:(NSString *)newRngOneName;
 - (void) setRngTwoUsingName:(NSString *)newRngTwoName;
 - (void) setRngOneSeed:(ULong)newSeed;
 - (void) setRngTwoSeed:(ULong)newSeed;
-- (void) setH:(Float)newH;
-- (void) setSigma:(Float)newSigma;
-- (void) setIterationsToDo:(Int32)newIterationsToDo;
 
 - (void) setupGaussianKernelForAO;
 - (void) setupGaussianKernelForAOWithSigma:(Float)kernelSigma;

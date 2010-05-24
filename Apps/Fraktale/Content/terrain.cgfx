@@ -48,7 +48,7 @@ FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
 	FOUTPUTDATA output;
 
     float3 normal = normalize(input.normal);
-    float3 lightVector = lightPosition;// - input.worldPosition.xyz;
+    float3 lightVector = lightPosition - input.worldPosition.xyz;
     float3 nLightVector = normalize(lightVector);
 
     float factor = max(0.0f, dot(normal, nLightVector));
@@ -56,7 +56,8 @@ FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
 
     //float4 diffusecolor = tex2D(colormap, input.texcoord);
 
-    output.color = float4(input.AO, 1.0);
+    output.color = float4(input.AO * (factor + ambient), 1.0);
+    //output.color = float4(input.AO, 1.0);
     //output.color = float4((factor+ambient)*0.7f,0.0,0.0,0.0);
     //output.color = float4(0.1f + input.AO.x,0.0,0.0,0.0);
     //output.color = float4(normal, 1.0f);
