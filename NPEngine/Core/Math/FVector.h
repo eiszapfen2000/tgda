@@ -65,6 +65,7 @@ const char * fv2_v_to_string(const FVector2 * const v);
 FVector3 * fv3_alloc();
 FVector3 * fv3_alloc_init();
 FVector3 * fv3_alloc_init_with_fv3(FVector3 * v);
+FVector3 * fv3_alloc_init_with_components(Float x, Float y, Float z);
 FVector3 * fv3_free(FVector3 * v);
 void fv3_v_init_with_zeros(FVector3 * v);
 void fv3_vv_init_with_fv3(FVector3 * v1, const FVector3 const * v2);
