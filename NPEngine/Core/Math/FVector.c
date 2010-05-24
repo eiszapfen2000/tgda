@@ -216,6 +216,17 @@ FVector3 * fv3_alloc_init_with_fv3(FVector3 * v)
     return tmp;
 }
 
+FVector3 * fv3_alloc_init_with_components(Float x, Float y, Float z)
+{
+    FVector3 * tmp = npfreenode_alloc(NP_FVECTOR3_FREELIST);
+
+    V_X(*tmp) = x;
+    V_Y(*tmp) = y;
+    V_Z(*tmp) = z;
+
+    return tmp;
+}
+
 FVector3 * fv3_free(FVector3 * v)
 {
     return npfreenode_free(v, NP_FVECTOR3_FREELIST);
