@@ -37,16 +37,15 @@
     g = [[[ NP Core ] randomNumberGeneratorManager ] mersenneTwisterWithSeed:0L ];
     [ rngs setObject:g forKey:NP_RNG_MERSENNE ];
 
-    size = iv2_alloc_init();
-    size->x = size->y = -1;
+    gaussianRng = [[[ NP Core ] randomNumberGeneratorManager ] gaussianGeneratorWithName:@"Gaussian"
+                                                    firstFixedParameterGenerator:NP_RNG_TT800
+                                                   secondFixedParameterGenerator:NP_RNG_TT800 ];
 
-    currentResolution = iv2_alloc_init();
-    lastResolution = iv2_alloc_init();
-    baseResolution = iv2_alloc_init();
+    size = iv2_alloc_init_with_components(-1, -1);
 
-    currentResolution->x = currentResolution->y = -1;   
-    lastResolution->x = lastResolution->y = -1;    
-    baseResolution->x = baseResolution->y = -1;
+    currentResolution = iv2_alloc_init_with_components(-1, -1);
+    lastResolution    = iv2_alloc_init_with_components(-1, -1);
+    baseResolution    = iv2_alloc_init_with_components(-1, -1);
 
     H = 0.5f;
     sigma = 1.0f;
@@ -65,16 +64,13 @@
 
     [ self setupGaussianKernelForAO ];
 
-    lightPosition = fv3_alloc_init();
-    lightPosition->x = 0.0f;
-    lightPosition->z = 5.0f;
-    lightPosition->y = 10.0f;
+    lightPosition = fv3_alloc_init_with_components(0.0f, 5.0f, 10.0f);
 
     lods = [[ NSMutableArray alloc ] init ];
 
-    gaussianRng = [[[ NP Core ] randomNumberGeneratorManager ] gaussianGeneratorWithName:@"Gaussian"
-                                                    firstFixedParameterGenerator:NP_RNG_TT800
-                                                   secondFixedParameterGenerator:NP_RNG_TT800 ];
+    effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"terrain.cgfx" ];
+    lightPositionParameter = [ effect parameterWithName:@"lightPosition" ];
+    NSAssert(lightPositionParameter != NULL, @"Light position parameter not found");
 
     return self;
 }
@@ -143,26 +139,6 @@
     lastResolution->y = (currentResolution->y - 1) / 2;
 }
 
-- (void) setWidth:(Int32)newWidth
-{
-    size->x = newWidth;
-}
-
-- (void) setLength:(Int32)newLength
-{
-    size->y = newLength;
-}
-
-- (void) setMinimumHeight:(Float)newMinimumHeight
-{
-    minimumHeight = newMinimumHeight;
-}
-
-- (void) setMaximumHeight:(Float)newMaximumHeight
-{
-    maximumHeight = newMaximumHeight;
-}
-
 - (void) setRngOneUsingName:(NSString *)newRngOneName
 {
     [ gaussianRng setFirstGenerator:[rngs objectForKey:newRngOneName]];
@@ -181,22 +157,6 @@
 - (void) setRngTwoSeed:(ULong)newSeed
 {
     [[ gaussianRng secondGenerator ] reseed:newSeed ];
-}
-
-- (void) setH:(Float)newH
-{
-    H = newH;
-}
-
-- (void) setSigma:(Float)newSigma
-{
-    sigma = newSigma;
-    variance = sigma * sigma;
-}
-
-- (void) setIterationsToDo:(Int32)newIterationsToDo
-{
-    iterationsToDo = newIterationsToDo;
 }
 
 - (void) setupGaussianKernelForAO
@@ -264,10 +224,6 @@
 
     [ self updateGeometry ];
 
-    effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"terrain.cgfx" ];
-    lightPositionParameter = [ effect parameterWithName:@"lightPosition" ];
-    NSAssert(lightPositionParameter != NULL, @"Light position parameter not found");
-
     return YES;
 }
 
@@ -286,25 +242,25 @@
 - (void) initialiseEmptyBaseLodPositions
 {
     Int numberOfVertices = 4;
-    Float * vertexPositions = ALLOC_ARRAY(Float, numberOfVertices * 3);
+    FVertex3 * vertices = ALLOC_ARRAY(FVertex3, numberOfVertices);
 
-    Float deltaX = (Float)size->x / (Float)(baseResolution->x - 1);
-    Float deltaY = (Float)size->y / (Float)(baseResolution->y - 1);
+    Float deltaX = (Float)size->x;
+    Float deltaY = (Float)size->y;
 
-    for ( Int i = 0; i < baseResolution->y; i++ )
+    for ( Int i = 0; i < 2; i++ )
     {
-        for ( Int j = 0; j < baseResolution->x; j++ )
+        for ( Int j = 0; j < 2; j++ )
         {
-            Int index = (i * baseResolution->x + j) * 3;
-            vertexPositions[index]   = (Float)(-size->x)/2.0f + (Float)j * deltaX;            
-            vertexPositions[index+2] = (Float)(-size->y)/2.0f + (Float)i * deltaY;
-            vertexPositions[index+1] = 0.0f;
+            Int index = i * 2 + j;
+            vertices[index].x = (Float)(-size->x)/2.0f + (Float)j * deltaX;
+            vertices[index].y = 0.0f;
+            vertices[index].z = (Float)(-size->y)/2.0f + (Float)i * deltaY;
         }
     }
 
     NPVertexBuffer * base = [ lods objectAtIndex:0 ];
 
-    [ base setPositions:vertexPositions 
+    [ base setPositions:(Float*)vertices
         elementsForPosition:3 
                  dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT
                 vertexCount:numberOfVertices ];
@@ -329,9 +285,9 @@
     }
 
     [[ lods objectAtIndex:currentLod ] setTextureCoordinates:(Float *)texCoords 
-                             elementsForTextureCoordinates:2
-                                                dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
-                                                    forSet:0 ];
+                               elementsForTextureCoordinates:2
+                                                  dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
+                                                      forSet:0 ];
 }
 
 - (void) updateNormals
@@ -342,40 +298,38 @@
     FNormal * normals = ALLOC_ARRAY(FNormal, numberOfVertices);
 
     FNormal cornerNormal = {0.0f, 1.0f, 0.0f};
-
     for ( Int i = 0; i < numberOfVertices; i++ )
     {
         normals[i] = cornerNormal;
     }
 
     // inner faces
+    FVector3 north, south, west, east;
+    FVector3 northWestNormal, northEastNormal, southWestNormal, southEastNormal;
+
     for ( Int i = 1; i < currentResolution->y - 1; i++ )
     {
         for ( Int j = 1; j < currentResolution->x - 1; j++ )
         {
-            FVector3 north, south, west, east;
             Int index = i * currentResolution->x + j;
             Int indexNorth = (i - 1) * currentResolution->x + j;
             Int indexSouth = (i + 1) * currentResolution->x + j;
             Int indexWest  = i * currentResolution->x + j - 1;
             Int indexEast  = i * currentResolution->x + j + 1;
 
-            fv3_vv_sub_v(&(vertexPositions[indexNorth]), &(vertexPositions[index]), &north);
-            fv3_vv_sub_v(&(vertexPositions[indexSouth]), &(vertexPositions[index]), &south);
-            fv3_vv_sub_v(&(vertexPositions[indexWest ]), &(vertexPositions[index]), &west);
-            fv3_vv_sub_v(&(vertexPositions[indexEast ]), &(vertexPositions[index]), &east);
+            north = fv3_vv_sub(&(vertexPositions[indexNorth]), &(vertexPositions[index]));
+            south = fv3_vv_sub(&(vertexPositions[indexSouth]), &(vertexPositions[index]));
+            west = fv3_vv_sub(&(vertexPositions[indexWest ]), &(vertexPositions[index]));
+            east = fv3_vv_sub(&(vertexPositions[indexEast ]), &(vertexPositions[index]));
 
-            FVector3 northWestNormal, northEastNormal, southWestNormal, southEastNormal;
-            fv3_vv_cross_product_v(&north, &west,  &northWestNormal);
-            fv3_vv_cross_product_v(&east,  &north, &northEastNormal);
-            fv3_vv_cross_product_v(&west,  &south, &southWestNormal);
-            fv3_vv_cross_product_v(&south, &east,  &southEastNormal);
+            northWestNormal = fv3_vv_cross_product(&north, &west);
+            northEastNormal = fv3_vv_cross_product(&east,  &north);
+            southWestNormal = fv3_vv_cross_product(&west,  &south);
+            southEastNormal = fv3_vv_cross_product(&south, &east);
 
-            FVector3 tmp, sum;
-            fv3_vv_add_v(&northWestNormal, &northEastNormal, &sum);
-            fv3_vv_add_v(&sum, &southWestNormal, &tmp);
-            fv3_vv_add_v(&tmp, &southEastNormal, &sum);
-
+            FVector3 sum = fv3_vv_add(&northWestNormal, &northEastNormal);
+            sum = fv3_vv_add(&sum, &southWestNormal);
+            sum = fv3_vv_add(&sum, &southEastNormal);
             fv3_v_normalise(&sum);
 
             normals[index] = sum;
@@ -446,7 +400,9 @@
         }
     }
 
-    [[ lods objectAtIndex:currentLod ] setColors:colors elementsForColor:3 dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT ];
+    [[ lods objectAtIndex:currentLod ] setColors:colors
+                                elementsForColor:3
+                                      dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT ];
 }
 
 - (void) updateIndices
@@ -464,13 +420,18 @@
             indices[index+1] = (i + 1) * currentResolution->x + j;
             indices[index+2] = i * currentResolution->x + j + 1;
 
+            //NSLog(@"%d %d %d", indices[index], indices[index+1], indices[index+2]);
+
             indices[index+3] = (i + 1) * currentResolution->x + j;
             indices[index+4] = (i + 1) * currentResolution->x + j + 1;
             indices[index+5] = i * currentResolution->x + j + 1;
+
+            //NSLog(@"%d %d %d", indices[index+3], indices[index+4], indices[index+5]);
         }
     }
 
-    [[ lods objectAtIndex:currentLod ] setIndices:indices indexCount:numberOfIndices ];
+    [[ lods objectAtIndex:currentLod ] setIndices:indices 
+                                       indexCount:numberOfIndices ];
 }
 
 - (void) subdivide
@@ -485,10 +446,8 @@
     currentResolution->y = (lastResolution->y - 1) * 2 + 1;
 
     Int numberOfVertices = currentResolution->x * currentResolution->y;
-    Float * positions = ALLOC_ARRAY(Float, numberOfVertices * 3);
-
-    Float * currentPositions = [[ lods objectAtIndex:currentLod-1 ] positions ];
-
+    FVertex3 * positions = ALLOC_ARRAY(FVertex3, numberOfVertices);
+    FVertex3 * currentPositions = (FVertex3 *)[[ lods objectAtIndex:currentLod-1 ] positions ];
     Float rngVariance = variance / (Float)pow(2.0, (Double)(currentIteration - 1) * (Double)H);
 
     // diamond step
@@ -500,15 +459,15 @@
     {
         for ( Int j = 0; j < lastResolution->x - 1; j++ )
         {
-            Int index0 = (i * lastResolution->x + j) * 3 + 1;
-            Int index3 = (i * lastResolution->x + j + 1) * 3 + 1;
-            Int index1 = ((i + 1) * lastResolution->x + j) * 3 + 1;
-            Int index2 = ((i + 1) * lastResolution->x + j + 1) * 3 + 1;
+            Int index0 = (i * lastResolution->x + j);
+            Int index3 = (i * lastResolution->x + j + 1);
+            Int index1 = ((i + 1) * lastResolution->x + j);
+            Int index2 = ((i + 1) * lastResolution->x + j + 1);
 
             Int index = i * (lastResolution->x -1) + j;
 
-            diamondPositions[index] = (currentPositions[index0] + currentPositions[index1] +
-                                      currentPositions[index2] + currentPositions[index3]) / 4.0f +
+            diamondPositions[index] = (currentPositions[index0].y + currentPositions[index1].y +
+                                       currentPositions[index2].y + currentPositions[index3].y) / 4.0f +
                                       [ gaussianRng nextGaussianFPRandomNumberWithMean:0.0f andVariance:rngVariance ];
                                       
         }
@@ -523,26 +482,26 @@
     {
         for ( Int j = 0; j < currentResolution->x; j++ )
         {
-            Int index = (i * currentResolution->x + j) * 3;
-            positions[index]   = (Float)(-size->x)/2.0f + (Float)j * deltaX;            
-            positions[index+2] = (Float)(-size->y)/2.0f + (Float)i * deltaY;
+            Int index = i * currentResolution->x + j;
+            positions[index].x = (Float)(-size->x)/2.0f + (Float)j * deltaX;            
+            positions[index].z = (Float)(-size->y)/2.0f + (Float)i * deltaY;
 
             if ( (j % 2 == 0) && (i % 2 == 0) )
             {
-                Float tmp = currentPositions[((i/2)*lastResolution->x+(j/2))*3+1];
-                positions[index+1] = tmp;
+                Float tmp = currentPositions[((i/2)*lastResolution->x+(j/2))].y;
+                positions[index].y = tmp;
             }
             else if ( (j % 2 == 1) && (i % 2 == 1) )
             {
                 Float tmp = diamondPositions[(i/2)*(lastResolution->x-1)+(j/2)];
-                positions[index+1] = tmp;
+                positions[index].y = tmp;
             }
             else
             {
                 if ( (i % 2 == 0) && (j % 2 == 1) )
                 {
-                    Float west = currentPositions[((i/2)*lastResolution->x+(j/2)  )*3+1];
-                    Float east = currentPositions[((i/2)*lastResolution->x+(j/2)+1)*3+1];
+                    Float west = currentPositions[((i/2)*lastResolution->x+(j/2)  )].y;
+                    Float east = currentPositions[((i/2)*lastResolution->x+(j/2)+1)].y;
 
                     Float north, south;
                     if ( i == 0 )
@@ -561,13 +520,13 @@
                         south = diamondPositions[(i/2   )*(lastResolution->x-1)+(j/2)];
                     }
 
-                    positions[index+1] = ( west + east + north + south ) / 4.0f +
+                    positions[index].y = ( west + east + north + south ) / 4.0f +
                                          [ gaussianRng nextGaussianFPRandomNumberWithMean:0.0f andVariance:rngVariance ];
                 }
                 else if ( (j % 2 == 0) && (i % 2 == 1) )
                 {
-                    Float north = currentPositions[((i/2  )*lastResolution->x+(j/2))*3+1];
-                    Float south = currentPositions[((i/2+1)*lastResolution->x+(j/2))*3+1];
+                    Float north = currentPositions[((i/2  )*lastResolution->x+(j/2))].y;
+                    Float south = currentPositions[((i/2+1)*lastResolution->x+(j/2))].y;
 
                     Float west, east;
                     if ( j == 0 )
@@ -586,7 +545,7 @@
                         east = diamondPositions[(i/2)*(lastResolution->x-1)+(j/2  )];
                     }
 
-                    positions[index+1] = ( west + east + north + south ) / 4.0f +
+                    positions[index].y = ( west + east + north + south ) / 4.0f +
                                          [ gaussianRng nextGaussianFPRandomNumberWithMean:0.0f andVariance:rngVariance ];
 
                 }
@@ -600,16 +559,25 @@
 
     FREE(diamondPositions);
 
-    NPVertexBuffer * buffer = [[ NPVertexBuffer alloc ] initWithName:[ NSString stringWithFormat:@"Iteration%d",currentIteration ] parent:self ];
-    [ buffer setPositions:positions 
+/*
+    for (Int32 i = 0; i < numberOfVertices; i++)
+    {
+        Int32 index = i * 3;
+        NSLog(@"%f %f %f", positions[index], positions[index+1], positions[index+2]);
+    }
+*/
+
+    NSString * vertexBufferName = [ NSString stringWithFormat:@"Iteration%d",currentIteration ];
+    NPVertexBuffer * buffer = [[ NPVertexBuffer alloc ] initWithName:vertexBufferName
+                                                              parent:self ];
+
+    [ buffer setPositions:(Float *)positions 
       elementsForPosition:3 
                dataFormat:NP_GRAPHICS_VBO_DATAFORMAT_FLOAT
               vertexCount:numberOfVertices ];
 
     [ lods addObject:buffer ];
     [ buffer release ];
-
-    //iterationsDone = iterationsDone + 1;
 }
 
 - (void) updateGeometryUsingSize:(IVector2)size
@@ -644,6 +612,7 @@
     }
 
     Int iterationsDone = 0;
+    iterationsToDo = 6;
     while ( iterationsToDo > iterationsDone )
     {
         [ self subdivide ];

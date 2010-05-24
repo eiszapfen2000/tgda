@@ -87,6 +87,7 @@
     [[ attractorIterationsTextfield cell ] setStringValue:[ attractorConfig objectForKey:@"Iterations" ]];
 
     [ typePopUp sendAction:[typePopUp action] to:[typePopUp target]];
+    [ tabView selectFirstTabViewItem:self ];
 }
 
 - (void)controlTextDidEndEditing:(NSNotification *)aNotification

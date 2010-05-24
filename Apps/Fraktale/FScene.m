@@ -1,4 +1,6 @@
 #import "NP.h"
+#import "Core/Utilities/NPStringList.h"
+#import "Core/Utilities/NPParser.h"
 #import "FCore.h"
 #import "FScene.h"
 #import "FCamera.h"
@@ -79,6 +81,9 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
                                                   pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ] retain ];
 
     fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
+
+    model = [[[ NP Graphics ] modelManager ] loadModelFromPath:@"camera.model" ];
+    [ model uploadToGL ];
 
     return self;
 }
@@ -214,6 +219,13 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     if ( activeScene == FSCENE_DRAW_ATTRACTOR )
     {
         [ attractor render:YES ];
+        [ model render ];
+    }
+
+    if ( activeScene == FSCENE_DRAW_TERRAIN )
+    {
+        [ terrain render ];
+        //[ model render ];
     }
 
     // detach targets    

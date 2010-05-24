@@ -10,6 +10,7 @@
 @class NPRenderBuffer;
 @class NPEffect;
 @class NPFullscreenQuad;
+@class NPSUXModel;
 
 typedef struct FBloomSettings
 {
@@ -50,6 +51,8 @@ void fbloomsettings_init(FBloomSettings * bloomSettings);
     NPRenderBuffer * depthBuffer;
 
     NPFullscreenQuad * fullscreenQuad;
+
+    NPSUXModel * model;
 }
 
 - (id) init;
