@@ -36,6 +36,9 @@ void fbloomsettings_init(FBloomSettings * bloomSettings);
     FCamera * camera;
 
     FBloomSettings bloomSettings;
+    Int32 luminanceMaxMipMapLevel;
+    Float referenceWhite;
+    Float key;
 
     NpState activeScene;
 
@@ -45,16 +48,18 @@ void fbloomsettings_init(FBloomSettings * bloomSettings);
     CGparameter bloomSaturationParameter;
     CGparameter sceneIntensityParameter;
     CGparameter sceneSaturationParameter;
+    CGparameter toneMappingParameters;
 
     NPRenderTargetConfiguration * attractorRTC;
-    NPRenderTexture * originalScene;
-    NPRenderTexture * colorTargetOne;
-    NPRenderTexture * colorTargetTwo;
+    NPRenderTargetConfiguration * terrainRTC;
+    NPRenderTexture * attractorScene;
+    NPRenderTexture * terrainScene;
+    NPRenderTexture * bloomTargetOne;
+    NPRenderTexture * bloomTargetTwo;
+    NPRenderTexture * luminanceTarget;
     NPRenderBuffer * depthBuffer;
 
     NPFullscreenQuad * fullscreenQuad;
-
-    NPSUXModel * model;
 }
 
 - (id) init;

@@ -1,6 +1,4 @@
-float4x4 modelmatrix : NPMODEL;
-float4x4 viewmatrix  : NPVIEW;
-float4x4 projectionmatrix : NPPROJECTION;
+float4x4 mvp : NPMODELVIEWPROJECTION;
 
 struct CINPUTDATA
 {
@@ -17,8 +15,6 @@ struct CVOUTPUTDATA
 CVOUTPUTDATA mvertexshader_coordinate_cross(CINPUTDATA input)
 {
 	CVOUTPUTDATA output;
-
-	float4x4 mvp = mul(projectionmatrix,mul(viewmatrix,modelmatrix));
 
 	output.position = mul(mvp, float4(input.position, 1.0f));
     output.color = input.color;
@@ -39,8 +35,6 @@ struct AVOUTPUTDATA
 AVOUTPUTDATA mvertexshader_attractor(AINPUTDATA input)
 {
 	AVOUTPUTDATA output;
-
-	float4x4 mvp = mul(projectionmatrix,mul(viewmatrix,modelmatrix));
 
 	output.position = mul(mvp, float4(input.position, 1.0f));
 	
