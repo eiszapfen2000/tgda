@@ -4,6 +4,7 @@
 @class FAttractor;
 @class FTerrain;
 @class FCamera;
+@class FPreethamSkylight;
 
 @class NPRenderTargetConfiguration;
 @class NPRenderTexture;
@@ -31,6 +32,7 @@ void fbloomsettings_init(FBloomSettings * bloomSettings);
 {
     FAttractor * attractor;
     FTerrain * terrain;
+    FPreethamSkylight * skylight;
     FCamera * camera;
 
     FBloomSettings bloomSettings;
@@ -60,8 +62,10 @@ void fbloomsettings_init(FBloomSettings * bloomSettings);
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 - (void) dealloc;
 
+- (FCamera *) camera;
 - (FAttractor *) attractor;
 - (FTerrain *) terrain;
+- (FPreethamSkylight *) skylight;
 
 - (NpState) activeScene;
 - (void) setActiveScene:(NpState)neewActiveScene;

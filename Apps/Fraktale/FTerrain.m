@@ -43,9 +43,9 @@
 
     size = iv2_alloc_init_with_components(-1, -1);
 
-    currentResolution = iv2_alloc_init_with_components(-1, -1);
-    lastResolution    = iv2_alloc_init_with_components(-1, -1);
     baseResolution    = iv2_alloc_init_with_components(-1, -1);
+    lastResolution    = iv2_alloc_init_with_components(-1, -1);
+    currentResolution = iv2_alloc_init_with_components(-1, -1);
 
     H = 0.5f;
     sigma = 1.0f;
@@ -53,8 +53,6 @@
     minimumHeight = 0.0f;
     maximumHeight = 1.0f;
 
-    iterations = 0;
-    baseIterations = 0;
     currentIteration = 0;
     iterationsToDo = 0;
     currentLod = 0;
@@ -64,7 +62,7 @@
 
     [ self setupGaussianKernelForAO ];
 
-    lightPosition = fv3_alloc_init_with_components(0.0f, 5.0f, 10.0f);
+    lightPosition = fv3_alloc_init_with_components(20.0f, 5.0f, 3.0f);
 
     lods = [[ NSMutableArray alloc ] init ];
 
@@ -129,14 +127,28 @@
 
 - (void) setCurrentLod:(Int32)newCurrentLod
 {
+    NSLog(@"%d", newCurrentLod);
+
     currentLod = newCurrentLod;
     currentIteration = newCurrentLod;
+
+    if ( newCurrentLod == 0 )
+    {
+        currentResolution->x = currentResolution->y = 2;
+        lastResolution->x = lastResolution->y = 2;
+
+        return;
+    }
 
     currentResolution->x = (Int)(pow(2.0,(Double)currentLod)) + 1;
     currentResolution->y = (Int)(pow(2.0,(Double)currentLod)) + 1;
 
-    lastResolution->x = (currentResolution->x - 1) / 2;
-    lastResolution->y = (currentResolution->y - 1) / 2;
+    NSLog(@"%d %d", currentResolution->x, currentResolution->y);
+
+    lastResolution->x = (Int)(pow(2.0,(Double)(currentLod - 1))) + 1;
+    lastResolution->y = (Int)(pow(2.0,(Double)(currentLod - 1))) + 1;
+
+    NSLog(@"%d %d", lastResolution->x, lastResolution->y);
 }
 
 - (void) setRngOneUsingName:(NSString *)newRngOneName
@@ -204,25 +216,32 @@
 {
     // Base LOD, 2x2 vertices
     baseResolution->x = baseResolution->y = 2;
-    baseIterations = 0;
-
     currentResolution->x = baseResolution->x;
     currentResolution->y = baseResolution->y;
 
-    currentIteration = baseIterations;
-    currentLod = currentIteration - baseIterations;
+    currentIteration = 0;
+    currentLod = 0;
+
+    IVector2 newSize;
+    FVector2 newHeightRange;
+    Int numberOfIterations;
+    Float newSigma;
+    Float newH;
 
     NSArray * terrainSizeStrings = [ dictionary objectForKey:@"Size" ];
-    size->x = [[ terrainSizeStrings objectAtIndex:0 ] intValue ];
-    size->y = [[ terrainSizeStrings objectAtIndex:1 ] intValue ];
+    newSize.x = [[ terrainSizeStrings objectAtIndex:0 ] intValue ];
+    newSize.y = [[ terrainSizeStrings objectAtIndex:1 ] intValue ];
+    newHeightRange.x = [[ dictionary objectForKey:@"MinimumHeight" ] floatValue ];
+    newHeightRange.y = [[ dictionary objectForKey:@"MaximumHeight" ] floatValue ];
+    numberOfIterations = [[ dictionary objectForKey:@"Iterations" ] intValue ];
+    newSigma = [[ dictionary objectForKey:@"Sigma" ] floatValue ];
+    newH = [[ dictionary objectForKey:@"H" ] floatValue ];
 
-    minimumHeight = [[ dictionary objectForKey:@"MinimumHeight" ] floatValue ];
-    maximumHeight = [[ dictionary objectForKey:@"MaximumHeight" ] floatValue ];
-    iterationsToDo = [[ dictionary objectForKey:@"Iterations" ] intValue ];
-    sigma = [[ dictionary objectForKey:@"Sigma" ] floatValue ];
-    H = [[ dictionary objectForKey:@"H" ] floatValue ];
-
-    [ self updateGeometry ];
+    [ self updateGeometryUsingSize:newSize
+                       heightRange:newHeightRange
+                             sigma:newSigma
+                                 H:newH
+                numberOfIterations:(UInt32)numberOfIterations ];
 
     return YES;
 }
@@ -420,13 +439,13 @@
             indices[index+1] = (i + 1) * currentResolution->x + j;
             indices[index+2] = i * currentResolution->x + j + 1;
 
-            //NSLog(@"%d %d %d", indices[index], indices[index+1], indices[index+2]);
+            NSLog(@"%d %d %d", indices[index], indices[index+1], indices[index+2]);
 
             indices[index+3] = (i + 1) * currentResolution->x + j;
             indices[index+4] = (i + 1) * currentResolution->x + j + 1;
             indices[index+5] = i * currentResolution->x + j + 1;
 
-            //NSLog(@"%d %d %d", indices[index+3], indices[index+4], indices[index+5]);
+            NSLog(@"%d %d %d", indices[index+3], indices[index+4], indices[index+5]);
         }
     }
 
@@ -437,7 +456,7 @@
 - (void) subdivide
 {
     currentIteration = currentIteration + 1;
-    currentLod = currentIteration - baseIterations;
+    currentLod = currentIteration;
 
     lastResolution->x = currentResolution->x;
     lastResolution->y = currentResolution->y;
@@ -483,18 +502,19 @@
         for ( Int j = 0; j < currentResolution->x; j++ )
         {
             Int index = i * currentResolution->x + j;
-            positions[index].x = (Float)(-size->x)/2.0f + (Float)j * deltaX;            
+            positions[index].x = (Float)(-size->x)/2.0f + (Float)j * deltaX;
+            positions[index].y = 0.0f;
             positions[index].z = (Float)(-size->y)/2.0f + (Float)i * deltaY;
 
             if ( (j % 2 == 0) && (i % 2 == 0) )
             {
                 Float tmp = currentPositions[((i/2)*lastResolution->x+(j/2))].y;
-                positions[index].y = tmp;
+                //positions[index].y = tmp;
             }
             else if ( (j % 2 == 1) && (i % 2 == 1) )
             {
                 Float tmp = diamondPositions[(i/2)*(lastResolution->x-1)+(j/2)];
-                positions[index].y = tmp;
+                //positions[index].y = tmp;
             }
             else
             {
@@ -520,8 +540,8 @@
                         south = diamondPositions[(i/2   )*(lastResolution->x-1)+(j/2)];
                     }
 
-                    positions[index].y = ( west + east + north + south ) / 4.0f +
-                                         [ gaussianRng nextGaussianFPRandomNumberWithMean:0.0f andVariance:rngVariance ];
+                    //positions[index].y = ( west + east + north + south ) / 4.0f +
+                    //                     [ gaussianRng nextGaussianFPRandomNumberWithMean:0.0f andVariance:rngVariance ];
                 }
                 else if ( (j % 2 == 0) && (i % 2 == 1) )
                 {
@@ -545,8 +565,8 @@
                         east = diamondPositions[(i/2)*(lastResolution->x-1)+(j/2  )];
                     }
 
-                    positions[index].y = ( west + east + north + south ) / 4.0f +
-                                         [ gaussianRng nextGaussianFPRandomNumberWithMean:0.0f andVariance:rngVariance ];
+                    //positions[index].y = ( west + east + north + south ) / 4.0f +
+                    //                     [ gaussianRng nextGaussianFPRandomNumberWithMean:0.0f andVariance:rngVariance ];
 
                 }
                 else
@@ -559,13 +579,10 @@
 
     FREE(diamondPositions);
 
-/*
     for (Int32 i = 0; i < numberOfVertices; i++)
     {
-        Int32 index = i * 3;
-        NSLog(@"%f %f %f", positions[index], positions[index+1], positions[index+2]);
+        NSLog(@"%f %f %f", positions[i].x, positions[i].y, positions[i].z);
     }
-*/
 
     NSString * vertexBufferName = [ NSString stringWithFormat:@"Iteration%d",currentIteration ];
     NPVertexBuffer * buffer = [[ NPVertexBuffer alloc ] initWithName:vertexBufferName
@@ -580,14 +597,60 @@
     [ buffer release ];
 }
 
-- (void) updateGeometryUsingSize:(IVector2)size
-                     heightRange:(FVector2)heightRange
+- (void) updateGeometryUsingSize:(IVector2)newSize
+                     heightRange:(FVector2)newHeightRange
+                           sigma:(Float)newSigma
+                               H:(Float)newH
               numberOfIterations:(UInt32)numberOfIterations
-                           sigma:(Float)sigma
-                               H:(Float)H
+
 {
+    size->x = newSize.x;
+    size->y = newSize.y;
+    H = newH;
+    sigma = newSigma;
+    variance = newSigma * newSigma;
+    iterationsToDo = numberOfIterations;
+
+    if ( [ lods count ] == 0 )
+    {
+        NPVertexBuffer * base = [[ NPVertexBuffer alloc ] initWithName:@"Base" parent:self ];
+        [ lods addObject:base ];
+        [ base release ];
+
+        [ self initialiseEmptyBaseLodPositions ];
+        [ self updateTextureCoordinates ];
+        [ self updateNormals ];
+        [ self updateAO ];
+        [ self updateIndices ];
+
+        [[ NP attributesWindowController ] addLodPopUpItemWithNumber:0 ];
+    }
+
+    for ( Int i = currentLod + 1; i < (Int)[ lods count ]; i++ )
+    {
+        [ lods removeObjectAtIndex:i ];
+        [[ NP attributesWindowController ] removeLodPopUpItemWithNumber:i ];
+    }
+
+    Int iterationsDone = 0;
+    while ( iterationsToDo > iterationsDone )
+    {
+        [ self subdivide ];
+        [ self updateTextureCoordinates ];
+        [ self updateNormals ];
+        [ self updateAO ];
+        [ self updateIndices ];
+
+        [[ NP attributesWindowController ] addLodPopUpItemWithNumber  :currentLod ];
+        [[ NP attributesWindowController ] selectLodPopUpItemWithIndex:currentLod ];
+
+        iterationsDone = iterationsDone + 1;
+    }
+
+    iterationsToDo = 0;
 }
 
+/*
 - (void) updateGeometry
 {
     if ( [ lods count ] == 0 )
@@ -612,7 +675,6 @@
     }
 
     Int iterationsDone = 0;
-    iterationsToDo = 6;
     while ( iterationsToDo > iterationsDone )
     {
         [ self subdivide ];
@@ -627,6 +689,7 @@
         iterationsDone = iterationsDone + 1;
     }
 }
+*/
 
 - (void) update:(Float)frameTime
 {
@@ -635,6 +698,7 @@
 
 - (void) render
 {
+    [[[ NP Core ] transformationState ] resetModelMatrix ];
     [ texture activateAtColorMapIndex:0 ];
     [ effect uploadFVector3Parameter:lightPositionParameter andValue:lightPosition ];
     [ effect activate ];
