@@ -6,6 +6,7 @@
 #import "FCamera.h"
 #import "FAttractor.h"
 #import "FTerrain.h"
+#import "FPreethamSkylight.h"
 
 void fbloomsettings_init(FBloomSettings * bloomSettings)
 {
@@ -90,6 +91,9 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
 
 - (void) dealloc
 {
+    TEST_RELEASE(skylight);
+    TEST_RELEASE(camera);
+
     RELEASE(colorTargetTwo);
     RELEASE(colorTargetOne);
     RELEASE(originalScene);
@@ -106,6 +110,11 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     [ super dealloc ];
 }
 
+- (FCamera *) camera
+{
+    return camera;
+}
+
 - (FAttractor *) attractor
 {
     return attractor;
@@ -114,6 +123,11 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
 - (FTerrain *) terrain
 {
     return terrain;
+}
+
+- (FPreethamSkylight *) skylight
+{
+    return skylight;
 }
 
 - (NpState) activeScene
@@ -133,6 +147,9 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     NSDictionary * terrainConfig   = [ sceneConfig objectForKey:@"Terrain"   ];
     NSDictionary * attractorConfig = [ sceneConfig objectForKey:@"Attractor" ];
     NSDictionary * bloomConfig     = [ sceneConfig objectForKey:@"Bloom"     ];
+
+    camera = [[ FCamera alloc ] initWithName:@"Camera" parent:self ];
+    skylight = [[ FPreethamSkylight alloc ] initWithName:@"Skylight" parent:self ];
 
     terrain   = [[ FTerrain   alloc ] init ];
     attractor = [[ FAttractor alloc ] init ];
@@ -160,8 +177,6 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
 
 - (void) activate
 {
-    camera = [[ FCamera alloc ] initWithName:@"Camera" parent:self ];
-
     FVector3 pos = { 0.0f, 0.2f, 0.0f };
     [ camera setPosition:&pos ];
     //[ camera cameraRotateUsingYaw:90.0f andPitch:0.0f ];
@@ -169,12 +184,13 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
 
 - (void) deactivate
 {
-    DESTROY(camera);
+
 }
 
 - (void) update:(Float)frameTime
 {
     [ camera update:frameTime ];
+    [ skylight update:frameTime ];
 
     if ( terrain != nil )
     {
@@ -224,6 +240,7 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
 
     if ( activeScene == FSCENE_DRAW_TERRAIN )
     {
+        [ skylight render ];
         [ terrain render ];
         //[ model render ];
     }

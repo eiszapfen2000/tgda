@@ -1,6 +1,7 @@
 float4x4 modelmatrix : NPMODEL;
 float4x4 viewmatrix  : NPVIEW;
 float4x4 projectionmatrix : NPPROJECTION;
+float4x4 mvp : NPMODELVIEWPROJECTION;
 
 float3 lightPosition;
 
@@ -27,7 +28,7 @@ VOUTPUTDATA mvertexshader(INPUTDATA input)
 {
 	VOUTPUTDATA output;
 
-	float4x4 mvp = mul(projectionmatrix,mul(viewmatrix,modelmatrix));
+	//float4x4 mvp = mul(projectionmatrix,mul(viewmatrix,modelmatrix));
 
 	output.position = mul(mvp, input.position);
     output.texcoord = input.texcoord;
@@ -56,7 +57,8 @@ FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
 
     //float4 diffusecolor = tex2D(colormap, input.texcoord);
 
-    output.color = float4(input.AO * (factor + ambient), 1.0);
+    output.color = float4(1.0, 0.0, 0.0, 1.0);
+    ///output.color = float4(input.AO * (factor + ambient), 1.0);
     //output.color = float4(input.AO, 1.0);
     //output.color = float4((factor+ambient)*0.7f,0.0,0.0,0.0);
     //output.color = float4(0.1f + input.AO.x,0.0,0.0,0.0);

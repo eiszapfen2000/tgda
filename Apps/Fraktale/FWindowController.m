@@ -150,7 +150,7 @@
 
 - (void) selectLod:(id)sender
 {
-    [[[[ NP applicationController ] scene ] terrain ] setCurrentLod:[ sender indexOfSelectedItem]];
+    [[[[ NP applicationController ] scene ] terrain ] setCurrentLod:[ sender indexOfSelectedItem ]];
 }
 
 /*- (void) setWidth:(id)sender
@@ -343,13 +343,13 @@
         Float H = [ hTextfield floatValue];
         Float minimumHeight = [ minimumHeightTextfield floatValue ];
         Float maximumHeight = [ maximumHeightTextfield floatValue ];
-        UInt32 numberOfIterations = [ iterationsTextfield intValue ];
+        UInt32 numberOfIterations = (UInt32)[ iterationsTextfield intValue ];
 
         [ terrain updateGeometryUsingSize:(IVector2){width, length}
                               heightRange:(FVector2){minimumHeight, maximumHeight}
-                       numberOfIterations:numberOfIterations
                                     sigma:sigma
-                                        H:H ];
+                                        H:H
+                       numberOfIterations:numberOfIterations ];
     }
     // Just to be sure
     else if ( [ tabViewItemLabel isEqual:@"Attractor" ] )

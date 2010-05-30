@@ -12,7 +12,8 @@ FScene.m \
 FTerrain.m \
 FPGMImage.m \
 FCamera.m \
-FAttractor.m
+FAttractor.m \
+FPreethamSkylight.m
 
 Fraktale_RESOURCE_FILES = \
 Fraktale.gorm \

@@ -26,10 +26,8 @@
     Float minimumHeight;
     Float maximumHeight;
 
-    Int32 iterations;
     Int32 currentIteration;
     Int32 iterationsToDo;
-    Int32 baseIterations;
     Int32 currentLod;
 
     Int gaussKernelWidth;
@@ -73,14 +71,14 @@
 
 - (void) reset;
 
-- (void) updateGeometryUsingSize:(IVector2)size
-                     heightRange:(FVector2)heightRange
+- (void) updateGeometryUsingSize:(IVector2)newSize
+                     heightRange:(FVector2)newHeightRange
+                           sigma:(Float)newSigma
+                               H:(Float)newH
               numberOfIterations:(UInt32)numberOfIterations
-                           sigma:(Float)sigma
-                               H:(Float)H
                                 ;
 
-- (void) updateGeometry;
+//- (void) updateGeometry;
 - (void) update:(Float)frameTime;
 - (void) render;
 
