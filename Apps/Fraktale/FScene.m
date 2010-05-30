@@ -36,6 +36,7 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     fbloomsettings_init(&bloomSettings);
 
     activeScene = NP_NONE;
+    fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
 
     fullscreenEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Fullscreen.cgfx" ];
     bloomThresholdParameter  = [ fullscreenEffect parameterWithName:@"bloomThreshold"  ];
@@ -43,15 +44,22 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     bloomSaturationParameter = [ fullscreenEffect parameterWithName:@"bloomSaturation" ];
     sceneIntensityParameter  = [ fullscreenEffect parameterWithName:@"sceneIntensity"  ];
     sceneSaturationParameter = [ fullscreenEffect parameterWithName:@"sceneSaturation" ];
+    toneMappingParameters    = [ fullscreenEffect parameterWithName:@"toneMappingParameters" ];
 
     NSAssert(bloomThresholdParameter  != NULL && bloomIntensityParameter != NULL &&
              bloomSaturationParameter != NULL && sceneIntensityParameter != NULL &&
-             sceneSaturationParameter != NULL, @"Parameters not found");
+             sceneSaturationParameter != NULL && toneMappingParameters != NULL,
+             @"Parameters not found");
 
 
     IVector2 * resolution = [[[ NP Graphics ] viewportManager ] currentControlSize ];
 
+    luminanceMaxMipMapLevel = 1 + floor(log2(MAX(resolution->x, resolution->y)));
+    referenceWhite = 2.5f;
+    key = 1.0f;
+
     attractorRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"AttractorRT" parent:self ];
+    terrainRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"TerrainRT" parent:self ];
 
     depthBuffer = [[ NPRenderBuffer renderBufferWithName:@"Depth"
                                                     type:NP_GRAPHICS_RENDERBUFFER_DEPTH_TYPE
@@ -59,7 +67,7 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
                                                    width:resolution->x
                                                   height:resolution->y ] retain ];
 
-    originalScene = [[ NPRenderTexture renderTextureWithName:@"Original"
+    attractorScene = [[ NPRenderTexture renderTextureWithName:@"AttractorScene"
                                                         type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
                                                        width:resolution->x
                                                       height:resolution->y
@@ -67,24 +75,35 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
                                                  pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ] retain ];
 
 
-    colorTargetOne = [[ NPRenderTexture renderTextureWithName:@"Color1"
+    bloomTargetOne = [[ NPRenderTexture renderTextureWithName:@"Bloom1"
                                                          type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
                                                         width:resolution->x / 2
                                                        height:resolution->y / 2
                                                    dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_BYTE
                                                   pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ] retain ];
 
-    colorTargetTwo = [[ NPRenderTexture renderTextureWithName:@"Color2"
+    bloomTargetTwo = [[ NPRenderTexture renderTextureWithName:@"Bloom2"
                                                          type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
                                                         width:resolution->x / 2
                                                        height:resolution->y / 2
                                                    dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_BYTE
                                                   pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ] retain ];
 
-    fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
+    terrainScene = [[ NPRenderTexture renderTextureWithName:@"TerrainScene"
+                                                        type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
+                                                       width:resolution->x
+                                                      height:resolution->y
+                                                  dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_HALF
+                                                 pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ] retain ];
 
-    model = [[[ NP Graphics ] modelManager ] loadModelFromPath:@"camera.model" ];
-    [ model uploadToGL ];
+    luminanceTarget = [[ NPRenderTexture renderTextureWithName:@"LuminanceRT"
+                                                          type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
+                                                         width:resolution->x
+                                                        height:resolution->y
+                                                    dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_HALF
+                                                   pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_R
+                                                 textureFilter:NP_GRAPHICS_TEXTURE_FILTER_TRILINEAR
+                                                   textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ] retain ];
 
     return self;
 }
@@ -94,13 +113,17 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     TEST_RELEASE(skylight);
     TEST_RELEASE(camera);
 
-    RELEASE(colorTargetTwo);
-    RELEASE(colorTargetOne);
-    RELEASE(originalScene);
+    RELEASE(luminanceTarget);
+    RELEASE(bloomTargetTwo);
+    RELEASE(bloomTargetOne);
+    RELEASE(attractorScene);
+    RELEASE(terrainScene);
     RELEASE(depthBuffer);
 
     [ attractorRTC clear ];
+    [ terrainRTC clear ];
     RELEASE(attractorRTC);
+    RELEASE(terrainRTC);
 
     RELEASE(fullscreenQuad);
 
@@ -192,17 +215,16 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     [ camera update:frameTime ];
     [ skylight update:frameTime ];
 
+    /*
     if ( terrain != nil )
     {
         [ terrain update:frameTime ];
     }
+    */
 }
 
-- (void) render
+- (void) renderAttractorScene
 {
-    // Clear back buffer and depth buffer
-    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
-
     IVector2 * resolution = [[[ NP Graphics ] viewportManager ] currentControlSize ];
 
     // setup fbo
@@ -211,14 +233,14 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     [ attractorRTC resetColorTargetsArray ];
     [ attractorRTC bindFBO ];
 
-    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:originalScene   ];
-    [ originalScene attachToColorBufferIndex:0 ];
+    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:attractorScene   ];
+    [ attractorScene attachToColorBufferIndex:0 ];
     [ depthBuffer attach ];
     [ attractorRTC activateViewport ];
     [ attractorRTC activateDrawBuffers ];
     [ attractorRTC checkFrameBufferCompleteness ];
 
-    // clear originalScene and depthBuffer
+    // clear attractorScene and depthBuffer
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
     // initialise state
@@ -231,22 +253,10 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
 
     // render scene
     [ camera render ];
-
-    if ( activeScene == FSCENE_DRAW_ATTRACTOR )
-    {
-        [ attractor render:YES ];
-        [ model render ];
-    }
-
-    if ( activeScene == FSCENE_DRAW_TERRAIN )
-    {
-        [ skylight render ];
-        [ terrain render ];
-        //[ model render ];
-    }
+    [ attractor render:YES ];
 
     // detach targets    
-    [ originalScene detach ];
+    [ attractorScene detach ];
     [ depthBuffer detach ];
 
     // deactivate depth test
@@ -261,45 +271,46 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     [ attractorRTC setWidth :resolution->x / 2 ];
     [ attractorRTC setHeight:resolution->y / 2 ];
 
-    // prepare colorTargetOne
-    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:colorTargetOne ];
-    [ colorTargetOne attachToColorBufferIndex:0 ];
+    // prepare bloomTargetOne
+    [[ bloomTargetOne texture ] setTextureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST ];
+    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:bloomTargetOne ];
+    [ bloomTargetOne attachToColorBufferIndex:0 ];
     [ attractorRTC activateViewport ];
     [ attractorRTC activateDrawBuffers ];
     [ attractorRTC checkFrameBufferCompleteness ];
 
-    // extract values of interest into bloom colorTargetOne
-    [[ originalScene texture ] activateAtColorMapIndex:0 ];
+    // extract values of interest into bloom bloomTargetOne
+    [[ attractorScene texture ] activateAtColorMapIndex:0 ];
     [ fullscreenEffect uploadFloatParameter:bloomThresholdParameter andValue:bloomSettings.bloomThreshold ];
     [ fullscreenEffect activateTechniqueWithName:@"bloomextract" ];
     [ fullscreenQuad render ];
-    [ colorTargetOne detach ];
+    [ bloomTargetOne detach ];
 
-    // prepare colorTargetTwo
-    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:colorTargetTwo ];
-    [ colorTargetTwo attachToColorBufferIndex:0 ];
+    // prepare bloomTargetTwo
+    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:bloomTargetTwo ];
+    [ bloomTargetTwo attachToColorBufferIndex:0 ];
     [ attractorRTC activateDrawBuffers ];
     [ attractorRTC checkFrameBufferCompleteness ];
 
     // horizontal filter
-    [[ colorTargetOne texture ] activateAtColorMapIndex:0 ];
+    [[ bloomTargetOne texture ] activateAtColorMapIndex:0 ];
     [ fullscreenEffect activateTechniqueWithName:@"horizontalbloom" ];
     [ fullscreenQuad render ];
     [ fullscreenEffect deactivate ];
-    [ colorTargetTwo detach ];
+    [ bloomTargetTwo detach ];
 
-    // prepare colorTargetOne
-    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:colorTargetOne ];
-    [ colorTargetOne attachToColorBufferIndex:0 ];
+    // prepare bloomTargetOne
+    [[ attractorRTC colorTargets ] replaceObjectAtIndex:0 withObject:bloomTargetOne ];
+    [ bloomTargetOne attachToColorBufferIndex:0 ];
     [ attractorRTC activateDrawBuffers ];
     [ attractorRTC checkFrameBufferCompleteness ];
 
     // vertical filter
-    [[ colorTargetTwo texture ] activateAtColorMapIndex:0 ];
+    [[ bloomTargetTwo texture ] activateAtColorMapIndex:0 ];
     [ fullscreenEffect activateTechniqueWithName:@"verticalbloom" ];
     [ fullscreenQuad render ];
     [ fullscreenEffect deactivate ];
-    [ colorTargetOne detach ];
+    [ bloomTargetOne detach ];
 
     // deactivate render targets
     [ attractorRTC unbindFBO ];
@@ -307,8 +318,9 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     [ attractorRTC deactivateViewport ];
 
     // render combined scene
-    [[ originalScene texture  ] activateAtColorMapIndex:0 ];
-    [[ colorTargetOne texture ] activateAtColorMapIndex:1 ];
+    [[ attractorScene texture  ] activateAtColorMapIndex:0 ];
+    [[ bloomTargetOne texture ] setTextureFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
+    [[ bloomTargetOne texture ] activateAtColorMapIndex:1 ];
     [ fullscreenEffect uploadFloatParameter:bloomIntensityParameter  andValue:bloomSettings.bloomIntensity  ];
     [ fullscreenEffect uploadFloatParameter:bloomSaturationParameter andValue:bloomSettings.bloomSaturation ];
     [ fullscreenEffect uploadFloatParameter:sceneIntensityParameter  andValue:bloomSettings.sceneIntensity  ];
@@ -316,6 +328,106 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     [ fullscreenEffect activateTechniqueWithName:@"combine" ];
     [ fullscreenQuad render ];
     [ fullscreenEffect deactivate ];
+}
+
+- (void) renderTerrainScene
+{
+    IVector2 * resolution = [[[ NP Graphics ] viewportManager ] currentControlSize ];
+
+    // setup fbo
+    [ terrainRTC setWidth:resolution->x ];
+    [ terrainRTC setHeight:resolution->y ];
+    [ terrainRTC resetColorTargetsArray ];
+    [ terrainRTC bindFBO ];
+
+    // setup terrainScene as target
+    [[ terrainRTC colorTargets ] replaceObjectAtIndex:0 withObject:terrainScene ];
+    [ terrainScene attachToColorBufferIndex:0 ];
+    [ depthBuffer attach ];
+    [ terrainRTC activateViewport ];
+    [ terrainRTC activateDrawBuffers ];
+    [ terrainRTC checkFrameBufferCompleteness ];
+
+    // clear terrainScene and depthBuffer
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
+
+    [ camera render ];
+    [ skylight render ];
+
+    [[[[ NP Graphics ] stateConfiguration ] cullingState ] setCullFace:NP_BACK_FACE ];
+    [[[[ NP Graphics ] stateConfiguration ] cullingState ] setEnabled:YES ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setWriteEnabled:YES ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:YES ];
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:NO ];
+    [[[ NP Graphics ] stateConfiguration ] activate ];
+
+    [ terrain render ];
+
+    // detach targets    
+    [ terrainScene detach ];
+    [ depthBuffer detach ];
+
+    // deactivate depth test
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setWriteEnabled:NO ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:NO ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] activate ];
+
+    // reset matrices
+    [[[ NP Core ] transformationState ] reset ];
+
+    // prepare luminanceTarget
+    [[ terrainRTC colorTargets ] replaceObjectAtIndex:0 withObject:luminanceTarget ];
+    [ luminanceTarget attachToColorBufferIndex:0 ];
+    [ terrainRTC activateViewport ];
+    [ terrainRTC activateDrawBuffers ];
+    [ terrainRTC checkFrameBufferCompleteness ];
+
+    // compute terrainScene's luminance into luminanceTarget
+    [[ terrainScene texture ] activateAtColorMapIndex:0 ];
+    [ fullscreenEffect activateTechniqueWithName:@"luminance" ];
+    [ fullscreenQuad render ];
+    [ luminanceTarget detach ];
+
+    // deactivate render targets
+    [ terrainRTC unbindFBO ];
+    [ terrainRTC deactivateDrawBuffers ];
+    [ terrainRTC deactivateViewport ];
+
+    // Generate mipmaps for luminance texture, since we want only the highest mipmaplevel
+    // as an approximation to the average luminance of the scene
+    [ luminanceTarget generateMipMaps ];
+
+    // render combined scene
+    //[[ luminanceTarget texture  ] activateAtColorMapIndex:0 ];
+    //[ fullscreenEffect activateTechniqueWithName:@"fullscreen" ];
+    //[ fullscreenQuad render ];
+    //[ fullscreenEffect deactivate ];
+
+    // Bind scene and luminance texture, and do tonemapping
+    [[ luminanceTarget  texture ] activateAtColorMapIndex:0 ];
+    [[ terrainScene     texture ] activateAtColorMapIndex:1 ];
+
+    FVector3 toneMappingParameterVector = { (Float)luminanceMaxMipMapLevel, referenceWhite, key };
+    [ fullscreenEffect uploadFVector3Parameter:toneMappingParameters andValue:&toneMappingParameterVector ];
+    [ fullscreenEffect activateTechniqueWithName:@"tonemap" ];
+    [ fullscreenQuad render ];
+    [ fullscreenEffect deactivate ];
+}
+
+- (void) render
+{
+    // Clear back buffer and depth buffer
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
+
+    if ( activeScene == FSCENE_DRAW_ATTRACTOR )
+    {
+        [ self renderAttractorScene ];
+    }
+
+    if ( activeScene == FSCENE_DRAW_TERRAIN )
+    {
+        [ self renderTerrainScene ];
+    }
 }
 
 @end

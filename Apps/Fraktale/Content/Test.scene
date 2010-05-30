@@ -34,7 +34,7 @@
     {
         BloomThreshold = "0.75";
         BloomIntensity = "1.25";
-        BloomSaturation = "2.0";
+        BloomSaturation = "1.5";
         SceneIntensity = "1.0";
         SceneSaturation = "1.0";
     };
