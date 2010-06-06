@@ -33,6 +33,8 @@
 
 - (UInt) generateGLTextureID;
 
+- (Int) calculateDataFormatByteCount:(NpState)dataFormat;
+- (Int) calculatePixelFormatChannelCount:(NpState)pixelFormat;
 - (GLenum) computeGLWrap:(NpState)wrap;
 - (GLenum) computeGLDataFormat:(NpState)dataFormat;
 - (GLenum) computeGLPixelFormat:(NpState)pixelFormat;
