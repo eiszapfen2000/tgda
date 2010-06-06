@@ -132,6 +132,59 @@
     return textureID;
 }
 
+- (Int) calculateDataFormatByteCount:(NpState)dataFormat
+{
+    Int dataFormatByteCount = 0;
+    switch ( dataFormat )
+    {
+        case NP_GRAPHICS_TEXTURE_DATAFORMAT_BYTE :{ dataFormatByteCount = 1; break; }
+        case NP_GRAPHICS_TEXTURE_DATAFORMAT_HALF :{ dataFormatByteCount = 2; break; }
+        case NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT:{ dataFormatByteCount = 4; break; }
+        default:{ NPLOG_ERROR(@"Unknown image data format %d",dataFormat); break; }
+    }
+
+    return dataFormatByteCount;
+}
+
+- (Int) calculatePixelFormatChannelCount:(NpState)pixelFormat
+{
+    Int pixelFormatChannelCount = 0;
+    switch ( pixelFormat )
+    {
+        case NP_GRAPHICS_TEXTURE_PIXELFORMAT_R  :
+        case NP_GRAPHICS_TEXTURE_PIXELFORMAT_sR :
+        {
+            pixelFormatChannelCount = 1;
+            break;
+        }
+
+        case NP_GRAPHICS_TEXTURE_PIXELFORMAT_RG  :
+        case NP_GRAPHICS_TEXTURE_PIXELFORMAT_sRG :
+        {
+            pixelFormatChannelCount = 2;
+            break;
+        }
+
+        case NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGB  :
+        case NP_GRAPHICS_TEXTURE_PIXELFORMAT_sRGB :
+        {
+            pixelFormatChannelCount = 3;
+            break;
+        }
+
+        case NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA:
+        case NP_GRAPHICS_TEXTURE_PIXELFORMAT_sRGB_LINEAR_ALPHA:
+        {
+            pixelFormatChannelCount = 4;
+            break;
+        }
+
+        default:{ NPLOG_ERROR(@"%@ - Unknown image pixel format %d", name, pixelFormat); break; }
+    }
+
+    return pixelFormatChannelCount;
+}
+
 - (GLenum) computeGLWrap:(NpState)wrap
 {
     GLenum glwrap = GL_NONE;

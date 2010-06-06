@@ -150,7 +150,7 @@
             break;
         }
 
-        default:{ NPLOG_ERROR(@"Unknown image pixel format %d", pixelFormat); break; }
+        default:{ NPLOG_ERROR(@"%@ - Unknown image pixel format %d", name, pixelFormat); break; }
     }
 
     return pixelFormatChannelCount;

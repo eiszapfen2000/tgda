@@ -212,7 +212,8 @@
 
 - (void) generateMipMaps
 {
-    if ( configuration != [[[ NP Graphics ] renderTargetManager ] currentRenderTargetConfiguration ] )
+    #warning FIXME Test if render texture is currently in use
+    //if ( configuration != [[[ NP Graphics ] renderTargetManager ] currentRenderTargetConfiguration ] )
     {
         #warning FIXME Possible clash with 3D texture mode
         glBindTexture(GL_TEXTURE_2D, renderTextureID);

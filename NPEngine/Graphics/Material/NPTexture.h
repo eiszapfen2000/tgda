@@ -54,9 +54,13 @@
 - (void) uploadToGLWithoutData;
 - (void) uploadToGLUsingImage:(NPImage *)image;
 - (void) uploadToGLWithData:(NSData *)data;
-
 - (void) uploadImage:(NPImage *)image toMipmapLevel:(Int32)level;
 - (void) uploadData:(NSData *)data toMipmapLevel:(Int32)level;
+
+- (NSData *) downloadMipmapFromGL:(Int32)level;
+- (Int32) downloadMaxMipmapLevelIntoBytes:(Byte **)data;
+- (Int32) downloadMaxMipmapLevelIntoHalfs:(Half **)data;
+- (Int32) downloadMaxMipmapLevelIntoFloats:(Float **)data;
 
 - (void) updateGLTextureState;
 

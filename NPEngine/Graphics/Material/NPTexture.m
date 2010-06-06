@@ -337,7 +337,115 @@
     glTexSubImage2D(GL_TEXTURE_2D, level, 0, 0, mipLevelWidth, mipLevelHeight, glpixelformat, glpixelformat, [data bytes]);
 }
 
-- (void)  updateGLTextureFilterState
+- (NSData *) downloadMipmapFromGL:(Int32)level
+{
+    Int32 numberOfLevels = 1 + floor(logb(NP_MAX(width, height)));
+
+    if ( level < 0 || level >= numberOfLevels )
+    {
+        return [ NSData data ];
+    }
+
+    Int32 mipLevelWidth = width;
+    Int32 mipLevelHeight = height;
+    Int32 nextMipLevelWidth;
+    Int32 nextMipLevelHeight;
+
+    for ( Int32 i = 0; i < level; i++ )
+    {
+        nextMipLevelWidth = NP_MAX(1, mipLevelWidth >> 1);
+        nextMipLevelHeight = NP_MAX(1, mipLevelHeight >> 1);
+
+        mipLevelWidth = nextMipLevelWidth;
+        mipLevelHeight = nextMipLevelHeight;
+    }
+
+    Int dataFormatbyteCount = [[[ NP Graphics ] textureManager ] calculateDataFormatByteCount:dataFormat ];
+    Int pixelFormatChannelCount = [[[ NP Graphics ] textureManager ] calculatePixelFormatChannelCount:pixelFormat ];
+    NSUInteger numberOfBytesForMipmapLevel = dataFormatbyteCount * pixelFormatChannelCount * mipLevelWidth * mipLevelHeight;
+
+    Byte * dataArray = ALLOC_ARRAY(Byte, numberOfBytesForMipmapLevel);
+
+    GLenum gldataformat  = [[[ NP Graphics ] textureManager ] computeGLDataFormat :dataFormat  ];
+    GLenum glpixelformat = [[[ NP Graphics ] textureManager ] computeGLPixelFormat:pixelFormat ];
+
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glGetTexImage(GL_TEXTURE_2D, level, glpixelformat, gldataformat, dataArray);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    return [ NSData dataWithBytesNoCopy:dataArray length:numberOfBytesForMipmapLevel freeWhenDone:YES ];
+}
+
+- (Int32) downloadMaxMipmapLevelIntoBytes:(Byte **)data
+{
+    if ( dataFormat != NP_GRAPHICS_TEXTURE_DATAFORMAT_BYTE )
+    {
+        *data = NULL;
+        return -1;
+    }
+
+    Int32 numberOfLevels = 1 + floor(logb(NP_MAX(width, height)));
+
+    Int pixelFormatChannelCount = [[[ NP Graphics ] textureManager ] calculatePixelFormatChannelCount:pixelFormat ];
+    *data = ALLOC_ARRAY(Byte, pixelFormatChannelCount);
+
+    GLenum gldataformat  = [[[ NP Graphics ] textureManager ] computeGLDataFormat :dataFormat  ];
+    GLenum glpixelformat = [[[ NP Graphics ] textureManager ] computeGLPixelFormat:pixelFormat ];
+    
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glGetTexImage(GL_TEXTURE_2D, numberOfLevels - 1, glpixelformat, gldataformat, *data);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    return pixelFormatChannelCount;
+}
+
+- (Int32) downloadMaxMipmapLevelIntoHalfs:(Half **)data
+{
+    if ( dataFormat != NP_GRAPHICS_TEXTURE_DATAFORMAT_HALF )
+    {
+        *data = NULL;
+        return -1;
+    }
+
+    Int32 numberOfLevels = 1 + floor(logb(NP_MAX(width, height)));
+
+    Int pixelFormatChannelCount = [[[ NP Graphics ] textureManager ] calculatePixelFormatChannelCount:pixelFormat ];
+    *data = ALLOC_ARRAY(Half, pixelFormatChannelCount);
+
+    GLenum gldataformat  = [[[ NP Graphics ] textureManager ] computeGLDataFormat :dataFormat  ];
+    GLenum glpixelformat = [[[ NP Graphics ] textureManager ] computeGLPixelFormat:pixelFormat ];
+    
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glGetTexImage(GL_TEXTURE_2D, numberOfLevels - 1, glpixelformat, gldataformat, *data);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    return pixelFormatChannelCount;
+}
+
+- (Int32) downloadMaxMipmapLevelIntoFloats:(Float **)data
+{
+    if ( dataFormat != NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT )
+    {
+        *data = NULL;
+        return -1;
+    }
+
+    Int32 numberOfLevels = 1 + floor(logb(NP_MAX(width, height)));
+
+    Int pixelFormatChannelCount = [[[ NP Graphics ] textureManager ] calculatePixelFormatChannelCount:pixelFormat ];
+    *data = ALLOC_ARRAY(Float, pixelFormatChannelCount);
+
+    GLenum gldataformat  = [[[ NP Graphics ] textureManager ] computeGLDataFormat :dataFormat  ];
+    GLenum glpixelformat = [[[ NP Graphics ] textureManager ] computeGLPixelFormat:pixelFormat ];
+    
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glGetTexImage(GL_TEXTURE_2D, numberOfLevels - 1, glpixelformat, gldataformat, *data);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    return pixelFormatChannelCount;
+}
+
+- (void) updateGLTextureFilterState
 {
     GLenum value = GL_NONE;
 
