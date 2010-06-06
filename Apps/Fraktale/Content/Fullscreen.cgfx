@@ -155,7 +155,7 @@ FOUTPUTDATA mfragmentshader_luminance(VOUTPUTDATA input)
     float3 XYZ = mul(color.xyz, RGB2XYZ);
 
     //Luminance
-    output.color.x = max(XYZ.y, 0.001f);
+    output.color.x = max(log(XYZ.y), 0.001f);
 
 	return output;
 }
@@ -164,7 +164,7 @@ FOUTPUTDATA mfragmentshader_tonemap(VOUTPUTDATA input)
 {
 	FOUTPUTDATA output;
 
-    float averageLuminance = tex2Dlod(colormap0, float4(0.5f, 0.5f, 0.0f, toneMappingParameters.x)).x;
+    //float averageLuminance = tex2Dlod(colormap0, float4(0.5f, 0.5f, 0.0f, toneMappingParameters.x)).x;
 
     float4 color = tex2D(colormap1, input.texcoord);
     float3 XYZ = mul(color.xyz, RGB2XYZ);
@@ -177,7 +177,8 @@ FOUTPUTDATA mfragmentshader_tonemap(VOUTPUTDATA input)
     // make exposure a parameter
     // make white a parameter
 
-    float Lscaled = Yxy.r * toneMappingParameters.z / averageLuminance;
+    //float Lscaled = Yxy.r * toneMappingParameters.z / averageLuminance;
+    float Lscaled = Yxy.r * toneMappingParameters.z / toneMappingParameters.x;
     Yxy.r = Lscaled * ( 1.0f + ( Lscaled / (toneMappingParameters.y * toneMappingParameters.y) ) ) / (1.0f + Lscaled);
 
     // Yxy -> XYZ conversion
@@ -185,6 +186,7 @@ FOUTPUTDATA mfragmentshader_tonemap(VOUTPUTDATA input)
     XYZ.g = Yxy.r;                                // copy luminance Y
     XYZ.b = Yxy.r * (1.0f - Yxy.g - Yxy.b) / Yxy.b;  // Z = Y * (1-x-y) / y
 
+    // back to linear RGB, apply gamma correction
     output.color.rgb = pow(mul(XYZ, XYZ2RGB), 1.0f/2.2f);
     output.color.a = 1.0f;
 
