@@ -6,7 +6,8 @@ libNPEngineCoreBasics_C_FILES = \
 NpBasics.c \
 NpCrc32.c \
 NpFreeList.c \
-NpSuperFastHash.c
+NpSuperFastHash.c \
+NpHalf.c
 
 
 libNPEngineCoreBasics_HEADER_FILES = \
@@ -15,7 +16,8 @@ NpCrc32.h \
 NpHashFunctions.h \
 NpMemory.h \
 NpFreeList.h \
-NpTypes.h
+NpTypes.h \
+NpHalf.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make

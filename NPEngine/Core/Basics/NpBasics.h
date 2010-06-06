@@ -3,6 +3,7 @@
 
 #include "NpTypes.h"
 #include "NpCrc32.h"
+#include "NpHalf.h"
 #include "NpHashFunctions.h"
 #include "NpMemory.h"
 #include "NpFreeList.h"

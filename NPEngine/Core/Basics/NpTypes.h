@@ -29,6 +29,7 @@ typedef unsigned long long UInt64;
 typedef unsigned long ULong;
 typedef signed long Long;
 
+typedef UInt16 Half;
 typedef float Float;
 typedef double Double;
 
