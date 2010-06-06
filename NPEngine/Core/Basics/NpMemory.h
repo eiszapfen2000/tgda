@@ -1,6 +1,7 @@
 #ifndef _NP_BASICS_MEMORY_H_
 #define _NP_BASICS_MEMORY_H_
 
+#include <string.h>
 #include <stdlib.h>
 
 #ifndef ALLOC
