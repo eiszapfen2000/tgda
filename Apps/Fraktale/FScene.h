@@ -39,6 +39,8 @@ void fbloomsettings_init(FBloomSettings * bloomSettings);
     Int32 luminanceMaxMipMapLevel;
     Float referenceWhite;
     Float key;
+    Float lastFrameLuminance;
+    Float currentFrameLuminance;
 
     NpState activeScene;
 

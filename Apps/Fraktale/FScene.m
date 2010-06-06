@@ -54,9 +54,10 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
 
     IVector2 * resolution = [[[ NP Graphics ] viewportManager ] currentControlSize ];
 
-    luminanceMaxMipMapLevel = 1 + floor(log2(MAX(resolution->x, resolution->y)));
-    referenceWhite = 2.5f;
-    key = 1.0f;
+    luminanceMaxMipMapLevel = floor(logb(MAX(resolution->x, resolution->y)));
+    referenceWhite = 0.85f;
+    key = 0.38f;
+    lastFrameLuminance = currentFrameLuminance = 1.0f;
 
     attractorRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"AttractorRT" parent:self ];
     terrainRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"TerrainRT" parent:self ];
@@ -397,17 +398,20 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     // as an approximation to the average luminance of the scene
     [ luminanceTarget generateMipMaps ];
 
-    // render combined scene
-    //[[ luminanceTarget texture  ] activateAtColorMapIndex:0 ];
-    //[ fullscreenEffect activateTechniqueWithName:@"fullscreen" ];
-    //[ fullscreenQuad render ];
-    //[ fullscreenEffect deactivate ];
+    Half * averageLuminance;
+    Int32 numberOfElements = [[ luminanceTarget texture ] downloadMaxMipmapLevelIntoHalfs:&averageLuminance ];
+    NSAssert(averageLuminance != NULL && numberOfElements != 0, @"Failed to read average luminance back to memory.");
+    lastFrameLuminance = currentFrameLuminance;
+    Float currentFrameAverageLuminance = exp(half_to_float(averageLuminance[0]));
+    Double frameTime = [[[ NP Core ] timer ] frameTime ];
+    currentFrameLuminance = lastFrameLuminance + (currentFrameAverageLuminance - lastFrameLuminance) * (Float)(1.0 - pow(0.97, 30.0 * frameTime));
+    FREE(averageLuminance);
 
     // Bind scene and luminance texture, and do tonemapping
     [[ luminanceTarget  texture ] activateAtColorMapIndex:0 ];
     [[ terrainScene     texture ] activateAtColorMapIndex:1 ];
 
-    FVector3 toneMappingParameterVector = { (Float)luminanceMaxMipMapLevel, referenceWhite, key };
+    FVector3 toneMappingParameterVector = { (Float)currentFrameLuminance, referenceWhite, key };
     [ fullscreenEffect uploadFVector3Parameter:toneMappingParameters andValue:&toneMappingParameterVector ];
     [ fullscreenEffect activateTechniqueWithName:@"tonemap" ];
     [ fullscreenQuad render ];
