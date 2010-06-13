@@ -14,35 +14,31 @@
 @class NPFullscreenQuad;
 @class NPSUXModel;
 
-typedef struct FBloomSettings
-{
-    float bloomThreshold;
-    float bloomIntensity;
-    float bloomSaturation;
-    float sceneIntensity;
-    float sceneSaturation;
-}
-FBloomSettings;
-
-void fbloomsettings_init(FBloomSettings * bloomSettings);
-
 #define FSCENE_DRAW_TERRAIN     0
 #define FSCENE_DRAW_ATTRACTOR   1
 
 @interface FScene : NPObject
 {
-    FMenu * menu;
+    FMenu * attractorMenu;
+    FMenu * terrainMenu;
 
     FAttractor * attractor;
     FTerrain * terrain;
     FPreethamSkylight * skylight;
     FCamera * camera;
 
-    FBloomSettings bloomSettings;
-    Int32 luminanceMaxMipMapLevel;
+    // Bloom stuff for attractor scene
+    float bloomThreshold;
+    float bloomIntensity;
+    float bloomSaturation;
+    float sceneIntensity;
+    float sceneSaturation;
+
+    // Tonemapping stuff for terrain scene
     Float referenceWhite;
     Float key;
     Float adaptationTimeScale;
+    Int32 luminanceMaxMipMapLevel;
     Float lastFrameLuminance;
     Float currentFrameLuminance;
 
