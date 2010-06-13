@@ -1,16 +1,18 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-SUBPROJECT_NAME = FMenu
+SUBPROJECT_NAME = ODMenu
 
-FMenu_HEADER_FILES = \
-FSliderItem.h \
-FCheckBoxItem.h \
-FMenu.h
+ODMenu_HEADER_FILES = \
+ODSliderItem.h \
+ODFCheckBoxItem.h \
+ODSelectionGroup.h \
+ODMenu.h
 
-FMenu_OBJC_FILES = \
-FSliderItem.m \
-FCheckBoxItem.m \
-FMenu.m
+ODMenu_OBJC_FILES = \
+ODSliderItem.m \
+ODCheckBoxItem.m \
+ODSelectionGroup.m \
+ODMenu.m
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make
