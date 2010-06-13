@@ -8,15 +8,6 @@
 #import "FTerrain.h"
 #import "FPreethamSkylight.h"
 
-void fbloomsettings_init(FBloomSettings * bloomSettings)
-{
-    bloomSettings->bloomThreshold  = 0.75f;
-    bloomSettings->bloomIntensity  = 1.25f;
-    bloomSettings->bloomSaturation = 2.00f;
-    bloomSettings->sceneIntensity  = 1.00f;
-    bloomSettings->sceneSaturation = 1.00f;    
-}
-
 @implementation FScene
 
 - (id) init
@@ -32,8 +23,6 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent
 {
     self = [ super initWithName:newName parent:newParent ];
-
-    fbloomsettings_init(&bloomSettings);
 
     activeScene = NP_NONE;
     fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
@@ -54,12 +43,21 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
 
     IVector2 * resolution = [[[ NP Graphics ] viewportManager ] currentControlSize ];
 
+    // Initialise bloom parameters
+    bloomThreshold  = 0.75f;
+    bloomIntensity  = 1.25f;
+    bloomSaturation = 2.00f;
+    sceneIntensity  = 1.00f;
+    sceneSaturation = 1.00f;
+
+    // Initialise tonemapping parameters
     luminanceMaxMipMapLevel = floor(logb(MAX(resolution->x, resolution->y)));
     referenceWhite = 0.85f;
     key = 0.38f;
     adaptationTimeScale = 30.0f;
     lastFrameLuminance = currentFrameLuminance = 1.0f;
 
+    // render target configurations
     attractorRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"AttractorRT" parent:self ];
     terrainRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"TerrainRT" parent:self ];
 
@@ -112,7 +110,8 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
 
 - (void) dealloc
 {
-    TEST_RELEASE(menu);
+    TEST_RELEASE(attractorMenu);
+    TEST_RELEASE(terrainMenu);
 
     TEST_RELEASE(skylight);
     TEST_RELEASE(camera);
@@ -193,14 +192,21 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
         return NO;
     }
 
-    bloomSettings.bloomThreshold  = [[ bloomConfig objectForKey:@"BloomThreshold"  ] floatValue ];
-    bloomSettings.bloomIntensity  = [[ bloomConfig objectForKey:@"BloomIntensity"  ] floatValue ];
-    bloomSettings.bloomSaturation = [[ bloomConfig objectForKey:@"BloomSaturation" ] floatValue ];
-    bloomSettings.sceneIntensity  = [[ bloomConfig objectForKey:@"SceneIntensity"  ] floatValue ];
-    bloomSettings.sceneSaturation = [[ bloomConfig objectForKey:@"SceneSaturation" ] floatValue ];
+    // Load bloom settings
+    bloomThreshold  = [[ bloomConfig objectForKey:@"BloomThreshold"  ] floatValue ];
+    bloomIntensity  = [[ bloomConfig objectForKey:@"BloomIntensity"  ] floatValue ];
+    bloomSaturation = [[ bloomConfig objectForKey:@"BloomSaturation" ] floatValue ];
+    sceneIntensity  = [[ bloomConfig objectForKey:@"SceneIntensity"  ] floatValue ];
+    sceneSaturation = [[ bloomConfig objectForKey:@"SceneSaturation" ] floatValue ];
 
-    menu = [[ FMenu alloc ] initWithName:@"Menu" parent:self ];
-    if ( [ menu loadFromPath:@"Menu.menu" ] == NO )
+    // Load tonemapping settings
+    // TODO
+
+    attractorMenu = [[ FMenu alloc ] initWithName:@"Attractor Menu" parent:self ];
+    terrainMenu = [[ FMenu alloc ] initWithName:@"Terrain Menu" parent:self ];
+
+    if (([ attractorMenu loadFromPath:@"AttractorMenu.menu" ] == NO)
+        || ([ terrainMenu loadFromPath:@"TerrainMenu.menu" ] == NO))
     {
         return NO;
     }
@@ -230,7 +236,15 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
         [ terrain update:frameTime ];
     }
 
-    [ menu update:frameTime ];
+    if ( activeScene == FSCENE_DRAW_ATTRACTOR )
+    {
+        [ attractorMenu update:frameTime ];
+    }
+
+    if ( activeScene == FSCENE_DRAW_TERRAIN )
+    {
+        [ terrainMenu update:frameTime ];
+    }
 }
 
 - (void) renderAttractorScene
@@ -291,7 +305,7 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
 
     // extract values of interest into bloom bloomTargetOne
     [[ attractorScene texture ] activateAtColorMapIndex:0 ];
-    [ fullscreenEffect uploadFloatParameter:bloomThresholdParameter andValue:bloomSettings.bloomThreshold ];
+    [ fullscreenEffect uploadFloatParameter:bloomThresholdParameter andValue:bloomThreshold ];
     [ fullscreenEffect activateTechniqueWithName:@"bloomextract" ];
     [ fullscreenQuad render ];
     [ bloomTargetOne detach ];
@@ -331,10 +345,10 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     [[ attractorScene texture  ] activateAtColorMapIndex:0 ];
     [[ bloomTargetOne texture ] setTextureFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];
     [[ bloomTargetOne texture ] activateAtColorMapIndex:1 ];
-    [ fullscreenEffect uploadFloatParameter:bloomIntensityParameter  andValue:bloomSettings.bloomIntensity  ];
-    [ fullscreenEffect uploadFloatParameter:bloomSaturationParameter andValue:bloomSettings.bloomSaturation ];
-    [ fullscreenEffect uploadFloatParameter:sceneIntensityParameter  andValue:bloomSettings.sceneIntensity  ];
-    [ fullscreenEffect uploadFloatParameter:sceneSaturationParameter andValue:bloomSettings.sceneSaturation ];
+    [ fullscreenEffect uploadFloatParameter:bloomIntensityParameter  andValue:bloomIntensity  ];
+    [ fullscreenEffect uploadFloatParameter:bloomSaturationParameter andValue:bloomSaturation ];
+    [ fullscreenEffect uploadFloatParameter:sceneIntensityParameter  andValue:sceneIntensity  ];
+    [ fullscreenEffect uploadFloatParameter:sceneSaturationParameter andValue:sceneSaturation ];
     [ fullscreenEffect activateTechniqueWithName:@"combine" ];
     [ fullscreenQuad render ];
     [ fullscreenEffect deactivate ];
@@ -410,10 +424,14 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     Half * averageLuminance;
     Int32 numberOfElements = [[ luminanceTarget texture ] downloadMaxMipmapLevelIntoHalfs:&averageLuminance ];
     NSAssert(averageLuminance != NULL && numberOfElements != 0, @"Failed to read average luminance back to memory.");
+
     lastFrameLuminance = currentFrameLuminance;
     Float currentFrameAverageLuminance = exp(half_to_float(averageLuminance[0]));
     Double frameTime = [[[ NP Core ] timer ] frameTime ];
-    currentFrameLuminance = lastFrameLuminance + (currentFrameAverageLuminance - lastFrameLuminance) * (Float)(1.0 - pow(0.97, adaptationTimeScale * frameTime));
+
+    currentFrameLuminance = lastFrameLuminance + (currentFrameAverageLuminance - lastFrameLuminance)
+         * (Float)(1.0 - pow(0.97, adaptationTimeScale * frameTime));
+
     FREE(averageLuminance);
 
     // Bind scene and luminance texture, and do tonemapping
@@ -426,21 +444,8 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     [ fullscreenEffect deactivate ];
 }
 
-- (void) render
+- (void) renderMenu:(FMenu *)menu
 {
-    // Clear back buffer and depth buffer
-    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
-
-    if ( activeScene == FSCENE_DRAW_ATTRACTOR )
-    {
-        [ self renderAttractorScene ];
-    }
-
-    if ( activeScene == FSCENE_DRAW_TERRAIN )
-    {
-        [ self renderTerrainScene ];
-    }
-
     // Activate blending for menu rendering
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];
@@ -453,6 +458,24 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     [[[ NP Graphics ] orthographicRendering ] activate ];
     [ menu render ];
     [[[ NP Graphics ] orthographicRendering ] deactivate ];
+}
+
+- (void) render
+{
+    // Clear back buffer and depth buffer
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
+
+    if ( activeScene == FSCENE_DRAW_ATTRACTOR )
+    {
+        [ self renderAttractorScene ];
+        [ self renderMenu:attractorMenu ];
+    }
+
+    if ( activeScene == FSCENE_DRAW_TERRAIN )
+    {
+        [ self renderTerrainScene ];
+        [ self renderMenu:terrainMenu ];
+    }
 }
 
 @end

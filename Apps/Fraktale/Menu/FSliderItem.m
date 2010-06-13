@@ -1,3 +1,4 @@
+#include <float.h>
 #import "NP.h"
 #import "FMenu.h"
 #import "FSliderItem.h"
@@ -45,7 +46,6 @@
     NSArray * headSizeStrings = [ dictionary objectForKey:@"HeadSize" ];
 
     NSString * alignmentString     = [ dictionary objectForKey:@"Alignment" ];
-    NSString * startPositionString = [ dictionary objectForKey:@"StartPosition" ];
 
     NSString * minimumValueString = [ dictionary objectForKey:@"MinimumValue" ];
     NSString * maximumValueString = [ dictionary objectForKey:@"MaximumValue" ];
@@ -53,16 +53,15 @@
     NSString * targetObjectString   = [ dictionary objectForKey:@"TargetObject" ];
     NSString * targetPropertyString = [ dictionary objectForKey:@"TargetProperty" ];
 
-    if ( positionStrings == nil || lineSizeStrings == nil || headSizeStrings == nil ||
-         alignmentString == nil || startPositionString == nil || minimumValueString == nil ||
-         maximumValueString == nil || description == nil )
+    if ( positionStrings == nil || lineSizeStrings == nil || headSizeStrings == nil
+         || alignmentString == nil || minimumValueString == nil || maximumValueString == nil
+         || description == nil )
     {
         NPLOG_ERROR(@"Dictionary incomplete");
         return NO;
     }
 
     FVector2 position, lineSize, headSize;
-
     position.x = [[ positionStrings objectAtIndex:0 ] floatValue ];
     position.y = [[ positionStrings objectAtIndex:1 ] floatValue ];
     lineSize.x = [[ lineSizeStrings objectAtIndex:0 ] floatValue ];
@@ -75,21 +74,8 @@
     frectangle_vv_init_with_min_and_size_r(&position, &lineSize, lineGeometry);
     [ FMenu alignRectangle:lineGeometry withAlignment:alignment ];
 
-    Float halfHeadWidth = headSize.x * 0.5f;
-    FVector2 sliderPosition = lineGeometry->min;
-    sliderPosition.x -= halfHeadWidth;
-
-    if ( [ startPositionString isEqual:@"Center" ] == YES )
-    {
-        sliderPosition.x += lineSize.x * 0.5f;
-    }
-
-    if ( [ startPositionString isEqual:@"Right" ] == YES )
-    {
-        sliderPosition.x += lineSize.x;
-    }
-
-    frectangle_vv_init_with_min_and_size_r(&sliderPosition, &headSize, headGeometry);
+    minimumValue = [ minimumValueString floatValue ];
+    maximumValue = [ maximumValueString floatValue ];
 
     if ( targetObjectString != nil )
     {
@@ -100,11 +86,19 @@
         {
             BOOL propertyFound = GSObjCFindVariable(target, [ targetPropertyString cStringUsingEncoding:NSASCIIStringEncoding ], NULL, &size, &offset );
             NSAssert1(propertyFound != NO, @"Property with name \"%@\" not found", targetPropertyString);
+
+            Float currentValue, normalisedValue;
+            GSObjCGetVariable(target, offset, size, &currentValue);
+            normalisedValue = currentValue / (maximumValue - minimumValue);
+
+            Float halfHeadWidth = headSize.x * 0.5f;
+            FVector2 sliderPosition = lineGeometry->min;
+            sliderPosition.x -= halfHeadWidth;
+            sliderPosition.x += lineSize.x * normalisedValue;
+
+            frectangle_vv_init_with_min_and_size_r(&sliderPosition, &headSize, headGeometry);
         }
     }
-
-    minimumValue = [ minimumValueString floatValue ];
-    maximumValue = [ maximumValueString floatValue ];
 
     lineTexture = [ (FMenu *)parent textureForKey:@"SliderLine" ];
     headTexture = [ (FMenu *)parent textureForKey:@"SliderHead" ];
@@ -160,14 +154,10 @@
 
     [ lineTexture activateAtColorMapIndex:0 ];
     [ effect activate ];
-
     [ NPPrimitivesRendering renderFRectangle:lineGeometry ];
-
     [ headTexture activateAtColorMapIndex:0 ];
     [ effect activate ];
-
     [ NPPrimitivesRendering renderFRectangle:headGeometry ];
-
     [ effect deactivate ];
 }
 

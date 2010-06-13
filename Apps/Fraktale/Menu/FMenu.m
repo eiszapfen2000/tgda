@@ -130,6 +130,8 @@
         return NO;
     }
 
+    NPLOG(@"Loading menu from %@", absolutePath);
+
     NSDictionary * menu = [ NSDictionary dictionaryWithContentsOfFile:absolutePath ];
 
     NSString * effectString = [ menu objectForKey:@"Effect" ];
