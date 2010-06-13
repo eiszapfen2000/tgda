@@ -23,6 +23,10 @@ struct VOUTPUTDATA
     float4 color    : TEXCOORD0;
 };
 
+static float3x3 XYZ2RGB = { 3.2404542f, -0.9692660f,  0.0556434f,
+                           -1.5371385f,  1.8760108f, -0.2040259f,
+                           -0.4985314f,  0.0415560f,  1.0572252f };
+
 VOUTPUTDATA mvertexshader(INPUTDATA input)
 {
 	VOUTPUTDATA output;
@@ -50,7 +54,7 @@ VOUTPUTDATA mvertexshader(INPUTDATA input)
     -0.969256f,  1.875992f,  0.041556,
      0.055648f, -0.204043f,  1.057311 );
 
-    output.color = float4(mul(conv_Mat, XYZ), 1.0f);
+    output.color = float4(mul(XYZ, XYZ2RGB), 1.0f);
     output.color.rgb *= 0.00025f;
 	
 	return output;

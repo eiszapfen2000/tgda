@@ -34,12 +34,14 @@
     Float gaussKernelSigma;
     Float * gaussKernel;
 
-    NPEffect * effect;
-    NPTexture * texture;
+    NPTexture * grassTexture;
+    NPTexture * stoneAndGrassTexture;
+    NPTexture * stoneTexture;
     NSMutableArray * lods;
 
-    FVector3 * lightPosition;
-    CGparameter lightPositionParameter;
+    FVector3 * lightDirection;
+    NPEffect * effect;
+    CGparameter lightDirectionParameter;
 
     NPGaussianRandomNumberGenerator * gaussianRng;
 }

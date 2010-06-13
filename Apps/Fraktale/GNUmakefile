@@ -2,6 +2,8 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 APP_NAME = Fraktale
 
+Fraktale_SUBPROJECTS = Menu
+
 Fraktale_OBJC_FILES = \
 main.m \
 FCore.m \

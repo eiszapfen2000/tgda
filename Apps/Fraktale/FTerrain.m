@@ -1,7 +1,9 @@
-#import "FTerrain.h"
-#import "FPGMImage.h"
 #import "NP.h"
 #import "FCore.h"
+#import "FTerrain.h"
+#import "FPGMImage.h"
+#import "FScene.h"
+#import "FPreethamSkylight.h"
 
 @implementation FTerrain
 
@@ -62,13 +64,18 @@
 
     [ self setupGaussianKernelForAO ];
 
-    lightPosition = fv3_alloc_init_with_components(20.0f, 5.0f, 3.0f);
+    lightDirection = fv3_alloc_init();
+    effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"terrain.cgfx" ];
+    lightDirectionParameter = [ effect parameterWithName:@"lightDirection" ];
+    NSAssert(lightDirectionParameter != NULL, @"Light direction parameter not found");
+
+    grassTexture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:@"grass.jpg" sRGB:YES ];
+    stoneAndGrassTexture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:@"grass_stone.jpg" sRGB:YES ];
+    stoneTexture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:@"stone.jpg" sRGB:YES ];
+
+    NSAssert(grassTexture != NULL && stoneAndGrassTexture != NULL && stoneTexture != NULL, @"Failed to load textures");
 
     lods = [[ NSMutableArray alloc ] init ];
-
-    effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"terrain.cgfx" ];
-    lightPositionParameter = [ effect parameterWithName:@"lightPosition" ];
-    NSAssert(lightPositionParameter != NULL, @"Light position parameter not found");
 
     return self;
 }
@@ -82,7 +89,7 @@
     baseResolution = iv2_free(baseResolution);
     currentResolution = iv2_free(currentResolution);
     lastResolution = iv2_free(lastResolution);
-    lightPosition = fv3_free(lightPosition);
+    lightDirection = fv3_free(lightDirection);
 
     [ lods removeAllObjects ];
     [ lods release ];
@@ -127,7 +134,7 @@
 
 - (void) setCurrentLod:(Int32)newCurrentLod
 {
-    NSLog(@"%d", newCurrentLod);
+    //NSLog(@"%d", newCurrentLod);
 
     currentLod = newCurrentLod;
     currentIteration = newCurrentLod;
@@ -143,12 +150,12 @@
     currentResolution->x = (Int)(pow(2.0,(Double)currentLod)) + 1;
     currentResolution->y = (Int)(pow(2.0,(Double)currentLod)) + 1;
 
-    NSLog(@"%d %d", currentResolution->x, currentResolution->y);
+    //NSLog(@"%d %d", currentResolution->x, currentResolution->y);
 
     lastResolution->x = (Int)(pow(2.0,(Double)(currentLod - 1))) + 1;
     lastResolution->y = (Int)(pow(2.0,(Double)(currentLod - 1))) + 1;
 
-    NSLog(@"%d %d", lastResolution->x, lastResolution->y);
+    //NSLog(@"%d %d", lastResolution->x, lastResolution->y);
 }
 
 - (void) setRngOneUsingName:(NSString *)newRngOneName
@@ -439,13 +446,13 @@
             indices[index+1] = (i + 1) * currentResolution->x + j;
             indices[index+2] = i * currentResolution->x + j + 1;
 
-            NSLog(@"%d %d %d", indices[index], indices[index+1], indices[index+2]);
+            //NSLog(@"%d %d %d", indices[index], indices[index+1], indices[index+2]);
 
             indices[index+3] = (i + 1) * currentResolution->x + j;
             indices[index+4] = (i + 1) * currentResolution->x + j + 1;
             indices[index+5] = i * currentResolution->x + j + 1;
 
-            NSLog(@"%d %d %d", indices[index+3], indices[index+4], indices[index+5]);
+            //NSLog(@"%d %d %d", indices[index+3], indices[index+4], indices[index+5]);
         }
     }
 
@@ -509,12 +516,12 @@
             if ( (j % 2 == 0) && (i % 2 == 0) )
             {
                 Float tmp = currentPositions[((i/2)*lastResolution->x+(j/2))].y;
-                //positions[index].y = tmp;
+                positions[index].y = tmp;
             }
             else if ( (j % 2 == 1) && (i % 2 == 1) )
             {
                 Float tmp = diamondPositions[(i/2)*(lastResolution->x-1)+(j/2)];
-                //positions[index].y = tmp;
+                positions[index].y = tmp;
             }
             else
             {
@@ -540,8 +547,8 @@
                         south = diamondPositions[(i/2   )*(lastResolution->x-1)+(j/2)];
                     }
 
-                    //positions[index].y = ( west + east + north + south ) / 4.0f +
-                    //                     [ gaussianRng nextGaussianFPRandomNumberWithMean:0.0f andVariance:rngVariance ];
+                    positions[index].y = ( west + east + north + south ) / 4.0f +
+                                         [ gaussianRng nextGaussianFPRandomNumberWithMean:0.0f andVariance:rngVariance ];
                 }
                 else if ( (j % 2 == 0) && (i % 2 == 1) )
                 {
@@ -565,8 +572,8 @@
                         east = diamondPositions[(i/2)*(lastResolution->x-1)+(j/2  )];
                     }
 
-                    //positions[index].y = ( west + east + north + south ) / 4.0f +
-                    //                     [ gaussianRng nextGaussianFPRandomNumberWithMean:0.0f andVariance:rngVariance ];
+                    positions[index].y = ( west + east + north + south ) / 4.0f +
+                                         [ gaussianRng nextGaussianFPRandomNumberWithMean:0.0f andVariance:rngVariance ];
 
                 }
                 else
@@ -579,10 +586,12 @@
 
     FREE(diamondPositions);
 
+    /*
     for (Int32 i = 0; i < numberOfVertices; i++)
     {
         NSLog(@"%f %f %f", positions[i].x, positions[i].y, positions[i].z);
     }
+    */
 
     NSString * vertexBufferName = [ NSString stringWithFormat:@"Iteration%d",currentIteration ];
     NPVertexBuffer * buffer = [[ NPVertexBuffer alloc ] initWithName:vertexBufferName
@@ -650,57 +659,17 @@
     iterationsToDo = 0;
 }
 
-/*
-- (void) updateGeometry
-{
-    if ( [ lods count ] == 0 )
-    {
-        NPVertexBuffer * base = [[ NPVertexBuffer alloc ] initWithName:@"Base" parent:self ];
-        [ lods addObject:base ];
-        [ base release ];
-
-        [ self initialiseEmptyBaseLodPositions ];
-        [ self updateTextureCoordinates ];
-        [ self updateNormals ];
-        [ self updateAO ];
-        [ self updateIndices ];
-
-        [[ NP attributesWindowController ] addLodPopUpItemWithNumber:0 ];
-    }
-
-    for ( Int i = currentLod + 1; i < (Int)[ lods count ]; i++ )
-    {
-        [ lods removeObjectAtIndex:i ];
-        [[ NP attributesWindowController ] removeLodPopUpItemWithNumber:i ];
-    }
-
-    Int iterationsDone = 0;
-    while ( iterationsToDo > iterationsDone )
-    {
-        [ self subdivide ];
-        [ self updateTextureCoordinates ];
-        [ self updateNormals ];
-        [ self updateAO ];
-        [ self updateIndices ];
-
-        [[ NP attributesWindowController ] addLodPopUpItemWithNumber  :currentLod ];
-        [[ NP attributesWindowController ] selectLodPopUpItemWithIndex:currentLod ];
-
-        iterationsDone = iterationsDone + 1;
-    }
-}
-*/
-
 - (void) update:(Float)frameTime
 {
-
+    FVector3 * skylightLightDirection = [[[[ NP applicationController ] scene ] skylight ] lightDirection ];
+    fv3_vv_init_with_fv3(lightDirection, skylightLightDirection);
 }
 
 - (void) render
 {
     [[[ NP Core ] transformationState ] resetModelMatrix ];
-    [ texture activateAtColorMapIndex:0 ];
-    [ effect uploadFVector3Parameter:lightPositionParameter andValue:lightPosition ];
+    [ grassTexture activateAtColorMapIndex:0 ];
+    [ effect uploadFVector3Parameter:lightDirectionParameter andValue:lightDirection ];
     [ effect activate ];
     [[ lods objectAtIndex:currentLod ] renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
     [ effect deactivate ];

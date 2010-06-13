@@ -5,6 +5,7 @@
 @class FTerrain;
 @class FCamera;
 @class FPreethamSkylight;
+@class FMenu;
 
 @class NPRenderTargetConfiguration;
 @class NPRenderTexture;
@@ -30,6 +31,8 @@ void fbloomsettings_init(FBloomSettings * bloomSettings);
 
 @interface FScene : NPObject
 {
+    FMenu * menu;
+
     FAttractor * attractor;
     FTerrain * terrain;
     FPreethamSkylight * skylight;
@@ -39,6 +42,7 @@ void fbloomsettings_init(FBloomSettings * bloomSettings);
     Int32 luminanceMaxMipMapLevel;
     Float referenceWhite;
     Float key;
+    Float adaptationTimeScale;
     Float lastFrameLuminance;
     Float currentFrameLuminance;
 

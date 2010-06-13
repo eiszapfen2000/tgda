@@ -8,7 +8,7 @@ float bloomIntensity;
 float bloomSaturation;
 float sceneIntensity;
 float sceneSaturation;
-float3 toneMappingParameters; // x = mipLevel, y = referenceWhite, z = key
+float3 toneMappingParameters; // x = averageLuminance, y = referenceWhite, z = key
 
 static const float gauss15x15[15] =
 {
@@ -164,9 +164,7 @@ FOUTPUTDATA mfragmentshader_tonemap(VOUTPUTDATA input)
 {
 	FOUTPUTDATA output;
 
-    //float averageLuminance = tex2Dlod(colormap0, float4(0.5f, 0.5f, 0.0f, toneMappingParameters.x)).x;
-
-    float4 color = tex2D(colormap1, input.texcoord);
+    float4 color = tex2D(colormap0, input.texcoord);
     float3 XYZ = mul(color.xyz, RGB2XYZ);
 
     float3 Yxy;
@@ -182,7 +180,7 @@ FOUTPUTDATA mfragmentshader_tonemap(VOUTPUTDATA input)
     Yxy.r = Lscaled * ( 1.0f + ( Lscaled / (toneMappingParameters.y * toneMappingParameters.y) ) ) / (1.0f + Lscaled);
 
     // Yxy -> XYZ conversion
-    XYZ.r = Yxy.r * Yxy.g / Yxy. b;               // X = Y * x / y
+    XYZ.r = Yxy.r * Yxy.g / Yxy.b;               // X = Y * x / y
     XYZ.g = Yxy.r;                                // copy luminance Y
     XYZ.b = Yxy.r * (1.0f - Yxy.g - Yxy.b) / Yxy.b;  // Z = Y * (1-x-y) / y
 
