@@ -33,6 +33,8 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 - (void) dealloc;
 
+- (FVector3 *) lightDirection;
+
 - (void) update:(Float)frameTime;
 - (void) render;
 

@@ -5,7 +5,7 @@
         H = "0.8";
         Sigma = "1.5";
         Iterations = "0";
-        Size = ("20", "20");
+        Size = ("100", "100");
         MinimumHeight = "0.0";
         MaximumHeight = "1.0";
     };

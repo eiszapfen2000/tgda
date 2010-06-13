@@ -57,6 +57,7 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     luminanceMaxMipMapLevel = floor(logb(MAX(resolution->x, resolution->y)));
     referenceWhite = 0.85f;
     key = 0.38f;
+    adaptationTimeScale = 30.0f;
     lastFrameLuminance = currentFrameLuminance = 1.0f;
 
     attractorRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"AttractorRT" parent:self ];
@@ -111,6 +112,8 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
 
 - (void) dealloc
 {
+    TEST_RELEASE(menu);
+
     TEST_RELEASE(skylight);
     TEST_RELEASE(camera);
 
@@ -196,6 +199,12 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     bloomSettings.sceneIntensity  = [[ bloomConfig objectForKey:@"SceneIntensity"  ] floatValue ];
     bloomSettings.sceneSaturation = [[ bloomConfig objectForKey:@"SceneSaturation" ] floatValue ];
 
+    menu = [[ FMenu alloc ] initWithName:@"Menu" parent:self ];
+    if ( [ menu loadFromPath:@"Menu.menu" ] == NO )
+    {
+        return NO;
+    }
+
     return YES;
 }
 
@@ -216,12 +225,12 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     [ camera update:frameTime ];
     [ skylight update:frameTime ];
 
-    /*
     if ( terrain != nil )
     {
         [ terrain update:frameTime ];
     }
-    */
+
+    [ menu update:frameTime ];
 }
 
 - (void) renderAttractorScene
@@ -404,12 +413,11 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     lastFrameLuminance = currentFrameLuminance;
     Float currentFrameAverageLuminance = exp(half_to_float(averageLuminance[0]));
     Double frameTime = [[[ NP Core ] timer ] frameTime ];
-    currentFrameLuminance = lastFrameLuminance + (currentFrameAverageLuminance - lastFrameLuminance) * (Float)(1.0 - pow(0.97, 30.0 * frameTime));
+    currentFrameLuminance = lastFrameLuminance + (currentFrameAverageLuminance - lastFrameLuminance) * (Float)(1.0 - pow(0.97, adaptationTimeScale * frameTime));
     FREE(averageLuminance);
 
     // Bind scene and luminance texture, and do tonemapping
-    [[ luminanceTarget  texture ] activateAtColorMapIndex:0 ];
-    [[ terrainScene     texture ] activateAtColorMapIndex:1 ];
+    [[ terrainScene texture ] activateAtColorMapIndex:0 ];
 
     FVector3 toneMappingParameterVector = { (Float)currentFrameLuminance, referenceWhite, key };
     [ fullscreenEffect uploadFVector3Parameter:toneMappingParameters andValue:&toneMappingParameterVector ];
@@ -432,6 +440,19 @@ void fbloomsettings_init(FBloomSettings * bloomSettings)
     {
         [ self renderTerrainScene ];
     }
+
+    // Activate blending for menu rendering
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] activate ];
+
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:NO ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] activate ];
+
+    // Render menu
+    [[[ NP Graphics ] orthographicRendering ] activate ];
+    [ menu render ];
+    [[[ NP Graphics ] orthographicRendering ] deactivate ];
 }
 
 @end

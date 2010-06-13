@@ -56,14 +56,19 @@
     [ super dealloc ];
 }
 
+- (FVector3 *) lightDirection
+{
+    return lightDirection;
+}
+
 - (void) update:(Float)frameTime
 {
     *position = *[[[[ NP applicationController ] scene ] camera ] position ];
-    position->y -= 3.0f;
+    position->y -= 10.0f;
 
-    lightDirection->x = -1.0f;
+    lightDirection->x = 0.5f;
     lightDirection->y = 0.5f;
-    lightDirection->z = -1.0f;
+    lightDirection->z = 0.0f;
     fv3_v_normalise(lightDirection);
 
     turbidity = 3.0f;
