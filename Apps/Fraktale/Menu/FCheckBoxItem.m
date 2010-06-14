@@ -38,30 +38,24 @@
 
     NSArray * positionStrings = [ dictionary objectForKey:@"Position" ];
     NSArray * sizeStrings     = [ dictionary objectForKey:@"Size" ];
-
     NSString * alignmentString = [ dictionary objectForKey:@"Alignment" ];
-    NSString * checkedString   = [ dictionary objectForKey:@"Checked" ];
-
     NSString * targetObjectString   = [ dictionary objectForKey:@"TargetObject" ];
     NSString * targetPropertyString = [ dictionary objectForKey:@"TargetProperty" ];
 
-    if ( positionStrings == nil || sizeStrings == nil || alignmentString == nil ||
-         checkedString == nil || description == nil )
+    if ( positionStrings == nil || sizeStrings == nil ||
+         alignmentString == nil || description == nil )
     {
         NPLOG_ERROR(@"Dictionary incomplete");
         return NO;
     }
 
     FVector2 position, checkBoxSize;
-
     position.x = [[ positionStrings objectAtIndex:0 ] floatValue ];
     position.y = [[ positionStrings objectAtIndex:1 ] floatValue ];
-
     checkBoxSize.x = [[ sizeStrings objectAtIndex:0 ] floatValue ];
     checkBoxSize.y = [[ sizeStrings objectAtIndex:1 ] floatValue ];
 
     alignment = [[ (FMenu *)parent valueForKeyword:alignmentString ] intValue ];
-    checked = [ checkedString boolValue ];
 
     frectangle_vv_init_with_min_and_size_r(&position, &checkBoxSize, geometry);
     [ FMenu alignRectangle:geometry withAlignment:alignment ];
@@ -75,6 +69,8 @@
         {
             BOOL propertyFound = GSObjCFindVariable(target, [ targetPropertyString cStringUsingEncoding:NSASCIIStringEncoding ], NULL, &size, &offset );
             NSAssert1(propertyFound != NO, @"Property with name \"%@\" not found", targetPropertyString);
+
+            GSObjCGetVariable(target, offset, size, &checked);
         }
     }
 

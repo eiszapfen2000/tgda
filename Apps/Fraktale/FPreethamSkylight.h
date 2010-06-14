@@ -4,6 +4,7 @@
 
 @class NPSUXModel;
 @class NPStateSet;
+@class NPInputAction;
 
 @interface FPreethamSkylight : NPObject
 {
@@ -26,6 +27,9 @@
     CGparameter CColorP;
     CGparameter DColorP;
     CGparameter EColorP;
+
+    NPInputAction * sunElevationIncreaseAction;
+    NPInputAction * sunElevationDecreaseAction;
 }
 
 - (id) init;

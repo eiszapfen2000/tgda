@@ -49,10 +49,24 @@
             Position = ("0.1", "0.4"  );
             LineSize = ("0.2",  "0.05" );
             HeadSize = ("0.04", "0.05" );
-            MinimumValue = "1.0f";
-            MaximumValue = "60.0f";
+            MinimumValue = "0.1f";
+            MaximumValue = "600.0f";
             TargetObject = "Scene";
             TargetProperty = "adaptationTimeScale";
+        };
+
+        TurbiditySlider =
+        {
+            Type = "FSliderItem";
+            Description = "Turbidity";
+            Alignment = "TopLeft";
+            Position = ("0.1", "0.55"  );
+            LineSize = ("0.2",  "0.05" );
+            HeadSize = ("0.04", "0.05" );
+            MinimumValue = "1.0f";
+            MaximumValue = "5.0f";
+            TargetObject = "Skylight";
+            TargetProperty = "turbidity";
         };
     };
 }
