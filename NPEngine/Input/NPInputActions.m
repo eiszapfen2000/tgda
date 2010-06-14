@@ -58,21 +58,22 @@
              primaryInputAction:(NpState)primaryInputAction
            secondaryInputAction:(NpState)secondaryInputAction
 {
-    if ( [ inputActions objectForKey:inputActionName ] == nil )
+    NPInputAction * inputAction = [ inputActions objectForKey:inputActionName ];
+    if ( inputAction == nil )
     {
-
-        NPInputAction * inputAction = [[ NPInputAction alloc ] initWithName:inputActionName
-                                                                     parent:self
-                                                              primaryAction:primaryInputAction
-                                                            secondaryAction:secondaryInputAction ];
+        inputAction = [[ NPInputAction alloc ] initWithName:inputActionName
+                                                     parent:self
+                                              primaryAction:primaryInputAction
+                                            secondaryAction:secondaryInputAction ];
 
         [ inputActions setObject:inputAction forKey:inputActionName ];
+
         return [ inputAction autorelease ];
     }
     else
     {
         NPLOG_WARNING(@"Input Action with name %@ already exists",inputActionName);
-        return nil;
+        return inputAction;
     }    
 }
 
