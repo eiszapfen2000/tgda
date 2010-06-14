@@ -430,7 +430,7 @@
     Double frameTime = [[[ NP Core ] timer ] frameTime ];
 
     currentFrameLuminance = lastFrameLuminance + (currentFrameAverageLuminance - lastFrameLuminance)
-         * (Float)(1.0 - pow(0.97, adaptationTimeScale * frameTime));
+         * (Float)(1.0 - pow(0.9, adaptationTimeScale * frameTime));
 
     FREE(averageLuminance);
 

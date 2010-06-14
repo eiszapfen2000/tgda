@@ -24,8 +24,9 @@
     modelMatrix = fm4_alloc_init();
     position = fv3_alloc_init();
     sunTheta = fv2_alloc_init();
-    lightDirection = fv3_alloc_init();
+    lightDirection = fv3_alloc_init_with_components(0.5f, 0.5f, 0.0f);
     zenithColor = fv3_alloc_init();
+    turbidity = 3.0f;
 
     model    = [[[ NP Graphics ] modelManager    ] loadModelFromPath:@"sky.model" ];
     stateset = [[[ NP Graphics ] stateSetManager ] loadStateSetFromPath:@"preetham.stateset" ];
@@ -41,6 +42,9 @@
     CColorP = [ effect parameterWithName:@"CColor" ];
     DColorP = [ effect parameterWithName:@"DColor" ];
     EColorP = [ effect parameterWithName:@"EColor" ];
+
+    sunElevationIncreaseAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"ElevationPlus" primaryInputAction:NP_INPUT_KEYBOARD_W ];
+    sunElevationDecreaseAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"ElevationMinus" primaryInputAction:NP_INPUT_KEYBOARD_S ];
 
     return self;
 }
@@ -66,12 +70,27 @@
     *position = *[[[[ NP applicationController ] scene ] camera ] position ];
     position->y -= 10.0f;
 
-    lightDirection->x = 0.5f;
-    lightDirection->y = 0.5f;
-    lightDirection->z = 0.0f;
-    fv3_v_normalise(lightDirection);
+    if ( [ sunElevationIncreaseAction active ] == YES )
+    {
+        lightDirection->y += 0.01f;
 
-    turbidity = 3.0f;
+        if ( lightDirection->y > 0.99f )
+        {
+            lightDirection->y = 0.01f;
+        }
+    }
+
+    if ( [ sunElevationDecreaseAction active ] == YES )
+    {
+        lightDirection->y -= 0.01f;
+
+        if ( lightDirection->y < 0.01f )
+        {
+            lightDirection->y = 0.99f;
+        }
+    }
+
+    fv3_v_normalise(lightDirection);
 
     sunTheta->x = acos(lightDirection->y);
 	sunTheta->y = cos(sunTheta->x) * cos(sunTheta->x);
