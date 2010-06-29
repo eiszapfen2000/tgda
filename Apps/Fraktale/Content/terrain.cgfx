@@ -15,7 +15,7 @@ struct VOUTPUTDATA
 	float4 position			: POSITION;
 	float2 texcoord			: TEXCOORD0;
     float3 normal           : TEXCOORD1;
-    float3 worldPosition    : TEXCOORD2;
+    //float3 worldPosition    : TEXCOORD2;
     float3 AO               : TEXCOORD3;
 };
 
@@ -26,7 +26,7 @@ VOUTPUTDATA mvertexshader(INPUTDATA input)
 	output.position = mul(mvp, input.position);
     output.texcoord = input.texcoord;
     output.normal   = input.normal;
-    output.worldPosition = input.position.xyz;
+    //output.worldPosition = input.position.xyz;
     output.AO = input.AO;
 	
 	return output;
@@ -45,15 +45,18 @@ FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
     float factor = max(0.0f, dot(normal, lightDirection));
     float ambient = 0.1f;
 
-    float4 diffusecolor = tex2D(colormap0, input.texcoord);
+    //float4 diffusecolor = tex2D(colormap0, input.texcoord);
 
-    //output.color = float4(factor, 0.0, 0.0, 1.0);
-    //output.color = float4(input.AO * (factor + ambient), 1.0);
+    //output.color = float4(input.texcoord, 0.0f, 1.0f);
+    //output.color = float4(factor, factor, factor, 1.0);
+    //output.color = float4(float3(ambient + factor), 1.0);
+    //output.color = float4(1.0f, 0.0, 0.0, 1.0);
+    output.color = float4(input.AO * (factor + ambient), 1.0);
     //output.color = float4(input.AO, 1.0);
     //output.color = float4((factor+ambient)*0.7f,0.0,0.0,0.0);
     //output.color = float4(0.1f + input.AO.x,0.0,0.0,0.0);
     //output.color = float4(normal, 1.0f);
-    output.color = diffusecolor;
+    //output.color = diffusecolor;
 
 	return output;
 }

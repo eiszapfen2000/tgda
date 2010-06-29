@@ -150,127 +150,8 @@
 
 - (void) selectLod:(id)sender
 {
-    [[[[ NP applicationController ] scene ] terrain ] setCurrentLod:[ sender indexOfSelectedItem ]];
+    //[[[[ NP applicationController ] scene ] terrain ] setCurrentLod:[ sender indexOfSelectedItem ]];
 }
-
-/*- (void) setWidth:(id)sender
-{
-    Int32 width = [[ sender cell ] intValue ];
-
-    if ( width < 0 )
-    {
-        [ sender setBackgroundColor:[NSColor redColor]];
-        return;
-    }
-
-    [ sender setBackgroundColor:[NSColor whiteColor]];
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setWidth:width ];
-}*/
-
-/*- (void) setLength:(id)sender
-{
-    Int32 length = [[ sender cell ] intValue ];
-
-    if ( length < 0 )
-    {
-        [ sender setBackgroundColor:[NSColor redColor]];
-        return;
-    }
-
-    [ sender setBackgroundColor:[NSColor whiteColor]];
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setLength:length ];
-}*/
-
-/*
-- (void) setMaximumHeight:(id)sender
-{
-}
-
-- (void) setMinimumHeight:(id)sender
-{
-}
-*/
-
-- (void) selectRngOne:(id)sender
-{
-    [[[[ NP applicationController ] scene ] terrain ] setRngOneUsingName:[sender titleOfSelectedItem]];
-}
-
-- (void) selectRngTwo:(id)sender
-{
-    [[[[ NP applicationController ] scene ] terrain ] setRngTwoUsingName:[sender titleOfSelectedItem]];
-}
-
-- (void) setRngOneSeed:(id)sender
-{
-    Int32 seed = [[ sender cell ] intValue ];
-
-    if ( seed < 0 )
-    {
-        [ sender setBackgroundColor:[NSColor redColor]];
-        return;
-    }
-
-    [ sender setBackgroundColor:[NSColor whiteColor]];
-    [[[[ NP applicationController ] scene ] terrain ] setRngOneSeed:(ULong)seed ];
-}
-
-- (void) setRngTwoSeed:(id)sender
-{
-    Int32 seed = [[ sender cell ] intValue ];
-
-    if ( seed < 0 )
-    {
-        [ sender setBackgroundColor:[NSColor redColor]];
-        return;
-    }
-
-    [ sender setBackgroundColor:[NSColor whiteColor]];
-    [[[[ NP applicationController ] scene ] terrain ] setRngTwoSeed:(ULong)seed ];
-}
-
-/*
-- (void) setSigma:(id)sender
-{
-    Float sigma = [[ sender cell ] floatValue ];
-
-    if ( sigma <= 0.0f )
-    {
-        [ sender setBackgroundColor:[NSColor redColor]];
-        return;
-    }
-
-    [ sender setBackgroundColor:[NSColor whiteColor]];
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setSigma:sigma ];
-}
-
-- (void) setH:(id)sender
-{
-    Float H = [[ sender cell ] floatValue ];
-
-    if ( H <= 0.0f || H > 1.0f )
-    {
-        [ sender setBackgroundColor:[NSColor redColor]];
-        return;
-    }
-
-    [ sender setBackgroundColor:[NSColor whiteColor]];
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setH:H ];
-}
-
-- (void) setIterations:(id)sender
-{
-    Int32 iterations = [[ sender cell ] intValue ];
-
-    if ( iterations < 1 )
-    {
-        [ sender setBackgroundColor:[NSColor redColor]];
-        return;
-    }
-
-    [ sender setBackgroundColor:[NSColor whiteColor]];
-    [[[[[ NP applicationController ] sceneManager ] currentScene ] terrain ] setIterationsToDo:iterations ];
-}*/
 
 - (void) selectAttractorType:(id)sender
 {
@@ -349,7 +230,11 @@
                               heightRange:(FVector2){minimumHeight, maximumHeight}
                                     sigma:sigma
                                         H:H
-                       numberOfIterations:numberOfIterations ];
+                       numberOfIterations:numberOfIterations
+                               rngOneName:NP_RNG_TT800
+                               rngOneSeed:0
+                               rngTwoName:NP_RNG_TT800
+                               rngTwoSeed:0 ];
     }
     // Just to be sure
     else if ( [ tabViewItemLabel isEqual:@"Attractor" ] )
@@ -369,9 +254,6 @@
         startingPoint.x = [ startingPointXTextfield floatValue ];
         startingPoint.y = [ startingPointYTextfield floatValue ];
         startingPoint.z = [ startingPointZTextfield floatValue ];
-
-        //NSLog(@"%f %f %f %f %f %u %f %f %f", a, b, c, sigma, r,
-        //         numberOfIterations, startingPoint.x, startingPoint.y, startingPoint.z);
 
         [ attractor generateAttractorOfType:type
                             withParametersA:a
