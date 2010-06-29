@@ -21,10 +21,11 @@
 {
     self =  [ super initWithName:newName parent:newParent ];
 
-    modelMatrix = fm4_alloc_init();
+    scaleMatrix = fm4_alloc_init();
+    translationMatrix = fm4_alloc_init();
     position = fv3_alloc_init();
     sunTheta = fv2_alloc_init();
-    lightDirection = fv3_alloc_init_with_components(0.5f, 0.5f, 0.0f);
+    lightDirection = fv3_alloc_init_with_components(0.1f, 0.5f, 0.0f);
     zenithColor = fv3_alloc_init();
     turbidity = 3.0f;
 
@@ -51,7 +52,8 @@
 
 - (void) dealloc
 {
-    modelMatrix = fm4_free(modelMatrix);
+    scaleMatrix = fm4_free(scaleMatrix);
+    translationMatrix = fm4_free(translationMatrix);
     position = fv3_free(position);
     sunTheta = fv2_free(sunTheta);
     lightDirection = fv3_free(lightDirection);
@@ -68,7 +70,7 @@
 - (void) update:(Float)frameTime
 {
     *position = *[[[[ NP applicationController ] scene ] camera ] position ];
-    position->y -= 10.0f;
+    //position->y -= 3.0f;
 
     if ( [ sunElevationIncreaseAction active ] == YES )
     {
@@ -92,8 +94,12 @@
 
     fv3_v_normalise(lightDirection);
 
+    // A Practical Analytic Model for Daylight - Page 9 - Equation 4 - needed for the denominator
+    // part, these are gamma and cos²gamma with theta sun as input
     sunTheta->x = acos(lightDirection->y);
 	sunTheta->y = cos(sunTheta->x) * cos(sunTheta->x);
+
+    //NSLog(@"%f %f", RADIANS_TO_DEGREE(sunTheta->x), RADIANS_TO_DEGREE(sunTheta->y));
 
 #define CBQ(X)		((X) * (X) * (X))
 #define SQR(X)		((X) * (X))
@@ -126,8 +132,10 @@
 
 - (void) render
 {
-    fm4_mv_translation_matrix(modelMatrix, position);
-    [[[ NP Core ] transformationState ] setModelMatrix:modelMatrix ];
+    fm4_msss_scale_matrix_xyz(scaleMatrix, 0.25f, 0.25f, 0.25f);
+    fm4_mv_translation_matrix(translationMatrix, position);
+    FMatrix4 scaleAndTranslate = fm4_mm_multiply(translationMatrix, scaleMatrix);
+    [[[ NP Core ] transformationState ] setModelMatrix:&scaleAndTranslate ];
 
     NPEffect * effect = [[[ model materials ] objectAtIndex:0 ] effect ];
 

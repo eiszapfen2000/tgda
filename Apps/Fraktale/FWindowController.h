@@ -20,7 +20,6 @@
 
     id sigmaTextfield;
     id hTextfield;
-
     id iterationsTextfield;
 
     // Attractor stuff
@@ -59,10 +58,6 @@
 
 // Terrain
 - (void) selectLod:(id)sender;
-- (void) selectRngOne:(id)sender;
-- (void) selectRngTwo:(id)sender;
-- (void) setRngOneSeed:(id)sender;
-- (void) setRngTwoSeed:(id)sender;
 
 // Attractor
 - (void) selectAttractorType:(id)sender;

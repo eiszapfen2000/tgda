@@ -11,7 +11,8 @@
     NPSUXModel * model;
     NPStateSet * stateset;
 
-    FMatrix4 * modelMatrix;
+    FMatrix4 * scaleMatrix;
+    FMatrix4 * translationMatrix;
     FVector3 * position;
 
     FVector2 * sunTheta;

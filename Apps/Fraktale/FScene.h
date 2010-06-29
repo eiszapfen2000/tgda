@@ -19,13 +19,14 @@
 
 @interface FScene : NPObject
 {
-    FMenu * attractorMenu;
-    FMenu * terrainMenu;
-
     FAttractor * attractor;
     FTerrain * terrain;
     FPreethamSkylight * skylight;
     FCamera * camera;
+
+    // menus for parameter tuning
+    FMenu * attractorMenu;
+    FMenu * terrainMenu;
 
     // Bloom stuff for attractor scene
     float bloomThreshold;
@@ -42,8 +43,10 @@
     Float lastFrameLuminance;
     Float currentFrameLuminance;
 
+    // terrain vs attractor scene
     NpState activeScene;
 
+    // effect + paramter handles
     NPEffect * fullscreenEffect;
     CGparameter bloomThresholdParameter;
     CGparameter bloomIntensityParameter;
@@ -52,6 +55,7 @@
     CGparameter sceneSaturationParameter;
     CGparameter toneMappingParameters;
 
+    // render targets
     NPRenderTargetConfiguration * attractorRTC;
     NPRenderTargetConfiguration * terrainRTC;
     NPRenderTexture * attractorScene;
