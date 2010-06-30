@@ -5,6 +5,7 @@
 #import "FPGMImage.h"
 #import "FScene.h"
 #import "FPreethamSkylight.h"
+#import "FCamera.h"
 
 @implementation FTerrain
 
@@ -47,22 +48,46 @@
 
     baseResolution = iv2_alloc_init_with_components(2, 2);
     size = iv2_alloc_init_with_components(10, 10);
+    heightRange = fv2_alloc_init();
+    lightDirection = fv3_alloc_init();
+    texCoordTiling = fv2_alloc_init();
 
     H = 0.5f;
     sigma = 1.0f;
     variance = 1.0f;
-    minimumHeight = 0.0f;
-    maximumHeight = 1.0f;
 
     gaussKernelSigma = 0.75f;
     gaussKernel = NULL;
 
     [ self setupGaussianKernelForAOWithSigma:gaussKernelSigma ];
 
-    lightDirection = fv3_alloc_init();
     effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"terrain.cgfx" ];
     lightDirectionParameter = [ effect parameterWithName:@"lightDirection" ];
-    NSAssert(lightDirectionParameter != NULL, @"Light direction parameter not found");
+    cameraPositionParameter = [ effect parameterWithName:@"cameraPosition" ];
+    texCoordTilingParameter = [ effect parameterWithName:@"texCoordTiling" ];
+    heightRangeParameter = [ effect parameterWithName:@"heightRange" ];
+    NSAssert(lightDirectionParameter != NULL, @"\"lightDirection\" parameter not found");
+    NSAssert(cameraPositionParameter != NULL, @"\"cameraPosition\" parameter not found");
+    NSAssert(texCoordTilingParameter != NULL, @"\"texCoordTiling\" parameter not found");
+    NSAssert(heightRangeParameter != NULL, @"\"heightRange\" parameter not found");
+
+    sandDiffuseTexture  = [[[ NP Graphics ] textureManager ] loadTextureFromPath:@"ground17.jpg" sRGB:YES ];
+    sandSpecularTexture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:@"ground17s.jpg" ];
+    grassDiffuseTexture  = [[[ NP Graphics ] textureManager ] loadTextureFromPath:@"ground14.jpg" sRGB:YES ];
+    grassSpecularTexture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:@"ground14s.jpg" ];
+    stoneDiffuseTexture  = [[[ NP Graphics ] textureManager ] loadTextureFromPath:@"stone17.jpg" sRGB:YES ];
+    stoneSpecularTexture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:@"stone17s.jpg" ];
+
+    [ grassDiffuseTexture  setTextureAnisotropyFilter:NP_GRAPHICS_TEXTURE_FILTER_ANISOTROPY_8X ];
+    [ grassSpecularTexture setTextureAnisotropyFilter:NP_GRAPHICS_TEXTURE_FILTER_ANISOTROPY_8X ];
+    [ stoneDiffuseTexture  setTextureAnisotropyFilter:NP_GRAPHICS_TEXTURE_FILTER_ANISOTROPY_8X ];
+    [ stoneSpecularTexture setTextureAnisotropyFilter:NP_GRAPHICS_TEXTURE_FILTER_ANISOTROPY_8X ];
+    [ sandDiffuseTexture  setTextureAnisotropyFilter:NP_GRAPHICS_TEXTURE_FILTER_ANISOTROPY_8X ];
+    [ sandSpecularTexture setTextureAnisotropyFilter:NP_GRAPHICS_TEXTURE_FILTER_ANISOTROPY_8X ];
+
+    useAO = YES;
+    useSpecular = YES;
+    lodToRender = 0;
 
     return self;
 }
@@ -76,7 +101,9 @@
     [ lods release ];
     [ rngs release ];
 
+    texCoordTiling = fv2_free(texCoordTiling);
     lightDirection = fv3_free(lightDirection);
+    heightRange = fv2_free(heightRange);
     baseResolution = iv2_free(baseResolution);    
     size = iv2_free(baseResolution);
 
@@ -93,14 +120,9 @@
     return sigma;
 }
 
-- (Float) minimumHeight
+- (void) setLODToRender:(UInt32)newLODToRender
 {
-    return minimumHeight;
-}
-
-- (Float) maximumHeight
-{
-    return maximumHeight;
+    lodToRender = newLODToRender;
 }
 
 - (void) setupGaussianKernelForAOWithSigma:(Float)kernelSigma
@@ -290,6 +312,7 @@
         colors[i] = 0.1f;
     }
 
+    float heightRangeInterval = fabs(heightRange->y - heightRange->x);
     div_t d = div(gaussKernelWidth, 2);
 
     if ( lodResolution.y - d.quot > d.quot )
@@ -311,11 +334,12 @@
                         Int vertexIndexOffset = (offsetK * lodResolution.x + offsetL) * 3;
                         Int vertexIndexForKernelElement = vertexOfInterestIndex + vertexIndexOffset;
 
-                        average = average + (vertexPositions[vertexIndexForKernelElement + 1] * gaussKernel[kernelElementIndex]); 
+                        average = average + ((vertexPositions[vertexIndexForKernelElement + 1] * gaussKernel[kernelElementIndex]) / heightRangeInterval); 
                     }
                 }
 
                 colors[vertexOfInterestIndex] = MAX(0.1f, average);
+                //NSLog(@"%f", average);
             }
         }
 
@@ -371,7 +395,7 @@
 
 - (IVector2) subdivideLOD:(UInt32)lodIndex
              atResolution:(IVector2)lodResolution
-          withHeightRange:(FVector2)heightRange
+          withHeightRange:(FVector2)lodHeightRange
 {
     IVector2 newLODResolution;
     newLODResolution.x = (lodResolution.x - 1) * 2 + 1;
@@ -510,31 +534,27 @@
     }
 
     Float currentRangeLength = fabs(max - min);
-    Float desiredRangeLength = fabs(heightRange.y - heightRange.x);
+    Float desiredRangeLength = fabs(lodHeightRange.y - lodHeightRange.x);
     Float rangeScalingFactor = desiredRangeLength / currentRangeLength;
-    Float rangeShiftFactor = -(min * rangeScalingFactor) + heightRange.x;
-
-    /*
-    NSLog(@"%f %f %f %f %f %f %f %f", min, max, heightRange.x, heightRange.y, 
-            currentRangeLength, desiredRangeLength, rangeScalingFactor, rangeShiftFactor);
-
-    NSLog(@"%f %f", min * rangeScalingFactor + rangeShiftFactor, max * rangeScalingFactor + rangeShiftFactor);
-    */
+    Float rangeShiftFactor = -(min * rangeScalingFactor) + lodHeightRange.x;
 
     if ( currentRangeLength <= desiredRangeLength )
     {
         rangeScalingFactor = 1.0f;
 
-        if ( min != heightRange.x )
+        if ( min != lodHeightRange.x )
         {
             rangeShiftFactor = -min;
-        } 
+        }
     }
 
     for (Int32 i = 0; i < newLODNumberOfVertices; i++)
     {
         newLODPositions[i].y = newLODPositions[i].y * rangeScalingFactor + rangeShiftFactor;
     }
+
+    heightRange->x = min * rangeScalingFactor + rangeShiftFactor;
+    heightRange->y = max * rangeScalingFactor + rangeShiftFactor;
 
     NSString * vertexBufferName = [ NSString stringWithFormat:@"Iteration%d", lodIndex + 1 ];
     NPVertexBuffer * buffer = [[ NPVertexBuffer alloc ] initWithName:vertexBufferName
@@ -566,6 +586,17 @@
     H = newH;
     sigma = newSigma;
     variance = newSigma * newSigma;
+
+    NPRandomNumberGenerator * generatorOne = [ rngs objectForKey:rngOneName ];
+    NPRandomNumberGenerator * generatorTwo = [ rngs objectForKey:rngTwoName ];
+
+    NSAssert(generatorOne != NULL && generatorTwo != NULL, @"RNG not found");
+
+    [ generatorOne reseed:(ULong)rngOneSeed ];
+    [ generatorTwo reseed:(ULong)rngTwoSeed ];
+
+    [ gaussianRng setFirstGenerator :generatorOne ];
+    [ gaussianRng setSecondGenerator:generatorTwo ];
     
     if ( [ lods count ] == 0 )
     {
@@ -610,24 +641,48 @@
         [[ NP attributesWindowController ] selectLodPopUpItemWithIndex:iterationsDone + 1 ];
 
         iterationsDone = iterationsDone + 1;
+        lodToRender = iterationsDone;
     }
-
-    //iterationsToDo = 0;
 }
 
 - (void) update:(Float)frameTime
 {
     FVector3 * skylightLightDirection = [[[[ NP applicationController ] scene ] skylight ] lightDirection ];
     fv3_vv_init_with_fv3(lightDirection, skylightLightDirection);
+
+    texCoordTiling->x = ((Float)size->x / 2.0f);
+    texCoordTiling->y = ((Float)size->y / 2.0f);
 }
 
 - (void) render
 {
     [[[ NP Core ] transformationState ] resetModelMatrix ];
-    //[ grassTexture activateAtColorMapIndex:0 ];
+    [ grassDiffuseTexture  activateAtColorMapIndex:0 ];
+    [ grassSpecularTexture activateAtColorMapIndex:1 ];
+    [ stoneDiffuseTexture  activateAtColorMapIndex:2 ];
+    [ stoneSpecularTexture activateAtColorMapIndex:3 ];
+    [ sandDiffuseTexture  activateAtColorMapIndex:4 ];
+    [ sandSpecularTexture activateAtColorMapIndex:5 ];
+
     [ effect uploadFVector3Parameter:lightDirectionParameter andValue:lightDirection ];
-    [ effect activate ];
-    [[ lods objectAtIndex:[lods count]-1 ] renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
+    [ effect uploadFVector3Parameter:cameraPositionParameter andValue:[[[[ NP applicationController ] scene ] camera ] position ]];
+    [ effect uploadFVector2Parameter:texCoordTilingParameter andValue:texCoordTiling ];
+    [ effect uploadFVector2Parameter:heightRangeParameter andValue:heightRange ];
+
+    if ( useAO == YES && useSpecular == YES )
+    {
+        [ effect activateTechniqueWithName:@"terrain" ];
+    }
+    else if ( useSpecular == YES )
+    {
+        [ effect activateTechniqueWithName:@"terrain_diffuse_and_specular" ];
+    }
+    else
+    {
+        [ effect activateTechniqueWithName:@"terrain_diffuse_only" ];
+    }
+
+    [[ lods objectAtIndex:lodToRender ] renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_TRIANGLES ];
     [ effect deactivate ];
 }
 

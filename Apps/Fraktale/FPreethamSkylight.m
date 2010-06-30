@@ -70,7 +70,7 @@
 - (void) update:(Float)frameTime
 {
     *position = *[[[[ NP applicationController ] scene ] camera ] position ];
-    //position->y -= 3.0f;
+    position->y -= 2.0f;
 
     if ( [ sunElevationIncreaseAction active ] == YES )
     {

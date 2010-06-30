@@ -19,21 +19,35 @@
 
     IVector2 * baseResolution;
     IVector2 * size;
+    FVector2 * heightRange;
+    FVector3 * lightDirection;
+    FVector2 * texCoordTiling;
 
     Float H;
     Float sigma;
     Float variance;
 
-    Float minimumHeight;
-    Float maximumHeight;
-
     Int gaussKernelWidth;
     Float gaussKernelSigma;
     Float * gaussKernel;
 
-    FVector3 * lightDirection;
     NPEffect * effect;
     CGparameter lightDirectionParameter;
+    CGparameter cameraPositionParameter;
+    CGparameter texCoordTilingParameter;
+    CGparameter heightRangeParameter;
+
+    BOOL useAO;
+    BOOL useSpecular;
+
+    NPTexture * sandDiffuseTexture;
+    NPTexture * sandSpecularTexture;
+    NPTexture * grassDiffuseTexture;
+    NPTexture * grassSpecularTexture;
+    NPTexture * stoneDiffuseTexture;
+    NPTexture * stoneSpecularTexture;
+
+    UInt32 lodToRender;
 }
 
 - (id) init;
@@ -43,8 +57,7 @@
 
 - (Float) H;
 - (Float) sigma;
-- (Float) minimumHeight;
-- (Float) maximumHeight;
+- (void) setLODToRender:(UInt32)newLODToRender;
 
 - (BOOL) loadFromDictionary:(NSDictionary *)dictionary;
 - (void) reset;

@@ -150,7 +150,7 @@
 
 - (void) selectLod:(id)sender
 {
-    //[[[[ NP applicationController ] scene ] terrain ] setCurrentLod:[ sender indexOfSelectedItem ]];
+    [[[[ NP applicationController ] scene ] terrain ] setLODToRender:[ sender indexOfSelectedItem ]];
 }
 
 - (void) selectAttractorType:(id)sender

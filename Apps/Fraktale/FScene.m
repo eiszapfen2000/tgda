@@ -216,9 +216,9 @@
 
 - (void) activate
 {
-    FVector3 pos = { 0.0f, 0.2f, 0.0f };
+    FVector3 pos = { 0.0f, 10.0f, 0.0f };
     [ camera setPosition:&pos ];
-    //[ camera cameraRotateUsingYaw:90.0f andPitch:0.0f ];
+    [ camera cameraRotateUsingYaw:30.0f andPitch:0.0f ];
 }
 
 - (void) deactivate
