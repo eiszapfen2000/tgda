@@ -50,7 +50,7 @@
             LineSize = ("0.2",  "0.05" );
             HeadSize = ("0.04", "0.05" );
             MinimumValue = "0.1f";
-            MaximumValue = "600.0f";
+            MaximumValue = "60.0f";
             TargetObject = "Scene";
             TargetProperty = "adaptationTimeScale";
         };
@@ -67,6 +67,28 @@
             MaximumValue = "5.0f";
             TargetObject = "Skylight";
             TargetProperty = "turbidity";
+        };
+
+        AOCheckBox =
+        {
+            Type = "FCheckBoxItem";
+            Description = "AO";
+            Alignment = "TopRight";
+            Position = ("0.1", "0.1");
+            Size = ("0.05", "0.05");
+            TargetObject = "Terrain";
+            TargetProperty = "useAO";
+        };
+
+        SpecularCheckBox =
+        {
+            Type = "FCheckBoxItem";
+            Description = "Specular";
+            Alignment = "TopRight";
+            Position = ("0.1", "0.2");
+            Size = ("0.05", "0.05");
+            TargetObject = "Terrain";
+            TargetProperty = "useSpecular";
         };
     };
 }

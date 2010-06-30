@@ -139,7 +139,7 @@
     }
 
     FVector2 position = { geometry->min.x, geometry->max.y + 0.035f };
-    [[ (FMenu *)parent font ] renderString:description atPosition:&position withSize:0.035f ];
+    [[ (FMenu *)parent font ] renderString:description atPosition:&position withSize:0.025f ];
 
     [ texture activateAtColorMapIndex:0 ];
     [ effect activate ];

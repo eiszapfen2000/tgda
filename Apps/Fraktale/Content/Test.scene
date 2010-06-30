@@ -5,9 +5,9 @@
         H = "0.8";
         Sigma = "1.5";
         Iterations = "0";
-        Size = ("20", "20");
+        Size = ("50", "50");
         MinimumHeight = "0.0";
-        MaximumHeight = "1.0";
+        MaximumHeight = "10.0";
     };
 
     Attractor = 
