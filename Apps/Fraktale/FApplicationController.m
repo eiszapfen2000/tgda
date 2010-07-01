@@ -22,7 +22,6 @@
     attributesWindowController = [[ FWindowController alloc ] init ];
     [ attributesWindowController showWindow:nil ];
 
-    glClearColor(0.2f, 0.4f, 1.0f, 0.0f);
     glClearDepth(1);
     glLineWidth(2.0f);
 
