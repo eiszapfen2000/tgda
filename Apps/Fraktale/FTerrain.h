@@ -46,6 +46,8 @@
     NPTexture * grassSpecularTexture;
     NPTexture * stoneDiffuseTexture;
     NPTexture * stoneSpecularTexture;
+    NPTexture * sandToGrassTexture;
+    NPTexture * grassToStoneTxture;
 
     UInt32 lodToRender;
 }

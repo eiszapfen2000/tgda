@@ -78,6 +78,9 @@
     stoneDiffuseTexture  = [[[ NP Graphics ] textureManager ] loadTextureFromPath:@"stone17.jpg" sRGB:YES ];
     stoneSpecularTexture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:@"stone17s.jpg" ];
 
+    sandToGrassTexture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:@"dirt03.jpg" ];
+    grassToStoneTxture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:@"dirt04.jpg" ];
+
     [ grassDiffuseTexture  setTextureAnisotropyFilter:NP_GRAPHICS_TEXTURE_FILTER_ANISOTROPY_8X ];
     [ grassSpecularTexture setTextureAnisotropyFilter:NP_GRAPHICS_TEXTURE_FILTER_ANISOTROPY_8X ];
     [ stoneDiffuseTexture  setTextureAnisotropyFilter:NP_GRAPHICS_TEXTURE_FILTER_ANISOTROPY_8X ];
@@ -663,6 +666,8 @@
     [ stoneSpecularTexture activateAtColorMapIndex:3 ];
     [ sandDiffuseTexture  activateAtColorMapIndex:4 ];
     [ sandSpecularTexture activateAtColorMapIndex:5 ];
+    [ sandToGrassTexture activateAtColorMapIndex:6 ];
+    [ grassToStoneTxture activateAtColorMapIndex:7 ];
 
     [ effect uploadFVector3Parameter:lightDirectionParameter andValue:lightDirection ];
     [ effect uploadFVector3Parameter:cameraPositionParameter andValue:[[[[ NP applicationController ] scene ] camera ] position ]];

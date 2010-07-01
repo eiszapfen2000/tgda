@@ -5,6 +5,8 @@ sampler2D stoneDiffuse  : NPCOLORMAP2;
 sampler2D stoneSpecular : NPCOLORMAP3;
 sampler2D sandDiffuse   : NPCOLORMAP4;
 sampler2D sandSpecular  : NPCOLORMAP5;
+sampler2D sandToGrass   : NPCOLORMAP6;
+sampler2D grassToStone  : NPCOLORMAP7;
 
 float3 lightDirection;
 float3 cameraPosition;
@@ -75,15 +77,27 @@ FOUTPUTDATA mfragmentshader(VOUTPUTDATA input)
         diffuseColor = sandColor;
         specularFactor = sandSpecularFactor;
     }
+    else if ( normalisedHeight < 0.1f )
+    {
+        float blendingFactor = tex2D(sandToGrass, texcoord).x;
+        diffuseColor = (1.0f - blendingFactor) * grassColor + blendingFactor * sandColor;
+        specularFactor = (1.0f - blendingFactor) * grassSpecularFactor + blendingFactor * sandSpecularFactor;
+    }
+    else if ( normalisedHeight < 0.6f )
+    {
+        diffuseColor = grassColor;
+        specularFactor = grassSpecularFactor;
+    }
     else if ( normalisedHeight < 2.0f/3.0f )
     {
-        diffuseColor = grassColor;//lerp(sandColor, grassColor, max(normalisedHeight * 1.5f + 0.5f, 1.0f));
-        specularFactor = grassSpecularFactor;//lerp(sandSpecularFactor, grassSpecularFactor, max(normalisedHeight * 1.5f + 0.5f, 1.0f));
+        float blendingFactor = tex2D(grassToStone, texcoord).x;
+        diffuseColor = (1.0f - blendingFactor) * stoneColor + blendingFactor * grassColor;
+        specularFactor = (1.0f - blendingFactor) * stoneSpecularFactor + blendingFactor * grassSpecularFactor;
     }
     else
     {
-        diffuseColor = stoneColor;//lerp(grassColor, stoneColor, (normalisedHeight * 3.0f) - 2.0f);
-        specularFactor = stoneSpecularFactor;//lerp(grassSpecularFactor, stoneSpecularFactor, (normalisedHeight * 3.0f) - 2.0f);
+        diffuseColor = stoneColor;
+        specularFactor = stoneSpecularFactor;
     }
 
     float ambient = input.AO.x;
@@ -129,15 +143,27 @@ FOUTPUTDATA mfragmentshader_diffuse_and_specular(VOUTPUTDATA input)
         diffuseColor = sandColor;
         specularFactor = sandSpecularFactor;
     }
+    else if ( normalisedHeight < 0.1f )
+    {
+        float blendingFactor = tex2D(sandToGrass, texcoord).x;
+        diffuseColor = (1.0f - blendingFactor) * grassColor + blendingFactor * sandColor;
+        specularFactor = (1.0f - blendingFactor) * grassSpecularFactor + blendingFactor * sandSpecularFactor;
+    }
+    else if ( normalisedHeight < 0.6f )
+    {
+        diffuseColor = grassColor;
+        specularFactor = grassSpecularFactor;
+    }
     else if ( normalisedHeight < 2.0f/3.0f )
     {
-        diffuseColor = grassColor;//lerp(sandColor, grassColor, max(normalisedHeight * 1.5f + 0.5f, 1.0f));
-        specularFactor = grassSpecularFactor;//lerp(sandSpecularFactor, grassSpecularFactor, max(normalisedHeight * 1.5f + 0.5f, 1.0f));
+        float blendingFactor = tex2D(grassToStone, texcoord).x;
+        diffuseColor = (1.0f - blendingFactor) * stoneColor + blendingFactor * grassColor;
+        specularFactor = (1.0f - blendingFactor) * stoneSpecularFactor + blendingFactor * grassSpecularFactor;
     }
     else
     {
-        diffuseColor = stoneColor;//lerp(grassColor, stoneColor, (normalisedHeight * 3.0f) - 2.0f);
-        specularFactor = stoneSpecularFactor;//lerp(grassSpecularFactor, stoneSpecularFactor, (normalisedHeight * 3.0f) - 2.0f);
+        diffuseColor = stoneColor;
+        specularFactor = stoneSpecularFactor;
     }
 
     float ambient = 0.2f;
@@ -176,9 +202,19 @@ FOUTPUTDATA mfragmentshader_diffuse_only(VOUTPUTDATA input)
     {
         diffuseColor = sandColor;
     }
-    else if ( normalisedHeight < 2.0f/3.0f )
+    else if ( normalisedHeight < 0.1f )
+    {
+        float blendingFactor = tex2D(sandToGrass, texcoord).x;
+        diffuseColor = (1.0f - blendingFactor) * grassColor + blendingFactor * sandColor;
+    }
+    else if ( normalisedHeight < 0.6f )
     {
         diffuseColor = grassColor;
+    }
+    else if ( normalisedHeight < 2.0f/3.0f )
+    {
+        float blendingFactor = tex2D(grassToStone, texcoord).x;
+        diffuseColor = (1.0f - blendingFactor) * stoneColor + blendingFactor * grassColor;
     }
     else
     {

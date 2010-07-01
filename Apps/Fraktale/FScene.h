@@ -23,6 +23,8 @@
     FTerrain * terrain;
     FPreethamSkylight * skylight;
     FCamera * camera;
+    FCamera * terrainCamera;
+    FCamera * attractorCamera;
 
     // menus for parameter tuning
     FMenu * attractorMenu;

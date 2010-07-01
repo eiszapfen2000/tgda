@@ -114,7 +114,8 @@
     TEST_RELEASE(terrainMenu);
 
     TEST_RELEASE(skylight);
-    TEST_RELEASE(camera);
+    TEST_RELEASE(terrainCamera);
+    TEST_RELEASE(attractorCamera);
 
     RELEASE(luminanceTarget);
     RELEASE(bloomTargetTwo);
@@ -164,6 +165,17 @@
 - (void) setActiveScene:(NpState)newActiveScene
 {
     activeScene = newActiveScene;
+
+    if ( newActiveScene == FSCENE_DRAW_TERRAIN )
+    {
+        camera = terrainCamera;
+        glClearColor(0.2f, 0.4f, 1.0f, 0.0f);
+    }
+    else if ( newActiveScene == FSCENE_DRAW_ATTRACTOR )
+    {
+        camera = attractorCamera;
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    }
 }
 
 - (BOOL) loadFromPath:(NSString *)path
@@ -174,7 +186,9 @@
     NSDictionary * attractorConfig = [ sceneConfig objectForKey:@"Attractor" ];
     NSDictionary * bloomConfig     = [ sceneConfig objectForKey:@"Bloom"     ];
 
-    camera = [[ FCamera alloc ] initWithName:@"Camera" parent:self ];
+    ///camera = [[ FCamera alloc ] initWithName:@"Camera" parent:self ];
+    terrainCamera = [[ FCamera alloc ] initWithName:@"TerrainCamera" parent:self ];
+    attractorCamera = [[ FCamera alloc ] initWithName:@"AttractorCamera" parent:self ];
     skylight = [[ FPreethamSkylight alloc ] initWithName:@"Skylight" parent:self ];
 
     terrain   = [[ FTerrain   alloc ] init ];
@@ -217,8 +231,12 @@
 - (void) activate
 {
     FVector3 pos = { 0.0f, 10.0f, 0.0f };
-    [ camera setPosition:&pos ];
-    [ camera cameraRotateUsingYaw:30.0f andPitch:0.0f ];
+    [ terrainCamera setPosition:&pos ];
+    [ terrainCamera cameraRotateUsingYaw:30.0f andPitch:0.0f ];
+
+    pos.y = 1.0f;
+    pos.z = 10.0f;
+    [ attractorCamera setPosition:&pos ];
 }
 
 - (void) deactivate
