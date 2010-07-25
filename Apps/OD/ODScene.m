@@ -206,7 +206,7 @@
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
     // Render scene
-    [[[ NP Core ] transformationStateManager ] resetCurrentTransformationState ];
+    [[[ NP Core ] transformationState ] reset ];
     [ camera render ];
 
     NSEnumerator * entityEnumerator = [ entities objectEnumerator ];

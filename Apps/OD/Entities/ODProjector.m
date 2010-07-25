@@ -203,7 +203,7 @@
 
 - (void) activate
 {
-    NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
+    NPTransformationState * trafo = [[ NP Core ] transformationState ];
     [ trafo setViewMatrix:view ];
     [ trafo setProjectionMatrix:projection ];
 }
@@ -422,7 +422,7 @@
 {
     if ( renderFrustum == YES && connectedToCamera == NO)
     {
-        [[[ NP Core ] transformationStateManager ] resetCurrentModelMatrix ];
+        [[[ NP Core ] transformationState ] resetModelMatrix ];
         [ frustum render ];
     }
 }

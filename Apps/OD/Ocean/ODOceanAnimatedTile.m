@@ -110,7 +110,8 @@
     {
         NPTexture * texture = [[ NPTexture alloc ] initWithName:[NSString stringWithFormat:@"Slice%d", i]
                                                          parent:self ];
-        [ texture setResolution:resolution ];
+        [ texture setWidth :resolution->x ];
+        [ texture setHeight:resolution->y ];
         [ texture setDataFormat   :NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT ];
         [ texture setPixelFormat  :NP_GRAPHICS_TEXTURE_PIXELFORMAT_R ];
         [ texture setMipMapping   :NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE ];
@@ -134,8 +135,9 @@
 
     texture3D = [[ NPTexture3D alloc ] initWithName:@"Volume" parent:self ];
 
-    IVector3 resolution3D = { resolution->x, resolution->y, numberOfSlices };
-    [ texture3D setResolution:&resolution3D ];
+    [ texture3D setWidth:resolution->x ];
+    [ texture3D setHeight:resolution->y ];
+    [ texture3D setDepth:numberOfSlices ];
     [ texture3D setDataFormat   :NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT ];
     [ texture3D setPixelFormat  :NP_GRAPHICS_TEXTURE_PIXELFORMAT_R ];
     [ texture3D setTextureFilter:NP_GRAPHICS_TEXTURE_FILTER_LINEAR ];

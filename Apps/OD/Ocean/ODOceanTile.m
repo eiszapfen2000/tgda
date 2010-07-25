@@ -58,7 +58,9 @@
 
     texture = [[ NPTexture alloc ] initWithName:@"Heights" parent:self ];
 
-    [ texture setResolution:resolution ];
+    //[ texture setResolution:resolution ];
+    [ texture setWidth:resolution->x ];
+    [ texture setHeight:resolution->y ];
     [ texture setDataFormat   :NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT ];
     [ texture setPixelFormat  :NP_GRAPHICS_TEXTURE_PIXELFORMAT_R ];
     [ texture setMipMapping   :NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_INACTIVE ];

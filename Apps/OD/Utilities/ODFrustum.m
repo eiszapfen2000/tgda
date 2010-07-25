@@ -291,7 +291,7 @@ int compare_floats (const void * a, const void * b)
         frustumFaceIndices[i*4+3] = defaultFaceIndices[index*4+3];
     }
 
-    [[[[ NP Core ] transformationStateManager ] currentTransformationState ] resetModelMatrix ];
+    [[[ NP Core ] transformationState ] resetModelMatrix ];
 
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];

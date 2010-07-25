@@ -73,12 +73,12 @@
     return nil;
 }
 
-- (id) currentScene
+- (ODScene *) currentScene
 {
     return currentScene;
 }
 
-- (void) setCurrentScene:(id)newCurrentScene
+- (void) setCurrentScene:(ODScene *)newCurrentScene
 {
     ASSIGN(currentScene, newCurrentScene);
 }
