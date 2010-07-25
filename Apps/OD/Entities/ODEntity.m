@@ -49,7 +49,7 @@
 
     [ self setName:entityName ];
 
-    model    = [[[[ NP Graphics ] modelManager    ] loadModelFromPath:modelPath       ] retain ];
+    model = [[[[ NP Graphics ] modelManager ] loadModelFromPath:modelPath ] retain ];
 
     if ( statesetPath != nil )
     {
@@ -87,7 +87,7 @@
 - (void) render
 {
     fm4_mv_translation_matrix(modelMatrix, position);
-    [[[[ NP Core ] transformationStateManager ] currentTransformationState ] setModelMatrix:modelMatrix ];
+    [[[ NP Core ] transformationState ] setModelMatrix:modelMatrix ];
 
     if ( stateset != nil )
     {

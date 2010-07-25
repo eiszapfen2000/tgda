@@ -125,7 +125,7 @@
 - (void) render
 {
     fm4_mv_translation_matrix(modelMatrix, position);
-    [[[[ NP Core ] transformationStateManager ] currentTransformationState ] setModelMatrix:modelMatrix ];
+    [[[ NP Core ] transformationState ] setModelMatrix:modelMatrix ];
 
     NPEffect * effect = [[[ model materials ] objectAtIndex:0 ] effect ];
 

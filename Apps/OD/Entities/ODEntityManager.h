@@ -2,7 +2,7 @@
 
 @interface ODEntityManager : NPObject
 {
-    id entities;
+    NSMutableDictionary * entities;
 }
 
 - (id) init;

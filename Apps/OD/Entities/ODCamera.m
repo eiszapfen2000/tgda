@@ -339,7 +339,7 @@
 
 - (void) render
 {
-    NPTransformationState * trafo = [[[ NP Core ] transformationStateManager ] currentTransformationState ];
+    NPTransformationState * trafo = [[ NP Core ] transformationState ];
     [ trafo setViewMatrix:view ];
     [ trafo setProjectionMatrix:projection ];
 }
