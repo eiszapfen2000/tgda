@@ -1,0 +1,8 @@
+{
+    Name = "Scene";
+    Skylight = "preetham.entity";
+    Camera = "camera.entity";
+    Projector = "projector.entity";
+    Entities = ("ocean.entity", "debug_plane.entity");
+}
+ 
