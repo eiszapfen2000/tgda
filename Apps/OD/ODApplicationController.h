@@ -1,9 +1,12 @@
 #import "Application/NPApplicationController.h"
 
+@class ODEntityManager;
+@class ODSceneManager;
+
 @interface ODApplicationController : NPApplicationController
 {
-    id entityManager;
-    id sceneManager;
+    ODEntityManager * entityManager;
+    ODSceneManager * sceneManager;
 }
 
 - (void) configureResourcePaths;
@@ -14,8 +17,8 @@
 
 - (void) dealloc;
 
-- (id) entityManager;
-- (id) sceneManager;
+- (ODEntityManager *) entityManager;
+- (ODSceneManager *) sceneManager;
 
 - (void) update;
 - (void) render;

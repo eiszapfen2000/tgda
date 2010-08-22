@@ -1,33 +1,48 @@
 #import "Core/NPObject/NPObject.h"
 #import "Graphics/npgl.h"
 
+@class ODCamera;
+@class ODProjector;
+@class ODPreethamSkylight;
+@class ODMenu;
+
+@class NPRenderTargetConfiguration;
+@class NPRenderTexture;
+@class NPRenderBuffer;
+@class NPEffect;
+@class NPFullscreenQuad;
+@class NPStateSet;
+
 @interface ODScene : NPObject
 {
-    id camera;
-    id projector;
+    ODCamera * camera;
+    ODProjector * projector;
+    ODPreethamSkylight * skylight;
 
-    id skybox;
     NSMutableArray * entities;
 
-    id font;
-    id menu;
+    ODMenu * menu;
 
-    id fullscreenEffect;
-    id fullscreenQuad;
-
-    id renderTargetConfiguration;
-    id sceneRenderTexture;
-    id luminanceRenderTexture;
-    id depthRenderBuffer;
-
-    id defaultStateSet;
-
-    Int32 luminanceMaxMipMapLevel;
+    // tonemapping parameters
     Float referenceWhite;
     Float key;
+    Float adaptationTimeScale;
+    Int32 luminanceMaxMipMapLevel;
+    Float lastFrameLuminance;
+    Float currentFrameLuminance;
+
+    // effect + parameter handles
+    NPEffect * fullscreenEffect;
     CGparameter toneMappingParameters;
 
-    id gammaTexture;
+    // render targets
+    NPRenderTargetConfiguration * sceneRTC;
+    NPRenderTexture * sceneRT;
+    NPRenderTexture * luminanceRT;
+    NPRenderBuffer * depthRB;
+
+    NPStateSet * defaultStateSet;
+    NPFullscreenQuad * fullscreenQuad;
 }
 
 - (id) init;
@@ -37,8 +52,8 @@
 
 - (BOOL) loadFromPath:(NSString *)path;
 
-- (id) camera;
-- (id) projector;
+- (ODCamera *) camera;
+- (ODProjector *) projector;
 - (id) entityWithName:(NSString *)entityName;
 
 - (void) activate;

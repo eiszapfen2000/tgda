@@ -27,72 +27,64 @@
     self =  [ super initWithName:newName parent:newParent ];
 
     entities = [[ NSMutableArray alloc ] init ];
-
-    fullscreenQuad = [[ NPFullscreenQuad alloc ] initWithName:@"Quad" parent:self ];
-
+    fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
     fullscreenEffect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:@"Fullscreen.cgfx" ];
+
     toneMappingParameters = [ fullscreenEffect parameterWithName:@"toneMappingParameters" ];
-    NSAssert1(toneMappingParameters != NULL, @"%@ missing \"toneMappingParameters\"", [ fullscreenEffect name ]);
+    NSAssert(toneMappingParameters != NULL, @"Parameter \"toneMappingParameters\" not found");
 
     IVector2 * resolution = [[[ NP Graphics ] viewportManager ] currentControlSize ];
-    renderTargetConfiguration = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTConfig" parent:self ];
-    [ renderTargetConfiguration setWidth:resolution->x ];
-    [ renderTargetConfiguration setHeight:resolution->y ];
 
+    // Initialise tonemapping parameters
+    luminanceMaxMipMapLevel = floor(logb(MAX(resolution->x, resolution->y)));
+    referenceWhite = 0.85f;
+    key = 0.38f;
+    adaptationTimeScale = 30.0f;
+    lastFrameLuminance = currentFrameLuminance = 1.0f;
 
-    sceneRenderTexture = [[ NPRenderTexture renderTextureWithName:@"SceneRT"
-                                                             type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
-                                                            width:resolution->x
-                                                           height:resolution->y
-                                                       dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
-                                                      pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA
-                                                    textureFilter:NP_GRAPHICS_TEXTURE_FILTER_NEAREST
-                                                      textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ] retain ];
+    // render target configurations
+    sceneRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"SceneRTC" parent:self ];
 
-    luminanceRenderTexture = [[ NPRenderTexture renderTextureWithName:@"LuminanceRT"
-                                                                 type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
-                                                                width:resolution->x
-                                                               height:resolution->y
-                                                           dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_FLOAT
-                                                          pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_R
-                                                        textureFilter:NP_GRAPHICS_TEXTURE_FILTER_TRILINEAR
-                                                          textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ] retain ];
+    depthRB = [[ NPRenderBuffer renderBufferWithName:@"DepthRB"
+                                                type:NP_GRAPHICS_RENDERBUFFER_DEPTH_TYPE
+                                              format:NP_GRAPHICS_RENDERBUFFER_DEPTH24
+                                               width:resolution->x
+                                              height:resolution->y ] retain ];
 
-    depthRenderBuffer = [[ NPRenderBuffer renderBufferWithName:@"DepthBuffer"
-                                                          type:NP_GRAPHICS_RENDERBUFFER_DEPTH_TYPE
-                                                        format:NP_GRAPHICS_RENDERBUFFER_DEPTH24
-                                                         width:resolution->x
-                                                        height:resolution->y ] retain ];
+    sceneRT = [[ NPRenderTexture renderTextureWithName:@"SceneRT"
+                                                  type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
+                                                 width:resolution->x
+                                                height:resolution->y
+                                            dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_HALF
+                                           pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_RGBA ] retain ];
 
-    [ depthRenderBuffer uploadToGL ];
-
-    defaultStateSet = [[[ NP Graphics ] stateSetManager ] loadStateSetFromPath:@"default.stateset" ];
-
-    luminanceMaxMipMapLevel = 1 + floor(log2(MAX(resolution->x, resolution->y)));
-    referenceWhite = 2.5f;
-    key = 1.0f;
-
-    gammaTexture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:@"SunDown.jpg" ];
+    luminanceRT = [[ NPRenderTexture renderTextureWithName:@"LuminanceRT"
+                                                      type:NP_GRAPHICS_RENDERTEXTURE_COLOR_TYPE
+                                                     width:resolution->x
+                                                    height:resolution->y
+                                                dataFormat:NP_GRAPHICS_TEXTURE_DATAFORMAT_HALF
+                                               pixelFormat:NP_GRAPHICS_TEXTURE_PIXELFORMAT_R
+                                             textureFilter:NP_GRAPHICS_TEXTURE_FILTER_TRILINEAR
+                                               textureWrap:NP_GRAPHICS_TEXTURE_WRAPPING_CLAMP_TO_EDGE ] retain ];
 
     return self;
 }
 
 - (void) dealloc
 {
-    [ fullscreenQuad release ];
-
-    [ menu release ];
-
-    [ depthRenderBuffer      release ];
-    [ sceneRenderTexture     release ];
-    [ luminanceRenderTexture release ];
-
-    [ renderTargetConfiguration resetColorTargetsArray ];
-    [ renderTargetConfiguration clear ];
-    [ renderTargetConfiguration release ];
+    RELEASE(menu);
 
     [ entities removeAllObjects ];
-    [ entities release ];
+    RELEASE(entities);
+
+    RELEASE(luminanceRT);
+    RELEASE(sceneRT);
+    RELEASE(depthRB);
+
+    [ sceneRTC clear ];
+    RELEASE(sceneRTC);
+
+    RELEASE(fullscreenQuad);
 
     [ super dealloc ];
 }
@@ -102,12 +94,12 @@
     NSDictionary * config = [ NSDictionary dictionaryWithContentsOfFile:path ];
 
     NSString * sceneName           = [ config objectForKey:@"Name" ];
-    NSString * skyboxEntityFile    = [ config objectForKey:@"Skybox" ];
+    NSString * skylightEntityFile  = [ config objectForKey:@"Skylight" ];
     NSString * cameraEntityFile    = [ config objectForKey:@"Camera" ];
     NSString * projectorEntityFile = [ config objectForKey:@"Projector" ];
     NSArray  * entityFiles         = [ config objectForKey:@"Entities" ];
 
-    if ( sceneName == nil || entityFiles == nil || skyboxEntityFile == nil ||
+    if ( sceneName == nil || entityFiles == nil || skylightEntityFile == nil ||
          cameraEntityFile == nil || projectorEntityFile == nil )
     {
         NPLOG_ERROR(@"Scene file %@ is incomplete", path);
@@ -116,27 +108,9 @@
 
     [ self setName:sceneName ];
 
-    skybox    = [[[ NP applicationController ] entityManager ] loadEntityFromPath:skyboxEntityFile ];
+    skylight  = [[[ NP applicationController ] entityManager ] loadEntityFromPath:skylightEntityFile ];
     camera    = [[[ NP applicationController ] entityManager ] loadEntityFromPath:cameraEntityFile ];
     projector = [[[ NP applicationController ] entityManager ] loadEntityFromPath:projectorEntityFile ];
-
-    //[ projector cameraRotateUsingYaw:-0.0f andPitch:-90.0f ];
-    [ projector setRenderFrustum:YES ];
-
-    NSEnumerator * entityFilesEnumerator = [ entityFiles objectEnumerator ];
-    id entityFileName;
-
-    while ( (entityFileName = [ entityFilesEnumerator nextObject ]) )
-    {
-        id entity = [[[ NP applicationController ] entityManager ] loadEntityFromPath:entityFileName ];
-
-        if ( entity != nil )
-        {
-            [ entities addObject:entity ];
-        }
-    }
-
-    font = [[[ NP Graphics ] fontManager ] loadFontFromPath:@"tahoma.font" ];
 
     menu = [[ ODMenu alloc ] initWithName:@"Menu" parent:self ];
     if ( [ menu loadFromPath:@"Menu.menu" ] == NO )
@@ -157,12 +131,12 @@
     [ (ODSceneManager *)parent setCurrentScene:nil ];
 }
 
-- (id) camera
+- (ODCamera *) camera
 {
     return camera;
 }
 
-- (id) projector
+- (ODProjector *) projector
 {
     return projector;
 }
@@ -187,8 +161,7 @@
 {
     [ camera    update:frameTime ];
     [ projector update:frameTime ];
-
-    [ skybox update:frameTime ];
+    [ skylight  update:frameTime ];
 
     NSEnumerator * entityEnumerator = [ entities objectEnumerator ];
     id <ODPEntity> entity;
@@ -203,11 +176,13 @@
 
 - (void) renderScene
 {
+    // clear terrainScene and depthBuffer
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
     // Render scene
     [[[ NP Core ] transformationState ] reset ];
     [ camera render ];
+    [ skylight render ];
 
     NSEnumerator * entityEnumerator = [ entities objectEnumerator ];
     id <ODPEntity> entity;
@@ -243,87 +218,86 @@
     // Set initial states
     [ defaultStateSet activate ];
 
-    // clear framebuffer/depthbuffer
-    //[[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
+    // Clear back buffer and depth buffer
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
-    //[ self renderScene ];
-    //[ self renderMenu  ];
+    IVector2 * resolution = [[[ NP Graphics ] viewportManager ] currentControlSize ];
 
-    [[[ NP Graphics ] orthographicRendering ] activate ];
+    // setup fbo
+    [ sceneRTC setWidth:resolution->x ];
+    [ sceneRTC setHeight:resolution->y ];
+    [ sceneRTC resetColorTargetsArray ];
+    [ sceneRTC bindFBO ];
 
-    FRectangle rect;
-    rect.min.x = -0.5f;
-    rect.min.y = -0.5f;
-    rect.max.x = 1.0f;
-    rect.max.y = 1.0f;
+    // setup sceneRT as render target
+    [[ sceneRTC colorTargets ] replaceObjectAtIndex:0 withObject:sceneRT ];
+    [ sceneRT attachToColorBufferIndex:0 ];
+    [ depthRB attach ];
+    [ sceneRTC activateViewport ];
+    [ sceneRTC activateDrawBuffers ];
+    [ sceneRTC checkFrameBufferCompleteness ];
 
-    FRectangle texCoords;
-    texCoords.min.x = texCoords.min.y = 0.0f;
-    texCoords.max.x = texCoords.max.y = 1.0f;
+    // clears framebuffer and depthbuffer, renders camera, skylight, all entities
+    // and the projector
+    [ self renderScene ];
 
-    [ gammaTexture activateAtColorMapIndex:0 ];
-    [ fullscreenEffect activateTechniqueWithName:@"fullscreen" ];
+    [ sceneRT detach ];
+    [ depthRB detach ];
 
-    [ NPPrimitivesRendering renderFRectangleGeometry:&rect withTexCoords:&texCoords ];
+    // deactivate depth write since we will not attach a depth target
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setWriteEnabled:NO ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:NO ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] activate ];
 
-    [ fullscreenEffect deactivate ];
+    // reset matrices
+    [[[ NP Core ] transformationState ] reset ];
 
-    [[[ NP Graphics ] orthographicRendering ] deactivate ];
+    // prepare luminanceRT
+    [[ sceneRTC colorTargets ] replaceObjectAtIndex:0 withObject:luminanceRT ];
+    [ luminanceRT attachToColorBufferIndex:0 ];
+    [ sceneRTC activateViewport ];
+    [ sceneRTC activateDrawBuffers ];
+    [ sceneRTC checkFrameBufferCompleteness ];
 
-
-    // Bind FBO, attach float color scene texture and depth renderbuffer
-    /*[ renderTargetConfiguration resetColorTargetsArray ];
-    [[ renderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:sceneRenderTexture ];
-    [ renderTargetConfiguration bindFBO ];
-    [ sceneRenderTexture attachToColorBufferIndex:0 ];
-    [ depthRenderBuffer attach ];
-    [ renderTargetConfiguration activateDrawBuffers ];
-    [ renderTargetConfiguration activateViewport ];
-
-    [ renderTargetConfiguration checkFrameBufferCompleteness ];*/
-
-    // Clear rendertexture(s)
-//    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
-
-    /*
-    // Detach float color scene texture and depth render buffer, attach luminance float texture
-    [[ renderTargetConfiguration colorTargets ] replaceObjectAtIndex:0 withObject:luminanceRenderTexture ];
-    [ depthRenderBuffer detach ];
-    [ luminanceRenderTexture attachToColorBufferIndex:0 ];
-    [ renderTargetConfiguration activateDrawBuffers ];
-    [ renderTargetConfiguration activateViewport ];
-
-    [ renderTargetConfiguration checkFrameBufferCompleteness ];
-
-    // Render to luminance texture, converting the source scene color to luminance
-    // during the process
-    [[ sceneRenderTexture texture ] activateAtColorMapIndex:0 ];
+    // compute sceneRT's luminance into luminanceRT
+    [[ sceneRT texture ] activateAtColorMapIndex:0 ];
     [ fullscreenEffect activateTechniqueWithName:@"luminance" ];
-
     [ fullscreenQuad render ];
+    [ luminanceRT detach ];
 
-    [ fullscreenEffect deactivate ];
-
-    // Deactivate FBO
-    [ renderTargetConfiguration unbindFBO ];
-    [ renderTargetConfiguration deactivateDrawBuffers ];
-    [ renderTargetConfiguration deactivateViewport ];
+    // deactivate render targets
+    [ sceneRTC unbindFBO ];
+    [ sceneRTC deactivateDrawBuffers ];
+    [ sceneRTC deactivateViewport ];
 
     // Generate mipmaps for luminance texture, since we want only the highest mipmaplevel
     // as an approximation to the average luminance of the scene
-    [ luminanceRenderTexture generateMipMaps ];
+    [ luminanceRT generateMipMaps ];
 
-    // Bind scene and luminance texture, and do tonemapping
-    [[ sceneRenderTexture     texture ] activateAtColorMapIndex:0 ];
-    [[ luminanceRenderTexture texture ] activateAtColorMapIndex:1 ];
+    Half * averageLuminance;
+    Int32 numberOfElements = [[ luminanceRT texture ] downloadMaxMipmapLevelIntoHalfs:&averageLuminance ];
+    NSAssert(averageLuminance != NULL && numberOfElements != 0, @"Failed to read average luminance back to memory.");
 
-    FVector3 toneMappingParameterVector = { (Float)luminanceMaxMipMapLevel, referenceWhite, key };
+    lastFrameLuminance = currentFrameLuminance;
+    Float currentFrameAverageLuminance = exp(half_to_float(averageLuminance[0]));
+    Double frameTime = [[[ NP Core ] timer ] frameTime ];
+
+    currentFrameLuminance = lastFrameLuminance + (currentFrameAverageLuminance - lastFrameLuminance)
+         * (Float)(1.0 - pow(0.9, adaptationTimeScale * frameTime));
+
+    FREE(averageLuminance);
+
+    // Bind scene texture, and do tonemapping
+    [[ sceneRT texture ] activateAtColorMapIndex:0 ];
+
+    FVector3 toneMappingParameterVector = { (Float)currentFrameLuminance, referenceWhite, key };
     [ fullscreenEffect uploadFVector3Parameter:toneMappingParameters andValue:&toneMappingParameterVector ];
     [ fullscreenEffect activateTechniqueWithName:@"tonemap" ];
-
     [ fullscreenQuad render ];
+    [ fullscreenEffect deactivate ];
 
-    [ fullscreenEffect deactivate ];*/
+    // render menu
+    [ self renderMenu ];
 
     // Reset states
     [[[ NP Graphics ] stateConfiguration ] deactivate ];

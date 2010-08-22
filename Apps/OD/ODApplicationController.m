@@ -62,12 +62,12 @@
     [ super dealloc ];
 }
 
-- (id) entityManager
+- (ODEntityManager *) entityManager
 {
     return entityManager;
 }
 
-- (id) sceneManager
+- (ODSceneManager *) sceneManager
 {
     return sceneManager;
 }

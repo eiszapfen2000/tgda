@@ -21,10 +21,9 @@
             Position = ("0.1", "0.1"  );
             LineSize = ("0.2",  "0.05" );
             HeadSize = ("0.04", "0.05" );
-            StartPosition = "Right";
-            MinimumValue = "0.0f";
+            MinimumValue = "0.1f";
             MaximumValue = "1.0f";
-            TargetObject = "TestScene";
+            TargetObject = "Scene";
             TargetProperty = "key";
         };
 
@@ -33,29 +32,27 @@
             Type = "ODSliderItem";
             Description = "Reference White";
             Alignment = "TopLeft";
-            Position = ("0.1", "0.3"  );
+            Position = ("0.1", "0.25"  );
             LineSize = ("0.2",  "0.05" );
             HeadSize = ("0.04", "0.05" );
-            StartPosition = "Center";
-            MinimumValue = "0.0f";
+            MinimumValue = "0.1f";
             MaximumValue = "5.0f";
-            TargetObject = "TestScene";
+            TargetObject = "Scene";
             TargetProperty = "referenceWhite";
         };
 
-        InkColors =
+        ToneMappingAdaptationTimeSlider =
         {
-            Type = "ODSelectionGroup";
-            Description = "Group";
-            Alignment = "Left";
-            Position = ("0.1", "0.4" );
-            ItemSize = ( "0.08", "0.08" );
-            ItemSpacing = ( "0.01", "0.01" );
-            Rows = "2";
-            Columns = "2";
-            Selection = "Selected.png";
-            Textures = ( "Red.png", "Blue.png", "Green.png", "Yellow.png" );
-            TargetObject = "TestScene";
+            Type = "ODSliderItem";
+            Description = "Adaptation Time";
+            Alignment = "TopLeft";
+            Position = ("0.1", "0.4"  );
+            LineSize = ("0.2",  "0.05" );
+            HeadSize = ("0.04", "0.05" );
+            MinimumValue = "1.0f";
+            MaximumValue = "60.0f";
+            TargetObject = "Scene";
+            TargetProperty = "adaptationTimeScale";
         };
 
         PConnection =

@@ -1,0 +1,104 @@
+float4x4 mvpmatrix : NPMODELVIEWPROJECTION;
+sampler2D colormap : NPCOLORMAP0;
+
+float3 toneMappingParameters; // x = mipLevel, y = referenceWhite, z = key
+
+static float3x3 RGB2XYZ = { 0.4124564,  0.2126729,  0.0193339,
+                            0.3575761,  0.7151522,  0.1191920,
+                            0.1804375,  0.0721750,  0.9503041 };
+
+static float3x3 XYZ2RGB = { 3.2404542, -0.9692660,  0.0556434,
+                           -1.5371385,  1.8760108, -0.2040259,
+                           -0.4985314,  0.0415560,  1.0572252 };
+
+
+struct INPUTDATA
+{
+	float4 position	: POSITION;
+    float2 texcoord : TEXCOORD0;
+};
+
+struct VOUTPUTDATA
+{
+	float4 position	: POSITION;
+    float2 texcoord : TEXCOORD0;
+};
+
+VOUTPUTDATA mvertexshader(INPUTDATA input)
+{
+	VOUTPUTDATA output;
+
+	output.position = mul(mvpmatrix, input.position);
+    output.texcoord = input.texcoord;
+	
+	return output;
+}
+
+struct FOUTPUTDATA
+{
+	float4 color : COLOR0;
+};
+
+FOUTPUTDATA mfragmentshader_luminance(VOUTPUTDATA input)
+{
+	FOUTPUTDATA output;
+
+    float4 color = tex2D(colormap, input.texcoord);
+    float3 XYZ = mul(color.xyz, RGB2XYZ);
+
+    //Luminance
+    output.color.x = max(log(XYZ.y), 0.001f);
+
+	return output;
+}
+
+FOUTPUTDATA mfragmentshader_tonemap(VOUTPUTDATA input)
+{
+	FOUTPUTDATA output;
+
+    float4 color = tex2D(colormap, input.texcoord);
+    float3 XYZ = mul(color.xyz, RGB2XYZ);
+
+    float3 Yxy;
+    Yxy.r = XYZ.g;                            // copy luminance Y
+    Yxy.g = XYZ.r / (XYZ.r + XYZ.g + XYZ.b ); // x = X / (X + Y + Z)
+    Yxy.b = XYZ.g / (XYZ.r + XYZ.g + XYZ.b ); // y = Y / (X + Y + Z)
+
+    // make exposure a parameter
+    // make white a parameter
+
+    //float Lscaled = Yxy.r * toneMappingParameters.z / averageLuminance;
+    float Lscaled = Yxy.r * toneMappingParameters.z / toneMappingParameters.x;
+    Yxy.r = Lscaled * ( 1.0f + ( Lscaled / (toneMappingParameters.y * toneMappingParameters.y) ) ) / (1.0f + Lscaled);
+
+    // Yxy -> XYZ conversion
+    XYZ.r = Yxy.r * Yxy.g / Yxy.b;               // X = Y * x / y
+    XYZ.g = Yxy.r;                                // copy luminance Y
+    XYZ.b = Yxy.r * (1.0f - Yxy.g - Yxy.b) / Yxy.b;  // Z = Y * (1-x-y) / y
+
+    // back to linear RGB, apply gamma correction
+    output.color.rgb = pow(mul(XYZ, XYZ2RGB), 1.0f/2.2f);
+    output.color.a = 1.0f;
+
+	return output;
+}
+
+
+technique luminance
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mfragmentshader_luminance();
+		VertexProgram   = compile vp40 mvertexshader();
+	}
+}
+
+technique tonemap
+{
+	pass
+	{
+		FragmentProgram = compile fp40 mfragmentshader_tonemap();
+		VertexProgram   = compile vp40 mvertexshader();
+	}
+}
+
