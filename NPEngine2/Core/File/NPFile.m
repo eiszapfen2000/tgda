@@ -1,0 +1,380 @@
+#import <Foundation/NSData.h>
+#import "NPFile.h"
+//#import "NP.h"
+
+@implementation NPFile
+
+- (id) init
+{
+    return [ self initWithName:@"NPFile" ];
+}
+
+- (id) initWithName:(NSString *)newName
+{
+    return [ self initWithName:newName parent:nil ];
+}
+
+- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
+{
+    return [ self initWithName:newName parent:newParent fileName:@"" ];
+}
+
+- (id) initWithName:(NSString *)newName
+             parent:(id <NPPObject> )newParent
+           fileName:(NSString *)newFileName
+{
+    return [ self initWithName:newName 
+                        parent:newParent
+                      fileName:newFileName mode:NP_FILE_READING ];
+}
+
+- (id) initWithName:(NSString *)newName
+             parent:(id <NPPObject> )newParent
+           fileName:(NSString *)newFileName
+               mode:(NpState)newMode
+{
+    self = [ super initWithName:newName parent:newParent ];
+
+    fileName = [ newFileName retain ];
+    fileHandle = nil;
+
+    [ self initFileHandleWithMode:newMode ];
+
+    return self;
+}
+
+- (void) dealloc
+{
+    [ self clear ];
+
+    [ super dealloc ];
+}
+
+- (NSString *) fileName
+{
+    return fileName;
+}
+
+- (NpState) mode
+{
+    return mode;
+}
+
+- (void) initFileHandleWithMode:(NpState)newMode
+{
+    if ( fileHandle != nil )
+    {
+        [ fileHandle closeFile ];
+        [ fileHandle release ];
+        fileHandle = nil;
+    }
+
+    mode = newMode;
+
+    switch ( mode )
+    {
+        case ( NP_FILE_READING ):
+        {
+            fileHandle = [[ NSFileHandle fileHandleForReadingAtPath:fileName ] retain ];
+            break;
+        }
+
+        case ( NP_FILE_UPDATING ):
+        {
+            fileHandle = [[ NSFileHandle fileHandleForUpdatingAtPath:fileName ] retain ];
+            break;
+        }
+
+        case ( NP_FILE_WRITING ):
+        {
+            fileHandle = [[ NSFileHandle fileHandleForWritingAtPath:fileName ] retain ];
+            break;
+        }
+
+        default:
+        {
+            fileHandle = [[ NSFileHandle fileHandleForReadingAtPath:fileName ] retain ];
+            break;
+        }
+    }
+
+    if ( fileHandle == nil )
+    {
+        //NPLOG_ERROR(@"%@: cannot open file %@ for processing", name, fileName);
+    }
+}
+
+- (void) clear
+{
+    [ fileHandle closeFile ];
+    [ fileHandle release ];
+    fileHandle = nil;
+
+    [ fileName release ];
+    fileName = @"";
+
+    mode = NP_NONE;
+}
+
+#define READ_DATA(_type) \
+    _type result; \
+    NSData * data = [ fileHandle readDataOfLength:sizeof(_type) ]; \
+    [ data getBytes:&result ]; \
+    return result;
+
+- (int16_t) readInt16
+{
+    READ_DATA(int16_t);
+}
+
+- (int32_t) readInt32
+{
+    READ_DATA(int32_t);
+}
+
+- (int64_t) readInt64
+{
+    READ_DATA(int64_t);
+}
+
+- (uint16_t) readUInt16
+{
+    READ_DATA(uint16_t);
+}
+
+- (uint32_t) readUInt32
+{
+    READ_DATA(uint32_t);
+}
+
+- (uint64_t) readUInt64
+{
+    READ_DATA(uint64_t);
+}
+
+- (Float) readFloat
+{
+    READ_DATA(Float);
+}
+
+- (Double) readDouble
+{
+    READ_DATA(Double);
+}
+
+- (BOOL) readBool
+{
+    READ_DATA(BOOL);
+}
+
+- (uint8_t) readByte
+{
+    READ_DATA(uint8_t);
+}
+
+- (char) readChar
+{
+    READ_DATA(char);
+}
+
+- (NSString *) readSUXString
+{
+    int32_t slength = [ self readInt32 ];
+    if ( slength > 0 )
+    {
+        NSData * data = [ fileHandle readDataOfLength:(uint32_t)slength ];
+
+        NSString * s = [[ NSString alloc] initWithBytes:[data bytes]
+                                                 length:(NSUInteger)slength
+                                               encoding:NSASCIIStringEncoding ];
+
+        return [ s autorelease ];
+    }
+
+    return @"";
+}
+
+/*
+- (NPStringList *) readSUXScript
+{
+    Int lines = 0;
+    [self readInt32:&lines ];
+
+    NPStringList * script = [[ NPStringList alloc ] init ];
+    [ script setAllowDuplicates:YES ];
+    [ script setAllowEmptyStrings:YES ];
+
+    for ( Int i = 0; i < lines; i++ )
+    {
+        NSString * line = [ self readSUXString ];
+        [ script addString:line ];
+    }
+
+    return [ script autorelease ];
+}
+
+*/
+
+#undef READ_DATA
+
+- (FVector2) readFVector2
+{
+    FVector2 v;
+    v.x = [ self readFloat ];
+    v.y = [ self readFloat ];
+    
+    return v;
+}
+
+- (FVector3) readFVector3
+{
+    FVector3 v;
+    v.x = [ self readFloat ];
+    v.y = [ self readFloat ];
+    v.z = [ self readFloat ];
+
+    return v;
+}
+
+- (FVector4) readFVector4
+{
+    FVector4 v;
+    v.x = [ self readFloat ];
+    v.y = [ self readFloat ];
+    v.z = [ self readFloat ];
+    v.w = [ self readFloat ];
+
+    return v;
+}
+
+- (IVector2) readIVector2
+{
+    IVector2 v;
+    v.x = [ self readInt32 ];
+    v.y = [ self readInt32 ];
+
+    return v;
+}
+
+- (NSData *) readEntireFile
+{
+    return [ fileHandle readDataToEndOfFile ];
+}
+
+#define WRITE_DATA(_v) \
+    NSData * data = [ NSData dataWithBytes:&(_v) length:sizeof(_v) ]; \
+    [ fileHandle writeData:data ];
+
+- (void) writeInt16:(int16_t)i
+{
+    WRITE_DATA(i);
+}
+
+- (void) writeInt32:(int32_t)i
+{
+    WRITE_DATA(i);
+}
+
+- (void) writeInt64:(int64_t)i
+{
+    WRITE_DATA(i);
+}
+
+- (void) writeUInt16:(uint16_t)u
+{
+    WRITE_DATA(u);
+}
+
+- (void) writeUInt32:(uint32_t)u
+{
+    WRITE_DATA(u);
+}
+
+- (void) writeUInt64:(uint64_t)u
+{
+    WRITE_DATA(u);
+}
+
+- (void) writeFloat:(Float)f
+{
+    WRITE_DATA(f);
+}
+
+- (void) writeDouble:(Double)d
+{
+    WRITE_DATA(d);
+}
+
+- (void) writeByte:(uint8_t)b
+{
+    WRITE_DATA(b);
+}
+
+- (void) writeChar:(char)c
+{
+    WRITE_DATA(c);
+}
+
+- (void) writeBool:(BOOL)b
+{
+    WRITE_DATA(b);
+}
+
+- (void) writeCharArray:(const char *)c length:(NSUInteger)length
+{
+    NSData * data = [ NSData dataWithBytes:c length:length ]; \
+    [ fileHandle writeData:data ];
+}
+
+- (void) writeSUXString:(NSString *)s
+{
+    NSUInteger ulength = [ s lengthOfBytesUsingEncoding:NSASCIIStringEncoding ];
+    int32_t length = (int32_t)ulength;
+    [ self writeInt32:length ];
+
+    char * cstring = (char *)[ s cStringUsingEncoding:NSASCIIStringEncoding ];
+    [ self writeCharArray:cstring length:ulength ];
+}
+
+/*
+
+- (void) writeSUXScript:(NPStringList *)script
+{
+    Int32 lines = (Int32)[ script count ];
+    [ self writeInt32:&lines ];
+
+    for ( Int i = 0; i < lines; i++ )
+    {
+        [ self writeSUXString:[ script stringAtIndex:i ]];
+    }
+}
+*/
+
+- (void) writeFVector2:(FVector2)v
+{
+    [ self writeFloat:v.x ];
+    [ self writeFloat:v.y ];
+}
+
+- (void) writeFVector3:(FVector3)v
+{
+    [ self writeFloat:v.x ];
+    [ self writeFloat:v.y ];
+    [ self writeFloat:v.z ];
+}
+
+- (void) writeFVector4:(FVector4)v
+{
+    [ self writeFloat:v.x ];
+    [ self writeFloat:v.y ];
+    [ self writeFloat:v.z ];
+    [ self writeFloat:v.w ];
+}
+
+- (void) writeIVector2:(IVector2)v
+{
+    [ self writeInt32:v.x ];
+    [ self writeInt32:v.y ];
+}
+
+@end
