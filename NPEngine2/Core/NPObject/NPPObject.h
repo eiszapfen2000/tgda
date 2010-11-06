@@ -4,8 +4,6 @@
 
 @protocol NPPObject < NSObject >
 
-//- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
-
 - (NSString *) name;
 - (id <NPPObject>) parent;
 - (uint32_t) objectID;
@@ -14,3 +12,4 @@
 - (void) setParent:(id <NPPObject> )newParent;
 
 @end
+
