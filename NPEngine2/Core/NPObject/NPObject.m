@@ -3,6 +3,8 @@
 //#import "NPObjectManager.h"
 //#import "Core/NPEngineCore.h"
 
+NSString* const NPEngineErrorDomain = @"NPEngineErrorDomain";
+
 @implementation NPObject
 
 - (id) init
@@ -19,11 +21,10 @@
 {
     self = [ super init ];
 
-    name = [ newName copy ];
+    ASSIGNCOPY(name, newName);
 
     //Weak reference
     parent = newParent;
-
     objectID = crc32_of_pointer(self);
 
     pointer = [[ NSValue alloc ] initWithBytes:&self objCType:@encode(void *) ];
@@ -34,11 +35,11 @@
 
 - (void) dealloc
 {
-    RELEASE(name);
+    DESTROY(name);
     parent = nil;
 
     //[[[ NPEngineCore instance ] objectManager ] removeObject:pointer ];
-    RELEASE(pointer);
+    DESTROY(pointer);
 
     [ super dealloc ];
 }

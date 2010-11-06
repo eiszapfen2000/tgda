@@ -1,8 +1,8 @@
+#import <Foundation/NSArray.h>
 #import "Core/NPObject/NPObject.h"
+#import "Core/File/NPPPersistentObject.h"
 
-@class NPFile;
-
-@interface NPStringList : NPObject
+@interface NPStringList : NPObject < NPPPersistentObject >
 {
     NSMutableArray * lines;
 
@@ -29,8 +29,6 @@
 - (void) setAllowEmptyStrings:(BOOL)newAllowEmptyStrings;
 
 - (void) clear;
-- (BOOL) loadFromFile:(NPFile *)file;
-- (BOOL) loadFromPath:(NSString *)path;
 
 - (void) addString:(NSString *)string;
 - (void) addStringsFromArray:(NSArray *)array;

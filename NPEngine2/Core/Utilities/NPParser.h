@@ -1,5 +1,8 @@
+#import <Foundation/NSCharacterSet.h>
 #import "Core/NPObject/NPObject.h"
 #import "NPStringList.h"
+
+@class NSCharacterSet;
 
 @interface NPParser : NPObject
 {
@@ -72,6 +75,6 @@
 - (void) parse:(NPStringList *)inputScript;
 
 - (void) clear;
-- (BOOL) loadFromPath:(NSString *)path;
+- (BOOL) loadFromFile:(NSString *)fileName;
 
 @end

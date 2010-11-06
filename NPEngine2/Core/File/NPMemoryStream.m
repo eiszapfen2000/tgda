@@ -19,6 +19,7 @@
     self = [ super initWithName:newName parent:newParent ];
 
     buffer = [[ NSData alloc ] init ];
+    streamOffset = 0;
 
     return self;
 }
@@ -30,9 +31,30 @@
     [ super dealloc ];
 }
 
+- (void) seekToBeginningOfStream
+{
+    streamOffset = 0;
+}
+
+- (void) seekToEndOfStream
+{
+    streamOffset = [ buffer length ];
+}
+
+- (void) seekToStreamOffset:(NSUInteger)offset
+{
+    NSAssert2(offset <= [ buffer length ],
+              @"%@: Offset %llu exceeds buffer length.", name, offset);
+
+    streamOffset = offset;
+}
+
 #define READ_DATA(_type) \
     _type result; \
-    [ buffer getBytes:&result length:sizeof(_type)]; \
+    NSUInteger size = sizeof(_type); \
+    NSRange range = NSMakeRange(streamOffset, size); \
+    [ buffer getBytes:&result range:range ]; \
+    streamOffset += size; \
     return result;
 
 - (int16_t) readInt16
@@ -202,7 +224,9 @@
 #undef READ_DATA
 
 #define WRITE_DATA(_v) \
-    [ buffer appendBytes:&(_v) length:sizeof(_v) ];
+    NSUInteger size = sizeof(_v); \
+    [ buffer appendBytes:&(_v) length:size ]; \
+    streamOffset += size;
 
 - (void) writeInt16:(int16_t)i
 {
@@ -264,6 +288,7 @@
 - (void) writeCharArray:(const char *)c length:(NSUInteger)length
 {
     [ buffer appendBytes:c length:length ];
+    streamOffset += length;
 }
 
 - (void) writeSUXString:(NSString *)s

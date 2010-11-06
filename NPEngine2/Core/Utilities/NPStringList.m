@@ -1,3 +1,4 @@
+#import <Foundation/NSException.h>
 #import <Foundation/NSScanner.h>
 #import "Core/File/NPFile.h"
 #import "NPStringList.h"
@@ -62,8 +63,6 @@
 
 - (NSString *) stringAtIndex:(NSUInteger)index
 {
-    NSAssert(index < [ lines count ], @"Index out of bounds");
-
     return [ lines objectAtIndex:index ];
 }
 
@@ -81,6 +80,8 @@
 {
     [ lines removeAllObjects ];
 }
+
+/*
 
 - (BOOL) loadFromFile:(NPFile *)file
 {
@@ -106,30 +107,7 @@
     return YES;
 }
 
-- (BOOL) loadFromPath:(NSString *)path
-{
-    NSString * fileContents = [ NSString stringWithContentsOfFile:path ];
-    if ( fileContents == nil )
-    {
-        return NO;
-    }
-
-    [ self clear ];
-
-    NSCharacterSet * newlineSet = [ NSCharacterSet newlineCharacterSet ];
-    NSScanner * scanner = [ NSScanner scannerWithString:fileContents ];
-
-    while ( [ scanner isAtEnd ] == NO )
-    {
-        NSString * string;
-        if ( [ scanner scanUpToCharactersFromSet:newlineSet  intoString:&string ] == YES )
-        {
-            [ self addString:string ];
-        }
-    }
-
-    return YES;
-}
+*/
 
 - (void) addString:(NSString *)string
 {
@@ -151,6 +129,52 @@
 - (void) addStringsFromArray:(NSArray *)array
 {
     [ lines addObjectsFromArray:array ];
+}
+
+- (BOOL) loadFromStream:(id <NPPStream>)stream 
+                  error:(NSError **)error
+{
+    [ self clear ];
+
+    int32_t numberOfLines = [ stream readInt32 ];
+    for ( int32_t i = 0; i < numberOfLines; i++ )
+    {
+        [ self addString:[ stream readSUXString ]];
+    }
+
+    return YES;
+}
+
+- (BOOL) loadFromFile:(NSString *)fileName
+                error:(NSError **)error
+{
+    NSStringEncoding encoding;
+    NSString * fileContents = 
+        [[ NSString alloc ] initWithContentsOfFile:fileName 
+                                      usedEncoding:&encoding
+                                             error:error ];
+
+    if ( fileContents == nil )
+    {
+        return NO;
+    }
+
+    [ self clear ];
+
+    NSCharacterSet * newlineSet = [ NSCharacterSet newlineCharacterSet ];
+    NSScanner * scanner = [ NSScanner scannerWithString:fileContents ];
+
+    while ( [ scanner isAtEnd ] == NO )
+    {
+        NSString * string;
+        if ( [ scanner scanUpToCharactersFromSet:newlineSet 
+                                      intoString:&string ] == YES )
+        {
+            [ self addString:string ];
+        }
+    }
+
+    return YES;
 }
 
 - (NSString *) description
