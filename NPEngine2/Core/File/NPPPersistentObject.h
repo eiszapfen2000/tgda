@@ -1,9 +1,16 @@
 #import <Foundation/NSString.h>
 #import "NPPStream.h"
 
+@class NSError;
+
 @protocol NPPPersistentObject
 
-- (void) loadFromStream:(id <NPPSttream>)stream;
-- (void) loadFromFile:(NSString *)fileName;
+- (BOOL) loadFromStream:(id <NPPStream>)stream 
+                  error:(NSError **)error
+                       ;
+
+- (BOOL) loadFromFile:(NSString *)fileName
+                error:(NSError **)error
+                     ;
 
 @end

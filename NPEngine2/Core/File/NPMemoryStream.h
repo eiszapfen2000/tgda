@@ -5,6 +5,7 @@
 @interface NPMemoryStream : NPObject < NPPStream >
 {
     NSMutableData * buffer;
+    NSUInteger streamOffset;
 }
 
 - (id) init;
@@ -14,5 +15,9 @@
                    ;
 
 - (void) dealloc;
+
+- (void) seekToBeginningOfStream;
+- (void) seekToEndOfStream;
+- (void) seekToStreamOffset:(NSUInteger)offset;
 
 @end

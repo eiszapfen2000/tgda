@@ -1,8 +1,10 @@
 #import <Foundation/NSObject.h>
+#import <Foundation/NSError.h>
 #import <Foundation/NSString.h>
-#import <Foundation/NSURL.h>
 #import <Foundation/NSValue.h>
 #import "NPPObject.h"
+
+NSString * const NPEngineErrorDomain;
 
 @interface NPObject : NSObject < NPPObject >
 {

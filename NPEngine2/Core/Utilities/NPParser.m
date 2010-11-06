@@ -1,6 +1,7 @@
+#import <Foundation/NSException.h>
 #import "NSString+NPEngine.h"
 #import "NPParser.h"
-#import "NP.h"
+
 
 @implementation NPParser
 
@@ -32,8 +33,7 @@
 {
     [ self clear ];
 
-    DESTROY(lines);    
-
+    DESTROY(lines);
     DESTROY(separators);
     DESTROY(separatorsToStoreAsLiterals);
     DESTROY(longLiteralMarkers);
@@ -239,7 +239,7 @@
 {
     if ( inputScript == nil )
     {
-        NPLOG_ERROR(@"No inputScript defined");
+        //NPLOG_ERROR(@"No inputScript defined");
         return;
     }
 
@@ -264,12 +264,12 @@
     }
 }
 
-- (BOOL) loadFromPath:(NSString *)path
+- (BOOL) loadFromFile:(NSString *)fileName
 {
     TEST_RELEASE(script);
     script = [[ NPStringList alloc ] init ];
     
-    return [ script loadFromPath:path ];
+    return [ script loadFromFile:fileName error:NULL ];
 }
 
 @end
