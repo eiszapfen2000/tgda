@@ -1,13 +1,11 @@
 #import <Foundation/NSException.h>
-#import <Foundation/NSData.h>
-#import "NPFile.h"
-//#import "NP.h"
+#import "NPMemoryStream.h"
 
-@implementation NPFile
+@implementation NPMemoryStream
 
 - (id) init
 {
-    return [ self initWithName:@"NPFile" ];
+    return [ self initWithName:@"NPMemoryStream" ];
 }
 
 - (id) initWithName:(NSString *)newName
@@ -15,96 +13,26 @@
     return [ self initWithName:newName parent:nil ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    return [ self initWithName:newName parent:newParent fileName:@"" ];
-}
-
-- (id) initWithName:(NSString *)newName
+- (id) initWithName:(NSString *)newName 
              parent:(id <NPPObject> )newParent
-           fileName:(NSString *)newFileName
-{
-    return [ self initWithName:newName 
-                        parent:newParent
-                      fileName:newFileName
-                          mode:NpFileRead ];
-}
-
-- (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject> )newParent
-           fileName:(NSString *)newFileName
-               mode:(NpFileMode)newMode
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    [ self openFile:newFileName mode:newMode ];
+    buffer = [[ NSData alloc ] init ];
 
     return self;
 }
 
 - (void) dealloc
 {
-    [ self close ];
+    DESTROY(buffer);
 
     [ super dealloc ];
 }
 
-- (NSString *) fileName
-{
-    return fileName;
-}
-
-- (NpFileMode) mode
-{
-    return mode;
-}
-
-- (void) openFile:(NSString *)newFileName
-             mode:(NpFileMode)newMode
-{
-    [ self close ];
-
-    ASSIGNCOPY(fileName, newFileName);
-    mode = newMode;
-
-    switch ( mode )
-    {
-        case NpFileRead:
-        {
-            fileHandle = RETAIN([ NSFileHandle fileHandleForReadingAtPath:fileName ]);
-            break;
-        }
-
-        case NpFileUpdate:
-        {
-            fileHandle = RETAIN([ NSFileHandle fileHandleForUpdatingAtPath:fileName ]);
-            break;
-        }
-
-        case NpFileWrite:
-        {
-            fileHandle = RETAIN([ NSFileHandle fileHandleForWritingAtPath:fileName ]);
-            break;
-        }
-    }
-
-    NSAssert1(fileHandle != nil, @"Failed to open %@.", fileName);
-}
-
-- (void) close
-{
-    if ( fileHandle != nil )
-    {
-        [ fileHandle closeFile ];
-        DESTROY(fileHandle);
-        DESTROY(fileName);
-    }
-}
-
 #define READ_DATA(_type) \
     _type result; \
-    NSData * data = [ fileHandle readDataOfLength:sizeof(_type) ]; \
-    [ data getBytes:&result ]; \
+    [ buffer getBytes:&result length:sizeof(_type)]; \
     return result;
 
 - (int16_t) readInt16
@@ -164,6 +92,7 @@
 
 - (NSString *) readSUXString
 {
+    /*
     int32_t slength = [ self readInt32 ];
     if ( slength > 0 )
     {
@@ -175,6 +104,7 @@
 
         return AUTORELEASE(s);
     }
+    */
 
     return @"";
 }
@@ -199,8 +129,6 @@
 }
 
 */
-
-#undef READ_DATA
 
 - (FVector2) readFVector2
 {
@@ -271,14 +199,10 @@
     return v;
 }
 
-- (NSData *) readEntireFile
-{
-    return [ fileHandle readDataToEndOfFile ];
-}
+#undef READ_DATA
 
 #define WRITE_DATA(_v) \
-    NSData * data = [ NSData dataWithBytes:&(_v) length:sizeof(_v) ]; \
-    [ fileHandle writeData:data ];
+    [ buffer appendBytes:&(_v) length:sizeof(_v) ];
 
 - (void) writeInt16:(int16_t)i
 {
@@ -335,10 +259,11 @@
     WRITE_DATA(b);
 }
 
+#undef WRITE_DATA
+
 - (void) writeCharArray:(const char *)c length:(NSUInteger)length
 {
-    NSData * data = [ NSData dataWithBytes:c length:length ]; \
-    [ fileHandle writeData:data ];
+    [ buffer appendBytes:c length:length ];
 }
 
 - (void) writeSUXString:(NSString *)s
@@ -350,22 +275,6 @@
     char * cstring = (char *)[ s cStringUsingEncoding:NSASCIIStringEncoding ];
     [ self writeCharArray:cstring length:ulength ];
 }
-
-/*
-
-- (void) writeSUXScript:(NPStringList *)script
-{
-    Int32 lines = (Int32)[ script count ];
-    [ self writeInt32:&lines ];
-
-    for ( Int i = 0; i < lines; i++ )
-    {
-        [ self writeSUXString:[ script stringAtIndex:i ]];
-    }
-}
-*/
-
-#undef WRITE_DATA
 
 - (void) writeFVector2:(FVector2)v
 {
