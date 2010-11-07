@@ -2,6 +2,7 @@
 #import <Foundation/NSError.h>
 #import <Foundation/NSString.h>
 #import <Foundation/NSValue.h>
+#import "Core/Basics/NpTypes.h"
 #import "NPPObject.h"
 
 NSString * const NPEngineErrorDomain;

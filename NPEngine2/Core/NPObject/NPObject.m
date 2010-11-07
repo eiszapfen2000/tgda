@@ -74,48 +74,9 @@ NSString* const NPEngineErrorDomain = @"NPEngineErrorDomain";
 
 - (NSString *) description
 {
-    return [ NSString stringWithFormat: @"ID:%ud retainCount:%u Name:%@ Class:%@",
+    return [ NSString stringWithFormat:@"ID:%ud retainCount:%u Name:%@ Class:%@",
              objectID, (uint32_t)[self retainCount], name, NSStringFromClass([self class]) ];
 }
 
 @end
 
-/*
-@implementation NPObject ( NPCoding )
-
-- (void) encodeWithCoder:(NSCoder *)coder
-{
-    if ( [coder allowsKeyedCoding] )
-    {
-        [ coder encodeObject:name forKey:@"Name" ];
-        [ coder encodeConditionalObject:parent forKey:@"Parent" ];
-    }
-    else
-    {
-        [ coder encodeObject:name ];
-        [ coder encodeConditionalObject:parent ];
-    }
-}
-
-- (id) initWithCoder:(NSCoder *)coder
-{
-    self = [ super init ];
-
-    if ( [coder allowsKeyedCoding] )
-    {
-        name = [ [ coder decodeObjectForKey:@"Name" ] retain ];
-        parent = [ coder decodeObjectForKey:@"Parent" ];
-    }
-    else
-    {
-        name = [ [ coder decodeObject ] retain ];
-        parent = [ coder decodeObject ];
-    }
-
-    objectID = crc32_of_pointer(self);
-
-    return self;
-}
-
-@end
-*/
