@@ -1,4 +1,4 @@
-#import "NPPathUtilities.h"
+#import "NSFileManager+NPEngine.h"
 
 @implementation NSFileManager ( NPEngine )
 
