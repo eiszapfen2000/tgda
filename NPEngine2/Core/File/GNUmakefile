@@ -3,16 +3,18 @@ include $(GNUSTEP_MAKEFILES)/common.make
 SUBPROJECT_NAME=libNPEngineCoreFile
 
 libNPEngineCoreFile_OBJC_FILES = \
-NPPathUtilities.m \
+NSFileManager+NPEngine.m \
 NPFile.m \
-NPMemoryStream.m
+NPMemoryStream.m \
+NPLocalPathManager.m
 
 libNPEngineCoreFile_HEADER_FILES = \
-NPPathUtilities.h \
+NSFileManager+NPEngine.h \
 NPPStream.h \
 NPFile.h \
 NPMemoryStream.h \
-NPPPersistentObject.h
+NPPPersistentObject.h \
+NPLocalPathManager.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make
