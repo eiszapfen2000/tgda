@@ -14,7 +14,8 @@ NPPStream.h \
 NPFile.h \
 NPMemoryStream.h \
 NPPPersistentObject.h \
-NPLocalPathManager.h
+NPLocalPathManager.h \
+NpFile.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make

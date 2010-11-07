@@ -17,7 +17,7 @@
 {
     self = [ super init ];
 
-    name = [ newName copy ];
+    ASSIGNCOPY(name, newName);
 
     //Weak reference
     parent = newParent;
@@ -30,7 +30,7 @@
 
 - (void) dealloc
 {
-    RELEASE(name);
+    DESTROY(name);
     parent = nil;
 
     if ( [ objects count ] > 0 )
@@ -42,11 +42,11 @@
 
         while (( o = [ e nextObject ] ))
         {
-            NSLog(@"%@ %@ %d",[(id)[o pointerValue] className], [(id)[o pointerValue] name],[(id)[o pointerValue] retainCount]);
+            NSLog(@"%@", [(id)[ o pointerValue ] description ]);
         }
     }
 
-    RELEASE(objects);
+    DESTROY(objects);
 
     [ super dealloc ];
 }
