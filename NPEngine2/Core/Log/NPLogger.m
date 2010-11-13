@@ -89,7 +89,7 @@
 
 - (void) writeError:(NSError *)error
 {
-
+    [ self write:[ @"[Error]: " stringByAppendingString:[ error description ]]];
 }
 
 @end
