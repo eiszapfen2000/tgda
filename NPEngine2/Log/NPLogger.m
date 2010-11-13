@@ -121,7 +121,12 @@ static NPLogger * NP_ENGINE_LOGGER = nil;
 
 - (void) writeError:(NSError *)error
 {
-    [ self write:[ @"[Error]: " stringByAppendingString:[ error description ]]];
+    [ self write:[ @"[ERROR]: " stringByAppendingString:[ error description ]]];
+}
+
+- (void) writeErrorString:(NSString *)errorString
+{
+    [ self write:[ @"[ERROR]: " stringByAppendingString:errorString ]];
 }
 
 - (id) copyWithZone:(NSZone *)zone

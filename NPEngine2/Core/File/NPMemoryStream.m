@@ -1,5 +1,7 @@
 #import <Foundation/NSException.h>
 #import <Foundation/NSData.h>
+#import "Core/Utilities/NPStringList.h"
+#import "Core/NPEngineCoreErrors.h"
 #import "NPMemoryStream.h"
 
 @implementation NPMemoryStream
@@ -115,43 +117,38 @@
 
 - (NSString *) readSUXString
 {
-    /*
-    int32_t slength = [ self readInt32 ];
-    if ( slength > 0 )
+    int32_t stringLength = [ self readInt32 ];
+    if ( stringLength > 0 )
     {
-        NSData * data = [ fileHandle readDataOfLength:(uint32_t)slength ];
+        NSData * data =
+         [ buffer subdataWithRange:NSMakeRange(streamOffset, stringLength) ];
 
-        NSString * s = [[ NSString alloc] initWithBytes:[data bytes]
-                                                 length:(NSUInteger)slength
-                                               encoding:NSASCIIStringEncoding ];
+        NSString * string =
+            [[ NSString alloc] initWithBytes:[data bytes]
+                                      length:(NSUInteger)stringLength
+                                    encoding:NSASCIIStringEncoding ];
 
-        return AUTORELEASE(s);
+        return AUTORELEASE(string);
     }
-    */
 
     return @"";
 }
 
-/*
 - (NPStringList *) readSUXScript
 {
-    Int lines = 0;
-    [self readInt32:&lines ];
-
     NPStringList * script = [[ NPStringList alloc ] init ];
     [ script setAllowDuplicates:YES ];
     [ script setAllowEmptyStrings:YES ];
 
-    for ( Int i = 0; i < lines; i++ )
+    int32_t numberOfLines = [ self readInt32 ];
+    for ( int32_t i = 0; i < numberOfLines; i++ )
     {
         NSString * line = [ self readSUXString ];
         [ script addString:line ];
     }
 
-    return [ script autorelease ];
+    return AUTORELEASE(script);
 }
-
-*/
 
 - (FVector2) readFVector2
 {
@@ -292,14 +289,26 @@
     streamOffset += length;
 }
 
-- (void) writeSUXString:(NSString *)s
+- (void) writeSUXString:(NSString *)string
 {
-    NSUInteger ulength = [ s lengthOfBytesUsingEncoding:NSASCIIStringEncoding ];
-    int32_t length = (int32_t)ulength;
-    [ self writeInt32:length ];
+    char * cstring = (char *)[ string cStringUsingEncoding:NSASCIIStringEncoding ];
 
-    char * cstring = (char *)[ s cStringUsingEncoding:NSASCIIStringEncoding ];
-    [ self writeCharArray:cstring length:ulength ];
+    NSUInteger ASCIIStringLength =
+        [ string lengthOfBytesUsingEncoding:NSASCIIStringEncoding ];
+
+    [ self writeInt32:(int32_t)ASCIIStringLength ];
+    [ self writeCharArray:cstring length:ASCIIStringLength ];
+}
+
+- (void) writeSUXScript:(NPStringList *)script
+{
+    int32_t lines = (int32_t)[ script count ];
+    [ self writeInt32:lines ];
+
+    for ( int32_t i = 0; i < lines; i++ )
+    {
+        [ self writeSUXString:[ script stringAtIndex:i ]];
+    }
 }
 
 - (void) writeFVector2:(FVector2)v
