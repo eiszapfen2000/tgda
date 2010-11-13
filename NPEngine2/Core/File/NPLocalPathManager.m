@@ -1,4 +1,5 @@
 #import <Foundation/NSFileManager.h>
+#import "Log/NPLogger.h"
 #import "NSFileManager+NPEngine.h"
 #import "NPLocalPathManager.h"
 
@@ -34,9 +35,10 @@
 
 - (void) addApplicationPath
 {
-    NSString * workingDirectory = [[ NSFileManager defaultManager ] currentDirectoryPath ];
+    NSString * workingDirectory =
+        [[ NSFileManager defaultManager ] currentDirectoryPath ];
 
-    //NPLOG(@"%@: Adding application directory %@ to local paths", name, workingDirectory);
+    NPLOG(@"%@: Adding application directory %@ to local paths", name, workingDirectory);
 
     if ( workingDirectory != nil )
     {
@@ -44,19 +46,26 @@
     }
     else
     {
-        //NPLOG_ERROR(@"%@: Working directory not accessible", name);
+        NPLOG_ERROR_STRING(@"%@: Working directory not accessible", name);
     }
 }
 
 - (void) addLookUpPath:(NSString *)lookUpPath
 {
-    //NPLOG(@"%@: Adding %@", name, lookUpPath);
-    [ localPaths addObject:lookUpPath ];
+    if ( [[ NSFileManager defaultManager ] isDirectory:lookUpPath ] == YES )
+    {
+        NPLOG(@"%@: Adding %@", name, lookUpPath);
+        [ localPaths addObject:lookUpPath ];
+    }
+    else
+    {
+        NPLOG(@"%@: %@ is not a directory", name, lookUpPath);
+    }
 }
 
 - (void) removeLookUpPath:(NSString *)lookUpPath
 {
-    //NPLOG(@"%@: Removing %@", name, lookUpPath);
+    NPLOG(@"%@: Removing %@", name, lookUpPath);
     [ localPaths removeObject:lookUpPath ];
 }
 

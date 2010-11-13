@@ -71,16 +71,12 @@
 
 - (NPStringList *) getTokensForLine:(NSUInteger)lineIndex
 {
-    NSAssert(lineIndex < [ lines count ], @"Index out of bounds");
-
     return [ lines objectAtIndex:lineIndex ];
 }
 
 - (NSString *) getTokenFromLine:(NSUInteger)lineIndex
                      atPosition:(NSUInteger)tokenIndex
 {
-    NSAssert(lineIndex < [ lines count ], @"Index out of bounds");
-
     return [[ lines objectAtIndex:lineIndex ] stringAtIndex:tokenIndex ];
 }
 
@@ -212,7 +208,9 @@
 {
     NSString * token = nil;
 
-    if ( [ self getTokenAsString:&token fromLine:lineIndex atPosition:tokenIndex ] == YES )
+    if ( [ self getTokenAsString:&token 
+                        fromLine:lineIndex
+                      atPosition:tokenIndex ] == YES )
     {
         return [ token isEqual:string ];
     }
@@ -226,7 +224,9 @@
 {
     NSString * token = nil;
 
-    if ( [ self getTokenAsLowerCaseString:&token fromLine:lineIndex atPosition:tokenIndex ] == YES )
+    if ( [ self getTokenAsLowerCaseString:&token
+                                 fromLine:lineIndex
+                               atPosition:tokenIndex ] == YES )
     {
         return [ token isEqual:string ];
     }

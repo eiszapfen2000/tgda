@@ -15,6 +15,7 @@ libNPEngineCore_OBJC_FILES = \
 NPEngineCore.m
 
 libNPEngineCore_HEADER_FILES = \
+NPEngineCoreErrors.h \
 NPEngineCore.h
 
 include $(TGDA_DIR)/GNUmakefile.flags

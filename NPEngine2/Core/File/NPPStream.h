@@ -8,6 +8,9 @@ typedef enum NpStreamMode
 }
 NpStreamMode;
 
+@class NSString;
+@class NPStringList;
+
 @protocol NPPStream
 
 - (int16_t) readInt16;
@@ -22,6 +25,7 @@ NpStreamMode;
 - (char) readChar;
 - (BOOL) readBool;
 - (NSString *) readSUXString;
+- (NPStringList *) readSUXScript;
 - (FVector2) readFVector2;
 - (FVector3) readFVector3;
 - (FVector4) readFVector4;
@@ -41,7 +45,8 @@ NpStreamMode;
 - (void) writeByte:(uint8_t)b;
 - (void) writeChar:(char)c;
 - (void) writeBool:(BOOL)b;
-- (void) writeSUXString:(NSString *)s;
+- (void) writeSUXString:(NSString *)string;
+- (void) writeSUXScript:(NPStringList *)script;
 - (void) writeFVector2:(FVector2)v;
 - (void) writeFVector3:(FVector3)v;
 - (void) writeFVector4:(FVector4)v;
