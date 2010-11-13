@@ -45,7 +45,6 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     objectID = crc32_of_pointer(self);
 
     objectManager = [[ NPObjectManager alloc ] init ];
-    logger        = [[ NPLogger        alloc ] init ];
 
     //NPLOG(@"%@ initialising...", name);
 
@@ -74,7 +73,6 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     DESTROY(transformationState);
     DESTROY(localPathManager);
     DESTROY(timer);
-    DESTROY(logger);
     DESTROY(objectManager);
 
     [ super dealloc ];
@@ -102,11 +100,6 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 - (uint32_t) objectID
 {
     return objectID;
-}
-
-- (NPLogger *) logger
-{
-    return logger;
 }
 
 - (NPTimer *) timer

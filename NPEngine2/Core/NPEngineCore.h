@@ -3,7 +3,6 @@
 #import "Core/NPObject/NPObject.h"
 #import "Core/NPObject/NPObjectManager.h"
 #import "Core/File/NpFile.h"
-#import "Core/Log/NPLogger.h"
 #import "Core/Timer/NPTimer.h"
 #import "Core/Utilities/NSString+NPEngine.h"
 #import "Core/World/NPTransformationState.h"
@@ -11,7 +10,6 @@
 @interface NPEngineCore : NSObject < NPPObject >
 {
     uint32_t objectID;
-    NPLogger * logger;
     NPTimer * timer;
     NPObjectManager * objectManager;
     NPLocalPathManager * localPathManager;
@@ -21,8 +19,8 @@
 + (NPEngineCore *) instance;
 
 - (id) init;
+- (void) dealloc;
 
-- (NPLogger *) logger;
 - (NPTimer *) timer;
 - (NPObjectManager *) objectManager;
 - (NPLocalPathManager *) localPathManager;

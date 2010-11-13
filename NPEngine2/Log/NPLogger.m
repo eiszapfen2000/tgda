@@ -1,8 +1,40 @@
+#import <Foundation/NSException.h>
 #import <Foundation/NSPathUtilities.h>
 #import <Foundation/NSFileManager.h>
 #import "NPLogger.h"
 
+static NPLogger * NP_ENGINE_LOGGER = nil;
+
 @implementation NPLogger
+
++ (void) initialize
+{
+	if ( [ NPLogger class ] == self )
+	{
+		[[ self alloc ] init ];
+	}
+}
+
++ (NPLogger *) instance
+{
+    return NP_ENGINE_LOGGER;
+}
+
++ (id) allocWithZone:(NSZone*)zone
+{
+    if ( self != [ NPLogger class ] )
+    {
+        [ NSException raise:NSInvalidArgumentException
+	                 format:@"Illegal attempt to subclass NPLogger as %@", self ];
+    }
+
+    if ( NP_ENGINE_LOGGER == nil )
+    {
+        NP_ENGINE_LOGGER = [ super allocWithZone:zone ];
+    }
+
+    return NP_ENGINE_LOGGER;
+}
 
 - (void) setupFileHandle
 {
@@ -90,6 +122,31 @@
 - (void) writeError:(NSError *)error
 {
     [ self write:[ @"[Error]: " stringByAppendingString:[ error description ]]];
+}
+
+- (id) copyWithZone:(NSZone *)zone
+{
+    return self;
+}
+
+- (id) retain
+{
+    return self;
+}
+
+- (NSUInteger) retainCount
+{
+    return ULONG_MAX;  //denotes an object that cannot be released
+} 
+
+- (void) release
+{
+    //do nothing
+} 
+
+- (id) autorelease
+{
+    return self;
 }
 
 @end

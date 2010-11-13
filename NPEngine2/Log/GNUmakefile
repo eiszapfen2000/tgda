@@ -1,11 +1,11 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-SUBPROJECT_NAME=libNPEngineCoreLog
+SUBPROJECT_NAME=libNPEngineLog
 
-libNPEngineCoreLog_OBJC_FILES = \
+libNPEngineLog_OBJC_FILES = \
 NPLogger.m
 
-libNPEngineCoreLog_HEADER_FILES = \
+libNPEngineLog_HEADER_FILES = \
 NPLogger.h
 
 include $(TGDA_DIR)/GNUmakefile.flags

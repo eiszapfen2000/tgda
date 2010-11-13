@@ -12,6 +12,8 @@
     NSString * prefixString;
 }
 
++ (NPLogger *) instance;
+
 - (id) init;
 - (void) dealloc;
 
