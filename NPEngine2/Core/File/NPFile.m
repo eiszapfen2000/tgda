@@ -27,17 +27,21 @@
     return [ self initWithName:newName 
                         parent:newParent
                       fileName:newFileName
-                          mode:NpFileRead ];
+                          mode:NpStreamRead
+                         error:NULL ];
 }
 
 - (id) initWithName:(NSString *)newName
              parent:(id <NPPObject> )newParent
            fileName:(NSString *)newFileName
-               mode:(NpFileMode)newMode
+               mode:(NpStreamMode)newMode
+              error:(NSError **)error
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    [ self openFile:newFileName mode:newMode ];
+    [ self openFile:newFileName
+               mode:newMode
+              error:error ];
 
     return self;
 }
@@ -54,13 +58,14 @@
     return fileName;
 }
 
-- (NpFileMode) mode
+- (NpStreamMode) mode
 {
     return mode;
 }
 
-- (void) openFile:(NSString *)newFileName
-             mode:(NpFileMode)newMode
+- (BOOL) openFile:(NSString *)newFileName
+             mode:(NpStreamMode)newMode
+            error:(NSError **)error
 {
     [ self close ];
 
@@ -69,26 +74,39 @@
 
     switch ( mode )
     {
-        case NpFileRead:
+        case NpStreamRead:
         {
             fileHandle = RETAIN([ NSFileHandle fileHandleForReadingAtPath:fileName ]);
             break;
         }
 
-        case NpFileUpdate:
-        {
-            fileHandle = RETAIN([ NSFileHandle fileHandleForUpdatingAtPath:fileName ]);
-            break;
-        }
-
-        case NpFileWrite:
+        case NpStreamWrite:
         {
             fileHandle = RETAIN([ NSFileHandle fileHandleForWritingAtPath:fileName ]);
             break;
         }
+
+        case NpStreamUpdate:
+        {
+            fileHandle = RETAIN([ NSFileHandle fileHandleForUpdatingAtPath:fileName ]);
+            break;
+        }
     }
 
-    NSAssert1(fileHandle != nil, @"Failed to open %@.", fileName);
+    BOOL result = YES;
+    if (fileHandle == nil)
+    {
+        result = NO;
+
+        if (error != 0)
+        {
+          *error = [NSError errorWithDomain: NPEngineErrorDomain
+                                       code: 0
+                                   userInfo: nil];
+        }
+    }
+
+    return result;
 }
 
 - (void) close

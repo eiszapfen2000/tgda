@@ -2,23 +2,11 @@
 #import "Core/NPObject/NPObject.h"
 #import "NPPStream.h"
 
-#define NP_FILE_READING     0
-#define NP_FILE_UPDATING    1
-#define NP_FILE_WRITING     2
-
-typedef enum NpFileMode
-{
-    NpFileRead = 0,
-    NpFileUpdate = 1,
-    NpFileWrite = 2
-}
-NpFileMode;
-
 @interface NPFile : NPObject < NPPStream >
 {
     NSString * fileName;
     NSFileHandle * fileHandle;
-    NpFileMode mode;
+    NpStreamMode mode;
 }
 
 - (id) init;
@@ -35,16 +23,18 @@ NpFileMode;
 - (id) initWithName:(NSString *)newName
              parent:(id <NPPObject>)newParent
            fileName:(NSString *)newFileName
-               mode:(NpFileMode)newMode
+               mode:(NpStreamMode)newMode
+              error:(NSError **)error
                    ;
 
 - (void) dealloc;
 
 - (NSString *) fileName;
-- (NpFileMode) mode;
+- (NpStreamMode) mode;
 
-- (void) openFile:(NSString *)newFileName
-             mode:(NpFileMode)newMode
+- (BOOL) openFile:(NSString *)newFileName
+             mode:(NpStreamMode)newMode
+            error:(NSError **)error
                  ;
 
 - (void) close;
