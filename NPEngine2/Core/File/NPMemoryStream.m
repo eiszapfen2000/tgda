@@ -1,4 +1,5 @@
 #import <Foundation/NSException.h>
+#import <Foundation/NSData.h>
 #import "NPMemoryStream.h"
 
 @implementation NPMemoryStream
@@ -18,7 +19,7 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    buffer = [[ NSData alloc ] init ];
+    buffer = [[ NSMutableData alloc ] init ];
     streamOffset = 0;
 
     return self;

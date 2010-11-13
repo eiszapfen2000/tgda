@@ -1,10 +1,9 @@
-#import  <Foundation/NSData.h>
 #import "Core/NPObject/NPObject.h"
 #import "NPPStream.h"
 
 @interface NPMemoryStream : NPObject < NPPStream >
 {
-    NSMutableData * buffer;
+    id buffer;
     NSUInteger streamOffset;
 }
 

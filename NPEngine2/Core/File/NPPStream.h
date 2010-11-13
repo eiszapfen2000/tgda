@@ -1,5 +1,13 @@
 #import "Core/Math/NpMath.h"
 
+typedef enum NpStreamMode
+{
+    NpStreamRead = 0,
+    NpStreamWrite,
+    NpStreamUpdate
+}
+NpStreamMode;
+
 @protocol NPPStream
 
 - (int16_t) readInt16;
