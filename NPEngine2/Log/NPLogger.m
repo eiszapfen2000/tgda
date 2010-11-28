@@ -141,7 +141,7 @@ static NPLogger * NP_ENGINE_LOGGER = nil;
 
 - (NSUInteger) retainCount
 {
-    return ULONG_MAX;  //denotes an object that cannot be released
+    return ULONG_MAX;
 } 
 
 - (void) release
