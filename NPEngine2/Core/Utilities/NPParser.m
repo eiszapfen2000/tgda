@@ -237,11 +237,7 @@
 
 - (void) parse:(NPStringList *)inputScript
 {
-    if ( inputScript == nil )
-    {
-        //NPLOG_ERROR(@"No inputScript defined");
-        return;
-    }
+    NSAssert(inputScript != nil, @"No input script defined");
 
     [ self clear ];
 

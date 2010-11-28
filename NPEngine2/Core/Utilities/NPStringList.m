@@ -81,34 +81,6 @@
     [ lines removeAllObjects ];
 }
 
-/*
-
-- (BOOL) loadFromFile:(NPFile *)file
-{
-    [ self clear ];
-
-    Int32 numberOfLines = 0;
-    [ file readInt32:&numberOfLines ];
-
-    for ( Int32 i = 0; i < numberOfLines; i++ )
-    {
-        [ self addString:[ file readSUXString ]];
-    }
-
-    //NSLog([lines description]);
-
-    return YES;
-}
-
-- (BOOL) saveToFile:(NPFile *)file
-{
-    [ file writeSUXScript:self ];
-
-    return YES;
-}
-
-*/
-
 - (void) addString:(NSString *)string
 {
     if ( allowDuplicates == NO &&
