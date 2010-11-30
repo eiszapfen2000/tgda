@@ -1,8 +1,20 @@
+#import <Foundation/NSDictionary.h>
 #import <Foundation/NSException.h>
+#import <Foundation/NSError.h>
+#import "Log/NPLogger.h"
+#import "Core/Basics/NpBasics.h"
+#import "Core/NPObject/NPObject.h"
+#import "NPEngineSoundErrors.h"
 #import "NPEngineSound.h"
-#import "NP.h"
 
 static NPEngineSound * NP_ENGINE_SOUND = nil;
+
+@interface NPEngineSound (Private)
+
+- (BOOL) startupOpenAL:(NSError **)error;
+- (void) shutdownOpenAL;
+
+@end
 
 @implementation NPEngineSound
 
@@ -37,34 +49,12 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 
 - (id) init
 {
-    return [ self initWithName:@"NP Engine Sound" parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName
-{
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
-{
     self = [ super init ];
 
-    ASSIGNCOPY(name, newName);
     objectID = crc32_of_pointer(self);
-
     volume = 1.0f;
 
     return self;
-}
-
-- (void) shutdownOpenAL
-{
-    alcMakeContextCurrent(NULL);
-    alcDestroyContext(context);
-    context = NULL;
-
-    alcCloseDevice(device);
-    device = NULL;
 }
 
 - (void) dealloc
@@ -75,7 +65,7 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 
 - (NSString *) name
 {
-    return @"NP Engine Sound";
+    return @"NPEngine Sound";
 }
 
 - (void) setName:(NSString *)newName
@@ -107,7 +97,7 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     volume = newVolume;
 }
 
-- (void) setupOpenAL
+- (BOOL) startupOpenAL:(NSError **)error
 {
     NPLOG(@"Opening default OpenAL device");
 
@@ -115,9 +105,9 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     if ( device == NULL )
     {
         NPLOG_ERROR_STRING(@"Failed to open OpenAL device");
-        [ self checkForALErrors ];
+        [ self checkForALError:error ];
 
-        return;
+        return NO;
     }
 
     NPLOG(@"Default device: %s", alcGetString(device, ALC_DEFAULT_DEVICE_SPECIFIER));
@@ -132,58 +122,121 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     if ( context == NULL )
     {
         NPLOG_ERROR_STRING(@"Failed to create OpenAL context");
-        [ self checkForALErrors ];
+        [ self checkForALError:error ];
 
-        return;
+        return NO;
     }
 
     ALCboolean success = alcMakeContextCurrent(context);
     if ( success == ALC_FALSE )
     {
-        [ self checkForALErrors ];
+        [ self checkForALError:error ];
+
+        return NO;
     }
 
     NPLOG(@"OpenAL vendor string: %s", alGetString(AL_VENDOR));
     NPLOG(@"OpenAL renderer string: %s", alGetString(AL_RENDERER));
     NPLOG(@"OpenAL version string: %s", alGetString(AL_VERSION));
 
-    [ self checkForALErrors ];
+    return [ self checkForALError:error ];
 }
 
-- (void) setup
+- (void) shutdownOpenAL
 {
-    NPLOG(@"");
-    NPLOG(@"%@ initialising...", name);
-    NPLOG_PUSH_PREFIX(@"    ");
+    alcMakeContextCurrent(NULL);
 
-    [ self setupOpenAL ];
+    if ( context != NULL )
+    {
+        alcDestroyContext(context);
+        context = NULL;
+    }
 
-    NPLOG_POP_PREFIX();
-    NPLOG(@"%@ up and running", name);
-    NPLOG(@"");
-}
-
-- (void) checkForALErrors
-{
     if ( device != NULL )
     {
-        ALCenum error = alcGetError(device);
-        if( error != ALC_NO_ERROR )
+        alcCloseDevice(device);
+        device = NULL;
+    }
+}
+
+- (BOOL) startup:(NSError **)error
+{
+    NPLOG(@"");
+    NPLOG(@"NPEngine Sound initialising...");
+    NPLOG_PUSH_PREFIX(@"    ");
+
+    BOOL result = [ self startupOpenAL:error ];
+    if ( result == NO )
+    {
+        return NO;
+    }
+
+    NPLOG_POP_PREFIX();
+    NPLOG(@"NPEngine Sound up and running");
+    NPLOG(@"");
+
+    return YES;
+}
+
+- (void) shutdown
+{
+    NPLOG(@"");
+    NPLOG(@"NPEngine Sound shutting down...");
+
+    [ self shutdownOpenAL ];
+
+    NPLOG(@"NPEngine Sound shut down");
+    NPLOG(@"");
+}
+
+- (BOOL) checkForALError:(NSError **)error
+{
+    NSMutableDictionary * errorDetail = nil;
+    NSString * errorString = nil;
+
+    if ( device != NULL )
+    {
+        ALCenum alcError = alcGetError(device);
+        if( alcError != ALC_NO_ERROR )
         {
-            NPLOG_ERROR_STRING(@"%s", (const char*)alcGetString(device, error));
+            errorDetail = [ NSMutableDictionary dictionary ];
+            errorString = [ NSString stringWithUTF8String:alcGetString(device, alcError) ];
+            [ errorDetail setValue:errorString forKey:NSLocalizedDescriptionKey];
+   
+            *error = [ NSError errorWithDomain:NPEngineErrorDomain 
+                                          code:NPOpenALCError
+                                      userInfo:errorDetail ];
+
+            return NO;
         }
     }
 
-    ALenum error = alGetError();
-    if( error != AL_NO_ERROR )
+    ALenum alError = alGetError();
+    if( alError != AL_NO_ERROR )
     {
-        NPLOG_ERROR_STRING(@"%s", (const char*)alGetString(error));
+            errorDetail = [ NSMutableDictionary dictionary ];
+            errorString = [ NSString stringWithUTF8String:alGetString(alError) ];
+            [ errorDetail setValue:errorString forKey:NSLocalizedDescriptionKey];
+   
+            *error = [ NSError errorWithDomain:NPEngineErrorDomain 
+                                          code:NPOpenALError
+                                      userInfo:errorDetail ];
+
+            return NO;
     }
+
+    return YES;
 }
 
 - (void) update
 {
-    [ self checkForALErrors ];
+    // error forwarding mechanism!?
+
+    NSError * error = nil;
+    if ([ self checkForALError:&error ] == NO)
+    {
+        NPLOG_ERROR(error);
+    }
 }
 
 - (id) copyWithZone:(NSZone *)zone
