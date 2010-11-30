@@ -1,6 +1,7 @@
 #import <Foundation/NSException.h>
+#import "Log/NPLogger.h"
 #import "NPEngineCore.h"
-//#import "NP.h"
+
 
 static NPEngineCore * NP_ENGINE_CORE = nil;
 
@@ -46,7 +47,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 
     objectManager = [[ NPObjectManager alloc ] init ];
 
-    //NPLOG(@"%@ initialising...", name);
+    NPLOG(@"NPEngine Core initialising...");
 
     timer = [[ NPTimer alloc ] initWithName:@"NPEngine Timer" parent:self ];
 
@@ -60,16 +61,13 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
             initWithName:@"NPEngine Transformation State"
                   parent:self ];
 
-    //NPLOG(@"%@ up and running", name);
+    NPLOG(@"NPEngine Core up and running.");
 
     return self;
 }
 
 - (void) dealloc
 {
-    //NPLOG(@"");
-    //NPLOG(@"NP Engine Core Dealloc");
-
     DESTROY(transformationState);
     DESTROY(localPathManager);
     DESTROY(timer);
@@ -80,7 +78,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 
 - (NSString *) name
 {
-    return @"NP Engine Core";
+    return @"NPEngine Core";
 }
 
 - (void) setName:(NSString *)newName
@@ -139,12 +137,12 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 
 - (NSUInteger) retainCount
 {
-    return ULONG_MAX;  //denotes an object that cannot be released
+    return ULONG_MAX;
 } 
 
 - (void) release
 {
-    //do nothing
+
 } 
 
 - (id) autorelease
