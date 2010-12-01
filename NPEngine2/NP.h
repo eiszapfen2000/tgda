@@ -1,11 +1,11 @@
-#import "Log/NPLogger.h"
+#import "Log/NPLog.h"
 #import "Core/NPEngineCore.h"
 #import "Sound/NPEngineSound.h"
 
 
 @interface NP : NSObject
 
-+ (id) Logger;
++ (id) Log;
 + (id) Core;
 + (id) Sound;
 

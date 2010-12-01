@@ -1,7 +1,6 @@
 #import <Foundation/NSException.h>
-#import "Log/NPLogger.h"
+#import "Log/NPLog.h"
 #import "NPEngineCore.h"
-
 
 static NPEngineCore * NP_ENGINE_CORE = nil;
 

@@ -1,5 +1,5 @@
 #import <Foundation/NSFileManager.h>
-#import "Log/NPLogger.h"
+#import "Log/NPLog.h"
 #import "NSFileManager+NPEngine.h"
 #import "NPLocalPathManager.h"
 
@@ -46,7 +46,7 @@
     }
     else
     {
-        NPLOG_ERROR_STRING(@"%@: Working directory not accessible", name);
+        //NPLOG_ERROR_STRING(@"%@: Working directory not accessible", name);
     }
 }
 

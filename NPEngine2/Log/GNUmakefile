@@ -3,10 +3,13 @@ include $(GNUSTEP_MAKEFILES)/common.make
 SUBPROJECT_NAME=libNPEngineLog
 
 libNPEngineLog_OBJC_FILES = \
-NPLogger.m
+NPLog.m \
+NPLogFile.m
 
 libNPEngineLog_HEADER_FILES = \
-NPLogger.h
+NPLog.h \
+NPLogFile.h \
+NPPLogger.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make

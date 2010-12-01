@@ -3,10 +3,12 @@ include $(GNUSTEP_MAKEFILES)/common.make
 SUBPROJECT_NAME=libNPEngineSound
 
 libNPEngineSound_HEADER_FILES = \
-NPEngineSound.h
+NPEngineSound.h \
+NPSoundWorld.h
 
 libNPEngineSound_OBJC_FILES = \
-NPEngineSound.m
+NPEngineSound.m \
+NPSoundWorld.m
 
 libNPEngineSound_LIBRARIES_DEPEND_UPON += -lopenal -lvorbis -lvorbisfile
 

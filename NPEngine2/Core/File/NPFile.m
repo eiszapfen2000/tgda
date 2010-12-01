@@ -1,10 +1,9 @@
 #import <Foundation/NSException.h>
 #import <Foundation/NSData.h>
-#import "Log/NPLogger.h"
+#import "Log/NPLog.h"
 #import "Core/Utilities/NPStringList.h"
 #import "Core/NPEngineCoreErrors.h"
 #import "NPFile.h"
-//#import "NP.h"
 
 @implementation NPFile
 

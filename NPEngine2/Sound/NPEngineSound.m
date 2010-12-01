@@ -1,7 +1,7 @@
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSException.h>
 #import <Foundation/NSError.h>
-#import "Log/NPLogger.h"
+#import "Log/NPLog.h"
 #import "Core/Basics/NpBasics.h"
 #import "Core/NPObject/NPObject.h"
 #import "NPEngineSoundErrors.h"
@@ -52,6 +52,9 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     self = [ super init ];
 
     objectID = crc32_of_pointer(self);
+
+    world = [[ NPSoundWorld alloc ] initWithName:@"NP Sound World" parent:self ];
+
     volume = 1.0f;
 
     return self;
@@ -60,6 +63,8 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 - (void) dealloc
 {
     [ self shutdownOpenAL ];
+    DESTROY(world);
+
     [ super dealloc ];
 }
 
@@ -97,6 +102,11 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     volume = newVolume;
 }
 
+- (NPSoundWorld *) world
+{
+    return world;
+}
+
 - (BOOL) startupOpenAL:(NSError **)error
 {
     NPLOG(@"Opening default OpenAL device");
@@ -104,7 +114,7 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     device = alcOpenDevice(NULL);
     if ( device == NULL )
     {
-        NPLOG_ERROR_STRING(@"Failed to open OpenAL device");
+        //NPLOG_ERROR_STRING(@"Failed to open OpenAL device");
         [ self checkForALError:error ];
 
         return NO;
@@ -121,7 +131,7 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     context = alcCreateContext(device, NULL);
     if ( context == NULL )
     {
-        NPLOG_ERROR_STRING(@"Failed to create OpenAL context");
+        //NPLOG_ERROR_STRING(@"Failed to create OpenAL context");
         [ self checkForALError:error ];
 
         return NO;
@@ -163,7 +173,6 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 {
     NPLOG(@"");
     NPLOG(@"NPEngine Sound initialising...");
-    NPLOG_PUSH_PREFIX(@"    ");
 
     BOOL result = [ self startupOpenAL:error ];
     if ( result == NO )
@@ -171,7 +180,6 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
         return NO;
     }
 
-    NPLOG_POP_PREFIX();
     NPLOG(@"NPEngine Sound up and running");
     NPLOG(@"");
 
@@ -230,6 +238,8 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 
 - (void) update
 {
+    [ world update ];
+
     // error forwarding mechanism!?
 
     NSError * error = nil;
