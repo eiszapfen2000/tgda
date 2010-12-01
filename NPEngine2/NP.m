@@ -2,9 +2,9 @@
 
 @implementation NP
 
-+ (id) Logger
++ (id) Log
 {
-    return [ NPLogger instance ];
+    return [ NPLog instance ];
 }
 
 + (id) Core
