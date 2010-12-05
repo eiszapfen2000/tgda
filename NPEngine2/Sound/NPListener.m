@@ -1,12 +1,12 @@
 #import "Core/NPEngineCore.h"
 #import "NPEngineSound.h"
-#import "NPSoundWorld.h"
+#import "NPListener.h"
 
-@implementation NPSoundWorld
+@implementation NPListener
 
 - (id) init
 {
-    return [ self initWithName:@"NPEngine Sound World" ];
+    return [ self initWithName:@"NPEngine Sound Listener" ];
 }
 
 - (id) initWithName:(NSString *)newName

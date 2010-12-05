@@ -4,14 +4,14 @@ SUBPROJECT_NAME=libNPEngineSound
 
 libNPEngineSound_HEADER_FILES = \
 NPEngineSound.h \
-NPSoundWorld.h \
+NPListener.h \
 NPSoundSample.h \
 NPSoundSource.h \
 NPSoundSources.h
 
 libNPEngineSound_OBJC_FILES = \
 NPEngineSound.m \
-NPSoundWorld.m \
+NPListener.m \
 NPSoundSample.m \
 NPSoundSource.m \
 NPSoundSources.m

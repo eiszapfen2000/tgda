@@ -2,7 +2,7 @@
 #import "AL/alc.h"
 #import "AL/alext.h"
 #import "Core/NPObject/NPPObject.h"
-#import "NPSoundWorld.h"
+#import "NPListener.h"
 
 @class NSError;
 
@@ -13,7 +13,7 @@
     ALCdevice * device;
     ALCcontext * context;
 
-    NPSoundWorld * world;
+    NPListener * listener;
 
     Float volume;
 }
@@ -28,7 +28,7 @@
 
 - (Float) volume;
 - (void) setVolume:(Float)newVolume;
-- (NPSoundWorld *) world;
+- (NPListener *) listener;
 
 - (BOOL) checkForALError:(NSError **)error;
 - (void) update;

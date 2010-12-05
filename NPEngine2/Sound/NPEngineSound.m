@@ -52,9 +52,7 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     self = [ super init ];
 
     objectID = crc32_of_pointer(self);
-
-    world = [[ NPSoundWorld alloc ] initWithName:@"NP Sound World" parent:self ];
-
+    listener = [[ NPListener alloc ] initWithName:@"NPEngine Sound Listener" parent:self ];
     volume = 1.0f;
 
     return self;
@@ -63,7 +61,7 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 - (void) dealloc
 {
     [ self shutdownOpenAL ];
-    DESTROY(world);
+    DESTROY(listener);
 
     [ super dealloc ];
 }
@@ -102,9 +100,9 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     volume = newVolume;
 }
 
-- (NPSoundWorld *) world
+- (NPListener *) listener
 {
-    return world;
+    return listener;
 }
 
 - (BOOL) startup:(NSError **)error
@@ -182,7 +180,7 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 
 - (void) update
 {
-    [ world update ];
+    [ listener update ];
 
     NSError * error = nil;
     while ( [ self checkForALError:&error ] == NO )

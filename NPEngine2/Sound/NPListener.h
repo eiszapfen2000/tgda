@@ -3,7 +3,7 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
 
-@interface NPSoundWorld : NPObject
+@interface NPListener : NPObject
 {
     FVector3 listenerPosition;
     FVector3 listenerPositionLastFrame;
