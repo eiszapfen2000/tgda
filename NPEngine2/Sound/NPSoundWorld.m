@@ -2,12 +2,11 @@
 #import "NPEngineSound.h"
 #import "NPSoundWorld.h"
 
-
 @implementation NPSoundWorld
 
 - (id) init
 {
-    return [ self initWithName:@"NP Sound World" ];
+    return [ self initWithName:@"NPEngine Sound World" ];
 }
 
 - (id) initWithName:(NSString *)newName
@@ -19,41 +18,37 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    listenerPosition = fv3_alloc_init();
-    listenerPositionLastFrame = fv3_alloc_init();
-    listenerRotation = fquat_alloc_init();
+    fv3_v_init_with_zeros(&listenerPositionLastFrame);
+    fv3_v_init_with_zeros(&listenerPosition);
+    fquat_set_identity(&listenerRotation);
 
     return self;
 }
 
 - (void) dealloc
 {
-    listenerRotation = fquat_free(listenerRotation);
-    listenerPositionLastFrame = fv3_free(listenerPositionLastFrame);
-    listenerPosition = fv3_free(listenerPosition);    
-
     [ super dealloc ];
 }
 
 - (void) setListenerPosition:(FVector3)newListenerPosition
 {
-    *listenerPosition = newListenerPosition;
+    listenerPosition = newListenerPosition;
 }
 
 - (void) setListenerOrientation:(FQuaternion)newListenerOrientation
 {
-    *listenerRotation = newListenerOrientation;
+    listenerRotation = newListenerOrientation;
 }
 
 - (void) update
 {
     Float volume = [[ NPEngineSound instance ] volume ];
 
-    FVector3 velocity = fv3_vv_sub(listenerPosition, listenerPositionLastFrame);
+    FVector3 velocity = fv3_vv_sub(&listenerPosition, &listenerPositionLastFrame);
     velocity = fv3_sv_scaled([[[ NPEngineCore instance ] timer ] reciprocalFrameTime ], &velocity);
 
-    FVector3 forward = fquat_q_forward_vector(listenerRotation);
-    FVector3 up = fquat_q_up_vector(listenerRotation);
+    FVector3 forward = fquat_q_forward_vector(&listenerRotation);
+    FVector3 up = fquat_q_up_vector(&listenerRotation);
 
     Float alOrientation[6];
     alOrientation[0] = forward.x;
@@ -64,9 +59,9 @@
     alOrientation[5] = up.z;
 
     Float alPosition[3];
-    alPosition[0] = listenerPosition->x;
-    alPosition[1] = listenerPosition->y;
-    alPosition[2] = listenerPosition->z;
+    alPosition[0] = listenerPosition.x;
+    alPosition[1] = listenerPosition.y;
+    alPosition[2] = listenerPosition.z;
 
     Float alVelocity[3];
     alVelocity[0] = velocity.x;
@@ -79,7 +74,7 @@
     alListenerfv(AL_ORIENTATION, alOrientation);
     alListenerfv(AL_VELOCITY, alVelocity);
 
-    *listenerPositionLastFrame = *listenerPosition;
+    listenerPositionLastFrame = listenerPosition;
 }
 
 

@@ -5,9 +5,9 @@
 
 @interface NPSoundWorld : NPObject
 {
-    FVector3 * listenerPosition;
-    FVector3 * listenerPositionLastFrame;
-    FQuaternion * listenerRotation;
+    FVector3 listenerPosition;
+    FVector3 listenerPositionLastFrame;
+    FQuaternion listenerRotation;
 }
 
 - (id) init;

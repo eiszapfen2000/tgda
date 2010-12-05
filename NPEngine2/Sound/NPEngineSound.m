@@ -107,6 +107,120 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     return world;
 }
 
+- (BOOL) startup:(NSError **)error
+{
+    NPLOG(@"");
+    NPLOG(@"NPEngine Sound initialising...");
+
+    BOOL result = [ self startupOpenAL:error ];
+    if ( result == NO )
+    {
+        return NO;
+    }
+
+    NPLOG(@"NPEngine Sound up and running");
+    NPLOG(@"");
+
+    return YES;
+}
+
+- (void) shutdown
+{
+    NPLOG(@"");
+    NPLOG(@"NPEngine Sound shutting down...");
+
+    [ self shutdownOpenAL ];
+
+    NPLOG(@"NPEngine Sound shut down");
+    NPLOG(@"");
+}
+
+- (BOOL) checkForALError:(NSError **)error
+{
+    NSMutableDictionary * errorDetail = nil;
+    NSString * errorString = nil;
+
+    if ( device != NULL )
+    {
+        ALCenum alcError = alcGetError(device);
+        if( alcError != ALC_NO_ERROR )
+        {
+            if ( error != NULL )
+            {
+                errorDetail = [ NSMutableDictionary dictionary ];
+                errorString = [ NSString stringWithUTF8String:alcGetString(device, alcError) ];
+                [ errorDetail setValue:errorString forKey:NSLocalizedDescriptionKey];
+   
+                *error = [ NSError errorWithDomain:NPEngineErrorDomain 
+                                              code:NPOpenALCError
+                                          userInfo:errorDetail ];
+            }
+
+            return NO;
+        }
+    }
+
+    ALenum alError = alGetError();
+    if( alError != AL_NO_ERROR )
+    {
+        if ( error != NULL )
+        {
+            errorDetail = [ NSMutableDictionary dictionary ];
+            errorString = [ NSString stringWithUTF8String:alGetString(alError) ];
+            [ errorDetail setValue:errorString forKey:NSLocalizedDescriptionKey];
+   
+            *error = [ NSError errorWithDomain:NPEngineErrorDomain 
+                                          code:NPOpenALError
+                                      userInfo:errorDetail ];
+        }
+
+        return NO;
+    }
+
+    return YES;
+}
+
+- (void) update
+{
+    [ world update ];
+
+    NSError * error = nil;
+    while ( [ self checkForALError:&error ] == NO )
+    {
+        NPLOG_ERROR(error);
+        error = nil;
+    }
+}
+
+- (id) copyWithZone:(NSZone *)zone
+{
+    return self;
+}
+
+- (id) retain
+{
+    return self;
+}
+
+- (NSUInteger) retainCount
+{
+    return ULONG_MAX;
+} 
+
+- (void) release
+{
+    //do nothing
+} 
+
+- (id) autorelease
+{
+    return self;
+}
+
+@end
+
+@implementation NPEngineSound (Private)
+
 - (BOOL) startupOpenAL:(NSError **)error
 {
     NPLOG(@"Opening default OpenAL device");
@@ -167,111 +281,6 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
         alcCloseDevice(device);
         device = NULL;
     }
-}
-
-- (BOOL) startup:(NSError **)error
-{
-    NPLOG(@"");
-    NPLOG(@"NPEngine Sound initialising...");
-
-    BOOL result = [ self startupOpenAL:error ];
-    if ( result == NO )
-    {
-        return NO;
-    }
-
-    NPLOG(@"NPEngine Sound up and running");
-    NPLOG(@"");
-
-    return YES;
-}
-
-- (void) shutdown
-{
-    NPLOG(@"");
-    NPLOG(@"NPEngine Sound shutting down...");
-
-    [ self shutdownOpenAL ];
-
-    NPLOG(@"NPEngine Sound shut down");
-    NPLOG(@"");
-}
-
-- (BOOL) checkForALError:(NSError **)error
-{
-    NSMutableDictionary * errorDetail = nil;
-    NSString * errorString = nil;
-
-    if ( device != NULL )
-    {
-        ALCenum alcError = alcGetError(device);
-        if( alcError != ALC_NO_ERROR )
-        {
-            errorDetail = [ NSMutableDictionary dictionary ];
-            errorString = [ NSString stringWithUTF8String:alcGetString(device, alcError) ];
-            [ errorDetail setValue:errorString forKey:NSLocalizedDescriptionKey];
-   
-            *error = [ NSError errorWithDomain:NPEngineErrorDomain 
-                                          code:NPOpenALCError
-                                      userInfo:errorDetail ];
-
-            return NO;
-        }
-    }
-
-    ALenum alError = alGetError();
-    if( alError != AL_NO_ERROR )
-    {
-            errorDetail = [ NSMutableDictionary dictionary ];
-            errorString = [ NSString stringWithUTF8String:alGetString(alError) ];
-            [ errorDetail setValue:errorString forKey:NSLocalizedDescriptionKey];
-   
-            *error = [ NSError errorWithDomain:NPEngineErrorDomain 
-                                          code:NPOpenALError
-                                      userInfo:errorDetail ];
-
-            return NO;
-    }
-
-    return YES;
-}
-
-- (void) update
-{
-    [ world update ];
-
-    // error forwarding mechanism!?
-
-    NSError * error = nil;
-    if ([ self checkForALError:&error ] == NO)
-    {
-        NPLOG_ERROR(error);
-    }
-}
-
-- (id) copyWithZone:(NSZone *)zone
-{
-    return self;
-}
-
-- (id) retain
-{
-    return self;
-}
-
-- (NSUInteger) retainCount
-{
-    return ULONG_MAX;
-} 
-
-- (void) release
-{
-    //do nothing
-} 
-
-- (id) autorelease
-{
-    return self;
 }
 
 @end
