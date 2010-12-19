@@ -1,16 +1,16 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 
-NATIVE_LIBRARY_NAME=libNPEngine
+NATIVE_LIBRARY_NAME=libNPEngine2
 
-libNPEngine_SUBPROJECTS = \
+libNPEngine2_SUBPROJECTS = \
     Log \
     Core \
     Sound
 
-libNPEngine_OBJC_FILES = \
+libNPEngine2_OBJC_FILES = \
 NP.m
 
-libNPEngine_HEADER_FILES = \
+libNPEngine2_HEADER_FILES = \
 NP.h
 
 include $(TGDA_DIR)/GNUmakefile.flags

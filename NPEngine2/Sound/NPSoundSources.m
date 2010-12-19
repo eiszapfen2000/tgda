@@ -4,7 +4,8 @@
 
 @interface NPSoundSources (Private)
 
-- (BOOL) startupSources:(NSError **)error;
+- (BOOL) startupSources;
+- (void) shutdownSources;
 
 @end
 
@@ -37,13 +38,14 @@
     [ super dealloc ];
 }
 
-- (BOOL) startup:(NSError **)error
+- (BOOL) startup
 {
-    return [ self startupSources:error ];
+    return [ self startupSources ];
 }
 
 - (void) shutdown
 {
+    [ self shutdownSources ];
 }
 
 - (NSUInteger) numberOfSources
@@ -143,7 +145,7 @@
 
 @implementation NPSoundSources (Private)
 
-- (BOOL) startupSources:(NSError **)error
+- (BOOL) startupSources
 {
     ALuint alID;
     NSUInteger index = 0;
@@ -180,6 +182,12 @@
     while ( outOfSources == NO && index <= 31 );
 
     return YES;
+}
+
+- (void) shutdownSources
+{
+    [ self stopAllSources ];
+    [ sources removeAllObjects ];
 }
 
 @end

@@ -5,13 +5,16 @@
 #import "Core/Basics/NpBasics.h"
 #import "Core/NPObject/NPObject.h"
 #import "NPEngineSoundErrors.h"
+#import "NPListener.h"
+#import "NPSoundSources.h"
+#import "NPSoundManager.h"
 #import "NPEngineSound.h"
 
 static NPEngineSound * NP_ENGINE_SOUND = nil;
 
 @interface NPEngineSound (Private)
 
-- (BOOL) startupOpenAL:(NSError **)error;
+- (BOOL) startupOpenAL;
 - (void) shutdownOpenAL;
 
 @end
@@ -52,7 +55,11 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     self = [ super init ];
 
     objectID = crc32_of_pointer(self);
+
     listener = [[ NPListener alloc ] initWithName:@"NPEngine Sound Listener" parent:self ];
+    soundManager = [[ NPSoundManager alloc ] initWithName:@"NPEngine Sound Manager" parent:self ];
+    sources = [[ NPSoundSources alloc ] initWithName:@"NPEngine Sound Sources" parent:self ];
+
     volume = 1.0f;
 
     return self;
@@ -60,8 +67,10 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 
 - (void) dealloc
 {
-    [ self shutdownOpenAL ];
+    DESTROY(sources);
+    DESTROY(soundManager);
     DESTROY(listener);
+    [ self shutdownOpenAL ];
 
     [ super dealloc ];
 }
@@ -105,12 +114,28 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     return listener;
 }
 
-- (BOOL) startup:(NSError **)error
+- (NPSoundSources *) sources
+{
+    return sources;
+}
+
+- (NPSoundManager *) soundManager
+{
+    return soundManager;
+}
+
+- (BOOL) startup
 {
     NPLOG(@"");
     NPLOG(@"NPEngine Sound initialising...");
 
-    BOOL result = [ self startupOpenAL:error ];
+    BOOL result = [ self startupOpenAL ];
+    if ( result == NO )
+    {
+        return NO;
+    }
+
+    result = result && [ sources startup ];
     if ( result == NO )
     {
         return NO;
@@ -126,6 +151,9 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 {
     NPLOG(@"");
     NPLOG(@"NPEngine Sound shutting down...");
+
+    [ sources shutdown ];
+    [ soundManager shutdown ];
 
     [ self shutdownOpenAL ];
 
@@ -178,16 +206,23 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     return YES;
 }
 
-- (void) update
+- (void) checkForALErrors
 {
-    [ listener update ];
-
     NSError * error = nil;
     while ( [ self checkForALError:&error ] == NO )
     {
         NPLOG_ERROR(error);
         error = nil;
-    }
+    }    
+}
+
+- (void) update
+{
+    [ listener update ];
+    [ sources update ];
+    [ soundManager update ];
+
+    [ self checkForALErrors ];
 }
 
 - (id) copyWithZone:(NSZone *)zone
@@ -219,16 +254,14 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 
 @implementation NPEngineSound (Private)
 
-- (BOOL) startupOpenAL:(NSError **)error
+- (BOOL) startupOpenAL
 {
     NPLOG(@"Opening default OpenAL device");
 
     device = alcOpenDevice(NULL);
     if ( device == NULL )
     {
-        //NPLOG_ERROR_STRING(@"Failed to open OpenAL device");
-        [ self checkForALError:error ];
-
+        [ self checkForALErrors ];
         return NO;
     }
 
@@ -243,17 +276,14 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     context = alcCreateContext(device, NULL);
     if ( context == NULL )
     {
-        //NPLOG_ERROR_STRING(@"Failed to create OpenAL context");
-        [ self checkForALError:error ];
-
+        [ self checkForALErrors ];
         return NO;
     }
 
     ALCboolean success = alcMakeContextCurrent(context);
     if ( success == ALC_FALSE )
     {
-        [ self checkForALError:error ];
-
+        [ self checkForALErrors ];
         return NO;
     }
 
@@ -261,7 +291,7 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     NPLOG(@"OpenAL renderer string: %s", alGetString(AL_RENDERER));
     NPLOG(@"OpenAL version string: %s", alGetString(AL_VERSION));
 
-    return [ self checkForALError:error ];
+    return YES;
 }
 
 - (void) shutdownOpenAL

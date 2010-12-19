@@ -15,6 +15,6 @@
 - (void) addLookUpPath:(NSString *)lookUpPath;
 - (void) removeLookUpPath:(NSString *)lookUpPath;
 
-- (NSString *) getAbsoluteFilePath:(NSString *)partialPath;
+- (NSString *) getAbsolutePath:(NSString *)partialPath;
 
 @end
