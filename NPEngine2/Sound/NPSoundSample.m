@@ -3,6 +3,13 @@
 #import "NPSoundSample.h"
 #import "NP.h"
 
+@interface NPSoundSample (Private)
+
+- (void) deleteALBuffer;
+- (void) generateALBuffer;
+
+@end
+
 @implementation NPSoundSample
 
 - (id) init
@@ -27,25 +34,10 @@
     return self;
 }
 
-- (void) deleteALBuffer
-{
-    if ( alID > 0 && alID < UINT_MAX )
-    {
-        alDeleteBuffers(1, &alID);
-        alID = UINT_MAX;
-    }
-}
-
 - (void) dealloc
 {
     [ self deleteALBuffer ];
     [ super dealloc ];
-}
-
-- (void) generateALBuffer
-{
-    [ self deleteALBuffer ];
-    alGenBuffers(1, &alID);
 }
 
 - (ALuint) alID
@@ -154,3 +146,23 @@
 }
 
 @end
+
+@implementation NPSoundSample (Private)
+
+- (void) deleteALBuffer
+{
+    if ( alID > 0 && alID < UINT_MAX )
+    {
+        alDeleteBuffers(1, &alID);
+        alID = UINT_MAX;
+    }
+}
+
+- (void) generateALBuffer
+{
+    [ self deleteALBuffer ];
+    alGenBuffers(1, &alID);
+}
+
+@end
+

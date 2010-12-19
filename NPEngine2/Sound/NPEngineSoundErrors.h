@@ -4,11 +4,18 @@
 enum
 {
     NPEngineSoundErrorMinimum = 1024,
-    NPEngineSoundErrorMaximum = 2048,
+    NPEngineSoundErrorMaximum = 2047,
     NPOpenALErrorMinimum = 1024,
-    NPOpenALErrorMaximum = 1152,
+    NPOpenALErrorMaximum = 1151,
     NPOpenALError = 1024,
-    NPOpenALCError = 1025
+    NPOpenALCError = 1025,
+    NPVorbisErrorMinimum = 1152,
+    NPVorbisErrorMaximum = 1279,
+    NPVorbisReadError = 1152,
+    NPVorbisStreamNotVorbisError = 1153,
+    NPVorbisVersionMismatchError = 1154,
+    NPVorbisBadHeaderError = 1155,
+    NPVorbisInternalError = 1156
 };
 
 #endif

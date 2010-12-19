@@ -69,20 +69,47 @@
     [ localPaths removeObject:lookUpPath ];
 }
 
-- (NSString *) getAbsoluteFilePath:(NSString *)partialPath
+- (NSString *) getAbsolutePath:(NSString *)partialPath
 {
-    NSString * absolutePath;
+    // standardize path
+    NSString * standardizedPath = [ partialPath stringByStandardizingPath ];
 
-    for ( NSUInteger i = 0; i < [ localPaths count ]; i++ )
+    // either empty path or error while trying to standardize path
+    if ( [ standardizedPath length ] == 0 || standardizedPath == partialPath)
     {
-        absolutePath = [[ localPaths objectAtIndex:i ] stringByAppendingPathComponent:partialPath ];
-        if ( [[ NSFileManager defaultManager ] isFile:absolutePath ] == YES )
+        return nil;
+    }
+
+    // check if standardizedPath is an absolute path
+    if ( [ standardizedPath isAbsolutePath ] == YES )
+    {
+        // standardizedPath is an absolute path, now we must check if it
+        // actually exists
+        if ( [[ NSFileManager defaultManager ] fileExistsAtPath:standardizedPath ] == YES )
         {
-            return absolutePath;
+            return standardizedPath;
+        }
+        else
+        {
+            return nil;
+        }
+    }
+    // standardizedPath is a relative path
+    else
+    {
+        NSString * absolutePath = nil;
+
+        for ( NSUInteger i = 0; i < [ localPaths count ]; i++ )
+        {
+            absolutePath = [[ localPaths objectAtIndex:i ] stringByAppendingPathComponent:standardizedPath ];
+            if ( [[ NSFileManager defaultManager ] fileExistsAtPath:absolutePath ] == YES )
+            {
+                return absolutePath;
+            }
         }
     }
 
-    return [ NSString string ];
+    return nil;
 }
 
 @end

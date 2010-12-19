@@ -7,14 +7,18 @@ NPEngineSound.h \
 NPListener.h \
 NPSoundSample.h \
 NPSoundSource.h \
-NPSoundSources.h
+NPSoundSources.h \
+NPSoundManager.h \
+NPSoundStream.h
 
 libNPEngineSound_OBJC_FILES = \
 NPEngineSound.m \
 NPListener.m \
 NPSoundSample.m \
 NPSoundSource.m \
-NPSoundSources.m
+NPSoundSources.m \
+NPSoundManager.m \
+NPSoundStream.m
 
 libNPEngineSound_LIBRARIES_DEPEND_UPON += -lopenal -lvorbis -lvorbisfile
 

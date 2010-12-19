@@ -5,6 +5,8 @@
 @interface NPSoundSource (Private)
 
 - (void) setDefaultValues;
+- (void) attachBuffer:(ALuint)bufferID;
+- (void) detachBuffer;
 
 @end
 
@@ -76,6 +78,7 @@
 - (void) stop
 {
     alSourceStop(alID);
+    [ self detachBuffer ];
 }
 
 - (void) resume
@@ -92,11 +95,9 @@
     }
 
     ASSIGN(currentSample, sample);
-
-    alSourcei(alID, AL_BUFFER, [ sample alID ]);
+    [ self attachBuffer:[ sample alID ]];
     alSourcef(alID, AL_ROLLOFF_FACTOR, [ sample range ]);
     alSourcePlay(alID);
-
     [ self setDefaultValues ];
 }
 
@@ -213,6 +214,16 @@
 
     is3DSource = NO;
     loop = NO;
+}
+
+- (void) attachBuffer:(ALuint)bufferID
+{
+    alSourcei(alID, AL_BUFFER, bufferID);
+}
+
+- (void) detachBuffer
+{
+    alSourcei(alID, AL_BUFFER, AL_NONE);
 }
 
 @end

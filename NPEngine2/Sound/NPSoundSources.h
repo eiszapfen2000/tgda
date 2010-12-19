@@ -17,7 +17,7 @@
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
-- (BOOL) startup:(NSError **)error;
+- (BOOL) startup;
 - (void) shutdown;
 
 - (NSUInteger) numberOfSources;
