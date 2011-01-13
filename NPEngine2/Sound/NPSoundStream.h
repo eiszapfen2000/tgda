@@ -15,14 +15,11 @@
     uint32_t bufferSize;
     uint32_t bufferLength;
     Float length;
-
-    // Other info
-    Float position;
-    Float volume;
     BOOL playing;
-
-    NPSoundSource * source;
+    BOOL loop;
     ALuint alBuffers[2];
+    // weak pointer
+    NPSoundSource * soundSource;
 }
 
 - (id) init;
@@ -31,6 +28,12 @@
 - (void) dealloc;
 
 - (BOOL) playing;
+- (BOOL) looping;
+- (void) setSoundSource:(NPSoundSource *)newSoundSource;
+
+- (void) start;
+- (void) stop;
+
 - (void) update;
 
 @end

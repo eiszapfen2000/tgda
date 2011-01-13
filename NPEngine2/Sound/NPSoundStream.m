@@ -5,6 +5,16 @@
 #import "NPSoundSources.h"
 #import "NPSoundStream.h"
 
+@interface NPSoundStream (Private)
+
+- (BOOL) streamData:(ALuint)buffer;
+- (BOOL) initialiseStream:(NSString *)fileName;
+- (void) startStream;
+- (void) updateStream;
+- (void) stopStream;
+
+@end
+
 @implementation NPSoundStream
 
 - (id) init
@@ -21,60 +31,22 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    source = [[[ NPEngineSound instance ] sources ] reserveSource ];
-
     length = 0.0f;
-    position = 0.0f;
-    volume = 1.0f;
     playing = NO;
+    loop = NO;
 
-    alBuffers[0] = alBuffers[1] = 0;
+    alBuffers[0] = alBuffers[1] = AL_NONE;
 
     bufferSize = 0;
+    // number of seconds to hold in one buffer
     bufferLength = 4;
 
     return self;
 }
 
-- (void) stopStreaming
-{
-    playing = NO;
-
-    if ( alBuffers[0] > 0 && alBuffers[1] > 0 )
-    {
-        [ source stop ];
-
-        ALint q, p;
-        alGetSourcei([source alID], AL_BUFFERS_QUEUED, &q);
-        alGetSourcei([source alID], AL_BUFFERS_PROCESSED, &p);
-
-        ALint * queuedBuffers = ALLOC_ARRAY(ALint, q);
-        alGetSourceiv([source alID], AL_BUFFER, queuedBuffers);
-
-        for (int32_t i = 0; i < q; i++ )
-        {
-            ALuint bufferID = (ALuint)(queuedBuffers[i]);
-            alSourceUnqueueBuffers([source alID], 1, &bufferID);
-
-            [[ NPEngineSound instance] checkForALErrors ];
-        }
-
-        alDeleteBuffers(2, alBuffers);
-        [[ NPEngineSound instance] checkForALErrors ];
-
-        alBuffers[0] = 0;
-        alBuffers[1] = 0;
-    }
-
-    ov_clear(&oggStream);
-}
-
 - (void) dealloc
 {
-    [ self stopStreaming ];
-    [ source stop ];
-    [ source unlock ];
-    source = nil;
+    [ self stopStream ];
 
     [ super dealloc ];
 }
@@ -83,6 +55,56 @@
 {
     return playing;
 }
+
+- (BOOL) looping
+{
+    return loop;
+}
+
+- (void) setSoundSource:(NPSoundSource *)newSoundSource
+{
+    soundSource = newSoundSource;
+}
+
+- (BOOL) loadFromStream:(id <NPPStream>)stream 
+                  error:(NSError **)error
+{
+    return NO;
+}
+
+- (BOOL) loadFromFile:(NSString *)fileName
+                error:(NSError **)error
+{
+    [ self setName:fileName ];
+
+    return [ self initialiseStream:fileName ];
+}
+
+- (void) start
+{
+    playing = YES;
+
+    [ self startStream ];
+}
+
+- (void) stop
+{
+    [ self stopStream ];
+
+    playing = NO;
+}
+
+- (void) update
+{
+    if ( playing == YES )
+    {
+        [ self updateStream ];
+    }
+}
+
+@end
+
+@implementation NPSoundStream (Private)
 
 - (BOOL) streamData:(ALuint)buffer
 {
@@ -123,10 +145,8 @@
     return YES;
 }
 
-- (BOOL) startStreaming:(NSString *)path
+- (BOOL) initialiseStream:(NSString *)path
 {
-    [ self stopStreaming ];
-
     FILE * file = fopen([path fileSystemRepresentation], "rb");
     if ( file == NULL )
     {
@@ -152,13 +172,25 @@
     NPLOG(@"Minimum Bit Rate: %ld", oggInfo->bitrate_lower);
     NPLOG(@"Average Bit Rate: %ld", ov_bitrate(&oggStream, -1));
 
-    if ( oggInfo->channels == 1 )
+    switch ( oggInfo->channels )
     {
-        format = AL_FORMAT_MONO16;
-    }
-    else if ( oggInfo->channels == 2 )
-    {
-        format = AL_FORMAT_STEREO16;
+        case 1:
+        {
+            format = AL_FORMAT_MONO16;
+            break;
+        }
+
+        case 2:
+        {
+            format = AL_FORMAT_STEREO16;
+            break;
+        }
+
+        default:
+        {
+            NSLog(@"Cannot handle %d channels", oggInfo->channels);
+            break;
+        }
     }
 
     if ( length < (float)bufferLength )
@@ -170,21 +202,6 @@
 
     alGenBuffers(2, alBuffers);
     [[ NPEngineSound instance] checkForALErrors ];
-
-    ALuint sourceALID = [ source alID ];
-
-    if ( alIsSource(sourceALID) == AL_FALSE )
-    {
-        NSLog(@"Invalid channel for stream %@", name);
-        return NO;
-    }
-
-    alSource3f(sourceALID, AL_POSITION, 0.0f, 0.0f, 0.0f);
-    alSource3f(sourceALID, AL_VELOCITY, 0.0f, 0.0f, 0.0f);
-    alSource3f(sourceALID, AL_DIRECTION, 0.0f, 0.0f, 0.0f);
-    alSourcef(sourceALID, AL_GAIN, 1.0f);
-    alSourcef(sourceALID, AL_ROLLOFF_FACTOR, 0.0f);
-    alSourcei(sourceALID, AL_SOURCE_RELATIVE, AL_TRUE);
 
     if ( [ self streamData:alBuffers[0] ] == NO )
     {
@@ -198,32 +215,32 @@
         return NO;
     }
 
-    alSourceQueueBuffers(sourceALID, 2, alBuffers);
-    alSourcePlay(sourceALID);
-
-    playing = YES;
-
     return YES;     
 }
 
-- (BOOL) loadFromStream:(id <NPPStream>)stream 
-                  error:(NSError **)error
+- (void) startStream
 {
-    return NO;
-}
+    if ( soundSource == nil )
+    {
+        NSLog(@"Stream %@ has no sound source", name);
+        return;
+    }
 
-- (BOOL) loadFromFile:(NSString *)fileName
-                error:(NSError **)error
-{
-    [ self setName:fileName ];
+    ALuint sourceALID = [ soundSource alID ];
 
-    return [ self startStreaming:fileName ];
+    if ( alIsSource(sourceALID) == AL_FALSE )
+    {
+        NSLog(@"Invalid source %@ for stream %@", [ soundSource name ], name);
+        return;
+    }
+
+    alSourceQueueBuffers(sourceALID, 2, alBuffers);
 }
 
 - (void) updateStream
 {
     ALint processed;
-    ALuint sourceALID = [ source alID ];
+    ALuint sourceALID = [ soundSource alID ];
 
     alGetSourcei(sourceALID, AL_BUFFERS_PROCESSED, &processed);
 
@@ -248,12 +265,18 @@
     }
 }
 
-- (void) update
+- (void) stopStream
 {
-    if ( playing == YES )
+    if ((alBuffers[0] != AL_NONE) && (alBuffers[1] != AL_NONE))
     {
-        [ self updateStream ];
+        alDeleteBuffers(2, alBuffers);
+        alBuffers[0] = alBuffers[1] = AL_NONE;
+
+        [[ NPEngineSound instance] checkForALErrors ];
     }
+
+    ov_clear(&oggStream);
 }
 
 @end
+

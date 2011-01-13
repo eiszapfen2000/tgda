@@ -70,8 +70,8 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     DESTROY(sources);
     DESTROY(soundManager);
     DESTROY(listener);
-    [ self shutdownOpenAL ];
 
+    [ self shutdownOpenAL ];
     [ super dealloc ];
 }
 
@@ -82,7 +82,6 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 
 - (void) setName:(NSString *)newName
 {
-
 }
 
 - (id <NPPObject>) parent

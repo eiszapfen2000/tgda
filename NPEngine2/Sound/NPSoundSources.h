@@ -6,6 +6,7 @@
 @class NSError;
 @class NPSoundSource;
 @class NPSoundSample;
+@class NPSoundStream;
 
 @interface NPSoundSources : NPObject
 {
@@ -29,7 +30,8 @@
 - (void) resumeAllSources;
 
 - (NPSoundSource *) reserveSource;
-- (NPSoundSource *) play:(NPSoundSample *)sample;
+- (NPSoundSource *) playSample:(NPSoundSample *)sample;
+- (NPSoundSource *) playStream:(NPSoundStream *)stream;
 
 - (void) update;
 
