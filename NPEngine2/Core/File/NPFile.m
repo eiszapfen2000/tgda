@@ -19,7 +19,7 @@
 
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
 {
-    return [ self initWithName:newName parent:newParent fileName:@"" ];
+    return [ super initWithName:newName parent:newParent ];
 }
 
 - (id) initWithName:(NSString *)newName
@@ -41,9 +41,13 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    [ self openFile:newFileName
-               mode:newMode
-              error:error ];
+    if ( [ self openFile:newFileName
+                    mode:newMode
+                   error:error ] == NO )
+    {
+        DESTROY(self);
+        return nil;
+    }
 
     return self;
 }
@@ -100,13 +104,11 @@
     {
         result = NO;
 
-        if (error != 0)
+        if (error != NULL)
         {
             *error = [ NSError errorWithDomain:NPEngineErrorDomain
                                           code:NPStreamOpenError
                                       userInfo:nil ];
-
-            NPLOG_ERROR(*error);
         }
     }
 

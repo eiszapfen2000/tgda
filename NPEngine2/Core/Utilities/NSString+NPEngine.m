@@ -106,7 +106,7 @@
 
     if ( [ currentString length ] > 0 )
     {
-        [ array addObject:[NSString stringWithString:currentString] ];
+        [ array addObject:[ NSString stringWithString:currentString ]];
     }
 
     // Return an autoreleased immutable copy of the array

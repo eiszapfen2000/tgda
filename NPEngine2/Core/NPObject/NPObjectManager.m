@@ -30,23 +30,21 @@
 
 - (void) dealloc
 {
-    DESTROY(name);
-    parent = nil;
-
-    if ( [ objects count ] > 0 )
+    NSUInteger numberOfLeakedObjects = [ objects count ];
+    if ( numberOfLeakedObjects > 0 )
     {
         NSLog(@"Memory leak, listing leaked objects:");
 
-        NSEnumerator * e = [ objects objectEnumerator ];
-        NSValue * o;
-
-        while (( o = [ e nextObject ] ))
+        for ( NSUInteger i = 0; i < numberOfLeakedObjects; i++ )
         {
-            NSLog(@"%@", [(id)[ o pointerValue ] description ]);
+            NSLog(@"%@", [(id)[[ objects objectAtIndex:i ] pointerValue ] description ]);
         }
+
     }
 
     DESTROY(objects);
+    DESTROY(name);
+    parent = nil;
 
     [ super dealloc ];
 }
@@ -63,18 +61,17 @@
 
 - (id <NPPObject>) objectByName:(NSString *)objectName
 {
-    NSEnumerator * objectsEnumerator = [ objects objectEnumerator ];
-    NSValue * value;
-    id <NPPObject> object;
+    id <NPPObject> object = nil;
+    NSUInteger numberOfObjects = [ objects count ];
 
-    while ( (value = [ objectsEnumerator nextObject ]) )
+    for ( NSUInteger i = 0; i < numberOfObjects; i++ )
     {
-        object = (id <NPPObject>)[ value pointerValue ];
+        object = [[ objects objectAtIndex:i ] pointerValue ];
 
         if ( [[ object name ] isEqual:objectName ] == YES )
         {
             return object;
-        }
+        }        
     }
 
     return nil;
@@ -102,10 +99,7 @@
 
 - (void) setParent:(id <NPPObject>)newParent
 {
-    if ( parent != newParent )
-    {
-        parent = newParent;
-    }
+    parent = newParent;
 }
 
 @end
