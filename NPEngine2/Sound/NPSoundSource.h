@@ -4,6 +4,7 @@
 #import "Core/NPObject/NPObject.h"
 
 @class NPSoundSample;
+@class NPSoundStream;
 
 @interface NPSoundSource : NPObject
 {
@@ -16,9 +17,10 @@
     Float pitchVariation;
     Float volumeVariation;
     BOOL is3DSource;
-    BOOL loop;
+    BOOL looping;
     BOOL locked;
     NPSoundSample * currentSample;
+    NPSoundStream * currentStream;
 }
 
 - (id) init;
@@ -38,11 +40,13 @@
 - (void) pause;
 - (void) stop;
 - (void) resume;
-- (void) play:(NPSoundSample *)sample;
+- (void) playSample:(NPSoundSample *)sample;
+- (void) playStream:(NPSoundStream *)stream;
 
 - (ALuint) alID;
 - (BOOL) paused;
 - (BOOL) playing;
+- (BOOL) looping;
 - (void) setPosition:(const FVector3)newPosition;
 - (void) setVolume:(Float)newVolume;
 - (void) setPitch:(Float)newPitch;

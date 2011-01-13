@@ -119,16 +119,28 @@
     return source;
 }
 
-- (NPSoundSource *) play:(NPSoundSample *)sample
+- (NPSoundSource *) playSample:(NPSoundSample *)sample
 {
     NPSoundSource * source = [ self firstFreeSource ];
     if ( source != nil )
     {
-        [ source play:sample ];
+        [ source playSample:sample ];
     }
 
     return source;
 }
+
+- (NPSoundSource *) playStream:(NPSoundStream *)stream
+{
+    NPSoundSource * source = [ self firstFreeSource ];
+    if ( source != nil )
+    {
+        [ source playStream:stream ];
+    }
+
+    return source;
+} 
+
 
 - (void) update
 {

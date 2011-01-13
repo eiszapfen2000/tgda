@@ -107,6 +107,7 @@
 
 - (void) update
 {
+    /*
     NPSoundStream * stream = nil;
     NSEnumerator * enumerator = [ streams objectEnumerator ];
 
@@ -114,6 +115,7 @@
     {
         [ stream update ];
     }
+    */
 }
 
 @end
