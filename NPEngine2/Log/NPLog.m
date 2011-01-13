@@ -35,31 +35,9 @@ static NPLog * NP_ENGINE_LOG = nil;
     return NP_ENGINE_LOG;
 }
 
-/*
-- (void) setupFileHandle
-{
-    NSString * logFileName = [[ NSHomeDirectory() stringByStandardizingPath ]
-                                    stringByAppendingPathComponent:@"np.log" ];
-
-    if ( [[ NSFileManager defaultManager ] 
-                createFileAtPath:logFileName
-                        contents:nil
-                      attributes:nil ] == YES )
-    {
-        logFile = RETAIN([ NSFileHandle fileHandleForWritingAtPath:logFileName ]);
-    }
-    else
-    {
-        logFile = RETAIN([ NSFileHandle fileHandleWithStandardOutput ]);
-    }
-}
-*/
-
 - (id) init
 {
     self = [ super init ];
-
-    //[ self setupFileHandle ];
 
     loggers = [[ NSMutableArray alloc ] init ];
 
