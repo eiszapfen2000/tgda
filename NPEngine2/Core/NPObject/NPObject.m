@@ -66,10 +66,7 @@ NSString* const NPEngineErrorDomain = @"NPEngineErrorDomain";
 
 - (void) setParent:(id <NPPObject>)newParent
 {
-    if ( parent != newParent )
-    {
-        parent = newParent;
-    }
+    parent = newParent;
 }
 
 - (NSString *) description
