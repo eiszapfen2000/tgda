@@ -1,4 +1,3 @@
-#include <unistd.h>
 #import "Log/NPLog.h"
 #import "NPEngineSound.h"
 #import "NPSoundSource.h"
@@ -34,12 +33,10 @@
     length = 0.0f;
     playing = NO;
     loop = NO;
-
-    alBuffers[0] = alBuffers[1] = AL_NONE;
-
     bufferSize = 0;
     // number of seconds to hold in one buffer
     bufferLength = 4;
+    alBuffers[0] = alBuffers[1] = AL_NONE;
 
     return self;
 }
@@ -215,7 +212,7 @@
         return NO;
     }
 
-    return YES;     
+    return YES;
 }
 
 - (void) startStream

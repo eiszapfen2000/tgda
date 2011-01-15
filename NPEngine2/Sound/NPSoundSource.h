@@ -33,6 +33,9 @@
                    ;
 - (void) dealloc;
 
+- (void) clear;
+- (void) reset;
+
 - (void) lock;
 - (void) unlock;
 - (BOOL) locked;
