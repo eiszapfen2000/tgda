@@ -1,7 +1,7 @@
 #import <vorbis/vorbisfile.h>
 #import <Foundation/NSData.h>
+#import "Log/NPLog.h"
 #import "NPSoundSample.h"
-#import "NP.h"
 
 @interface NPSoundSample (Private)
 

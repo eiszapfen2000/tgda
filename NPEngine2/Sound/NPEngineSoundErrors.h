@@ -15,7 +15,10 @@ enum
     NPVorbisStreamNotVorbisError = 1153,
     NPVorbisVersionMismatchError = 1154,
     NPVorbisBadHeaderError = 1155,
-    NPVorbisInternalError = 1156
+    NPVorbisInternalError = 1156,
+    NPVorbisHoleError = 1157,
+    NPVorbisBadLinkError = 1158,
+    NPVorbisBadInputError = 1159
 };
 
 #endif

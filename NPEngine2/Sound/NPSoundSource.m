@@ -50,18 +50,31 @@
 
 - (void) dealloc
 {
-    // empty source queue
-    alSourcei(alID, AL_BUFFER, AL_NONE);
-
-    TEST_RELEASE(currentSample);
-    TEST_RELEASE(currentStream);
-
+    [ self clear ];
     alDeleteSources(1, &alID);
 
     [ super dealloc ];
 }
 
 - (void) clear
+{
+    alSourceStop(alID);
+    alSourcei(alID, AL_BUFFER, AL_NONE);
+
+    if ( currentSample != nil )
+    {
+        DESTROY(currentSample);
+    }
+
+    if ( currentStream != nil )
+    {
+        [ currentStream stop ];
+        [ currentStream setSoundSource:nil ];
+        DESTROY(currentStream);
+    }
+}
+
+- (void) reset
 {
 
 }
@@ -105,11 +118,7 @@
     // queue; this also works for streams, since buffers
     // added through alSourceQueueBuffers are removed too
 
-    if ( [ self playing ] == YES )
-    {
-        alSourceStop(alID);
-        alSourcei(alID, AL_BUFFER, AL_NONE);
-    }
+    [ self clear ];
     
     ASSIGN(currentSample, sample);
     alSourcei(alID, AL_BUFFER, [ sample alID ]);

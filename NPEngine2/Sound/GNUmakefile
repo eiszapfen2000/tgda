@@ -9,7 +9,8 @@ NPSoundSample.h \
 NPSoundSource.h \
 NPSoundSources.h \
 NPSoundManager.h \
-NPSoundStream.h
+NPSoundStream.h \
+NPVorbisErrors.h
 
 libNPEngineSound_OBJC_FILES = \
 NPEngineSound.m \
@@ -18,7 +19,8 @@ NPSoundSample.m \
 NPSoundSource.m \
 NPSoundSources.m \
 NPSoundManager.m \
-NPSoundStream.m
+NPSoundStream.m \
+NPVorbisErrors.m
 
 libNPEngineSound_LIBRARIES_DEPEND_UPON += -lopenal -lvorbis -lvorbisfile
 
