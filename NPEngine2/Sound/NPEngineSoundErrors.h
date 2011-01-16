@@ -18,7 +18,8 @@ enum
     NPVorbisInternalError = 1156,
     NPVorbisHoleError = 1157,
     NPVorbisBadLinkError = 1158,
-    NPVorbisBadInputError = 1159
+    NPVorbisBadInputError = 1159,
+    NPVorbisNumberOfChannelsError = 1160
 };
 
 #endif

@@ -12,11 +12,11 @@
     vorbis_info * oggInfo;
     vorbis_comment* oggComment;
     ALenum format;
-    uint32_t bufferSize;
+    long bufferSize;
     uint32_t bufferLength;
     Float length;
     BOOL playing;
-    BOOL loop;
+    BOOL looping;
     ALuint alBuffers[2];
     // weak pointer
     NPSoundSource * soundSource;
@@ -29,6 +29,7 @@
 
 - (BOOL) playing;
 - (BOOL) looping;
+- (void) setLooping:(BOOL)newLooping;
 - (void) setSoundSource:(NPSoundSource *)newSoundSource;
 
 - (void) start;

@@ -1,5 +1,8 @@
 #import "Log/NPLog.h"
+#import "Core/Utilities/NSError+NPEngine.h"
 #import "NPEngineSound.h"
+#import "NPEngineSoundErrors.h"
+#import "NPVorbisErrors.h"
 #import "NPSoundSource.h"
 #import "NPSoundSources.h"
 #import "NPSoundStream.h"
@@ -7,7 +10,9 @@
 @interface NPSoundStream (Private)
 
 - (BOOL) streamData:(ALuint)buffer;
-- (BOOL) initialiseStream:(NSString *)fileName;
+- (BOOL) initialiseStream:(NSString *)fileName
+                    error:(NSError **)error
+                         ;
 - (void) startStream;
 - (void) updateStream;
 - (void) stopStream;
@@ -32,7 +37,8 @@
 
     length = 0.0f;
     playing = NO;
-    loop = NO;
+    looping = NO;
+    format = AL_NONE;
     bufferSize = 0;
     // number of seconds to hold in one buffer
     bufferLength = 4;
@@ -55,7 +61,12 @@
 
 - (BOOL) looping
 {
-    return loop;
+    return looping;
+}
+
+- (void) setLooping:(BOOL)newLooping
+{
+    looping = newLooping;
 }
 
 - (void) setSoundSource:(NPSoundSource *)newSoundSource
@@ -74,7 +85,7 @@
 {
     [ self setName:fileName ];
 
-    return [ self initialiseStream:fileName ];
+    return [ self initialiseStream:fileName error:error ];
 }
 
 - (void) start
@@ -120,18 +131,25 @@
         }
         else if ( bytesRead < 0 )
         {
-            NSLog(@"%@: streamData - Error reading file", name);
+            NPLOG_ERROR([ NPVorbisErrors vorbisReadError:bytesRead ]);
             return NO;
         }
         else
         {
+            if ( looping == YES )
+            {
+                if ( ov_raw_seek(&oggStream, 0) == 0 )
+                {
+                    continue;
+                }
+            }
             break;
         }
     }
 
     if ( size == 0 )
     {
-        SAFE_FREE(bufferData);
+        FREE(bufferData);
         return NO;
     }
 
@@ -143,6 +161,7 @@
 }
 
 - (BOOL) initialiseStream:(NSString *)path
+                    error:(NSError **)error
 {
     FILE * file = fopen([path fileSystemRepresentation], "rb");
     if ( file == NULL )
@@ -151,9 +170,14 @@
         return NO;
     }
 
-    if ( ov_open(file, &oggStream, NULL, 0) < 0 )
+    int resultCode = ov_open(file, &oggStream, NULL, 0);
+    if ( resultCode < 0 )
     {
-        NSLog(@"VorbisFile failed to open file %@", path);
+        if ( error != NULL )
+        {
+            *error = [ NPVorbisErrors vorbisOpenError:resultCode ];
+        }
+
         fclose(file);
         return NO;
     }
@@ -185,17 +209,23 @@
 
         default:
         {
-            NSLog(@"Cannot handle %d channels", oggInfo->channels);
-            break;
+            if ( error != NULL )
+            {
+                *error = [ NSError errorWithCode:NPVorbisNumberOfChannelsError
+                                     description:NPVorbisNumberOfChannelsErrorString ];
+            }
+
+            return NO;
         }
     }
 
+    // FIXME
     if ( length < (float)bufferLength )
     {
         bufferLength = (uint32_t)(ceil(length)) / 2;
     }
-
-    bufferSize = bufferLength * oggInfo->rate * oggInfo->channels * sizeof(uint16_t);
+    
+    bufferSize = bufferLength * oggInfo->rate * oggInfo->channels * sizeof(int16_t);
 
     alGenBuffers(2, alBuffers);
     [[ NPEngineSound instance] checkForALErrors ];

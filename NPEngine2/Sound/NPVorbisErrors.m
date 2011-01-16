@@ -16,6 +16,8 @@ NSString * const NPVorbisHoleErrorString = @"Data interruption.";
 NSString * const NPVorbisBadLinkErrorString = @"Invalid stream section, or the requested link is corrupt.";
 NSString * const NPVorbisBadInputErrorString = @"Initial file headers couldn't be read or are corrupt.";
 
+NSString * const NPVorbisNumberOfChannelsErrorString = @"Unsupported number of channels.";
+
 @implementation NPVorbisErrors
 
 + (NSError *) vorbisOpenError:(int)error
