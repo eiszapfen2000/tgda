@@ -3,7 +3,7 @@
 #import "NPObjectManager.h"
 #import "Core/NPEngineCore.h"
 
-NSString* const NPEngineErrorDomain = @"NPEngineErrorDomain";
+NSString * const NPEngineErrorDomain = @"NPEngineErrorDomain";
 
 @implementation NPObject
 
