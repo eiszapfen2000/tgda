@@ -132,6 +132,8 @@
 {
     NSAssert(stream != nil, @"No stream provided");
 
+    [ self clear ];
+
     ASSIGN(currentStream, stream);
     [ currentStream setSoundSource:self ];
     [ currentStream start ];
@@ -211,13 +213,21 @@
         alSourcei(alID, AL_SOURCE_RELATIVE, AL_TRUE);
     }
 
-    if ( looping == YES )
+    if ( currentSample != nil )
     {
-        alSourcei(alID, AL_LOOPING, AL_TRUE);
+        if ( looping == YES )
+        {
+            alSourcei(alID, AL_LOOPING, AL_TRUE);
+        }
+        else
+        {
+            alSourcei(alID, AL_LOOPING, AL_FALSE);
+        }
     }
-    else
+
+    if ( currentStream != nil )
     {
-        alSourcei(alID, AL_LOOPING, AL_FALSE);
+        [ currentStream setLooping:looping ];
     }
 }
 

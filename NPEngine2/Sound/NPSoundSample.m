@@ -1,6 +1,10 @@
 #import <vorbis/vorbisfile.h>
 #import <Foundation/NSData.h>
 #import "Log/NPLog.h"
+#import "Core/Utilities/NSError+NPEngine.h"
+#import "NPEngineSound.h"
+#import "NPEngineSoundErrors.h"
+#import "NPVorbisErrors.h"
 #import "NPSoundSample.h"
 
 @interface NPSoundSample (Private)
@@ -26,7 +30,7 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    alID = UINT_MAX;
+    alID = AL_NONE;
     volume = 1.0f;
     length = 0.0f;
     range = 1.0f;
@@ -76,24 +80,28 @@
 {
     [ self setName:fileName ];
 
+    // open file
     FILE * file = fopen([fileName fileSystemRepresentation], "rb");
     if ( file == NULL )
     {
-        // check errno
-        //NPLOG_ERROR(@"Unable to open file %@", path);
         return NO;
     }
 
-    vorbis_info * info;
+    // feed file handle to ov_open
     OggVorbis_File oggFile;
-
-    if ( ov_open(file, &oggFile, NULL, 0) < 0 )
+    int resultCode = ov_open(file, &oggFile, NULL, 0);
+    if ( resultCode < 0 )
     {
-        //NPLOG_ERROR(@"VorbisFile failed to open file %@", path);
+        if ( error != NULL )
+        {
+            *error = [ NPVorbisErrors vorbisOpenError:resultCode ];
+        }
+
         fclose(file);
         return NO;
     }
 
+    vorbis_info * info;
     info = ov_info(&oggFile, -1);
     length = ov_time_total(&oggFile, -1);
 
@@ -108,26 +116,54 @@
     ALsizei frequency = info->rate;
     ALenum format = AL_NONE;
 
-    if ( info->channels == 1 )
+    switch ( info->channels )
     {
-        format = AL_FORMAT_MONO16;
-    }
-    else if ( info->channels == 2 )
-    {
-        format = AL_FORMAT_STEREO16;
+        case 1:
+        {
+            format = AL_FORMAT_MONO16;
+            break;
+        }
+
+        case 2:
+        {
+            format = AL_FORMAT_STEREO16;
+            break;
+        }
+
+        default:
+        {
+            if ( error != NULL )
+            {
+                *error = [ NSError errorWithCode:NPVorbisNumberOfChannelsError
+                                     description:NPVorbisNumberOfChannelsErrorString ];
+            }
+
+            return NO;
+        }
     }
 
-    NSMutableData * data = [[ NSMutableData alloc ] init ];
+    NSMutableData * data = [ NSMutableData data ];
 
     #define BUFFER_SIZE     32768       // 32 KB buffers
 
     long bytesRead;
-    int stream;
+    int stream = -1;
     char buffer[BUFFER_SIZE];
 
     do
     {
         bytesRead = ov_read(&oggFile, buffer, BUFFER_SIZE, 0, 2, 1, &stream);
+
+        if ( bytesRead < 0 )
+        {
+            if ( error != NULL )
+            {
+                *error = [ NPVorbisErrors vorbisReadError:bytesRead ];
+            }
+
+            return NO;
+        }
+
         [ data appendBytes:buffer length:bytesRead ];
     }
     while ( bytesRead > 0 );
@@ -138,11 +174,14 @@
 
     NPLOG(@"Uncompressed Size: %lu", [ data length ]);
 
+    // generate OpenAL name
     [ self generateALBuffer ];
-    alBufferData(alID, format, [ data bytes ], [ data length ], frequency);
-    DESTROY(data);
 
-    return YES;
+    // upload buffer data
+    alBufferData(alID, format, [ data bytes ], [ data length ], frequency);
+
+    // check if buffer upload went well
+    return [[ NPEngineSound instance ] checkForALError:error ];
 }
 
 @end
@@ -151,10 +190,10 @@
 
 - (void) deleteALBuffer
 {
-    if ( alID > 0 && alID < UINT_MAX )
+    if ( alID != AL_NONE )
     {
         alDeleteBuffers(1, &alID);
-        alID = UINT_MAX;
+        alID = AL_NONE;
     }
 }
 
