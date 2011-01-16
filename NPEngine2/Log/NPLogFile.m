@@ -62,7 +62,8 @@
 
 - (void) logError:(NSError *)error
 {
-    [ self logMessage:[ @"[Error]: " stringByAppendingString:[ error localizedDescription ]]];
+    [ self logMessage:[ NSString stringWithFormat:@"[Error]: %@ %ld %@",
+        [ error domain ], [ error code ], [ error localizedDescription ]]];
 }
 
 @end
