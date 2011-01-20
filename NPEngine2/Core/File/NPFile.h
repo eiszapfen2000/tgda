@@ -1,12 +1,12 @@
-#import <Foundation/NSFileHandle.h>
+#import <stdio.h>
 #import "Core/NPObject/NPObject.h"
 #import "NPPStream.h"
 
 @interface NPFile : NPObject < NPPStream >
 {
     NSString * fileName;
-    NSFileHandle * fileHandle;
     NpStreamMode mode;
+    FILE * file;
 }
 
 - (id) init;

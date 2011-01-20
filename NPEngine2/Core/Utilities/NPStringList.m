@@ -108,13 +108,30 @@
 {
     [ self clear ];
 
-    int32_t numberOfLines = [ stream readInt32 ];
-    for ( int32_t i = 0; i < numberOfLines; i++ )
+    int32_t numberOfLines = 0;
+    BOOL result = [ stream readInt32:&numberOfLines ];
+
+    if ( result == NO )
     {
-        [ self addString:[ stream readSUXString ]];
+        return NO;
     }
 
-    return YES;
+    result = YES;
+    NSString * line = nil;
+
+    for ( int32_t i = 0; i < numberOfLines; i++ )
+    {
+        if ( [ stream readSUXString:&line ] == NO )
+        {
+            result = NO;
+            break;
+        }
+ 
+        [ self addString:line ];
+        line = nil;
+    }
+
+    return result;
 }
 
 - (BOOL) loadFromFile:(NSString *)fileName
