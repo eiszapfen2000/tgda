@@ -55,7 +55,6 @@
 - (void) dealloc
 {
     [ self close ];
-
     [ super dealloc ];
 }
 
@@ -82,25 +81,25 @@
     {
         case NpStreamRead:
         {
-            fileHandle = RETAIN([ NSFileHandle fileHandleForReadingAtPath:fileName ]);
+            file = fopen([ fileName fileSystemRepresentation], "rb");
             break;
         }
 
         case NpStreamWrite:
         {
-            fileHandle = RETAIN([ NSFileHandle fileHandleForWritingAtPath:fileName ]);
+            file = fopen([ fileName fileSystemRepresentation], "wb");
             break;
         }
 
         case NpStreamUpdate:
         {
-            fileHandle = RETAIN([ NSFileHandle fileHandleForUpdatingAtPath:fileName ]);
+            file = fopen([ fileName fileSystemRepresentation], "r+");
             break;
         }
     }
 
     BOOL result = YES;
-    if (fileHandle == nil)
+    if (file == NULL)
     {
         result = NO;
 
@@ -117,322 +116,359 @@
 
 - (void) close
 {
-    if ( fileHandle != nil )
+    if ( file != NULL )
     {
-        [ fileHandle closeFile ];
-        DESTROY(fileHandle);
+        fclose(file);
+        file = NULL;
         DESTROY(fileName);
     }
 }
 
-#define READ_DATA(_type) \
-    _type result; \
-    NSData * data = [ fileHandle readDataOfLength:sizeof(_type) ]; \
-    [ data getBytes:&result ]; \
-    return result;
-
-- (int16_t) readInt16
+- (BOOL) readElementsToBuffer:(void *)buffer
+                  elementSize:(size_t)elementSize
+             numberOfElements:(size_t)numberOfElements
 {
-    READ_DATA(int16_t);
+    NSAssert(file != NULL, @"Invalid file handle");
+
+    return (fread(buffer, elementSize, numberOfElements, file) == numberOfElements);
 }
 
-- (int32_t) readInt32
+- (BOOL) writeElements:(void *)buffer
+            elementSize:(size_t)elementSize
+       numberOfElements:(size_t)numberOfElements
 {
-    READ_DATA(int32_t);
+    NSAssert(file != NULL, @"Invalid file handle");
+
+    return (fwrite(buffer, elementSize, numberOfElements, file) == numberOfElements);
 }
 
-- (int64_t) readInt64
+#define READ_DATA(__type, __buffer) \
+    [ self readElementsToBuffer:(__buffer) \
+                    elementSize:sizeof(__type) \
+               numberOfElements:1 ]
+
+- (BOOL) readInt8:(int8_t *)i
 {
-    READ_DATA(int64_t);
+    return READ_DATA(int8_t, i);
 }
 
-- (uint16_t) readUInt16
+- (BOOL) readInt16:(int16_t *)i
 {
-    READ_DATA(uint16_t);
+    return READ_DATA(int16_t, i);
 }
 
-- (uint32_t) readUInt32
+- (BOOL) readInt32:(int32_t *)i
 {
-    READ_DATA(uint32_t);
+    return READ_DATA(int32_t, i);
 }
 
-- (uint64_t) readUInt64
+- (BOOL) readInt64:(int64_t *)i
 {
-    READ_DATA(uint64_t);
+    return READ_DATA(int64_t, i);
 }
 
-- (Float) readFloat
+- (BOOL) readUInt8:(uint8_t *)i
 {
-    READ_DATA(Float);
+    return READ_DATA(uint8_t, i);
 }
 
-- (Double) readDouble
+- (BOOL) readUInt16:(uint16_t *)i
 {
-    READ_DATA(Double);
+    return READ_DATA(uint16_t, i);
 }
 
-- (BOOL) readBool
+- (BOOL) readUInt32:(uint32_t *)i
 {
-    READ_DATA(BOOL);
+    return READ_DATA(uint32_t, i);
 }
 
-- (uint8_t) readByte
+- (BOOL) readUInt64:(uint64_t *)i
 {
-    READ_DATA(uint8_t);
+    return READ_DATA(uint64_t, i);
 }
 
-- (char) readChar
+- (BOOL) readFloat:(Float *)f
 {
-    READ_DATA(char);
+    return READ_DATA(Float, f);
 }
 
-- (NSString *) readSUXString
+- (BOOL) readDouble:(Double *)d
 {
-    int32_t stringLength = [ self readInt32 ];
-    if ( stringLength > 0 )
+    return READ_DATA(Double, d);
+}
+
+- (BOOL) readBool:(BOOL *)b
+{
+    return READ_DATA(BOOL, b);
+}
+
+- (BOOL) readSUXString:(NSString **)s
+{
+    if (s != NULL)
     {
-        NSData * data =
-            [ fileHandle readDataOfLength:(uint32_t)stringLength ];
-
-        NSString * string =
-            [[ NSString alloc] initWithBytes:[data bytes]
-                                      length:(NSUInteger)stringLength
-                                    encoding:NSASCIIStringEncoding ];
-
-        return AUTORELEASE(string);
+        *s = nil;
     }
 
-    return @"";
+    int32_t stringLength = 0;
+    if ( [ self readInt32:&stringLength ] == NO )
+    {
+        return NO;
+    }
+
+    if ( stringLength <= 0 )
+    {
+        return NO;
+    }
+
+    char * buffer = alloca(stringLength);
+    if ( [ self readElementsToBuffer:buffer
+                        elementSize:1
+                   numberOfElements:stringLength ] == NO )
+    {
+        return NO;
+    }
+
+    if ( s != NULL )
+    {
+        *s = [[ NSString alloc] initWithBytes:buffer
+                                       length:(NSUInteger)stringLength
+                                     encoding:NSASCIIStringEncoding ];
+        AUTORELEASE(*s);
+    }
+
+    return YES;
 }
 
-- (NPStringList *) readSUXScript
+- (BOOL) readSUXScript:(NPStringList **)s
 {
-    NPStringList * script = [[ NPStringList alloc ] init ];
+    if ( s != NULL )
+    {
+        *s = nil;
+    }
+
+    int32_t numberOfLines = 0;
+    if ( [ self readInt32:&numberOfLines ] == NO )
+    {
+        return NO;
+    }
+
+    if ( numberOfLines <= 0 )
+    {
+        return NO;
+    }
+
+    NPStringList * script = AUTORELEASE([[ NPStringList alloc ] init ]);
     [ script setAllowDuplicates:YES ];
     [ script setAllowEmptyStrings:YES ];
 
-    int32_t numberOfLines = [ self readInt32 ];
+    BOOL result = YES;
+    NSString * line = nil;
+
     for ( int32_t i = 0; i < numberOfLines; i++ )
     {
-        NSString * line = [ self readSUXString ];
+        if ( [ self readSUXString:&line ] == NO )
+        {
+            result = NO;
+            break;
+        }
+ 
         [ script addString:line ];
+        line = nil;
     }
 
-    return AUTORELEASE(script);
-}
-
-#undef READ_DATA
-
-- (FVector2) readFVector2
-{
-    FVector2 v;
-    v.x = [ self readFloat ];
-    v.y = [ self readFloat ];
-    
-    return v;
-}
-
-- (FVector3) readFVector3
-{
-    FVector3 v;
-    v.x = [ self readFloat ];
-    v.y = [ self readFloat ];
-    v.z = [ self readFloat ];
-
-    return v;
-}
-
-- (FVector4) readFVector4
-{
-    FVector4 v;
-    v.x = [ self readFloat ];
-    v.y = [ self readFloat ];
-    v.z = [ self readFloat ];
-    v.w = [ self readFloat ];
-
-    return v;
-}
-
-- (Vector2) readVector2
-{
-    Vector2 v;
-    v.x = [ self readDouble ];
-    v.y = [ self readDouble ];
-    
-    return v;
-}
-
-- (Vector3) readVector3
-{
-    Vector3 v;
-    v.x = [ self readDouble ];
-    v.y = [ self readDouble ];
-    v.z = [ self readDouble ];
-
-    return v;
-}
-
-- (Vector4) readVector4
-{
-    Vector4 v;
-    v.x = [ self readDouble ];
-    v.y = [ self readDouble ];
-    v.z = [ self readDouble ];
-    v.w = [ self readDouble ];
-
-    return v;
-}
-
-- (IVector2) readIVector2
-{
-    IVector2 v;
-    v.x = [ self readInt32 ];
-    v.y = [ self readInt32 ];
-
-    return v;
-}
-
-- (NSData *) readEntireFile
-{
-    return [ fileHandle readDataToEndOfFile ];
-}
-
-#define WRITE_DATA(_v) \
-    NSData * data = [ NSData dataWithBytes:&(_v) length:sizeof(_v) ]; \
-    [ fileHandle writeData:data ];
-
-- (void) writeInt16:(int16_t)i
-{
-    WRITE_DATA(i);
-}
-
-- (void) writeInt32:(int32_t)i
-{
-    WRITE_DATA(i);
-}
-
-- (void) writeInt64:(int64_t)i
-{
-    WRITE_DATA(i);
-}
-
-- (void) writeUInt16:(uint16_t)u
-{
-    WRITE_DATA(u);
-}
-
-- (void) writeUInt32:(uint32_t)u
-{
-    WRITE_DATA(u);
-}
-
-- (void) writeUInt64:(uint64_t)u
-{
-    WRITE_DATA(u);
-}
-
-- (void) writeFloat:(Float)f
-{
-    WRITE_DATA(f);
-}
-
-- (void) writeDouble:(Double)d
-{
-    WRITE_DATA(d);
-}
-
-- (void) writeByte:(uint8_t)b
-{
-    WRITE_DATA(b);
-}
-
-- (void) writeChar:(char)c
-{
-    WRITE_DATA(c);
-}
-
-- (void) writeBool:(BOOL)b
-{
-    WRITE_DATA(b);
-}
-
-- (void) writeCharArray:(const char *)c
-                 length:(NSUInteger)length
-{
-    NSData * data = [ NSData dataWithBytes:c length:length ];
-    [ fileHandle writeData:data ];
-}
-
-- (void) writeSUXString:(NSString *)string
-{
-    char * cstring = (char *)[ string cStringUsingEncoding:NSASCIIStringEncoding ];
-
-    NSUInteger ASCIIStringLength =
-        [ string lengthOfBytesUsingEncoding:NSASCIIStringEncoding ];
-
-    [ self writeInt32:(int32_t)ASCIIStringLength ];
-    [ self writeCharArray:cstring length:ASCIIStringLength ];
-}
-
-- (void) writeSUXScript:(NPStringList *)script
-{
-    int32_t lines = (int32_t)[ script count ];
-    [ self writeInt32:lines ];
-
-    for ( int32_t i = 0; i < lines; i++ )
+    if ( result == YES && s != NULL )
     {
-        [ self writeSUXString:[ script stringAtIndex:i ]];
+        *s = script;
     }
+
+    return result;
 }
 
-#undef WRITE_DATA
-
-- (void) writeFVector2:(FVector2)v
+- (BOOL) readFVector2:(FVector2 *)v
 {
-    [ self writeFloat:v.x ];
-    [ self writeFloat:v.y ];
+    return READ_DATA(FVector2, v);
 }
 
-- (void) writeFVector3:(FVector3)v
+- (BOOL) readFVector3:(FVector3 *)v
 {
-    [ self writeFloat:v.x ];
-    [ self writeFloat:v.y ];
-    [ self writeFloat:v.z ];
+    return READ_DATA(FVector3, v);
 }
 
-- (void) writeFVector4:(FVector4)v
+- (BOOL) readFVector4:(FVector4 *)v
 {
-    [ self writeFloat:v.x ];
-    [ self writeFloat:v.y ];
-    [ self writeFloat:v.z ];
-    [ self writeFloat:v.w ];
+    return READ_DATA(FVector4, v);
 }
 
-- (void) writeVector2:(Vector2)v
+- (BOOL) readVector2:(Vector2 *)v
 {
-    [ self writeDouble:v.x ];
-    [ self writeDouble:v.y ];
+    return READ_DATA(Vector2, v);
 }
 
-- (void) writeVector3:(Vector3)v
+- (BOOL) readVector3:(Vector3 *)v
 {
-    [ self writeDouble:v.x ];
-    [ self writeDouble:v.y ];
-    [ self writeDouble:v.z ];
+    return READ_DATA(Vector3, v);
 }
 
-- (void) writeVector4:(Vector4)v
+- (BOOL) readVector4:(Vector4 *)v
 {
-    [ self writeDouble:v.x ];
-    [ self writeDouble:v.y ];
-    [ self writeDouble:v.z ];
-    [ self writeDouble:v.w ];
+    return READ_DATA(Vector4, v);
 }
 
-- (void) writeIVector2:(IVector2)v
+- (BOOL) readIVector2:(IVector2 *)v
 {
-    [ self writeInt32:v.x ];
-    [ self writeInt32:v.y ];
+    return READ_DATA(IVector2, v);
+}
+
+#define WRITE_DATA(__type, __buffer) \
+    [ self writeElements:(__buffer) \
+             elementSize:sizeof(__type) \
+        numberOfElements:1 ]
+
+- (BOOL) writeInt8:(int8_t)i
+{
+    return WRITE_DATA(int8_t, &i);
+}
+
+- (BOOL) writeInt16:(int16_t)i
+{
+    return WRITE_DATA(int16_t, &i);
+}
+
+- (BOOL) writeInt32:(int32_t)i
+{
+    return WRITE_DATA(int32_t, &i);
+}
+
+- (BOOL) writeInt64:(int64_t)i
+{
+    return WRITE_DATA(int64_t, &i);
+}
+
+- (BOOL) writeUInt8:(uint8_t)i
+{
+    return WRITE_DATA(uint8_t, &i);
+}
+
+- (BOOL) writeUInt16:(uint16_t)i
+{
+    return WRITE_DATA(uint16_t, &i);
+}
+
+- (BOOL) writeUInt32:(uint32_t)i
+{
+    return WRITE_DATA(uint32_t, &i);
+}
+
+- (BOOL) writeUInt64:(uint64_t)i
+{
+    return WRITE_DATA(uint64_t, &i);
+}
+
+- (BOOL) writeFloat:(Float)f
+{
+    return WRITE_DATA(Float, &f);
+}
+
+- (BOOL) writeDouble:(Double)d
+{
+    return WRITE_DATA(Double, &d);
+}
+
+- (BOOL) writeBool:(BOOL)b
+{
+    return WRITE_DATA(BOOL, &b);
+}
+
+- (BOOL) writeFVector2:(FVector2)v
+{
+    return WRITE_DATA(FVector2, &v);
+}
+
+- (BOOL) writeFVector3:(FVector3)v
+{
+    return WRITE_DATA(FVector3, &v);
+}
+
+- (BOOL) writeFVector4:(FVector4)v
+{
+    return WRITE_DATA(FVector4, &v);
+}
+
+- (BOOL) writeVector2:(Vector2)v
+{
+    return WRITE_DATA(Vector2, &v);
+}
+
+- (BOOL) writeVector3:(Vector3)v
+{
+    return WRITE_DATA(Vector3, &v);
+}
+
+- (BOOL) writeVector4:(Vector4)v
+{
+    return WRITE_DATA(Vector4, &v);
+}
+
+- (BOOL) writeIVector2:(IVector2)v
+{
+    return WRITE_DATA(IVector2, &v);
+}
+
+- (BOOL) writeSUXString:(NSString *)string
+{
+    const char * cString = NULL;
+    size_t length = 0;
+
+    if ( [ string canBeConvertedToEncoding:NSASCIIStringEncoding ] == NO )
+    {
+        NSData * d = [ string dataUsingEncoding:NSASCIIStringEncoding
+                           allowLossyConversion:YES ];
+
+        cString = [ d bytes ];
+        length = [ d length ];
+    }
+    else
+    {
+        cString = [ string cStringUsingEncoding:NSASCIIStringEncoding ];
+        length = [ string lengthOfBytesUsingEncoding:NSASCIIStringEncoding ];
+    }
+
+    if ( cString == NULL )
+    {
+        return NO;
+    }
+
+    if ( [ self writeInt32:(int32_t)length ] == NO )
+    {
+        return NO;
+    }
+
+    return [ self writeElements:(void *)cString
+                    elementSize:1
+               numberOfElements:length ];
+}
+
+- (BOOL) writeSUXScript:(NPStringList *)script
+{
+    int32_t numberOfLines = (int32_t)[ script count ];
+
+    if ( [ self writeInt32:numberOfLines ] == NO )
+    {
+        return NO;
+    }
+
+    BOOL result = YES;
+    for ( int32_t i = 0; i < numberOfLines; i++ )
+    {
+        if ( [ self writeSUXString:[ script stringAtIndex:i ]] == NO )
+        {
+            result = NO;
+            break;
+        }
+    }
+
+    return result;
 }
 
 @end
+
