@@ -5,6 +5,7 @@ NATIVE_LIBRARY_NAME=libNPEngine2
 libNPEngine2_SUBPROJECTS = \
     Log \
     Core \
+    Graphics \
     Sound
 
 libNPEngine2_OBJC_FILES = \
