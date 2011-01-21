@@ -12,6 +12,11 @@
     return [ NPEngineCore instance ];
 }
 
++ (id) Graphics
+{
+    return [ NPEngineGraphics instance ];
+}
+
 + (id) Sound
 {
     return [ NPEngineSound instance ];
