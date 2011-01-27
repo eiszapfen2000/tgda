@@ -3,7 +3,8 @@ include $(GNUSTEP_MAKEFILES)/common.make
 SUBPROJECT_NAME=libNPEngineGraphics
 
 libNPEngineGraphics_SUBPROJECTS = \
-    Image
+    Image \
+    Texture
 
 libNPEngineGraphics_OBJC_FILES = \
 NPEngineGraphics.m

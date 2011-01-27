@@ -1,29 +1,7 @@
 #import "Core/Basics/NpTypes.h"
 #import "Core/NPObject/NPObject.h"
 #import "Core/File/NPPPersistentObject.h"
-
-typedef enum NpImagePixelFormat
-{
-    NpImagePixelFormatUnknown = -1,
-    NpImagePixelFormatR = 0,
-    NpImagePixelFormatRG = 1,
-    NpImagePixelFormatRGB = 2,
-    NpImagePixelFormatRGBA = 3,
-    NpImagePixelFormatsR = 4,
-    NpImagePixelFormatsRG = 5,
-    NpImagePixelFormatsRGB = 6,
-    NpImagePixelFormatsRGBLinearA = 7    
-}
-NpImagePixelFormat;
-
-typedef enum NpImageDataFormat
-{
-    NpImageDataFormatUnknown = -1,
-    NpImageDataFormatByte = 0,
-    NpImageDataFormatHalf = 1,
-    NpImageDataFormatFloat = 2
-}
-NpImageDataFormat;
+#import "Graphics/NPEngineGraphicsEnums.h"
 
 @class NSData;
 

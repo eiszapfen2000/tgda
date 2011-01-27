@@ -17,10 +17,10 @@ NpImageDataFormat convert_devil_dataformat(ILint devilDataFormat)
             result = NpImageDataFormatByte;
             break;
         case IL_HALF:
-            result = NpImageDataFormatHalf;
+            result = NpImageDataFormatFloat16;
             break;
         case IL_FLOAT:
-            result = NpImageDataFormatFloat;
+            result = NpImageDataFormatFloat32;
             break;
         default:
             break;
@@ -208,7 +208,7 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
                 [ NSString stringWithFormat:@"Data Format:%d Pixel Format:%d",
                      (int32_t)dataFormat, (int32_t)pixelFormat ];
 
-            *error = [ NSError errorWithCode:NPEngineGraphicsImageHasInvalidSize
+            *error = [ NSError errorWithCode:NPEngineGraphicsImageHasUnknownFormat
                                  description:errorString ];
 
         }
@@ -227,7 +227,9 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
 - (BOOL) loadFromFile:(NSString *)fileName
                 error:(NSError **)error
 {
-    return [ self loadFromFile:fileName sRGB:NO error:error ];
+    return [ self loadFromFile:fileName
+                          sRGB:NO
+                         error:error ];
 }
 
 @end
