@@ -30,6 +30,7 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
+    file = nil;
     lines = [[ NSMutableArray alloc ] init ];
 
     allowDuplicates = newAllowDuplicates;
@@ -61,6 +62,16 @@
     return [ lines count ];
 }
 
+- (NSString *) fileName
+{
+    return file;
+}
+
+- (BOOL) ready
+{
+    return YES;
+}
+
 - (NSString *) stringAtIndex:(NSUInteger)index
 {
     return [ lines objectAtIndex:index ];
@@ -78,6 +89,11 @@
 
 - (void) clear
 {
+    if ( file != nil )
+    {
+        DESTROY(file);
+    }
+
     [ lines removeAllObjects ];
 }
 
@@ -149,6 +165,7 @@
     }
 
     [ self clear ];
+    ASSIGNCOPY(file, fileName);
 
     NSCharacterSet * newlineSet = [ NSCharacterSet newlineCharacterSet ];
     NSScanner * scanner = [ NSScanner scannerWithString:fileContents ];

@@ -9,7 +9,11 @@ enum
     NPEngineGraphicsGLError = 2049,
     NPEngineGraphicsDevILError = 2050,
     NPEngineGraphicsImageHasInvalidSize = 2051,
-    NPEngineGraphicsImageHasUnknownFormat = 2052
+    NPEngineGraphicsImageHasUnknownFormat = 2052,
+    NPEngineGraphicsShaderGLSLCompilationError = 2096,
+    NPEngineGraphicsShaderConfigurationGLSLLinkError = 2097,
+    NPEngineGraphicsShaderConfigurationShaderMissing = 2098,
+    NPEngineGraphicsShaderConfigurationShaderCorrupt = 2099,
 };
 
 #endif

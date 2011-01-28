@@ -53,3 +53,20 @@ NpTextureWrap;
 
 typedef NpImagePixelFormat NpTexturePixelFormat;
 typedef NpImageDataFormat  NpTextureDataFormat;
+
+typedef enum NpShaderType
+{
+    NpShaderTypeUnknown = -1,
+    NpShaderTypeVertex = 0,
+    NpShaderTypeFragment = 1
+}
+NpShaderType;
+
+typedef enum NpShaderVariableType
+{
+    NpShaderVariableTypeUnknown = -1,
+    NpShaderVariableTypeTexture = 0,
+    NpShaderVariableTypeSemantic = 1,
+    NpShaderVariableTypeUniform = 2
+}
+NpShaderVariableType;

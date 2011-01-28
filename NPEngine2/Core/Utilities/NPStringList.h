@@ -4,6 +4,7 @@
 
 @interface NPStringList : NPObject < NPPPersistentObject >
 {
+    NSString * file;
     NSMutableArray * lines;
 
     BOOL allowDuplicates;

@@ -1,4 +1,7 @@
 #import <Foundation/NSData.h>
+#import "Core/Utilities/NSError+NPEngine.h"
+#import "Core/NPEngineCore.h"
+#import "Graphics/NPEngineGraphicsErrors.h"
 #import "Graphics/Image/NPImage.h"
 #import "NPTexture2D.h"
 
@@ -29,7 +32,9 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
 {
-    return [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName parent:newParent ];
+    [ self reset ];
+    return self;
 }
 
 - (void) dealloc
@@ -37,8 +42,21 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     [ super dealloc ];
 }
 
+- (BOOL) ready
+{
+    return ready;
+}
+
+- (NSString *) fileName
+{
+    return file;
+}
+
 - (void) clear
 {
+    SAFE_DESTROY(file);
+    ready = NO;
+
     if (glID > 0 )
     {
         glDeleteTextures(1, &glID);
@@ -92,7 +110,22 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 	return YES;
     */
 
-    [ self setName:fileName ];
+    // check if file is to be found
+    NSString * completeFileName
+        = [[[ NPEngineCore instance ] localPathManager ] getAbsolutePath:fileName ];
+
+    if ( completeFileName == nil )
+    {
+        if ( error != NULL )
+        {
+            *error = [ NSError fileNotFoundError:fileName ];
+        }
+
+        return NO;
+    }
+
+    [ self setName:completeFileName ];
+    ASSIGNCOPY(file, completeFileName);
 
     NPImage * image = AUTORELEASE([[ NPImage alloc ] init ]);
     if ( [ image loadFromFile:fileName
