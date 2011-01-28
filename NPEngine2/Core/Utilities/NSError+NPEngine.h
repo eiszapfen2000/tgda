@@ -2,6 +2,8 @@
 
 @interface NSError (NPEngine)
 
++ (id) fileNotFoundError:(NSString *)fileName;
+
 + (id) errorWithCode:(NSInteger)code 
          description:(NSString *)description
                     ;

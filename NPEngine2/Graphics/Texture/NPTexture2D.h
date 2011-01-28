@@ -26,6 +26,9 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState);
 
 @interface NPTexture2D : NPObject < NPPPersistentObject, NPPTexture >
 {
+    NSString * file;
+    BOOL ready;
+
     uint32_t width;
     uint32_t height;
 

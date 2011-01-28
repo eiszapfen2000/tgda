@@ -29,6 +29,14 @@
 
 - (void) dealloc
 {
+    // in case shutdown is not called,
+    // free all arrays here
+    SAFE_FREE(currentTextureIndices);
+    SAFE_FREE(boundTextureIndices);
+    SAFE_FREE(currentTextureTypes);
+    SAFE_FREE(boundTextureTypes);
+    SAFE_FREE(lockedTexelUnits);
+
     [ super dealloc ];
 }
 
@@ -39,9 +47,12 @@
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &numberSTU);
 	glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &maxNumberVTU);
 
+    // this is to prevent crashs in case the driver
+    // returns -1
     numberOfSuppertedTexelUnits = (uint32_t)(MAX(4, numberSTU));
     maximumNumberOfVertexTexelUnits = (uint32_t)(MAX(4, maxNumberVTU));
 
+    // log the values the driver returns
     NPLOG(@"Maximum Texel Units: %d", numberSTU);
 	NPLOG(@"Maximum Vertex Texel Units: %d", maxNumberVTU);
 

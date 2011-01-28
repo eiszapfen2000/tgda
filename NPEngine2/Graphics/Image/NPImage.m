@@ -4,6 +4,7 @@
 #import "IL/il.h"
 #import "IL/ilu.h"
 #import "Core/Utilities/NSError+NPEngine.h"
+#import "Core/NPEngineCore.h"
 #import "Graphics/NPEngineGraphicsErrors.h"
 #import "NPImage.h"
 
@@ -91,6 +92,9 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
 {
     self = [ super initWithName:newName parent:newParent ];
 
+    file = nil;
+    ready = NO;
+
     pixelFormat = NpImagePixelFormatUnknown;
     dataFormat = NpImageDataFormatUnknown;
     width = height = 0;
@@ -101,12 +105,29 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
 
 - (void) dealloc
 {
-    if ( imageData != nil )
-    {
-        DESTROY(imageData);
-    }
-
+    [ self clear ];
     [ super dealloc ];
+}
+
+- (void) clear
+{
+    SAFE_DESTROY(file);
+    SAFE_DESTROY(imageData);
+    ready = NO;
+
+    pixelFormat = NpImagePixelFormatUnknown;
+    dataFormat = NpImageDataFormatUnknown;
+    width = height = 0;
+}
+
+- (NSString *) fileName
+{
+    return file;
+}
+
+- (BOOL) ready
+{
+    return ready;
 }
 
 - (uint32_t) width
@@ -139,7 +160,23 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
                  sRGB:(BOOL)sRGB
                 error:(NSError **)error
 {
-    [ self setName:fileName ];
+    [ self clear ];
+
+    NSString * completeFileName
+        = [[[ NPEngineCore instance ] localPathManager ] getAbsolutePath:fileName ];
+
+    if ( completeFileName == nil )
+    {
+        if ( error != NULL )
+        {
+            *error = [ NSError fileNotFoundError:fileName ];
+        }
+
+        return NO;
+    }
+
+    [ self setName:completeFileName ];
+    ASSIGNCOPY(file, completeFileName);
 
     ILuint ilID;
     ilGenImages(1, &ilID);
@@ -148,7 +185,9 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
     ilOriginFunc(IL_ORIGIN_LOWER_LEFT );
     ilEnable(IL_ORIGIN_SET);
 
- 	ILboolean success = ilLoadImage( [ fileName cStringUsingEncoding:NSASCIIStringEncoding ] );
+ 	ILboolean success = 
+        ilLoadImage( [ completeFileName cStringUsingEncoding:NSASCIIStringEncoding ] );
+
     if ( success == IL_FALSE )
     {
         if ( error != NULL )
@@ -174,7 +213,9 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
     {
         if ( error != NULL )
         {
-            NSString * errorString = [ NSString stringWithFormat:@"%d x %d", imageWidth, imageHeight ];
+            NSString * errorString
+                = [ NSString stringWithFormat:@"%d x %d", imageWidth, imageHeight ];
+
             *error = [ NSError errorWithCode:NPEngineGraphicsImageHasInvalidSize
                                  description:errorString ];
 
@@ -219,7 +260,9 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
     NSUInteger dataLength = width * height * bytesperpixel;
     imageData = [[ NSData alloc ] initWithBytes:ilGetData() length:dataLength ];
     ilBindImage(0);
-	ilDeleteImages(1, &ilID);    
+	ilDeleteImages(1, &ilID);
+
+    ready = YES;
 
     return YES;
 }
