@@ -44,8 +44,6 @@
 
 - (void) clear
 {
-    TEST_RELEASE(script);
-
     [ lines removeAllObjects ];
 }
 
@@ -245,10 +243,11 @@
     {
         NSString * line = [ inputScript stringAtIndex:i ];
 
-        NSArray * literalsForLine = [ line literalsSeparatedBy:separators
-                                   separatorsToStoreAsLiterals:separatorsToStoreAsLiterals
-                                            longLiteralMarkers:longLiteralMarkers
-                                                 ignoreMarkers:ignoreMarkers ];
+        NSArray * literalsForLine
+            = [ line literalsSeparatedBy:separators
+             separatorsToStoreAsLiterals:separatorsToStoreAsLiterals
+                      longLiteralMarkers:longLiteralMarkers
+                           ignoreMarkers:ignoreMarkers ];
 
         if ( [ literalsForLine count ] > 0 )
         {
@@ -260,12 +259,22 @@
     }
 }
 
+/*
 - (BOOL) loadFromFile:(NSString *)fileName
 {
     TEST_RELEASE(script);
     script = [[ NPStringList alloc ] init ];
     
-    return [ script loadFromFile:fileName error:NULL ];
+    BOOL result = YES;
+    NSError * error = nil;
+    if ( [ script loadFromFile:fileName error:&error ] == NO )
+    {
+        NPLOG_ERROR(error);
+        result = NO;
+    }
+
+    return result;
 }
+*/
 
 @end

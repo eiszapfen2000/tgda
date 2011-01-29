@@ -2,8 +2,15 @@
 #import <Foundation/NSDictionary.h>
 #import "GL/glew.h"
 #import "GL/glu.h"
+#import "IL/il.h"
+#import "IL/ilu.h"
 #import "Log/NPLog.h"
 #import "Core/NPObject/NPObject.h"
+#import "Core/File/NPAssetArray.h"
+#import "Image/NPImage.h"
+#import "Texture/NPTexture2D.h"
+#import "Shader/NPShader.h"
+#import "Shader/NPEffect.h"
 #import "NPEngineGraphicsErrors.h"
 #import "NPEngineGraphics.h"
 
@@ -45,12 +52,62 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     self = [ super init ];
     objectID = crc32_of_pointer(self);
 
+    ilInit();
+    iluInit();
+
+    images = [[ NPAssetArray alloc ]
+                    initWithName:@"NP Engine Images"
+                          parent:self
+                      assetClass:NSClassFromString(@"NPImage") ];
+
+    textures2D = [[ NPAssetArray alloc ]
+                        initWithName:@"NP Engine Textures2D"
+                              parent:self
+                          assetClass:NSClassFromString(@"NPTexture2D") ];
+
+    shader = [[ NPAssetArray alloc ]
+                    initWithName:@"NP Engine Shader"
+                          parent:self
+                      assetClass:NSClassFromString(@"NPShader") ];
+
+    effects = [[ NPAssetArray alloc ]
+                    initWithName:@"NP Engine Shader"
+                          parent:self
+                      assetClass:NSClassFromString(@"NPEffect") ];
+
     return self;
 }
 
 - (void) dealloc
 {
+    ilShutDown();
+
+    DESTROY(effects);
+    DESTROY(shader);
+    DESTROY(textures2D);
+    DESTROY(images);
+
     [ super dealloc ];
+}
+
+- (NPAssetArray *) images
+{
+    return images;
+}
+
+- (NPAssetArray *) textures2D
+{
+    return textures2D;
+}
+
+- (NPAssetArray *) shader
+{
+    return shader;
+}
+
+- (NPAssetArray *) effects
+{
+    return effects;
 }
 
 - (BOOL) startup

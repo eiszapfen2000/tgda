@@ -7,6 +7,9 @@
 
 @interface NPSoundStream : NPObject < NPPPersistentObject >
 {
+    NSString * file;
+    BOOL ready;
+
     // Stream info
     OggVorbis_File oggStream;
     vorbis_info * oggInfo;

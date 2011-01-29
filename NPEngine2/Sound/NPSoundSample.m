@@ -30,6 +30,9 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
+    file = nil;
+    ready = NO;
+
     alID = AL_NONE;
     volume = 1.0f;
     length = 0.0f;
@@ -42,6 +45,16 @@
 {
     [ self deleteALBuffer ];
     [ super dealloc ];
+}
+
+- (NSString *) fileName
+{
+    return file;
+}
+
+- (BOOL) ready
+{
+    return ready;
 }
 
 - (ALuint) alID
@@ -67,6 +80,14 @@
 - (void) clear
 {
     [ self deleteALBuffer ];
+
+    alID = AL_NONE;
+    volume = 1.0f;
+    length = 0.0f;
+    range = 1.0f;    
+
+    SAFE_DESTROY(file);
+    ready = NO;
 }
 
 - (BOOL) loadFromStream:(id <NPPStream>)stream 
@@ -81,15 +102,15 @@
     [ self setName:fileName ];
 
     // open file
-    FILE * file = fopen([fileName fileSystemRepresentation], "rb");
-    if ( file == NULL )
+    FILE * cfile = fopen([fileName fileSystemRepresentation], "rb");
+    if ( cfile == NULL )
     {
         return NO;
     }
 
     // feed file handle to ov_open
     OggVorbis_File oggFile;
-    int resultCode = ov_open(file, &oggFile, NULL, 0);
+    int resultCode = ov_open(cfile, &oggFile, NULL, 0);
     if ( resultCode < 0 )
     {
         if ( error != NULL )
@@ -97,7 +118,7 @@
             *error = [ NPVorbisErrors vorbisOpenError:resultCode ];
         }
 
-        fclose(file);
+        fclose(cfile);
         return NO;
     }
 
@@ -181,7 +202,12 @@
     alBufferData(alID, format, [ data bytes ], [ data length ], frequency);
 
     // check if buffer upload went well
-    return [[ NPEngineSound instance ] checkForALError:error ];
+    if ( [[ NPEngineSound instance ] checkForALError:error ] == NO )
+    {
+        ready = YES;
+    }
+
+    return ready;
 }
 
 @end

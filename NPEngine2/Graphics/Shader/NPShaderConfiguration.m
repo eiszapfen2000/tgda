@@ -2,7 +2,9 @@
 #import "Log/NPLog.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Core/NPEngineCore.h"
+#import "Graphics/NPAssetArray.h"
 #import "Graphics/NPEngineGraphicsErrors.h"
+#import "Graphics/NPEngineGraphics.h"
 #import "NPShader.h"
 #import "NPShaderConfiguration.h"
 
@@ -35,6 +37,7 @@
 
     file = nil;
     ready = NO;
+
     glID = 0;
     vertexShader = fragmentShader = nil;
     shaderVariables = [[ NSMutableArray alloc ] init ];
@@ -104,6 +107,8 @@
     [ self setName:completeFileName ];
     ASSIGNCOPY(file, completeFileName);
 
+    NPLOG(@"Loading shader configuration \"%@\"", completeFileName);
+
     return NO;
 }
 
@@ -157,11 +162,13 @@
 {
     if ( vertexShader != nil )
     {
+        [[[ NPEngineGraphics instance ] shader ] releaseAsset:vertexShader ];
         vertexShader = nil;
     }
 
     if ( fragmentShader != nil )
     {
+        [[[ NPEngineGraphics instance ] shader ] releaseAsset:fragmentShader ];
         fragmentShader = nil;
     }
 }

@@ -35,6 +35,9 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
+    file = nil;
+    ready = NO;
+
     length = 0.0f;
     playing = NO;
     looping = NO;
@@ -50,8 +53,17 @@
 - (void) dealloc
 {
     [ self stopStream ];
-
     [ super dealloc ];
+}
+
+- (NSString *) fileName
+{
+    return file;
+}
+
+- (BOOL) ready
+{
+    return ready;
 }
 
 - (BOOL) playing
@@ -85,7 +97,12 @@
 {
     [ self setName:fileName ];
 
-    return [ self initialiseStream:fileName error:error ];
+    if ( [ self initialiseStream:fileName error:error ] == YES )
+    {
+        ready = YES;
+    }
+
+    return ready;
 }
 
 - (void) start
@@ -163,14 +180,14 @@
 - (BOOL) initialiseStream:(NSString *)path
                     error:(NSError **)error
 {
-    FILE * file = fopen([path fileSystemRepresentation], "rb");
-    if ( file == NULL )
+    FILE * cfile = fopen([path fileSystemRepresentation], "rb");
+    if ( cfile == NULL )
     {
         NSLog(@"Unable to open file %@", path);
         return NO;
     }
 
-    int resultCode = ov_open(file, &oggStream, NULL, 0);
+    int resultCode = ov_open(cfile, &oggStream, NULL, 0);
     if ( resultCode < 0 )
     {
         if ( error != NULL )
@@ -178,7 +195,7 @@
             *error = [ NPVorbisErrors vorbisOpenError:resultCode ];
         }
 
-        fclose(file);
+        fclose(cfile);
         return NO;
     }
 
