@@ -11,7 +11,7 @@
     NSCharacterSet * longLiteralMarkers;
     NSCharacterSet * ignoreMarkers;
 
-    NPStringList * script;
+//    NPStringList * script;
     NSMutableArray * lines;
 }
 
@@ -75,6 +75,6 @@
 - (void) parse:(NPStringList *)inputScript;
 
 - (void) clear;
-- (BOOL) loadFromFile:(NSString *)fileName;
+//- (BOOL) loadFromFile:(NSString *)fileName;
 
 @end

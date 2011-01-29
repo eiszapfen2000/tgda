@@ -3,6 +3,7 @@
 #import <Foundation/NSError.h>
 #import "IL/il.h"
 #import "IL/ilu.h"
+#import "Log/NPLog.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Core/NPEngineCore.h"
 #import "Graphics/NPEngineGraphicsErrors.h"
@@ -177,6 +178,8 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
 
     [ self setName:completeFileName ];
     ASSIGNCOPY(file, completeFileName);
+
+    NPLOG(@"Loading image \"%@\"", completeFileName);
 
     ILuint ilID;
     ilGenImages(1, &ilID);

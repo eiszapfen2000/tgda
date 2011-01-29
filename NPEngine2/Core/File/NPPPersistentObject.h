@@ -1,9 +1,10 @@
+#import "Core/NPObject/NPPObject.h"
 #import "NPPStream.h"
 
 @class NSError;
 @class NSString;
 
-@protocol NPPPersistentObject
+@protocol NPPPersistentObject < NPPObject >
 
 - (NSString *) fileName;
 - (BOOL) ready;
