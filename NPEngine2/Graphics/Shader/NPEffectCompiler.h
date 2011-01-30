@@ -7,6 +7,7 @@
 @interface NPEffectCompiler : NPParser
 {
     NPEffect * effect;
+    NPEffectTechnique * techniqueToParse;
 }
 
 - (void) compileScript:(NPStringList *)inputScript

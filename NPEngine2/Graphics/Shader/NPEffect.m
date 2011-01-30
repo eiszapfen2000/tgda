@@ -51,6 +51,17 @@
     return ready;
 }
 
+- (id) addTechniqueWithName:(NSString *)techniqueName
+{
+    NPEffectTechnique * t
+        = [[ NPEffectTechnique alloc ] initWithName:techniqueName
+                                             parent:self ];
+
+    [ techniques addObject:t ];
+
+    return AUTORELEASE(t);
+}
+
 - (BOOL) loadFromStream:(id <NPPStream>)stream 
                   error:(NSError **)error
 {
@@ -80,6 +91,7 @@
     ASSIGNCOPY(file, completeFileName);
 
     NPStringList * effectScript = AUTORELEASE([[ NPStringList alloc ] init ]);
+    [ effectScript setAllowDuplicates:YES ];
 
     if ( [ effectScript loadFromFile:completeFileName 
                                error:error ] == NO )

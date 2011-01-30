@@ -148,7 +148,7 @@
 
     if ( index != NSNotFound )
     {
-        [ asset release ];
+        RELEASE(asset);
 
         // if the retain counter is at 1, then we
         // are the only ones left owning the asset,
