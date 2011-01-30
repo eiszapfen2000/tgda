@@ -252,6 +252,7 @@
         if ( [ literalsForLine count ] > 0 )
         {
             NPStringList * literals = [[ NPStringList alloc ] init ];
+            [ literals setAllowDuplicates:YES ];
             [ literals addStringsFromArray:literalsForLine ];
             [ lines addObject:literals ];
             [ literals release ];

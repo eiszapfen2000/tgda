@@ -17,4 +17,6 @@
 
 - (void) clear;
 
+- (id) addTechniqueWithName:(NSString *)techniqueName;
+
 @end
