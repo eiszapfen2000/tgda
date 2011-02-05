@@ -27,8 +27,7 @@ NSString * const NPEngineErrorDomain = @"NPEngineErrorDomain";
     parent = newParent;
     objectID = crc32_of_pointer(self);
 
-    pointer = [[ NSValue alloc ] initWithBytes:&self objCType:@encode(void *) ];
-    [[[ NPEngineCore instance ] objectManager ] addObject:pointer ];
+    [[[ NPEngineCore instance ] objectManager ] addObject:self ];
 
     return self;
 } 
@@ -38,8 +37,7 @@ NSString * const NPEngineErrorDomain = @"NPEngineErrorDomain";
     DESTROY(name);
     parent = nil;
 
-    [[[ NPEngineCore instance ] objectManager ] removeObject:pointer ];
-    DESTROY(pointer);
+    [[[ NPEngineCore instance ] objectManager ] removeObject:self ];
 
     [ super dealloc ];
 }

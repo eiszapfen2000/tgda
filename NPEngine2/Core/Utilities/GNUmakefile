@@ -5,12 +5,14 @@ SUBPROJECT_NAME=libNPEngineCoreUtilities
 libNPEngineCoreUtilities_OBJC_FILES = \
 NSError+NPEngine.m \
 NSString+NPEngine.m \
+NSPointerArray+NPEngine.m \
 NPStringList.m \
 NPParser.m
 
 libNPEngineCoreUtilities_HEADER_FILES = \
 NSError+NPEngine.h \
 NSString+NPEngine.h \
+NSPointerArray+NPEngine.h \
 NPStringList.h \
 NPParser.h
 
