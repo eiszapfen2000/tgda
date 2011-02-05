@@ -202,7 +202,7 @@
     alBufferData(alID, format, [ data bytes ], [ data length ], frequency);
 
     // check if buffer upload went well
-    if ( [[ NPEngineSound instance ] checkForALError:error ] == NO )
+    if ( [[ NPEngineSound instance ] checkForALError:error ] == YES )
     {
         ready = YES;
     }

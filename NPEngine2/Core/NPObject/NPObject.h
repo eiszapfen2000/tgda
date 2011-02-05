@@ -12,7 +12,6 @@ NSString * const NPEngineErrorDomain;
     uint32_t objectID;
     NSString * name;
     id <NPPObject> parent;
-    NSValue * pointer;
 }
 
 - (id) init;

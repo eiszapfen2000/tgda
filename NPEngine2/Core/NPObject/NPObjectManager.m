@@ -1,5 +1,9 @@
-#import "NPObjectManager.h"
+#import <Foundation/NSPointerArray.h>
 #import "Core/Basics/NpCrc32.h"
+#import "Core/Utilities/NSPointerArray+NPEngine.h"
+#import "NSPointerArray+NPPObject.h"
+#import "NPObjectManager.h"
+
 
 @implementation NPObjectManager
 
@@ -21,9 +25,12 @@
 
     //Weak reference
     parent = newParent;
-
     objectID = crc32_of_pointer(self);
-    objects = [[ NSMutableArray alloc ] init ];
+
+    NSPointerFunctionsOptions options
+        = NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality;
+
+    objects = [[ NSPointerArray alloc ] initWithOptions:options ];
 
     return self;
 }
@@ -31,15 +38,9 @@
 - (void) dealloc
 {
     NSUInteger numberOfLeakedObjects = [ objects count ];
-    if ( numberOfLeakedObjects > 0 )
+    for ( NSUInteger i = 0; i < numberOfLeakedObjects; i++ )
     {
-        NSLog(@"Memory leak, listing leaked objects:");
-
-        for ( NSUInteger i = 0; i < numberOfLeakedObjects; i++ )
-        {
-            NSLog(@"%@", [(id)[[ objects objectAtIndex:i ] pointerValue ] description ]);
-        }
-
+        NSLog(@"%@", [(id)[ objects pointerAtIndex:i ] description ]);
     }
 
     DESTROY(objects);
@@ -49,32 +50,19 @@
     [ super dealloc ];
 }
 
-- (void) addObject:(NSValue *)newObject
+- (void) addObject:(id <NPPObject>)newObject
 {
-    [ objects addObject:newObject ];
+    [ objects addPointer:newObject ];
 }
 
-- (void) removeObject:(NSValue *)object
+- (void) removeObject:(id <NPPObject>)object
 {
-    [ objects removeObjectIdenticalTo:object ];
+    [ objects removePointerIdenticalTo:object ];
 }
 
 - (id <NPPObject>) objectByName:(NSString *)objectName
 {
-    id <NPPObject> object = nil;
-    NSUInteger numberOfObjects = [ objects count ];
-
-    for ( NSUInteger i = 0; i < numberOfObjects; i++ )
-    {
-        object = [[ objects objectAtIndex:i ] pointerValue ];
-
-        if ( [[ object name ] isEqual:objectName ] == YES )
-        {
-            return object;
-        }        
-    }
-
-    return nil;
+    return [ objects pointerWithName:objectName ];
 }
 
 - (NSString *) name
