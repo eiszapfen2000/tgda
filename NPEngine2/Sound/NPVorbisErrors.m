@@ -3,6 +3,7 @@
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSError.h>
 #import "Core/NPObject/NPObject.h"
+#import "Core/Utilities/NSError+NPEngine.h"
 #import "NPEngineSoundErrors.h"
 #import "NPVorbisErrors.h"
 

@@ -1,10 +1,10 @@
 #import <Foundation/NSArray.h>
 #import <Foundation/NSString.h>
-#import "NPPObject.h"
+#import "Core/Protocols/NPPObject.h"
 
 @interface NSArray (NPPObject)
 
-- (id) objectWithName:(NSString *)name;
+- (id <NPPObject>) objectWithName:(NSString *)name;
 
 @end
 

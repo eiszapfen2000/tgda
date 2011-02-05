@@ -6,6 +6,7 @@
 #import "IL/ilu.h"
 #import "Log/NPLog.h"
 #import "Core/NPObject/NPObject.h"
+#import "Core/Utilities/NSError+NPEngine.h"
 #import "Core/File/NPAssetArray.h"
 #import "Image/NPImage.h"
 #import "Texture/NPTexture2D.h"

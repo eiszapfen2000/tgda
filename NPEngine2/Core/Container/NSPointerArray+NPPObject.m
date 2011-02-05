@@ -2,7 +2,7 @@
 
 @implementation NSPointerArray (NPPObject)
 
-- (id) pointerWithName:(NSString *)name
+- (id <NPPObject>) pointerWithName:(NSString *)name
 {
     NSUInteger numberOfPointers = [ self count ];
     for ( NSUInteger i = 0; i < numberOfPointers; i++ )

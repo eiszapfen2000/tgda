@@ -1,5 +1,5 @@
 #import "Core/Basics/NpBasics.h"
-#import "Core/NPObject/NPPObject.h"
+#import "Core/Protocols/NPPObject.h"
 
 @class NPAssetArray;
 

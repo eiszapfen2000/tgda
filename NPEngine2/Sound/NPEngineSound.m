@@ -4,6 +4,7 @@
 #import "Log/NPLog.h"
 #import "Core/Basics/NpBasics.h"
 #import "Core/NPObject/NPObject.h"
+#import "Core/Utilities/NSError+NPEngine.h"
 #import "NPEngineSoundErrors.h"
 #import "NPListener.h"
 #import "NPSoundSources.h"

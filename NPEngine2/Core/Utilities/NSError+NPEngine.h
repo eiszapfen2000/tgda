@@ -1,5 +1,7 @@
 #import <Foundation/NSError.h>
 
+NSString * const NPEngineErrorDomain;
+
 @interface NSError (NPEngine)
 
 + (id) fileNotFoundError:(NSString *)fileName;

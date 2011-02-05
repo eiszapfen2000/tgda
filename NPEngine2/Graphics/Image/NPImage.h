@@ -1,6 +1,6 @@
 #import "Core/Basics/NpTypes.h"
 #import "Core/NPObject/NPObject.h"
-#import "Core/File/NPPPersistentObject.h"
+#import "Core/Protocols/NPPPersistentObject.h"
 #import "Graphics/NPEngineGraphicsEnums.h"
 
 @class NSData;

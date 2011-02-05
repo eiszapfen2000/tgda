@@ -3,9 +3,7 @@
 #import <Foundation/NSString.h>
 #import <Foundation/NSValue.h>
 #import "Core/Basics/NpTypes.h"
-#import "NPPObject.h"
-
-NSString * const NPEngineErrorDomain;
+#import "Core/Protocols/NPPObject.h"
 
 @interface NPObject : NSObject < NPPObject >
 {

@@ -1,6 +1,6 @@
 #import "GL/glew.h"
 #import "Core/NPObject/NPObject.h"
-#import "Core/File/NPPPersistentObject.h"
+#import "Core/Protocols/NPPPersistentObject.h"
 #import "Graphics/NPEngineGraphicsEnums.h"
 #import "NPPTexture.h"
 

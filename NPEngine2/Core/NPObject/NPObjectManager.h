@@ -1,5 +1,5 @@
 #import "Core/Basics/NpTypes.h"
-#import "NPPObject.h"
+#import "Core/Protocols/NPPObject.h"
 
 @class NSPointerArray;
 @class NSString;

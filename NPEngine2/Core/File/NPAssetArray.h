@@ -1,5 +1,5 @@
 #import "Core/NPObject/NPObject.h"
-#import "NPPPersistentObject.h"
+#import "Core/Protocols/NPPPersistentObject.h"
 
 @class NSMutableArray;
 
@@ -18,7 +18,6 @@
 
 - (id <NPPPersistentObject>) getAssetWithName:(NSString *)assetName;
 - (id <NPPPersistentObject>) getAssetWithFileName:(NSString *)fileName;
-- (void) releaseAsset:(id <NPPPersistentObject>)asset;
 
 @end
 
