@@ -1,7 +1,7 @@
 #import <Foundation/NSPointerArray.h>
 #import "Core/Basics/NpCrc32.h"
-#import "Core/Utilities/NSPointerArray+NPEngine.h"
-#import "NSPointerArray+NPPObject.h"
+#import "Core/Container/NSPointerArray+NPEngine.h"
+#import "Core/Container/NSPointerArray+NPPObject.h"
 #import "NPObjectManager.h"
 
 

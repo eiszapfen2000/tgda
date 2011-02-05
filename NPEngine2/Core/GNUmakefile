@@ -6,6 +6,7 @@ libNPEngineCore_SUBPROJECTS = \
 	Basics \
 	Math \
 	NPObject \
+    Container \
     Timer \
     File \
     Utilities \

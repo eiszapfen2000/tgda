@@ -3,6 +3,8 @@
 #import "Core/NPEngineCoreErrors.h"
 #import "NSError+NPEngine.h"
 
+NSString* const NPEngineErrorDomain = @"NPEngineErrorDomain";
+
 @implementation NSError (NPEngine)
 
 + (id) fileNotFoundError:(NSString *)fileName

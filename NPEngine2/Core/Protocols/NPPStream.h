@@ -3,8 +3,8 @@
 typedef enum NpStreamMode
 {
     NpStreamRead = 0,
-    NpStreamWrite,
-    NpStreamUpdate
+    NpStreamWrite = 1,
+    NpStreamUpdate = 2
 }
 NpStreamMode;
 

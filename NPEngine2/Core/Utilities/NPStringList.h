@@ -1,6 +1,6 @@
 #import <Foundation/NSArray.h>
 #import "Core/NPObject/NPObject.h"
-#import "Core/File/NPPPersistentObject.h"
+#import "Core/Protocols/NPPPersistentObject.h"
 
 @interface NPStringList : NPObject < NPPPersistentObject >
 {

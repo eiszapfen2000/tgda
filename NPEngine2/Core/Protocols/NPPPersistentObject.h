@@ -1,4 +1,4 @@
-#import "Core/NPObject/NPPObject.h"
+#import "NPPObject.h"
 #import "NPPStream.h"
 
 @class NSError;

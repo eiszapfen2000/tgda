@@ -143,7 +143,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
         return NO;
     }
 
-   [[[ NPEngineGraphics instance ] images ] releaseAsset:image ];
+   //[[[ NPEngineGraphics instance ] images ] releaseAsset:image ];
 
     return YES;
 }

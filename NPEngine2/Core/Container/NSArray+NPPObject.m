@@ -2,7 +2,7 @@
 
 @implementation NSArray (NPPObject)
 
-- (id) objectWithName:(NSString *)name
+- (id <NPPObject>) objectWithName:(NSString *)name
 {
     NSUInteger numberOfObjects = [ self count ];
     for ( NSUInteger i = 0; i < numberOfObjects; i++ )

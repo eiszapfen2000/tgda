@@ -1,5 +1,5 @@
 #import "Core/NPObject/NPObject.h"
-#import "Core/File/NPPPersistentObject.h"
+#import "Core/Protocols/NPPPersistentObject.h"
 
 @class NSMutableArray;
 

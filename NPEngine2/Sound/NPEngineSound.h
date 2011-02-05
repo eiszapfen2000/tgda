@@ -2,7 +2,7 @@
 #import "AL/alc.h"
 #import "AL/alext.h"
 #import "Core/Basics/NpTypes.h"
-#import "Core/NPObject/NPPObject.h"
+#import "Core/Protocols/NPPObject.h"
 
 @class NSError;
 @class NPListener;

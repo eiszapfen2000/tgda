@@ -1,7 +1,7 @@
 #import <vorbis/vorbisfile.h>
 #import "AL/al.h"
 #import "Core/NPObject/NPObject.h"
-#import "Core/File/NPPPersistentObject.h"
+#import "Core/Protocols/NPPPersistentObject.h"
 
 @class NPSoundSource;
 

@@ -4,16 +4,11 @@ SUBPROJECT_NAME=libNPEngineCoreNPObject
 
 libNPEngineCoreNPObject_OBJC_FILES = \
 NPObject.m \
-NPObjectManager.m \
-NSArray+NPPObject.m \
-NSPointerArray+NPPObject.m
+NPObjectManager.m
 
 libNPEngineCoreNPObject_HEADER_FILES = \
-NPPObject.h \
 NPObject.h \
-NPObjectManager.h \
-NSArray+NPPObject.h \
-NSPointerArray+NPPObject.h
+NPObjectManager.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make

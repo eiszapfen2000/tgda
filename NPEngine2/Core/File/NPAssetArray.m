@@ -5,47 +5,6 @@
 #import "NPLocalPathManager.h"
 #import "NPAssetArray.h"
 
-/*
-@interface NSPointerArray (NPEngine)
-
-- (BOOL) containsPointer:(void *)pointer;
-- (NSUInteger) indexOfPointerIdenticalTo:(void *)pointer;
-
-@end
-
-@implementation NSPointerArray (NPEngine)
-
-- (BOOL) containsPointer:(void *)pointer
-{
-    NSUInteger numberOfPointers = [ self count ];
-    for ( NSUInteger i = 0; i < numberOfPointers; i++ )
-    {
-        if ( [ self pointerAtIndex:i ] == pointer )
-        {
-            return YES;
-        }
-    }
-
-    return NO;
-}
-
-- (NSUInteger) indexOfPointerIdenticalTo:(void *)pointer
-{
-    NSUInteger numberOfPointers = [ self count ];
-    for ( NSUInteger i = 0; i < numberOfPointers; i++ )
-    {
-        if ( [ self pointerAtIndex:i ] == pointer )
-        {
-            return i;
-        }
-    }
-
-    return NSNotFound;
-}
-
-@end
-*/
-
 @implementation NPAssetArray
 
 - (id) initWithName:(NSString *)newName
@@ -140,24 +99,6 @@
     [ assets addObject:asset ];
 
     return AUTORELEASE(asset);
-}
-
-- (void) releaseAsset:(id <NPPPersistentObject>)asset
-{
-    NSUInteger index = [ assets indexOfObjectIdenticalTo:asset ];
-
-    if ( index != NSNotFound )
-    {
-        RELEASE(asset);
-
-        // if the retain counter is at 1, then we
-        // are the only ones left owning the asset,
-        // so we can release it
-        if ( [ asset retainCount ] == 1 )
-        {
-            [ assets removeObjectAtIndex:index ];
-        }
-    }   
 }
 
 @end

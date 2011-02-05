@@ -1,9 +1,7 @@
 #import "Core/Basics/NpCrc32.h"
-#import "NPObject.h"
 #import "NPObjectManager.h"
 #import "Core/NPEngineCore.h"
-
-NSString * const NPEngineErrorDomain = @"NPEngineErrorDomain";
+#import "NPObject.h"
 
 @implementation NPObject
 

@@ -1,6 +1,6 @@
 #import <stdio.h>
 #import "Core/NPObject/NPObject.h"
-#import "NPPStream.h"
+#import "Core/Protocols/NPPStream.h"
 
 @interface NPFile : NPObject < NPPStream >
 {
