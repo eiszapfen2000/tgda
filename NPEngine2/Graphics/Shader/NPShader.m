@@ -1,7 +1,10 @@
 #import "Log/NPLog.h"
+#import "Log/NPLog.h"
+#import "Core/Container/NPAssetArray.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Core/NPEngineCore.h"
 #import "Graphics/NPEngineGraphicsErrors.h"
+#import "Graphics/NPEngineGraphics.h"
 #import "NPShader.h"
 
 @interface NPShader (Private)
@@ -36,11 +39,15 @@
     glID = 0;
     shaderType = NpShaderTypeUnknown;
 
+    [[[ NPEngineGraphics instance ] shader ] registerAsset:self ];
+
     return self;
 }
 
 - (void) dealloc
 {
+    [[[ NPEngineGraphics instance ] shader ] unregisterAsset:self ];
+
     [ super dealloc ];
 }
 

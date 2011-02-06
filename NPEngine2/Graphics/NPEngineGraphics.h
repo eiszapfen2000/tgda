@@ -10,7 +10,7 @@
     NPAssetArray * images;
     NPAssetArray * textures2D;
     NPAssetArray * shader;
-    NPAssetArray * effects;
+    //NPAssetArray * effects;
 }
 
 + (NPEngineGraphics *) instance;
@@ -21,7 +21,7 @@
 - (NPAssetArray *) images;
 - (NPAssetArray *) textures2D;
 - (NPAssetArray *) shader;
-- (NPAssetArray *) effects;
+//- (NPAssetArray *) effects;
 
 - (BOOL) startup;
 - (void) shutdown;

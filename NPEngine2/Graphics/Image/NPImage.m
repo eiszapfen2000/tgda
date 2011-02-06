@@ -4,9 +4,11 @@
 #import "IL/il.h"
 #import "IL/ilu.h"
 #import "Log/NPLog.h"
+#import "Core/Container/NPAssetArray.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Core/NPEngineCore.h"
 #import "Graphics/NPEngineGraphicsErrors.h"
+#import "Graphics/NPEngineGraphics.h"
 #import "NPImage.h"
 
 NpImageDataFormat convert_devil_dataformat(ILint devilDataFormat)
@@ -101,11 +103,15 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
     width = height = 0;
     imageData = nil;
 
+    [[[ NPEngineGraphics instance ] images ] registerAsset:self ];
+
     return self;
 }
 
 - (void) dealloc
 {
+    [[[ NPEngineGraphics instance ] images ] unregisterAsset:self ];
+
     [ self clear ];
     [ super dealloc ];
 }

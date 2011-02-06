@@ -1,7 +1,7 @@
 #import <Foundation/NSScanner.h>
 #import "NSString+NPEngine.h"
 
-@implementation NSString ( NPEngine )
+@implementation NSString (NPEngine)
 
 - (NSString *) stringByRemovingLeadingAndTrailingQuotes
 {

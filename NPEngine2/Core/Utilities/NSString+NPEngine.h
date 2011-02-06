@@ -2,7 +2,7 @@
 #import <Foundation/NSCharacterSet.h>
 #import <Foundation/NSString.h>
 
-@interface NSString ( NPEngine )
+@interface NSString (NPEngine)
 
 - (NSString *) stringByRemovingLeadingAndTrailingQuotes;
 

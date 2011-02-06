@@ -1,12 +1,12 @@
 #import "Core/NPObject/NPObject.h"
 #import "Core/Protocols/NPPPersistentObject.h"
 
-@class NSMutableArray;
+@class NSPointerArray;
 
 @interface NPAssetArray : NPObject
 {
     Class assetClass;
-    NSMutableArray * assets;
+    NSPointerArray * assets;
 }
 
 - (id) initWithName:(NSString *)newName
@@ -16,7 +16,10 @@
 
 - (void) dealloc;
 
-- (id <NPPPersistentObject>) getAssetWithName:(NSString *)assetName;
+- (void) registerAsset:(id <NPPPersistentObject>)asset;
+- (void) unregisterAsset:(id <NPPPersistentObject>)asset;
+
+- (id <NPPObject>) getAssetWithName:(NSString *)assetName;
 - (id <NPPPersistentObject>) getAssetWithFileName:(NSString *)fileName;
 
 @end
