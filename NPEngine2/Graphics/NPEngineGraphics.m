@@ -10,7 +10,7 @@
 #import "Core/Container/NPAssetArray.h"
 #import "Image/NPImage.h"
 #import "Texture/NPTexture2D.h"
-#import "Shader/NPShader.h"
+#import "Effect/NPShader.h"
 #import "NPEngineGraphicsErrors.h"
 #import "NPEngineGraphics.h"
 

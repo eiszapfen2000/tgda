@@ -112,6 +112,8 @@
     [ self setName:completeFileName ];
     ASSIGNCOPY(file, completeFileName);
 
+    NPLOG(@"Loading shader \"%@\"", completeFileName);
+
     // try to load text file
     NSStringEncoding encoding;
     NSString * shaderSource
