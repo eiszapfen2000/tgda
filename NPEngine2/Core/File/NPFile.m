@@ -1,7 +1,7 @@
 #import <Foundation/NSException.h>
 #import <Foundation/NSData.h>
 #import "Log/NPLog.h"
-#import "Core/Utilities/NPStringList.h"
+#import "Core/String/NPStringList.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Core/NPEngineCoreErrors.h"
 #import "NPFile.h"
