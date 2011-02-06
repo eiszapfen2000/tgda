@@ -5,7 +5,7 @@ SUBPROJECT_NAME=libNPEngineGraphics
 libNPEngineGraphics_SUBPROJECTS = \
     Image \
     Texture \
-    Shader
+    Effect
 
 libNPEngineGraphics_OBJC_FILES = \
 NPEngineGraphics.m
