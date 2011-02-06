@@ -1,8 +1,11 @@
-#import <Foundation/NSArray.h>
+#import <Foundation/NSException.h>
 #import "Log/NPLog.h"
-#import "Core/NPEngineCore.h"
+#import "Core/File/NPLocalPathManager.h"
 #import "Core/Utilities/NSError+NPEngine.h"
-#import "NPLocalPathManager.h"
+#import "Core/NPEngineCore.h"
+#import "NSPointerArray+NPEngine.h"
+#import "NSPointerArray+NPPObject.h"
+#import "NSPointerArray+NPPPersistentObject.h"
 #import "NPAssetArray.h"
 
 @implementation NPAssetArray
@@ -14,7 +17,6 @@
     self = [ super initWithName:newName parent:newParent ];
 
     assetClass = newAssetClass;
-    assets = [[ NSMutableArray alloc ] init ];
 
     BOOL conformstoNPPObject
         = [ assetClass conformsToProtocol:@protocol(NPPObject) ];
@@ -29,6 +31,10 @@
         return nil;
     }
 
+    NSPointerFunctionsOptions options
+        = NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality;
+    assets = [[ NSPointerArray alloc ] initWithOptions:options ];
+
     return self;
 }
 
@@ -38,34 +44,30 @@
     [ super dealloc ];
 }
 
-- (id <NPPPersistentObject>) getAssetWithName:(NSString *)assetName
+- (void) registerAsset:(id <NPPPersistentObject>)asset
+{
+    NSAssert(asset != nil, @"Invalid asset");
+
+    [ assets addPointer:asset ];
+}
+
+- (void) unregisterAsset:(id <NPPPersistentObject>)asset
+{
+    [ assets removePointerIdenticalTo:asset ];
+}
+
+- (id <NPPObject>) getAssetWithName:(NSString *)assetName
 {
     if ( assetName == nil )
     {
         return nil;
     }
 
-    NSUInteger numberOfAssets = [ assets count ];
-
-    for ( NSUInteger i = 0; i < numberOfAssets; i++ )
-    {
-        id <NPPPersistentObject> o = [ assets objectAtIndex:i ];
-        if ( [[ o name ] isEqual:assetName ] == YES )
-        {
-            return o;
-        }
-    }
-    
-    return nil;
+    return [ assets pointerWithName:assetName ];
 }
 
 - (id <NPPPersistentObject>) getAssetWithFileName:(NSString *)fileName
 {
-    if ( fileName == nil )
-    {
-        return nil;
-    }
-
     NSString * absoluteFileName
         = [[[ NPEngineCore instance ] 
                 localPathManager ] getAbsolutePath:fileName ];
@@ -76,17 +78,13 @@
         return nil;
     }
 
-    NSUInteger numberOfAssets = [ assets count ];
-    for ( NSUInteger i = 0; i < numberOfAssets; i++ )
+    id <NPPPersistentObject> asset = [ assets pointerWithFileName:fileName ];
+    if ( asset != nil )
     {
-        id <NPPPersistentObject> o = [ assets objectAtIndex:i ];
-        if ( [[ o fileName ] isEqual:absoluteFileName ] == YES )
-        {
-            return o;
-        }
+        return asset;
     }
 
-    id <NPPPersistentObject> asset = [[ assetClass alloc ] init ];
+    asset = [[ assetClass alloc ] init ];
 
     NSError * error = nil;
     if ( [ asset loadFromFile:absoluteFileName error:&error ] == NO )
@@ -95,8 +93,6 @@
         DESTROY(asset);
         return nil;
     }
-
-    [ assets addObject:asset ];
 
     return AUTORELEASE(asset);
 }

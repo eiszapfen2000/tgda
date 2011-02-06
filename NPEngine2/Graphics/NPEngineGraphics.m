@@ -7,11 +7,10 @@
 #import "Log/NPLog.h"
 #import "Core/NPObject/NPObject.h"
 #import "Core/Utilities/NSError+NPEngine.h"
-#import "Core/File/NPAssetArray.h"
+#import "Core/Container/NPAssetArray.h"
 #import "Image/NPImage.h"
 #import "Texture/NPTexture2D.h"
 #import "Shader/NPShader.h"
-#import "Shader/NPEffect.h"
 #import "NPEngineGraphicsErrors.h"
 #import "NPEngineGraphics.h"
 
@@ -71,10 +70,12 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
                           parent:self
                       assetClass:NSClassFromString(@"NPShader") ];
 
+    /*
     effects = [[ NPAssetArray alloc ]
                     initWithName:@"NP Engine Shader"
                           parent:self
                       assetClass:NSClassFromString(@"NPEffect") ];
+    */
 
     return self;
 }
@@ -83,7 +84,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 {
     ilShutDown();
 
-    DESTROY(effects);
+    //DESTROY(effects);
     DESTROY(shader);
     DESTROY(textures2D);
     DESTROY(images);
@@ -106,10 +107,12 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     return shader;
 }
 
+/*
 - (NPAssetArray *) effects
 {
     return effects;
 }
+*/
 
 - (BOOL) startup
 {

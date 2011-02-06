@@ -1,11 +1,11 @@
 #import <Foundation/NSData.h>
 #import "Log/NPLog.h"
+#import "Core/Container/NPAssetArray.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Core/NPEngineCore.h"
-#import "Core/File/NPAssetArray.h"
+#import "Graphics/Image/NPImage.h"
 #import "Graphics/NPEngineGraphicsErrors.h"
 #import "Graphics/NPEngineGraphics.h"
-#import "Graphics/Image/NPImage.h"
 #import "NPTexture2D.h"
 
 void reset_texture2d_filterstate(NpTexture2DFilterState * filterState)
@@ -39,11 +39,15 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
     [ self reset ];
 
+    [[[ NPEngineGraphics instance ] textures2D ] registerAsset:self ];
+
     return self;
 }
 
 - (void) dealloc
 {
+    [[[ NPEngineGraphics instance ] textures2D ] unregisterAsset:self ];
+
     [ super dealloc ];
 }
 
@@ -143,7 +147,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
         return NO;
     }
 
-   //[[[ NPEngineGraphics instance ] images ] releaseAsset:image ];
+    RELEASE(image);
 
     return YES;
 }
