@@ -2,12 +2,15 @@
 #import "Core/Protocols/NPPPersistentObject.h"
 
 @class NSMutableArray;
+@class NPStringList;
+@class NSError;
 
 @interface NPEffect : NPObject < NPPPersistentObject >
 {
     NSString * file;
     BOOL ready;
     NSMutableArray * techniques;
+    NSMutableArray * variables;
 }
 
 - (id) init;
@@ -17,6 +20,8 @@
 
 - (void) clear;
 
-- (id) addTechniqueWithName:(NSString *)techniqueName;
+- (BOOL) loadFromStringList:(NPStringList *)stringList
+                      error:(NSError **)error
+                           ;
 
 @end

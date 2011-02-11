@@ -78,7 +78,7 @@
         return nil;
     }
 
-    id <NPPPersistentObject> asset = [ assets pointerWithFileName:fileName ];
+    id <NPPPersistentObject> asset = [ assets pointerWithFileName:absoluteFileName ];
     if ( asset != nil )
     {
         return asset;

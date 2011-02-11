@@ -68,8 +68,7 @@
             [ techniqueToParse addFragmentShaderFromFile:shaderFileName ];
         }
 
-    }
-    
+    }    
 }
 
 - (void) parseSetStatement:(const NSUInteger)lineIndex

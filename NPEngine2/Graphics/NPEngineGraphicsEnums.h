@@ -70,3 +70,21 @@ typedef enum NpShaderVariableType
     NpShaderVariableTypeUniform = 2
 }
 NpShaderVariableType;
+
+typedef enum NpEffectVariableType
+{
+    NpEffectVariableUnknown = -1,
+    NpEffectVariableFloat,
+    NpEffectVariableFloat2,
+    NpEffectVariableFloat3,
+    NpEffectVariableFloat4,
+    NpEffectVariableInt,
+    NpEffectVariableInt2,
+    NpEffectVariableInt3,
+    NpEffectVariableInt4,
+    NpEffectVariableFMatrix2x2,
+    NpEffectVariableFMatrix3x3,
+    NpEffectVariableFMatrix4x4
+}
+NpEffectVariableType;
+

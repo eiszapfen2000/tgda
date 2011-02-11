@@ -1,6 +1,7 @@
 #import "Log/NPLog.h"
 #import "Log/NPLog.h"
 #import "Core/Container/NPAssetArray.h"
+#import "Core/String/NPStringList.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Core/NPEngineCore.h"
 #import "Graphics/NPEngineGraphicsErrors.h"
@@ -84,6 +85,42 @@
     shaderType = NpShaderTypeUnknown;
 }
 
+- (BOOL) loadFromStringList:(NPStringList *)stringList
+                      error:(NSError **)error
+{
+    // determine shader type from file extensions
+    shaderType = [ NPShader shaderTypeFromFileName:[ stringList fileName ]];
+    if ( shaderType == NpShaderTypeUnknown )
+    {
+        return NO;
+    }
+
+    // determine GL shader type
+    GLenum glShaderType = [ NPShader glShaderTypeFromNpShaderType:shaderType ];
+    glID = glCreateShader(glShaderType);
+
+    NSUInteger numberOfLines = [ stringList count ];
+    const GLchar ** lineCStrings = ALLOC_ARRAY(const GLchar *, numberOfLines);
+    for (NSUInteger i = 0; i < numberOfLines; i++ )
+    {
+        lineCStrings[i]
+            = [[ stringList stringAtIndex:i ] 
+                     cStringUsingEncoding:NSUTF8StringEncoding ];
+    }
+
+    glShaderSource(glID, (GLsizei)numberOfLines, lineCStrings, NULL);
+    glCompileShader(glID);
+
+    // check if compilation went well
+    if ( [ NPShader checkShaderCompileStatus:glID
+                                       error:error ] == YES )
+    {
+        ready = YES;
+    }
+
+    return ready;
+}
+
 - (BOOL) loadFromStream:(id <NPPStream>)stream 
                   error:(NSError **)error
 {
@@ -114,44 +151,20 @@
 
     NPLOG(@"Loading shader \"%@\"", completeFileName);
 
-    // try to load text file
-    NSStringEncoding encoding;
-    NSString * shaderSource
-        = [ NSString stringWithContentsOfFile:completeFileName
-                                 usedEncoding:&encoding
-                                        error:error ];
+    NPStringList * stringList
+        = AUTORELEASE([[ NPStringList alloc ]
+                             initWithName:@""
+                                   parent:self
+                          allowDuplicates:YES
+                        allowEmptyStrings:YES ]);
 
-    if ( shaderSource == nil )
+    if ( [ stringList loadFromFile:completeFileName
+                             error:error ] == NO )
     {
         return NO;
     }
 
-    // determine shader type from file extensions
-    shaderType = [ NPShader shaderTypeFromFileName:completeFileName ];
-    if ( shaderType == NpShaderTypeUnknown )
-    {
-        return NO;
-    }
-
-    // determine GL shader type
-    GLenum glShaderType = [ NPShader glShaderTypeFromNpShaderType:shaderType ];
-    glID = glCreateShader(glShaderType);
-
-    // need a C string for GLSL compilation
-    const char * glSource
-        = [ shaderSource cStringUsingEncoding:NSUTF8StringEncoding ];
-
-    glShaderSource(glID, 1, &glSource, NULL);
-    glCompileShader(glID);
-
-    // check if compilation went well
-    if ( [ NPShader checkShaderCompileStatus:glID
-                                       error:error ] == YES )
-    {
-        ready = YES;
-    }
-
-    return ready;
+    return [ self loadFromStringList:stringList error:error ];
 }
 
 @end
@@ -213,10 +226,10 @@
 
         if ( error != NULL )
         {
-            NSString * description = AUTORELEASE(
-               [[ NSString alloc ] initWithBytes:infoLog
-                                          length:infoLogLength
-                                        encoding:NSASCIIStringEncoding ]);
+            NSString * description
+                = AUTORELEASE([[ NSString alloc ] 
+                                    initWithCString:infoLog
+                                           encoding:NSUTF8StringEncoding ]);
 
             *error = [ NSError errorWithCode:NPEngineGraphicsShaderGLSLCompilationError
                                  description:description ];

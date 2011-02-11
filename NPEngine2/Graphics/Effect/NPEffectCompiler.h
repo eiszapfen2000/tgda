@@ -1,4 +1,4 @@
-#import "Core/Utilities/NPParser.h"
+#import "Core/String/NPParser.h"
 
 @class NPEffect;
 @class NPEffectTechnique;

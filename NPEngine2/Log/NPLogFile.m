@@ -1,5 +1,6 @@
 #import <Foundation/NSString.h>
 #import <Foundation/NSError.h>
+#import <Foundation/NSException.h>
 #import <Foundation/NSFileHandle.h>
 #import <Foundation/NSFileManager.h>
 #import <Foundation/NSPathUtilities.h>
@@ -38,7 +39,6 @@
 
 - (void) dealloc
 {
-    [ logFile synchronizeFile ];
     [ logFile closeFile ];
     DESTROY(logFile);
 
@@ -47,12 +47,11 @@
 
 - (void) logMessage:(NSString *)message
 {
-    NSString * string = [ NSString stringWithFormat:@"%@\n", message ];
-    NSData * data = [ string dataUsingEncoding:NSUTF8StringEncoding 
-                          allowLossyConversion:NO ];
+    NSString * string = [ message stringByAppendingString:@"\r\n"];
+    NSData * data = [ string dataUsingEncoding:NSASCIIStringEncoding 
+                          allowLossyConversion:YES ];
 
     [ logFile writeData:data  ];
-    [ logFile synchronizeFile ];
 }
 
 - (void) logWarning:(NSString *)warning
@@ -62,6 +61,8 @@
 
 - (void) logError:(NSError *)error
 {
+    NSAssert(error != nil, @"Invalid NSError object");
+
     [ self logMessage:[ NSString stringWithFormat:@"[Error]: %@ %ld %@",
         [ error domain ], [ error code ], [ error localizedDescription ]]];
 }
