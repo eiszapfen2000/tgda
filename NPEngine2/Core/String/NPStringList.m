@@ -1,4 +1,5 @@
 #import <Foundation/NSException.h>
+#import <Foundation/NSIndexSet.h>
 #import <Foundation/NSScanner.h>
 #import "Core/File/NPFile.h"
 #import "NPStringList.h"
@@ -15,7 +16,8 @@
     return [ self initWithName:newName parent:nil ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
+- (id) initWithName:(NSString *)newName
+             parent:(id <NPPObject> )newParent
 {
     return [ self initWithName:newName
                         parent:newParent
@@ -31,7 +33,7 @@
     self = [ super initWithName:newName parent:newParent ];
 
     file = nil;
-    lines = [[ NSMutableArray alloc ] init ];
+    strings = [[ NSMutableArray alloc ] init ];
 
     allowDuplicates = newAllowDuplicates;
     allowEmptyStrings = newAllowEmptyStrings;
@@ -42,7 +44,7 @@
 - (void) dealloc
 {
     [ self clear ];
-    DESTROY(lines);
+    DESTROY(strings);
 
     [ super dealloc ];
 }
@@ -59,7 +61,7 @@
 
 - (NSUInteger) count
 {
-    return [ lines count ];
+    return [ strings count ];
 }
 
 - (NSString *) fileName
@@ -74,7 +76,15 @@
 
 - (NSString *) stringAtIndex:(NSUInteger)index
 {
-    return [ lines objectAtIndex:index ];
+    return AUTORELEASE([[ strings objectAtIndex:index ] copy ]);
+}
+
+- (NPStringList *) stringListWithRange:(NSRange)range
+{
+    NPStringList * result = AUTORELEASE([[ NPStringList alloc ] init ]);
+    [ result addStringsFromArray:[ strings subarrayWithRange:range ]];
+
+    return result;
 }
 
 - (void) setAllowDuplicates:(BOOL)newAllowDuplicates
@@ -89,18 +99,14 @@
 
 - (void) clear
 {
-    if ( file != nil )
-    {
-        DESTROY(file);
-    }
-
-    [ lines removeAllObjects ];
+    SAFE_DESTROY(file);
+    [ strings removeAllObjects ];
 }
 
 - (void) addString:(NSString *)string
 {
     if ( allowDuplicates == NO &&
-         [ lines containsObject:string ] == YES )
+         [ strings containsObject:string ] == YES )
     {
         return;
     }
@@ -111,12 +117,46 @@
         return;
     }
 
-    [ lines addObject:string ];
+    [ strings addObject:string ];
 }
 
 - (void) addStringsFromArray:(NSArray *)array
 {
-    [ lines addObjectsFromArray:array ];
+    NSUInteger numberOfElements = [ array count ];
+    for ( NSUInteger i = 0; i < numberOfElements; i++ )
+    {
+        [ self addString:[ array objectAtIndex:i ]];
+    }
+}
+
+
+- (void) insertString:(NSString *)string atIndex:(NSUInteger)index
+{
+    if ( allowDuplicates == NO &&
+         [ strings containsObject:string ] == YES )
+    {
+        return;
+    }
+
+    if ( allowEmptyStrings == NO &&
+         [ string length ] == 0 )
+    {
+        return;
+    }
+
+    [ strings insertObject:string atIndex:index ];
+}
+
+- (void) insertStrings:(NSArray *)array atIndexes:(NSIndexSet *)indexes
+{
+    NSUInteger currentIndex = [ indexes firstIndex ];
+    NSUInteger numberOfIndexes = [ indexes count ];
+
+    for (NSUInteger i = 0; i< numberOfIndexes; i++ )
+    {
+        [ self insertString:[ array objectAtIndex:i ] atIndex:currentIndex ];
+        currentIndex = [ indexes indexGreaterThanIndex:currentIndex ];
+    }    
 }
 
 - (BOOL) loadFromStream:(id <NPPStream>)stream 
@@ -154,10 +194,10 @@
                 error:(NSError **)error
 {
     NSStringEncoding encoding;
-    NSString * fileContents = 
-        [[ NSString alloc ] initWithContentsOfFile:fileName 
-                                      usedEncoding:&encoding
-                                             error:error ];
+    NSString * fileContents 
+        = [ NSString stringWithContentsOfFile:fileName
+                                 usedEncoding:&encoding
+                                        error:error ];
 
     if ( fileContents == nil )
     {
@@ -185,7 +225,7 @@
 
 - (NSString *) description
 {
-    return [ lines description ];
+    return [ strings description ];
 }
 
 @end

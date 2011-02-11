@@ -22,5 +22,9 @@
 - (GLuint) glID;
 - (NpShaderType) shaderType;
 
+- (BOOL) loadFromStringList:(NPStringList *)stringList
+                      error:(NSError **)error
+                           ;
+
 @end
 

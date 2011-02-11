@@ -6,15 +6,20 @@
 {
     NPShader * vertexShader;
     NPShader * fragmentShader;
+
+    NSMutableArray * techniqueVariables;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
+- (id) initWithName:(NSString *)newName
+             parent:(id <NPPObject> )newParent
+                   ;
 - (void) dealloc;
 
-- (void) addVertexShaderFromFile:(NSString *)fileName;
-- (void) addFragmentShaderFromFile:(NSString *)fileName;
+- (BOOL) loadFromStringList:(NPStringList *)stringList
+                      error:(NSError **)error
+                           ;
 
 @end
 

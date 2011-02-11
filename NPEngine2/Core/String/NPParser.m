@@ -42,6 +42,11 @@
     [ super dealloc ];
 }
 
+- (NSUInteger) lineCount
+{
+    return [ lines count ];
+}
+
 - (void) clear
 {
     [ lines removeAllObjects ];
@@ -259,23 +264,5 @@
         }
     }
 }
-
-/*
-- (BOOL) loadFromFile:(NSString *)fileName
-{
-    TEST_RELEASE(script);
-    script = [[ NPStringList alloc ] init ];
-    
-    BOOL result = YES;
-    NSError * error = nil;
-    if ( [ script loadFromFile:fileName error:&error ] == NO )
-    {
-        NPLOG_ERROR(error);
-        result = NO;
-    }
-
-    return result;
-}
-*/
 
 @end

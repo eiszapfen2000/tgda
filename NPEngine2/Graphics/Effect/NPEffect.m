@@ -1,6 +1,8 @@
-#import <Foundation/NSArray.h>
+#import "Log/NPLog.h"
 #import "Core/NPEngineCore.h"
 #import "Core/Utilities/NSError+NPEngine.h"
+#import "Core/Container/NPAssetArray.h"
+#import "Graphics/NPEngineGraphics.h"
 #import "NPEffectCompiler.h"
 #import "NPEffect.h"
 
@@ -23,12 +25,17 @@
     file = nil;
     ready = NO;
     techniques = [[ NSMutableArray alloc ] init ];
+    variables =  [[ NSMutableArray alloc ] init ];
+
+    [[[ NPEngineGraphics instance ] effects ] registerAsset:self ];
 
     return self;
 }
 
 - (void) dealloc
 {
+    [[[ NPEngineGraphics instance ] effects ] unregisterAsset:self ];
+
     [ self clear ];
     DESTROY(techniques);
     [ super dealloc ];
@@ -39,6 +46,7 @@
     SAFE_DESTROY(file);
     ready = NO;
     [ techniques removeAllObjects ];
+    [ variables  removeAllObjects ];
 }
 
 - (NSString *) fileName
@@ -51,21 +59,24 @@
     return ready;
 }
 
-- (id) addTechniqueWithName:(NSString *)techniqueName
-{
-    NPEffectTechnique * t
-        = [[ NPEffectTechnique alloc ] initWithName:techniqueName
-                                             parent:self ];
-
-    [ techniques addObject:t ];
-
-    return AUTORELEASE(t);
-}
-
 - (BOOL) loadFromStream:(id <NPPStream>)stream 
                   error:(NSError **)error
 {
-    return NO;
+    [ self clear ];
+
+    NPStringList * effectScript
+        = AUTORELEASE([[ NPStringList alloc ]
+                            initWithName:@""
+                                  parent:self
+                         allowDuplicates:YES
+                       allowEmptyStrings:NO ]);
+
+    if ( [ effectScript loadFromStream:stream error:error ] == NO )
+    {
+        return NO;
+    }
+
+    return [ self loadFromStringList:effectScript error:error ];
 }
 
 - (BOOL) loadFromFile:(NSString *)fileName
@@ -90,8 +101,12 @@
     [ self setName:completeFileName ];
     ASSIGNCOPY(file, completeFileName);
 
-    NPStringList * effectScript = AUTORELEASE([[ NPStringList alloc ] init ]);
-    [ effectScript setAllowDuplicates:YES ];
+    NPStringList * effectScript
+        = AUTORELEASE([[ NPStringList alloc ]
+                            initWithName:@"" 
+                                  parent:self
+                         allowDuplicates:YES
+                       allowEmptyStrings:NO ]);
 
     if ( [ effectScript loadFromFile:completeFileName 
                                error:error ] == NO )
@@ -99,11 +114,62 @@
         return NO;
     }
 
-    NPEffectCompiler * compiler = [[ NPEffectCompiler alloc ] init ];
-    [ compiler compileScript:effectScript intoEffect:self ];
-    DESTROY(compiler);
+    return [ self loadFromStringList:effectScript error:error ];
+}
 
-    return NO;
+- (BOOL) loadFromStringList:(NPStringList *)stringList
+                      error:(NSError **)error
+{
+    NPParser * parser = [[ NPParser alloc ] init ];
+    [ parser parse:stringList ];
+
+    NSUInteger numberOfLines = [ parser lineCount ];
+    for ( NSUInteger i = 0; i < numberOfLines - 2; i++ )
+    {
+        NSString * techniqueName = nil;
+        NSRange lineRange = NSMakeRange(ULONG_MAX, 0);
+
+        if ( [ parser isLowerCaseTokenFromLine:i atPosition:0 equalToString:@"technique" ] == YES
+             && [ parser getTokenAsString:&techniqueName fromLine:i atPosition:1 ] == YES
+             && [ parser isTokenFromLine:i+1 atPosition:0 equalToString:@"{" ] == YES )
+        {
+            // inside technique, find end
+            for (NSUInteger j = i + 2; j < numberOfLines; j++)
+            {
+                if ( [ parser isTokenFromLine:j atPosition:0 equalToString:@"}" ] == YES )
+                {
+                    lineRange.location = i + 2;
+                    lineRange.length = j - ( i + 2 );
+
+                    NPStringList * techniqueStringList
+                        = [ stringList stringListWithRange:lineRange ];
+
+                    NPEffectTechnique * technique
+                        = AUTORELEASE([[ NPEffectTechnique alloc ]
+                                             initWithName:techniqueName
+                                                   parent:self ]);
+
+                    NSError * error = nil;
+                    if ( [ technique loadFromStringList:techniqueStringList
+                                                  error:&error ] == YES )
+                    {
+                        [ techniques addObject:technique ];
+                    }
+                    else
+                    {
+                        NPLOG_ERROR(error);
+                    }
+
+                    // exit the inner loop since we are
+                    // done with the technique
+                    break;
+                }
+            }
+        }
+    }
+
+    DESTROY(parser);
+    return YES;
 }
 
 @end

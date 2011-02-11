@@ -10,8 +10,6 @@
     NSCharacterSet * separatorsToStoreAsLiterals;
     NSCharacterSet * longLiteralMarkers;
     NSCharacterSet * ignoreMarkers;
-
-//    NPStringList * script;
     NSMutableArray * lines;
 }
 
@@ -19,6 +17,8 @@
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
+
+- (NSUInteger) lineCount;
 
 - (void) setSeparators:(NSCharacterSet *)newSeparators;
 - (void) setSeparatorsToStoreAsLiterals:(NSCharacterSet *)newSeparatorsToStoreAsLiterals;
@@ -75,6 +75,5 @@
 - (void) parse:(NPStringList *)inputScript;
 
 - (void) clear;
-//- (BOOL) loadFromFile:(NSString *)fileName;
 
 @end

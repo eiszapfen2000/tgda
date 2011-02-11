@@ -5,7 +5,7 @@
 @interface NPStringList : NPObject < NPPPersistentObject >
 {
     NSString * file;
-    NSMutableArray * lines;
+    NSMutableArray * strings;
 
     BOOL allowDuplicates;
     BOOL allowEmptyStrings;
@@ -13,7 +13,9 @@
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
+- (id) initWithName:(NSString *)newName
+             parent:(id <NPPObject> )newParent
+                   ;
 - (id) initWithName:(NSString *)newName
              parent:(id <NPPObject> )newParent
     allowDuplicates:(BOOL)newAllowDuplicates
@@ -25,7 +27,7 @@
 - (BOOL) allowEmptyStrings;
 - (NSUInteger) count;
 - (NSString *) stringAtIndex:(NSUInteger)index;
-
+- (NPStringList *) stringListWithRange:(NSRange)range;
 - (void) setAllowDuplicates:(BOOL)newAllowDuplicates;
 - (void) setAllowEmptyStrings:(BOOL)newAllowEmptyStrings;
 
@@ -33,5 +35,7 @@
 
 - (void) addString:(NSString *)string;
 - (void) addStringsFromArray:(NSArray *)array;
+- (void) insertString:(NSString *)string atIndex:(NSUInteger)index;
+- (void) insertStrings:(NSArray *)array atIndexes:(NSIndexSet *)indexes;
 
 @end
