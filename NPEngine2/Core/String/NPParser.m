@@ -91,7 +91,7 @@
 
     if ( tokenIndex < [ tokensForLine count ] )
     {
-        *string = [[[ tokensForLine stringAtIndex:tokenIndex ] copy ] autorelease ];
+        *string = AUTORELEASE([[ tokensForLine stringAtIndex:tokenIndex ] copy ]);
         return YES;
     }
 
@@ -256,11 +256,10 @@
 
         if ( [ literalsForLine count ] > 0 )
         {
-            NPStringList * literals = [[ NPStringList alloc ] init ];
+            NPStringList * literals = [ NPStringList stringList ];
             [ literals setAllowDuplicates:YES ];
-            [ literals addStringsFromArray:literalsForLine ];
+            [ literals addStrings:literalsForLine ];
             [ lines addObject:literals ];
-            [ literals release ];
         }
     }
 }

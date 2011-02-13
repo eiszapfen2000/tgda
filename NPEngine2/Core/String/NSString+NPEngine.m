@@ -110,7 +110,7 @@
     }
 
     // Return an autoreleased immutable copy of the array
-    return [[ array copy ] autorelease ];
+    return AUTORELEASE([ array copy ]);
 }
 
 @end

@@ -1,4 +1,6 @@
 #import <Foundation/NSException.h>
+#import <Foundation/NSIndexSet.h>
+#import "Log/NPLog.h"
 #import "Core/String/NPStringList.h"
 #import "Core/String/NPParser.h"
 #import "Core/Container/NPAssetArray.h"
@@ -9,10 +11,22 @@
 
 @interface NPEffectTechnique (Private)
 
-- (void) addVertexShaderFromFile:(NSString *)fileName;
-- (void) addFragmentShaderFromFile:(NSString *)fileName;
-- (void) parseVariables:(NPParser *)parser;
-- (void) parseShader:(NPParser *)parser;
+- (NPShader *) loadShaderFromFile:(NSString *)fileName
+            insertEffectVariables:(NSArray *)effectVariables
+                                 ;
+
+- (void) loadVertexShaderFromFile:(NSString *)fileName
+                 effectVariables:(NSArray *)effectVariables
+                                ;
+
+- (void) loadFragmentShaderFromFile:(NSString *)fileName
+                   effectVariables:(NSArray *)effectVariables
+                                  ;
+
+- (NSArray *) extractEffectVariableLines:(NPStringList *)stringList;
+- (void) parseShader:(NPParser *)parser
+     effectVariables:(NSArray *)effectVariables
+                    ;
 
 @end
 
@@ -39,6 +53,9 @@
 
 - (void) dealloc
 {
+    SAFE_DESTROY(vertexShader);
+    SAFE_DESTROY(fragmentShader);
+
     [ super dealloc ];
 }
 
@@ -50,7 +67,10 @@
     NPParser * parser = [[ NPParser alloc ] init ];
     [ parser parse:stringList ];
 
-    [ self parseShader:parser ];
+    NSArray * effectVariableLines
+        = [ self extractEffectVariableLines:stringList ];
+
+    [ self parseShader:parser effectVariables:effectVariableLines ];
 
     DESTROY(parser);
 
@@ -61,24 +81,90 @@
 
 @implementation NPEffectTechnique (Private)
 
-- (void) addVertexShaderFromFile:(NSString *)fileName
+- (NPShader *) loadShaderFromFile:(NSString *)fileName
+            insertEffectVariables:(NSArray *)effectVariables
 {
-    SAFE_DESTROY(vertexShader);
-    vertexShader = [[[ NPEngineGraphics instance ] shader ] getAssetWithFileName:fileName ];
+    NSError * error = nil;
+    NPStringList * shaderSource
+        = [ NPStringList stringListWithContentsOfFile:fileName
+                                                error:&error ];
+
+    if ( shaderSource == nil )
+    {
+        NPLOG_ERROR(error);
+        return nil;
+    }
+
+    [ shaderSource insertStrings:effectVariables atIndex:0 ];
+
+    NPLOG([shaderSource description]);
+
+    NPShader * shader
+        = [ NPShader shaderFromStringList:shaderSource
+                                    error:&error ];
+
+    if ( shader == nil )
+    {
+        NPLOG_ERROR(error);
+    }
+
+    return shader;
 }
 
-- (void) addFragmentShaderFromFile:(NSString *)fileName
+- (void) loadVertexShaderFromFile:(NSString *)fileName
+                 effectVariables:(NSArray *)effectVariables
+{
+    SAFE_DESTROY(vertexShader);
+
+    NPLOG(@"Loading vertex shader \"%@\"", fileName);
+
+    NPShader * shader
+        = [ self loadShaderFromFile:fileName
+              insertEffectVariables:effectVariables ];
+
+    if ( shader != nil )
+    {
+        vertexShader = RETAIN(shader);
+    }
+}
+
+- (void) loadFragmentShaderFromFile:(NSString *)fileName
+                   effectVariables:(NSArray *)effectVariables
 {
     SAFE_DESTROY(fragmentShader);
-    fragmentShader = [[[ NPEngineGraphics instance ] shader ] getAssetWithFileName:fileName ];
+
+    NPLOG(@"Loading fragment shader \"%@\"", fileName);
+
+    NPShader * shader
+        = [ self loadShaderFromFile:fileName
+              insertEffectVariables:effectVariables ];
+
+    if ( shader != nil )
+    {
+        fragmentShader = RETAIN(shader);
+    }
+}
+
+- (NSArray *) extractEffectVariableLines:(NPStringList *)stringList
+{
+    NSMutableArray * lines = [ NSMutableArray arrayWithCapacity:8 ];
+    [ lines addObjectsFromArray:[ stringList stringsWithPrefix:@"uniform" ]];
+    [ lines addObjectsFromArray:[ stringList stringsWithPrefix:@"varying" ]];
+
+    return [ NSArray arrayWithArray:lines ];
 }
 
 - (void) parseVariables:(NPParser *)parser
 {
+    NSUInteger numberOfLines = [ parser lineCount ];
+    for ( NSUInteger i = 0; i < numberOfLines; i++ )
+    {
 
+    }
 }
 
 - (void) parseShader:(NPParser *)parser
+     effectVariables:(NSArray *)effectVariables
 {
     NSUInteger numberOfLines = [ parser lineCount ];
     for ( NSUInteger i = 0; i < numberOfLines; i++ )
@@ -93,12 +179,14 @@
         {
             if ( [ shaderType isEqual:@"vertex" ] == YES )
             {
-                [ self addVertexShaderFromFile:shaderFileName ];
+                [ self loadVertexShaderFromFile:shaderFileName
+                                effectVariables:effectVariables ];
             }
 
             if ( [ shaderType isEqual:@"fragment" ] == YES )
             {
-                [ self addFragmentShaderFromFile:shaderFileName ];
+                [ self loadFragmentShaderFromFile:shaderFileName
+                                  effectVariables:effectVariables ];
             }
         }
     }

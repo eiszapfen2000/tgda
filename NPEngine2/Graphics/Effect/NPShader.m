@@ -20,6 +20,48 @@
 
 @implementation NPShader
 
++ (id) shaderFromStringList:(NPStringList *)source
+                      error:(NSError **)error
+{
+    NPShader * shader = [[ NPShader alloc ] init ];
+    if ( [ shader loadFromStringList:source
+                               error:error ] == NO )
+    {
+        DESTROY(shader);
+        return nil;
+    }
+
+    return AUTORELEASE(shader);
+}
+
++ (id) shaderFromStream:(id <NPPStream>)stream
+                  error:(NSError **)error
+{
+    NPShader * shader = [[ NPShader alloc ] init ];
+    if ( [ shader loadFromStream:stream
+                           error:error ] == NO )
+    {
+        DESTROY(shader);
+        return nil;
+    }
+
+    return AUTORELEASE(shader);
+}
+
++ (id) shaderFromFile:(NSString *)fileName
+                error:(NSError **)error
+{
+    NPShader * shader = [[ NPShader alloc ] init ];
+    if ( [ shader loadFromFile:fileName
+                         error:error ] == NO )
+    {
+        DESTROY(shader);
+        return nil;
+    }
+
+    return AUTORELEASE(shader);
+}
+
 - (id) init
 {
     return [ self initWithName:@"Shader" ];

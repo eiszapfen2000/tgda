@@ -13,6 +13,7 @@
 #import "Effect/NPShader.h"
 #import "Effect/NPEffect.h"
 #import "NPEngineGraphicsErrors.h"
+#import "NPEngineGraphicsStringEnumConversion.h"
 #import "NPEngineGraphics.h"
 
 static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
@@ -56,6 +57,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     ilInit();
     iluInit();
 
+    stringEnumConversion
+        = [[ NPEngineGraphicsStringEnumConversion alloc ] 
+                 initWithName:@"Graphics String Enum Conversion"
+                       parent:self ];
+
     images = [[ NPAssetArray alloc ]
                     initWithName:@"NP Engine Images"
                           parent:self
@@ -83,12 +89,19 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 {
     ilShutDown();
 
+    DESTROY(stringEnumConversion);
+
     DESTROY(effects);
     DESTROY(shader);
     DESTROY(textures2D);
     DESTROY(images);
 
     [ super dealloc ];
+}
+
+- (NPEngineGraphicsStringEnumConversion *) stringEnumConversion
+{
+    return stringEnumConversion;
 }
 
 - (NPAssetArray *) images
@@ -128,11 +141,14 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         return NO;
     }
 
+    [ stringEnumConversion startup ];
+
     return YES;
 }
 
 - (void) shutdown
 {
+    [ stringEnumConversion shutdown ];
 }
 
 - (BOOL) checkForGLError:(NSError **)error

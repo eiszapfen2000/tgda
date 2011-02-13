@@ -2,6 +2,8 @@
 #import "Core/NPObject/NPObject.h"
 #import "Core/Protocols/NPPPersistentObject.h"
 
+@class NSError;
+
 @interface NPStringList : NPObject < NPPPersistentObject >
 {
     NSString * file;
@@ -10,6 +12,11 @@
     BOOL allowDuplicates;
     BOOL allowEmptyStrings;
 }
+
++ (id) stringList;
++ (id) stringListWithContentsOfFile:(NSString *)fileName
+                              error:(NSError **)error
+                                   ;
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
@@ -23,19 +30,31 @@
                    ;
 - (void) dealloc;
 
+- (void) clear;
+
 - (BOOL) allowDuplicates;
 - (BOOL) allowEmptyStrings;
-- (NSUInteger) count;
-- (NSString *) stringAtIndex:(NSUInteger)index;
-- (NPStringList *) stringListWithRange:(NSRange)range;
 - (void) setAllowDuplicates:(BOOL)newAllowDuplicates;
 - (void) setAllowEmptyStrings:(BOOL)newAllowEmptyStrings;
 
-- (void) clear;
+- (NSUInteger) count;
 
 - (void) addString:(NSString *)string;
-- (void) addStringsFromArray:(NSArray *)array;
+- (void) addStrings:(NSArray *)array;
+- (void) addStringList:(NPStringList *)stringList;
+
 - (void) insertString:(NSString *)string atIndex:(NSUInteger)index;
 - (void) insertStrings:(NSArray *)array atIndexes:(NSIndexSet *)indexes;
+- (void) insertStrings:(NSArray *)array atIndex:(NSUInteger)index;
+- (void) insertStringList:(NPStringList *)stringList
+                  atIndex:(NSUInteger)index
+                         ;
+
+- (NSString *) stringAtIndex:(NSUInteger)index;
+- (NPStringList *) stringListInRange:(NSRange)range;
+
+- (NSArray *) stringsWithPrefix:(NSString *)prefix;
+- (NSArray *) stringsWithSuffix:(NSString *)suffix;
 
 @end
+
