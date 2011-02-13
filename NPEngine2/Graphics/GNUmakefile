@@ -8,10 +8,14 @@ libNPEngineGraphics_SUBPROJECTS = \
     Effect
 
 libNPEngineGraphics_OBJC_FILES = \
-NPEngineGraphics.m
+NPEngineGraphics.m \
+NPEngineGraphicsStringEnumConversion.m
 
 libNPEngineGraphics_HEADER_FILES = \
-NPEngineGraphics.h
+NPEngineGraphics.h \
+NPEngineGraphicsEnums.h \
+NPEngineGraphicsErrors.h \
+NPEngineGraphicsStringEnumConversion.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make

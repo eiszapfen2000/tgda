@@ -12,6 +12,18 @@
     GLuint glID;
 }
 
++ (id) shaderFromStringList:(NPStringList *)source
+                      error:(NSError **)error
+                           ;
+
++ (id) shaderFromStream:(id <NPPStream>)stream
+                  error:(NSError **)error
+                       ;
+
++ (id) shaderFromFile:(NSString *)fileName
+                error:(NSError **)error
+                     ;
+
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;

@@ -142,7 +142,7 @@
                     lineRange.length = j - ( i + 2 );
 
                     NPStringList * techniqueStringList
-                        = [ stringList stringListWithRange:lineRange ];
+                        = [ stringList stringListInRange:lineRange ];
 
                     NPEffectTechnique * technique
                         = AUTORELEASE([[ NPEffectTechnique alloc ]

@@ -1,10 +1,32 @@
 #import <Foundation/NSException.h>
 #import <Foundation/NSIndexSet.h>
 #import <Foundation/NSScanner.h>
-#import "Core/File/NPFile.h"
+#import "Core/NPEngineCore.h"
+#import "Core/File/NPLocalPathManager.h"
+#import "Core/Utilities/NSError+NPEngine.h"
 #import "NPStringList.h"
 
 @implementation NPStringList
+
+
++ (id) stringList
+{
+    return AUTORELEASE([[ NPStringList alloc ] init ]);
+}
+
++ (id) stringListWithContentsOfFile:(NSString *)fileName
+                              error:(NSError **)error
+{
+    NPStringList * stringList = ([[ NPStringList alloc ] init ]);
+    if ( [ stringList loadFromFile:fileName
+                             error:error ] == NO )
+    {
+        DESTROY(stringList);
+        return nil;
+    }
+
+    return AUTORELEASE(stringList);
+}
 
 - (id) init
 {
@@ -49,6 +71,12 @@
     [ super dealloc ];
 }
 
+- (void) clear
+{
+    SAFE_DESTROY(file);
+    [ strings removeAllObjects ];
+}
+
 - (BOOL) allowDuplicates
 {
     return allowDuplicates;
@@ -57,34 +85,6 @@
 - (BOOL) allowEmptyStrings
 {
     return allowEmptyStrings;
-}
-
-- (NSUInteger) count
-{
-    return [ strings count ];
-}
-
-- (NSString *) fileName
-{
-    return file;
-}
-
-- (BOOL) ready
-{
-    return YES;
-}
-
-- (NSString *) stringAtIndex:(NSUInteger)index
-{
-    return AUTORELEASE([[ strings objectAtIndex:index ] copy ]);
-}
-
-- (NPStringList *) stringListWithRange:(NSRange)range
-{
-    NPStringList * result = AUTORELEASE([[ NPStringList alloc ] init ]);
-    [ result addStringsFromArray:[ strings subarrayWithRange:range ]];
-
-    return result;
 }
 
 - (void) setAllowDuplicates:(BOOL)newAllowDuplicates
@@ -97,10 +97,9 @@
     allowEmptyStrings = newAllowEmptyStrings;
 }
 
-- (void) clear
+- (NSUInteger) count
 {
-    SAFE_DESTROY(file);
-    [ strings removeAllObjects ];
+    return [ strings count ];
 }
 
 - (void) addString:(NSString *)string
@@ -120,7 +119,7 @@
     [ strings addObject:string ];
 }
 
-- (void) addStringsFromArray:(NSArray *)array
+- (void) addStrings:(NSArray *)array
 {
     NSUInteger numberOfElements = [ array count ];
     for ( NSUInteger i = 0; i < numberOfElements; i++ )
@@ -129,6 +128,10 @@
     }
 }
 
+- (void) addStringList:(NPStringList *)stringList
+{
+    [ self addStrings:stringList->strings ];
+}
 
 - (void) insertString:(NSString *)string atIndex:(NSUInteger)index
 {
@@ -154,9 +157,86 @@
 
     for (NSUInteger i = 0; i< numberOfIndexes; i++ )
     {
-        [ self insertString:[ array objectAtIndex:i ] atIndex:currentIndex ];
+        [ self insertString:[ array objectAtIndex:i ] 
+                    atIndex:currentIndex ];
+
         currentIndex = [ indexes indexGreaterThanIndex:currentIndex ];
     }    
+}
+
+- (void) insertStrings:(NSArray *)array atIndex:(NSUInteger)index
+{
+    NSRange indexRange = NSMakeRange(index, [ array count ]);
+    NSIndexSet * indexes = [ NSIndexSet indexSetWithIndexesInRange:indexRange ];
+    [ self insertStrings:array atIndexes:indexes ];
+}
+
+- (void) insertStringList:(NPStringList *)stringList
+                  atIndex:(NSUInteger)index
+{
+    NSRange indexRange = NSMakeRange(index, [ stringList count ]);
+    NSIndexSet * indexes = [ NSIndexSet indexSetWithIndexesInRange:indexRange ];
+
+    [ self insertStrings:stringList->strings atIndexes:indexes ];
+}
+
+- (NSString *) stringAtIndex:(NSUInteger)index
+{
+    return AUTORELEASE([[ strings objectAtIndex:index ] copy ]);
+}
+
+- (NPStringList *) stringListInRange:(NSRange)range
+{
+    NPStringList * result = [ NPStringList stringList ];
+    [ result setAllowDuplicates:allowDuplicates ];
+    [ result setAllowEmptyStrings:allowEmptyStrings ];
+    [ result addStrings:[ strings subarrayWithRange:range ]];
+
+    return result;
+}
+
+- (NSArray *) stringsWithPrefix:(NSString *)prefix
+{
+    NSMutableArray * result = [ NSMutableArray arrayWithCapacity:8 ];
+
+    NSUInteger numberOfStrings = [ strings count ];
+    for ( NSUInteger i = 0; i < numberOfStrings; i++ )
+    {
+        NSString * string = [ strings objectAtIndex:i ];
+        if ( [ string hasPrefix:prefix ] == YES )
+        {
+            [ result addObject:string ];
+        }
+    }
+
+    return [ NSArray arrayWithArray:result ];
+}
+
+- (NSArray *) stringsWithSuffix:(NSString *)suffix
+{
+    NSMutableArray * result = [ NSMutableArray arrayWithCapacity:8 ];
+
+    NSUInteger numberOfStrings = [ strings count ];
+    for ( NSUInteger i = 0; i < numberOfStrings; i++ )
+    {
+        NSString * string = [ strings objectAtIndex:i ];
+        if ( [ string hasSuffix:suffix ] == YES )
+        {
+            [ result addObject:string ];
+        }
+    }
+
+    return [ NSArray arrayWithArray:result ];
+}
+
+- (NSString *) fileName
+{
+    return file;
+}
+
+- (BOOL) ready
+{
+    return YES;
 }
 
 - (BOOL) loadFromStream:(id <NPPStream>)stream 
@@ -193,23 +273,45 @@
 - (BOOL) loadFromFile:(NSString *)fileName
                 error:(NSError **)error
 {
+    [ self clear ];
+
+    // check if file is to be found
+    NSString * completeFileName
+        = [[[ NPEngineCore instance ] localPathManager ] getAbsolutePath:fileName ];
+
+    if ( completeFileName == nil )
+    {
+        if ( error != NULL )
+        {
+            *error = [ NSError fileNotFoundError:fileName ];
+        }
+
+        return NO;
+    }
+
     NSStringEncoding encoding;
     NSString * fileContents 
-        = [ NSString stringWithContentsOfFile:fileName
+        = [ NSString stringWithContentsOfFile:completeFileName
                                  usedEncoding:&encoding
                                         error:error ];
+
+    // we should check the encoding and convert the string if
+    // necessary
 
     if ( fileContents == nil )
     {
         return NO;
     }
 
-    [ self clear ];
-    ASSIGNCOPY(file, fileName);
+    [ self setName:completeFileName ];
+    ASSIGNCOPY(file, completeFileName);
 
     NSCharacterSet * newlineSet = [ NSCharacterSet newlineCharacterSet ];
     NSScanner * scanner = [ NSScanner scannerWithString:fileContents ];
 
+    // NSScanner is nice and per default skips whitespace and tab,
+    // so we do not need to trim the strings as we would have to in case
+    // we were using -[NSString componentsSeparatedByCharactersInSet:]
     while ( [ scanner isAtEnd ] == NO )
     {
         NSString * string;
@@ -229,3 +331,4 @@
 }
 
 @end
+

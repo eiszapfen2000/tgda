@@ -5,9 +5,9 @@
 
 @interface NP : NSObject
 
-+ (id) Log;
-+ (id) Core;
-+ (id) Graphics;
-+ (id) Sound;
++ (NPLog *) Log;
++ (NPEngineCore *) Core;
++ (NPEngineGraphics *) Graphics;
++ (NPEngineSound *) Sound;
 
 @end

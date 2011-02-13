@@ -2,10 +2,13 @@
 #import "Core/Protocols/NPPObject.h"
 
 @class NPAssetArray;
+@class NPEngineGraphicsStringEnumConversion;
 
 @interface NPEngineGraphics : NSObject < NPPObject >
 {
     uint32_t objectID;
+
+    NPEngineGraphicsStringEnumConversion * stringEnumConversion;
 
     NPAssetArray * images;
     NPAssetArray * textures2D;
@@ -17,6 +20,8 @@
 
 - (id) init;
 - (void) dealloc;
+
+- (NPEngineGraphicsStringEnumConversion *) stringEnumConversion;
 
 - (NPAssetArray *) images;
 - (NPAssetArray *) textures2D;

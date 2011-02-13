@@ -2,22 +2,22 @@
 
 @implementation NP
 
-+ (id) Log
++ (NPLog *) Log
 {
     return [ NPLog instance ];
 }
 
-+ (id) Core
++ (NPEngineCore *) Core
 {
     return [ NPEngineCore instance ];
 }
 
-+ (id) Graphics
++ (NPEngineGraphics *) Graphics
 {
     return [ NPEngineGraphics instance ];
 }
 
-+ (id) Sound
++ (NPEngineSound *) Sound
 {
     return [ NPEngineSound instance ];
 }
