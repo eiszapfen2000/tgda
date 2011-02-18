@@ -12,6 +12,7 @@
 #import "Texture/NPTexture2D.h"
 #import "Effect/NPShader.h"
 #import "Effect/NPEffect.h"
+#import "State/NPStateConfiguration.h"
 #import "NPEngineGraphicsErrors.h"
 #import "NPEngineGraphicsStringEnumConversion.h"
 #import "NPEngineGraphics.h"
@@ -82,6 +83,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
                           parent:self
                       assetClass:NSClassFromString(@"NPEffect") ];
 
+    stateConfiguration
+        = [[ NPStateConfiguration alloc ]
+                initWithName:@"NP Engine State Configuration"
+                      parent:self ];
+
     return self;
 }
 
@@ -89,12 +95,14 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 {
     ilShutDown();
 
-    DESTROY(stringEnumConversion);
+    DESTROY(stateConfiguration);
 
     DESTROY(effects);
     DESTROY(shader);
     DESTROY(textures2D);
     DESTROY(images);
+
+    DESTROY(stringEnumConversion);
 
     [ super dealloc ];
 }
@@ -122,6 +130,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 - (NPAssetArray *) effects
 {
     return effects;
+}
+
+- (NPStateConfiguration *) stateConfiguration
+{
+    return stateConfiguration;
 }
 
 - (BOOL) startup

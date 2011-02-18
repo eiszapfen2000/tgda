@@ -3,6 +3,7 @@
 
 @class NPAssetArray;
 @class NPEngineGraphicsStringEnumConversion;
+@class NPStateConfiguration;
 
 @interface NPEngineGraphics : NSObject < NPPObject >
 {
@@ -14,6 +15,8 @@
     NPAssetArray * textures2D;
     NPAssetArray * shader;
     NPAssetArray * effects;
+
+    NPStateConfiguration * stateConfiguration;
 }
 
 + (NPEngineGraphics *) instance;
@@ -27,6 +30,8 @@
 - (NPAssetArray *) textures2D;
 - (NPAssetArray *) shader;
 - (NPAssetArray *) effects;
+
+- (NPStateConfiguration *) stateConfiguration;
 
 - (BOOL) startup;
 - (void) shutdown;

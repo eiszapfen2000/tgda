@@ -1,55 +1,47 @@
 #import "Core/NPObject/NPObject.h"
+#import "Graphics/NPEngineGraphicsEnums.h"
 
 @interface NPStateSet : NPObject
 {
-    BOOL    alphaTestEnabled;
-    Float   alphaTestThreshold;
-    NpState alphaTestComparisonFunction;
+    BOOL alphaTestEnabled;
+    BOOL blendingEnabled;
+    BOOL cullingEnabled;
+    BOOL depthTestEnabled;
+    BOOL depthWriteEnabled;
 
-    BOOL    blendingEnabled;
-    NpState blendingMode;
-
-    BOOL    colorWriteEnabled;
-
-    BOOL    cullingEnabled;
-    NpState cullFace;
-
-    BOOL    depthTestEnabled;
-    BOOL    depthWriteEnabled;
-    NpState depthTestComparisonFunction;
-
-    NpState polgyonFillFront;
-    NpState polgyonFillBack;
+    Float alphaTestThreshold;
+    NpComparisonFunction alphaTestComparisonFunction;
+    NpComparisonFunction depthTestComparisonFunction;
+    NpBlendingMode blendingMode;
+    NpCullface cullFace;
+    NpPolygonFillMode polgyonFillFront;
+    NpPolygonFillMode polgyonFillBack;
 }
 
-- (id) init;
-- (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
+- (id) initWithName:(NSString *)newName
+             parent:(id <NPPObject> )newParent
+                   ;
 - (void) dealloc;
 
 - (void) setAlphaTestEnabled:(BOOL)newAlphaTestEnabled;
 - (void) setAlphaTestThreshold:(BOOL)newAlphaTestThreshold;
-- (void) setAlphaTestComparisonFunction:(NpState)newAlphaTestComparisonFunction;
+- (void) setAlphaTestComparisonFunction:(NpComparisonFunction)newAlphaTestComparisonFunction;
 
 - (void) setBlendingEnabled:(BOOL)newBlendingEnabled;
-- (void) setBlendingMode:(NpState)newBlendingMode;
-
-- (void) setColorWriteEnabled:(BOOL)newColorWriteEnabled;
+- (void) setBlendingMode:(NpBlendingMode)newBlendingMode;
 
 - (void) setCullingEnabled:(BOOL)newCullingEnabled;
-- (void) setCullFace:(NpState)newCullFace;
+- (void) setCullFace:(NpCullface)newCullFace;
 
 - (void) setDepthTestEnabled:(BOOL)newDepthTestEnabled;
 - (void) setDepthWriteEnabled:(BOOL)newDepthWriteEnabled;
-- (void) setDepthTestComparisonFunction:(NpState)newDepthTestComparisonFunction;
+- (void) setDepthTestComparisonFunction:(NpComparisonFunction)newDepthTestComparisonFunction;
 
-- (void) setPolygonFillFront:(NpState)newPolygonFillFront;
-- (void) setPolygonFillBack:(NpState)newPolygonFillBack;
+- (void) setPolygonFillFront:(NpPolygonFillMode)newPolygonFillFront;
+- (void) setPolygonFillBack:(NpPolygonFillMode)newPolygonFillBack;
 
 - (void) activate;
 - (void) deactivate;
-
-- (void) loadFromFile:(NSString *)path;
 
 @end
 

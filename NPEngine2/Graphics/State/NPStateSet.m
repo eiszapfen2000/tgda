@@ -1,48 +1,34 @@
 #import "NPStateSet.h"
 #import "NPAlphaTestState.h"
-#import "NPDepthTestState.h"
-#import "NPCullingState.h"
 #import "NPBlendingState.h"
+#import "NPCullingState.h"
+#import "NPDepthTestState.h"
 #import "NPPolygonFillState.h"
-#import "NPColorWriteState.h"
 #import "NPStateConfiguration.h"
-#import "NPStateSetManager.h"
-#import "NP.h"
+#import "Graphics/NPEngineGraphics.h"
 
 @implementation NPStateSet
-
-- (id) init
-{
-    return [ self initWithName:@"NP State Set" ];
-}
-
-- (id) initWithName:(NSString *)newName
-{
-    return [ self initWithName:newName parent:nil ];
-}
 
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
 {
     self = [ super initWithName:newName parent:newParent ];
 
-    alphaTestEnabled            = NO;
-    alphaTestThreshold          = 0.5f;
-    alphaTestComparisonFunction = NP_COMPARISON_GREATER_EQUAL;
+    alphaTestEnabled   = NO;
+    alphaTestThreshold = 0.5f;
+    alphaTestComparisonFunction = NpComparisonGreaterEqual;
 
     blendingEnabled = NO;
-    blendingMode    = NP_BLENDING_ADDITIVE;
+    blendingMode    = NpBlendingAdditive;
 
     cullingEnabled = YES;
-    cullFace       = NP_BACK_FACE;
+    cullFace       = NpCullfaceBack;
 
-    colorWriteEnabled = YES;
+    depthTestEnabled  = YES;
+    depthWriteEnabled = YES;
+    depthTestComparisonFunction = NpComparisonLessEqual;
 
-    depthTestEnabled            = YES;
-    depthWriteEnabled           = YES;
-    depthTestComparisonFunction = NP_COMPARISON_LESS_EQUAL;
-
-    polgyonFillFront = NP_POLYGON_FILL_FACE;
-    polgyonFillBack  = NP_POLYGON_FILL_FACE;
+    polgyonFillFront = NpPolygonFillFace;
+    polgyonFillBack  = NpPolygonFillFace;
 
     return self;
 }
@@ -62,7 +48,7 @@
     alphaTestThreshold = newAlphaTestThreshold;
 }
 
-- (void) setAlphaTestComparisonFunction:(NpState)newAlphaTestComparisonFunction
+- (void) setAlphaTestComparisonFunction:(NpComparisonFunction)newAlphaTestComparisonFunction
 {
     alphaTestComparisonFunction = newAlphaTestComparisonFunction;
 }
@@ -72,7 +58,7 @@
     blendingEnabled = newBlendingEnabled;
 }
 
-- (void) setBlendingMode:(NpState)newBlendingMode
+- (void) setBlendingMode:(NpBlendingMode)newBlendingMode
 {
     blendingMode = newBlendingMode;
 }
@@ -82,14 +68,9 @@
     cullingEnabled = newCullingEnabled;
 }
 
-- (void) setCullFace:(NpState)newCullFace
+- (void) setCullFace:(NpCullface)newCullFace
 {
     cullFace = newCullFace;
-}
-
-- (void) setColorWriteEnabled:(BOOL)newColorWriteEnabled
-{
-    colorWriteEnabled = newColorWriteEnabled;
 }
 
 - (void) setDepthTestEnabled:(BOOL)newDepthTestEnabled
@@ -102,24 +83,24 @@
     depthWriteEnabled = newDepthWriteEnabled;
 }
 
-- (void) setDepthTestComparisonFunction:(NpState)newDepthTestComparisonFunction
+- (void) setDepthTestComparisonFunction:(NpComparisonFunction)newDepthTestComparisonFunction
 {
     depthTestComparisonFunction = newDepthTestComparisonFunction;
 }
 
-- (void) setPolygonFillFront:(NpState)newPolygonFillFront
+- (void) setPolygonFillFront:(NpPolygonFillMode)newPolygonFillFront
 {
     polgyonFillFront = newPolygonFillFront;
 }
 
-- (void) setPolygonFillBack:(NpState)newPolygonFillBack
+- (void) setPolygonFillBack:(NpPolygonFillMode)newPolygonFillBack
 {
     polgyonFillBack = newPolygonFillBack;
 }
 
 - (void) activate
 {
-    NPStateConfiguration * configuration = [[ NP Graphics ] stateConfiguration ];
+    NPStateConfiguration * configuration = [[ NPEngineGraphics instance ] stateConfiguration ];
 
     [[ configuration alphaTestState ] setEnabled:alphaTestEnabled ];
     [[ configuration alphaTestState ] setAlphaThreshold:alphaTestThreshold ];
@@ -127,8 +108,6 @@
 
     [[ configuration blendingState ] setEnabled:blendingEnabled ];
     [[ configuration blendingState ] setBlendingMode:blendingMode ];
-
-    [[ configuration colorWriteState ] setEnabled:colorWriteEnabled ];
 
     [[ configuration cullingState ] setEnabled:cullingEnabled ];
     [[ configuration cullingState ] setCullFace:cullFace ];
@@ -145,9 +124,10 @@
 
 - (void) deactivate
 {
-    [[[ NP Graphics ] stateConfiguration ] deactivate ];
+    [[[ NPEngineGraphics instance ] stateConfiguration ] deactivate ];
 }
 
+/*
 - (void) loadFromFile:(NSString *)path;
 {
     NSDictionary * states = [ NSDictionary dictionaryWithContentsOfFile:path ];
@@ -177,5 +157,6 @@
     polgyonFillFront = [[(NPStateSetManager *)parent valueForKeyword:[polygonFill objectForKey:@"Front"]] intValue ];
     polgyonFillBack  = [[(NPStateSetManager *)parent valueForKeyword:[polygonFill objectForKey:@"Back" ]] intValue ];
 }
+*/
 
 @end
