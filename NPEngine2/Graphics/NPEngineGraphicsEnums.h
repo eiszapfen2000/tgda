@@ -88,3 +88,39 @@ typedef enum NpEffectVariableType
 }
 NpEffectVariableType;
 
+typedef enum NpComparisonFunction
+{
+    NpComparisonNever = 0,
+    NpComparisonAlways,
+    NpComparisonLess,
+    NpComparisonLessEqual,
+    NpComparisonEqual,
+    NpComparisonGreaterEqual,
+    NpComparisonGreater
+}
+NpComparisonFunction;
+
+typedef enum NpBlendingMode
+{
+    NpBlendingAdditive = 0,
+    NpBlendingAverage,
+    NpBlendingSubtractive,
+    NpBlendingMin,
+    NpBlendingMax
+}
+NpBlendingMode;
+
+typedef enum NpCullFace
+{
+    NpCullfaceFront = 0,
+    NpCullfaceBack
+}
+NpCullFace;
+
+typedef enum NpPolygonFillMode
+{
+    NpPolygonFillPoint = 0,
+    NpPolygonFillLine,
+    NpPolygonFillFace
+}
+NpPolygonFillMode;
