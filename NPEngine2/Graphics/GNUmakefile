@@ -5,7 +5,11 @@ SUBPROJECT_NAME=libNPEngineGraphics
 libNPEngineGraphics_SUBPROJECTS = \
     Image \
     Texture \
-    Effect
+    Effect \
+    State
+
+libNPEngineGraphics_C_FILES = \
+NPEngineGraphicsEnums.c
 
 libNPEngineGraphics_OBJC_FILES = \
 NPEngineGraphics.m \

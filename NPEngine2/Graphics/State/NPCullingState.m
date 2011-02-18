@@ -1,24 +1,10 @@
 #import "NPCullingState.h"
-#import "NP.h"
 
 @implementation NPCullingState
 
-- (id) init
-{
-    return [ self initWithName:@"NP Culling State" ];
-}
-
 - (id) initWithName:(NSString *)newName
-{
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    return [ self initWithName:newName parent:newParent configuration:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent configuration:(NPStateConfiguration *)newConfiguration
+             parent:(id <NPPObject> )newParent 
+      configuration:(NPStateConfiguration *)newConfiguration
 {
     self = [ super initWithName:newName parent:newParent configuration:newConfiguration ];
 
@@ -26,9 +12,9 @@
     defaultEnabled   = NO;
     currentlyEnabled = YES;
 
-    cullFace        = NP_BACK_FACE;
-    defaultCullFace = NP_BACK_FACE;
-    currentCullFace = NP_FRONT_FACE;
+    cullFace        = NpCullfaceBack;
+    defaultCullFace = NpCullfaceBack;
+    currentCullFace = NpCullfaceFront;
 
     return self;
 }
@@ -43,6 +29,21 @@
     return enabled;
 }
 
+- (BOOL) defaultEnabled
+{
+    return defaultEnabled;
+}
+
+- (NpCullface) cullFace
+{
+    return cullFace;
+}
+
+- (NpCullface) defaultCullFace
+{
+    return defaultCullFace;
+}
+
 - (void) setEnabled:(BOOL)newEnabled
 {
     if ( [ super changeable ] == YES )
@@ -51,22 +52,12 @@
     }
 }
 
-- (BOOL) defaultEnabled
-{
-    return defaultEnabled;
-}
-
 - (void) setDefaultEnabled:(BOOL)newDefaultEnabled
 {
     defaultEnabled = newDefaultEnabled;
 }
 
-- (NpState) cullFace
-{
-    return cullFace;
-}
-
-- (void) setCullFace:(NpState)newCullFace
+- (void) setCullFace:(NpCullface)newCullFace
 {
     if ( [ super changeable ] == YES )
     {
@@ -74,12 +65,7 @@
     }
 }
 
-- (NpState) defaultCullFace
-{
-    return defaultCullFace;
-}
-
-- (void) setDefaultCullFace:(NpState)newDefaultCullFace
+- (void) setDefaultCullFace:(NpCullface)newDefaultCullFace
 {
     defaultCullFace = newDefaultCullFace;
 }
@@ -107,19 +93,10 @@
 
     if ( enabled == YES )
     {
-        GLenum face = GL_BACK;
-
         //if ( currentCullFace != cullFace )
         {
             currentCullFace = cullFace;
-
-            switch ( cullFace )
-            {
-                case NP_FRONT_FACE : { face = GL_FRONT; break; }
-                case NP_BACK_FACE  : { face = GL_BACK;  break; }
-                default: { NPLOG_ERROR(@"Unknown cull face parameter"); return; }
-            }
-
+            GLenum face = getGLCullface(currentCullFace);
             glCullFace(face);
         }
     }

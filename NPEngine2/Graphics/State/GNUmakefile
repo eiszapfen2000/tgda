@@ -5,24 +5,20 @@ SUBPROJECT_NAME=libNPEngineGraphicsState
 libNPEngineGraphicsState_HEADER_FILES = \
 NPState.h \
 NPAlphaTestState.h \
-NPDepthTestState.h \
-NPCullingState.h \
 NPBlendingState.h \
+NPCullingState.h \
+NPDepthTestState.h \
 NPPolygonFillState.h \
-NPColorWriteState.h \
-NPStateConfiguration.h \
-NPStateSet.h
+NPStateConfiguration.h
 
 libNPEngineGraphicsState_OBJC_FILES = \
 NPState.m \
 NPAlphaTestState.m \
-NPDepthTestState.m \
-NPCullingState.m \
 NPBlendingState.m \
+NPCullingState.m \
+NPDepthTestState.m \
 NPPolygonFillState.m \
-NPColorWriteState.m \
-NPStateConfiguration.m \
-NPStateSet.m
+NPStateConfiguration.m
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make

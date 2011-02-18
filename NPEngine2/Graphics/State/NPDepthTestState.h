@@ -1,3 +1,4 @@
+#import "Graphics/NPEngineGraphicsEnums.h"
 #import "NPState.h"
 
 @interface NPDepthTestState : NPState
@@ -10,35 +11,30 @@
     BOOL defaultWriteEnabled;
     BOOL currentWriteEnabled;
 
-    NpState comparisonFunction;
-    NpState defaultComparisonFunction;
-    NpState currentComparisonFunction;
+    NpComparisonFunction comparisonFunction;
+    NpComparisonFunction defaultComparisonFunction;
+    NpComparisonFunction currentComparisonFunction;
 }
 
-
-- (id) init;
-- (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent configuration:(NPStateConfiguration *)newConfiguration;
+- (id) initWithName:(NSString *)newName
+             parent:(id <NPPObject> )newParent
+      configuration:(NPStateConfiguration *)newConfiguration
+                   ;
 - (void) dealloc;
 
 - (BOOL) enabled;
-- (void) setEnabled:(BOOL)newEnabled;
-
 - (BOOL) defaultEnabled;
-- (void) setDefaultEnabled:(BOOL)newDefaultEnabled;
-
 - (BOOL) writeEnabled;
-- (void) setWriteEnabled:(BOOL)newWriteEnabled;
-
 - (BOOL) defaultWriteEnabled;
+- (NpComparisonFunction) comparisonFunction;
+- (NpComparisonFunction) defaultComparisonFunction;
+
+- (void) setEnabled:(BOOL)newEnabled;
+- (void) setDefaultEnabled:(BOOL)newDefaultEnabled;
+- (void) setWriteEnabled:(BOOL)newWriteEnabled;
 - (void) setDefaultWriteEnabled:(BOOL)newDefaultWriteEnabled;
-
-- (NpState) comparisonFunction;
-- (void)    setComparisonFunction:(NpState)newComparisonFunction;
-
-- (NpState) defaultComparisonFunction;
-- (void)    setDefaultComparisonFunction:(NpState)newDefaultComparisonFunction;
+- (void) setComparisonFunction:(NpComparisonFunction)newComparisonFunction;
+- (void) setDefaultComparisonFunction:(NpComparisonFunction)newDefaultComparisonFunction;
 
 - (void) activate;
 - (void) deactivate;
