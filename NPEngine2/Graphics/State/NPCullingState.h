@@ -1,3 +1,4 @@
+#import "Graphics/NPEngineGraphicsEnums.h"
 #import "NPState.h"
 
 @interface NPCullingState : NPState
@@ -6,29 +7,26 @@
     BOOL defaultEnabled;
     BOOL currentlyEnabled;
 
-    NpState cullFace;
-    NpState defaultCullFace;
-    NpState currentCullFace;
+    NpCullface cullFace;
+    NpCullface defaultCullFace;
+    NpCullface currentCullFace;
 }
 
-
-- (id) init;
-- (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent configuration:(NPStateConfiguration *)newConfiguration;
+- (id) initWithName:(NSString *)newName
+             parent:(id <NPPObject> )newParent
+      configuration:(NPStateConfiguration *)newConfiguration
+                   ;
 - (void) dealloc;
 
 - (BOOL) enabled;
-- (void) setEnabled:(BOOL)newEnabled;
-
 - (BOOL) defaultEnabled;
+- (NpCullface) cullFace;
+- (NpCullface) defaultCullFace;
+
+- (void) setEnabled:(BOOL)newEnabled;
 - (void) setDefaultEnabled:(BOOL)newDefaultEnabled;
-
-- (NpState) cullFace;
-- (void)    setCullFace:(NpState)newCullFace;
-
-- (NpState) defaultCullFace;
-- (void)    setDefaultCullFace:(NpState)newDefaultCullFace;
+- (void) setCullFace:(NpCullface)newCullFace;
+- (void) setDefaultCullFace:(NpCullface)newDefaultCullFace;
 
 - (void) activate;
 - (void) deactivate;

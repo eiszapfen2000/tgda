@@ -2,17 +2,8 @@
 
 @implementation NPStateConfiguration
 
-- (id) init
-{
-    return [ self initWithName:@"NP State Configuration" ];
-}
-
-- (id) initWithName:(NSString *)newName
-{
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
+- (id) initWithName:(NSString *)newName 
+             parent:(id <NPPObject> )newParent
 {
     self = [ super initWithName:newName parent:newParent ];
 
@@ -20,7 +11,6 @@
 
     alphaTestState   = [[ NPAlphaTestState   alloc ] initWithName:@"NP Alpha Test State"   parent:self configuration:self ];
     blendingState    = [[ NPBlendingState    alloc ] initWithName:@"NP Blending State"     parent:self configuration:self ];
-    colorWriteState  = [[ NPColorWriteState  alloc ] initWithName:@"NP Color Write State"  parent:self configuration:self ];
     cullingState     = [[ NPCullingState     alloc ] initWithName:@"NP Culling State"      parent:self configuration:self ];
     depthTestState   = [[ NPDepthTestState   alloc ] initWithName:@"NP Depth Test State"   parent:self configuration:self ];
     polygonFillState = [[ NPPolygonFillState alloc ] initWithName:@"NP Polygon Fill State" parent:self configuration:self ];
@@ -30,12 +20,11 @@
 
 - (void) dealloc
 {
-    [ alphaTestState   release ];
-    [ blendingState    release ];
-    [ colorWriteState  release ];
-    [ cullingState     release ];
-    [ depthTestState   release ];
-    [ polygonFillState release ];
+    RELEASE(alphaTestState);
+    RELEASE(blendingState);
+    RELEASE(cullingState);
+    RELEASE(depthTestState);
+    RELEASE(polygonFillState);
 
     [ super dealloc ];
 }
@@ -60,11 +49,6 @@
     return blendingState;
 }
 
-- (id) colorWriteState
-{
-    return colorWriteState;
-}
-
 - (id) cullingState
 {
     return cullingState;
@@ -86,7 +70,6 @@
     {
         [ alphaTestState   activate ];
         [ blendingState    activate ];
-        [ colorWriteState  activate ];
         [ cullingState     activate ];
         [ depthTestState   activate ];
         [ polygonFillState activate ];
@@ -99,7 +82,6 @@
     {
         [ alphaTestState   deactivate ];
         [ blendingState    deactivate ];
-        [ colorWriteState  deactivate ];
         [ cullingState     deactivate ];
         [ depthTestState   deactivate ];
         [ polygonFillState deactivate ];
@@ -112,7 +94,6 @@
     {
         [ alphaTestState   reset ];
         [ blendingState    reset ];
-        [ colorWriteState  reset ];
         [ cullingState     reset ];
         [ depthTestState   reset ];
         [ polygonFillState reset ];

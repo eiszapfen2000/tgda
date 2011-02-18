@@ -1,8 +1,7 @@
 #import "NPAlphaTestState.h"
-#import "NPDepthTestState.h"
-#import "NPColorWriteState.h"
-#import "NPCullingState.h"
 #import "NPBlendingState.h"
+#import "NPCullingState.h"
+#import "NPDepthTestState.h"
 #import "NPPolygonFillState.h"
 
 @interface NPStateConfiguration : NPObject
@@ -12,14 +11,13 @@
     NPAlphaTestState   * alphaTestState;
     NPBlendingState    * blendingState;
     NPCullingState     * cullingState;
-    NPColorWriteState  * colorWriteState;
     NPDepthTestState   * depthTestState;
     NPPolygonFillState * polygonFillState;
 }
 
-- (id) init;
-- (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
+- (id) initWithName:(NSString *)newName 
+             parent:(id <NPPObject> )newParent
+                   ;
 - (void) dealloc;
 
 - (BOOL) locked;
@@ -27,7 +25,6 @@
 
 - (id) alphaTestState;
 - (id) blendingState;
-- (id) colorWriteState;
 - (id) cullingState;
 - (id) depthTestState;
 - (id) polygonFillState;

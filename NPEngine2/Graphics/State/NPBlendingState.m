@@ -1,24 +1,10 @@
 #import "NPBlendingState.h"
-#import "NP.h"
 
 @implementation NPBlendingState
 
-- (id) init
-{
-    return [ self initWithName:@"NP Blending State" ];
-}
-
-- (id) initWithName:(NSString *)newName
-{
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    return [ self initWithName:newName parent:newParent configuration:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent configuration:(NPStateConfiguration *)newConfiguration
+- (id) initWithName:(NSString *)newName 
+             parent:(id <NPPObject> )newParent 
+      configuration:(NPStateConfiguration *)newConfiguration
 {
     self = [ super initWithName:newName parent:newParent configuration:newConfiguration ];
 
@@ -26,9 +12,9 @@
     defaultEnabled   = NO;
     currentlyEnabled = YES;
 
-    blendingMode        = NP_BLENDING_AVERAGE;
-    defaultBlendingMode = NP_BLENDING_AVERAGE;
-    currentBlendingMode = NP_NONE;
+    blendingMode        = NpBlendingAverage;
+    defaultBlendingMode = NpBlendingAverage;
+    currentBlendingMode = NpBlendingMax;
 
     return self;
 }
@@ -43,6 +29,21 @@
     return enabled;
 }
 
+- (BOOL) defaultEnabled
+{
+    return defaultEnabled;
+}
+
+- (NpBlendingMode) blendingMode
+{
+    return blendingMode;
+}
+
+- (NpBlendingMode) defaultBlendingMode
+{
+    return defaultBlendingMode;
+}
+
 - (void) setEnabled:(BOOL)newEnabled
 {
     if ( [ super changeable ] == YES )
@@ -51,22 +52,12 @@
     }
 }
 
-- (BOOL) defaultEnabled
-{
-    return defaultEnabled;
-}
-
 - (void) setDefaultEnabled:(BOOL)newDefaultEnabled
 {
     defaultEnabled = newDefaultEnabled;
 }
 
-- (NpState) blendingMode
-{
-    return blendingMode;
-}
-
-- (void) setBlendingMode:(NpState)newBlendingMode
+- (void) setBlendingMode:(NpBlendingMode)newBlendingMode
 {
     if ( [ super changeable ] == YES )
     {
@@ -74,12 +65,7 @@
     }
 }
 
-- (NpState) defaultBlendingMode
-{
-    return defaultBlendingMode;
-}
-
-- (void) setDefaultBlendingMode:(NpState)newBlendingMode
+- (void) setDefaultBlendingMode:(NpBlendingMode)newBlendingMode
 {
     defaultBlendingMode = newBlendingMode;
 }
@@ -117,12 +103,45 @@
 
             switch ( blendingMode )
             {
-                case NP_BLENDING_ADDITIVE: { blendEquation = GL_FUNC_ADD;      sourceFactor = GL_SRC_ALPHA; destinationFactor = GL_ONE;                 break; }
-                case NP_BLENDING_AVERAGE : { blendEquation = GL_FUNC_ADD;      sourceFactor = GL_SRC_ALPHA; destinationFactor = GL_ONE_MINUS_SRC_ALPHA; break; }
-                case NP_BLENDING_NEGATIVE: { blendEquation = GL_FUNC_SUBTRACT; sourceFactor = GL_SRC_ALPHA; destinationFactor = GL_ONE;                 break; }
-                case NP_BLENDING_MIN     : { blendEquation = GL_MIN;           sourceFactor = GL_SRC_COLOR; destinationFactor = GL_DST_COLOR;           break; }
-                case NP_BLENDING_MAX     : { blendEquation = GL_MAX;           sourceFactor = GL_SRC_COLOR; destinationFactor = GL_DST_COLOR;           break; }
-                default:{NPLOG_ERROR(@"Unknown blending mode specified"); return; }
+                case NpBlendingAdditive:
+                {
+                    blendEquation = GL_FUNC_ADD;
+                    sourceFactor = GL_SRC_ALPHA;
+                    destinationFactor = GL_ONE;
+                    break;
+                }
+
+                case NpBlendingAverage:
+                {
+                    blendEquation = GL_FUNC_ADD;
+                    sourceFactor = GL_SRC_ALPHA;
+                    destinationFactor = GL_ONE_MINUS_SRC_ALPHA;
+                    break;
+                }
+
+                case NpBlendingSubtractive:
+                {
+                    blendEquation = GL_FUNC_SUBTRACT;
+                    sourceFactor = GL_SRC_ALPHA;
+                    destinationFactor = GL_ONE;
+                    break;
+                }
+
+                case NpBlendingMin:
+                {
+                    blendEquation = GL_MIN;
+                    sourceFactor = GL_SRC_COLOR;
+                    destinationFactor = GL_DST_COLOR;
+                    break;
+                }
+
+                case NpBlendingMax:
+                {
+                    blendEquation = GL_MAX;
+                    sourceFactor = GL_SRC_COLOR;
+                    destinationFactor = GL_DST_COLOR;
+                    break;
+                }
             }
 
             glBlendEquation(blendEquation);

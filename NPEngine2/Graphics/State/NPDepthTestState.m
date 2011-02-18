@@ -1,24 +1,10 @@
 #import "NPDepthTestState.h"
-#import "NP.h"
 
 @implementation NPDepthTestState
 
-- (id) init
-{
-    return [ self initWithName:@"NP Depth Test State" ];
-}
-
 - (id) initWithName:(NSString *)newName
-{
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    return [ self initWithName:newName parent:newParent configuration:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent configuration:(NPStateConfiguration *)newConfiguration
+             parent:(id <NPPObject> )newParent
+      configuration:(NPStateConfiguration *)newConfiguration
 {
     self = [ super initWithName:newName parent:newParent configuration:newConfiguration ];
 
@@ -30,9 +16,9 @@
     defaultWriteEnabled = YES;
     currentWriteEnabled = NO;
 
-    comparisonFunction        = NP_COMPARISON_LESS_EQUAL;
-    defaultComparisonFunction = NP_COMPARISON_LESS_EQUAL;
-    currentComparisonFunction = NP_COMPARISON_GREATER;
+    comparisonFunction        = NpComparisonLessEqual;
+    defaultComparisonFunction = NpComparisonLessEqual;
+    currentComparisonFunction = NpComparisonGreater;
 
     return self;
 }
@@ -47,6 +33,31 @@
     return enabled;
 }
 
+- (BOOL) defaultEnabled
+{
+    return defaultEnabled;
+}
+
+- (BOOL) writeEnabled
+{
+    return writeEnabled;
+}
+
+- (BOOL) defaultWriteEnabled
+{
+    return defaultWriteEnabled;
+}
+
+- (NpComparisonFunction) comparisonFunction
+{
+    return comparisonFunction;
+}
+
+- (NpComparisonFunction) defaultComparisonFunction
+{
+    return defaultComparisonFunction;
+}
+
 - (void) setEnabled:(BOOL)newEnabled
 {
     if ( [ super changeable ] == YES )
@@ -55,19 +66,9 @@
     }
 }
 
-- (BOOL) defaultEnabled
-{
-    return defaultEnabled;
-}
-
 - (void) setDefaultEnabled:(BOOL)newDefaultEnabled
 {
     defaultEnabled = newDefaultEnabled;
-}
-
-- (BOOL) writeEnabled
-{
-    return writeEnabled;
 }
 
 - (void) setWriteEnabled:(BOOL)newWriteEnabled
@@ -78,11 +79,6 @@
     }
 }
 
-- (BOOL) defaultWriteEnabled
-{
-    return defaultWriteEnabled;
-}
-
 - (void) setDefaultWriteEnabled:(BOOL)newDefaultWriteEnabled
 {
     if ( [ super changeable ] == YES )
@@ -91,12 +87,7 @@
     }
 }
 
-- (NpState) comparisonFunction
-{
-    return comparisonFunction;
-}
-
-- (void) setComparisonFunction:(NpState)newComparisonFunction
+- (void) setComparisonFunction:(NpComparisonFunction)newComparisonFunction
 {
     if ( [ super changeable ] == YES )
     {
@@ -104,12 +95,7 @@
     }
 }
 
-- (NpState) defaultComparisonFunction
-{
-    return defaultComparisonFunction;
-}
-
-- (void) setDefaultComparisonFunction:(NpState)newDefaultComparisonFunction
+- (void) setDefaultComparisonFunction:(NpComparisonFunction)newDefaultComparisonFunction
 {
     defaultComparisonFunction = newDefaultComparisonFunction;
 }
@@ -146,19 +132,8 @@
         if ( currentComparisonFunction != comparisonFunction )
         {
             currentComparisonFunction = comparisonFunction;
-            GLenum comparison = GL_LEQUAL;
-
-            switch ( comparisonFunction )
-            {
-                case NP_COMPARISON_NEVER        : { comparison = GL_NEVER;   break; }
-                case NP_COMPARISON_ALWAYS       : { comparison = GL_ALWAYS;  break; }
-                case NP_COMPARISON_LESS         : { comparison = GL_LESS;    break; }
-                case NP_COMPARISON_LESS_EQUAL   : { comparison = GL_LEQUAL;  break; }
-                case NP_COMPARISON_EQUAL        : { comparison = GL_EQUAL;   break; }
-                case NP_COMPARISON_GREATER      : { comparison = GL_GREATER; break; }
-                case NP_COMPARISON_GREATER_EQUAL: { comparison = GL_GEQUAL;  break; }
-                default: { NPLOG_ERROR(@"Unknown alpha test function"); return; }
-            }
+            GLenum comparison
+                = getGLComparisonFunction(currentComparisonFunction);
 
             glDepthFunc(comparison);
         }

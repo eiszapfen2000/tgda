@@ -1,3 +1,4 @@
+#import "Graphics/NPEngineGraphicsEnums.h"
 #import "NPState.h"
 
 @interface NPBlendingState : NPState
@@ -6,29 +7,26 @@
     BOOL defaultEnabled;
     BOOL currentlyEnabled;
 
-    NpState blendingMode;
-    NpState defaultBlendingMode;
-    NpState currentBlendingMode;
+    NpBlendingMode blendingMode;
+    NpBlendingMode defaultBlendingMode;
+    NpBlendingMode currentBlendingMode;
 }
 
-
-- (id) init;
-- (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent configuration:(NPStateConfiguration *)newConfiguration;
+- (id) initWithName:(NSString *)newName 
+             parent:(id <NPPObject> )newParent
+      configuration:(NPStateConfiguration *)newConfiguration
+                   ;
 - (void) dealloc;
 
 - (BOOL) enabled;
-- (void) setEnabled:(BOOL)newEnabled;
-
 - (BOOL) defaultEnabled;
+- (NpBlendingMode) blendingMode;
+- (NpBlendingMode) defaultBlendingMode;
+
+- (void) setEnabled:(BOOL)newEnabled;
 - (void) setDefaultEnabled:(BOOL)newDefaultEnabled;
-
-- (NpState) blendingMode;
-- (void)    setBlendingMode:(NpState)newBlendingMode;
-
-- (NpState) defaultBlendingMode;
-- (void)    setDefaultBlendingMode:(NpState)newBlendingMode;
+- (void) setBlendingMode:(NpBlendingMode)newBlendingMode;
+- (void) setDefaultBlendingMode:(NpBlendingMode)newBlendingMode;
 
 - (void) activate;
 - (void) deactivate;

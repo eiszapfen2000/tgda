@@ -1,33 +1,32 @@
+#import "Graphics/NPEngineGraphicsEnums.h"
 #import "NPState.h"
 
 @interface NPPolygonFillState : NPState
 {
-    NpState frontFaceFill;
-    NpState defaultFrontFaceFill;
-    NpState currentFrontFaceFill;
+    NpPolygonFillMode frontFaceFill;
+    NpPolygonFillMode defaultFrontFaceFill;
+    NpPolygonFillMode currentFrontFaceFill;
 
-    NpState backFaceFill;
-    NpState defaultBackFaceFill;
-    NpState currentBackFaceFill;
+    NpPolygonFillMode backFaceFill;
+    NpPolygonFillMode defaultBackFaceFill;
+    NpPolygonFillMode currentBackFaceFill;
 }
 
-- (id) init;
-- (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent configuration:(NPStateConfiguration *)newConfiguration;
+- (id) initWithName:(NSString *)newName
+             parent:(id <NPPObject> )newParent
+      configuration:(NPStateConfiguration *)newConfiguration
+                   ;
 - (void) dealloc;
 
-- (NpState) frontFaceFill;
-- (void)    setFrontFaceFill:(NpState)newFrontFaceFill;
+- (NpPolygonFillMode) frontFaceFill;
+- (NpPolygonFillMode) defaultFrontFaceFill;
+- (NpPolygonFillMode) backFaceFill;
+- (NpPolygonFillMode) defaultBackFaceFill;
 
-- (NpState) defaultFrontFaceFill;
-- (void)    setDefaultFrontFaceFill:(NpState)newDefaultFrontFaceFill;
-
-- (NpState) backFaceFill;
-- (void)    setBackFaceFill:(NpState)newBackFaceFill;
-
-- (NpState) defaultBackFaceFill;
-- (void)    setDefaultBackFaceFill:(NpState)newDefaultBackFaceFill;
+- (void) setFrontFaceFill:(NpPolygonFillMode)newFrontFaceFill;
+- (void) setDefaultFrontFaceFill:(NpPolygonFillMode)newDefaultFrontFaceFill;
+- (void) setBackFaceFill:(NpPolygonFillMode)newBackFaceFill;
+- (void) setDefaultBackFaceFill:(NpPolygonFillMode)newDefaultBackFaceFill;
 
 - (void) activate;
 - (void) deactivate;

@@ -1,4 +1,7 @@
+#ifndef NPENGINEGRAPHICSENUMS_H_
+#define NPENGINEGRAPHICSENUMS_H_
 
+#include "GL/glew.h"
 
 typedef enum NpImagePixelFormat
 {
@@ -110,12 +113,12 @@ typedef enum NpBlendingMode
 }
 NpBlendingMode;
 
-typedef enum NpCullFace
+typedef enum NpCullface
 {
     NpCullfaceFront = 0,
     NpCullfaceBack
 }
-NpCullFace;
+NpCullface;
 
 typedef enum NpPolygonFillMode
 {
@@ -124,3 +127,11 @@ typedef enum NpPolygonFillMode
     NpPolygonFillFace
 }
 NpPolygonFillMode;
+
+GLenum getGLComparisonFunction(const NpComparisonFunction comparisonFunction);
+GLenum getGLCullface(const NpCullface cullface);
+GLenum getGLPolygonFillMode(const NpPolygonFillMode polygonFillMode);
+
+#endif
+
+

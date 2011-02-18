@@ -2,22 +2,9 @@
 
 @implementation NPState
 
-- (id) init
-{
-    return [ self initWithName:@"NPState" ];
-}
-
-- (id) initWithName:(NSString *)newName
-{
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    return [ self initWithName:newName parent:newParent configuration:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent configuration:(NPStateConfiguration *)newConfiguration
+- (id) initWithName:(NSString *)newName 
+             parent:(id <NPPObject> )newParent
+      configuration:(NPStateConfiguration *)newConfiguration
 {
     self = [ super initWithName:newName parent:newParent ];
 

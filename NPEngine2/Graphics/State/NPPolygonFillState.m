@@ -1,34 +1,20 @@
 #import "NPPolygonFillState.h"
-#import "NP.h"
 
 @implementation NPPolygonFillState
 
-- (id) init
-{
-    return [ self initWithName:@"NP Polygon Fill State" ];
-}
-
 - (id) initWithName:(NSString *)newName
-{
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    return [ self initWithName:newName parent:newParent configuration:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent configuration:(NPStateConfiguration *)newConfiguration
+             parent:(id <NPPObject> )newParent
+      configuration:(NPStateConfiguration *)newConfiguration
 {
     self = [ super initWithName:newName parent:newParent configuration:newConfiguration ];
 
-    frontFaceFill        = NP_POLYGON_FILL_FACE;
-    defaultFrontFaceFill = NP_POLYGON_FILL_FACE;
-    currentFrontFaceFill = NP_POLYGON_FILL_LINE;
+    frontFaceFill        = NpPolygonFillFace;
+    defaultFrontFaceFill = NpPolygonFillFace;
+    currentFrontFaceFill = NpPolygonFillLine;
 
-    backFaceFill        = NP_POLYGON_FILL_FACE;
-    defaultBackFaceFill = NP_POLYGON_FILL_FACE;
-    currentBackFaceFill = NP_POLYGON_FILL_LINE;
+    backFaceFill        = NpPolygonFillFace;
+    defaultBackFaceFill = NpPolygonFillFace;
+    currentBackFaceFill = NpPolygonFillLine;
 
     return self;
 }
@@ -38,12 +24,27 @@
     [ super dealloc ];
 }
 
-- (NpState) frontFaceFill
+- (NpPolygonFillMode) frontFaceFill
 {
     return frontFaceFill;
 }
 
-- (void) setFrontFaceFill:(NpState)newFrontFaceFill
+- (NpPolygonFillMode) defaultFrontFaceFill
+{
+    return defaultFrontFaceFill;
+}
+
+- (NpPolygonFillMode) backFaceFill
+{
+    return backFaceFill;
+}
+
+- (NpPolygonFillMode) defaultBackFaceFill
+{
+    return defaultBackFaceFill;
+}
+
+- (void) setFrontFaceFill:(NpPolygonFillMode)newFrontFaceFill
 {
     if ( [ super changeable ] == YES )
     {
@@ -51,22 +52,12 @@
     }
 }
 
-- (NpState) defaultFrontFaceFill
-{
-    return defaultFrontFaceFill;
-}
-
-- (void) setDefaultFrontFaceFill:(NpState)newDefaultFrontFaceFill
+- (void) setDefaultFrontFaceFill:(NpPolygonFillMode)newDefaultFrontFaceFill
 {
     defaultFrontFaceFill = newDefaultFrontFaceFill;
 }
 
-- (NpState) backFaceFill
-{
-    return backFaceFill;
-}
-
-- (void) setBackFaceFill:(NpState)newBackFaceFill
+- (void) setBackFaceFill:(NpPolygonFillMode)newBackFaceFill
 {
     if ( [ super changeable ] == YES )
     {
@@ -74,12 +65,7 @@
     }
 }
 
-- (NpState) defaultBackFaceFill
-{
-    return defaultBackFaceFill;
-}
-
-- (void) setDefaultBackFaceFill:(NpState)newDefaultBackFaceFill
+- (void) setDefaultBackFaceFill:(NpPolygonFillMode)newDefaultBackFaceFill
 {
     defaultBackFaceFill = newDefaultBackFaceFill;
 }
@@ -96,29 +82,15 @@
     {
         currentFrontFaceFill = frontFaceFill;
 
-        switch ( frontFaceFill )
-        {
-            case NP_POLYGON_FILL_POINT: { mode = GL_POINT; break; }
-            case NP_POLYGON_FILL_LINE : { mode = GL_LINE;  break; }
-            case NP_POLYGON_FILL_FACE : { mode = GL_FILL;  break; }
-            default: { NPLOG_ERROR(@"Unknown polygon mode"); return; }
-        }
-
-        glPolygonMode(GL_FRONT,mode);
+        mode = getGLPolygonFillMode(frontFaceFill);
+        glPolygonMode(GL_FRONT, mode);
     }
 
     //if ( currentBackFaceFill != backFaceFill )
     {
         currentBackFaceFill  = backFaceFill;
 
-        switch ( backFaceFill )
-        {
-            case NP_POLYGON_FILL_POINT: { mode = GL_POINT; break; }
-            case NP_POLYGON_FILL_LINE : { mode = GL_LINE;  break; }
-            case NP_POLYGON_FILL_FACE : { mode = GL_FILL;  break; }
-            default: { NPLOG_ERROR(@"Unknown polygon mode"); return; }
-        }
-
+        mode = getGLPolygonFillMode(frontFaceFill);
         glPolygonMode(GL_BACK,mode);
     }
 
