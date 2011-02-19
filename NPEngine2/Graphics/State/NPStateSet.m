@@ -1,3 +1,10 @@
+#import <Foundation/NSDictionary.h>
+#import "Log/NPLog.h"
+#import "Core/NPEngineCore.h"
+#import "Core/File/NPLocalPathManager.h"
+#import "Core/Utilities/NSError+NPEngine.h"
+#import "Graphics/NPEngineGraphics.h"
+#import "Graphics/NPEngineGraphicsStringEnumConversion.h"
 #import "NPStateSet.h"
 #import "NPAlphaTestState.h"
 #import "NPBlendingState.h"
@@ -5,13 +12,15 @@
 #import "NPDepthTestState.h"
 #import "NPPolygonFillState.h"
 #import "NPStateConfiguration.h"
-#import "Graphics/NPEngineGraphics.h"
 
 @implementation NPStateSet
 
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
 {
     self = [ super initWithName:newName parent:newParent ];
+
+    file = nil;
+    ready = YES;
 
     alphaTestEnabled   = NO;
     alphaTestThreshold = 0.5f;
@@ -127,36 +136,85 @@
     [[[ NPEngineGraphics instance ] stateConfiguration ] deactivate ];
 }
 
-/*
-- (void) loadFromFile:(NSString *)path;
+- (NSString *) fileName
 {
-    NSDictionary * states = [ NSDictionary dictionaryWithContentsOfFile:path ];
+    return file;
+}
 
-    NSDictionary * alphaTest = [ states objectForKey:@"AlphaTest" ];
+- (BOOL) ready
+{
+    return ready;
+}
+
+- (BOOL) loadFromStream:(id <NPPStream>)stream 
+                  error:(NSError **)error
+{
+    return NO;
+}
+
+- (BOOL) loadFromFile:(NSString *)fileName
+                error:(NSError **)error
+{
+    NSString * completeFileName
+        = [[[ NPEngineCore instance ] localPathManager ] getAbsolutePath:fileName ];
+
+    if ( completeFileName == nil )
+    {
+        if ( error != NULL )
+        {
+            *error = [ NSError fileNotFoundError:fileName ];
+        }
+
+        return NO;
+    }
+
+    [ self setName:completeFileName ];
+    ASSIGNCOPY(file, completeFileName);
+
+    NPLOG(@"Loading state set \"%@\"", completeFileName);
+
+    NSDictionary * states
+        = [ NSDictionary dictionaryWithContentsOfFile:completeFileName ];
+
+    if ( states == nil )
+    {
+        //create error object
+        return NO;
+    }
+
+    NPEngineGraphicsStringEnumConversion * se
+        = [[ NPEngineGraphics instance ] stringEnumConversion ];
+
+    NSDictionary * alphaTest   = [ states objectForKey:@"AlphaTest" ];
+    NSDictionary * blending    = [ states objectForKey:@"Blending" ];
+    NSDictionary * culling     = [ states objectForKey:@"Culling" ];
+    NSDictionary * depth       = [ states objectForKey:@"Depth" ];
+    NSDictionary * polygonFill = [ states objectForKey:@"PolygonFill" ];
+
+    NSString * comparison = nil;
+
     alphaTestEnabled   = [[ alphaTest objectForKey:@"Enabled" ] boolValue ];
-    alphaTestThreshold = [[ alphaTest objectForKey:@"Enabled" ] floatValue ];
-    alphaTestComparisonFunction = [[(NPStateSetManager *)parent valueForKeyword:[alphaTest objectForKey:@"ComparisonFunction"]] intValue ];
+    alphaTestThreshold = [[ alphaTest objectForKey:@"Threshold" ] floatValue ];
 
-    NSDictionary * blending = [ states objectForKey:@"Blending" ];
+    comparison = [[ alphaTest objectForKey:@"ComparisonFunction" ] lowercaseString ];
+    alphaTestComparisonFunction = [ se comparisonFunctionForString:comparison ];
+
     blendingEnabled = [[ blending objectForKey:@"Enabled" ] boolValue ];
-    blendingMode = [[(NPStateSetManager *)parent valueForKeyword:[ blending objectForKey:@"Mode" ]] intValue ];
+    blendingMode = [ se blendingModeForString:[[ blending objectForKey:@"Mode" ] lowercaseString ]];
 
-    NSDictionary * colorWrite = [ states objectForKey:@"ColorWrite" ];
-    colorWriteEnabled = [[ colorWrite objectForKey:@"Enabled" ] boolValue ];
-
-    NSDictionary * culling = [ states objectForKey:@"Culling" ];
     cullingEnabled = [[ culling objectForKey:@"Enabled" ] boolValue ];
-    cullFace = [[(NPStateSetManager *)parent valueForKeyword:[ culling objectForKey:@"CullFace" ]] intValue ];
+    cullFace = [ se cullfaceForString:[[ culling objectForKey:@"CullFace" ] lowercaseString ]];
 
-    NSDictionary * depth = [ states objectForKey:@"Depth" ];
     depthTestEnabled  = [[ depth objectForKey:@"DepthTestEnabled"  ] boolValue ];
     depthWriteEnabled = [[ depth objectForKey:@"DepthWriteEnabled" ] boolValue ];
-    depthTestComparisonFunction = [[(NPStateSetManager *)parent valueForKeyword:[depth objectForKey:@"ComparisonFunction"]] intValue ];
 
-    NSDictionary * polygonFill = [ states objectForKey:@"PolygonFill" ];
-    polgyonFillFront = [[(NPStateSetManager *)parent valueForKeyword:[polygonFill objectForKey:@"Front"]] intValue ];
-    polgyonFillBack  = [[(NPStateSetManager *)parent valueForKeyword:[polygonFill objectForKey:@"Back" ]] intValue ];
+    comparison = [[ depth objectForKey:@"ComparisonFunction" ] lowercaseString ];
+    depthTestComparisonFunction = [ se comparisonFunctionForString:comparison ];
+
+    polgyonFillFront = [ se polygonFillModeForString:[[ polygonFill objectForKey:@"Front"] lowercaseString ]];
+    polgyonFillBack  = [ se polygonFillModeForString:[[ polygonFill objectForKey:@"Back" ] lowercaseString ]];
+
+    return YES;
 }
-*/
 
 @end

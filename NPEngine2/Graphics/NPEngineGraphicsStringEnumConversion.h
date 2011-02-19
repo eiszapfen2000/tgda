@@ -5,6 +5,13 @@
 
 @interface NPEngineGraphicsStringEnumConversion : NPObject
 {
+    // states
+    NSMutableDictionary * blendingModes;
+    NSMutableDictionary * comparisonFunctions;
+    NSMutableDictionary * cullfaces;
+    NSMutableDictionary * polygonFillModes;
+
+    // effects
     NSMutableDictionary * effectVariableTypes;
 }
 
@@ -17,6 +24,11 @@
 
 - (void) startup;
 - (void) shutdown;
+
+- (NpBlendingMode) blendingModeForString:(NSString *)string;
+- (NpComparisonFunction) comparisonFunctionForString:(NSString *)string;
+- (NpCullface) cullfaceForString:(NSString *)string;
+- (NpPolygonFillMode) polygonFillModeForString:(NSString *)string;
 
 - (NpEffectVariableType) effectVariableTypeForString:(NSString *)string;
 

@@ -18,6 +18,10 @@
 {
     self = [ super initWithName:newName parent:newParent ];
 
+    blendingModes = [[ NSMutableDictionary alloc ] init ];
+    comparisonFunctions = [[ NSMutableDictionary alloc ] init ];
+    cullfaces = [[ NSMutableDictionary alloc ] init ];
+    polygonFillModes = [[ NSMutableDictionary alloc ] init ];
     effectVariableTypes = [[ NSMutableDictionary alloc ] init ];
 
     return self;
@@ -26,6 +30,10 @@
 - (void) dealloc
 {
     DESTROY(effectVariableTypes);
+    DESTROY(polygonFillModes);
+    DESTROY(cullfaces);
+    DESTROY(comparisonFunctions);
+    DESTROY(blendingModes);
 
     [ super dealloc ];
 }
@@ -35,6 +43,27 @@
 
 - (void) startup
 {
+    INSERTENUM(blendingModes, NpBlendingAdditive, @"additive");
+    INSERTENUM(blendingModes, NpBlendingSubtractive, @"subtractive");
+    INSERTENUM(blendingModes, NpBlendingAverage, @"average");
+    INSERTENUM(blendingModes, NpBlendingMin, @"min");
+    INSERTENUM(blendingModes, NpBlendingMax, @"max");
+
+    INSERTENUM(comparisonFunctions, NpComparisonNever, @"never");
+    INSERTENUM(comparisonFunctions, NpComparisonAlways, @"always");
+    INSERTENUM(comparisonFunctions, NpComparisonLess, @"less");
+    INSERTENUM(comparisonFunctions, NpComparisonLessEqual, @"lessequal");
+    INSERTENUM(comparisonFunctions, NpComparisonEqual, @"equal");
+    INSERTENUM(comparisonFunctions, NpComparisonGreaterEqual, @"greaterequal");
+    INSERTENUM(comparisonFunctions, NpComparisonGreater, @"greater");
+
+    INSERTENUM(cullfaces, NpCullfaceFront, @"front");
+    INSERTENUM(cullfaces, NpCullfaceBack, @"back");
+
+    INSERTENUM(polygonFillModes, NpPolygonFillPoint, @"point");
+    INSERTENUM(polygonFillModes, NpPolygonFillLine, @"line");
+    INSERTENUM(polygonFillModes, NpPolygonFillFace, @"face");
+
     INSERTENUM(effectVariableTypes, NpEffectVariableFloat, @"float");
     INSERTENUM(effectVariableTypes, NpEffectVariableFloat2, @"vec2");
     INSERTENUM(effectVariableTypes, NpEffectVariableFloat3, @"vec3");
@@ -53,7 +82,66 @@
 - (void) shutdown
 {
     [ effectVariableTypes removeAllObjects ];
+
+    [ polygonFillModes removeAllObjects ];
+    [ cullfaces removeAllObjects ];
+    [ comparisonFunctions removeAllObjects ];
+    [ blendingModes removeAllObjects ];
 }
+
+- (NpBlendingMode) blendingModeForString:(NSString *)string
+{
+    NpBlendingMode result = NpBlendingAverage;
+
+    NSNumber * n = [ blendingModes objectForKey:string ];
+    if ( n != nil )
+    {
+        result = (NpBlendingMode)[ n intValue ];
+    }
+
+    return result;
+}
+
+- (NpComparisonFunction) comparisonFunctionForString:(NSString *)string
+{
+    NpComparisonFunction result = NpComparisonAlways;
+
+    NSNumber * n = [ comparisonFunctions objectForKey:string ];
+    if ( n != nil )
+    {
+        result = (NpComparisonFunction)[ n intValue ];
+    }
+
+    return result;
+}
+
+- (NpCullface) cullfaceForString:(NSString *)string
+{
+    NpCullface result = NpCullfaceBack;
+
+    NSNumber * n = [ cullfaces objectForKey:string ];
+    if ( n != nil )
+    {
+        result = (NpCullface)[ n intValue ];
+    }
+
+    return result;
+
+}
+
+- (NpPolygonFillMode) polygonFillModeForString:(NSString *)string
+{
+    NpPolygonFillMode result = NpPolygonFillFace;
+
+    NSNumber * n = [ polygonFillModes objectForKey:string ];
+    if ( n != nil )
+    {
+        result = (NpPolygonFillMode)[ n intValue ];
+    }
+
+    return result;
+}
+
 
 - (NpEffectVariableType) effectVariableTypeForString:(NSString *)string
 {
