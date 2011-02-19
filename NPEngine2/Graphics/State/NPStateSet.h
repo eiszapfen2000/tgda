@@ -1,8 +1,12 @@
 #import "Core/NPObject/NPObject.h"
+#import "Core/Protocols/NPPPersistentObject.h"
 #import "Graphics/NPEngineGraphicsEnums.h"
 
-@interface NPStateSet : NPObject
+@interface NPStateSet : NPObject < NPPPersistentObject >
 {
+    NSString * file;
+    BOOL ready;
+
     BOOL alphaTestEnabled;
     BOOL blendingEnabled;
     BOOL cullingEnabled;
