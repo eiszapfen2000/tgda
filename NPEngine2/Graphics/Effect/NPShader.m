@@ -82,15 +82,12 @@
     glID = 0;
     shaderType = NpShaderTypeUnknown;
 
-    [[[ NPEngineGraphics instance ] shader ] registerAsset:self ];
-
     return self;
 }
 
 - (void) dealloc
 {
-    [[[ NPEngineGraphics instance ] shader ] unregisterAsset:self ];
-
+    [ self clear ];
     [ super dealloc ];
 }
 

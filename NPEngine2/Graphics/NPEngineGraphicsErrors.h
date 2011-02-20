@@ -11,9 +11,9 @@ enum
     NPEngineGraphicsImageHasInvalidSize = 2051,
     NPEngineGraphicsImageHasUnknownFormat = 2052,
     NPEngineGraphicsShaderGLSLCompilationError = 2096,
-    NPEngineGraphicsShaderConfigurationGLSLLinkError = 2097,
-    NPEngineGraphicsShaderConfigurationShaderMissing = 2098,
-    NPEngineGraphicsShaderConfigurationShaderCorrupt = 2099,
+    NPEngineGraphicsEffectTechniqueGLSLLinkError = 2097,
+    NPEngineGraphicsEffectTechniqueShaderMissing = 2098,
+    NPEngineGraphicsEffectTechniqueShaderCorrupt = 2099,
 };
 
 #endif

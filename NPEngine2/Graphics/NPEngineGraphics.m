@@ -73,11 +73,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
                               parent:self
                           assetClass:NSClassFromString(@"NPTexture2D") ];
 
-    shader = [[ NPAssetArray alloc ]
-                    initWithName:@"NP Engine Shader"
-                          parent:self
-                      assetClass:NSClassFromString(@"NPShader") ];
-
     effects = [[ NPAssetArray alloc ]
                     initWithName:@"NP Engine Shader"
                           parent:self
@@ -98,7 +93,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     DESTROY(stateConfiguration);
 
     DESTROY(effects);
-    DESTROY(shader);
     DESTROY(textures2D);
     DESTROY(images);
 
@@ -120,11 +114,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 - (NPAssetArray *) textures2D
 {
     return textures2D;
-}
-
-- (NPAssetArray *) shader
-{
-    return shader;
 }
 
 - (NPAssetArray *) effects
@@ -154,14 +143,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         return NO;
     }
 
-    [ stringEnumConversion startup ];
-
     return YES;
 }
 
 - (void) shutdown
 {
-    [ stringEnumConversion shutdown ];
 }
 
 - (BOOL) checkForGLError:(NSError **)error

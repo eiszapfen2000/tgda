@@ -65,31 +65,49 @@ typedef enum NpShaderType
 }
 NpShaderType;
 
-typedef enum NpShaderVariableType
-{
-    NpShaderVariableTypeUnknown = -1,
-    NpShaderVariableTypeTexture = 0,
-    NpShaderVariableTypeSemantic = 1,
-    NpShaderVariableTypeUniform = 2
-}
-NpShaderVariableType;
-
 typedef enum NpEffectVariableType
 {
-    NpEffectVariableUnknown = -1,
-    NpEffectVariableFloat,
-    NpEffectVariableFloat2,
-    NpEffectVariableFloat3,
-    NpEffectVariableFloat4,
-    NpEffectVariableInt,
-    NpEffectVariableInt2,
-    NpEffectVariableInt3,
-    NpEffectVariableInt4,
-    NpEffectVariableFMatrix2x2,
-    NpEffectVariableFMatrix3x3,
-    NpEffectVariableFMatrix4x4
+    NpEffectVariableTypeUnknown = -1,
+    NpEffectVariableTypeSemantic = 0,
+    NpEffectVariableTypeSampler = 1,
+    NpEffectVariableTypeUniform = 2
 }
 NpEffectVariableType;
+
+typedef enum NpEffectSemantic
+{
+    NpSemanticUnknown = -1,
+    NpModelMatrix = 0,
+    NpInverseModelMatrix = 1,
+    NpViewMatrix = 2,
+    NpInverseViewMatrix = 3,
+    NpProjectionMatrix = 4,
+    NpInverseProjectionMatrix = 5,
+    NpModelViewMatrix = 6,
+    NpInverseModelViewMatrix = 7,
+    NpViewProjectionMatrix = 8,
+    NpInverseViewProjectionMatrix = 9,
+    NpModelViewProjectionMatrix = 10,
+    NpInverseModelViewProjection = 11
+}
+NpEffectSemantic;
+
+typedef enum NpUniformType
+{
+    NpUniformUnknown = -1,
+    NpUniformFloat,
+    NpUniformFloat2,
+    NpUniformFloat3,
+    NpUniformFloat4,
+    NpUniformInt,
+    NpUniformInt2,
+    NpUniformInt3,
+    NpUniformInt4,
+    NpUniformFMatrix2x2,
+    NpUniformFMatrix3x3,
+    NpUniformFMatrix4x4
+}
+NpUniformType;
 
 typedef enum NpComparisonFunction
 {

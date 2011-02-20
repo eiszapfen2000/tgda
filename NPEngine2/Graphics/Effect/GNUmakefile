@@ -6,13 +6,18 @@ libNPEngineGraphicsEffect_OBJC_FILES = \
 NPShader.m \
 NPEffect.m \
 NPEffectTechnique.m \
-NPEffectTechniqueVariable.m
+NPEffectTechniqueVariable.m \
+NPEffectVariable.m \
+NPEffectVariableSemantic.m
 
 libNPEngineGraphicsEffect_HEADER_FILES = \
 NPShader.h \
 NPEffect.h \
 NPEffectTechnique.h \
-NPEffectTechniqueVariable.h
+NPEffectTechniqueVariable.h \
+NPEffectVariable.h \
+NPEffectVariableSemantic.h
+
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make
