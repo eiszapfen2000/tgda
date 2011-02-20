@@ -4,7 +4,7 @@
 #import "Core/File/NPLocalPathManager.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Graphics/NPEngineGraphics.h"
-#import "Graphics/NPEngineGraphicsStringEnumConversion.h"
+#import "Graphics/NSString+NPEngineGraphicsEnums.h"
 #import "NPStateSet.h"
 #import "NPAlphaTestState.h"
 #import "NPBlendingState.h"
@@ -12,6 +12,16 @@
 #import "NPDepthTestState.h"
 #import "NPPolygonFillState.h"
 #import "NPStateConfiguration.h"
+
+@interface NPStateSet (Private)
+
+- (void) loadAlphaTestState:(NSDictionary *)d;
+- (void) loadBlendingState:(NSDictionary *)d;
+- (void) loadCullingState:(NSDictionary *)d;
+- (void) loadDepthState:(NSDictionary *)d;
+- (void) loadPolygonFillState:(NSDictionary *)d;
+
+@end
 
 @implementation NPStateSet
 
@@ -182,39 +192,99 @@
         return NO;
     }
 
-    NPEngineGraphicsStringEnumConversion * se
-        = [[ NPEngineGraphics instance ] stringEnumConversion ];
-
     NSDictionary * alphaTest   = [ states objectForKey:@"AlphaTest" ];
     NSDictionary * blending    = [ states objectForKey:@"Blending" ];
     NSDictionary * culling     = [ states objectForKey:@"Culling" ];
     NSDictionary * depth       = [ states objectForKey:@"Depth" ];
     NSDictionary * polygonFill = [ states objectForKey:@"PolygonFill" ];
 
-    NSString * comparison = nil;
-
-    alphaTestEnabled   = [[ alphaTest objectForKey:@"Enabled" ] boolValue ];
-    alphaTestThreshold = [[ alphaTest objectForKey:@"Threshold" ] floatValue ];
-
-    comparison = [[ alphaTest objectForKey:@"ComparisonFunction" ] lowercaseString ];
-    alphaTestComparisonFunction = [ se comparisonFunctionForString:comparison ];
-
-    blendingEnabled = [[ blending objectForKey:@"Enabled" ] boolValue ];
-    blendingMode = [ se blendingModeForString:[[ blending objectForKey:@"Mode" ] lowercaseString ]];
-
-    cullingEnabled = [[ culling objectForKey:@"Enabled" ] boolValue ];
-    cullFace = [ se cullfaceForString:[[ culling objectForKey:@"CullFace" ] lowercaseString ]];
-
-    depthTestEnabled  = [[ depth objectForKey:@"DepthTestEnabled"  ] boolValue ];
-    depthWriteEnabled = [[ depth objectForKey:@"DepthWriteEnabled" ] boolValue ];
-
-    comparison = [[ depth objectForKey:@"ComparisonFunction" ] lowercaseString ];
-    depthTestComparisonFunction = [ se comparisonFunctionForString:comparison ];
-
-    polgyonFillFront = [ se polygonFillModeForString:[[ polygonFill objectForKey:@"Front"] lowercaseString ]];
-    polgyonFillBack  = [ se polygonFillModeForString:[[ polygonFill objectForKey:@"Back" ] lowercaseString ]];
+    [ self loadAlphaTestState:alphaTest ];
+    [ self loadBlendingState:blending ];
+    [ self loadCullingState:culling ];
+    [ self loadDepthState:depth ];
+    [ self loadPolygonFillState:polygonFill ];
 
     return YES;
 }
 
 @end
+
+@implementation NPStateSet (Private)
+
+- (void) loadAlphaTestState:(NSDictionary *)d
+{
+    if (d == nil )
+    {
+        return;
+    }
+
+    alphaTestEnabled   = [[ d objectForKey:@"Enabled" ] boolValue ];
+    alphaTestThreshold = [[ d objectForKey:@"Threshold" ] floatValue ];
+
+    NSString * alphaTestComparison
+        = [[ d objectForKey:@"ComparisonFunction" ] lowercaseString ];
+
+    alphaTestComparisonFunction 
+        = [ alphaTestComparison comparisonFunctionValueWithDefault:alphaTestComparisonFunction ];
+}
+
+- (void) loadBlendingState:(NSDictionary *)d
+{
+    if (d == nil )
+    {
+        return;
+    }
+
+    blendingEnabled = [[ d objectForKey:@"Enabled" ] boolValue ];
+
+    NSString * blendingModeString = [[ d objectForKey:@"Mode" ] lowercaseString ];
+    blendingMode = [ blendingModeString blendingModeValueWithDefault:blendingMode ];
+}
+
+- (void) loadCullingState:(NSDictionary *)d
+{
+    if (d == nil )
+    {
+        return;
+    }
+
+    cullingEnabled = [[ d objectForKey:@"Enabled" ] boolValue ];
+
+    NSString * cullfaceString = [[ d objectForKey:@"CullFace" ] lowercaseString ];
+    cullFace = [ cullfaceString cullfaceValueWithDefault:cullFace ];
+}
+
+- (void) loadDepthState:(NSDictionary *)d
+{
+    if (d == nil )
+    {
+        return;
+    }
+
+    depthTestEnabled  = [[ d objectForKey:@"DepthTestEnabled"  ] boolValue ];
+    depthWriteEnabled = [[ d objectForKey:@"DepthWriteEnabled" ] boolValue ];
+
+    NSString * depthComparison
+        = [[ d objectForKey:@"ComparisonFunction" ] lowercaseString ];
+
+    depthTestComparisonFunction
+        = [ depthComparison comparisonFunctionValueWithDefault:depthTestComparisonFunction ];
+}
+
+- (void) loadPolygonFillState:(NSDictionary *)d
+{
+    if (d == nil )
+    {
+        return;
+    }
+
+    NSString * pFront = [[ d objectForKey:@"Front" ] lowercaseString ];
+    NSString * pBack  = [[ d objectForKey:@"Back"  ] lowercaseString ];
+
+    polgyonFillFront = [ pFront polygonFillModeValueWithDefault:polgyonFillFront ];
+    polgyonFillBack  = [ pBack  polygonFillModeValueWithDefault:polgyonFillBack  ];
+}
+
+@end
+
+

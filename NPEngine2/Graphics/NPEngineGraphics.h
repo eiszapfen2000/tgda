@@ -13,7 +13,6 @@
 
     NPAssetArray * images;
     NPAssetArray * textures2D;
-    NPAssetArray * shader;
     NPAssetArray * effects;
 
     NPStateConfiguration * stateConfiguration;
@@ -28,7 +27,6 @@
 
 - (NPAssetArray *) images;
 - (NPAssetArray *) textures2D;
-- (NPAssetArray *) shader;
 - (NPAssetArray *) effects;
 
 - (NPStateConfiguration *) stateConfiguration;
