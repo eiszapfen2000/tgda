@@ -117,7 +117,6 @@
 
     if ( m != NULL )
     {
-        NSLog(@"activate %@ at %d", name, location);
         glUniformMatrix4fv(location, 1, GL_FALSE, (const GLfloat *)m->elements);
     }
 }

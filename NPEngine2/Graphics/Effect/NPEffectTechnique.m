@@ -1,3 +1,4 @@
+#import <Foundation/NSDictionary.h>
 #import <Foundation/NSException.h>
 #import "Log/NPLog.h"
 #import "Core/String/NPStringList.h"
@@ -7,23 +8,24 @@
 #import "Graphics/NPEngineGraphics.h"
 #import "Graphics/NPEngineGraphicsErrors.h"
 #import "Graphics/NSString+NPEngineGraphicsEnums.h"
+#import "Graphics/NSString+NPEngineGraphicsClasses.h"
 #import "NPShader.h"
 #import "NPEffectVariable.h"
 #import "NPEffectVariableSampler.h"
 #import "NPEffectVariableSemantic.h"
+#import "NPEffectVariableUniform.h"
+#import "NPEffectVariableFloat.h"
 #import "NPEffect.h"
 #import "NPEffectTechniqueVariable.h"
 #import "NPEffectTechnique.h"
 
 @interface NPEffect (Private)
 
-- (id) registerEffectVariable:(NSString *)variableName
-                                         type:(NpEffectVariableType)variableType
-                                             ;
-
 - (id) registerEffectVariableSemantic:(NSString *)variableName;
 - (id) registerEffectVariableSampler:(NSString *)variableName;
-
+- (id) registerEffectVariableUniform:(NSString *)variableName
+                        uniformClass:(Class)uniformClass
+                                    ;
 @end
 
 @interface NPEffectTechnique (Private)
@@ -137,57 +139,63 @@
 
 @implementation NPEffect (Private)
 
-- (id) registerEffectVariable:(NSString *)variableName
-                         type:(NpEffectVariableType)variableType
+- (id) registerEffectVariableSemantic:(NSString *)variableName
 {
-    NPEffectVariable * v = [ self variableWithName:variableName ];
+    NPEffectVariableSemantic * v = [ self variableWithName:variableName ];
 
     if ( v != nil )
     {
-        NSAssert([ v variableType ] == variableType, @"Effect Variable type mismatch");
+        NSAssert1([ v variableType ] == NpEffectVariableTypeSemantic,
+             @"Effect Variable \"%@\" is not a semantic", variableName);
+
         return v;
     }
 
-    switch ( variableType )
-    {
-        case NpEffectVariableTypeSemantic:
-        {
-            v = [[ NPEffectVariableSemantic alloc ] initWithName:variableName ];
-            break;
-        }
+    v = [[ NPEffectVariableSemantic alloc ] initWithName:variableName ];
+    [ variables addObject:v ];
 
-        case NpEffectVariableTypeSampler:
-        {
-            v = [[ NPEffectVariableSampler alloc ] initWithName:variableName ];
-            break;
-        }
-
-        default:
-        {
-            NPLOG(@"%s - Unknown effect variable %@", __PRETTY_FUNCTION__, variableName);
-            break;
-        }
-    }
-
-    if ( v != nil )
-    {
-        [ variables addObject:v ];
-        AUTORELEASE(v);
-    }
-
-    return v;
-}
-
-- (id) registerEffectVariableSemantic:(NSString *)variableName
-{
-    return  [ self registerEffectVariable:variableName
-                                     type:NpEffectVariableTypeSemantic ];
+    return AUTORELEASE(v);
 }
 
 - (id) registerEffectVariableSampler:(NSString *)variableName
 {
-    return  [ self registerEffectVariable:variableName
-                                     type:NpEffectVariableTypeSampler ];
+    NPEffectVariableSampler * v = [ self variableWithName:variableName ];
+
+    if ( v != nil )
+    {
+        NSAssert1([ v variableType ] == NpEffectVariableTypeSampler,
+             @"Effect Variable \"%@\" is not a sampler", variableName);
+
+        return v;
+    }
+
+    v = [[ NPEffectVariableSampler alloc ] initWithName:variableName ];
+    [ variables addObject:v ];
+
+    return AUTORELEASE(v);
+}
+
+- (id) registerEffectVariableUniform:(NSString *)variableName
+                        uniformClass:(Class)uniformClass
+{
+    NSAssert1(uniformClass != Nil, @"%s - uniformClass is Nil",
+        __PRETTY_FUNCTION__);
+
+    id v = [ self variableWithName:variableName ];
+
+    if ( v != nil )
+    {
+        NSAssert2([ v class ] == uniformClass,
+             @"Effect Variable \"%@\" is not of class %@",
+             variableName, NSStringFromClass(uniformClass));
+
+        return v;
+    }
+
+    v = [[ uniformClass alloc ] initWithName:variableName ];
+    [ variables addObject:v ];
+
+    return AUTORELEASE(v);   
 }
 
 @end
@@ -313,12 +321,16 @@
             {
                 //NPEffectVariableSampler * s = [ effect registerEffectVariableSampler:uniformName ];
             }
-
-            if ( [ uniformName hasPrefix:@"np_" ] == YES )
+            else if ( [ uniformName hasPrefix:@"np_" ] == YES )
             {
                 NPEffectVariableSemantic * s = [ effect registerEffectVariableSemantic:uniformName ];
                 NpEffectSemantic semantic = [[ uniformName lowercaseString ] semanticValue ];
                 [ s setSemantic:semantic ];
+            }
+            else if ( [ uniformName hasPrefix:@"np_" ] == NO &&  [ uniformName hasPrefix:@"gl_" ] == NO )
+            {
+                [ effect registerEffectVariableUniform:uniformName
+                                          uniformClass:[ uniformType uniformTypeClass ]];
             }
         }
     }
@@ -428,8 +440,6 @@
 	glGetProgramiv(glID, GL_ACTIVE_UNIFORMS, &numberOfActiveUniforms);
 	glGetProgramiv(glID, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxUniformNameLength);
 
-    NSLog(@"%d %d", numberOfActiveUniforms, maxUniformNameLength);
-
 	for (int32_t i = 0; i < numberOfActiveUniforms; i++)
 	{
 		GLsizei uniformNameLength;
@@ -444,7 +454,7 @@
             = [[ NSString alloc ] initWithCString:uniformName
                                          encoding:NSUTF8StringEncoding ];
 
-        NSLog(uName);
+        BOOL isSampler = NO;
 
 		// Sampler
 		switch (uniformType)
@@ -452,33 +462,15 @@
 		case GL_SAMPLER_1D:
 		case GL_SAMPLER_2D:
 		case GL_SAMPLER_3D:
-		//case GL_SAMPLER_1D_SHADOW:
-		//case GL_SAMPLER_2D_SHADOW:
 		case GL_SAMPLER_CUBE:
-			{
-                /*
-				ZtShaderVariableTexture* variableTexture = getShaderVariableTexture(shaderVariableName);
-				variableTexture->setGLID(i);
-                */
-				break;
-			}
-
 		case GL_SAMPLER_BUFFER_EXT:
-			{
-                /*
-				if (ztTextureManager()->getTextureBufferSupport())
-				{
-					ZtShaderVariableTexture* variableTexture = getShaderVariableTexture(shaderVariableName);
-					variableTexture->setGLID(i);
-					break;
-				}
-                */
-
+            {
+                isSampler = YES;
                 break;
-			}
+            }
 		}
 
-        if (([ uName hasPrefix:@"np_" ] == YES) && ([ uName semanticValue ] != NpSemanticUnknown))
+        if ( isSampler == NO )
         {
             NPEffectTechniqueVariable * vt
                 = AUTORELEASE([[ NPEffectTechniqueVariable alloc ]
@@ -542,11 +534,7 @@
 
 - (void) activateVariables
 {
-    NSUInteger numberOfVariablesInTechnique = [ techniqueVariables count ];
-    for ( NSUInteger i = 0; i < numberOfVariablesInTechnique; i++ )
-    {
-        [[ techniqueVariables objectAtIndex:i ] activate ];
-    }
+    [ techniqueVariables makeObjectsPerformSelector:@selector(activate) ];
 }
 
 @end

@@ -14,14 +14,18 @@ NPEngineGraphicsEnums.c
 libNPEngineGraphics_OBJC_FILES = \
 NPEngineGraphics.m \
 NPEngineGraphicsStringEnumConversion.m \
-NSString+NPEngineGraphicsEnums.m
+NPEngineGraphicsStringToClassConversion.m \
+NSString+NPEngineGraphicsEnums.m \
+NSString*NPEngineGraphicsClasses.m
 
 libNPEngineGraphics_HEADER_FILES = \
 NPEngineGraphics.h \
 NPEngineGraphicsEnums.h \
 NPEngineGraphicsErrors.h \
 NPEngineGraphicsStringEnumConversion.h \
-NSString+NPEngineGraphicsEnums.h
+NPEngineGraphicsStringToClassConversion.h \
+NSString+NPEngineGraphicsEnums.h \
+NSString*NPEngineGraphicsClasses.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make

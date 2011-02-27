@@ -6,7 +6,6 @@
 }
 
 - (id) initWithName:(NSString *)newName;
-- (void) dealloc;
 
 - (NpBlendingMode) blendingModeForString:(NSString *)string 
                              defaultMode:(NpBlendingMode)defaultMode
