@@ -60,28 +60,23 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
     stringEnumConversion
         = [[ NPEngineGraphicsStringEnumConversion alloc ] 
-                 initWithName:@"Graphics String Enum Conversion"
-                       parent:self ];
+                 initWithName:@"Graphics String Enum Conversion" ];
 
     images = [[ NPAssetArray alloc ]
                     initWithName:@"NP Engine Images"
-                          parent:self
                       assetClass:NSClassFromString(@"NPImage") ];
 
     textures2D = [[ NPAssetArray alloc ]
                         initWithName:@"NP Engine Textures2D"
-                              parent:self
                           assetClass:NSClassFromString(@"NPTexture2D") ];
 
     effects = [[ NPAssetArray alloc ]
                     initWithName:@"NP Engine Shader"
-                          parent:self
                       assetClass:NSClassFromString(@"NPEffect") ];
 
     stateConfiguration
         = [[ NPStateConfiguration alloc ]
-                initWithName:@"NP Engine State Configuration"
-                      parent:self ];
+                initWithName:@"NP Engine State Configuration" ];
 
     return self;
 }
@@ -198,23 +193,18 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     return @"NPEngine Graphics";
 }
 
+- (uint32_t) objectID
+{
+    return objectID;
+}
+
 - (void) setName:(NSString *)newName
 {
 
 }
 
-- (id <NPPObject>) parent
+- (void) setObjectID:(uint32_t)newObjectID
 {
-    return nil;
-}
-
-- (void) setParent:(id <NPPObject>)newParent
-{
-}
-
-- (uint32_t) objectID
-{
-    return objectID;
 }
 
 - (id) copyWithZone:(NSZone *)zone

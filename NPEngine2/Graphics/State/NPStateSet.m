@@ -25,9 +25,9 @@
 
 @implementation NPStateSet
 
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
+- (id) initWithName:(NSString *)newName
 {
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     file = nil;
     ready = YES;

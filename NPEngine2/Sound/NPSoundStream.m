@@ -21,19 +21,9 @@
 
 @implementation NPSoundStream
 
-- (id) init
-{
-    return [ self initWithName:@"NPEngine Sound Stream" ];
-}
-
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     file = nil;
     ready = NO;
@@ -160,6 +150,7 @@
                     continue;
                 }
             }
+
             break;
         }
     }

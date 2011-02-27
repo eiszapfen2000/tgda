@@ -3,17 +3,16 @@
 @implementation NPStateConfiguration
 
 - (id) initWithName:(NSString *)newName 
-             parent:(id <NPPObject> )newParent
 {
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     locked = NO;
 
-    alphaTestState   = [[ NPAlphaTestState   alloc ] initWithName:@"NP Alpha Test State"   parent:self configuration:self ];
-    blendingState    = [[ NPBlendingState    alloc ] initWithName:@"NP Blending State"     parent:self configuration:self ];
-    cullingState     = [[ NPCullingState     alloc ] initWithName:@"NP Culling State"      parent:self configuration:self ];
-    depthTestState   = [[ NPDepthTestState   alloc ] initWithName:@"NP Depth Test State"   parent:self configuration:self ];
-    polygonFillState = [[ NPPolygonFillState alloc ] initWithName:@"NP Polygon Fill State" parent:self configuration:self ];
+    alphaTestState   = [[ NPAlphaTestState   alloc ] initWithName:@"NP Alpha Test State"   configuration:self ];
+    blendingState    = [[ NPBlendingState    alloc ] initWithName:@"NP Blending State"     configuration:self ];
+    cullingState     = [[ NPCullingState     alloc ] initWithName:@"NP Culling State"      configuration:self ];
+    depthTestState   = [[ NPDepthTestState   alloc ] initWithName:@"NP Depth Test State"   configuration:self ];
+    polygonFillState = [[ NPPolygonFillState alloc ] initWithName:@"NP Polygon Fill State" configuration:self ];
 
     return self;
 }

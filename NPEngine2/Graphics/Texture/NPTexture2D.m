@@ -30,16 +30,10 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
+    [[[ NPEngineGraphics instance ] textures2D ] registerAsset:self ];
 
     [ self reset ];
-
-    [[[ NPEngineGraphics instance ] textures2D ] registerAsset:self ];
 
     return self;
 }

@@ -2,11 +2,9 @@
 
 @interface NPEffectVariableSampler : NPEffectVariable
 {
-
+    uint32_t texelUnit;
 }
 
-- (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject>)newParent
-                   ;
+- (id) initWithName:(NSString *)newName;
 
 @end

@@ -9,21 +9,18 @@
 {
     uint32_t objectID;
     NSString * name;
-    id <NPPObject> parent;
 }
 
-- (id) init;
 - (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 - (void) dealloc;
 
+/*
 - (NSString *) name;
-- (void) setName:(NSString *)newName;
-
-- (id <NPPObject>) parent;
-- (void) setParent:(id <NPPObject>)newParent;
-
 - (uint32_t) objectID;
+
+- (void) setName:(NSString *)newName;
+- (void) setObjectID:(uint32_t)newObjectID;
+*/
 
 @end
 

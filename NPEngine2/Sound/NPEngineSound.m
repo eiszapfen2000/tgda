@@ -57,9 +57,9 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 
     objectID = crc32_of_pointer(self);
 
-    listener = [[ NPListener alloc ] initWithName:@"NPEngine Sound Listener" parent:self ];
-    soundManager = [[ NPSoundManager alloc ] initWithName:@"NPEngine Sound Manager" parent:self ];
-    sources = [[ NPSoundSources alloc ] initWithName:@"NPEngine Sound Sources" parent:self ];
+    listener = [[ NPListener alloc ] initWithName:@"NPEngine Sound Listener" ];
+    soundManager = [[ NPSoundManager alloc ] initWithName:@"NPEngine Sound Manager" ];
+    sources = [[ NPSoundSources alloc ] initWithName:@"NPEngine Sound Sources" ];
 
     volume = 1.0f;
 
@@ -81,22 +81,17 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     return @"NPEngine Sound";
 }
 
+- (uint32_t) objectID
+{
+    return objectID;
+}
+
 - (void) setName:(NSString *)newName
 {
 }
 
-- (id <NPPObject>) parent
+- (void) setObjectID:(uint32_t)newObjectID
 {
-    return nil;
-}
-
-- (void) setParent:(id <NPPObject>)newParent
-{
-}
-
-- (uint32_t) objectID
-{
-    return objectID;
 }
 
 - (Float) volume

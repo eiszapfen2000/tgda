@@ -12,9 +12,7 @@
     BOOL paused;
 }
 
-- (id) init;
 - (id) initWithName:(NSString *) newName;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 
 - (int32_t) fps;
 - (Double) frameTime;

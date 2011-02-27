@@ -8,7 +8,6 @@
 
 @implementation NPStringList
 
-
 + (id) stringList
 {
     return AUTORELEASE([[ NPStringList alloc ] init ]);
@@ -35,24 +34,16 @@
 
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject> )newParent
-{
     return [ self initWithName:newName
-                        parent:newParent
                allowDuplicates:NO
              allowEmptyStrings:NO ];
 }
 
 - (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject> )newParent
     allowDuplicates:(BOOL)newAllowDuplicates
   allowEmptyStrings:(BOOL)newAllowEmptyStrings
 {
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     file = nil;
     strings = [[ NSMutableArray alloc ] init ];

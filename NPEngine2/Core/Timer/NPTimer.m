@@ -2,19 +2,9 @@
 
 @implementation NPTimer
 
-- (id) init
+- (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName: @"NPCore Timer" ];
-}
-
-- (id) initWithName: (NSString *) newName
-{
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     frameTime = 0.0;
     totalElapsedTime = 0.0;

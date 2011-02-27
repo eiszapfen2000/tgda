@@ -8,9 +8,7 @@
     NpEffectSemantic semantic;
 }
 
-- (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject>)newParent
-                   ;
+- (id) initWithName:(NSString *)newName;
 
 - (NpEffectSemantic) semantic;
 - (void) setSemantic:(NpEffectSemantic)newSemantic;

@@ -17,16 +17,14 @@
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
+
+- (void) clear;
 
 - (id) variableWithName:(NSString *)variableName;
 - (id) variableAtIndex:(NSUInteger)index;
 - (NPEffectTechnique *) techniqueWithName:(NSString *)techniqueName;
 - (NPEffectTechnique *) techniqueAtIndex:(NSUInteger)index;
-
-
-- (void) clear;
 
 - (BOOL) loadFromStringList:(NPStringList *)stringList
                       error:(NSError **)error

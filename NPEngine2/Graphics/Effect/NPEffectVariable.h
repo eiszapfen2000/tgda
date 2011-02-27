@@ -9,7 +9,6 @@
 }
 
 - (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject>)newParent
        variableType:(NpEffectVariableType)newVariableType
                    ;
 

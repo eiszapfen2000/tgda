@@ -7,10 +7,8 @@
 @implementation NPEffectVariableSemantic
 
 - (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject>)newParent
 {
     self = [ super initWithName:newName
-                         parent:newParent
                    variableType:NpEffectVariableTypeSemantic ];
 
     semantic = NpSemanticUnknown;

@@ -6,20 +6,9 @@
 
 @implementation NPMemoryStream
 
-- (id) init
-{
-    return [ self initWithName:@"NPMemoryStream" ];
-}
-
-- (id) initWithName:(NSString *)newName
-{
-    return [ self initWithName:newName parent:nil ];
-}
-
 - (id) initWithName:(NSString *)newName 
-             parent:(id <NPPObject> )newParent
 {
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     buffer = [[ NSMutableData alloc ] init ];
     streamOffset = 0;

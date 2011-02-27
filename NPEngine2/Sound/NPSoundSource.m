@@ -12,30 +12,11 @@
 
 @implementation NPSoundSource
 
-- (id) init
-{
-    return [ self initWithName:@"Sound Source" ];
-}
-
 - (id) initWithName:(NSString *)newName
-{
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    return [ self initWithName:newName 
-                        parent:newParent
-                   sourceIndex:ULONG_MAX
-                          alID:AL_NONE ];
-}
-
-- (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject> )newParent
         sourceIndex:(NSUInteger)newSourceIndex
                alID:(ALuint)newALID
 {
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     sourceIndex = newSourceIndex;
     alID = newALID;

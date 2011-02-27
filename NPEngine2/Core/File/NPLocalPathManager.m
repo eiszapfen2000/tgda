@@ -1,3 +1,4 @@
+#import <Foundation/NSBundle.h>
 #import <Foundation/NSFileManager.h>
 #import "Log/NPLog.h"
 #import "NSFileManager+NPEngine.h"
@@ -5,19 +6,9 @@
 
 @implementation NPLocalPathManager
 
-- (id) init
-{
-    return [ self initWithName:@"NPEngine Local Paths Manager" ];
-}
-
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     localPaths = [[ NSMutableArray alloc ] init ];
     [ self addApplicationPath ];
@@ -35,6 +26,9 @@
 
 - (void) addApplicationPath
 {
+    NSString * bundlePath = [[ NSBundle mainBundle ] bundlePath ];
+    NSLog(bundlePath);
+
     NSString * workingDirectory =
         [[ NSFileManager defaultManager ] currentDirectoryPath ];
 

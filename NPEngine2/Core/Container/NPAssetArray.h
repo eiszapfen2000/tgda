@@ -10,7 +10,6 @@
 }
 
 - (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject> )newParent
          assetClass:(Class)newAssetClass
                    ;
 

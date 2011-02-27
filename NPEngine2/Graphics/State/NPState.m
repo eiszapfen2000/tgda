@@ -3,10 +3,9 @@
 @implementation NPState
 
 - (id) initWithName:(NSString *)newName 
-             parent:(id <NPPObject> )newParent
       configuration:(NPStateConfiguration *)newConfiguration
 {
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     locked = NO;
     configuration = newConfiguration;

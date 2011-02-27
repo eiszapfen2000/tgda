@@ -80,9 +80,8 @@ static NSMutableDictionary * semantics = nil;
 #undef INSERTENUM
 
 - (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject> )newParent
 {
-    return [ super initWithName:newName parent:newParent ];
+    return [ super initWithName:newName ];
 }
 
 - (void) dealloc

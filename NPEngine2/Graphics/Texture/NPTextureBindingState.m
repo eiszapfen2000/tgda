@@ -4,19 +4,9 @@
 
 @implementation NPTextureBindingState
 
-- (id) init
-{
-    return [ self initWithName:@"NPEngine TextureBinding State" ];
-}
-
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     locked = NO;
     numberOfSuppertedTexelUnits = maximumNumberOfVertexTexelUnits = 0;

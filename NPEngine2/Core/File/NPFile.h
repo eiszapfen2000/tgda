@@ -9,19 +9,8 @@
     FILE * file;
 }
 
-- (id) init;
 - (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName 
-             parent:(id <NPPObject> )newParent
-                   ;
-
-- (id) initWithName:(NSString *)newName 
-             parent:(id <NPPObject> )newParent
-           fileName:(NSString *)newFileName
-                   ;
-
 - (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject>)newParent
            fileName:(NSString *)newFileName
                mode:(NpStreamMode)newMode
               error:(NSError **)error

@@ -11,19 +11,9 @@
 
 @implementation NPSoundSources
 
-- (id) init
-{
-    return [ self initWithName:@"NPEngine Sound Sources" ];
-}
-
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     sources = [[ NSMutableArray alloc ] init ];
 
@@ -180,10 +170,10 @@
         if ( outOfSources == NO )
         {
             NPSoundSource * source = 
-                [[ NPSoundSource alloc ] initWithName:[NSString stringWithFormat:@"Source%lu", index]
-                                               parent:self
-                                          sourceIndex:index
-                                                 alID:alID ];
+                [[ NPSoundSource alloc ]
+                        initWithName:[NSString stringWithFormat:@"Source%lu", index]
+                         sourceIndex:index
+                                alID:alID ];
 
             [ sources addObject:source ];
             [ source release ];

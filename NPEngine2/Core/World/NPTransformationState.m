@@ -2,19 +2,9 @@
 
 @implementation NPTransformationState
 
-- (id) init
-{
-    return [ self initWithName:@"NPEngine Core Transformation State" ];
-}
-
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     modelMatrix                         = fm4_alloc_init();
     inverseModelMatrix                  = fm4_alloc_init();
