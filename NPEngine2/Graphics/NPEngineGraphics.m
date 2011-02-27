@@ -15,6 +15,7 @@
 #import "State/NPStateConfiguration.h"
 #import "NPEngineGraphicsErrors.h"
 #import "NPEngineGraphicsStringEnumConversion.h"
+#import "NPEngineGraphicsStringToClassConversion.h"
 #import "NPEngineGraphics.h"
 
 static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
@@ -62,6 +63,10 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         = [[ NPEngineGraphicsStringEnumConversion alloc ] 
                  initWithName:@"Graphics String Enum Conversion" ];
 
+    stringToClassConversion
+        = [[ NPEngineGraphicsStringToClassConversion alloc ] 
+                 initWithName:@"Graphics String To Class Conversion" ];
+
     images = [[ NPAssetArray alloc ]
                     initWithName:@"NP Engine Images"
                       assetClass:NSClassFromString(@"NPImage") ];
@@ -99,6 +104,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 - (NPEngineGraphicsStringEnumConversion *) stringEnumConversion
 {
     return stringEnumConversion;
+}
+
+- (NPEngineGraphicsStringToClassConversion *) stringToClassConversion
+{
+    return stringToClassConversion;
 }
 
 - (NPAssetArray *) images

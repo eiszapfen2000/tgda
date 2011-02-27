@@ -26,21 +26,17 @@
 
 - (void) addApplicationPath
 {
-    NSString * bundlePath = [[ NSBundle mainBundle ] bundlePath ];
-    NSLog(bundlePath);
+    NSString * pathToExecutable = [[ NSBundle mainBundle ] executablePath ];
+    NSString * executableFolder = [ pathToExecutable stringByDeletingLastPathComponent ];
 
-    NSString * workingDirectory =
-        [[ NSFileManager defaultManager ] currentDirectoryPath ];
+    NPLOG(@"%@: Adding application directory %@ to local paths", name, executableFolder);
+    [ localPaths addObject:executableFolder ];
 
-    NPLOG(@"%@: Adding application directory %@ to local paths", name, workingDirectory);
-
+    NSString * workingDirectory = [[ NSFileManager defaultManager ] currentDirectoryPath ];
     if ( workingDirectory != nil )
     {
+        NPLOG(@"%@: Adding working directory %@ to local paths", name, workingDirectory);
         [ localPaths addObject:workingDirectory ];
-    }
-    else
-    {
-        //NPLOG_ERROR_STRING(@"%@: Working directory not accessible", name);
     }
 }
 

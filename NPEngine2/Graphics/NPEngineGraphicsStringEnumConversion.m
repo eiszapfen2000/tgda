@@ -84,11 +84,6 @@ static NSMutableDictionary * semantics = nil;
     return [ super initWithName:newName ];
 }
 
-- (void) dealloc
-{
-    [ super dealloc ];
-}
-
 - (NpBlendingMode) blendingModeForString:(NSString *)string 
                              defaultMode:(NpBlendingMode)defaultMode
 {

@@ -3,6 +3,7 @@
 
 @class NPAssetArray;
 @class NPEngineGraphicsStringEnumConversion;
+@class NPEngineGraphicsStringToClassConversion;
 @class NPStateConfiguration;
 
 @interface NPEngineGraphics : NSObject < NPPObject >
@@ -10,6 +11,7 @@
     uint32_t objectID;
 
     NPEngineGraphicsStringEnumConversion * stringEnumConversion;
+    NPEngineGraphicsStringToClassConversion * stringToClassConversion;
 
     NPAssetArray * images;
     NPAssetArray * textures2D;
@@ -24,6 +26,7 @@
 - (void) dealloc;
 
 - (NPEngineGraphicsStringEnumConversion *) stringEnumConversion;
+- (NPEngineGraphicsStringToClassConversion *) stringToClassConversion;
 
 - (NPAssetArray *) images;
 - (NPAssetArray *) textures2D;
@@ -41,4 +44,5 @@
 - (void) render;
 
 @end
+
 
