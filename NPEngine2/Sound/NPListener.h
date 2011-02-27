@@ -10,9 +10,7 @@
     FQuaternion listenerRotation;
 }
 
-- (id) init;
 - (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
 - (void) setListenerPosition:(FVector3)newListenerPosition;

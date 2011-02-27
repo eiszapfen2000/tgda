@@ -13,7 +13,6 @@
 }
 
 - (id) initWithName:(NSString *)newName 
-             parent:(id <NPPObject> )newParent
       configuration:(NPStateConfiguration *)newConfiguration
                    ;
 - (void) dealloc;

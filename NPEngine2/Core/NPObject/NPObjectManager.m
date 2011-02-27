@@ -7,24 +7,11 @@
 
 @implementation NPObjectManager
 
-- (id) init
-{
-    return [ self initWithName:@"" parent:nil ];
-}
-
 - (id) initWithName:(NSString *)newName
-{
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent
 {
     self = [ super init ];
 
     ASSIGNCOPY(name, newName);
-
-    //Weak reference
-    parent = newParent;
     objectID = crc32_of_pointer(self);
 
     NSPointerFunctionsOptions options
@@ -45,7 +32,6 @@
 
     DESTROY(objects);
     DESTROY(name);
-    parent = nil;
 
     [ super dealloc ];
 }
@@ -70,11 +56,6 @@
     return name;
 }
 
-- (id <NPPObject>) parent
-{
-    return parent;
-}
-
 - (uint32_t) objectID
 {
     return objectID;
@@ -85,9 +66,9 @@
     ASSIGNCOPY(name, newName);
 }
 
-- (void) setParent:(id <NPPObject>)newParent
+- (void) setObjectID:(uint32_t)newObjectID
 {
-    parent = newParent;
+    objectID = newObjectID;
 }
 
 @end

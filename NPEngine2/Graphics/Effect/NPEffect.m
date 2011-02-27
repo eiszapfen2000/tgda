@@ -19,30 +19,32 @@
 
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
+    [[[ NPEngineGraphics instance ] effects ] registerAsset:self ];
 
     file = nil;
     ready = NO;
     techniques = [[ NSMutableArray alloc ] init ];
     variables =  [[ NSMutableArray alloc ] init ];
 
-    [[[ NPEngineGraphics instance ] effects ] registerAsset:self ];
-
     return self;
 }
 
 - (void) dealloc
 {
-    [[[ NPEngineGraphics instance ] effects ] unregisterAsset:self ];
-
     [ self clear ];
     DESTROY(techniques);
+    [[[ NPEngineGraphics instance ] effects ] unregisterAsset:self ];
+
     [ super dealloc ];
+}
+
+- (void) clear
+{
+    SAFE_DESTROY(file);
+    ready = NO;
+    [ techniques removeAllObjects ];
+    [ variables  removeAllObjects ];
 }
 
 - (id) variableWithName:(NSString *)variableName
@@ -65,14 +67,6 @@
     return [ techniques objectAtIndex:index ];
 }
 
-- (void) clear
-{
-    SAFE_DESTROY(file);
-    ready = NO;
-    [ techniques removeAllObjects ];
-    [ variables  removeAllObjects ];
-}
-
 - (NSString *) fileName
 {
     return file;
@@ -91,7 +85,6 @@
     NPStringList * effectScript
         = AUTORELEASE([[ NPStringList alloc ]
                             initWithName:@""
-                                  parent:self
                          allowDuplicates:YES
                        allowEmptyStrings:NO ]);
 
@@ -128,7 +121,6 @@
     NPStringList * effectScript
         = AUTORELEASE([[ NPStringList alloc ]
                             initWithName:@"" 
-                                  parent:self
                          allowDuplicates:YES
                        allowEmptyStrings:NO ]);
 
@@ -171,7 +163,7 @@
                     NPEffectTechnique * technique
                         = AUTORELEASE([[ NPEffectTechnique alloc ]
                                              initWithName:techniqueName
-                                                   parent:self ]);
+                                                   effect:self ]);
 
                     NSError * error = nil;
                     if ( [ technique loadFromStringList:techniqueStringList

@@ -69,12 +69,7 @@
 
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     file = nil;
     ready = NO;
@@ -193,7 +188,6 @@
     NPStringList * stringList
         = AUTORELEASE([[ NPStringList alloc ]
                              initWithName:@""
-                                   parent:self
                           allowDuplicates:YES
                         allowEmptyStrings:YES ]);
 

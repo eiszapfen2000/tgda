@@ -4,19 +4,9 @@
 
 @implementation NPSoundManager
 
-- (id) init
-{
-    return [ self initWithName:@"NPEngine Sound Manager" ];
-}
-
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     samples = [[ NSMutableDictionary alloc ] init ];
     streams = [[ NSMutableDictionary alloc ] init ];
@@ -57,7 +47,7 @@
     if ( sample == nil )
     {
         NSError * error = nil;
-        sample = [[ NPSoundSample alloc ] initWithName:@"" parent:self ];
+        sample = [[ NPSoundSample alloc ] initWithName:@"" ];
 
         if ( [ sample loadFromFile:absoluteFileName error:&error ] == YES )
         {
@@ -89,7 +79,7 @@
     if ( stream == nil )
     {
         NSError * error = nil;
-        stream = [[ NPSoundStream alloc ] initWithName:@"" parent:self ];
+        stream = [[ NPSoundStream alloc ] initWithName:@"" ];
 
         if ( [ stream loadFromFile:absoluteFileName error:&error ] == YES )
         {

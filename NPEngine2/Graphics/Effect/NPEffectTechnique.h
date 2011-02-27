@@ -2,6 +2,7 @@
 #import "Core/NPObject/NPObject.h"
 
 @class NPShader;
+@class NPEffect;
 
 @interface NPEffectTechnique : NPObject
 {
@@ -10,11 +11,12 @@
     NPShader * vertexShader;
     NPShader * fragmentShader;
 
+    NPEffect * effect;
     NSMutableArray * techniqueVariables;
 }
 
 - (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject> )newParent
+             effect:(NPEffect *)newEffect
                    ;
 - (void) dealloc;
 

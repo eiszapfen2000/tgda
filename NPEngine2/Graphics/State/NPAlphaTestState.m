@@ -4,10 +4,9 @@
 @implementation NPAlphaTestState
 
 - (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject> )newParent
       configuration:(NPStateConfiguration *)newConfiguration
 {
-    self = [ super initWithName:newName parent:newParent configuration:newConfiguration ];
+    self = [ super initWithName:newName configuration:newConfiguration ];
 
     enabled          = NO;
     defaultEnabled   = NO;

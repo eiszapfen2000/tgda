@@ -8,39 +8,21 @@
 
 @implementation NPFile
 
-- (id) init
+- (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:@"NPFile" ];
+    self = [ super initWithName:newName ];
+
+    mode = NpStreamRead;
+
+    return self;
 }
 
 - (id) initWithName:(NSString *)newName
-{
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    return [ super initWithName:newName parent:newParent ];
-}
-
-- (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject> )newParent
-           fileName:(NSString *)newFileName
-{
-    return [ self initWithName:newName 
-                        parent:newParent
-                      fileName:newFileName
-                          mode:NpStreamRead
-                         error:NULL ];
-}
-
-- (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject> )newParent
            fileName:(NSString *)newFileName
                mode:(NpStreamMode)newMode
               error:(NSError **)error
 {
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     if ( [ self openFile:newFileName
                     mode:newMode

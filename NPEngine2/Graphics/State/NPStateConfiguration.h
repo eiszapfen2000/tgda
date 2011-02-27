@@ -15,9 +15,7 @@
     NPPolygonFillState * polygonFillState;
 }
 
-- (id) initWithName:(NSString *)newName 
-             parent:(id <NPPObject> )newParent
-                   ;
+- (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
 - (BOOL) locked;

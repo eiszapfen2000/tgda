@@ -23,11 +23,7 @@
     NPSoundStream * currentStream;
 }
 
-- (id) init;
-- (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject> )newParent
         sourceIndex:(NSUInteger)newSourceIndex
                alID:(ALuint)newALID
                    ;

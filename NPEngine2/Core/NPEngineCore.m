@@ -41,24 +41,21 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     npmath_initialise();
 
     self = [ super init ];
-
     objectID = crc32_of_pointer(self);
 
     objectManager = [[ NPObjectManager alloc ] init ];
 
     NPLOG(@"NPEngine Core initialising...");
 
-    timer = [[ NPTimer alloc ] initWithName:@"NPEngine Timer" parent:self ];
+    timer = [[ NPTimer alloc ] initWithName:@"NPEngine Timer" ];
 
     localPathManager = 
         [[ NPLocalPathManager alloc ] 
-            initWithName:@"NPEngine Local Path Manager"
-                  parent:self ];
+            initWithName:@"NPEngine Local Path Manager" ];
 
     transformationState =
         [[ NPTransformationState alloc ]
-            initWithName:@"NPEngine Transformation State"
-                  parent:self ];
+            initWithName:@"NPEngine Transformation State" ];
 
     NPLOG(@"NPEngine Core up and running.");
 
@@ -80,23 +77,19 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     return @"NPEngine Core";
 }
 
+- (uint32_t) objectID
+{
+    return objectID;
+}
+
 - (void) setName:(NSString *)newName
 {
 
 }
 
-- (id <NPPObject>) parent
+- (void) setObjectID:(uint32_t)newObjectID
 {
-    return nil;
-}
 
-- (void) setParent:(id <NPPObject>)newParent
-{
-}
-
-- (uint32_t) objectID
-{
-    return objectID;
 }
 
 - (NPTimer *) timer

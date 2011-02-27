@@ -59,11 +59,13 @@
 
 @implementation NPEffectTechnique
 
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
+- (id) initWithName:(NSString *)newName
+             effect:(NPEffect *)newEffect
 {
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     vertexShader = fragmentShader = nil;
+    effect = newEffect;
     techniqueVariables = [[ NSMutableArray alloc ] init ];
 
     return self;
@@ -95,9 +97,7 @@
 {
     [ self clear ];
 
-    NSAssert(parent != nil, @"Technique does not belong to an effect");
-    NSAssert([ parent isMemberOfClass:[ NPEffect class ]],
-        @"NPEffectTechnique must have a parent of type NPEffect");
+    NSAssert(effect != nil, @"Technique does not belong to an effect");
 
     NPParser * parser = AUTORELEASE([[ NPParser alloc ] init ]);
     [ parser parse:stringList ];
@@ -138,7 +138,7 @@
 @implementation NPEffect (Private)
 
 - (id) registerEffectVariable:(NSString *)variableName
-                                         type:(NpEffectVariableType)variableType
+                         type:(NpEffectVariableType)variableType
 {
     NPEffectVariable * v = [ self variableWithName:variableName ];
 
@@ -152,13 +152,13 @@
     {
         case NpEffectVariableTypeSemantic:
         {
-            v = [[ NPEffectVariableSemantic alloc ] initWithName:variableName parent:self ];
+            v = [[ NPEffectVariableSemantic alloc ] initWithName:variableName ];
             break;
         }
 
         case NpEffectVariableTypeSampler:
         {
-            v = [[ NPEffectVariableSampler alloc ] initWithName:variableName parent:self ];
+            v = [[ NPEffectVariableSampler alloc ] initWithName:variableName ];
             break;
         }
 
@@ -300,8 +300,6 @@
 
 - (void) parseEffectVariables:(NPParser *)parser
 {
-    NPEffect * effect = (NPEffect *)parent;
-
     NSUInteger numberOfLines = [ parser lineCount ];
     for ( NSUInteger i = 0; i < numberOfLines; i++ )
     {
@@ -424,8 +422,6 @@
 
 - (void) parseActiveVariables
 {
-    NPEffect * effect = (NPEffect *)parent;  
-
 	GLint numberOfActiveUniforms;
     GLint maxUniformNameLength;
 
@@ -487,7 +483,7 @@
             NPEffectTechniqueVariable * vt
                 = AUTORELEASE([[ NPEffectTechniqueVariable alloc ]
                                     initWithName:uName
-                                          parent:[ effect variableWithName:uName ]
+                                  effectVariable:[ effect variableWithName:uName ]
                                         location:i ]);
 
             [ techniqueVariables addObject:vt ];

@@ -22,9 +22,7 @@
     NpPolygonFillMode polgyonFillBack;
 }
 
-- (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject> )newParent
-                   ;
+- (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
 - (void) setAlphaTestEnabled:(BOOL)newAlphaTestEnabled;

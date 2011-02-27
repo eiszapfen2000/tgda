@@ -12,12 +12,7 @@
 
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     [ self setSeparators:[ NSCharacterSet characterSetWithCharactersInString:@" \t,;" ]];
     [ self setSeparatorsToStoreAsLiterals:[ NSCharacterSet characterSetWithCharactersInString:@":,=()[]{}"]];

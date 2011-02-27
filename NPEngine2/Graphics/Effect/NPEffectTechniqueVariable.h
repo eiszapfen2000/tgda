@@ -3,11 +3,12 @@
 
 @interface NPEffectTechniqueVariable : NPObject
 {
+    id effectVariable;
     GLint location;
 }
 
 - (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject> )newParent
+     effectVariable:(id)newEffectVariable
            location:(GLint)newLocation
                    ;
 

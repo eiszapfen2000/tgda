@@ -11,10 +11,9 @@
 @implementation NPAssetArray
 
 - (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject> )newParent
          assetClass:(Class)newAssetClass
 {
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     assetClass = newAssetClass;
 

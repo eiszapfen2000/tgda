@@ -5,9 +5,7 @@
 {
 }
 
-- (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject> )newParent
-                   ;
+- (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
 - (NpBlendingMode) blendingModeForString:(NSString *)string 

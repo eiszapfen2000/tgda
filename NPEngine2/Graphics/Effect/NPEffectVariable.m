@@ -3,10 +3,9 @@
 @implementation NPEffectVariable
 
 - (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject>)newParent
        variableType:(NpEffectVariableType)newVariableType
 {
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     variableType = newVariableType;
 

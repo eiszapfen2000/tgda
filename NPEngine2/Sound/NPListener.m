@@ -4,19 +4,9 @@
 
 @implementation NPListener
 
-- (id) init
-{
-    return [ self initWithName:@"NPEngine Sound Listener" ];
-}
-
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     fv3_v_init_with_zeros(&listenerPositionLastFrame);
     fv3_v_init_with_zeros(&listenerPosition);

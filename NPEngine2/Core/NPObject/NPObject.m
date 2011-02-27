@@ -5,24 +5,11 @@
 
 @implementation NPObject
 
-- (id) init
-{
-    return [ self initWithName:@"" parent:nil ];
-}
-
 - (id) initWithName:(NSString *)newName
-{
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent
 {
     self = [ super init ];
 
     ASSIGNCOPY(name, newName);
-
-    //Weak reference
-    parent = newParent;
     objectID = crc32_of_pointer(self);
 
     [[[ NPEngineCore instance ] objectManager ] addObject:self ];
@@ -33,8 +20,6 @@
 - (void) dealloc
 {
     DESTROY(name);
-    parent = nil;
-
     [[[ NPEngineCore instance ] objectManager ] removeObject:self ];
 
     [ super dealloc ];
@@ -43,11 +28,6 @@
 - (NSString *) name
 {
     return name;
-}
-
-- (id <NPPObject>) parent
-{
-    return parent;
 }
 
 - (uint32_t) objectID
@@ -60,15 +40,15 @@
     ASSIGNCOPY(name, newName);
 }
 
-- (void) setParent:(id <NPPObject>)newParent
+- (void) setObjectID:(uint32_t)newObjectID
 {
-    parent = newParent;
+    objectID = newObjectID;
 }
 
 - (NSString *) description
 {
-    return [ NSString stringWithFormat:@"ID:%ud retainCount:%u Name:%@ Class:%@",
-             objectID, (uint32_t)[self retainCount], name, NSStringFromClass([self class]) ];
+    return [ NSString stringWithFormat:@"Class:%@ Name:%@ retainCount:%lu ID:%ud",
+             NSStringFromClass([self class]), name, [self retainCount], objectID ];
 }
 
 @end

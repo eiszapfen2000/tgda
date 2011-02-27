@@ -8,13 +8,10 @@
 {
     uint32_t objectID;
     NSString * name;
-    id <NPPObject> parent;
     NSPointerArray * objects;
 }
 
-- (id) init;
 - (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent;
 - (void) dealloc;
 
 - (void) addObject:(id <NPPObject>)newObject;

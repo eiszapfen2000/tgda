@@ -8,13 +8,14 @@
 @implementation NPEffectTechniqueVariable
 
 - (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject> )newParent
+     effectVariable:(id)newEffectVariable
            location:(GLint)newLocation
 {
-    NSAssert([ newParent isKindOfClass:[ NPEffectVariable class ]] == YES, @"");
+    NSAssert([ newEffectVariable isKindOfClass:[ NPEffectVariable class ]] == YES, @"");
 
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
+    effectVariable = newEffectVariable;
     location = newLocation;
 
     return self;
@@ -27,7 +28,7 @@
 
 - (void) activate
 {
-    [ parent activate:self ];
+    [ effectVariable activate:self ];
 }
 
 @end

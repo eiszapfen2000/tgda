@@ -9,11 +9,10 @@
 @protocol NPPObject < NSObject >
 
 - (NSString *) name;
-- (id <NPPObject>) parent;
 - (uint32_t) objectID;
 
 - (void) setName:(NSString *)newName;
-- (void) setParent:(id <NPPObject> )newParent;
+- (void) setObjectID:(uint32_t)newObjectID;
 
 @end
 

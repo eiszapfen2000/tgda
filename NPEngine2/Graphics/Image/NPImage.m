@@ -88,12 +88,8 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
 
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
+    [[[ NPEngineGraphics instance ] images ] registerAsset:self ];
 
     file = nil;
     ready = NO;
@@ -103,16 +99,14 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
     width = height = 0;
     imageData = nil;
 
-    [[[ NPEngineGraphics instance ] images ] registerAsset:self ];
-
     return self;
 }
 
 - (void) dealloc
 {
+    [ self clear ];
     [[[ NPEngineGraphics instance ] images ] unregisterAsset:self ];
 
-    [ self clear ];
     [ super dealloc ];
 }
 
