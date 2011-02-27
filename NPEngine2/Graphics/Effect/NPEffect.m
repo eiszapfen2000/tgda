@@ -1,9 +1,13 @@
 #import "Log/NPLog.h"
 #import "Core/NPEngineCore.h"
-#import "Core/Utilities/NSError+NPEngine.h"
+#import "Core/String/NPStringList.h"
+#import "Core/String/NPParser.h"
+#import "Core/Container/NSArray+NPPObject.h"
 #import "Core/Container/NPAssetArray.h"
+#import "Core/Utilities/NSError+NPEngine.h"
 #import "Graphics/NPEngineGraphics.h"
-#import "NPEffectCompiler.h"
+#import "NPEffectVariable.h"
+#import "NPEffectTechnique.h"
 #import "NPEffect.h"
 
 @implementation NPEffect
@@ -39,6 +43,26 @@
     [ self clear ];
     DESTROY(techniques);
     [ super dealloc ];
+}
+
+- (id) variableWithName:(NSString *)variableName
+{
+    return [ variables objectWithName:variableName ];
+}
+
+- (id) variableAtIndex:(NSUInteger)index
+{
+    return [ variables objectAtIndex:index ];
+}
+
+- (NPEffectTechnique *) techniqueWithName:(NSString *)techniqueName
+{
+    return [ techniques objectWithName:techniqueName ];
+}
+
+- (NPEffectTechnique *) techniqueAtIndex:(NSUInteger)index
+{
+    return [ techniques objectAtIndex:index ];
 }
 
 - (void) clear

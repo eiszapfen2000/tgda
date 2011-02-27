@@ -53,8 +53,8 @@
 - (NSString *) stringAtIndex:(NSUInteger)index;
 - (NPStringList *) stringListInRange:(NSRange)range;
 
-- (NSArray *) stringsWithPrefix:(NSString *)prefix;
-- (NSArray *) stringsWithSuffix:(NSString *)suffix;
+- (NPStringList *) stringsWithPrefix:(NSString *)prefix;
+- (NPStringList *) stringsWithSuffix:(NSString *)suffix;
 
 @end
 

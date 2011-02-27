@@ -1,5 +1,4 @@
 #import <Foundation/NSException.h>
-#import <Foundation/NSIndexSet.h>
 #import "Log/NPLog.h"
 #import "Core/String/NPStringList.h"
 #import "Core/String/NPParser.h"
@@ -7,9 +6,25 @@
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Graphics/NPEngineGraphics.h"
 #import "Graphics/NPEngineGraphicsErrors.h"
+#import "Graphics/NSString+NPEngineGraphicsEnums.h"
 #import "NPShader.h"
+#import "NPEffectVariable.h"
+#import "NPEffectVariableSampler.h"
+#import "NPEffectVariableSemantic.h"
 #import "NPEffect.h"
+#import "NPEffectTechniqueVariable.h"
 #import "NPEffectTechnique.h"
+
+@interface NPEffect (Private)
+
+- (id) registerEffectVariable:(NSString *)variableName
+                                         type:(NpEffectVariableType)variableType
+                                             ;
+
+- (id) registerEffectVariableSemantic:(NSString *)variableName;
+- (id) registerEffectVariableSampler:(NSString *)variableName;
+
+@end
 
 @interface NPEffectTechnique (Private)
 
@@ -18,47 +33,38 @@
                                ;
 
 - (NPShader *) loadShaderFromFile:(NSString *)fileName
-            insertEffectVariables:(NSArray *)effectVariables
+            insertEffectVariables:(NPStringList *)effectVariables
                                  ;
 
 - (void) loadVertexShaderFromFile:(NSString *)fileName
-                 effectVariables:(NSArray *)effectVariables
-                                ;
+                  effectVariables:(NPStringList *)effectVariables
+                                 ;
 
 - (void) loadFragmentShaderFromFile:(NSString *)fileName
-                   effectVariables:(NSArray *)effectVariables
-                                  ;
+                    effectVariables:(NPStringList *)effectVariables
+                                   ;
 
-- (NSArray *) extractEffectVariableLines:(NPStringList *)stringList;
+- (NPStringList *) extractEffectVariableLines:(NPStringList *)stringList;
 - (void) parseShader:(NPParser *)parser
-     effectVariables:(NSArray *)effectVariables
+     effectVariables:(NPStringList *)effectVariables
                     ;
 
 - (void) clearShaders;
 - (BOOL) linkShader:(NSError **)error;
-- (void) parseUniforms;
-
-
+- (void) parseEffectVariables:(NPParser *)parser;
+- (void) parseActiveVariables;
+- (void) activateVariables;
 
 @end
 
 @implementation NPEffectTechnique
-
-- (id) init
-{
-    return [ self initWithName:@"Technique" ];
-}
-
-- (id) initWithName:(NSString *)newName
-{
-    return [ self initWithName:newName parent:nil ];
-}
 
 - (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
 {
     self = [ super initWithName:newName parent:newParent ];
 
     vertexShader = fragmentShader = nil;
+    techniqueVariables = [[ NSMutableArray alloc ] init ];
 
     return self;
 }
@@ -66,6 +72,8 @@
 - (void) dealloc
 {
     [ self clear ];
+    DESTROY(techniqueVariables);
+
     [ super dealloc ];
 }
 
@@ -78,6 +86,8 @@
         glDeleteProgram(glID);
 		glID = 0;
     }
+
+    [ techniqueVariables removeAllObjects ];
 }
 
 - (BOOL) loadFromStringList:(NPStringList *)stringList
@@ -86,27 +96,98 @@
     [ self clear ];
 
     NSAssert(parent != nil, @"Technique does not belong to an effect");
+    NSAssert([ parent isMemberOfClass:[ NPEffect class ]],
+        @"NPEffectTechnique must have a parent of type NPEffect");
 
-    NPParser * parser = [[ NPParser alloc ] init ];
+    NPParser * parser = AUTORELEASE([[ NPParser alloc ] init ]);
     [ parser parse:stringList ];
 
-    NSArray * effectVariableLines
+    NPStringList * effectVariableLines
         = [ self extractEffectVariableLines:stringList ];
 
     [ self parseShader:parser effectVariables:effectVariableLines ];
 
     glID = glCreateProgram();
 
-    DESTROY(parser);
-
     if ( [ self linkShader:error ] == NO )
     {
         return NO;
     }
 
-    [ self parseUniforms ];
+    [ parser parse:effectVariableLines ];
+    [ self parseEffectVariables:parser ];
+    [ self parseActiveVariables ];
 
     return YES;
+}
+
+- (void) activate
+{
+    [ self activate:NO ];
+}
+
+- (void) activate:(BOOL)force
+{
+    glUseProgram(glID);
+
+    [ self activateVariables ];
+}
+
+@end
+
+@implementation NPEffect (Private)
+
+- (id) registerEffectVariable:(NSString *)variableName
+                                         type:(NpEffectVariableType)variableType
+{
+    NPEffectVariable * v = [ self variableWithName:variableName ];
+
+    if ( v != nil )
+    {
+        NSAssert([ v variableType ] == variableType, @"Effect Variable type mismatch");
+        return v;
+    }
+
+    switch ( variableType )
+    {
+        case NpEffectVariableTypeSemantic:
+        {
+            v = [[ NPEffectVariableSemantic alloc ] initWithName:variableName parent:self ];
+            break;
+        }
+
+        case NpEffectVariableTypeSampler:
+        {
+            v = [[ NPEffectVariableSampler alloc ] initWithName:variableName parent:self ];
+            break;
+        }
+
+        default:
+        {
+            NPLOG(@"%s - Unknown effect variable %@", __PRETTY_FUNCTION__, variableName);
+            break;
+        }
+    }
+
+    if ( v != nil )
+    {
+        [ variables addObject:v ];
+        AUTORELEASE(v);
+    }
+
+    return v;
+}
+
+- (id) registerEffectVariableSemantic:(NSString *)variableName
+{
+    return  [ self registerEffectVariable:variableName
+                                     type:NpEffectVariableTypeSemantic ];
+}
+
+- (id) registerEffectVariableSampler:(NSString *)variableName
+{
+    return  [ self registerEffectVariable:variableName
+                                     type:NpEffectVariableTypeSampler ];
 }
 
 @end
@@ -114,7 +195,7 @@
 @implementation NPEffectTechnique (Private)
 
 - (NPShader *) loadShaderFromFile:(NSString *)fileName
-            insertEffectVariables:(NSArray *)effectVariables
+            insertEffectVariables:(NPStringList *)effectVariables
 {
     NSError * error = nil;
     NPStringList * shaderSource
@@ -127,7 +208,7 @@
         return nil;
     }
 
-    [ shaderSource insertStrings:effectVariables atIndex:0 ];
+    [ shaderSource insertStringList:effectVariables atIndex:0 ];
 
     NPLOG([shaderSource description]);
 
@@ -144,7 +225,7 @@
 }
 
 - (void) loadVertexShaderFromFile:(NSString *)fileName
-                 effectVariables:(NSArray *)effectVariables
+                  effectVariables:(NPStringList *)effectVariables
 {
     SAFE_DESTROY(vertexShader);
 
@@ -161,7 +242,7 @@
 }
 
 - (void) loadFragmentShaderFromFile:(NSString *)fileName
-                   effectVariables:(NSArray *)effectVariables
+                    effectVariables:(NPStringList *)effectVariables
 {
     SAFE_DESTROY(fragmentShader);
 
@@ -177,26 +258,19 @@
     }
 }
 
-- (NSArray *) extractEffectVariableLines:(NPStringList *)stringList
+- (NPStringList *) extractEffectVariableLines:(NPStringList *)stringList
 {
-    NSMutableArray * lines = [ NSMutableArray arrayWithCapacity:8 ];
-    [ lines addObjectsFromArray:[ stringList stringsWithPrefix:@"uniform" ]];
-    [ lines addObjectsFromArray:[ stringList stringsWithPrefix:@"varying" ]];
+    NPStringList * lines = [ NPStringList stringList ];
+    [ lines setAllowDuplicates:NO ];
 
-    return [ NSArray arrayWithArray:lines ];
-}
+    [ lines addStringList:[ stringList stringsWithPrefix:@"uniform" ]];
+    [ lines addStringList:[ stringList stringsWithPrefix:@"varying" ]];
 
-- (void) parseVariables:(NPParser *)parser
-{
-    NSUInteger numberOfLines = [ parser lineCount ];
-    for ( NSUInteger i = 0; i < numberOfLines; i++ )
-    {
-
-    }
+    return lines;
 }
 
 - (void) parseShader:(NPParser *)parser
-     effectVariables:(NSArray *)effectVariables
+     effectVariables:(NPStringList *)effectVariables
 {
     NSUInteger numberOfLines = [ parser lineCount ];
     for ( NSUInteger i = 0; i < numberOfLines; i++ )
@@ -219,6 +293,34 @@
             {
                 [ self loadFragmentShaderFromFile:shaderFileName
                                   effectVariables:effectVariables ];
+            }
+        }
+    }
+}
+
+- (void) parseEffectVariables:(NPParser *)parser
+{
+    NPEffect * effect = (NPEffect *)parent;
+
+    NSUInteger numberOfLines = [ parser lineCount ];
+    for ( NSUInteger i = 0; i < numberOfLines; i++ )
+    {
+        if ( [ parser tokenCountForLine:i ] == 3 
+             && [ parser isLowerCaseTokenFromLine:i atPosition:0 equalToString:@"uniform" ] == YES )
+        {
+            NSString * uniformType = [ parser getTokenFromLine:i atPosition:1 ];
+            NSString * uniformName = [ parser getTokenFromLine:i atPosition:2 ];
+
+            if ( [ uniformType hasPrefix:@"sampler" ] == YES )
+            {
+                //NPEffectVariableSampler * s = [ effect registerEffectVariableSampler:uniformName ];
+            }
+
+            if ( [ uniformName hasPrefix:@"np_" ] == YES )
+            {
+                NPEffectVariableSemantic * s = [ effect registerEffectVariableSemantic:uniformName ];
+                NpEffectSemantic semantic = [[ uniformName lowercaseString ] semanticValue ];
+                [ s setSemantic:semantic ];
             }
         }
     }
@@ -320,8 +422,10 @@
     return [ NPEffectTechnique checkProgramLinkStatus:glID error:error ];
 }
 
-- (void) parseUniforms
+- (void) parseActiveVariables
 {
+    NPEffect * effect = (NPEffect *)parent;  
+
 	GLint numberOfActiveUniforms;
     GLint maxUniformNameLength;
 
@@ -340,9 +444,11 @@
 		glGetActiveUniform(glID, i, maxUniformNameLength, &uniformNameLength,
 			&uniformSize, &uniformType, uniformName);
 
-        NSLog(@"%s", uniformName);
+        NSString * uName
+            = [[ NSString alloc ] initWithCString:uniformName
+                                         encoding:NSUTF8StringEncoding ];
 
-		//string shaderVariableName(uniformName, uniformNameLength);
+        NSLog(uName);
 
 		// Sampler
 		switch (uniformType)
@@ -376,27 +482,16 @@
 			}
 		}
 
-        /*
-		// Semantics
-		if (shaderVariableName.substr(0, 3) == "zt_")
-		{
-			ZtShaderVariableSemantic* variableSemantic = getShaderVariableSemantic(shaderVariableName);
-			variableSemantic->setGLID(i);
+        if (([ uName hasPrefix:@"np_" ] == YES) && ([ uName semanticValue ] != NpSemanticUnknown))
+        {
+            NPEffectTechniqueVariable * vt
+                = AUTORELEASE([[ NPEffectTechniqueVariable alloc ]
+                                    initWithName:uName
+                                          parent:[ effect variableWithName:uName ]
+                                        location:i ]);
 
-			if (shaderVariableName == "zt_model"){variableSemantic->setSemanticType(MODEL_MATRIX);}
-			if (shaderVariableName == "zt_inversemodel"){variableSemantic->setSemanticType(INVERSE_MODEL_MATRIX);}
-			if (shaderVariableName == "zt_view"){variableSemantic->setSemanticType(VIEW_MATRIX);}
-			if (shaderVariableName == "zt_inverseview"){variableSemantic->setSemanticType(INVERSE_VIEW_MATRIX);}
-			if (shaderVariableName == "zt_projection"){variableSemantic->setSemanticType(PROJECTION_MATRIX);}
-			if (shaderVariableName == "zt_inverseprojection"){variableSemantic->setSemanticType(INVERSE_PROJECTION_MATRIX);}
-			if (shaderVariableName == "zt_modelview"){variableSemantic->setSemanticType(MODELVIEW_MATRIX);}
-			if (shaderVariableName == "zt_inversemodelview"){variableSemantic->setSemanticType(INVERSE_MODELVIEW_MATRIX);}
-			if (shaderVariableName == "zt_viewprojection"){variableSemantic->setSemanticType(VIEWPROJECTION_MATRIX);}
-			if (shaderVariableName == "zt_inverseviewprojection"){variableSemantic->setSemanticType(INVERSE_VIEWPROJECTION_MATRIX);}
-			if (shaderVariableName == "zt_modelviewprojection"){variableSemantic->setSemanticType(MODELVIEWPROJECTION_MATRIX);}
-			if (shaderVariableName == "zt_inversemodelviewprojection"){variableSemantic->setSemanticType(INVERSE_MODELVIEWPROJECTION_MATRIX);}
-		}
-        */
+            [ techniqueVariables addObject:vt ];
+        }
 
         /*
 		// Other
@@ -447,6 +542,15 @@
 		}
         */
 	}
+}
+
+- (void) activateVariables
+{
+    NSUInteger numberOfVariablesInTechnique = [ techniqueVariables count ];
+    for ( NSUInteger i = 0; i < numberOfVariablesInTechnique; i++ )
+    {
+        [[ techniqueVariables objectAtIndex:i ] activate ];
+    }
 }
 
 @end

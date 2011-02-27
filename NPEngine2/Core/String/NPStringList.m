@@ -195,9 +195,11 @@
     return result;
 }
 
-- (NSArray *) stringsWithPrefix:(NSString *)prefix
+- (NPStringList *) stringsWithPrefix:(NSString *)prefix
 {
-    NSMutableArray * result = [ NSMutableArray arrayWithCapacity:8 ];
+    NPStringList * result = [ NPStringList stringList ];
+    [ result setAllowDuplicates:YES ];
+    [ result setAllowEmptyStrings:YES ];
 
     NSUInteger numberOfStrings = [ strings count ];
     for ( NSUInteger i = 0; i < numberOfStrings; i++ )
@@ -205,16 +207,18 @@
         NSString * string = [ strings objectAtIndex:i ];
         if ( [ string hasPrefix:prefix ] == YES )
         {
-            [ result addObject:string ];
+            [ result addString:string ];
         }
     }
 
-    return [ NSArray arrayWithArray:result ];
+    return result;
 }
 
-- (NSArray *) stringsWithSuffix:(NSString *)suffix
+- (NPStringList *) stringsWithSuffix:(NSString *)suffix
 {
-    NSMutableArray * result = [ NSMutableArray arrayWithCapacity:8 ];
+    NPStringList * result = [ NPStringList stringList ];
+    [ result setAllowDuplicates:YES ];
+    [ result setAllowEmptyStrings:YES ];
 
     NSUInteger numberOfStrings = [ strings count ];
     for ( NSUInteger i = 0; i < numberOfStrings; i++ )
@@ -222,11 +226,11 @@
         NSString * string = [ strings objectAtIndex:i ];
         if ( [ string hasSuffix:suffix ] == YES )
         {
-            [ result addObject:string ];
+            [ result addString:string ];
         }
     }
 
-    return [ NSArray arrayWithArray:result ];
+    return result;
 }
 
 - (NSString *) fileName

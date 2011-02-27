@@ -1,6 +1,8 @@
 #import "Core/NPObject/NPObject.h"
 #import "Graphics/NPEngineGraphicsEnums.h"
 
+@class NPEffectTechniqueVariable;
+
 @interface NPEffectVariable : NPObject
 {
     NpEffectVariableType variableType;
@@ -10,5 +12,7 @@
              parent:(id <NPPObject>)newParent
        variableType:(NpEffectVariableType)newVariableType
                    ;
+
+- (NpEffectVariableType) variableType;
 
 @end

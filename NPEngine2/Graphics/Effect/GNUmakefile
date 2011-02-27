@@ -8,6 +8,7 @@ NPEffect.m \
 NPEffectTechnique.m \
 NPEffectTechniqueVariable.m \
 NPEffectVariable.m \
+NPEffectVariableSampler.m \
 NPEffectVariableSemantic.m
 
 libNPEngineGraphicsEffect_HEADER_FILES = \
@@ -16,6 +17,7 @@ NPEffect.h \
 NPEffectTechnique.h \
 NPEffectTechniqueVariable.h \
 NPEffectVariable.h \
+NPEffectVariableSampler.h \
 NPEffectVariableSemantic.h
 
 

@@ -8,5 +8,7 @@
 - (NpCullface) cullfaceValueWithDefault:(NpCullface)defaultValue;
 - (NpPolygonFillMode) polygonFillModeValueWithDefault:(NpPolygonFillMode)defaultValue;
 - (NpUniformType) uniformTypeValue;
+- (NpTextureType) textureTypeValue;
+- (NpEffectSemantic) semanticValue;
 
 @end

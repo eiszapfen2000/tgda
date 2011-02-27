@@ -13,4 +13,9 @@
     return self;
 }
 
+- (NpEffectVariableType) variableType
+{
+    return variableType;
+}
+
 @end
