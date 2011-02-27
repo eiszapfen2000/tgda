@@ -27,5 +27,7 @@
                                               ;
 
 - (NpUniformType) uniformTypeForString:(NSString *)string;
+- (NpTextureType) textureTypeForString:(NSString *)string;
+- (NpEffectSemantic) semanticForString:(NSString *)string;
 
 @end

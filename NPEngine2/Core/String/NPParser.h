@@ -19,6 +19,7 @@
 - (void) dealloc;
 
 - (NSUInteger) lineCount;
+- (NSUInteger) tokenCountForLine:(NSUInteger)lineIndex;
 
 - (void) setSeparators:(NSCharacterSet *)newSeparators;
 - (void) setSeparatorsToStoreAsLiterals:(NSCharacterSet *)newSeparatorsToStoreAsLiterals;

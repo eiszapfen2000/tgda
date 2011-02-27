@@ -1,29 +1,18 @@
+#import <Foundation/NSException.h>
+#import "Graphics/NPEngineGraphicsEnums.h"
+#import "NPEffectVariable.h"
+#import "NPEffectVariableSemantic.h"
+#import "NPEffectVariableSampler.h"
 #import "NPEffectTechniqueVariable.h"
 
 @implementation NPEffectTechniqueVariable
-
-- (id) init
-{
-    return [ self initWithName:@"Effect Technique Variable" ];
-}
-
-- (id) initWithName:(NSString *)newName
-{
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName
-             parent:(id <NPPObject> )newParent
-{
-    return [ self initWithName:newName
-                        parent:newParent
-                      location:INT_MAX ];
-}
 
 - (id) initWithName:(NSString *)newName
              parent:(id <NPPObject> )newParent
            location:(GLint)newLocation
 {
+    NSAssert([ newParent isKindOfClass:[ NPEffectVariable class ]] == YES, @"");
+
     self = [ super initWithName:newName parent:newParent ];
 
     location = newLocation;
@@ -34,6 +23,11 @@
 - (GLint) location
 {
     return location;
+}
+
+- (void) activate
+{
+    [ parent activate:self ];
 }
 
 @end

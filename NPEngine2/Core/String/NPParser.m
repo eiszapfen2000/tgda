@@ -47,6 +47,11 @@
     return [ lines count ];
 }
 
+- (NSUInteger) tokenCountForLine:(NSUInteger)lineIndex
+{
+    return [[ lines objectAtIndex:lineIndex ] count ];
+}
+
 - (void) clear
 {
     [ lines removeAllObjects ];

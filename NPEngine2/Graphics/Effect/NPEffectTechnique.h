@@ -13,8 +13,6 @@
     NSMutableArray * techniqueVariables;
 }
 
-- (id) init;
-- (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName
              parent:(id <NPPObject> )newParent
                    ;
@@ -25,6 +23,9 @@
 - (BOOL) loadFromStringList:(NPStringList *)stringList
                       error:(NSError **)error
                            ;
+
+- (void) activate;
+- (void) activate:(BOOL)force;
 
 @end
 

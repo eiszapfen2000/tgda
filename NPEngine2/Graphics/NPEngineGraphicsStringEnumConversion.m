@@ -6,6 +6,8 @@ static NSMutableDictionary * comparisonFunctions = nil;
 static NSMutableDictionary * cullfaces = nil;
 static NSMutableDictionary * polygonFillModes = nil;
 static NSMutableDictionary * uniformTypes = nil;
+static NSMutableDictionary * textureTypes = nil;
+static NSMutableDictionary * semantics = nil;
 
 @implementation NPEngineGraphicsStringEnumConversion
 
@@ -19,6 +21,8 @@ static NSMutableDictionary * uniformTypes = nil;
     cullfaces           = [[ NSMutableDictionary alloc ] init ];
     polygonFillModes    = [[ NSMutableDictionary alloc ] init ];
     uniformTypes        = [[ NSMutableDictionary alloc ] init ];
+    textureTypes        = [[ NSMutableDictionary alloc ] init ];
+    semantics           = [[ NSMutableDictionary alloc ] init ];
 
     INSERTENUM(blendingModes, NpBlendingAdditive, @"additive");
     INSERTENUM(blendingModes, NpBlendingSubtractive, @"subtractive");
@@ -52,6 +56,25 @@ static NSMutableDictionary * uniformTypes = nil;
     INSERTENUM(uniformTypes, NpUniformFMatrix2x2, @"mat2");
     INSERTENUM(uniformTypes, NpUniformFMatrix3x3, @"mat3");
     INSERTENUM(uniformTypes, NpUniformFMatrix4x4, @"mat4");
+
+    INSERTENUM(textureTypes, NpTextureTypeTexture1D, @"sampler1D");
+    INSERTENUM(textureTypes, NpTextureTypeTexture2D, @"sampler2D");
+    INSERTENUM(textureTypes, NpTextureTypeTexture3D, @"sampler3D");
+    INSERTENUM(textureTypes, NpTextureTypeTextureCube, @"samplerCUBE");
+    INSERTENUM(textureTypes, NpTextureTypeTextureBuffer, @"samplerBuffer");
+
+    INSERTENUM(semantics, NpModelMatrix, @"np_modelmatrix");
+    INSERTENUM(semantics, NpInverseModelMatrix, @"np_inversemodelmatrix");
+    INSERTENUM(semantics, NpViewMatrix, @"np_viewmatrix");
+    INSERTENUM(semantics, NpInverseViewMatrix, @"np_inverseviewmatrix");
+    INSERTENUM(semantics, NpProjectionMatrix, @"np_projectionmatrix");
+    INSERTENUM(semantics, NpInverseProjectionMatrix, @"np_inverseprojectionmatrix");
+    INSERTENUM(semantics, NpModelViewMatrix, @"np_modelviewmatrix");
+    INSERTENUM(semantics, NpInverseModelViewMatrix, @"np_inversemodelviewmatrix");
+    INSERTENUM(semantics, NpViewProjectionMatrix, @"np_viewprojectionmatrix");
+    INSERTENUM(semantics, NpInverseViewProjectionMatrix, @"np_inverseviewprojectionmatrix");
+    INSERTENUM(semantics, NpModelViewProjectionMatrix, @"np_modelviewprojectionmatrix");
+    INSERTENUM(semantics, NpInverseModelViewProjection, @"np_inversemodelviewprojectionmatrix");
 }
 
 #undef INSERTENUM
@@ -131,6 +154,32 @@ static NSMutableDictionary * uniformTypes = nil;
     if ( n != nil )
     {
         result = (NpUniformType)[ n intValue ];
+    }
+
+    return result;
+}
+
+- (NpTextureType) textureTypeForString:(NSString *)string
+{
+    NpTextureType result = NpTextureTypeUnknown;
+
+    NSNumber * n = [ uniformTypes objectForKey:string ];
+    if ( n != nil )
+    {
+        result = (NpTextureType)[ n intValue ];
+    }
+
+    return result;
+}
+
+- (NpEffectSemantic) semanticForString:(NSString *)string
+{
+    NpEffectSemantic result = NpSemanticUnknown;
+
+    NSNumber * n = [ semantics objectForKey:string ];
+    if ( n != nil )
+    {
+        result = (NpEffectSemantic)[ n intValue ];
     }
 
     return result;

@@ -38,4 +38,16 @@
                    uniformTypeForString:self ];
 }
 
+- (NpTextureType) textureTypeValue
+{
+    return [[[ NPEngineGraphics instance ] stringEnumConversion ]
+                   textureTypeForString:self ];
+}
+
+- (NpEffectSemantic) semanticValue
+{
+    return [[[ NPEngineGraphics instance ] stringEnumConversion ]
+                   semanticForString:self ];
+}
+
 @end
