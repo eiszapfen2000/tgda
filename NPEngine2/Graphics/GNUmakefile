@@ -6,8 +6,7 @@ libNPEngineGraphics_SUBPROJECTS = \
     Image \
     Texture \
     Effect \
-    State \
-    Geometry
+    State
 
 libNPEngineGraphics_C_FILES = \
 NPEngineGraphicsEnums.c
