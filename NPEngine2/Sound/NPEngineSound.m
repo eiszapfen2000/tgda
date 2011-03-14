@@ -1,3 +1,4 @@
+#import <Foundation/NSObject.h>
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSException.h>
 #import <Foundation/NSError.h>

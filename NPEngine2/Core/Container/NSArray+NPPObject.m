@@ -21,3 +21,18 @@
 }
 
 @end
+
+@implementation NSMutableArray (NPPObject)
+
+- (void) removeObjectWithName:(NSString *)name
+{
+    id object = [ self objectWithName:name ];
+    
+    if ( object != nil )
+    {
+        [ self removeObjectIdenticalTo:object ];
+    }
+}
+
+@end
+

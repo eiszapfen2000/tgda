@@ -17,6 +17,11 @@
     return [ NPEngineGraphics instance ];
 }
 
++ (NPEngineInput *) Input
+{
+    return [ NPEngineInput instance ];
+}
+
 + (NPEngineSound *) Sound
 {
     return [ NPEngineSound instance ];

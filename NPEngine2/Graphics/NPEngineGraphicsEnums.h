@@ -146,6 +146,17 @@ typedef enum NpPolygonFillMode
 }
 NpPolygonFillMode;
 
+typedef enum NpGeometryDataFormat
+{
+    NpGeometryDataFormatUnknown = -1,
+    NpGeometryDataFormatInt8 = 0,
+    NpGeometryDataFormatInt16 = 1,
+    NpGeometryDataFormatInt32 = 2,
+    NpGeometryDataFormatFloat16 = 3,
+    NpGeometryDataFormatFloat32 = 4
+}
+NpGeometryDataFormat;
+
 GLenum getGLComparisonFunction(const NpComparisonFunction comparisonFunction);
 GLenum getGLCullface(const NpCullface cullface);
 GLenum getGLPolygonFillMode(const NpPolygonFillMode polygonFillMode);
