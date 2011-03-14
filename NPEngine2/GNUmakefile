@@ -6,6 +6,7 @@ libNPEngine2_SUBPROJECTS = \
     Log \
     Core \
     Graphics \
+    Input \
     Sound
 
 libNPEngine2_OBJC_FILES = \

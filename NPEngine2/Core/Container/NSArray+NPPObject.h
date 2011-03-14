@@ -8,3 +8,9 @@
 
 @end
 
+@interface NSMutableArray (NPPObject)
+
+- (void) removeObjectWithName:(NSString *)name;
+
+@end
+

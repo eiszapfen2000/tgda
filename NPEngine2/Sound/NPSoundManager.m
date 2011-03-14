@@ -1,5 +1,9 @@
+#import <Foundation/NSObject.h>
+#import <Foundation/NSDictionary.h>
 #import "Core/NPEngineCore.h"
+#import "Core/File/NPLocalPathManager.h"
 #import "NPSoundSample.h"
+#import "NPSoundStream.h"
 #import "NPSoundManager.h"
 
 @implementation NPSoundManager
