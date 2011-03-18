@@ -21,11 +21,6 @@ void reset_mouse_state(NpMouseState * mouseState)
     return self;
 }
 
-- (void) dealloc
-{
-    [ super dealloc ];
-}
-
 - (int32_t) x
 {
     return x;

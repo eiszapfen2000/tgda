@@ -7,13 +7,15 @@ NPEngineInput.h \
 NPEngineInputEnums.h \
 NPInputAction.h \
 NPInputActions.h \
-NPMouse.h
+NPMouse.h \
+NPKeyboard.h
 
 libNPEngineInput_OBJC_FILES = \
 NPEngineInput.m \
 NPInputAction.m \
 NPInputActions.m \
-NPMouse.m
+NPMouse.m \
+NPKeyboard.m
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make
