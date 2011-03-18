@@ -1,4 +1,5 @@
 #import "NPEngineInput.h"
+#import "NPKeyboard.h"
 #import "NPMouse.h"
 #import "NPInputAction.h"
 
@@ -42,7 +43,8 @@
 
 - (BOOL) isEventActive:(NpInputEvent)inputEvent 
 {
-    return [[[ NPEngineInput instance ] mouse ] isButtonPressed:event ];
+    return ( [[[ NPEngineInput instance ] mouse ] isButtonPressed:event ]
+             || [[[ NPEngineInput instance ] keyboard ] isKeyPressed:event ] );
 }
 
 - (void) update

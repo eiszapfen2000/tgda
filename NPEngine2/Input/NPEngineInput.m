@@ -2,6 +2,7 @@
 #import <Foundation/NSException.h>
 #import "Log/NPLog.h"
 #import "Core/Basics/NpBasics.h"
+#import "NPKeyboard.h"
 #import "NPMouse.h"
 #import "NPInputActions.h"
 #import "NPEngineInput.h"
@@ -44,6 +45,7 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
     self = [ super init ];
 
     objectID = crc32_of_pointer(self);
+    keyboard = [[ NPKeyboard alloc ] init ];
     mouse = [[ NPMouse alloc ] init ];
     inputActions = [[ NPInputActions alloc ] init ];
 
@@ -54,6 +56,7 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
 {
     DESTROY(inputActions);
     DESTROY(mouse);
+    DESTROY(keyboard);
 
     [ super dealloc ];
 }
@@ -76,6 +79,11 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
 {
 }
 
+- (NPKeyboard *) keyboard
+{
+    return keyboard;
+}
+
 - (NPMouse *) mouse
 {
     return mouse;
@@ -94,7 +102,7 @@ static NPEngineInput * NP_ENGINE_INPUT = nil;
 
 - (BOOL) isAnythingPressed
 {
-    return NO;
+    return ( [ keyboard isAnyKeyPressed ] || [ mouse isAnyButtonPressed ] );
 }
 
 - (id) copyWithZone:(NSZone *)zone
