@@ -13,6 +13,7 @@
     Float length;
 }
 
+- (id) init;
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 

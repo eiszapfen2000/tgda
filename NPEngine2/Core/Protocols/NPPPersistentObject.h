@@ -3,6 +3,7 @@
 
 @class NSError;
 @class NSString;
+@class NSDictionary;
 
 @protocol NPPPersistentObject < NPPObject >
 
@@ -14,6 +15,7 @@
                        ;
 
 - (BOOL) loadFromFile:(NSString *)fileName
+            arguments:(NSDictionary *)arguments
                 error:(NSError **)error
                      ;
 

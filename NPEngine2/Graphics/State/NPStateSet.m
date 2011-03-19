@@ -163,6 +163,7 @@
 }
 
 - (BOOL) loadFromFile:(NSString *)fileName
+            arguments:(NSDictionary *)arguments
                 error:(NSError **)error
 {
     NSString * completeFileName

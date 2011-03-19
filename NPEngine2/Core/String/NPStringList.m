@@ -18,6 +18,7 @@
 {
     NPStringList * stringList = ([[ NPStringList alloc ] init ]);
     if ( [ stringList loadFromFile:fileName
+                         arguments:nil
                              error:error ] == NO )
     {
         DESTROY(stringList);
@@ -266,6 +267,7 @@
 }
 
 - (BOOL) loadFromFile:(NSString *)fileName
+            arguments:(NSDictionary *)arguments
                 error:(NSError **)error
 {
     [ self clear ];

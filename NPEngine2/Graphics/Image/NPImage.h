@@ -28,9 +28,4 @@
 - (NpImagePixelFormat) pixelFormat;
 - (NpImageDataFormat) dataFormat;
 
-- (BOOL) loadFromFile:(NSString *)fileName
-                 sRGB:(BOOL)sRGB
-                error:(NSError **)error
-                     ;
-
 @end

@@ -53,6 +53,7 @@
 {
     NPShader * shader = [[ NPShader alloc ] init ];
     if ( [ shader loadFromFile:fileName
+                     arguments:nil
                          error:error ] == NO )
     {
         DESTROY(shader);
@@ -162,6 +163,7 @@
 }
 
 - (BOOL) loadFromFile:(NSString *)fileName
+            arguments:(NSDictionary *)arguments
                 error:(NSError **)error
 {
     [ self clear ];
@@ -192,6 +194,7 @@
                         allowEmptyStrings:YES ]);
 
     if ( [ stringList loadFromFile:completeFileName
+                         arguments:nil
                              error:error ] == NO )
     {
         return NO;

@@ -8,7 +8,6 @@ NPListener.h \
 NPSoundSample.h \
 NPSoundSource.h \
 NPSoundSources.h \
-NPSoundManager.h \
 NPSoundStream.h \
 NPVorbisErrors.h
 
@@ -18,7 +17,6 @@ NPListener.m \
 NPSoundSample.m \
 NPSoundSource.m \
 NPSoundSources.m \
-NPSoundManager.m \
 NPSoundStream.m \
 NPVorbisErrors.m
 
