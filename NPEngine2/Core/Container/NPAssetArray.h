@@ -2,6 +2,7 @@
 #import "Core/Protocols/NPPPersistentObject.h"
 
 @class NSPointerArray;
+@class NSDictionary;
 
 @interface NPAssetArray : NPObject
 {
@@ -20,6 +21,8 @@
 
 - (id <NPPObject>) getAssetWithName:(NSString *)assetName;
 - (id <NPPPersistentObject>) getAssetWithFileName:(NSString *)fileName;
+- (id <NPPPersistentObject>) getAssetWithFileName:(NSString *)fileName
+                                        arguments:(NSDictionary *)arguments;
 
 @end
 

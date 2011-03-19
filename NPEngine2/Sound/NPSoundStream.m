@@ -1,4 +1,6 @@
+#import <Foundation/NSDictionary.h>
 #import "Log/NPLog.h"
+#import "Core/Container/NPAssetArray.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "NPEngineSound.h"
 #import "NPEngineSoundErrors.h"
@@ -21,9 +23,15 @@
 
 @implementation NPSoundStream
 
+- (id) init
+{
+    return [ self initWithName:@"" ];
+}
+
 - (id) initWithName:(NSString *)newName
 {
     self = [ super initWithName:newName ];
+    [[[ NPEngineSound instance ] streams ] registerAsset:self ];
 
     file = nil;
     ready = NO;
@@ -43,6 +51,7 @@
 - (void) dealloc
 {
     [ self stopStream ];
+    [[[ NPEngineSound instance ] streams ] unregisterAsset:self ];
     [ super dealloc ];
 }
 
@@ -83,6 +92,7 @@
 }
 
 - (BOOL) loadFromFile:(NSString *)fileName
+            arguments:(NSDictionary *)arguments
                 error:(NSError **)error
 {
     [ self setName:fileName ];

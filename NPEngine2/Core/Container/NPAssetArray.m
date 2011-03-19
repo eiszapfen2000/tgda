@@ -1,3 +1,4 @@
+#import <Foundation/NSDictionary.h>
 #import <Foundation/NSException.h>
 #import "Log/NPLog.h"
 #import "Core/File/NPLocalPathManager.h"
@@ -66,6 +67,7 @@
 }
 
 - (id <NPPPersistentObject>) getAssetWithFileName:(NSString *)fileName
+                                        arguments:(NSDictionary *)arguments
 {
     NSString * absoluteFileName
         = [[[ NPEngineCore instance ] 
@@ -77,7 +79,9 @@
         return nil;
     }
 
-    id <NPPPersistentObject> asset = [ assets pointerWithFileName:absoluteFileName ];
+    id <NPPPersistentObject> asset
+        = [ assets pointerWithFileName:absoluteFileName ];
+
     if ( asset != nil )
     {
         return asset;
@@ -86,7 +90,9 @@
     asset = [[ assetClass alloc ] init ];
 
     NSError * error = nil;
-    if ( [ asset loadFromFile:absoluteFileName error:&error ] == NO )
+    if ( [ asset loadFromFile:absoluteFileName
+                    arguments:arguments
+                        error:&error ] == NO )
     {
         NPLOG_ERROR(error);
         DESTROY(asset);
@@ -94,6 +100,12 @@
     }
 
     return AUTORELEASE(asset);
+}
+
+- (id <NPPPersistentObject>) getAssetWithFileName:(NSString *)fileName
+{
+    return [ self getAssetWithFileName:fileName
+                             arguments:nil ];
 }
 
 @end

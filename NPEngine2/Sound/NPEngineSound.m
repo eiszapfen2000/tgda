@@ -5,11 +5,11 @@
 #import "Log/NPLog.h"
 #import "Core/Basics/NpBasics.h"
 #import "Core/NPObject/NPObject.h"
+#import "Core/Container/NPAssetArray.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "NPEngineSoundErrors.h"
 #import "NPListener.h"
 #import "NPSoundSources.h"
-#import "NPSoundManager.h"
 #import "NPEngineSound.h"
 
 static NPEngineSound * NP_ENGINE_SOUND = nil;
@@ -59,8 +59,21 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     objectID = crc32_of_pointer(self);
 
     listener = [[ NPListener alloc ] initWithName:@"NPEngine Sound Listener" ];
-    soundManager = [[ NPSoundManager alloc ] initWithName:@"NPEngine Sound Manager" ];
     sources = [[ NPSoundSources alloc ] initWithName:@"NPEngine Sound Sources" ];
+
+    samples = [[ NPAssetArray alloc ]
+                    initWithName:@"NP Engine Sound Samples"
+                      assetClass:NSClassFromString(@"NPSoundSample") ];
+
+    streams = [[ NPAssetArray alloc ]
+                    initWithName:@"NP Engine Sound Streams"
+                      assetClass:NSClassFromString(@"NPSoundStream") ];
+
+    if (samples == nil || streams == nil)
+    {
+        NSLog(@"FUCK");
+    }
+
 
     volume = 1.0f;
 
@@ -69,8 +82,9 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 
 - (void) dealloc
 {
+    DESTROY(samples);
+    DESTROY(streams);
     DESTROY(sources);
-    DESTROY(soundManager);
     DESTROY(listener);
 
     [ self shutdownOpenAL ];
@@ -115,9 +129,14 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     return sources;
 }
 
-- (NPSoundManager *) soundManager
+- (NPAssetArray *) samples
 {
-    return soundManager;
+    return samples;
+}
+
+- (NPAssetArray *) streams
+{
+    return streams;
 }
 
 - (BOOL) startup
@@ -149,8 +168,6 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     NPLOG(@"NPEngine Sound shutting down...");
 
     [ sources shutdown ];
-    [ soundManager shutdown ];
-
     [ self shutdownOpenAL ];
 
     NPLOG(@"NPEngine Sound shut down");
@@ -159,9 +176,6 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 
 - (BOOL) checkForALError:(NSError **)error
 {
-    NSMutableDictionary * errorDetail = nil;
-    NSString * errorString = nil;
-
     if ( device != NULL )
     {
         ALCenum alcError = alcGetError(device);
@@ -169,13 +183,11 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
         {
             if ( error != NULL )
             {
-                errorDetail = [ NSMutableDictionary dictionary ];
-                errorString = [ NSString stringWithUTF8String:alcGetString(device, alcError) ];
-                [ errorDetail setValue:errorString forKey:NSLocalizedDescriptionKey];
-   
-                *error = [ NSError errorWithDomain:NPEngineErrorDomain 
-                                              code:NPOpenALCError
-                                          userInfo:errorDetail ];
+                NSString * errorString
+                    = [ NSString stringWithUTF8String:alcGetString(device, alcError) ];
+
+                *error = [ NSError errorWithCode:NPOpenALCError
+                                     description:errorString ];
             }
 
             return NO;
@@ -187,13 +199,11 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
     {
         if ( error != NULL )
         {
-            errorDetail = [ NSMutableDictionary dictionary ];
-            errorString = [ NSString stringWithUTF8String:alGetString(alError) ];
-            [ errorDetail setValue:errorString forKey:NSLocalizedDescriptionKey];
-   
-            *error = [ NSError errorWithDomain:NPEngineErrorDomain 
-                                          code:NPOpenALError
-                                      userInfo:errorDetail ];
+            NSString * errorString
+                = [ NSString stringWithUTF8String:alGetString(alError) ];
+
+            *error = [ NSError errorWithCode:NPOpenALError
+                                 description:errorString ];
         }
 
         return NO;
@@ -216,7 +226,6 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 {
     [ listener update ];
     [ sources update ];
-    [ soundManager update ];
 
     [ self checkForALErrors ];
 }

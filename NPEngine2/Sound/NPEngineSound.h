@@ -7,7 +7,7 @@
 @class NSError;
 @class NPListener;
 @class NPSoundSources;
-@class NPSoundManager;
+@class NPAssetArray;
 
 @interface NPEngineSound : NSObject < NPPObject >
 {
@@ -18,7 +18,9 @@
 
     NPListener * listener;
     NPSoundSources * sources;
-    NPSoundManager * soundManager;
+
+    NPAssetArray * samples;
+    NPAssetArray * streams;
 
     Float volume;
 }
@@ -35,7 +37,8 @@
 - (void) setVolume:(Float)newVolume;
 - (NPListener *) listener;
 - (NPSoundSources *) sources;
-- (NPSoundManager *) soundManager;
+- (NPAssetArray *) samples;
+- (NPAssetArray *) streams;
 
 - (BOOL) checkForALError:(NSError **)error;
 - (void) checkForALErrors;

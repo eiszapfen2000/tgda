@@ -97,6 +97,7 @@
 }
 
 - (BOOL) loadFromFile:(NSString *)fileName
+            arguments:(NSDictionary *)arguments
                 error:(NSError **)error
 {
     [ self clear ];
@@ -124,7 +125,8 @@
                          allowDuplicates:YES
                        allowEmptyStrings:NO ]);
 
-    if ( [ effectScript loadFromFile:completeFileName 
+    if ( [ effectScript loadFromFile:completeFileName
+                           arguments:nil
                                error:error ] == NO )
     {
         return NO;

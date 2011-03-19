@@ -50,16 +50,18 @@
 
 - (NPSoundSource *) firstFreeSource
 {
-    NPSoundSource * source;
-    NSEnumerator * enumerator = [ sources objectEnumerator ];
+    NPSoundSource * source = nil;
+    NSUInteger numberOfSources = [ sources count ];
 
-    while (( source = [ enumerator nextObject ] ))
+    for ( NSUInteger i = 0; i < numberOfSources; i++ )
     {
+        source = [ sources objectAtIndex:i ];
+
         if (( [ source playing ] == NO ) &&
             ( [ source locked  ] == NO ))
         {
             return source;
-        }
+        }       
     }
 
     return nil;
@@ -67,35 +69,17 @@
 
 - (void) pauseAllSources
 {
-    NPSoundSource * source;
-    NSEnumerator * enumerator = [ sources objectEnumerator ];
-
-    while (( source = [ enumerator nextObject ] ))
-    {
-        [ source pause ];
-    }
+    [ sources makeObjectsPerformSelector:@selector(pause) ];
 }
 
 - (void) stopAllSources
 {
-    NPSoundSource * source;
-    NSEnumerator * enumerator = [ sources objectEnumerator ];
-
-    while (( source = [ enumerator nextObject ] ))
-    {
-        [ source stop ];
-    }
+    [ sources makeObjectsPerformSelector:@selector(stop) ];
 }
 
 - (void) resumeAllSources
 {
-    NPSoundSource * source;
-    NSEnumerator * enumerator = [ sources objectEnumerator ];
-
-    while (( source = [ enumerator nextObject ] ))
-    {
-        [ source resume ];
-    }
+    [ sources makeObjectsPerformSelector:@selector(resume) ];
 }
 
 - (NPSoundSource *) reserveSource
@@ -134,13 +118,7 @@
 
 - (void) update
 {
-    NPSoundSource * source;
-    NSEnumerator * enumerator = [ sources objectEnumerator ];
-
-    while (( source = [ enumerator nextObject ] ))
-    {
-        [ source update ];
-    }
+    [ sources makeObjectsPerformSelector:@selector(update) ];
 }
 
 @end

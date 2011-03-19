@@ -158,7 +158,7 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
 }
 
 - (BOOL) loadFromFile:(NSString *)fileName
-                 sRGB:(BOOL)sRGB
+            arguments:(NSDictionary *)arguments
                 error:(NSError **)error
 {
     [ self clear ];
@@ -240,6 +240,18 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
 		bytesperpixel = 4;
 	}
 
+    // get arguments
+    BOOL sRGB = NO;
+    
+    if ( arguments != nil )
+    {
+        NSString * sRGBString = [ arguments objectForKey:@"sRGB" ];
+        if ( sRGBString != nil )
+        {
+            sRGB = [ sRGBString boolValue ];
+        }
+    }
+
     dataFormat = convert_devil_dataformat(type);
     pixelFormat = convert_devil_pixelformat(format, sRGB);
 
@@ -268,14 +280,6 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
     ready = YES;
 
     return YES;
-}
-
-- (BOOL) loadFromFile:(NSString *)fileName
-                error:(NSError **)error
-{
-    return [ self loadFromFile:fileName
-                          sRGB:NO
-                         error:error ];
 }
 
 @end

@@ -56,6 +56,13 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     self = [ super init ];
     objectID = crc32_of_pointer(self);
 
+    supportsSGIGenerateMipMap = NO;
+    supportsAnisotropicTextureFilter = NO;
+    maximumAnisotropy = 1;
+    supportssRGBTextures = NO;
+    supportsEXTFBO = NO;
+    supportsARBFBO = NO;
+
     ilInit();
     iluInit();
 
@@ -133,20 +140,64 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
 - (BOOL) startup
 {
+    NPLOG(@"%@ starting up...", [ self name ]);
+
     GLenum error = glewInit();
     if ( error != GLEW_OK )
     {
-        NSMutableDictionary * errorDetail = [ NSMutableDictionary dictionary ];
-        NSString * errorString = [ NSString stringWithUTF8String:(const char *)glewGetErrorString(error) ];
-        [ errorDetail setValue:errorString forKey:NSLocalizedDescriptionKey];
+        NSString * errorString
+            = [ NSString stringWithUTF8String:(const char *)glewGetErrorString(error) ];
 
-        NSError * error = [ NSError errorWithDomain:NPEngineErrorDomain 
-                                               code:NPEngineGraphicsGLEWError
-                                           userInfo:errorDetail ];
+        NSError * error = [ NSError errorWithCode:NPEngineGraphicsGLEWError
+                                      description:errorString ];
+
         NPLOG_ERROR(error);
 
         return NO;
     }
+
+    if ( !GLEW_VERSION_2_0 )
+    {
+        NSString * errorString = @"Your system does not support OpenGL 2.0.";
+        NSError * error = [ NSError errorWithCode:NPEngineGraphicsGLEWError
+                                      description:errorString ];
+
+        NPLOG_ERROR(error);
+        return NO;
+    }
+
+    if ( GL_SGIS_generate_mipmap )
+    {
+        supportsSGIGenerateMipMap = YES;
+        NPLOG(@"GL_SGIS_generate_mipmap supported");
+    }
+
+    if ( GLEW_EXT_texture_filter_anisotropic )
+    {
+        supportsAnisotropicTextureFilter = YES;
+        glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&maximumAnisotropy);
+        NPLOG(@"GL_EXT_texture_filter_anisotropic with maximum anisotropy %d supported", maximumAnisotropy);
+    }
+
+    if ( GL_EXT_texture_sRGB || GLEW_VERSION_2_1 )
+    {
+        supportssRGBTextures = YES;
+        NPLOG(@"GL_EXT_texture_sRGB supported");
+    }
+
+    if ( GLEW_EXT_framebuffer_object )
+    {
+        supportsEXTFBO = YES;
+        NPLOG(@"GL_EXT_framebuffer_object supported");
+    }
+
+    if ( GLEW_ARB_framebuffer_object )
+    {
+        supportsARBFBO = YES;
+        NPLOG(@"GL_ARB_framebuffer_object supported");
+    }
+
+    NPLOG(@"%@ started", [ self name ]);
 
     return YES;
 }
@@ -155,23 +206,48 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 {
 }
 
+- (BOOL) supportsSGIGenerateMipMap
+{
+    return supportsSGIGenerateMipMap;
+}
+
+- (BOOL) supportsAnisotropicTextureFilter
+{
+    return supportsAnisotropicTextureFilter;
+}
+
+- (int32_t) maximumAnisotropy
+{
+    return maximumAnisotropy;
+}
+
+- (BOOL) supportssRGBTextures
+{
+    return supportssRGBTextures;
+}
+
+- (BOOL) supportsEXTFBO
+{
+    return supportsEXTFBO;
+}
+
+- (BOOL) supportsARBFBO
+{
+    return supportsARBFBO;
+}
+
 - (BOOL) checkForGLError:(NSError **)error
 {
-    NSMutableDictionary * errorDetail = nil;
-    NSString * errorString = nil;
-
     GLenum glError = glGetError();
     if( glError != GL_NO_ERROR )
     {
         if ( error != NULL )
         {
-            errorDetail = [ NSMutableDictionary dictionary ];
-            errorString = [ NSString stringWithUTF8String:(const char *)gluErrorString(glError) ];
-            [ errorDetail setValue:errorString forKey:NSLocalizedDescriptionKey];
-   
-            *error = [ NSError errorWithDomain:NPEngineErrorDomain 
-                                          code:NPEngineGraphicsGLError
-                                      userInfo:errorDetail ];
+            NSString * errorString
+                = [ NSString stringWithUTF8String:(const char *)gluErrorString(glError) ];
+
+            *error = [ NSError errorWithCode:NPEngineGraphicsGLError
+                                 description:errorString ];
         }
 
         return NO;

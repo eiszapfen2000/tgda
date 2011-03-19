@@ -88,7 +88,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 }
 
 - (BOOL) loadFromFile:(NSString *)fileName
-                 sRGB:(BOOL)sRGB
+            arguments:(NSDictionary *)arguments
                 error:(NSError **)error
 {
     /*
@@ -134,7 +134,8 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
     NPImage * image = 
         RETAIN([[[ NPEngineGraphics instance ] 
-                        images ] getAssetWithFileName:completeFileName ]);
+                        images ] getAssetWithFileName:completeFileName
+                                            arguments:arguments ]);
 
     if ( image == nil )
     {
@@ -146,14 +147,6 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     return YES;
 }
 
-- (BOOL) loadFromFile:(NSString *)fileName
-                error:(NSError **)error
-{
-    return [ self loadFromFile:fileName
-                          sRGB:NO
-                         error:error ];
-}
-
 - (void) uploadToGLWithoutData
 {
     [ self uploadToGLWithData:[ NSData data ]];
@@ -162,6 +155,8 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 - (void) uploadToGLWithData:(NSData *)data
 {
 }
+
+// NPPTexture protocol implementation
 
 - (NpTextureType) textureType
 {

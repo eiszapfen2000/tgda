@@ -10,6 +10,14 @@
 {
     uint32_t objectID;
 
+    // driver stuff
+    BOOL supportsSGIGenerateMipMap;
+    BOOL supportsAnisotropicTextureFilter;
+    int32_t maximumAnisotropy;
+    BOOL supportssRGBTextures;
+    BOOL supportsEXTFBO;
+    BOOL supportsARBFBO;
+
     NPEngineGraphicsStringEnumConversion * stringEnumConversion;
     NPEngineGraphicsStringToClassConversion * stringToClassConversion;
 
@@ -36,6 +44,13 @@
 
 - (BOOL) startup;
 - (void) shutdown;
+
+- (BOOL) supportsSGIGenerateMipMap;
+- (BOOL) supportsAnisotropicTextureFilter;
+- (int32_t) maximumAnisotropy;
+- (BOOL) supportssRGBTextures;
+- (BOOL) supportsEXTFBO;
+- (BOOL) supportsARBFBO;
 
 - (BOOL) checkForGLError:(NSError **)error;
 - (void) checkForGLErrors;
