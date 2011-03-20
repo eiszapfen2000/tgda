@@ -4,6 +4,11 @@
 
 @implementation NPTextureBindingState
 
+- (id) init
+{
+    return [ self initWithName:@"" ];
+}
+
 - (id) initWithName:(NSString *)newName
 {
     self = [ super initWithName:newName ];

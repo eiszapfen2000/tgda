@@ -41,8 +41,7 @@ typedef enum NpTexture2DFilter
 {
     NpTexture2DFilterNearest = 0,
     NpTexture2DFilterLinear = 1,
-    NpTexture2DFilterLinearMipmapping = 2,
-    NpTexture2DFilterTrilinear = 3
+    NpTexture2DFilterTrilinear = 2
 }
 NpTexture2DFilter;
 
@@ -157,6 +156,12 @@ typedef enum NpGeometryDataFormat
 }
 NpGeometryDataFormat;
 
+GLenum getGLTextureDataFormat(const NpImageDataFormat dataFormat);
+GLenum getGLTexturePixelFormat(const NpImagePixelFormat pixelFormat);
+GLint  getGLTextureInternalFormat(const NpImageDataFormat dataFormat,
+            const NpImagePixelFormat pixelFormat,
+            const int sRGBSupport);
+GLenum getGLTextureWrap(const NpTextureWrap textureWrap);
 GLenum getGLComparisonFunction(const NpComparisonFunction comparisonFunction);
 GLenum getGLCullface(const NpCullface cullface);
 GLenum getGLPolygonFillMode(const NpPolygonFillMode polygonFillMode);

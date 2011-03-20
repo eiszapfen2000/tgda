@@ -6,6 +6,7 @@
 #import "Graphics/Image/NPImage.h"
 #import "Graphics/NPEngineGraphicsErrors.h"
 #import "Graphics/NPEngineGraphics.h"
+#import "NPTextureBindingState.h"
 #import "NPTexture2D.h"
 
 void reset_texture2d_filterstate(NpTexture2DFilterState * filterState)
@@ -20,6 +21,13 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     wrapState->wrapS = NpTextureWrapToEdge;
     wrapState->wrapT = NpTextureWrapToEdge;
 }
+
+@interface NPTexture2D (Private)
+- (void) updateGLTextureFilterState;
+- (void) updateGLTextureAnisotropy;
+- (void) updateGLTextureWrapState;
+- (void) updateGLTextureState;
+@end
 
 @implementation NPTexture2D
 
@@ -81,11 +89,64 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     reset_texture2d_wrapstate(&wrapState);
 }
 
+- (uint32_t) width
+{
+    return width;
+}
+
+- (uint32_t) height
+{
+    return height;
+}
+
+- (NpTextureDataFormat) dataFormat
+{
+    return dataFormat;
+}
+
+- (NpTexturePixelFormat) pixelFormat
+{
+    return pixelFormat;
+}
+
+- (void) setWidth:(uint32_t)newWidth
+{
+    width = newWidth;
+}
+
+- (void) setHeight:(uint32_t)newHeight
+{
+    height = newHeight;
+}
+
+- (void) setDataFormat:(NpTextureDataFormat)newDataFormat
+{
+    dataFormat = newDataFormat;
+}
+
+- (void) setPixelFormat:(NpTexturePixelFormat)newPixelFormat
+{
+    pixelFormat = newPixelFormat;
+}
+
 - (BOOL) loadFromStream:(id <NPPStream>)stream 
                   error:(NSError **)error
 {
     return NO;
 }
+
+- (void) setTextureFilter:(NpTexture2DFilter)newTextureFilter
+{
+    filterState.textureFilter = newTextureFilter;
+}
+
+- (void) setTextureAnisotropy:(uint32_t)newTextureAnisotropy
+{
+    filterState.anisotropy
+        = MIN(newTextureAnisotropy,
+              (uint32_t)[[ NPEngineGraphics instance ] maximumAnisotropy ]);
+}
+
 
 - (BOOL) loadFromFile:(NSString *)fileName
             arguments:(NSDictionary *)arguments
@@ -142,6 +203,11 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
         return NO;
     }
 
+    dataFormat  = [ image dataFormat  ];
+    pixelFormat = [ image pixelFormat ];
+    width  = [ image width  ];
+    height = [ image height ];
+
     RELEASE(image);
 
     return YES;
@@ -154,6 +220,38 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 - (void) uploadToGLWithData:(NSData *)data
 {
+    GLenum gldataformat = getGLTextureDataFormat(dataFormat);
+    GLenum glpixelformat = getGLTexturePixelFormat(pixelFormat);
+    GLint  glinternalformat
+        = getGLTextureInternalFormat(dataFormat, pixelFormat,
+             [[ NPEngineGraphics instance ] supportssRGBTextures ]);
+
+    [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:self ];
+
+    if ( filterState.mipmaps == YES )
+    {
+        if ( [[ NPEngineGraphics instance ] supportsSGIGenerateMipMap ] == YES )
+        {
+            glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, 1);
+            glTexImage2D(GL_TEXTURE_2D, 0, glinternalformat, width, height,
+                0, glpixelformat, gldataformat, [data bytes]);
+            glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, 0);
+        }
+        else
+        {
+            gluBuild2DMipmaps(GL_TEXTURE_2D, glinternalformat, width, height,
+                glpixelformat, gldataformat, [data bytes]);
+        }
+    }
+    else
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, glinternalformat, width, height, 0,
+             glpixelformat, gldataformat, [data bytes]);
+    }
+
+    [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
+
+    [ self updateGLTextureState ]; 
 }
 
 // NPPTexture protocol implementation
@@ -171,6 +269,66 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 - (GLenum) glTarget
 {
     return GL_TEXTURE_2D;
+}
+
+@end
+
+@implementation NPTexture2D (Private)
+
+- (void) updateGLTextureFilterState
+{
+    GLenum minFilter = GL_NONE;
+    GLenum magFilter = GL_NONE;
+
+    switch ( filterState.textureFilter )
+    {
+        case NpTexture2DFilterNearest:
+        {
+            minFilter = magFilter = GL_NEAREST;
+            break;
+        }
+
+        case NpTexture2DFilterLinear:
+        {
+            minFilter = magFilter = GL_LINEAR;
+            break;
+        }
+
+        case NpTexture2DFilterTrilinear:
+        {
+            minFilter = GL_LINEAR_MIPMAP_LINEAR;
+            magFilter = GL_LINEAR;
+        }
+    }
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
+}
+
+- (void) updateGLTextureAnisotropy
+{
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
+                    filterState.anisotropy);
+}
+
+- (void) updateGLTextureWrapState
+{
+    GLenum wrapS = getGLTextureWrap(wrapState.wrapS);
+    GLenum wrapT = getGLTextureWrap(wrapState.wrapT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
+}
+
+- (void) updateGLTextureState
+{
+    [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:self ];
+
+    [ self updateGLTextureFilterState ];
+    [ self updateGLTextureAnisotropy ];
+    [ self updateGLTextureWrapState ];
+
+    [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
 }
 
 @end

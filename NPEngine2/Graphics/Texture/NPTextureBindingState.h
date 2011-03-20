@@ -17,6 +17,7 @@
 	BOOL* lockedTexelUnits;
 }
 
+- (id) init;
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
