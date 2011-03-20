@@ -8,7 +8,7 @@ typedef struct NpTexture2DFilterState
 {
 	BOOL mipmaps;
 	NpTexture2DFilter textureFilter;
-	int32_t anisotropy;
+	uint32_t anisotropy;
 }
 NpTexture2DFilterState;
 
@@ -46,6 +46,18 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState);
 
 - (void) clear;
 - (void) reset;
+
+- (uint32_t) width;
+- (uint32_t) height;
+- (NpTextureDataFormat) dataFormat;
+- (NpTexturePixelFormat) pixelFormat;
+
+- (void) setWidth:(uint32_t)newWidth;
+- (void) setHeight:(uint32_t)newHeight;
+- (void) setDataFormat:(NpTextureDataFormat)newDataFormat;
+- (void) setPixelFormat:(NpTexturePixelFormat)newPixelFormat;
+- (void) setTextureFilter:(NpTexture2DFilter)newTextureFilter;
+- (void) setTextureAnisotropy:(uint32_t)newTextureAnisotropy;
 
 - (void) uploadToGLWithoutData;
 - (void) uploadToGLWithData:(NSData *)data;

@@ -1,3 +1,5 @@
+#import <Foundation/NSObject.h>
+#import <Foundation/NSString.h>
 #import <Foundation/NSException.h>
 #import <Foundation/NSDictionary.h>
 #import "GL/glew.h"
@@ -10,6 +12,7 @@
 #import "Core/Container/NPAssetArray.h"
 #import "Image/NPImage.h"
 #import "Texture/NPTexture2D.h"
+#import "Texture/NPTextureBindingState.h"
 #import "Effect/NPShader.h"
 #import "Effect/NPEffect.h"
 #import "State/NPStateConfiguration.h"
@@ -86,6 +89,10 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
                     initWithName:@"NP Engine Shader"
                       assetClass:NSClassFromString(@"NPEffect") ];
 
+    textureBindingState
+        = [[ NPTextureBindingState alloc ]
+                initWithName:@"NP Engine Texture Binding State" ];
+
     stateConfiguration
         = [[ NPStateConfiguration alloc ]
                 initWithName:@"NP Engine State Configuration" ];
@@ -98,6 +105,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     ilShutDown();
 
     DESTROY(stateConfiguration);
+    DESTROY(textureBindingState);
 
     DESTROY(effects);
     DESTROY(textures2D);
@@ -131,6 +139,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 - (NPAssetArray *) effects
 {
     return effects;
+}
+
+- (NPTextureBindingState *) textureBindingState
+{
+    return textureBindingState;
 }
 
 - (NPStateConfiguration *) stateConfiguration
@@ -197,6 +210,8 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         NPLOG(@"GL_ARB_framebuffer_object supported");
     }
 
+    [ textureBindingState startup ];
+
     NPLOG(@"%@ started", [ self name ]);
 
     return YES;
@@ -204,6 +219,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
 - (void) shutdown
 {
+    [ textureBindingState shutdown ];
 }
 
 - (BOOL) supportsSGIGenerateMipMap

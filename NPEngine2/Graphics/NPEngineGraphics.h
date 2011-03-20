@@ -4,6 +4,7 @@
 @class NPAssetArray;
 @class NPEngineGraphicsStringEnumConversion;
 @class NPEngineGraphicsStringToClassConversion;
+@class NPTextureBindingState;
 @class NPStateConfiguration;
 
 @interface NPEngineGraphics : NSObject < NPPObject >
@@ -25,6 +26,7 @@
     NPAssetArray * textures2D;
     NPAssetArray * effects;
 
+    NPTextureBindingState * textureBindingState;
     NPStateConfiguration * stateConfiguration;
 }
 
@@ -40,6 +42,7 @@
 - (NPAssetArray *) textures2D;
 - (NPAssetArray *) effects;
 
+- (NPTextureBindingState *) textureBindingState;
 - (NPStateConfiguration *) stateConfiguration;
 
 - (BOOL) startup;
