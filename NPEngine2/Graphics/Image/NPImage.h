@@ -27,5 +27,6 @@
 - (uint32_t) height;
 - (NpImagePixelFormat) pixelFormat;
 - (NpImageDataFormat) dataFormat;
+- (NSData *) imageData;
 
 @end

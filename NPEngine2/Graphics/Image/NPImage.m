@@ -151,6 +151,11 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
     return pixelFormat;
 }
 
+- (NSData *) imageData
+{
+    return imageData;
+}
+
 - (BOOL) loadFromStream:(id <NPPStream>)stream 
                   error:(NSError **)error
 {
@@ -226,6 +231,9 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
 
         return NO;
     }
+
+    width = (uint32_t)imageWidth;
+    height = (uint32_t)imageHeight;
 
 	ILint type          = ilGetInteger(IL_IMAGE_TYPE);
 	ILint format        = ilGetInteger(IL_IMAGE_FORMAT);

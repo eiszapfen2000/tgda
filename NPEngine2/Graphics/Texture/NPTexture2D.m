@@ -23,10 +23,12 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 }
 
 @interface NPTexture2D (Private)
+
 - (void) updateGLTextureFilterState;
 - (void) updateGLTextureAnisotropy;
 - (void) updateGLTextureWrapState;
 - (void) updateGLTextureState;
+
 @end
 
 @implementation NPTexture2D
@@ -152,28 +154,6 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
             arguments:(NSDictionary *)arguments
                 error:(NSError **)error
 {
-    /*
-    dataFormat  = [ image dataFormat  ];
-    pixelFormat = [ image pixelFormat ];
-    width  = [ image width  ];
-    height = [ image height ];
-
-    textureFilterState.mipmapping = NP_GRAPHICS_TEXTURE_FILTER_MIPMAPPING_ACTIVE;
-    textureFilterState.minFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR;
-    textureFilterState.magFilter  = NP_GRAPHICS_TEXTURE_FILTER_LINEAR;
-    textureFilterState.anisotropy = [[[ NP Graphics ] textureManager ] anisotropy ];
-
-    textureWrapState.wrapS = NP_GRAPHICS_TEXTURE_WRAPPING_REPEAT;
-    textureWrapState.wrapT = NP_GRAPHICS_TEXTURE_WRAPPING_REPEAT;
-
-    ready = YES;
-
-    [ self uploadToGLUsingImage:image ];
-    [ image release ];
-
-	return YES;
-    */
-
     // check if file is to be found
     NSString * completeFileName
         = [[[ NPEngineCore instance ] localPathManager ] getAbsolutePath:fileName ];
@@ -207,6 +187,8 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     pixelFormat = [ image pixelFormat ];
     width  = [ image width  ];
     height = [ image height ];
+
+    [ self uploadToGLWithData:[ image imageData ]];
 
     RELEASE(image);
 
@@ -263,7 +245,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 - (GLuint) glID
 {
-    return 0;
+    return glID;
 }
 
 - (GLenum) glTarget
