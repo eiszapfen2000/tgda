@@ -6,6 +6,7 @@
 @class NPEngineGraphicsStringToClassConversion;
 @class NPTextureBindingState;
 @class NPStateConfiguration;
+@class NPViewport;
 
 @interface NPEngineGraphics : NSObject < NPPObject >
 {
@@ -18,6 +19,9 @@
     BOOL supportssRGBTextures;
     BOOL supportsEXTFBO;
     BOOL supportsARBFBO;
+    int32_t numberOfDrawBuffers;
+    int32_t numberOfColorAttachments;
+    int32_t maximalRenderbufferSize;
 
     NPEngineGraphicsStringEnumConversion * stringEnumConversion;
     NPEngineGraphicsStringToClassConversion * stringToClassConversion;
@@ -28,6 +32,7 @@
 
     NPTextureBindingState * textureBindingState;
     NPStateConfiguration * stateConfiguration;
+    NPViewport * viewport;
 }
 
 + (NPEngineGraphics *) instance;
@@ -44,6 +49,7 @@
 
 - (NPTextureBindingState *) textureBindingState;
 - (NPStateConfiguration *) stateConfiguration;
+- (NPViewport *) viewport;
 
 - (BOOL) startup;
 - (void) shutdown;
@@ -54,6 +60,9 @@
 - (BOOL) supportssRGBTextures;
 - (BOOL) supportsEXTFBO;
 - (BOOL) supportsARBFBO;
+- (int32_t) numberOfDrawBuffers;
+- (int32_t) numberOfColorAttachments;
+- (int32_t) maximalRenderbufferSize;
 
 - (BOOL) checkForGLError:(NSError **)error;
 - (void) checkForGLErrors;

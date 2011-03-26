@@ -156,15 +156,47 @@ typedef enum NpGeometryDataFormat
 }
 NpGeometryDataFormat;
 
+typedef enum NpRenderTargetType
+{
+    NpRenderTargetUnknown = -1,
+    NpRenderTargetColor = 0,
+	NpRenderTargetDepth = 1,
+    NpRenderTargetStencil = 2,
+    NpRenderTargetDepthStencil = 3
+}
+NpRenderTargetType;
+
+typedef enum NpRenderBufferDataFormat
+{
+    NpRenderBufferDataFormatUnknown = -1,
+    NpRenderBufferDataFormatByte = 0,
+    NpRenderBufferDataFormatFloat16 = 1,
+    NpRenderBufferDataFormatFloat32 = 2,
+    NpRenderBufferDataFormatDepth16 = 3,
+    NpRenderBufferDataFormatDepth24 = 4,
+    NpRenderBufferDataFormatDepth32 = 5,
+    NpRenderBufferDataFormatStencil8 = 6,
+    NpRenderBufferDataFormatStencil16 = 7,
+    NpRenderBufferDataFormatDepth24Stencil8 = 8,
+}
+NpRenderBufferDataFormat;
+
+typedef NpImagePixelFormat NpRenderBufferPixelFormat;
+
 GLenum getGLTextureDataFormat(const NpImageDataFormat dataFormat);
 GLenum getGLTexturePixelFormat(const NpImagePixelFormat pixelFormat);
+GLenum getGLTextureWrap(const NpTextureWrap textureWrap);
 GLint  getGLTextureInternalFormat(const NpImageDataFormat dataFormat,
             const NpImagePixelFormat pixelFormat,
             const int sRGBSupport);
-GLenum getGLTextureWrap(const NpTextureWrap textureWrap);
+
 GLenum getGLComparisonFunction(const NpComparisonFunction comparisonFunction);
 GLenum getGLCullface(const NpCullface cullface);
 GLenum getGLPolygonFillMode(const NpPolygonFillMode polygonFillMode);
+
+GLenum getGLRenderBufferInternalFormat(const NpRenderTargetType Type,
+            const NpRenderBufferPixelFormat PixelFormat,
+            const NpRenderBufferDataFormat DataFormat);
 
 #endif
 

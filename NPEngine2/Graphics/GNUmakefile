@@ -6,6 +6,7 @@ libNPEngineGraphics_SUBPROJECTS = \
     Image \
     Texture \
     Effect \
+    RenderTarget \
     State
 
 libNPEngineGraphics_C_FILES = \
@@ -16,7 +17,8 @@ NPEngineGraphics.m \
 NPEngineGraphicsStringEnumConversion.m \
 NPEngineGraphicsStringToClassConversion.m \
 NSString+NPEngineGraphicsEnums.m \
-NSString*NPEngineGraphicsClasses.m
+NSString+NPEngineGraphicsClasses.m \
+NPViewport.m
 
 libNPEngineGraphics_HEADER_FILES = \
 NPEngineGraphics.h \
@@ -25,7 +27,8 @@ NPEngineGraphicsErrors.h \
 NPEngineGraphicsStringEnumConversion.h \
 NPEngineGraphicsStringToClassConversion.h \
 NSString+NPEngineGraphicsEnums.h \
-NSString*NPEngineGraphicsClasses.h
+NSString+NPEngineGraphicsClasses.h \
+NPViewport.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make
