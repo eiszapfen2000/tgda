@@ -15,7 +15,6 @@
 typedef uint16_t Half;
 typedef float Float;
 typedef double Double;
-typedef int32_t NpState;
 
 #define NP_NONE  -1
 

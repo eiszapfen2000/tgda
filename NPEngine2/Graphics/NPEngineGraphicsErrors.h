@@ -10,10 +10,12 @@ enum
     NPEngineGraphicsDevILError = 2050,
     NPEngineGraphicsImageHasInvalidSize = 2051,
     NPEngineGraphicsImageHasUnknownFormat = 2052,
+    NPEngineGraphicsTextureUnableToLoadImage = 2060,
     NPEngineGraphicsShaderGLSLCompilationError = 2096,
     NPEngineGraphicsEffectTechniqueGLSLLinkError = 2097,
     NPEngineGraphicsEffectTechniqueShaderMissing = 2098,
     NPEngineGraphicsEffectTechniqueShaderCorrupt = 2099,
+    NPEngineGraphicsFBOError = 3000
 };
 
 #endif

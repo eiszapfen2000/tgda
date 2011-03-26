@@ -84,7 +84,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
   	glGenTextures(1, &glID);
 
     width = height = 0;
-    dataFormat = NpImageDataFormatUnknown;
+    dataFormat  = NpImageDataFormatUnknown;
     pixelFormat = NpImagePixelFormatUnknown;
 
     reset_texture2d_filterstate(&filterState);
@@ -145,8 +145,8 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 - (void) setTextureAnisotropy:(uint32_t)newTextureAnisotropy
 {
     filterState.anisotropy
-        = MIN(newTextureAnisotropy,
-              (uint32_t)[[ NPEngineGraphics instance ] maximumAnisotropy ]);
+        = MAX(1, MIN(newTextureAnisotropy,
+                         (uint32_t)[[ NPEngineGraphics instance ] maximumAnisotropy ]));
 }
 
 
@@ -180,6 +180,16 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
     if ( image == nil )
     {
+        if ( error != NULL )
+        {
+            NSString * errorString =
+                [ NSString stringWithFormat:@"Unable to load image from \"%@\"",
+                                            completeFileName];
+
+            *error = [ NSError errorWithCode:NPEngineGraphicsTextureUnableToLoadImage
+                                 description:errorString ];
+        }
+
         return NO;
     }
 

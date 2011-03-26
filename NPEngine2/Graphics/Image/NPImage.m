@@ -229,10 +229,13 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
 
         }
 
+        ilBindImage(0);
+    	ilDeleteImages(1, &ilID);
+
         return NO;
     }
 
-    width = (uint32_t)imageWidth;
+    width  = (uint32_t)imageWidth;
     height = (uint32_t)imageHeight;
 
 	ILint type          = ilGetInteger(IL_IMAGE_TYPE);
@@ -276,6 +279,9 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
                                  description:errorString ];
 
         }
+
+        ilBindImage(0);
+    	ilDeleteImages(1, &ilID);
 
         return NO;
     }

@@ -16,6 +16,7 @@
 #import "Effect/NPShader.h"
 #import "Effect/NPEffect.h"
 #import "State/NPStateConfiguration.h"
+#import "NPViewport.h"
 #import "NPEngineGraphicsErrors.h"
 #import "NPEngineGraphicsStringEnumConversion.h"
 #import "NPEngineGraphicsStringToClassConversion.h"
@@ -65,6 +66,8 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     supportssRGBTextures = NO;
     supportsEXTFBO = NO;
     supportsARBFBO = NO;
+    numberOfDrawBuffers = 1;
+    numberOfColorAttachments = 0;
 
     ilInit();
     iluInit();
@@ -97,6 +100,9 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         = [[ NPStateConfiguration alloc ]
                 initWithName:@"NP Engine State Configuration" ];
 
+    viewport
+        = [[ NPViewport alloc ] initWithName:@"NP Engine Viewport" ];
+
     return self;
 }
 
@@ -104,6 +110,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 {
     ilShutDown();
 
+    DESTROY(viewport);
     DESTROY(stateConfiguration);
     DESTROY(textureBindingState);
 
@@ -151,6 +158,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     return stateConfiguration;
 }
 
+- (NPViewport *) viewport
+{
+    return viewport;
+}
+
 - (BOOL) startup
 {
     NPLOG(@"%@ starting up...", [ self name ]);
@@ -179,6 +191,9 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         return NO;
     }
 
+    glGetIntegerv(GL_MAX_DRAW_BUFFERS, &numberOfDrawBuffers);
+    NPLOG(@"Draw Buffers: %d", numberOfDrawBuffers);
+
     if ( GL_SGIS_generate_mipmap )
     {
         supportsSGIGenerateMipMap = YES;
@@ -202,13 +217,20 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     {
         supportsEXTFBO = YES;
         NPLOG(@"GL_EXT_framebuffer_object supported");
+        glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS_EXT, &numberOfColorAttachments);
+        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &maximalRenderbufferSize);
     }
 
     if ( GLEW_ARB_framebuffer_object )
     {
         supportsARBFBO = YES;
         NPLOG(@"GL_ARB_framebuffer_object supported");
+        glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &numberOfColorAttachments);
+        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &maximalRenderbufferSize);
     }
+
+    NPLOG(@"Color Attachments: %d", numberOfColorAttachments);
+    NPLOG(@"Renderbuffer resolution up to: %d", maximalRenderbufferSize);
 
     [ textureBindingState startup ];
 
@@ -250,6 +272,21 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 - (BOOL) supportsARBFBO
 {
     return supportsARBFBO;
+}
+
+- (int32_t) numberOfDrawBuffers
+{
+    return numberOfDrawBuffers;
+}
+
+- (int32_t) numberOfColorAttachments
+{
+    return numberOfColorAttachments;
+}
+
+- (int32_t) maximalRenderbufferSize
+{
+    return maximalRenderbufferSize;
 }
 
 - (BOOL) checkForGLError:(NSError **)error
