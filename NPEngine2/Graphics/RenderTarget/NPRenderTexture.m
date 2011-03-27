@@ -1,3 +1,4 @@
+#import <Foundation/NSData.h>
 #import <Foundation/NSError.h>
 #import <Foundation/NSException.h>
 #import "Core/Utilities/NSError+NPEngine.h"
@@ -27,12 +28,12 @@
     [ self deleteTexture ];
 
     texture = [[ NPTexture2D alloc ] init ];
-    [ texture setWidth:width ];
-    [ texture setHeight:height ];
-    [ texture setPixelFormat:pixelFormat ];
-    [ texture setDataFormat:dataFormat ];
-    [ texture setTextureFilter:NpTexture2DFilterNearest ];
-    [ texture uploadToGLWithoutData ];
+
+    [ texture generateUsingWidth:width
+                          height:height
+                     pixelFormat:pixelFormat
+                      dataFormat:dataFormat
+                            data:[ NSData data ]];
 
     glID = [ texture glID ];
     ready = YES;
@@ -67,6 +68,11 @@
 - (void) dealloc
 {
     [ super dealloc ];
+}
+
+- (GLuint) glID
+{
+    return glID;
 }
 
 - (uint32_t) width

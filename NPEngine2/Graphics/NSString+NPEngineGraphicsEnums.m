@@ -50,4 +50,16 @@
                    semanticForString:self ];
 }
 
++ (NSString *) stringForPixelFormat:(const NpImagePixelFormat)pixelFormat
+{
+    return [[[ NPEngineGraphics instance ] stringEnumConversion ]
+                    stringForPixelFormat:pixelFormat ];
+}
+
++ (NSString *) stringForImageDataFormat:(const NpImageDataFormat)dataFormat
+{
+    return [[[ NPEngineGraphics instance ] stringEnumConversion ]
+                    stringForImageDataFormat:dataFormat ];
+}
+
 @end

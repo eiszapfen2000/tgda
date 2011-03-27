@@ -9,10 +9,16 @@ static NSMutableDictionary * uniformTypes = nil;
 static NSMutableDictionary * textureTypes = nil;
 static NSMutableDictionary * semantics = nil;
 
+static NSMutableDictionary * pixelFormats = nil;
+static NSMutableDictionary * imageDataFormats = nil;
+
 @implementation NPEngineGraphicsStringEnumConversion
 
 #define INSERTENUM(_dictionary, _enum, _string) \
-    [_dictionary setObject:[NSNumber numberWithInt:(int)_enum ] forKey:_string ]
+    [ _dictionary setObject:[NSNumber numberWithInt:(int)_enum ] forKey:_string ]
+
+#define INSERTSTRING(_dictionary, _string, _enum) \
+    [ _dictionary setObject:_string forKey:[NSNumber numberWithInt:(int)_enum ]]
 
 + (void) initialize
 {
@@ -23,6 +29,9 @@ static NSMutableDictionary * semantics = nil;
     uniformTypes        = [[ NSMutableDictionary alloc ] init ];
     textureTypes        = [[ NSMutableDictionary alloc ] init ];
     semantics           = [[ NSMutableDictionary alloc ] init ];
+
+    pixelFormats        = [[ NSMutableDictionary alloc ] init ];
+    imageDataFormats    = [[ NSMutableDictionary alloc ] init ];
 
     INSERTENUM(blendingModes, NpBlendingAdditive, @"additive");
     INSERTENUM(blendingModes, NpBlendingSubtractive, @"subtractive");
@@ -75,6 +84,21 @@ static NSMutableDictionary * semantics = nil;
     INSERTENUM(semantics, NpInverseViewProjectionMatrix, @"np_inverseviewprojectionmatrix");
     INSERTENUM(semantics, NpModelViewProjectionMatrix, @"np_modelviewprojectionmatrix");
     INSERTENUM(semantics, NpInverseModelViewProjection, @"np_inversemodelviewprojectionmatrix");
+
+    INSERTSTRING(pixelFormats, @"Unknown", NpImagePixelFormatUnknown);
+    INSERTSTRING(pixelFormats, @"R", NpImagePixelFormatR);
+    INSERTSTRING(pixelFormats, @"RG", NpImagePixelFormatRG);
+    INSERTSTRING(pixelFormats, @"RGB", NpImagePixelFormatRGB);
+    INSERTSTRING(pixelFormats, @"RGBA", NpImagePixelFormatRGBA);
+    INSERTSTRING(pixelFormats, @"sR", NpImagePixelFormatsR);
+    INSERTSTRING(pixelFormats, @"sRG", NpImagePixelFormatsRG);
+    INSERTSTRING(pixelFormats, @"sRGB", NpImagePixelFormatsRGB);
+    INSERTSTRING(pixelFormats, @"sRGB Linear Alpha", NpImagePixelFormatsRGBLinearA);
+
+    INSERTSTRING(imageDataFormats, @"Unknown", NpImageDataFormatUnknown);
+    INSERTSTRING(imageDataFormats, @"Byte", NpImageDataFormatByte);
+    INSERTSTRING(imageDataFormats, @"Float16", NpImageDataFormatFloat16);
+    INSERTSTRING(imageDataFormats, @"Float32", NpImageDataFormatFloat32);
 }
 
 #undef INSERTENUM
@@ -177,6 +201,16 @@ static NSMutableDictionary * semantics = nil;
     }
 
     return result;
+}
+
+- (NSString *) stringForPixelFormat:(const NpImagePixelFormat)pixelFormat
+{
+    return [ pixelFormats objectForKey:[ NSNumber numberWithInt:(int)pixelFormat ]];
+}
+
+- (NSString *) stringForImageDataFormat:(const NpImageDataFormat)dataFormat
+{
+    return [ imageDataFormats objectForKey:[ NSNumber numberWithInt:(int)dataFormat ]];
 }
 
 @end

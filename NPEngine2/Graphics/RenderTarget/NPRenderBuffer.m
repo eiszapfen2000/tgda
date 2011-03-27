@@ -52,6 +52,11 @@
     [ super dealloc ];
 }
 
+- (GLuint) glID
+{
+    return glID;
+}
+
 - (uint32_t) width
 {
     return width;
@@ -72,8 +77,7 @@
     [ self deleteGLRenderBuffer ];
 
     glGenRenderbuffersEXT(1, &glID);
-
-    if ( glID <= 0 )
+    if ( glID == 0 )
     {
         // log error
         return NO;
