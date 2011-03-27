@@ -21,6 +21,7 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
+- (GLuint) glID;
 - (uint32_t) width;
 - (uint32_t) height;
 

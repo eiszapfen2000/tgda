@@ -165,6 +165,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
 - (BOOL) startup
 {
+    NPLOG(@"");
     NPLOG(@"%@ starting up...", [ self name ]);
 
     GLenum error = glewInit();

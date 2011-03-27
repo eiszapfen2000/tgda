@@ -23,6 +23,7 @@ void reset_texture2d_filterstate(NpTexture2DFilterState * filterState);
 void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState);
 
 @class NSData;
+@class NPImage;
 
 @interface NPTexture2D : NPObject < NPPPersistentObject, NPPTexture >
 {
@@ -52,15 +53,17 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState);
 - (NpTextureDataFormat) dataFormat;
 - (NpTexturePixelFormat) pixelFormat;
 
-- (void) setWidth:(uint32_t)newWidth;
-- (void) setHeight:(uint32_t)newHeight;
-- (void) setDataFormat:(NpTextureDataFormat)newDataFormat;
-- (void) setPixelFormat:(NpTexturePixelFormat)newPixelFormat;
 - (void) setTextureFilter:(NpTexture2DFilter)newTextureFilter;
 - (void) setTextureAnisotropy:(uint32_t)newTextureAnisotropy;
 
-- (void) uploadToGLWithoutData;
-- (void) uploadToGLWithData:(NSData *)data;
+- (void) generateUsingWidth:(uint32_t)newWidth
+                     height:(uint32_t)newHeight
+                pixelFormat:(NpTexturePixelFormat)newPixelFormat
+                 dataFormat:(NpTextureDataFormat)newDataFormat
+                       data:(NSData *)data
+                           ;
+
+- (void) generateUsingImage:(NPImage *)image;
 
 @end
 

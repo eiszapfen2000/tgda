@@ -27,4 +27,7 @@
 - (NpTextureType) textureTypeForString:(NSString *)string;
 - (NpEffectSemantic) semanticForString:(NSString *)string;
 
+- (NSString *) stringForPixelFormat:(const NpImagePixelFormat)pixelFormat;
+- (NSString *) stringForImageDataFormat:(const NpImageDataFormat)dataFormat;
+
 @end

@@ -24,6 +24,8 @@
 - (GLuint) glID;
 - (uint32_t) width;
 - (uint32_t) height;
+- (void) setWidth:(uint32_t)newWidth;
+- (void) setHeight:(uint32_t)newHeight;
 
 - (void) setColorTarget:(NPRenderTexture *)colorTarget
                 atIndex:(uint32_t)index

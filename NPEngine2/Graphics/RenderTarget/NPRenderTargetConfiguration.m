@@ -5,6 +5,7 @@
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Graphics/NPEngineGraphics.h"
 #import "Graphics/NPEngineGraphicsErrors.h"
+#import "Graphics/NPViewport.h"
 #import "NPRenderBuffer.h"
 #import "NPRenderTexture.h"
 #import "NPRenderTargetConfiguration.h"
@@ -22,6 +23,8 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
 + (NSError *) fboError:(GLenum)fboStatus;
 - (void) generateGLFBO;
 - (void) deleteGLFBO;
+- (void) activateDrawBuffers;
+- (void) deactivateDrawBuffers;
 
 @end
 
@@ -111,6 +114,31 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
     }
 }
 
+- (void) activateDrawBuffers
+{
+    int32_t numberOfColorAttachments
+        = [[ NPEngineGraphics instance ] numberOfColorAttachments ];
+
+    GLenum buffers[numberOfColorAttachments];
+    GLsizei bufferCount = 0;
+
+    for ( int32_t i = 0; i < numberOfColorAttachments; i++ )
+    {
+        if ( [ colorTargets objectAtIndex:i ] != [ NSNull null ] )
+        {
+            buffers[bufferCount] = GL_COLOR_ATTACHMENT0_EXT + i;
+            bufferCount++;
+        }
+    }
+
+    glDrawBuffers(bufferCount, buffers);
+}
+
+- (void) deactivateDrawBuffers
+{
+    glDrawBuffer(GL_BACK);
+}
+
 @end
 
 @implementation NPRenderTargetConfiguration
@@ -168,12 +196,22 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
     return height;
 }
 
+- (void) setWidth:(uint32_t)newWidth
+{
+    width = newWidth;
+}
+
+- (void) setHeight:(uint32_t)newHeight
+{
+    height = newHeight;
+}
+
+
 - (void) setColorTarget:(NPRenderTexture *)colorTarget
                 atIndex:(uint32_t)index
 {
     if ( [ colorTargets objectAtIndex:index ] != [ NSNull null ] )
     {
-        [[ colorTargets objectAtIndex:index ] detach ];
         [ colorTargets replaceObjectAtIndex:index withObject:[ NSNull null ]];
     }
 
@@ -187,7 +225,6 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
 {
     if ( depthStencil != nil )
     {
-        [ depthStencil detach ];
         DESTROY(depthStencil);
     }
 
@@ -218,10 +255,18 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
 
 - (void) activate
 {
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, glID);
+
+    [ self activateDrawBuffers ];
+    [[[ NPEngineGraphics instance ] viewport ] setWidth:width height:height ];    
 }
 
 - (void) deactivate
 {
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+    [ self deactivateDrawBuffers ];
+    [[[ NPEngineGraphics instance ] viewport ] reset ];
 }
 
 @end
