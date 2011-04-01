@@ -206,24 +206,7 @@
         ASSIGN(configuration, newConfiguration);
 
         [ configuration bindFBO ];
-
-        //glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ configuration fboID ]);
-
-        /*if ( type == NP_GRAPHICS_RENDERBUFFER_DEPTH_STENCIL_TYPE )
-        {
-            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, renderBufferID);
-            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, renderBufferID);
-        }
-        else
-        {
-            GLenum attachment = [ self computeAttachment ];
-            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, attachment, GL_RENDERBUFFER_EXT, renderBufferID);
-        }*/
-
         [ self attach ];
-
-        //glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
         [ configuration unbindFBO ];
     }    
 }
@@ -233,24 +216,7 @@
     if ( configuration != nil )
     {
         [ configuration bindFBO ];
-
-        //glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ configuration fboID ]);
-
-        /*if ( type == NP_GRAPHICS_RENDERBUFFER_DEPTH_STENCIL_TYPE )
-        {
-            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, 0);
-            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, 0);
-        }
-        else
-        {
-            GLenum attachment = [ self computeAttachment ];
-            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, attachment, GL_RENDERBUFFER_EXT, 0);
-        }*/
-
         [ self detach ];
-
-        //glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
         [ configuration unbindFBO ];
 
         ASSIGN(configuration, nil);

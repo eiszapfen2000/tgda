@@ -14,7 +14,7 @@ else
 endif
 
 ADDITIONAL_INCLUDE_DIRS += \
-    -I$(TGDA_DIR)/NPEngine \
+    -I$(TGDA_DIR)/NPEngine2 \
     -I$(TGDA_DIR)/Dependencies/include \
     -I/usr/local/include
 
@@ -27,7 +27,8 @@ ADDITIONAL_CPPFLAGS += \
     $(BASIC_DEFINES)
 
 BASIC_CFLAGS += \
-    -Wall -Wextra -std=gnu99
+    -Wall -Wextra -Wformat=2 -std=gnu99 -fstrict-aliasing -Wstrict-aliasing
+
 BASIC_OBJCFLAGS += \
     $(BASIC_CFLAGS) \
     -Wno-import \
