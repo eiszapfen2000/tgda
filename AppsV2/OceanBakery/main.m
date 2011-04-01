@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
-#import "NP.h"
+#import "Core/NPEngineCore.h"
+#import "Core/File/NPLocalPathManager.h"
+#import "Core/File/NSFileManager+NPEngine.h"
 #import "OBOceanSurfaceGenerationConfiguration.h"
 #import "OBOceanSurfaceManager.h"
 
@@ -7,12 +9,12 @@ int main (void)
 {
     NSAutoreleasePool * pool = [[ NSAutoreleasePool alloc ] init ];
 
-    [ NP Core ];
+    [ NPEngineCore instance ];
 
     NSAutoreleasePool * innerPool = [[ NSAutoreleasePool alloc ] init ];
 
     NSString * currentDirectory = [[ NSFileManager defaultManager ] currentDirectoryPath ];
-    [[[ NP Core ] pathManager ] addLookUpPath:currentDirectory ];
+    [[[ NPEngineCore instance ] localPathManager ] addLookUpPath:currentDirectory ];
 
     OBOceanSurfaceManager * manager = [[ OBOceanSurfaceManager alloc ] init ];
 
@@ -24,7 +26,7 @@ int main (void)
 
         while (( file = [ argumentsEnumerator nextObject ] ))
         {
-            NSString * absolutePath = [[[ NP Core ] pathManager ] getAbsoluteFilePath:file ];
+            NSString * absolutePath = [[[ NPEngineCore instance ] localPathManager ] getAbsolutePath:file ];
 
             if ( [ absolutePath isEqual:@"" ] == NO && [[ NSFileManager defaultManager ] isFile:absolutePath ] == YES )
             {
@@ -47,7 +49,7 @@ int main (void)
     [ manager release ];
 
     [ innerPool release ];
-    [[ NP Core ] dealloc ];
+    [[ NPEngineCore instance ] dealloc ];
     [ pool release ];
 
     return 0;

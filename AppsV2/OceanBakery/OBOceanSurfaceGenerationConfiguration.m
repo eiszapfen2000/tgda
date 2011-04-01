@@ -1,9 +1,12 @@
+#import <Foundation/NSArray.h>
+#import <Foundation/NSDictionary.h>
+#import "OBRNG.h"
+#import "OBGaussianRNG.h"
 #import "OBOceanSurfaceGenerationConfiguration.h"
 #import "OBOceanSurfaceManager.h"
 #import "OBOceanSurface.h"
 #import "OBOceanSurfaceSlice.h"
 #import "OBPFrequencySpectrumGeneration.h"
-#import "NP.h"
 
 @implementation OBOceanSurfaceGenerationConfiguration
 
@@ -14,32 +17,32 @@
 
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parent:nil ];
+    return [ self initWithName:newName manager:nil ];
 }
 
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent
+- (id) initWithName:(NSString *)newName
+            manager:(OBOceanSurfaceManager *)manager
 {
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
-    resolution = iv2_alloc_init();
-    size = fv2_alloc_init();
-    windDirection = fv2_alloc_init();
+    resolution.x = resolution.y = 0;
+    size.x = size.y = 0.0f;
+    windDirection.x = windDirection.y = 0.0f;
+
     generatorName = nil;
     outputFileName = nil;
     timeStamps = NULL;
+
+    oceanSurfaceManager = manager;
 
     return self;
 }
 
 - (void) dealloc
 {
-    iv2_free(resolution);
-    fv2_free(size);
-    fv2_free(windDirection);
-
-    TEST_RELEASE(generatorName);
-    TEST_RELEASE(outputFileName);
-    TEST_RELEASE(gaussianRNG);
+    SAFE_DESTROY(generatorName);
+    SAFE_DESTROY(outputFileName);
+    SAFE_DESTROY(gaussianRNG);
 
     SAFE_FREE(timeStamps);
 
@@ -55,27 +58,27 @@
 {
     NSDictionary * config = [ NSDictionary dictionaryWithContentsOfFile:path ];
 
-    NPLOG(@"");
+    NSLog(@"");
     NSString * resX = [[ config objectForKey:@"Resolution" ] objectAtIndex:0 ];
     NSString * resY = [[ config objectForKey:@"Resolution" ] objectAtIndex:1 ];
-    resolution->x = [ resX intValue ];
-    resolution->y = [ resY intValue ];
-    NPLOG(@"Resolution: %d x %d", resolution->x, resolution->y);
+    resolution.x = [ resX intValue ];
+    resolution.y = [ resY intValue ];
+    NSLog(@"Resolution: %d x %d", resolution.x, resolution.y);
 
     NSString * width  = [[ config objectForKey:@"Size" ] objectAtIndex:0 ];
     NSString * length = [[ config objectForKey:@"Size" ] objectAtIndex:1 ];
-    size->x = [ width  floatValue ];
-    size->y = [ length floatValue ];
-    NPLOG(@"Size: %f km x %f km", size->x, size->y);
+    size.x = [ width  floatValue ];
+    size.y = [ length floatValue ];
+    NSLog(@"Size: %f km x %f km", size.x, size.y);
 
     generatorName = [[ config objectForKey:@"Generator" ] retain ];
-    NPLOG(@"Frequency Spectrum Generator: %@", generatorName);
+    NSLog(@"Frequency Spectrum Generator: %@", generatorName);
 
     NSString * windX = [[ config objectForKey:@"WindDirection" ] objectAtIndex:0 ];
     NSString * windY = [[ config objectForKey:@"WindDirection" ] objectAtIndex:1 ];
-    windDirection->x = [ windX floatValue ];
-    windDirection->y = [ windY floatValue ];
-    NPLOG(@"Wind Direction: ( %f, %f )", windDirection->x, windDirection->y);
+    windDirection.x = [ windX floatValue ];
+    windDirection.y = [ windY floatValue ];
+    NSLog(@"Wind Direction: ( %f, %f )", windDirection.x, windDirection.y);
 
     id gaussianRNGConfig = [ config objectForKey:@"RNG" ];
     NSString * firstGeneratorName  = [ gaussianRNGConfig objectForKey:@"FirstGenerator"  ];
@@ -83,35 +86,46 @@
     NSString * firstGeneratorSeed  = [ gaussianRNGConfig objectForKey:@"FirstSeed"  ];
     NSString * secondGeneratorSeed = [ gaussianRNGConfig objectForKey:@"SecondSeed" ];
 
+    /*
     id firstGenerator  = [[[ NP Core ] randomNumberGeneratorManager ] fixedParameterGeneratorWithRNGName:firstGeneratorName  ];
     id secondGenerator = [[[ NP Core ] randomNumberGeneratorManager ] fixedParameterGeneratorWithRNGName:secondGeneratorName ];
     [ firstGenerator  reseed:[firstGeneratorSeed  integerValue]];
     [ secondGenerator reseed:[secondGeneratorSeed integerValue]];
+    */
 
-    gaussianRNG = [[ NPGaussianRandomNumberGenerator alloc ] initWithName:@"Gaussian"
-                                                                   parent:self
-                                                           firstGenerator:firstGenerator
-                                                          secondGenerator:secondGenerator ];
+    id firstGenerator  = [[ OBRNG alloc ] initWithName:@"First RNG"  parameters:firstGeneratorName  ];
+    id secondGenerator = [[ OBRNG alloc ] initWithName:@"Second RNG" parameters:secondGeneratorName ];
+    [ firstGenerator  seed:[firstGeneratorSeed  integerValue]];
+    [ secondGenerator seed:[secondGeneratorSeed integerValue]];
+
+    gaussianRNG = 
+        [[ OBGaussianRNG alloc ]
+                initWithName:@"Gaussian"
+              firstGenerator:firstGenerator
+             secondGenerator:secondGenerator ];
+
+    RELEASE(firstGenerator);
+    RELEASE(secondGenerator);
 
     numberOfSlices  = [[ config objectForKey:@"Slices"  ] intValue ];
     numberOfThreads = [[ config objectForKey:@"Threads" ] intValue ];
-    NPLOG(@"Number of Slices: %d", numberOfSlices);
-    NPLOG(@"Number of Threads: %d", numberOfThreads);
+    NSLog(@"Number of Slices: %d", numberOfSlices);
+    NSLog(@"Number of Threads: %d", numberOfThreads);
 
     NSArray * timeStampArray = [ config objectForKey:@"TimeStamps" ];
-    Int timeStampCount = (Int)[ timeStampArray count ];
+    NSUInteger timeStampCount = [ timeStampArray count ];
 
     if ( timeStampCount != numberOfSlices )
     {
-        NPLOG_WARNING(@"Timestamp element count does not match number of slices");
+        NSLog(@"Timestamp element count does not match number of slices");
         numberOfSlices = timeStampCount;
     }
 
     timeStamps = ALLOC_ARRAY(Float, timeStampCount);
-    for ( int i = 0; i < timeStampCount; i++ )
+    for ( NSUInteger i = 0; i < timeStampCount; i++ )
     {
         timeStamps[i] = [[ timeStampArray objectAtIndex:i ] floatValue ];
-        NPLOG(@"%f", timeStamps[i]);
+        NSLog(@"%f", timeStamps[i]);
     }
 
     outputFileName = [[ config objectForKey:@"Output" ] retain ];
@@ -121,27 +135,29 @@
 
 - (OBOceanSurface *) process
 {
-    id <OBPFrequencySpectrumGeneration> generator = [[(OBOceanSurfaceManager *)parent frequencySpectrumGenerators ] objectForKey:generatorName ];
-    [ generator setSize:size ];
-    [ generator setResolution:resolution ];
-    [ generator setWindDirection:windDirection ];
+    id <OBPFrequencySpectrumGeneration> generator
+        = [[ oceanSurfaceManager frequencySpectrumGenerators ] objectForKey:generatorName ];
+
+    [ generator setSize:&size ];
+    [ generator setResolution:&resolution ];
+    [ generator setWindDirection:&windDirection ];
     [ generator setGaussianRNG:gaussianRNG ];
 
-    OBOceanSurface * oceanSurface = [[ OBOceanSurface alloc ] initWithName:@"" parent:nil ];
+    OBOceanSurface * oceanSurface = [[ OBOceanSurface alloc ] initWithName:@"" ];
     [ oceanSurface setResolution:resolution ];
     [ oceanSurface setSize:size ];
     [ oceanSurface setWindDirection:windDirection ];
 
     fftwf_plan_with_nthreads(numberOfThreads);
-    fftwf_complex * complexHeights = fftwf_malloc(sizeof(fftwf_complex) * resolution->x * resolution->y);
+    fftwf_complex * complexHeights = fftwf_malloc(sizeof(fftwf_complex) * resolution.x * resolution.y);
 
-    for ( Int i = 0; i < numberOfSlices; i++ )
+    for ( int32_t i = 0; i < numberOfSlices; i++ )
     {
         [ generator generateFrequencySpectrumAtTime:timeStamps[i] ];
 
         fftwf_plan plan;
-        plan = fftwf_plan_dft_2d(resolution->x,
-                                 resolution->y,
+        plan = fftwf_plan_dft_2d(resolution.x,
+                                 resolution.y,
                                  [generator frequencySpectrum],
                                  complexHeights,
                                  FFTW_BACKWARD,
@@ -149,19 +165,19 @@
         fftwf_execute(plan);
         fftwf_destroy_plan(plan);
 
-        Float * heights = ALLOC_ARRAY(Float,resolution->x*resolution->y);
+        Float * heights = ALLOC_ARRAY(Float,resolution.x*resolution.y);
 
-        for ( Int j = 0; j < resolution->x; j++ )
+        for ( int32_t j = 0; j < resolution.x; j++ )
         {
-            for ( Int k = 0; k < resolution->y; k++ )
+            for ( int32_t k = 0; k < resolution.y; k++ )
             {
-                heights[k + resolution->y * j] = complexHeights[k + resolution->y * j][0];
+                heights[k + resolution.y * j] = complexHeights[k + resolution.y * j][0];
             }
         }
 
-        OBOceanSurfaceSlice * slice = [[ OBOceanSurfaceSlice alloc ] initWithName:[NSString stringWithFormat:@"%d", i] parent:nil ];
+        OBOceanSurfaceSlice * slice = [[ OBOceanSurfaceSlice alloc ] initWithName:[NSString stringWithFormat:@"%d", i ]];
         [ slice setTime:timeStamps[i] ];
-        [ slice setHeights:heights elementCount:(UInt)(resolution->x * resolution->y) ];
+        [ slice setHeights:heights elementCount:(uint32_t)(resolution.x * resolution.y) ];
         [ oceanSurface addSlice:slice ];
         [ slice release ];
     }

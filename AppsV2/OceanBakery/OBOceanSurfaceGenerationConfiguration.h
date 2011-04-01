@@ -2,23 +2,28 @@
 #import "Core/NPObject/NPObject.h"
 
 @class OBOceanSurface;
+@class OBGaussianRNG;
+@class OBOceanSurfaceManager;
 
 @interface OBOceanSurfaceGenerationConfiguration : NPObject
 {
-    IVector2 * resolution;
-    FVector2 * size;
-    FVector2 * windDirection;
+    IVector2 resolution;
+    FVector2 size;
+    FVector2 windDirection;
     NSString * generatorName;
     NSString * outputFileName;
-    id gaussianRNG;
-    Int numberOfThreads;
-    Int numberOfSlices;
-    Float * timeStamps;
+    OBGaussianRNG * gaussianRNG;
+    int32_t numberOfThreads;
+    int32_t numberOfSlices;
+    float * timeStamps;
+    OBOceanSurfaceManager * oceanSurfaceManager;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
+- (id) initWithName:(NSString *)newName
+            manager:(OBOceanSurfaceManager *)manager
+                   ;
 - (void) dealloc;
 
 - (NSString *) outputFileName;

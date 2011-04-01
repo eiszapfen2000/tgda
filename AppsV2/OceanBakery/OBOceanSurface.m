@@ -1,6 +1,8 @@
+#import <Foundation/NSArray.h>
+#import <Foundation/NSException.h>
 #import "Core/File/NPFile.h"
-#import "OBOceanSurface.h"
 #import "OBOceanSurfaceSlice.h"
+#import "OBOceanSurface.h"
 
 @implementation OBOceanSurface
 
@@ -11,16 +13,12 @@
 
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parent:nil ];
-}
+    self = [ super initWithName:newName ];
 
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    self = [ super initWithName:newName parent:newParent ];
+    resolution.x = resolution.y = 0;
+    size.x = size.y = 0.0f;
+    windDirection.x = windDirection.y = 0.0f;
 
-    resolution = iv2_alloc_init();
-    size = fv2_alloc_init();
-    windDirection = fv2_alloc_init();
     slices = [[ NSMutableArray alloc ] init ];
 
     return self;
@@ -29,39 +27,37 @@
 - (void) dealloc
 {
     [ slices removeAllObjects ];
-    [ slices release ];
-
-    iv2_free(resolution);
+    DESTROY(slices);
 
     [ super dealloc ];
 }
 
-- (void) setResolution:(IVector2 *)newResolution
+- (void) setResolution:(const IVector2)newResolution
 {
-    *resolution = *newResolution;
+    resolution = newResolution;
 }
 
-- (void) setSize:(FVector2 *)newSize
+- (void) setSize:(const FVector2)newSize
 {
-    *size = *newSize;
+    size = newSize;
 }
 
-- (void) setWindDirection:(FVector2 *)newWindDirection
+- (void) setWindDirection:(const FVector2)newWindDirection
 {
-    *windDirection = *newWindDirection;
+    windDirection = newWindDirection;
 }
 
 - (void) addSlice:(OBOceanSurfaceSlice *)slice
 {
     [ slices addObject:slice ];
-    [ slice setParent:self ];
+    //[ slice setParent:self ];
 }
 
 - (void) saveToFile:(NPFile *)file
 {
     [ file writeSUXString:@"OceanSurface" ];
 
-    UInt32 numberOfSlices = [ slices count ];
+    NSUInteger numberOfSlices = [ slices count ];
     NSAssert(numberOfSlices > 0, @"No Slices");
 
     BOOL animated = NO;
@@ -70,7 +66,7 @@
         animated = YES;
     }
 
-    [ file writeBool:&animated ];
+    [ file writeBool:animated ];
 
     [ file writeIVector2:resolution ];
     [ file writeFVector2:size ];
@@ -82,15 +78,15 @@
     }
     else
     {
-        [ file writeUInt32:&numberOfSlices ];
+        [ file writeUInt32:(uint32_t)numberOfSlices ];
 
         NSEnumerator * sliceEnumerator = [ slices objectEnumerator ];
         OBOceanSurfaceSlice * slice;
 
         while (( slice = [ sliceEnumerator nextObject ] ))
         {
-            UInt32 index = [ slices indexOfObject:slice ];
-            [ file writeUInt32:&index ];
+            uint32_t index = [ slices indexOfObject:slice ];
+            [ file writeUInt32:index ];
 
             [ slice saveToFile:file ];
         }
