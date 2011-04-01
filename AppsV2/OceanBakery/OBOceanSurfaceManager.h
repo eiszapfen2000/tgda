@@ -1,7 +1,10 @@
 #import "Core/NPObject/NPObject.h"
 
-@class OBOceanSurface;
+@class NSMutableArray;
+@class NSMutableDictionary;
 @class NPFile;
+@class OBOceanSurface;
+
 
 @interface OBOceanSurfaceManager : NPObject
 {
@@ -14,7 +17,6 @@
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
 - (id) frequencySpectrumGenerators;

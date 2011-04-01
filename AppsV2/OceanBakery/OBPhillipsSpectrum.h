@@ -8,14 +8,14 @@
 {
     Float alpha;
 
-    IVector2 * resolution;
-    FVector2 * size;
-    FVector2 * windDirection;
+    IVector2 resolution;
+    FVector2 size;
+    FVector2 windDirection;
 
     id gaussianRNG;
 
     BOOL needsUpdate;
-    Float lastTime;
+    float lastTime;
 
     fftwf_complex * H0;
     fftwf_complex * frequencySpectrum;
@@ -23,11 +23,10 @@
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent;
 - (void) dealloc;
 
-- (Float) omegaForK:(FVector2 *)k;
-- (Float) indexToKx:(Int)index;
-- (Float) indexToKy:(Int)index;
+- (float) omegaForK:(FVector2 *)k;
+- (float) indexToKx:(int32_t)index;
+- (float) indexToKy:(int32_t)index;
 
 @end

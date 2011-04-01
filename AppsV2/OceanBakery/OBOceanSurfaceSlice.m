@@ -1,21 +1,16 @@
-#import "OBOceanSurfaceSlice.h"
 #import "Core/File/NPFile.h"
+#import "OBOceanSurfaceSlice.h"
 
 @implementation OBOceanSurfaceSlice
 
 - (id) init
 {
-    return [ self initWithName:@"Ocean Surface Slice" ];
+    return [ self initWithName:@"OB Surface Slice" ];
 }
 
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject> )newParent
-{
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     elementCount = 0;
     time = 0.0f;
@@ -31,12 +26,13 @@
     [ super dealloc ];
 }
 
-- (void) setTime:(Float)newTime
+- (void) setTime:(float)newTime
 {
     time = newTime;
 }
 
-- (void) setHeights:(Float *)newHeights elementCount:(UInt)count
+- (void) setHeights:(float *)newHeights
+       elementCount:(uint32_t)count
 {
     heights = newHeights;
     elementCount = count;    
@@ -46,8 +42,10 @@
 {
     if ( heights != NULL )
     {
-        [ file writeFloat:&time ];
-        [ file writeFloats:heights withLength:elementCount ];
+        [ file writeFloat:time ];
+
+        #warning FIXME write array to stream
+        //[ file writeFloats:heights withLength:elementCount ];
     }
 }
 

@@ -1,15 +1,23 @@
-#import "OBOceanSurfaceManager.h"
-#import "OBOceanSurfaceGenerationConfiguration.h"
-#import "OBOceanSurface.h"
-#import "OBPhillipsSpectrum.h"
+#import <Foundation/NSArray.h>
+#import <Foundation/NSDictionary.h>
+#import <Foundation/NSFileManager.h>
+#import <Foundation/NSProcessInfo.h>
 #import "fftw3.h"
-#import "NP.h"
+#import "Core/NPEngineCore.h"
+#import "Core/File/NPFile.h"
+#import "Core/File/NPLocalPathManager.h"
+#import "Core/File/NSFileManager+NPEngine.h"
+#import "OBPhillipsSpectrum.h"
+#import "OBOceanSurface.h"
+#import "OBOceanSurfaceGenerationConfiguration.h"
+#import "OBOceanSurfaceManager.h"
+
 
 @implementation OBOceanSurfaceManager
 
 - (void) createFrequencySpectrumGenerators
 {
-    OBPhillipsSpectrum * phillips = [[ OBPhillipsSpectrum alloc ] initWithName:@"Phillips" parent:self ];
+    OBPhillipsSpectrum * phillips = [[ OBPhillipsSpectrum alloc ] initWithName:@"Phillips" ];
     [ frequencySpectrumGenerators setObject:phillips forKey:@"Phillips" ];
     [ phillips release ];
 }
@@ -21,29 +29,24 @@
 
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parent:nil ];
-}
-
-- (id) initWithName:(NSString *)newName parent:(id <NPPObject>)newParent
-{
-    self = [ super initWithName:newName parent:newParent ];
+    self = [ super initWithName:newName ];
 
     frequencySpectrumGenerators = [[ NSMutableDictionary alloc ] init ];
     configurations = [[ NSMutableDictionary alloc ] init ];
     oceanSurfaces = [[ NSMutableArray alloc ] init ];
 
     processorCount = [[ NSProcessInfo processInfo ] processorCount ];
-    NPLOG(@"%@: %u processors detected", name, processorCount);
+    NSLog(@"%@: %u processors detected", name, processorCount);
 
     int result = fftwf_init_threads();
 
     if ( result == 0 )
     {
-        NPLOG_WARNING(@"%@: no fftw thread support", name);
+        NSLog(@"%@: no fftw thread support", name);
     }
     else
     {
-        NPLOG(@"%@: fftw thread support up and running", name);
+        NSLog(@"%@: fftw thread support up and running", name);
     }
 
     [ self createFrequencySpectrumGenerators ];
@@ -54,13 +57,12 @@
 - (void) dealloc
 {
     [ oceanSurfaces removeAllObjects ];
-    [ oceanSurfaces release ];
-
     [ frequencySpectrumGenerators removeAllObjects ];
-    [ frequencySpectrumGenerators release ];
-
     [ configurations removeAllObjects ];
-    [ configurations release ];
+
+    DESTROY(oceanSurfaces);
+    DESTROY(frequencySpectrumGenerators);
+    DESTROY(configurations);
 
     fftwf_cleanup_threads();
 
@@ -74,7 +76,7 @@
 
 - (id) loadOceanSurfaceGenerationConfigurationFromPath:(NSString *)path
 {
-    NSString * absolutePath = [[[ NP Core ] pathManager ] getAbsoluteFilePath:path ];
+    NSString * absolutePath = [[[ NPEngineCore instance ] localPathManager ] getAbsolutePath:path ];
 
     return [ self loadOceanSurfaceGenerationConfigurationFromAbsolutePath:absolutePath ];
 }
@@ -87,9 +89,12 @@
 
         if ( config == nil )
         {
-            NPLOG(@"%@: loading %@", name, path);
+            NSLog(@"%@: loading %@", name, path);
 
-            OBOceanSurfaceGenerationConfiguration * config = [[ OBOceanSurfaceGenerationConfiguration alloc ] initWithName:@"" parent:self ];
+            OBOceanSurfaceGenerationConfiguration * config
+                = [[ OBOceanSurfaceGenerationConfiguration alloc ]
+                                                    initWithName:@""
+                                                         manager:self ];
 
             if ( [ config loadFromPath:path ] == YES )
             {
@@ -117,16 +122,16 @@
     if ( [[ NSFileManager defaultManager ] createEmptyFileAtPath:path ] == YES )
     {
         NPFile * file = [[ NPFile alloc ] initWithName:[oceanSurface name]
-                                                parent:self
                                               fileName:path
-                                                  mode:NP_FILE_WRITING ];
+                                                  mode:NpStreamWrite
+                                                 error:NULL ];
 
         [ self saveOceanSurface:oceanSurface toFile:file ];
         [ file release ];
     }
     else
     {
-        NPLOG_ERROR(@"%@ failed to create file %@", name, path);
+        NSLog(@"%@ failed to create file %@", name, path);
     }
 }
 
