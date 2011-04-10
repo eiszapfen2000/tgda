@@ -189,6 +189,25 @@
 
 - (NPStringList *) stringsWithPrefix:(NSString *)prefix
 {
+    return [ self stringsWithPrefix:prefix
+                            indexes:NULL ];
+}
+
+- (NPStringList *) stringsWithSuffix:(NSString *)suffix
+{
+    return [ self stringsWithSuffix:suffix
+                            indexes:NULL ];
+}
+
+- (NPStringList *) stringsWithPrefix:(NSString *)prefix
+                             indexes:(NSIndexSet **)indexes
+{
+    NSMutableIndexSet * temp = nil;
+    if ( indexes != NULL )
+    {
+        temp = [[ NSMutableIndexSet alloc ] init ];
+    }
+
     NPStringList * result = [ NPStringList stringList ];
     [ result setAllowDuplicates:YES ];
     [ result setAllowEmptyStrings:YES ];
@@ -200,14 +219,31 @@
         if ( [ string hasPrefix:prefix ] == YES )
         {
             [ result addString:string ];
+
+            if ( temp != nil )
+            {
+                [ temp addIndex:i ];
+            }
         }
+    }
+
+    if ( indexes != NULL && temp != nil )
+    {
+        *indexes = [ temp copy ];
     }
 
     return result;
 }
 
 - (NPStringList *) stringsWithSuffix:(NSString *)suffix
+                             indexes:(NSIndexSet **)indexes
 {
+    NSMutableIndexSet * temp = nil;
+    if ( indexes != NULL )
+    {
+        temp = [[ NSMutableIndexSet alloc ] init ];
+    }
+
     NPStringList * result = [ NPStringList stringList ];
     [ result setAllowDuplicates:YES ];
     [ result setAllowEmptyStrings:YES ];
@@ -219,10 +255,118 @@
         if ( [ string hasSuffix:suffix ] == YES )
         {
             [ result addString:string ];
+
+            if ( temp != nil )
+            {
+                [ temp addIndex:i ];
+            }
+        }
+    }
+
+    if ( indexes != NULL && temp != nil )
+    {
+        *indexes = [ temp copy ];
+    }
+
+    return result;
+}
+
+- (NSUInteger) indexOfFirstStringWithPrefix:(NSString *)prefix
+{
+    NSUInteger result = NSNotFound;
+
+    NSUInteger numberOfStrings = [ strings count ];
+    for ( NSUInteger i = 0; i < numberOfStrings; i++ )
+    {
+        NSString * string = [ strings objectAtIndex:i ];
+        if ( [ string hasPrefix:prefix ] == YES )
+        {
+            result = i;
+            break;
         }
     }
 
     return result;
+}
+
+- (NSUInteger) indexOfFirstStringWithSuffix:(NSString *)suffix
+{
+    NSUInteger result = NSNotFound;
+
+    NSUInteger numberOfStrings = [ strings count ];
+    for ( NSUInteger i = 0; i < numberOfStrings; i++ )
+    {
+        NSString * string = [ strings objectAtIndex:i ];
+        if ( [ string hasSuffix:suffix ] == YES )
+        {
+            result = i;
+            break;
+        }
+    }
+
+    return result;
+}
+
+- (NSUInteger) indexOfLastStringWithPrefix:(NSString *)prefix
+{
+    NSUInteger result = NSNotFound;
+
+    NSUInteger numberOfStrings = [ strings count ];
+    for ( NSUInteger i = 0; i < numberOfStrings; i++ )
+    {
+        NSString * string = [ strings objectAtIndex:i ];
+        if ( [ string hasPrefix:prefix ] == YES )
+        {
+            result = i;
+        }
+    }
+
+    return result;
+}
+
+- (NSUInteger) indexOfLastStringWithSuffix:(NSString *)suffix
+{
+    NSUInteger result = NSNotFound;
+
+    NSUInteger numberOfStrings = [ strings count ];
+    for ( NSUInteger i = 0; i < numberOfStrings; i++ )
+    {
+        NSString * string = [ strings objectAtIndex:i ];
+        if ( [ string hasSuffix:suffix ] == YES )
+        {
+            result = i;
+        }
+    }
+
+    return result;
+}
+
+- (void) replaceStringAtIndex:(NSUInteger)index
+                   withString:(NSString *)string
+{
+    [ strings replaceObjectAtIndex:index withObject:string ];
+}
+
+- (void) replaceStringsAtIndexes:(NSIndexSet *)indexes
+                     withStrings:(NSArray *)array
+{
+    NSUInteger currentIndex = [ indexes firstIndex ];
+    NSUInteger numberOfIndexes = [ indexes count ];
+
+    for (NSUInteger i = 0; i< numberOfIndexes; i++ )
+    {
+        [ strings replaceObjectAtIndex:currentIndex
+                            withObject:[ array objectAtIndex:i ]];
+
+        currentIndex = [ indexes indexGreaterThanIndex:currentIndex ];
+    }
+}
+
+- (void) replaceStringsAtIndexes:(NSIndexSet *)indexes
+                  withStringList:(NPStringList *)stringList
+{
+    [ self replaceStringsAtIndexes:indexes
+                       withStrings:stringList->strings ];
 }
 
 - (NSString *) fileName

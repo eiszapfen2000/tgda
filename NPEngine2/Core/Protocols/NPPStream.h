@@ -13,6 +13,11 @@ NpStreamMode;
 
 @protocol NPPStream
 
+- (BOOL) readElementsToBuffer:(void *)buffer
+                  elementSize:(size_t)elementSize
+             numberOfElements:(size_t)numberOfElements
+                             ;
+
 - (BOOL) readInt8:(int8_t *)i;
 - (BOOL) readInt16:(int16_t *)i;
 - (BOOL) readInt32:(int32_t *)i;
@@ -21,8 +26,8 @@ NpStreamMode;
 - (BOOL) readUInt16:(uint16_t *)i;
 - (BOOL) readUInt32:(uint32_t *)i;
 - (BOOL) readUInt64:(uint64_t *)i;
-- (BOOL) readFloat:(Float *)f;
-- (BOOL) readDouble:(Double *)d;
+- (BOOL) readFloat:(float *)f;
+- (BOOL) readDouble:(double *)d;
 - (BOOL) readBool:(BOOL *)b;
 - (BOOL) readFVector2:(FVector2 *)v;
 - (BOOL) readFVector3:(FVector3 *)v;
@@ -34,6 +39,11 @@ NpStreamMode;
 - (BOOL) readSUXString:(NSString **)string;
 - (BOOL) readSUXScript:(NPStringList **)script;
 
+- (BOOL) writeElements:(void *)buffer
+           elementSize:(size_t)elementSize
+      numberOfElements:(size_t)numberOfElements
+                      ;
+
 - (BOOL) writeInt8:(int8_t)i;
 - (BOOL) writeInt16:(int16_t)i;
 - (BOOL) writeInt32:(int32_t)i;
@@ -42,8 +52,8 @@ NpStreamMode;
 - (BOOL) writeUInt16:(uint16_t)u;
 - (BOOL) writeUInt32:(uint32_t)u;
 - (BOOL) writeUInt64:(uint64_t)u;
-- (BOOL) writeFloat:(Float)f;
-- (BOOL) writeDouble:(Double)d;
+- (BOOL) writeFloat:(float)f;
+- (BOOL) writeDouble:(double)d;
 - (BOOL) writeBool:(BOOL)b;
 - (BOOL) writeFVector2:(FVector2)v;
 - (BOOL) writeFVector3:(FVector3)v;

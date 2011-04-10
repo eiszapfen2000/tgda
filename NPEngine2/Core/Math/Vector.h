@@ -53,6 +53,7 @@ Double v2_vv_dot_product(const Vector2 * const v, const Vector2 * const w);
 Double v2_v_square_length(const Vector2 * const v);
 Double v2_v_length(const Vector2 * const v);
 Vector2 v2_v_inverted(Vector2 * v);
+Vector2 v2_v_normalised(const Vector2 * const v);
 Vector2 v2_vv_add(const Vector2 * const v, const Vector2 * const w);
 Vector2 v2_vv_sub(const Vector2 * const v, const Vector2 * const w);
 Vector2 v2_sv_scaled(Double scale, const Vector2 const * v);

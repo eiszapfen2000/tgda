@@ -117,8 +117,8 @@
 }
 
 - (BOOL) writeElements:(void *)buffer
-            elementSize:(size_t)elementSize
-       numberOfElements:(size_t)numberOfElements
+           elementSize:(size_t)elementSize
+      numberOfElements:(size_t)numberOfElements
 {
     NSAssert(file != NULL, @"Invalid file handle");
 

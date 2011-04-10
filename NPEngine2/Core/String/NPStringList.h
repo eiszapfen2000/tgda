@@ -51,6 +51,29 @@
 
 - (NPStringList *) stringsWithPrefix:(NSString *)prefix;
 - (NPStringList *) stringsWithSuffix:(NSString *)suffix;
+- (NPStringList *) stringsWithPrefix:(NSString *)prefix
+                             indexes:(NSIndexSet **)indexes
+                                    ;
+- (NPStringList *) stringsWithSuffix:(NSString *)suffix
+                             indexes:(NSIndexSet **)indexes
+                                    ;
+
+- (NSUInteger) indexOfFirstStringWithPrefix:(NSString *)prefix;
+- (NSUInteger) indexOfFirstStringWithSuffix:(NSString *)suffix;
+- (NSUInteger) indexOfLastStringWithPrefix:(NSString *)prefix;
+- (NSUInteger) indexOfLastStringWithSuffix:(NSString *)suffix;
+
+- (void) replaceStringAtIndex:(NSUInteger)index
+                   withString:(NSString *)string
+                             ;
+
+- (void) replaceStringsAtIndexes:(NSIndexSet *)indexes
+                     withStrings:(NSArray *)array
+                                ;
+
+- (void) replaceStringsAtIndexes:(NSIndexSet *)indexes
+                  withStringList:(NPStringList *)stringList
+                                ;
 
 @end
 

@@ -169,6 +169,12 @@ Vector2 v2_v_inverted(Vector2 * v)
     return (Vector2){-V_X(*v), -V_Y(*v)};
 }
 
+Vector2 v2_v_normalised(const Vector2 * const v)
+{
+    double length = v2_v_length(v);
+    return (Vector2){ V_X(*v) / length, V_Y(*v) / length };
+}
+
 Vector2 v2_vv_add(const Vector2 * const v, const Vector2 * const w)
 {
     return (Vector2){V_X(*v) + V_X(*w), V_Y(*v) + V_Y(*w)};
