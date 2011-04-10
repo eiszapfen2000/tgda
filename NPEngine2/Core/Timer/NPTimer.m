@@ -2,6 +2,11 @@
 
 @implementation NPTimer
 
+- (id) init
+{
+    return [ self initWithName:@"Timer" ];
+}
+
 - (id) initWithName:(NSString *)newName
 {
     self = [ super initWithName:newName ];
@@ -13,7 +18,7 @@
     fpsThisSecond = 0;
     paused = NO;
 
-   	gettimeofday(&lastUpdate,0);
+   	gettimeofday(&lastUpdate, 0);
 
     return self;
 }
@@ -28,17 +33,17 @@
     return fps;
 }
 
-- (Double) frameTime
+- (double) frameTime
 {
     return frameTime;
 }
 
-- (Double) reciprocalFrameTime
+- (double) reciprocalFrameTime
 {
     return 1.0 / frameTime;
 }
 
-- (Double) totalElapsedTime
+- (double) totalElapsedTime
 {
     return totalElapsedTime;
 }
@@ -50,8 +55,8 @@
         struct timeval updateTime;
         gettimeofday(&updateTime, 0);
 
-        Double lastUpdateInSeconds = (Double)lastUpdate.tv_sec + (Double)lastUpdate.tv_usec / (1000000.0);
-        Double updateTimeInSeconds = (Double)updateTime.tv_sec + (Double)updateTime.tv_usec / (1000000.0);
+        double lastUpdateInSeconds = ((double)lastUpdate.tv_sec) + (((double)lastUpdate.tv_usec) / (1000000.0));
+        double updateTimeInSeconds = ((double)updateTime.tv_sec) + (((double)updateTime.tv_usec) / (1000000.0));
         frameTime  = updateTimeInSeconds - lastUpdateInSeconds;
         lastUpdate = updateTime;
 

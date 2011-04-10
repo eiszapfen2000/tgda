@@ -4,20 +4,21 @@
 @interface NPTimer : NPObject
 {
     struct timeval lastUpdate;
-    Double frameTime;
-    Double totalElapsedTime;
+    double frameTime;
+    double totalElapsedTime;
     int64_t secondsPassed;
     int32_t fps;
     int32_t fpsThisSecond;
     BOOL paused;
 }
 
+- (id) init;
 - (id) initWithName:(NSString *) newName;
 
 - (int32_t) fps;
-- (Double) frameTime;
-- (Double) reciprocalFrameTime;
-- (Double) totalElapsedTime;
+- (double) frameTime;
+- (double) reciprocalFrameTime;
+- (double) totalElapsedTime;
 
 - (void) setup;
 
