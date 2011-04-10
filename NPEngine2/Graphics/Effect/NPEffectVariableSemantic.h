@@ -8,10 +8,11 @@
     NpEffectSemantic semantic;
 }
 
-- (id) initWithName:(NSString *)newName;
+- (id) initWithName:(NSString *)newName
+           semantic:(NpEffectSemantic)newSemantic
+                   ;
 
 - (NpEffectSemantic) semantic;
-- (void) setSemantic:(NpEffectSemantic)newSemantic;
 
 - (void) activate:(NPEffectTechniqueVariable *)variable;
 

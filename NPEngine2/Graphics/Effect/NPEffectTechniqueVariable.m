@@ -7,11 +7,24 @@
 
 @implementation NPEffectTechniqueVariable
 
+- (id) init
+{
+    [ self notImplemented:_cmd ];
+    return nil;
+}
+
+- (id) initWithName:(NSString *)newName
+{
+    [ self notImplemented:_cmd ];
+    return nil;
+}
+
 - (id) initWithName:(NSString *)newName
      effectVariable:(id)newEffectVariable
            location:(GLint)newLocation
 {
-    NSAssert([ newEffectVariable isKindOfClass:[ NPEffectVariable class ]] == YES, @"");
+    NSAssert((location != -1) && (newEffectVariable != nil)
+             && ([ newEffectVariable isKindOfClass:[ NPEffectVariable class ]] == YES), @"");
 
     self = [ super initWithName:newName ];
 

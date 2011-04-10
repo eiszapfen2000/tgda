@@ -183,6 +183,34 @@ NpRenderBufferDataFormat;
 
 typedef NpImagePixelFormat NpRenderBufferPixelFormat;
 
+typedef enum NpBufferDataUpdateRate
+{
+    NpBufferDataUpdateOnceUseOften,
+    NpBufferDataUpdateOnceUseSeldom,
+    NpBufferDataUpdateOftenUseOften,
+}
+NpBufferDataUpdateRate;
+
+typedef enum NpBufferDataUsage
+{
+    NpBufferDataWriteCPUToGPU,
+    NpBufferDataCopyGPUToCPU,
+    NpBufferDataCopyGPUToGPU
+}
+NpBufferDataUsage;
+
+typedef enum NpBufferObjectType
+{
+    NpBufferObjectTypeUnknown = -1,
+    NpBufferObjectTypeGeometry = 0,
+    NpBufferObjectTypeIndices = 1,
+    NpBufferObjectTypePixelSource = 2,
+    NpBufferObjectTypePixelTarget = 3,
+    NpBufferObjectTypeUniforms = 4,
+    NpBufferObjectTypeTransformFeedback = 5
+}
+NpBufferObjectType;
+
 GLenum getGLTextureDataFormat(const NpImageDataFormat dataFormat);
 GLenum getGLTexturePixelFormat(const NpImagePixelFormat pixelFormat);
 GLenum getGLTextureWrap(const NpTextureWrap textureWrap);
@@ -197,6 +225,11 @@ GLenum getGLPolygonFillMode(const NpPolygonFillMode polygonFillMode);
 GLenum getGLRenderBufferInternalFormat(const NpRenderTargetType Type,
             const NpRenderBufferPixelFormat PixelFormat,
             const NpRenderBufferDataFormat DataFormat);
+
+GLenum getGLBufferUsage(const NpBufferDataUpdateRate UpdateRate,
+            const NpBufferDataUsage Usage);
+
+GLenum getGLBufferType(const NpBufferObjectType Type);
 
 #endif
 

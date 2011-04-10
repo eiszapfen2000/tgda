@@ -7,6 +7,8 @@
     GLint location;
 }
 
+- (id) init;
+- (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName
      effectVariable:(id)newEffectVariable
            location:(GLint)newLocation

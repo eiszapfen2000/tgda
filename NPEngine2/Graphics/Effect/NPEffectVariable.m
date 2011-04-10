@@ -2,6 +2,18 @@
 
 @implementation NPEffectVariable
 
+- (id) init
+{
+    [ self notImplemented:_cmd ];
+    return nil;
+}
+
+- (id) initWithName:(NSString *)newName
+{
+    [ self notImplemented:_cmd ];
+    return nil;
+}
+
 - (id) initWithName:(NSString *)newName
        variableType:(NpEffectVariableType)newVariableType
 {
@@ -15,6 +27,11 @@
 - (NpEffectVariableType) variableType
 {
     return variableType;
+}
+
+- (void) activate:(NPEffectTechniqueVariable *)variable
+{
+    [ self subclassResponsibility:_cmd ];
 }
 
 @end

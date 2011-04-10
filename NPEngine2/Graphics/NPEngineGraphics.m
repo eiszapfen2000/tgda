@@ -182,6 +182,8 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         return NO;
     }
 
+    [ self checkForGLErrors ];
+
     if ( !GLEW_VERSION_2_0 )
     {
         NSString * errorString = @"Your system does not support OpenGL 2.0.";
@@ -195,7 +197,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     glGetIntegerv(GL_MAX_DRAW_BUFFERS, &numberOfDrawBuffers);
     NPLOG(@"Draw Buffers: %d", numberOfDrawBuffers);
 
-    if ( GL_SGIS_generate_mipmap )
+    if ( GLEW_SGIS_generate_mipmap )
     {
         supportsSGIGenerateMipMap = YES;
         NPLOG(@"GL_SGIS_generate_mipmap supported");

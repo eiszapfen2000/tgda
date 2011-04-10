@@ -21,8 +21,14 @@
 
 @interface NPEffect (Private)
 
-- (id) registerEffectVariableSemantic:(NSString *)variableName;
-- (id) registerEffectVariableSampler:(NSString *)variableName;
+- (id) registerEffectVariableSampler:(NSString *)variableName
+                           texelUnit:(uint32_t)texelUnit
+                                    ;
+
+- (id) registerEffectVariableSemantic:(NSString *)variableName
+                             semantic:(NpEffectSemantic)semantic
+                                     ;
+
 - (id) registerEffectVariableUniform:(NSString *)variableName
                         uniformClass:(Class)uniformClass
                                     ;
@@ -140,6 +146,7 @@
 @implementation NPEffect (Private)
 
 - (id) registerEffectVariableSemantic:(NSString *)variableName
+                             semantic:(NpEffectSemantic)semantic
 {
     NPEffectVariableSemantic * v = [ self variableWithName:variableName ];
 
@@ -151,13 +158,17 @@
         return v;
     }
 
-    v = [[ NPEffectVariableSemantic alloc ] initWithName:variableName ];
+    v = [[ NPEffectVariableSemantic alloc ] 
+                           initWithName:variableName
+                               semantic:semantic ];
+
     [ variables addObject:v ];
 
     return AUTORELEASE(v);
 }
 
 - (id) registerEffectVariableSampler:(NSString *)variableName
+                           texelUnit:(uint32_t)texelUnit
 {
     NPEffectVariableSampler * v = [ self variableWithName:variableName ];
 
@@ -169,7 +180,10 @@
         return v;
     }
 
-    v = [[ NPEffectVariableSampler alloc ] initWithName:variableName ];
+    v = [[ NPEffectVariableSampler alloc ]
+                           initWithName:variableName
+                              texelUnit:texelUnit ];
+
     [ variables addObject:v ];
 
     return AUTORELEASE(v);
@@ -178,8 +192,7 @@
 - (id) registerEffectVariableUniform:(NSString *)variableName
                         uniformClass:(Class)uniformClass
 {
-    NSAssert1(uniformClass != Nil, @"%s - uniformClass is Nil",
-        __PRETTY_FUNCTION__);
+    NSAssert(uniformClass != Nil, @"UniformClass is Nil");
 
     id v = [ self variableWithName:variableName ];
 
@@ -195,7 +208,7 @@
     v = [[ uniformClass alloc ] initWithName:variableName ];
     [ variables addObject:v ];
 
-    return AUTORELEASE(v);   
+    return AUTORELEASE(v);
 }
 
 @end
@@ -216,9 +229,44 @@
         return nil;
     }
 
-    [ shaderSource insertStringList:effectVariables atIndex:0 ];
+    // search for GLSL preprocessor strings
+    // DAMN FUCKING NVIDIA GLSL Compiler needs \n
+    // after preprocessor directives
+    NSIndexSet * indexes = nil;
+    NPStringList * preprocessorLines
+        = [ shaderSource stringsWithPrefix:@"#"
+                                   indexes:&indexes ];
 
-    NPLOG([shaderSource description]);
+    NSCharacterSet * set = [ NSCharacterSet newlineCharacterSet ];
+    NPStringList * preprocessorLinesWithNewline = [ NPStringList stringList ];
+
+    NSRange range;
+    NSUInteger numberOfPreprocessorLines = [ preprocessorLines count ];
+    for ( NSUInteger i = 0; i < numberOfPreprocessorLines; i++ )
+    {
+        NSString * pLine = [ preprocessorLines stringAtIndex:i ];
+        range = [ pLine rangeOfCharacterFromSet:set ];
+
+        if ( range.location == NSNotFound )
+        {
+            NSString * pNewLine = [ NSString stringWithFormat:@"%@\n", pLine ];
+            [ preprocessorLinesWithNewline addString:pNewLine ];
+        }
+    }
+
+    [ shaderSource replaceStringsAtIndexes:indexes 
+                            withStringList:preprocessorLinesWithNewline ];
+
+    NSUInteger startIndex = 0;
+    NSUInteger vIndex
+        = [ shaderSource indexOfLastStringWithPrefix:@"#version" ];
+
+    if ( vIndex != NSNotFound )
+    {
+        startIndex = vIndex + 1;
+    }
+
+    [ shaderSource insertStringList:effectVariables atIndex:startIndex ];
 
     NPShader * shader
         = [ NPShader shaderFromStringList:shaderSource
@@ -308,6 +356,7 @@
 
 - (void) parseEffectVariables:(NPParser *)parser
 {
+    uint32_t texelUnit = 0;
     NSUInteger numberOfLines = [ parser lineCount ];
     for ( NSUInteger i = 0; i < numberOfLines; i++ )
     {
@@ -319,13 +368,16 @@
 
             if ( [ uniformType hasPrefix:@"sampler" ] == YES )
             {
-                //NPEffectVariableSampler * s = [ effect registerEffectVariableSampler:uniformName ];
+                [ effect registerEffectVariableSampler:uniformName 
+                                             texelUnit:texelUnit ];
+
+                texelUnit = texelUnit + 1;
             }
             else if ( [ uniformName hasPrefix:@"np_" ] == YES )
             {
-                NPEffectVariableSemantic * s = [ effect registerEffectVariableSemantic:uniformName ];
                 NpEffectSemantic semantic = [[ uniformName lowercaseString ] semanticValue ];
-                [ s setSemantic:semantic ];
+                [ effect registerEffectVariableSemantic:uniformName 
+                                               semantic:semantic ];
             }
             else if ( [ uniformName hasPrefix:@"np_" ] == NO &&  [ uniformName hasPrefix:@"gl_" ] == NO )
             {
@@ -450,85 +502,19 @@
 		glGetActiveUniform(glID, i, maxUniformNameLength, &uniformNameLength,
 			&uniformSize, &uniformType, uniformName);
 
+        #warning FIXME: Check for valid values returned by glGetActiveUniform
+
         NSString * uName
-            = [[ NSString alloc ] initWithCString:uniformName
-                                         encoding:NSUTF8StringEncoding ];
+            = [ NSString stringWithCString:uniformName
+                                  encoding:NSUTF8StringEncoding ];
 
-        BOOL isSampler = NO;
+        NPEffectTechniqueVariable * vt
+            = AUTORELEASE([[ NPEffectTechniqueVariable alloc ]
+                                initWithName:uName
+                              effectVariable:[ effect variableWithName:uName ]
+                                    location:i ]);
 
-		// Sampler
-		switch (uniformType)
-		{
-		case GL_SAMPLER_1D:
-		case GL_SAMPLER_2D:
-		case GL_SAMPLER_3D:
-		case GL_SAMPLER_CUBE:
-		case GL_SAMPLER_BUFFER_EXT:
-            {
-                isSampler = YES;
-                break;
-            }
-		}
-
-        if ( isSampler == NO )
-        {
-            NPEffectTechniqueVariable * vt
-                = AUTORELEASE([[ NPEffectTechniqueVariable alloc ]
-                                    initWithName:uName
-                                  effectVariable:[ effect variableWithName:uName ]
-                                        location:i ]);
-
-            [ techniqueVariables addObject:vt ];
-        }
-
-        /*
-		// Other
-		if ((shaderVariableName.length() < 3) || ((shaderVariableName.substr(0, 3) != "zt_") && (shaderVariableName.substr(0, 3) != "gl_")))
-		{
-			ZtShaderVariableUniform* uniformVariable = getShaderVariableUniform(shaderVariableName);
-			uniformVariable->setGLID(i);
-
-			switch (uniformType)
-			{
-			case GL_BOOL:
-				uniformVariable->setUniformType(VARIABLETYPE_BOOLEAN);
-				ztMaterialVariablePool()->getMaterialVariable(shaderVariableName, VARIABLETYPE_BOOLEAN);
-				break;
-			case GL_INT:
-				uniformVariable->setUniformType(VARIABLETYPE_INTEGER);
-				ztMaterialVariablePool()->getMaterialVariable(shaderVariableName, VARIABLETYPE_INTEGER);
-				break;
-			case GL_FLOAT:
-				uniformVariable->setUniformType(VARIABLETYPE_FLOAT);
-				ztMaterialVariablePool()->getMaterialVariable(shaderVariableName, VARIABLETYPE_FLOAT);
-				break;
-			case GL_FLOAT_VEC2:
-				uniformVariable->setUniformType(VARIABLETYPE_VECTOR2);
-				ztMaterialVariablePool()->getMaterialVariable(shaderVariableName, VARIABLETYPE_VECTOR2);
-				break;
-			case GL_FLOAT_VEC3:
-				uniformVariable->setUniformType(VARIABLETYPE_VECTOR3);
-				ztMaterialVariablePool()->getMaterialVariable(shaderVariableName, VARIABLETYPE_VECTOR3);
-				break;
-			case GL_FLOAT_VEC4:
-				uniformVariable->setUniformType(VARIABLETYPE_VECTOR4);
-				ztMaterialVariablePool()->getMaterialVariable(shaderVariableName, VARIABLETYPE_VECTOR4);
-				break;
-			case GL_FLOAT_MAT2:
-				uniformVariable->setUniformType(VARIABLETYPE_MATRIX2x2);
-				ztMaterialVariablePool()->getMaterialVariable(shaderVariableName, VARIABLETYPE_MATRIX2x2);
-				break;
-			case GL_FLOAT_MAT3:
-				uniformVariable->setUniformType(VARIABLETYPE_MATRIX3x3);
-				ztMaterialVariablePool()->getMaterialVariable(shaderVariableName, VARIABLETYPE_MATRIX3x3);
-				break;
-			case GL_FLOAT_MAT4:
-				uniformVariable->setUniformType(VARIABLETYPE_MATRIX4x4);
-				ztMaterialVariablePool()->getMaterialVariable(shaderVariableName, VARIABLETYPE_MATRIX4x4);
-				break;
-			}
-		}
-        */
+        [ techniqueVariables addObject:vt ];
 	}
 }
 
