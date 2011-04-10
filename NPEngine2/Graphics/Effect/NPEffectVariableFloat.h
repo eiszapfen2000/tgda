@@ -9,6 +9,7 @@
     Float value;
 }
 
+- (id) init;
 - (id) initWithName:(NSString *)newName;
 
 - (Float) value;
@@ -23,6 +24,7 @@
     FVector2 value;
 }
 
+- (id) init;
 - (id) initWithName:(NSString *)newName;
 
 - (FVector2) value;
@@ -37,6 +39,7 @@
     FVector3 value;
 }
 
+- (id) init;
 - (id) initWithName:(NSString *)newName;
 
 - (FVector3) value;
@@ -51,6 +54,7 @@
     FVector4 value;
 }
 
+- (id) init;
 - (id) initWithName:(NSString *)newName;
 
 - (FVector4) value;

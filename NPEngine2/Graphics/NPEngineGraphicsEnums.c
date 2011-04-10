@@ -447,3 +447,114 @@ GLenum getGLRenderBufferInternalFormat(const NpRenderTargetType Type,
 
 	return internalFormat;
 }
+
+GLenum getGLBufferUsage(const NpBufferDataUpdateRate UpdateRate,
+            const NpBufferDataUsage Usage)
+{
+    GLenum result = GL_NONE;
+
+    switch ( Usage )
+    {
+        case NpBufferDataWriteCPUToGPU:
+        {
+            switch ( UpdateRate )
+            {
+                case NpBufferDataUpdateOnceUseOften:
+                {
+                    result = GL_STATIC_DRAW;
+                }
+
+                case NpBufferDataUpdateOnceUseSeldom:
+                {
+                    result = GL_STREAM_DRAW;
+                }
+
+                case NpBufferDataUpdateOftenUseOften:
+                {
+                    result = GL_DYNAMIC_DRAW;
+                }
+            }
+
+            break;
+        }
+
+        case NpBufferDataCopyGPUToCPU:
+        {
+            switch ( UpdateRate )
+            {
+                case NpBufferDataUpdateOnceUseOften:
+                {
+                    result = GL_STATIC_READ;
+                }
+
+                case NpBufferDataUpdateOnceUseSeldom:
+                {
+                    result = GL_STREAM_READ;
+                }
+
+                case NpBufferDataUpdateOftenUseOften:
+                {
+                    result = GL_DYNAMIC_READ;
+                }
+            }
+
+            break;
+        }
+
+        case NpBufferDataCopyGPUToGPU:
+        {
+            switch ( UpdateRate )
+            {
+                case NpBufferDataUpdateOnceUseOften:
+                {
+                    result = GL_STATIC_COPY;
+                }
+
+                case NpBufferDataUpdateOnceUseSeldom:
+                {
+                    result = GL_STREAM_COPY;
+                }
+
+                case NpBufferDataUpdateOftenUseOften:
+                {
+                    result = GL_DYNAMIC_COPY;
+                }
+            }
+
+            break;
+        }
+    }
+
+    return result;
+}
+
+GLenum getGLBufferType(const NpBufferObjectType Type)
+{
+    GLenum result = GL_NONE;
+
+    switch ( Type )
+    {
+        case NpBufferObjectTypeGeometry:
+            result = GL_ARRAY_BUFFER;
+            break;
+        case NpBufferObjectTypeIndices:
+            result = GL_ELEMENT_ARRAY_BUFFER;
+            break;
+        case NpBufferObjectTypePixelSource:
+            result = GL_PIXEL_UNPACK_BUFFER;
+            break;
+        case NpBufferObjectTypePixelTarget:
+            result = GL_PIXEL_PACK_BUFFER;
+            break;
+        case NpBufferObjectTypeUniforms:
+            result = GL_UNIFORM_BUFFER;
+            break;
+        case NpBufferObjectTypeTransformFeedback:
+            result = GL_TRANSFORM_FEEDBACK_BUFFER;
+            break;
+        default:
+            break;
+    }
+
+    return result;
+}

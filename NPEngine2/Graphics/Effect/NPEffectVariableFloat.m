@@ -3,6 +3,12 @@
 
 @implementation NPEffectVariableFloat
 
+- (id) init
+{
+    [ self notImplemented:_cmd ];
+    return nil;
+}
+
 - (id) initWithName:(NSString *)newName
 {
     self = [ super initWithName:newName uniformType:NpUniformFloat ];
@@ -30,6 +36,12 @@
 @end
 
 @implementation NPEffectVariableFloat2
+
+- (id) init
+{
+    [ self notImplemented:_cmd ];
+    return nil;
+}
 
 - (id) initWithName:(NSString *)newName
 {
@@ -59,6 +71,12 @@
 
 @implementation NPEffectVariableFloat3
 
+- (id) init
+{
+    [ self notImplemented:_cmd ];
+    return nil;
+}
+
 - (id) initWithName:(NSString *)newName
 {
     self = [ super initWithName:newName uniformType:NpUniformFloat3 ];
@@ -86,6 +104,12 @@
 @end
 
 @implementation NPEffectVariableFloat4
+
+- (id) init
+{
+    [ self notImplemented:_cmd ];
+    return nil;
+}
 
 - (id) initWithName:(NSString *)newName
 {

@@ -14,4 +14,6 @@
 
 - (NpEffectVariableType) variableType;
 
+- (void) activate:(NPEffectTechniqueVariable *)variable;
+
 @end

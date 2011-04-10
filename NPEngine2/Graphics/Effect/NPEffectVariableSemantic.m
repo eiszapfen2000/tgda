@@ -6,12 +6,25 @@
 
 @implementation NPEffectVariableSemantic
 
+- (id) init
+{
+    [ self notImplemented:_cmd ];
+    return nil;
+}
+
 - (id) initWithName:(NSString *)newName
+{
+    [ self notImplemented:_cmd ];
+    return nil;
+}
+
+- (id) initWithName:(NSString *)newName
+           semantic:(NpEffectSemantic)newSemantic
 {
     self = [ super initWithName:newName
                    variableType:NpEffectVariableTypeSemantic ];
 
-    semantic = NpSemanticUnknown;
+    semantic = newSemantic;
 
     return self;
 }
@@ -19,11 +32,6 @@
 - (NpEffectSemantic) semantic
 {
     return semantic;
-}
-
-- (void) setSemantic:(NpEffectSemantic)newSemantic
-{
-    semantic = newSemantic;
 }
 
 - (void) activate:(NPEffectTechniqueVariable *)variable
@@ -54,8 +62,7 @@
 
         case NpInverseViewMatrix:
         {
-            FMatrix4 * m = [ trafo inverseViewMatrix ];
-            glUniformMatrix4fv(location, 1, GL_FALSE, (const GLfloat *)m->elements);
+            m = [ trafo inverseViewMatrix ];
             break;
         }
 

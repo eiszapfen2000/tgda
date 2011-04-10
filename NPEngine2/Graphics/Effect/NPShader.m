@@ -141,6 +141,8 @@
         lineCStrings[i]
             = [[ stringList stringAtIndex:i ] 
                      cStringUsingEncoding:NSUTF8StringEncoding ];
+
+        //NSLog(@"%s", lineCStrings[i]);
     }
 
     glShaderSource(glID, (GLsizei)numberOfLines, lineCStrings, NULL);
