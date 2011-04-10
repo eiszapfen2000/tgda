@@ -15,23 +15,31 @@
               stringByAppendingPathComponent:@"np.log" ];
 
     return [ self initWithFileName:logFileName ];
-
 }
 
 - (id) initWithFileName:(NSString *)fileName
 {
     self = [ super init ];
 
-    if ( [[ NSFileManager defaultManager ] 
-                createFileAtPath:fileName
-                        contents:nil
-                      attributes:nil ] == YES )
+    if ( fileName == nil )
     {
-        logFile = RETAIN([ NSFileHandle fileHandleForWritingAtPath:fileName ]);
+        logFile = RETAIN([ NSFileHandle fileHandleWithStandardOutput ]);
     }
     else
     {
-        logFile = RETAIN([ NSFileHandle fileHandleWithStandardOutput ]);
+        BOOL fileCreated = [[ NSFileManager defaultManager ] 
+                                createFileAtPath:fileName
+                                        contents:nil
+                                      attributes:nil ];
+
+        if ( fileCreated == YES )
+        {
+            logFile = RETAIN([ NSFileHandle fileHandleForWritingAtPath:fileName ]);
+        }
+        else
+        {
+            logFile = RETAIN([ NSFileHandle fileHandleWithStandardOutput ]);
+        }
     }
 
     return self;
