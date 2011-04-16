@@ -224,7 +224,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &maximalRenderbufferSize);
     }
 
-    if ( GLEW_ARB_framebuffer_object )
+    if ( GLEW_ARB_framebuffer_object || GLEW_VERSION_3_2 )
     {
         supportsARBFBO = YES;
         NPLOG(@"GL_ARB_framebuffer_object supported");

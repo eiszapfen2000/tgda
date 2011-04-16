@@ -13,6 +13,15 @@
     return AUTORELEASE([[ NPStringList alloc ] init ]);
 }
 
++ (id) stringListWithStringList:(NPStringList *)stringList
+{
+    NSRange range;
+    range.location = 0;
+    range.length = [ stringList count ];
+
+    return [ stringList stringListInRange:range ];
+}
+
 + (id) stringListWithContentsOfFile:(NSString *)fileName
                               error:(NSError **)error
 {
@@ -125,6 +134,16 @@
     [ self addStrings:stringList->strings ];
 }
 
+- (void) removeStringAtIndex:(NSUInteger)index
+{
+    [ strings removeObjectAtIndex:index ];
+}
+
+- (void) removeStringsAtIndexes:(NSIndexSet *)indexes
+{
+    [ strings removeObjectsAtIndexes:indexes ];
+}
+
 - (void) insertString:(NSString *)string atIndex:(NSUInteger)index
 {
     if ( allowDuplicates == NO &&
@@ -230,6 +249,7 @@
     if ( indexes != NULL && temp != nil )
     {
         *indexes = [ temp copy ];
+        DESTROY(temp);
     }
 
     return result;
@@ -266,6 +286,7 @@
     if ( indexes != NULL && temp != nil )
     {
         *indexes = [ temp copy ];
+        DESTROY(temp);
     }
 
     return result;
@@ -340,6 +361,49 @@
 
     return result;
 }
+
+- (NSIndexSet *) indexesOfStringsWithPrefix:(NSString *)prefix
+{
+    NSIndexSet * result = nil;
+    NSMutableIndexSet * temp = [[ NSMutableIndexSet alloc ] init ];
+
+    NSUInteger numberOfStrings = [ strings count ];
+    for ( NSUInteger i = 0; i < numberOfStrings; i++ )
+    {
+        NSString * string = [ strings objectAtIndex:i ];
+        if ( [ string hasPrefix:prefix ] == YES )
+        {
+            [ temp addIndex:i ];
+        }
+    }
+
+    result = [ temp copy ];
+    DESTROY(temp);
+
+    return result;
+}
+
+- (NSIndexSet *) indexesOfStringsWithSuffix:(NSString *)suffix
+{
+    NSIndexSet * result = nil;
+    NSMutableIndexSet * temp = [[ NSMutableIndexSet alloc ] init ];
+
+    NSUInteger numberOfStrings = [ strings count ];
+    for ( NSUInteger i = 0; i < numberOfStrings; i++ )
+    {
+        NSString * string = [ strings objectAtIndex:i ];
+        if ( [ string hasSuffix:suffix ] == YES )
+        {
+            [ temp addIndex:i ];
+        }
+    }
+
+    result = [ temp copy ];
+    DESTROY(temp);
+
+    return result;
+}
+
 
 - (void) replaceStringAtIndex:(NSUInteger)index
                    withString:(NSString *)string

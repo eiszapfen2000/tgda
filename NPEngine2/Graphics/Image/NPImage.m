@@ -40,25 +40,11 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
     switch ( devilPixelFormat )
     {
         case IL_LUMINANCE:
-            if ( sRGB == YES )
-            {
-                result = NpImagePixelFormatsR;
-            }
-            else
-            {
-                result = NpImagePixelFormatR;
-            }
+            result = NpImagePixelFormatR;
             break;
 
         case IL_LUMINANCE_ALPHA:
-            if ( sRGB == YES )
-            {
-                result = NpImagePixelFormatsRG;
-            }
-            else
-            {
-                result = NpImagePixelFormatRG;
-            }
+            result = NpImagePixelFormatRG;
             break;
 
         case IL_RGBA:

@@ -40,16 +40,14 @@ GLenum getGLTexturePixelFormat(const NpImagePixelFormat pixelFormat)
     switch ( pixelFormat )
     {
         case NpImagePixelFormatR:
-        case NpImagePixelFormatsR:
         {
-            result = GL_LUMINANCE;
+            result = GL_RED;
             break;
         }
 
         case NpImagePixelFormatRG:
-        case NpImagePixelFormatsRG:
         {
-            result = GL_LUMINANCE_ALPHA;
+            result = GL_RG;
             break;
         }
 
@@ -91,30 +89,28 @@ GLint getGLTextureInternalFormat(const NpImageDataFormat dataFormat,
                 switch ( pixelFormat )
                 {
                     case NpImagePixelFormatR :
-                    case NpImagePixelFormatsR:
                     {
-                        glinternalformat = GL_LUMINANCE;
+                        glinternalformat = GL_R8;
                         break;
                     }
 
                     case NpImagePixelFormatRG:
-                    case NpImagePixelFormatsRG:
                     {
-                        glinternalformat = GL_LUMINANCE_ALPHA;
+                        glinternalformat = GL_RG8;
                         break;
                     }
 
                     case NpImagePixelFormatRGB:
                     case NpImagePixelFormatsRGB:
                     {
-                        glinternalformat = GL_RGB;
+                        glinternalformat = GL_RGB8;
                         break;
                     }
 
                     case NpImagePixelFormatRGBA:
                     case NpImagePixelFormatsRGBLinearA:
                     {
-                        glinternalformat = GL_RGBA;
+                        glinternalformat = GL_RGBA8;
                         break;
                     }
 
@@ -125,16 +121,12 @@ GLint getGLTextureInternalFormat(const NpImageDataFormat dataFormat,
             {
                 switch ( pixelFormat )
                 {
-                    case NpImagePixelFormatR   : { glinternalformat = GL_LUMINANCE;       break; }
-                    case NpImagePixelFormatRG  : { glinternalformat = GL_LUMINANCE_ALPHA; break; }
-                    case NpImagePixelFormatRGB : { glinternalformat = GL_RGB;             break; }
-                    case NpImagePixelFormatRGBA: { glinternalformat = GL_RGBA;            break; }
-
-                    case NpImagePixelFormatsR         : { glinternalformat = GL_SLUMINANCE;       break; }
-                    // this is buggy, since alpha is linear, luminance is not
-                    case NpImagePixelFormatsRG        : { glinternalformat = GL_SLUMINANCE_ALPHA; break; }
-                    case NpImagePixelFormatsRGB       : { glinternalformat = GL_SRGB;             break; }
-                    case NpImagePixelFormatsRGBLinearA : { glinternalformat = GL_SRGB_ALPHA;       break; }
+                    case NpImagePixelFormatR   : { glinternalformat = GL_R8;   break; }
+                    case NpImagePixelFormatRG  : { glinternalformat = GL_RG8;  break; }
+                    case NpImagePixelFormatRGB : { glinternalformat = GL_RGB8;  break; }
+                    case NpImagePixelFormatRGBA: { glinternalformat = GL_RGBA8; break; }
+                    case NpImagePixelFormatsRGB        : { glinternalformat = GL_SRGB8;        break; }
+                    case NpImagePixelFormatsRGBLinearA : { glinternalformat = GL_SRGB8_ALPHA8; break; }
 
                     default: break;
                 }
@@ -147,10 +139,10 @@ GLint getGLTextureInternalFormat(const NpImageDataFormat dataFormat,
         {
             switch ( pixelFormat )
             {
-                case NpImagePixelFormatR   : { glinternalformat = GL_LUMINANCE16F_ARB;       break; }
-                case NpImagePixelFormatRG  : { glinternalformat = GL_LUMINANCE_ALPHA16F_ARB; break; }
-                case NpImagePixelFormatRGB : { glinternalformat = GL_RGB16F_ARB;             break; }
-                case NpImagePixelFormatRGBA: { glinternalformat = GL_RGBA16F_ARB;            break; }
+                case NpImagePixelFormatR   : { glinternalformat = GL_R16F;    break; }
+                case NpImagePixelFormatRG  : { glinternalformat = GL_RG16F;   break; }
+                case NpImagePixelFormatRGB : { glinternalformat = GL_RGB16F;  break; }
+                case NpImagePixelFormatRGBA: { glinternalformat = GL_RGBA16F; break; }
                 default: break;
             }
 
@@ -161,10 +153,10 @@ GLint getGLTextureInternalFormat(const NpImageDataFormat dataFormat,
         {
             switch ( pixelFormat )
             {
-                case NpImagePixelFormatR   : { glinternalformat = GL_LUMINANCE32F_ARB;       break; }
-                case NpImagePixelFormatRG  : { glinternalformat = GL_LUMINANCE_ALPHA32F_ARB; break; }
-                case NpImagePixelFormatRGB : { glinternalformat = GL_RGB32F_ARB;             break; }
-                case NpImagePixelFormatRGBA: { glinternalformat = GL_RGBA32F_ARB;            break; }
+                case NpImagePixelFormatR   : { glinternalformat = GL_R32F;    break; }
+                case NpImagePixelFormatRG  : { glinternalformat = GL_RG32F;   break; }
+                case NpImagePixelFormatRGB : { glinternalformat = GL_RGB32F;  break; }
+                case NpImagePixelFormatRGBA: { glinternalformat = GL_RGBA32F; break; }
                 default: break;
             }
 
@@ -178,31 +170,6 @@ GLint getGLTextureInternalFormat(const NpImageDataFormat dataFormat,
     return glinternalformat;
 
 }
-
-/*
-typedef enum NpImagePixelFormat
-{
-    NpImagePixelFormatUnknown = -1,
-    NpImagePixelFormatR = 0,
-    NpImagePixelFormatRG = 1,
-    NpImagePixelFormatRGB = 2,
-    NpImagePixelFormatRGBA = 3,
-    NpImagePixelFormatsR = 4,
-    NpImagePixelFormatsRG = 5,
-    NpImagePixelFormatsRGB = 6,
-    NpImagePixelFormatsRGBLinearA = 7    
-}
-NpImagePixelFormat;
-
-typedef enum NpImageDataFormat
-{
-    NpImageDataFormatUnknown = -1,
-    NpImageDataFormatByte = 0,
-    NpImageDataFormatFloat16 = 1,
-    NpImageDataFormatFloat32 = 2
-}
-NpImageDataFormat;
-*/
 
 GLenum getGLTextureWrap(const NpTextureWrap textureWrap)
 {
