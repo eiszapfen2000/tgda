@@ -14,6 +14,7 @@
 }
 
 + (id) stringList;
++ (id) stringListWithStringList:(NPStringList *)stringList;
 + (id) stringListWithContentsOfFile:(NSString *)fileName
                               error:(NSError **)error
                                    ;
@@ -38,6 +39,8 @@
 - (void) addString:(NSString *)string;
 - (void) addStrings:(NSArray *)array;
 - (void) addStringList:(NPStringList *)stringList;
+- (void) removeStringAtIndex:(NSUInteger)index;
+- (void) removeStringsAtIndexes:(NSIndexSet *)indexes;
 
 - (void) insertString:(NSString *)string atIndex:(NSUInteger)index;
 - (void) insertStrings:(NSArray *)array atIndexes:(NSIndexSet *)indexes;
@@ -62,6 +65,8 @@
 - (NSUInteger) indexOfFirstStringWithSuffix:(NSString *)suffix;
 - (NSUInteger) indexOfLastStringWithPrefix:(NSString *)prefix;
 - (NSUInteger) indexOfLastStringWithSuffix:(NSString *)suffix;
+- (NSIndexSet *) indexesOfStringsWithPrefix:(NSString *)prefix;
+- (NSIndexSet *) indexesOfStringsWithSuffix:(NSString *)suffix;
 
 - (void) replaceStringAtIndex:(NSUInteger)index
                    withString:(NSString *)string

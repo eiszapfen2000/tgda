@@ -119,6 +119,8 @@
     [ self setName:completeFileName ];
     ASSIGNCOPY(file, completeFileName);
 
+    NPLOG(@"Loading effect \"%@\"", completeFileName);
+
     NPStringList * effectScript
         = AUTORELEASE([[ NPStringList alloc ]
                             initWithName:@"" 
@@ -138,8 +140,14 @@
 - (BOOL) loadFromStringList:(NPStringList *)stringList
                       error:(NSError **)error
 {
+    NPStringList * stringListCopy
+         = [ NPStringList stringListWithStringList:stringList ];
+
+    NSIndexSet * set = [ stringList indexesOfStringsWithPrefix:@"#" ];
+    [ stringListCopy removeStringsAtIndexes:set ];
+
     NPParser * parser = [[ NPParser alloc ] init ];
-    [ parser parse:stringList ];
+    [ parser parse:stringListCopy ];
 
     NSUInteger numberOfLines = [ parser lineCount ];
     for ( NSUInteger i = 0; i < numberOfLines - 2; i++ )
@@ -160,7 +168,7 @@
                     lineRange.length = j - ( i + 2 );
 
                     NPStringList * techniqueStringList
-                        = [ stringList stringListInRange:lineRange ];
+                        = [ stringListCopy stringListInRange:lineRange ];
 
                     NPEffectTechnique * technique
                         = AUTORELEASE([[ NPEffectTechnique alloc ]

@@ -19,8 +19,9 @@
              effect:(NPEffect *)newEffect
                    ;
 - (void) dealloc;
-
 - (void) clear;
+
+- (GLuint) glID;
 
 - (BOOL) loadFromStringList:(NPStringList *)stringList
                       error:(NSError **)error

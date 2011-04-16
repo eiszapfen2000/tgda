@@ -90,8 +90,6 @@ static NSMutableDictionary * imageDataFormats = nil;
     INSERTSTRING(pixelFormats, @"RG", NpImagePixelFormatRG);
     INSERTSTRING(pixelFormats, @"RGB", NpImagePixelFormatRGB);
     INSERTSTRING(pixelFormats, @"RGBA", NpImagePixelFormatRGBA);
-    INSERTSTRING(pixelFormats, @"sR", NpImagePixelFormatsR);
-    INSERTSTRING(pixelFormats, @"sRG", NpImagePixelFormatsRG);
     INSERTSTRING(pixelFormats, @"sRGB", NpImagePixelFormatsRGB);
     INSERTSTRING(pixelFormats, @"sRGB Linear Alpha", NpImagePixelFormatsRGBLinearA);
 

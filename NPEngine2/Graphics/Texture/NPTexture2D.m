@@ -48,6 +48,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     self = [ super initWithName:newName ];
     [[[ NPEngineGraphics instance ] textures2D ] registerAsset:self ];
 
+    glGenTextures(1, &glID);
     [ self reset ];
 
     return self;
@@ -56,6 +57,12 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 - (void) dealloc
 {
     [[[ NPEngineGraphics instance ] textures2D ] unregisterAsset:self ];
+
+    if (glID > 0 )
+    {
+        glDeleteTextures(1, &glID);
+        glID = 0;
+    }
 
     [ super dealloc ];
 }
@@ -73,21 +80,12 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 - (void) clear
 {
     SAFE_DESTROY(file);
-    ready = NO;
-
-    if (glID > 0 )
-    {
-        glDeleteTextures(1, &glID);
-        glID = 0;
-    }
+    [ self reset ];
 }
 
 - (void) reset
 {
-    [ self clear ];
-
-  	glGenTextures(1, &glID);
-
+    ready = NO;
     width = height = 0;
     dataFormat  = NpImageDataFormatUnknown;
     pixelFormat = NpImagePixelFormatUnknown;
@@ -146,6 +144,8 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     dataFormat  = newDataFormat;
 
     [ self uploadToGLWithData:data ];
+
+    ready = YES;
 }
 
 - (void) generateUsingImage:(NPImage *)image
@@ -251,18 +251,21 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     {
         case NpTexture2DFilterNearest:
         {
+            filterState.mipmaps = NO;
             minFilter = magFilter = GL_NEAREST;
             break;
         }
 
         case NpTexture2DFilterLinear:
         {
+            filterState.mipmaps = NO;
             minFilter = magFilter = GL_LINEAR;
             break;
         }
 
         case NpTexture2DFilterTrilinear:
         {
+            filterState.mipmaps = YES;
             minFilter = GL_LINEAR_MIPMAP_LINEAR;
             magFilter = GL_LINEAR;
         }
@@ -270,6 +273,11 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
+
+    if ( filterState.mipmaps == YES )
+    {
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
 }
 
 - (void) updateGLTextureAnisotropy
@@ -308,30 +316,24 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
     [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:self ];
 
-    if ( filterState.mipmaps == YES )
+    if ( ready == YES )
     {
-        if ( [[ NPEngineGraphics instance ] supportsSGIGenerateMipMap ] == YES )
-        {
-            glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, 1);
-            glTexImage2D(GL_TEXTURE_2D, 0, glinternalformat, width, height,
-                0, glpixelformat, gldataformat, [data bytes]);
-            glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, 0);
-        }
-        else
-        {
-            gluBuild2DMipmaps(GL_TEXTURE_2D, glinternalformat, width, height,
-                glpixelformat, gldataformat, [data bytes]);
-        }
+        //update data, is a lot faster than glTexImage2D
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height,
+            glpixelformat, gldataformat, [data bytes]);
     }
     else
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, glinternalformat, width, height, 0,
-             glpixelformat, gldataformat, [data bytes]);
+        // specify entire texture
+        glTexImage2D(GL_TEXTURE_2D, 0, glinternalformat, width, height, 
+            0, glpixelformat, gldataformat, [data bytes]);
     }
 
-    [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
+    [ self updateGLTextureFilterState ];
+    [ self updateGLTextureAnisotropy ];
+    [ self updateGLTextureWrapState ];
 
-    [ self updateGLTextureState ]; 
+    [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
 }
 
 @end

@@ -10,10 +10,8 @@ typedef enum NpImagePixelFormat
     NpImagePixelFormatRG = 1,
     NpImagePixelFormatRGB = 2,
     NpImagePixelFormatRGBA = 3,
-    NpImagePixelFormatsR = 4,
-    NpImagePixelFormatsRG = 5,
-    NpImagePixelFormatsRGB = 6,
-    NpImagePixelFormatsRGBLinearA = 7    
+    NpImagePixelFormatsRGB = 4,
+    NpImagePixelFormatsRGBLinearA = 5
 }
 NpImagePixelFormat;
 

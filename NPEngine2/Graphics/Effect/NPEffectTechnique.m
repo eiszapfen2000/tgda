@@ -100,12 +100,19 @@
     [ techniqueVariables removeAllObjects ];
 }
 
+- (GLuint) glID
+{
+    return glID;
+}
+
 - (BOOL) loadFromStringList:(NPStringList *)stringList
                       error:(NSError **)error
 {
     [ self clear ];
 
     NSAssert(effect != nil, @"Technique does not belong to an effect");
+
+    NPLOG(@"Loading effect technique \"%@\"", name);
 
     NPParser * parser = AUTORELEASE([[ NPParser alloc ] init ]);
     [ parser parse:stringList ];
@@ -321,6 +328,7 @@
 
     [ lines addStringList:[ stringList stringsWithPrefix:@"uniform" ]];
     [ lines addStringList:[ stringList stringsWithPrefix:@"varying" ]];
+    [ lines addStringList:[ stringList stringsWithPrefix:@"attribute" ]];
 
     return lines;
 }
@@ -333,6 +341,8 @@
     {
         NSString * shaderType = nil;
         NSString * shaderFileName = nil;
+
+        //NSLog([[ parser getTokensForLine:i ] description]);
 
         if ( [ parser isLowerCaseTokenFromLine:i atPosition:0 equalToString:@"set" ] == YES
              && [ parser getTokenAsLowerCaseString:&shaderType fromLine:i atPosition:1 ] == YES
@@ -431,7 +441,7 @@
             NSString * description
                 = AUTORELEASE([[ NSString alloc ] 
                                     initWithCString:infoLog
-                                           encoding:NSUTF8StringEncoding ]);
+                                           encoding:NSASCIIStringEncoding ]);
 
             *error = [ NSError errorWithCode:NPEngineGraphicsEffectTechniqueGLSLLinkError
                                  description:description ];
@@ -506,7 +516,7 @@
 
         NSString * uName
             = [ NSString stringWithCString:uniformName
-                                  encoding:NSUTF8StringEncoding ];
+                                  encoding:NSASCIIStringEncoding ];
 
         NPEffectTechniqueVariable * vt
             = AUTORELEASE([[ NPEffectTechniqueVariable alloc ]
