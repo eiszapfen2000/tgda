@@ -1,3 +1,4 @@
+#import <Foundation/NSException.h>
 #import "Core/File/NPFile.h"
 #import "OBOceanSurfaceSlice.h"
 
@@ -12,8 +13,8 @@
 {
     self = [ super initWithName:newName ];
 
-    elementCount = 0;
     time = 0.0f;
+    numberOfHeightElements = 0;
     heights = NULL;
 
     return self;
@@ -26,27 +27,29 @@
     [ super dealloc ];
 }
 
-- (void) setTime:(float)newTime
+- (void) setTime:(double)newTime
 {
     time = newTime;
 }
 
-- (void) setHeights:(float *)newHeights
-       elementCount:(uint32_t)count
+- (void) setHeights:(double *)newHeights
+   numberOfElements:(size_t)numberOfElements
 {
     heights = newHeights;
-    elementCount = count;    
+    numberOfHeightElements = numberOfElements;    
 }
 
-- (void) saveToFile:(NPFile *)file
+- (BOOL) writeToStream:(id <NPPStream>)stream
+                 error:(NSError **)error
 {
-    if ( heights != NULL )
-    {
-        [ file writeFloat:time ];
+    NSAssert(heights != NULL, @"Invalid heights array");
 
-        #warning FIXME write array to stream
-        //[ file writeFloats:heights withLength:elementCount ];
-    }
+    BOOL result = [ stream writeFloat:time ];
+
+    return ( result &&
+                [ stream writeElements:heights 
+                         elementSize:sizeof(double)
+                    numberOfElements:numberOfHeightElements ] );
 }
 
 @end

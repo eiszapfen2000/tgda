@@ -16,8 +16,8 @@
     self = [ super initWithName:newName ];
 
     resolution.x = resolution.y = 0;
-    size.x = size.y = 0.0f;
-    windDirection.x = windDirection.y = 0.0f;
+    size.x = size.y = 0.0;
+    windDirection.x = windDirection.y = 0.0;
 
     slices = [[ NSMutableArray alloc ] init ];
 
@@ -37,12 +37,12 @@
     resolution = newResolution;
 }
 
-- (void) setSize:(const FVector2)newSize
+- (void) setSize:(const Vector2)newSize
 {
     size = newSize;
 }
 
-- (void) setWindDirection:(const FVector2)newWindDirection
+- (void) setWindDirection:(const Vector2)newWindDirection
 {
     windDirection = newWindDirection;
 }
@@ -50,47 +50,42 @@
 - (void) addSlice:(OBOceanSurfaceSlice *)slice
 {
     [ slices addObject:slice ];
-    //[ slice setParent:self ];
 }
 
-- (void) saveToFile:(NPFile *)file
+- (BOOL) writeToStream:(id <NPPStream>)stream
+                 error:(NSError **)error
 {
-    [ file writeSUXString:@"OceanSurface" ];
-
     NSUInteger numberOfSlices = [ slices count ];
     NSAssert(numberOfSlices > 0, @"No Slices");
 
-    BOOL animated = NO;
-    if ( numberOfSlices > 1 )
+    BOOL result = [ stream writeSUXString:@"OceanSurface" ];
+    result = result && [ stream writeIVector2:resolution ];
+    result = result && [ stream writeVector2:size ];
+    result = result && [ stream writeVector2:windDirection ];
+
+    if ( result == NO )
     {
-        animated = YES;
+        fprintf(stdout, "Error writing file header\n");
+        return NO;
     }
 
-    [ file writeBool:animated ];
+    result = YES;
 
-    [ file writeIVector2:resolution ];
-    [ file writeFVector2:size ];
-    [ file writeFVector2:windDirection ];
-
-    if ( animated == NO )
+    for ( NSUInteger i = 0; (i < numberOfSlices) && (result == YES); i++ )
     {
-        [[ slices objectAtIndex:0 ] saveToFile:file ];
+        result = result && [ stream writeUInt32:i ];
+        result = result &&
+                    [[ slices objectAtIndex:i ]
+                              writeToStream:stream
+                                      error:error ];
     }
-    else
+
+    if ( result == NO )
     {
-        [ file writeUInt32:(uint32_t)numberOfSlices ];
-
-        NSEnumerator * sliceEnumerator = [ slices objectEnumerator ];
-        OBOceanSurfaceSlice * slice;
-
-        while (( slice = [ sliceEnumerator nextObject ] ))
-        {
-            uint32_t index = [ slices indexOfObject:slice ];
-            [ file writeUInt32:index ];
-
-            [ slice saveToFile:file ];
-        }
+        fprintf(stdout, "Error writing heightfield data\n");
     }
+
+    return result;
 }
 
 @end

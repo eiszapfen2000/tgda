@@ -7,6 +7,7 @@ libNPEngineGraphics_SUBPROJECTS = \
     Texture \
     Effect \
     Buffer \
+    Geometry \
     RenderTarget \
     State
 

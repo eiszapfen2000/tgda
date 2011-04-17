@@ -25,7 +25,7 @@
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName
-         parameters:(NSString *)rngParameters
+                rng:(NSString *)rngName
                    ;
 - (void) dealloc;
 

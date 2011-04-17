@@ -4,12 +4,12 @@
 
 @protocol OBPFrequencySpectrumGeneration
 
-- (void) setSize:(FVector2 *)newSize;
-- (void) setResolution:(IVector2 *)newResolution;
-- (void) setWindDirection:(FVector2 *)newWindDirection;
+- (void) setSize:(const Vector2)newSize;
+- (void) setResolution:(const IVector2)newResolution;
+- (void) setWindDirection:(const Vector2)newWindDirection;
 - (void) setGaussianRNG:(id)newGaussianRNG;
 - (void) generateTimeIndependentFrequencySpectrum;
-- (void) generateFrequencySpectrumAtTime:(Float)time;
-- (fftwf_complex *) frequencySpectrum;
+- (void) generateFrequencySpectrumAtTime:(const double)time;
+- (fftw_complex *) frequencySpectrum;
 
 @end

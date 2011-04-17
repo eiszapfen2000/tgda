@@ -42,10 +42,12 @@
 
 - (NPShader *) loadShaderFromFile:(NSString *)fileName
             insertEffectVariables:(NPStringList *)effectVariables
+                 insertAttributes:(NPStringList *)attributes
                                  ;
 
 - (void) loadVertexShaderFromFile:(NSString *)fileName
                   effectVariables:(NPStringList *)effectVariables
+                       attributes:(NPStringList *)attributes
                                  ;
 
 - (void) loadFragmentShaderFromFile:(NSString *)fileName
@@ -53,13 +55,17 @@
                                    ;
 
 - (NPStringList *) extractEffectVariableLines:(NPStringList *)stringList;
+- (NPStringList *) extractVertexStreamAttributes:(NPStringList *)stringList;
+
 - (void) parseShader:(NPParser *)parser
      effectVariables:(NPStringList *)effectVariables
+          attributes:(NPStringList *)attributes
                     ;
 
 - (void) clearShaders;
 - (BOOL) linkShader:(NSError **)error;
 - (void) parseEffectVariables:(NPParser *)parser;
+- (void) parseActiveAttributes;
 - (void) parseActiveVariables;
 - (void) activateVariables;
 
@@ -120,7 +126,12 @@
     NPStringList * effectVariableLines
         = [ self extractEffectVariableLines:stringList ];
 
-    [ self parseShader:parser effectVariables:effectVariableLines ];
+    NPStringList * vertexStreamAttributes
+        = [ self extractVertexStreamAttributes:stringList ];
+
+    [ self parseShader:parser
+       effectVariables:effectVariableLines 
+            attributes:vertexStreamAttributes ];
 
     glID = glCreateProgram();
 
@@ -129,6 +140,7 @@
         return NO;
     }
 
+    [ self parseActiveAttributes ];
     [ parser parse:effectVariableLines ];
     [ self parseEffectVariables:parser ];
     [ self parseActiveVariables ];
@@ -224,6 +236,7 @@
 
 - (NPShader *) loadShaderFromFile:(NSString *)fileName
             insertEffectVariables:(NPStringList *)effectVariables
+                 insertAttributes:(NPStringList *)attributes
 {
     NSError * error = nil;
     NPStringList * shaderSource
@@ -236,34 +249,8 @@
         return nil;
     }
 
-    // search for GLSL preprocessor strings
-    // DAMN FUCKING NVIDIA GLSL Compiler needs \n
-    // after preprocessor directives
-    NSIndexSet * indexes = nil;
-    NPStringList * preprocessorLines
-        = [ shaderSource stringsWithPrefix:@"#"
-                                   indexes:&indexes ];
-
-    NSCharacterSet * set = [ NSCharacterSet newlineCharacterSet ];
-    NPStringList * preprocessorLinesWithNewline = [ NPStringList stringList ];
-
-    NSRange range;
-    NSUInteger numberOfPreprocessorLines = [ preprocessorLines count ];
-    for ( NSUInteger i = 0; i < numberOfPreprocessorLines; i++ )
-    {
-        NSString * pLine = [ preprocessorLines stringAtIndex:i ];
-        range = [ pLine rangeOfCharacterFromSet:set ];
-
-        if ( range.location == NSNotFound )
-        {
-            NSString * pNewLine = [ NSString stringWithFormat:@"%@\n", pLine ];
-            [ preprocessorLinesWithNewline addString:pNewLine ];
-        }
-    }
-
-    [ shaderSource replaceStringsAtIndexes:indexes 
-                            withStringList:preprocessorLinesWithNewline ];
-
+    // #version needs to be the first string in the shader,
+    // so we insert all effect variables afterwards
     NSUInteger startIndex = 0;
     NSUInteger vIndex
         = [ shaderSource indexOfLastStringWithPrefix:@"#version" ];
@@ -273,7 +260,21 @@
         startIndex = vIndex + 1;
     }
 
-    [ shaderSource insertStringList:effectVariables atIndex:startIndex ];
+    NPStringList * variablesAndAttributes
+        = [ NPStringList stringListWithStringList:effectVariables ];
+
+    if ( attributes != nil )
+    {
+        [ variablesAndAttributes addStringList:attributes ];
+    }
+
+    [ shaderSource insertStringList:variablesAndAttributes
+                            atIndex:startIndex ];
+
+    // DAMN FUCKING NVIDIA GLSL Compiler needs \n
+    // after preprocessor directives, so we insert
+    // new lines everywhere
+    [ shaderSource appendStringToAllStrings:@"\n" ];
 
     NPShader * shader
         = [ NPShader shaderFromStringList:shaderSource
@@ -289,6 +290,7 @@
 
 - (void) loadVertexShaderFromFile:(NSString *)fileName
                   effectVariables:(NPStringList *)effectVariables
+                       attributes:(NPStringList *)attributes
 {
     SAFE_DESTROY(vertexShader);
 
@@ -296,7 +298,8 @@
 
     NPShader * shader
         = [ self loadShaderFromFile:fileName
-              insertEffectVariables:effectVariables ];
+              insertEffectVariables:effectVariables
+                   insertAttributes:attributes ];
 
     if ( shader != nil )
     {
@@ -313,7 +316,8 @@
 
     NPShader * shader
         = [ self loadShaderFromFile:fileName
-              insertEffectVariables:effectVariables ];
+              insertEffectVariables:effectVariables
+                   insertAttributes:nil ];
 
     if ( shader != nil )
     {
@@ -328,6 +332,15 @@
 
     [ lines addStringList:[ stringList stringsWithPrefix:@"uniform" ]];
     [ lines addStringList:[ stringList stringsWithPrefix:@"varying" ]];
+
+    return lines;
+}
+
+- (NPStringList *) extractVertexStreamAttributes:(NPStringList *)stringList
+{
+    NPStringList * lines = [ NPStringList stringList ];
+    [ lines setAllowDuplicates:NO ];
+
     [ lines addStringList:[ stringList stringsWithPrefix:@"attribute" ]];
 
     return lines;
@@ -335,6 +348,7 @@
 
 - (void) parseShader:(NPParser *)parser
      effectVariables:(NPStringList *)effectVariables
+          attributes:(NPStringList *)attributes
 {
     NSUInteger numberOfLines = [ parser lineCount ];
     for ( NSUInteger i = 0; i < numberOfLines; i++ )
@@ -352,7 +366,8 @@
             if ( [ shaderType isEqual:@"vertex" ] == YES )
             {
                 [ self loadVertexShaderFromFile:shaderFileName
-                                effectVariables:effectVariables ];
+                                effectVariables:effectVariables
+                                     attributes:attributes ];
             }
 
             if ( [ shaderType isEqual:@"fragment" ] == YES )
@@ -494,10 +509,32 @@
     return [ NPEffectTechnique checkProgramLinkStatus:glID error:error ];
 }
 
+- (void) parseActiveAttributes
+{
+    GLint numberOfActiveAttributes = 0;
+    GLint maxAttributeNameLength = 0;
+
+    glGetProgramiv(glID, GL_ACTIVE_ATTRIBUTES, &numberOfActiveAttributes);
+    glGetProgramiv(glID, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxAttributeNameLength);
+
+	for (int32_t i = 0; i < numberOfActiveAttributes; i++)
+    {
+        GLsizei attributeNameLength;
+        GLint attributeSize;
+        GLenum attributeType;
+        GLchar attributeName[maxAttributeNameLength];
+
+        glGetActiveAttrib(glID, i, maxAttributeNameLength, &attributeNameLength,
+            &attributeSize, &attributeType, attributeName);
+
+        #warning FIXME: Check for valid values returned by glGetActiveAttrib
+    }
+}
+
 - (void) parseActiveVariables
 {
-	GLint numberOfActiveUniforms;
-    GLint maxUniformNameLength;
+	GLint numberOfActiveUniforms = 0;
+    GLint maxUniformNameLength = 0;
 
 	glGetProgramiv(glID, GL_ACTIVE_UNIFORMS, &numberOfActiveUniforms);
 	glGetProgramiv(glID, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxUniformNameLength);

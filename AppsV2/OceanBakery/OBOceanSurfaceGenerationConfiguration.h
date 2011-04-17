@@ -1,6 +1,7 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
 
+@class NSError;
 @class OBOceanSurface;
 @class OBGaussianRNG;
 @class OBOceanSurfaceManager;
@@ -8,14 +9,14 @@
 @interface OBOceanSurfaceGenerationConfiguration : NPObject
 {
     IVector2 resolution;
-    FVector2 size;
-    FVector2 windDirection;
+    Vector2 size;
+    Vector2 windDirection;
     NSString * generatorName;
     NSString * outputFileName;
     OBGaussianRNG * gaussianRNG;
-    int32_t numberOfThreads;
-    int32_t numberOfSlices;
-    float * timeStamps;
+    NSUInteger numberOfThreads;
+    NSUInteger numberOfSlices;
+    double * timeStamps;
     OBOceanSurfaceManager * oceanSurfaceManager;
 }
 
@@ -28,7 +29,9 @@
 
 - (NSString *) outputFileName;
 
-- (BOOL) loadFromPath:(NSString *)path;
+- (BOOL) loadFromFile:(NSString *)fileName
+                error:(NSError **)error
+                     ;
 
 - (OBOceanSurface *) process;
 

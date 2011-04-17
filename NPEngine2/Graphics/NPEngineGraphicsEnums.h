@@ -106,6 +106,20 @@ typedef enum NpUniformType
 }
 NpUniformType;
 
+typedef enum NpVertexAttributeType
+{
+    NpVertexAttributeUnknown = -1,
+    NpVertexAttributeFloat,
+    NpVertexAttributeFloat2,
+    NpVertexAttributeFloat3,
+    NpVertexAttributeFloat4,
+    NpVertexAttributeInt,
+    NpVertexAttributeInt2,
+    NpVertexAttributeInt3,
+    NpVertexAttributeInt4
+}
+NpVertexAttributeType;
+
 typedef enum NpComparisonFunction
 {
     NpComparisonNever = 0,
@@ -197,6 +211,17 @@ typedef enum NpBufferDataUsage
 }
 NpBufferDataUsage;
 
+typedef enum NpBufferDataFormat
+{
+    NpBufferDataFormatUnknown = -1,
+    NpBufferDataFormatByte = 0,
+    NpBufferDataFormatFloat16 = 1,
+    NpBufferDataFormatFloat32 = 2,
+    NpBufferDataFormatUInt16 = 3,
+    NpBufferDataFormatUInt32 = 4,
+}
+NpBufferDataFormat;
+
 typedef enum NpBufferObjectType
 {
     NpBufferObjectTypeUnknown = -1,
@@ -208,6 +233,54 @@ typedef enum NpBufferObjectType
     NpBufferObjectTypeTransformFeedback = 5
 }
 NpBufferObjectType;
+
+typedef enum NpVertexStreamSemantic
+{
+    NpVertexStreamPositions = 0,
+    NpVertexStreamNormals = 1,
+    NpVertexStreamColors = 2,
+    NpVertexStreamTexCoords  = 3,
+    NpVertexStreamTexCoords0 = 3,
+    NpVertexStreamTexCoords1 = 4,
+    NpVertexStreamTexCoords2 = 5,
+    NpVertexStreamTexCoords3 = 6,
+    NpVertexStreamTexCoords4 = 7,
+    NpVertexStreamTexCoords5 = 8,
+    NpVertexStreamTexCoords6 = 9,
+    NpVertexStreamTexCoords7 = 10,
+    NpVertexStreamAttribute0 = 0,
+    NpVertexStreamAttribute1 = 1,
+    NpVertexStreamAttribute2 = 2,
+    NpVertexStreamAttribute3 = 3,
+    NpVertexStreamAttribute4 = 4,
+    NpVertexStreamAttribute5 = 5,
+    NpVertexStreamAttribute6 = 6,
+    NpVertexStreamAttribute7 = 7,
+    NpVertexStreamAttribute8 = 8,
+    NpVertexStreamAttribute9 = 9,
+    NpVertexStreamAttribute10 = 10,
+    NpVertexStreamAttribute11 = 11,
+    NpVertexStreamAttribute12 = 12,
+    NpVertexStreamAttribute13 = 13,
+    NpVertexStreamAttribute14 = 14,
+    NpVertexStreamAttribute15 = 15
+}
+NpVertexStreamSemantic;
+
+// these match the corresponding GLenums, no need to convert
+typedef enum NpPrimitveType
+{
+    NpPrimitiveUnknown = -1,
+    NpPrimitivePoints = 0,
+    NpPrimitiveLines = 1,
+    NpPrimitiveLineLoop = 2,
+    NpPrimitiveLineStrip = 3,
+    NpPrimitiveTriangles = 4,
+    NpPrimitiveTriangleStrip = 5,
+    NpPrimitiveQuads = 7,
+    NpPrimitiveQuadStrip = 8
+}
+NpPrimitveType;
 
 GLenum getGLTextureDataFormat(const NpImageDataFormat dataFormat);
 GLenum getGLTexturePixelFormat(const NpImagePixelFormat pixelFormat);
@@ -228,6 +301,8 @@ GLenum getGLBufferUsage(const NpBufferDataUpdateRate UpdateRate,
             const NpBufferDataUsage Usage);
 
 GLenum getGLBufferType(const NpBufferObjectType Type);
+GLenum getGLBufferDataFormat(const NpBufferDataFormat DataFormat);
+size_t numberOfBytesForDataFormat(const NpBufferDataFormat DataFormat);
 
 #endif
 

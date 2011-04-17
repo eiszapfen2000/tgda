@@ -184,9 +184,9 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
     [ self checkForGLErrors ];
 
-    if ( !GLEW_VERSION_2_0 )
+    if ( !GLEW_VERSION_2_1 )
     {
-        NSString * errorString = @"Your system does not support OpenGL 2.0.";
+        NSString * errorString = @"Your system does not support OpenGL 2.1.";
         NSError * error = [ NSError errorWithCode:NPEngineGraphicsGLEWError
                                       description:errorString ];
 
@@ -201,6 +201,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     {
         supportsSGIGenerateMipMap = YES;
         NPLOG(@"GL_SGIS_generate_mipmap supported");
+    }
+
+    if ( GLEW_ARB_texture_rg )
+    {
+        NPLOG(@"GL_ARB_texture_rg supported");
     }
 
     if ( GLEW_EXT_texture_filter_anisotropic )
@@ -300,7 +305,8 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         if ( error != NULL )
         {
             NSString * errorString
-                = [ NSString stringWithUTF8String:(const char *)gluErrorString(glError) ];
+                = [ NSString stringWithCString:(const char *)gluErrorString(glError)
+                                      encoding:NSASCIIStringEncoding ];
 
             *error = [ NSError errorWithCode:NPEngineGraphicsGLError
                                  description:errorString ];

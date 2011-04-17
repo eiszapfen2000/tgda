@@ -9,15 +9,15 @@
 
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName parameters:NP_RNG_DEFAULT ];
+    return [ self initWithName:newName rng:NP_RNG_DEFAULT ];
 }
 
 - (id) initWithName:(NSString *)newName
-         parameters:(NSString *)rngParameters
+                rng:(NSString *)rngName
 {
     self = [ super initWithName:newName ];
 
-    char * p = (char *)[ rngParameters UTF8String ];
+    char * p = (char *)[ rngName UTF8String ];
     randomNumberGenerator = prng_new(p);
 
     return self;
@@ -54,7 +54,7 @@
 	}
     else
     {
-        NSLog(@"%@: unable to seed", name);
+        fprintf(stdout, "%s: unable to seed\n", prng_long_name(randomNumberGenerator));
     }
 }
 

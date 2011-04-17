@@ -1,15 +1,16 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
+#import "Core/Protocols/NPPStream.h"
 
+@class NSError;
 @class NSMutableArray;
-@class NPFile;
 @class OBOceanSurfaceSlice;
 
 @interface OBOceanSurface : NPObject
 {
     IVector2 resolution;
-    FVector2 size;
-    FVector2 windDirection;
+    Vector2 size;
+    Vector2 windDirection;
 
     NSMutableArray * slices;
 }
@@ -19,11 +20,13 @@
 - (void) dealloc;
 
 - (void) setResolution:(const IVector2)newResolution;
-- (void) setSize:(const FVector2)newSize;
-- (void) setWindDirection:(const FVector2)newWindDirection;
+- (void) setSize:(const Vector2)newSize;
+- (void) setWindDirection:(const Vector2)newWindDirection;
 
 - (void) addSlice:(OBOceanSurfaceSlice *)slice;
 
-- (void) saveToFile:(NPFile *)file;
+- (BOOL) writeToStream:(id <NPPStream>)stream
+                 error:(NSError **)error
+                      ;
 
 @end

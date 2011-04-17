@@ -6,9 +6,6 @@
 @interface NPBufferObject (Private)
 
 - (void) deleteBuffer;
-- (BOOL) createBuffer:(NSData *)data
-                error:(NSError**)error
-                     ;
 
 @end
 
@@ -21,23 +18,6 @@
         glDeleteBuffers(1, &glID);
         glID = 0;
     }
-}
-
-- (BOOL) createBuffer:(NSData *)data
-                error:(NSError**)error
-{
-    [ self deleteBuffer ];
-
-    glGenBuffers(1, &glID);
-    glTarget = getGLBufferType(type);
-
-    GLenum bufferUsage = getGLBufferUsage(updateRate, dataUsage);
-
-    glBindBuffer(glTarget, glID);
-    glBufferData(glTarget, [ data length ], [ data bytes ], bufferUsage);
-    glBindBuffer(glTarget, 0);
-
-    return YES;
 }
 
 @end
@@ -53,9 +33,13 @@
 {
     self = [ super initWithName:newName ];
 
-    glID = 0;
+    glGenBuffers(1, &glID);
     glTarget = GL_NONE;
     type = NpBufferObjectTypeUnknown;
+    dataFormat = NpBufferDataFormatUnknown;
+    numberOfComponents = 0;
+    numberOfBytes = 0;
+    numberOfElements = 0;
 
     return self;
 }
@@ -71,15 +55,67 @@
     return glID;
 }
 
+- (GLenum) glDataFormat
+{
+    return getGLBufferDataFormat(dataFormat);
+}
+
+- (NpBufferDataFormat) dataFormat
+{
+    return dataFormat;
+}
+
+- (uint32_t) numberOfComponents
+{
+    return numberOfComponents;
+}
+
+- (NSUInteger) numberOfBytes
+{
+    return numberOfBytes;
+}
+
+- (NSUInteger) numberOfElements
+{
+    return numberOfElements;
+}
+
 - (BOOL) generate:(NpBufferObjectType)newType
        updateRate:(NpBufferDataUpdateRate)newUpdateRate
         dataUsage:(NpBufferDataUsage)newDataUsage
+       dataFormat:(NpBufferDataFormat)newDataFormat
+       components:(uint32_t)newNumberOfComponents
              data:(NSData *)newData
+       dataLength:(NSUInteger)newDataLength
             error:(NSError **)error
+
 {
     type = newType;
     updateRate = newUpdateRate;
     dataUsage = newDataUsage;
+    dataFormat = newDataFormat;
+    numberOfComponents = newNumberOfComponents;
+    numberOfBytes = newDataLength;
+
+    numberOfElements
+        = numberOfBytes
+          / ( numberOfComponents * numberOfBytesForDataFormat(dataFormat));
+
+    glTarget = getGLBufferType(type);
+    glBindBuffer(glTarget, glID);
+
+    if ( glIsBuffer(glID) == GL_FALSE )
+    {
+        // set error
+
+        // just to be on the safe side
+        glBindBuffer(glTarget, 0);
+        return NO;
+    }
+
+    GLenum bufferUsage = getGLBufferUsage(updateRate, dataUsage);
+    glBufferData(glTarget, numberOfBytes, [ newData bytes ], bufferUsage);
+    glBindBuffer(glTarget, 0);
 
     return YES;
 }
