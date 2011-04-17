@@ -53,6 +53,7 @@
     [ self checkForSubGenerators ];
 
 	useLastValue = NO;
+    firstValue = secondValue = 0.0;
 
     return self;
 }
@@ -70,18 +71,12 @@
     if ( firstGenerator != nil )
     {
         [ firstGenerator  reset ];
-
     }
 
     if ( secondGenerator != nil )
     {
         [ secondGenerator reset ];
     }
-}
-
-- (BOOL) ready
-{
-    return ready;
 }
 
 - (OBRNG *)firstGenerator
@@ -147,7 +142,8 @@
 	    return mean + firstValue * variance;
     }
 
-    NSLog(@"Generator not ready, returning 0");
+    fprintf(stdout, "Generator not ready, returning 0\n");
+
     return 0.0;
 }
 

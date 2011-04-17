@@ -80,5 +80,7 @@
                   withStringList:(NPStringList *)stringList
                                 ;
 
+- (void) appendStringToAllStrings:(NSString *)append;
+
 @end
 

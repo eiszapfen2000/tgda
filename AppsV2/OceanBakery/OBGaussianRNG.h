@@ -23,7 +23,6 @@
 
 - (void) reset;
 
-- (BOOL) ready;
 - (OBRNG *) firstGenerator;
 - (OBRNG *) secondGenerator;
 - (void) setFirstGenerator:(OBRNG *)newFirstGenerator;

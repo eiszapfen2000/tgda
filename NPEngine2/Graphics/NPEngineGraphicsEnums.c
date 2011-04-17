@@ -525,3 +525,57 @@ GLenum getGLBufferType(const NpBufferObjectType Type)
 
     return result;
 }
+
+GLenum getGLBufferDataFormat(const NpBufferDataFormat DataFormat)
+{
+    GLenum result = GL_NONE;
+
+    switch ( DataFormat )
+    {
+        case NpBufferDataFormatByte:
+            result = GL_UNSIGNED_BYTE;
+            break;
+        case NpBufferDataFormatFloat16:
+            result = GL_HALF_FLOAT;
+            break;
+        case NpBufferDataFormatFloat32:
+            result = GL_FLOAT;
+            break;
+        case NpBufferDataFormatUInt16:
+            result = GL_UNSIGNED_SHORT;
+            break;
+        case NpBufferDataFormatUInt32:
+            result = GL_UNSIGNED_INT;
+            break;
+
+        default:
+            break;
+    }
+
+    return result;
+}
+
+size_t numberOfBytesForDataFormat(const NpBufferDataFormat DataFormat)
+{
+    size_t result = 0;
+
+    switch ( DataFormat )
+    {
+        case NpBufferDataFormatByte:
+            result = 1;
+            break;
+        case NpBufferDataFormatFloat16:
+        case NpBufferDataFormatUInt16:
+            result = 2;
+            break;
+        case NpBufferDataFormatFloat32:
+        case NpBufferDataFormatUInt32:
+            result = 4;
+            break;
+
+        default:
+            break;
+    }
+
+    return result;
+}

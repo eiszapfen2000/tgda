@@ -1,4 +1,6 @@
 #import <Foundation/Foundation.h>
+#import "Log/NPLog.h"
+#import "Log/NPLogFile.h"
 #import "Core/NPEngineCore.h"
 #import "Core/File/NPLocalPathManager.h"
 #import "Core/File/NSFileManager+NPEngine.h"
@@ -7,35 +9,37 @@
 
 int main (void)
 {
-    NSAutoreleasePool * pool = [[ NSAutoreleasePool alloc ] init ];
+    NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
+
+    NPLogFile * logFile = [[ NPLogFile alloc ] init ];
+    [[ NPLog instance ] addLogger:logFile ];
 
     [ NPEngineCore instance ];
 
-    NSAutoreleasePool * innerPool = [[ NSAutoreleasePool alloc ] init ];
-
-    NSString * currentDirectory = [[ NSFileManager defaultManager ] currentDirectoryPath ];
-    [[[ NPEngineCore instance ] localPathManager ] addLookUpPath:currentDirectory ];
+    NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
 
     OBOceanSurfaceManager * manager = [[ OBOceanSurfaceManager alloc ] init ];
 
     NSArray * arguments = [[ NSProcessInfo processInfo ] arguments ];
-    if ( [ arguments count ] > 1 )
+    NSUInteger numberOfArguments = [ arguments count ];
+
+    if ( numberOfArguments > 1 )
     {
-        NSEnumerator * argumentsEnumerator = [ arguments objectEnumerator ];
-        id file = [ argumentsEnumerator nextObject ];
-
-        while (( file = [ argumentsEnumerator nextObject ] ))
+        for ( NSUInteger i = 1; i < numberOfArguments; i++ )
         {
-            NSString * absolutePath = [[[ NPEngineCore instance ] localPathManager ] getAbsolutePath:file ];
+            NSString * file = [ arguments objectAtIndex:i ];
 
-            if ( [ absolutePath isEqual:@"" ] == NO && [[ NSFileManager defaultManager ] isFile:absolutePath ] == YES )
+            NSString * absolutePath
+                = [[[ NPEngineCore instance ] localPathManager ] getAbsolutePath:file ];
+
+            if ( absolutePath != nil )
             {
-                NSLog(@"Processing %@", absolutePath);
-                id config = [ manager loadOceanSurfaceGenerationConfigurationFromAbsolutePath:file ];
+                fprintf(stdout, "Processing %s\n", [ absolutePath UTF8String ]);
+                id config = [ manager loadOceanSurfaceGenerationConfigurationFromAbsolutePath:absolutePath ];
             }
             else
             {
-                NSLog(@"%@ is not a file", file);
+                fprintf(stdout, "%s is not a file\n", [ file UTF8String ]);
             }
         }
 
@@ -43,14 +47,13 @@ int main (void)
     }
     else
     {
-        NSLog(@"No input file specified");
+        fprintf(stdout, "No input file specified\n");
     }
 
-    [ manager release ];
-
-    [ innerPool release ];
+    DESTROY(manager);
+    DESTROY(innerPool);
     [[ NPEngineCore instance ] dealloc ];
-    [ pool release ];
+    DESTROY(pool);
 
     return 0;
 }

@@ -433,6 +433,17 @@
                        withStrings:stringList->strings ];
 }
 
+- (void) appendStringToAllStrings:(NSString *)append
+{
+    NSUInteger numberOfStrings = [ strings count ];
+    for ( NSUInteger i = 0; i < numberOfStrings; i++ )
+    {
+        NSString * s = [ strings objectAtIndex:i ];
+        NSString * tmp = [ s stringByAppendingString:append ];
+        [ strings replaceObjectAtIndex:i withObject:tmp ];
+    }
+}
+
 - (NSString *) fileName
 {
     return file;

@@ -1,0 +1,14 @@
+#version 150
+#extension GL_ARB_explicit_attrib_location : enable
+
+layout(location = 0) in vec2 position;
+layout(location = 1) in vec2 texcoordsIn;
+
+out vec2 texcoordsOut;
+
+void main()
+{
+    //gl_TexCoord[0] = vec4(texcoords.xy, 0.0f, 0.0f);
+    texcoordsOut = texcoordsIn;
+	gl_Position = np_modelviewprojectionmatrix * vec4(position.xy, 0.0f, 1.0f);
+}

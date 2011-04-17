@@ -1,5 +1,6 @@
 #import "Core/Basics/NpTypes.h"
 #import "Core/NPObject/NPObject.h"
+#import "Graphics/NPEngineGraphicsEnums.h"
 #import "GL/glew.h"
 
 @class NSData;
@@ -12,7 +13,10 @@
     NpBufferObjectType type;
     NpBufferDataUpdateRate updateRate;
     NpBufferDataUsage dataUsage;
-
+    NpBufferDataFormat dataFormat;
+    uint32_t numberOfComponents;
+    NSUInteger numberOfBytes;
+    NSUInteger numberOfElements;
 }
 
 - (id) init;
@@ -20,11 +24,19 @@
 - (void) dealloc;
 
 - (GLuint) glID;
+- (GLenum) glDataFormat;
+- (NpBufferDataFormat) dataFormat;
+- (uint32_t) numberOfComponents;
+- (NSUInteger) numberOfBytes;
+- (NSUInteger) numberOfElements;
 
 - (BOOL) generate:(NpBufferObjectType)newType
        updateRate:(NpBufferDataUpdateRate)newUpdateRate
         dataUsage:(NpBufferDataUsage)newDataUsage
+       dataFormat:(NpBufferDataFormat)newDataFormat
+       components:(uint32_t)newNumberOfComponents
              data:(NSData *)newData
+       dataLength:(NSUInteger)newDataLength
             error:(NSError **)error
                  ;
 

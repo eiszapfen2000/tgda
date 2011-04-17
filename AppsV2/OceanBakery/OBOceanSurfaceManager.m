@@ -36,17 +36,17 @@
     oceanSurfaces = [[ NSMutableArray alloc ] init ];
 
     processorCount = [[ NSProcessInfo processInfo ] processorCount ];
-    NSLog(@"%@: %u processors detected", name, processorCount);
+    fprintf(stdout, "%lu processors detected", processorCount);
 
-    int result = fftwf_init_threads();
+    int result = fftw_init_threads();
 
     if ( result == 0 )
     {
-        NSLog(@"%@: no fftw thread support", name);
+        fprintf(stdout, "No FFTW thread support");
     }
     else
     {
-        NSLog(@"%@: fftw thread support up and running", name);
+        fprintf(stdout, "FFTW thread support up and running");
     }
 
     [ self createFrequencySpectrumGenerators ];
@@ -64,7 +64,7 @@
     DESTROY(frequencySpectrumGenerators);
     DESTROY(configurations);
 
-    fftwf_cleanup_threads();
+    fftw_cleanup_threads();
 
     [ super dealloc ];
 }
@@ -96,7 +96,7 @@
                                                     initWithName:@""
                                                          manager:self ];
 
-            if ( [ config loadFromPath:path ] == YES )
+            if ( [ config loadFromFile:path error:NULL ] == YES )
             {
                 [ configurations setObject:config forKey:path ];
                 [ config release ];
@@ -137,7 +137,7 @@
 
 - (void) saveOceanSurface:(OBOceanSurface *)oceanSurface toFile:(NPFile *)file
 {
-    [ oceanSurface saveToFile:file ];
+    [ oceanSurface writeToStream:file error:NULL ];
 }
 
 - (void) processConfigurations
@@ -147,7 +147,12 @@
 
     while (( config = [ configEnumerator nextObject ] ))
     {
+        fprintf(stdout, "Processing...\n");
+
         OBOceanSurface * tmp = [ config process ];
+
+        fprintf(stdout, "Processed, now saving\n");
+
         NSString * path = [[[ NSFileManager defaultManager ] currentDirectoryPath ] stringByAppendingPathComponent:[config outputFileName]];
 
         [ self saveOceanSurface:tmp atAbsolutePath:path];
