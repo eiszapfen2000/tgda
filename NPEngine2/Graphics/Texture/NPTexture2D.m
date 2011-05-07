@@ -64,6 +64,8 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
         glID = 0;
     }
 
+    SAFE_DESTROY(file);
+
     [ super dealloc ];
 }
 
