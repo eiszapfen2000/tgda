@@ -205,8 +205,8 @@
 
     char * buffer = alloca(stringLength);
     if ( [ self readElementsToBuffer:buffer
-                        elementSize:1
-                   numberOfElements:stringLength ] == NO )
+                         elementSize:1
+                    numberOfElements:stringLength ] == NO )
     {
         return NO;
     }
