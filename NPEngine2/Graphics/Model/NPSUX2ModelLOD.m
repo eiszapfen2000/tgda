@@ -3,6 +3,7 @@
 #import "Log/NPLog.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Core/NPEngineCore.h"
+#import "NPSUX2ModelGroup.h"
 #import "NPSUX2ModelLOD.h"
 
 @implementation NPSUX2ModelLOD
@@ -52,53 +53,14 @@
     return ready;
 }
 
+- (NPSUX2VertexBuffer *) vertexBuffer
+{
+    return vertexBuffer;
+}
+
 - (BOOL) loadFromStream:(id <NPPStream>)stream 
                   error:(NSError **)error
 {
-/*
-    [ self setFileName:[ file fileName ] ];
-
-    NSString * lodName = [ file readSUXString ];
-    [ self setName: lodName ];
-    NPLOG(@"LOD Name: %@", lodName);
-
-    [ file readBool:&autoenable ];
-    [ file readFloat:&minDistance ];
-    [ file readFloat:&maxDistance ];
-    NPLOG(@"Min Distance:%f Max Distance %f",minDistance,maxDistance);
-
-    boundingBoxMinimum = [ file readFVector3 ];
-    boundingBoxMaximum = [ file readFVector3 ];
-    [ file readFloat:&boundingSphereRadius ];
-    NPLOG(@"Bounding Sphere %f",boundingSphereRadius);
-
-    vertexBuffer = [[ NPVertexBuffer alloc ] initWithParent:self ];
-
-    if ( [ vertexBuffer loadFromFile:file ] == NO )
-    {
-        return NO;
-    }
-
-    [ file readInt32:&groupCount ];
-    NPLOG(@"Group Count: %d",groupCount);
-
-    for ( Int i = 0; i < groupCount; i++ )
-    {
-        NPSUXModelGroup * group = [[ NPSUXModelGroup alloc ] initWithParent:self ];
-
-        if ( [ group loadFromFile:file ] == YES )
-        {
-            [ groups addObject:group ];
-        }
-
-        [ group release ];
-    }
-
-    ready = YES;
-
-    return YES;
-*/
-
     NSString * lodName;
     [ stream readSUXString:&lodName ];
     [ self setName: lodName ];
@@ -124,9 +86,35 @@
     [ stream readFloat:&boundingSphereRadius ];
     NPLOG(@"Bounding Sphere %f", boundingSphereRadius);
 
+    SAFE_DESTROY(vertexBuffer);
+
     vertexBuffer = [[ NPSUX2VertexBuffer alloc ] init ];
 
-    return NO;
+    if ( [ vertexBuffer loadFromStream:stream error:error ] == NO )
+    {
+        return NO;
+    }
+
+    int32_t numberOfGroups = 0;
+    [ stream readInt32:&numberOfGroups ];
+    NSLog(@"Group Count: %d", numberOfGroups);
+
+    for ( int32_t i = 0; i < numberOfGroups; i++ )
+    {
+        NPSUX2ModelGroup * group = [[ NPSUX2ModelGroup alloc ] init ];
+        [ group setLod:self ];
+
+        if ( [ group loadFromStream:stream error:NULL ] == YES )
+        {
+            [ groups addObject:group ];
+        }
+
+        DESTROY(group);
+    }
+
+    ready = ([ groups count ] != 0);
+
+    return YES;
 }
 
 - (BOOL) loadFromFile:(NSString *)fileName
@@ -134,6 +122,20 @@
                 error:(NSError **)error
 {
     return NO;
+}
+
+- (void) render
+{
+    if ( ready == NO )
+    {
+        NSLog(@"LOD not ready");
+    }
+
+    NSUInteger numberOfGroups = [ groups count ];
+    for ( NSUInteger i = 0; i < numberOfGroups; i++ )
+    {
+        [[ groups objectAtIndex:i ] render ];
+    }
 }
 
 @end

@@ -17,7 +17,6 @@
 
     glGenVertexArrays(1, &glID);
     numberOfVertices = 0;
-    primitiveType = NpPrimitiveUnknown;
 
     vertexStreams = [[ NSMutableArray alloc ] init ];
     indexStream = nil;
@@ -97,41 +96,83 @@
 {
     NSAssert(newIndexStream != nil, @"");
 
+    NSUInteger numberOfElements = [ newIndexStream numberOfElements ];
+    if ( numberOfElements == 0 )
+    {
+        NPLOG(@"Empty Index Stream");
+        return NO;
+    }
+
+    if ( numberOfElements > INT_MAX )
+    {
+        NPLOG(@"Index Stream is to large");
+        return NO;
+    }
+
     indexStream = RETAIN(newIndexStream);
+    numberOfIndices = (GLsizei)numberOfElements;
 
     return YES;
 }
 
-- (void) activate
+- (void) renderWithPrimitiveType:(const NpPrimitveType)type
 {
-    glBindVertexArray(glID);
+    if ( indexStream != nil )
+    {
+    /*
+        glBindVertexArray(glID);
+        [ indexStream activate ];
+        glDrawElements(type, [ indexStream numberOfElements ], [ indexStream glDataFormat ], NULL);
+        [ indexStream deactivate ];
+        glBindVertexArray(0);
+    */
+
+    [ self renderWithPrimitiveType:type
+                        firstIndex:0
+                         lastIndex:numberOfIndices - 1 ];
+
+    }
+    else
+    {
+    /*
+        glBindVertexArray(glID);
+        glDrawArrays(type, 0, numberOfVertices);
+        glBindVertexArray(0);
+    */
+
+    [ self renderWithPrimitiveType:type
+                        firstIndex:0
+                         lastIndex:numberOfVertices - 1 ];
+    } 
 }
 
-- (void) deactivate
-{
-    glBindVertexArray(0);
-}
-
-- (void) render
-{
-    [ self renderWithPrimitiveType:primitiveType ];
-}
-
-- (void) renderWithPrimitiveType:(NpPrimitveType)type
+- (void) renderWithPrimitiveType:(const NpPrimitveType)type
+                      firstIndex:(const uint32_t)firstIndex
+                       lastIndex:(const uint32_t)lastIndex
 {
     if ( indexStream != nil )
     {
         glBindVertexArray(glID);
         [ indexStream activate ];
-        glDrawElements(type, [ indexStream numberOfElements ], [ indexStream glDataFormat ], NULL);
+
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
+        glDrawRangeElements(type, 0, numberOfVertices - 1, lastIndex - firstIndex + 1,
+            [ indexStream glDataFormat ], BUFFER_OFFSET(firstIndex*sizeof(uint32_t)));
+
+#undef BUFFER_OFFSET
+
+        [ indexStream deactivate ];
         glBindVertexArray(0);
     }
+
     else
     {
         glBindVertexArray(glID);
-        glDrawArrays(type, 0, numberOfVertices);
+        glDrawArrays(type, 0, lastIndex - firstIndex + 1);
         glBindVertexArray(0);
     } 
 }
+
 
 @end
