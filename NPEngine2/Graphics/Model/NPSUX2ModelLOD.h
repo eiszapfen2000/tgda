@@ -26,4 +26,8 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
+- (NPSUX2VertexBuffer *) vertexBuffer;
+
+- (void) render;
+
 @end

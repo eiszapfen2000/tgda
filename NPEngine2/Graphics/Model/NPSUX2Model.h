@@ -16,4 +16,7 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
+- (void) render;
+- (void) renderLOD:(uint32_t)index;
+
 @end

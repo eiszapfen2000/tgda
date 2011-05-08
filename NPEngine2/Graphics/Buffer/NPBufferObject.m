@@ -1,5 +1,6 @@
 #import <Foundation/NSData.h>
 #import <Foundation/NSError.h>
+#import "Log/NPLog.h"
 #import "Graphics/NPEngineGraphicsEnums.h"
 #import "NPBufferObject.h"
 
@@ -107,6 +108,7 @@
     if ( glIsBuffer(glID) == GL_FALSE )
     {
         // set error
+        NPLOG(@"Buffer generation error");
 
         // just to be on the safe side
         glBindBuffer(glTarget, 0);

@@ -117,6 +117,8 @@
         DESTROY(lod);
     }
 
+    ready = ([ lods count ] != 0);
+
     return YES;
 }
 
@@ -159,6 +161,19 @@
     DESTROY(file);
 
     return result;
+}
+
+- (void) render
+{
+    [ self renderLOD:0 ];
+}
+
+- (void) renderLOD:(uint32_t)index
+{
+    if ( ready == YES )
+    {
+        [[ lods objectAtIndex:index ] render ];
+    }
 }
 
 @end

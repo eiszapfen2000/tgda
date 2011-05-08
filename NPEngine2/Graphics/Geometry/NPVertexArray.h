@@ -11,7 +11,7 @@
 {
     GLuint glID;
     GLsizei numberOfVertices;
-    NpPrimitveType primitiveType;
+    GLsizei numberOfIndices;
     NSMutableArray * vertexStreams;
     NPBufferObject * indexStream;
 }
@@ -31,11 +31,11 @@
                   error:(NSError **)error
                        ;
 
-- (void) activate;
-- (void) deactivate;
-
-- (void) render;
-- (void) renderWithPrimitiveType:(NpPrimitveType)type;
+- (void) renderWithPrimitiveType:(const NpPrimitveType)type;
+- (void) renderWithPrimitiveType:(const NpPrimitveType)type
+                      firstIndex:(const uint32_t)firstIndex
+                       lastIndex:(const uint32_t)lastIndex
+                                ;
 
 @end
 
