@@ -1,8 +1,10 @@
 #import <Foundation/Foundation.h>
 #import "Log/NPLogFile.h"
 #import "Core/Container/NPAssetArray.h"
+#import "Core/Timer/NPTimer.h"
 #import "Graphics/Buffer/NPBufferObject.h"
 #import "Graphics/Geometry/NPVertexArray.h"
+#import "Graphics/Model/NPSUX2Model.h"
 #import "Graphics/Texture/NPTexture2D.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
 #import "Graphics/Effect/NPEffect.h"
@@ -13,6 +15,7 @@
 #import "Input/NPInputAction.h"
 #import "Input/NPInputActions.h"
 #import "NP.h"
+#import "ODCamera.h"
 #import "GL/glfw.h"
 
 NpKeyboardState keyboardState;
@@ -54,7 +57,7 @@ int main (int argc, char **argv)
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
     // register log file
-    NPLogFile * logFile = [[ NPLogFile alloc ] init ];
+    NPLogFile * logFile = AUTORELEASE([[ NPLogFile alloc ] init ]);
     [[ NP Log ] addLogger:logFile ];
 
     // Initialise GLFW
@@ -116,6 +119,7 @@ int main (int argc, char **argv)
 
     [[[ NP Graphics ] viewport ] setWidgetWidth:640 ];
     [[[ NP Graphics ] viewport ] setWidgetHeight:480 ];
+    [[[ NP Graphics ] viewport ] reset ];
 
     NSAutoreleasePool * innerPool = [[ NSAutoreleasePool alloc ] init ];
     NPEffect * e = RETAIN([[[ NP Graphics ] effects ] getAssetWithFileName:@"test.effect" ]);
@@ -131,6 +135,13 @@ int main (int argc, char **argv)
     [ tex setTextureFilter:NpTexture2DFilterTrilinear ];
 
     [[ NP Graphics ] checkForGLErrors ];
+
+    NPSUX2Model * model = [[ NPSUX2Model alloc ] init ];
+    BOOL modelResult = [ model loadFromFile:@"skybox.model" arguments:NULL error:NULL ];
+    if ( modelResult == NO )
+    {
+        NSLog(@"MODEL FAUIL");
+    }
 
     float vertices[12] = {-0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, -0.5f, -0.5f};
     float texcoords[12] = {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f};
@@ -182,7 +193,7 @@ int main (int argc, char **argv)
 
     NPVertexArray * vertexArray = [[ NPVertexArray alloc ] init ];
     BOOL rak = [ vertexArray addVertexStream:vBuffer atLocation:NpVertexStreamAttribute0 error:NULL ];
-    rak = rak && [ vertexArray addVertexStream:tBuffer atLocation:NpVertexStreamAttribute1 error:NULL ];
+    rak = rak && [ vertexArray addVertexStream:tBuffer atLocation:NpVertexStreamAttribute3 error:NULL ];
     rak = rak && [ vertexArray addIndexStream:iBuffer error:NULL ];
 
     if ( rak == NO )
@@ -191,6 +202,8 @@ int main (int argc, char **argv)
     }
 
     [[ NP Graphics ] checkForGLErrors ];
+
+    ODCamera * camera = [[ ODCamera alloc ] init ];
 
     while ( running )
     {
@@ -205,26 +218,24 @@ int main (int argc, char **argv)
         // Update NPInput's internal state (actions)
         [[ NP Input ] update ];
 
+        [[ NP Core ] update ];
+        float frameTime = [[[ NP Core ] timer ] frameTime ];
+
+        [ camera update:frameTime ];
+
         // Do GL stuff
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+        [[[ NP Core ] transformationState ] setViewMatrix:[ camera view ]];
+        [[[ NP Core ] transformationState ] setProjectionMatrix:[ camera projection ]];
 
         [[[ NP Graphics ] textureBindingState ] setTexture:tex texelUnit:0 ];
         [[[ NP Graphics ] textureBindingState ] activate ];
         [ t activate ];
 
-        /*
-        [ vertexArray activate ];
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        [ vertexArray deactivate ];
-        */
-
         [ vertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
 
-        /*
-        glBindVertexArray(vertexArray);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindVertexArray(0);
-        */
+        //[ model render ];
 
         // Check for GL errors
         [[ NP Graphics ] checkForGLErrors ];
@@ -235,7 +246,7 @@ int main (int argc, char **argv)
         running = running && glfwGetWindowParam( GLFW_OPENED );
     }
 
-//    glDeleteVertexArrays(1, &vertexArray);
+    DESTROY(model);
     DESTROY(vertexArray);
 
     RELEASE(tex);
@@ -255,12 +266,12 @@ int main (int argc, char **argv)
 
     // Kill singletons by force, sending them
     // "release" would have no effect
-    [[ NP Input ] dealloc ];
+    [[ NP Input    ] dealloc ];
     [[ NP Graphics ] dealloc ];
-    [[ NP Core ] dealloc ];
-    [[ NP Log ] dealloc ];
+    [[ NP Core     ] dealloc ];
+    [[ NP Log      ] dealloc ];
 
-    DESTROY(logFile);
+    //DESTROY(logFile);
 
     [ pool release ];
 
