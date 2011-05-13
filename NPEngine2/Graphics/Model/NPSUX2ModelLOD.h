@@ -4,6 +4,7 @@
 
 @class NSMutableArray;
 @class NPSUX2VertexBuffer;
+@class NPSUX2Model;
 
 @interface NPSUX2ModelLOD : NPObject < NPPPersistentObject >
 {
@@ -20,6 +21,7 @@
 
     NPSUX2VertexBuffer * vertexBuffer;
     NSMutableArray * groups;
+    NPSUX2Model * model;
 }
 
 - (id) init;
@@ -27,6 +29,8 @@
 - (void) dealloc;
 
 - (NPSUX2VertexBuffer *) vertexBuffer;
+- (NPSUX2Model *) model;
+- (void) setModel:(NPSUX2Model *)newModel;
 
 - (void) render;
 

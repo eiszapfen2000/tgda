@@ -52,6 +52,12 @@
     return ready;
 }
 
+- (NPSUX2MaterialInstance *) materialInstanceAtIndex:(const NSUInteger)index
+{
+    return [ materials objectAtIndex:index ];
+}
+
+
 - (BOOL) loadFromStream:(id <NPPStream>)stream 
                   error:(NSError **)error
 {
@@ -63,14 +69,12 @@
                       numberOfElements:8 ] == NO )
     {
         NPLOG(@"Failed to read header");
-
         return NO;
     }
 
     if ( strncmp(suxHeader, headerFromFile, 8) != 0 )
     {
         NPLOG(@"Wrong header version");
-
         return NO;
     }
 
@@ -107,6 +111,7 @@
     {
         NPSUX2ModelLOD * lod
             = [[ NPSUX2ModelLOD alloc ] init ];
+        [ lod setModel:self ];
 
         if ( [ lod loadFromStream:stream
                             error:NULL ] == YES )
@@ -170,10 +175,13 @@
 
 - (void) renderLOD:(uint32_t)index
 {
-    if ( ready == YES )
+    if ( ready == NO )
     {
-        [[ lods objectAtIndex:index ] render ];
+        NPLOG(@"Model not ready");
+        return;
     }
+
+    [[ lods objectAtIndex:index ] render ];
 }
 
 @end

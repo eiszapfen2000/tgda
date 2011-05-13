@@ -3,6 +3,7 @@
 #import "Graphics/NPEngineGraphicsEnums.h"
 
 @class NPSUX2ModelLOD;
+@class NPSUX2MaterialInstance;
 
 @interface NPSUX2ModelGroup : NPObject < NPPPersistentObject >
 {
@@ -15,6 +16,7 @@
     int32_t materialInstanceIndex;
 
     NPSUX2ModelLOD * lod;
+    NPSUX2MaterialInstance * materialInstance;
 }
 
 - (id) init;

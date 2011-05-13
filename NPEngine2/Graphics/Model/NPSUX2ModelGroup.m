@@ -5,6 +5,8 @@
 #import "Core/NPEngineCore.h"
 #import "Graphics/NPEngineGraphicsEnums.h"
 #import "NPSUX2VertexBuffer.h"
+#import "NPSUX2Model.h"
+#import "NPSUX2MaterialInstance.h"
 #import "NPSUX2ModelLOD.h"
 #import "NPSUX2ModelGroup.h"
 
@@ -71,9 +73,11 @@
     [ stream readInt32:&lastIndex ];
     [ stream readInt32:&materialInstanceIndex ];
 
-    NSLog(@"%d %d %d", primitiveType, firstIndex, lastIndex, materialInstanceIndex);
+    materialInstance
+        = [[ lod model ] materialInstanceAtIndex:materialInstanceIndex ];
 
-    ready = (firstIndex != -1 && lastIndex != -1 && lod != nil );
+    ready = (firstIndex != -1 && lastIndex != -1
+                && lod != nil && materialInstance != nil);
 
     return YES;
 }
@@ -87,17 +91,18 @@
 
 - (void) render
 {
-    if ( ready == YES )
+    if ( ready == NO )
     {
-        [[ lod vertexBuffer ]
-                renderWithPrimitiveType:primitiveType
-                             firstIndex:firstIndex
-                             lastIndex:lastIndex ];
+        NPLOG(@"Group not ready");
+        return;
     }
-    else
-    {
-        NSLog(@"Group not ready");
-    }
+
+    [ materialInstance activate ];
+
+    [[ lod vertexBuffer ]
+            renderWithPrimitiveType:primitiveType
+                         firstIndex:firstIndex
+                          lastIndex:lastIndex ];
 }
 
 @end
