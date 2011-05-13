@@ -58,6 +58,17 @@
     return vertexBuffer;
 }
 
+- (NPSUX2Model *) model
+{
+    return model;
+}
+
+- (void) setModel:(NPSUX2Model *)newModel
+{
+    // weak reference
+    model = newModel;
+}
+
 - (BOOL) loadFromStream:(id <NPPStream>)stream 
                   error:(NSError **)error
 {
@@ -128,7 +139,8 @@
 {
     if ( ready == NO )
     {
-        NSLog(@"LOD not ready");
+        NPLOG(@"LOD not ready");
+        return;
     }
 
     NSUInteger numberOfGroups = [ groups count ];

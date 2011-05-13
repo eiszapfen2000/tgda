@@ -393,7 +393,7 @@
 
             if ( [ uniformType hasPrefix:@"sampler" ] == YES )
             {
-                [ effect registerEffectVariableSampler:uniformName 
+                [ effect registerEffectVariableSampler:uniformName
                                              texelUnit:texelUnit ];
 
                 texelUnit = texelUnit + 1;
@@ -401,7 +401,7 @@
             else if ( [ uniformName hasPrefix:@"np_" ] == YES )
             {
                 NpEffectSemantic semantic = [[ uniformName lowercaseString ] semanticValue ];
-                [ effect registerEffectVariableSemantic:uniformName 
+                [ effect registerEffectVariableSemantic:uniformName
                                                semantic:semantic ];
             }
             else if ( [ uniformName hasPrefix:@"np_" ] == NO &&  [ uniformName hasPrefix:@"gl_" ] == NO )
