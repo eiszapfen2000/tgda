@@ -108,7 +108,7 @@
 
     int32_t numberOfGroups = 0;
     [ stream readInt32:&numberOfGroups ];
-    NSLog(@"Group Count: %d", numberOfGroups);
+    NPLOG(@"Group Count: %d", numberOfGroups);
 
     for ( int32_t i = 0; i < numberOfGroups; i++ )
     {

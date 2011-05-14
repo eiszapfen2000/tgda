@@ -21,8 +21,6 @@
                         fromLine:lineIndex
                       atPosition:1 ] == YES )
     {
-        NSLog(effectFileName);
-
         NSString * effectFileNameWithoutExtension
             = [ effectFileName stringByDeletingPathExtension ];
 
@@ -80,8 +78,6 @@
                 if ( ([ token isEqual:@"texture2d" ] == YES) ||
                      ([ token isEqual:@"texture2Dsrgb" ] == YES) )
                 {
-                    NSLog(@"%@ %@", textureVariableName, textureFileName);
-
                     [ instanceToCompile 
                         addTexture2DWithName:textureVariableName
                                     fromFile:textureFileName
