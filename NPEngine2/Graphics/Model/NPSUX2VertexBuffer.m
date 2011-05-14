@@ -327,16 +327,6 @@ void vertices_delete_storage(NpSUX2Vertices * vertices)
         [ stream readInt32:&indexCount ];
     }
 
-    NSLog(@"%d %d %d", vertices.format.elementsForNormal, vertices.format.elementsForColor, vertices.format.elementsForWeights);
-
-    for ( int32_t i = 0; i < SUX2_SAMPLER_COUNT; i++ )
-    {
-        NSLog(@"%d", vertices.format.elementsForTextureCoordinateSet[i]);
-    }
-
-    NSLog(@"%d %d", vertices.format.maxTextureCoordinateSet, (int)vertices.indexed);
-    NSLog(@"%d %d", vertexCount, indexCount);
-
     vertices_allocate_storage(&vertices, vertexCount, indexCount);
 
     [ stream readElementsToBuffer:vertices.positions
