@@ -15,7 +15,7 @@
 #import "Input/NPInputAction.h"
 #import "Input/NPInputActions.h"
 #import "NP.h"
-#import "ODCamera.h"
+#import "Entities/ODCamera.h"
 #import "GL/glfw.h"
 
 NpKeyboardState keyboardState;
