@@ -136,12 +136,14 @@ int main (int argc, char **argv)
 
     [[ NP Graphics ] checkForGLErrors ];
 
+    /*
     NPSUX2Model * model = [[ NPSUX2Model alloc ] init ];
     BOOL modelResult = [ model loadFromFile:@"skybox.model" arguments:NULL error:NULL ];
     if ( modelResult == NO )
     {
         NSLog(@"MODEL FAUIL");
     }
+    */
 
     float vertices[12] = {-0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, -0.5f, -0.5f};
     float texcoords[12] = {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f};
@@ -246,7 +248,7 @@ int main (int argc, char **argv)
         running = running && glfwGetWindowParam( GLFW_OPENED );
     }
 
-    DESTROY(model);
+    //DESTROY(model);
     DESTROY(vertexArray);
 
     RELEASE(tex);
