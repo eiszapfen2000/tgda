@@ -1,4 +1,5 @@
 #import <Foundation/NSDictionary.h>
+#import <Foundation/NSError.h>
 #import "GL/glew.h"
 #import "Input/NPInputAction.h"
 #import "Input/NPInputActions.h"
@@ -18,11 +19,10 @@
 {
 	self = [ super initWithName:newName ];
 
-	view = fm4_alloc_init();
-	projection = fm4_alloc_init();
-
-	orientation = fquat_alloc_init();
-	position = fv3_alloc_init();
+    fm4_m_set_identity(&view);
+    fm4_m_set_identity(&projection);
+    fquat_set_identity(&orientation);
+    fv3_v_init_with_zeros(&position);
 
     fov         = 45.0f;
     nearPlane   = 0.1f;
@@ -32,8 +32,8 @@
     yaw   = 0.0f;
     pitch = 0.0f;
 
-    forward = fv3_alloc_init();
-    V_Z(*forward) = -1.0;
+    fv3_v_init_with_zeros(&forward);
+    V_Z(forward) = -1.0f;
 
     leftClickAction        = [[[ NP Input ] inputActions ] addInputActionWithName:@"LeftClick"   inputEvent:NpMouseButtonLeft ];
     forwardMovementAction  = [[[ NP Input ] inputActions ] addInputActionWithName:@"Forward"     inputEvent:NpKeyboardUp      ];
@@ -49,12 +49,6 @@
 
 - (void) dealloc
 {
-	view = fm4_free(view);
-	projection = fm4_free(projection);
-
-	orientation = fquat_free(orientation);
-	position = fv3_free(position);
-
     [[[ NP Input ] inputActions ] removeInputAction:leftClickAction ];
     [[[ NP Input ] inputActions ] removeInputAction:forwardMovementAction ];
     [[[ NP Input ] inputActions ] removeInputAction:backwardMovementAction ];
@@ -65,6 +59,7 @@
 }
 
 - (BOOL) loadFromDictionary:(NSDictionary *)config
+                      error:(NSError **)error
 {
     /*
     NSString * cameraName      = [ config objectForKey:@"Name" ];
@@ -88,11 +83,10 @@
 
 - (void) reset
 {
-	fm4_m_set_identity(view);
-	fm4_m_set_identity(projection);
-
-	fquat_set_identity(orientation);
-	fv3_v_init_with_zeros(position);
+	fm4_m_set_identity(&view);
+	fm4_m_set_identity(&projection);
+	fquat_set_identity(&orientation);
+	fv3_v_init_with_zeros(&position);
 }
 
 - (float) fov
@@ -117,22 +111,22 @@
 
 - (FVector3 *) forward
 {
-    return forward;
+    return &forward;
 }
 
 - (FVector3 *) position
 {
-	return position;
+	return &position;
 }
 
 - (FMatrix4 *) view
 {
-    return view;
+    return &view;
 }
 
 - (FMatrix4 *) projection
 {
-    return projection;
+    return &projection;
 }
 
 - (void) setFov:(float)newFov
@@ -157,7 +151,7 @@
 
 - (void) setPosition:(FVector3 *)newPosition
 {
-	*position = *newPosition;
+	position = *newPosition;
 }
 
 
@@ -202,72 +196,71 @@
     [ self updateYaw:yawDegrees ];
     [ self updatePitch:pitchDegrees ];
 
-    fquat_q_init_with_axis_and_degrees(orientation, NP_WORLDF_Y_AXIS, yaw);
-    fquat_q_rotatex(orientation, pitch);
+    fquat_q_init_with_axis_and_degrees(&orientation, NP_WORLDF_Y_AXIS, yaw);
+    fquat_q_rotatex(&orientation, pitch);
 }
 
 - (void) moveForward:(float)frameTime
 {
-    fquat_q_forward_vector_v(orientation,forward);
+    fquat_q_forward_vector_v(&orientation, &forward);
 
-    V_X(*position) += (forward->x * frameTime);
-    V_Y(*position) += (forward->y * frameTime);
-    V_Z(*position) += (forward->z * frameTime);
+    position.x += (forward.x * frameTime);
+    position.y += (forward.y * frameTime);
+    position.z += (forward.z * frameTime);
 }
 
 - (void) moveBackward:(float)frameTime
 {
-    fquat_q_forward_vector_v(orientation, forward);
+    fquat_q_forward_vector_v(&orientation, &forward);
 
-    V_X(*position) -= (forward->x * frameTime);
-    V_Y(*position) -= (forward->y * frameTime);
-    V_Z(*position) -= (forward->z * frameTime);
+    position.x -= (forward.x * frameTime);
+    position.y -= (forward.y * frameTime);
+    position.z -= (forward.z * frameTime);
 }
 
 - (void) moveLeft:(float)frameTime
 {
-    FVector3 left;
-    fquat_q_right_vector_v(orientation, &left);
+    FVector3 right;
+    fquat_q_right_vector_v(&orientation, &right);
 
-    V_X(*position) -= (left.x * frameTime);
-    V_Y(*position) -= (left.y * frameTime);
-    V_Z(*position) -= (left.z * frameTime);
+    position.x -= (right.x * frameTime);
+    position.y -= (right.y * frameTime);
+    position.z -= (right.z * frameTime);
 }
 
 - (void) moveRight:(float)frameTime
 {
     FVector3 right;
-    fquat_q_right_vector_v(orientation, &right);
+    fquat_q_right_vector_v(&orientation, &right);
 
-    V_X(*position) += (right.x * frameTime);
-    V_Y(*position) += (right.y * frameTime);
-    V_Z(*position) += (right.z * frameTime);
+    position.x += (right.x * frameTime);
+    position.y += (right.y * frameTime);
+    position.z += (right.z * frameTime);
 }
 
 - (void) updateProjection
 {
     glMatrixMode(GL_PROJECTION);
 
-    fm4_mssss_projection_matrix(projection, aspectRatio, fov, nearPlane, farPlane);
+    fm4_mssss_projection_matrix(&projection, aspectRatio, fov, nearPlane, farPlane);
 
-    glLoadMatrixf((float *)(M_ELEMENTS(*projection)));
+    glLoadMatrixf((float *)(M_ELEMENTS(projection)));
     glMatrixMode(GL_MODELVIEW);
 }
 
 - (void) updateView
 {
-    fm4_m_set_identity(view);
+    fm4_m_set_identity(&view);
 
-    fquat_q_forward_vector_v(orientation,forward);
-
-    FQuaternion q = fquat_q_conjugated(orientation);
+    fquat_q_forward_vector_v(&orientation, &forward);
+    FQuaternion q = fquat_q_conjugated(&orientation);
     FMatrix4 rotate = fquat_q_to_fmatrix4(&q);
-    FMatrix4 tmp = fm4_mm_multiply(view, &rotate);
-    FVector3 invpos = fv3_v_inverted(position);
+    FMatrix4 tmp = fm4_mm_multiply(&view, &rotate);
+    FVector3 invpos = fv3_v_inverted(&position);
     FMatrix4 trans = fm4_v_translation_matrix(&invpos);
-    fm4_mm_multiply_m(&tmp, &trans, view);
+    fm4_mm_multiply_m(&tmp, &trans, &view);
 
-    glLoadMatrixf((float *)(M_ELEMENTS(*view)));
+    glLoadMatrixf((float *)(M_ELEMENTS(view)));
 }
 
 - (void) update:(float)frameTime
@@ -285,22 +278,22 @@
 
     if ( [ strafeLeftAction active ] == YES )
     {
-        [ self moveLeft:frameTime*10.0f ];
+        [ self moveLeft:frameTime * 3.0f ];
     }
 
     if ( [ strafeRightAction active ] == YES )
     {
-        [ self moveRight:frameTime*10.0f ];
+        [ self moveRight:frameTime * 3.0f ];
     }
 
     if ( [ leftClickAction active ] == YES )
     {
         // rotation update
         NPMouse * mouse = [[ NP Input ] mouse ];
-        float deltaX = [ mouse deltaX ];
-        float deltaY = [ mouse deltaY ];
+        int32_t deltaX = [ mouse deltaX ];
+        int32_t deltaY = [ mouse deltaY ];
 
-        if ( deltaX != 0.0f || deltaY != 0.0f )
+        if ( deltaX != 0 || deltaY != 0 )
         {
             [ self cameraRotateUsingYaw:-deltaX*0.3f andPitch:-deltaY*0.3f ];
         }
@@ -308,20 +301,20 @@
 
     if ( [ wheelUpAction activated ] == YES )
     {
-        fquat_q_forward_vector_v(orientation,forward);
+        fquat_q_forward_vector_v(&orientation, &forward);
 
-        V_X(*position) += (forward->x * 2.0f);
-        V_Y(*position) += (forward->y * 2.0f);
-        V_Z(*position) += (forward->z * 2.0f);        
+        position.x += (forward.x * 2.0f);
+        position.y += (forward.y * 2.0f);
+        position.z += (forward.z * 2.0f);
     }
 
     if ( [ wheelDownAction activated ] == YES )
     {
-        fquat_q_forward_vector_v(orientation,forward);
+        fquat_q_forward_vector_v(&orientation, &forward);
 
-        V_X(*position) -= (forward->x * 2.0f);
-        V_Y(*position) -= (forward->y * 2.0f);
-        V_Z(*position) -= (forward->z * 2.0f);
+        position.x -= (forward.x * 2.0f);
+        position.y -= (forward.y * 2.0f);
+        position.z -= (forward.z * 2.0f);
     }
 
     // update matrices
@@ -332,8 +325,8 @@
 - (void) render
 {
     NPTransformationState * trafo = [[ NP Core ] transformationState ];
-    [ trafo setViewMatrix:view ];
-    [ trafo setProjectionMatrix:projection ];
+    [ trafo setViewMatrix:&view ];
+    [ trafo setProjectionMatrix:&projection ];
 }
 
 @end

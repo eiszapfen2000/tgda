@@ -1,15 +1,15 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
+#import "ODPEntity.h"
 
 @class NPInputAction;
 
-@interface ODCamera : NPObject
+@interface ODCamera : NPObject < ODPEntity >
 {
-	FMatrix4 * view;
-	FMatrix4 * projection;
-
-    FQuaternion * orientation;
-    FVector3 * position;
+	FMatrix4 view;
+	FMatrix4 projection;
+    FQuaternion orientation;
+    FVector3 position;
 
 	float fov;
 	float nearPlane;
@@ -18,7 +18,7 @@
 
     float yaw;
     float pitch;
-    FVector3 * forward;
+    FVector3 forward;
 
     NPInputAction * leftClickAction;
     NPInputAction * forwardMovementAction;
@@ -58,7 +58,5 @@
 
 - (void) updateProjection;
 - (void) updateView;
-- (void) update:(float)frameTime;
-- (void) render;
 
 @end
