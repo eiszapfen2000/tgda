@@ -119,7 +119,8 @@
 
 - (void) activate
 {
-    NPStateConfiguration * configuration = [[ NPEngineGraphics instance ] stateConfiguration ];
+    NPStateConfiguration * configuration
+        = [[ NPEngineGraphics instance ] stateConfiguration ];
 
     [[ configuration alphaTestState ] setEnabled:alphaTestEnabled ];
     [[ configuration alphaTestState ] setAlphaThreshold:alphaTestThreshold ];
