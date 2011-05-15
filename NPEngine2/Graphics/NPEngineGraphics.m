@@ -81,12 +81,12 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
                  initWithName:@"Graphics String To Class Conversion" ];
 
     images = [[ NPAssetArray alloc ]
-                    initWithName:@"NP Engine Images"
-                      assetClass:NSClassFromString(@"NPImage") ];
+                   initWithName:@"NP Engine Images"
+                     assetClass:NSClassFromString(@"NPImage") ];
 
     textures2D = [[ NPAssetArray alloc ]
-                        initWithName:@"NP Engine Textures2D"
-                          assetClass:NSClassFromString(@"NPTexture2D") ];
+                       initWithName:@"NP Engine Textures2D"
+                         assetClass:NSClassFromString(@"NPTexture2D") ];
 
     effects = [[ NPAssetArray alloc ]
                     initWithName:@"NP Engine Shader"
