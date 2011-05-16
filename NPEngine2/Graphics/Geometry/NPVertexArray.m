@@ -48,7 +48,7 @@
               atLocation:(NpVertexStreamSemantic)location
                    error:(NSError **)error
 {
-    NSAssert(vertexStream != nil, @"");
+    NSAssert(vertexStream != nil, @"Invalid vertex stream");
 
     NSUInteger numberOfElements = [ vertexStream numberOfElements ];
     if ( numberOfElements == 0 )
@@ -94,7 +94,7 @@
 - (BOOL) addIndexStream:(NPBufferObject *)newIndexStream
                   error:(NSError **)error
 {
-    NSAssert(newIndexStream != nil, @"");
+    NSAssert(newIndexStream != nil, @"Invalid index stream");
 
     NSUInteger numberOfElements = [ newIndexStream numberOfElements ];
     if ( numberOfElements == 0 )
@@ -119,30 +119,16 @@
 {
     if ( indexStream != nil )
     {
-    /*
-        glBindVertexArray(glID);
-        [ indexStream activate ];
-        glDrawElements(type, [ indexStream numberOfElements ], [ indexStream glDataFormat ], NULL);
-        [ indexStream deactivate ];
-        glBindVertexArray(0);
-    */
-
-    [ self renderWithPrimitiveType:type
-                        firstIndex:0
-                         lastIndex:numberOfIndices - 1 ];
+        [ self renderWithPrimitiveType:type
+                            firstIndex:0
+                             lastIndex:numberOfIndices - 1 ];
 
     }
     else
     {
-    /*
-        glBindVertexArray(glID);
-        glDrawArrays(type, 0, numberOfVertices);
-        glBindVertexArray(0);
-    */
-
-    [ self renderWithPrimitiveType:type
-                        firstIndex:0
-                         lastIndex:numberOfVertices - 1 ];
+        [ self renderWithPrimitiveType:type
+                            firstIndex:0
+                             lastIndex:numberOfVertices - 1 ];
     } 
 }
 
