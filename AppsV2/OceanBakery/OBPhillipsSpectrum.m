@@ -14,18 +14,18 @@ Vector2 globalWindDirectionNormalised;
 double globalL;
 double globalLSquare;
 
-inline double omegaForK(const Vector2 const * k)
+double omegaForK(const Vector2 const * k)
 {
     return sqrt(EARTH_ACCELERATION * v2_v_length(k));
 }
 
-inline double indexToKx(const int32_t index)
+double indexToKx(const int32_t index)
 {
     const double n = -(globalResolutionD.x * 0.5) + (double)index;
     return (MATH_2_MUL_PI * n) / globalSize.x;
 }
 
-inline double indexToKy(const int32_t index)
+double indexToKy(const int32_t index)
 {
     const double m = (globalResolutionD.y * 0.5) - (double)index;
     return (MATH_2_MUL_PI * m) / globalSize.y;
@@ -34,13 +34,10 @@ inline double indexToKy(const int32_t index)
 double getAmplitudeAt(const Vector2 const * k)
 {
     const double kSquareLength = v2_v_square_length(k);
-
-    /*
     if ( kSquareLength == 0.0 )
     {
         return 0.0;
     }
-    */
 
     const Vector2 kNormalised = v2_v_normalised(k);
 
@@ -48,8 +45,7 @@ double getAmplitudeAt(const Vector2 const * k)
     amplitude = amplitude * ( 1.0 / (kSquareLength * kSquareLength) );
     amplitude = amplitude * exp( -1.0 / (kSquareLength * globalLSquare) );
 
-    //const double kdotw = v2_vv_dot_product(&kNormalised, &globalWindDirectionNormalised);
-    const double kdotw = kNormalised.x * globalWindDirectionNormalised.x + kNormalised.y * globalWindDirectionNormalised.y;
+    const double kdotw = v2_vv_dot_product(&kNormalised, &globalWindDirectionNormalised);
     amplitude = amplitude * (kdotw * kdotw);
 
     return amplitude;
@@ -140,97 +136,81 @@ double getAmplitudeAt(const Vector2 const * k)
     needsUpdate = YES;
 }
 
-/*
-- (float) omegaForK:(FVector2 *)k
+- (double) omegaForK:(Vector2 *)k
 {
-    return (float)sqrt(EARTH_ACCELERATION * fv2_v_length(k));
+    return sqrt(EARTH_ACCELERATION * v2_v_length(k));
 }
 
-- (float) indexToKx:(int32_t)index
+- (double) indexToKx:(int32_t)index
 {
-    float n = -(resolution.x / 2.0f);
-    n = n + (float)index;
+    double n = -(resolution.x / 2.0);
+    n = n + (double)index;
 
     return (MATH_2_MUL_PI * n) / size.x;
 }
 
-- (float) indexToKy:(int32_t)index
+- (double) indexToKy:(int32_t)index
 {
-    float m = (resolution.y / 2.0f);
-    m = m - (float)index;
+    double m = (resolution.y / 2.0);
+    m = m - (double)index;
 
     return (MATH_2_MUL_PI * m) / size.y;
 }
 
-- (float) getAmplitudeAt:(FVector2 *)k
+- (double) getAmplitudeAt:(Vector2 *)k
 {
-    float kSquareLength = fv2_v_square_length(k);
+    double kSquareLength = v2_v_square_length(k);
 
-    if ( kSquareLength == 0.0f )
+    if ( kSquareLength == 0.0 )
     {
-        return 0.0f;
+        return 0.0;
     }
 
-    float windDirectionSquareLength  = fv2_v_square_length(&windDirection);
-    float L = windDirectionSquareLength / EARTH_ACCELERATION;
+    double windDirectionSquareLength  = v2_v_square_length(&windDirection);
+    double L = windDirectionSquareLength / EARTH_ACCELERATION;
 
-    FVector2 windDirectionNormalised = fv2_v_normalised(&windDirection);
-    FVector2 kNormalised = fv2_v_normalised(k);
+    Vector2 windDirectionNormalised = v2_v_normalised(&windDirection);
+    Vector2 kNormalised = v2_v_normalised(k);
 
-    float amplitude = PHILLIPS_CONSTANT;
-    amplitude = amplitude * ( 1.0f / (kSquareLength * kSquareLength) );
-    amplitude = amplitude * (float)exp( -1.0 / (double)(kSquareLength * L * L) );
+    double amplitude = PHILLIPS_CONSTANT;
+    amplitude = amplitude * ( 1.0 / (kSquareLength * kSquareLength) );
+    amplitude = amplitude * exp( -1.0 / (kSquareLength * L * L) );
 
-    float kdotw = fv2_vv_dot_product(&kNormalised, &windDirectionNormalised);
-    amplitude = amplitude * (float)pow((double)kdotw, 2.0);
+    double kdotw = v2_vv_dot_product(&kNormalised, &windDirectionNormalised);
+    amplitude = amplitude * kdotw * kdotw;
 
     return amplitude;
 }
-*/
 
 - (void) generateH0
 {
     double xi_r, xi_i, a;
     Vector2 k;
 
-    NPTimer * t = [[ NPEngineCore instance ] timer ];
-
 	if ( needsUpdate == YES )
 	{
         FFTW_SAFE_FREE(H0);
 
 		H0 = fftw_malloc(sizeof(fftw_complex) * resolution.x * resolution.y);
-        [ t reset ];
 
         for ( int32_t i = 0; i < resolution.x; i++ )
         {
             for ( int32_t j = 0; j < resolution.y; j++ )
             {
-			    //xi_r = [ gaussianRNG nextGaussianFPRandomNumber ];
-			    //xi_i = [ gaussianRNG nextGaussianFPRandomNumber ];
-                //xi_r = i * 0.35;
-                //xi_i = j * 0.75;
+                xi_r = [ gaussianRNG nextGaussianFPRandomNumber ];
+                xi_i = [ gaussianRNG nextGaussianFPRandomNumber ];
 
-                //k.x = [ self indexToKx:i ];
-                //k.y = [ self indexToKy:j ];
-                k.x = indexToKx(i);
-                k.y = indexToKy(j);
+                k.x = [ self indexToKx:i ];
+                k.y = [ self indexToKy:j ];
 
-                //a = sqrt([ self getAmplitudeAt:&k ]);
-                a = sqrt(getAmplitudeAt(&k));
+                a = sqrt([ self getAmplitudeAt:&k ]);
 
-			    //H0[j + resolution.y * i][0] = MATH_1_DIV_SQRT_2 * xi_r * a;
-			    //H0[j + resolution.y * i][1] = MATH_1_DIV_SQRT_2 * xi_i * a;
-			    H0[j + resolution.y * i][0] = MATH_1_DIV_SQRT_2 * a;
-			    H0[j + resolution.y * i][1] = MATH_1_DIV_SQRT_2 * a;
-
+                H0[j + resolution.y * i][0] = MATH_1_DIV_SQRT_2 * xi_r * a;
+                H0[j + resolution.y * i][1] = MATH_1_DIV_SQRT_2 * xi_i * a;
             }
         }
 
         needsUpdate = NO;
-
-        [ t update ];
-        fprintf(stdout, "H0 %f\n", [ t frameTime ]);
     }
 }
 
@@ -241,15 +221,11 @@ double getAmplitudeAt(const Vector2 const * k)
     fftw_complex expOmega, expMinusOmega, H0expOmega, H0expMinusOmega, H0conjugate;
     int32_t indexForK, indexForConjugate;
 
-    NPTimer * t = [[ NPEngineCore instance ] timer ];
-
 	if ( time != lastTime )
 	{
         FFTW_SAFE_FREE(frequencySpectrum);
 
 		frequencySpectrum = fftw_malloc(sizeof(fftw_complex) * resolution.x * resolution.y);
-
-        [ t reset ];
 
         for ( int32_t i = 0; i < resolution.x; i++ )
         {
@@ -258,21 +234,16 @@ double getAmplitudeAt(const Vector2 const * k)
                 indexForK = j + resolution.y * i;
                 indexForConjugate = ((resolution.y - j) % resolution.y) + resolution.y * ((resolution.x - i) % resolution.x);
 
-                //k.x = [ self indexToKx:i ];
-                //k.y = [ self indexToKy:j ];
-                k.x = indexToKx(i);
-                k.y = indexToKy(j);
+                k.x = [ self indexToKx:i ];
+                k.y = [ self indexToKy:j ];
 
-                //omega = [ self omegaForK:&k ];
-                omega = omegaForK(&k);
+                omega = [ self omegaForK:&k ];
 
                 // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
                 expOmega[0] = cos(omega * time);
                 expOmega[1] = sin(omega * time);
 
                 // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
-                //expMinusOmega[0] =  cos(omega * time);
-                //expMinusOmega[1] = -sin(omega * time);
                 expMinusOmega[0] =  expOmega[0];
                 expMinusOmega[1] = -expOmega[1];
 
@@ -308,9 +279,6 @@ double getAmplitudeAt(const Vector2 const * k)
         }
 
         lastTime = time;
-
-        [ t update ];
-        fprintf(stdout, "H %f\n", [ t frameTime ]);
     }
 }
 

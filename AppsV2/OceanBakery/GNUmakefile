@@ -21,7 +21,7 @@ OBOceanSurfaceManager.m \
 OBOceanSurfaceGenerationConfiguration.m \
 main.m
 
-ADDITIONAL_TOOL_LIBS += -lfftw3 -lfftw3_threads -lGL -lGLU -lNPEngine2 -lGLEW -lIL -lILU -lprng -lopenal -lvorbisfile
+ADDITIONAL_TOOL_LIBS += -lfftw3 -lfftw3_threads -lNPEngine2 -lGLEW -lIL -lILU -lprng -lopenal -lvorbisfile
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/tool.make
