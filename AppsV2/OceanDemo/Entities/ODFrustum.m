@@ -165,12 +165,11 @@ int compare_floats (const void * a, const void * b)
     farPlaneHalfWidth   = farPlaneWidth   / 2.0f;
 
     fquat_q_forward_vector_v(orientation, &forward);
-    fv3_v_normalise(&forward);
-
     fquat_q_up_vector_v(orientation, &up);
-    fv3_v_normalise(&up);
-
     fquat_q_right_vector_v(orientation, &right);
+
+    fv3_v_normalise(&forward);
+    fv3_v_normalise(&up);
     fv3_v_normalise(&right);
 
     FVector3 tmp = forward;
@@ -192,6 +191,8 @@ int compare_floats (const void * a, const void * b)
     fv3_sv_scale(nearPlaneHalfHeight, &nearPlaneHalfHeightV);
 
     // near plane stuff
+    //FVector3 test = fv3_vv_add(&nearPlaneHalfHeightV, &nearPlaneHalfWidthV);
+
     fv3_vv_add_v(&nearPlaneHalfHeightV, &nearPlaneHalfWidthV, &tmp);
     fv3_vv_add_v(&positionToNearPlaneCenter, &tmp, &(frustumCornerPositions[NEARPLANE_UPPERRIGHT]));
     fv3_vv_sub_v(&positionToNearPlaneCenter, &tmp, &(frustumCornerPositions[NEARPLANE_LOWERLEFT]));

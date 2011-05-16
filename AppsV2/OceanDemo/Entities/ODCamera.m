@@ -254,11 +254,10 @@
 
     fquat_q_forward_vector_v(&orientation, &forward);
     FQuaternion q = fquat_q_conjugated(&orientation);
-    FMatrix4 rotate = fquat_q_to_fmatrix4(&q);
-    FMatrix4 tmp = fm4_mm_multiply(&view, &rotate);
     FVector3 invpos = fv3_v_inverted(&position);
-    FMatrix4 trans = fm4_v_translation_matrix(&invpos);
-    fm4_mm_multiply_m(&tmp, &trans, &view);
+    FMatrix4 rotate = fquat_q_to_fmatrix4(&q);
+    FMatrix4 translate = fm4_v_translation_matrix(&invpos);
+    fm4_mm_multiply_m(&rotate, &translate, &view);
 
     glLoadMatrixf((float *)(M_ELEMENTS(view)));
 }
