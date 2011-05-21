@@ -6,7 +6,7 @@ ifeq ($(GNUSTEP_HOST_CPU),ix86)
     EXTERNAL_DEPENDENCIES_LIB_DIR = $(TGDA_DIR)/Dependencies/lib32
     NP_LIBS_DIR = $(TGDA_DIR)/lib/lib32
 else
-	ifeq ($(GNUSTEP_HOST_CPU),x86_64)
+    ifeq ($(GNUSTEP_HOST_CPU),x86_64)
         EXTERNAL_DEPENDENCIES_LIB_DIR = $(TGDA_DIR)/Dependencies/lib64
         BASIC_DEFINES = -D_NP_64BIT_SYSTEM_
         NP_LIBS_DIR = $(TGDA_DIR)/lib/lib64
@@ -20,7 +20,7 @@ ADDITIONAL_INCLUDE_DIRS += \
 
 ADDITIONAL_LIB_DIRS += \
     -L$(EXTERNAL_DEPENDENCIES_LIB_DIR) \
-	-L$(NP_LIBS_DIR) \
+    -L$(NP_LIBS_DIR) \
     -L/usr/local/lib
 
 ADDITIONAL_CPPFLAGS += \
