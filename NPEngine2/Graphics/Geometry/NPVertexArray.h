@@ -6,6 +6,7 @@
 @class NSMutableArray;
 @class NSError;
 @class NPBufferObject;
+@class NPCPUBuffer;
 
 @interface NPVertexArray : NPObject
 {
@@ -26,6 +27,11 @@
               atLocation:(NpVertexStreamSemantic)location
                    error:(NSError **)error
                         ;
+
+- (BOOL) addCPUVertexStream:(NPCPUBuffer *)vertexStream
+                 atLocation:(NpVertexStreamSemantic)location
+                      error:(NSError **)error
+                           ;
 
 - (BOOL) addIndexStream:(NPBufferObject *)newIndexStream
                   error:(NSError **)error

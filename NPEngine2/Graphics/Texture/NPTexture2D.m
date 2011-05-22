@@ -1,5 +1,5 @@
-#import <Foundation/NSAutoreleasePool.h>
 #import <Foundation/NSData.h>
+#import <Foundation/NSDictionary.h>
 #import "Log/NPLog.h"
 #import "Core/Container/NPAssetArray.h"
 #import "Core/Utilities/NSError+NPEngine.h"
@@ -200,7 +200,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
         {
             NSString * errorString =
                 [ NSString stringWithFormat:@"Unable to load image from \"%@\"",
-                                            completeFileName];
+                                            completeFileName ];
 
             *error = [ NSError errorWithCode:NPEngineGraphicsTextureUnableToLoadImage
                                  description:errorString ];
@@ -209,9 +209,32 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
         return NO;
     }
 
+    // default if loading from file, generate mipmaps
+    // and do trilinear filtering
+    filterState.textureFilter = NpTexture2DFilterTrilinear;
+
+    // process optional arguments
+    if ( arguments != nil )
+    {
+        NSString * mipmapString = [ arguments objectForKey:@"Mipmaps" ];
+        NSString * filterString = [ arguments objectForKey:@"Filter"  ];
+
+        if ( mipmapString != nil )
+        {
+            filterState.mipmaps = [ mipmapString boolValue ];
+        }
+
+        if ( filterString != nil )
+        {
+            filterState.textureFilter
+                = [[ filterString lowercaseString ]
+                        textureFilterValueWithDefault:NpTexture2DFilterTrilinear ];
+        }
+    }
+
     [ self generateUsingImage:image ];
 
-    RELEASE(image);
+    DESTROY(image);
 
     NSString * p = [ NSString stringForPixelFormat:pixelFormat ];
     NSString * d = [ NSString stringForImageDataFormat:dataFormat ];

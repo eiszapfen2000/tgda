@@ -495,6 +495,25 @@ GLenum getGLBufferUsage(const NpBufferDataUpdateRate UpdateRate,
     return result;
 }
 
+GLenum getCPUBufferType(const NpCPUBufferType Type)
+{
+    GLenum result = GL_NONE;
+
+    switch ( Type )
+    {
+        case NpBufferObjectTypeGeometry:
+            result = GL_ARRAY_BUFFER;
+            break;
+        case NpBufferObjectTypeIndices:
+            result = GL_ELEMENT_ARRAY_BUFFER;
+            break;
+        default:
+            break;
+    }
+
+    return result;
+}
+
 GLenum getGLBufferType(const NpBufferObjectType Type)
 {
     GLenum result = GL_NONE;

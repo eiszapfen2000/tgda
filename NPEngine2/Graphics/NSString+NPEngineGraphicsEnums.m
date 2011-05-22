@@ -50,6 +50,13 @@
                    semanticForString:self ];
 }
 
+- (NpTexture2DFilter) textureFilterValueWithDefault:(NpTexture2DFilter)defaultValue
+{
+    return [[[ NPEngineGraphics instance ] stringEnumConversion ]
+                   textureFilterForString:self
+                            defaultFilter:defaultValue ];
+}
+
 + (NSString *) stringForPixelFormat:(const NpImagePixelFormat)pixelFormat
 {
     return [[[ NPEngineGraphics instance ] stringEnumConversion ]

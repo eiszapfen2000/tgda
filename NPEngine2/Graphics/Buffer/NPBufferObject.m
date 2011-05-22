@@ -1,7 +1,7 @@
 #import <Foundation/NSData.h>
 #import <Foundation/NSError.h>
+#import <Foundation/NSException.h>
 #import "Log/NPLog.h"
-#import "Graphics/NPEngineGraphicsEnums.h"
 #import "NPBufferObject.h"
 
 @interface NPBufferObject (Private)
@@ -81,6 +81,23 @@
     return numberOfElements;
 }
 
+- (BOOL) generateStaticGeometryBuffer:(NpBufferDataFormat)newDataFormat
+                           components:(uint32_t)newNumberOfComponents
+                                 data:(NSData *)newData
+                           dataLength:(NSUInteger)newDataLength
+                                error:(NSError **)error
+{
+    return
+        [ self generate:NpBufferObjectTypeGeometry
+             updateRate:NpBufferDataUpdateOnceUseOften
+              dataUsage:NpBufferDataWriteCPUToGPU
+             dataFormat:newDataFormat
+             components:newNumberOfComponents
+                   data:newData
+             dataLength:newDataLength
+                  error:error ];
+}
+
 - (BOOL) generate:(NpBufferObjectType)newType
        updateRate:(NpBufferDataUpdateRate)newUpdateRate
         dataUsage:(NpBufferDataUsage)newDataUsage
@@ -91,6 +108,8 @@
             error:(NSError **)error
 
 {
+    NSAssert(newData != nil, @"");
+
     type = newType;
     updateRate = newUpdateRate;
     dataUsage = newDataUsage;

@@ -8,7 +8,7 @@ static NSMutableDictionary * polygonFillModes = nil;
 static NSMutableDictionary * uniformTypes = nil;
 static NSMutableDictionary * textureTypes = nil;
 static NSMutableDictionary * semantics = nil;
-
+static NSMutableDictionary * textureFilters = nil;
 static NSMutableDictionary * pixelFormats = nil;
 static NSMutableDictionary * imageDataFormats = nil;
 
@@ -29,7 +29,7 @@ static NSMutableDictionary * imageDataFormats = nil;
     uniformTypes        = [[ NSMutableDictionary alloc ] init ];
     textureTypes        = [[ NSMutableDictionary alloc ] init ];
     semantics           = [[ NSMutableDictionary alloc ] init ];
-
+    textureFilters      = [[ NSMutableDictionary alloc ] init ];
     pixelFormats        = [[ NSMutableDictionary alloc ] init ];
     imageDataFormats    = [[ NSMutableDictionary alloc ] init ];
 
@@ -85,6 +85,10 @@ static NSMutableDictionary * imageDataFormats = nil;
     INSERTENUM(semantics, NpModelViewProjectionMatrix, @"np_modelviewprojectionmatrix");
     INSERTENUM(semantics, NpInverseModelViewProjection, @"np_inversemodelviewprojectionmatrix");
 
+    INSERTENUM(textureFilters, NpTexture2DFilterNearest, @"nearest");
+    INSERTENUM(textureFilters, NpTexture2DFilterLinear, @"linear");
+    INSERTENUM(textureFilters, NpTexture2DFilterTrilinear, @"trilinear");
+
     INSERTSTRING(pixelFormats, @"Unknown", NpImagePixelFormatUnknown);
     INSERTSTRING(pixelFormats, @"R", NpImagePixelFormatR);
     INSERTSTRING(pixelFormats, @"RG", NpImagePixelFormatRG);
@@ -100,6 +104,11 @@ static NSMutableDictionary * imageDataFormats = nil;
 }
 
 #undef INSERTENUM
+
+- (id) init
+{
+    return [ self initWithName:@"Graphics String Enum Conversion" ];
+}
 
 - (id) initWithName:(NSString *)newName
 {
@@ -196,6 +205,20 @@ static NSMutableDictionary * imageDataFormats = nil;
     if ( n != nil )
     {
         result = (NpEffectSemantic)[ n intValue ];
+    }
+
+    return result;
+}
+
+- (NpTexture2DFilter) textureFilterForString:(NSString *)string
+                               defaultFilter:(NpTexture2DFilter)defaultFilter
+{
+    NpTexture2DFilter result = defaultFilter;
+
+    NSNumber * n = [ textureFilters objectForKey:string ];
+    if ( n != nil )
+    {
+        result = (NpTexture2DFilter)[ n intValue ];
     }
 
     return result;

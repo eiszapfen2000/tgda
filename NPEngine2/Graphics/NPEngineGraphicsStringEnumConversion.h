@@ -5,6 +5,7 @@
 {
 }
 
+- (id) init;
 - (id) initWithName:(NSString *)newName;
 
 - (NpBlendingMode) blendingModeForString:(NSString *)string 
@@ -26,6 +27,10 @@
 - (NpUniformType) uniformTypeForString:(NSString *)string;
 - (NpTextureType) textureTypeForString:(NSString *)string;
 - (NpEffectSemantic) semanticForString:(NSString *)string;
+
+- (NpTexture2DFilter) textureFilterForString:(NSString *)string
+                               defaultFilter:(NpTexture2DFilter)defaultFilter
+                                            ;
 
 - (NSString *) stringForPixelFormat:(const NpImagePixelFormat)pixelFormat;
 - (NSString *) stringForImageDataFormat:(const NpImageDataFormat)dataFormat;
