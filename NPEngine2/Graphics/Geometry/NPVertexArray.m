@@ -1,7 +1,9 @@
 #import <Foundation/NSArray.h>
+#import <Foundation/NSData.h>
 #import <Foundation/NSException.h>
 #import "Log/NPLog.h"
 #import "Graphics/Buffer/NPBufferObject.h"
+#import "Graphics/Buffer/NPCPUBuffer.h"
 #import "NPVertexArray.h"
 
 @implementation NPVertexArray
@@ -91,6 +93,51 @@
     return YES;
 }
 
+- (BOOL) addCPUVertexStream:(NPCPUBuffer *)vertexStream
+                 atLocation:(NpVertexStreamSemantic)location
+                      error:(NSError **)error
+{
+    NSAssert(vertexStream != nil, @"Invalid vertex stream");
+
+    NSUInteger numberOfElements = [ vertexStream numberOfElements ];
+    if ( numberOfElements == 0 )
+    {
+        NPLOG(@"Empty Vertex Stream");
+        return NO;
+    }
+
+    if ( numberOfElements > INT_MAX )
+    {
+        NPLOG(@"Vertex Stream is to large");
+        return NO;
+    }
+
+    GLsizei glNumberOfElements = (GLsizei)numberOfElements;
+
+    if ( numberOfVertices == 0 )
+    {
+        numberOfVertices = glNumberOfElements;
+    }
+    else if ( numberOfVertices != glNumberOfElements )
+    {
+        NPLOG(@"Buffer size mismatch");
+        return NO;
+    }
+
+    [ vertexStreams addObject:vertexStream ];
+
+    GLuint glLocation = (GLuint)location;
+    GLenum type = getGLBufferDataFormat([ vertexStream dataFormat]);
+    GLint size = (GLint)[ vertexStream numberOfComponents ];
+
+    glBindVertexArray(glID);
+    glVertexAttribPointer(glLocation, size, type, GL_FALSE, 0, [[ vertexStream data ] bytes ]);
+    glEnableVertexAttribArray(glLocation);
+    glBindVertexArray(0);
+
+    return YES;
+}
+
 - (BOOL) addIndexStream:(NPBufferObject *)newIndexStream
                   error:(NSError **)error
 {
@@ -151,7 +198,6 @@
         [ indexStream deactivate ];
         glBindVertexArray(0);
     }
-
     else
     {
         glBindVertexArray(glID);

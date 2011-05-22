@@ -30,6 +30,13 @@
 - (NSUInteger) numberOfBytes;
 - (NSUInteger) numberOfElements;
 
+- (BOOL) generateStaticGeometryBuffer:(NpBufferDataFormat)newDataFormat
+                           components:(uint32_t)newNumberOfComponents
+                                 data:(NSData *)newData
+                           dataLength:(NSUInteger)newDataLength
+                                error:(NSError **)error
+                                     ;
+
 - (BOOL) generate:(NpBufferObjectType)newType
        updateRate:(NpBufferDataUpdateRate)newUpdateRate
         dataUsage:(NpBufferDataUsage)newDataUsage

@@ -222,6 +222,14 @@ typedef enum NpBufferDataFormat
 }
 NpBufferDataFormat;
 
+typedef enum NpCPUBufferType
+{
+    NpCPUBufferTypeUnknown = -1,
+    NpCPUBufferTypeGeometry = 0,
+    NpCPUBufferTypeIndices = 1
+}
+NpCPUBufferType;
+
 typedef enum NpBufferObjectType
 {
     NpBufferObjectTypeUnknown = -1,
@@ -300,6 +308,7 @@ GLenum getGLRenderBufferInternalFormat(const NpRenderTargetType Type,
 GLenum getGLBufferUsage(const NpBufferDataUpdateRate UpdateRate,
             const NpBufferDataUsage Usage);
 
+GLenum getCPUBufferType(const NpCPUBufferType Type);
 GLenum getGLBufferType(const NpBufferObjectType Type);
 GLenum getGLBufferDataFormat(const NpBufferDataFormat DataFormat);
 size_t numberOfBytesForDataFormat(const NpBufferDataFormat DataFormat);
