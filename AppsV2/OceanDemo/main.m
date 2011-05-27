@@ -69,10 +69,8 @@ int main (int argc, char **argv)
 
     // do not allow window resizing
     glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
-
     glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
-    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 2);
-//    glfwOpenWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
     glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
     
     // Open a window and create its OpenGL context
@@ -84,14 +82,11 @@ int main (int argc, char **argv)
     }
 
     int d = glfwGetWindowParam(GLFW_DEPTH_BITS);
-    NSLog(@"%d", d);
-
     int major = glfwGetWindowParam(GLFW_OPENGL_VERSION_MAJOR);
     int minor = glfwGetWindowParam(GLFW_OPENGL_VERSION_MINOR);
-    NSLog(@"%d . %d", major, minor);
-
     int profile = glfwGetWindowParam(GLFW_OPENGL_PROFILE);
-    NSLog(@"Got profile %d", profile);
+
+    NSLog(@"%d %d %d", major, minor, profile);
 
     // callback for window resizes
     glfwSetWindowSizeCallback(window_resize_callback);
@@ -114,7 +109,8 @@ int main (int argc, char **argv)
 
     if ( [[ NP Graphics ] startup ] == NO )
     {
-        NSLog(@"GFX BRAK");
+        NSLog(@"NPEngineGraphics failed to start up.");
+        exit( EXIT_FAILURE );
     }
 
     [[[ NP Graphics ] viewport ] setWidgetWidth:640 ];
@@ -235,9 +231,18 @@ int main (int argc, char **argv)
         [[[ NP Graphics ] textureBindingState ] activate ];
         [ t activate ];
 
-        [ vertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
-
+        //[ vertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
         //[ model render ];
+
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+        glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, texcoords);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(3);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(3);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
         // Check for GL errors
         [[ NP Graphics ] checkForGLErrors ];
