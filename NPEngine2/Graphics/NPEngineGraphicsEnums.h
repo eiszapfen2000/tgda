@@ -271,7 +271,9 @@ typedef enum NpVertexStreamSemantic
     NpVertexStreamAttribute12 = 12,
     NpVertexStreamAttribute13 = 13,
     NpVertexStreamAttribute14 = 14,
-    NpVertexStreamAttribute15 = 15
+    NpVertexStreamAttribute15 = 15,
+    NpVertexStreamMin = 0,
+    NpVertexStreamMax = 15
 }
 NpVertexStreamSemantic;
 
