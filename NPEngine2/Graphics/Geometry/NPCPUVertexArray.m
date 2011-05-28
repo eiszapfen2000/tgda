@@ -2,38 +2,38 @@
 #import <Foundation/NSData.h>
 #import <Foundation/NSException.h>
 #import "Log/NPLog.h"
-#import "Graphics/Buffer/NPBufferObject.h"
 #import "Graphics/Buffer/NPCPUBuffer.h"
-#import "NPVertexArray.h"
+#import "NPCPUVertexArray.h"
 
-@implementation NPVertexArray
+@implementation NPCPUVertexArray
 
 - (id) init
 {
-    return [ self initWithName:@"Vertex Array" ];
+    return [ self initWithName:@"CPU Vertex Array" ];
 }
 
 - (id) initWithName:(NSString *)newName
 {
     self = [ super initWithName:newName ];
 
-    glGenVertexArrays(1, &glID);
     numberOfVertices = 0;
     numberOfIndices = 0;
 
     vertexStreams = [[ NSMutableArray alloc ] init ];
     indexStream = nil;
 
+    memset(types,    0, sizeof(types));
+    memset(sizes,    0, sizeof(sizes));
+    memset(pointers, 0, sizeof(pointers));
+    indexPointer = NULL;
+    indexType = GL_NONE;
+    numberOfBytesForIndex = 0;
+
     return self;
 }
 
 - (void) dealloc
 {
-    if ( glID > 0 )
-    {
-        glDeleteVertexArrays(1, &glID);
-    }
-
     [ vertexStreams removeAllObjects ];
     DESTROY(vertexStreams);
 
@@ -42,12 +42,7 @@
     [ super dealloc ];
 }
 
-- (GLuint) glID
-{
-    return glID;
-}
-
-- (BOOL) addVertexStream:(NPBufferObject *)vertexStream
+- (BOOL) addVertexStream:(NPCPUBuffer *)vertexStream
               atLocation:(NpVertexStreamSemantic)location
                    error:(NSError **)error
 {
@@ -80,68 +75,14 @@
 
     [ vertexStreams addObject:vertexStream ];
 
-    GLuint glLocation = (GLuint)location;
-    GLenum type = getGLBufferDataFormat([ vertexStream dataFormat]);
-    GLint size = (GLint)[ vertexStream numberOfComponents ];
-
-    glBindVertexArray(glID);
-    [ vertexStream activate ];
-    glVertexAttribPointer(glLocation, size, type, GL_FALSE, 0, 0);
-    [ vertexStream deactivate ];
-    glEnableVertexAttribArray(glLocation);
-    glBindVertexArray(0);
+    types[location] = getGLBufferDataFormat([ vertexStream dataFormat]);
+    sizes[location] = (GLint)[ vertexStream numberOfComponents ];
+    pointers[location] = (GLvoid *)[[ vertexStream data ] bytes ];
 
     return YES;
 }
 
-/*
-- (BOOL) addCPUVertexStream:(NPCPUBuffer *)vertexStream
-                 atLocation:(NpVertexStreamSemantic)location
-                      error:(NSError **)error
-{
-    NSAssert(vertexStream != nil, @"Invalid vertex stream");
-
-    NSUInteger numberOfElements = [ vertexStream numberOfElements ];
-    if ( numberOfElements == 0 )
-    {
-        NPLOG(@"Empty Vertex Stream");
-        return NO;
-    }
-
-    if ( numberOfElements > INT_MAX )
-    {
-        NPLOG(@"Vertex Stream is to large");
-        return NO;
-    }
-
-    GLsizei glNumberOfElements = (GLsizei)numberOfElements;
-
-    if ( numberOfVertices == 0 )
-    {
-        numberOfVertices = glNumberOfElements;
-    }
-    else if ( numberOfVertices != glNumberOfElements )
-    {
-        NPLOG(@"Buffer size mismatch");
-        return NO;
-    }
-
-    [ vertexStreams addObject:vertexStream ];
-
-    GLuint glLocation = (GLuint)location;
-    GLenum type = getGLBufferDataFormat([ vertexStream dataFormat]);
-    GLint size = (GLint)[ vertexStream numberOfComponents ];
-
-    glBindVertexArray(glID);
-    glVertexAttribPointer(glLocation, size, type, GL_FALSE, 0, [[ vertexStream data ] bytes ]);
-    glEnableVertexAttribArray(glLocation);
-    glBindVertexArray(0);
-
-    return YES;
-}
-*/
-
-- (BOOL) addIndexStream:(NPBufferObject *)newIndexStream
+- (BOOL) addIndexStream:(NPCPUBuffer *)newIndexStream
                   error:(NSError **)error
 {
     NSAssert(newIndexStream != nil, @"Invalid index stream");
@@ -161,6 +102,10 @@
 
     indexStream = RETAIN(newIndexStream);
     numberOfIndices = (GLsizei)numberOfElements;
+    indexPointer = (GLvoid *)[[ indexStream data ] bytes ];
+    indexType = getGLBufferDataFormat([ indexStream dataFormat ]);
+    numberOfBytesForIndex
+        = (GLsizei)numberOfBytesForDataFormat([ indexStream dataFormat ]);
 
     return YES;
 }
@@ -188,24 +133,48 @@
 {
     if ( indexStream != nil )
     {
-        glBindVertexArray(glID);
-        [ indexStream activate ];
-
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+        for ( int32_t i = NpVertexStreamMin; i <= NpVertexStreamMax; i++ )
+        {
+            if ( pointers[i] != NULL )
+            {
+                glVertexAttribPointer(i, sizes[i], types[i], GL_FALSE, 0, pointers[i]);
+                glEnableVertexAttribArray(i);
+            }
+        }
 
         glDrawRangeElements(type, 0, numberOfVertices - 1, lastIndex - firstIndex + 1,
-            [ indexStream glDataFormat ], BUFFER_OFFSET(firstIndex*sizeof(uint32_t)));
+            indexType, indexPointer + (firstIndex * numberOfBytesForIndex));
 
-#undef BUFFER_OFFSET
-
-        [ indexStream deactivate ];
-        glBindVertexArray(0);
+        for ( int32_t i = NpVertexStreamMin; i <= NpVertexStreamMax; i++ )
+        {
+            if ( pointers[i] != NULL )
+            {
+                glVertexAttribPointer(i, sizes[i], types[i], GL_FALSE, 0, NULL);
+                glDisableVertexAttribArray(i);
+            }
+        }
     }
     else
     {
-        glBindVertexArray(glID);
+        for ( int32_t i = NpVertexStreamMin; i <= NpVertexStreamMax; i++ )
+        {
+            if ( pointers[i] != NULL )
+            {
+                glVertexAttribPointer(i, sizes[i], types[i], GL_FALSE, 0, pointers[i]);
+                glEnableVertexAttribArray(i);
+            }
+        }
+
         glDrawArrays(type, 0, lastIndex - firstIndex + 1);
-        glBindVertexArray(0);
+
+        for ( int32_t i = NpVertexStreamMin; i <= NpVertexStreamMax; i++ )
+        {
+            if ( pointers[i] != NULL )
+            {
+                glVertexAttribPointer(i, sizes[i], types[i], GL_FALSE, 0, NULL);
+                glDisableVertexAttribArray(i);
+            }
+        }
     } 
 }
 

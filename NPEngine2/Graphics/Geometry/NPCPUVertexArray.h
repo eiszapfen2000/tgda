@@ -6,28 +6,33 @@
 @class NSMutableArray;
 @class NSError;
 @class NPBufferObject;
+@class NPCPUBuffer;
 
-@interface NPVertexArray : NPObject
+@interface NPCPUVertexArray : NPObject
 {
-    GLuint glID;
     GLsizei numberOfVertices;
     GLsizei numberOfIndices;
     NSMutableArray * vertexStreams;
-    NPBufferObject * indexStream;
+    NPCPUBuffer * indexStream;
+
+    GLenum  types[NpVertexStreamMax + 1];
+    GLint   sizes[NpVertexStreamMax + 1];
+    GLvoid* pointers[NpVertexStreamMax + 1];
+    GLvoid* indexPointer;
+    GLenum  indexType;
+    GLsizei numberOfBytesForIndex;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-- (GLuint) glID;
-
-- (BOOL) addVertexStream:(NPBufferObject *)vertexStream
+- (BOOL) addVertexStream:(NPCPUBuffer *)vertexStream
               atLocation:(NpVertexStreamSemantic)location
                    error:(NSError **)error
                         ;
 
-- (BOOL) addIndexStream:(NPBufferObject *)newIndexStream
+- (BOOL) addIndexStream:(NPCPUBuffer *)newIndexStream
                   error:(NSError **)error
                        ;
 
@@ -38,4 +43,3 @@
                                 ;
 
 @end
-

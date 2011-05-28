@@ -4,10 +4,12 @@ SUBPROJECT_NAME=libNPEngineGraphicsGeometry
 
 libNPEngineGraphicsGeometry_HEADER_FILES = \
 NPVertexArray.h \
+NPCPUVertexArray.h \
 NPFullscreenQuad.h
 
 libNPEngineGraphicsGeometry_OBJC_FILES = \
 NPVertexArray.m \
+NPCPUVertexArray.m \
 NPFullscreenQuad.m
 
 include $(TGDA_DIR)/GNUmakefile.flags
