@@ -70,6 +70,11 @@
 - (void) update;
 - (void) render;
 
+- (void) clearFrameBuffer:(BOOL)clearFrameBuffer
+              depthBuffer:(BOOL)clearDepthBuffer
+            stencilBuffer:(BOOL)clearStencilBuffer
+                         ;
+
 @end
 
 
