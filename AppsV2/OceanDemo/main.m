@@ -3,6 +3,8 @@
 #import "Core/Container/NPAssetArray.h"
 #import "Core/Timer/NPTimer.h"
 #import "Graphics/Buffer/NPBufferObject.h"
+#import "Graphics/Buffer/NPCPUBuffer.h"
+#import "Graphics/Geometry/NPCPUVertexArray.h"
 #import "Graphics/Geometry/NPVertexArray.h"
 #import "Graphics/Model/NPSUX2Model.h"
 #import "Graphics/Texture/NPTexture2D.h"
@@ -128,8 +130,6 @@ int main (int argc, char **argv)
         NSLog(@"KBUMM");
     }
 
-    [ tex setTextureFilter:NpTexture2DFilterTrilinear ];
-
     [[ NP Graphics ] checkForGLErrors ];
 
     /*
@@ -189,10 +189,53 @@ int main (int argc, char **argv)
         NSLog(@"BUFFERFAIL");
     }
 
+    NPCPUBuffer * cvBuffer = [[ NPCPUBuffer alloc ] init ];
+    NPCPUBuffer * ctBuffer = [[ NPCPUBuffer alloc ] init ];
+    NPCPUBuffer * ciBuffer = [[ NPCPUBuffer alloc ] init ];
+
+    vOK =
+    [ cvBuffer generate:NpBufferObjectTypeGeometry
+             dataFormat:NpBufferDataFormatFloat32
+             components:2
+                   data:vData
+             dataLength:[ vData length ]
+                  error:NULL ];
+
+    tOK =
+    [ ctBuffer generate:NpBufferObjectTypeGeometry
+             dataFormat:NpBufferDataFormatFloat32
+             components:2
+                   data:tData
+             dataLength:[ tData length ]
+                  error:NULL ];
+
+    iOK =
+    [ ciBuffer generate:NpBufferObjectTypeIndices
+             dataFormat:NpBufferDataFormatUInt16
+             components:1
+                   data:iData
+             dataLength:[ iData length ]
+                  error:NULL ];
+
+    if ( vOK == NO || tOK == NO || iOK == NO )
+    {
+        NSLog(@"CPU BUFFERFAIL");
+    }
+
     NPVertexArray * vertexArray = [[ NPVertexArray alloc ] init ];
     BOOL rak = [ vertexArray addVertexStream:vBuffer atLocation:NpVertexStreamAttribute0 error:NULL ];
     rak = rak && [ vertexArray addVertexStream:tBuffer atLocation:NpVertexStreamAttribute3 error:NULL ];
     rak = rak && [ vertexArray addIndexStream:iBuffer error:NULL ];
+
+    if ( rak == NO )
+    {
+        NSLog(@"FUCK");
+    }
+
+    NPCPUVertexArray * cpuVertexArray = [[ NPCPUVertexArray alloc ] init ];
+    rak = [ cpuVertexArray addVertexStream:cvBuffer atLocation:NpVertexStreamAttribute0 error:NULL ];
+    rak = rak && [ cpuVertexArray addVertexStream:ctBuffer atLocation:NpVertexStreamAttribute3 error:NULL ];
+    rak = rak && [ cpuVertexArray addIndexStream:ciBuffer error:NULL ];
 
     if ( rak == NO )
     {
@@ -234,6 +277,9 @@ int main (int argc, char **argv)
         //[ vertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
         //[ model render ];
 
+        [ cpuVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+
+        /*
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, vertices);
         glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, texcoords);
         glEnableVertexAttribArray(0);
@@ -243,6 +289,7 @@ int main (int argc, char **argv)
         glDisableVertexAttribArray(3);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
         glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        */
 
         // Check for GL errors
         [[ NP Graphics ] checkForGLErrors ];
@@ -255,9 +302,14 @@ int main (int argc, char **argv)
 
     //DESTROY(model);
     DESTROY(vertexArray);
+    DESTROY(cpuVertexArray);
 
     RELEASE(tex);
     RELEASE(e);
+
+    DESTROY(ciBuffer);
+    DESTROY(cvBuffer);
+    DESTROY(ctBuffer);
 
     DESTROY(iBuffer);
     DESTROY(vBuffer);

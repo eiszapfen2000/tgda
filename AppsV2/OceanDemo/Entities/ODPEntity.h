@@ -1,14 +1,15 @@
-#import "Core/Protocols/NPPPersistentObject.h"
+#import "Core/Protocols/NPPObject.h"
 
 @class NSDictionary;
 @class NSError;
 
-@protocol ODPEntity
+@protocol ODPEntity <NPPObject>
 
 - (BOOL) loadFromDictionary:(NSDictionary *)config
                       error:(NSError **)error
                            ;
-- (void) update:(float)frameTime;
+
+- (void) update:(const float)frameTime;
 - (void) render;
 
 @end

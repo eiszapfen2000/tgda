@@ -3,6 +3,7 @@
 #import "ODPEntity.h"
 
 @class NPInputAction;
+@class ODProjector;
 
 @interface ODCamera : NPObject < ODPEntity >
 {

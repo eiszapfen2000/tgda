@@ -7,15 +7,6 @@
 @class ODCamera;
 @class ODFrustum;
 
-#define NEARPLANE_LOWERLEFT    0
-#define NEARPLANE_LOWERRIGHT   1
-#define NEARPLANE_UPPERRIGHT   2
-#define NEARPLANE_UPPERLEFT    3
-#define FARPLANE_LOWERLEFT     4
-#define FARPLANE_LOWERRIGHT    5
-#define FARPLANE_UPPERRIGHT    6
-#define FARPLANE_UPPERLEFT     7
-
 @interface ODProjector : NPObject < ODPEntity >
 {
 	FMatrix4 view;

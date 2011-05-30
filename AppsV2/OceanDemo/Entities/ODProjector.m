@@ -282,7 +282,7 @@
     }
 }
 
-- (void) update:(float)frameTime
+- (void) update:(const float)frameTime
 {
     if ( [ pitchMinusAction active ] == YES )
     {
