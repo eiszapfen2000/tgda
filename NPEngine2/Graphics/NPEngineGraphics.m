@@ -336,6 +336,30 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 {
 }
 
+- (void) clearFrameBuffer:(BOOL)clearFrameBuffer
+              depthBuffer:(BOOL)clearDepthBuffer
+            stencilBuffer:(BOOL)clearStencilBuffer
+{
+    GLbitfield buffersToClear = 0;
+
+    if ( clearFrameBuffer == YES )
+    {
+        buffersToClear = buffersToClear | GL_COLOR_BUFFER_BIT;
+    }
+
+    if ( clearDepthBuffer == YES )
+    {
+        buffersToClear = buffersToClear | GL_DEPTH_BUFFER_BIT;
+    }
+
+    if ( clearStencilBuffer == YES )
+    {
+        buffersToClear = buffersToClear | GL_STENCIL_BUFFER_BIT;
+    }
+
+    glClear(buffersToClear);
+}
+
 - (NSString *) name
 {
     return @"NPEngine Graphics";
