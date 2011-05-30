@@ -21,14 +21,13 @@
 
 @interface ODFrustum : NPObject
 {
-    float * frustumFaceVertices;
-    float * frustumLineVertices;
-
     uint16_t frustumFaceIndices[24];
     uint16_t defaultFaceIndices[24];
     uint16_t frustumLineIndices[24];
 
     FVertex3 frustumCornerPositions[8];
+    FVertex3 frustumFaceVertices[8];
+    FVertex3 frustumLineVertices[8];
 
     float nearPlaneHeight;
     float nearPlaneWidth;
@@ -51,8 +50,6 @@
     FVector3 forward;
     FVector3 up;
     FVector3 right;
-
-    NPEffect * frustumEffect;
 }
 
 - (id) init;

@@ -32,9 +32,6 @@ int compare_floats (const void * a, const void * b)
 {
     self =  [ super initWithName:newName ];
 
-    frustumFaceVertices = ALLOC_ARRAY(float, 24);
-    frustumLineVertices = ALLOC_ARRAY(float, 24);
-
     frustumLineIndices[0] = frustumLineIndices[7] = frustumLineIndices[16] = 0;
     frustumLineIndices[1] = frustumLineIndices[2] = frustumLineIndices[18] = 1;
     frustumLineIndices[3] = frustumLineIndices[4] = frustumLineIndices[20] = 2;
@@ -43,7 +40,6 @@ int compare_floats (const void * a, const void * b)
     frustumLineIndices[9] = frustumLineIndices[10] = frustumLineIndices[19] = 5;
     frustumLineIndices[11] = frustumLineIndices[12] = frustumLineIndices[21] = 6;
     frustumLineIndices[13] = frustumLineIndices[14] = frustumLineIndices[23] = 7;
-
 
     // Quad on near plane
     defaultFaceIndices[0] = 0;
@@ -155,8 +151,8 @@ int compare_floats (const void * a, const void * b)
     float fovradians = DEGREE_TO_RADIANS(fov/2.0f);
 
     nearPlaneHeight = 2.0f * tanf(fovradians) * nearPlane;
-    nearPlaneWidth  = nearPlaneHeight * aspectRatio;
     farPlaneHeight  = 2.0f * tanf(fovradians) * farPlane;
+    nearPlaneWidth  = nearPlaneHeight * aspectRatio;
     farPlaneWidth   = farPlaneHeight * aspectRatio;
 
     nearPlaneHalfHeight = nearPlaneHeight / 2.0f;
@@ -172,53 +168,39 @@ int compare_floats (const void * a, const void * b)
     fv3_v_normalise(&up);
     fv3_v_normalise(&right);
 
-    FVector3 tmp = forward;
-    fv3_sv_scale(farPlane, &tmp);
-    fv3_vv_add_v(position, &tmp, &positionToFarPlaneCenter);
+    FVector3 positionToFarPlane  = fv3_sv_scaled(farPlane, &forward);
+    FVector3 positionToNearPlane = fv3_sv_scaled(nearPlane, &forward);
+    positionToFarPlaneCenter  = fv3_vv_add(position, &positionToFarPlane);
+    positionToNearPlaneCenter = fv3_vv_add(position, &positionToNearPlane);
 
-    tmp = forward;
-    fv3_sv_scale(nearPlane, &tmp);
-    fv3_vv_add_v(position, &tmp, &positionToNearPlaneCenter);
-
-    fv3_vv_init_with_fv3(&farPlaneHalfWidthV, &right);
-    fv3_vv_init_with_fv3(&nearPlaneHalfWidthV, &right);
-    fv3_vv_init_with_fv3(&farPlaneHalfHeightV, &up);
-    fv3_vv_init_with_fv3(&nearPlaneHalfHeightV, &up);
-
-    fv3_sv_scale(farPlaneHalfWidth, &farPlaneHalfWidthV);
-    fv3_sv_scale(nearPlaneHalfWidth, &nearPlaneHalfWidthV);
-    fv3_sv_scale(farPlaneHalfHeight, &farPlaneHalfHeightV);
-    fv3_sv_scale(nearPlaneHalfHeight, &nearPlaneHalfHeightV);
+    farPlaneHalfWidthV  = fv3_sv_scaled(farPlaneHalfWidth, &right);
+    farPlaneHalfHeightV = fv3_sv_scaled(farPlaneHalfHeight, &up);
+    nearPlaneHalfWidthV  = fv3_sv_scaled(nearPlaneHalfWidth, &right);
+    nearPlaneHalfHeightV = fv3_sv_scaled(nearPlaneHalfHeight, &up);
 
     // near plane stuff
-    //FVector3 test = fv3_vv_add(&nearPlaneHalfHeightV, &nearPlaneHalfWidthV);
+    FVector3 direction = fv3_vv_add(&nearPlaneHalfHeightV, &nearPlaneHalfWidthV);
+    FVector3 nearPlaneUpperCenter = fv3_vv_add(&positionToNearPlaneCenter, &nearPlaneHalfHeightV);
+    FVector3 nearPlaneLowerCenter = fv3_vv_sub(&positionToNearPlaneCenter, &nearPlaneHalfHeightV);
 
-    fv3_vv_add_v(&nearPlaneHalfHeightV, &nearPlaneHalfWidthV, &tmp);
-    fv3_vv_add_v(&positionToNearPlaneCenter, &tmp, &(frustumCornerPositions[NEARPLANE_UPPERRIGHT]));
-    fv3_vv_sub_v(&positionToNearPlaneCenter, &tmp, &(frustumCornerPositions[NEARPLANE_LOWERLEFT]));
-
-    fv3_vv_add_v(&positionToNearPlaneCenter, &nearPlaneHalfHeightV, &tmp);
-    fv3_vv_sub_v(&tmp, &nearPlaneHalfWidthV, &(frustumCornerPositions[NEARPLANE_UPPERLEFT]));
-
-    fv3_vv_sub_v(&positionToNearPlaneCenter, &nearPlaneHalfHeightV, &tmp);
-    fv3_vv_add_v(&tmp, &nearPlaneHalfWidthV, &(frustumCornerPositions[NEARPLANE_LOWERRIGHT]));
+    frustumCornerPositions[NEARPLANE_UPPERRIGHT] = fv3_vv_add(&positionToNearPlaneCenter, &direction);
+    frustumCornerPositions[NEARPLANE_LOWERLEFT]  = fv3_vv_sub(&positionToNearPlaneCenter, &direction);
+    frustumCornerPositions[NEARPLANE_UPPERLEFT]  = fv3_vv_sub(&nearPlaneUpperCenter, &nearPlaneHalfWidthV);
+    frustumCornerPositions[NEARPLANE_LOWERRIGHT] = fv3_vv_add(&nearPlaneLowerCenter, &nearPlaneHalfWidthV);
 
     // far plane stuff
-    fv3_vv_add_v(&farPlaneHalfHeightV, &farPlaneHalfWidthV, &tmp);
-    fv3_vv_add_v(&positionToFarPlaneCenter, &tmp, &(frustumCornerPositions[FARPLANE_UPPERRIGHT]));
-    fv3_vv_sub_v(&positionToFarPlaneCenter, &tmp, &(frustumCornerPositions[FARPLANE_LOWERLEFT]));
+    direction = fv3_vv_add(&farPlaneHalfHeightV, &farPlaneHalfWidthV);
+    FVector3 farPlaneUpperCenter = fv3_vv_add(&positionToFarPlaneCenter, &farPlaneHalfHeightV);
+    FVector3 farPlaneLowerCenter = fv3_vv_sub(&positionToFarPlaneCenter, &farPlaneHalfHeightV);
 
-    fv3_vv_add_v(&positionToFarPlaneCenter, &farPlaneHalfHeightV, &tmp);
-    fv3_vv_sub_v(&tmp, &farPlaneHalfWidthV, &(frustumCornerPositions[FARPLANE_UPPERLEFT]));
-
-    fv3_vv_sub_v(&positionToFarPlaneCenter, &farPlaneHalfHeightV, &tmp);
-    fv3_vv_add_v(&tmp, &farPlaneHalfWidthV, &(frustumCornerPositions[FARPLANE_LOWERRIGHT]));
+    frustumCornerPositions[FARPLANE_UPPERRIGHT] = fv3_vv_add(&positionToFarPlaneCenter, &direction);
+    frustumCornerPositions[FARPLANE_LOWERLEFT]  = fv3_vv_sub(&positionToFarPlaneCenter, &direction);
+    frustumCornerPositions[FARPLANE_UPPERLEFT]  = fv3_vv_sub(&farPlaneUpperCenter, &farPlaneHalfWidthV);
+    frustumCornerPositions[FARPLANE_LOWERRIGHT] = fv3_vv_add(&farPlaneLowerCenter, &farPlaneHalfWidthV);
 
     for ( int32_t i = 0; i < 8; i++ )
     {
-        frustumFaceVertices[i*3]     = frustumLineVertices[i*3]     = frustumCornerPositions[i].x;
-        frustumFaceVertices[i*3 + 1] = frustumLineVertices[i*3 + 1] = frustumCornerPositions[i].y;
-        frustumFaceVertices[i*3 + 2] = frustumLineVertices[i*3 + 2] = frustumCornerPositions[i].z;
+        frustumFaceVertices[i] = frustumLineVertices[i] = frustumCornerPositions[i];
     }
 }
 

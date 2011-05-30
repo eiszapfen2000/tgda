@@ -6,6 +6,7 @@
 #import "Input/NPKeyboard.h"
 #import "Input/NPMouse.h"
 #import "NP.h"
+#import "ODProjector.h"
 #import "ODCamera.h"
 
 @implementation ODCamera
@@ -33,7 +34,7 @@
     pitch = 0.0f;
 
     fv3_v_init_with_zeros(&forward);
-    V_Z(forward) = -1.0f;
+    forward.z = -1.0f;
 
     leftClickAction        = [[[ NP Input ] inputActions ] addInputActionWithName:@"LeftClick"   inputEvent:NpMouseButtonLeft ];
     forwardMovementAction  = [[[ NP Input ] inputActions ] addInputActionWithName:@"Forward"     inputEvent:NpKeyboardUp      ];
@@ -49,11 +50,13 @@
 
 - (void) dealloc
 {
-    [[[ NP Input ] inputActions ] removeInputAction:leftClickAction ];
-    [[[ NP Input ] inputActions ] removeInputAction:forwardMovementAction ];
-    [[[ NP Input ] inputActions ] removeInputAction:backwardMovementAction ];
-    [[[ NP Input ] inputActions ] removeInputAction:strafeLeftAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:wheelUpAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:wheelDownAction ];
     [[[ NP Input ] inputActions ] removeInputAction:strafeRightAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:strafeLeftAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:backwardMovementAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:forwardMovementAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:leftClickAction ];
 
 	[ super dealloc ];
 }
@@ -262,7 +265,7 @@
     glLoadMatrixf((float *)(M_ELEMENTS(view)));
 }
 
-- (void) update:(float)frameTime
+- (void) update:(const float)frameTime
 {
     // position update
     if ( [ forwardMovementAction active ] == YES )
