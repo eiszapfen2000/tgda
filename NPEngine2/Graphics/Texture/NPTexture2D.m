@@ -138,7 +138,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
                  dataFormat:(NpTextureDataFormat)newDataFormat
                        data:(NSData *)data
 {
-    [ self reset ];
+    ready = NO;
 
     width  = newWidth;
     height = newHeight;
@@ -307,8 +307,8 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 - (void) updateGLTextureAnisotropy
 {
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
-                    filterState.anisotropy);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
+                    (float)filterState.anisotropy);
 }
 
 - (void) updateGLTextureWrapState
