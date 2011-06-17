@@ -12,6 +12,9 @@ OceanDemo_OBJC_FILES = \
     ODScene.m \
     main.m
 
+OceanDemo_RESOURCE_FILES = \
+Content
+
 ADDITIONAL_TOOL_LIBS += -lGL -lGLU -lNPEngine2 -lGLEW -lIL -lILU -lopenal -lvorbisfile -lglfw
 
 include $(TGDA_DIR)/GNUmakefile.flags

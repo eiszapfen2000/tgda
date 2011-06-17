@@ -1,6 +1,7 @@
 #import <Foundation/NSArray.h>
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSError.h>
+#import <Foundation/NSException.h>
 #import "Input/NPInputAction.h"
 #import "Input/NPInputActions.h"
 #import "Input/NPKeyboard.h"
@@ -284,6 +285,8 @@
 
 - (void) update:(const float)frameTime
 {
+    NSAssert(camera != nil, @"No camera attached");
+
     if ( [ pitchMinusAction active ] == YES )
     {
         [ self cameraRotateUsingYaw:0.0f andPitch:-1.0f ];
@@ -322,6 +325,8 @@
 
 - (void) render
 {
+    NSAssert(camera != nil, @"No camera attached");
+
     if ( renderFrustum == YES && connectedToCamera == NO)
     {
         [[[ NP Core ] transformationState ] resetModelMatrix ];

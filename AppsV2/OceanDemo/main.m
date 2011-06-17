@@ -1,3 +1,5 @@
+#import <assert.h>
+#import <Foundation/NSException.h>
 #import <Foundation/Foundation.h>
 #import "Log/NPLogFile.h"
 #import "Core/Container/NPAssetArray.h"
@@ -18,6 +20,7 @@
 #import "Input/NPInputActions.h"
 #import "NP.h"
 #import "Entities/ODCamera.h"
+#import "ODScene.h"
 #import "GL/glfw.h"
 
 NpKeyboardState keyboardState;
@@ -50,6 +53,8 @@ void GLFWCALL window_resize_callback(int width, int height)
 {
     windowWidth = width;
     windowHeight = height;
+
+    NSLog(@"%d %d", windowWidth, windowHeight);
 }
 
 int running = GL_TRUE;
@@ -76,7 +81,7 @@ int main (int argc, char **argv)
     glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
     
     // Open a window and create its OpenGL context
-    if( !glfwOpenWindow( 640, 480, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
+    if( !glfwOpenWindow( 800, 600, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
     {
         NSLog(@"Failed to open GLFW window");
         glfwTerminate();
@@ -111,35 +116,52 @@ int main (int argc, char **argv)
 
     if ( [[ NP Graphics ] startup ] == NO )
     {
-        NSLog(@"NPEngineGraphics failed to start up.");
+        NSLog(@"NPEngineGraphics failed to start up. Consult $HOME/np.log for details.");
         exit( EXIT_FAILURE );
     }
 
-    [[[ NP Graphics ] viewport ] setWidgetWidth:640 ];
-    [[[ NP Graphics ] viewport ] setWidgetHeight:480 ];
+    [[[ NP Graphics ] viewport ] setWidgetWidth:800  ];
+    [[[ NP Graphics ] viewport ] setWidgetHeight:600 ];
     [[[ NP Graphics ] viewport ] reset ];
 
-    NSAutoreleasePool * innerPool = [[ NSAutoreleasePool alloc ] init ];
-    NPEffect * e = RETAIN([[[ NP Graphics ] effects ] getAssetWithFileName:@"test.effect" ]);
-    NPEffectTechnique * t = [ e techniqueWithName:@"texture" ];
+    // resource loading creates a lot of temporary objects, so we
+    // create an autorelease pool right for that task and
+    // release it afterwards, but before we enter the main loop
+    NSAutoreleasePool * resourcePool = [ NSAutoreleasePool new ];
 
-    NSDictionary * arguments = [ NSDictionary dictionaryWithObject:@"YES" forKey:@"sRGB" ];
-    NPTexture2D * tex = RETAIN([[[ NP Graphics ] textures2D ] getAssetWithFileName:@"editorobjects.jpg" arguments:arguments]);
-    if ( tex == nil )
-    {
-        NSLog(@"KBUMM");
-    }
+    NPEffect * testEffect
+        = [[[ NP Graphics ] effects ] getAssetWithFileName:@"test.effect" ];
+
+    CASSERT_RETAIN(testEffect);
+
+    NPEffectTechnique * technique = [ testEffect techniqueWithName:@"texture" ];
+    assert(technique != nil);
 
     [[ NP Graphics ] checkForGLErrors ];
 
-    /*
+    NSDictionary * arguments
+        = [ NSDictionary dictionaryWithObject:@"YES" forKey:@"sRGB" ];
+
+    NPTexture2D * texture
+        = [[[ NP Graphics ] textures2D ]
+                getAssetWithFileName:@"editorobjects.jpg"
+                           arguments:arguments];
+
+    CASSERT_RETAIN(texture);
+
+    [[ NP Graphics ] checkForGLErrors ];
+
     NPSUX2Model * model = [[ NPSUX2Model alloc ] init ];
     BOOL modelResult = [ model loadFromFile:@"skybox.model" arguments:NULL error:NULL ];
     if ( modelResult == NO )
     {
         NSLog(@"MODEL FAUIL");
     }
-    */
+
+    [[ NP Graphics ] checkForGLErrors ];
+
+    ODScene * scene = [[ ODScene alloc ] init ];
+    [ scene loadFromFile:@"test.scene" arguments:nil error:NULL ];
 
     float vertices[12] = {-0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, -0.5f, -0.5f};
     float texcoords[12] = {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f};
@@ -244,10 +266,14 @@ int main (int argc, char **argv)
 
     [[ NP Graphics ] checkForGLErrors ];
 
-    ODCamera * camera = [[ ODCamera alloc ] init ];
+    //ODCamera * camera = [[ ODCamera alloc ] init ];
+
+    DESTROY(resourcePool);
 
     while ( running )
     {
+        NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
+
         // poll events, callbacks for mouse and keyboard
         // are called automagically
         glfwPollEvents();
@@ -262,34 +288,27 @@ int main (int argc, char **argv)
         [[ NP Core ] update ];
         float frameTime = [[[ NP Core ] timer ] frameTime ];
 
-        [ camera update:frameTime ];
+        //[ camera update:frameTime ];
+
+        [ scene update:frameTime ];
 
         // Do GL stuff
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        //glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-        [[[ NP Core ] transformationState ] setViewMatrix:[ camera view ]];
-        [[[ NP Core ] transformationState ] setProjectionMatrix:[ camera projection ]];
-
-        [[[ NP Graphics ] textureBindingState ] setTexture:tex texelUnit:0 ];
-        [[[ NP Graphics ] textureBindingState ] activate ];
-        [ t activate ];
-
-        //[ vertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
-        //[ model render ];
-
-        [ cpuVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+        //[[[ NP Core ] transformationState ] setViewMatrix:[ camera view ]];
+        //[[[ NP Core ] transformationState ] setProjectionMatrix:[ camera projection ]];
 
         /*
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-        glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, texcoords);
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(3);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(3);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
-        glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        [[[ NP Graphics ] textureBindingState ] setTexture:texture texelUnit:0 ];
+        [[[ NP Graphics ] textureBindingState ] activate ];
+        [ technique activate ];
         */
+
+        //[ vertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+        //[ cpuVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+        //[ model render ];
+
+        [ scene render ];
 
         // Check for GL errors
         [[ NP Graphics ] checkForGLErrors ];
@@ -298,14 +317,16 @@ int main (int argc, char **argv)
         glfwSwapBuffers();
         // Check if ESC key was pressed or window was closed
         running = running && glfwGetWindowParam( GLFW_OPENED );
+
+        DESTROY(innerPool);
     }
 
-    //DESTROY(model);
+    DESTROY(model);
     DESTROY(vertexArray);
     DESTROY(cpuVertexArray);
 
-    RELEASE(tex);
-    RELEASE(e);
+    RELEASE(texture);
+    RELEASE(testEffect);
 
     DESTROY(ciBuffer);
     DESTROY(cvBuffer);
@@ -314,8 +335,6 @@ int main (int argc, char **argv)
     DESTROY(iBuffer);
     DESTROY(vBuffer);
     DESTROY(tBuffer);
-
-    [ innerPool release ];
 
     // Shutdown NPGraphics, deallocates a lot of stuff
     [[ NP Graphics ] shutdown ];
@@ -332,7 +351,7 @@ int main (int argc, char **argv)
 
     //DESTROY(logFile);
 
-    [ pool release ];
+    DESTROY(pool);
 
     return EXIT_SUCCESS;
 }
