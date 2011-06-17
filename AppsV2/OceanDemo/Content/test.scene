@@ -1,0 +1,6 @@
+{
+    Name = "Scene";
+    Camera = "camera.entity";
+    Projector = "projector.entity";
+    Entities = ("debug_plane.entity");
+}

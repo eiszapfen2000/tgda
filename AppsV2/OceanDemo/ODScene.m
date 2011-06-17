@@ -44,7 +44,8 @@
 
     NSAssert(typeClassString != nil && entityNameString != nil, @"");
 
-    id <ODPEntity> entity = [ entities objectWithName:entityNameString ];
+    id <ODPEntity> entity
+        = (id <ODPEntity>)[ entities objectWithName:entityNameString ];
 
     if ( entity != nil )
     {
@@ -171,8 +172,11 @@
 
     [ self setName:sceneName ];
 
-    camera    = RETAIN([ self loadEntityFromFile:cameraEntityFile    error:NULL ]);
-    projector = RETAIN([ self loadEntityFromFile:projectorEntityFile error:NULL ]);
+    camera    = [ self loadEntityFromFile:cameraEntityFile    error:NULL ];
+    projector = [ self loadEntityFromFile:projectorEntityFile error:NULL ];
+
+    ASSERT_RETAIN(camera);
+    ASSERT_RETAIN(projector);
 
     NSUInteger numberOfEntityFiles = [ entityFiles count ];
     for ( NSUInteger i = 0; i < numberOfEntityFiles; i++ )
@@ -189,40 +193,6 @@
 
     return YES;
 }
-
-/*
-- (BOOL) loadFromPath:(NSString *)path
-{
-    NSDictionary * config = [ NSDictionary dictionaryWithContentsOfFile:path ];
-
-    NSString * sceneName           = [ config objectForKey:@"Name" ];
-    NSString * skylightEntityFile  = [ config objectForKey:@"Skylight" ];
-    NSString * cameraEntityFile    = [ config objectForKey:@"Camera" ];
-    NSString * projectorEntityFile = [ config objectForKey:@"Projector" ];
-    NSArray  * entityFiles         = [ config objectForKey:@"Entities" ];
-
-    if ( sceneName == nil || entityFiles == nil || skylightEntityFile == nil ||
-         cameraEntityFile == nil || projectorEntityFile == nil )
-    {
-        NPLOG_ERROR(@"Scene file %@ is incomplete", path);
-        return NO;
-    }
-
-    [ self setName:sceneName ];
-
-    skylight  = [[[ NP applicationController ] entityManager ] loadEntityFromPath:skylightEntityFile ];
-    camera    = [[[ NP applicationController ] entityManager ] loadEntityFromPath:cameraEntityFile ];
-    projector = [[[ NP applicationController ] entityManager ] loadEntityFromPath:projectorEntityFile ];
-
-    menu = [[ ODMenu alloc ] initWithName:@"Menu" parent:self ];
-    if ( [ menu loadFromPath:@"Menu.menu" ] == NO )
-    {
-        return NO;
-    }
-
-    return YES;
-}
-*/
 
 - (ODCamera *) camera
 {
@@ -248,7 +218,7 @@
 
 - (void) renderScene
 {
-    // clear terrainScene and depthBuffer
+    // clear color and depth buffer
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
     // reset matrices
