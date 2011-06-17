@@ -1,0 +1,12 @@
+effect "default":
+
+technique "render"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    # shaders
+    set vertex shader "default.vertex"
+    set fragment shader "default.fragment"
+}
+
+

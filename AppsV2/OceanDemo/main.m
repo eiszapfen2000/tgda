@@ -63,10 +63,6 @@ int main (int argc, char **argv)
 {
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
-    // register log file
-    NPLogFile * logFile = AUTORELEASE([[ NPLogFile alloc ] init ]);
-    [[ NP Log ] addLogger:logFile ];
-
     // Initialise GLFW
     if( !glfwInit() )
     {
@@ -114,6 +110,18 @@ int main (int argc, char **argv)
     glfwSetMouseButtonCallback(mouse_button_callback);
     glfwSetMouseWheelCallback(mouse_wheel_callback);
 
+    // create and register log file
+    NPLogFile * logFile = AUTORELEASE([[ NPLogFile alloc ] init ]);
+    [[ NP Log ] addLogger:logFile ];
+
+    // add content subdirectory to lookup paths
+    NSString * contentPath =
+        [[[ NSFileManager defaultManager ] currentDirectoryPath ]
+                stringByAppendingPathComponent:@"Content" ];
+
+    [[[ NP Core ] localPathManager ] addLookUpPath:contentPath ];
+
+    // start up GFX
     if ( [[ NP Graphics ] startup ] == NO )
     {
         NSLog(@"NPEngineGraphics failed to start up. Consult $HOME/np.log for details.");
@@ -129,30 +137,12 @@ int main (int argc, char **argv)
     // release it afterwards, but before we enter the main loop
     NSAutoreleasePool * resourcePool = [ NSAutoreleasePool new ];
 
-    NPEffect * testEffect
-        = [[[ NP Graphics ] effects ] getAssetWithFileName:@"test.effect" ];
-
-    CASSERT_RETAIN(testEffect);
-
-    NPEffectTechnique * technique = [ testEffect techniqueWithName:@"texture" ];
-    assert(technique != nil);
-
-    [[ NP Graphics ] checkForGLErrors ];
-
-    NSDictionary * arguments
-        = [ NSDictionary dictionaryWithObject:@"YES" forKey:@"sRGB" ];
-
-    NPTexture2D * texture
-        = [[[ NP Graphics ] textures2D ]
-                getAssetWithFileName:@"editorobjects.jpg"
-                           arguments:arguments];
-
-    CASSERT_RETAIN(texture);
-
-    [[ NP Graphics ] checkForGLErrors ];
-
     NPSUX2Model * model = [[ NPSUX2Model alloc ] init ];
-    BOOL modelResult = [ model loadFromFile:@"skybox.model" arguments:NULL error:NULL ];
+    BOOL modelResult
+         = [ model loadFromFile:@"skybox.model"
+                      arguments:NULL
+                          error:NULL ];
+
     if ( modelResult == NO )
     {
         NSLog(@"MODEL FAUIL");
@@ -160,8 +150,16 @@ int main (int argc, char **argv)
 
     [[ NP Graphics ] checkForGLErrors ];
 
+
+    NSError * sceneError = nil;
     ODScene * scene = [[ ODScene alloc ] init ];
-    [ scene loadFromFile:@"test.scene" arguments:nil error:NULL ];
+
+    if ( [ scene loadFromFile:@"test.scene"
+                    arguments:nil
+                        error:&sceneError ] == NO )
+    {
+        NPLOG_ERROR(sceneError);
+    }
 
     float vertices[12] = {-0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, -0.5f, -0.5f};
     float texcoords[12] = {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f};
@@ -266,12 +264,12 @@ int main (int argc, char **argv)
 
     [[ NP Graphics ] checkForGLErrors ];
 
-    //ODCamera * camera = [[ ODCamera alloc ] init ];
-
     DESTROY(resourcePool);
 
+    // run loop
     while ( running )
     {
+        // create an autorelease pool for every run-loop iteration
         NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
 
         // poll events, callbacks for mouse and keyboard
@@ -282,51 +280,38 @@ int main (int argc, char **argv)
         [[[ NP Input ] keyboard ] setKeyboardState:&keyboardState ];
         [[[ NP Input ] mouse ] setMouseState:mouseState ];
         [[[ NP Input ] mouse ] setMousePosition:mousePosition ];
-        // Update NPInput's internal state (actions)
+
+        // update NPEngineInput's internal state (actions)
         [[ NP Input ] update ];
 
+        // update NPEngineCore
         [[ NP Core ] update ];
+
+        // get current frametime
         float frameTime = [[[ NP Core ] timer ] frameTime ];
 
-        //[ camera update:frameTime ];
-
+        // update scene
         [ scene update:frameTime ];
 
-        // Do GL stuff
-        //glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-        //[[[ NP Core ] transformationState ] setViewMatrix:[ camera view ]];
-        //[[[ NP Core ] transformationState ] setProjectionMatrix:[ camera projection ]];
-
-        /*
-        [[[ NP Graphics ] textureBindingState ] setTexture:texture texelUnit:0 ];
-        [[[ NP Graphics ] textureBindingState ] activate ];
-        [ technique activate ];
-        */
-
-        //[ vertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
-        //[ cpuVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
-        //[ model render ];
-
+        // scene render
         [ scene render ];
 
-        // Check for GL errors
+        // check for GL errors
         [[ NP Graphics ] checkForGLErrors ];
 
-        // Swap front and back rendering buffers
+        // swap front and back rendering buffers
         glfwSwapBuffers();
-        // Check if ESC key was pressed or window was closed
+
+        // check if ESC key was pressed or window was closed
         running = running && glfwGetWindowParam( GLFW_OPENED );
 
+        // kill autorelease pool
         DESTROY(innerPool);
     }
 
     DESTROY(model);
     DESTROY(vertexArray);
     DESTROY(cpuVertexArray);
-
-    RELEASE(texture);
-    RELEASE(testEffect);
 
     DESTROY(ciBuffer);
     DESTROY(cvBuffer);
@@ -348,8 +333,6 @@ int main (int argc, char **argv)
     [[ NP Graphics ] dealloc ];
     [[ NP Core     ] dealloc ];
     [[ NP Log      ] dealloc ];
-
-    //DESTROY(logFile);
 
     DESTROY(pool);
 

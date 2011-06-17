@@ -178,6 +178,8 @@
     ASSERT_RETAIN(camera);
     ASSERT_RETAIN(projector);
 
+    [ projector setCamera:camera ];
+
     NSUInteger numberOfEntityFiles = [ entityFiles count ];
     for ( NSUInteger i = 0; i < numberOfEntityFiles; i++ )
     {
@@ -207,7 +209,7 @@
 - (void) update:(const float)frameTime
 {
     [ camera    update:frameTime ];
-    [ projector update:frameTime ];
+    //[ projector update:frameTime ];
 
     NSUInteger numberOfEntities = [ entities count ];
     for ( NSUInteger i = 0; i < numberOfEntities; i++ )
@@ -231,7 +233,7 @@
     [ entities makeObjectsPerformSelector:@selector(render) ];
 
     // render projector frustum
-    [ projector render ];
+    //[ projector render ];
 }
 
 - (void) render
