@@ -40,22 +40,22 @@
 - (float) aspectRatio;
 - (float) nearPlane;
 - (float) farPlane;
-- (FVector3 *) forward;
-- (FVector3 *) position;
+- (FVector3) forward;
+- (FVector3) position;
 - (FMatrix4 *) view;
 - (FMatrix4 *) projection;
 
-- (void) setFov:(float)newFov;
-- (void) setNearPlane:(float)newNearPlane;
-- (void) setFarPlane:(float)newFarPlane;
-- (void) setAspectRatio:(float)newAspectRatio;
-- (void) setPosition:(FVector3 *)newPosition;
+- (void) setFov:(const float)newFov;
+- (void) setNearPlane:(const float)newNearPlane;
+- (void) setFarPlane:(const float)newFarPlane;
+- (void) setAspectRatio:(const float)newAspectRatio;
+- (void) setPosition:(const FVector3)newPosition;
 
-- (void) cameraRotateUsingYaw:(float)yawDegrees andPitch:(float)pitchDegrees;
-- (void) moveForward:(float)frameTime;
-- (void) moveBackward:(float)frameTime;
-- (void) moveLeft:(float)frameTime;
-- (void) moveRight:(float)frameTime;
+- (void) cameraRotateUsingYaw:(const float)yawDegrees andPitch:(const float)pitchDegrees;
+- (void) moveForward:(const float)frameTime;
+- (void) moveBackward:(const float)frameTime;
+- (void) moveLeft:(const float)frameTime;
+- (void) moveRight:(const float)frameTime;
 
 - (void) updateProjection;
 - (void) updateView;

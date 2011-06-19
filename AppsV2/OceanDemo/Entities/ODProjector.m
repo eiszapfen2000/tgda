@@ -8,6 +8,7 @@
 #import "Input/NPMouse.h"
 #import "NP.h"
 #import "ODCamera.h"
+#import "ODFrustum.h"
 #import "ODProjector.h"
 
 @implementation ODProjector
@@ -37,16 +38,16 @@
     fv3_v_init_with_zeros(&right);
     forward.z = -1.0f;
 
-    renderFrustum = NO;
+    renderFrustum = YES;
 
-    //frustum = [[ ODFrustum alloc ] initWithName:@"ProjectorFrustum" parent:self ];
+    frustum = [[ ODFrustum alloc ] initWithName:@"ProjectorFrustum" ];
 
     pitchMinusAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"PitchMinus" inputEvent:NpKeyboardS ];
     pitchPlusAction  = [[[ NP Input ] inputActions ] addInputActionWithName:@"PitchPlus"  inputEvent:NpKeyboardW ];
     yawMinusAction   = [[[ NP Input ] inputActions ] addInputActionWithName:@"YawMinus"   inputEvent:NpKeyboardA ];
     yawPlusAction    = [[[ NP Input ] inputActions ] addInputActionWithName:@"YawPlus"    inputEvent:NpKeyboardD ];
 
-    connectedToCamera = YES;
+    connectedToCamera = NO;
 
 	return self;
 }
@@ -91,9 +92,9 @@
 	fv3_v_init_with_zeros(&position);
 }
 
-- (FVector3 *) position
+- (FVector3) position
 {
-	return &position;
+	return position;
 }
 
 - (FMatrix4 *) view
@@ -121,9 +122,9 @@
     return frustum;
 }
 
-- (void) setPosition:(FVector3 *)newPosition
+- (void) setPosition:(const FVector3)newPosition
 {
-	position = *newPosition;
+	position = newPosition;
 }
 
 - (void) setCamera:(ODCamera *)newCamera
@@ -172,7 +173,7 @@
     }
 }
 
-- (void) cameraRotateUsingYaw:(float)yawDegrees andPitch:(float)pitchDegrees
+- (void) cameraRotateUsingYaw:(const float)yawDegrees andPitch:(const float)pitchDegrees
 {
     [ self updateYaw:yawDegrees ];
     [ self updatePitch:pitchDegrees ];
@@ -208,6 +209,9 @@
 
 - (void) updateProjection
 {
+    if ( connectedToCamera == YES )
+    {
+
     //enlarge horizontal field of view
     float horizontalFOV = [ camera fov ] * [ camera aspectRatio ] * 1.2f;
 
@@ -216,6 +220,13 @@
 
     // Recalculate aspectRatio
     aspectRatio = horizontalFOV / fov;
+
+    }
+    else
+    {
+        aspectRatio = [ camera aspectRatio ];
+        fov = [ camera fov ];
+    }
 
     nearPlane = [ camera nearPlane ];
     farPlane  = [ camera farPlane  ];
@@ -227,12 +238,10 @@
 {
     if ( connectedToCamera == YES )
     {
-        fv3_vv_init_with_fv3(&position, [ camera position ]);
+        position =  [ camera position ];
 
-        FVector3 cameraForward;
-        FVector3 cameraPosition;
-        fv3_vv_init_with_fv3(&cameraForward,  [ camera forward  ]);
-        fv3_vv_init_with_fv3(&cameraPosition, [ camera position ]);
+        FVector3 cameraForward  = [ camera forward  ];
+        FVector3 cameraPosition = [ camera position ];
 
         FVector3 cameraForwardProjectedOnBasePlane = { cameraForward.x, 0.0f, cameraForward.z };
         fv3_v_normalise(&cameraForward);
@@ -310,14 +319,12 @@
     [ self updateProjection ];
     [ self updateView ];
 
-    /*
     [ frustum updateWithPosition:position
                      orientation:orientation
                              fov:fov
                        nearPlane:nearPlane
                         farPlane:farPlane
                      aspectRatio:aspectRatio ];
-    */
 
     fm4_mm_multiply_m(&projection, &view, &viewProjection);
     fm4_m_inverse_m(&viewProjection, &inverseViewProjection);
@@ -330,7 +337,7 @@
     if ( renderFrustum == YES && connectedToCamera == NO)
     {
         [[[ NP Core ] transformationState ] resetModelMatrix ];
-        //[ frustum render ];
+        [ frustum render ];
     }
 }
 

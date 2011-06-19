@@ -8,8 +8,8 @@
 #import "Graphics/State/NPStateSet.h"
 #import "ODEntity.h"
 
-NPAssetArray * models = nil;
-NPAssetArray * statesets = nil;
+static NPAssetArray * models = nil;
+static NPAssetArray * statesets = nil;
 
 @implementation ODEntity
 
@@ -111,14 +111,14 @@ NPAssetArray * statesets = nil;
     return model;
 }
 
-- (FVector3 *) position
+- (FVector3) position
 {
-    return &position;
+    return position;
 }
 
-- (void) setPosition:(FVector3 *)newPosition
+- (void) setPosition:(const FVector3)newPosition
 {
-    position = *newPosition;
+    position = newPosition;
 }
 
 - (void) update:(const float)frameTime

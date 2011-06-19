@@ -110,6 +110,7 @@
 {
     [ entities removeAllObjects ];
     DESTROY(entities);
+
     SAFE_DESTROY(projector);
     SAFE_DESTROY(camera);
     SAFE_DESTROY(file);
@@ -180,7 +181,7 @@
 
     [ projector setCamera:camera ];
 
-    NSUInteger numberOfEntityFiles = [ entityFiles count ];
+    const NSUInteger numberOfEntityFiles = [ entityFiles count ];
     for ( NSUInteger i = 0; i < numberOfEntityFiles; i++ )
     {
         id <ODPEntity> entity
@@ -209,9 +210,9 @@
 - (void) update:(const float)frameTime
 {
     [ camera    update:frameTime ];
-    //[ projector update:frameTime ];
+    [ projector update:frameTime ];
 
-    NSUInteger numberOfEntities = [ entities count ];
+    const NSUInteger numberOfEntities = [ entities count ];
     for ( NSUInteger i = 0; i < numberOfEntities; i++ )
     {
         [[ entities objectAtIndex:i ] update:frameTime ];
@@ -233,7 +234,7 @@
     [ entities makeObjectsPerformSelector:@selector(render) ];
 
     // render projector frustum
-    //[ projector render ];
+    [ projector render ];
 }
 
 - (void) render
