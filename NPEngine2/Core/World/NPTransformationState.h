@@ -48,9 +48,9 @@
 - (FMatrix4 *) modelViewProjectionMatrix;
 - (FMatrix4 *) inverseModelViewProjectionMatrix;
 
-- (void) setModelMatrix:(FMatrix4 *)newModelMatrix;
-- (void) setViewMatrix:(FMatrix4 *)newViewMatrix;
-- (void) setProjectionMatrix:(FMatrix4 *)newProjectionMatrix;
+- (void) setModelMatrix:(const FMatrix4 * const)newModelMatrix;
+- (void) setViewMatrix:(const FMatrix4 * const)newViewMatrix;
+- (void) setProjectionMatrix:(const FMatrix4 * const)newProjectionMatrix;
 
 - (void) computeInverseModelMatrix;
 - (void) computeInverseViewMatrix;

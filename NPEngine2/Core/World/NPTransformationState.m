@@ -209,7 +209,7 @@
     return inverseModelViewProjectionMatrix;
 }
 
-- (void) setModelMatrix:(FMatrix4 *)newModelMatrix
+- (void) setModelMatrix:(const FMatrix4 * const)newModelMatrix
 {
     *modelMatrix = *newModelMatrix;
 
@@ -217,7 +217,7 @@
     recomputeModelViewProjectionMatrix = YES;
 }
 
-- (void) setViewMatrix:(FMatrix4 *)newViewMatrix
+- (void) setViewMatrix:(const FMatrix4 * const)newViewMatrix
 {
     *viewMatrix = *newViewMatrix;
 
@@ -227,7 +227,7 @@
     recomputeInverseViewProjectionMatrix = YES;    
 }
 
-- (void) setProjectionMatrix:(FMatrix4 *)newProjectionMatrix
+- (void) setProjectionMatrix:(const FMatrix4 * const)newProjectionMatrix
 {
     *projectionMatrix = *newProjectionMatrix;
 

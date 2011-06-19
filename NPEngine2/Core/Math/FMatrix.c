@@ -164,54 +164,6 @@ FMatrix2 fm2_m_inverse(const FMatrix2 * const m)
     return result;
 }
 
-FVector3 fm3_m_get_right_vector(const FMatrix3 * const m)
-{
-    FVector3 right;
-    fm3_m_get_right_vector_v(m, &right);
-
-    return right;
-}
-
-FVector3 fm3_m_get_up_vector(const FMatrix3 * const m)
-{
-    FVector3 up;
-    fm3_m_get_up_vector_v(m, &up);
-
-    return up;
-}
-
-FVector3 fm3_m_get_forward_vector(const FMatrix3 * const m)
-{
-    FVector3 forward;
-    fm3_m_get_forward_vector_v(m, &forward);
-
-    return forward;
-}
-
-FMatrix3 fm3_s_rotatex(Float degree)
-{
-    FMatrix3 rotate;
-    fm3_s_rotatex_m(degree, &rotate);
-
-    return rotate;
-}
-
-FMatrix3 fm3_s_rotatey(Float degree)
-{
-    FMatrix3 rotate;
-    fm3_s_rotatey_m(degree, &rotate);
-
-    return rotate;
-}
-
-FMatrix3 fm3_s_rotatez(Float degree)
-{
-    FMatrix3 rotate;
-    fm3_s_rotatez_m(degree, &rotate);
-
-    return rotate;
-}
-
 const char * fm2_m_to_string(FMatrix2 * m)
 {
     char * fm2string;
@@ -413,6 +365,36 @@ void fm3_s_rotatez_m(Float degree, FMatrix3 * result)
     M_EL(*result,1,0) = -M_EL(*result,0,1);
 }
 
+void fm3_s_scalex_m(Float scale, FMatrix3 * result)
+{
+    fm3_m_set_identity(result);
+
+    M_EL(*result,0,0) = scale;
+}
+
+void fm3_s_scaley_m(Float scale, FMatrix3 * result)
+{
+    fm3_m_set_identity(result);
+
+    M_EL(*result,1,1) = scale;
+}
+
+void fm3_s_scalez_m(Float scale, FMatrix3 * result)
+{
+    fm3_m_set_identity(result);
+
+    M_EL(*result,2,2) = scale;
+}
+
+void fm3_s_scale_m(Float scale, FMatrix3 * result)
+{
+    fm3_m_set_identity(result);
+
+    M_EL(*result,0,0) = scale;
+    M_EL(*result,1,1) = scale;
+    M_EL(*result,2,2) = scale;
+}
+
 /*
   If Kramer's rule is applied to a matrix M:
 
@@ -486,6 +468,86 @@ FMatrix3 fm3_m_inverse(const FMatrix3 * const m)
 {
     FMatrix3 result;
     fm3_m_inverse_m(m, &result);
+
+    return result;
+}
+
+FVector3 fm3_m_get_right_vector(const FMatrix3 * const m)
+{
+    FVector3 right;
+    fm3_m_get_right_vector_v(m, &right);
+
+    return right;
+}
+
+FVector3 fm3_m_get_up_vector(const FMatrix3 * const m)
+{
+    FVector3 up;
+    fm3_m_get_up_vector_v(m, &up);
+
+    return up;
+}
+
+FVector3 fm3_m_get_forward_vector(const FMatrix3 * const m)
+{
+    FVector3 forward;
+    fm3_m_get_forward_vector_v(m, &forward);
+
+    return forward;
+}
+
+FMatrix3 fm3_s_rotatex(Float degree)
+{
+    FMatrix3 rotate;
+    fm3_s_rotatex_m(degree, &rotate);
+
+    return rotate;
+}
+
+FMatrix3 fm3_s_rotatey(Float degree)
+{
+    FMatrix3 rotate;
+    fm3_s_rotatey_m(degree, &rotate);
+
+    return rotate;
+}
+
+FMatrix3 fm3_s_rotatez(Float degree)
+{
+    FMatrix3 rotate;
+    fm3_s_rotatez_m(degree, &rotate);
+
+    return rotate;
+}
+
+FMatrix3 fm3_s_scalex(Float scale)
+{
+    FMatrix3 result;
+    fm3_s_scalex_m(scale, &result);
+
+    return result;
+}
+
+FMatrix3 fm3_s_scaley(Float scale)
+{
+    FMatrix3 result;
+    fm3_s_scaley_m(scale, &result);
+
+    return result;
+}
+
+FMatrix3 fm3_s_scalez(Float scale)
+{
+    FMatrix3 result;
+    fm3_s_scalez_m(scale, &result);
+
+    return result;
+}
+
+FMatrix3 fm3_s_scale(Float scale)
+{
+    FMatrix3 result;
+    fm3_s_scale_m(scale, &result);
 
     return result;
 }

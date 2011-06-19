@@ -1,6 +1,7 @@
 #include "FVertex.h"
 
-FVertex2 fvertex_as_calculateMassCenter2D(FVertex2 * vertices, size_t numberOfVertices)
+FVertex2 fvertex_as_masscenter_2d(const FVertex2 * const vertices,
+    const size_t numberOfVertices)
 {
     FVertex2 result;
     fv2_v_init_with_zeros(&result);
@@ -11,13 +12,14 @@ FVertex2 fvertex_as_calculateMassCenter2D(FVertex2 * vertices, size_t numberOfVe
         result.y += vertices[i].y;
     }
 
-    result.x /= (Float)numberOfVertices;
-    result.y /= (Float)numberOfVertices;
+    result.x /= (float)numberOfVertices;
+    result.y /= (float)numberOfVertices;
 
     return result;
 }
 
-FVertex3 fvertex_as_calculateMassCenter3D(FVertex3 * vertices, size_t numberOfVertices)
+FVertex3 fvertex_as_masscenter_3d(const FVertex3 * const vertices,
+    const size_t numberOfVertices)
 {
     FVertex3 result;
     fv3_v_init_with_zeros(&result);
@@ -29,14 +31,15 @@ FVertex3 fvertex_as_calculateMassCenter3D(FVertex3 * vertices, size_t numberOfVe
         result.z += vertices[i].z;
     }
 
-    result.x /= (Float)numberOfVertices;
-    result.y /= (Float)numberOfVertices;
-    result.z /= (Float)numberOfVertices;
+    result.x /= (float)numberOfVertices;
+    result.y /= (float)numberOfVertices;
+    result.z /= (float)numberOfVertices;
 
     return result;
 }
 
-FVertex4 fvertex_as_calculateMassCenter4D(FVertex4 * vertices, size_t numberOfVertices)
+FVertex4 fvertex_as_masscenter_4d(const FVertex4 * const vertices,
+    const size_t numberOfVertices)
 {
     FVertex4 result;
     fv4_v_init_with_zeros(&result);
@@ -49,22 +52,24 @@ FVertex4 fvertex_as_calculateMassCenter4D(FVertex4 * vertices, size_t numberOfVe
         result.w += vertices[i].w;
     }
 
-    result.x /= (Float)numberOfVertices;
-    result.y /= (Float)numberOfVertices;
-    result.z /= (Float)numberOfVertices;
-    result.w /= (Float)numberOfVertices;
+    result.x /= (float)numberOfVertices;
+    result.y /= (float)numberOfVertices;
+    result.z /= (float)numberOfVertices;
+    result.w /= (float)numberOfVertices;
 
     return result;
 }
 
-FVertex2 fvertex_aass_calculate_indexed_MassCenter2D(FVertex2 * vertices, uint32_t * indices, size_t numberOfVertices, size_t numberOfIndices)
+FVertex2 fvertex_aass_masscenter_2d_indexed(const FVertex2 * const vertices,
+    const uint32_t * const indices, const size_t numberOfVertices,
+    const size_t numberOfIndices)
 {
     FVertex2 result;
     fv2_v_init_with_zeros(&result);
 
     for ( size_t i = 0; i < numberOfIndices; i++ )
     {
-        uint32_t index = indices[i];
+        const uint32_t index = indices[i];
 
         if ( index < numberOfVertices )
         {
@@ -73,20 +78,22 @@ FVertex2 fvertex_aass_calculate_indexed_MassCenter2D(FVertex2 * vertices, uint32
         }
     }
 
-    result.x /= (Float)numberOfIndices;
-    result.y /= (Float)numberOfIndices;
+    result.x /= (float)numberOfIndices;
+    result.y /= (float)numberOfIndices;
 
     return result;
 }
 
-FVertex3 fvertex_aass_calculate_indexed_MassCenter3D(FVertex3 * vertices, uint32_t * indices, size_t numberOfVertices, size_t numberOfIndices)
+FVertex3 fvertex_aass_masscenter_3d_indexed(const FVertex3 * const vertices,
+    const uint32_t * const indices, const size_t numberOfVertices,
+    const size_t numberOfIndices)
 {
     FVertex3 result;
     fv3_v_init_with_zeros(&result);
 
     for ( size_t i = 0; i < numberOfIndices; i++ )
     {
-        uint32_t index = indices[i];
+        const uint32_t index = indices[i];
 
         if ( index < numberOfVertices )
         {
@@ -96,21 +103,23 @@ FVertex3 fvertex_aass_calculate_indexed_MassCenter3D(FVertex3 * vertices, uint32
         }
     }
 
-    result.x /= (Float)numberOfIndices;
-    result.y /= (Float)numberOfIndices;
-    result.z /= (Float)numberOfIndices;
+    result.x /= (float)numberOfIndices;
+    result.y /= (float)numberOfIndices;
+    result.z /= (float)numberOfIndices;
 
     return result;
 }
 
-FVertex4 fvertex_aass_calculate_indexed_MassCenter4D(FVertex4 * vertices, uint32_t * indices, size_t numberOfVertices, size_t numberOfIndices)
+FVertex4 fvertex_aass_masscenter_4d_indexed(const FVertex4 * const vertices,
+    const uint32_t * const indices, const size_t numberOfVertices,
+    const size_t numberOfIndices)
 {
     FVertex4 result;
     fv4_v_init_with_zeros(&result);
 
     for ( size_t i = 0; i < numberOfIndices; i++ )
     {
-        uint32_t index = indices[i];
+        const uint32_t index = indices[i];
 
         if ( index < numberOfVertices )
         {
@@ -121,10 +130,10 @@ FVertex4 fvertex_aass_calculate_indexed_MassCenter4D(FVertex4 * vertices, uint32
         }
     }
 
-    result.x /= (Float)numberOfIndices;
-    result.y /= (Float)numberOfIndices;
-    result.z /= (Float)numberOfIndices;
-    result.w /= (Float)numberOfIndices;
+    result.x /= (float)numberOfIndices;
+    result.y /= (float)numberOfIndices;
+    result.z /= (float)numberOfIndices;
+    result.w /= (float)numberOfIndices;
 
     return result;
 }
