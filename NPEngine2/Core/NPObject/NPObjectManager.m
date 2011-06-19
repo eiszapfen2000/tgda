@@ -7,6 +7,11 @@
 
 @implementation NPObjectManager
 
+- (id) init
+{
+    return [ self initWithName:@"NPEngineCore Object Manager" ];
+}
+
 - (id) initWithName:(NSString *)newName
 {
     self = [ super init ];

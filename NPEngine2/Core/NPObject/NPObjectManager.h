@@ -11,6 +11,7 @@
     NSPointerArray * objects;
 }
 
+- (id) init;
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 

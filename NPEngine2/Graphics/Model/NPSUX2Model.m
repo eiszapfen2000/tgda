@@ -163,7 +163,7 @@
     }
 
     BOOL result = [ self loadFromStream:fileStream error:error ];
-    DESTROY(file);
+    DESTROY(fileStream);
 
     return result;
 }
