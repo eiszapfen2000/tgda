@@ -17,7 +17,10 @@
 #define FRUSTUM_LEFT    4
 #define FRUSTUM_RIGHT   5 
 
+@class NSData;
 @class NPEffect;
+@class NPCPUBuffer;
+@class NPCPUVertexArray;
 
 @interface ODFrustum : NPObject
 {
@@ -29,44 +32,26 @@
     FVertex3 frustumFaceVertices[8];
     FVertex3 frustumLineVertices[8];
 
-    float nearPlaneHeight;
-    float nearPlaneWidth;
-    float farPlaneHeight;
-    float farPlaneWidth;
+    NSData * vertexData;
+    NSData * indexData;
+    NPCPUBuffer * vertexStream;
+    NPCPUBuffer * indexStream;
+    NPCPUVertexArray * vertexArray;
 
-    float nearPlaneHalfHeight;
-    float nearPlaneHalfWidth;
-    float farPlaneHalfHeight;
-    float farPlaneHalfWidth;
-
-    FVector3 farPlaneHalfWidthV;
-    FVector3 nearPlaneHalfWidthV;
-    FVector3 farPlaneHalfHeightV;
-    FVector3 nearPlaneHalfHeightV;
-
-    FVector3 positionToNearPlaneCenter;
-    FVector3 positionToFarPlaneCenter;
-
-    FVector3 forward;
-    FVector3 up;
-    FVector3 right;
+    NPEffect * effect;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-- (float) nearPlaneHeight;
-- (float) nearPlaneWidth;
-- (float) farPlaneHeight;
-- (float) farPlaneWidth;
-
-- (void) updateWithPosition:(FVector3 *)position
-                orientation:(FQuaternion *)orientation
-                        fov:(float)fov
-                  nearPlane:(float)nearPlane
-                   farPlane:(float)farPlane
-                aspectRatio:(float)aspectRatio;
+- (void) updateWithPosition:(const FVector3)position
+                orientation:(const FQuaternion)orientation
+                        fov:(const float)fov
+                  nearPlane:(const float)nearPlane
+                   farPlane:(const float)farPlane
+                aspectRatio:(const float)aspectRatio
+                           ;
 
 - (void) render;
 

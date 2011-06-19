@@ -309,6 +309,7 @@ int main (int argc, char **argv)
         DESTROY(innerPool);
     }
 
+    DESTROY(scene);
     DESTROY(model);
     DESTROY(vertexArray);
     DESTROY(cpuVertexArray);

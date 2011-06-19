@@ -112,14 +112,14 @@
     return farPlane;
 }
 
-- (FVector3 *) forward
+- (FVector3) forward
 {
-    return &forward;
+    return forward;
 }
 
-- (FVector3 *) position
+- (FVector3) position
 {
-	return &position;
+	return position;
 }
 
 - (FMatrix4 *) view
@@ -132,29 +132,29 @@
     return &projection;
 }
 
-- (void) setFov:(float)newFov
+- (void) setFov:(const float)newFov
 {
 	fov = newFov;
 }
 
-- (void) setAspectRatio:(float)newAspectRatio
+- (void) setAspectRatio:(const float)newAspectRatio
 {
 	aspectRatio = newAspectRatio;
 }
 
-- (void) setNearPlane:(float)newNearPlane
+- (void) setNearPlane:(const float)newNearPlane
 {
 	nearPlane = newNearPlane;
 }
 
-- (void) setFarPlane:(float)newFarPlane
+- (void) setFarPlane:(const float)newFarPlane
 {
 	farPlane = newFarPlane;
 }
 
-- (void) setPosition:(FVector3 *)newPosition
+- (void) setPosition:(const FVector3)newPosition
 {
-	position = *newPosition;
+	position = newPosition;
 }
 
 
@@ -194,7 +194,7 @@
     }
 }
 
-- (void) cameraRotateUsingYaw:(float)yawDegrees andPitch:(float)pitchDegrees
+- (void) cameraRotateUsingYaw:(const float)yawDegrees andPitch:(const float)pitchDegrees
 {
     [ self updateYaw:yawDegrees ];
     [ self updatePitch:pitchDegrees ];
@@ -203,7 +203,7 @@
     fquat_q_rotatex(&orientation, pitch);
 }
 
-- (void) moveForward:(float)frameTime
+- (void) moveForward:(const float)frameTime
 {
     fquat_q_forward_vector_v(&orientation, &forward);
 
@@ -212,7 +212,7 @@
     position.z += (forward.z * frameTime);
 }
 
-- (void) moveBackward:(float)frameTime
+- (void) moveBackward:(const float)frameTime
 {
     fquat_q_forward_vector_v(&orientation, &forward);
 
@@ -221,7 +221,7 @@
     position.z -= (forward.z * frameTime);
 }
 
-- (void) moveLeft:(float)frameTime
+- (void) moveLeft:(const float)frameTime
 {
     FVector3 right;
     fquat_q_right_vector_v(&orientation, &right);
@@ -231,7 +231,7 @@
     position.z -= (right.z * frameTime);
 }
 
-- (void) moveRight:(float)frameTime
+- (void) moveRight:(const float)frameTime
 {
     FVector3 right;
     fquat_q_right_vector_v(&orientation, &right);

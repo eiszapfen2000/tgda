@@ -46,18 +46,18 @@
 
 - (void) reset;
 
-- (FVector3 *) position;
+- (FVector3) position;
 - (FMatrix4 *) view;
 - (FMatrix4 *) projection;
 - (FMatrix4 *) inverseViewProjection;
 - (ODCamera *) camera;
 - (ODFrustum *) frustum;
 
-- (void) setPosition:(FVector3 *)newPosition;
+- (void) setPosition:(const FVector3)newPosition;
 - (void) setCamera:(ODCamera *)newCamera;
 - (void) setRenderFrustum:(BOOL)newRenderFrustum;
 
-- (void) cameraRotateUsingYaw:(float)yawDegrees andPitch:(float)pitchDegrees;
+- (void) cameraRotateUsingYaw:(const float)yawDegrees andPitch:(const float)pitchDegrees;
 - (void) moveForward;
 - (void) moveBackward;
 

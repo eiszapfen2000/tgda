@@ -18,8 +18,8 @@
 - (void) dealloc;
 
 - (NPSUX2Model *) model;
-- (FVector3 *) position;
-- (void) setPosition:(FVector3 *)newPosition;
+- (FVector3) position;
+- (void) setPosition:(const FVector3)newPosition;
 
 @end
 
