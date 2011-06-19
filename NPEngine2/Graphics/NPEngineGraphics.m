@@ -118,6 +118,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     DESTROY(textures2D);
     DESTROY(images);
 
+    DESTROY(stringToClassConversion);
     DESTROY(stringEnumConversion);
 
     [ super dealloc ];

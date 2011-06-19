@@ -41,6 +41,7 @@
 
 - (void) dealloc
 {
+    SAFE_DESTROY(effect);
     [ textures removeAllObjects ];
     DESTROY(textures);
     SAFE_DESTROY(file);
