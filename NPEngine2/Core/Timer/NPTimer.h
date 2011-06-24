@@ -3,7 +3,8 @@
 
 @interface NPTimer : NPObject
 {
-    struct timeval lastUpdate;
+    //struct timeval lastUpdate;
+    struct timespec lastUpdate;
     double frameTime;
     double totalElapsedTime;
     int64_t secondsPassed;
