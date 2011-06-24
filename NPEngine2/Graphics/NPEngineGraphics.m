@@ -245,6 +245,8 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
     NPLOG(@"%@ started", [ self name ]);
 
+    [ stateConfiguration activate ];
+
     return YES;
 }
 

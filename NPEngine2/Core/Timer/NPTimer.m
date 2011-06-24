@@ -18,7 +18,8 @@
     fpsThisSecond = 0;
     paused = NO;
 
-   	gettimeofday(&lastUpdate, 0);
+   	//gettimeofday(&lastUpdate, 0);
+    clock_gettime(CLOCK_MONOTONIC, &lastUpdate);
 
     return self;
 }
@@ -52,6 +53,7 @@
 {
     if ( paused == NO )
     {
+        /*
         struct timeval updateTime;
         gettimeofday(&updateTime, 0);
 
@@ -72,13 +74,49 @@
             fpsThisSecond = 0;
             secondsPassed = totalSeconds;
         }
+        */
+
+        struct timespec updateTime;
+        clock_gettime(CLOCK_MONOTONIC, &updateTime);
+
+        // compute difference using same types
+        // convert to double afterwards
+
+	    struct timespec diff;
+
+	    if ( (updateTime.tv_nsec - lastUpdate.tv_nsec) < 0 )
+        {
+		    diff.tv_sec  = updateTime.tv_sec - lastUpdate.tv_sec - 1;
+		    diff.tv_nsec = 1000000000 + updateTime.tv_nsec - lastUpdate.tv_nsec;
+	    }
+        else
+        {
+		    diff.tv_sec  = updateTime.tv_sec  - lastUpdate.tv_sec;
+		    diff.tv_nsec = updateTime.tv_nsec - lastUpdate.tv_nsec;
+	    }
+
+        frameTime = ((double)(diff.tv_sec)) + ((double)(diff.tv_nsec) / 1000000000.0);
+        lastUpdate = updateTime;
+
+        totalElapsedTime += frameTime;
+
+        fpsThisSecond++;
+
+        int64_t totalSeconds = (int64_t)totalElapsedTime;
+
+        if ( totalSeconds != secondsPassed )
+        {
+            fps = fpsThisSecond;
+            fpsThisSecond = 0;
+            secondsPassed = totalSeconds;
+        }
     }   
 }
 
 - (void) resetFrameTime
 {
     frameTime = 0.0;
-    gettimeofday(&lastUpdate, 0);
+    clock_gettime(CLOCK_MONOTONIC, &lastUpdate);
 }
 
 - (void) resetTotalElapsedTime
@@ -94,7 +132,7 @@
     fps = 0;
     fpsThisSecond = 0;
 
-   	gettimeofday(&lastUpdate, 0);
+   	clock_gettime(CLOCK_MONOTONIC, &lastUpdate);
 }
 
 - (void) pause
