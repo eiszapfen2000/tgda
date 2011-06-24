@@ -222,9 +222,6 @@
 
 - (void) renderScene
 {
-    // reset states, makes depth buffer writable
-    [[[ NP Graphics ] stateConfiguration ] deactivate ];
-
     // clear color and depth buffer
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
@@ -243,6 +240,9 @@
 
     // render projector frustum
     [ projector render ];
+
+    // reset states, makes depth buffer writable
+    [[[ NP Graphics ] stateConfiguration ] deactivate ];
 }
 
 - (void) render

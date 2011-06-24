@@ -1,4 +1,6 @@
+#define _GNU_SOURCE
 #import <assert.h>
+#import <time.h>
 #import <Foundation/NSException.h>
 #import <Foundation/Foundation.h>
 #import "Log/NPLogFile.h"
@@ -102,7 +104,7 @@ int main (int argc, char **argv)
     mousePosition.x = mousePosition.y = 0;
 
     // VSync
-    glfwSwapInterval(1);
+    glfwSwapInterval(0);
     // do not poll events on glfwSwapBuffers
     glfwDisable(GLFW_AUTO_POLL_EVENTS);
     // register keyboard callback

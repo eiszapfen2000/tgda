@@ -152,8 +152,8 @@ int compare_floats (const void * a, const void * b)
     color = [ effect variableWithName:@"color" ];
 
     lineColor.x = 0.0f;
-    lineColor.y = 0.0f;
-    lineColor.z = 1.0f;
+    lineColor.y = 1.0f;
+    lineColor.z = 0.0f;
     lineColor.w = 1.0f;
 
     faceColor.x = 0.0f;
@@ -276,12 +276,6 @@ int compare_floats (const void * a, const void * b)
     [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] setWriteEnabled:NO ];
     [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] activate ];
 
-    /*
-    glDepthMask(GL_FALSE);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-    */
-
     [ color setValue:faceColor ];
     [[ effect techniqueWithName:@"color" ] activate ];
     [ facesVertexArray renderWithPrimitiveType:NpPrimitiveQuads ];
@@ -291,75 +285,6 @@ int compare_floats (const void * a, const void * b)
     glLineWidth(5.0f);
     [ linesVertexArray renderWithPrimitiveType:NpPrimitiveLines ];
     glLineWidth(1.0f);
-
-    //[[[ NPEngineGraphics instance ] stateConfiguration ] reset ];
-
-    /*
-    ODCamera * camera = [[[[ NP applicationController ] sceneManager ] currentScene ] camera ];
-    FVector3 * position = [ camera position ];
-
-    float squareDistances[6];
-    float sortedSquareDistances[6];
-
-    for ( Int i = 0; i < 6; i++ )
-    {
-        FVertex3 midPoint = fvertex_aass_calculate_indexed_MassCenter3D(frustumCornerPositions, &(defaultFaceIndices[i*4]), 8, 4);
-        squareDistances[i] = fv3_vv_square_distance(&midPoint, position);
-        sortedSquareDistances[i] = squareDistances[i];
-    }
-
-    qsort(sortedSquareDistances, 6, sizeof(float), compare_floats);
-
-    for ( Int i = 0; i < 6; i++ )
-    {
-        Int32 index = -1;
-
-        for ( Int j = 0; j < 6; j++ )
-        {
-            if ( (sortedSquareDistances[i] == squareDistances[j]) && (index == -1))
-            {
-                index = j;
-                squareDistances[j] = 0.0f;
-            }
-        }
-
-        frustumFaceIndices[i*4]   = defaultFaceIndices[index*4];
-        frustumFaceIndices[i*4+1] = defaultFaceIndices[index*4+1];
-        frustumFaceIndices[i*4+2] = defaultFaceIndices[index*4+2];
-        frustumFaceIndices[i*4+3] = defaultFaceIndices[index*4+3];
-    }
-
-    [[[ NP Core ] transformationState ] resetModelMatrix ];
-
-    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:YES ];
-    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setBlendingMode:NP_BLENDING_AVERAGE ];
-    [[[[ NP Graphics ] stateConfiguration ] blendingState ] activate ];
-
-    [[[[ NP Graphics ] stateConfiguration ] cullingState ] setEnabled:NO ];
-    [[[[ NP Graphics ] stateConfiguration ] cullingState ] activate ];
-
-    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:YES ];
-    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setWriteEnabled:NO ];
-    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] activate ];
-
-    glLineWidth(5.0f);
-
-    FVector4 color = { 0.0f, 1.0f, 0.0f, 0.5f };
-    [ frustumEffect uploadFVector4ParameterWithName:@"color" andValue:&color ];
-
-    [ frustumEffect activateTechniqueWithName:@"render" ];
-    [ frustumFaceGeometry renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_QUADS ];
-
-    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:NO ];
-    [[[[ NP Graphics ] stateConfiguration ] blendingState ] activate ];
-
-    [ frustumEffect activateTechniqueWithName:@"render" ];
-    [ frustumLineGeometry renderWithPrimitiveType:NP_GRAPHICS_VBO_PRIMITIVES_LINES ];
-
-    [ frustumEffect deactivate ];
-
-    glLineWidth(1.0f);
-    */
 }
 
 @end

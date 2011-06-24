@@ -211,16 +211,14 @@
 {
     if ( connectedToCamera == YES )
     {
+        //enlarge horizontal field of view
+        float horizontalFOV = [ camera fov ] * [ camera aspectRatio ] * 1.2f;
 
-    //enlarge horizontal field of view
-    float horizontalFOV = [ camera fov ] * [ camera aspectRatio ] * 1.2f;
+        // Set vertical field of view to 90°
+        fov = 90.0f;
 
-    // Set vertical field of view to 90°
-    fov = 90.0f;
-
-    // Recalculate aspectRatio
-    aspectRatio = horizontalFOV / fov;
-
+        // Recalculate aspectRatio
+        aspectRatio = horizontalFOV / fov;
     }
     else
     {
@@ -296,24 +294,26 @@
 {
     NSAssert(camera != nil, @"No camera attached");
 
+    const float pitchYaw = frameTime * 45.0f;
+
     if ( [ pitchMinusAction active ] == YES )
     {
-        [ self cameraRotateUsingYaw:0.0f andPitch:-1.0f ];
+        [ self cameraRotateUsingYaw:0.0f andPitch:-pitchYaw ];
     }
 
     if ( [ pitchPlusAction active ] == YES )
     {
-        [ self cameraRotateUsingYaw:0.0f andPitch:1.0f ];
+        [ self cameraRotateUsingYaw:0.0f andPitch:pitchYaw ];
     }
 
     if ( [ yawMinusAction active ] == YES )
     {
-        [ self cameraRotateUsingYaw:-1.0f andPitch:0.0f ];
+        [ self cameraRotateUsingYaw:-pitchYaw  andPitch:0.0f ];
     }
 
     if ( [ yawPlusAction active ] == YES )
     {
-        [ self cameraRotateUsingYaw:1.0f andPitch:0.0f ];
+        [ self cameraRotateUsingYaw:pitchYaw andPitch:0.0f ];
     }
 
     [ self updateProjection ];
