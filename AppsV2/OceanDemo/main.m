@@ -89,7 +89,9 @@ int main (int argc, char **argv)
     int minor = glfwGetWindowParam(GLFW_OPENGL_VERSION_MINOR);
     int profile = glfwGetWindowParam(GLFW_OPENGL_PROFILE);
 
-    NSLog(@"%d %d %d", major, minor, profile);
+    NSLog(@"%d %d %d %d", major, minor, profile, d);
+
+    glClearDepth(1);
 
     // callback for window resizes
     glfwSetWindowSizeCallback(window_resize_callback);

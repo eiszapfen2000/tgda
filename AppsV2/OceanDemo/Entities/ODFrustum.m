@@ -9,6 +9,11 @@
 #import "Graphics/Geometry/NPCPUVertexArray.h"
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
+#import "Graphics/Effect/NPEffectVariableFloat.h"
+#import "Graphics/State/NPBlendingState.h"
+#import "Graphics/State/NPCullingState.h"
+#import "Graphics/State/NPDepthTestState.h"
+#import "Graphics/State/NPStateConfiguration.h"
 #import "Graphics/NPEngineGraphics.h"
 #import "ODFrustum.h"
 
@@ -51,43 +56,23 @@ int compare_floats (const void * a, const void * b)
     frustumLineIndices[11] = frustumLineIndices[12] = frustumLineIndices[21] = 6;
     frustumLineIndices[13] = frustumLineIndices[14] = frustumLineIndices[23] = 7;
 
-    // Quad on near plane
-    defaultFaceIndices[0] = 0;
-    defaultFaceIndices[1] = 1;
-    defaultFaceIndices[2] = 2;
-    defaultFaceIndices[3] = 3;
+    // Quad on near plane           // Quad on far plane
+    frustumFaceIndices[0] = 0;      frustumFaceIndices[4] = 4;
+    frustumFaceIndices[1] = 1;      frustumFaceIndices[5] = 5;
+    frustumFaceIndices[2] = 2;      frustumFaceIndices[6] = 6;
+    frustumFaceIndices[3] = 3;      frustumFaceIndices[7] = 7;
 
-    // Quad on far plane
-    defaultFaceIndices[4] = 4;
-    defaultFaceIndices[5] = 5;
-    defaultFaceIndices[6] = 6;
-    defaultFaceIndices[7] = 7;
+    //Top Quad                      //Bottom Quad
+    frustumFaceIndices[8] = 3;      frustumFaceIndices[12] = 0;
+    frustumFaceIndices[9] = 2;      frustumFaceIndices[13] = 1;
+    frustumFaceIndices[10] = 6;     frustumFaceIndices[14] = 5;
+    frustumFaceIndices[11] = 7;     frustumFaceIndices[15] = 4;
 
-    //Top Quad
-    defaultFaceIndices[8] = 3;
-    defaultFaceIndices[9] = 2;
-    defaultFaceIndices[10] = 6;
-    defaultFaceIndices[11] = 7;
-
-    //Bottom Quad
-    defaultFaceIndices[12] = 0;
-    defaultFaceIndices[13] = 1;
-    defaultFaceIndices[14] = 5;
-    defaultFaceIndices[15] = 4;
-
-    // Left quad
-    defaultFaceIndices[16]  = 3;
-    defaultFaceIndices[17]  = 0;
-    defaultFaceIndices[18] = 4;
-    defaultFaceIndices[19] = 7;
-
-    //Right Quad
-    defaultFaceIndices[20] = 1;
-    defaultFaceIndices[21] = 2;
-    defaultFaceIndices[22] = 6;
-    defaultFaceIndices[23] = 5;
-
-    memcpy(frustumFaceIndices, defaultFaceIndices, sizeof(defaultFaceIndices));
+    // Left quad                    //Right Quad
+    frustumFaceIndices[16]  = 3;    frustumFaceIndices[20] = 1;
+    frustumFaceIndices[17]  = 0;    frustumFaceIndices[21] = 2;
+    frustumFaceIndices[18] = 4;     frustumFaceIndices[22] = 6;
+    frustumFaceIndices[19] = 7;     frustumFaceIndices[23] = 5;
 
     vertexData
         = [[ NSData alloc ]
@@ -95,14 +80,22 @@ int compare_floats (const void * a, const void * b)
                              length:sizeof(frustumCornerPositions)
                        freeWhenDone:NO ];
 
-    indexData
+    facesIndexData
         = [[ NSData alloc ]
-                initWithBytesNoCopy:defaultFaceIndices
-                             length:sizeof(defaultFaceIndices)
+                initWithBytesNoCopy:frustumFaceIndices
+                             length:sizeof(frustumFaceIndices)
                        freeWhenDone:NO ];
 
+    linesIndexData
+        = [[ NSData alloc ]
+                initWithBytesNoCopy:frustumLineIndices
+                             length:sizeof(frustumLineIndices)
+                       freeWhenDone:NO ];
+
+
     vertexStream = [[ NPCPUBuffer alloc ] init ];
-    indexStream  = [[ NPCPUBuffer alloc ] init ];
+    facesIndexStream  = [[ NPCPUBuffer alloc ] init ];
+    linesIndexStream  = [[ NPCPUBuffer alloc ] init ];
 
     BOOL result
         = [ vertexStream generate:NpBufferObjectTypeGeometry
@@ -114,23 +107,39 @@ int compare_floats (const void * a, const void * b)
 
     NSAssert(result, @"");
 
-    result = [ indexStream generate:NpBufferObjectTypeIndices
-                         dataFormat:NpBufferDataFormatUInt16
-                         components:1
-                               data:indexData
-                         dataLength:[ indexData length ]
-                              error:NULL ];
+    result = [ facesIndexStream generate:NpBufferObjectTypeIndices
+                              dataFormat:NpBufferDataFormatUInt16
+                              components:1
+                                    data:facesIndexData
+                              dataLength:[ facesIndexData length ]
+                                   error:NULL ];
 
     NSAssert(result, @"");
 
-    vertexArray = [[ NPCPUVertexArray alloc ] init ];
-    result = [ vertexArray addVertexStream:vertexStream
-                                atLocation:NpVertexStreamAttribute0
-                                     error:NULL ];
+    result = [ linesIndexStream generate:NpBufferObjectTypeIndices
+                              dataFormat:NpBufferDataFormatUInt16
+                              components:1
+                                    data:linesIndexData
+                              dataLength:[ linesIndexData length ]
+                                   error:NULL ];
 
     NSAssert(result, @"");
 
-    result = [ vertexArray addIndexStream:indexStream error:NULL ];
+    facesVertexArray = [[ NPCPUVertexArray alloc ] init ];
+    linesVertexArray = [[ NPCPUVertexArray alloc ] init ];
+
+    result = [ facesVertexArray addVertexStream:vertexStream
+                                     atLocation:NpVertexStreamAttribute0
+                                          error:NULL ];
+
+    result = [ linesVertexArray addVertexStream:vertexStream
+                                     atLocation:NpVertexStreamAttribute0
+                                          error:NULL ];
+
+    NSAssert(result, @"");
+
+    result = [ facesVertexArray addIndexStream:facesIndexStream error:NULL ];
+    result = [ linesVertexArray addIndexStream:linesIndexStream error:NULL ];
 
     NSAssert(result, @"");
 
@@ -140,16 +149,32 @@ int compare_floats (const void * a, const void * b)
 
     ASSERT_RETAIN(effect);
 
+    color = [ effect variableWithName:@"color" ];
+
+    lineColor.x = 0.0f;
+    lineColor.y = 0.0f;
+    lineColor.z = 1.0f;
+    lineColor.w = 1.0f;
+
+    faceColor.x = 0.0f;
+    faceColor.y = 1.0f;
+    faceColor.z = 0.0f;
+    faceColor.w = 0.5f;
+
+
     return self;
 }
 
 - (void) dealloc
 {
     DESTROY(effect);
-    DESTROY(vertexArray);
-    DESTROY(indexStream);
+    DESTROY(facesVertexArray);
+    DESTROY(linesVertexArray);
+    DESTROY(facesIndexStream);
+    DESTROY(linesIndexStream);
     DESTROY(vertexStream);
-    DESTROY(indexData);
+    DESTROY(facesIndexData);
+    DESTROY(linesIndexData);
     DESTROY(vertexData);
 
     [ super dealloc ];
@@ -220,7 +245,7 @@ int compare_floats (const void * a, const void * b)
     frustumCornerPositions[FARPLANE_LOWERRIGHT] = fv3_vv_add(&farPlaneLowerCenter, &farPlaneHalfWidthV);
 
     // scale frustum geometry
-    const FMatrix3 scale = fm3_s_scale(0.05f);
+    const FMatrix3 scale = fm3_s_scale(0.25f);
 
     for ( int32_t i = 0; i < 8; i++ )
     {
@@ -241,9 +266,33 @@ int compare_floats (const void * a, const void * b)
 {
     [[[ NPEngineCore instance ] transformationState ] resetModelMatrix ];
 
-    [[ effect techniqueWithName:@"render" ] activate ];
+    [[[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ] setEnabled:YES ];
+    [[[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ] setBlendingMode:NpBlendingAverage ];
+    [[[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ] activate ];
 
-    [ vertexArray renderWithPrimitiveType:NpPrimitiveQuads ];
+    [[[[ NPEngineGraphics instance ] stateConfiguration ] cullingState ] setEnabled:NO ];
+    [[[[ NPEngineGraphics instance ] stateConfiguration ] cullingState ] activate ];
+
+    [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] setWriteEnabled:NO ];
+    [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] activate ];
+
+    /*
+    glDepthMask(GL_FALSE);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+    */
+
+    [ color setValue:faceColor ];
+    [[ effect techniqueWithName:@"color" ] activate ];
+    [ facesVertexArray renderWithPrimitiveType:NpPrimitiveQuads ];
+
+    [ color setValue:lineColor ];
+    [[ effect techniqueWithName:@"color" ] activate ];
+    glLineWidth(5.0f);
+    [ linesVertexArray renderWithPrimitiveType:NpPrimitiveLines ];
+    glLineWidth(1.0f);
+
+    //[[[ NPEngineGraphics instance ] stateConfiguration ] reset ];
 
     /*
     ODCamera * camera = [[[[ NP applicationController ] sceneManager ] currentScene ] camera ];

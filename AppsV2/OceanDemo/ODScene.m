@@ -4,6 +4,7 @@
 #import <Foundation/NSException.h>
 #import "Core/Container/NSArray+NPPObject.h"
 #import "Core/Utilities/NSError+NPEngine.h"
+#import "Graphics/State/NPStateConfiguration.h"
 #import "NP.h"
 #import "Entities/ODPEntity.h"
 #import "Entities/ODCamera.h"
@@ -221,11 +222,18 @@
 
 - (void) renderScene
 {
+    // reset states, makes depth buffer writable
+    [[[ NP Graphics ] stateConfiguration ] deactivate ];
+
     // clear color and depth buffer
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
     // reset matrices
     [[[ NP Core ] transformationState ] reset ];
+
+    [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] setEnabled:YES ];
+    [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] setWriteEnabled:YES ];
+    [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] activate ];
 
     // set view and projection
     [ camera render ];

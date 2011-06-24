@@ -9,4 +9,14 @@ technique "render"
     set fragment shader "default.fragment"
 }
 
+technique "color"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform vec4 color;
+    # shaders
+    set vertex shader "color.vertex"
+    set fragment shader "color.fragment"
+}
+
 

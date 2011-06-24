@@ -19,26 +19,33 @@
 
 @class NSData;
 @class NPEffect;
+@class NPEffectVariableFloat4;
 @class NPCPUBuffer;
 @class NPCPUVertexArray;
 
 @interface ODFrustum : NPObject
 {
+    // indcies to render frustum quads
     uint16_t frustumFaceIndices[24];
-    uint16_t defaultFaceIndices[24];
+    // indices to render frustum as lines
     uint16_t frustumLineIndices[24];
-
+    // frustum world space vertex positions
     FVertex3 frustumCornerPositions[8];
-    FVertex3 frustumFaceVertices[8];
-    FVertex3 frustumLineVertices[8];
 
     NSData * vertexData;
-    NSData * indexData;
+    NSData * facesIndexData;
+    NSData * linesIndexData;
     NPCPUBuffer * vertexStream;
-    NPCPUBuffer * indexStream;
-    NPCPUVertexArray * vertexArray;
+    NPCPUBuffer * facesIndexStream;
+    NPCPUBuffer * linesIndexStream;
+    NPCPUVertexArray * facesVertexArray;
+    NPCPUVertexArray * linesVertexArray;
 
     NPEffect * effect;
+    NPEffectVariableFloat4 * color;
+
+    FVector4 lineColor;
+    FVector4 faceColor;
 }
 
 - (id) init;
