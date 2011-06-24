@@ -120,14 +120,14 @@
         }
     }
 
+    if ( currentWriteEnabled != writeEnabled )
+    {
+        currentWriteEnabled = writeEnabled;
+        glDepthMask(writeEnabled);
+    }
+
     if ( enabled == YES )
     {
-        if ( currentWriteEnabled != writeEnabled )
-        {
-            currentWriteEnabled = writeEnabled;
-            glDepthMask(writeEnabled);
-        }
-
         if ( currentComparisonFunction != comparisonFunction )
         {
             currentComparisonFunction = comparisonFunction;
