@@ -104,7 +104,7 @@ int main (int argc, char **argv)
     mousePosition.x = mousePosition.y = 0;
 
     // VSync
-    glfwSwapInterval(0);
+    glfwSwapInterval(1);
     // do not poll events on glfwSwapBuffers
     glfwDisable(GLFW_AUTO_POLL_EVENTS);
     // register keyboard callback
@@ -325,6 +325,9 @@ int main (int argc, char **argv)
     DESTROY(iBuffer);
     DESTROY(vBuffer);
     DESTROY(tBuffer);
+
+    // delete static data
+    [ ODScene shutdown ];
 
     // Shutdown NPGraphics, deallocates a lot of stuff
     [[ NP Graphics ] shutdown ];

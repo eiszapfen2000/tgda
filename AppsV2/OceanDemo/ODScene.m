@@ -88,6 +88,11 @@
 
 @implementation ODScene
 
++ (void) shutdown
+{
+    [ ODEntity shutdown ];
+}
+
 - (id) init
 {
     return [ self initWithName:@"ODScene" ];
