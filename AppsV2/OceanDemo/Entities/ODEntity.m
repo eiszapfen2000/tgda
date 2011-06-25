@@ -26,6 +26,12 @@ static NPAssetArray * statesets = nil;
                   assetClass:NSClassFromString(@"NPStateSet") ];
 }
 
++ (void) shutdown
+{
+    DESTROY(statesets);
+    DESTROY(models);
+}
+
 - (id) init
 {
     return [ self initWithName:@"ODEntity" ];

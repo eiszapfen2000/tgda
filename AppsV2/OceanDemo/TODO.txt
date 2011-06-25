@@ -1,0 +1,14 @@
+ODFrustum:
+    - depth sort frustum faces for proper transparency
+
+ODProjectedGrid
+    - implement
+    - needs resolution
+    - first project on cpu
+    - then project every vertex on gpu
+    - lastly project 4 corner vertices and interpolate the rest on gpu
+
+ODOceanEntity
+    - load data from OceanBakery
+    - use projected grid
+    - render to vertexbuffer?

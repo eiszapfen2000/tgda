@@ -13,6 +13,8 @@
     FVector3 position;
 }
 
++ (void) shutdown;
+
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
