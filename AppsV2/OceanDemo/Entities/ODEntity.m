@@ -1,6 +1,7 @@
 #import <Foundation/NSArray.h>
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSError.h>
+#import <Foundation/NSException.h>
 #import "Core/Container/NPAssetArray.h"
 #import "Core/World/NPTransformationState.h"
 #import "Core/NPEngineCore.h"
@@ -67,6 +68,8 @@ static NPAssetArray * statesets = nil;
 - (BOOL) loadFromDictionary:(NSDictionary *)config
                       error:(NSError **)error
 {
+    NSAssert(config != nil, @"");
+
     NSString * entityName      = [ config objectForKey:@"Name"     ];
     NSString * modelPath       = [ config objectForKey:@"Model"    ];
     NSString * statesetPath    = [ config objectForKey:@"States"   ];

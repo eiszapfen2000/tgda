@@ -1,5 +1,6 @@
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSError.h>
+#import <Foundation/NSException.h>
 #import "GL/glew.h"
 #import "Input/NPInputAction.h"
 #import "Input/NPInputActions.h"
@@ -64,6 +65,8 @@
 - (BOOL) loadFromDictionary:(NSDictionary *)config
                       error:(NSError **)error
 {
+    NSAssert(config != nil, @"");
+
     /*
     NSString * cameraName      = [ config objectForKey:@"Name" ];
     NSArray  * positionStrings = [ config objectForKey:@"Position" ];
