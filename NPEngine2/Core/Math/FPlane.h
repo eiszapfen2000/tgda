@@ -10,19 +10,22 @@ void npmath_fplane_initialise();
 typedef struct FPlane
 {
     FVector3 normal;
-    Float    d;
+    float    d;
 }
 FPlane;
 
 FPlane * fplane_alloc();
 FPlane * fplane_alloc_init();
-FPlane * fplane_alloc_init_with_normal(const FVector3 * normal);
-FPlane * fplane_alloc_init_with_normal_and_scalar(const FVector3 * normal, const Float scalar);
-FPlane * fplane_alloc_init_with_components(const Float x, const Float y, const Float z, const Float scalar);
+FPlane * fplane_alloc_init_with_normal(const FVector3 * const normal);
+FPlane * fplane_alloc_init_with_normal_and_scalar(const FVector3 * const normal, const float scalar);
+FPlane * fplane_alloc_init_with_components(const float x, const float y, const float z, const float scalar);
 FPlane * fplane_free(FPlane * p);
+void fplane_pv_init_with_normal(FPlane * plane, const FVector3 * const normal);
+void fplane_pvs_init_with_normal_and_scalar(FPlane * plane, const FVector3 * const normal, const float scalar);
+void fplane_pssss_init_with_components(FPlane * plane, const float x, const float y, const float z, const float scalar);
 
-int32_t fplane_pr_intersect_with_ray_v(const FPlane * plane, const FRay * ray, FVector3 * result);
-Float fplane_pv_signed_distance_from_plane(const FPlane * plane, const FVector3 * point);
-Float fplane_pv_distance_from_plane(const FPlane * plane, const FVector3 * point);
+int32_t fplane_pr_intersect_with_ray_v(const FPlane * const plane, const FRay * const ray, FVector3 * result);
+float fplane_pv_signed_distance_from_plane(const FPlane * const plane, const FVector3 * const point);
+float fplane_pv_distance_from_plane(const FPlane * const plane, const FVector3 * const point);
 
 #endif

@@ -15,7 +15,8 @@ enum
     NPEngineGraphicsEffectTechniqueGLSLLinkError = 2097,
     NPEngineGraphicsEffectTechniqueShaderMissing = 2098,
     NPEngineGraphicsEffectTechniqueShaderCorrupt = 2099,
-    NPEngineGraphicsFBOError = 3000
+    NPEngineGraphicsFBOError = 3000,
+    NPEngineGraphicsVertexArrayError = 3001
 };
 
 #endif

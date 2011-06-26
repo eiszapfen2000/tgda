@@ -17,25 +17,25 @@ FPlane * fplane_alloc()
 
 FPlane * fplane_alloc_init()
 {
-    FPlane * plane   = npfreenode_alloc(NP_FPLANE_FREELIST);
+    FPlane * plane  = npfreenode_alloc(NP_FPLANE_FREELIST);
     plane->normal.x = plane->normal.y = plane->normal.z = 0.0f;
     plane->d        = 0.0f;
 
     return plane;
 }
 
-FPlane * fplane_alloc_init_with_normal(const FVector3 * normal)
+FPlane * fplane_alloc_init_with_normal(const FVector3 * const normal)
 {
     FPlane * plane = npfreenode_alloc(NP_FPLANE_FREELIST);
-    plane->normal = *normal;
-    plane->d      = 0.0f;
+    plane->normal  = *normal;
+    plane->d       = 0.0f;
 
     fv3_v_normalise(&(plane->normal));
 
     return plane;
 }
 
-FPlane * fplane_alloc_init_with_normal_and_scalar(const FVector3 * normal, const Float scalar)
+FPlane * fplane_alloc_init_with_normal_and_scalar(const FVector3 * const normal, const float scalar)
 {
     FPlane * plane = npfreenode_alloc(NP_FPLANE_FREELIST);
     plane->normal = *normal;
@@ -46,7 +46,7 @@ FPlane * fplane_alloc_init_with_normal_and_scalar(const FVector3 * normal, const
     return plane;
 }
 
-FPlane * fplane_alloc_init_with_components(const Float x, const Float y, const Float z, const Float scalar)
+FPlane * fplane_alloc_init_with_components(const float x, const float y, const float z, const float scalar)
 {
     FPlane * plane = npfreenode_alloc(NP_FPLANE_FREELIST);
     plane->normal.x = x;
@@ -64,17 +64,43 @@ FPlane * fplane_free(FPlane * p)
     return npfreenode_free(p, NP_FPLANE_FREELIST);
 }
 
-int32_t fplane_pr_intersect_with_ray_v(const FPlane * plane, const FRay * ray, FVector3 * result)
+void fplane_pv_init_with_normal(FPlane * plane, const FVector3 * const normal)
 {
-    const Float raypoint_dot_planenormal     = fv3_vv_dot_product(&(ray->point),     &(plane->normal));
-    const Float raydirection_dot_planenormal = fv3_vv_dot_product(&(ray->direction), &(plane->normal));
+    plane->normal = *normal;
+    plane->d      = 0.0f;
+
+    fv3_v_normalise(&(plane->normal));  
+}
+
+void fplane_pvs_init_with_normal_and_scalar(FPlane * plane, const FVector3 * const normal, const float scalar)
+{
+    plane->normal = *normal;
+    plane->d      = scalar;
+
+    fv3_v_normalise(&(plane->normal)); 
+}
+
+void fplane_pssss_init_with_components(FPlane * plane, const float x, const float y, const float z, const float scalar)
+{
+    plane->normal.x = x;
+    plane->normal.y = y;
+    plane->normal.z = z;
+    plane->d = scalar;
+
+    fv3_v_normalise(&(plane->normal));
+}
+
+int32_t fplane_pr_intersect_with_ray_v(const FPlane * const plane, const FRay * const ray, FVector3 * result)
+{
+    const float raypoint_dot_planenormal     = fv3_vv_dot_product(&(ray->point),     &(plane->normal));
+    const float raydirection_dot_planenormal = fv3_vv_dot_product(&(ray->direction), &(plane->normal));
 
     if ( fabs(raydirection_dot_planenormal) <= MATH_FLOAT_EPSILON )
     {
         return 0;
     }
 
-    const Float t = ( plane->d - raypoint_dot_planenormal ) / raydirection_dot_planenormal;
+    const float t = ( plane->d - raypoint_dot_planenormal ) / raydirection_dot_planenormal;
 
     fv3_sv_scale_v(t, &(ray->direction), result);
     fv3_vv_add_v(result, &(ray->point), result);
@@ -88,16 +114,16 @@ int32_t fplane_pr_intersect_with_ray_v(const FPlane * plane, const FRay * ray, F
     return r;
 }
 
-Float fplane_pv_signed_distance_from_plane_s(const FPlane * plane, const FVector3 * point)
+float fplane_pv_signed_distance_from_plane_s(const FPlane * const plane, const FVector3 * const point)
 {
-    const Float tmp = fv3_vv_dot_product(&(plane->normal), point);
+    const float tmp = fv3_vv_dot_product(&(plane->normal), point);
 
     return tmp + plane->d;
 }
 
-Float fplane_pv_distance_from_plane_s(const FPlane * plane, const FVector3 * point)
+float fplane_pv_distance_from_plane_s(const FPlane * const plane, const FVector3 * const point)
 {
-    const Float tmp = fv3_vv_dot_product(&(plane->normal), point);
+    const float tmp = fv3_vv_dot_product(&(plane->normal), point);
 
-    return (Float)fabs(tmp + plane->d);
+    return (float)fabs(tmp + plane->d);
 }
