@@ -77,6 +77,7 @@
         = numberOfBytes
           / ( numberOfComponents * numberOfBytesForDataFormat(dataFormat));
 
+    SAFE_DESTROY(data);
     data = RETAIN(newData);
 
     return YES;

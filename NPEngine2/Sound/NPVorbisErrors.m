@@ -7,15 +7,15 @@
 #import "NPEngineSoundErrors.h"
 #import "NPVorbisErrors.h"
 
-NSString * const NPVorbisReadErrorString = @"A read from media returned an error.";
-NSString * const NPVorbisNotVorbisErrorString = @"Bitstream is not Vorbis data.";
-NSString * const NPVorbisVersionMismatchErrorString = @"Vorbis version mismatch.";
-NSString * const NPVorbisBadHeaderErrorString = @"Invalid Vorbis bitstream header.";
-NSString * const NPVorbisInternalErrorString = @"Internal logic fault; indicates a bug or heap/stack corruption.";
+static NSString * const NPVorbisReadErrorString = @"A read from media returned an error.";
+static NSString * const NPVorbisNotVorbisErrorString = @"Bitstream is not Vorbis data.";
+static NSString * const NPVorbisVersionMismatchErrorString = @"Vorbis version mismatch.";
+static NSString * const NPVorbisBadHeaderErrorString = @"Invalid Vorbis bitstream header.";
+static NSString * const NPVorbisInternalErrorString = @"Internal logic fault; indicates a bug or heap/stack corruption.";
 
-NSString * const NPVorbisHoleErrorString = @"Data interruption.";
-NSString * const NPVorbisBadLinkErrorString = @"Invalid stream section, or the requested link is corrupt.";
-NSString * const NPVorbisBadInputErrorString = @"Initial file headers couldn't be read or are corrupt.";
+static NSString * const NPVorbisHoleErrorString = @"Data interruption.";
+static NSString * const NPVorbisBadLinkErrorString = @"Invalid stream section, or the requested link is corrupt.";
+static NSString * const NPVorbisBadInputErrorString = @"Initial file headers couldn't be read or are corrupt.";
 
 NSString * const NPVorbisNumberOfChannelsErrorString = @"Unsupported number of channels.";
 

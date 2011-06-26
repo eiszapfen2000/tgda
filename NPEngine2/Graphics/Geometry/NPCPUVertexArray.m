@@ -2,8 +2,18 @@
 #import <Foundation/NSData.h>
 #import <Foundation/NSException.h>
 #import "Log/NPLog.h"
+#import "Core/Utilities/NSError+NPEngine.h"
+#import "Graphics/NPEngineGraphicsErrors.h"
 #import "Graphics/Buffer/NPCPUBuffer.h"
 #import "NPCPUVertexArray.h"
+
+static NSString * const NPCPUVertexArrayVertexStreamEmpty = @"Vertex stream is empty.";
+static NSString * const NPCPUVertexArrayIndexStreamEmpty = @"Index stream is empty.";
+static NSString * const NPCPUVertexArrayVertexStreamTooLarge = @"Vertex stream exceeds 2GB limit.";
+static NSString * const NPCPUVertexArrayIndexStreamTooLarge = @"Index stream exceeds 2GB limit.";
+
+static NSString * const NPCPUVertexArrayStreamMismatch
+    = @"Stream has not the same number of vertices as other streams.";
 
 @implementation NPCPUVertexArray
 
@@ -17,14 +27,15 @@
     self = [ super initWithName:newName ];
 
     numberOfVertices = 0;
-    numberOfIndices = 0;
+    numberOfIndices  = 0;
 
     vertexStreams = [[ NSMutableArray alloc ] init ];
-    indexStream = nil;
+    indexStream   = nil;
 
     memset(types,    0, sizeof(types));
     memset(sizes,    0, sizeof(sizes));
     memset(pointers, 0, sizeof(pointers));
+
     indexPointer = NULL;
     indexType = GL_NONE;
     numberOfBytesForIndex = 0;
@@ -47,17 +58,30 @@
                    error:(NSError **)error
 {
     NSAssert(vertexStream != nil, @"Invalid vertex stream");
+    NSAssert([ vertexStream data ] != nil, @"Vertex stream has no data");
 
-    NSUInteger numberOfElements = [ vertexStream numberOfElements ];
+    const NSUInteger numberOfElements = [ vertexStream numberOfElements ];
     if ( numberOfElements == 0 )
     {
-        NPLOG(@"Empty Vertex Stream");
+        if ( error != NULL )
+        {
+            *error
+                = [ NSError errorWithCode:NPEngineGraphicsVertexArrayError
+                              description:NPCPUVertexArrayVertexStreamEmpty ];
+        }
+
         return NO;
     }
 
     if ( numberOfElements > INT_MAX )
     {
-        NPLOG(@"Vertex Stream is to large");
+        if ( error != NULL )
+        {
+            *error
+                = [ NSError errorWithCode:NPEngineGraphicsVertexArrayError
+                              description:NPCPUVertexArrayVertexStreamTooLarge ];
+        }
+
         return NO;
     }
 
@@ -69,7 +93,13 @@
     }
     else if ( numberOfVertices != glNumberOfElements )
     {
-        NPLOG(@"Buffer size mismatch");
+        if ( error != NULL )
+        {
+            *error
+                = [ NSError errorWithCode:NPEngineGraphicsVertexArrayError
+                              description:NPCPUVertexArrayStreamMismatch ];
+        }
+
         return NO;
     }
 
@@ -90,16 +120,29 @@
     NSUInteger numberOfElements = [ newIndexStream numberOfElements ];
     if ( numberOfElements == 0 )
     {
-        NPLOG(@"Empty Index Stream");
+        if ( error != NULL )
+        {
+            *error
+                = [ NSError errorWithCode:NPEngineGraphicsVertexArrayError
+                              description:NPCPUVertexArrayIndexStreamEmpty ];
+        }
+
         return NO;
     }
 
     if ( numberOfElements > INT_MAX )
     {
-        NPLOG(@"Index Stream is to large");
+        if ( error != NULL )
+        {
+            *error
+                = [ NSError errorWithCode:NPEngineGraphicsVertexArrayError
+                              description:NPCPUVertexArrayIndexStreamTooLarge ];
+        }
+
         return NO;
     }
 
+    SAFE_DESTROY(indexStream);
     indexStream = RETAIN(newIndexStream);
     numberOfIndices = (GLsizei)numberOfElements;
     indexPointer = (GLvoid *)[[ indexStream data ] bytes ];
@@ -108,6 +151,11 @@
         = (GLsizei)numberOfBytesForDataFormat([ indexStream dataFormat ]);
 
     return YES;
+}
+
+- (BOOL) syncToStreams
+{
+    return NO;
 }
 
 - (void) renderWithPrimitiveType:(const NpPrimitveType)type
@@ -142,8 +190,12 @@
             }
         }
 
+        // this is necessary because arithmetic on void* is undefined
+        unsigned char * ptr
+            = ((unsigned char *)indexPointer) + (firstIndex * numberOfBytesForIndex);
+
         glDrawRangeElements(type, 0, numberOfVertices - 1, lastIndex - firstIndex + 1,
-            indexType, indexPointer + (firstIndex * numberOfBytesForIndex));
+            indexType, ptr);
 
         for ( int32_t i = NpVertexStreamMin; i <= NpVertexStreamMax; i++ )
         {

@@ -36,6 +36,8 @@
                   error:(NSError **)error
                        ;
 
+- (BOOL) syncToStreams;
+
 - (void) renderWithPrimitiveType:(const NpPrimitveType)type;
 - (void) renderWithPrimitiveType:(const NpPrimitveType)type
                       firstIndex:(const uint32_t)firstIndex
