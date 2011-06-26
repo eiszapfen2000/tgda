@@ -63,6 +63,8 @@
 - (BOOL) loadFromDictionary:(NSDictionary *)config
                       error:(NSError **)error
 {
+    NSAssert(config != nil, @"");
+
     NSString * projectorName   = [ config objectForKey:@"Name" ];
     NSArray  * positionStrings = [ config objectForKey:@"Position" ];
 

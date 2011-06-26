@@ -189,7 +189,7 @@ int compare_floats (const void * a, const void * b)
 {
     // compute near and far plane size
 
-    const float fovradians = DEGREE_TO_RADIANS(fov/2.0f);
+    const float fovradians = DEGREE_TO_RADIANS(fov / 2.0f);
 
     const float nearPlaneHeight = 2.0f * tanf(fovradians) * nearPlane;
     const float farPlaneHeight  = 2.0f * tanf(fovradians) * farPlane;
@@ -280,9 +280,9 @@ int compare_floats (const void * a, const void * b)
     [[ effect techniqueWithName:@"color" ] activate ];
     [ facesVertexArray renderWithPrimitiveType:NpPrimitiveQuads ];
 
+    glLineWidth(5.0f);
     [ color setValue:lineColor ];
     [[ effect techniqueWithName:@"color" ] activate ];
-    glLineWidth(5.0f);
     [ linesVertexArray renderWithPrimitiveType:NpPrimitiveLines ];
     glLineWidth(1.0f);
 }
