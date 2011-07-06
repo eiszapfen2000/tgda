@@ -4,6 +4,7 @@
 @class NSMutableArray;
 @class ODCamera;
 @class ODProjector;
+@class ODProjectedGrid;
 
 @interface ODScene : NPObject < NPPPersistentObject >
 {
@@ -12,6 +13,7 @@
 
     ODCamera * camera;
     ODProjector * projector;
+    ODProjectedGrid * projectedGrid;
 
     NSMutableArray * entities;
 }

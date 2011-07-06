@@ -165,107 +165,6 @@ int main (int argc, char **argv)
         NPLOG_ERROR(sceneError);
     }
 
-    float vertices[12] = {-0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, -0.5f, -0.5f};
-    float texcoords[12] = {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f};
-    uint16_t indices[6] = {0, 1, 2, 3, 4, 5};
-
-    NSData * vData = [ NSData dataWithBytes:vertices length:sizeof(vertices) ];
-    NSData * tData = [ NSData dataWithBytes:texcoords length:sizeof(texcoords) ];
-    NSData * iData = [ NSData dataWithBytes:indices length:sizeof(indices) ];
-
-    NPBufferObject * vBuffer = [[ NPBufferObject alloc ] init ];
-    NPBufferObject * tBuffer = [[ NPBufferObject alloc ] init ];
-    NPBufferObject * iBuffer = [[ NPBufferObject alloc ] init ];
-
-    BOOL vOK =
-    [ vBuffer generate:NpBufferObjectTypeGeometry
-            updateRate:NpBufferDataUpdateOnceUseOften
-             dataUsage:NpBufferDataWriteCPUToGPU
-            dataFormat:NpBufferDataFormatFloat32
-            components:2
-                  data:vData
-            dataLength:[ vData length ]
-                 error:NULL ];
-
-    BOOL tOK =
-    [ tBuffer generate:NpBufferObjectTypeGeometry
-            updateRate:NpBufferDataUpdateOnceUseOften
-             dataUsage:NpBufferDataWriteCPUToGPU
-            dataFormat:NpBufferDataFormatFloat32
-            components:2
-                  data:tData
-            dataLength:[ tData length ]
-                 error:NULL ];
-
-    BOOL iOK =
-    [ iBuffer generate:NpBufferObjectTypeIndices
-            updateRate:NpBufferDataUpdateOnceUseOften
-             dataUsage:NpBufferDataWriteCPUToGPU
-            dataFormat:NpBufferDataFormatUInt16
-            components:1
-                  data:iData
-            dataLength:[ iData length ]
-                 error:NULL ];
-
-
-    if ( vOK == NO || tOK == NO || iOK == NO )
-    {
-        NSLog(@"BUFFERFAIL");
-    }
-
-    NPCPUBuffer * cvBuffer = [[ NPCPUBuffer alloc ] init ];
-    NPCPUBuffer * ctBuffer = [[ NPCPUBuffer alloc ] init ];
-    NPCPUBuffer * ciBuffer = [[ NPCPUBuffer alloc ] init ];
-
-    vOK =
-    [ cvBuffer generate:NpBufferObjectTypeGeometry
-             dataFormat:NpBufferDataFormatFloat32
-             components:2
-                   data:vData
-             dataLength:[ vData length ]
-                  error:NULL ];
-
-    tOK =
-    [ ctBuffer generate:NpBufferObjectTypeGeometry
-             dataFormat:NpBufferDataFormatFloat32
-             components:2
-                   data:tData
-             dataLength:[ tData length ]
-                  error:NULL ];
-
-    iOK =
-    [ ciBuffer generate:NpBufferObjectTypeIndices
-             dataFormat:NpBufferDataFormatUInt16
-             components:1
-                   data:iData
-             dataLength:[ iData length ]
-                  error:NULL ];
-
-    if ( vOK == NO || tOK == NO || iOK == NO )
-    {
-        NSLog(@"CPU BUFFERFAIL");
-    }
-
-    NPVertexArray * vertexArray = [[ NPVertexArray alloc ] init ];
-    BOOL rak = [ vertexArray addVertexStream:vBuffer atLocation:NpVertexStreamAttribute0 error:NULL ];
-    rak = rak && [ vertexArray addVertexStream:tBuffer atLocation:NpVertexStreamAttribute3 error:NULL ];
-    rak = rak && [ vertexArray addIndexStream:iBuffer error:NULL ];
-
-    if ( rak == NO )
-    {
-        NSLog(@"FUCK");
-    }
-
-    NPCPUVertexArray * cpuVertexArray = [[ NPCPUVertexArray alloc ] init ];
-    rak = [ cpuVertexArray addVertexStream:cvBuffer atLocation:NpVertexStreamAttribute0 error:NULL ];
-    rak = rak && [ cpuVertexArray addVertexStream:ctBuffer atLocation:NpVertexStreamAttribute3 error:NULL ];
-    rak = rak && [ cpuVertexArray addIndexStream:ciBuffer error:NULL ];
-
-    if ( rak == NO )
-    {
-        NSLog(@"FUCK");
-    }
-
     [[ NP Graphics ] checkForGLErrors ];
 
     DESTROY(resourcePool);
@@ -292,7 +191,7 @@ int main (int argc, char **argv)
         [[ NP Core ] update ];
 
         // get current frametime
-        float frameTime = [[[ NP Core ] timer ] frameTime ];
+        const float frameTime = [[[ NP Core ] timer ] frameTime ];
 
         // update scene
         [ scene update:frameTime ];
@@ -315,16 +214,6 @@ int main (int argc, char **argv)
 
     DESTROY(scene);
     DESTROY(model);
-    DESTROY(vertexArray);
-    DESTROY(cpuVertexArray);
-
-    DESTROY(ciBuffer);
-    DESTROY(cvBuffer);
-    DESTROY(ctBuffer);
-
-    DESTROY(iBuffer);
-    DESTROY(vBuffer);
-    DESTROY(tBuffer);
 
     // delete static data
     [ ODScene shutdown ];
