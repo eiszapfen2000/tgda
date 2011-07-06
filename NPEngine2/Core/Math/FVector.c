@@ -559,7 +559,12 @@ void fv4_vv_sub_v(const FVector4 * const v, const FVector4 * const w, FVector4 *
     V_W(*result) = V_W(*v) - V_W(*w);
 }
 
-FVector4 fv4_v_homogenised(const FVector4 const * v)
+FVector4 fv4_v_from_fv3(const FVector3 * const v)
+{
+    return (FVector4){ V_X(*v), V_Y(*v), V_Z(*v), 1.0f };
+}
+
+FVector4 fv4_v_homogenised(const FVector4 * const v)
 {
     return (FVector4){ V_X(*v) / V_W(*v), V_Y(*v) / V_W(*v),
                        V_Z(*v) / V_W(*v), 1.0f };
