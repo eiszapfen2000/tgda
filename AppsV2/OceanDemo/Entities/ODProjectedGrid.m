@@ -1,16 +1,57 @@
+#import <Foundation/NSArray.h>
 #import <Foundation/NSData.h>
 #import <Foundation/NSDictionary.h>
+#import <Foundation/NSException.h>
 #import "Graphics/Buffer/NPCPUBuffer.h"
 #import "Graphics/Geometry/NPCPUVertexArray.h"
+#import "ODProjector.h"
 #import "ODProjectedGrid.h"
 
 @interface ODProjectedGrid (Private)
 
+- (void) computeBasePlaneGeometry;
 - (void) updateResolution;
 
 @end
 
 @implementation ODProjectedGrid (Private)
+
+- (void) computeBasePlaneGeometry
+{
+    NSAssert(projector != nil, @"");
+
+    const FMatrix4 * const inverseViewProjection = [ projector inverseViewProjection ];
+
+    for ( int32_t i = 0; i < resolution.y; i++ )
+    {
+        for (int32_t j = 0; j < resolution.x; j++ )
+        {
+            const int32_t index = i * resolution.x + j;
+
+            FVector4 nearPlaneVertex = nearPlanePostProjectionPositions[index];
+            FVector4 farPlaneVertex  = nearPlaneVertex;
+            farPlaneVertex.z = 1.0f;
+
+            const FVector4 resultN = fm4_mv_multiply(inverseViewProjection, &nearPlaneVertex);
+            const FVector4 resultF = fm4_mv_multiply(inverseViewProjection, &farPlaneVertex);
+
+            FRay ray;
+            ray.point.x = resultN.x / resultN.w;
+            ray.point.y = resultN.y / resultN.w;
+            ray.point.z = resultN.z / resultN.w;
+
+            ray.direction.x = (resultF.x / resultF.w) - ray.point.x;
+            ray.direction.y = (resultF.y / resultF.w) - ray.point.y;
+            ray.direction.z = (resultF.z / resultF.w) - ray.point.z;
+
+            FVector3 intersection;
+            int32_t r = fplane_pr_intersect_with_ray_v(&basePlane, &ray, &intersection);
+
+            FVector4 result = fv4_v_from_fv3(&intersection);
+            worldSpacePositions[index] = result;
+        }
+    }
+}
 
 - (void) updateResolution
 {
@@ -39,7 +80,7 @@
             const int32_t index = (i * resolution.x) + j;
             nearPlanePostProjectionPositions[index].x = -1.0f + j * deltaX;
             nearPlanePostProjectionPositions[index].y = -1.0f + i * deltaY;
-            nearPlanePostProjectionPositions[index].z = -1.0f;
+            nearPlanePostProjectionPositions[index].z = -1.0f; // near plane
             nearPlanePostProjectionPositions[index].w =  1.0f;
         }
     }
@@ -120,6 +161,7 @@
     resolutionLastFrame.x = resolutionLastFrame.y = 0;
     resolution.x = resolution.y = 0;
 
+    // y = 0 plane
     fplane_pssss_init_with_components(&basePlane, 0.0f, 1.0f, 0.0f, 0.0f);
 
     vertexStream = [[ NPCPUBuffer alloc ] init ];
@@ -142,15 +184,45 @@
     [ super dealloc ];
 }
 
+- (IVector2) resolution
+{
+    return resolution;
+}
+
+- (void) setResolution:(const IVector2)newResolution
+{
+    resolution = newResolution;
+}
+
+- (void) setProjector:(ODProjector *)newProjector
+{
+    ASSIGN(projector, newProjector);
+}
+
 - (BOOL) loadFromDictionary:(NSDictionary *)config
                       error:(NSError **)error
 {
-    if ( error != NULL )
+    NSAssert(config != nil, @"");
+
+    NSString * gridName          = [ config objectForKey:@"Name" ];
+    NSArray  * resolutionStrings = [ config objectForKey:@"Resolution" ];
+
+    if ( gridName == nil || resolutionStrings == nil )
     {
-        *error = nil;
+        if ( error != NULL )
+        {
+            *error = nil;
+        }
+        
+        return NO;
     }
 
-    return NO;
+    [ self setName:gridName ];
+
+    resolution.x = [[ resolutionStrings objectAtIndex:0 ] intValue ];
+    resolution.y = [[ resolutionStrings objectAtIndex:1 ] intValue ];
+
+    return YES;
 }
 
 - (void) update:(const float)frameTime
@@ -162,6 +234,13 @@
 
         resolutionLastFrame = resolution;
     }
+
+    if ( projector == nil )
+    {
+        return;
+    }
+
+    [ self computeBasePlaneGeometry ];
 }
 
 - (void) render

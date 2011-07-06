@@ -4,6 +4,7 @@
 
 @class NPCPUBuffer;
 @class NPCPUVertexArray;
+@class ODProjector;
 
 @interface ODProjectedGrid : NPObject < ODPEntity >
 {
@@ -16,6 +17,8 @@
     FVertex4 * worldSpacePositions;
     uint16_t * indices;
 
+    ODProjector * projector;
+
     NPCPUBuffer * vertexStream;
     NPCPUBuffer * indexStream;
     NPCPUVertexArray * vertexArray;
@@ -24,6 +27,10 @@
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
+
+- (IVector2) resolution;
+- (void) setResolution:(const IVector2)newResolution;
+- (void) setProjector:(ODProjector *)newProjector;
 
 @end
 

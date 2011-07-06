@@ -2,5 +2,6 @@
     Name = "Scene";
     Camera = "camera.entity";
     Projector = "projector.entity";
+    ProjectedGrid = "grid.entity";
     Entities = ("debug_plane.entity");
 }

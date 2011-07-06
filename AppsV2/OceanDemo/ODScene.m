@@ -9,6 +9,7 @@
 #import "Entities/ODPEntity.h"
 #import "Entities/ODCamera.h"
 #import "Entities/ODProjector.h"
+#import "Entities/ODProjectedGrid.h"
 #import "Entities/ODEntity.h"
 #import "ODScene.h"
 
@@ -106,6 +107,7 @@
     file = nil;
     camera = nil;
     projector = nil;
+    projectedGrid = nil;
 
     entities = [[ NSMutableArray alloc ] init ];
 
@@ -117,6 +119,7 @@
     [ entities removeAllObjects ];
     DESTROY(entities);
 
+    SAFE_DESTROY(projectedGrid);
     SAFE_DESTROY(projector);
     SAFE_DESTROY(camera);
     SAFE_DESTROY(file);
@@ -171,21 +174,25 @@
     NSDictionary * sceneContents
         = [ NSDictionary dictionaryWithContentsOfFile:absoluteFileName ];
 
-    NSString * sceneName           = [ sceneContents objectForKey:@"Name"      ];
-    NSString * skylightEntityFile  = [ sceneContents objectForKey:@"Skylight"  ];
-    NSString * cameraEntityFile    = [ sceneContents objectForKey:@"Camera"    ];
-    NSString * projectorEntityFile = [ sceneContents objectForKey:@"Projector" ];
-    NSArray  * entityFiles         = [ sceneContents objectForKey:@"Entities"  ];
+    NSString * sceneName               = [ sceneContents objectForKey:@"Name"      ];
+    NSString * skylightEntityFile      = [ sceneContents objectForKey:@"Skylight"  ];
+    NSString * cameraEntityFile        = [ sceneContents objectForKey:@"Camera"    ];
+    NSString * projectorEntityFile     = [ sceneContents objectForKey:@"Projector" ];
+    NSArray  * entityFiles             = [ sceneContents objectForKey:@"Entities"  ];
+    NSString * projectedGridEntityFile = [ sceneContents objectForKey:@"ProjectedGrid" ];
 
     [ self setName:sceneName ];
 
-    camera    = [ self loadEntityFromFile:cameraEntityFile    error:NULL ];
-    projector = [ self loadEntityFromFile:projectorEntityFile error:NULL ];
+    camera        = [ self loadEntityFromFile:cameraEntityFile        error:NULL ];
+    projector     = [ self loadEntityFromFile:projectorEntityFile     error:NULL ];
+    projectedGrid = [ self loadEntityFromFile:projectedGridEntityFile error:NULL ];
 
     ASSERT_RETAIN(camera);
     ASSERT_RETAIN(projector);
+    ASSERT_RETAIN(projectedGrid);
 
     [ projector setCamera:camera ];
+    [ projectedGrid setProjector:projector ];
 
     const NSUInteger numberOfEntityFiles = [ entityFiles count ];
     for ( NSUInteger i = 0; i < numberOfEntityFiles; i++ )
@@ -215,8 +222,9 @@
 
 - (void) update:(const float)frameTime
 {
-    [ camera    update:frameTime ];
-    [ projector update:frameTime ];
+    [ camera        update:frameTime ];
+    [ projector     update:frameTime ];
+    [ projectedGrid update:frameTime ];
 
     const NSUInteger numberOfEntities = [ entities count ];
     for ( NSUInteger i = 0; i < numberOfEntities; i++ )
