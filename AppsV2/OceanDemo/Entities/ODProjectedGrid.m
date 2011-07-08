@@ -2,8 +2,15 @@
 #import <Foundation/NSData.h>
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSException.h>
+#import "Core/Container/NPAssetArray.h"
+#import "Core/World/NPTransformationState.h"
+#import "Core/NPEngineCore.h"
 #import "Graphics/Buffer/NPCPUBuffer.h"
 #import "Graphics/Geometry/NPCPUVertexArray.h"
+#import "Graphics/Effect/NPEffect.h"
+#import "Graphics/Effect/NPEffectTechnique.h"
+#import "Graphics/Effect/NPEffectVariableFloat.h"
+#import "Graphics/NPEngineGraphics.h"
 #import "ODProjector.h"
 #import "ODProjectedGrid.h"
 
@@ -28,7 +35,9 @@
         {
             const int32_t index = i * resolution.x + j;
 
+            // near plane z = -1.0f
             FVector4 nearPlaneVertex = nearPlanePostProjectionPositions[index];
+            // far plane z = 1.0f
             FVector4 farPlaneVertex  = nearPlaneVertex;
             farPlaneVertex.z = 1.0f;
 
@@ -115,8 +124,15 @@
         }
     }
 
+    /*
     NSData * vertexData
         = [ NSData dataWithBytesNoCopy:nearPlanePostProjectionPositions
+                                length:sizeof(FVertex4) * numberOfVertices
+                          freeWhenDone:NO ];
+    */
+
+    NSData * vertexData
+        = [ NSData dataWithBytesNoCopy:worldSpacePositions
                                 length:sizeof(FVertex4) * numberOfVertices
                           freeWhenDone:NO ];
 
@@ -143,6 +159,20 @@
                               error:NULL ];
 
     NSAssert(result, @"");
+
+    SAFE_DESTROY(vertexArray);
+    vertexArray = [[ NPCPUVertexArray alloc ] init ];
+
+    result = [ vertexArray addVertexStream:vertexStream 
+                                atLocation:NpVertexStreamPositions
+                                     error:NULL ];
+
+    NSAssert(result, @"");
+
+    result = [ vertexArray addIndexStream:indexStream 
+                                    error:NULL ];
+
+    NSAssert(result, @"");
 }
 
 @end
@@ -166,16 +196,31 @@
 
     vertexStream = [[ NPCPUBuffer alloc ] init ];
     indexStream  = [[ NPCPUBuffer alloc ] init ];
-    vertexArray  = [[ NPCPUVertexArray alloc ] init ];
+
+    effect
+        = [[[ NPEngineGraphics instance ] effects ]
+                getAssetWithFileName:@"default.effect" ];
+
+    ASSERT_RETAIN(effect);
+
+    color = [ effect variableWithName:@"color" ];
+
+    gridColor.x = 0.0f;
+    gridColor.y = 0.0f;
+    gridColor.z = 1.0f;
+    gridColor.w = 1.0f;
 
     return self;
 }
 
 - (void) dealloc
 {
-    DESTROY(vertexArray);
+    DESTROY(effect);
+    SAFE_DESTROY(vertexArray);
     DESTROY(vertexStream);
     DESTROY(indexStream);
+
+    SAFE_DESTROY(projector);
 
     SAFE_FREE(nearPlanePostProjectionPositions);
     SAFE_FREE(worldSpacePositions);
@@ -235,16 +280,16 @@
         resolutionLastFrame = resolution;
     }
 
-    if ( projector == nil )
-    {
-        return;
-    }
-
     [ self computeBasePlaneGeometry ];
 }
 
 - (void) render
 {
+    [[[ NPEngineCore instance ] transformationState ] resetModelMatrix ];
+
+    [ color setValue:gridColor ];
+    [[ effect techniqueWithName:@"color" ] activate ];
+    [ vertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
 }
 
 @end

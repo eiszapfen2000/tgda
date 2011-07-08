@@ -175,7 +175,7 @@
         = [ NSDictionary dictionaryWithContentsOfFile:absoluteFileName ];
 
     NSString * sceneName               = [ sceneContents objectForKey:@"Name"      ];
-    NSString * skylightEntityFile      = [ sceneContents objectForKey:@"Skylight"  ];
+    //NSString * skylightEntityFile      = [ sceneContents objectForKey:@"Skylight"  ];
     NSString * cameraEntityFile        = [ sceneContents objectForKey:@"Camera"    ];
     NSString * projectorEntityFile     = [ sceneContents objectForKey:@"Projector" ];
     NSArray  * entityFiles             = [ sceneContents objectForKey:@"Entities"  ];
@@ -241,12 +241,16 @@
     // reset matrices
     [[[ NP Core ] transformationState ] reset ];
 
+    // enable depth write and depth test
     [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] setEnabled:YES ];
     [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] setWriteEnabled:YES ];
     [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] activate ];
 
     // set view and projection
     [ camera render ];
+
+    // render projected grid
+    [ projectedGrid render ];
 
     // render entities
     [ entities makeObjectsPerformSelector:@selector(render) ];
