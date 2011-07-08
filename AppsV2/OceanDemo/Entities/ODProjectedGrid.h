@@ -5,6 +5,8 @@
 @class NPCPUBuffer;
 @class NPCPUVertexArray;
 @class ODProjector;
+@class NPEffect;
+@class NPEffectVariableFloat4;
 
 @interface ODProjectedGrid : NPObject < ODPEntity >
 {
@@ -22,6 +24,10 @@
     NPCPUBuffer * vertexStream;
     NPCPUBuffer * indexStream;
     NPCPUVertexArray * vertexArray;
+
+    NPEffect * effect;
+    NPEffectVariableFloat4 * color;
+    FVector4 gridColor;
 }
 
 - (id) init;
