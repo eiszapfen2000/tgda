@@ -284,6 +284,43 @@
     {
         fm4_m_set_identity(&view);
 
+        FVector3 f = fquat_q_forward_vector(&orientation);
+        FVector3 fb = { f.x, 0.0f, f.z };
+        fv3_v_normalise(&f);
+        fv3_v_normalise(&fb);
+
+        double delta = 0.0;
+        const double degrees = RADIANS_TO_DEGREE(atan2(f.y, -f.z));
+
+        // camera looking up
+        if ( f.y > 0.0f )
+        {
+            if ( -f.z >= 0.0f )
+            {
+                delta = -degrees;
+                delta -= 45.0;
+            }
+            else
+            {
+                delta = 180.0 - degrees;
+                delta += 45.0;
+            }
+        }
+        else
+        {
+            if ( degrees < -135.0 )
+            {
+                delta = (-135.0) - degrees;
+            }
+
+            if ( degrees > -45.0 )
+            {
+                delta = (-45.0) - degrees;
+            }            
+        }
+
+        pitch = pitch + delta;
+        fquat_q_rotatex(&orientation, delta);
         FQuaternion q = fquat_q_conjugated(&orientation);
         FVector3 invpos = fv3_v_inverted(&position);
         FMatrix4 rotate = fquat_q_to_fmatrix4(&q);

@@ -25,8 +25,6 @@
 
 - (void) computeBasePlaneGeometry
 {
-    NSAssert(projector != nil, @"");
-
     const FMatrix4 * const inverseViewProjection = [ projector inverseViewProjection ];
 
     for ( int32_t i = 0; i < resolution.y; i++ )
@@ -272,6 +270,8 @@
 
 - (void) update:(const float)frameTime
 {
+    NSAssert(projector != nil, @"No projector attached");
+
     if ( resolutionLastFrame.x != resolution.x
         || resolutionLastFrame.y != resolution.y )
     {
