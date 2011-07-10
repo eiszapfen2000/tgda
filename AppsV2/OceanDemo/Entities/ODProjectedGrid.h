@@ -19,6 +19,8 @@
     FVertex4 * worldSpacePositions;
     uint16_t * indices;
 
+    FVertex4 boundaryVertices[4];
+
     ODProjector * projector;
 
     NPCPUBuffer * vertexStream;

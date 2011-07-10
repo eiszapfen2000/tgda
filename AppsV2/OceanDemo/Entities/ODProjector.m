@@ -145,7 +145,7 @@
     {
         yaw += degrees;
 
-        if ( yaw < -360.0f )
+        if ( yaw < 0.0f )
         {
             yaw += 360.0f;
         }
@@ -163,7 +163,7 @@
     {
         pitch += degrees;
 
-        if ( pitch < -360.0f )
+        if ( pitch < 0.0f )
         {
             pitch += 360.0f;
         }
@@ -282,45 +282,34 @@
     }
     else
     {
-        fm4_m_set_identity(&view);
-
-        FVector3 f = fquat_q_forward_vector(&orientation);
-        FVector3 fb = { f.x, 0.0f, f.z };
-        fv3_v_normalise(&f);
-        fv3_v_normalise(&fb);
-
-        double delta = 0.0;
-        const double degrees = RADIANS_TO_DEGREE(atan2(f.y, -f.z));
-
-        // camera looking up
-        if ( f.y > 0.0f )
+        // camera looking upwards
+        if ( pitch >= 0.0f && pitch <= 180.0f )
         {
-            if ( -f.z >= 0.0f )
+            if ( pitch <= 90.0f )
             {
-                delta = -degrees;
-                delta -= 45.0;
+                pitch = 315.0f;
             }
             else
             {
-                delta = 180.0 - degrees;
-                delta += 45.0;
+                pitch = 225.0f;
             }
         }
         else
         {
-            if ( degrees < -135.0 )
+            if ( pitch < 225.0f )
             {
-                delta = (-135.0) - degrees;
+                pitch = 225.0f;
             }
 
-            if ( degrees > -45.0 )
+            if ( pitch > 315.0f )
             {
-                delta = (-45.0) - degrees;
-            }            
+                pitch = 315.0f;
+            }
         }
 
-        pitch = pitch + delta;
-        fquat_q_rotatex(&orientation, delta);
+        fm4_m_set_identity(&view);
+        fquat_q_init_with_axis_and_degrees(&orientation, NP_WORLDF_Y_AXIS, yaw);
+        fquat_q_rotatex(&orientation, pitch);
         FQuaternion q = fquat_q_conjugated(&orientation);
         FVector3 invpos = fv3_v_inverted(&position);
         FMatrix4 rotate = fquat_q_to_fmatrix4(&q);

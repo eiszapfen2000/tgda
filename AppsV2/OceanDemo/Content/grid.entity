@@ -1,6 +1,6 @@
 {
     Type = "ODProjectedGrid";
     Name = "Projected Grid";
-    Resolution = ("128", "128");
+    Resolution = ("4", "4");
 }
  
