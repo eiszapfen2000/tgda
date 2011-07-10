@@ -17,6 +17,8 @@
 @interface ODProjectedGrid (Private)
 
 - (void) computeBasePlaneGeometry;
+- (FVector4) computeBasePlanePosition:(const FVector2)postProjectionVertex;
+- (void) computeBasePlaneBoundaryVertices;
 - (void) updateResolution;
 
 @end
@@ -58,6 +60,48 @@
             worldSpacePositions[index] = result;
         }
     }
+}
+
+- (FVector4) computeBasePlanePosition:(const FVector2)postProjectionVertex
+{
+    const FMatrix4 * const inverseViewProjection
+        = [ projector inverseViewProjection ];
+
+    const FVector4 nearPlaneVertex
+        = {postProjectionVertex.x, postProjectionVertex.y, -1.0f, 1.0f};
+
+    const FVector4 farPlaneVertex
+        = {postProjectionVertex.x, postProjectionVertex.y, 1.0f, 1.0f};
+
+    const FVector4 resultN = fm4_mv_multiply(inverseViewProjection, &nearPlaneVertex);
+    const FVector4 resultF = fm4_mv_multiply(inverseViewProjection, &farPlaneVertex);
+
+    FRay ray;
+    ray.point.x = resultN.x / resultN.w;
+    ray.point.y = resultN.y / resultN.w;
+    ray.point.z = resultN.z / resultN.w;
+
+    ray.direction.x = (resultF.x / resultF.w) - ray.point.x;
+    ray.direction.y = (resultF.y / resultF.w) - ray.point.y;
+    ray.direction.z = (resultF.z / resultF.w) - ray.point.z;
+
+    FVector3 intersection;
+    int32_t r = fplane_pr_intersect_with_ray_v(&basePlane, &ray, &intersection);
+
+    return fv4_v_from_fv3(&intersection);
+}
+
+- (void) computeBasePlaneBoundaryVertices
+{
+    const FVector2 upperLeft  = {-1.0f,  1.0f};
+    const FVector2 upperRight = { 1.0f,  1.0f};
+    const FVector2 lowerLeft  = {-1.0f, -1.0f};
+    const FVector2 lowerRight = { 1.0f, -1.0f};
+
+    boundaryVertices[0] = [ self computeBasePlanePosition:lowerLeft  ];
+    boundaryVertices[1] = [ self computeBasePlanePosition:lowerRight ];
+    boundaryVertices[2] = [ self computeBasePlanePosition:upperRight ];
+    boundaryVertices[3] = [ self computeBasePlanePosition:upperLeft  ];
 }
 
 - (void) updateResolution
@@ -281,6 +325,7 @@
     }
 
     [ self computeBasePlaneGeometry ];
+    [ self computeBasePlaneBoundaryVertices ];
 }
 
 - (void) render
