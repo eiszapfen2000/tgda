@@ -71,6 +71,11 @@
     if ( projectorName == nil || positionStrings == nil )
     {
         //NPLOG_ERROR(@"%@: Dictionary incomplete", name);
+        if ( error != NULL )
+        {
+            *error = nil;
+        }
+
         return NO;
     }
 

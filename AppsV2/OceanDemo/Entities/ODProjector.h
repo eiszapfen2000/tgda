@@ -37,7 +37,7 @@
     NPInputAction * yawPlusAction;
 
     BOOL connectedToCamera;
-    ODCamera* camera;
+    ODCamera * camera;
 }
 
 - (id) init;
