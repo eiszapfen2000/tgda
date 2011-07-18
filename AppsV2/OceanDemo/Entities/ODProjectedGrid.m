@@ -16,16 +16,17 @@
 
 @interface ODProjectedGrid (Private)
 
-- (void) computeBasePlaneGeometry;
+- (void) computeBasePlaneGeometryUsingRaycasting;
 - (FVector4) computeBasePlanePosition:(const FVector2)postProjectionVertex;
 - (void) computeBasePlaneBoundaryVertices;
+- (void) computeBasePlaneGeometryUsingInterpolation;
 - (void) updateResolution;
 
 @end
 
 @implementation ODProjectedGrid (Private)
 
-- (void) computeBasePlaneGeometry
+- (void) computeBasePlaneGeometryUsingRaycasting
 {
     const FMatrix4 * const inverseViewProjection = [ projector inverseViewProjection ];
 
@@ -102,6 +103,54 @@
     boundaryVertices[1] = [ self computeBasePlanePosition:lowerRight ];
     boundaryVertices[2] = [ self computeBasePlanePosition:upperRight ];
     boundaryVertices[3] = [ self computeBasePlanePosition:upperLeft  ];
+}
+
+- (void) computeBasePlaneGeometryUsingInterpolation
+{
+    [ self computeBasePlaneBoundaryVertices ];
+
+    float u = -1.0f;
+    float v = -1.0f;
+
+    float deltaX = 2.0f / (resolution.x - 1.0f);
+    float deltaY = 2.0f / (resolution.y - 1.0f);
+
+    for ( int32_t i = 0; i < resolution.y; i++ )
+    {
+        u = -1.0f;
+
+        for ( int32_t j = 0; j < resolution.x; j++ )
+        {
+            const float w
+                = (boundaryVertices[0].w / 4.0f) * (1.0f - u)  * (1.0f - v) +
+                  (boundaryVertices[1].w / 4.0f) * (u + 1.0f ) * (1.0f - v) +
+                  (boundaryVertices[3].w / 4.0f) * (1.0f - u)  * (v + 1.0f) +
+                  (boundaryVertices[2].w / 4.0f) * (u + 1.0f ) * (v + 1.0f);
+
+            const float x
+                = (boundaryVertices[0].x / 4.0f) * (1.0f - u)  * (1.0f - v) +
+                  (boundaryVertices[1].x / 4.0f) * (u + 1.0f ) * (1.0f - v) +
+                  (boundaryVertices[3].x / 4.0f) * (1.0f - u)  * (v + 1.0f) +
+                  (boundaryVertices[2].x / 4.0f) * (u + 1.0f ) * (v + 1.0f);
+
+            const float z
+                = (boundaryVertices[0].z / 4.0f) * (1.0f - u)  * (1.0f - v) +
+                  (boundaryVertices[1].z / 4.0f) * (u + 1.0f ) * (1.0f - v) +
+                  (boundaryVertices[3].z / 4.0f) * (1.0f - u)  * (v + 1.0f) +
+                  (boundaryVertices[2].z / 4.0f) * (u + 1.0f ) * (v + 1.0f);
+
+            const int32_t index = i * resolution.x + j;
+
+            worldSpacePositions[index].x = x / w;
+            worldSpacePositions[index].y = 0.0f;
+            worldSpacePositions[index].z = z / w;
+            worldSpacePositions[index].w = 1.0f;
+
+            u = u + deltaX;
+        }
+
+        v = v + deltaY;
+    }
 }
 
 - (void) updateResolution
@@ -236,6 +285,8 @@
     // y = 0 plane
     fplane_pssss_init_with_components(&basePlane, 0.0f, 1.0f, 0.0f, 0.0f);
 
+    renderMode = ProjectedGridCPURaycasting;
+
     vertexStream = [[ NPCPUBuffer alloc ] init ];
     indexStream  = [[ NPCPUBuffer alloc ] init ];
 
@@ -271,6 +322,11 @@
     [ super dealloc ];
 }
 
+- (ODProjectedGridRenderMode) renderMode
+{
+    return renderMode;
+}
+
 - (IVector2) resolution
 {
     return resolution;
@@ -279,6 +335,11 @@
 - (void) setResolution:(const IVector2)newResolution
 {
     resolution = newResolution;
+}
+
+- (void) setRenderMode:(const ODProjectedGridRenderMode)newRenderMode
+{
+    renderMode = newRenderMode;
 }
 
 - (void) setProjector:(ODProjector *)newProjector
@@ -324,8 +385,26 @@
         resolutionLastFrame = resolution;
     }
 
-    [ self computeBasePlaneGeometry ];
-    [ self computeBasePlaneBoundaryVertices ];
+    switch ( renderMode )
+    {
+        case ProjectedGridCPURaycasting:
+        {
+            [ self computeBasePlaneGeometryUsingRaycasting ];            
+            break;
+        }
+
+        case ProjectedGridCPUInterpolation:
+        {
+            [ self computeBasePlaneGeometryUsingInterpolation ];
+            break;
+        }
+
+        case ProjectedGridGPUInterpolation:
+        {
+            [ self computeBasePlaneBoundaryVertices ];
+            break;
+        }
+    }
 }
 
 - (void) render

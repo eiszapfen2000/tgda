@@ -245,7 +245,7 @@ int compare_floats (const void * a, const void * b)
     frustumCornerPositions[FARPLANE_LOWERRIGHT] = fv3_vv_add(&farPlaneLowerCenter, &farPlaneHalfWidthV);
 
     // scale frustum geometry
-    const FMatrix3 scale = fm3_s_scale(0.25f);
+    const FMatrix3 scale = fm3_s_scale(1.0f);
 
     for ( int32_t i = 0; i < 8; i++ )
     {

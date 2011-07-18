@@ -8,6 +8,14 @@
 @class NPEffect;
 @class NPEffectVariableFloat4;
 
+typedef enum ODProjectedGridRenderMode
+{
+    ProjectedGridCPURaycasting = 0,
+    ProjectedGridCPUInterpolation = 1,
+    ProjectedGridGPUInterpolation = 2
+}
+ODProjectedGridRenderMode;
+
 @interface ODProjectedGrid : NPObject < ODPEntity >
 {
     IVector2 resolutionLastFrame;
@@ -23,6 +31,8 @@
 
     ODProjector * projector;
 
+    ODProjectedGridRenderMode renderMode;
+
     NPCPUBuffer * vertexStream;
     NPCPUBuffer * indexStream;
     NPCPUVertexArray * vertexArray;
@@ -36,8 +46,10 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
+- (ODProjectedGridRenderMode) renderMode;
 - (IVector2) resolution;
 - (void) setResolution:(const IVector2)newResolution;
+- (void) setRenderMode:(const ODProjectedGridRenderMode)newRenderMode;
 - (void) setProjector:(ODProjector *)newProjector;
 
 @end
