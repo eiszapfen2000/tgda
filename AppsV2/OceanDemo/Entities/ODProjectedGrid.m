@@ -18,7 +18,7 @@
 
 - (void) computeBasePlaneGeometryUsingRaycasting;
 - (FVector4) computeBasePlanePosition:(const FVector2)postProjectionVertex;
-- (void) computeBasePlaneBoundaryVertices;
+- (void) computeBasePlaneCornerVertices;
 - (void) computeBasePlaneGeometryUsingInterpolation;
 - (void) updateResolution;
 
@@ -42,9 +42,11 @@
             FVector4 farPlaneVertex  = nearPlaneVertex;
             farPlaneVertex.z = 1.0f;
 
+            // transform to world space
             const FVector4 resultN = fm4_mv_multiply(inverseViewProjection, &nearPlaneVertex);
             const FVector4 resultF = fm4_mv_multiply(inverseViewProjection, &farPlaneVertex);
 
+            // construct ray
             FRay ray;
             ray.point.x = resultN.x / resultN.w;
             ray.point.y = resultN.y / resultN.w;
@@ -54,6 +56,7 @@
             ray.direction.y = (resultF.y / resultF.w) - ray.point.y;
             ray.direction.z = (resultF.z / resultF.w) - ray.point.z;
 
+            // interset ray with plane
             FVector3 intersection;
             int32_t r = fplane_pr_intersect_with_ray_v(&basePlane, &ray, &intersection);
 
@@ -92,22 +95,22 @@
     return fv4_v_from_fv3(&intersection);
 }
 
-- (void) computeBasePlaneBoundaryVertices
+- (void) computeBasePlaneCornerVertices
 {
     const FVector2 upperLeft  = {-1.0f,  1.0f};
     const FVector2 upperRight = { 1.0f,  1.0f};
     const FVector2 lowerLeft  = {-1.0f, -1.0f};
     const FVector2 lowerRight = { 1.0f, -1.0f};
 
-    boundaryVertices[0] = [ self computeBasePlanePosition:lowerLeft  ];
-    boundaryVertices[1] = [ self computeBasePlanePosition:lowerRight ];
-    boundaryVertices[2] = [ self computeBasePlanePosition:upperRight ];
-    boundaryVertices[3] = [ self computeBasePlanePosition:upperLeft  ];
+    cornerVertices[0] = [ self computeBasePlanePosition:lowerLeft  ];
+    cornerVertices[1] = [ self computeBasePlanePosition:lowerRight ];
+    cornerVertices[2] = [ self computeBasePlanePosition:upperRight ];
+    cornerVertices[3] = [ self computeBasePlanePosition:upperLeft  ];
 }
 
 - (void) computeBasePlaneGeometryUsingInterpolation
 {
-    [ self computeBasePlaneBoundaryVertices ];
+    [ self computeBasePlaneCornerVertices ];
 
     float u = -1.0f;
     float v = -1.0f;
@@ -122,22 +125,22 @@
         for ( int32_t j = 0; j < resolution.x; j++ )
         {
             const float w
-                = (boundaryVertices[0].w / 4.0f) * (1.0f - u)  * (1.0f - v) +
-                  (boundaryVertices[1].w / 4.0f) * (u + 1.0f ) * (1.0f - v) +
-                  (boundaryVertices[3].w / 4.0f) * (1.0f - u)  * (v + 1.0f) +
-                  (boundaryVertices[2].w / 4.0f) * (u + 1.0f ) * (v + 1.0f);
+                = (cornerVertices[0].w / 4.0f) * (1.0f - u)  * (1.0f - v) +
+                  (cornerVertices[1].w / 4.0f) * (u + 1.0f ) * (1.0f - v) +
+                  (cornerVertices[3].w / 4.0f) * (1.0f - u)  * (v + 1.0f) +
+                  (cornerVertices[2].w / 4.0f) * (u + 1.0f ) * (v + 1.0f);
 
             const float x
-                = (boundaryVertices[0].x / 4.0f) * (1.0f - u)  * (1.0f - v) +
-                  (boundaryVertices[1].x / 4.0f) * (u + 1.0f ) * (1.0f - v) +
-                  (boundaryVertices[3].x / 4.0f) * (1.0f - u)  * (v + 1.0f) +
-                  (boundaryVertices[2].x / 4.0f) * (u + 1.0f ) * (v + 1.0f);
+                = (cornerVertices[0].x / 4.0f) * (1.0f - u)  * (1.0f - v) +
+                  (cornerVertices[1].x / 4.0f) * (u + 1.0f ) * (1.0f - v) +
+                  (cornerVertices[3].x / 4.0f) * (1.0f - u)  * (v + 1.0f) +
+                  (cornerVertices[2].x / 4.0f) * (u + 1.0f ) * (v + 1.0f);
 
             const float z
-                = (boundaryVertices[0].z / 4.0f) * (1.0f - u)  * (1.0f - v) +
-                  (boundaryVertices[1].z / 4.0f) * (u + 1.0f ) * (1.0f - v) +
-                  (boundaryVertices[3].z / 4.0f) * (1.0f - u)  * (v + 1.0f) +
-                  (boundaryVertices[2].z / 4.0f) * (u + 1.0f ) * (v + 1.0f);
+                = (cornerVertices[0].z / 4.0f) * (1.0f - u)  * (1.0f - v) +
+                  (cornerVertices[1].z / 4.0f) * (u + 1.0f ) * (1.0f - v) +
+                  (cornerVertices[3].z / 4.0f) * (1.0f - u)  * (v + 1.0f) +
+                  (cornerVertices[2].z / 4.0f) * (u + 1.0f ) * (v + 1.0f);
 
             const int32_t index = i * resolution.x + j;
 
@@ -157,7 +160,7 @@
 {
     SAFE_FREE(nearPlanePostProjectionPositions);
     SAFE_FREE(worldSpacePositions);
-    SAFE_FREE(indices);
+    SAFE_FREE(gridIndices);
 
     const size_t numberOfVertices = resolution.x * resolution.y;
     const size_t numberOfIndices
@@ -165,7 +168,7 @@
 
     nearPlanePostProjectionPositions = ALLOC_ARRAY(FVertex4, numberOfVertices);
     worldSpacePositions = ALLOC_ARRAY(FVertex4, numberOfVertices);
-    indices = ALLOC_ARRAY(uint16_t, numberOfIndices);
+    gridIndices = ALLOC_ARRAY(uint16_t, numberOfIndices);
 
     const float deltaX = 2.0f / ((float)(resolution.x - 1));
     const float deltaY = 2.0f / ((float)(resolution.y - 1));
@@ -205,13 +208,13 @@
 
             const int32_t quadrangleIndex = (i * (resolution.x - 1) + j) * 6;
 
-            indices[quadrangleIndex]   = subIndex0;
-            indices[quadrangleIndex+1] = subIndex1;
-            indices[quadrangleIndex+2] = subIndex2;
+            gridIndices[quadrangleIndex]   = subIndex0;
+            gridIndices[quadrangleIndex+1] = subIndex1;
+            gridIndices[quadrangleIndex+2] = subIndex2;
 
-            indices[quadrangleIndex+3] = subIndex2;
-            indices[quadrangleIndex+4] = subIndex3;
-            indices[quadrangleIndex+5] = subIndex0;
+            gridIndices[quadrangleIndex+3] = subIndex2;
+            gridIndices[quadrangleIndex+4] = subIndex3;
+            gridIndices[quadrangleIndex+5] = subIndex0;
         }
     }
 
@@ -228,12 +231,12 @@
                           freeWhenDone:NO ];
 
     NSData * indexData
-        = [ NSData dataWithBytesNoCopy:indices
+        = [ NSData dataWithBytesNoCopy:gridIndices
                                 length:sizeof(uint16_t) * numberOfIndices
                           freeWhenDone:NO ];
 
     BOOL result
-        = [ vertexStream generate:NpBufferObjectTypeGeometry
+        = [ gridVertexStream generate:NpBufferObjectTypeGeometry
                        dataFormat:NpBufferDataFormatFloat32
                        components:4
                              data:vertexData
@@ -242,7 +245,7 @@
 
     NSAssert(result, @"");
 
-    result = [ indexStream generate:NpBufferObjectTypeIndices
+    result = [ gridIndexStream generate:NpBufferObjectTypeIndices
                          dataFormat:NpBufferDataFormatUInt16
                          components:1
                                data:indexData
@@ -251,16 +254,16 @@
 
     NSAssert(result, @"");
 
-    SAFE_DESTROY(vertexArray);
-    vertexArray = [[ NPCPUVertexArray alloc ] init ];
+    SAFE_DESTROY(gridVertexArray);
+    gridVertexArray = [[ NPCPUVertexArray alloc ] init ];
 
-    result = [ vertexArray addVertexStream:vertexStream 
+    result = [ gridVertexArray addVertexStream:gridVertexStream 
                                 atLocation:NpVertexStreamPositions
                                      error:NULL ];
 
     NSAssert(result, @"");
 
-    result = [ vertexArray addIndexStream:indexStream 
+    result = [ gridVertexArray addIndexStream:gridIndexStream 
                                     error:NULL ];
 
     NSAssert(result, @"");
@@ -285,10 +288,65 @@
     // y = 0 plane
     fplane_pssss_init_with_components(&basePlane, 0.0f, 1.0f, 0.0f, 0.0f);
 
-    renderMode = ProjectedGridCPURaycasting;
+    renderMode = ProjectedGridGPUInterpolation;
 
-    vertexStream = [[ NPCPUBuffer alloc ] init ];
-    indexStream  = [[ NPCPUBuffer alloc ] init ];
+    // resolution independent
+    cornerVertices = ALLOC_ARRAY(FVertex4, 4);
+    cornerIndices  = ALLOC_ARRAY(uint16_t, 6);
+    cornerIndices[0] = 0;
+    cornerIndices[1] = 1;
+    cornerIndices[2] = 2;
+    cornerIndices[3] = 2;
+    cornerIndices[4] = 3;
+    cornerIndices[5] = 0;
+
+    gridVertexStream   = [[ NPCPUBuffer alloc ] init ];
+    gridIndexStream    = [[ NPCPUBuffer alloc ] init ];
+    cornerVertexStream = [[ NPCPUBuffer alloc ] init ];
+    cornerIndexStream  = [[ NPCPUBuffer alloc ] init ];
+
+    NSData * cornerVertexData
+        = [ NSData dataWithBytesNoCopy:cornerVertices
+                                length:sizeof(FVertex4) * 4
+                          freeWhenDone:NO ];
+
+    NSData * cornerIndexData
+        = [ NSData dataWithBytesNoCopy:cornerIndices
+                                length:sizeof(uint16_t) * 6
+                          freeWhenDone:NO ];
+
+    BOOL result
+        = [ cornerVertexStream generate:NpBufferObjectTypeGeometry
+                             dataFormat:NpBufferDataFormatFloat32
+                             components:4
+                                   data:cornerVertexData
+                             dataLength:[ cornerVertexData length ]
+                                  error:NULL ];
+
+    NSAssert(result, @"");
+
+    result =
+        [ cornerIndexStream generate:NpBufferObjectTypeIndices
+                          dataFormat:NpBufferDataFormatUInt16
+                          components:1
+                                data:cornerIndexData
+                          dataLength:[ cornerIndexData length ]
+                               error:NULL ];
+
+    NSAssert(result, @"");
+
+    cornerVertexArray = [[ NPCPUVertexArray alloc ] init ];
+
+    result = [ cornerVertexArray addVertexStream:cornerVertexStream 
+                                      atLocation:NpVertexStreamPositions
+                                           error:NULL ];
+
+    NSAssert(result, @"");
+
+    result = [ cornerVertexArray addIndexStream:cornerIndexStream 
+                                    error:NULL ];
+
+    NSAssert(result, @"");
 
     effect
         = [[[ NPEngineGraphics instance ] effects ]
@@ -309,15 +367,20 @@
 - (void) dealloc
 {
     DESTROY(effect);
-    SAFE_DESTROY(vertexArray);
-    DESTROY(vertexStream);
-    DESTROY(indexStream);
+    SAFE_DESTROY(gridVertexArray);
+    DESTROY(gridVertexStream);
+    DESTROY(gridIndexStream);
+    DESTROY(cornerVertexArray);
+    DESTROY(cornerIndexStream);
+    DESTROY(cornerVertexStream);
 
     SAFE_DESTROY(projector);
 
     SAFE_FREE(nearPlanePostProjectionPositions);
     SAFE_FREE(worldSpacePositions);
-    SAFE_FREE(indices);   
+    FREE(cornerVertices);
+    SAFE_FREE(gridIndices);
+    FREE(cornerIndices);
 
     [ super dealloc ];
 }
@@ -401,7 +464,7 @@
 
         case ProjectedGridGPUInterpolation:
         {
-            [ self computeBasePlaneBoundaryVertices ];
+            [ self computeBasePlaneCornerVertices ];
             break;
         }
     }
@@ -412,8 +475,24 @@
     [[[ NPEngineCore instance ] transformationState ] resetModelMatrix ];
 
     [ color setValue:gridColor ];
-    [[ effect techniqueWithName:@"color" ] activate ];
-    [ vertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+    [[ effect techniqueWithName:@"color" ] activate ];    
+
+    switch ( renderMode )
+    {
+        case ProjectedGridCPURaycasting:
+        case ProjectedGridCPUInterpolation:
+        {
+            [ gridVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+            break;
+        }
+
+        case ProjectedGridGPUInterpolation:
+        {
+            [ cornerVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+            break;
+        }
+    }
 }
 
 @end
+

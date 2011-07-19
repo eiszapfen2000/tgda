@@ -18,25 +18,33 @@ ODProjectedGridRenderMode;
 
 @interface ODProjectedGrid : NPObject < ODPEntity >
 {
+    // resolution
     IVector2 resolutionLastFrame;
     IVector2 resolution;
-
+    // the plane we want project onto, y = 0
     FPlane basePlane;
-
+    // vertices on the near plane in post projection space
     FVertex4 * nearPlanePostProjectionPositions;
+    // vertices projected from near plane onto basePlane
     FVertex4 * worldSpacePositions;
-    uint16_t * indices;
-
-    FVertex4 boundaryVertices[4];
-
+    // near plane corner vertices projected onto basePlane
+    FVertex4 * cornerVertices;
+    // mesh indices for rendering
+    uint16_t * gridIndices;
+    uint16_t * cornerIndices;
+    // the projector we are connected to
     ODProjector * projector;
-
+    // rendering mode
     ODProjectedGridRenderMode renderMode;
-
-    NPCPUBuffer * vertexStream;
-    NPCPUBuffer * indexStream;
-    NPCPUVertexArray * vertexArray;
-
+    // buffers and vertex array for grid based rendering
+    NPCPUBuffer * gridVertexStream;
+    NPCPUBuffer * gridIndexStream;
+    NPCPUVertexArray * gridVertexArray;
+    // buffer and vertex array for GPU interpolation based rendering
+    NPCPUBuffer * cornerVertexStream;
+    NPCPUBuffer * cornerIndexStream;
+    NPCPUVertexArray * cornerVertexArray;
+    // effect
     NPEffect * effect;
     NPEffectVariableFloat4 * color;
     FVector4 gridColor;
