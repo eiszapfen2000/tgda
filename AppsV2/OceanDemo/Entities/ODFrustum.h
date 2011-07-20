@@ -32,9 +32,6 @@
     // frustum world space vertex positions
     FVertex3 frustumCornerPositions[8];
 
-    NSData * vertexData;
-    NSData * facesIndexData;
-    NSData * linesIndexData;
     NPCPUBuffer * vertexStream;
     NPCPUBuffer * facesIndexStream;
     NPCPUBuffer * linesIndexStream;
