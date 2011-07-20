@@ -74,23 +74,20 @@ int compare_floats (const void * a, const void * b)
     frustumFaceIndices[18] = 4;     frustumFaceIndices[22] = 6;
     frustumFaceIndices[19] = 7;     frustumFaceIndices[23] = 5;
 
-    vertexData
-        = [[ NSData alloc ]
-                initWithBytesNoCopy:frustumCornerPositions
-                             length:sizeof(frustumCornerPositions)
-                       freeWhenDone:NO ];
+    NSData * vertexData
+        = [ NSData dataWithBytesNoCopy:frustumCornerPositions
+                                length:sizeof(frustumCornerPositions)
+                          freeWhenDone:NO ];
 
-    facesIndexData
-        = [[ NSData alloc ]
-                initWithBytesNoCopy:frustumFaceIndices
-                             length:sizeof(frustumFaceIndices)
-                       freeWhenDone:NO ];
+    NSData * facesIndexData
+        = [ NSData dataWithBytesNoCopy:frustumFaceIndices
+                                length:sizeof(frustumFaceIndices)
+                          freeWhenDone:NO ];
 
-    linesIndexData
-        = [[ NSData alloc ]
-                initWithBytesNoCopy:frustumLineIndices
-                             length:sizeof(frustumLineIndices)
-                       freeWhenDone:NO ];
+    NSData * linesIndexData
+        = [ NSData dataWithBytesNoCopy:frustumLineIndices
+                                length:sizeof(frustumLineIndices)
+                          freeWhenDone:NO ];
 
 
     vertexStream = [[ NPCPUBuffer alloc ] init ];
@@ -173,9 +170,6 @@ int compare_floats (const void * a, const void * b)
     DESTROY(facesIndexStream);
     DESTROY(linesIndexStream);
     DESTROY(vertexStream);
-    DESTROY(facesIndexData);
-    DESTROY(linesIndexData);
-    DESTROY(vertexData);
 
     [ super dealloc ];
 }
