@@ -9,7 +9,8 @@ ODCamera.h \
 ODProjector.h \
 ODFrustum.h \
 ODOceanEntity.h \
-ODProjectedGrid.h
+ODProjectedGrid.h \
+ODPerlinNoise.h
 
 ODEntities_OBJC_FILES = \
 ODEntity.m \
@@ -17,7 +18,8 @@ ODCamera.m \
 ODProjector.m \
 ODFrustum.m \
 ODOceanEntity.m \
-ODProjectedGrid.m
+ODProjectedGrid.m \
+ODPerlinNoise.m
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make
