@@ -31,9 +31,9 @@ static double generate(const uint32_t size, const uint32_t * const permutationTa
     const int32_t zi = (int32_t)zid;
 
     // fade function
-    const double u = fade(c.x);
-    const double v = fade(c.y);
-    const double w = fade(c.z);
+    const double u = fade(c.x - xid);
+    const double v = fade(c.y - yid);
+    const double w = fade(c.z - zid);
 
     // gradient lookup indices
     const uint32_t q00  = (permutationTable[xi]     + yi) % size;
@@ -69,6 +69,21 @@ static double generate(const uint32_t size, const uint32_t * const permutationTa
     const Vector3 d011 = {c.x - xid,       c.y - yid - 1.0, c.z - zid - 1.0};
     const Vector3 d111 = {c.x - xid - 1.0, c.y - yid - 1.0, c.z - zid - 1.0};
 
+    const double l0 = lerp(v3_vv_dot_product(&g000, &d000), v3_vv_dot_product(&g100, &d100), u);
+    const double l1 = lerp(v3_vv_dot_product(&g010, &d010), v3_vv_dot_product(&g110, &d110), u);
+    const double l2 = lerp(v3_vv_dot_product(&g001, &d001), v3_vv_dot_product(&g101, &d101), u);
+    const double l3 = lerp(v3_vv_dot_product(&g011, &d011), v3_vv_dot_product(&g111, &d111), u);
+
+    const double l4 = lerp(l0, l1, v);
+    const double l5 = lerp(l2, l3, v);
+
+    const double l6 = lerp(l5, l6, w);
+
+    //NSLog(@"%f %f %f %f %f %f %f %f %f %f", u, v, w, l0, l1, l2, l3, l4, l5, l6);
+
+    return l6;
+
+    /*
     return 
         lerp(lerp(lerp(v3_vv_dot_product(&g000, &d000), v3_vv_dot_product(&g100, &d100), u),
                   lerp(v3_vv_dot_product(&g010, &d010), v3_vv_dot_product(&g110, &d110), u),
@@ -77,6 +92,7 @@ static double generate(const uint32_t size, const uint32_t * const permutationTa
                   lerp(v3_vv_dot_product(&g011, &d011), v3_vv_dot_product(&g111, &d111), u),
                   v),
              w);
+    */
 }
 
 @interface ODPerlinNoise (Private)
@@ -97,7 +113,7 @@ static double generate(const uint32_t size, const uint32_t * const permutationTa
         permutationTable[i] = i;
     }
 
-     for ( uint32_t i = 0; i < size; i++ )
+    for ( uint32_t i = 0; i < size; i++ )
     {
         uint32_t j = (uint32_t)rand() % size;
         uint32_t temp = permutationTable[i];
@@ -139,15 +155,25 @@ static double generate(const uint32_t size, const uint32_t * const permutationTa
 
 - (void) generateWithSize:(const uint32_t)newSize
 {
-    NSAssert(newSize > 4, @"");
+    NSAssert(newSize > 3, @"");
 
     if ( newSize != size )
     {
-        [ self generatePermutationTable ];
-
-        SAFE_FREE(noise);
-        noise = ALLOC_ARRAY(double, newSize * newSize);
         size = newSize;
+        SAFE_FREE(noise);
+        noise = ALLOC_ARRAY(double, size * size);
+
+        [ self generatePermutationTable ];
+    }
+
+    for ( uint32_t i = 0; i < size; i++ )
+    {
+        for ( uint32_t j = 0; j < size; j++ )
+        {
+            const Vector3 c = {j + 0.5, i + 0.5, 0.0};
+            noise[i*size+j] = generate(size, permutationTable, c);
+           // NSLog(@"%f", noise[i*size+j]);
+        }
     }
 }
 
