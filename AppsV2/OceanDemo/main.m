@@ -21,7 +21,7 @@
 #import "Input/NPInputAction.h"
 #import "Input/NPInputActions.h"
 #import "NP.h"
-#import "Entities/ODCamera.h"
+#import "Entities/ODPerlinNoise.h"
 #import "ODScene.h"
 #import "GL/glfw.h"
 
@@ -64,6 +64,10 @@ int running = GL_TRUE;
 int main (int argc, char **argv)
 {
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
+
+    ODPerlinNoise * noise = [[ ODPerlinNoise alloc ] init ];
+    [ noise generateWithSize:4 ];
+    DESTROY(noise);
 
     // Initialise GLFW
     if( !glfwInit() )
