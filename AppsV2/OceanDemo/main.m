@@ -66,7 +66,7 @@ int main (int argc, char **argv)
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
     ODPerlinNoise * noise = [[ ODPerlinNoise alloc ] init ];
-    [ noise generateWithSize:4 ];
+    [ noise generate ];
     DESTROY(noise);
 
     // Initialise GLFW
