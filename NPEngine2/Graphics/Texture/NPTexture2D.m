@@ -354,6 +354,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
             0, glpixelformat, gldataformat, [data bytes]);
     }
 
+    #warning FIXME move this into else block?
     [ self updateGLTextureFilterState ];
     [ self updateGLTextureAnisotropy ];
     [ self updateGLTextureWrapState ];
