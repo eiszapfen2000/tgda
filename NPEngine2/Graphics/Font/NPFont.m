@@ -1,3 +1,4 @@
+#import <Foundation/NSArray.h>
 #import "NPFont.h"
 
 @implementation NPFont
@@ -11,11 +12,18 @@
 {
     self = [ super initWithName:newName ];
 
+    file = nil;
+    ready = NO;
+
+    characterPages = [[ NSMutableArray alloc ] init ];
+
     return self;
 }
 
 - (void) dealloc
 {
+    [ characterPages removeAllObjects ];
+    DESTROY(characterPages);
     SAFE_DESTROY(file);
 
     [ super dealloc ];
