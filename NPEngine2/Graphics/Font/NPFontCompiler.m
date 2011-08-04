@@ -31,8 +31,7 @@
     {
         [ font setRenderedSize:renderedSize ];
     }
-}
-        
+}        
 
 - (void) parseCommonAtLine:(const NSUInteger)lineIndex
 {
@@ -71,10 +70,46 @@
 
 - (void) parsePageAtLine:(const NSUInteger)lineIndex
 {
+    NSString * characterPageFileName = nil;
+    if ( [ self isLowerCaseTokenFromLine:lineIndex atPosition:4 equalToString:@"file" ] == YES
+         && [ self isTokenFromLine:lineIndex atPosition:5 equalToString:@"=" ] == YES
+         && [ self getTokenAsString:&characterPageFileName fromLine:lineIndex atPosition:6 ] == YES )
+    {
+        [ font addCharacterPageFromFile:characterPageFileName ];
+    }
 }
 
 - (void) parseCharactersStartingAtLine:(const NSUInteger)lineIndex
 {
+	int32_t numberOfCharacters = 0;
+    if ( [ self isLowerCaseTokenFromLine:lineIndex atPosition:1 equalToString:@"count" ] == YES
+         && [ self isTokenFromLine:lineIndex atPosition:2 equalToString:@"=" ] == YES
+         && [ self getTokenAsInt:&numberOfCharacters fromLine:lineIndex atPosition:3 ] == YES )
+    {
+        for ( NSUInteger i = lineIndex; i <= lineIndex + numberOfCharacters; i++ )
+        {
+            int32_t characterID;
+            NpBMFontCharacter character;
+
+            if ( [ self isLowerCaseTokenFromLine:i atPosition:0 equalToString:@"char" ] == YES
+                 && [ self tokenCountForLine:i ] == 31 )
+            {
+                if ( [ self isLowerCaseTokenFromLine:i atPosition:1 equalToString:@"id" ] == YES
+                     && [ self getTokenAsInt:&characterID          fromLine:i atPosition:3 ] == YES
+                     && [ self getTokenAsInt:&(character.x)        fromLine:i atPosition:6 ] == YES
+                     && [ self getTokenAsInt:&(character.y)        fromLine:i atPosition:9 ] == YES
+                     && [ self getTokenAsInt:&(character.width)    fromLine:i atPosition:12 ] == YES
+                     && [ self getTokenAsInt:&(character.height)   fromLine:i atPosition:15 ] == YES
+                     && [ self getTokenAsInt:&(character.xOffset)  fromLine:i atPosition:18 ] == YES
+                     && [ self getTokenAsInt:&(character.yOffset)  fromLine:i atPosition:21 ] == YES
+                     && [ self getTokenAsInt:&(character.xAdvance) fromLine:i atPosition:24 ] == YES
+                     && [ self getTokenAsInt:&(character.characterMapIndex) fromLine:i atPosition:27 ] == YES )
+                {
+                    [ font addCharacter:character atIndex:characterID ];
+                }
+            }
+        }
+    }
 }
 
 @end

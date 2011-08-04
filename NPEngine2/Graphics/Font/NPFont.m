@@ -2,9 +2,12 @@
 #import <Foundation/NSException.h>
 #import "Log/NPLog.h"
 #import "Core/Container/NSArray+NPPObject.h"
+#import "Core/Container/NPAssetArray.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Core/String/NPStringList.h"
 #import "Core/NPEngineCore.h"
+#import "Graphics/Texture/NPTexture2D.h"
+#import "Graphics/NPEngineGraphics.h"
 #import "NPFontCompiler.h"
 #import "NPFont.h"
 
@@ -48,6 +51,7 @@
     lineHeight = baseLine = 0;
     textureWidth = textureHeight = 0;
     characterPages = [[ NSMutableArray alloc ] init ];
+    characters = NULL;
 
     return self;
 }
@@ -56,6 +60,7 @@
 {
     [ characterPages removeAllObjects ];
     DESTROY(characterPages);
+    SAFE_FREE(characters);
     SAFE_DESTROY(file);
 
     [ super dealloc ];
@@ -66,6 +71,7 @@
     SAFE_DESTROY(file);
     ready = NO;
 
+    SAFE_FREE(characters);
     SAFE_DESTROY(fontFaceName);
     [ characterPages removeAllObjects ];
     renderedSize = 0;
@@ -143,6 +149,51 @@
     textureHeight = newTextureHeight;
 }
 
+- (void) addCharacterPageFromFile:(NSString *)fileName
+{
+    NPTexture2D * characterPage
+        = [[[ NPEngineGraphics instance ] textures2D ] getAssetWithFileName:fileName ];
+
+    if ( characterPage != nil )
+    {
+        [ characterPages addObject:characterPage ];
+    }
+}
+
+- (void) addCharacter:(const NpBMFontCharacter)character
+              atIndex:(const int32_t)index
+{
+	if (index < 0 || index > 255)
+	{
+		return;
+	}
+
+	const float normaliseTextureCoordinatesX = 1.0f / textureWidth;
+	const float normaliseTextureCoordinatesY = 1.0f / textureHeight;
+
+	// NpBMFontCharacter uses integer coordinates representing pixel centers
+	// NpFontCharacter has it's origin at the lower left and uses normalised coordinates,
+	// so we need to flip the ZtBMFontCharacter's y coordinates and normalise afterwards.
+	NpFontCharacter fontCharacter;
+	fontCharacter.source.min.x = (float)character.x + 0.5f;
+	fontCharacter.source.min.y = (float)textureHeight - ((float)(character.y + character.height - 1) + 0.5f);
+	fontCharacter.source.max.x = (float)(character.x + character.width - 1) + 0.5f;
+	fontCharacter.source.max.y = (float)textureHeight - ((float)character.y + 0.5f);
+	fontCharacter.source.min.x *= normaliseTextureCoordinatesX;
+	fontCharacter.source.min.y *= normaliseTextureCoordinatesY;
+	fontCharacter.source.max.x *= normaliseTextureCoordinatesX;
+	fontCharacter.source.max.y *= normaliseTextureCoordinatesY;
+
+	fontCharacter.characterMapIndex = character.characterMapIndex;
+	fontCharacter.xAdvance = character.xAdvance;
+    fontCharacter.size.x = character.width;
+    fontCharacter.size.y = character.height;
+	fontCharacter.offset.x = character.xOffset;
+	fontCharacter.offset.y = character.yOffset;
+
+    characters[index] = fontCharacter;
+}
+
 - (BOOL) loadFromStream:(id <NPPStream>)stream 
                   error:(NSError **)error
 {
@@ -172,6 +223,9 @@
 
     [ self setName:completeFileName ];
     ASSIGNCOPY(file, completeFileName);
+
+    characters = ALLOC_ARRAY(NpFontCharacter, 256);
+    memset(characters, 0, sizeof(NpFontCharacter) * 256);
 
     NPLOG(@"Loading font \"%@\"", completeFileName);
 
