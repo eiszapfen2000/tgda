@@ -18,4 +18,5 @@ void npmath_initialise()
     npmath_pluecker_initialise();
 
     npmath_ivector_initialise();
+    npmath_irectangle_initialise();
 }

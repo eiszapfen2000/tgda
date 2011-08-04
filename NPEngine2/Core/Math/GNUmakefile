@@ -8,6 +8,7 @@ FMatrix.c \
 FQuaternion.c \
 Matrix.c \
 IVector.c \
+IRectangle.c \
 Quaternion.c \
 Vector.c \
 Plane.c \
@@ -26,10 +27,17 @@ FMatrix.h \
 FQuaternion.h \
 FVector.h \
 Matrix.h \
+IVector.h \
+IRectangle.h \
 Quaternion.h \
 Random.h \
 Vector.h \
+Plane.h \
+FPlane.h \
+Ray.h \
+FRay.h \
 FRectangle.h \
+FVertex.h \
 Pluecker.h \
 FPluecker.h \
 NpMath.h
