@@ -22,6 +22,9 @@
 - (void) clear;
 
 - (GLuint) glID;
+- (NPShader *) vertexShader;
+- (NPShader *) fragmentShader;
+- (NPEffect *) effect;
 
 - (BOOL) loadFromStringList:(NPStringList *)stringList
                       error:(NSError **)error

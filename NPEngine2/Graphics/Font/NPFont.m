@@ -7,6 +7,10 @@
 #import "Core/String/NPStringList.h"
 #import "Core/NPEngineCore.h"
 #import "Graphics/Texture/NPTexture2D.h"
+#import "Graphics/Effect/NPEffect.h"
+#import "Graphics/Effect/NPEffectTechnique.h"
+#import "Graphics/Effect/NPEffectVariableSampler.h"
+#import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/NPEngineGraphics.h"
 #import "NPFontCompiler.h"
 #import "NPFont.h"
@@ -58,10 +62,8 @@
 
 - (void) dealloc
 {
-    [ characterPages removeAllObjects ];
+    [ self clear ];
     DESTROY(characterPages);
-    SAFE_FREE(characters);
-    SAFE_DESTROY(file);
 
     [ super dealloc ];
 }
@@ -74,6 +76,9 @@
     SAFE_FREE(characters);
     SAFE_DESTROY(fontFaceName);
     [ characterPages removeAllObjects ];
+    SAFE_DESTROY(technique);
+    SAFE_DESTROY(characterPage);
+    SAFE_DESTROY(textcolor);
     renderedSize = 0;
     lineHeight = baseLine = 0;
     textureWidth = textureHeight = 0;
@@ -151,12 +156,12 @@
 
 - (void) addCharacterPageFromFile:(NSString *)fileName
 {
-    NPTexture2D * characterPage
+    NPTexture2D * page
         = [[[ NPEngineGraphics instance ] textures2D ] getAssetWithFileName:fileName ];
 
-    if ( characterPage != nil )
+    if ( page != nil )
     {
-        [ characterPages addObject:characterPage ];
+        [ characterPages addObject:page ];
     }
 }
 
@@ -245,6 +250,83 @@
     [ self loadFromStringList:fontScript ];
 
     return YES;
+}
+
+- (void) setEffectTechnique:(NPEffectTechnique *)newTechnique
+{
+    NSAssert(newTechnique != nil, @"");
+
+    technique = RETAIN(newTechnique);
+
+    characterPage = [[ technique effect ] variableWithName:@"characterpage" ];
+    textcolor     = [[ technique effect ] variableWithName:@"textcolor"     ];
+    ASSERT_RETAIN(characterPage);
+    ASSERT_RETAIN(textcolor);
+}
+
+- (void) renderString:(NSString *)string
+            withColor:(const FVector3)color
+           atPosition:(const IVector2)position
+                 size:(const int32_t)size
+{
+    NSAssert(ready && (characters != NULL) && ([ characterPages count ] != 0), @"");
+    NSAssert(technique != nil, @"");
+
+    const float scale = ((float)size) / ((float)abs(renderedSize));
+    int32_t cursorPosition = position.x;
+
+    NSUInteger numberOfCharacters = [ string length ];
+    const char * cString = [ string cStringUsingEncoding:NSASCIIStringEncoding ];
+
+    NSAssert(cString != NULL, @"");
+
+    [ textcolor setValue:color ];
+    [ technique activate ];
+
+    #define round(x) floor((x) + 0.5)
+
+    for ( NSUInteger i = 0; i < numberOfCharacters; i++ )
+    {
+        const int32_t character = cString[i];
+        const NpFontCharacter fontCharacter = characters[character];
+
+        IRectangle r;
+        r.min.x = cursorPosition + (int32_t)round(fontCharacter.offset.x * scale);
+		r.max.x = cursorPosition + (int32_t)round((fontCharacter.size.x + fontCharacter.offset.x) * scale);
+		r.max.y = position.y - (int32_t)round(fontCharacter.offset.y * scale);
+		r.min.y = position.y - (int32_t)round((fontCharacter.size.y + fontCharacter.offset.y) * scale);
+
+		cursorPosition += (int32_t)round(fontCharacter.xAdvance * scale);
+    }
+
+    #undef round
+    /*
+	const float scale = ((float)Size) / abs(RenderedSize_);
+	int32_t cursorPosition = Position.x;
+
+	ztMaterialVariablePool()->setMaterialVariableVector3("textcolor", TextColor);
+	Shader_->activate();
+
+	for (size_t i = 0; i < Text.length(); i++)
+	{
+		const char character = Text.at(i);
+		ZtFontCharacter fontCharacter(Characters_[(size_t)character]);
+
+		ZtIBoundingRectangle v;
+		v.Min_.x = cursorPosition + (int32_t)round(fontCharacter.Offset_.x * scale);
+		v.Max_.x = cursorPosition + (int32_t)round((fontCharacter.Size_.x + fontCharacter.Offset_.x) * scale);
+		v.Max_.y = Position.y - (int32_t)round(fontCharacter.Offset_.y * scale);
+		v.Min_.y = Position.y - (int32_t)round((fontCharacter.Offset_.y + fontCharacter.Size_.y) * scale);
+
+		cursorPosition += (int32_t)round(fontCharacter.XAdvance_ * scale);
+		
+		ztTextureBindingState()->setTexture(
+			static_cast<ZtTexture2D*>(CharacterMaps_.get(fontCharacter.CharacterMapIndex_)));
+		ztTextureBindingState()->activate();
+
+		ZtPrimitivesRendering::render(v, fontCharacter.Source_);
+	}
+    */
 }
 
 @end

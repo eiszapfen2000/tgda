@@ -3,6 +3,9 @@
 #import "Core/Protocols/NPPPersistentObject.h"
 
 @class NSMutableArray;
+@class NPEffectTechnique;
+@class NPEffectVariableSampler;
+@class NPEffectVariableFloat3;
 
 typedef struct NpBMFontCharacter
 {
@@ -40,6 +43,9 @@ NpFontCharacter;
     int32_t textureHeight;
     NSMutableArray * characterPages;
     NpFontCharacter * characters;
+    NPEffectTechnique * technique;
+    NPEffectVariableSampler * characterPage;
+    NPEffectVariableFloat3 * textcolor;
 }
 
 - (id) init;
@@ -65,6 +71,14 @@ NpFontCharacter;
 - (void) addCharacterPageFromFile:(NSString *)fileName;
 - (void) addCharacter:(const NpBMFontCharacter)character
               atIndex:(const int32_t)index
+                     ;
+
+- (void) setEffectTechnique:(NPEffectTechnique *)newTechnique;
+
+- (void) renderString:(NSString *)string
+            withColor:(const FVector3)color
+           atPosition:(const IVector2)position
+                 size:(const int32_t)size
                      ;
 
 @end

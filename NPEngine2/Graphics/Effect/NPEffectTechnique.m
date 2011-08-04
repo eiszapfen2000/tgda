@@ -111,6 +111,21 @@
     return glID;
 }
 
+- (NPShader *) vertexShader
+{
+    return vertexShader;
+}
+
+- (NPShader *) fragmentShader
+{
+    return fragmentShader;
+}
+
+- (NPEffect *) effect
+{
+    return effect;
+}
+
 - (BOOL) loadFromStringList:(NPStringList *)stringList
                       error:(NSError **)error
 {
