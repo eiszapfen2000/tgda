@@ -15,6 +15,7 @@
 #import "Graphics/Texture/NPTextureBindingState.h"
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
+#import "Graphics/Font/NPFont.h"
 #import "Graphics/NPViewport.h"
 #import "Input/NPKeyboard.h"
 #import "Input/NPMouse.h"
@@ -80,6 +81,7 @@ int main (int argc, char **argv)
     glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
     glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
     glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
+    // glew needs compatibility profile
     glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
     
     // Open a window and create its OpenGL context
@@ -157,6 +159,19 @@ int main (int argc, char **argv)
     }
 
     [[ NP Graphics ] checkForGLErrors ];
+
+    NPFont * font = [[ NPFont alloc ] init ];
+    BOOL fontResult
+        = [ font loadFromFile:@"Tahoma.fnt"
+                    arguments:NULL
+                        error:NULL ];
+
+    if ( fontResult == NO )
+    {
+        NSLog(@"FONT FAUIL");
+    }
+
+    DESTROY(font);
 
 
     NSError * sceneError = nil;
