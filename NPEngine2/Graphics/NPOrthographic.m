@@ -152,7 +152,14 @@
     viewBefore       = *[ tState viewMatrix       ];
     projectionBefore = *[ tState projectionMatrix ];
 
-    //fm4_mssss_orthographic_2d_projection_matrix
+    FMatrix4 orthoProjection;
+    fm4_mssss_orthographic_2d_projection_matrix(&orthoProjection,
+        [ NPOrthographic left ], [ NPOrthographic right ],
+        [ NPOrthographic bottom ], [ NPOrthographic top ]);
+
+    [ tState resetModelMatrix ];
+    [ tState resetViewMatrix  ];
+    [ tState setProjectionMatrix:&orthoProjection ];
 }
 
 - (void) deactivate
