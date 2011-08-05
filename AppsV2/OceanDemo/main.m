@@ -16,6 +16,9 @@
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Font/NPFont.h"
+#import "Graphics/State/NPStateConfiguration.h"
+#import "Graphics/State/NPBlendingState.h"
+#import "Graphics/State/NPDepthTestState.h"
 #import "Graphics/NPViewport.h"
 #import "Graphics/NPOrthographic.h"
 #import "Input/NPKeyboard.h"
@@ -163,7 +166,7 @@ int main (int argc, char **argv)
 
     NPFont * font = [[ NPFont alloc ] init ];
     BOOL fontResult
-        = [ font loadFromFile:@"Tahoma.fnt"
+        = [ font loadFromFile:@"Tahoma24.fnt"
                     arguments:nil
                         error:NULL ];
 
@@ -172,7 +175,22 @@ int main (int argc, char **argv)
         NSLog(@"FONT FAUIL");
     }
 
-    DESTROY(font);
+    [[ NP Graphics ] checkForGLErrors ];
+
+    NPEffect * fontEffect = [[ NPEffect alloc ] init ];
+    BOOL effectResult
+        = [ fontEffect loadFromFile:@"font.effect"
+                          arguments:nil
+                              error:NULL ];
+
+    if ( effectResult == NO )
+    {
+        NSLog(@"EFFECT FAUIL");
+    }
+
+    [[ NP Graphics ] checkForGLErrors ];
+
+    [ font setEffectTechnique:[ fontEffect techniqueWithName:@"font" ]];
 
     NSError * sceneError = nil;
     ODScene * scene = [[ ODScene alloc ] init ];
@@ -221,6 +239,28 @@ int main (int argc, char **argv)
 
         // menu
         [[[ NP Graphics ] orthographic ] activate ];
+
+        NPBlendingState * bState
+            = [[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ];
+
+        NPDepthTestState * dState
+            = [[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ];
+
+        [ bState setBlendingMode:NpBlendingAverage ];
+        [ bState setEnabled:YES ];
+        [ bState activate ];
+
+        [ dState setWriteEnabled:NO ];
+        [ dState setEnabled:NO ];
+        [ dState activate ];
+
+        IVector2 textPosition = {100, 200};
+        FVector3 textColor = {1.0f, 1.0f, 1.0f};
+        [ font renderString:@"GCNB" withColor:textColor atPosition:textPosition size:24 ];
+
+        [ bState deactivate ];
+        [ dState deactivate ];
+
         [[[ NP Graphics ] orthographic ] deactivate ];
 
         // check for GL errors
@@ -238,6 +278,8 @@ int main (int argc, char **argv)
 
     DESTROY(scene);
     DESTROY(model);
+    DESTROY(font);
+    DESTROY(fontEffect);
 
     // delete static data
     [ ODScene shutdown ];
