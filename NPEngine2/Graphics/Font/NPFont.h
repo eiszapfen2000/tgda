@@ -26,7 +26,7 @@ typedef struct NpFontCharacter
 	IVector2 size;
 	IVector2 offset;	
 	int32_t xAdvance;
-	int32_t characterMapIndex;
+	int32_t characterPage;
 }
 NpFontCharacter;
 
