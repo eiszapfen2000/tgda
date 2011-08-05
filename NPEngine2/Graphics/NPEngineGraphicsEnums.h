@@ -292,6 +292,20 @@ typedef enum NpPrimitveType
 }
 NpPrimitveType;
 
+typedef enum NpOrthographicAlignment
+{
+    NpOrthographicAlignUnknown = -1,
+    NpOrthographicAlignTopLeft = 0,
+    NpOrthographicAlignTop = 1,
+    NpOrthographicAlignTopRight = 2,
+    NpOrthographicAlignRight = 3,
+    NpOrthographicAlignBottomRight = 4,
+    NpOrthographicAlignBottom = 5,
+    NpOrthographicAlignBottomLeft = 6,
+    NpOrthographicAlignLeft = 7
+}
+NpOrthographicAlignment;
+
 GLenum getGLTextureDataFormat(const NpImageDataFormat dataFormat);
 GLenum getGLTexturePixelFormat(const NpImagePixelFormat pixelFormat);
 GLenum getGLTextureWrap(const NpTextureWrap textureWrap);
