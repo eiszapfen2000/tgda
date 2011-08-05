@@ -1,4 +1,5 @@
 #import <Foundation/NSArray.h>
+#import <Foundation/NSDictionary.h>
 #import <Foundation/NSException.h>
 #import "Log/NPLog.h"
 #import "Core/Container/NSArray+NPPObject.h"
@@ -7,6 +8,7 @@
 #import "Core/String/NPStringList.h"
 #import "Core/NPEngineCore.h"
 #import "Graphics/Texture/NPTexture2D.h"
+#import "Graphics/Texture/NPTextureBindingState.h"
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffectVariableSampler.h"
@@ -156,8 +158,12 @@
 
 - (void) addCharacterPageFromFile:(NSString *)fileName
 {
+    NSDictionary * arguments
+        = [ NSDictionary dictionaryWithObject:@"nearest" forKey:@"Filter" ];
+
     NPTexture2D * page
-        = [[[ NPEngineGraphics instance ] textures2D ] getAssetWithFileName:fileName ];
+        = [[[ NPEngineGraphics instance ] textures2D ]
+                 getAssetWithFileName:fileName arguments:arguments];
 
     if ( page != nil )
     {
@@ -189,7 +195,7 @@
 	fontCharacter.source.max.x *= normaliseTextureCoordinatesX;
 	fontCharacter.source.max.y *= normaliseTextureCoordinatesY;
 
-	fontCharacter.characterMapIndex = character.characterMapIndex;
+	fontCharacter.characterPage = character.characterMapIndex;
 	fontCharacter.xAdvance = character.xAdvance;
     fontCharacter.size.x = character.width;
     fontCharacter.size.y = character.height;
@@ -283,6 +289,9 @@
     [ textcolor setValue:color ];
     [ technique activate ];
 
+    NPTextureBindingState * texState
+        = [[ NPEngineGraphics instance ] textureBindingState ];
+
     #define round(x) floor((x) + 0.5)
 
     for ( NSUInteger i = 0; i < numberOfCharacters; i++ )
@@ -295,6 +304,20 @@
 		r.max.x = cursorPosition + (int32_t)round((fontCharacter.size.x + fontCharacter.offset.x) * scale);
 		r.max.y = position.y - (int32_t)round(fontCharacter.offset.y * scale);
 		r.min.y = position.y - (int32_t)round((fontCharacter.size.y + fontCharacter.offset.y) * scale);
+
+        [ texState setTexture:[ characterPages objectAtIndex:fontCharacter.characterPage ] texelUnit:0 ];
+        [ texState activate ];
+
+        glBegin(GL_QUADS);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, fontCharacter.source.min.x, fontCharacter.source.min.y);
+            glVertex2i(r.min.x, r.min.y);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, fontCharacter.source.max.x, fontCharacter.source.min.y);
+            glVertex2i(r.max.x, r.min.y);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, fontCharacter.source.max.x, fontCharacter.source.max.y);
+            glVertex2i(r.max.x, r.max.y);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, fontCharacter.source.min.x, fontCharacter.source.max.y);
+            glVertex2i(r.min.x, r.max.y);
+        glEnd();
 
 		cursorPosition += (int32_t)round(fontCharacter.xAdvance * scale);
     }
