@@ -323,33 +323,6 @@
     }
 
     #undef round
-    /*
-	const float scale = ((float)Size) / abs(RenderedSize_);
-	int32_t cursorPosition = Position.x;
-
-	ztMaterialVariablePool()->setMaterialVariableVector3("textcolor", TextColor);
-	Shader_->activate();
-
-	for (size_t i = 0; i < Text.length(); i++)
-	{
-		const char character = Text.at(i);
-		ZtFontCharacter fontCharacter(Characters_[(size_t)character]);
-
-		ZtIBoundingRectangle v;
-		v.Min_.x = cursorPosition + (int32_t)round(fontCharacter.Offset_.x * scale);
-		v.Max_.x = cursorPosition + (int32_t)round((fontCharacter.Size_.x + fontCharacter.Offset_.x) * scale);
-		v.Max_.y = Position.y - (int32_t)round(fontCharacter.Offset_.y * scale);
-		v.Min_.y = Position.y - (int32_t)round((fontCharacter.Offset_.y + fontCharacter.Size_.y) * scale);
-
-		cursorPosition += (int32_t)round(fontCharacter.XAdvance_ * scale);
-		
-		ztTextureBindingState()->setTexture(
-			static_cast<ZtTexture2D*>(CharacterMaps_.get(fontCharacter.CharacterMapIndex_)));
-		ztTextureBindingState()->activate();
-
-		ZtPrimitivesRendering::render(v, fontCharacter.Source_);
-	}
-    */
 }
 
 @end
