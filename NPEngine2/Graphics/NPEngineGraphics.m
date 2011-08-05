@@ -17,6 +17,7 @@
 #import "Effect/NPEffect.h"
 #import "State/NPStateConfiguration.h"
 #import "NPViewport.h"
+#import "NPOrthographic.h"
 #import "NPEngineGraphicsErrors.h"
 #import "NPEngineGraphicsStringEnumConversion.h"
 #import "NPEngineGraphicsStringToClassConversion.h"
@@ -103,6 +104,9 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     viewport
         = [[ NPViewport alloc ] initWithName:@"NP Engine Viewport" ];
 
+    orthographic
+        = [[ NPOrthographic alloc ] initWithName:@"NP Engine Orthographic Rendering" ];
+
     return self;
 }
 
@@ -110,6 +114,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 {
     ilShutDown();
 
+    DESTROY(orthographic);
     DESTROY(viewport);
     DESTROY(stateConfiguration);
     DESTROY(textureBindingState);
@@ -162,6 +167,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 - (NPViewport *) viewport
 {
     return viewport;
+}
+
+- (NPOrthographic *) orthographic
+{
+    return orthographic;
 }
 
 - (BOOL) startup

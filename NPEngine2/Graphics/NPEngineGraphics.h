@@ -7,6 +7,7 @@
 @class NPTextureBindingState;
 @class NPStateConfiguration;
 @class NPViewport;
+@class NPOrthographic;
 
 @interface NPEngineGraphics : NSObject < NPPObject >
 {
@@ -33,6 +34,7 @@
     NPTextureBindingState * textureBindingState;
     NPStateConfiguration * stateConfiguration;
     NPViewport * viewport;
+    NPOrthographic * orthographic;
 }
 
 + (NPEngineGraphics *) instance;
@@ -50,6 +52,7 @@
 - (NPTextureBindingState *) textureBindingState;
 - (NPStateConfiguration *) stateConfiguration;
 - (NPViewport *) viewport;
+- (NPOrthographic *) orthographic;
 
 - (BOOL) startup;
 - (void) shutdown;

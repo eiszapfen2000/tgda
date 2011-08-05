@@ -22,7 +22,8 @@ NPEngineGraphicsStringEnumConversion.m \
 NPEngineGraphicsStringToClassConversion.m \
 NSString+NPEngineGraphicsEnums.m \
 NSString+NPEngineGraphicsClasses.m \
-NPViewport.m
+NPViewport.m \
+NPOrthographic.m
 
 libNPEngineGraphics_HEADER_FILES = \
 NPEngineGraphics.h \
@@ -32,7 +33,8 @@ NPEngineGraphicsStringEnumConversion.h \
 NPEngineGraphicsStringToClassConversion.h \
 NSString+NPEngineGraphicsEnums.h \
 NSString+NPEngineGraphicsClasses.h \
-NPViewport.h
+NPViewport.h \
+NPOrthographic.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make
