@@ -14,6 +14,10 @@
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 
+- (uint32_t) left;
+- (uint32_t) right;
+- (uint32_t) bottom;
+- (uint32_t) top;
 - (uint32_t) width;
 - (uint32_t) height;
 - (float) aspectRatio;

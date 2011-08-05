@@ -19,6 +19,26 @@
     return self;
 }
 
+- (uint32_t) left
+{
+    return left;
+}
+
+- (uint32_t) right
+{
+    return right;
+}
+
+- (uint32_t) bottom
+{
+    return bottom;
+}
+
+- (uint32_t) top
+{
+    return top;
+}
+
 - (uint32_t) width
 {
     return right - left;
