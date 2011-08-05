@@ -17,6 +17,7 @@
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Font/NPFont.h"
 #import "Graphics/NPViewport.h"
+#import "Graphics/NPOrthographic.h"
 #import "Input/NPKeyboard.h"
 #import "Input/NPMouse.h"
 #import "Input/NPInputAction.h"
@@ -150,7 +151,7 @@ int main (int argc, char **argv)
     NPSUX2Model * model = [[ NPSUX2Model alloc ] init ];
     BOOL modelResult
          = [ model loadFromFile:@"skybox.model"
-                      arguments:NULL
+                      arguments:nil
                           error:NULL ];
 
     if ( modelResult == NO )
@@ -163,7 +164,7 @@ int main (int argc, char **argv)
     NPFont * font = [[ NPFont alloc ] init ];
     BOOL fontResult
         = [ font loadFromFile:@"Tahoma.fnt"
-                    arguments:NULL
+                    arguments:nil
                         error:NULL ];
 
     if ( fontResult == NO )
@@ -172,7 +173,6 @@ int main (int argc, char **argv)
     }
 
     DESTROY(font);
-
 
     NSError * sceneError = nil;
     ODScene * scene = [[ ODScene alloc ] init ];
@@ -186,6 +186,7 @@ int main (int argc, char **argv)
 
     [[ NP Graphics ] checkForGLErrors ];
 
+    // delete all autoreleased objects created during resource loading
     DESTROY(resourcePool);
 
     // run loop
@@ -217,6 +218,10 @@ int main (int argc, char **argv)
 
         // scene render
         [ scene render ];
+
+        // menu
+        [[[ NP Graphics ] orthographic ] activate ];
+        [[[ NP Graphics ] orthographic ] deactivate ];
 
         // check for GL errors
         [[ NP Graphics ] checkForGLErrors ];
