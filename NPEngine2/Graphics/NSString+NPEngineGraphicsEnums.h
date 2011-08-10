@@ -11,6 +11,7 @@
 - (NpTextureType) textureTypeValue;
 - (NpEffectSemantic) semanticValue;
 - (NpTexture2DFilter) textureFilterValueWithDefault:(NpTexture2DFilter)defaultValue;
+- (NpOrthographicAlignment) orthographicAlignmentValueWithDefault:(NpOrthographicAlignment)defaultValue;
 
 + (NSString *) stringForPixelFormat:(const NpImagePixelFormat)pixelFormat;
 + (NSString *) stringForImageDataFormat:(const NpImageDataFormat)dataFormat;
