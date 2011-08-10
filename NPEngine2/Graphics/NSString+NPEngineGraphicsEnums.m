@@ -57,6 +57,13 @@
                             defaultFilter:defaultValue ];
 }
 
+- (NpOrthographicAlignment) orthographicAlignmentValueWithDefault:(NpOrthographicAlignment)defaultValue
+{
+    return [[[ NPEngineGraphics instance ] stringEnumConversion ]
+                   orthographicAlignmentForString:self
+                                 defaultAlignment:defaultValue ];
+}
+
 + (NSString *) stringForPixelFormat:(const NpImagePixelFormat)pixelFormat
 {
     return [[[ NPEngineGraphics instance ] stringEnumConversion ]
