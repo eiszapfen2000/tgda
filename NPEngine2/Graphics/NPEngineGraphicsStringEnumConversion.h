@@ -32,6 +32,10 @@
                                defaultFilter:(NpTexture2DFilter)defaultFilter
                                             ;
 
+- (NpOrthographicAlignment) orthographicAlignmentForString:(NSString *)string
+                                          defaultAlignment:(NpOrthographicAlignment)defaultAlignment
+                                                          ;
+
 - (NSString *) stringForPixelFormat:(const NpImagePixelFormat)pixelFormat;
 - (NSString *) stringForImageDataFormat:(const NpImageDataFormat)dataFormat;
 
