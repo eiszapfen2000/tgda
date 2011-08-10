@@ -9,6 +9,7 @@ static NSMutableDictionary * uniformTypes = nil;
 static NSMutableDictionary * textureTypes = nil;
 static NSMutableDictionary * semantics = nil;
 static NSMutableDictionary * textureFilters = nil;
+static NSMutableDictionary * orthographicAlignments = nil;
 static NSMutableDictionary * pixelFormats = nil;
 static NSMutableDictionary * imageDataFormats = nil;
 
@@ -22,16 +23,17 @@ static NSMutableDictionary * imageDataFormats = nil;
 
 + (void) initialize
 {
-    blendingModes       = [[ NSMutableDictionary alloc ] init ];
-    comparisonFunctions = [[ NSMutableDictionary alloc ] init ];
-    cullfaces           = [[ NSMutableDictionary alloc ] init ];
-    polygonFillModes    = [[ NSMutableDictionary alloc ] init ];
-    uniformTypes        = [[ NSMutableDictionary alloc ] init ];
-    textureTypes        = [[ NSMutableDictionary alloc ] init ];
-    semantics           = [[ NSMutableDictionary alloc ] init ];
-    textureFilters      = [[ NSMutableDictionary alloc ] init ];
-    pixelFormats        = [[ NSMutableDictionary alloc ] init ];
-    imageDataFormats    = [[ NSMutableDictionary alloc ] init ];
+    blendingModes          = [[ NSMutableDictionary alloc ] init ];
+    comparisonFunctions    = [[ NSMutableDictionary alloc ] init ];
+    cullfaces              = [[ NSMutableDictionary alloc ] init ];
+    polygonFillModes       = [[ NSMutableDictionary alloc ] init ];
+    uniformTypes           = [[ NSMutableDictionary alloc ] init ];
+    textureTypes           = [[ NSMutableDictionary alloc ] init ];
+    semantics              = [[ NSMutableDictionary alloc ] init ];
+    textureFilters         = [[ NSMutableDictionary alloc ] init ];
+    orthographicAlignments = [[ NSMutableDictionary alloc ] init ];
+    pixelFormats           = [[ NSMutableDictionary alloc ] init ];
+    imageDataFormats       = [[ NSMutableDictionary alloc ] init ];
 
     INSERTENUM(blendingModes, NpBlendingAdditive, @"additive");
     INSERTENUM(blendingModes, NpBlendingSubtractive, @"subtractive");
@@ -88,6 +90,15 @@ static NSMutableDictionary * imageDataFormats = nil;
     INSERTENUM(textureFilters, NpTexture2DFilterNearest, @"nearest");
     INSERTENUM(textureFilters, NpTexture2DFilterLinear, @"linear");
     INSERTENUM(textureFilters, NpTexture2DFilterTrilinear, @"trilinear");
+
+    INSERTENUM(orthographicAlignments, NpOrthographicAlignTopLeft, @"topleft");
+    INSERTENUM(orthographicAlignments, NpOrthographicAlignTop, @"top");
+    INSERTENUM(orthographicAlignments, NpOrthographicAlignTopRight, @"topright");
+    INSERTENUM(orthographicAlignments, NpOrthographicAlignRight, @"right");
+    INSERTENUM(orthographicAlignments, NpOrthographicAlignBottomRight, @"bottomright");
+    INSERTENUM(orthographicAlignments, NpOrthographicAlignBottom, @"bottom");
+    INSERTENUM(orthographicAlignments, NpOrthographicAlignBottomLeft, @"bottomleft");
+    INSERTENUM(orthographicAlignments, NpOrthographicAlignLeft, @"left");
 
     INSERTSTRING(pixelFormats, @"Unknown", NpImagePixelFormatUnknown);
     INSERTSTRING(pixelFormats, @"R", NpImagePixelFormatR);
@@ -219,6 +230,19 @@ static NSMutableDictionary * imageDataFormats = nil;
     if ( n != nil )
     {
         result = (NpTexture2DFilter)[ n intValue ];
+    }
+
+    return result;
+}
+
+- (NpOrthographicAlignment) orthographicAlignmentForString:(NSString *)string
+                                          defaultAlignment:(NpOrthographicAlignment)defaultAlignment
+{
+    NpOrthographicAlignment result = defaultAlignment;
+    NSNumber * n = [ orthographicAlignments objectForKey:string ];
+    if ( n != nil )
+    {
+        result = (NpOrthographicAlignment)[ n intValue ];
     }
 
     return result;
