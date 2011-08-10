@@ -3,7 +3,8 @@ include $(GNUSTEP_MAKEFILES)/common.make
 TOOL_NAME=OceanDemo
 
 OceanDemo_SUBPROJECTS = \
-    Entities
+    Entities \
+    Menu
 
 OceanDemo_HEADER_FILES = \
     ODScene.h
