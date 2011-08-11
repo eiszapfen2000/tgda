@@ -27,6 +27,7 @@
 #import "Input/NPInputActions.h"
 #import "NP.h"
 #import "Entities/ODPerlinNoise.h"
+#import "Menu/ODMenu.h"
 #import "ODScene.h"
 #import "GL/glfw.h"
 
@@ -43,6 +44,8 @@ void GLFWCALL mouse_pos_callback(int x, int y)
 {
     mousePosition.x = x;
     mousePosition.y = y;
+
+    //NSLog(@"%d %d", x, y);
 }
 
 void mouse_button_callback(int button, int state)
