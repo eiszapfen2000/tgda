@@ -32,6 +32,14 @@ IRectangle * irectangle_free(IRectangle * r)
     return npfreenode_free(r, NP_IRECTANGLE_FREELIST);
 }
 
+void irectangle_ssss_init_with_min_max_r(int32_t minX, int32_t minY, int32_t maxX, int32_t maxY, IRectangle * rectangle)
+{
+    rectangle->min.x = minX;
+    rectangle->min.y = minY;
+    rectangle->max.x = maxX;
+    rectangle->max.y = maxY;    
+}
+
 void irectangle_vv_init_with_min_max_r(IVector2 * min, IVector2 * max, IRectangle * rectangle)
 {
     rectangle->min.x = min->x;
