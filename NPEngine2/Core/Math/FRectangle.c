@@ -32,6 +32,14 @@ FRectangle * frectangle_free(FRectangle * r)
     return npfreenode_free(r, NP_FRECTANGLE_FREELIST);
 }
 
+void frectangle_ssss_init_with_min_max_r(float minX, float minY, float maxX, float maxY, FRectangle * rectangle)
+{
+    rectangle->min.x = minX;
+    rectangle->min.y = minY;
+    rectangle->max.x = maxX;
+    rectangle->max.y = maxY;
+}
+
 void frectangle_vv_init_with_min_max_r(FVector2 * min, FVector2 * max, FRectangle * rectangle)
 {
     rectangle->min.x = min->x;
