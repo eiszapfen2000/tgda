@@ -99,7 +99,6 @@
     menuItems = [[ NSMutableArray alloc ] init ];
     menuActive = NO;
 
-
     menuClickAction
         = [[[ NPEngineInput instance ] inputActions ]
                 addInputActionWithName:@"Menu Click"
