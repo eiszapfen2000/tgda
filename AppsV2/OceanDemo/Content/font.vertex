@@ -1,7 +1,7 @@
 #version 150
 #extension GL_ARB_explicit_attrib_location : enable
 
-layout(location = 0) in vec3 position;
+layout(location = 0) in vec4 position;
 layout(location = 3) in vec2 texcoordsIn;
 
 out vec2 texcoordsOut;
@@ -9,5 +9,5 @@ out vec2 texcoordsOut;
 void main()
 {
     texcoordsOut = texcoordsIn;
-	gl_Position = np_modelviewprojectionmatrix * vec4(position.xyz, 1.0f);
+	gl_Position = np_modelviewprojectionmatrix * position;
 }
