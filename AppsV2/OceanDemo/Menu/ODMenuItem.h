@@ -11,11 +11,15 @@
     ODMenu * menu;
     NpOrthographicAlignment alignment;
     FRectangle geometry;
+    FRectangle alignedGeometry;
     uint32_t textSize;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
+- (id) initWithName:(NSString *)newName
+               menu:(ODMenu *)newMenu
+                   ;
 - (void) dealloc;
 
 - (BOOL) loadFromDictionary:(NSDictionary *)source

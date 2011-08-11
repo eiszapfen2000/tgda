@@ -3,6 +3,7 @@
 #import "Core/Protocols/NPPPersistentObject.h"
 #import "Graphics/NPEngineGraphicsEnums.h"
 
+@class NSMutableArray;
 @class NSMutableDictionary;
 @class NPInputAction;
 @class NPFont;
@@ -31,6 +32,8 @@
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
+
+- (void) clear;
 
 - (void) update:(const float)frameTime;
 - (void) render;

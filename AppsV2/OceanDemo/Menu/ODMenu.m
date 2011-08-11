@@ -1,11 +1,21 @@
 #import <Foundation/NSArray.h>
 #import <Foundation/NSDictionary.h>
+#import <Foundation/NSException.h>
+#import "Log/NPLog.h"
 #import "Core/Container/NSArray+NPPObject.h"
 #import "Core/Container/NSArray+NPPPersistentObject.h"
+#import "Core/Container/NPAssetArray.h"
+#import "Core/Utilities/NSError+NPEngine.h"
+#import "Core/NPEngineCore.h"
+#import "Graphics/Effect/NPEffect.h"
+#import "Graphics/Font/NPFont.h"
 #import "Graphics/NPOrthographic.h"
+#import "Graphics/NPEngineGraphics.h"
 #import "Input/NPInputAction.h"
 #import "Input/NPInputActions.h"
 #import "Input/NPEngineInput.h"
+#import "ODMenuItem.h"
+#import "ODCheckboxItem.h"
 #import "ODMenu.h"
 
 @implementation ODMenu
@@ -114,19 +124,27 @@
 
 - (void) dealloc
 {
+    [ self clear ];
+
     [[[ NPEngineInput instance ]
          inputActions ] removeInputAction:menuClickAction ];
 
     [[[ NPEngineInput instance ] 
          inputActions ] removeInputAction:menuActivationAction ];
 
-    [ textures  removeAllObjects ];
-    [ menuItems removeAllObjects ];
-
     DESTROY(textures);
     DESTROY(menuItems);
 
     [ super dealloc ];
+}
+
+- (void) clear
+{
+    [ textures  removeAllObjects ];
+    [ menuItems removeAllObjects ];
+
+    SAFE_DESTROY(effect);
+    SAFE_DESTROY(font);
 }
 
 - (BOOL) ready
@@ -149,95 +167,79 @@
             arguments:(NSDictionary *)arguments
                 error:(NSError **)error
 {
-    return NO;
-}
+    [ self clear ];
 
-/*
-- (BOOL) loadFromPath:(NSString *)path
-{
-    NSString * absolutePath = [[[ NP Core ] pathManager ] getAbsoluteFilePath:path ];
+    // check if file is to be found
+    NSString * completeFileName
+        = [[[ NPEngineCore instance ] localPathManager ] getAbsolutePath:fileName ];
 
-    if ( [ absolutePath isEqual:@"" ] == YES )
+    if ( completeFileName == nil )
     {
-        return NO;
-    }
-
-    NSDictionary * menu = [ NSDictionary dictionaryWithContentsOfFile:absolutePath ];
-
-    NSString * effectString = [ menu objectForKey:@"Effect" ];
-    NSString * fontString   = [ menu objectForKey:@"Font" ];
-    NSDictionary * texturesDictionary = [ menu objectForKey:@"Textures" ];
-    NSDictionary * items = [ menu objectForKey:@"Items" ];
-
-    if ( effectString == nil )
-    {
-        NPLOG_ERROR(@"%@: Effect missing", name);
-        return NO;
-    }
-
-    effect = [[[ NP Graphics ] effectManager ] loadEffectFromPath:effectString ];
-
-    if ( fontString == nil )
-    {
-        NPLOG_ERROR(@"%@: Font missing", name);
-        return NO;
-    }
-
-    font = [[[ NP Graphics ] fontManager ] loadFontFromPath:fontString ];
-
-    if ( texturesDictionary == nil )
-    {
-        NPLOG_ERROR(@"%@: Textures missing", name);
-        return NO;
-    }
-
-    NSEnumerator * keyEnumerator = [ texturesDictionary keyEnumerator ];
-    NSString * key;
-
-    while ( (key = [ keyEnumerator nextObject ]) )
-    {
-        NSString * path = [ texturesDictionary objectForKey:key ];
-        NPTexture * texture = [[[ NP Graphics ] textureManager ] loadTextureFromPath:path ];
-
-        if ( texture != nil )
+        if ( error != NULL )
         {
-            [ textures setObject:texture forKey:key ];
+            *error = [ NSError fileNotFoundError:fileName ];
         }
-    }
 
-    if ( items == nil )
-    {
-        NPLOG_ERROR(@"%@: Items missing", name);
         return NO;
     }
 
-    keyEnumerator = [ items keyEnumerator ];
-    NSDictionary * itemData;
-    NSString * itemType;
-    Class itemClass;
+    [ self setName:completeFileName ];
+    ASSIGNCOPY(file, completeFileName);
 
-    while ( (key = [ keyEnumerator nextObject ]) )
+    NPLOG(@"Loading menu \"%@\"", completeFileName);
+
+    NSDictionary * menu 
+        = [ NSDictionary dictionaryWithContentsOfFile:completeFileName ];
+
+    NSAssert(menu != nil, @"");
+
+    NSString * effectString    = [ menu objectForKey:@"Effect" ];
+    NSString * fontString      = [ menu objectForKey:@"Font"   ];
+    NSDictionary * itemSources = [ menu objectForKey:@"Items"  ];
+
+    NSAssert((effectString != nil) && (fontString != nil)
+             && (itemSources != nil), @"");
+
+    effect
+        = [[[ NPEngineGraphics instance ]
+                effects ] getAssetWithFileName:effectString ];
+
+    ASSERT_RETAIN(effect);
+
+    font = [[ NPFont alloc ] init ];
+    BOOL fontResult
+        = [ font loadFromFile:fontString
+                    arguments:nil
+                        error:error ];
+
+    NSAssert(fontResult == YES, @"");
+
+    NSString * key;
+    Class itemClass;
+    NSString * itemType;
+    NSDictionary * itemSource;
+    NSEnumerator * keyEnumerator = [ itemSources keyEnumerator ];
+
+    while (( key = [ keyEnumerator nextObject ] ))
     {
-        itemData = [ items objectForKey:key ];
-        itemType = [ itemData objectForKey:@"Type" ];
+        itemSource = [ itemSources objectForKey:key ];
+        itemType   = [ itemSource  objectForKey:@"Type" ];
 
         itemClass = NSClassFromString(itemType);
         NSAssert1(itemClass != Nil, @"Invalid Class Name %@", itemType);
 
-        id item = [[ itemClass alloc ] initWithName:key parent:self ];
+        id item = [[ itemClass alloc ] initWithName:key menu:self ];
 
-        if ( [ item loadFromDictionary:itemData ] == YES )
+        if ( [ item loadFromDictionary:itemSource error:error ] == YES )
         {
-            [ menuItems setObject:item forKey:key ];
+            [ menuItems addObject:item ];
         }
 
-        [ item release ];
+        DESTROY(item);
     }
 
-    return YES;    
+    return YES;
 }
-
-*/
 
 - (void) update:(Float)frameTime
 {
