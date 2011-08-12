@@ -44,8 +44,6 @@ void GLFWCALL mouse_pos_callback(int x, int y)
 {
     mousePosition.x = x;
     mousePosition.y = y;
-
-    //NSLog(@"%d %d", x, y);
 }
 
 void mouse_button_callback(int button, int state)
@@ -63,8 +61,6 @@ void GLFWCALL window_resize_callback(int width, int height)
 {
     windowWidth = width;
     windowHeight = height;
-
-    NSLog(@"%d %d", windowWidth, windowHeight);
 }
 
 int running = GL_TRUE;
@@ -207,6 +203,17 @@ int main (int argc, char **argv)
 
     [[ NP Graphics ] checkForGLErrors ];
 
+    ODMenu * menu = [[ ODMenu alloc ] init ];
+    BOOL menuResult
+        = [ menu loadFromFile:@"test.menu"
+                    arguments:nil
+                        error:NULL ];
+
+    if ( menuResult == NO )
+    {
+        NSLog(@"MENU FAIL");
+    }
+
     // delete all autoreleased objects created during resource loading
     DESTROY(resourcePool);
 
@@ -237,6 +244,9 @@ int main (int argc, char **argv)
         // update scene
         [ scene update:frameTime ];
 
+        // update menu
+        [ menu update:frameTime ];
+
         // scene render
         [ scene render ];
 
@@ -261,6 +271,8 @@ int main (int argc, char **argv)
         FVector3 textColor = {1.0f, 1.0f, 1.0f};
         [ font renderString:@"GCNB" withColor:textColor atPosition:textPosition size:24 ];
 
+        [ menu render ];
+
         [ bState deactivate ];
         [ dState deactivate ];
 
@@ -283,6 +295,7 @@ int main (int argc, char **argv)
     DESTROY(model);
     DESTROY(font);
     DESTROY(fontEffect);
+    DESTROY(menu);
 
     // delete static data
     [ ODScene shutdown ];

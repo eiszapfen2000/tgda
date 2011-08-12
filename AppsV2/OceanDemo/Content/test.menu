@@ -1,6 +1,6 @@
 {
     Effect = "menu.effect";
-    Font = "Tahoma16.font";
+    Font = "Tahoma16.fnt";
 
     Textures = 
     {
@@ -17,9 +17,9 @@
         {
             Type = "ODCheckboxItem";
             Description = "Nix";
-            Alignment = "Left";
-            Position = ("0.1", "0.2" );
-            Size = ( "0.08", "0.08" );
+            Alignment = "TopLeft";
+            Position = ("100", "100" );
+            Size = ( "100", "100" );
             Checked = "YES";
             TargetObject = "Projector";
             TargetProperty = "connectedToCamera";

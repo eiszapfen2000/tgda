@@ -1,0 +1,21 @@
+effect "menu":
+
+technique "color"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform vec4 color;
+    # shaders
+    set vertex shader "color.vertex"
+    set fragment shader "color.fragment"
+}
+
+technique "texture"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform sampler2D colormap;
+    # shaders
+    set vertex shader "simpletextured.vertex"
+    set fragment shader "simpletextured.fragment"
+}
