@@ -19,6 +19,8 @@
 #import "NPEffectTechniqueVariable.h"
 #import "NPEffectTechnique.h"
 
+static NPEffectTechnique * currentTechnique = nil;
+
 @interface NPEffect (Private)
 
 - (id) registerEffectVariableSampler:(NSString *)variableName
@@ -170,7 +172,11 @@
 
 - (void) activate:(BOOL)force
 {
-    glUseProgram(glID);
+    if ( currentTechnique != self)
+    {
+        glUseProgram(glID);
+        currentTechnique = self;
+    }
 
     [ self activateVariables ];
 }

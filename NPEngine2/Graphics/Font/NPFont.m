@@ -238,6 +238,7 @@
     characters = ALLOC_ARRAY(NpFontCharacter, 256);
     memset(characters, 0, sizeof(NpFontCharacter) * 256);
 
+    NPLOG(@"");
     NPLOG(@"Loading font \"%@\"", completeFileName);
 
     NPStringList * fontScript
