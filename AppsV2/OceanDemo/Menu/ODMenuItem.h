@@ -20,7 +20,6 @@
 - (id) initWithName:(NSString *)newName
                menu:(ODMenu *)newMenu
                    ;
-- (void) dealloc;
 
 - (BOOL) loadFromDictionary:(NSDictionary *)source
                       error:(NSError **)error

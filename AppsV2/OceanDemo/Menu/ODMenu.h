@@ -1,3 +1,4 @@
+#import "Core/Math/FVector.h"
 #import "Core/Math/FRectangle.h"
 #import "Core/NPObject/NPObject.h"
 #import "Core/Protocols/NPPPersistentObject.h"
@@ -35,6 +36,11 @@
 
 - (void) clear;
 
+- (NPFont *) font;
+- (NPEffect *) effect;
+
+- (BOOL) isHit:(const FVector2)mousePosition;
+- (void) onClick:(const FVector2)mousePosition;
 - (void) update:(const float)frameTime;
 - (void) render;
 

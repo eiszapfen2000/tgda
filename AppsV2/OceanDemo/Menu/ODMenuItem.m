@@ -37,11 +37,6 @@
     return self;
 }
 
-- (void) dealloc
-{
-    [ super dealloc ];
-}
-
 - (BOOL) loadFromDictionary:(NSDictionary *)source
                       error:(NSError **)error
 {
@@ -59,7 +54,7 @@
 
     // alignment
     alignment
-        = [ alignmentString
+        = [[ alignmentString lowercaseString ]
                 orthographicAlignmentValueWithDefault:NpOrthographicAlignUnknown ];
     
     // position and size
@@ -93,5 +88,5 @@
     [ self subclassResponsibility:_cmd ];
 }
 
-
 @end
+

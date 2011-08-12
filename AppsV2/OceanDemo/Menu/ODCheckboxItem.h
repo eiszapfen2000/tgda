@@ -7,6 +7,8 @@
     id target;
     uint32_t size;
     int32_t offset;
+
+    FRectangle pixelCenterGeometry;
 }
 
 - (id) init;
@@ -14,7 +16,6 @@
 - (id) initWithName:(NSString *)newName
                menu:(ODMenu *)newMenu
                    ;
-- (void) dealloc;
 
 - (BOOL) loadFromDictionary:(NSDictionary *)source
                       error:(NSError **)error

@@ -107,7 +107,7 @@
 
     textures = [[ NSMutableDictionary alloc ] init ];
     menuItems = [[ NSMutableArray alloc ] init ];
-    menuActive = NO;
+    menuActive = YES;
 
     menuClickAction
         = [[[ NPEngineInput instance ] inputActions ]
@@ -157,6 +157,16 @@
     return file;
 }
 
+- (NPFont *) font
+{
+    return font;
+}
+
+- (NPEffect *) effect
+{
+    return effect;
+}
+
 - (BOOL) loadFromStream:(id <NPPStream>)stream 
                   error:(NSError **)error
 {
@@ -186,6 +196,7 @@
     [ self setName:completeFileName ];
     ASSIGNCOPY(file, completeFileName);
 
+    NPLOG(@"");
     NPLOG(@"Loading menu \"%@\"", completeFileName);
 
     NSDictionary * menu 
@@ -241,6 +252,37 @@
     return YES;
 }
 
+- (BOOL) isHit:(const FVector2)mousePosition
+{
+    BOOL result = NO;
+
+    const NSUInteger numberOfMenuItems = [ menuItems count ];
+    for ( NSUInteger i = 0; i < numberOfMenuItems; i++ )
+    {
+        id menuItem = [ menuItems objectAtIndex:i ];
+        if ( [ menuItem isHit:mousePosition ] == YES )
+        {
+            result = YES;
+            break;
+        }
+    }
+
+    return result;
+}
+
+- (void) onClick:(const FVector2)mousePosition
+{
+    const NSUInteger numberOfMenuItems = [ menuItems count ];
+    for ( NSUInteger i = 0; i < numberOfMenuItems; i++ )
+    {
+        id menuItem = [ menuItems objectAtIndex:i ];
+        if ( [ menuItem isHit:mousePosition ] == YES )
+        {
+            [ menuItem onClick:mousePosition ];
+        }
+    }
+}
+
 - (void) update:(Float)frameTime
 {
     if ( [ menuActivationAction activated ] == YES )
@@ -259,35 +301,15 @@
     {
         if ( [ menuClickAction activated ] )
         {
-            /*
-            IVector2 * controlSize = [[[ NP Graphics ] viewportManager ] currentControlSize ];
-            Float aspectRatio = [[[ NP Graphics ] viewportManager ] currentAspectRatio ];
 
-            Float mouseX = [[[ NP Input ] mouse ] x ];
-            Float mouseY = [[[ NP Input ] mouse ] y ];
-
-            FVector2 preProjectionMousePosition;
-
-            // shift to pixel center using + 0.5
-            preProjectionMousePosition.x = ((mouseX + 0.5f) / ((Float)(controlSize->x) / ( 2.0f * aspectRatio ))) - aspectRatio;
-            preProjectionMousePosition.y = ((mouseY + 0.5f) / ((Float)(controlSize->y) / 2.0f )) - 1.0f;
-
-            NSEnumerator * menuItemEnumerator = [ menuItems objectEnumerator ];
-            id menuItem;
-            foundHit = NO;
-
-            while ( (menuItem = [ menuItemEnumerator nextObject ]) && foundHit == NO )
-            {
-                foundHit = [ menuItem mouseHit:preProjectionMousePosition ];
-
-                if ( foundHit == YES )
-                {
-                    [ menuItem onClick:preProjectionMousePosition ];
-                }
-            }
-            */
         }
     }
+
+    const NSUInteger numberOfMenuItems = [ menuItems count ];
+    for ( NSUInteger i = 0; i < numberOfMenuItems; i++ )
+    {
+        [[ menuItems objectAtIndex:i ] update:frameTime ];
+    }    
 }
 
 - (void) render
