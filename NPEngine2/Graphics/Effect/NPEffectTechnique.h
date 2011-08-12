@@ -3,6 +3,8 @@
 
 @class NPShader;
 @class NPEffect;
+@class NSMutableArray;
+@class NPStringList;
 
 @interface NPEffectTechnique : NPObject
 {
