@@ -32,7 +32,8 @@ IRectangle * irectangle_free(IRectangle * r)
     return npfreenode_free(r, NP_IRECTANGLE_FREELIST);
 }
 
-void irectangle_ssss_init_with_min_max_r(int32_t minX, int32_t minY, int32_t maxX, int32_t maxY, IRectangle * rectangle)
+void irectangle_ssss_init_with_min_max_r(const int32_t minX, const int32_t minY,
+    const int32_t maxX, const int32_t maxY, IRectangle * rectangle)
 {
     rectangle->min.x = minX;
     rectangle->min.y = minY;
@@ -40,7 +41,8 @@ void irectangle_ssss_init_with_min_max_r(int32_t minX, int32_t minY, int32_t max
     rectangle->max.y = maxY;    
 }
 
-void irectangle_vv_init_with_min_max_r(IVector2 * min, IVector2 * max, IRectangle * rectangle)
+void irectangle_vv_init_with_min_max_r(const IVector2 const * min,
+    const IVector2 const * max, IRectangle * rectangle)
 {
     rectangle->min.x = min->x;
     rectangle->min.y = min->y;
@@ -48,7 +50,8 @@ void irectangle_vv_init_with_min_max_r(IVector2 * min, IVector2 * max, IRectangl
     rectangle->max.y = max->y;
 }
 
-void irectangle_vv_init_with_min_and_size_r(IVector2 * min, IVector2 * size, IRectangle * rectangle)
+void irectangle_vv_init_with_min_and_size_r(const IVector2 const * min,
+    const IVector2 const * size, IRectangle * rectangle)
 {
     rectangle->min.x = min->x;
     rectangle->min.y = min->y;
@@ -69,31 +72,33 @@ void irectangle_r_recalculate_min_max(IRectangle * rectangle)
     rectangle->max.y = maxY;
 }
 
-int32_t irectangle_r_calculate_width(IRectangle * rectangle)
+int32_t irectangle_r_calculate_width(const IRectangle const * rectangle)
 {
     return rectangle->max.x - rectangle->min.x;
 }
 
-int32_t irectangle_r_calculate_height(IRectangle * rectangle)
+int32_t irectangle_r_calculate_height(const IRectangle const * rectangle)
 {
     return rectangle->max.y - rectangle->min.y;
 }
 
-float irectangle_r_calculate_x_center(IRectangle * rectangle)
+float irectangle_r_calculate_x_center(const IRectangle const * rectangle)
 {
     return ((float)(rectangle->min.x)) + (rectangle->max.x - rectangle->min.x) * 0.5f;
 }
 
-float irectangle_r_calculate_y_center(IRectangle * rectangle)
+float irectangle_r_calculate_y_center(const IRectangle const * rectangle)
 {
     return ((float)(rectangle->min.y)) + (rectangle->max.y - rectangle->min.y) * 0.5f;
 }
 
-const char * irectangle_r_to_string(IRectangle * rectangle)
+const char * irectangle_r_to_string(const IRectangle const * rectangle)
 {
     char * irectanglestring;
 
-    if ( asprintf(&irectanglestring, "Min (%d, %d) Max (%d, %d)", rectangle->min.x, rectangle->min.y, rectangle->max.x, rectangle->max.y) < 0)
+    if ( asprintf(&irectanglestring, "Min (%d, %d) Max (%d, %d)",
+                  rectangle->min.x, rectangle->min.y,
+                  rectangle->max.x, rectangle->max.y) < 0)
     {
         return NULL;
     }
