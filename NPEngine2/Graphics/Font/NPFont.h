@@ -75,6 +75,10 @@ NpFontCharacter;
 
 - (void) setEffectTechnique:(NPEffectTechnique *)newTechnique;
 
+- (IVector2) boundsForString:(NSString *)string
+                        size:(const int32_t)size
+                            ;
+
 - (void) renderString:(NSString *)string
             withColor:(const FVector3)color
            atPosition:(const IVector2)position
