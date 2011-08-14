@@ -7,10 +7,11 @@
 #import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffect.h"
+#import "Graphics/Font/NPFont.h"
 #import "ODMenu.h"
-#import "ODCheckboxItem.h"
+#import "ODButtonItem.h"
 
-@implementation ODCheckboxItem
+@implementation ODButtonItem
 
 - (id) init
 {
@@ -29,7 +30,7 @@
 {
     self = [ super initWithName:newName menu:newMenu ];
 
-    checked = NO;
+    active = NO;
 
     return self;
 }
@@ -45,9 +46,14 @@
         return NO;
     }
 
+    NSString * l = [ source objectForKey:@"Label"];
+    NSAssert(l != nil, @"");
+
+    ASSIGNCOPY(label, l);
+
     if ( target != nil )
     {
-        ODObjCSetVariable(target, offset, size, &checked);
+        ODObjCGetVariable(target, offset, size, &active);
     }
 
     return result;
@@ -55,16 +61,12 @@
 
 - (void) onClick:(const FVector2)mousePosition
 {
-    checked == YES ? (checked = NO) : (checked = YES);
+    active == YES ? (active = NO) : (active = YES);
 
-    /*
     if ( target != nil )
     {
-        GSObjCSetVariable(target, offset, size, &checked);
+        GSObjCSetVariable(target, offset, size, &active);
     }
-    */
-
-    NSLog(@"%d", (int32_t)checked);
 }
 
 - (void) update:(const float)frameTime
@@ -78,11 +80,13 @@
     pixelCenterGeometry.min.y = alignedGeometry.min.y + 0.5f;
     pixelCenterGeometry.max.x = alignedGeometry.max.x - 0.5f;
     pixelCenterGeometry.max.y = alignedGeometry.max.y - 0.5f;
+
+    round(0.5f);
 }
 
 - (void) render
 {
-    const FVector4 c = {1.0f, 1.0f, 1.0f, 1.0f};
+    FVector4 c = {1.0f, 1.0f, 1.0f, 1.0f};
 
     NPEffect * effect = [ menu effect ];
     NPEffectTechnique * technique = [ effect techniqueWithName:@"color" ];
@@ -96,6 +100,34 @@
         glVertex2f(pixelCenterGeometry.max.x, pixelCenterGeometry.max.y);
         glVertex2f(pixelCenterGeometry.min.x, pixelCenterGeometry.max.y);
     glEnd();
+
+    if ( active == YES )
+    {
+        c.w = 0.25f;
+        [ color setValue:c ];
+        [ technique activate ];
+
+        glBegin(GL_QUADS);
+            glVertex2f(pixelCenterGeometry.min.x, pixelCenterGeometry.min.y);
+            glVertex2f(pixelCenterGeometry.max.x, pixelCenterGeometry.min.y);
+            glVertex2f(pixelCenterGeometry.max.x, pixelCenterGeometry.max.y);
+            glVertex2f(pixelCenterGeometry.min.x, pixelCenterGeometry.max.y);
+        glEnd();
+    }
+
+    NPFont * font = [ menu fontForSize:textSize ];
+    IVector2 textBounds = [ font boundsForString:label size:textSize ];
+
+    const float geometryWidth = frectangle_r_calculate_width(&geometry);
+    const float centering = (geometryWidth - textBounds.x) / 2.0f;
+
+    IVector2 textPosition;
+    textPosition.x = (int32_t)round(geometry.min.x + centering);
+    textPosition.y = (int32_t)round(geometry.max.y);
+
+    FVector3 tC = {1.0f, 1.0f, 1.0f};
+
+    [ font renderString:label withColor:tC atPosition:textPosition size:textSize ];
 }
 
 @end
