@@ -271,6 +271,31 @@
     ASSERT_RETAIN(textcolor);
 }
 
+- (IVector2) boundsForString:(NSString *)string
+                        size:(const int32_t)size
+{
+    NSAssert(string != nil, @"");
+
+    const char * cString = [ string cStringUsingEncoding:NSASCIIStringEncoding ];
+
+    NSAssert(cString != NULL, @"");
+
+    IVector2 result = {0, 0};
+    const float scale = ((float)size) / ((float)abs(renderedSize));
+
+    NSUInteger numberOfCharacters = [ string length ];
+    for ( NSUInteger i = 0; i < numberOfCharacters; i++ )
+    {
+        const int32_t character = cString[i];
+        const NpFontCharacter fontCharacter = characters[character];
+
+        result.x += (int32_t)round(fontCharacter.xAdvance * scale);
+        result.y = MAX(result.y, (int32_t)round((fontCharacter.offset.y + fontCharacter.size.y) * scale));
+    }
+
+    return result;
+}
+
 - (void) renderString:(NSString *)string
             withColor:(const FVector3)color
            atPosition:(const IVector2)position
@@ -292,8 +317,6 @@
 
     NPTextureBindingState * texState
         = [[ NPEngineGraphics instance ] textureBindingState ];
-
-    #define round(x) floor((x) + 0.5)
 
     for ( NSUInteger i = 0; i < numberOfCharacters; i++ )
     {
@@ -322,8 +345,6 @@
 
 		cursorPosition += (int32_t)round(fontCharacter.xAdvance * scale);
     }
-
-    #undef round
 }
 
 @end
