@@ -1,9 +1,10 @@
 #import "ODMenuItem.h"
 
-@interface ODCheckboxItem : ODMenuItem
+@interface ODButtonItem : ODMenuItem
 {
-    BOOL checked;
+    BOOL active;
     FRectangle pixelCenterGeometry;
+    NSString * label;
 }
 
 - (id) init;

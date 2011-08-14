@@ -1,6 +1,6 @@
 {
     Effect = "menu.effect";
-    Font = "Tahoma16.fnt";
+    Fonts = ("Tahoma16.fnt");
 
     Textures = 
     {
@@ -17,12 +17,23 @@
         {
             Type = "ODCheckboxItem";
             Description = "Nix";
+            TextSize = "16";
             Alignment = "TopLeft";
             Position = ("100", "100" );
             Size = ( "100", "100" );
             Checked = "YES";
             TargetObject = "Projector";
             TargetProperty = "connectedToCamera";
+        };
+
+        PButton =
+        {
+            Type = "ODButtonItem";
+            Label = "Connect";
+            Alignment = "BottomLeft";
+            Position = ("50", "50" );
+            Size = ( "50", "50" );
+            TextSize = "16";
         };
     };
 }

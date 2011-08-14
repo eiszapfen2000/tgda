@@ -10,9 +10,11 @@
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Font/NPFont.h"
 #import "Graphics/NPOrthographic.h"
+#import "Graphics/NPViewport.h"
 #import "Graphics/NPEngineGraphics.h"
 #import "Input/NPInputAction.h"
 #import "Input/NPInputActions.h"
+#import "Input/NPMouse.h"
 #import "Input/NPEngineInput.h"
 #import "ODMenuItem.h"
 #import "ODCheckboxItem.h"
@@ -106,7 +108,10 @@
     ready = NO;
 
     textures = [[ NSMutableDictionary alloc ] init ];
+
     menuItems = [[ NSMutableArray alloc ] init ];
+    fonts     = [[ NSMutableArray alloc ] init ];
+
     menuActive = YES;
 
     menuClickAction
@@ -134,6 +139,7 @@
 
     DESTROY(textures);
     DESTROY(menuItems);
+    DESTROY(fonts);
 
     [ super dealloc ];
 }
@@ -142,9 +148,9 @@
 {
     [ textures  removeAllObjects ];
     [ menuItems removeAllObjects ];
+    [ fonts     removeAllObjects ];
 
     SAFE_DESTROY(effect);
-    SAFE_DESTROY(font);
 }
 
 - (BOOL) ready
@@ -157,14 +163,65 @@
     return file;
 }
 
-- (NPFont *) font
+- (NPFont *) fontAtIndex:(const NSUInteger)index
 {
-    return font;
+    return [ fonts objectAtIndex:index ];
+}
+
+- (NPFont *) fontForSize:(const uint32_t)size
+{
+    const NSUInteger numberOfFonts = [ fonts count ];
+    assert(numberOfFonts != 0);
+
+    int32_t sizes[numberOfFonts];
+    memset(sizes, 0, sizeof(int32_t) * numberOfFonts);
+
+    for ( NSUInteger i = 0; i < numberOfFonts; i++ )
+    {
+        NPFont * font = [ fonts objectAtIndex:i ];
+        sizes[i] = abs([ font renderedSize ]);
+    }
+
+    NSUInteger minIndex = ULONG_MAX;
+    int32_t minDelta = INT_MAX;
+    for ( NSUInteger i = 0; i < numberOfFonts; i++ )
+    {
+        const int32_t deltaSize = abs(((int32_t)size) - sizes[i]);
+
+        if ( deltaSize < minDelta )
+        {
+            minDelta = deltaSize;
+            minIndex = i;
+        }
+    }
+
+    return [ fonts objectAtIndex:minIndex ];
 }
 
 - (NPEffect *) effect
 {
     return effect;
+}
+
+- (NPEffectTechnique *) colorTechnique
+{
+    NSAssert(effect != nil, @"");
+
+    return [ effect techniqueWithName:@"color" ];
+}
+
+- (NPEffectTechnique *) textureTechnique
+{
+    NSAssert(effect != nil, @"");
+
+    return [ effect techniqueWithName:@"texture" ];
+}
+
+- (NPEffectTechnique *) fontTechnique
+{
+    NSAssert(effect != nil, @"");
+
+    return [ effect techniqueWithName:@"font" ];
 }
 
 - (BOOL) loadFromStream:(id <NPPStream>)stream 
@@ -205,10 +262,10 @@
     NSAssert(menu != nil, @"");
 
     NSString * effectString    = [ menu objectForKey:@"Effect" ];
-    NSString * fontString      = [ menu objectForKey:@"Font"   ];
+    NSArray  * fontFileNames   = [ menu objectForKey:@"Fonts"  ];
     NSDictionary * itemSources = [ menu objectForKey:@"Items"  ];
 
-    NSAssert((effectString != nil) && (fontString != nil)
+    NSAssert((effectString != nil) && (fontFileNames != nil)
              && (itemSources != nil), @"");
 
     effect
@@ -217,13 +274,27 @@
 
     ASSERT_RETAIN(effect);
 
-    font = [[ NPFont alloc ] init ];
-    BOOL fontResult
-        = [ font loadFromFile:fontString
-                    arguments:nil
-                        error:error ];
+    NSAssert([ effect techniqueWithName:@"color" ]   != nil, @"");
+    NSAssert([ effect techniqueWithName:@"texture" ] != nil, @"");
+    NSAssert([ effect techniqueWithName:@"font" ]    != nil, @"");
 
-    NSAssert(fontResult == YES, @"");
+    NPEffectTechnique * fontTechnique = [ self fontTechnique ];
+    const NSUInteger numberOfFontFileNames = [ fontFileNames count ];
+    for ( NSUInteger i = 0; i < numberOfFontFileNames; i++ )
+    {
+        NSString * fontFileName = [ fontFileNames objectAtIndex:i ];
+
+        NPFont * font = [[ NPFont alloc ] init ];
+        if ( [ font loadFromFile:fontFileName
+                       arguments:nil
+                           error:error ] == YES )
+        {
+            [ fonts addObject:font ];
+            [ font setEffectTechnique:fontTechnique ];
+        }
+
+        DESTROY(font);
+    }
 
     NSString * key;
     Class itemClass;
@@ -252,37 +323,6 @@
     return YES;
 }
 
-- (BOOL) isHit:(const FVector2)mousePosition
-{
-    BOOL result = NO;
-
-    const NSUInteger numberOfMenuItems = [ menuItems count ];
-    for ( NSUInteger i = 0; i < numberOfMenuItems; i++ )
-    {
-        id menuItem = [ menuItems objectAtIndex:i ];
-        if ( [ menuItem isHit:mousePosition ] == YES )
-        {
-            result = YES;
-            break;
-        }
-    }
-
-    return result;
-}
-
-- (void) onClick:(const FVector2)mousePosition
-{
-    const NSUInteger numberOfMenuItems = [ menuItems count ];
-    for ( NSUInteger i = 0; i < numberOfMenuItems; i++ )
-    {
-        id menuItem = [ menuItems objectAtIndex:i ];
-        if ( [ menuItem isHit:mousePosition ] == YES )
-        {
-            [ menuItem onClick:mousePosition ];
-        }
-    }
-}
-
 - (void) update:(Float)frameTime
 {
     if ( [ menuActivationAction activated ] == YES )
@@ -301,7 +341,24 @@
     {
         if ( [ menuClickAction activated ] )
         {
+            const int32_t mouseX = [[[ NPEngineInput instance ] mouse ] x ];
+            const int32_t mouseY = [[[ NPEngineInput instance ] mouse ] y ];
 
+            const uint32_t widgetHeight
+                = [[[ NPEngineGraphics instance ] viewport ] widgetHeight ];
+
+            const FVector2 clickPosition = {mouseX, widgetHeight - mouseY};
+
+            const NSUInteger numberOfMenuItems = [ menuItems count ];
+            for ( NSUInteger i = 0; i < numberOfMenuItems; i++ )
+            {
+                id menuItem = [ menuItems objectAtIndex:i ];
+                if ( [ menuItem isHit:clickPosition ] == YES )
+                {
+                    [ menuItem onClick:clickPosition ];
+                    break;
+                }
+            }
         }
     }
 

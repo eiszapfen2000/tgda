@@ -9,6 +9,7 @@
 @class NPInputAction;
 @class NPFont;
 @class NPEffect;
+@class NPEffectTechnique;
 
 @interface ODMenu : NPObject < NPPPersistentObject >
 {
@@ -22,7 +23,7 @@
     NPInputAction * menuClickAction;
     BOOL menuActive;
 
-    NPFont * font;
+    NSMutableArray * fonts;
     NPEffect * effect;
 }
 
@@ -36,11 +37,13 @@
 
 - (void) clear;
 
-- (NPFont *) font;
+- (NPFont *) fontAtIndex:(const NSUInteger)index;
+- (NPFont *) fontForSize:(const uint32_t)size;
 - (NPEffect *) effect;
+- (NPEffectTechnique *) colorTechnique;
+- (NPEffectTechnique *) textureTechnique;
+- (NPEffectTechnique *) fontTechnique;
 
-- (BOOL) isHit:(const FVector2)mousePosition;
-- (void) onClick:(const FVector2)mousePosition;
 - (void) update:(const float)frameTime;
 - (void) render;
 
