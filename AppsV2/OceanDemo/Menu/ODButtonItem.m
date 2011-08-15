@@ -4,6 +4,7 @@
 #import <Foundation/NSException.h>
 #import "Core/NPObject/NPObjectManager.h"
 #import "Core/NPEngineCore.h"
+#import "Graphics/Geometry/NPIMRendering.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffect.h"
@@ -35,6 +36,14 @@
     return self;
 }
 
+- (void) dealloc
+{
+    SAFE_DESTROY(technique);
+    SAFE_DESTROY(color);
+
+    [ super dealloc ];
+}
+
 - (BOOL) loadFromDictionary:(NSDictionary *)source
                       error:(NSError **)error
 {
@@ -55,6 +64,9 @@
     {
         ODObjCGetVariable(target, offset, size, &active);
     }
+
+    technique = RETAIN([ menu colorTechnique ]);
+    color = RETAIN([[ menu effect ] variableWithName:@"color" ]);
 
     return result;
 }
@@ -80,40 +92,30 @@
     pixelCenterGeometry.min.y = alignedGeometry.min.y + 0.5f;
     pixelCenterGeometry.max.x = alignedGeometry.max.x - 0.5f;
     pixelCenterGeometry.max.y = alignedGeometry.max.y - 0.5f;
-
-    round(0.5f);
 }
 
 - (void) render
 {
-    FVector4 c = {1.0f, 1.0f, 1.0f, 1.0f};
+    const FVector4 lineColor = {1.0f, 1.0f, 1.0f, 1.0f};
+    const FVector4 quadColor = {1.0f, 1.0f, 1.0f, 0.25f};
+    const FVector3 textColor = {1.0f, 1.0f, 1.0f};
 
-    NPEffect * effect = [ menu effect ];
-    NPEffectTechnique * technique = [ effect techniqueWithName:@"color" ];
-    NPEffectVariableFloat4 * color = [ effect variableWithName:@"color" ];
-    [ color setValue:c ];
-    [ technique activate ];
-
-    glBegin(GL_LINE_LOOP);
-        glVertex2f(pixelCenterGeometry.min.x, pixelCenterGeometry.min.y);
-        glVertex2f(pixelCenterGeometry.max.x, pixelCenterGeometry.min.y);
-        glVertex2f(pixelCenterGeometry.max.x, pixelCenterGeometry.max.y);
-        glVertex2f(pixelCenterGeometry.min.x, pixelCenterGeometry.max.y);
-    glEnd();
-
+    // draw quad if active
     if ( active == YES )
     {
-        c.w = 0.25f;
-        [ color setValue:c ];
+        [ color setValue:quadColor ];
         [ technique activate ];
 
-        glBegin(GL_QUADS);
-            glVertex2f(pixelCenterGeometry.min.x, pixelCenterGeometry.min.y);
-            glVertex2f(pixelCenterGeometry.max.x, pixelCenterGeometry.min.y);
-            glVertex2f(pixelCenterGeometry.max.x, pixelCenterGeometry.max.y);
-            glVertex2f(pixelCenterGeometry.min.x, pixelCenterGeometry.max.y);
-        glEnd();
+        [ NPIMRendering renderFRectangle:alignedGeometry
+                           primitiveType:NpPrimitiveQuads ];
     }
+
+    // draw line
+    [ color setValue:lineColor ];
+    [ technique activate ];
+
+    [ NPIMRendering renderFRectangle:pixelCenterGeometry
+                       primitiveType:NpPrimitiveLineLoop ];
 
     NPFont * font = [ menu fontForSize:textSize ];
     IVector2 textBounds = [ font boundsForString:label size:textSize ];
@@ -125,9 +127,11 @@
     textPosition.x = (int32_t)round(geometry.min.x + centering);
     textPosition.y = (int32_t)round(geometry.max.y);
 
-    FVector3 tC = {1.0f, 1.0f, 1.0f};
-
-    [ font renderString:label withColor:tC atPosition:textPosition size:textSize ];
+    // draw text
+    [ font renderString:label
+              withColor:textColor
+             atPosition:textPosition
+                   size:textSize ];
 }
 
 @end
