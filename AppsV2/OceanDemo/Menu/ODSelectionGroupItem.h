@@ -1,13 +1,17 @@
+#import "Core/Math/FVector.h"
+#import "Core/Math/IVector.h"
 #import "ODMenuItem.h"
 
 @class NPEffectTechnique;
 @class NPEffectVariableFloat4;
 
-@interface ODButtonItem : ODMenuItem
+@interface ODSelectionGroupItem : ODMenuItem
 {
-    BOOL active;
-    FRectangle pixelCenterGeometry;
-    NSString * label;
+    FVector2 itemSize;
+    FVector2 itemSpacing;
+    IVector2 layout;
+    NSUInteger indexOfActiveItem;
+    NSArray * labels;
 
     NPEffectTechnique * technique;
     NPEffectVariableFloat4 * color;
