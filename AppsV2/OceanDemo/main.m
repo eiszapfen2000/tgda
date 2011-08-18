@@ -163,34 +163,6 @@ int main (int argc, char **argv)
 
     [[ NP Graphics ] checkForGLErrors ];
 
-    NPFont * font = [[ NPFont alloc ] init ];
-    BOOL fontResult
-        = [ font loadFromFile:@"Tahoma24.fnt"
-                    arguments:nil
-                        error:NULL ];
-
-    if ( fontResult == NO )
-    {
-        NSLog(@"FONT FAUIL");
-    }
-
-    [[ NP Graphics ] checkForGLErrors ];
-
-    NPEffect * fontEffect = [[ NPEffect alloc ] init ];
-    BOOL effectResult
-        = [ fontEffect loadFromFile:@"font.effect"
-                          arguments:nil
-                              error:NULL ];
-
-    if ( effectResult == NO )
-    {
-        NSLog(@"EFFECT FAUIL");
-    }
-
-    [[ NP Graphics ] checkForGLErrors ];
-
-    [ font setEffectTechnique:[ fontEffect techniqueWithName:@"font" ]];
-
     NSError * sceneError = nil;
     ODScene * scene = [[ ODScene alloc ] init ];
 
@@ -267,10 +239,6 @@ int main (int argc, char **argv)
         [ dState setEnabled:NO ];
         [ dState activate ];
 
-        IVector2 textPosition = {100, 200};
-        FVector3 textColor = {1.0f, 1.0f, 1.0f};
-        [ font renderString:@"GCNB" withColor:textColor atPosition:textPosition size:24 ];
-
         [ menu render ];
 
         [ bState deactivate ];
@@ -293,8 +261,6 @@ int main (int argc, char **argv)
 
     DESTROY(scene);
     DESTROY(model);
-    DESTROY(font);
-    DESTROY(fontEffect);
     DESTROY(menu);
 
     // delete static data

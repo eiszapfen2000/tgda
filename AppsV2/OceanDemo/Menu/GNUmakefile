@@ -7,14 +7,16 @@ ODMenu.h \
 ODMenuItem.h \
 ODButtonItem.h \
 ODCheckboxItem.h \
-ODSelectionGroupItem.h
+ODSelectionGroupItem.h \
+ODSliderItem.h
 
 ODMenu_OBJC_FILES = \
 ODMenu.m \
 ODMenuItem.m \
 ODButtonItem.m \
 ODCheckboxItem.m \
-ODSelectionGroupItem.m
+ODSelectionGroupItem.m \
+ODSliderItem.m
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make

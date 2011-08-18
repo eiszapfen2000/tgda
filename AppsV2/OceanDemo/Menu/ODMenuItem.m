@@ -107,12 +107,13 @@ void ODObjCSetVariable(id obj, const ptrdiff_t offset,
     textSize = (uint32_t)[ textSizeString intValue ];
     
     // position and size
-    FVector2 position, checkBoxSize;
-    position.x = [[ positionStrings objectAtIndex:0 ] intValue ];
-    position.y = [[ positionStrings objectAtIndex:1 ] intValue ];
-    checkBoxSize.x = [[ sizeStrings objectAtIndex:0 ] intValue ];
-    checkBoxSize.y = [[ sizeStrings objectAtIndex:1 ] intValue ];
-    frectangle_vv_init_with_min_and_size_r(&position, &checkBoxSize, &geometry);
+    FVector2 itemPosition;
+    FVector2 itemSize;
+    itemPosition.x = [[ positionStrings objectAtIndex:0 ] intValue ];
+    itemPosition.y = [[ positionStrings objectAtIndex:1 ] intValue ];
+    itemSize.x = [[ sizeStrings objectAtIndex:0 ] intValue ];
+    itemSize.y = [[ sizeStrings objectAtIndex:1 ] intValue ];
+    frectangle_vv_init_with_min_and_size_r(&itemPosition, &itemSize, &geometry);
 
     // target property
     NSString * targetObjectString   = [ source objectForKey:@"TargetObject"   ];
