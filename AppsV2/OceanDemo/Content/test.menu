@@ -49,6 +49,22 @@
             Layout = ("2", "2");
             Labels = ("1", "2", "3", "4");
         };
+
+        PSlider =
+        {
+            Type = "ODSliderItem";
+            Label = "SLIDER";
+            Alignment = "BottomRight";
+            Position = ("50", "50" );
+            Size = ( "50", "1" );
+            TextSize = "16";
+            MinimumValue = "-360";
+            MaximumValue = "360";
+            LineSize = ("3", "51");
+            HeadSize = ("21", "3");
+            TargetObject = "Projector";
+            TargetProperty = "yaw";
+        };
     };
 }
  
