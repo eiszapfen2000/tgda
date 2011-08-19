@@ -75,10 +75,6 @@ static NPAssetArray * statesets = nil;
     NSString * statesetPath    = [ config objectForKey:@"States"   ];
     NSArray  * positionStrings = [ config objectForKey:@"Position" ];
 
-    position.x = [[ positionStrings objectAtIndex:0 ] floatValue ];
-    position.y = [[ positionStrings objectAtIndex:1 ] floatValue ];
-    position.z = [[ positionStrings objectAtIndex:2 ] floatValue ];
-
     if ( modelPath == nil || entityName == nil )
     {
         // set error
@@ -104,6 +100,13 @@ static NPAssetArray * statesets = nil;
             [ statesets registerAsset:stateset ];
             RETAIN(stateset);
         }
+    }
+
+    if ( positionStrings != nil )
+    {
+        position.x = [[ positionStrings objectAtIndex:0 ] floatValue ];
+        position.y = [[ positionStrings objectAtIndex:1 ] floatValue ];
+        position.z = [[ positionStrings objectAtIndex:2 ] floatValue ];
     }
 
     if ( model == nil )
