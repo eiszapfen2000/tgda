@@ -1,0 +1,13 @@
+effect "Fullscreen Effects":
+
+technique "texture"
+{
+    # effect variables
+    uniform sampler2D colormap;
+    uniform mat4 np_modelviewprojectionmatrix;
+    # shaders
+    set vertex shader "fullscreen_quad.vertex"
+    set fragment shader "fullscreen_quad.fragment"
+}
+
+

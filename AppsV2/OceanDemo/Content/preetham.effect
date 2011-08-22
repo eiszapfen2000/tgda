@@ -1,0 +1,12 @@
+effect "preetham":
+
+technique "preetham"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    # shaders
+    set vertex shader "preetham.vertex"
+    set fragment shader "preetham.fragment"
+}
+
+

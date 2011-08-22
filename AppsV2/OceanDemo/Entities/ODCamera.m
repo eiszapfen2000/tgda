@@ -29,7 +29,8 @@
     fov         = 45.0f;
     nearPlane   = 0.1f;
     farPlane    = 50.0f;
-    aspectRatio = [[[ NP Graphics ] viewport ] aspectRatio ];
+    //aspectRatio = [[[ NP Graphics ] viewport ] aspectRatio ];
+    aspectRatio = 1.0f;
 
     yaw   = 0.0f;
     pitch = 0.0f;
@@ -256,6 +257,8 @@
 
 - (void) updateView
 {
+    aspectRatio = [[[ NP Graphics ] viewport ] aspectRatio ];
+
     fm4_m_set_identity(&view);
 
     fquat_q_forward_vector_v(&orientation, &forward);
