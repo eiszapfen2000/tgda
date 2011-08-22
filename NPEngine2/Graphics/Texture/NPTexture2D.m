@@ -91,6 +91,9 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     width = height = 0;
     dataFormat  = NpImageDataFormatUnknown;
     pixelFormat = NpImagePixelFormatUnknown;
+    glDataFormat = GL_NONE;
+    glPixelFormat = GL_NONE;
+    glInternalFormat = GL_NONE;
 
     reset_texture2d_filterstate(&filterState);
     reset_texture2d_wrapstate(&wrapState);
@@ -333,31 +336,30 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 - (void) uploadToGLWithData:(NSData *)data
 {
-    GLenum gldataformat = getGLTextureDataFormat(dataFormat);
-    GLenum glpixelformat = getGLTexturePixelFormat(pixelFormat);
-    GLint  glinternalformat
-        = getGLTextureInternalFormat(dataFormat, pixelFormat,
-             [[ NPEngineGraphics instance ] supportssRGBTextures ]);
-
     [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:self ];
 
     if ( ready == YES )
     {
         //update data, is a lot faster than glTexImage2D
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height,
-            glpixelformat, gldataformat, [data bytes]);
+            glPixelFormat, glDataFormat, [data bytes]);
     }
     else
     {
-        // specify entire texture
-        glTexImage2D(GL_TEXTURE_2D, 0, glinternalformat, width, height, 
-            0, glpixelformat, gldataformat, [data bytes]);
-    }
+        glDataFormat = getGLTextureDataFormat(dataFormat);
+        glPixelFormat = getGLTexturePixelFormat(pixelFormat);
+        glInternalFormat
+            = getGLTextureInternalFormat(dataFormat, pixelFormat,
+                 [[ NPEngineGraphics instance ] supportssRGBTextures ]);
 
-    #warning FIXME move this into else block?
-    [ self updateGLTextureFilterState ];
-    [ self updateGLTextureAnisotropy ];
-    [ self updateGLTextureWrapState ];
+        // specify entire texture
+        glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, width, height, 
+            0, glPixelFormat, glDataFormat, [data bytes]);
+
+        [ self updateGLTextureFilterState ];
+        [ self updateGLTextureAnisotropy ];
+        [ self updateGLTextureWrapState ];
+    }
 
     [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
 }

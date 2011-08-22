@@ -108,13 +108,16 @@
 }
 
 - (void) attachToRenderTargetConfiguration:(NPRenderTargetConfiguration *)configuration
+                                   bindFBO:(BOOL)bindFBO
 {
     NSAssert1(configuration != nil, @"%@: Invalid NPRenderTargetConfiguration", name);
 
     rtc = configuration;
-    [ rtc setDepthStencilTarget:self ];
 
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ rtc glID ]);
+    if ( bindFBO == YES )
+    {
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ rtc glID ]);
+    }
 
     switch ( type )
     {
@@ -151,11 +154,18 @@
         }
     }
 
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    if ( bindFBO == YES )
+    {
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    }
+
+    [ rtc setDepthStencilTarget:self ];
 }
 
 - (void) detach
 {
+    [ rtc setDepthStencilTarget:nil ];
+
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ rtc glID ]);
 
     switch ( type )
@@ -194,8 +204,6 @@
     }
 
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
-    [ rtc setDepthStencilTarget:nil ];
     rtc = nil;
 }
 

@@ -27,6 +27,7 @@
 - (GLuint) glID;
 - (uint32_t) width;
 - (uint32_t) height;
+- (NPTexture2D *) texture;
 
 - (BOOL) generate:(NpRenderTargetType)newType
             width:(uint32_t)newWidth
@@ -38,6 +39,7 @@
 
 - (void) attachToRenderTargetConfiguration:(NPRenderTargetConfiguration *)configuration
                           colorBufferIndex:(uint32_t)newColorBufferIndex
+                                   bindFBO:(BOOL)bindFBO
                                           ;
 - (void) detach;
 

@@ -1,6 +1,7 @@
 #import "Core/Math/FVector.h"
 #import "Core/Math/FVertex.h"
 #import "Core/NPObject/NPObject.h"
+#import "GL/glew.h"
 
 @interface NPFullscreenQuad : NPObject
 {

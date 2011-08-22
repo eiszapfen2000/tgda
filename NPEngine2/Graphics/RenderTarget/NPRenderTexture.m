@@ -67,6 +67,7 @@
 
 - (void) dealloc
 {
+    [ self deleteTexture ];
     [ super dealloc ];
 }
 
@@ -83,6 +84,11 @@
 - (uint32_t) height
 {
     return height;
+}
+
+- (NPTexture2D *) texture
+{
+    return texture;
 }
 
 - (BOOL) generate:(NpRenderTargetType)newType
@@ -105,6 +111,7 @@
 
 - (void) attachToRenderTargetConfiguration:(NPRenderTargetConfiguration *)configuration
                           colorBufferIndex:(uint32_t)newColorBufferIndex
+                                   bindFBO:(BOOL)bindFBO
 {
     NSAssert1(configuration != nil, @"%@: Invalid NPRenderTargetConfiguration", name);
     NSAssert2((int32_t)newColorBufferIndex < [[ NPEngineGraphics instance ] numberOfColorAttachments ],
@@ -112,22 +119,32 @@
 
     rtc = configuration;
     colorBufferIndex = newColorBufferIndex;
-    [ rtc setColorTarget:self atIndex:colorBufferIndex ];
 
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ rtc glID ]);
+    if (bindFBO == YES)
+    {
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ rtc glID ]);
+    }
+
     GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, glID, 0);
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+    if (bindFBO == YES)
+    {
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    }
+
+    [ rtc setColorTarget:self atIndex:colorBufferIndex ];
 }
 
 - (void) detach
 {
+    [ rtc setColorTarget:nil atIndex:colorBufferIndex ];
+
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ rtc glID ]);
-    GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
-    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, 0, 0);
+        GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
+        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, 0, 0);
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
-    [ rtc setColorTarget:nil atIndex:colorBufferIndex ];
     rtc = nil;
     colorBufferIndex = INT_MAX;
 }
