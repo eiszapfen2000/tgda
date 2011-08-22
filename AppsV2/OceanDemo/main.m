@@ -34,6 +34,7 @@
 NpKeyboardState keyboardState;
 NpMouseState mouseState;
 IVector2 mousePosition;
+IVector2 widgetSize;
 
 void GLFWCALL keyboard_callback(int key, int state)
 {
@@ -56,11 +57,10 @@ void GLFWCALL mouse_wheel_callback(int wheel)
     mouseState.scrollWheel = wheel;
 }
 
-int windowWidth, windowHeight;
 void GLFWCALL window_resize_callback(int width, int height)
 {
-    windowWidth = width;
-    windowHeight = height;
+    widgetSize.x = width;
+    widgetSize.y = height;
 }
 
 int running = GL_TRUE;
@@ -141,27 +141,12 @@ int main (int argc, char **argv)
         exit( EXIT_FAILURE );
     }
 
-    [[[ NP Graphics ] viewport ] setWidgetWidth:800  ];
-    [[[ NP Graphics ] viewport ] setWidgetHeight:600 ];
-    [[[ NP Graphics ] viewport ] reset ];
+    NSLog(@"%d %d", widgetSize.x, widgetSize.y);
 
     // resource loading creates a lot of temporary objects, so we
     // create an autorelease pool right for that task and
     // release it afterwards, but before we enter the main loop
     NSAutoreleasePool * resourcePool = [ NSAutoreleasePool new ];
-
-    NPSUX2Model * model = [[ NPSUX2Model alloc ] init ];
-    BOOL modelResult
-         = [ model loadFromFile:@"skybox.model"
-                      arguments:nil
-                          error:NULL ];
-
-    if ( modelResult == NO )
-    {
-        NSLog(@"MODEL FAUIL");
-    }
-
-    [[ NP Graphics ] checkForGLErrors ];
 
     NSError * sceneError = nil;
     ODScene * scene = [[ ODScene alloc ] init ];
@@ -195,9 +180,11 @@ int main (int argc, char **argv)
         // create an autorelease pool for every run-loop iteration
         NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
 
-        // poll events, callbacks for mouse and keyboard
-        // are called automagically
-        glfwPollEvents();
+        // adopt viewport to current widget size
+        NPViewport * viewport = [[ NP Graphics ] viewport ];
+        [ viewport setWidgetWidth:widgetSize.x  ];
+        [ viewport setWidgetHeight:widgetSize.y ];
+        [ viewport reset ];
 
         // push current keyboard and mouse state into NPInput
         [[[ NP Input ] keyboard ] setKeyboardState:&keyboardState ];
@@ -252,6 +239,12 @@ int main (int argc, char **argv)
         // swap front and back rendering buffers
         glfwSwapBuffers();
 
+        // poll events, callbacks for mouse and keyboard
+        // are called automagically
+        // we need to call this here, because only this way
+        // window closing events are processed
+        glfwPollEvents();
+
         // check if ESC key was pressed or window was closed
         running = running && glfwGetWindowParam( GLFW_OPENED );
 
@@ -260,7 +253,6 @@ int main (int argc, char **argv)
     }
 
     DESTROY(scene);
-    DESTROY(model);
     DESTROY(menu);
 
     // delete static data

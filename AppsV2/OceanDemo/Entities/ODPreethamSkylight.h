@@ -4,6 +4,9 @@
 
 @class NPSUX2Model;
 @class NPStateSet;
+@class NPEffect;
+@class NPEffectTechnique;
+@class NPEffectVariableFloat3;
 
 @interface ODPreethamSkylight : ODEntity
 {
@@ -12,15 +15,16 @@
     FVector3 zenithColor;
     float turbidity;
 
+    NPEffectVariableFloat3 * A_Yxy_P;
+    NPEffectVariableFloat3 * B_Yxy_P;
+    NPEffectVariableFloat3 * C_Yxy_P;
+    NPEffectVariableFloat3 * D_Yxy_P;
+    NPEffectVariableFloat3 * E_Yxy_P;
+    NPEffectVariableFloat3 * zenithColor_P;
+
     /*
     CGparameter lightDirectionP;
     CGparameter thetaSunP;
-    CGparameter zenithColorP;
-    CGparameter AColorP;
-    CGparameter BColorP;
-    CGparameter CColorP;
-    CGparameter DColorP;
-    CGparameter EColorP;
     */
 }
 
