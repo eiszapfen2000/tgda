@@ -33,7 +33,9 @@
             error:(NSError **)error
                  ;
 
-- (void) attachToRenderTargetConfiguration:(NPRenderTargetConfiguration *)configuration;
+- (void) attachToRenderTargetConfiguration:(NPRenderTargetConfiguration *)configuration
+                                   bindFBO:(BOOL)bindFBO
+                                          ;
 - (void) detach;
 
 @end

@@ -39,6 +39,9 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState);
     NpTexture2DWrapState wrapState;
 
     GLuint glID;
+    GLenum glDataFormat;
+    GLenum glPixelFormat;
+    GLint  glInternalFormat;
 }
 
 - (id) init;

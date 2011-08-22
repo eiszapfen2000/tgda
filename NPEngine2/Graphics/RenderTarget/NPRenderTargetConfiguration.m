@@ -23,8 +23,6 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
 + (NSError *) fboError:(GLenum)fboStatus;
 - (void) generateGLFBO;
 - (void) deleteGLFBO;
-- (void) activateDrawBuffers;
-- (void) deactivateDrawBuffers;
 
 @end
 
@@ -114,31 +112,6 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
     }
 }
 
-- (void) activateDrawBuffers
-{
-    int32_t numberOfColorAttachments
-        = [[ NPEngineGraphics instance ] numberOfColorAttachments ];
-
-    GLenum buffers[numberOfColorAttachments];
-    GLsizei bufferCount = 0;
-
-    for ( int32_t i = 0; i < numberOfColorAttachments; i++ )
-    {
-        if ( [ colorTargets objectAtIndex:i ] != [ NSNull null ] )
-        {
-            buffers[bufferCount] = GL_COLOR_ATTACHMENT0_EXT + i;
-            bufferCount++;
-        }
-    }
-
-    glDrawBuffers(bufferCount, buffers);
-}
-
-- (void) deactivateDrawBuffers
-{
-    glDrawBuffer(GL_BACK);
-}
-
 @end
 
 @implementation NPRenderTargetConfiguration
@@ -174,6 +147,7 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
 
 - (void) dealloc
 {
+    SAFE_DESTROY(depthStencil);
     [ colorTargets removeAllObjects ];
     DESTROY(colorTargets);
     [ self deleteGLFBO ];
@@ -206,6 +180,15 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
     height = newHeight;
 }
 
+- (void) bindFBO
+{
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, glID);
+}
+
+- (void) unbindFBO
+{
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+}
 
 - (void) setColorTarget:(NPRenderTexture *)colorTarget
                 atIndex:(uint32_t)index
@@ -234,7 +217,6 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
     }
 }
 
-
 - (BOOL) checkFrameBufferCompleteness:(NSError **)error
 {
     BOOL result = YES;
@@ -253,20 +235,53 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
     return result;
 }
 
+- (void) activateDrawBuffers
+{
+    int32_t numberOfColorAttachments
+        = [[ NPEngineGraphics instance ] numberOfColorAttachments ];
+
+    GLenum buffers[numberOfColorAttachments];
+    GLsizei bufferCount = 0;
+
+    for ( int32_t i = 0; i < numberOfColorAttachments; i++ )
+    {
+        if ( [ colorTargets objectAtIndex:i ] != [ NSNull null ] )
+        {
+            buffers[bufferCount] = GL_COLOR_ATTACHMENT0_EXT + i;
+            bufferCount++;
+        }
+    }
+
+    glDrawBuffers(bufferCount, buffers);
+}
+
+- (void) deactivateDrawBuffers
+{
+    glDrawBuffer(GL_BACK);
+}
+
+- (void) activateViewport
+{
+    [[[ NPEngineGraphics instance ] viewport ] setWidth:width height:height ]; 
+}
+
+- (void) deactivateViewport
+{
+    [[[ NPEngineGraphics instance ] viewport ] reset ];
+}
+
 - (void) activate
 {
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, glID);
-
+    [ self bindFBO ];
     [ self activateDrawBuffers ];
-    [[[ NPEngineGraphics instance ] viewport ] setWidth:width height:height ];    
+    [ self activateViewport ];
 }
 
 - (void) deactivate
 {
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
+    [ self unbindFBO ];
     [ self deactivateDrawBuffers ];
-    [[[ NPEngineGraphics instance ] viewport ] reset ];
+    [ self deactivateViewport ];
 }
 
 @end
