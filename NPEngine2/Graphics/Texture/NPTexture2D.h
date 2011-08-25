@@ -59,10 +59,13 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState);
 - (void) setTextureFilter:(NpTexture2DFilter)newTextureFilter;
 - (void) setTextureAnisotropy:(uint32_t)newTextureAnisotropy;
 
+- (void) generateMipMaps;
+
 - (void) generateUsingWidth:(uint32_t)newWidth
                      height:(uint32_t)newHeight
                 pixelFormat:(NpTexturePixelFormat)newPixelFormat
                  dataFormat:(NpTextureDataFormat)newDataFormat
+                    mipmaps:(BOOL)newMipmaps
                        data:(NSData *)data
                            ;
 

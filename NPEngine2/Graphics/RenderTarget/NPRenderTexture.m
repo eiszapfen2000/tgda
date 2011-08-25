@@ -23,7 +23,7 @@
     ready = NO;
 }
 
-- (void) createTexture
+- (void) createTextureWithMipmaps:(BOOL)mipmaps
 {
     [ self deleteTexture ];
 
@@ -33,6 +33,7 @@
                           height:height
                      pixelFormat:pixelFormat
                       dataFormat:dataFormat
+                         mipmaps:mipmaps
                             data:[ NSData data ]];
 
     glID = [ texture glID ];
@@ -96,6 +97,7 @@
            height:(uint32_t)newHeight
       pixelFormat:(NpTexturePixelFormat)newPixelFormat
        dataFormat:(NpTextureDataFormat)newDataFormat
+    mipmapStorage:(BOOL)mipmapStorage
             error:(NSError **)error
 {
     type = newType;
@@ -104,7 +106,7 @@
     pixelFormat = newPixelFormat;
     dataFormat = newDataFormat;
 
-    [ self createTexture ];
+    [ self createTextureWithMipmaps:mipmapStorage ];
 
     return YES;
 }
@@ -136,14 +138,22 @@
     [ rtc setColorTarget:self atIndex:colorBufferIndex ];
 }
 
-- (void) detach
+- (void) detach:(BOOL)bindFBO
 {
     [ rtc setColorTarget:nil atIndex:colorBufferIndex ];
 
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ rtc glID ]);
-        GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
-        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, 0, 0);
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    if ( bindFBO == YES )
+    {
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ rtc glID ]);
+    }
+
+    GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
+    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, 0, 0);
+
+    if ( bindFBO == YES )
+    {
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    }
 
     rtc = nil;
     colorBufferIndex = INT_MAX;

@@ -49,6 +49,16 @@
     [ super dealloc ];
 }
 
+- (NPEffect *) effect
+{
+    return effect;
+}
+
+- (NSString *) techniqueName
+{
+    return techniqueName;
+}
+
 - (void) addEffectFromFile:(NSString *)fileName
 {
     SAFE_DESTROY(effect);

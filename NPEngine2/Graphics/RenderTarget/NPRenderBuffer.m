@@ -162,11 +162,14 @@
     [ rtc setDepthStencilTarget:self ];
 }
 
-- (void) detach
+- (void) detach:(BOOL)bindFBO
 {
     [ rtc setDepthStencilTarget:nil ];
 
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ rtc glID ]);
+    if ( bindFBO == YES )
+    {
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ rtc glID ]);
+    }
 
     switch ( type )
     {
@@ -203,7 +206,11 @@
         }
     }
 
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    if ( bindFBO == YES )
+    {
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    }
+
     rtc = nil;
 }
 

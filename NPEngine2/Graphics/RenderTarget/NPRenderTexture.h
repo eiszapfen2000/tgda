@@ -34,6 +34,7 @@
            height:(uint32_t)newHeight
       pixelFormat:(NpTexturePixelFormat)newPixelFormat
        dataFormat:(NpTextureDataFormat)newDataFormat
+    mipmapStorage:(BOOL)mipmapStorage
             error:(NSError **)error
                  ;
 
@@ -41,7 +42,7 @@
                           colorBufferIndex:(uint32_t)newColorBufferIndex
                                    bindFBO:(BOOL)bindFBO
                                           ;
-- (void) detach;
+- (void) detach:(BOOL)bindFBO;
 
 @end
 
