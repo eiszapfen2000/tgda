@@ -135,10 +135,20 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     [ self updateGLTextureState ];
 }
 
+- (void) generateMipMaps
+{
+    [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:self ];
+
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
+}
+
 - (void) generateUsingWidth:(uint32_t)newWidth
                      height:(uint32_t)newHeight
                 pixelFormat:(NpTexturePixelFormat)newPixelFormat
                  dataFormat:(NpTextureDataFormat)newDataFormat
+                    mipmaps:(BOOL)newMipmaps
                        data:(NSData *)data
 {
     ready = NO;
@@ -147,6 +157,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     height = newHeight;
     pixelFormat = newPixelFormat;
     dataFormat  = newDataFormat;
+    filterState.mipmaps = newMipmaps;
 
     [ self uploadToGLWithData:data ];
 
@@ -159,6 +170,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
                        height:[ image height      ]
                   pixelFormat:[ image pixelFormat ]
                    dataFormat:[ image dataFormat  ]
+                      mipmaps:filterState.mipmaps
                          data:[ image imageData   ]];
 }
 
@@ -279,21 +291,18 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     {
         case NpTexture2DFilterNearest:
         {
-            filterState.mipmaps = NO;
             minFilter = magFilter = GL_NEAREST;
             break;
         }
 
         case NpTexture2DFilterLinear:
         {
-            filterState.mipmaps = NO;
             minFilter = magFilter = GL_LINEAR;
             break;
         }
 
         case NpTexture2DFilterTrilinear:
         {
-            filterState.mipmaps = YES;
             minFilter = GL_LINEAR_MIPMAP_LINEAR;
             magFilter = GL_LINEAR;
         }
@@ -301,11 +310,6 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
-
-    if ( filterState.mipmaps == YES )
-    {
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
 }
 
 - (void) updateGLTextureAnisotropy
@@ -355,6 +359,14 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
         // specify entire texture
         glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, width, height, 
             0, glPixelFormat, glDataFormat, [data bytes]);
+
+        // this is here because of broken AMD drivers
+        // if the call is moved somewhere else mipmap
+        // generation does not work
+        if ( filterState.mipmaps == YES )
+        {
+            glGenerateMipmap(GL_TEXTURE_2D);
+        }
 
         [ self updateGLTextureFilterState ];
         [ self updateGLTextureAnisotropy ];

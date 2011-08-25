@@ -22,6 +22,9 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
+- (NPEffect *) effect;
+- (NSString *) techniqueName;
+
 - (void) addEffectFromFile:(NSString *)fileName;
 - (void) setTechniqueName:(NSString *)newTechniqueName;
 

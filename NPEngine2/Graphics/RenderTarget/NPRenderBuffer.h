@@ -36,7 +36,7 @@
 - (void) attachToRenderTargetConfiguration:(NPRenderTargetConfiguration *)configuration
                                    bindFBO:(BOOL)bindFBO
                                           ;
-- (void) detach;
+- (void) detach:(BOOL)bindFBO;
 
 @end
 
