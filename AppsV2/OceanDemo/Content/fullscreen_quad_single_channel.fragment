@@ -1,0 +1,12 @@
+#version 150
+#extension GL_ARB_explicit_attrib_location : enable
+
+in vec2 texcoordsOut;
+layout(location = 0) out vec4 color;
+
+void main()
+{
+    float c = texture2D(colormap, texcoordsOut).r;
+    color = vec4(c, c, c, 1.0f);
+}
+

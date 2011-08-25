@@ -7,9 +7,12 @@
 @class NPEffect;
 @class NPEffectTechnique;
 @class NPEffectVariableFloat3;
+@class ODCamera;
 
 @interface ODPreethamSkylight : ODEntity
 {
+    ODCamera * camera;
+
     FVector2 sunTheta;
     FVector3 lightDirection;
     FVector3 zenithColor;
@@ -31,6 +34,8 @@
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
+
+- (void) setCamera:(ODCamera *)newCamera;
 
 @end
 

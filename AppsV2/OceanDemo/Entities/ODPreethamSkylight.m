@@ -5,8 +5,13 @@
 #import "Core/Container/NPAssetArray.h"
 #import "Core/World/NPTransformationState.h"
 #import "Core/NPEngineCore.h"
+#import "Graphics/Effect/NPEffect.h"
+#import "Graphics/Effect/NPEffectTechnique.h"
+#import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/Model/NPSUX2Model.h"
+#import "Graphics/Model/NPSUX2MaterialInstance.h"
 #import "Graphics/State/NPStateSet.h"
+#import "ODCamera.h"
 #import "ODPreethamSkylight.h"
 
 
@@ -33,47 +38,50 @@
 
 - (void) dealloc
 {
+    SAFE_DESTROY(camera);
+
     [ super dealloc ];
 }
 
 - (BOOL) loadFromDictionary:(NSDictionary *)config
                       error:(NSError **)error
 {
+    BOOL result
+        = [ super loadFromDictionary:config
+                               error:error ];
+
+    if ( result == NO )
+    {
+        return NO;
+    }
+
+
+    NPSUX2MaterialInstance * mInstance = [ model materialInstanceAtIndex:0 ];
+    NPEffect * effect = [ mInstance effect ];
+    NPEffectTechnique * technique
+        = [ effect techniqueWithName:[ mInstance techniqueName ]];
+
+    NSAssert(technique != nil, @"");
+
+    A_Yxy_P = [ effect variableWithName:@"AColor" ];
+    B_Yxy_P = [ effect variableWithName:@"BColor" ];
+    C_Yxy_P = [ effect variableWithName:@"CColor" ];
+    D_Yxy_P = [ effect variableWithName:@"DColor" ];
+    E_Yxy_P = [ effect variableWithName:@"EColor" ];
+    zenithColor_P = [ effect variableWithName:@"ZenithColor" ];
+
     /*
-    NSString * entityName      = [ config objectForKey:@"Name"     ];
-    NSString * modelPath       = [ config objectForKey:@"Model"    ];
-    NSString * statesetPath    = [ config objectForKey:@"States"   ];
-
-    if ( modelPath == nil || statesetPath == nil || entityName == nil )
-    {
-        NPLOG_ERROR(@"%@: Dictionary incomplete.", name);
-        return NO;
-    }
-
-    [ self setName:entityName ];
-
-    model    = [[[ NP Graphics ] modelManager    ] loadModelFromPath:modelPath       ];
-    stateset = [[[ NP Graphics ] stateSetManager ] loadStateSetFromPath:statesetPath ];
-
-    if ( model == nil || stateset == nil )
-    {
-        return NO;
-    }
-
-    NPEffect * effect = [[[ model materials ] objectAtIndex:0 ] effect ];
-
     lightDirectionP = [ effect parameterWithName:@"LightDirection" ];
     thetaSunP       = [ effect parameterWithName:@"ThetaSun" ];
     zenithColorP    = [ effect parameterWithName:@"ZenithColor" ];
-
-    AColorP = [ effect parameterWithName:@"AColor" ];
-    BColorP = [ effect parameterWithName:@"BColor" ];
-    CColorP = [ effect parameterWithName:@"CColor" ];
-    DColorP = [ effect parameterWithName:@"DColor" ];
-    EColorP = [ effect parameterWithName:@"EColor" ];
     */
 
-    return NO;
+    return YES;
+}
+
+- (void) setCamera:(ODCamera *)newCamera
+{
+    ASSIGN(camera, newCamera);
 }
 
 - (void) update:(const float)frameTime
@@ -184,3 +192,4 @@
 */
 
 @end
+

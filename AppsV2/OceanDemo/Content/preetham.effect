@@ -4,6 +4,13 @@ technique "preetham"
 {
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
+    uniform vec3 AColor;
+    uniform vec3 BColor;
+    uniform vec3 CColor;
+    uniform vec3 DColor;
+    uniform vec3 EColor;
+    uniform vec3 ZenithColor;
+    uniform vec3 DirectionToSun;
     # shaders
     set vertex shader "preetham.vertex"
     set fragment shader "preetham.fragment"

@@ -1,5 +1,5 @@
 {
-    Type = "ODEntity";
+    Type = "ODPreethamSkylight";
     Name = "Preetham Skylight";
     Model = "sky.model";
     States = "preetham.stateset";
