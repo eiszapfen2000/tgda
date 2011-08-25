@@ -10,6 +10,7 @@
 @class NPRenderTexture;
 @class NPRenderBuffer;
 @class NPEffect;
+@class NPEffectVariableFloat3;
 @class NPFullscreenQuad;
 
 @interface ODScene : NPObject < NPPPersistentObject >
@@ -28,7 +29,6 @@
     float referenceWhite;
     float key;
     float adaptationTimeScale;
-    int32_t luminanceMaxMipMapLevel;
     float lastFrameLuminance;
     float currentFrameLuminance;
 
@@ -44,6 +44,7 @@
 
     //
     NPEffect * fullscreenEffect;
+    NPEffectVariableFloat3 * toneMappingParameters;
     NPFullscreenQuad * fullscreenQuad;
 }
 

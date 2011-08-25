@@ -4,10 +4,38 @@ technique "texture"
 {
     # effect variables
     uniform sampler2D colormap;
-    uniform mat4 np_modelviewprojectionmatrix;
     # shaders
     set vertex shader "fullscreen_quad.vertex"
     set fragment shader "fullscreen_quad.fragment"
 }
+
+technique "texture_single_channel"
+{
+    # effect variables
+    uniform sampler2D colormap;
+    # shaders
+    set vertex shader "fullscreen_quad.vertex"
+    set fragment shader "fullscreen_quad_single_channel.fragment"
+}
+
+technique "luminance"
+{
+    # effect variables
+    uniform sampler2D colormap;
+    # shaders
+    set vertex shader "fullscreen_quad.vertex"
+    set fragment shader "fullscreen_quad_luminance.fragment"
+}
+
+technique "tonemap_reinhard"
+{
+    # effect variables
+    uniform sampler2D colormap;
+    uniform vec3 toneMappingParameters;
+    # shaders
+    set vertex shader "fullscreen_quad.vertex"
+    set fragment shader "fullscreen_quad_tonemap_reinhard.fragment"
+}
+
 
 

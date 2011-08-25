@@ -8,6 +8,7 @@
 #import "Graphics/Geometry/NPFullscreenQuad.h"
 #import "Graphics/Texture/NPTexture2D.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
+#import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/RenderTarget/NPRenderBuffer.h"
@@ -119,10 +120,9 @@
     lastFrameResolution.x = lastFrameResolution.y = INT_MAX;
     currentResolution.x = currentResolution.y = 0;
 
-    referenceWhite = 0.85f;
-    key = 0.38f;
+    referenceWhite = 1.0f;
+    key = 0.72f;
     adaptationTimeScale = 30.0f;
-    luminanceMaxMipMapLevel = -1;
     lastFrameLuminance = currentFrameLuminance = 1.0f;
 
     rtc = [[ NPRenderTargetConfiguration alloc ] init ];
@@ -134,6 +134,11 @@
         = [[[ NP Graphics ] effects ] getAssetWithFileName:@"fullscreen.effect" ];
 
     ASSERT_RETAIN(fullscreenEffect);
+
+    toneMappingParameters
+        = [ fullscreenEffect variableWithName:@"toneMappingParameters" ];
+
+    NSAssert(toneMappingParameters != nil, @"");
 
     fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
 
@@ -229,6 +234,7 @@
 
     [ projector setCamera:camera ];
     [ projectedGrid setProjector:projector ];
+    [ skylight setCamera:camera ];
 
     const NSUInteger numberOfEntityFiles = [ entityFiles count ];
     for ( NSUInteger i = 0; i < numberOfEntityFiles; i++ )
@@ -269,7 +275,7 @@
 - (void) update:(const float)frameTime
 {
     NPViewport * viewport = [[ NP Graphics] viewport ];
-    currentResolution.x = [ viewport width ];
+    currentResolution.x = [ viewport width  ];
     currentResolution.y = [ viewport height ];
 
     [ camera        update:frameTime ];
@@ -313,102 +319,11 @@
     [[[ NP Graphics ] stateConfiguration ] deactivate ];
 }
 
-/*
-    IVector2 * resolution = [[[ NP Graphics ] viewportManager ] currentControlSize ];
-
-    // setup fbo
-    [ terrainRTC setWidth:resolution->x ];
-    [ terrainRTC setHeight:resolution->y ];
-    [ terrainRTC resetColorTargetsArray ];
-    [ terrainRTC bindFBO ];
-
-    // setup terrainScene as target
-    [[ terrainRTC colorTargets ] replaceObjectAtIndex:0 withObject:terrainScene ];
-    [ terrainScene attachToColorBufferIndex:0 ];
-    [ depthBuffer attach ];
-    [ terrainRTC activateViewport ];
-    [ terrainRTC activateDrawBuffers ];
-    [ terrainRTC checkFrameBufferCompleteness ];
-
-    // clear terrainScene and depthBuffer
-    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
-
-    [ camera render ];
-    [ skylight render ];
-
-    [[[[ NP Graphics ] stateConfiguration ] cullingState ] setCullFace:NP_BACK_FACE ];
-    [[[[ NP Graphics ] stateConfiguration ] cullingState ] setEnabled:YES ];
-    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setWriteEnabled:YES ];
-    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:YES ];
-    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:NO ];
-    [[[ NP Graphics ] stateConfiguration ] activate ];
-
-    [ terrain render ];
-
-    // detach targets    
-    [ terrainScene detach ];
-    [ depthBuffer detach ];
-
-    // deactivate depth test
-    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setWriteEnabled:NO ];
-    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:NO ];
-    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] activate ];
-
-    // reset matrices
-    [[[ NP Core ] transformationState ] reset ];
-
-    // prepare luminanceTarget
-    [[ terrainRTC colorTargets ] replaceObjectAtIndex:0 withObject:luminanceTarget ];
-    [ luminanceTarget attachToColorBufferIndex:0 ];
-    [ terrainRTC activateViewport ];
-    [ terrainRTC activateDrawBuffers ];
-    [ terrainRTC checkFrameBufferCompleteness ];
-
-    // compute terrainScene's luminance into luminanceTarget
-    [[ terrainScene texture ] activateAtColorMapIndex:0 ];
-    [ fullscreenEffect activateTechniqueWithName:@"luminance" ];
-    [ fullscreenQuad render ];
-    [ luminanceTarget detach ];
-
-    // deactivate render targets
-    [ terrainRTC unbindFBO ];
-    [ terrainRTC deactivateDrawBuffers ];
-    [ terrainRTC deactivateViewport ];
-
-    // Generate mipmaps for luminance texture, since we want only the highest mipmaplevel
-    // as an approximation to the average luminance of the scene
-    [ luminanceTarget generateMipMaps ];
-
-    Half * averageLuminance;
-    Int32 numberOfElements = [[ luminanceTarget texture ] downloadMaxMipmapLevelIntoHalfs:&averageLuminance ];
-    NSAssert(averageLuminance != NULL && numberOfElements != 0, @"Failed to read average luminance back to memory.");
-
-    lastFrameLuminance = currentFrameLuminance;
-    Float currentFrameAverageLuminance = exp(half_to_float(averageLuminance[0]));
-    Double frameTime = [[[ NP Core ] timer ] frameTime ];
-
-    currentFrameLuminance = lastFrameLuminance + (currentFrameAverageLuminance - lastFrameLuminance)
-         * (Float)(1.0 - pow(0.9, adaptationTimeScale * frameTime));
-
-    FREE(averageLuminance);
-
-    // Bind scene and luminance texture, and do tonemapping
-    [[ terrainScene texture ] activateAtColorMapIndex:0 ];
-
-    FVector3 toneMappingParameterVector = { (Float)currentFrameLuminance, referenceWhite, key };
-    [ fullscreenEffect uploadFVector3Parameter:toneMappingParameters andValue:&toneMappingParameterVector ];
-    [ fullscreenEffect activateTechniqueWithName:@"tonemap" ];
-    [ fullscreenQuad render ];
-    [ fullscreenEffect deactivate ];
-*/
-
 - (void) render
 {
     if (( currentResolution.x != lastFrameResolution.x )
         || ( currentResolution.y != lastFrameResolution.y ))
     {
-        NSLog(@"Target resize");
-
         [ rtc setWidth:currentResolution.x  ];
         [ rtc setHeight:currentResolution.y ];
 
@@ -417,6 +332,7 @@
                         height:currentResolution.y
                    pixelFormat:NpImagePixelFormatRGBA
                     dataFormat:NpImageDataFormatFloat16
+                 mipmapStorage:YES
                          error:NULL ];
 
         [ luminanceTarget generate:NpRenderTargetColor
@@ -424,6 +340,7 @@
                             height:currentResolution.y
                        pixelFormat:NpImagePixelFormatR
                         dataFormat:NpImageDataFormatFloat16
+                     mipmapStorage:YES
                              error:NULL ];
 
         [ depthBuffer generate:NpRenderTargetDepth
@@ -439,21 +356,26 @@
     // Clear back buffer and depth buffer
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
-    // bind target for scene rendering
+    // bind FBO
     [ rtc bindFBO ];
+
+    // attach scene target texture
     [ sceneTarget
         attachToRenderTargetConfiguration:rtc
                          colorBufferIndex:0
                                   bindFBO:NO ];
 
+    // attach depth buffer
     [ depthBuffer
         attachToRenderTargetConfiguration:rtc
                                   bindFBO:NO ];
 
+    // set drawbuffers and viewport
     [ rtc activateDrawBuffers ];
     [ rtc activateViewport ];
 
     /*
+    // check for completeness
     NSError * fboError = nil;
     if ([ rtc checkFrameBufferCompleteness:&fboError ] == NO )
     {
@@ -461,9 +383,26 @@
     }
     */
 
+    // render scene
     [ self renderScene ];
 
-    [ rtc deactivate ];
+    // detach depth buffer and scene texture
+    [ depthBuffer detach:NO ];
+    [ sceneTarget detach:NO ];
+
+    // attach luminance target
+    [ luminanceTarget
+        attachToRenderTargetConfiguration:rtc
+                         colorBufferIndex:0
+                                  bindFBO:NO ];
+
+    /*
+    // check for completeness
+    if ([ rtc checkFrameBufferCompleteness:&fboError ] == NO )
+    {
+        NPLOG_ERROR(fboError);
+    }
+    */
 
     // reset matrices
     [[[ NP Core ] transformationState ] reset ];
@@ -471,10 +410,70 @@
     // bind scene target as texture source
     [[[ NP Graphics ] textureBindingState ] setTexture:[ sceneTarget texture ] texelUnit:0 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
-    
-    // render fullscreen quad
-    [[ fullscreenEffect techniqueWithName:@"texture" ] activate ];
+
+    // compute luminance from scene texture
+    [[ fullscreenEffect techniqueWithName:@"luminance" ] activate ];
     [ fullscreenQuad render ];
+
+    // detach luminance target
+    [ luminanceTarget detach:NO ];
+
+    // deactivate fbo, reset drawbuffers and viewport
+    [ rtc deactivate ];
+
+    // Generate mipmaps for luminance texture, since we want only the highest mipmaplevel
+    // as an approximation to the average luminance of the scene
+    [[ luminanceTarget texture ] generateMipMaps ];
+
+    [[[ NP Graphics ] textureBindingState ] clear ];
+
+    // read back of highest mipmap level
+    const uint32_t luminanceTargetWidth  = [ luminanceTarget width  ];
+    const uint32_t luminanceTargetHeight = [ luminanceTarget height ];
+    const int32_t  numberOfLevels = 1 + (int32_t)floor(logb(MAX(luminanceTargetWidth, luminanceTargetHeight)));
+    Half averageLuminance = 0;
+    glBindTexture(GL_TEXTURE_2D, [[ luminanceTarget texture ] glID ]);
+    glGetTexImage(GL_TEXTURE_2D, numberOfLevels - 1, GL_RED, GL_HALF_FLOAT, &averageLuminance);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    lastFrameLuminance = currentFrameLuminance;
+    const float currentFrameAverageLuminance = exp(half_to_float(averageLuminance));
+    const float frameTime = [[[ NP Core ] timer ] frameTime ];
+
+    currentFrameLuminance = lastFrameLuminance + (currentFrameAverageLuminance - lastFrameLuminance)
+         * (float)(1.0 - pow(0.9, adaptationTimeScale * frameTime));
+
+    //NSLog(@"%f %f", currentFrameAverageLuminance, currentFrameLuminance);
+
+    // bind scene target as texture source
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ sceneTarget texture ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] activate ];
+
+    FVector3 toneMappingParameterVector = {currentFrameLuminance, referenceWhite, key};
+    [ toneMappingParameters setValue:toneMappingParameterVector ];
+    [[ fullscreenEffect techniqueWithName:@"tonemap_reinhard" ] activate ];
+    [ fullscreenQuad render ];
+
+    /*
+    // Bind scene and luminance texture, and do tonemapping
+    [[ terrainScene texture ] activateAtColorMapIndex:0 ];
+
+    FVector3 toneMappingParameterVector = { (Float)currentFrameLuminance, referenceWhite, key };
+    [ fullscreenEffect uploadFVector3Parameter:toneMappingParameters andValue:&toneMappingParameterVector ];
+    [ fullscreenEffect activateTechniqueWithName:@"tonemap" ];
+    [ fullscreenQuad render ];
+    [ fullscreenEffect deactivate ];
+    */
+
+    /*
+    // bind luminance target as texture source
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ luminanceTarget texture ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] activate ];
+
+    // render luminance texture
+    [[ fullscreenEffect techniqueWithName:@"texture_single_channel" ] activate ];
+    [ fullscreenQuad render ];
+    */
 }
 
 @end
