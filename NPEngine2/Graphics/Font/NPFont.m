@@ -297,7 +297,7 @@
 }
 
 - (void) renderString:(NSString *)string
-            withColor:(const FVector3)color
+            withColor:(const FVector4)color
            atPosition:(const IVector2)position
                  size:(const int32_t)size
 {

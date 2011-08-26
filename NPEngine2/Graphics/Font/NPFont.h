@@ -5,7 +5,7 @@
 @class NSMutableArray;
 @class NPEffectTechnique;
 @class NPEffectVariableSampler;
-@class NPEffectVariableFloat3;
+@class NPEffectVariableFloat4;
 
 typedef struct NpBMFontCharacter
 {
@@ -45,7 +45,7 @@ NpFontCharacter;
     NpFontCharacter * characters;
     NPEffectTechnique * technique;
     NPEffectVariableSampler * characterPage;
-    NPEffectVariableFloat3 * textcolor;
+    NPEffectVariableFloat4 * textcolor;
 }
 
 - (id) init;
@@ -80,7 +80,7 @@ NpFontCharacter;
                             ;
 
 - (void) renderString:(NSString *)string
-            withColor:(const FVector3)color
+            withColor:(const FVector4)color
            atPosition:(const IVector2)position
                  size:(const int32_t)size
                      ;
