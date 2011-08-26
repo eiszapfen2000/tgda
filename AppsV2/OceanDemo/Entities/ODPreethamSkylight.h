@@ -13,8 +13,10 @@
 @interface ODPreethamSkylight : ODEntity
 {
     ODCamera * camera;
-    NPInputAction * sunZenithDistanceAction;
-    NPInputAction * sunAzimuthAction;
+    NPInputAction * sunZenithDistanceIncreaseAction;
+    NPInputAction * sunZenithDistanceDecreaseAction;
+    NPInputAction * sunAzimuthIncreaseAction;
+    NPInputAction * sunAzimuthDecreaseAction;
 
     float thetaSunDegrees;
     float phiSunDegrees;

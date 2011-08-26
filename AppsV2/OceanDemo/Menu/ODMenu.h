@@ -22,6 +22,10 @@
     NPInputAction * menuActivationAction;
     NPInputAction * menuClickAction;
     BOOL menuActive;
+    BOOL menuActivating;
+    BOOL menuDeactivating;
+    float activatingTime;
+    float opacity;
 
     NSMutableArray * fonts;
     NPEffect * effect;
@@ -43,6 +47,7 @@
 - (NPEffectTechnique *) colorTechnique;
 - (NPEffectTechnique *) textureTechnique;
 - (NPEffectTechnique *) fontTechnique;
+- (float) opacity;
 
 - (void) update:(const float)frameTime;
 - (void) render;

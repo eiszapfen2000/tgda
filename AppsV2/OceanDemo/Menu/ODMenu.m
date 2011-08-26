@@ -112,7 +112,11 @@
     menuItems = [[ NSMutableArray alloc ] init ];
     fonts     = [[ NSMutableArray alloc ] init ];
 
-    menuActive = YES;
+    menuActive = NO;
+    menuActivating = NO;
+    menuDeactivating = NO;
+    activatingTime = 0.0f;
+    opacity = 0.0f;
 
     menuClickAction
         = [[[ NPEngineInput instance ] inputActions ]
@@ -224,6 +228,11 @@
     return [ effect techniqueWithName:@"font" ];
 }
 
+- (float) opacity
+{
+    return opacity;
+}
+
 - (BOOL) loadFromStream:(id <NPPStream>)stream 
                   error:(NSError **)error
 {
@@ -329,13 +338,41 @@
     {
         if ( menuActive == NO )
         {
-            menuActive = YES;
+            menuActivating = YES;
         }
         else
         {
-            menuActive = NO;
+            menuDeactivating = YES;
         }
     }
+
+    if ( menuActivating == YES )
+    {
+        activatingTime += frameTime;
+        activatingTime = MIN(activatingTime, 1.0f);
+        opacity = activatingTime;
+
+        if ( activatingTime == 1.0f )
+        {
+            activatingTime = 0.0f;
+            menuActive = YES;
+            menuActivating = NO;
+        }
+    }
+
+    if ( menuDeactivating == YES )
+    {
+        activatingTime += frameTime;
+        activatingTime = MIN(activatingTime, 1.0f);
+        opacity = 1.0f - activatingTime;
+
+        if ( activatingTime == 1.0f )
+        {
+            activatingTime = 0.0f;
+            menuActive = NO;
+            menuDeactivating = NO;
+        }
+    }   
 
     if ( menuActive == YES )
     {
@@ -371,7 +408,7 @@
 
 - (void) render
 {
-    if ( menuActive == YES )
+    if ( menuActive == YES || menuActivating == YES || menuDeactivating == YES )
     {
         [ menuItems makeObjectsPerformSelector:@selector(render) ];
     }

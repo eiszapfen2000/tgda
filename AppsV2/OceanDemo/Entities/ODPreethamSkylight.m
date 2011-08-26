@@ -30,13 +30,21 @@
 {
     self =  [ super initWithName:newName ];
 
-    sunZenithDistanceAction
+    sunZenithDistanceIncreaseAction
         = [[[ NP Input ] inputActions ]
-                addInputActionWithName:@"SunZenithDistance" inputEvent:NpKeyboardO ];
+                addInputActionWithName:@"SunZenithDistanceIncrease" inputEvent:NpKeyboardKeypad2 ];
 
-    sunAzimuthAction
+    sunZenithDistanceDecreaseAction
         = [[[ NP Input ] inputActions ]
-                addInputActionWithName:@"SunAzimuth" inputEvent:NpKeyboardL ];
+                addInputActionWithName:@"SunZenithDistanceDecrease" inputEvent:NpKeyboardKeypad8 ];
+
+    sunAzimuthIncreaseAction
+        = [[[ NP Input ] inputActions ]
+                addInputActionWithName:@"SunAzimuthIncrease" inputEvent:NpKeyboardKeypad4 ];
+
+    sunAzimuthDecreaseAction
+        = [[[ NP Input ] inputActions ]
+                addInputActionWithName:@"SunAzimuthDecrease" inputEvent:NpKeyboardKeypad6 ];
 
     thetaSunDegrees = 45.0f;
     phiSunDegrees = 0.0f;
@@ -46,15 +54,17 @@
     fv3_v_init_with_zeros(&zenithColor);
 
     // turbidity must be in the range 2 - 6
-    turbidity = 3.0f;
+    turbidity = 8.0f;
 
     return self;
 }
 
 - (void) dealloc
 {
-    [[[ NP Input ] inputActions ] removeInputAction:sunZenithDistanceAction ];
-    [[[ NP Input ] inputActions ] removeInputAction:sunAzimuthAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:sunZenithDistanceIncreaseAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:sunZenithDistanceDecreaseAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:sunAzimuthIncreaseAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:sunAzimuthDecreaseAction ];
 
     SAFE_DESTROY(camera);
 
@@ -89,12 +99,6 @@
     zenithColor_P = [ effect variableWithName:@"ZenithColor" ];
     lighDirection_P = [ effect variableWithName:@"DirectionToSun" ];
 
-    /*
-    lightDirectionP = [ effect parameterWithName:@"LightDirection" ];
-    thetaSunP       = [ effect parameterWithName:@"ThetaSun" ];
-    zenithColorP    = [ effect parameterWithName:@"ZenithColor" ];
-    */
-
     return YES;
 }
 
@@ -105,6 +109,47 @@
 
 - (void) update:(const float)frameTime
 {
+
+    if ( [ sunZenithDistanceIncreaseAction active ] == YES )
+    {
+        thetaSunDegrees += 1.0f;
+    }
+
+    if ( [ sunZenithDistanceDecreaseAction active ] == YES )
+    {
+        thetaSunDegrees -= 1.0f;
+    }
+
+    if ( [ sunAzimuthIncreaseAction active ] == YES )
+    {
+        phiSunDegrees += 1.0f;
+    }
+
+    if ( [ sunAzimuthDecreaseAction active ] == YES )
+    {
+        phiSunDegrees -= 1.0f;
+    }
+
+    if ( thetaSunDegrees < 0.0f )
+    {
+        thetaSunDegrees = 0.0f;
+    }
+
+    if (thetaSunDegrees > 90.0f)
+    {
+        thetaSunDegrees = 90.0f;
+    }
+
+    if ( phiSunDegrees > 360.0f )
+    {
+        phiSunDegrees -= 360.0f;
+    }
+
+    if ( phiSunDegrees < 0.0f )
+    {
+        phiSunDegrees += 360.0f;
+    }
+
     position = [ camera position ];
 
     const double thetaSunAngle = DEGREE_TO_RADIANS(thetaSunDegrees);
