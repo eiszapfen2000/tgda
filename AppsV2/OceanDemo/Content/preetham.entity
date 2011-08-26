@@ -3,6 +3,6 @@
     Name = "Preetham Skylight";
     Model = "sky.model";
     States = "preetham.stateset";
-    Position = ( "0.0", "-2.0", "0.0" );
+    Position = ( "0.0", "0.0", "0.0" );
 }
  

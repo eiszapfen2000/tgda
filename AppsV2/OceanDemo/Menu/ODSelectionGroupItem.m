@@ -21,8 +21,8 @@
 
 - (void) renderGeometry
 {
-    const FVector4 lineColor = {1.0f, 1.0f, 1.0f, 1.0f};
-    const FVector4 quadColor = {1.0f, 1.0f, 1.0f, 0.25f};
+    const FVector4 lineColor = {1.0f, 1.0f, 1.0f, [ menu opacity ]};
+    const FVector4 quadColor = {1.0f, 1.0f, 1.0f, [ menu opacity ] * 0.25f};
 
     // start with the lower left of the upper left item
     FVector2 lowerLeft
@@ -72,7 +72,7 @@
 {
     NPFont * font = [ menu fontForSize:textSize ];
 
-    const FVector3 textColor = {1.0f, 1.0f, 1.0f};
+    const FVector4 textColor = {1.0f, 1.0f, 1.0f, [ menu opacity ]};
 
     // start with the lower left of the upper left item
     FVector2 lowerLeft

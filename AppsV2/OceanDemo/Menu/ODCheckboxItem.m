@@ -82,7 +82,7 @@
 
 - (void) render
 {
-    const FVector4 c = {1.0f, 1.0f, 1.0f, 1.0f};
+    const FVector4 c = {1.0f, 1.0f, 1.0f, [ menu opacity ]};
 
     NPEffect * effect = [ menu effect ];
     NPEffectTechnique * technique = [ effect techniqueWithName:@"color" ];

@@ -24,7 +24,7 @@ technique "font"
 {
     # effect variables
     uniform sampler2D characterpage;
-    uniform vec3 textcolor;
+    uniform vec4 textcolor;
     uniform mat4 np_modelviewprojectionmatrix;
     # shaders
     set vertex shader "font.vertex"

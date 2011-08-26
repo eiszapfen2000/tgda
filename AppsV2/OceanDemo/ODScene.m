@@ -122,7 +122,7 @@
 
     referenceWhite = 1.0f;
     key = 0.72f;
-    adaptationTimeScale = 30.0f;
+    adaptationTimeScale = 10.0f;
     lastFrameLuminance = currentFrameLuminance = 1.0f;
 
     rtc = [[ NPRenderTargetConfiguration alloc ] init ];
@@ -298,11 +298,6 @@
     // reset matrices
     [[[ NP Core ] transformationState ] reset ];
 
-    // enable depth write and depth test
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] setEnabled:YES ];
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] setWriteEnabled:YES ];
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] activate ];
-
     // set view and projection
     [ camera render ];
 
@@ -364,7 +359,7 @@
         lastFrameResolution = currentResolution;
     }
 
-    // Clear back buffer and depth buffer
+    // clear back buffer and depth buffer
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
     // bind FBO
