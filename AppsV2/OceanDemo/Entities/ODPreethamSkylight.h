@@ -7,11 +7,17 @@
 @class NPEffect;
 @class NPEffectTechnique;
 @class NPEffectVariableFloat3;
+@class NPInputAction;
 @class ODCamera;
 
 @interface ODPreethamSkylight : ODEntity
 {
     ODCamera * camera;
+    NPInputAction * sunZenithDistanceAction;
+    NPInputAction * sunAzimuthAction;
+
+    float thetaSunDegrees;
+    float phiSunDegrees;
 
     FVector2 sunTheta;
     FVector3 lightDirection;
@@ -24,6 +30,7 @@
     NPEffectVariableFloat3 * D_Yxy_P;
     NPEffectVariableFloat3 * E_Yxy_P;
     NPEffectVariableFloat3 * zenithColor_P;
+    NPEffectVariableFloat3 * lighDirection_P;
 
     /*
     CGparameter lightDirectionP;

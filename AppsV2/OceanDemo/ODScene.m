@@ -306,6 +306,17 @@
     // set view and projection
     [ camera render ];
 
+    // render skylight
+    [ skylight render ];
+
+    // activate culling, depth write and depth test
+    [[[[ NP Graphics ] stateConfiguration ] cullingState ] setCullFace:NpCullfaceBack ];
+    [[[[ NP Graphics ] stateConfiguration ] cullingState ] setEnabled:YES ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setWriteEnabled:YES ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:YES ];
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:NO ];
+    [[[ NP Graphics ] stateConfiguration ] activate ];
+
     // render projected grid
     [ projectedGrid render ];
 
@@ -423,18 +434,16 @@
 
     // Generate mipmaps for luminance texture, since we want only the highest mipmaplevel
     // as an approximation to the average luminance of the scene
-    [[ luminanceTarget texture ] generateMipMaps ];
-
-    [[[ NP Graphics ] textureBindingState ] clear ];
-
-    // read back of highest mipmap level
-    const uint32_t luminanceTargetWidth  = [ luminanceTarget width  ];
-    const uint32_t luminanceTargetHeight = [ luminanceTarget height ];
-    const int32_t  numberOfLevels = 1 + (int32_t)floor(logb(MAX(luminanceTargetWidth, luminanceTargetHeight)));
     Half averageLuminance = 0;
-    glBindTexture(GL_TEXTURE_2D, [[ luminanceTarget texture ] glID ]);
+    const int32_t  numberOfLevels
+        = 1 + (int32_t)floor(logb(MAX(currentResolution.x, currentResolution.y)));
+
+    [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ luminanceTarget texture ]];
+
+    glGenerateMipmap(GL_TEXTURE_2D);
     glGetTexImage(GL_TEXTURE_2D, numberOfLevels - 1, GL_RED, GL_HALF_FLOAT, &averageLuminance);
-    glBindTexture(GL_TEXTURE_2D, 0);
+
+    [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
 
     lastFrameLuminance = currentFrameLuminance;
     const float currentFrameAverageLuminance = exp(half_to_float(averageLuminance));
@@ -449,31 +458,13 @@
     [[[ NP Graphics ] textureBindingState ] setTexture:[ sceneTarget texture ] texelUnit:0 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
+    // set tonemapping paramters
     FVector3 toneMappingParameterVector = {currentFrameLuminance, referenceWhite, key};
     [ toneMappingParameters setValue:toneMappingParameterVector ];
+
+    // render tonemapped scene to screen
     [[ fullscreenEffect techniqueWithName:@"tonemap_reinhard" ] activate ];
     [ fullscreenQuad render ];
-
-    /*
-    // Bind scene and luminance texture, and do tonemapping
-    [[ terrainScene texture ] activateAtColorMapIndex:0 ];
-
-    FVector3 toneMappingParameterVector = { (Float)currentFrameLuminance, referenceWhite, key };
-    [ fullscreenEffect uploadFVector3Parameter:toneMappingParameters andValue:&toneMappingParameterVector ];
-    [ fullscreenEffect activateTechniqueWithName:@"tonemap" ];
-    [ fullscreenQuad render ];
-    [ fullscreenEffect deactivate ];
-    */
-
-    /*
-    // bind luminance target as texture source
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ luminanceTarget texture ] texelUnit:0 ];
-    [[[ NP Graphics ] textureBindingState ] activate ];
-
-    // render luminance texture
-    [[ fullscreenEffect techniqueWithName:@"texture_single_channel" ] activate ];
-    [ fullscreenQuad render ];
-    */
 }
 
 @end
