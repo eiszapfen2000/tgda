@@ -445,7 +445,7 @@
     const float frameTime = [[[ NP Core ] timer ] frameTime ];
 
     currentFrameLuminance = lastFrameLuminance + (currentFrameAverageLuminance - lastFrameLuminance)
-         * (float)(1.0 - pow(0.9, adaptationTimeScale * frameTime));
+         * (1.0 - pow(0.9, adaptationTimeScale * frameTime));
 
     //NSLog(@"%f %f", currentFrameAverageLuminance, currentFrameLuminance);
 

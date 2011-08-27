@@ -19,18 +19,27 @@ NPFont
     - render - done
 
 ODMenu
-    - loading - mostly done
-    - render - renders all items at the moment
-    - test hit testing
-    - picking
-    - ODCheckboxItem
-    - ODSliderItem
-    - ODSelectionGroupItem
-    - ODButtonItem
+    - loading - done
+    - render - done
+    - test hit testing - done
+    - picking - done
+    - ODCheckboxItem - chekced/unchecked/label rendering
+    - ODSliderItem - label rendering
+    - ODSelectionGroupItem - label rendering
+    - ODButtonItem - label rendering
+    - Fade-In / Fade-out - done
 
-- ODPreethamSky
-- HDR rendering
-- sRGB sampling
-- tone mapping
+- ODPreethamSkylight
+    - loading - mostly done, scaling factor missing
+    - move light direction - done
+    - compute max luminance
+    - render with scaling
+
+- FQuaternion
+    - SLERP
+
+- HDR rendering - done
+- sRGB sampling 
+- tone mapping - reinhard done
 
 

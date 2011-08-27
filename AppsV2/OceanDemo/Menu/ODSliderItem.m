@@ -22,7 +22,7 @@
 
 - (float) scaledValue
 {
-    float normalisedScale;
+    float normalisedScale = 0.0f;
 
     switch ( direction )
     {
@@ -215,6 +215,12 @@
             headOffset.y = (headSize.y * -0.5f) + deltaY;
             break;
         }
+    }
+
+    if ( target != nil )
+    {
+        const float scaledValue = [ self scaledValue ];
+        GSObjCSetVariable(target, offset, size, &scaledValue);
     }
 }
 
