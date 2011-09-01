@@ -386,6 +386,21 @@ void fquat_m4_to_quaternion_q(const FMatrix4 * m, FQuaternion * q)
     }
 }
 
+void fquat_qqs_slerp_q(const FQuaternion * const q1, const FQuaternion * const q2, const float u, FQuaternion * result)
+{
+    double cosAngle = q1->w * q2->w + q1->v.x * q2->v.x + q1->v.y * q2->v.y + q1->v.z * q2->v.z;
+    double angle = acos(cosAngle);
+    double sinAngle = sin(angle);
+
+    double q1Scale = sin(angle * (1.0 - u)) / sinAngle;
+    double q2Scale = sin(angle * u) / sinAngle;
+
+    result->v.x = q1->v.x * q1Scale + q2->v.x * q2Scale;
+    result->v.y = q1->v.y * q1Scale + q2->v.y * q2Scale;
+    result->v.z = q1->v.z * q1Scale + q2->v.z * q2Scale;
+    result->w   = q1->w   * q1Scale + q2->w   * q2Scale;
+}
+
 FQuaternion fquat_q_conjugated(const FQuaternion * q)
 {
     return (FQuaternion){{ -Q_X(*q), -Q_Y(*q), -Q_Z(*q) }, Q_W(*q) };
