@@ -49,6 +49,8 @@ void fquat_q_to_fmatrix4_m(const FQuaternion * q, FMatrix4 * m);
 void fquat_m3_to_quaternion_q(const FMatrix3 * m, FQuaternion * q);
 void fquat_m4_to_quaternion_q(const FMatrix4 * m, FQuaternion * q);
 
+void fquat_qqs_slerp_q(const FQuaternion * const q1, const FQuaternion * const q2, const float u, FQuaternion * result);
+
 FQuaternion fquat_q_conjugated(const FQuaternion * q);
 FQuaternion fquat_q_normalised(const FQuaternion * q);
 FQuaternion fquat_qq_multiply(const FQuaternion * restrict q1, const FQuaternion * restrict q2);
