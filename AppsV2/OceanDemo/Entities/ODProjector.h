@@ -36,6 +36,7 @@
     NPInputAction * yawMinusAction;
     NPInputAction * yawPlusAction;
 
+    BOOL connectedToCameraLastFrame;
     BOOL connectedToCamera;
     ODCamera * camera;
 }
@@ -47,11 +48,15 @@
 - (void) reset;
 
 - (FVector3) position;
+- (FQuaternion) orientation;
 - (FMatrix4 *) view;
 - (FMatrix4 *) projection;
 - (FMatrix4 *) inverseViewProjection;
 - (ODCamera *) camera;
 - (ODFrustum *) frustum;
+
+- (BOOL) connecting;
+- (BOOL) disconnecting;
 
 - (void) setPosition:(const FVector3)newPosition;
 - (void) setCamera:(ODCamera *)newCamera;

@@ -13,27 +13,16 @@
 
     Items =
     {
-        PConnection =
-        {
-            Type = "ODCheckboxItem";
-            Description = "Nix";
-            TextSize = "16";
-            Alignment = "TopLeft";
-            Position = ("100", "100" );
-            Size = ( "100", "100" );
-            Checked = "YES";
-            TargetObject = "Projector";
-            TargetProperty = "connectedToCamera";
-        };
-
         PButton =
         {
             Type = "ODButtonItem";
             Label = "Connect";
             Alignment = "BottomLeft";
             Position = ("50", "50" );
-            Size = ( "50", "50" );
+            Size = ( "70", "20" );
             TextSize = "16";
+            TargetObject = "Projector";
+            TargetProperty = "connectedToCamera";
         };
 
         PGroup =

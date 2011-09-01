@@ -47,7 +47,7 @@
     yawMinusAction   = [[[ NP Input ] inputActions ] addInputActionWithName:@"YawMinus"   inputEvent:NpKeyboardA ];
     yawPlusAction    = [[[ NP Input ] inputActions ] addInputActionWithName:@"YawPlus"    inputEvent:NpKeyboardD ];
 
-    connectedToCamera = NO;
+    connectedToCameraLastFrame = connectedToCamera = NO;
 
 	return self;
 }
@@ -104,6 +104,11 @@
 	return position;
 }
 
+- (FQuaternion) orientation
+{
+    return orientation;
+}
+
 - (FMatrix4 *) view
 {
     return &view;
@@ -127,6 +132,16 @@
 - (ODFrustum *) frustum
 {
     return frustum;
+}
+
+- (BOOL) connecting
+{
+    return ( connectedToCameraLastFrame == NO && connectedToCamera == YES ) ? YES : NO;
+}
+
+- (BOOL) disconnecting
+{
+    return ( connectedToCameraLastFrame == YES && connectedToCamera == NO ) ? YES : NO;
 }
 
 - (void) setPosition:(const FVector3)newPosition
@@ -216,6 +231,7 @@
 
 - (void) updateProjection
 {
+    /*
     if ( connectedToCamera == YES )
     {
         //enlarge horizontal field of view
@@ -229,9 +245,10 @@
     }
     else
     {
+    */
         aspectRatio = [ camera aspectRatio ];
         fov = [ camera fov ];
-    }
+    //}
 
     nearPlane = [ camera nearPlane ];
     farPlane  = [ camera farPlane  ];
@@ -241,6 +258,7 @@
 
 - (void) updateView
 {
+    /*
     if ( connectedToCamera == YES )
     {
         position =  [ camera position ];
@@ -287,6 +305,7 @@
     }
     else
     {
+    */
         // camera looking upwards
         if ( pitch >= 0.0f && pitch <= 180.0f )
         {
@@ -320,7 +339,7 @@
         FMatrix4 rotate = fquat_q_to_fmatrix4(&q);
         FMatrix4 translate = fm4_v_translation_matrix(&invpos);
         fm4_mm_multiply_m(&rotate, &translate, &view);
-    }
+    //}
 }
 
 - (void) update:(const float)frameTime
@@ -361,13 +380,16 @@
 
     fm4_mm_multiply_m(&projection, &view, &viewProjection);
     fm4_m_inverse_m(&viewProjection, &inverseViewProjection);
+
+    connectedToCameraLastFrame = connectedToCamera;
 }
 
 - (void) render
 {
     NSAssert(camera != nil, @"No camera attached");
 
-    if ( renderFrustum == YES && connectedToCamera == NO)
+    //if ( renderFrustum == YES && connectedToCamera == NO)
+    if ( renderFrustum == YES )
     {
         [[[ NP Core ] transformationState ] resetModelMatrix ];
         [ frustum render ];

@@ -117,19 +117,32 @@
 
     entities = [[ NSMutableArray alloc ] init ];
 
-    lastFrameResolution.x = lastFrameResolution.y = INT_MAX;
-    currentResolution.x = currentResolution.y = 0;
+    // camera animation
+    fquat_set_identity(&startOrientation);
+    fquat_set_identity(&endOrientation);
+    fv3_v_init_with_zeros(&startPosition);
+    fv3_v_init_with_zeros(&endPosition);
+    animationTime = 0.0f;
+    connecting = NO;
+    disconnecting = NO;
 
+    // tonemapping parameters
     referenceWhite = 1.0f;
     key = 0.72f;
     adaptationTimeScale = 10.0f;
     lastFrameLuminance = currentFrameLuminance = 1.0f;
 
+    // render target resolution
+    lastFrameResolution.x = lastFrameResolution.y = INT_MAX;
+    currentResolution.x = currentResolution.y = 0;
+
+    // render targets
     rtc = [[ NPRenderTargetConfiguration alloc ] init ];
     sceneTarget = [[ NPRenderTexture alloc ] init ];
     luminanceTarget = [[ NPRenderTexture alloc ] init ];
     depthBuffer = [[ NPRenderBuffer alloc ] init ];
 
+    // effect and effect paramters
     fullscreenEffect
         = [[[ NP Graphics ] effects ] getAssetWithFileName:@"fullscreen.effect" ];
 
@@ -140,6 +153,7 @@
 
     NSAssert(toneMappingParameters != nil, @"");
 
+    // fullscreen quad for render target display
     fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
 
     return self;
@@ -277,6 +291,66 @@
     NPViewport * viewport = [[ NP Graphics] viewport ];
     currentResolution.x = [ viewport width  ];
     currentResolution.y = [ viewport height ];
+
+    if ( [ projector connecting ] == YES )
+    {
+        [ camera lockInput ];
+
+        startOrientation = [ camera orientation ];
+        endOrientation   = [ projector orientation ];
+
+        FVector3 fs = fquat_q_forward_vector(&startOrientation);
+        FVector3 fe = fquat_q_forward_vector(&endOrientation);
+
+        double cosAngle = startOrientation.w * endOrientation.w + startOrientation.v.x * endOrientation.v.x + startOrientation.v.y * endOrientation.v.y + startOrientation.v.z * endOrientation.v.z;
+        double angle = acos(cosAngle);
+        NSLog(@"START ANGLE %f", angle);
+
+        /*
+        NSLog(@"START F: %f %f %f", fs.x, fs.y, fs.z);
+        NSLog(@"END F: %f %f %f", fe.x, fe.y, fe.z);
+        NSLog(@"DOT %f", fv3_vv_dot_product(&fs, &fe));
+
+        NSLog(@"START: %f %f %f %f", startOrientation.v.x, startOrientation.v.y, startOrientation.v.z, startOrientation.w);
+        NSLog(@"END: %f %f %f %f", endOrientation.v.x, endOrientation.v.y, endOrientation.v.z, endOrientation.w);
+        */
+
+        startPosition = [ camera position ];
+        endPosition   = [ projector position ];
+        connecting = YES;
+
+        NSLog(@"Connecting");
+    }
+
+    if ( [ projector disconnecting ] == YES )
+    {
+        disconnecting = YES;
+
+        NSLog(@"Disconnecting");
+    }
+
+    if ( connecting == YES )
+    {
+        animationTime += frameTime;
+        animationTime = MIN(animationTime, 2.0f);
+
+        FQuaternion slerped;
+        fquat_qqs_slerp_q(&startOrientation, &endOrientation, animationTime / 2.0f, &slerped);
+
+        double cosAngle = startOrientation.w * slerped.w + startOrientation.v.x * slerped.v.x + startOrientation.v.y * slerped.v.y + startOrientation.v.z * slerped.v.z;
+        double angle = acos(cosAngle);
+        NSLog(@"ANGLE %f", angle);
+
+        [ camera setOrientation:slerped ];
+
+        if ( animationTime == 2.0f )
+        {
+            connecting = NO;
+            animationTime = 0.0f;
+            NSLog(@"UNLOCK");
+            //[ camera unlockInput ];
+        }
+    }
 
     [ camera        update:frameTime ];
     [ projector     update:frameTime ];

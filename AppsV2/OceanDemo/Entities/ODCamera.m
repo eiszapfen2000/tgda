@@ -10,6 +10,72 @@
 #import "ODProjector.h"
 #import "ODCamera.h"
 
+@interface ODCamera (Private)
+
+- (void) processInput:(const float)frameTime;
+
+@end
+
+@implementation ODCamera (Private)
+
+- (void) processInput:(const float)frameTime
+{
+    // position update
+    if ( [ forwardMovementAction active ] == YES )
+    {
+        [ self moveForward:frameTime ];
+    }
+
+    if ( [ backwardMovementAction active ] == YES )
+    {
+        [ self moveBackward:frameTime ];
+    }
+
+    if ( [ strafeLeftAction active ] == YES )
+    {
+        [ self moveLeft:frameTime * 3.0f ];
+    }
+
+    if ( [ strafeRightAction active ] == YES )
+    {
+        [ self moveRight:frameTime * 3.0f ];
+    }
+
+    if ( [ leftClickAction active ] == YES )
+    {
+        // rotation update
+        NPMouse * mouse = [[ NP Input ] mouse ];
+        int32_t deltaX = [ mouse deltaX ];
+        int32_t deltaY = [ mouse deltaY ];
+
+        if ( deltaX != 0 || deltaY != 0 )
+        {
+            [ self cameraRotateUsingYaw:-deltaX*0.3f andPitch:-deltaY*0.3f ];
+        }
+    }
+
+    if ( [ wheelUpAction activated ] == YES )
+    {
+        fquat_q_forward_vector_v(&orientation, &forward);
+
+        position.x += (forward.x * 2.0f);
+        position.y += (forward.y * 2.0f);
+        position.z += (forward.z * 2.0f);
+    }
+
+    if ( [ wheelDownAction activated ] == YES )
+    {
+        fquat_q_forward_vector_v(&orientation, &forward);
+
+        position.x -= (forward.x * 2.0f);
+        position.y -= (forward.y * 2.0f);
+        position.z -= (forward.z * 2.0f);
+    }
+
+}
+
+@end
+
 @implementation ODCamera
 
 - (id) init
@@ -29,7 +95,6 @@
     fov         = 45.0f;
     nearPlane   = 0.1f;
     farPlane    = 50.0f;
-    //aspectRatio = [[[ NP Graphics ] viewport ] aspectRatio ];
     aspectRatio = 1.0f;
 
     yaw   = 0.0f;
@@ -37,6 +102,8 @@
 
     fv3_v_init_with_zeros(&forward);
     forward.z = -1.0f;
+
+    inputLocked = NO;
 
     leftClickAction        = [[[ NP Input ] inputActions ] addInputActionWithName:@"LeftClick"   inputEvent:NpMouseButtonLeft ];
     forwardMovementAction  = [[[ NP Input ] inputActions ] addInputActionWithName:@"Forward"     inputEvent:NpKeyboardUp      ];
@@ -126,6 +193,11 @@
 	return position;
 }
 
+- (FQuaternion) orientation
+{
+    return orientation;
+}
+
 - (FMatrix4 *) view
 {
     return &view;
@@ -134,6 +206,11 @@
 - (FMatrix4 *) projection
 {
     return &projection;
+}
+
+- (BOOL) inputLocked
+{
+    return inputLocked;
 }
 
 - (void) setFov:(const float)newFov
@@ -161,6 +238,20 @@
 	position = newPosition;
 }
 
+- (void) setOrientation:(const FQuaternion)newOrientation
+{
+    orientation = newOrientation;
+}
+
+- (void) lockInput
+{
+    inputLocked = YES;
+}
+
+- (void) unlockInput
+{
+    inputLocked = NO;
+}
 
 - (void) updateYaw:(float)degrees
 {
@@ -168,9 +259,9 @@
     {
         yaw += degrees;
 
-        if ( yaw < -360.0f )
+        if ( yaw < 0.0f )
         {
-            yaw += 360.0f;
+            yaw = 360.0f + yaw;
         }
 
         if ( yaw > 360.0f )
@@ -186,9 +277,9 @@
     {
         pitch += degrees;
 
-        if ( pitch < -360.0f )
+        if ( pitch < 0.0f )
         {
-            pitch += 360.0f;
+            pitch = 360.0f + pitch;
         }
 
         if ( pitch > 360.0f )
@@ -261,6 +352,8 @@
 
     fm4_m_set_identity(&view);
 
+//    NSLog(@"%f %f", pitch, yaw);
+
     fquat_q_forward_vector_v(&orientation, &forward);
     FQuaternion q = fquat_q_conjugated(&orientation);
     FVector3 invpos = fv3_v_inverted(&position);
@@ -273,56 +366,9 @@
 
 - (void) update:(const float)frameTime
 {
-    // position update
-    if ( [ forwardMovementAction active ] == YES )
+    if ( inputLocked == NO )
     {
-        [ self moveForward:frameTime ];
-    }
-
-    if ( [ backwardMovementAction active ] == YES )
-    {
-        [ self moveBackward:frameTime ];
-    }
-
-    if ( [ strafeLeftAction active ] == YES )
-    {
-        [ self moveLeft:frameTime * 3.0f ];
-    }
-
-    if ( [ strafeRightAction active ] == YES )
-    {
-        [ self moveRight:frameTime * 3.0f ];
-    }
-
-    if ( [ leftClickAction active ] == YES )
-    {
-        // rotation update
-        NPMouse * mouse = [[ NP Input ] mouse ];
-        int32_t deltaX = [ mouse deltaX ];
-        int32_t deltaY = [ mouse deltaY ];
-
-        if ( deltaX != 0 || deltaY != 0 )
-        {
-            [ self cameraRotateUsingYaw:-deltaX*0.3f andPitch:-deltaY*0.3f ];
-        }
-    }
-
-    if ( [ wheelUpAction activated ] == YES )
-    {
-        fquat_q_forward_vector_v(&orientation, &forward);
-
-        position.x += (forward.x * 2.0f);
-        position.y += (forward.y * 2.0f);
-        position.z += (forward.z * 2.0f);
-    }
-
-    if ( [ wheelDownAction activated ] == YES )
-    {
-        fquat_q_forward_vector_v(&orientation, &forward);
-
-        position.x -= (forward.x * 2.0f);
-        position.y -= (forward.y * 2.0f);
-        position.z -= (forward.z * 2.0f);
+        [ self processInput:frameTime ];
     }
 
     // update matrices
