@@ -2,6 +2,7 @@
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSError.h>
 #import <Foundation/NSException.h>
+#import "Core/Timer/NPTimer.h"
 #import "Core/Container/NPAssetArray.h"
 #import "Core/World/NPTransformationState.h"
 #import "Core/NPEngineCore.h"
@@ -135,12 +136,15 @@ static NPAssetArray * statesets = nil;
 
 - (void) update:(const float)frameTime
 {
-
+    //double totalTime = [[[ NPEngineCore instance ] timer ]totalElapsedTime ];
+    //double u = fmod(totalTime, 5.0) / 5.0f;
+    //NSLog(@"%f %f %f",totalTime, fmod(totalTime, 5.0), u);
 }
 
 - (void) render
 {
     fm4_mv_translation_matrix(&modelMatrix, &position);
+
     [[[ NPEngineCore instance ] transformationState ] setModelMatrix:&modelMatrix ];
 
     if ( stateset != nil )

@@ -25,6 +25,15 @@
     ODPreethamSkylight * skylight;
     NSMutableArray * entities;
 
+    // camera animation
+    FQuaternion startOrientation;
+    FQuaternion endOrientation;
+    FVector3 startPosition;
+    FVector3 endPosition;
+    float animationTime;
+    BOOL connecting;
+    BOOL disconnecting;
+
     // tonemapping parameters
     float referenceWhite;
     float key;
