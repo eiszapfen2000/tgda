@@ -1,6 +1,7 @@
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <math.h>
+#include <float.h>
 
 #include "Core/Basics/NpFreeList.h"
 #include "FQuaternion.h"
@@ -388,12 +389,48 @@ void fquat_m4_to_quaternion_q(const FMatrix4 * m, FQuaternion * q)
 
 void fquat_qqs_slerp_q(const FQuaternion * const q1, const FQuaternion * const q2, const float u, FQuaternion * result)
 {
-    double cosAngle = q1->w * q2->w + q1->v.x * q2->v.x + q1->v.y * q2->v.y + q1->v.z * q2->v.z;
-    double angle = acos(cosAngle);
-    double sinAngle = sin(angle);
+    //http://libcinder.org/docs/v0.8.2/_quaternion_8h_source.html
 
-    double q1Scale = sin(angle * (1.0 - u)) / sinAngle;
-    double q2Scale = sin(angle * u) / sinAngle;
+    const double cosAngle
+        = q1->w * q2->w + q1->v.x * q2->v.x + q1->v.y * q2->v.y + q1->v.z * q2->v.z;
+
+    double q1Scale;
+    double q2Scale;
+
+    if ( cosAngle >= DBL_EPSILON )
+    {
+        if (( 1.0 - cosAngle ) > DBL_EPSILON )
+        {
+            const double sinAngle = sqrt(1.0 - cosAngle * cosAngle);
+            const double angle = atan2(sinAngle, cosAngle);
+            const double rSinAngle = 1.0 / sinAngle;
+
+            q1Scale = sin(angle * (1.0 - u)) * rSinAngle;
+            q2Scale = sin(angle * u) * rSinAngle;
+        }
+        else
+        {
+            q1Scale = 1.0 - u;
+            q2Scale = u;
+        }
+    }
+    else
+    {
+        if (( 1.0 + cosAngle ) > DBL_EPSILON )
+        {
+            const double sinAngle = sqrt(1.0 - cosAngle * cosAngle);
+            const double angle = atan2(sinAngle, -cosAngle);
+            const double rSinAngle = 1.0 / sinAngle;
+
+            q1Scale = sin(angle * (u - 1.0)) * rSinAngle;
+            q2Scale = sin(angle * u) * rSinAngle;
+        }
+        else
+        {
+            q1Scale = u - 1.0;
+            q2Scale = u;
+        }
+    }
 
     result->v.x = q1->v.x * q1Scale + q2->v.x * q2Scale;
     result->v.y = q1->v.y * q1Scale + q2->v.y * q2Scale;
