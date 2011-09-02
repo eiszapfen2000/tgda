@@ -299,34 +299,15 @@
         startOrientation = [ camera orientation ];
         endOrientation   = [ projector orientation ];
 
-        FVector3 fs = fquat_q_forward_vector(&startOrientation);
-        FVector3 fe = fquat_q_forward_vector(&endOrientation);
-
-        double cosAngle = startOrientation.w * endOrientation.w + startOrientation.v.x * endOrientation.v.x + startOrientation.v.y * endOrientation.v.y + startOrientation.v.z * endOrientation.v.z;
-        double angle = acos(cosAngle);
-        NSLog(@"START ANGLE %f", angle);
-
-        /*
-        NSLog(@"START F: %f %f %f", fs.x, fs.y, fs.z);
-        NSLog(@"END F: %f %f %f", fe.x, fe.y, fe.z);
-        NSLog(@"DOT %f", fv3_vv_dot_product(&fs, &fe));
-
-        NSLog(@"START: %f %f %f %f", startOrientation.v.x, startOrientation.v.y, startOrientation.v.z, startOrientation.w);
-        NSLog(@"END: %f %f %f %f", endOrientation.v.x, endOrientation.v.y, endOrientation.v.z, endOrientation.w);
-        */
-
         startPosition = [ camera position ];
         endPosition   = [ projector position ];
-        connecting = YES;
 
-        NSLog(@"Connecting");
+        connecting = YES;
     }
 
     if ( [ projector disconnecting ] == YES )
     {
         disconnecting = YES;
-
-        NSLog(@"Disconnecting");
     }
 
     if ( connecting == YES )
@@ -337,18 +318,16 @@
         FQuaternion slerped;
         fquat_qqs_slerp_q(&startOrientation, &endOrientation, animationTime / 2.0f, &slerped);
 
-        double cosAngle = startOrientation.w * slerped.w + startOrientation.v.x * slerped.v.x + startOrientation.v.y * slerped.v.y + startOrientation.v.z * slerped.v.z;
-        double angle = acos(cosAngle);
-        NSLog(@"ANGLE %f", angle);
-
         [ camera setOrientation:slerped ];
 
         if ( animationTime == 2.0f )
         {
             connecting = NO;
             animationTime = 0.0f;
-            NSLog(@"UNLOCK");
-            //[ camera unlockInput ];
+            [ camera unlockInput ];
+
+            [ camera setYaw:[ projector yaw ]];
+            [ camera setPitch:[ projector pitch ]];
         }
     }
 

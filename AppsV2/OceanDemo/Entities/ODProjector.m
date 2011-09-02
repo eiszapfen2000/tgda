@@ -109,6 +109,16 @@
     return orientation;
 }
 
+- (float) yaw
+{
+    return yaw;
+}
+
+- (float) pitch
+{
+    return pitch;
+}
+
 - (FMatrix4 *) view
 {
     return &view;

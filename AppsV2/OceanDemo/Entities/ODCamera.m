@@ -198,6 +198,16 @@
     return orientation;
 }
 
+- (float) yaw
+{
+    return yaw;
+}
+
+- (float) pitch
+{
+    return pitch;
+}
+
 - (FMatrix4 *) view
 {
     return &view;
@@ -241,6 +251,16 @@
 - (void) setOrientation:(const FQuaternion)newOrientation
 {
     orientation = newOrientation;
+}
+
+- (void) setYaw:(const float)newYaw
+{
+    yaw = newYaw;
+}
+
+- (void) setPitch:(const float)newPitch
+{
+    pitch = newPitch;
 }
 
 - (void) lockInput
@@ -293,9 +313,6 @@
 {
     [ self updateYaw:yawDegrees ];
     [ self updatePitch:pitchDegrees ];
-
-    fquat_q_init_with_axis_and_degrees(&orientation, NP_WORLDF_Y_AXIS, yaw);
-    fquat_q_rotatex(&orientation, pitch);
 }
 
 - (void) moveForward:(const float)frameTime
@@ -352,7 +369,11 @@
 
     fm4_m_set_identity(&view);
 
-//    NSLog(@"%f %f", pitch, yaw);
+    if ( inputLocked == NO )
+    {
+        fquat_q_init_with_axis_and_degrees(&orientation, NP_WORLDF_Y_AXIS, yaw);
+        fquat_q_rotatex(&orientation, pitch);
+    }
 
     fquat_q_forward_vector_v(&orientation, &forward);
     FQuaternion q = fquat_q_conjugated(&orientation);
