@@ -49,6 +49,8 @@
 
 - (FVector3) position;
 - (FQuaternion) orientation;
+- (float) yaw;
+- (float) pitch;
 - (FMatrix4 *) view;
 - (FMatrix4 *) projection;
 - (FMatrix4 *) inverseViewProjection;

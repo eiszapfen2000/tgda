@@ -44,6 +44,8 @@
 - (FVector3) forward;
 - (FVector3) position;
 - (FQuaternion) orientation;
+- (float) yaw;
+- (float) pitch;
 - (FMatrix4 *) view;
 - (FMatrix4 *) projection;
 - (BOOL) inputLocked;
@@ -54,6 +56,8 @@
 - (void) setAspectRatio:(const float)newAspectRatio;
 - (void) setPosition:(const FVector3)newPosition;
 - (void) setOrientation:(const FQuaternion)newOrientation;
+- (void) setYaw:(const float)newYaw;
+- (void) setPitch:(const float)newPitch;
 
 - (void) lockInput;
 - (void) unlockInput;
