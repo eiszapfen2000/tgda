@@ -164,6 +164,10 @@
     lightDirection.y = cosThetaSun;
     lightDirection.z = sinThetaSun * cosPhiSun;
 
+    // zenith color computation
+    // A Practical Analytic Model for Daylight
+    // page 22/23    
+
     #define CBQ(X)		((X) * (X) * (X))
     #define SQR(X)		((X) * (X))
 
@@ -193,6 +197,56 @@
 
     #undef SQR
     #undef CBQ
+
+    // max skylight luminance (right at sun position)
+    // A Practical Analytic Model for Daylight
+    // page 9
+    //             F(thetaSunAngle, 0)
+    // Ymax = Yz ----------------------
+    //             F(0, thetaSunAngle)
+
+    double ABCDE_Y[5];
+
+	ABCDE_Y[0] =  0.17872 * turbidity - 1.46303;
+	ABCDE_Y[1] = -0.35540 * turbidity + 0.42749;
+	ABCDE_Y[2] = -0.02266 * turbidity + 5.32505;
+	ABCDE_Y[3] =  0.12064 * turbidity - 2.57705;
+	ABCDE_Y[4] = -0.06696 * turbidity + 0.37027;
+
+    const double numerator
+        = ( 1.0 + ABCDE_Y[0] * exp( ABCDE_Y[1] / cosThetaSun )) * ( 1.0 + ABCDE_Y[2] + ABCDE_Y[4] );
+
+    const double denominator
+        = ( 1.0 + ABCDE_Y[0] * exp( ABCDE_Y[1] )) * ( 1.0 + ABCDE_Y[2] * exp( ABCDE_Y[3] * thetaSunAngle) + ABCDE_Y[4] * cosThetaSun * cosThetaSun);
+
+    const double factor = numerator / denominator;
+
+    double xyY[3];
+    xyY[0] = zenithColor.x * factor;
+    xyY[1] = zenithColor.y * factor;
+    xyY[2] = zenithColor.z * factor;
+
+    double XYZ[3];
+    XYZ[0] = (xyY[0] / xyY[1]) * xyY[2];
+    XYZ[1] = xyY[2];
+    XYZ[2] = ((1.0 - xyY[0] - xyY[1]) / xyY[1]) * xyY[2];
+
+    //NSLog(@"1: %f %f %f", XYZ[0], XYZ[1], XYZ[2]);
+
+    double RGB[3];
+    RGB[0] =  3.2404542 * XYZ[0] - 1.5371385 * XYZ[1] - 0.4985314 * XYZ[2];
+    RGB[1] = -0.9692660 * XYZ[0] + 1.8760108 * XYZ[1] + 0.0415560 * XYZ[2];
+    RGB[2] =  0.0556434 * XYZ[0] - 0.2040259 * XYZ[1] + 1.0572252 * XYZ[2];
+
+    RGB[0] *= 0.00025f;
+    RGB[1] *= 0.00025f;
+    RGB[2] *= 0.00025f;
+
+    XYZ[0] = 0.4124564 * RGB[0] + 0.3575761 * RGB[1] + 0.1804375 * RGB[2];
+    XYZ[1] = 0.2126729 * RGB[0] + 0.7151522 * RGB[1] + 0.0721750 * RGB[2];
+    XYZ[2] = 0.0193339 * RGB[0] + 0.1191920 * RGB[1] + 0.9503041 * RGB[2];
+
+    //NSLog(@"2: %f %f %f", XYZ[0], XYZ[1], XYZ[2]);
 }
 
 - (void) render

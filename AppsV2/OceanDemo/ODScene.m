@@ -138,9 +138,9 @@
 
     // render targets
     rtc = [[ NPRenderTargetConfiguration alloc ] init ];
-    sceneTarget = [[ NPRenderTexture alloc ] init ];
+    sceneTarget     = [[ NPRenderTexture alloc ] init ];
     luminanceTarget = [[ NPRenderTexture alloc ] init ];
-    depthBuffer = [[ NPRenderBuffer alloc ] init ];
+    depthBuffer     = [[ NPRenderBuffer  alloc ] init ];
 
     // effect and effect paramters
     fullscreenEffect
@@ -313,14 +313,15 @@
     if ( connecting == YES )
     {
         animationTime += frameTime;
-        animationTime = MIN(animationTime, 2.0f);
+        animationTime = MIN(animationTime, 1.0f);
 
-        FQuaternion slerped;
-        fquat_qqs_slerp_q(&startOrientation, &endOrientation, animationTime / 2.0f, &slerped);
+        FQuaternion slerped = fquat_qqs_slerp(&startOrientation, &endOrientation, animationTime);
+        FVector3 lerped = fv3_vvs_lerp(&startPosition, &endPosition, animationTime);
 
         [ camera setOrientation:slerped ];
+        [ camera setPosition:lerped ];
 
-        if ( animationTime == 2.0f )
+        if ( animationTime == 1.0f )
         {
             connecting = NO;
             animationTime = 0.0f;
