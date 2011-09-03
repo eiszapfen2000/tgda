@@ -33,11 +33,6 @@
     NPEffectVariableFloat3 * E_Yxy_P;
     NPEffectVariableFloat3 * zenithColor_P;
     NPEffectVariableFloat3 * lighDirection_P;
-
-    /*
-    CGparameter lightDirectionP;
-    CGparameter thetaSunP;
-    */
 }
 
 - (id) init;
