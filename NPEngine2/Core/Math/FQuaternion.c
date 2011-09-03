@@ -538,6 +538,14 @@ FQuaternion fquat_m4_to_quaternion(const FMatrix4 * m)
     return result;
 }
 
+FQuaternion fquat_qqs_slerp(const FQuaternion * const q1, const FQuaternion * const q2, const float u)
+{
+    FQuaternion result;
+    fquat_qqs_slerp_q(q1, q2, u, &result);
+
+    return result;
+}
+
 const char * fquat_q_to_string(const FQuaternion * q)
 {
     char * fquatstring;

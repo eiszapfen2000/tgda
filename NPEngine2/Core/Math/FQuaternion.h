@@ -67,6 +67,8 @@ FMatrix4 fquat_q_to_fmatrix4(const FQuaternion * const q);
 FQuaternion fquat_m3_to_quaternion(const FMatrix3 * const m);
 FQuaternion fquat_m4_to_quaternion(const FMatrix4 * const m);
 
+FQuaternion fquat_qqs_slerp(const FQuaternion * const q1, const FQuaternion * const q2, const float u);
+
 const char * fquat_q_to_string(const FQuaternion * q);
 
 #endif
