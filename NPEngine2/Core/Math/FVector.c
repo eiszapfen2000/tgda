@@ -131,6 +131,12 @@ void fv2_vv_sub_v(const FVector2 * const v, const FVector2 * const w, FVector2 *
     V_Y(*result) = V_Y(*v) - V_Y(*w);
 }
 
+void fv2_vvs_lerp_v(const FVector2 * const v, const FVector2 * const w, const float u, FVector2 * result)
+{
+    result->x = v->x * (1.0 - u) + w->x * u;
+    result->y = v->y * (1.0 - u) + w->y * u;
+}
+
 Float fv2_vv_dot_product(const FVector2 * const v, const FVector2 * const w)
 {
     return ( V_X(*v) * V_X(*w) + V_Y(*v) * V_Y(*w) );
@@ -180,6 +186,13 @@ FVector2 fv2_sv_scaledx(Float scale, const FVector2 const * v)
 FVector2 fv2_sv_scaledy(Float scale, const FVector2 const * v)
 {
     return (FVector2){V_X(*v) * scale, V_Y(*v)};
+}
+
+FVector2 fv2_vvs_lerp(const FVector2 * const v, const FVector2 * const w, const float u)
+{
+    return
+        (FVector2){ v->x * (1.0f - u) + w->x * u,
+                    v->y * (1.0f - u) + w->y * u };
 }
 
 const char * fv2_v_to_string(const FVector2 * const v)
@@ -347,6 +360,13 @@ void fv3_vv_cross_product_v(const FVector3 * const v, const FVector3 * const w, 
     V_Z(*cross) = V_X(*v) * V_Y(*w) - V_Y(*v) * V_X(*w);
 }
 
+void fv3_vvs_lerp_v(const FVector3 * const v, const FVector3 * const w, const float u, FVector3 * result)
+{
+    result->x = v->x * (1.0 - u) + w->x * u;
+    result->y = v->y * (1.0 - u) + w->y * u;
+    result->z = v->z * (1.0 - u) + w->z * u;
+}
+
 Float fv3_vv_dot_product(const FVector3 * const v, const FVector3 * const w)
 {
     return ( V_X(*v) * V_X(*w) + V_Y(*v) * V_Y(*w) + V_Z(*v) * V_Z(*w) );
@@ -423,6 +443,14 @@ FVector3 fv3_sv_scaledy(Float scale, const FVector3 const * v)
 FVector3 fv3_sv_scaledz(Float scale, const FVector3 const * v)
 {
     return (FVector3){ V_X(*v), V_Y(*v), V_Z(*v) * scale };
+}
+
+FVector3 fv3_vvs_lerp(const FVector3 * const v, const FVector3 * const w, const float u)
+{
+    return
+        (FVector3){ v->x * (1.0f - u) + w->x * u,
+                    v->y * (1.0f - u) + w->y * u,
+                    v->z * (1.0f - u) + w->z * u };
 }
 
 const char * fv3_v_to_string(const FVector3 * const v)
