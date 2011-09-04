@@ -29,6 +29,7 @@
 #import "Entities/ODPerlinNoise.h"
 #import "Menu/ODMenu.h"
 #import "ODScene.h"
+#import "ODSemaphore.h"
 #import "GL/glfw.h"
 
 NpKeyboardState keyboardState;
@@ -65,9 +66,50 @@ void GLFWCALL window_resize_callback(int width, int height)
 
 int running = GL_TRUE;
 
+ODSemaphore * semaphore = nil;
+BOOL doDummyWork = NO;
+
+@interface Dummy : NSObject
+
+- (void) doWork:(id)arg;
+
+@end
+
+@implementation Dummy
+
++ (void) initialize
+{
+    semaphore = [[ ODSemaphore alloc ] init ];
+}
+
+- (void) doWork:(id)arg
+{
+    NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
+
+    while ( [[ NSThread currentThread ] isCancelled ] == NO )
+    {    
+        [ semaphore wait ];
+
+        if ( [[ NSThread currentThread ] isCancelled ] == NO )
+        {
+            NSLog(@"BRAK");
+        }
+    }    
+
+    DESTROY(pool);
+}
+
+@end
+
 int main (int argc, char **argv)
 {
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
+
+    NSLog(@"BLOB");
+
+    Dummy * dummy = [[ Dummy alloc ] init ];
+    NSThread * thread = [[ NSThread alloc ] initWithTarget:dummy selector:@selector(doWork:) object:nil ];
+    [ thread start ];
 
     ODPerlinNoise * noise = [[ ODPerlinNoise alloc ] init ];
     [ noise generate ];
@@ -177,6 +219,14 @@ int main (int argc, char **argv)
     // run loop
     while ( running )
     {
+        /*
+        [ condition lock ];
+        doDummyWork = YES;
+        [ condition signal ];
+        [ condition unlock ];
+        */
+        [ semaphore post ];
+
         // create an autorelease pool for every run-loop iteration
         NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
 
@@ -270,6 +320,19 @@ int main (int argc, char **argv)
     [[ NP Graphics ] dealloc ];
     [[ NP Core     ] dealloc ];
     [[ NP Log      ] dealloc ];
+
+    [ thread cancel ];
+    [ semaphore post ];
+
+    while ( [ thread isFinished ] == NO )
+    {
+        struct timespec request;
+        request.tv_sec = (time_t)0;
+        request.tv_nsec = 1000000L;
+        nanosleep(&request, 0);
+    }
+
+    DESTROY(thread);
 
     DESTROY(pool);
 
