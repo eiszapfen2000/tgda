@@ -7,10 +7,12 @@ OceanDemo_SUBPROJECTS = \
     Menu
 
 OceanDemo_HEADER_FILES = \
-    ODScene.h
+    ODScene.h \
+    ODSemaphore.h
 
 OceanDemo_OBJC_FILES = \
     ODScene.m \
+    ODSemaphore.m \
     main.m
 
 OceanDemo_RESOURCE_FILES = \
