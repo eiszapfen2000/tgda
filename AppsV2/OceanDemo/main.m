@@ -5,6 +5,7 @@
 #import <Foundation/Foundation.h>
 #import "Log/NPLogFile.h"
 #import "Core/Container/NPAssetArray.h"
+#import "Core/Thread/NPSemaphore.h"
 #import "Core/Timer/NPTimer.h"
 #import "Graphics/Buffer/NPBufferObject.h"
 #import "Graphics/Buffer/NPCPUBuffer.h"
@@ -29,7 +30,6 @@
 #import "Entities/ODPerlinNoise.h"
 #import "Menu/ODMenu.h"
 #import "ODScene.h"
-#import "ODSemaphore.h"
 #import "GL/glfw.h"
 
 NpKeyboardState keyboardState;
@@ -66,7 +66,7 @@ void GLFWCALL window_resize_callback(int width, int height)
 
 int running = GL_TRUE;
 
-ODSemaphore * semaphore = nil;
+NPSemaphore * semaphore = nil;
 BOOL doDummyWork = NO;
 
 @interface Dummy : NSObject
@@ -79,7 +79,7 @@ BOOL doDummyWork = NO;
 
 + (void) initialize
 {
-    semaphore = [[ ODSemaphore alloc ] init ];
+    semaphore = [[ NPSemaphore alloc ] init ];
 }
 
 - (void) doWork:(id)arg
@@ -314,16 +314,13 @@ int main (int argc, char **argv)
     // Close OpenGL window and terminate GLFW
     glfwTerminate();
 
-    // Kill singletons by force, sending them
-    // "release" would have no effect
-    [[ NP Input    ] dealloc ];
-    [[ NP Graphics ] dealloc ];
-    [[ NP Core     ] dealloc ];
-    [[ NP Log      ] dealloc ];
-
+    // cancel thread
     [ thread cancel ];
+    // wake thread up so it exits
     [ semaphore post ];
 
+    // since NSThreads are created in detached mode
+    // we have to join by hand
     while ( [ thread isFinished ] == NO )
     {
         struct timespec request;
@@ -333,6 +330,14 @@ int main (int argc, char **argv)
     }
 
     DESTROY(thread);
+    DESTROY(semaphore);
+
+    // Kill singletons by force, sending them
+    // "release" would have no effect
+    [[ NP Input    ] dealloc ];
+    [[ NP Graphics ] dealloc ];
+    [[ NP Core     ] dealloc ];
+    [[ NP Log      ] dealloc ];
 
     DESTROY(pool);
 
