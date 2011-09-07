@@ -8,6 +8,7 @@ libNPEngineCore_SUBPROJECTS = \
 	NPObject \
     String \
     Container \
+    Thread \
     Timer \
     File \
     Utilities \
