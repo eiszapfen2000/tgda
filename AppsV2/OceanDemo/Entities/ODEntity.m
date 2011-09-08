@@ -136,9 +136,7 @@ static NPAssetArray * statesets = nil;
 
 - (void) update:(const float)frameTime
 {
-    //double totalTime = [[[ NPEngineCore instance ] timer ]totalElapsedTime ];
-    //double u = fmod(totalTime, 5.0) / 5.0f;
-    //NSLog(@"%f %f %f",totalTime, fmod(totalTime, 5.0), u);
+
 }
 
 - (void) render

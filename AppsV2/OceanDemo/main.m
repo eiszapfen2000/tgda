@@ -219,12 +219,6 @@ int main (int argc, char **argv)
     // run loop
     while ( running )
     {
-        /*
-        [ condition lock ];
-        doDummyWork = YES;
-        [ condition signal ];
-        [ condition unlock ];
-        */
         [ semaphore post ];
 
         // create an autorelease pool for every run-loop iteration
@@ -297,6 +291,8 @@ int main (int argc, char **argv)
 
         // check if ESC key was pressed or window was closed
         running = running && glfwGetWindowParam( GLFW_OPENED );
+
+        NSLog(@"%f", frameTime);
 
         // kill autorelease pool
         DESTROY(innerPool);
