@@ -6,6 +6,7 @@
 @class ODProjector;
 @class ODProjectedGrid;
 @class ODPreethamSkylight;
+@class ODOceanEntity;
 @class NPRenderTargetConfiguration;
 @class NPRenderTexture;
 @class NPRenderBuffer;
@@ -23,6 +24,7 @@
     ODProjector * projector;
     ODProjectedGrid * projectedGrid;
     ODPreethamSkylight * skylight;
+    ODOceanEntity * ocean;
     NSMutableArray * entities;
 
     // camera animation
@@ -67,6 +69,7 @@
 - (ODProjector *) projector;
 - (ODProjectedGrid *) projectedGrid;
 - (ODPreethamSkylight *) skylight;
+- (ODOceanEntity *) ocean;
 
 - (void) update:(const float)frameTime;
 - (void) render;

@@ -2,6 +2,9 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 SUBPROJECT_NAME=ODEntities
 
+ODEntities_SUBPROJECTS = \
+    Ocean
+
 ODEntities_HEADER_FILES = \
 ODPEntity.h \
 ODEntity.h \

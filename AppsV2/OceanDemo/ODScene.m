@@ -22,6 +22,7 @@
 #import "Entities/ODProjector.h"
 #import "Entities/ODProjectedGrid.h"
 #import "Entities/ODPreethamSkylight.h"
+#import "Entities/ODOceanEntity.h"
 #import "Entities/ODEntity.h"
 #import "ODScene.h"
 
@@ -164,6 +165,7 @@
     [ entities removeAllObjects ];
     DESTROY(entities);
 
+    SAFE_DESTROY(ocean);
     SAFE_DESTROY(skylight);
     SAFE_DESTROY(projectedGrid);
     SAFE_DESTROY(projector);
@@ -232,6 +234,7 @@
     NSString * cameraEntityFile        = [ sceneContents objectForKey:@"Camera"    ];
     NSString * projectorEntityFile     = [ sceneContents objectForKey:@"Projector" ];
     NSArray  * entityFiles             = [ sceneContents objectForKey:@"Entities"  ];
+    NSString * oceanEntityFile         = [ sceneContents objectForKey:@"Ocean"  ];
     NSString * projectedGridEntityFile = [ sceneContents objectForKey:@"ProjectedGrid" ];
 
     [ self setName:sceneName ];
@@ -240,11 +243,13 @@
     projector     = [ self loadEntityFromFile:projectorEntityFile     error:NULL ];
     projectedGrid = [ self loadEntityFromFile:projectedGridEntityFile error:NULL ];
     skylight      = [ self loadEntityFromFile:skylightEntityFile      error:NULL ];
+    ocean         = [ self loadEntityFromFile:oceanEntityFile         error:NULL ];
 
     ASSERT_RETAIN(camera);
     ASSERT_RETAIN(projector);
     ASSERT_RETAIN(projectedGrid);
     ASSERT_RETAIN(skylight);
+    ASSERT_RETAIN(ocean);
 
     [ projector setCamera:camera ];
     [ projectedGrid setProjector:projector ];
@@ -284,6 +289,11 @@
 - (ODPreethamSkylight *) skylight
 {
     return skylight;
+}
+
+- (ODOceanEntity *) ocean
+{
+    return ocean;
 }
 
 - (void) update:(const float)frameTime
@@ -336,6 +346,7 @@
     [ projector     update:frameTime ];
     [ projectedGrid update:frameTime ];
     [ skylight      update:frameTime ];
+    [ ocean         update:frameTime ];
 
     const NSUInteger numberOfEntities = [ entities count ];
     for ( NSUInteger i = 0; i < numberOfEntities; i++ )
