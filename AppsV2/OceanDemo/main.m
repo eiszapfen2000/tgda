@@ -253,7 +253,7 @@ int main (int argc, char **argv)
         // check if ESC key was pressed or window was closed
         running = running && glfwGetWindowParam( GLFW_OPENED );
 
-        NSLog(@"%f %d", frameTime, fps);
+        //NSLog(@"%f %d", frameTime, fps);
 
         // kill autorelease pool
         DESTROY(innerPool);
