@@ -30,6 +30,8 @@
     fquat_set_identity(&orientation);
     fv3_v_init_with_zeros(&position);
 
+    position.y = 15.0f;
+
     yaw   = 0.0f;
     pitch = 0.0f;
 
