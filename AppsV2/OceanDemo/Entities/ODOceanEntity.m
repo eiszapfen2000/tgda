@@ -6,6 +6,9 @@
 #import "Core/Thread/NPSemaphore.h"
 #import "ODProjector.h"
 #import "ODProjectedGrid.h"
+#import "Ocean/ODPhillipsSpectrum.h"
+#import "Ocean/ODGaussianRNG.h"
+#import "fftw3.h"
 #import "ODOceanEntity.h"
 
 static NPSemaphore * semaphore = nil;
@@ -22,6 +25,20 @@ static NPSemaphore * semaphore = nil;
 {
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
+    NPTimer * timer = [[ NPTimer alloc ] initWithName:@"Thread Timer" ];
+
+    Vector2 spectrumSize = {1.0f, 1.0f};
+    IVector2 spectrumResolution = {512, 512};
+    Vector2 spectumWindDirection = {10.0f, 15.0f};
+
+    ODPhillipsSpectrum * s = [[ ODPhillipsSpectrum alloc ] init ];
+    [ s setSize:spectrumSize ];
+    [ s setResolution:spectrumResolution ];
+    [ s setWindDirection:spectumWindDirection ];
+
+    fftw_complex * complexHeights = fftw_malloc(sizeof(fftw_complex) * spectrumResolution.x * spectrumResolution.y);
+    double * heights = ALLOC_ARRAY(double, spectrumResolution.x * spectrumResolution.y);
+
     while ( [[ NSThread currentThread ] isCancelled ] == NO )
     {    
         [ semaphore wait ];
@@ -30,12 +47,44 @@ static NPSemaphore * semaphore = nil;
 
         if ( [[ NSThread currentThread ] isCancelled ] == NO )
         {
-            NSLog(@"BLOB");
+            [ timer update ];
+            [ s generateFrequencySpectrumAtTime:[ timer totalElapsedTime ]];
+            [ timer update ];
+
+            const double spectrumTime = [ timer frameTime ];
+
+            fftw_plan plan;
+            plan = fftw_plan_dft_2d(spectrumResolution.x,
+                                    spectrumResolution.y,
+                                    [s frequencySpectrum],
+                                    complexHeights,
+                                    FFTW_BACKWARD,
+                                    FFTW_ESTIMATE);
+
+            fftw_execute(plan);
+            fftw_destroy_plan(plan);
+
+            // write real part to result array
+            for ( int32_t j = 0; j < spectrumResolution.x; j++ )
+            {
+                for ( int32_t k = 0; k < spectrumResolution.y; k++ )
+                {
+                    heights[k + spectrumResolution.y * j] = complexHeights[k + spectrumResolution.y * j][0];
+                }
+            }
+
+            [ timer update ];
+            NSLog(@"spectrum %f, FFT %f", spectrumTime, [ timer frameTime ]);
         }
 
         DESTROY(innerPool);
     }    
 
+    fftw_free(complexHeights);
+    SAFE_FREE(heights);
+
+    DESTROY(s);
+    DESTROY(timer);
     DESTROY(pool);
 }
 
@@ -46,6 +95,8 @@ static NPSemaphore * semaphore = nil;
 + (void) initialize
 {
     semaphore = [[ NPSemaphore alloc ] init ];
+
+    odgaussianrng_initialise();    
 }
 
 - (id) init
@@ -57,7 +108,6 @@ static NPSemaphore * semaphore = nil;
 {
     self =  [ super initWithName:newName ];
 
-    timer = [[ NPTimer alloc ] initWithName:@"Thread Timer" ];
     projector = [[ ODProjector alloc ] initWithName:@"Projector" ];
     projectedGrid = [[ ODProjectedGrid alloc ] initWithName:@"Projected Grid" ];
     [ projectedGrid setProjector:projector ];
@@ -69,7 +119,6 @@ static NPSemaphore * semaphore = nil;
 {
     SAFE_DESTROY(stateset);
 
-    DESTROY(timer);
     DESTROY(projector);
     DESTROY(projectedGrid);
 

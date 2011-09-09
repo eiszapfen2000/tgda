@@ -69,7 +69,7 @@
     needsUpdate = YES;
 }
 
-- (double) omegaForK:(Vector2 *)k
+- (double) omegaForK:(const Vector2 *)k
 {
     return sqrt(EARTH_ACCELERATION * v2_v_length(k));
 }
@@ -90,7 +90,7 @@
     return (MATH_2_MUL_PI * m) / size.y;
 }
 
-- (double) getAmplitudeAt:(Vector2 *)k
+- (double) getAmplitudeAt:(const Vector2 *)k
 {
     double kSquareLength = v2_v_square_length(k);
 
@@ -117,29 +117,33 @@
 
 - (void) generateH0
 {
-    double xi_r, xi_i, a;
-    Vector2 k;
-
 	if ( needsUpdate == YES )
 	{
         FFTW_SAFE_FREE(H0);
-
 		H0 = fftw_malloc(sizeof(fftw_complex) * resolution.x * resolution.y);
+
+        const double n = -(resolution.x / 2.0);
+        const double m =  (resolution.y / 2.0);
+
+        const double dsizex = 1.0 / size.x;
+        const double dsizey = 1.0 / size.y;
 
         for ( int32_t i = 0; i < resolution.x; i++ )
         {
             for ( int32_t j = 0; j < resolution.y; j++ )
             {
-                //xi_r = [ gaussianRNG nextGaussianFPRandomNumber ];
-                //xi_i = [ gaussianRNG nextGaussianFPRandomNumber ];
+                const double xi_r = gaussian_fprandomnumber();
+                const double xi_i = gaussian_fprandomnumber();
 
-                xi_r = gaussian_fprandomnumber();
-                xi_i = gaussian_fprandomnumber();
+                const double di = i;
+                const double dj = j;
 
-                k.x = [ self indexToKx:i ];
-                k.y = [ self indexToKy:j ];
+                const double kx = (n + di) * MATH_2_MUL_PI * dsizex;
+                const double ky = (m - dj) * MATH_2_MUL_PI * dsizey;
 
-                a = sqrt([ self getAmplitudeAt:&k ]);
+                const Vector2 k = {kx, ky};
+
+                const double a = sqrt([ self getAmplitudeAt:&k ]);
 
                 H0[j + resolution.y * i][0] = MATH_1_DIV_SQRT_2 * xi_r * a;
                 H0[j + resolution.y * i][1] = MATH_1_DIV_SQRT_2 * xi_i * a;
@@ -160,8 +164,13 @@
 	if ( time != lastTime )
 	{
         FFTW_SAFE_FREE(frequencySpectrum);
-
 		frequencySpectrum = fftw_malloc(sizeof(fftw_complex) * resolution.x * resolution.y);
+
+        const double n = -(resolution.x / 2.0);
+        const double m =  (resolution.y / 2.0);
+
+        const double dsizex = 1.0 / size.x;
+        const double dsizey = 1.0 / size.y;
 
         for ( int32_t i = 0; i < resolution.x; i++ )
         {
@@ -170,8 +179,13 @@
                 indexForK = j + resolution.y * i;
                 indexForConjugate = ((resolution.y - j) % resolution.y) + resolution.y * ((resolution.x - i) % resolution.x);
 
-                k.x = [ self indexToKx:i ];
-                k.y = [ self indexToKy:j ];
+                const double di = i;
+                const double dj = j;
+
+                const double kx = (n + di) * MATH_2_MUL_PI * dsizex;
+                const double ky = (m - dj) * MATH_2_MUL_PI * dsizey;
+
+                const Vector2 k = {kx, ky};
 
                 omega = [ self omegaForK:&k ];
 
@@ -193,12 +207,10 @@
                 H0expOmega[0] = H0[indexForK][0] * expOmega[0] - H0[indexForK][1] * expOmega[1];
                 H0expOmega[1] = H0[indexForK][0] * expOmega[1] + H0[indexForK][1] * expOmega[0];
 
-
                 H0conjugate[0] =  H0[indexForConjugate][0];
                 H0conjugate[1] = -H0[indexForConjugate][1];
 
-                // H0[indexForConjugate] * exp(-i*omega*t)
-                
+                // H0[indexForConjugate] * exp(-i*omega*t)                
                 H0expMinusOmega[0] = H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1];
                 H0expMinusOmega[1] = H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0];
 
@@ -271,12 +283,15 @@ ODQuadrants;
         }
     }
 
+    const int32_t halfResX = resolution.x / 2;
+    const int32_t halfResY = resolution.y / 2;
+
     for ( int32_t i = startX; i < endX; i++ )
     {
         for ( int32_t j = startY; j < endY; j++ )
         {
             index = j + resolution.y * i;
-            oppositeQuadrantIndex = (j + ((resolution.y/2) * quadrants)) + resolution.y * (i + resolution.x/2);
+            oppositeQuadrantIndex = (j + (halfResY * quadrants)) + resolution.y * (i + halfResX);
 
             tmp[0] = frequencySpectrum[index][0];
             tmp[1] = frequencySpectrum[index][1];

@@ -12,7 +12,6 @@
 @interface ODOceanEntity : NPObject < ODPEntity >
 {
     NSThread * thread;
-    NPTimer * timer;
 
     ODProjector * projector;
     ODProjectedGrid * projectedGrid;

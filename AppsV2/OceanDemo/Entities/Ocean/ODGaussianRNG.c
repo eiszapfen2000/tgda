@@ -18,7 +18,7 @@ void odgaussianrng_initialise()
     ctg    = prng_new("ctg");
     mrg    = prng_new("mrg");
     cmrg   = prng_new("cmrg");
-    mt1997 = prng_new("mersenne");
+    mt1997 = prng_new("mt19937(0)");
 }
 
 double gaussian_fprandomnumber()
