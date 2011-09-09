@@ -66,50 +66,11 @@ void GLFWCALL window_resize_callback(int width, int height)
 
 int running = GL_TRUE;
 
-NPSemaphore * semaphore = nil;
-BOOL doDummyWork = NO;
-
-@interface Dummy : NSObject
-
-- (void) doWork:(id)arg;
-
-@end
-
-@implementation Dummy
-
-+ (void) initialize
-{
-    semaphore = [[ NPSemaphore alloc ] init ];
-}
-
-- (void) doWork:(id)arg
-{
-    NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
-
-    while ( [[ NSThread currentThread ] isCancelled ] == NO )
-    {    
-        [ semaphore wait ];
-
-        if ( [[ NSThread currentThread ] isCancelled ] == NO )
-        {
-            NSLog(@"BRAK");
-        }
-    }    
-
-    DESTROY(pool);
-}
-
-@end
-
 int main (int argc, char **argv)
 {
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
     NSLog(@"BLOB");
-
-    Dummy * dummy = [[ Dummy alloc ] init ];
-    NSThread * thread = [[ NSThread alloc ] initWithTarget:dummy selector:@selector(doWork:) object:nil ];
-    [ thread start ];
 
     ODPerlinNoise * noise = [[ ODPerlinNoise alloc ] init ];
     [ noise generate ];
@@ -214,13 +175,12 @@ int main (int argc, char **argv)
     }
 
     // delete all autoreleased objects created during resource loading
+
     DESTROY(resourcePool);
 
     // run loop
     while ( running )
     {
-        [ semaphore post ];
-
         // create an autorelease pool for every run-loop iteration
         NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
 
@@ -243,6 +203,7 @@ int main (int argc, char **argv)
 
         // get current frametime
         const float frameTime = [[[ NP Core ] timer ] frameTime ];
+        const int32_t fps = [[[ NP Core ] timer ] fps ];
 
         // update scene
         [ scene update:frameTime ];
@@ -292,7 +253,7 @@ int main (int argc, char **argv)
         // check if ESC key was pressed or window was closed
         running = running && glfwGetWindowParam( GLFW_OPENED );
 
-        NSLog(@"%f", frameTime);
+        NSLog(@"%f %d", frameTime, fps);
 
         // kill autorelease pool
         DESTROY(innerPool);
@@ -309,24 +270,6 @@ int main (int argc, char **argv)
 
     // Close OpenGL window and terminate GLFW
     glfwTerminate();
-
-    // cancel thread
-    [ thread cancel ];
-    // wake thread up so it exits
-    [ semaphore post ];
-
-    // since NSThreads are created in detached mode
-    // we have to join by hand
-    while ( [ thread isFinished ] == NO )
-    {
-        struct timespec request;
-        request.tv_sec = (time_t)0;
-        request.tv_nsec = 1000000L;
-        nanosleep(&request, 0);
-    }
-
-    DESTROY(thread);
-    DESTROY(semaphore);
 
     // Kill singletons by force, sending them
     // "release" would have no effect

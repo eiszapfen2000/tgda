@@ -165,10 +165,9 @@
     [ entities removeAllObjects ];
     DESTROY(entities);
 
+    [ ocean stop ];
     SAFE_DESTROY(ocean);
     SAFE_DESTROY(skylight);
-    SAFE_DESTROY(projectedGrid);
-    SAFE_DESTROY(projector);
     SAFE_DESTROY(camera);
     SAFE_DESTROY(file);
 
@@ -229,31 +228,28 @@
     NSDictionary * sceneContents
         = [ NSDictionary dictionaryWithContentsOfFile:absoluteFileName ];
 
-    NSString * sceneName               = [ sceneContents objectForKey:@"Name"      ];
-    NSString * skylightEntityFile      = [ sceneContents objectForKey:@"Skylight"  ];
-    NSString * cameraEntityFile        = [ sceneContents objectForKey:@"Camera"    ];
-    NSString * projectorEntityFile     = [ sceneContents objectForKey:@"Projector" ];
-    NSArray  * entityFiles             = [ sceneContents objectForKey:@"Entities"  ];
-    NSString * oceanEntityFile         = [ sceneContents objectForKey:@"Ocean"  ];
-    NSString * projectedGridEntityFile = [ sceneContents objectForKey:@"ProjectedGrid" ];
+    NSString * sceneName          = [ sceneContents objectForKey:@"Name"     ];
+    NSString * skylightEntityFile = [ sceneContents objectForKey:@"Skylight" ];
+    NSString * cameraEntityFile   = [ sceneContents objectForKey:@"Camera"   ];
+    NSArray  * entityFiles        = [ sceneContents objectForKey:@"Entities" ];
+    NSString * oceanEntityFile    = [ sceneContents objectForKey:@"Ocean"    ];
 
     [ self setName:sceneName ];
 
-    camera        = [ self loadEntityFromFile:cameraEntityFile        error:NULL ];
-    projector     = [ self loadEntityFromFile:projectorEntityFile     error:NULL ];
-    projectedGrid = [ self loadEntityFromFile:projectedGridEntityFile error:NULL ];
-    skylight      = [ self loadEntityFromFile:skylightEntityFile      error:NULL ];
-    ocean         = [ self loadEntityFromFile:oceanEntityFile         error:NULL ];
+    camera   = [ self loadEntityFromFile:cameraEntityFile   error:NULL ];
+    skylight = [ self loadEntityFromFile:skylightEntityFile error:NULL ];
+    ocean    = [ self loadEntityFromFile:oceanEntityFile    error:NULL ];
 
     ASSERT_RETAIN(camera);
-    ASSERT_RETAIN(projector);
-    ASSERT_RETAIN(projectedGrid);
     ASSERT_RETAIN(skylight);
     ASSERT_RETAIN(ocean);
 
-    [ projector setCamera:camera ];
-    [ projectedGrid setProjector:projector ];
     [ skylight setCamera:camera ];
+    [ ocean setCamera:camera ];
+    [ ocean start ];
+
+    //[ projector setCamera:camera ];
+    //[ projectedGrid setProjector:projector ];
 
     const NSUInteger numberOfEntityFiles = [ entityFiles count ];
     for ( NSUInteger i = 0; i < numberOfEntityFiles; i++ )
@@ -276,16 +272,6 @@
     return camera;
 }
 
-- (ODProjector *) projector
-{
-    return projector;
-}
-
-- (ODProjectedGrid *) projectedGrid
-{
-    return projectedGrid;
-}
-
 - (ODPreethamSkylight *) skylight
 {
     return skylight;
@@ -302,6 +288,7 @@
     currentResolution.x = [ viewport width  ];
     currentResolution.y = [ viewport height ];
 
+    /*
     if ( [ projector connecting ] == YES )
     {
         [ camera lockInput ];
@@ -341,12 +328,11 @@
             [ camera setPitch:[ projector pitch ]];
         }
     }
+    */
 
-    [ camera        update:frameTime ];
-    [ projector     update:frameTime ];
-    [ projectedGrid update:frameTime ];
-    [ skylight      update:frameTime ];
-    [ ocean         update:frameTime ];
+    [ camera   update:frameTime ];
+    [ skylight update:frameTime ];
+    [ ocean    update:frameTime ];
 
     const NSUInteger numberOfEntities = [ entities count ];
     for ( NSUInteger i = 0; i < numberOfEntities; i++ )
@@ -377,14 +363,11 @@
     [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:NO ];
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
-    // render projected grid
-    [ projectedGrid render ];
+    // render ocean
+    [ ocean render ];
 
     // render entities
     [ entities makeObjectsPerformSelector:@selector(render) ];
-
-    // render projector frustum
-    [ projector render ];
 
     // reset states, makes depth buffer writable
     [[[ NP Graphics ] stateConfiguration ] deactivate ];

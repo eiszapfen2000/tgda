@@ -21,8 +21,6 @@
 
     // enitities
     ODCamera * camera;
-    ODProjector * projector;
-    ODProjectedGrid * projectedGrid;
     ODPreethamSkylight * skylight;
     ODOceanEntity * ocean;
     NSMutableArray * entities;
@@ -66,8 +64,6 @@
 - (void) dealloc;
 
 - (ODCamera *) camera;
-- (ODProjector *) projector;
-- (ODProjectedGrid *) projectedGrid;
 - (ODPreethamSkylight *) skylight;
 - (ODOceanEntity *) ocean;
 

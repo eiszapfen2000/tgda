@@ -1,8 +1,7 @@
 {
     Name = "Scene";
     Camera = "camera.entity";
-    Projector = "projector.entity";
-    ProjectedGrid = "grid.entity";
     Skylight = "preetham.entity";
-    Entities = ("debug_plane.entity");
+    Ocean = "ocean.entity";
+    Entities = ();
 }
