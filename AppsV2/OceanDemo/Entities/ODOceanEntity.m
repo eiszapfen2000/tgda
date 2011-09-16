@@ -28,7 +28,7 @@ static NPSemaphore * semaphore = nil;
     NPTimer * timer = [[ NPTimer alloc ] initWithName:@"Thread Timer" ];
 
     Vector2 spectrumSize = {1.0f, 1.0f};
-    IVector2 spectrumResolution = {256, 256};
+    IVector2 spectrumResolution = {8, 8};
     Vector2 spectumWindDirection = {10.0f, 15.0f};
 
     ODPhillipsSpectrum * s = [[ ODPhillipsSpectrum alloc ] init ];
@@ -37,6 +37,8 @@ static NPSemaphore * semaphore = nil;
     [ s setWindDirection:spectumWindDirection ];
 
     fftw_complex * complexHeights = fftw_malloc(sizeof(fftw_complex) * spectrumResolution.x * spectrumResolution.y);
+    fftw_complex * r2c = fftw_malloc(sizeof(fftw_complex) * spectrumResolution.x * ((spectrumResolution.y / 2) + 1));
+    double * c2r = ALLOC_ARRAY(double, spectrumResolution.x * spectrumResolution.y);
     double * heights = ALLOC_ARRAY(double, spectrumResolution.x * spectrumResolution.y);
 
     while ( [[ NSThread currentThread ] isCancelled ] == NO )
@@ -49,9 +51,22 @@ static NPSemaphore * semaphore = nil;
         {
             [ timer update ];
             [ s generateFrequencySpectrumAtTime:[ timer totalElapsedTime ]];
-            [ timer update ];
 
-            const double spectrumTime = [ timer frameTime ];
+            fftw_complex * spectrum = [s frequencySpectrum];
+
+            printf("spectrum\n");
+
+            for ( int32_t j = 0; j < spectrumResolution.y; j++ )
+            {
+                for ( int32_t k = 0; k < spectrumResolution.x; k++ )
+                {
+                    printf("%f %fi ", spectrum[k * spectrumResolution.y + j][0], spectrum[k * spectrumResolution.y + j][1]);
+                }
+
+                printf("\n");
+            }
+            fflush(stdout);
+
 
             fftw_plan plan;
             plan = fftw_plan_dft_2d(spectrumResolution.x,
@@ -73,15 +88,68 @@ static NPSemaphore * semaphore = nil;
                 }
             }
 
-            [ timer update ];
-            NSLog(@"spectrum %f, FFT %f", spectrumTime, [ timer frameTime ]);
+            printf("heights\n");
+            for ( int32_t j = 0; j < spectrumResolution.y; j++ )
+            {
+                for ( int32_t k = 0; k < spectrumResolution.x; k++ )
+                {
+                    printf("%f ", heights[k * spectrumResolution.y + j]);
+                }
+
+                printf("\n");
+            }
+
+            fflush(stdout);
+
+            plan = fftw_plan_dft_r2c_2d(spectrumResolution.x,
+                                        spectrumResolution.y,
+                                        heights,
+                                        r2c,
+                                        FFTW_ESTIMATE);
+
+            fftw_execute(plan);
+            fftw_destroy_plan(plan);
+
+            printf("r2c spectrum\n");
+            for ( int32_t j = 0; j < ((spectrumResolution.y/2)+1); j++ )
+            {
+                for ( int32_t k = 0; k < spectrumResolution.x; k++ )
+                {
+                    printf("%f %fi ", r2c[k * ((spectrumResolution.y/2)+1) + j][0], r2c[k * ((spectrumResolution.y/2)+1) + j][1]);
+                }
+
+                printf("\n");
+            }
+            fflush(stdout);
+
+            plan = fftw_plan_dft_c2r_2d(spectrumResolution.x,
+                                        spectrumResolution.y,
+                                        r2c,
+                                        c2r,
+                                        FFTW_ESTIMATE);
+
+            fftw_execute(plan);
+            fftw_destroy_plan(plan);
+
+            printf("c2r spectrum\n");
+            for ( int32_t j = 0; j < spectrumResolution.y; j++ )
+            {
+                for ( int32_t k = 0; k < spectrumResolution.x; k++ )
+                {
+                    printf("%f ", c2r[k * spectrumResolution.y + j] / (spectrumResolution.x * spectrumResolution.y));
+                }
+                printf("\n");
+            }
+            fflush(stdout);
         }
 
         DESTROY(innerPool);
     }    
 
     fftw_free(complexHeights);
+    fftw_free(r2c);
     SAFE_FREE(heights);
+    SAFE_FREE(c2r);
 
     DESTROY(s);
     DESTROY(timer);
