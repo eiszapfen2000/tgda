@@ -27,7 +27,7 @@ static NPSemaphore * semaphore = nil;
 
     NPTimer * timer = [[ NPTimer alloc ] initWithName:@"Thread Timer" ];
 
-    Vector2 spectrumSize = {1.0f, 1.0f};
+    Vector2 spectrumSize = {10.0f, 10.0f};
     IVector2 spectrumResolution = {8, 8};
     Vector2 spectumWindDirection = {10.0f, 15.0f};
 

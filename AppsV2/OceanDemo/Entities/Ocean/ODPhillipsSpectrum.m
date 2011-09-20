@@ -210,7 +210,7 @@
                 H0conjugate[0] =  H0[indexForConjugate][0];
                 H0conjugate[1] = -H0[indexForConjugate][1];
 
-                // H0[indexForConjugate] * exp(-i*omega*t)                
+                // H0[indexForConjugate] * exp(-i*omega*t)
                 H0expMinusOmega[0] = H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1];
                 H0expMinusOmega[1] = H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0];
 
@@ -244,6 +244,17 @@ Frequeny Spectrum Quadrant Layout
 | 4 | 3 |
 ---------
 
+*/
+
+
+/*
+If I want to generate less data and use a complex 2 real transform
+I need to take the quadrant swapping into account, it's not enough
+to simply generate data for quadrant 1 and 2.
+Basically I need quadrant 4 and 3, but quadrant 3 has to be moved
+to quadrant 4's left side.
+Either screw around with two for loops or choose k the
+right way.
 */
 
 #define QUADRANT_1_AND_3     1
