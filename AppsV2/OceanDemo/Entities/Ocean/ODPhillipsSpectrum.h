@@ -17,6 +17,7 @@
 
     fftw_complex * H0;
     fftw_complex * frequencySpectrum;
+    fftw_complex * frequencySpectrumHC;
 }
 
 - (id) init;

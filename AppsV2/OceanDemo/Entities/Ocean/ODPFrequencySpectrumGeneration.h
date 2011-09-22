@@ -10,5 +10,8 @@
 - (void) generateTimeIndependentFrequencySpectrum;
 - (void) generateFrequencySpectrumAtTime:(const double)time;
 - (fftw_complex *) frequencySpectrum;
+- (void) generateTimeIndependentFrequencySpectrumHC;
+- (void) generateFrequencySpectrumHCAtTime:(const double)time;
+- (fftw_complex *) frequencySpectrumHC;
 
 @end

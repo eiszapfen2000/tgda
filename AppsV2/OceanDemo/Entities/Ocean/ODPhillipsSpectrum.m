@@ -6,70 +6,31 @@
 #define FFTW_FREE(_pointer)        do {void *_ptr=(void *)(_pointer); fftw_free(_ptr); _pointer=NULL; } while (0)
 #define FFTW_SAFE_FREE(_pointer)   { if ( (_pointer) != NULL ) FFTW_FREE((_pointer)); }
 
-@implementation ODPhillipsSpectrum
-
-- (id) init
+typedef enum ODQuadrants
 {
-    return [ self initWithName:@"Phillips Spectrum" ];
+    ODQuadrant_1_3 =  1,
+    ODQuadrant_2_4 = -1
 }
+ODQuadrants;
 
-- (id) initWithName:(NSString *)newName
-{
-    self = [ super initWithName:newName ];
+@interface ODPhillipsSpectrum (Private)
 
-    alpha = PHILLIPS_CONSTANT;
+- (double) omegaForK:(const Vector2 * const)k;
+- (double) indexToKx:(int32_t)index;
+- (double) indexToKy:(int32_t)index;
+- (double) getAmplitudeAt:(const Vector2 *)k;
+- (void) generateH0;
+- (void) generateHAtTime:(double)time;
+- (void) generateTimeIndependentH;
+- (void) swapFrequencySpectrumQuadrants:(ODQuadrants)quadrants;
+- (void) generateHHCAtTime:(double)time;
+- (void) generateTimeIndependentHHC;
 
-    resolution.x = resolution.y = 0;
-    size.x = size.y = 0.0;
-    windDirection.x = windDirection.y = 0.0;
+@end
 
-    needsUpdate = YES;
-    lastTime = -1.0;
+@implementation ODPhillipsSpectrum (Private)
 
-    H0 = NULL;
-    frequencySpectrum = NULL;
-
-    return self;
-}
-
-- (void) dealloc
-{
-    FFTW_SAFE_FREE(frequencySpectrum);
-    FFTW_SAFE_FREE(H0);
-
-    [ super dealloc ];
-}
-
-- (fftw_complex *) frequencySpectrum
-{
-    return frequencySpectrum;
-}
-
-- (void) setSize:(const Vector2)newSize
-{
-    if ( newSize.x > 0.0f && newSize.y > 0.0f )
-    {
-        size = newSize;
-        needsUpdate = YES;
-    }
-}
-
-- (void) setResolution:(const IVector2)newResolution
-{
-    if ( newResolution.x > 0 && newResolution.y > 0 )
-    {
-        resolution = newResolution;
-        needsUpdate = YES;
-    }
-}
-
-- (void) setWindDirection:(const Vector2)newWindDirection
-{
-    windDirection = newWindDirection;
-    needsUpdate = YES;
-}
-
-- (double) omegaForK:(const Vector2 *)k
+- (double) omegaForK:(const Vector2 * const)k;
 {
     return sqrt(EARTH_ACCELERATION * v2_v_length(k));
 }
@@ -156,11 +117,6 @@
 
 - (void) generateHAtTime:(double)time
 {
-    Vector2 k;
-    double omega;
-    fftw_complex expOmega, expMinusOmega, H0expOmega, H0expMinusOmega, H0conjugate;
-    int32_t indexForK, indexForConjugate;
-
 	if ( time != lastTime )
 	{
         FFTW_SAFE_FREE(frequencySpectrum);
@@ -176,8 +132,8 @@
         {
             for ( int32_t j = 0; j < resolution.y; j++ )
             {
-                indexForK = j + resolution.y * i;
-                indexForConjugate = ((resolution.y - j) % resolution.y) + resolution.y * ((resolution.x - i) % resolution.x);
+                const int32_t indexForK = j + resolution.y * i;
+                const int32_t indexForConjugate = ((resolution.y - j) % resolution.y) + resolution.y * ((resolution.x - i) % resolution.x);
 
                 const double di = i;
                 const double dj = j;
@@ -186,16 +142,13 @@
                 const double ky = (m - dj) * MATH_2_MUL_PI * dsizey;
 
                 const Vector2 k = {kx, ky};
-
-                omega = [ self omegaForK:&k ];
+                const double omega = [ self omegaForK:&k ];
 
                 // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
-                expOmega[0] = cos(omega * time);
-                expOmega[1] = sin(omega * time);
+                const fftw_complex expOmega = { cos(omega * time), sin(omega * time) };
 
                 // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
-                expMinusOmega[0] =  expOmega[0];
-                expMinusOmega[1] = -expOmega[1];
+                const fftw_complex expMinusOmega = { expOmega[0], -expOmega[1] };
 
                 /* complex multiplication
                    x = a + i*b
@@ -204,15 +157,17 @@
                 */
 
                 // H0[indexForK] * exp(i*omega*t)
-                H0expOmega[0] = H0[indexForK][0] * expOmega[0] - H0[indexForK][1] * expOmega[1];
-                H0expOmega[1] = H0[indexForK][0] * expOmega[1] + H0[indexForK][1] * expOmega[0];
+                const fftw_complex H0expOmega
+                    = { H0[indexForK][0] * expOmega[0] - H0[indexForK][1] * expOmega[1],
+                        H0[indexForK][0] * expOmega[1] + H0[indexForK][1] * expOmega[0] };
 
-                H0conjugate[0] =  H0[indexForConjugate][0];
-                H0conjugate[1] = -H0[indexForConjugate][1];
+                const fftw_complex H0conjugate
+                    = { H0[indexForConjugate][0], -H0[indexForConjugate][1] };
 
                 // H0[indexForConjugate] * exp(-i*omega*t)
-                H0expMinusOmega[0] = H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1];
-                H0expMinusOmega[1] = H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0];
+                const fftw_complex H0expMinusOmega
+                    = { H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1],
+                        H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0] };
 
                 /* complex addition
                    x = a + i*b
@@ -235,6 +190,245 @@
     [ self generateHAtTime:1.0 ];
 }
 
+- (void) generateHHCAtTime:(double)time
+{
+	//if ( time != lastTime )
+	{
+        const IVector2 resolutionHC = { resolution.x, (resolution.y / 2) + 1 };
+        const IVector2 quadrantResolution = { resolution.x / 2, resolution.y / 2 };
+
+        FFTW_SAFE_FREE(frequencySpectrumHC);
+		frequencySpectrumHC = fftw_malloc(sizeof(fftw_complex) * resolutionHC.x * resolutionHC.y);
+
+        //const double n = -(resolution.x / 2.0);
+        //const double m =  (resolution.y / 2.0);
+
+        const double dsizex = 1.0 / size.x;
+        const double dsizey = 1.0 / size.y;
+
+        // first generate quadrant 3
+        // kx starts at 0 and increases
+        // ky starts at 0 and decreases
+
+        const double q3n = 0.0;
+        const double q3m = 0.0;
+
+        for ( int32_t i = 0; i < quadrantResolution.x; i++ )
+        {
+            for ( int32_t j = 0; j < quadrantResolution.y; j++ )
+            {
+                const int32_t iInH0 = i + quadrantResolution.x;
+                const int32_t jInH0 = j + quadrantResolution.y;
+
+                const int32_t indexForKInH0 = jInH0 + (resolution.y * iInH0);
+
+                const int32_t indexForKConjugateInH0
+                    = ((resolution.y - jInH0) % resolution.y) + resolution.y * ((resolution.x - iInH0) % resolution.x);
+
+                const int32_t indexHC = j + (i * resolutionHC.y);
+
+                //printf("%d %d %d %d %d %d\n", i, j, iInH0, jInH0, indexForKInH0, indexForKConjugateInH0);
+
+                const double di = i;
+                const double dj = j;
+
+                const double kx = (q3n + di) * MATH_2_MUL_PI * dsizex;
+                const double ky = (q3m - dj) * MATH_2_MUL_PI * dsizey;
+
+                const Vector2 k = {kx, ky};
+                const double omega = [ self omegaForK:&k ];
+
+                // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
+                const fftw_complex expOmega = { cos(omega * time), sin(omega * time) };
+
+                // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
+                const fftw_complex expMinusOmega = { expOmega[0], -expOmega[1] };
+
+                // H0[indexForK] * exp(i*omega*t)
+                const fftw_complex H0expOmega
+                    = { H0[indexForKInH0][0] * expOmega[0] - H0[indexForKInH0][1] * expOmega[1],
+                        H0[indexForKInH0][0] * expOmega[1] + H0[indexForKInH0][1] * expOmega[0] };
+
+                const fftw_complex H0conjugate
+                    = { H0[indexForKConjugateInH0][0], -H0[indexForKConjugateInH0][1] };
+
+                // H0[indexForConjugate] * exp(-i*omega*t)
+                const fftw_complex H0expMinusOmega
+                    = { H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1],
+                        H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0] };
+
+                // H = H0expOmega + H0expMinusomega
+                frequencySpectrumHC[indexHC][0] = H0expOmega[0] + H0expMinusOmega[0];
+                frequencySpectrumHC[indexHC][1] = H0expOmega[1] + H0expMinusOmega[1];
+            }
+        }
+
+        // second generate quadrant 4
+        // kx starts at -resolution.x/2
+        // ky starts at 0 and decreases
+
+        const double q4n = -(resolution.x / 2.0);
+        const double q4m = 0.0;
+
+        for ( int32_t i = 0; i < quadrantResolution.x; i++ )
+        {
+            for ( int32_t j = 0; j < quadrantResolution.y; j++ )
+            {
+                const int32_t iInH0 = i;
+                const int32_t jInH0 = j + quadrantResolution.y;
+
+                const int32_t indexForKInH0 = jInH0 + (resolution.y * iInH0);
+
+                const int32_t indexForKConjugateInH0
+                    = ((resolution.y - jInH0) % resolution.y) + resolution.y * ((resolution.x - iInH0) % resolution.x);
+
+                const int32_t indexHC = j + ((i + quadrantResolution.x) * resolutionHC.y);
+
+                const double di = i;
+                const double dj = j;
+
+                const double kx = (q4n + di) * MATH_2_MUL_PI * dsizex;
+                const double ky = (q4m - dj) * MATH_2_MUL_PI * dsizey;
+
+                const Vector2 k = {kx, ky};
+                const double omega = [ self omegaForK:&k ];
+
+                // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
+                const fftw_complex expOmega = { cos(omega * time), sin(omega * time) };
+
+                // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
+                const fftw_complex expMinusOmega = { expOmega[0], -expOmega[1] };
+
+                // H0[indexForK] * exp(i*omega*t)
+                const fftw_complex H0expOmega
+                    = { H0[indexForKInH0][0] * expOmega[0] - H0[indexForKInH0][1] * expOmega[1],
+                        H0[indexForKInH0][0] * expOmega[1] + H0[indexForKInH0][1] * expOmega[0] };
+
+                const fftw_complex H0conjugate
+                    = { H0[indexForKConjugateInH0][0], -H0[indexForKConjugateInH0][1] };
+
+                // H0[indexForConjugate] * exp(-i*omega*t)
+                const fftw_complex H0expMinusOmega
+                    = { H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1],
+                        H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0] };
+
+                // H = H0expOmega + H0expMinusomega
+                frequencySpectrumHC[indexHC][0] = H0expOmega[0] + H0expMinusOmega[0];
+                frequencySpectrumHC[indexHC][1] = H0expOmega[1] + H0expMinusOmega[1];
+            }
+        }
+
+        //printf("q2\n");
+        // third generate first row of quadrant 2
+
+        const double q2n = 0.0;
+        const double q2m = resolution.y / 2.0;
+
+        for ( int32_t i = 0; i < quadrantResolution.x; i++ )
+        {
+            const int32_t iInH0 = i + quadrantResolution.x;
+            const int32_t jInH0 = 0;
+
+            const int32_t indexForKInH0 = jInH0 + (resolution.y * iInH0);
+
+            const int32_t indexForKConjugateInH0
+                = ((resolution.y - jInH0) % resolution.y) + resolution.y * ((resolution.x - iInH0) % resolution.x);
+
+            const int32_t indexHC = quadrantResolution.y + (i * resolutionHC.y);
+
+            const double di = i;
+            const double dj = 0;
+
+            const double kx = (q2n + di) * MATH_2_MUL_PI * dsizex;
+            const double ky = (q2m - dj) * MATH_2_MUL_PI * dsizey;
+
+            const Vector2 k = {kx, ky};
+            const double omega = [ self omegaForK:&k ];
+
+            // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
+            const fftw_complex expOmega = { cos(omega * time), sin(omega * time) };
+
+            // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
+            const fftw_complex expMinusOmega = { expOmega[0], -expOmega[1] };
+
+            // H0[indexForK] * exp(i*omega*t)
+            const fftw_complex H0expOmega
+                = { H0[indexForKInH0][0] * expOmega[0] - H0[indexForKInH0][1] * expOmega[1],
+                    H0[indexForKInH0][0] * expOmega[1] + H0[indexForKInH0][1] * expOmega[0] };
+
+            const fftw_complex H0conjugate
+                = { H0[indexForKConjugateInH0][0], -H0[indexForKConjugateInH0][1] };
+
+            // H0[indexForConjugate] * exp(-i*omega*t)
+            const fftw_complex H0expMinusOmega
+                = { H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1],
+                    H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0] };
+
+            // H = H0expOmega + H0expMinusomega
+            frequencySpectrumHC[indexHC][0] = H0expOmega[0] + H0expMinusOmega[0];
+            frequencySpectrumHC[indexHC][1] = H0expOmega[1] + H0expMinusOmega[1];
+        }
+
+        //printf("q1\n");
+
+        const double q1n = -(resolution.x / 2.0);
+        const double q1m =   resolution.y / 2.0;
+
+        // forth generate first row of quadrant 1
+        for ( int32_t i = 0; i < quadrantResolution.x; i++ )
+        {
+            const int32_t iInH0 = i;
+            const int32_t jInH0 = 0;
+
+            const int32_t indexForKInH0 = jInH0 + (resolution.y * iInH0);
+
+            const int32_t indexForKConjugateInH0
+                = ((resolution.y - jInH0) % resolution.y) + resolution.y * ((resolution.x - iInH0) % resolution.x);
+
+            const int32_t indexHC = quadrantResolution.y + ((i + quadrantResolution.x) * resolutionHC.y);
+
+            const double di = i;
+            const double dj = 0;
+
+            const double kx = (q1n + di) * MATH_2_MUL_PI * dsizex;
+            const double ky = (q1m - dj) * MATH_2_MUL_PI * dsizey;
+
+            const Vector2 k = {kx, ky};
+            const double omega = [ self omegaForK:&k ];
+
+            // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
+            const fftw_complex expOmega = { cos(omega * time), sin(omega * time) };
+
+            // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
+            const fftw_complex expMinusOmega = { expOmega[0], -expOmega[1] };
+
+            // H0[indexForK] * exp(i*omega*t)
+            const fftw_complex H0expOmega
+                = { H0[indexForKInH0][0] * expOmega[0] - H0[indexForKInH0][1] * expOmega[1],
+                    H0[indexForKInH0][0] * expOmega[1] + H0[indexForKInH0][1] * expOmega[0] };
+
+            const fftw_complex H0conjugate
+                = { H0[indexForKConjugateInH0][0], -H0[indexForKConjugateInH0][1] };
+
+            // H0[indexForConjugate] * exp(-i*omega*t)
+            const fftw_complex H0expMinusOmega
+                = { H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1],
+                    H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0] };
+
+            // H = H0expOmega + H0expMinusomega
+            frequencySpectrumHC[indexHC][0] = H0expOmega[0] + H0expMinusOmega[0];
+            frequencySpectrumHC[indexHC][1] = H0expOmega[1] + H0expMinusOmega[1];
+        }
+
+        //lastTime = time;
+    }
+}
+
+- (void) generateTimeIndependentHHC
+{
+    [ self generateHHCAtTime:1.0 ];
+}
+
 /*
 Frequeny Spectrum Quadrant Layout
 
@@ -246,7 +440,6 @@ Frequeny Spectrum Quadrant Layout
 
 */
 
-
 /*
 If I want to generate less data and use a complex 2 real transform
 I need to take the quadrant swapping into account, it's not enough
@@ -256,16 +449,6 @@ to quadrant 4's left side.
 Either screw around with two for loops or choose k the
 right way.
 */
-
-#define QUADRANT_1_AND_3     1
-#define QUADRANT_2_AND_4    -1
-
-typedef enum ODQuadrants
-{
-    ODQuadrant_1_3 =  1,
-    ODQuadrant_2_4 = -1
-}
-ODQuadrants;
 
 - (void) swapFrequencySpectrumQuadrants:(ODQuadrants)quadrants
 {
@@ -316,6 +499,76 @@ ODQuadrants;
     }
 }
 
+@end
+
+@implementation ODPhillipsSpectrum
+
+- (id) init
+{
+    return [ self initWithName:@"Phillips Spectrum" ];
+}
+
+- (id) initWithName:(NSString *)newName
+{
+    self = [ super initWithName:newName ];
+
+    alpha = PHILLIPS_CONSTANT;
+
+    resolution.x = resolution.y = 0;
+    size.x = size.y = 0.0;
+    windDirection.x = windDirection.y = 0.0;
+
+    needsUpdate = YES;
+    lastTime = -1.0;
+
+    H0 = NULL;
+    frequencySpectrum = NULL;
+
+    return self;
+}
+
+- (void) dealloc
+{
+    FFTW_SAFE_FREE(frequencySpectrum);
+    FFTW_SAFE_FREE(H0);
+
+    [ super dealloc ];
+}
+
+- (fftw_complex *) frequencySpectrum
+{
+    return frequencySpectrum;
+}
+
+- (fftw_complex *) frequencySpectrumHC
+{
+    return frequencySpectrumHC;
+}
+
+- (void) setSize:(const Vector2)newSize
+{
+    if ( newSize.x > 0.0f && newSize.y > 0.0f )
+    {
+        size = newSize;
+        needsUpdate = YES;
+    }
+}
+
+- (void) setResolution:(const IVector2)newResolution
+{
+    if ( newResolution.x > 0 && newResolution.y > 0 )
+    {
+        resolution = newResolution;
+        needsUpdate = YES;
+    }
+}
+
+- (void) setWindDirection:(const Vector2)newWindDirection
+{
+    windDirection = newWindDirection;
+    needsUpdate = YES;
+}
+
 - (void) generateTimeIndependentFrequencySpectrum
 {
     [ self generateH0 ];
@@ -334,4 +587,17 @@ ODQuadrants;
     [ self swapFrequencySpectrumQuadrants:ODQuadrant_2_4 ];
 }
 
+- (void) generateTimeIndependentFrequencySpectrumHC
+{
+    [ self generateH0 ];
+    [ self generateTimeIndependentHHC ];
+}
+
+- (void) generateFrequencySpectrumHCAtTime:(const double)time
+{
+    [ self generateH0 ];
+    [ self generateHHCAtTime:time ];
+}
+
 @end
+
