@@ -52,6 +52,8 @@ static NPSemaphore * semaphore = nil;
             [ timer update ];
             [ s generateFrequencySpectrumAtTime:[ timer totalElapsedTime ]];
 
+            [ s generateFrequencySpectrumHCAtTime:[ timer totalElapsedTime ]];
+
             fftw_complex * spectrum = [s frequencySpectrum];
 
             printf("spectrum\n");
@@ -61,6 +63,21 @@ static NPSemaphore * semaphore = nil;
                 for ( int32_t k = 0; k < spectrumResolution.x; k++ )
                 {
                     printf("%f %fi ", spectrum[k * spectrumResolution.y + j][0], spectrum[k * spectrumResolution.y + j][1]);
+                }
+
+                printf("\n");
+            }
+            fflush(stdout);
+
+            fftw_complex * spectrumHC = [s frequencySpectrumHC];
+
+            printf("spectrumHC\n");
+
+            for ( int32_t j = 0; j < ((spectrumResolution.y/2)+1); j++ )
+            {
+                for ( int32_t k = 0; k < spectrumResolution.x; k++ )
+                {
+                    printf("%f %fi ", spectrumHC[k * ((spectrumResolution.y/2)+1) + j][0], spectrumHC[k * ((spectrumResolution.y/2)+1) + j][1]);
                 }
 
                 printf("\n");
