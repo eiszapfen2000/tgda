@@ -28,7 +28,7 @@ static NPSemaphore * semaphore = nil;
     NPTimer * timer = [[ NPTimer alloc ] initWithName:@"Thread Timer" ];
 
     Vector2 spectrumSize = {10.0f, 10.0f};
-    IVector2 spectrumResolution = {8, 8};
+    IVector2 spectrumResolution = {512, 512};
     Vector2 spectumWindDirection = {10.0f, 15.0f};
 
     ODPhillipsSpectrum * s = [[ ODPhillipsSpectrum alloc ] init ];
@@ -51,11 +51,21 @@ static NPSemaphore * semaphore = nil;
         {
             [ timer update ];
             [ s generateFrequencySpectrumAtTime:[ timer totalElapsedTime ]];
+            [ timer update ];
+
+            const float fpsC = [ timer frameTime ];
 
             [ s generateFrequencySpectrumHCAtTime:[ timer totalElapsedTime ]];
+            [ timer update ];
+
+            const float fpsHC = [ timer frameTime ];
 
             fftw_complex * spectrum = [s frequencySpectrum];
 
+            printf("PHILLIPS: %f %f\n", fpsC, fpsHC);
+            fflush(stdout);
+
+            /*
             printf("spectrum\n");
 
             for ( int32_t j = 0; j < spectrumResolution.y; j++ )
@@ -68,9 +78,11 @@ static NPSemaphore * semaphore = nil;
                 printf("\n");
             }
             fflush(stdout);
+            */
 
-            fftw_complex * spectrumHC = [s frequencySpectrumHC];
+            //fftw_complex * spectrumHC = [s frequencySpectrumHC];
 
+            /*
             printf("spectrumHC\n");
 
             for ( int32_t j = 0; j < ((spectrumResolution.y/2)+1); j++ )
@@ -83,8 +95,10 @@ static NPSemaphore * semaphore = nil;
                 printf("\n");
             }
             fflush(stdout);
+            */
 
 
+            [ timer update ];
             fftw_plan plan;
             plan = fftw_plan_dft_2d(spectrumResolution.x,
                                     spectrumResolution.y,
@@ -95,6 +109,9 @@ static NPSemaphore * semaphore = nil;
 
             fftw_execute(plan);
             fftw_destroy_plan(plan);
+            [ timer update ];
+
+            const float fpsIFFTC = [ timer frameTime ];
 
             // write real part to result array
             for ( int32_t j = 0; j < spectrumResolution.x; j++ )
@@ -105,6 +122,7 @@ static NPSemaphore * semaphore = nil;
                 }
             }
 
+            /*
             printf("heights\n");
             for ( int32_t j = 0; j < spectrumResolution.y; j++ )
             {
@@ -115,9 +133,10 @@ static NPSemaphore * semaphore = nil;
 
                 printf("\n");
             }
-
             fflush(stdout);
+            */
 
+            /*
             plan = fftw_plan_dft_r2c_2d(spectrumResolution.x,
                                         spectrumResolution.y,
                                         heights,
@@ -126,7 +145,9 @@ static NPSemaphore * semaphore = nil;
 
             fftw_execute(plan);
             fftw_destroy_plan(plan);
+            */
 
+            /*
             printf("r2c spectrum\n");
             for ( int32_t j = 0; j < ((spectrumResolution.y/2)+1); j++ )
             {
@@ -138,16 +159,40 @@ static NPSemaphore * semaphore = nil;
                 printf("\n");
             }
             fflush(stdout);
+            */
 
+            [ timer update ];
             plan = fftw_plan_dft_c2r_2d(spectrumResolution.x,
                                         spectrumResolution.y,
-                                        r2c,
+                                        //r2c,
+                                        [ s frequencySpectrumHC ],
                                         c2r,
                                         FFTW_ESTIMATE);
 
             fftw_execute(plan);
             fftw_destroy_plan(plan);
+            [ timer update ];
 
+            const float fpsIFFTHC = [ timer frameTime ];
+
+            /*
+            printf("heights HC\n");
+            for ( int32_t j = 0; j < spectrumResolution.y; j++ )
+            {
+                for ( int32_t k = 0; k < spectrumResolution.x; k++ )
+                {
+                    printf("%f ", c2r[k * spectrumResolution.y + j]);
+                }
+
+                printf("\n");
+            }
+            fflush(stdout);
+            */
+
+            printf("IFFT: %f %f\n", fpsIFFTC, fpsIFFTHC);
+            fflush(stdout);
+
+            /*
             printf("c2r spectrum\n");
             for ( int32_t j = 0; j < spectrumResolution.y; j++ )
             {
@@ -158,6 +203,7 @@ static NPSemaphore * semaphore = nil;
                 printf("\n");
             }
             fflush(stdout);
+            */
         }
 
         DESTROY(innerPool);
