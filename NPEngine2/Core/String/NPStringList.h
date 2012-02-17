@@ -41,6 +41,8 @@
 - (void) addStringList:(NPStringList *)stringList;
 - (void) removeStringAtIndex:(NSUInteger)index;
 - (void) removeStringsAtIndexes:(NSIndexSet *)indexes;
+- (void) removeStringsWithPrefix:(NSString *)prefix;
+- (void) removeStringsWithSuffix:(NSString *)suffix;
 
 - (void) insertString:(NSString *)string atIndex:(NSUInteger)index;
 - (void) insertStrings:(NSArray *)array atIndexes:(NSIndexSet *)indexes;

@@ -144,6 +144,18 @@
     [ strings removeObjectsAtIndexes:indexes ];
 }
 
+- (void) removeStringsWithPrefix:(NSString *)prefix
+{
+    NSIndexSet * set = [ self indexesOfStringsWithPrefix:prefix ];
+    [ self removeStringsAtIndexes:set ];
+}
+
+- (void) removeStringsWithSuffix:(NSString *)suffix
+{
+    NSIndexSet * set = [ self indexesOfStringsWithSuffix:suffix ];
+    [ self removeStringsAtIndexes:set ];
+}
+
 - (void) insertString:(NSString *)string atIndex:(NSUInteger)index
 {
     if ( allowDuplicates == NO &&
@@ -248,7 +260,7 @@
 
     if ( indexes != NULL && temp != nil )
     {
-        *indexes = [ temp copy ];
+        *indexes = AUTORELEASE([ temp copy ]);
         DESTROY(temp);
     }
 
@@ -285,7 +297,7 @@
 
     if ( indexes != NULL && temp != nil )
     {
-        *indexes = [ temp copy ];
+        *indexes = AUTORELEASE([ temp copy ]);
         DESTROY(temp);
     }
 
@@ -380,7 +392,7 @@
     result = [ temp copy ];
     DESTROY(temp);
 
-    return result;
+    return AUTORELEASE(result);
 }
 
 - (NSIndexSet *) indexesOfStringsWithSuffix:(NSString *)suffix
@@ -401,7 +413,7 @@
     result = [ temp copy ];
     DESTROY(temp);
 
-    return result;
+    return AUTORELEASE(result);
 }
 
 
