@@ -143,8 +143,7 @@
     NPStringList * stringListCopy
          = [ NPStringList stringListWithStringList:stringList ];
 
-    NSIndexSet * set = [ stringList indexesOfStringsWithPrefix:@"#" ];
-    [ stringListCopy removeStringsAtIndexes:set ];
+    [ stringListCopy removeStringsWithPrefix:@"#"];
 
     NPParser * parser = [[ NPParser alloc ] init ];
     [ parser parse:stringListCopy ];
@@ -195,6 +194,12 @@
     }
 
     DESTROY(parser);
+
+    if ( [techniques count] != 0 )
+    {
+        ready = YES;
+    }
+
     return YES;
 }
 
