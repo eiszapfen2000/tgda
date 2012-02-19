@@ -25,7 +25,7 @@
 + (id) stringListWithContentsOfFile:(NSString *)fileName
                               error:(NSError **)error
 {
-    NPStringList * stringList = ([[ NPStringList alloc ] init ]);
+    NPStringList * stringList = [[ NPStringList alloc ] init ];
     if ( [ stringList loadFromFile:fileName
                          arguments:nil
                              error:error ] == NO )
