@@ -1,8 +1,6 @@
 #version 150
-#extension GL_ARB_explicit_attrib_location : enable
 
-in vec2 texcoordsOut;
-layout(location = 0) out float color;
+in vec2 out_texcoords;
 
 const mat3 LinearsRGBToXYZ
     = mat3( 0.4124564f, 0.2126729f, 0.0193339f,
@@ -11,9 +9,9 @@ const mat3 LinearsRGBToXYZ
 
 void main()
 {
-    vec4 c = texture2D(colormap, texcoordsOut);
+    vec4 c = texture2D(colormap, out_texcoords);
     vec3 XYZ = LinearsRGBToXYZ * c.rgb;
-    color = max(log(XYZ.y), 0.01f);
-    //color = XYZ.y;
+    target = max(log(XYZ.y), 0.01f);
+    //target = XYZ.y;
 }
 
