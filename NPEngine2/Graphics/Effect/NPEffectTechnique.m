@@ -44,30 +44,33 @@ static NPEffectTechnique * currentTechnique = nil;
 
 - (NPShader *) loadShaderFromFile:(NSString *)fileName
             insertEffectVariables:(NPStringList *)effectVariables
-                 insertAttributes:(NPStringList *)attributes
+                    insertStreams:(NPStringList *)streams
                                  ;
 
 - (void) loadVertexShaderFromFile:(NSString *)fileName
                   effectVariables:(NPStringList *)effectVariables
-                       attributes:(NPStringList *)attributes
+                    vertexStreams:(NPStringList *)vertexStreams
                                  ;
 
 - (void) loadFragmentShaderFromFile:(NSString *)fileName
                     effectVariables:(NPStringList *)effectVariables
+                    fragmentStreams:(NPStringList *)fragmentStreams
                                    ;
 
-- (NPStringList *) extractEffectVariableLines:(NPStringList *)stringList;
-- (NPStringList *) extractVertexStreamAttributes:(NPStringList *)stringList;
+- (NPStringList *) extractStreamLines:(NPStringList *)stringList;
 
 - (void) parseShader:(NPParser *)parser
      effectVariables:(NPStringList *)effectVariables
-          attributes:(NPStringList *)attributes
+       vertexStreams:(NPStringList *)vertexStreams
+     fragmentStreams:(NPStringList *)fragmentStreams
                     ;
+
+- (void) parseVertexStreams:(NPStringList *)vertexStreamLines;
+- (void) parseFragmentStreams:(NPStringList *)fragmentStreamLines;
 
 - (void) clearShaders;
 - (BOOL) linkShader:(NSError **)error;
 - (void) parseEffectVariables:(NPParser *)parser;
-- (void) parseActiveAttributes;
 - (void) parseActiveVariables;
 - (void) activateVariables;
 
@@ -137,27 +140,47 @@ static NPEffectTechnique * currentTechnique = nil;
 
     NPLOG(@"Loading effect technique \"%@\"", name);
 
+    NSLog([stringList description]);
+
     NPParser * parser = AUTORELEASE([[ NPParser alloc ] init ]);
     [ parser parse:stringList ];
 
-    NPStringList * effectVariableLines
-        = [ self extractEffectVariableLines:stringList ];
+    NPStringList * effectVariableLines = [ NPStringList stringList ];
+    NPStringList * vertexStreamLines   = [ NPStringList stringList ];
+    NPStringList * fragmentStreamLines = [ NPStringList stringList ];
 
-    NPStringList * vertexStreamAttributes
-        = [ self extractVertexStreamAttributes:stringList ];
+    [ effectVariableLines addStringList:[ stringList stringsWithPrefix:@"uniform" ]];
+    [ vertexStreamLines   addStringList:[ stringList stringsWithPrefix:@"in"  ]];
+    [ fragmentStreamLines addStringList:[ stringList stringsWithPrefix:@"out" ]];
+
+    // separate stream related strings at ":", trim first component
+    // and append ";"
+    NPStringList * vertexStreamLinesStripped
+        = [ self extractStreamLines:vertexStreamLines ];
+
+    NPStringList * fragmentStreamLinesStripped
+        = [ self extractStreamLines:fragmentStreamLines ];
 
     [ self parseShader:parser
        effectVariables:effectVariableLines 
-            attributes:vertexStreamAttributes ];
+         vertexStreams:vertexStreamLinesStripped
+       fragmentStreams:fragmentStreamLinesStripped ];
 
     glID = glCreateProgram();
+	if (glIsProgram(glID) == GL_FALSE)
+	{
+        // error
+		return NO;
+	}
+
+    [ self parseVertexStreams:vertexStreamLines ];
+    [ self parseFragmentStreams:fragmentStreamLines ];
 
     if ( [ self linkShader:error ] == NO )
     {
         return NO;
     }
 
-    [ self parseActiveAttributes ];
     [ parser parse:effectVariableLines ];
     [ self parseEffectVariables:parser ];
     [ self parseActiveVariables ];
@@ -257,15 +280,18 @@ static NPEffectTechnique * currentTechnique = nil;
 
 - (NPShader *) loadShaderFromFile:(NSString *)fileName
             insertEffectVariables:(NPStringList *)effectVariables
-                 insertAttributes:(NPStringList *)attributes
+                    insertStreams:(NPStringList *)streams
 {
     NSError * error = nil;
-    NPStringList * shaderSource
-        = [ NPStringList stringListWithContentsOfFile:fileName
-                                                error:&error ];
 
-    if ( shaderSource == nil )
+    NPStringList * shaderSource = [ NPStringList stringList ];
+    [ shaderSource setAllowDuplicates:YES ];
+
+    if ( [ shaderSource loadFromFile:fileName
+                           arguments:nil
+                               error:&error ] == NO )
     {
+        DESTROY(shaderSource);
         NPLOG_ERROR(error);
         return nil;
     }
@@ -281,15 +307,11 @@ static NPEffectTechnique * currentTechnique = nil;
         startIndex = vIndex + 1;
     }
 
-    NPStringList * variablesAndAttributes
-        = [ NPStringList stringListWithStringList:effectVariables ];
+    NPStringList * variablesAndStreams = [ NPStringList stringList ];
+    [ variablesAndStreams addStringList:effectVariables ];
+    [ variablesAndStreams addStringList:streams ];
 
-    if ( attributes != nil )
-    {
-        [ variablesAndAttributes addStringList:attributes ];
-    }
-
-    [ shaderSource insertStringList:variablesAndAttributes
+    [ shaderSource insertStringList:variablesAndStreams
                             atIndex:startIndex ];
 
     // DAMN FUCKING NVIDIA GLSL Compiler needs \n
@@ -311,7 +333,7 @@ static NPEffectTechnique * currentTechnique = nil;
 
 - (void) loadVertexShaderFromFile:(NSString *)fileName
                   effectVariables:(NPStringList *)effectVariables
-                       attributes:(NPStringList *)attributes
+                    vertexStreams:(NPStringList *)vertexStreams
 {
     SAFE_DESTROY(vertexShader);
 
@@ -320,7 +342,7 @@ static NPEffectTechnique * currentTechnique = nil;
     NPShader * shader
         = [ self loadShaderFromFile:fileName
               insertEffectVariables:effectVariables
-                   insertAttributes:attributes ];
+                      insertStreams:vertexStreams ];
 
     if ( shader != nil )
     {
@@ -330,6 +352,7 @@ static NPEffectTechnique * currentTechnique = nil;
 
 - (void) loadFragmentShaderFromFile:(NSString *)fileName
                     effectVariables:(NPStringList *)effectVariables
+                    fragmentStreams:(NPStringList *)fragmentStreams
 {
     SAFE_DESTROY(fragmentShader);
 
@@ -338,7 +361,7 @@ static NPEffectTechnique * currentTechnique = nil;
     NPShader * shader
         = [ self loadShaderFromFile:fileName
               insertEffectVariables:effectVariables
-                   insertAttributes:nil ];
+                      insertStreams:fragmentStreams ];
 
     if ( shader != nil )
     {
@@ -346,38 +369,39 @@ static NPEffectTechnique * currentTechnique = nil;
     }
 }
 
-- (NPStringList *) extractEffectVariableLines:(NPStringList *)stringList
+- (NPStringList *) extractStreamLines:(NPStringList *)stringList
 {
-    NPStringList * lines = [ NPStringList stringList ];
-    [ lines setAllowDuplicates:NO ];
+    NSCharacterSet * whitespace = [ NSCharacterSet whitespaceCharacterSet ];
 
-    [ lines addStringList:[ stringList stringsWithPrefix:@"uniform" ]];
-    [ lines addStringList:[ stringList stringsWithPrefix:@"varying" ]];
+    NPStringList * result = [ NPStringList stringList ];
 
-    return lines;
-}
+    // separate strings at ":"
+    NSUInteger numberOfStrings = [ stringList count ];
+    for (NSUInteger i = 0; i < numberOfStrings; i++)
+    {
+        NSString * string = [ stringList stringAtIndex:i ];
+        NSArray  * components = [ string componentsSeparatedByString:@":" ];
+        NSString * component = [ components objectAtIndex:0];
+        NSString * trimmed = [ component stringByTrimmingCharactersInSet:whitespace ];
+        NSString * final = [ trimmed stringByAppendingString:@";" ];
+        [ result addString:final ];
+    }
 
-- (NPStringList *) extractVertexStreamAttributes:(NPStringList *)stringList
-{
-    NPStringList * lines = [ NPStringList stringList ];
-    [ lines setAllowDuplicates:NO ];
+    NSLog([result description]);
 
-    [ lines addStringList:[ stringList stringsWithPrefix:@"attribute" ]];
-
-    return lines;
+    return result;
 }
 
 - (void) parseShader:(NPParser *)parser
      effectVariables:(NPStringList *)effectVariables
-          attributes:(NPStringList *)attributes
+       vertexStreams:(NPStringList *)vertexStreams
+     fragmentStreams:(NPStringList *)fragmentStreams
 {
     NSUInteger numberOfLines = [ parser lineCount ];
     for ( NSUInteger i = 0; i < numberOfLines; i++ )
     {
         NSString * shaderType = nil;
         NSString * shaderFileName = nil;
-
-        //NSLog([[ parser getTokensForLine:i ] description]);
 
         if ( [ parser isLowerCaseTokenFromLine:i atPosition:0 equalToString:@"set" ] == YES
              && [ parser getTokenAsLowerCaseString:&shaderType fromLine:i atPosition:1 ] == YES
@@ -388,16 +412,65 @@ static NPEffectTechnique * currentTechnique = nil;
             {
                 [ self loadVertexShaderFromFile:shaderFileName
                                 effectVariables:effectVariables
-                                     attributes:attributes ];
+                                  vertexStreams:vertexStreams ];
             }
 
             if ( [ shaderType isEqual:@"fragment" ] == YES )
             {
                 [ self loadFragmentShaderFromFile:shaderFileName
-                                  effectVariables:effectVariables ];
+                                  effectVariables:effectVariables
+                                  fragmentStreams:fragmentStreams ];
             }
         }
     }
+}
+
+- (void) parseVertexStreams:(NPStringList *)vertexStreamLines
+{
+    NPParser * parser = [[ NPParser alloc ] init ];
+    [ parser parse:vertexStreamLines ];
+
+    const NSUInteger numberOfLines = [ parser lineCount ];
+    for (NSUInteger i = 0; i < numberOfLines; i++)
+    {
+        NSString * streamName;
+        int streamBinding;
+
+        if ( [ parser isLowerCaseTokenFromLine:i atPosition:0 equalToString:@"in" ] == YES
+             && [ parser getTokenAsLowerCaseString:&streamName fromLine:i atPosition:2 ] == YES
+             && [ parser isTokenFromLine:i atPosition:3 equalToString:@":"] == YES
+             && [ parser getTokenAsInt:&streamBinding fromLine:i atPosition:4 ] == YES )
+        {
+            glBindAttribLocation(glID, streamBinding,
+                [ streamName cStringUsingEncoding:NSASCIIStringEncoding ]);
+        }
+    }
+
+    DESTROY(parser);
+}
+
+- (void) parseFragmentStreams:(NPStringList *)fragmentStreamLines
+{
+    NPParser * parser = [[ NPParser alloc ] init ];
+    [ parser parse:fragmentStreamLines ];
+
+    const NSUInteger numberOfLines = [ parser lineCount ];
+    for (NSUInteger i = 0; i < numberOfLines; i++)
+    {
+        NSString * streamName;
+        int streamBinding;
+
+        if ( [ parser isLowerCaseTokenFromLine:i atPosition:0 equalToString:@"out" ] == YES
+             && [ parser getTokenAsLowerCaseString:&streamName fromLine:i atPosition:2 ] == YES
+             && [ parser isTokenFromLine:i atPosition:3 equalToString:@":"] == YES
+             && [ parser getTokenAsInt:&streamBinding fromLine:i atPosition:4 ] == YES )
+        {
+            glBindFragDataLocation(glID, streamBinding,
+                [ streamName cStringUsingEncoding:NSASCIIStringEncoding ]);
+        }
+    }
+
+    DESTROY(parser);
 }
 
 - (void) parseEffectVariables:(NPParser *)parser
@@ -530,28 +603,6 @@ static NPEffectTechnique * currentTechnique = nil;
     return [ NPEffectTechnique checkProgramLinkStatus:glID error:error ];
 }
 
-- (void) parseActiveAttributes
-{
-    GLint numberOfActiveAttributes = 0;
-    GLint maxAttributeNameLength = 0;
-
-    glGetProgramiv(glID, GL_ACTIVE_ATTRIBUTES, &numberOfActiveAttributes);
-    glGetProgramiv(glID, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxAttributeNameLength);
-
-	for (int32_t i = 0; i < numberOfActiveAttributes; i++)
-    {
-        GLsizei attributeNameLength;
-        GLint attributeSize;
-        GLenum attributeType;
-        GLchar attributeName[maxAttributeNameLength];
-
-        glGetActiveAttrib(glID, i, maxAttributeNameLength, &attributeNameLength,
-            &attributeSize, &attributeType, attributeName);
-
-        #warning FIXME: Check for valid values returned by glGetActiveAttrib
-    }
-}
-
 - (void) parseActiveVariables
 {
 	GLint numberOfActiveUniforms = 0;
@@ -565,10 +616,14 @@ static NPEffectTechnique * currentTechnique = nil;
 		GLsizei uniformNameLength;
 		GLint uniformSize;
 		GLenum uniformType;
+        GLint uniformLocation;
 		char uniformName[maxUniformNameLength];
 
 		glGetActiveUniform(glID, i, maxUniformNameLength, &uniformNameLength,
 			&uniformSize, &uniformType, uniformName);
+
+        // because of INTEL driver
+        uniformLocation = glGetUniformLocation(glID, uniformName);
 
         #warning FIXME: Check for valid values returned by glGetActiveUniform
 
@@ -580,7 +635,7 @@ static NPEffectTechnique * currentTechnique = nil;
             = AUTORELEASE([[ NPEffectTechniqueVariable alloc ]
                                 initWithName:uName
                               effectVariable:[ effect variableWithName:uName ]
-                                    location:i ]);
+                                    location:uniformLocation ]);
 
         [ techniqueVariables addObject:vt ];
 	}
