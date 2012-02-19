@@ -4,6 +4,11 @@ technique "texture"
 {
     # effect variables
     uniform sampler2D colormap;
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
     # shaders
     set vertex shader "fullscreen_quad.vertex"
     set fragment shader "fullscreen_quad.fragment"
@@ -13,6 +18,11 @@ technique "texture_single_channel"
 {
     # effect variables
     uniform sampler2D colormap;
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
     # shaders
     set vertex shader "fullscreen_quad.vertex"
     set fragment shader "fullscreen_quad_single_channel.fragment"
@@ -22,6 +32,11 @@ technique "luminance"
 {
     # effect variables
     uniform sampler2D colormap;
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
     # shaders
     set vertex shader "fullscreen_quad.vertex"
     set fragment shader "fullscreen_quad_luminance.fragment"
@@ -32,6 +47,11 @@ technique "tonemap_reinhard"
     # effect variables
     uniform sampler2D colormap;
     uniform vec3 toneMappingParameters;
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
     # shaders
     set vertex shader "fullscreen_quad.vertex"
     set fragment shader "fullscreen_quad_tonemap_reinhard.fragment"
