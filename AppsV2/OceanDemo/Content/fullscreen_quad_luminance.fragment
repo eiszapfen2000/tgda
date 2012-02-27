@@ -12,6 +12,5 @@ void main()
     vec4 c = texture2D(colormap, out_texcoords);
     vec3 XYZ = LinearsRGBToXYZ * c.rgb;
     target = max(log(XYZ.y), 0.01f);
-    //target = XYZ.y;
 }
 

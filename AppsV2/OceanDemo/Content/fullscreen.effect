@@ -36,7 +36,7 @@ technique "luminance"
     in vec2 in_position : 0;
     in vec2 in_texcoords : 3;
     # fragment streams
-    out vec4 target : 0;
+    out float target : 0;
     # shaders
     set vertex shader "fullscreen_quad.vertex"
     set fragment shader "fullscreen_quad_luminance.fragment"
