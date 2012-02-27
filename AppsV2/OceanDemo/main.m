@@ -70,8 +70,6 @@ int main (int argc, char **argv)
 {
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
-    NSLog(@"BLOB");
-
     ODPerlinNoise * noise = [[ ODPerlinNoise alloc ] init ];
     [ noise generate ];
     DESTROY(noise);

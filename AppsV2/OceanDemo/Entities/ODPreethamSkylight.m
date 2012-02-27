@@ -150,8 +150,6 @@
         phiSunDegrees += 360.0f;
     }
 
-    position = [ camera position ];
-
     const double thetaSunAngle = DEGREE_TO_RADIANS(thetaSunDegrees);
     const double phiSunAngle   = DEGREE_TO_RADIANS(phiSunDegrees);
 

@@ -79,10 +79,11 @@ static NPSemaphore * semaphore = nil;
             }
             fflush(stdout);
             */
-
-            //fftw_complex * spectrumHC = [s frequencySpectrumHC];
+            
 
             /*
+            fftw_complex * spectrumHC = [s frequencySpectrumHC];
+
             printf("spectrumHC\n");
 
             for ( int32_t j = 0; j < ((spectrumResolution.y/2)+1); j++ )
@@ -225,7 +226,7 @@ static NPSemaphore * semaphore = nil;
 
 + (void) initialize
 {
-    semaphore = [[ NPSemaphore alloc ] init ];
+    //semaphore = [[ NPSemaphore alloc ] init ];
 
     odgaussianrng_initialise();    
 }
@@ -258,6 +259,11 @@ static NPSemaphore * semaphore = nil;
 
 - (void) start
 {
+    if ( semaphore == nil )
+    {
+        semaphore = [[ NPSemaphore alloc ] init ];
+    }
+
     if ( thread == nil )
     {
         thread
@@ -295,6 +301,8 @@ static NPSemaphore * semaphore = nil;
 
         DESTROY(thread);
     }
+
+    SAFE_DESTROY(semaphore);
 }
 
 - (ODProjector *) projector

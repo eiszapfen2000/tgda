@@ -33,6 +33,10 @@ ODQuadrants;
 - (double) omegaForK:(const Vector2 * const)k;
 {
     return sqrt(EARTH_ACCELERATION * v2_v_length(k));
+
+    // for animation this needs to be changed
+    // omega_zero = 2*Pi / T where T is the looping time
+    // omega_t = int(omega / omega_zero) * omega_zero
 }
 
 - (double) indexToKx:(int32_t)index
