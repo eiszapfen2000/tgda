@@ -140,8 +140,6 @@ static NPEffectTechnique * currentTechnique = nil;
 
     NPLOG(@"Loading effect technique \"%@\"", name);
 
-    NSLog([stringList description]);
-
     NPParser * parser = AUTORELEASE([[ NPParser alloc ] init ]);
     [ parser parse:stringList ];
 
@@ -386,8 +384,6 @@ static NPEffectTechnique * currentTechnique = nil;
         NSString * final = [ trimmed stringByAppendingString:@";" ];
         [ result addString:final ];
     }
-
-    NSLog([result description]);
 
     return result;
 }
