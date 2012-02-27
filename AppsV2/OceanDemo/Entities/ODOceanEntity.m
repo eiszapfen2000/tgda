@@ -1,6 +1,7 @@
 #import <Foundation/NSArray.h>
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSException.h>
+#import <Foundation/NSLock.h>
 #import <Foundation/NSThread.h>
 #import "Core/Timer/NPTimer.h"
 #import "Core/Thread/NPSemaphore.h"
@@ -12,6 +13,7 @@
 #import "ODOceanEntity.h"
 
 static NPSemaphore * semaphore = nil;
+static NSLock * mutex = nil;
 
 @interface ODOceanEntity (Private)
 
@@ -226,8 +228,6 @@ static NPSemaphore * semaphore = nil;
 
 + (void) initialize
 {
-    //semaphore = [[ NPSemaphore alloc ] init ];
-
     odgaussianrng_initialise();    
 }
 
@@ -262,6 +262,11 @@ static NPSemaphore * semaphore = nil;
     if ( semaphore == nil )
     {
         semaphore = [[ NPSemaphore alloc ] init ];
+    }
+
+    if ( mutex == nil )
+    {
+        mutex = [[ NSLock alloc ] init ];
     }
 
     if ( thread == nil )
@@ -303,6 +308,7 @@ static NPSemaphore * semaphore = nil;
     }
 
     SAFE_DESTROY(semaphore);
+    SAFE_DESTROY(mutex);
 }
 
 - (ODProjector *) projector
