@@ -29,19 +29,20 @@ static NSLock * mutex = nil;
 
     NPTimer * timer = [[ NPTimer alloc ] initWithName:@"Thread Timer" ];
 
-    Vector2 spectrumSize = {10.0f, 10.0f};
-    IVector2 spectrumResolution = {512, 512};
-    Vector2 spectumWindDirection = {10.0f, 15.0f};
+    ODSpectrumSettings settings;
+    settings.size = (Vector2){10.0f, 10.0f};
+    settings.resolution = (IVector2){512, 512};
+    settings.windDirection = (Vector2){10.0f, 15.0f};
 
     ODPhillipsSpectrum * s = [[ ODPhillipsSpectrum alloc ] init ];
-    [ s setSize:spectrumSize ];
-    [ s setResolution:spectrumResolution ];
-    [ s setWindDirection:spectumWindDirection ];
 
-    fftw_complex * complexHeights = fftw_malloc(sizeof(fftw_complex) * spectrumResolution.x * spectrumResolution.y);
-    fftw_complex * r2c = fftw_malloc(sizeof(fftw_complex) * spectrumResolution.x * ((spectrumResolution.y / 2) + 1));
-    double * c2r = ALLOC_ARRAY(double, spectrumResolution.x * spectrumResolution.y);
-    double * heights = ALLOC_ARRAY(double, spectrumResolution.x * spectrumResolution.y);
+    fftw_complex * complexHeights
+        = fftw_malloc(sizeof(fftw_complex) * settings.resolution.x * settings.resolution.y);
+
+    fftw_complex * r2c = fftw_malloc(sizeof(fftw_complex) * settings.resolution.x * ((settings.resolution.y / 2) + 1));
+
+    double * c2r = ALLOC_ARRAY(double, settings.resolution.x * settings.resolution.y);
+    double * heights = ALLOC_ARRAY(double, settings.resolution.x * settings.resolution.y);
 
     while ( [[ NSThread currentThread ] isCancelled ] == NO )
     {    
@@ -52,17 +53,20 @@ static NSLock * mutex = nil;
         if ( [[ NSThread currentThread ] isCancelled ] == NO )
         {
             [ timer update ];
-            [ s generateFrequencySpectrumAtTime:[ timer totalElapsedTime ]];
+
+            fftw_complex * complexSpectrum
+                = [ s generateFrequencySpectrum:settings atTime:1.0];
+
             [ timer update ];
 
             const float fpsC = [ timer frameTime ];
 
-            [ s generateFrequencySpectrumHCAtTime:[ timer totalElapsedTime ]];
+            fftw_complex * halfcomplexSpectrum
+                = [ s generateFrequencySpectrumHC:settings atTime:1.0];
+
             [ timer update ];
 
             const float fpsHC = [ timer frameTime ];
-
-            fftw_complex * spectrum = [s frequencySpectrum];
 
             printf("PHILLIPS: %f %f\n", fpsC, fpsHC);
             fflush(stdout);
@@ -70,11 +74,11 @@ static NSLock * mutex = nil;
             /*
             printf("spectrum\n");
 
-            for ( int32_t j = 0; j < spectrumResolution.y; j++ )
+            for ( int32_t j = 0; j < settings.resolution.y; j++ )
             {
-                for ( int32_t k = 0; k < spectrumResolution.x; k++ )
+                for ( int32_t k = 0; k < settings.resolution.x; k++ )
                 {
-                    printf("%f %fi ", spectrum[k * spectrumResolution.y + j][0], spectrum[k * spectrumResolution.y + j][1]);
+                    printf("%f %fi ", complexSpectrum[k * settings.resolution.y + j][0], complexSpectrum[k * settings.resolution.y + j][1]);
                 }
 
                 printf("\n");
@@ -82,17 +86,14 @@ static NSLock * mutex = nil;
             fflush(stdout);
             */
             
-
             /*
-            fftw_complex * spectrumHC = [s frequencySpectrumHC];
-
             printf("spectrumHC\n");
 
-            for ( int32_t j = 0; j < ((spectrumResolution.y/2)+1); j++ )
+            for ( int32_t j = 0; j < ((settings.resolution.y/2)+1); j++ )
             {
-                for ( int32_t k = 0; k < spectrumResolution.x; k++ )
+                for ( int32_t k = 0; k < settings.resolution.x; k++ )
                 {
-                    printf("%f %fi ", spectrumHC[k * ((spectrumResolution.y/2)+1) + j][0], spectrumHC[k * ((spectrumResolution.y/2)+1) + j][1]);
+                    printf("%f %fi ", halfcomplexSpectrum[k * ((settings.resolution.y/2)+1) + j][0], halfcomplexSpectrum[k * ((settings.resolution.y/2)+1) + j][1]);
                 }
 
                 printf("\n");
@@ -103,9 +104,9 @@ static NSLock * mutex = nil;
 
             [ timer update ];
             fftw_plan plan;
-            plan = fftw_plan_dft_2d(spectrumResolution.x,
-                                    spectrumResolution.y,
-                                    [s frequencySpectrum],
+            plan = fftw_plan_dft_2d(settings.resolution.x,
+                                    settings.resolution.y,
+                                    complexSpectrum,
                                     complexHeights,
                                     FFTW_BACKWARD,
                                     FFTW_ESTIMATE);
@@ -117,11 +118,11 @@ static NSLock * mutex = nil;
             const float fpsIFFTC = [ timer frameTime ];
 
             // write real part to result array
-            for ( int32_t j = 0; j < spectrumResolution.x; j++ )
+            for ( int32_t j = 0; j < settings.resolution.x; j++ )
             {
-                for ( int32_t k = 0; k < spectrumResolution.y; k++ )
+                for ( int32_t k = 0; k < settings.resolution.y; k++ )
                 {
-                    heights[k + spectrumResolution.y * j] = complexHeights[k + spectrumResolution.y * j][0];
+                    heights[k + settings.resolution.y * j] = complexHeights[k + settings.resolution.y * j][0];
                 }
             }
 
@@ -165,10 +166,10 @@ static NSLock * mutex = nil;
             */
 
             [ timer update ];
-            plan = fftw_plan_dft_c2r_2d(spectrumResolution.x,
-                                        spectrumResolution.y,
+            plan = fftw_plan_dft_c2r_2d(settings.resolution.x,
+                                        settings.resolution.y,
                                         //r2c,
-                                        [ s frequencySpectrumHC ],
+                                        halfcomplexSpectrum,
                                         c2r,
                                         FFTW_ESTIMATE);
 
@@ -207,6 +208,9 @@ static NSLock * mutex = nil;
             }
             fflush(stdout);
             */
+
+            fftw_free(complexSpectrum);
+            fftw_free(halfcomplexSpectrum);
         }
 
         DESTROY(innerPool);

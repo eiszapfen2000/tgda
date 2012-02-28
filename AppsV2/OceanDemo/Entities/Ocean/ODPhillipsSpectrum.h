@@ -6,18 +6,9 @@
 
 @interface ODPhillipsSpectrum : NPObject < ODPFrequencySpectrumGeneration >
 {
-    double alpha;
-
-    IVector2 resolution;
-    Vector2 size;
-    Vector2 windDirection;
-
-    BOOL needsUpdate;
-    double lastTime;
-
     fftw_complex * H0;
-    fftw_complex * frequencySpectrum;
-    fftw_complex * frequencySpectrumHC;
+    ODSpectrumSettings lastSettings;
+    ODSpectrumSettings currentSettings;
 }
 
 - (id) init;
