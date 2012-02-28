@@ -2,16 +2,22 @@
 #import "Core/Math/NpMath.h"
 #import "fftw3.h"
 
+typedef struct ODSpectrumSettings
+{
+    IVector2 resolution;
+    Vector2 size;
+    Vector2 windDirection;    
+}
+ODSpectrumSettings;
+
 @protocol ODPFrequencySpectrumGeneration
 
-- (void) setSize:(const Vector2)newSize;
-- (void) setResolution:(const IVector2)newResolution;
-- (void) setWindDirection:(const Vector2)newWindDirection;
-- (void) generateTimeIndependentFrequencySpectrum;
-- (void) generateFrequencySpectrumAtTime:(const double)time;
-- (fftw_complex *) frequencySpectrum;
-- (void) generateTimeIndependentFrequencySpectrumHC;
-- (void) generateFrequencySpectrumHCAtTime:(const double)time;
-- (fftw_complex *) frequencySpectrumHC;
+- (fftw_complex *) generateFrequencySpectrum:(const ODSpectrumSettings)settings
+                                      atTime:(const double)time
+                                            ;
+
+- (fftw_complex *) generateFrequencySpectrumHC:(const ODSpectrumSettings)settings
+                                        atTime:(const double)time
+                                              ;
 
 @end
