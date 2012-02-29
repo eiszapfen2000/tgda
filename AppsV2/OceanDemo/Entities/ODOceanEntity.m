@@ -31,7 +31,7 @@ static NSLock * mutex = nil;
 
     ODSpectrumSettings settings;
     settings.size = (Vector2){10.0f, 10.0f};
-    settings.resolution = (IVector2){512, 512};
+    settings.resolution = (IVector2){256, 256};
     settings.windDirection = (Vector2){10.0f, 15.0f};
 
     ODPhillipsSpectrum * s = [[ ODPhillipsSpectrum alloc ] init ];
@@ -230,11 +230,6 @@ static NSLock * mutex = nil;
 
 @implementation ODOceanEntity
 
-+ (void) initialize
-{
-    odgaussianrng_initialise();    
-}
-
 - (id) init
 {
     return [ self initWithName:@"ODOceanEntity" ];
@@ -263,6 +258,8 @@ static NSLock * mutex = nil;
 
 - (void) start
 {
+    odgaussianrng_initialise();
+
     if ( semaphore == nil )
     {
         semaphore = [[ NPSemaphore alloc ] init ];
@@ -313,6 +310,8 @@ static NSLock * mutex = nil;
 
     SAFE_DESTROY(semaphore);
     SAFE_DESTROY(mutex);
+
+    odgaussianrng_shutdown();
 }
 
 - (ODProjector *) projector

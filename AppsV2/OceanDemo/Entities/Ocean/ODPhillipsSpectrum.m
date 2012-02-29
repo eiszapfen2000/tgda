@@ -20,7 +20,7 @@ ODQuadrants;
 - (void) generateH0;
 - (fftw_complex *) generateHAtTime:(const double)time;
 - (fftw_complex *) generateTimeIndependentH;
-- (fftw_complex *) generateHHCAtTime:(double)time;
+- (fftw_complex *) generateHHCAtTime:(const double)time;
 - (fftw_complex *) generateTimeIndependentHHC;
 - (void) swapFrequencySpectrum:(fftw_complex *)spectrum
                      quadrants:(ODQuadrants)quadrants
@@ -74,7 +74,6 @@ ODQuadrants;
          && currentSettings.resolution.x == lastSettings.resolution.x
          && currentSettings.resolution.y == lastSettings.resolution.y )
     {
-        printf("LAZY\n");
         return;
     }
 
