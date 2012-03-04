@@ -2,13 +2,13 @@
 #import "Core/NPObject/NPObject.h"
 #import "ODPFrequencySpectrumGeneration.h"
 
-#define PHILLIPS_CONSTANT       0.0081
+@class ODPhillipsSpectrumFloat;
+@class ODPhillipsSpectrumDouble;
 
-@interface ODPhillipsSpectrum : NPObject < ODPFrequencySpectrumGeneration >
+@interface ODPhillipsSpectrum : NPObject < ODPFrequencySpectrumGenerationDouble, ODPFrequencySpectrumGenerationFloat >
 {
-    fftw_complex * H0;
-    ODSpectrumSettings lastSettings;
-    ODSpectrumSettings currentSettings;
+    ODPhillipsSpectrumFloat * floatGenerator;
+    ODPhillipsSpectrumDouble * doubleGenerator;
 }
 
 - (id) init;

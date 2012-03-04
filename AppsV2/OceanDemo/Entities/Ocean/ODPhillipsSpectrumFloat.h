@@ -2,7 +2,7 @@
 #import "Core/NPObject/NPObject.h"
 #import "ODPFrequencySpectrumGeneration.h"
 
-@interface ODPhillipsSpectrumFloat : NPObject
+@interface ODPhillipsSpectrumFloat : NPObject < ODPFrequencySpectrumGenerationFloat >
 {
     fftwf_complex * H0;
     ODSpectrumSettings lastSettings;
