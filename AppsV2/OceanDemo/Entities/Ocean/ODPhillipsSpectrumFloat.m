@@ -110,20 +110,20 @@ float amplitudef(FVector2 const * const windDirection,
     {
         for ( int32_t j = 0; j < resolution.y; j++ )
         {
-            const double xi_r = gaussian_fprandomnumber();
-            const double xi_i = gaussian_fprandomnumber();
+            const float xi_r = (float)gaussian_fprandomnumber();
+            const float xi_i = (float)gaussian_fprandomnumber();
 
             const float di = i;
             const float dj = j;
 
-            const float kx = (n + di) * MATH_2_MUL_PI * dsizex;
-            const float ky = (m - dj) * MATH_2_MUL_PI * dsizey;
+            const float kx = (n + di) * MATH_2_MUL_PIf * dsizex;
+            const float ky = (m - dj) * MATH_2_MUL_PIf * dsizey;
 
             const FVector2 k = {kx, ky};
             const float a = sqrtf(amplitudef(&windDirection, &k));
 
-            H0[j + resolution.y * i][0] = MATH_1_DIV_SQRT_2 * xi_r * a;
-            H0[j + resolution.y * i][1] = MATH_1_DIV_SQRT_2 * xi_i * a;
+            H0[j + resolution.y * i][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
+            H0[j + resolution.y * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
         }
     }
 }
@@ -152,8 +152,8 @@ float amplitudef(FVector2 const * const windDirection,
             const float di = i;
             const float dj = j;
 
-            const float kx = (n + di) * MATH_2_MUL_PI * dsizex;
-            const float ky = (m - dj) * MATH_2_MUL_PI * dsizey;
+            const float kx = (n + di) * MATH_2_MUL_PIf * dsizex;
+            const float ky = (m - dj) * MATH_2_MUL_PIf * dsizey;
 
             const FVector2 k = {kx, ky};
             //const double omega = [ self omegaForK:&k ];
@@ -247,8 +247,8 @@ float amplitudef(FVector2 const * const windDirection,
             const float di = i;
             const float dj = j;
 
-            const float kx = (q3n + di) * MATH_2_MUL_PI * dsizex;
-            const float ky = (q3m - dj) * MATH_2_MUL_PI * dsizey;
+            const float kx = (q3n + di) * MATH_2_MUL_PIf * dsizex;
+            const float ky = (q3m - dj) * MATH_2_MUL_PIf * dsizey;
 
             const FVector2 k = {kx, ky};
 //            const double omega = [ self omegaForK:&k ];
@@ -303,8 +303,8 @@ float amplitudef(FVector2 const * const windDirection,
             const float di = i;
             const float dj = j;
 
-            const float kx = (q4n + di) * MATH_2_MUL_PI * dsizex;
-            const float ky = (q4m - dj) * MATH_2_MUL_PI * dsizey;
+            const float kx = (q4n + di) * MATH_2_MUL_PIf * dsizex;
+            const float ky = (q4m - dj) * MATH_2_MUL_PIf * dsizey;
 
             const FVector2 k = {kx, ky};
 //            const double omega = [ self omegaForK:&k ];
@@ -356,8 +356,8 @@ float amplitudef(FVector2 const * const windDirection,
         const float di = i;
         const float dj = 0;
 
-        const float kx = (q2n + di) * MATH_2_MUL_PI * dsizex;
-        const float ky = (q2m - dj) * MATH_2_MUL_PI * dsizey;
+        const float kx = (q2n + di) * MATH_2_MUL_PIf * dsizex;
+        const float ky = (q2m - dj) * MATH_2_MUL_PIf * dsizey;
 
         const FVector2 k = {kx, ky};
 //        const double omega = [ self omegaForK:&k ];
@@ -408,8 +408,8 @@ float amplitudef(FVector2 const * const windDirection,
         const float di = i;
         const float dj = 0;
 
-        const float kx = (q1n + di) * MATH_2_MUL_PI * dsizex;
-        const float ky = (q1m - dj) * MATH_2_MUL_PI * dsizey;
+        const float kx = (q1n + di) * MATH_2_MUL_PIf * dsizex;
+        const float ky = (q1m - dj) * MATH_2_MUL_PIf * dsizey;
 
         const FVector2 k = {kx, ky};
 //        const double omega = [ self omegaForK:&k ];
