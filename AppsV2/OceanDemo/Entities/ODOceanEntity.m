@@ -31,7 +31,7 @@ static NSLock * mutex = nil;
 
     ODSpectrumSettings settings;
     settings.size = (Vector2){10.0f, 10.0f};
-    settings.resolution = (IVector2){256, 256};
+    settings.resolution = (IVector2){8, 8};
     settings.windDirection = (Vector2){10.0f, 15.0f};
 
     ODPhillipsSpectrum * s = [[ ODPhillipsSpectrum alloc ] init ];
@@ -55,14 +55,14 @@ static NSLock * mutex = nil;
             [ timer update ];
 
             fftw_complex * complexSpectrum
-                = [ s generateFrequencySpectrum:settings atTime:1.0];
+                = [ s generateDoubleFrequencySpectrum:settings atTime:1.0];
 
             [ timer update ];
 
             const float fpsC = [ timer frameTime ];
 
             fftw_complex * halfcomplexSpectrum
-                = [ s generateFrequencySpectrumHC:settings atTime:1.0];
+                = [ s generateDoubleFrequencySpectrumHC:settings atTime:1.0];
 
             [ timer update ];
 
@@ -71,7 +71,6 @@ static NSLock * mutex = nil;
             printf("PHILLIPS: %f %f\n", fpsC, fpsHC);
             fflush(stdout);
 
-            /*
             printf("spectrum\n");
 
             for ( int32_t j = 0; j < settings.resolution.y; j++ )
@@ -84,9 +83,7 @@ static NSLock * mutex = nil;
                 printf("\n");
             }
             fflush(stdout);
-            */
             
-            /*
             printf("spectrumHC\n");
 
             for ( int32_t j = 0; j < ((settings.resolution.y/2)+1); j++ )
@@ -99,7 +96,6 @@ static NSLock * mutex = nil;
                 printf("\n");
             }
             fflush(stdout);
-            */
 
 
             [ timer update ];

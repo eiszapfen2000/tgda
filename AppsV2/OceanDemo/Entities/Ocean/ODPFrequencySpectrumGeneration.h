@@ -10,14 +10,26 @@ typedef struct ODSpectrumSettings
 }
 ODSpectrumSettings;
 
-@protocol ODPFrequencySpectrumGeneration
+@protocol ODPFrequencySpectrumGenerationDouble
 
-- (fftw_complex *) generateFrequencySpectrum:(const ODSpectrumSettings)settings
-                                      atTime:(const double)time
-                                            ;
+- (fftw_complex *) generateDoubleFrequencySpectrum:(const ODSpectrumSettings)settings
+                                            atTime:(const double)time
+                                                  ;
 
-- (fftw_complex *) generateFrequencySpectrumHC:(const ODSpectrumSettings)settings
-                                        atTime:(const double)time
-                                              ;
+- (fftw_complex *) generateDoubleFrequencySpectrumHC:(const ODSpectrumSettings)settings
+                                              atTime:(const double)time
+                                                    ;
+
+@end
+
+@protocol ODPFrequencySpectrumGenerationFloat
+
+- (fftwf_complex *) generateFloatFrequencySpectrum:(const ODSpectrumSettings)settings
+                                            atTime:(const float)time
+                                                  ;
+
+- (fftwf_complex *) generateFloatFrequencySpectrumHC:(const ODSpectrumSettings)settings
+                                              atTime:(const float)time
+                                                    ;
 
 @end
