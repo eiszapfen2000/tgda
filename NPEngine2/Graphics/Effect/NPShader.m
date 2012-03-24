@@ -148,6 +148,8 @@
     glShaderSource(glID, (GLsizei)numberOfLines, lineCStrings, NULL);
     glCompileShader(glID);
 
+    FREE(lineCStrings);
+
     // check if compilation went well
     if ( [ NPShader checkShaderCompileStatus:glID
                                        error:error ] == YES )

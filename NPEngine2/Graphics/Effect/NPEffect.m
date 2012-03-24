@@ -34,6 +34,7 @@
 {
     [ self clear ];
     DESTROY(techniques);
+    DESTROY(variables);
     [[[ NPEngineGraphics instance ] effects ] unregisterAsset:self ];
 
     [ super dealloc ];
