@@ -121,9 +121,11 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 - (void) setTextureFilter:(NpTexture2DFilter)newTextureFilter
 {
-    filterState.textureFilter = newTextureFilter;
-
-    [ self updateGLTextureState ];
+    if ( filterState.textureFilter != newTextureFilter )
+    {
+        filterState.textureFilter = newTextureFilter;
+        [ self updateGLTextureState ];
+    }
 }
 
 - (void) setTextureAnisotropy:(uint32_t)newTextureAnisotropy
@@ -151,12 +153,16 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
                     mipmaps:(BOOL)newMipmaps
                        data:(NSData *)data
 {
-    ready = NO;
+    if ( width != newWidth || height != newHeight
+        || pixelFormat != newPixelFormat || dataFormat != newDataFormat)
+    {
+        ready = NO;
+        width  = newWidth;
+        height = newHeight;
+        pixelFormat = newPixelFormat;
+        dataFormat  = newDataFormat;
+    }
 
-    width  = newWidth;
-    height = newHeight;
-    pixelFormat = newPixelFormat;
-    dataFormat  = newDataFormat;
     filterState.mipmaps = newMipmaps;
 
     [ self uploadToGLWithData:data ];
