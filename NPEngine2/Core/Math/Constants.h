@@ -32,12 +32,5 @@
 #define MATH_FLOAT_EPSILON      0.000005
 #define MATH_DOUBLE_EPSILON     0.00000000005
 
-// In meters
-#define EQUATORIAL_RADIUS       6378137
-#define POLAR_RADIUS            6356752.3141
-
-// m/s²
-#define EARTH_ACCELERATION      9.80665
-
 #endif
 
