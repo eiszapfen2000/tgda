@@ -29,9 +29,10 @@ ODOceanEntity
 
 ODPhillipsSpectrum
     - generates spectrum for now
-    - make faster - partially done
-    - save last used parameters
+    - make faster - half complex & float version - done
+    - save last used parameters - done
     - compare current to last parameters for memory allocation, re-generation of H0, ...
+    - MEMORY LAYOUT madness - need scanline based layout for texture - texture memory starts at lower left, fftw memory at upper left
 
 ODPerlinNoise
     - recheck for correctness
