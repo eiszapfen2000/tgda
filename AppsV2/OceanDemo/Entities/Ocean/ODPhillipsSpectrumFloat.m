@@ -100,8 +100,6 @@ float amplitudef(FVector2 const * const windDirection,
 	    H0 = fftwf_malloc(sizeof(fftwf_complex) * currentSettings.resolution.x * currentSettings.resolution.y);
     }
 
-    printf("generateH0\n");
-
     const IVector2 resolution = currentSettings.resolution;
     const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
     const FVector2 windDirection = (FVector2){currentSettings.windDirection.x, currentSettings.windDirection.y};
@@ -164,9 +162,10 @@ float amplitudef(FVector2 const * const windDirection,
             const FVector2 k = {kx, ky};
             //const double omega = [ self omegaForK:&k ];
             const float omega = omegaf_for_k(&k);
+            const float omegaT = fmodf(omega * time, (float)MATH_2_MUL_PI);
 
             // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
-            const fftwf_complex expOmega = { cosf(omega * time), sinf(omega * time) };
+            const fftwf_complex expOmega = { cosf(omegaT), sinf(omegaT) };
 
             // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
             const fftwf_complex expMinusOmega = { expOmega[0], -expOmega[1] };
