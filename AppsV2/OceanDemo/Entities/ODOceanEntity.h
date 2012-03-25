@@ -2,21 +2,28 @@
 #import "Core/NPObject/NPObject.h"
 #import "ODPEntity.h"
 
+@class NSPointerArray;
 @class NSThread;
+@class NPEffect;
 @class NPTimer;
+@class NPTexture2D;
 @class NPStateSet;
 @class ODCamera;
 @class ODProjector;
 @class ODProjectedGrid;
 
+
 @interface ODOceanEntity : NPObject < ODPEntity >
 {
     NSThread * thread;
+    NSPointerArray * resultQueue;
 
     ODProjector * projector;
     ODProjectedGrid * projectedGrid;
 
     NPStateSet * stateset;
+    NPEffect * effect;
+    NPTexture2D * heightfield;
 }
 
 - (id) init;

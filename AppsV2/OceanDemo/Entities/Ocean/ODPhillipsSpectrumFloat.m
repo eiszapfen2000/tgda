@@ -1,3 +1,4 @@
+#import "Core/Timer/NPTimer.h"
 #import "ODConstants.h"
 #import "ODGaussianRNG.h"
 #import "ODPhillipsSpectrumFloat.h"
@@ -67,11 +68,14 @@ float amplitudef(FVector2 const * const windDirection,
     lastSettings.windDirection = (Vector2){DBL_MAX, DBL_MAX};
     currentSettings.windDirection = (Vector2){0.0, 0.0};
 
+    timer = [[ NPTimer alloc ] init ];
+
     return self;
 }
 
 - (void) dealloc
 {
+    DESTROY(timer);
     FFTW_SAFE_FREE(H0);
 
     [ super dealloc ];
@@ -95,6 +99,8 @@ float amplitudef(FVector2 const * const windDirection,
         FFTW_SAFE_FREE(H0);
 	    H0 = fftwf_malloc(sizeof(fftwf_complex) * currentSettings.resolution.x * currentSettings.resolution.y);
     }
+
+    printf("generateH0\n");
 
     const IVector2 resolution = currentSettings.resolution;
     const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
@@ -206,6 +212,7 @@ float amplitudef(FVector2 const * const windDirection,
 
 - (fftwf_complex *) generateHHCAtTime:(const float)time
 {
+    //[ timer update ];
     const IVector2 resolution = currentSettings.resolution;
     const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
 
@@ -214,6 +221,9 @@ float amplitudef(FVector2 const * const windDirection,
 
 	fftwf_complex * frequencySpectrumHC
         = fftwf_malloc(sizeof(fftwf_complex) * resolutionHC.x * resolutionHC.y);
+
+    //[ timer update ];
+    //timings[0] = [ timer frameTime ];
 
     //const double n = -(resolution.x / 2.0);
     //const double m =  (resolution.y / 2.0);
@@ -227,6 +237,8 @@ float amplitudef(FVector2 const * const windDirection,
 
     const float q3n = 0.0f;
     const float q3m = 0.0f;
+
+    //[ timer update ];
 
     for ( int32_t i = 0; i < quadrantResolution.x; i++ )
     {
@@ -253,9 +265,10 @@ float amplitudef(FVector2 const * const windDirection,
             const FVector2 k = {kx, ky};
 //            const double omega = [ self omegaForK:&k ];
             const float omega = omegaf_for_k(&k);
+            const float omegaT = fmodf(omega * time, (float)MATH_2_MUL_PI);
 
             // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
-            const fftwf_complex expOmega = { cosf(omega * time), sinf(omega * time) };
+            const fftwf_complex expOmega = { cosf(omegaT), sinf(omegaT) };
 
             // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
             const fftwf_complex expMinusOmega = { expOmega[0], -expOmega[1] };
@@ -279,6 +292,9 @@ float amplitudef(FVector2 const * const windDirection,
         }
     }
 
+    //[ timer update ];
+    //timings[1] = [ timer frameTime ];
+
     // second generate quadrant 4
     // kx starts at -resolution.x/2
     // ky starts at 0 and decreases
@@ -286,6 +302,7 @@ float amplitudef(FVector2 const * const windDirection,
     const float q4n = -(resolution.x / 2.0f);
     const float q4m = 0.0f;
 
+    //[ timer update ];
     for ( int32_t i = 0; i < quadrantResolution.x; i++ )
     {
         for ( int32_t j = 0; j < quadrantResolution.y; j++ )
@@ -309,9 +326,10 @@ float amplitudef(FVector2 const * const windDirection,
             const FVector2 k = {kx, ky};
 //            const double omega = [ self omegaForK:&k ];
             const float omega = omegaf_for_k(&k);
+            const float omegaT = fmodf(omega * time, (float)MATH_2_MUL_PI);
 
             // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
-            const fftwf_complex expOmega = { cosf(omega * time), sinf(omega * time) };
+            const fftwf_complex expOmega = { cosf(omegaT), sinf(omegaT) };
 
             // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
             const fftwf_complex expMinusOmega = { expOmega[0], -expOmega[1] };
@@ -335,11 +353,16 @@ float amplitudef(FVector2 const * const windDirection,
         }
     }
 
+    //[ timer update ];
+    //timings[2] = [ timer frameTime ];
+
     //printf("q2\n");
     // third generate first row of quadrant 2
 
     const float q2n = 0.0f;
     const float q2m = resolution.y / 2.0f;
+
+    [ timer update ];
 
     for ( int32_t i = 0; i < quadrantResolution.x; i++ )
     {
@@ -362,9 +385,10 @@ float amplitudef(FVector2 const * const windDirection,
         const FVector2 k = {kx, ky};
 //        const double omega = [ self omegaForK:&k ];
         const float omega = omegaf_for_k(&k);
+        const float omegaT = fmodf(omega * time, (float)MATH_2_MUL_PI);
 
         // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
-        const fftwf_complex expOmega = { cosf(omega * time), sinf(omega * time) };
+        const fftwf_complex expOmega = { cosf(omegaT), sinf(omegaT) };
 
         // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
         const fftwf_complex expMinusOmega = { expOmega[0], -expOmega[1] };
@@ -387,10 +411,15 @@ float amplitudef(FVector2 const * const windDirection,
         frequencySpectrumHC[indexHC][1] = H0expOmega[1] + H0expMinusOmega[1];
     }
 
+    //[ timer update ];
+    //timings[3] = [ timer frameTime ];
+
     //printf("q1\n");
 
     const float q1n = -(resolution.x / 2.0f);
     const float q1m =   resolution.y / 2.0f;
+
+    [ timer update ];
 
     // forth generate first row of quadrant 1
     for ( int32_t i = 0; i < quadrantResolution.x; i++ )
@@ -414,9 +443,10 @@ float amplitudef(FVector2 const * const windDirection,
         const FVector2 k = {kx, ky};
 //        const double omega = [ self omegaForK:&k ];
         const float omega = omegaf_for_k(&k);
+        const float omegaT = fmodf(omega * time, (float)MATH_2_MUL_PI);
 
         // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
-        const fftwf_complex expOmega = { cosf(omega * time), sinf(omega * time) };
+        const fftwf_complex expOmega = { cosf(omegaT), sinf(omegaT) };
 
         // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
         const fftwf_complex expMinusOmega = { expOmega[0], -expOmega[1] };
@@ -438,6 +468,9 @@ float amplitudef(FVector2 const * const windDirection,
         frequencySpectrumHC[indexHC][0] = H0expOmega[0] + H0expMinusOmega[0];
         frequencySpectrumHC[indexHC][1] = H0expOmega[1] + H0expMinusOmega[1];
     }
+
+    //[ timer update ];
+    //timings[4] = [ timer frameTime ];
 
     return frequencySpectrumHC;
 }
@@ -542,8 +575,10 @@ right way.
     currentSettings = settings;
 
     [ self generateH0 ];
-
     fftwf_complex * spectrum = [ self generateHHCAtTime:time ];
+
+    //printf("generateFloatFrequencySpectrumHC %f %f %f %f %f %f\n", time, timings[0], timings[1], timings[2], timings[3], timings[4]);
+
     lastSettings = currentSettings;
 
     return spectrum;

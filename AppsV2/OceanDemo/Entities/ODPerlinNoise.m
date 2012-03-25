@@ -157,7 +157,7 @@ static double generate(const uint32_t size, const uint32_t * const permutationTa
 - (void) generate
 {
     SAFE_FREE(noise);
-    noise = ALLOC_ARRAY(double, 8*8);
+    //noise = ALLOC_ARRAY(double, 8*8);
 
     /*
     Vector3 c;
