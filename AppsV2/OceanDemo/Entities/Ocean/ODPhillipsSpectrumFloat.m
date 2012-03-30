@@ -110,9 +110,9 @@ float amplitudef(FVector2 const * const windDirection,
     const float dsizex = 1.0f / size.x;
     const float dsizey = 1.0f / size.y;
 
-    for ( int32_t i = 0; i < resolution.x; i++ )
+    for ( int32_t i = 0; i < resolution.y; i++ )
     {
-        for ( int32_t j = 0; j < resolution.y; j++ )
+        for ( int32_t j = 0; j < resolution.x; j++ )
         {
             const float xi_r = (float)gaussian_fprandomnumber();
             const float xi_i = (float)gaussian_fprandomnumber();
@@ -120,14 +120,14 @@ float amplitudef(FVector2 const * const windDirection,
             const float di = i;
             const float dj = j;
 
-            const float kx = (n + di) * MATH_2_MUL_PIf * dsizex;
-            const float ky = (m - dj) * MATH_2_MUL_PIf * dsizey;
+            const float kx = (n + dj) * MATH_2_MUL_PIf * dsizex;
+            const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
 
             const FVector2 k = {kx, ky};
             const float a = sqrtf(amplitudef(&windDirection, &k));
 
-            H0[j + resolution.y * i][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
-            H0[j + resolution.y * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
+            H0[j + resolution.x * i][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
+            H0[j + resolution.x * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
         }
     }
 }
@@ -146,18 +146,18 @@ float amplitudef(FVector2 const * const windDirection,
     const float dsizex = 1.0f / size.x;
     const float dsizey = 1.0f / size.y;
 
-    for ( int32_t i = 0; i < resolution.x; i++ )
+    for ( int32_t i = 0; i < resolution.y; i++ )
     {
-        for ( int32_t j = 0; j < resolution.y; j++ )
+        for ( int32_t j = 0; j < resolution.x; j++ )
         {
-            const int32_t indexForK = j + resolution.y * i;
-            const int32_t indexForConjugate = ((resolution.y - j) % resolution.y) + resolution.y * ((resolution.x - i) % resolution.x);
+            const int32_t indexForK = j + resolution.x * i;
+            const int32_t indexForConjugate = ((resolution.x - j) % resolution.x) + resolution.x * ((resolution.y - i) % resolution.y);
 
             const float di = i;
             const float dj = j;
 
-            const float kx = (n + di) * MATH_2_MUL_PIf * dsizex;
-            const float ky = (m - dj) * MATH_2_MUL_PIf * dsizey;
+            const float kx = (n + dj) * MATH_2_MUL_PIf * dsizex;
+            const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
 
             const FVector2 k = {kx, ky};
             //const double omega = [ self omegaForK:&k ];
@@ -215,7 +215,7 @@ float amplitudef(FVector2 const * const windDirection,
     const IVector2 resolution = currentSettings.resolution;
     const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
 
-    const IVector2 resolutionHC = { resolution.x, (resolution.y / 2) + 1 };
+    const IVector2 resolutionHC = { (resolution.x / 2) + 1, resolution.y };
     const IVector2 quadrantResolution = { resolution.x / 2, resolution.y / 2 };
 
 	fftwf_complex * frequencySpectrumHC
@@ -239,30 +239,29 @@ float amplitudef(FVector2 const * const windDirection,
 
     //[ timer update ];
 
-    for ( int32_t i = 0; i < quadrantResolution.x; i++ )
+    for ( int32_t i = 0; i < quadrantResolution.y; i++ )
     {
-        for ( int32_t j = 0; j < quadrantResolution.y; j++ )
+        for ( int32_t j = 0; j < quadrantResolution.x; j++ )
         {
-            const int32_t iInH0 = i + quadrantResolution.x;
-            const int32_t jInH0 = j + quadrantResolution.y;
+            const int32_t iInH0 = i + quadrantResolution.y;
+            const int32_t jInH0 = j + quadrantResolution.x;
 
-            const int32_t indexForKInH0 = jInH0 + (resolution.y * iInH0);
+            const int32_t indexForKInH0 = jInH0 + (resolution.x * iInH0);
 
             const int32_t indexForKConjugateInH0
-                = ((resolution.y - jInH0) % resolution.y) + resolution.y * ((resolution.x - iInH0) % resolution.x);
+                = ((resolution.x - jInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
 
-            const int32_t indexHC = j + (i * resolutionHC.y);
+            const int32_t indexHC = j + (resolutionHC.x * i);
 
-            //printf("%d %d %d %d %d %d\n", i, j, iInH0, jInH0, indexForKInH0, indexForKConjugateInH0);
+            //printf("%d %d %d %d %d %d %d\n", j, i, jInH0, iInH0, indexForKInH0, indexForKConjugateInH0, indexHC);
 
             const float di = i;
             const float dj = j;
 
-            const float kx = (q3n + di) * MATH_2_MUL_PIf * dsizex;
-            const float ky = (q3m - dj) * MATH_2_MUL_PIf * dsizey;
+            const float kx = (q3n + dj) * MATH_2_MUL_PIf * dsizex;
+            const float ky = (q3m - di) * MATH_2_MUL_PIf * dsizey;
 
             const FVector2 k = {kx, ky};
-//            const double omega = [ self omegaForK:&k ];
             const float omega = omegaf_for_k(&k);
             const float omegaT = fmodf(omega * time, (float)MATH_2_MUL_PI);
 
@@ -291,6 +290,177 @@ float amplitudef(FVector2 const * const windDirection,
         }
     }
 
+    // second generate quadrant 2
+    // kx starts at 0 and increases
+    // ky starts at resolution.y/2 and decreases
+
+    const float q2n = 0.0f;
+    const float q2m = resolution.y / 2.0f;
+
+    for ( int32_t i = 0; i < quadrantResolution.y; i++ )
+    {
+        for ( int32_t j = 0; j < quadrantResolution.x; j++ )
+        {
+            const int32_t iInH0 = i;
+            const int32_t jInH0 = j + quadrantResolution.x;
+
+            const int32_t indexForKInH0 = jInH0 + (resolution.x * iInH0);
+
+            const int32_t indexForKConjugateInH0
+                = ((resolution.x - jInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
+
+            const int32_t indexHC = j + (resolutionHC.x * (i + quadrantResolution.y));
+
+            //printf("%d %d %d %d %d %d %d\n", j, i, jInH0, iInH0, indexForKInH0, indexForKConjugateInH0, indexHC);
+
+            const float di = i;
+            const float dj = j;
+
+            const float kx = (q2n + dj) * MATH_2_MUL_PIf * dsizex;
+            const float ky = (q2m - di) * MATH_2_MUL_PIf * dsizey;
+
+            const FVector2 k = {kx, ky};
+            const float omega = omegaf_for_k(&k);
+            const float omegaT = fmodf(omega * time, (float)MATH_2_MUL_PI);
+
+            // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
+            const fftwf_complex expOmega = { cosf(omegaT), sinf(omegaT) };
+
+            // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
+            const fftwf_complex expMinusOmega = { expOmega[0], -expOmega[1] };
+
+            // H0[indexForK] * exp(i*omega*t)
+            const fftwf_complex H0expOmega
+                = { H0[indexForKInH0][0] * expOmega[0] - H0[indexForKInH0][1] * expOmega[1],
+                    H0[indexForKInH0][0] * expOmega[1] + H0[indexForKInH0][1] * expOmega[0] };
+
+            const fftwf_complex H0conjugate
+                = { H0[indexForKConjugateInH0][0], -H0[indexForKConjugateInH0][1] };
+
+            // H0[indexForConjugate] * exp(-i*omega*t)
+            const fftwf_complex H0expMinusOmega
+                = { H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1],
+                    H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0] };
+
+            // H = H0expOmega + H0expMinusomega
+            frequencySpectrumHC[indexHC][0] = H0expOmega[0] + H0expMinusOmega[0];
+            frequencySpectrumHC[indexHC][1] = H0expOmega[1] + H0expMinusOmega[1];
+        }
+    }
+
+    // third generate first column of quadrant 1
+    // kx equals -resolution.x/2
+    // ky starts at resolution.y/2 and decreases
+
+    const float q1n = -(resolution.x / 2.0f);
+    const float q1m = resolution.y / 2.0f;
+
+    for ( int32_t i = 0; i < quadrantResolution.y; i++ )
+    {
+        const int32_t jInH0 = 0;
+        const int32_t iInH0 = i;
+        const int32_t j = 0;
+
+        const int32_t indexForKInH0 = jInH0 + (resolution.x * iInH0);
+
+        const int32_t indexForKConjugateInH0
+            = ((resolution.x - jInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
+
+        const int32_t indexHC = quadrantResolution.x + (resolutionHC.x * (i + quadrantResolution.y));
+
+        //printf("%d %d %d %d %d %d %d\n", j, i, jInH0, iInH0, indexForKInH0, indexForKConjugateInH0, indexHC);
+
+        const float di = i;
+        const float dj = j;
+
+        const float kx = (q1n + dj) * MATH_2_MUL_PIf * dsizex;
+        const float ky = (q1m - di) * MATH_2_MUL_PIf * dsizey;
+
+        const FVector2 k = {kx, ky};
+        const float omega = omegaf_for_k(&k);
+        const float omegaT = fmodf(omega * time, (float)MATH_2_MUL_PI);
+
+        // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
+        const fftwf_complex expOmega = { cosf(omegaT), sinf(omegaT) };
+
+        // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
+        const fftwf_complex expMinusOmega = { expOmega[0], -expOmega[1] };
+
+        // H0[indexForK] * exp(i*omega*t)
+        const fftwf_complex H0expOmega
+            = { H0[indexForKInH0][0] * expOmega[0] - H0[indexForKInH0][1] * expOmega[1],
+                H0[indexForKInH0][0] * expOmega[1] + H0[indexForKInH0][1] * expOmega[0] };
+
+        const fftwf_complex H0conjugate
+            = { H0[indexForKConjugateInH0][0], -H0[indexForKConjugateInH0][1] };
+
+        // H0[indexForConjugate] * exp(-i*omega*t)
+        const fftwf_complex H0expMinusOmega
+            = { H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1],
+                H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0] };
+
+        // H = H0expOmega + H0expMinusomega
+        frequencySpectrumHC[indexHC][0] = H0expOmega[0] + H0expMinusOmega[0];
+        frequencySpectrumHC[indexHC][1] = H0expOmega[1] + H0expMinusOmega[1];
+    }
+
+    // third generate first column of quadrant 4
+    // kx equals -resolution.x/2
+    // ky starts at 0.0 and decreases
+
+    const float q4n = -(resolution.x / 2.0f);
+    const float q4m = 0.0f;
+
+    for ( int32_t i = 0; i < quadrantResolution.y; i++ )
+    {
+        const int32_t jInH0 = 0;
+        const int32_t iInH0 = i + quadrantResolution.y;
+        const int32_t j = 0;
+
+        const int32_t indexForKInH0 = jInH0 + (resolution.x * iInH0);
+
+        const int32_t indexForKConjugateInH0
+            = ((resolution.x - jInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
+
+        const int32_t indexHC = quadrantResolution.x + (resolutionHC.x * i);
+
+        //printf("%d %d %d %d %d %d %d\n", j, i, jInH0, iInH0, indexForKInH0, indexForKConjugateInH0, indexHC);
+
+        const float di = i;
+        const float dj = j;
+
+        const float kx = (q4n + dj) * MATH_2_MUL_PIf * dsizex;
+        const float ky = (q4m - di) * MATH_2_MUL_PIf * dsizey;
+
+        const FVector2 k = {kx, ky};
+        const float omega = omegaf_for_k(&k);
+        const float omegaT = fmodf(omega * time, (float)MATH_2_MUL_PI);
+
+        // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
+        const fftwf_complex expOmega = { cosf(omegaT), sinf(omegaT) };
+
+        // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
+        const fftwf_complex expMinusOmega = { expOmega[0], -expOmega[1] };
+
+        // H0[indexForK] * exp(i*omega*t)
+        const fftwf_complex H0expOmega
+            = { H0[indexForKInH0][0] * expOmega[0] - H0[indexForKInH0][1] * expOmega[1],
+                H0[indexForKInH0][0] * expOmega[1] + H0[indexForKInH0][1] * expOmega[0] };
+
+        const fftwf_complex H0conjugate
+            = { H0[indexForKConjugateInH0][0], -H0[indexForKConjugateInH0][1] };
+
+        // H0[indexForConjugate] * exp(-i*omega*t)
+        const fftwf_complex H0expMinusOmega
+            = { H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1],
+                H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0] };
+
+        // H = H0expOmega + H0expMinusomega
+        frequencySpectrumHC[indexHC][0] = H0expOmega[0] + H0expMinusOmega[0];
+        frequencySpectrumHC[indexHC][1] = H0expOmega[1] + H0expMinusOmega[1];
+    }
+
+    /*
     //[ timer update ];
     //timings[1] = [ timer frameTime ];
 
@@ -302,25 +472,27 @@ float amplitudef(FVector2 const * const windDirection,
     const float q4m = 0.0f;
 
     //[ timer update ];
-    for ( int32_t i = 0; i < quadrantResolution.x; i++ )
+    for ( int32_t i = 0; i < quadrantResolution.y; i++ )
     {
-        for ( int32_t j = 0; j < quadrantResolution.y; j++ )
+        for ( int32_t j = 0; j < quadrantResolution.x; j++ )
         {
-            const int32_t iInH0 = i;
-            const int32_t jInH0 = j + quadrantResolution.y;
+            const int32_t iInH0 = i + quadrantResolution.y;
+            const int32_t jInH0 = j;
 
-            const int32_t indexForKInH0 = jInH0 + (resolution.y * iInH0);
+            const int32_t indexForKInH0 = jInH0 + (resolution.x * iInH0);
 
             const int32_t indexForKConjugateInH0
-                = ((resolution.y - jInH0) % resolution.y) + resolution.y * ((resolution.x - iInH0) % resolution.x);
+                = ((resolution.x - jInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
 
-            const int32_t indexHC = j + ((i + quadrantResolution.x) * resolutionHC.y);
+            const int32_t indexHC = j + quadrantResolution.x + (resolution.x * i);
+
+            //printf("%d %d %d %d %d %d %d\n", i, j, iInH0, jInH0, indexForKInH0, indexForKConjugateInH0, indexHC);
 
             const float di = i;
             const float dj = j;
 
-            const float kx = (q4n + di) * MATH_2_MUL_PIf * dsizex;
-            const float ky = (q4m - dj) * MATH_2_MUL_PIf * dsizey;
+            const float kx = (q4n + dj) * MATH_2_MUL_PIf * dsizex;
+            const float ky = (q4m - di) * MATH_2_MUL_PIf * dsizey;
 
             const FVector2 k = {kx, ky};
 //            const double omega = [ self omegaForK:&k ];
@@ -363,26 +535,28 @@ float amplitudef(FVector2 const * const windDirection,
 
     [ timer update ];
 
-    for ( int32_t i = 0; i < quadrantResolution.x; i++ )
+    for ( int32_t j = 0; j < quadrantResolution.x; j++ )
     {
-        const int32_t iInH0 = i + quadrantResolution.x;
-        const int32_t jInH0 = 0;
+        const int32_t jInH0 = j + quadrantResolution.x;
+        const int32_t iInH0 = 0;
+        const int32_t i = 0;
 
-        const int32_t indexForKInH0 = jInH0 + (resolution.y * iInH0);
+        const int32_t indexForKInH0 = jInH0 + (resolution.x * iInH0);
 
         const int32_t indexForKConjugateInH0
-            = ((resolution.y - jInH0) % resolution.y) + resolution.y * ((resolution.x - iInH0) % resolution.x);
+            = ((resolution.x - jInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
 
-        const int32_t indexHC = quadrantResolution.y + (i * resolutionHC.y);
+        const int32_t indexHC = (resolutionHC.y - 1) * resolution.x + j;
 
-        const float di = i;
-        const float dj = 0;
+        //printf("%d %d %d %d %d %d %d\n", i, j, iInH0, jInH0, indexForKInH0, indexForKConjugateInH0, indexHC);
 
-        const float kx = (q2n + di) * MATH_2_MUL_PIf * dsizex;
-        const float ky = (q2m - dj) * MATH_2_MUL_PIf * dsizey;
+        const float di = 0;
+        const float dj = j;
+
+        const float kx = (q2n + dj) * MATH_2_MUL_PIf * dsizex;
+        const float ky = (q2m - di) * MATH_2_MUL_PIf * dsizey;
 
         const FVector2 k = {kx, ky};
-//        const double omega = [ self omegaForK:&k ];
         const float omega = omegaf_for_k(&k);
         const float omegaT = fmodf(omega * time, (float)MATH_2_MUL_PI);
 
@@ -421,26 +595,29 @@ float amplitudef(FVector2 const * const windDirection,
     [ timer update ];
 
     // forth generate first row of quadrant 1
-    for ( int32_t i = 0; i < quadrantResolution.x; i++ )
+    for ( int32_t j = 0; j < quadrantResolution.x; j++ )
     {
-        const int32_t iInH0 = i;
-        const int32_t jInH0 = 0;
+        const int32_t jInH0 = j;
+        const int32_t iInH0 = 0;
+        const int32_t i = 0;
 
-        const int32_t indexForKInH0 = jInH0 + (resolution.y * iInH0);
+        const int32_t indexForKInH0 = jInH0 + (resolution.x * iInH0);
 
         const int32_t indexForKConjugateInH0
-            = ((resolution.y - jInH0) % resolution.y) + resolution.y * ((resolution.x - iInH0) % resolution.x);
+            = ((resolution.x - jInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
 
-        const int32_t indexHC = quadrantResolution.y + ((i + quadrantResolution.x) * resolutionHC.y);
+        //const int32_t indexHC = quadrantResolution.y + ((i + quadrantResolution.x) * resolutionHC.y);
+        const int32_t indexHC = (resolutionHC.y - 1) * resolution.x + j + quadrantResolution.x;
 
-        const float di = i;
-        const float dj = 0;
+        //printf("%d %d %d %d %d %d %d\n", i, j, iInH0, jInH0, indexForKInH0, indexForKConjugateInH0, indexHC);
 
-        const float kx = (q1n + di) * MATH_2_MUL_PIf * dsizex;
-        const float ky = (q1m - dj) * MATH_2_MUL_PIf * dsizey;
+        const float di = 0;
+        const float dj = j;
+
+        const float kx = (q1n + dj) * MATH_2_MUL_PIf * dsizex;
+        const float ky = (q1m - di) * MATH_2_MUL_PIf * dsizey;
 
         const FVector2 k = {kx, ky};
-//        const double omega = [ self omegaForK:&k ];
         const float omega = omegaf_for_k(&k);
         const float omegaT = fmodf(omega * time, (float)MATH_2_MUL_PI);
 
@@ -470,6 +647,7 @@ float amplitudef(FVector2 const * const windDirection,
 
     //[ timer update ];
     //timings[4] = [ timer frameTime ];
+    */
 
     return frequencySpectrumHC;
 }
