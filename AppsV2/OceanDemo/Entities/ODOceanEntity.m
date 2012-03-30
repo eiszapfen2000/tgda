@@ -31,7 +31,7 @@ void print_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
     {
         for ( int32_t k = 0; k < resolution.x; k++ )
         {
-            printf("%f %fi ", spectrum[k * resolution.y + j][0], spectrum[k * resolution.y + j][1]);
+            printf("%f %fi ", spectrum[j * resolution.x + k][0], spectrum[j * resolution.x + k][1]);
         }
 
         printf("\n");
@@ -40,11 +40,11 @@ void print_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
 
 void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
 {
-    for ( int32_t j = 0; j < ((resolution.y/2)+1); j++ )
+    for ( int32_t j = 0; j < resolution.y; j++ )
     {
-        for ( int32_t k = 0; k < resolution.x; k++ )
+        for ( int32_t k = 0; k < ((resolution.x/2)+1); k++ )
         {
-            printf("%f %fi ", spectrum[k * ((resolution.y/2)+1) + j][0], spectrum[k * ((resolution.y/2)+1) + j][1]);
+            printf("%f %fi ", spectrum[j * ((resolution.x/2)+1) + k][0], spectrum[j * ((resolution.x/2)+1) + k][1]);
         }
 
         printf("\n");
@@ -76,8 +76,8 @@ OdHeightfieldData;
 
     ODSpectrumSettings settings;
     settings.size = (Vector2){10.0f, 10.0f};
-    settings.resolution = (IVector2){256, 256};
-    settings.windDirection = (Vector2){1.0f, 15.0f};
+    settings.resolution = (IVector2){512, 512};
+    settings.windDirection = (Vector2){1.0f, 1.0f};
 
     ODPhillipsSpectrum * s = [[ ODPhillipsSpectrum alloc ] init ];
 
@@ -97,6 +97,8 @@ OdHeightfieldData;
             OdHeightfieldData * result = ALLOC(OdHeightfieldData);
             result->size = settings.size;
             result->resolution = settings.resolution;
+            result->data32f = NULL;
+            result->data64f = NULL;
 
             [ timer update ];
 
@@ -107,6 +109,8 @@ OdHeightfieldData;
 
             const float fpsC = [ timer frameTime ];
 
+            [ timer update ];
+
             fftwf_complex * halfcomplexSpectrum
                 = [ s generateFloatFrequencySpectrumHC:settings atTime:[ timer totalElapsedTime ]];
 
@@ -114,21 +118,16 @@ OdHeightfieldData;
 
             const float fpsHC = [ timer frameTime ];
 
-            printf("PHILLIPS: %f %f\n", fpsC, fpsHC);
-            fflush(stdout);
-
             /*
             printf("spectrum\n");
             print_complex_spectrum(settings.resolution, complexSpectrum);
             fflush(stdout);
-            */
-            
-            /*
             printf("spectrumHC\n");
             print_half_complex_spectrum(settings.resolution, halfcomplexSpectrum);
             fflush(stdout);
             */
 
+            /*
             [ timer update ];
             fftwf_plan plan;
             plan = fftwf_plan_dft_2d(settings.resolution.x,
@@ -143,8 +142,10 @@ OdHeightfieldData;
             [ timer update ];
 
             const float fpsIFFTC = [ timer frameTime ];
+            */
 
             [ timer update ];
+            fftwf_plan plan;
             plan = fftwf_plan_dft_c2r_2d(settings.resolution.x,
                                         settings.resolution.y,
                                         halfcomplexSpectrum,
@@ -157,13 +158,13 @@ OdHeightfieldData;
 
             const float fpsIFFTHC = [ timer frameTime ];
 
-            //printf("IFFT: %f %f\n", fpsIFFTC, fpsIFFTHC);
-            //fflush(stdout);
+            printf("PHILLIPS HC: %f IFFT: %f \n", fpsHC, fpsIFFTHC);
+            fflush(stdout);
 
             fftwf_free(complexSpectrum);
             fftwf_free(halfcomplexSpectrum);
 
-            fftwf_free(complexHeights);
+            //fftwf_free(complexHeights);
             //SAFE_FREE(c2r);
 
             result->data32f = c2r;
@@ -374,13 +375,13 @@ OdHeightfieldData;
     [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
     [[ effect techniqueWithName:@"texture" ] activate ];
     glBegin(GL_QUADS);
-        glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
-        glVertex2i(0, 0);
-        glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
-        glVertex2i(1, 0);
-        glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
-        glVertex2i(1, 1);
         glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
+        glVertex2i(0, 0);
+        glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
+        glVertex2i(1, 0);
+        glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
+        glVertex2i(1, 1);
+        glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
         glVertex2i(0, 1);
     glEnd();
 
