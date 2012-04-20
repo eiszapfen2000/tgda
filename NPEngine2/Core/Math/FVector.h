@@ -112,7 +112,7 @@ FVector4 * fv4_alloc_init_with_components(Float x, Float y, Float z, Float w);
 FVector4 * fv4_free(FVector4 * v);
 void fv4_v_init_with_zeros(FVector4 * v);
 void fv4_vv_init_with_fv3(FVector4 * v1, const FVector3 const * v2);
-void fv4_vssss_init_with_components(FVector4 * v, Double x, Double y, Double z, Double w);
+void fv4_vssss_init_with_components(FVector4 * v, Float x, Float y, Float z, Float w);
 void fv4_v_homogenise(FVector4 * v);
 void fv4_v_homogenise_v(const FVector4 const * v, FVector4 * result);
 void fv4_sv_scale(Float scale, FVector4 * v);

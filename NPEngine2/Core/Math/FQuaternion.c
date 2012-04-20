@@ -51,15 +51,15 @@ FQuaternion * fquat_free(FQuaternion * q)
 
 void fquat_set_identity(FQuaternion * q)
 {
-    Q_X(*q) = Q_Y(*q) = Q_Z(*q) = 0.0;
-    Q_W(*q) = 1.0;
+    Q_X(*q) = Q_Y(*q) = Q_Z(*q) = 0.0f;
+    Q_W(*q) = 1.0f;
 }
 
 void fquat_q_init_with_axis_and_degrees(FQuaternion * q, const FVector3 * axis, const Float degrees)
 {
-    Float angle = DEGREE_TO_RADIANS(degrees);
-    Float sin_angle = sin(angle / 2.0);
-    Float cos_angle = cos(angle / 2.0);
+    Double angle = DEGREE_TO_RADIANS(degrees);
+    Double sin_angle = sin(angle / 2.0);
+    Double cos_angle = cos(angle / 2.0);
 
     FVector3 tmp;
 
@@ -82,8 +82,8 @@ void fquat_q_init_with_axis_and_degrees(FQuaternion * q, const FVector3 * axis, 
 
 void fquat_q_init_with_axis_and_radians(FQuaternion * q, const FVector3 * axis, const Float radians)
 {
-    Float sin_angle = sin(radians / 2.0);
-    Float cos_angle = cos(radians / 2.0);
+    Double sin_angle = sin(radians / 2.0);
+    Double cos_angle = cos(radians / 2.0);
 
     FVector3 tmp;
 
@@ -123,8 +123,6 @@ void fquat_q_conjugate_q(const FQuaternion * restrict q, FQuaternion * restrict 
     Q_Z(*conjugate) = -Q_Z(*q);
     Q_W(*conjugate) =  Q_W(*q);
 }
-
-
 
 void fquat_q_normalise(FQuaternion * q)
 {
@@ -277,8 +275,8 @@ void fquat_q_to_fmatrix4_m(const FQuaternion * q, FMatrix4 * m)
 
 void fquat_m3_to_quaternion_q(const FMatrix3 * m, FQuaternion * q)
 {
-    Float trace = M_EL(*m,0,0) + M_EL(*m,1,1) + M_EL(*m,2,2) + 1.0;
-    Float s;
+    Double trace = M_EL(*m,0,0) + M_EL(*m,1,1) + M_EL(*m,2,2) + 1.0;
+    Double s;
 
     if ( trace > 0.0 )
     {
@@ -333,8 +331,8 @@ void fquat_m3_to_quaternion_q(const FMatrix3 * m, FQuaternion * q)
 
 void fquat_m4_to_quaternion_q(const FMatrix4 * m, FQuaternion * q)
 {
-    Float trace = M_EL(*m,0,0) + M_EL(*m,1,1) + M_EL(*m,2,2) + 1.0;
-    Float s;
+    Double trace = M_EL(*m,0,0) + M_EL(*m,1,1) + M_EL(*m,2,2) + 1.0;
+    Double s;
 
     if ( trace > 0.0 )
     {
