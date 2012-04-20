@@ -261,7 +261,7 @@
 
 		glGetShaderiv(glID, GL_INFO_LOG_LENGTH, &infoLogLength);
 
-		char* infoLog = ALLOC_ARRAY(char, infoLogLength);
+		char* infoLog = ALLOC_ARRAY(char, (size_t)infoLogLength);
 		glGetShaderInfoLog(glID, infoLogLength, &charsWritten, infoLog);
 
         if ( error != NULL )

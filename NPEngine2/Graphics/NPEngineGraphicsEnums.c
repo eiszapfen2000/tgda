@@ -171,9 +171,9 @@ GLint getGLTextureInternalFormat(const NpImageDataFormat dataFormat,
 
 }
 
-GLenum getGLTextureWrap(const NpTextureWrap textureWrap)
+GLint getGLTextureWrap(const NpTextureWrap textureWrap)
 {
-    GLenum result = GL_NONE;
+    GLint result = GL_NONE;
 
     switch ( textureWrap )
     {

@@ -81,10 +81,10 @@
 
 - (void) parseCharactersStartingAtLine:(const NSUInteger)lineIndex
 {
-	int32_t numberOfCharacters = 0;
+	uint32_t numberOfCharacters = 0;
     if ( [ self isLowerCaseTokenFromLine:lineIndex atPosition:1 equalToString:@"count" ] == YES
          && [ self isTokenFromLine:lineIndex atPosition:2 equalToString:@"=" ] == YES
-         && [ self getTokenAsInt:&numberOfCharacters fromLine:lineIndex atPosition:3 ] == YES )
+         && [ self getTokenAsUInt:&numberOfCharacters fromLine:lineIndex atPosition:3 ] == YES )
     {
         for ( NSUInteger i = lineIndex; i <= lineIndex + numberOfCharacters; i++ )
         {

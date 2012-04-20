@@ -430,12 +430,12 @@ static NPEffectTechnique * currentTechnique = nil;
     for (NSUInteger i = 0; i < numberOfLines; i++)
     {
         NSString * streamName;
-        int streamBinding;
+        unsigned int streamBinding;
 
         if ( [ parser isLowerCaseTokenFromLine:i atPosition:0 equalToString:@"in" ] == YES
              && [ parser getTokenAsLowerCaseString:&streamName fromLine:i atPosition:2 ] == YES
              && [ parser isTokenFromLine:i atPosition:3 equalToString:@":"] == YES
-             && [ parser getTokenAsInt:&streamBinding fromLine:i atPosition:4 ] == YES )
+             && [ parser getTokenAsUInt:&streamBinding fromLine:i atPosition:4 ] == YES )
         {
             glBindAttribLocation(glID, streamBinding,
                 [ streamName cStringUsingEncoding:NSASCIIStringEncoding ]);
@@ -454,12 +454,12 @@ static NPEffectTechnique * currentTechnique = nil;
     for (NSUInteger i = 0; i < numberOfLines; i++)
     {
         NSString * streamName;
-        int streamBinding;
+        unsigned int streamBinding;
 
         if ( [ parser isLowerCaseTokenFromLine:i atPosition:0 equalToString:@"out" ] == YES
              && [ parser getTokenAsLowerCaseString:&streamName fromLine:i atPosition:2 ] == YES
              && [ parser isTokenFromLine:i atPosition:3 equalToString:@":"] == YES
-             && [ parser getTokenAsInt:&streamBinding fromLine:i atPosition:4 ] == YES )
+             && [ parser getTokenAsUInt:&streamBinding fromLine:i atPosition:4 ] == YES )
         {
             glBindFragDataLocation(glID, streamBinding,
                 [ streamName cStringUsingEncoding:NSASCIIStringEncoding ]);
@@ -538,7 +538,7 @@ static NPEffectTechnique * currentTechnique = nil;
 
 		glGetProgramiv(glID, GL_INFO_LOG_LENGTH, &infoLogLength);
 
-		char* infoLog = ALLOC_ARRAY(char, infoLogLength);
+		char* infoLog = ALLOC_ARRAY(char, (size_t)infoLogLength);
 		glGetProgramInfoLog(glID, infoLogLength, &charsWritten, infoLog);
 
         if ( error != NULL )
