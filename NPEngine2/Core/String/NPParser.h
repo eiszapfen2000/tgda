@@ -46,6 +46,11 @@
             atPosition:(NSUInteger)tokenIndex
                       ;
 
+- (BOOL) getTokenAsUInt:(unsigned int *)uintValue
+               fromLine:(NSUInteger)lineIndex
+             atPosition:(NSUInteger)tokenIndex
+                       ;
+
 - (BOOL) getTokenAsFloat:(float *)floatValue
                 fromLine:(NSUInteger)lineIndex
               atPosition:(NSUInteger)tokenIndex

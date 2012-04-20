@@ -135,6 +135,27 @@
     return NO;
 }
 
+- (BOOL) getTokenAsUInt:(unsigned int *)uintValue
+               fromLine:(NSUInteger)lineIndex
+             atPosition:(NSUInteger)tokenIndex
+{
+    NPStringList * tokensForLine = [ self getTokensForLine:lineIndex ];
+
+    if ( tokenIndex < [ tokensForLine count ] )
+    {
+        const char * cString
+            = [[ tokensForLine stringAtIndex:tokenIndex ] cStringUsingEncoding:NSUTF8StringEncoding ];
+        
+        if ( sscanf(cString, "%u", uintValue) == 1 )
+        {
+            return YES;
+        }
+    }
+
+    *uintValue = 0;
+    return NO;
+}
+
 - (BOOL) getTokenAsFloat:(float *)floatValue
                 fromLine:(NSUInteger)lineIndex
               atPosition:(NSUInteger)tokenIndex
