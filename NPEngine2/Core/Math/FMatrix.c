@@ -336,7 +336,7 @@ void fm3_s_rotatex_m(Float degree, FMatrix3 * result)
 {
     fm3_m_set_identity(result);
 
-    Float angle = DEGREE_TO_RADIANS(degree);
+    Double angle = DEGREE_TO_RADIANS(degree);
 
     M_EL(*result,1,1) = M_EL(*result,2,2) = cos(angle);
     M_EL(*result,1,2) = sin(angle);
@@ -347,7 +347,7 @@ void fm3_s_rotatey_m(Float degree, FMatrix3 * result)
 {
     fm3_m_set_identity(result);
 
-    Float angle = DEGREE_TO_RADIANS(degree);
+    Double angle = DEGREE_TO_RADIANS(degree);
 
     M_EL(*result,0,0) = M_EL(*result,2,2) = cos(angle);
     M_EL(*result,2,0) = sin(angle);
@@ -358,7 +358,7 @@ void fm3_s_rotatez_m(Float degree, FMatrix3 * result)
 {
     fm3_m_set_identity(result);
 
-    Float angle = DEGREE_TO_RADIANS(degree);
+    Double angle = DEGREE_TO_RADIANS(degree);
 
     M_EL(*result,0,0) = M_EL(*result,1,1) = cos(angle);
     M_EL(*result,0,1) = sin(angle);
@@ -798,8 +798,8 @@ void fm4_vvvv_look_at_matrix_m(FVector3 * rightVector, FVector3 * upVector, FVec
 void fm4_mssss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegrees, Float nearplane, Float farplane)
 {
     fm4_m_set_identity(m);
-    Float fovradians = DEGREE_TO_RADIANS(fovdegrees/2.0f);
-    Float f = 1.0f / tan(fovradians);
+    Double fovradians = DEGREE_TO_RADIANS(fovdegrees/2.0f);
+    Double f = 1.0 / tan(fovradians);
 
     M_EL(*m,0,0) = f/aspectratio;
     M_EL(*m,1,1) = f;
@@ -883,7 +883,7 @@ void fm4_m_inverse_m(const FMatrix4 * const m, FMatrix4 * result)
             sign = 1 - ( (i + j) % 2 ) * 2;
             fm4_mss_sub_matrix_m(m,i,j,subMatrix);
             Float subMatrixDeterminant = fm3_m_determinant(subMatrix);
-            M_EL(*result,i,j) = subMatrixDeterminant * sign * scalar;
+            M_EL(*result,i,j) = sign * subMatrixDeterminant * scalar;
         }
     }
 
@@ -916,7 +916,7 @@ void fm4_s_rotatex_m(Float degree, FMatrix4 * result)
 {
     fm4_m_set_identity(result);
 
-    Float angle = DEGREE_TO_RADIANS(degree);
+    Double angle = DEGREE_TO_RADIANS(degree);
 
     M_EL(*result,1,1) = M_EL(*result,2,2) = cos(angle);
     M_EL(*result,1,2) = sin(angle);
@@ -927,7 +927,7 @@ void fm4_s_rotatey_m(Float degree, FMatrix4 * result)
 {
     fm4_m_set_identity(result);
 
-    Float angle = DEGREE_TO_RADIANS(degree);
+    Double angle = DEGREE_TO_RADIANS(degree);
 
     M_EL(*result,0,0) = M_EL(*result,2,2) = cos(angle);
     M_EL(*result,2,0) = sin(angle);
@@ -938,7 +938,7 @@ void fm4_s_rotatez_m(Float degree, FMatrix4 * result)
 {
     fm4_m_set_identity(result);
 
-    Float angle = DEGREE_TO_RADIANS(degree);
+    Double angle = DEGREE_TO_RADIANS(degree);
 
     M_EL(*result,0,0) = M_EL(*result,1,1) = cos(angle);
     M_EL(*result,0,1) = sin(angle);

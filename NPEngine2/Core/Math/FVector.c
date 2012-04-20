@@ -133,8 +133,8 @@ void fv2_vv_sub_v(const FVector2 * const v, const FVector2 * const w, FVector2 *
 
 void fv2_vvs_lerp_v(const FVector2 * const v, const FVector2 * const w, const float u, FVector2 * result)
 {
-    result->x = v->x * (1.0 - u) + w->x * u;
-    result->y = v->y * (1.0 - u) + w->y * u;
+    result->x = v->x * (1.0f - u) + w->x * u;
+    result->y = v->y * (1.0f - u) + w->y * u;
 }
 
 Float fv2_vv_dot_product(const FVector2 * const v, const FVector2 * const w)
@@ -149,7 +149,7 @@ Float fv2_v_square_length(const FVector2 * const v)
 
 Float fv2_v_length(const FVector2 * const v)
 {
-    return sqrt(fv2_v_square_length(v));
+    return sqrtf(fv2_v_square_length(v));
 }
 
 FVector2 fv2_v_inverted(const FVector2 * const v)
@@ -362,9 +362,9 @@ void fv3_vv_cross_product_v(const FVector3 * const v, const FVector3 * const w, 
 
 void fv3_vvs_lerp_v(const FVector3 * const v, const FVector3 * const w, const float u, FVector3 * result)
 {
-    result->x = v->x * (1.0 - u) + w->x * u;
-    result->y = v->y * (1.0 - u) + w->y * u;
-    result->z = v->z * (1.0 - u) + w->z * u;
+    result->x = v->x * (1.0f - u) + w->x * u;
+    result->y = v->y * (1.0f - u) + w->y * u;
+    result->z = v->z * (1.0f - u) + w->z * u;
 }
 
 Float fv3_vv_dot_product(const FVector3 * const v, const FVector3 * const w)
@@ -379,7 +379,7 @@ Float fv3_v_square_length(const FVector3 * const v)
 
 Float fv3_v_length(const FVector3 * const v)
 {
-    return sqrt(fv3_v_square_length(v));
+    return sqrtf(fv3_v_square_length(v));
 }
 
 Float fv3_vv_square_distance(const FVector3 * const v, const FVector3 * const w)
@@ -531,7 +531,7 @@ void fv4_vv_init_with_fv3(FVector4 * v1, const FVector3 const * v2)
     V_W(*v1) = 1.0f;
 }
 
-void fv4_vssss_init_with_components(FVector4 * v, Double x, Double y, Double z, Double w)
+void fv4_vssss_init_with_components(FVector4 * v, Float x, Float y, Float z, Float w)
 {
     V_X(*v) = x;
     V_Y(*v) = y;
