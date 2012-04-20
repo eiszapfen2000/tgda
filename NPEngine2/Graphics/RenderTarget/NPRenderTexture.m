@@ -10,7 +10,7 @@
 @interface NPRenderTexture (Private)
 
 - (void) deleteTexture;
-- (void) createTexture;
+- (void) createTextureWithMipmaps:(BOOL)mipmaps;
 
 @end
 

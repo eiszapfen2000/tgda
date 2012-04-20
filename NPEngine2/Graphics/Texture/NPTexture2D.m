@@ -290,8 +290,8 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 - (void) updateGLTextureFilterState
 {
-    GLenum minFilter = GL_NONE;
-    GLenum magFilter = GL_NONE;
+    GLint minFilter = GL_NONE;
+    GLint magFilter = GL_NONE;
 
     switch ( filterState.textureFilter )
     {
@@ -326,8 +326,8 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 - (void) updateGLTextureWrapState
 {
-    GLenum wrapS = getGLTextureWrap(wrapState.wrapS);
-    GLenum wrapT = getGLTextureWrap(wrapState.wrapT);
+    GLint wrapS = getGLTextureWrap(wrapState.wrapS);
+    GLint wrapT = getGLTextureWrap(wrapState.wrapT);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);

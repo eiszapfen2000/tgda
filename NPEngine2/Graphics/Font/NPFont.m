@@ -179,8 +179,8 @@
 		return;
 	}
 
-	const float normaliseTextureCoordinatesX = 1.0f / textureWidth;
-	const float normaliseTextureCoordinatesY = 1.0f / textureHeight;
+	const float normaliseTextureCoordinatesX = 1.0f / (float)textureWidth;
+	const float normaliseTextureCoordinatesY = 1.0f / (float)textureHeight;
 
 	// NpBMFontCharacter uses integer coordinates representing pixel centers
 	// NpFontCharacter has it's origin at the lower left and uses normalised coordinates,
@@ -289,8 +289,8 @@
         const int32_t character = cString[i];
         const NpFontCharacter fontCharacter = characters[character];
 
-        result.x += (int32_t)round(fontCharacter.xAdvance * scale);
-        result.y = MAX(result.y, (int32_t)round((fontCharacter.offset.y + fontCharacter.size.y) * scale));
+        result.x += (int32_t)round((float)fontCharacter.xAdvance * scale);
+        result.y = MAX(result.y, (int32_t)round((float)(fontCharacter.offset.y + fontCharacter.size.y) * scale));
     }
 
     return result;
@@ -324,10 +324,10 @@
         const NpFontCharacter fontCharacter = characters[character];
 
         IRectangle r;
-        r.min.x = cursorPosition + (int32_t)round(fontCharacter.offset.x * scale);
-		r.max.x = cursorPosition + (int32_t)round((fontCharacter.size.x + fontCharacter.offset.x) * scale);
-		r.max.y = position.y - (int32_t)round(fontCharacter.offset.y * scale);
-		r.min.y = position.y - (int32_t)round((fontCharacter.size.y + fontCharacter.offset.y) * scale);
+        r.min.x = cursorPosition + (int32_t)round((float)fontCharacter.offset.x * scale);
+		r.max.x = cursorPosition + (int32_t)round((float)(fontCharacter.size.x + fontCharacter.offset.x) * scale);
+		r.max.y = position.y - (int32_t)round((float)fontCharacter.offset.y * scale);
+		r.min.y = position.y - (int32_t)round((float)(fontCharacter.size.y + fontCharacter.offset.y) * scale);
 
         [ texState setTexture:[ characterPages objectAtIndex:fontCharacter.characterPage ] texelUnit:0 ];
         [ texState activate ];
@@ -343,7 +343,7 @@
             glVertex2i(r.min.x, r.max.y);
         glEnd();
 
-		cursorPosition += (int32_t)round(fontCharacter.xAdvance * scale);
+		cursorPosition += (int32_t)round((float)fontCharacter.xAdvance * scale);
     }
 }
 
