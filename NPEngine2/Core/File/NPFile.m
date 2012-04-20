@@ -203,10 +203,10 @@
         return NO;
     }
 
-    char * buffer = alloca(stringLength);
+    char * buffer = alloca((size_t)stringLength);
     if ( [ self readElementsToBuffer:buffer
                          elementSize:1
-                    numberOfElements:stringLength ] == NO )
+                    numberOfElements:(size_t)stringLength ] == NO )
     {
         return NO;
     }
@@ -433,15 +433,15 @@
 
 - (BOOL) writeSUXScript:(NPStringList *)script
 {
-    int32_t numberOfLines = (int32_t)[ script count ];
+    NSUInteger numberOfLines = [ script count ];
 
-    if ( [ self writeInt32:numberOfLines ] == NO )
+    if ( [ self writeInt32:(int32_t)numberOfLines ] == NO )
     {
         return NO;
     }
 
     BOOL result = YES;
-    for ( int32_t i = 0; i < numberOfLines; i++ )
+    for ( NSUInteger i = 0; i < numberOfLines; i++ )
     {
         if ( [ self writeSUXString:[ script stringAtIndex:i ]] == NO )
         {
