@@ -66,6 +66,8 @@ OdHeightfieldData;
 
 @end
 
+//static double windAngle = 0.0;
+
 @implementation ODOceanEntity (Private)
 
 - (void) generate:(id)argument
@@ -76,8 +78,10 @@ OdHeightfieldData;
 
     ODSpectrumSettings settings;
     settings.size = (Vector2){10.0f, 10.0f};
-    settings.resolution = (IVector2){512, 512};
-    settings.windDirection = (Vector2){1.0f, 1.0f};
+    settings.resolution = (IVector2){128, 128};
+    settings.windDirection = (Vector2){-1.0f, 1.0f};
+    //settings.windDirection = (Vector2){sin(windAngle), cos(windAngle)};
+    //windAngle += MATH_DEG_TO_RAD;
 
     ODPhillipsSpectrum * s = [[ ODPhillipsSpectrum alloc ] init ];
 
@@ -89,8 +93,13 @@ OdHeightfieldData;
 
         if ( [[ NSThread currentThread ] isCancelled ] == NO )
         {
+            //settings.windDirection = (Vector2){sin(windAngle), cos(windAngle)};
+            //windAngle += MATH_DEG_TO_RAD;
+
+            /*
             fftwf_complex * complexHeights
                 = fftwf_malloc(sizeof(fftwf_complex) * settings.resolution.x * settings.resolution.y);
+            */
 
             float * c2r = ALLOC_ARRAY(float, settings.resolution.x * settings.resolution.y);
 
@@ -100,10 +109,12 @@ OdHeightfieldData;
             result->data32f = NULL;
             result->data64f = NULL;
 
+            /*
             [ timer update ];
 
             fftwf_complex * complexSpectrum
                 = [ s generateFloatFrequencySpectrum:settings atTime:[ timer totalElapsedTime ]];
+            */
 
             [ timer update ];
 
@@ -158,10 +169,10 @@ OdHeightfieldData;
 
             const float fpsIFFTHC = [ timer frameTime ];
 
-            printf("PHILLIPS HC: %f IFFT: %f \n", fpsHC, fpsIFFTHC);
-            fflush(stdout);
+            //printf("PHILLIPS HC: %f IFFT: %f \n", fpsHC, fpsIFFTHC);
+            //fflush(stdout);
 
-            fftwf_free(complexSpectrum);
+            //fftwf_free(complexSpectrum);
             fftwf_free(halfcomplexSpectrum);
 
             //fftwf_free(complexHeights);
@@ -248,6 +259,7 @@ OdHeightfieldData;
                             object:nil ];
     }
 
+    //windAngle = 0.0;
     [ thread start ];
 } 
 
