@@ -204,7 +204,7 @@
     else
     {
         glBindVertexArray(glID);
-        glDrawArrays(type, 0, lastIndex - firstIndex + 1);
+        glDrawArrays(type, firstIndex, lastIndex - firstIndex + 1);
         glBindVertexArray(0);
     } 
 }
