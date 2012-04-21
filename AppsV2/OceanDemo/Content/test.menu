@@ -54,6 +54,16 @@
             TargetObject = "Scene";
             TargetProperty = "key";
         };
+
+        PDirection =
+        {
+            Type = "ODWindDirectionItem";
+            Label = "DIR";
+            Alignment = "BottomRight";
+            Position = ("50", "150" );
+            Size = ( "50", "50" );
+            TextSize = "16";
+        };
     };
 }
  
