@@ -287,6 +287,7 @@ typedef enum NpPrimitveType
     NpPrimitiveLineStrip = 3,
     NpPrimitiveTriangles = 4,
     NpPrimitiveTriangleStrip = 5,
+    NpPrimitiveTriangleFan = 6,
     NpPrimitiveQuads = 7,
     NpPrimitiveQuadStrip = 8
 }
