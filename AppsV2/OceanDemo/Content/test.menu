@@ -63,6 +63,8 @@
             Position = ("50", "150" );
             Size = ( "50", "50" );
             TextSize = "16";
+            TargetObject = "Ocean";
+            TargetProperty = "windDirection";
         };
     };
 }
