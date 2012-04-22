@@ -78,7 +78,7 @@
 
     if ( target != nil )
     {
-        GSObjCSetVariable(target, offset, size, &active);
+        ODObjCSetVariable(target, offset, size, &active);
     }
 }
 

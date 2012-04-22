@@ -223,7 +223,14 @@
             if ( frectangle_vr_is_point_inside(&mousePosition, &itemGeometry) != 0 )
             {
                 indexOfActiveItem = index;
-                break;
+
+                // set target property
+                if ( target != nil )
+                {
+                    ODObjCSetVariable(target, offset, size, &indexOfActiveItem);
+                }
+
+                return;
             }
 
 			lowerLeft.x = lowerLeft.x + itemSize.x + itemSpacing.x;
@@ -238,6 +245,12 @@
 {
     alignedGeometry
         = [ ODMenu alignRectangle:geometry withAlignment:alignment ];
+
+        // get value from target
+    if ( target != nil )
+    {
+        ODObjCGetVariable(target, offset, size, &indexOfActiveItem);
+    }
 }
 
 - (void) render
