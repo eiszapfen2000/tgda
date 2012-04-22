@@ -66,8 +66,6 @@ OdHeightfieldData;
 
 @end
 
-//static double windAngle = 0.0;
-
 @implementation ODOceanEntity (Private)
 
 - (void) generate:(id)argument
@@ -75,14 +73,6 @@ OdHeightfieldData;
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
     NPTimer * timer = [[ NPTimer alloc ] initWithName:@"Thread Timer" ];
-
-    ODSpectrumSettings settings;
-    settings.size = (Vector2){10.0f, 10.0f};
-    settings.resolution = (IVector2){128, 128};
-    settings.windDirection = (Vector2){-1.0f, 1.0f};
-    //settings.windDirection = (Vector2){sin(windAngle), cos(windAngle)};
-    //windAngle += MATH_DEG_TO_RAD;
-
     ODPhillipsSpectrum * s = [[ ODPhillipsSpectrum alloc ] init ];
 
     while ( [[ NSThread currentThread ] isCancelled ] == NO )
@@ -93,13 +83,13 @@ OdHeightfieldData;
 
         if ( [[ NSThread currentThread ] isCancelled ] == NO )
         {
-            //settings.windDirection = (Vector2){sin(windAngle), cos(windAngle)};
-            //windAngle += MATH_DEG_TO_RAD;
+            ODSpectrumSettings settings;
 
-            /*
-            fftwf_complex * complexHeights
-                = fftwf_malloc(sizeof(fftwf_complex) * settings.resolution.x * settings.resolution.y);
-            */
+            {
+                [ mutex lock ];
+                settings = spectrumSettings;
+                [ mutex unlock ];
+            }
 
             float * c2r = ALLOC_ARRAY(float, settings.resolution.x * settings.resolution.y);
 
@@ -108,17 +98,6 @@ OdHeightfieldData;
             result->resolution = settings.resolution;
             result->data32f = NULL;
             result->data64f = NULL;
-
-            /*
-            [ timer update ];
-
-            fftwf_complex * complexSpectrum
-                = [ s generateFloatFrequencySpectrum:settings atTime:[ timer totalElapsedTime ]];
-            */
-
-            [ timer update ];
-
-            const float fpsC = [ timer frameTime ];
 
             [ timer update ];
 
@@ -168,20 +147,18 @@ OdHeightfieldData;
             [ timer update ];
 
             const float fpsIFFTHC = [ timer frameTime ];
-
             //printf("PHILLIPS HC: %f IFFT: %f \n", fpsHC, fpsIFFTHC);
             //fflush(stdout);
 
-            //fftwf_free(complexSpectrum);
             fftwf_free(halfcomplexSpectrum);
 
-            //fftwf_free(complexHeights);
-            //SAFE_FREE(c2r);
-
             result->data32f = c2r;
-            [ mutex lock ];
-            [ resultQueue addPointer:result ];
-            [ mutex unlock ];
+
+            {
+                [ mutex lock ];
+                [ resultQueue addPointer:result ];
+                [ mutex unlock ];
+            }
         }
 
         DESTROY(innerPool);
@@ -204,6 +181,12 @@ OdHeightfieldData;
 - (id) initWithName:(NSString *)newName
 {
     self =  [ super initWithName:newName ];
+
+    spectrumSettings.resolution = (IVector2){128, 128};    
+    spectrumSettings.size = (Vector2){10.0, 10.0};
+    spectrumSettings.windDirection = (Vector2){1.0, 0.0};
+
+    windDirection = lastWindDirection = spectrumSettings.windDirection;
 
     NSPointerFunctionsOptions options
         = NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality;
@@ -259,7 +242,6 @@ OdHeightfieldData;
                             object:nil ];
     }
 
-    //windAngle = 0.0;
     [ thread start ];
 } 
 
@@ -345,20 +327,36 @@ OdHeightfieldData;
 
     [ projector     update:frameTime ];
     [ projectedGrid update:frameTime ];
+
+    {
+        [ mutex lock ];
+
+        if ( windDirection.x != lastWindDirection.x
+             || windDirection.y != lastWindDirection.y )
+        {
+            spectrumSettings.windDirection = windDirection;
+            lastWindDirection = windDirection;
+        }
+
+        [ mutex unlock ];
+    }
 }
 
 - (void) render
 {
     OdHeightfieldData * hf = NULL;
 
-    [ mutex lock ];
-    if ( [ resultQueue count ] != 0)
     {
-        //NSLog(@"%u", (uint32_t)[ resultQueue count ]);
-        hf = [ resultQueue pointerAtIndex:0 ];
-        [ resultQueue removePointerAtIndex:0 ];
+        [ mutex lock ];
+
+        if ( [ resultQueue count ] != 0)
+        {
+            hf = [ resultQueue pointerAtIndex:0 ];
+            [ resultQueue removePointerAtIndex:0 ];
+        }
+
+        [ mutex unlock ];
     }
-    [ mutex unlock ];
 
     if ( hf != NULL )
     {
@@ -381,6 +379,7 @@ OdHeightfieldData;
     }
 
     [ projectedGrid render ];
+    [ projector     render ];
 
     [[[ NPEngineGraphics instance ] orthographic ] activate ];
     [[[ NPEngineGraphics instance ] textureBindingState ] setTexture:heightfield texelUnit:0 ];
@@ -399,7 +398,7 @@ OdHeightfieldData;
 
     [[[ NPEngineGraphics instance ] orthographic ] deactivate ];
 
-    [ projector     render ];
+
 }
 
 @end

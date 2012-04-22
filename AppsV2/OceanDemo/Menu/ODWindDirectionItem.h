@@ -9,6 +9,8 @@
     FRectangle pixelCenterGeometry;
     NSString * label;
 
+    FMatrix4 translation;
+    Vector2 windDirection;
     NPVertexArray* circleGeometry;
     NPEffectTechnique * technique;
     NPEffectVariableFloat4 * color;

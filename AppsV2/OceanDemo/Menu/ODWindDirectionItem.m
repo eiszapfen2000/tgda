@@ -35,6 +35,8 @@
     self = [ super initWithName:newName menu:newMenu ];
 
     frectangle_ssss_init_with_min_max_r(0.0f, 0.0f, 0.0f, 0.0f, &pixelCenterGeometry);
+    fm4_m_set_identity(&translation);
+    v2_v_init_with_zeros(&windDirection);
 
     circleGeometry = [[ NPVertexArray alloc ] init ];
 
@@ -66,12 +68,12 @@
 
     ASSIGNCOPY(label, l);
 
-    /*
     if ( target != nil )
     {
-        ODObjCGetVariable(target, offset, size, &active);
+        ODObjCGetVariable(target, offset, size, &windDirection);
     }
-    */
+
+    NSLog(@"DIR %f %f", windDirection.x, windDirection.y);
 
     technique = RETAIN([ menu colorTechnique ]);
     color = RETAIN([[ menu effect ] variableWithName:@"color" ]);
@@ -104,7 +106,7 @@
         vertices[i + 1].x = x * radius;
         vertices[i + 1].y = y * radius;
 
-        printf("%u %f %f %f\n", i, angle, x * radius, y * radius);
+        //printf("%u %f %f %f\n", i, angle, x * radius, y * radius);
     }
 
     NPBufferObject * vertexBuffer = [[ NPBufferObject alloc ] init ];
@@ -134,7 +136,12 @@
 
 - (void) onClick:(const FVector2)mousePosition
 {
-    NSLog(@"OUCH");
+    FVector2 center2D;
+    frectangle_r_calculate_center_v(&alignedGeometry, &center2D);
+
+    windDirection.x = mousePosition.x - center2D.x;
+    windDirection.y = mousePosition.y - center2D.y;
+    v2_v_normalise(&windDirection);
 }
 
 - (void) update:(const float)frameTime
@@ -148,6 +155,19 @@
     pixelCenterGeometry.min.y = alignedGeometry.min.y + 0.5f;
     pixelCenterGeometry.max.x = alignedGeometry.max.x - 0.5f;
     pixelCenterGeometry.max.y = alignedGeometry.max.y - 0.5f;
+
+    // generate translation matrix
+    FVector2 center2D;
+    FVector3 center3D;
+
+    frectangle_r_calculate_center_v(&alignedGeometry, &center2D);
+    center3D = (FVector3){center2D.x, center2D.y, 0.0f};
+    fm4_mv_translation_matrix(&translation, &center3D);
+
+    if ( target != nil )
+    {
+        GSObjCSetVariable(target, offset, size, &windDirection);
+    }
 }
 
 - (void) render
@@ -162,12 +182,6 @@
                        primitiveType:NpPrimitiveQuads ];
     */
 
-
-    FVector2 center;
-    frectangle_r_calculate_center_v(&alignedGeometry, &center);
-
-    FVector3 t = {center.x, center.y, 0.0f};
-    FMatrix4 translation = fm4_v_translation_matrix(&t);
 
     NPTransformationState * tState
         = [[ NPEngineCore instance ] transformationState ];

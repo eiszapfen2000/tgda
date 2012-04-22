@@ -1,5 +1,6 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
+#import "Ocean/ODPFrequencySpectrumGeneration.h"
 #import "ODPEntity.h"
 
 @class NSPointerArray;
@@ -12,9 +13,13 @@
 @class ODProjector;
 @class ODProjectedGrid;
 
-
 @interface ODOceanEntity : NPObject < ODPEntity >
 {
+    Vector2 lastWindDirection;
+    Vector2 windDirection;
+
+    ODSpectrumSettings spectrumSettings;
+    
     NSThread * thread;
     NSPointerArray * resultQueue;
 
