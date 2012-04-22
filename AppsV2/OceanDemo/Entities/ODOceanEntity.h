@@ -17,6 +17,8 @@
 {
     Vector2 lastWindDirection;
     Vector2 windDirection;
+    NSUInteger lastResolutionIndex;
+    NSUInteger resolutionIndex;
 
     ODSpectrumSettings spectrumSettings;
     

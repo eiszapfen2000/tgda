@@ -68,13 +68,6 @@
 
     ASSIGNCOPY(label, l);
 
-    if ( target != nil )
-    {
-        ODObjCGetVariable(target, offset, size, &windDirection);
-    }
-
-    NSLog(@"DIR %f %f", windDirection.x, windDirection.y);
-
     technique = RETAIN([ menu colorTechnique ]);
     color = RETAIN([[ menu effect ] variableWithName:@"color" ]);
 
@@ -142,6 +135,12 @@
     windDirection.x = mousePosition.x - center2D.x;
     windDirection.y = mousePosition.y - center2D.y;
     v2_v_normalise(&windDirection);
+
+    // set target property
+    if ( target != nil )
+    {
+        ODObjCSetVariable(target, offset, size, &windDirection);
+    }
 }
 
 - (void) update:(const float)frameTime
@@ -164,9 +163,10 @@
     center3D = (FVector3){center2D.x, center2D.y, 0.0f};
     fm4_mv_translation_matrix(&translation, &center3D);
 
+    // get value from target
     if ( target != nil )
     {
-        GSObjCSetVariable(target, offset, size, &windDirection);
+        ODObjCGetVariable(target, offset, size, &windDirection);
     }
 }
 

@@ -101,8 +101,10 @@ OdHeightfieldData;
 
             [ timer update ];
 
+            const float totalTime = [ timer totalElapsedTime ];
+
             fftwf_complex * halfcomplexSpectrum
-                = [ s generateFloatFrequencySpectrumHC:settings atTime:[ timer totalElapsedTime ]];
+                = [ s generateFloatFrequencySpectrumHC:settings atTime:totalTime ];
 
             [ timer update ];
 
@@ -147,7 +149,7 @@ OdHeightfieldData;
             [ timer update ];
 
             const float fpsIFFTHC = [ timer frameTime ];
-            //printf("PHILLIPS HC: %f IFFT: %f \n", fpsHC, fpsIFFTHC);
+            //printf("PHILLIPS HC: %f IFFT: %f Time:%f\n", fpsHC, fpsIFFTHC, totalTime);
             //fflush(stdout);
 
             fftwf_free(halfcomplexSpectrum);
@@ -171,6 +173,11 @@ OdHeightfieldData;
 
 @end
 
+static const Vector2 defaultWindDirection = {1.0, 0.0};
+static const NSUInteger defaultResolutionIndex = 3;
+
+static const int32_t resolutions[4] = {64, 128, 256, 512};
+
 @implementation ODOceanEntity
 
 - (id) init
@@ -182,11 +189,11 @@ OdHeightfieldData;
 {
     self =  [ super initWithName:newName ];
 
-    spectrumSettings.resolution = (IVector2){128, 128};    
-    spectrumSettings.size = (Vector2){10.0, 10.0};
-    spectrumSettings.windDirection = (Vector2){1.0, 0.0};
+    lastResolutionIndex = ULONG_MAX;
+    resolutionIndex = defaultResolutionIndex;
 
-    windDirection = lastWindDirection = spectrumSettings.windDirection;
+    lastWindDirection = (Vector2){DBL_MAX, DBL_MAX};
+    windDirection = defaultWindDirection;
 
     NSPointerFunctionsOptions options
         = NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality;
@@ -214,6 +221,19 @@ OdHeightfieldData;
     DESTROY(heightfield);
     DESTROY(projector);
     DESTROY(projectedGrid);
+
+    NSUInteger count = [ resultQueue count ];
+    while (count != 0)
+    {
+        OdHeightfieldData * hf = [ resultQueue pointerAtIndex:0 ];
+        if ( hf != NULL )
+        {
+            SAFE_FREE(hf->data32f);
+            FREE(hf);
+        }
+        [ resultQueue removePointerAtIndex:0 ];
+        count = [ resultQueue count ];
+    }
     DESTROY(resultQueue);
 
     [ super dealloc ];
@@ -323,8 +343,6 @@ OdHeightfieldData;
 
 - (void) update:(const float)frameTime
 {
-    [ semaphore post ];
-
     [ projector     update:frameTime ];
     [ projectedGrid update:frameTime ];
 
@@ -332,14 +350,36 @@ OdHeightfieldData;
         [ mutex lock ];
 
         if ( windDirection.x != lastWindDirection.x
-             || windDirection.y != lastWindDirection.y )
+             || windDirection.y != lastWindDirection.y
+             || resolutionIndex != lastResolutionIndex )
         {
             spectrumSettings.windDirection = windDirection;
+            spectrumSettings.size = (Vector2){10.0, 10.0};
+
+            const int32_t res = resolutions[resolutionIndex];
+            spectrumSettings.resolution = (IVector2){res, res};
+
             lastWindDirection = windDirection;
+            lastResolutionIndex = resolutionIndex;
+
+            NSUInteger count = [ resultQueue count ];
+            while (count != 0)
+            {
+                OdHeightfieldData * hf = [ resultQueue pointerAtIndex:0 ];
+                if ( hf != NULL )
+                {
+                    SAFE_FREE(hf->data32f);
+                    FREE(hf);
+                }
+                [ resultQueue removePointerAtIndex:0 ];
+                count = [ resultQueue count ];
+            }
         }
 
         [ mutex unlock ];
     }
+
+    [ semaphore post ];
 }
 
 - (void) render
@@ -376,6 +416,7 @@ OdHeightfieldData;
                                     data:textureData ];
 
         SAFE_FREE(hf->data32f);
+        FREE(hf);
     }
 
     [ projectedGrid render ];

@@ -220,7 +220,7 @@
     if ( target != nil )
     {
         const float scaledValue = [ self scaledValue ];
-        GSObjCSetVariable(target, offset, size, &scaledValue);
+        ODObjCSetVariable(target, offset, size, &scaledValue);
     }
 }
 
