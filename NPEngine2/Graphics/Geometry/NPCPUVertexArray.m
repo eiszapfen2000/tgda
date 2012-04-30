@@ -1,4 +1,4 @@
-#import <Foundation/NSArray.h>
+#import <Foundation/NSPointerArray.h>
 #import <Foundation/NSData.h>
 #import <Foundation/NSException.h>
 #import "Log/NPLog.h"
@@ -29,8 +29,12 @@ static NSString * const NPCPUVertexArrayStreamMismatch
     numberOfVertices = 0;
     numberOfIndices  = 0;
 
-    vertexStreams = [[ NSMutableArray alloc ] initWithCapacity:(NpVertexStreamMax + 1) ];
-    indexStream   = nil;
+    NSPointerFunctionsOptions options
+        = NSPointerFunctionsObjectPointerPersonality | NSPointerFunctionsStrongMemory;
+
+    vertexStreams = [[ NSPointerArray alloc ] initWithOptions:options ];
+    [ vertexStreams setCount:(NpVertexStreamMax + 1) ];
+    indexStream = nil;
 
     memset(types,    0, sizeof(types));
     memset(sizes,    0, sizeof(sizes));
@@ -45,22 +49,33 @@ static NSString * const NPCPUVertexArrayStreamMismatch
 
 - (void) dealloc
 {
-    [ vertexStreams removeAllObjects ];
+    [ vertexStreams setCount:0 ];
     DESTROY(vertexStreams);
-
     SAFE_DESTROY(indexStream);
 
     [ super dealloc ];
 }
 
-- (BOOL) setVertexStream:(NPCPUBuffer *)vertexStream
+- (BOOL) setVertexStream:(NPCPUBuffer *)newVertexStream
               atLocation:(NpVertexStreamSemantic)location
                    error:(NSError **)error
 {
-    NSAssert(vertexStream != nil, @"Invalid vertex stream");
-    NSAssert([ vertexStream data ] != nil, @"Vertex stream has no data");
+    // release current stream, and reset data
+    [ vertexStreams replacePointerAtIndex:location withPointer:NULL ];
 
-    const NSUInteger numberOfElements = [ vertexStream numberOfElements ];
+    types[location] = GL_NONE;
+    sizes[location] = 0;
+    pointers[location] = NULL;
+
+    // if no new vertex stream is provided, return
+    if ( newVertexStream == nil )
+    {
+        return YES;
+    }
+
+    NSAssert([ newVertexStream data ] != nil, @"Vertex stream has no data");
+
+    const NSUInteger numberOfElements = [ newVertexStream numberOfElements ];
     if ( numberOfElements == 0 )
     {
         if ( error != NULL )
@@ -103,11 +118,11 @@ static NSString * const NPCPUVertexArrayStreamMismatch
         return NO;
     }
 
-    [ vertexStreams addObject:vertexStream ];
+    [ vertexStreams replacePointerAtIndex:location withPointer:newVertexStream ];
 
-    types[location] = getGLBufferDataFormat([ vertexStream dataFormat]);
-    sizes[location] = (GLint)[ vertexStream numberOfComponents ];
-    pointers[location] = (GLvoid *)[[ vertexStream data ] bytes ];
+    types[location] = getGLBufferDataFormat([ newVertexStream dataFormat]);
+    sizes[location] = (GLint)[ newVertexStream numberOfComponents ];
+    pointers[location] = (GLvoid *)[[ newVertexStream data ] bytes ];
 
     return YES;
 }
@@ -115,7 +130,7 @@ static NSString * const NPCPUVertexArrayStreamMismatch
 - (BOOL) setIndexStream:(NPCPUBuffer *)newIndexStream
                   error:(NSError **)error
 {
-    // release current strea, and reset data
+    // release current stream, and reset data
     SAFE_DESTROY(indexStream);
     numberOfIndices = 0;
     indexPointer = NULL;
@@ -123,7 +138,7 @@ static NSString * const NPCPUVertexArrayStreamMismatch
     numberOfBytesForIndex = 0;
 
     // if no new index stream is provided, return
-    if (newIndexStream == nil)
+    if ( newIndexStream == nil )
     {
         return YES;
     }
