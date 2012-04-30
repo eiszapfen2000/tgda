@@ -6,6 +6,7 @@
 @class NPCPUVertexArray;
 @class ODProjector;
 @class NPEffect;
+@class NPEffectTechnique;
 @class NPEffectVariableFloat4;
 
 typedef enum ODProjectedGridRenderMode
@@ -46,6 +47,8 @@ ODProjectedGridRenderMode;
     NPCPUVertexArray * cornerVertexArray;
     // effect
     NPEffect * effect;
+    NPEffectTechnique* transformTechnique;
+    NPEffectTechnique* feedbackTechnique;
     NPEffectVariableFloat4 * color;
     FVector4 gridColor;
 }
