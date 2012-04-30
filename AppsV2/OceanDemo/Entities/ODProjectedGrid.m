@@ -218,13 +218,6 @@
         }
     }
 
-    /*
-    NSData * vertexData
-        = [ NSData dataWithBytesNoCopy:nearPlanePostProjectionPositions
-                                length:sizeof(FVertex4) * numberOfVertices
-                          freeWhenDone:NO ];
-    */
-
     NSData * vertexData
         = [ NSData dataWithBytesNoCopy:worldSpacePositions
                                 length:sizeof(FVertex4) * numberOfVertices
@@ -237,34 +230,27 @@
 
     BOOL result
         = [ gridVertexStream generate:NpBufferObjectTypeGeometry
-                       dataFormat:NpBufferDataFormatFloat32
-                       components:4
-                             data:vertexData
-                       dataLength:[ vertexData length ]
-                            error:NULL ];
+                           dataFormat:NpBufferDataFormatFloat32
+                           components:4
+                                 data:vertexData
+                                error:NULL ];
 
-    NSAssert(result, @"");
+    result
+        = result && [ gridIndexStream generate:NpBufferObjectTypeIndices
+                                    dataFormat:NpBufferDataFormatUInt16
+                                    components:1
+                                          data:indexData
+                                         error:NULL ];
 
-    result = [ gridIndexStream generate:NpBufferObjectTypeIndices
-                         dataFormat:NpBufferDataFormatUInt16
-                         components:1
-                               data:indexData
-                         dataLength:[ indexData length ]
-                              error:NULL ];
+    result
+        = result && [ gridVertexArray setVertexStream:gridVertexStream 
+                                           atLocation:NpVertexStreamPositions
+                                                error:NULL ];
 
-    NSAssert(result, @"");
+    result
+        = result && [ gridVertexArray setIndexStream:gridIndexStream 
+                                               error:NULL ];
 
-    SAFE_DESTROY(gridVertexArray);
-    gridVertexArray = [[ NPCPUVertexArray alloc ] init ];
-
-    result = [ gridVertexArray addVertexStream:gridVertexStream 
-                                atLocation:NpVertexStreamPositions
-                                     error:NULL ];
-
-    NSAssert(result, @"");
-
-    result = [ gridVertexArray addIndexStream:gridIndexStream 
-                                    error:NULL ];
 
     NSAssert(result, @"");
 }
@@ -288,7 +274,7 @@
     // y = 0 plane
     fplane_pssss_init_with_components(&basePlane, 0.0f, 1.0f, 0.0f, 0.0f);
 
-    renderMode = ProjectedGridGPUInterpolation;
+    renderMode = ProjectedGridCPURaycasting;
 
     // resolution independent
     cornerVertices = ALLOC_ARRAY(FVertex4, 4);
@@ -300,10 +286,13 @@
     cornerIndices[4] = 3;
     cornerIndices[5] = 0;
 
-    gridVertexStream   = [[ NPCPUBuffer alloc ] init ];
-    gridIndexStream    = [[ NPCPUBuffer alloc ] init ];
-    cornerVertexStream = [[ NPCPUBuffer alloc ] init ];
-    cornerIndexStream  = [[ NPCPUBuffer alloc ] init ];
+    cornerVertexArray = [[ NPCPUVertexArray alloc ] init ];
+    gridVertexArray   = [[ NPCPUVertexArray alloc ] init ];
+
+    gridVertexStream   = [[ NPCPUBuffer alloc ] initWithName:@"gridVertexStream" ];
+    gridIndexStream    = [[ NPCPUBuffer alloc ] initWithName:@"gridIndexStream" ];
+    cornerVertexStream = [[ NPCPUBuffer alloc ] initWithName:@"cornerVertexStream" ];
+    cornerIndexStream  = [[ NPCPUBuffer alloc ] initWithName:@"cornerIndexStream" ];
 
     NSData * cornerVertexData
         = [ NSData dataWithBytesNoCopy:cornerVertices
@@ -323,28 +312,22 @@
                              dataLength:[ cornerVertexData length ]
                                   error:NULL ];
 
-    NSAssert(result, @"");
-
-    result =
-        [ cornerIndexStream generate:NpBufferObjectTypeIndices
-                          dataFormat:NpBufferDataFormatUInt16
-                          components:1
-                                data:cornerIndexData
-                          dataLength:[ cornerIndexData length ]
-                               error:NULL ];
-
-    NSAssert(result, @"");
-
-    cornerVertexArray = [[ NPCPUVertexArray alloc ] init ];
-
-    result = [ cornerVertexArray addVertexStream:cornerVertexStream 
-                                      atLocation:NpVertexStreamPositions
+    result
+        = result && [ cornerIndexStream generate:NpBufferObjectTypeIndices
+                                      dataFormat:NpBufferDataFormatUInt16
+                                      components:1
+                                            data:cornerIndexData
+                                      dataLength:[ cornerIndexData length ]
                                            error:NULL ];
 
-    NSAssert(result, @"");
+    result
+        = result && [ cornerVertexArray setVertexStream:cornerVertexStream 
+                                             atLocation:NpVertexStreamPositions
+                                                  error:NULL ];
 
-    result = [ cornerVertexArray addIndexStream:cornerIndexStream 
-                                    error:NULL ];
+    result
+        = result && [ cornerVertexArray setIndexStream:cornerIndexStream 
+                                                 error:NULL ];
 
     NSAssert(result, @"");
 

@@ -125,18 +125,18 @@ int compare_floats (const void * a, const void * b)
     facesVertexArray = [[ NPCPUVertexArray alloc ] init ];
     linesVertexArray = [[ NPCPUVertexArray alloc ] init ];
 
-    result = [ facesVertexArray addVertexStream:vertexStream
+    result = [ facesVertexArray setVertexStream:vertexStream
                                      atLocation:NpVertexStreamAttribute0
                                           error:NULL ];
 
-    result = [ linesVertexArray addVertexStream:vertexStream
+    result = [ linesVertexArray setVertexStream:vertexStream
                                      atLocation:NpVertexStreamAttribute0
                                           error:NULL ];
 
     NSAssert(result, @"");
 
-    result = [ facesVertexArray addIndexStream:facesIndexStream error:NULL ];
-    result = [ linesVertexArray addIndexStream:linesIndexStream error:NULL ];
+    result = [ facesVertexArray setIndexStream:facesIndexStream error:NULL ];
+    result = [ linesVertexArray setIndexStream:linesIndexStream error:NULL ];
 
     NSAssert(result, @"");
 
