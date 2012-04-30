@@ -19,4 +19,12 @@ enum
     NPEngineGraphicsVertexArrayError = 3001
 };
 
+@class NSString;
+
+extern NSString* const NPVertexArrayVertexStreamEmpty;
+extern NSString* const NPVertexArrayIndexStreamEmpty;
+extern NSString* const NPVertexArrayVertexStreamTooLarge;
+extern NSString* const NPVertexArrayIndexStreamTooLarge;
+extern NSString* const NPVertexArrayStreamMismatch;
+
 #endif

@@ -18,6 +18,7 @@ NPEngineGraphicsEnums.c
 
 libNPEngineGraphics_OBJC_FILES = \
 NPEngineGraphics.m \
+NPEngineGraphicsErrors.m \
 NPEngineGraphicsStringEnumConversion.m \
 NPEngineGraphicsStringToClassConversion.m \
 NSString+NPEngineGraphicsEnums.m \

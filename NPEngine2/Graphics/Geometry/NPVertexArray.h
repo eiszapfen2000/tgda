@@ -3,7 +3,7 @@
 #import "Graphics/NPEngineGraphicsEnums.h"
 #import "GL/glew.h"
 
-@class NSMutableArray;
+@class NSPointerArray;
 @class NSError;
 @class NPBufferObject;
 
@@ -12,7 +12,7 @@
     GLuint glID;
     GLsizei numberOfVertices;
     GLsizei numberOfIndices;
-    NSMutableArray * vertexStreams;
+    NSPointerArray * vertexStreams;
     NPBufferObject * indexStream;
 }
 
@@ -22,12 +22,12 @@
 
 - (GLuint) glID;
 
-- (BOOL) addVertexStream:(NPBufferObject *)vertexStream
+- (BOOL) setVertexStream:(NPBufferObject *)newVertexStream
               atLocation:(NpVertexStreamSemantic)location
                    error:(NSError **)error
                         ;
 
-- (BOOL) addIndexStream:(NPBufferObject *)newIndexStream
+- (BOOL) setIndexStream:(NPBufferObject *)newIndexStream
                   error:(NSError **)error
                        ;
 

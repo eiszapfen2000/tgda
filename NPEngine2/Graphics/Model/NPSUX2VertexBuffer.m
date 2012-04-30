@@ -211,7 +211,7 @@ void vertices_delete_storage(NpSUX2Vertices * vertices)
                   numberOfComponents:3
                        numberOfBytes:numberOfVertices * sizeof(float) * 3 ];
 
-    [ vertexArray addVertexStream:bufferObject atLocation:NpVertexStreamPositions error:NULL ];
+    [ vertexArray setVertexStream:bufferObject atLocation:NpVertexStreamPositions error:NULL ];
 
     if ( vertices->format.elementsForNormal > 0 )
     {
@@ -220,7 +220,7 @@ void vertices_delete_storage(NpSUX2Vertices * vertices)
                        numberOfComponents:vertices->format.elementsForNormal
                             numberOfBytes:vertices->format.elementsForNormal * numberOfVertices * sizeof(float) ];
 
-            [ vertexArray addVertexStream:bufferObject atLocation:NpVertexStreamNormals error:NULL ];
+            [ vertexArray setVertexStream:bufferObject atLocation:NpVertexStreamNormals error:NULL ];
     }
 
     if ( vertices->format.elementsForColor > 0 )
@@ -230,7 +230,7 @@ void vertices_delete_storage(NpSUX2Vertices * vertices)
                        numberOfComponents:vertices->format.elementsForColor
                             numberOfBytes:vertices->format.elementsForColor * numberOfVertices * sizeof(float) ];
 
-            [ vertexArray addVertexStream:bufferObject atLocation:NpVertexStreamColors error:NULL ];
+            [ vertexArray setVertexStream:bufferObject atLocation:NpVertexStreamColors error:NULL ];
     }
 
     if ( vertices->format.elementsForWeights > 0 )
@@ -247,7 +247,7 @@ void vertices_delete_storage(NpSUX2Vertices * vertices)
                            numberOfComponents:vertices->format.elementsForTextureCoordinateSet[i]
                                 numberOfBytes:vertices->format.elementsForTextureCoordinateSet[i] * numberOfVertices * sizeof(float) ];
 
-            [ vertexArray addVertexStream:bufferObject atLocation:NpVertexStreamTexCoords0 + i error:NULL ];
+            [ vertexArray setVertexStream:bufferObject atLocation:NpVertexStreamTexCoords0 + i error:NULL ];
         }
     }
 
@@ -257,7 +257,7 @@ void vertices_delete_storage(NpSUX2Vertices * vertices)
             = [ self bufferObjectForIndices:vertices->indices
                             numberOfIndices:vertices->maxIndex + 1 ];
 
-        [ vertexArray addIndexStream:bufferObject error:NULL ];
+        [ vertexArray setIndexStream:bufferObject error:NULL ];
     }
 }
 
