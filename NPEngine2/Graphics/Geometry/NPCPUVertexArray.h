@@ -3,7 +3,7 @@
 #import "Graphics/NPEngineGraphicsEnums.h"
 #import "GL/glew.h"
 
-@class NSMutableArray;
+@class NSPointerArray;
 @class NSError;
 @class NPBufferObject;
 @class NPCPUBuffer;
@@ -12,7 +12,7 @@
 {
     GLsizei numberOfVertices;
     GLsizei numberOfIndices;
-    NSMutableArray * vertexStreams;
+    NSPointerArray * vertexStreams;
     NPCPUBuffer * indexStream;
 
     GLenum  types[NpVertexStreamMax + 1];
@@ -27,7 +27,7 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-- (BOOL) setVertexStream:(NPCPUBuffer *)vertexStream
+- (BOOL) setVertexStream:(NPCPUBuffer *)newVertexStream
               atLocation:(NpVertexStreamSemantic)location
                    error:(NSError **)error
                         ;
