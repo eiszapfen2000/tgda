@@ -29,7 +29,7 @@ static NSString * const NPCPUVertexArrayStreamMismatch
     numberOfVertices = 0;
     numberOfIndices  = 0;
 
-    vertexStreams = [[ NSMutableArray alloc ] init ];
+    vertexStreams = [[ NSMutableArray alloc ] initWithCapacity:(NpVertexStreamMax + 1) ];
     indexStream   = nil;
 
     memset(types,    0, sizeof(types));
@@ -53,7 +53,7 @@ static NSString * const NPCPUVertexArrayStreamMismatch
     [ super dealloc ];
 }
 
-- (BOOL) addVertexStream:(NPCPUBuffer *)vertexStream
+- (BOOL) setVertexStream:(NPCPUBuffer *)vertexStream
               atLocation:(NpVertexStreamSemantic)location
                    error:(NSError **)error
 {
@@ -112,11 +112,23 @@ static NSString * const NPCPUVertexArrayStreamMismatch
     return YES;
 }
 
-- (BOOL) addIndexStream:(NPCPUBuffer *)newIndexStream
+- (BOOL) setIndexStream:(NPCPUBuffer *)newIndexStream
                   error:(NSError **)error
 {
-    NSAssert(newIndexStream != nil, @"Invalid index stream");
+    // release current strea, and reset data
+    SAFE_DESTROY(indexStream);
+    numberOfIndices = 0;
+    indexPointer = NULL;
+    indexType = GL_NONE;
+    numberOfBytesForIndex = 0;
 
+    // if no new index stream is provided, return
+    if (newIndexStream == nil)
+    {
+        return YES;
+    }
+
+    // check for valid number of indices
     NSUInteger numberOfElements = [ newIndexStream numberOfElements ];
     if ( numberOfElements == 0 )
     {
@@ -142,7 +154,6 @@ static NSString * const NPCPUVertexArrayStreamMismatch
         return NO;
     }
 
-    SAFE_DESTROY(indexStream);
     indexStream = RETAIN(newIndexStream);
     numberOfIndices = (GLsizei)numberOfElements;
     indexPointer = (GLvoid *)[[ indexStream data ] bytes ];
@@ -151,11 +162,6 @@ static NSString * const NPCPUVertexArrayStreamMismatch
         = (GLsizei)numberOfBytesForDataFormat([ indexStream dataFormat ]);
 
     return YES;
-}
-
-- (BOOL) syncToStreams
-{
-    return NO;
 }
 
 - (void) renderWithPrimitiveType:(const NpPrimitveType)type

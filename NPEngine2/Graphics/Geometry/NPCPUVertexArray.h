@@ -27,16 +27,14 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-- (BOOL) addVertexStream:(NPCPUBuffer *)vertexStream
+- (BOOL) setVertexStream:(NPCPUBuffer *)vertexStream
               atLocation:(NpVertexStreamSemantic)location
                    error:(NSError **)error
                         ;
 
-- (BOOL) addIndexStream:(NPCPUBuffer *)newIndexStream
+- (BOOL) setIndexStream:(NPCPUBuffer *)newIndexStream
                   error:(NSError **)error
                        ;
-
-- (BOOL) syncToStreams;
 
 - (void) renderWithPrimitiveType:(const NpPrimitveType)type;
 - (void) renderWithPrimitiveType:(const NpPrimitveType)type

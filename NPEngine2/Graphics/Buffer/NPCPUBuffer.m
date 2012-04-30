@@ -63,6 +63,21 @@
        dataFormat:(NpBufferDataFormat)newDataFormat
        components:(uint32_t)newNumberOfComponents
              data:(NSData *)newData
+            error:(NSError **)error
+{
+    return
+        [ self generate:newType
+             dataFormat:newDataFormat
+             components:newNumberOfComponents
+                   data:newData
+             dataLength:[ newData length ]
+                  error:error ];
+}
+
+- (BOOL) generate:(NpCPUBufferType)newType
+       dataFormat:(NpBufferDataFormat)newDataFormat
+       components:(uint32_t)newNumberOfComponents
+             data:(NSData *)newData
        dataLength:(NSUInteger)newDataLength
             error:(NSError **)error
 {
