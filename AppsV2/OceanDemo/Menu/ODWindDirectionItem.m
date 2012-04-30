@@ -116,7 +116,7 @@
 
     result
         = [ circleGeometry
-                addVertexStream:vertexBuffer
+                setVertexStream:vertexBuffer
                      atLocation:NpVertexStreamPositions
                           error:NULL ];
 

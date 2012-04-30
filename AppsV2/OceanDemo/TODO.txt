@@ -23,16 +23,16 @@ ODOceanEntity
     - transform feedback?
     - fork thread for online spectrum creation - done
     - inverse FFT on spectrum - done
-    - upload data to gpu
-    - display heightfield data
+    - upload data to gpu - done
+    - display heightfield data - done
     - apply heightfield data on projected grid
 
 ODPhillipsSpectrum
     - generates spectrum for now
     - make faster - half complex & float version - done
     - save last used parameters - done
-    - compare current to last parameters for memory allocation, re-generation of H0, ...
-    - MEMORY LAYOUT madness - need scanline based layout for texture - texture memory starts at lower left, fftw memory at upper left
+    - compare current to last parameters for memory allocation, re-generation of H0, ... - done
+    - MEMORY LAYOUT madness - need scanline based layout for texture - texture memory starts at lower left, fftw memory at upper left - done
 
 ODPerlinNoise
     - recheck for correctness
@@ -53,6 +53,7 @@ ODMenu
     - ODSelectionGroupItem - label rendering
     - ODButtonItem - label rendering
     - Fade-In / Fade-out - done
+    - ODWindDirectionItem - partially done
 
 - ODPreethamSkylight
     - loading - mostly done, scaling factor missing
