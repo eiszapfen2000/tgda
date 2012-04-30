@@ -1,4 +1,4 @@
-#import <Foundation/NSArray.h>
+#import <Foundation/NSPointerArray.h>
 #import <Foundation/NSData.h>
 #import <Foundation/NSException.h>
 #import "Log/NPLog.h"
@@ -21,7 +21,11 @@
     numberOfVertices = 0;
     numberOfIndices = 0;
 
-    vertexStreams = [[ NSMutableArray alloc ] init ];
+    NSPointerFunctionsOptions options
+        = NSPointerFunctionsObjectPointerPersonality | NSPointerFunctionsStrongMemory;
+
+    vertexStreams = [[ NSPointerArray alloc ] initWithOptions:options ];
+    [ vertexStreams setCount:(NpVertexStreamMax + 1) ];
     indexStream = nil;
 
     return self;
@@ -34,9 +38,8 @@
         glDeleteVertexArrays(1, &glID);
     }
 
-    [ vertexStreams removeAllObjects ];
+    [ vertexStreams setCount:0 ];
     DESTROY(vertexStreams);
-
     SAFE_DESTROY(indexStream);
 
     [ super dealloc ];
@@ -47,13 +50,27 @@
     return glID;
 }
 
-- (BOOL) addVertexStream:(NPBufferObject *)vertexStream
+- (BOOL) setVertexStream:(NPBufferObject *)newVertexStream
               atLocation:(NpVertexStreamSemantic)location
                    error:(NSError **)error
 {
-    NSAssert(vertexStream != nil, @"Invalid vertex stream");
+    if ( newVertexStream == nil )
+    {
+        [ vertexStreams replacePointerAtIndex:location withPointer:NULL ];
+        glBindVertexArray(glID);
+        glDisableVertexAttribArray((GLuint)location);
+        glBindVertexArray(0);
 
-    NSUInteger numberOfElements = [ vertexStream numberOfElements ];
+        NSArray * streams = [ vertexStreams allObjects ];
+        if ( [ streams count ] == 0 )
+        {
+            numberOfVertices = 0;
+        }
+
+        return YES;
+    }
+
+    NSUInteger numberOfElements = [ newVertexStream numberOfElements ];
     if ( numberOfElements == 0 )
     {
         NPLOG(@"Empty Vertex Stream");
@@ -78,73 +95,32 @@
         return NO;
     }
 
-    [ vertexStreams addObject:vertexStream ];
+    [ vertexStreams replacePointerAtIndex:location withPointer:newVertexStream ];
 
     GLuint glLocation = (GLuint)location;
-    GLenum type = getGLBufferDataFormat([ vertexStream dataFormat]);
-    GLint size = (GLint)[ vertexStream numberOfComponents ];
+    GLenum type = getGLBufferDataFormat([ newVertexStream dataFormat]);
+    GLint size = (GLint)[ newVertexStream numberOfComponents ];
 
     glBindVertexArray(glID);
-    [ vertexStream activate ];
+    [ newVertexStream activate ];
     glVertexAttribPointer(glLocation, size, type, GL_FALSE, 0, 0);
-    [ vertexStream deactivate ];
+    [ newVertexStream deactivate ];
     glEnableVertexAttribArray(glLocation);
     glBindVertexArray(0);
 
     return YES;
 }
 
-/*
-- (BOOL) addCPUVertexStream:(NPCPUBuffer *)vertexStream
-                 atLocation:(NpVertexStreamSemantic)location
-                      error:(NSError **)error
-{
-    NSAssert(vertexStream != nil, @"Invalid vertex stream");
-
-    NSUInteger numberOfElements = [ vertexStream numberOfElements ];
-    if ( numberOfElements == 0 )
-    {
-        NPLOG(@"Empty Vertex Stream");
-        return NO;
-    }
-
-    if ( numberOfElements > INT_MAX )
-    {
-        NPLOG(@"Vertex Stream is to large");
-        return NO;
-    }
-
-    GLsizei glNumberOfElements = (GLsizei)numberOfElements;
-
-    if ( numberOfVertices == 0 )
-    {
-        numberOfVertices = glNumberOfElements;
-    }
-    else if ( numberOfVertices != glNumberOfElements )
-    {
-        NPLOG(@"Buffer size mismatch");
-        return NO;
-    }
-
-    [ vertexStreams addObject:vertexStream ];
-
-    GLuint glLocation = (GLuint)location;
-    GLenum type = getGLBufferDataFormat([ vertexStream dataFormat]);
-    GLint size = (GLint)[ vertexStream numberOfComponents ];
-
-    glBindVertexArray(glID);
-    glVertexAttribPointer(glLocation, size, type, GL_FALSE, 0, [[ vertexStream data ] bytes ]);
-    glEnableVertexAttribArray(glLocation);
-    glBindVertexArray(0);
-
-    return YES;
-}
-*/
-
-- (BOOL) addIndexStream:(NPBufferObject *)newIndexStream
+- (BOOL) setIndexStream:(NPBufferObject *)newIndexStream
                   error:(NSError **)error
 {
-    NSAssert(newIndexStream != nil, @"Invalid index stream");
+    SAFE_DESTROY(indexStream);
+    numberOfIndices = 0;
+
+    if ( newIndexStream == nil )
+    {
+        return YES;
+    }
 
     NSUInteger numberOfElements = [ newIndexStream numberOfElements ];
     if ( numberOfElements == 0 )

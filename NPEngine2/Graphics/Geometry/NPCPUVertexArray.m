@@ -1,19 +1,12 @@
-#import <Foundation/NSPointerArray.h>
+#import <Foundation/NSArray.h>
 #import <Foundation/NSData.h>
 #import <Foundation/NSException.h>
+#import <Foundation/NSPointerArray.h>
 #import "Log/NPLog.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Graphics/NPEngineGraphicsErrors.h"
 #import "Graphics/Buffer/NPCPUBuffer.h"
 #import "NPCPUVertexArray.h"
-
-static NSString * const NPCPUVertexArrayVertexStreamEmpty = @"Vertex stream is empty.";
-static NSString * const NPCPUVertexArrayIndexStreamEmpty = @"Index stream is empty.";
-static NSString * const NPCPUVertexArrayVertexStreamTooLarge = @"Vertex stream exceeds 2GB limit.";
-static NSString * const NPCPUVertexArrayIndexStreamTooLarge = @"Index stream exceeds 2GB limit.";
-
-static NSString * const NPCPUVertexArrayStreamMismatch
-    = @"Stream has not the same number of vertices as other streams.";
 
 @implementation NPCPUVertexArray
 
@@ -67,6 +60,12 @@ static NSString * const NPCPUVertexArrayStreamMismatch
     sizes[location] = 0;
     pointers[location] = NULL;
 
+    NSArray * streams = [ vertexStreams allObjects ];
+    if ( [ streams count ] == 0 )
+    {
+        numberOfVertices = 0;
+    }
+
     // if no new vertex stream is provided, return
     if ( newVertexStream == nil )
     {
@@ -82,7 +81,7 @@ static NSString * const NPCPUVertexArrayStreamMismatch
         {
             *error
                 = [ NSError errorWithCode:NPEngineGraphicsVertexArrayError
-                              description:NPCPUVertexArrayVertexStreamEmpty ];
+                              description:NPVertexArrayVertexStreamEmpty ];
         }
 
         return NO;
@@ -94,7 +93,7 @@ static NSString * const NPCPUVertexArrayStreamMismatch
         {
             *error
                 = [ NSError errorWithCode:NPEngineGraphicsVertexArrayError
-                              description:NPCPUVertexArrayVertexStreamTooLarge ];
+                              description:NPVertexArrayVertexStreamTooLarge ];
         }
 
         return NO;
@@ -112,7 +111,7 @@ static NSString * const NPCPUVertexArrayStreamMismatch
         {
             *error
                 = [ NSError errorWithCode:NPEngineGraphicsVertexArrayError
-                              description:NPCPUVertexArrayStreamMismatch ];
+                              description:NPVertexArrayStreamMismatch ];
         }
 
         return NO;
@@ -151,7 +150,7 @@ static NSString * const NPCPUVertexArrayStreamMismatch
         {
             *error
                 = [ NSError errorWithCode:NPEngineGraphicsVertexArrayError
-                              description:NPCPUVertexArrayIndexStreamEmpty ];
+                              description:NPVertexArrayIndexStreamEmpty ];
         }
 
         return NO;
@@ -163,7 +162,7 @@ static NSString * const NPCPUVertexArrayStreamMismatch
         {
             *error
                 = [ NSError errorWithCode:NPEngineGraphicsVertexArrayError
-                              description:NPCPUVertexArrayIndexStreamTooLarge ];
+                              description:NPVertexArrayIndexStreamTooLarge ];
         }
 
         return NO;
