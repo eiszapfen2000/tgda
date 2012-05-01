@@ -54,7 +54,7 @@
     fv3_v_init_with_zeros(&zenithColor);
 
     // turbidity must be in the range 2 - 6
-    turbidity = 8.0f;
+    turbidity = 4.0f;
 
     return self;
 }
