@@ -32,7 +32,9 @@ void main()
     XYZ.z = ((1.0f - xyY.x - xyY.y) / xyY.y) * xyY.z;
 
     colorOut = vec4(XYZ2LinearsRGB * XYZ, 1.0f);
+
+    // REMOVE THE FOLLOWING LINE
     colorOut.rgb *= 0.00025f;
-    //colorOut = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
 	gl_Position = np_modelviewprojectionmatrix * vec4(position.xyz, 1.0f);
 }
