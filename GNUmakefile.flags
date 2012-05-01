@@ -27,7 +27,10 @@ ADDITIONAL_CPPFLAGS += \
     $(BASIC_DEFINES)
 
 BASIC_CFLAGS += \
-    -Wall -Wextra -Wformat=2 -std=gnu99 -fstrict-aliasing -Wstrict-aliasing
+    -Wall -Wextra -Wformat=2 -std=gnu99 \
+    -fstrict-aliasing -Wstrict-aliasing \
+    -Wpointer-arith -Wno-unused-parameter \
+    # -O3 -mtune=native -ffast-math
 
 BASIC_OBJCFLAGS += \
     $(BASIC_CFLAGS) \

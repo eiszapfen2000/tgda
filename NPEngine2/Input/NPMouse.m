@@ -84,7 +84,7 @@ void reset_mouse_state(NpMouseState * mouseState)
         case NpMouseButton7:
         case NpMouseButton8:
         {
-            return mouseState.buttons[button - 512];
+            return mouseState.buttons[button - NpMouseEventMin];
         }
 
         case NpMouseWheelUp:
@@ -100,9 +100,7 @@ void reset_mouse_state(NpMouseState * mouseState)
         {
             return NO;
         }
-    }
-
-    return NO;   
+    }  
 }
 
 @end
