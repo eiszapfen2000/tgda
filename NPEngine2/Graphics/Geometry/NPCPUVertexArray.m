@@ -60,6 +60,7 @@
     sizes[location] = 0;
     pointers[location] = NULL;
 
+    // if the last stream is removed, reset numberOfVertices
     NSArray * streams = [ vertexStreams allObjects ];
     if ( [ streams count ] == 0 )
     {
@@ -185,7 +186,6 @@
         [ self renderWithPrimitiveType:type
                             firstIndex:0
                              lastIndex:numberOfIndices - 1 ];
-
     }
     else
     {

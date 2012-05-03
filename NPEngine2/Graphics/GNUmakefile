@@ -18,6 +18,7 @@ NPEngineGraphicsEnums.c
 
 libNPEngineGraphics_OBJC_FILES = \
 NPEngineGraphics.m \
+NPEngineGraphicsConversions.m \
 NPEngineGraphicsErrors.m \
 NPEngineGraphicsStringEnumConversion.m \
 NPEngineGraphicsStringToClassConversion.m \
@@ -28,6 +29,7 @@ NPOrthographic.m
 
 libNPEngineGraphics_HEADER_FILES = \
 NPEngineGraphics.h \
+NPEngineGraphicsConversions.h \
 NPEngineGraphicsEnums.h \
 NPEngineGraphicsErrors.h \
 NPEngineGraphicsStringEnumConversion.h \
