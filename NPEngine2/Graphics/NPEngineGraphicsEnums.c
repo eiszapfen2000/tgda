@@ -433,12 +433,12 @@ GLenum getGLBufferUsage(const NpBufferDataUpdateRate UpdateRate,
 
                 case NpBufferDataUpdateOnceUseSeldom:
                 {
-                    result = GL_STREAM_DRAW;
+                    result = GL_DYNAMIC_DRAW;
                 }
 
                 case NpBufferDataUpdateOftenUseOften:
                 {
-                    result = GL_DYNAMIC_DRAW;
+                    result = GL_STREAM_DRAW;
                 }
             }
 
@@ -456,12 +456,12 @@ GLenum getGLBufferUsage(const NpBufferDataUpdateRate UpdateRate,
 
                 case NpBufferDataUpdateOnceUseSeldom:
                 {
-                    result = GL_STREAM_READ;
+                    result = GL_DYNAMIC_READ;
                 }
 
                 case NpBufferDataUpdateOftenUseOften:
                 {
-                    result = GL_DYNAMIC_READ;
+                    result = GL_STREAM_READ;
                 }
             }
 
@@ -479,12 +479,12 @@ GLenum getGLBufferUsage(const NpBufferDataUpdateRate UpdateRate,
 
                 case NpBufferDataUpdateOnceUseSeldom:
                 {
-                    result = GL_STREAM_COPY;
+                    result = GL_DYNAMIC_COPY;
                 }
 
                 case NpBufferDataUpdateOftenUseOften:
                 {
-                    result = GL_DYNAMIC_COPY;
+                    result = GL_STREAM_COPY;
                 }
             }
 
