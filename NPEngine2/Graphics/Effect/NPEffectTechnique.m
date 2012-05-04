@@ -38,10 +38,6 @@ static NPEffectTechnique * currentTechnique = nil;
 
 @interface NPEffectTechnique (Private)
 
-+ (BOOL) checkProgramLinkStatus:(GLuint)glID
-                          error:(NSError **)error
-                               ;
-
 - (NPShader *) loadShaderFromFile:(NSString *)fileName
             insertEffectVariables:(NPStringList *)effectVariables
                     insertStreams:(NPStringList *)streams
@@ -77,6 +73,48 @@ static NPEffectTechnique * currentTechnique = nil;
 @end
 
 @implementation NPEffectTechnique
+
++ (BOOL) checkProgramLinkStatus:(GLuint)glID
+                          error:(NSError **)error
+{
+	if ( glID == 0 )
+	{
+		return NO;
+	}
+
+	BOOL result = YES;
+
+	GLint successful;
+	glGetProgramiv(glID, GL_LINK_STATUS, &successful);
+
+	if ( successful == GL_FALSE )
+	{
+		GLsizei infoLogLength = 0;
+		GLsizei charsWritten = 0;
+
+		glGetProgramiv(glID, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+		char* infoLog = ALLOC_ARRAY(char, (size_t)infoLogLength);
+		glGetProgramInfoLog(glID, infoLogLength, &charsWritten, infoLog);
+
+        if ( error != NULL )
+        {
+            NSString * description
+                = AUTORELEASE([[ NSString alloc ] 
+                                    initWithCString:infoLog
+                                           encoding:NSASCIIStringEncoding ]);
+
+            *error = [ NSError errorWithCode:NPEngineGraphicsEffectTechniqueGLSLLinkError
+                                 description:description ];
+        }
+		
+		FREE(infoLog);
+
+		result = NO;
+	}
+
+	return result;
+}
 
 - (id) initWithName:(NSString *)newName
              effect:(NPEffect *)newEffect
@@ -511,6 +549,12 @@ static NPEffectTechnique * currentTechnique = nil;
 		DESTROY(fragmentShader);
 	}
 
+    if ( geometryShader != nil )
+    {
+		glDetachShader(glID, [ geometryShader glID ]);
+		DESTROY(geometryShader);
+    }
+
 	if ( vertexShader != nil )
 	{
 		glDetachShader(glID, [ vertexShader glID ]);
@@ -518,56 +562,14 @@ static NPEffectTechnique * currentTechnique = nil;
 	}
 }
 
-+ (BOOL) checkProgramLinkStatus:(GLuint)glID
-                          error:(NSError **)error
-{
-	if ( glID == 0 )
-	{
-		return NO;
-	}
-
-	BOOL result = YES;
-
-	GLint successful;
-	glGetProgramiv(glID, GL_LINK_STATUS, &successful);
-
-	if ( successful == GL_FALSE )
-	{
-		GLsizei infoLogLength = 0;
-		GLsizei charsWritten = 0;
-
-		glGetProgramiv(glID, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-		char* infoLog = ALLOC_ARRAY(char, (size_t)infoLogLength);
-		glGetProgramInfoLog(glID, infoLogLength, &charsWritten, infoLog);
-
-        if ( error != NULL )
-        {
-            NSString * description
-                = AUTORELEASE([[ NSString alloc ] 
-                                    initWithCString:infoLog
-                                           encoding:NSASCIIStringEncoding ]);
-
-            *error = [ NSError errorWithCode:NPEngineGraphicsEffectTechniqueGLSLLinkError
-                                 description:description ];
-        }
-		
-		FREE(infoLog);
-
-		result = NO;
-	}
-
-	return result;
-}
-
 - (BOOL) linkShader:(NSError **)error
 {
-    if ( vertexShader == nil || fragmentShader == nil )
+    if ( vertexShader == nil )
     {
         if ( error != NULL )
         {
             NSString * description
-                = [ NSString stringWithFormat:@"Technique %@ misses at least one shader", name ];
+                = [ NSString stringWithFormat:@"Technique %@ misses vertex shader", name ];
 
             *error = [ NSError errorWithCode:NPEngineGraphicsEffectTechniqueShaderMissing
                                  description:description ];
@@ -576,7 +578,9 @@ static NPEffectTechnique * currentTechnique = nil;
         return NO;
     }
 
-    if ( [ vertexShader ready ] == NO || [ fragmentShader ready ] == NO )
+    if ( [ vertexShader ready ] == NO
+         || ( geometryShader != nil && [ geometryShader ready ] == NO )
+         || ( fragmentShader != nil && [ fragmentShader ready ] == NO ))
     {
         if ( error != NULL )
         {
@@ -586,13 +590,23 @@ static NPEffectTechnique * currentTechnique = nil;
             *error = [ NSError errorWithCode:NPEngineGraphicsEffectTechniqueShaderCorrupt
                                  description:description ];
         }
+
         return NO;
     }
 
     NSAssert1(glID != 0, @"Technique %@ misses GL program ID", name);
 
-	glAttachShader(glID, [ vertexShader   glID ]);
-	glAttachShader(glID, [ fragmentShader glID ]);
+    glAttachShader(glID, [ vertexShader glID ]);
+
+    if ( geometryShader != nil )
+    {
+        glAttachShader(glID, [ geometryShader glID ]);
+    }
+
+    if ( fragmentShader != nil )
+    {
+        glAttachShader(glID, [ fragmentShader glID ]);
+    }
 
 	glLinkProgram(glID);
 

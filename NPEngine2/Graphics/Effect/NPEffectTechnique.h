@@ -11,11 +11,16 @@
     GLuint glID;
 
     NPShader * vertexShader;
+    NPShader * geometryShader;
     NPShader * fragmentShader;
 
     NPEffect * effect;
     NSMutableArray * techniqueVariables;
 }
+
++ (BOOL) checkProgramLinkStatus:(GLuint)glID
+                          error:(NSError **)error
+                               ;
 
 - (id) initWithName:(NSString *)newName
              effect:(NPEffect *)newEffect
