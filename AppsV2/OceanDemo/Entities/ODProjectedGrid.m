@@ -2,17 +2,34 @@
 #import <Foundation/NSData.h>
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSException.h>
+#import "Log/NPLog.h"
 #import "Core/Container/NPAssetArray.h"
 #import "Core/World/NPTransformationState.h"
 #import "Core/NPEngineCore.h"
+#import "Graphics/Buffer/NPBufferObject.h"
 #import "Graphics/Buffer/NPCPUBuffer.h"
 #import "Graphics/Geometry/NPCPUVertexArray.h"
+#import "Graphics/Geometry/NPVertexArray.h"
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/NPEngineGraphics.h"
 #import "ODProjector.h"
 #import "ODProjectedGrid.h"
+
+/*
+static GLsizei vertexCount = 6;
+static GLsizeiptr positionSize = 6 * sizeof(FVector4);
+static FVector4 positionData[6] =
+{
+    {-1.0f,-1.0f, 0.0f, 1.0f},
+    {1.0f,-1.0f, 0.0f, 1.0f},
+    {1.0f, 1.0f, 0.0f, 1.0f},
+    {1.0f, 1.0f, 0.0f, 1.0f},
+    {-1.0f, 1.0f, 0.0f, 1.0f},
+    {-1.0f,-1.0f, 0.0f, 1.0f}
+};
+*/
 
 @interface ODProjectedGrid (Private)
 
@@ -228,6 +245,14 @@
                                 length:sizeof(uint16_t) * numberOfIndices
                           freeWhenDone:NO ];
 
+    /*
+    NSData * sourceData
+        = [ NSData dataWithBytesNoCopy:positionData
+                                length:positionSize
+                          freeWhenDone:NO ];
+    */
+
+
     BOOL result
         = [ gridVertexStream generate:NpBufferObjectTypeGeometry
                            dataFormat:NpBufferDataFormatFloat32
@@ -251,6 +276,41 @@
         = result && [ gridVertexArray setIndexStream:gridIndexStream 
                                                error:NULL ];
 
+    NSAssert(result, @"");
+
+    /*
+    result
+        = result && [ sourceVertexStream generate:NpBufferObjectTypeGeometry
+                                       updateRate:NpBufferDataUpdateOftenUseOften
+                                        dataUsage:NpBufferDataCopyGPUToGPU
+                                       dataFormat:NpBufferDataFormatFloat32
+                                       components:4
+                                             data:sourceData
+                                       dataLength:positionSize
+                                            error:NULL ];
+    */
+
+    result
+        = result && [ transformedVertexStream generate:NpBufferObjectTypeGeometry
+                                            updateRate:NpBufferDataUpdateOftenUseOften
+                                             dataUsage:NpBufferDataCopyGPUToGPU
+                                            dataFormat:NpBufferDataFormatFloat32
+                                            components:4
+                                                  data:[ NSData data ]
+                                            dataLength:numberOfIndices * sizeof(FVector4)
+                                                 error:NULL ];
+
+    /*
+    result
+        = result && [ source setVertexStream:sourceVertexStream 
+                                  atLocation:NpVertexStreamPositions
+                                       error:NULL ];
+    */
+
+    result
+        = result && [ transformTarget setVertexStream:transformedVertexStream 
+                                           atLocation:NpVertexStreamPositions
+                                                error:NULL ];
 
     NSAssert(result, @"");
 }
@@ -289,10 +349,16 @@
     cornerVertexArray = [[ NPCPUVertexArray alloc ] init ];
     gridVertexArray   = [[ NPCPUVertexArray alloc ] init ];
 
+    //source          = [[ NPVertexArray alloc ] init ];
+    transformTarget = [[ NPVertexArray alloc ] init ];
+
     gridVertexStream   = [[ NPCPUBuffer alloc ] initWithName:@"gridVertexStream" ];
     gridIndexStream    = [[ NPCPUBuffer alloc ] initWithName:@"gridIndexStream" ];
     cornerVertexStream = [[ NPCPUBuffer alloc ] initWithName:@"cornerVertexStream" ];
     cornerIndexStream  = [[ NPCPUBuffer alloc ] initWithName:@"cornerIndexStream" ];
+
+    //sourceVertexStream = [[ NPBufferObject alloc ] initWithName:@"sourceVertexStream" ];
+    transformedVertexStream = [[ NPBufferObject alloc ] initWithName:@"transformedVertexStream" ];
 
     NSData * cornerVertexData
         = [ NSData dataWithBytesNoCopy:cornerVertices
@@ -309,7 +375,6 @@
                              dataFormat:NpBufferDataFormatFloat32
                              components:4
                                    data:cornerVertexData
-                             dataLength:[ cornerVertexData length ]
                                   error:NULL ];
 
     result
@@ -317,7 +382,6 @@
                                       dataFormat:NpBufferDataFormatUInt16
                                       components:1
                                             data:cornerIndexData
-                                      dataLength:[ cornerIndexData length ]
                                            error:NULL ];
 
     result
@@ -331,11 +395,32 @@
 
     NSAssert(result, @"");
 
+    glGenQueries(1, &query);
+    
     effect
         = [[[ NPEngineGraphics instance ] effects ]
-                getAssetWithFileName:@"default.effect" ];
+                getAssetWithFileName:@"projected_grid.effect" ];
 
     ASSERT_RETAIN(effect);
+
+    transformTechnique = [ effect techniqueWithName:@"transform" ];
+    feedbackTechnique  = [ effect techniqueWithName:@"feedback" ];
+
+    ASSERT_RETAIN(transformTechnique);
+    ASSERT_RETAIN(feedbackTechnique);
+
+    const char * tfvarying = "gl_Position";
+    glTransformFeedbackVaryings([ transformTechnique glID ], 1, &tfvarying, GL_SEPARATE_ATTRIBS);
+	glLinkProgram([ transformTechnique glID ]);
+
+    NSError * tfLinkError = nil;
+    result = [ NPEffectTechnique checkProgramLinkStatus:[ transformTechnique glID ] error:&tfLinkError ];
+    if ( result == NO )
+    {
+        NPLOG_ERROR(tfLinkError);
+    }
+
+    NSAssert(result, @"TF");
 
     color = [ effect variableWithName:@"color" ];
 
@@ -349,13 +434,22 @@
 
 - (void) dealloc
 {
+    DESTROY(feedbackTechnique);
+    DESTROY(transformTechnique);
     DESTROY(effect);
+
+    glDeleteQueries(1, &query);
+
     SAFE_DESTROY(gridVertexArray);
     DESTROY(gridVertexStream);
     DESTROY(gridIndexStream);
     DESTROY(cornerVertexArray);
     DESTROY(cornerIndexStream);
     DESTROY(cornerVertexStream);
+    //DESTROY(source);
+    DESTROY(transformTarget);
+    //DESTROY(sourceVertexStream);
+    DESTROY(transformedVertexStream);
 
     SAFE_DESTROY(projector);
 
@@ -458,20 +552,60 @@
     [[[ NPEngineCore instance ] transformationState ] resetModelMatrix ];
 
     [ color setValue:gridColor ];
-    [[ effect techniqueWithName:@"color" ] activate ];    
+    //[[ effect techniqueWithName:@"color" ] activate ];    
 
     switch ( renderMode )
     {
         case ProjectedGridCPURaycasting:
         case ProjectedGridCPUInterpolation:
         {
-            [ gridVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+            //[ feedbackTechnique activate ];
+            //[ gridVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+
+            glEnable(GL_RASTERIZER_DISCARD);
+                [ transformTechnique activate ];
+
+                //glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, [ transformedVertexStream glID ]);
+                glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, [ transformedVertexStream glID ]);
+
+                //glBindVertexArray([source glID]);
+                glBeginQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query);
+                glBeginTransformFeedback(GL_TRIANGLES);
+                //glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 1);
+                [ gridVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+                glEndTransformFeedback();
+                glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
+                glBindVertexArray(0);
+
+                glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
+
+            glDisable(GL_RASTERIZER_DISCARD);
+
+            GLuint primitivesWritten = 0;
+            glGetQueryObjectuiv(query, GL_QUERY_RESULT, &primitivesWritten);
+            //NSLog(@"%u", primitivesWritten);
+
+            [ feedbackTechnique activate ];
+            //[ transformTarget renderWithPrimitiveType:NpPrimitiveTriangles ];
+            //glDisable(GL_CULL_FACE);
+            glBindVertexArray([transformTarget glID]);
+            glDrawArrays(GL_TRIANGLES, 0, 7938 * 3);
+            glBindVertexArray(0);    
+            
+            /*
+            glBindBuffer(GL_ARRAY_BUFFER, [ transformedVertexStream glID ]);
+            FVertex4* pointer = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
+            NSLog(@"%f %f %f %f", pointer[0].x, pointer[0].y, pointer[0].z, pointer[0].w);
+            glUnmapBuffer(GL_ARRAY_BUFFER);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            */
+
             break;
         }
 
         case ProjectedGridGPUInterpolation:
         {
-            [ cornerVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+            //[ cornerVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
             break;
         }
     }

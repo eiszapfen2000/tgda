@@ -30,6 +30,7 @@
 #import "Entities/ODPerlinNoise.h"
 #import "Menu/ODMenu.h"
 #import "ODScene.h"
+#import "GL/glew.h"
 #import "GL/glfw.h"
 
 NpKeyboardState keyboardState;
@@ -103,6 +104,12 @@ int main (int argc, char **argv)
 
     NSLog(@"%d %d %d %d", major, minor, profile, d);
 
+    int32_t tf;
+    glGetIntegerv(GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS, &tf);
+    NSLog(@"MAX TF S %d", tf);
+    glGetIntegerv(GL_MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS, &tf);
+    NSLog(@"MAX TF I %d", tf);
+
     glClearDepth(1);
 
     // callback for window resizes
@@ -114,7 +121,7 @@ int main (int argc, char **argv)
     mousePosition.x = mousePosition.y = 0;
 
     // VSync
-    glfwSwapInterval(1);
+    glfwSwapInterval(0);
     // do not poll events on glfwSwapBuffers
     glfwDisable(GLFW_AUTO_POLL_EVENTS);
     // register keyboard callback
