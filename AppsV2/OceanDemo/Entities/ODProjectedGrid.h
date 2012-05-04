@@ -2,6 +2,8 @@
 #import "Core/NPObject/NPObject.h"
 #import "ODPEntity.h"
 
+@class NPBufferObject;
+@class NPVertexArray;
 @class NPCPUBuffer;
 @class NPCPUVertexArray;
 @class ODProjector;
@@ -45,6 +47,14 @@ ODProjectedGridRenderMode;
     NPCPUBuffer * cornerVertexStream;
     NPCPUBuffer * cornerIndexStream;
     NPCPUVertexArray * cornerVertexArray;
+    // query
+    GLuint query;
+    // transform target buffer
+    //NPBufferObject * sourceVertexStream;
+    NPBufferObject * transformedVertexStream;
+    //NPBufferObject * transformedIndexStream;
+    //NPVertexArray * source;
+    NPVertexArray * transformTarget;
     // effect
     NPEffect * effect;
     NPEffectTechnique* transformTechnique;

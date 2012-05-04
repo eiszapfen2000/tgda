@@ -1,19 +1,20 @@
-effect "default":
+effect "Projected Grid":
 
-technique "render"
+technique "transform"
 {
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
+    uniform vec4 color;
     # vertex streams
-    in vec3 in_position : 0;
+    in vec4 in_position : 0;
     # fragment streams
     out vec4 target : 0;
     # shaders
-    set vertex shader "default.vertex"
-    set fragment shader "default.fragment"
+    set vertex shader "transform.vertex"
+    set fragment shader "color.fragment"
 }
 
-technique "color"
+technique "feedback"
 {
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
@@ -26,5 +27,4 @@ technique "color"
     set vertex shader "color.vertex"
     set fragment shader "color.fragment"
 }
-
 

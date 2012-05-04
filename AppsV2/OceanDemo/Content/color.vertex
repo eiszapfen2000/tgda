@@ -1,9 +1,7 @@
 #version 150
-#extension GL_ARB_explicit_attrib_location : enable
-
-layout(location = 0) in vec4 position;
 
 void main()
 {
-	gl_Position = np_modelviewprojectionmatrix * position;
+	gl_Position = np_modelviewprojectionmatrix * in_position;
 }
+
