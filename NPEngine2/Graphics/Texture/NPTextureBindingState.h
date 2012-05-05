@@ -7,6 +7,8 @@
 {
 	uint32_t numberOfSuppertedTexelUnits;
 	uint32_t maximumNumberOfVertexTexelUnits;
+	uint32_t maximumNumberOfGeometryTexelUnits;
+	uint32_t maximumNumberOfFragmentTexelUnits;
 
 	BOOL locked;
 
