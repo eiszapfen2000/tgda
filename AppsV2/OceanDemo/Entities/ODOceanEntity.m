@@ -174,9 +174,8 @@ OdHeightfieldData;
 @end
 
 static const Vector2 defaultWindDirection = {1.0, 0.0};
-static const NSUInteger defaultResolutionIndex = 3;
-
 static const int32_t resolutions[4] = {64, 128, 256, 512};
+static const NSUInteger defaultResolutionIndex = 0;
 
 @implementation ODOceanEntity
 
@@ -419,8 +418,8 @@ static const int32_t resolutions[4] = {64, 128, 256, 512};
         FREE(hf);
     }
 
-    [ projectedGrid render ];
-    [ projector     render ];
+    [ projectedGrid render:heightfield ];
+    [ projector render ];
 
     [[[ NPEngineGraphics instance ] orthographic ] activate ];
     [[[ NPEngineGraphics instance ] textureBindingState ] setTexture:heightfield texelUnit:0 ];
@@ -438,8 +437,6 @@ static const int32_t resolutions[4] = {64, 128, 256, 512};
     glEnd();
 
     [[[ NPEngineGraphics instance ] orthographic ] deactivate ];
-
-
 }
 
 @end

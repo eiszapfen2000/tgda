@@ -4,14 +4,11 @@ technique "transform"
 {
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
-    uniform vec4 color;
+    uniform sampler2D heights;
     # vertex streams
     in vec4 in_position : 0;
-    # fragment streams
-    out vec4 target : 0;
     # shaders
     set vertex shader "transform.vertex"
-    set fragment shader "color.fragment"
 }
 
 technique "feedback"
