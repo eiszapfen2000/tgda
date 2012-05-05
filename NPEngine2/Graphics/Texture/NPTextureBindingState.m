@@ -14,7 +14,8 @@
     self = [ super initWithName:newName ];
 
     locked = NO;
-    numberOfSuppertedTexelUnits = maximumNumberOfVertexTexelUnits = 0;
+    numberOfSuppertedTexelUnits = maximumNumberOfVertexTexelUnits
+        = maximumNumberOfGeometryTexelUnits = maximumNumberOfFragmentTexelUnits = 0;
     currentTextureIndices = currentTextureTypes = NULL;
 	boundTextureIndices = boundTextureTypes = NULL;
 	lockedTexelUnits = NULL;
@@ -39,17 +40,25 @@
 {
     GLint numberSTU = 0;
     GLint maxNumberVTU = 0;
-	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &numberSTU);
+    GLint maxNumberGTU = 0;
+    GLint maxNumberFTU = 0;
+    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &numberSTU);
 	glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &maxNumberVTU);
+    glGetIntegerv(GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS, &maxNumberGTU);
+	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxNumberFTU);
 
     // this is to prevent crashs in case the driver
     // returns -1
     numberOfSuppertedTexelUnits = (uint32_t)(MAX(4, numberSTU));
     maximumNumberOfVertexTexelUnits = (uint32_t)(MAX(4, maxNumberVTU));
+    maximumNumberOfGeometryTexelUnits = (uint32_t)(MAX(4, maxNumberGTU));
+    maximumNumberOfFragmentTexelUnits = (uint32_t)(MAX(4, maxNumberFTU));
 
     // log the values the driver returns
     NPLOG(@"Maximum Texel Units: %d", numberSTU);
 	NPLOG(@"Maximum Vertex Texel Units: %d", maxNumberVTU);
+	NPLOG(@"Maximum Geometry Texel Units: %d", maxNumberGTU);
+	NPLOG(@"Maximum Fragment Texel Units: %d", maxNumberFTU);
 
 	currentTextureIndices = ALLOC_ARRAY(GLuint, numberOfSuppertedTexelUnits);
 	boundTextureIndices   = ALLOC_ARRAY(GLuint, numberOfSuppertedTexelUnits);
