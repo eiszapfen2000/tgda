@@ -10,6 +10,7 @@
 @class NPEffect;
 @class NPEffectTechnique;
 @class NPEffectVariableFloat4;
+@class NPTexture2D;
 
 typedef enum ODProjectedGridRenderMode
 {
@@ -19,7 +20,7 @@ typedef enum ODProjectedGridRenderMode
 }
 ODProjectedGridRenderMode;
 
-@interface ODProjectedGrid : NPObject < ODPEntity >
+@interface ODProjectedGrid : NPObject// < ODPEntity >
 {
     // resolution
     IVector2 resolutionLastFrame;
@@ -50,10 +51,7 @@ ODProjectedGridRenderMode;
     // query
     GLuint query;
     // transform target buffer
-    //NPBufferObject * sourceVertexStream;
     NPBufferObject * transformedVertexStream;
-    //NPBufferObject * transformedIndexStream;
-    //NPVertexArray * source;
     NPVertexArray * transformTarget;
     // effect
     NPEffect * effect;
@@ -72,6 +70,9 @@ ODProjectedGridRenderMode;
 - (void) setResolution:(const IVector2)newResolution;
 - (void) setRenderMode:(const ODProjectedGridRenderMode)newRenderMode;
 - (void) setProjector:(ODProjector *)newProjector;
+
+- (void) update:(const float)frameTime;
+- (void) render:(NPTexture2D *)heights;
 
 @end
 
