@@ -129,14 +129,6 @@
             break;
         }
 
-        case NpRenderTargetStencil:
-        {
-            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
-                GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, glID);
-
-            break;
-        }
-
         case NpRenderTargetDepthStencil:
         {
             glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
@@ -177,14 +169,6 @@
         {
             glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
                 GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, 0);
-
-            break;
-        }
-
-        case NpRenderTargetStencil:
-        {
-            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
-                GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, 0);
 
             break;
         }

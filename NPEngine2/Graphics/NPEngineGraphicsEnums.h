@@ -173,7 +173,6 @@ typedef enum NpRenderTargetType
     NpRenderTargetUnknown = -1,
     NpRenderTargetColor = 0,
 	NpRenderTargetDepth = 1,
-    NpRenderTargetStencil = 2,
     NpRenderTargetDepthStencil = 3
 }
 NpRenderTargetType;
@@ -186,10 +185,8 @@ typedef enum NpRenderBufferDataFormat
     NpRenderBufferDataFormatFloat32 = 2,
     NpRenderBufferDataFormatDepth16 = 3,
     NpRenderBufferDataFormatDepth24 = 4,
-    NpRenderBufferDataFormatDepth32 = 5,
-    NpRenderBufferDataFormatStencil8 = 6,
-    NpRenderBufferDataFormatStencil16 = 7,
-    NpRenderBufferDataFormatDepth24Stencil8 = 8,
+    NpRenderBufferDataFormatDepth32 = 5
+//    NpRenderBufferDataFormatDepth24Stencil8 = 8
 }
 NpRenderBufferDataFormat;
 
