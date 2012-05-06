@@ -362,46 +362,42 @@ GLenum getGLRenderBufferInternalFormat(const NpRenderTargetType Type,
 				    break;
                 }
 
-                default:
+                case NpRenderBufferDataFormatFloat32:
                 {
+                    internalFormat = GL_DEPTH_COMPONENT32F;
                     break;
-                }
-			}
-
-			break;
-		}
-
-    	case NpRenderTargetStencil:
-		{
-			switch (DataFormat)
-			{
-			    case NpRenderBufferDataFormatStencil8:
-                {
-				    internalFormat = GL_STENCIL_INDEX8;
-				    break;
-                }
-
-    			case NpRenderBufferDataFormatStencil16:
-                {
-				    internalFormat = GL_STENCIL_INDEX16;
-				    break;
                 }
 
                 default:
                 {
                     break;
                 }
-			}			
+			}
 
 			break;
 		}
 
     	case NpRenderTargetDepthStencil:
 		{
-			if (DataFormat == NpRenderBufferDataFormatDepth24Stencil8)
-			{
-				internalFormat = GL_DEPTH24_STENCIL8;
-			}
+            switch (DataFormat)
+            {
+                case NpRenderBufferDataFormatDepth24:
+                {
+    				internalFormat = GL_DEPTH24_STENCIL8;
+                    break;
+                }
+
+                case NpRenderBufferDataFormatFloat32:
+                {
+                    internalFormat = GL_DEPTH32F_STENCIL8;
+                    break;
+                }
+
+                default:
+                {
+                    break;
+                }
+            }
 
 			break;
 		}
