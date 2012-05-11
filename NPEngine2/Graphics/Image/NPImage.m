@@ -176,7 +176,7 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
     ilGenImages(1, &ilID);
     ilBindImage(ilID);
 
-    ilOriginFunc(IL_ORIGIN_LOWER_LEFT );
+    ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
     ilEnable(IL_ORIGIN_SET);
 
  	ILboolean success = 
@@ -249,7 +249,7 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
         }
     }
 
-    dataFormat = convert_devil_dataformat(type);
+    dataFormat  = convert_devil_dataformat(type);
     pixelFormat = convert_devil_pixelformat(format, sRGB);
 
     if ( dataFormat == NpImageDataFormatUnknown
