@@ -1,24 +1,36 @@
 #include "NPEngineGraphicsEnums.h"
 
-GLenum getGLTextureDataFormat(const NpImageDataFormat dataFormat)
+GLenum getGLTextureDataFormat(const NpTextureDataFormat dataFormat)
 {
     GLenum result = GL_NONE;
 
     switch ( dataFormat )
     {
-        case NpImageDataFormatByte:
+        case NpTextureDataFormatByte:
         {
             result = GL_UNSIGNED_BYTE;
             break;
         }
 
-        case NpImageDataFormatFloat16:
+        case NpTextureDataFormatShort:
         {
-            result = GL_HALF_FLOAT_ARB;
+            result = GL_SHORT;
             break;
         }
 
-        case NpImageDataFormatFloat32:
+        case NpTextureDataFormatInt:
+        {
+            result = GL_INT;
+            break;
+        }
+
+        case NpTextureDataFormatFloat16:
+        {
+            result = GL_HALF_FLOAT;
+            break;
+        }
+
+        case NpTextureDataFormatFloat32:
         {
             result = GL_FLOAT;
             break;
@@ -33,35 +45,47 @@ GLenum getGLTextureDataFormat(const NpImageDataFormat dataFormat)
     return result;
 }
 
-GLenum getGLTexturePixelFormat(const NpImagePixelFormat pixelFormat)
+GLenum getGLTexturePixelFormat(const NpTexturePixelFormat pixelFormat)
 {
     GLenum result = GL_NONE;
 
     switch ( pixelFormat )
     {
-        case NpImagePixelFormatR:
+        case NpTexturePixelFormatR:
         {
             result = GL_RED;
             break;
         }
 
-        case NpImagePixelFormatRG:
+        case NpTexturePixelFormatRG:
         {
             result = GL_RG;
             break;
         }
 
-        case NpImagePixelFormatRGB:
-        case NpImagePixelFormatsRGB:
+        case NpTexturePixelFormatRGB:
+        case NpTexturePixelFormatsRGB:
         {
             result = GL_RGB;
             break;
         }
 
-        case NpImagePixelFormatRGBA:
-        case NpImagePixelFormatsRGBLinearA:
+        case NpTexturePixelFormatRGBA:
+        case NpTexturePixelFormatsRGBLinearA:
         {
             result = GL_RGBA;
+            break;
+        }
+
+        case NpTexturePixelFormatDepth:
+        {
+            result = GL_DEPTH_COMPONENT;
+            break;
+        }
+
+        case NpTexturePixelFormatDepthStencil:
+        {
+            result = GL_DEPTH_STENCIL;
             break;
         }
 
@@ -74,45 +98,47 @@ GLenum getGLTexturePixelFormat(const NpImagePixelFormat pixelFormat)
     return result;
 }
 
-GLint getGLTextureInternalFormat(const NpImageDataFormat dataFormat,
-                                 const NpImagePixelFormat pixelFormat,
+GLint getGLTextureInternalFormat(const NpTextureDataFormat dataFormat,
+                                 const NpTexturePixelFormat pixelFormat,
                                  const int sRGBSupport)
 {
     GLint glinternalformat = 0;
 
     switch ( dataFormat )
     {
-        case NpImageDataFormatByte:
+        case NpTextureDataFormatByte:
         {
             if ( !sRGBSupport )
             {
                 switch ( pixelFormat )
                 {
-                    case NpImagePixelFormatR :
+                    case NpTexturePixelFormatR :
                     {
                         glinternalformat = GL_R8;
                         break;
                     }
 
-                    case NpImagePixelFormatRG:
+                    case NpTexturePixelFormatRG:
                     {
                         glinternalformat = GL_RG8;
                         break;
                     }
 
-                    case NpImagePixelFormatRGB:
-                    case NpImagePixelFormatsRGB:
+                    case NpTexturePixelFormatRGB:
+                    case NpTexturePixelFormatsRGB:
                     {
                         glinternalformat = GL_RGB8;
                         break;
                     }
 
-                    case NpImagePixelFormatRGBA:
-                    case NpImagePixelFormatsRGBLinearA:
+                    case NpTexturePixelFormatRGBA:
+                    case NpTexturePixelFormatsRGBLinearA:
                     {
                         glinternalformat = GL_RGBA8;
                         break;
                     }
+
+                    // do not handle depth and depthstencil
 
                     default: break;
                 }
@@ -121,12 +147,14 @@ GLint getGLTextureInternalFormat(const NpImageDataFormat dataFormat,
             {
                 switch ( pixelFormat )
                 {
-                    case NpImagePixelFormatR   : { glinternalformat = GL_R8;   break; }
-                    case NpImagePixelFormatRG  : { glinternalformat = GL_RG8;  break; }
-                    case NpImagePixelFormatRGB : { glinternalformat = GL_RGB8;  break; }
-                    case NpImagePixelFormatRGBA: { glinternalformat = GL_RGBA8; break; }
-                    case NpImagePixelFormatsRGB        : { glinternalformat = GL_SRGB8;        break; }
-                    case NpImagePixelFormatsRGBLinearA : { glinternalformat = GL_SRGB8_ALPHA8; break; }
+                    case NpTexturePixelFormatR   : { glinternalformat = GL_R8;   break; }
+                    case NpTexturePixelFormatRG  : { glinternalformat = GL_RG8;  break; }
+                    case NpTexturePixelFormatRGB : { glinternalformat = GL_RGB8;  break; }
+                    case NpTexturePixelFormatRGBA: { glinternalformat = GL_RGBA8; break; }
+                    case NpTexturePixelFormatsRGB        : { glinternalformat = GL_SRGB8;        break; }
+                    case NpTexturePixelFormatsRGBLinearA : { glinternalformat = GL_SRGB8_ALPHA8; break; }
+
+                    // do not handle depth and depth stencil
 
                     default: break;
                 }
@@ -135,29 +163,72 @@ GLint getGLTextureInternalFormat(const NpImageDataFormat dataFormat,
             break;
         }
 
-        case ( NpImageDataFormatFloat16 ):
+        case NpTextureDataFormatShort:
         {
             switch ( pixelFormat )
             {
-                case NpImagePixelFormatR   : { glinternalformat = GL_R16F;    break; }
-                case NpImagePixelFormatRG  : { glinternalformat = GL_RG16F;   break; }
-                case NpImagePixelFormatRGB : { glinternalformat = GL_RGB16F;  break; }
-                case NpImagePixelFormatRGBA: { glinternalformat = GL_RGBA16F; break; }
+                case NpTexturePixelFormatR   : { glinternalformat = GL_R16I;   break; }
+                case NpTexturePixelFormatRG  : { glinternalformat = GL_RG16I;  break; }
+                case NpTexturePixelFormatRGB : { glinternalformat = GL_RGB16I;  break; }
+                case NpTexturePixelFormatRGBA: { glinternalformat = GL_RGBA16I; break; }
+                case NpTexturePixelFormatDepth: { glinternalformat = GL_DEPTH_COMPONENT16; break; }
+
+                // do not handle srgb, srgb linear a, depth stencil
+
                 default: break;
             }
 
             break;
         }
 
-        case ( NpImageDataFormatFloat32 ):
+        case NpTextureDataFormatInt:
         {
             switch ( pixelFormat )
             {
-                case NpImagePixelFormatR   : { glinternalformat = GL_R32F;    break; }
-                case NpImagePixelFormatRG  : { glinternalformat = GL_RG32F;   break; }
-                case NpImagePixelFormatRGB : { glinternalformat = GL_RGB32F;  break; }
-                case NpImagePixelFormatRGBA: { glinternalformat = GL_RGBA32F; break; }
+                case NpTexturePixelFormatR   : { glinternalformat = GL_R32I;   break; }
+                case NpTexturePixelFormatRG  : { glinternalformat = GL_RG32I;  break; }
+                case NpTexturePixelFormatRGB : { glinternalformat = GL_RGB32I;  break; }
+                case NpTexturePixelFormatRGBA: { glinternalformat = GL_RGBA32I; break; }
+                case NpTexturePixelFormatDepth: { glinternalformat = GL_DEPTH_COMPONENT24; break; }
+                case NpTexturePixelFormatDepthStencil: { glinternalformat = GL_DEPTH24_STENCIL8; break; }
+
+                // do not handle srgb, srgb linear a, depth stencil
+
                 default: break;
+            }
+
+            break;
+        }
+
+        case NpTextureDataFormatFloat16:
+        {
+            switch ( pixelFormat )
+            {
+                case NpTexturePixelFormatR   : { glinternalformat = GL_R16F;    break; }
+                case NpTexturePixelFormatRG  : { glinternalformat = GL_RG16F;   break; }
+                case NpTexturePixelFormatRGB : { glinternalformat = GL_RGB16F;  break; }
+                case NpTexturePixelFormatRGBA: { glinternalformat = GL_RGBA16F; break; }
+                default: break;
+
+                // do not handle srgb, srgb linear a, depth and depth stencil
+            }
+
+            break;
+        }
+
+        case ( NpTextureDataFormatFloat32 ):
+        {
+            switch ( pixelFormat )
+            {
+                case NpTexturePixelFormatR   : { glinternalformat = GL_R32F;    break; }
+                case NpTexturePixelFormatRG  : { glinternalformat = GL_RG32F;   break; }
+                case NpTexturePixelFormatRGB : { glinternalformat = GL_RGB32F;  break; }
+                case NpTexturePixelFormatRGBA: { glinternalformat = GL_RGBA32F; break; }
+                case NpTexturePixelFormatDepth: { glinternalformat = GL_DEPTH_COMPONENT32F; break; }
+                case NpTexturePixelFormatDepthStencil: { glinternalformat = GL_DEPTH32F_STENCIL8; break; }
+                default: break;
+
+                // do not handle srgb, srgb linear a
             }
 
             break;

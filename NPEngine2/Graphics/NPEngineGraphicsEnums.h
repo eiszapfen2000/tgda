@@ -19,8 +19,8 @@ typedef enum NpImageDataFormat
 {
     NpImageDataFormatUnknown = -1,
     NpImageDataFormatByte = 0,
-    NpImageDataFormatFloat16 = 1,
-    NpImageDataFormatFloat32 = 2
+    NpImageDataFormatFloat16 = 3,
+    NpImageDataFormatFloat32 = 4
 }
 NpImageDataFormat;
 
@@ -51,8 +51,30 @@ typedef enum NpTextureWrap
 }
 NpTextureWrap;
 
-typedef NpImagePixelFormat NpTexturePixelFormat;
-typedef NpImageDataFormat  NpTextureDataFormat;
+typedef enum NpTexturePixelFormat
+{
+    NpTexturePixelFormatUnknown = -1,
+    NpTexturePixelFormatR = 0,
+    NpTexturePixelFormatRG = 1,
+    NpTexturePixelFormatRGB = 2,
+    NpTexturePixelFormatRGBA = 3,
+    NpTexturePixelFormatsRGB = 4,
+    NpTexturePixelFormatsRGBLinearA = 5,
+    NpTexturePixelFormatDepth = 6,
+    NpTexturePixelFormatDepthStencil = 7
+}
+NpTexturePixelFormat;
+
+typedef enum NpTextureDataFormat
+{
+    NpTextureDataFormatUnknown = -1,
+    NpTextureDataFormatByte = 0,
+    NpTextureDataFormatShort = 1,
+    NpTextureDataFormatInt = 2,
+    NpTextureDataFormatFloat16 = 3,
+    NpTextureDataFormatFloat32 = 4
+}
+NpTextureDataFormat;
 
 typedef enum NpShaderType
 {
@@ -186,7 +208,6 @@ typedef enum NpRenderBufferDataFormat
     NpRenderBufferDataFormatDepth16 = 3,
     NpRenderBufferDataFormatDepth24 = 4,
     NpRenderBufferDataFormatDepth32 = 5
-//    NpRenderBufferDataFormatDepth24Stencil8 = 8
 }
 NpRenderBufferDataFormat;
 
@@ -304,11 +325,11 @@ typedef enum NpOrthographicAlignment
 }
 NpOrthographicAlignment;
 
-GLenum getGLTextureDataFormat(const NpImageDataFormat dataFormat);
-GLenum getGLTexturePixelFormat(const NpImagePixelFormat pixelFormat);
+GLenum getGLTextureDataFormat(const NpTextureDataFormat dataFormat);
+GLenum getGLTexturePixelFormat(const NpTexturePixelFormat pixelFormat);
 GLint  getGLTextureWrap(const NpTextureWrap textureWrap);
-GLint  getGLTextureInternalFormat(const NpImageDataFormat dataFormat,
-            const NpImagePixelFormat pixelFormat,
+GLint  getGLTextureInternalFormat(const NpTextureDataFormat dataFormat,
+            const NpTexturePixelFormat pixelFormat,
             const int sRGBSupport);
 
 GLenum getGLComparisonFunction(const NpComparisonFunction comparisonFunction);
