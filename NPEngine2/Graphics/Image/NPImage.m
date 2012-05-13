@@ -11,20 +11,40 @@
 #import "Graphics/NPEngineGraphics.h"
 #import "NPImage.h"
 
-NpImageDataFormat convert_devil_dataformat(ILint devilDataFormat)
+static NpImageDataFormat convert_devil_dataformat(ILint devilDataFormat)
 {
     NpImageDataFormat result = NpImageDataFormatUnknown;
 
     switch ( devilDataFormat )
     {
+        // use normalized data format for bytes
+
+        case IL_BYTE:
+            result = NpImageDataFormatInt8N;
+            break;
         case IL_UNSIGNED_BYTE:
-            result = NpImageDataFormatByte;
+            result = NpImageDataFormatUInt8N;
+            break;
+        case IL_SHORT:
+            result = NpImageDataFormatInt16;
+            break;
+        case IL_UNSIGNED_SHORT:
+            result = NpImageDataFormatUInt16;
+            break;
+        case IL_INT:
+            result = NpImageDataFormatInt32;
+            break;
+        case IL_UNSIGNED_INT:
+            result = NpImageDataFormatUInt32;
             break;
         case IL_HALF:
             result = NpImageDataFormatFloat16;
             break;
         case IL_FLOAT:
             result = NpImageDataFormatFloat32;
+            break;
+        case IL_DOUBLE:
+            result = NpImageDataFormatFloat64;
             break;
         default:
             break;
@@ -33,12 +53,13 @@ NpImageDataFormat convert_devil_dataformat(ILint devilDataFormat)
     return result;
 }
 
-NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
+static NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
 {
     NpImagePixelFormat result = NpImagePixelFormatUnknown;
 
     switch ( devilPixelFormat )
     {
+        case IL_ALPHA:
         case IL_LUMINANCE:
             result = NpImagePixelFormatR;
             break;
@@ -81,7 +102,7 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
     ready = NO;
 
     pixelFormat = NpImagePixelFormatUnknown;
-    dataFormat = NpImageDataFormatUnknown;
+    dataFormat  = NpImageDataFormatUnknown;
     width = height = 0;
     imageData = nil;
 
@@ -200,7 +221,7 @@ NpImagePixelFormat convert_devil_pixelformat(ILint devilPixelFormat, BOOL sRGB)
         return NO;
     }
 
-    ILint imageWidth = ilGetInteger(IL_IMAGE_WIDTH);
+    ILint imageWidth  = ilGetInteger(IL_IMAGE_WIDTH);
     ILint imageHeight = ilGetInteger(IL_IMAGE_HEIGHT); 
 
     if ( imageWidth <= 0 || imageHeight <= 0 )

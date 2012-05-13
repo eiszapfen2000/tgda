@@ -28,8 +28,8 @@
 - (BOOL) generate:(NpRenderTargetType)newType
             width:(uint32_t)newWidth
            height:(uint32_t)newHeight
-      pixelFormat:(NpImagePixelFormat)newPixelFormat
-       dataFormat:(NpRenderBufferDataFormat)newDataFormat
+      pixelFormat:(NpTexturePixelFormat)newPixelFormat
+       dataFormat:(NpTextureDataFormat)newDataFormat
             error:(NSError **)error
                  ;
 

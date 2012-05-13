@@ -70,8 +70,8 @@
 - (BOOL) generate:(NpRenderTargetType)newType
             width:(uint32_t)newWidth
            height:(uint32_t)newHeight
-      pixelFormat:(NpImagePixelFormat)newPixelFormat
-       dataFormat:(NpRenderBufferDataFormat)newDataFormat
+      pixelFormat:(NpTexturePixelFormat)newPixelFormat
+       dataFormat:(NpTextureDataFormat)newDataFormat
             error:(NSError **)error
 {
     [ self deleteGLRenderBuffer ];
@@ -89,8 +89,13 @@
     pixelFormat = newPixelFormat;
     dataFormat = newDataFormat;
 
+    /*
     GLenum internalFormat
         = getGLRenderBufferInternalFormat(type, pixelFormat, dataFormat);
+    */
+    GLenum internalFormat
+        = getGLTextureInternalFormat(dataFormat, pixelFormat, false,
+                                     NULL, NULL);
 
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, glID);
     glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, internalFormat, width, height);
