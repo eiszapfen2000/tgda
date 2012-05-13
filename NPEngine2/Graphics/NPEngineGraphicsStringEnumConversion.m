@@ -100,18 +100,33 @@ static NSMutableDictionary * imageDataFormats = nil;
     INSERTENUM(orthographicAlignments, NpOrthographicAlignBottomLeft, @"bottomleft");
     INSERTENUM(orthographicAlignments, NpOrthographicAlignLeft, @"left");
 
-    INSERTSTRING(pixelFormats, @"Unknown", NpImagePixelFormatUnknown);
-    INSERTSTRING(pixelFormats, @"R", NpImagePixelFormatR);
-    INSERTSTRING(pixelFormats, @"RG", NpImagePixelFormatRG);
-    INSERTSTRING(pixelFormats, @"RGB", NpImagePixelFormatRGB);
-    INSERTSTRING(pixelFormats, @"RGBA", NpImagePixelFormatRGBA);
-    INSERTSTRING(pixelFormats, @"sRGB", NpImagePixelFormatsRGB);
-    INSERTSTRING(pixelFormats, @"sRGB Linear Alpha", NpImagePixelFormatsRGBLinearA);
+    INSERTSTRING(pixelFormats, @"Unknown", NpTexturePixelFormatUnknown);
+    INSERTSTRING(pixelFormats, @"R", NpTexturePixelFormatR);
+    INSERTSTRING(pixelFormats, @"RG", NpTexturePixelFormatRG);
+    INSERTSTRING(pixelFormats, @"RGB", NpTexturePixelFormatRGB);
+    INSERTSTRING(pixelFormats, @"RGBA", NpTexturePixelFormatRGBA);
+    INSERTSTRING(pixelFormats, @"sRGB", NpTexturePixelFormatsRGB);
+    INSERTSTRING(pixelFormats, @"sRGB Linear Alpha", NpTexturePixelFormatsRGBLinearA);
+    INSERTSTRING(pixelFormats, @"sRGB", NpTexturePixelFormatsRGB);
+    INSERTSTRING(pixelFormats, @"Depth", NpTexturePixelFormatDepth);
+    INSERTSTRING(pixelFormats, @"DepthStencil", NpTexturePixelFormatDepthStencil);
 
-    INSERTSTRING(imageDataFormats, @"Unknown", NpImageDataFormatUnknown);
-    INSERTSTRING(imageDataFormats, @"Byte", NpImageDataFormatByte);
-    INSERTSTRING(imageDataFormats, @"Float16", NpImageDataFormatFloat16);
-    INSERTSTRING(imageDataFormats, @"Float32", NpImageDataFormatFloat32);
+    INSERTSTRING(imageDataFormats, @"Unknown", NpTextureDataFormatUnknown);
+    INSERTSTRING(imageDataFormats, @"UInt8N", NpTextureDataFormatUInt8N);
+    INSERTSTRING(imageDataFormats, @"Int8N", NpTextureDataFormatInt8N);
+    INSERTSTRING(imageDataFormats, @"UInt8", NpTextureDataFormatUInt8);
+    INSERTSTRING(imageDataFormats, @"Int8", NpTextureDataFormatInt8);
+    INSERTSTRING(imageDataFormats, @"UInt16N", NpTextureDataFormatUInt16N);
+    INSERTSTRING(imageDataFormats, @"Int16N", NpTextureDataFormatInt16N);
+    INSERTSTRING(imageDataFormats, @"UInt16", NpTextureDataFormatUInt16);
+    INSERTSTRING(imageDataFormats, @"Int16", NpTextureDataFormatInt16);
+    INSERTSTRING(imageDataFormats, @"UInt32N", NpTextureDataFormatUInt32N);
+    INSERTSTRING(imageDataFormats, @"Int32N", NpTextureDataFormatInt32N);
+    INSERTSTRING(imageDataFormats, @"UInt32", NpTextureDataFormatUInt32);
+    INSERTSTRING(imageDataFormats, @"Int32", NpTextureDataFormatInt32);
+    INSERTSTRING(imageDataFormats, @"Float16", NpTextureDataFormatFloat16);
+    INSERTSTRING(imageDataFormats, @"Float32", NpTextureDataFormatFloat32);
+    INSERTSTRING(imageDataFormats, @"Float64", NpTextureDataFormatFloat64);
 }
 
 #undef INSERTENUM
@@ -248,12 +263,12 @@ static NSMutableDictionary * imageDataFormats = nil;
     return result;
 }
 
-- (NSString *) stringForPixelFormat:(const NpImagePixelFormat)pixelFormat
+- (NSString *) stringForPixelFormat:(const NpTexturePixelFormat)pixelFormat
 {
     return [ pixelFormats objectForKey:[ NSNumber numberWithInt:(int)pixelFormat ]];
 }
 
-- (NSString *) stringForImageDataFormat:(const NpImageDataFormat)dataFormat
+- (NSString *) stringForImageDataFormat:(const NpTextureDataFormat)dataFormat
 {
     return [ imageDataFormats objectForKey:[ NSNumber numberWithInt:(int)dataFormat ]];
 }

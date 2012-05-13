@@ -356,11 +356,17 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     }
     else
     {
+        /*
         glDataFormat = getGLTextureDataFormat(dataFormat);
         glPixelFormat = getGLTexturePixelFormat(pixelFormat);
         glInternalFormat
             = getGLTextureInternalFormat(dataFormat, pixelFormat,
                  [[ NPEngineGraphics instance ] supportssRGBTextures ]);
+        */
+        glInternalFormat
+            = getGLTextureInternalFormat(dataFormat, pixelFormat,
+                 [[ NPEngineGraphics instance ] supportssRGBTextures ],
+                 &glDataFormat, &glPixelFormat);
 
         // specify entire texture
         glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, width, height, 

@@ -36,7 +36,7 @@
                                           defaultAlignment:(NpOrthographicAlignment)defaultAlignment
                                                           ;
 
-- (NSString *) stringForPixelFormat:(const NpImagePixelFormat)pixelFormat;
-- (NSString *) stringForImageDataFormat:(const NpImageDataFormat)dataFormat;
+- (NSString *) stringForPixelFormat:(const NpTexturePixelFormat)pixelFormat;
+- (NSString *) stringForImageDataFormat:(const NpTextureDataFormat)dataFormat;
 
 @end
