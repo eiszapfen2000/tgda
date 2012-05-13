@@ -384,24 +384,24 @@
         [ sceneTarget generate:NpRenderTargetColor
                          width:currentResolution.x
                         height:currentResolution.y
-                   pixelFormat:NpImagePixelFormatRGBA
-                    dataFormat:NpImageDataFormatFloat16
+                   pixelFormat:NpTexturePixelFormatRGBA
+                    dataFormat:NpTextureDataFormatFloat16
                  mipmapStorage:YES
                          error:NULL ];
 
         [ luminanceTarget generate:NpRenderTargetColor
                              width:currentResolution.x
                             height:currentResolution.y
-                       pixelFormat:NpImagePixelFormatR
-                        dataFormat:NpImageDataFormatFloat16
+                       pixelFormat:NpTexturePixelFormatR
+                        dataFormat:NpTextureDataFormatFloat16
                      mipmapStorage:YES
                              error:NULL ];
 
         [ depthBuffer generate:NpRenderTargetDepth
                          width:currentResolution.x
                         height:currentResolution.y
-                   pixelFormat:NpImagePixelFormatUnknown
-                    dataFormat:NpRenderBufferDataFormatDepth32
+                   pixelFormat:NpTexturePixelFormatDepth
+                    dataFormat:NpTextureDataFormatInt32N
                          error:NULL ];
 
         lastFrameResolution = currentResolution;
@@ -428,14 +428,12 @@
     [ rtc activateDrawBuffers ];
     [ rtc activateViewport ];
 
-    /*
     // check for completeness
     NSError * fboError = nil;
     if ([ rtc checkFrameBufferCompleteness:&fboError ] == NO )
     {
         NPLOG_ERROR(fboError);
     }
-    */
 
     // render scene
     [ self renderScene ];
@@ -450,13 +448,11 @@
                          colorBufferIndex:0
                                   bindFBO:NO ];
 
-    /*
     // check for completeness
     if ([ rtc checkFrameBufferCompleteness:&fboError ] == NO )
     {
         NPLOG_ERROR(fboError);
     }
-    */
 
     // reset matrices
     [[[ NP Core ] transformationState ] reset ];
