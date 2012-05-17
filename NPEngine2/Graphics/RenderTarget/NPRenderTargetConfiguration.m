@@ -190,7 +190,7 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 }
 
-- (void) setColorTarget:(NPRenderTexture *)colorTarget
+- (void) setColorTarget:(id < NPPRenderTarget >)colorTarget
                 atIndex:(uint32_t)index
 {
     if ( [ colorTargets objectAtIndex:index ] != [ NSNull null ] )
@@ -204,7 +204,7 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
     }
 }
 
-- (void) setDepthStencilTarget:(NPRenderBuffer *)depthStencilTarget
+- (void) setDepthStencilTarget:(id < NPPRenderTarget >)depthStencilTarget
 {
     if ( depthStencil != nil )
     {

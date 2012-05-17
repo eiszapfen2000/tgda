@@ -56,12 +56,12 @@
     glID = 0;
     type = NpRenderTargetUnknown;
     width = height = 0;
-    pixelFormat = NpImagePixelFormatUnknown;
-    dataFormat = NpRenderBufferDataFormatUnknown;
+    pixelFormat = NpTexturePixelFormatUnknown;
+    dataFormat = NpTextureDataFormatUnknown;
     texture = nil;
-    ready = NO;
     rtc = nil;
     colorBufferIndex = INT_MAX;
+    ready = NO;
 
     return self;
 }
@@ -116,39 +116,122 @@
                                    bindFBO:(BOOL)bindFBO
 {
     NSAssert1(configuration != nil, @"%@: Invalid NPRenderTargetConfiguration", name);
-    NSAssert2((int32_t)newColorBufferIndex < [[ NPEngineGraphics instance ] numberOfColorAttachments ],
-        @"%@: Invalid color buffer index %u", name, newColorBufferIndex);
 
     rtc = configuration;
-    colorBufferIndex = newColorBufferIndex;
 
     if (bindFBO == YES)
     {
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ rtc glID ]);
     }
 
-    GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
-    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, glID, 0);
+    switch ( type )
+    {
+        case NpRenderTargetColor:
+        {
+            NSAssert2((int32_t)newColorBufferIndex < [[ NPEngineGraphics instance ] numberOfColorAttachments ],
+                @"%@: Invalid color buffer index %u", name, newColorBufferIndex);
+
+            colorBufferIndex = newColorBufferIndex;
+            GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
+            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment,
+                GL_TEXTURE_2D, glID, 0);
+
+            break;
+        }
+
+        case NpRenderTargetDepth:
+        {
+            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
+                GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, glID, 0);
+
+            break;
+        }
+
+        case NpRenderTargetDepthStencil:
+        {
+            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
+                GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, glID, 0);
+
+            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
+                GL_STENCIL_ATTACHMENT_EXT, GL_TEXTURE_2D, glID, 0);
+
+            break;
+        }
+
+        default:
+        {
+            break;
+        }
+    }
 
     if (bindFBO == YES)
     {
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
 
-    [ rtc setColorTarget:self atIndex:colorBufferIndex ];
+    if ( colorBufferIndex != INT_MAX )
+    {
+        [ rtc setColorTarget:self atIndex:colorBufferIndex ];
+    }
+    else
+    {
+        [ rtc setDepthStencilTarget:self ];
+    }
 }
 
 - (void) detach:(BOOL)bindFBO
 {
-    [ rtc setColorTarget:nil atIndex:colorBufferIndex ];
+    // remove self pointer from rtc
+    if ( colorBufferIndex != INT_MAX )
+    {
+        [ rtc setColorTarget:nil atIndex:colorBufferIndex ];
+    }
+    else
+    {
+        [ rtc setDepthStencilTarget:nil ];
+    }
 
+    // bind FBO if desired
     if ( bindFBO == YES )
     {
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ rtc glID ]);
     }
 
-    GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
-    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment, GL_TEXTURE_2D, 0, 0);
+    switch ( type )
+    {
+        case NpRenderTargetColor:
+        {
+            GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
+            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment,
+                GL_TEXTURE_2D, 0, 0);
+
+            break;
+        }
+
+        case NpRenderTargetDepth:
+        {
+            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
+                GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, 0, 0);
+
+            break;
+        }
+
+        case NpRenderTargetDepthStencil:
+        {
+            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
+                GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, 0, 0);
+
+            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
+                GL_STENCIL_ATTACHMENT_EXT, GL_TEXTURE_2D, 0, 0);
+
+            break;
+        }
+
+        default:
+        {
+            break;
+        }
+    }
 
     if ( bindFBO == YES )
     {

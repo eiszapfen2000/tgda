@@ -1,6 +1,7 @@
 #import <Foundation/NSError.h>
 #import <Foundation/NSException.h>
 #import "Core/Utilities/NSError+NPEngine.h"
+#import "Graphics/NPEngineGraphics.h"
 #import "NPRenderTargetConfiguration.h"
 #import "NPRenderBuffer.h"
 
@@ -38,10 +39,11 @@
     glID = 0;
     type = NpRenderTargetUnknown;
     width = height = 0;
-    pixelFormat = NpImagePixelFormatUnknown;
-    dataFormat = NpRenderBufferDataFormatUnknown;
-    ready = NO;
+    pixelFormat = NpTexturePixelFormatUnknown;
+    dataFormat = NpTextureDataFormatUnknown;
     rtc = nil;
+    colorBufferIndex = INT_MAX;
+    ready = NO;
 
     return self;
 }
@@ -89,10 +91,6 @@
     pixelFormat = newPixelFormat;
     dataFormat = newDataFormat;
 
-    /*
-    GLenum internalFormat
-        = getGLRenderBufferInternalFormat(type, pixelFormat, dataFormat);
-    */
     GLenum internalFormat
         = getGLTextureInternalFormat(dataFormat, pixelFormat, false,
                                      NULL, NULL);
@@ -113,6 +111,7 @@
 }
 
 - (void) attachToRenderTargetConfiguration:(NPRenderTargetConfiguration *)configuration
+                          colorBufferIndex:(uint32_t)newColorBufferIndex
                                    bindFBO:(BOOL)bindFBO
 {
     NSAssert1(configuration != nil, @"%@: Invalid NPRenderTargetConfiguration", name);
@@ -126,6 +125,21 @@
 
     switch ( type )
     {
+        case NpRenderTargetColor:
+        {
+            NSAssert2((int32_t)newColorBufferIndex < [[ NPEngineGraphics instance ] numberOfColorAttachments ],
+                @"%@: Invalid color buffer index %u", name, newColorBufferIndex);
+
+
+            colorBufferIndex = newColorBufferIndex;
+            GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
+
+            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,attachment,
+                GL_RENDERBUFFER_EXT, glID);
+
+            break;
+        }
+
         case NpRenderTargetDepth:
         {
             glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
@@ -156,12 +170,27 @@
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
 
-    [ rtc setDepthStencilTarget:self ];
+    if ( colorBufferIndex == INT_MAX )
+    {
+        [ rtc setDepthStencilTarget:self ];
+    }
+    else
+    {
+        [ rtc setColorTarget:self atIndex:colorBufferIndex ];
+    }
 }
 
 - (void) detach:(BOOL)bindFBO
 {
-    [ rtc setDepthStencilTarget:nil ];
+    // remove self pointer from rtc
+    if ( colorBufferIndex == INT_MAX )
+    {
+        [ rtc setDepthStencilTarget:nil ];
+    }
+    else
+    {
+        [ rtc setColorTarget:nil atIndex:colorBufferIndex ];
+    }
 
     if ( bindFBO == YES )
     {
@@ -170,6 +199,15 @@
 
     switch ( type )
     {
+        case NpRenderTargetColor:
+        {
+            GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
+            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, attachment,
+                GL_RENDERBUFFER_EXT, 0);
+
+            break;
+        }
+
         case NpRenderTargetDepth:
         {
             glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
@@ -201,6 +239,7 @@
     }
 
     rtc = nil;
+    colorBufferIndex = INT_MAX;
 }
 
 @end

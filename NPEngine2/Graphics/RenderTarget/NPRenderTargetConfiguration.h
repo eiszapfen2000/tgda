@@ -1,5 +1,6 @@
 #import "GL/glew.h"
 #import "Core/NPObject/NPObject.h"
+#import "NPPRenderTarget.h"
 
 @class NSError;
 @class NSMutableArray;
@@ -14,7 +15,7 @@
 	uint32_t height;
 
     NSMutableArray * colorTargets;
-    NPRenderBuffer * depthStencil;
+    id < NPPRenderTarget > depthStencil;
 }
 
 - (id) init;
@@ -30,11 +31,11 @@
 - (void) bindFBO;
 - (void) unbindFBO;
 
-- (void) setColorTarget:(NPRenderTexture *)colorTarget
+- (void) setColorTarget:(id < NPPRenderTarget >)colorTarget
                 atIndex:(uint32_t)index
                        ;
 
-- (void) setDepthStencilTarget:(NPRenderBuffer *)depthStencilTarget;
+- (void) setDepthStencilTarget:(id < NPPRenderTarget >)depthStencilTarget;
 
 - (BOOL) checkFrameBufferCompleteness:(NSError **)error;
 
