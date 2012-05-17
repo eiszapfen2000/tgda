@@ -422,6 +422,7 @@
     // attach depth buffer
     [ depthBuffer
         attachToRenderTargetConfiguration:rtc
+                         colorBufferIndex:INT_MAX
                                   bindFBO:NO ];
 
     // set drawbuffers and viewport
