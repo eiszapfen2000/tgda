@@ -3,6 +3,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 SUBPROJECT_NAME=libNPEngineGraphicsRenderTarget
 
 libNPEngineGraphicsRenderTarget_HEADER_FILES = \
+NPPRenderTarget.h \
 NPRenderBuffer.h \
 NPRenderTexture.h \
 NPRenderTargetConfiguration.h
