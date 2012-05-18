@@ -28,6 +28,9 @@
 - (void) dealloc;
 - (void) clear;
 
+- (void) lock;
+- (void) unlock;
+
 - (GLuint) glID;
 - (NPShader *) vertexShader;
 - (NPShader *) fragmentShader;

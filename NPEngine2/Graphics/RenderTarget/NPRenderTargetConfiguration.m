@@ -131,7 +131,7 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
 	width = height = 0;
 
     int32_t numberOfColorAttachments
-        = [[ NPEngineGraphics  instance ] numberOfColorAttachments ];
+        = [[ NPEngineGraphics instance ] numberOfColorAttachments ];
 
     NSPointerFunctionsOptions options
         = NSPointerFunctionsObjectPointerPersonality | NSPointerFunctionsStrongMemory;
@@ -197,7 +197,7 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
 - (void) setDepthStencilTarget:(id < NPPRenderTarget >)depthStencilTarget
 {
     int32_t numberOfColorAttachments
-        = [[ NPEngineGraphics  instance ] numberOfColorAttachments ];
+        = [[ NPEngineGraphics instance ] numberOfColorAttachments ];
 
     [ targets
         replacePointerAtIndex:numberOfColorAttachments
