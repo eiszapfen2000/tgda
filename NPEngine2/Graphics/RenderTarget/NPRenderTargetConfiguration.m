@@ -1,6 +1,7 @@
 #import <Foundation/NSArray.h>
 #import <Foundation/NSError.h>
 #import <Foundation/NSNull.h>
+#import <Foundation/NSPointerArray.h>
 #import "GL/glew.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Graphics/NPEngineGraphics.h"
@@ -128,28 +129,25 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
 	[ self generateGLFBO ];
 
 	width = height = 0;
-    depthStencil = nil;
 
     int32_t numberOfColorAttachments
         = [[ NPEngineGraphics  instance ] numberOfColorAttachments ];
 
-    colorTargets
-        = [[ NSMutableArray alloc ] 
-                initWithCapacity:(NSUInteger)numberOfColorAttachments ];
+    NSPointerFunctionsOptions options
+        = NSPointerFunctionsObjectPointerPersonality | NSPointerFunctionsStrongMemory;
 
-    for ( int32_t i = 0; i < numberOfColorAttachments; i++ )
-    {
-        [ colorTargets addObject:[ NSNull null ]];
-    }
+    targets = [[ NSPointerArray alloc ] initWithOptions:options ];
+
+    // last target is depth / depthstencil
+    [ targets setCount:(numberOfColorAttachments + 1) ];
 
     return self;
 }
 
 - (void) dealloc
 {
-    SAFE_DESTROY(depthStencil);
-    [ colorTargets removeAllObjects ];
-    DESTROY(colorTargets);
+    [ targets setCount:0 ];
+    DESTROY(targets);
     [ self deleteGLFBO ];
 
     [ super dealloc ];
@@ -193,28 +191,17 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
 - (void) setColorTarget:(id < NPPRenderTarget >)colorTarget
                 atIndex:(uint32_t)index
 {
-    if ( [ colorTargets objectAtIndex:index ] != [ NSNull null ] )
-    {
-        [ colorTargets replaceObjectAtIndex:index withObject:[ NSNull null ]];
-    }
-
-    if ( colorTarget != nil )
-    {
-        [ colorTargets replaceObjectAtIndex:index withObject:colorTarget ];
-    }
+    [ targets replacePointerAtIndex:index withPointer:colorTarget ];
 }
 
 - (void) setDepthStencilTarget:(id < NPPRenderTarget >)depthStencilTarget
 {
-    if ( depthStencil != nil )
-    {
-        DESTROY(depthStencil);
-    }
+    int32_t numberOfColorAttachments
+        = [[ NPEngineGraphics  instance ] numberOfColorAttachments ];
 
-    if ( depthStencilTarget != nil )
-    {
-        depthStencil = RETAIN(depthStencilTarget);
-    }
+    [ targets
+        replacePointerAtIndex:numberOfColorAttachments
+                  withPointer:depthStencilTarget ];
 }
 
 - (BOOL) checkFrameBufferCompleteness:(NSError **)error
@@ -245,7 +232,7 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
 
     for ( int32_t i = 0; i < numberOfColorAttachments; i++ )
     {
-        if ( [ colorTargets objectAtIndex:i ] != [ NSNull null ] )
+        if ( [ targets pointerAtIndex:i ] != nil )
         {
             buffers[bufferCount] = GL_COLOR_ATTACHMENT0_EXT + i;
             bufferCount++;
