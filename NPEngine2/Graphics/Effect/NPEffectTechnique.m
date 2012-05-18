@@ -20,6 +20,7 @@
 #import "NPEffectTechnique.h"
 
 static NPEffectTechnique * currentTechnique = nil;
+static BOOL locked = NO;
 
 @interface NPEffect (Private)
 
@@ -149,6 +150,16 @@ static NPEffectTechnique * currentTechnique = nil;
     [ techniqueVariables removeAllObjects ];
 }
 
+- (void) lock
+{
+    locked = YES;
+}
+
+- (void) unlock
+{
+    locked = NO;
+}
+
 - (GLuint) glID
 {
     return glID;
@@ -231,7 +242,7 @@ static NPEffectTechnique * currentTechnique = nil;
 
 - (void) activate:(BOOL)force
 {
-    if ( currentTechnique != self)
+    if (( currentTechnique != self ) && (locked == NO ))
     {
         glUseProgram(glID);
         currentTechnique = self;
