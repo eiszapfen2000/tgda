@@ -6,16 +6,14 @@
 @class NSMutableArray;
 @class NPRenderBuffer;
 @class NPRenderTexture;
+@class NSPointerArray;
 
 @interface NPRenderTargetConfiguration : NPObject
 {
 	GLuint glID;
-
 	uint32_t width;
 	uint32_t height;
-
-    NSMutableArray * colorTargets;
-    id < NPPRenderTarget > depthStencil;
+    NSPointerArray * targets;
 }
 
 - (id) init;
