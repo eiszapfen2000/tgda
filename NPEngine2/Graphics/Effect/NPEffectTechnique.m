@@ -242,13 +242,13 @@ static BOOL locked = NO;
 
 - (void) activate:(BOOL)force
 {
-    if (( currentTechnique != self ) && (locked == NO ))
+    if (( currentTechnique != self ) && (locked == NO || force == YES ))
     {
         glUseProgram(glID);
         currentTechnique = self;
     }
 
-    [ self activateVariables ];
+    [ currentTechnique activateVariables ];
 }
 
 @end

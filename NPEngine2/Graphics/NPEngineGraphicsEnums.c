@@ -37,12 +37,14 @@ GLenum getGLTextureDataFormat(const NpTextureDataFormat dataFormat)
         }
 
         case NpTextureDataFormatUInt32:
+        case NpTextureDataFormatUInt32N:
         {
             result = GL_UNSIGNED_INT;
             break;
         }
 
         case NpTextureDataFormatInt32:
+        case NpTextureDataFormatInt32N:
         {
             result = GL_INT;
             break;
@@ -246,7 +248,7 @@ GLint getGLTextureInternalFormat(const NpTextureDataFormat dataFormat,
         {
             switch ( pixelFormat )
             {
-                case NpTexturePixelFormatDepth: { glinternalformat = GL_DEPTH_COMPONENT32; break; }
+                case NpTexturePixelFormatDepth: { glinternalformat = GL_DEPTH_COMPONENT24; break; }
                 case NpTexturePixelFormatDepthStencil: { glinternalformat = GL_DEPTH24_STENCIL8; break; }
                 default: break;
             }
