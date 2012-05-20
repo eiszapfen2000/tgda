@@ -145,10 +145,12 @@ static NPAssetArray * statesets = nil;
 
     [[[ NPEngineCore instance ] transformationState ] setModelMatrix:&modelMatrix ];
 
+    /*
     if ( stateset != nil )
     {
         [ stateset activate ];
     }
+    */
 
     [ model render ];
 }

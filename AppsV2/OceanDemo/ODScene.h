@@ -51,6 +51,14 @@
     NPRenderTexture * luminanceTarget;
     NPRenderBuffer * depthBuffer;
 
+    // G buffer
+    NPRenderTargetConfiguration * gBuffer;
+    NPRenderTexture * positionsTarget;
+    NPRenderTexture * normalsTarget;
+    NPRenderTexture * depthTarget;
+
+    NPEffect * deferredEffect;
+
     //
     NPEffect * fullscreenEffect;
     NPEffectVariableFloat3 * toneMappingParameters;

@@ -3,19 +3,15 @@
 void main()
 {
     ivec2 resolution = textureSize(heights, 0);
-    vec2 x = vec2(resolution);
-    vec2 n = noise2(in_position.xy);
-    vec2 m = n * 0.5 + 1.0;
     vec4 p = in_position;
-    //p.y = float(resolution.x) / 64.0;
 
     vec2 g;
-    g.x = mod(abs(p.x), 5.0);
-    g.y = mod(abs(p.z), 5.0);
-    g.x = g.x / 5.0;
-    g.y = 1.0 - (g.y / 5.0);
+    g.x = mod(abs(p.x), 40.0);
+    g.y = mod(abs(p.z), 40.0);
+    g.x = g.x / 40.0;
+    g.y = 1.0 - (g.y / 40.0);
 
-    p.y = textureLod(heights, g, 0).x;
+    p.y = textureLod(heights, g, 0).x * 5.0;
     //p.y = 5.0;
 	gl_Position = p;
 }
