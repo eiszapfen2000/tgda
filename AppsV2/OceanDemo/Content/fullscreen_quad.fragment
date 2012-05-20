@@ -1,9 +1,11 @@
-#version 150
+#version 330
 
 in vec2 out_texcoords;
 
 void main()
 {
-    target = texture2D(colormap, out_texcoords);
+    //vec4 brak = textureLod(colormap, out_texcoords.xy, 0);
+    target = texture(colormap, out_texcoords.xy);
+    //target = vec4(out_texcoords.xy, 0.0, 1.0) * brak;
 }
 

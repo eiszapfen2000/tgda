@@ -173,7 +173,7 @@ OdHeightfieldData;
 
 @end
 
-static const Vector2 defaultWindDirection = {1.0, 0.0};
+static const Vector2 defaultWindDirection = {10.0, 0.5};
 static const int32_t resolutions[4] = {64, 128, 256, 512};
 static const NSUInteger defaultResolutionIndex = 0;
 
@@ -203,6 +203,7 @@ static const NSUInteger defaultResolutionIndex = 0;
     [ projectedGrid setProjector:projector ];
 
     heightfield = [[ NPTexture2D alloc ] initWithName:@"Height Texture" ];
+    [ heightfield setTextureFilter:NpTexture2DFilterLinear ];
 
     effect
         = [[[ NPEngineGraphics instance ] effects ]
@@ -353,7 +354,7 @@ static const NSUInteger defaultResolutionIndex = 0;
              || resolutionIndex != lastResolutionIndex )
         {
             spectrumSettings.windDirection = windDirection;
-            spectrumSettings.size = (Vector2){10.0, 10.0};
+            spectrumSettings.size = (Vector2){5.0, 5.0};
 
             const int32_t res = resolutions[resolutionIndex];
             spectrumSettings.resolution = (IVector2){res, res};

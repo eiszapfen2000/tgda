@@ -1,0 +1,18 @@
+effect "Deferred Effect":
+
+technique "geometry"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform mat4 np_modelmatrix;
+    # vertex streams
+    in vec3 in_position : 0;
+    in vec3 in_normal : 1;
+    # fragment streams
+    out vec4 positions_target : 0;
+    //out vec4 normals_target : 1;
+    # shaders
+    set vertex shader "deferred_geometry.vertex"
+    set fragment shader "deferred_geometry.fragment"
+}
+

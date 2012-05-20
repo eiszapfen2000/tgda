@@ -1,0 +1,11 @@
+#version 150
+
+in vec3 out_worldpos;
+in vec3 out_normal;
+
+void main()
+{
+    positions_target = vec4(out_worldpos, 1.0);
+    //normals_target = vec4(out_normal, 0.0);
+}
+

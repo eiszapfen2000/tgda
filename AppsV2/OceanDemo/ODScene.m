@@ -143,6 +143,17 @@
     luminanceTarget = [[ NPRenderTexture alloc ] init ];
     depthBuffer     = [[ NPRenderBuffer  alloc ] init ];
 
+    // g buffer
+    gBuffer = [[ NPRenderTargetConfiguration alloc ] initWithName:@"GBUffer" ];
+    positionsTarget = [[ NPRenderTexture alloc ] init ];
+    normalsTarget   = [[ NPRenderTexture alloc ] init ];
+    depthTarget     = [[ NPRenderTexture alloc ] init ];
+
+    deferredEffect
+        = [[[ NP Graphics ] effects ] getAssetWithFileName:@"deferred.effect" ];
+
+    ASSERT_RETAIN(deferredEffect);
+
     // effect and effect paramters
     fullscreenEffect
         = [[[ NP Graphics ] effects ] getAssetWithFileName:@"fullscreen.effect" ];
@@ -175,8 +186,15 @@
     DESTROY(luminanceTarget);
     DESTROY(sceneTarget);
     DESTROY(rtc);
+
+    DESTROY(depthTarget);
+    DESTROY(positionsTarget);
+    DESTROY(normalsTarget);
+    DESTROY(gBuffer);
+
     DESTROY(fullscreenQuad);
     DESTROY(fullscreenEffect);
+    DESTROY(deferredEffect);
 
     [ super dealloc ];
 }
@@ -380,6 +398,8 @@
     {
         [ rtc setWidth:currentResolution.x  ];
         [ rtc setHeight:currentResolution.y ];
+        [ gBuffer setWidth:currentResolution.x  ];
+        [ gBuffer setHeight:currentResolution.y ];
 
         [ sceneTarget generate:NpRenderTargetColor
                          width:currentResolution.x
@@ -404,9 +424,130 @@
                     dataFormat:NpTextureDataFormatInt32N
                          error:NULL ];
 
+        [ positionsTarget generate:NpRenderTargetColor
+                             width:currentResolution.x
+                            height:currentResolution.y
+                       pixelFormat:NpTexturePixelFormatRGBA
+                        dataFormat:NpTextureDataFormatFloat32
+                     mipmapStorage:NO
+                             error:NULL ];
+
+        [ normalsTarget generate:NpRenderTargetColor
+                           width:currentResolution.x
+                          height:currentResolution.y
+                     pixelFormat:NpTexturePixelFormatRGBA
+                      dataFormat:NpTextureDataFormatFloat16
+                   mipmapStorage:NO
+                           error:NULL ];
+
+        [ depthTarget generate:NpRenderTargetDepth
+                         width:currentResolution.x
+                        height:currentResolution.y
+                   pixelFormat:NpTexturePixelFormatDepth
+                    dataFormat:NpTextureDataFormatUInt32N
+                 mipmapStorage:NO
+                         error:NULL ];
+
         lastFrameResolution = currentResolution;
     }
 
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearDepth(1);
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
+
+    [ gBuffer bindFBO ];
+
+    // attach scene target texture
+    [ positionsTarget
+        attachToRenderTargetConfiguration:gBuffer
+                         colorBufferIndex:0
+                                  bindFBO:NO ];
+
+    [ normalsTarget
+        attachToRenderTargetConfiguration:gBuffer
+                         colorBufferIndex:1
+                                  bindFBO:NO ];
+
+    // attach depth buffer
+    [ depthBuffer
+        attachToRenderTargetConfiguration:gBuffer
+                         colorBufferIndex:0
+                                  bindFBO:NO ];
+
+    [ gBuffer activateDrawBuffers ];
+    [ gBuffer activateViewport ];
+
+    NSError * fboError = nil;
+    if ([ gBuffer checkFrameBufferCompleteness:&fboError ] == NO )
+    {
+        NPLOG_ERROR(fboError);
+    }
+
+    glDepthMask(GL_TRUE);
+    glClearDepth(1);
+    glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
+
+    glDisable(GL_BLEND);
+    glDisable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+
+    [ camera render ];
+
+    NPEffectTechnique * t = [ deferredEffect techniqueWithName:@"geometry" ];
+    [ t lock ];
+    [ t activate:YES ];
+
+    glBegin(GL_QUADS);
+        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
+        glVertex3f(0.0f, 0.0f, 5.0f);
+        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
+        glVertex3f(10.0f, 0.0f, 5.0f);
+        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
+        glVertex3f(10.0f, 10.0f, 5.0f);
+        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
+        glVertex3f(0.0f, 10.0f, 5.0f);
+    glEnd();
+
+    glBegin(GL_QUADS);
+        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
+        glVertex3f(0.0f, 0.0f, -5.0f);
+        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
+        glVertex3f(10.0f, 0.0f, -5.0f);
+        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
+        glVertex3f(10.0f, 10.0f, -5.0f);
+        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
+        glVertex3f(0.0f, 10.0f, -5.0f);
+    glEnd();
+
+    [ skylight render ];
+    [ t unlock ];
+    //[[[ NP Graphics ] stateConfiguration ] deactivate ];
+    [ gBuffer deactivate ];
+
+    /*
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, [ gBuffer glID ]);
+    glReadBuffer(GL_COLOR_ATTACHMENT0);
+    glBlitFramebuffer(0, 0, 800, 600, 0, 0, 400, 300, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+    glReadBuffer(GL_COLOR_ATTACHMENT1);
+    glBlitFramebuffer(0, 0, 800, 600, 400, 0, 800, 300, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    glReadBuffer(GL_BACK);
+    */
+
+    // reset matrices
+    [[[ NP Core ] transformationState ] reset ];
+    // bind scene target as texture source
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ positionsTarget texture ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] activate ];
+
+    // render tonemapped scene to screen
+    [[ fullscreenEffect techniqueWithName:@"texture" ] activate ];
+    [ fullscreenQuad render ];
+
+    /*
     // clear back buffer and depth buffer
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
@@ -422,7 +563,7 @@
     // attach depth buffer
     [ depthBuffer
         attachToRenderTargetConfiguration:rtc
-                         colorBufferIndex:INT_MAX
+                         colorBufferIndex:0
                                   bindFBO:NO ];
 
     // set drawbuffers and viewport
@@ -505,6 +646,7 @@
     // render tonemapped scene to screen
     [[ fullscreenEffect techniqueWithName:@"tonemap_reinhard" ] activate ];
     [ fullscreenQuad render ];
+    */
 }
 
 @end

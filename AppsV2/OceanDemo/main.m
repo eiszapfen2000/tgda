@@ -219,6 +219,7 @@ int main (int argc, char **argv)
         // scene render
         [ scene render ];
 
+        /*
         // menu
         [[[ NP Graphics ] orthographic ] activate ];
 
@@ -242,6 +243,7 @@ int main (int argc, char **argv)
         [ dState deactivate ];
 
         [[[ NP Graphics ] orthographic ] deactivate ];
+        */
 
         // check for GL errors
         [[ NP Graphics ] checkForGLErrors ];

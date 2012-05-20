@@ -1,0 +1,11 @@
+#version 150
+
+out vec3 out_worldpos;
+out vec3 out_normal;
+
+void main()
+{
+	gl_Position = np_modelviewprojectionmatrix * vec4(in_position, 1.0f);
+    out_worldpos = (np_modelmatrix * vec4(in_position, 1.0f)).xyz;
+    out_normal = (np_modelmatrix * vec4(in_normal, 0.0f)).xyz;
+}
