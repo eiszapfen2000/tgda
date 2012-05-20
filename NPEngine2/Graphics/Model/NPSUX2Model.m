@@ -52,6 +52,11 @@
     return ready;
 }
 
+- (NPSUX2ModelLOD *) lodAtIndex:(const NSUInteger)index
+{
+    return [ lods objectAtIndex:index ];
+}
+
 - (NPSUX2MaterialInstance *) materialInstanceAtIndex:(const NSUInteger)index
 {
     return [ materials objectAtIndex:index ];

@@ -63,6 +63,11 @@
     return model;
 }
 
+- (NPSUX2ModelGroup *) groupAtIndex:(const NSUInteger)index
+{
+    return [ groups objectAtIndex:index ];
+}
+
 - (void) setModel:(NPSUX2Model *)newModel
 {
     // weak reference
