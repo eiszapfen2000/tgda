@@ -35,6 +35,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState);
 
     NpTextureDataFormat dataFormat;
     NpTexturePixelFormat pixelFormat;
+    NpTextureColorFormat colorFormat;
     NpTexture2DFilterState filterState;
     NpTexture2DWrapState wrapState;
 
@@ -55,8 +56,11 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState);
 - (uint32_t) height;
 - (NpTextureDataFormat) dataFormat;
 - (NpTexturePixelFormat) pixelFormat;
+- (NpTextureColorFormat) colorFormat;
 
+- (void) setColorFormat:(NpTextureColorFormat)newColorFormat;
 - (void) setTextureFilter:(NpTexture2DFilter)newTextureFilter;
+- (void) setTextureWrap:(NpTextureWrap)newTextureWrap;
 - (void) setTextureAnisotropy:(uint32_t)newTextureAnisotropy;
 
 - (void) generateMipMaps;
