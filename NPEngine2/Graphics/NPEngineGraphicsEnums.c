@@ -1,5 +1,48 @@
 #include "NPEngineGraphicsEnums.h"
 
+NpTextureColorFormat getColorFormatForPixelFormat(const NpTexturePixelFormat pixelFormat)
+{
+    NpTextureColorFormat result = NpTextureColorFormatUnknown;
+
+    switch ( pixelFormat )
+    {
+        case NpTexturePixelFormatR:
+        case NpTexturePixelFormatDepth:
+        case NpTexturePixelFormatDepthStencil:
+        {
+            result = NpTextureColorFormatRRR1;
+            break;
+        }
+
+        case NpTexturePixelFormatRG:
+        {
+            result = NpTextureColorFormatRG01;
+            break;
+        }
+
+        case NpTexturePixelFormatRGB:
+        case NpTexturePixelFormatsRGB:
+        {
+            result = NpTextureColorFormatRGB1;
+            break;
+        }
+
+        case NpTexturePixelFormatRGBA:
+        case NpTexturePixelFormatsRGBLinearA:
+        {
+            result = NpTextureColorFormatRGBA;
+            break;
+        }
+
+        default:
+        {
+            break;
+        }
+    }
+
+    return result;
+}
+
 GLenum getGLTextureDataFormat(const NpTextureDataFormat dataFormat)
 {
     GLenum result = GL_NONE;
@@ -463,175 +506,6 @@ GLenum getGLPolygonFillMode(const NpPolygonFillMode polygonFillMode)
 
     return result;
 }
-
-/*
-GLenum getGLRenderBufferInternalFormat(const NpRenderTargetType Type,
-            const NpRenderBufferPixelFormat PixelFormat,
-            const NpRenderBufferDataFormat DataFormat)
-{
-    GLenum internalFormat = GL_NONE;
-
-	switch (Type)
-	{
-	    case NpRenderTargetColor:
-		{
-			switch (DataFormat)
-			{
-			    case NpRenderBufferDataFormatByte:
-				{
-					switch (PixelFormat)
-					{
-					    case NpImagePixelFormatRGB:
-                        {
-						    internalFormat = GL_RGB8;
-						    break;
-                        }
-
-					    case NpImagePixelFormatRGBA:
-                        {
-						    internalFormat = GL_RGBA8;
-						    break;
-                        }
-
-                        default:
-                        {
-                            break;
-                        }
-					}
-
-					break;
-				}
-
-    			case NpRenderBufferDataFormatFloat16:
-				{
-					switch (PixelFormat)
-					{
-					    case NpImagePixelFormatRGB:
-                        {
-						    internalFormat = GL_RGB16F;
-						    break;
-                        }
-
-					    case NpImagePixelFormatRGBA:
-                        {
-						    internalFormat = GL_RGBA16F;
-						    break;
-                        }
-
-                        default:
-                        {
-                            break;
-                        }
-                    }
-
-					break;
-				}
-
-    			case NpRenderBufferDataFormatFloat32:
-				{
-					switch (PixelFormat)
-					{
-					    case NpImagePixelFormatRGB:
-                        {
-						    internalFormat = GL_RGB32F;
-						    break;
-                        }
-
-					    case NpImagePixelFormatRGBA:
-                        {
-						    internalFormat = GL_RGBA32F;
-						    break;
-                        }
-
-                        default:
-                        {
-                            break;
-                        }
-                    }
-
-					break;
-				}
-
-                default:
-                {
-                    break;
-                }
-			}
-
-			break;
-		}
-
-    	case NpRenderTargetDepth:
-		{
-			switch (DataFormat)
-			{
-			    case NpRenderBufferDataFormatDepth16:
-                {
-				    internalFormat = GL_DEPTH_COMPONENT16;
-				    break;
-                }
-
-    			case NpRenderBufferDataFormatDepth24:
-                {
-				    internalFormat = GL_DEPTH_COMPONENT24;
-				    break;
-                }
-
-    			case NpRenderBufferDataFormatDepth32:
-                {
-				    internalFormat = GL_DEPTH_COMPONENT32;
-				    break;
-                }
-
-                case NpRenderBufferDataFormatFloat32:
-                {
-                    internalFormat = GL_DEPTH_COMPONENT32F;
-                    break;
-                }
-
-                default:
-                {
-                    break;
-                }
-			}
-
-			break;
-		}
-
-    	case NpRenderTargetDepthStencil:
-		{
-            switch (DataFormat)
-            {
-                case NpRenderBufferDataFormatDepth24:
-                {
-    				internalFormat = GL_DEPTH24_STENCIL8;
-                    break;
-                }
-
-                case NpRenderBufferDataFormatFloat32:
-                {
-                    internalFormat = GL_DEPTH32F_STENCIL8;
-                    break;
-                }
-
-                default:
-                {
-                    break;
-                }
-            }
-
-			break;
-		}
-
-    	default:
-		{
-			break;
-		}
-	}
-
-	return internalFormat;
-}
-*/
 
 GLenum getGLBufferUsage(const NpBufferDataUpdateRate UpdateRate,
             const NpBufferDataUsage Usage)

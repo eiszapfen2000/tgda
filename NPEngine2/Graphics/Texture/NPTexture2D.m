@@ -1,5 +1,6 @@
 #import <Foundation/NSData.h>
 #import <Foundation/NSDictionary.h>
+#import <Foundation/NSException.h>
 #import "Log/NPLog.h"
 #import "Core/Container/NPAssetArray.h"
 #import "Core/Utilities/NSError+NPEngine.h"
@@ -31,6 +32,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 - (void) updateGLTextureFilterState;
 - (void) updateGLTextureAnisotropy;
 - (void) updateGLTextureWrapState;
+- (void) updateGLSwizzleState;
 - (void) updateGLTextureState;
 - (void) uploadToGLWithData:(NSData *)data;
 
@@ -91,6 +93,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     width = height = 0;
     dataFormat  = NpImageDataFormatUnknown;
     pixelFormat = NpImagePixelFormatUnknown;
+    colorFormat = NpTextureColorFormatUnknown;
     glDataFormat = GL_NONE;
     glPixelFormat = GL_NONE;
     glInternalFormat = GL_NONE;
@@ -119,11 +122,36 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     return pixelFormat;
 }
 
+- (NpTextureColorFormat) colorFormat
+{
+    return colorFormat;
+}
+
+- (void) setColorFormat:(NpTextureColorFormat)newColorFormat
+{
+    if ( colorFormat != newColorFormat )
+    {
+        colorFormat = newColorFormat;
+        [ self updateGLTextureState ];
+    }
+}
+
 - (void) setTextureFilter:(NpTexture2DFilter)newTextureFilter
 {
     if ( filterState.textureFilter != newTextureFilter )
     {
         filterState.textureFilter = newTextureFilter;
+        [ self updateGLTextureState ];
+    }
+}
+
+- (void) setTextureWrap:(NpTextureWrap)newTextureWrap
+{
+    if ( wrapState.wrapS != newTextureWrap
+         || wrapState.wrapT != newTextureWrap )
+    {
+        wrapState.wrapS = newTextureWrap;
+        wrapState.wrapT = newTextureWrap;
         [ self updateGLTextureState ];
     }
 }
@@ -154,13 +182,14 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
                        data:(NSData *)data
 {
     if ( width != newWidth || height != newHeight
-        || pixelFormat != newPixelFormat || dataFormat != newDataFormat)
+        || pixelFormat != newPixelFormat || dataFormat != newDataFormat )
     {
         ready = NO;
         width  = newWidth;
         height = newHeight;
         pixelFormat = newPixelFormat;
         dataFormat  = newDataFormat;
+        colorFormat = getColorFormatForPixelFormat(newPixelFormat);
     }
 
     filterState.mipmaps = newMipmaps;
@@ -233,6 +262,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     // default if loading from file, generate mipmaps
     // and do trilinear filtering
     filterState.textureFilter = NpTexture2DFilterTrilinear;
+    filterState.mipmaps = YES;
 
     // process optional arguments
     if ( arguments != nil )
@@ -286,6 +316,21 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 @end
 
+static GLint masks[][4]
+    = {
+        {GL_RED, GL_RED, GL_RED, GL_ZERO},
+        {GL_RED, GL_RED, GL_RED, GL_ONE},
+        {GL_GREEN, GL_GREEN, GL_GREEN, GL_ZERO},
+        {GL_GREEN, GL_GREEN, GL_GREEN, GL_ONE},
+        {GL_BLUE, GL_BLUE, GL_BLUE, GL_ZERO},
+        {GL_BLUE, GL_BLUE, GL_BLUE, GL_ONE},
+        {GL_RED, GL_GREEN, GL_ZERO, GL_ZERO},
+        {GL_RED, GL_GREEN, GL_ZERO, GL_ONE},
+        {GL_RED, GL_GREEN, GL_BLUE, GL_ZERO},
+        {GL_RED, GL_GREEN, GL_BLUE, GL_ONE},
+        {GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA}
+      };
+
 @implementation NPTexture2D (Private)
 
 - (void) updateGLTextureFilterState
@@ -333,6 +378,14 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
 }
 
+- (void) updateGLSwizzleState
+{
+    if (colorFormat != NpTextureColorFormatUnknown)
+    {
+        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, masks[colorFormat]);
+    }
+}
+
 - (void) updateGLTextureState
 {
     [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:self ];
@@ -340,6 +393,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     [ self updateGLTextureFilterState ];
     [ self updateGLTextureAnisotropy ];
     [ self updateGLTextureWrapState ];
+    [ self updateGLSwizzleState ];
 
     [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
 }
@@ -356,13 +410,6 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     }
     else
     {
-        /*
-        glDataFormat = getGLTextureDataFormat(dataFormat);
-        glPixelFormat = getGLTexturePixelFormat(pixelFormat);
-        glInternalFormat
-            = getGLTextureInternalFormat(dataFormat, pixelFormat,
-                 [[ NPEngineGraphics instance ] supportssRGBTextures ]);
-        */
         glInternalFormat
             = getGLTextureInternalFormat(dataFormat, pixelFormat,
                  [[ NPEngineGraphics instance ] supportssRGBTextures ],
@@ -383,6 +430,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
         [ self updateGLTextureFilterState ];
         [ self updateGLTextureAnisotropy ];
         [ self updateGLTextureWrapState ];
+        [ self updateGLSwizzleState ];
     }
 
     [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];

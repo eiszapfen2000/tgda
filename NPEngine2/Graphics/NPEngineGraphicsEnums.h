@@ -95,6 +95,23 @@ typedef enum NpTextureDataFormat
 }
 NpTextureDataFormat;
 
+typedef enum NpTextureColorFormat
+{
+    NpTextureColorFormatUnknown = -1,
+    NpTextureColorFormatRRR0 = 0,
+    NpTextureColorFormatRRR1 = 1,
+    NpTextureColorFormatGGG0 = 2,
+    NpTextureColorFormatGGG1 = 3,
+    NpTextureColorFormatBBB0 = 4,
+    NpTextureColorFormatBBB1 = 5,
+    NpTextureColorFormatRG00 = 6,
+    NpTextureColorFormatRG01 = 7,
+    NpTextureColorFormatRGB0 = 8,
+    NpTextureColorFormatRGB1 = 9,
+    NpTextureColorFormatRGBA = 10
+}
+NpTextureColorFormat;
+
 typedef enum NpShaderType
 {
     NpShaderTypeUnknown  = -1,
@@ -344,6 +361,8 @@ typedef enum NpOrthographicAlignment
 }
 NpOrthographicAlignment;
 
+NpTextureColorFormat getColorFormatForPixelFormat(const NpTexturePixelFormat pixelFormat);
+
 GLenum getGLTextureDataFormat(const NpTextureDataFormat dataFormat);
 GLenum getGLTexturePixelFormat(const NpTexturePixelFormat pixelFormat, const bool normalized);
 GLint  getGLTextureWrap(const NpTextureWrap textureWrap);
@@ -351,16 +370,9 @@ GLint  getGLTextureInternalFormat(const NpTextureDataFormat dataFormat,
             const NpTexturePixelFormat pixelFormat, const bool sRGBSupport,
             GLenum * glDataFormat, GLenum * glPixelFormat);
 
-
 GLenum getGLComparisonFunction(const NpComparisonFunction comparisonFunction);
 GLenum getGLCullface(const NpCullface cullface);
 GLenum getGLPolygonFillMode(const NpPolygonFillMode polygonFillMode);
-
-/*
-GLenum getGLRenderBufferInternalFormat(const NpRenderTargetType Type,
-            const NpRenderBufferPixelFormat PixelFormat,
-            const NpRenderBufferDataFormat DataFormat);
-*/
 
 GLenum getGLBufferUsage(const NpBufferDataUpdateRate UpdateRate,
             const NpBufferDataUsage Usage);
