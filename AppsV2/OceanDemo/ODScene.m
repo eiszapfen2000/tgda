@@ -469,7 +469,7 @@
                                   bindFBO:NO ];
 
     // attach depth buffer
-    [ depthBuffer
+    [ depthTarget
         attachToRenderTargetConfiguration:gBuffer
                          colorBufferIndex:0
                                   bindFBO:NO ];
