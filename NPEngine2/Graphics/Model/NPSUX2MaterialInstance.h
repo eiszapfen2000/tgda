@@ -1,7 +1,7 @@
 #import "Core/NPObject/NPObject.h"
 #import "Core/Protocols/NPPPersistentObject.h"
 
-@class NSMutableArray;
+@class NSPointerArray;
 @class NPEffect;
 
 #ifndef SUX2_SAMPLER_COUNT
@@ -13,7 +13,7 @@
     NSString * file;
     BOOL ready;
 
-    NSMutableArray * textures;
+    NSPointerArray * textures;
     NPEffect * effect;
     NSString * techniqueName;
 }

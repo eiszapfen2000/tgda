@@ -1,7 +1,6 @@
-#import <Foundation/NSArray.h>
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSException.h>
-#import <Foundation/NSNull.h>
+#import <Foundation/NSPointerArray.h>
 #import "Log/NPLog.h"
 #import "Core/Container/NPAssetArray.h"
 #import "Core/String/NPStringList.h"
@@ -30,11 +29,11 @@
     file = nil;
     ready = NO;
 
-    textures = [[ NSMutableArray alloc ] initWithCapacity:SUX2_SAMPLER_COUNT ];
-    for (uint32_t i = 0; i < SUX2_SAMPLER_COUNT; i++ )
-    {
-        [ textures addObject:[ NSNull null ]];
-    }
+    NSPointerFunctionsOptions options
+        = NSPointerFunctionsObjectPointerPersonality | NSPointerFunctionsStrongMemory;
+
+    textures = [[ NSPointerArray alloc ] initWithOptions:options ];
+    [ textures setCount:SUX2_SAMPLER_COUNT ];
 
     return self;
 }
@@ -42,7 +41,7 @@
 - (void) dealloc
 {
     SAFE_DESTROY(effect);
-    [ textures removeAllObjects ];
+    [ textures setCount:0 ];
     DESTROY(textures);
     SAFE_DESTROY(file);
 
@@ -90,7 +89,7 @@
                   getAssetWithFileName:fileName
                              arguments:arguments ];
 
-    if ( texture != nil )
+    if ( texture != nil )    [[ effect techniqueWithName:techniqueName ] activate ];
     {
         NSAssert(effect != nil, @"Material instance misses effect");
 
@@ -102,29 +101,27 @@
         NSAssert(texelUnit < SUX2_SAMPLER_COUNT,
             @"Texelunit exceeds index");
 
-        [ textures replaceObjectAtIndex:texelUnit
-                             withObject:texture ];
+        [ textures replacePointerAtIndex:texelUnit
+                             withPointer:texture ];
     }
 }
 
 - (void) activate
 {
-    id null = [ NSNull null ];
-
     NPTextureBindingState * textureBindingState
         = [[ NPEngineGraphics instance ] textureBindingState ];
 
     for (uint32_t i = 0; i < SUX2_SAMPLER_COUNT; i++ )
     {
-        id texture = [ textures objectAtIndex:i ];
-        if ( texture != null )
-        {
-            [ textureBindingState setTexture:texture texelUnit:i ];
-        }
+        [ textureBindingState setTexture:[ textures pointerAtIndex:i ] texelUnit:i ];
     }    
 
     [ textureBindingState activate ];
-    [[ effect techniqueWithName:techniqueName ] activate ];
+
+    if ( effect != nil && techniqueName != nil )
+    {
+        [[ effect techniqueWithName:techniqueName ] activate ];
+    }
 }
 
 - (NSString *) fileName
