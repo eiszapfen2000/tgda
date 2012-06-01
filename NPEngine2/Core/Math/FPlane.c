@@ -1,5 +1,4 @@
 #include <math.h>
-
 #include "FPlane.h"
 #include "Constants.h"
 
@@ -125,5 +124,5 @@ float fplane_pv_distance_from_plane_s(const FPlane * const plane, const FVector3
 {
     const float tmp = fv3_vv_dot_product(&(plane->normal), point);
 
-    return (float)fabs(tmp + plane->d);
+    return fabsf(tmp + plane->d);
 }
