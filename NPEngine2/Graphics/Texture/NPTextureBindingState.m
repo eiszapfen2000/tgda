@@ -149,27 +149,6 @@
     }
 }
 
-- (void) setNoTexture:(const uint32_t)texelUnit
-{
-	if ( locked )
-	{
-		return;
-	}
-
-    if ( texelUnit >= numberOfSuppertedTexelUnits )
-    {
-        return;
-    }
-    
-	if (lockedTexelUnits[texelUnit] == YES)
-	{
-		return;
-	}
-
-	currentTextureIndices[texelUnit] = 0;
-	currentTextureTypes[texelUnit]   = GL_TEXTURE_2D;
-}
-
 - (void) setTexture:(id <NPPTexture>)texture texelUnit:(const uint32_t)texelUnit
 {
 	if ( locked )

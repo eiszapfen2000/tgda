@@ -35,7 +35,6 @@
 - (void) lockTexelUnit:(const uint32_t)texelUnit;
 - (void) unlockTexelUnit:(const uint32_t)texelUnit;
 
-- (void) setNoTexture:(const uint32_t)texelUnit;
 - (void) setTexture:(id <NPPTexture>)texture texelUnit:(const uint32_t)texelUnit;
 - (void) setTextureImmediately:(id <NPPTexture>)texture;
 - (void) restoreOriginalTextureImmediately;
