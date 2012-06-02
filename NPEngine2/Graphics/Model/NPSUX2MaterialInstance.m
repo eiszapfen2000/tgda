@@ -89,7 +89,7 @@
                   getAssetWithFileName:fileName
                              arguments:arguments ];
 
-    if ( texture != nil )    [[ effect techniqueWithName:techniqueName ] activate ];
+    if ( texture != nil )
     {
         NSAssert(effect != nil, @"Material instance misses effect");
 
