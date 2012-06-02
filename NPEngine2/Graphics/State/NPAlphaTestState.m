@@ -71,7 +71,7 @@
     defaultEnabled = newDefaultEnabled;
 }
 
-- (void)  setAlphaThreshold:(Float)newAlphaThreshold
+- (void) setAlphaThreshold:(Float)newAlphaThreshold
 {
     if ( [ super changeable ] == YES )
     {
@@ -79,7 +79,7 @@
     }
 }
 
-- (void)  setDefaultAlphaThreshold:(Float)newDefaultAlphaThreshold
+- (void) setDefaultAlphaThreshold:(Float)newDefaultAlphaThreshold
 {
     defaultAlphaThreshold = newDefaultAlphaThreshold;
 }
