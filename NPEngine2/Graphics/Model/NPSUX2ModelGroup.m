@@ -91,13 +91,21 @@
 
 - (void) render
 {
+    [ self renderWithMaterial:YES ];
+}
+
+- (void) renderWithMaterial:(BOOL)renderMaterial
+{
     if ( ready == NO )
     {
         NPLOG(@"Group not ready");
         return;
     }
 
-    [ materialInstance activate ];
+    if ( renderMaterial == YES )
+    {
+        [ materialInstance activate ];
+    }
 
     [[ lod vertexBuffer ]
             renderWithPrimitiveType:primitiveType

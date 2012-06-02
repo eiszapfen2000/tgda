@@ -23,5 +23,6 @@
 
 - (void) render;
 - (void) renderLOD:(uint32_t)index;
+- (void) renderLOD:(uint32_t)index withMaterial:(BOOL)renderMaterial;
 
 @end

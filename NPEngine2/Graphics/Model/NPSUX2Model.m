@@ -175,10 +175,15 @@
 
 - (void) render
 {
-    [ self renderLOD:0 ];
+    [ self renderLOD:0 withMaterial:YES ];
 }
 
 - (void) renderLOD:(uint32_t)index
+{
+    [ self renderLOD:index withMaterial:YES ];
+}
+
+- (void) renderLOD:(uint32_t)index withMaterial:(BOOL)renderMaterial
 {
     if ( ready == NO )
     {
@@ -186,7 +191,7 @@
         return;
     }
 
-    [[ lods objectAtIndex:index ] render ];
+    [[ lods objectAtIndex:index ] renderWithMaterial:renderMaterial ];
 }
 
 @end

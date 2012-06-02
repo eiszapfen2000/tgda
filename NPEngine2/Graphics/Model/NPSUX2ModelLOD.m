@@ -142,6 +142,11 @@
 
 - (void) render
 {
+    [ self renderWithMaterial:YES ];
+}
+
+- (void) renderWithMaterial:(BOOL)renderMaterial
+{
     if ( ready == NO )
     {
         NPLOG(@"LOD not ready");
@@ -151,7 +156,7 @@
     NSUInteger numberOfGroups = [ groups count ];
     for ( NSUInteger i = 0; i < numberOfGroups; i++ )
     {
-        [[ groups objectAtIndex:i ] render ];
+        [[ groups objectAtIndex:i ] renderWithMaterial:renderMaterial ];
     }
 }
 
