@@ -35,5 +35,6 @@
 - (void) setModel:(NPSUX2Model *)newModel;
 
 - (void) render;
+- (void) renderWithMaterial:(BOOL)renderMaterial;
 
 @end

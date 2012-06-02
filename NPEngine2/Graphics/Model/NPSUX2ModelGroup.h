@@ -27,5 +27,6 @@
 - (void) setLod:(NPSUX2ModelLOD *)newLod;
 
 - (void) render;
+- (void) renderWithMaterial:(BOOL)renderMaterial;
 
 @end
