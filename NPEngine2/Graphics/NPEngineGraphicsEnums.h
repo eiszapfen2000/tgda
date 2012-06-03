@@ -104,11 +104,13 @@ typedef enum NpTextureColorFormat
     NpTextureColorFormatGGG1 = 3,
     NpTextureColorFormatBBB0 = 4,
     NpTextureColorFormatBBB1 = 5,
-    NpTextureColorFormatRG00 = 6,
-    NpTextureColorFormatRG01 = 7,
-    NpTextureColorFormatRGB0 = 8,
-    NpTextureColorFormatRGB1 = 9,
-    NpTextureColorFormatRGBA = 10
+    NpTextureColorFormatAAA0 = 6,
+    NpTextureColorFormatAAA1 = 7,
+    NpTextureColorFormatRG00 = 8,
+    NpTextureColorFormatRG01 = 9,
+    NpTextureColorFormatRGB0 = 10,
+    NpTextureColorFormatRGB1 = 11,
+    NpTextureColorFormatRGBA = 12
 }
 NpTextureColorFormat;
 

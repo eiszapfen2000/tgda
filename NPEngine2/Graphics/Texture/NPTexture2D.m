@@ -324,6 +324,8 @@ static GLint masks[][4]
         {GL_GREEN, GL_GREEN, GL_GREEN, GL_ONE},
         {GL_BLUE, GL_BLUE, GL_BLUE, GL_ZERO},
         {GL_BLUE, GL_BLUE, GL_BLUE, GL_ONE},
+        {GL_ALPHA, GL_ALPHA, GL_ALPHA, GL_ZERO},
+        {GL_ALPHA, GL_ALPHA, GL_ALPHA, GL_ONE},
         {GL_RED, GL_GREEN, GL_ZERO, GL_ZERO},
         {GL_RED, GL_GREEN, GL_ZERO, GL_ONE},
         {GL_RED, GL_GREEN, GL_BLUE, GL_ZERO},
@@ -380,7 +382,7 @@ static GLint masks[][4]
 
 - (void) updateGLSwizzleState
 {
-    if (colorFormat != NpTextureColorFormatUnknown)
+    if ( colorFormat != NpTextureColorFormatUnknown )
     {
         glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, masks[colorFormat]);
     }
