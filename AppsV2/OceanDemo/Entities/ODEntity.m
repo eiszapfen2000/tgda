@@ -152,7 +152,7 @@ static NPAssetArray * statesets = nil;
     }
     */
 
-    [ model render ];
+    [ model renderLOD:0 withMaterial:NO ];
 }
 
 @end
