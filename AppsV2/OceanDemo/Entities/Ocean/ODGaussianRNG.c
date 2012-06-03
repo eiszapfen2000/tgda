@@ -39,6 +39,8 @@ void odgaussianrng_shutdown()
     prng_free(mrg);
     prng_free(ctg);
     prng_free(tt800);
+
+    mt19937 = cmrg = mrg = ctg = tt800 = NULL;
 }
 
 double gaussian_fprandomnumber()

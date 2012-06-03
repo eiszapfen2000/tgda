@@ -5,11 +5,7 @@ in vec3 out_normal;
 
 void main()
 {
-    //positions_target = vec4(out_worldpos.xyz, 1.0);
-    positions_target = vec4(0.0);
-    positions_target.rgb = -out_worldpos.www;
-    positions_target.a = 1.0;
-    //positions_target = vec4(out_worldpos.www, 1.0);
+    positions_target = out_worldpos;
     normals_target = vec4(out_normal, 0.0);
 }
 
