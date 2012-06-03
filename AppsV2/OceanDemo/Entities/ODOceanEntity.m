@@ -241,8 +241,6 @@ static const NSUInteger defaultResolutionIndex = 0;
 
 - (void) start
 {
-    odgaussianrng_initialise();
-
     if ( semaphore == nil )
     {
         semaphore = [[ NPSemaphore alloc ] init ];
@@ -255,6 +253,8 @@ static const NSUInteger defaultResolutionIndex = 0;
 
     if ( thread == nil )
     {
+        odgaussianrng_initialise();
+
         thread
             = [[ NSThread alloc ]
                     initWithTarget:self
@@ -289,12 +289,11 @@ static const NSUInteger defaultResolutionIndex = 0;
         }
 
         DESTROY(thread);
+        odgaussianrng_shutdown();
     }
 
     SAFE_DESTROY(semaphore);
     SAFE_DESTROY(mutex);
-
-    odgaussianrng_shutdown();
 }
 
 - (ODProjector *) projector

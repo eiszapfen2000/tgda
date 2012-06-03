@@ -33,12 +33,12 @@
 
     if ( [ strafeLeftAction active ] == YES )
     {
-        [ self moveLeft:frameTime * 3.0f ];
+        [ self moveLeft:frameTime * 10.0f ];
     }
 
     if ( [ strafeRightAction active ] == YES )
     {
-        [ self moveRight:frameTime * 3.0f ];
+        [ self moveRight:frameTime * 10.0f ];
     }
 
     if ( [ leftClickAction active ] == YES )
@@ -94,7 +94,7 @@
 
     fov         = 45.0f;
     nearPlane   = 0.1f;
-    farPlane    = 50.0f;
+    farPlane    = 150.0f;
     aspectRatio = 1.0f;
 
     yaw   = 0.0f;

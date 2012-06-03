@@ -264,7 +264,7 @@
 
     [ skylight setCamera:camera ];
     [ ocean setCamera:camera ];
-    [ ocean start ];
+    //[ ocean start ];
 
     //[ projector setCamera:camera ];
     //[ projectedGrid setProjector:projector ];
@@ -485,7 +485,7 @@
 
     glDepthMask(GL_TRUE);
     glClearDepth(1);
-    glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
@@ -523,11 +523,11 @@
     glEnd();
 
     [ skylight render ];
+    [ entities makeObjectsPerformSelector:@selector(render) ];
     [ t unlock ];
     //[[[ NP Graphics ] stateConfiguration ] deactivate ];
     [ gBuffer deactivate ];
 
-    /*
     glBindFramebuffer(GL_READ_FRAMEBUFFER, [ gBuffer glID ]);
     glReadBuffer(GL_COLOR_ATTACHMENT0);
     glBlitFramebuffer(0, 0, 800, 600, 0, 0, 400, 300, GL_COLOR_BUFFER_BIT, GL_LINEAR);
@@ -535,7 +535,9 @@
     glBlitFramebuffer(0, 0, 800, 600, 400, 0, 800, 300, GL_COLOR_BUFFER_BIT, GL_LINEAR);
     glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
     glReadBuffer(GL_BACK);
-    */
+
+    /*
+    [[ positionsTarget texture ] setColorFormat:NpTextureColorFormatAAA1 ];
 
     // reset matrices
     [[[ NP Core ] transformationState ] reset ];
@@ -546,6 +548,9 @@
     // render tonemapped scene to screen
     [[ fullscreenEffect techniqueWithName:@"texture" ] activate ];
     [ fullscreenQuad render ];
+
+    [[ positionsTarget texture ] setColorFormat:NpTextureColorFormatRGBA ];
+    */
 
     /*
     // clear back buffer and depth buffer
