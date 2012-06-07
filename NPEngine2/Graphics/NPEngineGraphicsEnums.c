@@ -43,85 +43,117 @@ NpTextureColorFormat getColorFormatForPixelFormat(const NpTexturePixelFormat pix
     return result;
 }
 
-GLenum getGLTextureDataFormat(const NpTextureDataFormat dataFormat)
+static GLenum getGLTextureDataFormat(const NpTexturePixelFormat pixelFormat, const NpTextureDataFormat dataFormat)
 {
     GLenum result = GL_NONE;
 
-    switch ( dataFormat )
+    switch ( pixelFormat )
     {
-        case NpTextureDataFormatUInt8N:
-        case NpTextureDataFormatUInt8:
+        case NpTexturePixelFormatR:
+        case NpTexturePixelFormatRG:
+        case NpTexturePixelFormatRGB:
+        case NpTexturePixelFormatRGBA:
         {
-            result = GL_UNSIGNED_BYTE;
+            switch ( dataFormat )
+            {
+                case NpTextureDataFormatUInt8N:
+                case NpTextureDataFormatUInt8:
+                { result = GL_UNSIGNED_BYTE; break; }
+
+                case NpTextureDataFormatInt8N:
+                case NpTextureDataFormatInt8:
+                { result = GL_BYTE; break; }
+
+                case NpTextureDataFormatUInt16N:
+                case NpTextureDataFormatUInt16:
+                { result = GL_UNSIGNED_SHORT; break; }
+
+                case NpTextureDataFormatInt16N:
+                case NpTextureDataFormatInt16:
+                { result = GL_SHORT; break; }
+
+                case NpTextureDataFormatUInt32N:
+                case NpTextureDataFormatUInt32:
+                { result = GL_UNSIGNED_INT; break; }
+
+                case NpTextureDataFormatInt32N:
+                case NpTextureDataFormatInt32:
+                { result = GL_INT; break; }
+
+                case NpTextureDataFormatFloat16:
+                { result = GL_HALF_FLOAT; break; }
+
+                case NpTextureDataFormatFloat32:
+                { result = GL_FLOAT; break; }
+
+                case NpTextureDataFormatFloat64:
+                { result = GL_DOUBLE; break; }
+
+                default: break;
+            }
+
             break;
         }
 
-        case NpTextureDataFormatInt8N:
-        case NpTextureDataFormatInt8:
+        case NpTexturePixelFormatsRGB:
+        case NpTexturePixelFormatsRGBLinearA:
         {
-            result = GL_BYTE;
-            break;
+            switch ( dataFormat )
+            {
+                case NpTextureDataFormatUInt8N:
+                case NpTextureDataFormatUInt8:
+                { result = GL_UNSIGNED_BYTE; break; }
+                default: break;
+            }
 
-        }
-
-        case NpTextureDataFormatUInt16N:
-        case NpTextureDataFormatUInt16:
-        {
-            result = GL_UNSIGNED_SHORT;
-            break;
-        }
-
-        case NpTextureDataFormatInt16N:
-        case NpTextureDataFormatInt16:
-        {
-            result = GL_SHORT;
-            break;
-
-        }
-
-        case NpTextureDataFormatUInt32:
-        case NpTextureDataFormatUInt32N:
-        {
-            result = GL_UNSIGNED_INT;
             break;
         }
 
-        case NpTextureDataFormatInt32:
-        case NpTextureDataFormatInt32N:
+        case NpTexturePixelFormatDepth:
         {
-            result = GL_INT;
-            break;
+            switch ( dataFormat )
+            {
+                case NpTextureDataFormatUInt16N:
+                case NpTextureDataFormatInt16N:
+                { result = GL_UNSIGNED_SHORT; break; }
 
-        }
+                case NpTextureDataFormatUInt32N:
+                case NpTextureDataFormatInt32N:
+                { result = GL_UNSIGNED_INT; break; }
 
-        case NpTextureDataFormatFloat16:
-        {
-            result = GL_HALF_FLOAT;
-            break;
-        }
+                case NpTextureDataFormatFloat32:
+                { result = GL_FLOAT; break; }
 
-        case NpTextureDataFormatFloat32:
-        {
-            result = GL_FLOAT;
-            break;
-        }
+                default: break;
+            }
 
-        case NpTextureDataFormatFloat64:
-        {
-            result = GL_DOUBLE;
             break;
         }
 
-        default:
+        case NpTexturePixelFormatDepthStencil:
         {
+            switch ( dataFormat )
+            {
+                case NpTextureDataFormatUInt32N:
+                case NpTextureDataFormatInt32N:
+                { result = GL_UNSIGNED_INT_24_8; break; }
+
+                case NpTextureDataFormatFloat32:
+                { result = GL_FLOAT_32_UNSIGNED_INT_24_8_REV; break; }
+
+                default: break;
+            }
+
             break;
         }
+
+        default: break;
     }
 
     return result;
 }
 
-GLenum getGLTexturePixelFormat(const NpTexturePixelFormat pixelFormat, const bool normalized)
+static GLenum getGLTexturePixelFormat(const NpTexturePixelFormat pixelFormat, const bool normalized)
 {
     GLenum result = GL_NONE;
 
@@ -423,7 +455,7 @@ GLint getGLTextureInternalFormat(const NpTextureDataFormat dataFormat,
 
     if ( glDataFormat != NULL )
     {
-        *glDataFormat = getGLTextureDataFormat(dataFormat);
+        *glDataFormat = getGLTextureDataFormat(pixelFormat, dataFormat);
     }
 
     if ( glPixelFormat != NULL )
