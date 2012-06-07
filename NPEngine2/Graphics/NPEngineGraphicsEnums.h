@@ -365,8 +365,8 @@ NpOrthographicAlignment;
 
 NpTextureColorFormat getColorFormatForPixelFormat(const NpTexturePixelFormat pixelFormat);
 
-GLenum getGLTextureDataFormat(const NpTextureDataFormat dataFormat);
-GLenum getGLTexturePixelFormat(const NpTexturePixelFormat pixelFormat, const bool normalized);
+//GLenum getGLTextureDataFormat(const NpTextureDataFormat dataFormat);
+//GLenum getGLTexturePixelFormat(const NpTexturePixelFormat pixelFormat, const bool normalized);
 GLint  getGLTextureWrap(const NpTextureWrap textureWrap);
 GLint  getGLTextureInternalFormat(const NpTextureDataFormat dataFormat,
             const NpTexturePixelFormat pixelFormat, const bool sRGBSupport,
