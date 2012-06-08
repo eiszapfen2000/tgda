@@ -184,11 +184,12 @@ typedef enum NpComparisonFunction
 {
     NpComparisonNever        = 0,
     NpComparisonAlways       = 1,
-    NpComparisonLess         = 2,
-    NpComparisonLessEqual    = 3,
-    NpComparisonEqual        = 4,
-    NpComparisonGreaterEqual = 5,
-    NpComparisonGreater      = 6
+    NpComparisonEqual        = 2,
+    NpComparisonNotEqual     = 3,
+    NpComparisonLess         = 4,
+    NpComparisonLessEqual    = 5,
+    NpComparisonGreaterEqual = 6,
+    NpComparisonGreater      = 7
 }
 NpComparisonFunction;
 
@@ -216,6 +217,19 @@ typedef enum NpPolygonFillMode
     NpPolygonFillFace  = 2
 }
 NpPolygonFillMode;
+
+typedef enum NpStencilOperation
+{
+    NpStencilKeepValue = 0,
+    NpStencilSetZeroValue = 1,
+    NpStencilSetReferenceValue = 2,
+    NpStencilInvertValue = 3,
+    NpStencilIncrementValue = 4,
+    NpStencilIncrementAndWrapValue = 5,
+    NpStencilDecrementValue = 6,
+    NpStencilDecrementAndWrapValue = 7
+}
+NpStencilOperation;
 
 typedef enum NpGeometryDataFormat
 {
@@ -364,17 +378,15 @@ typedef enum NpOrthographicAlignment
 NpOrthographicAlignment;
 
 NpTextureColorFormat getColorFormatForPixelFormat(const NpTexturePixelFormat pixelFormat);
-
-//GLenum getGLTextureDataFormat(const NpTextureDataFormat dataFormat);
-//GLenum getGLTexturePixelFormat(const NpTexturePixelFormat pixelFormat, const bool normalized);
-GLint  getGLTextureWrap(const NpTextureWrap textureWrap);
-GLint  getGLTextureInternalFormat(const NpTextureDataFormat dataFormat,
-            const NpTexturePixelFormat pixelFormat, const bool sRGBSupport,
-            GLenum * glDataFormat, GLenum * glPixelFormat);
+GLint getGLTextureWrap(const NpTextureWrap textureWrap);
+GLint getGLTextureInternalFormat(const NpTextureDataFormat dataFormat,
+        const NpTexturePixelFormat pixelFormat, const bool sRGBSupport,
+        GLenum * glDataFormat, GLenum * glPixelFormat);
 
 GLenum getGLComparisonFunction(const NpComparisonFunction comparisonFunction);
 GLenum getGLCullface(const NpCullface cullface);
 GLenum getGLPolygonFillMode(const NpPolygonFillMode polygonFillMode);
+GLenum getGLStencilOperation(const NpStencilOperation stencilOperation);
 
 GLenum getGLBufferUsage(const NpBufferDataUpdateRate UpdateRate,
             const NpBufferDataUsage Usage);

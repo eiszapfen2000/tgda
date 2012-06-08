@@ -500,13 +500,14 @@ GLenum getGLComparisonFunction(const NpComparisonFunction comparisonFunction)
 
 	switch (comparisonFunction)
 	{
-	    case NpComparisonNever        : { result = GL_NEVER;   break; }
-	    case NpComparisonAlways       : { result = GL_ALWAYS;  break; }
-	    case NpComparisonLess         : { result = GL_LESS;    break; }
-	    case NpComparisonLessEqual    : { result = GL_LEQUAL;  break; }
-	    case NpComparisonEqual        : { result = GL_EQUAL;   break; }
-	    case NpComparisonGreaterEqual : { result = GL_GEQUAL;  break; }
-	    case NpComparisonGreater      : { result = GL_GREATER; break; }
+	    case NpComparisonNever        : { result = GL_NEVER;    break; }
+	    case NpComparisonAlways       : { result = GL_ALWAYS;   break; }
+	    case NpComparisonEqual        : { result = GL_EQUAL;    break; }
+	    case NpComparisonNotEqual     : { result = GL_NOTEQUAL; break; }
+	    case NpComparisonLess         : { result = GL_LESS;     break; }
+	    case NpComparisonLessEqual    : { result = GL_LEQUAL;   break; }
+	    case NpComparisonGreaterEqual : { result = GL_GEQUAL;   break; }
+	    case NpComparisonGreater      : { result = GL_GREATER;  break; }
 	}
 
     return result;
@@ -534,6 +535,25 @@ GLenum getGLPolygonFillMode(const NpPolygonFillMode polygonFillMode)
         case NpPolygonFillPoint: { result = GL_POINT; break; }
         case NpPolygonFillLine : { result = GL_LINE;  break; }
         case NpPolygonFillFace : { result = GL_FILL;  break; }
+    }
+
+    return result;
+}
+
+GLenum getGLStencilOperation(const NpStencilOperation stencilOperation)
+{
+    GLenum result = GL_NONE;
+
+    switch ( stencilOperation )
+    {
+        case NpStencilKeepValue             : { result = GL_KEEP;      break; }
+        case NpStencilSetZeroValue          : { result = GL_ZERO;      break; }
+        case NpStencilSetReferenceValue     : { result = GL_REPLACE;   break; }
+        case NpStencilInvertValue           : { result = GL_INVERT;    break; }
+        case NpStencilIncrementValue        : { result = GL_INCR;      break; }
+        case NpStencilIncrementAndWrapValue : { result = GL_INCR_WRAP; break; }
+        case NpStencilDecrementValue        : { result = GL_DECR;      break; }
+        case NpStencilDecrementAndWrapValue : { result = GL_DECR_WRAP; break; }
     }
 
     return result;
