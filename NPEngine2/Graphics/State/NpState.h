@@ -4,6 +4,7 @@
 #import "NPCullingState.h"
 #import "NPBlendingState.h"
 #import "NPPolygonFillState.h"
+#import "NPStencilTestState.h"
 #import "NPStateConfiguration.h"
 #import "NPStateSet.h"
-#import "NPStateSetManager.h"
+

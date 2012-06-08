@@ -1,8 +1,11 @@
-#import "NPAlphaTestState.h"
-#import "NPBlendingState.h"
-#import "NPCullingState.h"
-#import "NPDepthTestState.h"
-#import "NPPolygonFillState.h"
+#import "Core/NPObject/NPObject.h"
+
+@class NPAlphaTestState;
+@class NPBlendingState;
+@class NPCullingState;
+@class NPDepthTestState;
+@class NPPolygonFillState;
+@class NPStencilTestState;
 
 @interface NPStateConfiguration : NPObject
 {
@@ -13,6 +16,7 @@
     NPCullingState     * cullingState;
     NPDepthTestState   * depthTestState;
     NPPolygonFillState * polygonFillState;
+    NPStencilTestState * stencilTestState;
 }
 
 - (id) initWithName:(NSString *)newName;
@@ -26,6 +30,7 @@
 - (id) cullingState;
 - (id) depthTestState;
 - (id) polygonFillState;
+- (id) stencilTestState;
 
 - (void) activate;
 - (void) deactivate;

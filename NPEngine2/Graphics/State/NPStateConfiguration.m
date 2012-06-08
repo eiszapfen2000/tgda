@@ -1,3 +1,9 @@
+#import "NPAlphaTestState.h"
+#import "NPBlendingState.h"
+#import "NPCullingState.h"
+#import "NPDepthTestState.h"
+#import "NPPolygonFillState.h"
+#import "NPStencilTestState.h"
 #import "NPStateConfiguration.h"
 
 @implementation NPStateConfiguration
@@ -13,6 +19,7 @@
     cullingState     = [[ NPCullingState     alloc ] initWithName:@"NP Culling State"      configuration:self ];
     depthTestState   = [[ NPDepthTestState   alloc ] initWithName:@"NP Depth Test State"   configuration:self ];
     polygonFillState = [[ NPPolygonFillState alloc ] initWithName:@"NP Polygon Fill State" configuration:self ];
+    stencilTestState = [[ NPStencilTestState alloc ] initWithName:@"NP Stencil Test State" configuration:self ];
 
     return self;
 }
@@ -24,6 +31,7 @@
     RELEASE(cullingState);
     RELEASE(depthTestState);
     RELEASE(polygonFillState);
+    RELEASE(stencilTestState);
 
     [ super dealloc ];
 }
@@ -63,6 +71,11 @@
     return polygonFillState;
 }
 
+- (id) stencilTestState
+{
+    return stencilTestState;
+}
+
 - (void) activate
 {
     if ( locked == NO )
@@ -72,6 +85,7 @@
         [ cullingState     activate ];
         [ depthTestState   activate ];
         [ polygonFillState activate ];
+        [ stencilTestState activate ];
     }
 }
 
@@ -84,6 +98,7 @@
         [ cullingState     deactivate ];
         [ depthTestState   deactivate ];
         [ polygonFillState deactivate ];
+        [ stencilTestState deactivate ];
     }
 }
 
@@ -96,6 +111,7 @@
         [ cullingState     reset ];
         [ depthTestState   reset ];
         [ polygonFillState reset ];
+        [ stencilTestState reset ];
     }
 }
 
