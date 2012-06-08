@@ -1,6 +1,6 @@
-#import "NPDepthTestState.h"
+#import "NPStencilTestState.h"
 
-@implementation NPDepthTestState
+@implementation NPStencilTestState
 
 - (id) initWithName:(NSString *)newName
       configuration:(NPStateConfiguration *)newConfiguration
@@ -15,9 +15,17 @@
     defaultWriteEnabled = YES;
     currentWriteEnabled = NO;
 
-    comparisonFunction        = NpComparisonLessEqual;
-    defaultComparisonFunction = NpComparisonLessEqual;
-    currentComparisonFunction = NpComparisonGreater;
+    comparisonFunction        = NpComparisonNotEqual;
+    defaultComparisonFunction = NpComparisonNotEqual;
+    currentComparisonFunction = NpComparisonEqual;
+
+    referenceValue = 0;
+    defaultReferenceValue = 0;
+    currentReferenceValue = 1;
+
+    comparisonMask = ~0u;
+    defaultComparisonMask = ~0u;
+    currentComparisonMask = 0;
 
     return self;
 }
@@ -55,6 +63,26 @@
 - (NpComparisonFunction) defaultComparisonFunction
 {
     return defaultComparisonFunction;
+}
+
+- (int32_t) referenceValue
+{
+    return referenceValue;
+}
+
+- (int32_t) defaultReferenceValue
+{
+    return defaultReferenceValue;
+}
+
+- (uint32_t) comparisonMask
+{
+    return comparisonMask;
+}
+
+- (uint32_t) defaultComparisonMask
+{
+    return defaultComparisonMask;
 }
 
 - (void) setEnabled:(BOOL)newEnabled
@@ -96,6 +124,32 @@
     defaultComparisonFunction = newDefaultComparisonFunction;
 }
 
+- (void) setReferenceValue:(int32_t)newReferenceValue
+{
+    if ( [ super changeable ] == YES )
+    {
+        referenceValue = newReferenceValue;
+    }
+}
+
+- (void) setDefaultReferenceValue:(int32_t)newDefaultReferenceValue
+{
+    defaultReferenceValue = newDefaultReferenceValue;
+}
+
+- (void) setComparisonMask:(uint32_t)newComparisonMask
+{
+    if ( [ super changeable ] == YES )
+    {
+        comparisonMask = newComparisonMask;
+    }
+}
+
+- (void) setDefaultComparisonMask:(uint32_t)newDefaultComparisonMask
+{
+    defaultComparisonMask = newDefaultComparisonMask;
+}
+
 - (void) activate
 {
     if ( [ super changeable ] == NO )
@@ -109,29 +163,34 @@
 
         if ( enabled == YES )
         {
-            glEnable(GL_DEPTH_TEST);
+            glEnable(GL_STENCIL_TEST);
         }
         else
         {
-            glDisable(GL_DEPTH_TEST);
+            glDisable(GL_STENCIL_TEST);
         }
     }
 
     if ( currentWriteEnabled != writeEnabled )
     {
         currentWriteEnabled = writeEnabled;
-        glDepthMask(writeEnabled);
+        glStencilMask(~0u);
     }
 
     if ( enabled == YES )
     {
-        if ( currentComparisonFunction != comparisonFunction )
+        if ( currentComparisonFunction != comparisonFunction 
+             || currentReferenceValue != referenceValue
+             || currentComparisonMask != comparisonMask )
         {
             currentComparisonFunction = comparisonFunction;
+            currentReferenceValue = referenceValue;
+            currentComparisonMask = comparisonMask;
+
             GLenum comparison
                 = getGLComparisonFunction(currentComparisonFunction);
 
-            glDepthFunc(comparison);
+            glStencilFunc(comparison, currentReferenceValue, currentComparisonMask);
         }
     }
 }
@@ -152,6 +211,8 @@
         enabled            = defaultEnabled;
         writeEnabled       = defaultWriteEnabled;
         comparisonFunction = defaultComparisonFunction;
+        referenceValue     = defaultReferenceValue;
+        comparisonMask     = defaultComparisonMask;
     }
 }
 

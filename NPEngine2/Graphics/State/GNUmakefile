@@ -9,6 +9,7 @@ NPBlendingState.h \
 NPCullingState.h \
 NPDepthTestState.h \
 NPPolygonFillState.h \
+NPStencilTestState.h \
 NPStateConfiguration.h \
 NPStateSet.h
 
@@ -19,6 +20,7 @@ NPBlendingState.m \
 NPCullingState.m \
 NPDepthTestState.m \
 NPPolygonFillState.m \
+NPStencilTestState.m \
 NPStateConfiguration.m \
 NPStateSet.m
 
