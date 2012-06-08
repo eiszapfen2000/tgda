@@ -14,7 +14,7 @@
 #import "Graphics/RenderTarget/NPRenderBuffer.h"
 #import "Graphics/RenderTarget/NPRenderTexture.h"
 #import "Graphics/RenderTarget/NPRenderTargetConfiguration.h"
-#import "Graphics/State/NPStateConfiguration.h"
+#import "Graphics/State/NpState.h"
 #import "Graphics/NPViewport.h"
 #import "NP.h"
 #import "Entities/ODPEntity.h"
@@ -417,12 +417,14 @@
                      mipmapStorage:YES
                              error:NULL ];
 
-        [ depthBuffer generate:NpRenderTargetDepth
+        [ depthBuffer generate:NpRenderTargetDepthStencil
                          width:currentResolution.x
                         height:currentResolution.y
-                   pixelFormat:NpTexturePixelFormatDepth
+                   pixelFormat:NpTexturePixelFormatDepthStencil
                     dataFormat:NpTextureDataFormatInt32N
                          error:NULL ];
+
+        [[ NP Graphics ] checkForGLErrors ];
 
         [ positionsTarget generate:NpRenderTargetColor
                              width:currentResolution.x
@@ -440,19 +442,27 @@
                    mipmapStorage:NO
                            error:NULL ];
 
-        [ depthTarget generate:NpRenderTargetDepth
+        [ depthTarget generate:NpRenderTargetDepthStencil
                          width:currentResolution.x
                         height:currentResolution.y
-                   pixelFormat:NpTexturePixelFormatDepth
+                   pixelFormat:NpTexturePixelFormatDepthStencil
                     dataFormat:NpTextureDataFormatUInt32N
                  mipmapStorage:NO
                          error:NULL ];
 
+        [[ NP Graphics ] checkForGLErrors ];
+
         lastFrameResolution = currentResolution;
     }
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClearDepth(1);
+    // activate culling, depth write and depth test
+    [[[[ NP Graphics ] stateConfiguration ] cullingState ] setCullFace:NpCullfaceBack ];
+    [[[[ NP Graphics ] stateConfiguration ] cullingState ] setEnabled:YES ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setWriteEnabled:YES ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:YES ];
+    [[[[ NP Graphics ] stateConfiguration ] blendingState ] setEnabled:NO ];
+    [[[ NP Graphics ] stateConfiguration ] activate ];
+
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
     [ gBuffer bindFBO ];
@@ -468,11 +478,15 @@
                          colorBufferIndex:1
                                   bindFBO:NO ];
 
+        [[ NP Graphics ] checkForGLErrors ];
+
     // attach depth buffer
-    [ depthTarget
+    [ depthBuffer
         attachToRenderTargetConfiguration:gBuffer
                          colorBufferIndex:0
                                   bindFBO:NO ];
+
+        [[ NP Graphics ] checkForGLErrors ];
 
     [ gBuffer activateDrawBuffers ];
     [ gBuffer activateViewport ];
@@ -483,16 +497,7 @@
         NPLOG_ERROR(fboError);
     }
 
-    glDepthMask(GL_TRUE);
-    glClearDepth(1);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
-
-    glDisable(GL_BLEND);
-    glDisable(GL_CULL_FACE);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
 
     [ camera render ];
 
@@ -522,12 +527,15 @@
         glVertex3f(0.0f, 10.0f, -5.0f);
     glEnd();
 
-    [ skylight render ];
+    //[ skylight render ];
     [ entities makeObjectsPerformSelector:@selector(render) ];
     [ t unlock ];
-    //[[[ NP Graphics ] stateConfiguration ] deactivate ];
+
+    [[[ NP Graphics ] stateConfiguration ] deactivate ];
+
     [ gBuffer deactivate ];
 
+    /*
     glBindFramebuffer(GL_READ_FRAMEBUFFER, [ gBuffer glID ]);
     glReadBuffer(GL_COLOR_ATTACHMENT0);
     glBlitFramebuffer(0, 0, 800, 600, 0, 0, 400, 300, GL_COLOR_BUFFER_BIT, GL_LINEAR);
@@ -535,9 +543,9 @@
     glBlitFramebuffer(0, 0, 800, 600, 400, 0, 800, 300, GL_COLOR_BUFFER_BIT, GL_LINEAR);
     glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
     glReadBuffer(GL_BACK);
+    */
 
-    /*
-    [[ positionsTarget texture ] setColorFormat:NpTextureColorFormatAAA1 ];
+    //[[ positionsTarget texture ] setColorFormat:NpTextureColorFormatAAA1 ];
 
     // reset matrices
     [[[ NP Core ] transformationState ] reset ];
@@ -549,8 +557,7 @@
     [[ fullscreenEffect techniqueWithName:@"texture" ] activate ];
     [ fullscreenQuad render ];
 
-    [[ positionsTarget texture ] setColorFormat:NpTextureColorFormatRGBA ];
-    */
+    //[[ positionsTarget texture ] setColorFormat:NpTextureColorFormatRGBA ];
 
     /*
     // clear back buffer and depth buffer
