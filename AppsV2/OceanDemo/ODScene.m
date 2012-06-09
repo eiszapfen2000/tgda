@@ -32,6 +32,8 @@
                                 error:(NSError **)error
                                      ;
 
+- (BOOL) generateRenderTargets:(NSError **)error;
+
 @end
 
 @implementation ODScene (Private)
@@ -96,6 +98,64 @@
     }
 
     return entity;
+}
+
+- (BOOL) generateRenderTargets:(NSError **)error
+{
+    BOOL result
+        = [ sceneTarget generate:NpRenderTargetColor
+                           width:currentResolution.x
+                          height:currentResolution.y
+                     pixelFormat:NpTexturePixelFormatRGBA
+                      dataFormat:NpTextureDataFormatFloat16
+                   mipmapStorage:YES
+                           error:error ];
+
+    result
+        = result && [ luminanceTarget generate:NpRenderTargetColor
+                                         width:currentResolution.x
+                                        height:currentResolution.y
+                                   pixelFormat:NpTexturePixelFormatR
+                                    dataFormat:NpTextureDataFormatFloat16
+                                 mipmapStorage:YES
+                                         error:error ];
+
+    result
+        = result && [ depthBuffer generate:NpRenderTargetDepthStencil
+                                     width:currentResolution.x
+                                    height:currentResolution.y
+                               pixelFormat:NpTexturePixelFormatDepthStencil
+                                dataFormat:NpTextureDataFormatUInt32N
+                                     error:error ];
+
+    result
+        = result && [ positionsTarget generate:NpRenderTargetColor
+                                         width:currentResolution.x
+                                        height:currentResolution.y
+                                   pixelFormat:NpTexturePixelFormatRGBA
+                                    dataFormat:NpTextureDataFormatFloat32
+                                 mipmapStorage:NO
+                                         error:error ];
+
+    result
+        = result && [ normalsTarget generate:NpRenderTargetColor
+                                       width:currentResolution.x
+                                      height:currentResolution.y
+                                 pixelFormat:NpTexturePixelFormatRGBA
+                                  dataFormat:NpTextureDataFormatFloat16
+                               mipmapStorage:NO
+                                       error:error ];
+
+    result
+        = result && [ depthTarget generate:NpRenderTargetDepthStencil
+                                     width:currentResolution.x
+                                    height:currentResolution.y
+                               pixelFormat:NpTexturePixelFormatDepthStencil
+                                dataFormat:NpTextureDataFormatUInt32N
+                             mipmapStorage:NO
+                                     error:error ];
+
+    return result;
 }
 
 @end
@@ -401,56 +461,7 @@
         [ gBuffer setWidth:currentResolution.x  ];
         [ gBuffer setHeight:currentResolution.y ];
 
-        [ sceneTarget generate:NpRenderTargetColor
-                         width:currentResolution.x
-                        height:currentResolution.y
-                   pixelFormat:NpTexturePixelFormatRGBA
-                    dataFormat:NpTextureDataFormatFloat16
-                 mipmapStorage:YES
-                         error:NULL ];
-
-        [ luminanceTarget generate:NpRenderTargetColor
-                             width:currentResolution.x
-                            height:currentResolution.y
-                       pixelFormat:NpTexturePixelFormatR
-                        dataFormat:NpTextureDataFormatFloat16
-                     mipmapStorage:YES
-                             error:NULL ];
-
-        [ depthBuffer generate:NpRenderTargetDepthStencil
-                         width:currentResolution.x
-                        height:currentResolution.y
-                   pixelFormat:NpTexturePixelFormatDepthStencil
-                    dataFormat:NpTextureDataFormatUInt32N
-                         error:NULL ];
-
-        [[ NP Graphics ] checkForGLErrors ];
-
-        [ positionsTarget generate:NpRenderTargetColor
-                             width:currentResolution.x
-                            height:currentResolution.y
-                       pixelFormat:NpTexturePixelFormatRGBA
-                        dataFormat:NpTextureDataFormatFloat32
-                     mipmapStorage:NO
-                             error:NULL ];
-
-        [ normalsTarget generate:NpRenderTargetColor
-                           width:currentResolution.x
-                          height:currentResolution.y
-                     pixelFormat:NpTexturePixelFormatRGBA
-                      dataFormat:NpTextureDataFormatFloat16
-                   mipmapStorage:NO
-                           error:NULL ];
-
-        [ depthTarget generate:NpRenderTargetDepthStencil
-                         width:currentResolution.x
-                        height:currentResolution.y
-                   pixelFormat:NpTexturePixelFormatDepthStencil
-                    dataFormat:NpTextureDataFormatUInt32N
-                 mipmapStorage:NO
-                         error:NULL ];
-
-        [[ NP Graphics ] checkForGLErrors ];
+        NSAssert(([ self generateRenderTargets:NULL ] == YES), @"");
 
         lastFrameResolution = currentResolution;
     }
@@ -478,15 +489,11 @@
                          colorBufferIndex:1
                                   bindFBO:NO ];
 
-        [[ NP Graphics ] checkForGLErrors ];
-
     // attach depth buffer
     [ depthTarget
         attachToRenderTargetConfiguration:gBuffer
                          colorBufferIndex:0
                                   bindFBO:NO ];
-
-        [[ NP Graphics ] checkForGLErrors ];
 
     [ gBuffer activateDrawBuffers ];
     [ gBuffer activateViewport ];
@@ -505,8 +512,6 @@
     NPEffectTechnique * t = [ deferredEffect techniqueWithName:@"geometry" ];
     [ t lock ];
     [ t activate:YES ];
-
-    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 
     NPStencilTestState * stencil = [[[ NP Graphics ] stateConfiguration ] stencilTestState ];
     [ stencil setComparisonFunction:NpComparisonAlways ];
@@ -527,33 +532,6 @@
         glVertex3f(0.0f, 10.0f, 5.0f);
     glEnd();
 
-    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
-    [ stencil setComparisonFunction:NpComparisonNotEqual ];
-    [ stencil setOperationOnStencilTestFail:NpStencilKeepValue ];
-    [ stencil setOperationOnDepthTestFail:NpStencilKeepValue ];
-    [ stencil setOperationOnDepthTestPass:NpStencilKeepValue ];
-    [ stencil activate ];
-
-    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:NO ];
-    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] activate ];
-
-    glBegin(GL_QUADS);
-        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
-        glVertex3f(2.0f, 0.0f, 5.0f);
-        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
-        glVertex3f(12.0f, 0.0f, 5.0f);
-        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
-        glVertex3f(12.0f, 10.0f, 5.0f);
-        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
-        glVertex3f(2.0f, 10.0f, 5.0f);
-    glEnd();
-
-    [ stencil deactivate ];
-
-    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:YES ];
-    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] activate ];
-
     glBegin(GL_QUADS);
         glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
         glVertex3f(0.0f, 0.0f, -5.0f);
@@ -565,8 +543,27 @@
         glVertex3f(0.0f, 10.0f, -5.0f);
     glEnd();
 
-    //[ skylight render ];
     [ entities makeObjectsPerformSelector:@selector(render) ];
+
+    [ stencil setComparisonFunction:NpComparisonEqual ];
+    [ stencil setOperationOnStencilTestFail:NpStencilKeepValue ];
+    [ stencil setOperationOnDepthTestFail:NpStencilKeepValue ];
+    [ stencil setOperationOnDepthTestPass:NpStencilKeepValue ];
+    [ stencil activate ];
+
+    //[[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:NO ];
+    //[[[[ NP Graphics ] stateConfiguration ] depthTestState ] activate ];
+
+    [[[[ NP Graphics ] stateConfiguration ] cullingState ] setEnabled:NO ];
+    [[[[ NP Graphics ] stateConfiguration ] cullingState ] activate ];
+
+    [ skylight render ];
+
+    [ stencil deactivate ];
+
+    //[[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:YES ];
+    //[[[[ NP Graphics ] stateConfiguration ] depthTestState ] activate ];
+
     [ t unlock ];
 
     [[[ NP Graphics ] stateConfiguration ] deactivate ];
