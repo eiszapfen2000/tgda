@@ -22,6 +22,7 @@
     NpPolygonFillMode polgyonFillBack;
 }
 
+- (id) init;
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 

@@ -2,6 +2,12 @@
 
 @implementation NPStencilTestState
 
+- (id) init
+{
+    [ self notImplemented:_cmd ];
+    return nil;
+}
+
 - (id) initWithName:(NSString *)newName
       configuration:(NPStateConfiguration *)newConfiguration
 {
@@ -26,6 +32,18 @@
     comparisonMask = ~0u;
     defaultComparisonMask = ~0u;
     currentComparisonMask = 0;
+
+    operationOnStencilTestFail = NpStencilKeepValue;
+    defaultOperationOnStencilTestFail = NpStencilKeepValue;
+    currentOperationOnStencilTestFail = NpStencilIncrementValue;
+
+    operationOnDepthTestFail = NpStencilKeepValue;
+    defaultOperationOnDepthTestFail = NpStencilKeepValue;
+    currentOperationOnDepthTestFail = NpStencilIncrementValue;
+
+    operationOnDepthTestPass = NpStencilKeepValue;
+    defaultOperationOnDepthTestPass = NpStencilKeepValue;
+    currentOperationOnDepthTestPass = NpStencilIncrementValue;
 
     return self;
 }
@@ -83,6 +101,36 @@
 - (uint32_t) defaultComparisonMask
 {
     return defaultComparisonMask;
+}
+
+- (NpStencilOperation) operationOnStencilTestFail
+{
+    return operationOnStencilTestFail;
+}
+
+- (NpStencilOperation) defaultOperationOnStencilTestFail
+{
+    return defaultOperationOnStencilTestFail;
+}
+
+- (NpStencilOperation) operationOnDepthTestFail
+{
+    return operationOnDepthTestFail;
+}
+
+- (NpStencilOperation) defaultOperationOnDepthTestFail
+{
+    return defaultOperationOnDepthTestFail;
+}
+
+- (NpStencilOperation) operationOnDepthTestPass
+{
+    return operationOnDepthTestPass;
+}
+
+- (NpStencilOperation) defaultOperationOnDepthTestPass
+{
+    return defaultOperationOnDepthTestPass;
 }
 
 - (void) setEnabled:(BOOL)newEnabled
@@ -150,6 +198,45 @@
     defaultComparisonMask = newDefaultComparisonMask;
 }
 
+- (void) setOperationOnStencilTestFail:(NpStencilOperation)newOperationOnStencilTestFail
+{
+    if ( [ super changeable ] == YES )
+    {
+        operationOnStencilTestFail = newOperationOnStencilTestFail;
+    }
+}
+
+- (void) setDefaultOperationOnStencilTestFail:(NpStencilOperation)newDefaultOperationOnStencilTestFail
+{
+    defaultOperationOnStencilTestFail = newDefaultOperationOnStencilTestFail;
+}
+
+- (void) setOperationOnDepthTestFail:(NpStencilOperation)newOperationOnDepthTestFail
+{
+    if ( [ super changeable ] == YES )
+    {
+        operationOnDepthTestFail = newOperationOnDepthTestFail;
+    }
+}
+
+- (void) setDefaultOperationOnDepthTestFail:(NpStencilOperation)newDefaultOperationOnDepthTestFail
+{
+    defaultOperationOnDepthTestFail = newDefaultOperationOnDepthTestFail;
+}
+
+- (void) setOperationOnDepthTestPass:(NpStencilOperation)newOperationOnDepthTestPass
+{
+    if ( [ super changeable ] == YES )
+    {
+        operationOnDepthTestPass = newOperationOnDepthTestPass;
+    }
+}
+
+- (void) setDefaultOperationOnDepthTestPass:(NpStencilOperation)newDefaultOperationOnDepthTestPass
+{
+    defaultOperationOnDepthTestPass = newDefaultOperationOnDepthTestPass;
+}
+
 - (void) activate
 {
     if ( [ super changeable ] == NO )
@@ -180,17 +267,32 @@
     if ( enabled == YES )
     {
         if ( currentComparisonFunction != comparisonFunction 
-             || currentReferenceValue != referenceValue
-             || currentComparisonMask != comparisonMask )
+             || currentReferenceValue  != referenceValue
+             || currentComparisonMask  != comparisonMask )
         {
             currentComparisonFunction = comparisonFunction;
-            currentReferenceValue = referenceValue;
-            currentComparisonMask = comparisonMask;
+            currentReferenceValue     = referenceValue;
+            currentComparisonMask     = comparisonMask;
 
             GLenum comparison
                 = getGLComparisonFunction(currentComparisonFunction);
 
             glStencilFunc(comparison, currentReferenceValue, currentComparisonMask);
+        }
+
+        if ( currentOperationOnStencilTestFail  != operationOnStencilTestFail
+             || currentOperationOnDepthTestFail != operationOnDepthTestFail
+             || currentOperationOnDepthTestPass != operationOnDepthTestPass )
+        {
+            currentOperationOnStencilTestFail = operationOnStencilTestFail;
+            currentOperationOnDepthTestFail   = operationOnDepthTestFail;
+            currentOperationOnDepthTestPass   = operationOnDepthTestPass;
+
+            const GLenum sfail = getGLStencilOperation(currentOperationOnStencilTestFail);
+            const GLenum dfail = getGLStencilOperation(currentOperationOnDepthTestFail);
+            const GLenum dpass = getGLStencilOperation(currentOperationOnDepthTestPass);
+
+            glStencilOp(sfail, dfail, dpass);
         }
     }
 }
@@ -213,6 +315,10 @@
         comparisonFunction = defaultComparisonFunction;
         referenceValue     = defaultReferenceValue;
         comparisonMask     = defaultComparisonMask;
+
+        operationOnStencilTestFail = defaultOperationOnStencilTestFail;
+        operationOnDepthTestFail = defaultOperationOnDepthTestFail;
+        operationOnDepthTestPass = defaultOperationOnDepthTestPass;
     }
 }
 
