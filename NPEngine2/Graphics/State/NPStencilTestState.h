@@ -22,6 +22,18 @@
     uint32_t comparisonMask;
     uint32_t defaultComparisonMask;
     uint32_t currentComparisonMask;
+
+    NpStencilOperation operationOnStencilTestFail;
+    NpStencilOperation defaultOperationOnStencilTestFail;
+    NpStencilOperation currentOperationOnStencilTestFail;
+
+    NpStencilOperation operationOnDepthTestFail;
+    NpStencilOperation defaultOperationOnDepthTestFail;
+    NpStencilOperation currentOperationOnDepthTestFail;
+
+    NpStencilOperation operationOnDepthTestPass;
+    NpStencilOperation defaultOperationOnDepthTestPass;
+    NpStencilOperation currentOperationOnDepthTestPass;
 }
 
 - (id) initWithName:(NSString *)newName
@@ -39,6 +51,12 @@
 - (int32_t) defaultReferenceValue;
 - (uint32_t) comparisonMask;
 - (uint32_t) defaultComparisonMask;
+- (NpStencilOperation) operationOnStencilTestFail;
+- (NpStencilOperation) defaultOperationOnStencilTestFail;
+- (NpStencilOperation) operationOnDepthTestFail;
+- (NpStencilOperation) defaultOperationOnDepthTestFail;
+- (NpStencilOperation) operationOnDepthTestPass;
+- (NpStencilOperation) defaultOperationOnDepthTestPass;
 
 - (void) setEnabled:(BOOL)newEnabled;
 - (void) setDefaultEnabled:(BOOL)newDefaultEnabled;
@@ -50,6 +68,12 @@
 - (void) setDefaultReferenceValue:(int32_t)newDefaultReferenceValue;
 - (void) setComparisonMask:(uint32_t)newComparisonMask;
 - (void) setDefaultComparisonMask:(uint32_t)newDefaultComparisonMask;
+- (void) setOperationOnStencilTestFail:(NpStencilOperation)newOperationOnStencilTestFail;
+- (void) setDefaultOperationOnStencilTestFail:(NpStencilOperation)newDefaultOperationOnStencilTestFail;
+- (void) setOperationOnDepthTestFail:(NpStencilOperation)newOperationOnDepthTestFail;
+- (void) setDefaultOperationOnDepthTestFail:(NpStencilOperation)newDefaultOperationOnDepthTestFail;
+- (void) setOperationOnDepthTestPass:(NpStencilOperation)newOperationOnDepthTestPass;
+- (void) setDefaultOperationOnDepthTestPass:(NpStencilOperation)newDefaultOperationOnDepthTestPass;
 
 - (void) activate;
 - (void) deactivate;

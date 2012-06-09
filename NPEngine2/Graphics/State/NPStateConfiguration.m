@@ -8,6 +8,12 @@
 
 @implementation NPStateConfiguration
 
+- (id) init
+{
+    [ self notImplemented:_cmd ];
+    return nil;
+}
+
 - (id) initWithName:(NSString *)newName 
 {
     self = [ super initWithName:newName ];

@@ -2,6 +2,12 @@
 
 @implementation NPDepthTestState
 
+- (id) init
+{
+    [ self notImplemented:_cmd ];
+    return nil;
+}
+
 - (id) initWithName:(NSString *)newName
       configuration:(NPStateConfiguration *)newConfiguration
 {

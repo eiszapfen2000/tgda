@@ -25,6 +25,11 @@
 
 @implementation NPStateSet
 
+- (id) init
+{
+    return [ self initWithName:@"State Set" ];
+}
+
 - (id) initWithName:(NSString *)newName
 {
     self = [ super initWithName:newName ];
