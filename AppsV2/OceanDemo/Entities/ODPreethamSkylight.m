@@ -245,6 +245,9 @@
     XYZ[2] = 0.0193339 * RGB[0] + 0.1191920 * RGB[1] + 0.9503041 * RGB[2];
 
     //NSLog(@"2: %f %f %f", XYZ[0], XYZ[1], XYZ[2]);
+
+    position = [ camera position ];
+    position.y -= 2.0f;
 }
 
 - (void) render
@@ -283,7 +286,9 @@
     [ zenithColor_P setValue:zenithColor ];
     [ lighDirection_P setValue:lightDirection ];
 
-    [ super render ];
+    fm4_mv_translation_matrix(&modelMatrix, &position);
+    [[[ NPEngineCore instance ] transformationState ] setModelMatrix:&modelMatrix ];
+    [ model renderLOD:0 withMaterial:YES ];
 }
 
 @end
