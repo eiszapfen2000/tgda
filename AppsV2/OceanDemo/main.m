@@ -111,6 +111,7 @@ int main (int argc, char **argv)
     NSLog(@"MAX TF I %d", tf);
 
     glClearDepth(1);
+    glClearStencil(0);
 
     // callback for window resizes
     glfwSetWindowSizeCallback(window_resize_callback);

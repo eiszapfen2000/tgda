@@ -421,7 +421,7 @@
                          width:currentResolution.x
                         height:currentResolution.y
                    pixelFormat:NpTexturePixelFormatDepthStencil
-                    dataFormat:NpTextureDataFormatInt32N
+                    dataFormat:NpTextureDataFormatUInt32N
                          error:NULL ];
 
         [[ NP Graphics ] checkForGLErrors ];
@@ -481,7 +481,7 @@
         [[ NP Graphics ] checkForGLErrors ];
 
     // attach depth buffer
-    [ depthBuffer
+    [ depthTarget
         attachToRenderTargetConfiguration:gBuffer
                          colorBufferIndex:0
                                   bindFBO:NO ];
@@ -497,13 +497,24 @@
         NPLOG_ERROR(fboError);
     }
 
-    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
+    [[[[ NP Graphics ] stateConfiguration ] stencilTestState ] setWriteEnabled:YES ];
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:YES ];
 
     [ camera render ];
 
     NPEffectTechnique * t = [ deferredEffect techniqueWithName:@"geometry" ];
     [ t lock ];
     [ t activate:YES ];
+
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+    NPStencilTestState * stencil = [[[ NP Graphics ] stateConfiguration ] stencilTestState ];
+    [ stencil setComparisonFunction:NpComparisonAlways ];
+    [ stencil setOperationOnStencilTestFail:NpStencilKeepValue ];
+    [ stencil setOperationOnDepthTestFail:NpStencilKeepValue ];
+    [ stencil setOperationOnDepthTestPass:NpStencilIncrementValue ];
+    [ stencil setEnabled:YES ];
+    [ stencil activate ];
 
     glBegin(GL_QUADS);
         glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
@@ -515,6 +526,33 @@
         glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
         glVertex3f(0.0f, 10.0f, 5.0f);
     glEnd();
+
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+    [ stencil setComparisonFunction:NpComparisonNotEqual ];
+    [ stencil setOperationOnStencilTestFail:NpStencilKeepValue ];
+    [ stencil setOperationOnDepthTestFail:NpStencilKeepValue ];
+    [ stencil setOperationOnDepthTestPass:NpStencilKeepValue ];
+    [ stencil activate ];
+
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:NO ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] activate ];
+
+    glBegin(GL_QUADS);
+        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
+        glVertex3f(2.0f, 0.0f, 5.0f);
+        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
+        glVertex3f(12.0f, 0.0f, 5.0f);
+        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
+        glVertex3f(12.0f, 10.0f, 5.0f);
+        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
+        glVertex3f(2.0f, 10.0f, 5.0f);
+    glEnd();
+
+    [ stencil deactivate ];
+
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] setEnabled:YES ];
+    [[[[ NP Graphics ] stateConfiguration ] depthTestState ] activate ];
 
     glBegin(GL_QUADS);
         glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
@@ -550,7 +588,7 @@
     // reset matrices
     [[[ NP Core ] transformationState ] reset ];
     // bind scene target as texture source
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ positionsTarget texture ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ normalsTarget texture ] texelUnit:0 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
     // render tonemapped scene to screen
