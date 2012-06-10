@@ -198,9 +198,15 @@
         return NO;
     }
 
-    if ( stringLength <= 0 )
+    if ( stringLength < 0 )
     {
         return NO;
+    }
+
+    if ( stringLength == 0 )
+    {
+        *s = @"";
+        return YES;
     }
 
     char * buffer = alloca((size_t)stringLength);
@@ -235,7 +241,7 @@
         return NO;
     }
 
-    if ( numberOfLines <= 0 )
+    if ( numberOfLines < 0 )
     {
         return NO;
     }
