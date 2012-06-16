@@ -117,6 +117,23 @@ static BOOL locked = NO;
 	return result;
 }
 
++ (void) activate
+{
+    if ( currentTechnique != nil )
+    {
+        [ currentTechnique activateVariables ];
+    }
+}
+
++ (void) deactivate
+{
+    if (( currentTechnique != nil ) && ( locked == NO ))
+    {
+        glUseProgram(0);
+        currentTechnique = nil;
+    }
+}
+
 - (id) initWithName:(NSString *)newName
              effect:(NPEffect *)newEffect
 {

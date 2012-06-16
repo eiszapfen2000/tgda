@@ -22,6 +22,9 @@
                           error:(NSError **)error
                                ;
 
++ (void) activate;
++ (void) deactivate;
+
 - (id) initWithName:(NSString *)newName
              effect:(NPEffect *)newEffect
                    ;
