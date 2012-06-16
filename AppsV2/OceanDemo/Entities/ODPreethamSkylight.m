@@ -102,6 +102,11 @@
     return YES;
 }
 
+- (FVector3) lightDirection
+{
+    return lightDirection;
+}
+
 - (void) setCamera:(ODCamera *)newCamera
 {
     ASSIGN(camera, newCamera);

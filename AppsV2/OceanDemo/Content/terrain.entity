@@ -1,6 +1,7 @@
 {
     Type = "ODTerrain";
     Name = "Garden Terrain";
-    Models = ("terrain1.model", "terrain2.model", "terrain3.model", "terrain4.model", "terrain5.model", "terrain6.model", "terrain7.model", "terrain8.model", "terrain9.model", "terrain10.model", "terrain11.model", "terrain12.model");
+    Models = ("terrain1.model", "terrain2.model", "terrain3.model", "terrain4.model", "terrain5.model", "terrain6.model", "terrain7.model", "terrain8.model", "terrain9.model", "terrain10.model", "terrain11.model", "terrain12.model", "terrain1u.model", "terrain2u.model", "terrain4u.model", "terrain5u.model", "terrain6u.model", "terrain8u.model",
+"terrain9u.model", "terrain12u.model", "terrain12upool1.model", "terrain12upool2.model", "terrain12upool3.model");
 }
  
