@@ -17,3 +17,18 @@ technique "geometry"
     set fragment shader "deferred_geometry.fragment"
 }
 
+technique "directional_light"
+{
+    # effect variables
+    uniform vec3 lightDirection;
+    uniform sampler2D positions;
+    uniform sampler2D normals;
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "deferred_directional_light.vertex"
+    set fragment shader "deferred_directional_light.fragment"
+}

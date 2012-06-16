@@ -39,6 +39,7 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
+- (FVector3) lightDirection;
 - (void) setCamera:(ODCamera *)newCamera;
 
 @end

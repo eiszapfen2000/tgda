@@ -45,12 +45,6 @@
     IVector2 currentResolution;
     IVector2 lastFrameResolution;
 
-    // render targets
-    NPRenderTargetConfiguration * rtc;
-    NPRenderTexture * sceneTarget;
-    NPRenderTexture * luminanceTarget;
-    NPRenderBuffer * depthBuffer;
-
     // G buffer
     NPRenderTargetConfiguration * gBuffer;
     NPRenderTexture * positionsTarget;
@@ -58,10 +52,8 @@
     NPRenderTexture * depthTarget;
 
     NPEffect * deferredEffect;
+    NPEffectVariableFloat3 * lightDirection;
 
-    //
-    NPEffect * fullscreenEffect;
-    NPEffectVariableFloat3 * toneMappingParameters;
     NPFullscreenQuad * fullscreenQuad;
 }
 
