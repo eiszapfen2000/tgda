@@ -32,3 +32,20 @@ technique "directional_light"
     set vertex shader "deferred_directional_light.vertex"
     set fragment shader "deferred_directional_light.fragment"
 }
+
+technique "water_surface"
+{
+    # effect variables
+    uniform vec3 cameraPosition;
+    uniform sampler2D positions;
+    uniform sampler2D normals;
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "deferred_water_surface.vertex"
+    set fragment shader "deferred_water_surface.fragment"
+}
+
