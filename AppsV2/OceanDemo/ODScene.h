@@ -53,6 +53,7 @@
 
     NPEffect * deferredEffect;
     NPEffectVariableFloat3 * lightDirection;
+    NPEffectVariableFloat3 * cameraPosition;
 
     NPFullscreenQuad * fullscreenQuad;
 }

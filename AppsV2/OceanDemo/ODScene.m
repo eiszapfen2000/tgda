@@ -183,7 +183,9 @@
     ASSERT_RETAIN(deferredEffect);
 
     lightDirection = [ deferredEffect variableWithName:@"lightDirection" ];
-    NSAssert(lightDirection != nil, @"lighDirection invalid");
+    cameraPosition = [ deferredEffect variableWithName:@"cameraPosition" ];
+    NSAssert(lightDirection != nil, @"lightDirection invalid");
+    NSAssert(cameraPosition != nil, @"cameraPosition invalid");
 
     // fullscreen quad for render target display
     fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
@@ -524,7 +526,8 @@
 
     // render tonemapped scene to screen
     [ lightDirection setValue:[ skylight lightDirection ]];
-    [[ deferredEffect techniqueWithName:@"directional_light" ] activate ];
+    [ cameraPosition setValue:[ camera position ]];
+    [[ deferredEffect techniqueWithName:@"water_surface" ] activate ];
     [ fullscreenQuad render ];
 }
 
