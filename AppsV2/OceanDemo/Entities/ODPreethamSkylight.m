@@ -117,22 +117,22 @@
 
     if ( [ sunZenithDistanceIncreaseAction active ] == YES )
     {
-        thetaSunDegrees += 1.0f;
+        thetaSunDegrees += (25.0f * frameTime);
     }
 
     if ( [ sunZenithDistanceDecreaseAction active ] == YES )
     {
-        thetaSunDegrees -= 1.0f;
+        thetaSunDegrees -= (25.0f * frameTime);
     }
 
     if ( [ sunAzimuthIncreaseAction active ] == YES )
     {
-        phiSunDegrees += 1.0f;
+        phiSunDegrees += (25.0f * frameTime);
     }
 
     if ( [ sunAzimuthDecreaseAction active ] == YES )
     {
-        phiSunDegrees -= 1.0f;
+        phiSunDegrees -= (25.0f * frameTime);
     }
 
     if ( thetaSunDegrees < 0.0f )
