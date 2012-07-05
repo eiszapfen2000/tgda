@@ -277,7 +277,7 @@
     ASSERT_RETAIN(ocean);
 
     [ skylight setCamera:camera ];
-    [ ocean setCamera:camera ];
+    [ ocean    setCamera:camera ];
     //[ ocean start ];
 
     //[ projector setCamera:camera ];
