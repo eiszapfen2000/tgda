@@ -7,8 +7,9 @@
 
 @interface ODCamera : NPObject < ODPEntity >
 {
-	FMatrix4 view;
-	FMatrix4 projection;
+    FMatrix4 view;
+    FMatrix4 projection;
+    FMatrix4 inverseViewProjection;
     FQuaternion orientation;
     FVector3 position;
 
@@ -48,6 +49,7 @@
 - (float) pitch;
 - (FMatrix4 *) view;
 - (FMatrix4 *) projection;
+- (FMatrix4 *) inverseViewProjection;
 - (BOOL) inputLocked;
 
 - (void) setFov:(const float)newFov;

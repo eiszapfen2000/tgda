@@ -89,6 +89,7 @@
 
     fm4_m_set_identity(&view);
     fm4_m_set_identity(&projection);
+    fm4_m_set_identity(&inverseViewProjection);
     fquat_set_identity(&orientation);
     fv3_v_init_with_zeros(&position);
 
@@ -216,6 +217,11 @@
 - (FMatrix4 *) projection
 {
     return &projection;
+}
+
+- (FMatrix4 *) inverseViewProjection
+{
+    return &inverseViewProjection;
 }
 
 - (BOOL) inputLocked
@@ -355,12 +361,7 @@
 
 - (void) updateProjection
 {
-    glMatrixMode(GL_PROJECTION);
-
     fm4_mssss_projection_matrix(&projection, aspectRatio, fov, nearPlane, farPlane);
-
-    glLoadMatrixf((float *)(M_ELEMENTS(projection)));
-    glMatrixMode(GL_MODELVIEW);
 }
 
 - (void) updateView
@@ -381,8 +382,6 @@
     FMatrix4 rotate = fquat_q_to_fmatrix4(&q);
     FMatrix4 translate = fm4_v_translation_matrix(&invpos);
     fm4_mm_multiply_m(&rotate, &translate, &view);
-
-    glLoadMatrixf((float *)(M_ELEMENTS(view)));
 }
 
 - (void) update:(const float)frameTime
@@ -393,8 +392,12 @@
     }
 
     // update matrices
-	[ self updateProjection ];
-	[ self updateView ];
+    [ self updateProjection ];
+    [ self updateView ];
+
+    FMatrix4 viewProjection;
+    fm4_mm_multiply_m(&projection, &view, &viewProjection);
+    fm4_m_inverse_m(&viewProjection, &inverseViewProjection);
 }
 
 - (void) render
