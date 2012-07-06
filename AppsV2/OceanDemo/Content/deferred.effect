@@ -17,6 +17,20 @@ technique "geometry"
     set fragment shader "deferred_geometry.fragment"
 }
 
+technique "texture"
+{
+    # effect variables
+    uniform sampler2D colormap;
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "fullscreen_quad.vertex"
+    set fragment shader "fullscreen_quad.fragment"
+}
+
 technique "directional_light"
 {
     # effect variables

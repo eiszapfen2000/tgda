@@ -17,6 +17,7 @@
 #import "Graphics/State/NpState.h"
 #import "Graphics/NPViewport.h"
 #import "NP.h"
+#import "Entities/ODBasePlane.h"
 #import "Entities/ODPEntity.h"
 #import "Entities/ODCamera.h"
 #import "Entities/ODProjector.h"
@@ -150,7 +151,8 @@
 {
     self =  [ super initWithName:newName ];
 
-    entities = [[ NSMutableArray alloc ] init ];
+    basePlane = [[ ODBasePlane alloc ] init ];
+    entities  = [[ NSMutableArray alloc ] init ];
 
     // camera animation
     fquat_set_identity(&startOrientation);
@@ -197,6 +199,7 @@
 {
     [ entities removeAllObjects ];
     DESTROY(entities);
+    DESTROY(basePlane);
 
     [ ocean stop ];
     SAFE_DESTROY(ocean);
@@ -278,8 +281,9 @@
     ASSERT_RETAIN(skylight);
     ASSERT_RETAIN(ocean);
 
-    [ skylight setCamera:camera ];
-    [ ocean    setCamera:camera ];
+    [ basePlane setCamera:camera ];
+    [ skylight  setCamera:camera ];
+    [ ocean     setCamera:camera ];
     //[ ocean start ];
 
     //[ projector setCamera:camera ];
@@ -364,9 +368,10 @@
     }
     */
 
-    [ camera   update:frameTime ];
-    [ skylight update:frameTime ];
-    [ ocean    update:frameTime ];
+    [ camera    update:frameTime ];
+    [ skylight  update:frameTime ];
+    [ ocean     update:frameTime ];
+    [ basePlane update:frameTime ];
 
     const NSUInteger numberOfEntities = [ entities count ];
     for ( NSUInteger i = 0; i < numberOfEntities; i++ )
@@ -484,6 +489,8 @@
 
     [ entities makeObjectsPerformSelector:@selector(render) ];
 
+    [ basePlane render ];
+
     /*
     [ stencilTestState setComparisonFunction:NpComparisonEqual ];
     [ stencilTestState setOperationOnStencilTestFail:NpStencilKeepValue ];
@@ -528,6 +535,7 @@
     [ lightDirection setValue:[ skylight lightDirection ]];
     [ cameraPosition setValue:[ camera position ]];
     [[ deferredEffect techniqueWithName:@"water_surface" ] activate ];
+    //[[ deferredEffect techniqueWithName:@"texture" ] activate ];
     [ fullscreenQuad render ];
 }
 
