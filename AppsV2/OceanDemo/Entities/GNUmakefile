@@ -6,6 +6,7 @@ ODEntities_SUBPROJECTS = \
     Ocean
 
 ODEntities_HEADER_FILES = \
+ODBasePlane.h \
 ODPEntity.h \
 ODEntity.h \
 ODCamera.h \
@@ -18,6 +19,7 @@ ODPreethamSkylight.h \
 ODTerrain.h
 
 ODEntities_OBJC_FILES = \
+ODBasePlane.m \
 ODEntity.m \
 ODCamera.m \
 ODProjector.m \

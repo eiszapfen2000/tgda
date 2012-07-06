@@ -1,3 +1,4 @@
+#import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
 #import "Core/Protocols/NPPPersistentObject.h"
 
@@ -13,6 +14,7 @@
 @class NPEffect;
 @class NPEffectVariableFloat3;
 @class NPFullscreenQuad;
+@class ODBasePlane;
 
 @interface ODScene : NPObject < NPPPersistentObject >
 {
@@ -23,6 +25,7 @@
     ODCamera * camera;
     ODPreethamSkylight * skylight;
     ODOceanEntity * ocean;
+    ODBasePlane * basePlane;
     NSMutableArray * entities;
 
     // camera animation
@@ -51,10 +54,12 @@
     NPRenderTexture * normalsTarget;
     NPRenderTexture * depthTarget;
 
+    // effect + variables
     NPEffect * deferredEffect;
     NPEffectVariableFloat3 * lightDirection;
     NPEffectVariableFloat3 * cameraPosition;
 
+    // fullscreen quad geometry
     NPFullscreenQuad * fullscreenQuad;
 }
 
