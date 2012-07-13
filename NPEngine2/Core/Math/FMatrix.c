@@ -88,22 +88,22 @@ void fm2_mv_multiply_v(const FMatrix2 * const m, const FVector2 * const v, FVect
 
 void fm2_m_inverse_m(const FMatrix2 * const m1, FMatrix2 * m2)
 {
-    Float determinant = fm2_determinant(m1);
+    const float determinant = fm2_determinant(m1);
 
-    if ( determinant == 0.0f )
+    if ( fabsf(determinant) <= FLT_EPSILON )
     {
         return;
     }
 
-    Float scalar = 1.0f/determinant;
+    const float scalar = 1.0f / determinant;
 
-    M_EL(*m2,0,0) = scalar * M_EL(*m1,1,1);
+    M_EL(*m2,0,0) = scalar *  M_EL(*m1,1,1);
     M_EL(*m2,0,1) = scalar * -M_EL(*m1,0,1);
     M_EL(*m2,1,0) = scalar * -M_EL(*m1,1,0);
-    M_EL(*m2,1,1) = scalar * M_EL(*m1,0,0);
+    M_EL(*m2,1,1) = scalar *  M_EL(*m1,0,0);
 }
 
-Float fm2_determinant(const FMatrix2 * const m)
+float fm2_determinant(const FMatrix2 * const m)
 {
     return M_EL(*m,0,0) * M_EL(*m,1,1) - M_EL(*m,0,1)*M_EL(*m,1,0);
 }
@@ -289,14 +289,14 @@ void fm3_mv_multiply_v(const FMatrix3 * const m, const FVector3 * const v, FVect
 
 void fm3_m_inverse_m(const FMatrix3 * const m1, FMatrix3 * m2)
 {
-    Float determinant = fm3_m_determinant(m1);
+    const float determinant = fm3_m_determinant(m1);
 
-    if ( fabs(determinant) < MATH_FLOAT_EPSILON )
+    if ( fabsf(determinant) <= FLT_EPSILON )
     {
         return;
     }
 
-    Float scalar = 1.0f/determinant;
+    const float scalar = 1.0f / determinant;
 
     M_EL(*m2,0,0) = scalar *   ( M_EL(*m1,1,1)*M_EL(*m1,2,2) - M_EL(*m1,2,1)*M_EL(*m1,1,2) );
     M_EL(*m2,0,1) = scalar * (-( M_EL(*m1,0,1)*M_EL(*m1,2,2) - M_EL(*m1,2,1)*M_EL(*m1,0,2) ));
@@ -332,61 +332,61 @@ void fm3_m_get_forward_vector_v(const FMatrix3 * const m, FVector3 * forward)
     forward->z = -M_EL(*m,2,2);
 }
 
-void fm3_s_rotatex_m(Float degree, FMatrix3 * result)
+void fm3_s_rotatex_m(float degree, FMatrix3 * result)
 {
     fm3_m_set_identity(result);
 
-    Double angle = DEGREE_TO_RADIANS(degree);
+    double angle = DEGREE_TO_RADIANS(degree);
 
     M_EL(*result,1,1) = M_EL(*result,2,2) = cos(angle);
     M_EL(*result,1,2) = sin(angle);
     M_EL(*result,2,1) = -M_EL(*result,1,2);
 }
 
-void fm3_s_rotatey_m(Float degree, FMatrix3 * result)
+void fm3_s_rotatey_m(float degree, FMatrix3 * result)
 {
     fm3_m_set_identity(result);
 
-    Double angle = DEGREE_TO_RADIANS(degree);
+    double angle = DEGREE_TO_RADIANS(degree);
 
     M_EL(*result,0,0) = M_EL(*result,2,2) = cos(angle);
     M_EL(*result,2,0) = sin(angle);
     M_EL(*result,0,2) = -M_EL(*result,2,0);
 }
 
-void fm3_s_rotatez_m(Float degree, FMatrix3 * result)
+void fm3_s_rotatez_m(float degree, FMatrix3 * result)
 {
     fm3_m_set_identity(result);
 
-    Double angle = DEGREE_TO_RADIANS(degree);
+    double angle = DEGREE_TO_RADIANS(degree);
 
     M_EL(*result,0,0) = M_EL(*result,1,1) = cos(angle);
     M_EL(*result,0,1) = sin(angle);
     M_EL(*result,1,0) = -M_EL(*result,0,1);
 }
 
-void fm3_s_scalex_m(Float scale, FMatrix3 * result)
+void fm3_s_scalex_m(float scale, FMatrix3 * result)
 {
     fm3_m_set_identity(result);
 
     M_EL(*result,0,0) = scale;
 }
 
-void fm3_s_scaley_m(Float scale, FMatrix3 * result)
+void fm3_s_scaley_m(float scale, FMatrix3 * result)
 {
     fm3_m_set_identity(result);
 
     M_EL(*result,1,1) = scale;
 }
 
-void fm3_s_scalez_m(Float scale, FMatrix3 * result)
+void fm3_s_scalez_m(float scale, FMatrix3 * result)
 {
     fm3_m_set_identity(result);
 
     M_EL(*result,2,2) = scale;
 }
 
-void fm3_s_scale_m(Float scale, FMatrix3 * result)
+void fm3_s_scale_m(float scale, FMatrix3 * result)
 {
     fm3_m_set_identity(result);
 
@@ -407,11 +407,11 @@ void fm3_s_scale_m(Float scale, FMatrix3 * result)
     det M = A * (EI - HF) - B * (DI - GF) + C * (DH - GE)
 */
 
-Float fm3_m_determinant(const FMatrix3 * const m)
+float fm3_m_determinant(const FMatrix3 * const m)
 {
-    Float EIminusHF = M_EL(*m,1,1)*M_EL(*m,2,2) - M_EL(*m,1,2)*M_EL(*m,2,1);
-    Float DIminusGF = M_EL(*m,0,1)*M_EL(*m,2,2) - M_EL(*m,0,2)*M_EL(*m,2,1);
-    Float DHminusGE = M_EL(*m,0,1)*M_EL(*m,1,2) - M_EL(*m,0,2)*M_EL(*m,1,1);
+    float EIminusHF = M_EL(*m,1,1)*M_EL(*m,2,2) - M_EL(*m,1,2)*M_EL(*m,2,1);
+    float DIminusGF = M_EL(*m,0,1)*M_EL(*m,2,2) - M_EL(*m,0,2)*M_EL(*m,2,1);
+    float DHminusGE = M_EL(*m,0,1)*M_EL(*m,1,2) - M_EL(*m,0,2)*M_EL(*m,1,1);
 
     return M_EL(*m,0,0) * EIminusHF - M_EL(*m,1,0) * DIminusGF + M_EL(*m,2,0) * DHminusGE;
 }
@@ -496,7 +496,7 @@ FVector3 fm3_m_get_forward_vector(const FMatrix3 * const m)
     return forward;
 }
 
-FMatrix3 fm3_s_rotatex(Float degree)
+FMatrix3 fm3_s_rotatex(float degree)
 {
     FMatrix3 rotate;
     fm3_s_rotatex_m(degree, &rotate);
@@ -504,7 +504,7 @@ FMatrix3 fm3_s_rotatex(Float degree)
     return rotate;
 }
 
-FMatrix3 fm3_s_rotatey(Float degree)
+FMatrix3 fm3_s_rotatey(float degree)
 {
     FMatrix3 rotate;
     fm3_s_rotatey_m(degree, &rotate);
@@ -512,7 +512,7 @@ FMatrix3 fm3_s_rotatey(Float degree)
     return rotate;
 }
 
-FMatrix3 fm3_s_rotatez(Float degree)
+FMatrix3 fm3_s_rotatez(float degree)
 {
     FMatrix3 rotate;
     fm3_s_rotatez_m(degree, &rotate);
@@ -520,7 +520,7 @@ FMatrix3 fm3_s_rotatez(Float degree)
     return rotate;
 }
 
-FMatrix3 fm3_s_scalex(Float scale)
+FMatrix3 fm3_s_scalex(float scale)
 {
     FMatrix3 result;
     fm3_s_scalex_m(scale, &result);
@@ -528,7 +528,7 @@ FMatrix3 fm3_s_scalex(Float scale)
     return result;
 }
 
-FMatrix3 fm3_s_scaley(Float scale)
+FMatrix3 fm3_s_scaley(float scale)
 {
     FMatrix3 result;
     fm3_s_scaley_m(scale, &result);
@@ -536,7 +536,7 @@ FMatrix3 fm3_s_scaley(Float scale)
     return result;
 }
 
-FMatrix3 fm3_s_scalez(Float scale)
+FMatrix3 fm3_s_scalez(float scale)
 {
     FMatrix3 result;
     fm3_s_scalez_m(scale, &result);
@@ -544,7 +544,7 @@ FMatrix3 fm3_s_scalez(Float scale)
     return result;
 }
 
-FMatrix3 fm3_s_scale(Float scale)
+FMatrix3 fm3_s_scale(float scale)
 {
     FMatrix3 result;
     fm3_s_scale_m(scale, &result);
@@ -729,25 +729,25 @@ void fm4_mv_scale_matrix(FMatrix4 * m, const FVector3 * const v)
     M_EL(*m,2,2) = v->z;
 }
 
-void fm4_ms_scale_matrix_x(FMatrix4 * m, Float x)
+void fm4_ms_scale_matrix_x(FMatrix4 * m, float x)
 {
     fm4_m_set_identity(m);
     M_EL(*m,0,0) = x;
 }
 
-void fm4_ms_scale_matrix_y(FMatrix4 * m, Float y)
+void fm4_ms_scale_matrix_y(FMatrix4 * m, float y)
 {
     fm4_m_set_identity(m);
     M_EL(*m,1,1) = y;
 }
 
-void fm4_ms_scale_matrix_z(FMatrix4 * m, Float z)
+void fm4_ms_scale_matrix_z(FMatrix4 * m, float z)
 {
     fm4_m_set_identity(m);
     M_EL(*m,2,2) = z;
 }
 
-void fm4_msss_scale_matrix_xyz(FMatrix4 * m, Float x, Float y, Float z)
+void fm4_msss_scale_matrix_xyz(FMatrix4 * m, float x, float y, float z)
 {
     fm4_m_set_identity(m);
     M_EL(*m,0,0) = x;
@@ -795,11 +795,11 @@ void fm4_vvvv_look_at_matrix_m(FVector3 * rightVector, FVector3 * upVector, FVec
     fm4_mm_multiply_m(&rotation, &translation, result);
 }
 
-void fm4_mssss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegrees, Float nearplane, Float farplane)
+void fm4_mssss_projection_matrix(FMatrix4 * m, float aspectratio, float fovdegrees, float nearplane, float farplane)
 {
     fm4_m_set_identity(m);
-    Double fovradians = DEGREE_TO_RADIANS(fovdegrees/2.0f);
-    Double f = 1.0 / tan(fovradians);
+    double fovradians = DEGREE_TO_RADIANS(fovdegrees/2.0f);
+    double f = 1.0 / tan(fovradians);
 
     M_EL(*m,0,0) = f/aspectratio;
     M_EL(*m,1,1) = f;
@@ -809,14 +809,14 @@ void fm4_mssss_projection_matrix(FMatrix4 * m, Float aspectratio, Float fovdegre
     M_EL(*m,3,3) = 0.0f;
 }
 
-void fm4_ms_simple_orthographic_projection_matrix(FMatrix4 * m, Float aspectratio)
+void fm4_ms_simple_orthographic_projection_matrix(FMatrix4 * m, float aspectratio)
 {
     fm4_m_set_identity(m);
     FVector3 tmp = { 1.0f/aspectratio, 1.0f, 1.0f };
     fm4_mv_scale_matrix(m, &tmp);
 }
 
-void fm4_mssssss_orthographic_projection_matrix(FMatrix4 * m, Float left, Float right, Float bottom, Float top, Float near, Float far)
+void fm4_mssssss_orthographic_projection_matrix(FMatrix4 * m, float left, float right, float bottom, float top, float near, float far)
 {
     fm4_m_set_identity(m);
 
@@ -829,7 +829,7 @@ void fm4_mssssss_orthographic_projection_matrix(FMatrix4 * m, Float left, Float 
     M_EL(*m,3,3) =  1.0f;
 }
 
-void fm4_mssss_orthographic_2d_projection_matrix(FMatrix4 * m, Float left, Float right, Float bottom, Float top)
+void fm4_mssss_orthographic_2d_projection_matrix(FMatrix4 * m, float left, float right, float bottom, float top)
 {
     fm4_mssssss_orthographic_projection_matrix(m, left, right, bottom, top, -1.0f, 1.0f);
 }
@@ -865,14 +865,14 @@ void fm4_mss_sub_matrix_m(const FMatrix4 * const m, int row, int column, FMatrix
 
 void fm4_m_inverse_m(const FMatrix4 * const m, FMatrix4 * result)
 {
-    Float determinant = fm4_m_determinant(m);
+    float determinant = fm4_m_determinant(m);
 
-    if ( fabs(determinant) < MATH_FLOAT_EPSILON )
+    if ( fabsf(determinant) <= FLT_EPSILON )
     {
         return;
     }
 
-    Float scalar = 1.0f/determinant;
+    float scalar = 1.0f/determinant;
     FMatrix3 * subMatrix = fm3_alloc_init();
     int sign;
 
@@ -882,7 +882,7 @@ void fm4_m_inverse_m(const FMatrix4 * const m, FMatrix4 * result)
         {
             sign = 1 - ( (i + j) % 2 ) * 2;
             fm4_mss_sub_matrix_m(m,i,j,subMatrix);
-            Float subMatrixDeterminant = fm3_m_determinant(subMatrix);
+            float subMatrixDeterminant = fm3_m_determinant(subMatrix);
             M_EL(*result,i,j) = sign * subMatrixDeterminant * scalar;
         }
     }
@@ -912,42 +912,42 @@ void fm4_m_get_forward_vector_v(const FMatrix4 * const m, FVector3 * forward)
     forward->z = -M_EL(*m,2,2);
 }
 
-void fm4_s_rotatex_m(Float degree, FMatrix4 * result)
+void fm4_s_rotatex_m(float degree, FMatrix4 * result)
 {
     fm4_m_set_identity(result);
 
-    Double angle = DEGREE_TO_RADIANS(degree);
+    double angle = DEGREE_TO_RADIANS(degree);
 
     M_EL(*result,1,1) = M_EL(*result,2,2) = cos(angle);
     M_EL(*result,1,2) = sin(angle);
     M_EL(*result,2,1) = -M_EL(*result,1,2);
 }
 
-void fm4_s_rotatey_m(Float degree, FMatrix4 * result)
+void fm4_s_rotatey_m(float degree, FMatrix4 * result)
 {
     fm4_m_set_identity(result);
 
-    Double angle = DEGREE_TO_RADIANS(degree);
+    double angle = DEGREE_TO_RADIANS(degree);
 
     M_EL(*result,0,0) = M_EL(*result,2,2) = cos(angle);
     M_EL(*result,2,0) = sin(angle);
     M_EL(*result,0,2) = -M_EL(*result,2,0);
 }
 
-void fm4_s_rotatez_m(Float degree, FMatrix4 * result)
+void fm4_s_rotatez_m(float degree, FMatrix4 * result)
 {
     fm4_m_set_identity(result);
 
-    Double angle = DEGREE_TO_RADIANS(degree);
+    double angle = DEGREE_TO_RADIANS(degree);
 
     M_EL(*result,0,0) = M_EL(*result,1,1) = cos(angle);
     M_EL(*result,0,1) = sin(angle);
     M_EL(*result,1,0) = -M_EL(*result,0,1);
 }
 
-Float fm4_m_determinant(const FMatrix4 * const m)
+float fm4_m_determinant(const FMatrix4 * const m)
 {
-    Float subMatrixDeterminant, determinant = 0.0f;
+    float subMatrixDeterminant, determinant = 0.0f;
     FMatrix3 * subMatrix = fm3_alloc_init();
     int scalar = 1;
 
