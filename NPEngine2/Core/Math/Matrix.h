@@ -11,19 +11,19 @@ void npmath_matrix_initialise();
 
 typedef struct Matrix2
 {
-    Double elements[2][2];
+    double elements[2][2];
 }
 Matrix2;
 
 typedef struct Matrix3
 {
-    Double elements[3][3];
+    double elements[3][3];
 }
 Matrix3;
 
 typedef struct Matrix4
 {
-    Double elements[4][4];
+    double elements[4][4];
 }
 Matrix4;
 
