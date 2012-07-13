@@ -1,3 +1,4 @@
+#include <float.h>
 #include <math.h>
 #include "FPlane.h"
 #include "Constants.h"
@@ -94,7 +95,7 @@ int32_t fplane_pr_intersect_with_ray_v(const FPlane * const plane, const FRay * 
     const float raypoint_dot_planenormal     = fv3_vv_dot_product(&(ray->point),     &(plane->normal));
     const float raydirection_dot_planenormal = fv3_vv_dot_product(&(ray->direction), &(plane->normal));
 
-    if ( fabs(raydirection_dot_planenormal) <= MATH_FLOAT_EPSILON )
+    if ( fabsf(raydirection_dot_planenormal) <= FLT_EPSILON )
     {
         return 0;
     }
