@@ -28,7 +28,7 @@ FQuaternion * fquat_alloc_init()
     return tmp;
 }
 
-FQuaternion * fquat_alloc_init_with_axis_and_degrees(const FVector3 * axis, const Float degrees)
+FQuaternion * fquat_alloc_init_with_axis_and_degrees(const FVector3 * const axis, const float degrees)
 {
     FQuaternion * q = fquat_alloc();
     fquat_q_init_with_axis_and_degrees(q, axis, degrees);
@@ -36,7 +36,7 @@ FQuaternion * fquat_alloc_init_with_axis_and_degrees(const FVector3 * axis, cons
     return q;
 }
 
-FQuaternion * fquat_alloc_init_with_axis_and_radians(const FVector3 * axis, const Float radians)
+FQuaternion * fquat_alloc_init_with_axis_and_radians(const FVector3 * const axis, const float radians)
 {
     FQuaternion * q = fquat_alloc();
     fquat_q_init_with_axis_and_radians(q, axis, radians);
@@ -55,11 +55,11 @@ void fquat_set_identity(FQuaternion * q)
     Q_W(*q) = 1.0f;
 }
 
-void fquat_q_init_with_axis_and_degrees(FQuaternion * q, const FVector3 * axis, const Float degrees)
+void fquat_q_init_with_axis_and_degrees(FQuaternion * q, const FVector3 * const axis, const float degrees)
 {
-    Double angle = DEGREE_TO_RADIANS(degrees);
-    Double sin_angle = sin(angle / 2.0);
-    Double cos_angle = cos(angle / 2.0);
+    const double angle = DEGREE_TO_RADIANS(degrees);
+    const double sin_angle = sin(angle / 2.0);
+    const double cos_angle = cos(angle / 2.0);
 
     FVector3 tmp;
 
@@ -80,10 +80,10 @@ void fquat_q_init_with_axis_and_degrees(FQuaternion * q, const FVector3 * axis, 
     fquat_q_normalise(q);
 }
 
-void fquat_q_init_with_axis_and_radians(FQuaternion * q, const FVector3 * axis, const Float radians)
+void fquat_q_init_with_axis_and_radians(FQuaternion * q, const FVector3 * const axis, const float radians)
 {
-    Double sin_angle = sin(radians / 2.0);
-    Double cos_angle = cos(radians / 2.0);
+    const double sin_angle = sin(radians / 2.0);
+    const double cos_angle = cos(radians / 2.0);
 
     FVector3 tmp;
 
@@ -102,11 +102,6 @@ void fquat_q_init_with_axis_and_radians(FQuaternion * q, const FVector3 * axis, 
     Q_W(*q) = cos_angle;
 
     fquat_q_normalise(q);
-}
-
-Float fquat_q_magnitude(const FQuaternion * q)
-{
-    return sqrt( Q_X(*q) * Q_X(*q) + Q_Y(*q) * Q_Y(*q) + Q_Z(*q) * Q_Z(*q) + Q_W(*q) * Q_W(*q) );
 }
 
 void fquat_q_conjugate(FQuaternion * q)
@@ -116,7 +111,7 @@ void fquat_q_conjugate(FQuaternion * q)
     Q_Z(*q) = -Q_Z(*q);
 }
 
-void fquat_q_conjugate_q(const FQuaternion * restrict q, FQuaternion * restrict conjugate)
+void fquat_q_conjugate_q(const FQuaternion * const q, FQuaternion * conjugate)
 {
     Q_X(*conjugate) = -Q_X(*q);
     Q_Y(*conjugate) = -Q_Y(*q);
@@ -126,7 +121,7 @@ void fquat_q_conjugate_q(const FQuaternion * restrict q, FQuaternion * restrict 
 
 void fquat_q_normalise(FQuaternion * q)
 {
-    const Float magnitude = fquat_q_magnitude(q);
+    const float magnitude = fquat_q_magnitude(q);
 
     Q_X(*q) /= magnitude;
     Q_Y(*q) /= magnitude;
@@ -134,9 +129,9 @@ void fquat_q_normalise(FQuaternion * q)
     Q_W(*q) /= magnitude;
 }
 
-void fquat_q_normalise_q(const FQuaternion * restrict q, FQuaternion * restrict normalised)
+void fquat_q_normalise_q(const FQuaternion * const q, FQuaternion * normalised)
 {
-    const Float magnitude = fquat_q_magnitude(q);
+    const float magnitude = fquat_q_magnitude(q);
 
     Q_X(*normalised) = Q_X(*q)/magnitude;
     Q_Y(*normalised) = Q_Y(*q)/magnitude;
@@ -144,7 +139,7 @@ void fquat_q_normalise_q(const FQuaternion * restrict q, FQuaternion * restrict 
     Q_W(*normalised) = Q_W(*q)/magnitude;
 }
 
-void fquat_qq_multiply_q(const FQuaternion * restrict q1, const FQuaternion * restrict q2, FQuaternion * restrict result)
+void fquat_qq_multiply_q(const FQuaternion * const q1, const FQuaternion * const q2, FQuaternion * result)
 {
     Q_X(*result) = Q_W(*q1) * Q_X(*q2) + Q_X(*q1) * Q_W(*q2) + Q_Y(*q1) * Q_Z(*q2) - Q_Z(*q1) * Q_Y(*q2);
     Q_Y(*result) = Q_W(*q1) * Q_Y(*q2) - Q_X(*q1) * Q_Z(*q2) + Q_Y(*q1) * Q_W(*q2) + Q_Z(*q1) * Q_X(*q2);
@@ -154,7 +149,7 @@ void fquat_qq_multiply_q(const FQuaternion * restrict q1, const FQuaternion * re
     fquat_q_normalise(result);
 }
 
-void fquat_qv_multiply_v(const FQuaternion * const q, const FVector3 * restrict v, FVector3 * restrict result)
+void fquat_qv_multiply_v(const FQuaternion * const q, const FVector3 * const v, FVector3 * result)
 {
 	V_X(*result) = Q_W(*q) * Q_W(*q) * V_X(*v) + 2 * Q_Y(*q) * Q_W(*q) * V_Z(*v)
                    - 2 * Q_Z(*q) * Q_W(*q) * V_Y(*v) + Q_X(*q) * Q_X(*q) * V_X(*v) + 2 * Q_Y(*q) * Q_X(*q) * V_Y(*v)
@@ -168,7 +163,7 @@ void fquat_qv_multiply_v(const FQuaternion * const q, const FVector3 * restrict 
 }
 
 
-void fquat_q_rotatex(FQuaternion * q, const Float degrees)
+void fquat_q_rotatex(FQuaternion * q, const float degrees)
 {
     FQuaternion rotatex;
     fquat_q_init_with_axis_and_degrees(&rotatex, NP_WORLDF_X_AXIS, degrees);
@@ -176,7 +171,7 @@ void fquat_q_rotatex(FQuaternion * q, const Float degrees)
     fquat_qq_multiply_q(&tmp, &rotatex, q);
 }
 
-void fquat_q_rotatey(FQuaternion * q, const Float degrees)
+void fquat_q_rotatey(FQuaternion * q, const float degrees)
 {
     FQuaternion rotatey;
     fquat_q_init_with_axis_and_degrees(&rotatey, NP_WORLDF_Y_AXIS, degrees);
@@ -184,7 +179,7 @@ void fquat_q_rotatey(FQuaternion * q, const Float degrees)
     fquat_qq_multiply_q(&tmp, &rotatey, q);
 }
 
-void fquat_q_rotatez(FQuaternion * q, const Float degrees)
+void fquat_q_rotatez(FQuaternion * q, const float degrees)
 {
     FQuaternion rotatez;
     fquat_q_init_with_axis_and_degrees(&rotatez, NP_WORLDF_Z_AXIS, degrees);
@@ -192,22 +187,22 @@ void fquat_q_rotatez(FQuaternion * q, const Float degrees)
     fquat_qq_multiply_q(&tmp, &rotatez, q);
 }
 
-void fquat_q_forward_vector_v(const FQuaternion * q, FVector3 * v)
+void fquat_q_forward_vector_v(const FQuaternion * const q, FVector3 * v)
 {
     fquat_qv_multiply_v(q, NP_WORLDF_FORWARD_VECTOR, v);
 }
 
-void fquat_q_up_vector_v(const FQuaternion * q, FVector3 * v)
+void fquat_q_up_vector_v(const FQuaternion * const q, FVector3 * v)
 {
     fquat_qv_multiply_v(q, NP_WORLDF_Y_AXIS, v);
 }
 
-void fquat_q_right_vector_v(const FQuaternion * q, FVector3 * v)
+void fquat_q_right_vector_v(const FQuaternion * const q, FVector3 * v)
 {
     fquat_qv_multiply_v(q, NP_WORLDF_X_AXIS, v);
 }
 
-void fquat_q_to_matrix3_m(const FQuaternion * q, Matrix3 * m)
+void fquat_q_to_matrix3_m(const FQuaternion * const q, Matrix3 * m)
 {
     M_EL(*m,0,0) = 1 - 2 * ( Q_Y(*q) * Q_Y(*q) + Q_Z(*q) * Q_Z(*q) );
     M_EL(*m,0,1) =     2 * ( Q_X(*q) * Q_Y(*q) + Q_Z(*q) * Q_W(*q) );
@@ -222,7 +217,7 @@ void fquat_q_to_matrix3_m(const FQuaternion * q, Matrix3 * m)
     M_EL(*m,2,2) = 1 - 2 * ( Q_X(*q) * Q_X(*q) + Q_Y(*q) * Q_Y(*q) );
 }
 
-void fquat_q_to_fmatrix3_m(const FQuaternion * q, FMatrix3 * m)
+void fquat_q_to_fmatrix3_m(const FQuaternion * const q, FMatrix3 * m)
 {
     M_EL(*m,0,0) = 1 - 2 * ( Q_Y(*q) * Q_Y(*q) + Q_Z(*q) * Q_Z(*q) );
     M_EL(*m,0,1) =     2 * ( Q_X(*q) * Q_Y(*q) + Q_Z(*q) * Q_W(*q) );
@@ -237,7 +232,7 @@ void fquat_q_to_fmatrix3_m(const FQuaternion * q, FMatrix3 * m)
     M_EL(*m,2,2) = 1 - 2 * ( Q_X(*q) * Q_X(*q) + Q_Y(*q) * Q_Y(*q) );    
 }
 
-void fquat_q_to_matrix4_m(const FQuaternion * q, Matrix4 * m)
+void fquat_q_to_matrix4_m(const FQuaternion * const q, Matrix4 * m)
 {
     M_EL(*m,0,0) = 1 - 2 * ( Q_Y(*q) * Q_Y(*q) + Q_Z(*q) * Q_Z(*q) );
     M_EL(*m,0,1) =     2 * ( Q_X(*q) * Q_Y(*q) + Q_Z(*q) * Q_W(*q) );
@@ -255,7 +250,7 @@ void fquat_q_to_matrix4_m(const FQuaternion * q, Matrix4 * m)
     M_EL(*m,3,3) = 1.0;
 }
 
-void fquat_q_to_fmatrix4_m(const FQuaternion * q, FMatrix4 * m)
+void fquat_q_to_fmatrix4_m(const FQuaternion * const q, FMatrix4 * m)
 {
     M_EL(*m,0,0) = 1 - 2 * ( Q_Y(*q) * Q_Y(*q) + Q_Z(*q) * Q_Z(*q) );
     M_EL(*m,0,1) =     2 * ( Q_X(*q) * Q_Y(*q) + Q_Z(*q) * Q_W(*q) );
@@ -273,10 +268,10 @@ void fquat_q_to_fmatrix4_m(const FQuaternion * q, FMatrix4 * m)
     M_EL(*m,3,3) = 1.0;
 }
 
-void fquat_m3_to_quaternion_q(const FMatrix3 * m, FQuaternion * q)
+void fquat_m3_to_quaternion_q(const FMatrix3 * const m, FQuaternion * q)
 {
-    Double trace = M_EL(*m,0,0) + M_EL(*m,1,1) + M_EL(*m,2,2) + 1.0;
-    Double s;
+    double trace = M_EL(*m,0,0) + M_EL(*m,1,1) + M_EL(*m,2,2) + 1.0;
+    double s;
 
     if ( trace > 0.0 )
     {
@@ -329,10 +324,10 @@ void fquat_m3_to_quaternion_q(const FMatrix3 * m, FQuaternion * q)
     }
 }
 
-void fquat_m4_to_quaternion_q(const FMatrix4 * m, FQuaternion * q)
+void fquat_m4_to_quaternion_q(const FMatrix4 * const m, FQuaternion * q)
 {
-    Double trace = M_EL(*m,0,0) + M_EL(*m,1,1) + M_EL(*m,2,2) + 1.0;
-    Double s;
+    double trace = M_EL(*m,0,0) + M_EL(*m,1,1) + M_EL(*m,2,2) + 1.0;
+    double s;
 
     if ( trace > 0.0 )
     {
@@ -436,19 +431,24 @@ void fquat_qqs_slerp_q(const FQuaternion * const q1, const FQuaternion * const q
     result->w   = q1->w   * q1Scale + q2->w   * q2Scale;
 }
 
-FQuaternion fquat_q_conjugated(const FQuaternion * q)
+float fquat_q_magnitude(const FQuaternion * const q)
+{
+    return sqrt( Q_X(*q) * Q_X(*q) + Q_Y(*q) * Q_Y(*q) + Q_Z(*q) * Q_Z(*q) + Q_W(*q) * Q_W(*q) );
+}
+
+FQuaternion fquat_q_conjugated(const FQuaternion * const q)
 {
     return (FQuaternion){{ -Q_X(*q), -Q_Y(*q), -Q_Z(*q) }, Q_W(*q) };
 }
 
-FQuaternion fquat_q_normalised(const FQuaternion * q)
+FQuaternion fquat_q_normalised(const FQuaternion * const q)
 {
-    const Float magnitude = fquat_q_magnitude(q);
+    const float magnitude = fquat_q_magnitude(q);
 
     return (FQuaternion){{ Q_X(*q) / magnitude, Q_Y(*q) / magnitude, Q_Z(*q) / magnitude }, Q_W(*q) / magnitude };
 }
 
-FQuaternion fquat_qq_multiply(const FQuaternion * restrict q1, const FQuaternion * restrict q2)
+FQuaternion fquat_qq_multiply(const FQuaternion * const q1, const FQuaternion * const q2)
 {
     FQuaternion result;
     fquat_qq_multiply_q(q1, q2, &result);
@@ -456,7 +456,7 @@ FQuaternion fquat_qq_multiply(const FQuaternion * restrict q1, const FQuaternion
     return result;
 }
 
-FVector3 fquat_qv_multiply(const FQuaternion * q, const FVector3 * v)
+FVector3 fquat_qv_multiply(const FQuaternion * const q, const FVector3 * const v)
 {
     FVector3 result;
     fquat_qv_multiply_v(q, v, &result);
@@ -464,7 +464,7 @@ FVector3 fquat_qv_multiply(const FQuaternion * q, const FVector3 * v)
     return result;
 }
 
-FVector3 fquat_q_forward_vector(const FQuaternion * q)
+FVector3 fquat_q_forward_vector(const FQuaternion * const q)
 {
     FVector3 forwardVector;
     fquat_qv_multiply_v(q, NP_WORLDF_FORWARD_VECTOR, &forwardVector);
@@ -472,7 +472,7 @@ FVector3 fquat_q_forward_vector(const FQuaternion * q)
     return forwardVector;
 }
 
-FVector3 fquat_q_up_vector(const FQuaternion * q)
+FVector3 fquat_q_up_vector(const FQuaternion * const q)
 {
     FVector3 upVector;
     fquat_qv_multiply_v(q, NP_WORLDF_Y_AXIS, &upVector);
@@ -480,7 +480,7 @@ FVector3 fquat_q_up_vector(const FQuaternion * q)
     return upVector;
 }
 
-FVector3 fquat_q_right_vector(const FQuaternion * q)
+FVector3 fquat_q_right_vector(const FQuaternion * const q)
 {
     FVector3 rightVector;
     fquat_qv_multiply_v(q, NP_WORLDF_X_AXIS, &rightVector);
@@ -488,7 +488,7 @@ FVector3 fquat_q_right_vector(const FQuaternion * q)
     return rightVector;
 }
 
-Matrix3 fquat_q_to_matrix3(const FQuaternion * q)
+Matrix3 fquat_q_to_matrix3(const FQuaternion * const q)
 {
     Matrix3 result;
     fquat_q_to_matrix3_m(q, &result);
@@ -496,7 +496,7 @@ Matrix3 fquat_q_to_matrix3(const FQuaternion * q)
     return result;
 }
 
-FMatrix3 fquat_q_to_fmatrix3(const FQuaternion * q)
+FMatrix3 fquat_q_to_fmatrix3(const FQuaternion * const q)
 {
     FMatrix3 result;
     fquat_q_to_fmatrix3_m(q, &result);
@@ -504,7 +504,7 @@ FMatrix3 fquat_q_to_fmatrix3(const FQuaternion * q)
     return result;    
 }
 
-Matrix4 fquat_q_to_matrix4(const FQuaternion * q)
+Matrix4 fquat_q_to_matrix4(const FQuaternion * const q)
 {
     Matrix4 result;
     fquat_q_to_matrix4_m(q, &result);
@@ -512,7 +512,7 @@ Matrix4 fquat_q_to_matrix4(const FQuaternion * q)
     return result;    
 }
 
-FMatrix4 fquat_q_to_fmatrix4(const FQuaternion * q)
+FMatrix4 fquat_q_to_fmatrix4(const FQuaternion * const q)
 {
     FMatrix4 result;
     fquat_q_to_fmatrix4_m(q, &result);
@@ -520,7 +520,7 @@ FMatrix4 fquat_q_to_fmatrix4(const FQuaternion * q)
     return result;    
 }
 
-FQuaternion fquat_m3_to_quaternion(const FMatrix3 * m)
+FQuaternion fquat_m3_to_quaternion(const FMatrix3 * const m)
 {
     FQuaternion result;
     fquat_m3_to_quaternion_q(m, &result);
@@ -528,7 +528,7 @@ FQuaternion fquat_m3_to_quaternion(const FMatrix3 * m)
     return result;
 }
 
-FQuaternion fquat_m4_to_quaternion(const FMatrix4 * m)
+FQuaternion fquat_m4_to_quaternion(const FMatrix4 * const m)
 {
     FQuaternion result;
     fquat_m4_to_quaternion_q(m, &result);
@@ -544,7 +544,7 @@ FQuaternion fquat_qqs_slerp(const FQuaternion * const q1, const FQuaternion * co
     return result;
 }
 
-const char * fquat_q_to_string(const FQuaternion * q)
+const char * fquat_q_to_string(const FQuaternion * const q)
 {
     char * fquatstring;
 
