@@ -7,6 +7,12 @@
 
 void npmath_fmatrix_initialise();
 
+struct Matrix2;
+struct Matrix3;
+struct Matrix4;
+
+//first index = column
+
 typedef struct FMatrix2
 {
     float elements[2][2];
@@ -29,6 +35,7 @@ FMatrix2 * fm2_alloc();
 FMatrix2 * fm2_alloc_init();
 FMatrix2 * fm2_free(FMatrix2 * v);
 void fm2_m_set_identity(FMatrix2 * m);
+void fm2_m_init_with_m2(FMatrix2 * m1, const struct Matrix2 * const m2);
 void fm2_m_transpose_m(const FMatrix2 * const m, FMatrix2 * transpose);
 void fm2_mm_add_m(const FMatrix2 * const m1, const FMatrix2 * const m2, FMatrix2 * result);
 void fm2_mm_subtract_m(const FMatrix2 * const m1, const FMatrix2 * const m2, FMatrix2 * result);
@@ -50,6 +57,7 @@ FMatrix3 * fm3_alloc();
 FMatrix3 * fm3_alloc_init();
 FMatrix3 * fm3_free(FMatrix3 * v);
 void fm3_m_set_identity(FMatrix3 * m);
+void fm3_m_init_with_m3(FMatrix3 * m1, const struct Matrix3 * const m2);
 void fm3_m_transpose_m(const FMatrix3 * const m, FMatrix3 * transpose);
 void fm3_mm_add_m(const FMatrix3 * const m1, const FMatrix3 * const m2, FMatrix3 * result);
 void fm3_mm_subtract_m(const FMatrix3 * const m1, const FMatrix3 * const m2, FMatrix3 * result);
@@ -92,6 +100,7 @@ FMatrix4 * fm4_alloc_init();
 FMatrix4 * fm4_alloc_init_with_fm4(FMatrix4 * m);
 FMatrix4 * fm4_free(FMatrix4 * v);
 void fm4_m_set_identity(FMatrix4 * m);
+void fm4_m_init_with_m4(FMatrix4 * m1, const struct Matrix4 * const m2);
 void fm4_m_init_with_fm4(FMatrix4 * destination, FMatrix4 * source);
 void fm4_m_transpose_m(const FMatrix4 * const m, FMatrix4 * transpose);
 void fm4_mm_add_m(const FMatrix4 * const m1, const FMatrix4 * const m2, FMatrix4 * result);

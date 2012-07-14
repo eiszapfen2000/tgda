@@ -1,5 +1,6 @@
 #import "Core/NPObject/NPObject.h"
 #import "Core/Math/FMatrix.h"
+#import "Core/Math/Matrix.h"
 
 @interface NPTransformationState : NPObject
 {
@@ -48,9 +49,12 @@
 - (FMatrix4 *) modelViewProjectionMatrix;
 - (FMatrix4 *) inverseModelViewProjectionMatrix;
 
-- (void) setModelMatrix:(const FMatrix4 * const)newModelMatrix;
-- (void) setViewMatrix:(const FMatrix4 * const)newViewMatrix;
-- (void) setProjectionMatrix:(const FMatrix4 * const)newProjectionMatrix;
+- (void) setFModelMatrix:(const FMatrix4 * const)newModelMatrix;
+- (void) setFViewMatrix:(const FMatrix4 * const)newViewMatrix;
+- (void) setFProjectionMatrix:(const FMatrix4 * const)newProjectionMatrix;
+- (void) setModelMatrix:(const Matrix4 * const)newModelMatrix;
+- (void) setViewMatrix:(const Matrix4 * const)newViewMatrix;
+- (void) setProjectionMatrix:(const Matrix4 * const)newProjectionMatrix;
 
 - (void) computeInverseModelMatrix;
 - (void) computeInverseViewMatrix;
