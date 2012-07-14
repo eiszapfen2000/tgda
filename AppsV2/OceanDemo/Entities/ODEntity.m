@@ -143,7 +143,7 @@ static NPAssetArray * statesets = nil;
 {
     fm4_mv_translation_matrix(&modelMatrix, &position);
 
-    [[[ NPEngineCore instance ] transformationState ] setModelMatrix:&modelMatrix ];
+    [[[ NPEngineCore instance ] transformationState ] setFModelMatrix:&modelMatrix ];
 
     /*
     if ( stateset != nil )

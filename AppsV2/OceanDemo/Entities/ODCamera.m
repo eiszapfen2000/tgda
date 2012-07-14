@@ -403,8 +403,8 @@
 - (void) render
 {
     NPTransformationState * trafo = [[ NP Core ] transformationState ];
-    [ trafo setViewMatrix:&view ];
-    [ trafo setProjectionMatrix:&projection ];
+    [ trafo setFViewMatrix:&view ];
+    [ trafo setFProjectionMatrix:&projection ];
 }
 
 @end
