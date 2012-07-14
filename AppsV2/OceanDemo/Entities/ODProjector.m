@@ -354,7 +354,7 @@
     //}
 }
 
-- (void) update:(const float)frameTime
+- (void) update:(const double)frameTime
 {
     NSAssert(camera != nil, @"No camera attached");
 

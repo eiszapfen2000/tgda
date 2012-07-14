@@ -320,7 +320,7 @@
     return ocean;
 }
 
-- (void) update:(const float)frameTime
+- (void) update:(const double)frameTime
 {
     NPViewport * viewport = [[ NP Graphics] viewport ];
     currentResolution.x = [ viewport width  ];

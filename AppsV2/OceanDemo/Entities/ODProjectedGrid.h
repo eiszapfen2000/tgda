@@ -71,7 +71,7 @@ ODProjectedGridRenderMode;
 - (void) setRenderMode:(const ODProjectedGridRenderMode)newRenderMode;
 - (void) setProjector:(ODProjector *)newProjector;
 
-- (void) update:(const float)frameTime;
+- (void) update:(const double)frameTime;
 - (void) render:(NPTexture2D *)heights;
 
 @end

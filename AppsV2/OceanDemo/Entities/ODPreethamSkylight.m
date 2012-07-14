@@ -112,7 +112,7 @@
     ASSIGN(camera, newCamera);
 }
 
-- (void) update:(const float)frameTime
+- (void) update:(const double)frameTime
 {
 
     if ( [ sunZenithDistanceIncreaseAction active ] == YES )

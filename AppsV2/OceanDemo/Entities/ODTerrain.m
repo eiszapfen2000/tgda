@@ -82,7 +82,7 @@
     return YES;
 }
 
-- (void) update:(const float)frameTime
+- (void) update:(const double)frameTime
 {
 }
 

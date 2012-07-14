@@ -451,7 +451,7 @@
     ASSIGN(projector, newProjector);
 }
 
-- (void) update:(const float)frameTime
+- (void) update:(const double)frameTime
 {
     NSAssert(projector != nil, @"No projector attached");
 

@@ -384,7 +384,7 @@
     fm4_mm_multiply_m(&rotate, &translate, &view);
 }
 
-- (void) update:(const float)frameTime
+- (void) update:(const double)frameTime
 {
     if ( inputLocked == NO )
     {
