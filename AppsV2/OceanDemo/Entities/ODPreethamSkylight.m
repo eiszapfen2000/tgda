@@ -292,7 +292,7 @@
     [ lighDirection_P setValue:lightDirection ];
 
     fm4_mv_translation_matrix(&modelMatrix, &position);
-    [[[ NPEngineCore instance ] transformationState ] setModelMatrix:&modelMatrix ];
+    [[[ NPEngineCore instance ] transformationState ] setFModelMatrix:&modelMatrix ];
     [ model renderLOD:0 withMaterial:YES ];
 }
 

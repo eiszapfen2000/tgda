@@ -188,7 +188,7 @@
 
     FMatrix4 modelMatrix = *[ tState modelMatrix ];
 
-    [ tState setModelMatrix:&translation ];
+    [ tState setFModelMatrix:&translation ];
 
     [ color setValue:quadColor ];
     [ technique activate ];
@@ -206,7 +206,7 @@
 
     [ circleGeometry renderWithPrimitiveType:NpPrimitiveLineStrip firstIndex:1 lastIndex:25 ];
 
-    [ tState setModelMatrix:&modelMatrix ];
+    [ tState setFModelMatrix:&modelMatrix ];
 }
 
 @end
