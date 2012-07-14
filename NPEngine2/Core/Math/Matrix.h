@@ -10,7 +10,7 @@ void npmath_matrix_initialise();
 //first index = column
 
 struct FMatrix2;
-struct Matrix3;
+struct FMatrix3;
 struct FMatrix4;
 
 typedef struct Matrix2

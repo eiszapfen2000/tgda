@@ -5,6 +5,7 @@
 
 #include "Core/Basics/NpFreeList.h"
 #include "Utilities.h"
+#include "Matrix.h"
 #include "FMatrix.h"
 
 NpFreeList * NP_FMATRIX2_FREELIST = NULL;
@@ -40,6 +41,14 @@ void fm2_m_set_identity(FMatrix2 * m)
 {
     M_EL(*m,0,0) = M_EL(*m,1,1) = 1.0f;
     M_EL(*m,0,1) = M_EL(*m,1,0) = 0.0f;
+}
+
+void fm2_mm_init_with_m2(FMatrix2 * m1, const struct Matrix2 * const m2)
+{
+    M_EL(*m1,0,0) = M_EL(*m2,0,0);
+    M_EL(*m1,0,1) = M_EL(*m2,0,1);
+    M_EL(*m1,1,0) = M_EL(*m2,1,0);
+    M_EL(*m1,1,1) = M_EL(*m2,1,1);
 }
 
 void fm2_m_transpose_m(const FMatrix2 * const m, FMatrix2 * transpose)
@@ -203,6 +212,17 @@ void fm3_m_set_identity(FMatrix3 * m)
 {
     M_EL(*m,0,0) = M_EL(*m,1,1) = M_EL(*m,2,2) = 1.0;
     M_EL(*m,0,1) = M_EL(*m,0,2) = M_EL(*m,1,0) = M_EL(*m,1,2) = M_EL(*m,2,0) = M_EL(*m,2,1) = 0.0;
+}
+
+void fm3_mm_init_with_m3(FMatrix3 * m1, const struct Matrix3 * const m2)
+{
+    for ( uint32_t i = 0; i < 3; i++ )
+    {
+        for ( uint32_t j = 0; j < 3; j++ )
+        {
+            M_EL(*m1, i, j) = M_EL(*m2, i, j);
+        }
+    }
 }
 
 void fm3_m_transpose_m(const FMatrix3 * const m, FMatrix3 * transpose)
@@ -568,6 +588,8 @@ const char * fm3_m_to_string(FMatrix3 * m)
     return fm3string;
 }
 
+/* ------------------------------------------------------------------------- */
+
 FMatrix4 * fm4_alloc()
 {
     return (FMatrix4 *)npfreenode_alloc(NP_FMATRIX4_FREELIST);
@@ -599,6 +621,17 @@ void fm4_m_set_identity(FMatrix4 * m)
     M_EL(*m,0,0) = M_EL(*m,1,1) = M_EL(*m,2,2) = M_EL(*m,3,3) = 1.0;
     M_EL(*m,0,1) = M_EL(*m,0,2) = M_EL(*m,0,3) = M_EL(*m,1,0) = M_EL(*m,1,2) = M_EL(*m,1,3) =
     M_EL(*m,2,0) = M_EL(*m,2,1) = M_EL(*m,2,3) = M_EL(*m,3,0) = M_EL(*m,3,1) = M_EL(*m,3,2) = 0.0;
+}
+
+void fm4_m_init_with_m4(FMatrix4 * m1, const struct Matrix4 * const m2)
+{
+    for ( uint32_t i = 0; i < 4; i++ )
+    {
+        for ( uint32_t j = 0; j < 4; j++ )
+        {
+            M_EL(*m1, i, j) = M_EL(*m2, i, j);
+        }
+    }
 }
 
 void fm4_m_init_with_fm4(FMatrix4 * destination, FMatrix4 * source)

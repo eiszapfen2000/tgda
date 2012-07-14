@@ -159,7 +159,7 @@
 
     [ tState resetModelMatrix ];
     [ tState resetViewMatrix  ];
-    [ tState setProjectionMatrix:&orthoProjection ];
+    [ tState setFProjectionMatrix:&orthoProjection ];
 }
 
 - (void) deactivate
@@ -167,9 +167,9 @@
     NPTransformationState * tState
         = [[ NPEngineCore instance ] transformationState ];
 
-    [ tState setModelMatrix:&modelBefore ];
-    [ tState setViewMatrix:&viewBefore ];
-    [ tState setProjectionMatrix:&projectionBefore ];
+    [ tState setFModelMatrix:&modelBefore ];
+    [ tState setFViewMatrix:&viewBefore ];
+    [ tState setFProjectionMatrix:&projectionBefore ];
 }
 
 @end

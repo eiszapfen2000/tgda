@@ -209,7 +209,7 @@
     return inverseModelViewProjectionMatrix;
 }
 
-- (void) setModelMatrix:(const FMatrix4 * const)newModelMatrix
+- (void) setFModelMatrix:(const FMatrix4 * const)newModelMatrix
 {
     *modelMatrix = *newModelMatrix;
 
@@ -217,7 +217,7 @@
     recomputeModelViewProjectionMatrix = YES;
 }
 
-- (void) setViewMatrix:(const FMatrix4 * const)newViewMatrix
+- (void) setFViewMatrix:(const FMatrix4 * const)newViewMatrix
 {
     *viewMatrix = *newViewMatrix;
 
@@ -227,9 +227,36 @@
     recomputeInverseViewProjectionMatrix = YES;    
 }
 
-- (void) setProjectionMatrix:(const FMatrix4 * const)newProjectionMatrix
+- (void) setFProjectionMatrix:(const FMatrix4 * const)newProjectionMatrix
 {
     *projectionMatrix = *newProjectionMatrix;
+
+    recomputeViewProjectionMatrix = YES;
+    recomputeModelViewProjectionMatrix = YES;
+    recomputeInverseViewProjectionMatrix = YES;
+}
+
+- (void) setModelMatrix:(const Matrix4 * const)newModelMatrix
+{
+    fm4_m_init_with_m4(modelMatrix, newModelMatrix);
+
+    recomputeModelViewMatrix = YES;
+    recomputeModelViewProjectionMatrix = YES;
+}
+
+- (void) setViewMatrix:(const Matrix4 * const)newViewMatrix
+{
+    fm4_m_init_with_m4(viewMatrix, newViewMatrix);
+
+    recomputeModelViewMatrix = YES;
+    recomputeViewProjectionMatrix = YES;
+    recomputeModelViewProjectionMatrix = YES;
+    recomputeInverseViewProjectionMatrix = YES;    
+}
+
+- (void) setProjectionMatrix:(const Matrix4 * const)newProjectionMatrix
+{
+    fm4_m_init_with_m4(projectionMatrix, newProjectionMatrix);
 
     recomputeViewProjectionMatrix = YES;
     recomputeModelViewProjectionMatrix = YES;
