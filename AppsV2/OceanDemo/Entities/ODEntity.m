@@ -134,7 +134,7 @@ static NPAssetArray * statesets = nil;
     position = newPosition;
 }
 
-- (void) update:(const float)frameTime
+- (void) update:(const double)frameTime
 {
 
 }

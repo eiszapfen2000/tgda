@@ -340,7 +340,7 @@ static const NSUInteger defaultResolutionIndex = 0;
     return YES;
 }
 
-- (void) update:(const float)frameTime
+- (void) update:(const double)frameTime
 {
     [ projector     update:frameTime ];
     [ projectedGrid update:frameTime ];

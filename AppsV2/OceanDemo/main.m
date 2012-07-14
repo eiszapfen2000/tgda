@@ -208,7 +208,7 @@ int main (int argc, char **argv)
         [[ NP Core ] update ];
 
         // get current frametime
-        const float frameTime = [[[ NP Core ] timer ] frameTime ];
+        const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
 
         // update scene
