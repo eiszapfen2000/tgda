@@ -386,6 +386,13 @@ Vector3 v3_v_inverted(Vector3 * v)
     return (Vector3){-V_X(*v), -V_Y(*v), -V_Z(*v)};
 }
 
+Vector3 v3_v_normalised(const Vector3 * const v)
+{
+    Double length = v3_v_length(v);
+
+    return (Vector3){ V_X(*v) / length, V_Y(*v) / length, V_Z(*v) / length };
+}
+
 Vector3 v3_vv_add(const Vector3 * const v, const Vector3 * const w)
 {
     return (Vector3){V_X(*v) + V_X(*w), V_Y(*v) + V_Y(*w), V_Z(*v) + V_Z(*w)};

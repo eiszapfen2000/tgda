@@ -1,10 +1,11 @@
 #define _GNU_SOURCE
-#include <stdio.h>
+#include <float.h>
 #include <math.h>
+#include <stdio.h>
 
 #include "Core/Basics/NpFreeList.h"
-#include "FMatrix.h"
 #include "Utilities.h"
+#include "FMatrix.h"
 
 NpFreeList * NP_FMATRIX2_FREELIST = NULL;
 NpFreeList * NP_FMATRIX3_FREELIST = NULL;
@@ -37,8 +38,8 @@ FMatrix2 * fm2_free(FMatrix2 * v)
 
 void fm2_m_set_identity(FMatrix2 * m)
 {
-    M_EL(*m,0,0) = M_EL(*m,1,1) = 1.0;
-    M_EL(*m,0,1) = M_EL(*m,1,0) = 0.0;
+    M_EL(*m,0,0) = M_EL(*m,1,1) = 1.0f;
+    M_EL(*m,0,1) = M_EL(*m,1,0) = 0.0f;
 }
 
 void fm2_m_transpose_m(const FMatrix2 * const m, FMatrix2 * transpose)
