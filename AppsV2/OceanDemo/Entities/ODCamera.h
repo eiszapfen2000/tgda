@@ -17,8 +17,8 @@
 	float nearPlane;
 	float farPlane;
 	float aspectRatio;
-    float yaw;
-    float pitch;
+    double yaw;
+    double pitch;
 
     BOOL inputLocked;
     NPInputAction * leftClickAction;
@@ -41,8 +41,8 @@
 - (Vector3) forward;
 - (Vector3) position;
 - (Quaternion) orientation;
-- (float) yaw;
-- (float) pitch;
+- (double) yaw;
+- (double) pitch;
 - (Matrix4 *) view;
 - (Matrix4 *) projection;
 - (Matrix4 *) inverseViewProjection;
@@ -54,8 +54,8 @@
 - (void) setAspectRatio:(const float)newAspectRatio;
 - (void) setPosition:(const Vector3)newPosition;
 - (void) setOrientation:(const Quaternion)newOrientation;
-- (void) setYaw:(const float)newYaw;
-- (void) setPitch:(const float)newPitch;
+- (void) setYaw:(const double)newYaw;
+- (void) setPitch:(const double)newPitch;
 
 - (void) lockInput;
 - (void) unlockInput;
