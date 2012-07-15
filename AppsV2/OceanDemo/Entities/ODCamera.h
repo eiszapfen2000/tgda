@@ -13,6 +13,12 @@
     FQuaternion orientation;
     FVector3 position;
 
+    Matrix4 viewD;
+    Matrix4 projectionD;
+    Matrix4 inverseViewProjectionD;
+    Quaternion orientationD;
+    Vector3 positionD;
+
 	float fov;
 	float nearPlane;
 	float farPlane;
@@ -21,6 +27,7 @@
     float yaw;
     float pitch;
     FVector3 forward;
+    Vector3 forwardD;
 
     BOOL inputLocked;
     NPInputAction * leftClickAction;

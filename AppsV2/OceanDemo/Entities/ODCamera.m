@@ -57,21 +57,30 @@
     if ( [ wheelUpAction activated ] == YES )
     {
         fquat_q_forward_vector_v(&orientation, &forward);
+        quat_q_forward_vector_v(&orientationD, &forwardD);
 
         position.x += (forward.x * 2.0f);
         position.y += (forward.y * 2.0f);
         position.z += (forward.z * 2.0f);
+
+        positionD.x += (forwardD.x * 2.0);
+        positionD.y += (forwardD.y * 2.0);
+        positionD.z += (forwardD.z * 2.0);
     }
 
     if ( [ wheelDownAction activated ] == YES )
     {
         fquat_q_forward_vector_v(&orientation, &forward);
+        quat_q_forward_vector_v(&orientationD, &forwardD);
 
         position.x -= (forward.x * 2.0f);
         position.y -= (forward.y * 2.0f);
         position.z -= (forward.z * 2.0f);
-    }
 
+        positionD.x -= (forwardD.x * 2.0);
+        positionD.y -= (forwardD.y * 2.0);
+        positionD.z -= (forwardD.z * 2.0);
+    }
 }
 
 @end
@@ -93,6 +102,12 @@
     fquat_set_identity(&orientation);
     fv3_v_init_with_zeros(&position);
 
+    m4_m_set_identity(&viewD);
+    m4_m_set_identity(&projectionD);
+    m4_m_set_identity(&inverseViewProjectionD);
+    quat_set_identity(&orientationD);
+    v3_v_init_with_zeros(&positionD);
+
     fov         = 45.0f;
     nearPlane   = 0.1f;
     farPlane    = 150.0f;
@@ -102,7 +117,9 @@
     pitch = 0.0f;
 
     fv3_v_init_with_zeros(&forward);
-    forward.z = -1.0f;
+    v3_v_init_with_zeros(&forwardD);
+    forward.z  = -1.0f;
+    forwardD.z = -1.0;
 
     inputLocked = NO;
 
@@ -324,56 +341,83 @@
 - (void) moveForward:(const float)frameTime
 {
     fquat_q_forward_vector_v(&orientation, &forward);
+    quat_q_forward_vector_v(&orientationD, &forwardD);
 
     position.x += (forward.x * frameTime);
     position.y += (forward.y * frameTime);
     position.z += (forward.z * frameTime);
+
+    positionD.x += (forwardD.x * frameTime);
+    positionD.y += (forwardD.y * frameTime);
+    positionD.z += (forwardD.z * frameTime);
 }
 
 - (void) moveBackward:(const float)frameTime
 {
     fquat_q_forward_vector_v(&orientation, &forward);
+    quat_q_forward_vector_v(&orientationD, &forwardD);
 
     position.x -= (forward.x * frameTime);
     position.y -= (forward.y * frameTime);
     position.z -= (forward.z * frameTime);
+
+    positionD.x -= (forwardD.x * frameTime);
+    positionD.y -= (forwardD.y * frameTime);
+    positionD.z -= (forwardD.z * frameTime);
 }
 
 - (void) moveLeft:(const float)frameTime
 {
     FVector3 right;
+    Vector3  rightD;
+
     fquat_q_right_vector_v(&orientation, &right);
+    quat_q_right_vector_v(&orientationD, &rightD);
 
     position.x -= (right.x * frameTime);
     position.y -= (right.y * frameTime);
     position.z -= (right.z * frameTime);
+
+    positionD.x -= (rightD.x * frameTime);
+    positionD.y -= (rightD.y * frameTime);
+    positionD.z -= (rightD.z * frameTime);
 }
 
 - (void) moveRight:(const float)frameTime
 {
     FVector3 right;
+    Vector3  rightD;
     fquat_q_right_vector_v(&orientation, &right);
+    quat_q_right_vector_v(&orientationD, &rightD);
 
     position.x += (right.x * frameTime);
     position.y += (right.y * frameTime);
     position.z += (right.z * frameTime);
+
+    positionD.x += (rightD.x * frameTime);
+    positionD.y += (rightD.y * frameTime);
+    positionD.z += (rightD.z * frameTime);
 }
 
 - (void) updateProjection
 {
+    aspectRatio = [[[ NP Graphics ] viewport ] aspectRatio ];
     fm4_mssss_projection_matrix(&projection, aspectRatio, fov, nearPlane, farPlane);
+    m4_mssss_projection_matrix(&projectionD, aspectRatio, fov, nearPlane, farPlane);
 }
 
 - (void) updateView
 {
-    aspectRatio = [[[ NP Graphics ] viewport ] aspectRatio ];
-
     fm4_m_set_identity(&view);
+    m4_m_set_identity(&viewD);
 
     if ( inputLocked == NO )
     {
         fquat_q_init_with_axis_and_degrees(&orientation, NP_WORLDF_Y_AXIS, yaw);
         fquat_q_rotatex(&orientation, pitch);
+
+        quat_q_init_with_axis_and_degrees(&orientationD, NP_WORLD_Y_AXIS, yaw);
+        quat_q_rotatex(&orientationD, pitch);
     }
 
     fquat_q_forward_vector_v(&orientation, &forward);
@@ -382,6 +426,13 @@
     FMatrix4 rotate = fquat_q_to_fmatrix4(&q);
     FMatrix4 translate = fm4_v_translation_matrix(&invpos);
     fm4_mm_multiply_m(&rotate, &translate, &view);
+
+    quat_q_forward_vector_v(&orientationD, &forwardD);
+    Quaternion qD = quat_q_conjugated(&orientationD);
+    Vector3 invposD = v3_v_inverted(&positionD);
+    Matrix4 rotateD = quat_q_to_matrix4(&qD);
+    Matrix4 translateD = m4_v_translation_matrix(&invposD);
+    m4_mm_multiply_m(&rotateD, &translateD, &viewD);
 }
 
 - (void) update:(const double)frameTime
@@ -398,13 +449,29 @@
     FMatrix4 viewProjection;
     fm4_mm_multiply_m(&projection, &view, &viewProjection);
     fm4_m_inverse_m(&viewProjection, &inverseViewProjection);
+
+    Matrix4 viewProjectionD;
+    m4_mm_multiply_m(&projectionD, &viewD, &viewProjectionD);
+    m4_m_inverse_m(&viewProjectionD, &inverseViewProjectionD);
+
+    /*
+    const char * s1 = fm4_m_to_string(&projection);
+    const char * s2 = m4_m_to_string(&projectionD);
+
+    NSLog(@"\n%s\n\n%s\n", s1, s2);
+
+    SAFE_FREE(s1);
+    SAFE_FREE(s2);
+    */
 }
 
 - (void) render
 {
     NPTransformationState * trafo = [[ NP Core ] transformationState ];
-    [ trafo setFViewMatrix:&view ];
-    [ trafo setFProjectionMatrix:&projection ];
+//    [ trafo setFViewMatrix:&view ];
+    [ trafo setViewMatrix:&viewD ];
+//    [ trafo setFProjectionMatrix:&projection ];
+    [ trafo setProjectionMatrix:&projectionD ];
 }
 
 @end
