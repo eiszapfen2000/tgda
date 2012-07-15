@@ -1,19 +1,21 @@
 #import "Core/Basics/NpTypes.h"
 #import "Core/Math/FVector.h"
+#import "Core/Math/Vector.h"
 #import "NPEffectVariableUniform.h"
 
 @class NPEffectTechniqueVariable;
 
 @interface NPEffectVariableFloat : NPEffectVariableUniform
 {
-    Float value;
+    float value;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 
-- (Float) value;
-- (void) setValue:(Float)newValue;
+- (float) value;
+- (void) setFValue:(float)newValue;
+- (void) setValue:(double)newValue;
 
 - (void) activate:(NPEffectTechniqueVariable *)variable;
 
@@ -28,7 +30,8 @@
 - (id) initWithName:(NSString *)newName;
 
 - (FVector2) value;
-- (void) setValue:(FVector2)newValue;
+- (void) setFValue:(FVector2)newValue;
+- (void) setValue:(Vector2)newValue;
 
 - (void) activate:(NPEffectTechniqueVariable *)variable;
 
@@ -43,7 +46,8 @@
 - (id) initWithName:(NSString *)newName;
 
 - (FVector3) value;
-- (void) setValue:(FVector3)newValue;
+- (void) setFValue:(FVector3)newValue;
+- (void) setValue:(Vector3)newValue;
 
 - (void) activate:(NPEffectTechniqueVariable *)variable;
 
@@ -58,7 +62,8 @@
 - (id) initWithName:(NSString *)newName;
 
 - (FVector4) value;
-- (void) setValue:(FVector4)newValue;
+- (void) setFValue:(FVector4)newValue;
+- (void) setValue:(Vector4)newValue;
 
 - (void) activate:(NPEffectTechniqueVariable *)variable;
 
