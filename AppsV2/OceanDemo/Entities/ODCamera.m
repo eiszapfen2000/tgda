@@ -13,6 +13,15 @@
 @interface ODCamera (Private)
 
 - (void) processInput:(const double)frameTime;
+- (void) cameraRotateUsingYaw:(const double)yawDegrees andPitch:(const double)pitchDegrees;
+- (void) moveForward:(const double)frameTime;
+- (void) moveBackward:(const double)frameTime;
+- (void) moveLeft:(const double)frameTime;
+- (void) moveRight:(const double)frameTime;
+- (void) updateYaw:(double)degrees;
+- (void) updatePitch:(double)degrees;
+- (void) updateProjection;
+- (void) updateView;
 
 @end
 
@@ -73,6 +82,110 @@
         position.y -= (forward.y * 2.0);
         position.z -= (forward.z * 2.0);
     }
+}
+
+- (void) cameraRotateUsingYaw:(const double)yawDegrees andPitch:(const double)pitchDegrees
+{
+    [ self updateYaw:yawDegrees ];
+    [ self updatePitch:pitchDegrees ];
+}
+
+- (void) moveForward:(const double)frameTime
+{
+    quat_q_forward_vector_v(&orientation, &forward);
+    
+    position.x += (forward.x * frameTime);
+    position.y += (forward.y * frameTime);
+    position.z += (forward.z * frameTime);
+}
+
+- (void) moveBackward:(const double)frameTime
+{
+    quat_q_forward_vector_v(&orientation, &forward);
+    
+    position.x -= (forward.x * frameTime);
+    position.y -= (forward.y * frameTime);
+    position.z -= (forward.z * frameTime);
+}
+
+- (void) moveLeft:(const double)frameTime
+{
+    Vector3 right;
+    quat_q_right_vector_v(&orientation, &right);
+    
+    position.x -= (right.x * frameTime);
+    position.y -= (right.y * frameTime);
+    position.z -= (right.z * frameTime);
+}
+
+- (void) moveRight:(const double)frameTime
+{
+    Vector3 right;
+    quat_q_right_vector_v(&orientation, &right);
+    
+    position.x += (right.x * frameTime);
+    position.y += (right.y * frameTime);
+    position.z += (right.z * frameTime);
+}
+
+- (void) updateYaw:(double)degrees
+{
+    if ( degrees != 0.0 )
+    {
+        yaw += degrees;
+
+        if ( yaw < 0.0 )
+        {
+            yaw = 360.0 + yaw;
+        }
+
+        if ( yaw > 360.0 )
+        {
+            yaw -= 360.0;
+        }
+    }
+}
+
+- (void) updatePitch:(double)degrees
+{
+    if ( degrees != 0.0 )
+    {
+        pitch += degrees;
+
+        if ( pitch < 0.0 )
+        {
+            pitch = 360.0 + pitch;
+        }
+
+        if ( pitch > 360.0 )
+        {
+            pitch -= 360.0;
+        }
+    }
+}
+
+- (void) updateProjection
+{
+    aspectRatio = [[[ NP Graphics ] viewport ] aspectRatio ];
+    m4_mssss_projection_matrix(&projection, aspectRatio, fov, nearPlane, farPlane);
+}
+
+- (void) updateView
+{
+    m4_m_set_identity(&view);
+    
+    if ( inputLocked == NO )
+    {
+        quat_q_init_with_axis_and_degrees(&orientation, NP_WORLD_Y_AXIS, yaw);
+        quat_q_rotatex(&orientation, pitch);
+    }
+
+    quat_q_forward_vector_v(&orientation, &forward);
+    Quaternion q = quat_q_conjugated(&orientation);
+    Vector3 invpos = v3_v_inverted(&position);
+    Matrix4 rotate = quat_q_to_matrix4(&q);
+    Matrix4 translate = m4_v_translation_matrix(&invpos);
+    m4_mm_multiply_m(&rotate, &translate, &view);
 }
 
 @end
@@ -271,109 +384,9 @@
     inputLocked = NO;
 }
 
-- (void) updateYaw:(double)degrees
-{
-    if ( degrees != 0.0 )
-    {
-        yaw += degrees;
 
-        if ( yaw < 0.0 )
-        {
-            yaw = 360.0 + yaw;
-        }
 
-        if ( yaw > 360.0 )
-        {
-            yaw -= 360.0;
-        }
-    }
-}
 
-- (void) updatePitch:(double)degrees
-{
-    if ( degrees != 0.0 )
-    {
-        pitch += degrees;
-
-        if ( pitch < 0.0 )
-        {
-            pitch = 360.0 + pitch;
-        }
-
-        if ( pitch > 360.0 )
-        {
-            pitch -= 360.0;
-        }
-    }
-}
-
-- (void) cameraRotateUsingYaw:(const double)yawDegrees andPitch:(const double)pitchDegrees
-{
-    [ self updateYaw:yawDegrees ];
-    [ self updatePitch:pitchDegrees ];
-}
-
-- (void) moveForward:(const double)frameTime
-{
-    quat_q_forward_vector_v(&orientation, &forward);
-    
-    position.x += (forward.x * frameTime);
-    position.y += (forward.y * frameTime);
-    position.z += (forward.z * frameTime);
-}
-
-- (void) moveBackward:(const double)frameTime
-{
-    quat_q_forward_vector_v(&orientation, &forward);
-    
-    position.x -= (forward.x * frameTime);
-    position.y -= (forward.y * frameTime);
-    position.z -= (forward.z * frameTime);
-}
-
-- (void) moveLeft:(const double)frameTime
-{
-    Vector3 right;
-    quat_q_right_vector_v(&orientation, &right);
-    
-    position.x -= (right.x * frameTime);
-    position.y -= (right.y * frameTime);
-    position.z -= (right.z * frameTime);
-}
-
-- (void) moveRight:(const double)frameTime
-{
-    Vector3 right;
-    quat_q_right_vector_v(&orientation, &right);
-    
-    position.x += (right.x * frameTime);
-    position.y += (right.y * frameTime);
-    position.z += (right.z * frameTime);
-}
-
-- (void) updateProjection
-{
-    aspectRatio = [[[ NP Graphics ] viewport ] aspectRatio ];
-    m4_mssss_projection_matrix(&projection, aspectRatio, fov, nearPlane, farPlane);
-}
-
-- (void) updateView
-{
-    m4_m_set_identity(&view);
-    
-    if ( inputLocked == NO )
-    {
-        quat_q_init_with_axis_and_degrees(&orientation, NP_WORLD_Y_AXIS, yaw);
-        quat_q_rotatex(&orientation, pitch);
-    }
-
-    quat_q_forward_vector_v(&orientation, &forward);
-    Quaternion q = quat_q_conjugated(&orientation);
-    Vector3 invpos = v3_v_inverted(&position);
-    Matrix4 rotate = quat_q_to_matrix4(&q);
-    Matrix4 translate = m4_v_translation_matrix(&invpos);
-    m4_mm_multiply_m(&rotate, &translate, &view);
-}
 
 - (void) update:(const double)frameTime
 {
