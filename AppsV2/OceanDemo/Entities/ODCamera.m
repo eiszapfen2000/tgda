@@ -2,6 +2,8 @@
 #import <Foundation/NSError.h>
 #import <Foundation/NSException.h>
 #import "GL/glew.h"
+#import "Graphics/NPEngineGraphics.h"
+#import "Graphics/NPViewport.h"
 #import "Input/NPInputAction.h"
 #import "Input/NPInputActions.h"
 #import "Input/NPKeyboard.h"
@@ -207,7 +209,7 @@
     quat_set_identity(&orientation);
     v3_v_init_with_zeros(&position);
     v3_v_init_with_zeros(&forward);
-    forward.z  = -1.0f;
+    forward.z  = -1.0;
 
     fov         = 45.0f;
     nearPlane   = 0.1f;
@@ -269,22 +271,22 @@
     return YES;
 }
 
-- (float) fov
+- (double) fov
 {
     return fov;
 }
 
-- (float) aspectRatio
+- (double) aspectRatio
 {
     return aspectRatio;
 }
 
-- (float) nearPlane
+- (double) nearPlane
 {
     return nearPlane;
 }
 
-- (float) farPlane
+- (double) farPlane
 {
     return farPlane;
 }
@@ -334,6 +336,7 @@
     return inputLocked;
 }
 
+/*
 - (void) setFov:(const float)newFov
 {
 	fov = newFov;
@@ -353,6 +356,7 @@
 {
 	farPlane = newFarPlane;
 }
+*/
 
 - (void) setPosition:(const Vector3)newPosition
 {
@@ -383,10 +387,6 @@
 {
     inputLocked = NO;
 }
-
-
-
-
 
 - (void) update:(const double)frameTime
 {
