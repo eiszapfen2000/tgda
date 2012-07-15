@@ -12,13 +12,13 @@
 
 @interface ODCamera (Private)
 
-- (void) processInput:(const float)frameTime;
+- (void) processInput:(const double)frameTime;
 
 @end
 
 @implementation ODCamera (Private)
 
-- (void) processInput:(const float)frameTime
+- (void) processInput:(const double)frameTime
 {
     // position update
     if ( [ forwardMovementAction active ] == YES )
@@ -50,7 +50,9 @@
 
         if ( deltaX != 0 || deltaY != 0 )
         {
-            [ self cameraRotateUsingYaw:-deltaX*0.3f andPitch:-deltaY*0.3f ];
+            double y = 0.3 * (double)(-deltaX);
+            double p = 0.3 * (double)(-deltaY);
+            [ self cameraRotateUsingYaw:y andPitch:p ];
         }
     }
 
@@ -269,49 +271,49 @@
     inputLocked = NO;
 }
 
-- (void) updateYaw:(float)degrees
+- (void) updateYaw:(double)degrees
 {
-    if ( degrees != 0.0f )
+    if ( degrees != 0.0 )
     {
         yaw += degrees;
 
-        if ( yaw < 0.0f )
+        if ( yaw < 0.0 )
         {
-            yaw = 360.0f + yaw;
+            yaw = 360.0 + yaw;
         }
 
-        if ( yaw > 360.0f )
+        if ( yaw > 360.0 )
         {
-            yaw -= 360.0f;
+            yaw -= 360.0;
         }
     }
 }
 
-- (void) updatePitch:(float)degrees
+- (void) updatePitch:(double)degrees
 {
-    if ( degrees != 0.0f )
+    if ( degrees != 0.0 )
     {
         pitch += degrees;
 
-        if ( pitch < 0.0f )
+        if ( pitch < 0.0 )
         {
-            pitch = 360.0f + pitch;
+            pitch = 360.0 + pitch;
         }
 
-        if ( pitch > 360.0f )
+        if ( pitch > 360.0 )
         {
-            pitch -= 360.0f;
+            pitch -= 360.0;
         }
     }
 }
 
-- (void) cameraRotateUsingYaw:(const float)yawDegrees andPitch:(const float)pitchDegrees
+- (void) cameraRotateUsingYaw:(const double)yawDegrees andPitch:(const double)pitchDegrees
 {
     [ self updateYaw:yawDegrees ];
     [ self updatePitch:pitchDegrees ];
 }
 
-- (void) moveForward:(const float)frameTime
+- (void) moveForward:(const double)frameTime
 {
     quat_q_forward_vector_v(&orientation, &forward);
     
@@ -320,7 +322,7 @@
     position.z += (forward.z * frameTime);
 }
 
-- (void) moveBackward:(const float)frameTime
+- (void) moveBackward:(const double)frameTime
 {
     quat_q_forward_vector_v(&orientation, &forward);
     
@@ -329,7 +331,7 @@
     position.z -= (forward.z * frameTime);
 }
 
-- (void) moveLeft:(const float)frameTime
+- (void) moveLeft:(const double)frameTime
 {
     Vector3 right;
     quat_q_right_vector_v(&orientation, &right);
@@ -339,7 +341,7 @@
     position.z -= (right.z * frameTime);
 }
 
-- (void) moveRight:(const float)frameTime
+- (void) moveRight:(const double)frameTime
 {
     Vector3 right;
     quat_q_right_vector_v(&orientation, &right);
@@ -402,9 +404,7 @@
 - (void) render
 {
     NPTransformationState * trafo = [[ NP Core ] transformationState ];
-//    [ trafo setFViewMatrix:&view ];
     [ trafo setViewMatrix:&view ];
-//    [ trafo setFProjectionMatrix:&projection ];
     [ trafo setProjectionMatrix:&projection ];
 }
 
