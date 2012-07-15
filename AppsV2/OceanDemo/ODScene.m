@@ -533,7 +533,7 @@
 
     // render tonemapped scene to screen
     [ lightDirection setFValue:[ skylight lightDirection ]];
-    [ cameraPosition setFValue:[ camera position ]];
+    [ cameraPosition setValue:[ camera position ]];
     [[ deferredEffect techniqueWithName:@"water_surface" ] activate ];
     //[[ deferredEffect techniqueWithName:@"texture" ] activate ];
     [ fullscreenQuad render ];

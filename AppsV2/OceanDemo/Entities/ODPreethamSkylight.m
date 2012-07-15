@@ -251,7 +251,10 @@
 
     //NSLog(@"2: %f %f %f", XYZ[0], XYZ[1], XYZ[2]);
 
-    position = [ camera position ];
+    Vector3 p = [ camera position ];
+    position.x = p.x;
+    position.y = p.y;
+    position.z = p.z;
     position.y -= 2.0f;
 }
 
