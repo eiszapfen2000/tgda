@@ -18,14 +18,19 @@
     return self;
 }
 
-- (Float) value
+- (float) value
 {
     return value;
 }
 
-- (void) setValue:(Float)newValue
+- (void) setFValue:(float)newValue
 {
     value = newValue;
+}
+
+- (void) setValue:(double)newValue
+{
+    value = (float)newValue;
 }
 
 - (void) activate:(NPEffectTechniqueVariable *)variable
@@ -57,9 +62,15 @@
     return value;
 }
 
-- (void) setValue:(FVector2)newValue
+- (void) setFValue:(FVector2)newValue
 {
     value = newValue;
+}
+
+- (void) setValue:(Vector2)newValue
+{
+    value.x = (float)newValue.x;
+    value.y = (float)newValue.y;
 }
 
 - (void) activate:(NPEffectTechniqueVariable *)variable
@@ -91,9 +102,16 @@
     return value;
 }
 
-- (void) setValue:(FVector3)newValue
+- (void) setFValue:(FVector3)newValue
 {
     value = newValue;
+}
+
+- (void) setValue:(Vector3)newValue
+{
+    value.x = (float)newValue.x;
+    value.y = (float)newValue.y;
+    value.z = (float)newValue.z;
 }
 
 - (void) activate:(NPEffectTechniqueVariable *)variable
@@ -125,9 +143,17 @@
     return value;
 }
 
-- (void) setValue:(FVector4)newValue
+- (void) setFValue:(FVector4)newValue
 {
     value = newValue;
+}
+
+- (void) setValue:(Vector4)newValue
+{
+    value.x = (float)newValue.x;
+    value.y = (float)newValue.y;
+    value.z = (float)newValue.z;
+    value.w = (float)newValue.w;
 }
 
 - (void) activate:(NPEffectTechniqueVariable *)variable

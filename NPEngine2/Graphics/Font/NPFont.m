@@ -312,7 +312,7 @@
 
     NSAssert(cString != NULL, @"");
 
-    [ textcolor setValue:color ];
+    [ textcolor setFValue:color ];
     [ technique activate ];
 
     NPTextureBindingState * texState
