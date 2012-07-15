@@ -49,12 +49,6 @@
 - (Matrix4 *) inverseViewProjection;
 - (BOOL) inputLocked;
 
-/*
-- (void) setFov:(const float)newFov;
-- (void) setNearPlane:(const float)newNearPlane;
-- (void) setFarPlane:(const float)newFarPlane;
-- (void) setAspectRatio:(const float)newAspectRatio;
-*/
 - (void) setPosition:(const Vector3)newPosition;
 - (void) setOrientation:(const Quaternion)newOrientation;
 - (void) setYaw:(const double)newYaw;

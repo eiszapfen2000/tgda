@@ -336,28 +336,6 @@
     return inputLocked;
 }
 
-/*
-- (void) setFov:(const float)newFov
-{
-	fov = newFov;
-}
-
-- (void) setAspectRatio:(const float)newAspectRatio
-{
-	aspectRatio = newAspectRatio;
-}
-
-- (void) setNearPlane:(const float)newNearPlane
-{
-	nearPlane = newNearPlane;
-}
-
-- (void) setFarPlane:(const float)newFarPlane
-{
-	farPlane = newFarPlane;
-}
-*/
-
 - (void) setPosition:(const Vector3)newPosition
 {
 	position = newPosition;
