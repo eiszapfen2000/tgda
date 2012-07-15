@@ -13,10 +13,10 @@
     Quaternion orientation;
     Vector3 position;
     Vector3 forward;
-	float fov;
-	float nearPlane;
-	float farPlane;
-	float aspectRatio;
+	double fov;
+	double nearPlane;
+	double farPlane;
+	double aspectRatio;
     double yaw;
     double pitch;
 
@@ -34,10 +34,11 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-- (float) fov;
-- (float) aspectRatio;
-- (float) nearPlane;
-- (float) farPlane;
+
+- (double) fov;
+- (double) aspectRatio;
+- (double) nearPlane;
+- (double) farPlane;
 - (Vector3) forward;
 - (Vector3) position;
 - (Quaternion) orientation;
@@ -48,10 +49,12 @@
 - (Matrix4 *) inverseViewProjection;
 - (BOOL) inputLocked;
 
+/*
 - (void) setFov:(const float)newFov;
 - (void) setNearPlane:(const float)newNearPlane;
 - (void) setFarPlane:(const float)newFarPlane;
 - (void) setAspectRatio:(const float)newAspectRatio;
+*/
 - (void) setPosition:(const Vector3)newPosition;
 - (void) setOrientation:(const Quaternion)newOrientation;
 - (void) setYaw:(const double)newYaw;
