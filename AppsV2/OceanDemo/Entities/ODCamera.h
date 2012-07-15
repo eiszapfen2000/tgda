@@ -7,27 +7,18 @@
 
 @interface ODCamera : NPObject < ODPEntity >
 {
-    FMatrix4 view;
-    FMatrix4 projection;
-    FMatrix4 inverseViewProjection;
-    FQuaternion orientation;
-    FVector3 position;
-
-    Matrix4 viewD;
-    Matrix4 projectionD;
-    Matrix4 inverseViewProjectionD;
-    Quaternion orientationD;
-    Vector3 positionD;
-
+    Matrix4 view;
+    Matrix4 projection;
+    Matrix4 inverseViewProjection;
+    Quaternion orientation;
+    Vector3 position;
+    Vector3 forward;
 	float fov;
 	float nearPlane;
 	float farPlane;
 	float aspectRatio;
-
     float yaw;
     float pitch;
-    FVector3 forward;
-    Vector3 forwardD;
 
     BOOL inputLocked;
     NPInputAction * leftClickAction;
@@ -43,28 +34,26 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-- (void) reset;
-
 - (float) fov;
 - (float) aspectRatio;
 - (float) nearPlane;
 - (float) farPlane;
-- (FVector3) forward;
-- (FVector3) position;
-- (FQuaternion) orientation;
+- (Vector3) forward;
+- (Vector3) position;
+- (Quaternion) orientation;
 - (float) yaw;
 - (float) pitch;
-- (FMatrix4 *) view;
-- (FMatrix4 *) projection;
-- (FMatrix4 *) inverseViewProjection;
+- (Matrix4 *) view;
+- (Matrix4 *) projection;
+- (Matrix4 *) inverseViewProjection;
 - (BOOL) inputLocked;
 
 - (void) setFov:(const float)newFov;
 - (void) setNearPlane:(const float)newNearPlane;
 - (void) setFarPlane:(const float)newFarPlane;
 - (void) setAspectRatio:(const float)newAspectRatio;
-- (void) setPosition:(const FVector3)newPosition;
-- (void) setOrientation:(const FQuaternion)newOrientation;
+- (void) setPosition:(const Vector3)newPosition;
+- (void) setOrientation:(const Quaternion)newOrientation;
 - (void) setYaw:(const float)newYaw;
 - (void) setPitch:(const float)newPitch;
 

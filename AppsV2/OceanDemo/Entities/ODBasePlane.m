@@ -128,12 +128,13 @@ static FVector3 computeBasePlanePosition(const FMatrix4 * const inverseViewProje
     const FVector2 lowerLeft  = {-1.0f, -1.0f};
     const FVector2 lowerRight = { 1.0f, -1.0f};
 
-    const FMatrix4 * const invViewProjection = [ camera inverseViewProjection ];
+    FMatrix4 invViewProjection;
+    fm4_m_init_with_m4(&invViewProjection, [ camera inverseViewProjection ]);
     
-    cornerVertices[0] = computeBasePlanePosition(invViewProjection, basePlane, lowerLeft);
-    cornerVertices[1] = computeBasePlanePosition(invViewProjection, basePlane, lowerRight);
-    cornerVertices[2] = computeBasePlanePosition(invViewProjection, basePlane, upperRight);
-    cornerVertices[3] = computeBasePlanePosition(invViewProjection, basePlane, upperLeft);
+    cornerVertices[0] = computeBasePlanePosition(&invViewProjection, basePlane, lowerLeft);
+    cornerVertices[1] = computeBasePlanePosition(&invViewProjection, basePlane, lowerRight);
+    cornerVertices[2] = computeBasePlanePosition(&invViewProjection, basePlane, upperRight);
+    cornerVertices[3] = computeBasePlanePosition(&invViewProjection, basePlane, upperLeft);
 
     /*
     NSLog(@"ul %s", fv3_v_to_string(&ul));
