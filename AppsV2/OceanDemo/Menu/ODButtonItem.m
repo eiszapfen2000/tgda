@@ -104,7 +104,7 @@
     // draw quad if active
     if ( active == YES )
     {
-        [ color setValue:quadColor ];
+        [ color setFValue:quadColor ];
         [ technique activate ];
 
         [ NPIMRendering renderFRectangle:alignedGeometry
@@ -112,7 +112,7 @@
     }
 
     // draw line
-    [ color setValue:lineColor ];
+    [ color setFValue:lineColor ];
     [ technique activate ];
 
     [ NPIMRendering renderFRectangle:pixelCenterGeometry

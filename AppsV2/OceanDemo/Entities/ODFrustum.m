@@ -270,12 +270,12 @@ int compare_floats (const void * a, const void * b)
     [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] setWriteEnabled:NO ];
     [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] activate ];
 
-    [ color setValue:faceColor ];
+    [ color setFValue:faceColor ];
     [[ effect techniqueWithName:@"color" ] activate ];
     [ facesVertexArray renderWithPrimitiveType:NpPrimitiveQuads ];
 
     glLineWidth(5.0f);
-    [ color setValue:lineColor ];
+    [ color setFValue:lineColor ];
     [[ effect techniqueWithName:@"color" ] activate ];
     [ linesVertexArray renderWithPrimitiveType:NpPrimitiveLines ];
     glLineWidth(1.0f);

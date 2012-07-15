@@ -532,8 +532,8 @@
     [[[ NP Graphics ] textureBindingState ] activate ];
 
     // render tonemapped scene to screen
-    [ lightDirection setValue:[ skylight lightDirection ]];
-    [ cameraPosition setValue:[ camera position ]];
+    [ lightDirection setFValue:[ skylight lightDirection ]];
+    [ cameraPosition setFValue:[ camera position ]];
     [[ deferredEffect techniqueWithName:@"water_surface" ] activate ];
     //[[ deferredEffect techniqueWithName:@"texture" ] activate ];
     [ fullscreenQuad render ];

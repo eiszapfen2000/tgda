@@ -40,7 +40,7 @@
 
             if ( index == indexOfActiveItem )
             {
-                [ color setValue:quadColor ];
+                [ color setFValue:quadColor ];
                 [ technique activate ];
 
                 [ NPIMRendering renderFRectangle:itemGeometry
@@ -54,7 +54,7 @@
             pixelCenterGeometry.max.y -= 0.5f;
 
             // draw line
-            [ color setValue:lineColor ];
+            [ color setFValue:lineColor ];
             [ technique activate ];
 
             [ NPIMRendering renderFRectangle:pixelCenterGeometry

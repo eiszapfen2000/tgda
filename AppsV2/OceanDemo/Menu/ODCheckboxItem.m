@@ -87,7 +87,7 @@
     NPEffect * effect = [ menu effect ];
     NPEffectTechnique * technique = [ effect techniqueWithName:@"color" ];
     NPEffectVariableFloat4 * color = [ effect variableWithName:@"color" ];
-    [ color setValue:c ];
+    [ color setFValue:c ];
     [ technique activate ];
 
     glBegin(GL_LINE_LOOP);

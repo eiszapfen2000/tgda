@@ -244,14 +244,14 @@
     const FVector4 lineColor = {1.0f, 1.0f, 1.0f, [ menu opacity ]};
     const FVector4 quadColor = {1.0f, 1.0f, 1.0f, [ menu opacity ] * 0.25f};
 
-    [ color setValue:quadColor ];
+    [ color setFValue:quadColor ];
     [ technique activate ];
 
     [ NPIMRendering renderFRectangle:alignedGeometry
                        primitiveType:NpPrimitiveQuads ];
 
 
-    [ color setValue:lineColor ];
+    [ color setFValue:lineColor ];
     [ technique activate ];
 
     [ NPIMRendering renderFRectangle:alignedLineGeometry

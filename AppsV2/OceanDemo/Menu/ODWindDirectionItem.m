@@ -190,7 +190,7 @@
 
     [ tState setFModelMatrix:&translation ];
 
-    [ color setValue:quadColor ];
+    [ color setFValue:quadColor ];
     [ technique activate ];
 
     /*
@@ -200,7 +200,7 @@
 
     [ circleGeometry renderWithPrimitiveType:NpPrimitiveTriangleFan ];
 
-    [ color setValue:lineColor ];
+    [ color setFValue:lineColor ];
     [ technique activate ];
 
 
