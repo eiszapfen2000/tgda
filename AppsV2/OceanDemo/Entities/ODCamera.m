@@ -33,12 +33,12 @@
 
     if ( [ strafeLeftAction active ] == YES )
     {
-        [ self moveLeft:frameTime * 10.0f ];
+        [ self moveLeft:frameTime * 10.0 ];
     }
 
     if ( [ strafeRightAction active ] == YES )
     {
-        [ self moveRight:frameTime * 10.0f ];
+        [ self moveRight:frameTime * 10.0 ];
     }
 
     if ( [ leftClickAction active ] == YES )
@@ -101,8 +101,8 @@
     farPlane    = 150.0f;
     aspectRatio = 1.0f;
 
-    yaw   = 0.0f;
-    pitch = 0.0f;
+    yaw   = 0.0;
+    pitch = 0.0;
 
     inputLocked = NO;
 
@@ -191,12 +191,12 @@
     return orientation;
 }
 
-- (float) yaw
+- (double) yaw
 {
     return yaw;
 }
 
-- (float) pitch
+- (double) pitch
 {
     return pitch;
 }
@@ -251,12 +251,12 @@
     orientation = newOrientation;
 }
 
-- (void) setYaw:(const float)newYaw
+- (void) setYaw:(const double)newYaw
 {
     yaw = newYaw;
 }
 
-- (void) setPitch:(const float)newPitch
+- (void) setPitch:(const double)newPitch
 {
     pitch = newPitch;
 }
