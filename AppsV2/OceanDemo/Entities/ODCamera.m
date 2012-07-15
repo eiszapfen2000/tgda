@@ -380,16 +380,6 @@
     Matrix4 viewProjection;
     m4_mm_multiply_m(&projection, &view, &viewProjection);
     m4_m_inverse_m(&viewProjection, &inverseViewProjection);
-
-    /*
-    const char * s1 = fm4_m_to_string(&projection);
-    const char * s2 = m4_m_to_string(&projectionD);
-
-    NSLog(@"\n%s\n\n%s\n", s1, s2);
-
-    SAFE_FREE(s1);
-    SAFE_FREE(s2);
-    */
 }
 
 - (void) render

@@ -34,7 +34,6 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-
 - (double) fov;
 - (double) aspectRatio;
 - (double) nearPlane;
