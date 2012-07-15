@@ -496,7 +496,7 @@
     [[[ NPEngineGraphics instance ] textureBindingState ] setTexture:heights texelUnit:0 ];
     [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
-    [ color setValue:gridColor ];
+    [ color setFValue:gridColor ];
 
     switch ( renderMode )
     {

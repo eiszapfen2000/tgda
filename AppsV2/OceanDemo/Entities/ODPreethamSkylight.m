@@ -283,13 +283,13 @@
     const FVector3 D = { ABCDE_x[3], ABCDE_y[3], ABCDE_Y[3] };
     const FVector3 E = { ABCDE_x[4], ABCDE_y[4], ABCDE_Y[4] };
 
-    [ A_Yxy_P setValue:A ];
-    [ B_Yxy_P setValue:B ];
-    [ C_Yxy_P setValue:C ];
-    [ D_Yxy_P setValue:D ];
-    [ E_Yxy_P setValue:E ];
-    [ zenithColor_P setValue:zenithColor ];
-    [ lighDirection_P setValue:lightDirection ];
+    [ A_Yxy_P setFValue:A ];
+    [ B_Yxy_P setFValue:B ];
+    [ C_Yxy_P setFValue:C ];
+    [ D_Yxy_P setFValue:D ];
+    [ E_Yxy_P setFValue:E ];
+    [ zenithColor_P setFValue:zenithColor ];
+    [ lighDirection_P setFValue:lightDirection ];
 
     fm4_mv_translation_matrix(&modelMatrix, &position);
     [[[ NPEngineCore instance ] transformationState ] setFModelMatrix:&modelMatrix ];
