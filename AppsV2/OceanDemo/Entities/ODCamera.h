@@ -60,13 +60,4 @@
 - (void) lockInput;
 - (void) unlockInput;
 
-- (void) cameraRotateUsingYaw:(const double)yawDegrees andPitch:(const double)pitchDegrees;
-- (void) moveForward:(const double)frameTime;
-- (void) moveBackward:(const double)frameTime;
-- (void) moveLeft:(const double)frameTime;
-- (void) moveRight:(const double)frameTime;
-
-- (void) updateProjection;
-- (void) updateView;
-
 @end
