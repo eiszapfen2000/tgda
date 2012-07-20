@@ -151,7 +151,8 @@
 {
     self =  [ super initWithName:newName ];
 
-    basePlane = [[ ODBasePlane alloc ] init ];
+    basePlane = [[ ODBasePlane    alloc ] init ];
+    camera    = [[ ODCamera       alloc ] init ];
     entities  = [[ NSMutableArray alloc ] init ];
 
     // camera animation
@@ -199,12 +200,12 @@
 {
     [ entities removeAllObjects ];
     DESTROY(entities);
+    DESTROY(camera);
     DESTROY(basePlane);
 
     [ ocean stop ];
     SAFE_DESTROY(ocean);
     SAFE_DESTROY(skylight);
-    SAFE_DESTROY(camera);
     SAFE_DESTROY(file);
 
     DESTROY(depthTarget);
@@ -267,17 +268,14 @@
 
     NSString * sceneName          = [ sceneContents objectForKey:@"Name"     ];
     NSString * skylightEntityFile = [ sceneContents objectForKey:@"Skylight" ];
-    NSString * cameraEntityFile   = [ sceneContents objectForKey:@"Camera"   ];
     NSArray  * entityFiles        = [ sceneContents objectForKey:@"Entities" ];
     NSString * oceanEntityFile    = [ sceneContents objectForKey:@"Ocean"    ];
 
     [ self setName:sceneName ];
 
-    camera   = [ self loadEntityFromFile:cameraEntityFile   error:NULL ];
     skylight = [ self loadEntityFromFile:skylightEntityFile error:NULL ];
     ocean    = [ self loadEntityFromFile:oceanEntityFile    error:NULL ];
 
-    ASSERT_RETAIN(camera);
     ASSERT_RETAIN(skylight);
     ASSERT_RETAIN(ocean);
 
