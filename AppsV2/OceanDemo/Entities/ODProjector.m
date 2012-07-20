@@ -11,175 +11,33 @@
 #import "ODFrustum.h"
 #import "ODProjector.h"
 
-@implementation ODProjector
+@interface ODProjector (Private)
 
-- (id) init
-{
-	return [ self initWithName:@"Projector" ];
-}
+- (void) cameraRotateUsingYaw:(const double)yawDegrees andPitch:(const double)pitchDegrees;
+- (void) moveForward;
+- (void) moveBackward;
 
-- (id) initWithName:(NSString *)newName
-{
-	self = [ super initWithName:newName ];
+- (void) updateYaw:(double)degrees;
+- (void) updatePitch:(double)degrees;
+- (void) updateProjection;
+- (void) updateView;
 
-    fm4_m_set_identity(&view);
-    fm4_m_set_identity(&projection);
-    fm4_m_set_identity(&viewProjection);
-    fm4_m_set_identity(&inverseViewProjection);
+@end
 
-    fquat_set_identity(&orientation);
-    fv3_v_init_with_zeros(&position);
+@implementation ODProjector (Private)
 
-    position.y = 15.0f;
-
-    yaw   = 0.0f;
-    pitch = 0.0f;
-
-    fv3_v_init_with_zeros(&forward);
-    fv3_v_init_with_zeros(&up);
-    fv3_v_init_with_zeros(&right);
-    forward.z = -1.0f;
-
-    renderFrustum = YES;
-
-    frustum = [[ ODFrustum alloc ] initWithName:@"ProjectorFrustum" ];
-
-    pitchMinusAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"PitchMinus" inputEvent:NpKeyboardS ];
-    pitchPlusAction  = [[[ NP Input ] inputActions ] addInputActionWithName:@"PitchPlus"  inputEvent:NpKeyboardW ];
-    yawMinusAction   = [[[ NP Input ] inputActions ] addInputActionWithName:@"YawMinus"   inputEvent:NpKeyboardA ];
-    yawPlusAction    = [[[ NP Input ] inputActions ] addInputActionWithName:@"YawPlus"    inputEvent:NpKeyboardD ];
-
-    connectedToCameraLastFrame = connectedToCamera = NO;
-
-	return self;
-}
-
-- (void) dealloc
-{
-    SAFE_DESTROY(frustum);
-    SAFE_DESTROY(camera);
-
-	[ super dealloc ];
-}
-
-- (FVector3) position
-{
-	return position;
-}
-
-- (FQuaternion) orientation
-{
-    return orientation;
-}
-
-- (float) yaw
-{
-    return yaw;
-}
-
-- (float) pitch
-{
-    return pitch;
-}
-
-- (FMatrix4 *) view
-{
-    return &view;
-}
-
-- (FMatrix4 *) projection
-{
-    return &projection;
-}
-
-- (FMatrix4 *) inverseViewProjection
-{
-    return &inverseViewProjection;
-}
-
-- (ODCamera *) camera
-{
-    return camera;
-}
-
-- (ODFrustum *) frustum
-{
-    return frustum;
-}
-
-- (BOOL) connecting
-{
-    return ( connectedToCameraLastFrame == NO && connectedToCamera == YES ) ? YES : NO;
-}
-
-- (BOOL) disconnecting
-{
-    return ( connectedToCameraLastFrame == YES && connectedToCamera == NO ) ? YES : NO;
-}
-
-- (void) setPosition:(const FVector3)newPosition
-{
-	position = newPosition;
-}
-
-- (void) setCamera:(ODCamera *)newCamera
-{
-    ASSIGN(camera, newCamera);
-}
-
-- (void) setRenderFrustum:(BOOL)newRenderFrustum
-{
-    renderFrustum = newRenderFrustum;
-}
-
-- (void) updateYaw:(float)degrees
-{
-    if ( degrees != 0.0f )
-    {
-        yaw += degrees;
-
-        if ( yaw < 0.0f )
-        {
-            yaw += 360.0f;
-        }
-
-        if ( yaw > 360.0f )
-        {
-            yaw -= 360.0f;
-        }
-    }
-}
-
-- (void) updatePitch:(float)degrees
-{
-    if ( degrees != 0.0f )
-    {
-        pitch += degrees;
-
-        if ( pitch < 0.0f )
-        {
-            pitch += 360.0f;
-        }
-
-        if ( pitch > 360.0f )
-        {
-            pitch -= 360.0f;
-        }
-    }
-}
-
-- (void) cameraRotateUsingYaw:(const float)yawDegrees andPitch:(const float)pitchDegrees
+- (void) cameraRotateUsingYaw:(const double)yawDegrees andPitch:(const double)pitchDegrees
 {
     [ self updateYaw:yawDegrees ];
     [ self updatePitch:pitchDegrees ];
 
-    fquat_q_init_with_axis_and_degrees(&orientation, NP_WORLDF_Y_AXIS, yaw);
-    fquat_q_rotatex(&orientation, pitch);
+    quat_q_init_with_axis_and_degrees(&orientation, NP_WORLD_Y_AXIS, yaw);
+    quat_q_rotatex(&orientation, pitch);
 }
 
 - (void) moveForward
 {
-    fquat_q_forward_vector_v(&orientation, &forward);
+    quat_q_forward_vector_v(&orientation, &forward);
 
     position.x += forward.x;
     position.y += forward.y;
@@ -188,18 +46,47 @@
 
 - (void) moveBackward
 {
-    fquat_q_forward_vector_v(&orientation, &forward);
+    quat_q_forward_vector_v(&orientation, &forward);
 
     position.x -= forward.x;
     position.y -= forward.y;
     position.z -= forward.z;
 }
 
-- (void) activate
+- (void) updateYaw:(double)degrees
 {
-    NPTransformationState * trafo = [[ NP Core ] transformationState ];
-    [ trafo setFViewMatrix:&view ];
-    [ trafo setFProjectionMatrix:&projection ];
+    if ( degrees != 0.0 )
+    {
+        yaw += degrees;
+
+        if ( yaw < 0.0 )
+        {
+            yaw += 360.0;
+        }
+
+        if ( yaw > 360.0 )
+        {
+            yaw -= 360.0;
+        }
+    }
+}
+
+- (void) updatePitch:(double)degrees
+{
+    if ( degrees != 0.0 )
+    {
+        pitch += degrees;
+
+        if ( pitch < 0.0 )
+        {
+            pitch += 360.0;
+        }
+
+        if ( pitch > 360.0 )
+        {
+            pitch -= 360.0;
+        }
+    }
 }
 
 - (void) updateProjection
@@ -226,7 +113,7 @@
     nearPlane = [ camera nearPlane ];
     farPlane  = [ camera farPlane  ];
 
-    fm4_mssss_projection_matrix(&projection, aspectRatio, fov, nearPlane, farPlane);
+    m4_mssss_projection_matrix(&projection, aspectRatio, fov, nearPlane, farPlane);
 }
 
 - (void) updateView
@@ -280,46 +167,169 @@
     {
     */
         // camera looking upwards
-        if ( pitch >= 0.0f && pitch <= 180.0f )
+        if ( pitch >= 0.0 && pitch <= 180.0 )
         {
-            if ( pitch <= 90.0f )
+            if ( pitch <= 90.0 )
             {
-                pitch = 315.0f;
+                pitch = 315.0;
             }
             else
             {
-                pitch = 225.0f;
+                pitch = 225.0;
             }
         }
         else
         {
-            if ( pitch < 225.0f )
+            if ( pitch < 225.0 )
             {
-                pitch = 225.0f;
+                pitch = 225.0;
             }
 
-            if ( pitch > 315.0f )
+            if ( pitch > 315.0 )
             {
-                pitch = 315.0f;
+                pitch = 315.0;
             }
         }
 
-        fm4_m_set_identity(&view);
-        fquat_q_init_with_axis_and_degrees(&orientation, NP_WORLDF_Y_AXIS, yaw);
-        fquat_q_rotatex(&orientation, pitch);
-        FQuaternion q = fquat_q_conjugated(&orientation);
-        FVector3 invpos = fv3_v_inverted(&position);
-        FMatrix4 rotate = fquat_q_to_fmatrix4(&q);
-        FMatrix4 translate = fm4_v_translation_matrix(&invpos);
-        fm4_mm_multiply_m(&rotate, &translate, &view);
+        m4_m_set_identity(&view);
+        quat_q_init_with_axis_and_degrees(&orientation, NP_WORLD_Y_AXIS, yaw);
+        quat_q_rotatex(&orientation, pitch);
+        Quaternion q = quat_q_conjugated(&orientation);
+        Vector3 invpos = v3_v_inverted(&position);
+        Matrix4 rotate = quat_q_to_matrix4(&q);
+        Matrix4 translate = m4_v_translation_matrix(&invpos);
+        m4_mm_multiply_m(&rotate, &translate, &view);
     //}
+}
+
+@end
+
+@implementation ODProjector
+
+- (id) init
+{
+	return [ self initWithName:@"Projector" ];
+}
+
+- (id) initWithName:(NSString *)newName
+{
+	self = [ super initWithName:newName ];
+
+    m4_m_set_identity(&view);
+    m4_m_set_identity(&projection);
+    m4_m_set_identity(&viewProjection);
+    m4_m_set_identity(&inverseViewProjection);
+
+    quat_set_identity(&orientation);
+    v3_v_init_with_zeros(&position);
+
+    position.y = 15.0;
+
+    yaw   = 0.0;
+    pitch = 0.0;
+
+    v3_v_init_with_zeros(&forward);
+    v3_v_init_with_zeros(&up);
+    v3_v_init_with_zeros(&right);
+    forward.z = -1.0;
+
+    renderFrustum = YES;
+
+    frustum = [[ ODFrustum alloc ] initWithName:@"ProjectorFrustum" ];
+
+    pitchMinusAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"PitchMinus" inputEvent:NpKeyboardS ];
+    pitchPlusAction  = [[[ NP Input ] inputActions ] addInputActionWithName:@"PitchPlus"  inputEvent:NpKeyboardW ];
+    yawMinusAction   = [[[ NP Input ] inputActions ] addInputActionWithName:@"YawMinus"   inputEvent:NpKeyboardA ];
+    yawPlusAction    = [[[ NP Input ] inputActions ] addInputActionWithName:@"YawPlus"    inputEvent:NpKeyboardD ];
+
+    connectedToCameraLastFrame = connectedToCamera = NO;
+
+	return self;
+}
+
+- (void) dealloc
+{
+    SAFE_DESTROY(frustum);
+    SAFE_DESTROY(camera);
+
+	[ super dealloc ];
+}
+
+- (Vector3) position
+{
+	return position;
+}
+
+- (Quaternion) orientation
+{
+    return orientation;
+}
+
+- (double) yaw
+{
+    return yaw;
+}
+
+- (double) pitch
+{
+    return pitch;
+}
+
+- (Matrix4 *) view
+{
+    return &view;
+}
+
+- (Matrix4 *) projection
+{
+    return &projection;
+}
+
+- (Matrix4 *) inverseViewProjection
+{
+    return &inverseViewProjection;
+}
+
+- (ODCamera *) camera
+{
+    return camera;
+}
+
+- (ODFrustum *) frustum
+{
+    return frustum;
+}
+
+- (BOOL) connecting
+{
+    return ( connectedToCameraLastFrame == NO && connectedToCamera == YES ) ? YES : NO;
+}
+
+- (BOOL) disconnecting
+{
+    return ( connectedToCameraLastFrame == YES && connectedToCamera == NO ) ? YES : NO;
+}
+
+- (void) setPosition:(const Vector3)newPosition
+{
+	position = newPosition;
+}
+
+- (void) setCamera:(ODCamera *)newCamera
+{
+    ASSIGN(camera, newCamera);
+}
+
+- (void) setRenderFrustum:(BOOL)newRenderFrustum
+{
+    renderFrustum = newRenderFrustum;
 }
 
 - (void) update:(const double)frameTime
 {
     NSAssert(camera != nil, @"No camera attached");
 
-    const float pitchYaw = frameTime * 45.0f;
+    const double pitchYaw = frameTime * 45.0;
 
     if ( [ pitchMinusAction active ] == YES )
     {
@@ -328,31 +338,33 @@
 
     if ( [ pitchPlusAction active ] == YES )
     {
-        [ self cameraRotateUsingYaw:0.0f andPitch:pitchYaw ];
+        [ self cameraRotateUsingYaw:0.0 andPitch:pitchYaw ];
     }
 
     if ( [ yawMinusAction active ] == YES )
     {
-        [ self cameraRotateUsingYaw:-pitchYaw  andPitch:0.0f ];
+        [ self cameraRotateUsingYaw:-pitchYaw  andPitch:0.0 ];
     }
 
     if ( [ yawPlusAction active ] == YES )
     {
-        [ self cameraRotateUsingYaw:pitchYaw andPitch:0.0f ];
+        [ self cameraRotateUsingYaw:pitchYaw andPitch:0.0 ];
     }
 
     [ self updateProjection ];
     [ self updateView ];
 
+    /*
     [ frustum updateWithPosition:position
                      orientation:orientation
                              fov:fov
                        nearPlane:nearPlane
                         farPlane:farPlane
                      aspectRatio:aspectRatio ];
+    */
 
-    fm4_mm_multiply_m(&projection, &view, &viewProjection);
-    fm4_m_inverse_m(&viewProjection, &inverseViewProjection);
+    m4_mm_multiply_m(&projection, &view, &viewProjection);
+    m4_m_inverse_m(&viewProjection, &inverseViewProjection);
 
     connectedToCameraLastFrame = connectedToCamera;
 }

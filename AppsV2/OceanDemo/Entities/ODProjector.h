@@ -8,23 +8,23 @@
 
 @interface ODProjector : NPObject
 {
-	FMatrix4 view;
-    FMatrix4 projection;
-    FMatrix4 viewProjection;
-    FMatrix4 inverseViewProjection;
-    FQuaternion orientation;
-    FVector3 position;
+	Matrix4 view;
+    Matrix4 projection;
+    Matrix4 viewProjection;
+    Matrix4 inverseViewProjection;
+    Quaternion orientation;
+    Vector3 position;
 
-    float yaw;
-    float pitch;
-    FVector3 forward;
-    FVector3 right;
-    FVector3 up;
+    double yaw;
+    double pitch;
+    Vector3 forward;
+    Vector3 right;
+    Vector3 up;
 
-    float fov;
-    float nearPlane;
-    float farPlane;
-    float aspectRatio;
+    double fov;
+    double nearPlane;
+    double farPlane;
+    double aspectRatio;
 
     BOOL renderFrustum;
     ODFrustum * frustum;
@@ -43,31 +43,22 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-- (FVector3) position;
-- (FQuaternion) orientation;
-- (float) yaw;
-- (float) pitch;
-- (FMatrix4 *) view;
-- (FMatrix4 *) projection;
-- (FMatrix4 *) inverseViewProjection;
+- (Vector3) position;
+- (Quaternion) orientation;
+- (double) yaw;
+- (double) pitch;
+- (Matrix4 *) view;
+- (Matrix4 *) projection;
+- (Matrix4 *) inverseViewProjection;
 - (ODCamera *) camera;
 - (ODFrustum *) frustum;
 
 - (BOOL) connecting;
 - (BOOL) disconnecting;
 
-- (void) setPosition:(const FVector3)newPosition;
+- (void) setPosition:(const Vector3)newPosition;
 - (void) setCamera:(ODCamera *)newCamera;
 - (void) setRenderFrustum:(BOOL)newRenderFrustum;
-
-- (void) cameraRotateUsingYaw:(const float)yawDegrees andPitch:(const float)pitchDegrees;
-- (void) moveForward;
-- (void) moveBackward;
-
-- (void) activate;
-
-- (void) updateProjection;
-- (void) updateView;
 
 - (void) update:(const double)frameTime;
 - (void) render;
