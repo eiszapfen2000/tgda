@@ -198,9 +198,9 @@ static const NSUInteger defaultResolutionIndex = 0;
         = NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality;
     resultQueue = [[ NSPointerArray alloc ] initWithOptions:options ];
 
-    projector = [[ ODProjector alloc ] initWithName:@"Projector" ];
+    //projector = [[ ODProjector alloc ] initWithName:@"Projector" ];
     projectedGrid = [[ ODProjectedGrid alloc ] initWithName:@"Projected Grid" ];
-    [ projectedGrid setProjector:projector ];
+    //[ projectedGrid setProjector:projector ];
 
     heightfield = [[ NPTexture2D alloc ] initWithName:@"Height Texture" ];
     [ heightfield setTextureFilter:NpTexture2DFilterLinear ];
@@ -219,7 +219,7 @@ static const NSUInteger defaultResolutionIndex = 0;
     SAFE_DESTROY(stateset);
     DESTROY(effect);
     DESTROY(heightfield);
-    DESTROY(projector);
+    //DESTROY(projector);
     DESTROY(projectedGrid);
 
     NSUInteger count = [ resultQueue count ];

@@ -2,18 +2,16 @@
 #import "Core/NPObject/NPObject.h"
 #import "ODPEntity.h"
 
-@class NPEffect;
 @class NPInputAction;
 @class ODCamera;
 @class ODFrustum;
 
-@interface ODProjector : NPObject < ODPEntity >
+@interface ODProjector : NPObject
 {
 	FMatrix4 view;
     FMatrix4 projection;
     FMatrix4 viewProjection;
     FMatrix4 inverseViewProjection;
-
     FQuaternion orientation;
     FVector3 position;
 
@@ -45,8 +43,6 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-- (void) reset;
-
 - (FVector3) position;
 - (FQuaternion) orientation;
 - (float) yaw;
@@ -72,5 +68,8 @@
 
 - (void) updateProjection;
 - (void) updateView;
+
+- (void) update:(const double)frameTime;
+- (void) render;
 
 @end
