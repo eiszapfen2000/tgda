@@ -281,9 +281,11 @@
     ASSERT_RETAIN(skylight);
     ASSERT_RETAIN(ocean);
 
-    [ basePlane setCamera:camera ];
+    [ projector setCamera:camera ];
     [ skylight  setCamera:camera ];
     [ ocean     setCamera:camera ];
+
+    [ basePlane setProjector:projector ];
     //[ ocean start ];
 
     //[ projector setCamera:camera ];
@@ -369,6 +371,7 @@
     */
 
     [ camera    update:frameTime ];
+    [ projector update:frameTime ];
     [ skylight  update:frameTime ];
     //[ ocean     update:frameTime ];
     [ basePlane update:frameTime ];
