@@ -6,23 +6,23 @@
 #import "Graphics/Buffer/NPCPUBuffer.h"
 #import "Graphics/Geometry/NPCPUVertexArray.h"
 #import "Graphics/NPEngineGraphics.h"
-#import "ODCamera.h"
+#import "ODProjector.h"
 #import "ODBasePlane.h"
 
-static FVector3 computeBasePlanePosition(const FMatrix4 * const inverseViewProjection,
-                                         const FPlane basePlane,
-                                         const FVector2 postProjectionVertex)
+static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjection,
+                                         Plane basePlane,
+                                         Vector2 postProjectionVertex)
 {
-    const FVector4 nearPlaneVertex
-        = {postProjectionVertex.x, postProjectionVertex.y, -1.0f, 1.0f};
+    const Vector4 nearPlaneVertex
+        = {postProjectionVertex.x, postProjectionVertex.y, -1.0, 1.0};
 
-    const FVector4 farPlaneVertex
-        = {postProjectionVertex.x, postProjectionVertex.y, 1.0f, 1.0f};
+    const Vector4 farPlaneVertex
+        = {postProjectionVertex.x, postProjectionVertex.y, 1.0, 1.0};
 
-    const FVector4 resultN = fm4_mv_multiply(inverseViewProjection, &nearPlaneVertex);
-    const FVector4 resultF = fm4_mv_multiply(inverseViewProjection, &farPlaneVertex);
+    const Vector4 resultN = m4_mv_multiply(inverseViewProjection, &nearPlaneVertex);
+    const Vector4 resultF = m4_mv_multiply(inverseViewProjection, &farPlaneVertex);
 
-    FRay ray;
+    Ray ray;
     ray.point.x = resultN.x / resultN.w;
     ray.point.y = resultN.y / resultN.w;
     ray.point.z = resultN.z / resultN.w;
@@ -31,10 +31,15 @@ static FVector3 computeBasePlanePosition(const FMatrix4 * const inverseViewProje
     ray.direction.y = (resultF.y / resultF.w) - ray.point.y;
     ray.direction.z = (resultF.z / resultF.w) - ray.point.z;
 
-    FVector3 intersection;
-    int32_t r = fplane_pr_intersect_with_ray_v(&basePlane, &ray, &intersection);
+    Vector3 intersection;
+    int32_t r = plane_pr_intersect_with_ray_v(&basePlane, &ray, &intersection);
 
-    return intersection;
+    FVector3 result;
+    result.x = intersection.x;
+    result.y = intersection.y;
+    result.z = intersection.z;
+
+    return result;
 }
 
 @implementation ODBasePlane
@@ -49,7 +54,7 @@ static FVector3 computeBasePlanePosition(const FMatrix4 * const inverseViewProje
 	self = [ super initWithName:newName ];
 
     // y = 0 plane
-    fplane_pssss_init_with_components(&basePlane, 0.0f, 1.0f, 0.0f, 0.0f);
+    plane_pssss_init_with_components(&basePlane, 0.0, 1.0, 0.0, 0.0);
 
     cornerVertices = ALLOC_ARRAY(FVertex3, 4);
     cornerIndices  = ALLOC_ARRAY(uint16_t, 6);
@@ -104,7 +109,7 @@ static FVector3 computeBasePlanePosition(const FMatrix4 * const inverseViewProje
 
 - (void) dealloc
 {
-    SAFE_DESTROY(camera);
+    SAFE_DESTROY(projector);
     DESTROY(cornerVertexArray);
     DESTROY(cornerIndexStream);
     DESTROY(cornerVertexStream);
@@ -114,33 +119,32 @@ static FVector3 computeBasePlanePosition(const FMatrix4 * const inverseViewProje
 	[ super dealloc ];
 }
 
-- (void) setCamera:(ODCamera *)newCamera
+- (void) setProjector:(ODProjector *)newProjector;
 {
-    ASSIGN(camera, newCamera);
+    ASSIGN(projector, newProjector);
 }
 
 - (void) update:(const double)frameTime
 {
-    NSAssert(camera != nil, @"No camera attached to ODBasePlane");
+    NSAssert(projector != nil, @"No projector attached to ODBasePlane");
 
-    const FVector2 upperLeft  = {-1.0f,  1.0f};
-    const FVector2 upperRight = { 1.0f,  1.0f};
-    const FVector2 lowerLeft  = {-1.0f, -1.0f};
-    const FVector2 lowerRight = { 1.0f, -1.0f};
+    const Vector2 upperLeft  = {-1.0,  1.0};
+    const Vector2 upperRight = { 1.0,  1.0};
+    const Vector2 lowerLeft  = {-1.0, -1.0};
+    const Vector2 lowerRight = { 1.0, -1.0};
 
-    FMatrix4 invViewProjection;
-    fm4_m_init_with_m4(&invViewProjection, [ camera inverseViewProjection ]);
+    const Matrix4 * const invViewProjection = [ projector inverseViewProjection ];
     
-    cornerVertices[0] = computeBasePlanePosition(&invViewProjection, basePlane, lowerLeft);
-    cornerVertices[1] = computeBasePlanePosition(&invViewProjection, basePlane, lowerRight);
-    cornerVertices[2] = computeBasePlanePosition(&invViewProjection, basePlane, upperRight);
-    cornerVertices[3] = computeBasePlanePosition(&invViewProjection, basePlane, upperLeft);
+    cornerVertices[0] = computeBasePlanePosition(invViewProjection, basePlane, lowerLeft);
+    cornerVertices[1] = computeBasePlanePosition(invViewProjection, basePlane, lowerRight);
+    cornerVertices[2] = computeBasePlanePosition(invViewProjection, basePlane, upperRight);
+    cornerVertices[3] = computeBasePlanePosition(invViewProjection, basePlane, upperLeft);
 
     /*
-    NSLog(@"ul %s", fv3_v_to_string(&ul));
-    NSLog(@"ur %s", fv3_v_to_string(&ur));
-    NSLog(@"ll %s", fv3_v_to_string(&ll));
-    NSLog(@"lr %s", fv3_v_to_string(&lr));
+    NSLog(@"ul %s", fv3_v_to_string(&cornerVertices[0]));
+    NSLog(@"ur %s", fv3_v_to_string(&cornerVertices[1]));
+    NSLog(@"ll %s", fv3_v_to_string(&cornerVertices[2]));
+    NSLog(@"lr %s", fv3_v_to_string(&cornerVertices[3]));
     */
 }
 

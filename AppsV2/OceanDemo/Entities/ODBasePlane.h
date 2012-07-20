@@ -4,14 +4,14 @@
 
 @class NPCPUBuffer;
 @class NPCPUVertexArray;
-@class ODCamera;
+@class ODProjector;
 
 @interface ODBasePlane : NPObject
 {
-    // the camera we get the inverse viewprojection matrix from
-    ODCamera * camera;
+    // the projector we get the inverse viewprojection matrix from
+    ODProjector * projector;
     // the plane we want project onto, y = 0
-    FPlane basePlane;
+    Plane basePlane;
     // near plane corner vertices projected onto basePlane
     FVertex3 * cornerVertices;
     uint16_t * cornerIndices;
@@ -25,7 +25,7 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-- (void) setCamera:(ODCamera *)newCamera;
+- (void) setProjector:(ODProjector *)newProjector;
 
 - (void) update:(const double)frameTime;
 - (void) render;

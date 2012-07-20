@@ -110,6 +110,8 @@
         fov = [ camera fov ];
     //}
 
+    fov = 90.0 - 0.00001;
+
     nearPlane = [ camera nearPlane ];
     farPlane  = [ camera farPlane  ];
 
@@ -118,6 +120,49 @@
 
 - (void) updateView
 {
+    float localPitch = pitch;
+    float localYaw = yaw;
+
+    if ( connectedToCamera == YES )
+    {
+        position   = [ camera position ];
+        localPitch = [ camera pitch ];
+        localYaw   = [ camera yaw ];
+    }
+
+    if ( localPitch >= 0.0 && localPitch <= 180.0 )
+    {
+        if ( localPitch <= 90.0 )
+        {
+            localPitch = 315.0;
+        }
+        else
+        {
+            localPitch = 225.0;
+        }
+    }
+    else
+    {
+        if ( localPitch < 225.0 )
+        {
+            localPitch = 225.0;
+        }
+
+        if ( localPitch > 315.0 )
+        {
+            localPitch = 315.0;
+        }
+    }
+
+    m4_m_set_identity(&view);
+    quat_q_init_with_axis_and_degrees(&orientation, NP_WORLD_Y_AXIS, localYaw);
+    quat_q_rotatex(&orientation, localPitch);
+    Quaternion q = quat_q_conjugated(&orientation);
+    Vector3 invpos = v3_v_inverted(&position);
+    Matrix4 rotate = quat_q_to_matrix4(&q);
+    Matrix4 translate = m4_v_translation_matrix(&invpos);
+    m4_mm_multiply_m(&rotate, &translate, &view);
+
     /*
     if ( connectedToCamera == YES )
     {
@@ -167,38 +212,9 @@
     {
     */
         // camera looking upwards
-        if ( pitch >= 0.0 && pitch <= 180.0 )
-        {
-            if ( pitch <= 90.0 )
-            {
-                pitch = 315.0;
-            }
-            else
-            {
-                pitch = 225.0;
-            }
-        }
-        else
-        {
-            if ( pitch < 225.0 )
-            {
-                pitch = 225.0;
-            }
 
-            if ( pitch > 315.0 )
-            {
-                pitch = 315.0;
-            }
-        }
 
-        m4_m_set_identity(&view);
-        quat_q_init_with_axis_and_degrees(&orientation, NP_WORLD_Y_AXIS, yaw);
-        quat_q_rotatex(&orientation, pitch);
-        Quaternion q = quat_q_conjugated(&orientation);
-        Vector3 invpos = v3_v_inverted(&position);
-        Matrix4 rotate = quat_q_to_matrix4(&q);
-        Matrix4 translate = m4_v_translation_matrix(&invpos);
-        m4_mm_multiply_m(&rotate, &translate, &view);
+
     //}
 }
 
@@ -223,7 +239,7 @@
     quat_set_identity(&orientation);
     v3_v_init_with_zeros(&position);
 
-    position.y = 15.0;
+    position.y = 150.0;
 
     yaw   = 0.0;
     pitch = 0.0;
@@ -233,7 +249,7 @@
     v3_v_init_with_zeros(&right);
     forward.z = -1.0;
 
-    renderFrustum = YES;
+    renderFrustum = NO;
 
     frustum = [[ ODFrustum alloc ] initWithName:@"ProjectorFrustum" ];
 
@@ -242,7 +258,7 @@
     yawMinusAction   = [[[ NP Input ] inputActions ] addInputActionWithName:@"YawMinus"   inputEvent:NpKeyboardA ];
     yawPlusAction    = [[[ NP Input ] inputActions ] addInputActionWithName:@"YawPlus"    inputEvent:NpKeyboardD ];
 
-    connectedToCameraLastFrame = connectedToCamera = NO;
+    connectedToCameraLastFrame = connectedToCamera = YES;
 
 	return self;
 }
