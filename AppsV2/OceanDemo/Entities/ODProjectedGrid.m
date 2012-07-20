@@ -33,7 +33,8 @@
 
 - (void) computeBasePlaneGeometryUsingRaycasting
 {
-    const FMatrix4 * const inverseViewProjection = [ projector inverseViewProjection ];
+    FMatrix4 inverseViewProjection;
+    fm4_m_init_with_m4(&inverseViewProjection, [ projector inverseViewProjection ]);
 
     for ( int32_t i = 0; i < resolution.y; i++ )
     {
@@ -48,8 +49,8 @@
             farPlaneVertex.z = 1.0f;
 
             // transform to world space
-            const FVector4 resultN = fm4_mv_multiply(inverseViewProjection, &nearPlaneVertex);
-            const FVector4 resultF = fm4_mv_multiply(inverseViewProjection, &farPlaneVertex);
+            const FVector4 resultN = fm4_mv_multiply(&inverseViewProjection, &nearPlaneVertex);
+            const FVector4 resultF = fm4_mv_multiply(&inverseViewProjection, &farPlaneVertex);
 
             // construct ray
             FRay ray;
@@ -73,8 +74,8 @@
 
 - (FVector4) computeBasePlanePosition:(const FVector2)postProjectionVertex
 {
-    const FMatrix4 * const inverseViewProjection
-        = [ projector inverseViewProjection ];
+    FMatrix4 inverseViewProjection;
+    fm4_m_init_with_m4(&inverseViewProjection, [ projector inverseViewProjection ]);
 
     const FVector4 nearPlaneVertex
         = {postProjectionVertex.x, postProjectionVertex.y, -1.0f, 1.0f};
@@ -82,8 +83,8 @@
     const FVector4 farPlaneVertex
         = {postProjectionVertex.x, postProjectionVertex.y, 1.0f, 1.0f};
 
-    const FVector4 resultN = fm4_mv_multiply(inverseViewProjection, &nearPlaneVertex);
-    const FVector4 resultF = fm4_mv_multiply(inverseViewProjection, &farPlaneVertex);
+    const FVector4 resultN = fm4_mv_multiply(&inverseViewProjection, &nearPlaneVertex);
+    const FVector4 resultF = fm4_mv_multiply(&inverseViewProjection, &farPlaneVertex);
 
     FRay ray;
     ray.point.x = resultN.x / resultN.w;
