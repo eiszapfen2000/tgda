@@ -153,6 +153,7 @@
 
     basePlane = [[ ODBasePlane    alloc ] init ];
     camera    = [[ ODCamera       alloc ] init ];
+    projector = [[ ODProjector    alloc ] init ];
     entities  = [[ NSMutableArray alloc ] init ];
 
     // camera animation
@@ -201,6 +202,7 @@
     [ entities removeAllObjects ];
     DESTROY(entities);
     DESTROY(camera);
+    DESTROY(projector);
     DESTROY(basePlane);
 
     [ ocean stop ];
@@ -368,7 +370,7 @@
 
     [ camera    update:frameTime ];
     [ skylight  update:frameTime ];
-    [ ocean     update:frameTime ];
+    //[ ocean     update:frameTime ];
     [ basePlane update:frameTime ];
 
     const NSUInteger numberOfEntities = [ entities count ];

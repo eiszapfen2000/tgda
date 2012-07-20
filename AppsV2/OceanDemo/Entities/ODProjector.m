@@ -62,45 +62,6 @@
 	[ super dealloc ];
 }
 
-- (BOOL) loadFromDictionary:(NSDictionary *)config
-                      error:(NSError **)error
-{
-    NSAssert(config != nil, @"");
-
-    NSString * projectorName   = [ config objectForKey:@"Name" ];
-    NSArray  * positionStrings = [ config objectForKey:@"Position" ];
-
-    if ( projectorName == nil || positionStrings == nil )
-    {
-        //NPLOG_ERROR(@"%@: Dictionary incomplete", name);
-        if ( error != NULL )
-        {
-            *error = nil;
-        }
-
-        return NO;
-    }
-
-    [ self setName:projectorName ];
-
-    position.x = [[ positionStrings objectAtIndex:0 ] floatValue ];
-    position.y = [[ positionStrings objectAtIndex:1 ] floatValue ];
-    position.z = [[ positionStrings objectAtIndex:2 ] floatValue ];
-
-    return YES;
-}
-
-- (void) reset
-{
-	fm4_m_set_identity(&view);
-	fm4_m_set_identity(&projection);
-	fm4_m_set_identity(&viewProjection);
-	fm4_m_set_identity(&inverseViewProjection);
-
-	fquat_set_identity(&orientation);
-	fv3_v_init_with_zeros(&position);
-}
-
 - (FVector3) position
 {
 	return position;
