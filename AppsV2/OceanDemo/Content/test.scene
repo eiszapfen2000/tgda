@@ -1,6 +1,5 @@
 {
     Name = "Scene";
-    Camera = "camera.entity";
     Skylight = "preetham.entity";
     Ocean = "ocean.entity";
     Entities = ("terrain.entity");

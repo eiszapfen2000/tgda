@@ -1,11 +1,9 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
-#import "ODPEntity.h"
 
 @class NPInputAction;
-@class ODProjector;
 
-@interface ODCamera : NPObject < ODPEntity >
+@interface ODCamera : NPObject
 {
     Matrix4 view;
     Matrix4 projection;
@@ -55,5 +53,8 @@
 
 - (void) lockInput;
 - (void) unlockInput;
+
+- (void) update:(const double)frameTime;
+- (void) render;
 
 @end
