@@ -16,13 +16,15 @@
     // driver stuff
     BOOL supportsSGIGenerateMipMap;
     BOOL supportsAnisotropicTextureFilter;
-    int32_t maximumAnisotropy;
     BOOL supportssRGBTextures;
     BOOL supportsEXTFBO;
     BOOL supportsARBFBO;
+    BOOL debugContext;
+    int32_t maximumAnisotropy;
     int32_t numberOfDrawBuffers;
     int32_t numberOfColorAttachments;
     int32_t maximalRenderbufferSize;
+    int32_t maximumDebugMessageLength;
 
     NPEngineGraphicsStringEnumConversion * stringEnumConversion;
     NPEngineGraphicsStringToClassConversion * stringToClassConversion;
@@ -67,6 +69,7 @@
 - (int32_t) numberOfColorAttachments;
 - (int32_t) maximalRenderbufferSize;
 
+- (void) checkForDebugMessages;
 - (BOOL) checkForGLError:(NSError **)error;
 - (void) checkForGLErrors;
 

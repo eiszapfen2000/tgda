@@ -23,6 +23,143 @@
 #import "NPEngineGraphicsStringToClassConversion.h"
 #import "NPEngineGraphics.h"
 
+static NSString * debug_source_to_string(GLenum debugSource)
+{
+    NSString * result = nil;
+    switch (debugSource)
+    {
+        case GL_DEBUG_SOURCE_API_ARB:
+        {
+            result = @"OpenGL";
+            break;
+        }
+ 
+        case GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB:
+        {
+            result = @"Window System";
+            break;
+        }
+
+        case GL_DEBUG_SOURCE_SHADER_COMPILER_ARB:
+        {
+            result = @"Shader Compiler";
+            break;
+        }
+
+        case GL_DEBUG_SOURCE_THIRD_PARTY_ARB:
+        {
+            result = @"Third Party";
+            break;
+        }
+
+        case GL_DEBUG_SOURCE_APPLICATION_ARB:
+        {
+            result = @"Application";
+            break;
+        }
+
+        case GL_DEBUG_SOURCE_OTHER_ARB:
+        {
+            result = @"Other";
+            break;
+        }
+
+        default:
+        {
+            result = @"";
+            break;
+        }
+    }
+
+    return result;
+}
+
+static NSString * debug_type_to_string(GLenum debugType)
+{
+    NSString * result = nil;
+
+    switch ( debugType )
+    {
+        case GL_DEBUG_TYPE_ERROR_ARB:
+        {
+            result = @"Error";
+            break;
+        }
+
+        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB:
+        {
+            result = @"Deprecated Behavior";
+            break;
+        }
+
+        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB:
+        {
+            result = @"Undefined Behavior";
+            break;
+        }
+
+        case GL_DEBUG_TYPE_PORTABILITY_ARB:
+        {
+            result = @"Portability";
+            break;
+        }
+
+        case GL_DEBUG_TYPE_PERFORMANCE_ARB:
+        {
+            result = @"Performance";
+            break;
+        }
+
+        case GL_DEBUG_TYPE_OTHER_ARB:
+        {
+            result = @"Other";
+            break;
+        }
+
+        default:
+        {
+            result = @"";
+            break;
+        }
+    }
+
+    return result;
+}
+
+static NSString * debug_severity_to_string(GLenum debugSeverity)
+{
+    NSString * result = nil;
+
+    switch ( debugSeverity )
+    {
+        case GL_DEBUG_SEVERITY_HIGH_ARB:
+        {
+            result = @"High";
+            break;
+        }
+
+        case GL_DEBUG_SEVERITY_MEDIUM_ARB:
+        {
+            result = @"Medium";
+            break;
+        }
+
+        case GL_DEBUG_SEVERITY_LOW_ARB:
+        {
+            result = @"Low";
+            break;
+        }
+
+        default:
+        {
+            result = @"";
+            break;
+        }
+    }
+
+    return result;
+}
+
 static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
 @implementation NPEngineGraphics
@@ -63,12 +200,16 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
     supportsSGIGenerateMipMap = NO;
     supportsAnisotropicTextureFilter = NO;
-    maximumAnisotropy = 1;
     supportssRGBTextures = NO;
     supportsEXTFBO = NO;
     supportsARBFBO = NO;
+    debugContext = NO;
+
+    maximumAnisotropy = 1;
     numberOfDrawBuffers = 1;
     numberOfColorAttachments = 0;
+    maximalRenderbufferSize = 0;
+    maximumDebugMessageLength = 0;
 
     ilInit();
     iluInit();
@@ -251,6 +392,14 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     NPLOG(@"Color Attachments: %d", numberOfColorAttachments);
     NPLOG(@"Renderbuffer resolution up to: %d", maximalRenderbufferSize);
 
+    if (GLEW_ARB_debug_output)
+    {
+        debugContext = YES;
+        glGetIntegerv(GL_MAX_DEBUG_MESSAGE_LENGTH_ARB, &maximumDebugMessageLength);
+        NPLOG(@"Debug Context Enabled");
+    }
+
+
     [ textureBindingState startup ];
 
     NPLOG(@"%@ started", [ self name ]);
@@ -308,6 +457,44 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 - (int32_t) maximalRenderbufferSize
 {
     return maximalRenderbufferSize;
+}
+
+- (void) checkForDebugMessages
+{
+    if ( debugContext == YES )
+    {
+        GLint n = 0;
+        glGetIntegerv(GL_DEBUG_LOGGED_MESSAGES_ARB, &n);
+
+        GLenum source;
+        GLenum type;
+        GLenum messageID;
+        GLenum severity;
+        GLsizei length;        
+
+        while ( n != 0 )
+        {
+            GLint s = 0;
+            glGetIntegerv(GL_DEBUG_NEXT_LOGGED_MESSAGE_LENGTH_ARB, &s);
+
+            GLchar logBuffer[maximumDebugMessageLength];
+            GLuint i
+                = glGetDebugMessageLogARB(1, maximumDebugMessageLength, &source,
+                                &type, &messageID, &severity, &length, logBuffer);
+
+            if ( i != 0 )
+            {
+                NSString * sourceString = debug_source_to_string(source);
+                NSString * typeString = debug_type_to_string(type);
+                NSString * severityString = debug_severity_to_string(severity);
+
+                NPLOG(@"Source:%@ Type:%@ ID:%d Severity:%@ - %s", sourceString,
+                      typeString, messageID, severityString, logBuffer);
+            }
+
+            glGetIntegerv(GL_DEBUG_LOGGED_MESSAGES_ARB, &n);
+        }
+    }
 }
 
 - (BOOL) checkForGLError:(NSError **)error
