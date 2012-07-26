@@ -71,15 +71,11 @@ int main (int argc, char **argv)
 {
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
-    ODPerlinNoise * noise = [[ ODPerlinNoise alloc ] init ];
-    [ noise generate ];
-    DESTROY(noise);
-
     // Initialise GLFW
     if( !glfwInit() )
     {
         NSLog(@"Failed to initialize GLFW");
-        exit( EXIT_FAILURE );
+        exit(EXIT_FAILURE);
     }
 
     // do not allow window resizing
@@ -88,27 +84,23 @@ int main (int argc, char **argv)
     glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
     // glew needs compatibility profile
     glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
     
     // Open a window and create its OpenGL context
     if( !glfwOpenWindow( 800, 600, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
     {
         NSLog(@"Failed to open GLFW window");
         glfwTerminate();
-        exit( EXIT_FAILURE );
+        exit(EXIT_FAILURE);
     }
 
+    /*
     int d = glfwGetWindowParam(GLFW_DEPTH_BITS);
     int major = glfwGetWindowParam(GLFW_OPENGL_VERSION_MAJOR);
     int minor = glfwGetWindowParam(GLFW_OPENGL_VERSION_MINOR);
     int profile = glfwGetWindowParam(GLFW_OPENGL_PROFILE);
-
     NSLog(@"%d %d %d %d", major, minor, profile, d);
-
-    int32_t tf;
-    glGetIntegerv(GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS, &tf);
-    NSLog(@"MAX TF S %d", tf);
-    glGetIntegerv(GL_MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS, &tf);
-    NSLog(@"MAX TF I %d", tf);
+    */
 
     glClearDepth(1);
     glClearStencil(0);
@@ -147,10 +139,10 @@ int main (int argc, char **argv)
     if ( [[ NP Graphics ] startup ] == NO )
     {
         NSLog(@"NPEngineGraphics failed to start up. Consult $HOME/np.log for details.");
-        exit( EXIT_FAILURE );
+        exit(EXIT_FAILURE);
     }
 
-    NSLog(@"%d %d", widgetSize.x, widgetSize.y);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
 
     // resource loading creates a lot of temporary objects, so we
     // create an autorelease pool right for that task and
@@ -245,6 +237,9 @@ int main (int argc, char **argv)
 
         [[[ NP Graphics ] orthographic ] deactivate ];
         */
+
+        // check for debug messages
+        [[ NP Graphics ] checkForDebugMessages ];
 
         // check for GL errors
         [[ NP Graphics ] checkForGLErrors ];
