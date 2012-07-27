@@ -161,19 +161,17 @@ int main (int argc, char **argv)
 
     [[ NP Graphics ] checkForGLErrors ];
 
+    NSError * menuError = nil;
     ODMenu * menu = [[ ODMenu alloc ] init ];
-    BOOL menuResult
-        = [ menu loadFromFile:@"test.menu"
-                    arguments:nil
-                        error:NULL ];
 
-    if ( menuResult == NO )
+    if ( [ menu loadFromFile:@"test.menu"
+                   arguments:nil
+                       error:&menuError ] == NO )
     {
-        NSLog(@"MENU FAIL");
+        NPLOG_ERROR(menuError);
     }
 
     // delete all autoreleased objects created during resource loading
-
     DESTROY(resourcePool);
 
     // run loop
