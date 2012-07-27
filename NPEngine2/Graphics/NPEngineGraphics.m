@@ -8,6 +8,7 @@
 #import "IL/ilu.h"
 #import "Log/NPLog.h"
 #import "Core/NPObject/NPObject.h"
+#import "Core/String/NPStringList.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Core/Container/NPAssetArray.h"
 #import "Image/NPImage.h"
@@ -158,6 +159,21 @@ static NSString * debug_severity_to_string(GLenum debugSeverity)
     }
 
     return result;
+}
+
+static void GLAPIENTRY
+debug_callback(GLenum source, GLenum type, GLuint mID, GLenum severity,
+               GLsizei length, const GLchar* message, GLvoid* userParam)
+{
+    NSString * sourceString = debug_source_to_string(source);
+    NSString * typeString = debug_type_to_string(type);
+    NSString * severityString = debug_severity_to_string(severity);
+
+    NSString * messageString
+        = [ NSString stringWithFormat:@"Source:%@ Type:%@ ID:%d Severity:%@ - %s",
+                sourceString, typeString, mID, severityString, message ];
+
+    [[ NPLog instance ] logMessage:messageString ];
 }
 
 static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
@@ -346,6 +362,16 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         return NO;
     }
 
+    if (GLEW_ARB_debug_output)
+    {
+        debugContext = YES;
+        glGetIntegerv(GL_MAX_DEBUG_MESSAGE_LENGTH_ARB, &maximumDebugMessageLength);
+
+        glDebugMessageCallbackARB(&debug_callback, NULL);
+
+        NPLOG(@"Debug Context Enabled");
+    }
+
     glGetIntegerv(GL_MAX_DRAW_BUFFERS, &numberOfDrawBuffers);
     NPLOG(@"Draw Buffers: %d", numberOfDrawBuffers);
 
@@ -392,17 +418,9 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     NPLOG(@"Color Attachments: %d", numberOfColorAttachments);
     NPLOG(@"Renderbuffer resolution up to: %d", maximalRenderbufferSize);
 
-    if (GLEW_ARB_debug_output)
-    {
-        debugContext = YES;
-        glGetIntegerv(GL_MAX_DEBUG_MESSAGE_LENGTH_ARB, &maximumDebugMessageLength);
-        NPLOG(@"Debug Context Enabled");
-    }
-
-
     [ textureBindingState startup ];
 
-    NPLOG(@"%@ started", [ self name ]);
+    NPLOG(@"%@ started\n", [ self name ]);
 
     [ stateConfiguration activate ];
 
