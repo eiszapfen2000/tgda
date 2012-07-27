@@ -39,6 +39,7 @@ static NPLog * NP_ENGINE_LOG = nil;
 {
     self = [ super init ];
 
+    sync = [[ NSRecursiveLock alloc ] init ];
     loggers = [[ NSMutableArray alloc ] init ];
 
     return self;
@@ -48,45 +49,62 @@ static NPLog * NP_ENGINE_LOG = nil;
 {
     [ loggers removeAllObjects ];
     DESTROY(loggers);
+    DESTROY(sync);
 
     [ super dealloc ];
 }
 
 - (void) addLogger:(id <NPPLogger>)logger
 {
+    [ sync lock ];
     [ loggers addObject:logger ];
+    [ sync unlock ];
 }
 
 - (void) removeLogger:(id <NPPLogger>)logger
 {
+    [ sync lock ];
     [ loggers removeObjectIdenticalTo:logger ];
+    [ sync unlock ];
 }
 
 - (void) logMessage:(NSString *)message
 {
+    [ sync lock ];
+
     NSUInteger numberOfLoggers = [ loggers count ];
     for ( NSUInteger i = 0; i < numberOfLoggers; i++ )
     {
         [[ loggers objectAtIndex:i ] logMessage:message ];
     }
+
+    [ sync unlock ];
 }
 
 - (void) logWarning:(NSString *)warning
 {
+    [ sync lock ];
+
     NSUInteger numberOfLoggers = [ loggers count ];
     for ( NSUInteger i = 0; i < numberOfLoggers; i++ )
     {
         [[ loggers objectAtIndex:i ] logWarning:warning ];
     }
+
+    [ sync unlock ];
 }
 
 - (void) logError:(NSError *)error
 {
+    [ sync lock ];
+
     NSUInteger numberOfLoggers = [ loggers count ];
     for ( NSUInteger i = 0; i < numberOfLoggers; i++ )
     {
         [[ loggers objectAtIndex:i ] logError:error ];
-    }   
+    }
+
+    [ sync unlock ];
 }
 
 - (id) copyWithZone:(NSZone *)zone
