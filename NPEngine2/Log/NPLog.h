@@ -1,15 +1,13 @@
 #import <Foundation/NSObject.h>
 #import <Foundation/NSString.h>
 #import <Foundation/NSError.h>
-#import <Foundation/NSFileHandle.h>
 #import <Foundation/NSArray.h>
+#import <Foundation/NSLock.h>
 #import "NPPLogger.h"
 
 @interface NPLog : NSObject
 {
-    NSString * fileName;
-    NSFileHandle * logFile;
-    
+    NSRecursiveLock * sync;    
     NSMutableArray* loggers;
 }
 
