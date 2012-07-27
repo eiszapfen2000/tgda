@@ -352,9 +352,9 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
     [ self checkForGLErrors ];
 
-    if ( !GLEW_VERSION_2_1 )
+    if ( !GLEW_VERSION_3_1 )
     {
-        NSString * errorString = @"Your system does not support OpenGL 2.1.";
+        NSString * errorString = @"Your system does not support OpenGL 3.1.";
         NSError * error = [ NSError errorWithCode:NPEngineGraphicsGLEWError
                                       description:errorString ];
 
