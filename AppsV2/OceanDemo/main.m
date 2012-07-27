@@ -138,11 +138,11 @@ int main (int argc, char **argv)
     // start up GFX
     if ( [[ NP Graphics ] startup ] == NO )
     {
-        NSLog(@"NPEngineGraphics failed to start up. Consult $HOME/np.log for details.");
+        NSLog(@"NPEngineGraphics failed to start up. Consult %@/np.log for details.",  NSHomeDirectory());
         exit(EXIT_FAILURE);
     }
 
-    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+    glDisable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
 
     // resource loading creates a lot of temporary objects, so we
     // create an autorelease pool right for that task and
@@ -239,7 +239,7 @@ int main (int argc, char **argv)
         */
 
         // check for debug messages
-        [[ NP Graphics ] checkForDebugMessages ];
+        //[[ NP Graphics ] checkForDebugMessages ];
 
         // check for GL errors
         [[ NP Graphics ] checkForGLErrors ];
