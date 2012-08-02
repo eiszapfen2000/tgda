@@ -23,8 +23,6 @@
 
     // enitities
     ODCamera * camera;
-    ODProjector * projector;
-    ODBasePlane * basePlane;
     ODOceanEntity * ocean;
     ODPreethamSkylight * skylight;
     NSMutableArray * entities;

@@ -110,7 +110,9 @@
         fov = [ camera fov ];
     //}
 
+    float horizontalFOV = [ camera fov ] * [ camera aspectRatio ] * 1.2;
     fov = 90.0 - 0.00001;
+    aspectRatio = horizontalFOV / fov;
 
     nearPlane = [ camera nearPlane ];
     farPlane  = [ camera farPlane  ];
@@ -162,60 +164,6 @@
     Matrix4 rotate = quat_q_to_matrix4(&q);
     Matrix4 translate = m4_v_translation_matrix(&invpos);
     m4_mm_multiply_m(&rotate, &translate, &view);
-
-    /*
-    if ( connectedToCamera == YES )
-    {
-        position =  [ camera position ];
-
-        FVector3 cameraForward  = [ camera forward  ];
-        FVector3 cameraPosition = [ camera position ];
-
-        FVector3 cameraForwardProjectedOnBasePlane = { cameraForward.x, 0.0f, cameraForward.z };
-        fv3_v_normalise(&cameraForward);
-        fv3_v_normalise(&cameraForwardProjectedOnBasePlane);
-
-        // replace with atan2
-        // need y and z values to compute angle between xz plane and forward vector
-
-        float cosAngle = fv3_vv_dot_product(&cameraForward, &cameraForwardProjectedOnBasePlane);
-        float angle = RADIANS_TO_DEGREE(acosf(cosAngle));
-
-        FMatrix4 rotationX;
-
-        // camera looks upwards
-        if ( cameraForward.y >= 0.0f )
-        {
-            fm4_s_rotatex_m((45.0f + angle), &rotationX);
-        }
-        else
-        {
-            float deltaAngle = 45.0f - angle;
-
-            if ( deltaAngle > 0.0f )
-            {
-                fm4_s_rotatex_m(deltaAngle, &rotationX);
-            }
-            else
-            {
-                fm4_m_set_identity(&rotationX);
-            }
-        }
-
-        fm4_mm_multiply_m(&rotationX, [camera view], &view);
-
-        fquat_m4_to_quaternion_q(&view, &orientation);
-        fquat_q_normalise(&orientation);
-        fquat_q_conjugate(&orientation);
-    }
-    else
-    {
-    */
-        // camera looking upwards
-
-
-
-    //}
 }
 
 @end

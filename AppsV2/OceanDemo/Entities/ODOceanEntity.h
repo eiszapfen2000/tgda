@@ -11,7 +11,7 @@
 @class NPStateSet;
 @class ODCamera;
 @class ODProjector;
-@class ODProjectedGrid;
+@class ODBasePlane;
 
 @interface ODOceanEntity : NPObject < ODPEntity >
 {
@@ -26,7 +26,7 @@
     NSPointerArray * resultQueue;
 
     ODProjector * projector;
-    ODProjectedGrid * projectedGrid;
+    ODBasePlane * basePlane;
 
     NPStateSet * stateset;
     NPEffect * effect;
@@ -41,7 +41,7 @@
 - (void) stop;
 
 - (ODProjector *) projector;
-- (ODProjectedGrid *) projectedGrid;
+- (ODBasePlane *) basePlane;
 
 - (void) setCamera:(ODCamera *)newCamera;
 

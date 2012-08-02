@@ -151,9 +151,7 @@
 {
     self =  [ super initWithName:newName ];
 
-    basePlane = [[ ODBasePlane    alloc ] init ];
     camera    = [[ ODCamera       alloc ] init ];
-    projector = [[ ODProjector    alloc ] init ];
     entities  = [[ NSMutableArray alloc ] init ];
 
     // camera animation
@@ -202,8 +200,6 @@
     [ entities removeAllObjects ];
     DESTROY(entities);
     DESTROY(camera);
-    DESTROY(projector);
-    DESTROY(basePlane);
 
     [ ocean stop ];
     SAFE_DESTROY(ocean);
@@ -281,15 +277,10 @@
     ASSERT_RETAIN(skylight);
     ASSERT_RETAIN(ocean);
 
-    [ projector setCamera:camera ];
     [ skylight  setCamera:camera ];
     [ ocean     setCamera:camera ];
 
-    [ basePlane setProjector:projector ];
-    //[ ocean start ];
-
-    //[ projector setCamera:camera ];
-    //[ projectedGrid setProjector:projector ];
+    [ ocean start ];
 
     const NSUInteger numberOfEntityFiles = [ entityFiles count ];
     for ( NSUInteger i = 0; i < numberOfEntityFiles; i++ )
@@ -371,10 +362,8 @@
     */
 
     [ camera    update:frameTime ];
-    [ projector update:frameTime ];
     [ skylight  update:frameTime ];
-    //[ ocean     update:frameTime ];
-    [ basePlane update:frameTime ];
+    [ ocean     update:frameTime ];
 
     const NSUInteger numberOfEntities = [ entities count ];
     for ( NSUInteger i = 0; i < numberOfEntities; i++ )
@@ -492,7 +481,7 @@
 
     [ entities makeObjectsPerformSelector:@selector(render) ];
 
-    [ basePlane render ];
+    [ ocean render ];
 
     /*
     [ stencilTestState setComparisonFunction:NpComparisonEqual ];
