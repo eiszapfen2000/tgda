@@ -16,7 +16,7 @@
 #import "Graphics/NPOrthographic.h"
 #import "Graphics/NPEngineGraphics.h"
 #import "ODProjector.h"
-#import "ODProjectedGrid.h"
+#import "ODBasePlane.h"
 #import "Ocean/ODPhillipsSpectrum.h"
 #import "Ocean/ODGaussianRNG.h"
 #import "fftw3.h"
@@ -55,8 +55,10 @@ typedef struct
 {
     IVector2 resolution;
     Vector2 size;
-    float  * data32f;
-    double * data64f;
+    double timeStamp;
+    float * data32f;
+    float dataMin;
+    float dataMax;
 }
 OdHeightfieldData;
 
@@ -97,11 +99,11 @@ OdHeightfieldData;
             result->size = settings.size;
             result->resolution = settings.resolution;
             result->data32f = NULL;
-            result->data64f = NULL;
 
             [ timer update ];
 
             const float totalTime = [ timer totalElapsedTime ];
+            result->timeStamp = totalTime;
 
             fftwf_complex * halfcomplexSpectrum
                 = [ s generateFloatFrequencySpectrumHC:settings atTime:totalTime ];
@@ -149,12 +151,30 @@ OdHeightfieldData;
             [ timer update ];
 
             const float fpsIFFTHC = [ timer frameTime ];
-            //printf("PHILLIPS HC: %f IFFT: %f Time:%f\n", fpsHC, fpsIFFTHC, totalTime);
-            //fflush(stdout);
+
+            float maxHeight = -FLT_MAX;
+            float minHeight =  FLT_MAX;
+            int32_t numberOfElements = settings.resolution.x * settings.resolution.y;
+            for ( int32_t i = 0; i < numberOfElements; i++ )
+            {
+                maxHeight = MAX(maxHeight, c2r[i]);
+                minHeight = MIN(minHeight, c2r[i]);
+            }
+
+            [ timer update ];
+            
+            const float fpsMinMax = [ timer frameTime ];
+
+            /*
+            printf("PHILLIPS HC: %f IFFT: %f Min: %f Max: %f MinMaxTime: %f\n", fpsHC, fpsIFFTHC, minHeight, maxHeight, fpsMinMax);
+            fflush(stdout);
+            */
 
             fftwf_free(halfcomplexSpectrum);
 
             result->data32f = c2r;
+            result->dataMin = minHeight;
+            result->dataMax = maxHeight;
 
             {
                 [ mutex lock ];
@@ -175,7 +195,7 @@ OdHeightfieldData;
 
 static const Vector2 defaultWindDirection = {10.0, 0.5};
 static const int32_t resolutions[4] = {64, 128, 256, 512};
-static const NSUInteger defaultResolutionIndex = 0;
+static const NSUInteger defaultResolutionIndex = 3;
 
 @implementation ODOceanEntity
 
@@ -198,9 +218,9 @@ static const NSUInteger defaultResolutionIndex = 0;
         = NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality;
     resultQueue = [[ NSPointerArray alloc ] initWithOptions:options ];
 
-    //projector = [[ ODProjector alloc ] initWithName:@"Projector" ];
-    projectedGrid = [[ ODProjectedGrid alloc ] initWithName:@"Projected Grid" ];
-    //[ projectedGrid setProjector:projector ];
+    projector = [[ ODProjector alloc ] initWithName:@"Projector" ];
+    basePlane = [[ ODBasePlane alloc ] initWithName:@"BasePlane" ];
+    [ basePlane setProjector:projector ];
 
     heightfield = [[ NPTexture2D alloc ] initWithName:@"Height Texture" ];
     [ heightfield setTextureFilter:NpTexture2DFilterLinear ];
@@ -219,8 +239,8 @@ static const NSUInteger defaultResolutionIndex = 0;
     SAFE_DESTROY(stateset);
     DESTROY(effect);
     DESTROY(heightfield);
-    //DESTROY(projector);
-    DESTROY(projectedGrid);
+    DESTROY(projector);
+    DESTROY(basePlane);
 
     NSUInteger count = [ resultQueue count ];
     while (count != 0)
@@ -301,9 +321,9 @@ static const NSUInteger defaultResolutionIndex = 0;
     return projector;
 }
 
-- (ODProjectedGrid *) projectedGrid
+- (ODBasePlane *) basePlane
 {
-    return projectedGrid;
+    return basePlane;
 }
 
 - (void) setCamera:(ODCamera *)newCamera
@@ -335,15 +355,15 @@ static const NSUInteger defaultResolutionIndex = 0;
     resolution.x = [[ resolutionStrings objectAtIndex:0 ] intValue ];
     resolution.y = [[ resolutionStrings objectAtIndex:1 ] intValue ];
 
-    [ projectedGrid setResolution:resolution ];
+    //[ projectedGrid setResolution:resolution ];
 
     return YES;
 }
 
 - (void) update:(const double)frameTime
 {
-    [ projector     update:frameTime ];
-    [ projectedGrid update:frameTime ];
+    [ projector update:frameTime ];
+    [ basePlane update:frameTime ];
 
     {
         [ mutex lock ];
@@ -414,13 +434,19 @@ static const NSUInteger defaultResolutionIndex = 0;
                                  mipmaps:NO
                                     data:textureData ];
 
+        /*
+        printf("%f %f %f\n", hf->dataMin, hf->dataMax, hf->timeStamp);
+        fflush(stdout);
+        */
+
         SAFE_FREE(hf->data32f);
         FREE(hf);
     }
 
-    [ projectedGrid render:heightfield ];
-    [ projector render ];
+    [ basePlane render ];
+    //[ projector render ];
 
+    /*
     [[[ NPEngineGraphics instance ] orthographic ] activate ];
     [[[ NPEngineGraphics instance ] textureBindingState ] setTexture:heightfield texelUnit:0 ];
     [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
@@ -437,6 +463,7 @@ static const NSUInteger defaultResolutionIndex = 0;
     glEnd();
 
     [[[ NPEngineGraphics instance ] orthographic ] deactivate ];
+    */
 }
 
 @end
