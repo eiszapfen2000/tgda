@@ -23,7 +23,9 @@
 #import "ODOceanEntity.h"
 
 static NPSemaphore * semaphore = nil;
+static NSCondition * condition = nil;
 static NSLock * mutex = nil;
+static BOOL generateData = NO;
 
 void print_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
 {
@@ -79,7 +81,15 @@ OdHeightfieldData;
 
     while ( [[ NSThread currentThread ] isCancelled ] == NO )
     {    
-        [ semaphore wait ];
+        //[ semaphore wait ];
+        [ condition lock ];
+
+        while ( generateData == NO )
+        {
+            [ condition wait ];
+        }
+
+        [ condition unlock ];
 
         NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
 
@@ -266,6 +276,11 @@ static const NSUInteger defaultResolutionIndex = 3;
         semaphore = [[ NPSemaphore alloc ] init ];
     }
 
+    if ( condition == nil )
+    {
+        condition = [[ NSCondition alloc ] init ];
+    }
+
     if ( mutex == nil )
     {
         mutex = [[ NSLock alloc ] init ];
@@ -295,7 +310,11 @@ static const NSUInteger defaultResolutionIndex = 3;
             [ thread cancel ];
 
             // wake thread up a last time so it exits its main loop
-            [ semaphore post ];
+            //[ semaphore post ];
+            [ condition lock ];
+            generateData = YES;
+            [ condition signal ];
+            [ condition unlock ];
 
             // since NSThreads are created in detached mode
             // we have to join by hand
@@ -314,6 +333,7 @@ static const NSUInteger defaultResolutionIndex = 3;
 
     SAFE_DESTROY(semaphore);
     SAFE_DESTROY(mutex);
+    SAFE_DESTROY(condition);
 }
 
 - (ODProjector *) projector
@@ -365,8 +385,12 @@ static const NSUInteger defaultResolutionIndex = 3;
     [ projector update:frameTime ];
     [ basePlane update:frameTime ];
 
+    NSUInteger queueCount = 0;
+
     {
         [ mutex lock ];
+
+        queueCount = [ resultQueue count ];
 
         if ( windDirection.x != lastWindDirection.x
              || windDirection.y != lastWindDirection.y
@@ -381,7 +405,7 @@ static const NSUInteger defaultResolutionIndex = 3;
             lastWindDirection = windDirection;
             lastResolutionIndex = resolutionIndex;
 
-            NSUInteger count = [ resultQueue count ];
+            NSUInteger count = queueCount;
             while (count != 0)
             {
                 OdHeightfieldData * hf = [ resultQueue pointerAtIndex:0 ];
@@ -393,12 +417,23 @@ static const NSUInteger defaultResolutionIndex = 3;
                 [ resultQueue removePointerAtIndex:0 ];
                 count = [ resultQueue count ];
             }
+
+            queueCount = count;
         }
 
         [ mutex unlock ];
     }
 
-    [ semaphore post ];
+    //printf("QC: %lu\n", queueCount);
+
+    {
+        [ condition lock ];
+        generateData = ( queueCount < 16 ) ? YES : NO;
+        [ condition signal ];
+        [ condition unlock ];
+    }
+
+    //[ semaphore post ];
 }
 
 - (void) render
