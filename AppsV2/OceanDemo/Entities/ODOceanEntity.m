@@ -22,7 +22,6 @@
 #import "fftw3.h"
 #import "ODOceanEntity.h"
 
-static NPSemaphore * semaphore = nil;
 static NSCondition * condition = nil;
 static NSLock * mutex = nil;
 static BOOL generateData = NO;
@@ -81,7 +80,6 @@ OdHeightfieldData;
 
     while ( [[ NSThread currentThread ] isCancelled ] == NO )
     {    
-        //[ semaphore wait ];
         [ condition lock ];
 
         while ( generateData == NO )
@@ -271,11 +269,6 @@ static const NSUInteger defaultResolutionIndex = 3;
 
 - (void) start
 {
-    if ( semaphore == nil )
-    {
-        semaphore = [[ NPSemaphore alloc ] init ];
-    }
-
     if ( condition == nil )
     {
         condition = [[ NSCondition alloc ] init ];
@@ -310,7 +303,6 @@ static const NSUInteger defaultResolutionIndex = 3;
             [ thread cancel ];
 
             // wake thread up a last time so it exits its main loop
-            //[ semaphore post ];
             [ condition lock ];
             generateData = YES;
             [ condition signal ];
@@ -331,7 +323,6 @@ static const NSUInteger defaultResolutionIndex = 3;
         odgaussianrng_shutdown();
     }
 
-    SAFE_DESTROY(semaphore);
     SAFE_DESTROY(mutex);
     SAFE_DESTROY(condition);
 }
@@ -432,8 +423,6 @@ static const NSUInteger defaultResolutionIndex = 3;
         [ condition signal ];
         [ condition unlock ];
     }
-
-    //[ semaphore post ];
 }
 
 - (void) render
