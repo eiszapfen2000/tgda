@@ -381,9 +381,25 @@ static const NSUInteger defaultResolutionIndex = 3;
 
     if ( createWisdom == YES )
     {
+        for ( uint32_t i = 0; i < ODOCEANENTITY_NUMBER_OF_RESOLUTIONS; i++)
+        {
+            const size_t arraySize = resolutions[i] * resolutions[i];
 
+            float * target = ALLOC_ARRAY(float, arraySize);
+            fftwf_complex * source = fftwf_malloc(sizeof(fftwf_complex) * arraySize);
 
+            plans[i]
+                = fftwf_plan_dft_c2r_2d(resolutions[i],
+                                        resolutions[i],
+                                        source,
+                                        target,
+                                        FFTW_PATIENT);
 
+            fftwf_free(source);
+            FREE(target);
+
+            NSLog(@"%d", i);
+        }
     }
 
     //[ projectedGrid setResolution:resolution ];
