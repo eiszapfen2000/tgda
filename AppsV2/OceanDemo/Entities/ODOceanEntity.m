@@ -22,10 +22,6 @@
 #import "fftw3.h"
 #import "ODOceanEntity.h"
 
-static NSCondition * condition = nil;
-static NSLock * mutex = nil;
-static BOOL generateData = NO;
-
 void print_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
 {
     for ( int32_t j = 0; j < resolution.y; j++ )
@@ -216,6 +212,11 @@ static const NSUInteger defaultResolutionIndex = 3;
 {
     self =  [ super initWithName:newName ];
 
+    mutex = [[ NSLock alloc ] init ];
+    condition = [[ NSCondition alloc ] init ];
+
+    generateData = NO;
+
     lastResolutionIndex = ULONG_MAX;
     resolutionIndex = defaultResolutionIndex;
 
@@ -264,21 +265,14 @@ static const NSUInteger defaultResolutionIndex = 3;
     }
     DESTROY(resultQueue);
 
+    DESTROY(mutex);
+    DESTROY(condition);
+
     [ super dealloc ];
 }
 
 - (void) start
 {
-    if ( condition == nil )
-    {
-        condition = [[ NSCondition alloc ] init ];
-    }
-
-    if ( mutex == nil )
-    {
-        mutex = [[ NSLock alloc ] init ];
-    }
-
     if ( thread == nil )
     {
         odgaussianrng_initialise();
@@ -322,9 +316,6 @@ static const NSUInteger defaultResolutionIndex = 3;
         DESTROY(thread);
         odgaussianrng_shutdown();
     }
-
-    SAFE_DESTROY(mutex);
-    SAFE_DESTROY(condition);
 }
 
 - (ODProjector *) projector
