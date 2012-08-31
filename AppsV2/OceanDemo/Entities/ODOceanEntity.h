@@ -3,6 +3,8 @@
 #import "Ocean/ODPFrequencySpectrumGeneration.h"
 #import "ODPEntity.h"
 
+@class NSCondition;
+@class NSLock;
 @class NSPointerArray;
 @class NSThread;
 @class NPEffect;
@@ -15,12 +17,16 @@
 
 @interface ODOceanEntity : NPObject < ODPEntity >
 {
+    NSCondition * condition;
+    NSLock * mutex;
+
     Vector2 lastWindDirection;
     Vector2 windDirection;
     NSUInteger lastResolutionIndex;
     NSUInteger resolutionIndex;
 
     ODSpectrumSettings spectrumSettings;
+    BOOL generateData;
     
     NSThread * thread;
     NSPointerArray * resultQueue;
