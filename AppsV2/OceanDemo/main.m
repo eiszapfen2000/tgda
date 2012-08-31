@@ -114,7 +114,7 @@ int main (int argc, char **argv)
     mousePosition.x = mousePosition.y = 0;
 
     // VSync
-    glfwSwapInterval(1);
+    glfwSwapInterval(0);
     // do not poll events on glfwSwapBuffers
     glfwDisable(GLFW_AUTO_POLL_EVENTS);
     // register keyboard callback
@@ -143,6 +143,7 @@ int main (int argc, char **argv)
     }
 
     glDisable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+    //glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
 
     // resource loading creates a lot of temporary objects, so we
     // create an autorelease pool right for that task and
