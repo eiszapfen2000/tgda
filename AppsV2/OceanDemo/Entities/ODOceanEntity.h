@@ -2,6 +2,7 @@
 #import "Core/NPObject/NPObject.h"
 #import "Ocean/ODPFrequencySpectrumGeneration.h"
 #import "ODPEntity.h"
+#import "fftw3.h"
 
 @class NSCondition;
 @class NSLock;
@@ -15,6 +16,8 @@
 @class ODProjector;
 @class ODBasePlane;
 
+#define ODOCEANENTITY_NUMBER_OF_RESOLUTIONS     4
+
 @interface ODOceanEntity : NPObject < ODPEntity >
 {
     NSCondition * condition;
@@ -27,6 +30,8 @@
 
     ODSpectrumSettings spectrumSettings;
     BOOL generateData;
+
+    fftwf_plan plans[ODOCEANENTITY_NUMBER_OF_RESOLUTIONS];
     
     NSThread * thread;
     NSPointerArray * resultQueue;
