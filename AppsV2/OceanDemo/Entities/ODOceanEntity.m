@@ -2,12 +2,15 @@
 #import <Foundation/NSData.h>
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSException.h>
+#import <Foundation/NSFileManager.h>
 #import <Foundation/NSLock.h>
+#import <Foundation/NSPathUtilities.h>
 #import <Foundation/NSPointerArray.h>
 #import <Foundation/NSThread.h>
 #import "Core/Container/NPAssetArray.h"
 #import "Core/Thread/NPSemaphore.h"
 #import "Core/Timer/NPTimer.h"
+#import "Core/File/NSFileManager+NPEngine.h"
 #import "Core/File/NPLocalPathManager.h"
 #import "Core/NPEngineCore.h"
 #import "Graphics/Effect/NPEffect.h"
@@ -21,7 +24,6 @@
 #import "ODBasePlane.h"
 #import "Ocean/ODPhillipsSpectrum.h"
 #import "Ocean/ODGaussianRNG.h"
-#import "fftw3.h"
 #import "ODOceanEntity.h"
 
 void print_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
@@ -359,14 +361,35 @@ static const NSUInteger defaultResolutionIndex = 3;
     resolution.x = [[ resolutionStrings objectAtIndex:0 ] intValue ];
     resolution.y = [[ resolutionStrings objectAtIndex:1 ] intValue ];
 
-    NSString * wisdomFileName
-        = [[[ NPEngineCore instance ] 
-                localPathManager ] getAbsolutePath:@"wisdom" ];
-
     BOOL createWisdom = YES;
+    BOOL createWisdomFile = YES;
 
-    if ( wisdomFileName != nil )
+    NSArray * paths
+        = NSSearchPathForDirectoriesInDomains(
+            NSApplicationSupportDirectory,
+            NSUserDomainMask,
+            YES);
+
+    // Normally only need the first path
+    NSString * wisdomFolder
+        = [[ paths objectAtIndex:0 ] stringByAppendingPathComponent:@"OceanDemo" ];
+    
+    // Create the path if it doesn't exist
+    NSError * e;
+    BOOL success
+        = [[ NSFileManager defaultManager ]
+                    createDirectoryAtPath:wisdomFolder
+              withIntermediateDirectories:YES
+                               attributes:nil
+                                    error:&e ];
+
+    NSString * wisdomFileName
+        = [ wisdomFolder stringByAppendingPathComponent:@"wisdom" ];
+
+    if ( [[ NSFileManager defaultManager ] isFile:wisdomFileName ] == YES )
     {
+        createWisdomFile = NO;
+
         FILE * wisdom = fopen([ wisdomFileName UTF8String], "r");
 
         if ( wisdom != NULL )
@@ -376,6 +399,8 @@ static const NSUInteger defaultResolutionIndex = 3;
                 NSLog(@"Wisdom obtained");
                 createWisdom = NO;
             }
+
+            fclose(wisdom);
         }
     }
 
@@ -400,9 +425,16 @@ static const NSUInteger defaultResolutionIndex = 3;
 
             NSLog(@"%d", i);
         }
-    }
 
-    //[ projectedGrid setResolution:resolution ];
+        if ( createWisdomFile == YES )
+        {
+            [[ NSFileManager defaultManager ] createEmptyFileAtPath:wisdomFileName ];
+        }
+
+        FILE * wisdom = fopen([ wisdomFileName UTF8String], "w");
+        fftw_export_wisdom_to_file(wisdom);
+        fclose(wisdom);
+    }
 
     return YES;
 }
