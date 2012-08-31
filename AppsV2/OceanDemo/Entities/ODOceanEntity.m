@@ -8,6 +8,8 @@
 #import "Core/Container/NPAssetArray.h"
 #import "Core/Thread/NPSemaphore.h"
 #import "Core/Timer/NPTimer.h"
+#import "Core/File/NPLocalPathManager.h"
+#import "Core/NPEngineCore.h"
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
@@ -356,6 +358,33 @@ static const NSUInteger defaultResolutionIndex = 3;
     IVector2 resolution;
     resolution.x = [[ resolutionStrings objectAtIndex:0 ] intValue ];
     resolution.y = [[ resolutionStrings objectAtIndex:1 ] intValue ];
+
+    NSString * wisdomFileName
+        = [[[ NPEngineCore instance ] 
+                localPathManager ] getAbsolutePath:@"wisdom" ];
+
+    BOOL createWisdom = YES;
+
+    if ( wisdomFileName != nil )
+    {
+        FILE * wisdom = fopen([ wisdomFileName UTF8String], "r");
+
+        if ( wisdom != NULL )
+        {
+            if ( fftw_import_wisdom_from_file(wisdom) != 0 )
+            {
+                NSLog(@"Wisdom obtained");
+                createWisdom = NO;
+            }
+        }
+    }
+
+    if ( createWisdom == YES )
+    {
+
+
+
+    }
 
     //[ projectedGrid setResolution:resolution ];
 
