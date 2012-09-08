@@ -12,12 +12,12 @@ typedef enum ODQuadrants
 }
 ODQuadrants;
 
-float omegaf_for_k(FVector2 const * const k)
+static float omegaf_for_k(FVector2 const * const k)
 {
     return sqrtf(EARTH_ACCELERATIONf * fv2_v_length(k));
 }
 
-float amplitudef(FVector2 const * const windDirection,
+static float amplitudef(FVector2 const * const windDirection,
                  FVector2 const * const k)
 {
     const float kSquareLength = fv2_v_square_length(k);

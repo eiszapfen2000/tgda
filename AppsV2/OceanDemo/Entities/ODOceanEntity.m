@@ -63,6 +63,10 @@ typedef struct
 }
 OdHeightfieldData;
 
+static const Vector2 defaultWindDirection = {10.0, 0.5};
+static const int32_t resolutions[4] = {64, 128, 256, 512};
+static const NSUInteger defaultResolutionIndex = 3;
+
 @interface ODOceanEntity (Private)
 
 - (void) generate:(id)argument;
@@ -94,12 +98,17 @@ OdHeightfieldData;
         if ( [[ NSThread currentThread ] isCancelled ] == NO )
         {
             ODSpectrumSettings settings;
+            NSUInteger resIndex;
 
             {
                 [ mutex lock ];
                 settings = spectrumSettings;
+                resIndex = resolutionIndex;
                 [ mutex unlock ];
             }
+
+            const int32_t res = resolutions[resIndex];
+            settings.resolution = (IVector2){res, res};
 
             float * c2r = ALLOC_ARRAY(float, settings.resolution.x * settings.resolution.y);
 
@@ -147,15 +156,9 @@ OdHeightfieldData;
             */
 
             [ timer update ];
-            fftwf_plan plan;
-            plan = fftwf_plan_dft_c2r_2d(settings.resolution.x,
-                                        settings.resolution.y,
-                                        halfcomplexSpectrum,
-                                        c2r,
-                                        FFTW_ESTIMATE);
 
-            fftwf_execute(plan);
-            fftwf_destroy_plan(plan);
+            fftwf_execute_dft_c2r(plans[resIndex], halfcomplexSpectrum, c2r);
+
             [ timer update ];
 
             const float fpsIFFTHC = [ timer frameTime ];
@@ -200,10 +203,6 @@ OdHeightfieldData;
 }
 
 @end
-
-static const Vector2 defaultWindDirection = {10.0, 0.5};
-static const int32_t resolutions[4] = {64, 128, 256, 512};
-static const NSUInteger defaultResolutionIndex = 3;
 
 @implementation ODOceanEntity
 
@@ -268,6 +267,14 @@ static const NSUInteger defaultResolutionIndex = 3;
         count = [ resultQueue count ];
     }
     DESTROY(resultQueue);
+
+    for ( uint32_t i = 0; i < ODOCEANENTITY_NUMBER_OF_RESOLUTIONS; i++ )
+    {
+        if ( plans[i] != NULL )
+        {
+            fftwf_destroy_plan(plans[i]);
+        }
+    }
 
     DESTROY(mutex);
     DESTROY(condition);
@@ -361,9 +368,6 @@ static const NSUInteger defaultResolutionIndex = 3;
     resolution.x = [[ resolutionStrings objectAtIndex:0 ] intValue ];
     resolution.y = [[ resolutionStrings objectAtIndex:1 ] intValue ];
 
-    BOOL createWisdom = YES;
-    BOOL createWisdomFile = YES;
-
     NSArray * paths
         = NSSearchPathForDirectoriesInDomains(
             NSApplicationSupportDirectory,
@@ -383,57 +387,55 @@ static const NSUInteger defaultResolutionIndex = 3;
                                attributes:nil
                                     error:&e ];
 
+    BOOL obtainedWisdom = NO;
+
     NSString * wisdomFileName
         = [ wisdomFolder stringByAppendingPathComponent:@"wisdom" ];
 
     if ( [[ NSFileManager defaultManager ] isFile:wisdomFileName ] == YES )
     {
-        createWisdomFile = NO;
+        NSLog(@"Loading FFTW wisdom...");
 
-        FILE * wisdom = fopen([ wisdomFileName UTF8String], "r");
-
-        if ( wisdom != NULL )
+        if ( fftw_import_wisdom_from_filename([ wisdomFileName UTF8String ]) != 0 )
         {
-            if ( fftw_import_wisdom_from_file(wisdom) != 0 )
-            {
-                NSLog(@"Wisdom obtained");
-                createWisdom = NO;
-            }
+            NSLog(@"FFTW Wisdom obtained.");
+            obtainedWisdom = YES;
+        }
 
-            fclose(wisdom);
+        if ( obtainedWisdom == NO )
+        {
+            NSLog(@"Unable to import FFTW Wisdom.");
         }
     }
-
-    if ( createWisdom == YES )
+    else
     {
-        for ( uint32_t i = 0; i < ODOCEANENTITY_NUMBER_OF_RESOLUTIONS; i++)
+        [[ NSFileManager defaultManager ] createEmptyFileAtPath:wisdomFileName ];
+    }
+
+    for ( uint32_t i = 0; i < ODOCEANENTITY_NUMBER_OF_RESOLUTIONS; i++)
+    {
+        const size_t arraySize = resolutions[i] * resolutions[i];
+
+        float * target = ALLOC_ARRAY(float, arraySize);
+        fftwf_complex * source = fftwf_malloc(sizeof(fftwf_complex) * arraySize);
+
+        plans[i]
+            = fftwf_plan_dft_c2r_2d(resolutions[i],
+                                    resolutions[i],
+                                    source,
+                                    target,
+                                    FFTW_MEASURE);
+
+        fftwf_free(source);
+        FREE(target);
+    }
+
+    if ( obtainedWisdom == NO )
+    {
+        if ( fftw_export_wisdom_to_filename([ wisdomFileName UTF8String ]) != 0 )
         {
-            const size_t arraySize = resolutions[i] * resolutions[i];
-
-            float * target = ALLOC_ARRAY(float, arraySize);
-            fftwf_complex * source = fftwf_malloc(sizeof(fftwf_complex) * arraySize);
-
-            plans[i]
-                = fftwf_plan_dft_c2r_2d(resolutions[i],
-                                        resolutions[i],
-                                        source,
-                                        target,
-                                        FFTW_PATIENT);
-
-            fftwf_free(source);
-            FREE(target);
-
-            NSLog(@"%d", i);
+            NSLog(@"FFTW Wisdom stored");
         }
-
-        if ( createWisdomFile == YES )
-        {
-            [[ NSFileManager defaultManager ] createEmptyFileAtPath:wisdomFileName ];
-        }
-
-        FILE * wisdom = fopen([ wisdomFileName UTF8String], "w");
-        fftw_export_wisdom_to_file(wisdom);
-        fclose(wisdom);
     }
 
     return YES;
@@ -458,8 +460,8 @@ static const NSUInteger defaultResolutionIndex = 3;
             spectrumSettings.windDirection = windDirection;
             spectrumSettings.size = (Vector2){5.0, 5.0};
 
-            const int32_t res = resolutions[resolutionIndex];
-            spectrumSettings.resolution = (IVector2){res, res};
+            //const int32_t res = resolutions[resolutionIndex];
+            //spectrumSettings.resolution = (IVector2){res, res};
 
             lastWindDirection = windDirection;
             lastResolutionIndex = resolutionIndex;
