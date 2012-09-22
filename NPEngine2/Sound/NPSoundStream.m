@@ -149,6 +149,7 @@
         else if ( bytesRead < 0 )
         {
             NPLOG_ERROR([ NPVorbisErrors vorbisReadError:bytesRead ]);
+            FREE(bufferData);
             return NO;
         }
         else
@@ -173,7 +174,7 @@
 
     alBufferData(buffer, format, bufferData, bufferSize, oggInfo->rate);
     [[ NPEngineSound instance] checkForALErrors ];
-    SAFE_FREE(bufferData);
+    FREE(bufferData);
 
     return YES;
 }

@@ -316,7 +316,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 @end
 
-static GLint masks[][4]
+static const GLint masks[][4]
     = {
         {GL_RED, GL_RED, GL_RED, GL_ZERO},
         {GL_RED, GL_RED, GL_RED, GL_ONE},
