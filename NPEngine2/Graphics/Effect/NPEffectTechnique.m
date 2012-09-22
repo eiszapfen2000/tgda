@@ -355,7 +355,6 @@ static BOOL locked = NO;
                            arguments:nil
                                error:&error ] == NO )
     {
-        DESTROY(shaderSource);
         NPLOG_ERROR(error);
         return nil;
     }
