@@ -907,7 +907,8 @@ void fm4_m_inverse_m(const FMatrix4 * const m, FMatrix4 * result)
     }
 
     float scalar = 1.0f/determinant;
-    FMatrix3 * subMatrix = fm3_alloc_init();
+    //FMatrix3 * subMatrix = fm3_alloc_init();
+    FMatrix3 subMatrix;
     int sign;
 
     for ( int i = 0; i < 4; i++ )
@@ -915,14 +916,11 @@ void fm4_m_inverse_m(const FMatrix4 * const m, FMatrix4 * result)
         for ( int j = 0; j < 4; j++ )
         {
             sign = 1 - ( (i + j) % 2 ) * 2;
-            fm4_mss_sub_matrix_m(m,i,j,subMatrix);
-            float subMatrixDeterminant = fm3_m_determinant(subMatrix);
+            fm4_mss_sub_matrix_m(m, i, j, &subMatrix);
+            float subMatrixDeterminant = fm3_m_determinant(&subMatrix);
             M_EL(*result,i,j) = sign * subMatrixDeterminant * scalar;
         }
     }
-
-    fm3_free(subMatrix);
-
 }
 
 void fm4_m_get_right_vector_v(const FMatrix4 * const m, FVector3 * right)

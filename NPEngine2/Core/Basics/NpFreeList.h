@@ -79,7 +79,7 @@ NpFreeList;
 #endif
 
 /* ---------------------------------------------------------------------------
-    'npfreelist_free'
+    'npfreelist_alloc_block'
         Allocates an additional block.
 --------------------------------------------------------------------------- */
 NpFreeNode* npfreelist_alloc_block( NpFreeList * freelist );

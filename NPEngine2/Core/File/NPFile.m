@@ -203,7 +203,7 @@
         return NO;
     }
 
-    if ( stringLength == 0 )
+    if (( s != NULL ) && ( stringLength == 0 ))
     {
         *s = @"";
         return YES;
