@@ -149,7 +149,7 @@ Float fv2_v_square_length(const FVector2 * const v)
 
 Float fv2_v_length(const FVector2 * const v)
 {
-    return sqrtf(fv2_v_square_length(v));
+    return sqrtf( V_X(*v) * V_X(*v) + V_Y(*v) * V_Y(*v) );
 }
 
 FVector2 fv2_v_inverted(const FVector2 * const v)
@@ -379,7 +379,7 @@ Float fv3_v_square_length(const FVector3 * const v)
 
 Float fv3_v_length(const FVector3 * const v)
 {
-    return sqrtf(fv3_v_square_length(v));
+    return sqrtf( V_X(*v) * V_X(*v) + V_Y(*v) * V_Y(*v) + V_Z(*v) * V_Z(*v) );
 }
 
 Float fv3_vv_square_distance(const FVector3 * const v, const FVector3 * const w)

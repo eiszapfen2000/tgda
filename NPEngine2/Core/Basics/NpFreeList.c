@@ -43,14 +43,14 @@ void npfreelist_free( NpFreeList * freelist )
 
 void* npfreenode_alloc( NpFreeList * freelist )
 {
-    NpFreeNode* free = NPFREELIST_FREE(*freelist);
+    NpFreeNode * free = NPFREELIST_FREE(*freelist);
 
-    if (!free)
+    if ( free == NULL )
     {
         free = npfreelist_alloc_block(freelist);
     }
 
-    NPFREELIST_FREE(*freelist) = NPFREENODE_NEXT(*NPFREELIST_FREE(*freelist));
+    NPFREELIST_FREE(*freelist) = NPFREENODE_NEXT(*free);
     NPFREELIST_INC_ALLOCATED(freelist);
 
     return (void *)free;
