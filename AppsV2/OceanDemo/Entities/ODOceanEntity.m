@@ -379,7 +379,7 @@ static const NSUInteger defaultResolutionIndex = 3;
         = [[ paths objectAtIndex:0 ] stringByAppendingPathComponent:@"OceanDemo" ];
     
     // Create the path if it doesn't exist
-    NSError * e;
+    NSError * e = nil;
     BOOL success
         = [[ NSFileManager defaultManager ]
                     createDirectoryAtPath:wisdomFolder

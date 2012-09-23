@@ -104,39 +104,43 @@ int compare_floats (const void * a, const void * b)
 
     NSAssert(result, @"");
 
-    result = [ facesIndexStream generate:NpBufferObjectTypeIndices
-                              dataFormat:NpBufferDataFormatUInt16
-                              components:1
-                                    data:facesIndexData
-                              dataLength:[ facesIndexData length ]
-                                   error:NULL ];
+    result
+        = result && [ facesIndexStream generate:NpBufferObjectTypeIndices
+                                     dataFormat:NpBufferDataFormatUInt16
+                                     components:1
+                                           data:facesIndexData
+                                     dataLength:[ facesIndexData length ]
+                                          error:NULL ];
 
     NSAssert(result, @"");
 
-    result = [ linesIndexStream generate:NpBufferObjectTypeIndices
-                              dataFormat:NpBufferDataFormatUInt16
-                              components:1
-                                    data:linesIndexData
-                              dataLength:[ linesIndexData length ]
-                                   error:NULL ];
+    result
+        = result && [ linesIndexStream generate:NpBufferObjectTypeIndices
+                                     dataFormat:NpBufferDataFormatUInt16
+                                     components:1
+                                           data:linesIndexData
+                                     dataLength:[ linesIndexData length ]
+                                          error:NULL ];
 
     NSAssert(result, @"");
 
     facesVertexArray = [[ NPCPUVertexArray alloc ] init ];
     linesVertexArray = [[ NPCPUVertexArray alloc ] init ];
 
-    result = [ facesVertexArray setVertexStream:vertexStream
-                                     atLocation:NpVertexStreamAttribute0
-                                          error:NULL ];
+    result
+        = result && [ facesVertexArray setVertexStream:vertexStream
+                                            atLocation:NpVertexStreamAttribute0
+                                                 error:NULL ];
 
-    result = [ linesVertexArray setVertexStream:vertexStream
-                                     atLocation:NpVertexStreamAttribute0
-                                          error:NULL ];
+    result
+        = result && [ linesVertexArray setVertexStream:vertexStream
+                                            atLocation:NpVertexStreamAttribute0
+                                                 error:NULL ];
 
     NSAssert(result, @"");
 
-    result = [ facesVertexArray setIndexStream:facesIndexStream error:NULL ];
-    result = [ linesVertexArray setIndexStream:linesIndexStream error:NULL ];
+    result = result && [ facesVertexArray setIndexStream:facesIndexStream error:NULL ];
+    result = result && [ linesVertexArray setIndexStream:linesIndexStream error:NULL ];
 
     NSAssert(result, @"");
 

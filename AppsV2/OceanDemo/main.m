@@ -101,6 +101,7 @@ int main (int argc, char **argv)
     int profile = glfwGetWindowParam(GLFW_OPENGL_PROFILE);
     NSLog(@"%d %d %d %d", major, minor, profile, d);
     */
+    
 
     glClearDepth(1);
     glClearStencil(0);
@@ -110,7 +111,7 @@ int main (int argc, char **argv)
 
     // initialise keyboard and mouse state
     keyboardstate_reset(&keyboardState);
-    reset_mouse_state(&mouseState);
+    mousestate_reset(&mouseState);
     mousePosition.x = mousePosition.y = 0;
 
     // VSync
@@ -189,7 +190,7 @@ int main (int argc, char **argv)
 
         // push current keyboard and mouse state into NPInput
         [[[ NP Input ] keyboard ] setKeyboardState:&keyboardState ];
-        [[[ NP Input ] mouse ] setMouseState:mouseState ];
+        [[[ NP Input ] mouse ] setMouseState:&mouseState ];
         [[[ NP Input ] mouse ] setMousePosition:mousePosition ];
 
         // update NPEngineInput's internal state (actions)
