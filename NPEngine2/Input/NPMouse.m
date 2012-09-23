@@ -1,7 +1,7 @@
 #import "Core/Basics/NpBasics.h"
 #import "NPMouse.h"
 
-void reset_mouse_state(NpMouseState * mouseState)
+void mousestate_reset(NpMouseState * mouseState)
 {
     memset(mouseState->buttons, 0, sizeof(mouseState->buttons));
     mouseState->scrollWheel = 0;
@@ -13,7 +13,7 @@ void reset_mouse_state(NpMouseState * mouseState)
 {
     self = [ super initWithName:@"NPEngine Mouse" ];
 
-    reset_mouse_state(&mouseState);
+    mousestate_reset(&mouseState);
     scrollWheelLastFrame = 0;
     x = y = 0;
     xLastFrame = yLastFrame = 0;
@@ -41,10 +41,10 @@ void reset_mouse_state(NpMouseState * mouseState)
     return y - yLastFrame;
 }
 
-- (void) setMouseState:(NpMouseState)newMouseState
+- (void) setMouseState:(NpMouseState *)newMouseState
 {
     scrollWheelLastFrame = mouseState.scrollWheel;
-    mouseState = newMouseState;
+    mouseState = *newMouseState;
 }
 
 - (void) setMousePosition:(IVector2)newMousePosition

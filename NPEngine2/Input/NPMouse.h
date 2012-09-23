@@ -9,7 +9,7 @@ typedef struct NpMouseState
 }
 NpMouseState;
 
-void reset_mouse_state(NpMouseState * mouseState);
+void mousestate_reset(NpMouseState * mouseState);
 
 @interface NPMouse : NPObject
 {
@@ -26,7 +26,7 @@ void reset_mouse_state(NpMouseState * mouseState);
 - (int32_t) deltaX;
 - (int32_t) deltaY;
 
-- (void) setMouseState:(NpMouseState)newMouseState;
+- (void) setMouseState:(NpMouseState *)newMouseState;
 - (void) setMousePosition:(IVector2)newMousePosition;
 
 - (BOOL) isAnyButtonPressed;
