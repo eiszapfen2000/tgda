@@ -1,6 +1,6 @@
 #include "NPEngineGraphicsConversions.h"
 
-// GLsizeiptr equals int
+// GLsizei equals int
 BOOL NSUIntegerToGLsizei(const NSUInteger uint, GLsizei* sizei)
 {
     if (uint > INT_MAX)

@@ -1,4 +1,5 @@
 #import "Core/Basics/NpBasics.h"
+#import "Core/Math/FVector.h"
 #import "Core/Protocols/NPPObject.h"
 
 @class NPAssetArray;
@@ -79,6 +80,17 @@
 - (void) clearFrameBuffer:(BOOL)clearFrameBuffer
               depthBuffer:(BOOL)clearDepthBuffer
             stencilBuffer:(BOOL)clearStencilBuffer
+                         ;
+
+- (void) clearDrawBuffer:(int32_t)drawbuffer
+                   color:(FVector4)color
+                        ;
+
+- (void) clearDepthBuffer:(float)depth;
+- (void) clearStencilBuffer:(int32_t)stencil;
+
+- (void) clearDepthBuffer:(float)depth
+            stencilBuffer:(int32_t)stencil
                          ;
 
 @end

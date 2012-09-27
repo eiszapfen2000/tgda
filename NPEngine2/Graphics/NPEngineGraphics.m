@@ -578,6 +578,31 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     glClear(buffersToClear);
 }
 
+- (void) clearDrawBuffer:(int32_t)drawbuffer
+                   color:(FVector4)color
+{
+    NSAssert(drawbuffer < numberOfDrawBuffers, @"");
+
+    const float c[4] = {color.x, color.y, color.z, color.w};
+    glClearBufferfv(GL_COLOR, drawbuffer, c);
+}
+
+- (void) clearDepthBuffer:(float)depth
+{
+    glClearBufferfv(GL_DEPTH, 0, &depth);
+}
+
+- (void) clearStencilBuffer:(int32_t)stencil
+{
+    glClearBufferiv(GL_STENCIL, 0, &stencil);
+}
+
+- (void) clearDepthBuffer:(float)depth
+            stencilBuffer:(int32_t)stencil
+{
+    glClearBufferfi(GL_DEPTH_STENCIL, 0, depth, stencil);
+}
+
 - (NSString *) name
 {
     return @"NPEngine Graphics";
