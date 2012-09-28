@@ -208,6 +208,7 @@
     m4_m_set_identity(&inverseViewProjection);
     quat_set_identity(&orientation);
     v3_v_init_with_zeros(&position);
+    position.y = 2.0f;
     v3_v_init_with_zeros(&forward);
     forward.z  = -1.0;
 

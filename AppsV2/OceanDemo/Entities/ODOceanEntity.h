@@ -8,10 +8,8 @@
 @class NSLock;
 @class NSPointerArray;
 @class NSThread;
-@class NPEffect;
 @class NPTimer;
 @class NPTexture2D;
-@class NPStateSet;
 @class ODCamera;
 @class ODProjector;
 @class ODBasePlane;
@@ -39,8 +37,6 @@
     ODProjector * projector;
     ODBasePlane * basePlane;
 
-    NPStateSet * stateset;
-    NPEffect * effect;
     NPTexture2D * heightfield;
 }
 
@@ -53,8 +49,9 @@
 
 - (ODProjector *) projector;
 - (ODBasePlane *) basePlane;
-
 - (void) setCamera:(ODCamera *)newCamera;
+
+- (void) renderBasePlane;
 
 @end
 

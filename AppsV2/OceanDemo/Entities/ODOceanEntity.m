@@ -237,19 +237,11 @@ static const NSUInteger defaultResolutionIndex = 3;
     heightfield = [[ NPTexture2D alloc ] initWithName:@"Height Texture" ];
     [ heightfield setTextureFilter:NpTexture2DFilterLinear ];
 
-    effect
-        = [[[ NPEngineGraphics instance ] effects ]
-                getAssetWithFileName:@"fullscreen.effect" ];
-
-    ASSERT_RETAIN(effect);
-
     return self;
 }
 
 - (void) dealloc
 {
-    SAFE_DESTROY(stateset);
-    DESTROY(effect);
     DESTROY(heightfield);
     DESTROY(projector);
     DESTROY(basePlane);
@@ -448,6 +440,9 @@ static const NSUInteger defaultResolutionIndex = 3;
 
     NSUInteger queueCount = 0;
 
+    // in case spectrum generation settings changed
+    // update the generator thread settings and clear
+    // the resultQueue of still therein residing data
     {
         [ mutex lock ];
 
@@ -487,12 +482,20 @@ static const NSUInteger defaultResolutionIndex = 3;
 
     //printf("QC: %lu\n", queueCount);
 
+    // update condition variable
+    // in case we have 16 or more heightfields in our buffer
+    // the generating thread will be put to sleep
     {
         [ condition lock ];
         generateData = ( queueCount < 16 ) ? YES : NO;
         [ condition signal ];
         [ condition unlock ];
     }
+}
+
+- (void) renderBasePlane
+{
+    [ basePlane render ];
 }
 
 - (void) render
