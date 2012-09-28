@@ -438,7 +438,11 @@
     [ stencilTestState setWriteEnabled:YES ];
 
     // clear G-Buffer
-    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:YES ];
+    // [[ NP Graphics ] clearFrameBuffer:NO depthBuffer:YES stencilBuffer:YES ];
+    const FVector4 v = (FVector4){FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX};
+    [[ NP Graphics ] clearDepthBuffer:1.0f stencilBuffer:0 ];
+    [[ NP Graphics ] clearDrawBuffer:0 color:v ];
+    [[ NP Graphics ] clearDrawBuffer:1 color:v ];
 
     // set up view and projection matrices
     [ camera render ];
@@ -481,7 +485,7 @@
 
     [ entities makeObjectsPerformSelector:@selector(render) ];
 
-    [ ocean render ];
+    [ ocean renderBasePlane ];
 
     /*
     [ stencilTestState setComparisonFunction:NpComparisonEqual ];

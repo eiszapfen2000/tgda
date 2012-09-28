@@ -51,8 +51,10 @@ technique "water_surface"
 {
     # effect variables
     uniform vec3 cameraPosition;
+    uniform vec2 heightfieldMinMax;
     uniform sampler2D positions;
     uniform sampler2D normals;
+    uniform sampler2D heightfield;
     # vertex streams
     in vec2 in_position : 0;
     in vec2 in_texcoords : 3;
