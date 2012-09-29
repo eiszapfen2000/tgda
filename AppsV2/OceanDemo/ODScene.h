@@ -12,6 +12,7 @@
 @class NPRenderTexture;
 @class NPRenderBuffer;
 @class NPEffect;
+@class NPEffectVariableFloat2;
 @class NPEffectVariableFloat3;
 @class NPFullscreenQuad;
 @class ODBasePlane;
@@ -55,6 +56,7 @@
 
     // effect + variables
     NPEffect * deferredEffect;
+    NPEffectVariableFloat2 * heightfieldMinMax;
     NPEffectVariableFloat3 * lightDirection;
     NPEffectVariableFloat3 * cameraPosition;
 

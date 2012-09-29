@@ -184,8 +184,11 @@
 
     ASSERT_RETAIN(deferredEffect);
 
-    lightDirection = [ deferredEffect variableWithName:@"lightDirection" ];
-    cameraPosition = [ deferredEffect variableWithName:@"cameraPosition" ];
+    heightfieldMinMax = [ deferredEffect variableWithName:@"heightfieldMinMax" ];
+    lightDirection    = [ deferredEffect variableWithName:@"lightDirection" ];
+    cameraPosition    = [ deferredEffect variableWithName:@"cameraPosition" ];
+
+    NSAssert(heightfieldMinMax != nil, @"heightfieldMinMax invalid");
     NSAssert(lightDirection != nil, @"lightDirection invalid");
     NSAssert(cameraPosition != nil, @"cameraPosition invalid");
 
@@ -525,9 +528,14 @@
     // bind scene target as texture source
     [[[ NP Graphics ] textureBindingState ] setTexture:[ positionsTarget texture ] texelUnit:0 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ normalsTarget   texture ] texelUnit:1 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean       heightfield ] texelUnit:2 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
-    // render tonemapped scene to screen
+    const float minHeight = [ ocean minHeight ];
+    const float maxHeight = [ ocean maxHeight ];
+    const FVector2 minMax = {minHeight, maxHeight};
+
+    [ heightfieldMinMax setFValue:minMax ];
     [ lightDirection setFValue:[ skylight lightDirection ]];
     [ cameraPosition setValue:[ camera position ]];
     [[ deferredEffect techniqueWithName:@"water_surface" ] activate ];
