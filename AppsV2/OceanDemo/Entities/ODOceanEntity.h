@@ -38,6 +38,8 @@
     ODBasePlane * basePlane;
 
     NPTexture2D * heightfield;
+    float minHeight;
+    float maxHeight;
 }
 
 - (id) init;
@@ -49,6 +51,9 @@
 
 - (ODProjector *) projector;
 - (ODBasePlane *) basePlane;
+- (NPTexture2D *) heightfield;
+- (float) minHeight;
+- (float) maxHeight; 
 - (void) setCamera:(ODCamera *)newCamera;
 
 - (void) renderBasePlane;

@@ -52,6 +52,8 @@ void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex * spec
     }
 }
 
+
+// TODO: use a freelist for instances of OdHeightfieldData
 typedef struct
 {
     IVector2 resolution;
@@ -163,13 +165,13 @@ static const NSUInteger defaultResolutionIndex = 3;
 
             const float fpsIFFTHC = [ timer frameTime ];
 
-            float maxHeight = -FLT_MAX;
-            float minHeight =  FLT_MAX;
+            float maxSurfaceHeight = -FLT_MAX;
+            float minSurfaceHeight =  FLT_MAX;
             int32_t numberOfElements = settings.resolution.x * settings.resolution.y;
             for ( int32_t i = 0; i < numberOfElements; i++ )
             {
-                maxHeight = MAX(maxHeight, c2r[i]);
-                minHeight = MIN(minHeight, c2r[i]);
+                maxSurfaceHeight = MAX(maxSurfaceHeight, c2r[i]);
+                minSurfaceHeight = MIN(minSurfaceHeight, c2r[i]);
             }
 
             [ timer update ];
@@ -184,8 +186,8 @@ static const NSUInteger defaultResolutionIndex = 3;
             fftwf_free(halfcomplexSpectrum);
 
             result->data32f = c2r;
-            result->dataMin = minHeight;
-            result->dataMax = maxHeight;
+            result->dataMin = minSurfaceHeight;
+            result->dataMax = maxSurfaceHeight;
 
             {
                 [ mutex lock ];
@@ -236,6 +238,9 @@ static const NSUInteger defaultResolutionIndex = 3;
 
     heightfield = [[ NPTexture2D alloc ] initWithName:@"Height Texture" ];
     [ heightfield setTextureFilter:NpTexture2DFilterLinear ];
+
+    minHeight =  FLT_MAX;
+    maxHeight = -FLT_MAX;
 
     return self;
 }
@@ -329,6 +334,21 @@ static const NSUInteger defaultResolutionIndex = 3;
 - (ODBasePlane *) basePlane
 {
     return basePlane;
+}
+
+- (NPTexture2D *) heightfield
+{
+    return heightfield;
+}
+
+- (float) minHeight
+{
+    return minHeight;
+}
+
+- (float) maxHeight
+{
+    return maxHeight;
 }
 
 - (void) setCamera:(ODCamera *)newCamera
@@ -439,15 +459,16 @@ static const NSUInteger defaultResolutionIndex = 3;
     [ basePlane update:frameTime ];
 
     NSUInteger queueCount = 0;
+    OdHeightfieldData * hf = NULL;
 
-    // in case spectrum generation settings changed
-    // update the generator thread settings and clear
-    // the resultQueue of still therein residing data
     {
         [ mutex lock ];
 
         queueCount = [ resultQueue count ];
 
+        // in case spectrum generation settings changed
+        // update the generator thread's' settings and clear
+        // the resultQueue of still therein residing data
         if ( windDirection.x != lastWindDirection.x
              || windDirection.y != lastWindDirection.y
              || resolutionIndex != lastResolutionIndex )
@@ -477,10 +498,16 @@ static const NSUInteger defaultResolutionIndex = 3;
             queueCount = count;
         }
 
+        // get heightfield data
+        if ( queueCount != 0)
+        {
+            hf = [ resultQueue pointerAtIndex:0 ];
+            [ resultQueue removePointerAtIndex:0 ];
+            queueCount = [ resultQueue count ];
+        }
+
         [ mutex unlock ];
     }
-
-    //printf("QC: %lu\n", queueCount);
 
     // update condition variable
     // in case we have 16 or more heightfields in our buffer
@@ -491,6 +518,31 @@ static const NSUInteger defaultResolutionIndex = 3;
         [ condition signal ];
         [ condition unlock ];
     }
+
+    // update texture and associated min max
+    if ( hf != NULL )
+    {
+        minHeight = hf->dataMin;
+        maxHeight = hf->dataMax;
+
+        const NSUInteger numberOfBytes
+            = hf->resolution.x * hf->resolution.y * sizeof(float);
+
+        NSData * textureData
+            = [ NSData dataWithBytesNoCopy:hf->data32f
+                                    length:numberOfBytes
+                              freeWhenDone:NO ];
+
+        [ heightfield generateUsingWidth:hf->resolution.x
+                                  height:hf->resolution.y
+                             pixelFormat:NpImagePixelFormatR
+                              dataFormat:NpImageDataFormatFloat32
+                                 mipmaps:NO
+                                    data:textureData ];
+
+        SAFE_FREE(hf->data32f);
+        FREE(hf);
+    }
 }
 
 - (void) renderBasePlane
@@ -500,6 +552,8 @@ static const NSUInteger defaultResolutionIndex = 3;
 
 - (void) render
 {
+    NSLog(@"SHIT");
+    /*
     OdHeightfieldData * hf = NULL;
 
     {
@@ -516,6 +570,9 @@ static const NSUInteger defaultResolutionIndex = 3;
 
     if ( hf != NULL )
     {
+        minHeight = hf->dataMin;
+        maxHeight = hf->dataMax;
+
         const NSUInteger numberOfBytes
             = hf->resolution.x * hf->resolution.y * sizeof(float);
 
@@ -531,17 +588,13 @@ static const NSUInteger defaultResolutionIndex = 3;
                                  mipmaps:NO
                                     data:textureData ];
 
-        /*
-        printf("%f %f %f\n", hf->dataMin, hf->dataMax, hf->timeStamp);
-        fflush(stdout);
-        */
-
         SAFE_FREE(hf->data32f);
         FREE(hf);
     }
 
     [ basePlane render ];
     //[ projector render ];
+    */
 
     /*
     [[[ NPEngineGraphics instance ] orthographic ] activate ];
