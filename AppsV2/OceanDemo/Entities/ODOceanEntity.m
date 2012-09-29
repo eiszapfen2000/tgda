@@ -71,11 +71,99 @@ static const NSUInteger defaultResolutionIndex = 3;
 
 @interface ODOceanEntity (Private)
 
+- (void) startupFFTW;
+- (void) shutdownFFTW;
 - (void) generate:(id)argument;
 
 @end
 
 @implementation ODOceanEntity (Private)
+
+- (void) startupFFTW
+{
+    NSArray * paths
+            = NSSearchPathForDirectoriesInDomains(
+                NSApplicationSupportDirectory,
+                NSUserDomainMask,
+                YES);
+
+    // Normally only need the first path
+    NSString * wisdomFolder
+        = [[ paths objectAtIndex:0 ] stringByAppendingPathComponent:@"OceanDemo" ];
+    
+    // Create the path if it doesn't exist
+    NSError * e = nil;
+    BOOL success
+        = [[ NSFileManager defaultManager ]
+                    createDirectoryAtPath:wisdomFolder
+              withIntermediateDirectories:YES
+                               attributes:nil
+                                    error:&e ];
+
+    BOOL obtainedWisdom = NO;
+
+    NSString * wisdomFileName
+        = [ wisdomFolder stringByAppendingPathComponent:@"wisdom" ];
+
+    if ( [[ NSFileManager defaultManager ] isFile:wisdomFileName ] == YES )
+    {
+        printf("Loading FFTW wisdom...\n");
+
+        if ( fftw_import_wisdom_from_filename([ wisdomFileName UTF8String ]) != 0 )
+        {
+            printf("FFTW Wisdom obtained.\n");
+            obtainedWisdom = YES;
+        }
+
+        if ( obtainedWisdom == NO )
+        {
+            printf("Unable to import FFTW Wisdom.\n");
+        }
+    }
+    else
+    {
+        [[ NSFileManager defaultManager ] createEmptyFileAtPath:wisdomFileName ];
+    }
+
+    for ( uint32_t i = 0; i < ODOCEANENTITY_NUMBER_OF_RESOLUTIONS; i++)
+    {
+        const size_t arraySize = resolutions[i] * resolutions[i];
+
+        float * target = ALLOC_ARRAY(float, arraySize);
+        fftwf_complex * source = fftwf_malloc(sizeof(fftwf_complex) * arraySize);
+
+        plans[i]
+            = fftwf_plan_dft_c2r_2d(resolutions[i],
+                                    resolutions[i],
+                                    source,
+                                    target,
+                                    FFTW_MEASURE);
+
+        fftwf_free(source);
+        FREE(target);
+    }
+
+    if ( obtainedWisdom == NO )
+    {
+        if ( fftw_export_wisdom_to_filename([ wisdomFileName UTF8String ]) != 0 )
+        {
+            printf("FFTW Wisdom stored\n");
+        }
+    }
+}
+
+- (void) shutdownFFTW
+{
+    for ( uint32_t i = 0; i < ODOCEANENTITY_NUMBER_OF_RESOLUTIONS; i++ )
+    {
+        if ( plans[i] != NULL )
+        {
+            fftwf_destroy_plan(plans[i]);
+        }
+    }
+
+    fftw_forget_wisdom();
+}
 
 - (void) generate:(id)argument
 {
@@ -263,16 +351,8 @@ static const NSUInteger defaultResolutionIndex = 3;
         [ resultQueue removePointerAtIndex:0 ];
         count = [ resultQueue count ];
     }
+
     DESTROY(resultQueue);
-
-    for ( uint32_t i = 0; i < ODOCEANENTITY_NUMBER_OF_RESOLUTIONS; i++ )
-    {
-        if ( plans[i] != NULL )
-        {
-            fftwf_destroy_plan(plans[i]);
-        }
-    }
-
     DESTROY(mutex);
     DESTROY(condition);
 
@@ -281,6 +361,8 @@ static const NSUInteger defaultResolutionIndex = 3;
 
 - (void) start
 {
+    [ self startupFFTW ];
+
     if ( thread == nil )
     {
         odgaussianrng_initialise();
@@ -324,6 +406,8 @@ static const NSUInteger defaultResolutionIndex = 3;
         DESTROY(thread);
         odgaussianrng_shutdown();
     }
+
+    [ self shutdownFFTW ];
 }
 
 - (ODProjector *) projector
@@ -354,103 +438,6 @@ static const NSUInteger defaultResolutionIndex = 3;
 - (void) setCamera:(ODCamera *)newCamera
 {
     [ projector setCamera:newCamera ];
-}
-
-- (BOOL) loadFromDictionary:(NSDictionary *)config
-                      error:(NSError **)error
-{
-    NSAssert(config != nil, @"");
-
-    NSString * oceanName = [ config objectForKey:@"Name" ];
-    NSArray  * resolutionStrings = [ config objectForKey:@"Resolution" ];
-
-    if ( resolutionStrings == nil )
-    {
-        if ( error != NULL )
-        {
-            *error = nil;
-        }
-        
-        return NO;
-    }
-
-    [ self setName:oceanName ];
-
-    IVector2 resolution;
-    resolution.x = [[ resolutionStrings objectAtIndex:0 ] intValue ];
-    resolution.y = [[ resolutionStrings objectAtIndex:1 ] intValue ];
-
-    NSArray * paths
-        = NSSearchPathForDirectoriesInDomains(
-            NSApplicationSupportDirectory,
-            NSUserDomainMask,
-            YES);
-
-    // Normally only need the first path
-    NSString * wisdomFolder
-        = [[ paths objectAtIndex:0 ] stringByAppendingPathComponent:@"OceanDemo" ];
-    
-    // Create the path if it doesn't exist
-    NSError * e = nil;
-    BOOL success
-        = [[ NSFileManager defaultManager ]
-                    createDirectoryAtPath:wisdomFolder
-              withIntermediateDirectories:YES
-                               attributes:nil
-                                    error:&e ];
-
-    BOOL obtainedWisdom = NO;
-
-    NSString * wisdomFileName
-        = [ wisdomFolder stringByAppendingPathComponent:@"wisdom" ];
-
-    if ( [[ NSFileManager defaultManager ] isFile:wisdomFileName ] == YES )
-    {
-        NSLog(@"Loading FFTW wisdom...");
-
-        if ( fftw_import_wisdom_from_filename([ wisdomFileName UTF8String ]) != 0 )
-        {
-            NSLog(@"FFTW Wisdom obtained.");
-            obtainedWisdom = YES;
-        }
-
-        if ( obtainedWisdom == NO )
-        {
-            NSLog(@"Unable to import FFTW Wisdom.");
-        }
-    }
-    else
-    {
-        [[ NSFileManager defaultManager ] createEmptyFileAtPath:wisdomFileName ];
-    }
-
-    for ( uint32_t i = 0; i < ODOCEANENTITY_NUMBER_OF_RESOLUTIONS; i++)
-    {
-        const size_t arraySize = resolutions[i] * resolutions[i];
-
-        float * target = ALLOC_ARRAY(float, arraySize);
-        fftwf_complex * source = fftwf_malloc(sizeof(fftwf_complex) * arraySize);
-
-        plans[i]
-            = fftwf_plan_dft_c2r_2d(resolutions[i],
-                                    resolutions[i],
-                                    source,
-                                    target,
-                                    FFTW_MEASURE);
-
-        fftwf_free(source);
-        FREE(target);
-    }
-
-    if ( obtainedWisdom == NO )
-    {
-        if ( fftw_export_wisdom_to_filename([ wisdomFileName UTF8String ]) != 0 )
-        {
-            NSLog(@"FFTW Wisdom stored");
-        }
-    }
-
-    return YES;
 }
 
 - (void) update:(const double)frameTime
@@ -550,71 +537,24 @@ static const NSUInteger defaultResolutionIndex = 3;
     [ basePlane render ];
 }
 
-- (void) render
-{
-    NSLog(@"SHIT");
-    /*
-    OdHeightfieldData * hf = NULL;
+/*
+[[[ NPEngineGraphics instance ] orthographic ] activate ];
+[[[ NPEngineGraphics instance ] textureBindingState ] setTexture:heightfield texelUnit:0 ];
+[[[ NPEngineGraphics instance ] textureBindingState ] activate ];
+[[ effect techniqueWithName:@"texture" ] activate ];
+glBegin(GL_QUADS);
+    glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
+    glVertex2i(0, 0);
+    glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
+    glVertex2i(1, 0);
+    glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
+    glVertex2i(1, 1);
+    glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
+    glVertex2i(0, 1);
+glEnd();
 
-    {
-        [ mutex lock ];
-
-        if ( [ resultQueue count ] != 0)
-        {
-            hf = [ resultQueue pointerAtIndex:0 ];
-            [ resultQueue removePointerAtIndex:0 ];
-        }
-
-        [ mutex unlock ];
-    }
-
-    if ( hf != NULL )
-    {
-        minHeight = hf->dataMin;
-        maxHeight = hf->dataMax;
-
-        const NSUInteger numberOfBytes
-            = hf->resolution.x * hf->resolution.y * sizeof(float);
-
-        NSData * textureData
-            = [ NSData dataWithBytesNoCopy:hf->data32f
-                                    length:numberOfBytes
-                              freeWhenDone:NO ];
-
-        [ heightfield generateUsingWidth:hf->resolution.x
-                                  height:hf->resolution.y
-                             pixelFormat:NpImagePixelFormatR
-                              dataFormat:NpImageDataFormatFloat32
-                                 mipmaps:NO
-                                    data:textureData ];
-
-        SAFE_FREE(hf->data32f);
-        FREE(hf);
-    }
-
-    [ basePlane render ];
-    //[ projector render ];
-    */
-
-    /*
-    [[[ NPEngineGraphics instance ] orthographic ] activate ];
-    [[[ NPEngineGraphics instance ] textureBindingState ] setTexture:heightfield texelUnit:0 ];
-    [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
-    [[ effect techniqueWithName:@"texture" ] activate ];
-    glBegin(GL_QUADS);
-        glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
-        glVertex2i(0, 0);
-        glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
-        glVertex2i(1, 0);
-        glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
-        glVertex2i(1, 1);
-        glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
-        glVertex2i(0, 1);
-    glEnd();
-
-    [[[ NPEngineGraphics instance ] orthographic ] deactivate ];
-    */
-}
+[[[ NPEngineGraphics instance ] orthographic ] deactivate ];
+*/
 
 @end
 

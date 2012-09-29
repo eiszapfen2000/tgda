@@ -16,7 +16,7 @@
 
 #define ODOCEANENTITY_NUMBER_OF_RESOLUTIONS     4
 
-@interface ODOceanEntity : NPObject < ODPEntity >
+@interface ODOceanEntity : NPObject
 {
     NSCondition * condition;
     NSLock * mutex;
@@ -56,6 +56,7 @@
 - (float) maxHeight; 
 - (void) setCamera:(ODCamera *)newCamera;
 
+- (void) update:(const double)frameTime;
 - (void) renderBasePlane;
 
 @end

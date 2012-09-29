@@ -154,6 +154,8 @@
     camera    = [[ ODCamera       alloc ] init ];
     entities  = [[ NSMutableArray alloc ] init ];
 
+    ocean = [[ ODOceanEntity  alloc ] initWithName:@"Ocean" ];
+
     // camera animation
     fquat_set_identity(&startOrientation);
     fquat_set_identity(&endOrientation);
@@ -270,15 +272,12 @@
     NSString * sceneName          = [ sceneContents objectForKey:@"Name"     ];
     NSString * skylightEntityFile = [ sceneContents objectForKey:@"Skylight" ];
     NSArray  * entityFiles        = [ sceneContents objectForKey:@"Entities" ];
-    NSString * oceanEntityFile    = [ sceneContents objectForKey:@"Ocean"    ];
 
     [ self setName:sceneName ];
 
     skylight = [ self loadEntityFromFile:skylightEntityFile error:NULL ];
-    ocean    = [ self loadEntityFromFile:oceanEntityFile    error:NULL ];
 
     ASSERT_RETAIN(skylight);
-    ASSERT_RETAIN(ocean);
 
     [ skylight  setCamera:camera ];
     [ ocean     setCamera:camera ];

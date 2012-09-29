@@ -9,6 +9,7 @@ void main()
     vec4 position = textureLod(positions, out_texcoords.xy, 0);
     vec4 normal   = textureLod(normals,   out_texcoords.xy, 0);
 
+    // no position data
     if (position == vec4(FLT_MAX))
     {
         target = vec4(1.0, 0.0, 0.0, 1.0);
