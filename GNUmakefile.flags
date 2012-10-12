@@ -14,14 +14,12 @@ else
 endif
 
 ADDITIONAL_INCLUDE_DIRS += \
-    -I$(TGDA_DIR)/NPEngine2 \
     -I$(TGDA_DIR)/Dependencies/include \
-    -I/usr/local/include
+    -I$(TGDA_DIR)/NPEngine2
 
 ADDITIONAL_LIB_DIRS += \
     -L$(EXTERNAL_DEPENDENCIES_LIB_DIR) \
     -L$(NP_LIBS_DIR) \
-    -L/usr/local/lib
 
 ADDITIONAL_CPPFLAGS += \
     $(BASIC_DEFINES)

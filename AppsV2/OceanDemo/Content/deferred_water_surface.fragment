@@ -4,6 +4,11 @@ in vec2 out_texcoords;
 
 #define FLT_MAX 3.40282347e+38F
 
+float brak()
+{
+    return 1.0;
+}
+
 void main()
 {
     vec4 position = textureLod(positions, out_texcoords.xy, 0);
@@ -16,21 +21,40 @@ void main()
     }
     else
     {
+        float lol = brak();
         vec4 color = vec4(1.0);
 
-        if (position.y <= (0.0 + 2.0 * heightfieldMinMax.y))
+        if (position.y <= (0.0 + heightfieldMinMax.y))
         {
             const vec3 planeNormal = vec3(0.0, 1.0, 0.0);
             vec3 rayDirection = position.xyz - cameraPosition.xyz;
             float d1 = dot(cameraPosition, planeNormal);
             float d2 = dot(rayDirection, planeNormal);
-            float t = (0.0 - d1) / d2;
-            vec3 point = cameraPosition + t * rayDirection;
 
-            if (t < 0.0)
+            float t0 = (0.0 - d1) / d2;
+            float tBottom = (heightfieldMinMax.x - d1) / d2;
+            float tTop = (heightfieldMinMax.y - d1) / d2;
+
+            vec3 topPoint = cameraPosition + tTop * rayDirection;
+            vec3 bottomPoint = cameraPosition + tBottom * rayDirection;
+            vec3 point = cameraPosition + t0 * rayDirection;
+
+            vec3 ray = bottomPoint - topPoint;
+            vec2 rayOnPlane = ray.xz;
+
+            
+            if (t0 < 0.0)
                 color = vec4(0.0, 1.0, 0.0, 1.0);
             else
                 color = vec4(0.0, 0.0, 1.0, 1.0);
+            
+            /*
+            if (tBottom > tTop)
+                color = vec4(0.0, 1.0, 0.0, 1.0);
+            else
+                color = vec4(0.0, 0.0, 1.0, 1.0);
+            */
+
         }
 
         target = color;
