@@ -4,8 +4,36 @@ in vec2 out_texcoords;
 
 #define FLT_MAX 3.40282347e+38F
 
-float brak()
+float ray_intersect(in sampler2D heightMap, in vec2 heightMinMax, in vec4 dpds)
 {
+    const int numberOfLinearSteps = 10;
+    const int numberOfBinarySteps =  5;
+
+    //vec2 rayOnPlane = ray.xz;
+    //vec2 xzStep = rayOnPlane / float(numberOfLinearSteps - 1);
+
+
+    // start at top
+    float depth = heightMinMax.y;
+    // assume bottom is best
+    float bestDepth = heightMinMax.x;
+    // compute depth delta to take each iteration
+    float depthStep = (heightMinMax.x - heightMinMax.y) / float(numberOfLinearSteps - 1);
+
+    // search from top to bottom for first point inside the heightfield
+    for (int i = 0; i < numberOfLinearSteps; i++)
+    {
+        vec4 h = textureLod(heightMap, dpds.xy + float(i) * dpds.zw, 0);
+
+        if ( depth <= h.x )
+        {
+            bestDepth = depth;
+            break;
+        }         
+
+        depth += depthStep;
+    }
+
     return 1.0;
 }
 
@@ -21,8 +49,8 @@ void main()
     }
     else
     {
-        float lol = brak();
         vec4 color = vec4(1.0);
+        float lala = ray_intersect(positions, vec2(1.0), vec4(1.0));
 
         if (position.y <= (0.0 + heightfieldMinMax.y))
         {
@@ -42,11 +70,16 @@ void main()
             vec3 ray = bottomPoint - topPoint;
             vec2 rayOnPlane = ray.xz;
 
+            float rtes = mod(2.5, 2.0);
+
             
-            if (t0 < 0.0)
+            if (rtes == 0.5)
                 color = vec4(0.0, 1.0, 0.0, 1.0);
             else
                 color = vec4(0.0, 0.0, 1.0, 1.0);
+            
+
+            //color = vec4(0.0, 0.0, rtes, 1.0);
             
             /*
             if (tBottom > tTop)
