@@ -67,7 +67,7 @@ OdHeightfieldData;
 
 static const Vector2 defaultWindDirection = {10.0, 0.5};
 static const int32_t resolutions[4] = {64, 128, 256, 512};
-static const NSUInteger defaultResolutionIndex = 3;
+static const NSUInteger defaultResolutionIndex = 0;
 
 @interface ODOceanEntity (Private)
 
@@ -172,6 +172,15 @@ static const NSUInteger defaultResolutionIndex = 3;
     NPTimer * timer = [[ NPTimer alloc ] initWithName:@"Thread Timer" ];
     ODPhillipsSpectrum * s = [[ ODPhillipsSpectrum alloc ] init ];
 
+    float generationTime = 0.0;
+
+    NSNumber * n = [ NSNumber numberWithFloat:1.0f ];
+    int i = [n intValue];
+    NSInteger nsi = [n integerValue];
+    float f = [n floatValue];
+
+    NSLog(@"%d %ld %f", i, nsi, f);
+
     while ( [[ NSThread currentThread ] isCancelled ] == NO )
     {    
         [ condition lock ];
@@ -191,10 +200,10 @@ static const NSUInteger defaultResolutionIndex = 3;
             NSUInteger resIndex;
 
             {
-                [ mutex lock ];
+                [ resultQueueMutex lock ];
                 settings = spectrumSettings;
                 resIndex = resolutionIndex;
-                [ mutex unlock ];
+                [ resultQueueMutex unlock ];
             }
 
             const int32_t res = resolutions[resIndex];
@@ -209,11 +218,14 @@ static const NSUInteger defaultResolutionIndex = 3;
 
             [ timer update ];
 
-            const float totalTime = [ timer totalElapsedTime ];
-            result->timeStamp = totalTime;
+            //const float totalTime = [ timer totalElapsedTime ];
+            //result->timeStamp = totalTime;
+            result->timeStamp = generationTime;
 
             fftwf_complex * halfcomplexSpectrum
-                = [ s generateFloatFrequencySpectrumHC:settings atTime:totalTime ];
+                = [ s generateFloatFrequencySpectrumHC:settings atTime:generationTime ];
+
+            generationTime += 1.0f/60.0f;
 
             [ timer update ];
 
@@ -278,9 +290,9 @@ static const NSUInteger defaultResolutionIndex = 3;
             result->dataMax = maxSurfaceHeight;
 
             {
-                [ mutex lock ];
+                [ resultQueueMutex lock ];
                 [ resultQueue addPointer:result ];
-                [ mutex unlock ];
+                [ resultQueueMutex unlock ];
             }
         }
 
@@ -305,7 +317,8 @@ static const NSUInteger defaultResolutionIndex = 3;
 {
     self =  [ super initWithName:newName ];
 
-    mutex = [[ NSLock alloc ] init ];
+    resultQueueMutex = [[ NSLock alloc ] init ];
+    timeQueueMutex = [[ NSLock alloc ] init ];
     condition = [[ NSCondition alloc ] init ];
 
     generateData = NO;
@@ -320,12 +333,15 @@ static const NSUInteger defaultResolutionIndex = 3;
         = NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality;
     resultQueue = [[ NSPointerArray alloc ] initWithOptions:options ];
 
+    timeQueue = [[ NSMutableArray alloc ] initWithCapacity:16 ];
+
     projector = [[ ODProjector alloc ] initWithName:@"Projector" ];
     basePlane = [[ ODBasePlane alloc ] initWithName:@"BasePlane" ];
     [ basePlane setProjector:projector ];
 
     heightfield = [[ NPTexture2D alloc ] initWithName:@"Height Texture" ];
     [ heightfield setTextureFilter:NpTexture2DFilterLinear ];
+    [ heightfield setTextureWrap:NpTextureWrapRepeat ];
 
     minHeight =  FLT_MAX;
     maxHeight = -FLT_MAX;
@@ -352,8 +368,12 @@ static const NSUInteger defaultResolutionIndex = 3;
         count = [ resultQueue count ];
     }
 
+    [ timeQueue removeAllObjects ];
+
     DESTROY(resultQueue);
-    DESTROY(mutex);
+    DESTROY(timeQueue);
+    DESTROY(resultQueueMutex);
+    DESTROY(timeQueueMutex);
     DESTROY(condition);
 
     [ super dealloc ];
@@ -449,7 +469,7 @@ static const NSUInteger defaultResolutionIndex = 3;
     OdHeightfieldData * hf = NULL;
 
     {
-        [ mutex lock ];
+        [ resultQueueMutex lock ];
 
         queueCount = [ resultQueue count ];
 
@@ -485,6 +505,8 @@ static const NSUInteger defaultResolutionIndex = 3;
             queueCount = count;
         }
 
+        //printf("Queue %lu\n", queueCount);
+
         // get heightfield data
         if ( queueCount != 0)
         {
@@ -493,7 +515,7 @@ static const NSUInteger defaultResolutionIndex = 3;
             queueCount = [ resultQueue count ];
         }
 
-        [ mutex unlock ];
+        [ resultQueueMutex unlock ];
     }
 
     // update condition variable
@@ -511,6 +533,8 @@ static const NSUInteger defaultResolutionIndex = 3;
     {
         minHeight = hf->dataMin;
         maxHeight = hf->dataMax;
+
+        //printf("stamp %f\n", hf->timeStamp);
 
         const NSUInteger numberOfBytes
             = hf->resolution.x * hf->resolution.y * sizeof(float);
