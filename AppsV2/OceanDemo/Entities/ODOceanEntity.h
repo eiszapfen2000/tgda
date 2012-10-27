@@ -6,6 +6,7 @@
 
 @class NSCondition;
 @class NSLock;
+@class NSMutableArray;
 @class NSPointerArray;
 @class NSThread;
 @class NPTimer;
@@ -19,7 +20,8 @@
 @interface ODOceanEntity : NPObject
 {
     NSCondition * condition;
-    NSLock * mutex;
+    NSLock * resultQueueMutex;
+    NSLock * timeQueueMutex;
 
     Vector2 lastWindDirection;
     Vector2 windDirection;
@@ -33,6 +35,7 @@
     
     NSThread * thread;
     NSPointerArray * resultQueue;
+    NSMutableArray * timeQueue;
 
     ODProjector * projector;
     ODBasePlane * basePlane;
