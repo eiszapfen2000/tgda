@@ -39,4 +39,25 @@
     }
 }
 
+- (void) removePointersInRange:(NSRange)aRange
+{
+    NSUInteger numberOfPointers = [ self count ];
+    NSUInteger startIndex = aRange.location;
+
+    NSUInteger i = aRange.location + aRange.length;
+
+    if ( numberOfPointers < i)
+    {
+        i = numberOfPointers;
+    }
+
+    if ( i > startIndex )
+    {
+        while ( i-- > startIndex )
+        {
+            [ self removePointerAtIndex:i ];
+        }
+    }
+}
+
 @end
