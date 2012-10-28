@@ -176,6 +176,8 @@ int main (int argc, char **argv)
     // delete all autoreleased objects created during resource loading
     DESTROY(resourcePool);
 
+    [[[ NP Core ] timer ] reset ];
+
     // run loop
     while ( running )
     {
@@ -254,7 +256,8 @@ int main (int argc, char **argv)
         // check if ESC key was pressed or window was closed
         running = running && glfwGetWindowParam( GLFW_OPENED );
 
-        //NSLog(@"%f %d", frameTime, fps);
+        //printf("%f %d\n", frameTime, fps);
+        //fflush(stdout);
 
         // kill autorelease pool
         DESTROY(innerPool);
