@@ -71,12 +71,12 @@ void main()
             dpds.zw = ((bottomPoint.xz - topPoint.xz) / tileSizeInWS);
             dpds.zw = dpds.zw / float(numberOfLinearSteps - 1);
 
-            float lala = ray_intersect(heightfield, heightfieldMinMax, dpds, int(10));
+            float lala = ray_intersect(heightfield, heightfieldMinMax, dpds, int(5));
 
             if (t0 < 0.0)
                 color = vec4(0.0, 1.0, 0.0, 1.0);
             else
-                color = vec4(0.0, 0.0, lala + 1.0, 1.0);
+                color = vec4(0.0, 0.0, (lala - heightfieldMinMax.x) / (heightfieldMinMax.y - heightfieldMinMax.x), 1.0);
             
 
             //color = vec4(0.0, 0.0, rtes, 1.0);

@@ -8,6 +8,7 @@
 #import <Foundation/NSPointerArray.h>
 #import <Foundation/NSThread.h>
 #import "Core/Container/NPAssetArray.h"
+#import "Core/Container/NSPointerArray+NPEngine.h"
 #import "Core/Thread/NPSemaphore.h"
 #import "Core/Timer/NPTimer.h"
 #import "Core/File/NSFileManager+NPEngine.h"
@@ -67,7 +68,8 @@ OdHeightfieldData;
 
 static const Vector2 defaultWindDirection = {10.0, 0.5};
 static const int32_t resolutions[4] = {64, 128, 256, 512};
-static const NSUInteger defaultResolutionIndex = 0;
+static const NSUInteger defaultResolutionIndex = 3;
+static const double OneDivSixty = 1.0 / 60.0;
 
 @interface ODOceanEntity (Private)
 
@@ -174,13 +176,6 @@ static const NSUInteger defaultResolutionIndex = 0;
 
     float generationTime = 0.0;
 
-    NSNumber * n = [ NSNumber numberWithFloat:1.0f ];
-    int i = [n intValue];
-    NSInteger nsi = [n integerValue];
-    float f = [n floatValue];
-
-    NSLog(@"%d %ld %f", i, nsi, f);
-
     while ( [[ NSThread currentThread ] isCancelled ] == NO )
     {    
         [ condition lock ];
@@ -226,6 +221,7 @@ static const NSUInteger defaultResolutionIndex = 0;
                 = [ s generateFloatFrequencySpectrumHC:settings atTime:generationTime ];
 
             generationTime += 1.0f/60.0f;
+            //NSLog(@"%f", generationTime);
 
             [ timer update ];
 
@@ -345,6 +341,7 @@ static const NSUInteger defaultResolutionIndex = 0;
 
     minHeight =  FLT_MAX;
     maxHeight = -FLT_MAX;
+    timeStamp =  DBL_MAX;
 
     return self;
 }
@@ -462,11 +459,34 @@ static const NSUInteger defaultResolutionIndex = 0;
 
 - (void) update:(const double)frameTime
 {
+    //NSLog(@"update");
+    
     [ projector update:frameTime ];
     [ basePlane update:frameTime ];
 
+    const double totalElapsedTime
+        = [[[ NPEngineCore instance ] timer ] totalElapsedTime ];
+
+    /*
+    // time did not advance more than half of 1/60
+    // simply use current heightfield again
+    if ((timeStamp + 0.5 * OneDivSixty) <= totalElapsedTime)
+    {
+        NSLog(@"EARLY %f %f", timeStamp, totalElapsedTime);
+        return;
+    }
+    */
+
     NSUInteger queueCount = 0;
     OdHeightfieldData * hf = NULL;
+    BOOL deleteHFData = NO;
+
+    /*
+    {
+        [ timeQueueMutex lock ];
+        [ timeQueueMutex unlock ];
+    }
+    */
 
     {
         [ resultQueueMutex lock ];
@@ -508,13 +528,63 @@ static const NSUInteger defaultResolutionIndex = 0;
         //printf("Queue %lu\n", queueCount);
 
         // get heightfield data
-        if ( queueCount != 0)
+        if ( queueCount != 0 )
         {
-            hf = [ resultQueue pointerAtIndex:0 ];
-            [ resultQueue removePointerAtIndex:0 ];
+            //NSLog(@"SEARCH %f", totalElapsedTime);
+
+            NSUInteger f = NSNotFound;
+            double queueMinTimeStamp =  DBL_MAX;
+            double queueMaxTimeStamp = -DBL_MAX;
+
+            for ( NSUInteger i = 0; i < queueCount; i++ )
+            {
+                OdHeightfieldData * h = [ resultQueue pointerAtIndex:i ];
+                //NSLog(@"TS %f", h->timeStamp);
+                const double x = totalElapsedTime - 0.5 * OneDivSixty;
+                const double y = totalElapsedTime + 0.5 * OneDivSixty;
+                const double hTimeStamp = h->timeStamp;
+
+                queueMinTimeStamp = MIN(queueMinTimeStamp, hTimeStamp);
+                queueMaxTimeStamp = MAX(queueMaxTimeStamp, hTimeStamp);
+
+                if ( hTimeStamp >= x && hTimeStamp < y )
+                {
+                    f = i;
+                    //NSLog(@"FOUND %lu", f);
+                }
+            }
+
+            //NSLog(@"MIN %f MAX %f", queueMinTimeStamp, queueMaxTimeStamp);
+
+            if ( f != NSNotFound )
+            {
+                hf = [ resultQueue pointerAtIndex:f ];
+
+                for ( NSUInteger i = 0; i < f; i++ )
+                {
+                    OdHeightfieldData * h = [ resultQueue pointerAtIndex:i ];
+                    SAFE_FREE(h->data32f);
+                    FREE(h);
+                }
+
+                NSRange range = NSMakeRange(0, f);
+                //NSLog(@"Range %lu %lu", range.location, range.length);
+
+                [ resultQueue removePointersInRange:range ];
+            }
+            else
+            {
+                hf = [ resultQueue pointerAtIndex:0 ];
+                [ resultQueue removePointerAtIndex:0 ];
+                deleteHFData = YES;
+            }
+            /*
+
             queueCount = [ resultQueue count ];
+            */
         }
 
+        queueCount = [ resultQueue count ];
         [ resultQueueMutex unlock ];
     }
 
@@ -533,6 +603,7 @@ static const NSUInteger defaultResolutionIndex = 0;
     {
         minHeight = hf->dataMin;
         maxHeight = hf->dataMax;
+        timeStamp = hf->timeStamp;
 
         //printf("stamp %f\n", hf->timeStamp);
 
@@ -551,8 +622,13 @@ static const NSUInteger defaultResolutionIndex = 0;
                                  mipmaps:NO
                                     data:textureData ];
 
-        SAFE_FREE(hf->data32f);
-        FREE(hf);
+        if ( deleteHFData == YES )
+        {
+            SAFE_FREE(hf->data32f);
+            FREE(hf);
+        }
+
+        NSLog(@"%f %f", totalElapsedTime, timeStamp);
     }
 }
 

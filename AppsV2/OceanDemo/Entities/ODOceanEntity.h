@@ -43,6 +43,7 @@
     NPTexture2D * heightfield;
     float minHeight;
     float maxHeight;
+    double timeStamp;
 }
 
 - (id) init;
