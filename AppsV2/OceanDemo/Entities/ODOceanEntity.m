@@ -24,7 +24,6 @@
 #import "ODProjector.h"
 #import "ODBasePlane.h"
 #import "Ocean/ODPhillipsSpectrum.h"
-#import "Ocean/ODGaussianRNG.h"
 #import "ODOceanEntity.h"
 
 void print_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
@@ -274,10 +273,10 @@ static const double OneDivSixty = 1.0 / 60.0;
             
             const float fpsMinMax = [ timer frameTime ];
 
-            /*
-            printf("PHILLIPS HC: %f IFFT: %f Min: %f Max: %f MinMaxTime: %f\n", fpsHC, fpsIFFTHC, minHeight, maxHeight, fpsMinMax);
+            
+            printf("PHILLIPS HC: %f IFFT: %f Min: %f Max: %f MinMaxTime: %f\n", fpsHC, fpsIFFTHC, minSurfaceHeight, maxSurfaceHeight, fpsMinMax);
             fflush(stdout);
-            */
+            
 
             fftwf_free(halfcomplexSpectrum);
 
@@ -382,8 +381,6 @@ static const double OneDivSixty = 1.0 / 60.0;
 
     if ( thread == nil )
     {
-        odgaussianrng_initialise();
-
         thread
             = [[ NSThread alloc ]
                     initWithTarget:self
@@ -421,7 +418,6 @@ static const double OneDivSixty = 1.0 / 60.0;
         }
 
         DESTROY(thread);
-        odgaussianrng_shutdown();
     }
 
     [ self shutdownFFTW ];
@@ -628,7 +624,7 @@ static const double OneDivSixty = 1.0 / 60.0;
             FREE(hf);
         }
 
-        NSLog(@"%f %f", totalElapsedTime, timeStamp);
+        //NSLog(@"%f %f", totalElapsedTime, timeStamp);
     }
 }
 

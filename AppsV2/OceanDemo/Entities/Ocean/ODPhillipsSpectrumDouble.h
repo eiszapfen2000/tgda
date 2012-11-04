@@ -1,10 +1,12 @@
 #import "fftw3.h"
 #import "Core/NPObject/NPObject.h"
+#import "ODGaussianRNG.h"
 #import "ODPFrequencySpectrumGeneration.h"
 
 @interface ODPhillipsSpectrumDouble : NPObject < ODPFrequencySpectrumGenerationDouble >
 {
     fftw_complex * H0;
+    OdGaussianRng * gaussianRNG;
     ODSpectrumSettings lastSettings;
     ODSpectrumSettings currentSettings;
 }

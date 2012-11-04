@@ -58,6 +58,8 @@ double amplitude(Vector2 const * const windDirection,
 
     H0 = NULL;
 
+    gaussianRNG = odgaussianrng_alloc_init();
+
     lastSettings.resolution = (IVector2){INT_MAX, INT_MAX};
     currentSettings.resolution = (IVector2){0, 0};
 
@@ -73,6 +75,7 @@ double amplitude(Vector2 const * const windDirection,
 - (void) dealloc
 {
     FFTW_SAFE_FREE(H0);
+    odgaussianrng_free(gaussianRNG);
 
     [ super dealloc ];
 }
@@ -110,8 +113,8 @@ double amplitude(Vector2 const * const windDirection,
     {
         for ( int32_t j = 0; j < resolution.y; j++ )
         {
-            const double xi_r = gaussian_fprandomnumber();
-            const double xi_i = gaussian_fprandomnumber();
+            const double xi_r = odgaussianrng_get_next(gaussianRNG);
+            const double xi_i = odgaussianrng_get_next(gaussianRNG);
 
             const double di = i;
             const double dj = j;
