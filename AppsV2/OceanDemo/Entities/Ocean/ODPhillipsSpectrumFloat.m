@@ -1,5 +1,4 @@
 #import "ODConstants.h"
-#import "ODGaussianRNG.h"
 #import "ODPhillipsSpectrumFloat.h"
 
 #define FFTW_FREE(_pointer)        do {void *_ptr=(void *)(_pointer); fftwf_free(_ptr); _pointer=NULL; } while (0)
@@ -12,7 +11,7 @@ typedef enum ODQuadrants
 }
 ODQuadrants;
 
-static float omegaf_for_k(FVector2 const * const k)
+static inline float omegaf_for_k(FVector2 const * const k)
 {
     return sqrtf(EARTH_ACCELERATIONf * fv2_v_length(k));
 }
@@ -58,6 +57,8 @@ static float amplitudef(FVector2 const * const windDirection,
 
     H0 = NULL;
 
+    gaussianRNG = odgaussianrng_alloc_init();
+
     lastSettings.resolution = (IVector2){INT_MAX, INT_MAX};
     currentSettings.resolution = (IVector2){0, 0};
 
@@ -73,6 +74,7 @@ static float amplitudef(FVector2 const * const windDirection,
 - (void) dealloc
 {
     FFTW_SAFE_FREE(H0);
+    odgaussianrng_free(gaussianRNG);
 
     [ super dealloc ];
 }
@@ -110,8 +112,11 @@ static float amplitudef(FVector2 const * const windDirection,
     {
         for ( int32_t j = 0; j < resolution.x; j++ )
         {
-            const float xi_r = (float)gaussian_fprandomnumber();
-            const float xi_i = (float)gaussian_fprandomnumber();
+            //const float xi_r = (float)gaussian_fprandomnumber();
+            //const float xi_i = (float)gaussian_fprandomnumber();
+            const float xi_r = (float)odgaussianrng_get_next(gaussianRNG);
+            const float xi_i = (float)odgaussianrng_get_next(gaussianRNG);
+
 
             const float di = i;
             const float dj = j;
