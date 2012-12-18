@@ -650,19 +650,32 @@ static BOOL locked = NO;
 
 	for (int32_t i = 0; i < numberOfActiveUniforms; i++)
 	{
-		GLsizei uniformNameLength;
-		GLint uniformSize;
-		GLenum uniformType;
+		GLsizei uniformNameLength = -1;
+		GLint uniformSize = -1;
+		GLenum uniformType = GL_NONE;
         GLint uniformLocation;
 		char uniformName[maxUniformNameLength];
+        memset(uniformName, 0, maxUniformNameLength);
 
 		glGetActiveUniform(glID, i, maxUniformNameLength, &uniformNameLength,
 			&uniformSize, &uniformType, uniformName);
 
-        // because of INTEL driver
-        uniformLocation = glGetUniformLocation(glID, uniformName);
+        // no information, probable cause: link failed
+        if (( uniformNameLength == 0 ) && ( strlen(uniformName) == 0))
+        {
+            // print something
+            continue;
+        }
 
-        #warning FIXME: Check for valid values returned by glGetActiveUniform
+        // even less information, error
+        if (( uniformNameLength == -1 ) || ( uniformSize == -1 )
+            || ( uniformType == GL_NONE ))
+        {
+            // print something
+            continue;
+        }
+
+        uniformLocation = glGetUniformLocation(glID, uniformName);
 
         NSString * uName
             = [ NSString stringWithCString:uniformName
@@ -676,6 +689,9 @@ static BOOL locked = NO;
 
         [ techniqueVariables addObject:vt ];
 	}
+
+    NSAssert([ techniqueVariables count ] == (NSUInteger)numberOfActiveUniforms,
+             @"Active uniform parse error");
 }
 
 - (void) activateVariables
