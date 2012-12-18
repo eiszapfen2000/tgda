@@ -161,7 +161,7 @@
     NSDictionary * arguments
         = [ NSDictionary dictionaryWithObject:@"nearest" forKey:@"Filter" ];
 
-    NPTexture2D * page
+    id <NPPPersistentObject> page
         = [[[ NPEngineGraphics instance ] textures2D ]
                  getAssetWithFileName:fileName arguments:arguments];
 
