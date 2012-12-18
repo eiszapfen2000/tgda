@@ -677,6 +677,12 @@ static BOOL locked = NO;
 
         uniformLocation = glGetUniformLocation(glID, uniformName);
 
+        if ( uniformLocation == -1 )
+        {
+            // print something
+            continue;
+        }
+
         NSString * uName
             = [ NSString stringWithCString:uniformName
                                   encoding:NSASCIIStringEncoding ];
