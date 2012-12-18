@@ -84,10 +84,10 @@
     }
 
     NPTexture2D * texture
-        = [[[ NPEngineGraphics
-                instance ] textures2D ]
-                  getAssetWithFileName:fileName
-                             arguments:arguments ];
+        = (NPTexture2D *)[[[ NPEngineGraphics
+                               instance ] textures2D ]
+                                 getAssetWithFileName:fileName
+                                            arguments:arguments ];
 
     if ( texture != nil )
     {
