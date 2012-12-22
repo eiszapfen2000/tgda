@@ -72,7 +72,7 @@ void vertices_allocate_storage(NpSUX2Vertices * vertices, const int32_t numberOf
     assert(numberOfVertices > 0);
 
     vertices->maxVertex = numberOfVertices - 1;
-    vertices->maxIndex  = MAX(0, numberOfIndices  - 1);
+    vertices->maxIndex  = MAX(0, numberOfIndices - 1);
 
     vertices->positions = ALLOC_ARRAY(float, 3 * numberOfVertices);
 

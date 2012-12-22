@@ -336,11 +336,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     NPLOG(@"");
     NPLOG(@"%@ starting up...", [ self name ]);
 
-    GLenum error = glewInit();
-    if ( error != GLEW_OK )
+    GLenum glewInitError = glewInit();
+    if ( glewInitError != GLEW_OK )
     {
         NSString * errorString
-            = [ NSString stringWithUTF8String:(const char *)glewGetErrorString(error) ];
+            = [ NSString stringWithUTF8String:(const char *)glewGetErrorString(glewInitError) ];
 
         NSError * error = [ NSError errorWithCode:NPEngineGraphicsGLEWError
                                       description:errorString ];
