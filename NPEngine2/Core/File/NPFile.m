@@ -116,7 +116,7 @@
     return (fread(buffer, elementSize, numberOfElements, file) == numberOfElements);
 }
 
-- (BOOL) writeElements:(void *)buffer
+- (BOOL) writeElements:(const void *)buffer
            elementSize:(size_t)elementSize
       numberOfElements:(size_t)numberOfElements
 {
@@ -432,7 +432,7 @@
         return NO;
     }
 
-    return [ self writeElements:(void *)cString
+    return [ self writeElements:cString
                     elementSize:1
                numberOfElements:length ];
 }

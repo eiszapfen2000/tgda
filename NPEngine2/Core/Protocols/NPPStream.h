@@ -39,7 +39,7 @@ NpStreamMode;
 - (BOOL) readSUXString:(NSString **)string;
 - (BOOL) readSUXScript:(NPStringList **)script;
 
-- (BOOL) writeElements:(void *)buffer
+- (BOOL) writeElements:(const void *)buffer
            elementSize:(size_t)elementSize
       numberOfElements:(size_t)numberOfElements
                       ;
