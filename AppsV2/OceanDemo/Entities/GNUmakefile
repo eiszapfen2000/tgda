@@ -16,7 +16,8 @@ ODOceanEntity.h \
 ODProjectedGrid.h \
 ODPerlinNoise.h \
 ODPreethamSkylight.h \
-ODTerrain.h
+ODTerrain.h \
+ODHeightfieldQueue.h
 
 ODEntities_OBJC_FILES = \
 ODBasePlane.m \
@@ -28,7 +29,8 @@ ODOceanEntity.m \
 ODProjectedGrid.m \
 ODPerlinNoise.m \
 ODPreethamSkylight.m \
-ODTerrain.m
+ODTerrain.m \
+ODHeightfieldQueue.m
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make
