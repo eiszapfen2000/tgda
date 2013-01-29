@@ -17,9 +17,11 @@ OdHeightfieldData;
 
 void od_heightfielddata_initialise();
 
-OdHeightfieldData * hf_alloc();
-OdHeightfieldData * hf_alloc_init();
-OdHeightfieldData * hf_free(OdHeightfieldData * heightfield);
+OdHeightfieldData * heightfield_alloc();
+OdHeightfieldData * heightfield_alloc_init();
+OdHeightfieldData * heightfield_alloc_init_with_resolution_and_size(IVector2 resolution, Vector2 size);
+OdHeightfieldData * heightfield_free(OdHeightfieldData * heightfield);
+void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield);
 
 @interface ODHeightfieldQueue : NPObject
 {
