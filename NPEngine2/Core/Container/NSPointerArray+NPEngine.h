@@ -7,6 +7,7 @@
 - (NSUInteger) indexOfPointerIdenticalTo:(void *)pointer;
 - (void) removePointerIdenticalTo:(void *)pointer;
 - (void) removePointersInRange:(NSRange)aRange;
+- (void) removeAllPointers;
 
 @end
 
