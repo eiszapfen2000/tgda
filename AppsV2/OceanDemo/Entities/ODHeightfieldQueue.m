@@ -18,7 +18,9 @@ OdHeightfieldData * heightfield_alloc()
 
 OdHeightfieldData * heightfield_alloc_init()
 {
-    OdHeightfieldData * result = (OdHeightfieldData *)npfreenode_alloc(OD_HEIGHTFIELDDATA_FREELIST);
+    OdHeightfieldData * result
+        = (OdHeightfieldData *)npfreenode_alloc(OD_HEIGHTFIELDDATA_FREELIST);
+
     memset(result, 0, sizeof(OdHeightfieldData));
 
     return result;
@@ -26,7 +28,8 @@ OdHeightfieldData * heightfield_alloc_init()
 
 OdHeightfieldData * heightfield_alloc_init_with_resolution_and_size(IVector2 resolution, Vector2 size)
 {
-    OdHeightfieldData * result = (OdHeightfieldData *)npfreenode_alloc(OD_HEIGHTFIELDDATA_FREELIST);
+    OdHeightfieldData * result
+        = (OdHeightfieldData *)npfreenode_alloc(OD_HEIGHTFIELDDATA_FREELIST);
 
     memset(result, 0, sizeof(OdHeightfieldData));
 
@@ -50,6 +53,7 @@ void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield)
 
     float maxSurfaceHeight = -FLT_MAX;
     float minSurfaceHeight =  FLT_MAX;
+
     int32_t numberOfElements = heightfield->resolution.x * heightfield->resolution.y;
 
     for ( int32_t i = 0; i < numberOfElements; i++ )
