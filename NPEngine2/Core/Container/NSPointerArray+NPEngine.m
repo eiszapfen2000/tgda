@@ -60,4 +60,18 @@
     }
 }
 
+- (void) removeAllPointers
+{
+    NSUInteger numberOfPointers = [ self count ];
+
+    if (numberOfPointers > 0)
+    {
+        NSUInteger i = numberOfPointers;
+        while ( i-- != 0)
+        {
+            [ self removePointerAtIndex:i ];
+        }
+    }
+}
+
 @end
