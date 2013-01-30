@@ -14,6 +14,7 @@
 @class ODCamera;
 @class ODProjector;
 @class ODBasePlane;
+@class ODHeightfieldQueue;
 
 #define ODOCEANENTITY_NUMBER_OF_RESOLUTIONS     4
 
@@ -21,7 +22,6 @@
 {
     NSCondition * condition;
     NSLock * resultQueueMutex;
-    NSLock * timeQueueMutex;
 
     Vector2 lastWindDirection;
     Vector2 windDirection;
@@ -34,8 +34,7 @@
     fftwf_plan plans[ODOCEANENTITY_NUMBER_OF_RESOLUTIONS];
     
     NSThread * thread;
-    NSPointerArray * resultQueue;
-    NSMutableArray * timeQueue;
+    ODHeightfieldQueue * resultQueue;
 
     ODProjector * projector;
     ODBasePlane * basePlane;

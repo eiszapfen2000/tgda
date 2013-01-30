@@ -24,6 +24,7 @@
 #import "ODProjector.h"
 #import "ODBasePlane.h"
 #import "Ocean/ODPhillipsSpectrum.h"
+#import "ODHeightfieldQueue.h"
 #import "ODOceanEntity.h"
 
 void print_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
@@ -51,19 +52,6 @@ void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex * spec
         printf("\n");
     }
 }
-
-
-// TODO: use a freelist for instances of OdHeightfieldData
-typedef struct
-{
-    IVector2 resolution;
-    Vector2 size;
-    double timeStamp;
-    float * data32f;
-    float dataMin;
-    float dataMax;
-}
-OdHeightfieldData;
 
 static const Vector2 defaultWindDirection = {10.0, 0.5};
 static const int32_t resolutions[4] = {64, 128, 256, 512};
@@ -203,12 +191,8 @@ static const double OneDivSixty = 1.0 / 60.0;
             const int32_t res = resolutions[resIndex];
             settings.resolution = (IVector2){res, res};
 
-            float * c2r = ALLOC_ARRAY(float, settings.resolution.x * settings.resolution.y);
-
-            OdHeightfieldData * result = ALLOC(OdHeightfieldData);
-            result->size = settings.size;
-            result->resolution = settings.resolution;
-            result->data32f = NULL;
+            OdHeightfieldData * result
+                = heightfield_alloc_init_with_resolution_and_size(settings.resolution, settings.size);
 
             [ timer update ];
 
@@ -254,39 +238,23 @@ static const double OneDivSixty = 1.0 / 60.0;
 
             [ timer update ];
 
-            fftwf_execute_dft_c2r(plans[resIndex], halfcomplexSpectrum, c2r);
+            fftwf_execute_dft_c2r(plans[resIndex], halfcomplexSpectrum, result->data32f);
 
             [ timer update ];
 
             const float fpsIFFTHC = [ timer frameTime ];
-
-            float maxSurfaceHeight = -FLT_MAX;
-            float minSurfaceHeight =  FLT_MAX;
-            int32_t numberOfElements = settings.resolution.x * settings.resolution.y;
-            for ( int32_t i = 0; i < numberOfElements; i++ )
-            {
-                maxSurfaceHeight = MAX(maxSurfaceHeight, c2r[i]);
-                minSurfaceHeight = MIN(minSurfaceHeight, c2r[i]);
-            }
+            heightfield_hf_compute_min_max(result);
 
             [ timer update ];
             
             const float fpsMinMax = [ timer frameTime ];
-
-            
-            printf("PHILLIPS HC: %f IFFT: %f Min: %f Max: %f MinMaxTime: %f\n", fpsHC, fpsIFFTHC, minSurfaceHeight, maxSurfaceHeight, fpsMinMax);
+            printf("PHILLIPS HC: %f IFFT: %f Min: %f Max: %f MinMaxTime: %f\n", fpsHC, fpsIFFTHC, result->dataMin, result->dataMax, fpsMinMax);
             fflush(stdout);
-            
-
             fftwf_free(halfcomplexSpectrum);
-
-            result->data32f = c2r;
-            result->dataMin = minSurfaceHeight;
-            result->dataMax = maxSurfaceHeight;
 
             {
                 [ resultQueueMutex lock ];
-                [ resultQueue addPointer:result ];
+                [ resultQueue addHeightfield:result ];
                 [ resultQueueMutex unlock ];
             }
         }
@@ -313,7 +281,6 @@ static const double OneDivSixty = 1.0 / 60.0;
     self =  [ super initWithName:newName ];
 
     resultQueueMutex = [[ NSLock alloc ] init ];
-    timeQueueMutex = [[ NSLock alloc ] init ];
     condition = [[ NSCondition alloc ] init ];
 
     generateData = NO;
@@ -324,11 +291,7 @@ static const double OneDivSixty = 1.0 / 60.0;
     lastWindDirection = (Vector2){DBL_MAX, DBL_MAX};
     windDirection = defaultWindDirection;
 
-    NSPointerFunctionsOptions options
-        = NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality;
-    resultQueue = [[ NSPointerArray alloc ] initWithOptions:options ];
-
-    timeQueue = [[ NSMutableArray alloc ] initWithCapacity:16 ];
+    resultQueue = [[ ODHeightfieldQueue alloc ] init ];
 
     projector = [[ ODProjector alloc ] initWithName:@"Projector" ];
     basePlane = [[ ODBasePlane alloc ] initWithName:@"BasePlane" ];
@@ -350,26 +313,8 @@ static const double OneDivSixty = 1.0 / 60.0;
     DESTROY(heightfield);
     DESTROY(projector);
     DESTROY(basePlane);
-
-    NSUInteger count = [ resultQueue count ];
-    while (count != 0)
-    {
-        OdHeightfieldData * hf = [ resultQueue pointerAtIndex:0 ];
-        if ( hf != NULL )
-        {
-            SAFE_FREE(hf->data32f);
-            FREE(hf);
-        }
-        [ resultQueue removePointerAtIndex:0 ];
-        count = [ resultQueue count ];
-    }
-
-    [ timeQueue removeAllObjects ];
-
     DESTROY(resultQueue);
-    DESTROY(timeQueue);
     DESTROY(resultQueueMutex);
-    DESTROY(timeQueueMutex);
     DESTROY(condition);
 
     [ super dealloc ];
@@ -477,13 +422,6 @@ static const double OneDivSixty = 1.0 / 60.0;
     OdHeightfieldData * hf = NULL;
     BOOL deleteHFData = NO;
 
-    /*
-    {
-        [ timeQueueMutex lock ];
-        [ timeQueueMutex unlock ];
-    }
-    */
-
     {
         [ resultQueueMutex lock ];
 
@@ -505,20 +443,9 @@ static const double OneDivSixty = 1.0 / 60.0;
             lastWindDirection = windDirection;
             lastResolutionIndex = resolutionIndex;
 
-            NSUInteger count = queueCount;
-            while (count != 0)
-            {
-                OdHeightfieldData * hf = [ resultQueue pointerAtIndex:0 ];
-                if ( hf != NULL )
-                {
-                    SAFE_FREE(hf->data32f);
-                    FREE(hf);
-                }
-                [ resultQueue removePointerAtIndex:0 ];
-                count = [ resultQueue count ];
-            }
+            [ resultQueue clear ];
 
-            queueCount = count;
+            queueCount = 0;
         }
 
         //printf("Queue %lu\n", queueCount);
@@ -534,7 +461,7 @@ static const double OneDivSixty = 1.0 / 60.0;
 
             for ( NSUInteger i = 0; i < queueCount; i++ )
             {
-                OdHeightfieldData * h = [ resultQueue pointerAtIndex:i ];
+                OdHeightfieldData * h = [ resultQueue heightfieldAtIndex:i ];
                 //NSLog(@"TS %f", h->timeStamp);
                 const double x = totalElapsedTime - 0.5 * OneDivSixty;
                 const double y = totalElapsedTime + 0.5 * OneDivSixty;
@@ -554,24 +481,26 @@ static const double OneDivSixty = 1.0 / 60.0;
 
             if ( f != NSNotFound )
             {
-                hf = [ resultQueue pointerAtIndex:f ];
+                hf = [ resultQueue heightfieldAtIndex:f ];
 
                 for ( NSUInteger i = 0; i < f; i++ )
                 {
+                    /*
                     OdHeightfieldData * h = [ resultQueue pointerAtIndex:i ];
                     SAFE_FREE(h->data32f);
                     FREE(h);
+                    */
+                    [ resultQueue removeHeightfieldAtIndex:0 ];
                 }
 
-                NSRange range = NSMakeRange(0, f);
+                //NSRange range = NSMakeRange(0, f);
                 //NSLog(@"Range %lu %lu", range.location, range.length);
 
-                [ resultQueue removePointersInRange:range ];
+                //[ resultQueue removePointersInRange:range ];
             }
             else
             {
-                hf = [ resultQueue pointerAtIndex:0 ];
-                [ resultQueue removePointerAtIndex:0 ];
+                hf = [ resultQueue heightfieldAtIndex:0 ];
                 deleteHFData = YES;
             }
             /*
@@ -620,8 +549,9 @@ static const double OneDivSixty = 1.0 / 60.0;
 
         if ( deleteHFData == YES )
         {
-            SAFE_FREE(hf->data32f);
-            FREE(hf);
+            [ resultQueue removeHeightfieldAtIndex:0 ];
+            //SAFE_FREE(hf->data32f);
+            //FREE(hf);
         }
 
         //NSLog(@"%f %f", totalElapsedTime, timeStamp);
