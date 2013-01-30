@@ -27,4 +27,20 @@ void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield);
 {
     NSPointerArray * queue;
 }
+
+- (id) init;
+- (id) initWithName:(NSString *)newName;
+- (void) dealloc;
+
+- (void) clear;
+
+- (NSUInteger) count;
+- (OdHeightfieldData *) heightfieldAtIndex:(NSUInteger)index;
+- (void) addHeightfield:(OdHeightfieldData *)heightfield;
+- (void) removeHeightfieldAtIndex:(NSUInteger)index;
+- (void) insertHeightfield:(OdHeightfieldData *)heightfield atIndex:(NSUInteger)index;
+- (void) replaceHeightfieldAtIndex:(NSUInteger)index withHeightfield:(OdHeightfieldData *)heightfield;
+
+
+
 @end

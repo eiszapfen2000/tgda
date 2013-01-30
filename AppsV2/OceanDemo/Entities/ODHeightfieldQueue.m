@@ -76,4 +76,86 @@ void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield)
 	}
 }
 
+- (id) init
+{
+    return [ self initWithName:@"ODHeightfieldQueue" ];
+}
+
+- (id) initWithName:(NSString *)newName
+{
+    self =  [ super initWithName:newName ];
+
+    NSPointerFunctionsOptions options
+        = NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality;
+
+    queue = [[ NSPointerArray alloc ] initWithOptions:options ];
+
+    return self;
+}
+
+- (void) dealloc
+{
+    [ self clear ];
+    [ super dealloc ];
+}
+
+- (void) clear
+{
+    NSUInteger count = [ queue count ];
+
+    for ( NSUInteger i = 0; i < count; i++ )
+    {
+        OdHeightfieldData * hf = [ queue pointerAtIndex:i ];
+        heightfield_free(hf);
+    }
+
+    [ queue removeAllPointers ];
+}
+
+- (NSUInteger) count
+{
+    return [ queue count ];
+}
+
+- (OdHeightfieldData *) heightfieldAtIndex:(NSUInteger)index
+{
+    return (OdHeightfieldData *)[ queue pointerAtIndex:index ];
+}
+
+- (void) addHeightfield:(OdHeightfieldData *)heightfield
+{
+    [ queue addPointer:heightfield ];
+}
+
+- (void) removeHeightfieldAtIndex:(NSUInteger)index
+{
+    OdHeightfieldData * hf = [ queue pointerAtIndex:index ];
+
+    if ( hf != NULL )
+    {
+        heightfield_free(hf);
+    }
+
+    [ queue removePointerAtIndex:index ];
+}
+
+- (void) insertHeightfield:(OdHeightfieldData *)heightfield
+                   atIndex:(NSUInteger)index
+{
+    [ queue insertPointer:heightfield atIndex:index ];
+}
+
+- (void) replaceHeightfieldAtIndex:(NSUInteger)index
+                   withHeightfield:(OdHeightfieldData *)heightfield
+{
+    OdHeightfieldData * hf = [ queue pointerAtIndex:index ];
+
+    if ( hf != NULL )
+    {
+        heightfield_free(hf);
+    }
+
+    [ queue replacePointerAtIndex:index withPointer:heightfield ];
+}
+
 @end
