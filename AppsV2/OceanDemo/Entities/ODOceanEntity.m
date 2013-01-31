@@ -196,8 +196,6 @@ static const double OneDivSixty = 1.0 / 60.0;
 
             [ timer update ];
 
-            //const float totalTime = [ timer totalElapsedTime ];
-            //result->timeStamp = totalTime;
             result->timeStamp = generationTime;
 
             fftwf_complex * halfcomplexSpectrum
@@ -248,8 +246,12 @@ static const double OneDivSixty = 1.0 / 60.0;
             [ timer update ];
             
             const float fpsMinMax = [ timer frameTime ];
+
+            /*
             printf("PHILLIPS HC: %f IFFT: %f Min: %f Max: %f MinMaxTime: %f\n", fpsHC, fpsIFFTHC, result->dataMin, result->dataMax, fpsMinMax);
             fflush(stdout);
+            */
+
             fftwf_free(halfcomplexSpectrum);
 
             {
@@ -443,7 +445,7 @@ static const double OneDivSixty = 1.0 / 60.0;
             lastWindDirection = windDirection;
             lastResolutionIndex = resolutionIndex;
 
-            [ resultQueue clear ];
+            [ resultQueue removeAllHeightfields ];
 
             queueCount = 0;
         }
@@ -483,30 +485,15 @@ static const double OneDivSixty = 1.0 / 60.0;
             {
                 hf = [ resultQueue heightfieldAtIndex:f ];
 
-                for ( NSUInteger i = 0; i < f; i++ )
-                {
-                    /*
-                    OdHeightfieldData * h = [ resultQueue pointerAtIndex:i ];
-                    SAFE_FREE(h->data32f);
-                    FREE(h);
-                    */
-                    [ resultQueue removeHeightfieldAtIndex:0 ];
-                }
-
-                //NSRange range = NSMakeRange(0, f);
-                //NSLog(@"Range %lu %lu", range.location, range.length);
-
-                //[ resultQueue removePointersInRange:range ];
+                NSRange range = NSMakeRange(0, f);
+                [ resultQueue removeHeightfieldsInRange:range ];
+                //NSLog(@"Range %lu %lu", range.location, range.length);                
             }
             else
             {
                 hf = [ resultQueue heightfieldAtIndex:0 ];
                 deleteHFData = YES;
             }
-            /*
-
-            queueCount = [ resultQueue count ];
-            */
         }
 
         queueCount = [ resultQueue count ];
@@ -550,8 +537,6 @@ static const double OneDivSixty = 1.0 / 60.0;
         if ( deleteHFData == YES )
         {
             [ resultQueue removeHeightfieldAtIndex:0 ];
-            //SAFE_FREE(hf->data32f);
-            //FREE(hf);
         }
 
         //NSLog(@"%f %f", totalElapsedTime, timeStamp);

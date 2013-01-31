@@ -84,7 +84,7 @@ int main (int argc, char **argv)
     glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
     // glew needs compatibility profile
     glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_FALSE);
     
     // Open a window and create its OpenGL context
     if( !glfwOpenWindow( 800, 600, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
@@ -143,7 +143,7 @@ int main (int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    glDisable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+    //glDisable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
     //glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
 
     // resource loading creates a lot of temporary objects, so we
@@ -172,6 +172,8 @@ int main (int argc, char **argv)
     {
         NPLOG_ERROR(menuError);
     }
+
+    [[ NP Graphics ] checkForGLErrors ];
 
     // delete all autoreleased objects created during resource loading
     DESTROY(resourcePool);
