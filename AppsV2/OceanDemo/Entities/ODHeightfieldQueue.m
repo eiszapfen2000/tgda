@@ -95,21 +95,8 @@ void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield)
 
 - (void) dealloc
 {
-    [ self clear ];
+    [ self removeAllHeightfields ];
     [ super dealloc ];
-}
-
-- (void) clear
-{
-    NSUInteger count = [ queue count ];
-
-    for ( NSUInteger i = 0; i < count; i++ )
-    {
-        OdHeightfieldData * hf = [ queue pointerAtIndex:i ];
-        heightfield_free(hf);
-    }
-
-    [ queue removeAllPointers ];
 }
 
 - (NSUInteger) count
@@ -137,6 +124,40 @@ void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield)
     }
 
     [ queue removePointerAtIndex:index ];
+}
+
+- (void) removeAllHeightfields
+{
+    NSUInteger count = [ queue count ];
+
+    for ( NSUInteger i = 0; i < count; i++ )
+    {
+        OdHeightfieldData * hf = [ queue pointerAtIndex:i ];
+        heightfield_free(hf);
+    }
+
+    [ queue removeAllPointers ];
+}
+
+- (void) removeHeightfieldsInRange:(NSRange)aRange
+{
+    NSUInteger numberOfPointers = [ self count ];
+    NSUInteger startIndex = aRange.location;
+
+    NSUInteger i = aRange.location + aRange.length;
+
+    if ( numberOfPointers < i )
+    {
+        i = numberOfPointers;
+    }
+
+    if ( i > startIndex )
+    {
+        while ( i-- > startIndex )
+        {
+            [ self removeHeightfieldAtIndex:i ];
+        }
+    }
 }
 
 - (void) insertHeightfield:(OdHeightfieldData *)heightfield
