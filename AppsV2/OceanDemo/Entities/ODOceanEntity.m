@@ -191,8 +191,14 @@ static const double OneDivSixty = 1.0 / 60.0;
             const int32_t res = resolutions[resIndex];
             settings.resolution = (IVector2){res, res};
 
-            OdHeightfieldData * result
-                = heightfield_alloc_init_with_resolution_and_size(settings.resolution, settings.size);
+            OdHeightfieldData * result = NULL;
+
+            {
+                [ resultQueueMutex lock ];
+                result = heightfield_alloc_init_with_resolution_and_size(settings.resolution, settings.size);
+                [ resultQueueMutex unlock ];
+            }
+
 
             [ timer update ];
 
@@ -536,7 +542,9 @@ static const double OneDivSixty = 1.0 / 60.0;
 
         if ( deleteHFData == YES )
         {
+            [ resultQueueMutex lock ];
             [ resultQueue removeHeightfieldAtIndex:0 ];
+            [ resultQueueMutex unlock ];
         }
 
         //NSLog(@"%f %f", totalElapsedTime, timeStamp);
