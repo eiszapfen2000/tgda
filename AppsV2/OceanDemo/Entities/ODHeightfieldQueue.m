@@ -104,6 +104,42 @@ void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield)
     return [ queue count ];
 }
 
+- (double) minTimeStamp
+{
+    double result = DBL_MAX;
+    NSUInteger count = [ queue count ];
+
+    for ( NSUInteger i = 0; i < count; i++ )
+    {
+        OdHeightfieldData * hf = [ queue pointerAtIndex:i ];
+
+        if ( hf != NULL )
+        {
+            result = MIN(result, hf->timeStamp);
+        }
+    }
+
+    return result;
+}
+
+- (double) maxTimeStamp
+{
+    double result = -DBL_MAX;
+    NSUInteger count = [ queue count ];
+
+    for ( NSUInteger i = 0; i < count; i++ )
+    {
+        OdHeightfieldData * hf = [ queue pointerAtIndex:i ];
+
+        if ( hf != NULL )
+        {
+            result = MAX(result, hf->timeStamp);
+        }
+    }
+
+    return result;
+}
+
 - (OdHeightfieldData *) heightfieldAtIndex:(NSUInteger)index
 {
     return (OdHeightfieldData *)[ queue pointerAtIndex:index ];
