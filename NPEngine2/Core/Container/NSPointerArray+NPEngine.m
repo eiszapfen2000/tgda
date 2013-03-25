@@ -46,7 +46,7 @@
 
     NSUInteger i = aRange.location + aRange.length;
 
-    if ( numberOfPointers < i)
+    if ( numberOfPointers < i )
     {
         i = numberOfPointers;
     }
@@ -64,10 +64,10 @@
 {
     NSUInteger numberOfPointers = [ self count ];
 
-    if (numberOfPointers > 0)
+    if ( numberOfPointers > 0 )
     {
         NSUInteger i = numberOfPointers;
-        while ( i-- != 0)
+        while ( i-- != 0 )
         {
             [ self removePointerAtIndex:i ];
         }
