@@ -133,7 +133,11 @@ void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield)
     for ( NSUInteger i = 0; i < count; i++ )
     {
         OdHeightfieldData * hf = [ queue pointerAtIndex:i ];
-        heightfield_free(hf);
+
+        if ( hf != NULL )
+        {
+            heightfield_free(hf);
+        }
     }
 
     [ queue removeAllPointers ];
