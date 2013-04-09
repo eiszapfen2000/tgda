@@ -413,8 +413,7 @@ static const GLint masks[][4]
     else
     {
         glInternalFormat
-            = getGLTextureInternalFormat(dataFormat, pixelFormat,
-                 [[ NPEngineGraphics instance ] supportssRGBTextures ],
+            = getGLTextureInternalFormat(dataFormat, pixelFormat, YES,
                  &glDataFormat, &glPixelFormat);
 
         // specify entire texture

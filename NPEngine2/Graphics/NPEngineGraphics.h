@@ -17,9 +17,9 @@
     // driver stuff
     BOOL supportsSGIGenerateMipMap;
     BOOL supportsAnisotropicTextureFilter;
-    BOOL supportssRGBTextures;
     BOOL supportsEXTFBO;
     BOOL supportsARBFBO;
+    BOOL supportsSamplerObjects;
     BOOL debugContext;
     int32_t maximumAnisotropy;
     int32_t numberOfDrawBuffers;
@@ -63,9 +63,9 @@
 - (BOOL) supportsSGIGenerateMipMap;
 - (BOOL) supportsAnisotropicTextureFilter;
 - (int32_t) maximumAnisotropy;
-- (BOOL) supportssRGBTextures;
 - (BOOL) supportsEXTFBO;
 - (BOOL) supportsARBFBO;
+- (BOOL) supportsSamplerObjects;
 - (int32_t) numberOfDrawBuffers;
 - (int32_t) numberOfColorAttachments;
 - (int32_t) maximalRenderbufferSize;

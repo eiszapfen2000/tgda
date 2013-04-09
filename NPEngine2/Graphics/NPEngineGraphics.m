@@ -216,9 +216,9 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
     supportsSGIGenerateMipMap = NO;
     supportsAnisotropicTextureFilter = NO;
-    supportssRGBTextures = NO;
     supportsEXTFBO = NO;
     supportsARBFBO = NO;
+    supportsSamplerObjects = NO;
     debugContext = NO;
 
     maximumAnisotropy = 1;
@@ -381,22 +381,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         NPLOG(@"GL_SGIS_generate_mipmap supported");
     }
 
-    if ( GLEW_ARB_texture_rg )
-    {
-        NPLOG(@"GL_ARB_texture_rg supported");
-    }
-
     if ( GLEW_EXT_texture_filter_anisotropic )
     {
         supportsAnisotropicTextureFilter = YES;
-        glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&maximumAnisotropy);
+        glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maximumAnisotropy);
         NPLOG(@"GL_EXT_texture_filter_anisotropic with maximum anisotropy %d supported", maximumAnisotropy);
-    }
-
-    if ( GL_EXT_texture_sRGB || GLEW_VERSION_2_1 )
-    {
-        supportssRGBTextures = YES;
-        NPLOG(@"GL_EXT_texture_sRGB supported");
     }
 
     if ( GLEW_EXT_framebuffer_object )
@@ -413,6 +402,12 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         NPLOG(@"GL_ARB_framebuffer_object supported");
         glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &numberOfColorAttachments);
         glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &maximalRenderbufferSize);
+    }
+
+    if ( GLEW_ARB_sampler_objects )
+    {
+        supportsSamplerObjects = YES;
+        NPLOG(@"GL_ARB_sampler_objects supported");
     }
 
     NPLOG(@"Color Attachments: %d", numberOfColorAttachments);
@@ -447,11 +442,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     return maximumAnisotropy;
 }
 
-- (BOOL) supportssRGBTextures
-{
-    return supportssRGBTextures;
-}
-
 - (BOOL) supportsEXTFBO
 {
     return supportsEXTFBO;
@@ -460,6 +450,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 - (BOOL) supportsARBFBO
 {
     return supportsARBFBO;
+}
+
+- (BOOL) supportsSamplerObjects
+{
+    return supportsSamplerObjects;
 }
 
 - (int32_t) numberOfDrawBuffers
