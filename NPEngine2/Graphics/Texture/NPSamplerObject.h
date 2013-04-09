@@ -2,27 +2,28 @@
 #import "Core/NPObject/NPObject.h"
 #import "Graphics/NPEngineGraphicsEnums.h"
 
-typedef struct NpSampler2DFilterState
+typedef struct NpSamplerFilterState
 {
 	NpTexture2DFilter textureFilter;
 	uint32_t anisotropy;
 }
-NpSampler2DFilterState;
+NpSamplerFilterState;
 
-typedef struct NpSampler2DWrapState
+typedef struct NpSamplerWrapState
 {
 	NpTextureWrap wrapS;
 	NpTextureWrap wrapT;
+    NpTextureWrap wrapR;
 }
-NpSampler2DWrapState;
+NpSamplerWrapState;
 
-void reset_sampler2d_filterstate(NpSampler2DFilterState * filterState);
-void reset_sampler2d_wrapstate(NpSampler2DWrapState * wrapState);
+void reset_sampler_filterstate(NpSamplerFilterState * filterState);
+void reset_sampler_wrapstate(NpSamplerWrapState * wrapState);
 
 @interface NPSamplerObject : NPObject
 {
-    NpSampler2DFilterState filterState;
-    NpSampler2DWrapState wrapState;
+    NpSamplerFilterState filterState;
+    NpSamplerWrapState wrapState;
     GLuint glID;
 }
 
@@ -32,6 +33,10 @@ void reset_sampler2d_wrapstate(NpSampler2DWrapState * wrapState);
 
 - (void) clear;
 - (void) reset;
+
+- (void) setTextureFilter:(NpTexture2DFilter)newTextureFilter;
+- (void) setTextureAnisotropy:(uint32_t)newTextureAnisotropy;
+- (void) setTextureWrap:(NpSamplerWrapState)newTextureWrap;
 
 @end
 
