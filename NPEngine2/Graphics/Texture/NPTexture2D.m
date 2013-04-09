@@ -11,6 +11,7 @@
 #import "Graphics/NPEngineGraphicsStringEnumConversion.h"
 #import "Graphics/NSString+NPEngineGraphicsEnums.h"
 #import "Graphics/NPEngineGraphics.h"
+#import "NpTextureSamplerParameter.h"
 #import "NPTextureBindingState.h"
 #import "NPTexture2D.h"
 
@@ -29,10 +30,6 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 @interface NPTexture2D (Private)
 
-- (void) updateGLTextureFilterState;
-- (void) updateGLTextureAnisotropy;
-- (void) updateGLTextureWrapState;
-- (void) updateGLSwizzleState;
 - (void) updateGLTextureState;
 - (void) uploadToGLWithData:(NSData *)data;
 
@@ -335,67 +332,14 @@ static const GLint masks[][4]
 
 @implementation NPTexture2D (Private)
 
-- (void) updateGLTextureFilterState
-{
-    GLint minFilter = GL_NONE;
-    GLint magFilter = GL_NONE;
-
-    switch ( filterState.textureFilter )
-    {
-        case NpTexture2DFilterNearest:
-        {
-            minFilter = magFilter = GL_NEAREST;
-            break;
-        }
-
-        case NpTexture2DFilterLinear:
-        {
-            minFilter = magFilter = GL_LINEAR;
-            break;
-        }
-
-        case NpTexture2DFilterTrilinear:
-        {
-            minFilter = GL_LINEAR_MIPMAP_LINEAR;
-            magFilter = GL_LINEAR;
-        }
-    }
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
-}
-
-- (void) updateGLTextureAnisotropy
-{
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
-                    (float)filterState.anisotropy);
-}
-
-- (void) updateGLTextureWrapState
-{
-    GLint wrapS = getGLTextureWrap(wrapState.wrapS);
-    GLint wrapT = getGLTextureWrap(wrapState.wrapT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
-}
-
-- (void) updateGLSwizzleState
-{
-    if ( colorFormat != NpTextureColorFormatUnknown )
-    {
-        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, masks[colorFormat]);
-    }
-}
-
 - (void) updateGLTextureState
 {
     [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:self ];
 
-    [ self updateGLTextureFilterState ];
-    [ self updateGLTextureAnisotropy ];
-    [ self updateGLTextureWrapState ];
-    [ self updateGLSwizzleState ];
+    set_texture2d_filter(filterState.textureFilter);
+    set_texture2d_anisotropy(filterState.anisotropy);
+    set_texture2d_wrap(wrapState.wrapS, wrapState.wrapT);
+    set_texture2d_swizzle_mask(colorFormat);
 
     [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
 }
@@ -428,10 +372,10 @@ static const GLint masks[][4]
             glGenerateMipmap(GL_TEXTURE_2D);
         }
 
-        [ self updateGLTextureFilterState ];
-        [ self updateGLTextureAnisotropy ];
-        [ self updateGLTextureWrapState ];
-        [ self updateGLSwizzleState ];
+        set_texture2d_filter(filterState.textureFilter);
+        set_texture2d_anisotropy(filterState.anisotropy);
+        set_texture2d_wrap(wrapState.wrapS, wrapState.wrapT);
+        set_texture2d_swizzle_mask(colorFormat);
     }
 
     [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
