@@ -3,10 +3,12 @@ include $(GNUSTEP_MAKEFILES)/common.make
 SUBPROJECT_NAME=libNPEngineGraphicsTexture
 
 libNPEngineGraphicsTexture_OBJC_FILES = \
+NPSamplerObject.m \
 NPTexture2D.m \
 NPTextureBindingState.m
 
 libNPEngineGraphicsTexture_HEADER_FILES = \
+NPSamplerObject.h \
 NPTexture2D.h \
 NPTextureBindingState.h
 
