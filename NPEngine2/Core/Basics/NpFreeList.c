@@ -30,7 +30,7 @@ void npfreelist_free( NpFreeList * freelist )
 
     NpFreeNode * next;
 
-    while (node)
+    while ( node != NULL )
     {
 	    next = NPFREENODE_NEXT(*node);
     	free(((uint8_t *)node) - tablelength);
