@@ -26,6 +26,12 @@ void reset_sampler_wrapstate(NpSamplerWrapState * wrapState)
 {
     self = [ super initWithName:newName ];
 
+    if ( !GLEW_ARB_sampler_objects )
+    {
+        RELEASE(self);
+        return nil;
+    }
+
     glGenSamplers(1, &glID);
     [ self reset ];
 

@@ -14,6 +14,7 @@
 #import "Image/NPImage.h"
 #import "Texture/NPTexture2D.h"
 #import "Texture/NPTextureBindingState.h"
+#import "Texture/NPTextureSamplingState.h"
 #import "Effect/NPShader.h"
 #import "Effect/NPEffect.h"
 #import "State/NPStateConfiguration.h"
@@ -254,6 +255,10 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         = [[ NPTextureBindingState alloc ]
                 initWithName:@"NP Engine Texture Binding State" ];
 
+    textureSamplingState
+        = [[ NPTextureSamplingState alloc ]
+                initWithName:@"NP Engine Texture Sampling State" ];
+
     stateConfiguration
         = [[ NPStateConfiguration alloc ]
                 initWithName:@"NP Engine State Configuration" ];
@@ -275,6 +280,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     DESTROY(viewport);
     DESTROY(stateConfiguration);
     DESTROY(textureBindingState);
+    DESTROY(textureSamplingState);
 
     DESTROY(effects);
     DESTROY(textures2D);
@@ -314,6 +320,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 - (NPTextureBindingState *) textureBindingState
 {
     return textureBindingState;
+}
+
+- (NPTextureSamplingState *) textureSamplingState
+{
+    return textureSamplingState;
 }
 
 - (NPStateConfiguration *) stateConfiguration
@@ -362,7 +373,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         return NO;
     }
 
-    if (GLEW_ARB_debug_output)
+    if ( GLEW_ARB_debug_output )
     {
         debugContext = YES;
         glGetIntegerv(GL_MAX_DEBUG_MESSAGE_LENGTH_ARB, &maximumDebugMessageLength);
@@ -404,16 +415,18 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &maximalRenderbufferSize);
     }
 
-    if ( GLEW_ARB_sampler_objects )
-    {
-        supportsSamplerObjects = YES;
-        NPLOG(@"GL_ARB_sampler_objects supported");
-    }
-
     NPLOG(@"Color Attachments: %d", numberOfColorAttachments);
     NPLOG(@"Renderbuffer resolution up to: %d", maximalRenderbufferSize);
 
     [ textureBindingState startup ];
+
+    if ( GLEW_ARB_sampler_objects )
+    {
+        supportsSamplerObjects = YES;
+        NPLOG(@"GL_ARB_sampler_objects supported");
+
+        [ textureSamplingState startup ];
+    }
 
     NPLOG(@"%@ started\n", [ self name ]);
 
@@ -424,7 +437,8 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
 - (void) shutdown
 {
-    [ textureBindingState shutdown ];
+    [ textureBindingState  shutdown ];
+    [ textureSamplingState shutdown ];
 }
 
 - (BOOL) supportsSGIGenerateMipMap
@@ -541,14 +555,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     }    
 }
 
-- (void) update
-{
-}
-
-- (void) render
-{
-}
-
 - (void) clearFrameBuffer:(BOOL)clearFrameBuffer
               depthBuffer:(BOOL)clearDepthBuffer
             stencilBuffer:(BOOL)clearStencilBuffer
@@ -610,7 +616,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
 - (void) setName:(NSString *)newName
 {
-
 }
 
 - (void) setObjectID:(uint32_t)newObjectID
@@ -640,7 +645,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 {
     return self;
 }
-
 
 @end
 
