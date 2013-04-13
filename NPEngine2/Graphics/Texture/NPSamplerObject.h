@@ -31,6 +31,8 @@ void reset_sampler_wrapstate(NpSamplerWrapState * wrapState);
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
+- (GLuint) glID;
+
 - (void) clear;
 - (void) reset;
 
