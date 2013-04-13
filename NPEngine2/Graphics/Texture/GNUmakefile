@@ -8,13 +8,15 @@ NpTextureSamplerParameter.c
 libNPEngineGraphicsTexture_OBJC_FILES = \
 NPSamplerObject.m \
 NPTexture2D.m \
-NPTextureBindingState.m
+NPTextureBindingState.m \
+NPTextureSamplingState.m
 
 libNPEngineGraphicsTexture_HEADER_FILES = \
 NpTextureSamplerParameter.h \
 NPSamplerObject.h \
 NPTexture2D.h \
-NPTextureBindingState.h
+NPTextureBindingState.h \
+NPTextureSamplingState.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make

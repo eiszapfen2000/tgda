@@ -43,6 +43,11 @@ void reset_sampler_wrapstate(NpSamplerWrapState * wrapState)
     [ super dealloc ];
 }
 
+- (GLuint) glID
+{
+    return glID;
+}
+
 - (void) clear
 {
     [ self reset ];
@@ -63,7 +68,7 @@ void reset_sampler_wrapstate(NpSamplerWrapState * wrapState)
     if ( filterState.textureFilter != newTextureFilter )
     {
         filterState.textureFilter = newTextureFilter;
-        set_sampler_filter(glID, newTextureFilter);
+        set_sampler_filter(glID, filterState.textureFilter);
     }
 }
 
