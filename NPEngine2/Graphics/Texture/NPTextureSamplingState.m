@@ -128,7 +128,7 @@
         return;
     }
     
-	if (lockedSamplers[texelUnit] == YES)
+	if ( lockedSamplers[texelUnit] == YES )
 	{
 		return;
 	}

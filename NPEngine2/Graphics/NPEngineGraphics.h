@@ -6,6 +6,7 @@
 @class NPEngineGraphicsStringEnumConversion;
 @class NPEngineGraphicsStringToClassConversion;
 @class NPTextureBindingState;
+@class NPTextureSamplingState;
 @class NPStateConfiguration;
 @class NPViewport;
 @class NPOrthographic;
@@ -35,6 +36,7 @@
     NPAssetArray * effects;
 
     NPTextureBindingState * textureBindingState;
+    NPTextureSamplingState * textureSamplingState;
     NPStateConfiguration * stateConfiguration;
     NPViewport * viewport;
     NPOrthographic * orthographic;
@@ -53,6 +55,7 @@
 - (NPAssetArray *) effects;
 
 - (NPTextureBindingState *) textureBindingState;
+- (NPTextureSamplingState *) textureSamplingState;
 - (NPStateConfiguration *) stateConfiguration;
 - (NPViewport *) viewport;
 - (NPOrthographic *) orthographic;
@@ -73,9 +76,6 @@
 - (void) checkForDebugMessages;
 - (BOOL) checkForGLError:(NSError **)error;
 - (void) checkForGLErrors;
-
-- (void) update;
-- (void) render;
 
 - (void) clearFrameBuffer:(BOOL)clearFrameBuffer
               depthBuffer:(BOOL)clearDepthBuffer
