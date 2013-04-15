@@ -211,7 +211,7 @@
 
     DESTROY(parser);
 
-    if ( [techniques count] != 0 )
+    if ( [ techniques count ] != 0 )
     {
         ready = YES;
     }
