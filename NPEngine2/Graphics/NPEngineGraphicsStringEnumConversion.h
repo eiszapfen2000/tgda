@@ -32,6 +32,10 @@
                                defaultFilter:(NpTexture2DFilter)defaultFilter
                                             ;
 
+- (NpTextureWrap) textureWrapForString:(NSString *)string
+                           defaultWrap:(NpTextureWrap)defaultWrap
+                                      ;
+
 - (NpOrthographicAlignment) orthographicAlignmentForString:(NSString *)string
                                           defaultAlignment:(NpOrthographicAlignment)defaultAlignment
                                                           ;
