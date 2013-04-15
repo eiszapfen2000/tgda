@@ -67,6 +67,9 @@ static BOOL locked = NO;
 
 - (void) clearShaders;
 - (BOOL) linkShader:(NSError **)error;
+- (void) parseSamplerVariable:(NPParser *)parser
+                       atLine:(NSUInteger)line
+                             ;
 - (void) parseEffectVariables:(NPParser *)parser;
 - (void) parseActiveVariables;
 - (void) activateVariables;
@@ -551,6 +554,12 @@ static BOOL locked = NO;
     DESTROY(parser);
 }
 
+- (void) parseSamplerVariable:(NPParser *)parser
+                       atLine:(NSUInteger)line
+{
+
+}
+
 - (void) parseEffectVariables:(NPParser *)parser
 {
     uint32_t texelUnit = 0;
@@ -569,6 +578,41 @@ static BOOL locked = NO;
                                              texelUnit:texelUnit ];
 
                 texelUnit = texelUnit + 1;
+
+                NSRange lineRange = NSMakeRange(ULONG_MAX, 0);
+
+                if ( [ parser isTokenFromLine:i+1 atPosition:0 equalToString:@"{" ] == YES )
+                {
+                    // inside sampler, find end
+                    for ( NSUInteger j = i + 2; j < numberOfLines; j++ )
+                    {
+                        if ( [ parser isTokenFromLine:j atPosition:0 equalToString:@"}" ] == YES )
+                        {
+                            lineRange.location = i + 2;
+                            lineRange.length = j - ( i + 2 );
+
+                            NSLog(@"%lu %lu", lineRange.location, lineRange.length);
+                            // exit the inner loop since we are
+                            // done with the sampler
+                            break;
+                        }
+                    }
+                }
+
+                if ( lineRange.location != ULONG_MAX )
+                {
+                    for ( NSUInteger j = lineRange.location; j < lineRange.location + lineRange.length; j++ )
+                    {
+                        if ( [ parser isLowerCaseTokenFromLine:j atPosition:0 equalToString:@"wraps" ] == YES )
+                        { NSLog(@"wraps");}
+                        else if ( [ parser isLowerCaseTokenFromLine:j atPosition:0 equalToString:@"wrapt" ] == YES )
+                        { NSLog(@"wrapt");}
+                        else if ( [ parser isLowerCaseTokenFromLine:j atPosition:0 equalToString:@"filter" ] == YES )
+                        { NSLog(@"filter");}
+                        else if ( [ parser isLowerCaseTokenFromLine:j atPosition:0 equalToString:@"anisotropy" ] == YES )
+                        { NSLog(@"anisotropy");}
+                    }
+                }
             }
             else if ( [ uniformName hasPrefix:@"np_" ] == YES )
             {

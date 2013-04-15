@@ -9,6 +9,7 @@ static NSMutableDictionary * uniformTypes = nil;
 static NSMutableDictionary * textureTypes = nil;
 static NSMutableDictionary * semantics = nil;
 static NSMutableDictionary * textureFilters = nil;
+static NSMutableDictionary * textureWraps = nil;
 static NSMutableDictionary * orthographicAlignments = nil;
 static NSMutableDictionary * pixelFormats = nil;
 static NSMutableDictionary * imageDataFormats = nil;
@@ -90,6 +91,10 @@ static NSMutableDictionary * imageDataFormats = nil;
     INSERTENUM(textureFilters, NpTexture2DFilterNearest, @"nearest");
     INSERTENUM(textureFilters, NpTexture2DFilterLinear, @"linear");
     INSERTENUM(textureFilters, NpTexture2DFilterTrilinear, @"trilinear");
+
+    INSERTENUM(textureWraps, NpTextureWrapToBorder, @"wraptoborder");
+    INSERTENUM(textureWraps, NpTextureWrapToEdge, @"wraptoedge");
+    INSERTENUM(textureWraps, NpTextureWrapRepeat, @"repeat");
 
     INSERTENUM(orthographicAlignments, NpOrthographicAlignTopLeft, @"topleft");
     INSERTENUM(orthographicAlignments, NpOrthographicAlignTop, @"top");
@@ -245,6 +250,20 @@ static NSMutableDictionary * imageDataFormats = nil;
     if ( n != nil )
     {
         result = (NpTexture2DFilter)[ n intValue ];
+    }
+
+    return result;
+}
+
+- (NpTextureWrap) textureWrapForString:(NSString *)string
+                           defaultWrap:(NpTextureWrap)defaultWrap
+{
+    NpTextureWrap result = defaultWrap;
+
+    NSNumber * n = [ textureWraps objectForKey:string ];
+    if ( n != nil )
+    {
+        result = (NpTextureWrap)[ n intValue ];
     }
 
     return result;
