@@ -209,13 +209,13 @@ static BOOL locked = NO;
     NPParser * parser = AUTORELEASE([[ NPParser alloc ] init ]);
     [ parser parse:stringList ];
 
-    NPStringList * effectVariableLines = [ NPStringList stringList ];
-    NPStringList * vertexStreamLines   = [ NPStringList stringList ];
-    NPStringList * fragmentStreamLines = [ NPStringList stringList ];
+    NPStringList * uniformVariableLines = [ NPStringList stringList ];
+    NPStringList * vertexStreamLines    = [ NPStringList stringList ];
+    NPStringList * fragmentStreamLines  = [ NPStringList stringList ];
 
-    [ effectVariableLines addStringList:[ stringList stringsWithPrefix:@"uniform" ]];
-    [ vertexStreamLines   addStringList:[ stringList stringsWithPrefix:@"in"  ]];
-    [ fragmentStreamLines addStringList:[ stringList stringsWithPrefix:@"out" ]];
+    [ uniformVariableLines addStringList:[ stringList stringsWithPrefix:@"uniform" ]];
+    [ vertexStreamLines    addStringList:[ stringList stringsWithPrefix:@"in"  ]];
+    [ fragmentStreamLines  addStringList:[ stringList stringsWithPrefix:@"out" ]];
 
     // separate stream related strings at ":", trim first component
     // and append ";"
@@ -226,21 +226,22 @@ static BOOL locked = NO;
         = [ self extractStreamLines:fragmentStreamLines ];
 
     // append semicolon if necessary
-    NSUInteger c = [ effectVariableLines count ];
+    NSUInteger c = [ uniformVariableLines count ];
     for ( NSUInteger i = 0; i < c; i++ )
     {
-        NSString * s = [ effectVariableLines stringAtIndex:i ];
+        NSString * s = [ uniformVariableLines stringAtIndex:i ];
 
         if ( [ s hasSuffix:@";" ] == NO )
         {
-            [ effectVariableLines
+            [ uniformVariableLines
                 replaceStringAtIndex:i
                           withString:[ s stringByAppendingString:@";" ]];
         }
     }
 
+    // assemble and compile shaders
     [ self parseShader:parser
-       effectVariables:effectVariableLines 
+       effectVariables:uniformVariableLines 
          vertexStreams:vertexStreamLinesStripped
        fragmentStreams:fragmentStreamLinesStripped ];
 
@@ -251,7 +252,9 @@ static BOOL locked = NO;
 		return NO;
 	}
 
+    // bind vertex attribute input locations
     [ self parseVertexStreams:vertexStreamLines ];
+    // bind fragment output locations
     [ self parseFragmentStreams:fragmentStreamLines ];
 
     if ( [ self linkShader:error ] == NO )
@@ -259,7 +262,7 @@ static BOOL locked = NO;
         return NO;
     }
 
-    [ parser parse:effectVariableLines ];
+//    [ parser parse:effectVariableLines ];
     [ self parseEffectVariables:parser ];
     [ self parseActiveVariables ];
 
