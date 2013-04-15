@@ -10,9 +10,9 @@
 
 	BOOL locked;
 
-	GLuint* currentSamplerIndices;
-	GLuint* boundSamplerIndices;
-	BOOL* lockedSamplers;
+	GLuint * currentSamplerIndices;
+	GLuint * boundSamplerIndices;
+	BOOL * lockedSamplers;
 }
 
 - (id) init;

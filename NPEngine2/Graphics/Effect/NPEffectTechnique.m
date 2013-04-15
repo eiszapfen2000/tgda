@@ -225,6 +225,20 @@ static BOOL locked = NO;
     NPStringList * fragmentStreamLinesStripped
         = [ self extractStreamLines:fragmentStreamLines ];
 
+    // append semicolon if necessary
+    NSUInteger c = [ effectVariableLines count ];
+    for ( NSUInteger i = 0; i < c; i++ )
+    {
+        NSString * s = [ effectVariableLines stringAtIndex:i ];
+
+        if ( [ s hasSuffix:@";" ] == NO )
+        {
+            [ effectVariableLines
+                replaceStringAtIndex:i
+                          withString:[ s stringByAppendingString:@";" ]];
+        }
+    }
+
     [ self parseShader:parser
        effectVariables:effectVariableLines 
          vertexStreams:vertexStreamLinesStripped
