@@ -159,11 +159,26 @@
              && [ parser getTokenAsString:&techniqueName fromLine:i atPosition:1 ] == YES
              && [ parser isTokenFromLine:i+1 atPosition:0 equalToString:@"{" ] == YES )
         {
+            NSUInteger nestingLevel = 0;
+
             // inside technique, find end
             for (NSUInteger j = i + 2; j < numberOfLines; j++)
             {
+                // another opening brace
+                if ( [ parser isTokenFromLine:j atPosition:0 equalToString:@"{" ] == YES )
+                {
+                    nestingLevel++;
+                    continue;
+                }
+
                 if ( [ parser isTokenFromLine:j atPosition:0 equalToString:@"}" ] == YES )
                 {
+                    if ( nestingLevel != 0 )
+                    {
+                        nestingLevel--;
+                        continue;
+                    }
+
                     lineRange.location = i + 2;
                     lineRange.length = j - ( i + 2 );
 

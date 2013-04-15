@@ -12,11 +12,11 @@
 
 	BOOL locked;
 
-	GLuint* currentTextureIndices;
-	GLenum* currentTextureTypes;
-	GLuint* boundTextureIndices;
-	GLenum* boundTextureTypes;
-	BOOL* lockedTexelUnits;
+	GLuint * currentTextureIndices;
+	GLenum * currentTextureTypes;
+	GLuint * boundTextureIndices;
+	GLenum * boundTextureTypes;
+	BOOL * lockedTexelUnits;
 }
 
 - (id) init;
