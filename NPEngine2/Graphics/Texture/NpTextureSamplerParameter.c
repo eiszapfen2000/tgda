@@ -74,34 +74,13 @@ void set_texture2d_swizzle_mask(NpTextureColorFormat colorFormat)
     }
 }
 
-void set_sampler_filter(GLuint sampler, NpTexture2DFilter filter)
+void set_sampler_filter(GLuint sampler, NpTextureMinFilter minFilter, NpTextureMagFilter magFilter)
 {
-    GLint minFilter = GL_NONE;
-    GLint magFilter = GL_NONE;
+    GLint minGLFilter = getGLTextureMinFilter(minFilter);
+    GLint magGLFilter = getGLTextureMagFilter(magFilter);
 
-    switch ( filter )
-    {
-        case NpTexture2DFilterNearest:
-        {
-            minFilter = magFilter = GL_NEAREST;
-            break;
-        }
-
-        case NpTexture2DFilterLinear:
-        {
-            minFilter = magFilter = GL_LINEAR;
-            break;
-        }
-
-        case NpTexture2DFilterTrilinear:
-        {
-            minFilter = GL_LINEAR_MIPMAP_LINEAR;
-            magFilter = GL_LINEAR;
-        }
-    }
-
-    glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, minFilter);
-    glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, magFilter);
+    glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, minGLFilter);
+    glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, magGLFilter);
 }
 
 void set_sampler_wrap(GLuint sampler, NpTextureWrap s, NpTextureWrap t, NpTextureWrap r)
