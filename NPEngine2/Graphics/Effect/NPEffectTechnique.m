@@ -22,7 +22,7 @@
 static NPEffectTechnique * currentTechnique = nil;
 static BOOL locked = NO;
 
-@interface NPEffect (Private)
+@interface NPEffect (Technique)
 
 - (id) registerEffectVariableSampler:(NSString *)variableName
                            texelUnit:(uint32_t)texelUnit
@@ -290,7 +290,7 @@ static BOOL locked = NO;
 
 @end
 
-@implementation NPEffect (Private)
+@implementation NPEffect (Technique)
 
 - (id) registerEffectVariableSemantic:(NSString *)variableName
                              semantic:(NpEffectSemantic)semantic

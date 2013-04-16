@@ -10,6 +10,102 @@
 #import "NPEffectTechnique.h"
 #import "NPEffect.h"
 
+
+@interface NPEffect (Private)
+
+- (void) parseHeader:(NPParser *)parser;
+- (void) parseTechniques:(NPParser *)parser
+              withScript:(NPStringList *)script
+                        ;
+
+@end
+
+@implementation NPEffect (Private)
+
+- (void) parseHeader:(NPParser *)parser
+{
+    NSUInteger numberOfLines = [ parser lineCount ];
+    for (NSUInteger i = 0; i < numberOfLines; i++)
+    {
+        NSString * effectName = nil;
+
+        if ( [ parser isLowerCaseTokenFromLine:i atPosition:0 equalToString:@"effect" ] == YES
+             && [ parser getTokenAsString:&effectName fromLine:i atPosition:1 ] == YES
+             && [ parser isTokenFromLine:i atPosition:2 equalToString:@":" ] == YES )
+        {
+            [ self setName:effectName ];
+
+            break;
+        }
+    }
+}
+
+- (void) parseTechniques:(NPParser *)parser
+              withScript:(NPStringList *)script
+{
+    NSUInteger numberOfLines = [ parser lineCount ];
+    for ( NSUInteger i = 0; i < numberOfLines - 2; i++ )
+    {
+        NSString * techniqueName = nil;
+        NSRange lineRange = NSMakeRange(ULONG_MAX, 0);
+
+        if ( [ parser isLowerCaseTokenFromLine:i atPosition:0 equalToString:@"technique" ] == YES
+             && [ parser getTokenAsString:&techniqueName fromLine:i atPosition:1 ] == YES
+             && [ parser isTokenFromLine:i+1 atPosition:0 equalToString:@"{" ] == YES )
+        {
+            NSUInteger nestingLevel = 0;
+
+            // inside technique, find end
+            for (NSUInteger j = i + 2; j < numberOfLines; j++)
+            {
+                // another opening brace
+                if ( [ parser isTokenFromLine:j atPosition:0 equalToString:@"{" ] == YES )
+                {
+                    nestingLevel++;
+                    continue;
+                }
+
+                if ( [ parser isTokenFromLine:j atPosition:0 equalToString:@"}" ] == YES )
+                {
+                    if ( nestingLevel != 0 )
+                    {
+                        nestingLevel--;
+                        continue;
+                    }
+
+                    lineRange.location = i + 2;
+                    lineRange.length = j - ( i + 2 );
+
+                    NPStringList * techniqueStringList
+                        = [ script stringListInRange:lineRange ];
+
+                    NPEffectTechnique * technique
+                        = AUTORELEASE([[ NPEffectTechnique alloc ]
+                                             initWithName:techniqueName
+                                                   effect:self ]);
+
+                    NSError * error = nil;
+                    if ( [ technique loadFromStringList:techniqueStringList
+                                                  error:&error ] == YES )
+                    {
+                        [ techniques addObject:technique ];
+                    }
+                    else
+                    {
+                        NPLOG_ERROR(error);
+                    }
+
+                    // exit the inner loop since we are
+                    // done with the technique
+                    break;
+                }
+            }
+        }
+    }
+}
+
+@end
+
 @implementation NPEffect
 
 - (id) init
@@ -149,65 +245,8 @@
     NPParser * parser = [[ NPParser alloc ] init ];
     [ parser parse:stringListCopy ];
 
-    NSUInteger numberOfLines = [ parser lineCount ];
-    for ( NSUInteger i = 0; i < numberOfLines - 2; i++ )
-    {
-        NSString * techniqueName = nil;
-        NSRange lineRange = NSMakeRange(ULONG_MAX, 0);
-
-        if ( [ parser isLowerCaseTokenFromLine:i atPosition:0 equalToString:@"technique" ] == YES
-             && [ parser getTokenAsString:&techniqueName fromLine:i atPosition:1 ] == YES
-             && [ parser isTokenFromLine:i+1 atPosition:0 equalToString:@"{" ] == YES )
-        {
-            NSUInteger nestingLevel = 0;
-
-            // inside technique, find end
-            for (NSUInteger j = i + 2; j < numberOfLines; j++)
-            {
-                // another opening brace
-                if ( [ parser isTokenFromLine:j atPosition:0 equalToString:@"{" ] == YES )
-                {
-                    nestingLevel++;
-                    continue;
-                }
-
-                if ( [ parser isTokenFromLine:j atPosition:0 equalToString:@"}" ] == YES )
-                {
-                    if ( nestingLevel != 0 )
-                    {
-                        nestingLevel--;
-                        continue;
-                    }
-
-                    lineRange.location = i + 2;
-                    lineRange.length = j - ( i + 2 );
-
-                    NPStringList * techniqueStringList
-                        = [ stringListCopy stringListInRange:lineRange ];
-
-                    NPEffectTechnique * technique
-                        = AUTORELEASE([[ NPEffectTechnique alloc ]
-                                             initWithName:techniqueName
-                                                   effect:self ]);
-
-                    NSError * error = nil;
-                    if ( [ technique loadFromStringList:techniqueStringList
-                                                  error:&error ] == YES )
-                    {
-                        [ techniques addObject:technique ];
-                    }
-                    else
-                    {
-                        NPLOG_ERROR(error);
-                    }
-
-                    // exit the inner loop since we are
-                    // done with the technique
-                    break;
-                }
-            }
-        }
-    }
+    [ self parseHeader:parser ];
+    [ self parseTechniques:parser withScript:stringListCopy ];
 
     DESTROY(parser);
 
