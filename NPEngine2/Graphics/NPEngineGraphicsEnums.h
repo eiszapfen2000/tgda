@@ -393,6 +393,8 @@ typedef enum NpOrthographicAlignment
 NpOrthographicAlignment;
 
 NpTextureColorFormat getColorFormatForPixelFormat(const NpTexturePixelFormat pixelFormat);
+GLint getGLTextureMinFilter(const NpTextureMinFilter filter);
+GLint getGLTextureMagFilter(const NpTextureMagFilter filter);
 GLint getGLTextureWrap(const NpTextureWrap textureWrap);
 GLint getGLTextureInternalFormat(const NpTextureDataFormat dataFormat,
         const NpTexturePixelFormat pixelFormat, const bool sRGBSupport,

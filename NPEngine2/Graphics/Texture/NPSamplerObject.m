@@ -5,7 +5,8 @@
 
 void reset_sampler_filterstate(NpSamplerFilterState * filterState)
 {
-    filterState->textureFilter = NpTexture2DFilterNearest;
+    filterState->minFilter = NpTextureMinFilterNearest;
+    filterState->magFilter = NpTextureMagFilterNearest;
     filterState->anisotropy = 1;
 }
 
@@ -65,17 +66,19 @@ void reset_sampler_wrapstate(NpSamplerWrapState * wrapState)
     reset_sampler_filterstate(&filterState);
     reset_sampler_wrapstate(&wrapState);
 
-    set_sampler_filter(glID, filterState.textureFilter);
+    set_sampler_filter(glID, filterState.minFilter, filterState.magFilter);
     set_sampler_anisotropy(glID, filterState.anisotropy);
     set_sampler_wrap(glID, wrapState.wrapS, wrapState.wrapT, wrapState.wrapR);
 }
 
-- (void) setTextureFilter:(NpTexture2DFilter)newTextureFilter
+- (void) setTextureFilter:(NpSamplerFilterState)newTextureFilter
 {
-    if ( filterState.textureFilter != newTextureFilter )
+    if ( filterState.minFilter != newTextureFilter.minFilter
+         || filterState.magFilter != newTextureFilter.magFilter
+         || filterState.anisotropy != newTextureFilter.anisotropy )
     {
-        filterState.textureFilter = newTextureFilter;
-        set_sampler_filter(glID, filterState.textureFilter);
+        filterState = newTextureFilter;
+        set_sampler_filter(glID, filterState.minFilter, filterState.magFilter);
     }
 }
 

@@ -4,7 +4,8 @@
 
 typedef struct NpSamplerFilterState
 {
-	NpTexture2DFilter textureFilter;
+	NpTextureMinFilter minFilter;
+	NpTextureMagFilter magFilter;
 	uint32_t anisotropy;
 }
 NpSamplerFilterState;
@@ -36,7 +37,7 @@ void reset_sampler_wrapstate(NpSamplerWrapState * wrapState);
 - (void) clear;
 - (void) reset;
 
-- (void) setTextureFilter:(NpTexture2DFilter)newTextureFilter;
+- (void) setTextureFilter:(NpSamplerFilterState)newTextureFilter;
 - (void) setTextureAnisotropy:(uint32_t)newTextureAnisotropy;
 - (void) setTextureWrap:(NpSamplerWrapState)newTextureWrap;
 

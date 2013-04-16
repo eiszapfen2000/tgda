@@ -466,6 +466,46 @@ GLint getGLTextureInternalFormat(const NpTextureDataFormat dataFormat,
     return glinternalformat;
 }
 
+GLint getGLTextureMinFilter(const NpTextureMinFilter filter)
+{
+    GLint result = GL_NONE;
+
+    switch ( filter )
+    {
+        case NpTextureMinFilterNearest:
+            result = GL_NEAREST;
+            break;
+
+        case NpTextureMinFilterLinear:
+            result = GL_LINEAR;
+            break;
+
+        case NpTextureMinFilterTrilinear:
+            result = GL_LINEAR_MIPMAP_LINEAR;
+            break;
+    }
+
+    return result;
+}
+
+GLint getGLTextureMagFilter(const NpTextureMagFilter filter)
+{
+    GLint result = GL_NONE;
+
+    switch ( filter )
+    {
+        case NpTextureMagFilterNearest:
+            result = GL_NEAREST;
+            break;
+
+        case NpTextureMagFilterLinear:
+            result = GL_LINEAR;
+            break;
+    }
+
+    return result;
+}
+
 GLint getGLTextureWrap(const NpTextureWrap textureWrap)
 {
     GLint result = GL_NONE;
