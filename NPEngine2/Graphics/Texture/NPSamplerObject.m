@@ -1,5 +1,6 @@
 #import "Graphics/NPEngineGraphics.h"
 #import "NpTextureSamplerParameter.h"
+#import "Graphics/NPEngineGraphics.h"
 #import "NPSamplerObject.h"
 
 void reset_sampler_filterstate(NpSamplerFilterState * filterState)
@@ -26,7 +27,7 @@ void reset_sampler_wrapstate(NpSamplerWrapState * wrapState)
 {
     self = [ super initWithName:newName ];
 
-    if ( !GLEW_ARB_sampler_objects )
+    if ( [[ NPEngineGraphics instance ] supportsSamplerObjects ] == NO )
     {
         RELEASE(self);
         return nil;
