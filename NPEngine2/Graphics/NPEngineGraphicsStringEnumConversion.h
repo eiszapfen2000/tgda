@@ -28,6 +28,14 @@
 - (NpTextureType) textureTypeForString:(NSString *)string;
 - (NpEffectSemantic) semanticForString:(NSString *)string;
 
+- (NpTextureMinFilter) textureMinFilterForString:(NSString *)string
+                                defaultMinFilter:(NpTextureMinFilter)defaultMinFilter
+                                                ;
+
+- (NpTextureMagFilter) textureMagFilterForString:(NSString *)string
+                                defaultMagFilter:(NpTextureMagFilter)defaultMagFilter
+                                                ;
+
 - (NpTexture2DFilter) textureFilterForString:(NSString *)string
                                defaultFilter:(NpTexture2DFilter)defaultFilter
                                             ;

@@ -50,6 +50,20 @@
                    semanticForString:self ];
 }
 
+- (NpTextureMinFilter) textureMinFilterValueWithDefault:(NpTextureMinFilter)defaultValue
+{
+    return [[[ NPEngineGraphics instance ] stringEnumConversion ]
+                   textureMinFilterForString:self
+                            defaultMinFilter:defaultValue ];
+}
+
+- (NpTextureMagFilter) textureMagFilterValueWithDefault:(NpTextureMagFilter)defaultValue
+{
+    return [[[ NPEngineGraphics instance ] stringEnumConversion ]
+                   textureMagFilterForString:self
+                            defaultMagFilter:defaultValue ];
+}
+
 - (NpTexture2DFilter) textureFilterValueWithDefault:(NpTexture2DFilter)defaultValue
 {
     return [[[ NPEngineGraphics instance ] stringEnumConversion ]
