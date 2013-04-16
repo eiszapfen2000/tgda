@@ -71,6 +71,13 @@
                             defaultFilter:defaultValue ];
 }
 
+- (NpTextureWrap) textureWrapValueWithDefaultValue:(NpTextureWrap)defaultValue
+{
+    return [[[ NPEngineGraphics instance ] stringEnumConversion ]
+                   textureWrapForString:self
+                            defaultWrap:defaultValue ];
+}
+
 - (NpOrthographicAlignment) orthographicAlignmentValueWithDefault:(NpOrthographicAlignment)defaultValue
 {
     return [[[ NPEngineGraphics instance ] stringEnumConversion ]
