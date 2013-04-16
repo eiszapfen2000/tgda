@@ -34,6 +34,7 @@ static NSMutableDictionary * imageDataFormats = nil;
     semantics              = [[ NSMutableDictionary alloc ] init ];
     textureFilters         = [[ NSMutableDictionary alloc ] init ];
     textureMinMagFilters   = [[ NSMutableDictionary alloc ] init ];
+    textureWraps           = [[ NSMutableDictionary alloc ] init ];
     orthographicAlignments = [[ NSMutableDictionary alloc ] init ];
     pixelFormats           = [[ NSMutableDictionary alloc ] init ];
     imageDataFormats       = [[ NSMutableDictionary alloc ] init ];
