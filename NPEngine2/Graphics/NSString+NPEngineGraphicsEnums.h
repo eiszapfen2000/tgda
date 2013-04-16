@@ -10,6 +10,8 @@
 - (NpUniformType) uniformTypeValue;
 - (NpTextureType) textureTypeValue;
 - (NpEffectSemantic) semanticValue;
+- (NpTextureMinFilter) textureMinFilterValueWithDefault:(NpTextureMinFilter)defaultValue;
+- (NpTextureMagFilter) textureMagFilterValueWithDefault:(NpTextureMagFilter)defaultValue;
 - (NpTexture2DFilter) textureFilterValueWithDefault:(NpTexture2DFilter)defaultValue;
 - (NpOrthographicAlignment) orthographicAlignmentValueWithDefault:(NpOrthographicAlignment)defaultValue;
 

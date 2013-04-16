@@ -44,6 +44,21 @@ typedef enum NpTextureType
 }
 NpTextureType;
 
+typedef enum NpTextureMinFilter
+{
+    NpTextureMinFilterNearest   = 0,
+    NpTextureMinFilterLinear    = 1,
+    NpTextureMinFilterTrilinear = 2
+}
+NpTextureMinFilter;
+
+typedef enum NpTextureMagFilter
+{
+    NpTextureMagFilterNearest = 0,
+    NpTextureMagFilterLinear  = 1
+}
+NpTextureMagFilter;
+
 typedef enum NpTexture2DFilter
 {
     NpTexture2DFilterNearest   = 0,

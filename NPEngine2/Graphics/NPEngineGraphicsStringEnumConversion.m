@@ -9,6 +9,7 @@ static NSMutableDictionary * uniformTypes = nil;
 static NSMutableDictionary * textureTypes = nil;
 static NSMutableDictionary * semantics = nil;
 static NSMutableDictionary * textureFilters = nil;
+static NSMutableDictionary * textureMinMagFilters = nil;
 static NSMutableDictionary * textureWraps = nil;
 static NSMutableDictionary * orthographicAlignments = nil;
 static NSMutableDictionary * pixelFormats = nil;
@@ -32,6 +33,7 @@ static NSMutableDictionary * imageDataFormats = nil;
     textureTypes           = [[ NSMutableDictionary alloc ] init ];
     semantics              = [[ NSMutableDictionary alloc ] init ];
     textureFilters         = [[ NSMutableDictionary alloc ] init ];
+    textureMinMagFilters   = [[ NSMutableDictionary alloc ] init ];
     orthographicAlignments = [[ NSMutableDictionary alloc ] init ];
     pixelFormats           = [[ NSMutableDictionary alloc ] init ];
     imageDataFormats       = [[ NSMutableDictionary alloc ] init ];
@@ -91,6 +93,10 @@ static NSMutableDictionary * imageDataFormats = nil;
     INSERTENUM(textureFilters, NpTexture2DFilterNearest, @"nearest");
     INSERTENUM(textureFilters, NpTexture2DFilterLinear, @"linear");
     INSERTENUM(textureFilters, NpTexture2DFilterTrilinear, @"trilinear");
+
+    INSERTENUM(textureMinMagFilters, NpTextureMinFilterNearest, @"nearest");
+    INSERTENUM(textureMinMagFilters, NpTextureMinFilterLinear, @"linear");
+    INSERTENUM(textureMinMagFilters, NpTextureMinFilterTrilinear, @"trilinear");
 
     INSERTENUM(textureWraps, NpTextureWrapToBorder, @"wraptoborder");
     INSERTENUM(textureWraps, NpTextureWrapToEdge, @"wraptoedge");
@@ -236,6 +242,34 @@ static NSMutableDictionary * imageDataFormats = nil;
     if ( n != nil )
     {
         result = (NpEffectSemantic)[ n intValue ];
+    }
+
+    return result;
+}
+
+- (NpTextureMinFilter) textureMinFilterForString:(NSString *)string
+                                defaultMinFilter:(NpTextureMinFilter)defaultMinFilter
+{
+    NpTextureMinFilter result = defaultMinFilter;
+
+    NSNumber * n = [ textureMinMagFilters objectForKey:string ];
+    if ( n != nil )
+    {
+        result = (NpTextureMinFilter)[ n intValue ];
+    }
+
+    return result;
+}
+
+- (NpTextureMagFilter) textureMagFilterForString:(NSString *)string
+                                defaultMagFilter:(NpTextureMagFilter)defaultMagFilter
+{
+    NpTextureMagFilter result = defaultMagFilter;
+
+    NSNumber * n = [ textureMinMagFilters objectForKey:string ];
+    if ( n != nil )
+    {
+        result = (NpTextureMagFilter)[ n intValue ];
     }
 
     return result;
