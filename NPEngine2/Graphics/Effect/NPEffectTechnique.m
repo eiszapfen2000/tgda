@@ -574,8 +574,9 @@ static BOOL locked = NO;
 
             if ( [ uniformType hasPrefix:@"sampler" ] == YES )
             {
-                [ effect registerEffectVariableSampler:uniformName
-                                             texelUnit:texelUnit ];
+                NPEffectVariableSampler * sampler
+                    = [ effect registerEffectVariableSampler:uniformName
+                                                   texelUnit:texelUnit ];
 
                 texelUnit = texelUnit + 1;
 
@@ -603,14 +604,37 @@ static BOOL locked = NO;
                 {
                     for ( NSUInteger j = lineRange.location; j < lineRange.location + lineRange.length; j++ )
                     {
+                        NSString * fieldName  = NULL;
+                        NSString * fieldValue = NULL;
+
+                        if ( [ parser getTokenAsLowerCaseString:&fieldName fromLine:j atPosition:0 ] == YES
+                             && [ parser isTokenFromLine:j atPosition:1 equalToString:@"=" ] == YES
+                             && [ parser getTokenAsLowerCaseString:&fieldValue fromLine:j atPosition:2 ] == YES)
+                        {
+                            //NSLog(@"%@ = %@", fieldName, fieldValue);
+
+                            if ( [ fieldName isEqual:@"wraps" ] == YES )
+                            if ( [ fieldName isEqual:@"wrapt" ] == YES )
+                            if ( [ fieldName isEqual:@"wrapr" ] == YES )
+                            if ( [ fieldName isEqual:@"minfilter" ] == YES )
+                            if ( [ fieldName isEqual:@"magfilter" ] == YES )
+                            if ( [ fieldName isEqual:@"anisotropy" ] == YES ){}
+                        }
+
+                        /*
                         if ( [ parser isLowerCaseTokenFromLine:j atPosition:0 equalToString:@"wraps" ] == YES )
-                        { NSLog(@"wraps");}
+                        { //NSLog(@"wraps");}
                         else if ( [ parser isLowerCaseTokenFromLine:j atPosition:0 equalToString:@"wrapt" ] == YES )
-                        { NSLog(@"wrapt");}
-                        else if ( [ parser isLowerCaseTokenFromLine:j atPosition:0 equalToString:@"filter" ] == YES )
-                        { NSLog(@"filter");}
+                        { //NSLog(@"wrapt");}
+                        else if ( [ parser isLowerCaseTokenFromLine:j atPosition:0 equalToString:@"wrapr" ] == YES )
+                        { //NSLog(@"wrapr");}
+                        else if ( [ parser isLowerCaseTokenFromLine:j atPosition:0 equalToString:@"minfilter" ] == YES )
+                        { //NSLog(@"minfilter");}
+                        else if ( [ parser isLowerCaseTokenFromLine:j atPosition:0 equalToString:@"magfilter" ] == YES )
+                        { //NSLog(@"magfilter");}
                         else if ( [ parser isLowerCaseTokenFromLine:j atPosition:0 equalToString:@"anisotropy" ] == YES )
-                        { NSLog(@"anisotropy");}
+                        { //NSLog(@"anisotropy");}
+                        */
                     }
                 }
             }
