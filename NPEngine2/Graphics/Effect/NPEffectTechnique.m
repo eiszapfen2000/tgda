@@ -593,7 +593,7 @@ static BOOL locked = NO;
                             lineRange.location = i + 2;
                             lineRange.length = j - ( i + 2 );
 
-                            NSLog(@"%lu %lu", lineRange.location, lineRange.length);
+                            //NSLog(@"%lu %lu", lineRange.location, lineRange.length);
                             // exit the inner loop since we are
                             // done with the sampler
                             break;
