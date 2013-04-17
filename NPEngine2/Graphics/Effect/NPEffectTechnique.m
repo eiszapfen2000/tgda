@@ -6,6 +6,7 @@
 #import "Core/Container/NPAssetArray.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Graphics/Texture/NpTextureSamplerParameter.h"
+#import "Graphics/Texture/NPTextureSamplingState.h"
 #import "Graphics/NPEngineGraphics.h"
 #import "Graphics/NPEngineGraphicsErrors.h"
 #import "Graphics/NSString+NPEngineGraphicsEnums.h"
@@ -287,6 +288,7 @@ static BOOL locked = NO;
     }
 
     [ currentTechnique activateVariables ];
+    [[[ NPEngineGraphics instance ] textureSamplingState ] activate ];
 }
 
 @end
@@ -593,7 +595,6 @@ static BOOL locked = NO;
                             lineRange.location = i + 2;
                             lineRange.length = j - ( i + 2 );
 
-                            //NSLog(@"%lu %lu", lineRange.location, lineRange.length);
                             // exit the inner loop since we are
                             // done with the sampler
                             break;
@@ -617,8 +618,6 @@ static BOOL locked = NO;
                              && [ parser isTokenFromLine:j atPosition:1 equalToString:@"=" ] == YES
                              && [ parser getTokenAsLowerCaseString:&fieldValue fromLine:j atPosition:2 ] == YES)
                         {
-                            //NSLog(@"%@ = %@", fieldName, fieldValue);
-
                             if ( [ fieldName isEqual:@"wraps" ] == YES )
                             {
                                 wrapState.wrapS
@@ -657,8 +656,8 @@ static BOOL locked = NO;
                         }
                     }
 
-                    //NSLog(@"%d %d %u", filterState.minFilter, filterState.magFilter, filterState.anisotropy);
-                    //NSLog(@"%d %d %d", wrapState.wrapS, wrapState.wrapT, wrapState.wrapR);
+                    [ sampler setFilterState:filterState ];
+                    [ sampler setWrapState:wrapState ];
                 }
             }
             else if ( [ uniformName hasPrefix:@"np_" ] == YES )
