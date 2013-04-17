@@ -3,27 +3,6 @@
 #import "Graphics/NPEngineGraphicsEnums.h"
 #import "NpTextureSamplerParameter.h"
 
-/*
-typedef struct NpSamplerFilterState
-{
-	NpTextureMinFilter minFilter;
-	NpTextureMagFilter magFilter;
-	uint32_t anisotropy;
-}
-NpSamplerFilterState;
-
-typedef struct NpSamplerWrapState
-{
-	NpTextureWrap wrapS;
-	NpTextureWrap wrapT;
-    NpTextureWrap wrapR;
-}
-NpSamplerWrapState;
-
-void reset_sampler_filterstate(NpSamplerFilterState * filterState);
-void reset_sampler_wrapstate(NpSamplerWrapState * wrapState);
-*/
-
 @interface NPSamplerObject : NPObject
 {
     NpSamplerFilterState filterState;
