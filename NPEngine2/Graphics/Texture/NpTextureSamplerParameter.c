@@ -2,6 +2,20 @@
 #include "GL/glew.h"
 #include "NpTextureSamplerParameter.h"
 
+void reset_sampler_filterstate(NpSamplerFilterState * filterState)
+{
+    filterState->minFilter = NpTextureMinFilterNearest;
+    filterState->magFilter = NpTextureMagFilterNearest;
+    filterState->anisotropy = 1;
+}
+
+void reset_sampler_wrapstate(NpSamplerWrapState * wrapState)
+{
+    wrapState->wrapS = NpTextureWrapToEdge;
+    wrapState->wrapT = NpTextureWrapToEdge;
+    wrapState->wrapR = NpTextureWrapToEdge;
+}
+
 void set_texture2d_filter(NpTexture2DFilter filter)
 {
     GLint minFilter = GL_NONE;
@@ -72,6 +86,28 @@ void set_texture2d_swizzle_mask(NpTextureColorFormat colorFormat)
     {
         glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, masks[colorFormat]);
     }
+}
+
+void set_sampler_filterstate(GLuint sampler, NpSamplerFilterState filterState)
+{
+    GLint minGLFilter = getGLTextureMinFilter(filterState.minFilter);
+    GLint magGLFilter = getGLTextureMagFilter(filterState.magFilter);
+
+    glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, minGLFilter);
+    glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, magGLFilter);
+
+    glSamplerParameteri(sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT, (GLint)(filterState.anisotropy));
+}
+
+void set_sampler_wrapstate(GLuint sampler, NpSamplerWrapState wrapState)
+{
+    GLint wrapS = getGLTextureWrap(wrapState.wrapS);
+    GLint wrapT = getGLTextureWrap(wrapState.wrapT);
+    GLint wrapR = getGLTextureWrap(wrapState.wrapR);
+
+    glSamplerParameteri(sampler, GL_TEXTURE_WRAP_S, wrapS);
+    glSamplerParameteri(sampler, GL_TEXTURE_WRAP_T, wrapT);
+    glSamplerParameteri(sampler, GL_TEXTURE_WRAP_R, wrapR);
 }
 
 void set_sampler_filter(GLuint sampler, NpTextureMinFilter minFilter, NpTextureMagFilter magFilter)

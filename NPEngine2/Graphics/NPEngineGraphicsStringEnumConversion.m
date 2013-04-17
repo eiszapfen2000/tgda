@@ -101,6 +101,8 @@ static NSMutableDictionary * imageDataFormats = nil;
 
     INSERTENUM(textureWraps, NpTextureWrapToBorder, @"wraptoborder");
     INSERTENUM(textureWraps, NpTextureWrapToEdge, @"wraptoedge");
+    INSERTENUM(textureWraps, NpTextureWrapToBorder, @"clamptoborder");
+    INSERTENUM(textureWraps, NpTextureWrapToEdge, @"clamptoedge");
     INSERTENUM(textureWraps, NpTextureWrapRepeat, @"repeat");
 
     INSERTENUM(orthographicAlignments, NpOrthographicAlignTopLeft, @"topleft");

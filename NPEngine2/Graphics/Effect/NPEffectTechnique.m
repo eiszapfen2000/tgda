@@ -5,6 +5,7 @@
 #import "Core/String/NPParser.h"
 #import "Core/Container/NPAssetArray.h"
 #import "Core/Utilities/NSError+NPEngine.h"
+#import "Graphics/Texture/NpTextureSamplerParameter.h"
 #import "Graphics/NPEngineGraphics.h"
 #import "Graphics/NPEngineGraphicsErrors.h"
 #import "Graphics/NSString+NPEngineGraphicsEnums.h"
@@ -602,6 +603,11 @@ static BOOL locked = NO;
 
                 if ( lineRange.location != ULONG_MAX )
                 {
+                    NpSamplerFilterState filterState;
+                    NpSamplerWrapState wrapState;
+                    reset_sampler_filterstate(&filterState);
+                    reset_sampler_wrapstate(&wrapState);
+
                     for ( NSUInteger j = lineRange.location; j < lineRange.location + lineRange.length; j++ )
                     {
                         NSString * fieldName  = NULL;
@@ -614,28 +620,45 @@ static BOOL locked = NO;
                             //NSLog(@"%@ = %@", fieldName, fieldValue);
 
                             if ( [ fieldName isEqual:@"wraps" ] == YES )
-                            if ( [ fieldName isEqual:@"wrapt" ] == YES )
-                            if ( [ fieldName isEqual:@"wrapr" ] == YES )
-                            if ( [ fieldName isEqual:@"minfilter" ] == YES )
-                            if ( [ fieldName isEqual:@"magfilter" ] == YES )
-                            if ( [ fieldName isEqual:@"anisotropy" ] == YES ){}
-                        }
+                            {
+                                wrapState.wrapS
+                                    = [ fieldValue textureWrapValueWithDefaultValue:wrapState.wrapS ];
+                            }
 
-                        /*
-                        if ( [ parser isLowerCaseTokenFromLine:j atPosition:0 equalToString:@"wraps" ] == YES )
-                        { //NSLog(@"wraps");}
-                        else if ( [ parser isLowerCaseTokenFromLine:j atPosition:0 equalToString:@"wrapt" ] == YES )
-                        { //NSLog(@"wrapt");}
-                        else if ( [ parser isLowerCaseTokenFromLine:j atPosition:0 equalToString:@"wrapr" ] == YES )
-                        { //NSLog(@"wrapr");}
-                        else if ( [ parser isLowerCaseTokenFromLine:j atPosition:0 equalToString:@"minfilter" ] == YES )
-                        { //NSLog(@"minfilter");}
-                        else if ( [ parser isLowerCaseTokenFromLine:j atPosition:0 equalToString:@"magfilter" ] == YES )
-                        { //NSLog(@"magfilter");}
-                        else if ( [ parser isLowerCaseTokenFromLine:j atPosition:0 equalToString:@"anisotropy" ] == YES )
-                        { //NSLog(@"anisotropy");}
-                        */
+                            if ( [ fieldName isEqual:@"wrapt" ] == YES )
+                            {
+                                wrapState.wrapT
+                                    = [ fieldValue textureWrapValueWithDefaultValue:wrapState.wrapT ];
+                            }
+
+                            if ( [ fieldName isEqual:@"wrapr" ] == YES )
+                            {
+                                wrapState.wrapR
+                                    = [ fieldValue textureWrapValueWithDefaultValue:wrapState.wrapR ];
+                            }
+
+                            if ( [ fieldName isEqual:@"minfilter" ] == YES )
+                            {
+                                filterState.minFilter
+                                    = [ fieldValue textureMinFilterValueWithDefault:filterState.minFilter ];
+                            }
+
+                            if ( [ fieldName isEqual:@"magfilter" ] == YES )
+                            {
+                                filterState.magFilter
+                                    = [ fieldValue textureMagFilterValueWithDefault:filterState.magFilter ];
+                            }
+
+                            if ( [ fieldName isEqual:@"anisotropy" ] == YES )
+                            {
+                                filterState.anisotropy
+                                    = MAX(0, [ fieldValue intValue ]);
+                            }
+                        }
                     }
+
+                    //NSLog(@"%d %d %u", filterState.minFilter, filterState.magFilter, filterState.anisotropy);
+                    //NSLog(@"%d %d %d", wrapState.wrapS, wrapState.wrapT, wrapState.wrapR);
                 }
             }
             else if ( [ uniformName hasPrefix:@"np_" ] == YES )

@@ -1,7 +1,9 @@
 #import "GL/glew.h"
 #import "Core/NPObject/NPObject.h"
 #import "Graphics/NPEngineGraphicsEnums.h"
+#import "NpTextureSamplerParameter.h"
 
+/*
 typedef struct NpSamplerFilterState
 {
 	NpTextureMinFilter minFilter;
@@ -20,6 +22,7 @@ NpSamplerWrapState;
 
 void reset_sampler_filterstate(NpSamplerFilterState * filterState);
 void reset_sampler_wrapstate(NpSamplerWrapState * wrapState);
+*/
 
 @interface NPSamplerObject : NPObject
 {
