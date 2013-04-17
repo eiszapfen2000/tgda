@@ -1,21 +1,6 @@
 #import "Graphics/NPEngineGraphics.h"
-#import "NpTextureSamplerParameter.h"
 #import "Graphics/NPEngineGraphics.h"
 #import "NPSamplerObject.h"
-
-void reset_sampler_filterstate(NpSamplerFilterState * filterState)
-{
-    filterState->minFilter = NpTextureMinFilterNearest;
-    filterState->magFilter = NpTextureMagFilterNearest;
-    filterState->anisotropy = 1;
-}
-
-void reset_sampler_wrapstate(NpSamplerWrapState * wrapState)
-{
-    wrapState->wrapS = NpTextureWrapToEdge;
-    wrapState->wrapT = NpTextureWrapToEdge;
-    wrapState->wrapR = NpTextureWrapToEdge;
-}
 
 @implementation NPSamplerObject
 
@@ -66,9 +51,8 @@ void reset_sampler_wrapstate(NpSamplerWrapState * wrapState)
     reset_sampler_filterstate(&filterState);
     reset_sampler_wrapstate(&wrapState);
 
-    set_sampler_filter(glID, filterState.minFilter, filterState.magFilter);
-    set_sampler_anisotropy(glID, filterState.anisotropy);
-    set_sampler_wrap(glID, wrapState.wrapS, wrapState.wrapT, wrapState.wrapR);
+    set_sampler_filterstate(glID, filterState);
+    set_sampler_wrapstate(glID, wrapState);
 }
 
 - (void) setTextureFilter:(NpSamplerFilterState)newTextureFilter
@@ -78,7 +62,7 @@ void reset_sampler_wrapstate(NpSamplerWrapState * wrapState)
          || filterState.anisotropy != newTextureFilter.anisotropy )
     {
         filterState = newTextureFilter;
-        set_sampler_filter(glID, filterState.minFilter, filterState.magFilter);
+        set_sampler_filterstate(glID, filterState);;
     }
 }
 
@@ -89,7 +73,7 @@ void reset_sampler_wrapstate(NpSamplerWrapState * wrapState)
          || wrapState.wrapR != newTextureWrap.wrapR)
     {
         wrapState = newTextureWrap;
-        set_sampler_wrap(glID, wrapState.wrapS, wrapState.wrapT, wrapState.wrapR);
+        set_sampler_wrapstate(glID, wrapState);;
     }
 }
 
