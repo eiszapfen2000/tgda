@@ -118,18 +118,29 @@ static const double OneDivSixty = 1.0 / 60.0;
     {
         const size_t arraySize = resolutions[i] * resolutions[i];
 
-        float * target = ALLOC_ARRAY(float, arraySize);
+        float * realTarget = ALLOC_ARRAY(float, arraySize);
         fftwf_complex * source = fftwf_malloc(sizeof(fftwf_complex) * arraySize);
+        fftwf_complex * complexTarget = fftwf_malloc(sizeof(fftwf_complex) * arraySize);
 
-        plans[i]
+        halfComplexPlans[i]
             = fftwf_plan_dft_c2r_2d(resolutions[i],
                                     resolutions[i],
                                     source,
-                                    target,
+                                    realTarget,
                                     FFTW_MEASURE);
 
+        complexPlans[i]
+            = fftwf_plan_dft_2d(resolutions[i],
+                                resolutions[i],
+                                source,
+                                complexTarget,
+                                FFTW_BACKWARD,
+                                FFTW_MEASURE);
+
+
         fftwf_free(source);
-        FREE(target);
+        fftwf_free(complexTarget);
+        FREE(realTarget);
     }
 
     if ( obtainedWisdom == NO )
@@ -145,9 +156,14 @@ static const double OneDivSixty = 1.0 / 60.0;
 {
     for ( uint32_t i = 0; i < ODOCEANENTITY_NUMBER_OF_RESOLUTIONS; i++ )
     {
-        if ( plans[i] != NULL )
+        if ( halfComplexPlans[i] != NULL )
         {
-            fftwf_destroy_plan(plans[i]);
+            fftwf_destroy_plan(halfComplexPlans[i]);
+        }
+
+        if ( complexPlans[i] != NULL )
+        {
+            fftwf_destroy_plan(complexPlans[i]);
         }
     }
 
@@ -242,7 +258,7 @@ static const double OneDivSixty = 1.0 / 60.0;
 
             [ timer update ];
 
-            fftwf_execute_dft_c2r(plans[resIndex], halfcomplexSpectrum, result->data32f);
+            fftwf_execute_dft_c2r(halfComplexPlans[resIndex], halfcomplexSpectrum, result->data32f);
 
             [ timer update ];
 
