@@ -54,7 +54,13 @@ technique "water_surface"
     uniform vec2 heightfieldMinMax;
     uniform sampler2D positions;
     uniform sampler2D normals;
-    uniform sampler2D heightfield;
+    uniform sampler2D heightfield
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
     # vertex streams
     in vec2 in_position : 0;
     in vec2 in_texcoords : 3;
