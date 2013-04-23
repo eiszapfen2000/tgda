@@ -62,7 +62,7 @@
          || filterState.anisotropy != newTextureFilter.anisotropy )
     {
         filterState = newTextureFilter;
-        set_sampler_filterstate(glID, filterState);;
+        set_sampler_filterstate(glID, filterState);
     }
 }
 
@@ -73,7 +73,7 @@
          || wrapState.wrapR != newTextureWrap.wrapR)
     {
         wrapState = newTextureWrap;
-        set_sampler_wrapstate(glID, wrapState);;
+        set_sampler_wrapstate(glID, wrapState);
     }
 }
 
