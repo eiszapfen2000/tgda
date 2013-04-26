@@ -17,21 +17,24 @@ static NPAssetArray * statesets = nil;
 
 + (void) initialize
 {
-    models
-        = [[ NPAssetArray alloc ] 
-                initWithName:@"Ocean Demo Entity Models"
-                  assetClass:NSClassFromString(@"NPSUX2Model") ];
+    if ( self == [ ODEntity class ] )
+    {
+        models
+            = [[ NPAssetArray alloc ] 
+                    initWithName:@"Ocean Demo Entity Models"
+                      assetClass:NSClassFromString(@"NPSUX2Model") ];
 
-    statesets
-        = [[ NPAssetArray alloc ] 
-                initWithName:@"Ocean Demo Entity Statesets"
-                  assetClass:NSClassFromString(@"NPStateSet") ];
+        statesets
+            = [[ NPAssetArray alloc ] 
+                    initWithName:@"Ocean Demo Entity Statesets"
+                      assetClass:NSClassFromString(@"NPStateSet") ];
+    }
 }
 
 + (void) shutdown
 {
-    DESTROY(statesets);
-    DESTROY(models);
+    SAFE_DESTROY(statesets);
+    SAFE_DESTROY(models);
 }
 
 - (id) init
