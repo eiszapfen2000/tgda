@@ -5,6 +5,7 @@
 #import "Core/NPEngineCore.h"
 #import "NPSUX2ModelGroup.h"
 #import "NPSUX2ModelLOD.h"
+#import "NPSUX2VertexBuffer.h"
 
 @implementation NPSUX2ModelLOD
 

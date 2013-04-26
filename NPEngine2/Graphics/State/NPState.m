@@ -1,3 +1,4 @@
+#import "NPStateConfiguration.h"
 #import "NPState.h"
 
 @implementation NPState
