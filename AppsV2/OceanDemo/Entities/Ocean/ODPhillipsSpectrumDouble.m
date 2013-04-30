@@ -523,8 +523,8 @@ right way.
     }
 }
 
-- (fftw_complex *) generateDoubleFrequencySpectrum:(const ODSpectrumSettings)settings
-                                            atTime:(const double)time
+- (OdFrequencySpectrumDouble) generateDoubleFrequencySpectrum:(const ODSpectrumSettings)settings
+                                                       atTime:(const double)time
 {
     currentSettings = settings;
 
@@ -536,11 +536,14 @@ right way.
 
     lastSettings = currentSettings;
 
-    return spectrum;
+    OdFrequencySpectrumDouble result
+        = {.waveSpectrum = spectrum, .gradientX = NULL, .gradientZ = NULL };
+
+    return result;
 }
 
-- (fftw_complex *) generateDoubleFrequencySpectrumHC:(const ODSpectrumSettings)settings
-                                              atTime:(const double)time
+- (OdFrequencySpectrumDouble) generateDoubleFrequencySpectrumHC:(const ODSpectrumSettings)settings
+                                                         atTime:(const double)time
 {
     currentSettings = settings;
 
@@ -549,7 +552,10 @@ right way.
     fftw_complex * spectrum = [ self generateHHCAtTime:time ];
     lastSettings = currentSettings;
 
-    return spectrum;
+    OdFrequencySpectrumDouble result
+        = {.waveSpectrum = spectrum, .gradientX = NULL, .gradientZ = NULL };
+
+    return result;
 }
 
 @end

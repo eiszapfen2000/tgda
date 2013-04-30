@@ -535,8 +535,8 @@ right way.
     }
 }
 
-- (fftwf_complex *) generateFloatFrequencySpectrum:(const ODSpectrumSettings)settings
-                                            atTime:(const float)time
+- (OdFrequencySpectrumFloat) generateFloatFrequencySpectrum:(const ODSpectrumSettings)settings
+                                                     atTime:(const float)time
 {
     currentSettings = settings;
 
@@ -548,11 +548,14 @@ right way.
 
     lastSettings = currentSettings;
 
-    return spectrum;
+    OdFrequencySpectrumFloat result
+        = {.waveSpectrum = spectrum, .gradientX = NULL, .gradientZ = NULL };
+
+    return result;
 }
 
-- (fftwf_complex *) generateFloatFrequencySpectrumHC:(const ODSpectrumSettings)settings
-                                              atTime:(const float)time
+- (OdFrequencySpectrumFloat) generateFloatFrequencySpectrumHC:(const ODSpectrumSettings)settings
+                                                       atTime:(const float)time
 {
     currentSettings = settings;
 
@@ -560,7 +563,10 @@ right way.
     fftwf_complex * spectrum = [ self generateHHCAtTime:time ];
     lastSettings = currentSettings;
 
-    return spectrum;
+    OdFrequencySpectrumFloat result
+        = {.waveSpectrum = spectrum, .gradientX = NULL, .gradientZ = NULL };
+
+    return result;
 }
 
 @end

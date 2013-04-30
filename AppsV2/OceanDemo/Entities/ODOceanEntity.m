@@ -220,7 +220,7 @@ static const double OneDivSixty = 1.0 / 60.0;
 
             result->timeStamp = generationTime;
 
-            fftwf_complex * halfcomplexSpectrum
+            OdFrequencySpectrumFloat halfcomplexSpectrum
                 = [ s generateFloatFrequencySpectrumHC:settings atTime:generationTime ];
 
             generationTime += 1.0f/60.0f;
@@ -258,7 +258,7 @@ static const double OneDivSixty = 1.0 / 60.0;
 
             [ timer update ];
 
-            fftwf_execute_dft_c2r(halfComplexPlans[resIndex], halfcomplexSpectrum, result->data32f);
+            fftwf_execute_dft_c2r(halfComplexPlans[resIndex], halfcomplexSpectrum.waveSpectrum, result->data32f);
 
             [ timer update ];
 
@@ -274,7 +274,7 @@ static const double OneDivSixty = 1.0 / 60.0;
             fflush(stdout);
             */
 
-            fftwf_free(halfcomplexSpectrum);
+            fftwf_free(halfcomplexSpectrum.waveSpectrum);
 
             {
                 [ resultQueueMutex lock ];
