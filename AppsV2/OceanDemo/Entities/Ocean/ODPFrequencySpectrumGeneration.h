@@ -6,17 +6,33 @@ typedef struct ODSpectrumSettings
 {
     IVector2 resolution;
     Vector2 size;
-    Vector2 windDirection;    
+    Vector2 windDirection;
 }
 ODSpectrumSettings;
 
+typedef struct OdFrequencySpectrumDouble
+{
+    fftw_complex * waveSpectrum;
+    fftw_complex * gradientX;
+    fftw_complex * gradientZ;
+}
+OdFrequencySpectrumDouble;
+
+typedef struct OdFrequencySpectrumFloat
+{
+    fftwf_complex * waveSpectrum;
+    fftwf_complex * gradientX;
+    fftwf_complex * gradientZ;
+}
+OdFrequencySpectrumFloat;
+
 @protocol ODPFrequencySpectrumGenerationDouble
 
-- (fftw_complex *) generateDoubleFrequencySpectrum:(const ODSpectrumSettings)settings
+- (OdFrequencySpectrumDouble) generateDoubleFrequencySpectrum:(const ODSpectrumSettings)settings
                                             atTime:(const double)time
                                                   ;
 
-- (fftw_complex *) generateDoubleFrequencySpectrumHC:(const ODSpectrumSettings)settings
+- (OdFrequencySpectrumDouble) generateDoubleFrequencySpectrumHC:(const ODSpectrumSettings)settings
                                               atTime:(const double)time
                                                     ;
 
@@ -24,11 +40,11 @@ ODSpectrumSettings;
 
 @protocol ODPFrequencySpectrumGenerationFloat
 
-- (fftwf_complex *) generateFloatFrequencySpectrum:(const ODSpectrumSettings)settings
+- (OdFrequencySpectrumFloat) generateFloatFrequencySpectrum:(const ODSpectrumSettings)settings
                                             atTime:(const float)time
                                                   ;
 
-- (fftwf_complex *) generateFloatFrequencySpectrumHC:(const ODSpectrumSettings)settings
+- (OdFrequencySpectrumFloat) generateFloatFrequencySpectrumHC:(const ODSpectrumSettings)settings
                                               atTime:(const float)time
                                                     ;
 

@@ -29,26 +29,26 @@
     [ super dealloc ];
 }
 
-- (fftw_complex *) generateDoubleFrequencySpectrum:(const ODSpectrumSettings)settings
-                                            atTime:(const double)time
+- (OdFrequencySpectrumDouble) generateDoubleFrequencySpectrum:(const ODSpectrumSettings)settings
+                                                       atTime:(const double)time
 {
     return [ doubleGenerator generateDoubleFrequencySpectrum:settings atTime:time ];
 }
 
-- (fftw_complex *) generateDoubleFrequencySpectrumHC:(const ODSpectrumSettings)settings
-                                              atTime:(const double)time
+- (OdFrequencySpectrumDouble) generateDoubleFrequencySpectrumHC:(const ODSpectrumSettings)settings
+                                                         atTime:(const double)time
 {
     return [ doubleGenerator generateDoubleFrequencySpectrumHC:settings atTime:time ];
 }
 
-- (fftwf_complex *) generateFloatFrequencySpectrum:(const ODSpectrumSettings)settings
-                                            atTime:(const float)time
+- (OdFrequencySpectrumFloat) generateFloatFrequencySpectrum:(const ODSpectrumSettings)settings
+                                                     atTime:(const float)time
 {
     return [ floatGenerator generateFloatFrequencySpectrum:settings atTime:time ];
 }
 
-- (fftwf_complex *) generateFloatFrequencySpectrumHC:(const ODSpectrumSettings)settings
-                                              atTime:(const float)time
+- (OdFrequencySpectrumFloat) generateFloatFrequencySpectrumHC:(const ODSpectrumSettings)settings
+                                                       atTime:(const float)time
 {
     return [ floatGenerator generateFloatFrequencySpectrumHC:settings atTime:time ];
 }
