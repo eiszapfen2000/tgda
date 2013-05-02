@@ -133,7 +133,7 @@ static float amplitudef(FVector2 const * const windDirection,
     }
 }
 
-- (fftwf_complex *) generateHAtTime:(const float)time
+- (OdFrequencySpectrumFloat) generateHAtTime:(const float)time
 {
     const IVector2 resolution = currentSettings.resolution;
     const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
@@ -202,15 +202,18 @@ static float amplitudef(FVector2 const * const windDirection,
         }
     }
 
-    return frequencySpectrum;
+    OdFrequencySpectrumFloat result
+        = {.waveSpectrum = frequencySpectrum, .gradientX = NULL, .gradientZ = NULL };
+
+    return result;
 }
 
-- (fftwf_complex *) generateTimeIndependentH
+- (OdFrequencySpectrumFloat) generateTimeIndependentH
 {
     return [ self generateHAtTime:1.0f ];
 }
 
-- (fftwf_complex *) generateHHCAtTime:(const float)time
+- (OdFrequencySpectrumFloat) generateHHCAtTime:(const float)time
 {
     const IVector2 resolution = currentSettings.resolution;
     const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
@@ -454,10 +457,13 @@ static float amplitudef(FVector2 const * const windDirection,
         frequencySpectrumHC[indexHC][1] = H0expOmega[1] + H0expMinusOmega[1];
     }
 
-    return frequencySpectrumHC;
+    OdFrequencySpectrumFloat result
+        = {.waveSpectrum = frequencySpectrumHC, .gradientX = NULL, .gradientZ = NULL };
+
+    return result;
 }
 
-- (fftwf_complex *) generateTimeIndependentHHC
+- (OdFrequencySpectrumFloat) generateTimeIndependentHHC
 {
     return [ self generateHHCAtTime:1.0f ];
 }
@@ -542,14 +548,11 @@ right way.
 
     [ self generateH0 ];
 
-    fftwf_complex * spectrum = [ self generateHAtTime:time ];
-    [ self swapFrequencySpectrum:spectrum quadrants:ODQuadrant_1_3 ];
-    [ self swapFrequencySpectrum:spectrum quadrants:ODQuadrant_2_4 ];
+    OdFrequencySpectrumFloat result = [ self generateHAtTime:time ];
+    [ self swapFrequencySpectrum:result.waveSpectrum quadrants:ODQuadrant_1_3 ];
+    [ self swapFrequencySpectrum:result.waveSpectrum quadrants:ODQuadrant_2_4 ];
 
     lastSettings = currentSettings;
-
-    OdFrequencySpectrumFloat result
-        = {.waveSpectrum = spectrum, .gradientX = NULL, .gradientZ = NULL };
 
     return result;
 }
@@ -560,11 +563,8 @@ right way.
     currentSettings = settings;
 
     [ self generateH0 ];
-    fftwf_complex * spectrum = [ self generateHHCAtTime:time ];
+    OdFrequencySpectrumFloat result= [ self generateHHCAtTime:time ];
     lastSettings = currentSettings;
-
-    OdFrequencySpectrumFloat result
-        = {.waveSpectrum = spectrum, .gradientX = NULL, .gradientZ = NULL };
 
     return result;
 }
