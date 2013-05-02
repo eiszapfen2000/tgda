@@ -118,9 +118,9 @@ static const double OneDivSixty = 1.0 / 60.0;
     {
         const size_t arraySize = resolutions[i] * resolutions[i];
 
-        float * realTarget = ALLOC_ARRAY(float, arraySize);
-        fftwf_complex * source = fftwf_malloc(sizeof(fftwf_complex) * arraySize);
-        fftwf_complex * complexTarget = fftwf_malloc(sizeof(fftwf_complex) * arraySize);
+        float * realTarget = fftwf_alloc_real(arraySize);
+        fftwf_complex * source = fftwf_alloc_complex(arraySize);
+        fftwf_complex * complexTarget = fftwf_alloc_complex(arraySize);
 
         halfComplexPlans[i]
             = fftwf_plan_dft_c2r_2d(resolutions[i],
@@ -140,7 +140,7 @@ static const double OneDivSixty = 1.0 / 60.0;
 
         fftwf_free(source);
         fftwf_free(complexTarget);
-        FREE(realTarget);
+        fftwf_free(realTarget);
     }
 
     if ( obtainedWisdom == NO )
@@ -275,6 +275,8 @@ static const double OneDivSixty = 1.0 / 60.0;
             */
 
             fftwf_free(halfcomplexSpectrum.waveSpectrum);
+            fftwf_free(halfcomplexSpectrum.gradientX);
+            fftwf_free(halfcomplexSpectrum.gradientZ);
 
             {
                 [ resultQueueMutex lock ];
