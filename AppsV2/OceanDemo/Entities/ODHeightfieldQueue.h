@@ -1,6 +1,5 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
-#import "fftw3.h"
 
 @class NSPointerArray;
 
