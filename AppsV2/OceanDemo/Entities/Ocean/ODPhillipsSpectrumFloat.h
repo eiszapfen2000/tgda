@@ -16,9 +16,9 @@
 - (void) dealloc;
 
 - (void) generateH0;
-- (fftwf_complex *) generateHAtTime:(const float)time;
-- (fftwf_complex *) generateTimeIndependentH;
-- (fftwf_complex *) generateHHCAtTime:(const float)time;
-- (fftwf_complex *) generateTimeIndependentHHC;
+- (OdFrequencySpectrumFloat) generateHAtTime:(const float)time;
+- (OdFrequencySpectrumFloat) generateTimeIndependentH;
+- (OdFrequencySpectrumFloat) generateHHCAtTime:(const float)time;
+- (OdFrequencySpectrumFloat) generateTimeIndependentHHC;
 
 @end
