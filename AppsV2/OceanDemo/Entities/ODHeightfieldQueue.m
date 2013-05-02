@@ -1,5 +1,6 @@
 #import <Foundation/NSPointerArray.h>
 #import <Foundation/NSString.h>
+#import "fftw3.h"
 #import "Core/Basics/NpFreeList.h"
 #import "Core/Container/NSPointerArray+NPEngine.h"
 #import "ODHeightfieldQueue.h"
@@ -35,14 +36,17 @@ OdHeightfieldData * heightfield_alloc_init_with_resolution_and_size(IVector2 res
 
     result->resolution = resolution;
     result->size = size;
-    result->data32f = ALLOC_ARRAY(float, resolution.x * resolution.y);
+    result->data32f = fftwf_alloc_real(resolution.x * resolution.y);
 
     return result;
 }
 
 OdHeightfieldData * heightfield_free(OdHeightfieldData * heightfield)
 {
-    SAFE_FREE(heightfield->data32f);
+    if ( heightfield->data32f != NULL )
+    {
+        fftwf_free(heightfield->data32f);
+    }
 
     return npfreenode_free(heightfield, OD_HEIGHTFIELDDATA_FREELIST);
 }
