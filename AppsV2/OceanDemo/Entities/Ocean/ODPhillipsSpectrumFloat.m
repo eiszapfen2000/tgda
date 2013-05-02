@@ -205,6 +205,26 @@ static float amplitudef(FVector2 const * const windDirection,
             // H = H0expOmega + H0expMinusomega
             frequencySpectrum[indexForK][0] = H0expOmega[0] + H0expMinusOmega[0];
             frequencySpectrum[indexForK][1] = H0expOmega[1] + H0expMinusOmega[1];
+
+            // i * kx
+            /*
+            x = 0  + i*1
+            y = kx + i*0
+            xy = (0*k - 1*0) + i*(0*0+1*kx)
+               = 0 + i*kx
+            */
+
+            // i * kx * H
+            /*
+            x = 0 + i*kx
+            H = c + i*d
+            xy = (0*c - kx*d) + i*(0*d+kx*c)
+            */
+            gradientX[indexForK][0] = -kx * (H0expOmega[1] + H0expMinusOmega[1]);
+            gradientX[indexForK][1] =  kx * (H0expOmega[0] + H0expMinusOmega[0]);
+
+            gradientZ[indexForK][0] = -ky * (H0expOmega[1] + H0expMinusOmega[1]);
+            gradientZ[indexForK][1] =  ky * (H0expOmega[0] + H0expMinusOmega[0]);
         }
     }
 
@@ -557,6 +577,18 @@ right way.
     OdFrequencySpectrumFloat result = [ self generateHAtTime:time ];
     [ self swapFrequencySpectrum:result.waveSpectrum quadrants:ODQuadrant_1_3 ];
     [ self swapFrequencySpectrum:result.waveSpectrum quadrants:ODQuadrant_2_4 ];
+
+    if ( result.gradientX != NULL )
+    {
+        [ self swapFrequencySpectrum:result.gradientX quadrants:ODQuadrant_1_3 ];
+        [ self swapFrequencySpectrum:result.gradientX quadrants:ODQuadrant_2_4 ];
+    }
+
+    if ( result.gradientZ != NULL )
+    {
+        [ self swapFrequencySpectrum:result.gradientZ quadrants:ODQuadrant_1_3 ];
+        [ self swapFrequencySpectrum:result.gradientZ quadrants:ODQuadrant_2_4 ];
+    }
 
     lastSettings = currentSettings;
 

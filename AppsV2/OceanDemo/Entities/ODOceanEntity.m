@@ -55,7 +55,7 @@ void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex * spec
 
 static const Vector2 defaultWindDirection = {10.0, 0.5};
 static const int32_t resolutions[4] = {64, 128, 256, 512};
-static const NSUInteger defaultResolutionIndex = 3;
+static const NSUInteger defaultResolutionIndex = 0;
 static const double OneDivSixty = 1.0 / 60.0;
 
 @interface ODOceanEntity (Private)
@@ -215,13 +215,14 @@ static const double OneDivSixty = 1.0 / 60.0;
                 [ resultQueueMutex unlock ];
             }
 
+            fftwf_complex * complexHeights = fftwf_alloc_complex(res * res);
 
             [ timer update ];
 
             result->timeStamp = generationTime;
 
-            OdFrequencySpectrumFloat halfcomplexSpectrum
-                = [ s generateFloatFrequencySpectrumHC:settings atTime:generationTime ];
+            OdFrequencySpectrumFloat complexSpectrum
+                = [ s generateFloatFrequencySpectrum:settings atTime:generationTime ];
 
             generationTime += 1.0f/60.0f;
             //NSLog(@"%f", generationTime);
@@ -232,7 +233,7 @@ static const double OneDivSixty = 1.0 / 60.0;
 
             /*
             printf("spectrum\n");
-            print_complex_spectrum(settings.resolution, complexSpectrum);
+            print_complex_spectrum(settings.resolution, complexSpectrum.waveSpectrum);
             fflush(stdout);
             printf("spectrumHC\n");
             print_half_complex_spectrum(settings.resolution, halfcomplexSpectrum);
@@ -258,7 +259,16 @@ static const double OneDivSixty = 1.0 / 60.0;
 
             [ timer update ];
 
-            fftwf_execute_dft_c2r(halfComplexPlans[resIndex], halfcomplexSpectrum.waveSpectrum, result->data32f);
+            //fftwf_execute_dft_c2r(halfComplexPlans[resIndex], halfcomplexSpectrum.waveSpectrum, result->data32f);
+            fftwf_execute_dft(complexPlans[resIndex], complexSpectrum.waveSpectrum, complexHeights);
+
+            [ timer update ];
+
+            const int32_t numberOfElements = res * res;
+            for ( int32_t i = 0; i < numberOfElements; i++ )
+            {
+                result->data32f[i] = complexHeights[i][0];
+            }
 
             [ timer update ];
 
@@ -269,14 +279,10 @@ static const double OneDivSixty = 1.0 / 60.0;
             
             const float fpsMinMax = [ timer frameTime ];
 
-            /*
-            printf("PHILLIPS HC: %f IFFT: %f Min: %f Max: %f MinMaxTime: %f\n", fpsHC, fpsIFFTHC, result->dataMin, result->dataMax, fpsMinMax);
-            fflush(stdout);
-            */
-
-            fftwf_free(halfcomplexSpectrum.waveSpectrum);
-            fftwf_free(halfcomplexSpectrum.gradientX);
-            fftwf_free(halfcomplexSpectrum.gradientZ);
+            fftwf_free(complexSpectrum.waveSpectrum);
+            fftwf_free(complexSpectrum.gradientX);
+            fftwf_free(complexSpectrum.gradientZ);
+            fftwf_free(complexHeights);
 
             {
                 [ resultQueueMutex lock ];
