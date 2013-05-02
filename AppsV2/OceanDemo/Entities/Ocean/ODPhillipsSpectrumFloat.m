@@ -139,7 +139,13 @@ static float amplitudef(FVector2 const * const windDirection,
     const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
 
 	fftwf_complex * frequencySpectrum
-        = fftwf_malloc(sizeof(fftwf_complex) * resolution.x * resolution.y);
+        = fftwf_alloc_complex(resolution.x * resolution.y);
+
+	fftwf_complex * gradientX
+        = fftwf_alloc_complex(resolution.x * resolution.y);
+
+	fftwf_complex * gradientZ
+        = fftwf_alloc_complex(resolution.x * resolution.y);
 
     const float n = -(resolution.x / 2.0f);
     const float m =  (resolution.y / 2.0f);
@@ -203,7 +209,7 @@ static float amplitudef(FVector2 const * const windDirection,
     }
 
     OdFrequencySpectrumFloat result
-        = {.waveSpectrum = frequencySpectrum, .gradientX = NULL, .gradientZ = NULL };
+        = {.waveSpectrum = frequencySpectrum, .gradientX = gradientX, .gradientZ = gradientZ };
 
     return result;
 }
