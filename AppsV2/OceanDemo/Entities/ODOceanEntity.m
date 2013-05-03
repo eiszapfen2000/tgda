@@ -273,7 +273,7 @@ static const double OneDivSixty = 1.0 / 60.0;
             const int32_t numberOfElements = res * res;
             for ( int32_t i = 0; i < numberOfElements; i++ )
             {
-                result->data32f[i] = complexHeights[i][0];
+                result->heights32f[i] = complexHeights[i][0];
             }
 
             [ timer update ];
@@ -551,8 +551,8 @@ static const double OneDivSixty = 1.0 / 60.0;
     // update texture and associated min max
     if ( hf != NULL )
     {
-        minHeight = hf->dataMin;
-        maxHeight = hf->dataMax;
+        minHeight = hf->minHeight;
+        maxHeight = hf->maxHeight;
         timeStamp = hf->timeStamp;
 
         //printf("stamp %f\n", hf->timeStamp);
@@ -561,7 +561,7 @@ static const double OneDivSixty = 1.0 / 60.0;
             = hf->resolution.x * hf->resolution.y * sizeof(float);
 
         NSData * textureData
-            = [ NSData dataWithBytesNoCopy:hf->data32f
+            = [ NSData dataWithBytesNoCopy:hf->heights32f
                                     length:numberOfBytes
                               freeWhenDone:NO ];
 

@@ -3,14 +3,16 @@
 
 @class NSPointerArray;
 
-typedef struct
+typedef struct OdHeightfieldData
 {
     IVector2 resolution;
     Vector2 size;
     double timeStamp;
-    float * data32f;
-    float dataMin;
-    float dataMax;
+    float * heights32f;
+    float * gradientX;
+    float * gradientZ;
+    float minHeight;
+    float maxHeight;
 }
 OdHeightfieldData;
 
@@ -40,6 +42,5 @@ void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield);
 - (void) insertHeightfield:(OdHeightfieldData *)heightfield atIndex:(NSUInteger)index;
 - (void) replaceHeightfieldAtIndex:(NSUInteger)index withHeightfield:(OdHeightfieldData *)heightfield;
 
-
-
 @end
+
