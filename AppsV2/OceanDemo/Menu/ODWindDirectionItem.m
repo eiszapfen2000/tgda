@@ -176,13 +176,6 @@
     const FVector4 quadColor = {1.0f, 1.0f, 1.0f, [ menu opacity ] * 0.25f};
     const FVector4 textColor = {1.0f, 1.0f, 1.0f, [ menu opacity ]};
 
-    // draw quad
-    /*
-    [ NPIMRendering renderFRectangle:pixelCenterGeometry
-                       primitiveType:NpPrimitiveQuads ];
-    */
-
-
     NPTransformationState * tState
         = [[ NPEngineCore instance ] transformationState ];
 
@@ -192,18 +185,10 @@
 
     [ color setFValue:quadColor ];
     [ technique activate ];
-
-    /*
-    [ NPIMRendering renderFRectangle:pixelCenterGeometry
-                       primitiveType:NpPrimitiveLineLoop ];
-    */
-
     [ circleGeometry renderWithPrimitiveType:NpPrimitiveTriangleFan ];
 
     [ color setFValue:lineColor ];
     [ technique activate ];
-
-
     [ circleGeometry renderWithPrimitiveType:NpPrimitiveLineStrip firstIndex:1 lastIndex:25 ];
 
     [ tState setFModelMatrix:&modelMatrix ];

@@ -13,17 +13,39 @@
 
     Items =
     {
-        PButton =
+        PHeights =
         {
-            Type = "ODButtonItem";
-            Label = "Connect";
+            Type = "ODTextureItem";
+            Label = "Heights";
             Alignment = "BottomLeft";
-            Position = ("50", "50" );
-            Size = ( "70", "20" );
+            Position = ("20", "50" );
+            Size = ( "150", "150" );
             TextSize = "16";
-            TargetObject = "Projector";
-            TargetProperty = "connectedToCamera";
+            Texture = "Height Texture";
         };
+
+        PGradientX =
+        {
+            Type = "ODTextureItem";
+            Label = "Gradient X";
+            Alignment = "BottomLeft";
+            Position = ("190", "50" );
+            Size = ( "150", "150" );
+            TextSize = "16";
+            Texture = "Height Texture X Gradient";
+        };
+
+        PGradientZ =
+        {
+            Type = "ODTextureItem";
+            Label = "Gradient Z";
+            Alignment = "BottomLeft";
+            Position = ("360", "50" );
+            Size = ( "150", "150" );
+            TextSize = "16";
+            Texture = "Height Texture Z Gradient";
+        };
+
 
         PGroup =
         {

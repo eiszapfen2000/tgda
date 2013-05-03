@@ -9,6 +9,7 @@ ODButtonItem.h \
 ODCheckboxItem.h \
 ODSelectionGroupItem.h \
 ODSliderItem.h \
+ODTextureItem.h \
 ODWindDirectionItem.h
 
 ODMenu_OBJC_FILES = \
@@ -18,6 +19,7 @@ ODButtonItem.m \
 ODCheckboxItem.m \
 ODSelectionGroupItem.m \
 ODSliderItem.m \
+ODTextureItem.m \
 ODWindDirectionItem.m
 
 include $(TGDA_DIR)/GNUmakefile.flags
