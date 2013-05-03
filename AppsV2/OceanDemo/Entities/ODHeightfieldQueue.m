@@ -36,16 +36,28 @@ OdHeightfieldData * heightfield_alloc_init_with_resolution_and_size(IVector2 res
 
     result->resolution = resolution;
     result->size = size;
-    result->data32f = fftwf_alloc_real(resolution.x * resolution.y);
+    result->heights32f = fftwf_alloc_real(resolution.x * resolution.y);
+    result->gradientX  = fftwf_alloc_real(resolution.x * resolution.y);
+    result->gradientZ  = fftwf_alloc_real(resolution.x * resolution.y);
 
     return result;
 }
 
 OdHeightfieldData * heightfield_free(OdHeightfieldData * heightfield)
 {
-    if ( heightfield->data32f != NULL )
+    if ( heightfield->heights32f != NULL )
     {
-        fftwf_free(heightfield->data32f);
+        fftwf_free(heightfield->heights32f);
+    }
+
+    if ( heightfield->gradientX != NULL )
+    {
+        fftwf_free(heightfield->gradientX);
+    }
+
+    if ( heightfield->gradientZ != NULL )
+    {
+        fftwf_free(heightfield->gradientZ);
     }
 
     return npfreenode_free(heightfield, OD_HEIGHTFIELDDATA_FREELIST);
@@ -53,7 +65,7 @@ OdHeightfieldData * heightfield_free(OdHeightfieldData * heightfield)
 
 void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield)
 {
-    assert( heightfield->data32f != NULL );
+    assert( heightfield->heights32f != NULL );
 
     float maxSurfaceHeight = -FLT_MAX;
     float minSurfaceHeight =  FLT_MAX;
@@ -62,12 +74,12 @@ void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield)
 
     for ( int32_t i = 0; i < numberOfElements; i++ )
     {
-        maxSurfaceHeight = MAX(maxSurfaceHeight, heightfield->data32f[i]);
-        minSurfaceHeight = MIN(minSurfaceHeight, heightfield->data32f[i]);
+        maxSurfaceHeight = MAX(maxSurfaceHeight, heightfield->heights32f[i]);
+        minSurfaceHeight = MIN(minSurfaceHeight, heightfield->heights32f[i]);
     }
 
-    heightfield->dataMin = minSurfaceHeight;
-    heightfield->dataMax = maxSurfaceHeight;
+    heightfield->minHeight = minSurfaceHeight;
+    heightfield->maxHeight = maxSurfaceHeight;
 }
 
 @implementation ODHeightfieldQueue
