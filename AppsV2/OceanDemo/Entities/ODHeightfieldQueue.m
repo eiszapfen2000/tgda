@@ -82,6 +82,33 @@ void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield)
     heightfield->maxHeight = maxSurfaceHeight;
 }
 
+void heightfield_hf_compute_min_max_gradients(OdHeightfieldData * heightfield)
+{
+    assert( heightfield->gradientX != NULL && heightfield->gradientZ != NULL);
+
+    float maxGradientX = -FLT_MAX;
+    float maxGradientZ = -FLT_MAX;
+
+    float minGradientX = FLT_MAX;
+    float minGradientZ = FLT_MAX;
+
+    int32_t numberOfElements = heightfield->resolution.x * heightfield->resolution.y;
+
+    for ( int32_t i = 0; i < numberOfElements; i++ )
+    {
+        maxGradientX = MAX(maxGradientX, heightfield->gradientX[i]);
+        maxGradientZ = MAX(maxGradientZ, heightfield->gradientZ[i]);
+
+        minGradientX = MIN(minGradientX, heightfield->gradientX[i]);
+        minGradientZ = MIN(minGradientZ, heightfield->gradientZ[i]);
+    }
+
+    heightfield->minGradientX = minGradientX;
+    heightfield->minGradientZ = minGradientZ;
+    heightfield->maxGradientX = maxGradientX;
+    heightfield->maxGradientZ = maxGradientZ;
+}
+
 @implementation ODHeightfieldQueue
 
 + (void) initialize

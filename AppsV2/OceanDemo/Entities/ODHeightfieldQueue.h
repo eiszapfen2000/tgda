@@ -13,6 +13,10 @@ typedef struct OdHeightfieldData
     float * gradientZ;
     float minHeight;
     float maxHeight;
+    float minGradientX;
+    float maxGradientX;
+    float minGradientZ;
+    float maxGradientZ;
 }
 OdHeightfieldData;
 
@@ -23,6 +27,7 @@ OdHeightfieldData * heightfield_alloc_init();
 OdHeightfieldData * heightfield_alloc_init_with_resolution_and_size(IVector2 resolution, Vector2 size);
 OdHeightfieldData * heightfield_free(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield);
+void heightfield_hf_compute_min_max_gradients(OdHeightfieldData * heightfield);
 
 @interface ODHeightfieldQueue : NPObject
 {
