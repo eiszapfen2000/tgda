@@ -55,7 +55,7 @@ void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex * spec
 
 static const Vector2 defaultWindDirection = {10.0, 0.5};
 static const int32_t resolutions[4] = {64, 128, 256, 512};
-static const NSUInteger defaultResolutionIndex = 0;
+static const NSUInteger defaultResolutionIndex = 2;
 static const double OneDivSixty = 1.0 / 60.0;
 
 @interface ODOceanEntity (Private)
@@ -215,7 +215,9 @@ static const double OneDivSixty = 1.0 / 60.0;
                 [ resultQueueMutex unlock ];
             }
 
-            fftwf_complex * complexHeights = fftwf_alloc_complex(res * res);
+            fftwf_complex * complexHeights   = fftwf_alloc_complex(res * res);
+            fftwf_complex * complexGradientX = fftwf_alloc_complex(res * res);
+            fftwf_complex * complexGradientZ = fftwf_alloc_complex(res * res);
 
             [ timer update ];
 
@@ -261,8 +263,12 @@ static const double OneDivSixty = 1.0 / 60.0;
 
             //fftwf_execute_dft_c2r(halfComplexPlans[resIndex], halfcomplexSpectrum.waveSpectrum, result->data32f);
             fftwf_execute_dft(complexPlans[resIndex], complexSpectrum.waveSpectrum, complexHeights);
+            fftwf_execute_dft(complexPlans[resIndex], complexSpectrum.gradientX, complexGradientX);
+            fftwf_execute_dft(complexPlans[resIndex], complexSpectrum.gradientZ, complexGradientZ);
 
             [ timer update ];
+
+            NSLog(@"%f", [timer frameTime]);
 
             const int32_t numberOfElements = res * res;
             for ( int32_t i = 0; i < numberOfElements; i++ )
@@ -283,6 +289,8 @@ static const double OneDivSixty = 1.0 / 60.0;
             fftwf_free(complexSpectrum.gradientX);
             fftwf_free(complexSpectrum.gradientZ);
             fftwf_free(complexHeights);
+            fftwf_free(complexGradientX);
+            fftwf_free(complexGradientZ);
 
             {
                 [ resultQueueMutex lock ];
