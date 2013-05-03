@@ -268,7 +268,7 @@ static const double OneDivSixty = 1.0 / 60.0;
 
             [ timer update ];
 
-            NSLog(@"%f", [timer frameTime]);
+            //NSLog(@"%f", [timer frameTime]);
 
             const int32_t numberOfElements = res * res;
             for ( int32_t i = 0; i < numberOfElements; i++ )
@@ -282,10 +282,11 @@ static const double OneDivSixty = 1.0 / 60.0;
 
             const float fpsIFFTHC = [ timer frameTime ];
             heightfield_hf_compute_min_max(result);
+            heightfield_hf_compute_min_max_gradients(result);
 
             [ timer update ];
             
-            const float fpsMinMax = [ timer frameTime ];
+            //NSLog(@"MinX: %f MaxX: %f MinZ: %f MaxZ: %f", result->minGradientX, result->maxGradientX, result->minGradientZ, result->maxGradientZ);
 
             fftwf_free(complexSpectrum.waveSpectrum);
             fftwf_free(complexSpectrum.gradientX);
