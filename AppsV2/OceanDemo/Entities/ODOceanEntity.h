@@ -41,6 +41,8 @@
     ODBasePlane * basePlane;
 
     NPTexture2D * heightfield;
+    NPTexture2D * gradientX;
+    NPTexture2D * gradientZ;
     float minHeight;
     float maxHeight;
     double timeStamp;

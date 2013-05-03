@@ -274,6 +274,8 @@ static const double OneDivSixty = 1.0 / 60.0;
             for ( int32_t i = 0; i < numberOfElements; i++ )
             {
                 result->heights32f[i] = complexHeights[i][0];
+                result->gradientX[i]  = complexGradientX[i][0];
+                result->gradientZ[i]  = complexGradientZ[i][0];
             }
 
             [ timer update ];
@@ -338,8 +340,16 @@ static const double OneDivSixty = 1.0 / 60.0;
     [ basePlane setProjector:projector ];
 
     heightfield = [[ NPTexture2D alloc ] initWithName:@"Height Texture" ];
+    gradientX = [[ NPTexture2D alloc ] initWithName:@"Height Texture X Gradient" ];
+    gradientZ = [[ NPTexture2D alloc ] initWithName:@"Height Texture Z Gradient" ];
+
     [ heightfield setTextureFilter:NpTexture2DFilterLinear ];
+    [ gradientX   setTextureFilter:NpTexture2DFilterLinear ];
+    [ gradientZ   setTextureFilter:NpTexture2DFilterLinear ];
+
     [ heightfield setTextureWrap:NpTextureWrapRepeat ];
+    [ gradientX   setTextureWrap:NpTextureWrapRepeat ];
+    [ gradientZ   setTextureWrap:NpTextureWrapRepeat ];
 
     minHeight =  FLT_MAX;
     maxHeight = -FLT_MAX;
@@ -351,6 +361,8 @@ static const double OneDivSixty = 1.0 / 60.0;
 - (void) dealloc
 {
     DESTROY(heightfield);
+    DESTROY(gradientX);
+    DESTROY(gradientZ);
     DESTROY(projector);
     DESTROY(basePlane);
     DESTROY(resultQueue);
@@ -565,12 +577,36 @@ static const double OneDivSixty = 1.0 / 60.0;
                                     length:numberOfBytes
                               freeWhenDone:NO ];
 
+        NSData * gradientXData
+            = [ NSData dataWithBytesNoCopy:hf->gradientX
+                                    length:numberOfBytes
+                              freeWhenDone:NO ];
+
+        NSData * gradientZData
+            = [ NSData dataWithBytesNoCopy:hf->gradientZ
+                                    length:numberOfBytes
+                              freeWhenDone:NO ];
+
         [ heightfield generateUsingWidth:hf->resolution.x
                                   height:hf->resolution.y
                              pixelFormat:NpImagePixelFormatR
                               dataFormat:NpImageDataFormatFloat32
                                  mipmaps:NO
                                     data:textureData ];
+
+        [ gradientX generateUsingWidth:hf->resolution.x
+                                height:hf->resolution.y
+                           pixelFormat:NpImagePixelFormatR
+                            dataFormat:NpImageDataFormatFloat32
+                               mipmaps:NO
+                                  data:gradientXData ];
+
+        [ gradientZ generateUsingWidth:hf->resolution.x
+                                height:hf->resolution.y
+                           pixelFormat:NpImagePixelFormatR
+                            dataFormat:NpImageDataFormatFloat32
+                               mipmaps:NO
+                                  data:gradientZData ];
 
         if ( deleteHFData == YES )
         {
