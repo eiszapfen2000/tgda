@@ -19,6 +19,13 @@ technique "texture"
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
     uniform sampler2D colormap;
+    uniform vec4 color;
+    uniform vec2 range;
+    # vertex streams
+    in vec4 in_position : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
     # shaders
     set vertex shader "simpletextured.vertex"
     set fragment shader "simpletextured.fragment"
@@ -30,6 +37,11 @@ technique "font"
     uniform sampler2D characterpage;
     uniform vec4 textcolor;
     uniform mat4 np_modelviewprojectionmatrix;
+    # vertex streams
+    in vec4 in_position  : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
     # shaders
     set vertex shader "font.vertex"
     set fragment shader "font.fragment"
