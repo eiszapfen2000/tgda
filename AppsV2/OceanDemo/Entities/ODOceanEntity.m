@@ -295,11 +295,20 @@ static const double OneDivSixty = 1.0 / 60.0;
             fftwf_free(complexGradientX);
             fftwf_free(complexGradientZ);
 
+
+            NSUInteger queueCount = 0;
             {
                 [ resultQueueMutex lock ];
                 [ resultQueue addHeightfield:result ];
+                queueCount = [ resultQueue count ];
                 [ resultQueueMutex unlock ];
             }
+
+            //NSLog(@"%lu", queueCount);
+
+            [ condition lock ];
+            generateData = ( queueCount < 16 ) ? YES : NO;
+            [ condition unlock ];
         }
 
         DESTROY(innerPool);
@@ -470,7 +479,6 @@ static const double OneDivSixty = 1.0 / 60.0;
 
     NSUInteger queueCount = 0;
     OdHeightfieldData * hf = NULL;
-    BOOL deleteHFData = NO;
 
     {
         [ resultQueueMutex lock ];
@@ -539,8 +547,8 @@ static const double OneDivSixty = 1.0 / 60.0;
             }
             else
             {
+                //NSLog(@"Not found");
                 hf = [ resultQueue heightfieldAtIndex:0 ];
-                deleteHFData = YES;
             }
         }
 
@@ -607,13 +615,6 @@ static const double OneDivSixty = 1.0 / 60.0;
                             dataFormat:NpImageDataFormatFloat32
                                mipmaps:NO
                                   data:gradientZData ];
-
-        if ( deleteHFData == YES )
-        {
-            [ resultQueueMutex lock ];
-            [ resultQueue removeHeightfieldAtIndex:0 ];
-            [ resultQueueMutex unlock ];
-        }
 
         //NSLog(@"%f %f", totalElapsedTime, timeStamp);
     }
