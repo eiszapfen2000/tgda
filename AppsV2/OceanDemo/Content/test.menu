@@ -22,6 +22,8 @@
             Size = ( "150", "150" );
             TextSize = "16";
             Texture = "Height Texture";
+            TargetObject = "Ocean";
+            TargetProperty = "heightRange";
         };
 
         PGradientX =
@@ -33,6 +35,8 @@
             Size = ( "150", "150" );
             TextSize = "16";
             Texture = "Height Texture X Gradient";
+            TargetObject = "Ocean";
+            TargetProperty = "gradientXRange";
         };
 
         PGradientZ =
@@ -44,6 +48,8 @@
             Size = ( "150", "150" );
             TextSize = "16";
             Texture = "Height Texture Z Gradient";
+            TargetObject = "Ocean";
+            TargetProperty = "gradientZRange";
         };
 
 

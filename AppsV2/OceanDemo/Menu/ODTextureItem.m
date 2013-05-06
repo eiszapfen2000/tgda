@@ -45,6 +45,7 @@
     SAFE_DESTROY(colorTechnique);
     SAFE_DESTROY(textureTechnique);
     SAFE_DESTROY(color);
+    SAFE_DESTROY(range);
     SAFE_DESTROY(texture);
 
     [ super dealloc ];
@@ -71,7 +72,12 @@
 
     colorTechnique   = RETAIN([ menu colorTechnique   ]);
     textureTechnique = RETAIN([ menu textureTechnique ]);
-    color = RETAIN([[ menu effect ] variableWithName:@"color" ]);
+
+    color = [[ menu effect ] variableWithName:@"color" ];
+    range = [[ menu effect ] variableWithName:@"range" ];
+
+    ASSERT_RETAIN(color);
+    ASSERT_RETAIN(range);
 
     texture
         = [[[ NPEngineGraphics instance ] textures2D ] getAssetWithName:t ];
@@ -112,10 +118,17 @@
     const FVector4 quadColor = {1.0f, 1.0f, 1.0f, [ menu opacity ] * 0.25f};
     const FVector4 textColor = {1.0f, 1.0f, 1.0f, [ menu opacity ]};
     const FRectangle texcoords = {{0.0f, 0.0f}, {1.0f, 1.0f}};
+    FVector2 valueRange = {.x = 0.0f, .y = 1.0f};
+
+    if ( target != nil )
+    {
+        ODObjCGetVariable(target, offset, size, &valueRange);
+    }
 
     [[[ NPEngineGraphics instance ] textureBindingState ] setTexture:texture texelUnit:0 ];
     [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
+    [ range setFValue:valueRange ];
     [ textureTechnique activate ];
     [ NPIMRendering renderFRectangle:alignedGeometry
                            texCoords:texcoords

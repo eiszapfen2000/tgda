@@ -1,6 +1,7 @@
 #import "ODMenuItem.h"
 
 @class NPEffectTechnique;
+@class NPEffectVariableFloat2;
 @class NPEffectVariableFloat4;
 @class NPTexture2D;
 
@@ -12,6 +13,7 @@
     NPEffectTechnique * colorTechnique;
     NPEffectTechnique * textureTechnique;
     NPEffectVariableFloat4 * color;
+    NPEffectVariableFloat2 * range;
     NPTexture2D * texture;
 }
 

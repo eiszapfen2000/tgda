@@ -352,9 +352,11 @@ static const double OneDivSixty = 1.0 / 60.0;
     [ gradientX   setTextureWrap:NpTextureWrapRepeat ];
     [ gradientZ   setTextureWrap:NpTextureWrapRepeat ];
 
-    minHeight =  FLT_MAX;
-    maxHeight = -FLT_MAX;
     timeStamp =  DBL_MAX;
+
+    heightRange    = (FVector2){.x = FLT_MAX, .y = -FLT_MAX};
+    gradientXRange = (FVector2){.x = 0.0f, .y = 1.0f};
+    gradientZRange = (FVector2){.x = 0.0f, .y = 1.0f};
 
     return self;
 }
@@ -436,14 +438,9 @@ static const double OneDivSixty = 1.0 / 60.0;
     return heightfield;
 }
 
-- (float) minHeight
+- (FVector2) heightRange
 {
-    return minHeight;
-}
-
-- (float) maxHeight
-{
-    return maxHeight;
+    return heightRange;
 }
 
 - (void) setCamera:(ODCamera *)newCamera
@@ -564,9 +561,11 @@ static const double OneDivSixty = 1.0 / 60.0;
     // update texture and associated min max
     if ( hf != NULL )
     {
-        minHeight = hf->minHeight;
-        maxHeight = hf->maxHeight;
         timeStamp = hf->timeStamp;
+
+        heightRange    = (FVector2){.x = hf->minHeight,    .y = hf->maxHeight   };
+        gradientXRange = (FVector2){.x = hf->minGradientX, .y = hf->maxGradientX};
+        gradientZRange = (FVector2){.x = hf->minGradientZ, .y = hf->maxGradientZ};
 
         //printf("stamp %f\n", hf->timeStamp);
 

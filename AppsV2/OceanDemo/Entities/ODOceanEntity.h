@@ -43,9 +43,10 @@
     NPTexture2D * heightfield;
     NPTexture2D * gradientX;
     NPTexture2D * gradientZ;
-    float minHeight;
-    float maxHeight;
     double timeStamp;
+    FVector2 heightRange;
+    FVector2 gradientXRange;
+    FVector2 gradientZRange;
 }
 
 - (id) init;
@@ -58,8 +59,7 @@
 - (ODProjector *) projector;
 - (ODBasePlane *) basePlane;
 - (NPTexture2D *) heightfield;
-- (float) minHeight;
-- (float) maxHeight; 
+- (FVector2) heightRange;
 - (void) setCamera:(ODCamera *)newCamera;
 
 - (void) update:(const double)frameTime;
