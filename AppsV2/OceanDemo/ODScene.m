@@ -530,9 +530,7 @@
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean       heightfield ] texelUnit:2 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
-    const float minHeight = [ ocean minHeight ];
-    const float maxHeight = [ ocean maxHeight ];
-    const FVector2 minMax = {minHeight, maxHeight};
+    const FVector2 minMax = [ ocean heightRange ];
 
     [ heightfieldMinMax setFValue:minMax ];
     [ lightDirection setFValue:[ skylight lightDirection ]];
