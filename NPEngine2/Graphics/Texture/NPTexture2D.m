@@ -348,11 +348,17 @@ static const GLint masks[][4]
 {
     [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:self ];
 
+    const GLvoid * glData = [ data bytes ];
+
     if ( ready == YES )
     {
-        //update data, is a lot faster than glTexImage2D
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height,
-            glPixelFormat, glDataFormat, [data bytes]);
+        // glTexSubImage2D does not handle NULL
+        if ( glData != NULL )
+        {
+            //update data, is a lot faster than glTexImage2D
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height,
+                glPixelFormat, glDataFormat, glData);
+        }
     }
     else
     {
@@ -362,7 +368,7 @@ static const GLint masks[][4]
 
         // specify entire texture
         glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, width, height, 
-            0, glPixelFormat, glDataFormat, [data bytes]);
+            0, glPixelFormat, glDataFormat, glData);
 
         // this is here because of broken AMD drivers
         // if the call is moved somewhere else mipmap
