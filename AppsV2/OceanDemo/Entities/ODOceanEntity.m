@@ -182,14 +182,14 @@ static const double OneDivSixty = 1.0 / 60.0;
 
     while ( [[ NSThread currentThread ] isCancelled ] == NO )
     {    
-        [ condition lock ];
+        [ generateCondition lock ];
 
         while ( generateData == NO )
         {
-            [ condition wait ];
+            [ generateCondition wait ];
         }
 
-        [ condition unlock ];
+        [ generateCondition unlock ];
 
         NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
 
@@ -307,9 +307,9 @@ static const double OneDivSixty = 1.0 / 60.0;
 
             //NSLog(@"%lu", queueCount);
 
-            [ condition lock ];
+            [ generateCondition lock ];
             generateData = ( queueCount < 16 ) ? YES : NO;
-            [ condition unlock ];
+            [ generateCondition unlock ];
         }
 
         DESTROY(innerPool);
@@ -339,7 +339,8 @@ static const double OneDivSixty = 1.0 / 60.0;
     self =  [ super initWithName:newName ];
 
     resultQueueMutex = [[ NSLock alloc ] init ];
-    condition = [[ NSCondition alloc ] init ];
+    generateCondition = [[ NSCondition alloc ] init ];
+    transformCondition = [[ NSCondition alloc ] init ];
 
     generateData = NO;
     transformData = NO;
@@ -386,7 +387,8 @@ static const double OneDivSixty = 1.0 / 60.0;
     DESTROY(basePlane);
     DESTROY(resultQueue);
     DESTROY(resultQueueMutex);
-    DESTROY(condition);
+    DESTROY(generateCondition);
+    DESTROY(transformCondition);
 
     [ super dealloc ];
 }
@@ -427,10 +429,10 @@ static const double OneDivSixty = 1.0 / 60.0;
             [ generatorThread cancel ];
 
             // wake thread up a last time so it exits its main loop
-            [ condition lock ];
+            [ generateCondition lock ];
             generateData = YES;
-            [ condition signal ];
-            [ condition unlock ];
+            [ generateCondition signal ];
+            [ generateCondition unlock ];
 
             // since NSThreads are created in detached mode
             // we have to join by hand
@@ -454,10 +456,10 @@ static const double OneDivSixty = 1.0 / 60.0;
             [ transformThread cancel ];
 
             // wake thread up a last time so it exits its main loop
-            [ condition lock ];
+            [ transformCondition lock ];
             transformData = YES;
-            [ condition signal ];
-            [ condition unlock ];
+            [ transformCondition signal ];
+            [ transformCondition unlock ];
 
             // since NSThreads are created in detached mode
             // we have to join by hand
@@ -604,10 +606,10 @@ static const double OneDivSixty = 1.0 / 60.0;
     // in case we have 16 or more heightfields in our buffer
     // the generating thread will be put to sleep
     {
-        [ condition lock ];
+        [ generateCondition lock ];
         generateData = ( queueCount < 16 ) ? YES : NO;
-        [ condition signal ];
-        [ condition unlock ];
+        [ generateCondition signal ];
+        [ generateCondition unlock ];
     }
 
     // update texture and associated min max

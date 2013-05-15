@@ -20,7 +20,8 @@
 
 @interface ODOceanEntity : NPObject
 {
-    NSCondition * condition;
+    NSCondition * generateCondition;
+    NSCondition * transformCondition;
     NSLock * resultQueueMutex;
 
     Vector2 lastWindDirection;
