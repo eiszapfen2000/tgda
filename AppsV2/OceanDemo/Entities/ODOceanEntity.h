@@ -30,11 +30,13 @@
 
     ODSpectrumSettings spectrumSettings;
     BOOL generateData;
+    BOOL transformData;
 
     fftwf_plan complexPlans[ODOCEANENTITY_NUMBER_OF_RESOLUTIONS];
     fftwf_plan halfComplexPlans[ODOCEANENTITY_NUMBER_OF_RESOLUTIONS];
     
-    NSThread * thread;
+    NSThread * generatorThread;
+    NSThread * transformThread;
     ODHeightfieldQueue * resultQueue;
 
     ODProjector * projector;
