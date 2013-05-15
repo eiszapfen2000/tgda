@@ -63,6 +63,7 @@ static const double OneDivSixty = 1.0 / 60.0;
 - (void) startupFFTW;
 - (void) shutdownFFTW;
 - (void) generate:(id)argument;
+- (void) transform:(id)argument;
 
 @end
 
@@ -319,6 +320,11 @@ static const double OneDivSixty = 1.0 / 60.0;
     DESTROY(pool);
 }
 
+- (void) transform:(id)argument
+{
+    NSLog(@"Transform");
+}
+
 @end
 
 @implementation ODOceanEntity
@@ -336,6 +342,7 @@ static const double OneDivSixty = 1.0 / 60.0;
     condition = [[ NSCondition alloc ] init ];
 
     generateData = NO;
+    transformData = NO;
 
     lastResolutionIndex = ULONG_MAX;
     resolutionIndex = defaultResolutionIndex;
@@ -388,26 +395,36 @@ static const double OneDivSixty = 1.0 / 60.0;
 {
     [ self startupFFTW ];
 
-    if ( thread == nil )
+    if ( generatorThread == nil )
     {
-        thread
+        generatorThread
             = [[ NSThread alloc ]
                     initWithTarget:self
                           selector:@selector(generate:)
                             object:nil ];
     }
 
-    [ thread start ];
+    if ( transformThread == nil )
+    {
+        transformThread
+            = [[ NSThread alloc ]
+                    initWithTarget:self
+                          selector:@selector(transform:)
+                            object:nil ];
+    }
+
+    [ generatorThread start ];
+    [ transformThread start ];
 } 
 
 - (void) stop
 {
-    if ( thread != nil )
+    if ( generatorThread != nil )
     {
-        if ( [ thread isExecuting ] == YES )
+        if ( [ generatorThread isExecuting ] == YES )
         {
             // cancel thread
-            [ thread cancel ];
+            [ generatorThread cancel ];
 
             // wake thread up a last time so it exits its main loop
             [ condition lock ];
@@ -417,7 +434,7 @@ static const double OneDivSixty = 1.0 / 60.0;
 
             // since NSThreads are created in detached mode
             // we have to join by hand
-            while ( [ thread isFinished ] == NO )
+            while ( [ generatorThread isFinished ] == NO )
             {
                 struct timespec request;
                 request.tv_sec = (time_t)0;
@@ -426,7 +443,34 @@ static const double OneDivSixty = 1.0 / 60.0;
             }
         }
 
-        DESTROY(thread);
+        DESTROY(generatorThread);
+    }
+
+    if ( transformThread != nil )
+    {
+        if ( [ transformThread isExecuting ] == YES )
+        {
+            // cancel thread
+            [ transformThread cancel ];
+
+            // wake thread up a last time so it exits its main loop
+            [ condition lock ];
+            transformData = YES;
+            [ condition signal ];
+            [ condition unlock ];
+
+            // since NSThreads are created in detached mode
+            // we have to join by hand
+            while ( [ transformThread isFinished ] == NO )
+            {
+                struct timespec request;
+                request.tv_sec = (time_t)0;
+                request.tv_nsec = 1000000L;
+                nanosleep(&request, 0);
+            }
+        }
+
+        DESTROY(transformThread);
     }
 
     [ self shutdownFFTW ];
