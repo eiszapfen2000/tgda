@@ -322,7 +322,21 @@ static const double OneDivSixty = 1.0 / 60.0;
 
 - (void) transform:(id)argument
 {
-    NSLog(@"Transform");
+    NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
+
+    while ( [[ NSThread currentThread ] isCancelled ] == NO )
+    {    
+        [ transformCondition lock ];
+
+        while ( transformData == NO )
+        {
+            [ transformCondition wait ];
+        }
+
+        [ transformCondition unlock ];
+    }
+
+    DESTROY(pool);
 }
 
 @end
