@@ -234,32 +234,6 @@ static const double OneDivSixty = 1.0 / 60.0;
 
             const float fpsHC = [ timer frameTime ];
 
-            /*
-            printf("spectrum\n");
-            print_complex_spectrum(settings.resolution, complexSpectrum.waveSpectrum);
-            fflush(stdout);
-            printf("spectrumHC\n");
-            print_half_complex_spectrum(settings.resolution, halfcomplexSpectrum);
-            fflush(stdout);
-            */
-
-            /*
-            [ timer update ];
-            fftwf_plan plan;
-            plan = fftwf_plan_dft_2d(settings.resolution.x,
-                                    settings.resolution.y,
-                                    complexSpectrum,
-                                    complexHeights,
-                                    FFTW_BACKWARD,
-                                    FFTW_ESTIMATE);
-
-            fftwf_execute(plan);
-            fftwf_destroy_plan(plan);
-            [ timer update ];
-
-            const float fpsIFFTC = [ timer frameTime ];
-            */
-
             [ timer update ];
 
             //fftwf_execute_dft_c2r(halfComplexPlans[resIndex], halfcomplexSpectrum.waveSpectrum, result->data32f);
@@ -313,7 +287,7 @@ static const double OneDivSixty = 1.0 / 60.0;
         }
 
         DESTROY(innerPool);
-    }    
+    }
 
     DESTROY(s);
     DESTROY(timer);
@@ -356,7 +330,7 @@ static const double OneDivSixty = 1.0 / 60.0;
     generateCondition = [[ NSCondition alloc ] init ];
     transformCondition = [[ NSCondition alloc ] init ];
 
-    generateData = NO;
+    generateData  = NO;
     transformData = NO;
 
     lastResolutionIndex = ULONG_MAX;
@@ -372,8 +346,8 @@ static const double OneDivSixty = 1.0 / 60.0;
     [ basePlane setProjector:projector ];
 
     heightfield = [[ NPTexture2D alloc ] initWithName:@"Height Texture" ];
-    gradientX = [[ NPTexture2D alloc ] initWithName:@"Height Texture X Gradient" ];
-    gradientZ = [[ NPTexture2D alloc ] initWithName:@"Height Texture Z Gradient" ];
+    gradientX   = [[ NPTexture2D alloc ] initWithName:@"Height Texture X Gradient" ];
+    gradientZ   = [[ NPTexture2D alloc ] initWithName:@"Height Texture Z Gradient" ];
 
     [ heightfield setTextureFilter:NpTexture2DFilterLinear ];
     [ gradientX   setTextureFilter:NpTexture2DFilterLinear ];
@@ -383,7 +357,7 @@ static const double OneDivSixty = 1.0 / 60.0;
     [ gradientX   setTextureWrap:NpTextureWrapRepeat ];
     [ gradientZ   setTextureWrap:NpTextureWrapRepeat ];
 
-    timeStamp =  DBL_MAX;
+    timeStamp = DBL_MAX;
 
     heightRange    = (FVector2){.x = FLT_MAX, .y = -FLT_MAX};
     gradientXRange = (FVector2){.x = 0.0f, .y = 1.0f};
