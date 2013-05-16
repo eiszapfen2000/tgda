@@ -311,25 +311,26 @@ static const double OneDivSixty = 1.0 / 60.0;
 
         NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
 
-        OdFrequencySpectrumFloat item
-            = { .waveSpectrum = NULL, .gradientX = NULL, .gradientZ = NULL };
-
+        if ( [[ NSThread currentThread ] isCancelled ] == NO )
         {
-            [ spectrumQueueMutex lock ];
+            OdFrequencySpectrumFloat item
+                = { .waveSpectrum = NULL, .gradientX = NULL, .gradientZ = NULL };
 
-            if ( [ spectrumQueue count ] != 0 )
             {
-                OdFrequencySpectrumFloat * tempItem = [ spectrumQueue pointerAtIndex:0 ];
-
-                if ( tempItem != NULL )
+                [ spectrumQueueMutex lock ];
+                if ( [ spectrumQueue count ] != 0 )
                 {
-                    item = *tempItem;
+                    OdFrequencySpectrumFloat * tempItem = [ spectrumQueue pointerAtIndex:0 ];
+
+                    if ( tempItem != NULL )
+                    {
+                        item = *tempItem;
+                    }
+
+                    [ spectrumQueue removePointerAtIndex:0 ];
                 }
-
-                [ spectrumQueue removePointerAtIndex:0 ];
+                [ spectrumQueueMutex unlock ];
             }
-
-            [ spectrumQueueMutex unlock ];
         }
 
         DESTROY(innerPool);
@@ -340,7 +341,7 @@ static const double OneDivSixty = 1.0 / 60.0;
 
 @end
 
-static NSUInteger od_freq_spectrum_size(const void *item)
+static NSUInteger od_freq_spectrum_size(const void * item)
 {
     return sizeof(OdFrequencySpectrumFloat);
 }

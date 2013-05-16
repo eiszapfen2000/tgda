@@ -69,42 +69,9 @@ void GLFWCALL window_resize_callback(int width, int height)
 
 int running = GL_TRUE;
 
-static NSUInteger sizeFunction(const void *item)
-{
-    return sizeof(OdFrequencySpectrumFloat);
-}
-
 int main (int argc, char **argv)
 {
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
-
-    /*
-    NSPointerFunctions * pFunctions = [ NSPointerFunctions pointerFunctionsWithOptions:NSPointerFunctionsMallocMemory | NSPointerFunctionsStructPersonality | NSPointerFunctionsCopyIn ];
-    [ pFunctions setSizeFunction:&sizeFunction];
-    NSPointerArray * testPointers = [ NSPointerArray pointerArrayWithPointerFunctions:pFunctions ];
-
-    if ( running == YES )
-    {
-        OdFrequencySpectrumFloat testSpectrumOne;
-        OdFrequencySpectrumFloat testSpectrumTwo;
-        testSpectrumOne.waveSpectrum = 1;
-        testSpectrumOne.gradientX = 2;
-        testSpectrumOne.gradientZ = 3;
-        testSpectrumTwo.waveSpectrum = 4;
-        testSpectrumTwo.gradientX = 5;
-        testSpectrumTwo.gradientZ = 6;
-        [ testPointers addPointer:&testSpectrumOne ];
-        [ testPointers addPointer:&testSpectrumTwo ];
-    }
-
-    if ( running == YES )
-    {
-        OdFrequencySpectrumFloat * testSpectrumThree = [ testPointers pointerAtIndex:0 ];
-        OdFrequencySpectrumFloat * testSpectrumFour = [ testPointers pointerAtIndex:1 ];
-
-        NSLog(@"One: %lu %lu %lu Two: %lu %lu %lu", testSpectrumThree->waveSpectrum, testSpectrumThree->gradientX, testSpectrumThree->gradientZ, testSpectrumFour->waveSpectrum, testSpectrumFour->gradientX, testSpectrumFour->gradientZ);
-    }
-    */
 
     // Initialise GLFW
     if( !glfwInit() )
