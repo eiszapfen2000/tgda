@@ -199,10 +199,10 @@ static const double OneDivSixty = 1.0 / 60.0;
             NSUInteger resIndex;
 
             {
-                [ resultQueueMutex lock ];
+                [ heightfieldQueueMutex lock ];
                 settings = spectrumSettings;
                 resIndex = resolutionIndex;
-                [ resultQueueMutex unlock ];
+                [ heightfieldQueueMutex unlock ];
             }
 
             const int32_t res = resolutions[resIndex];
@@ -211,9 +211,9 @@ static const double OneDivSixty = 1.0 / 60.0;
             OdHeightfieldData * result = NULL;
 
             {
-                [ resultQueueMutex lock ];
+                [ heightfieldQueueMutex lock ];
                 result = heightfield_alloc_init_with_resolution_and_size(settings.resolution, settings.size);
-                [ resultQueueMutex unlock ];
+                [ heightfieldQueueMutex unlock ];
             }
 
             fftwf_complex * complexHeights   = fftwf_alloc_complex(res * res);
@@ -273,10 +273,10 @@ static const double OneDivSixty = 1.0 / 60.0;
 
             NSUInteger queueCount = 0;
             {
-                [ resultQueueMutex lock ];
+                [ heightfieldQueueMutex lock ];
                 [ resultQueue addHeightfield:result ];
                 queueCount = [ resultQueue count ];
-                [ resultQueueMutex unlock ];
+                [ heightfieldQueueMutex unlock ];
             }
 
             //NSLog(@"%lu", queueCount);
@@ -308,12 +308,42 @@ static const double OneDivSixty = 1.0 / 60.0;
         }
 
         [ transformCondition unlock ];
+
+        NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
+
+        OdFrequencySpectrumFloat item
+            = { .waveSpectrum = NULL, .gradientX = NULL, .gradientZ = NULL };
+
+        {
+            [ spectrumQueueMutex lock ];
+
+            if ( [ spectrumQueue count ] != 0 )
+            {
+                OdFrequencySpectrumFloat * tempItem = [ spectrumQueue pointerAtIndex:0 ];
+
+                if ( tempItem != NULL )
+                {
+                    item = *tempItem;
+                }
+
+                [ spectrumQueue removePointerAtIndex:0 ];
+            }
+
+            [ spectrumQueueMutex unlock ];
+        }
+
+        DESTROY(innerPool);
     }
 
     DESTROY(pool);
 }
 
 @end
+
+static NSUInteger od_freq_spectrum_size(const void *item)
+{
+    return sizeof(OdFrequencySpectrumFloat);
+}
 
 @implementation ODOceanEntity
 
@@ -326,8 +356,10 @@ static const double OneDivSixty = 1.0 / 60.0;
 {
     self =  [ super initWithName:newName ];
 
-    resultQueueMutex = [[ NSLock alloc ] init ];
-    generateCondition = [[ NSCondition alloc ] init ];
+    spectrumQueueMutex    = [[ NSLock alloc ] init ];
+    heightfieldQueueMutex = [[ NSLock alloc ] init ];
+
+    generateCondition  = [[ NSCondition alloc ] init ];
     transformCondition = [[ NSCondition alloc ] init ];
 
     generateData  = NO;
@@ -338,6 +370,17 @@ static const double OneDivSixty = 1.0 / 60.0;
 
     lastWindDirection = (Vector2){DBL_MAX, DBL_MAX};
     windDirection = defaultWindDirection;
+
+    const NSUInteger options
+        = NSPointerFunctionsMallocMemory
+          | NSPointerFunctionsStructPersonality
+          | NSPointerFunctionsCopyIn;
+
+    NSPointerFunctions * pFunctions
+        = [ NSPointerFunctions pointerFunctionsWithOptions:options ];
+    [ pFunctions setSizeFunction:&od_freq_spectrum_size];
+
+    spectrumQueue = [[ NSPointerArray alloc ] initWithPointerFunctions:pFunctions ];
 
     resultQueue = [[ ODHeightfieldQueue alloc ] init ];
 
@@ -374,7 +417,9 @@ static const double OneDivSixty = 1.0 / 60.0;
     DESTROY(projector);
     DESTROY(basePlane);
     DESTROY(resultQueue);
-    DESTROY(resultQueueMutex);
+    DESTROY(spectrumQueue);
+    DESTROY(spectrumQueueMutex);
+    DESTROY(heightfieldQueueMutex);
     DESTROY(generateCondition);
     DESTROY(transformCondition);
 
@@ -515,7 +560,7 @@ static const double OneDivSixty = 1.0 / 60.0;
     OdHeightfieldData * hf = NULL;
 
     {
-        [ resultQueueMutex lock ];
+        [ heightfieldQueueMutex lock ];
 
         queueCount = [ resultQueue count ];
 
@@ -587,7 +632,7 @@ static const double OneDivSixty = 1.0 / 60.0;
         }
 
         queueCount = [ resultQueue count ];
-        [ resultQueueMutex unlock ];
+        [ heightfieldQueueMutex unlock ];
     }
 
     // update condition variable
