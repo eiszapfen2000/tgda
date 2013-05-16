@@ -200,7 +200,7 @@ double amplitude(Vector2 const * const windDirection,
     }
 
     OdFrequencySpectrumDouble result
-        = {.timestamp = time, .resolution = resolution, .waveSpectrum = frequencySpectrum,
+        = {.timestamp = time, .resolution = resolution, .size = currentSettings.size, .waveSpectrum = frequencySpectrum,
            .gradientX = NULL, .gradientZ = NULL };
 
     return result;
@@ -447,7 +447,7 @@ double amplitude(Vector2 const * const windDirection,
     }
 
     OdFrequencySpectrumDouble result
-        = {.timestamp = time, .resolution = resolution, .waveSpectrum = frequencySpectrumHC,
+        = {.timestamp = time, .resolution = resolution, .size = currentSettings.size, .waveSpectrum = frequencySpectrumHC,
            .gradientX = NULL, .gradientZ = NULL };
 
     return result;
