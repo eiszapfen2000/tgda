@@ -131,7 +131,7 @@ double amplitude(Vector2 const * const windDirection,
     }
 }
 
-- (fftw_complex *) generateHAtTime:(const double)time
+- (OdFrequencySpectrumDouble) generateHAtTime:(const double)time
 {
     const IVector2 resolution = currentSettings.resolution;
     const Vector2 size = currentSettings.size;
@@ -199,15 +199,19 @@ double amplitude(Vector2 const * const windDirection,
         }
     }
 
-    return frequencySpectrum;
+    OdFrequencySpectrumDouble result
+        = {.timestamp = time, .resolution = resolution, .waveSpectrum = frequencySpectrum,
+           .gradientX = NULL, .gradientZ = NULL };
+
+    return result;
 }
 
-- (fftw_complex *) generateTimeIndependentH
+- (OdFrequencySpectrumDouble) generateTimeIndependentH
 {
     return [ self generateHAtTime:1.0 ];
 }
 
-- (fftw_complex *) generateHHCAtTime:(const double)time
+- (OdFrequencySpectrumDouble) generateHHCAtTime:(const double)time
 {
     const IVector2 resolution = currentSettings.resolution;
     const Vector2 size = currentSettings.size;
@@ -442,10 +446,14 @@ double amplitude(Vector2 const * const windDirection,
         frequencySpectrumHC[indexHC][1] = H0expOmega[1] + H0expMinusOmega[1];
     }
 
-    return frequencySpectrumHC;
+    OdFrequencySpectrumDouble result
+        = {.timestamp = time, .resolution = resolution, .waveSpectrum = frequencySpectrumHC,
+           .gradientX = NULL, .gradientZ = NULL };
+
+    return result;
 }
 
-- (fftw_complex *) generateTimeIndependentHHC
+- (OdFrequencySpectrumDouble) generateTimeIndependentHHC
 {
     return [ self generateHHCAtTime:1.0 ];
 }
@@ -530,14 +538,23 @@ right way.
 
     [ self generateH0 ];
 
-    fftw_complex * spectrum = [ self generateHAtTime:time ];
-    [ self swapFrequencySpectrum:spectrum quadrants:ODQuadrant_1_3 ];
-    [ self swapFrequencySpectrum:spectrum quadrants:ODQuadrant_2_4 ];
+    OdFrequencySpectrumDouble result = [ self generateHAtTime:time ];
+    [ self swapFrequencySpectrum:result.waveSpectrum quadrants:ODQuadrant_1_3 ];
+    [ self swapFrequencySpectrum:result.waveSpectrum quadrants:ODQuadrant_2_4 ];
+
+    if ( result.gradientX != NULL )
+    {
+        [ self swapFrequencySpectrum:result.gradientX quadrants:ODQuadrant_1_3 ];
+        [ self swapFrequencySpectrum:result.gradientX quadrants:ODQuadrant_2_4 ];
+    }
+
+    if ( result.gradientZ != NULL )
+    {
+        [ self swapFrequencySpectrum:result.gradientZ quadrants:ODQuadrant_1_3 ];
+        [ self swapFrequencySpectrum:result.gradientZ quadrants:ODQuadrant_2_4 ];
+    }
 
     lastSettings = currentSettings;
-
-    OdFrequencySpectrumDouble result
-        = {.waveSpectrum = spectrum, .gradientX = NULL, .gradientZ = NULL };
 
     return result;
 }
@@ -548,12 +565,8 @@ right way.
     currentSettings = settings;
 
     [ self generateH0 ];
-
-    fftw_complex * spectrum = [ self generateHHCAtTime:time ];
+    OdFrequencySpectrumDouble result= [ self generateHHCAtTime:time ];
     lastSettings = currentSettings;
-
-    OdFrequencySpectrumDouble result
-        = {.waveSpectrum = spectrum, .gradientX = NULL, .gradientZ = NULL };
 
     return result;
 }
