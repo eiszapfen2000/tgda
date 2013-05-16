@@ -22,7 +22,8 @@
 {
     NSCondition * generateCondition;
     NSCondition * transformCondition;
-    NSLock * resultQueueMutex;
+    NSLock * spectrumQueueMutex;
+    NSLock * heightfieldQueueMutex;
 
     Vector2 lastWindDirection;
     Vector2 windDirection;
@@ -38,6 +39,7 @@
     
     NSThread * generatorThread;
     NSThread * transformThread;
+    NSPointerArray * spectrumQueue;
     ODHeightfieldQueue * resultQueue;
 
     ODProjector * projector;
