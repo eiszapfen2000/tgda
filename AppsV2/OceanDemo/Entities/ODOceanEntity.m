@@ -58,6 +58,23 @@ static const int32_t resolutions[4] = {64, 128, 256, 512};
 static const NSUInteger defaultResolutionIndex = 2;
 static const double OneDivSixty = 1.0 / 60.0;
 
+static size_t index_for_resolution(int32_t resolution)
+{
+    switch ( resolution )
+    {
+        case 64:
+            return 0;
+        case 128:
+            return 1;
+        case 256:
+            return 2;
+        case 512:
+            return 3;
+        default:
+            return SIZE_MAX;
+    }
+}
+
 @interface ODOceanEntity (Private)
 
 - (void) startupFFTW;
@@ -314,7 +331,8 @@ static const double OneDivSixty = 1.0 / 60.0;
         if ( [[ NSThread currentThread ] isCancelled ] == NO )
         {
             OdFrequencySpectrumFloat item
-                = { .waveSpectrum = NULL, .gradientX = NULL, .gradientZ = NULL };
+                = { .timestamp = FLT_MAX, .resolution = {.x = 0, .y = 0}, .size = {.x = 0.0, .y = 0.0},
+                    .waveSpectrum = NULL, .gradientX = NULL, .gradientZ = NULL };
 
             {
                 [ spectrumQueueMutex lock ];
@@ -331,6 +349,45 @@ static const double OneDivSixty = 1.0 / 60.0;
                 }
                 [ spectrumQueueMutex unlock ];
             }
+
+            OdHeightfieldData * result = NULL;
+
+            {
+                [ heightfieldQueueMutex lock ];
+                result = heightfield_alloc_init_with_resolution_and_size(item.resolution, item.size);
+                [ heightfieldQueueMutex unlock ];
+            }
+
+            const size_t index = index_for_resolution(item.resolution.x);
+            const size_t numberOfElements = item.resolution.x * item.resolution.y;
+            NSAssert(index != SIZE_MAX, @"Invalid resolution");
+            NSAssert(numberOfElements != 0, @"Invalid resolution");
+            NSAssert(item.size.x != 0.0 && item.size.y != 0.0, @"Invalid size");
+
+            fftwf_complex * complexHeights   = fftwf_alloc_complex(numberOfElements);
+            fftwf_complex * complexGradientX = fftwf_alloc_complex(numberOfElements);
+            fftwf_complex * complexGradientZ = fftwf_alloc_complex(numberOfElements);
+
+            fftwf_execute_dft(complexPlans[index], item.waveSpectrum, complexHeights);
+            fftwf_execute_dft(complexPlans[index], item.gradientX,    complexGradientX);
+            fftwf_execute_dft(complexPlans[index], item.gradientZ,    complexGradientZ);
+
+            for ( size_t i = 0; i < numberOfElements; i++ )
+            {
+                result->heights32f[i] = complexHeights[i][0];
+                result->gradientX[i]  = complexGradientX[i][0];
+                result->gradientZ[i]  = complexGradientZ[i][0];
+            }
+
+            heightfield_hf_compute_min_max(result);
+            heightfield_hf_compute_min_max_gradients(result);
+
+            fftwf_free(item.waveSpectrum);
+            fftwf_free(item.gradientX);
+            fftwf_free(item.gradientZ);
+            fftwf_free(complexHeights);
+            fftwf_free(complexGradientX);
+            fftwf_free(complexGradientZ);
         }
 
         DESTROY(innerPool);

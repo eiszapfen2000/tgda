@@ -14,6 +14,7 @@ typedef struct OdFrequencySpectrumDouble
 {
     double timestamp;
     IVector2 resolution;
+    Vector2  size;
     fftw_complex * waveSpectrum;
     fftw_complex * gradientX;
     fftw_complex * gradientZ;
@@ -24,6 +25,7 @@ typedef struct OdFrequencySpectrumFloat
 {
     float timestamp;
     IVector2 resolution;
+    Vector2 size;
     fftwf_complex * waveSpectrum;
     fftwf_complex * gradientX;
     fftwf_complex * gradientZ;

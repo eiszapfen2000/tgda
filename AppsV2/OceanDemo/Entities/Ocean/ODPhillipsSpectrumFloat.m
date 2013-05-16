@@ -229,7 +229,7 @@ static float amplitudef(FVector2 const * const windDirection,
     }
 
     OdFrequencySpectrumFloat result
-        = {.timestamp = time, .resolution = resolution, .waveSpectrum = frequencySpectrum,
+        = {.timestamp = time, .resolution = resolution, .size = currentSettings.size, .waveSpectrum = frequencySpectrum,
            .gradientX = gradientX, .gradientZ = gradientZ };
 
     return result;
@@ -485,7 +485,7 @@ static float amplitudef(FVector2 const * const windDirection,
     }
 
     OdFrequencySpectrumFloat result
-        = {.timestamp = time, .resolution = resolution, .waveSpectrum = frequencySpectrumHC,
+        = {.timestamp = time, .resolution = resolution, .size = currentSettings.size, .waveSpectrum = frequencySpectrumHC,
            .gradientX = NULL, .gradientZ = NULL };
 
     return result;
