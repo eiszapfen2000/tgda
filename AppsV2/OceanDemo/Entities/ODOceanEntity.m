@@ -225,82 +225,29 @@ static size_t index_for_resolution(int32_t resolution)
             const int32_t res = resolutions[resIndex];
             settings.resolution = (IVector2){res, res};
 
-            OdHeightfieldData * result = NULL;
-
-            {
-                [ heightfieldQueueMutex lock ];
-                result = heightfield_alloc_init_with_resolution_and_size(settings.resolution, settings.size);
-                [ heightfieldQueueMutex unlock ];
-            }
-
-            fftwf_complex * complexHeights   = fftwf_alloc_complex(res * res);
-            fftwf_complex * complexGradientX = fftwf_alloc_complex(res * res);
-            fftwf_complex * complexGradientZ = fftwf_alloc_complex(res * res);
-
-            [ timer update ];
-
-            result->timeStamp = generationTime;
-
             OdFrequencySpectrumFloat complexSpectrum
                 = [ s generateFloatFrequencySpectrum:settings atTime:generationTime ];
 
             generationTime += 1.0f/60.0f;
-            //NSLog(@"%f", generationTime);
-
-            [ timer update ];
-
-            const float fpsHC = [ timer frameTime ];
-
-            [ timer update ];
-
-            //fftwf_execute_dft_c2r(halfComplexPlans[resIndex], halfcomplexSpectrum.waveSpectrum, result->data32f);
-            fftwf_execute_dft(complexPlans[resIndex], complexSpectrum.waveSpectrum, complexHeights);
-            fftwf_execute_dft(complexPlans[resIndex], complexSpectrum.gradientX, complexGradientX);
-            fftwf_execute_dft(complexPlans[resIndex], complexSpectrum.gradientZ, complexGradientZ);
-
-            [ timer update ];
-
-            //NSLog(@"%f", [timer frameTime]);
-
-            const int32_t numberOfElements = res * res;
-            for ( int32_t i = 0; i < numberOfElements; i++ )
-            {
-                result->heights32f[i] = complexHeights[i][0];
-                result->gradientX[i]  = complexGradientX[i][0];
-                result->gradientZ[i]  = complexGradientZ[i][0];
-            }
-
-            [ timer update ];
-
-            const float fpsIFFTHC = [ timer frameTime ];
-            heightfield_hf_compute_min_max(result);
-            heightfield_hf_compute_min_max_gradients(result);
-
-            [ timer update ];
-            
-            //NSLog(@"MinX: %f MaxX: %f MinZ: %f MaxZ: %f", result->minGradientX, result->maxGradientX, result->minGradientZ, result->maxGradientZ);
-
-            fftwf_free(complexSpectrum.waveSpectrum);
-            fftwf_free(complexSpectrum.gradientX);
-            fftwf_free(complexSpectrum.gradientZ);
-            fftwf_free(complexHeights);
-            fftwf_free(complexGradientX);
-            fftwf_free(complexGradientZ);
-
 
             NSUInteger queueCount = 0;
             {
-                [ heightfieldQueueMutex lock ];
-                [ resultQueue addHeightfield:result ];
-                queueCount = [ resultQueue count ];
-                [ heightfieldQueueMutex unlock ];
+                [ spectrumQueueMutex lock ];
+                [ spectrumQueue addPointer:&complexSpectrum ];
+                queueCount = [ spectrumQueue count ];
+                [ spectrumQueueMutex unlock ];
             }
 
-            //NSLog(@"%lu", queueCount);
+            //NSLog(@"GENERATE %f", complexSpectrum.timestamp);
 
             [ generateCondition lock ];
             generateData = ( queueCount < 16 ) ? YES : NO;
             [ generateCondition unlock ];
+
+            [ transformCondition lock ];
+            transformData = YES;
+            [ transformCondition signal ];
+            [ transformCondition unlock ];
         }
 
         DESTROY(innerPool);
@@ -334,6 +281,8 @@ static size_t index_for_resolution(int32_t resolution)
                 = { .timestamp = FLT_MAX, .resolution = {.x = 0, .y = 0}, .size = {.x = 0.0, .y = 0.0},
                     .waveSpectrum = NULL, .gradientX = NULL, .gradientZ = NULL };
 
+            NSUInteger spectrumCount = 0;
+
             {
                 [ spectrumQueueMutex lock ];
                 if ( [ spectrumQueue count ] != 0 )
@@ -346,6 +295,7 @@ static size_t index_for_resolution(int32_t resolution)
                     }
 
                     [ spectrumQueue removePointerAtIndex:0 ];
+                    spectrumCount = [ spectrumQueue count ];
                 }
                 [ spectrumQueueMutex unlock ];
             }
@@ -364,14 +314,18 @@ static size_t index_for_resolution(int32_t resolution)
             NSAssert(numberOfElements != 0, @"Invalid resolution");
             NSAssert(item.size.x != 0.0 && item.size.y != 0.0, @"Invalid size");
 
+            //NSLog(@"TRANSFORM %f", item.timestamp);
+
             fftwf_complex * complexHeights   = fftwf_alloc_complex(numberOfElements);
             fftwf_complex * complexGradientX = fftwf_alloc_complex(numberOfElements);
             fftwf_complex * complexGradientZ = fftwf_alloc_complex(numberOfElements);
 
+            //fftwf_execute_dft_c2r(halfComplexPlans[resIndex], halfcomplexSpectrum.waveSpectrum, result->data32f);
             fftwf_execute_dft(complexPlans[index], item.waveSpectrum, complexHeights);
             fftwf_execute_dft(complexPlans[index], item.gradientX,    complexGradientX);
             fftwf_execute_dft(complexPlans[index], item.gradientZ,    complexGradientZ);
 
+            result->timeStamp = item.timestamp;
             for ( size_t i = 0; i < numberOfElements; i++ )
             {
                 result->heights32f[i] = complexHeights[i][0];
@@ -381,6 +335,16 @@ static size_t index_for_resolution(int32_t resolution)
 
             heightfield_hf_compute_min_max(result);
             heightfield_hf_compute_min_max_gradients(result);
+
+            {
+                [ heightfieldQueueMutex lock ];
+                [ resultQueue addHeightfield:result ];
+                [ heightfieldQueueMutex unlock ];
+            }
+
+            [ transformCondition lock ];
+            transformData = ( spectrumCount != 0 ) ? YES : NO;
+            [ transformCondition unlock ];
 
             fftwf_free(item.waveSpectrum);
             fftwf_free(item.gradientX);
@@ -622,6 +586,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
         queueCount = [ resultQueue count ];
 
+        #warning FIXME: Need proper reset for data strcutures of both threads
         // in case spectrum generation settings changed
         // update the generator thread's' settings and clear
         // the resultQueue of still therein residing data
