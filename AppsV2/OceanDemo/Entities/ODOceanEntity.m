@@ -216,14 +216,15 @@ static size_t index_for_resolution(int32_t resolution)
             NSUInteger resIndex;
 
             {
-                [ heightfieldQueueMutex lock ];
-                settings = spectrumSettings;
-                resIndex = resolutionIndex;
-                [ heightfieldQueueMutex unlock ];
+                [ settingsMutex lock ];
+                settings.windDirection = generatorWindDirection;
+                resIndex = generatorResolutionIndex;
+                [ settingsMutex unlock ];
             }
 
             const int32_t res = resolutions[resIndex];
             settings.resolution = (IVector2){res, res};
+            settings.size = (Vector2){5.0, 5.0};
 
             OdFrequencySpectrumFloat complexSpectrum
                 = [ s generateFloatFrequencySpectrum:settings atTime:generationTime ];
@@ -271,9 +272,6 @@ static size_t index_for_resolution(int32_t resolution)
             [ transformCondition wait ];
         }
 
-        NSString * dummy = nil;
-        @selector(dummy);
-
         [ transformCondition unlock ];
 
         NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
@@ -303,6 +301,13 @@ static size_t index_for_resolution(int32_t resolution)
                 [ spectrumQueueMutex unlock ];
             }
 
+            if ( item.timestamp == FLT_MAX || item.resolution.x == 0 || item.resolution.y == 0
+                 || item.size.x == 0.0 || item.size.y == 0.0 || item.waveSpectrum == NULL
+                 || item.gradientX == NULL || item.gradientZ == NULL )
+            {
+                continue;
+            }
+
             OdHeightfieldData * result = NULL;
 
             {
@@ -314,8 +319,8 @@ static size_t index_for_resolution(int32_t resolution)
             const size_t index = index_for_resolution(item.resolution.x);
             const size_t numberOfElements = item.resolution.x * item.resolution.y;
 
-            NSAssert(index != SIZE_MAX, @"Invalid resolution");
-            NSAssert(numberOfElements != 0, @"Invalid resolution");
+            NSAssert1(index != SIZE_MAX, @"Invalid resolution %d", item.resolution.x);
+            NSAssert1(numberOfElements != 0, @"Invalid number of elements %lu", numberOfElements);
             NSAssert(item.size.x != 0.0 && item.size.y != 0.0, @"Invalid size");
 
             //NSLog(@"TRANSFORM %f", item.timestamp);
@@ -574,45 +579,45 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     const double totalElapsedTime
         = [[[ NPEngineCore instance ] timer ] totalElapsedTime ];
 
-    /*
-    // time did not advance more than half of 1/60
-    // simply use current heightfield again
-    if ((timeStamp + 0.5 * OneDivSixty) <= totalElapsedTime)
+    BOOL settingsChanged = NO;
+
+    // in case spectrum generation settings changed
+    // update the generator thread's' settings and clear
+    // the resultQueue of still therein residing data
+    if ( windDirection.x != lastWindDirection.x
+         || windDirection.y != lastWindDirection.y
+         || resolutionIndex != lastResolutionIndex )
     {
-        NSLog(@"EARLY %f %f", timeStamp, totalElapsedTime);
-        return;
+        lastWindDirection = windDirection;
+        lastResolutionIndex = resolutionIndex;
+        settingsChanged = YES;
     }
-    */
+
+    if ( settingsChanged == YES )
+    {
+        [ settingsMutex lock ];
+        generatorWindDirection = windDirection;
+        generatorResolutionIndex = resolutionIndex;
+        [ settingsMutex unlock ];
+
+        [ spectrumQueueMutex lock ];
+        [ spectrumQueue removeAllPointers ];
+        [ spectrumQueueMutex unlock ];
+
+        [ heightfieldQueueMutex lock ];
+        [ resultQueue removeAllHeightfields ];
+        [ heightfieldQueueMutex unlock ];
+    }
+
 
     NSUInteger queueCount = 0;
     OdHeightfieldData * hf = NULL;
+
 
     {
         [ heightfieldQueueMutex lock ];
 
         queueCount = [ resultQueue count ];
-
-        #warning FIXME: Need proper reset for data strcutures of both threads
-        // in case spectrum generation settings changed
-        // update the generator thread's' settings and clear
-        // the resultQueue of still therein residing data
-        if ( windDirection.x != lastWindDirection.x
-             || windDirection.y != lastWindDirection.y
-             || resolutionIndex != lastResolutionIndex )
-        {
-            spectrumSettings.windDirection = windDirection;
-            spectrumSettings.size = (Vector2){5.0, 5.0};
-
-            //const int32_t res = resolutions[resolutionIndex];
-            //spectrumSettings.resolution = (IVector2){res, res};
-
-            lastWindDirection = windDirection;
-            lastResolutionIndex = resolutionIndex;
-
-            [ resultQueue removeAllHeightfields ];
-
-            queueCount = 0;
-        }
 
         // get heightfield data
         if ( queueCount != 0 )
