@@ -271,6 +271,9 @@ static size_t index_for_resolution(int32_t resolution)
             [ transformCondition wait ];
         }
 
+        NSString * dummy = nil;
+        @selector(dummy);
+
         [ transformCondition unlock ];
 
         NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
@@ -310,6 +313,7 @@ static size_t index_for_resolution(int32_t resolution)
 
             const size_t index = index_for_resolution(item.resolution.x);
             const size_t numberOfElements = item.resolution.x * item.resolution.y;
+
             NSAssert(index != SIZE_MAX, @"Invalid resolution");
             NSAssert(numberOfElements != 0, @"Invalid resolution");
             NSAssert(item.size.x != 0.0 && item.size.y != 0.0, @"Invalid size");
@@ -380,6 +384,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
     spectrumQueueMutex    = [[ NSLock alloc ] init ];
     heightfieldQueueMutex = [[ NSLock alloc ] init ];
+    settingsMutex         = [[ NSLock alloc ] init ];
 
     generateCondition  = [[ NSCondition alloc ] init ];
     transformCondition = [[ NSCondition alloc ] init ];
@@ -388,10 +393,10 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     transformData = NO;
 
     lastResolutionIndex = ULONG_MAX;
-    resolutionIndex = defaultResolutionIndex;
+    resolutionIndex = generatorResolutionIndex = defaultResolutionIndex;
 
     lastWindDirection = (Vector2){DBL_MAX, DBL_MAX};
-    windDirection = defaultWindDirection;
+    windDirection = generatorWindDirection = defaultWindDirection;
 
     const NSUInteger options
         = NSPointerFunctionsMallocMemory
@@ -442,6 +447,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     DESTROY(spectrumQueue);
     DESTROY(spectrumQueueMutex);
     DESTROY(heightfieldQueueMutex);
+    DESTROY(settingsMutex);
     DESTROY(generateCondition);
     DESTROY(transformCondition);
 
@@ -608,13 +614,9 @@ static NSUInteger od_freq_spectrum_size(const void * item)
             queueCount = 0;
         }
 
-        //printf("Queue %lu\n", queueCount);
-
         // get heightfield data
         if ( queueCount != 0 )
         {
-            //NSLog(@"SEARCH %f", totalElapsedTime);
-
             NSUInteger f = NSNotFound;
             double queueMinTimeStamp =  DBL_MAX;
             double queueMaxTimeStamp = -DBL_MAX;
@@ -622,7 +624,6 @@ static NSUInteger od_freq_spectrum_size(const void * item)
             for ( NSUInteger i = 0; i < queueCount; i++ )
             {
                 OdHeightfieldData * h = [ resultQueue heightfieldAtIndex:i ];
-                //NSLog(@"TS %f", h->timeStamp);
                 const double x = totalElapsedTime - 0.5 * OneDivSixty;
                 const double y = totalElapsedTime + 0.5 * OneDivSixty;
                 const double hTimeStamp = h->timeStamp;
@@ -633,11 +634,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
                 if ( hTimeStamp >= x && hTimeStamp < y )
                 {
                     f = i;
-                    //NSLog(@"FOUND %lu", f);
                 }
             }
-
-            //NSLog(@"MIN %f MAX %f", queueMinTimeStamp, queueMaxTimeStamp);
 
             if ( f != NSNotFound )
             {
@@ -645,11 +643,9 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
                 NSRange range = NSMakeRange(0, f);
                 [ resultQueue removeHeightfieldsInRange:range ];
-                //NSLog(@"Range %lu %lu", range.location, range.length);                
             }
             else
             {
-                //NSLog(@"Not found");
                 hf = [ resultQueue heightfieldAtIndex:0 ];
             }
         }
