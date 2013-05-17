@@ -24,11 +24,14 @@
     NSCondition * transformCondition;
     NSLock * spectrumQueueMutex;
     NSLock * heightfieldQueueMutex;
+    NSLock * settingsMutex;
 
     Vector2 lastWindDirection;
     Vector2 windDirection;
+    Vector2 generatorWindDirection;
     NSUInteger lastResolutionIndex;
     NSUInteger resolutionIndex;
+    NSUInteger generatorResolutionIndex;
 
     ODSpectrumSettings spectrumSettings;
     BOOL generateData;
