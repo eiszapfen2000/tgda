@@ -61,6 +61,20 @@ technique "water_surface"
         MinFilter = Linear;
         MagFilter = Linear;
     };
+    uniform sampler2D gradientX
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
+    uniform sampler2D gradientZ
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
     # vertex streams
     in vec2 in_position : 0;
     in vec2 in_texcoords : 3;
