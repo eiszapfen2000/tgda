@@ -1,5 +1,5 @@
 EXTERNAL_DEPENDENCIES_LIB_DIR =
-BASIC_DEFINES = 
+BASIC_DEFINES =
 NP_LIBS_DIR = 
 
 ifeq ($(GNUSTEP_HOST_CPU),ix86)
@@ -8,7 +8,7 @@ ifeq ($(GNUSTEP_HOST_CPU),ix86)
 else
     ifeq ($(GNUSTEP_HOST_CPU),x86_64)
         EXTERNAL_DEPENDENCIES_LIB_DIR = $(TGDA_DIR)/Dependencies/lib64
-        BASIC_DEFINES = -D_NP_64BIT_SYSTEM_
+        BASIC_DEFINES += -D_NP_64BIT_SYSTEM_
         NP_LIBS_DIR = $(TGDA_DIR)/lib/lib64
     endif
 endif
@@ -27,8 +27,12 @@ ADDITIONAL_CPPFLAGS += \
 BASIC_CFLAGS += \
     -Wall -Wextra -Wformat=2 -std=gnu99 \
     -fstrict-aliasing -Wstrict-aliasing \
-    -Wpointer-arith -Wno-unused-parameter \
-    # -O3 -mtune=native -ffast-math
+    -fstrict-overflow -Wstrict-overflow=1 \
+    -Wpointer-arith -Wuninitialized -Winit-self -Winline -Wno-unused
+
+ifeq ($(debug),no)
+    -O3 -mtune=native -ffast-math -ggdb
+endif
 
 BASIC_OBJCFLAGS += \
     $(BASIC_CFLAGS) \
