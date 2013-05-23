@@ -13,29 +13,39 @@ float ray_intersect(in sampler2D heightMap, in vec2 heightMinMax, in vec4 dpds, 
     // compute depth delta to take each iteration
     float depthStep = (heightMinMax.x - heightMinMax.y) / float(numberOfLinearSteps - 1);
     //
-    float lastSampledHeight = FLT_MAX;
-    float currentSampledHeight = FLT_MAX;
+    float lastSampledHeight = depth;
+    float currentSampledHeight = depth;
+    vec2 lastOffset = vec2(0.0);
+    vec2 currentOffset = vec2(0.0);
     int currentNumberOfSteps = 0;
 
     // search from top to bottom for first point inside the heightfield
     while ( currentNumberOfSteps < numberOfLinearSteps )
     {
-        currentSampledHeight = textureLod(heightMap, dpds.xy + float(currentNumberOfSteps) * dpds.zw, 0).r;
+        currentSampledHeight = textureLod(heightMap, dpds.xy + currentOffset, 0).r;
 
-        if ( depth <= currentSampledHeight )
+        if ( currentSampledHeight > depth )
         {
             bestDepth = depth;
             currentNumberOfSteps = numberOfLinearSteps + 1;
+            
+			float delta1 = currentSampledHeight - depth;
+			float delta2 = ( depth - depthStep ) - lastSampledHeight;
+			float ratio = delta1 / ( delta1 + delta2 );
+            
+			currentOffset = (ratio * lastOffset) + ((1.0-ratio) * currentOffset);
         }
         else
         {
-
             depth += depthStep;
+            lastSampledHeight = currentSampledHeight;
+            lastOffset = currentOffset;
+            currentOffset = float(currentNumberOfSteps) * dpds.zw;
             currentNumberOfSteps++;
         }
     }
 
-    return bestDepth;
+    return textureLod(heightMap, dpds.xy + currentOffset, 0).r;
 }
 
 void main()
@@ -56,7 +66,7 @@ void main()
         if (position.y <= (waterLevel + heightfieldMinMax.y))
         {
             const vec3 planeNormal = vec3(0.0, 1.0, 0.0);
-            const int numberOfLinearSteps = 25;
+            const int numberOfLinearSteps = 16;
             const float tileSizeInWS = 50.0;
 
             vec3 rayDirection = position.xyz - cameraPosition.xyz;
@@ -70,9 +80,6 @@ void main()
             vec3 topPoint = cameraPosition + tTop * rayDirection;
             vec3 bottomPoint = cameraPosition + tBottom * rayDirection;
             vec3 point = cameraPosition + t0 * rayDirection;
-
-            vec3 ray = bottomPoint - topPoint;
-            vec2 rayOnPlane = ray.xz;
 
             vec4 dpds;
             dpds.xy = (topPoint.xz / tileSizeInWS);
