@@ -12,19 +12,27 @@ float ray_intersect(in sampler2D heightMap, in vec2 heightMinMax, in vec4 dpds, 
     float bestDepth = heightMinMax.x;
     // compute depth delta to take each iteration
     float depthStep = (heightMinMax.x - heightMinMax.y) / float(numberOfLinearSteps - 1);
+    //
+    float lastSampledHeight = FLT_MAX;
+    float currentSampledHeight = FLT_MAX;
+    int currentNumberOfSteps = 0;
 
     // search from top to bottom for first point inside the heightfield
-    for (int i = 0; i < numberOfLinearSteps; i++)
+    while ( currentNumberOfSteps < numberOfLinearSteps )
     {
-        vec4 h = textureLod(heightMap, dpds.xy + float(i) * dpds.zw, 0);
+        currentSampledHeight = textureLod(heightMap, dpds.xy + float(currentNumberOfSteps) * dpds.zw, 0).r;
 
-        if ( depth <= h.x )
+        if ( depth <= currentSampledHeight )
         {
             bestDepth = depth;
-            break;
-        }         
+            currentNumberOfSteps = numberOfLinearSteps + 1;
+        }
+        else
+        {
 
-        depth += depthStep;
+            depth += depthStep;
+            currentNumberOfSteps++;
+        }
     }
 
     return bestDepth;
@@ -48,8 +56,8 @@ void main()
         if (position.y <= (waterLevel + heightfieldMinMax.y))
         {
             const vec3 planeNormal = vec3(0.0, 1.0, 0.0);
-            const int numberOfLinearSteps = 10;
-            const float tileSizeInWS = 20.0;
+            const int numberOfLinearSteps = 25;
+            const float tileSizeInWS = 50.0;
 
             vec3 rayDirection = position.xyz - cameraPosition.xyz;
             float d1 = dot(cameraPosition, planeNormal);
@@ -71,7 +79,7 @@ void main()
             dpds.zw = ((bottomPoint.xz - topPoint.xz) / tileSizeInWS);
             dpds.zw = dpds.zw / float(numberOfLinearSteps - 1);
 
-            float lala = ray_intersect(heightfield, heightfieldMinMax, dpds, int(5));
+            float lala = ray_intersect(heightfield, heightfieldMinMax, dpds, numberOfLinearSteps);
 
             if (t0 < 0.0)
                 color = vec4(0.0, 1.0, 0.0, 1.0);
