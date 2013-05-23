@@ -53,7 +53,7 @@ void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex * spec
     }
 }
 
-static const Vector2 defaultWindDirection = {10.0, 0.5};
+static const Vector2 defaultWindDirection = {5.1, 3.3};
 static const int32_t resolutions[4] = {64, 128, 256, 512};
 static const NSUInteger defaultResolutionIndex = 2;
 static const double OneDivSixty = 1.0 / 60.0;

@@ -4,7 +4,7 @@ in vec2 out_texcoords;
 
 #define FLT_MAX 3.40282347e+38F
 
-float ray_intersect(in sampler2D heightMap, in vec2 heightMinMax, in vec4 dpds, in int numberOfLinearSteps)
+vec4 ray_intersect(in sampler2D heightMap, in vec2 heightMinMax, in vec4 dpds, in int numberOfLinearSteps)
 {
     // start at top
     float depth = heightMinMax.y;
@@ -45,7 +45,14 @@ float ray_intersect(in sampler2D heightMap, in vec2 heightMinMax, in vec4 dpds, 
         }
     }
 
-    return textureLod(heightMap, dpds.xy + currentOffset, 0).r;
+    vec4 result = vec4(0.0);
+    result.w = textureLod(heightMap, dpds.xy + currentOffset, 0).r;
+
+    float gx = textureLod(gradientX, dpds.xy + currentOffset, 0).r;
+    float gz = textureLod(gradientZ, dpds.xy + currentOffset, 0).r;
+    result.xyz = normalize(vec3(-gx, 1.0, -gz));
+
+    return result;
 }
 
 void main()
@@ -86,12 +93,19 @@ void main()
             dpds.zw = ((bottomPoint.xz - topPoint.xz) / tileSizeInWS);
             dpds.zw = dpds.zw / float(numberOfLinearSteps - 1);
 
-            float lala = ray_intersect(heightfield, heightfieldMinMax, dpds, numberOfLinearSteps);
+            vec4 lala = ray_intersect(heightfield, heightfieldMinMax, dpds, numberOfLinearSteps);
 
             if (t0 < 0.0)
+            {
                 color = vec4(0.0, 1.0, 0.0, 1.0);
+            }
             else
-                color = vec4(0.0, 0.0, (lala - heightfieldMinMax.x) / (heightfieldMinMax.y - heightfieldMinMax.x), 1.0);
+            {
+                color = vec4(0.0, 0.0, (lala.x - heightfieldMinMax.x) / (heightfieldMinMax.y - heightfieldMinMax.x), 1.0);
+                //vec3 snormal = normalize(vec3(0.0, 1.0, -1.0));
+                //float diffuse = max(dot(snormal, lala.xyz), 0.0);
+                //color = vec4(diffuse, diffuse, diffuse, 1.0);
+            }
             
 
             //color = vec4(0.0, 0.0, rtes, 1.0);
