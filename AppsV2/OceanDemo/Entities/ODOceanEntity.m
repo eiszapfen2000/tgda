@@ -559,6 +559,16 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     return heightfield;
 }
 
+- (NPTexture2D *) gradientX
+{
+    return gradientX;
+}
+
+- (NPTexture2D *) gradientZ
+{
+    return gradientZ;
+}
+
 - (FVector2) heightRange
 {
     return heightRange;

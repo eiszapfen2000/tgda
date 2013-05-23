@@ -67,6 +67,8 @@
 - (ODProjector *) projector;
 - (ODBasePlane *) basePlane;
 - (NPTexture2D *) heightfield;
+- (NPTexture2D *) gradientX;
+- (NPTexture2D *) gradientZ;
 - (FVector2) heightRange;
 - (void) setCamera:(ODCamera *)newCamera;
 
