@@ -4,12 +4,10 @@ in vec2 out_texcoords;
 
 #define FLT_MAX 3.40282347e+38F
 
-vec4 ray_intersect(in sampler2D heightMap, in vec2 heightMinMax, in vec4 dpds, in int numberOfLinearSteps)
+vec4 ray_intersect(in sampler2D heightMap, in vec2 heightMinMax, in vec4 dpds, in vec4 gradients, in int numberOfLinearSteps)
 {
     // start at top
     float depth = heightMinMax.y;
-    // assume bottom is best
-    float bestDepth = heightMinMax.x;
     // compute depth delta to take each iteration
     float depthStep = (heightMinMax.x - heightMinMax.y) / float(numberOfLinearSteps - 1);
     //
@@ -22,11 +20,10 @@ vec4 ray_intersect(in sampler2D heightMap, in vec2 heightMinMax, in vec4 dpds, i
     // search from top to bottom for first point inside the heightfield
     while ( currentNumberOfSteps < numberOfLinearSteps )
     {
-        currentSampledHeight = textureLod(heightMap, dpds.xy + currentOffset, 0).r;
+        currentSampledHeight = textureGrad(heightMap, dpds.xy + currentOffset, gradients.xy, gradients.zw).r;
 
         if ( currentSampledHeight > depth )
         {
-            bestDepth = depth;
             currentNumberOfSteps = numberOfLinearSteps + 1;
             
 			float delta1 = currentSampledHeight - depth;
@@ -34,6 +31,7 @@ vec4 ray_intersect(in sampler2D heightMap, in vec2 heightMinMax, in vec4 dpds, i
 			float ratio = delta1 / ( delta1 + delta2 );
             
 			currentOffset = (ratio * lastOffset) + ((1.0-ratio) * currentOffset);
+            depth = (ratio * (depth - depthStep)) + ((1.0 - ratio) * depth);
         }
         else
         {
@@ -46,10 +44,11 @@ vec4 ray_intersect(in sampler2D heightMap, in vec2 heightMinMax, in vec4 dpds, i
     }
 
     vec4 result = vec4(0.0);
-    result.w = textureLod(heightMap, dpds.xy + currentOffset, 0).r;
+    //result.w = textureGrad(heightMap, dpds.xy + currentOffset, gradients.xy, gradients.zw).r;
+    result.w = depth;
 
-    float gx = textureLod(gradientX, dpds.xy + currentOffset, 0).r;
-    float gz = textureLod(gradientZ, dpds.xy + currentOffset, 0).r;
+    float gx = textureGrad(gradientX, dpds.xy + currentOffset, gradients.xy, gradients.zw).r;
+    float gz = textureGrad(gradientZ, dpds.xy + currentOffset, gradients.xy, gradients.zw).r;
     result.xyz = normalize(vec3(-gx, 1.0, -gz));
 
     return result;
@@ -74,7 +73,7 @@ void main()
         {
             const vec3 planeNormal = vec3(0.0, 1.0, 0.0);
             const int numberOfLinearSteps = 16;
-            const float tileSizeInWS = 50.0;
+            const float tileSizeInWS = 10.0;
 
             vec3 rayDirection = position.xyz - cameraPosition.xyz;
             float d1 = dot(cameraPosition, planeNormal);
@@ -88,14 +87,21 @@ void main()
             vec3 bottomPoint = cameraPosition + tBottom * rayDirection;
             vec3 point = cameraPosition + t0 * rayDirection;
 
+            float pLimit = abs(length(rayDirection.xz) / rayDirection.y);
+            pLimit *= tileSizeInWS;
+
             vec4 dpds;
             dpds.xy = (topPoint.xz / tileSizeInWS);
             dpds.zw = ((bottomPoint.xz - topPoint.xz) / tileSizeInWS);
             dpds.zw = dpds.zw / float(numberOfLinearSteps - 1);
 
-            vec4 lala = ray_intersect(heightfield, heightfieldMinMax, dpds, numberOfLinearSteps);
+            vec4 spGradients;
+            spGradients.xy = dFdx(out_texcoords.xy);
+            spGradients.zw = dFdx(out_texcoords.xy);
 
-            if (t0 < 0.0)
+            vec4 lala = ray_intersect(heightfield, heightfieldMinMax, dpds, spGradients, numberOfLinearSteps);
+
+            if (pLimit < 0.0)
             {
                 color = vec4(0.0, 1.0, 0.0, 1.0);
             }
