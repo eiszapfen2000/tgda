@@ -53,7 +53,7 @@ void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex * spec
     }
 }
 
-static const Vector2 defaultWindDirection = {5.1, 3.3};
+static const Vector2 defaultWindDirection = {2.1, 2.3};
 static const int32_t resolutions[4] = {64, 128, 256, 512};
 static const NSUInteger defaultResolutionIndex = 2;
 static const double OneDivSixty = 1.0 / 60.0;
@@ -224,7 +224,7 @@ static size_t index_for_resolution(int32_t resolution)
 
             const int32_t res = resolutions[resIndex];
             settings.resolution = (IVector2){res, res};
-            settings.size = (Vector2){5.0, 5.0};
+            settings.size = (Vector2){10.0, 10.0};
 
             OdFrequencySpectrumFloat complexSpectrum
                 = [ s generateFloatFrequencySpectrum:settings atTime:generationTime ];
@@ -437,6 +437,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     heightRange    = (FVector2){.x = FLT_MAX, .y = -FLT_MAX};
     gradientXRange = (FVector2){.x = 0.0f, .y = 1.0f};
     gradientZRange = (FVector2){.x = 0.0f, .y = 1.0f};
+
+    animated = YES;
 
     return self;
 }
@@ -680,7 +682,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     }
 
     // update texture and associated min max
-    if ( hf != NULL )
+    if ( hf != NULL && animated == YES)
     {
         timeStamp = hf->timeStamp;
 
@@ -689,47 +691,50 @@ static NSUInteger od_freq_spectrum_size(const void * item)
         gradientZRange = (FVector2){.x = hf->minGradientZ, .y = hf->maxGradientZ};
 
         //printf("stamp %f\n", hf->timeStamp);
+        NSLog(@"%f %f", heightRange.x, heightRange.y);
 
-        const NSUInteger numberOfBytes
-            = hf->resolution.x * hf->resolution.y * sizeof(float);
+        {
+            const NSUInteger numberOfBytes
+                = hf->resolution.x * hf->resolution.y * sizeof(float);
 
-        NSData * textureData
-            = [ NSData dataWithBytesNoCopy:hf->heights32f
-                                    length:numberOfBytes
-                              freeWhenDone:NO ];
+            NSData * textureData
+                = [ NSData dataWithBytesNoCopy:hf->heights32f
+                                        length:numberOfBytes
+                                  freeWhenDone:NO ];
 
-        NSData * gradientXData
-            = [ NSData dataWithBytesNoCopy:hf->gradientX
-                                    length:numberOfBytes
-                              freeWhenDone:NO ];
+            NSData * gradientXData
+                = [ NSData dataWithBytesNoCopy:hf->gradientX
+                                        length:numberOfBytes
+                                  freeWhenDone:NO ];
 
-        NSData * gradientZData
-            = [ NSData dataWithBytesNoCopy:hf->gradientZ
-                                    length:numberOfBytes
-                              freeWhenDone:NO ];
+            NSData * gradientZData
+                = [ NSData dataWithBytesNoCopy:hf->gradientZ
+                                        length:numberOfBytes
+                                  freeWhenDone:NO ];
 
-        [ heightfield generateUsingWidth:hf->resolution.x
-                                  height:hf->resolution.y
-                             pixelFormat:NpImagePixelFormatR
-                              dataFormat:NpImageDataFormatFloat32
-                                 mipmaps:NO
-                                    data:textureData ];
+            [ heightfield generateUsingWidth:hf->resolution.x
+                                      height:hf->resolution.y
+                                 pixelFormat:NpImagePixelFormatR
+                                  dataFormat:NpImageDataFormatFloat32
+                                     mipmaps:NO
+                                        data:textureData ];
 
-        [ gradientX generateUsingWidth:hf->resolution.x
-                                height:hf->resolution.y
-                           pixelFormat:NpImagePixelFormatR
-                            dataFormat:NpImageDataFormatFloat32
-                               mipmaps:NO
-                                  data:gradientXData ];
+            [ gradientX generateUsingWidth:hf->resolution.x
+                                    height:hf->resolution.y
+                               pixelFormat:NpImagePixelFormatR
+                                dataFormat:NpImageDataFormatFloat32
+                                   mipmaps:NO
+                                      data:gradientXData ];
 
-        [ gradientZ generateUsingWidth:hf->resolution.x
-                                height:hf->resolution.y
-                           pixelFormat:NpImagePixelFormatR
-                            dataFormat:NpImageDataFormatFloat32
-                               mipmaps:NO
-                                  data:gradientZData ];
+            [ gradientZ generateUsingWidth:hf->resolution.x
+                                    height:hf->resolution.y
+                               pixelFormat:NpImagePixelFormatR
+                                dataFormat:NpImageDataFormatFloat32
+                                   mipmaps:NO
+                                      data:gradientZData ];
 
-        //NSLog(@"%f %f", totalElapsedTime, timeStamp);
+            //NSLog(@"%f %f", totalElapsedTime, timeStamp);
+        }
     }
 }
 

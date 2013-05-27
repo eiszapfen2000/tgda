@@ -55,6 +55,7 @@
     FVector2 heightRange;
     FVector2 gradientXRange;
     FVector2 gradientZRange;
+    BOOL animated;
 }
 
 - (id) init;

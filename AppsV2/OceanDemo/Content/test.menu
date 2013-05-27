@@ -52,6 +52,17 @@
             TargetProperty = "gradientZRange";
         };
 
+        PAnimation =
+        {
+            Type = "ODButtonItem";
+            Label = "Animation";
+            Alignment = "BottomRight";
+            Position = ("20", "50" );
+            Size = ( "100", "20" );
+            TextSize = "16";
+            TargetObject = "Ocean";
+            TargetProperty = "animated";
+        };
 
         PGroup =
         {

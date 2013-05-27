@@ -2,5 +2,5 @@
     Name = "Scene";
     Skylight = "preetham.entity";
     Ocean = "ocean.entity";
-    Entities = ("terrain.entity");
+    Entities = ();
 }
