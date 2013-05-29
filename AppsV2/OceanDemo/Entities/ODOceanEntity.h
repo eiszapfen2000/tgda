@@ -51,6 +51,9 @@
     NPTexture2D * heightfield;
     NPTexture2D * gradientX;
     NPTexture2D * gradientZ;
+    NPTexture2D * displacementX;
+    NPTexture2D * displacementZ;
+
     double timeStamp;
     FVector2 heightRange;
     FVector2 gradientXRange;
@@ -72,6 +75,9 @@
 - (NPTexture2D *) heightfield;
 - (NPTexture2D *) gradientX;
 - (NPTexture2D *) gradientZ;
+- (NPTexture2D *) displacementX;
+- (NPTexture2D *) displacementZ;
+
 - (FVector2) heightRange;
 - (void) setCamera:(ODCamera *)newCamera;
 
