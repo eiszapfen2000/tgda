@@ -341,13 +341,16 @@ static size_t index_for_resolution(int32_t resolution)
             result->timeStamp = item.timestamp;
             for ( size_t i = 0; i < numberOfElements; i++ )
             {
-                result->heights32f[i] = complexHeights[i][0];
-                result->gradientX[i]  = complexGradientX[i][0];
-                result->gradientZ[i]  = complexGradientZ[i][0];
+                result->heights32f[i]    = complexHeights[i][0];
+                result->gradientX[i]     = complexGradientX[i][0];
+                result->gradientZ[i]     = complexGradientZ[i][0];
+                result->displacementX[i] = complexDisplacementX[i][0];
+                result->displacementZ[i] = complexDisplacementZ[i][0];
             }
 
             heightfield_hf_compute_min_max(result);
             heightfield_hf_compute_min_max_gradients(result);
+            heightfield_hf_compute_min_max_displacements(result);
 
             {
                 [ heightfieldQueueMutex lock ];
@@ -445,6 +448,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     heightRange    = (FVector2){.x = FLT_MAX, .y = -FLT_MAX};
     gradientXRange = (FVector2){.x = 0.0f, .y = 1.0f};
     gradientZRange = (FVector2){.x = 0.0f, .y = 1.0f};
+    displacementXRange = (FVector2){.x = 0.0f, .y = 1.0f};
+    displacementZRange = (FVector2){.x = 0.0f, .y = 1.0f};
 
     animated = YES;
 
@@ -697,9 +702,11 @@ static NSUInteger od_freq_spectrum_size(const void * item)
         heightRange    = (FVector2){.x = hf->minHeight,    .y = hf->maxHeight   };
         gradientXRange = (FVector2){.x = hf->minGradientX, .y = hf->maxGradientX};
         gradientZRange = (FVector2){.x = hf->minGradientZ, .y = hf->maxGradientZ};
+        displacementXRange = (FVector2){.x = hf->minDisplacementX, .y = hf->maxDisplacementX};
+        displacementZRange = (FVector2){.x = hf->minDisplacementZ, .y = hf->maxDisplacementZ};
 
         //printf("stamp %f\n", hf->timeStamp);
-        NSLog(@"%f %f", heightRange.x, heightRange.y);
+        //NSLog(@"%f %f", displacementZRange.x, displacementZRange.y);
 
         {
             const NSUInteger numberOfBytes

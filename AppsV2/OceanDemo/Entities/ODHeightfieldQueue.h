@@ -34,6 +34,7 @@ OdHeightfieldData * heightfield_alloc_init_with_resolution_and_size(IVector2 res
 OdHeightfieldData * heightfield_free(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max_gradients(OdHeightfieldData * heightfield);
+void heightfield_hf_compute_min_max_displacements(OdHeightfieldData * heightfield);
 
 @interface ODHeightfieldQueue : NPObject
 {

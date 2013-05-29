@@ -18,8 +18,8 @@
             Type = "ODTextureItem";
             Label = "Heights";
             Alignment = "BottomLeft";
-            Position = ("20", "50" );
-            Size = ( "150", "150" );
+            Position = ("20", "20" );
+            Size = ( "100", "100" );
             TextSize = "16";
             Texture = "Height Texture";
             TargetObject = "Ocean";
@@ -31,8 +31,8 @@
             Type = "ODTextureItem";
             Label = "Gradient X";
             Alignment = "BottomLeft";
-            Position = ("190", "50" );
-            Size = ( "150", "150" );
+            Position = ("140", "20" );
+            Size = ( "100", "100" );
             TextSize = "16";
             Texture = "Height Texture X Gradient";
             TargetObject = "Ocean";
@@ -44,12 +44,38 @@
             Type = "ODTextureItem";
             Label = "Gradient Z";
             Alignment = "BottomLeft";
-            Position = ("360", "50" );
-            Size = ( "150", "150" );
+            Position = ("260", "20" );
+            Size = ( "100", "100" );
             TextSize = "16";
             Texture = "Height Texture Z Gradient";
             TargetObject = "Ocean";
             TargetProperty = "gradientZRange";
+        };
+
+        PDisplacementX =
+        {
+            Type = "ODTextureItem";
+            Label = "Displacement X";
+            Alignment = "BottomLeft";
+            Position = ("380", "20" );
+            Size = ( "100", "100" );
+            TextSize = "16";
+            Texture = "Height Texture X Gradient";
+            TargetObject = "Ocean";
+            TargetProperty = "displacementXRange";
+        };
+
+        PDisplacementZ =
+        {
+            Type = "ODTextureItem";
+            Label = "Displacement Z";
+            Alignment = "BottomLeft";
+            Position = ("500", "20" );
+            Size = ( "100", "100" );
+            TextSize = "16";
+            Texture = "Height Texture Z Gradient";
+            TargetObject = "Ocean";
+            TargetProperty = "displacementZRange";
         };
 
         PAnimation =

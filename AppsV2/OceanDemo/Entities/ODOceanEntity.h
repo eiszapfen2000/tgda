@@ -55,6 +55,8 @@
     FVector2 heightRange;
     FVector2 gradientXRange;
     FVector2 gradientZRange;
+    FVector2 displacementXRange;
+    FVector2 displacementZRange;
     BOOL animated;
 }
 
