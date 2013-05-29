@@ -144,12 +144,12 @@
     NPFont * font = [ menu fontForSize:textSize ];
     IVector2 textBounds = [ font boundsForString:label size:textSize ];
 
-    const float geometryWidth = frectangle_r_calculate_width(&geometry);
+    const float geometryWidth = frectangle_r_calculate_width(&alignedGeometry);
     const float centering = (geometryWidth - textBounds.x) / 2.0f;
 
     IVector2 textPosition;
-    textPosition.x = (int32_t)round(geometry.min.x + centering);
-    textPosition.y = (int32_t)round(geometry.max.y);
+    textPosition.x = (int32_t)round(alignedGeometry.min.x + centering);
+    textPosition.y = (int32_t)round(alignedGeometry.max.y);
 
     // draw text
     [ font renderString:label
