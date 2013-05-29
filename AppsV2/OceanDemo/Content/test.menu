@@ -60,7 +60,7 @@
             Position = ("380", "20" );
             Size = ( "100", "100" );
             TextSize = "16";
-            Texture = "Height Texture X Gradient";
+            Texture = "X Displacement";
             TargetObject = "Ocean";
             TargetProperty = "displacementXRange";
         };
@@ -73,7 +73,7 @@
             Position = ("500", "20" );
             Size = ( "100", "100" );
             TextSize = "16";
-            Texture = "Height Texture Z Gradient";
+            Texture = "Z Displacement";
             TargetObject = "Ocean";
             TargetProperty = "displacementZRange";
         };

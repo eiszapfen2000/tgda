@@ -431,17 +431,23 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     basePlane = [[ ODBasePlane alloc ] initWithName:@"BasePlane" ];
     [ basePlane setProjector:projector ];
 
-    heightfield = [[ NPTexture2D alloc ] initWithName:@"Height Texture" ];
-    gradientX   = [[ NPTexture2D alloc ] initWithName:@"Height Texture X Gradient" ];
-    gradientZ   = [[ NPTexture2D alloc ] initWithName:@"Height Texture Z Gradient" ];
+    heightfield   = [[ NPTexture2D alloc ] initWithName:@"Height Texture" ];
+    gradientX     = [[ NPTexture2D alloc ] initWithName:@"Height Texture X Gradient" ];
+    gradientZ     = [[ NPTexture2D alloc ] initWithName:@"Height Texture Z Gradient" ];
+    displacementX = [[ NPTexture2D alloc ] initWithName:@"X Displacement" ];
+    displacementZ = [[ NPTexture2D alloc ] initWithName:@"Z Displacement" ];
 
-    [ heightfield setTextureFilter:NpTexture2DFilterLinear ];
-    [ gradientX   setTextureFilter:NpTexture2DFilterLinear ];
-    [ gradientZ   setTextureFilter:NpTexture2DFilterLinear ];
+    [ heightfield   setTextureFilter:NpTexture2DFilterLinear ];
+    [ gradientX     setTextureFilter:NpTexture2DFilterLinear ];
+    [ gradientZ     setTextureFilter:NpTexture2DFilterLinear ];
+    [ displacementX setTextureFilter:NpTexture2DFilterLinear ];
+    [ displacementZ setTextureFilter:NpTexture2DFilterLinear ];
 
-    [ heightfield setTextureWrap:NpTextureWrapRepeat ];
-    [ gradientX   setTextureWrap:NpTextureWrapRepeat ];
-    [ gradientZ   setTextureWrap:NpTextureWrapRepeat ];
+    [ heightfield   setTextureWrap:NpTextureWrapRepeat ];
+    [ gradientX     setTextureWrap:NpTextureWrapRepeat ];
+    [ gradientZ     setTextureWrap:NpTextureWrapRepeat ];
+    [ displacementX setTextureWrap:NpTextureWrapRepeat ];
+    [ displacementZ setTextureWrap:NpTextureWrapRepeat ];
 
     timeStamp = DBL_MAX;
 
@@ -461,6 +467,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     DESTROY(heightfield);
     DESTROY(gradientX);
     DESTROY(gradientZ);
+    DESTROY(displacementX);
+    DESTROY(displacementZ);
     DESTROY(projector);
     DESTROY(basePlane);
     DESTROY(resultQueue);
@@ -582,6 +590,16 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 - (NPTexture2D *) gradientZ
 {
     return gradientZ;
+}
+
+- (NPTexture2D *) displacementX
+{
+    return displacementX;
+}
+
+- (NPTexture2D *) displacementZ
+{
+    return displacementZ;
 }
 
 - (FVector2) heightRange
@@ -706,7 +724,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
         displacementZRange = (FVector2){.x = hf->minDisplacementZ, .y = hf->maxDisplacementZ};
 
         //printf("stamp %f\n", hf->timeStamp);
-        //NSLog(@"%f %f", displacementZRange.x, displacementZRange.y);
+        NSLog(@"X:%f %f Z:%f %f", displacementXRange.x, displacementXRange.y, displacementZRange.x, displacementZRange.y);
 
         {
             const NSUInteger numberOfBytes
@@ -724,6 +742,16 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
             NSData * gradientZData
                 = [ NSData dataWithBytesNoCopy:hf->gradientZ
+                                        length:numberOfBytes
+                                  freeWhenDone:NO ];
+
+            NSData * displacementXData
+                = [ NSData dataWithBytesNoCopy:hf->displacementX
+                                        length:numberOfBytes
+                                  freeWhenDone:NO ];
+
+            NSData * displacementZData
+                = [ NSData dataWithBytesNoCopy:hf->displacementZ
                                         length:numberOfBytes
                                   freeWhenDone:NO ];
 
@@ -747,6 +775,21 @@ static NSUInteger od_freq_spectrum_size(const void * item)
                                 dataFormat:NpImageDataFormatFloat32
                                    mipmaps:NO
                                       data:gradientZData ];
+
+            [ displacementX generateUsingWidth:hf->resolution.x
+                                        height:hf->resolution.y
+                                   pixelFormat:NpImagePixelFormatR
+                                    dataFormat:NpImageDataFormatFloat32
+                                       mipmaps:NO
+                                          data:displacementXData ];
+
+            [ displacementZ generateUsingWidth:hf->resolution.x
+                                        height:hf->resolution.y
+                                   pixelFormat:NpImagePixelFormatR
+                                    dataFormat:NpImageDataFormatFloat32
+                                       mipmaps:NO
+                                          data:displacementZData ];
+
 
             //NSLog(@"%f %f", totalElapsedTime, timeStamp);
         }
