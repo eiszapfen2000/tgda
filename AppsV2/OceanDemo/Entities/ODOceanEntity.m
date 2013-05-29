@@ -325,14 +325,18 @@ static size_t index_for_resolution(int32_t resolution)
 
             //NSLog(@"TRANSFORM %f", item.timestamp);
 
-            fftwf_complex * complexHeights   = fftwf_alloc_complex(numberOfElements);
-            fftwf_complex * complexGradientX = fftwf_alloc_complex(numberOfElements);
-            fftwf_complex * complexGradientZ = fftwf_alloc_complex(numberOfElements);
+            fftwf_complex * complexHeights       = fftwf_alloc_complex(numberOfElements);
+            fftwf_complex * complexGradientX     = fftwf_alloc_complex(numberOfElements);
+            fftwf_complex * complexGradientZ     = fftwf_alloc_complex(numberOfElements);
+            fftwf_complex * complexDisplacementX = fftwf_alloc_complex(numberOfElements);
+            fftwf_complex * complexDisplacementZ = fftwf_alloc_complex(numberOfElements);
 
             //fftwf_execute_dft_c2r(halfComplexPlans[resIndex], halfcomplexSpectrum.waveSpectrum, result->data32f);
-            fftwf_execute_dft(complexPlans[index], item.waveSpectrum, complexHeights);
-            fftwf_execute_dft(complexPlans[index], item.gradientX,    complexGradientX);
-            fftwf_execute_dft(complexPlans[index], item.gradientZ,    complexGradientZ);
+            fftwf_execute_dft(complexPlans[index], item.waveSpectrum,  complexHeights);
+            fftwf_execute_dft(complexPlans[index], item.gradientX,     complexGradientX);
+            fftwf_execute_dft(complexPlans[index], item.gradientZ,     complexGradientZ);
+            fftwf_execute_dft(complexPlans[index], item.displacementX, complexDisplacementX);
+            fftwf_execute_dft(complexPlans[index], item.displacementZ, complexDisplacementZ);
 
             result->timeStamp = item.timestamp;
             for ( size_t i = 0; i < numberOfElements; i++ )
@@ -358,9 +362,13 @@ static size_t index_for_resolution(int32_t resolution)
             fftwf_free(item.waveSpectrum);
             fftwf_free(item.gradientX);
             fftwf_free(item.gradientZ);
+            fftwf_free(item.displacementX);
+            fftwf_free(item.displacementZ);
             fftwf_free(complexHeights);
             fftwf_free(complexGradientX);
             fftwf_free(complexGradientZ);
+            fftwf_free(complexDisplacementX);
+            fftwf_free(complexDisplacementZ);
         }
 
         DESTROY(innerPool);
