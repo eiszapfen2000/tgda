@@ -18,6 +18,8 @@ typedef struct OdFrequencySpectrumDouble
     fftw_complex * waveSpectrum;
     fftw_complex * gradientX;
     fftw_complex * gradientZ;
+    fftw_complex * displacementX;
+    fftw_complex * displacementZ;
 }
 OdFrequencySpectrumDouble;
 
@@ -29,6 +31,8 @@ typedef struct OdFrequencySpectrumFloat
     fftwf_complex * waveSpectrum;
     fftwf_complex * gradientX;
     fftwf_complex * gradientZ;
+    fftwf_complex * displacementX;
+    fftwf_complex * displacementZ;
 }
 OdFrequencySpectrumFloat;
 

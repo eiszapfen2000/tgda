@@ -40,6 +40,9 @@ OdHeightfieldData * heightfield_alloc_init_with_resolution_and_size(IVector2 res
     result->gradientX  = fftwf_alloc_real(resolution.x * resolution.y);
     result->gradientZ  = fftwf_alloc_real(resolution.x * resolution.y);
 
+    result->displacementX = fftwf_alloc_real(resolution.x * resolution.y);
+    result->displacementZ = fftwf_alloc_real(resolution.x * resolution.y);
+
     return result;
 }
 
@@ -58,6 +61,16 @@ OdHeightfieldData * heightfield_free(OdHeightfieldData * heightfield)
     if ( heightfield->gradientZ != NULL )
     {
         fftwf_free(heightfield->gradientZ);
+    }
+
+    if ( heightfield->displacementX != NULL )
+    {
+        fftwf_free(heightfield->displacementX);
+    }
+
+    if ( heightfield->displacementZ != NULL )
+    {
+        fftwf_free(heightfield->displacementZ);
     }
 
     return npfreenode_free(heightfield, OD_HEIGHTFIELDDATA_FREELIST);

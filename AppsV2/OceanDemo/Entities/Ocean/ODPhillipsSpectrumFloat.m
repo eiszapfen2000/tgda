@@ -147,6 +147,12 @@ static float amplitudef(FVector2 const * const windDirection,
 	fftwf_complex * gradientZ
         = fftwf_alloc_complex(resolution.x * resolution.y);
 
+    fftwf_complex * displacementX
+        = fftwf_alloc_complex(resolution.x * resolution.y);
+
+    fftwf_complex * displacementZ
+        = fftwf_alloc_complex(resolution.x * resolution.y);
+
     const float n = -(resolution.x / 2.0f);
     const float m =  (resolution.y / 2.0f);
 
@@ -166,9 +172,10 @@ static float amplitudef(FVector2 const * const windDirection,
             const float kx = (n + dj) * MATH_2_MUL_PIf * dsizex;
             const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
 
-            const FVector2 k = {kx, ky};
-            //const double omega = [ self omegaForK:&k ];
-            const float omega = omegaf_for_k(&k);
+            //const FVector2 k = {kx, ky};
+            //const float omega = omegaf_for_k(&k);
+            const float lengthK = sqrtf(kx * kx + ky * ky);
+            const float omega = sqrtf(EARTH_ACCELERATIONf * lengthK);
             const float omegaT = fmodf(omega * time, MATH_2_MUL_PIf);
 
             // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
@@ -202,9 +209,15 @@ static float amplitudef(FVector2 const * const windDirection,
                x+y = (a+c)+i(b+d)
             */
 
-            // H = H0expOmega + H0expMinusomega
-            frequencySpectrum[indexForK][0] = H0expOmega[0] + H0expMinusOmega[0];
-            frequencySpectrum[indexForK][1] = H0expOmega[1] + H0expMinusOmega[1];
+
+            // hTilde = H0expOmega + H0expMinusomega            
+            const fftwf_complex hTilde
+                = { H0expOmega[0] + H0expMinusOmega[0],
+                    H0expOmega[1] + H0expMinusOmega[1] } ;
+
+
+            frequencySpectrum[indexForK][0] = hTilde[0];
+            frequencySpectrum[indexForK][1] = hTilde[1];
 
             // i * kx
             /*
@@ -218,19 +231,37 @@ static float amplitudef(FVector2 const * const windDirection,
             /*
             x = 0 + i*kx
             H = c + i*d
-            xy = (0*c - kx*d) + i*(0*d+kx*c)
+            xH = (0*c - kx*d) + i*(0*d+kx*c)
             */
-            gradientX[indexForK][0] = -kx * (H0expOmega[1] + H0expMinusOmega[1]);
-            gradientX[indexForK][1] =  kx * (H0expOmega[0] + H0expMinusOmega[0]);
+            gradientX[indexForK][0] = -kx * hTilde[1];
+            gradientX[indexForK][1] =  kx * hTilde[0];
 
-            gradientZ[indexForK][0] = -ky * (H0expOmega[1] + H0expMinusOmega[1]);
-            gradientZ[indexForK][1] =  ky * (H0expOmega[0] + H0expMinusOmega[0]);
+            gradientZ[indexForK][0] = -ky * hTilde[1];
+            gradientZ[indexForK][1] =  ky * hTilde[0];
+
+            // -i * kx/|k| * H
+            /*
+            x  = 0 + i*(-kx/|k|)
+            H  = c + i*d
+            xH = (0*c - (-kx/|k| * d)) + i*(0*d + (-kx/|k| * c))
+               = d*kx/|k| + i*(-c*kx/|k|)
+            */
+
+            const float factor = (lengthK != 0.0f) ? 1.0f/lengthK : 0.0f;
+
+            displacementX[indexForK][0] = factor * kx * hTilde[1];
+            displacementX[indexForK][1] = factor * kx * hTilde[0] * -1.0f;
+
+            displacementZ[indexForK][0] = factor * ky * hTilde[1];
+            displacementZ[indexForK][1] = factor * ky * hTilde[0] * -1.0f;
+
         }
     }
 
     OdFrequencySpectrumFloat result
-        = {.timestamp = time, .resolution = resolution, .size = currentSettings.size, .waveSpectrum = frequencySpectrum,
-           .gradientX = gradientX, .gradientZ = gradientZ };
+        = { .timestamp = time, .resolution = resolution, .size = currentSettings.size,
+            .waveSpectrum = frequencySpectrum, .gradientX = gradientX, .gradientZ = gradientZ,
+            .displacementX = displacementX, .displacementZ = displacementZ };
 
     return result;
 }
