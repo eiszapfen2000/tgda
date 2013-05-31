@@ -31,7 +31,7 @@ void od_heightfielddata_initialise();
 OdHeightfieldData * heightfield_alloc();
 OdHeightfieldData * heightfield_alloc_init();
 OdHeightfieldData * heightfield_alloc_init_with_resolution_and_size(IVector2 resolution, Vector2 size);
-OdHeightfieldData * heightfield_free(OdHeightfieldData * heightfield);
+void heightfield_free(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max_gradients(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max_displacements(OdHeightfieldData * heightfield);

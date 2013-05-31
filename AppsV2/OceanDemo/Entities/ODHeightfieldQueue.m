@@ -46,34 +46,18 @@ OdHeightfieldData * heightfield_alloc_init_with_resolution_and_size(IVector2 res
     return result;
 }
 
-OdHeightfieldData * heightfield_free(OdHeightfieldData * heightfield)
+void heightfield_free(OdHeightfieldData * heightfield)
 {
-    if ( heightfield->heights32f != NULL )
+    if ( heightfield != NULL )
     {
         fftwf_free(heightfield->heights32f);
-    }
-
-    if ( heightfield->gradientX != NULL )
-    {
         fftwf_free(heightfield->gradientX);
-    }
-
-    if ( heightfield->gradientZ != NULL )
-    {
         fftwf_free(heightfield->gradientZ);
-    }
-
-    if ( heightfield->displacementX != NULL )
-    {
         fftwf_free(heightfield->displacementX);
-    }
-
-    if ( heightfield->displacementZ != NULL )
-    {
         fftwf_free(heightfield->displacementZ);
-    }
 
-    return npfreenode_free(heightfield, OD_HEIGHTFIELDDATA_FREELIST);
+        npfreenode_free(heightfield, OD_HEIGHTFIELDDATA_FREELIST);
+    }
 }
 
 void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield)
@@ -235,12 +219,7 @@ void heightfield_hf_compute_min_max_displacements(OdHeightfieldData * heightfiel
 
 - (void) removeHeightfieldAtIndex:(NSUInteger)index
 {
-    OdHeightfieldData * hf = [ queue pointerAtIndex:index ];
-
-    if ( hf != NULL )
-    {
-        heightfield_free(hf);
-    }
+    heightfield_free([ queue pointerAtIndex:index ]);
 
     [ queue removePointerAtIndex:index ];
 }
@@ -251,12 +230,7 @@ void heightfield_hf_compute_min_max_displacements(OdHeightfieldData * heightfiel
 
     for ( NSUInteger i = 0; i < count; i++ )
     {
-        OdHeightfieldData * hf = [ queue pointerAtIndex:i ];
-
-        if ( hf != NULL )
-        {
-            heightfield_free(hf);
-        }
+        heightfield_free([ queue pointerAtIndex:i ]);
     }
 
     [ queue removeAllPointers ];
@@ -292,13 +266,7 @@ void heightfield_hf_compute_min_max_displacements(OdHeightfieldData * heightfiel
 - (void) replaceHeightfieldAtIndex:(NSUInteger)index
                    withHeightfield:(OdHeightfieldData *)heightfield
 {
-    OdHeightfieldData * hf = [ queue pointerAtIndex:index ];
-
-    if ( hf != NULL )
-    {
-        heightfield_free(hf);
-    }
-
+    heightfield_free([ queue pointerAtIndex:index ]);
     [ queue replacePointerAtIndex:index withPointer:heightfield ];
 }
 
