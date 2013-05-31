@@ -724,7 +724,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
         displacementZRange = (FVector2){.x = hf->minDisplacementZ, .y = hf->maxDisplacementZ};
 
         //printf("stamp %f\n", hf->timeStamp);
-        NSLog(@"X:%f %f Z:%f %f", displacementXRange.x, displacementXRange.y, displacementZRange.x, displacementZRange.y);
+        //NSLog(@"X:%f %f Z:%f %f", displacementXRange.x, displacementXRange.y, displacementZRange.x, displacementZRange.y);
 
         {
             const NSUInteger numberOfBytes
