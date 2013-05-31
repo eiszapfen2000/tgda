@@ -15,7 +15,7 @@ IRectangle;
 
 IRectangle * irectangle_alloc();
 IRectangle * irectangle_alloc_init();
-IRectangle * irectangle_free(IRectangle * r);
+void irectangle_free(IRectangle * r);
 
 void irectangle_ssss_init_with_min_max_r(const int32_t minX, const int32_t minY,
     const int32_t maxX, const int32_t maxY, IRectangle * rectangle);

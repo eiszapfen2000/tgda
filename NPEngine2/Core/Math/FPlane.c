@@ -59,9 +59,9 @@ FPlane * fplane_alloc_init_with_components(const float x, const float y, const f
     return plane;
 }
 
-FPlane * fplane_free(FPlane * p)
+void fplane_free(FPlane * p)
 {
-    return npfreenode_free(p, NP_FPLANE_FREELIST);
+    npfreenode_free(p, NP_FPLANE_FREELIST);
 }
 
 void fplane_pv_init_with_normal(FPlane * plane, const FVector3 * const normal)

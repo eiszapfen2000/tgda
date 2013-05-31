@@ -31,9 +31,9 @@ Matrix2 * m2_alloc_init()
     return tmp;
 }
 
-Matrix2 * m2_free(Matrix2 * m)
+void m2_free(Matrix2 * m)
 {
-    return npfreenode_free(m, NP_MATRIX2_FREELIST);
+    npfreenode_free(m, NP_MATRIX2_FREELIST);
 }
 
 void m2_m_set_identity(Matrix2 * m)
@@ -194,9 +194,9 @@ Matrix3 * m3_alloc_init()
     return tmp;
 }
 
-Matrix3 * m3_free(Matrix3 * m)
+void m3_free(Matrix3 * m)
 {
-    return npfreenode_free(m, NP_MATRIX3_FREELIST);
+    npfreenode_free(m, NP_MATRIX3_FREELIST);
 }
 
 void m3_m_set_identity(Matrix3 * m)
@@ -583,9 +583,9 @@ Matrix4 * m4_alloc_init()
     return tmp;
 }
 
-Matrix4 * m4_free(Matrix4 * m)
+void m4_free(Matrix4 * m)
 {
-    return npfreenode_free(m, NP_MATRIX4_FREELIST);
+    npfreenode_free(m, NP_MATRIX4_FREELIST);
 }
 
 void m4_m_set_identity(Matrix4 * m)

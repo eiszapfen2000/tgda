@@ -102,12 +102,12 @@ void* npfreenode_alloc( NpFreeList * freelist );
         Frees a node by pushing it onto the freelist.  The pointer to the
         node must be valid - it is not checked against 0.
 --------------------------------------------------------------------------- */
-void* npfreenode_fast_free( void * node, NpFreeList * freelist );
+void npfreenode_fast_free( void * node, NpFreeList * freelist );
 
 /* ---------------------------------------------------------------------------
     'npfreenode_free'
         Frees a node by pushing it onto the freelist.
 --------------------------------------------------------------------------- */
-void* npfreenode_free( void * node, NpFreeList * freelist );
+void npfreenode_free( void * node, NpFreeList * freelist );
 
 #endif //_NP_BASICS_FREELIST_H_

@@ -32,9 +32,9 @@ FMatrix2 * fm2_alloc_init()
     return tmp;
 }
 
-FMatrix2 * fm2_free(FMatrix2 * v)
+void fm2_free(FMatrix2 * v)
 {
-    return npfreenode_free(v, NP_FMATRIX2_FREELIST);
+    npfreenode_free(v, NP_FMATRIX2_FREELIST);
 }
 
 void fm2_m_set_identity(FMatrix2 * m)
@@ -203,9 +203,9 @@ FMatrix3 * fm3_alloc_init()
     return tmp;
 }
 
-FMatrix3 * fm3_free(FMatrix3 * v)
+void fm3_free(FMatrix3 * v)
 {
-    return npfreenode_free(v, NP_FMATRIX3_FREELIST);
+    npfreenode_free(v, NP_FMATRIX3_FREELIST);
 }
 
 void fm3_m_set_identity(FMatrix3 * m)
@@ -611,9 +611,9 @@ FMatrix4 * fm4_alloc_init_with_fm4(FMatrix4 * m)
     return tmp;
 }
 
-FMatrix4 * fm4_free(FMatrix4 * v)
+void fm4_free(FMatrix4 * v)
 {
-    return npfreenode_free(v,NP_FMATRIX4_FREELIST);
+    npfreenode_free(v,NP_FMATRIX4_FREELIST);
 }
 
 void fm4_m_set_identity(FMatrix4 * m)

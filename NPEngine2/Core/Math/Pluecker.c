@@ -47,9 +47,9 @@ Pluecker * pluecker_alloc_init_with_point_and_direction(const Vector3 const * po
     return tmp;
 }
 
-Pluecker * pluecker_free(Pluecker * p)
+void pluecker_free(Pluecker * p)
 {
-    return npfreenode_free(p, NP_PLUECKER_FREELIST);
+    npfreenode_free(p, NP_PLUECKER_FREELIST);
 }
 
 void pluecker_init_with_points(Pluecker * pl, const Vector3 const * p1, const Vector3 const * p2)

@@ -17,7 +17,7 @@ FPluecker * fpluecker_alloc();
 FPluecker * fpluecker_alloc_init();
 FPluecker * fpluecker_alloc_init_with_points(const FVector3 * p1, const FVector3 * p2);
 FPluecker * fpluecker_alloc_init_with_point_and_direction(const FVector3 * point, const FVector3 *  direction);
-FPluecker * fpluecker_free(FPluecker * p);
+void fpluecker_free(FPluecker * p);
 
 void fpluecker_init_with_points(FPluecker * pl, const FVector3 * p1, const FVector3 * p2);
 void fpluecker_init_with_point_and_direction(FPluecker * pl, const FVector3 * point, const FVector3 * direction);

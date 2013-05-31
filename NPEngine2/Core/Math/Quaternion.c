@@ -43,9 +43,9 @@ Quaternion * quat_alloc_init_with_axis_and_radians(const Vector3 * const axis, c
     return q;
 }
 
-Quaternion * quat_free(Quaternion * q)
+void quat_free(Quaternion * q)
 {
-    return npfreenode_free(q, NP_QUATERNION_FREELIST);
+    npfreenode_free(q, NP_QUATERNION_FREELIST);
 }
 
 void quat_set_identity(Quaternion * q)

@@ -19,7 +19,7 @@ FPlane * fplane_alloc_init();
 FPlane * fplane_alloc_init_with_normal(const FVector3 * const normal);
 FPlane * fplane_alloc_init_with_normal_and_scalar(const FVector3 * const normal, const float scalar);
 FPlane * fplane_alloc_init_with_components(const float x, const float y, const float z, const float scalar);
-FPlane * fplane_free(FPlane * p);
+void fplane_free(FPlane * p);
 void fplane_pv_init_with_normal(FPlane * plane, const FVector3 * const normal);
 void fplane_pvs_init_with_normal_and_scalar(FPlane * plane, const FVector3 * const normal, const float scalar);
 void fplane_pssss_init_with_components(FPlane * plane, const float x, const float y, const float z, const float scalar);

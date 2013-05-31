@@ -30,7 +30,7 @@ Ray * ray_alloc_init_with_point_and_direction(Vector3 * point, Vector3 * directi
     return ray;
 }
 
-Ray * ray_free(Ray * r)
+void ray_free(Ray * r)
 {
-    return npfreenode_free(r, NP_RAY_FREELIST);
+    npfreenode_free(r, NP_RAY_FREELIST);
 }

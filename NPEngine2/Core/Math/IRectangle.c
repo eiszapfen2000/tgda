@@ -27,9 +27,9 @@ IRectangle * irectangle_alloc_init()
     return rectangle;
 }
 
-IRectangle * irectangle_free(IRectangle * r)
+void irectangle_free(IRectangle * r)
 {
-    return npfreenode_free(r, NP_IRECTANGLE_FREELIST);
+    npfreenode_free(r, NP_IRECTANGLE_FREELIST);
 }
 
 void irectangle_ssss_init_with_min_max_r(const int32_t minX, const int32_t minY,
