@@ -9,11 +9,13 @@
 {
     FRectangle pixelCenterGeometry;
     NSString * label;
+    FVector4 channels;
 
     NPEffectTechnique * colorTechnique;
-    NPEffectTechnique * textureTechnique;
+    NPEffectTechnique * textureRangeTechnique;
     NPEffectVariableFloat4 * color;
     NPEffectVariableFloat2 * range;
+    NPEffectVariableFloat4 * mask;
     NPTexture2D * texture;
 }
 

@@ -36,6 +36,7 @@
     self = [ super initWithName:newName menu:newMenu ];
 
     frectangle_ssss_init_with_min_max_r(0.0f, 0.0f, 0.0f, 0.0f, &pixelCenterGeometry);
+    channels = (FVector4){1.0f, 1.0f, 1.0f, 1.0f};
 
     return self;
 }
@@ -43,9 +44,10 @@
 - (void) dealloc
 {
     SAFE_DESTROY(colorTechnique);
-    SAFE_DESTROY(textureTechnique);
+    SAFE_DESTROY(textureRangeTechnique);
     SAFE_DESTROY(color);
     SAFE_DESTROY(range);
+    SAFE_DESTROY(mask);
     SAFE_DESTROY(texture);
 
     [ super dealloc ];
@@ -70,14 +72,28 @@
 
     ASSIGNCOPY(label, l);
 
-    colorTechnique   = RETAIN([ menu colorTechnique   ]);
-    textureTechnique = RETAIN([ menu textureTechnique ]);
+    NSArray * channelStrings = [ source objectForKey:@"Channels"];
+    if ( channelStrings != nil )
+    {
+        NSUInteger numberOfStrings = [ channelStrings count ];
+        NSAssert(numberOfStrings == 4, @"");
+
+        channels.x = ([[ channelStrings objectAtIndex:0 ] boolValue ] == YES) ? 1.0f : 0.0f;
+        channels.y = ([[ channelStrings objectAtIndex:1 ] boolValue ] == YES) ? 1.0f : 0.0f;
+        channels.z = ([[ channelStrings objectAtIndex:2 ] boolValue ] == YES) ? 1.0f : 0.0f;
+        channels.w = ([[ channelStrings objectAtIndex:3 ] boolValue ] == YES) ? 1.0f : 0.0f;
+    }
+
+    colorTechnique        = RETAIN([ menu colorTechnique        ]);
+    textureRangeTechnique = RETAIN([ menu textureRangeTechnique ]);
 
     color = [[ menu effect ] variableWithName:@"color" ];
     range = [[ menu effect ] variableWithName:@"range" ];
+    mask  = [[ menu effect ] variableWithName:@"mask"  ];
 
     ASSERT_RETAIN(color);
     ASSERT_RETAIN(range);
+    ASSERT_RETAIN(mask);
 
     texture
         = [[[ NPEngineGraphics instance ] textures2D ] getAssetWithName:t ];
@@ -129,7 +145,8 @@
     [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
     [ range setFValue:valueRange ];
-    [ textureTechnique activate ];
+    [ mask  setFValue:channels   ];
+    [ textureRangeTechnique activate ];
     [ NPIMRendering renderFRectangle:alignedGeometry
                            texCoords:texcoords
                        primitiveType:NpPrimitiveQuads ];

@@ -46,6 +46,7 @@
 - (NPEffect *) effect;
 - (NPEffectTechnique *) colorTechnique;
 - (NPEffectTechnique *) textureTechnique;
+- (NPEffectTechnique *) textureRangeTechnique;
 - (NPEffectTechnique *) fontTechnique;
 - (float) opacity;
 

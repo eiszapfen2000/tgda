@@ -528,8 +528,7 @@
     [[[ NP Graphics ] textureBindingState ] setTexture:[ positionsTarget texture ] texelUnit:0 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ normalsTarget   texture ] texelUnit:1 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean       heightfield ] texelUnit:2 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean         gradientX ] texelUnit:3 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean         gradientZ ] texelUnit:4 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean  supplementalData ] texelUnit:3 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
     const FVector2 minMax = [ ocean heightRange ];

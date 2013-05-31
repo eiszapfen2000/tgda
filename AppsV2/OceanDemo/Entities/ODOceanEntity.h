@@ -49,10 +49,7 @@
     ODBasePlane * basePlane;
 
     NPTexture2D * heightfield;
-    NPTexture2D * gradientX;
-    NPTexture2D * gradientZ;
-    NPTexture2D * displacementX;
-    NPTexture2D * displacementZ;
+    NPTexture2D * supplementalData;
 
     double timeStamp;
     FVector2 heightRange;
@@ -73,10 +70,7 @@
 - (ODProjector *) projector;
 - (ODBasePlane *) basePlane;
 - (NPTexture2D *) heightfield;
-- (NPTexture2D *) gradientX;
-- (NPTexture2D *) gradientZ;
-- (NPTexture2D *) displacementX;
-- (NPTexture2D *) displacementZ;
+- (NPTexture2D *) supplementalData;
 
 - (FVector2) heightRange;
 - (void) setCamera:(ODCamera *)newCamera;

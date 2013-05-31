@@ -24,6 +24,7 @@
             Texture = "Height Texture";
             TargetObject = "Ocean";
             TargetProperty = "heightRange";
+            Channels = ("y", "n", "n", "n");
         };
 
         PGradientX =
@@ -34,9 +35,10 @@
             Position = ("140", "20" );
             Size = ( "100", "100" );
             TextSize = "16";
-            Texture = "Height Texture X Gradient";
+            Texture = "Height Texture Supplements";
             TargetObject = "Ocean";
             TargetProperty = "gradientXRange";
+            Channels = ("y", "n", "n", "n");
         };
 
         PGradientZ =
@@ -47,9 +49,10 @@
             Position = ("260", "20" );
             Size = ( "100", "100" );
             TextSize = "16";
-            Texture = "Height Texture Z Gradient";
+            Texture = "Height Texture Supplements";
             TargetObject = "Ocean";
             TargetProperty = "gradientZRange";
+            Channels = ("n", "y", "n", "n");
         };
 
         PDisplacementX =
@@ -60,9 +63,10 @@
             Position = ("380", "20" );
             Size = ( "100", "100" );
             TextSize = "16";
-            Texture = "X Displacement";
+            Texture = "Height Texture Supplements";
             TargetObject = "Ocean";
             TargetProperty = "displacementXRange";
+            Channels = ("n", "n", "y", "n");
         };
 
         PDisplacementZ =
@@ -73,9 +77,10 @@
             Position = ("500", "20" );
             Size = ( "100", "100" );
             TextSize = "16";
-            Texture = "Z Displacement";
+            Texture = "Height Texture Supplements";
             TargetObject = "Ocean";
             TargetProperty = "displacementZRange";
+            Channels = ("n", "n", "n", "y");
         };
 
         PAnimation =

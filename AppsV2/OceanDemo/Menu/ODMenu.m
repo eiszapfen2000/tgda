@@ -221,6 +221,13 @@
     return [ effect techniqueWithName:@"texture" ];
 }
 
+- (NPEffectTechnique *) textureRangeTechnique
+{
+    NSAssert(effect != nil, @"");
+
+    return [ effect techniqueWithName:@"texture_range" ];
+}
+
 - (NPEffectTechnique *) fontTechnique
 {
     NSAssert(effect != nil, @"");
