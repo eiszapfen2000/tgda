@@ -4,8 +4,6 @@ in vec2 out_texcoords;
 
 void main()
 {
-    vec4 sample = texture(colormap, vec2(out_texcoords.x, 1.0 - out_texcoords.y));
-    vec4 result = ( sample.x < 0.0 ) ? vec4(abs(sample.x) / abs(range.x), 0.0, 0.0, 1.0) : vec4(0.0, abs(sample.x) / abs(range.y), 0.0, 1.0);
-
-	target = result;
+    vec4 sample = texture(colormap, out_texcoords);
+	target = sample;
 }
