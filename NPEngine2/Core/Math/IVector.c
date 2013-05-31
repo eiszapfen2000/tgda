@@ -49,9 +49,9 @@ void iv2_v_copy_v(IVector2 * source, IVector2 * target)
     V_Y(*target) = V_Y(*source);
 }
 
-IVector2 * iv2_free(IVector2 * v)
+void iv2_free(IVector2 * v)
 {
-    return npfreenode_free(v, NP_IVECTOR2_FREELIST);
+    npfreenode_free(v, NP_IVECTOR2_FREELIST);
 }
 
 
@@ -95,7 +95,7 @@ void iv3_v_copy_v(IVector3 * source, IVector3 * target)
     V_Z(*target) = V_Z(*source);
 }
 
-IVector3 * iv3_free(IVector3 * v)
+void iv3_free(IVector3 * v)
 {
-    return npfreenode_free(v, NP_IVECTOR3_FREELIST);
+    npfreenode_free(v, NP_IVECTOR3_FREELIST);
 }

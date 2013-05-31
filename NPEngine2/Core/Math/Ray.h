@@ -16,6 +16,6 @@ Ray;
 Ray * ray_alloc();
 Ray * ray_alloc_init();
 Ray * ray_alloc_init_with_point_and_direction(Vector3 * point, Vector3 * direction);
-Ray * ray_free(Ray * r);
+void ray_free(Ray * r);
 
 #endif

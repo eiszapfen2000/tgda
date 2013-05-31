@@ -56,25 +56,19 @@ void* npfreenode_alloc( NpFreeList * freelist )
     return (void *)free;
 }
 
-void* npfreenode_fast_free( void * node, NpFreeList * freelist )
+void npfreenode_fast_free( void * node, NpFreeList * freelist )
 {
     NPFREELIST_DEC_ALLOCATED(freelist);
 
     NPFREENODE_NEXT(*((NpFreeNode *)node)) = NPFREELIST_FREE(*freelist);
     NPFREELIST_FREE(*freelist) = (NpFreeNode*)node;
-
-    return NULL;
 }
 
-void* npfreenode_free( void * node, NpFreeList * freelist )
+void npfreenode_free( void * node, NpFreeList * freelist )
 {
-    void * result = NULL;
-
     if ( node != NULL && freelist != NULL )
     {
-        result = npfreenode_fast_free(node, freelist);
+        npfreenode_fast_free(node, freelist);
     }
-
-    return result;
 }
 

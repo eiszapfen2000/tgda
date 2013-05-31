@@ -30,7 +30,7 @@ FRay * fray_alloc_init_with_point_and_direction(const FVector3 * point, const FV
     return ray;
 }
 
-FRay * fray_free(FRay * r)
+void fray_free(FRay * r)
 {
-    return npfreenode_free(r, NP_FRAY_FREELIST);
+    npfreenode_free(r, NP_FRAY_FREELIST);
 }

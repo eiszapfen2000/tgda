@@ -46,9 +46,9 @@ Plane * plane_alloc_init_with_normal_and_scalar(Vector3 * normal, double scalar)
     return plane;
 }
 
-Plane * plane_free(Plane * p)
+void plane_free(Plane * p)
 {
-    return npfreenode_free(p, NP_PLANE_FREELIST);
+    npfreenode_free(p, NP_PLANE_FREELIST);
 }
 
 void plane_pv_init_with_normal(Plane * plane, const Vector3 * const normal)

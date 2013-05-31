@@ -39,9 +39,9 @@ FVector2 * fv2_alloc_init()
     return tmp;
 }
 
-FVector2 * fv2_free(FVector2 * v)
+void fv2_free(FVector2 * v)
 {
-    return npfreenode_free(v, NP_FVECTOR2_FREELIST);
+    npfreenode_free(v, NP_FVECTOR2_FREELIST);
 }
 
 void fv2_v_init_with_zeros(FVector2 * v)
@@ -241,9 +241,9 @@ FVector3 * fv3_alloc_init_with_components(Float x, Float y, Float z)
     return tmp;
 }
 
-FVector3 * fv3_free(FVector3 * v)
+void fv3_free(FVector3 * v)
 {
-    return npfreenode_free(v, NP_FVECTOR3_FREELIST);
+    npfreenode_free(v, NP_FVECTOR3_FREELIST);
 }
 
 void fv3_v_init_with_zeros(FVector3 * v)
@@ -513,9 +513,9 @@ FVector4 * fv4_alloc_init_with_components(Float x, Float y, Float z, Float w)
     return tmp;
 }
 
-FVector4 * fv4_free(FVector4 * v)
+void fv4_free(FVector4 * v)
 {
-    return npfreenode_free(v, NP_FVECTOR4_FREELIST);
+    npfreenode_free(v, NP_FVECTOR4_FREELIST);
 }
 
 void fv4_v_init_with_zeros(FVector4 * v)

@@ -18,7 +18,7 @@ Plane * plane_alloc();
 Plane * plane_alloc_init();
 Plane * plane_alloc_init_with_normal(Vector3 * normal);
 Plane * plane_alloc_init_with_normal_and_scalar(Vector3 * normal, double scalar);
-Plane * plane_free(Plane * p);
+void plane_free(Plane * p);
 void plane_pv_init_with_normal(Plane * plane, const Vector3 * const normal);
 void plane_pvs_init_with_normal_and_scalar(Plane * plane, const Vector3 * const normal, const double scalar);
 void plane_pssss_init_with_components(Plane * plane, const double x, const double y, const double z, const double scalar);

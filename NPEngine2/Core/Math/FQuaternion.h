@@ -20,7 +20,7 @@ FQuaternion * fquat_alloc();
 FQuaternion * fquat_alloc_init();
 FQuaternion * fquat_alloc_init_with_axis_and_degrees(const FVector3 * const axis, const float degrees);
 FQuaternion * fquat_alloc_init_with_axis_and_radians(const FVector3 * const axis, const float radians);
-FQuaternion * fquat_free(FQuaternion * q);
+void fquat_free(FQuaternion * q);
 
 void fquat_set_identity(FQuaternion * q);
 void fquat_q_init_with_axis_and_degrees(FQuaternion * q, const FVector3 * const axis, const float degrees);

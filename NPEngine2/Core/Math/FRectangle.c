@@ -27,9 +27,9 @@ FRectangle * frectangle_alloc_init()
     return rectangle;
 }
 
-FRectangle * frectangle_free(FRectangle * r)
+void frectangle_free(FRectangle * r)
 {
-    return npfreenode_free(r, NP_FRECTANGLE_FREELIST);
+    npfreenode_free(r, NP_FRECTANGLE_FREELIST);
 }
 
 void frectangle_ssss_init_with_min_max_r(const float minX, const float minY,

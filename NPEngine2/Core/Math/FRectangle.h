@@ -15,7 +15,7 @@ FRectangle;
 
 FRectangle * frectangle_alloc();
 FRectangle * frectangle_alloc_init();
-FRectangle * frectangle_free(FRectangle * r);
+void frectangle_free(FRectangle * r);
 
 void frectangle_ssss_init_with_min_max_r(const float minX, const float minY,
     const float maxX, const float maxY, FRectangle * rectangle);

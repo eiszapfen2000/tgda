@@ -57,9 +57,9 @@ Vector2 * v2_alloc_init_with_components(Double x, Double y)
     return tmp;
 }
 
-Vector2 * v2_free(Vector2 * v)
+void v2_free(Vector2 * v)
 {
-    return npfreenode_free(v, NP_VECTOR2_FREELIST);
+    npfreenode_free(v, NP_VECTOR2_FREELIST);
 }
 
 void v2_v_init_with_zeros(Vector2 * v)
@@ -247,9 +247,9 @@ Vector3 * v3_alloc_init_with_components(Double x, Double y, Double z)
     return tmp;
 }
 
-Vector3 * v3_free(Vector3 * v)
+void v3_free(Vector3 * v)
 {
-    return npfreenode_free(v, NP_VECTOR3_FREELIST);
+    npfreenode_free(v, NP_VECTOR3_FREELIST);
 }
 
 void v3_v_init_with_zeros(Vector3 * v)
@@ -490,9 +490,9 @@ Vector4 * v4_alloc_init_with_components(Double x, Double y, Double z, Double w)
     return tmp;
 }
 
-Vector4 * v4_free(Vector4 * v)
+void v4_free(Vector4 * v)
 {
-    return npfreenode_free(v, NP_VECTOR4_FREELIST);
+    npfreenode_free(v, NP_VECTOR4_FREELIST);
 }
 
 void v4_v_init_with_zeros(Vector4 * v)

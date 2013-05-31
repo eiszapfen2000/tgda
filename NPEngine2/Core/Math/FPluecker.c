@@ -47,9 +47,9 @@ FPluecker * fpluecker_alloc_init_with_point_and_direction(const FVector3 * point
     return tmp;
 }
 
-FPluecker * fpluecker_free(FPluecker * p)
+void fpluecker_free(FPluecker * p)
 {
-    return npfreenode_free(p, NP_FPLUECKER_FREELIST);
+    npfreenode_free(p, NP_FPLUECKER_FREELIST);
 }
 
 void fpluecker_init_with_points(FPluecker * pl, const FVector3 * p1, const FVector3 * p2)
