@@ -54,8 +54,9 @@ void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex * spec
 }
 
 static const Vector2 defaultWindDirection = {2.1, 2.3};
+static const Vector2 defaultSize = {10.0, 10.0};
 static const int32_t resolutions[4] = {64, 128, 256, 512};
-static const NSUInteger defaultResolutionIndex = 2;
+static const NSUInteger defaultResolutionIndex = 0;
 static const double OneDivSixty = 1.0 / 60.0;
 
 static size_t index_for_resolution(int32_t resolution)
@@ -218,13 +219,14 @@ static size_t index_for_resolution(int32_t resolution)
             {
                 [ settingsMutex lock ];
                 settings.windDirection = generatorWindDirection;
+                settings.size = generatorSize;
                 resIndex = generatorResolutionIndex;
                 [ settingsMutex unlock ];
             }
 
             const int32_t res = resolutions[resIndex];
             settings.resolution = (IVector2){res, res};
-            settings.size = (Vector2){10.0, 10.0};
+
 
             OdFrequencySpectrumFloat complexSpectrum
                 = [ s generateFloatFrequencySpectrum:settings atTime:generationTime ];
@@ -414,6 +416,9 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     lastWindDirection = (Vector2){DBL_MAX, DBL_MAX};
     windDirection = generatorWindDirection = defaultWindDirection;
 
+    lastSize = (Vector2){DBL_MAX, DBL_MAX};
+    size = generatorSize = defaultSize;
+
     const NSUInteger options
         = NSPointerFunctionsMallocMemory
           | NSPointerFunctionsStructPersonality
@@ -440,6 +445,10 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     [ heightfield      setTextureWrap:NpTextureWrapRepeat ];
     [ supplementalData setTextureWrap:NpTextureWrapRepeat ];
 
+    xzStream = [[ NPBufferObject alloc ] initWithName:@"XZ Stream" ];
+    yStream  = [[ NPBufferObject alloc ] initWithName:@"Y Stream"  ];
+    mesh = [[ NPVertexArray alloc ] initWithName:@"Mesh" ];
+
     timeStamp = DBL_MAX;
 
     heightRange    = (FVector2){.x = FLT_MAX, .y = -FLT_MAX};
@@ -455,6 +464,9 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
 - (void) dealloc
 {
+    DESTROY(mesh);
+    DESTROY(yStream);
+    DESTROY(xzStream);
     DESTROY(heightfield);
     DESTROY(supplementalData);
     DESTROY(projector);
@@ -602,9 +614,12 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     // the resultQueue of still therein residing data
     if ( windDirection.x != lastWindDirection.x
          || windDirection.y != lastWindDirection.y
+         || size.x != lastSize.x
+         || size.y != lastSize.y
          || resolutionIndex != lastResolutionIndex )
     {
         lastWindDirection = windDirection;
+        lastSize = size;
         lastResolutionIndex = resolutionIndex;
         settingsChanged = YES;
     }
@@ -613,6 +628,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     {
         [ settingsMutex lock ];
         generatorWindDirection = windDirection;
+        generatorSize = size;
         generatorResolutionIndex = resolutionIndex;
         [ settingsMutex unlock ];
 
@@ -721,11 +737,11 @@ static NSUInteger od_freq_spectrum_size(const void * item)
                                         data:textureData ];
 
             [ supplementalData generateUsingWidth:hf->resolution.x
-                                    height:hf->resolution.y
-                               pixelFormat:NpImagePixelFormatRGBA
-                                dataFormat:NpImageDataFormatFloat32
-                                   mipmaps:NO
-                                      data:supplemental ];
+                                           height:hf->resolution.y
+                                      pixelFormat:NpImagePixelFormatRGBA
+                                       dataFormat:NpImageDataFormatFloat32
+                                          mipmaps:NO
+                                             data:supplemental ];
         }
     }
 }
