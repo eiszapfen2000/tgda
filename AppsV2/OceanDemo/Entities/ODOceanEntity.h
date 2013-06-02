@@ -11,10 +11,13 @@
 @class NSThread;
 @class NPTimer;
 @class NPTexture2D;
+@class NPBufferObject;
+@class NPVertexArray;
 @class ODCamera;
 @class ODProjector;
 @class ODBasePlane;
 @class ODHeightfieldQueue;
+
 
 #define ODOCEANENTITY_NUMBER_OF_RESOLUTIONS     4
 
@@ -29,6 +32,9 @@
     Vector2 lastWindDirection;
     Vector2 windDirection;
     Vector2 generatorWindDirection;
+    Vector2 lastSize;
+    Vector2 size;
+    Vector2 generatorSize;
     NSUInteger lastResolutionIndex;
     NSUInteger resolutionIndex;
     NSUInteger generatorResolutionIndex;
@@ -50,6 +56,10 @@
 
     NPTexture2D * heightfield;
     NPTexture2D * supplementalData;
+
+    NPBufferObject * xzStream;
+    NPBufferObject * yStream;
+    NPVertexArray * mesh;
 
     double timeStamp;
     FVector2 heightRange;
