@@ -46,5 +46,15 @@
     return success;
 }
 
+- (void) updateIndex:(NSUInteger)index withData:(NSData *)data
+{
+    [[ meshes objectAtIndex:index ] update:data ];
+}
+
+- (void) renderMeshAtIndex:(NSUInteger)index
+{
+    [[ meshes objectAtIndex:index ] render ];
+}
+
 @end
 

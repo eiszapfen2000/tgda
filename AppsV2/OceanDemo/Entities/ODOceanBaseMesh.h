@@ -18,4 +18,7 @@
 
 - (BOOL) generateWithResolution:(int32_t)resolution;
 
+- (void) update:(NSData *)yData;
+- (void) render;
+
 @end

@@ -16,5 +16,9 @@
              numberOfResolutions:(int32_t)numberOfResolutions
                                 ;
 
+- (void) updateIndex:(NSUInteger)index withData:(NSData *)data;
+
+- (void) renderMeshAtIndex:(NSUInteger)index;
+
 @end
 

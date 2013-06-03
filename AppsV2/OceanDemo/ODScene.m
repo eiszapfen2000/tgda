@@ -390,6 +390,7 @@
     NPCullingState * cullingState = [[[ NP Graphics ] stateConfiguration ] cullingState ];
     NPBlendingState * blendingState = [[[ NP Graphics ] stateConfiguration ] blendingState ];
     NPDepthTestState * depthTestState = [[[ NP Graphics ] stateConfiguration ] depthTestState ];
+    NPPolygonFillState * fillState = [[[ NP Graphics ] stateConfiguration ] polygonFillState ];
     NPStencilTestState * stencilTestState = [[[ NP Graphics ] stateConfiguration ] stencilTestState ];
 
     // activate culling, depth write and depth test
@@ -398,11 +399,23 @@
     [ cullingState   setEnabled:YES ];
     [ depthTestState setWriteEnabled:YES ];
     [ depthTestState setEnabled:YES ];
+    [ fillState      setFrontFaceFill:NpPolygonFillLine ];
+    [ fillState      setBackFaceFill:NpPolygonFillLine ];
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
     // clear back buffer
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
+    [ camera render ];
+
+    NPEffectVariableFloat2 * v = [ deferredEffect variableWithName:@"scale"];
+    [ v setFValue:[ocean baseMeshScale]];
+    [[ deferredEffect techniqueWithName:@"base_xz" ] activate ];
+    [ ocean renderBaseMesh ];
+
+    [[[ NP Graphics ] stateConfiguration ] deactivate ];
+
+    /*
     [ gBuffer bindFBO ];
 
     // attach G-Buffer positions target texture
@@ -453,6 +466,7 @@
     NPEffectTechnique * t = [ deferredEffect techniqueWithName:@"geometry" ];
     [ t lock ];
     [ t activate:YES ];
+    */
 
     /*
     [ stencilTestState setComparisonFunction:NpComparisonAlways ];
@@ -463,6 +477,7 @@
     [ stencilTestState activate ];
     */
 
+    /*
     glBegin(GL_QUADS);
         glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
         glVertex3f(0.0f, 0.0f, 5.0f);
@@ -488,6 +503,7 @@
     [ entities makeObjectsPerformSelector:@selector(render) ];
 
     [ ocean renderBasePlane ];
+    */
 
     /*
     [ stencilTestState setComparisonFunction:NpComparisonEqual ];
@@ -502,6 +518,7 @@
     [ skylight render ];
     */
 
+    /*
     [ stencilTestState deactivate ];
 
     [ t unlock ];
@@ -509,6 +526,7 @@
     [[[ NP Graphics ] stateConfiguration ] deactivate ];
 
     [ gBuffer deactivate ];
+    */
 
     /*
     glBindFramebuffer(GL_READ_FRAMEBUFFER, [ gBuffer glID ]);
@@ -520,6 +538,7 @@
     glReadBuffer(GL_BACK);
     */
 
+    /*
     //[[ positionsTarget texture ] setColorFormat:NpTextureColorFormatAAA1 ];
 
     // reset matrices
@@ -539,6 +558,7 @@
     [[ deferredEffect techniqueWithName:@"water_surface" ] activate ];
     //[[ deferredEffect techniqueWithName:@"texture" ] activate ];
     [ fullscreenQuad render ];
+    */
 }
 
     //[[ positionsTarget texture ] setColorFormat:NpTextureColorFormatRGBA ];

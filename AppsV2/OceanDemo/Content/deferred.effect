@@ -1,5 +1,20 @@
 effect "Deferred Effect":
 
+technique "base_xz"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform vec2 scale;
+    # vertex streams
+    in vec2 in_position : 0;
+    in float in_height : 1;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "base_xz.vertex"
+    set fragment shader "base_xz.fragment"
+}
+
 technique "geometry"
 {
     # effect variables
