@@ -17,6 +17,7 @@
 @class ODProjector;
 @class ODBasePlane;
 @class ODHeightfieldQueue;
+@class ODOceanBaseMeshes;
 
 
 #define ODOCEANENTITY_NUMBER_OF_RESOLUTIONS     4
@@ -57,9 +58,7 @@
     NPTexture2D * heightfield;
     NPTexture2D * supplementalData;
 
-    NPBufferObject * xzStream;
-    NPBufferObject * yStream;
-    NPVertexArray * mesh;
+    ODOceanBaseMeshes * baseMeshes;
 
     double timeStamp;
     FVector2 heightRange;
