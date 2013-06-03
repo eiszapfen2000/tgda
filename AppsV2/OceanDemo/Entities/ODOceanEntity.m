@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+#import <fenv.h>
 #import <Foundation/NSArray.h>
 #import <Foundation/NSData.h>
 #import <Foundation/NSDictionary.h>
@@ -55,10 +57,10 @@ void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex * spec
     }
 }
 
-static const Vector2 defaultWindDirection = {2.1, 2.3};
-static const Vector2 defaultSize = {10.0, 10.0};
+static const Vector2 defaultWindDirection = {2.8, 1.2};
+static const Vector2 defaultSize = {50.0, 50.0};
 static const int32_t resolutions[4] = {64, 128, 256, 512};
-static const NSUInteger defaultResolutionIndex = 1;
+static const NSUInteger defaultResolutionIndex = 2;
 static const double OneDivSixty = 1.0 / 60.0;
 
 static size_t index_for_resolution(int32_t resolution)
@@ -193,6 +195,8 @@ static size_t index_for_resolution(int32_t resolution)
 
 - (void) generate:(id)argument
 {
+    feenableexcept(FE_DIVBYZERO | FE_INVALID);
+
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
     NPTimer * timer = [[ NPTimer alloc ] initWithName:@"Thread Timer" ];
@@ -265,6 +269,8 @@ static size_t index_for_resolution(int32_t resolution)
 
 - (void) transform:(id)argument
 {
+    feenableexcept(FE_DIVBYZERO | FE_INVALID);
+
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
     while ( [[ NSThread currentThread ] isCancelled ] == NO )
@@ -726,8 +732,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
             const double resX = hf->resolution.x;
             const double resY = hf->resolution.y;
-            baseMeshScale.x = hf->size.x / resX;
-            baseMeshScale.y = hf->size.y / resY;
+            baseMeshScale.x = hf->size.x * 10.0 / resX;
+            baseMeshScale.y = hf->size.y * 10.0 / resY;
 
             const NSUInteger numberOfBytes
                 = hf->resolution.x * hf->resolution.y * sizeof(float);
@@ -759,6 +765,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
             [ baseMeshes updateIndex:baseMeshIndex withData:textureData ];
         }
     }
+
+//    NSLog(@"%f", timeStamp);
 }
 
 - (void) renderBasePlane
