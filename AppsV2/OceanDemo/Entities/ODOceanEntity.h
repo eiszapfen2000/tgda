@@ -59,6 +59,8 @@
     NPTexture2D * supplementalData;
 
     ODOceanBaseMeshes * baseMeshes;
+    NSUInteger baseMeshIndex;
+    FVector2 baseMeshScale;
 
     double timeStamp;
     FVector2 heightRange;
@@ -82,10 +84,12 @@
 - (NPTexture2D *) supplementalData;
 
 - (FVector2) heightRange;
+- (FVector2) baseMeshScale;
 - (void) setCamera:(ODCamera *)newCamera;
 
 - (void) update:(const double)frameTime;
 - (void) renderBasePlane;
+- (void) renderBaseMesh;
 
 @end
 

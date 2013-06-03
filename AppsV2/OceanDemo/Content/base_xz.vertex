@@ -1,0 +1,11 @@
+#version 150
+
+out vec3 out_worldpos;
+
+void main()
+{
+    vec3 pos = vec3(in_position.x * scale.x, in_height, in_position.y * scale.y);
+
+    out_worldpos = pos;
+	gl_Position = np_modelviewprojectionmatrix * vec4(pos, 1.0);
+}

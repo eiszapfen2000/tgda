@@ -217,7 +217,7 @@
     farPlane    = 150.0f;
     aspectRatio = 1.0f;
 
-    yaw   = 0.0;
+    yaw   = 225.0;
     pitch = 0.0;
 
     inputLocked = NO;

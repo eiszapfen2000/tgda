@@ -58,7 +58,7 @@ void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex * spec
 static const Vector2 defaultWindDirection = {2.1, 2.3};
 static const Vector2 defaultSize = {10.0, 10.0};
 static const int32_t resolutions[4] = {64, 128, 256, 512};
-static const NSUInteger defaultResolutionIndex = 0;
+static const NSUInteger defaultResolutionIndex = 1;
 static const double OneDivSixty = 1.0 / 60.0;
 
 static size_t index_for_resolution(int32_t resolution)
@@ -449,6 +449,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
     baseMeshes = [[ ODOceanBaseMeshes alloc ] init ];
     NSAssert(YES == [ baseMeshes generateWithResolutions:resolutions numberOfResolutions:4 ], @"");
+    baseMeshIndex = ULONG_MAX;
+    baseMeshScale = (FVector2){.x = 1.0f, .y = 1.0f};
 
     timeStamp = DBL_MAX;
 
@@ -591,6 +593,11 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     return heightRange;
 }
 
+- (FVector2) baseMeshScale
+{
+    return baseMeshScale;
+}
+
 - (void) setCamera:(ODCamera *)newCamera
 {
     [ projector setCamera:newCamera ];
@@ -715,6 +722,13 @@ static NSUInteger od_freq_spectrum_size(const void * item)
         //NSLog(@"X:%f %f Z:%f %f", displacementXRange.x, displacementXRange.y, displacementZRange.x, displacementZRange.y);
 
         {
+            baseMeshIndex = index_for_resolution(hf->resolution.x);
+
+            const double resX = hf->resolution.x;
+            const double resY = hf->resolution.y;
+            baseMeshScale.x = hf->size.x / resX;
+            baseMeshScale.y = hf->size.y / resY;
+
             const NSUInteger numberOfBytes
                 = hf->resolution.x * hf->resolution.y * sizeof(float);
 
@@ -741,6 +755,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
                                        dataFormat:NpImageDataFormatFloat32
                                           mipmaps:NO
                                              data:supplemental ];
+
+            [ baseMeshes updateIndex:baseMeshIndex withData:textureData ];
         }
     }
 }
@@ -748,6 +764,14 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 - (void) renderBasePlane
 {
     [ basePlane render ];
+}
+
+- (void) renderBaseMesh
+{
+    if ( baseMeshIndex != ULONG_MAX )
+    {
+        [ baseMeshes renderMeshAtIndex:baseMeshIndex ];
+    }
 }
 
 /*

@@ -1,0 +1,9 @@
+#version 150
+
+in vec3 out_worldpos;
+
+void main()
+{
+    target = vec4(out_worldpos, 1.0);
+}
+

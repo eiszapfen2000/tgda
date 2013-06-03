@@ -74,6 +74,8 @@
                                 length:numberOfVertices * sizeof(FVector2)
                           freeWhenDone:NO ];
 
+    NSData * yData = [ NSData data ];
+
     NSData * indexData
         = [ NSData dataWithBytesNoCopy:indices
                                 length:numberOfIndices * sizeof(uint32_t)
@@ -90,6 +92,16 @@
                         error:NULL ];
 
     success
+        = success && [ yStream generate:NpBufferObjectTypeGeometry
+                             updateRate:NpBufferDataUpdateOnceUseOften
+                              dataUsage:NpBufferDataWriteCPUToGPU
+                             dataFormat:NpBufferDataFormatFloat32
+                             components:1
+                                   data:yData
+                             dataLength:numberOfVertices * sizeof(float)
+                                  error:NULL ];
+
+    success
         = success && [ indexStream generate:NpBufferObjectTypeIndices
                                  updateRate:NpBufferDataUpdateOnceUseOften
                                   dataUsage:NpBufferDataWriteCPUToGPU
@@ -101,7 +113,12 @@
 
     success
         = success && [ mesh setVertexStream:xzStream
-                                 atLocation:NpVertexStreamPositions
+                                 atLocation:NpVertexStreamAttribute0
+                                      error:NULL ];
+
+    success
+        = success && [ mesh setVertexStream:yStream
+                                 atLocation:NpVertexStreamAttribute1
                                       error:NULL ];
 
     success
@@ -112,6 +129,23 @@
     FREE(indices);
 
     return success;
+}
+
+- (void) update:(NSData *)yData
+{
+    [ yStream generate:NpBufferObjectTypeGeometry
+            updateRate:NpBufferDataUpdateOnceUseOften
+             dataUsage:NpBufferDataWriteCPUToGPU
+            dataFormat:NpBufferDataFormatFloat32
+            components:1
+                  data:yData
+            dataLength:[yData length]
+                 error:NULL ];
+}
+
+- (void) render
+{
+    [ mesh renderWithPrimitiveType:NpPrimitiveTriangles ];
 }
 
 @end
