@@ -214,7 +214,7 @@
 
     fov         = 45.0f;
     nearPlane   = 0.1f;
-    farPlane    = 150.0f;
+    farPlane    = 1000.0f;
     aspectRatio = 1.0f;
 
     yaw   = 225.0;

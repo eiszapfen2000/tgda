@@ -1,5 +1,6 @@
 #define _GNU_SOURCE
 #import <assert.h>
+#import <fenv.h>
 #import <time.h>
 #import <Foundation/NSException.h>
 #import <Foundation/NSPointerArray.h>
@@ -71,6 +72,8 @@ int running = GL_TRUE;
 
 int main (int argc, char **argv)
 {
+    //feenableexcept(FE_DIVBYZERO | FE_INVALID);
+
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
     // Initialise GLFW
