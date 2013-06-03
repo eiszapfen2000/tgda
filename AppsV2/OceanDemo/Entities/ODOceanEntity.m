@@ -25,6 +25,8 @@
 #import "ODBasePlane.h"
 #import "Ocean/ODPhillipsSpectrum.h"
 #import "ODHeightfieldQueue.h"
+#import "ODOceanBaseMesh.h"
+#import "ODOceanBaseMeshes.h"
 #import "ODOceanEntity.h"
 
 void print_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
@@ -445,13 +447,12 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     [ heightfield      setTextureWrap:NpTextureWrapRepeat ];
     [ supplementalData setTextureWrap:NpTextureWrapRepeat ];
 
-    xzStream = [[ NPBufferObject alloc ] initWithName:@"XZ Stream" ];
-    yStream  = [[ NPBufferObject alloc ] initWithName:@"Y Stream"  ];
-    mesh = [[ NPVertexArray alloc ] initWithName:@"Mesh" ];
+    baseMeshes = [[ ODOceanBaseMeshes alloc ] init ];
+    NSAssert(YES == [ baseMeshes generateWithResolutions:resolutions numberOfResolutions:4 ], @"");
 
     timeStamp = DBL_MAX;
 
-    heightRange    = (FVector2){.x = FLT_MAX, .y = -FLT_MAX};
+    heightRange    = (FVector2){.x = 0.0f, .y = 0.0f};
     gradientXRange = (FVector2){.x = 0.0f, .y = 1.0f};
     gradientZRange = (FVector2){.x = 0.0f, .y = 1.0f};
     displacementXRange = (FVector2){.x = 0.0f, .y = 1.0f};
@@ -464,9 +465,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
 - (void) dealloc
 {
-    DESTROY(mesh);
-    DESTROY(yStream);
-    DESTROY(xzStream);
+    DESTROY(baseMeshes);
     DESTROY(heightfield);
     DESTROY(supplementalData);
     DESTROY(projector);
