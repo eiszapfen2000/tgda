@@ -623,6 +623,18 @@ right way.
         [ self swapFrequencySpectrum:result.gradientZ quadrants:ODQuadrant_2_4 ];
     }
 
+    if ( result.displacementX != NULL )
+    {
+        [ self swapFrequencySpectrum:result.displacementX quadrants:ODQuadrant_1_3 ];
+        [ self swapFrequencySpectrum:result.displacementX quadrants:ODQuadrant_2_4 ];
+    }
+
+    if ( result.displacementZ != NULL )
+    {
+        [ self swapFrequencySpectrum:result.displacementZ quadrants:ODQuadrant_1_3 ];
+        [ self swapFrequencySpectrum:result.displacementZ quadrants:ODQuadrant_2_4 ];
+    }
+
     lastSettings = currentSettings;
 
     return result;
