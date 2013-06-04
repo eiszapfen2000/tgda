@@ -57,10 +57,10 @@ void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex * spec
     }
 }
 
-static const Vector2 defaultWindDirection = {2.8, 1.2};
-static const Vector2 defaultSize = {50.0, 50.0};
+static const Vector2 defaultWindDirection = {10.8, 1.2};
+static const Vector2 defaultSize = {40.0, 40.0};
 static const int32_t resolutions[4] = {64, 128, 256, 512};
-static const NSUInteger defaultResolutionIndex = 2;
+static const NSUInteger defaultResolutionIndex = 1;
 static const double OneDivSixty = 1.0 / 60.0;
 
 static size_t index_for_resolution(int32_t resolution)
@@ -159,7 +159,6 @@ static size_t index_for_resolution(int32_t resolution)
                                 complexTarget,
                                 FFTW_BACKWARD,
                                 FFTW_MEASURE);
-
 
         fftwf_free(source);
         fftwf_free(complexTarget);
@@ -762,7 +761,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
                                           mipmaps:NO
                                              data:supplemental ];
 
-            [ baseMeshes updateIndex:baseMeshIndex withData:textureData ];
+            [ baseMeshes updateMeshAtIndex:baseMeshIndex withYData:textureData supplementalData:supplemental ];
         }
     }
 

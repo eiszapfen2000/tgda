@@ -46,9 +46,11 @@
     return success;
 }
 
-- (void) updateIndex:(NSUInteger)index withData:(NSData *)data
+- (void) updateMeshAtIndex:(NSUInteger)index
+                 withYData:(NSData *)yData
+          supplementalData:(NSData *)supplementalData
 {
-    [[ meshes objectAtIndex:index ] update:data ];
+    [[ meshes objectAtIndex:index ] updateYStream:yData supplementalStream:supplementalData ];
 }
 
 - (void) renderMeshAtIndex:(NSUInteger)index

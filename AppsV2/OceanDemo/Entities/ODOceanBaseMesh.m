@@ -15,9 +15,10 @@
 {
     self =  [ super initWithName:newName ];
 
-    xzStream     = [[ NPBufferObject alloc ] initWithName:@"XZ Stream" ];
-    yStream      = [[ NPBufferObject alloc ] initWithName:@"Y Stream"  ];
-    indexStream  = [[ NPBufferObject alloc ] initWithName:@"Indices"   ];
+    xzStream           = [[ NPBufferObject alloc ] initWithName:@"XZ Stream" ];
+    yStream            = [[ NPBufferObject alloc ] initWithName:@"Y Stream"  ];
+    supplementalStream = [[ NPBufferObject alloc ] initWithName:@"Gradients and Displacement" ];
+    indexStream        = [[ NPBufferObject alloc ] initWithName:@"Indices"   ];
 
     mesh = [[ NPVertexArray alloc ] initWithName:@"Mesh" ];
 
@@ -28,6 +29,7 @@
 {
     DESTROY(mesh);
     DESTROY(indexStream);
+    DESTROY(supplementalStream);
     DESTROY(yStream);
     DESTROY(xzStream);
 
@@ -74,7 +76,7 @@
                                 length:numberOfVertices * sizeof(FVector2)
                           freeWhenDone:NO ];
 
-    NSData * yData = [ NSData data ];
+    NSData * emptyData = [ NSData data ];
 
     NSData * indexData
         = [ NSData dataWithBytesNoCopy:indices
@@ -97,9 +99,19 @@
                               dataUsage:NpBufferDataWriteCPUToGPU
                              dataFormat:NpBufferDataFormatFloat32
                              components:1
-                                   data:yData
+                                   data:emptyData
                              dataLength:numberOfVertices * sizeof(float)
                                   error:NULL ];
+
+    success
+        = success && [ supplementalStream generate:NpBufferObjectTypeGeometry
+                                        updateRate:NpBufferDataUpdateOnceUseOften
+                                         dataUsage:NpBufferDataWriteCPUToGPU
+                                        dataFormat:NpBufferDataFormatFloat32
+                                        components:4
+                                              data:emptyData
+                                        dataLength:numberOfVertices * sizeof(FVector4)
+                                             error:NULL ];
 
     success
         = success && [ indexStream generate:NpBufferObjectTypeIndices
@@ -122,6 +134,11 @@
                                       error:NULL ];
 
     success
+        = success && [ mesh setVertexStream:supplementalStream
+                                 atLocation:NpVertexStreamAttribute2
+                                      error:NULL ];
+
+    success
         = success && [ mesh setIndexStream:indexStream
                                      error:NULL ];
     
@@ -131,8 +148,11 @@
     return success;
 }
 
-- (void) update:(NSData *)yData
+- (void) updateYStream:(NSData *)yData
+    supplementalStream:(NSData *)supplementalData
 {
+    NSAssert(yData != nil && supplementalData != nil, @"");
+
     [ yStream generate:NpBufferObjectTypeGeometry
             updateRate:NpBufferDataUpdateOnceUseOften
              dataUsage:NpBufferDataWriteCPUToGPU
@@ -141,6 +161,15 @@
                   data:yData
             dataLength:[yData length]
                  error:NULL ];
+
+    [ supplementalStream generate:NpBufferObjectTypeGeometry
+                       updateRate:NpBufferDataUpdateOnceUseOften
+                        dataUsage:NpBufferDataWriteCPUToGPU
+                       dataFormat:NpBufferDataFormatFloat32
+                       components:4
+                             data:supplementalData
+                       dataLength:[supplementalData length]
+                            error:NULL ];
 }
 
 - (void) render

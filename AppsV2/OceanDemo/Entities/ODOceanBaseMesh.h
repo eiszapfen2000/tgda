@@ -8,6 +8,7 @@
 {
     NPBufferObject * xzStream;
     NPBufferObject * yStream;
+    NPBufferObject * supplementalStream;
     NPBufferObject * indexStream;
     NPVertexArray * mesh;
 }
@@ -18,7 +19,9 @@
 
 - (BOOL) generateWithResolution:(int32_t)resolution;
 
-- (void) update:(NSData *)yData;
+- (void) updateYStream:(NSData *)yData
+    supplementalStream:(NSData *)supplementalData
+                      ;
 - (void) render;
 
 @end

@@ -8,6 +8,7 @@ technique "base_xz"
     # vertex streams
     in vec2 in_position : 0;
     in float in_height : 1;
+    in vec4 in_supplemental : 2;
     # fragment streams
     out vec4 target : 0;
     # shaders
