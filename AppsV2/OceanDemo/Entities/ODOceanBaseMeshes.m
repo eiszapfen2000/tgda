@@ -27,6 +27,11 @@
     [ super dealloc ];
 }
 
+- (ODOceanBaseMesh *) meshatIndex:(NSUInteger)index
+{
+    return [ meshes objectAtIndex:index ];
+}
+
 - (BOOL) generateWithResolutions:(const int32_t *)resolutions
              numberOfResolutions:(int32_t)numberOfResolutions
 {

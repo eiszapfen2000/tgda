@@ -2,6 +2,7 @@
 #import "Core/NPObject/NPObject.h"
 
 @class NSMutableArray;
+@class ODOceanBaseMesh;
 
 @interface ODOceanBaseMeshes : NPObject
 {
@@ -11,6 +12,8 @@
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
+
+- (ODOceanBaseMesh *) meshatIndex:(NSUInteger)index;
 
 - (BOOL) generateWithResolutions:(const int32_t *)resolutions
              numberOfResolutions:(int32_t)numberOfResolutions

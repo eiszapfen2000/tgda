@@ -747,21 +747,32 @@ static NSUInteger od_freq_spectrum_size(const void * item)
                                         length:numberOfBytes * 4
                                   freeWhenDone:NO ];
 
+            NSData * empty = [ NSData data ];
+
+            [ baseMeshes
+                updateMeshAtIndex:baseMeshIndex
+                        withYData:textureData
+                 supplementalData:supplemental ];
+
+            NPBufferObject * yStream
+                = [[ baseMeshes meshatIndex:baseMeshIndex ] yStream ];
+
+            NPBufferObject * supplementalStream
+                = [[ baseMeshes meshatIndex:baseMeshIndex ] supplementalStream ];
+
             [ heightfield generateUsingWidth:hf->resolution.x
                                       height:hf->resolution.y
                                  pixelFormat:NpImagePixelFormatR
                                   dataFormat:NpImageDataFormatFloat32
                                      mipmaps:NO
-                                        data:textureData ];
+                                bufferObject:yStream ];
 
             [ supplementalData generateUsingWidth:hf->resolution.x
                                            height:hf->resolution.y
                                       pixelFormat:NpImagePixelFormatRGBA
                                        dataFormat:NpImageDataFormatFloat32
                                           mipmaps:NO
-                                             data:supplemental ];
-
-            [ baseMeshes updateMeshAtIndex:baseMeshIndex withYData:textureData supplementalData:supplemental ];
+                                     bufferObject:supplementalStream ];
         }
     }
 
