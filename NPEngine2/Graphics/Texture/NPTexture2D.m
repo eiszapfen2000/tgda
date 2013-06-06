@@ -5,6 +5,7 @@
 #import "Core/Container/NPAssetArray.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Core/NPEngineCore.h"
+#import "Graphics/Buffer/NPBufferObject.h"
 #import "Graphics/Image/NPImage.h"
 #import "Graphics/NPEngineGraphicsErrors.h"
 #import "Graphics/NPEngineGraphicsEnums.h"
@@ -32,6 +33,8 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 - (void) updateGLTextureState;
 - (void) uploadToGLWithData:(NSData *)data;
+- (void) uploadToGLWithBufferObject:(NPBufferObject *)bufferObject;
+- (void) uploadToGL:(const GLvoid *)data allowNull:(BOOL)allowNull;
 
 @end
 
@@ -196,6 +199,31 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     ready = YES;
 }
 
+- (void) generateUsingWidth:(uint32_t)newWidth
+                     height:(uint32_t)newHeight
+                pixelFormat:(NpTexturePixelFormat)newPixelFormat
+                 dataFormat:(NpTextureDataFormat)newDataFormat
+                    mipmaps:(BOOL)newMipmaps
+               bufferObject:(NPBufferObject *)bufferObject
+{
+    if ( width != newWidth || height != newHeight
+        || pixelFormat != newPixelFormat || dataFormat != newDataFormat )
+    {
+        ready = NO;
+        width  = newWidth;
+        height = newHeight;
+        pixelFormat = newPixelFormat;
+        dataFormat  = newDataFormat;
+        colorFormat = getColorFormatForPixelFormat(newPixelFormat);
+    }
+
+    filterState.mipmaps = newMipmaps;
+
+    [ self uploadToGLWithBufferObject:bufferObject ];
+
+    ready = YES;
+}
+
 - (void) generateUsingImage:(NPImage *)image
 {
     [ self generateUsingWidth:[ image width       ]
@@ -349,15 +377,32 @@ static const GLint masks[][4]
     [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:self ];
 
     const GLvoid * glData = [ data bytes ];
+    [ self uploadToGL:glData allowNull:NO ];
 
+    [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
+}
+
+- (void) uploadToGLWithBufferObject:(NPBufferObject *)bufferObject
+{
+    [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:self ];
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, [bufferObject glID]);
+
+    [ self uploadToGL:NULL allowNull:YES ];
+
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+    [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
+}
+
+- (void) uploadToGL:(const GLvoid *)data allowNull:(BOOL)allowNull
+{
     if ( ready == YES )
     {
         // glTexSubImage2D does not handle NULL
-        if ( glData != NULL )
+        if ( allowNull == YES || data != NULL )
         {
             //update data, is a lot faster than glTexImage2D
             glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height,
-                glPixelFormat, glDataFormat, glData);
+                glPixelFormat, glDataFormat, data);
         }
     }
     else
@@ -368,7 +413,7 @@ static const GLint masks[][4]
 
         // specify entire texture
         glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, width, height, 
-            0, glPixelFormat, glDataFormat, glData);
+            0, glPixelFormat, glDataFormat, data);
 
         // this is here because of broken AMD drivers
         // if the call is moved somewhere else mipmap
@@ -383,8 +428,6 @@ static const GLint masks[][4]
         set_texture2d_wrap(wrapState.wrapS, wrapState.wrapT);
         set_texture2d_swizzle_mask(colorFormat);
     }
-
-    [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
 }
 
 @end
