@@ -165,8 +165,8 @@
 
     if ( target != nil )
     {
-        float currentValue;
-        float normalisedValue;
+        double currentValue;
+        double normalisedValue;
 
         ODObjCGetVariable(target, offset, size, &currentValue);
         normalisedValue = (currentValue - minimumValue) / (maximumValue - minimumValue);
@@ -219,7 +219,7 @@
 
     if ( target != nil )
     {
-        const float scaledValue = [ self scaledValue ];
+        const double scaledValue = [ self scaledValue ];
         ODObjCSetVariable(target, offset, size, &scaledValue);
     }
 }
