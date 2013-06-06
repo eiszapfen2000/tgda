@@ -33,6 +33,9 @@
     Vector2 lastWindDirection;
     Vector2 windDirection;
     Vector2 generatorWindDirection;
+    double lastWindSpeed;
+    double windSpeed;
+    double generatorWindSpeed;
     Vector2 lastSize;
     Vector2 size;
     Vector2 generatorSize;

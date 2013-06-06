@@ -57,7 +57,8 @@ void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex * spec
     }
 }
 
-static const Vector2 defaultWindDirection = {10.8, 1.2};
+static const double defaultWindSpeed = 8.5;
+static const Vector2 defaultWindDirection = {1.8, 0.2};
 static const Vector2 defaultSize = {40.0, 40.0};
 static const int32_t resolutions[4] = {64, 128, 256, 512};
 static const NSUInteger defaultResolutionIndex = 1;
@@ -219,6 +220,7 @@ static size_t index_for_resolution(int32_t resolution)
         if ( [[ NSThread currentThread ] isCancelled ] == NO )
         {
             ODSpectrumSettings settings;
+            double gWindSpeed;
             NSUInteger resIndex;
 
             {
@@ -226,8 +228,13 @@ static size_t index_for_resolution(int32_t resolution)
                 settings.windDirection = generatorWindDirection;
                 settings.size = generatorSize;
                 resIndex = generatorResolutionIndex;
+                gWindSpeed = generatorWindSpeed;
                 [ settingsMutex unlock ];
             }
+
+            v2_v_normalise(&(settings.windDirection));
+            settings.windDirection.x *= gWindSpeed;
+            settings.windDirection.y *= gWindSpeed;
 
             const int32_t res = resolutions[resIndex];
             settings.resolution = (IVector2){res, res};
@@ -422,6 +429,9 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
     lastWindDirection = (Vector2){DBL_MAX, DBL_MAX};
     windDirection = generatorWindDirection = defaultWindDirection;
+
+    lastWindSpeed = DBL_MAX;
+    windSpeed = generatorWindSpeed = defaultWindSpeed;
 
     lastSize = (Vector2){DBL_MAX, DBL_MAX};
     size = generatorSize = defaultSize;
@@ -625,11 +635,13 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     // the resultQueue of still therein residing data
     if ( windDirection.x != lastWindDirection.x
          || windDirection.y != lastWindDirection.y
+         || windSpeed != lastWindSpeed
          || size.x != lastSize.x
          || size.y != lastSize.y
          || resolutionIndex != lastResolutionIndex )
     {
         lastWindDirection = windDirection;
+        lastWindSpeed = windSpeed;
         lastSize = size;
         lastResolutionIndex = resolutionIndex;
         settingsChanged = YES;
@@ -639,6 +651,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     {
         [ settingsMutex lock ];
         generatorWindDirection = windDirection;
+        generatorWindSpeed = windSpeed;
         generatorSize = size;
         generatorResolutionIndex = resolutionIndex;
         [ settingsMutex unlock ];
