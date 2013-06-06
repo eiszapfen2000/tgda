@@ -36,6 +36,16 @@
     [ super dealloc ];
 }
 
+- (NPBufferObject *) yStream
+{
+    return yStream;
+}
+
+- (NPBufferObject *) supplementalStream
+{
+    return supplementalStream;
+}
+
 - (BOOL) generateWithResolution:(int32_t)resolution
 {
     NSAssert(resolution > 0, @"");

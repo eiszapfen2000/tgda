@@ -17,6 +17,9 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
+- (NPBufferObject *) yStream;
+- (NPBufferObject *) supplementalStream;
+
 - (BOOL) generateWithResolution:(int32_t)resolution;
 
 - (void) updateYStream:(NSData *)yData
