@@ -24,6 +24,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState);
 
 @class NSData;
 @class NPImage;
+@class NPBufferObject;
 
 @interface NPTexture2D : NPObject < NPPPersistentObject, NPPTexture >
 {
@@ -71,6 +72,14 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState);
                  dataFormat:(NpTextureDataFormat)newDataFormat
                     mipmaps:(BOOL)newMipmaps
                        data:(NSData *)data
+                           ;
+
+- (void) generateUsingWidth:(uint32_t)newWidth
+                     height:(uint32_t)newHeight
+                pixelFormat:(NpTexturePixelFormat)newPixelFormat
+                 dataFormat:(NpTextureDataFormat)newDataFormat
+                    mipmaps:(BOOL)newMipmaps
+               bufferObject:(NPBufferObject *)bufferObject
                            ;
 
 - (void) generateUsingImage:(NPImage *)image;
