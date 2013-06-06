@@ -37,6 +37,7 @@
     frectangle_ssss_init_with_min_max_r(0.0f, 0.0f, 0.0f, 0.0f, &pixelCenterGeometry);
     fm4_m_set_identity(&translation);
     v2_v_init_with_zeros(&windDirection);
+    radius = 1.0f;
 
     circleGeometry = [[ NPVertexArray alloc ] init ];
 
@@ -76,7 +77,7 @@
 
     const float halfWidth  = itemWidth  / 2.0f;
     const float halfHeight = itemHeight / 2.0f;
-    const float radius = MIN(halfWidth, halfHeight);
+    radius = MIN(halfWidth, halfHeight);
 
     const uint32_t numberOfTriangles = 24;
     const NSUInteger numberOfVertices = numberOfTriangles + 2;
@@ -102,27 +103,23 @@
         //printf("%u %f %f %f\n", i, angle, x * radius, y * radius);
     }
 
-    NPBufferObject * vertexBuffer = [[ NPBufferObject alloc ] init ];
+    NPBufferObject * vertexStream
+        = AUTORELEASE([[ NPBufferObject alloc ] init ]);
 
     result
-        = [ vertexBuffer
-                generateStaticGeometryBuffer:NpBufferDataFormatFloat32
-                                  components:2
-                                        data:geometryData
-                                  dataLength:numberOfBytes
-                                       error:NULL ];
-
-    NSAssert(result, @"BROKEN");
+        = result && [ vertexStream
+                        generateStaticGeometryBuffer:NpBufferDataFormatFloat32
+                                          components:2
+                                                data:geometryData
+                                          dataLength:numberOfBytes
+                                               error:NULL ];
 
     result
-        = [ circleGeometry
-                setVertexStream:vertexBuffer
-                     atLocation:NpVertexStreamPositions
-                          error:NULL ];
+        = result && [ circleGeometry
+                        setVertexStream:vertexStream
+                             atLocation:NpVertexStreamPositions
+                                  error:NULL ];
 
-    NSAssert(result, @"BROKEN");
-
-    DESTROY(vertexBuffer);
 
     return result;
 }
@@ -167,6 +164,7 @@
     if ( target != nil )
     {
         ODObjCGetVariable(target, offset, size, &windDirection);
+        v2_v_normalise(&windDirection);
     }
 }
 
@@ -190,6 +188,11 @@
     [ color setFValue:lineColor ];
     [ technique activate ];
     [ circleGeometry renderWithPrimitiveType:NpPrimitiveLineStrip firstIndex:1 lastIndex:25 ];
+
+    glBegin(GL_LINES);
+        glVertex2f(0.0f, 0.0f);
+        glVertex2f(windDirection.x * radius, windDirection.y * radius);
+    glEnd();    
 
     [ tState setFModelMatrix:&modelMatrix ];
 }

@@ -11,6 +11,7 @@
 
     FMatrix4 translation;
     Vector2 windDirection;
+    float radius;
     NPVertexArray* circleGeometry;
     NPEffectTechnique * technique;
     NPEffectVariableFloat4 * color;
