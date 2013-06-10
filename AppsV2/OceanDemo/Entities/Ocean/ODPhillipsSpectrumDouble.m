@@ -96,7 +96,7 @@ double amplitude(Vector2 const * const windDirection,
          || currentSettings.resolution.y != lastSettings.resolution.y )
     {
         FFTW_SAFE_FREE(H0);
-	    H0 = fftw_malloc(sizeof(fftw_complex) * currentSettings.resolution.x * currentSettings.resolution.y);
+	    H0 = fftw_alloc_complex(currentSettings.resolution.x * currentSettings.resolution.y);
     }
 
     const IVector2 resolution = currentSettings.resolution;
@@ -137,7 +137,7 @@ double amplitude(Vector2 const * const windDirection,
     const Vector2 size = currentSettings.size;
 
 	fftw_complex * frequencySpectrum
-        = fftw_malloc(sizeof(fftw_complex) * resolution.x * resolution.y);
+        = fftw_alloc_complex(resolution.x * resolution.y);
 
     const double n = -(resolution.x / 2.0);
     const double m =  (resolution.y / 2.0);
@@ -220,7 +220,7 @@ double amplitude(Vector2 const * const windDirection,
     const IVector2 quadrantResolution = { resolution.x / 2, resolution.y / 2 };
 
 	fftw_complex * frequencySpectrumHC
-        = fftw_malloc(sizeof(fftw_complex) * resolutionHC.x * resolutionHC.y);
+        = fftw_alloc_complex(resolutionHC.x * resolutionHC.y);
 
     //const double n = -(resolution.x / 2.0);
     //const double m =  (resolution.y / 2.0);
