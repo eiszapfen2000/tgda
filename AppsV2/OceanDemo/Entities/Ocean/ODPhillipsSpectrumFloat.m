@@ -95,7 +95,7 @@ static float amplitudef(FVector2 const * const windDirection,
          || currentSettings.resolution.y != lastSettings.resolution.y )
     {
         FFTW_SAFE_FREE(H0);
-	    H0 = fftwf_malloc(sizeof(fftwf_complex) * currentSettings.resolution.x * currentSettings.resolution.y);
+	    H0 = fftwf_alloc_complex(currentSettings.resolution.x * currentSettings.resolution.y);
     }
 
     const IVector2 resolution = currentSettings.resolution;
@@ -280,7 +280,7 @@ static float amplitudef(FVector2 const * const windDirection,
     const IVector2 quadrantResolution = { resolution.x / 2, resolution.y / 2 };
 
 	fftwf_complex * frequencySpectrumHC
-        = fftwf_malloc(sizeof(fftwf_complex) * resolutionHC.x * resolutionHC.y);
+        = fftwf_alloc_complex(resolutionHC.x * resolutionHC.y);
 
     const float dsizex = 1.0f / size.x;
     const float dsizey = 1.0f / size.y;
