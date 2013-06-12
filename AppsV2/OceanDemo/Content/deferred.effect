@@ -16,6 +16,19 @@ technique "base_xz"
     set fragment shader "base_xz.fragment"
 }
 
+technique "proj_grid_corners"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    # vertex streams
+    in vec3 in_position : 0;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "proj_grid_corners.vertex"
+    set fragment shader "proj_grid_corners.fragment"
+}
+
 technique "geometry"
 {
     # effect variables

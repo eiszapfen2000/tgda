@@ -32,7 +32,7 @@ ODProjectedGridRenderMode;
     // vertices projected from near plane onto basePlane
     FVertex4 * worldSpacePositions;
     // near plane corner vertices projected onto basePlane
-    FVertex4 * cornerVertices;
+    FVertex3 * cornerVertices;
     // mesh indices for rendering
     uint16_t * gridIndices;
     uint16_t * cornerIndices;

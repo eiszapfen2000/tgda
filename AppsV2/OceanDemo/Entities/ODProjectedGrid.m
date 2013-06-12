@@ -19,10 +19,42 @@
 #import "ODProjector.h"
 #import "ODProjectedGrid.h"
 
+static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjection,
+                                         Plane basePlane,
+                                         Vector2 postProjectionVertex)
+{
+    const Vector4 nearPlaneVertex
+        = {postProjectionVertex.x, postProjectionVertex.y, -1.0, 1.0};
+
+    const Vector4 farPlaneVertex
+        = {postProjectionVertex.x, postProjectionVertex.y, 1.0, 1.0};
+
+    const Vector4 resultN = m4_mv_multiply(inverseViewProjection, &nearPlaneVertex);
+    const Vector4 resultF = m4_mv_multiply(inverseViewProjection, &farPlaneVertex);
+
+    Ray ray;
+    ray.point.x = resultN.x / resultN.w;
+    ray.point.y = resultN.y / resultN.w;
+    ray.point.z = resultN.z / resultN.w;
+
+    ray.direction.x = (resultF.x / resultF.w) - ray.point.x;
+    ray.direction.y = (resultF.y / resultF.w) - ray.point.y;
+    ray.direction.z = (resultF.z / resultF.w) - ray.point.z;
+
+    Vector3 intersection;
+    int32_t r = plane_pr_intersect_with_ray_v(&basePlane, &ray, &intersection);
+
+    FVector3 result;
+    result.x = intersection.x;
+    result.y = intersection.y;
+    result.z = intersection.z;
+
+    return result;
+}
+
 @interface ODProjectedGrid (Private)
 
 - (void) computeBasePlaneGeometryUsingRaycasting;
-- (FVector4) computeBasePlanePosition:(const FVector2)postProjectionVertex;
 - (void) computeBasePlaneCornerVertices;
 - (void) computeBasePlaneGeometryUsingInterpolation;
 - (void) updateResolution;
@@ -72,59 +104,29 @@
     }
 }
 
-- (FVector4) computeBasePlanePosition:(const FVector2)postProjectionVertex
-{
-    FMatrix4 inverseViewProjection;
-    fm4_m_init_with_m4(&inverseViewProjection, [ projector inverseViewProjection ]);
-
-    const FVector4 nearPlaneVertex
-        = {postProjectionVertex.x, postProjectionVertex.y, -1.0f, 1.0f};
-
-    const FVector4 farPlaneVertex
-        = {postProjectionVertex.x, postProjectionVertex.y, 1.0f, 1.0f};
-
-    const FVector4 resultN = fm4_mv_multiply(&inverseViewProjection, &nearPlaneVertex);
-    const FVector4 resultF = fm4_mv_multiply(&inverseViewProjection, &farPlaneVertex);
-
-    FRay ray;
-    ray.point.x = resultN.x / resultN.w;
-    ray.point.y = resultN.y / resultN.w;
-    ray.point.z = resultN.z / resultN.w;
-
-    ray.direction.x = (resultF.x / resultF.w) - ray.point.x;
-    ray.direction.y = (resultF.y / resultF.w) - ray.point.y;
-    ray.direction.z = (resultF.z / resultF.w) - ray.point.z;
-
-    FVector3 intersection;
-    int32_t r = fplane_pr_intersect_with_ray_v(&basePlane, &ray, &intersection);
-
-    return fv4_v_from_fv3(&intersection);
-}
-
 - (void) computeBasePlaneCornerVertices
 {
-    const FVector2 upperLeft  = {-1.0f,  1.0f};
-    const FVector2 upperRight = { 1.0f,  1.0f};
-    const FVector2 lowerLeft  = {-1.0f, -1.0f};
-    const FVector2 lowerRight = { 1.0f, -1.0f};
+    const Vector2 upperLeft  = {-1.0,  1.0};
+    const Vector2 upperRight = { 1.0,  1.0};
+    const Vector2 lowerLeft  = {-1.0, -1.0};
+    const Vector2 lowerRight = { 1.0, -1.0};
 
-    cornerVertices[0] = [ self computeBasePlanePosition:lowerLeft  ];
-    cornerVertices[1] = [ self computeBasePlanePosition:lowerRight ];
-    cornerVertices[2] = [ self computeBasePlanePosition:upperRight ];
-    cornerVertices[3] = [ self computeBasePlanePosition:upperLeft  ];
+    Plane plane;
+    plane_pssss_init_with_components(&plane, 0.0, 1.0, 0.0, 0.0);
 
-    /*
-    NSLog(@"%s", fv4_v_to_string(&(cornerVertices[0])));
-    NSLog(@"%s", fv4_v_to_string(&(cornerVertices[1])));
-    NSLog(@"%s", fv4_v_to_string(&(cornerVertices[2])));
-    NSLog(@"%s", fv4_v_to_string(&(cornerVertices[3])));
-    */
+    const Matrix4 * const invViewProjection = [ projector inverseViewProjection ];
+
+    cornerVertices[0] = computeBasePlanePosition(invViewProjection, plane, lowerLeft);
+    cornerVertices[1] = computeBasePlanePosition(invViewProjection, plane, lowerRight);
+    cornerVertices[2] = computeBasePlanePosition(invViewProjection, plane, upperRight);
+    cornerVertices[3] = computeBasePlanePosition(invViewProjection, plane, upperLeft);
 }
 
 - (void) computeBasePlaneGeometryUsingInterpolation
 {
     [ self computeBasePlaneCornerVertices ];
 
+    /*
     float u = -1.0f;
     float v = -1.0f;
 
@@ -167,6 +169,7 @@
 
         v = v + deltaY;
     }
+    */
 }
 
 - (void) updateResolution
@@ -303,10 +306,10 @@
     // y = 0 plane
     fplane_pssss_init_with_components(&basePlane, 0.0f, 1.0f, 0.0f, 0.0f);
 
-    renderMode = ProjectedGridCPURaycasting;
+    renderMode = ProjectedGridGPUInterpolation;
 
     // resolution independent
-    cornerVertices = ALLOC_ARRAY(FVertex4, 4);
+    cornerVertices = ALLOC_ARRAY(FVertex3, 4);
     cornerIndices  = ALLOC_ARRAY(uint16_t, 6);
     cornerIndices[0] = 0;
     cornerIndices[1] = 1;
@@ -329,7 +332,7 @@
 
     NSData * cornerVertexData
         = [ NSData dataWithBytesNoCopy:cornerVertices
-                                length:sizeof(FVertex4) * 4
+                                length:sizeof(FVertex3) * 4
                           freeWhenDone:NO ];
 
     NSData * cornerIndexData
@@ -340,7 +343,7 @@
     BOOL result
         = [ cornerVertexStream generate:NpBufferObjectTypeGeometry
                              dataFormat:NpBufferDataFormatFloat32
-                             components:4
+                             components:3
                                    data:cornerVertexData
                                   error:NULL ];
 
@@ -464,8 +467,6 @@
         resolutionLastFrame = resolution;
     }
 
-    //[ self computeBasePlaneCornerVertices ];
-
     switch ( renderMode )
     {
         case ProjectedGridCPURaycasting:
@@ -490,6 +491,7 @@
 
 - (void) render:(NPTexture2D *)heights
 {
+    /*
     NSAssert(heights != nil, @"");
 
     [[[ NPEngineCore instance ] transformationState ] resetModelMatrix ];
@@ -498,6 +500,7 @@
     [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
     [ color setFValue:gridColor ];
+    */
 
     switch ( renderMode )
     {

@@ -25,6 +25,7 @@
     // enitities
     ODCamera * camera;
     ODOceanEntity * ocean;
+    ODProjectedGrid * projectedGrid;
     ODPreethamSkylight * skylight;
     NSMutableArray * entities;
 
