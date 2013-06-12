@@ -65,8 +65,7 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
 
 - (void) computeBasePlaneGeometryUsingRaycasting
 {
-    FMatrix4 inverseViewProjection;
-    fm4_m_init_with_m4(&inverseViewProjection, [ projector inverseViewProjection ]);
+    const Matrix4 * const invViewProjection = [ projector inverseViewProjection ];
 
     for ( int32_t i = 0; i < resolution.y; i++ )
     {
@@ -74,18 +73,18 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
         {
             const int32_t index = i * resolution.x + j;
 
-            // near plane z = -1.0f
-            FVector4 nearPlaneVertex = nearPlanePostProjectionPositions[index];
-            // far plane z = 1.0f
-            FVector4 farPlaneVertex  = nearPlaneVertex;
-            farPlaneVertex.z = 1.0f;
+            FVector2 nearPlanePosition = nearPlanePostProjectionPositions[index];
 
-            // transform to world space
-            const FVector4 resultN = fm4_mv_multiply(&inverseViewProjection, &nearPlaneVertex);
-            const FVector4 resultF = fm4_mv_multiply(&inverseViewProjection, &farPlaneVertex);
+            const Vector4 nearPlaneVertex
+                = {nearPlanePosition.x, nearPlanePosition.y, -1.0, 1.0};
 
-            // construct ray
-            FRay ray;
+            const Vector4 farPlaneVertex
+                = {nearPlanePosition.x, nearPlanePosition.y, 1.0, 1.0};
+
+            const Vector4 resultN = m4_mv_multiply(invViewProjection, &nearPlaneVertex);
+            const Vector4 resultF = m4_mv_multiply(invViewProjection, &farPlaneVertex);
+
+            Ray ray;
             ray.point.x = resultN.x / resultN.w;
             ray.point.y = resultN.y / resultN.w;
             ray.point.z = resultN.z / resultN.w;
@@ -94,12 +93,11 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
             ray.direction.y = (resultF.y / resultF.w) - ray.point.y;
             ray.direction.z = (resultF.z / resultF.w) - ray.point.z;
 
-            // intersect ray with plane
-            FVector3 intersection;
-            int32_t r = fplane_pr_intersect_with_ray_v(&basePlane, &ray, &intersection);
+            Vector3 intersection;
+            int32_t r = plane_pr_intersect_with_ray_v(&basePlane, &ray, &intersection);
 
-            FVector4 result = fv4_v_from_fv3(&intersection);
-            worldSpacePositions[index] = result;
+            worldSpacePositions[index]
+                = (FVector3){.x = intersection.x, .y = intersection.y, .z = intersection.z};
         }
     }
 }
@@ -111,15 +109,12 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
     const Vector2 lowerLeft  = {-1.0, -1.0};
     const Vector2 lowerRight = { 1.0, -1.0};
 
-    Plane plane;
-    plane_pssss_init_with_components(&plane, 0.0, 1.0, 0.0, 0.0);
-
     const Matrix4 * const invViewProjection = [ projector inverseViewProjection ];
 
-    cornerVertices[0] = computeBasePlanePosition(invViewProjection, plane, lowerLeft);
-    cornerVertices[1] = computeBasePlanePosition(invViewProjection, plane, lowerRight);
-    cornerVertices[2] = computeBasePlanePosition(invViewProjection, plane, upperRight);
-    cornerVertices[3] = computeBasePlanePosition(invViewProjection, plane, upperLeft);
+    cornerVertices[0] = computeBasePlanePosition(invViewProjection, basePlane, lowerLeft);
+    cornerVertices[1] = computeBasePlanePosition(invViewProjection, basePlane, lowerRight);
+    cornerVertices[2] = computeBasePlanePosition(invViewProjection, basePlane, upperRight);
+    cornerVertices[3] = computeBasePlanePosition(invViewProjection, basePlane, upperLeft);
 }
 
 - (void) computeBasePlaneGeometryUsingInterpolation
@@ -182,12 +177,12 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
     const size_t numberOfIndices
         = (resolution.x - 1) * (resolution.y - 1) * 6;
 
-    nearPlanePostProjectionPositions = ALLOC_ARRAY(FVertex4, numberOfVertices);
-    worldSpacePositions = ALLOC_ARRAY(FVertex4, numberOfVertices);
+    nearPlanePostProjectionPositions = ALLOC_ARRAY(FVertex2, numberOfVertices);
+    worldSpacePositions = ALLOC_ARRAY(FVertex3, numberOfVertices);
     gridIndices = ALLOC_ARRAY(uint16_t, numberOfIndices);
 
-    const float deltaX = 2.0f / ((float)(resolution.x - 1));
-    const float deltaY = 2.0f / ((float)(resolution.y - 1));
+    const double deltaX = 2.0 / ((double)(resolution.x - 1));
+    const double deltaY = 2.0 / ((double)(resolution.y - 1));
 
     // scanlinewise starting from lowerleft
     // due to render to vertexbuffer memory layout
@@ -197,10 +192,8 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
         for ( int32_t j = 0; j < resolution.x; j++ )
         {
             const int32_t index = (i * resolution.x) + j;
-            nearPlanePostProjectionPositions[index].x = -1.0f + j * deltaX;
-            nearPlanePostProjectionPositions[index].y = -1.0f + i * deltaY;
-            nearPlanePostProjectionPositions[index].z = -1.0f; // near plane
-            nearPlanePostProjectionPositions[index].w =  1.0f;
+            nearPlanePostProjectionPositions[index].x = (float)(-1.0 + j * deltaX);
+            nearPlanePostProjectionPositions[index].y = (float)(-1.0 + i * deltaY);
         }
     }
 
@@ -236,7 +229,7 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
 
     NSData * vertexData
         = [ NSData dataWithBytesNoCopy:worldSpacePositions
-                                length:sizeof(FVertex4) * numberOfVertices
+                                length:sizeof(FVertex3) * numberOfVertices
                           freeWhenDone:NO ];
 
     NSData * indexData
@@ -247,7 +240,7 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
     BOOL result
         = [ gridVertexStream generate:NpBufferObjectTypeGeometry
                            dataFormat:NpBufferDataFormatFloat32
-                           components:4
+                           components:3
                                  data:vertexData
                                 error:NULL ];
 
@@ -304,7 +297,7 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
     resolution.x = resolution.y = 0;
 
     // y = 0 plane
-    fplane_pssss_init_with_components(&basePlane, 0.0f, 1.0f, 0.0f, 0.0f);
+    plane_pssss_init_with_components(&basePlane, 0.0, 1.0, 0.0, 0.0);
 
     renderMode = ProjectedGridGPUInterpolation;
 
@@ -471,7 +464,7 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
     {
         case ProjectedGridCPURaycasting:
         {
-            [ self computeBasePlaneGeometryUsingRaycasting ];            
+            [ self computeBasePlaneGeometryUsingRaycasting ];
             break;
         }
 
@@ -483,6 +476,7 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
 
         case ProjectedGridGPUInterpolation:
         {
+            [ self computeBasePlaneGeometryUsingRaycasting ];
             [ self computeBasePlaneCornerVertices ];
             break;
         }
@@ -542,7 +536,8 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
 
         case ProjectedGridGPUInterpolation:
         {
-            [ cornerVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+            [ gridVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+            //[ cornerVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
             break;
         }
     }
