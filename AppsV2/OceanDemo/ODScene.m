@@ -325,6 +325,11 @@
     currentResolution.x = [ viewport width  ];
     currentResolution.y = [ viewport height ];
 
+    IVector2 r;
+    r.x = 64;
+    r.y = 48;
+    [ projectedGrid setResolution:r ];
+
     /*
     if ( [ projector connecting ] == YES )
     {

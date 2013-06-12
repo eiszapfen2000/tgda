@@ -26,11 +26,11 @@ ODProjectedGridRenderMode;
     IVector2 resolutionLastFrame;
     IVector2 resolution;
     // the plane we want project onto, y = 0
-    FPlane basePlane;
+    Plane basePlane;
     // vertices on the near plane in post projection space
-    FVertex4 * nearPlanePostProjectionPositions;
+    FVertex2 * nearPlanePostProjectionPositions;
     // vertices projected from near plane onto basePlane
-    FVertex4 * worldSpacePositions;
+    FVertex3 * worldSpacePositions;
     // near plane corner vertices projected onto basePlane
     FVertex3 * cornerVertices;
     // mesh indices for rendering
