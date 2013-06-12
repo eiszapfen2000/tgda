@@ -43,7 +43,7 @@ void fm2_m_set_identity(FMatrix2 * m)
     M_EL(*m,0,1) = M_EL(*m,1,0) = 0.0f;
 }
 
-void fm2_mm_init_with_m2(FMatrix2 * m1, const struct Matrix2 * const m2)
+void fm2_m_init_with_m2(FMatrix2 * m1, const struct Matrix2 * const m2)
 {
     M_EL(*m1,0,0) = M_EL(*m2,0,0);
     M_EL(*m1,0,1) = M_EL(*m2,0,1);
@@ -214,7 +214,7 @@ void fm3_m_set_identity(FMatrix3 * m)
     M_EL(*m,0,1) = M_EL(*m,0,2) = M_EL(*m,1,0) = M_EL(*m,1,2) = M_EL(*m,2,0) = M_EL(*m,2,1) = 0.0;
 }
 
-void fm3_mm_init_with_m3(FMatrix3 * m1, const struct Matrix3 * const m2)
+void fm3_m_init_with_m3(FMatrix3 * m1, const struct Matrix3 * const m2)
 {
     for ( uint32_t i = 0; i < 3; i++ )
     {
