@@ -154,7 +154,8 @@
     camera    = [[ ODCamera       alloc ] init ];
     entities  = [[ NSMutableArray alloc ] init ];
 
-    ocean = [[ ODOceanEntity  alloc ] initWithName:@"Ocean" ];
+    ocean = [[ ODOceanEntity alloc ] initWithName:@"Ocean" ];
+    projectedGrid = [[ ODProjectedGrid alloc ] initWithName:@"ProjGrid" ];
 
     // camera animation
     fquat_set_identity(&startOrientation);
@@ -208,6 +209,7 @@
 
     [ ocean stop ];
     SAFE_DESTROY(ocean);
+    SAFE_DESTROY(projectedGrid);
     SAFE_DESTROY(skylight);
     SAFE_DESTROY(file);
 
@@ -281,6 +283,8 @@
 
     [ skylight  setCamera:camera ];
     [ ocean     setCamera:camera ];
+
+    [ projectedGrid setProjector:[ ocean projector ]];
 
     [ ocean start ];
 
@@ -363,14 +367,17 @@
     }
     */
 
-    [ camera    update:frameTime ];
-    [ skylight  update:frameTime ];
-    [ ocean     update:frameTime ];
+    [ camera        update:frameTime ];
+/*
+    [ skylight      update:frameTime ];
+*/
+    [ ocean         update:frameTime ];
+    [ projectedGrid update:frameTime ];
 
     const NSUInteger numberOfEntities = [ entities count ];
     for ( NSUInteger i = 0; i < numberOfEntities; i++ )
     {
-        [[ entities objectAtIndex:i ] update:frameTime ];
+        //[[ entities objectAtIndex:i ] update:frameTime ];
     }
 }
 
@@ -399,8 +406,8 @@
     [ cullingState   setEnabled:YES ];
     [ depthTestState setWriteEnabled:YES ];
     [ depthTestState setEnabled:YES ];
-    [ fillState      setFrontFaceFill:NpPolygonFillLine ];
-    [ fillState      setBackFaceFill:NpPolygonFillLine ];
+    //[ fillState      setFrontFaceFill:NpPolygonFillLine ];
+    //[ fillState      setBackFaceFill:NpPolygonFillLine ];
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
     // clear back buffer
@@ -408,10 +415,15 @@
 
     [ camera render ];
 
+    [[[ NP Core] transformationState] resetModelMatrix];
     NPEffectVariableFloat2 * v = [ deferredEffect variableWithName:@"scale"];
     [ v setFValue:[ocean baseMeshScale]];
-    [[ deferredEffect techniqueWithName:@"base_xz" ] activate ];
-    [ ocean renderBaseMesh ];
+    //[[ deferredEffect techniqueWithName:@"base_xz" ] activate ];
+    //[ ocean renderBaseMesh ];
+    
+    [[ deferredEffect techniqueWithName:@"proj_grid_corners" ] activate ];
+    [ projectedGrid render:nil ];
+    //[ ocean renderBasePlane ];
 
     [[[ NP Graphics ] stateConfiguration ] deactivate ];
 
