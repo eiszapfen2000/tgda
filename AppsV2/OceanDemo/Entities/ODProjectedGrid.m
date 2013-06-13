@@ -52,6 +52,39 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
     return result;
 }
 
+static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProjection,
+                                          FPlane basePlane,
+                                          FVector2 postProjectionVertex)
+{
+    const FVector4 nearPlaneVertex
+        = {postProjectionVertex.x, postProjectionVertex.y, -1.0, 1.0};
+
+    const FVector4 farPlaneVertex
+        = {postProjectionVertex.x, postProjectionVertex.y, 1.0, 1.0};
+
+    const FVector4 resultN = fm4_mv_multiply(inverseViewProjection, &nearPlaneVertex);
+    const FVector4 resultF = fm4_mv_multiply(inverseViewProjection, &farPlaneVertex);
+
+    FRay ray;
+    ray.point.x = resultN.x / resultN.w;
+    ray.point.y = resultN.y / resultN.w;
+    ray.point.z = resultN.z / resultN.w;
+
+    ray.direction.x = (resultF.x / resultF.w) - ray.point.x;
+    ray.direction.y = (resultF.y / resultF.w) - ray.point.y;
+    ray.direction.z = (resultF.z / resultF.w) - ray.point.z;
+
+    FVector3 intersection;
+    int32_t r = fplane_pr_intersect_with_ray_v(&basePlane, &ray, &intersection);
+
+    FVector3 result;
+    result.x = intersection.x;
+    result.y = intersection.y;
+    result.z = intersection.z;
+
+    return result;
+}
+
 @interface ODProjectedGrid (Private)
 
 - (void) computeBasePlaneGeometryUsingRaycasting;
@@ -96,8 +129,9 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
             Vector3 intersection;
             int32_t r = plane_pr_intersect_with_ray_v(&basePlane, &ray, &intersection);
 
-            worldSpacePositions[index]
-                = (FVector3){.x = intersection.x, .y = intersection.y, .z = intersection.z};
+            worldSpacePositions[index].x = intersection.x;
+            worldSpacePositions[index].y = intersection.y;
+            worldSpacePositions[index].z = intersection.z;
         }
     }
 }
@@ -115,6 +149,40 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
     cornerVertices[1] = computeBasePlanePosition(invViewProjection, basePlane, lowerRight);
     cornerVertices[2] = computeBasePlanePosition(invViewProjection, basePlane, upperRight);
     cornerVertices[3] = computeBasePlanePosition(invViewProjection, basePlane, upperLeft);
+
+    FPlane plane;
+    FMatrix4 invVP;
+    fm4_m_init_with_m4(&invVP, invViewProjection);
+
+    fplane_pssss_init_with_components(&plane, 0.0f, 1.0f, 0.0f, 0.0f);
+
+    const FVector2 upperLeftf  = {-1.0f,  1.0f};
+    const FVector2 upperRightf = { 1.0f,  1.0f};
+    const FVector2 lowerLeftf  = {-1.0f, -1.0f};
+    const FVector2 lowerRightf = { 1.0f, -1.0f};
+
+    FVector3 cornersF[4];
+
+    cornersF[0] = computeBasePlanePositionF(&invVP, plane, lowerLeftf);
+    cornersF[1] = computeBasePlanePositionF(&invVP, plane, lowerRightf);
+    cornersF[2] = computeBasePlanePositionF(&invVP, plane, upperRightf);
+    cornersF[3] = computeBasePlanePositionF(&invVP, plane, upperLeftf);
+
+    
+    /*
+    for (int32_t i = 0; i < 4; i++)
+    {
+        NSLog(@"\n%s\n%s", fv3_v_to_string(&(cornerVertices[i])), fv3_v_to_string(&(cornersF[i])));
+    }
+    */
+    
+
+    
+    cornerVertices[0] = (FVector3){-1.0, 0.0, -1.0};
+    cornerVertices[1] = (FVector3){ 1.0, 0.0, -1.0};
+    cornerVertices[2] = (FVector3){ 1.0, 0.0,  1.0};
+    cornerVertices[3] = (FVector3){-1.0, 0.0,  1.0};
+    
 }
 
 - (void) computeBasePlaneGeometryUsingInterpolation
@@ -536,8 +604,8 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
 
         case ProjectedGridGPUInterpolation:
         {
-            [ gridVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
-            //[ cornerVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+            //[ gridVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+            [ cornerVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
             break;
         }
     }

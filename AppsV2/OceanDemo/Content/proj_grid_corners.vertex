@@ -1,6 +1,24 @@
 #version 150
 
+out vec3 out_position;
+
 void main()
 {
-	gl_Position = np_modelviewprojectionmatrix * vec4(in_position, 1.0);
+    vec4 near = vec4(in_position.xz, -1.0, 1.0);
+    vec4 far  = vec4(in_position.xz,  1.0, 1.0);
+
+    vec4 rNear = invMVP * near;
+    vec4 rFar  = invMVP * far;
+
+    vec3 point = rNear.xyz / rNear.w;
+    vec3 direction = (rFar.xyz / rFar.w) - point;
+
+    const vec4 plane = vec4(0.0, 1.0, 0.0, 0.0);
+    float point_dot_planenormal = dot(point, plane.xyz);
+    float direction_dot_planenormal = dot(direction, plane.xyz);
+    float t = ( plane.w - point_dot_planenormal ) / direction_dot_planenormal;
+    vec3 intersection = point + t * direction;
+
+    out_position = intersection;
+    gl_Position = np_modelviewprojectionmatrix * vec4(intersection, 1.0);
 }

@@ -408,7 +408,7 @@
     // activate culling, depth write and depth test
     [ blendingState  setEnabled:NO ];
     [ cullingState   setCullFace:NpCullfaceBack ];
-    [ cullingState   setEnabled:YES ];
+    [ cullingState   setEnabled:NO ];
     [ depthTestState setWriteEnabled:YES ];
     [ depthTestState setEnabled:YES ];
     //[ fillState      setFrontFaceFill:NpPolygonFillLine ];
@@ -421,10 +421,12 @@
     [ camera render ];
 
     [[[ NP Core] transformationState] resetModelMatrix];
-    NPEffectVariableFloat2 * v = [ deferredEffect variableWithName:@"scale"];
-    [ v setFValue:[ocean baseMeshScale]];
+    //NPEffectVariableFloat2 * v = [ deferredEffect variableWithName:@"scale"];
+    //[ v setFValue:[ocean baseMeshScale]];
     //[[ deferredEffect techniqueWithName:@"base_xz" ] activate ];
     //[ ocean renderBaseMesh ];
+    NPEffectVariableMatrix4x4 * v = [ deferredEffect variableWithName:@"invMVP"];
+    [ v setValue:[[ocean projector] inverseViewProjection]];
     
     [[ deferredEffect techniqueWithName:@"proj_grid_corners" ] activate ];
     [ projectedGrid render:nil ];

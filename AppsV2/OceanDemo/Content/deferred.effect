@@ -20,6 +20,7 @@ technique "proj_grid_corners"
 {
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
+    uniform mat4 invMVP;
     # vertex streams
     in vec3 in_position : 0;
     # fragment streams

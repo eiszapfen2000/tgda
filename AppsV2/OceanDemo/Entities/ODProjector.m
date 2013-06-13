@@ -111,7 +111,7 @@
     //}
 
     float horizontalFOV = [ camera fov ] * [ camera aspectRatio ] * 1.2;
-    fov = 90.0 - 0.00001;
+    fov = 90.0 - 0.05;
     aspectRatio = horizontalFOV / fov;
 
     nearPlane = [ camera nearPlane ];
