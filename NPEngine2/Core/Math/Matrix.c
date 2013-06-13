@@ -788,15 +788,22 @@ void m4_vvvv_look_at_matrix_m(Vector3 * rightVector, Vector3 * upVector, Vector3
 void m4_mssss_projection_matrix(Matrix4 * m, double aspectratio, double fovdegrees, double nearplane, double farplane)
 {
     m4_m_set_identity(m);
-    double fovradians = DEGREE_TO_RADIANS(fovdegrees/2.0);
-    double f = 1.0 / tan(fovradians);
+    
+    const double ymax = nearplane * tan(fovdegrees * MATH_PI / 360.0);
+    const double ymin = -ymax;
+    const double xmin = ymin * aspectratio;
+    const double xmax = ymax * aspectratio;
 
-    M_EL(*m,0,0) = f/aspectratio;
-    M_EL(*m,1,1) = f;
-    M_EL(*m,2,2) = (nearplane + farplane)/(nearplane - farplane);
-    M_EL(*m,2,3) = -1.0;
-    M_EL(*m,3,2) = (2.0*nearplane*farplane)/(nearplane - farplane);
+    M_EL(*m,0,0) = (2.0 * nearplane) / (xmax - xmin);
+    M_EL(*m,1,1) = (2.0 * nearplane) / (ymax - ymin);
+    M_EL(*m,2,2) = -(farplane + nearplane) / (farplane - nearplane);
     M_EL(*m,3,3) = 0.0;
+
+    M_EL(*m,2,0) = (xmax + xmin) / (xmax - xmin);
+    M_EL(*m,2,1) = (ymax + ymin) / (ymax - ymin);
+    M_EL(*m,2,3) = -1.0;
+
+    M_EL(*m,3,2) = (-2.0 * farplane * nearplane) / (farplane - nearplane);
 }
 
 void m4_ms_simple_orthographic_projection_matrix(Matrix4 * m, double aspectratio)
