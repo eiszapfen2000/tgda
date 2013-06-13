@@ -326,8 +326,8 @@
     currentResolution.y = [ viewport height ];
 
     IVector2 r;
-    r.x = 64;
-    r.y = 48;
+    r.x = 200;
+    r.y = 150;
     [ projectedGrid setResolution:r ];
 
     /*
@@ -411,8 +411,8 @@
     [ cullingState   setEnabled:NO ];
     [ depthTestState setWriteEnabled:YES ];
     [ depthTestState setEnabled:YES ];
-    //[ fillState      setFrontFaceFill:NpPolygonFillLine ];
-    //[ fillState      setBackFaceFill:NpPolygonFillLine ];
+    [ fillState      setFrontFaceFill:NpPolygonFillLine ];
+    [ fillState      setBackFaceFill:NpPolygonFillLine ];
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
     // clear back buffer
