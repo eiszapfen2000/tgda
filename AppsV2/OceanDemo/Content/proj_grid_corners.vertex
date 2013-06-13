@@ -4,8 +4,8 @@ out vec3 out_position;
 
 void main()
 {
-    vec4 near = vec4(in_position.xz, -1.0, 1.0);
-    vec4 far  = vec4(in_position.xz,  1.0, 1.0);
+    vec4 near = vec4(in_position.xy, -1.0, 1.0);
+    vec4 far  = vec4(in_position.xy,  1.0, 1.0);
 
     vec4 rNear = invMVP * near;
     vec4 rFar  = invMVP * far;

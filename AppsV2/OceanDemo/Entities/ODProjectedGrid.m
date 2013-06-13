@@ -296,8 +296,8 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
     }
 
     NSData * vertexData
-        = [ NSData dataWithBytesNoCopy:worldSpacePositions
-                                length:sizeof(FVertex3) * numberOfVertices
+        = [ NSData dataWithBytesNoCopy:nearPlanePostProjectionPositions
+                                length:sizeof(FVertex2) * numberOfVertices
                           freeWhenDone:NO ];
 
     NSData * indexData
@@ -308,7 +308,7 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
     BOOL result
         = [ gridVertexStream generate:NpBufferObjectTypeGeometry
                            dataFormat:NpBufferDataFormatFloat32
-                           components:3
+                           components:2
                                  data:vertexData
                                 error:NULL ];
 
@@ -544,7 +544,7 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
 
         case ProjectedGridGPUInterpolation:
         {
-            [ self computeBasePlaneGeometryUsingRaycasting ];
+            //[ self computeBasePlaneGeometryUsingRaycasting ];
             [ self computeBasePlaneCornerVertices ];
             break;
         }
@@ -604,8 +604,8 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
 
         case ProjectedGridGPUInterpolation:
         {
-            //[ gridVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
-            [ cornerVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+            [ gridVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+            //[ cornerVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
             break;
         }
     }

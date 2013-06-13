@@ -22,7 +22,7 @@ technique "proj_grid_corners"
     uniform mat4 np_modelviewprojectionmatrix;
     uniform mat4 invMVP;
     # vertex streams
-    in vec3 in_position : 0;
+    in vec2 in_position : 0;
     # fragment streams
     out vec4 target : 0;
     # shaders
