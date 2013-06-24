@@ -29,16 +29,6 @@
 
 - (void) processInput:(const double)frameTime
 {
-    if ( [ strafeLeftAction active ] == YES )
-    {
-        [ self moveLeft:frameTime * 10.0 ];
-    }
-
-    if ( [ strafeRightAction active ] == YES )
-    {
-        [ self moveRight:frameTime * 10.0 ];
-    }
-
     if ( [ leftClickAction active ] == YES )
     {
         // rotation update
@@ -52,6 +42,16 @@
             double p = 0.3 * (double)(-deltaY);
             [ self cameraRotateUsingYaw:y andPitch:p ];
         }
+    }
+
+    if ( [ rightClickAction active ] == YES )
+    {
+        // rotation update
+        NPMouse * mouse = [[ NP Input ] mouse ];
+        int32_t deltaX = [ mouse deltaX ];
+        int32_t deltaY = [ mouse deltaY ];
+
+        [ self moveRight:frameTime * 25.0 * deltaX ];
     }
 
     if ( [ wheelUpAction activated ] == YES )
@@ -77,24 +77,6 @@
 {
     [ self updateYaw:yawDegrees ];
     [ self updatePitch:pitchDegrees ];
-}
-
-- (void) moveForward:(const double)frameTime
-{
-    quat_q_forward_vector_v(&orientation, &forward);
-    
-    position.x += (forward.x * frameTime);
-    position.y += (forward.y * frameTime);
-    position.z += (forward.z * frameTime);
-}
-
-- (void) moveBackward:(const double)frameTime
-{
-    quat_q_forward_vector_v(&orientation, &forward);
-    
-    position.x -= (forward.x * frameTime);
-    position.y -= (forward.y * frameTime);
-    position.z -= (forward.z * frameTime);
 }
 
 - (void) moveLeft:(const double)frameTime
@@ -210,8 +192,7 @@
     inputLocked = NO;
 
     leftClickAction        = [[[ NP Input ] inputActions ] addInputActionWithName:@"LeftClick"   inputEvent:NpMouseButtonLeft ];
-    strafeLeftAction       = [[[ NP Input ] inputActions ] addInputActionWithName:@"StrafeLeft"  inputEvent:NpKeyboardLeft    ];
-    strafeRightAction      = [[[ NP Input ] inputActions ] addInputActionWithName:@"StrafeRight" inputEvent:NpKeyboardRight   ];
+    rightClickAction       = [[[ NP Input ] inputActions ] addInputActionWithName:@"RightClick"   inputEvent:NpMouseButtonRight ];
 
     wheelDownAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"ZoomOut" inputEvent:NpMouseWheelDown ];
     wheelUpAction   = [[[ NP Input ] inputActions ] addInputActionWithName:@"ZoomIn"  inputEvent:NpMouseWheelUp   ];
@@ -223,9 +204,8 @@
 {
     [[[ NP Input ] inputActions ] removeInputAction:wheelUpAction ];
     [[[ NP Input ] inputActions ] removeInputAction:wheelDownAction ];
-    [[[ NP Input ] inputActions ] removeInputAction:strafeRightAction ];
-    [[[ NP Input ] inputActions ] removeInputAction:strafeLeftAction ];
     [[[ NP Input ] inputActions ] removeInputAction:leftClickAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:rightClickAction ];
 
 	[ super dealloc ];
 }
