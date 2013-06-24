@@ -29,14 +29,18 @@ OdCameraInputSettings;
     double pitch;
 
     BOOL inputLocked;
-    NPInputAction * leftClickAction;
-    NPInputAction * rightClickAction;
-    NPInputAction * wheelDownAction;
-    NPInputAction * wheelUpAction;
+    NPInputAction * rotateAction;
+    NPInputAction * strafeAction;
+    NPInputAction * forwardAction;
+    NPInputAction * backwardAction;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
+- (id) initWithName:(NSString *)newName
+      inputSettings:(OdCameraInputSettings)inputSettings
+                   ;
+
 - (void) dealloc;
 
 - (double) fov;
