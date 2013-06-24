@@ -1,5 +1,15 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
+#import "Input/NPEngineInputEnums.h"
+
+typedef struct OdCameraInputSettings
+{
+    NpInputEvent rotate;
+    NpInputEvent strafe;
+    NpInputEvent forward;
+    NpInputEvent backward;
+}
+OdCameraInputSettings;
 
 @class NPInputAction;
 
@@ -20,8 +30,6 @@
 
     BOOL inputLocked;
     NPInputAction * leftClickAction;
-    NPInputAction * forwardMovementAction;
-    NPInputAction * backwardMovementAction;
     NPInputAction * strafeLeftAction;
     NPInputAction * strafeRightAction;
     NPInputAction * wheelDownAction;
