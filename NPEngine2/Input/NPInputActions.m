@@ -58,7 +58,10 @@
 
 - (void) removeInputAction:(id)inputAction
 {
-    [ inputActions removeObjectIdenticalTo:inputAction ];
+    if ( inputAction != nil )
+    {
+        [ inputActions removeObjectIdenticalTo:inputAction ];
+    }
 }
 
 - (void) update
