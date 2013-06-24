@@ -30,8 +30,7 @@ OdCameraInputSettings;
 
     BOOL inputLocked;
     NPInputAction * leftClickAction;
-    NPInputAction * strafeLeftAction;
-    NPInputAction * strafeRightAction;
+    NPInputAction * rightClickAction;
     NPInputAction * wheelDownAction;
     NPInputAction * wheelUpAction;
 }
