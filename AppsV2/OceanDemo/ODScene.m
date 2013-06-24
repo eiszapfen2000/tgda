@@ -154,6 +154,8 @@
     camera    = [[ ODCamera       alloc ] init ];
     entities  = [[ NSMutableArray alloc ] init ];
 
+    testCamera = [[ ODCamera alloc ] initWithName:@"TestCamera" ];
+
     ocean = [[ ODOceanEntity alloc ] initWithName:@"Ocean" ];
     projectedGrid = [[ ODProjectedGrid alloc ] initWithName:@"ProjGrid" ];
 
@@ -206,6 +208,7 @@
     [ entities removeAllObjects ];
     DESTROY(entities);
     DESTROY(camera);
+    DESTROY(testCamera);
 
     [ ocean stop ];
     SAFE_DESTROY(ocean);

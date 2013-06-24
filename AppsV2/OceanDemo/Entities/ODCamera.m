@@ -127,10 +127,13 @@ static NSString * const strafeActionString   = @"Strafe";
 static NSString * const forwardActionString  = @"Forward";
 static NSString * const backwardActionString = @"Backward";
 
-static NPInputAction * create_input_action(NSString * name, NpInputEvent event)
+static NPInputAction * create_input_action(NSString * cameraName, NSString * actionName, NpInputEvent event)
 {
     if ( event != NpInputEventUnknown )
     {
+        NSMutableString * name = [NSMutableString stringWithString:cameraName];
+        [ name appendString:actionName ];
+
         return
             [[[ NP Input ] inputActions ]
                     addInputActionWithName:name
@@ -176,10 +179,10 @@ static NPInputAction * create_input_action(NSString * name, NpInputEvent event)
 
     inputLocked = NO;
 
-    rotateAction   = create_input_action(rotateActionString,   inputSettings.rotate);
-    strafeAction   = create_input_action(strafeActionString,   inputSettings.strafe);
-    forwardAction  = create_input_action(forwardActionString,  inputSettings.forward);
-    backwardAction = create_input_action(backwardActionString, inputSettings.backward);
+    rotateAction   = create_input_action(name, rotateActionString,   inputSettings.rotate);
+    strafeAction   = create_input_action(name, strafeActionString,   inputSettings.strafe);
+    forwardAction  = create_input_action(name, forwardActionString,  inputSettings.forward);
+    backwardAction = create_input_action(name, backwardActionString, inputSettings.backward);
 
 	return self;
 }
