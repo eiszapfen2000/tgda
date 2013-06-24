@@ -27,7 +27,7 @@
 
 - (void) processInput:(const double)frameTime
 {
-    if ( [ leftClickAction active ] == YES )
+    if (( rotateAction != nil ) && ( [ rotateAction active ] == YES ))
     {
         // rotation update
         NPMouse * mouse = [[ NP Input ] mouse ];
@@ -42,17 +42,16 @@
         }
     }
 
-    if ( [ rightClickAction active ] == YES )
+    if (( strafeAction != nil ) && ( [ strafeAction active ] == YES ))
     {
         // rotation update
         NPMouse * mouse = [[ NP Input ] mouse ];
         int32_t deltaX = [ mouse deltaX ];
-        int32_t deltaY = [ mouse deltaY ];
 
         [ self moveRight:frameTime * 25.0 * deltaX ];
     }
 
-    if ( [ wheelUpAction activated ] == YES )
+    if (( forwardAction != nil ) && ( [ forwardAction active ] == YES ))
     {
         quat_q_forward_vector_v(&orientation, &forward);
 
@@ -61,7 +60,7 @@
         position.z += (forward.z * 2.0);
     }
 
-    if ( [ wheelDownAction activated ] == YES )
+    if (( backwardAction != nil ) && ( [ backwardAction active ] == YES ))
     {
         quat_q_forward_vector_v(&orientation, &forward);
 
@@ -132,6 +131,28 @@
 
 @end
 
+static const OdCameraInputSettings defaultInputSettings
+    = {.rotate = NpMouseButtonLeft, .strafe = NpMouseButtonRight,
+       .forward = NpMouseWheelUp, .backward = NpMouseWheelDown };
+
+static NSString * const rotateActionString   = @"Rotate";
+static NSString * const strafeActionString   = @"Strafe";
+static NSString * const forwardActionString  = @"Forward";
+static NSString * const backwardActionString = @"Backward";
+
+static NPInputAction * create_input_action(NSString * name, NpInputEvent event)
+{
+    if ( event != NpInputEventUnknown )
+    {
+        return
+            [[[ NP Input ] inputActions ]
+                    addInputActionWithName:name
+                                inputEvent:event ]; 
+    }
+
+    return nil;
+}
+
 @implementation ODCamera
 
 - (id) init
@@ -139,7 +160,13 @@
 	return [ self initWithName:@"ODCamera" ];
 }
 
-- (id) initWithName:(NSString *)newName;
+- (id) initWithName:(NSString *)newName
+{
+    return [ self initWithName:newName inputSettings:defaultInputSettings ];
+}
+
+- (id) initWithName:(NSString *)newName
+      inputSettings:(OdCameraInputSettings)inputSettings
 {
 	self = [ super initWithName:newName ];
 
@@ -162,21 +189,20 @@
 
     inputLocked = NO;
 
-    leftClickAction        = [[[ NP Input ] inputActions ] addInputActionWithName:@"LeftClick"   inputEvent:NpMouseButtonLeft ];
-    rightClickAction       = [[[ NP Input ] inputActions ] addInputActionWithName:@"RightClick"   inputEvent:NpMouseButtonRight ];
-
-    wheelDownAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"ZoomOut" inputEvent:NpMouseWheelDown ];
-    wheelUpAction   = [[[ NP Input ] inputActions ] addInputActionWithName:@"ZoomIn"  inputEvent:NpMouseWheelUp   ];
+    rotateAction = create_input_action(rotateActionString, inputSettings.rotate);
+    strafeAction = create_input_action(strafeActionString, inputSettings.strafe);
+    forwardAction = create_input_action(forwardActionString, inputSettings.forward);
+    backwardAction = create_input_action(backwardActionString, inputSettings.backward);
 
 	return self;
 }
 
 - (void) dealloc
 {
-    [[[ NP Input ] inputActions ] removeInputAction:wheelUpAction ];
-    [[[ NP Input ] inputActions ] removeInputAction:wheelDownAction ];
-    [[[ NP Input ] inputActions ] removeInputAction:leftClickAction ];
-    [[[ NP Input ] inputActions ] removeInputAction:rightClickAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:backwardAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:forwardAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:strafeAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:rotateAction ];
 
 	[ super dealloc ];
 }
