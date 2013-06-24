@@ -16,8 +16,7 @@
 
 - (void) processInput:(const double)frameTime;
 - (void) cameraRotateUsingYaw:(const double)yawDegrees andPitch:(const double)pitchDegrees;
-- (void) moveLeft:(const double)frameTime;
-- (void) moveRight:(const double)frameTime;
+- (void) strafe:(const double)scale;
 - (void) updateProjection;
 - (void) updateView;
 
@@ -29,7 +28,6 @@
 {
     if (( rotateAction != nil ) && ( [ rotateAction active ] == YES ))
     {
-        // rotation update
         NPMouse * mouse = [[ NP Input ] mouse ];
         int32_t deltaX = [ mouse deltaX ];
         int32_t deltaY = [ mouse deltaY ];
@@ -44,11 +42,10 @@
 
     if (( strafeAction != nil ) && ( [ strafeAction active ] == YES ))
     {
-        // rotation update
         NPMouse * mouse = [[ NP Input ] mouse ];
         int32_t deltaX = [ mouse deltaX ];
 
-        [ self moveRight:frameTime * 25.0 * deltaX ];
+        [ self strafe:frameTime * 25.0 * deltaX ];
     }
 
     if (( forwardAction != nil ) && ( [ forwardAction active ] == YES ))
@@ -85,24 +82,14 @@
     }
 }
 
-- (void) moveLeft:(const double)frameTime
+- (void) strafe:(const double)scale
 {
     Vector3 right;
     quat_q_right_vector_v(&orientation, &right);
     
-    position.x -= (right.x * frameTime);
-    position.y -= (right.y * frameTime);
-    position.z -= (right.z * frameTime);
-}
-
-- (void) moveRight:(const double)frameTime
-{
-    Vector3 right;
-    quat_q_right_vector_v(&orientation, &right);
-    
-    position.x += (right.x * frameTime);
-    position.y += (right.y * frameTime);
-    position.z += (right.z * frameTime);
+    position.x += (right.x * scale);
+    position.y += (right.y * scale);
+    position.z += (right.z * scale);
 }
 
 - (void) updateProjection
@@ -189,9 +176,9 @@ static NPInputAction * create_input_action(NSString * name, NpInputEvent event)
 
     inputLocked = NO;
 
-    rotateAction = create_input_action(rotateActionString, inputSettings.rotate);
-    strafeAction = create_input_action(strafeActionString, inputSettings.strafe);
-    forwardAction = create_input_action(forwardActionString, inputSettings.forward);
+    rotateAction   = create_input_action(rotateActionString,   inputSettings.rotate);
+    strafeAction   = create_input_action(strafeActionString,   inputSettings.strafe);
+    forwardAction  = create_input_action(forwardActionString,  inputSettings.forward);
     backwardAction = create_input_action(backwardActionString, inputSettings.backward);
 
 	return self;
@@ -200,9 +187,9 @@ static NPInputAction * create_input_action(NSString * name, NpInputEvent event)
 - (void) dealloc
 {
     [[[ NP Input ] inputActions ] removeInputAction:backwardAction ];
-    [[[ NP Input ] inputActions ] removeInputAction:forwardAction ];
-    [[[ NP Input ] inputActions ] removeInputAction:strafeAction ];
-    [[[ NP Input ] inputActions ] removeInputAction:rotateAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:forwardAction  ];
+    [[[ NP Input ] inputActions ] removeInputAction:strafeAction   ];
+    [[[ NP Input ] inputActions ] removeInputAction:rotateAction   ];
 
 	[ super dealloc ];
 }
