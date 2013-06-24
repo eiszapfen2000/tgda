@@ -421,15 +421,17 @@
     [ camera render ];
 
     [[[ NP Core] transformationState] resetModelMatrix];
-    //NPEffectVariableFloat2 * v = [ deferredEffect variableWithName:@"scale"];
-    //[ v setFValue:[ocean baseMeshScale]];
-    //[[ deferredEffect techniqueWithName:@"base_xz" ] activate ];
-    //[ ocean renderBaseMesh ];
+    NPEffectVariableFloat2 * v = [ deferredEffect variableWithName:@"scale"];
+    [ v setFValue:[ocean baseMeshScale]];
+    [[ deferredEffect techniqueWithName:@"base_xz" ] activate ];
+    [ ocean renderBaseMesh ];
+    /*
     NPEffectVariableMatrix4x4 * v = [ deferredEffect variableWithName:@"invMVP"];
     [ v setValue:[[ocean projector] inverseViewProjection]];
     
     [[ deferredEffect techniqueWithName:@"proj_grid_corners" ] activate ];
     [ projectedGrid render:nil ];
+    */
     //[ ocean renderBasePlane ];
 
     [[[ NP Graphics ] stateConfiguration ] deactivate ];

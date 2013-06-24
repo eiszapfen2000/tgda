@@ -16,8 +16,6 @@
 
 - (void) processInput:(const double)frameTime;
 - (void) cameraRotateUsingYaw:(const double)yawDegrees andPitch:(const double)pitchDegrees;
-- (void) moveForward:(const double)frameTime;
-- (void) moveBackward:(const double)frameTime;
 - (void) moveLeft:(const double)frameTime;
 - (void) moveRight:(const double)frameTime;
 - (void) updateYaw:(double)degrees;
@@ -31,17 +29,6 @@
 
 - (void) processInput:(const double)frameTime
 {
-    // position update
-    if ( [ forwardMovementAction active ] == YES )
-    {
-        [ self moveForward:frameTime ];
-    }
-
-    if ( [ backwardMovementAction active ] == YES )
-    {
-        [ self moveBackward:frameTime ];
-    }
-
     if ( [ strafeLeftAction active ] == YES )
     {
         [ self moveLeft:frameTime * 10.0 ];
@@ -223,8 +210,6 @@
     inputLocked = NO;
 
     leftClickAction        = [[[ NP Input ] inputActions ] addInputActionWithName:@"LeftClick"   inputEvent:NpMouseButtonLeft ];
-    forwardMovementAction  = [[[ NP Input ] inputActions ] addInputActionWithName:@"Forward"     inputEvent:NpKeyboardUp      ];
-    backwardMovementAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"Backward"    inputEvent:NpKeyboardDown    ];
     strafeLeftAction       = [[[ NP Input ] inputActions ] addInputActionWithName:@"StrafeLeft"  inputEvent:NpKeyboardLeft    ];
     strafeRightAction      = [[[ NP Input ] inputActions ] addInputActionWithName:@"StrafeRight" inputEvent:NpKeyboardRight   ];
 
@@ -240,8 +225,6 @@
     [[[ NP Input ] inputActions ] removeInputAction:wheelDownAction ];
     [[[ NP Input ] inputActions ] removeInputAction:strafeRightAction ];
     [[[ NP Input ] inputActions ] removeInputAction:strafeLeftAction ];
-    [[[ NP Input ] inputActions ] removeInputAction:backwardMovementAction ];
-    [[[ NP Input ] inputActions ] removeInputAction:forwardMovementAction ];
     [[[ NP Input ] inputActions ] removeInputAction:leftClickAction ];
 
 	[ super dealloc ];
