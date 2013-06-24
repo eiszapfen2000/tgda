@@ -18,8 +18,6 @@
 - (void) cameraRotateUsingYaw:(const double)yawDegrees andPitch:(const double)pitchDegrees;
 - (void) moveLeft:(const double)frameTime;
 - (void) moveRight:(const double)frameTime;
-- (void) updateYaw:(double)degrees;
-- (void) updatePitch:(double)degrees;
 - (void) updateProjection;
 - (void) updateView;
 
@@ -75,8 +73,17 @@
 
 - (void) cameraRotateUsingYaw:(const double)yawDegrees andPitch:(const double)pitchDegrees
 {
-    [ self updateYaw:yawDegrees ];
-    [ self updatePitch:pitchDegrees ];
+    if ( yawDegrees != 0.0 )
+    {
+        yaw += yawDegrees;
+        yaw = fmod(yaw, 360.0);
+    }
+
+    if ( pitchDegrees != 0.0 )
+    {
+        pitch += pitchDegrees;
+        pitch = fmod(pitch, 360.0);
+    }
 }
 
 - (void) moveLeft:(const double)frameTime
@@ -97,42 +104,6 @@
     position.x += (right.x * frameTime);
     position.y += (right.y * frameTime);
     position.z += (right.z * frameTime);
-}
-
-- (void) updateYaw:(double)degrees
-{
-    if ( degrees != 0.0 )
-    {
-        yaw += degrees;
-
-        if ( yaw < 0.0 )
-        {
-            yaw = 360.0 + yaw;
-        }
-
-        if ( yaw > 360.0 )
-        {
-            yaw -= 360.0;
-        }
-    }
-}
-
-- (void) updatePitch:(double)degrees
-{
-    if ( degrees != 0.0 )
-    {
-        pitch += degrees;
-
-        if ( pitch < 0.0 )
-        {
-            pitch = 360.0 + pitch;
-        }
-
-        if ( pitch > 360.0 )
-        {
-            pitch -= 360.0;
-        }
-    }
 }
 
 - (void) updateProjection
