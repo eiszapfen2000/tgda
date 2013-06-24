@@ -24,6 +24,7 @@
 
     // enitities
     ODCamera * camera;
+    ODCamera * testCamera;
     ODOceanEntity * ocean;
     ODProjectedGrid * projectedGrid;
     ODPreethamSkylight * skylight;
