@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "NpCrc32.h"
 
-void crc32_initialise()
+void crc32_initialise(void)
 {
     crc32_verify_tables();
 }
@@ -87,7 +87,7 @@ const uint32_t crc32_8bit_table[] =
     0xb40bbe37u, 0xc30c8ea1u, 0x5a05df1bu, 0x2d02ef8du
 };
 
-void crc32_verify_tables()
+void crc32_verify_tables(void)
 {
     uint32_t pattern;
     

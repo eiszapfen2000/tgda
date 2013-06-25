@@ -7,6 +7,6 @@
 #include "NpFreeList.h"
 #include "NpHalf.h"
 
-void npbasics_initialise();
+void npbasics_initialise(void);
 
 #endif
