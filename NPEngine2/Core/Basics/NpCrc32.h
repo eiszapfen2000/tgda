@@ -50,7 +50,7 @@
 
 #include "NpTypes.h"
 
-void crc32_initialise();
+void crc32_initialise(void);
 
 extern const uint32_t crc32_2bit_table[];
 extern const uint32_t crc32_4bit_table[];
@@ -64,7 +64,7 @@ extern const uint32_t crc32_8bit_table[];
     'crc32_verify_tables'
 	Verify all crc tables.  If this fails, something serious is amiss.
 --------------------------------------------------------------------------- */
-void crc32_verify_tables();
+void crc32_verify_tables(void);
 
 /* ---------------------------------------------------------------------------
     'crc32_update_with_...'
@@ -86,6 +86,7 @@ void crc32_update_with_string( uint32_t * crc, const char * string );
 	Calculate the crc32 value of various different sizes of data.
 --------------------------------------------------------------------------- */
 void crc32_write_to_data( const uint32_t crc, void * pointer );
+uint32_t crc32_of_uint32( const uint32_t value );
 uint32_t crc32_of_uint64( const uint64_t value );
 uint32_t crc32_of_pointer( const void const * pointer );
 uint32_t crc32_of_data( const void const * pointer, const size_t length );
