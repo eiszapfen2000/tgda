@@ -39,13 +39,13 @@ typedef struct NpSUX2Vertices
 }
 NpSUX2Vertices;
 
-void init_vertexformat(NpSUX2VertexFormat * vertexformat)
+static void init_vertexformat(NpSUX2VertexFormat * vertexformat)
 {
     memset(vertexformat, 0, sizeof(NpSUX2VertexFormat));
     vertexformat->elementsForPosition = 3;
 }
 
-void init_vertices(NpSUX2Vertices * vertices)
+static void init_vertices(NpSUX2Vertices * vertices)
 {
     init_vertexformat(&(vertices->format));
 
@@ -65,7 +65,7 @@ void init_vertices(NpSUX2Vertices * vertices)
     }
 }
 
-void vertices_allocate_storage(NpSUX2Vertices * vertices, const int32_t numberOfVertices,
+static void vertices_allocate_storage(NpSUX2Vertices * vertices, const int32_t numberOfVertices,
         const int32_t numberOfIndices)
 {
     assert(vertices != NULL);
@@ -109,7 +109,7 @@ void vertices_allocate_storage(NpSUX2Vertices * vertices, const int32_t numberOf
     }
 }
 
-void vertices_delete_storage(NpSUX2Vertices * vertices)
+static void vertices_delete_storage(NpSUX2Vertices * vertices)
 {
     assert(vertices != NULL);
 
