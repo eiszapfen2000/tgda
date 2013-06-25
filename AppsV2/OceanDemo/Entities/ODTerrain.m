@@ -20,6 +20,8 @@
 
 - (id) initWithName:(NSString *)newName
 {
+    self = [ super initWithName:newName ];
+
     models = [[ NSMutableArray alloc ] init ];
 
     return self;

@@ -15,7 +15,7 @@
 
 static char * rng_names[] = {"tt800", "ctg", "mrg", "cmrg", "mt19937(0)"};
 
-OdGaussianRng * odgaussianrng_alloc()
+OdGaussianRng * odgaussianrng_alloc(void)
 {
     OdGaussianRng * grng = ALLOC(OdGaussianRng);
     memset(grng, 0, sizeof(OdGaussianRng));
@@ -23,7 +23,7 @@ OdGaussianRng * odgaussianrng_alloc()
     return grng;
 }
 
-OdGaussianRng * odgaussianrng_alloc_init()
+OdGaussianRng * odgaussianrng_alloc_init(void)
 {
     OdGaussianRng * grng = ALLOC(OdGaussianRng);
     memset(grng, 0, sizeof(OdGaussianRng));

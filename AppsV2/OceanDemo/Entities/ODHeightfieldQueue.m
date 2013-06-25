@@ -7,17 +7,17 @@
 
 static NpFreeList * OD_HEIGHTFIELDDATA_FREELIST = NULL;
 
-void od_heightfielddata_initialise()
+void od_heightfielddata_initialise(void)
 {
     NPFREELIST_ALLOC_INIT(OD_HEIGHTFIELDDATA_FREELIST, OdHeightfieldData, 128)
 }
 
-OdHeightfieldData * heightfield_alloc()
+OdHeightfieldData * heightfield_alloc(void)
 {
     return (OdHeightfieldData *)npfreenode_alloc(OD_HEIGHTFIELDDATA_FREELIST);
 }
 
-OdHeightfieldData * heightfield_alloc_init()
+OdHeightfieldData * heightfield_alloc_init(void)
 {
     OdHeightfieldData * result
         = (OdHeightfieldData *)npfreenode_alloc(OD_HEIGHTFIELDDATA_FREELIST);

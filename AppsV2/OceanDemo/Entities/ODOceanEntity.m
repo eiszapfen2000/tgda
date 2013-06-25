@@ -31,7 +31,7 @@
 #import "ODOceanBaseMeshes.h"
 #import "ODOceanEntity.h"
 
-void print_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
+static void print_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
 {
     for ( int32_t j = 0; j < resolution.y; j++ )
     {
@@ -44,7 +44,7 @@ void print_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
     }
 }
 
-void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
+static void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
 {
     for ( int32_t j = 0; j < resolution.y; j++ )
     {

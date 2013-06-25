@@ -41,28 +41,28 @@ NpMouseState mouseState;
 IVector2 mousePosition;
 IVector2 widgetSize;
 
-void GLFWCALL keyboard_callback(int key, int state)
+static void GLFWCALL keyboard_callback(int key, int state)
 {
     keyboardState.keys[key] = state;
 }
 
-void GLFWCALL mouse_pos_callback(int x, int y)
+static void GLFWCALL mouse_pos_callback(int x, int y)
 {
     mousePosition.x = x;
     mousePosition.y = y;
 }
 
-void mouse_button_callback(int button, int state)
+static void mouse_button_callback(int button, int state)
 {
     mouseState.buttons[button] = state;
 }
 
-void GLFWCALL mouse_wheel_callback(int wheel)
+static void GLFWCALL mouse_wheel_callback(int wheel)
 {
     mouseState.scrollWheel = wheel;
 }
 
-void GLFWCALL window_resize_callback(int width, int height)
+static void GLFWCALL window_resize_callback(int width, int height)
 {
     widgetSize.x = width;
     widgetSize.y = height;
