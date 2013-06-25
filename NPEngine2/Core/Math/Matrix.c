@@ -11,19 +11,19 @@ NpFreeList * NP_MATRIX2_FREELIST = NULL;
 NpFreeList * NP_MATRIX3_FREELIST = NULL;
 NpFreeList * NP_MATRIX4_FREELIST = NULL;
 
-void npmath_matrix_initialise()
+void npmath_matrix_initialise(void)
 {
     NPFREELIST_ALLOC_INIT(NP_MATRIX2_FREELIST, Matrix2, 512)
     NPFREELIST_ALLOC_INIT(NP_MATRIX3_FREELIST, Matrix3, 512)
     NPFREELIST_ALLOC_INIT(NP_MATRIX4_FREELIST, Matrix4, 512)
 }
 
-Matrix2 * m2_alloc()
+Matrix2 * m2_alloc(void)
 {
     return (Matrix2 *)npfreenode_alloc(NP_MATRIX2_FREELIST);
 }
 
-Matrix2 * m2_alloc_init()
+Matrix2 * m2_alloc_init(void)
 {
     Matrix2 * tmp = npfreenode_alloc(NP_MATRIX2_FREELIST);
     m2_m_set_identity(tmp);
@@ -181,12 +181,12 @@ const char * m2_m_to_string(Matrix2 * m)
 
 /* ------------------------------------------------------------------------- */
 
-Matrix3 * m3_alloc()
+Matrix3 * m3_alloc(void)
 {
     return (Matrix3 *)npfreenode_alloc(NP_MATRIX3_FREELIST);
 }
 
-Matrix3 * m3_alloc_init()
+Matrix3 * m3_alloc_init(void)
 {
     Matrix3 * tmp = npfreenode_alloc(NP_MATRIX3_FREELIST);
     m3_m_set_identity(tmp);
@@ -570,12 +570,12 @@ const char * m3_m_to_string(Matrix3 * m)
 
 /* ------------------------------------------------------------------------- */
 
-Matrix4 * m4_alloc()
+Matrix4 * m4_alloc(void)
 {
     return (Matrix4 *)npfreenode_alloc(NP_MATRIX4_FREELIST);
 }
 
-Matrix4 * m4_alloc_init()
+Matrix4 * m4_alloc_init(void)
 {
     Matrix4 * tmp = npfreenode_alloc(NP_MATRIX4_FREELIST);
     m4_m_set_identity(tmp);

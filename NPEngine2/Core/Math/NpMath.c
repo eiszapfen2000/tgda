@@ -1,6 +1,6 @@
 #include "NpMath.h"
 
-void npmath_initialise()
+void npmath_initialise(void)
 {
     npmath_fvector_initialise();
     npmath_fmatrix_initialise();

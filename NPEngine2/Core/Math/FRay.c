@@ -2,17 +2,17 @@
 
 NpFreeList * NP_FRAY_FREELIST = NULL;
 
-void npmath_fray_initialise()
+void npmath_fray_initialise(void)
 {
     NPFREELIST_ALLOC_INIT(NP_FRAY_FREELIST, FRay, 512);
 }
 
-FRay * fray_alloc()
+FRay * fray_alloc(void)
 {
     return npfreenode_alloc(NP_FRAY_FREELIST);
 }
 
-FRay * fray_alloc_init()
+FRay * fray_alloc_init(void)
 {
     FRay * ray    = npfreenode_alloc(NP_FRAY_FREELIST);
     fv3_v_init_with_zeros(&(ray->point));

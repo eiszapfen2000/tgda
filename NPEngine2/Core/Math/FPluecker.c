@@ -7,17 +7,17 @@
 
 NpFreeList * NP_FPLUECKER_FREELIST = NULL;
 
-void npmath_fpluecker_initialise()
+void npmath_fpluecker_initialise(void)
 {
     NPFREELIST_ALLOC_INIT(NP_FPLUECKER_FREELIST, FPluecker, 64)
 }
 
-FPluecker * fpluecker_alloc()
+FPluecker * fpluecker_alloc(void)
 {
     return (FPluecker *)npfreenode_alloc(NP_FPLUECKER_FREELIST);
 }
 
-FPluecker * fpluecker_alloc_init()
+FPluecker * fpluecker_alloc_init(void)
 {
     FPluecker * tmp = npfreenode_alloc(NP_FPLUECKER_FREELIST);
 

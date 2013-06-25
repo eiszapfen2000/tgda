@@ -5,7 +5,7 @@
 #include "FVector.h"
 #include "FRay.h"
 
-void npmath_fplane_initialise();
+void npmath_fplane_initialise(void);
 
 typedef struct FPlane
 {
@@ -14,8 +14,8 @@ typedef struct FPlane
 }
 FPlane;
 
-FPlane * fplane_alloc();
-FPlane * fplane_alloc_init();
+FPlane * fplane_alloc(void);
+FPlane * fplane_alloc_init(void);
 FPlane * fplane_alloc_init_with_normal(const FVector3 * const normal);
 FPlane * fplane_alloc_init_with_normal_and_scalar(const FVector3 * const normal, const float scalar);
 FPlane * fplane_alloc_init_with_components(const float x, const float y, const float z, const float scalar);

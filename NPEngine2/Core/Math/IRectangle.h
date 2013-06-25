@@ -4,7 +4,7 @@
 #include "Core/Basics/NpBasics.h"
 #include "IVector.h"
 
-void npmath_irectangle_initialise();
+void npmath_irectangle_initialise(void);
 
 typedef struct IRectangle
 {
@@ -13,8 +13,8 @@ typedef struct IRectangle
 }
 IRectangle;
 
-IRectangle * irectangle_alloc();
-IRectangle * irectangle_alloc_init();
+IRectangle * irectangle_alloc(void);
+IRectangle * irectangle_alloc_init(void);
 void irectangle_free(IRectangle * r);
 
 void irectangle_ssss_init_with_min_max_r(const int32_t minX, const int32_t minY,

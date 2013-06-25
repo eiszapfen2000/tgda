@@ -4,7 +4,7 @@
 #include "Core/Basics/NpTypes.h"
 #include "Accessors.h"
 
-void npmath_fvector_initialise();
+void npmath_fvector_initialise(void);
 
 typedef struct FVector2
 {
@@ -31,11 +31,10 @@ extern FVector3 * NP_WORLDF_Y_AXIS;
 extern FVector3 * NP_WORLDF_Z_AXIS;
 extern FVector3 * NP_WORLDF_FORWARD_VECTOR;
 
-FVector2 * fv2_alloc();
-FVector2 * fv2_alloc_init();
+FVector2 * fv2_alloc(void);
+FVector2 * fv2_alloc_init(void);
 void fv2_free(FVector2 * v);
 void fv2_v_init_with_zeros(FVector2 * v);
-void fv2_vv_init_with_fv2(FVector2 * v1, const FVector2 const * v2);
 void fv2_vss_init_with_components(FVector2 * v, Float x, Float y);
 void fv2_v_invert(FVector2 * v);
 void fv2_v_invert_v(const FVector2 const * v, FVector2 * result);
@@ -63,8 +62,8 @@ FVector2 fv2_sv_scaledy(Float scale, const FVector2 const * v);
 FVector2 fv2_vvs_lerp(const FVector2 * const v, const FVector2 * const w, const float u);
 const char * fv2_v_to_string(const FVector2 * const v);
 
-FVector3 * fv3_alloc();
-FVector3 * fv3_alloc_init();
+FVector3 * fv3_alloc(void);
+FVector3 * fv3_alloc_init(void);
 FVector3 * fv3_alloc_init_with_fv3(FVector3 * v);
 FVector3 * fv3_alloc_init_with_components(Float x, Float y, Float z);
 void fv3_free(FVector3 * v);
@@ -104,8 +103,8 @@ FVector3 fv3_sv_scaledz(Float scale, const FVector3 const * v);
 FVector3 fv3_vvs_lerp(const FVector3 * const v, const FVector3 * const w, const float u);
 const char * fv3_v_to_string(const FVector3 * const v);
 
-FVector4 * fv4_alloc();
-FVector4 * fv4_alloc_init();
+FVector4 * fv4_alloc(void);
+FVector4 * fv4_alloc_init(void);
 FVector4 * fv4_alloc_init_with_fv3(const FVector3 const * v);
 FVector4 * fv4_alloc_init_with_fv4(const FVector4 const * v);
 FVector4 * fv4_alloc_init_with_components(Float x, Float y, Float z, Float w);

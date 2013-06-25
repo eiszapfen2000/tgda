@@ -9,17 +9,17 @@
 
 NpFreeList * NP_FQUATERNION_FREELIST = NULL;
 
-void npmath_fquaternion_initialise()
+void npmath_fquaternion_initialise(void)
 {
     NPFREELIST_ALLOC_INIT(NP_FQUATERNION_FREELIST, FQuaternion, 512)
 }
 
-FQuaternion * fquat_alloc()
+FQuaternion * fquat_alloc(void)
 {
     return (FQuaternion *)npfreenode_alloc(NP_FQUATERNION_FREELIST);
 }
 
-FQuaternion * fquat_alloc_init()
+FQuaternion * fquat_alloc_init(void)
 {
     FQuaternion * tmp = npfreenode_alloc(NP_FQUATERNION_FREELIST);
     Q_X(*tmp) = Q_Y(*tmp) = Q_Z(*tmp) = 0.0f;

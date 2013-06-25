@@ -7,7 +7,7 @@
 #include "Matrix.h"
 #include "FMatrix.h"
 
-void npmath_quaternion_initialise();
+void npmath_quaternion_initialise(void);
 
 typedef struct
 {
@@ -16,8 +16,8 @@ typedef struct
 }
 Quaternion;
 
-Quaternion * quat_alloc();
-Quaternion * quat_alloc_init();
+Quaternion * quat_alloc(void);
+Quaternion * quat_alloc_init(void);
 Quaternion * quat_alloc_init_with_axis_and_degrees(const Vector3 * const axis, const double degrees);
 Quaternion * quat_alloc_init_with_axis_and_radians(const Vector3 * const axis, const double radians);
 void quat_free(Quaternion * q);
