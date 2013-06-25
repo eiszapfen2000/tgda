@@ -14,7 +14,7 @@ Vector3 * NP_WORLD_Y_AXIS = NULL;
 Vector3 * NP_WORLD_Z_AXIS = NULL;
 Vector3 * NP_WORLD_FORWARD_VECTOR = NULL;
 
-void npmath_vector_initialise()
+void npmath_vector_initialise(void)
 {
     NPFREELIST_ALLOC_INIT(NP_VECTOR2_FREELIST, Vector2, 512)
     NPFREELIST_ALLOC_INIT(NP_VECTOR3_FREELIST, Vector3, 512)
@@ -26,24 +26,15 @@ void npmath_vector_initialise()
     NP_WORLD_FORWARD_VECTOR = v3_alloc_init(); V_Z(*NP_WORLD_FORWARD_VECTOR) = -1.0;
 }
 
-Vector2 * v2_alloc()
+Vector2 * v2_alloc(void)
 {
     return (Vector2 *)npfreenode_alloc(NP_VECTOR2_FREELIST);
 }
 
-Vector2 * v2_alloc_init()
+Vector2 * v2_alloc_init(void)
 {
     Vector2 * tmp = npfreenode_alloc(NP_VECTOR2_FREELIST);
     V_X(*tmp) = V_Y(*tmp) = 0.0;
-
-    return tmp;
-}
-
-Vector2 * v2_alloc_init_with_v2(const Vector2 const * v)
-{
-    Vector2 * tmp = npfreenode_alloc(NP_VECTOR2_FREELIST);
-    V_X(*tmp) = V_X(*v);
-    V_Y(*tmp) = V_Y(*v);
 
     return tmp;
 }
@@ -214,25 +205,15 @@ const char * v2_v_to_string(Vector2 * v)
 
 // ----------------------------------------------------------------------------
 
-Vector3 * v3_alloc()
+Vector3 * v3_alloc(void)
 {
     return (Vector3 *)npfreenode_alloc(NP_VECTOR3_FREELIST);
 }
 
-Vector3 * v3_alloc_init()
+Vector3 * v3_alloc_init(void)
 {
     Vector3 * tmp = npfreenode_alloc(NP_VECTOR3_FREELIST);
     V_X(*tmp) = V_Y(*tmp) = V_Z(*tmp) = 0.0;
-
-    return tmp;
-}
-
-Vector3 * v3_alloc_init_with_v3(const Vector3 const * v)
-{
-    Vector3 * tmp = npfreenode_alloc(NP_VECTOR3_FREELIST);
-    V_X(*tmp) = V_X(*v);
-    V_Y(*tmp) = V_Y(*v);
-    V_Z(*tmp) = V_Z(*v);
 
     return tmp;
 }
@@ -444,12 +425,12 @@ const char * v3_v_to_string(Vector3 * v)
 
 //-----------------------------------------------------------------------------
 
-Vector4 * v4_alloc()
+Vector4 * v4_alloc(void)
 {
     return (Vector4 *)npfreenode_alloc(NP_VECTOR4_FREELIST);
 }
 
-Vector4 * v4_alloc_init()
+Vector4 * v4_alloc_init(void)
 {
     Vector4 * tmp = npfreenode_alloc(NP_VECTOR4_FREELIST);
     V_X(*tmp) = V_Y(*tmp) = V_Z(*tmp) = 0.0;
@@ -458,23 +439,13 @@ Vector4 * v4_alloc_init()
     return tmp;
 }
 
-Vector4 * v4_alloc_init_with_fv3(const Vector3 const * v)
+Vector4 * v4_alloc_init_with_v3(const Vector3 const * v)
 {
     Vector4 * tmp = npfreenode_alloc(NP_VECTOR4_FREELIST);
     V_X(*tmp) = V_X(*v);
     V_Y(*tmp) = V_Y(*v);
     V_Z(*tmp) = V_Z(*v);
-
-    return tmp;
-}
-
-Vector4 * v4_alloc_init_with_fv4(const Vector4 const * v)
-{
-    Vector4 * tmp = npfreenode_alloc(NP_VECTOR4_FREELIST);
-    V_X(*tmp) = V_X(*v);
-    V_Y(*tmp) = V_Y(*v);
-    V_Z(*tmp) = V_Z(*v);
-    V_W(*tmp) = V_W(*v);
+    V_W(*tmp) = 1.0;
 
     return tmp;
 }

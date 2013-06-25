@@ -7,17 +7,17 @@
 
 NpFreeList * NP_IRECTANGLE_FREELIST = NULL;
 
-void npmath_irectangle_initialise()
+void npmath_irectangle_initialise(void)
 {
     NPFREELIST_ALLOC_INIT(NP_IRECTANGLE_FREELIST, IRectangle, 512);
 }
 
-IRectangle * irectangle_alloc()
+IRectangle * irectangle_alloc(void)
 {
     return npfreenode_alloc(NP_IRECTANGLE_FREELIST);
 }
 
-IRectangle * irectangle_alloc_init()
+IRectangle * irectangle_alloc_init(void)
 {
     IRectangle * rectangle = npfreenode_alloc(NP_IRECTANGLE_FREELIST);
 

@@ -30,6 +30,6 @@
 #include "Pluecker.h"
 #include "FPluecker.h"
 
-void npmath_initialise();
+void npmath_initialise(void);
 
 #endif

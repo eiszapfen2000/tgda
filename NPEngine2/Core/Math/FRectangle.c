@@ -7,17 +7,17 @@
 
 NpFreeList * NP_FRECTANGLE_FREELIST = NULL;
 
-void npmath_frectangle_initialise()
+void npmath_frectangle_initialise(void)
 {
     NPFREELIST_ALLOC_INIT(NP_FRECTANGLE_FREELIST, FRectangle, 512);
 }
 
-FRectangle * frectangle_alloc()
+FRectangle * frectangle_alloc(void)
 {
     return npfreenode_alloc(NP_FRECTANGLE_FREELIST);
 }
 
-FRectangle * frectangle_alloc_init()
+FRectangle * frectangle_alloc_init(void)
 {
     FRectangle * rectangle = npfreenode_alloc(NP_FRECTANGLE_FREELIST);
 

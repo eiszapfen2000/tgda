@@ -4,7 +4,7 @@
 #include "Core/Basics/NpBasics.h"
 #include "FVector.h"
 
-void npmath_fray_initialise();
+void npmath_fray_initialise(void);
 
 typedef struct FRay
 {
@@ -13,8 +13,8 @@ typedef struct FRay
 }
 FRay;
 
-FRay * fray_alloc();
-FRay * fray_alloc_init();
+FRay * fray_alloc(void);
+FRay * fray_alloc_init(void);
 FRay * fray_alloc_init_with_point_and_direction(const FVector3 * point, const FVector3 * direction);
 void fray_free(FRay * r);
 

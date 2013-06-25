@@ -5,7 +5,7 @@
 #include "Accessors.h"
 #include "FVector.h"
 
-void npmath_fmatrix_initialise();
+void npmath_fmatrix_initialise(void);
 
 struct Matrix2;
 struct Matrix3;
@@ -31,8 +31,8 @@ typedef struct FMatrix4
 }
 FMatrix4;
 
-FMatrix2 * fm2_alloc();
-FMatrix2 * fm2_alloc_init();
+FMatrix2 * fm2_alloc(void);
+FMatrix2 * fm2_alloc_init(void);
 void fm2_free(FMatrix2 * v);
 void fm2_m_set_identity(FMatrix2 * m);
 void fm2_m_init_with_m2(FMatrix2 * m1, const struct Matrix2 * const m2);
@@ -53,8 +53,8 @@ FVector2 fm2_mv_multiply(const FMatrix2 * const m, const FVector2 * const v);
 FMatrix2 fm2_m_inverse(const FMatrix2 * const m);
 const char * fm2_m_to_string(FMatrix2 * m);
 
-FMatrix3 * fm3_alloc();
-FMatrix3 * fm3_alloc_init();
+FMatrix3 * fm3_alloc(void);
+FMatrix3 * fm3_alloc_init(void);
 void fm3_free(FMatrix3 * v);
 void fm3_m_set_identity(FMatrix3 * m);
 void fm3_m_init_with_m3(FMatrix3 * m1, const struct Matrix3 * const m2);
@@ -95,8 +95,8 @@ FMatrix3 fm3_s_scalez(float scale);
 FMatrix3 fm3_s_scale(float scale);
 const char * fm3_m_to_string(FMatrix3 * m);
 
-FMatrix4 * fm4_alloc();
-FMatrix4 * fm4_alloc_init();
+FMatrix4 * fm4_alloc(void);
+FMatrix4 * fm4_alloc_init(void);
 FMatrix4 * fm4_alloc_init_with_fm4(FMatrix4 * m);
 void fm4_free(FMatrix4 * v);
 void fm4_m_set_identity(FMatrix4 * m);

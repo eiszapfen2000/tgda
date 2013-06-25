@@ -5,7 +5,7 @@
 #include "Vector.h"
 #include "Ray.h"
 
-void npmath_plane_initialise();
+void npmath_plane_initialise(void);
 
 typedef struct Plane
 {
@@ -14,8 +14,8 @@ typedef struct Plane
 }
 Plane;
 
-Plane * plane_alloc();
-Plane * plane_alloc_init();
+Plane * plane_alloc(void);
+Plane * plane_alloc_init(void);
 Plane * plane_alloc_init_with_normal(Vector3 * normal);
 Plane * plane_alloc_init_with_normal_and_scalar(Vector3 * normal, double scalar);
 void plane_free(Plane * p);
@@ -25,6 +25,6 @@ void plane_pssss_init_with_components(Plane * plane, const double x, const doubl
 
 int32_t plane_pr_intersect_with_ray_v(Plane * plane, Ray * ray, Vector3 * result);
 double plane_pv_signed_distance_from_plane(const Plane * const plane, const Vector3 * const point);
-double plane_pv_distance_from_plane_s(Plane * plane, Vector3 * point);
+double plane_pv_distance_from_plane(Plane * plane, Vector3 * point);
 
 #endif

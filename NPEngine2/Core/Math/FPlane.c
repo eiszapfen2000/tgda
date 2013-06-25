@@ -5,17 +5,17 @@
 
 NpFreeList * NP_FPLANE_FREELIST = NULL;
 
-void npmath_fplane_initialise()
+void npmath_fplane_initialise(void)
 {
     NPFREELIST_ALLOC_INIT(NP_FPLANE_FREELIST, FPlane, 512);
 }
 
-FPlane * fplane_alloc()
+FPlane * fplane_alloc(void)
 {
     return npfreenode_alloc(NP_FPLANE_FREELIST);
 }
 
-FPlane * fplane_alloc_init()
+FPlane * fplane_alloc_init(void)
 {
     FPlane * plane  = npfreenode_alloc(NP_FPLANE_FREELIST);
     plane->normal.x = plane->normal.y = plane->normal.z = 0.0f;
@@ -114,14 +114,14 @@ int32_t fplane_pr_intersect_with_ray_v(const FPlane * const plane, const FRay * 
     return r;
 }
 
-float fplane_pv_signed_distance_from_plane_s(const FPlane * const plane, const FVector3 * const point)
+float fplane_pv_signed_distance_from_plane(const FPlane * const plane, const FVector3 * const point)
 {
     const float tmp = fv3_vv_dot_product(&(plane->normal), point);
 
     return tmp + plane->d;
 }
 
-float fplane_pv_distance_from_plane_s(const FPlane * const plane, const FVector3 * const point)
+float fplane_pv_distance_from_plane(const FPlane * const plane, const FVector3 * const point)
 {
     const float tmp = fv3_vv_dot_product(&(plane->normal), point);
 

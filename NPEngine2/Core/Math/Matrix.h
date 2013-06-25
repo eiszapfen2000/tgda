@@ -5,7 +5,7 @@
 #include "Accessors.h"
 #include "Vector.h"
 
-void npmath_matrix_initialise();
+void npmath_matrix_initialise(void);
 
 //first index = column
 
@@ -31,8 +31,8 @@ typedef struct Matrix4
 }
 Matrix4;
 
-Matrix2 * m2_alloc();
-Matrix2 * m2_alloc_init();
+Matrix2 * m2_alloc(void);
+Matrix2 * m2_alloc_init(void);
 void m2_free(Matrix2 * m);
 void m2_m_set_identity(Matrix2 * m);
 void m2_m_transpose_m(const Matrix2 * const m, Matrix2 * transpose);
@@ -52,8 +52,8 @@ Vector2 m2_mv_multiply(const Matrix2 * const m, const Vector2 * const v);
 Matrix2 m2_m_inverse(const Matrix2 * const m);
 const char * m2_m_to_string(Matrix2 * m);
 
-Matrix3 * m3_alloc();
-Matrix3 * m3_alloc_init();
+Matrix3 * m3_alloc(void);
+Matrix3 * m3_alloc_init(void);
 void m3_free(Matrix3 * m);
 void m3_m_set_identity(Matrix3 * m);
 void m3_m_transpose_m(const Matrix3 * const m, Matrix3 * transpose);
@@ -93,8 +93,8 @@ Matrix3 m3_s_scalez(double scale);
 Matrix3 m3_s_scale(double scale);
 const char * m3_m_to_string(Matrix3 * m);
 
-Matrix4 * m4_alloc();
-Matrix4 * m4_alloc_init();
+Matrix4 * m4_alloc(void);
+Matrix4 * m4_alloc_init(void);
 void m4_free(Matrix4 * m);
 void m4_m_set_identity(Matrix4 * m);
 void m4_m_transpose_m(const Matrix4 * const m, Matrix4 * transpose);

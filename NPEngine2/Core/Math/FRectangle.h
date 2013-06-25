@@ -4,7 +4,7 @@
 #include "Core/Basics/NpBasics.h"
 #include "FVector.h"
 
-void npmath_frectangle_initialise();
+void npmath_frectangle_initialise(void);
 
 typedef struct FRectangle
 {
@@ -13,8 +13,8 @@ typedef struct FRectangle
 }
 FRectangle;
 
-FRectangle * frectangle_alloc();
-FRectangle * frectangle_alloc_init();
+FRectangle * frectangle_alloc(void);
+FRectangle * frectangle_alloc_init(void);
 void frectangle_free(FRectangle * r);
 
 void frectangle_ssss_init_with_min_max_r(const float minX, const float minY,

@@ -4,7 +4,7 @@
 #include "Core/Basics/NpTypes.h"
 #include "Accessors.h"
 
-void npmath_vector_initialise();
+void npmath_vector_initialise(void);
 
 typedef struct Vector2
 {
@@ -29,9 +29,8 @@ extern Vector3 * NP_WORLD_Y_AXIS;
 extern Vector3 * NP_WORLD_Z_AXIS;
 extern Vector3 * NP_WORLD_FORWARD_VECTOR;
 
-Vector2 * v2_alloc();
-Vector2 * v2_alloc_init();
-Vector2 * v2_alloc_init_with_v2(const Vector2 const * v);
+Vector2 * v2_alloc(void);
+Vector2 * v2_alloc_init(void);
 Vector2 * v2_alloc_init_with_components(Double x, Double y);
 void v2_free(Vector2 * v);
 void v2_v_init_with_zeros(Vector2 * v);
@@ -61,9 +60,8 @@ Vector2 v2_sv_scaledx(Double scale, const Vector2 const * v);
 Vector2 v2_sv_scaledy(Double scale, const Vector2 const * v);
 const char * v2_v_to_string(Vector2 * v);
 
-Vector3 * v3_alloc();
-Vector3 * v3_alloc_init();
-Vector3 * v3_alloc_init_with_v3(const Vector3 const * v);
+Vector3 * v3_alloc(void);
+Vector3 * v3_alloc_init(void);
 Vector3 * v3_alloc_init_with_components(Double x, Double y, Double z);
 void v3_free(Vector3 * v);
 void v3_v_init_with_zeros(Vector3 * v);
@@ -98,10 +96,9 @@ Vector3 v3_sv_scaledy(Double scale, const Vector3 const * v);
 Vector3 v3_sv_scaledz(Double scale, const Vector3 const * v);
 const char * v3_v_to_string(Vector3 * v);
 
-Vector4 * v4_alloc();
-Vector4 * v4_alloc_init();
+Vector4 * v4_alloc(void);
+Vector4 * v4_alloc_init(void);
 Vector4 * v4_alloc_init_with_v3(const Vector3 const * v);
-Vector4 * v4_alloc_init_with_v4(const Vector4 const * v);
 Vector4 * v4_alloc_init_with_components(Double x, Double y, Double z, Double w);
 void v4_free(Vector4 * v);
 void v4_v_init_with_zeros(Vector4 * v);

@@ -4,7 +4,7 @@
 #include "FVector.h"
 #include "FPlane.h"
 
-void npmath_fpluecker_initialise();
+void npmath_fpluecker_initialise(void);
 
 typedef struct FPluecker
 {
@@ -13,8 +13,8 @@ typedef struct FPluecker
 }
 FPluecker;
 
-FPluecker * fpluecker_alloc();
-FPluecker * fpluecker_alloc_init();
+FPluecker * fpluecker_alloc(void);
+FPluecker * fpluecker_alloc_init(void);
 FPluecker * fpluecker_alloc_init_with_points(const FVector3 * p1, const FVector3 * p2);
 FPluecker * fpluecker_alloc_init_with_point_and_direction(const FVector3 * point, const FVector3 *  direction);
 void fpluecker_free(FPluecker * p);

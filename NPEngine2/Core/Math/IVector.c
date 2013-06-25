@@ -5,31 +5,22 @@ NpFreeList * NP_IVECTOR2_FREELIST = NULL;
 NpFreeList * NP_IVECTOR3_FREELIST = NULL;
 NpFreeList * NP_IVECTOR4_FREELIST = NULL;
 
-void npmath_ivector_initialise()
+void npmath_ivector_initialise(void)
 {
     NPFREELIST_ALLOC_INIT(NP_IVECTOR2_FREELIST, IVector2, 512)
     NPFREELIST_ALLOC_INIT(NP_IVECTOR3_FREELIST, IVector3, 512)
     NPFREELIST_ALLOC_INIT(NP_IVECTOR4_FREELIST, IVector4, 512)
 }
 
-IVector2 * iv2_alloc()
+IVector2 * iv2_alloc(void)
 {
     return (IVector2 *)npfreenode_alloc(NP_IVECTOR2_FREELIST);
 }
 
-IVector2 * iv2_alloc_init()
+IVector2 * iv2_alloc_init(void)
 {
     IVector2 * tmp = npfreenode_alloc(NP_IVECTOR2_FREELIST);
     V_X(*tmp) = V_Y(*tmp) = 0;
-
-    return tmp;
-}
-
-IVector2 * iv2_alloc_init_with_iv2(IVector2 * v)
-{
-    IVector2 * tmp = npfreenode_alloc(NP_IVECTOR2_FREELIST);
-    V_X(*tmp) = V_X(*v);
-    V_Y(*tmp) = V_Y(*v);
 
     return tmp;
 }
@@ -43,37 +34,21 @@ IVector2 * iv2_alloc_init_with_components(int32_t x, int32_t y)
     return tmp;
 }
 
-void iv2_v_copy_v(IVector2 * source, IVector2 * target)
-{
-    V_X(*target) = V_X(*source);
-    V_Y(*target) = V_Y(*source);
-}
-
 void iv2_free(IVector2 * v)
 {
     npfreenode_free(v, NP_IVECTOR2_FREELIST);
 }
 
 
-IVector3 * iv3_alloc()
+IVector3 * iv3_alloc(void)
 {
     return (IVector3 *)npfreenode_alloc(NP_IVECTOR3_FREELIST);
 }
 
-IVector3 * iv3_alloc_init()
+IVector3 * iv3_alloc_init(void)
 {
     IVector3 * tmp = npfreenode_alloc(NP_IVECTOR3_FREELIST);
     V_X(*tmp) = V_Y(*tmp) = V_Z(*tmp) = 0;
-
-    return tmp;
-}
-
-IVector3 * iv3_alloc_init_with_iv2(IVector3 * v)
-{
-    IVector3 * tmp = npfreenode_alloc(NP_IVECTOR3_FREELIST);
-    V_X(*tmp) = V_X(*v);
-    V_Y(*tmp) = V_Y(*v);
-    V_Z(*tmp) = V_Z(*v);
 
     return tmp;
 }
@@ -88,14 +63,8 @@ IVector3 * iv3_alloc_init_with_components(int32_t x, int32_t y, int32_t z)
     return tmp;
 }
 
-void iv3_v_copy_v(IVector3 * source, IVector3 * target)
-{
-    V_X(*target) = V_X(*source);
-    V_Y(*target) = V_Y(*source);
-    V_Z(*target) = V_Z(*source);
-}
-
 void iv3_free(IVector3 * v)
 {
     npfreenode_free(v, NP_IVECTOR3_FREELIST);
 }
+

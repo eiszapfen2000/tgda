@@ -5,17 +5,17 @@
 
 NpFreeList * NP_PLANE_FREELIST = NULL;
 
-void npmath_plane_initialise()
+void npmath_plane_initialise(void)
 {
     NPFREELIST_ALLOC_INIT(NP_PLANE_FREELIST, Plane, 512);
 }
 
-Plane * plane_alloc()
+Plane * plane_alloc(void)
 {
     return npfreenode_alloc(NP_PLANE_FREELIST);
 }
 
-Plane * plane_alloc_init()
+Plane * plane_alloc_init(void)
 {
     Plane * plane   = npfreenode_alloc(NP_PLANE_FREELIST);
     plane->normal.x = plane->normal.y = plane->normal.z = 0.0;
@@ -108,7 +108,7 @@ double plane_pv_signed_distance_from_plane(const Plane * const plane, const Vect
     return tmp + plane->d;
 }
 
-double plane_pv_distance_from_plane_s(Plane * plane, Vector3 * point)
+double plane_pv_distance_from_plane(Plane * plane, Vector3 * point)
 {
     double tmp = v3_vv_dot_product(&(plane->normal), point);
 
