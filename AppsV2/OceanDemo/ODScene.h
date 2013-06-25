@@ -24,11 +24,13 @@
 
     // enitities
     ODCamera * camera;
-    ODCamera * testCamera;
     ODOceanEntity * ocean;
     ODProjectedGrid * projectedGrid;
     ODPreethamSkylight * skylight;
     NSMutableArray * entities;
+
+    ODCamera * testCamera;
+    ODProjector * testProjector;
 
     // camera animation
     FQuaternion startOrientation;

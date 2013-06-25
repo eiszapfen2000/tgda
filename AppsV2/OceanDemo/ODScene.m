@@ -135,6 +135,14 @@
 
 @end
 
+static const OdCameraMovementEvents testCameraMovementEvents
+    = {.rotate  = NpInputEventUnknown, .strafe   = NpInputEventUnknown,
+       .forward = NpInputEventUnknown, .backward = NpInputEventUnknown };
+
+static const OdProjectorRotationEvents testProjectorRotationEvents
+    = {.pitchMinus = NpInputEventUnknown, .pitchPlus = NpInputEventUnknown,
+       .yawMinus   = NpInputEventUnknown, .yawPlus   = NpInputEventUnknown };
+
 @implementation ODScene
 
 + (void) shutdown
@@ -154,7 +162,8 @@
     camera    = [[ ODCamera       alloc ] init ];
     entities  = [[ NSMutableArray alloc ] init ];
 
-    testCamera = [[ ODCamera alloc ] initWithName:@"TestCamera" ];
+    testCamera = [[ ODCamera alloc ] initWithName:@"TestCamera"  movementEvents:testCameraMovementEvents ];
+    testProjector = [[ ODProjector alloc ] initWithName:@"TestProj" rotationEvents:testProjectorRotationEvents ];
 
     ocean = [[ ODOceanEntity alloc ] initWithName:@"Ocean" ];
     projectedGrid = [[ ODProjectedGrid alloc ] initWithName:@"ProjGrid" ];
@@ -376,6 +385,7 @@
     */
 
     [ camera        update:frameTime ];
+    [ testCamera    update:frameTime ];
 /*
     [ skylight      update:frameTime ];
 */

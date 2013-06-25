@@ -1,6 +1,15 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
-#import "ODPEntity.h"
+#import "Input/NPEngineInputEnums.h"
+
+typedef struct OdProjectorRotationEvents
+{
+    NpInputEvent pitchMinus;
+    NpInputEvent pitchPlus;
+    NpInputEvent yawMinus;
+    NpInputEvent yawPlus;
+}
+OdProjectorRotationEvents;
 
 @class NPInputAction;
 @class ODCamera;
@@ -41,6 +50,9 @@
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
+- (id) initWithName:(NSString *)newName
+     rotationEvents:(OdProjectorRotationEvents)rotationEvents
+                   ;
 - (void) dealloc;
 
 - (Vector3) position;
