@@ -27,11 +27,12 @@ typedef struct OdGaussianRng
 }
 OdGaussianRng;
 
-OdGaussianRng * odgaussianrng_alloc();
-OdGaussianRng * odgaussianrng_alloc_init();
+OdGaussianRng * odgaussianrng_alloc(void);
+OdGaussianRng * odgaussianrng_alloc_init(void);
 OdGaussianRng * odgaussianrng_alloc_init_with_type(OdGaussianRngType type);
 void odgaussianrng_free(OdGaussianRng * grng);
 
+void odgaussianrng_reset(OdGaussianRng * grng);
 double odgaussianrng_get_next(OdGaussianRng * grng);
 void odgaussianrng_get_array(OdGaussianRng * grng, double * array, int numberOfElements);
 
