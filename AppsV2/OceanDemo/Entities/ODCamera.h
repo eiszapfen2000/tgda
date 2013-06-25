@@ -2,14 +2,14 @@
 #import "Core/NPObject/NPObject.h"
 #import "Input/NPEngineInputEnums.h"
 
-typedef struct OdCameraInputSettings
+typedef struct OdCameraMovementEvents
 {
     NpInputEvent rotate;
     NpInputEvent strafe;
     NpInputEvent forward;
     NpInputEvent backward;
 }
-OdCameraInputSettings;
+OdCameraMovementEvents;
 
 @class NPInputAction;
 
@@ -38,7 +38,7 @@ OdCameraInputSettings;
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (id) initWithName:(NSString *)newName
-      inputSettings:(OdCameraInputSettings)inputSettings
+     movementEvents:(OdCameraMovementEvents)movementEvents
                    ;
 
 - (void) dealloc;

@@ -118,9 +118,9 @@
 
 @end
 
-static const OdCameraInputSettings defaultInputSettings
-    = {.rotate = NpMouseButtonLeft, .strafe = NpMouseButtonRight,
-       .forward = NpMouseWheelUp, .backward = NpMouseWheelDown };
+static const OdCameraMovementEvents defaultMovementEvents
+    = {.rotate  = NpMouseButtonLeft, .strafe   = NpMouseButtonRight,
+       .forward = NpMouseWheelUp,    .backward = NpMouseWheelDown };
 
 static NSString * const rotateActionString   = @"Rotate";
 static NSString * const strafeActionString   = @"Strafe";
@@ -152,11 +152,11 @@ static NPInputAction * create_input_action(NSString * cameraName, NSString * act
 
 - (id) initWithName:(NSString *)newName
 {
-    return [ self initWithName:newName inputSettings:defaultInputSettings ];
+    return [ self initWithName:newName movementEvents:defaultMovementEvents ];
 }
 
 - (id) initWithName:(NSString *)newName
-      inputSettings:(OdCameraInputSettings)inputSettings
+     movementEvents:(OdCameraMovementEvents)movementEvents
 {
 	self = [ super initWithName:newName ];
 
@@ -179,10 +179,10 @@ static NPInputAction * create_input_action(NSString * cameraName, NSString * act
 
     inputLocked = NO;
 
-    rotateAction   = create_input_action(name, rotateActionString,   inputSettings.rotate);
-    strafeAction   = create_input_action(name, strafeActionString,   inputSettings.strafe);
-    forwardAction  = create_input_action(name, forwardActionString,  inputSettings.forward);
-    backwardAction = create_input_action(name, backwardActionString, inputSettings.backward);
+    rotateAction   = create_input_action(name, rotateActionString,   movementEvents.rotate);
+    strafeAction   = create_input_action(name, strafeActionString,   movementEvents.strafe);
+    forwardAction  = create_input_action(name, forwardActionString,  movementEvents.forward);
+    backwardAction = create_input_action(name, backwardActionString, movementEvents.backward);
 
 	return self;
 }

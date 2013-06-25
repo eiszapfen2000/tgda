@@ -211,6 +211,12 @@
 	return self;
 }
 
+- (id) initWithName:(NSString *)newName
+     rotationEvents:(OdProjectorRotationEvents)rotationEvents
+{
+    return nil;
+}
+
 - (void) dealloc
 {
     SAFE_DESTROY(frustum);
