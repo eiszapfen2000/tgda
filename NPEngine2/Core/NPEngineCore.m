@@ -132,7 +132,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
     return ULONG_MAX;
 } 
 
-- (void) release
+- (oneway void) release
 {
 
 } 

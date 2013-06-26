@@ -27,7 +27,7 @@
 
 @implementation NPRenderBuffer
 
-- (id) init;
+- (id) init
 {
     return [ self initWithName:@"Render Buffer" ];
 }

@@ -180,7 +180,7 @@
     return self;
 }
 
-- (const FMatrix2 *) value;
+- (const FMatrix2 *) value
 {
     return &value;
 }
@@ -219,7 +219,7 @@
     return self;
 }
 
-- (const FMatrix3 *) value;
+- (const FMatrix3 *) value
 {
     return &value;
 }
@@ -258,7 +258,7 @@
     return self;
 }
 
-- (const FMatrix4 *) value;
+- (const FMatrix4 *) value
 {
     return &value;
 }
