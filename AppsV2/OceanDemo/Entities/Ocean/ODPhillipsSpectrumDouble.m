@@ -1,5 +1,4 @@
 #import "ODConstants.h"
-#import "ODGaussianRNG.h"
 #import "ODPhillipsSpectrumDouble.h"
 
 #define FFTW_FREE(_pointer)        do {void *_ptr=(void *)(_pointer); fftw_free(_ptr); _pointer=NULL; } while (0)
@@ -12,13 +11,13 @@ typedef enum ODQuadrants
 }
 ODQuadrants;
 
-double omega_for_k(Vector2 const * const k)
+static inline double omega_for_k(Vector2 const * const k)
 {
     return sqrt(EARTH_ACCELERATION * v2_v_length(k));
 }
 
-double amplitude(Vector2 const * const windDirection,
-                 Vector2 const * const k)
+static double amplitude(Vector2 const * const windDirection,
+                        Vector2 const * const k)
 {
     const double kSquareLength = v2_v_square_length(k);
 

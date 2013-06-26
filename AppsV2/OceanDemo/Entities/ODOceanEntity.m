@@ -775,15 +775,15 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
             [ heightfield generateUsingWidth:hf->resolution.x
                                       height:hf->resolution.y
-                                 pixelFormat:NpImagePixelFormatR
-                                  dataFormat:NpImageDataFormatFloat32
+                                 pixelFormat:NpTexturePixelFormatR
+                                  dataFormat:NpTextureDataFormatFloat32
                                      mipmaps:NO
                                 bufferObject:yStream ];
 
             [ supplementalData generateUsingWidth:hf->resolution.x
                                            height:hf->resolution.y
-                                      pixelFormat:NpImagePixelFormatRGBA
-                                       dataFormat:NpImageDataFormatFloat32
+                                      pixelFormat:NpTexturePixelFormatRGBA
+                                       dataFormat:NpTextureDataFormatFloat32
                                           mipmaps:NO
                                      bufferObject:supplementalStream ];
         }

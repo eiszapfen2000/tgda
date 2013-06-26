@@ -17,7 +17,7 @@
 #import "Graphics/NPEngineGraphics.h"
 #import "ODFrustum.h"
 
-int compare_floats (const void * a, const void * b)
+static int compare_floats (const void * a, const void * b)
 {
     float temp = *((float *)a) - *((float *)b);
 
@@ -95,7 +95,7 @@ int compare_floats (const void * a, const void * b)
     linesIndexStream  = [[ NPCPUBuffer alloc ] init ];
 
     BOOL result
-        = [ vertexStream generate:NpBufferObjectTypeGeometry
+        = [ vertexStream generate:NpCPUBufferTypeGeometry
                        dataFormat:NpBufferDataFormatFloat32
                        components:3
                              data:vertexData
@@ -105,7 +105,7 @@ int compare_floats (const void * a, const void * b)
     NSAssert(result, @"");
 
     result
-        = result && [ facesIndexStream generate:NpBufferObjectTypeIndices
+        = result && [ facesIndexStream generate:NpCPUBufferTypeIndices
                                      dataFormat:NpBufferDataFormatUInt16
                                      components:1
                                            data:facesIndexData
@@ -115,7 +115,7 @@ int compare_floats (const void * a, const void * b)
     NSAssert(result, @"");
 
     result
-        = result && [ linesIndexStream generate:NpBufferObjectTypeIndices
+        = result && [ linesIndexStream generate:NpCPUBufferTypeIndices
                                      dataFormat:NpBufferDataFormatUInt16
                                      components:1
                                            data:linesIndexData
