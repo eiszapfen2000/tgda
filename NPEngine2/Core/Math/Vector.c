@@ -58,12 +58,6 @@ void v2_v_init_with_zeros(Vector2 * v)
     V_X(*v) = V_Y(*v) = 0.0;
 }
 
-void v2_vv_init_with_v2(Vector2 * v1, const Vector2 const * v2)
-{
-    V_X(*v1) = V_X(*v2);
-    V_Y(*v1) = V_Y(*v2);
-}
-
 void v2_vss_init_with_components(Vector2 * v, double x, double y)
 {
     V_X(*v) = x;
@@ -76,7 +70,7 @@ void v2_v_invert(Vector2 * v)
     V_Y(*v) = -V_Y(*v);
 }
 
-void v2_v_invert_v(const Vector2 const * v, Vector2 * result)
+void v2_v_invert_v(const Vector2 * const v, Vector2 * result)
 {
     V_X(*result) = -V_X(*v);
     V_Y(*result) = -V_Y(*v);
@@ -176,17 +170,17 @@ Vector2 v2_vv_sub(const Vector2 * const v, const Vector2 * const w)
     return (Vector2){V_X(*v) - V_X(*w), V_Y(*v) - V_Y(*w)};
 }
 
-Vector2 v2_sv_scaled(double scale, const Vector2 const * v)
+Vector2 v2_sv_scaled(double scale, const Vector2 * const v)
 {
     return (Vector2){V_X(*v) * scale, V_Y(*v) * scale};
 }
 
-Vector2 v2_sv_scaledx(double scale, const Vector2 const * v)
+Vector2 v2_sv_scaledx(double scale, const Vector2 * const v)
 {
     return (Vector2){V_X(*v) * scale, V_Y(*v)};
 }
 
-Vector2 v2_sv_scaledy(double scale, const Vector2 const * v)
+Vector2 v2_sv_scaledy(double scale, const Vector2 * const v)
 {
     return (Vector2){V_X(*v) * scale, V_Y(*v)};
 }
@@ -238,13 +232,6 @@ void v3_v_init_with_zeros(Vector3 * v)
     V_X(*v) = V_Y(*v) = V_Z(*v) = 0.0;
 }
 
-void v3_vv_init_with_v3(Vector3 * v1, const Vector3 const * v2)
-{
-    V_X(*v1) = V_X(*v2);
-    V_Y(*v1) = V_Y(*v2);
-    V_Z(*v1) = V_Z(*v2);
-}
-
 void v3_vsss_init_with_components(Vector3 * v, double x, double y, double z)
 {
     V_X(*v) = x;
@@ -259,7 +246,7 @@ void v3_v_invert(Vector3 * v)
     V_Z(*v) = -V_Z(*v);
 }
 
-void v3_v_invert_v(const Vector3 const * v, Vector3 * result)
+void v3_v_invert_v(const Vector3 * const v, Vector3 * result)
 {
     V_X(*result) = -V_X(*v);
     V_Y(*result) = -V_Y(*v);
@@ -391,22 +378,22 @@ Vector3 v3_vv_cross_product(const Vector3 * const v, const Vector3 * const w)
                      V_X(*v) * V_Y(*w) - V_Y(*v) * V_X(*w)};
 }
 
-Vector3 v3_sv_scaled(double scale, const Vector3 const * v)
+Vector3 v3_sv_scaled(double scale, const Vector3 * const v)
 {
     return (Vector3){V_X(*v) * scale, V_Y(*v) * scale, V_Z(*v) * scale};
 }
 
-Vector3 v3_sv_scaledx(double scale, const Vector3 const * v)
+Vector3 v3_sv_scaledx(double scale, const Vector3 * const v)
 {
     return (Vector3){V_X(*v) * scale, V_Y(*v), V_Z(*v)};
 }
 
-Vector3 v3_sv_scaledy(double scale, const Vector3 const * v)
+Vector3 v3_sv_scaledy(double scale, const Vector3 * const v)
 {
     return (Vector3){V_X(*v), V_Y(*v) * scale, V_Z(*v)};
 }
 
-Vector3 v3_sv_scaledz(double scale, const Vector3 const * v)
+Vector3 v3_sv_scaledz(double scale, const Vector3 * const v)
 {
     return (Vector3){V_X(*v), V_Y(*v), V_Z(*v) * scale};
 }
@@ -439,7 +426,7 @@ Vector4 * v4_alloc_init(void)
     return tmp;
 }
 
-Vector4 * v4_alloc_init_with_v3(const Vector3 const * v)
+Vector4 * v4_alloc_init_with_v3(const Vector3 * const v)
 {
     Vector4 * tmp = npfreenode_alloc(NP_VECTOR4_FREELIST);
     V_X(*tmp) = V_X(*v);
@@ -471,7 +458,7 @@ void v4_v_init_with_zeros(Vector4 * v)
     V_X(*v) = V_Y(*v) = V_Z(*v) = V_W(*v) = 0.0;
 }
 
-void v4_vv_init_with_v3(Vector4 * v1, const Vector3 const * v2)
+void v4_vv_init_with_v3(Vector4 * v1, const Vector3 * const v2)
 {
     V_X(*v1) = V_X(*v2);
     V_Y(*v1) = V_Y(*v2);
@@ -495,7 +482,7 @@ void v4_v_homogenise(Vector4 * v)
     V_W(*v) = 1.0;
 }
 
-void v4_v_homogenise_v(const Vector4 const * v, Vector4 * result)
+void v4_v_homogenise_v(const Vector4 * const v, Vector4 * result)
 {
     V_X(*result) = V_X(*v) / V_W(*v);
     V_Y(*result) = V_Y(*v) / V_W(*v);
@@ -519,7 +506,7 @@ void v4_sv_scale_v(double scale, const Vector4 * const v, Vector4 * result)
     V_W(*result) = V_W(*v) * scale;
 }
 
-Vector4 v4_v_homogenised(const Vector4 const * v)
+Vector4 v4_v_homogenised(const Vector4 * const v)
 {
     return (Vector4){ V_X(*v) / V_W(*v), V_Y(*v) / V_W(*v),
                        V_Z(*v) / V_W(*v), 1.0 };

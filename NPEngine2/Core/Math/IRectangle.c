@@ -41,8 +41,8 @@ void irectangle_ssss_init_with_min_max_r(const int32_t minX, const int32_t minY,
     rectangle->max.y = maxY;    
 }
 
-void irectangle_vv_init_with_min_max_r(const IVector2 const * min,
-    const IVector2 const * max, IRectangle * rectangle)
+void irectangle_vv_init_with_min_max_r(const IVector2 * const min,
+    const IVector2 * const max, IRectangle * rectangle)
 {
     rectangle->min.x = min->x;
     rectangle->min.y = min->y;
@@ -50,8 +50,8 @@ void irectangle_vv_init_with_min_max_r(const IVector2 const * min,
     rectangle->max.y = max->y;
 }
 
-void irectangle_vv_init_with_min_and_size_r(const IVector2 const * min,
-    const IVector2 const * size, IRectangle * rectangle)
+void irectangle_vv_init_with_min_and_size_r(const IVector2 * const min,
+    const IVector2 * const size, IRectangle * rectangle)
 {
     rectangle->min.x = min->x;
     rectangle->min.y = min->y;
@@ -72,27 +72,27 @@ void irectangle_r_recalculate_min_max(IRectangle * rectangle)
     rectangle->max.y = maxY;
 }
 
-int32_t irectangle_r_calculate_width(const IRectangle const * rectangle)
+int32_t irectangle_r_calculate_width(const IRectangle * const rectangle)
 {
     return rectangle->max.x - rectangle->min.x;
 }
 
-int32_t irectangle_r_calculate_height(const IRectangle const * rectangle)
+int32_t irectangle_r_calculate_height(const IRectangle * const rectangle)
 {
     return rectangle->max.y - rectangle->min.y;
 }
 
-float irectangle_r_calculate_x_center(const IRectangle const * rectangle)
+float irectangle_r_calculate_x_center(const IRectangle * const rectangle)
 {
     return ((float)(rectangle->min.x)) + (rectangle->max.x - rectangle->min.x) * 0.5f;
 }
 
-float irectangle_r_calculate_y_center(const IRectangle const * rectangle)
+float irectangle_r_calculate_y_center(const IRectangle * const rectangle)
 {
     return ((float)(rectangle->min.y)) + (rectangle->max.y - rectangle->min.y) * 0.5f;
 }
 
-const char * irectangle_r_to_string(const IRectangle const * rectangle)
+const char * irectangle_r_to_string(const IRectangle * const rectangle)
 {
     char * irectanglestring;
 
