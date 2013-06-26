@@ -50,7 +50,7 @@
 - (NPEffectTechnique *) fontTechnique;
 - (float) opacity;
 
-- (void) update:(const float)frameTime;
+- (void) update:(float)frameTime;
 - (void) render;
 
 @end

@@ -339,7 +339,7 @@
     return YES;
 }
 
-- (void) update:(Float)frameTime
+- (void) update:(float)frameTime
 {
     if ( [ menuActivationAction activated ] == YES )
     {
