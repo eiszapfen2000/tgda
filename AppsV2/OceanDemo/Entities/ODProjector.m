@@ -14,11 +14,6 @@
 @interface ODProjector (Private)
 
 - (void) cameraRotateUsingYaw:(const double)yawDegrees andPitch:(const double)pitchDegrees;
-- (void) moveForward;
-- (void) moveBackward;
-
-- (void) updateYaw:(double)degrees;
-- (void) updatePitch:(double)degrees;
 - (void) updateProjection;
 - (void) updateView;
 
@@ -28,65 +23,30 @@
 
 - (void) cameraRotateUsingYaw:(const double)yawDegrees andPitch:(const double)pitchDegrees
 {
-    [ self updateYaw:yawDegrees ];
-    [ self updatePitch:pitchDegrees ];
-
-    quat_q_init_with_axis_and_degrees(&orientation, NP_WORLD_Y_AXIS, yaw);
-    quat_q_rotatex(&orientation, pitch);
-}
-
-- (void) moveForward
-{
-    quat_q_forward_vector_v(&orientation, &forward);
-
-    position.x += forward.x;
-    position.y += forward.y;
-    position.z += forward.z;
-}
-
-- (void) moveBackward
-{
-    quat_q_forward_vector_v(&orientation, &forward);
-
-    position.x -= forward.x;
-    position.y -= forward.y;
-    position.z -= forward.z;
-}
-
-- (void) updateYaw:(double)degrees
-{
-    if ( degrees != 0.0 )
+    if ( yawDegrees != 0.0 )
     {
-        yaw += degrees;
+        yaw += yawDegrees;
+        yaw = fmod(yaw, 360.0);
 
         if ( yaw < 0.0 )
         {
             yaw += 360.0;
         }
-
-        if ( yaw > 360.0 )
-        {
-            yaw -= 360.0;
-        }
     }
-}
 
-- (void) updatePitch:(double)degrees
-{
-    if ( degrees != 0.0 )
+    if ( pitchDegrees != 0.0 )
     {
-        pitch += degrees;
+        pitch += pitchDegrees;
+        pitch = fmod(pitch, 360.0);
 
         if ( pitch < 0.0 )
         {
             pitch += 360.0;
         }
-
-        if ( pitch > 360.0 )
-        {
-            pitch -= 360.0;
-        }
     }
+
+    quat_q_init_with_axis_and_degrees(&orientation, NP_WORLD_Y_AXIS, yaw);
+    quat_q_rotatex(&orientation, pitch);
 }
 
 - (void) updateProjection

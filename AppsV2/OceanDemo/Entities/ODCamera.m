@@ -73,12 +73,22 @@
     {
         yaw += yawDegrees;
         yaw = fmod(yaw, 360.0);
+
+        if ( yaw < 0.0 )
+        {
+            yaw += 360.0;
+        }
     }
 
     if ( pitchDegrees != 0.0 )
     {
         pitch += pitchDegrees;
         pitch = fmod(pitch, 360.0);
+
+        if ( pitch < 0.0 )
+        {
+            pitch += 360.0;
+        }
     }
 }
 
