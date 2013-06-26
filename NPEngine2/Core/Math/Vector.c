@@ -39,7 +39,7 @@ Vector2 * v2_alloc_init(void)
     return tmp;
 }
 
-Vector2 * v2_alloc_init_with_components(Double x, Double y)
+Vector2 * v2_alloc_init_with_components(double x, double y)
 {
     Vector2 * tmp = npfreenode_alloc(NP_VECTOR2_FREELIST);
     V_X(*tmp) = x;
@@ -64,7 +64,7 @@ void v2_vv_init_with_v2(Vector2 * v1, const Vector2 const * v2)
     V_Y(*v1) = V_Y(*v2);
 }
 
-void v2_vss_init_with_components(Vector2 * v, Double x, Double y)
+void v2_vss_init_with_components(Vector2 * v, double x, double y)
 {
     V_X(*v) = x;
     V_Y(*v) = y;
@@ -84,46 +84,46 @@ void v2_v_invert_v(const Vector2 const * v, Vector2 * result)
 
 void v2_v_normalise_v(const Vector2 * const v, Vector2 * normalised)
 {
-    Double length = v2_v_length(v);
+    double length = v2_v_length(v);
     V_X(*normalised) = V_X(*v)/length;
     V_Y(*normalised) = V_Y(*v)/length;
 }
 
 void v2_v_normalise(Vector2 * v)
 {
-    Double length = v2_v_length(v);
+    double length = v2_v_length(v);
     V_X(*v) = V_X(*v)/length;
     V_Y(*v) = V_Y(*v)/length;
 }
 
-void v2_sv_scale(Double scale, Vector2 * v)
+void v2_sv_scale(double scale, Vector2 * v)
 {
     V_X(*v) *= scale;
     V_Y(*v) *= scale;
 }
 
-void v2_sv_scalex(Double scale, Vector2 * v)
+void v2_sv_scalex(double scale, Vector2 * v)
 {
     V_X(*v) *= scale;
 }
 
-void v2_sv_scaley(Double scale, Vector2 * v)
+void v2_sv_scaley(double scale, Vector2 * v)
 {
     V_Y(*v) *= scale;
 }
 
-void v2_sv_scale_v(Double scale, const Vector2 * const v, Vector2 * result)
+void v2_sv_scale_v(double scale, const Vector2 * const v, Vector2 * result)
 {
     V_X(*result) = V_X(*v) * scale;
     V_Y(*result) = V_Y(*v) * scale;
 }
 
-void v2_sv_scalex_v(Double scale, const Vector2 * const v, Vector2 * result)
+void v2_sv_scalex_v(double scale, const Vector2 * const v, Vector2 * result)
 {
     V_X(*result) = V_X(*v) * scale;
 }
 
-void v2_sv_scaley_v(Double scale, const Vector2 * const v, Vector2 * result)
+void v2_sv_scaley_v(double scale, const Vector2 * const v, Vector2 * result)
 {
     V_Y(*result) = V_Y(*v) * scale;
 }
@@ -140,17 +140,17 @@ void v2_vv_sub_v(const Vector2 * const v, const Vector2 * const w, Vector2 * res
     V_Y(*result) = V_Y(*v) - V_Y(*w);
 }
 
-Double v2_vv_dot_product(const Vector2 * const v, const Vector2 * const w)
+double v2_vv_dot_product(const Vector2 * const v, const Vector2 * const w)
 {
     return ( V_X(*v) * V_X(*w) + V_Y(*v) * V_Y(*w) );
 }
 
-Double v2_v_square_length(const Vector2 * const v)
+double v2_v_square_length(const Vector2 * const v)
 {
     return ( V_X(*v) * V_X(*v) + V_Y(*v) * V_Y(*v) );
 }
 
-Double v2_v_length(const Vector2 * const v)
+double v2_v_length(const Vector2 * const v)
 {
     return sqrt(v2_v_square_length(v));
 }
@@ -176,17 +176,17 @@ Vector2 v2_vv_sub(const Vector2 * const v, const Vector2 * const w)
     return (Vector2){V_X(*v) - V_X(*w), V_Y(*v) - V_Y(*w)};
 }
 
-Vector2 v2_sv_scaled(Double scale, const Vector2 const * v)
+Vector2 v2_sv_scaled(double scale, const Vector2 const * v)
 {
     return (Vector2){V_X(*v) * scale, V_Y(*v) * scale};
 }
 
-Vector2 v2_sv_scaledx(Double scale, const Vector2 const * v)
+Vector2 v2_sv_scaledx(double scale, const Vector2 const * v)
 {
     return (Vector2){V_X(*v) * scale, V_Y(*v)};
 }
 
-Vector2 v2_sv_scaledy(Double scale, const Vector2 const * v)
+Vector2 v2_sv_scaledy(double scale, const Vector2 const * v)
 {
     return (Vector2){V_X(*v) * scale, V_Y(*v)};
 }
@@ -218,7 +218,7 @@ Vector3 * v3_alloc_init(void)
     return tmp;
 }
 
-Vector3 * v3_alloc_init_with_components(Double x, Double y, Double z)
+Vector3 * v3_alloc_init_with_components(double x, double y, double z)
 {
     Vector3 * tmp = npfreenode_alloc(NP_VECTOR3_FREELIST);
     V_X(*tmp) = x;
@@ -245,7 +245,7 @@ void v3_vv_init_with_v3(Vector3 * v1, const Vector3 const * v2)
     V_Z(*v1) = V_Z(*v2);
 }
 
-void v3_vsss_init_with_components(Vector3 * v, Double x, Double y, Double z)
+void v3_vsss_init_with_components(Vector3 * v, double x, double y, double z)
 {
     V_X(*v) = x;
     V_Y(*v) = y;
@@ -268,7 +268,7 @@ void v3_v_invert_v(const Vector3 const * v, Vector3 * result)
 
 void v3_v_normalise_v(const Vector3 * const v, Vector3 * normalised)
 {
-    Double length = v3_v_length(v);
+    double length = v3_v_length(v);
     V_X(*normalised) = V_X(*v)/length;
     V_Y(*normalised) = V_Y(*v)/length;
     V_Z(*normalised) = V_Z(*v)/length;
@@ -276,52 +276,52 @@ void v3_v_normalise_v(const Vector3 * const v, Vector3 * normalised)
 
 void v3_v_normalise(Vector3 * v)
 {
-    Double length = v3_v_length(v);
+    double length = v3_v_length(v);
     V_X(*v) = V_X(*v)/length;
     V_Y(*v) = V_Y(*v)/length;
     V_Z(*v) = V_Z(*v)/length;
 }
 
-void v3_sv_scale(Double scale, Vector3 * v)
+void v3_sv_scale(double scale, Vector3 * v)
 {
     V_X(*v) *= scale;
     V_Y(*v) *= scale;
     V_Z(*v) *= scale;
 }
 
-void v3_sv_scalex(Double scale, Vector3 * v)
+void v3_sv_scalex(double scale, Vector3 * v)
 {
     V_X(*v) *= scale;
 }
 
-void v3_sv_scaley(Double scale, Vector3 * v)
+void v3_sv_scaley(double scale, Vector3 * v)
 {
     V_Y(*v) *= scale;
 }
 
-void v3_sv_scalez(Double scale, Vector3 * v)
+void v3_sv_scalez(double scale, Vector3 * v)
 {
     V_Z(*v) *= scale;
 }
 
-void v3_sv_scale_v(Double scale, const Vector3 * const v, Vector3 * result)
+void v3_sv_scale_v(double scale, const Vector3 * const v, Vector3 * result)
 {
     V_X(*result) = V_X(*v) * scale;
     V_Y(*result) = V_Y(*v) * scale;
     V_Z(*result) = V_Z(*v) * scale;
 }
 
-void v3_sv_scalex_v(Double scale, const Vector3 * const v, Vector3 * result)
+void v3_sv_scalex_v(double scale, const Vector3 * const v, Vector3 * result)
 {
     V_X(*result) = V_X(*v) * scale;
 }
 
-void v3_sv_scaley_v(Double scale, const Vector3 * const v, Vector3 * result)
+void v3_sv_scaley_v(double scale, const Vector3 * const v, Vector3 * result)
 {
     V_Y(*result) = V_Y(*v) * scale;
 }
 
-void v3_sv_scalez_v(Double scale, const Vector3 * const v, Vector3 * result)
+void v3_sv_scalez_v(double scale, const Vector3 * const v, Vector3 * result)
 {
     V_Z(*result) = V_Z(*v) * scale;
 }
@@ -347,17 +347,17 @@ void v3_vv_cross_product_v(const Vector3 * const v, const Vector3 * const w, Vec
     V_Z(*cross) = V_X(*v) * V_Y(*w) - V_Y(*v) * V_X(*w);
 }
 
-Double v3_vv_dot_product(const Vector3 * const v, const Vector3 * const w)
+double v3_vv_dot_product(const Vector3 * const v, const Vector3 * const w)
 {
     return ( V_X(*v) * V_X(*w) + V_Y(*v) * V_Y(*w) + V_Z(*v) * V_Z(*w) );
 }
 
-Double v3_v_square_length(const Vector3 * const v)
+double v3_v_square_length(const Vector3 * const v)
 {
     return ( V_X(*v) * V_X(*v) + V_Y(*v) * V_Y(*v) + V_Z(*v) * V_Z(*v) );
 }
 
-Double v3_v_length(const Vector3 * const v)
+double v3_v_length(const Vector3 * const v)
 {
     return sqrt(v3_v_square_length(v));
 }
@@ -369,7 +369,7 @@ Vector3 v3_v_inverted(Vector3 * v)
 
 Vector3 v3_v_normalised(const Vector3 * const v)
 {
-    Double length = v3_v_length(v);
+    double length = v3_v_length(v);
 
     return (Vector3){ V_X(*v) / length, V_Y(*v) / length, V_Z(*v) / length };
 }
@@ -391,22 +391,22 @@ Vector3 v3_vv_cross_product(const Vector3 * const v, const Vector3 * const w)
                      V_X(*v) * V_Y(*w) - V_Y(*v) * V_X(*w)};
 }
 
-Vector3 v3_sv_scaled(Double scale, const Vector3 const * v)
+Vector3 v3_sv_scaled(double scale, const Vector3 const * v)
 {
     return (Vector3){V_X(*v) * scale, V_Y(*v) * scale, V_Z(*v) * scale};
 }
 
-Vector3 v3_sv_scaledx(Double scale, const Vector3 const * v)
+Vector3 v3_sv_scaledx(double scale, const Vector3 const * v)
 {
     return (Vector3){V_X(*v) * scale, V_Y(*v), V_Z(*v)};
 }
 
-Vector3 v3_sv_scaledy(Double scale, const Vector3 const * v)
+Vector3 v3_sv_scaledy(double scale, const Vector3 const * v)
 {
     return (Vector3){V_X(*v), V_Y(*v) * scale, V_Z(*v)};
 }
 
-Vector3 v3_sv_scaledz(Double scale, const Vector3 const * v)
+Vector3 v3_sv_scaledz(double scale, const Vector3 const * v)
 {
     return (Vector3){V_X(*v), V_Y(*v), V_Z(*v) * scale};
 }
@@ -450,7 +450,7 @@ Vector4 * v4_alloc_init_with_v3(const Vector3 const * v)
     return tmp;
 }
 
-Vector4 * v4_alloc_init_with_components(Double x, Double y, Double z, Double w)
+Vector4 * v4_alloc_init_with_components(double x, double y, double z, double w)
 {
     Vector4 * tmp = npfreenode_alloc(NP_VECTOR4_FREELIST);
     V_X(*tmp) = x;
@@ -479,7 +479,7 @@ void v4_vv_init_with_v3(Vector4 * v1, const Vector3 const * v2)
     V_W(*v1) = 1.0;
 }
 
-void v4_vssss_init_with_components(Vector4 * v, Double x, Double y, Double z, Double w)
+void v4_vssss_init_with_components(Vector4 * v, double x, double y, double z, double w)
 {
     V_X(*v) = x;
     V_Y(*v) = y;
@@ -503,7 +503,7 @@ void v4_v_homogenise_v(const Vector4 const * v, Vector4 * result)
     V_W(*result) = 1.0;
 }
 
-void v4_sv_scale(Double scale, Vector4 * v)
+void v4_sv_scale(double scale, Vector4 * v)
 {
     V_X(*v) = V_X(*v) * scale;
     V_Y(*v) = V_Y(*v) * scale;
@@ -511,7 +511,7 @@ void v4_sv_scale(Double scale, Vector4 * v)
     V_W(*v) = V_W(*v) * scale;
 }
 
-void v4_sv_scale_v(Double scale, const Vector4 * const v, Vector4 * result)
+void v4_sv_scale_v(double scale, const Vector4 * const v, Vector4 * result)
 {
     V_X(*result) = V_X(*v) * scale;
     V_Y(*result) = V_Y(*v) * scale;

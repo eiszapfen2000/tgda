@@ -61,10 +61,10 @@ void frectangle_vv_init_with_min_and_size_r(const FVector2 const * min,
 
 void frectangle_r_recalculate_min_max(FRectangle * rectangle)
 {
-    Float minX = MIN(rectangle->min.x, rectangle->max.x);
-    Float minY = MIN(rectangle->min.y, rectangle->max.y);
-    Float maxX = MAX(rectangle->min.x, rectangle->max.x);
-    Float maxY = MAX(rectangle->min.y, rectangle->max.y);
+    float minX = MIN(rectangle->min.x, rectangle->max.x);
+    float minY = MIN(rectangle->min.y, rectangle->max.y);
+    float maxX = MAX(rectangle->min.x, rectangle->max.x);
+    float maxY = MAX(rectangle->min.y, rectangle->max.y);
 
     rectangle->min.x = minX;
     rectangle->min.y = minY;
@@ -72,22 +72,22 @@ void frectangle_r_recalculate_min_max(FRectangle * rectangle)
     rectangle->max.y = maxY;
 }
 
-Float frectangle_r_calculate_width(const FRectangle const * rectangle)
+float frectangle_r_calculate_width(const FRectangle const * rectangle)
 {
     return rectangle->max.x - rectangle->min.x;
 }
 
-Float frectangle_r_calculate_height(const FRectangle const * rectangle)
+float frectangle_r_calculate_height(const FRectangle const * rectangle)
 {
     return rectangle->max.y - rectangle->min.y;
 }
 
-Float frectangle_r_calculate_x_center(const FRectangle const * rectangle)
+float frectangle_r_calculate_x_center(const FRectangle const * rectangle)
 {
     return rectangle->min.x + (rectangle->max.x - rectangle->min.x) * 0.5f;
 }
 
-Float frectangle_r_calculate_y_center(const FRectangle const * rectangle)
+float frectangle_r_calculate_y_center(const FRectangle const * rectangle)
 {
     return rectangle->min.y + (rectangle->max.y - rectangle->min.y) * 0.5f;
 }
