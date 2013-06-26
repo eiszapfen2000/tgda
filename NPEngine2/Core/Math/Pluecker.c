@@ -66,7 +66,7 @@ void pluecker_init_with_point_and_direction(Pluecker * pl, const Vector3 const *
 
 int32_t pluecker_plp_intersect_with_plane_v(const Pluecker const * pluecker, const Plane const * p, Vector3 * result)
 {
-    Double dot = v3_vv_dot_product(&(pluecker->U), &(p->normal));
+    double dot = v3_vv_dot_product(&(pluecker->U), &(p->normal));
 
     Vector3 cross = v3_vv_cross_product(&(pluecker->V), &(p->normal));
     Vector3 scaled = v3_sv_scaled(p->d, &(pluecker->U));

@@ -170,14 +170,14 @@
     return READ_DATA(uint64_t, i);
 }
 
-- (BOOL) readFloat:(Float *)f
+- (BOOL) readFloat:(float *)f
 {
-    return READ_DATA(Float, f);
+    return READ_DATA(float, f);
 }
 
-- (BOOL) readDouble:(Double *)d
+- (BOOL) readDouble:(double *)d
 {
-    return READ_DATA(Double, d);
+    return READ_DATA(double, d);
 }
 
 - (BOOL) readBool:(BOOL *)b
@@ -353,14 +353,14 @@
     return WRITE_DATA(uint64_t, &i);
 }
 
-- (BOOL) writeFloat:(Float)f
+- (BOOL) writeFloat:(float)f
 {
-    return WRITE_DATA(Float, &f);
+    return WRITE_DATA(float, &f);
 }
 
-- (BOOL) writeDouble:(Double)d
+- (BOOL) writeDouble:(double)d
 {
-    return WRITE_DATA(Double, &d);
+    return WRITE_DATA(double, &d);
 }
 
 - (BOOL) writeBool:(BOOL)b

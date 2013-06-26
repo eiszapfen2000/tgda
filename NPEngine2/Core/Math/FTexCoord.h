@@ -5,13 +5,13 @@
 
 typedef struct FTexCoord2
 {
-    Float u, v;
+    float u, v;
 }
 FTexCoord2;
 
 typedef struct FTexCoord3
 {
-    Float u, v, w;
+    float u, v, w;
 }
 FTexCoord3;
 

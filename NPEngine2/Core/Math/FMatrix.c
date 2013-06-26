@@ -832,15 +832,22 @@ void fm4_vvvv_look_at_matrix_m(FVector3 * rightVector, FVector3 * upVector, FVec
 void fm4_mssss_projection_matrix(FMatrix4 * m, float aspectratio, float fovdegrees, float nearplane, float farplane)
 {
     fm4_m_set_identity(m);
-    double fovradians = DEGREE_TO_RADIANS(fovdegrees/2.0f);
-    double f = 1.0 / tan(fovradians);
+    
+    const double ymax = nearplane * tan(fovdegrees * MATH_PI / 360.0);
+    const double ymin = -ymax;
+    const double xmin = ymin * aspectratio;
+    const double xmax = ymax * aspectratio;
 
-    M_EL(*m,0,0) = f/aspectratio;
-    M_EL(*m,1,1) = f;
-    M_EL(*m,2,2) = (nearplane + farplane)/(nearplane - farplane);
-    M_EL(*m,2,3) = -1.0f;
-    M_EL(*m,3,2) = (2.0f*nearplane*farplane)/(nearplane - farplane);
+    M_EL(*m,0,0) = (2.0 * nearplane) / (xmax - xmin);
+    M_EL(*m,1,1) = (2.0 * nearplane) / (ymax - ymin);
+    M_EL(*m,2,2) = -(farplane + nearplane) / (farplane - nearplane);
     M_EL(*m,3,3) = 0.0f;
+
+    M_EL(*m,2,0) = (xmax + xmin) / (xmax - xmin);
+    M_EL(*m,2,1) = (ymax + ymin) / (ymax - ymin);
+    M_EL(*m,2,3) = -1.0f;
+
+    M_EL(*m,3,2) = (-2.0f * farplane * nearplane) / (farplane - nearplane);
 }
 
 void fm4_ms_simple_orthographic_projection_matrix(FMatrix4 * m, float aspectratio)
@@ -980,18 +987,16 @@ void fm4_s_rotatez_m(float degree, FMatrix4 * result)
 float fm4_m_determinant(const FMatrix4 * const m)
 {
     float subMatrixDeterminant, determinant = 0.0f;
-    FMatrix3 * subMatrix = fm3_alloc_init();
+    FMatrix3 subMatrix;
     int scalar = 1;
 
     for ( int x = 0; x < 4; x++ )
     {
-        fm4_mss_sub_matrix_m(m, 0, x, subMatrix);
-        subMatrixDeterminant = fm3_m_determinant(subMatrix);
+        fm4_mss_sub_matrix_m(m, 0, x, &subMatrix);
+        subMatrixDeterminant = fm3_m_determinant(&subMatrix);
         determinant += M_EL(*m,x,0) * subMatrixDeterminant * scalar;
         scalar *= -1;
     }
-
-    fm3_free(subMatrix);
 
     return determinant;
 }
