@@ -22,7 +22,7 @@
     NPAssetArray * samples;
     NPAssetArray * streams;
 
-    Float volume;
+    float volume;
 }
 
 + (NPEngineSound *) instance;
@@ -33,8 +33,8 @@
 - (BOOL) startup;
 - (void) shutdown;
 
-- (Float) volume;
-- (void) setVolume:(Float)newVolume;
+- (float) volume;
+- (void) setVolume:(float)newVolume;
 - (NPListener *) listener;
 - (NPSoundSources *) sources;
 - (NPAssetArray *) samples;

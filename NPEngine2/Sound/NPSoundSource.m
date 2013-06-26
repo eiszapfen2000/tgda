@@ -155,12 +155,12 @@
     is3DSource = YES;
 }
 
-- (void) setVolume:(Float)newVolume
+- (void) setVolume:(float)newVolume
 {
     volume = newVolume;
 }
 
-- (void) setPitch:(Float)newPitch
+- (void) setPitch:(float)newPitch
 {
     pitch = newPitch;
 }

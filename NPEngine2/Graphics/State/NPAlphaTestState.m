@@ -44,12 +44,12 @@
     return defaultEnabled;
 }
 
-- (Float) alphaThreshold
+- (float) alphaThreshold
 {
     return alphaThreshold;
 }
 
-- (Float) defaultAlphaThreshold
+- (float) defaultAlphaThreshold
 {
     return defaultAlphaThreshold;
 }
@@ -77,7 +77,7 @@
     defaultEnabled = newDefaultEnabled;
 }
 
-- (void) setAlphaThreshold:(Float)newAlphaThreshold
+- (void) setAlphaThreshold:(float)newAlphaThreshold
 {
     if ( [ super changeable ] == YES )
     {
@@ -85,7 +85,7 @@
     }
 }
 
-- (void) setDefaultAlphaThreshold:(Float)newDefaultAlphaThreshold
+- (void) setDefaultAlphaThreshold:(float)newDefaultAlphaThreshold
 {
     defaultAlphaThreshold = newDefaultAlphaThreshold;
 }

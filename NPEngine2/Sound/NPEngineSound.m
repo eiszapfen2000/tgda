@@ -109,12 +109,12 @@ static NPEngineSound * NP_ENGINE_SOUND = nil;
 {
 }
 
-- (Float) volume
+- (float) volume
 {
     return volume;
 }
 
-- (void) setVolume:(Float)newVolume
+- (void) setVolume:(float)newVolume
 {
     volume = newVolume;
 }

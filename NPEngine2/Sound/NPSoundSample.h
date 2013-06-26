@@ -8,9 +8,9 @@
     BOOL ready;
 
     ALuint alID;
-    Float volume;
-    Float range;
-    Float length;
+    float volume;
+    float range;
+    float length;
 }
 
 - (id) init;
@@ -18,9 +18,9 @@
 - (void) dealloc;
 
 - (ALuint) alID;
-- (Float) volume;
-- (Float) range;
-- (Float) length;
+- (float) volume;
+- (float) range;
+- (float) length;
 
 - (void) clear;
 

@@ -13,7 +13,7 @@
     BOOL depthTestEnabled;
     BOOL depthWriteEnabled;
 
-    Float alphaTestThreshold;
+    float alphaTestThreshold;
     NpComparisonFunction alphaTestComparisonFunction;
     NpComparisonFunction depthTestComparisonFunction;
     NpBlendingMode blendingMode;
@@ -27,7 +27,7 @@
 - (void) dealloc;
 
 - (void) setAlphaTestEnabled:(BOOL)newAlphaTestEnabled;
-- (void) setAlphaTestThreshold:(BOOL)newAlphaTestThreshold;
+- (void) setAlphaTestThreshold:(float)newAlphaTestThreshold;
 - (void) setAlphaTestComparisonFunction:(NpComparisonFunction)newAlphaTestComparisonFunction;
 
 - (void) setBlendingEnabled:(BOOL)newBlendingEnabled;
