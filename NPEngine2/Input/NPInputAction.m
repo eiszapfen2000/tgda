@@ -43,8 +43,8 @@
 
 - (BOOL) isEventActive:(NpInputEvent)inputEvent 
 {
-    return ( [[[ NPEngineInput instance ] mouse ] isButtonPressed:event ]
-             || [[[ NPEngineInput instance ] keyboard ] isKeyPressed:event ] );
+    return ( [[[ NPEngineInput instance ] mouse ] isButtonPressed:inputEvent ]
+             || [[[ NPEngineInput instance ] keyboard ] isKeyPressed:inputEvent ] );
 }
 
 - (void) update
