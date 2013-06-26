@@ -13,8 +13,6 @@
 #endif
 
 typedef uint16_t Half;
-typedef float Float;
-typedef double Double;
 
 #define NP_NONE  -1
 

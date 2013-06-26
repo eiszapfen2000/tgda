@@ -67,7 +67,7 @@
     alphaTestEnabled = newAlphaTestEnabled;
 }
 
-- (void) setAlphaTestThreshold:(BOOL)newAlphaTestThreshold
+- (void) setAlphaTestThreshold:(float)newAlphaTestThreshold
 {
     alphaTestThreshold = newAlphaTestThreshold;
 }

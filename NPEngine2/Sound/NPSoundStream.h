@@ -17,7 +17,7 @@
     ALenum format;
     long bufferSize;
     uint32_t bufferLength;
-    Float length;
+    float length;
     BOOL playing;
     BOOL looping;
     ALuint alBuffers[2];

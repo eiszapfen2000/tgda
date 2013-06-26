@@ -7,9 +7,9 @@
     BOOL defaultEnabled;
     BOOL currentlyEnabled;
 
-    Float alphaThreshold;
-    Float defaultAlphaThreshold;
-    Float currentAlphaThreshold;
+    float alphaThreshold;
+    float defaultAlphaThreshold;
+    float currentAlphaThreshold;
 
     NpComparisonFunction comparisonFunction;
     NpComparisonFunction defaultComparisonFunction;
@@ -23,15 +23,15 @@
 
 - (BOOL) enabled;
 - (BOOL) defaultEnabled;
-- (Float) alphaThreshold;
-- (Float) defaultAlphaThreshold;
+- (float) alphaThreshold;
+- (float) defaultAlphaThreshold;
 - (NpComparisonFunction) comparisonFunction;
 - (NpComparisonFunction) defaultComparisonFunction;
 
 - (void) setEnabled:(BOOL)newEnabled;
 - (void) setDefaultEnabled:(BOOL)newDefaultEnabled;
-- (void) setAlphaThreshold:(Float)newAlphaThreshold;
-- (void) setDefaultAlphaThreshold:(Float)newDefaultAlphaThreshold;
+- (void) setAlphaThreshold:(float)newAlphaThreshold;
+- (void) setDefaultAlphaThreshold:(float)newDefaultAlphaThreshold;
 - (void) setComparisonFunction:(NpComparisonFunction)newComparisonFunction;
 - (void) setDefaultComparisonFunction:(NpComparisonFunction)newDefaultComparisonFunction;
 

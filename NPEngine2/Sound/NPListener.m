@@ -32,7 +32,7 @@
 
 - (void) update
 {
-    Float volume = [[ NPEngineSound instance ] volume ];
+    float volume = [[ NPEngineSound instance ] volume ];
 
     FVector3 velocity = fv3_vv_sub(&listenerPosition, &listenerPositionLastFrame);
     velocity = fv3_sv_scaled([[[ NPEngineCore instance ] timer ] reciprocalFrameTime ], &velocity);
@@ -40,7 +40,7 @@
     FVector3 forward = fquat_q_forward_vector(&listenerRotation);
     FVector3 up = fquat_q_up_vector(&listenerRotation);
 
-    Float alOrientation[6];
+    float alOrientation[6];
     alOrientation[0] = forward.x;
     alOrientation[1] = forward.y;
     alOrientation[2] = forward.z;
@@ -48,12 +48,12 @@
     alOrientation[4] = up.y;
     alOrientation[5] = up.z;
 
-    Float alPosition[3];
+    float alPosition[3];
     alPosition[0] = listenerPosition.x;
     alPosition[1] = listenerPosition.y;
     alPosition[2] = listenerPosition.z;
 
-    Float alVelocity[3];
+    float alVelocity[3];
     alVelocity[0] = velocity.x;
     alVelocity[1] = velocity.y;
     alVelocity[2] = velocity.z;

@@ -12,10 +12,10 @@
     ALuint alID;
     FVector3 position;
     FVector3 positionLastFrame;
-    Float pitch;
-    Float volume;
-    Float pitchVariation;
-    Float volumeVariation;
+    float pitch;
+    float volume;
+    float pitchVariation;
+    float volumeVariation;
     BOOL is3DSource;
     BOOL looping;
     BOOL locked;
@@ -47,8 +47,8 @@
 - (BOOL) playing;
 - (BOOL) looping;
 - (void) setPosition:(const FVector3)newPosition;
-- (void) setVolume:(Float)newVolume;
-- (void) setPitch:(Float)newPitch;
+- (void) setVolume:(float)newVolume;
+- (void) setPitch:(float)newPitch;
 - (void) setLooping:(BOOL)newLooping;
 
 - (void) update;

@@ -61,17 +61,17 @@
     return alID;
 }
 
-- (Float) volume
+- (float) volume
 {
     return volume;
 }
 
-- (Float) range
+- (float) range
 {
     return range;
 }
 
-- (Float) length
+- (float) length
 {
     return length;
 }
