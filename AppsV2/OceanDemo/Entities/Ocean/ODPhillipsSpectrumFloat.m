@@ -17,7 +17,7 @@ static inline float omegaf_for_k(FVector2 const * const k)
 }
 
 static float amplitudef(FVector2 const * const windDirection,
-                 FVector2 const * const k)
+                        FVector2 const * const k)
 {
     const float kSquareLength = fv2_v_square_length(k);
 

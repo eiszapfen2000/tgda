@@ -306,14 +306,14 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
                           freeWhenDone:NO ];
 
     BOOL result
-        = [ gridVertexStream generate:NpBufferObjectTypeGeometry
+        = [ gridVertexStream generate:NpCPUBufferTypeGeometry
                            dataFormat:NpBufferDataFormatFloat32
                            components:2
                                  data:vertexData
                                 error:NULL ];
 
     result
-        = result && [ gridIndexStream generate:NpBufferObjectTypeIndices
+        = result && [ gridIndexStream generate:NpCPUBufferTypeIndices
                                     dataFormat:NpBufferDataFormatUInt16
                                     components:1
                                           data:indexData
@@ -402,14 +402,14 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
                           freeWhenDone:NO ];
 
     BOOL result
-        = [ cornerVertexStream generate:NpBufferObjectTypeGeometry
+        = [ cornerVertexStream generate:NpCPUBufferTypeGeometry
                              dataFormat:NpBufferDataFormatFloat32
                              components:3
                                    data:cornerVertexData
                                   error:NULL ];
 
     result
-        = result && [ cornerIndexStream generate:NpBufferObjectTypeIndices
+        = result && [ cornerIndexStream generate:NpCPUBufferTypeIndices
                                       dataFormat:NpBufferDataFormatUInt16
                                       components:1
                                             data:cornerIndexData
