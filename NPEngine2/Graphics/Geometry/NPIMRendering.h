@@ -3,7 +3,7 @@
 #import "Core/NPObject/NPObject.h"
 #import "Graphics/NPEngineGraphicsEnums.h"
 
-@interface NPIMRendering
+@interface NPIMRendering : NSObject
 
 + (void) renderFRectangle:(const FRectangle)rectangle
             primitiveType:(const NpPrimitveType)primitiveType
