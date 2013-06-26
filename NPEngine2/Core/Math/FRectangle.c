@@ -41,8 +41,8 @@ void frectangle_ssss_init_with_min_max_r(const float minX, const float minY,
     rectangle->max.y = maxY;
 }
 
-void frectangle_vv_init_with_min_max_r(const FVector2 const * min,
-    const FVector2 const * max, FRectangle * rectangle)
+void frectangle_vv_init_with_min_max_r(const FVector2 * const min,
+    const FVector2 * const max, FRectangle * rectangle)
 {
     rectangle->min.x = min->x;
     rectangle->min.y = min->y;
@@ -50,8 +50,8 @@ void frectangle_vv_init_with_min_max_r(const FVector2 const * min,
     rectangle->max.y = max->y;
 }
 
-void frectangle_vv_init_with_min_and_size_r(const FVector2 const * min,
-    const FVector2 const * size, FRectangle * rectangle)
+void frectangle_vv_init_with_min_and_size_r(const FVector2 * const min,
+    const FVector2 * const size, FRectangle * rectangle)
 {
     rectangle->min.x = min->x;
     rectangle->min.y = min->y;
@@ -72,34 +72,34 @@ void frectangle_r_recalculate_min_max(FRectangle * rectangle)
     rectangle->max.y = maxY;
 }
 
-float frectangle_r_calculate_width(const FRectangle const * rectangle)
+float frectangle_r_calculate_width(const FRectangle * const rectangle)
 {
     return rectangle->max.x - rectangle->min.x;
 }
 
-float frectangle_r_calculate_height(const FRectangle const * rectangle)
+float frectangle_r_calculate_height(const FRectangle * const rectangle)
 {
     return rectangle->max.y - rectangle->min.y;
 }
 
-float frectangle_r_calculate_x_center(const FRectangle const * rectangle)
+float frectangle_r_calculate_x_center(const FRectangle * const rectangle)
 {
     return rectangle->min.x + (rectangle->max.x - rectangle->min.x) * 0.5f;
 }
 
-float frectangle_r_calculate_y_center(const FRectangle const * rectangle)
+float frectangle_r_calculate_y_center(const FRectangle * const rectangle)
 {
     return rectangle->min.y + (rectangle->max.y - rectangle->min.y) * 0.5f;
 }
 
-void frectangle_r_calculate_center_v(const FRectangle const * rectangle, FVector2 * result)
+void frectangle_r_calculate_center_v(const FRectangle * const rectangle, FVector2 * result)
 {
     result->x = frectangle_r_calculate_x_center(rectangle);
     result->y = frectangle_r_calculate_y_center(rectangle);
 }
 
-int32_t frectangle_vr_is_point_inside(const FVector2 const * point,
-    const FRectangle const * rectangle)
+int32_t frectangle_vr_is_point_inside(const FVector2 * const point,
+    const FRectangle * const rectangle)
 {
     int32_t result = 0;
 
@@ -112,7 +112,7 @@ int32_t frectangle_vr_is_point_inside(const FVector2 const * point,
     return result;
 }
 
-const char * frectangle_r_to_string(const FRectangle const * rectangle)
+const char * frectangle_r_to_string(const FRectangle * const rectangle)
 {
     char * frectanglestring;
 

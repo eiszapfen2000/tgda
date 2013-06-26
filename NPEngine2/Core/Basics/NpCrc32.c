@@ -170,7 +170,7 @@ void crc32_update_with_64bits( uint32_t * crc, const uint64_t data )
     crc32_update_with_32bits(crc, (uint32_t)(data >> 32));
 }
 
-void crc32_update_with_pointer( uint32_t * crc, const void const * pointer )
+void crc32_update_with_pointer( uint32_t * crc, const void * const pointer )
 {
 #ifdef NP_32BIT_LONG
     crc32_update_with_32bits(crc, (uint32_t) pointer);
@@ -193,7 +193,7 @@ void crc32_update_with_pointer( uint32_t * crc, const void const * pointer )
 #define crc32_update_with_long		crc32_update_with_64bits
 #endif
 
-void crc32_update_with_data( uint32_t * crc, const void const * pointer, const size_t length )
+void crc32_update_with_data( uint32_t * crc, const void * const pointer, const size_t length )
 {
     const uint8_t * byte_ptr = (const uint8_t *)pointer;
     const uint8_t * stop_ptr = byte_ptr + length;
@@ -244,7 +244,7 @@ uint32_t crc32_of_uint64( const uint64_t value )
     return CRC32_VALUE(crc);
 }
 
-uint32_t crc32_of_pointer( const void const * pointer )
+uint32_t crc32_of_pointer( const void * const pointer )
 {
 #ifdef NP_32BIT_LONG
     return crc32_of_uint32((uint32_t)pointer);
@@ -266,7 +266,7 @@ uint32_t crc32_of_pointer( const void const * pointer )
 #endif
 
 
-uint32_t crc32_of_data( const void const * pointer, const size_t length )
+uint32_t crc32_of_data( const void * const pointer, const size_t length )
 {
     uint32_t crc = CRC32_INITIAL_VALUE;
     crc32_update_with_data(&crc, pointer, length);

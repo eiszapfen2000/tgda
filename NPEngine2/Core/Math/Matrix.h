@@ -43,7 +43,7 @@ void m2_vm_multiply_v(const Vector2 * const v, const Matrix2 * const m, Vector2 
 void m2_mv_multiply_v(const Matrix2 * const m, const Vector2 * const v, Vector2 * result);
 void m2_m_inverse_m(const Matrix2 * const m1, Matrix2 * m2);
 double m2_determinant(const Matrix2 * const m);
-Matrix2 m2_m_transposed(const Matrix2 const * m);
+Matrix2 m2_m_transposed(const Matrix2 * const m);
 Matrix2 m2_mm_add(const Matrix2 * const m1, const Matrix2 * const m2);
 Matrix2 m2_mm_subtract(const Matrix2 * const m1, const Matrix2 * const m2);
 Matrix2 m2_mm_multiply(const Matrix2 * const m1, const Matrix2 * const m2);
@@ -74,7 +74,7 @@ void m3_s_scaley_m(double scale, Matrix3 * result);
 void m3_s_scalez_m(double scale, Matrix3 * result);
 void m3_s_scale_m(double scale, Matrix3 * result);
 double m3_m_determinant(const Matrix3 * const m);
-Matrix3 m3_m_transposed(const Matrix3 const * m);
+Matrix3 m3_m_transposed(const Matrix3 * const m);
 Matrix3 m3_mm_add(const Matrix3 * const m1, const Matrix3 * const m2);
 Matrix3 m3_mm_subtract(const Matrix3 * const m1, const Matrix3 * const m2);
 Matrix3 m3_mm_multiply(const Matrix3 * const m1, const Matrix3 * const m2);

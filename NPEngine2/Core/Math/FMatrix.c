@@ -118,7 +118,7 @@ float fm2_determinant(const FMatrix2 * const m)
     return M_EL(*m,0,0) * M_EL(*m,1,1) - M_EL(*m,0,1)*M_EL(*m,1,0);
 }
 
-FMatrix2 fm2_m_transposed(const FMatrix2 const * m)
+FMatrix2 fm2_m_transposed(const FMatrix2 * const m)
 {
     FMatrix2 transpose;
     fm2_m_transpose_m(m, &transpose);
@@ -437,7 +437,7 @@ float fm3_m_determinant(const FMatrix3 * const m)
     return M_EL(*m,0,0) * EIminusHF - M_EL(*m,1,0) * DIminusGF + M_EL(*m,2,0) * DHminusGE;
 }
 
-FMatrix3 fm3_m_transposed(const FMatrix3 const * m)
+FMatrix3 fm3_m_transposed(const FMatrix3 * const m)
 {
     FMatrix3 transpose;
     fm3_m_transpose_m(m, &transpose);

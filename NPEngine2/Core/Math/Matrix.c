@@ -109,7 +109,7 @@ double m2_determinant(const Matrix2 * const m)
     return M_EL(*m,0,0) * M_EL(*m,1,1) - M_EL(*m,0,1)*M_EL(*m,1,0);
 }
 
-Matrix2 m2_m_transposed(const Matrix2 const * m)
+Matrix2 m2_m_transposed(const Matrix2 * const m)
 {
     Matrix2 transpose;
     m2_m_transpose_m(m, &transpose);
@@ -417,7 +417,7 @@ double m3_m_determinant(const Matrix3 * const m)
     return M_EL(*m,0,0) * EIminusHF - M_EL(*m,1,0) * DIminusGF + M_EL(*m,2,0) * DHminusGE;
 }
 
-Matrix3 m3_m_transposed(const Matrix3 const * m)
+Matrix3 m3_m_transposed(const Matrix3 * const m)
 {
     Matrix3 transpose;
     m3_m_transpose_m(m, &transpose);

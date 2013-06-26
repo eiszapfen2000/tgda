@@ -44,7 +44,7 @@ void fm2_vm_multiply_v(const FVector2 * const v, const FMatrix2 * const m, FVect
 void fm2_mv_multiply_v(const FMatrix2 * const m, const FVector2 * const v, FVector2 * result);
 void fm2_m_inverse_m(const FMatrix2 * const m1, FMatrix2 * m2);
 float fm2_determinant(const FMatrix2 * const m);
-FMatrix2 fm2_m_transposed(const FMatrix2 const * m);
+FMatrix2 fm2_m_transposed(const FMatrix2 * const m);
 FMatrix2 fm2_mm_add(const FMatrix2 * const m1, const FMatrix2 * const m2);
 FMatrix2 fm2_mm_subtract(const FMatrix2 * const m1, const FMatrix2 * const m2);
 FMatrix2 fm2_mm_multiply(const FMatrix2 * const m1, const FMatrix2 * const m2);
@@ -76,7 +76,7 @@ void fm3_s_scaley_m(float scale, FMatrix3 * result);
 void fm3_s_scalez_m(float scale, FMatrix3 * result);
 void fm3_s_scale_m(float scale, FMatrix3 * result);
 float fm3_m_determinant(const FMatrix3 * const m);
-FMatrix3 fm3_m_transposed(const FMatrix3 const * m);
+FMatrix3 fm3_m_transposed(const FMatrix3 * const m);
 FMatrix3 fm3_mm_add(const FMatrix3 * const m1, const FMatrix3 * const m2);
 FMatrix3 fm3_mm_subtract(const FMatrix3 * const m1, const FMatrix3 * const m2);
 FMatrix3 fm3_mm_multiply(const FMatrix3 * const m1, const FMatrix3 * const m2);

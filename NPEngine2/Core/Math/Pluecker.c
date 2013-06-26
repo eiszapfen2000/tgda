@@ -27,7 +27,7 @@ Pluecker * pluecker_alloc_init(void)
     return tmp;
 }
 
-Pluecker * pluecker_alloc_init_with_points(const Vector3 const * p1, const Vector3 const * p2)
+Pluecker * pluecker_alloc_init_with_points(const Vector3 * const p1, const Vector3 * const p2)
 {
     Pluecker * tmp = npfreenode_alloc(NP_PLUECKER_FREELIST);
 
@@ -37,11 +37,11 @@ Pluecker * pluecker_alloc_init_with_points(const Vector3 const * p1, const Vecto
     return tmp;
 }
 
-Pluecker * pluecker_alloc_init_with_point_and_direction(const Vector3 const * point, const Vector3 const * direction)
+Pluecker * pluecker_alloc_init_with_point_and_direction(const Vector3 * const point, const Vector3 * const direction)
 {
     Pluecker * tmp = npfreenode_alloc(NP_PLUECKER_FREELIST);
 
-    v3_vv_init_with_v3(&(tmp->U), direction);
+    tmp->U = *direction;
     v3_vv_cross_product_v(direction, point, &(tmp->V));
 
     return tmp;
@@ -52,19 +52,19 @@ void pluecker_free(Pluecker * p)
     npfreenode_free(p, NP_PLUECKER_FREELIST);
 }
 
-void pluecker_init_with_points(Pluecker * pl, const Vector3 const * p1, const Vector3 const * p2)
+void pluecker_init_with_points(Pluecker * pl, const Vector3 * const p1, const Vector3 * const p2)
 {
     v3_vv_sub_v(p2, p1, &(pl->U));
     v3_vv_cross_product_v(p2, p1, &(pl->V));
 }
 
-void pluecker_init_with_point_and_direction(Pluecker * pl, const Vector3 const * point, const Vector3 const * direction)
+void pluecker_init_with_point_and_direction(Pluecker * pl, const Vector3 * const point, const Vector3 * const direction)
 {
-    v3_vv_init_with_v3(&(pl->U), direction);
+    pl->U = *direction;
     v3_vv_cross_product_v(direction, point, &(pl->V));
 }
 
-int32_t pluecker_plp_intersect_with_plane_v(const Pluecker const * pluecker, const Plane const * p, Vector3 * result)
+int32_t pluecker_plp_intersect_with_plane_v(const Pluecker * const pluecker, const Plane * const p, Vector3 * result)
 {
     double dot = v3_vv_dot_product(&(pluecker->U), &(p->normal));
 
@@ -75,3 +75,4 @@ int32_t pluecker_plp_intersect_with_plane_v(const Pluecker const * pluecker, con
 
     return 1;
 }
+

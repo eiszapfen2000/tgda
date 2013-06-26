@@ -41,7 +41,7 @@ FPluecker * fpluecker_alloc_init_with_point_and_direction(const FVector3 * point
 {
     FPluecker * tmp = npfreenode_alloc(NP_FPLUECKER_FREELIST);
 
-    fv3_vv_init_with_fv3(&(tmp->U), direction);
+    tmp->U = *direction;
     fv3_vv_cross_product_v(direction, point, &(tmp->V));
 
     return tmp;
@@ -60,7 +60,7 @@ void fpluecker_init_with_points(FPluecker * pl, const FVector3 * p1, const FVect
 
 void fpluecker_init_with_point_and_direction(FPluecker * pl, const FVector3 * point, const FVector3 * direction)
 {
-    fv3_vv_init_with_fv3(&(pl->U), direction);
+    pl->U = *direction;
     fv3_vv_cross_product_v(direction, point, &(pl->V));
 }
 

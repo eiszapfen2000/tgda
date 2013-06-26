@@ -77,8 +77,8 @@ void crc32_update_with_8bits( uint32_t * crc, const uint32_t data );
 void crc32_update_with_16bits( uint32_t * crc, const uint32_t data );
 void crc32_update_with_32bits( uint32_t * crc, const uint32_t data );
 void crc32_update_with_64bits( uint32_t * crc, const uint64_t data );
-void crc32_update_with_pointer( uint32_t * crc, const void const * pointer );
-void crc32_update_with_data( uint32_t * crc, const void const * pointer, const size_t length );
+void crc32_update_with_pointer( uint32_t * crc, const void * const pointer );
+void crc32_update_with_data( uint32_t * crc, const void * const pointer, const size_t length );
 void crc32_update_with_string( uint32_t * crc, const char * string );
 
 /* ---------------------------------------------------------------------------
@@ -88,8 +88,8 @@ void crc32_update_with_string( uint32_t * crc, const char * string );
 void crc32_write_to_data( const uint32_t crc, void * pointer );
 uint32_t crc32_of_uint32( const uint32_t value );
 uint32_t crc32_of_uint64( const uint64_t value );
-uint32_t crc32_of_pointer( const void const * pointer );
-uint32_t crc32_of_data( const void const * pointer, const size_t length );
+uint32_t crc32_of_pointer( const void * const pointer );
+uint32_t crc32_of_data( const void * const pointer, const size_t length );
 uint32_t crc32_of_string( const char * string );
 
 #endif /* _NP_BASICS_CRC32_H_ */
