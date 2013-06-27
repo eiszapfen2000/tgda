@@ -428,6 +428,7 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
 
     glGenQueries(1, &query);
     
+    /*
     effect
         = [[[ NPEngineGraphics instance ] effects ]
                 getAssetWithFileName:@"projected_grid.effect" ];
@@ -454,6 +455,7 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
     NSAssert(result, @"TF");
 
     color = [ effect variableWithName:@"color" ];
+    */
 
     gridColor.x = 0.0f;
     gridColor.y = 0.0f;

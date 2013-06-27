@@ -144,31 +144,11 @@ static int compare_floats (const void * a, const void * b)
 
     NSAssert(result, @"");
 
-    effect
-        = [[[ NPEngineGraphics instance ] effects ]
-                getAssetWithFileName:@"default.effect" ];
-
-    ASSERT_RETAIN(effect);
-
-    color = [ effect variableWithName:@"color" ];
-
-    lineColor.x = 0.0f;
-    lineColor.y = 1.0f;
-    lineColor.z = 0.0f;
-    lineColor.w = 1.0f;
-
-    faceColor.x = 0.0f;
-    faceColor.y = 1.0f;
-    faceColor.z = 0.0f;
-    faceColor.w = 0.5f;
-
-
     return self;
 }
 
 - (void) dealloc
 {
-    DESTROY(effect);
     DESTROY(facesVertexArray);
     DESTROY(linesVertexArray);
     DESTROY(facesIndexStream);
@@ -178,72 +158,76 @@ static int compare_floats (const void * a, const void * b)
     [ super dealloc ];
 }
 
-- (void) updateWithPosition:(const FVector3)position
-                orientation:(const FQuaternion)orientation
-                        fov:(const float)fov
-                  nearPlane:(const float)nearPlane
-                   farPlane:(const float)farPlane
-                aspectRatio:(const float)aspectRatio
+- (void) updateWithPosition:(const Vector3)position
+                orientation:(const Quaternion)orientation
+                        fov:(const double)fov
+                  nearPlane:(const double)nearPlane
+                   farPlane:(const double)farPlane
+                aspectRatio:(const double)aspectRatio
 {
     // compute near and far plane size
 
-    const float fovradians = DEGREE_TO_RADIANS(fov / 2.0f);
+    const double fovradians = DEGREE_TO_RADIANS(fov / 2.0);
 
-    const float nearPlaneHeight = 2.0f * tanf(fovradians) * nearPlane;
-    const float farPlaneHeight  = 2.0f * tanf(fovradians) * farPlane;
-    const float nearPlaneWidth  = nearPlaneHeight * aspectRatio;
-    const float farPlaneWidth   = farPlaneHeight * aspectRatio;
+    const double nearPlaneHeight = 2.0 * tan(fovradians) * nearPlane;
+    const double farPlaneHeight  = 2.0 * tan(fovradians) * farPlane;
+    const double nearPlaneWidth  = nearPlaneHeight * aspectRatio;
+    const double farPlaneWidth   = farPlaneHeight * aspectRatio;
 
-    const float nearPlaneHalfHeight = nearPlaneHeight / 2.0f;
-    const float nearPlaneHalfWidth  = nearPlaneWidth  / 2.0f;
-    const float farPlaneHalfHeight  = farPlaneHeight  / 2.0f;
-    const float farPlaneHalfWidth   = farPlaneWidth   / 2.0f;
+    const double nearPlaneHalfHeight = nearPlaneHeight / 2.0;
+    const double nearPlaneHalfWidth  = nearPlaneWidth  / 2.0;
+    const double farPlaneHalfHeight  = farPlaneHeight  / 2.0;
+    const double farPlaneHalfWidth   = farPlaneWidth   / 2.0;
 
     // compute forward, up and right vector
 
-    FVector3 forward = fquat_q_forward_vector(&orientation);
-    FVector3 up = fquat_q_up_vector(&orientation);
-    FVector3 right = fquat_q_right_vector(&orientation);
+    Vector3 forward = quat_q_forward_vector(&orientation);
+    Vector3 up = quat_q_up_vector(&orientation);
+    Vector3 right = quat_q_right_vector(&orientation);
 
-    fv3_v_normalise(&forward);
-    fv3_v_normalise(&up);
-    fv3_v_normalise(&right);
+    v3_v_normalise(&forward);
+    v3_v_normalise(&up);
+    v3_v_normalise(&right);
 
     // compute frustum bounds with the near plane center at the origin
     // so we can apply an uniform scale to the vertices to shrink
     // the frustum to an acceptable size for rendering
 
-    const FVector3 farPlaneHalfWidthV  = fv3_sv_scaled(farPlaneHalfWidth, &right);
-    const FVector3 farPlaneHalfHeightV = fv3_sv_scaled(farPlaneHalfHeight, &up);
-    const FVector3 nearPlaneHalfWidthV  = fv3_sv_scaled(nearPlaneHalfWidth, &right);
-    const FVector3 nearPlaneHalfHeightV = fv3_sv_scaled(nearPlaneHalfHeight, &up);
+    const Vector3 farPlaneHalfWidthV   = v3_sv_scaled(farPlaneHalfWidth, &right);
+    const Vector3 farPlaneHalfHeightV  = v3_sv_scaled(farPlaneHalfHeight, &up);
+    const Vector3 nearPlaneHalfWidthV  = v3_sv_scaled(nearPlaneHalfWidth, &right);
+    const Vector3 nearPlaneHalfHeightV = v3_sv_scaled(nearPlaneHalfHeight, &up);
 
     // near plane stuff
-    const FVector3 nearPlaneCenter = (FVector3){0.0f, 0.0f, 0.0f};
+    const Vector3 nearPlaneCenter = (Vector3){0.0, 0.0, 0.0};
+    const Vector3 farPlaneCenter = v3_sv_scaled(farPlane - nearPlane, &forward);
 
-    const FVector3 npDirection = fv3_vv_add(&nearPlaneHalfHeightV, &nearPlaneHalfWidthV);
-    const FVector3 nearPlaneUpperCenter = fv3_vv_add(&nearPlaneCenter, &nearPlaneHalfHeightV);
-    const FVector3 nearPlaneLowerCenter = fv3_vv_sub(&nearPlaneCenter, &nearPlaneHalfHeightV);
+    const Vector3 npDirection = v3_vv_add(&nearPlaneHalfHeightV, &nearPlaneHalfWidthV);
+    const Vector3 fpdirection = v3_vv_add(&farPlaneHalfHeightV, &farPlaneHalfWidthV);
 
-    frustumCornerPositions[NEARPLANE_UPPERRIGHT] = fv3_vv_add(&nearPlaneCenter, &npDirection);
-    frustumCornerPositions[NEARPLANE_LOWERLEFT]  = fv3_vv_sub(&nearPlaneCenter, &npDirection);
-    frustumCornerPositions[NEARPLANE_UPPERLEFT]  = fv3_vv_sub(&nearPlaneUpperCenter, &nearPlaneHalfWidthV);
-    frustumCornerPositions[NEARPLANE_LOWERRIGHT] = fv3_vv_add(&nearPlaneLowerCenter, &nearPlaneHalfWidthV);
+    const Vector3 nearPlaneUpperCenter = v3_vv_add(&nearPlaneCenter, &nearPlaneHalfHeightV);
+    const Vector3 nearPlaneLowerCenter = v3_vv_sub(&nearPlaneCenter, &nearPlaneHalfHeightV);
+    const Vector3 farPlaneUpperCenter = v3_vv_add(&farPlaneCenter, &farPlaneHalfHeightV);
+    const Vector3 farPlaneLowerCenter = v3_vv_sub(&farPlaneCenter, &farPlaneHalfHeightV);
 
-    // far plane stuff
-    const FVector3 farPlaneCenter = fv3_sv_scaled(farPlane - nearPlane, &forward);
+    Vector3 cornerPositions[8];
+    cornerPositions[NEARPLANE_UPPERRIGHT] = v3_vv_add(&nearPlaneCenter, &npDirection);
+    cornerPositions[NEARPLANE_LOWERLEFT]  = v3_vv_sub(&nearPlaneCenter, &npDirection);
+    cornerPositions[NEARPLANE_UPPERLEFT]  = v3_vv_sub(&nearPlaneUpperCenter, &nearPlaneHalfWidthV);
+    cornerPositions[NEARPLANE_LOWERRIGHT] = v3_vv_add(&nearPlaneLowerCenter, &nearPlaneHalfWidthV);
+    cornerPositions[FARPLANE_UPPERRIGHT]  = v3_vv_add(&farPlaneCenter, &fpdirection);
+    cornerPositions[FARPLANE_LOWERLEFT]   = v3_vv_sub(&farPlaneCenter, &fpdirection);
+    cornerPositions[FARPLANE_UPPERLEFT]   = v3_vv_sub(&farPlaneUpperCenter, &farPlaneHalfWidthV);
+    cornerPositions[FARPLANE_LOWERRIGHT]  = v3_vv_add(&farPlaneLowerCenter, &farPlaneHalfWidthV);
 
-    const FVector3 fpdirection = fv3_vv_add(&farPlaneHalfHeightV, &farPlaneHalfWidthV);
-    const FVector3 farPlaneUpperCenter = fv3_vv_add(&farPlaneCenter, &farPlaneHalfHeightV);
-    const FVector3 farPlaneLowerCenter = fv3_vv_sub(&farPlaneCenter, &farPlaneHalfHeightV);
-
-    frustumCornerPositions[FARPLANE_UPPERRIGHT] = fv3_vv_add(&farPlaneCenter, &fpdirection);
-    frustumCornerPositions[FARPLANE_LOWERLEFT]  = fv3_vv_sub(&farPlaneCenter, &fpdirection);
-    frustumCornerPositions[FARPLANE_UPPERLEFT]  = fv3_vv_sub(&farPlaneUpperCenter, &farPlaneHalfWidthV);
-    frustumCornerPositions[FARPLANE_LOWERRIGHT] = fv3_vv_add(&farPlaneLowerCenter, &farPlaneHalfWidthV);
+    for ( int32_t i = 0; i < 8; i++ )
+    {
+        frustumCornerPositions[i]
+            = (FVector3){ cornerPositions[i].x, cornerPositions[i].y, cornerPositions[i].z };
+    }
 
     // scale frustum geometry
-    const FMatrix3 scale = fm3_s_scale(0.25f);
+    const FMatrix3 scale = fm3_s_scale(1.0f);
 
     for ( int32_t i = 0; i < 8; i++ )
     {
@@ -251,17 +235,20 @@ static int compare_floats (const void * a, const void * b)
     }
 
     // translate frustum to world space
-    const FVector3 fromPositionToNearPlane = fv3_sv_scaled(nearPlane, &forward);
-    const FVector3 nearPlaneWorldSpacePosition  = fv3_vv_add(&position, &fromPositionToNearPlane);
+    const Vector3 fromPositionToNearPlane = v3_sv_scaled(nearPlane, &forward);
+    const Vector3 nearPlaneWorldSpacePosition  = v3_vv_add(&position, &fromPositionToNearPlane);
+    const FVector3 nearPlaneWorldSpacePositionF
+        = (FVector3){ nearPlaneWorldSpacePosition.x, nearPlaneWorldSpacePosition.y, nearPlaneWorldSpacePosition.z };
 
     for ( int32_t i = 0; i < 8; i++ )
     {
-        frustumCornerPositions[i] = fv3_vv_add(&(frustumCornerPositions[i]), &nearPlaneWorldSpacePosition);
+        frustumCornerPositions[i] = fv3_vv_add(&(frustumCornerPositions[i]), &nearPlaneWorldSpacePositionF);
     }
 }
 
 - (void) render
 {
+    /*
     [[[ NPEngineCore instance ] transformationState ] resetModelMatrix ];
 
     [[[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ] setEnabled:YES ];
@@ -276,13 +263,15 @@ static int compare_floats (const void * a, const void * b)
 
     [ color setFValue:faceColor ];
     [[ effect techniqueWithName:@"color" ] activate ];
-    [ facesVertexArray renderWithPrimitiveType:NpPrimitiveQuads ];
 
     glLineWidth(5.0f);
     [ color setFValue:lineColor ];
     [[ effect techniqueWithName:@"color" ] activate ];
-    [ linesVertexArray renderWithPrimitiveType:NpPrimitiveLines ];
     glLineWidth(1.0f);
+    */
+
+    [ facesVertexArray renderWithPrimitiveType:NpPrimitiveQuads ];
+    [ linesVertexArray renderWithPrimitiveType:NpPrimitiveLines ];
 }
 
 @end

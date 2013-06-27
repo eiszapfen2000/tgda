@@ -51,26 +51,10 @@
 
 - (void) updateProjection
 {
-    /*
-    if ( connectedToCamera == YES )
-    {
-        //enlarge horizontal field of view
-        float horizontalFOV = [ camera fov ] * [ camera aspectRatio ] * 1.2f;
-
-        // Set vertical field of view to 90°
-        fov = 90.0f;
-
-        // Recalculate aspectRatio
-        aspectRatio = horizontalFOV / fov;
-    }
-    else
-    {
-    */
-        aspectRatio = [ camera aspectRatio ];
-        fov = [ camera fov ];
-    //}
-
-    float horizontalFOV = [ camera fov ] * [ camera aspectRatio ] * 1.2;
+    // Enlarge horizontal field of view
+    float horizontalFOV = [ camera fov ] * [ camera aspectRatio ] * 1.15;
+    // Set vertical field of view to nearly 90°, with exactly 90° we run into
+    // numerical issues
     fov = 90.0 - 0.05;
     aspectRatio = horizontalFOV / fov;
 
@@ -128,6 +112,31 @@
 
 @end
 
+static const OdProjectorRotationEvents defaultRotationEvents
+    = {.pitchMinus = NpKeyboardS, .pitchPlus = NpKeyboardW,
+       .yawMinus   = NpKeyboardA, .yawPlus   = NpKeyboardD };
+
+static NSString * const pitchMinusActionString = @"PitchMinus";
+static NSString * const pitchPlusActionString  = @"PitchPlus";
+static NSString * const yawMinusActionString   = @"YawMinus";
+static NSString * const yawPlusActionString    = @"YawPlus";
+
+static NPInputAction * create_input_action(NSString * projectorName, NSString * actionName, NpInputEvent event)
+{
+    if ( event != NpInputEventUnknown )
+    {
+        NSMutableString * name = [ NSMutableString stringWithString:projectorName ];
+        [ name appendString:actionName ];
+
+        return
+            [[[ NP Input ] inputActions ]
+                    addInputActionWithName:name
+                                inputEvent:event ]; 
+    }
+
+    return nil;
+}
+
 @implementation ODProjector
 
 - (id) init
@@ -136,6 +145,12 @@
 }
 
 - (id) initWithName:(NSString *)newName
+{
+    return [ self initWithName:newName rotationEvents:defaultRotationEvents ];
+}
+
+- (id) initWithName:(NSString *)newName
+     rotationEvents:(OdProjectorRotationEvents)rotationEvents
 {
 	self = [ super initWithName:newName ];
 
@@ -157,32 +172,41 @@
     v3_v_init_with_zeros(&right);
     forward.z = -1.0;
 
-    renderFrustum = NO;
-
-    frustum = [[ ODFrustum alloc ] initWithName:@"ProjectorFrustum" ];
-
-    pitchMinusAction = [[[ NP Input ] inputActions ] addInputActionWithName:@"PitchMinus" inputEvent:NpKeyboardS ];
-    pitchPlusAction  = [[[ NP Input ] inputActions ] addInputActionWithName:@"PitchPlus"  inputEvent:NpKeyboardW ];
-    yawMinusAction   = [[[ NP Input ] inputActions ] addInputActionWithName:@"YawMinus"   inputEvent:NpKeyboardA ];
-    yawPlusAction    = [[[ NP Input ] inputActions ] addInputActionWithName:@"YawPlus"    inputEvent:NpKeyboardD ];
+    pitchMinusAction = create_input_action(name, pitchMinusActionString, rotationEvents.pitchMinus);
+    pitchPlusAction  = create_input_action(name, pitchPlusActionString,  rotationEvents.pitchPlus);
+    yawMinusAction   = create_input_action(name, yawMinusActionString,   rotationEvents.yawMinus);
+    yawPlusAction    = create_input_action(name, yawPlusActionString,    rotationEvents.yawPlus);
 
     connectedToCameraLastFrame = connectedToCamera = YES;
 
 	return self;
 }
 
-- (id) initWithName:(NSString *)newName
-     rotationEvents:(OdProjectorRotationEvents)rotationEvents
-{
-    return nil;
-}
-
 - (void) dealloc
 {
-    SAFE_DESTROY(frustum);
     SAFE_DESTROY(camera);
 
 	[ super dealloc ];
+}
+
+- (double) fov
+{
+    return fov;
+}
+
+- (double) aspectRatio
+{
+    return aspectRatio;
+}
+
+- (double) nearPlane
+{
+    return nearPlane;
+}
+
+- (double) farPlane
+{
+    return farPlane;
 }
 
 - (Vector3) position
@@ -225,11 +249,6 @@
     return camera;
 }
 
-- (ODFrustum *) frustum
-{
-    return frustum;
-}
-
 - (BOOL) connecting
 {
     return ( connectedToCameraLastFrame == NO && connectedToCamera == YES ) ? YES : NO;
@@ -250,48 +269,34 @@
     ASSIGN(camera, newCamera);
 }
 
-- (void) setRenderFrustum:(BOOL)newRenderFrustum
-{
-    renderFrustum = newRenderFrustum;
-}
-
 - (void) update:(const double)frameTime
 {
     NSAssert(camera != nil, @"No camera attached");
 
     const double pitchYaw = frameTime * 45.0;
 
-    if ( [ pitchMinusAction active ] == YES )
+    if (( pitchMinusAction != nil ) && ([ pitchMinusAction active ] == YES ))
     {
         [ self cameraRotateUsingYaw:0.0f andPitch:-pitchYaw ];
     }
 
-    if ( [ pitchPlusAction active ] == YES )
+    if (( pitchPlusAction != nil ) && ([ pitchPlusAction active ] == YES ))
     {
         [ self cameraRotateUsingYaw:0.0 andPitch:pitchYaw ];
     }
 
-    if ( [ yawMinusAction active ] == YES )
+    if (( yawMinusAction != nil ) && ([ yawMinusAction active ] == YES ))
     {
         [ self cameraRotateUsingYaw:-pitchYaw  andPitch:0.0 ];
     }
 
-    if ( [ yawPlusAction active ] == YES )
+    if (( yawPlusAction != nil ) && ([ yawPlusAction active ] == YES ))
     {
         [ self cameraRotateUsingYaw:pitchYaw andPitch:0.0 ];
     }
 
     [ self updateProjection ];
     [ self updateView ];
-
-    /*
-    [ frustum updateWithPosition:position
-                     orientation:orientation
-                             fov:fov
-                       nearPlane:nearPlane
-                        farPlane:farPlane
-                     aspectRatio:aspectRatio ];
-    */
 
     m4_mm_multiply_m(&projection, &view, &viewProjection);
     m4_m_inverse_m(&viewProjection, &inverseViewProjection);
@@ -303,12 +308,13 @@
 {
     NSAssert(camera != nil, @"No camera attached");
 
-    //if ( renderFrustum == YES && connectedToCamera == NO)
+    /*
     if ( renderFrustum == YES )
     {
         [[[ NP Core ] transformationState ] resetModelMatrix ];
         [ frustum render ];
     }
+    */
 }
 
 @end

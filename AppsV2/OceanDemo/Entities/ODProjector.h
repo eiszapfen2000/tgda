@@ -35,9 +35,6 @@ OdProjectorRotationEvents;
     double farPlane;
     double aspectRatio;
 
-    BOOL renderFrustum;
-    ODFrustum * frustum;
-
     NPInputAction * pitchMinusAction;
     NPInputAction * pitchPlusAction;
     NPInputAction * yawMinusAction;
@@ -55,6 +52,10 @@ OdProjectorRotationEvents;
                    ;
 - (void) dealloc;
 
+- (double) fov;
+- (double) aspectRatio;
+- (double) nearPlane;
+- (double) farPlane;
 - (Vector3) position;
 - (Quaternion) orientation;
 - (double) yaw;
@@ -63,14 +64,12 @@ OdProjectorRotationEvents;
 - (Matrix4 *) projection;
 - (Matrix4 *) inverseViewProjection;
 - (ODCamera *) camera;
-- (ODFrustum *) frustum;
 
 - (BOOL) connecting;
 - (BOOL) disconnecting;
 
 - (void) setPosition:(const Vector3)newPosition;
 - (void) setCamera:(ODCamera *)newCamera;
-- (void) setRenderFrustum:(BOOL)newRenderFrustum;
 
 - (void) update:(const double)frameTime;
 - (void) render;

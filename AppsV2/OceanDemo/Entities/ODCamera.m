@@ -272,6 +272,16 @@ static NPInputAction * create_input_action(NSString * cameraName, NSString * act
     return inputLocked;
 }
 
+- (void) setNearPlane:(double)newNearPlane
+{
+    nearPlane = newNearPlane;
+}
+
+- (void) setFarPlane:(double)newFarPlane
+{
+    farPlane = newFarPlane;
+}
+
 - (void) setPosition:(const Vector3)newPosition
 {
 	position = newPosition;
