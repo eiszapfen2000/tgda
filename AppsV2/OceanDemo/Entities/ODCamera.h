@@ -57,6 +57,8 @@ OdCameraMovementEvents;
 - (Matrix4 *) inverseViewProjection;
 - (BOOL) inputLocked;
 
+- (void) setNearPlane:(double)newNearPlane;
+- (void) setFarPlane:(double)newFarPlane;
 - (void) setPosition:(const Vector3)newPosition;
 - (void) setOrientation:(const Quaternion)newOrientation;
 - (void) setYaw:(const double)newYaw;

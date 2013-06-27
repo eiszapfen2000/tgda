@@ -4,6 +4,7 @@
 
 @class NSMutableArray;
 @class ODCamera;
+@class ODFrustum;
 @class ODProjector;
 @class ODProjectedGrid;
 @class ODPreethamSkylight;
@@ -30,7 +31,9 @@
     NSMutableArray * entities;
 
     ODCamera * testCamera;
+    ODFrustum * testCameraFrustum;
     ODProjector * testProjector;
+    ODFrustum * testProjectorFrustum;
 
     // camera animation
     FQuaternion startOrientation;

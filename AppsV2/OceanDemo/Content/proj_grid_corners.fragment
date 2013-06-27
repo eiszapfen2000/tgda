@@ -22,5 +22,6 @@ void main()
     */
 
     target = vec4(out_position, 1.0);
+    //target = vec4(1.0);
 }
 

@@ -20,6 +20,7 @@
 #import "Entities/ODBasePlane.h"
 #import "Entities/ODPEntity.h"
 #import "Entities/ODCamera.h"
+#import "Entities/ODFrustum.h"
 #import "Entities/ODProjector.h"
 #import "Entities/ODProjectedGrid.h"
 #import "Entities/ODPreethamSkylight.h"
@@ -136,7 +137,7 @@
 @end
 
 static const OdCameraMovementEvents testCameraMovementEvents
-    = {.rotate  = NpInputEventUnknown, .strafe   = NpInputEventUnknown,
+    = {.rotate  = NpKeyboardG, .strafe   = NpInputEventUnknown,
        .forward = NpInputEventUnknown, .backward = NpInputEventUnknown };
 
 static const OdProjectorRotationEvents testProjectorRotationEvents
@@ -163,7 +164,13 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     entities  = [[ NSMutableArray alloc ] init ];
 
     testCamera = [[ ODCamera alloc ] initWithName:@"TestCamera"  movementEvents:testCameraMovementEvents ];
-    testProjector = [[ ODProjector alloc ] initWithName:@"TestProj" rotationEvents:testProjectorRotationEvents ];
+    testProjector = [[ ODProjector alloc ] initWithName:@"TestProj" ];
+
+    [ testCamera setFarPlane:50.0 ];
+    [ testProjector setCamera:testCamera ];
+
+    testCameraFrustum = [[ ODFrustum alloc ] initWithName:@"CFrustum" ];
+    testProjectorFrustum = [[ ODFrustum alloc ] initWithName:@"PFrustum" ];
 
     ocean = [[ ODOceanEntity alloc ] initWithName:@"Ocean" ];
     projectedGrid = [[ ODProjectedGrid alloc ] initWithName:@"ProjGrid" ];
@@ -217,7 +224,11 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ entities removeAllObjects ];
     DESTROY(entities);
     DESTROY(camera);
+
     DESTROY(testCamera);
+    DESTROY(testProjector);
+    DESTROY(testCameraFrustum);
+    DESTROY(testProjectorFrustum);
 
     [ ocean stop ];
     SAFE_DESTROY(ocean);
@@ -296,7 +307,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ skylight  setCamera:camera ];
     [ ocean     setCamera:camera ];
 
-    [ projectedGrid setProjector:[ ocean projector ]];
+    //[ projectedGrid setProjector:[ ocean projector ]];
+    [ projectedGrid setProjector:testProjector ];
 
     [ ocean start ];
 
@@ -386,6 +398,22 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [ camera        update:frameTime ];
     [ testCamera    update:frameTime ];
+    [ testProjector update:frameTime ];
+
+    [ testCameraFrustum updateWithPosition:[testCamera position]
+                               orientation:[testCamera orientation]
+                                       fov:[testCamera fov]
+                                 nearPlane:[testCamera nearPlane]
+                                  farPlane:[testCamera farPlane]
+                               aspectRatio:[testCamera aspectRatio]];
+
+    [ testProjectorFrustum updateWithPosition:[testProjector position]
+                                  orientation:[testProjector orientation]
+                                          fov:[testProjector fov]
+                                    nearPlane:[testProjector nearPlane]
+                                     farPlane:[testProjector farPlane]
+                                  aspectRatio:[testProjector aspectRatio]];
+
 /*
     [ skylight      update:frameTime ];
 */
@@ -424,8 +452,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ cullingState   setEnabled:NO ];
     [ depthTestState setWriteEnabled:YES ];
     [ depthTestState setEnabled:YES ];
-    [ fillState      setFrontFaceFill:NpPolygonFillLine ];
-    [ fillState      setBackFaceFill:NpPolygonFillLine ];
+    //[ fillState      setFrontFaceFill:NpPolygonFillLine ];
+    //[ fillState      setBackFaceFill:NpPolygonFillLine ];
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
     // clear back buffer
@@ -434,18 +462,50 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ camera render ];
 
     [[[ NP Core] transformationState] resetModelMatrix];
+    /*
     NPEffectVariableFloat2 * v = [ deferredEffect variableWithName:@"scale"];
     [ v setFValue:[ocean baseMeshScale]];
     [[ deferredEffect techniqueWithName:@"base_xz" ] activate ];
     [ ocean renderBaseMesh ];
-    /*
+    */
+        
     NPEffectVariableMatrix4x4 * v = [ deferredEffect variableWithName:@"invMVP"];
-    [ v setValue:[[ocean projector] inverseViewProjection]];
+    [ v setValue:[testProjector inverseViewProjection]];
     
     [[ deferredEffect techniqueWithName:@"proj_grid_corners" ] activate ];
     [ projectedGrid render:nil ];
-    */
+    
+    
     //[ ocean renderBasePlane ];
+
+    [ NPEffectTechnique deactivate ];
+
+    [[[ NPEngineCore instance ] transformationState ] resetModelMatrix ];
+    [[[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ] setEnabled:YES ];
+    [[[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ] setBlendingMode:NpBlendingAverage ];
+    [[[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ] activate ];
+
+    [[[[ NPEngineGraphics instance ] stateConfiguration ] cullingState ] setEnabled:NO ];
+    [[[[ NPEngineGraphics instance ] stateConfiguration ] cullingState ] activate ];
+
+    [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] setWriteEnabled:NO ];
+    [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] activate ];
+
+    FVector4 fc = {0.0f, 1.0f, 0.0f, 0.5f};
+    FVector4 lc = {1.0f, 0.0f, 0.0f, 0.5f};
+
+    NPEffectVariableFloat4 * c = [ deferredEffect variableWithName:@"color" ];
+    NSAssert(c != nil, @"");
+
+    [ c setFValue:fc ];
+    [[ deferredEffect techniqueWithName:@"color" ] activate ];
+
+    [ testCameraFrustum render ];
+
+    [ c setFValue:lc ];
+    [[ deferredEffect techniqueWithName:@"color" ] activate ];
+
+    [ testProjectorFrustum render ];
 
     [[[ NP Graphics ] stateConfiguration ] deactivate ];
 

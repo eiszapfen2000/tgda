@@ -37,24 +37,18 @@
     NPCPUBuffer * linesIndexStream;
     NPCPUVertexArray * facesVertexArray;
     NPCPUVertexArray * linesVertexArray;
-
-    NPEffect * effect;
-    NPEffectVariableFloat4 * color;
-
-    FVector4 lineColor;
-    FVector4 faceColor;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-- (void) updateWithPosition:(const FVector3)position
-                orientation:(const FQuaternion)orientation
-                        fov:(const float)fov
-                  nearPlane:(const float)nearPlane
-                   farPlane:(const float)farPlane
-                aspectRatio:(const float)aspectRatio
+- (void) updateWithPosition:(const Vector3)position
+                orientation:(const Quaternion)orientation
+                        fov:(const double)fov
+                  nearPlane:(const double)nearPlane
+                   farPlane:(const double)farPlane
+                aspectRatio:(const double)aspectRatio
                            ;
 
 - (void) render;
