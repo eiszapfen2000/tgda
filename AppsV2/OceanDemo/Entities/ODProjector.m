@@ -55,7 +55,11 @@
     float horizontalFOV = [ camera fov ] * [ camera aspectRatio ] * 1.15;
     // Set vertical field of view to nearly 90°, with exactly 90° we run into
     // numerical issues
-    fov = 90.0 - 0.05;
+    //fov = 90.0 - 0.05;
+    //aspectRatio = horizontalFOV / fov;
+
+    fov = [ camera fov ];
+    //aspectRatio = [ camera aspectRatio ];
     aspectRatio = horizontalFOV / fov;
 
     nearPlane = [ camera nearPlane ];
@@ -66,38 +70,52 @@
 
 - (void) updateView
 {
-    float localPitch = pitch;
-    float localYaw = yaw;
+    double localPitch = pitch;
+    double localYaw = yaw;
+    double localfov = fov;
 
     if ( connectedToCamera == YES )
     {
         position   = [ camera position ];
         localPitch = [ camera pitch ];
         localYaw   = [ camera yaw ];
+        localfov   = [ camera fov ];
     }
+
+    const double halfCameraFOV = localfov / 2.0;
 
     if ( localPitch >= 0.0 && localPitch <= 180.0 )
     {
         if ( localPitch <= 90.0 )
         {
-            localPitch = 315.0;
+            localPitch = 360.0 - halfCameraFOV;
         }
         else
         {
-            localPitch = 225.0;
+            localPitch = 180.0 + halfCameraFOV;
         }
     }
     else
     {
-        if ( localPitch < 225.0 )
+        if ( localPitch < (180.0 + halfCameraFOV) )
         {
-            localPitch = 225.0;
+            localPitch = 180.0 + halfCameraFOV;
         }
 
-        if ( localPitch > 315.0 )
+        if ( localPitch > (360.0 - halfCameraFOV) )
         {
-            localPitch = 315.0;
+            localPitch = 360.0 - halfCameraFOV;
         }
+    }
+
+    if ( localPitch >= (180.0 + halfCameraFOV) )
+    {
+        localPitch = MAX(localPitch, 180.0 + halfCameraFOV + 1.0);
+    }
+
+    if ( localPitch <= (360.0 - halfCameraFOV) )
+    {
+        localPitch = MIN(localPitch, 360.0 - halfCameraFOV - 1.0);
     }
 
     m4_m_set_identity(&view);
@@ -166,6 +184,11 @@ static NPInputAction * create_input_action(NSString * projectorName, NSString * 
 
     yaw   = 0.0;
     pitch = 0.0;
+
+    fov = 45.0;
+    nearPlane = 0.1;
+    farPlane = 100.0;
+    aspectRatio = 1.0f;
 
     v3_v_init_with_zeros(&forward);
     v3_v_init_with_zeros(&up);
