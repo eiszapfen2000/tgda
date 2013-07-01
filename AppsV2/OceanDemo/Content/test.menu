@@ -105,8 +105,8 @@
             TextSize = "16";
             ItemSize = ("50", "50");
             Spacing = ("5", "5");
-            Layout = ("2", "2");
-            Labels = ("64", "128", "256", "512");
+            Layout = ("2", "4");
+            Labels = ("8", "16", "32", "64", "128", "256", "512", "1024");
             TargetObject = "Ocean";
             TargetProperty = "resolutionIndex";
         };

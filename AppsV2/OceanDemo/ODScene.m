@@ -452,8 +452,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ cullingState   setEnabled:NO ];
     [ depthTestState setWriteEnabled:YES ];
     [ depthTestState setEnabled:YES ];
-    //[ fillState      setFrontFaceFill:NpPolygonFillLine ];
-    //[ fillState      setBackFaceFill:NpPolygonFillLine ];
+    [ fillState      setFrontFaceFill:NpPolygonFillLine ];
+    [ fillState      setBackFaceFill:NpPolygonFillLine ];
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
     // clear back buffer
@@ -462,13 +462,15 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ camera render ];
 
     [[[ NP Core] transformationState] resetModelMatrix];
-    /*
+    
     NPEffectVariableFloat2 * v = [ deferredEffect variableWithName:@"scale"];
     [ v setFValue:[ocean baseMeshScale]];
     [[ deferredEffect techniqueWithName:@"base_xz" ] activate ];
     [ ocean renderBaseMesh ];
-    */
+    
         
+
+    /*
     NPEffectVariableMatrix4x4 * v = [ deferredEffect variableWithName:@"invMVP"];
     [ v setValue:[testProjector inverseViewProjection]];
     
@@ -506,8 +508,10 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[ deferredEffect techniqueWithName:@"color" ] activate ];
 
     [ testProjectorFrustum render ];
+    */
 
     [[[ NP Graphics ] stateConfiguration ] deactivate ];
+    
 
     /*
     [ gBuffer bindFBO ];
