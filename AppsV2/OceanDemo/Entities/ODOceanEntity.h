@@ -20,7 +20,7 @@
 @class ODOceanBaseMeshes;
 
 
-#define ODOCEANENTITY_NUMBER_OF_RESOLUTIONS     4
+#define ODOCEANENTITY_NUMBER_OF_RESOLUTIONS     8
 
 @interface ODOceanEntity : NPObject
 {

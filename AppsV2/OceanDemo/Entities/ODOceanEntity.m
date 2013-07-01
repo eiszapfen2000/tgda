@@ -60,22 +60,30 @@ static void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex
 static const double defaultWindSpeed = 8.5;
 static const Vector2 defaultWindDirection = {1.8, 0.2};
 static const Vector2 defaultSize = {40.0, 40.0};
-static const int32_t resolutions[4] = {64, 128, 256, 512};
-static const NSUInteger defaultResolutionIndex = 1;
+static const int32_t resolutions[8] = {8, 16, 32, 64, 128, 256, 512, 1024};
+static const NSUInteger defaultResolutionIndex = 0;
 static const double OneDivSixty = 1.0 / 60.0;
 
 static size_t index_for_resolution(int32_t resolution)
 {
     switch ( resolution )
     {
-        case 64:
+        case 8:
             return 0;
-        case 128:
+        case 16:
             return 1;
-        case 256:
+        case 32:
             return 2;
-        case 512:
+        case 64:
             return 3;
+        case 128:
+            return 4;
+        case 256:
+            return 5;
+        case 512:
+            return 6;
+        case 1024:
+            return 7;
         default:
             return SIZE_MAX;
     }
