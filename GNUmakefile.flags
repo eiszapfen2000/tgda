@@ -28,7 +28,15 @@ BASIC_CFLAGS += \
     -Wall -Wextra -Wformat=2 -std=gnu99 \
     -fstrict-aliasing -Wstrict-aliasing \
     -fstrict-overflow -Wstrict-overflow=1 \
-    -Wpointer-arith -Wuninitialized -Winit-self -Winline -Wno-unused
+    -Wpointer-arith -Wuninitialized -Winit-self -Winline -Wno-unused \
+    -Wcast-align \
+    -Woverlength-strings \
+    -Wno-unused-parameter
+#    -Wfloat-equal \
+#    -Wstrict-prototypes \
+#    -Wunreachable-code \
+#    -Wmissing-prototypes \
+#    -Wmissing-declarations \
 
 ifeq ($(debug),no)
     -O3 -mtune=native -ffast-math -ggdb
@@ -37,7 +45,8 @@ endif
 BASIC_OBJCFLAGS += \
     $(BASIC_CFLAGS) \
     -Wno-import \
-    -Wstrict-selector-match
+    -Wstrict-selector-match \
+    -Wundeclared-selector
 
 ADDITIONAL_CFLAGS += $(BASIC_CFLAGS)
 ADDITIONAL_OBJCFLAGS += $(BASIC_OBJCFLAGS)
