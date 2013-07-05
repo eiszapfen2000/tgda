@@ -407,25 +407,18 @@ s_prng_num s_tmp;
 switch(mm->algorithm)
         {
         case PRNG_MM_ZERO:   return(0);
-                        break;
         case PRNG_MM_ONE:    return(s);
-                        break;
         case PRNG_MM_SIMPLE: return((s * mm->a) % mm->p );
-                        break;
         case PRNG_MM_SCHRAGE:
                         s_tmp = mm->a * ( s % mm->q ) - 
                                 mm->r * ( s / mm->q );
                         if (s_tmp < 0) s_tmp += mm->p;
                         return(s_tmp);
-                        break;
         case PRNG_MM_DECOMP: return(mult_mod_generic(s,mm->a,mm->p)); 
-                        break;
 #ifdef HAVE_LONGLONG
         case PRNG_MM_LL:     return(mult_mod_ll(s,mm->a,mm->p));
-                        break;
 #endif
         case PRNG_MM_POW2:   return((s*mm->a) & mm->mask);
-			break;
 
         }
 /* not reached */
