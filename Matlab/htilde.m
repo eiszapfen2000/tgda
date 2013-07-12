@@ -6,8 +6,8 @@ gaussrandi = normrnd(0, 1, resolution(1), resolution(2));
 gaussrand = complex(gaussrandr, gaussrandi);
 
 omega = sqrt(knorm.*9.81);
-expomega = exp(i.*omega.*time);
-expminusomega = exp(-i.*omega.*time);
+expomega = exp(1i.*omega.*time);
+expminusomega = exp(-1i.*omega.*time);
 
 hzero = h0(k, knorm, knormalised, gaussrand, wind, l);
 z = zeros(resolution(1), resolution(2));
