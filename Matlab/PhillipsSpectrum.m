@@ -1,4 +1,4 @@
-function y = PhillipsSpectrum(k, knorm, knormalised, wind, l)
+function y = PhillipsSpectrum(k, knorm, knormalised, wind, A, l)
 
 resolution = size(k);
 
@@ -7,8 +7,6 @@ L = dot(wind, wind)/g;
 
 windnorm = norm(wind,2);
 windnormalised = wind./windnorm;
-
-phillipsconstant = 0.0081;
 
 wtmp = zeros(resolution(1), resolution(2),2);
 wtmp(:,:,1) = windnormalised(1);
@@ -34,6 +32,6 @@ expargument = expargument./tmpknorm4;
 expargument(find(isinf(expargument)))=0;
 
 y = zeros(resolution(1), resolution(2));
-y = y + phillipsconstant;
+y = y + A;
 y = y.*expargument;
 y = y.*kdotw;
