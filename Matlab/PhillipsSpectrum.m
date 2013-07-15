@@ -25,11 +25,11 @@ klsquare = realpow(knorm.*l, 2);
 minusone = zeros(resolution(1), resolution(2));
 minusone = minusone - 1;
 expargument = minusone./kLsquare;
-expargument(find(isinf(expargument)))=0;
+expargument(isinf(expargument))=0;
 expargument = expargument - klsquare;
 expargument = exp(expargument);
 expargument = expargument./tmpknorm4;
-expargument(find(isinf(expargument)))=0;
+expargument(isinf(expargument))=0;
 
 y = zeros(resolution(1), resolution(2));
 y = y + A;
