@@ -58,10 +58,10 @@ static void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex
 }
 
 static const double defaultWindSpeed = 8.5;
-static const Vector2 defaultWindDirection = {1.8, 0.2};
+static const Vector2 defaultWindDirection = {1.5, 2.8};
 static const Vector2 defaultSize = {40.0, 40.0};
 static const int32_t resolutions[8] = {8, 16, 32, 64, 128, 256, 512, 1024};
-static const NSUInteger defaultResolutionIndex = 0;
+static const NSUInteger defaultResolutionIndex = 4;
 static const double OneDivSixty = 1.0 / 60.0;
 
 static size_t index_for_resolution(int32_t resolution)
@@ -471,7 +471,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     [ supplementalData setTextureWrap:NpTextureWrapRepeat ];
 
     baseMeshes = [[ ODOceanBaseMeshes alloc ] init ];
-    NSAssert(YES == [ baseMeshes generateWithResolutions:resolutions numberOfResolutions:4 ], @"");
+    NSAssert(YES == [ baseMeshes generateWithResolutions:resolutions numberOfResolutions:8 ], @"");
     baseMeshIndex = ULONG_MAX;
     baseMeshScale = (FVector2){.x = 1.0f, .y = 1.0f};
 
