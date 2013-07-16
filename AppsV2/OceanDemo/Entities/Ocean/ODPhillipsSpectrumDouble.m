@@ -16,8 +16,9 @@ static inline double omega_for_k(Vector2 const * const k)
     return sqrt(EARTH_ACCELERATION * v2_v_length(k));
 }
 
-static double amplitude(Vector2 const * const windDirection,
-                        Vector2 const * const k)
+static double amplitude(Vector2 const * const windDirectionNormalised,
+                        Vector2 const * const k,
+                        const double L)
 {
     const double kSquareLength = v2_v_square_length(k);
 
@@ -26,19 +27,13 @@ static double amplitude(Vector2 const * const windDirection,
         return 0.0;
     }
 
-    const double windDirectionSquareLength 
-        = v2_v_square_length(windDirection);
-
-    const double L = windDirectionSquareLength / EARTH_ACCELERATION;
-
-    const Vector2 windDirectionNormalised = v2_v_normalised(windDirection);
     const Vector2 kNormalised = v2_v_normalised(k);
 
     double amplitude = PHILLIPS_CONSTANT;
     amplitude = amplitude * ( 1.0 / (kSquareLength * kSquareLength) );
     amplitude = amplitude * exp( -1.0 / (kSquareLength * L * L) );
 
-    const double kdotw = v2_vv_dot_product(&kNormalised, &windDirectionNormalised);
+    const double kdotw = v2_vv_dot_product(&kNormalised, windDirectionNormalised);
     amplitude = amplitude * kdotw * kdotw;
 
     return amplitude;
@@ -101,6 +96,12 @@ static double amplitude(Vector2 const * const windDirection,
     const IVector2 resolution = currentSettings.resolution;
     const Vector2 size = currentSettings.size;
     const Vector2 windDirection = currentSettings.windDirection;
+    const Vector2 windDirectionNormalised = v2_v_normalised(&windDirection);
+
+    const double windDirectionSquareLength 
+        = v2_v_square_length(&windDirection);
+
+    const double L = windDirectionSquareLength / EARTH_ACCELERATION;
 
     const double n = -(resolution.x / 2.0);
     const double m =  (resolution.y / 2.0);
@@ -122,7 +123,7 @@ static double amplitude(Vector2 const * const windDirection,
             const double ky = (m - dj) * MATH_2_MUL_PI * dsizey;
 
             const Vector2 k = {kx, ky};
-            const double a = sqrt(amplitude(&windDirection, &k));
+            const double a = sqrt(amplitude(&windDirectionNormalised, &k, L));
 
             H0[j + resolution.y * i][0] = MATH_1_DIV_SQRT_2 * xi_r * a;
             H0[j + resolution.y * i][1] = MATH_1_DIV_SQRT_2 * xi_i * a;
