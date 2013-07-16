@@ -1,3 +1,5 @@
+#import "Foundation/NSException.h"
+#import "Core/Timer/NPTimer.h"
 #import "ODConstants.h"
 #import "ODPhillipsSpectrumFloat.h"
 
@@ -16,30 +18,47 @@ static inline float omegaf_for_k(FVector2 const * const k)
     return sqrtf(EARTH_ACCELERATIONf * fv2_v_length(k));
 }
 
-static float amplitudef(FVector2 const * const windDirectionNormalised,
-                        FVector2 const * const k,
+static float amplitudef(const FVector2 windDirectionNormalised,
+                        const FVector2 k, const float A,
                         const float L)
 {
-    const float kSquareLength = fv2_v_square_length(k);
+    const float kSquareLength = k.x * k.x + k.y * k.y;
 
     if ( kSquareLength == 0.0f )
     {
         return 0.0f;
     }
 
-    const FVector2 kNormalised = fv2_v_normalised(k);
+    const float kLength = sqrtf(kSquareLength);
+    const FVector2 kNormalised = { .x = k.x / kLength, .y = k.y / kLength };
 
-    float amplitude = PHILLIPS_CONSTANTf;
-    amplitude = amplitude * ( 1.0f / (kSquareLength * kSquareLength) );
+    float amplitude = A;
     amplitude = amplitude * expf( -1.0f / (kSquareLength * L * L) );
+    amplitude = amplitude * ( 1.0f / (kSquareLength * kSquareLength) );
 
-    const float kdotw = fv2_vv_dot_product(&kNormalised, windDirectionNormalised);
+    const float kdotw
+        = kNormalised.x * windDirectionNormalised.x + kNormalised.y * windDirectionNormalised.y;
+
     amplitude = amplitude * kdotw * kdotw;
 
     return amplitude;
 }
 
+static NPTimer * timer = nil;
+
+
 @implementation ODPhillipsSpectrumFloat
+
++ (void) initialize
+{
+	if ( [ ODPhillipsSpectrumFloat class ] == self )
+    {
+        if ( timer == nil )
+        {
+            timer = [[ NPTimer alloc ] initWithName:@"SpectrumTimer" ];
+        }
+    }
+}
 
 - (id) init
 {
@@ -51,6 +70,7 @@ static float amplitudef(FVector2 const * const windDirectionNormalised,
     self = [ super initWithName:newName ];
 
     H0 = NULL;
+    randomNumbers = NULL;
 
     gaussianRNG = odgaussianrng_alloc_init();
 
@@ -69,6 +89,7 @@ static float amplitudef(FVector2 const * const windDirectionNormalised,
 - (void) dealloc
 {
     FFTW_SAFE_FREE(H0);
+    SAFE_FREE(randomNumbers);
     odgaussianrng_free(gaussianRNG);
 
     [ super dealloc ];
@@ -90,7 +111,9 @@ static float amplitudef(FVector2 const * const windDirectionNormalised,
          || currentSettings.resolution.y != lastSettings.resolution.y )
     {
         FFTW_SAFE_FREE(H0);
+        SAFE_FREE(randomNumbers);
 	    H0 = fftwf_alloc_complex(currentSettings.resolution.x * currentSettings.resolution.y);
+	    randomNumbers = ALLOC_ARRAY(double, 2 * currentSettings.resolution.x * currentSettings.resolution.y);
     }
 
     const IVector2 resolution = currentSettings.resolution;
@@ -102,6 +125,9 @@ static float amplitudef(FVector2 const * const windDirectionNormalised,
         = fv2_v_square_length(&windDirection);
 
     const float L = windDirectionSquareLength / EARTH_ACCELERATIONf;
+    const float A = PHILLIPS_CONSTANT * (1.0 / (size.x * size.y));
+
+    //NSLog(@"%f", A);
 
     const float n = -(resolution.x / 2.0f);
     const float m =  (resolution.y / 2.0f);
@@ -109,15 +135,16 @@ static float amplitudef(FVector2 const * const windDirectionNormalised,
     const float dsizex = 1.0f / size.x;
     const float dsizey = 1.0f / size.y;
 
+    odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * resolution.x * resolution.y);
+
     for ( int32_t i = 0; i < resolution.y; i++ )
     {
         for ( int32_t j = 0; j < resolution.x; j++ )
         {
-            //const float xi_r = (float)gaussian_fprandomnumber();
-            //const float xi_i = (float)gaussian_fprandomnumber();
-            const float xi_r = (float)odgaussianrng_get_next(gaussianRNG);
-            const float xi_i = (float)odgaussianrng_get_next(gaussianRNG);
-
+            const float xi_r = (float)randomNumbers[2 * (j + resolution.x * i)    ];
+            const float xi_i = (float)randomNumbers[2 * (j + resolution.x * i) + 1];
+            //const float xi_r = (float)odgaussianrng_get_next(gaussianRNG);
+            //const float xi_i = (float)odgaussianrng_get_next(gaussianRNG);
 
             const float di = i;
             const float dj = j;
@@ -126,7 +153,7 @@ static float amplitudef(FVector2 const * const windDirectionNormalised,
             const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
 
             const FVector2 k = {kx, ky};
-            const float a = sqrtf(amplitudef(&windDirectionNormalised, &k, L));
+            const float a = sqrtf(amplitudef(windDirectionNormalised, k, A, L));
 
             H0[j + resolution.x * i][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
             H0[j + resolution.x * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
@@ -606,7 +633,10 @@ right way.
 {
     currentSettings = settings;
 
+    //[ timer update];
     [ self generateH0 ];
+    //[ timer update];
+    //NSLog(@"%f", [timer frameTime]);
 
     OdFrequencySpectrumFloat result = [ self generateHAtTime:time ];
     [ self swapFrequencySpectrum:result.waveSpectrum quadrants:ODQuadrant_1_3 ];

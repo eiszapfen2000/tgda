@@ -6,6 +6,7 @@
 @interface ODPhillipsSpectrumFloat : NPObject < ODPFrequencySpectrumGenerationFloat >
 {
     fftwf_complex * H0;
+    double * randomNumbers;
     OdGaussianRng * gaussianRNG;
     ODSpectrumSettings lastSettings;
     ODSpectrumSettings currentSettings;
