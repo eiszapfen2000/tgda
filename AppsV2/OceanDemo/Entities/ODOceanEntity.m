@@ -57,11 +57,11 @@ static void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex
     }
 }
 
-static const double defaultWindSpeed = 8.5;
-static const Vector2 defaultWindDirection = {1.5, 2.8};
-static const Vector2 defaultSize = {40.0, 40.0};
+static const double defaultWindSpeed = 4.5;
+static const Vector2 defaultWindDirection = {1.0, 0.0};
+static const Vector2 defaultSize = {50.0, 50.0};
 static const int32_t resolutions[8] = {8, 16, 32, 64, 128, 256, 512, 1024};
-static const NSUInteger defaultResolutionIndex = 4;
+static const NSUInteger defaultResolutionIndex = 5;
 static const double OneDivSixty = 1.0 / 60.0;
 
 static size_t index_for_resolution(int32_t resolution)
@@ -686,6 +686,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
         // get heightfield data
         if ( queueCount != 0 )
         {
+            
             NSUInteger f = NSNotFound;
             double queueMinTimeStamp =  DBL_MAX;
             double queueMaxTimeStamp = -DBL_MAX;
@@ -705,7 +706,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
                     f = i;
                 }
             }
-
+                        
             if ( f != NSNotFound )
             {
                 hf = [ resultQueue heightfieldAtIndex:f ];
@@ -717,6 +718,9 @@ static NSUInteger od_freq_spectrum_size(const void * item)
             {
                 hf = [ resultQueue heightfieldAtIndex:0 ];
             }
+            
+
+            //hf = [ resultQueue heightfieldAtIndex:0 ];
         }
 
         queueCount = [ resultQueue count ];
@@ -752,8 +756,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
             const double resX = hf->resolution.x;
             const double resY = hf->resolution.y;
-            baseMeshScale.x = hf->size.x * 10.0 / resX;
-            baseMeshScale.y = hf->size.y * 10.0 / resY;
+            baseMeshScale.x = hf->size.x / resX;
+            baseMeshScale.y = hf->size.y / resY;
 
             const NSUInteger numberOfBytes
                 = hf->resolution.x * hf->resolution.y * sizeof(float);
@@ -795,6 +799,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
                                           mipmaps:NO
                                      bufferObject:supplementalStream ];
         }
+
+        //[ resultQueue removeHeightfieldAtIndex:0 ];
     }
 
 //    NSLog(@"%f", timeStamp);
