@@ -16,8 +16,9 @@ static inline float omegaf_for_k(FVector2 const * const k)
     return sqrtf(EARTH_ACCELERATIONf * fv2_v_length(k));
 }
 
-static float amplitudef(FVector2 const * const windDirection,
-                        FVector2 const * const k)
+static float amplitudef(FVector2 const * const windDirectionNormalised,
+                        FVector2 const * const k,
+                        const float L)
 {
     const float kSquareLength = fv2_v_square_length(k);
 
@@ -26,19 +27,13 @@ static float amplitudef(FVector2 const * const windDirection,
         return 0.0f;
     }
 
-    const float windDirectionSquareLength 
-        = fv2_v_square_length(windDirection);
-
-    const float L = windDirectionSquareLength / EARTH_ACCELERATIONf;
-
-    const FVector2 windDirectionNormalised = fv2_v_normalised(windDirection);
     const FVector2 kNormalised = fv2_v_normalised(k);
 
     float amplitude = PHILLIPS_CONSTANTf;
     amplitude = amplitude * ( 1.0f / (kSquareLength * kSquareLength) );
     amplitude = amplitude * expf( -1.0f / (kSquareLength * L * L) );
 
-    const float kdotw = fv2_vv_dot_product(&kNormalised, &windDirectionNormalised);
+    const float kdotw = fv2_vv_dot_product(&kNormalised, windDirectionNormalised);
     amplitude = amplitude * kdotw * kdotw;
 
     return amplitude;
@@ -101,6 +96,12 @@ static float amplitudef(FVector2 const * const windDirection,
     const IVector2 resolution = currentSettings.resolution;
     const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
     const FVector2 windDirection = (FVector2){currentSettings.windDirection.x, currentSettings.windDirection.y};
+    const FVector2 windDirectionNormalised = fv2_v_normalised(&windDirection);
+
+    const float windDirectionSquareLength 
+        = fv2_v_square_length(&windDirection);
+
+    const float L = windDirectionSquareLength / EARTH_ACCELERATIONf;
 
     const float n = -(resolution.x / 2.0f);
     const float m =  (resolution.y / 2.0f);
@@ -125,7 +126,7 @@ static float amplitudef(FVector2 const * const windDirection,
             const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
 
             const FVector2 k = {kx, ky};
-            const float a = sqrtf(amplitudef(&windDirection, &k));
+            const float a = sqrtf(amplitudef(&windDirectionNormalised, &k, L));
 
             H0[j + resolution.x * i][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
             H0[j + resolution.x * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
