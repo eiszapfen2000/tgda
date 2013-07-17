@@ -42,15 +42,25 @@
 }
 
 - (OdFrequencySpectrumFloat) generateFloatFrequencySpectrum:(const ODSpectrumSettings)settings
-                                                     atTime:(const float)time
+                                            atTime:(const float)time
+                              generateBaseGeometry:(BOOL)generateBaseGeometry
 {
-    return [ floatGenerator generateFloatFrequencySpectrum:settings atTime:time ];
+    return
+        [ floatGenerator
+            generateFloatFrequencySpectrum:settings
+                                    atTime:time
+                      generateBaseGeometry:generateBaseGeometry ];
 }
 
 - (OdFrequencySpectrumFloat) generateFloatFrequencySpectrumHC:(const ODSpectrumSettings)settings
-                                                       atTime:(const float)time
+                                              atTime:(const float)time
+                                generateBaseGeometry:(BOOL)generateBaseGeometry
 {
-    return [ floatGenerator generateFloatFrequencySpectrumHC:settings atTime:time ];
+    return
+        [ floatGenerator
+            generateFloatFrequencySpectrumHC:settings
+                                      atTime:time
+                        generateBaseGeometry:generateBaseGeometry ];
 }
 
 @end

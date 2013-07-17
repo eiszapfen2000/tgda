@@ -39,7 +39,7 @@ static float amplitudef(const FVector2 windDirectionNormalised,
     const float kdotw
         = kNormalised.x * windDirectionNormalised.x + kNormalised.y * windDirectionNormalised.y;
 
-    amplitude = amplitude * kdotw * kdotw;
+    amplitude = amplitude * kdotw * kdotw * kdotw * kdotw;
 
     return amplitude;
 }
@@ -95,17 +95,20 @@ static NPTimer * timer = nil;
     [ super dealloc ];
 }
 
-- (void) generateH0
+- (void) generateH0:(BOOL)force
 {
     if ( currentSettings.size.x == lastSettings.size.x
          && currentSettings.size.y == lastSettings.size.y
          && currentSettings.windDirection.x == lastSettings.windDirection.x
          && currentSettings.windDirection.y == lastSettings.windDirection.y
          && currentSettings.resolution.x == lastSettings.resolution.x
-         && currentSettings.resolution.y == lastSettings.resolution.y )
+         && currentSettings.resolution.y == lastSettings.resolution.y
+         && force == NO )
     {
         return;
     }
+
+    BOOL generateRandomNumbers = force;
 
     if ( currentSettings.resolution.x != lastSettings.resolution.x
          || currentSettings.resolution.y != lastSettings.resolution.y )
@@ -114,7 +117,10 @@ static NPTimer * timer = nil;
         SAFE_FREE(randomNumbers);
 	    H0 = fftwf_alloc_complex(currentSettings.resolution.x * currentSettings.resolution.y);
 	    randomNumbers = ALLOC_ARRAY(double, 2 * currentSettings.resolution.x * currentSettings.resolution.y);
+        generateRandomNumbers = YES;
     }
+
+    //NSLog(@"generateH0");
 
     const IVector2 resolution = currentSettings.resolution;
     const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
@@ -127,15 +133,16 @@ static NPTimer * timer = nil;
     const float L = windDirectionSquareLength / EARTH_ACCELERATIONf;
     const float A = PHILLIPS_CONSTANT * (1.0 / (size.x * size.y));
 
-    //NSLog(@"%f", A);
-
     const float n = -(resolution.x / 2.0f);
     const float m =  (resolution.y / 2.0f);
 
     const float dsizex = 1.0f / size.x;
     const float dsizey = 1.0f / size.y;
 
-    odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * resolution.x * resolution.y);
+    if ( generateRandomNumbers == YES )
+    {
+        odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * resolution.x * resolution.y);
+    }
 
     for ( int32_t i = 0; i < resolution.y; i++ )
     {
@@ -630,11 +637,12 @@ right way.
 
 - (OdFrequencySpectrumFloat) generateFloatFrequencySpectrum:(const ODSpectrumSettings)settings
                                                      atTime:(const float)time
+                                       generateBaseGeometry:(BOOL)generateBaseGeometry
 {
     currentSettings = settings;
 
     //[ timer update];
-    [ self generateH0 ];
+    [ self generateH0:generateBaseGeometry ];
     //[ timer update];
     //NSLog(@"%f", [timer frameTime]);
 
@@ -673,10 +681,11 @@ right way.
 
 - (OdFrequencySpectrumFloat) generateFloatFrequencySpectrumHC:(const ODSpectrumSettings)settings
                                                        atTime:(const float)time
+                                         generateBaseGeometry:(BOOL)generateBaseGeometry
 {
     currentSettings = settings;
 
-    [ self generateH0 ];
+    [ self generateH0:generateBaseGeometry ];
     OdFrequencySpectrumFloat result= [ self generateHHCAtTime:time ];
     lastSettings = currentSettings;
 

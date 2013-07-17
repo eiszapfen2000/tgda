@@ -52,10 +52,12 @@ OdFrequencySpectrumFloat;
 
 - (OdFrequencySpectrumFloat) generateFloatFrequencySpectrum:(const ODSpectrumSettings)settings
                                             atTime:(const float)time
+                              generateBaseGeometry:(BOOL)generateBaseGeometry
                                                   ;
 
 - (OdFrequencySpectrumFloat) generateFloatFrequencySpectrumHC:(const ODSpectrumSettings)settings
                                               atTime:(const float)time
+                                generateBaseGeometry:(BOOL)generateBaseGeometry
                                                     ;
 
 @end
