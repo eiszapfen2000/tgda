@@ -16,7 +16,7 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-- (void) generateH0;
+- (void) generateH0:(BOOL)force;
 - (OdFrequencySpectrumFloat) generateHAtTime:(const float)time;
 - (OdFrequencySpectrumFloat) generateTimeIndependentH;
 - (OdFrequencySpectrumFloat) generateHHCAtTime:(const float)time;

@@ -449,7 +449,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     // activate culling, depth write and depth test
     [ blendingState  setEnabled:NO ];
     [ cullingState   setCullFace:NpCullfaceBack ];
-    [ cullingState   setEnabled:NO ];
+    [ cullingState   setEnabled:YES ];
     [ depthTestState setWriteEnabled:YES ];
     [ depthTestState setEnabled:YES ];
     [ fillState      setFrontFaceFill:NpPolygonFillLine ];
