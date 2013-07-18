@@ -83,24 +83,12 @@
             Channels = ("n", "n", "n", "y");
         };
 
-        PAnimation =
-        {
-            Type = "ODButtonItem";
-            Label = "Animation";
-            Alignment = "BottomRight";
-            Position = ("20", "50" );
-            Size = ( "100", "20" );
-            TextSize = "16";
-            TargetObject = "Ocean";
-            TargetProperty = "animated";
-        };
-
         PGroup =
         {
             Type = "ODSelectionGroupItem";
             Label = "BRAK";
             Alignment = "TopRight";
-            Position = ("50", "50" );
+            Position = ("30", "30" );
             Size = ( "50", "50" );
             TextSize = "16";
             ItemSize = ("50", "50");
@@ -111,33 +99,47 @@
             TargetProperty = "resolutionIndex";
         };
 
-        PSlider =
+        PAnimation =
         {
-            Type = "ODSliderItem";
-            Label = "SLIDER";
-            Alignment = "BottomRight";
-            Position = ("50", "50" );
-            Size = ( "50", "1" );
+            Type = "ODButtonItem";
+            Label = "Animation";
+            Alignment = "TopRight";
+            Position = ("30", "260" );
+            Size = ( "105", "20" );
             TextSize = "16";
-            MinimumValue = "1.0";
-            MaximumValue = "20";
-            LineSize = ("3", "51");
-            HeadSize = ("21", "3");
             TargetObject = "Ocean";
-            TargetProperty = "windSpeed";
+            TargetProperty = "animated";
         };
 
         PDirection =
         {
             Type = "ODWindDirectionItem";
             Label = "DIR";
-            Alignment = "BottomRight";
-            Position = ("50", "150" );
-            Size = ( "50", "50" );
+            Alignment = "TopRight";
+            Position = ("30", "290" );
+            Size = ( "105", "105" );
             TextSize = "16";
             TargetObject = "Ocean";
             TargetProperty = "windDirection";
         };
+
+        PSlider =
+        {
+            Type = "ODSliderItem";
+            Label = "SLIDER";
+            Alignment = "TopRight";
+            Position = ("30", "405" );
+            Size = ( "50", "1" );
+            TextSize = "16";
+            MinimumValue = "1.0";
+            MaximumValue = "40.0";
+            LineSize = ("105", "3");
+            HeadSize = ("3", "21");
+            TargetObject = "Ocean";
+            TargetProperty = "windSpeed";
+        };
+
+
     };
 }
  
