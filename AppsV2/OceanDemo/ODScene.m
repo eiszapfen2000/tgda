@@ -463,6 +463,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [[[ NP Core] transformationState] resetModelMatrix];
     
+    [[[ NP Core] transformationState] setFModelMatrix:[ ocean modelMatrix ]];
     NPEffectVariableFloat2 * v = [ deferredEffect variableWithName:@"scale"];
     [ v setFValue:[ocean baseMeshScale]];
     [[ deferredEffect techniqueWithName:@"base_xz" ] activate ];

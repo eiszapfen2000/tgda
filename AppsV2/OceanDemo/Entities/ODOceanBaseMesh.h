@@ -11,12 +11,14 @@
     NPBufferObject * supplementalStream;
     NPBufferObject * indexStream;
     NPVertexArray * mesh;
+    FVector3 center;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
+- (FVector3) center;
 - (NPBufferObject *) yStream;
 - (NPBufferObject *) supplementalStream;
 

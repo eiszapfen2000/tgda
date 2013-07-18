@@ -15,6 +15,7 @@
 #import "Core/Timer/NPTimer.h"
 #import "Core/File/NSFileManager+NPEngine.h"
 #import "Core/File/NPLocalPathManager.h"
+#import "Core/World/NPTransformationState.h"
 #import "Core/NPEngineCore.h"
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
@@ -233,7 +234,8 @@ static size_t index_for_resolution(int32_t resolution)
 
             {
                 [ settingsMutex lock ];
-                settings.windDirection = generatorWindDirection;
+                //settings.windDirection = generatorWindDirection;
+                settings.windDirection = defaultWindDirection;
                 settings.size = generatorSize;
                 resIndex = generatorResolutionIndex;
                 gWindSpeed = generatorWindSpeed;
@@ -492,6 +494,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
     animated = YES;
 
+    fm4_m_set_identity(&modelMatrix);
+
     return self;
 }
 
@@ -596,6 +600,11 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     }
 
     [ self shutdownFFTW ];
+}
+
+- (const FMatrix4 * const) modelMatrix
+{
+    return &modelMatrix;
 }
 
 - (ODProjector *) projector
@@ -787,10 +796,10 @@ static NSUInteger od_freq_spectrum_size(const void * item)
                  supplementalData:supplemental ];
 
             NPBufferObject * yStream
-                = [[ baseMeshes meshatIndex:baseMeshIndex ] yStream ];
+                = [[ baseMeshes meshAtIndex:baseMeshIndex ] yStream ];
 
             NPBufferObject * supplementalStream
-                = [[ baseMeshes meshatIndex:baseMeshIndex ] supplementalStream ];
+                = [[ baseMeshes meshAtIndex:baseMeshIndex ] supplementalStream ];
 
             [ heightfield generateUsingWidth:hf->resolution.x
                                       height:hf->resolution.y
@@ -810,7 +819,46 @@ static NSUInteger od_freq_spectrum_size(const void * item)
         //[ resultQueue removeHeightfieldAtIndex:0 ];
     }
 
-//    NSLog(@"%f", timeStamp);
+    if ( baseMeshIndex != ULONG_MAX )
+    {
+        FMatrix4 rotation;
+        FMatrix4 invTranslation;
+        FMatrix4 translation;
+
+        fm4_m_set_identity(&rotation);
+        fm4_m_set_identity(&invTranslation);
+        fm4_m_set_identity(&translation);
+
+        const FVector3 z = {.x = windDirection.x, .y = 0.0f, .z = windDirection.y};
+
+        const FVector3 rightVector
+            = fv3_vv_cross_product(NP_WORLDF_Y_AXIS, &z);
+
+        M_EL(rotation, 0, 0) = rightVector.x;
+        M_EL(rotation, 1, 0) = rightVector.y;
+        M_EL(rotation, 2, 0) = rightVector.z;
+
+        M_EL(rotation, 0, 1) = NP_WORLDF_Y_AXIS->x;
+        M_EL(rotation, 1, 1) = NP_WORLDF_Y_AXIS->y;
+        M_EL(rotation, 2, 1) = NP_WORLDF_Y_AXIS->z;
+
+        M_EL(rotation, 0, 2) = z.x;
+        M_EL(rotation, 1, 2) = z.y;
+        M_EL(rotation, 2, 2) = z.z;
+
+        const FVector3 center = [[ baseMeshes meshAtIndex:baseMeshIndex ] center ];
+
+        M_EL(invTranslation, 3, 0) = -center.x * baseMeshScale.x;
+        M_EL(invTranslation, 3, 1) = -center.y;
+        M_EL(invTranslation, 3, 2) = -center.z * baseMeshScale.y;
+
+        M_EL(translation, 3, 0) = center.x * baseMeshScale.x;
+        M_EL(translation, 3, 1) = center.y;
+        M_EL(translation, 3, 2) = center.z * baseMeshScale.y;
+
+        FMatrix4 tmp = fm4_mm_multiply(&rotation, &invTranslation);
+        modelMatrix = fm4_mm_multiply(&translation, &tmp);
+    }
 }
 
 - (void) renderBasePlane
