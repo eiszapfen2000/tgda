@@ -247,8 +247,16 @@ static size_t index_for_resolution(int32_t resolution)
             const int32_t res = resolutions[resIndex];
             settings.resolution = (IVector2){res, res};
 
+            [ timer update ];
+
             OdFrequencySpectrumFloat complexSpectrum
-                = [ s generateFloatFrequencySpectrum:settings atTime:generationTime generateBaseGeometry:NO ];
+                = [ s generateFloatFrequencySpectrum:settings
+                                              atTime:generationTime
+                                generateBaseGeometry:NO ];
+
+            [ timer update ];
+
+            //NSLog(@"Gen Time %f", [ timer frameTime ]);
 
             generationTime += 1.0f/60.0f;
 

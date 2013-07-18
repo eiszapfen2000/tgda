@@ -33,7 +33,11 @@ static float amplitudef(const FVector2 windDirectionNormalised,
     const FVector2 kNormalised = { .x = k.x / kLength, .y = k.y / kLength };
 
     float amplitude = A;
-    amplitude = amplitude * expf( -1.0f / (kSquareLength * L * L) );
+/*
+    Use exp because glibc on Ubuntu 10.04 does not contain a optimised
+    version of expf yet, expf is way slower than exp
+*/
+    amplitude = amplitude * (float)exp( -1.0 / (kSquareLength * L * L) );
     amplitude = amplitude * ( 1.0f / (kSquareLength * kSquareLength) );
 
     const float kdotw
@@ -119,8 +123,6 @@ static NPTimer * timer = nil;
 	    randomNumbers = ALLOC_ARRAY(double, 2 * currentSettings.resolution.x * currentSettings.resolution.y);
         generateRandomNumbers = YES;
     }
-
-    //NSLog(@"generateH0");
 
     const IVector2 resolution = currentSettings.resolution;
     const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
@@ -641,12 +643,17 @@ right way.
 {
     currentSettings = settings;
 
-    //[ timer update];
+    [ timer update];
     [ self generateH0:generateBaseGeometry ];
-    //[ timer update];
-    //NSLog(@"%f", [timer frameTime]);
+    [ timer update];
+
+    const double h0time = [ timer frameTime ];
 
     OdFrequencySpectrumFloat result = [ self generateHAtTime:time ];
+    [ timer update ];
+
+    const double htime = [ timer frameTime ];
+
     [ self swapFrequencySpectrum:result.waveSpectrum quadrants:ODQuadrant_1_3 ];
     [ self swapFrequencySpectrum:result.waveSpectrum quadrants:ODQuadrant_2_4 ];
 
@@ -674,7 +681,13 @@ right way.
         [ self swapFrequencySpectrum:result.displacementZ quadrants:ODQuadrant_2_4 ];
     }
 
+    [ timer update ];
+
     lastSettings = currentSettings;
+
+    const double swaptime = [ timer frameTime ];
+
+    //NSLog(@"H0: %f H:%f Swap:%f", h0time, htime, swaptime);
 
     return result;
 }
