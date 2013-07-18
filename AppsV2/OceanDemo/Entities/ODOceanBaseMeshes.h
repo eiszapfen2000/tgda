@@ -13,7 +13,7 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-- (ODOceanBaseMesh *) meshatIndex:(NSUInteger)index;
+- (ODOceanBaseMesh *) meshAtIndex:(NSUInteger)index;
 
 - (BOOL) generateWithResolutions:(const int32_t *)resolutions
              numberOfResolutions:(int32_t)numberOfResolutions

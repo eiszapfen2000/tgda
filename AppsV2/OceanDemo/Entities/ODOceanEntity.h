@@ -72,6 +72,8 @@
     FVector2 displacementXRange;
     FVector2 displacementZRange;
     BOOL animated;
+
+    FMatrix4 modelMatrix;
 }
 
 - (id) init;
@@ -81,6 +83,7 @@
 - (void) start;
 - (void) stop;
 
+- (const FMatrix4 * const) modelMatrix;
 - (ODProjector *) projector;
 - (ODBasePlane *) basePlane;
 - (NPTexture2D *) heightfield;

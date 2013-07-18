@@ -22,6 +22,8 @@
 
     mesh = [[ NPVertexArray alloc ] initWithName:@"Mesh" ];
 
+    center.x = center.y = center.z = 0.0f;
+
     return self;
 }
 
@@ -34,6 +36,11 @@
     DESTROY(xzStream);
 
     [ super dealloc ];
+}
+
+- (FVector3) center
+{
+    return center;
 }
 
 - (NPBufferObject *) yStream
@@ -64,6 +71,8 @@
             vertices[i*resolution + j] = (FVector2){.x = j, .y = i};
         }
     }
+
+    center.x = center.z = (float)(resolution - 1) / 2.0f;
 
     int32_t index = 0;
 

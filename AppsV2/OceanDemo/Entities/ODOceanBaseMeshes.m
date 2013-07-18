@@ -27,7 +27,7 @@
     [ super dealloc ];
 }
 
-- (ODOceanBaseMesh *) meshatIndex:(NSUInteger)index
+- (ODOceanBaseMesh *) meshAtIndex:(NSUInteger)index
 {
     return [ meshes objectAtIndex:index ];
 }
