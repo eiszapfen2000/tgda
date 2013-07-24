@@ -4,9 +4,67 @@
 #import <math.h>
 #import <stdlib.h>
 #import <time.h>
-#import "fftw3.h"
+#import <Foundation/NSException.h>
+#import <Foundation/NSPointerArray.h>
+#import <Foundation/Foundation.h>
+#import "Log/NPLogFile.h"
+#import "Core/Container/NPAssetArray.h"
+#import "Core/Thread/NPSemaphore.h"
+#import "Core/Timer/NPTimer.h"
+#import "Graphics/Buffer/NPBufferObject.h"
+#import "Graphics/Buffer/NPCPUBuffer.h"
+#import "Graphics/Geometry/NPCPUVertexArray.h"
+#import "Graphics/Geometry/NPVertexArray.h"
+#import "Graphics/Model/NPSUX2Model.h"
+#import "Graphics/Texture/NPTexture2D.h"
+#import "Graphics/Texture/NPTextureBindingState.h"
+#import "Graphics/Effect/NPEffect.h"
+#import "Graphics/Effect/NPEffectTechnique.h"
+#import "Graphics/Font/NPFont.h"
+#import "Graphics/State/NPStateConfiguration.h"
+#import "Graphics/State/NPBlendingState.h"
+#import "Graphics/State/NPDepthTestState.h"
+#import "Graphics/NPViewport.h"
+#import "Graphics/NPOrthographic.h"
+#import "Input/NPKeyboard.h"
+#import "Input/NPMouse.h"
+#import "Input/NPInputAction.h"
+#import "Input/NPInputActions.h"
+#import "NP.h"
+#import "GL/glew.h"
+#import "GL/glfw.h"
 
-#define MATH_2_MUL_PI           6.28318530717958647692528676655900576839
+NpKeyboardState keyboardState;
+NpMouseState mouseState;
+IVector2 mousePosition;
+IVector2 widgetSize;
+
+static void GLFWCALL keyboard_callback(int key, int state)
+{
+    keyboardState.keys[key] = state;
+}
+
+static void GLFWCALL mouse_pos_callback(int x, int y)
+{
+    mousePosition.x = x;
+    mousePosition.y = y;
+}
+
+static void mouse_button_callback(int button, int state)
+{
+    mouseState.buttons[button] = state;
+}
+
+static void GLFWCALL mouse_wheel_callback(int wheel)
+{
+    mouseState.scrollWheel = wheel;
+}
+
+static void GLFWCALL window_resize_callback(int width, int height)
+{
+    widgetSize.x = width;
+    widgetSize.y = height;
+}
 
 static double G_zero(double sigma, int32_t n, double deltaQ)
 {
@@ -65,6 +123,52 @@ int main (int argc, char **argv)
 {
     feenableexcept(FE_DIVBYZERO | FE_INVALID);
 
+    NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
+
+    // Initialise GLFW
+    if( !glfwInit() )
+    {
+        NSLog(@"Failed to initialize GLFW");
+        exit(EXIT_FAILURE);
+    }
+
+    // do not allow window resizing
+    glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
+    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
+    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
+    // glew needs compatibility profile
+    glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_FALSE);
+    
+    // Open a window and create its OpenGL context
+    if( !glfwOpenWindow( 800, 600, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
+    {
+        NSLog(@"Failed to open GLFW window");
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+
+    // initialise keyboard and mouse state
+    keyboardstate_reset(&keyboardState);
+    mousestate_reset(&mouseState);
+    mousePosition.x = mousePosition.y = 0;
+
+    // VSync
+    glfwSwapInterval(0);
+    // do not poll events on glfwSwapBuffers
+    glfwDisable(GLFW_AUTO_POLL_EVENTS);
+    // register keyboard callback
+    glfwSetKeyCallback(keyboard_callback);
+    // register mouse callbacks
+    glfwSetMousePosCallback(mouse_pos_callback);
+    glfwSetMouseButtonCallback(mouse_button_callback);
+    glfwSetMouseWheelCallback(mouse_wheel_callback);
+    // callback for window resizes
+    glfwSetWindowSizeCallback(window_resize_callback);
+
+    glClearDepth(1);
+    glClearStencil(0);
+
     double x = rand();
     double y = j0(x);
 
@@ -74,6 +178,11 @@ int main (int argc, char **argv)
     double * result = NULL;
     G(6, 1.0, 10000, 0.001,&result);
 
-    return 0;
+    // Close OpenGL window and terminate GLFW
+    glfwTerminate();
+
+    DESTROY(pool);
+
+    return EXIT_SUCCESS;
 }
 
