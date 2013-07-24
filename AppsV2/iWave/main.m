@@ -175,13 +175,6 @@ int main (int argc, char **argv)
     NPLogFile * logFile = AUTORELEASE([[ NPLogFile alloc ] init ]);
     [[ NP Log ] addLogger:logFile ];
 
-    // add content subdirectory to lookup paths
-    NSString * contentPath =
-        [[[ NSFileManager defaultManager ] currentDirectoryPath ]
-                stringByAppendingPathComponent:@"Content" ];
-
-    [[[ NP Core ] localPathManager ] addLookUpPath:contentPath ];
-
     // start up GFX
     if ( [[ NP Graphics ] startup ] == NO )
     {
@@ -200,21 +193,45 @@ int main (int argc, char **argv)
     const int32_t gridWidth  = 400;
     const int32_t gridHeight = 300;
 
-    double * heights     = ALLOC_ARRAY(double, gridWidth * gridHeight);
-    double * prevHeights = ALLOC_ARRAY(double, gridWidth * gridHeight);
-    double * derivative  = ALLOC_ARRAY(double, gridWidth * gridHeight);
-    double * source      = ALLOC_ARRAY(double, gridWidth * gridHeight);
-    double * obstruction = ALLOC_ARRAY(double, gridWidth * gridHeight);
+    float * heights     = ALLOC_ARRAY(float, gridWidth * gridHeight);
+    float * prevHeights = ALLOC_ARRAY(float, gridWidth * gridHeight);
+    float * derivative  = ALLOC_ARRAY(float, gridWidth * gridHeight);
+    float * source      = ALLOC_ARRAY(float, gridWidth * gridHeight);
+    float * obstruction = ALLOC_ARRAY(float, gridWidth * gridHeight);
 
-    memset(heights,     0, sizeof(double) * gridWidth * gridHeight);
-    memset(prevHeights, 0, sizeof(double) * gridWidth * gridHeight);
-    memset(derivative,  0, sizeof(double) * gridWidth * gridHeight);
-    memset(source,      0, sizeof(double) * gridWidth * gridHeight);
+    memset(heights,     0, sizeof(float) * gridWidth * gridHeight);
+    memset(prevHeights, 0, sizeof(float) * gridWidth * gridHeight);
+    memset(derivative,  0, sizeof(float) * gridWidth * gridHeight);
+    memset(source,      0, sizeof(float) * gridWidth * gridHeight);
 
     for (int32_t i = 0; i < gridWidth * gridHeight; i++)
     {
         obstruction[i] = 1.0f;
     }
+
+    NSAutoreleasePool * rPool = [ NSAutoreleasePool new ];
+
+
+    NSData * heightData
+        = [ NSData dataWithBytesNoCopy:heights
+                                length:sizeof(float) * gridWidth * gridHeight
+                          freeWhenDone:NO ];
+
+    NPTexture2D * texture = [[ NPTexture2D alloc ] initWithName:@"GridTexture" ];
+    [ texture generateUsingWidth:gridWidth
+                          height:gridHeight
+                     pixelFormat:NpTexturePixelFormatR
+                      dataFormat:NpTextureDataFormatFloat32
+                         mipmaps:NO
+                            data:heightData ];
+
+    NPEffect * effect
+        = [[[ NPEngineGraphics instance ]
+                effects ] getAssetWithFileName:@"default.effect" ];
+
+    RETAIN(effect);
+
+    DESTROY(rPool);
 
     BOOL running = YES;
 
@@ -245,6 +262,20 @@ int main (int argc, char **argv)
         const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
 
+        [[[ NP Graphics ] textureBindingState ] setTexture:texture texelUnit:0 ];
+        [[ effect techniqueWithName:@"texture"] activate ];
+
+        glBegin(GL_QUADS);
+            glTexCoord2f(0.0f, 0.0f);
+            glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
+            glTexCoord2f(1.0f, 0.0f);
+            glVertex4f(1.0f, -1.0f, 0.0f, 1.0f);
+            glTexCoord2f(1.0f, 1.0f);
+            glVertex4f(1.0f, 1.0f, 0.0f, 1.0f);
+            glTexCoord2f(0.0f, 1.0f);
+            glVertex4f(-1.0f, 1.0f, 0.0f, 1.0f);
+        glEnd();
+
         // check for GL errors
         [[ NP Graphics ] checkForGLErrors ];
 
@@ -264,6 +295,9 @@ int main (int argc, char **argv)
         DESTROY(innerPool);
     }
 
+    DESTROY(effect);
+    DESTROY(texture);
+
     FREE(heights);
     FREE(prevHeights);
     FREE(derivative);
@@ -278,10 +312,12 @@ int main (int argc, char **argv)
 
     // Kill singletons by force, sending them
     // "release" would have no effect
+    
     [[ NP Input    ] dealloc ];
     [[ NP Graphics ] dealloc ];
     [[ NP Core     ] dealloc ];
     [[ NP Log      ] dealloc ];
+    
 
     DESTROY(pool);
 

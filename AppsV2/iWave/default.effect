@@ -1,0 +1,25 @@
+effect "default":
+
+technique "texture"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform sampler2D colormap
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
+    # vertex streams
+    in vec4 in_position : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "simpletextured.vertex"
+    set fragment shader "simpletextured.fragment"
+}
+
+
+
