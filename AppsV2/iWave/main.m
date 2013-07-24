@@ -169,17 +169,91 @@ int main (int argc, char **argv)
     glClearDepth(1);
     glClearStencil(0);
 
-    double x = rand();
-    double y = j0(x);
+    // create and register log file
+    NPLogFile * logFile = AUTORELEASE([[ NPLogFile alloc ] init ]);
+    [[ NP Log ] addLogger:logFile ];
 
-    double z = G_zero(1.0, 10000, 0.001);
-    printf("%lf\n", z);
+    // add content subdirectory to lookup paths
+    NSString * contentPath =
+        [[[ NSFileManager defaultManager ] currentDirectoryPath ]
+                stringByAppendingPathComponent:@"Content" ];
+
+    [[[ NP Core ] localPathManager ] addLookUpPath:contentPath ];
+
+    // start up GFX
+    if ( [[ NP Graphics ] startup ] == NO )
+    {
+        NSLog(@"NPEngineGraphics failed to start up. Consult %@/np.log for details.",  NSHomeDirectory());
+        exit(EXIT_FAILURE);
+    }
 
     double * result = NULL;
     G(6, 1.0, 10000, 0.001,&result);
+    SAFE_FREE(result);
+
+    [[ NP Graphics ] checkForGLErrors ];
+    [[[ NP Core ] timer ] reset ];
+
+    BOOL running = YES;
+
+    // run loop
+    while ( running )
+    {
+        // create an autorelease pool for every run-loop iteration
+        NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
+
+        // adopt viewport to current widget size
+        NPViewport * viewport = [[ NP Graphics ] viewport ];
+        [ viewport setWidgetWidth:widgetSize.x  ];
+        [ viewport setWidgetHeight:widgetSize.y ];
+        [ viewport reset ];
+
+        // push current keyboard and mouse state into NPInput
+        [[[ NP Input ] keyboard ] setKeyboardState:&keyboardState ];
+        [[[ NP Input ] mouse ] setMouseState:&mouseState ];
+        [[[ NP Input ] mouse ] setMousePosition:mousePosition ];
+
+        // update NPEngineInput's internal state (actions)
+        [[ NP Input ] update ];
+
+        // update NPEngineCore
+        [[ NP Core ] update ];
+
+        // get current frametime
+        const double frameTime = [[[ NP Core ] timer ] frameTime ];
+        const int32_t fps = [[[ NP Core ] timer ] fps ];
+
+        // check for GL errors
+        [[ NP Graphics ] checkForGLErrors ];
+
+        // swap front and back rendering buffers
+        glfwSwapBuffers();
+
+        // poll events, callbacks for mouse and keyboard
+        // are called automagically
+        // we need to call this here, because only this way
+        // window closing events are processed
+        glfwPollEvents();
+
+        // check if window was closed
+        running = running && glfwGetWindowParam( GLFW_OPENED );
+
+        // kill autorelease pool
+        DESTROY(innerPool);
+    }
+
+    // Shutdown NPGraphics, deallocates a lot of stuff
+    [[ NP Graphics ] shutdown ];
 
     // Close OpenGL window and terminate GLFW
     glfwTerminate();
+
+    // Kill singletons by force, sending them
+    // "release" would have no effect
+    [[ NP Input    ] dealloc ];
+    [[ NP Graphics ] dealloc ];
+    [[ NP Core     ] dealloc ];
+    [[ NP Log      ] dealloc ];
 
     DESTROY(pool);
 
