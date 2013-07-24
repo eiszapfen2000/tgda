@@ -89,7 +89,7 @@ static void G(int32_t P, double sigma, int32_t n, double deltaQ, double ** kerne
     const int32_t kernelSize = 2 * P + 1;
     const double gZero = G_zero(sigma, n, deltaQ);
 
-    *kernel = malloc(sizeof(double) * kernelSize * kernelSize);
+    *kernel = ALLOC_ARRAY(double, kernelSize * kernelSize);
 
     for (int32_t k = -P; k < P + 1; k++)
     {
@@ -118,6 +118,8 @@ static void G(int32_t P, double sigma, int32_t n, double deltaQ, double ** kerne
         }
     }
 }
+
+static NSString * const NPGraphicsStartupError = @"NPEngineGraphics failed to start up. Consult %@/np.log for details.";
 
 int main (int argc, char **argv)
 {
@@ -183,7 +185,7 @@ int main (int argc, char **argv)
     // start up GFX
     if ( [[ NP Graphics ] startup ] == NO )
     {
-        NSLog(@"NPEngineGraphics failed to start up. Consult %@/np.log for details.",  NSHomeDirectory());
+        NSLog(NPGraphicsStartupError, NSHomeDirectory());
         exit(EXIT_FAILURE);
     }
 
@@ -193,6 +195,26 @@ int main (int argc, char **argv)
 
     [[ NP Graphics ] checkForGLErrors ];
     [[[ NP Core ] timer ] reset ];
+
+
+    const int32_t gridWidth  = 400;
+    const int32_t gridHeight = 300;
+
+    double * heights     = ALLOC_ARRAY(double, gridWidth * gridHeight);
+    double * prevHeights = ALLOC_ARRAY(double, gridWidth * gridHeight);
+    double * derivative  = ALLOC_ARRAY(double, gridWidth * gridHeight);
+    double * source      = ALLOC_ARRAY(double, gridWidth * gridHeight);
+    double * obstruction = ALLOC_ARRAY(double, gridWidth * gridHeight);
+
+    memset(heights,     0, sizeof(double) * gridWidth * gridHeight);
+    memset(prevHeights, 0, sizeof(double) * gridWidth * gridHeight);
+    memset(derivative,  0, sizeof(double) * gridWidth * gridHeight);
+    memset(source,      0, sizeof(double) * gridWidth * gridHeight);
+
+    for (int32_t i = 0; i < gridWidth * gridHeight; i++)
+    {
+        obstruction[i] = 1.0f;
+    }
 
     BOOL running = YES;
 
@@ -241,6 +263,12 @@ int main (int argc, char **argv)
         // kill autorelease pool
         DESTROY(innerPool);
     }
+
+    FREE(heights);
+    FREE(prevHeights);
+    FREE(derivative);
+    FREE(source);
+    FREE(obstruction);
 
     // Shutdown NPGraphics, deallocates a lot of stuff
     [[ NP Graphics ] shutdown ];
