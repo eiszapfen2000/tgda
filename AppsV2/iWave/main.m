@@ -250,6 +250,28 @@ int main (int argc, char **argv)
         obstruction[i] = 1.0f;
     }
 
+    float sourceBrush[3][3];
+    sourceBrush[1][1] = 1.0f;
+    sourceBrush[0][1] = 0.5f;
+    sourceBrush[2][1] = 0.5f;
+    sourceBrush[1][0] = 0.5f;
+    sourceBrush[1][2] = 0.5f;
+    sourceBrush[0][0] = 0.25f;
+    sourceBrush[0][2] = 0.25f;
+    sourceBrush[2][0] = 0.25f;
+    sourceBrush[2][2] = 0.25f;
+
+    float obstructionBrush[3][3];
+    obstructionBrush[1][1] = 0.0f;
+    obstructionBrush[0][1] = 0.5f;
+    obstructionBrush[2][1] = 0.5f;
+    obstructionBrush[1][0] = 0.5f;
+    obstructionBrush[1][2] = 0.5f;
+    obstructionBrush[0][0] = 0.75f;
+    obstructionBrush[0][2] = 0.75f;
+    obstructionBrush[2][0] = 0.75f;
+    obstructionBrush[2][2] = 0.75f;
+
     float * kernel = NULL;
     G(6, 1.0, 10000, 0.001,&kernel);
 
@@ -279,6 +301,31 @@ int main (int argc, char **argv)
                 effects ] getAssetWithFileName:@"default.effect" ];
 
     RETAIN(effect);
+
+    NPInputAction * leftClick
+        = [[[ NP Input ] inputActions ] 
+                addInputActionWithName:@"LeftClick"
+                            inputEvent:NpMouseButtonLeft ];
+
+    NPInputAction * rightClick
+        = [[[ NP Input ] inputActions ] 
+                addInputActionWithName:@"RightClick"
+                            inputEvent:NpMouseButtonRight ];
+
+    NPInputAction * wheelUp
+        = [[[ NP Input ] inputActions ] 
+                addInputActionWithName:@"WheelUp"
+                            inputEvent:NpMouseWheelUp ];
+
+    NPInputAction * wheelDown
+        = [[[ NP Input ] inputActions ] 
+                addInputActionWithName:@"WheelDown"
+                            inputEvent:NpMouseWheelDown ];
+
+    RETAIN(leftClick);
+    RETAIN(rightClick);
+    RETAIN(wheelUp);
+    RETAIN(wheelDown);
 
     DESTROY(rPool);
 
@@ -343,6 +390,11 @@ int main (int argc, char **argv)
         // kill autorelease pool
         DESTROY(innerPool);
     }
+
+    DESTROY(leftClick);
+    DESTROY(rightClick);
+    DESTROY(wheelUp);
+    DESTROY(wheelDown);
 
     DESTROY(effect);
     DESTROY(texture);
