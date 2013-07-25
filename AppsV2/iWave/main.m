@@ -82,18 +82,26 @@ static double G_zero(double sigma, int32_t n, double deltaQ)
     return result;
 }
 
-static void G(int32_t P, double sigma, int32_t n, double deltaQ, double ** kernel)
+static void G(int32_t P, double sigma, int32_t n, double deltaQ, float ** kernel)
 {
     assert(kernel != NULL);
 
     const int32_t kernelSize = 2 * P + 1;
     const double gZero = G_zero(sigma, n, deltaQ);
 
-    *kernel = ALLOC_ARRAY(double, kernelSize * kernelSize);
+    *kernel = ALLOC_ARRAY(float, kernelSize * kernelSize);
 
-    for (int32_t k = -P; k < P + 1; k++)
+    /*
+        Memory layout
+
+        6 7 8
+        3 4 5
+        0 1 2
+    */
+
+    for (int32_t l = -P; l < P + 1; l++)
     {
-        for (int32_t l = -P; l < P + 1; l++)
+        for (int32_t k = -P; k < P + 1; k++)
         {
             const double dl = (double)l;
             const double dk = (double)k;
@@ -112,9 +120,46 @@ static void G(int32_t P, double sigma, int32_t n, double deltaQ, double ** kerne
 
             const int32_t indexk = k + P;
             const int32_t indexl = l + P;
-            const int32_t index = indexk * kernelSize + indexl;
+            const int32_t index = indexl * kernelSize + indexk;
 
-            (*kernel)[index] = element / gZero;
+            (*kernel)[index] = (float)(element / gZero);
+        }
+    }
+}
+
+static void convolve(const float * const source, int32_t sourceWidth, int32_t sourceHeight,
+    const float * const kernel, int32_t P, float * target)
+{
+    const int32_t kernelWidth = 2 * P + 1;
+
+    const int32_t startx = P;
+    const int32_t starty = P;
+    const int32_t endx = sourceWidth  - P;
+    const int32_t endy = sourceHeight - P;
+
+    for (int32_t i = starty; i < endy; i++)
+    {
+        for (int32_t j = startx; j < endx; j++)
+        {
+            float result = 0.0f;
+
+            for (int32_t ky = -P; ky < P + 1; ky++)
+            {
+                for (int32_t kx = -P; kx < P + 1; kx++)
+                {
+                    const int32_t indexkx = kx + P;
+                    const int32_t indexky = ky + P;
+                    const int32_t kernelIndex = indexky * kernelWidth + indexkx;
+
+                    const int32_t indexi = i + ky;
+                    const int32_t indexj = j + kx;
+                    const int32_t sourceIndex = indexi * sourceWidth + indexj;
+
+                    result += (source[sourceIndex] * kernel[kernelIndex]);
+                }
+            }
+
+            target[i*sourceWidth + j] = result;
         }
     }
 }
@@ -182,10 +227,6 @@ int main (int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    double * result = NULL;
-    G(6, 1.0, 10000, 0.001,&result);
-    SAFE_FREE(result);
-
     [[ NP Graphics ] checkForGLErrors ];
     [[[ NP Core ] timer ] reset ];
 
@@ -209,11 +250,19 @@ int main (int argc, char **argv)
         obstruction[i] = 1.0f;
     }
 
+    float * kernel = NULL;
+    G(6, 1.0, 10000, 0.001,&kernel);
+
+    convolve(heights, gridWidth, gridHeight, kernel, 6, derivative);
+
+    SAFE_FREE(kernel);
+
+
     NSAutoreleasePool * rPool = [ NSAutoreleasePool new ];
 
 
     NSData * heightData
-        = [ NSData dataWithBytesNoCopy:heights
+        = [ NSData dataWithBytesNoCopy:derivative
                                 length:sizeof(float) * gridWidth * gridHeight
                           freeWhenDone:NO ];
 
