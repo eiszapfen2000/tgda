@@ -23,6 +23,7 @@
 #import "Graphics/Font/NPFont.h"
 #import "Graphics/State/NPStateConfiguration.h"
 #import "Graphics/State/NPBlendingState.h"
+#import "Graphics/State/NPCullingState.h"
 #import "Graphics/State/NPDepthTestState.h"
 #import "Graphics/NPViewport.h"
 #import "Graphics/NPOrthographic.h"
@@ -168,7 +169,7 @@ static NSString * const NPGraphicsStartupError = @"NPEngineGraphics failed to st
 
 int main (int argc, char **argv)
 {
-    feenableexcept(FE_DIVBYZERO | FE_INVALID);
+    //feenableexcept(FE_DIVBYZERO | FE_INVALID);
 
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
@@ -215,6 +216,7 @@ int main (int argc, char **argv)
 
     glClearDepth(1);
     glClearStencil(0);
+    glClearColor(0.0, 1.0, 0.0, 0.0);
 
     // create and register log file
     NPLogFile * logFile = AUTORELEASE([[ NPLogFile alloc ] init ]);
@@ -231,8 +233,11 @@ int main (int argc, char **argv)
     [[[ NP Core ] timer ] reset ];
 
 
+
     const int32_t gridWidth  = 400;
     const int32_t gridHeight = 300;
+    const double scaleX = ((double)gridWidth) / ((double)widgetSize.x);
+    const double scaleY = ((double)gridHeight) / ((double)widgetSize.y);
 
     float * heights     = ALLOC_ARRAY(float, gridWidth * gridHeight);
     float * prevHeights = ALLOC_ARRAY(float, gridWidth * gridHeight);
@@ -272,23 +277,25 @@ int main (int argc, char **argv)
     obstructionBrush[2][0] = 0.75f;
     obstructionBrush[2][2] = 0.75f;
 
+
+    const float dt = 0.03f;
+    const float alpha = 0.3f;
+    const float gravity = 9.81f;
+    const float gdtdt = gravity * dt * dt;
+
     float * kernel = NULL;
     G(6, 1.0, 10000, 0.001,&kernel);
-
-    convolve(heights, gridWidth, gridHeight, kernel, 6, derivative);
-
-    SAFE_FREE(kernel);
-
 
     NSAutoreleasePool * rPool = [ NSAutoreleasePool new ];
 
 
     NSData * heightData
-        = [ NSData dataWithBytesNoCopy:derivative
+        = [ NSData dataWithBytesNoCopy:heights
                                 length:sizeof(float) * gridWidth * gridHeight
                           freeWhenDone:NO ];
 
     NPTexture2D * texture = [[ NPTexture2D alloc ] initWithName:@"GridTexture" ];
+
     [ texture generateUsingWidth:gridWidth
                           height:gridHeight
                      pixelFormat:NpTexturePixelFormatR
@@ -358,19 +365,132 @@ int main (int argc, char **argv)
         const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
 
+        // on right click reset all data
+        if ( [ rightClick activated ] == YES )
+        {
+            memset(heights,     0, sizeof(float) * gridWidth * gridHeight);
+            memset(prevHeights, 0, sizeof(float) * gridWidth * gridHeight);
+            memset(derivative,  0, sizeof(float) * gridWidth * gridHeight);
+            memset(source,      0, sizeof(float) * gridWidth * gridHeight);
+
+            for (int32_t i = 0; i < gridWidth * gridHeight; i++)
+            {
+                obstruction[i] = 1.0f;
+            }
+        }
+
+        if ( [ leftClick activated ] == YES )
+        {
+            int32_t mouseX = [[[ NP Input ] mouse ] x ];
+            int32_t mouseY = [[[ NP Input ] mouse ] y ];
+
+            const uint32_t widgetHeight
+                = [[[ NP Graphics ] viewport ] widgetHeight ];
+
+            mouseY = widgetHeight - mouseY - 1;
+
+            const double dx = ((double)mouseX) * scaleX;
+            const double dy = ((double)mouseY) * scaleY;
+
+            const int32_t dmousex = (int32_t)floor(dx + 0.5);
+            const int32_t dmousey = (int32_t)floor(dy + 0.5);
+
+            //NSLog(@"%d %d %lf %lf %d %d", mouseX, mouseY, dx, dy, dmousex, dmousey);
+
+            int32_t xstart = MAX(0, dmousex - 1);
+            int32_t ystart = MAX(0, dmousey - 1);
+            int32_t xend   = MIN(dmousex + 1, gridWidth  - 1);
+            int32_t yend   = MIN(dmousey + 1, gridHeight - 1);
+
+            //NSLog(@"%d %d %d %d", xstart, ystart, xend, yend);
+
+            for (int32_t i = ystart; i < yend + 1; i++)
+            {
+                for (int32_t j = xstart; j < xend + 1; j++)
+                {
+                    const int32_t sourceIndex = i * gridWidth + j;
+                    source[sourceIndex] += sourceBrush[i-ystart][j-xstart];
+                    printf("%f\n", source[sourceIndex]);
+                }
+            }
+        }
+
+        // advance surface
+        const float adt  = alpha*dt;
+        const float adt2 = 1.0f / (1.0f + adt);
+        const int32_t size = gridWidth * gridHeight;
+
+        for (int32_t i = 0; i < size; i++)
+        {
+            heights[i] += source[i];            
+            heights[i] *= obstruction[i];
+        }
+
+        convolve(heights, gridWidth, gridHeight, kernel, 6, derivative);
+
+        for (int32_t i = 0; i < size; i++)
+        {
+            const float temp = heights[i];
+
+            heights[i] = heights[i] * (2.0f - adt) - prevHeights[i] - gdtdt*derivative[i];
+            heights[i] *= adt2;
+
+            assert(!isinff(heights[i]));
+
+            prevHeights[i] = temp;
+        }
+
+        /*
+        for (int32_t i = 0; i < size; i++)
+        {
+            source[i] = 0.0f;
+        }
+        */
+
+        NPCullingState * cullingState = [[[ NP Graphics ] stateConfiguration ] cullingState ];
+        NPBlendingState * blendingState = [[[ NP Graphics ] stateConfiguration ] blendingState ];
+        NPDepthTestState * depthTestState = [[[ NP Graphics ] stateConfiguration ] depthTestState ];
+        NPStencilTestState * stencilTestState = [[[ NP Graphics ] stateConfiguration ] stencilTestState ];
+
+        // activate culling, depth write and depth test
+        [ blendingState  setEnabled:NO ];
+        [ cullingState   setCullFace:NpCullfaceBack ];
+        [ cullingState   setEnabled:YES ];
+        [ depthTestState setWriteEnabled:YES ];
+        [ depthTestState setEnabled:YES ];
+        [[[ NP Graphics ] stateConfiguration ] activate ];
+
+        [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
+
+        
+        NSData * heightData
+            = [ NSData dataWithBytesNoCopy:heights
+                                    length:sizeof(float) * gridWidth * gridHeight
+                              freeWhenDone:NO ];
+
+        [ texture generateUsingWidth:gridWidth
+                              height:gridHeight
+                         pixelFormat:NpTexturePixelFormatR
+                          dataFormat:NpTextureDataFormatFloat32
+                             mipmaps:NO
+                                data:heightData ];        
+
+        
         [[[ NP Graphics ] textureBindingState ] setTexture:texture texelUnit:0 ];
+        [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
         [[ effect techniqueWithName:@"texture"] activate ];
 
         glBegin(GL_QUADS);
-            glTexCoord2f(0.0f, 0.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
             glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
-            glTexCoord2f(1.0f, 0.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
             glVertex4f(1.0f, -1.0f, 0.0f, 1.0f);
-            glTexCoord2f(1.0f, 1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
             glVertex4f(1.0f, 1.0f, 0.0f, 1.0f);
-            glTexCoord2f(0.0f, 1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
             glVertex4f(-1.0f, 1.0f, 0.0f, 1.0f);
         glEnd();
+        
 
         // check for GL errors
         [[ NP Graphics ] checkForGLErrors ];
@@ -390,6 +510,8 @@ int main (int argc, char **argv)
         // kill autorelease pool
         DESTROY(innerPool);
     }
+
+    SAFE_FREE(kernel);
 
     DESTROY(leftClick);
     DESTROY(rightClick);
