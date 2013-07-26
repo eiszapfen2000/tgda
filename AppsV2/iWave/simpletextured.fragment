@@ -4,7 +4,21 @@ in vec2 out_texcoords;
 
 void main()
 {
-    vec4 sample = texture(colormap, out_texcoords);
 
-    target = sample;
+    float hRange = heightRange.y - heightRange.x;
+    float sRange = sourceRange.y - sourceRange.x;
+
+    float height = texture(heightmap, out_texcoords).r;
+    float source = texture(sourcemap, out_texcoords).r;
+    float obstruction = texture(obstructionmap, out_texcoords).r;
+
+    if ( source > 0.0 )
+    {
+        target = vec4(source, source, source, 1.0);
+    }
+    else
+    {
+        float h = height * obstruction;
+        target = vec4(h, h, h, 1.0);
+    }
 }

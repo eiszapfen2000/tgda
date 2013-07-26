@@ -20,6 +20,7 @@
 #import "Graphics/Texture/NPTextureBindingState.h"
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
+#import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/Font/NPFont.h"
 #import "Graphics/State/NPStateConfiguration.h"
 #import "Graphics/State/NPBlendingState.h"
@@ -169,7 +170,7 @@ static NSString * const NPGraphicsStartupError = @"NPEngineGraphics failed to st
 
 int main (int argc, char **argv)
 {
-    //feenableexcept(FE_DIVBYZERO | FE_INVALID);
+    feenableexcept(FE_DIVBYZERO | FE_INVALID);
 
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
@@ -186,7 +187,7 @@ int main (int argc, char **argv)
     glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
     // glew needs compatibility profile
     glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_FALSE);
+    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
     
     // Open a window and create its OpenGL context
     if( !glfwOpenWindow( 800, 600, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
@@ -294,14 +295,40 @@ int main (int argc, char **argv)
                                 length:sizeof(float) * gridWidth * gridHeight
                           freeWhenDone:NO ];
 
-    NPTexture2D * texture = [[ NPTexture2D alloc ] initWithName:@"GridTexture" ];
+    NSData * sourceData
+        = [ NSData dataWithBytesNoCopy:source
+                                length:sizeof(float) * gridWidth * gridHeight
+                          freeWhenDone:NO ];
 
-    [ texture generateUsingWidth:gridWidth
+    NSData * obstructionData
+        = [ NSData dataWithBytesNoCopy:obstruction
+                                length:sizeof(float) * gridWidth * gridHeight
+                          freeWhenDone:NO ];
+
+    NPTexture2D * heightTexture      = [[ NPTexture2D alloc ] initWithName:@"Height" ];
+    NPTexture2D * sourceTexture      = [[ NPTexture2D alloc ] initWithName:@"Source" ];
+    NPTexture2D * obstructionTexture = [[ NPTexture2D alloc ] initWithName:@"Obstruction" ];
+
+    [ heightTexture generateUsingWidth:gridWidth
                           height:gridHeight
                      pixelFormat:NpTexturePixelFormatR
                       dataFormat:NpTextureDataFormatFloat32
                          mipmaps:NO
                             data:heightData ];
+
+    [ sourceTexture generateUsingWidth:gridWidth
+                          height:gridHeight
+                     pixelFormat:NpTexturePixelFormatR
+                      dataFormat:NpTextureDataFormatFloat32
+                         mipmaps:NO
+                            data:sourceData ];
+
+    [ obstructionTexture generateUsingWidth:gridWidth
+                          height:gridHeight
+                     pixelFormat:NpTexturePixelFormatR
+                      dataFormat:NpTextureDataFormatFloat32
+                         mipmaps:NO
+                            data:obstructionData ];
 
     NPEffect * effect
         = [[[ NPEngineGraphics instance ]
@@ -440,6 +467,7 @@ int main (int argc, char **argv)
             }
         }
 
+        
         // advance surface
         const float adt  = alpha*dt;
         const float adt2 = 1.0f / (1.0f + adt);
@@ -460,18 +488,25 @@ int main (int argc, char **argv)
             heights[i] = heights[i] * (2.0f - adt) - prevHeights[i] - gdtdt*derivative[i];
             heights[i] *= adt2;
 
-            assert(!isinff(heights[i]));
+            //assert(!isinff(heights[i]));
 
             prevHeights[i] = temp;
         }
 
-        /*
+        FVector2 heightRange = {.x = FLT_MAX, .y = -FLT_MAX};
+        FVector2 sourceRange = {.x = FLT_MAX, .y = -FLT_MAX};
+
         for (int32_t i = 0; i < size; i++)
         {
-            source[i] = 0.0f;
-        }
-        */
+            heightRange.x = MIN(heights[i], heightRange.x);
+            heightRange.y = MAX(heights[i], heightRange.y);
 
+            sourceRange.x = MIN(source[i], sourceRange.x);
+            sourceRange.y = MAX(source[i], sourceRange.y);
+        }
+
+        //printf("%f %f\n", heightRange.x, heightRange.y);
+        
         NPCullingState * cullingState = [[[ NP Graphics ] stateConfiguration ] cullingState ];
         NPBlendingState * blendingState = [[[ NP Graphics ] stateConfiguration ] blendingState ];
         NPDepthTestState * depthTestState = [[[ NP Graphics ] stateConfiguration ] depthTestState ];
@@ -493,16 +528,48 @@ int main (int argc, char **argv)
                                     length:sizeof(float) * gridWidth * gridHeight
                               freeWhenDone:NO ];
 
-        [ texture generateUsingWidth:gridWidth
+        NSData * sourceData
+            = [ NSData dataWithBytesNoCopy:source
+                                    length:sizeof(float) * gridWidth * gridHeight
+                              freeWhenDone:NO ];
+
+        NSData * obstructionData
+            = [ NSData dataWithBytesNoCopy:obstruction
+                                    length:sizeof(float) * gridWidth * gridHeight
+                              freeWhenDone:NO ];
+
+        [ heightTexture generateUsingWidth:gridWidth
                               height:gridHeight
                          pixelFormat:NpTexturePixelFormatR
                           dataFormat:NpTextureDataFormatFloat32
                              mipmaps:NO
-                                data:heightData ];        
+                                data:heightData ];
+
+        [ sourceTexture generateUsingWidth:gridWidth
+                              height:gridHeight
+                         pixelFormat:NpTexturePixelFormatR
+                          dataFormat:NpTextureDataFormatFloat32
+                             mipmaps:NO
+                                data:sourceData ];
+
+        [ obstructionTexture generateUsingWidth:gridWidth
+                              height:gridHeight
+                         pixelFormat:NpTexturePixelFormatR
+                          dataFormat:NpTextureDataFormatFloat32
+                             mipmaps:NO
+                                data:obstructionData ];       
 
         
-        [[[ NP Graphics ] textureBindingState ] setTexture:texture texelUnit:0 ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:heightTexture texelUnit:0 ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:sourceTexture texelUnit:1 ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:obstructionTexture texelUnit:2 ];
         [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
+
+        NPEffectVariableFloat2 * heightRangeV = [ effect variableWithName:@"heightRange" ];
+        NPEffectVariableFloat2 * sourceRangeV = [ effect variableWithName:@"sourceRange" ];
+
+        [ heightRangeV setFValue:heightRange ];
+        [ sourceRangeV setFValue:sourceRange ];
         [[ effect techniqueWithName:@"texture"] activate ];
 
         glBegin(GL_QUADS);
@@ -519,6 +586,7 @@ int main (int argc, char **argv)
 
         // check for GL errors
         [[ NP Graphics ] checkForGLErrors ];
+        
 
         // swap front and back rendering buffers
         glfwSwapBuffers();
@@ -544,7 +612,9 @@ int main (int argc, char **argv)
     DESTROY(wheelDown);
 
     DESTROY(effect);
-    DESTROY(texture);
+    DESTROY(heightTexture);
+    DESTROY(sourceTexture);
+    DESTROY(obstructionTexture);
 
     FREE(heights);
     FREE(prevHeights);
