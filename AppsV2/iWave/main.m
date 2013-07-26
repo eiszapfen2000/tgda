@@ -278,8 +278,8 @@ int main (int argc, char **argv)
     obstructionBrush[2][2] = 0.75f;
 
 
-    const float dt = 0.03f;
-    const float alpha = 0.3f;
+    const float dt = 1.0f / 60.0f;
+    const float alpha = 0.1f;
     const float gravity = 9.81f;
     const float gdtdt = gravity * dt * dt;
 
@@ -336,7 +336,11 @@ int main (int argc, char **argv)
 
     DESTROY(rPool);
 
+    #define SOURCE YES
+    #define OBSTRUCTION NO
+
     BOOL running = YES;
+    BOOL paintMode = SOURCE;
 
     // run loop
     while ( running )
@@ -368,8 +372,8 @@ int main (int argc, char **argv)
         // on right click reset all data
         if ( [ rightClick activated ] == YES )
         {
-            memset(heights,     0, sizeof(float) * gridWidth * gridHeight);
-            memset(prevHeights, 0, sizeof(float) * gridWidth * gridHeight);
+            //memset(heights,     0, sizeof(float) * gridWidth * gridHeight);
+            //memset(prevHeights, 0, sizeof(float) * gridWidth * gridHeight);
             memset(derivative,  0, sizeof(float) * gridWidth * gridHeight);
             memset(source,      0, sizeof(float) * gridWidth * gridHeight);
 
@@ -377,6 +381,11 @@ int main (int argc, char **argv)
             {
                 obstruction[i] = 1.0f;
             }
+        }
+
+        if ( [ wheelUp activated ] == YES || [ wheelDown activated ] == YES )
+        {
+            paintMode = !paintMode;
         }
 
         if ( [ leftClick activated ] == YES )
@@ -404,13 +413,29 @@ int main (int argc, char **argv)
 
             //NSLog(@"%d %d %d %d", xstart, ystart, xend, yend);
 
-            for (int32_t i = ystart; i < yend + 1; i++)
+            if ( paintMode == SOURCE )
             {
-                for (int32_t j = xstart; j < xend + 1; j++)
+                for (int32_t i = ystart; i < yend + 1; i++)
                 {
-                    const int32_t sourceIndex = i * gridWidth + j;
-                    source[sourceIndex] += sourceBrush[i-ystart][j-xstart];
-                    printf("%f\n", source[sourceIndex]);
+                    for (int32_t j = xstart; j < xend + 1; j++)
+                    {
+                        const int32_t sourceIndex = i * gridWidth + j;
+                        source[sourceIndex] += sourceBrush[i-ystart][j-xstart];
+                        //printf("%f\n", source[sourceIndex]);
+                    }
+                }
+            }
+
+            if ( paintMode == OBSTRUCTION )
+            {
+                for (int32_t i = ystart; i < yend + 1; i++)
+                {
+                    for (int32_t j = xstart; j < xend + 1; j++)
+                    {
+                        const int32_t obstructionIndex = i * gridWidth + j;
+                        obstruction[obstructionIndex] = obstructionBrush[i-ystart][j-xstart];
+                        //printf("%f\n", obstruction[obstructionIndex]);
+                    }
                 }
             }
         }
