@@ -3,9 +3,12 @@
 #import "Graphics/NPEngineGraphicsEnums.h"
 #import "NPPTexture.h"
 
+@class NPBufferObject;
+
 @interface NPTextureBuffer : NPObject < NPPTexture >
 {
     GLuint textureID;
+    NPBufferObject * buffer;
 }
 
 - (id) init;
