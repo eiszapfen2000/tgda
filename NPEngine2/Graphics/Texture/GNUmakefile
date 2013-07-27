@@ -9,12 +9,14 @@ libNPEngineGraphicsTexture_OBJC_FILES = \
 NPSamplerObject.m \
 NPTexture2D.m \
 NPTextureBindingState.m \
+NPTextureBuffer.m \
 NPTextureSamplingState.m
 
 libNPEngineGraphicsTexture_HEADER_FILES = \
 NpTextureSamplerParameter.h \
 NPSamplerObject.h \
 NPTexture2D.h \
+NPTextureBuffer.h \
 NPTextureBindingState.h \
 NPTextureSamplingState.h
 
