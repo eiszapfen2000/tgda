@@ -22,7 +22,7 @@
 
 - (void) dealloc
 {
-    SAFE_DESTROY(buffer);
+    [ self detachBuffer ];
 
     if (textureID > 0 )
     {
@@ -54,6 +54,7 @@
            dataFormat:(NpTextureDataFormat)newDataFormat
 {
     NSAssert(newBuffer != nil, @"");
+    ASSIGN(buffer, newBuffer);
 
     GLint glInternalFormat
         = getGLTextureInternalFormat(newDataFormat, newPixelFormat, YES,
@@ -62,8 +63,6 @@
     [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:self ];
     glTexBuffer(GL_TEXTURE_BUFFER, glInternalFormat, [ buffer glID ]);
     [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
-
-    buffer = RETAIN(newBuffer);
 }
 
 - (void) detachBuffer

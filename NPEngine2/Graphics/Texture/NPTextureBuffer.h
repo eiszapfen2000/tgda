@@ -15,6 +15,14 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
+- (void) attachBuffer:(NPBufferObject *)newBuffer
+     numberOfElements:(NSUInteger)newNumberOfElements
+          pixelFormat:(NpTexturePixelFormat)newPixelFormat
+           dataFormat:(NpTextureDataFormat)newDataFormat
+                     ;
+
+- (void) detachBuffer;
+
 @end
 
 
