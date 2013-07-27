@@ -27,6 +27,7 @@ technique "texture"
         MinFilter = Linear;
         MagFilter = Linear;
     };
+    uniform samplerBuffer kernelmap;
 
     # vertex streams
     in vec4 in_position : 0;
