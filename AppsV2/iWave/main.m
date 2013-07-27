@@ -285,8 +285,11 @@ int main (int argc, char **argv)
     const float gravity = 9.81f;
     const float gdtdt = gravity * dt * dt;
 
+    const int32_t kernelRadius = 6;
+    const int32_t kernelSize = 2 * kernelRadius + 1;
+
     float * kernel = NULL;
-    G(6, 1.0, 10000, 0.001, &kernel);
+    G(kernelRadius, 1.0, 10000, 0.001, &kernel);
 
     NSAutoreleasePool * rPool = [ NSAutoreleasePool new ];
 
@@ -308,7 +311,7 @@ int main (int argc, char **argv)
 
     NSData * kernelData
         = [ NSData dataWithBytesNoCopy:kernel
-                                length:sizeof(float) * 13 * 13
+                                length:sizeof(float) * kernelSize * kernelSize
                           freeWhenDone:NO ];
 
     NPTexture2D * heightTexture      = [[ NPTexture2D alloc ] initWithName:@"Height" ];
@@ -329,7 +332,7 @@ int main (int argc, char **argv)
     assert(allok == YES);
 
     [ kernelTexture attachBuffer:kernelBuffer
-                numberOfElements:13*13
+                numberOfElements:kernelSize * kernelSize
                      pixelFormat:NpTexturePixelFormatR
                       dataFormat:NpTextureDataFormatFloat32 ];
 
