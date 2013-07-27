@@ -18,6 +18,7 @@
 #import "Graphics/Model/NPSUX2Model.h"
 #import "Graphics/Texture/NPTexture2D.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
+#import "Graphics/Texture/NPTextureBuffer.h"
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
@@ -285,7 +286,7 @@ int main (int argc, char **argv)
     const float gdtdt = gravity * dt * dt;
 
     float * kernel = NULL;
-    G(6, 1.0, 10000, 0.001,&kernel);
+    G(6, 1.0, 10000, 0.001, &kernel);
 
     NSAutoreleasePool * rPool = [ NSAutoreleasePool new ];
 
@@ -305,9 +306,33 @@ int main (int argc, char **argv)
                                 length:sizeof(float) * gridWidth * gridHeight
                           freeWhenDone:NO ];
 
+    NSData * kernelData
+        = [ NSData dataWithBytesNoCopy:kernel
+                                length:sizeof(float) * 13 * 13
+                          freeWhenDone:NO ];
+
     NPTexture2D * heightTexture      = [[ NPTexture2D alloc ] initWithName:@"Height" ];
     NPTexture2D * sourceTexture      = [[ NPTexture2D alloc ] initWithName:@"Source" ];
     NPTexture2D * obstructionTexture = [[ NPTexture2D alloc ] initWithName:@"Obstruction" ];
+
+    NPBufferObject  * kernelBuffer  = [[ NPBufferObject alloc ] initWithName:@"Kernel BO"  ];
+    NPTextureBuffer * kernelTexture = [[ NPTextureBuffer alloc ] initWithName:@"Kernel TB" ];
+
+    BOOL allok
+        = [ kernelBuffer
+                generateStaticGeometryBuffer:NpBufferDataFormatFloat32
+                                  components:1
+                                        data:kernelData
+                                  dataLength:[ kernelData length ]
+                                       error:NULL ];
+
+    assert(allok == YES);
+
+    [ kernelTexture attachBuffer:kernelBuffer
+                numberOfElements:13*13
+                     pixelFormat:NpTexturePixelFormatR
+                      dataFormat:NpTextureDataFormatFloat32 ];
+
 
     [ heightTexture generateUsingWidth:gridWidth
                           height:gridHeight
@@ -563,6 +588,7 @@ int main (int argc, char **argv)
         [[[ NP Graphics ] textureBindingState ] setTexture:heightTexture texelUnit:0 ];
         [[[ NP Graphics ] textureBindingState ] setTexture:sourceTexture texelUnit:1 ];
         [[[ NP Graphics ] textureBindingState ] setTexture:obstructionTexture texelUnit:2 ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture texelUnit:3 ];
         [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
         NPEffectVariableFloat2 * heightRangeV = [ effect variableWithName:@"heightRange" ];
@@ -615,6 +641,8 @@ int main (int argc, char **argv)
     DESTROY(heightTexture);
     DESTROY(sourceTexture);
     DESTROY(obstructionTexture);
+    DESTROY(kernelTexture);
+    DESTROY(kernelBuffer);
 
     FREE(heights);
     FREE(prevHeights);
