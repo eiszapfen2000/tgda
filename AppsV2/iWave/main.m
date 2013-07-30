@@ -204,7 +204,7 @@ int main (int argc, char **argv)
     mousePosition.x = mousePosition.y = 0;
 
     // VSync
-    glfwSwapInterval(0);
+    glfwSwapInterval(1);
     // do not poll events on glfwSwapBuffers
     glfwDisable(GLFW_AUTO_POLL_EVENTS);
     // register keyboard callback
@@ -234,16 +234,17 @@ int main (int argc, char **argv)
     [[ NP Graphics ] checkForGLErrors ];
     [[[ NP Core ] timer ] reset ];
 
-
-
-    const int32_t gridWidth  = 400;
-    const int32_t gridHeight = 300;
+    const int32_t gridWidth  = 200;
+    const int32_t gridHeight = 150;
     const double scaleX = ((double)gridWidth) / ((double)widgetSize.x);
     const double scaleY = ((double)gridHeight) / ((double)widgetSize.y);
 
     float * heights     = ALLOC_ARRAY(float, gridWidth * gridHeight);
     float * prevHeights = ALLOC_ARRAY(float, gridWidth * gridHeight);
     float * derivative  = ALLOC_ARRAY(float, gridWidth * gridHeight);
+    float * phi         = ALLOC_ARRAY(float, gridWidth * gridHeight);
+    float * dphi        = ALLOC_ARRAY(float, gridWidth * gridHeight);
+
     float * source      = ALLOC_ARRAY(float, gridWidth * gridHeight);
     float * obstruction = ALLOC_ARRAY(float, gridWidth * gridHeight);
 
@@ -251,6 +252,8 @@ int main (int argc, char **argv)
     memset(prevHeights, 0, sizeof(float) * gridWidth * gridHeight);
     memset(derivative,  0, sizeof(float) * gridWidth * gridHeight);
     memset(source,      0, sizeof(float) * gridWidth * gridHeight);
+    memset(phi,         0, sizeof(float) * gridWidth * gridHeight);
+    memset(dphi,        0, sizeof(float) * gridWidth * gridHeight);
 
     for (int32_t i = 0; i < gridWidth * gridHeight; i++)
     {
@@ -279,10 +282,11 @@ int main (int argc, char **argv)
     obstructionBrush[2][0] = 0.75f;
     obstructionBrush[2][2] = 0.75f;
 
-
+    const float alpha = 0.3;
     const float dt = 1.0f / 60.0f;
-    const float alpha = 0.1f;
+    const float halfdt = dt * 0.5f;
     const float gravity = 9.81f;
+    const float gravityHalfDt = gravity * halfdt;
     const float gdtdt = gravity * dt * dt;
 
     const int32_t kernelRadius = 6;
@@ -318,7 +322,7 @@ int main (int argc, char **argv)
     NPTexture2D * sourceTexture      = [[ NPTexture2D alloc ] initWithName:@"Source" ];
     NPTexture2D * obstructionTexture = [[ NPTexture2D alloc ] initWithName:@"Obstruction" ];
 
-    NPBufferObject  * kernelBuffer  = [[ NPBufferObject alloc ] initWithName:@"Kernel BO"  ];
+    NPBufferObject  * kernelBuffer  = [[ NPBufferObject alloc ]  initWithName:@"Kernel BO" ];
     NPTextureBuffer * kernelTexture = [[ NPTextureBuffer alloc ] initWithName:@"Kernel TB" ];
 
     BOOL allok
@@ -427,10 +431,7 @@ int main (int argc, char **argv)
         // on right click reset all data
         if ( [ rightClick activated ] == YES )
         {
-            //memset(heights,     0, sizeof(float) * gridWidth * gridHeight);
-            //memset(prevHeights, 0, sizeof(float) * gridWidth * gridHeight);
-            memset(derivative,  0, sizeof(float) * gridWidth * gridHeight);
-            memset(source,      0, sizeof(float) * gridWidth * gridHeight);
+            memset(source, 0, sizeof(float) * gridWidth * gridHeight);
 
             for (int32_t i = 0; i < gridWidth * gridHeight; i++)
             {
@@ -443,7 +444,7 @@ int main (int argc, char **argv)
             paintMode = !paintMode;
         }
 
-        if ( [ leftClick activated ] == YES )
+        if ( [ leftClick active ] == YES )
         {
             int32_t mouseX = [[[ NP Input ] mouse ] x ];
             int32_t mouseY = [[[ NP Input ] mouse ] y ];
@@ -496,6 +497,7 @@ int main (int argc, char **argv)
         }
 
         
+        
         // advance surface
         const float adt  = alpha*dt;
         const float adt2 = 1.0f / (1.0f + adt);
@@ -503,7 +505,7 @@ int main (int argc, char **argv)
 
         for (int32_t i = 0; i < size; i++)
         {
-            heights[i] += source[i];            
+            heights[i] += source[i];
             heights[i] *= obstruction[i];
         }
 
@@ -519,7 +521,32 @@ int main (int argc, char **argv)
             //assert(!isinff(heights[i]));
 
             prevHeights[i] = temp;
+
+            source[i] = 0.0f;
         }
+        
+
+        /*
+        const int32_t size = gridWidth * gridHeight;
+
+        for ( int32_t i = 0; i < size; i++ )
+        {
+            phi[i] -= 0.5f * dt * 9.81f * heights[i];
+            phi[i] += 0.5f * dt * source[i];
+        }
+
+        convolve(phi, gridWidth, gridHeight, kernel, 6, dphi);
+
+        for ( int32_t i = 0; i < size; i++ )
+        {
+            heights[i] += dt * dphi[i];
+            phi[i] -= 0.5f * dt * 9.81f * heights[i];
+            phi[i] += 0.5f * dt * source[i];
+
+            //heights[i] = heights[i] * obstruction[i];
+            //phi[i] = phi[i] * obstruction[i];
+        }
+        */
 
         FVector2 heightRange = {.x = FLT_MAX, .y = -FLT_MAX};
         FVector2 sourceRange = {.x = FLT_MAX, .y = -FLT_MAX};
@@ -650,6 +677,8 @@ int main (int argc, char **argv)
     FREE(heights);
     FREE(prevHeights);
     FREE(derivative);
+    FREE(phi);
+    FREE(dphi);
     FREE(source);
     FREE(obstruction);
 
