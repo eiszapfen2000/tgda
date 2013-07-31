@@ -11,7 +11,8 @@ NPEffectVariable.m \
 NPEffectVariableSampler.m \
 NPEffectVariableSemantic.m \
 NPEffectVariableUniform.m \
-NPEffectVariableFloat.m
+NPEffectVariableFloat.m \
+NPEffectVariableInt.m
 
 libNPEngineGraphicsEffect_HEADER_FILES = \
 NPShader.h \
@@ -22,7 +23,8 @@ NPEffectVariable.h \
 NPEffectVariableSampler.h \
 NPEffectVariableSemantic.h \
 NPEffectVariableUniform.h \
-NPEffectVariableFloat.h
+NPEffectVariableFloat.h \
+NPEffectVariableInt.h
 
 
 include $(TGDA_DIR)/GNUmakefile.flags

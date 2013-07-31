@@ -20,6 +20,11 @@ static NSMutableDictionary * uniformTypeToClass = nil;
     INSERTCLASS(uniformTypeToClass, @"NPEffectVariableMatrix2x2", @"mat2" );
     INSERTCLASS(uniformTypeToClass, @"NPEffectVariableMatrix3x3", @"mat3" );
     INSERTCLASS(uniformTypeToClass, @"NPEffectVariableMatrix4x4", @"mat4" );
+
+    INSERTCLASS(uniformTypeToClass, @"NPEffectVariableInt" , @"int");
+    INSERTCLASS(uniformTypeToClass, @"NPEffectVariableInt2", @"ivec2" );
+    INSERTCLASS(uniformTypeToClass, @"NPEffectVariableInt3", @"ivec3" );
+    INSERTCLASS(uniformTypeToClass, @"NPEffectVariableInt4", @"ivec4" );
 }
 
 #undef INSERTCLASS
