@@ -1,0 +1,8 @@
+#version 150
+
+in vec2 out_texcoords;
+
+void main()
+{
+    target = vec4(out_texcoords.x, out_texcoords.y, 0.0, 1.0);
+}
