@@ -313,6 +313,11 @@ int main (int argc, char **argv)
                                 length:sizeof(float) * gridWidth * gridHeight
                           freeWhenDone:NO ];
 
+    NSData * derivativeData
+        = [ NSData dataWithBytesNoCopy:derivative
+                                length:sizeof(float) * gridWidth * gridHeight
+                          freeWhenDone:NO ];
+
     NSData * kernelData
         = [ NSData dataWithBytesNoCopy:kernel
                                 length:sizeof(float) * kernelSize * kernelSize
@@ -321,6 +326,7 @@ int main (int argc, char **argv)
     NPTexture2D * heightTexture      = [[ NPTexture2D alloc ] initWithName:@"Height" ];
     NPTexture2D * sourceTexture      = [[ NPTexture2D alloc ] initWithName:@"Source" ];
     NPTexture2D * obstructionTexture = [[ NPTexture2D alloc ] initWithName:@"Obstruction" ];
+    NPTexture2D * derivativeTexture  = [[ NPTexture2D alloc ] initWithName:@"Derivative"  ];
 
     NPBufferObject  * kernelBuffer  = [[ NPBufferObject alloc ]  initWithName:@"Kernel BO" ];
     NPTextureBuffer * kernelTexture = [[ NPTextureBuffer alloc ] initWithName:@"Kernel TB" ];
@@ -361,6 +367,13 @@ int main (int argc, char **argv)
                       dataFormat:NpTextureDataFormatFloat32
                          mipmaps:NO
                             data:obstructionData ];
+
+    [ derivativeTexture generateUsingWidth:gridWidth
+                          height:gridHeight
+                     pixelFormat:NpTexturePixelFormatR
+                      dataFormat:NpTextureDataFormatFloat32
+                         mipmaps:NO
+                            data:derivativeData ];
 
     NPEffect * effect
         = [[[ NPEngineGraphics instance ]
@@ -597,6 +610,12 @@ int main (int argc, char **argv)
                                     length:sizeof(float) * gridWidth * gridHeight
                               freeWhenDone:NO ];
 
+        NSData * derivativeData
+            = [ NSData dataWithBytesNoCopy:derivative
+                                    length:sizeof(float) * gridWidth * gridHeight
+                              freeWhenDone:NO ];
+
+
         [ heightTexture generateUsingWidth:gridWidth
                               height:gridHeight
                          pixelFormat:NpTexturePixelFormatR
@@ -617,6 +636,13 @@ int main (int argc, char **argv)
                           dataFormat:NpTextureDataFormatFloat32
                              mipmaps:NO
                                 data:obstructionData ];
+
+        [ derivativeTexture generateUsingWidth:gridWidth
+                              height:gridHeight
+                         pixelFormat:NpTexturePixelFormatR
+                          dataFormat:NpTextureDataFormatFloat32
+                             mipmaps:NO
+                                data:derivativeData ];
 
         [[[ NP Graphics ] textureBindingState ] setTexture:heightTexture texelUnit:0 ];
         [[[ NP Graphics ] textureBindingState ] setTexture:sourceTexture texelUnit:1 ];
@@ -672,6 +698,7 @@ int main (int argc, char **argv)
     DESTROY(heightTexture);
     DESTROY(sourceTexture);
     DESTROY(obstructionTexture);
+    DESTROY(derivativeTexture);
     DESTROY(kernelTexture);
     DESTROY(kernelBuffer);
 
