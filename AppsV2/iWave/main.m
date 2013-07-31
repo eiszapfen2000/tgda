@@ -24,6 +24,8 @@
 #import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/Effect/NPEffectVariableInt.h"
 #import "Graphics/Font/NPFont.h"
+#import "Graphics/RenderTarget/NPRenderTargetConfiguration.h"
+#import "Graphics/RenderTarget/NPRenderTexture.h"
 #import "Graphics/State/NPStateConfiguration.h"
 #import "Graphics/State/NPBlendingState.h"
 #import "Graphics/State/NPCullingState.h"
@@ -219,7 +221,7 @@ int main (int argc, char **argv)
 
     glClearDepth(1);
     glClearStencil(0);
-    glClearColor(0.0, 1.0, 0.0, 0.0);
+    glClearColor(0.0, 0.0, 0.0, 0.0);
 
     // create and register log file
     NPLogFile * logFile = AUTORELEASE([[ NPLogFile alloc ] init ]);
@@ -334,6 +336,12 @@ int main (int argc, char **argv)
     NPBufferObject  * kernelBuffer  = [[ NPBufferObject alloc ]  initWithName:@"Kernel BO" ];
     NPTextureBuffer * kernelTexture = [[ NPTextureBuffer alloc ] initWithName:@"Kernel TB" ];
 
+    NPRenderTexture * heightsTarget     = [[ NPRenderTexture alloc ] initWithName:@"Height Target"      ];
+    NPRenderTexture * prevHeightsTarget = [[ NPRenderTexture alloc ] initWithName:@"Prev Height Target" ];
+    NPRenderTexture * derivativeTarget  = [[ NPRenderTexture alloc ] initWithName:@"Derivative Target"  ];
+
+    NPRenderTargetConfiguration * rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC" ];
+
     BOOL allok
         = [ kernelBuffer
                 generateStaticGeometryBuffer:NpBufferDataFormatFloat32
@@ -377,6 +385,35 @@ int main (int argc, char **argv)
                       dataFormat:NpTextureDataFormatFloat32
                          mipmaps:NO
                             data:derivativeData ];
+
+
+    [ heightsTarget generate:NpRenderTargetColor
+                       width:gridWidth
+                      height:gridHeight
+                 pixelFormat:NpTexturePixelFormatR
+                  dataFormat:NpTextureDataFormatFloat32
+               mipmapStorage:NO
+                       error:NULL ];
+
+    [ prevHeightsTarget generate:NpRenderTargetColor
+                           width:gridWidth
+                          height:gridHeight
+                     pixelFormat:NpTexturePixelFormatR
+                      dataFormat:NpTextureDataFormatFloat32
+                   mipmapStorage:NO
+                           error:NULL ];
+
+    [ derivativeTarget generate:NpRenderTargetColor
+                          width:gridWidth
+                         height:gridHeight
+                    pixelFormat:NpTexturePixelFormatR
+                     dataFormat:NpTextureDataFormatFloat32
+                  mipmapStorage:NO
+                          error:NULL ];
+
+    [ rtc setWidth:gridWidth ];
+    [ rtc setHeight:gridHeight ];
+
 
     NPEffect * effect
         = [[[ NPEngineGraphics instance ]
@@ -546,30 +583,6 @@ int main (int argc, char **argv)
             source[i] = 0.0f;
         }        
 
-        /*
-        const int32_t size = gridWidth * gridHeight;
-
-        for ( int32_t i = 0; i < size; i++ )
-        {
-            phi[i] -= 0.5f * dt * 9.81f * heights[i];
-            phi[i] += 0.5f * dt * source[i];
-        }
-
-        convolve(phi, gridWidth, gridHeight, kernel, 6, dphi);
-
-        for ( int32_t i = 0; i < size; i++ )
-        {
-            heights[i] += dt * dphi[i];
-            phi[i] -= 0.5f * dt * 9.81f * heights[i];
-            phi[i] += 0.5f * dt * source[i];
-
-            //heights[i] = heights[i] * obstruction[i];
-            //phi[i] = phi[i] * obstruction[i];
-
-            source[i] = 0.0f;
-        }
-        */
-
         FVector2 heightRange = {.x = FLT_MAX, .y = -FLT_MAX};
         FVector2 sourceRange = {.x = FLT_MAX, .y = -FLT_MAX};
 
@@ -717,6 +730,12 @@ int main (int argc, char **argv)
     DESTROY(wheelDown);
 
     DESTROY(effect);
+
+    DESTROY(rtc);
+    DESTROY(derivativeTarget);
+    DESTROY(prevHeightsTarget);
+    DESTROY(heightsTarget);
+
     DESTROY(heightTexture);
     DESTROY(sourceTexture);
     DESTROY(obstructionTexture);
