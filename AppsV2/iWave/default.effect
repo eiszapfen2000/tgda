@@ -68,14 +68,21 @@ technique "convolution"
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
     uniform sampler2D source;
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
     uniform samplerBuffer kernel;
+    uniform int kernelRadius;
     # vertex streams
-    in vec4 in_position : 0;
+    in vec4 in_position  : 0;
     in vec2 in_texcoords : 3;
     # fragment streams
     out vec4 target : 0;
     # shaders
-    set vertex shader "convolution.vertex"
+    set vertex   shader "convolution.vertex"
     set fragment shader "convolution.fragment"
 
 }

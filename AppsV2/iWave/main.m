@@ -22,6 +22,7 @@
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
+#import "Graphics/Effect/NPEffectVariableInt.h"
 #import "Graphics/Font/NPFont.h"
 #import "Graphics/State/NPStateConfiguration.h"
 #import "Graphics/State/NPBlendingState.h"
@@ -241,6 +242,7 @@ int main (int argc, char **argv)
 
     float * heights     = ALLOC_ARRAY(float, gridWidth * gridHeight);
     float * prevHeights = ALLOC_ARRAY(float, gridWidth * gridHeight);
+    float * gpuHeights  = ALLOC_ARRAY(float, gridWidth * gridHeight);
     float * derivative  = ALLOC_ARRAY(float, gridWidth * gridHeight);
     float * phi         = ALLOC_ARRAY(float, gridWidth * gridHeight);
     float * dphi        = ALLOC_ARRAY(float, gridWidth * gridHeight);
@@ -250,6 +252,7 @@ int main (int argc, char **argv)
 
     memset(heights,     0, sizeof(float) * gridWidth * gridHeight);
     memset(prevHeights, 0, sizeof(float) * gridWidth * gridHeight);
+    memset(gpuHeights,  0, sizeof(float) * gridWidth * gridHeight);
     memset(derivative,  0, sizeof(float) * gridWidth * gridHeight);
     memset(source,      0, sizeof(float) * gridWidth * gridHeight);
     memset(phi,         0, sizeof(float) * gridWidth * gridHeight);
@@ -525,6 +528,8 @@ int main (int argc, char **argv)
             heights[i] *= obstruction[i];
         }
 
+        memcpy(gpuHeights, heights, sizeof(float) * gridWidth * gridHeight);
+
         convolve(heights, gridWidth, gridHeight, kernel, 6, derivative);
 
         for (int32_t i = 0; i < size; i++)
@@ -601,7 +606,7 @@ int main (int argc, char **argv)
                               freeWhenDone:NO ];
 
         NSData * sourceData
-            = [ NSData dataWithBytesNoCopy:source
+            = [ NSData dataWithBytesNoCopy:gpuHeights
                                     length:sizeof(float) * gridWidth * gridHeight
                               freeWhenDone:NO ];
 
@@ -644,28 +649,45 @@ int main (int argc, char **argv)
                              mipmaps:NO
                                 data:derivativeData ];
 
-        [[[ NP Graphics ] textureBindingState ] setTexture:heightTexture texelUnit:0 ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:sourceTexture texelUnit:1 ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:obstructionTexture texelUnit:2 ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture texelUnit:3 ];
+        NPEffectVariableFloat2 * heightRangeV  = [ effect variableWithName:@"heightRange"  ];
+        NPEffectVariableFloat2 * sourceRangeV  = [ effect variableWithName:@"sourceRange"  ];
+        NPEffectVariableInt    * kernelRadiusV = [ effect variableWithName:@"kernelRadius" ];
+
+        [ heightRangeV setFValue:heightRange  ];
+        [ sourceRangeV setFValue:sourceRange  ];
+        [ kernelRadiusV setValue:kernelRadius ];
+
+        [[[ NP Graphics ] textureBindingState ] setTexture:derivativeTexture texelUnit:0 ];
         [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
-        NPEffectVariableFloat2 * heightRangeV = [ effect variableWithName:@"heightRange" ];
-        NPEffectVariableFloat2 * sourceRangeV = [ effect variableWithName:@"sourceRange" ];
-
-        [ heightRangeV setFValue:heightRange ];
-        [ sourceRangeV setFValue:sourceRange ];
         [[ effect techniqueWithName:@"texture"] activate ];
 
         glBegin(GL_QUADS);
             glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
-            glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
+            glVertex4f(-1.0f, 0.0f, 0.0f, 1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
+            glVertex4f(0.0f, 0.0f, 0.0f, 1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
+            glVertex4f(0.0f, 1.0f, 0.0f, 1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
+            glVertex4f(-1.0f, 1.0f, 0.0f, 1.0f);
+        glEnd();
+
+        [[[ NP Graphics ] textureBindingState ] setTexture:sourceTexture texelUnit:0 ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture texelUnit:1 ];
+        [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
+
+        [[ effect techniqueWithName:@"convolution"] activate ];
+
+        glBegin(GL_QUADS);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
+            glVertex4f(0.0f, -1.0f, 0.0f, 1.0f);
             glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
             glVertex4f(1.0f, -1.0f, 0.0f, 1.0f);
             glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
-            glVertex4f(1.0f, 1.0f, 0.0f, 1.0f);
+            glVertex4f(1.0f, 0.0f, 0.0f, 1.0f);
             glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
-            glVertex4f(-1.0f, 1.0f, 0.0f, 1.0f);
+            glVertex4f(0.0f, 0.0f, 0.0f, 1.0f);
         glEnd();
 
         // check for GL errors
@@ -704,6 +726,7 @@ int main (int argc, char **argv)
 
     FREE(heights);
     FREE(prevHeights);
+    FREE(gpuHeights);
     FREE(derivative);
     FREE(phi);
     FREE(dphi);

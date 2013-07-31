@@ -4,5 +4,29 @@ in vec2 out_texcoords;
 
 void main()
 {
-    target = vec4(out_texcoords.x, out_texcoords.y, 0.0, 1.0);
+    int kernelWidth = 2 * kernelRadius + 1;
+    ivec2 sourceSize = textureSize(source, 0);
+    vec2 sourceDxy = vec2(1.0) / sourceSize;
+
+    float result = 0.0;
+
+    for (int i = -kernelRadius; i < kernelRadius + 1; i++)
+    {
+        for (int j = -kernelRadius; j < kernelRadius + 1; j++)
+        {
+            int indexki = i + kernelRadius;
+            int indexkj = j + kernelRadius;
+            int indexk  = indexki * kernelWidth + indexkj;
+
+            vec2 sourceCoords = out_texcoords + vec2(j * sourceDxy.x, i * sourceDxy.y);
+
+            float ks = texelFetch(kernel, indexk).r;
+            float ss = textureLod(source, sourceCoords, 0).r;
+
+            result += (ks * ss);
+        }
+    }
+
+    //target = textureLod(source, out_texcoords, 0);
+    target = vec4(result);
 }
