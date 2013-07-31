@@ -431,7 +431,12 @@ int main (int argc, char **argv)
         // on right click reset all data
         if ( [ rightClick activated ] == YES )
         {
-            memset(source, 0, sizeof(float) * gridWidth * gridHeight);
+            memset(heights,     0, sizeof(float) * gridWidth * gridHeight);
+            memset(prevHeights, 0, sizeof(float) * gridWidth * gridHeight);
+            memset(derivative,  0, sizeof(float) * gridWidth * gridHeight);
+            memset(source,      0, sizeof(float) * gridWidth * gridHeight);
+            memset(phi,         0, sizeof(float) * gridWidth * gridHeight);
+            memset(dphi,        0, sizeof(float) * gridWidth * gridHeight);
 
             for (int32_t i = 0; i < gridWidth * gridHeight; i++)
             {
@@ -494,9 +499,7 @@ int main (int argc, char **argv)
                     }
                 }
             }
-        }
-
-        
+        }        
         
         // advance surface
         const float adt  = alpha*dt;
@@ -523,8 +526,7 @@ int main (int argc, char **argv)
             prevHeights[i] = temp;
 
             source[i] = 0.0f;
-        }
-        
+        }        
 
         /*
         const int32_t size = gridWidth * gridHeight;
@@ -545,6 +547,8 @@ int main (int argc, char **argv)
 
             //heights[i] = heights[i] * obstruction[i];
             //phi[i] = phi[i] * obstruction[i];
+
+            source[i] = 0.0f;
         }
         */
 
@@ -612,9 +616,8 @@ int main (int argc, char **argv)
                          pixelFormat:NpTexturePixelFormatR
                           dataFormat:NpTextureDataFormatFloat32
                              mipmaps:NO
-                                data:obstructionData ];       
+                                data:obstructionData ];
 
-        
         [[[ NP Graphics ] textureBindingState ] setTexture:heightTexture texelUnit:0 ];
         [[[ NP Graphics ] textureBindingState ] setTexture:sourceTexture texelUnit:1 ];
         [[[ NP Graphics ] textureBindingState ] setTexture:obstructionTexture texelUnit:2 ];
@@ -638,11 +641,9 @@ int main (int argc, char **argv)
             glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
             glVertex4f(-1.0f, 1.0f, 0.0f, 1.0f);
         glEnd();
-        
 
         // check for GL errors
-        [[ NP Graphics ] checkForGLErrors ];
-        
+        [[ NP Graphics ] checkForGLErrors ];        
 
         // swap front and back rendering buffers
         glfwSwapBuffers();
