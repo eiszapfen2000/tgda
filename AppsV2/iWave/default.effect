@@ -24,6 +24,44 @@ technique "texture"
     set fragment shader "simpletextured.fragment"
 }
 
+technique "source_and_obstruction
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform sampler2D source
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform sampler2D obstruction
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform sampler2D height
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+
+    # vertex streams
+    in vec4 in_position  : 0;
+    in vec2 in_texcoords : 3;
+
+    # fragment streams
+    out vec4 target : 0;
+
+    # shaders
+    set vertex shader "source_and_obstruction.vertex"
+    set fragment shader "source_and_obstruction.fragment"
+}
+
 technique "fluid"
 {
     # effect variables
