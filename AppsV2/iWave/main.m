@@ -339,6 +339,7 @@ int main (int argc, char **argv)
     NPRenderTexture * heightsTarget     = [[ NPRenderTexture alloc ] initWithName:@"Height Target"      ];
     NPRenderTexture * prevHeightsTarget = [[ NPRenderTexture alloc ] initWithName:@"Prev Height Target" ];
     NPRenderTexture * derivativeTarget  = [[ NPRenderTexture alloc ] initWithName:@"Derivative Target"  ];
+    NPRenderTexture * tempTarget        = [[ NPRenderTexture alloc ] initWithName:@"Temp Target"        ];
 
     NPRenderTargetConfiguration * rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC" ];
 
@@ -410,6 +411,14 @@ int main (int argc, char **argv)
                      dataFormat:NpTextureDataFormatFloat32
                   mipmapStorage:NO
                           error:NULL ];
+
+    [ tempTarget generate:NpRenderTargetColor
+                    width:gridWidth
+                   height:gridHeight
+              pixelFormat:NpTexturePixelFormatR
+               dataFormat:NpTextureDataFormatFloat32
+            mipmapStorage:NO
+                    error:NULL ];
 
     [ rtc setWidth:gridWidth ];
     [ rtc setHeight:gridHeight ];
@@ -552,7 +561,57 @@ int main (int argc, char **argv)
                     }
                 }
             }
-        }        
+        }
+
+        NSData * sourceData
+            = [ NSData dataWithBytesNoCopy:gpuHeights
+                                    length:sizeof(float) * gridWidth * gridHeight
+                              freeWhenDone:NO ];
+
+        NSData * obstructionData
+            = [ NSData dataWithBytesNoCopy:obstruction
+                                    length:sizeof(float) * gridWidth * gridHeight
+                              freeWhenDone:NO ];
+
+        [ sourceTexture generateUsingWidth:gridWidth
+                              height:gridHeight
+                         pixelFormat:NpTexturePixelFormatR
+                          dataFormat:NpTextureDataFormatFloat32
+                             mipmaps:NO
+                                data:sourceData ];
+
+        [ obstructionTexture generateUsingWidth:gridWidth
+                              height:gridHeight
+                         pixelFormat:NpTexturePixelFormatR
+                          dataFormat:NpTextureDataFormatFloat32
+                             mipmaps:NO
+                                data:obstructionData ];
+
+        [ rtc bindFBO ];
+
+        [ heightsTarget
+            attachToRenderTargetConfiguration:rtc
+                             colorBufferIndex:0
+                                      bindFBO:NO ];
+
+        // configure draw buffers
+        [ rtc activateDrawBuffers ];
+
+        // set viewport
+        [ rtc activateViewport ];
+
+        // check FBO completeness
+        NSError * fboError = nil;
+        if ([ rtc checkFrameBufferCompleteness:&fboError ] == NO )
+        {
+            NPLOG_ERROR(fboError);
+        }
+
+        [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
+        
+
+        [ rtc deactivate ];
         
         // advance surface
         const float adt  = alpha*dt;
@@ -618,15 +677,7 @@ int main (int argc, char **argv)
                                     length:sizeof(float) * gridWidth * gridHeight
                               freeWhenDone:NO ];
 
-        NSData * sourceData
-            = [ NSData dataWithBytesNoCopy:gpuHeights
-                                    length:sizeof(float) * gridWidth * gridHeight
-                              freeWhenDone:NO ];
 
-        NSData * obstructionData
-            = [ NSData dataWithBytesNoCopy:obstruction
-                                    length:sizeof(float) * gridWidth * gridHeight
-                              freeWhenDone:NO ];
 
         NSData * derivativeData
             = [ NSData dataWithBytesNoCopy:derivative
@@ -640,20 +691,6 @@ int main (int argc, char **argv)
                           dataFormat:NpTextureDataFormatFloat32
                              mipmaps:NO
                                 data:heightData ];
-
-        [ sourceTexture generateUsingWidth:gridWidth
-                              height:gridHeight
-                         pixelFormat:NpTexturePixelFormatR
-                          dataFormat:NpTextureDataFormatFloat32
-                             mipmaps:NO
-                                data:sourceData ];
-
-        [ obstructionTexture generateUsingWidth:gridWidth
-                              height:gridHeight
-                         pixelFormat:NpTexturePixelFormatR
-                          dataFormat:NpTextureDataFormatFloat32
-                             mipmaps:NO
-                                data:obstructionData ];
 
         [ derivativeTexture generateUsingWidth:gridWidth
                               height:gridHeight
@@ -735,6 +772,7 @@ int main (int argc, char **argv)
     DESTROY(derivativeTarget);
     DESTROY(prevHeightsTarget);
     DESTROY(heightsTarget);
+    DESTROY(tempTarget);
 
     DESTROY(heightTexture);
     DESTROY(sourceTexture);
