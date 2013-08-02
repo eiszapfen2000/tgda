@@ -271,7 +271,7 @@ int main (int argc, char **argv)
         obstruction[i] = 1.0f;
     }
 
-    const float maxDepth = 10.0f;
+    const float maxDepth = 5.0f;
     const float deltaDepth = maxDepth / (float)(gridWidth - 1);
 
     for (int32_t i = 0; i < gridHeight; i++)
@@ -427,10 +427,11 @@ int main (int argc, char **argv)
 
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
 
-    [ tempTarget        detach:NO ];
-    [ derivativeTarget  detach:NO ];
-    [ prevHeightsTarget detach:NO ];
-    [ heightsTarget     detach:NO ];
+    [ tempTarget            detach:NO ];
+    [ depthDerivativeTarget detach:NO ];
+    [ derivativeTarget      detach:NO ];
+    [ prevHeightsTarget     detach:NO ];
+    [ heightsTarget         detach:NO ];
 
     [ rtc deactivate ];
 
@@ -638,20 +639,62 @@ int main (int argc, char **argv)
 
         [ tempTarget detach:NO ];
 
+        
+        [ depthDerivativeTarget
+            attachToRenderTargetConfiguration:rtc
+                             colorBufferIndex:0
+                                      bindFBO:NO ];
+
+        [[[ NP Graphics ] textureBindingState ] setTexture:depthTexture  texelUnit:0 ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture texelUnit:1 ];
+        [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
+
+        [[ effect techniqueWithName:@"convolution"] activate ];
+
+        glBegin(GL_QUADS);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
+            glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
+            glVertex4f( 1.0f, -1.0f, 0.0f, 1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
+            glVertex4f( 1.0f,  1.0f, 0.0f, 1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
+            glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
+        glEnd();
+
+        [ depthDerivativeTarget detach:NO ];
+        
         [ derivativeTarget
             attachToRenderTargetConfiguration:rtc
                              colorBufferIndex:0
                                       bindFBO:NO ];
 
-        //[ rtc activateDrawBuffers ];
-        //[ rtc activateViewport ];
-
-        //[[[ NP Graphics ] textureBindingState ] clear ];
+        /*
         [[[ NP Graphics ] textureBindingState ] setTexture:[ tempTarget texture ] texelUnit:0 ];
         [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture          texelUnit:1 ];
         [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
         [[ effect techniqueWithName:@"convolution"] activate ];
+
+        glBegin(GL_QUADS);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
+            glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
+            glVertex4f( 1.0f, -1.0f, 0.0f, 1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
+            glVertex4f( 1.0f,  1.0f, 0.0f, 1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
+            glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
+        glEnd();
+        */
+        
+       
+        [[[ NP Graphics ] textureBindingState ] setTexture:[ tempTarget           texture ] texelUnit:0 ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture                    texelUnit:1 ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:[ depthDerivativeTarget texture] texelUnit:2 ];
+        [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
+
+        [[ effect techniqueWithName:@"convolution_shallow"] activate ];
 
         glBegin(GL_QUADS);
             glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
@@ -671,9 +714,6 @@ int main (int argc, char **argv)
                              colorBufferIndex:0
                                       bindFBO:NO ];
 
-        //[ rtc activateDrawBuffers ];
-        //[ rtc activateViewport ];
-
         //[[[ NP Graphics ] textureBindingState ] clear ];
         [[[ NP Graphics ] textureBindingState ] setTexture:[ tempTarget        texture ] texelUnit:0 ];
         [[[ NP Graphics ] textureBindingState ] setTexture:[ prevHeightsTarget texture ] texelUnit:1 ];
@@ -682,7 +722,6 @@ int main (int argc, char **argv)
 
         const float alpha = 0.3;
         const float dt = 1.0f / 60.0f;
-        const int32_t size = gridWidth * gridHeight;
 
         FVector2 parameters = {.x = dt, .y = alpha};
         NPEffectVariableFloat2 * parametersV  = [ effect variableWithName:@"parameters" ];
@@ -708,9 +747,6 @@ int main (int argc, char **argv)
                              colorBufferIndex:0
                                       bindFBO:NO ];
 
-        //[ rtc activateDrawBuffers ];
-        //[ rtc activateViewport ];
-
         [[[ NP Graphics ] textureBindingState ] clear ];
         [[[ NP Graphics ] textureBindingState ] setTexture:[ tempTarget texture ] texelUnit:0 ];
         [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
@@ -732,6 +768,7 @@ int main (int argc, char **argv)
         
         [ rtc deactivate ];
 
+        const int32_t size = gridWidth * gridHeight;
         for (int32_t i = 0; i < size; i++)
         {
             source[i] = 0.0f;

@@ -1,0 +1,35 @@
+#version 150
+
+in vec2 out_texcoords;
+
+void main()
+{
+    int kernelWidth = 2 * kernelRadius + 1;
+    ivec2 sourceSize = textureSize(source, 0);
+    vec2 v = vec2(sourceSize);
+    vec2 sourceDxy = vec2(1.0 / v.x, 1.0 / v.y);
+
+    float result = 0.0;
+
+    for (int i = -kernelRadius; i < (kernelRadius + 1); i++)
+    {
+        for (int j = -kernelRadius; j < (kernelRadius + 1); j++)
+        {
+            int indexki = i + kernelRadius;
+            int indexkj = j + kernelRadius;
+            int indexk  = indexki * kernelWidth + indexkj;
+            float fi = i;
+            float fj = j;
+
+            vec2 sourceCoords = out_texcoords + vec2(fj * sourceDxy.x, fi * sourceDxy.y);
+
+            float ks = texelFetch(kernel, indexk).r;
+            float h  = textureLod(source, sourceCoords, 0).r;
+            float dd = textureLod(depthDerivative, sourceCoords, 0).r;
+
+            result += (ks * tanh(dd) * h );
+        }
+    }
+
+    target = vec4(result);
+}
