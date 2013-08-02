@@ -26,6 +26,7 @@ void main()
             float ks = texelFetch(kernel, indexk).r;
             float h  = textureLod(source, sourceCoords, 0).r;
             float dd = textureLod(depthDerivative, sourceCoords, 0).r;
+            dd = max(-5.0, min(5.0, dd));
 
             result += (ks * tanh(dd) * h );
         }
