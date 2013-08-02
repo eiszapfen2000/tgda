@@ -326,10 +326,11 @@ int main (int argc, char **argv)
     NPBufferObject  * kernelBuffer  = [[ NPBufferObject alloc ]  initWithName:@"Kernel BO" ];
     NPTextureBuffer * kernelTexture = [[ NPTextureBuffer alloc ] initWithName:@"Kernel TB" ];
 
-    NPRenderTexture * heightsTarget     = [[ NPRenderTexture alloc ] initWithName:@"Height Target"      ];
-    NPRenderTexture * prevHeightsTarget = [[ NPRenderTexture alloc ] initWithName:@"Prev Height Target" ];
-    NPRenderTexture * derivativeTarget  = [[ NPRenderTexture alloc ] initWithName:@"Derivative Target"  ];
-    NPRenderTexture * tempTarget        = [[ NPRenderTexture alloc ] initWithName:@"Temp Target"        ];
+    NPRenderTexture * heightsTarget         = [[ NPRenderTexture alloc ] initWithName:@"Height Target"           ];
+    NPRenderTexture * prevHeightsTarget     = [[ NPRenderTexture alloc ] initWithName:@"Prev Height Target"      ];
+    NPRenderTexture * depthDerivativeTarget = [[ NPRenderTexture alloc ] initWithName:@"Depth Derivative Target" ];
+    NPRenderTexture * derivativeTarget      = [[ NPRenderTexture alloc ] initWithName:@"Derivative Target"       ];
+    NPRenderTexture * tempTarget            = [[ NPRenderTexture alloc ] initWithName:@"Temp Target"             ];
 
     NPRenderTargetConfiguration * rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC" ];
 
@@ -367,6 +368,14 @@ int main (int argc, char **argv)
                    mipmapStorage:NO
                            error:NULL ];
 
+    [ depthDerivativeTarget generate:NpRenderTargetColor
+                               width:gridWidth
+                              height:gridHeight
+                         pixelFormat:NpTexturePixelFormatR
+                          dataFormat:NpTextureDataFormatFloat32
+                       mipmapStorage:NO
+                               error:NULL ];
+
     [ derivativeTarget generate:NpRenderTargetColor
                           width:gridWidth
                          height:gridHeight
@@ -403,9 +412,14 @@ int main (int argc, char **argv)
                          colorBufferIndex:2
                                   bindFBO:NO ];
 
-    [ tempTarget
+    [ depthDerivativeTarget
         attachToRenderTargetConfiguration:rtc
                          colorBufferIndex:3
+                                  bindFBO:NO ];
+
+    [ tempTarget
+        attachToRenderTargetConfiguration:rtc
+                         colorBufferIndex:4
                                   bindFBO:NO ];
 
     [ rtc activateDrawBuffers ];
@@ -801,6 +815,7 @@ int main (int argc, char **argv)
 
     DESTROY(rtc);
     DESTROY(derivativeTarget);
+    DESTROY(depthDerivativeTarget);
     DESTROY(prevHeightsTarget);
     DESTROY(heightsTarget);
     DESTROY(tempTarget);
