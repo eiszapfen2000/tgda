@@ -191,7 +191,7 @@ int main (int argc, char **argv)
     glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
     // glew needs compatibility profile
     glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_FALSE);
     
     // Open a window and create its OpenGL context
     if( !glfwOpenWindow( 800, 600, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
@@ -237,40 +237,50 @@ int main (int argc, char **argv)
     [[ NP Graphics ] checkForGLErrors ];
     [[[ NP Core ] timer ] reset ];
 
+    /*
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+
+    glDebugMessageControlARB(GL_DONT_CARE,
+                             GL_DONT_CARE,
+                             GL_DONT_CARE,
+                             0, NULL,
+                             GL_TRUE);
+    */
+
+    [[ NP Graphics ] checkForGLErrors ];
+
     // adopt viewport to current widget size
     NPViewport * viewport = [[ NP Graphics ] viewport ];
     [ viewport setWidgetWidth:widgetSize.x  ];
     [ viewport setWidgetHeight:widgetSize.y ];
     [ viewport reset ];
 
-    const int32_t gridWidth  = 200;
-    const int32_t gridHeight = 150;
+    const int32_t gridWidth  = 400;
+    const int32_t gridHeight = 300;
     const double scaleX = ((double)gridWidth) / ((double)widgetSize.x);
     const double scaleY = ((double)gridHeight) / ((double)widgetSize.y);
 
-    float * heights     = ALLOC_ARRAY(float, gridWidth * gridHeight);
-    float * temp        = ALLOC_ARRAY(float, gridWidth * gridHeight);
-    float * prevHeights = ALLOC_ARRAY(float, gridWidth * gridHeight);
-    float * gpuHeights  = ALLOC_ARRAY(float, gridWidth * gridHeight);
-    float * derivative  = ALLOC_ARRAY(float, gridWidth * gridHeight);
-    float * phi         = ALLOC_ARRAY(float, gridWidth * gridHeight);
-    float * dphi        = ALLOC_ARRAY(float, gridWidth * gridHeight);
-
     float * source      = ALLOC_ARRAY(float, gridWidth * gridHeight);
     float * obstruction = ALLOC_ARRAY(float, gridWidth * gridHeight);
+    float * depth       = ALLOC_ARRAY(float, gridWidth * gridHeight);
 
-    memset(heights,     0, sizeof(float) * gridWidth * gridHeight);
-    memset(temp,        0, sizeof(float) * gridWidth * gridHeight);
-    memset(prevHeights, 0, sizeof(float) * gridWidth * gridHeight);
-    memset(gpuHeights,  0, sizeof(float) * gridWidth * gridHeight);
-    memset(derivative,  0, sizeof(float) * gridWidth * gridHeight);
-    memset(source,      0, sizeof(float) * gridWidth * gridHeight);
-    memset(phi,         0, sizeof(float) * gridWidth * gridHeight);
-    memset(dphi,        0, sizeof(float) * gridWidth * gridHeight);
+    memset(source, 0, sizeof(float) * gridWidth * gridHeight);
 
     for (int32_t i = 0; i < gridWidth * gridHeight; i++)
     {
         obstruction[i] = 1.0f;
+    }
+
+    const float maxDepth = 10.0f;
+    const float deltaDepth = maxDepth / (float)(gridWidth - 1);
+
+    for (int32_t i = 0; i < gridHeight; i++)
+    {
+        for (int32_t j = 0; j < gridWidth; j++)
+        {
+            const int32_t index = i * gridWidth + j;
+            depth[index] = (float)j * deltaDepth;
+        }
     }
 
     float sourceBrush[3][3];
@@ -304,35 +314,14 @@ int main (int argc, char **argv)
     NSAutoreleasePool * rPool = [ NSAutoreleasePool new ];
 
 
-    NSData * heightData
-        = [ NSData dataWithBytesNoCopy:heights
-                                length:sizeof(float) * gridWidth * gridHeight
-                          freeWhenDone:NO ];
-
-    NSData * sourceData
-        = [ NSData dataWithBytesNoCopy:source
-                                length:sizeof(float) * gridWidth * gridHeight
-                          freeWhenDone:NO ];
-
-    NSData * obstructionData
-        = [ NSData dataWithBytesNoCopy:obstruction
-                                length:sizeof(float) * gridWidth * gridHeight
-                          freeWhenDone:NO ];
-
-    NSData * derivativeData
-        = [ NSData dataWithBytesNoCopy:derivative
-                                length:sizeof(float) * gridWidth * gridHeight
-                          freeWhenDone:NO ];
-
     NSData * kernelData
         = [ NSData dataWithBytesNoCopy:kernel
                                 length:sizeof(float) * kernelSize * kernelSize
                           freeWhenDone:NO ];
 
-    NPTexture2D * heightTexture      = [[ NPTexture2D alloc ] initWithName:@"Height" ];
     NPTexture2D * sourceTexture      = [[ NPTexture2D alloc ] initWithName:@"Source" ];
     NPTexture2D * obstructionTexture = [[ NPTexture2D alloc ] initWithName:@"Obstruction" ];
-    NPTexture2D * derivativeTexture  = [[ NPTexture2D alloc ] initWithName:@"Derivative"  ];
+    NPTexture2D * depthTexture       = [[ NPTexture2D alloc ] initWithName:@"Depth" ];
 
     NPBufferObject  * kernelBuffer  = [[ NPBufferObject alloc ]  initWithName:@"Kernel BO" ];
     NPTextureBuffer * kernelTexture = [[ NPTextureBuffer alloc ] initWithName:@"Kernel TB" ];
@@ -346,11 +335,14 @@ int main (int argc, char **argv)
 
     BOOL allok
         = [ kernelBuffer
-                generateStaticGeometryBuffer:NpBufferDataFormatFloat32
-                                  components:1
-                                        data:kernelData
-                                  dataLength:[ kernelData length ]
-                                       error:NULL ];
+               generate:NpBufferObjectTypeTexture
+             updateRate:NpBufferDataUpdateOnceUseOften
+              dataUsage:NpBufferDataWriteCPUToGPU
+             dataFormat:NpBufferDataFormatFloat32
+             components:1
+                   data:kernelData
+             dataLength:[ kernelData length ]
+                  error:NULL ];
 
     assert(allok == YES);
 
@@ -358,36 +350,6 @@ int main (int argc, char **argv)
                 numberOfElements:kernelSize * kernelSize
                      pixelFormat:NpTexturePixelFormatR
                       dataFormat:NpTextureDataFormatFloat32 ];
-
-
-    [ heightTexture generateUsingWidth:gridWidth
-                          height:gridHeight
-                     pixelFormat:NpTexturePixelFormatR
-                      dataFormat:NpTextureDataFormatFloat32
-                         mipmaps:NO
-                            data:heightData ];
-
-    [ sourceTexture generateUsingWidth:gridWidth
-                          height:gridHeight
-                     pixelFormat:NpTexturePixelFormatR
-                      dataFormat:NpTextureDataFormatFloat32
-                         mipmaps:NO
-                            data:sourceData ];
-
-    [ obstructionTexture generateUsingWidth:gridWidth
-                          height:gridHeight
-                     pixelFormat:NpTexturePixelFormatR
-                      dataFormat:NpTextureDataFormatFloat32
-                         mipmaps:NO
-                            data:obstructionData ];
-
-    [ derivativeTexture generateUsingWidth:gridWidth
-                          height:gridHeight
-                     pixelFormat:NpTexturePixelFormatR
-                      dataFormat:NpTextureDataFormatFloat32
-                         mipmaps:NO
-                            data:derivativeData ];
-
 
     [ heightsTarget generate:NpRenderTargetColor
                        width:gridWidth
@@ -522,13 +484,7 @@ int main (int argc, char **argv)
         // on right click reset all data
         if ( [ rightClick activated ] == YES )
         {
-            memset(heights,     0, sizeof(float) * gridWidth * gridHeight);
-            memset(temp,        0, sizeof(float) * gridWidth * gridHeight);
-            memset(prevHeights, 0, sizeof(float) * gridWidth * gridHeight);
-            memset(derivative,  0, sizeof(float) * gridWidth * gridHeight);
-            memset(source,      0, sizeof(float) * gridWidth * gridHeight);
-            memset(phi,         0, sizeof(float) * gridWidth * gridHeight);
-            memset(dphi,        0, sizeof(float) * gridWidth * gridHeight);
+            memset(source, 0, sizeof(float) * gridWidth * gridHeight);
 
             for (int32_t i = 0; i < gridWidth * gridHeight; i++)
             {
@@ -603,6 +559,11 @@ int main (int argc, char **argv)
                                     length:sizeof(float) * gridWidth * gridHeight
                               freeWhenDone:NO ];
 
+        NSData * depthData
+            = [ NSData dataWithBytesNoCopy:depth
+                                    length:sizeof(float) * gridWidth * gridHeight
+                              freeWhenDone:NO ];
+
         [ sourceTexture generateUsingWidth:gridWidth
                               height:gridHeight
                          pixelFormat:NpTexturePixelFormatR
@@ -616,6 +577,13 @@ int main (int argc, char **argv)
                           dataFormat:NpTextureDataFormatFloat32
                              mipmaps:NO
                                 data:obstructionData ];
+
+        [ depthTexture generateUsingWidth:gridWidth
+                                   height:gridHeight
+                              pixelFormat:NpTexturePixelFormatR
+                               dataFormat:NpTextureDataFormatFloat32
+                                  mipmaps:NO
+                                     data:depthData ];
 
         [[[ NP Graphics ] textureBindingState ] clear ];
 
@@ -636,9 +604,7 @@ int main (int argc, char **argv)
         // set viewport
         [ rtc activateViewport ];
 
-        //[[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
-
-        [[[ NP Graphics ] textureBindingState ] clear ];
+        //[[[ NP Graphics ] textureBindingState ] clear ];
         [[[ NP Graphics ] textureBindingState ] setTexture:sourceTexture             texelUnit:0 ];
         [[[ NP Graphics ] textureBindingState ] setTexture:obstructionTexture        texelUnit:1 ];
         [[[ NP Graphics ] textureBindingState ] setTexture:[ heightsTarget texture ] texelUnit:2 ];
@@ -663,10 +629,10 @@ int main (int argc, char **argv)
                              colorBufferIndex:0
                                       bindFBO:NO ];
 
-        [ rtc activateDrawBuffers ];
-        [ rtc activateViewport ];
+        //[ rtc activateDrawBuffers ];
+        //[ rtc activateViewport ];
 
-        [[[ NP Graphics ] textureBindingState ] clear ];
+        //[[[ NP Graphics ] textureBindingState ] clear ];
         [[[ NP Graphics ] textureBindingState ] setTexture:[ tempTarget texture ] texelUnit:0 ];
         [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture          texelUnit:1 ];
         [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
@@ -691,21 +657,23 @@ int main (int argc, char **argv)
                              colorBufferIndex:0
                                       bindFBO:NO ];
 
-        [ rtc activateDrawBuffers ];
-        [ rtc activateViewport ];
+        //[ rtc activateDrawBuffers ];
+        //[ rtc activateViewport ];
 
-        [[[ NP Graphics ] textureBindingState ] clear ];
+        //[[[ NP Graphics ] textureBindingState ] clear ];
         [[[ NP Graphics ] textureBindingState ] setTexture:[ tempTarget        texture ] texelUnit:0 ];
         [[[ NP Graphics ] textureBindingState ] setTexture:[ prevHeightsTarget texture ] texelUnit:1 ];
         [[[ NP Graphics ] textureBindingState ] setTexture:[ derivativeTarget  texture ] texelUnit:2 ];
         [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
-        /*
+        const float alpha = 0.3;
+        const float dt = 1.0f / 60.0f;
+        const int32_t size = gridWidth * gridHeight;
+
         FVector2 parameters = {.x = dt, .y = alpha};
         NPEffectVariableFloat2 * parametersV  = [ effect variableWithName:@"parameters" ];
         [ parametersV setFValue:parameters ];
-        */
-
+        
         [[ effect techniqueWithName:@"propagation"] activate ];
 
         glBegin(GL_QUADS);
@@ -726,8 +694,8 @@ int main (int argc, char **argv)
                              colorBufferIndex:0
                                       bindFBO:NO ];
 
-        [ rtc activateDrawBuffers ];
-        [ rtc activateViewport ];
+        //[ rtc activateDrawBuffers ];
+        //[ rtc activateViewport ];
 
         [[[ NP Graphics ] textureBindingState ] clear ];
         [[[ NP Graphics ] textureBindingState ] setTexture:[ tempTarget texture ] texelUnit:0 ];
@@ -750,62 +718,11 @@ int main (int argc, char **argv)
         
         [ rtc deactivate ];
 
-        // advance surface
-        const float alpha = 0.3;
-        const float dt = 1.0f / 60.0f;
-        const float halfdt = dt * 0.5f;
-        const float gravity = 9.81f;
-        const float gravityHalfDt = gravity * halfdt;
-        const float gdtdt = gravity * dt * dt;
-
-        const float adt  = alpha*dt;
-        const float adt2 = 1.0f / (1.0f + adt);
-        const int32_t size = gridWidth * gridHeight;
-
-        for (int32_t i = 0; i < size; i++)
-        {
-            temp[i] = (heights[i] + source[i]) * obstruction[i];
-        }
-
-        convolve(temp, gridWidth, gridHeight, kernel, 6, derivative);
-
-        
-        for (int32_t i = 0; i < size; i++)
-        {
-            /*
-            heights[i] = (2.0 - adt) * temp[i] - prevHeights[i] - gdtdt * derivative[i];
-            heights[i] *= adt2;
-            */
-            heights[i] = (-adt + 2.0f) * temp[i] - prevHeights[i] - gdtdt * derivative[i];
-            heights[i] *= adt2;
-        }        
-        
-
-        for (int32_t i = 0; i < size; i++)
-        {
-            prevHeights[i] = temp[i];
-        }
-        
-
         for (int32_t i = 0; i < size; i++)
         {
             source[i] = 0.0f;
         }
 
-        FVector2 heightRange = {.x = FLT_MAX, .y = -FLT_MAX};
-        FVector2 sourceRange = {.x = FLT_MAX, .y = -FLT_MAX};
-
-        for (int32_t i = 0; i < size; i++)
-        {
-            heightRange.x = MIN(heights[i], heightRange.x);
-            heightRange.y = MAX(heights[i], heightRange.y);
-
-            sourceRange.x = MIN(source[i], sourceRange.x);
-            sourceRange.y = MAX(source[i], sourceRange.y);
-        }
-
-        //printf("%f %f\n", heightRange.x, heightRange.y);
-        
         NPCullingState * cullingState = [[[ NP Graphics ] stateConfiguration ] cullingState ];
         NPBlendingState * blendingState = [[[ NP Graphics ] stateConfiguration ] blendingState ];
         NPDepthTestState * depthTestState = [[[ NP Graphics ] stateConfiguration ] depthTestState ];
@@ -821,69 +738,6 @@ int main (int argc, char **argv)
 
         [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
-        NSData * heightData
-            = [ NSData dataWithBytesNoCopy:heights
-                                    length:sizeof(float) * gridWidth * gridHeight
-                              freeWhenDone:NO ];
-
-        NSData * derivativeData
-            = [ NSData dataWithBytesNoCopy:derivative
-                                    length:sizeof(float) * gridWidth * gridHeight
-                              freeWhenDone:NO ];
-
-
-        [ heightTexture generateUsingWidth:gridWidth
-                              height:gridHeight
-                         pixelFormat:NpTexturePixelFormatR
-                          dataFormat:NpTextureDataFormatFloat32
-                             mipmaps:NO
-                                data:heightData ];
-
-        [ derivativeTexture generateUsingWidth:gridWidth
-                              height:gridHeight
-                         pixelFormat:NpTexturePixelFormatR
-                          dataFormat:NpTextureDataFormatFloat32
-                             mipmaps:NO
-                                data:derivativeData ];
-
-        [[[ NP Graphics ] textureBindingState ] setTexture:heightTexture texelUnit:0 ];
-        [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
-
-        NPEffectVariableFloat2 * heightRangeV  = [ effect variableWithName:@"heightRange"  ];
-        NPEffectVariableFloat2 * sourceRangeV  = [ effect variableWithName:@"sourceRange"  ];
-        [ heightRangeV setFValue:heightRange  ];
-        [ sourceRangeV setFValue:sourceRange  ];
-
-        [[ effect techniqueWithName:@"texture"] activate ];
-
-        glBegin(GL_QUADS);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
-            glVertex4f(-1.0f, 0.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
-            glVertex4f(0.0f, 0.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
-            glVertex4f(0.0f, 1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
-            glVertex4f(-1.0f, 1.0f, 0.0f, 1.0f);
-        glEnd();
-
-        [[[ NP Graphics ] textureBindingState ] setTexture:derivativeTexture texelUnit:0 ];
-        [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
-
-        [[ effect techniqueWithName:@"texture"] activate ];
-
-        glBegin(GL_QUADS);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
-            glVertex4f(0.0f, 0.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
-            glVertex4f(1.0f, 0.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
-            glVertex4f(1.0f, 1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
-            glVertex4f(0.0f, 1.0f, 0.0f, 1.0f);
-        glEnd();
-
-
         [[[ NP Graphics ] textureBindingState ] setTexture:[ heightsTarget texture ] texelUnit:0 ];
         [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
         [[ effect techniqueWithName:@"texture"] activate ];
@@ -892,14 +746,14 @@ int main (int argc, char **argv)
             glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
             glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
             glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
-            glVertex4f(0.0f, -1.0f, 0.0f, 1.0f);
+            glVertex4f( 1.0f, -1.0f, 0.0f, 1.0f);
             glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
-            glVertex4f(0.0f, 0.0f, 0.0f, 1.0f);
+            glVertex4f( 1.0f,  1.0f, 0.0f, 1.0f);
             glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
-            glVertex4f(-1.0f, 0.0f, 0.0f, 1.0f);
+            glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
         glEnd();
 
-        
+        /*        
         [[[ NP Graphics ] textureBindingState ] setTexture:[ derivativeTarget texture ] texelUnit:0 ];
         [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
@@ -915,28 +769,7 @@ int main (int argc, char **argv)
             glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
             glVertex4f(0.0f, 0.0f, 0.0f, 1.0f);
         glEnd();
-        
-        
-
-        /*
-        [[[ NP Graphics ] textureBindingState ] setTexture:derivativeTexture texelUnit:0 ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture texelUnit:1 ];
-        [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
-
-        [[ effect techniqueWithName:@"convolution"] activate ];
-
-        glBegin(GL_QUADS);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
-            glVertex4f(0.0f, -1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
-            glVertex4f(1.0f, -1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
-            glVertex4f(1.0f, 0.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
-            glVertex4f(0.0f, 0.0f, 0.0f, 1.0f);
-        glEnd();
-        */
-        
+        */        
 
         // check for GL errors
         [[ NP Graphics ] checkForGLErrors ];        
@@ -972,19 +805,12 @@ int main (int argc, char **argv)
     DESTROY(heightsTarget);
     DESTROY(tempTarget);
 
-    DESTROY(heightTexture);
     DESTROY(sourceTexture);
     DESTROY(obstructionTexture);
-    DESTROY(derivativeTexture);
+    DESTROY(depthTexture);
     DESTROY(kernelTexture);
     DESTROY(kernelBuffer);
 
-    FREE(heights);
-    FREE(prevHeights);
-    FREE(gpuHeights);
-    FREE(derivative);
-    FREE(phi);
-    FREE(dphi);
     FREE(source);
     FREE(obstruction);
 

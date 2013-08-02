@@ -4,12 +4,19 @@ in vec2 out_texcoords;
 
 void main()
 {
+    /*
     const float alpha = 0.3;
     const float dt = 1.0f / 60.0f;
     const float gravity = 9.81f;
     const float gdtdt = gravity * dt * dt;
     const float adt  = alpha*dt;
     const float adt2 = 1.0f / (1.0f + adt);
+    */
+
+    const float gravity = 9.81f;
+    float gdtdt = gravity * parameters.x * parameters.x;
+    float adt  = parameters.x * parameters.y;
+    float adt2 = 1.0f / (1.0f + adt);
 
     float h  = textureLod(temp,       out_texcoords, 0).r;
     float ph = textureLod(prevHeight, out_texcoords, 0).r;
