@@ -18,14 +18,17 @@ prevHeights = zeros(resolution);
 derivative  = zeros(resolution);
 sources     = zeros(resolution);
 obstruction = ones(resolution);
+depth       = zeros(resolution);
 
-sources(20:40, 80:100) = 0.75;
-sources(25:35, 85:95) = 1.5;
-sources(30, 90) = 2;
+sources(20:40, 80:100) = 0.25;
+sources(25:35, 85:95) = 0.5;
+sources(30, 90) = 1;
 
 obstruction(60:100, 80:100) = 0;
 %obstruction = obstruction - 1;
 
+depthr = 0:10/(resolution - 1):10;
+depth = repmat(depthr, resolution, 1);
 gkernel = G(10, g_n, g_deltaQ);
 
 subplot(2,2,1);
@@ -43,7 +46,9 @@ while true
     heights = heights + sources;
     heights = heights .* obstruction;
     
-    derivative = conv2(heights, gkernel, 'same');
+    depthDerivative = conv2(depth, gkernel, 'same');
+    shallowheights = tanh(depthDerivative) .* heights;
+    derivative = conv2(shallowheights, gkernel, 'same');
     
     temp = heights;
     
