@@ -9,11 +9,13 @@ void main()
     vec2 v = vec2(sourceSize);
     vec2 sourceDxy = vec2(1.0 / v.x, 1.0 / v.y);
 
+    int kstart = -kernelRadius;
+    int kend   =  kernelRadius + 1;
     float result = 0.0;
 
-    for (int i = -kernelRadius; i < (kernelRadius + 1); i++)
+    for (int i = kstart; i < kend; i++)
     {
-        for (int j = -kernelRadius; j < (kernelRadius + 1); j++)
+        for (int j = kstart; j < kend; j++)
         {
             int indexki = i + kernelRadius;
             int indexkj = j + kernelRadius;
