@@ -207,7 +207,7 @@ int main (int argc, char **argv)
     mousePosition.x = mousePosition.y = 0;
 
     // VSync
-    glfwSwapInterval(1);
+    glfwSwapInterval(0);
     // do not poll events on glfwSwapBuffers
     glfwDisable(GLFW_AUTO_POLL_EVENTS);
     // register keyboard callback
@@ -255,8 +255,8 @@ int main (int argc, char **argv)
     [ viewport setWidgetHeight:widgetSize.y ];
     [ viewport reset ];
 
-    const int32_t gridWidth  = 400;
-    const int32_t gridHeight = 300;
+    const int32_t gridWidth  = 200;
+    const int32_t gridHeight = 150;
     const double scaleX = ((double)gridWidth) / ((double)widgetSize.x);
     const double scaleY = ((double)gridHeight) / ((double)widgetSize.y);
 
@@ -475,6 +475,11 @@ int main (int argc, char **argv)
     BOOL running = YES;
     BOOL paintMode = SOURCE;
 
+    BOOL updateSource = YES;
+    BOOL updateObstruction = YES;
+    BOOL updateDepth = YES;
+    BOOL updateDepthDerivative = YES;
+
     // run loop
     while ( running )
     {
@@ -495,6 +500,8 @@ int main (int argc, char **argv)
         // get current frametime
         const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
+
+        NSLog(@"%d", fps);
 
         // on right click reset all data
         if ( [ rightClick activated ] == YES )
@@ -548,6 +555,8 @@ int main (int argc, char **argv)
                         //printf("%f\n", source[sourceIndex]);
                     }
                 }
+
+                updateSource = YES;
             }
 
             if ( paintMode == OBSTRUCTION )
@@ -561,6 +570,8 @@ int main (int argc, char **argv)
                         //printf("%f\n", obstruction[obstructionIndex]);
                     }
                 }
+
+                updateObstruction = YES;
             }
         }
 
@@ -579,26 +590,42 @@ int main (int argc, char **argv)
                                     length:sizeof(float) * gridWidth * gridHeight
                               freeWhenDone:NO ];
 
-        [ sourceTexture generateUsingWidth:gridWidth
-                              height:gridHeight
-                         pixelFormat:NpTexturePixelFormatR
-                          dataFormat:NpTextureDataFormatFloat32
-                             mipmaps:NO
-                                data:sourceData ];
+        if ( updateSource == YES )
+        {
+            [ sourceTexture generateUsingWidth:gridWidth
+                                  height:gridHeight
+                             pixelFormat:NpTexturePixelFormatR
+                              dataFormat:NpTextureDataFormatFloat32
+                                 mipmaps:NO
+                                    data:sourceData ];
 
-        [ obstructionTexture generateUsingWidth:gridWidth
-                              height:gridHeight
-                         pixelFormat:NpTexturePixelFormatR
-                          dataFormat:NpTextureDataFormatFloat32
-                             mipmaps:NO
-                                data:obstructionData ];
+            updateSource = NO;
+        }
 
-        [ depthTexture generateUsingWidth:gridWidth
-                                   height:gridHeight
-                              pixelFormat:NpTexturePixelFormatR
-                               dataFormat:NpTextureDataFormatFloat32
-                                  mipmaps:NO
-                                     data:depthData ];
+        if ( updateObstruction == YES )
+        {
+            [ obstructionTexture generateUsingWidth:gridWidth
+                                  height:gridHeight
+                             pixelFormat:NpTexturePixelFormatR
+                              dataFormat:NpTextureDataFormatFloat32
+                                 mipmaps:NO
+                                    data:obstructionData ];
+
+            updateObstruction = NO;
+        }
+
+        if ( updateDepth == YES )
+        {
+            [ depthTexture generateUsingWidth:gridWidth
+                                       height:gridHeight
+                                  pixelFormat:NpTexturePixelFormatR
+                                   dataFormat:NpTextureDataFormatFloat32
+                                      mipmaps:NO
+                                         data:depthData ];
+
+            updateDepth = NO;
+            updateDepthDerivative = YES;
+        }
 
         [[[ NP Graphics ] textureBindingState ] clear ];
 
@@ -639,55 +666,40 @@ int main (int argc, char **argv)
 
         [ tempTarget detach:NO ];
 
-        
-        [ depthDerivativeTarget
-            attachToRenderTargetConfiguration:rtc
-                             colorBufferIndex:0
-                                      bindFBO:NO ];
+        if ( updateDepthDerivative == YES )
+        {
+            [ depthDerivativeTarget
+                attachToRenderTargetConfiguration:rtc
+                                 colorBufferIndex:0
+                                          bindFBO:NO ];
 
-        [[[ NP Graphics ] textureBindingState ] setTexture:depthTexture  texelUnit:0 ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture texelUnit:1 ];
-        [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
+            [[[ NP Graphics ] textureBindingState ] setTexture:depthTexture  texelUnit:0 ];
+            [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture texelUnit:1 ];
+            [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
-        [[ effect techniqueWithName:@"convolution"] activate ];
+            [[ effect techniqueWithName:@"convolution"] activate ];
 
-        glBegin(GL_QUADS);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
-            glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
-            glVertex4f( 1.0f, -1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
-            glVertex4f( 1.0f,  1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
-            glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
-        glEnd();
+            glBegin(GL_QUADS);
+                glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
+                glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
+                glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
+                glVertex4f( 1.0f, -1.0f, 0.0f, 1.0f);
+                glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
+                glVertex4f( 1.0f,  1.0f, 0.0f, 1.0f);
+                glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
+                glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
+            glEnd();
 
-        [ depthDerivativeTarget detach:NO ];
+            [ depthDerivativeTarget detach:NO ];
+
+            updateDepthDerivative = NO;
+        }
         
         [ derivativeTarget
             attachToRenderTargetConfiguration:rtc
                              colorBufferIndex:0
                                       bindFBO:NO ];
 
-        /*
-        [[[ NP Graphics ] textureBindingState ] setTexture:[ tempTarget texture ] texelUnit:0 ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture          texelUnit:1 ];
-        [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
-
-        [[ effect techniqueWithName:@"convolution"] activate ];
-
-        glBegin(GL_QUADS);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
-            glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
-            glVertex4f( 1.0f, -1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
-            glVertex4f( 1.0f,  1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
-            glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
-        glEnd();
-        */
-        
        
         [[[ NP Graphics ] textureBindingState ] setTexture:[ tempTarget           texture ] texelUnit:0 ];
         [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture                    texelUnit:1 ];
