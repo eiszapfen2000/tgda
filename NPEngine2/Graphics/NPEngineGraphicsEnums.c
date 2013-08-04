@@ -725,6 +725,9 @@ GLenum getGLBufferType(const NpBufferObjectType Type)
         case NpBufferObjectTypePixelTarget:
             result = GL_PIXEL_PACK_BUFFER;
             break;
+        case NpBufferObjectTypeTexture:
+            result = GL_TEXTURE_BUFFER;
+            break;
         case NpBufferObjectTypeUniforms:
             result = GL_UNIFORM_BUFFER;
             break;

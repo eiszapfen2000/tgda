@@ -322,8 +322,9 @@ typedef enum NpBufferObjectType
     NpBufferObjectTypeIndices           =  1,
     NpBufferObjectTypePixelSource       =  2,
     NpBufferObjectTypePixelTarget       =  3,
-    NpBufferObjectTypeUniforms          =  4,
-    NpBufferObjectTypeTransformFeedback =  5
+    NpBufferObjectTypeTexture           =  4,
+    NpBufferObjectTypeUniforms          =  5,
+    NpBufferObjectTypeTransformFeedback =  6
 }
 NpBufferObjectType;
 
