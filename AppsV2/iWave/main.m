@@ -207,7 +207,7 @@ int main (int argc, char **argv)
     mousePosition.x = mousePosition.y = 0;
 
     // VSync
-    glfwSwapInterval(1);
+    glfwSwapInterval(0);
     // do not poll events on glfwSwapBuffers
     glfwDisable(GLFW_AUTO_POLL_EVENTS);
     // register keyboard callback
@@ -310,6 +310,18 @@ int main (int argc, char **argv)
 
     float * kernel = NULL;
     G(kernelRadius, 1.0, 10000, 0.001, &kernel);
+
+    /*
+    for (int32_t l = 0; l < 2 * kernelRadius + 1; l++)
+    {
+        for (int32_t k = 0; k < 2 * kernelRadius + 1; k++)
+        {
+            printf("%f ", kernel[l * (2 * kernelRadius + 1) + k]);
+        }
+        printf("\n");
+    }
+    */
+    
 
     NSAutoreleasePool * rPool = [ NSAutoreleasePool new ];
 
@@ -502,6 +514,8 @@ int main (int argc, char **argv)
         // get current frametime
         const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
+
+        //NSLog(@"%d", fps);
 
         deltaTime += frameTime;
         BOOL process = ( deltaTime < ( 1.0/60.0 )) ? NO : YES;

@@ -9,6 +9,7 @@ void main()
     vec2 v = vec2(sourceSize);
     vec2 sourceDxy = vec2(1.0 / v.x, 1.0 / v.y);
 
+    
     int kstart = -kernelRadius;
     int kend   =  kernelRadius + 1;
     float result = 0.0;
@@ -33,6 +34,57 @@ void main()
             result += (ks * tanh(dd) * h );
         }
     }
+    
+
+    /*
+    const vec4 mask = vec4(1.0, 1.0, 1.0, -1.0);
+    int kend = kernelRadius + 1;
+    int lend = kend;
+
+    float result = textureLod(source, out_texcoords, 0).r;
+
+    for (int k = 1; k < kend; k++)
+    {
+        for (int l = 1; l < lend; l++)
+        {
+            int indexk = k + kernelRadius;
+            int indexl = l + kernelRadius;
+            int indexkernel = indexl * kernelWidth + indexk;
+
+            vec2 o = vec2(k, l) * sourceDxy;
+
+            float ks = texelFetch(kernel, indexkernel).r;
+
+            float hpkpl  = textureLod(source, out_texcoords + o * mask.xy, 0).r;
+            float hmkml  = textureLod(source, out_texcoords - o * mask.xy, 0).r;
+            float hpkml  = textureLod(source, out_texcoords + o * mask.zw, 0).r;
+            float hmkpl  = textureLod(source, out_texcoords - o * mask.zw, 0).r;
+
+            result += (ks * (hpkpl + hmkml + hpkml + hmkpl));
+        }
+    }
+    
+
+    
+    for (int l = 1; l < lend; l++)
+    {
+        int k = 0;
+        int indexk = k + kernelRadius;
+        int indexl = l + kernelRadius;
+        int indexkernel = indexl * kernelWidth + indexk;
+
+        vec2 o = vec2(k, l) * sourceDxy;
+
+        float ks = texelFetch(kernel, indexkernel).r;
+
+        float hpkpl  = textureLod(source, out_texcoords + o, 0).r;
+        float hmkml  = textureLod(source, out_texcoords - o, 0).r;
+        float hpkml  = textureLod(source, out_texcoords + o.yx, 0).r;
+        float hmkpl  = textureLod(source, out_texcoords - o.yx, 0).r;
+
+        result += (ks * (hpkpl + hmkml + hpkml + hmkpl));
+    }
+    */
 
     target = vec4(result);
 }
