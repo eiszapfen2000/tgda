@@ -207,7 +207,7 @@ int main (int argc, char **argv)
     mousePosition.x = mousePosition.y = 0;
 
     // VSync
-    glfwSwapInterval(0);
+    glfwSwapInterval(1);
     // do not poll events on glfwSwapBuffers
     glfwDisable(GLFW_AUTO_POLL_EVENTS);
     // register keyboard callback
@@ -255,8 +255,8 @@ int main (int argc, char **argv)
     [ viewport setWidgetHeight:widgetSize.y ];
     [ viewport reset ];
 
-    const int32_t gridWidth  = 200;
-    const int32_t gridHeight = 150;
+    const int32_t gridWidth  = 800;
+    const int32_t gridHeight = 600;
     const double scaleX = ((double)gridWidth) / ((double)widgetSize.x);
     const double scaleY = ((double)gridHeight) / ((double)widgetSize.y);
 
@@ -480,6 +480,8 @@ int main (int argc, char **argv)
     BOOL updateDepth = YES;
     BOOL updateDepthDerivative = YES;
 
+    double deltaTime = 0.0;
+
     // run loop
     while ( running )
     {
@@ -501,7 +503,8 @@ int main (int argc, char **argv)
         const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
 
-        NSLog(@"%d", fps);
+        deltaTime += frameTime;
+        BOOL process = ( deltaTime < ( 1.0/60.0 )) ? NO : YES;
 
         // on right click reset all data
         if ( [ rightClick activated ] == YES )
@@ -575,109 +578,142 @@ int main (int argc, char **argv)
             }
         }
 
-        NSData * sourceData
-            = [ NSData dataWithBytesNoCopy:source
-                                    length:sizeof(float) * gridWidth * gridHeight
-                              freeWhenDone:NO ];
-
-        NSData * obstructionData
-            = [ NSData dataWithBytesNoCopy:obstruction
-                                    length:sizeof(float) * gridWidth * gridHeight
-                              freeWhenDone:NO ];
-
-        NSData * depthData
-            = [ NSData dataWithBytesNoCopy:depth
-                                    length:sizeof(float) * gridWidth * gridHeight
-                              freeWhenDone:NO ];
-
-        if ( updateSource == YES )
+        if ( process == YES )
         {
-            [ sourceTexture generateUsingWidth:gridWidth
-                                  height:gridHeight
-                             pixelFormat:NpTexturePixelFormatR
-                              dataFormat:NpTextureDataFormatFloat32
-                                 mipmaps:NO
-                                    data:sourceData ];
+            deltaTime = 0.0;
 
-            updateSource = NO;
-        }
+            NSData * sourceData
+                = [ NSData dataWithBytesNoCopy:source
+                                        length:sizeof(float) * gridWidth * gridHeight
+                                  freeWhenDone:NO ];
 
-        if ( updateObstruction == YES )
-        {
-            [ obstructionTexture generateUsingWidth:gridWidth
-                                  height:gridHeight
-                             pixelFormat:NpTexturePixelFormatR
-                              dataFormat:NpTextureDataFormatFloat32
-                                 mipmaps:NO
-                                    data:obstructionData ];
+            NSData * obstructionData
+                = [ NSData dataWithBytesNoCopy:obstruction
+                                        length:sizeof(float) * gridWidth * gridHeight
+                                  freeWhenDone:NO ];
 
-            updateObstruction = NO;
-        }
+            NSData * depthData
+                = [ NSData dataWithBytesNoCopy:depth
+                                        length:sizeof(float) * gridWidth * gridHeight
+                                  freeWhenDone:NO ];
 
-        if ( updateDepth == YES )
-        {
-            [ depthTexture generateUsingWidth:gridWidth
-                                       height:gridHeight
-                                  pixelFormat:NpTexturePixelFormatR
-                                   dataFormat:NpTextureDataFormatFloat32
-                                      mipmaps:NO
-                                         data:depthData ];
+            if ( updateSource == YES )
+            {
+                [ sourceTexture generateUsingWidth:gridWidth
+                                      height:gridHeight
+                                 pixelFormat:NpTexturePixelFormatR
+                                  dataFormat:NpTextureDataFormatFloat32
+                                     mipmaps:NO
+                                        data:sourceData ];
 
-            updateDepth = NO;
-            updateDepthDerivative = YES;
-        }
+                updateSource = NO;
+            }
 
-        [[[ NP Graphics ] textureBindingState ] clear ];
+            if ( updateObstruction == YES )
+            {
+                [ obstructionTexture generateUsingWidth:gridWidth
+                                      height:gridHeight
+                                 pixelFormat:NpTexturePixelFormatR
+                                  dataFormat:NpTextureDataFormatFloat32
+                                     mipmaps:NO
+                                        data:obstructionData ];
+
+                updateObstruction = NO;
+            }
+
+            if ( updateDepth == YES )
+            {
+                [ depthTexture generateUsingWidth:gridWidth
+                                           height:gridHeight
+                                      pixelFormat:NpTexturePixelFormatR
+                                       dataFormat:NpTextureDataFormatFloat32
+                                          mipmaps:NO
+                                             data:depthData ];
+
+                updateDepth = NO;
+                updateDepthDerivative = YES;
+            }
+
+            [[[ NP Graphics ] textureBindingState ] clear ];
 
 
-        NPEffectVariableInt * kernelRadiusV = [ effect variableWithName:@"kernelRadius" ];
-        [ kernelRadiusV setValue:kernelRadius ];
+            NPEffectVariableInt * kernelRadiusV = [ effect variableWithName:@"kernelRadius" ];
+            [ kernelRadiusV setValue:kernelRadius ];
 
-        [ rtc bindFBO ];
+            [ rtc bindFBO ];
 
-        [ tempTarget
-            attachToRenderTargetConfiguration:rtc
-                             colorBufferIndex:0
-                                      bindFBO:NO ];
-
-        // configure draw buffers
-        [ rtc activateDrawBuffers ];
-
-        // set viewport
-        [ rtc activateViewport ];
-
-        //[[[ NP Graphics ] textureBindingState ] clear ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:sourceTexture             texelUnit:0 ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:obstructionTexture        texelUnit:1 ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:[ heightsTarget texture ] texelUnit:2 ];
-        [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
-
-        [[ effect techniqueWithName:@"source_and_obstruction" ] activate ];
-        glBegin(GL_QUADS);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
-            glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
-            glVertex4f( 1.0f, -1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
-            glVertex4f( 1.0f,  1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
-            glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
-        glEnd();
-
-        [ tempTarget detach:NO ];
-
-        if ( updateDepthDerivative == YES )
-        {
-            [ depthDerivativeTarget
+            [ tempTarget
                 attachToRenderTargetConfiguration:rtc
                                  colorBufferIndex:0
                                           bindFBO:NO ];
 
-            [[[ NP Graphics ] textureBindingState ] setTexture:depthTexture  texelUnit:0 ];
-            [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture texelUnit:1 ];
+            // configure draw buffers
+            [ rtc activateDrawBuffers ];
+
+            // set viewport
+            [ rtc activateViewport ];
+
+            //[[[ NP Graphics ] textureBindingState ] clear ];
+            [[[ NP Graphics ] textureBindingState ] setTexture:sourceTexture             texelUnit:0 ];
+            [[[ NP Graphics ] textureBindingState ] setTexture:obstructionTexture        texelUnit:1 ];
+            [[[ NP Graphics ] textureBindingState ] setTexture:[ heightsTarget texture ] texelUnit:2 ];
             [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
-            [[ effect techniqueWithName:@"convolution"] activate ];
+            [[ effect techniqueWithName:@"source_and_obstruction" ] activate ];
+            glBegin(GL_QUADS);
+                glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
+                glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
+                glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
+                glVertex4f( 1.0f, -1.0f, 0.0f, 1.0f);
+                glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
+                glVertex4f( 1.0f,  1.0f, 0.0f, 1.0f);
+                glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
+                glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
+            glEnd();
+
+            [ tempTarget detach:NO ];
+
+            if ( updateDepthDerivative == YES )
+            {
+                [ depthDerivativeTarget
+                    attachToRenderTargetConfiguration:rtc
+                                     colorBufferIndex:0
+                                              bindFBO:NO ];
+
+                [[[ NP Graphics ] textureBindingState ] setTexture:depthTexture  texelUnit:0 ];
+                [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture texelUnit:1 ];
+                [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
+
+                [[ effect techniqueWithName:@"convolution"] activate ];
+
+                glBegin(GL_QUADS);
+                    glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
+                    glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
+                    glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
+                    glVertex4f( 1.0f, -1.0f, 0.0f, 1.0f);
+                    glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
+                    glVertex4f( 1.0f,  1.0f, 0.0f, 1.0f);
+                    glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
+                    glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
+                glEnd();
+
+                [ depthDerivativeTarget detach:NO ];
+
+                updateDepthDerivative = NO;
+            }
+            
+            [ derivativeTarget
+                attachToRenderTargetConfiguration:rtc
+                                 colorBufferIndex:0
+                                          bindFBO:NO ];
+
+           
+            [[[ NP Graphics ] textureBindingState ] setTexture:[ tempTarget           texture ] texelUnit:0 ];
+            [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture                    texelUnit:1 ];
+            [[[ NP Graphics ] textureBindingState ] setTexture:[ depthDerivativeTarget texture] texelUnit:2 ];
+            [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
+
+            [[ effect techniqueWithName:@"convolution_shallow"] activate ];
 
             glBegin(GL_QUADS);
                 glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
@@ -690,101 +726,76 @@ int main (int argc, char **argv)
                 glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
             glEnd();
 
-            [ depthDerivativeTarget detach:NO ];
+            [ derivativeTarget detach:NO ];
 
-            updateDepthDerivative = NO;
+            [ heightsTarget
+                attachToRenderTargetConfiguration:rtc
+                                 colorBufferIndex:0
+                                          bindFBO:NO ];
+
+            //[[[ NP Graphics ] textureBindingState ] clear ];
+            [[[ NP Graphics ] textureBindingState ] setTexture:[ tempTarget        texture ] texelUnit:0 ];
+            [[[ NP Graphics ] textureBindingState ] setTexture:[ prevHeightsTarget texture ] texelUnit:1 ];
+            [[[ NP Graphics ] textureBindingState ] setTexture:[ derivativeTarget  texture ] texelUnit:2 ];
+            [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
+
+            const float alpha = 0.3;
+            const float dt = 1.0f / 60.0f;
+
+            FVector2 parameters = {.x = dt, .y = alpha};
+            NPEffectVariableFloat2 * parametersV  = [ effect variableWithName:@"parameters" ];
+            [ parametersV setFValue:parameters ];
+            
+            [[ effect techniqueWithName:@"propagation"] activate ];
+
+            glBegin(GL_QUADS);
+                glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
+                glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
+                glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
+                glVertex4f( 1.0f, -1.0f, 0.0f, 1.0f);
+                glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
+                glVertex4f( 1.0f,  1.0f, 0.0f, 1.0f);
+                glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
+                glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
+            glEnd();
+
+            [ heightsTarget detach:NO ];
+            
+            [ prevHeightsTarget
+                attachToRenderTargetConfiguration:rtc
+                                 colorBufferIndex:0
+                                          bindFBO:NO ];
+
+            [[[ NP Graphics ] textureBindingState ] clear ];
+            [[[ NP Graphics ] textureBindingState ] setTexture:[ tempTarget texture ] texelUnit:0 ];
+            [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
+
+            [[ effect techniqueWithName:@"texture"] activate ];
+
+            glBegin(GL_QUADS);
+                glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
+                glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
+                glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
+                glVertex4f( 1.0f, -1.0f, 0.0f, 1.0f);
+                glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
+                glVertex4f( 1.0f,  1.0f, 0.0f, 1.0f);
+                glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
+                glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
+            glEnd();
+
+            [ prevHeightsTarget detach:NO ];
+            
+            [ rtc deactivate ];
+
         }
-        
-        [ derivativeTarget
-            attachToRenderTargetConfiguration:rtc
-                             colorBufferIndex:0
-                                      bindFBO:NO ];
-
-       
-        [[[ NP Graphics ] textureBindingState ] setTexture:[ tempTarget           texture ] texelUnit:0 ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture                    texelUnit:1 ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:[ depthDerivativeTarget texture] texelUnit:2 ];
-        [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
-
-        [[ effect techniqueWithName:@"convolution_shallow"] activate ];
-
-        glBegin(GL_QUADS);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
-            glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
-            glVertex4f( 1.0f, -1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
-            glVertex4f( 1.0f,  1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
-            glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
-        glEnd();
-
-        [ derivativeTarget detach:NO ];
-
-        [ heightsTarget
-            attachToRenderTargetConfiguration:rtc
-                             colorBufferIndex:0
-                                      bindFBO:NO ];
-
-        //[[[ NP Graphics ] textureBindingState ] clear ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:[ tempTarget        texture ] texelUnit:0 ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:[ prevHeightsTarget texture ] texelUnit:1 ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:[ derivativeTarget  texture ] texelUnit:2 ];
-        [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
-
-        const float alpha = 0.3;
-        const float dt = 1.0f / 60.0f;
-
-        FVector2 parameters = {.x = dt, .y = alpha};
-        NPEffectVariableFloat2 * parametersV  = [ effect variableWithName:@"parameters" ];
-        [ parametersV setFValue:parameters ];
-        
-        [[ effect techniqueWithName:@"propagation"] activate ];
-
-        glBegin(GL_QUADS);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
-            glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
-            glVertex4f( 1.0f, -1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
-            glVertex4f( 1.0f,  1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
-            glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
-        glEnd();
-
-        [ heightsTarget detach:NO ];
-        
-        [ prevHeightsTarget
-            attachToRenderTargetConfiguration:rtc
-                             colorBufferIndex:0
-                                      bindFBO:NO ];
-
-        [[[ NP Graphics ] textureBindingState ] clear ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:[ tempTarget texture ] texelUnit:0 ];
-        [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
-
-        [[ effect techniqueWithName:@"texture"] activate ];
-
-        glBegin(GL_QUADS);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
-            glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
-            glVertex4f( 1.0f, -1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
-            glVertex4f( 1.0f,  1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
-            glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
-        glEnd();
-
-        [ prevHeightsTarget detach:NO ];
-        
-        [ rtc deactivate ];
 
         const int32_t size = gridWidth * gridHeight;
         for (int32_t i = 0; i < size; i++)
         {
             source[i] = 0.0f;
         }
+
+        updateSource = YES;
 
         NPCullingState * cullingState = [[[ NP Graphics ] stateConfiguration ] cullingState ];
         NPBlendingState * blendingState = [[[ NP Graphics ] stateConfiguration ] blendingState ];
