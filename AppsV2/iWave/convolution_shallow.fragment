@@ -28,12 +28,13 @@ void main()
             float h  = textureLod(source, out_texcoords + o, 0).r;
             float dd = textureLod(depthDerivative, out_texcoords + o, 0).r;
             dd = max(-10.0, min(10.0, dd));
-
             result += (ks * tanh(dd) * h );
+            //result += (ks * h );
         }
-    }    
+    }
     */
 
+    
     int kend = kernelRadius + 1;
     int lend = kend;
 
@@ -48,15 +49,29 @@ void main()
             int indexkernel = indexl * kernelWidth + indexk;
 
             vec2 o = vec2(k, l) * sourceDxy;
+            vec2 opkml = vec2( o.x, -o.y);
+            vec2 omkpl = vec2(-o.x,  o.y);
 
             float ks = texelFetch(kernel, indexkernel).r;
 
-            float hpkpl  = textureLod(source, out_texcoords + o, 0).r;
-            float hmkml  = textureLod(source, out_texcoords - o, 0).r;
-            float hpkml  = textureLod(source, out_texcoords + vec2( o.x, -o.y), 0).r;
-            float hmkpl  = textureLod(source, out_texcoords + vec2(-o.x,  o.y), 0).r;
+            vec4 h;
+            h.x  = textureLod(source, out_texcoords + o, 0).r;
+            h.y  = textureLod(source, out_texcoords - o, 0).r;
+            h.z  = textureLod(source, out_texcoords + opkml, 0).r;
+            h.w  = textureLod(source, out_texcoords + omkpl, 0).r;
 
-            result += (ks * (hpkpl + hmkml + hpkml + hmkpl));
+            vec4 dd;
+            dd.x  = textureLod(depthDerivative, out_texcoords + o, 0).r;
+            dd.y  = textureLod(depthDerivative, out_texcoords - o, 0).r;
+            dd.z  = textureLod(depthDerivative, out_texcoords + opkml, 0).r;
+            dd.w  = textureLod(depthDerivative, out_texcoords + omkpl, 0).r;
+
+            dd = max(min(dd, 10.0), -10.0);
+            dd = tanh(dd);
+
+            vec4 f = h * dd;
+
+            result += (ks * (f.x + f.y + f.z + f.w));
         }
     }
     
@@ -68,16 +83,31 @@ void main()
         int indexkernel = indexl * kernelWidth + indexk;
 
         vec2 o = l * sourceDxy;
+        vec2 oy = vec2(0.0, o.y);
+        vec2 ox = vec2(o.x, 0.0);
 
         float ks = texelFetch(kernel, indexkernel).r;
 
-        float hpkpl  = textureLod(source, out_texcoords + vec2( 0.0,  o.y), 0).r;
-        float hmkml  = textureLod(source, out_texcoords + vec2( 0.0, -o.y), 0).r;
-        float hpkml  = textureLod(source, out_texcoords + vec2( o.x,  0.0), 0).r;
-        float hmkpl  = textureLod(source, out_texcoords + vec2(-o.x,  0.0), 0).r;
+        vec4 h;
+        h.x = textureLod(source, out_texcoords + oy, 0).r;
+        h.y = textureLod(source, out_texcoords - oy, 0).r;
+        h.z = textureLod(source, out_texcoords + ox, 0).r;
+        h.w = textureLod(source, out_texcoords - ox, 0).r;
 
-        result += (ks * (hpkpl + hmkml + hpkml + hmkpl));
+        vec4 dd;
+        dd.x = textureLod(depthDerivative, out_texcoords + oy, 0).r;
+        dd.y = textureLod(depthDerivative, out_texcoords - oy, 0).r;
+        dd.z = textureLod(depthDerivative, out_texcoords + ox, 0).r;
+        dd.w = textureLod(depthDerivative, out_texcoords - ox, 0).r;
+
+        dd = max(min(dd, 10.0), -10.0);
+        dd = tanh(dd);
+
+        vec4 f = h * dd;
+
+        result += (ks * (f.x + f.y + f.z + f.w));
     }
+    
 
     target = vec4(result);
 }

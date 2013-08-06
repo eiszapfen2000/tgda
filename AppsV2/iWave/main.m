@@ -487,7 +487,6 @@ int main (int argc, char **argv)
     BOOL running = YES;
     BOOL paintMode = SOURCE;
 
-    BOOL updateSource = YES;
     BOOL updateObstruction = YES;
     BOOL updateDepth = YES;
     BOOL updateDepthDerivative = YES;
@@ -515,7 +514,7 @@ int main (int argc, char **argv)
         const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
 
-        //NSLog(@"%d", fps);
+        NSLog(@"%d", fps);
 
         deltaTime += frameTime;
         BOOL process = ( deltaTime < ( 1.0/60.0 )) ? NO : YES;
@@ -572,8 +571,6 @@ int main (int argc, char **argv)
                         //printf("%f\n", source[sourceIndex]);
                     }
                 }
-
-                updateSource = YES;
             }
 
             if ( paintMode == OBSTRUCTION )
@@ -611,17 +608,13 @@ int main (int argc, char **argv)
                                         length:sizeof(float) * gridWidth * gridHeight
                                   freeWhenDone:NO ];
 
-            if ( updateSource == YES )
-            {
-                [ sourceTexture generateUsingWidth:gridWidth
-                                      height:gridHeight
-                                 pixelFormat:NpTexturePixelFormatR
-                                  dataFormat:NpTextureDataFormatFloat32
-                                     mipmaps:NO
-                                        data:sourceData ];
 
-                updateSource = NO;
-            }
+            [ sourceTexture generateUsingWidth:gridWidth
+                                  height:gridHeight
+                             pixelFormat:NpTexturePixelFormatR
+                              dataFormat:NpTextureDataFormatFloat32
+                                 mipmaps:NO
+                                    data:sourceData ];
 
             if ( updateObstruction == YES )
             {
@@ -808,8 +801,6 @@ int main (int argc, char **argv)
         {
             source[i] = 0.0f;
         }
-
-        updateSource = YES;
 
         NPCullingState * cullingState = [[[ NP Graphics ] stateConfiguration ] cullingState ];
         NPBlendingState * blendingState = [[[ NP Graphics ] stateConfiguration ] blendingState ];
