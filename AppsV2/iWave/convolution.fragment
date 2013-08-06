@@ -9,6 +9,7 @@ void main()
     vec2 v = vec2(sourceSize);
     vec2 sourceDxy = vec2(1.0 / v.x, 1.0 / v.y);
 
+    /*
     int kstart = -kernelRadius;
     int kend   =  kernelRadius + 1;
     float result = 0.0;
@@ -30,6 +31,58 @@ void main()
 
             result += (ks * ss);
         }
+    }
+    */
+
+    int kend = kernelRadius + 1;
+    int lend = kend;
+
+    float result = textureLod(source, out_texcoords, 0).r;
+
+    for (int k = 1; k < kend; k++)
+    {
+        for (int l = 1; l < lend; l++)
+        {
+            int indexk = k + kernelRadius;
+            int indexl = l + kernelRadius;
+            int indexkernel = indexl * kernelWidth + indexk;
+
+            vec2 o = vec2(k, l) * sourceDxy;
+            vec2 opkml = vec2( o.x, -o.y);
+            vec2 omkpl = vec2(-o.x,  o.y);
+
+            float ks = texelFetch(kernel, indexkernel).r;
+
+            vec4 ss;
+            ss.x  = textureLod(source, out_texcoords + o, 0).r;
+            ss.y  = textureLod(source, out_texcoords - o, 0).r;
+            ss.z  = textureLod(source, out_texcoords + opkml, 0).r;
+            ss.w  = textureLod(source, out_texcoords + omkpl, 0).r;
+
+            result += (ks * (ss.x + ss.y + ss.z + ss.w));
+        }
+    }
+
+    for (int l = 1; l < lend; l++)
+    {
+        int k = 0;
+        int indexk = k + kernelRadius;
+        int indexl = l + kernelRadius;
+        int indexkernel = indexl * kernelWidth + indexk;
+
+        vec2 o = l * sourceDxy;
+        vec2 oy = vec2(0.0, o.y);
+        vec2 ox = vec2(o.x, 0.0);
+
+        float ks = texelFetch(kernel, indexkernel).r;
+
+        vec4 ss;
+        ss.x = textureLod(source, out_texcoords + oy, 0).r;
+        ss.y = textureLod(source, out_texcoords - oy, 0).r;
+        ss.z = textureLod(source, out_texcoords + ox, 0).r;
+        ss.w = textureLod(source, out_texcoords - ox, 0).r;
+
+        result += (ks * (ss.x + ss.y + ss.z + ss.w));
     }
 
     target = vec4(result);
