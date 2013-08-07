@@ -29,6 +29,67 @@
 #import "Graphics/NPEngineGraphics.h"
 #import "ODIWave.h"
 
+static double G_zero(double sigma, int32_t n, double deltaQ)
+{
+    double result = 0.0;
+
+    for (int32_t i = 0; i < n; i++)
+    {
+        double di = (double)i;
+        double qn = di * deltaQ;
+        double qnSquare = qn * qn;
+
+        result += qnSquare * exp(-1.0 * sigma * qnSquare);        
+    }
+
+    return result;
+}
+
+static void G(int32_t P, double sigma, int32_t n, double deltaQ, float ** kernel)
+{
+    assert(kernel != NULL);
+
+    const int32_t kernelSize = 2 * P + 1;
+    const double gZero = G_zero(sigma, n, deltaQ);
+
+    *kernel = ALLOC_ARRAY(float, kernelSize * kernelSize);
+
+    /*
+        Memory layout
+
+        6 7 8
+        3 4 5
+        0 1 2
+    */
+
+    for (int32_t l = -P; l < P + 1; l++)
+    {
+        for (int32_t k = -P; k < P + 1; k++)
+        {
+            const double dl = (double)l;
+            const double dk = (double)k;
+            const double r = sqrt(dk * dk + dl * dl);
+
+            double element = 0.0;
+
+            for (int32_t i = 0; i < n; i++)
+            {
+                double di = (double)i;
+                double qn = di * deltaQ;
+                double qnSquare = qn * qn;
+
+                element += qnSquare * exp(-1.0 * sigma * qnSquare) * j0(r * qn);
+            }
+
+            const int32_t indexk = k + P;
+            const int32_t indexl = l + P;
+            const int32_t index = indexl * kernelSize + indexk;
+
+            (*kernel)[index] = (float)(element / gZero);
+        }
+    }
+}
+
 static const IVector2 defaultResolution = {.x = 256, .y = 256};
 static const int32_t  defaultKernelRadius = 6;
 
@@ -88,6 +149,10 @@ static const int32_t  defaultKernelRadius = 6;
 {
     if ( kernelRadius != lastKernelRadius )
     {
+        SAFE_FREE(kernel);
+        G(kernelRadius, 1.0, 10000, 0.001, &kernel);
+
+        lastKernelRadius = kernelRadius;
     }
 
     if ( resolution.x != lastResolution.x
