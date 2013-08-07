@@ -172,6 +172,13 @@ static void convolve(const float * const source, int32_t sourceWidth, int32_t so
 
 static NSString * const NPGraphicsStartupError = @"NPEngineGraphics failed to start up. Consult %@/np.log for details.";
 
+typedef enum EPaintMode
+{
+    Source = 0,
+    Obstruction = 1
+}
+EPaintMode;
+
 int main (int argc, char **argv)
 {
     feenableexcept(FE_DIVBYZERO | FE_INVALID);
@@ -272,15 +279,9 @@ int main (int argc, char **argv)
     }
 
     const float maxDepth = 5.0f;
-    const float deltaDepth = maxDepth / (float)(gridWidth - 1);
-
-    for (int32_t i = 0; i < gridHeight; i++)
+    for (int32_t i = 0; i < gridWidth * gridHeight; i++)
     {
-        for (int32_t j = 0; j < gridWidth; j++)
-        {
-            const int32_t index = i * gridWidth + j;
-            depth[index] = (float)j * deltaDepth;
-        }
+        depth[i] = maxDepth;
     }
 
     float sourceBrush[3][3];
@@ -481,11 +482,8 @@ int main (int argc, char **argv)
 
     DESTROY(rPool);
 
-    #define SOURCE YES
-    #define OBSTRUCTION NO
-
     BOOL running = YES;
-    BOOL paintMode = SOURCE;
+    EPaintMode paintMode = Source;
 
     BOOL updateObstruction = YES;
     BOOL updateDepth = YES;
@@ -532,7 +530,10 @@ int main (int argc, char **argv)
 
         if ( [ wheelUp activated ] == YES || [ wheelDown activated ] == YES )
         {
-            paintMode = !paintMode;
+            int pTemp = paintMode;
+            pTemp = (pTemp + 1) % 2;
+
+            paintMode = pTemp;
         }
 
         if ( [ leftClick active ] == YES )
@@ -560,7 +561,7 @@ int main (int argc, char **argv)
 
             //NSLog(@"%d %d %d %d", xstart, ystart, xend, yend);
 
-            if ( paintMode == SOURCE )
+            if ( paintMode == Source )
             {
                 for (int32_t i = ystart; i < yend + 1; i++)
                 {
@@ -573,7 +574,7 @@ int main (int argc, char **argv)
                 }
             }
 
-            if ( paintMode == OBSTRUCTION )
+            if ( paintMode == Obstruction )
             {
                 for (int32_t i = ystart; i < yend + 1; i++)
                 {
@@ -818,6 +819,26 @@ int main (int argc, char **argv)
         [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
         [[[ NP Graphics ] textureBindingState ] setTexture:[ heightsTarget texture ] texelUnit:0 ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:sourceTexture      texelUnit:1 ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:obstructionTexture texelUnit:2 ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:depthTexture       texelUnit:3 ];
+        [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
+        [[ effect techniqueWithName:@"fluid"] activate ];
+
+        glBegin(GL_QUADS);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
+            glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
+            glVertex4f( 1.0f, -1.0f, 0.0f, 1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
+            glVertex4f( 1.0f,  1.0f, 0.0f, 1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
+            glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
+        glEnd();
+
+
+        /*
+        [[[ NP Graphics ] textureBindingState ] setTexture:[ heightsTarget texture ] texelUnit:0 ];
         [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
         [[ effect techniqueWithName:@"texture"] activate ];
 
@@ -831,6 +852,7 @@ int main (int argc, char **argv)
             glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
             glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
         glEnd();
+        */
 
         /*        
         [[[ NP Graphics ] textureBindingState ] setTexture:[ derivativeTarget texture ] texelUnit:0 ];
