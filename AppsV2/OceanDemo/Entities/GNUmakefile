@@ -12,6 +12,7 @@ ODEntity.h \
 ODCamera.h \
 ODProjector.h \
 ODFrustum.h \
+ODIWave.h \
 ODOceanBaseMesh.h \
 ODOceanBaseMeshes.h \
 ODOceanEntity.h \
@@ -27,6 +28,7 @@ ODEntity.m \
 ODCamera.m \
 ODProjector.m \
 ODFrustum.m \
+ODIWave.m \
 ODOceanBaseMesh.m \
 ODOceanBaseMeshes.m \
 ODOceanEntity.m \
