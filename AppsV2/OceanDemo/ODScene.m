@@ -21,6 +21,7 @@
 #import "Entities/ODPEntity.h"
 #import "Entities/ODCamera.h"
 #import "Entities/ODFrustum.h"
+#import "Entities/ODIWave.h"
 #import "Entities/ODProjector.h"
 #import "Entities/ODProjectedGrid.h"
 #import "Entities/ODPreethamSkylight.h"
@@ -172,6 +173,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     testCameraFrustum = [[ ODFrustum alloc ] initWithName:@"CFrustum" ];
     testProjectorFrustum = [[ ODFrustum alloc ] initWithName:@"PFrustum" ];
 
+    iwave = [[ ODIWave alloc ] init ];
     ocean = [[ ODOceanEntity alloc ] initWithName:@"Ocean" ];
     projectedGrid = [[ ODProjectedGrid alloc ] initWithName:@"ProjGrid" ];
 
@@ -230,7 +232,10 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     DESTROY(testCameraFrustum);
     DESTROY(testProjectorFrustum);
 
+    [ iwave stop ];
     [ ocean stop ];
+
+    DESTROY(iwave);
     SAFE_DESTROY(ocean);
     SAFE_DESTROY(projectedGrid);
     SAFE_DESTROY(skylight);
@@ -310,6 +315,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     //[ projectedGrid setProjector:[ ocean projector ]];
     [ projectedGrid setProjector:testProjector ];
 
+    [ iwave start ];
     [ ocean start ];
 
     const NSUInteger numberOfEntityFiles = [ entityFiles count ];
@@ -417,6 +423,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 /*
     [ skylight      update:frameTime ];
 */
+    [ iwave         update:frameTime ];
     [ ocean         update:frameTime ];
     [ projectedGrid update:frameTime ];
 
