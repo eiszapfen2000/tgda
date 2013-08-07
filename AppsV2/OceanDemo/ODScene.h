@@ -17,6 +17,7 @@
 @class NPEffectVariableFloat3;
 @class NPFullscreenQuad;
 @class ODBasePlane;
+@class ODIWave;
 
 @interface ODScene : NPObject < NPPPersistentObject >
 {
@@ -25,6 +26,7 @@
 
     // enitities
     ODCamera * camera;
+    ODIWave * iwave;
     ODOceanEntity * ocean;
     ODProjectedGrid * projectedGrid;
     ODPreethamSkylight * skylight;
