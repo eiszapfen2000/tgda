@@ -17,6 +17,7 @@
 #import "Core/File/NPLocalPathManager.h"
 #import "Core/World/NPTransformationState.h"
 #import "Core/NPEngineCore.h"
+#import "Graphics/Buffer/NPBufferObject.h"
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
@@ -90,9 +91,100 @@ static void G(int32_t P, double sigma, int32_t n, double deltaQ, float ** kernel
     }
 }
 
-static const IVector2 defaultResolution = {.x = 256, .y = 256};
-static const int32_t  defaultKernelRadius = 6;
+@interface ODIWave (Private)
 
+- (BOOL) generateTextureBuffer:(NSError **)error;
+- (BOOL) generateRenderTargets:(NSError **)error;
+
+@end
+
+@implementation ODIWave (Private)
+
+- (BOOL) generateTextureBuffer:(NSError **)error
+{
+    const int32_t kernelSize = 2 * kernelRadius + 1;
+
+    NSData * kernelData
+        = [ NSData dataWithBytesNoCopy:kernel
+                                length:sizeof(float) * kernelSize * kernelSize
+                          freeWhenDone:NO ];
+
+    BOOL result
+        = [ kernelBuffer
+               generate:NpBufferObjectTypeTexture
+             updateRate:NpBufferDataUpdateOnceUseOften
+              dataUsage:NpBufferDataWriteCPUToGPU
+             dataFormat:NpBufferDataFormatFloat32
+             components:1
+                   data:kernelData
+             dataLength:[ kernelData length ]
+                  error:error ];
+
+    if ( result == YES )
+    {
+        [ kernelTexture attachBuffer:kernelBuffer
+                    numberOfElements:kernelSize * kernelSize
+                         pixelFormat:NpTexturePixelFormatR
+                          dataFormat:NpTextureDataFormatFloat32 ];
+    }
+
+    return result;
+}
+
+- (BOOL) generateRenderTargets:(NSError **)error
+{
+    BOOL result
+        = [ heightsTarget generate:NpRenderTargetColor
+                             width:resolution.x
+                            height:resolution.y
+                       pixelFormat:NpTexturePixelFormatR
+                        dataFormat:NpTextureDataFormatFloat32
+                     mipmapStorage:NO
+                             error:error ];
+
+    result
+        = result && [ prevHeightsTarget generate:NpRenderTargetColor
+                                           width:resolution.x
+                                          height:resolution.y
+                                     pixelFormat:NpTexturePixelFormatR
+                                      dataFormat:NpTextureDataFormatFloat32
+                                   mipmapStorage:NO
+                                           error:error ];
+
+    result
+        = result && [ depthDerivativeTarget generate:NpRenderTargetColor
+                                               width:resolution.x
+                                              height:resolution.y
+                                         pixelFormat:NpTexturePixelFormatR
+                                          dataFormat:NpTextureDataFormatFloat32
+                                       mipmapStorage:NO
+                                               error:error ];
+
+    result
+        = result && [ derivativeTarget generate:NpRenderTargetColor
+                                          width:resolution.x
+                                         height:resolution.y
+                                    pixelFormat:NpTexturePixelFormatR
+                                     dataFormat:NpTextureDataFormatFloat32
+                                  mipmapStorage:NO
+                                          error:error ];
+
+    result
+        = result && [ tempTarget generate:NpRenderTargetColor
+                                    width:resolution.x
+                                   height:resolution.y
+                              pixelFormat:NpTexturePixelFormatR
+                               dataFormat:NpTextureDataFormatFloat32
+                            mipmapStorage:NO
+                                    error:error ];
+
+    return result;
+}
+
+@end
+
+static const IVector2 defaultResolution   = {.x = 256, .y = 256};
+static const int32_t  defaultKernelRadius = 6;
 
 @implementation ODIWave
 
@@ -110,6 +202,21 @@ static const int32_t  defaultKernelRadius = 6;
 
     lastKernelRadius = INT_MAX;
     kernelRadius = defaultKernelRadius;
+
+    kernelBuffer  = [[ NPBufferObject alloc ]  initWithName:@"Kernel BO" ];
+    kernelTexture = [[ NPTextureBuffer alloc ] initWithName:@"Kernel TB" ];
+
+    sourceTexture      = [[ NPTexture2D alloc ] initWithName:@"Source" ];
+    obstructionTexture = [[ NPTexture2D alloc ] initWithName:@"Obstruction" ];
+    depthTexture       = [[ NPTexture2D alloc ] initWithName:@"Depth" ];
+
+    heightsTarget         = [[ NPRenderTexture alloc ] initWithName:@"Height Target"           ];
+    prevHeightsTarget     = [[ NPRenderTexture alloc ] initWithName:@"Prev Height Target"      ];
+    depthDerivativeTarget = [[ NPRenderTexture alloc ] initWithName:@"Depth Derivative Target" ];
+    derivativeTarget      = [[ NPRenderTexture alloc ] initWithName:@"Derivative Target"       ];
+    tempTarget            = [[ NPRenderTexture alloc ] initWithName:@"Temp Target"             ];
+
+    rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC" ];
 
     return self;
 }
@@ -152,12 +259,29 @@ static const int32_t  defaultKernelRadius = 6;
         SAFE_FREE(kernel);
         G(kernelRadius, 1.0, 10000, 0.001, &kernel);
 
+        NSAssert([ self generateTextureBuffer:NULL ] == YES, @"");
+
         lastKernelRadius = kernelRadius;
     }
 
     if ( resolution.x != lastResolution.x
          || resolution.y != lastResolution.y )
     {
+        SAFE_FREE(source);
+        SAFE_FREE(obstruction);
+        SAFE_FREE(depth);
+
+        const int32_t size = resolution.x * resolution.y;
+        source      = ALLOC_ARRAY(float, size);
+        obstruction = ALLOC_ARRAY(float, size);
+        depth       = ALLOC_ARRAY(float, size);
+
+        [ rtc setWidth:resolution.x  ];
+        [ rtc setHeight:resolution.y ];
+        
+        NSAssert([ self generateRenderTargets:NULL ] == YES, @"");
+
+        lastResolution = resolution;
     }
 }
 
