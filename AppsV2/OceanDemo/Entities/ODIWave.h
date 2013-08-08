@@ -12,6 +12,7 @@
 @class NPTextureBuffer;
 @class NPBufferObject;
 @class NPVertexArray;
+@class NPFullscreenQuad;
 @class NPRenderTexture;
 @class NPRenderTargetConfiguration;
 
@@ -41,6 +42,8 @@
     NPRenderTexture * derivativeTarget;
     NPRenderTexture * tempTarget;
     NPRenderTargetConfiguration * rtc;
+
+    NPFullscreenQuad * fullscreenQuad;
 }
 
 - (id) init;
