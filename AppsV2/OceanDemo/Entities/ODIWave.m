@@ -21,6 +21,7 @@
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
+#import "Graphics/Effect/NPEffectVariableInt.h"
 #import "Graphics/Geometry/NPFullscreenQuad.h"
 #import "Graphics/Texture/NPTexture2D.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
@@ -29,6 +30,7 @@
 #import "Graphics/RenderTarget/NPRenderTargetConfiguration.h"
 #import "Graphics/NPOrthographic.h"
 #import "Graphics/NPEngineGraphics.h"
+#import "NP.h"
 #import "ODIWave.h"
 
 static double G_zero(double sigma, int32_t n, double deltaQ)
@@ -97,6 +99,7 @@ static void G(int32_t P, double sigma, int32_t n, double deltaQ, float ** kernel
 - (BOOL) generateTextureBuffer:(NSError **)error;
 - (BOOL) generateRenderTargets:(NSError **)error;
 - (void) clearRenderTargets;
+- (void) uploadInputData;
 
 @end
 
@@ -215,7 +218,7 @@ static void G(int32_t P, double sigma, int32_t n, double deltaQ, float ** kernel
     [ rtc activateDrawBuffers ];
     [ rtc activateViewport ];
 
-    [[ NPEngineGraphics instance ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
 
     [ tempTarget            detach:NO ];
     [ depthDerivativeTarget detach:NO ];
@@ -224,6 +227,49 @@ static void G(int32_t P, double sigma, int32_t n, double deltaQ, float ** kernel
     [ heightsTarget         detach:NO ];
 
     [ rtc deactivate ];
+}
+
+- (void) uploadInputData
+{
+    const NSUInteger numberOfBytes
+        = sizeof(float) * (NSUInteger)(resolution.x * resolution.y);
+
+    NSData * sourceData
+        = [ NSData dataWithBytesNoCopy:source
+                                length:numberOfBytes
+                          freeWhenDone:NO ];
+
+    NSData * obstructionData
+        = [ NSData dataWithBytesNoCopy:obstruction
+                                length:numberOfBytes
+                          freeWhenDone:NO ];
+
+    NSData * depthData
+        = [ NSData dataWithBytesNoCopy:depth
+                                length:numberOfBytes
+                          freeWhenDone:NO ];
+
+
+    [ sourceTexture generateUsingWidth:resolution.x
+                                height:resolution.y
+                           pixelFormat:NpTexturePixelFormatR
+                            dataFormat:NpTextureDataFormatFloat32
+                               mipmaps:NO
+                                  data:sourceData ];
+
+    [ obstructionTexture generateUsingWidth:resolution.x
+                                     height:resolution.y
+                                pixelFormat:NpTexturePixelFormatR
+                                 dataFormat:NpTextureDataFormatFloat32
+                                    mipmaps:NO
+                                       data:obstructionData ];
+
+    [ depthTexture generateUsingWidth:resolution.x
+                               height:resolution.y
+                          pixelFormat:NpTexturePixelFormatR
+                           dataFormat:NpTextureDataFormatFloat32
+                              mipmaps:NO
+                                 data:depthData ];
 }
 
 @end
@@ -265,11 +311,25 @@ static const int32_t  defaultKernelRadius = 6;
 
     fullscreenQuad = [[ NPFullscreenQuad alloc ] initWithName:@"iWave FSQ" ];
 
+    effect
+        = [[[ NP Graphics ] effects ] getAssetWithFileName:@"iWave.effect" ];
+
+    ASSERT_RETAIN(effect);
+
+    kernelRadiusV = [ effect variableWithName:@"kernelRadius" ];
+    dtAlphaV      = [ effect variableWithName:@"dt_alpha"     ];
+
+    ASSERT_RETAIN(kernelRadiusV);
+    ASSERT_RETAIN(dtAlphaV);
+
     return self;
 }
 
 - (void) dealloc
 {
+    SAFE_DESTROY(dtAlphaV);
+    SAFE_DESTROY(kernelRadiusV);
+    SAFE_DESTROY(effect);
     SAFE_DESTROY(fullscreenQuad);
     SAFE_DESTROY(rtc);
     SAFE_DESTROY(tempTarget);
@@ -309,6 +369,8 @@ static const int32_t  defaultKernelRadius = 6;
 
         NSAssert([ self generateTextureBuffer:NULL ] == YES, @"");
 
+        [ kernelRadiusV setValue:kernelRadius ];
+
         lastKernelRadius = kernelRadius;
     }
 
@@ -333,6 +395,65 @@ static const int32_t  defaultKernelRadius = 6;
 
         lastResolution = resolution;
     }
+
+    [[[ NP Core ] transformationState ] reset ];
+
+    [ self uploadInputData ];
+
+    [ rtc bindFBO ];
+
+    // add source and obstruction
+    [ tempTarget
+        attachToRenderTargetConfiguration:rtc
+                         colorBufferIndex:0
+                                  bindFBO:NO ];
+
+    [ rtc activateDrawBuffers ];
+    [ rtc activateViewport ];
+
+    [[[ NP Graphics ] textureBindingState ] setTexture:sourceTexture             texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:obstructionTexture        texelUnit:1 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ heightsTarget texture ] texelUnit:2 ];
+    [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
+
+    [[ effect techniqueWithName:@"source_and_obstruction" ] activate ];
+    [ fullscreenQuad render ];
+    [ tempTarget detach:NO ];
+
+    // compute vertical derivative through convolution
+    [ derivativeTarget
+        attachToRenderTargetConfiguration:rtc
+                         colorBufferIndex:0
+                                  bindFBO:NO ];
+
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ tempTarget texture ]  texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture           texelUnit:1 ];
+    [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
+
+    [[ effect techniqueWithName:@"convolution"] activate ];
+    [ fullscreenQuad render ];
+    [ derivativeTarget detach:NO ];
+
+    [ heightsTarget
+        attachToRenderTargetConfiguration:rtc
+                         colorBufferIndex:0
+                                  bindFBO:NO ];
+
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ tempTarget        texture ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ prevHeightsTarget texture ] texelUnit:1 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ derivativeTarget  texture ] texelUnit:2 ];
+    [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
+
+    const float alpha = 0.3;
+    const float dt = 1.0f / 60.0f;
+    FVector2 parameters = {.x = dt, .y = alpha};
+
+    [ dtAlphaV setFValue:parameters ];
+    [[ effect techniqueWithName:@"propagation"] activate ];
+    [ fullscreenQuad render ];
+    [ heightsTarget detach:NO ];
+
+    [ rtc deactivate ];
 }
 
 - (void) render

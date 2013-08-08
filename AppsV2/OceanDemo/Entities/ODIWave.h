@@ -15,6 +15,9 @@
 @class NPFullscreenQuad;
 @class NPRenderTexture;
 @class NPRenderTargetConfiguration;
+@class NPEffect;
+@class NPEffectVariableInt;
+@class NPEffectVariableFloat2;
 
 @interface ODIWave : NPObject
 {
@@ -44,6 +47,10 @@
     NPRenderTargetConfiguration * rtc;
 
     NPFullscreenQuad * fullscreenQuad;
+
+    NPEffect * effect;
+    NPEffectVariableInt * kernelRadiusV;
+    NPEffectVariableFloat2 * dtAlphaV;
 }
 
 - (id) init;
