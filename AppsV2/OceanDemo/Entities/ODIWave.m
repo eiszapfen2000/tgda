@@ -21,6 +21,7 @@
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
+#import "Graphics/Geometry/NPFullscreenQuad.h"
 #import "Graphics/Texture/NPTexture2D.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
 #import "Graphics/Texture/NPTextureBuffer.h"
@@ -95,6 +96,7 @@ static void G(int32_t P, double sigma, int32_t n, double deltaQ, float ** kernel
 
 - (BOOL) generateTextureBuffer:(NSError **)error;
 - (BOOL) generateRenderTargets:(NSError **)error;
+- (void) clearRenderTargets;
 
 @end
 
@@ -181,6 +183,49 @@ static void G(int32_t P, double sigma, int32_t n, double deltaQ, float ** kernel
     return result;
 }
 
+- (void) clearRenderTargets
+{
+    [ rtc bindFBO ];
+
+    [ heightsTarget
+        attachToRenderTargetConfiguration:rtc
+                         colorBufferIndex:0
+                                  bindFBO:NO ];
+
+    [ prevHeightsTarget
+        attachToRenderTargetConfiguration:rtc
+                         colorBufferIndex:1
+                                  bindFBO:NO ];
+
+    [ derivativeTarget
+        attachToRenderTargetConfiguration:rtc
+                         colorBufferIndex:2
+                                  bindFBO:NO ];
+
+    [ depthDerivativeTarget
+        attachToRenderTargetConfiguration:rtc
+                         colorBufferIndex:3
+                                  bindFBO:NO ];
+
+    [ tempTarget
+        attachToRenderTargetConfiguration:rtc
+                         colorBufferIndex:4
+                                  bindFBO:NO ];
+
+    [ rtc activateDrawBuffers ];
+    [ rtc activateViewport ];
+
+    [[ NPEngineGraphics instance ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
+    [ tempTarget            detach:NO ];
+    [ depthDerivativeTarget detach:NO ];
+    [ derivativeTarget      detach:NO ];
+    [ prevHeightsTarget     detach:NO ];
+    [ heightsTarget         detach:NO ];
+
+    [ rtc deactivate ];
+}
+
 @end
 
 static const IVector2 defaultResolution   = {.x = 256, .y = 256};
@@ -218,11 +263,14 @@ static const int32_t  defaultKernelRadius = 6;
 
     rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC" ];
 
+    fullscreenQuad = [[ NPFullscreenQuad alloc ] initWithName:@"iWave FSQ" ];
+
     return self;
 }
 
 - (void) dealloc
 {
+    SAFE_DESTROY(fullscreenQuad);
     SAFE_DESTROY(rtc);
     SAFE_DESTROY(tempTarget);
     SAFE_DESTROY(derivativeTarget);
@@ -280,6 +328,8 @@ static const int32_t  defaultKernelRadius = 6;
         [ rtc setHeight:resolution.y ];
         
         NSAssert([ self generateRenderTargets:NULL ] == YES, @"");
+
+        [ self clearRenderTargets ];
 
         lastResolution = resolution;
     }
