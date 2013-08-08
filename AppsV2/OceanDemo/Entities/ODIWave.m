@@ -430,10 +430,11 @@ static const int32_t  defaultKernelRadius = 6;
     [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture           texelUnit:1 ];
     [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
-    [[ effect techniqueWithName:@"convolution"] activate ];
+    [[ effect techniqueWithName:@"convolution" ] activate ];
     [ fullscreenQuad render ];
     [ derivativeTarget detach:NO ];
 
+    // do propagation
     [ heightsTarget
         attachToRenderTargetConfiguration:rtc
                          colorBufferIndex:0
@@ -449,11 +450,34 @@ static const int32_t  defaultKernelRadius = 6;
     FVector2 parameters = {.x = dt, .y = alpha};
 
     [ dtAlphaV setFValue:parameters ];
-    [[ effect techniqueWithName:@"propagation"] activate ];
+    [[ effect techniqueWithName:@"propagation" ] activate ];
     [ fullscreenQuad render ];
     [ heightsTarget detach:NO ];
 
     [ rtc deactivate ];
+
+    // copy tempTarget to prevHeightsTarget
+    [[[ NP Graphics ] textureBindingState ] clear ];
+
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, [ rtc glID ]);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, [ rtc glID ]);
+
+    glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, [[ tempTarget        texture ] glID ], 0);
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, [[ prevHeightsTarget texture ] glID ], 0);
+
+    glReadBuffer(GL_COLOR_ATTACHMENT0);
+    glDrawBuffer(GL_COLOR_ATTACHMENT1);
+
+    glBlitFramebuffer(0, 0, resolution.x, resolution.y, 0, 0, resolution.x, resolution.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+    glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, 0, 0);
+
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+    glReadBuffer(GL_BACK);
+    glDrawBuffer(GL_BACK);
 }
 
 - (void) render

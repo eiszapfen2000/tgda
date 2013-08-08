@@ -212,6 +212,8 @@ int main (int argc, char **argv)
         const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
 
+        NSLog(@"%d", fps);
+
         // update scene
         [ scene update:frameTime ];
 
