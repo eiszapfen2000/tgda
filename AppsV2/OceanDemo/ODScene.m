@@ -470,12 +470,27 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [[[ NP Core] transformationState] resetModelMatrix];
     
+    /*
     [[[ NP Core] transformationState] setFModelMatrix:[ ocean modelMatrix ]];
     NPEffectVariableFloat2 * v = [ deferredEffect variableWithName:@"scale"];
     [ v setFValue:[ocean baseMeshScale]];
     [[ deferredEffect techniqueWithName:@"base_xz" ] activate ];
     [ ocean renderBaseMesh ];
+    */
     
+    
+    
+    [[ deferredEffect techniqueWithName:@"iwave_base_xz" ] activate ];
+    [ iwave render ];
+    
+
+    /*
+    [[[ NP Graphics ] textureBindingState ] clear ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[iwave heightTexture] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] activate ];
+    [[ deferredEffect techniqueWithName:@"texture" ] activate ];
+    [ fullscreenQuad render ];
+    */
         
 
     /*

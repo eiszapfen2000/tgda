@@ -13,7 +13,6 @@ void main()
     float ph = textureLod(previous_height,                    out_texcoords, 0).r;
     float dh = textureLod(height_vertical_derivative,         out_texcoords, 0).r;
 
-    //float result = ((2.0 - adt) * h);// - ph;// - (gdtdt * dh);
     float result = (-adt + 2.0) * h - ph - (gdtdt * dh);
     result *= adt2;
 

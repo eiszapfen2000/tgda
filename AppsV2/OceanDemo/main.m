@@ -120,7 +120,7 @@ int main (int argc, char **argv)
     mousePosition.x = mousePosition.y = 0;
 
     // VSync
-    glfwSwapInterval(0);
+    glfwSwapInterval(1);
     // do not poll events on glfwSwapBuffers
     glfwDisable(GLFW_AUTO_POLL_EVENTS);
     // register keyboard callback
@@ -185,6 +185,8 @@ int main (int argc, char **argv)
 
     [[[ NP Core ] timer ] reset ];
 
+    BOOL sceneRender = YES;
+
     // run loop
     while ( running )
     {
@@ -212,7 +214,7 @@ int main (int argc, char **argv)
         const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
 
-        NSLog(@"%d", fps);
+        //NSLog(@"%d", fps);
 
         // update scene
         [ scene update:frameTime ];
