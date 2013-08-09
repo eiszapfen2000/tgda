@@ -276,6 +276,7 @@ static void G(int32_t P, double sigma, int32_t n, double deltaQ, float ** kernel
 
 static const IVector2 defaultResolution   = {.x = 256, .y = 256};
 static const int32_t  defaultKernelRadius = 6;
+static const double desiredDeltaTime = 1.0 / 60.0;
 
 @implementation ODIWave
 
@@ -290,6 +291,9 @@ static const int32_t  defaultKernelRadius = 6;
 
     lastResolution.x = lastResolution.y = INT_MAX;
     resolution = defaultResolution;
+
+    alpha = 0.3f;
+    accumulatedDeltaTime = 0.0;
 
     lastKernelRadius = INT_MAX;
     kernelRadius = defaultKernelRadius;
@@ -381,19 +385,33 @@ static const int32_t  defaultKernelRadius = 6;
         SAFE_FREE(obstruction);
         SAFE_FREE(depth);
 
-        const int32_t size = resolution.x * resolution.y;
+        const uint32_t size = (uint32_t)(resolution.x * resolution.y);
         source      = ALLOC_ARRAY(float, size);
         obstruction = ALLOC_ARRAY(float, size);
         depth       = ALLOC_ARRAY(float, size);
+
+        memset(source, 0, sizeof(float) * size);
+
+        for ( uint32_t i = 0; i < size; i++ )
+        {
+            obstruction[i] = 1.0f;
+            depth[i] = 1.0f;
+        }
 
         [ rtc setWidth:resolution.x  ];
         [ rtc setHeight:resolution.y ];
         
         NSAssert([ self generateRenderTargets:NULL ] == YES, @"");
-
         [ self clearRenderTargets ];
 
         lastResolution = resolution;
+    }
+
+    accumulatedDeltaTime += frameTime;
+
+    if ( accumulatedDeltaTime < desiredDeltaTime )
+    {
+        return;
     }
 
     [[[ NP Core ] transformationState ] reset ];
@@ -445,9 +463,7 @@ static const int32_t  defaultKernelRadius = 6;
     [[[ NP Graphics ] textureBindingState ] setTexture:[ derivativeTarget  texture ] texelUnit:2 ];
     [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
-    const float alpha = 0.3;
-    const float dt = 1.0f / 60.0f;
-    FVector2 parameters = {.x = dt, .y = alpha};
+    FVector2 parameters = {.x = accumulatedDeltaTime, .y = alpha};
 
     [ dtAlphaV setFValue:parameters ];
     [[ effect techniqueWithName:@"propagation" ] activate ];
@@ -478,6 +494,9 @@ static const int32_t  defaultKernelRadius = 6;
 
     glReadBuffer(GL_BACK);
     glDrawBuffer(GL_BACK);
+
+    // reset
+    accumulatedDeltaTime = 0.0;
 }
 
 - (void) render

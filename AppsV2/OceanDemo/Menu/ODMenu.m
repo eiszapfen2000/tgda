@@ -391,7 +391,7 @@
             const uint32_t widgetHeight
                 = [[[ NPEngineGraphics instance ] viewport ] widgetHeight ];
 
-            const FVector2 clickPosition = {mouseX, widgetHeight - mouseY};
+            const FVector2 clickPosition = {mouseX, widgetHeight - mouseY - 1};
 
             const NSUInteger numberOfMenuItems = [ menuItems count ];
             for ( NSUInteger i = 0; i < numberOfMenuItems; i++ )

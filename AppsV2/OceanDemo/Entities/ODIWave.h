@@ -24,6 +24,9 @@
     IVector2 lastResolution;
     IVector2 resolution;
 
+    float alpha;
+    double accumulatedDeltaTime;
+
     int32_t lastKernelRadius;
     int32_t kernelRadius;
     float * kernel;
