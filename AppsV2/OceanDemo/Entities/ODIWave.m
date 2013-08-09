@@ -23,6 +23,7 @@
 #import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/Effect/NPEffectVariableInt.h"
 #import "Graphics/Geometry/NPFullscreenQuad.h"
+#import "Graphics/Geometry/NPVertexArray.h"
 #import "Graphics/Texture/NPTexture2D.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
 #import "Graphics/Texture/NPTextureBuffer.h"
@@ -326,11 +327,21 @@ static const double desiredDeltaTime = 1.0 / 60.0;
     ASSERT_RETAIN(kernelRadiusV);
     ASSERT_RETAIN(dtAlphaV);
 
+    xzStream    = [[ NPBufferObject alloc ] initWithName:@"iWave XZ Stream" ];
+    yStream     = [[ NPBufferObject alloc ] initWithName:@"iWave Y Stream"  ];
+    indexStream = [[ NPBufferObject alloc ] initWithName:@"Indices" ];
+    mesh = [[ NPVertexArray alloc ] initWithName:@"iWave Mesh" ];
+
     return self;
 }
 
 - (void) dealloc
 {
+    SAFE_DESTROY(mesh);
+    SAFE_DESTROY(indexStream);
+    SAFE_DESTROY(yStream);
+    SAFE_DESTROY(xzStream);
+
     SAFE_DESTROY(dtAlphaV);
     SAFE_DESTROY(kernelRadiusV);
     SAFE_DESTROY(effect);
