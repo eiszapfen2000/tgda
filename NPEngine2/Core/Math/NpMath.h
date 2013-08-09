@@ -16,6 +16,7 @@
 
 #include "IVector.h"
 #include "IRectangle.h"
+#include "IBBox.h"
 
 #include "Ray.h"
 #include "FRay.h"

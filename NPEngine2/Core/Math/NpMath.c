@@ -19,4 +19,5 @@ void npmath_initialise(void)
 
     npmath_ivector_initialise();
     npmath_irectangle_initialise();
+    npmath_ibbox_initialise();
 }
