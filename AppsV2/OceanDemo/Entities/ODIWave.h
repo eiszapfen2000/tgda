@@ -1,5 +1,6 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
+#import "Protocols/ODPPicking.h"
 #import "ODPEntity.h"
 
 @class NSCondition;
@@ -54,6 +55,11 @@
     NPEffect * effect;
     NPEffectVariableInt * kernelRadiusV;
     NPEffectVariableFloat2 * dtAlphaV;
+
+    NPBufferObject * xzStream;
+    NPBufferObject * yStream;
+    NPBufferObject * indexStream;
+    NPVertexArray * mesh;
 }
 
 - (id) init;
