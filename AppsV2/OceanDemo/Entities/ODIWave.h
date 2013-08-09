@@ -1,6 +1,5 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
-#import "Protocols/ODPPicking.h"
 #import "ODPEntity.h"
 
 @class NSCondition;
@@ -53,6 +52,9 @@
     NPFullscreenQuad * fullscreenQuad;
 
     NPEffect * effect;
+    NPEffectTechnique * addSourceObstructionT;
+    NPEffectTechnique * convolutionT;
+    NPEffectTechnique * propagationT;
     NPEffectVariableInt * kernelRadiusV;
     NPEffectVariableFloat2 * dtAlphaV;
 
@@ -68,6 +70,12 @@
 
 - (void) start;
 - (void) stop;
+
+- (NPTexture2D *) sourceTexture;
+- (NPTexture2D *) obstructionTexture;
+- (NPTexture2D *) derivativeTexture;
+- (NPTexture2D *) heightTexture;
+- (NPTexture2D *) prevHeightTexture;
 
 - (void) update:(const double)frameTime;
 - (void) render;

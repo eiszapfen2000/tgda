@@ -99,6 +99,7 @@ static void G(int32_t P, double sigma, int32_t n, double deltaQ, float ** kernel
 
 - (BOOL) generateTextureBuffer:(NSError **)error;
 - (BOOL) generateRenderTargets:(NSError **)error;
+- (BOOL) generateMesh:(NSError **)error;
 - (void) clearRenderTargets;
 - (void) uploadInputData;
 
@@ -187,6 +188,104 @@ static void G(int32_t P, double sigma, int32_t n, double deltaQ, float ** kernel
     return result;
 }
 
+- (BOOL) generateMesh:(NSError **)error
+{
+    NSAssert(resolution.x > 0 && resolution.y > 0, @"");
+
+    const uint32_t numberOfVertices = resolution.x * resolution.y;
+    const uint32_t numberOfTriangles = (resolution.x - 1) * (resolution.y - 1) * 2;
+    const uint32_t numberOfIndices = numberOfTriangles * 3;
+
+    FVector2 * vertices = ALLOC_ARRAY(FVector2, numberOfVertices);
+    uint32_t * indices  = ALLOC_ARRAY(uint32_t, numberOfIndices);
+
+    for ( int32_t i = 0; i < resolution.y; i++ )
+    {
+        for ( int32_t j = 0; j < resolution.x; j++ )
+        {
+            vertices[i*resolution.x + j] = (FVector2){.x = j, .y = i};
+        }
+    }
+
+    int32_t index = 0;
+
+    for ( int32_t i = 0; i < resolution.y - 1; i++ )
+    {
+        for ( int32_t j = 0; j < resolution.x - 1; j++ )
+        {
+            indices[index++] = (i*resolution.x) + j;
+            indices[index++] = ((i+1)*resolution.x) + j;
+            indices[index++] = ((i+1)*resolution.x) + j + 1;
+
+            indices[index++] = ((i+1)*resolution.x) + j + 1;
+            indices[index++] = (i*resolution.x) + j + 1;
+            indices[index++] = (i*resolution.x) + j;
+        }
+    }
+
+    NSData * xzData
+        = [ NSData dataWithBytesNoCopy:vertices
+                                length:numberOfVertices * sizeof(FVector2)
+                          freeWhenDone:NO ];
+
+    NSData * emptyData = [ NSData data ];
+
+    NSData * indexData
+        = [ NSData dataWithBytesNoCopy:indices
+                                length:numberOfIndices * sizeof(uint32_t)
+                          freeWhenDone:NO ];
+
+    BOOL success
+        = [ xzStream generate:NpBufferObjectTypeGeometry
+                   updateRate:NpBufferDataUpdateOnceUseOften
+                    dataUsage:NpBufferDataWriteCPUToGPU
+                   dataFormat:NpBufferDataFormatFloat32
+                   components:2
+                         data:xzData
+                   dataLength:[xzData length]
+                        error:error ];
+
+    
+    success
+        = success && [ yStream generate:NpBufferObjectTypeGeometry
+                             updateRate:NpBufferDataUpdateOnceUseOften
+                              dataUsage:NpBufferDataWriteCPUToGPU
+                             dataFormat:NpBufferDataFormatFloat32
+                             components:1
+                                   data:emptyData
+                             dataLength:numberOfVertices * sizeof(float)
+                                  error:error ];
+
+    success
+        = success && [ indexStream generate:NpBufferObjectTypeIndices
+                                 updateRate:NpBufferDataUpdateOnceUseOften
+                                  dataUsage:NpBufferDataWriteCPUToGPU
+                                 dataFormat:NpBufferDataFormatUInt32
+                                 components:1
+                                       data:indexData
+                                 dataLength:[indexData length]
+                                      error:error ];
+
+    success
+        = success && [ mesh setVertexStream:xzStream
+                                 atLocation:NpVertexStreamAttribute0
+                                      error:error ];
+
+    success
+        = success && [ mesh setVertexStream:yStream
+                                 atLocation:NpVertexStreamAttribute1
+                                      error:error ];
+
+    success
+        = success && [ mesh setIndexStream:indexStream
+                                     error:error ];
+    
+    FREE(vertices);
+    FREE(indices);
+
+    return success;
+}
+
 - (void) clearRenderTargets
 {
     [ rtc bindFBO ];
@@ -245,10 +344,12 @@ static void G(int32_t P, double sigma, int32_t n, double deltaQ, float ** kernel
                                 length:numberOfBytes
                           freeWhenDone:NO ];
 
+    /*
     NSData * depthData
         = [ NSData dataWithBytesNoCopy:depth
                                 length:numberOfBytes
                           freeWhenDone:NO ];
+    */
 
 
     [ sourceTexture generateUsingWidth:resolution.x
@@ -265,12 +366,14 @@ static void G(int32_t P, double sigma, int32_t n, double deltaQ, float ** kernel
                                     mipmaps:NO
                                        data:obstructionData ];
 
+    /*
     [ depthTexture generateUsingWidth:resolution.x
                                height:resolution.y
                           pixelFormat:NpTexturePixelFormatR
                            dataFormat:NpTextureDataFormatFloat32
                               mipmaps:NO
                                  data:depthData ];
+    */
 }
 
 @end
@@ -321,6 +424,14 @@ static const double desiredDeltaTime = 1.0 / 60.0;
 
     ASSERT_RETAIN(effect);
 
+    addSourceObstructionT = [ effect techniqueWithName:@"height_plus_source_mul_obstruction" ];
+    convolutionT = [ effect techniqueWithName:@"convolution" ];
+    propagationT = [ effect techniqueWithName:@"propagation" ];
+
+    ASSERT_RETAIN(addSourceObstructionT);
+    ASSERT_RETAIN(convolutionT);
+    ASSERT_RETAIN(propagationT);
+
     kernelRadiusV = [ effect variableWithName:@"kernelRadius" ];
     dtAlphaV      = [ effect variableWithName:@"dt_alpha"     ];
 
@@ -344,6 +455,9 @@ static const double desiredDeltaTime = 1.0 / 60.0;
 
     SAFE_DESTROY(dtAlphaV);
     SAFE_DESTROY(kernelRadiusV);
+    SAFE_DESTROY(propagationT);
+    SAFE_DESTROY(convolutionT);
+    SAFE_DESTROY(addSourceObstructionT);
     SAFE_DESTROY(effect);
     SAFE_DESTROY(fullscreenQuad);
     SAFE_DESTROY(rtc);
@@ -375,6 +489,31 @@ static const double desiredDeltaTime = 1.0 / 60.0;
 {
 }
 
+- (NPTexture2D *) sourceTexture
+{
+    return sourceTexture;
+}
+
+- (NPTexture2D *) obstructionTexture
+{
+    return obstructionTexture;
+}
+
+- (NPTexture2D *) derivativeTexture
+{
+    return [ derivativeTarget texture ];
+}
+
+- (NPTexture2D *) heightTexture
+{
+    return [ heightsTarget texture ];
+}
+
+- (NPTexture2D *) prevHeightTexture
+{
+    return [ prevHeightsTarget texture ];
+}
+
 - (void) update:(const double)frameTime
 {
     if ( kernelRadius != lastKernelRadius )
@@ -383,8 +522,6 @@ static const double desiredDeltaTime = 1.0 / 60.0;
         G(kernelRadius, 1.0, 10000, 0.001, &kernel);
 
         NSAssert([ self generateTextureBuffer:NULL ] == YES, @"");
-
-        [ kernelRadiusV setValue:kernelRadius ];
 
         lastKernelRadius = kernelRadius;
     }
@@ -414,20 +551,28 @@ static const double desiredDeltaTime = 1.0 / 60.0;
         
         NSAssert([ self generateRenderTargets:NULL ] == YES, @"");
         [ self clearRenderTargets ];
+        NSAssert([ self generateMesh:NULL ] == YES, @"");
 
         lastResolution = resolution;
     }
 
     accumulatedDeltaTime += frameTime;
-
     if ( accumulatedDeltaTime < desiredDeltaTime )
     {
         return;
     }
+    
+    {
+        int randomX = rand() % resolution.x;
+        int randomY = rand() % resolution.y;
 
-    [[[ NP Core ] transformationState ] reset ];
+        source[randomY * resolution.x + randomX] = 0.5;
+    }
 
     [ self uploadInputData ];
+
+    [[[ NP Core ] transformationState ] reset ];
+    [[[ NP Graphics ] textureBindingState ] clear ];
 
     [ rtc bindFBO ];
 
@@ -445,7 +590,7 @@ static const double desiredDeltaTime = 1.0 / 60.0;
     [[[ NP Graphics ] textureBindingState ] setTexture:[ heightsTarget texture ] texelUnit:2 ];
     [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
-    [[ effect techniqueWithName:@"source_and_obstruction" ] activate ];
+    [ addSourceObstructionT activate ];
     [ fullscreenQuad render ];
     [ tempTarget detach:NO ];
 
@@ -459,10 +604,11 @@ static const double desiredDeltaTime = 1.0 / 60.0;
     [[[ NP Graphics ] textureBindingState ] setTexture:kernelTexture           texelUnit:1 ];
     [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
-    [[ effect techniqueWithName:@"convolution" ] activate ];
+    [ kernelRadiusV setValue:kernelRadius ];
+    [ convolutionT activate ];
     [ fullscreenQuad render ];
     [ derivativeTarget detach:NO ];
-
+    
     // do propagation
     [ heightsTarget
         attachToRenderTargetConfiguration:rtc
@@ -475,7 +621,6 @@ static const double desiredDeltaTime = 1.0 / 60.0;
     [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
     FVector2 parameters = {.x = accumulatedDeltaTime, .y = alpha};
-
     [ dtAlphaV setFValue:parameters ];
     [[ effect techniqueWithName:@"propagation" ] activate ];
     [ fullscreenQuad render ];
@@ -506,12 +651,28 @@ static const double desiredDeltaTime = 1.0 / 60.0;
     glReadBuffer(GL_BACK);
     glDrawBuffer(GL_BACK);
 
+    // copy heights to yStream
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, [ rtc glID ]);
+    glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, [[ heightsTarget texture ] glID ], 0);
+    glReadBuffer(GL_COLOR_ATTACHMENT0);
+
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, [ yStream glID ]);
+    glReadPixels(0, 0, resolution.x, resolution.y, GL_RED, GL_FLOAT, NULL);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+
+    glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    glReadBuffer(GL_BACK);
+
     // reset
     accumulatedDeltaTime = 0.0;
+
+    memset(source, 0, sizeof(float) * resolution.x * resolution.y);
 }
 
 - (void) render
 {
+    [ mesh renderWithPrimitiveType:NpPrimitiveTriangles ];
 }
 
 @end
