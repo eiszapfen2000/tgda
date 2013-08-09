@@ -7,6 +7,7 @@ FVector.c \
 FMatrix.c \
 FQuaternion.c \
 Matrix.c \
+IBBox.c \
 IVector.c \
 IRectangle.c \
 Quaternion.c \
@@ -27,6 +28,7 @@ FMatrix.h \
 FQuaternion.h \
 FVector.h \
 Matrix.h \
+IBBox.h \
 IVector.h \
 IRectangle.h \
 Quaternion.h \
