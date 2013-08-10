@@ -334,77 +334,82 @@ static size_t index_for_resolution(int32_t resolution)
                 [ spectrumQueueMutex unlock ];
             }
 
+            BOOL process = YES;
+
             if ( item.timestamp == FLT_MAX || item.resolution.x == 0 || item.resolution.y == 0
                  || item.size.x == 0.0 || item.size.y == 0.0 || item.waveSpectrum == NULL
                  || item.gradientX == NULL || item.gradientZ == NULL )
             {
-                continue;
+                process = NO;
             }
 
-            OdHeightfieldData * result = NULL;
-
+            if ( process == YES )
             {
-                [ heightfieldQueueMutex lock ];
-                result = heightfield_alloc_init_with_resolution_and_size(item.resolution, item.size);
-                [ heightfieldQueueMutex unlock ];
+                OdHeightfieldData * result = NULL;
+
+                {
+                    [ heightfieldQueueMutex lock ];
+                    result = heightfield_alloc_init_with_resolution_and_size(item.resolution, item.size);
+                    [ heightfieldQueueMutex unlock ];
+                }
+
+                const size_t index = index_for_resolution(item.resolution.x);
+                const size_t numberOfElements = item.resolution.x * item.resolution.y;
+
+                NSAssert1(index != SIZE_MAX, @"Invalid resolution %d", item.resolution.x);
+                NSAssert1(numberOfElements != 0, @"Invalid number of elements %lu", numberOfElements);
+                NSAssert(item.size.x != 0.0 && item.size.y != 0.0, @"Invalid size");
+
+                //NSLog(@"TRANSFORM %f", item.timestamp);
+
+                fftwf_complex * complexHeights       = fftwf_alloc_complex(numberOfElements);
+                fftwf_complex * complexGradientX     = fftwf_alloc_complex(numberOfElements);
+                fftwf_complex * complexGradientZ     = fftwf_alloc_complex(numberOfElements);
+                fftwf_complex * complexDisplacementX = fftwf_alloc_complex(numberOfElements);
+                fftwf_complex * complexDisplacementZ = fftwf_alloc_complex(numberOfElements);
+
+                //fftwf_execute_dft_c2r(halfComplexPlans[resIndex], halfcomplexSpectrum.waveSpectrum, result->data32f);
+                fftwf_execute_dft(complexPlans[index], item.waveSpectrum,  complexHeights);
+                fftwf_execute_dft(complexPlans[index], item.gradientX,     complexGradientX);
+                fftwf_execute_dft(complexPlans[index], item.gradientZ,     complexGradientZ);
+                fftwf_execute_dft(complexPlans[index], item.displacementX, complexDisplacementX);
+                fftwf_execute_dft(complexPlans[index], item.displacementZ, complexDisplacementZ);
+
+                result->timeStamp = item.timestamp;
+                for ( size_t i = 0; i < numberOfElements; i++ )
+                {
+                    result->heights32f[i] = complexHeights[i][0];
+                    result->supplementalData32f[i].x = complexGradientX[i][0];
+                    result->supplementalData32f[i].y = complexGradientZ[i][0];
+                    result->supplementalData32f[i].z = complexDisplacementX[i][0];
+                    result->supplementalData32f[i].w = complexDisplacementZ[i][0];
+                }
+
+                heightfield_hf_compute_min_max(result);
+                heightfield_hf_compute_min_max_gradients(result);
+                heightfield_hf_compute_min_max_displacements(result);
+
+                {
+                    [ heightfieldQueueMutex lock ];
+                    [ resultQueue addHeightfield:result ];
+                    [ heightfieldQueueMutex unlock ];
+                }
+
+                [ transformCondition lock ];
+                transformData = ( spectrumCount != 0 ) ? YES : NO;
+                [ transformCondition unlock ];
+
+                fftwf_free(item.waveSpectrum);
+                fftwf_free(item.gradientX);
+                fftwf_free(item.gradientZ);
+                fftwf_free(item.displacementX);
+                fftwf_free(item.displacementZ);
+                fftwf_free(complexHeights);
+                fftwf_free(complexGradientX);
+                fftwf_free(complexGradientZ);
+                fftwf_free(complexDisplacementX);
+                fftwf_free(complexDisplacementZ);
             }
-
-            const size_t index = index_for_resolution(item.resolution.x);
-            const size_t numberOfElements = item.resolution.x * item.resolution.y;
-
-            NSAssert1(index != SIZE_MAX, @"Invalid resolution %d", item.resolution.x);
-            NSAssert1(numberOfElements != 0, @"Invalid number of elements %lu", numberOfElements);
-            NSAssert(item.size.x != 0.0 && item.size.y != 0.0, @"Invalid size");
-
-            //NSLog(@"TRANSFORM %f", item.timestamp);
-
-            fftwf_complex * complexHeights       = fftwf_alloc_complex(numberOfElements);
-            fftwf_complex * complexGradientX     = fftwf_alloc_complex(numberOfElements);
-            fftwf_complex * complexGradientZ     = fftwf_alloc_complex(numberOfElements);
-            fftwf_complex * complexDisplacementX = fftwf_alloc_complex(numberOfElements);
-            fftwf_complex * complexDisplacementZ = fftwf_alloc_complex(numberOfElements);
-
-            //fftwf_execute_dft_c2r(halfComplexPlans[resIndex], halfcomplexSpectrum.waveSpectrum, result->data32f);
-            fftwf_execute_dft(complexPlans[index], item.waveSpectrum,  complexHeights);
-            fftwf_execute_dft(complexPlans[index], item.gradientX,     complexGradientX);
-            fftwf_execute_dft(complexPlans[index], item.gradientZ,     complexGradientZ);
-            fftwf_execute_dft(complexPlans[index], item.displacementX, complexDisplacementX);
-            fftwf_execute_dft(complexPlans[index], item.displacementZ, complexDisplacementZ);
-
-            result->timeStamp = item.timestamp;
-            for ( size_t i = 0; i < numberOfElements; i++ )
-            {
-                result->heights32f[i] = complexHeights[i][0];
-                result->supplementalData32f[i].x = complexGradientX[i][0];
-                result->supplementalData32f[i].y = complexGradientZ[i][0];
-                result->supplementalData32f[i].z = complexDisplacementX[i][0];
-                result->supplementalData32f[i].w = complexDisplacementZ[i][0];
-            }
-
-            heightfield_hf_compute_min_max(result);
-            heightfield_hf_compute_min_max_gradients(result);
-            heightfield_hf_compute_min_max_displacements(result);
-
-            {
-                [ heightfieldQueueMutex lock ];
-                [ resultQueue addHeightfield:result ];
-                [ heightfieldQueueMutex unlock ];
-            }
-
-            [ transformCondition lock ];
-            transformData = ( spectrumCount != 0 ) ? YES : NO;
-            [ transformCondition unlock ];
-
-            fftwf_free(item.waveSpectrum);
-            fftwf_free(item.gradientX);
-            fftwf_free(item.gradientZ);
-            fftwf_free(item.displacementX);
-            fftwf_free(item.displacementZ);
-            fftwf_free(complexHeights);
-            fftwf_free(complexGradientX);
-            fftwf_free(complexGradientZ);
-            fftwf_free(complexDisplacementX);
-            fftwf_free(complexDisplacementZ);
         }
 
         DESTROY(innerPool);
