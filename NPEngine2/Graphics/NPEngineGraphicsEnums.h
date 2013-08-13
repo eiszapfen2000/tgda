@@ -175,6 +175,10 @@ typedef enum NpUniformType
     NpUniformInt2,
     NpUniformInt3,
     NpUniformInt4,
+    NpUniformBool,
+    NpUniformBool2,
+    NpUniformBool3,
+    NpUniformBool4,
     NpUniformFMatrix2x2,
     NpUniformFMatrix3x3,
     NpUniformFMatrix4x4
