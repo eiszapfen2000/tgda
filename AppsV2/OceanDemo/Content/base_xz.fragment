@@ -1,10 +1,18 @@
 #version 150
 
-//in vec3 out_worldpos;
+in vec2 out_original_xz;
+in vec2 out_gradients;
+
+#define MATH_PI 3.14159
 
 void main()
 {
-    //target = vec4(out_worldpos, 1.0);
-    target = vec4(1.0);
+    vec3 lightDir = normalize(vec3(-1.0, 1.0, 0.0));
+    vec3 normal = normalize(vec3(-out_gradients.x, 1.0, -out_gradients.y));
+    float diffuse = clamp(dot(normal, lightDir) / MATH_PI, 0.0, 1.0);
+    diffuse = pow(diffuse, 1.0 / 2.2);    
+
+    target = vec4(vec3(diffuse), 1.0);
+    //target = vec4(1.0);
 }
 

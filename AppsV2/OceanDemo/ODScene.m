@@ -423,7 +423,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 /*
     [ skylight      update:frameTime ];
 */
-    [ iwave         update:frameTime ];
+    //[ iwave         update:frameTime ];
     [ ocean         update:frameTime ];
     [ projectedGrid update:frameTime ];
 
@@ -470,20 +470,26 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [[[ NP Core] transformationState] resetModelMatrix];
     
-    /*
-    [[[ NP Core] transformationState] setFModelMatrix:[ ocean modelMatrix ]];
+    
     NPEffectVariableFloat2 * v = [ deferredEffect variableWithName:@"scale"];
-    [ v setFValue:[ocean baseMeshScale]];
+    NPEffectVariableFloat3 * c = [ deferredEffect variableWithName:@"cameraPosition"];
+    [ v setFValue:[ ocean baseMeshScale ]];
+    [ c setValue:[ camera position ]];
+    [[[ NP Core] transformationState] setFModelMatrix:[ ocean modelMatrix ]];
+    [[[ NP Graphics ] textureBindingState ] clear ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ocean supplementalData] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] activate ];
+
     [[ deferredEffect techniqueWithName:@"base_xz" ] activate ];
     [ ocean renderBaseMesh ];
-    */
     
     
     
+    /*
     [[ deferredEffect techniqueWithName:@"iwave_base_xz" ] activate ];
     [ iwave render ];
+    */
     
-
     /*
     [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[iwave heightTexture] texelUnit:0 ];
@@ -491,7 +497,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[ deferredEffect techniqueWithName:@"texture" ] activate ];
     [ fullscreenQuad render ];
     */
-        
+       
 
     /*
     NPEffectVariableMatrix4x4 * v = [ deferredEffect variableWithName:@"invMVP"];

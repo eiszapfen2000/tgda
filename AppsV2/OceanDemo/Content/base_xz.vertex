@@ -1,11 +1,13 @@
 #version 150
 
-out vec3 out_worldpos;
+out vec2 out_original_xz;
+out vec2 out_gradients;
 
 void main()
 {
     vec3 pos = vec3(in_position.x * scale.x, in_height, in_position.y * scale.y);
     pos.xz -= in_supplemental.zw;
-    out_worldpos = pos;
+    out_original_xz = in_position.xy;
+    out_gradients = in_supplemental.xy;
 	gl_Position = np_modelviewprojectionmatrix * vec4(pos, 1.0);
 }
