@@ -4,7 +4,16 @@ technique "base_xz"
 {
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
+    uniform mat4 np_inversemodelmatrix;
     uniform vec2 scale;
+    uniform sampler2D supplemental
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
+    uniform vec3 cameraPosition;
     # vertex streams
     in vec2 in_position : 0;
     in float in_height : 1;
