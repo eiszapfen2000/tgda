@@ -17,6 +17,8 @@
 #import "NPEffectVariableSemantic.h"
 #import "NPEffectVariableUniform.h"
 #import "NPEffectVariableFloat.h"
+#import "NPEffectVariableInt.h"
+#import "NPEffectVariableBool.h"
 #import "NPEffect.h"
 #import "NPEffectTechniqueVariable.h"
 #import "NPEffectTechnique.h"
