@@ -836,20 +836,32 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
         const FVector3 z = {.x = windDirection.x, .y = 0.0f, .z = windDirection.y};
 
+        const double angle = atan2(windDirection.y, windDirection.x);
+        const double degree = RADIANS_TO_DEGREE(angle);
+
         const FVector3 rightVector
             = fv3_vv_cross_product(NP_WORLDF_Y_AXIS, &z);
 
+        fm4_s_rotatey_m(degree, &rotation);
+
+        /*
         M_EL(rotation, 0, 0) = rightVector.x;
         M_EL(rotation, 1, 0) = rightVector.y;
         M_EL(rotation, 2, 0) = rightVector.z;
+        */
 
+        /*
         M_EL(rotation, 0, 1) = NP_WORLDF_Y_AXIS->x;
         M_EL(rotation, 1, 1) = NP_WORLDF_Y_AXIS->y;
         M_EL(rotation, 2, 1) = NP_WORLDF_Y_AXIS->z;
+        */
 
+        /*
         M_EL(rotation, 0, 2) = z.x;
         M_EL(rotation, 1, 2) = z.y;
         M_EL(rotation, 2, 2) = z.z;
+        */
+
 
         const FVector3 center = [[ baseMeshes meshAtIndex:baseMeshIndex ] center ];
 
@@ -863,6 +875,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
         FMatrix4 tmp = fm4_mm_multiply(&rotation, &invTranslation);
         modelMatrix = fm4_mm_multiply(&translation, &tmp);
+        
+        //NSLog(@"\n%f\n%s", degree, fm4_m_to_string(&rotation));
     }
 }
 

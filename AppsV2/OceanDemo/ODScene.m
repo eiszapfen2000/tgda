@@ -459,8 +459,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ cullingState   setEnabled:YES ];
     [ depthTestState setWriteEnabled:YES ];
     [ depthTestState setEnabled:YES ];
-    [ fillState      setFrontFaceFill:NpPolygonFillLine ];
-    [ fillState      setBackFaceFill:NpPolygonFillLine ];
+    //[ fillState      setFrontFaceFill:NpPolygonFillLine ];
+    //[ fillState      setBackFaceFill:NpPolygonFillLine ];
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
     // clear back buffer

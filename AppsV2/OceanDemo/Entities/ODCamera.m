@@ -175,7 +175,10 @@ static NPInputAction * create_input_action(NSString * cameraName, NSString * act
     m4_m_set_identity(&inverseViewProjection);
     quat_set_identity(&orientation);
     v3_v_init_with_zeros(&position);
-    position.y = 2.0f;
+
+    position.x = 100.0f;
+    position.y = 120.0f;
+    position.z = 270.0;
     v3_v_init_with_zeros(&forward);
     forward.z  = -1.0;
 
@@ -184,8 +187,8 @@ static NPInputAction * create_input_action(NSString * cameraName, NSString * act
     farPlane    = 1000.0f;
     aspectRatio = 1.0f;
 
-    yaw   = 225.0;
-    pitch = 0.0;
+    yaw   = 0.0;
+    pitch = -30.0;
 
     inputLocked = NO;
 
