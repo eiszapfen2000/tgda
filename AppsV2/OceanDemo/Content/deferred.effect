@@ -3,8 +3,8 @@ effect "Deferred Effect":
 technique "base_xz"
 {
     # effect variables
+    uniform mat4 np_modelmatrix;
     uniform mat4 np_modelviewprojectionmatrix;
-    uniform mat4 np_inversemodelmatrix;
     uniform vec2 scale;
     uniform sampler2D supplemental
     {
@@ -22,20 +22,6 @@ technique "base_xz"
     out vec4 target : 0;
     # shaders
     set vertex shader "base_xz.vertex"
-    set fragment shader "base_xz.fragment"
-}
-
-technique "iwave_base_xz"
-{
-    # effect variables
-    uniform mat4 np_modelviewprojectionmatrix;
-    # vertex streams
-    in vec2 in_position : 0;
-    in float in_height : 1;
-    # fragment streams
-    out vec4 target : 0;
-    # shaders
-    set vertex shader "iwave_base_xz.vertex"
     set fragment shader "base_xz.fragment"
 }
 
