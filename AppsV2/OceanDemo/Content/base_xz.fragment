@@ -18,21 +18,23 @@ void main()
 
     vec3 c_light = vec3(1.0, 1.0, 1.0);
     vec3 c_diff  = vec3(0.1, 0.5, 1.0);
-    vec3 c_spec  = vec3(0.1, 0.5, 1.0);
+    vec3 c_spec  = vec3(1.0, 1.0, 1.0);
     float alpha_p = 5.0;
 
+    float r_dot_l = clamp(dot(r, l), 0.0, 1.0);
     float n_dot_l = clamp(dot(n, l), 0.0, 1.0);
     float n_dot_h = clamp(dot(n, h), 0.0, 1.0);
 
-    vec3 f_lambert = c_diff / MATH_PI;
-    vec3 L_zero = (f_lambert * MATH_PI) * (c_light * n_dot_l);
+    vec3 diffuse_term = c_diff;
+    vec3 specular_term = (c_spec * pow(n_dot_h, alpha_p));
+    vec3 L_zero = (diffuse_term + specular_term) * (c_light * n_dot_l);
+
+
+    //vec3 L_zero = (f_lambert * MATH_PI) * (c_light * n_dot_l);
     //vec3 L_zero = (c_spec * pow(n_dot_h, alpha_p)) * (c_light * n_dot_l);
 
     // from linear to gamma corrected
-    //vec3 diffuse = pow(L_zero, vec3(1.0 / 2.2));
-    vec3 diffuse = L_zero;
-
+    vec3 diffuse = pow(L_zero, vec3(1.0 / 2.2));
     target = vec4(diffuse, 1.0);
-    //target = vec4(1.0);
 }
 
