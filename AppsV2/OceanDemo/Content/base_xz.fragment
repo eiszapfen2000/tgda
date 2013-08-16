@@ -26,6 +26,19 @@ float beckmann_distribution(vec3 n, vec3 h, float m)
     return power / (MATH_PI * m * m * n_dot_h_square * n_dot_h_square);
 }
 
+float geometry_implicit(vec3 n, vec3 h, vec3 v, vec3 l)
+{
+    float n_dot_l = clamp(dot(n, l), 0.0, 1.0);
+    float n_dot_v = clamp(dot(n, v), 0.0, 1.0);
+
+    return n_dot_l * n_dot_v;
+}
+
+float geometry_cook_torrance(vec3 n, vec3 h, vec3 v, vec3 l)
+{
+    return 0.0;
+}
+
 void main()
 {
     vec3 lightPos = vec3(50.0, 20.0, 50.0);
@@ -51,15 +64,22 @@ void main()
     float r_dot_l = clamp(dot(r, l), 0.0, 1.0);
     float n_dot_l = clamp(dot(n, l), 0.0, 1.0);
     float n_dot_h = clamp(dot(n, h), 0.0, 1.0);
+    float n_dot_v = clamp(dot(n, v), 0.0, 1.0);
     float l_dot_h = clamp(dot(l, h), 0.0, 1.0);
 
+    float foreshortening = n_dot_l * n_dot_v;
+
     vec3 f_schlick = c_spec + ((vec3(1.0) - c_spec) * pow(1.0 - l_dot_h, 5.0));
+
     float D_bp = blinn_phong_distribution(n, h, alpha_p);
     float D_bm = beckmann_distribution(n, h, m_alpha_p);
 
+    float G_i  = geometry_implicit(n, h, v, l);
+    float G_ct = geometry_cook_torrance(n, h, v, l);
+
     vec3 diffuse_term = c_diff;
     //diffuse_term = vec3(0.0);
-    vec3 specular_term = f_schlick * D_bm * brdf_factor;
+    vec3 specular_term = f_schlick * D_bm * (G_i / foreshortening) * brdf_factor;
     vec3 L_zero = (diffuse_term + specular_term) * (c_light * n_dot_l);
 
     // from linear to gamma corrected
