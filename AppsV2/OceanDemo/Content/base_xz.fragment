@@ -5,6 +5,27 @@ in vec3 out_normal;
 
 #define MATH_PI 3.14159
 
+
+float blinn_phong_distribution(vec3 n, vec3 h, float alpha_p)
+{
+    float specular_normalization = (alpha_p + 2.0) / (2.0 * MATH_PI);
+    float n_dot_h = clamp(dot(n, h), 0.0, 1.0);
+    float power = pow(n_dot_h, alpha_p);
+
+    return specular_normalization * power;
+}
+
+float beckmann_distribution(vec3 n, vec3 h, float m)
+{
+    float n_dot_h = clamp(dot(n, h), 0.0, 1.0);
+    float n_dot_h_square = n_dot_h * n_dot_h;
+
+    float exponent = (n_dot_h_square - 1.0) / (m * m * n_dot_h_square);
+    float power = exp(exponent);
+
+    return power / (MATH_PI * m * m * n_dot_h_square * n_dot_h_square);
+}
+
 void main()
 {
     vec3 lightPos = vec3(50.0, 20.0, 50.0);
@@ -19,7 +40,11 @@ void main()
     vec3 c_light = vec3(1.0, 1.0, 1.0);
     vec3 c_diff  = vec3(0.1, 0.5, 0.9);
     vec3 c_spec  = vec3(0.02);
-    float alpha_p = 1.0;
+    //vec3 c_diff  = vec3(0.0, 0.0, 0.0);
+    //vec3 c_spec = vec3(0.95, 0.64, 0.54);
+
+    float alpha_p = 12.0;
+    float m_alpha_p = sqrt(2.0 / (alpha_p + 2.0));
     float specular_normalization = (alpha_p + 2.0) / (2.0 * MATH_PI);
     float brdf_factor = MATH_PI / 4.0;
 
@@ -29,10 +54,12 @@ void main()
     float l_dot_h = clamp(dot(l, h), 0.0, 1.0);
 
     vec3 f_schlick = c_spec + ((vec3(1.0) - c_spec) * pow(1.0 - l_dot_h, 5.0));
+    float D_bp = blinn_phong_distribution(n, h, alpha_p);
+    float D_bm = beckmann_distribution(n, h, m_alpha_p);
 
     vec3 diffuse_term = c_diff;
     //diffuse_term = vec3(0.0);
-    vec3 specular_term = f_schlick * pow(n_dot_h, alpha_p) * specular_normalization * brdf_factor;
+    vec3 specular_term = f_schlick * D_bm * brdf_factor;
     vec3 L_zero = (diffuse_term + specular_term) * (c_light * n_dot_l);
 
     // from linear to gamma corrected
