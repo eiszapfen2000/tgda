@@ -36,7 +36,15 @@ float geometry_implicit(vec3 n, vec3 h, vec3 v, vec3 l)
 
 float geometry_cook_torrance(vec3 n, vec3 h, vec3 v, vec3 l)
 {
-    return 0.0;
+    float n_dot_h = dot(n, h);
+    float n_dot_v = clamp(dot(n, v), 0.0, 1.0);
+    float n_dot_l = clamp(dot(n, l), 0.0, 1.0);
+    float v_dot_h = dot(v, h);
+
+    float g1 = (2.0 * n_dot_h * n_dot_v) / v_dot_h;
+    float g2 = (2.0 * n_dot_h * n_dot_l) / v_dot_h;
+
+    return min(1.0, min(g1, g2));
 }
 
 void main()
