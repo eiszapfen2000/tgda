@@ -48,8 +48,8 @@ gaussrand = complex(gaussrandr, gaussrandi);
 % h_a2_w1 = h_a2_w1 .* (resolution(1) * resolution(2));
 % h_a2_w2 = h_a2_w2 .* (resolution(1) * resolution(2));
 
-[ z1 x1 y1 dispx1 dispy1 gradx1 grady1] = heightfield(resolution, area1, area1, gaussrand, wind2, A1, 0, 1);
-[ z2 x2 y2 dispx2 dispy2 gradx2 grady2] = heightfield(resolution, area2, area2, gaussrand, wind2, A2, 0, 1);
+[ z1 x1 y1 dispx1 dispy1 gradx1 grady1] = heightfield(resolution, resolution, area1, area1, gaussrand, wind2, A1, 0, 1);
+[ z2 x2 y2 dispx2 dispy2 gradx2 grady2] = heightfield(resolution, resolution, area2, area2, gaussrand, wind2, A2, 0, 1);
 
 close all
 figure

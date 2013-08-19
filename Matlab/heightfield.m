@@ -1,10 +1,10 @@
-function [z x y dispx dispy gradx grady] = heightfield(resolution, h0area, htildearea, randomnumbers, wind, A, l, time)
+function [z x y dispx dispy gradx grady] = heightfield(geometryRes, gradientRes, h0area, htildearea, randomnumbers, wind, A, l, time)
 
-h0 = h0_x(resolution, h0area, randomnumbers, wind, A, l);
-[htilde x y] = htilde_x(resolution, htildearea, h0, time);
+h0 = h0_x(geometryRes, h0area, randomnumbers, wind, A, l);
+[htilde x y] = htilde_x(geometryRes, htildearea, h0, time);
 
-[dispxf dispyf] = freq_spec_disp(resolution, htildearea, htilde);
-[gradxf gradyf] = freq_spec_grad(resolution, htildearea, htilde);
+[dispxf dispyf] = freq_spec_disp(geometryRes, htildearea, htilde);
+[gradxf gradyf] = freq_spec_grad(geometryRes, htildearea, htilde);
 
 htilde = ifftshift(htilde);
 dispxf = ifftshift(dispxf);
@@ -18,10 +18,10 @@ dispy = real(ifft2(dispyf));
 gradx = real(ifft2(gradxf));
 grady = real(ifft2(gradyf));
 
-z = z .* (resolution(1) * resolution(2));
-dispx = dispx .* (resolution(1) * resolution(2));
-dispy = dispy .* (resolution(1) * resolution(2));
-gradx = gradx .* (resolution(1) * resolution(2));
-grady = grady .* (resolution(1) * resolution(2));
+z = z .* (geometryRes(1) * geometryRes(2));
+dispx = dispx .* (geometryRes(1) * geometryRes(2));
+dispy = dispy .* (geometryRes(1) * geometryRes(2));
+gradx = gradx .* (geometryRes(1) * geometryRes(2));
+grady = grady .* (geometryRes(1) * geometryRes(2));
 
 end
