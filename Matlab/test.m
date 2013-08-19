@@ -48,8 +48,31 @@ gaussrand = complex(gaussrandr, gaussrandi);
 % h_a2_w1 = h_a2_w1 .* (resolution(1) * resolution(2));
 % h_a2_w2 = h_a2_w2 .* (resolution(1) * resolution(2));
 
+% resolution = [4 4];
+% tmpm1 = -resolution(1)/2:1:resolution(1)/2-1;
+% tmpn1 = resolution(2)/2-1:-1:-resolution(2)/2;
+% tmpms1 = tmpm1.*(2*pi)./10.0
+% tmpns1 = tmpn1.*(2*pi)./10.0
+% k1 = zeros(resolution(1), resolution(2), 2);
+% [ k1(:,:,1) k1(:,:,2) ] = meshgrid(tmpms1, tmpns1);
+% 
+% resolution = [8 8];
+% tmpm2 = -resolution(1)/2:1:resolution(1)/2-1;
+% tmpn2 = resolution(2)/2-1:-1:-resolution(2)/2;
+% tmpms2 = tmpm2.*(2*pi)./10.0;
+% tmpns2 = tmpn2.*(2*pi)./10.0;
+% k2 = zeros(resolution(1), resolution(2), 2);
+% [ k2(:,:,1) k2(:,:,2) ] = meshgrid(tmpms2, tmpns2);
+
 [ z1 x1 y1 dispx1 dispy1 gradx1 grady1] = heightfield(resolution, resolution, area1, area1, gaussrand, wind2, A1, 0, 1);
 [ z2 x2 y2 dispx2 dispy2 gradx2 grady2] = heightfield(resolution, resolution, area2, area2, gaussrand, wind2, A2, 0, 1);
+
+% gr = normrnd(0, 1, 128, 128);
+% gi = normrnd(0, 1, 128, 128);
+% gd = complex(gr, gi);
+% 
+% [ z1 x1 y1 dispx1 dispy1 gradx1 grady1] = heightfield([64 64], [128 128], area1, area1, gd, wind2, A1, 0, 1);
+
 
 close all
 figure
