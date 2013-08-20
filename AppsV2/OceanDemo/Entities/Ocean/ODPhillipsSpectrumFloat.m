@@ -43,7 +43,7 @@ static float amplitudef(const FVector2 windDirectionNormalised,
     const float kdotw
         = kNormalised.x * windDirectionNormalised.x + kNormalised.y * windDirectionNormalised.y;
 
-    amplitude = amplitude * kdotw * kdotw * kdotw * kdotw;
+    amplitude = amplitude * kdotw * kdotw;// * kdotw * kdotw;
 
     return amplitude;
 }
