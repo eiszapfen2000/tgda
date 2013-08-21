@@ -20,7 +20,7 @@ static inline float omegaf_for_k(FVector2 const * const k)
 
 static float amplitudef(const FVector2 windDirectionNormalised,
                         const FVector2 k, const float A,
-                        const float L)
+                        const float L, const float l)
 {
     const float kSquareLength = k.x * k.x + k.y * k.y;
 
@@ -37,13 +37,13 @@ static float amplitudef(const FVector2 windDirectionNormalised,
     Use exp because glibc on Ubuntu 10.04 does not contain a optimised
     version of expf yet, expf is way slower than exp
 */
-    amplitude = amplitude * (float)exp( -1.0 / (kSquareLength * L * L) );
+    amplitude = amplitude * (float)exp(( -1.0 / (kSquareLength * L * L)) - (kSquareLength * l * l));
     amplitude = amplitude * ( 1.0f / (kSquareLength * kSquareLength) );
 
     const float kdotw
         = kNormalised.x * windDirectionNormalised.x + kNormalised.y * windDirectionNormalised.y;
 
-    amplitude = amplitude * kdotw * kdotw;// * kdotw * kdotw;
+    amplitude = amplitude * kdotw * kdotw * kdotw * kdotw;
 
     return amplitude;
 }
@@ -87,6 +87,9 @@ static NPTimer * timer = nil;
     lastSettings.windDirection = (Vector2){DBL_MAX, DBL_MAX};
     currentSettings.windDirection = (Vector2){0.0, 0.0};
 
+    lastSettings.windSpeed = DBL_MAX;
+    currentSettings.windSpeed = 0.0;
+
     return self;
 }
 
@@ -105,6 +108,7 @@ static NPTimer * timer = nil;
          && currentSettings.size.y == lastSettings.size.y
          && currentSettings.windDirection.x == lastSettings.windDirection.x
          && currentSettings.windDirection.y == lastSettings.windDirection.y
+         && currentSettings.windSpeed == lastSettings.windSpeed
          && currentSettings.resolution.x == lastSettings.resolution.x
          && currentSettings.resolution.y == lastSettings.resolution.y
          && force == NO )
@@ -128,12 +132,11 @@ static NPTimer * timer = nil;
     const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
     const FVector2 windDirection = (FVector2){currentSettings.windDirection.x, currentSettings.windDirection.y};
     const FVector2 windDirectionNormalised = fv2_v_normalised(&windDirection);
+    const float    windSpeed = currentSettings.windSpeed;
 
-    const float windDirectionSquareLength 
-        = fv2_v_square_length(&windDirection);
-
-    const float L = windDirectionSquareLength / EARTH_ACCELERATIONf;
     const float A = PHILLIPS_CONSTANT * (1.0 / (size.x * size.y));
+    const float L = (windSpeed * windSpeed) / EARTH_ACCELERATIONf;
+    const float l = 0.0f;
 
     const float n = -(resolution.x / 2.0f);
     const float m =  (resolution.y / 2.0f);
@@ -162,7 +165,7 @@ static NPTimer * timer = nil;
             const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
 
             const FVector2 k = {kx, ky};
-            const float a = sqrtf(amplitudef(windDirectionNormalised, k, A, L));
+            const float a = sqrtf(amplitudef(windDirectionNormalised, k, A, L, l));
 
             H0[j + resolution.x * i][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
             H0[j + resolution.x * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;

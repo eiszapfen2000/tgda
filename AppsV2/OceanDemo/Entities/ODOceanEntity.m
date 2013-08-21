@@ -229,22 +229,18 @@ static size_t index_for_resolution(int32_t resolution)
         if ( [[ NSThread currentThread ] isCancelled ] == NO )
         {
             ODSpectrumSettings settings;
-            double gWindSpeed;
             NSUInteger resIndex;
 
             {
                 [ settingsMutex lock ];
-                //settings.windDirection = generatorWindDirection;
+
                 settings.windDirection = defaultWindDirection;
+                settings.windSpeed = generatorWindSpeed;
                 settings.size = generatorSize;
                 resIndex = generatorResolutionIndex;
-                gWindSpeed = generatorWindSpeed;
+
                 [ settingsMutex unlock ];
             }
-
-            v2_v_normalise(&(settings.windDirection));
-            settings.windDirection.x *= gWindSpeed;
-            settings.windDirection.y *= gWindSpeed;
 
             const int32_t res = resolutions[resIndex];
             settings.resolution = (IVector2){res, res};

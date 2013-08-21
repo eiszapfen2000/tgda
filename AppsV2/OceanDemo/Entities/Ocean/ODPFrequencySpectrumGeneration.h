@@ -7,6 +7,7 @@ typedef struct ODSpectrumSettings
     IVector2 resolution;
     Vector2  size;
     Vector2  windDirection;
+    double   windSpeed;
 }
 ODSpectrumSettings;
 
