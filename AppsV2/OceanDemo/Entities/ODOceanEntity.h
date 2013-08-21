@@ -36,9 +36,9 @@
     double lastWindSpeed;
     double windSpeed;
     double generatorWindSpeed;
-    Vector2 lastSize;
-    Vector2 size;
-    Vector2 generatorSize;
+    double lastSize;
+    double size;
+    double generatorSize;
     NSUInteger lastResolutionIndex;
     NSUInteger resolutionIndex;
     NSUInteger generatorResolutionIndex;

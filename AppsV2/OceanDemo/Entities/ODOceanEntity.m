@@ -60,7 +60,7 @@ static void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex
 
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
-static const Vector2 defaultSize = {150.0, 150.0};
+static const double defaultSize = 150.0;
 static const int32_t resolutions[8] = {8, 16, 32, 64, 128, 256, 512, 1024};
 static const NSUInteger defaultResolutionIndex = 4;
 static const double OneDivSixty = 1.0 / 60.0;
@@ -236,7 +236,7 @@ static size_t index_for_resolution(int32_t resolution)
 
                 settings.windDirection = defaultWindDirection;
                 settings.windSpeed = generatorWindSpeed;
-                settings.size = generatorSize;
+                settings.size = (Vector2){generatorSize, generatorSize};
                 resIndex = generatorResolutionIndex;
 
                 [ settingsMutex unlock ];
@@ -451,7 +451,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     lastWindSpeed = DBL_MAX;
     windSpeed = generatorWindSpeed = defaultWindSpeed;
 
-    lastSize = (Vector2){DBL_MAX, DBL_MAX};
+    lastSize = DBL_MAX;
     size = generatorSize = defaultSize;
 
     const NSUInteger options
@@ -661,8 +661,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     if ( windDirection.x != lastWindDirection.x
          || windDirection.y != lastWindDirection.y
          || windSpeed != lastWindSpeed
-         || size.x != lastSize.x
-         || size.y != lastSize.y
+         || size != lastSize
          || resolutionIndex != lastResolutionIndex )
     {
         lastWindDirection = windDirection;
