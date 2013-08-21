@@ -109,6 +109,7 @@ static NPTimer * timer = nil;
          && currentSettings.windDirection.x == lastSettings.windDirection.x
          && currentSettings.windDirection.y == lastSettings.windDirection.y
          && currentSettings.windSpeed == lastSettings.windSpeed
+         && currentSettings.dampening == lastSettings.dampening
          && currentSettings.resolution.x == lastSettings.resolution.x
          && currentSettings.resolution.y == lastSettings.resolution.y
          && force == NO )

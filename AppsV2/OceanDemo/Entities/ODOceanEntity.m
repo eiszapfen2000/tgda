@@ -842,25 +842,6 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
         fm4_s_rotatey_m(degree, &rotation);
 
-        /*
-        M_EL(rotation, 0, 0) = rightVector.x;
-        M_EL(rotation, 1, 0) = rightVector.y;
-        M_EL(rotation, 2, 0) = rightVector.z;
-        */
-
-        /*
-        M_EL(rotation, 0, 1) = NP_WORLDF_Y_AXIS->x;
-        M_EL(rotation, 1, 1) = NP_WORLDF_Y_AXIS->y;
-        M_EL(rotation, 2, 1) = NP_WORLDF_Y_AXIS->z;
-        */
-
-        /*
-        M_EL(rotation, 0, 2) = z.x;
-        M_EL(rotation, 1, 2) = z.y;
-        M_EL(rotation, 2, 2) = z.z;
-        */
-
-
         const FVector3 center = [[ baseMeshes meshAtIndex:baseMeshIndex ] center ];
 
         M_EL(invTranslation, 3, 0) = -center.x * baseMeshScale.x;
