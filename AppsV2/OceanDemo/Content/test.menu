@@ -144,7 +144,7 @@
             Type = "ODSliderItem";
             Label = "Tile Area";
             Alignment = "TopRight";
-            Position = ("30", "450" );
+            Position = ("30", "435" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "10.0";
@@ -153,6 +153,22 @@
             HeadSize = ("3", "21");
             TargetObject = "Ocean";
             TargetProperty = "size";
+        };
+
+        PSliderDampening =
+        {
+            Type = "ODSliderItem";
+            Label = "Dampening Factor";
+            Alignment = "TopRight";
+            Position = ("30", "465" );
+            Size = ( "50", "1" );
+            TextSize = "16";
+            MinimumValue = "0.0";
+            MaximumValue = "0.05";
+            LineSize = ("105", "3");
+            HeadSize = ("3", "21");
+            TargetObject = "Ocean";
+            TargetProperty = "dampening";
         };
     };
 }
