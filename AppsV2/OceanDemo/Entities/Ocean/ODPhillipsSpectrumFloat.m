@@ -133,10 +133,13 @@ static NPTimer * timer = nil;
     const FVector2 windDirection = (FVector2){currentSettings.windDirection.x, currentSettings.windDirection.y};
     const FVector2 windDirectionNormalised = fv2_v_normalised(&windDirection);
     const float    windSpeed = currentSettings.windSpeed;
+    const float    dampening = currentSettings.dampening;
+
+    assert(dampening < 1.0f);
 
     const float A = PHILLIPS_CONSTANT * (1.0 / (size.x * size.y));
     const float L = (windSpeed * windSpeed) / EARTH_ACCELERATIONf;
-    const float l = 0.0f;
+    const float l = dampening * L;
 
     const float n = -(resolution.x / 2.0f);
     const float m =  (resolution.y / 2.0f);
