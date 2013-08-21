@@ -123,10 +123,10 @@
             TargetProperty = "windDirection";
         };
 
-        PSlider =
+        PSliderWindSpeed =
         {
             Type = "ODSliderItem";
-            Label = "SLIDER";
+            Label = "Wind Speed";
             Alignment = "TopRight";
             Position = ("30", "405" );
             Size = ( "50", "1" );
@@ -139,7 +139,21 @@
             TargetProperty = "windSpeed";
         };
 
-
+        PSliderArea =
+        {
+            Type = "ODSliderItem";
+            Label = "Tile Area";
+            Alignment = "TopRight";
+            Position = ("30", "450" );
+            Size = ( "50", "1" );
+            TextSize = "16";
+            MinimumValue = "10.0";
+            MaximumValue = "200.0";
+            LineSize = ("105", "3");
+            HeadSize = ("3", "21");
+            TargetObject = "Ocean";
+            TargetProperty = "size";
+        };
     };
 }
  
