@@ -30,9 +30,7 @@
     NSLock * heightfieldQueueMutex;
     NSLock * settingsMutex;
 
-    Vector2 lastWindDirection;
     Vector2 windDirection;
-    Vector2 generatorWindDirection;
     double lastWindSpeed;
     double windSpeed;
     double generatorWindSpeed;

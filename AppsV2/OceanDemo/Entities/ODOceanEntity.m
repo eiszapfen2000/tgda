@@ -445,8 +445,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     lastResolutionIndex = ULONG_MAX;
     resolutionIndex = generatorResolutionIndex = defaultResolutionIndex;
 
-    lastWindDirection = (Vector2){DBL_MAX, DBL_MAX};
-    windDirection = generatorWindDirection = defaultWindDirection;
+    windDirection = defaultWindDirection;
 
     lastWindSpeed = DBL_MAX;
     windSpeed = generatorWindSpeed = defaultWindSpeed;
@@ -658,13 +657,10 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     // in case spectrum generation settings changed
     // update the generator thread's' settings and clear
     // the resultQueue of still therein residing data
-    if ( windDirection.x != lastWindDirection.x
-         || windDirection.y != lastWindDirection.y
-         || windSpeed != lastWindSpeed
+    if ( windSpeed != lastWindSpeed
          || size != lastSize
          || resolutionIndex != lastResolutionIndex )
     {
-        lastWindDirection = windDirection;
         lastWindSpeed = windSpeed;
         lastSize = size;
         lastResolutionIndex = resolutionIndex;
@@ -674,7 +670,6 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     if ( settingsChanged == YES )
     {
         [ settingsMutex lock ];
-        generatorWindDirection = windDirection;
         generatorWindSpeed = windSpeed;
         generatorSize = size;
         generatorResolutionIndex = resolutionIndex;
