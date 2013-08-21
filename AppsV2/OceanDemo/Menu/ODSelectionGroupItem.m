@@ -89,10 +89,11 @@
             FRectangle itemGeometry;
             frectangle_vv_init_with_min_and_size_r(&lowerLeft, &itemSize, &itemGeometry);
 
-            int32_t centering = (int32_t)round((itemSize.x - labelBounds.x) / 2.0f);
+            int32_t centeringX = (int32_t)round((itemSize.x - labelBounds.x) / 2.0f);
+            int32_t centeringY = (int32_t)round((itemSize.y - labelBounds.y) / 2.0f);
             IVector2 labelPosition;
-            labelPosition.x = itemGeometry.min.x + centering;
-            labelPosition.y = itemGeometry.max.y;
+            labelPosition.x = itemGeometry.min.x + centeringX;
+            labelPosition.y = itemGeometry.max.y - centeringY + 1;
 
             [ font renderString:label
                       withColor:textColor
