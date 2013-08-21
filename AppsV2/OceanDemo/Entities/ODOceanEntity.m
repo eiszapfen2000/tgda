@@ -61,6 +61,7 @@ static void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
 static const double defaultSize = 150.0;
+static const double defaultDampening = 0.001;
 static const int32_t resolutions[8] = {8, 16, 32, 64, 128, 256, 512, 1024};
 static const NSUInteger defaultResolutionIndex = 4;
 static const double OneDivSixty = 1.0 / 60.0;
@@ -237,6 +238,7 @@ static size_t index_for_resolution(int32_t resolution)
                 settings.windDirection = defaultWindDirection;
                 settings.windSpeed = generatorWindSpeed;
                 settings.size = (Vector2){generatorSize, generatorSize};
+                settings.dampening = generatorDampening;
                 resIndex = generatorResolutionIndex;
 
                 [ settingsMutex unlock ];
@@ -453,6 +455,9 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     lastSize = DBL_MAX;
     size = generatorSize = defaultSize;
 
+    lastDampening = DBL_MAX;
+    dampening = generatorDampening = defaultDampening;
+
     const NSUInteger options
         = NSPointerFunctionsMallocMemory
           | NSPointerFunctionsStructPersonality
@@ -659,10 +664,12 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     // the resultQueue of still therein residing data
     if ( windSpeed != lastWindSpeed
          || size != lastSize
+         || dampening != lastDampening
          || resolutionIndex != lastResolutionIndex )
     {
         lastWindSpeed = windSpeed;
         lastSize = size;
+        lastDampening = dampening;
         lastResolutionIndex = resolutionIndex;
         settingsChanged = YES;
     }
@@ -672,6 +679,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
         [ settingsMutex lock ];
         generatorWindSpeed = windSpeed;
         generatorSize = size;
+        generatorDampening = dampening;
         generatorResolutionIndex = resolutionIndex;
         [ settingsMutex unlock ];
 

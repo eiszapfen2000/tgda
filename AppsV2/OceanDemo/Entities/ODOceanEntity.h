@@ -37,6 +37,9 @@
     double lastSize;
     double size;
     double generatorSize;
+    double lastDampening;
+    double dampening;
+    double generatorDampening;
     NSUInteger lastResolutionIndex;
     NSUInteger resolutionIndex;
     NSUInteger generatorResolutionIndex;
