@@ -72,7 +72,7 @@ static void GLFWCALL window_resize_callback(int width, int height)
     widgetSize.y = height;
 }
 
-static double G_zero(double sigma, int32_t n, double deltaQ)
+static double G_zero(double sigma, double L, int32_t n, double deltaQ)
 {
     double result = 0.0;
 
@@ -81,19 +81,20 @@ static double G_zero(double sigma, int32_t n, double deltaQ)
         double di = (double)i;
         double qn = di * deltaQ;
         double qnSquare = qn * qn;
+        double LSquare = L * L;
 
-        result += qnSquare * exp(-1.0 * sigma * qnSquare);        
+        result += (qnSquare * sqrt(1.0 + qnSquare * LSquare)* exp(-1.0 * sigma * qnSquare));
     }
 
     return result;
 }
 
-static void G(int32_t P, double sigma, int32_t n, double deltaQ, float ** kernel)
+static void G(int32_t P, double sigma, double L, int32_t n, double deltaQ, float ** kernel)
 {
     assert(kernel != NULL);
 
     const int32_t kernelSize = 2 * P + 1;
-    const double gZero = G_zero(sigma, n, deltaQ);
+    const double gZero = G_zero(sigma, L, n, deltaQ);
 
     *kernel = ALLOC_ARRAY(float, kernelSize * kernelSize);
 
@@ -120,8 +121,9 @@ static void G(int32_t P, double sigma, int32_t n, double deltaQ, float ** kernel
                 double di = (double)i;
                 double qn = di * deltaQ;
                 double qnSquare = qn * qn;
+                double LSquare = L * L;
 
-                element += qnSquare * exp(-1.0 * sigma * qnSquare) * j0(r * qn);
+                element += (qnSquare * sqrt(1.0 + qnSquare * LSquare) * exp(-1.0 * sigma * qnSquare) * j0(r * qn));
             }
 
             const int32_t indexk = k + P;
@@ -285,15 +287,15 @@ int main (int argc, char **argv)
     }
 
     float sourceBrush[3][3];
-    sourceBrush[1][1] = 1.0f;
-    sourceBrush[0][1] = 0.5f;
-    sourceBrush[2][1] = 0.5f;
-    sourceBrush[1][0] = 0.5f;
-    sourceBrush[1][2] = 0.5f;
-    sourceBrush[0][0] = 0.25f;
-    sourceBrush[0][2] = 0.25f;
-    sourceBrush[2][0] = 0.25f;
-    sourceBrush[2][2] = 0.25f;
+    sourceBrush[1][1] = 5.0f;
+    sourceBrush[0][1] = 2.5f;
+    sourceBrush[2][1] = 2.5f;
+    sourceBrush[1][0] = 2.5f;
+    sourceBrush[1][2] = 2.5f;
+    sourceBrush[0][0] = 1.25f;
+    sourceBrush[0][2] = 1.25f;
+    sourceBrush[2][0] = 1.25f;
+    sourceBrush[2][2] = 1.25f;
 
     float obstructionBrush[3][3];
     obstructionBrush[1][1] = 0.0f;
@@ -310,7 +312,7 @@ int main (int argc, char **argv)
     const int32_t kernelSize = 2 * kernelRadius + 1;
 
     float * kernel = NULL;
-    G(kernelRadius, 1.0, 10000, 0.001, &kernel);
+    G(kernelRadius, 1.0, 1.0, 10000, 0.001, &kernel);
 
     /*
     for (int32_t l = 0; l < 2 * kernelRadius + 1; l++)
@@ -346,6 +348,7 @@ int main (int argc, char **argv)
     NPRenderTexture * tempTarget            = [[ NPRenderTexture alloc ] initWithName:@"Temp Target"             ];
 
     NPRenderTargetConfiguration * rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC" ];
+    NPRenderTargetConfiguration * rtcCopy = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC Copy" ];
 
     BOOL allok
         = [ kernelBuffer
@@ -768,7 +771,8 @@ int main (int argc, char **argv)
             glEnd();
 
             [ heightsTarget detach:NO ];
-            
+           
+            /*
             [ prevHeightsTarget
                 attachToRenderTargetConfiguration:rtc
                                  colorBufferIndex:0
@@ -790,11 +794,32 @@ int main (int argc, char **argv)
                 glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
                 glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
             glEnd();
-
-            [ prevHeightsTarget detach:NO ];
             
+            [ prevHeightsTarget detach:NO ];
+            */
             [ rtc deactivate ];
 
+            [[[ NP Graphics ] textureBindingState ] clear ];
+
+            glBindFramebufferEXT(GL_READ_FRAMEBUFFER, [rtc glID]);
+            glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, [rtc glID]);
+
+            glFramebufferTexture2DEXT(GL_READ_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, [[ tempTarget        texture ] glID], 0);
+            glFramebufferTexture2DEXT(GL_DRAW_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT1_EXT, GL_TEXTURE_2D, [[ prevHeightsTarget texture ] glID], 0);
+
+            glReadBuffer(GL_COLOR_ATTACHMENT0_EXT);
+            glDrawBuffer(GL_COLOR_ATTACHMENT1_EXT);
+
+            glBlitFramebuffer(0, 0, gridWidth, gridHeight, 0, 0, gridWidth, gridHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+            glFramebufferTexture2DEXT(GL_READ_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, 0, 0);
+            glFramebufferTexture2DEXT(GL_DRAW_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT1_EXT, GL_TEXTURE_2D, 0, 0);
+
+            glBindFramebufferEXT(GL_READ_FRAMEBUFFER, 0);
+            glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, 0);
+
+            glReadBuffer(GL_BACK);
+            glDrawBuffer(GL_BACK);
         }
 
         const int32_t size = gridWidth * gridHeight;
@@ -900,6 +925,7 @@ int main (int argc, char **argv)
 
     DESTROY(effect);
 
+    DESTROY(rtcCopy);
     DESTROY(rtc);
     DESTROY(derivativeTarget);
     DESTROY(depthDerivativeTarget);
