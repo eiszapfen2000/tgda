@@ -24,7 +24,7 @@ technique "texture"
     set fragment shader "simpletextured.fragment"
 }
 
-technique "source_and_obstruction
+technique "source_and_obstruction"
 {
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
