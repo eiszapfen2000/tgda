@@ -131,7 +131,7 @@
             Position = ("30", "405" );
             Size = ( "50", "1" );
             TextSize = "16";
-            MinimumValue = "1.0";
+            MinimumValue = "0.0";
             MaximumValue = "40.0";
             LineSize = ("105", "3");
             HeadSize = ("3", "21");
@@ -147,8 +147,8 @@
             Position = ("30", "435" );
             Size = ( "50", "1" );
             TextSize = "16";
-            MinimumValue = "10.0";
-            MaximumValue = "200.0";
+            MinimumValue = "1.0";
+            MaximumValue = "100.0";
             LineSize = ("105", "3");
             HeadSize = ("3", "21");
             TargetObject = "Ocean";
