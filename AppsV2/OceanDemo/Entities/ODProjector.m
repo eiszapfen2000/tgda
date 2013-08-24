@@ -26,23 +26,11 @@
     if ( yawDegrees != 0.0 )
     {
         yaw += yawDegrees;
-        yaw = fmod(yaw, 360.0);
-
-        if ( yaw < 0.0 )
-        {
-            yaw += 360.0;
-        }
     }
 
     if ( pitchDegrees != 0.0 )
     {
         pitch += pitchDegrees;
-        pitch = fmod(pitch, 360.0);
-
-        if ( pitch < 0.0 )
-        {
-            pitch += 360.0;
-        }
     }
 
     quat_q_init_with_axis_and_degrees(&orientation, NP_WORLD_Y_AXIS, yaw);
@@ -70,6 +58,19 @@
 
 - (void) updateView
 {
+    yaw   = fmod(yaw,   360.0);
+    pitch = fmod(pitch, 360.0);
+
+    if ( yaw < 0.0 )
+    {
+        yaw += 360.0;
+    }
+
+    if ( pitch < 0.0 )
+    {
+        pitch += 360.0;
+    }
+
     double localPitch = pitch;
     double localYaw = yaw;
     double localfov = fov;
