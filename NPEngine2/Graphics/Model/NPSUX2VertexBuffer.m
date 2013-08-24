@@ -4,6 +4,7 @@
 #import "Log/NPLog.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Core/NPEngineCore.h"
+#import "Core/Utilities/NSData+NPEngine.h"
 #import "Graphics/Buffer/NPBufferObject.h"
 #import "Graphics/Geometry/NPVertexArray.h"
 #import "NPSUX2VertexBuffer.h"
@@ -151,9 +152,8 @@ static void vertices_delete_storage(NpSUX2Vertices * vertices)
                             numberOfBytes:(size_t)numberOfBytes
 {
     NSData * data
-        = [ NSData dataWithBytesNoCopy:bytes 
-                                length:numberOfBytes
-                          freeWhenDone:NO ];
+        = [ NSData dataWithBytesNoCopyNoFree:bytes 
+                                      length:numberOfBytes ];
 
     NPBufferObject * bo = [[ NPBufferObject alloc ] init ];
 
@@ -176,9 +176,8 @@ static void vertices_delete_storage(NpSUX2Vertices * vertices)
                             numberOfIndices:(size_t)numberOfIndices
 {
     NSData * data
-        = [ NSData dataWithBytesNoCopy:indices 
-                                length:numberOfIndices * sizeof(int32_t)
-                          freeWhenDone:NO ];
+        = [ NSData dataWithBytesNoCopyNoFree:indices 
+                                      length:numberOfIndices * sizeof(int32_t) ];
 
     NPBufferObject * bo = [[ NPBufferObject alloc ] init ];
 
