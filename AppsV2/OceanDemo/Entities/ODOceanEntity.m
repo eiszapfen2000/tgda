@@ -60,7 +60,7 @@ static void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex
 
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
-static const double defaultSize = 150.0;
+static const double defaultSize = 80.0;
 static const double defaultDampening = 0.001;
 static const int32_t resolutions[8] = {8, 16, 32, 64, 128, 256, 512, 1024};
 static const NSUInteger defaultResolutionIndex = 4;
@@ -832,13 +832,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
         fm4_m_set_identity(&invTranslation);
         fm4_m_set_identity(&translation);
 
-        const FVector3 z = {.x = windDirection.x, .y = 0.0f, .z = windDirection.y};
-
         const double angle = atan2(windDirection.y, windDirection.x);
         const double degree = RADIANS_TO_DEGREE(angle);
-
-        const FVector3 rightVector
-            = fv3_vv_cross_product(NP_WORLDF_Y_AXIS, &z);
 
         fm4_s_rotatey_m(degree, &rotation);
 
