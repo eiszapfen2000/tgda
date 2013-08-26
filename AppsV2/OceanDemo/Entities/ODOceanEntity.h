@@ -89,8 +89,14 @@
 - (NPTexture2D *) heightfield;
 - (NPTexture2D *) supplementalData;
 
+- (double) size;
 - (FVector2) heightRange;
+- (FVector2) gradientXRange;
+- (FVector2) gradientZRange;
+- (FVector2) displacementXRange;
+- (FVector2) displacementZRange;
 - (FVector2) baseMeshScale;
+
 - (void) setCamera:(ODCamera *)newCamera;
 
 - (void) update:(const double)frameTime;
