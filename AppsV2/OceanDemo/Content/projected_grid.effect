@@ -1,27 +1,26 @@
 effect "Projected Grid":
 
-technique "transform"
+technique "proj_grid_tf_transform"
 {
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
-    uniform sampler2D heights;
+    uniform mat4 invMVP;
     # vertex streams
-    in vec4 in_position : 0;
+    in vec2 in_position : 0;
     # shaders
-    set vertex shader "transform.vertex"
+    set vertex shader "proj_grid_tf_transform.vertex"
 }
 
-technique "feedback"
+technique "proj_grid_tf_feedback"
 {
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
-    uniform vec4 color;
     # vertex streams
-    in vec4 in_position : 0;
+    in vec3 in_position : 0;
     # fragment streams
     out vec4 target : 0;
     # shaders
-    set vertex shader "color.vertex"
-    set fragment shader "color.fragment"
+    set vertex shader "default.vertex"
+    set fragment shader "default.fragment"
 }
 

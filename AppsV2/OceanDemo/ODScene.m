@@ -205,7 +205,11 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     deferredEffect
         = [[[ NP Graphics ] effects ] getAssetWithFileName:@"deferred.effect" ];
 
+    projectedGridEffect
+        = [[[ NP Graphics ] effects ] getAssetWithFileName:@"projected_grid.effect" ];
+
     ASSERT_RETAIN(deferredEffect);
+    ASSERT_RETAIN(projectedGridEffect);
 
     heightfieldMinMax = [ deferredEffect variableWithName:@"heightfieldMinMax" ];
     lightDirection    = [ deferredEffect variableWithName:@"lightDirection" ];
@@ -214,6 +218,30 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     NSAssert(heightfieldMinMax != nil, @"heightfieldMinMax invalid");
     NSAssert(lightDirection != nil, @"lightDirection invalid");
     NSAssert(cameraPosition != nil, @"cameraPosition invalid");
+
+    projectedGridTFTransform = [ projectedGridEffect techniqueWithName:@"proj_grid_tf_transform" ];
+    projectedGridTFFeedback  = [ projectedGridEffect techniqueWithName:@"proj_grid_tf_feedback"  ];
+
+    ASSERT_RETAIN(projectedGridTFTransform);
+    ASSERT_RETAIN(projectedGridTFFeedback);
+
+    // transform feedback setup
+    const char * tfvarying = "out_position";
+    glTransformFeedbackVaryings([ projectedGridTFTransform glID ], 1, &tfvarying, GL_SEPARATE_ATTRIBS);
+	glLinkProgram([ projectedGridTFTransform glID ]);
+
+    NSError * tfLinkError = nil;
+    BOOL result
+        = [ NPEffectTechnique
+                checkProgramLinkStatus:[ projectedGridTFTransform glID ]
+                                 error:&tfLinkError ];
+
+    if ( result == NO )
+    {
+        NPLOG_ERROR(tfLinkError);
+    }
+
+    NSAssert(result, @"Transform Feedback setup failed");
 
     // fullscreen quad for render target display
     fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
@@ -247,7 +275,10 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     DESTROY(gBuffer);
 
     DESTROY(fullscreenQuad);
+    DESTROY(projectedGridTFFeedback);
+    DESTROY(projectedGridTFTransform);
     DESTROY(deferredEffect);
+    DESTROY(projectedGridEffect);
 
     [ super dealloc ];
 }
@@ -356,8 +387,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     currentResolution.y = [ viewport height ];
 
     IVector2 r;
-    r.x = 200;
-    r.y = 150;
+    r.x = currentResolution.x / 8;
+    r.y = currentResolution.y / 8;
     [ projectedGrid setResolution:r ];
 
     /*
@@ -459,8 +490,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ cullingState   setEnabled:YES ];
     [ depthTestState setWriteEnabled:YES ];
     [ depthTestState setEnabled:YES ];
-    //[ fillState      setFrontFaceFill:NpPolygonFillLine ];
-    //[ fillState      setBackFaceFill:NpPolygonFillLine ];
+    [ fillState      setFrontFaceFill:NpPolygonFillLine ];
+    [ fillState      setBackFaceFill:NpPolygonFillLine ];
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
     // clear back buffer
@@ -470,7 +501,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [[[ NP Core] transformationState] resetModelMatrix];
     
-    
+    /*
     NPEffectVariableFloat2 * v = [ deferredEffect variableWithName:@"scale"];
     NPEffectVariableFloat3 * c = [ deferredEffect variableWithName:@"cameraPosition"];
     [ v setFValue:[ ocean baseMeshScale ]];
@@ -482,6 +513,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [[ deferredEffect techniqueWithName:@"base_xz" ] activate ];
     [ ocean renderBaseMesh ];
+    */
     
     
     
@@ -499,12 +531,22 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     */
        
 
-    /*
+    
     NPEffectVariableMatrix4x4 * v = [ deferredEffect variableWithName:@"invMVP"];
     [ v setValue:[testProjector inverseViewProjection]];
-    
+
+    NPEffectVariableMatrix4x4 * w = [ projectedGridEffect variableWithName:@"invMVP"];
+    [ w setValue:[testProjector inverseViewProjection]];
+
+    [ projectedGridTFTransform activate ];
+    [ projectedGrid renderTFTransform ];
+    [ projectedGridTFFeedback activate ];
+    [ projectedGrid renderTFFeedback  ];
+
+    /*
     [[ deferredEffect techniqueWithName:@"proj_grid_corners" ] activate ];
-    [ projectedGrid render:nil ];
+    [ projectedGrid render ];
+    */
     
     
     //[ ocean renderBasePlane ];
@@ -512,15 +554,19 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ NPEffectTechnique deactivate ];
 
     [[[ NPEngineCore instance ] transformationState ] resetModelMatrix ];
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ] setEnabled:YES ];
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ] setBlendingMode:NpBlendingAverage ];
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ] activate ];
+    [ blendingState setEnabled:YES ];
+    [ blendingState setBlendingMode:NpBlendingAverage ];
+    [ blendingState activate ];
 
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] cullingState ] setEnabled:NO ];
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] cullingState ] activate ];
+    [ cullingState setEnabled:NO ];
+    [ cullingState activate ];
 
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] setWriteEnabled:NO ];
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] activate ];
+    [ depthTestState setWriteEnabled:NO ];
+    [ depthTestState activate ];
+
+    [ fillState setFrontFaceFill:NpPolygonFillFace ];
+    [ fillState setBackFaceFill:NpPolygonFillFace ];
+    [ fillState activate ];
 
     FVector4 fc = {0.0f, 1.0f, 0.0f, 0.5f};
     FVector4 lc = {1.0f, 0.0f, 0.0f, 0.5f};
@@ -537,7 +583,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[ deferredEffect techniqueWithName:@"color" ] activate ];
 
     [ testProjectorFrustum render ];
-    */
+    
 
     [[[ NP Graphics ] stateConfiguration ] deactivate ];
     
