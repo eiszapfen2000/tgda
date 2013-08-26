@@ -632,9 +632,34 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     return supplementalData;
 }
 
+- (double) size
+{
+    return size;
+}
+
 - (FVector2) heightRange
 {
     return heightRange;
+}
+
+- (FVector2) gradientXRange
+{
+    return gradientXRange;
+}
+
+- (FVector2) gradientZRange
+{
+    return gradientZRange;
+}
+
+- (FVector2) displacementXRange
+{
+    return displacementXRange;
+}
+
+- (FVector2) displacementZRange
+{
+    return displacementZRange;
 }
 
 - (FVector2) baseMeshScale
@@ -649,8 +674,6 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
 - (void) update:(const double)frameTime
 {
-    //NSLog(@"update");
-    
     [ projector update:frameTime ];
     [ basePlane update:frameTime ];
 
@@ -692,10 +715,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
         [ heightfieldQueueMutex unlock ];
     }
 
-
     NSUInteger queueCount = 0;
     OdHeightfieldData * hf = NULL;
-
 
     {
         [ heightfieldQueueMutex lock ];
