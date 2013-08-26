@@ -849,8 +849,6 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
         FMatrix4 tmp = fm4_mm_multiply(&rotation, &invTranslation);
         modelMatrix = fm4_mm_multiply(&translation, &tmp);
-        
-        //NSLog(@"\n%f\n%s", degree, fm4_m_to_string(&rotation));
     }
 }
 
