@@ -66,6 +66,7 @@
     FVector2 baseMeshScale;
 
     double timeStamp;
+    double area;
     FVector2 heightRange;
     FVector2 gradientXRange;
     FVector2 gradientZRange;
@@ -89,7 +90,7 @@
 - (NPTexture2D *) heightfield;
 - (NPTexture2D *) supplementalData;
 
-- (double) size;
+- (double) area;
 - (FVector2) heightRange;
 - (FVector2) gradientXRange;
 - (FVector2) gradientZRange;

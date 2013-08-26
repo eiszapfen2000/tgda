@@ -515,8 +515,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ ocean renderBaseMesh ];
     */
     
-    
-    
     /*
     [[ deferredEffect techniqueWithName:@"iwave_base_xz" ] activate ];
     [ iwave render ];
@@ -529,14 +527,22 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[ deferredEffect techniqueWithName:@"texture" ] activate ];
     [ fullscreenQuad render ];
     */
-       
 
-    
+    [[[ NP Graphics ] textureBindingState ] clear ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean heightfield      ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean supplementalData ] texelUnit:1 ];
+    [[[ NP Graphics ] textureBindingState ] activate ];
+
     NPEffectVariableMatrix4x4 * v = [ deferredEffect variableWithName:@"invMVP"];
     [ v setValue:[testProjector inverseViewProjection]];
 
     NPEffectVariableMatrix4x4 * w = [ projectedGridEffect variableWithName:@"invMVP"];
+    NPEffectVariableFloat * a = [ projectedGridEffect variableWithName:@"area"];
+
+    NSAssert(w != nil && a != nil, @"");
+
     [ w setValue:[testProjector inverseViewProjection]];
+    [ a setValue:[ ocean area ]];
 
     [ projectedGridTFTransform activate ];
     [ projectedGrid renderTFTransform ];
@@ -551,7 +557,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     
     //[ ocean renderBasePlane ];
 
-    [ NPEffectTechnique deactivate ];
 
     [[[ NPEngineCore instance ] transformationState ] resetModelMatrix ];
     [ blendingState setEnabled:YES ];
@@ -583,7 +588,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[ deferredEffect techniqueWithName:@"color" ] activate ];
 
     [ testProjectorFrustum render ];
-    
 
     [[[ NP Graphics ] stateConfiguration ] deactivate ];
     

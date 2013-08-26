@@ -5,6 +5,21 @@ technique "proj_grid_tf_transform"
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
     uniform mat4 invMVP;
+    uniform float area;
+    uniform sampler2D heightmap
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
+    uniform sampler2D supplemental
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
     # vertex streams
     in vec2 in_position : 0;
     # shaders
