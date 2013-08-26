@@ -12,14 +12,6 @@
 @class NPEffectVariableFloat4;
 @class NPTexture2D;
 
-typedef enum ODProjectedGridRenderMode
-{
-    ProjectedGridCPURaycasting = 0,
-    ProjectedGridCPUInterpolation = 1,
-    ProjectedGridGPUInterpolation = 2
-}
-ODProjectedGridRenderMode;
-
 @interface ODProjectedGrid : NPObject// < ODPEntity >
 {
     // resolution
@@ -38,8 +30,6 @@ ODProjectedGridRenderMode;
     uint16_t * cornerIndices;
     // the projector we are connected to
     ODProjector * projector;
-    // rendering mode
-    ODProjectedGridRenderMode renderMode;
     // buffers and vertex array for grid based rendering
     NPCPUBuffer * gridVertexStream;
     NPCPUBuffer * gridIndexStream;
@@ -53,22 +43,14 @@ ODProjectedGridRenderMode;
     // transform target buffer
     NPBufferObject * transformedVertexStream;
     NPVertexArray * transformTarget;
-    // effect
-    NPEffect * effect;
-    NPEffectTechnique* transformTechnique;
-    NPEffectTechnique* feedbackTechnique;
-    NPEffectVariableFloat4 * color;
-    FVector4 gridColor;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-- (ODProjectedGridRenderMode) renderMode;
 - (IVector2) resolution;
 - (void) setResolution:(const IVector2)newResolution;
-- (void) setRenderMode:(const ODProjectedGridRenderMode)newRenderMode;
 - (void) setProjector:(ODProjector *)newProjector;
 
 - (void) update:(const double)frameTime;
