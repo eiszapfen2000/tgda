@@ -13,6 +13,7 @@
 @class NPRenderTexture;
 @class NPRenderBuffer;
 @class NPEffect;
+@class NPEffectVariableFloat;
 @class NPEffectVariableFloat2;
 @class NPEffectVariableFloat3;
 @class NPFullscreenQuad;

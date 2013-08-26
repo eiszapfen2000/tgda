@@ -19,6 +19,16 @@ void main()
     float t = ( plane.w - point_dot_planenormal ) / direction_dot_planenormal;
     vec3 intersection = point + t * direction;
 
-    out_position = intersection;
+    vec2 texcoord;
+    texcoord.x = mod(abs(intersection.x), area);
+    texcoord.y = mod(abs(intersection.z), area);
+    texcoord *= (1.0 / area);
+    texcoord.y = 1.0 - texcoord.y;
+
+    float h = textureLod(heightmap, texcoord, 0.0);
+    vec4 s  = textureLod(supplemental, texcoord, 0.0);    
+
+    out_position.xz = intersection.xz - s.zw;
+    out_position.y = h;
     gl_Position = np_modelviewprojectionmatrix * vec4(intersection, 1.0);
 }

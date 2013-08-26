@@ -491,6 +491,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
     timeStamp = DBL_MAX;
 
+    area = 0.0;
+
     heightRange    = (FVector2){.x = 0.0f, .y = 0.0f};
     gradientXRange = (FVector2){.x = 0.0f, .y = 1.0f};
     gradientZRange = (FVector2){.x = 0.0f, .y = 1.0f};
@@ -632,9 +634,9 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     return supplementalData;
 }
 
-- (double) size
+- (double) area
 {
-    return size;
+    return area;
 }
 
 - (FVector2) heightRange
@@ -781,6 +783,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     if ( hf != NULL && animated == YES)
     {
         timeStamp = hf->timeStamp;
+
+        area = hf->size.x;
 
         heightRange    = (FVector2){.x = hf->minHeight,    .y = hf->maxHeight   };
         gradientXRange = (FVector2){.x = hf->minGradientX, .y = hf->maxGradientX};
