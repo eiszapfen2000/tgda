@@ -151,8 +151,6 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
     const size_t numberOfIndices
         = (resolution.x - 1) * (resolution.y - 1) * 6;
 
-    NSLog(@"%lu", numberOfIndices);
-
     nearPlanePostProjectionPositions = ALLOC_ARRAY(FVertex2, numberOfVertices);
     gridIndices = ALLOC_ARRAY(uint16_t, numberOfIndices);
 
@@ -388,7 +386,6 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
 - (void) renderTFTransform
 {
     glEnable(GL_RASTERIZER_DISCARD);
-        //[ transformTechnique activate ];
         glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, [ transformedVertexStream glID ]);
         glBeginQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query);
         glBeginTransformFeedback(GL_TRIANGLES);
@@ -420,40 +417,6 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
 
 - (void) render
 {
-    /*
-    glEnable(GL_RASTERIZER_DISCARD);
-        [ transformTechnique activate ];
-        glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, [ transformedVertexStream glID ]);
-        glBeginQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query);
-        glBeginTransformFeedback(GL_TRIANGLES);
-            [ gridVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
-        glEndTransformFeedback();
-        glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
-        glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
-    glDisable(GL_RASTERIZER_DISCARD);
-
-    GLuint primitivesWritten = 0;
-    glGetQueryObjectuiv(query, GL_QUERY_RESULT, &primitivesWritten);
-    //NSLog(@"%u", primitivesWritten);
-    */
-
-    /*
-    glBindBuffer(GL_ARRAY_BUFFER, [ transformedVertexStream glID ]);
-    FVector4* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
-    glUnmapBuffer(GL_ARRAY_BUFFER);
-    NSLog(@"%f %f %f %f", ptr[0].x, ptr[0].y, ptr[0].z, ptr[0].w);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    */
-
-    /*
-    glPolygonMode(GL_FRONT, GL_LINE);
-    [ feedbackTechnique activate ];
-    [ transformTarget renderWithPrimitiveType:NpPrimitiveTriangles
-                                   firstIndex:0
-                                    lastIndex:(primitivesWritten * 3) - 1];
-    glPolygonMode(GL_FRONT, GL_FILL);
-    */
-
     [ gridVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
 }
 

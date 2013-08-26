@@ -44,7 +44,6 @@
     NSUInteger resolutionIndex;
     NSUInteger generatorResolutionIndex;
 
-    ODSpectrumSettings spectrumSettings;
     BOOL generateData;
     BOOL transformData;
 
