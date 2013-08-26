@@ -54,7 +54,10 @@
 - (void) setProjector:(ODProjector *)newProjector;
 
 - (void) update:(const double)frameTime;
-- (void) render:(NPTexture2D *)heights;
+
+- (void) renderTFTransform;
+- (void) renderTFFeedback;
+- (void) render;
 
 @end
 

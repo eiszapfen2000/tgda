@@ -69,6 +69,10 @@
     NPEffectVariableFloat3 * lightDirection;
     NPEffectVariableFloat3 * cameraPosition;
 
+    NPEffect * projectedGridEffect;
+    NPEffectTechnique * projectedGridTFTransform;
+    NPEffectTechnique * projectedGridTFFeedback;
+
     // fullscreen quad geometry
     NPFullscreenQuad * fullscreenQuad;
 }

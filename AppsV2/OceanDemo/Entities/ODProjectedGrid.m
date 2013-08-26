@@ -131,7 +131,8 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
     /*
     for (int32_t i = 0; i < 4; i++)
     {
-        NSLog(@"\n%s\n%s", fv3_v_to_string(&(cornerVertices[i])), fv3_v_to_string(&(cornersF[i])));
+        //NSLog(@"\n%s\n%s", fv3_v_to_string(&(cornerVertices[i])), fv3_v_to_string(&(cornersF[i])));
+        NSLog(@"%d %s", i, fv3_v_to_string(&(cornerVertices[i])));
     }
     */
     
@@ -149,6 +150,8 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
     const size_t numberOfVertices = resolution.x * resolution.y;
     const size_t numberOfIndices
         = (resolution.x - 1) * (resolution.y - 1) * 6;
+
+    NSLog(@"%lu", numberOfIndices);
 
     nearPlanePostProjectionPositions = ALLOC_ARRAY(FVertex2, numberOfVertices);
     gridIndices = ALLOC_ARRAY(uint16_t, numberOfIndices);
@@ -237,9 +240,9 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
                                             updateRate:NpBufferDataUpdateOftenUseOften
                                              dataUsage:NpBufferDataCopyGPUToGPU
                                             dataFormat:NpBufferDataFormatFloat32
-                                            components:4
+                                            components:3
                                                   data:[ NSData data ]
-                                            dataLength:numberOfIndices * sizeof(FVector4)
+                                            dataLength:numberOfIndices * sizeof(FVector3)
                                                  error:NULL ];
 
     result
@@ -325,33 +328,6 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
     NSAssert(result, @"");
 
     glGenQueries(1, &query);
-    
-    /*
-    effect
-        = [[[ NPEngineGraphics instance ] effects ]
-                getAssetWithFileName:@"projected_grid.effect" ];
-
-    ASSERT_RETAIN(effect);
-
-    transformTechnique = [ effect techniqueWithName:@"transform" ];
-    feedbackTechnique  = [ effect techniqueWithName:@"feedback" ];
-
-    ASSERT_RETAIN(transformTechnique);
-    ASSERT_RETAIN(feedbackTechnique);
-
-    const char * tfvarying = "gl_Position";
-    glTransformFeedbackVaryings([ transformTechnique glID ], 1, &tfvarying, GL_SEPARATE_ATTRIBS);
-	glLinkProgram([ transformTechnique glID ]);
-
-    NSError * tfLinkError = nil;
-    result = [ NPEffectTechnique checkProgramLinkStatus:[ transformTechnique glID ] error:&tfLinkError ];
-    if ( result == NO )
-    {
-        NPLOG_ERROR(tfLinkError);
-    }
-
-    NSAssert(result, @"TF");
-    */
 
     return self;
 }
@@ -409,7 +385,40 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
     [ self computeBasePlaneCornerVertices ];
 }
 
-- (void) render:(NPTexture2D *)heights
+- (void) renderTFTransform
+{
+    glEnable(GL_RASTERIZER_DISCARD);
+        //[ transformTechnique activate ];
+        glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, [ transformedVertexStream glID ]);
+        glBeginQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query);
+        glBeginTransformFeedback(GL_TRIANGLES);
+            [ gridVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+        glEndTransformFeedback();
+        glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
+        glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
+    glDisable(GL_RASTERIZER_DISCARD);
+}
+
+- (void) renderTFFeedback
+{
+    GLuint primitivesWritten = 0;
+    glGetQueryObjectuiv(query, GL_QUERY_RESULT, &primitivesWritten);
+
+    [ transformTarget
+        renderWithPrimitiveType:NpPrimitiveTriangles
+                     firstIndex:0
+                      lastIndex:(primitivesWritten * 3) - 1];
+
+    /*
+    glBindBuffer(GL_ARRAY_BUFFER, [ transformedVertexStream glID ]);
+    FVector3* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
+    glUnmapBuffer(GL_ARRAY_BUFFER);
+    NSLog(@"%f %f %f", ptr[0].x, ptr[0].y, ptr[0].z);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    */
+}
+
+- (void) render
 {
     /*
     glEnable(GL_RASTERIZER_DISCARD);
