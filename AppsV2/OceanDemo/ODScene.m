@@ -490,8 +490,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ cullingState   setEnabled:YES ];
     [ depthTestState setWriteEnabled:YES ];
     [ depthTestState setEnabled:YES ];
-    [ fillState      setFrontFaceFill:NpPolygonFillLine ];
-    [ fillState      setBackFaceFill:NpPolygonFillLine ];
+    //[ fillState      setFrontFaceFill:NpPolygonFillLine ];
+    //[ fillState      setBackFaceFill:NpPolygonFillLine ];
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
     // clear back buffer
@@ -538,11 +538,13 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     NPEffectVariableMatrix4x4 * w = [ projectedGridEffect variableWithName:@"invMVP"];
     NPEffectVariableFloat * a = [ projectedGridEffect variableWithName:@"area"];
+    NPEffectVariableFloat3 * cP = [ projectedGridEffect variableWithName:@"cameraPosition"];
 
     NSAssert(w != nil && a != nil, @"");
 
     [ w setValue:[testProjector inverseViewProjection]];
     [ a setValue:[ ocean area ]];
+    [ cP setValue:[ camera position ]];
 
     [ projectedGridTFTransform activate ];
     [ projectedGrid renderTFTransform ];
