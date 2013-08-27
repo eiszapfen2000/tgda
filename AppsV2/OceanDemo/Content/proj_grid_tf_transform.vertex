@@ -1,6 +1,7 @@
 #version 150
 
 out vec3 out_position;
+out vec3 out_normal;
 
 void main()
 {
@@ -20,14 +21,20 @@ void main()
     vec3 intersection = point + t * direction;
 
     vec2 texcoord = intersection.xz;
-    //texcoord.y = texcoord.y - (area / 2.0);
     texcoord *= (1.0 / area);
-    //texcoord.y = 1.0 - texcoord.y;
 
     float h = textureLod(heightmap, texcoord, 0.0);
+    float ht = textureLodOffset(heightmap, texcoord, 0.0, ivec2(0,  1));
+    float hb = textureLodOffset(heightmap, texcoord, 0.0, ivec2(0, -1));
+    float hl = textureLodOffset(heightmap, texcoord, 0.0, ivec2(-1, 0));
+    float hr = textureLodOffset(heightmap, texcoord, 0.0, ivec2( 1, 0));
+
     vec4 s  = textureLod(supplemental, texcoord, 0.0);    
 
     out_position.xz = intersection.xz - s.zw;
     out_position.y = h;
+
+    out_normal = vec3((hr - hl) / -2.0, 1.0, (ht - hb) / -2.0);
+
     gl_Position = np_modelviewprojectionmatrix * vec4(intersection, 1.0);
 }
