@@ -47,9 +47,7 @@ float geometry_cook_torrance(vec3 n, vec3 h, vec3 v, vec3 l)
 
 void main()
 {
-    vec2 cell;
-    cell.x = mod(abs(out_ws_position.x), area);
-    cell.y = mod(abs(out_ws_position.z), area);
+    vec2 cell = mod(abs(out_ws_position.xz), area);
 
     if ( cell.x < 5.0 || cell.y < 5.0 )
     {
