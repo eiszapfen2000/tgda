@@ -30,12 +30,13 @@ technique "proj_grid_tf_feedback"
 {
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
+    uniform float area;
     # vertex streams
     in vec3 in_position : 0;
     # fragment streams
     out vec4 target : 0;
     # shaders
-    set vertex shader "default.vertex"
-    set fragment shader "default.fragment"
+    set vertex shader "proj_grid_tf_feedback.vertex"
+    set fragment shader "proj_grid_tf_feedback.fragment"
 }
 

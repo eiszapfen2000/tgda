@@ -387,8 +387,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     currentResolution.y = [ viewport height ];
 
     IVector2 r;
-    r.x = currentResolution.x / 8;
-    r.y = currentResolution.y / 8;
+    r.x = currentResolution.x / 4;
+    r.y = currentResolution.y / 4;
     [ projectedGrid setResolution:r ];
 
     /*
