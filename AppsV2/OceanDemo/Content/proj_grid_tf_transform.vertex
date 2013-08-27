@@ -19,11 +19,10 @@ void main()
     float t = ( plane.w - point_dot_planenormal ) / direction_dot_planenormal;
     vec3 intersection = point + t * direction;
 
-    vec2 texcoord;
-    texcoord.x = mod(abs(intersection.x), area);
-    texcoord.y = mod(abs(intersection.z), area);
+    vec2 texcoord = intersection.xz;
+    //texcoord.y = texcoord.y - (area / 2.0);
     texcoord *= (1.0 / area);
-    texcoord.y = 1.0 - texcoord.y;
+    //texcoord.y = 1.0 - texcoord.y;
 
     float h = textureLod(heightmap, texcoord, 0.0);
     vec4 s  = textureLod(supplemental, texcoord, 0.0);    

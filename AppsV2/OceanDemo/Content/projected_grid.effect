@@ -31,6 +31,21 @@ technique "proj_grid_tf_feedback"
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
     uniform float area;
+    uniform vec3 cameraPosition;
+    uniform sampler2D heightmap
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform sampler2D supplemental
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
     # vertex streams
     in vec3 in_position : 0;
     # fragment streams
