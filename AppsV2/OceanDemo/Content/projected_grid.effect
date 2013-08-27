@@ -10,15 +10,15 @@ technique "proj_grid_tf_transform"
     {
         WrapS = Repeat;
         WrapT = Repeat;
-        MinFilter = Linear;
-        MagFilter = Linear;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
     };
     uniform sampler2D supplemental
     {
         WrapS = Repeat;
         WrapT = Repeat;
-        MinFilter = Linear;
-        MagFilter = Linear;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
     };
     # vertex streams
     in vec2 in_position : 0;
@@ -48,6 +48,7 @@ technique "proj_grid_tf_feedback"
     };
     # vertex streams
     in vec3 in_position : 0;
+    in vec3 in_normal : 1;
     # fragment streams
     out vec4 target : 0;
     # shaders
