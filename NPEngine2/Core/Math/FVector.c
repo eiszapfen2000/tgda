@@ -146,6 +146,16 @@ float fv2_v_length(const FVector2 * const v)
     return sqrtf( V_X(*v) * V_X(*v) + V_Y(*v) * V_Y(*v) );
 }
 
+FVector2 fv2_min(void)
+{
+    return (FVector2){-FLT_MAX, -FLT_MAX};
+}
+
+FVector2 fv2_max(void)
+{
+    return (FVector2){FLT_MAX, FLT_MAX};
+}
+
 FVector2 fv2_v_inverted(const FVector2 * const v)
 {
     return (FVector2){-V_X(*v), -V_Y(*v)};
@@ -381,6 +391,16 @@ float fv3_vv_distance(const FVector3 * const v, const FVector3 * const w)
     FVector3 sub = fv3_vv_sub(v, w);
 
     return fv3_v_length(&sub);
+}
+
+FVector3 fv3_min(void)
+{
+    return (FVector3){-FLT_MAX, -FLT_MAX, -FLT_MAX};
+}
+
+FVector3 fv3_max(void)
+{
+    return (FVector3){FLT_MAX, FLT_MAX, FLT_MAX};
 }
 
 FVector3 fv3_v_inverted(const FVector3 * const v)

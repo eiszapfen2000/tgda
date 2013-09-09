@@ -39,6 +39,16 @@ void iv2_free(IVector2 * v)
     npfreenode_free(v, NP_IVECTOR2_FREELIST);
 }
 
+IVector2 iv2_min(void)
+{
+    return (IVector2){INT_MIN, INT_MIN};
+}
+
+IVector2 iv2_max(void)
+{
+    return (IVector2){INT_MAX, INT_MAX};
+}
+
 
 IVector3 * iv3_alloc(void)
 {
@@ -62,6 +72,17 @@ IVector3 * iv3_alloc_init_with_components(int32_t x, int32_t y, int32_t z)
 
     return tmp;
 }
+
+IVector3 iv3_min(void)
+{
+    return (IVector3){INT_MIN, INT_MIN, INT_MIN};
+}
+
+IVector3 iv3_max(void)
+{
+    return (IVector3){INT_MAX, INT_MAX, INT_MAX};
+}
+
 
 void iv3_free(IVector3 * v)
 {

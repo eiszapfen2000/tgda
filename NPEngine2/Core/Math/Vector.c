@@ -149,6 +149,16 @@ double v2_v_length(const Vector2 * const v)
     return sqrt(v2_v_square_length(v));
 }
 
+Vector2 v2_min(void)
+{
+    return (Vector2){-DBL_MAX, -DBL_MAX};
+}
+
+Vector2 v2_max(void)
+{
+    return (Vector2){DBL_MAX, DBL_MAX};
+}
+
 Vector2 v2_v_inverted(Vector2 * v)
 {
     return (Vector2){-V_X(*v), -V_Y(*v)};
@@ -347,6 +357,16 @@ double v3_v_square_length(const Vector3 * const v)
 double v3_v_length(const Vector3 * const v)
 {
     return sqrt(v3_v_square_length(v));
+}
+
+Vector3 v3_min(void)
+{
+    return (Vector3){-DBL_MAX, -DBL_MAX, -DBL_MAX};
+}
+
+Vector3 v3_max(void)
+{
+    return (Vector3){DBL_MAX, DBL_MAX, DBL_MAX};
 }
 
 Vector3 v3_v_inverted(Vector3 * v)

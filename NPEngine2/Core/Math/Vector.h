@@ -50,6 +50,8 @@ void v2_vv_sub_v(const Vector2 * const v, const Vector2 * const w, Vector2 * res
 double v2_vv_dot_product(const Vector2 * const v, const Vector2 * const w);
 double v2_v_square_length(const Vector2 * const v);
 double v2_v_length(const Vector2 * const v);
+Vector2 v2_min(void);
+Vector2 v2_max(void);
 Vector2 v2_v_inverted(Vector2 * v);
 Vector2 v2_v_normalised(const Vector2 * const v);
 Vector2 v2_vv_add(const Vector2 * const v, const Vector2 * const w);
@@ -83,6 +85,8 @@ void v3_vv_cross_product_v(const Vector3 * const v, const Vector3 * const w, Vec
 double v3_vv_dot_product(const Vector3 * const v, const Vector3 * const w);
 double v3_v_square_length(const Vector3 * const v);
 double v3_v_length(const Vector3 * const v);
+Vector3 v3_min(void);
+Vector3 v3_max(void);
 Vector3 v3_v_inverted(Vector3 * v);
 Vector3 v3_v_normalised(const Vector3 * const v);
 Vector3 v3_vv_add(const Vector3 * const v, const Vector3 * const w);
