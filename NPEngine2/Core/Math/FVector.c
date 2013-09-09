@@ -146,6 +146,11 @@ float fv2_v_length(const FVector2 * const v)
     return sqrtf( V_X(*v) * V_X(*v) + V_Y(*v) * V_Y(*v) );
 }
 
+FVector2 fv2_zero(void)
+{
+    return (FVector2){0.0f, 0.0f};
+}
+
 FVector2 fv2_min(void)
 {
     return (FVector2){-FLT_MAX, -FLT_MAX};
@@ -391,6 +396,11 @@ float fv3_vv_distance(const FVector3 * const v, const FVector3 * const w)
     FVector3 sub = fv3_vv_sub(v, w);
 
     return fv3_v_length(&sub);
+}
+
+FVector3 fv3_zero(void)
+{
+    return (FVector3){0.0f, 0.0f, 0.0f};
 }
 
 FVector3 fv3_min(void)

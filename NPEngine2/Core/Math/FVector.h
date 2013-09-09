@@ -52,6 +52,7 @@ void fv2_vvs_lerp_v(const FVector2 * const v, const FVector2 * const w, const fl
 float fv2_vv_dot_product(const FVector2 * const v, const FVector2 * const w);
 float fv2_v_square_length(const FVector2 * const v);
 float fv2_v_length(const FVector2 * const v);
+FVector2 fv2_zero(void);
 FVector2 fv2_min(void);
 FVector2 fv2_max(void);
 FVector2 fv2_v_inverted(const FVector2 * const v);
@@ -92,6 +93,7 @@ float fv3_v_square_length(const FVector3 * const v);
 float fv3_v_length(const FVector3 * const v);
 float fv3_vv_square_distance(const FVector3 * const v, const FVector3 * const w);
 float fv3_vv_distance(const FVector3 * const v, const FVector3 * const w);
+FVector3 fv3_zero(void);
 FVector3 fv3_min(void);
 FVector3 fv3_max(void);
 FVector3 fv3_v_inverted(const FVector3 * const v);

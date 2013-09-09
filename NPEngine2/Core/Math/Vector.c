@@ -149,6 +149,11 @@ double v2_v_length(const Vector2 * const v)
     return sqrt(v2_v_square_length(v));
 }
 
+Vector2 v2_zero(void)
+{
+    return (Vector2){0.0, 0.0};
+}
+
 Vector2 v2_min(void)
 {
     return (Vector2){-DBL_MAX, -DBL_MAX};
@@ -357,6 +362,11 @@ double v3_v_square_length(const Vector3 * const v)
 double v3_v_length(const Vector3 * const v)
 {
     return sqrt(v3_v_square_length(v));
+}
+
+Vector3 v3_zero(void)
+{
+    return (Vector3){0.0, 0.0, 0.0};
 }
 
 Vector3 v3_min(void)
