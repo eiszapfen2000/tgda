@@ -78,19 +78,16 @@ static NPTimer * timer = nil;
 
     gaussianRNG = odgaussianrng_alloc_init();
 
-    lastSettings.resolution = (IVector2){INT_MAX, INT_MAX};
-    currentSettings.resolution = (IVector2){0, 0};
-
-    lastSettings.size = (Vector2){DBL_MAX, DBL_MAX};
-    currentSettings.size = (Vector2){0.0, 0.0};
-
-    lastSettings.windDirection = (Vector2){DBL_MAX, DBL_MAX};
-    currentSettings.windDirection = (Vector2){0.0, 0.0};
-
+    lastSettings.resolution = iv2_max();
+    lastSettings.size = v2_max();
+    lastSettings.windDirection = v2_max();
     lastSettings.windSpeed = DBL_MAX;
-    currentSettings.windSpeed = 0.0;
-
     lastSettings.dampening = DBL_MAX;
+
+    currentSettings.resolution = iv2_zero();
+    currentSettings.size = v2_zero();
+    currentSettings.windDirection = v2_zero();
+    currentSettings.windSpeed = 0.0;
     currentSettings.dampening = 0.0;
 
     return self;
@@ -280,11 +277,16 @@ static NPTimer * timer = nil;
             H = c + i*d
             xH = (0*c - kx*d) + i*(0*d+kx*c)
             */
-            gradientX[indexForK][0] = -kx * hTilde[1];
-            gradientX[indexForK][1] =  kx * hTilde[0];
 
-            gradientZ[indexForK][0] = -ky * hTilde[1];
-            gradientZ[indexForK][1] =  ky * hTilde[0];
+            if ( gradientX != NULL && gradientZ != NULL )
+            {
+
+                gradientX[indexForK][0] = -kx * hTilde[1];
+                gradientX[indexForK][1] =  kx * hTilde[0];
+
+                gradientZ[indexForK][0] = -ky * hTilde[1];
+                gradientZ[indexForK][1] =  ky * hTilde[0];
+            }
 
             // -i * kx/|k| * H
             /*
@@ -294,21 +296,28 @@ static NPTimer * timer = nil;
                = d*kx/|k| + i*(-c*kx/|k|)
             */
 
-            const float factor = (lengthK != 0.0f) ? 1.0f/lengthK : 0.0f;
+            if ( displacementX != NULL && displacementZ != NULL )
+            {
+                const float factor = (lengthK != 0.0f) ? 1.0f/lengthK : 0.0f;
 
-            displacementX[indexForK][0] = factor * kx * hTilde[1];
-            displacementX[indexForK][1] = factor * kx * hTilde[0] * -1.0f;
+                displacementX[indexForK][0] = factor * kx * hTilde[1];
+                displacementX[indexForK][1] = factor * kx * hTilde[0] * -1.0f;
 
-            displacementZ[indexForK][0] = factor * ky * hTilde[1];
-            displacementZ[indexForK][1] = factor * ky * hTilde[0] * -1.0f;
-
+                displacementZ[indexForK][0] = factor * ky * hTilde[1];
+                displacementZ[indexForK][1] = factor * ky * hTilde[0] * -1.0f;
+            }
         }
     }
 
     OdFrequencySpectrumFloat result
-        = { .timestamp = time, .resolution = resolution, .size = currentSettings.size,
-            .waveSpectrum = frequencySpectrum, .gradientX = gradientX, .gradientZ = gradientZ,
-            .displacementX = displacementX, .displacementZ = displacementZ };
+        = { .timestamp     = time,
+            .resolution    = resolution,
+            .size          = currentSettings.size,
+            .waveSpectrum  = frequencySpectrum,
+            .gradientX     = gradientX,
+            .gradientZ     = gradientZ,
+            .displacementX = displacementX,
+            .displacementZ = displacementZ };
 
     return result;
 }
