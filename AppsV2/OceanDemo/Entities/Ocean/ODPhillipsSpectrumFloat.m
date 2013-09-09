@@ -90,6 +90,9 @@ static NPTimer * timer = nil;
     lastSettings.windSpeed = DBL_MAX;
     currentSettings.windSpeed = 0.0;
 
+    lastSettings.dampening = DBL_MAX;
+    currentSettings.dampening = 0.0;
+
     return self;
 }
 
