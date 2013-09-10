@@ -504,10 +504,9 @@ right way.
 */
 
 - (void) swapFrequencySpectrum:(fftw_complex *)spectrum
+                    resolution:(IVector2)resolution
                      quadrants:(ODQuadrants)quadrants
 {
-    const IVector2 resolution = currentSettings.gradientResolution;
-
     fftw_complex tmp;
     int32_t index, oppositeQuadrantIndex;
 
@@ -563,19 +562,57 @@ right way.
     [ self generateH0:YES ];
 
     OdFrequencySpectrumDouble result = [ self generateHAtTime:time ];
-    [ self swapFrequencySpectrum:result.waveSpectrum quadrants:ODQuadrant_1_3 ];
-    [ self swapFrequencySpectrum:result.waveSpectrum quadrants:ODQuadrant_2_4 ];
+
+    [ self swapFrequencySpectrum:result.waveSpectrum
+                      resolution:currentSettings.geometryResolution
+                       quadrants:ODQuadrant_1_3 ];
+
+    [ self swapFrequencySpectrum:result.waveSpectrum
+                      resolution:currentSettings.geometryResolution
+                       quadrants:ODQuadrant_2_4 ];
 
     if ( result.gradientX != NULL )
     {
-        [ self swapFrequencySpectrum:result.gradientX quadrants:ODQuadrant_1_3 ];
-        [ self swapFrequencySpectrum:result.gradientX quadrants:ODQuadrant_2_4 ];
+        [ self swapFrequencySpectrum:result.gradientX
+                          resolution:currentSettings.gradientResolution
+                           quadrants:ODQuadrant_1_3 ];
+
+        [ self swapFrequencySpectrum:result.gradientX
+                          resolution:currentSettings.gradientResolution
+                           quadrants:ODQuadrant_2_4 ];
     }
 
     if ( result.gradientZ != NULL )
     {
-        [ self swapFrequencySpectrum:result.gradientZ quadrants:ODQuadrant_1_3 ];
-        [ self swapFrequencySpectrum:result.gradientZ quadrants:ODQuadrant_2_4 ];
+        [ self swapFrequencySpectrum:result.gradientZ
+                          resolution:currentSettings.gradientResolution
+                           quadrants:ODQuadrant_1_3 ];
+
+        [ self swapFrequencySpectrum:result.gradientZ
+                          resolution:currentSettings.gradientResolution
+                           quadrants:ODQuadrant_2_4 ];
+    }
+
+    if ( result.displacementX != NULL )
+    {
+        [ self swapFrequencySpectrum:result.displacementX
+                          resolution:currentSettings.geometryResolution
+                           quadrants:ODQuadrant_1_3 ];
+
+        [ self swapFrequencySpectrum:result.displacementX
+                          resolution:currentSettings.geometryResolution
+                           quadrants:ODQuadrant_2_4 ];
+    }
+
+    if ( result.displacementZ != NULL )
+    {
+        [ self swapFrequencySpectrum:result.displacementZ
+                          resolution:currentSettings.geometryResolution
+                           quadrants:ODQuadrant_1_3 ];
+
+        [ self swapFrequencySpectrum:result.displacementZ
+                          resolution:currentSettings.geometryResolution
+                           quadrants:ODQuadrant_2_4 ];
     }
 
     lastSettings = currentSettings;
