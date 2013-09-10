@@ -4,7 +4,8 @@
 
 typedef struct ODSpectrumSettings
 {
-    IVector2 resolution;
+    IVector2 geometryResolution;
+    IVector2 gradientResolution;
     Vector2  size;
     Vector2  windDirection;
     double   windSpeed;
@@ -15,7 +16,8 @@ ODSpectrumSettings;
 typedef struct OdFrequencySpectrumDouble
 {
     double timestamp;
-    IVector2 resolution;
+    IVector2 geometryResolution;
+    IVector2 gradientResolution;
     Vector2  size;
     fftw_complex * waveSpectrum;
     fftw_complex * gradientX;
@@ -28,7 +30,8 @@ OdFrequencySpectrumDouble;
 typedef struct OdFrequencySpectrumFloat
 {
     float timestamp;
-    IVector2 resolution;
+    IVector2 geometryResolution;
+    IVector2 gradientResolution;
     Vector2 size;
     fftwf_complex * waveSpectrum;
     fftwf_complex * gradientX;

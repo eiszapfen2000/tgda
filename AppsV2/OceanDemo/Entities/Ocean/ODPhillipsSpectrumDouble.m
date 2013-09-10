@@ -54,14 +54,19 @@ static double amplitude(Vector2 const * const windDirectionNormalised,
 
     gaussianRNG = odgaussianrng_alloc_init();
 
-    lastSettings.resolution = (IVector2){INT_MAX, INT_MAX};
-    currentSettings.resolution = (IVector2){0, 0};
+    lastSettings.geometryResolution = iv2_max();
+    lastSettings.gradientResolution = iv2_max();
+    lastSettings.size = v2_max();
+    lastSettings.windDirection = v2_max();
+    lastSettings.windSpeed = DBL_MAX;
+    lastSettings.dampening = DBL_MAX;
 
-    lastSettings.size = (Vector2){DBL_MAX, DBL_MAX};
-    currentSettings.size = (Vector2){0.0, 0.0};
-
-    lastSettings.windDirection = (Vector2){DBL_MAX, DBL_MAX};
-    currentSettings.windDirection = (Vector2){0.0, 0.0};
+    currentSettings.geometryResolution = iv2_zero();
+    currentSettings.gradientResolution = iv2_zero();
+    currentSettings.size = v2_zero();
+    currentSettings.windDirection = v2_zero();
+    currentSettings.windSpeed = 0.0;
+    currentSettings.dampening = 0.0;
 
     return self;
 }
@@ -74,26 +79,31 @@ static double amplitude(Vector2 const * const windDirectionNormalised,
     [ super dealloc ];
 }
 
-- (void) generateH0
+- (void) generateH0:(BOOL)force
 {
     if ( currentSettings.size.x == lastSettings.size.x
          && currentSettings.size.y == lastSettings.size.y
          && currentSettings.windDirection.x == lastSettings.windDirection.x
          && currentSettings.windDirection.y == lastSettings.windDirection.y
-         && currentSettings.resolution.x == lastSettings.resolution.x
-         && currentSettings.resolution.y == lastSettings.resolution.y )
+         && currentSettings.windSpeed == lastSettings.windSpeed
+         && currentSettings.dampening == lastSettings.dampening
+         && currentSettings.geometryResolution.x == lastSettings.geometryResolution.x
+         && currentSettings.geometryResolution.y == lastSettings.geometryResolution.y
+         && currentSettings.gradientResolution.x == lastSettings.gradientResolution.x
+         && currentSettings.gradientResolution.y == lastSettings.gradientResolution.y
+         && force == NO )
     {
         return;
     }
 
-    if ( currentSettings.resolution.x != lastSettings.resolution.x
-         || currentSettings.resolution.y != lastSettings.resolution.y )
+    if ( currentSettings.gradientResolution.x != lastSettings.gradientResolution.x
+         || currentSettings.gradientResolution.y != lastSettings.gradientResolution.y )
     {
         FFTW_SAFE_FREE(H0);
-	    H0 = fftw_alloc_complex(currentSettings.resolution.x * currentSettings.resolution.y);
+	    H0 = fftw_alloc_complex(currentSettings.gradientResolution.x * currentSettings.gradientResolution.y);
     }
 
-    const IVector2 resolution = currentSettings.resolution;
+    const IVector2 resolution = currentSettings.gradientResolution;
     const Vector2 size = currentSettings.size;
     const Vector2 windDirection = currentSettings.windDirection;
     const Vector2 windDirectionNormalised = v2_v_normalised(&windDirection);
@@ -133,7 +143,7 @@ static double amplitude(Vector2 const * const windDirectionNormalised,
 
 - (OdFrequencySpectrumDouble) generateHAtTime:(const double)time
 {
-    const IVector2 resolution = currentSettings.resolution;
+    const IVector2 resolution = currentSettings.gradientResolution;
     const Vector2 size = currentSettings.size;
 
 	fftw_complex * frequencySpectrum
@@ -200,8 +210,15 @@ static double amplitude(Vector2 const * const windDirectionNormalised,
     }
 
     OdFrequencySpectrumDouble result
-        = {.timestamp = time, .resolution = resolution, .size = currentSettings.size, .waveSpectrum = frequencySpectrum,
-           .gradientX = NULL, .gradientZ = NULL };
+        = { .timestamp     = time,
+            .geometryResolution = resolution,
+            .gradientResolution = resolution,
+            .size          = currentSettings.size,
+            .waveSpectrum  = frequencySpectrum,
+            .gradientX     = NULL,
+            .gradientZ     = NULL,
+            .displacementX = NULL,
+            .displacementZ = NULL };
 
     return result;
 }
@@ -213,7 +230,7 @@ static double amplitude(Vector2 const * const windDirectionNormalised,
 
 - (OdFrequencySpectrumDouble) generateHHCAtTime:(const double)time
 {
-    const IVector2 resolution = currentSettings.resolution;
+    const IVector2 resolution = currentSettings.gradientResolution;
     const Vector2 size = currentSettings.size;
 
     const IVector2 resolutionHC = { resolution.x, (resolution.y / 2) + 1 };
@@ -447,8 +464,15 @@ static double amplitude(Vector2 const * const windDirectionNormalised,
     }
 
     OdFrequencySpectrumDouble result
-        = {.timestamp = time, .resolution = resolution, .size = currentSettings.size, .waveSpectrum = frequencySpectrumHC,
-           .gradientX = NULL, .gradientZ = NULL };
+        = { .timestamp     = time,
+            .geometryResolution = resolution,
+            .gradientResolution = resolution,
+            .size          = currentSettings.size,
+            .waveSpectrum  = frequencySpectrumHC,
+            .gradientX     = NULL,
+            .gradientZ     = NULL,
+            .displacementX = NULL,
+            .displacementZ = NULL };
 
     return result;
 }
@@ -482,7 +506,7 @@ right way.
 - (void) swapFrequencySpectrum:(fftw_complex *)spectrum
                      quadrants:(ODQuadrants)quadrants
 {
-    const IVector2 resolution = currentSettings.resolution;
+    const IVector2 resolution = currentSettings.gradientResolution;
 
     fftw_complex tmp;
     int32_t index, oppositeQuadrantIndex;
@@ -536,7 +560,7 @@ right way.
 {
     currentSettings = settings;
 
-    [ self generateH0 ];
+    [ self generateH0:YES ];
 
     OdFrequencySpectrumDouble result = [ self generateHAtTime:time ];
     [ self swapFrequencySpectrum:result.waveSpectrum quadrants:ODQuadrant_1_3 ];
@@ -564,7 +588,7 @@ right way.
 {
     currentSettings = settings;
 
-    [ self generateH0 ];
+    [ self generateH0:YES ];
     OdFrequencySpectrumDouble result= [ self generateHHCAtTime:time ];
     lastSettings = currentSettings;
 
