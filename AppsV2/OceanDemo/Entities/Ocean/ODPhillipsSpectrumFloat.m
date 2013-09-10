@@ -620,8 +620,6 @@ right way.
                     resolution:(IVector2)resolution
                      quadrants:(ODQuadrants)quadrants
 {
-    //const IVector2 resolution = currentSettings.gradientResolution;
-
     fftwf_complex tmp;
     int32_t index, oppositeQuadrantIndex;
 
