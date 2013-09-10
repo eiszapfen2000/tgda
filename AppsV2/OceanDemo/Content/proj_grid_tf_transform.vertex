@@ -23,11 +23,18 @@ void main()
     vec2 texcoord = intersection.xz;
     texcoord *= (1.0 / area);
 
+    // due to fftw memory layout textures are upside down
+    // it does not matter for heights, but displacement as well
+    // gradient in z direction have to invert sign
+
     float h = textureLod(heightmap, texcoord, 0.0).x;
+
+    /*
     float ht = textureLodOffset(heightmap, texcoord, 0.0, ivec2(0,  1)).x;
     float hb = textureLodOffset(heightmap, texcoord, 0.0, ivec2(0, -1)).x;
     float hl = textureLodOffset(heightmap, texcoord, 0.0, ivec2(-1, 0)).x;
     float hr = textureLodOffset(heightmap, texcoord, 0.0, ivec2( 1, 0)).x;
+    */
 
     vec4 s  = textureLod(supplemental, texcoord, 0.0);    
 
