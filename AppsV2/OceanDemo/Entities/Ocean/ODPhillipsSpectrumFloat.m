@@ -78,13 +78,15 @@ static NPTimer * timer = nil;
 
     gaussianRNG = odgaussianrng_alloc_init();
 
-    lastSettings.resolution = iv2_max();
+    lastSettings.geometryResolution = iv2_max();
+    lastSettings.gradientResolution = iv2_max();
     lastSettings.size = v2_max();
     lastSettings.windDirection = v2_max();
     lastSettings.windSpeed = DBL_MAX;
     lastSettings.dampening = DBL_MAX;
 
-    currentSettings.resolution = iv2_zero();
+    currentSettings.geometryResolution = iv2_zero();
+    currentSettings.gradientResolution = iv2_zero();
     currentSettings.size = v2_zero();
     currentSettings.windDirection = v2_zero();
     currentSettings.windSpeed = 0.0;
@@ -110,8 +112,10 @@ static NPTimer * timer = nil;
          && currentSettings.windDirection.y == lastSettings.windDirection.y
          && currentSettings.windSpeed == lastSettings.windSpeed
          && currentSettings.dampening == lastSettings.dampening
-         && currentSettings.resolution.x == lastSettings.resolution.x
-         && currentSettings.resolution.y == lastSettings.resolution.y
+         && currentSettings.geometryResolution.x == lastSettings.geometryResolution.x
+         && currentSettings.geometryResolution.y == lastSettings.geometryResolution.y
+         && currentSettings.gradientResolution.x == lastSettings.gradientResolution.x
+         && currentSettings.gradientResolution.y == lastSettings.gradientResolution.y
          && force == NO )
     {
         return;
@@ -119,17 +123,17 @@ static NPTimer * timer = nil;
 
     BOOL generateRandomNumbers = force;
 
-    if ( currentSettings.resolution.x != lastSettings.resolution.x
-         || currentSettings.resolution.y != lastSettings.resolution.y )
+    if ( currentSettings.gradientResolution.x != lastSettings.gradientResolution.x
+         || currentSettings.gradientResolution.y != lastSettings.gradientResolution.y )
     {
         FFTW_SAFE_FREE(H0);
         SAFE_FREE(randomNumbers);
-	    H0 = fftwf_alloc_complex(currentSettings.resolution.x * currentSettings.resolution.y);
-	    randomNumbers = ALLOC_ARRAY(double, 2 * currentSettings.resolution.x * currentSettings.resolution.y);
+	    H0 = fftwf_alloc_complex(currentSettings.gradientResolution.x * currentSettings.gradientResolution.y);
+	    randomNumbers = ALLOC_ARRAY(double, 2 * currentSettings.gradientResolution.x * currentSettings.gradientResolution.y);
         generateRandomNumbers = YES;
     }
 
-    const IVector2 resolution = currentSettings.resolution;
+    const IVector2 resolution = currentSettings.gradientResolution;
     const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
     const FVector2 windDirection = (FVector2){currentSettings.windDirection.x, currentSettings.windDirection.y};
     const FVector2 windDirectionNormalised = fv2_v_normalised(&windDirection);
@@ -179,22 +183,22 @@ static NPTimer * timer = nil;
 
 - (OdFrequencySpectrumFloat) generateHAtTime:(const float)time
 {
-    const IVector2 resolution = currentSettings.resolution;
+    const IVector2 resolution = currentSettings.gradientResolution;
     const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
 
 	fftwf_complex * frequencySpectrum
         = fftwf_alloc_complex(resolution.x * resolution.y);
 
-	fftwf_complex * gradientX
+	fftwf_complex * gradientX //= NULL;
         = fftwf_alloc_complex(resolution.x * resolution.y);
 
-	fftwf_complex * gradientZ
+	fftwf_complex * gradientZ //= NULL;
         = fftwf_alloc_complex(resolution.x * resolution.y);
 
-    fftwf_complex * displacementX
+    fftwf_complex * displacementX //= NULL;
         = fftwf_alloc_complex(resolution.x * resolution.y);
 
-    fftwf_complex * displacementZ
+    fftwf_complex * displacementZ //= NULL;
         = fftwf_alloc_complex(resolution.x * resolution.y);
 
     const float n = -(resolution.x / 2.0f);
@@ -311,7 +315,8 @@ static NPTimer * timer = nil;
 
     OdFrequencySpectrumFloat result
         = { .timestamp     = time,
-            .resolution    = resolution,
+            .geometryResolution = resolution,
+            .gradientResolution = resolution,
             .size          = currentSettings.size,
             .waveSpectrum  = frequencySpectrum,
             .gradientX     = gradientX,
@@ -329,7 +334,7 @@ static NPTimer * timer = nil;
 
 - (OdFrequencySpectrumFloat) generateHHCAtTime:(const float)time
 {
-    const IVector2 resolution = currentSettings.resolution;
+    const IVector2 resolution = currentSettings.gradientResolution;
     const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
 
     const IVector2 resolutionHC = { (resolution.x / 2) + 1, resolution.y };
@@ -572,8 +577,15 @@ static NPTimer * timer = nil;
     }
 
     OdFrequencySpectrumFloat result
-        = {.timestamp = time, .resolution = resolution, .size = currentSettings.size, .waveSpectrum = frequencySpectrumHC,
-           .gradientX = NULL, .gradientZ = NULL };
+        = { .timestamp = time,
+            .geometryResolution = resolution,
+            .gradientResolution = resolution,
+            .size = currentSettings.size,
+            .waveSpectrum = frequencySpectrumHC,
+            .gradientX = NULL,
+            .gradientZ = NULL,
+            .displacementX = NULL,
+            .displacementZ = NULL };
 
     return result;
 }
@@ -607,7 +619,7 @@ right way.
 - (void) swapFrequencySpectrum:(fftwf_complex *)spectrum
                      quadrants:(ODQuadrants)quadrants
 {
-    const IVector2 resolution = currentSettings.resolution;
+    const IVector2 resolution = currentSettings.gradientResolution;
 
     fftwf_complex tmp;
     int32_t index, oppositeQuadrantIndex;

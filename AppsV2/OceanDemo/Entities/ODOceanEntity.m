@@ -245,7 +245,8 @@ static size_t index_for_resolution(int32_t resolution)
             }
 
             const int32_t res = resolutions[resIndex];
-            settings.resolution = (IVector2){res, res};
+            settings.geometryResolution = (IVector2){res, res};
+            settings.gradientResolution = (IVector2){res, res};
 
             [ timer update ];
 
@@ -321,8 +322,9 @@ static size_t index_for_resolution(int32_t resolution)
             if ( hfCount < 16 )
             {
                 OdFrequencySpectrumFloat item
-                    = { .timestamp     = FLT_MAX,
-                        .resolution    = {.x = 0, .y = 0},
+                    = { .timestamp = FLT_MAX,
+                        .geometryResolution = {.x = 0, .y = 0},
+                        .gradientResolution = {.x = 0, .y = 0},
                         .size          = {.x = 0.0, .y = 0.0},
                         .waveSpectrum  = NULL,
                         .gradientX     = NULL,
@@ -351,8 +353,10 @@ static size_t index_for_resolution(int32_t resolution)
 
                 BOOL process = YES;
 
-                if ( item.timestamp == FLT_MAX || item.resolution.x == 0 || item.resolution.y == 0
-                     || item.size.x == 0.0 || item.size.y == 0.0 || item.waveSpectrum == NULL )
+                if ( item.timestamp == FLT_MAX || item.geometryResolution.x == 0
+                     || item.geometryResolution.y == 0 || item.gradientResolution.x == 0
+                     || item.gradientResolution.y == 0 || item.size.x == 0.0
+                     || item.size.y == 0.0 || item.waveSpectrum == NULL )
                 {
                     process = NO;
                 }
@@ -363,14 +367,14 @@ static size_t index_for_resolution(int32_t resolution)
 
                     {
                         [ heightfieldQueueMutex lock ];
-                        result = heightfield_alloc_init_with_resolution_and_size(item.resolution, item.size);
+                        result = heightfield_alloc_init_with_resolution_and_size(item.gradientResolution, item.size);
                         [ heightfieldQueueMutex unlock ];
                     }
 
-                    const size_t index = index_for_resolution(item.resolution.x);
-                    const size_t numberOfElements = item.resolution.x * item.resolution.y;
+                    const size_t index = index_for_resolution(item.gradientResolution.x);
+                    const size_t numberOfElements = item.gradientResolution.x * item.gradientResolution.y;
 
-                    NSAssert1(index != SIZE_MAX, @"Invalid resolution %d", item.resolution.x);
+                    NSAssert1(index != SIZE_MAX, @"Invalid resolution %d", item.gradientResolution.x);
 
                     //NSLog(@"TRANSFORM %f", item.timestamp);
 
