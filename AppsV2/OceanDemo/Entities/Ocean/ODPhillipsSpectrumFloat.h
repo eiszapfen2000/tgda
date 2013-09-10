@@ -7,6 +7,7 @@
 {
     fftwf_complex * H0;
     double * randomNumbers;
+    IVector2 H0Resolution;
     OdGaussianRng * gaussianRNG;
     ODSpectrumSettings lastSettings;
     ODSpectrumSettings currentSettings;

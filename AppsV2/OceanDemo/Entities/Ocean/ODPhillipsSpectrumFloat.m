@@ -75,6 +75,7 @@ static NPTimer * timer = nil;
 
     H0 = NULL;
     randomNumbers = NULL;
+    H0Resolution = iv2_zero();
 
     gaussianRNG = odgaussianrng_alloc_init();
 
@@ -123,17 +124,28 @@ static NPTimer * timer = nil;
 
     BOOL generateRandomNumbers = force;
 
-    if ( currentSettings.gradientResolution.x != lastSettings.gradientResolution.x
+    if ( currentSettings.geometryResolution.x != lastSettings.geometryResolution.x
+         || currentSettings.geometryResolution.y != lastSettings.geometryResolution.y
+         || currentSettings.gradientResolution.x != lastSettings.gradientResolution.x
          || currentSettings.gradientResolution.y != lastSettings.gradientResolution.y )
     {
-        FFTW_SAFE_FREE(H0);
-        SAFE_FREE(randomNumbers);
-	    H0 = fftwf_alloc_complex(currentSettings.gradientResolution.x * currentSettings.gradientResolution.y);
-	    randomNumbers = ALLOC_ARRAY(double, 2 * currentSettings.gradientResolution.x * currentSettings.gradientResolution.y);
-        generateRandomNumbers = YES;
+        IVector2 resolution;
+        resolution.x = MAX(currentSettings.geometryResolution.x, currentSettings.gradientResolution.x);
+        resolution.y = MAX(currentSettings.geometryResolution.y, currentSettings.gradientResolution.y);
+
+        if ( resolution.x != H0Resolution.x || resolution.y != H0Resolution.y )
+        {
+            FFTW_SAFE_FREE(H0);
+            SAFE_FREE(randomNumbers);
+	        H0 = fftwf_alloc_complex(resolution.x * resolution.y);
+	        randomNumbers = ALLOC_ARRAY(double, 2 * resolution.x * resolution.y);
+
+            H0Resolution = resolution;
+            generateRandomNumbers = YES;
+        }
     }
 
-    const IVector2 resolution = currentSettings.gradientResolution;
+    const IVector2 resolution = H0Resolution;
     const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
     const FVector2 windDirection = (FVector2){currentSettings.windDirection.x, currentSettings.windDirection.y};
     const FVector2 windDirectionNormalised = fv2_v_normalised(&windDirection);
