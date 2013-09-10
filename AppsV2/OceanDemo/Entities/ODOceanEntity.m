@@ -63,7 +63,8 @@ static const Vector2 defaultWindDirection = {1.0, 0.0};
 static const double defaultSize = 80.0;
 static const double defaultDampening = 0.001;
 static const int32_t resolutions[8] = {8, 16, 32, 64, 128, 256, 512, 1024};
-static const NSUInteger defaultResolutionIndex = 4;
+static const NSUInteger defaultGeometryResolutionIndex = 4;
+static const NSUInteger defaultGradientResolutionIndex = 4;
 static const double OneDivSixty = 1.0 / 60.0;
 
 static size_t index_for_resolution(int32_t resolution)
@@ -230,7 +231,8 @@ static size_t index_for_resolution(int32_t resolution)
         if ( [[ NSThread currentThread ] isCancelled ] == NO )
         {
             ODSpectrumSettings settings;
-            NSUInteger resIndex;
+            NSUInteger geometryResIndex;
+            NSUInteger gradientResIndex;
 
             {
                 [ settingsMutex lock ];
@@ -239,14 +241,18 @@ static size_t index_for_resolution(int32_t resolution)
                 settings.windSpeed = generatorWindSpeed;
                 settings.size = (Vector2){generatorSize, generatorSize};
                 settings.dampening = generatorDampening;
-                resIndex = generatorResolutionIndex;
+                geometryResIndex = generatorGeometryResolutionIndex;
+                gradientResIndex = generatorGradientResolutionIndex;
 
                 [ settingsMutex unlock ];
             }
 
-            const int32_t res = resolutions[resIndex];
-            settings.geometryResolution = (IVector2){res, res};
-            settings.gradientResolution = (IVector2){res, res};
+            const int32_t geometryRes = resolutions[geometryResIndex];
+            //const int32_t gradientRes = resolutions[gradientResIndex];
+            #warning FIXME
+            const int32_t gradientRes = geometryRes;
+            settings.geometryResolution = (IVector2){geometryRes, geometryRes};
+            settings.gradientResolution = (IVector2){gradientRes, gradientRes};
 
             [ timer update ];
 
@@ -486,8 +492,9 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     generateData  = NO;
     transformData = NO;
 
-    lastResolutionIndex = ULONG_MAX;
-    resolutionIndex = generatorResolutionIndex = defaultResolutionIndex;
+    lastGeometryResolutionIndex = lastGradientResolutionIndex = ULONG_MAX;
+    geometryResolutionIndex = generatorGeometryResolutionIndex = defaultGeometryResolutionIndex;
+    gradientResolutionIndex = generatorGradientResolutionIndex = defaultGradientResolutionIndex;
 
     windDirection = defaultWindDirection;
 
@@ -732,12 +739,14 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     if ( windSpeed != lastWindSpeed
          || size != lastSize
          || dampening != lastDampening
-         || resolutionIndex != lastResolutionIndex )
+         || geometryResolutionIndex != lastGeometryResolutionIndex
+         || gradientResolutionIndex != lastGradientResolutionIndex )
     {
         lastWindSpeed = windSpeed;
         lastSize = size;
         lastDampening = dampening;
-        lastResolutionIndex = resolutionIndex;
+        lastGeometryResolutionIndex = geometryResolutionIndex;
+        lastGradientResolutionIndex = gradientResolutionIndex;
         settingsChanged = YES;
     }
 
@@ -747,7 +756,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
         generatorWindSpeed = windSpeed;
         generatorSize = size;
         generatorDampening = dampening;
-        generatorResolutionIndex = resolutionIndex;
+        generatorGeometryResolutionIndex = geometryResolutionIndex;
+        generatorGradientResolutionIndex = gradientResolutionIndex;
         [ settingsMutex unlock ];
 
         [ spectrumQueueMutex lock ];

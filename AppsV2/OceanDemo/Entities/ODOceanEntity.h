@@ -40,9 +40,12 @@
     double lastDampening;
     double dampening;
     double generatorDampening;
-    NSUInteger lastResolutionIndex;
-    NSUInteger resolutionIndex;
-    NSUInteger generatorResolutionIndex;
+    NSUInteger lastGeometryResolutionIndex;
+    NSUInteger geometryResolutionIndex;
+    NSUInteger generatorGeometryResolutionIndex;
+    NSUInteger lastGradientResolutionIndex;
+    NSUInteger gradientResolutionIndex;
+    NSUInteger generatorGradientResolutionIndex;
 
     BOOL generateData;
     BOOL transformData;
