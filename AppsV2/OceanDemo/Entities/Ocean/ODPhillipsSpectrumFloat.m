@@ -351,8 +351,8 @@ static NPTimer * timer = nil;
 
     OdFrequencySpectrumFloat result
         = { .timestamp     = time,
-            .geometryResolution = resolution,
-            .gradientResolution = resolution,
+            .geometryResolution = geometryResolution,
+            .gradientResolution = gradientResolution,
             .size          = currentSettings.size,
             .waveSpectrum  = frequencySpectrum,
             .gradientX     = gradientX,

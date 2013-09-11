@@ -27,17 +27,21 @@ OdHeightfieldData * heightfield_alloc_init(void)
     return result;
 }
 
-OdHeightfieldData * heightfield_alloc_init_with_resolution_and_size(IVector2 resolution, Vector2 size)
+OdHeightfieldData * heightfield_alloc_init_with_resolutions_and_size(
+    IVector2 geometryResolution, IVector2 gradientResolution,
+    Vector2 size)
 {
     OdHeightfieldData * result
         = (OdHeightfieldData *)npfreenode_alloc(OD_HEIGHTFIELDDATA_FREELIST);
 
     memset(result, 0, sizeof(OdHeightfieldData));
 
-    result->resolution = resolution;
+    result->geometryResolution = geometryResolution;
+    result->gradientResolution = gradientResolution;
     result->size = size;
-    result->heights32f = fftwf_alloc_real(resolution.x * resolution.y);
-    result->supplementalData32f = (FVector4 *)fftwf_alloc_real(resolution.x * resolution.y * 4);
+    result->heights32f = fftwf_alloc_real(geometryResolution.x * geometryResolution.y);
+    result->displacements32f = (FVector2 *)fftwf_alloc_real(geometryResolution.x * geometryResolution.y * 2);
+    result->gradients32f = (FVector2 *)fftwf_alloc_real(gradientResolution.x * gradientResolution.y * 2);
 
     return result;
 }
@@ -47,7 +51,8 @@ void heightfield_free(OdHeightfieldData * heightfield)
     if ( heightfield != NULL )
     {
         fftwf_free(heightfield->heights32f);
-        fftwf_free(heightfield->supplementalData32f);
+        fftwf_free(heightfield->displacements32f);
+        fftwf_free(heightfield->gradients32f);
 
         npfreenode_free(heightfield, OD_HEIGHTFIELDDATA_FREELIST);
     }
@@ -60,7 +65,8 @@ void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield)
     float maxSurfaceHeight = -FLT_MAX;
     float minSurfaceHeight =  FLT_MAX;
 
-    int32_t numberOfElements = heightfield->resolution.x * heightfield->resolution.y;
+    int32_t numberOfElements
+        = heightfield->geometryResolution.x * heightfield->geometryResolution.y;
 
     for ( int32_t i = 0; i < numberOfElements; i++ )
     {
@@ -74,7 +80,7 @@ void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield)
 
 void heightfield_hf_compute_min_max_gradients(OdHeightfieldData * heightfield)
 {
-    assert( heightfield->supplementalData32f != NULL );
+    assert( heightfield->gradients32f != NULL );
 
     float maxGradientX = -FLT_MAX;
     float maxGradientZ = -FLT_MAX;
@@ -83,15 +89,15 @@ void heightfield_hf_compute_min_max_gradients(OdHeightfieldData * heightfield)
     float minGradientZ = FLT_MAX;
 
     const int32_t numberOfElements
-        = heightfield->resolution.x * heightfield->resolution.y;
+        = heightfield->gradientResolution.x * heightfield->gradientResolution.y;
 
     for ( int32_t i = 0; i < numberOfElements; i++ )
     {
-        maxGradientX = MAX(maxGradientX, heightfield->supplementalData32f[i].x);
-        maxGradientZ = MAX(maxGradientZ, heightfield->supplementalData32f[i].y);
+        maxGradientX = MAX(maxGradientX, heightfield->gradients32f[i].x);
+        maxGradientZ = MAX(maxGradientZ, heightfield->gradients32f[i].y);
 
-        minGradientX = MIN(minGradientX, heightfield->supplementalData32f[i].x);
-        minGradientZ = MIN(minGradientZ, heightfield->supplementalData32f[i].y);
+        minGradientX = MIN(minGradientX, heightfield->gradients32f[i].x);
+        minGradientZ = MIN(minGradientZ, heightfield->gradients32f[i].y);
     }
 
     heightfield->minGradientX = minGradientX;
@@ -102,7 +108,7 @@ void heightfield_hf_compute_min_max_gradients(OdHeightfieldData * heightfield)
 
 void heightfield_hf_compute_min_max_displacements(OdHeightfieldData * heightfield)
 {
-    assert( heightfield->supplementalData32f != NULL );
+    assert( heightfield->displacements32f != NULL );
 
     float maxDisplacementX = -FLT_MAX;
     float maxDisplacementZ = -FLT_MAX;
@@ -111,15 +117,15 @@ void heightfield_hf_compute_min_max_displacements(OdHeightfieldData * heightfiel
     float minDisplacementZ = FLT_MAX;
 
     const int32_t numberOfElements
-        = heightfield->resolution.x * heightfield->resolution.y;
+        = heightfield->geometryResolution.x * heightfield->geometryResolution.y;
 
     for ( int32_t i = 0; i < numberOfElements; i++ )
     {
-        maxDisplacementX = MAX(maxDisplacementX, heightfield->supplementalData32f[i].z);
-        maxDisplacementZ = MAX(maxDisplacementZ, heightfield->supplementalData32f[i].w);
+        maxDisplacementX = MAX(maxDisplacementX, heightfield->displacements32f[i].x);
+        maxDisplacementZ = MAX(maxDisplacementZ, heightfield->displacements32f[i].y);
 
-        minDisplacementX = MIN(minDisplacementX, heightfield->supplementalData32f[i].z);
-        minDisplacementZ = MIN(minDisplacementZ, heightfield->supplementalData32f[i].w);
+        minDisplacementX = MIN(minDisplacementX, heightfield->displacements32f[i].x);
+        minDisplacementZ = MIN(minDisplacementZ, heightfield->displacements32f[i].y);
     }
 
     heightfield->minDisplacementX = minDisplacementX;

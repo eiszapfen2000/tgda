@@ -5,11 +5,13 @@
 
 typedef struct OdHeightfieldData
 {
-    IVector2 resolution;
+    IVector2 geometryResolution;
+    IVector2 gradientResolution;
     Vector2 size;
     double timeStamp;
     float * heights32f;
-    FVector4 * supplementalData32f; // x = gradient x, y = gradient z, z = displacement x, w = displacement z
+    FVector2 * displacements32f; //  x = displacement x, y = displacement z
+    FVector2 * gradients32f; // x = gradient x, y = gradient z    
     float minHeight;
     float maxHeight;
     float minGradientX;
@@ -27,7 +29,10 @@ void od_heightfielddata_initialise(void);
 
 OdHeightfieldData * heightfield_alloc(void);
 OdHeightfieldData * heightfield_alloc_init(void);
-OdHeightfieldData * heightfield_alloc_init_with_resolution_and_size(IVector2 resolution, Vector2 size);
+OdHeightfieldData * heightfield_alloc_init_with_resolutions_and_size(
+    IVector2 geometryResolution, IVector2 gradientResolution,
+    Vector2 size);
+
 void heightfield_free(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max_gradients(OdHeightfieldData * heightfield);
