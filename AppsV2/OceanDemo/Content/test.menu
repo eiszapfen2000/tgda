@@ -35,7 +35,7 @@
             Position = ("140", "20" );
             Size = ( "100", "100" );
             TextSize = "16";
-            Texture = "Height Texture Supplements";
+            Texture = "Height Texture Gradient";
             TargetObject = "Ocean";
             TargetProperty = "gradientXRange";
             Channels = ("y", "n", "n", "n");
@@ -49,7 +49,7 @@
             Position = ("260", "20" );
             Size = ( "100", "100" );
             TextSize = "16";
-            Texture = "Height Texture Supplements";
+            Texture = "Height Texture Gradient";
             TargetObject = "Ocean";
             TargetProperty = "gradientZRange";
             Channels = ("n", "y", "n", "n");
@@ -63,10 +63,10 @@
             Position = ("380", "20" );
             Size = ( "100", "100" );
             TextSize = "16";
-            Texture = "Height Texture Supplements";
+            Texture = "Height Texture Displacement";
             TargetObject = "Ocean";
             TargetProperty = "displacementXRange";
-            Channels = ("n", "n", "y", "n");
+            Channels = ("y", "n", "n", "n");
         };
 
         PDisplacementZ =
@@ -77,10 +77,10 @@
             Position = ("500", "20" );
             Size = ( "100", "100" );
             TextSize = "16";
-            Texture = "Height Texture Supplements";
+            Texture = "Height Texture Displacement";
             TargetObject = "Ocean";
             TargetProperty = "displacementZRange";
-            Channels = ("n", "n", "n", "y");
+            Channels = ("n", "y", "n", "n");
         };
 
         PGroup =
