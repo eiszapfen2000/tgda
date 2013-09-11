@@ -29,22 +29,23 @@ void main()
 
     float h = textureLod(heightmap, texcoord, 0.0).x;
 
-    /*
+    
     float ht = textureLodOffset(heightmap, texcoord, 0.0, ivec2(0,  1)).x;
     float hb = textureLodOffset(heightmap, texcoord, 0.0, ivec2(0, -1)).x;
     float hl = textureLodOffset(heightmap, texcoord, 0.0, ivec2(-1, 0)).x;
     float hr = textureLodOffset(heightmap, texcoord, 0.0, ivec2( 1, 0)).x;
-    */
+    
+    vec2 d  = textureLod(displacement, texcoord, 0.0).xy;
+    vec2 g  = textureLod(gradient, texcoord, 0.0).xy;
 
-    vec4 s  = textureLod(supplemental, texcoord, 0.0);    
-
+    const float lamda = 0.5;
     out_position.xz = intersection.xz;
-    out_position.x -= s.z;
-    out_position.z += s.w;
+    out_position.x -= lamda * d.x;
+    out_position.z += lamda * d.y;
     out_position.y = h;
 
     //out_normal = vec3((hr - hl) / -2.0, 1.0, (ht - hb) / -2.0);
-    out_normal = vec3(-s.x, 1.0, s.y);
+    out_normal = vec3(-g.x, 1.0, g.y);
 
     gl_Position = np_modelviewprojectionmatrix * vec4(intersection, 1.0);
 }

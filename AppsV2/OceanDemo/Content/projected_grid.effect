@@ -13,13 +13,21 @@ technique "proj_grid_tf_transform"
         MinFilter = Nearest;
         MagFilter = Nearest;
     };
-    uniform sampler2D supplemental
+    uniform sampler2D displacement
     {
         WrapS = Repeat;
         WrapT = Repeat;
         MinFilter = Nearest;
         MagFilter = Nearest;
     };
+    uniform sampler2D gradient
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+
     # vertex streams
     in vec2 in_position : 0;
     # shaders
@@ -39,7 +47,14 @@ technique "proj_grid_tf_feedback"
         MinFilter = Nearest;
         MagFilter = Nearest;
     };
-    uniform sampler2D supplemental
+    uniform sampler2D displacement
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform sampler2D gradient
     {
         WrapS = Repeat;
         WrapT = Repeat;
