@@ -59,12 +59,12 @@ static void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex
 }
 
 static const double defaultWindSpeed = 4.5;
-static const Vector2 defaultWindDirection = {1.0, 0.0};
+static const Vector2 defaultWindDirection = {0.0, 1.0};
 static const double defaultSize = 80.0;
 static const double defaultDampening = 0.001;
 static const int32_t resolutions[8] = {8, 16, 32, 64, 128, 256, 512, 1024};
 static const NSUInteger defaultGeometryResolutionIndex = 4;
-static const NSUInteger defaultGradientResolutionIndex = 4;
+static const NSUInteger defaultGradientResolutionIndex = 5;
 static const double OneDivSixty = 1.0 / 60.0;
 
 static size_t index_for_resolution(int32_t resolution)
@@ -248,9 +248,7 @@ static size_t index_for_resolution(int32_t resolution)
             }
 
             const int32_t geometryRes = resolutions[geometryResIndex];
-            //const int32_t gradientRes = resolutions[gradientResIndex];
-            #warning FIXME
-            const int32_t gradientRes = geometryRes;
+            const int32_t gradientRes = resolutions[gradientResIndex];
             settings.geometryResolution = (IVector2){geometryRes, geometryRes};
             settings.gradientResolution = (IVector2){gradientRes, gradientRes};
 
@@ -373,22 +371,31 @@ static size_t index_for_resolution(int32_t resolution)
 
                     {
                         [ heightfieldQueueMutex lock ];
-                        result = heightfield_alloc_init_with_resolution_and_size(item.gradientResolution, item.size);
+                        result
+                            = heightfield_alloc_init_with_resolutions_and_size(
+                                item.geometryResolution,
+                                item.gradientResolution,
+                                item.size);
+
                         [ heightfieldQueueMutex unlock ];
                     }
 
-                    const size_t index = index_for_resolution(item.gradientResolution.x);
-                    const size_t numberOfElements = item.gradientResolution.x * item.gradientResolution.y;
+                    const size_t geometryIndex = index_for_resolution(item.geometryResolution.x);
+                    const size_t gradientIndex = index_for_resolution(item.gradientResolution.x);
 
-                    NSAssert1(index != SIZE_MAX, @"Invalid resolution %d", item.gradientResolution.x);
+                    const size_t numberOfGeometryElements = item.geometryResolution.x * item.geometryResolution.y;
+                    const size_t numberOfGradientElements = item.gradientResolution.x * item.gradientResolution.y;
+
+                    NSAssert2(geometryIndex != SIZE_MAX && gradientIndex != SIZE_MAX,
+                              @"Invalid resolution %d %d", item.geometryResolution.x, item.gradientResolution.x);
 
                     //NSLog(@"TRANSFORM %f", item.timestamp);
 
-                    fftwf_complex * complexHeights = fftwf_alloc_complex(numberOfElements);
-                    fftwf_execute_dft(complexPlans[index], item.waveSpectrum, complexHeights);
+                    fftwf_complex * complexHeights = fftwf_alloc_complex(numberOfGeometryElements);
+                    fftwf_execute_dft(complexPlans[geometryIndex], item.waveSpectrum, complexHeights);
                     result->timeStamp = item.timestamp;
 
-                    for ( size_t i = 0; i < numberOfElements; i++ )
+                    for ( size_t i = 0; i < numberOfGeometryElements; i++ )
                     {
                         result->heights32f[i] = complexHeights[i][0];
                     }
@@ -397,16 +404,16 @@ static size_t index_for_resolution(int32_t resolution)
 
                     if ( item.gradientX != NULL && item.gradientZ != NULL )
                     {
-                        fftwf_complex * complexGradientX     = fftwf_alloc_complex(numberOfElements);
-                        fftwf_complex * complexGradientZ     = fftwf_alloc_complex(numberOfElements);
+                        fftwf_complex * complexGradientX = fftwf_alloc_complex(numberOfGradientElements);
+                        fftwf_complex * complexGradientZ = fftwf_alloc_complex(numberOfGradientElements);
 
-                        fftwf_execute_dft(complexPlans[index], item.gradientX, complexGradientX);
-                        fftwf_execute_dft(complexPlans[index], item.gradientZ, complexGradientZ);
+                        fftwf_execute_dft(complexPlans[gradientIndex], item.gradientX, complexGradientX);
+                        fftwf_execute_dft(complexPlans[gradientIndex], item.gradientZ, complexGradientZ);
 
-                        for ( size_t i = 0; i < numberOfElements; i++ )
+                        for ( size_t i = 0; i < numberOfGradientElements; i++ )
                         {
-                            result->supplementalData32f[i].x = complexGradientX[i][0];
-                            result->supplementalData32f[i].y = complexGradientZ[i][0];
+                            result->gradients32f[i].x = complexGradientX[i][0];
+                            result->gradients32f[i].y = complexGradientZ[i][0];
                         }
 
                         heightfield_hf_compute_min_max_gradients(result);
@@ -417,16 +424,16 @@ static size_t index_for_resolution(int32_t resolution)
 
                     if ( item.displacementX != NULL && item.displacementZ != NULL )
                     {
-                        fftwf_complex * complexDisplacementX = fftwf_alloc_complex(numberOfElements);
-                        fftwf_complex * complexDisplacementZ = fftwf_alloc_complex(numberOfElements);
+                        fftwf_complex * complexDisplacementX = fftwf_alloc_complex(numberOfGeometryElements);
+                        fftwf_complex * complexDisplacementZ = fftwf_alloc_complex(numberOfGeometryElements);
 
-                        fftwf_execute_dft(complexPlans[index], item.displacementX, complexDisplacementX);
-                        fftwf_execute_dft(complexPlans[index], item.displacementZ, complexDisplacementZ);
+                        fftwf_execute_dft(complexPlans[geometryIndex], item.displacementX, complexDisplacementX);
+                        fftwf_execute_dft(complexPlans[geometryIndex], item.displacementZ, complexDisplacementZ);
 
-                        for ( size_t i = 0; i < numberOfElements; i++ )
+                        for ( size_t i = 0; i < numberOfGeometryElements; i++ )
                         {
-                            result->supplementalData32f[i].z = complexDisplacementX[i][0];
-                            result->supplementalData32f[i].w = complexDisplacementZ[i][0];
+                            result->displacements32f[i].x = complexDisplacementX[i][0];
+                            result->displacements32f[i].y = complexDisplacementZ[i][0];
                         }
 
                         heightfield_hf_compute_min_max_displacements(result);
@@ -848,6 +855,26 @@ static NSUInteger od_freq_spectrum_size(const void * item)
         //NSLog(@"X:%f %f Z:%f %f", displacementXRange.x, displacementXRange.y, displacementZRange.x, displacementZRange.y);
 
         {
+            const double resX = hf->geometryResolution.x;
+            const double resY = hf->geometryResolution.y;
+            baseMeshScale.x = hf->size.x / resX;
+            baseMeshScale.y = hf->size.y / resY;
+
+            const NSUInteger numberOfGeometryBytes
+                = hf->geometryResolution.x * hf->geometryResolution.y * sizeof(float);
+
+            NSData * heightsData
+                = [ NSData dataWithBytesNoCopy:hf->heights32f
+                                        length:numberOfGeometryBytes
+                                  freeWhenDone:NO ];
+
+            [ heightfield generateUsingWidth:hf->geometryResolution.x
+                                      height:hf->geometryResolution.y
+                                 pixelFormat:NpTexturePixelFormatR
+                                  dataFormat:NpTextureDataFormatFloat32
+                                     mipmaps:NO
+                                        data:heightsData ];
+            /*
             baseMeshIndex = index_for_resolution(hf->resolution.x);
 
             const double resX = hf->resolution.x;
@@ -894,6 +921,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
                                        dataFormat:NpTextureDataFormatFloat32
                                           mipmaps:NO
                                      bufferObject:supplementalStream ];
+            */
         }
 
         //[ resultQueue removeHeightfieldAtIndex:0 ];
