@@ -63,8 +63,8 @@ static const Vector2 defaultWindDirection = {0.0, 1.0};
 static const double defaultSize = 80.0;
 static const double defaultDampening = 0.001;
 static const int32_t resolutions[8] = {8, 16, 32, 64, 128, 256, 512, 1024};
-static const NSUInteger defaultGeometryResolutionIndex = 4;
-static const NSUInteger defaultGradientResolutionIndex = 5;
+static const NSUInteger defaultGeometryResolutionIndex = 0;
+static const NSUInteger defaultGradientResolutionIndex = 2;
 static const double OneDivSixty = 1.0 / 60.0;
 
 static size_t index_for_resolution(int32_t resolution)
@@ -252,6 +252,8 @@ static size_t index_for_resolution(int32_t resolution)
             settings.geometryResolution = (IVector2){geometryRes, geometryRes};
             settings.gradientResolution = (IVector2){gradientRes, gradientRes};
 
+            NSLog(@"%d %d", geometryRes, gradientRes);
+
             [ timer update ];
 
             OdFrequencySpectrumFloat complexSpectrum
@@ -260,6 +262,8 @@ static size_t index_for_resolution(int32_t resolution)
                                 generateBaseGeometry:NO ];
 
             [ timer update ];
+
+            NSLog(@"%d %d %d %d", complexSpectrum.geometryResolution.x, complexSpectrum.geometryResolution.y, complexSpectrum.gradientResolution.x, complexSpectrum.gradientResolution.y);
 
             //NSLog(@"Gen Time %f", [ timer frameTime ]);
 
@@ -869,6 +873,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
             baseMeshScale.x = hf->size.x / resX;
             baseMeshScale.y = hf->size.y / resY;
 
+            NSLog(@"HF %d %d", hf->geometryResolution.x, hf->gradientResolution.x);
+
             const NSUInteger numberOfGeometryBytes
                 = hf->geometryResolution.x * hf->geometryResolution.y * sizeof(float);
 
@@ -885,7 +891,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
                                         length:numberOfGeometryBytes * 2
                                   freeWhenDone:NO ];
 
-            NSData * gradientData
+            NSData * gradientsData
                 = [ NSData dataWithBytesNoCopy:hf->gradients32f
                                         length:numberOfGradientBytes
                                   freeWhenDone:NO ];
@@ -902,14 +908,14 @@ static NSUInteger od_freq_spectrum_size(const void * item)
                                   pixelFormat:NpTexturePixelFormatRG
                                    dataFormat:NpTextureDataFormatFloat32
                                       mipmaps:NO
-                                        data:displacementsData ];
+                                         data:displacementsData ];
 
             [ gradient generateUsingWidth:hf->gradientResolution.x
                                    height:hf->gradientResolution.y
                               pixelFormat:NpTexturePixelFormatRG
                                dataFormat:NpTextureDataFormatFloat32
                                   mipmaps:NO
-                                    data:gradientData ];
+                                     data:gradientsData ];
             /*
             baseMeshIndex = index_for_resolution(hf->resolution.x);
 
