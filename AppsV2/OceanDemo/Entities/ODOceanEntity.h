@@ -62,7 +62,8 @@
     ODBasePlane * basePlane;
 
     NPTexture2D * heightfield;
-    NPTexture2D * supplementalData;
+    NPTexture2D * displacement;
+    NPTexture2D * gradient;
 
     ODOceanBaseMeshes * baseMeshes;
     NSUInteger baseMeshIndex;
@@ -91,7 +92,8 @@
 - (ODProjector *) projector;
 - (ODBasePlane *) basePlane;
 - (NPTexture2D *) heightfield;
-- (NPTexture2D *) supplementalData;
+- (NPTexture2D *) displacement;
+- (NPTexture2D *) gradient;
 
 - (double) area;
 - (FVector2) heightRange;

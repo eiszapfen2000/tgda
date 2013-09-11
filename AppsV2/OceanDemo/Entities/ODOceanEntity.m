@@ -531,14 +531,17 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     basePlane = [[ ODBasePlane alloc ] initWithName:@"BasePlane" ];
     [ basePlane setProjector:projector ];
 
-    heightfield      = [[ NPTexture2D alloc ] initWithName:@"Height Texture" ];
-    supplementalData = [[ NPTexture2D alloc ] initWithName:@"Height Texture Supplements" ];
+    heightfield  = [[ NPTexture2D alloc ] initWithName:@"Height Texture" ];
+    displacement = [[ NPTexture2D alloc ] initWithName:@"Height Texture Displacement" ];
+    gradient     = [[ NPTexture2D alloc ] initWithName:@"Height Texture Gradient" ];
 
-    [ heightfield      setTextureFilter:NpTexture2DFilterLinear ];
-    [ supplementalData setTextureFilter:NpTexture2DFilterLinear ];
+    [ heightfield  setTextureFilter:NpTexture2DFilterLinear ];
+    [ displacement setTextureFilter:NpTexture2DFilterLinear ];
+    [ gradient     setTextureFilter:NpTexture2DFilterLinear ];
 
-    [ heightfield      setTextureWrap:NpTextureWrapRepeat ];
-    [ supplementalData setTextureWrap:NpTextureWrapRepeat ];
+    [ heightfield  setTextureWrap:NpTextureWrapRepeat ];
+    [ displacement setTextureWrap:NpTextureWrapRepeat ];
+    [ gradient     setTextureWrap:NpTextureWrapRepeat ];
 
     baseMeshes = [[ ODOceanBaseMeshes alloc ] init ];
     NSAssert(YES == [ baseMeshes generateWithResolutions:resolutions numberOfResolutions:8 ], @"");
@@ -566,7 +569,8 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 {
     DESTROY(baseMeshes);
     DESTROY(heightfield);
-    DESTROY(supplementalData);
+    DESTROY(displacement);
+    DESTROY(gradient);
     DESTROY(projector);
     DESTROY(basePlane);
     DESTROY(resultQueue);
@@ -685,9 +689,14 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     return heightfield;
 }
 
-- (NPTexture2D *) supplementalData
+- (NPTexture2D *) displacement
 {
-    return supplementalData;
+    return displacement;
+}
+
+- (NPTexture2D *) gradient
+{
+    return gradient;
 }
 
 - (double) area
@@ -863,9 +872,22 @@ static NSUInteger od_freq_spectrum_size(const void * item)
             const NSUInteger numberOfGeometryBytes
                 = hf->geometryResolution.x * hf->geometryResolution.y * sizeof(float);
 
+            const NSUInteger numberOfGradientBytes
+                = hf->gradientResolution.x * hf->gradientResolution.y * sizeof(float) * 2;
+
             NSData * heightsData
                 = [ NSData dataWithBytesNoCopy:hf->heights32f
                                         length:numberOfGeometryBytes
+                                  freeWhenDone:NO ];
+
+            NSData * displacementsData
+                = [ NSData dataWithBytesNoCopy:hf->displacements32f
+                                        length:numberOfGeometryBytes * 2
+                                  freeWhenDone:NO ];
+
+            NSData * gradientData
+                = [ NSData dataWithBytesNoCopy:hf->gradients32f
+                                        length:numberOfGradientBytes
                                   freeWhenDone:NO ];
 
             [ heightfield generateUsingWidth:hf->geometryResolution.x
@@ -874,6 +896,20 @@ static NSUInteger od_freq_spectrum_size(const void * item)
                                   dataFormat:NpTextureDataFormatFloat32
                                      mipmaps:NO
                                         data:heightsData ];
+
+            [ displacement generateUsingWidth:hf->geometryResolution.x
+                                       height:hf->geometryResolution.y
+                                  pixelFormat:NpTexturePixelFormatRG
+                                   dataFormat:NpTextureDataFormatFloat32
+                                      mipmaps:NO
+                                        data:displacementsData ];
+
+            [ gradient generateUsingWidth:hf->gradientResolution.x
+                                   height:hf->gradientResolution.y
+                              pixelFormat:NpTexturePixelFormatRG
+                               dataFormat:NpTextureDataFormatFloat32
+                                  mipmaps:NO
+                                    data:gradientData ];
             /*
             baseMeshIndex = index_for_resolution(hf->resolution.x);
 

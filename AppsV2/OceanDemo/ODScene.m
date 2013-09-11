@@ -532,8 +532,9 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     */
 
     [[[ NP Graphics ] textureBindingState ] clear ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean heightfield      ] texelUnit:0 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean supplementalData ] texelUnit:1 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean heightfield  ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacement ] texelUnit:1 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean gradient     ] texelUnit:2 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
     NPEffectVariableMatrix4x4 * v = [ deferredEffect variableWithName:@"invMVP"];
