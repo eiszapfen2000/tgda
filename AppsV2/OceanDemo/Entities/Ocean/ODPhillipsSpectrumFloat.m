@@ -195,23 +195,39 @@ static NPTimer * timer = nil;
 
 - (OdFrequencySpectrumFloat) generateHAtTime:(const float)time
 {
-    const IVector2 resolution = currentSettings.gradientResolution;
+    const IVector2 resolution = H0Resolution;
+    const IVector2 geometryResolution = currentSettings.geometryResolution;
+    const IVector2 gradientResolution = currentSettings.gradientResolution;
     const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
 
 	fftwf_complex * frequencySpectrum
-        = fftwf_alloc_complex(resolution.x * resolution.y);
+        = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
 
 	fftwf_complex * gradientX //= NULL;
-        = fftwf_alloc_complex(resolution.x * resolution.y);
+        = fftwf_alloc_complex(gradientResolution.x * gradientResolution.y);
 
 	fftwf_complex * gradientZ //= NULL;
-        = fftwf_alloc_complex(resolution.x * resolution.y);
+        = fftwf_alloc_complex(gradientResolution.x * gradientResolution.y);
 
     fftwf_complex * displacementX //= NULL;
-        = fftwf_alloc_complex(resolution.x * resolution.y);
+        = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
 
     fftwf_complex * displacementZ //= NULL;
-        = fftwf_alloc_complex(resolution.x * resolution.y);
+        = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
+
+    const IVector2 geometryPadding
+        = { .x = (H0Resolution.x - geometryResolution.x) / 2, .y = (H0Resolution.y - geometryResolution.y) / 2 };
+
+    const IVector2 gradientPadding
+        = { .x = (H0Resolution.x - gradientResolution.x) / 2, .y = (H0Resolution.y - gradientResolution.y) / 2 };
+
+    const int32_t geometryStartIndex = geometryPadding.y * resolution.x + geometryPadding.x;
+    const int32_t gradientStartIndex = gradientPadding.y * resolution.x + gradientPadding.x;
+
+    const int32_t geometryEndIndex   = (geometryPadding.y + geometryResolution.y) * resolution.x - geometryPadding.x - 1;
+    const int32_t gradientEndIndex   = (gradientPadding.y + gradientResolution.y) * resolution.x - gradientPadding.x - 1;
+
+    //NSLog(@"%d %d %d %d", geometryStartIndex, geometryEndIndex, gradientStartIndex, gradientEndIndex);
 
     const float n = -(resolution.x / 2.0f);
     const float m =  (resolution.y / 2.0f);
@@ -225,6 +241,9 @@ static NPTimer * timer = nil;
         {
             const int32_t indexForK = j + resolution.x * i;
             const int32_t indexForConjugate = ((resolution.x - j) % resolution.x) + resolution.x * ((resolution.y - i) % resolution.y);
+
+            const int32_t geometryIndex = (i - geometryPadding.y) * geometryResolution.x + j - geometryPadding.x;
+            const int32_t gradientIndex = (i - gradientPadding.y) * gradientResolution.x + j - gradientPadding.x;
 
             const float di = i;
             const float dj = j;
@@ -276,8 +295,11 @@ static NPTimer * timer = nil;
                     H0expOmega[1] + H0expMinusOmega[1] } ;
 
 
-            frequencySpectrum[indexForK][0] = hTilde[0];
-            frequencySpectrum[indexForK][1] = hTilde[1];
+            if ( indexForK >= geometryStartIndex && indexForK <= geometryEndIndex )
+            {
+                frequencySpectrum[geometryIndex][0] = hTilde[0];
+                frequencySpectrum[geometryIndex][1] = hTilde[1];
+            }
 
             // i * kx
             /*
@@ -294,14 +316,15 @@ static NPTimer * timer = nil;
             xH = (0*c - kx*d) + i*(0*d+kx*c)
             */
 
-            if ( gradientX != NULL && gradientZ != NULL )
+            if ( gradientX != NULL && gradientZ != NULL
+                 && indexForK >= gradientStartIndex && indexForK <= gradientEndIndex)
             {
 
-                gradientX[indexForK][0] = -kx * hTilde[1];
-                gradientX[indexForK][1] =  kx * hTilde[0];
+                gradientX[gradientIndex][0] = -kx * hTilde[1];
+                gradientX[gradientIndex][1] =  kx * hTilde[0];
 
-                gradientZ[indexForK][0] = -ky * hTilde[1];
-                gradientZ[indexForK][1] =  ky * hTilde[0];
+                gradientZ[gradientIndex][0] = -ky * hTilde[1];
+                gradientZ[gradientIndex][1] =  ky * hTilde[0];
             }
 
             // -i * kx/|k| * H
@@ -312,15 +335,16 @@ static NPTimer * timer = nil;
                = d*kx/|k| + i*(-c*kx/|k|)
             */
 
-            if ( displacementX != NULL && displacementZ != NULL )
+            if ( displacementX != NULL && displacementZ != NULL
+                 && indexForK >= geometryStartIndex && indexForK <= geometryEndIndex )
             {
                 const float factor = (lengthK != 0.0f) ? 1.0f/lengthK : 0.0f;
 
-                displacementX[indexForK][0] = factor * kx * hTilde[1];
-                displacementX[indexForK][1] = factor * kx * hTilde[0] * -1.0f;
+                displacementX[geometryIndex][0] = factor * kx * hTilde[1];
+                displacementX[geometryIndex][1] = factor * kx * hTilde[0] * -1.0f;
 
-                displacementZ[indexForK][0] = factor * ky * hTilde[1];
-                displacementZ[indexForK][1] = factor * ky * hTilde[0] * -1.0f;
+                displacementZ[geometryIndex][0] = factor * ky * hTilde[1];
+                displacementZ[geometryIndex][1] = factor * ky * hTilde[0] * -1.0f;
             }
         }
     }
