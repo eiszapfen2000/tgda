@@ -159,7 +159,8 @@
 - (void) addCharacterPageFromFile:(NSString *)fileName
 {
     NSDictionary * arguments
-        = [ NSDictionary dictionaryWithObject:@"nearest" forKey:@"Filter" ];
+        = [ NSDictionary dictionaryWithObjectsAndKeys:@"nearest", @"Filter",
+                @"no", @"Mipmaps", nil ];
 
     id <NPPPersistentObject> page
         = [[[ NPEngineGraphics instance ] textures2D ]

@@ -380,6 +380,8 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
         glDebugMessageCallbackARB(&debug_callback, NULL);
 
+        glDebugMessageControlARB(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+
         NPLOG(@"Debug Context Enabled");
     }
 

@@ -169,6 +169,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 {
     [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:self ];
 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 1000);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
@@ -421,6 +422,10 @@ static const GLint masks[][4]
         if ( filterState.mipmaps == YES )
         {
             glGenerateMipmap(GL_TEXTURE_2D);
+        }
+        else
+        {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
         }
 
         set_texture2d_filter(filterState.textureFilter);
