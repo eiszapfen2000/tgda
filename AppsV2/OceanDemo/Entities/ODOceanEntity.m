@@ -62,7 +62,7 @@ static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {0.0, 1.0};
 static const double defaultSize = 80.0;
 static const double defaultDampening = 0.001;
-static const int32_t resolutions[8] = {8, 16, 32, 64, 128, 256, 512, 1024};
+static const int32_t resolutions[6] = {8, 64, 128, 256, 512, 1024};
 static const NSUInteger defaultGeometryResolutionIndex = 0;
 static const NSUInteger defaultGradientResolutionIndex = 2;
 static const double OneDivSixty = 1.0 / 60.0;
@@ -73,20 +73,16 @@ static size_t index_for_resolution(int32_t resolution)
     {
         case 8:
             return 0;
-        case 16:
-            return 1;
-        case 32:
-            return 2;
         case 64:
-            return 3;
+            return 1;
         case 128:
-            return 4;
+            return 2;
         case 256:
-            return 5;
+            return 3;
         case 512:
-            return 6;
+            return 4;
         case 1024:
-            return 7;
+            return 5;
         default:
             return SIZE_MAX;
     }
@@ -548,7 +544,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     [ gradient     setTextureWrap:NpTextureWrapRepeat ];
 
     baseMeshes = [[ ODOceanBaseMeshes alloc ] init ];
-    NSAssert(YES == [ baseMeshes generateWithResolutions:resolutions numberOfResolutions:8 ], @"");
+    NSAssert(YES == [ baseMeshes generateWithResolutions:resolutions numberOfResolutions:6 ], @"");
     baseMeshIndex = ULONG_MAX;
     baseMeshScale = (FVector2){.x = 1.0f, .y = 1.0f};
 
