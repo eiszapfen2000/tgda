@@ -10,22 +10,22 @@ technique "proj_grid_tf_transform"
     {
         WrapS = Repeat;
         WrapT = Repeat;
-        MinFilter = Nearest;
-        MagFilter = Nearest;
+        MinFilter = Linear;
+        MagFilter = Linear;
     };
     uniform sampler2D displacement
     {
         WrapS = Repeat;
         WrapT = Repeat;
-        MinFilter = Nearest;
-        MagFilter = Nearest;
+        MinFilter = Linear;
+        MagFilter = Linear;
     };
     uniform sampler2D gradient
     {
         WrapS = Repeat;
         WrapT = Repeat;
-        MinFilter = Nearest;
-        MagFilter = Nearest;
+        MinFilter = Linear;
+        MagFilter = Linear;
     };
 
     # vertex streams
@@ -44,26 +44,25 @@ technique "proj_grid_tf_feedback"
     {
         WrapS = Repeat;
         WrapT = Repeat;
-        MinFilter = Nearest;
-        MagFilter = Nearest;
+        MinFilter = Linear;
+        MagFilter = Linear;
     };
     uniform sampler2D displacement
     {
         WrapS = Repeat;
         WrapT = Repeat;
-        MinFilter = Nearest;
-        MagFilter = Nearest;
+        MinFilter = Linear;
+        MagFilter = Linear;
     };
     uniform sampler2D gradient
     {
         WrapS = Repeat;
         WrapT = Repeat;
-        MinFilter = Nearest;
-        MagFilter = Nearest;
+        MinFilter = Linear;
+        MagFilter = Linear;
     };
     # vertex streams
     in vec3 in_position : 0;
-    in vec3 in_normal : 1;
     # fragment streams
     out vec4 target : 0;
     # shaders
