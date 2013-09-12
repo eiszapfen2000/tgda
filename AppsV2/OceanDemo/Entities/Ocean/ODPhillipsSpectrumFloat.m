@@ -122,8 +122,6 @@ static NPTimer * timer = nil;
         return;
     }
 
-    NSLog(@"H0");
-
     BOOL generateRandomNumbers = force;
 
     if ( currentSettings.geometryResolution.x != lastSettings.geometryResolution.x
@@ -135,16 +133,12 @@ static NPTimer * timer = nil;
         resolution.x = MAX(currentSettings.geometryResolution.x, currentSettings.gradientResolution.x);
         resolution.y = MAX(currentSettings.geometryResolution.y, currentSettings.gradientResolution.y);
 
-        NSLog(@"H0 1");
-
         if ( resolution.x != H0Resolution.x || resolution.y != H0Resolution.y )
         {
             FFTW_SAFE_FREE(H0);
             SAFE_FREE(randomNumbers);
 	        H0 = fftwf_alloc_complex(resolution.x * resolution.y);
 	        randomNumbers = ALLOC_ARRAY(double, 2 * resolution.x * resolution.y);
-
-            NSLog(@"H0 2");
 
             H0Resolution = resolution;
             generateRandomNumbers = YES;
@@ -197,8 +191,6 @@ static NPTimer * timer = nil;
             H0[j + resolution.x * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
         }
     }
-
-    NSLog(@"H0 End");
 }
 
 - (OdFrequencySpectrumFloat) generateHAtTime:(const float)time
@@ -235,7 +227,7 @@ static NPTimer * timer = nil;
     const int32_t geometryEndIndex   = (geometryPadding.y + geometryResolution.y) * resolution.x - geometryPadding.x - 1;
     const int32_t gradientEndIndex   = (gradientPadding.y + gradientResolution.y) * resolution.x - gradientPadding.x - 1;
 
-    NSLog(@"H: %d %d %d %d", geometryStartIndex, geometryEndIndex, gradientStartIndex, gradientEndIndex);
+    //NSLog(@"H: %d %d %d %d", geometryStartIndex, geometryEndIndex, gradientStartIndex, gradientEndIndex);
 
     const float n = -(resolution.x / 2.0f);
     const float m =  (resolution.y / 2.0f);
@@ -378,7 +370,7 @@ static NPTimer * timer = nil;
             .displacementX = displacementX,
             .displacementZ = displacementZ };
 
-    NSLog(@"H end");
+    //NSLog(@"H end");
 
     return result;
 }
