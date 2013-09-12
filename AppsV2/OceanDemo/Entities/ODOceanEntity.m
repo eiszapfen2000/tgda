@@ -252,7 +252,7 @@ static size_t index_for_resolution(int32_t resolution)
             settings.geometryResolution = (IVector2){geometryRes, geometryRes};
             settings.gradientResolution = (IVector2){gradientRes, gradientRes};
 
-            NSLog(@"%d %d", geometryRes, gradientRes);
+            //NSLog(@"%d %d", geometryRes, gradientRes);
 
             [ timer update ];
 
@@ -263,7 +263,7 @@ static size_t index_for_resolution(int32_t resolution)
 
             [ timer update ];
 
-            NSLog(@"%d %d %d %d", complexSpectrum.geometryResolution.x, complexSpectrum.geometryResolution.y, complexSpectrum.gradientResolution.x, complexSpectrum.gradientResolution.y);
+            //NSLog(@"%d %d %d %d", complexSpectrum.geometryResolution.x, complexSpectrum.geometryResolution.y, complexSpectrum.gradientResolution.x, complexSpectrum.gradientResolution.y);
 
             //NSLog(@"Gen Time %f", [ timer frameTime ]);
 
@@ -873,7 +873,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
             baseMeshScale.x = hf->size.x / resX;
             baseMeshScale.y = hf->size.y / resY;
 
-            NSLog(@"HF %d %d", hf->geometryResolution.x, hf->gradientResolution.x);
+            //NSLog(@"HF %d %d", hf->geometryResolution.x, hf->gradientResolution.x);
 
             const NSUInteger numberOfGeometryBytes
                 = hf->geometryResolution.x * hf->geometryResolution.y * sizeof(float);
