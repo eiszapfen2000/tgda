@@ -221,11 +221,12 @@ static NPTimer * timer = nil;
     const IVector2 gradientPadding
         = { .x = (H0Resolution.x - gradientResolution.x) / 2, .y = (H0Resolution.y - gradientResolution.y) / 2 };
 
-    const int32_t geometryStartIndex = geometryPadding.y * resolution.x + geometryPadding.x;
-    const int32_t gradientStartIndex = gradientPadding.y * resolution.x + gradientPadding.x;
+    const IVector2 geometryXRange = {.x = geometryPadding.x - 1, .y = resolution.x - geometryPadding.x };
+    const IVector2 geometryYRange = {.x = geometryPadding.y - 1, .y = resolution.y - geometryPadding.y };
 
-    const int32_t geometryEndIndex   = (geometryPadding.y + geometryResolution.y) * resolution.x - geometryPadding.x - 1;
-    const int32_t gradientEndIndex   = (gradientPadding.y + gradientResolution.y) * resolution.x - gradientPadding.x - 1;
+    const IVector2 gradientXRange = {.x = gradientPadding.x - 1, .y = resolution.x - gradientPadding.x };
+    const IVector2 gradientYRange = {.x = gradientPadding.y - 1, .y = resolution.y - gradientPadding.y };
+
 
     //NSLog(@"H: %d %d %d %d", geometryStartIndex, geometryEndIndex, gradientStartIndex, gradientEndIndex);
 
@@ -296,8 +297,8 @@ static NPTimer * timer = nil;
 
 
             //if ( indexForK >= geometryStartIndex && indexForK <= geometryEndIndex )
-            if ( j >= geometryPadding.x && j < (resolution.x - geometryPadding.x)
-                 && i >= geometryPadding.y && i < (resolution.y - geometryPadding.y))
+            if ( j > geometryXRange.x && j < geometryXRange.y
+                 && i > geometryYRange.x && i < geometryYRange.y )
             {
                 //printf("%d %d\n", geometryIndex, gradientIndex);
                 frequencySpectrum[geometryIndex][0] = hTilde[0];
@@ -319,11 +320,9 @@ static NPTimer * timer = nil;
             xH = (0*c - kx*d) + i*(0*d+kx*c)
             */
 
-            //if ( gradientX != NULL && gradientZ != NULL
-            //     && indexForK >= gradientStartIndex && indexForK <= gradientEndIndex)
             if ( gradientX != NULL && gradientZ != NULL
-                 && j >= gradientPadding.x && j < (resolution.x - gradientPadding.x)
-                 && i >= gradientPadding.y && i < (resolution.y - gradientPadding.y))
+                 && j > gradientXRange.x && j < gradientXRange.y
+                 && i > gradientYRange.x && i < gradientYRange.y )
             {
 
                 gradientX[gradientIndex][0] = -kx * hTilde[1];
@@ -342,11 +341,9 @@ static NPTimer * timer = nil;
             */
 
             
-            //if ( displacementX != NULL && displacementZ != NULL
-            //     && indexForK >= geometryStartIndex && indexForK <= geometryEndIndex )
             if ( displacementX != NULL && displacementZ != NULL
-                 && j >= geometryPadding.x && j < (resolution.x - geometryPadding.x)
-                 && i >= geometryPadding.y && i < (resolution.y - geometryPadding.y))
+                 && j > geometryXRange.x && j < geometryXRange.y
+                 && i > geometryYRange.x && i < geometryYRange.y )
             {
                 const float factor = (lengthK != 0.0f) ? 1.0f/lengthK : 0.0f;
 
