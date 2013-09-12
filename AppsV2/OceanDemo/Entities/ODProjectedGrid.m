@@ -244,23 +244,8 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
                                                  error:NULL ];
 
     result
-        = result && [ transformedNormalStream generate:NpBufferObjectTypeGeometry
-                                            updateRate:NpBufferDataUpdateOftenUseOften
-                                             dataUsage:NpBufferDataCopyGPUToGPU
-                                            dataFormat:NpBufferDataFormatFloat32
-                                            components:3
-                                                  data:[ NSData data ]
-                                            dataLength:numberOfIndices * sizeof(FVector3)
-                                                 error:NULL ];
-
-    result
         = result && [ transformTarget setVertexStream:transformedVertexStream 
                                            atLocation:NpVertexStreamPositions
-                                                error:NULL ];
-
-    result
-        = result && [ transformTarget setVertexStream:transformedNormalStream 
-                                           atLocation:NpVertexStreamNormals
                                                 error:NULL ];
 
     NSAssert(result, @"");
@@ -306,7 +291,6 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
     cornerIndexStream  = [[ NPCPUBuffer alloc ] initWithName:@"cornerIndexStream" ];
 
     transformedVertexStream = [[ NPBufferObject alloc ] initWithName:@"transformedVertexStream" ];
-    transformedNormalStream = [[ NPBufferObject alloc ] initWithName:@"transformedNormalStream" ];
 
     NSData * cornerVertexData
         = [ NSData dataWithBytesNoCopyNoFree:cornerVertices
@@ -358,7 +342,6 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
     DESTROY(cornerVertexStream);
     DESTROY(transformTarget);
     DESTROY(transformedVertexStream);
-    DESTROY(transformedNormalStream);
 
     SAFE_DESTROY(projector);
 
@@ -404,14 +387,12 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
 {
     glEnable(GL_RASTERIZER_DISCARD);
         glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, [ transformedVertexStream glID ]);
-        glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, [ transformedNormalStream glID ]);
         glBeginQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query);
         glBeginTransformFeedback(GL_TRIANGLES);
             [ gridVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
         glEndTransformFeedback();
         glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
         glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
-        glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, 0);
     glDisable(GL_RASTERIZER_DISCARD);
 }
 

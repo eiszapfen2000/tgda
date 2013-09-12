@@ -42,7 +42,6 @@
     GLuint query;
     // transform target buffer
     NPBufferObject * transformedVertexStream;
-    NPBufferObject * transformedNormalStream;
     NPVertexArray * transformTarget;
 }
 
