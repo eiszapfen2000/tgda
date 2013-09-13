@@ -65,7 +65,7 @@ static const double defaultDisplacementScale = 1.0;
 static const double defaultDampening = 0.001;
 static const int32_t resolutions[6] = {8, 64, 128, 256, 512, 1024};
 static const NSUInteger defaultGeometryResolutionIndex = 0;
-static const NSUInteger defaultGradientResolutionIndex = 2;
+static const NSUInteger defaultGradientResolutionIndex = 3;
 static const double OneDivSixty = 1.0 / 60.0;
 
 static size_t index_for_resolution(int32_t resolution)
