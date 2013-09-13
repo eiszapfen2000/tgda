@@ -1,10 +1,11 @@
 #version 150
 
 out vec3 out_ws_position;
-out vec3 out_normal;
+out vec2 out_ws_non_disp_position;
 
 void main()
 {
     out_ws_position = in_position;
+    out_ws_non_disp_position = in_non_disp_position;    
     gl_Position = np_modelviewprojectionmatrix * vec4(in_position, 1.0);
 }
