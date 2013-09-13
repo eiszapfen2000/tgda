@@ -61,6 +61,7 @@ static void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {0.0, 1.0};
 static const double defaultSize = 80.0;
+static const double defaultDisplacementScale = 1.0;
 static const double defaultDampening = 0.001;
 static const int32_t resolutions[6] = {8, 64, 128, 256, 512, 1024};
 static const NSUInteger defaultGeometryResolutionIndex = 0;
@@ -551,6 +552,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     timeStamp = DBL_MAX;
 
     area = 0.0;
+    displacementScale = defaultDisplacementScale;
 
     heightRange    = (FVector2){.x = 0.0f, .y = 0.0f};
     gradientXRange = (FVector2){.x = 0.0f, .y = 1.0f};
@@ -702,6 +704,11 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 - (double) area
 {
     return area;
+}
+
+- (double) displacementScale
+{
+    return displacementScale;
 }
 
 - (FVector2) heightRange

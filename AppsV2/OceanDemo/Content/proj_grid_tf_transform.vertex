@@ -38,11 +38,10 @@ void main()
     vec2 d  = textureLod(displacement, texcoord, 0.0).xy;
     vec2 g  = textureLod(gradient, texcoord, 0.0).xy;
 
-    const float lamda = 1.0;
     out_non_disp_position = intersection.xz;
     out_position.xz = intersection.xz;
-    out_position.x -= lamda * d.x;
-    out_position.z += lamda * d.y;
+    out_position.x -= displacementScale * d.x;
+    out_position.z += displacementScale * d.y;
     out_position.y = h;
 
     gl_Position = np_modelviewprojectionmatrix * vec4(intersection, 1.0);

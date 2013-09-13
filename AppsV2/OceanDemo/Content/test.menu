@@ -187,6 +187,22 @@
             TargetObject = "Ocean";
             TargetProperty = "dampening";
         };
+
+        PSliderDisplacementScale =
+        {
+            Type = "ODSliderItem";
+            Label = "Displacement";
+            Alignment = "TopLeft";
+            Position = ("30", "30" );
+            Size = ( "50", "1" );
+            TextSize = "16";
+            MinimumValue = "0.0";
+            MaximumValue = "1.0";
+            LineSize = ("85", "3");
+            HeadSize = ("3", "21");
+            TargetObject = "Ocean";
+            TargetProperty = "displacementScale";
+        };
     };
 }
  
