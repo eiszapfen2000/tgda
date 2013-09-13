@@ -227,9 +227,10 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     // transform feedback setup
     const char * tfposition = "out_position";
-    const char * varyings[1] = {tfposition};
+    const char * tfndposition = "out_non_disp_position";
+    const char * varyings[2] = {tfposition, tfndposition};
 
-    glTransformFeedbackVaryings([ projectedGridTFTransform glID ], 1, (const char **)(&varyings), GL_SEPARATE_ATTRIBS);
+    glTransformFeedbackVaryings([ projectedGridTFTransform glID ], 2, (const char **)(&varyings), GL_SEPARATE_ATTRIBS);
 	glLinkProgram([ projectedGridTFTransform glID ]);
 
     NSError * tfLinkError = nil;
