@@ -71,6 +71,7 @@
 
     double timeStamp;
     double area;
+    double displacementScale;
     FVector2 heightRange;
     FVector2 gradientXRange;
     FVector2 gradientZRange;
@@ -96,6 +97,7 @@
 - (NPTexture2D *) gradient;
 
 - (double) area;
+- (double) displacementScale;
 - (FVector2) heightRange;
 - (FVector2) gradientXRange;
 - (FVector2) gradientZRange;

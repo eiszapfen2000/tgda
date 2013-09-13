@@ -542,12 +542,14 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     NPEffectVariableMatrix4x4 * w = [ projectedGridEffect variableWithName:@"invMVP"];
     NPEffectVariableFloat * a = [ projectedGridEffect variableWithName:@"area"];
+    NPEffectVariableFloat * ds = [ projectedGridEffect variableWithName:@"displacementScale"];
     NPEffectVariableFloat3 * cP = [ projectedGridEffect variableWithName:@"cameraPosition"];
 
-    NSAssert(w != nil && a != nil, @"");
+    NSAssert(w != nil && a != nil && ds != nil && cP != nil, @"");
 
     [ w setValue:[testProjector inverseViewProjection]];
     [ a setValue:[ ocean area ]];
+    [ ds setValue:[ ocean displacementScale ]];
     [ cP setValue:[ camera position ]];
 
     [ projectedGridTFTransform activate ];

@@ -6,6 +6,7 @@ technique "proj_grid_tf_transform"
     uniform mat4 np_modelviewprojectionmatrix;
     uniform mat4 invMVP;
     uniform float area;
+    uniform float displacementScale;
     uniform sampler2D heightmap
     {
         WrapS = Repeat;
