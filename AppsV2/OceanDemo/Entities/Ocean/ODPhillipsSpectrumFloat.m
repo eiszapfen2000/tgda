@@ -164,10 +164,17 @@ static NPTimer * timer = nil;
     const float dsizex = 1.0f / size.x;
     const float dsizey = 1.0f / size.y;
 
+    const float dkx = MATH_2_MUL_PIf * dsizex;
+    const float dky = MATH_2_MUL_PIf * dsizey;
+
     if ( generateRandomNumbers == YES )
     {
         odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * resolution.x * resolution.y);
     }
+
+    float varianceX = 0.0;
+    float varianceY = 0.0;
+    float varianceXY = 0.0;
 
     for ( int32_t i = 0; i < resolution.y; i++ )
     {
@@ -185,12 +192,19 @@ static NPTimer * timer = nil;
             const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
 
             const FVector2 k = {kx, ky};
-            const float a = sqrtf(amplitudef(windDirectionNormalised, k, A, L, l));
+            const float s = amplitudef(windDirectionNormalised, k, A, L, l);
+            const float a = sqrtf(s);
+
+            varianceX += (kx * kx) * (dkx * dky) * s;
+            varianceY += (ky * ky) * (dkx * dky) * s;
+            varianceXY += (kx * kx + ky * ky) * (dkx * dky) * s;
 
             H0[j + resolution.x * i][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
             H0[j + resolution.x * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
         }
     }
+
+    //NSLog(@"%f %f %f %f", varianceX, varianceY, varianceXY, varianceX + varianceY);
 }
 
 - (OdFrequencySpectrumFloat) generateHAtTime:(const float)time
