@@ -13,6 +13,7 @@
 #import "Core/Container/NPAssetArray.h"
 #import "Image/NPImage.h"
 #import "Texture/NPTexture2D.h"
+#import "Texture/NPTexture3D.h"
 #import "Texture/NPTextureBindingState.h"
 #import "Texture/NPTextureSamplingState.h"
 #import "Effect/NPShader.h"
@@ -247,6 +248,10 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
                        initWithName:@"NP Engine Textures2D"
                          assetClass:NSClassFromString(@"NPTexture2D") ];
 
+    textures3D = [[ NPAssetArray alloc ]
+                       initWithName:@"NP Engine Textures3D"
+                         assetClass:NSClassFromString(@"NPTexture3D") ];
+
     effects = [[ NPAssetArray alloc ]
                     initWithName:@"NP Engine Shader"
                       assetClass:NSClassFromString(@"NPEffect") ];
@@ -283,6 +288,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     DESTROY(textureSamplingState);
 
     DESTROY(effects);
+    DESTROY(textures3D);
     DESTROY(textures2D);
     DESTROY(images);
 
@@ -310,6 +316,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 - (NPAssetArray *) textures2D
 {
     return textures2D;
+}
+
+- (NPAssetArray *) textures3D
+{
+    return textures3D;
 }
 
 - (NPAssetArray *) effects

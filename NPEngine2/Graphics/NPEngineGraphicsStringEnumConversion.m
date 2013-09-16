@@ -95,9 +95,9 @@ static NSMutableDictionary * imageDataFormats = nil;
     INSERTENUM(semantics, NpModelViewProjectionMatrix, @"np_modelviewprojectionmatrix");
     INSERTENUM(semantics, NpInverseModelViewProjection, @"np_inversemodelviewprojectionmatrix");
 
-    INSERTENUM(textureFilters, NpTexture2DFilterNearest, @"nearest");
-    INSERTENUM(textureFilters, NpTexture2DFilterLinear, @"linear");
-    INSERTENUM(textureFilters, NpTexture2DFilterTrilinear, @"trilinear");
+    INSERTENUM(textureFilters, NpTextureFilterNearest, @"nearest");
+    INSERTENUM(textureFilters, NpTextureFilterLinear, @"linear");
+    INSERTENUM(textureFilters, NpTextureFilterTrilinear, @"trilinear");
 
     INSERTENUM(textureMinMagFilters, NpTextureMinFilterNearest, @"nearest");
     INSERTENUM(textureMinMagFilters, NpTextureMinFilterLinear, @"linear");

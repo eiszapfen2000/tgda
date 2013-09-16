@@ -16,6 +16,23 @@ void reset_sampler_wrapstate(NpSamplerWrapState * wrapState)
     wrapState->wrapR = NpTextureWrapToEdge;
 }
 
+static const GLint masks[][4]
+    = {
+        {GL_RED, GL_RED, GL_RED, GL_ZERO},
+        {GL_RED, GL_RED, GL_RED, GL_ONE},
+        {GL_GREEN, GL_GREEN, GL_GREEN, GL_ZERO},
+        {GL_GREEN, GL_GREEN, GL_GREEN, GL_ONE},
+        {GL_BLUE, GL_BLUE, GL_BLUE, GL_ZERO},
+        {GL_BLUE, GL_BLUE, GL_BLUE, GL_ONE},
+        {GL_ALPHA, GL_ALPHA, GL_ALPHA, GL_ZERO},
+        {GL_ALPHA, GL_ALPHA, GL_ALPHA, GL_ONE},
+        {GL_RED, GL_GREEN, GL_ZERO, GL_ZERO},
+        {GL_RED, GL_GREEN, GL_ZERO, GL_ONE},
+        {GL_RED, GL_GREEN, GL_BLUE, GL_ZERO},
+        {GL_RED, GL_GREEN, GL_BLUE, GL_ONE},
+        {GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA}
+      };
+
 void set_texture2d_filter(NpTexture2DFilter filter)
 {
     GLint minFilter = GL_NONE;
@@ -23,19 +40,19 @@ void set_texture2d_filter(NpTexture2DFilter filter)
 
     switch ( filter )
     {
-        case NpTexture2DFilterNearest:
+        case NpTextureFilterNearest:
         {
             minFilter = magFilter = GL_NEAREST;
             break;
         }
 
-        case NpTexture2DFilterLinear:
+        case NpTextureFilterLinear:
         {
             minFilter = magFilter = GL_LINEAR;
             break;
         }
 
-        case NpTexture2DFilterTrilinear:
+        case NpTextureFilterTrilinear:
         {
             minFilter = GL_LINEAR_MIPMAP_LINEAR;
             magFilter = GL_LINEAR;
@@ -61,23 +78,6 @@ void set_texture2d_anisotropy(uint32_t anisotropy)
                     (GLint)anisotropy);
 }
 
-static const GLint masks[][4]
-    = {
-        {GL_RED, GL_RED, GL_RED, GL_ZERO},
-        {GL_RED, GL_RED, GL_RED, GL_ONE},
-        {GL_GREEN, GL_GREEN, GL_GREEN, GL_ZERO},
-        {GL_GREEN, GL_GREEN, GL_GREEN, GL_ONE},
-        {GL_BLUE, GL_BLUE, GL_BLUE, GL_ZERO},
-        {GL_BLUE, GL_BLUE, GL_BLUE, GL_ONE},
-        {GL_ALPHA, GL_ALPHA, GL_ALPHA, GL_ZERO},
-        {GL_ALPHA, GL_ALPHA, GL_ALPHA, GL_ONE},
-        {GL_RED, GL_GREEN, GL_ZERO, GL_ZERO},
-        {GL_RED, GL_GREEN, GL_ZERO, GL_ONE},
-        {GL_RED, GL_GREEN, GL_BLUE, GL_ZERO},
-        {GL_RED, GL_GREEN, GL_BLUE, GL_ONE},
-        {GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA}
-      };
-
 void set_texture2d_swizzle_mask(NpTextureColorFormat colorFormat)
 {
     //assert(colorFormat != NpTextureColorFormatUnknown);
@@ -85,6 +85,63 @@ void set_texture2d_swizzle_mask(NpTextureColorFormat colorFormat)
     if ( colorFormat != NpTextureColorFormatUnknown )
     {
         glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, masks[colorFormat]);
+    }
+}
+
+void set_texture3d_filter(NpTexture3DFilter filter)
+{
+    GLint minFilter = GL_NONE;
+    GLint magFilter = GL_NONE;
+
+    switch ( filter )
+    {
+        case NpTextureFilterNearest:
+        {
+            minFilter = magFilter = GL_NEAREST;
+            break;
+        }
+
+        case NpTextureFilterLinear:
+        {
+            minFilter = magFilter = GL_LINEAR;
+            break;
+        }
+
+        case NpTextureFilterTrilinear:
+        {
+            minFilter = GL_LINEAR_MIPMAP_LINEAR;
+            magFilter = GL_LINEAR;
+        }
+    }
+
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, minFilter);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, magFilter);
+}
+
+void set_texture3d_wrap(NpTextureWrap s, NpTextureWrap t, NpTextureWrap r)
+{
+    GLint wrapS = getGLTextureWrap(s);
+    GLint wrapT = getGLTextureWrap(t);
+    GLint wrapR = getGLTextureWrap(r);
+
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, wrapS);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, wrapT);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, wrapR);
+}
+
+void set_texture3d_anisotropy(uint32_t anisotropy)
+{
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
+                    (GLint)anisotropy);
+}
+
+void set_texture3d_swizzle_mask(NpTextureColorFormat colorFormat)
+{
+    //assert(colorFormat != NpTextureColorFormatUnknown);
+
+    if ( colorFormat != NpTextureColorFormatUnknown )
+    {
+        glTexParameteriv(GL_TEXTURE_3D, GL_TEXTURE_SWIZZLE_RGBA, masks[colorFormat]);
     }
 }
 

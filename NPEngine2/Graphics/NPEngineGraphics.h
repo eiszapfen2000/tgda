@@ -33,6 +33,7 @@
 
     NPAssetArray * images;
     NPAssetArray * textures2D;
+    NPAssetArray * textures3D;
     NPAssetArray * effects;
 
     NPTextureBindingState * textureBindingState;
@@ -52,6 +53,7 @@
 
 - (NPAssetArray *) images;
 - (NPAssetArray *) textures2D;
+- (NPAssetArray *) textures3D;
 - (NPAssetArray *) effects;
 
 - (NPTextureBindingState *) textureBindingState;

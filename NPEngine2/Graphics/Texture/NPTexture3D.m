@@ -14,22 +14,23 @@
 #import "Graphics/NPEngineGraphics.h"
 #import "NpTextureSamplerParameter.h"
 #import "NPTextureBindingState.h"
-#import "NPTexture2D.h"
+#import "NPTexture3D.h"
 
-void reset_texture2d_filterstate(NpTexture2DFilterState * filterState)
+void reset_texture3d_filterstate(NpTexture3DFilterState * filterState)
 {
     filterState->mipmaps = NO;
     filterState->textureFilter = NpTextureFilterNearest;
     filterState->anisotropy = 1;
 }
 
-void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
+void reset_texture3d_wrapstate(NpTexture3DWrapState * wrapState)
 {
     wrapState->wrapS = NpTextureWrapToEdge;
     wrapState->wrapT = NpTextureWrapToEdge;
+    wrapState->wrapR = NpTextureWrapToEdge;
 }
 
-@interface NPTexture2D (Private)
+@interface NPTexture3D (Private)
 
 - (void) updateGLTextureState;
 - (void) uploadToGLWithData:(NSData *)data;
@@ -38,17 +39,17 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 @end
 
-@implementation NPTexture2D
+@implementation NPTexture3D
 
 - (id) init
 {
-    return [ self initWithName:@"Texture2D" ];
+    return [ self initWithName:@"Texture3D" ];
 }
 
 - (id) initWithName:(NSString *)newName
 {
     self = [ super initWithName:newName ];
-    [[[ NPEngineGraphics instance ] textures2D ] registerAsset:self ];
+    [[[ NPEngineGraphics instance ] textures3D ] registerAsset:self ];
 
     glGenTextures(1, &glID);
     [ self reset ];
@@ -58,7 +59,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 - (void) dealloc
 {
-    [[[ NPEngineGraphics instance ] textures2D ] unregisterAsset:self ];
+    [[[ NPEngineGraphics instance ] textures3D ] unregisterAsset:self ];
 
     if (glID > 0 )
     {
@@ -90,7 +91,7 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 - (void) reset
 {
     ready = NO;
-    width = height = 0;
+    width = height = depth = 0;
     dataFormat  = NpImageDataFormatUnknown;
     pixelFormat = NpImagePixelFormatUnknown;
     colorFormat = NpTextureColorFormatUnknown;
@@ -98,8 +99,8 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     glPixelFormat = GL_NONE;
     glInternalFormat = GL_NONE;
 
-    reset_texture2d_filterstate(&filterState);
-    reset_texture2d_wrapstate(&wrapState);
+    reset_texture3d_filterstate(&filterState);
+    reset_texture3d_wrapstate(&wrapState);
 }
 
 - (uint32_t) width
@@ -110,6 +111,11 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 - (uint32_t) height
 {
     return height;
+}
+
+- (uint32_t) depth
+{
+    return depth;
 }
 
 - (NpTextureDataFormat) dataFormat
@@ -148,10 +154,13 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 - (void) setTextureWrap:(NpTextureWrap)newTextureWrap
 {
     if ( wrapState.wrapS != newTextureWrap
-         || wrapState.wrapT != newTextureWrap )
+         || wrapState.wrapT != newTextureWrap
+         || wrapState.wrapR != newTextureWrap )
     {
         wrapState.wrapS = newTextureWrap;
         wrapState.wrapT = newTextureWrap;
+        wrapState.wrapR = newTextureWrap;
+
         [ self updateGLTextureState ];
     }
 }
@@ -169,25 +178,27 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 {
     [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:self ];
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 1000);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAX_LEVEL, 1000);
+    glGenerateMipmap(GL_TEXTURE_3D);
 
     [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
 }
 
 - (void) generateUsingWidth:(uint32_t)newWidth
                      height:(uint32_t)newHeight
+                      depth:(uint32_t)newDepth
                 pixelFormat:(NpTexturePixelFormat)newPixelFormat
                  dataFormat:(NpTextureDataFormat)newDataFormat
                     mipmaps:(BOOL)newMipmaps
                        data:(NSData *)data
 {
-    if ( width != newWidth || height != newHeight
+    if ( width != newWidth || height != newHeight || depth != newDepth
         || pixelFormat != newPixelFormat || dataFormat != newDataFormat )
     {
         ready = NO;
         width  = newWidth;
         height = newHeight;
+        depth  = newDepth;
         pixelFormat = newPixelFormat;
         dataFormat  = newDataFormat;
         colorFormat = getColorFormatForPixelFormat(newPixelFormat);
@@ -202,17 +213,19 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 - (void) generateUsingWidth:(uint32_t)newWidth
                      height:(uint32_t)newHeight
+                      depth:(uint32_t)newDepth
                 pixelFormat:(NpTexturePixelFormat)newPixelFormat
                  dataFormat:(NpTextureDataFormat)newDataFormat
                     mipmaps:(BOOL)newMipmaps
                bufferObject:(NPBufferObject *)bufferObject
 {
-    if ( width != newWidth || height != newHeight
+    if ( width != newWidth || height != newHeight || depth != newDepth
         || pixelFormat != newPixelFormat || dataFormat != newDataFormat )
     {
         ready = NO;
         width  = newWidth;
         height = newHeight;
+        depth  = newDepth;
         pixelFormat = newPixelFormat;
         dataFormat  = newDataFormat;
         colorFormat = getColorFormatForPixelFormat(newPixelFormat);
@@ -225,16 +238,6 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
     ready = YES;
 }
 
-- (void) generateUsingImage:(NPImage *)image
-{
-    [ self generateUsingWidth:[ image width       ]
-                       height:[ image height      ]
-                  pixelFormat:[ image pixelFormat ]
-                   dataFormat:[ image dataFormat  ]
-                      mipmaps:filterState.mipmaps
-                         data:[ image imageData   ]];
-}
-
 - (BOOL) loadFromStream:(id <NPPStream>)stream 
                   error:(NSError **)error
 {
@@ -245,89 +248,14 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
             arguments:(NSDictionary *)arguments
                 error:(NSError **)error
 {
-    // check if file is to be found
-    NSString * completeFileName
-        = [[[ NPEngineCore instance ] localPathManager ] getAbsolutePath:fileName ];
-
-    if ( completeFileName == nil )
-    {
-        if ( error != NULL )
-        {
-            *error = [ NSError fileNotFoundError:fileName ];
-        }
-
-        return NO;
-    }
-
-    [ self setName:completeFileName ];
-    ASSIGNCOPY(file, completeFileName);
-
-    NPLOG(@"");
-    NPLOG(@"Loading texture \"%@\"", completeFileName);
-
-    NPImage * image = 
-        RETAIN([[[ NPEngineGraphics instance ] 
-                        images ] getAssetWithFileName:completeFileName
-                                            arguments:arguments ]);
-
-    if ( image == nil )
-    {
-        if ( error != NULL )
-        {
-            NSString * errorString =
-                [ NSString stringWithFormat:@"Unable to load image from \"%@\"",
-                                            completeFileName ];
-
-            *error = [ NSError errorWithCode:NPEngineGraphicsTextureUnableToLoadImage
-                                 description:errorString ];
-        }
-
-        return NO;
-    }
-
-    // default if loading from file, generate mipmaps
-    // and do trilinear filtering
-    filterState.textureFilter = NpTextureFilterTrilinear;
-    filterState.mipmaps = YES;
-
-    // process optional arguments
-    if ( arguments != nil )
-    {
-        NSString * mipmapString = [ arguments objectForKey:@"Mipmaps" ];
-        NSString * filterString = [ arguments objectForKey:@"Filter"  ];
-
-        if ( mipmapString != nil )
-        {
-            filterState.mipmaps = [ mipmapString boolValue ];
-        }
-
-        if ( filterString != nil )
-        {
-            filterState.textureFilter
-                = [[ filterString lowercaseString ]
-                        textureFilterValueWithDefault:NpTextureFilterTrilinear ];
-        }
-    }
-
-    [ self generateUsingImage:image ];
-
-    DESTROY(image);
-
-    NSString * p = [ NSString stringForPixelFormat:pixelFormat ];
-    NSString * d = [ NSString stringForImageDataFormat:dataFormat ];
-
-    NPLOG(@"Resolution: %u x %u", width, height);
-    NPLOG(@"Pixel Format: %@", p);
-    NPLOG(@"Data Format: %@", d);
-
-    return YES;
+    return NO;
 }
 
 // NPPTexture protocol implementation
 
 - (NpTextureType) textureType
 {
-    return NpTextureTypeTexture2D;
+    return NpTextureTypeTexture3D;
 }
 
 - (GLuint) glID
@@ -337,38 +265,21 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 - (GLenum) glTarget
 {
-    return GL_TEXTURE_2D;
+    return GL_TEXTURE_3D;
 }
 
 @end
 
-static const GLint masks[][4]
-    = {
-        {GL_RED, GL_RED, GL_RED, GL_ZERO},
-        {GL_RED, GL_RED, GL_RED, GL_ONE},
-        {GL_GREEN, GL_GREEN, GL_GREEN, GL_ZERO},
-        {GL_GREEN, GL_GREEN, GL_GREEN, GL_ONE},
-        {GL_BLUE, GL_BLUE, GL_BLUE, GL_ZERO},
-        {GL_BLUE, GL_BLUE, GL_BLUE, GL_ONE},
-        {GL_ALPHA, GL_ALPHA, GL_ALPHA, GL_ZERO},
-        {GL_ALPHA, GL_ALPHA, GL_ALPHA, GL_ONE},
-        {GL_RED, GL_GREEN, GL_ZERO, GL_ZERO},
-        {GL_RED, GL_GREEN, GL_ZERO, GL_ONE},
-        {GL_RED, GL_GREEN, GL_BLUE, GL_ZERO},
-        {GL_RED, GL_GREEN, GL_BLUE, GL_ONE},
-        {GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA}
-      };
-
-@implementation NPTexture2D (Private)
+@implementation NPTexture3D (Private)
 
 - (void) updateGLTextureState
 {
     [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:self ];
 
-    set_texture2d_filter(filterState.textureFilter);
-    set_texture2d_anisotropy(filterState.anisotropy);
-    set_texture2d_wrap(wrapState.wrapS, wrapState.wrapT);
-    set_texture2d_swizzle_mask(colorFormat);
+    set_texture3d_filter(filterState.textureFilter);
+    set_texture3d_anisotropy(filterState.anisotropy);
+    set_texture3d_wrap(wrapState.wrapS, wrapState.wrapT, wrapState.wrapR);
+    set_texture3d_swizzle_mask(colorFormat);
 
     [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
 }
@@ -402,8 +313,8 @@ static const GLint masks[][4]
         if ( allowNull == YES || data != NULL )
         {
             //update data, is a lot faster than glTexImage2D
-            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height,
-                glPixelFormat, glDataFormat, data);
+            glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, 0, width, height,
+                depth, glPixelFormat, glDataFormat, data);
         }
     }
     else
@@ -413,25 +324,25 @@ static const GLint masks[][4]
                  &glDataFormat, &glPixelFormat);
 
         // specify entire texture
-        glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, width, height, 
-            0, glPixelFormat, glDataFormat, data);
+        glTexImage3D(GL_TEXTURE_3D, 0, glInternalFormat, width, height, 
+            depth, 0, glPixelFormat, glDataFormat, data);
 
         // this is here because of broken AMD drivers
         // if the call is moved somewhere else mipmap
         // generation does not work
         if ( filterState.mipmaps == YES )
         {
-            glGenerateMipmap(GL_TEXTURE_2D);
+            glGenerateMipmap(GL_TEXTURE_3D);
         }
         else
         {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+            glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAX_LEVEL, 0);
         }
 
-        set_texture2d_filter(filterState.textureFilter);
-        set_texture2d_anisotropy(filterState.anisotropy);
-        set_texture2d_wrap(wrapState.wrapS, wrapState.wrapT);
-        set_texture2d_swizzle_mask(colorFormat);
+        set_texture3d_filter(filterState.textureFilter);
+        set_texture3d_anisotropy(filterState.anisotropy);
+        set_texture3d_wrap(wrapState.wrapS, wrapState.wrapT, wrapState.wrapR);
+        set_texture3d_swizzle_mask(colorFormat);
     }
 }
 
