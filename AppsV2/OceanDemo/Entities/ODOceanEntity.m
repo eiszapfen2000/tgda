@@ -536,9 +536,9 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     displacement = [[ NPTexture2D alloc ] initWithName:@"Height Texture Displacement" ];
     gradient     = [[ NPTexture2D alloc ] initWithName:@"Height Texture Gradient" ];
 
-    [ heightfield  setTextureFilter:NpTexture2DFilterLinear ];
-    [ displacement setTextureFilter:NpTexture2DFilterLinear ];
-    [ gradient     setTextureFilter:NpTexture2DFilterLinear ];
+    [ heightfield  setTextureFilter:NpTextureFilterLinear ];
+    [ displacement setTextureFilter:NpTextureFilterLinear ];
+    [ gradient     setTextureFilter:NpTextureFilterLinear ];
 
     [ heightfield  setTextureWrap:NpTextureWrapRepeat ];
     [ displacement setTextureWrap:NpTextureWrapRepeat ];
