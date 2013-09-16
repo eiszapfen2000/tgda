@@ -24,6 +24,11 @@ void set_texture2d_wrap(NpTextureWrap s, NpTextureWrap t);
 void set_texture2d_anisotropy(uint32_t anisotropy);
 void set_texture2d_swizzle_mask(NpTextureColorFormat colorFormat);
 
+void set_texture3d_filter(NpTexture3DFilter filter);
+void set_texture3d_wrap(NpTextureWrap s, NpTextureWrap t, NpTextureWrap r);
+void set_texture3d_anisotropy(uint32_t anisotropy);
+void set_texture3d_swizzle_mask(NpTextureColorFormat colorFormat);
+
 void set_sampler_filterstate(GLuint sampler, NpSamplerFilterState filterState);
 void set_sampler_wrapstate(GLuint sampler, NpSamplerWrapState wrapState);
 
