@@ -218,7 +218,84 @@ static NPTimer * timer = nil;
         }
     }
 
-    //NSLog(@"%f %f %f %f", varianceX, varianceY, varianceXY, varianceX + varianceY);
+    /*
+    // eq. A6
+    float mss = 0.0f;
+
+    for ( float k = 0.001f; k < 1000.0f; k = k * 1.001f )
+    {
+        const float kSquare = k * k;
+        const float dk = (k * 1.001f) - k;
+
+        // eq A3
+        float sk = 0.0;
+        for ( float phi = -MATH_PI; phi <= MATH_PI; phi = phi + 0.1f )
+        {
+            sk += amplitudef_polar(windDirectionNormalised, k, phi, A, L, l) * k * 0.1f;
+        }
+
+        mss += kSquare * sk * dk;
+    }
+
+    NSLog(@"%f %f %f %f", varianceX, varianceY, varianceXY, varianceX + varianceY);
+    NSLog(@"%f", mss);
+
+    const float deltaVariance = mss - varianceXY;
+
+    const int32_t slopeVarianceResolution = 4;
+    const float divisor = (float)(slopeVarianceResolution - 1);
+    const float AA = A;
+
+    for ( int32_t c = 0; c < slopeVarianceResolution; c++ )
+    {
+        for ( int32_t b = 0; b < slopeVarianceResolution; b++ )
+        {
+            for ( int32_t a = 0; a < slopeVarianceResolution; a++ )
+            {
+                const float fa = a;
+                const float fb = b;
+                const float fc = c;
+                float A = powf(a / divisor, 4.0f);
+                float C = powf(c / divisor, 4.0f);
+                float B = (2.0f * b / divisor - 1.0) * sqrt(A * C);
+
+                //NSLog(@"1 %d %d %d %f %f %f", a, b, c, A, B, C);
+
+                A = -0.5f * A;
+                B = -B;
+                C = -0.5f * C;
+
+                //NSLog(@"2 %d %d %d %f %f %f", a, b, c, A, B, C);
+
+                float lvarianceX = deltaVariance;
+                float lvarianceY = deltaVariance;
+
+                for ( int32_t i = 0; i < resolution.y; i++ )
+                {
+                    for ( int32_t j = 0; j < resolution.x; j++ )
+                    {
+                        const float di = i;
+                        const float dj = j;
+
+                        const float kx = (n + dj) * MATH_2_MUL_PIf * dsizex;
+                        const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
+
+                        const FVector2 k = {kx, ky};
+                        const float w = 1.0f - exp(A * k.x * k.x + B * k.x * k.y + C * k.y * k.y);
+                        const float s = amplitudef_cartesian(windDirectionNormalised, k, AA, L, l);
+
+                        lvarianceX += ((kx * kx * w * w) * (dkx * dky) * s);
+                        lvarianceY += ((ky * ky * w * w) * (dkx * dky) * s);
+
+                        //NSLog(@"%f %f", lvarianceX, lvarianceY);
+                    }
+                }
+
+                //NSLog(@"%d %d %d %f %f %f", a, b, c, lvarianceX, lvarianceY, lvarianceX + lvarianceY);
+            }
+        }
+    }
+    */
 }
 
 - (OdFrequencySpectrumFloat) generateHAtTime:(const float)time
