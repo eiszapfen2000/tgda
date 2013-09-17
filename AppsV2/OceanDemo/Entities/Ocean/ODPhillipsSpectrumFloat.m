@@ -18,9 +18,9 @@ static inline float omegaf_for_k(FVector2 const * const k)
     return sqrtf(EARTH_ACCELERATIONf * fv2_v_length(k));
 }
 
-static float amplitudef(const FVector2 windDirectionNormalised,
-                        const FVector2 k, const float A,
-                        const float L, const float l)
+static float amplitudef_cartesian(const FVector2 windDirectionNormalised,
+                                  const FVector2 k, const float A,
+                                  const float L, const float l)
 {
     const float kSquareLength = k.x * k.x + k.y * k.y;
 
@@ -46,6 +46,20 @@ static float amplitudef(const FVector2 windDirectionNormalised,
     amplitude = amplitude * kdotw * kdotw * kdotw * kdotw;
 
     return amplitude;
+}
+
+static float amplitudef_polar(const FVector2 windDirectionNormalised,
+                              const float k, const float phi, const float A,
+                              const float L, const float l)
+{
+    // rotate (1,0) by phi
+
+    const float x = cosf(phi);
+    const float y = sinf(phi);
+    const FVector2 kv = {.x = x * k, .y = y * k};
+
+    return amplitudef_cartesian(windDirectionNormalised,
+                                kv, A, L, l);
 }
 
 static NPTimer * timer = nil;
@@ -192,7 +206,7 @@ static NPTimer * timer = nil;
             const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
 
             const FVector2 k = {kx, ky};
-            const float s = amplitudef(windDirectionNormalised, k, A, L, l);
+            const float s = amplitudef_cartesian(windDirectionNormalised, k, A, L, l);
             const float a = sqrtf(s);
 
             varianceX += (kx * kx) * (dkx * dky) * s;
