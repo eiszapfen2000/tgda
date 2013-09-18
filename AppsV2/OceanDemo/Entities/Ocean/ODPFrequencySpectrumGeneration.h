@@ -33,7 +33,10 @@ typedef struct OdFrequencySpectrumFloat
     IVector2 geometryResolution;
     IVector2 gradientResolution;
     Vector2 size;
-    fftwf_complex * waveSpectrum;
+    float * baseSpectrum; // zero frequency at center
+    float maxMeanSlopeVariance;
+    float effectiveMeanSlopeVariance;
+    fftwf_complex * waveSpectrum; // zeros frequency upper left
     fftwf_complex * gradientX;
     fftwf_complex * gradientZ;
     fftwf_complex * displacementX;

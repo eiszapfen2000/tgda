@@ -85,60 +85,13 @@ static float amplitudef_polar(const FVector2 windDirectionNormalised,
 
 static NPTimer * timer = nil;
 
+@interface ODPhillipsSpectrumFloat (Private)
 
-@implementation ODPhillipsSpectrumFloat
+- (void) generateH0:(BOOL)force;
 
-+ (void) initialize
-{
-	if ( [ ODPhillipsSpectrumFloat class ] == self )
-    {
-        if ( timer == nil )
-        {
-            timer = [[ NPTimer alloc ] initWithName:@"SpectrumTimer" ];
-        }
-    }
-}
+@end
 
-- (id) init
-{
-    return [ self initWithName:@"Phillips Spectrum Float" ];
-}
-
-- (id) initWithName:(NSString *)newName
-{
-    self = [ super initWithName:newName ];
-
-    H0 = NULL;
-    randomNumbers = NULL;
-    H0Resolution = iv2_zero();
-
-    gaussianRNG = odgaussianrng_alloc_init();
-
-    lastSettings.geometryResolution = iv2_max();
-    lastSettings.gradientResolution = iv2_max();
-    lastSettings.size = v2_max();
-    lastSettings.windDirection = v2_max();
-    lastSettings.windSpeed = DBL_MAX;
-    lastSettings.dampening = DBL_MAX;
-
-    currentSettings.geometryResolution = iv2_zero();
-    currentSettings.gradientResolution = iv2_zero();
-    currentSettings.size = v2_zero();
-    currentSettings.windDirection = v2_zero();
-    currentSettings.windSpeed = 0.0;
-    currentSettings.dampening = 0.0;
-
-    return self;
-}
-
-- (void) dealloc
-{
-    FFTW_SAFE_FREE(H0);
-    SAFE_FREE(randomNumbers);
-    odgaussianrng_free(gaussianRNG);
-
-    [ super dealloc ];
-}
+@implementation ODPhillipsSpectrumFloat (Private)
 
 - (void) generateH0:(BOOL)force
 {
@@ -189,6 +142,9 @@ static NPTimer * timer = nil;
 
     assert(dampening < 1.0f);
 
+    FFTW_SAFE_FREE(baseSpectrum);
+    baseSpectrum = fftwf_alloc_real(resolution.x * resolution.y);
+
     const float A = PHILLIPS_CONSTANT * (1.0 / (size.x * size.y));
     const float L = (windSpeed * windSpeed) / EARTH_ACCELERATIONf;
     const float l = dampening * L;
@@ -234,11 +190,11 @@ static NPTimer * timer = nil;
             varianceY += (ky * ky) * (dkx * dky) * s;
             varianceXY += (kx * kx + ky * ky) * (dkx * dky) * s;
 
+            baseSpectrum[j + resolution.x * i] = s;
             H0[j + resolution.x * i][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
             H0[j + resolution.x * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
         }
     }
-
 
     float mss = 0.0f;
 
@@ -253,6 +209,9 @@ static NPTimer * timer = nil;
         // eq A6
         mss += kSquare * sk * dk;
     }
+
+    maxMeanSlopeVariance = mss;
+    effectiveMeanSlopeVariance = varianceXY;
 
     //NSLog(@"%f %f %f %f", varianceX, varianceY, varianceXY, varianceX + varianceY);
     //NSLog(@"%f", mss);
@@ -314,6 +273,67 @@ static NPTimer * timer = nil;
         }
     }
     */
+}
+
+@end
+
+
+@implementation ODPhillipsSpectrumFloat
+
++ (void) initialize
+{
+	if ( [ ODPhillipsSpectrumFloat class ] == self )
+    {
+        if ( timer == nil )
+        {
+            timer = [[ NPTimer alloc ] initWithName:@"SpectrumTimer" ];
+        }
+    }
+}
+
+- (id) init
+{
+    return [ self initWithName:@"Phillips Spectrum Float" ];
+}
+
+- (id) initWithName:(NSString *)newName
+{
+    self = [ super initWithName:newName ];
+
+    H0 = NULL;
+    baseSpectrum = NULL;
+    randomNumbers = NULL;
+    H0Resolution = iv2_zero();
+
+    gaussianRNG = odgaussianrng_alloc_init();
+
+    maxMeanSlopeVariance = effectiveMeanSlopeVariance = 0.0f;
+
+    lastSettings.geometryResolution = iv2_max();
+    lastSettings.gradientResolution = iv2_max();
+    lastSettings.size = v2_max();
+    lastSettings.windDirection = v2_max();
+    lastSettings.windSpeed = DBL_MAX;
+    lastSettings.dampening = DBL_MAX;
+
+    currentSettings.geometryResolution = iv2_zero();
+    currentSettings.gradientResolution = iv2_zero();
+    currentSettings.size = v2_zero();
+    currentSettings.windDirection = v2_zero();
+    currentSettings.windSpeed = 0.0;
+    currentSettings.dampening = 0.0;
+
+    return self;
+}
+
+- (void) dealloc
+{
+    FFTW_SAFE_FREE(H0);
+    FFTW_SAFE_FREE(baseSpectrum);
+    SAFE_FREE(randomNumbers);
+    odgaussianrng_free(gaussianRNG);
+
+    [ super dealloc ];
 }
 
 - (OdFrequencySpectrumFloat) generateHAtTime:(const float)time
@@ -484,6 +504,9 @@ static NPTimer * timer = nil;
             .geometryResolution = geometryResolution,
             .gradientResolution = gradientResolution,
             .size          = currentSettings.size,
+            .baseSpectrum  = NULL,
+            .maxMeanSlopeVariance = 0.0f,
+            .effectiveMeanSlopeVariance = 0.0f,
             .waveSpectrum  = frequencySpectrum,
             .gradientX     = gradientX,
             .gradientZ     = gradientZ,
@@ -749,6 +772,9 @@ static NPTimer * timer = nil;
             .geometryResolution = resolution,
             .gradientResolution = resolution,
             .size = currentSettings.size,
+            .baseSpectrum  = NULL,
+            .maxMeanSlopeVariance = 0.0f,
+            .effectiveMeanSlopeVariance = 0.0f,
             .waveSpectrum = frequencySpectrumHC,
             .gradientX = NULL,
             .gradientZ = NULL,
@@ -912,6 +938,16 @@ right way.
 
     //NSLog(@"H0: %f H:%f Swap:%f", h0time, htime, swaptime);
 
+    if ( baseSpectrum != NULL )
+    {
+        result.baseSpectrum = baseSpectrum;
+        result.maxMeanSlopeVariance = maxMeanSlopeVariance;
+        result.effectiveMeanSlopeVariance = effectiveMeanSlopeVariance;
+
+        baseSpectrum = NULL;
+        maxMeanSlopeVariance = effectiveMeanSlopeVariance = 0.0f;
+    }
+
     return result;
 }
 
@@ -923,6 +959,17 @@ right way.
 
     [ self generateH0:generateBaseGeometry ];
     OdFrequencySpectrumFloat result= [ self generateHHCAtTime:time ];
+
+    if ( baseSpectrum != NULL )
+    {
+        result.baseSpectrum = baseSpectrum;
+        result.maxMeanSlopeVariance = maxMeanSlopeVariance;
+        result.effectiveMeanSlopeVariance = effectiveMeanSlopeVariance;
+
+        baseSpectrum = NULL;
+        maxMeanSlopeVariance = effectiveMeanSlopeVariance = 0.0f;
+    }
+
     lastSettings = currentSettings;
 
     return result;
