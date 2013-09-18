@@ -48,6 +48,27 @@ static float amplitudef_cartesian(const FVector2 windDirectionNormalised,
     return amplitude;
 }
 
+static float amplitudef_cartesian_omnidirectional(
+      const float k, const float A,
+      const float L, const float l)
+{
+    if ( k == 0.0f )
+    {
+        return 0.0f;
+    }
+
+    float amplitude = A;
+    amplitude = amplitude * (float)exp(( -1.0 / (k * k * L * L)) - (k * k * l * l));
+    amplitude = amplitude * ( 1.0f / (k * k * k * k) );
+
+    // This is dependent on the dot(k, wind) term in the directional version
+    // 0.75 * PI represents the integral over dot(k, wind) ^ 4
+    amplitude = amplitude * ( 0.75f * MATH_PIf );
+    amplitude = amplitude * k;
+
+    return amplitude;
+}
+
 static float amplitudef_polar(const FVector2 windDirectionNormalised,
                               const float k, const float phi, const float A,
                               const float L, const float l)
@@ -218,8 +239,7 @@ static NPTimer * timer = nil;
         }
     }
 
-    /*
-    // eq. A6
+
     float mss = 0.0f;
 
     for ( float k = 0.001f; k < 1000.0f; k = k * 1.001f )
@@ -228,18 +248,16 @@ static NPTimer * timer = nil;
         const float dk = (k * 1.001f) - k;
 
         // eq A3
-        float sk = 0.0;
-        for ( float phi = -MATH_PI; phi <= MATH_PI; phi = phi + 0.1f )
-        {
-            sk += amplitudef_polar(windDirectionNormalised, k, phi, A, L, l) * k * 0.1f;
-        }
+        float sk = amplitudef_cartesian_omnidirectional(k, A, L, l);
 
+        // eq A6
         mss += kSquare * sk * dk;
     }
 
-    NSLog(@"%f %f %f %f", varianceX, varianceY, varianceXY, varianceX + varianceY);
-    NSLog(@"%f", mss);
+    //NSLog(@"%f %f %f %f", varianceX, varianceY, varianceXY, varianceX + varianceY);
+    //NSLog(@"%f", mss);
 
+    /*
     const float deltaVariance = mss - varianceXY;
 
     const int32_t slopeVarianceResolution = 4;
