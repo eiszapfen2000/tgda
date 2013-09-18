@@ -59,13 +59,13 @@ static void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex
 }
 
 static const double defaultWindSpeed = 4.5;
-static const Vector2 defaultWindDirection = {0.0, 1.0};
+static const Vector2 defaultWindDirection = {1.0, 0.0};
 static const double defaultSize = 80.0;
 static const double defaultDisplacementScale = 1.0;
 static const double defaultDampening = 0.001;
 static const int32_t resolutions[6] = {8, 64, 128, 256, 512, 1024};
 static const NSUInteger defaultGeometryResolutionIndex = 0;
-static const NSUInteger defaultGradientResolutionIndex = 3;
+static const NSUInteger defaultGradientResolutionIndex = 1;
 static const double OneDivSixty = 1.0 / 60.0;
 
 static size_t index_for_resolution(int32_t resolution)
@@ -372,6 +372,7 @@ static size_t index_for_resolution(int32_t resolution)
 
                     {
                         [ heightfieldQueueMutex lock ];
+
                         result
                             = heightfield_alloc_init_with_resolutions_and_size(
                                 item.geometryResolution,

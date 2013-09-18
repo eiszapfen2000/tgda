@@ -6,9 +6,12 @@
 @interface ODPhillipsSpectrumFloat : NPObject < ODPFrequencySpectrumGenerationFloat >
 {
     fftwf_complex * H0;
+    float * baseSpectrum;
     double * randomNumbers;
     IVector2 H0Resolution;
     OdGaussianRng * gaussianRNG;
+    float maxMeanSlopeVariance;
+    float effectiveMeanSlopeVariance;
     ODSpectrumSettings lastSettings;
     ODSpectrumSettings currentSettings;
 }
@@ -17,7 +20,6 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-- (void) generateH0:(BOOL)force;
 - (OdFrequencySpectrumFloat) generateHAtTime:(const float)time;
 - (OdFrequencySpectrumFloat) generateTimeIndependentH;
 - (OdFrequencySpectrumFloat) generateHHCAtTime:(const float)time;
