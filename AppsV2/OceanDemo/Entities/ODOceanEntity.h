@@ -19,6 +19,14 @@
 @class ODHeightfieldQueue;
 @class ODOceanBaseMeshes;
 
+typedef struct OdSpectrumVariance
+{
+    struct OdHeightfieldData * heightfield;
+    float * baseSpectrum;
+    float maxMeanSlopeVariance;
+    float effectiveMeanSlopeVariance;
+}
+OdSpectrumVariance;
 
 #define ODOCEANENTITY_NUMBER_OF_RESOLUTIONS 6
 
@@ -28,6 +36,7 @@
     NSCondition * transformCondition;
     NSLock * spectrumQueueMutex;
     NSLock * heightfieldQueueMutex;
+    NSLock * varianceMutex;
     NSLock * settingsMutex;
 
     Vector2 windDirection;
@@ -57,6 +66,7 @@
     NSThread * transformThread;
     NSPointerArray * spectrumQueue;
     ODHeightfieldQueue * resultQueue;
+    OdSpectrumVariance variance;
 
     ODProjector * projector;
     ODBasePlane * basePlane;

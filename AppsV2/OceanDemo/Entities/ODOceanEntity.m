@@ -444,6 +444,16 @@ static size_t index_for_resolution(int32_t resolution)
                         fftwf_free(complexDisplacementZ);
                     }
 
+                    if ( item.baseSpectrum != NULL )
+                    {
+                        [ varianceMutex lock ];
+                        variance.heightfield = result;
+                        variance.baseSpectrum = item.baseSpectrum;
+                        variance.maxMeanSlopeVariance = item.maxMeanSlopeVariance;
+                        variance.effectiveMeanSlopeVariance = item.effectiveMeanSlopeVariance;
+                        [ varianceMutex unlock ];
+                    }
+
                     //fftwf_execute_dft_c2r(halfComplexPlans[resIndex], halfcomplexSpectrum.waveSpectrum, result->data32f);
 
                     {
@@ -493,6 +503,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
     spectrumQueueMutex    = [[ NSLock alloc ] init ];
     heightfieldQueueMutex = [[ NSLock alloc ] init ];
+    varianceMutex         = [[ NSLock alloc ] init ];
     settingsMutex         = [[ NSLock alloc ] init ];
 
     generateCondition  = [[ NSCondition alloc ] init ];
@@ -528,6 +539,11 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     spectrumQueue = [[ NSPointerArray alloc ] initWithPointerFunctions:pFunctions ];
 
     resultQueue = [[ ODHeightfieldQueue alloc ] init ];
+
+    variance.heightfield = NULL;
+    variance.baseSpectrum = NULL;
+    variance.maxMeanSlopeVariance = 0.0f;
+    variance.effectiveMeanSlopeVariance = 0.0f;
 
     projector = [[ ODProjector alloc ] initWithName:@"Projector" ];
     basePlane = [[ ODBasePlane alloc ] initWithName:@"BasePlane" ];
@@ -580,6 +596,7 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     DESTROY(spectrumQueue);
     DESTROY(spectrumQueueMutex);
     DESTROY(heightfieldQueueMutex);
+    DESTROY(varianceMutex);
     DESTROY(settingsMutex);
     DESTROY(generateCondition);
     DESTROY(transformCondition);
