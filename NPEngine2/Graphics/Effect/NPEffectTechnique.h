@@ -3,6 +3,7 @@
 
 @class NPShader;
 @class NPEffect;
+@class NPEffectTechniqueVariable;
 @class NSMutableArray;
 @class NPStringList;
 
@@ -38,6 +39,7 @@
 - (NPShader *) vertexShader;
 - (NPShader *) fragmentShader;
 - (NPEffect *) effect;
+- (NPEffectTechniqueVariable *) techniqueVariableWithName:(NSString *)variableName;
 
 - (BOOL) loadFromStringList:(NPStringList *)stringList
                       error:(NSError **)error

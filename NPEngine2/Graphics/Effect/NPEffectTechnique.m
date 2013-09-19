@@ -4,6 +4,7 @@
 #import "Core/String/NPStringList.h"
 #import "Core/String/NPParser.h"
 #import "Core/Container/NPAssetArray.h"
+#import "Core/Container/NSArray+NPPObject.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Graphics/Texture/NpTextureSamplerParameter.h"
 #import "Graphics/Texture/NPTextureSamplingState.h"
@@ -202,6 +203,11 @@ static BOOL locked = NO;
 - (NPEffect *) effect
 {
     return effect;
+}
+
+- (NPEffectTechniqueVariable *) techniqueVariableWithName:(NSString *)variableName
+{
+    return [ techniqueVariables objectWithName:variableName ];
 }
 
 - (BOOL) loadFromStringList:(NPStringList *)stringList
