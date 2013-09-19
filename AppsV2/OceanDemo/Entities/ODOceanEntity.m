@@ -58,6 +58,14 @@ static void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex
     }
 }
 
+typedef struct OdSpectrumVariance
+{
+    float * baseSpectrum;
+    float maxMeanSlopeVariance;
+    float effectiveMeanSlopeVariance;
+}
+OdSpectrumVariance;
+
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
 static const double defaultSize = 80.0;
@@ -331,6 +339,9 @@ static size_t index_for_resolution(int32_t resolution)
                         .geometryResolution = {.x = 0, .y = 0},
                         .gradientResolution = {.x = 0, .y = 0},
                         .size          = {.x = 0.0, .y = 0.0},
+                        .baseSpectrum  = NULL,
+                        .maxMeanSlopeVariance = 0.0f,
+                        .effectiveMeanSlopeVariance = 0.0f,
                         .waveSpectrum  = NULL,
                         .gradientX     = NULL,
                         .gradientZ     = NULL,
@@ -444,21 +455,19 @@ static size_t index_for_resolution(int32_t resolution)
                         fftwf_free(complexDisplacementZ);
                     }
 
-                    if ( item.baseSpectrum != NULL )
-                    {
-                        [ varianceMutex lock ];
-                        variance.heightfield = result;
-                        variance.baseSpectrum = item.baseSpectrum;
-                        variance.maxMeanSlopeVariance = item.maxMeanSlopeVariance;
-                        variance.effectiveMeanSlopeVariance = item.effectiveMeanSlopeVariance;
-                        [ varianceMutex unlock ];
-                    }
-
                     //fftwf_execute_dft_c2r(halfComplexPlans[resIndex], halfcomplexSpectrum.waveSpectrum, result->data32f);
 
                     {
                         [ heightfieldQueueMutex lock ];
+
+                        OdSpectrumVariance variance;
+                        variance.baseSpectrum = item.baseSpectrum;
+                        variance.maxMeanSlopeVariance = item.maxMeanSlopeVariance;
+                        variance.effectiveMeanSlopeVariance = item.effectiveMeanSlopeVariance;
+
+                        [ varianceQueue addPointer:&variance ];
                         [ resultQueue addHeightfield:result ];
+
                         [ heightfieldQueueMutex unlock ];
                     }
 
@@ -490,6 +499,11 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     return sizeof(OdFrequencySpectrumFloat);
 }
 
+static NSUInteger od_variance_size(const void * item)
+{
+    return sizeof(OdSpectrumVariance);
+}
+
 @implementation ODOceanEntity
 
 - (id) init
@@ -503,7 +517,6 @@ static NSUInteger od_freq_spectrum_size(const void * item)
 
     spectrumQueueMutex    = [[ NSLock alloc ] init ];
     heightfieldQueueMutex = [[ NSLock alloc ] init ];
-    varianceMutex         = [[ NSLock alloc ] init ];
     settingsMutex         = [[ NSLock alloc ] init ];
 
     generateCondition  = [[ NSCondition alloc ] init ];
@@ -532,18 +545,19 @@ static NSUInteger od_freq_spectrum_size(const void * item)
           | NSPointerFunctionsStructPersonality
           | NSPointerFunctionsCopyIn;
 
-    NSPointerFunctions * pFunctions
+    NSPointerFunctions * pFunctionsSpectrum
         = [ NSPointerFunctions pointerFunctionsWithOptions:options ];
-    [ pFunctions setSizeFunction:&od_freq_spectrum_size];
 
-    spectrumQueue = [[ NSPointerArray alloc ] initWithPointerFunctions:pFunctions ];
+    NSPointerFunctions * pFunctionsVariance
+        = [ NSPointerFunctions pointerFunctionsWithOptions:options ];
+
+    [ pFunctionsSpectrum setSizeFunction:&od_freq_spectrum_size];
+    [ pFunctionsVariance setSizeFunction:&od_variance_size];
+
+    spectrumQueue = [[ NSPointerArray alloc ] initWithPointerFunctions:pFunctionsSpectrum ];
+    varianceQueue = [[ NSPointerArray alloc ] initWithPointerFunctions:pFunctionsVariance ];
 
     resultQueue = [[ ODHeightfieldQueue alloc ] init ];
-
-    variance.heightfield = NULL;
-    variance.baseSpectrum = NULL;
-    variance.maxMeanSlopeVariance = 0.0f;
-    variance.effectiveMeanSlopeVariance = 0.0f;
 
     projector = [[ ODProjector alloc ] initWithName:@"Projector" ];
     basePlane = [[ ODBasePlane alloc ] initWithName:@"BasePlane" ];
@@ -593,10 +607,10 @@ static NSUInteger od_freq_spectrum_size(const void * item)
     DESTROY(projector);
     DESTROY(basePlane);
     DESTROY(resultQueue);
+    DESTROY(varianceQueue);
     DESTROY(spectrumQueue);
     DESTROY(spectrumQueueMutex);
     DESTROY(heightfieldQueueMutex);
-    DESTROY(varianceMutex);
     DESTROY(settingsMutex);
     DESTROY(generateCondition);
     DESTROY(transformCondition);
@@ -806,22 +820,26 @@ static NSUInteger od_freq_spectrum_size(const void * item)
         [ spectrumQueueMutex unlock ];
 
         [ heightfieldQueueMutex lock ];
+        [ varianceQueue removeAllPointers ];
         [ resultQueue removeAllHeightfields ];
         [ heightfieldQueueMutex unlock ];
     }
 
     NSUInteger queueCount = 0;
     OdHeightfieldData * hf = NULL;
+    OdSpectrumVariance * variance = NULL;
 
     {
         [ heightfieldQueueMutex lock ];
 
         queueCount = [ resultQueue count ];
+        NSUInteger q = [ varianceQueue count ];
+
+        NSAssert2(queueCount == q, @"%lu %lu", queueCount, q);
 
         // get heightfield data
         if ( queueCount != 0 )
         {
-            
             NSUInteger f = NSNotFound;
             double queueMinTimeStamp =  DBL_MAX;
             double queueMaxTimeStamp = -DBL_MAX;
@@ -845,20 +863,23 @@ static NSUInteger od_freq_spectrum_size(const void * item)
             if ( f != NSNotFound )
             {
                 hf = [ resultQueue heightfieldAtIndex:f ];
+                variance = [ varianceQueue pointerAtIndex:f ];
 
                 NSRange range = NSMakeRange(0, f);
+                [ varianceQueue removePointersInRange:range ];
                 [ resultQueue removeHeightfieldsInRange:range ];
             }
             else
             {
                 hf = [ resultQueue heightfieldAtIndex:0 ];
+                variance = [ varianceQueue pointerAtIndex:0 ];
             }
             
-
             //hf = [ resultQueue heightfieldAtIndex:0 ];
         }
 
         queueCount = [ resultQueue count ];
+
         [ heightfieldQueueMutex unlock ];
     }
 
