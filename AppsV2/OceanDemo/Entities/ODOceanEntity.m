@@ -15,6 +15,7 @@
 #import "Core/Timer/NPTimer.h"
 #import "Core/File/NSFileManager+NPEngine.h"
 #import "Core/File/NPLocalPathManager.h"
+#import "Core/Utilities/NSData+NPEngine.h"
 #import "Core/World/NPTransformationState.h"
 #import "Core/NPEngineCore.h"
 #import "Graphics/Effect/NPEffect.h"
@@ -563,17 +564,20 @@ static NSUInteger od_variance_size(const void * item)
     basePlane = [[ ODBasePlane alloc ] initWithName:@"BasePlane" ];
     [ basePlane setProjector:projector ];
 
+    baseSpectrum = [[ NPTexture2D alloc ] initWithName:@"Base Spectrum Texture" ];
     heightfield  = [[ NPTexture2D alloc ] initWithName:@"Height Texture" ];
     displacement = [[ NPTexture2D alloc ] initWithName:@"Height Texture Displacement" ];
     gradient     = [[ NPTexture2D alloc ] initWithName:@"Height Texture Gradient" ];
 
-    [ heightfield  setTextureFilter:NpTextureFilterLinear ];
-    [ displacement setTextureFilter:NpTextureFilterLinear ];
-    [ gradient     setTextureFilter:NpTextureFilterLinear ];
+    [ baseSpectrum setTextureFilter:NpTextureFilterNearest ];
+    [ heightfield  setTextureFilter:NpTextureFilterLinear  ];
+    [ displacement setTextureFilter:NpTextureFilterLinear  ];
+    [ gradient     setTextureFilter:NpTextureFilterLinear  ];
 
-    [ heightfield  setTextureWrap:NpTextureWrapRepeat ];
-    [ displacement setTextureWrap:NpTextureWrapRepeat ];
-    [ gradient     setTextureWrap:NpTextureWrapRepeat ];
+    [ baseSpectrum setTextureWrap:NpTextureWrapToBorder ];
+    [ heightfield  setTextureWrap:NpTextureWrapRepeat   ];
+    [ displacement setTextureWrap:NpTextureWrapRepeat   ];
+    [ gradient     setTextureWrap:NpTextureWrapRepeat   ];
 
     baseMeshes = [[ ODOceanBaseMeshes alloc ] init ];
     NSAssert(YES == [ baseMeshes generateWithResolutions:resolutions numberOfResolutions:6 ], @"");
@@ -604,6 +608,7 @@ static NSUInteger od_variance_size(const void * item)
     DESTROY(heightfield);
     DESTROY(displacement);
     DESTROY(gradient);
+    DESTROY(baseSpectrum);
     DESTROY(projector);
     DESTROY(basePlane);
     DESTROY(resultQueue);
@@ -716,6 +721,11 @@ static NSUInteger od_variance_size(const void * item)
 - (ODBasePlane *) basePlane
 {
     return basePlane;
+}
+
+- (NPTexture2D *) baseSpectrum
+{
+    return baseSpectrum;
 }
 
 - (NPTexture2D *) heightfield
@@ -924,19 +934,16 @@ static NSUInteger od_variance_size(const void * item)
                 = hf->gradientResolution.x * hf->gradientResolution.y * sizeof(float) * 2;
 
             NSData * heightsData
-                = [ NSData dataWithBytesNoCopy:hf->heights32f
-                                        length:numberOfGeometryBytes
-                                  freeWhenDone:NO ];
+                = [ NSData dataWithBytesNoCopyNoFree:hf->heights32f
+                                              length:numberOfGeometryBytes ];
 
             NSData * displacementsData
-                = [ NSData dataWithBytesNoCopy:hf->displacements32f
-                                        length:numberOfGeometryBytes * 2
-                                  freeWhenDone:NO ];
+                = [ NSData dataWithBytesNoCopyNoFree:hf->displacements32f
+                                              length:numberOfGeometryBytes * 2 ];
 
             NSData * gradientsData
-                = [ NSData dataWithBytesNoCopy:hf->gradients32f
-                                        length:numberOfGradientBytes
-                                  freeWhenDone:NO ];
+                = [ NSData dataWithBytesNoCopyNoFree:hf->gradients32f
+                                              length:numberOfGradientBytes ];
 
             [ heightfield generateUsingWidth:hf->geometryResolution.x
                                       height:hf->geometryResolution.y
@@ -958,6 +965,29 @@ static NSUInteger od_variance_size(const void * item)
                                dataFormat:NpTextureDataFormatFloat32
                                   mipmaps:NO
                                      data:gradientsData ];
+
+            if ( variance != NULL && variance->baseSpectrum != NULL )
+            {
+                const int32_t vWidth  = MAX(hf->geometryResolution.x, hf->gradientResolution.x);
+                const int32_t vHeight = MAX(hf->geometryResolution.y, hf->gradientResolution.y);
+
+                const NSUInteger numberOfBaseSpectrumBytes
+                    = vWidth * vHeight * sizeof(float);
+
+                NSData * baseSpectrumData
+                    = [ NSData dataWithBytesNoCopyNoFree:variance->baseSpectrum
+                                                  length:numberOfBaseSpectrumBytes ];
+
+                [ baseSpectrum generateUsingWidth:vWidth
+                                           height:vHeight
+                                      pixelFormat:NpTexturePixelFormatR
+                                       dataFormat:NpTextureDataFormatFloat32
+                                          mipmaps:NO
+                                             data:baseSpectrumData ];
+
+                fftwf_free(variance->baseSpectrum);
+                variance->baseSpectrum = NULL;
+            }
             /*
             baseMeshIndex = index_for_resolution(hf->resolution.x);
 
