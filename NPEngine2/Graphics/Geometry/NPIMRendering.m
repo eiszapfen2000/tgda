@@ -7,10 +7,21 @@
             primitiveType:(const NpPrimitveType)primitiveType
 {
     glBegin(primitiveType);
-        glVertex2f(rectangle.min.x, rectangle.min.y);
-        glVertex2f(rectangle.max.x, rectangle.min.y);
-        glVertex2f(rectangle.max.x, rectangle.max.y);
-        glVertex2f(rectangle.min.x, rectangle.max.y);
+        glVertexAttrib2f(NpVertexStreamPositions, rectangle.min.x, rectangle.min.y);
+        glVertexAttrib2f(NpVertexStreamPositions, rectangle.max.x, rectangle.min.y);
+        glVertexAttrib2f(NpVertexStreamPositions, rectangle.max.x, rectangle.max.y);
+        glVertexAttrib2f(NpVertexStreamPositions, rectangle.min.x, rectangle.max.y);
+    glEnd();
+}
+
++ (void) renderIRectangle:(const IRectangle)rectangle
+            primitiveType:(const NpPrimitveType)primitiveType
+{
+    glBegin(primitiveType);
+        glVertexAttribI2i(NpVertexStreamPositions, rectangle.min.x, rectangle.min.y);
+        glVertexAttribI2i(NpVertexStreamPositions, rectangle.max.x, rectangle.min.y);
+        glVertexAttribI2i(NpVertexStreamPositions, rectangle.max.x, rectangle.max.y);
+        glVertexAttribI2i(NpVertexStreamPositions, rectangle.min.x, rectangle.max.y);
     glEnd();
 }
 
@@ -20,13 +31,29 @@
 {
     glBegin(primitiveType);
         glVertexAttrib2f(NpVertexStreamTexCoords0, texCoords.min.x, texCoords.min.y);
-        glVertex2f(rectangle.min.x, rectangle.min.y);
+        glVertexAttrib2f(NpVertexStreamPositions, rectangle.min.x, rectangle.min.y);
         glVertexAttrib2f(NpVertexStreamTexCoords0, texCoords.max.x, texCoords.min.y);
-        glVertex2f(rectangle.max.x, rectangle.min.y);
+        glVertexAttrib2f(NpVertexStreamPositions, rectangle.max.x, rectangle.min.y);
         glVertexAttrib2f(NpVertexStreamTexCoords0, texCoords.max.x, texCoords.max.y);
-        glVertex2f(rectangle.max.x, rectangle.max.y);
+        glVertexAttrib2f(NpVertexStreamPositions, rectangle.max.x, rectangle.max.y);
         glVertexAttrib2f(NpVertexStreamTexCoords0, texCoords.min.x, texCoords.max.y);
-        glVertex2f(rectangle.min.x, rectangle.max.y);
+        glVertexAttrib2f(NpVertexStreamPositions, rectangle.min.x, rectangle.max.y);
+    glEnd();
+}
+
++ (void) renderIRectangle:(const IRectangle)rectangle
+                texCoords:(const IRectangle)texCoords
+            primitiveType:(const NpPrimitveType)primitiveType
+{
+    glBegin(primitiveType);
+        glVertexAttribI2i(NpVertexStreamTexCoords0, texCoords.min.x, texCoords.min.y);
+        glVertexAttribI2i(NpVertexStreamPositions, rectangle.min.x, rectangle.min.y);
+        glVertexAttribI2i(NpVertexStreamTexCoords0, texCoords.max.x, texCoords.min.y);
+        glVertexAttribI2i(NpVertexStreamPositions, rectangle.max.x, rectangle.min.y);
+        glVertexAttribI2i(NpVertexStreamTexCoords0, texCoords.max.x, texCoords.max.y);
+        glVertexAttribI2i(NpVertexStreamPositions, rectangle.max.x, rectangle.max.y);
+        glVertexAttribI2i(NpVertexStreamTexCoords0, texCoords.min.x, texCoords.max.y);
+        glVertexAttribI2i(NpVertexStreamPositions, rectangle.min.x, rectangle.max.y);
     glEnd();
 }
 
