@@ -138,3 +138,22 @@ technique "water_surface"
     set fragment shader "deferred_water_surface.fragment"
 }
 
+technique "variance"
+{
+    # effect variables
+    # .x = layer .y = resolution .z = size .w = deltaVariance
+    uniform float layer;
+    uniform float varianceTextureResolution;
+    uniform vec2  baseSpectrumSize;
+    uniform float deltaVariance;
+    uniform sampler2D baseSpectrum;
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec2 varianceTarget : 0;
+    # shaders
+    set vertex shader "variance.vertex"
+    set fragment shader "variance.fragment"
+}
+

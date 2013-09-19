@@ -1,0 +1,51 @@
+#version 150
+
+in vec2 out_texcoords;
+
+#define MATH_2_MUL_PIf           6.28318530717958647692528676655900576839f
+
+void main()
+{
+    float divisor = varianceTextureResolution - 1.0f;
+
+    float a = floor(out_texcoords.x);
+    float b = floor(out_texcoords.y);
+    float A = pow(a / divisor, 4.0f);
+    float C = pow(layer / divisor, 4.0f);
+    float B = (2.0f * b / divisor - 1.0) * sqrt(A * C);
+
+    A = -0.5f * A;
+    B = -B;
+    C = -0.5f * C;
+
+    ivec2 resolution = textureSize(baseSpectrum, 0);
+
+    float n = -(float(resolution.x) / 2.0f);
+    float m =  (float(resolution.y) / 2.0f);
+
+    vec2 dsize = vec2(1.0f) / baseSpectrumSize;
+    vec2 dk = MATH_2_MUL_PIf * dsize;
+
+    vec2 variance = vec2(deltaVariance);
+
+    for ( int i = 0; i < resolution.y; i++ )
+    {
+        for ( int j = 0; j < resolution.x; j++ )
+        {
+            float di = i;
+            float dj = j;
+            
+            float kx = (n + dj) * MATH_2_MUL_PIf * dsize.x;
+            float ky = (m - di) * MATH_2_MUL_PIf * dsize.x;
+
+            float s = texelFetch(baseSpectrum, ivec2(i, j), 0);
+            float w = 1.0f - exp(A * kx * kx + B * kx * ky + C * ky * ky);
+
+            variance.x += ((kx * kx * w * w) * (dk.x * dk.x) * s);
+            variance.y += ((ky * ky * w * w) * (dk.y * dk.y) * s);
+        }
+    }
+
+    varianceTarget.xy = variance;
+}
+
