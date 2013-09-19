@@ -23,8 +23,9 @@
      effectVariable:(id)newEffectVariable
            location:(GLint)newLocation
 {
-    NSAssert((location != -1) && (newEffectVariable != nil)
-             && ([ newEffectVariable isKindOfClass:[ NPEffectVariable class ]] == YES), @"");
+    NSAssert2((location != -1) && (newEffectVariable != nil)
+             && ([ newEffectVariable isKindOfClass:[ NPEffectVariable class ]] == YES),
+             @"%@ %d", newName, newLocation);
 
     self = [ super initWithName:newName ];
 
