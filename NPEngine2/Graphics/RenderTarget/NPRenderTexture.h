@@ -2,6 +2,7 @@
 #import "Core/NPObject/NPObject.h"
 #import "NPPRenderTarget.h"
 #import "Graphics/NPEngineGraphicsEnums.h"
+#import "Graphics/Texture/NPPTexture.h"
 
 @class NSError;
 @class NPRenderTargetConfiguration;
@@ -13,9 +14,10 @@
     NpRenderTargetType type;
 	uint32_t width;
 	uint32_t height;
+    uint32_t depth;
     NpTexturePixelFormat pixelFormat;
     NpTextureDataFormat dataFormat;
-    NPTexture2D * texture;
+    id < NPPTexture > texture;
     NPRenderTargetConfiguration * rtc;
     uint32_t colorBufferIndex;
     BOOL ready;
@@ -25,7 +27,7 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-- (NPTexture2D *) texture;
+- (id < NPPTexture >) texture;
 
 - (BOOL) generate:(NpRenderTargetType)newType
             width:(uint32_t)newWidth
