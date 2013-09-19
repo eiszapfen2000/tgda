@@ -61,6 +61,7 @@
     ODProjector * projector;
     ODBasePlane * basePlane;
 
+    NPTexture2D * baseSpectrum;
     NPTexture2D * heightfield;
     NPTexture2D * displacement;
     NPTexture2D * gradient;
@@ -92,6 +93,7 @@
 - (const FMatrix4 * const) modelMatrix;
 - (ODProjector *) projector;
 - (ODBasePlane *) basePlane;
+- (NPTexture2D *) baseSpectrum;
 - (NPTexture2D *) heightfield;
 - (NPTexture2D *) displacement;
 - (NPTexture2D *) gradient;
