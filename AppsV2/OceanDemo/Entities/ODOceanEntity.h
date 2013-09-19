@@ -78,7 +78,10 @@
     FVector2 gradientZRange;
     FVector2 displacementXRange;
     FVector2 displacementZRange;
+    IVector2 baseSpectrumResolution;
+    Vector2  baseSpectrumSize;
     BOOL animated;
+    BOOL updateSlopeVariance;
 
     FMatrix4 modelMatrix;
 }
@@ -105,7 +108,11 @@
 - (FVector2) gradientZRange;
 - (FVector2) displacementXRange;
 - (FVector2) displacementZRange;
+- (IVector2) baseSpectrumResolution;
+- (Vector2)  baseSpectrumSize;
 - (FVector2) baseMeshScale;
+
+- (BOOL) updateSlopeVariance;
 
 - (void) setCamera:(ODCamera *)newCamera;
 

@@ -596,6 +596,10 @@ static NSUInteger od_variance_size(const void * item)
     displacementZRange = (FVector2){.x = 0.0f, .y = 1.0f};
 
     animated = YES;
+    updateSlopeVariance = NO;
+
+    baseSpectrumResolution = iv2_zero();
+    baseSpectrumSize = v2_zero();
 
     fm4_m_set_identity(&modelMatrix);
 
@@ -778,9 +782,24 @@ static NSUInteger od_variance_size(const void * item)
     return displacementZRange;
 }
 
+- (IVector2) baseSpectrumResolution
+{
+    return baseSpectrumResolution;
+}
+
+- (Vector2) baseSpectrumSize
+{
+    return baseSpectrumSize;
+}
+
 - (FVector2) baseMeshScale
 {
     return baseMeshScale;
+}
+
+- (BOOL) updateSlopeVariance
+{
+    return updateSlopeVariance;
 }
 
 - (void) setCamera:(ODCamera *)newCamera
@@ -903,6 +922,8 @@ static NSUInteger od_variance_size(const void * item)
         [ generateCondition unlock ];
     }
 
+    updateSlopeVariance = NO;
+
     // update texture and associated min max
     if ( hf != NULL && animated == YES)
     {
@@ -968,18 +989,19 @@ static NSUInteger od_variance_size(const void * item)
 
             if ( variance != NULL && variance->baseSpectrum != NULL )
             {
-                const int32_t vWidth  = MAX(hf->geometryResolution.x, hf->gradientResolution.x);
-                const int32_t vHeight = MAX(hf->geometryResolution.y, hf->gradientResolution.y);
+                baseSpectrumSize = hf->size;
+                baseSpectrumResolution.x = MAX(hf->geometryResolution.x, hf->gradientResolution.x);
+                baseSpectrumResolution.y = MAX(hf->geometryResolution.y, hf->gradientResolution.y);
 
                 const NSUInteger numberOfBaseSpectrumBytes
-                    = vWidth * vHeight * sizeof(float);
+                    = baseSpectrumResolution.x * baseSpectrumResolution.y * sizeof(float);
 
                 NSData * baseSpectrumData
                     = [ NSData dataWithBytesNoCopyNoFree:variance->baseSpectrum
                                                   length:numberOfBaseSpectrumBytes ];
 
-                [ baseSpectrum generateUsingWidth:vWidth
-                                           height:vHeight
+                [ baseSpectrum generateUsingWidth:baseSpectrumResolution.x
+                                           height:baseSpectrumResolution.y
                                       pixelFormat:NpTexturePixelFormatR
                                        dataFormat:NpTextureDataFormatFloat32
                                           mipmaps:NO
@@ -987,6 +1009,8 @@ static NSUInteger od_variance_size(const void * item)
 
                 fftwf_free(variance->baseSpectrum);
                 variance->baseSpectrum = NULL;
+
+                updateSlopeVariance = YES;
             }
             /*
             baseMeshIndex = index_for_resolution(hf->resolution.x);
