@@ -27,14 +27,17 @@
 {
     [ self deleteTexture ];
 
-    texture = [[ NPTexture2D alloc ] init ];
+    NPTexture2D * texture2D = [[ NPTexture2D alloc ] init ];
 
-    [ texture generateUsingWidth:width
-                          height:height
-                     pixelFormat:pixelFormat
-                      dataFormat:dataFormat
-                         mipmaps:mipmaps
-                            data:[ NSData data ]];
+    [ texture2D generateUsingWidth:width
+                            height:height
+                       pixelFormat:pixelFormat
+                        dataFormat:dataFormat
+                           mipmaps:mipmaps
+                              data:[ NSData data ]];
+
+    texture = RETAIN(texture2D);
+    DESTROY(texture2D);
 
     glID = [ texture glID ];
     ready = YES;
@@ -55,7 +58,7 @@
 
     glID = 0;
     type = NpRenderTargetUnknown;
-    width = height = 0;
+    width = height = depth = 0;
     pixelFormat = NpTexturePixelFormatUnknown;
     dataFormat = NpTextureDataFormatUnknown;
     texture = nil;
@@ -87,7 +90,12 @@
     return height;
 }
 
-- (NPTexture2D *) texture
+- (uint32_t) depth
+{
+    return depth;
+}
+
+- (id < NPPTexture >) texture
 {
     return texture;
 }

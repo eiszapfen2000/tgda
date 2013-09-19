@@ -69,6 +69,11 @@
     return height;
 }
 
+- (uint32_t) depth
+{
+    return 0;
+}
+
 - (BOOL) generate:(NpRenderTargetType)newType
             width:(uint32_t)newWidth
            height:(uint32_t)newHeight
