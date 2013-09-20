@@ -421,6 +421,8 @@ GLenum getGLBufferType(const NpBufferObjectType Type);
 GLenum getGLBufferDataFormat(const NpBufferDataFormat DataFormat);
 size_t numberOfBytesForDataFormat(const NpBufferDataFormat DataFormat);
 
+GLenum getGLAttachment(const NpRenderTargetType type, const uint32_t index);
+
 #endif
 
 
