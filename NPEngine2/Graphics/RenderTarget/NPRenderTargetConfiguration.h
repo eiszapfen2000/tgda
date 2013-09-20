@@ -29,11 +29,11 @@
 - (void) bindFBO;
 - (void) unbindFBO;
 
-- (void) setColorTarget:(id < NPPRenderTarget >)colorTarget
+- (void) setColorTarget:(id < NPPRenderTarget2D >)colorTarget
                 atIndex:(uint32_t)index
                        ;
 
-- (void) setDepthStencilTarget:(id < NPPRenderTarget >)depthStencilTarget;
+- (void) setDepthStencilTarget:(id < NPPRenderTarget2D >)depthStencilTarget;
 
 - (BOOL) checkFrameBufferCompleteness:(NSError **)error;
 

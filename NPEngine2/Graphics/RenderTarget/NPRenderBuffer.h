@@ -6,7 +6,7 @@
 @class NSError;
 @class NPRenderTargetConfiguration;
 
-@interface NPRenderBuffer : NPObject < NPPRenderTarget >
+@interface NPRenderBuffer : NPObject < NPPRenderTarget2D >
 {
 	GLuint glID;
     NpRenderTargetType type;

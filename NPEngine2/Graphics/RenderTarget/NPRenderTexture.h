@@ -8,7 +8,7 @@
 @class NPRenderTargetConfiguration;
 @class NPTexture2D;
 
-@interface NPRenderTexture : NPObject < NPPRenderTarget >
+@interface NPRenderTexture : NPObject < NPPRenderTarget2D >
 {
 	GLuint glID;
     NpRenderTargetType type;
