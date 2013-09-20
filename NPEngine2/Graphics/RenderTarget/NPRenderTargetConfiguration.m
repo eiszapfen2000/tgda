@@ -13,11 +13,11 @@
 
 NSString * const NPFBOAttachmentErrorString = @"FBO Attachment error.";
 NSString * const NPFBOMissingAttachmentErrorString = @"FBO missing attachment.";
-NSString * const NPFBODimensionsErrorString = @"FBO wrong dimensions.";
-NSString * const NPFBOFormatsErrorString = @"FBO wrong format.";
 NSString * const NPFBODrawBufferErrorString = @"FBO draw buffer error.";
 NSString * const NPFBOReadBufferErrorString = @"FBO read buffer error.";
 NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
+NSString * const NPFBOMultiSampleErrorString = @"FBO attachments multisample settings mismatch.";
+NSString * const NPFBOLayerErrorString = @"FBO attachments layer mismatch.";
 
 @interface NPRenderTargetConfiguration (Private)
 
@@ -36,42 +36,41 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
 
     switch ( fboStatus )
     {
-        case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
+        case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
         {
             errorString = NPFBOAttachmentErrorString;
             break;
         }
-        case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
+        case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
         {
             errorString = NPFBOMissingAttachmentErrorString;
             break;
         }
-        case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
-        {
-            errorString = NPFBODimensionsErrorString;
-            break;
-        }
-        case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
-        {
-            errorString = NPFBOFormatsErrorString;
-            break;
-        }
-        case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
+        case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
         {
             errorString = NPFBODrawBufferErrorString;
             break;
         }
-        case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
+        case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
         {
             errorString = NPFBOReadBufferErrorString;
             break;
         }
-        case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
+        case GL_FRAMEBUFFER_UNSUPPORTED:
         {
             errorString = NPFBOUnsupportedErrorString;
             break;
         }
-
+        case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+        {
+            errorString = NPFBOMultiSampleErrorString;
+            break;
+        }
+        case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+        {
+            errorString = NPFBOLayerErrorString;
+            break;
+        }
         default:
         {
             break;
@@ -83,34 +82,12 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
 
 - (void) generateGLFBO
 {
-    if ( [[ NPEngineGraphics instance ] supportsARBFBO ] == YES )
-    {
-        glGenFramebuffers(1, &glID);
-    }
-    else if ( [[ NPEngineGraphics instance ] supportsEXTFBO ] == YES )
-    {
-        glGenFramebuffersEXT(1, &glID);
-    }
-    else
-    {
-        glID = 0;
-    }
+    glGenFramebuffers(1, &glID);
 }
 
 - (void) deleteGLFBO
 {
-    if ( [[ NPEngineGraphics instance ] supportsARBFBO ] == YES )
-    {
-        glDeleteFramebuffers(1, &glID);
-    }
-    else if ( [[ NPEngineGraphics instance ] supportsEXTFBO ] == YES )
-    {
-        glDeleteFramebuffersEXT(1, &glID);
-    }
-    else
-    {
-        glID = 0;
-    }
+    glDeleteFramebuffers(1, &glID);
 }
 
 @end
@@ -180,12 +157,12 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
 
 - (void) bindFBO
 {
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, glID);
+    glBindFramebuffer(GL_FRAMEBUFFER, glID);
 }
 
 - (void) unbindFBO
 {
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 - (void) setColorTarget:(id < NPPRenderTarget >)colorTarget
@@ -207,7 +184,7 @@ NSString * const NPFBOUnsupportedErrorString = @"FBO unsupported format.";
 - (BOOL) checkFrameBufferCompleteness:(NSError **)error
 {
     BOOL result = YES;
-    GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
     if ( status != GL_FRAMEBUFFER_COMPLETE_EXT )
     {

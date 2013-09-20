@@ -129,7 +129,7 @@
 
     if (bindFBO == YES)
     {
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ rtc glID ]);
+        glBindFramebuffer(GL_FRAMEBUFFER, [ rtc glID ]);
     }
 
     switch ( type )
@@ -140,8 +140,8 @@
                 @"%@: Invalid color buffer index %u", name, newColorBufferIndex);
 
             colorBufferIndex = newColorBufferIndex;
-            GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
-            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment,
+            GLenum attachment = GL_COLOR_ATTACHMENT0 + colorBufferIndex;
+            glFramebufferTexture2D(GL_FRAMEBUFFER, attachment,
                 GL_TEXTURE_2D, glID, 0);
 
             break;
@@ -149,19 +149,19 @@
 
         case NpRenderTargetDepth:
         {
-            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
-                GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, glID, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER,
+                GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, glID, 0);
 
             break;
         }
 
         case NpRenderTargetDepthStencil:
         {
-            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
-                GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, glID, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER,
+                GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, glID, 0);
 
-            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
-                GL_STENCIL_ATTACHMENT_EXT, GL_TEXTURE_2D, glID, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER,
+                GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, glID, 0);
 
             break;
         }
@@ -174,7 +174,7 @@
 
     if (bindFBO == YES)
     {
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     if ( colorBufferIndex != INT_MAX )
@@ -202,15 +202,15 @@
     // bind FBO if desired
     if ( bindFBO == YES )
     {
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ rtc glID ]);
+        glBindFramebuffer(GL_FRAMEBUFFER, [ rtc glID ]);
     }
 
     switch ( type )
     {
         case NpRenderTargetColor:
         {
-            GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
-            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment,
+            GLenum attachment = GL_COLOR_ATTACHMENT0 + colorBufferIndex;
+            glFramebufferTexture2D(GL_FRAMEBUFFER, attachment,
                 GL_TEXTURE_2D, 0, 0);
 
             break;
@@ -218,19 +218,19 @@
 
         case NpRenderTargetDepth:
         {
-            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
-                GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, 0, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER,
+                GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
 
             break;
         }
 
         case NpRenderTargetDepthStencil:
         {
-            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
+            glFramebufferTexture2D(GL_FRAMEBUFFER,
                 GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, 0, 0);
 
-            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
-                GL_STENCIL_ATTACHMENT_EXT, GL_TEXTURE_2D, 0, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER,
+                GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
 
             break;
         }
@@ -243,7 +243,7 @@
 
     if ( bindFBO == YES )
     {
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     rtc = nil;
