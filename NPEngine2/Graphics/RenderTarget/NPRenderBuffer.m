@@ -17,7 +17,7 @@
 {
 	if ( glID > 0 )
 	{
-		glDeleteRenderbuffersEXT(1, &glID);
+		glDeleteRenderbuffers(1, &glID);
         glID = 0;
         ready = NO;
 	}
@@ -78,7 +78,7 @@
 {
     [ self deleteGLRenderBuffer ];
 
-    glGenRenderbuffersEXT(1, &glID);
+    glGenRenderbuffers(1, &glID);
     if ( glID == 0 )
     {
         // log error
@@ -95,16 +95,16 @@
         = getGLTextureInternalFormat(dataFormat, pixelFormat, false,
                                      NULL, NULL);
 
-    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, glID);
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, internalFormat, width, height);
+    glBindRenderbuffer(GL_RENDERBUFFER, glID);
+    glRenderbufferStorage(GL_RENDERBUFFER, internalFormat, width, height);
 
-    if ( glIsRenderbufferEXT(glID) == GL_FALSE )
+    if ( glIsRenderbuffer(glID) == GL_FALSE )
     {
         // log error
         return NO;
     }
 
-    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
     ready = YES;
 
     return YES;
@@ -120,7 +120,7 @@
 
     if ( bindFBO == YES )
     {
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ rtc glID ]);
+        glBindFramebuffer(GL_FRAMEBUFFER, [ rtc glID ]);
     }
 
     switch ( type )
@@ -132,29 +132,29 @@
 
 
             colorBufferIndex = newColorBufferIndex;
-            GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
+            GLenum attachment = GL_COLOR_ATTACHMENT0 + colorBufferIndex;
 
-            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,attachment,
-                GL_RENDERBUFFER_EXT, glID);
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER,attachment,
+                GL_RENDERBUFFER, glID);
 
             break;
         }
 
         case NpRenderTargetDepth:
         {
-            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
-                GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, glID);
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+                GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, glID);
 
             break;
         }
 
         case NpRenderTargetDepthStencil:
         {
-            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
-                GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, glID);
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+                GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, glID);
 
-            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
-                GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, glID);
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+                GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, glID);
 
             break;
         }
@@ -167,7 +167,7 @@
 
     if ( bindFBO == YES )
     {
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     if ( colorBufferIndex == INT_MAX )
@@ -194,35 +194,35 @@
 
     if ( bindFBO == YES )
     {
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, [ rtc glID ]);
+        glBindFramebuffer(GL_FRAMEBUFFER, [ rtc glID ]);
     }
 
     switch ( type )
     {
         case NpRenderTargetColor:
         {
-            GLenum attachment = GL_COLOR_ATTACHMENT0_EXT + colorBufferIndex;
-            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, attachment,
-                GL_RENDERBUFFER_EXT, 0);
+            GLenum attachment = GL_COLOR_ATTACHMENT0 + colorBufferIndex;
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment,
+                GL_RENDERBUFFER, 0);
 
             break;
         }
 
         case NpRenderTargetDepth:
         {
-            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
-                GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, 0);
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+                GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
 
             break;
         }
 
         case NpRenderTargetDepthStencil:
         {
-            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
-                GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, 0);
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+                GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
 
-            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
-                GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, 0);
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+                GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, 0);
 
             break;
         }
@@ -235,7 +235,7 @@
 
     if ( bindFBO == YES )
     {
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     rtc = nil;
