@@ -9,7 +9,7 @@
 {
     self = [ super init ];
 
-    ASSIGNCOPY(name, newName);
+    name = [newName copy ];
     objectID = crc32_of_pointer(self);
 
     [[[ NPEngineCore instance ] objectManager ] addObject:self ];

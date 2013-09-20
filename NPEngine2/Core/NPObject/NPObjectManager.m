@@ -19,16 +19,21 @@
     ASSIGNCOPY(name, newName);
     objectID = crc32_of_pointer(self);
 
+    sync = [[ NSRecursiveLock alloc ] init ];
+
     NSPointerFunctionsOptions options
         = NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality;
 
     objects = [[ NSPointerArray alloc ] initWithOptions:options ];
+    //[ objects setCount:2048 ];
 
     return self;
 }
 
 - (void) dealloc
 {
+    [ objects compact ];
+
     NSUInteger numberOfLeakedObjects = [ objects count ];
     for ( NSUInteger i = 0; i < numberOfLeakedObjects; i++ )
     {
@@ -36,6 +41,7 @@
     }
 
     DESTROY(objects);
+    DESTROY(sync);
     DESTROY(name);
 
     [ super dealloc ];
@@ -43,17 +49,25 @@
 
 - (void) addObject:(id <NPPObject>)newObject
 {
+    [ sync lock ];
     [ objects addPointer:newObject ];
+    [ sync unlock ];
 }
 
 - (void) removeObject:(id <NPPObject>)object
 {
+    [ sync lock ];
     [ objects removePointerIdenticalTo:object ];
+    [ sync unlock ];
 }
 
 - (id <NPPObject>) objectByName:(NSString *)objectName
 {
-    return [ objects pointerWithName:objectName ];
+    [ sync lock ];
+    id < NPPObject > result = [ objects pointerWithName:objectName ];
+    [ sync unlock ];
+
+    return result;
 }
 
 - (NSString *) name
