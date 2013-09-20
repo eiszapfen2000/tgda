@@ -1,3 +1,4 @@
+#import <Foundation/NSLock.h>
 #import "Core/Basics/NpTypes.h"
 #import "Core/Protocols/NPPObject.h"
 
@@ -8,6 +9,7 @@
 {
     uint32_t objectID;
     NSString * name;
+    NSRecursiveLock * sync;
     NSPointerArray * objects;
 }
 
