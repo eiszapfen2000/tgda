@@ -218,8 +218,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
     supportsSGIGenerateMipMap = NO;
     supportsAnisotropicTextureFilter = NO;
-    supportsEXTFBO = NO;
-    supportsARBFBO = NO;
     supportsSamplerObjects = NO;
     debugContext = NO;
 
@@ -412,21 +410,8 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         NPLOG(@"GL_EXT_texture_filter_anisotropic with maximum anisotropy %d supported", maximumAnisotropy);
     }
 
-    if ( GLEW_EXT_framebuffer_object )
-    {
-        supportsEXTFBO = YES;
-        NPLOG(@"GL_EXT_framebuffer_object supported");
-        glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS_EXT, &numberOfColorAttachments);
-        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &maximalRenderbufferSize);
-    }
-
-    if ( GLEW_ARB_framebuffer_object || GLEW_VERSION_3_2 )
-    {
-        supportsARBFBO = YES;
-        NPLOG(@"GL_ARB_framebuffer_object supported");
-        glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &numberOfColorAttachments);
-        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &maximalRenderbufferSize);
-    }
+    glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &numberOfColorAttachments);
+    glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &maximalRenderbufferSize);
 
     NPLOG(@"Color Attachments: %d", numberOfColorAttachments);
     NPLOG(@"Renderbuffer resolution up to: %d", maximalRenderbufferSize);
@@ -467,16 +452,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 - (int32_t) maximumAnisotropy
 {
     return maximumAnisotropy;
-}
-
-- (BOOL) supportsEXTFBO
-{
-    return supportsEXTFBO;
-}
-
-- (BOOL) supportsARBFBO
-{
-    return supportsARBFBO;
 }
 
 - (BOOL) supportsSamplerObjects
