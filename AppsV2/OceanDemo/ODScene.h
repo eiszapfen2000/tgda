@@ -74,10 +74,11 @@
     NPEffectTechnique * projectedGridTFTransform;
     NPEffectTechnique * projectedGridTFFeedback;
 
-    int32_t varianceLUTLastResolution;
-    int32_t varianceLUTResolution;
+    uint32_t varianceLUTLastResolution;
+    uint32_t varianceLUTResolution;
     NPRenderTargetConfiguration * varianceRTC;
     NPRenderTexture * varianceLUT;
+    NPEffectTechnique * variance;
 
     // fullscreen quad geometry
     NPFullscreenQuad * fullscreenQuad;
