@@ -6,6 +6,7 @@
 #import "Core/Container/NPAssetArray.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Graphics/Geometry/NPFullscreenQuad.h"
+#import "Graphics/Geometry/NPIMRendering.h"
 #import "Graphics/Texture/NPTexture2D.h"
 #import "Graphics/Texture/NPTexture3D.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
@@ -263,10 +264,13 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     NSAssert(result, @"Transform Feedback setup failed");
 
-    varianceLUTLastResolution = INT_MAX;
+    varianceLUTLastResolution = UINT_MAX;
     varianceLUTResolution = 16;
     varianceRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Variance RTC" ];
     varianceLUT = [[ NPRenderTexture alloc ] initWithName:@"Variance LUT" ];
+
+    variance = [ deferredEffect techniqueWithName:@"variance" ];
+    ASSERT_RETAIN(variance);
 
     // fullscreen quad for render target display
     fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
@@ -294,6 +298,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     SAFE_DESTROY(skylight);
     SAFE_DESTROY(file);
 
+    DESTROY(variance);
     DESTROY(varianceLUT);
     DESTROY(varianceRTC);
 
@@ -566,7 +571,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ fullscreenQuad render ];
     */
 
-    /*
+    
     if ( [ ocean updateSlopeVariance ] == YES )
     {
         [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean baseSpectrum ] texelUnit:0 ];
@@ -574,21 +579,60 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         //const IVector2 baseSpectrumResolution = [ ocean baseSpectrumResolution ];
         //const Vector2 baseSpectrumSize = [ ocean baseSpectrumSize ];
 
-        for ( int32_t c = 0; c < varianceLUTResolution; c++ )
+        FRectangle vertices;
+        FRectangle texcoords;
+
+        vertices.min.x = -1.0f;
+        vertices.max.x =  1.0f;
+        vertices.min.y = -1.0f;
+        vertices.max.y =  1.0f;
+
+        texcoords.min.x =  0.0f;
+        texcoords.max.x =  varianceLUTResolution;
+        texcoords.min.y =  0.0f;
+        texcoords.max.y =  varianceLUTResolution;
+
+        [ varianceRTC bindFBO ];
+        [ varianceRTC activateViewport ];
+
+        for ( uint32_t c = 0; c < varianceLUTResolution; c++ )
         {
-            glBegin(GL_QUADS);
-            glVertexAttribI2i(NpVertexStreamTexCoords0, 0, 0);
-            glVertex2f(-1.0, -1.0);
-            glVertexAttribI2i(NpVertexStreamTexCoords0, slopeVarianceResolution - 1, 0);
-            glVertex2f( 1.0, -1.0);
-            glVertexAttribI2i(NpVertexStreamTexCoords0, slopeVarianceResolution - 1, slopeVarianceResolution - 1);
-            glVertex2f( 1.0,  1.0);
-            glVertexAttribI2i(NpVertexStreamTexCoords0, 0, slopeVarianceResolution - 1);
-            glVertex2f(-1.0,  1.0);
-            glEnd();
+            [ varianceLUT attachLevel:0
+                                layer:c
+            renderTargetConfiguration:varianceRTC
+                     colorBufferIndex:0
+                              bindFBO:NO ];
+
+            if ( c == 0 )
+            {
+                [ varianceRTC activateDrawBuffers ];
+            }
+
+            [ variance activate ];
+            [ NPIMRendering renderFRectangle:vertices
+                                   texCoords:texcoords
+                               primitiveType:NpPrimitiveQuads ];
         }
+
+        [ varianceRTC deactivate ];
+
+        /*
+        float * testData = malloc(sizeof(float) * varianceLUTResolution * varianceLUTResolution * varianceLUTResolution * 2);
+        
+        [[[ NP Graphics ] textureBindingState ] clear ];
+        [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ varianceLUT texture ]];
+        glGetTexImage(GL_TEXTURE_3D, 0, GL_RG, GL_FLOAT, testData);
+        [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
+    
+        for ( uint32_t i = 0; i < varianceLUTResolution * varianceLUTResolution * varianceLUTResolution * 2; i++ )
+        {
+            NSLog(@"%f", testData[i]);
+        }
+
+        free(testData);
+        */
     }
-    */
+    
 
     [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean heightfield  ] texelUnit:0 ];
