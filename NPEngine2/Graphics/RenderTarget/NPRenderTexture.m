@@ -186,7 +186,7 @@
 
     rtc = configuration;
 
-    if (bindFBO == YES)
+    if ( bindFBO == YES )
     {
         glBindFramebuffer(GL_FRAMEBUFFER, [ rtc glID ]);
     }
@@ -194,10 +194,10 @@
     colorBufferIndex = newColorBufferIndex;
     GLenum attachment = getGLAttachment(type, colorBufferIndex);
 
-    NSAssert(attachment != GL_NONE, @"");
+    NSAssert(attachment != GL_NONE, @"Unknown attachment");
     glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, glID, newLevel);
 
-    if (bindFBO == YES)
+    if ( bindFBO == YES )
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
@@ -279,35 +279,10 @@
         glBindFramebuffer(GL_FRAMEBUFFER, [ rtc glID ]);
     }
 
-    switch ( type )
-    {
-        case NpRenderTargetColor:
-        {
-            GLenum attachment = GL_COLOR_ATTACHMENT0 + colorBufferIndex;
-            glFramebufferTexture(GL_FRAMEBUFFER, attachment, 0, 0);
-
-            break;
-        }
-
-        case NpRenderTargetDepth:
-        {
-            glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 0, 0);
-
-            break;
-        }
-
-        case NpRenderTargetDepthStencil:
-        {
-            glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, 0, 0);
-
-            break;
-        }
-
-        default:
-        {
-            break;
-        }
-    }
+    GLenum attachment = getGLAttachment(type, colorBufferIndex);
+    NSAssert(attachment != GL_NONE, @"Unknown attachment");
+    
+    glFramebufferTexture(GL_FRAMEBUFFER, attachment, 0, 0);
 
     if ( bindFBO == YES )
     {
