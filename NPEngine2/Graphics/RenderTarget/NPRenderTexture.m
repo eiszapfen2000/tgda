@@ -227,7 +227,7 @@
         case NpRenderTargetDepthStencil:
         {
             glFramebufferTexture2D(GL_FRAMEBUFFER,
-                GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, 0, 0);
+                GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
 
             glFramebufferTexture2D(GL_FRAMEBUFFER,
                 GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
