@@ -127,6 +127,8 @@
 {
     NSAssert1(configuration != nil, @"%@: Invalid NPRenderTargetConfiguration", name);
     NSAssert1(newLevel == 0, @"Level is required to be 0, actually is %d", newLevel);
+    NSAssert2((int32_t)newColorBufferIndex < [[ NPEngineGraphics instance ] numberOfColorAttachments ],
+        @"%@: Invalid color buffer index %u", name, newColorBufferIndex);
 
     rtc = configuration;
 
@@ -135,47 +137,11 @@
         glBindFramebuffer(GL_FRAMEBUFFER, [ rtc glID ]);
     }
 
-    switch ( type )
-    {
-        case NpRenderTargetColor:
-        {
-            NSAssert2((int32_t)newColorBufferIndex < [[ NPEngineGraphics instance ] numberOfColorAttachments ],
-                @"%@: Invalid color buffer index %u", name, newColorBufferIndex);
+    colorBufferIndex = newColorBufferIndex;
+    GLenum attachment = getGLAttachment(type, colorBufferIndex);
 
-
-            colorBufferIndex = newColorBufferIndex;
-            GLenum attachment = GL_COLOR_ATTACHMENT0 + colorBufferIndex;
-
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER,attachment,
-                GL_RENDERBUFFER, glID);
-
-            break;
-        }
-
-        case NpRenderTargetDepth:
-        {
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER,
-                GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, glID);
-
-            break;
-        }
-
-        case NpRenderTargetDepthStencil:
-        {
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER,
-                GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, glID);
-
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER,
-                GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, glID);
-
-            break;
-        }
-
-        default:
-        {
-            break;
-        }
-    }
+    NSAssert(attachment != GL_NONE, @"Unknown attachment");
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, glID);
 
     if ( bindFBO == YES )
     {
@@ -209,41 +175,10 @@
         glBindFramebuffer(GL_FRAMEBUFFER, [ rtc glID ]);
     }
 
-    switch ( type )
-    {
-        case NpRenderTargetColor:
-        {
-            GLenum attachment = GL_COLOR_ATTACHMENT0 + colorBufferIndex;
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment,
-                GL_RENDERBUFFER, 0);
-
-            break;
-        }
-
-        case NpRenderTargetDepth:
-        {
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER,
-                GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
-
-            break;
-        }
-
-        case NpRenderTargetDepthStencil:
-        {
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER,
-                GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
-
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER,
-                GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, 0);
-
-            break;
-        }
-
-        default:
-        {
-            break;
-        }
-    }
+    GLenum attachment = getGLAttachment(type, colorBufferIndex);
+    NSAssert(attachment != GL_NONE, @"Unknown attachment");
+    
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, 0);
 
     if ( bindFBO == YES )
     {
@@ -255,5 +190,4 @@
 }
 
 @end
-
 
