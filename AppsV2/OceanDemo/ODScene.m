@@ -37,6 +37,7 @@
                                      ;
 
 - (BOOL) generateRenderTargets:(NSError **)error;
+- (BOOL) generateVarianceLUTRenderTarget:(NSError **)error;
 
 @end
 
@@ -133,15 +134,20 @@
                              mipmapStorage:NO
                                      error:error ];
 
-    result
-        = result && [ varianceLUT generate3D:NpRenderTargetColor
-                                     width:varianceLUTResolution
-                                    height:varianceLUTResolution
-                                     depth:varianceLUTResolution
-                               pixelFormat:NpTexturePixelFormatDepthStencil
-                                dataFormat:NpTextureDataFormatFloat32
-                             mipmapStorage:NO
-                                     error:error ];
+    return result;
+}
+
+- (BOOL) generateVarianceLUTRenderTarget:(NSError **)error
+{
+    BOOL result
+        = [ varianceLUT generate3D:NpRenderTargetColor
+                             width:varianceLUTResolution
+                            height:varianceLUTResolution
+                             depth:varianceLUTResolution
+                       pixelFormat:NpTexturePixelFormatRG
+                        dataFormat:NpTextureDataFormatFloat32
+                     mipmapStorage:NO
+                             error:error ];
 
     return result;
 }
@@ -257,7 +263,9 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     NSAssert(result, @"Transform Feedback setup failed");
 
+    varianceLUTLastResolution = INT_MAX;
     varianceLUTResolution = 16;
+    varianceRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Variance RTC" ];
     varianceLUT = [[ NPRenderTexture alloc ] initWithName:@"Variance LUT" ];
 
     // fullscreen quad for render target display
@@ -286,12 +294,14 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     SAFE_DESTROY(skylight);
     SAFE_DESTROY(file);
 
+    DESTROY(varianceLUT);
+    DESTROY(varianceRTC);
+
     DESTROY(depthTarget);
     DESTROY(positionsTarget);
     DESTROY(normalsTarget);
     DESTROY(gBuffer);
 
-    DESTROY(varianceLUT);
     DESTROY(fullscreenQuad);
     DESTROY(projectedGridTFFeedback);
     DESTROY(projectedGridTFTransform);
@@ -496,6 +506,16 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         lastFrameResolution = currentResolution;
     }
 
+    if ( varianceLUTResolution != varianceLUTLastResolution )
+    {
+        [ varianceRTC setWidth:varianceLUTResolution ];
+        [ varianceRTC setHeight:varianceLUTResolution ];
+
+        NSAssert(([ self generateVarianceLUTRenderTarget:NULL ] == YES), @"");
+
+        varianceLUTLastResolution = varianceLUTResolution;
+    }
+
     NPCullingState * cullingState = [[[ NP Graphics ] stateConfiguration ] cullingState ];
     NPBlendingState * blendingState = [[[ NP Graphics ] stateConfiguration ] blendingState ];
     NPDepthTestState * depthTestState = [[[ NP Graphics ] stateConfiguration ] depthTestState ];
@@ -549,14 +569,12 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     /*
     if ( [ ocean updateSlopeVariance ] == YES )
     {
-        const int32_t slopeVarianceResolution = 4;
-
         [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean baseSpectrum ] texelUnit:0 ];
 
-        const IVector2 baseSpectrumResolution = [ ocean baseSpectrumResolution ];
-        const Vector2 baseSpectrumSize = [ ocean baseSpectrumSize ];
+        //const IVector2 baseSpectrumResolution = [ ocean baseSpectrumResolution ];
+        //const Vector2 baseSpectrumSize = [ ocean baseSpectrumSize ];
 
-        for ( int32_t c = 0; c < slopeVarianceResolution; c++ )
+        for ( int32_t c = 0; c < varianceLUTResolution; c++ )
         {
             glBegin(GL_QUADS);
             glVertexAttribI2i(NpVertexStreamTexCoords0, 0, 0);
