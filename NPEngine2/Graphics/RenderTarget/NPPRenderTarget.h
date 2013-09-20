@@ -14,6 +14,12 @@
                                    bindFBO:(BOOL)bindFBO
                                           ;
 
+- (void)       attachLevel:(uint32_t)newLevel
+ renderTargetConfiguration:(NPRenderTargetConfiguration *)configuration
+          colorBufferIndex:(uint32_t)newColorBufferIndex
+                   bindFBO:(BOOL)bindFBO
+                          ;
+
 - (void) detach:(BOOL)bindFBO;
 
 @end
