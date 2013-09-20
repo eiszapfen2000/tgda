@@ -794,3 +794,36 @@ size_t numberOfBytesForDataFormat(const NpBufferDataFormat DataFormat)
 
     return result;
 }
+
+GLenum getGLAttachment(const NpRenderTargetType type, const uint32_t index)
+{
+    GLenum result = GL_NONE;
+
+    switch ( type )
+    {
+        case NpRenderTargetColor:
+        {
+            result = GL_COLOR_ATTACHMENT0 + index;
+            break;
+        }
+
+        case NpRenderTargetDepth:
+        {
+            result = GL_DEPTH_ATTACHMENT;
+            break;
+        }
+
+        case NpRenderTargetDepthStencil:
+        {
+            result = GL_DEPTH_STENCIL_ATTACHMENT;
+            break;
+        }
+
+        default:
+        {
+            break;
+        }
+    }
+
+    return result;
+}

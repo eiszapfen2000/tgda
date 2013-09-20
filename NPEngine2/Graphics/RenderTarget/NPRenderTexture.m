@@ -3,6 +3,7 @@
 #import <Foundation/NSException.h>
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Graphics/Texture/NPTexture2D.h"
+#import "Graphics/Texture/NPTexture3D.h"
 #import "Graphics/NPEngineGraphics.h"
 #import "NPRenderTargetConfiguration.h"
 #import "NPRenderTexture.h"
@@ -11,6 +12,7 @@
 
 - (void) deleteTexture;
 - (void) createTextureWithMipmaps:(BOOL)mipmaps;
+- (void) createTexture3DWithMipmaps:(BOOL)mipmaps;
 
 @end
 
@@ -38,6 +40,27 @@
 
     texture = RETAIN(texture2D);
     DESTROY(texture2D);
+
+    glID = [ texture glID ];
+    ready = YES;
+}
+
+- (void) createTexture3DWithMipmaps:(BOOL)mipmaps
+{
+    [ self deleteTexture ];
+
+    NPTexture3D * texture3D = [[ NPTexture3D alloc ] init ];
+
+    [ texture3D generateUsingWidth:width
+                            height:height
+                             depth:depth
+                       pixelFormat:pixelFormat
+                        dataFormat:dataFormat
+                           mipmaps:mipmaps
+                              data:[ NSData data ]];
+
+    texture = RETAIN(texture3D);
+    DESTROY(texture3D);
 
     glID = [ texture glID ];
     ready = YES;
@@ -108,13 +131,35 @@
     mipmapStorage:(BOOL)mipmapStorage
             error:(NSError **)error
 {
-    type = newType;
-    width = newWidth;
+    type   = newType;
+    width  = newWidth;
     height = newHeight;
+    depth  = 0;
     pixelFormat = newPixelFormat;
-    dataFormat = newDataFormat;
+    dataFormat  = newDataFormat;
 
     [ self createTextureWithMipmaps:mipmapStorage ];
+
+    return YES;
+}
+
+- (BOOL) generate3D:(NpRenderTargetType)newType
+              width:(uint32_t)newWidth
+             height:(uint32_t)newHeight
+              depth:(uint32_t)newDepth
+        pixelFormat:(NpTexturePixelFormat)newPixelFormat
+         dataFormat:(NpTextureDataFormat)newDataFormat
+      mipmapStorage:(BOOL)mipmapStorage
+              error:(NSError **)error
+{
+    type   = newType;
+    width  = newWidth;
+    height = newHeight;
+    depth  = newDepth;
+    pixelFormat = newPixelFormat;
+    dataFormat  = newDataFormat;
+
+    [ self createTexture3DWithMipmaps:mipmapStorage ];
 
     return YES;
 }
@@ -134,7 +179,10 @@
           colorBufferIndex:(uint32_t)newColorBufferIndex
                    bindFBO:(BOOL)bindFBO
 {
+    NSAssert([ texture isKindOfClass:[ NPTexture2D class ]] == YES, @"Render texture is not a 2D texture");
     NSAssert1(configuration != nil, @"%@: Invalid NPRenderTargetConfiguration", name);
+    NSAssert2((int32_t)newColorBufferIndex < [[ NPEngineGraphics instance ] numberOfColorAttachments ],
+        @"%@: Invalid color buffer index %u", name, newColorBufferIndex);
 
     rtc = configuration;
 
@@ -143,45 +191,11 @@
         glBindFramebuffer(GL_FRAMEBUFFER, [ rtc glID ]);
     }
 
-    switch ( type )
-    {
-        case NpRenderTargetColor:
-        {
-            NSAssert2((int32_t)newColorBufferIndex < [[ NPEngineGraphics instance ] numberOfColorAttachments ],
-                @"%@: Invalid color buffer index %u", name, newColorBufferIndex);
+    colorBufferIndex = newColorBufferIndex;
+    GLenum attachment = getGLAttachment(type, colorBufferIndex);
 
-            colorBufferIndex = newColorBufferIndex;
-            GLenum attachment = GL_COLOR_ATTACHMENT0 + colorBufferIndex;
-            glFramebufferTexture2D(GL_FRAMEBUFFER, attachment,
-                GL_TEXTURE_2D, glID, newLevel);
-
-            break;
-        }
-
-        case NpRenderTargetDepth:
-        {
-            glFramebufferTexture2D(GL_FRAMEBUFFER,
-                GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, glID, newLevel);
-
-            break;
-        }
-
-        case NpRenderTargetDepthStencil:
-        {
-            glFramebufferTexture2D(GL_FRAMEBUFFER,
-                GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, glID, newLevel);
-
-            glFramebufferTexture2D(GL_FRAMEBUFFER,
-                GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, glID, newLevel);
-
-            break;
-        }
-
-        default:
-        {
-            break;
-        }
-    }
+    NSAssert(attachment != GL_NONE, @"");
+    glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, glID, newLevel);
 
     if (bindFBO == YES)
     {
@@ -196,6 +210,55 @@
     {
         [ rtc setDepthStencilTarget:self ];
     }
+}
+
+- (void)       attachLevel:(uint32_t)newLevel
+                     layer:(uint32_t)newLayer
+ renderTargetConfiguration:(NPRenderTargetConfiguration *)configuration
+          colorBufferIndex:(uint32_t)newColorBufferIndex
+                   bindFBO:(BOOL)bindFBO
+{
+    /*
+    switch ( type )
+    {
+        case NpRenderTargetColor:
+        {
+            NSAssert2((int32_t)newColorBufferIndex < [[ NPEngineGraphics instance ] numberOfColorAttachments ],
+                @"%@: Invalid color buffer index %u", name, newColorBufferIndex);
+
+            colorBufferIndex = newColorBufferIndex;
+            GLenum attachment = GL_COLOR_ATTACHMENT0 + colorBufferIndex;
+            glFramebufferTexture3D(GL_FRAMEBUFFER, attachment,
+                GL_TEXTURE_3D, glID, newLevel, newLayer);
+
+            break;
+        }
+
+        case NpRenderTargetDepth:
+        {
+            glFramebufferTexture3D(GL_FRAMEBUFFER,
+                GL_DEPTH_ATTACHMENT, GL_TEXTURE_3D, glID, newLevel, newLayer);
+
+            break;
+        }
+
+        case NpRenderTargetDepthStencil:
+        {
+            glFramebufferTexture3D(GL_FRAMEBUFFER,
+                GL_DEPTH_ATTACHMENT, GL_TEXTURE_3D, glID, newLevel, newLayer);
+
+            glFramebufferTexture3D(GL_FRAMEBUFFER,
+                GL_STENCIL_ATTACHMENT, GL_TEXTURE_3D, glID, newLevel, newLayer);
+
+            break;
+        }
+
+        default:
+        {
+            break;
+        }
+    }
+    */
 }
 
 - (void) detach:(BOOL)bindFBO
@@ -221,27 +284,21 @@
         case NpRenderTargetColor:
         {
             GLenum attachment = GL_COLOR_ATTACHMENT0 + colorBufferIndex;
-            glFramebufferTexture2D(GL_FRAMEBUFFER, attachment,
-                GL_TEXTURE_2D, 0, 0);
+            glFramebufferTexture(GL_FRAMEBUFFER, attachment, 0, 0);
 
             break;
         }
 
         case NpRenderTargetDepth:
         {
-            glFramebufferTexture2D(GL_FRAMEBUFFER,
-                GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
+            glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 0, 0);
 
             break;
         }
 
         case NpRenderTargetDepthStencil:
         {
-            glFramebufferTexture2D(GL_FRAMEBUFFER,
-                GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
-
-            glFramebufferTexture2D(GL_FRAMEBUFFER,
-                GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
+            glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, 0, 0);
 
             break;
         }

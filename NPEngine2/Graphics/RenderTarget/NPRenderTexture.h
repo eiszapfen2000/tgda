@@ -8,7 +8,7 @@
 @class NPRenderTargetConfiguration;
 @class NPTexture2D;
 
-@interface NPRenderTexture : NPObject < NPPRenderTarget2D >
+@interface NPRenderTexture : NPObject < NPPRenderTarget2D, NPPRenderTarget3D >
 {
 	GLuint glID;
     NpRenderTargetType type;
@@ -17,7 +17,7 @@
     uint32_t depth;
     NpTexturePixelFormat pixelFormat;
     NpTextureDataFormat dataFormat;
-    id < NPPTexture > texture;
+    id < NSObject, NPPTexture > texture;
     NPRenderTargetConfiguration * rtc;
     uint32_t colorBufferIndex;
     BOOL ready;
@@ -37,6 +37,16 @@
     mipmapStorage:(BOOL)mipmapStorage
             error:(NSError **)error
                  ;
+
+- (BOOL) generate3D:(NpRenderTargetType)newType
+              width:(uint32_t)newWidth
+             height:(uint32_t)newHeight
+              depth:(uint32_t)newDepth
+        pixelFormat:(NpTexturePixelFormat)newPixelFormat
+         dataFormat:(NpTextureDataFormat)newDataFormat
+      mipmapStorage:(BOOL)mipmapStorage
+              error:(NSError **)error
+                   ;
 
 @end
 
