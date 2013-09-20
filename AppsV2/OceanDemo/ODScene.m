@@ -7,6 +7,7 @@
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Graphics/Geometry/NPFullscreenQuad.h"
 #import "Graphics/Texture/NPTexture2D.h"
+#import "Graphics/Texture/NPTexture3D.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
@@ -132,6 +133,16 @@
                              mipmapStorage:NO
                                      error:error ];
 
+    result
+        = result && [ varianceLUT generate3D:NpRenderTargetColor
+                                     width:varianceLUTResolution
+                                    height:varianceLUTResolution
+                                     depth:varianceLUTResolution
+                               pixelFormat:NpTexturePixelFormatDepthStencil
+                                dataFormat:NpTextureDataFormatFloat32
+                             mipmapStorage:NO
+                                     error:error ];
+
     return result;
 }
 
@@ -246,6 +257,9 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     NSAssert(result, @"Transform Feedback setup failed");
 
+    varianceLUTResolution = 16;
+    varianceLUT = [[ NPRenderTexture alloc ] initWithName:@"Variance LUT" ];
+
     // fullscreen quad for render target display
     fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
 
@@ -277,6 +291,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     DESTROY(normalsTarget);
     DESTROY(gBuffer);
 
+    DESTROY(varianceLUT);
     DESTROY(fullscreenQuad);
     DESTROY(projectedGridTFFeedback);
     DESTROY(projectedGridTFTransform);
@@ -529,6 +544,32 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[[ NP Graphics ] textureBindingState ] activate ];
     [[ deferredEffect techniqueWithName:@"texture" ] activate ];
     [ fullscreenQuad render ];
+    */
+
+    /*
+    if ( [ ocean updateSlopeVariance ] == YES )
+    {
+        const int32_t slopeVarianceResolution = 4;
+
+        [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean baseSpectrum ] texelUnit:0 ];
+
+        const IVector2 baseSpectrumResolution = [ ocean baseSpectrumResolution ];
+        const Vector2 baseSpectrumSize = [ ocean baseSpectrumSize ];
+
+        for ( int32_t c = 0; c < slopeVarianceResolution; c++ )
+        {
+            glBegin(GL_QUADS);
+            glVertexAttribI2i(NpVertexStreamTexCoords0, 0, 0);
+            glVertex2f(-1.0, -1.0);
+            glVertexAttribI2i(NpVertexStreamTexCoords0, slopeVarianceResolution - 1, 0);
+            glVertex2f( 1.0, -1.0);
+            glVertexAttribI2i(NpVertexStreamTexCoords0, slopeVarianceResolution - 1, slopeVarianceResolution - 1);
+            glVertex2f( 1.0,  1.0);
+            glVertexAttribI2i(NpVertexStreamTexCoords0, 0, slopeVarianceResolution - 1);
+            glVertex2f(-1.0,  1.0);
+            glEnd();
+        }
+    }
     */
 
     [[[ NP Graphics ] textureBindingState ] clear ];

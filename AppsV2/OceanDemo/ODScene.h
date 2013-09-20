@@ -74,6 +74,9 @@
     NPEffectTechnique * projectedGridTFTransform;
     NPEffectTechnique * projectedGridTFFeedback;
 
+    int32_t varianceLUTResolution;
+    NPRenderTexture * varianceLUT;
+
     // fullscreen quad geometry
     NPFullscreenQuad * fullscreenQuad;
 }
