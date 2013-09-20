@@ -218,47 +218,37 @@
           colorBufferIndex:(uint32_t)newColorBufferIndex
                    bindFBO:(BOOL)bindFBO
 {
-    /*
-    switch ( type )
+    NSAssert([ texture isKindOfClass:[ NPTexture3D class ]] == YES, @"Render texture is not a 3D texture");
+    NSAssert1(configuration != nil, @"%@: Invalid NPRenderTargetConfiguration", name);
+    NSAssert2((int32_t)newColorBufferIndex < [[ NPEngineGraphics instance ] numberOfColorAttachments ],
+        @"%@: Invalid color buffer index %u", name, newColorBufferIndex);
+
+    rtc = configuration;
+
+    if ( bindFBO == YES )
     {
-        case NpRenderTargetColor:
-        {
-            NSAssert2((int32_t)newColorBufferIndex < [[ NPEngineGraphics instance ] numberOfColorAttachments ],
-                @"%@: Invalid color buffer index %u", name, newColorBufferIndex);
-
-            colorBufferIndex = newColorBufferIndex;
-            GLenum attachment = GL_COLOR_ATTACHMENT0 + colorBufferIndex;
-            glFramebufferTexture3D(GL_FRAMEBUFFER, attachment,
-                GL_TEXTURE_3D, glID, newLevel, newLayer);
-
-            break;
-        }
-
-        case NpRenderTargetDepth:
-        {
-            glFramebufferTexture3D(GL_FRAMEBUFFER,
-                GL_DEPTH_ATTACHMENT, GL_TEXTURE_3D, glID, newLevel, newLayer);
-
-            break;
-        }
-
-        case NpRenderTargetDepthStencil:
-        {
-            glFramebufferTexture3D(GL_FRAMEBUFFER,
-                GL_DEPTH_ATTACHMENT, GL_TEXTURE_3D, glID, newLevel, newLayer);
-
-            glFramebufferTexture3D(GL_FRAMEBUFFER,
-                GL_STENCIL_ATTACHMENT, GL_TEXTURE_3D, glID, newLevel, newLayer);
-
-            break;
-        }
-
-        default:
-        {
-            break;
-        }
+        glBindFramebuffer(GL_FRAMEBUFFER, [ rtc glID ]);
     }
-    */
+
+    colorBufferIndex = newColorBufferIndex;
+    GLenum attachment = getGLAttachment(type, colorBufferIndex);
+
+    NSAssert(attachment != GL_NONE, @"Unknown attachment");
+    glFramebufferTexture3D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_3D, glID, newLevel, newLayer);
+
+    if ( bindFBO == YES )
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    if ( colorBufferIndex != INT_MAX )
+    {
+        [ rtc setColorTarget:self atIndex:colorBufferIndex ];
+    }
+    else
+    {
+        [ rtc setDepthStencilTarget:self ];
+    }
 }
 
 - (void) detach:(BOOL)bindFBO
