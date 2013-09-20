@@ -114,7 +114,19 @@
                           colorBufferIndex:(uint32_t)newColorBufferIndex
                                    bindFBO:(BOOL)bindFBO
 {
+        [ self attachLevel:0
+ renderTargetConfiguration:configuration
+          colorBufferIndex:newColorBufferIndex
+                   bindFBO:bindFBO ];
+}
+
+- (void)       attachLevel:(uint32_t)newLevel
+ renderTargetConfiguration:(NPRenderTargetConfiguration *)configuration
+          colorBufferIndex:(uint32_t)newColorBufferIndex
+                   bindFBO:(BOOL)bindFBO
+{
     NSAssert1(configuration != nil, @"%@: Invalid NPRenderTargetConfiguration", name);
+    NSAssert1(newLevel == 0, @"Level is required to be 0, actually is %d", newLevel);
 
     rtc = configuration;
 

@@ -123,6 +123,17 @@
                           colorBufferIndex:(uint32_t)newColorBufferIndex
                                    bindFBO:(BOOL)bindFBO
 {
+            [ self attachLevel:0
+     renderTargetConfiguration:configuration
+              colorBufferIndex:newColorBufferIndex
+                       bindFBO:bindFBO ];
+}
+
+- (void)       attachLevel:(uint32_t)newLevel
+ renderTargetConfiguration:(NPRenderTargetConfiguration *)configuration
+          colorBufferIndex:(uint32_t)newColorBufferIndex
+                   bindFBO:(BOOL)bindFBO
+{
     NSAssert1(configuration != nil, @"%@: Invalid NPRenderTargetConfiguration", name);
 
     rtc = configuration;
@@ -142,7 +153,7 @@
             colorBufferIndex = newColorBufferIndex;
             GLenum attachment = GL_COLOR_ATTACHMENT0 + colorBufferIndex;
             glFramebufferTexture2D(GL_FRAMEBUFFER, attachment,
-                GL_TEXTURE_2D, glID, 0);
+                GL_TEXTURE_2D, glID, newLevel);
 
             break;
         }
@@ -150,7 +161,7 @@
         case NpRenderTargetDepth:
         {
             glFramebufferTexture2D(GL_FRAMEBUFFER,
-                GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, glID, 0);
+                GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, glID, newLevel);
 
             break;
         }
@@ -158,10 +169,10 @@
         case NpRenderTargetDepthStencil:
         {
             glFramebufferTexture2D(GL_FRAMEBUFFER,
-                GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, glID, 0);
+                GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, glID, newLevel);
 
             glFramebufferTexture2D(GL_FRAMEBUFFER,
-                GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, glID, 0);
+                GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, glID, newLevel);
 
             break;
         }
