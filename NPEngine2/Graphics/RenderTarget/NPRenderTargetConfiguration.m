@@ -165,13 +165,13 @@ NSString * const NPFBOLayerErrorString = @"FBO attachments layer mismatch.";
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-- (void) setColorTarget:(id < NPPRenderTarget >)colorTarget
+- (void) setColorTarget:(id < NPPRenderTarget2D >)colorTarget
                 atIndex:(uint32_t)index
 {
     [ targets replacePointerAtIndex:index withPointer:colorTarget ];
 }
 
-- (void) setDepthStencilTarget:(id < NPPRenderTarget >)depthStencilTarget
+- (void) setDepthStencilTarget:(id < NPPRenderTarget2D >)depthStencilTarget
 {
     int32_t numberOfColorAttachments
         = [[ NPEngineGraphics instance ] numberOfColorAttachments ];
