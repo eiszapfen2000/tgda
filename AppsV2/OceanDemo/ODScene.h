@@ -13,6 +13,7 @@
 @class NPRenderTexture;
 @class NPRenderBuffer;
 @class NPEffect;
+@class NPEffectTechniqueVariable;
 @class NPEffectVariableFloat;
 @class NPEffectVariableFloat2;
 @class NPEffectVariableFloat3;
@@ -79,6 +80,10 @@
     NPRenderTargetConfiguration * varianceRTC;
     NPRenderTexture * varianceLUT;
     NPEffectTechnique * variance;
+    NPEffectVariableFloat * layer;
+    NPEffectVariableFloat * varianceTextureResolution;
+    NPEffectVariableFloat2 * baseSpectrumSize;
+    NPEffectVariableFloat * deltaVariance;
 
     // fullscreen quad geometry
     NPFullscreenQuad * fullscreenQuad;

@@ -265,12 +265,19 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     NSAssert(result, @"Transform Feedback setup failed");
 
     varianceLUTLastResolution = UINT_MAX;
-    varianceLUTResolution = 16;
+    varianceLUTResolution = 4;
     varianceRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Variance RTC" ];
     varianceLUT = [[ NPRenderTexture alloc ] initWithName:@"Variance LUT" ];
 
     variance = [ deferredEffect techniqueWithName:@"variance" ];
     ASSERT_RETAIN(variance);
+
+    layer            = [ deferredEffect variableWithName:@"layer" ];
+    baseSpectrumSize = [ deferredEffect variableWithName:@"baseSpectrumSize" ];
+    deltaVariance    = [ deferredEffect variableWithName:@"deltaVariance" ];
+    varianceTextureResolution = [ deferredEffect variableWithName:@"varianceTextureResolution" ];
+
+    NSAssert(layer != nil && baseSpectrumSize != nil && deltaVariance != nil && varianceTextureResolution != nil, @"");
 
     // fullscreen quad for render target display
     fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
@@ -574,10 +581,15 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     
     if ( [ ocean updateSlopeVariance ] == YES )
     {
-        [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean baseSpectrum ] texelUnit:0 ];
+        //NSLog(@"BRAK");
 
-        //const IVector2 baseSpectrumResolution = [ ocean baseSpectrumResolution ];
-        //const Vector2 baseSpectrumSize = [ ocean baseSpectrumSize ];
+        [ varianceTextureResolution setFValue:varianceLUTResolution ];
+        [ baseSpectrumSize setValue:[ ocean baseSpectrumSize ]];
+        [ deltaVariance setFValue:[ ocean baseSpectrumDeltaVariance ]];
+
+        [[[ NP Graphics ] textureBindingState ] clear ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean baseSpectrum ] texelUnit:0 ];
+        [[[ NP Graphics ] textureBindingState ] activate ];
 
         FRectangle vertices;
         FRectangle texcoords;
@@ -608,6 +620,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
                 [ varianceRTC activateDrawBuffers ];
             }
 
+            [ layer setFValue:(float)c ];
             [ variance activate ];
             [ NPIMRendering renderFRectangle:vertices
                                    texCoords:texcoords
@@ -624,9 +637,9 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         glGetTexImage(GL_TEXTURE_3D, 0, GL_RG, GL_FLOAT, testData);
         [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
     
-        for ( uint32_t i = 0; i < varianceLUTResolution * varianceLUTResolution * varianceLUTResolution * 2; i++ )
+        for ( uint32_t i = 0; i < varianceLUTResolution * varianceLUTResolution * varianceLUTResolution; i++ )
         {
-            NSLog(@"%f", testData[i]);
+            NSLog(@"%f %f", testData[i*2], testData[i*2+1]);
         }
 
         free(testData);

@@ -600,6 +600,7 @@ static NSUInteger od_variance_size(const void * item)
 
     baseSpectrumResolution = iv2_zero();
     baseSpectrumSize = v2_zero();
+    baseSpectrumDeltaVariance = 0.0f;
 
     fm4_m_set_identity(&modelMatrix);
 
@@ -790,6 +791,11 @@ static NSUInteger od_variance_size(const void * item)
 - (Vector2) baseSpectrumSize
 {
     return baseSpectrumSize;
+}
+
+- (float) baseSpectrumDeltaVariance
+{
+    return baseSpectrumDeltaVariance;
 }
 
 - (FVector2) baseMeshScale
@@ -993,6 +999,8 @@ static NSUInteger od_variance_size(const void * item)
                 baseSpectrumResolution.x = MAX(hf->geometryResolution.x, hf->gradientResolution.x);
                 baseSpectrumResolution.y = MAX(hf->geometryResolution.y, hf->gradientResolution.y);
 
+                //NSLog(@"%d %d", baseSpectrumResolution.x, baseSpectrumResolution.y);
+
                 const NSUInteger numberOfBaseSpectrumBytes
                     = baseSpectrumResolution.x * baseSpectrumResolution.y * sizeof(float);
 
@@ -1006,6 +1014,9 @@ static NSUInteger od_variance_size(const void * item)
                                        dataFormat:NpTextureDataFormatFloat32
                                           mipmaps:NO
                                              data:baseSpectrumData ];
+
+                baseSpectrumDeltaVariance
+                    = variance->maxMeanSlopeVariance - variance->effectiveMeanSlopeVariance;
 
                 fftwf_free(variance->baseSpectrum);
                 variance->baseSpectrum = NULL;

@@ -38,7 +38,9 @@ void main()
             float kx = (n + dj) * MATH_2_MUL_PIf * dsize.x;
             float ky = (m - di) * MATH_2_MUL_PIf * dsize.x;
 
-            float s = texelFetch(baseSpectrum, ivec2(i, j), 0);
+            // switch i and j due to to different memory layout
+            // of fftw and opengl
+            float s = texelFetch(baseSpectrum, ivec2(j, i), 0);
             float w = 1.0f - exp(A * kx * kx + B * kx * ky + C * ky * ky);
 
             variance.x += ((kx * kx * w * w) * (dk.x * dk.x) * s);

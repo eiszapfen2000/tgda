@@ -80,6 +80,7 @@
     FVector2 displacementZRange;
     IVector2 baseSpectrumResolution;
     Vector2  baseSpectrumSize;
+    float baseSpectrumDeltaVariance;
     BOOL animated;
     BOOL updateSlopeVariance;
 
@@ -110,6 +111,7 @@
 - (FVector2) displacementZRange;
 - (IVector2) baseSpectrumResolution;
 - (Vector2)  baseSpectrumSize;
+- (float)    baseSpectrumDeltaVariance;
 - (FVector2) baseMeshScale;
 
 - (BOOL) updateSlopeVariance;
