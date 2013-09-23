@@ -62,6 +62,13 @@ technique "proj_grid_tf_feedback"
         MinFilter = Linear;
         MagFilter = Linear;
     };
+    uniform sampler3D variance
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
     # vertex streams
     in vec3 in_position : 0;
     in vec2 in_non_disp_position : 1;
