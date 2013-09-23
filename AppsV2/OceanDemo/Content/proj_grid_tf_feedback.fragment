@@ -46,15 +46,47 @@ float geometry_cook_torrance(vec3 n, vec3 h, vec3 v, vec3 l)
     return min(1.0, min(g1, g2));
 }
 
+float meanFresnel(float cosThetaV, float sigmaV)
+{
+    return pow(1.0 - cosThetaV, 5.0 * exp(-2.69 * sigmaV)) / (1.0 + 22.7 * pow(sigmaV, 1.5));
+}
+
+// V, N in world space
+float meanFresnel(vec3 V, vec3 N, vec2 sigmaSq)
+{
+    // view direction in wind space
+    vec2 v = V.xz;
+    // cos^2 and sin^2 of view direction
+    vec2 t = v * v / (1.0 - V.y * V.y);
+    // slope variance in view direction
+    float sigmaV2 = dot(t, sigmaSq);
+
+    return meanFresnel(dot(V, N), sqrt(sigmaV2));
+}
+
 void main()
 {
+    float Jxx = dFdx(out_ws_non_disp_position.x);
+    float Jxy = dFdy(out_ws_non_disp_position.x);
+    float Jyx = dFdx(out_ws_non_disp_position.y);
+    float Jyy = dFdy(out_ws_non_disp_position.y);
+    float A = Jxx * Jxx + Jyx * Jyx;
+    float B = Jxx * Jxy + Jyx * Jyy;
+    float C = Jxy * Jxy + Jyy * Jyy;
+    float ua = pow(A, 0.25);
+    float ub = 0.5 + 0.5 * B / sqrt(A * C);
+    float uc = pow(C, 0.25);
+
+    vec2 sigmaSq = texture(variance, vec3(ua, ub, uc)).xy * 100.0;
+    sigmaSq = max(sigmaSq, 2e-5);
+
     vec2 texcoord = out_ws_non_disp_position;
     texcoord *= (1.0 / area);
 
     vec2 grad = textureLod(gradient, texcoord, 0.0).xy;
     vec3 normal = vec3(-grad.x, 1.0, grad.y);
 
-    vec3 lightDir = vec3(0.0, 1.0, 1.0);
+    vec3 lightDir = vec3(1.0, 1.0, 1.0);
     vec3 viewDir  = cameraPosition - out_ws_position;
     vec3 l        = normalize(lightDir);
     vec3 v        = normalize(viewDir);
@@ -78,9 +110,12 @@ void main()
     float n_dot_v = clamp(dot(n, v), 0.001, 1.0);
     float l_dot_h = clamp(dot(l, h), 0.001, 1.0);
 
+    vec3 f_schlick = vec3(meanFresnel(v, n, sigmaSq));
+
+    /*
     float foreshortening = n_dot_l * n_dot_v;
 
-    vec3 f_schlick = c_spec + ((vec3(1.0) - c_spec) * pow(1.0 - dot(l,h), 5.0));
+    //vec3 f_schlick = c_spec + ((vec3(1.0) - c_spec) * pow(1.0 - dot(l,h), 5.0));
 
     float D_bp = blinn_phong_distribution(n, h, alpha_p);
     float D_bm = beckmann_distribution(n, h, m_alpha_p);
@@ -109,6 +144,8 @@ void main()
     //L_zero = f_schlick * D_bp * brdf_factor;
     vec3 result = pow(L_zero, vec3(1.0 / 2.2));
     target = vec4(L_zero, 1.0);
-    //target = vec4(n.z, 0.0, 0.0, 1.0);
+    */
+
+    target = vec4(f_schlick, 1.0);
 }
 
