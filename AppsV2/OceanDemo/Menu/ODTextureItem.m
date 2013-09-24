@@ -84,8 +84,11 @@
         channels.w = ([[ channelStrings objectAtIndex:3 ] boolValue ] == YES) ? 1.0f : 0.0f;
     }
 
-    colorTechnique        = RETAIN([ menu colorTechnique        ]);
-    textureRangeTechnique = RETAIN([ menu textureRangeTechnique ]);
+    colorTechnique        = [ menu colorTechnique ];
+    textureRangeTechnique = [ menu textureRangeTechnique ];
+
+    ASSERT_RETAIN(colorTechnique);
+    ASSERT_RETAIN(textureRangeTechnique);
 
     color = [[ menu effect ] variableWithName:@"color" ];
     range = [[ menu effect ] variableWithName:@"range" ];
@@ -140,6 +143,8 @@
     {
         ODObjCGetVariable(target, offset, size, &valueRange);
     }
+
+    //NSLog(@"%@ %f %f", label, valueRange.x, valueRange.y);
 
     [[[ NPEngineGraphics instance ] textureBindingState ] setTexture:texture texelUnit:0 ];
     [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
