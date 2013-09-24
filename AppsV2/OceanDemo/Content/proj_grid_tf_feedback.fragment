@@ -46,6 +46,58 @@ float geometry_cook_torrance(vec3 n, vec3 h, vec3 v, vec3 l)
     return min(1.0, min(g1, g2));
 }
 
+// assumes x > 0
+float erfc(float x)
+{
+    return 2.0 * exp(-x * x) / (2.319 * x + sqrt(4.0 + 1.52 * x * x));
+}
+
+float erf(float x)
+{
+    float a   = 0.140012;
+    float x2  = x * x;
+    float ax2 = a * x2;
+    return sign(x) * sqrt( 1.0 - exp(-x2*(4.0/MATH_PI + ax2)/(1.0 + ax2)) );
+}
+
+float Lambda(float cosTheta, float sigmaSq)
+{
+    float v = cosTheta / sqrt((1.0 - cosTheta * cosTheta) * (2.0 * sigmaSq));
+
+    return max(0.0, (exp(-v * v) - v * sqrt(MATH_PI) * erfc(v)) / (2.0 * v * sqrt(MATH_PI)));
+}
+
+// L, V, N, Tx, Ty in world space
+float reflectedSunRadiance(vec3 L, vec3 V, vec3 N, vec3 Tx, vec3 Ty, vec2 sigmaSq)
+{
+    vec3 H = normalize(L + V);
+    float zetax = dot(H, Tx) / dot(H, N);
+    float zetay = dot(H, Ty) / dot(H, N);
+
+    float zL = dot(L, N); // cos of source zenith angle
+    float zV = dot(V, N); // cos of receiver zenith angle
+    float zH = dot(H, N); // cos of facet normal zenith angle
+    float zH2 = zH * zH;
+
+    float p = exp(-0.5 * (zetax * zetax / sigmaSq.x + zetay * zetay / sigmaSq.y))
+                / (2.0 * MATH_PI * sqrt(sigmaSq.x * sigmaSq.y));
+
+    float tanV = atan(dot(V, Ty), dot(V, Tx));
+    float cosV2 = 1.0 / (1.0 + tanV * tanV);
+    float sigmaV2 = sigmaSq.x * cosV2 + sigmaSq.y * (1.0 - cosV2);
+
+    float tanL = atan(dot(L, Ty), dot(L, Tx));
+    float cosL2 = 1.0 / (1.0 + tanL * tanL);
+    float sigmaL2 = sigmaSq.x * cosL2 + sigmaSq.y * (1.0 - cosL2);
+
+    float fresnel = 0.02 + 0.98 * pow(1.0 - dot(V, H), 5.0);
+
+    zL = max(zL, 0.01);
+    zV = max(zV, 0.01);
+
+    return fresnel * p / ((1.0 + Lambda(zL, sigmaL2) + Lambda(zV, sigmaV2)) * zV * zH2 * zH2 * 4.0);
+}
+
 float meanFresnel(float cosThetaV, float sigmaV)
 {
     return pow(1.0 - cosThetaV, 5.0 * exp(-2.69 * sigmaV)) / (1.0 + 22.7 * pow(sigmaV, 1.5));
@@ -86,7 +138,7 @@ void main()
     vec2 grad = textureLod(gradient, texcoord, 0.0).xy;
     vec3 normal = vec3(-grad.x, 1.0, grad.y);
 
-    vec3 lightDir = vec3(1.0, 1.0, 1.0);
+    vec3 lightDir = vec3(0.0, 1.0, -1.0);
     vec3 viewDir  = cameraPosition - out_ws_position;
     vec3 l        = normalize(lightDir);
     vec3 v        = normalize(viewDir);
@@ -97,7 +149,7 @@ void main()
 
     vec3 c_light = vec3(1.0, 1.0, 1.0);
     vec3 c_diff  = vec3(0.0, 0.15, 0.25);
-    vec3 c_spec  = vec3(0.2);
+    vec3 c_spec  = vec3(0.02);
 
     float alpha_p = 12.0;
     float m_alpha_p = sqrt(2.0 / (alpha_p + 2.0));
@@ -111,6 +163,28 @@ void main()
     float l_dot_h = clamp(dot(l, h), 0.001, 1.0);
 
     vec3 f_schlick = vec3(meanFresnel(v, n, sigmaSq));
+    //vec3 f_schlick = c_spec + ((vec3(1.0) - c_spec) * pow(1.0 - clamp(dot(l,h), 0.0, 1.0), 5.0));
+
+    vec3 tx = vec3(1.0, grad.x, 0.0);
+    vec3 tz = vec3(0.0, -grad.y, 1.0);
+    vec3 tn = cross(tz, tx);
+
+    mat3 tnb = mat3(normalize(tx), normalize(tn), normalize(tz));
+    mat3 itnb = inverse(tnb);
+
+    vec3 tnbl = normalize(itnb * lightDir);
+    vec3 tnbv = normalize(itnb * viewDir);
+    vec3 tnbh = normalize(tnbv + tnbl);
+
+    vec3 tnbf_schlick = c_spec + ((vec3(1.0) - c_spec) * pow(1.0 - clamp(dot(tnbl,tnbh), 0.0, 1.0), 5.0));
+
+    vec3 sun = vec3(0.95, 0.95, 0.05) * 25.0;
+    float brak = reflectedSunRadiance(l, v, n, normalize(tx), normalize(tz), sigmaSq);
+
+    vec3 sea = vec3(0.05, 0.25, 0.5);
+    vec3 sky = vec3(4.0, 2.0, 2.0);
+    vec3 lsea = sea * sky / MATH_PI;
+    vec3 lala = (vec3(1.0) - f_schlick) * lsea;
 
     /*
     float foreshortening = n_dot_l * n_dot_v;
@@ -146,6 +220,6 @@ void main()
     target = vec4(L_zero, 1.0);
     */
 
-    target = vec4(f_schlick, 1.0);
+    target = vec4(max(sun * brak, 0.0), 1.0);
 }
 
