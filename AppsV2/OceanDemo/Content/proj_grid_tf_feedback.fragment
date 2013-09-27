@@ -47,6 +47,29 @@ float geometry_cook_torrance(vec3 n, vec3 h, vec3 v, vec3 l)
     return min(1.0, min(g1, g2));
 }
 
+float sigma_square(vec3 v_ross, vec3 tx_ross, vec2 sigmaXYSqr)
+{
+    vec3 v_ross_planar = normalize(vec3(v_ross.x, 0.0, v_ross.z));
+
+    float v_ross_cos_phi = dot(v_ross_planar, tx_ross);
+    float v_ross_cos_phi_square = v_ross_cos_phi * v_ross_cos_phi;
+
+    return (sigmaXYSqr.x * v_ross_cos_phi_square) + sigmaXYSqr.y * (1.0 - v_ross_cos_phi_square);
+}
+
+float nu(vec3 v_ross, vec3 tx_ross, vec3 n_ross, vec2 sigmaXYSqr)
+{
+    float v_sigma_square = sigma_square(v_ross, tx_ross, sigmaXYSqr);
+
+    float v_ross_cos_theta = dot(v_ross, n_ross);
+    float v_ross_cos_theta_square = v_ross_cos_theta * v_ross_cos_theta;
+    float v_ross_cot_theta = sqrt(v_ross_cos_theta_square / (1.0 - v_ross_cos_theta_square));
+
+    return v_ross_cot_theta / sqrt( 2.0 * v_sigma_square);
+}
+
+// http://en.wikipedia.org/wiki/Error_function#Approximation_with_elementary_functions
+
 float erf(float x)
 {
     const float a = 0.140012;
@@ -65,18 +88,24 @@ float erfc(float x)
     return clamp(1.0 - erf(x), 0.0, 2.0);
 }
 
-float Lambda(float v)
+float Lambda(float nu)
 {
-    return max(0.0, (exp(-(v * v)) - v * MATH_SQRT_PI * erfc(v)) / (2.0 * v * MATH_SQRT_PI));
+    return max(0.0, (exp(-(nu * nu)) - nu * MATH_SQRT_PI * erfc(nu)) / (2.0 * nu * MATH_SQRT_PI));
 }
 
-float p(vec2 sigmaSqr, vec2 zeta)
+float p(vec2 sigmaXYSqr, vec2 zeta)
 {
-    float x = (zeta.x * zeta.x) / sigmaSqr.x;
-    float y = (zeta.y * zeta.y) / sigmaSqr.y;
+    float x = (zeta.x * zeta.x) / sigmaXYSqr.x;
+    float y = (zeta.y * zeta.y) / sigmaXYSqr.y;
     float exponent = -0.5 * (x + y);
+    float probability = exp(exponent) / (2.0 * MATH_PI * sqrt(sigmaXYSqr.x * sigmaXYSqr.y));
 
-    return exp(exponent) / (2.0 * MATH_PI * sqrt(sigmaSqr.x * sigmaSqr.y));
+    return clamp(probability, 0.0, 1.0);
+}
+
+float H(float x)
+{
+    return x < 0.0 ? 0.0 : 1.0;
 }
 
 /*
@@ -150,7 +179,7 @@ void main()
     float ub = 0.5 + 0.5 * B / sqrt(A * C);
     float uc = pow(C, 0.25);
 
-    vec2 sigmaSq = texture(variance, vec3(ua, ub, uc)).xy * 100.0;
+    vec2 sigmaSq = texture(variance, vec3(ua, ub, uc)).xy;
     sigmaSq = max(sigmaSq, 2e-5);
 
     vec2 texcoord = out_ws_non_disp_position;
@@ -159,7 +188,7 @@ void main()
     vec2 grad = textureLod(gradient, texcoord, 0.0).xy;
     vec3 normal = vec3(-grad.x, 1.0, grad.y);
 
-    vec3 lightDir = vec3(-1.0, 1.0, 0.0);
+    vec3 lightDir = vec3(1.0, 1.0, 0.0);
     vec3 viewDir  = cameraPosition - out_ws_position;
     vec3 l        = normalize(lightDir);
     vec3 v        = normalize(viewDir);
@@ -168,7 +197,7 @@ void main()
     vec3 h        = normalize(v + l);
     vec3 r        = 2.0 * dot(l, n) * n - l;
 
-    vec3 c_light = vec3(1.0, 1.0, 1.0);
+    vec3 c_light = vec3(1000000);
     vec3 c_diff  = vec3(0.0, 0.15, 0.25);
     vec3 c_spec  = vec3(0.02);
 
@@ -189,33 +218,34 @@ void main()
 
     vec3 l_ross = iross * l;
     vec3 v_ross = iross * v;
+    vec3 h_ross = normalize(l_ross + v_ross);
 
-    vec3 l_ross_planar = normalize(vec3(l_ross.x, 0.0, l_ross.z));
-    vec3 v_ross_planar = normalize(vec3(v_ross.x, 0.0, v_ross.z));
+    vec2 zeta;
+    zeta.x = dot(h_ross, tx_ross) / dot(h_ross, n_ross);
+    zeta.y = dot(h_ross, ty_ross) / dot(h_ross, n_ross);
 
-    float l_ross_cos_phi = dot(l_ross_planar, tx_ross);
-    float v_ross_cos_phi = dot(v_ross_planar, tx_ross);
+    float probability = p(sigmaSq, zeta);
 
-    float l_ross_cos_phi_square = l_ross_cos_phi * l_ross_cos_phi;
-    float v_ross_cos_phi_square = v_ross_cos_phi * v_ross_cos_phi;
+    float l_nu = nu(l_ross, tx_ross, n_ross, sigmaSq);
+    float v_nu = nu(v_ross, tx_ross, n_ross, sigmaSq);
 
-    float l_sigma_square = sigmaSq.x * l_ross_cos_phi_square + sigmaSq.y * (1.0 - l_ross_cos_phi_square);
-    float v_sigma_square = sigmaSq.x * v_ross_cos_phi_square + sigmaSq.y * (1.0 - v_ross_cos_phi_square);
+    float l_lambda = Lambda(l_nu);
+    float v_lambda = Lambda(v_nu);
+    float l_v_smith = 1.0 + l_lambda + v_lambda;
 
-    float l_ross_cos_theta = dot(l_ross, n_ross);
-    float v_ross_cos_theta = dot(v_ross, n_ross);
+    float H_ross = H(dot(l_ross, h_ross));
+    float v_dot_f = max(0.0, dot(v_ross, h_ross));
 
-    float l_ross_cos_theta_square = l_ross_cos_theta * l_ross_cos_theta;
-    float v_ross_cos_theta_square = v_ross_cos_theta * v_ross_cos_theta;
+    float q_vn = (probability * v_dot_f * H_ross) / (l_v_smith * max(0.01, h_ross.y) * max(0.01, dot(v_ross, n_ross)));
 
-    float l_ross_cot_theta = sqrt(l_ross_cos_theta_square / (1.0 - l_ross_cos_theta_square));
-    float v_ross_cot_theta = sqrt(v_ross_cos_theta_square / (1.0 - v_ross_cos_theta_square));
+    vec3 f_schlick = c_spec + ((vec3(1.0) - c_spec) * pow(1.0 - clamp(dot(l_ross, h_ross), 0.0, 1.0), 5.0));
 
-    float l_v = l_ross_cot_theta / sqrt( 2.0 * l_sigma_square);
-    float v_v = v_ross_cot_theta / sqrt( 2.0 * v_sigma_square);
+    float denominator = 4.0 * (h_ross.y * h_ross.y * h_ross.y) * max(0.01, dot(l_ross, n_ross)) * max(0.01, dot(v_ross, h_ross));
 
+    vec3 result = f_schlick * (q_vn / denominator);
 
+    vec3 L_zero = (result * MATH_PI) * (c_light * max(0.01, dot(l_ross, n_ross)));
 
-    target = vec4(iross * n, 1.0);
+    target = vec4(L_zero, 1.0);
 }
 
