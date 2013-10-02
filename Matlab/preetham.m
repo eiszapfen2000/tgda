@@ -1,7 +1,9 @@
-turbidity = 3.0;
+XYZ2sRGBD50 = [3.1338561 -1.6168667 -0.4906146; -0.9787684  1.9161415  0.0334540; 0.0719453 -0.2289914  1.4052427];
+
+turbidity = 2.0;
 
 thetaSun = pi / 4.0;
-phiSun = 0.0;
+phiSun = pi;
 
 mAY = [ 0.1787 -1.4630; -0.3554 0.4275; -0.0227 5.3251; 0.1206 -2.5771; -0.0670 0.3703 ];
 mAx = [ -0.0193 -0.2592; -0.0665 0.0008; -0.0004 0.2125; -0.0641 -0.8989; -0.0033 0.0452 ];
@@ -25,3 +27,64 @@ Yz = (4.0453 * turbidity - 4.9710) * tan(chi) - 0.2155 * turbidity + 2.4192;
 
 % convert kcd/m² to cd/m²
 Yz = Yz * 1000.0;
+
+resolution = 513;
+xyY = zeros(resolution, resolution, 3);
+XYZ = zeros(resolution, resolution, 3);
+sRGB = zeros(resolution, resolution, 3);
+start = floor(resolution / 2);
+remainder = rem(resolution, 2);
+
+radiusForMaxTheta = start;
+
+s = [ radiusForMaxTheta * sin(thetaSun) * cos(phiSun), radiusForMaxTheta * sin(thetaSun) * sin(phiSun), radiusForMaxTheta * cos(thetaSun) ];
+s_n = s / norm(s);
+denominator_x = digamma(0, thetaSun, Ax);
+denominator_y = digamma(0, thetaSun, Ay);
+denominator_Y = digamma(0, thetaSun, AY);
+
+for y = -start:start
+    for x = -start:start
+        phiAngle = atan2(y,x);
+        
+        radius = sqrt(x*x + y*y);
+        radiusNormalised = radius / radiusForMaxTheta;
+        
+        % only compute if we are inside circle
+        if ( radiusNormalised <= 1.0 )
+            thetaAngle = pi * 0.5 * radiusNormalised;
+            
+            v = [ x y radiusForMaxTheta * cos(thetaAngle) ];            
+            v_n = v / norm(v);
+            
+            cosGamma = s_n * v_n';
+            gammaAngle = acos(cosGamma);
+            
+            v_x = xz * (digamma(thetaAngle, gammaAngle, Ax) / denominator_x);
+            v_y = yz * (digamma(thetaAngle, gammaAngle, Ay) / denominator_y);
+            v_Y = Yz * (digamma(thetaAngle, gammaAngle, AY) / denominator_Y);
+            
+            xyY(x+start+1,y+start+1,1) = v_x;
+            xyY(x+start+1,y+start+1,2) = v_y;
+            xyY(x+start+1,y+start+1,3) = v_Y;
+            
+            lXYZ = zeros(1,3);
+            lXYZ(1) = (v_x / v_y) * v_Y;
+            lXYZ(2) = v_Y;
+            lXYZ(3) = ((1.0 - v_x - v_y) / v_y) * v_Y;
+            
+            XYZ(x+start+1,y+start+1,1) = lXYZ(1);
+            XYZ(x+start+1,y+start+1,2) = lXYZ(2);
+            XYZ(x+start+1,y+start+1,3) = lXYZ(3);
+            
+            lsRGB = XYZ2sRGBD50 * lXYZ';
+            sRGB(x+start+1,y+start+1,1) = lsRGB(1);
+            sRGB(x+start+1,y+start+1,2) = lsRGB(2);
+            sRGB(x+start+1,y+start+1,3) = lsRGB(3);
+        end
+    end
+end
+
+result = tonemap(sRGB);
+imshow(result);
+
