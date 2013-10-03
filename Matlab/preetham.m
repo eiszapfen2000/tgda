@@ -1,8 +1,11 @@
+clear all
+close all
+
 XYZ2sRGBD50 = [3.1338561 -1.6168667 -0.4906146; -0.9787684  1.9161415  0.0334540; 0.0719453 -0.2289914  1.4052427];
 
-turbidity = 2.0;
+turbidity = 4.0;
 
-thetaSun = pi / 4.0;
+thetaSun = 0.1;
 phiSun = pi;
 
 mAY = [ 0.1787 -1.4630; -0.3554 0.4275; -0.0227 5.3251; 0.1206 -2.5771; -0.0670 0.3703 ];
@@ -28,7 +31,7 @@ Yz = (4.0453 * turbidity - 4.9710) * tan(chi) - 0.2155 * turbidity + 2.4192;
 % convert kcd/m² to cd/m²
 Yz = Yz * 1000.0;
 
-resolution = 513;
+resolution = 1025;
 xyY = zeros(resolution, resolution, 3);
 XYZ = zeros(resolution, resolution, 3);
 sRGB = zeros(resolution, resolution, 3);
@@ -85,6 +88,21 @@ for y = -start:start
     end
 end
 
+%xyY2XYZ = makecform('xyl2xyz');
+%XYZ2sRGB = makecform('xyz2srgb');
+
+%tXYZ = applycform(xyY, xyY2XYZ);
+%sRGB = applycform(XYZ, XYZ2sRGB);
+
+lresult = tonemap(sRGB);
+figure
+imshow(lresult);
+
+mask = (sRGB > 0.0031308);
+sRGB(mask) = ((1.055 * sRGB(mask)) .^ (1 / 2.4)) - 0.055;
+sRGB(~mask) = 12.92 * sRGB(~mask);
+
 result = tonemap(sRGB);
+figure
 imshow(result);
 
