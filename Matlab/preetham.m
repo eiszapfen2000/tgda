@@ -5,7 +5,7 @@ XYZ2sRGBD50 = [3.1338561 -1.6168667 -0.4906146; -0.9787684  1.9161415  0.0334540
 
 turbidity = 4.0;
 
-thetaSun = 0.1;
+thetaSun = pi / 4;
 phiSun = pi;
 
 mAY = [ 0.1787 -1.4630; -0.3554 0.4275; -0.0227 5.3251; 0.1206 -2.5771; -0.0670 0.3703 ];
@@ -32,7 +32,7 @@ Yz = (4.0453 * turbidity - 4.9710) * tan(chi) - 0.2155 * turbidity + 2.4192;
 Yz = Yz * 1000.0;
 
 resolution = 1025;
-xyY = zeros(resolution, resolution, 3);
+xyY = ones(resolution, resolution, 3);
 XYZ = zeros(resolution, resolution, 3);
 sRGB = zeros(resolution, resolution, 3);
 start = floor(resolution / 2);
@@ -88,21 +88,61 @@ for y = -start:start
     end
 end
 
-%xyY2XYZ = makecform('xyl2xyz');
-%XYZ2sRGB = makecform('xyz2srgb');
+dimensions = size(xyY);
+numberOfElements = dimensions(1) * dimensions(2);
+Lw = xyY(:,:,3);
 
-%tXYZ = applycform(xyY, xyY2XYZ);
-%sRGB = applycform(XYZ, XYZ2sRGB);
+logarithms = max(log(Lw), 0);
+sumOfLogarithms = sum(sum(logarithms));
+Lw_average = exp(sumOfLogarithms / numberOfElements);
 
-lresult = tonemap(sRGB);
-figure
-imshow(lresult);
+% between 0 and 1
+a = 0.05;
 
-mask = (sRGB > 0.0031308);
-sRGB(mask) = ((1.055 * sRGB(mask)) .^ (1 / 2.4)) - 0.055;
-sRGB(~mask) = 12.92 * sRGB(~mask);
+%Lwhite = max(max(Lw));
+Lwhite = 1;
+invLwhite = 1.0 / (Lwhite * Lwhite);
 
-result = tonemap(sRGB);
-figure
-imshow(result);
+L = (a / Lw_average) * Lw;
+
+%Ld = L ./ (L + 1);
+Ld = (L .* ((L .* invLwhite) + 1)) ./ (L + 1);
+
+xyY(:,:,3) = Ld;
+
+for y = 1:resolution
+    for x = 1:resolution
+        v_x = xyY(y,x,1);
+        v_y = xyY(y,x,2);
+        v_Y = xyY(y,x,3);
+
+        lXYZ = zeros(1,3);
+        lXYZ(1) = (v_x / v_y) * v_Y;
+        lXYZ(2) = v_Y;
+        lXYZ(3) = ((1.0 - v_x - v_y) / v_y) * v_Y;
+
+        XYZ(y,x,1) = lXYZ(1);
+        XYZ(y,x,2) = lXYZ(2);
+        XYZ(y,x,3) = lXYZ(3);
+
+        lsRGB = XYZ2sRGBD50 * lXYZ';
+        sRGB(y,x,1) = lsRGB(1);
+        sRGB(y,x,2) = lsRGB(2);
+        sRGB(y,x,3) = lsRGB(3);
+    end
+end
+
+imshow(power(sRGB, 1/2.2));
+
+% lresult = tonemap(sRGB);
+% figure
+% imshow(lresult);
+% 
+% mask = (sRGB > 0.0031308);
+% sRGB(mask) = ((1.055 * sRGB(mask)) .^ (1 / 2.4)) - 0.055;
+% sRGB(~mask) = 12.92 * sRGB(~mask);
+% 
+% result = tonemap(sRGB);
+% figure
+% imshow(result);
 
