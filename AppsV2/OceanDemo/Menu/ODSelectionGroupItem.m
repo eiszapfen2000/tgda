@@ -36,7 +36,7 @@
             const NSUInteger index = i * layout.x + j;
 
             FRectangle itemGeometry;
-            frectangle_vv_init_with_min_and_size_r(&lowerLeft, &itemSize, &itemGeometry);
+            frectangle_rvv_init_with_min_and_size(&itemGeometry, &lowerLeft, &itemSize);
 
             if ( index == indexOfActiveItem )
             {
@@ -87,7 +87,7 @@
             IVector2 labelBounds = [ font boundsForString:label size:textSize ];
 
             FRectangle itemGeometry;
-            frectangle_vv_init_with_min_and_size_r(&lowerLeft, &itemSize, &itemGeometry);
+            frectangle_rvv_init_with_min_and_size(&itemGeometry, &lowerLeft, &itemSize);
 
             int32_t centeringX = (int32_t)round((itemSize.x - labelBounds.x) / 2.0f);
             int32_t centeringY = (int32_t)round((itemSize.y - labelBounds.y) / 2.0f);
@@ -200,7 +200,7 @@
 	}
 
     FVector2 position = geometry.min;
-    frectangle_vv_init_with_min_and_size_r(&position, &realSize, &geometry);
+    frectangle_rvv_init_with_min_and_size(&geometry, &position, &realSize);
 
     technique = RETAIN([ menu colorTechnique ]);
     color = RETAIN([[ menu effect ] variableWithName:@"color" ]);
@@ -220,7 +220,7 @@
             const NSUInteger index = i * layout.x + j;
 
             FRectangle itemGeometry;
-            frectangle_vv_init_with_min_and_size_r(&lowerLeft, &itemSize, &itemGeometry);
+            frectangle_rvv_init_with_min_and_size(&itemGeometry, &lowerLeft, &itemSize);
             if ( frectangle_vr_is_point_inside(&mousePosition, &itemGeometry) != 0 )
             {
                 indexOfActiveItem = index;

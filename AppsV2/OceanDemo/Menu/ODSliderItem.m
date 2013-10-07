@@ -82,9 +82,9 @@
     lineSize.x = lineSize.y = 0.0f;
     headSize.x = headSize.y = 0.0f;
     headOffset.x = headOffset.y = 0.0f;
-    frectangle_ssss_init_with_min_max_r(0.0f, 0.0f, 0.0f, 0.0f, &lineGeometry);
-    frectangle_ssss_init_with_min_max_r(0.0f, 0.0f, 0.0f, 0.0f, &alignedHeadGeometry);
-    frectangle_ssss_init_with_min_max_r(0.0f, 0.0f, 0.0f, 0.0f, &alignedLineGeometry);
+    frectangle_rssss_init_with_min_max(&lineGeometry, 0.0f, 0.0f, 0.0f, 0.0f);
+    frectangle_rssss_init_with_min_max(&alignedHeadGeometry, 0.0f, 0.0f, 0.0f, 0.0f);
+    frectangle_rssss_init_with_min_max(&alignedLineGeometry, 0.0f, 0.0f, 0.0f, 0.0f);
 
     return self;
 }
@@ -140,7 +140,7 @@
     FVector2 geometryPos = geometry.min;
     geometrySize.x = MAX(headSize.x, lineSize.x);
     geometrySize.y = MAX(headSize.y, lineSize.y);
-    frectangle_vv_init_with_min_and_size_r(&geometryPos, &geometrySize, &geometry);
+    frectangle_rvv_init_with_min_and_size(&geometry, &geometryPos, &geometrySize);
 
     FVector2 linePosition = geometryPos;
 
@@ -161,7 +161,7 @@
         }
     }
 
-    frectangle_vv_init_with_min_and_size_r(&linePosition, &lineSize, &lineGeometry);
+    frectangle_rvv_init_with_min_and_size(&lineGeometry, &linePosition, &lineSize);
 
     if ( target != nil )
     {
@@ -236,7 +236,7 @@
     headPosition.x += headOffset.x;
     headPosition.y += headOffset.y;
 
-    frectangle_vv_init_with_min_and_size_r(&headPosition, &headSize, &alignedHeadGeometry);
+    frectangle_rvv_init_with_min_and_size(&alignedHeadGeometry, &headPosition, &headSize);
 }
 
 - (void) render
