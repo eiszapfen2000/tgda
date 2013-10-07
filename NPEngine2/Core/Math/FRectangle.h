@@ -17,14 +17,17 @@ FRectangle * frectangle_alloc(void);
 FRectangle * frectangle_alloc_init(void);
 void frectangle_free(FRectangle * r);
 
-void frectangle_ssss_init_with_min_max_r(const float minX, const float minY,
-    const float maxX, const float maxY, FRectangle * rectangle);
+void frectangle_rssss_init_with_min_max(FRectangle * rectangle,
+    const float minX, const float minY,
+    const float maxX, const float maxY);
 
-void frectangle_vv_init_with_min_max_r(const FVector2 * const min,
-    const FVector2 * const max, FRectangle * rectangle);
+void frectangle_rvv_init_with_min_max(FRectangle * rectangle,
+    const FVector2 * const min,
+    const FVector2 * const max);
 
-void frectangle_vv_init_with_min_and_size_r(const FVector2 * const min,
-    const FVector2 * const size, FRectangle * rectangle);
+void frectangle_rvv_init_with_min_and_size(FRectangle * rectangle,
+    const FVector2 * const min,
+    const FVector2 * const size);
 
 void frectangle_r_recalculate_min_max(FRectangle * rectangle);
 float frectangle_r_calculate_width(const FRectangle * const rectangle);
