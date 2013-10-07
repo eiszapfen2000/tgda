@@ -32,8 +32,9 @@ void irectangle_free(IRectangle * r)
     npfreenode_free(r, NP_IRECTANGLE_FREELIST);
 }
 
-void irectangle_ssss_init_with_min_max_r(const int32_t minX, const int32_t minY,
-    const int32_t maxX, const int32_t maxY, IRectangle * rectangle)
+void irectangle_rssss_init_with_min_max(IRectangle * rectangle,
+    const int32_t minX, const int32_t minY,
+    const int32_t maxX, const int32_t maxY)
 {
     rectangle->min.x = minX;
     rectangle->min.y = minY;
@@ -41,8 +42,9 @@ void irectangle_ssss_init_with_min_max_r(const int32_t minX, const int32_t minY,
     rectangle->max.y = maxY;    
 }
 
-void irectangle_vv_init_with_min_max_r(const IVector2 * const min,
-    const IVector2 * const max, IRectangle * rectangle)
+void irectangle_rvv_init_with_min_max(IRectangle * rectangle,
+    const IVector2 * const min,
+    const IVector2 * const max)
 {
     rectangle->min.x = min->x;
     rectangle->min.y = min->y;
@@ -50,8 +52,9 @@ void irectangle_vv_init_with_min_max_r(const IVector2 * const min,
     rectangle->max.y = max->y;
 }
 
-void irectangle_vv_init_with_min_and_size_r(const IVector2 * const min,
-    const IVector2 * const size, IRectangle * rectangle)
+void irectangle_rvv_init_with_min_and_size(IRectangle * rectangle,
+    const IVector2 * const min,
+    const IVector2 * const size)
 {
     rectangle->min.x = min->x;
     rectangle->min.y = min->y;
