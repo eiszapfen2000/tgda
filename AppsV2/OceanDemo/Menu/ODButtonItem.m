@@ -32,7 +32,7 @@
     self = [ super initWithName:newName menu:newMenu ];
 
     active = NO;
-    frectangle_ssss_init_with_min_max_r(0.0f, 0.0f, 0.0f, 0.0f, &pixelCenterGeometry);
+    frectangle_rssss_init_with_min_max(&pixelCenterGeometry, 0.0f, 0.0f, 0.0f, 0.0f);
 
     return self;
 }

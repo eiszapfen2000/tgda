@@ -75,8 +75,8 @@ void ODObjCSetVariable(id obj, const ptrdiff_t offset,
 
     menu = newMenu;
     alignment = NpOrthographicAlignUnknown;
-    frectangle_ssss_init_with_min_max_r(0.0f, 0.0f, 0.0f, 0.0f, &geometry);
-    frectangle_ssss_init_with_min_max_r(0.0f, 0.0f, 0.0f, 0.0f, &alignedGeometry);
+    frectangle_rssss_init_with_min_max(&geometry, 0.0f, 0.0f, 0.0f, 0.0f);
+    frectangle_rssss_init_with_min_max(&alignedGeometry, 0.0f, 0.0f, 0.0f, 0.0f);
     textSize = 0;
 
     return self;
@@ -113,7 +113,7 @@ void ODObjCSetVariable(id obj, const ptrdiff_t offset,
     itemPosition.y = [[ positionStrings objectAtIndex:1 ] intValue ];
     itemSize.x = [[ sizeStrings objectAtIndex:0 ] intValue ];
     itemSize.y = [[ sizeStrings objectAtIndex:1 ] intValue ];
-    frectangle_vv_init_with_min_and_size_r(&itemPosition, &itemSize, &geometry);
+    frectangle_rvv_init_with_min_and_size(&geometry, &itemPosition, &itemSize);
 
     // target property
     NSString * targetObjectString   = [ source objectForKey:@"TargetObject"   ];
