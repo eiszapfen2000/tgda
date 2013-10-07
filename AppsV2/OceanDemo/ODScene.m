@@ -265,7 +265,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     NSAssert(result, @"Transform Feedback setup failed");
 
     varianceLUTLastResolution = UINT_MAX;
-    varianceLUTResolution = 4;
+    varianceLUTResolution = 8;
     varianceRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Variance RTC" ];
     varianceLUT = [[ NPRenderTexture alloc ] initWithName:@"Variance LUT" ];
 
@@ -594,15 +594,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         FRectangle vertices;
         FRectangle texcoords;
 
-        vertices.min.x = -1.0f;
-        vertices.max.x =  1.0f;
-        vertices.min.y = -1.0f;
-        vertices.max.y =  1.0f;
-
-        texcoords.min.x =  0.0f;
-        texcoords.max.x =  varianceLUTResolution;
-        texcoords.min.y =  0.0f;
-        texcoords.max.y =  varianceLUTResolution;
+        frectangle_rssss_init_with_min_max(&vertices, -1.0f, -1.0f, 1.0f, 1.0f);
+        frectangle_rssss_init_with_min_max(&texcoords, 0.0f, 0.0f, varianceLUTResolution, varianceLUTResolution);
 
         [ varianceRTC bindFBO ];
         [ varianceRTC activateViewport ];
@@ -628,22 +621,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         }
 
         [ varianceRTC deactivate ];
-
-        /*
-        float * testData = malloc(sizeof(float) * varianceLUTResolution * varianceLUTResolution * varianceLUTResolution * 2);
-        
-        [[[ NP Graphics ] textureBindingState ] clear ];
-        [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ varianceLUT texture ]];
-        glGetTexImage(GL_TEXTURE_3D, 0, GL_RG, GL_FLOAT, testData);
-        [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
-    
-        for ( uint32_t i = 0; i < varianceLUTResolution * varianceLUTResolution * varianceLUTResolution; i++ )
-        {
-            NSLog(@"%f %f", testData[i*2], testData[i*2+1]);
-        }
-
-        free(testData);
-        */
     }
     
 
