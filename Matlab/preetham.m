@@ -1,9 +1,9 @@
 clear all
-close all
+%close all
 
 XYZ2sRGBD50 = [3.1338561 -1.6168667 -0.4906146; -0.9787684  1.9161415  0.0334540; 0.0719453 -0.2289914  1.4052427];
 
-turbidity = 4.0;
+turbidity = 2.0;
 
 thetaSun = pi / 4;
 phiSun = pi;
@@ -31,7 +31,7 @@ Yz = (4.0453 * turbidity - 4.9710) * tan(chi) - 0.2155 * turbidity + 2.4192;
 % convert kcd/m² to cd/m²
 Yz = Yz * 1000.0;
 
-resolution = 1025;
+resolution = 257;
 xyY = ones(resolution, resolution, 3);
 XYZ = zeros(resolution, resolution, 3);
 sRGB = zeros(resolution, resolution, 3);
@@ -92,7 +92,9 @@ dimensions = size(xyY);
 numberOfElements = dimensions(1) * dimensions(2);
 Lw = xyY(:,:,3);
 
-logarithms = max(log(Lw), 0);
+%logarithms = log(Lw + 0.001);
+%logarithms = max(log(Lw), 0.0);
+logarithms = max(log(Lw + 0.001), 0.0);
 sumOfLogarithms = sum(sum(logarithms));
 Lw_average = exp(sumOfLogarithms / numberOfElements);
 
@@ -132,6 +134,7 @@ for y = 1:resolution
     end
 end
 
+figure
 imshow(power(sRGB, 1/2.2));
 
 % lresult = tonemap(sRGB);
