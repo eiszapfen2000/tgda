@@ -50,5 +50,29 @@ technique "preetham"
     set fragment shader "preetham.fragment"
 }
 
+technique "linear_sRGB_to_log_luminance"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform sampler2D linearsRGB
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+
+    # fragment streams
+    out float target : 0;
+
+    # shaders
+    set vertex shader "simpletextured.vertex"
+    set fragment shader "linear_sRGB_to_log_luminance.fragment"
+}
+
 
 
