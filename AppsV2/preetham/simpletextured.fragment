@@ -4,5 +4,7 @@ in vec2 out_texcoords;
 
 void main()
 {
-    target = texture(colormap, out_texcoords);
+    vec4 result = texture(colormap, out_texcoords);
+
+    target = pow(result * 0.00005, vec4(1/2.2));
 }

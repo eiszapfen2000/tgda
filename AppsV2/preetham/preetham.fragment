@@ -5,6 +5,11 @@ in vec2 out_texcoords;
 
 #define MATH_PI_DIV_2   1.5707963268
 
+const mat3 XYZ2LinearsRGB
+    = mat3(3.1338561, -0.9787684,  0.0719453,
+           -1.6168667, 1.9161415, -0.2289914,
+            -0.4906146, 0.0334540, 1.4052427);
+
 void main()
 {
     float radius = length(out_texcoords);
@@ -16,10 +21,21 @@ void main()
     }
 
     float theta = MATH_PI_DIV_2 * radiusNormalised;
-    vec3 v = vec3(out_texcoords, radiusForMaxTheta * cos(theta));
+    float cosTheta = cos(theta);
+
+    vec3 v = vec3(out_texcoords, radiusForMaxTheta * cosTheta);
+    v = normalize(v);
 
     float cosGamma = dot(v, directionToSun);
     float gamma = acos(cosGamma);
 
-    target = vec4(zenithColor, 1.0);
+    vec3 numerator = (1.0f + A * exp( B / cosTheta )) * (1.0f + C * exp( D * gamma ) + (E * cosGamma * cosGamma));
+    vec3 xyY = zenithColor * (numerator / denominator);
+
+    vec3 XYZ;
+    XYZ.x = (xyY.x / xyY.y) * xyY.z;
+    XYZ.y = xyY.z;
+    XYZ.z = ((1.0f - xyY.x - xyY.y) / xyY.y) * xyY.z;
+
+    target = vec4(XYZ2LinearsRGB * XYZ, 1.0);
 }

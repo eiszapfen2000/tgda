@@ -324,7 +324,7 @@ int main (int argc, char **argv)
     [ rtc deactivate ];
     */
 
-    const uint32_t skyResolution = 4;
+    const uint32_t skyResolution = 512;
 
     NPRenderTargetConfiguration * rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC"  ];
     NPRenderTexture * preethamTarget  = [[ NPRenderTexture alloc ] initWithName:@"Preetham Target"  ];
@@ -375,6 +375,9 @@ int main (int argc, char **argv)
     NPEffectVariableFloat3 * zenithColor_P
         = [ effect variableWithName:@"zenithColor" ];
 
+    NPEffectVariableFloat3 * denominator_P
+        = [ effect variableWithName:@"denominator" ];
+
     NPEffectVariableFloat3 * A_xyY_P = [ effect variableWithName:@"A" ];
     NPEffectVariableFloat3 * B_xyY_P = [ effect variableWithName:@"B" ];
     NPEffectVariableFloat3 * C_xyY_P = [ effect variableWithName:@"C" ];
@@ -383,7 +386,7 @@ int main (int argc, char **argv)
 
     assert(A_xyY_P != nil && B_xyY_P != nil && C_xyY_P != nil && D_xyY_P != nil
            && E_xyY_P != nil && radiusForMaxTheta_P != nil && directionToSun_P != nil
-           && zenithColor_P != nil);
+           && zenithColor_P != nil && denominator_P != nil);
 
     NPInputAction * leftClick
         = [[[ NP Input ] inputActions ] 
@@ -443,6 +446,19 @@ int main (int argc, char **argv)
         const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
 
+        if ([ wheelUp activated ] == YES )
+        {
+            thetaSun += MATH_DEG_TO_RAD * 3.0;
+        }
+
+        if ([ wheelDown activated ] == YES )
+        {
+            thetaSun -= MATH_DEG_TO_RAD * 3.0;
+        }
+
+        thetaSun = MIN(thetaSun, MATH_PI_DIV_2);
+        thetaSun = MAX(thetaSun, 0.1);
+
         //
         const double maxThetaRadius = halfSkyResolution;
         const double sinThetaSun = sin(thetaSun);
@@ -498,9 +514,11 @@ int main (int argc, char **argv)
         [ C_xyY_P setFValue:C ];
         [ D_xyY_P setFValue:D ];
         [ E_xyY_P setFValue:E ];
+
         [ radiusForMaxTheta_P setFValue:halfSkyResolution ];
-        [ directionToSun_P setValue:directionToSun ];
+        [ directionToSun_P setValue:directionToSunNormalised ];
         [ zenithColor_P setValue:zenithColor ];
+        [ denominator_P setValue:denominator ];
 
         // clear preetham target
         [ rtc bindFBO ];
