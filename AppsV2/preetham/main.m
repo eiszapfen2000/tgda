@@ -72,6 +72,58 @@ static void GLFWCALL window_resize_callback(int width, int height)
     widgetSize.y = height;
 }
 
+static Vector3 preetham_zenith(double turbidity, double thetaSun)
+{
+    // zenith color computation
+    // A Practical Analytic Model for Daylight                              
+    // page 22/23    
+
+    #define CBQ(X)		((X) * (X) * (X))
+    #define SQR(X)		((X) * (X))
+
+    Vector3 zenithColor;
+
+    zenithColor.x
+        = ( 0.00166 * CBQ(thetaSun) - 0.00375  * SQR(thetaSun) +
+            0.00209 * thetaSun + 0.0f) * SQR(turbidity) +
+          (-0.02903 * CBQ(thetaSun) + 0.06377  * SQR(thetaSun) -
+            0.03202 * thetaSun  + 0.00394) * turbidity +
+          ( 0.11693 * CBQ(thetaSun) - 0.21196  * SQR(thetaSun) +
+            0.06052 * thetaSun + 0.25886);
+
+    zenithColor.y
+        = ( 0.00275 * CBQ(thetaSun) - 0.00610  * SQR(thetaSun) +
+            0.00317 * thetaSun + 0.0) * SQR(turbidity) +
+          (-0.04214 * CBQ(thetaSun) + 0.08970  * SQR(thetaSun) -
+            0.04153 * thetaSun  + 0.00516) * turbidity  +
+          ( 0.15346 * CBQ(thetaSun) - 0.26756  * SQR(thetaSun) +
+            0.06670 * thetaSun  + 0.26688);
+
+    zenithColor.z
+        = (4.0453 * turbidity - 4.9710) * 
+          tan((4.0 / 9.0 - turbidity / 120.0) * (MATH_PI - 2.0 * thetaSun))
+          - 0.2155 * turbidity + 2.4192;
+
+    // convert kcd/m² to cd/m²
+    zenithColor.z *= 1000.0;
+
+    #undef SQR
+    #undef CBQ
+
+    return zenithColor;
+}
+
+static double digamma(double theta, double gamma, double ABCDE[5])
+{
+    const double cosTheta = cos(theta);
+    const double cosGamma = cos(gamma);
+
+    const double term_one = 1.0 + ABCDE[0] * exp(ABCDE[1] / cosTheta);
+    const double term_two = 1.0 + ABCDE[2] * exp(ABCDE[3] * gamma) + (ABCDE[4] * cosGamma * cosGamma);
+
+    return term_one * term_two;
+}
+
 static NSString * const NPGraphicsStartupError = @"NPEngineGraphics failed to start up. Consult %@/np.log for details.";
 
 int main (int argc, char **argv)
@@ -272,7 +324,7 @@ int main (int argc, char **argv)
     [ rtc deactivate ];
     */
 
-    const uint32_t skyResolution = 512;
+    const uint32_t skyResolution = 5;
 
     NPRenderTargetConfiguration * rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC"  ];
     NPRenderTexture * preethamTarget  = [[ NPRenderTexture alloc ] initWithName:@"Preetham Target"  ];
@@ -306,6 +358,25 @@ int main (int argc, char **argv)
 
     RETAIN(effect);
 
+    NPEffectTechnique * preetham = [ effect techniqueWithName:@"preetham" ];
+    NPEffectTechnique * texture  = [ effect techniqueWithName:@"texture"  ];
+
+    assert(preetham != nil && texture != nil);
+
+    RETAIN(preetham);
+    RETAIN(texture);
+
+    NPEffectVariableFloat3 * A_xyY = [ effect variableWithName:@"A" ];
+    NPEffectVariableFloat3 * B_xyY = [ effect variableWithName:@"B" ];
+    NPEffectVariableFloat3 * C_xyY = [ effect variableWithName:@"C" ];
+    NPEffectVariableFloat3 * D_xyY = [ effect variableWithName:@"D" ];
+    NPEffectVariableFloat3 * E_xyY = [ effect variableWithName:@"E" ];
+
+    NPEffectVariableFloat * radiusForMaxTheta = [ effect variableWithName:@"radiusForMaxTheta" ];
+
+    assert(A_xyY != nil && B_xyY != nil && C_xyY != nil && D_xyY != nil
+           && E_xyY != nil && radiusForMaxTheta != nil);
+
     NPInputAction * leftClick
         = [[[ NP Input ] inputActions ] 
                 addInputActionWithName:@"LeftClick"
@@ -334,7 +405,14 @@ int main (int argc, char **argv)
     DESTROY(rPool);
 
     BOOL running = YES;
-    double deltaTime = 0.0;
+    double turbidity = 2.0;
+    double phiSun = 0.0;
+    double thetaSun = MATH_PI_DIV_4;
+
+    const float halfSkyResolution = ((float)skyResolution) / (2.0f);
+
+    const float cStart = -halfSkyResolution;
+    const float cEnd   =  halfSkyResolution;
 
     // run loop
     while ( running )
@@ -357,6 +435,50 @@ int main (int argc, char **argv)
         const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
 
+        // Preetham Skylight Zenith color
+        // xyY space, cd/m²
+        Vector3 zenithColor = preetham_zenith(turbidity, thetaSun);
+
+        //
+	    double ABCDE_x[5], ABCDE_y[5], ABCDE_Y[5];
+
+	    ABCDE_x[0] = -0.01925 * turbidity - 0.25922;
+	    ABCDE_x[1] = -0.06651 * turbidity + 0.00081;
+	    ABCDE_x[2] = -0.00041 * turbidity + 0.21247;
+	    ABCDE_x[3] = -0.06409 * turbidity - 0.89887;
+	    ABCDE_x[4] = -0.00325 * turbidity + 0.04517;
+
+	    ABCDE_y[0] = -0.01669 * turbidity - 0.26078;
+	    ABCDE_y[1] = -0.09495 * turbidity + 0.00921;
+	    ABCDE_y[2] = -0.00792 * turbidity + 0.21023;
+	    ABCDE_y[3] = -0.04405 * turbidity - 1.65369;
+	    ABCDE_y[4] = -0.01092 * turbidity + 0.05291;
+
+	    ABCDE_Y[0] =  0.17872 * turbidity - 1.46303;
+	    ABCDE_Y[1] = -0.35540 * turbidity + 0.42749;
+	    ABCDE_Y[2] = -0.02266 * turbidity + 5.32505;
+	    ABCDE_Y[3] =  0.12064 * turbidity - 2.57705;
+	    ABCDE_Y[4] = -0.06696 * turbidity + 0.37027;
+
+        // Page 9 eq. 4, precompute F(0, thetaSun)
+        Vector3 denominator;
+        denominator.x = digamma(0.0, thetaSun, ABCDE_x);
+        denominator.y = digamma(0.0, thetaSun, ABCDE_y);
+        denominator.z = digamma(0.0, thetaSun, ABCDE_Y);
+
+        const FVector3 A = { ABCDE_x[0], ABCDE_y[0], ABCDE_Y[0] };
+        const FVector3 B = { ABCDE_x[1], ABCDE_y[1], ABCDE_Y[1] };
+        const FVector3 C = { ABCDE_x[2], ABCDE_y[2], ABCDE_Y[2] };
+        const FVector3 D = { ABCDE_x[3], ABCDE_y[3], ABCDE_Y[3] };
+        const FVector3 E = { ABCDE_x[4], ABCDE_y[4], ABCDE_Y[4] };
+
+        [ A_xyY setFValue:A ];
+        [ B_xyY setFValue:B ];
+        [ C_xyY setFValue:C ];
+        [ D_xyY setFValue:D ];
+        [ E_xyY setFValue:E ];
+        [ radiusForMaxTheta setFValue:halfSkyResolution ];
+
         // clear preetham target
         [ rtc bindFBO ];
 
@@ -368,8 +490,22 @@ int main (int argc, char **argv)
         [ rtc activateDrawBuffers ];
         [ rtc activateViewport ];
 
-        const FVector4 clearColor = {.x = 1.0f, .y = 1.0f, .z = 0.0f, .w = 1.0f};
+        const FVector4 clearColor = {.x = 0.0f, .y = 0.0f, .z = 0.0f, .w = 0.0f};
         [[ NP Graphics ] clearDrawBuffer:0 color:clearColor ];
+
+        [ preetham activate ];
+
+        glBegin(GL_QUADS);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, cStart, cStart);
+            glVertexAttrib2f(NpVertexStreamPositions, -1.0f, -1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, cEnd, cStart);
+            glVertexAttrib2f(NpVertexStreamPositions,  1.0f, -1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, cEnd,  cEnd);
+            glVertexAttrib2f(NpVertexStreamPositions,  1.0f,  1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, cStart,  cEnd);
+            glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
+        glEnd();
+
 
         [ rtc deactivate ];
 
@@ -393,7 +529,7 @@ int main (int argc, char **argv)
         [[[ NP Graphics ] textureBindingState ] setTexture:[ preethamTarget texture ] texelUnit:0 ];
         [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
-        [[ effect techniqueWithName:@"texture"] activate ];
+        [ texture activate ];
 
         glBegin(GL_QUADS);
             glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f,  0.0f);
@@ -430,6 +566,8 @@ int main (int argc, char **argv)
     DESTROY(wheelUp);
     DESTROY(wheelDown);
 
+    DESTROY(preetham);
+    DESTROY(texture);
     DESTROY(effect);
 
     DESTROY(rtc);
