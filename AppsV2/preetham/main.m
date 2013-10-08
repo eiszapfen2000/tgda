@@ -128,7 +128,7 @@ static NSString * const NPGraphicsStartupError = @"NPEngineGraphics failed to st
 
 int main (int argc, char **argv)
 {
-    feenableexcept(FE_DIVBYZERO | FE_INVALID);
+    //feenableexcept(FE_DIVBYZERO | FE_INVALID);
 
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
@@ -343,7 +343,7 @@ int main (int argc, char **argv)
                         height:skyResolution
                    pixelFormat:NpTexturePixelFormatR
                     dataFormat:NpTextureDataFormatFloat32
-                 mipmapStorage:NO
+                 mipmapStorage:YES
                          error:NULL ];
 
     [ rtc setWidth:skyResolution  ];
@@ -361,10 +361,14 @@ int main (int argc, char **argv)
     NPEffectTechnique * preetham = [ effect techniqueWithName:@"preetham" ];
     NPEffectTechnique * texture  = [ effect techniqueWithName:@"texture"  ];
 
-    assert(preetham != nil && texture != nil);
+    NPEffectTechnique * logLuminance
+        = [ effect techniqueWithName:@"linear_sRGB_to_log_luminance" ];
+
+    assert(preetham != nil && texture != nil && logLuminance != nil);
 
     RETAIN(preetham);
     RETAIN(texture);
+    RETAIN(logLuminance);
 
     NPEffectVariableFloat * radiusForMaxTheta_P
         = [ effect variableWithName:@"radiusForMaxTheta" ];
@@ -424,6 +428,10 @@ int main (int argc, char **argv)
 
     const float cStart = -halfSkyResolution;
     const float cEnd   =  halfSkyResolution;
+
+    const double infinity = log(0.0);
+
+    printf("\n%lf\n", MAX(infinity, 0.0));
 
     // run loop
     while ( running )
@@ -531,7 +539,7 @@ int main (int argc, char **argv)
         [ rtc activateDrawBuffers ];
         [ rtc activateViewport ];
 
-        const FVector4 clearColor = {.x = 0.0f, .y = 0.0f, .z = 0.0f, .w = 0.0f};
+        const FVector4 clearColor = {.x = 1.0f, .y = 0.0f, .z = 0.0f, .w = 0.0f};
         [[ NP Graphics ] clearDrawBuffer:0 color:clearColor ];
 
         [ preetham activate ];
@@ -547,8 +555,48 @@ int main (int argc, char **argv)
             glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
         glEnd();
 
+        [ preethamTarget detach:NO ];
+
+        [ luminanceTarget
+            attachToRenderTargetConfiguration:rtc
+                             colorBufferIndex:0
+                                      bindFBO:NO ];
+
+        [[ NP Graphics ] clearDrawBuffer:0 color:clearColor ];
+
+        [[[ NP Graphics ] textureBindingState ] setTexture:[ preethamTarget texture ] texelUnit:0 ];
+        [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
+
+        [ logLuminance activate ];
+
+        glBegin(GL_QUADS);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f,  0.0f);
+            glVertexAttrib2f(NpVertexStreamPositions, -1.0f, -1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f,  0.0f);
+            glVertexAttrib2f(NpVertexStreamPositions,  1.0f, -1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f,  1.0f);
+            glVertexAttrib2f(NpVertexStreamPositions,  1.0f,  1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f,  1.0f);
+            glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
+        glEnd();
+
+        [ luminanceTarget detach:NO ];
 
         [ rtc deactivate ];
+
+        const int32_t numberOfLevels
+            = 1 + (int32_t)floor(logb(skyResolution));
+
+        [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:[ luminanceTarget texture ]];
+
+        float averageLuminance = FLT_MAX;
+
+        glGenerateMipmap(GL_TEXTURE_2D);
+        glGetTexImage(GL_TEXTURE_2D, numberOfLevels - 1, GL_RED, GL_FLOAT, &averageLuminance);
+
+        [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
+
+        NSLog(@"%f %f", averageLuminance, expf(averageLuminance));
 
         // activate culling, depth write and depth test
         NPCullingState * cullingState = [[[ NP Graphics ] stateConfiguration ] cullingState ];
@@ -567,7 +615,7 @@ int main (int argc, char **argv)
         [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
         [[[ NP Graphics ] textureBindingState ] clear ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:[ preethamTarget texture ] texelUnit:0 ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:[ luminanceTarget texture ] texelUnit:0 ];
         [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
         [ texture activate ];
@@ -607,6 +655,7 @@ int main (int argc, char **argv)
     DESTROY(wheelUp);
     DESTROY(wheelDown);
 
+    DESTROY(logLuminance);
     DESTROY(preetham);
     DESTROY(texture);
     DESTROY(effect);
