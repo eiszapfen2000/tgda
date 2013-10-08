@@ -2,14 +2,24 @@
 
 in vec2 out_texcoords;
 
+
+#define MATH_PI_DIV_2   1.5707963268
+
 void main()
 {
     float radius = length(out_texcoords);
+    float radiusNormalised = radius / radiusForMaxTheta;
 
-    if ((radius / radiusForMaxTheta) > 1.0)
+    if (radiusNormalised > 1.0)
     {
         discard;
     }
 
-    target = vec4(radius, radius, 0.0, 1.0);
+    float theta = MATH_PI_DIV_2 * radiusNormalised;
+    vec3 v = vec3(out_texcoords, radiusForMaxTheta * cos(theta));
+
+    float cosGamma = dot(v, directionToSun);
+    float gamma = acos(cosGamma);
+
+    target = vec4(zenithColor, 1.0);
 }

@@ -324,7 +324,7 @@ int main (int argc, char **argv)
     [ rtc deactivate ];
     */
 
-    const uint32_t skyResolution = 5;
+    const uint32_t skyResolution = 4;
 
     NPRenderTargetConfiguration * rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC"  ];
     NPRenderTexture * preethamTarget  = [[ NPRenderTexture alloc ] initWithName:@"Preetham Target"  ];
@@ -366,16 +366,24 @@ int main (int argc, char **argv)
     RETAIN(preetham);
     RETAIN(texture);
 
-    NPEffectVariableFloat3 * A_xyY = [ effect variableWithName:@"A" ];
-    NPEffectVariableFloat3 * B_xyY = [ effect variableWithName:@"B" ];
-    NPEffectVariableFloat3 * C_xyY = [ effect variableWithName:@"C" ];
-    NPEffectVariableFloat3 * D_xyY = [ effect variableWithName:@"D" ];
-    NPEffectVariableFloat3 * E_xyY = [ effect variableWithName:@"E" ];
+    NPEffectVariableFloat * radiusForMaxTheta_P
+        = [ effect variableWithName:@"radiusForMaxTheta" ];
 
-    NPEffectVariableFloat * radiusForMaxTheta = [ effect variableWithName:@"radiusForMaxTheta" ];
+    NPEffectVariableFloat3 * directionToSun_P
+        = [ effect variableWithName:@"directionToSun" ];
 
-    assert(A_xyY != nil && B_xyY != nil && C_xyY != nil && D_xyY != nil
-           && E_xyY != nil && radiusForMaxTheta != nil);
+    NPEffectVariableFloat3 * zenithColor_P
+        = [ effect variableWithName:@"zenithColor" ];
+
+    NPEffectVariableFloat3 * A_xyY_P = [ effect variableWithName:@"A" ];
+    NPEffectVariableFloat3 * B_xyY_P = [ effect variableWithName:@"B" ];
+    NPEffectVariableFloat3 * C_xyY_P = [ effect variableWithName:@"C" ];
+    NPEffectVariableFloat3 * D_xyY_P = [ effect variableWithName:@"D" ];
+    NPEffectVariableFloat3 * E_xyY_P = [ effect variableWithName:@"E" ];
+
+    assert(A_xyY_P != nil && B_xyY_P != nil && C_xyY_P != nil && D_xyY_P != nil
+           && E_xyY_P != nil && radiusForMaxTheta_P != nil && directionToSun_P != nil
+           && zenithColor_P != nil);
 
     NPInputAction * leftClick
         = [[[ NP Input ] inputActions ] 
@@ -435,11 +443,24 @@ int main (int argc, char **argv)
         const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
 
+        //
+        const double maxThetaRadius = halfSkyResolution;
+        const double sinThetaSun = sin(thetaSun);
+        const double cosThetaSun = cos(thetaSun);
+        const double sinPhiSun = sin(phiSun);
+        const double cosPhiSun = cos(phiSun);
+
+        Vector3 directionToSun;
+        directionToSun.x = maxThetaRadius * sinThetaSun * cosPhiSun;
+        directionToSun.y = maxThetaRadius * sinThetaSun * sinPhiSun;
+        directionToSun.z = maxThetaRadius * cosThetaSun;
+        Vector3 directionToSunNormalised = v3_v_normalised(&directionToSun);
+
         // Preetham Skylight Zenith color
         // xyY space, cd/m²
         Vector3 zenithColor = preetham_zenith(turbidity, thetaSun);
 
-        //
+        // Page 22/23 compute coefficients
 	    double ABCDE_x[5], ABCDE_y[5], ABCDE_Y[5];
 
 	    ABCDE_x[0] = -0.01925 * turbidity - 0.25922;
@@ -472,12 +493,14 @@ int main (int argc, char **argv)
         const FVector3 D = { ABCDE_x[3], ABCDE_y[3], ABCDE_Y[3] };
         const FVector3 E = { ABCDE_x[4], ABCDE_y[4], ABCDE_Y[4] };
 
-        [ A_xyY setFValue:A ];
-        [ B_xyY setFValue:B ];
-        [ C_xyY setFValue:C ];
-        [ D_xyY setFValue:D ];
-        [ E_xyY setFValue:E ];
-        [ radiusForMaxTheta setFValue:halfSkyResolution ];
+        [ A_xyY_P setFValue:A ];
+        [ B_xyY_P setFValue:B ];
+        [ C_xyY_P setFValue:C ];
+        [ D_xyY_P setFValue:D ];
+        [ E_xyY_P setFValue:E ];
+        [ radiusForMaxTheta_P setFValue:halfSkyResolution ];
+        [ directionToSun_P setValue:directionToSun ];
+        [ zenithColor_P setValue:zenithColor ];
 
         // clear preetham target
         [ rtc bindFBO ];
