@@ -40,6 +40,9 @@
 - (BOOL) generateRenderTargets:(NSError **)error;
 - (BOOL) generateVarianceLUTRenderTarget:(NSError **)error;
 
+- (void) updateSlopeVarianceLUT;
+- (void) renderProjectedGrid;
+
 @end
 
 @implementation ODScene (Private)
@@ -151,6 +154,52 @@
                              error:error ];
 
     return result;
+}
+
+- (void) updateSlopeVarianceLUT
+{
+    [ varianceTextureResolution setFValue:varianceLUTResolution ];
+    [ baseSpectrumSize setValue:[ ocean baseSpectrumSize ]];
+    [ deltaVariance setFValue:[ ocean baseSpectrumDeltaVariance ]];
+
+    [[[ NP Graphics ] textureBindingState ] clear ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean baseSpectrum ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] activate ];
+
+    FRectangle vertices;
+    FRectangle texcoords;
+
+    frectangle_rssss_init_with_min_max(&vertices, -1.0f, -1.0f, 1.0f, 1.0f);
+    frectangle_rssss_init_with_min_max(&texcoords, 0.0f, 0.0f, varianceLUTResolution, varianceLUTResolution);
+
+    [ varianceRTC bindFBO ];
+    [ varianceRTC activateViewport ];
+
+    for ( uint32_t c = 0; c < varianceLUTResolution; c++ )
+    {
+        [ varianceLUT attachLevel:0
+                            layer:c
+        renderTargetConfiguration:varianceRTC
+                 colorBufferIndex:0
+                          bindFBO:NO ];
+
+        if ( c == 0 )
+        {
+            [ varianceRTC activateDrawBuffers ];
+        }
+
+        [ layer setFValue:(float)c ];
+        [ variance activate ];
+        [ NPIMRendering renderFRectangle:vertices
+                               texCoords:texcoords
+                           primitiveType:NpPrimitiveQuads ];
+    }
+
+    [ varianceRTC deactivate ];
+}
+
+- (void) renderProjectedGrid
+{
 }
 
 @end
@@ -528,6 +577,11 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         varianceLUTLastResolution = varianceLUTResolution;
     }
 
+    if ( [ ocean updateSlopeVariance ] == YES )
+    {
+        [ self updateSlopeVarianceLUT ];
+    }
+
     NPCullingState * cullingState = [[[ NP Graphics ] stateConfiguration ] cullingState ];
     NPBlendingState * blendingState = [[[ NP Graphics ] stateConfiguration ] blendingState ];
     NPDepthTestState * depthTestState = [[[ NP Graphics ] stateConfiguration ] depthTestState ];
@@ -551,79 +605,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [[[ NP Core] transformationState] resetModelMatrix];
     
-    /*
-    NPEffectVariableFloat2 * v = [ deferredEffect variableWithName:@"scale"];
-    NPEffectVariableFloat3 * c = [ deferredEffect variableWithName:@"cameraPosition"];
-    [ v setFValue:[ ocean baseMeshScale ]];
-    [ c setValue:[ camera position ]];
-    [[[ NP Core] transformationState] setFModelMatrix:[ ocean modelMatrix ]];
-    [[[ NP Graphics ] textureBindingState ] clear ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ocean supplementalData] texelUnit:0 ];
-    [[[ NP Graphics ] textureBindingState ] activate ];
-
-    [[ deferredEffect techniqueWithName:@"base_xz" ] activate ];
-    [ ocean renderBaseMesh ];
-    */
-    
-    /*
-    [[ deferredEffect techniqueWithName:@"iwave_base_xz" ] activate ];
-    [ iwave render ];
-    */
-    
-    /*
-    [[[ NP Graphics ] textureBindingState ] clear ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[iwave heightTexture] texelUnit:0 ];
-    [[[ NP Graphics ] textureBindingState ] activate ];
-    [[ deferredEffect techniqueWithName:@"texture" ] activate ];
-    [ fullscreenQuad render ];
-    */
-
-    
-    if ( [ ocean updateSlopeVariance ] == YES )
-    {
-        //NSLog(@"BRAK");
-
-        [ varianceTextureResolution setFValue:varianceLUTResolution ];
-        [ baseSpectrumSize setValue:[ ocean baseSpectrumSize ]];
-        [ deltaVariance setFValue:[ ocean baseSpectrumDeltaVariance ]];
-
-        [[[ NP Graphics ] textureBindingState ] clear ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean baseSpectrum ] texelUnit:0 ];
-        [[[ NP Graphics ] textureBindingState ] activate ];
-
-        FRectangle vertices;
-        FRectangle texcoords;
-
-        frectangle_rssss_init_with_min_max(&vertices, -1.0f, -1.0f, 1.0f, 1.0f);
-        frectangle_rssss_init_with_min_max(&texcoords, 0.0f, 0.0f, varianceLUTResolution, varianceLUTResolution);
-
-        [ varianceRTC bindFBO ];
-        [ varianceRTC activateViewport ];
-
-        for ( uint32_t c = 0; c < varianceLUTResolution; c++ )
-        {
-            [ varianceLUT attachLevel:0
-                                layer:c
-            renderTargetConfiguration:varianceRTC
-                     colorBufferIndex:0
-                              bindFBO:NO ];
-
-            if ( c == 0 )
-            {
-                [ varianceRTC activateDrawBuffers ];
-            }
-
-            [ layer setFValue:(float)c ];
-            [ variance activate ];
-            [ NPIMRendering renderFRectangle:vertices
-                                   texCoords:texcoords
-                               primitiveType:NpPrimitiveQuads ];
-        }
-
-        [ varianceRTC deactivate ];
-    }
-    
-
     [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean heightfield   ] texelUnit:0 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacement  ] texelUnit:1 ];
@@ -650,15 +631,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ projectedGrid renderTFTransform ];
     [ projectedGridTFFeedback activate ];
     [ projectedGrid renderTFFeedback  ];
-
-    /*
-    [[ deferredEffect techniqueWithName:@"proj_grid_corners" ] activate ];
-    [ projectedGrid render ];
-    */
-    
-    
-    //[ ocean renderBasePlane ];
-
 
     [[[ NPEngineCore instance ] transformationState ] resetModelMatrix ];
     [ blendingState setEnabled:YES ];
@@ -692,8 +664,37 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ testProjectorFrustum render ];
 
     [[[ NP Graphics ] stateConfiguration ] deactivate ];
-    
 
+//-------------------------------------------
+
+    /*
+    NPEffectVariableFloat2 * v = [ deferredEffect variableWithName:@"scale"];
+    NPEffectVariableFloat3 * c = [ deferredEffect variableWithName:@"cameraPosition"];
+    [ v setFValue:[ ocean baseMeshScale ]];
+    [ c setValue:[ camera position ]];
+    [[[ NP Core] transformationState] setFModelMatrix:[ ocean modelMatrix ]];
+    [[[ NP Graphics ] textureBindingState ] clear ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ocean supplementalData] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] activate ];
+
+    [[ deferredEffect techniqueWithName:@"base_xz" ] activate ];
+    [ ocean renderBaseMesh ];
+    */
+    
+    /*
+    [[ deferredEffect techniqueWithName:@"iwave_base_xz" ] activate ];
+    [ iwave render ];
+    */
+    
+    /*
+    [[[ NP Graphics ] textureBindingState ] clear ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[iwave heightTexture] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] activate ];
+    [[ deferredEffect techniqueWithName:@"texture" ] activate ];
+    [ fullscreenQuad render ];
+    */
+    
+//-------------------------------------------
     /*
     [ gBuffer bindFBO ];
 
