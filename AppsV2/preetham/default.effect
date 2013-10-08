@@ -13,7 +13,7 @@ technique "texture"
     };
 
     # vertex streams
-    in vec4 in_position : 0;
+    in vec2 in_position : 0;
     in vec2 in_texcoords : 3;
 
     # fragment streams

@@ -96,7 +96,7 @@ int main (int argc, char **argv)
     glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_FALSE);
     
     // Open a window and create its OpenGL context
-    if( !glfwOpenWindow( 800, 600, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
+    if( !glfwOpenWindow( 512, 512, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
     {
         NSLog(@"Failed to open GLFW window");
         glfwTerminate();
@@ -272,6 +272,31 @@ int main (int argc, char **argv)
     [ rtc deactivate ];
     */
 
+    const uint32_t skyResolution = 512;
+
+    NPRenderTargetConfiguration * rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC"  ];
+    NPRenderTexture * preethamTarget  = [[ NPRenderTexture alloc ] initWithName:@"Preetham Target"  ];
+    NPRenderTexture * luminanceTarget = [[ NPRenderTexture alloc ] initWithName:@"Luminance Target" ];
+
+    [ preethamTarget generate:NpRenderTargetColor
+                        width:skyResolution
+                       height:skyResolution
+                  pixelFormat:NpTexturePixelFormatRGBA
+                   dataFormat:NpTextureDataFormatFloat32
+                mipmapStorage:NO
+                        error:NULL ];
+
+    [ luminanceTarget generate:NpRenderTargetColor
+                         width:skyResolution
+                        height:skyResolution
+                   pixelFormat:NpTexturePixelFormatR
+                    dataFormat:NpTextureDataFormatFloat32
+                 mipmapStorage:NO
+                         error:NULL ];
+
+    [ rtc setWidth:skyResolution  ];
+    [ rtc setHeight:skyResolution ];
+
 
     NPEffect * effect
         = [[[ NPEngineGraphics instance ]
@@ -332,14 +357,28 @@ int main (int argc, char **argv)
         const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
 
-        //NSLog(@"%lf", frameTime);
+        // clear preetham target
+        [ rtc bindFBO ];
 
+        [ preethamTarget
+            attachToRenderTargetConfiguration:rtc
+                             colorBufferIndex:0
+                                      bindFBO:NO ];
+
+        [ rtc activateDrawBuffers ];
+        [ rtc activateViewport ];
+
+        const FVector4 clearColor = {.x = 1.0f, .y = 1.0f, .z = 0.0f, .w = 1.0f};
+        [[ NP Graphics ] clearDrawBuffer:0 color:clearColor ];
+
+        [ rtc deactivate ];
+
+        // activate culling, depth write and depth test
         NPCullingState * cullingState = [[[ NP Graphics ] stateConfiguration ] cullingState ];
         NPBlendingState * blendingState = [[[ NP Graphics ] stateConfiguration ] blendingState ];
         NPDepthTestState * depthTestState = [[[ NP Graphics ] stateConfiguration ] depthTestState ];
         NPStencilTestState * stencilTestState = [[[ NP Graphics ] stateConfiguration ] stencilTestState ];
 
-        // activate culling, depth write and depth test
         [ blendingState  setEnabled:NO ];
         [ cullingState   setCullFace:NpCullfaceBack ];
         [ cullingState   setEnabled:YES ];
@@ -347,27 +386,25 @@ int main (int argc, char **argv)
         [ depthTestState setEnabled:YES ];
         [[[ NP Graphics ] stateConfiguration ] activate ];
 
+        // clear context framebuffer
         [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
-        /*
-        [[[ NP Graphics ] textureBindingState ] setTexture:[ heightsTarget texture ] texelUnit:0 ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:sourceTexture      texelUnit:1 ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:obstructionTexture texelUnit:2 ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:depthTexture       texelUnit:3 ];
+        [[[ NP Graphics ] textureBindingState ] clear ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:[ preethamTarget texture ] texelUnit:0 ];
         [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
-        [[ effect techniqueWithName:@"fluid"] activate ];
+
+        [[ effect techniqueWithName:@"texture"] activate ];
 
         glBegin(GL_QUADS);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
-            glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
-            glVertex4f( 1.0f, -1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
-            glVertex4f( 1.0f,  1.0f, 0.0f, 1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
-            glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
-        glEnd(); 
-        */      
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f,  0.0f);
+            glVertexAttrib2f(NpVertexStreamPositions, -1.0f, -1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f,  0.0f);
+            glVertexAttrib2f(NpVertexStreamPositions,  1.0f, -1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f,  1.0f);
+            glVertexAttrib2f(NpVertexStreamPositions,  1.0f,  1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f,  1.0f);
+            glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
+        glEnd();
 
         // check for GL errors
         [[ NP Graphics ] checkForGLErrors ];        
@@ -395,20 +432,9 @@ int main (int argc, char **argv)
 
     DESTROY(effect);
 
-    /*
     DESTROY(rtc);
-    DESTROY(derivativeTarget);
-    DESTROY(depthDerivativeTarget);
-    DESTROY(prevHeightsTarget);
-    DESTROY(heightsTarget);
-    DESTROY(tempTarget);
-
-    DESTROY(sourceTexture);
-    DESTROY(obstructionTexture);
-    DESTROY(depthTexture);
-    DESTROY(kernelTexture);
-    DESTROY(kernelBuffer);
-    */
+    DESTROY(preethamTarget);
+    DESTROY(luminanceTarget);
 
     // Shutdown NPGraphics, deallocates a lot of stuff
     [[ NP Graphics ] shutdown ];
