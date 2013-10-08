@@ -1,0 +1,15 @@
+#version 150
+
+in vec2 out_texcoords;
+
+void main()
+{
+    float radius = length(out_texcoords);
+
+    if ((radius / radiusForMaxTheta) > 1.0)
+    {
+        discard;
+    }
+
+    target = vec4(radius, radius, 0.0, 1.0);
+}
