@@ -74,5 +74,32 @@ technique "linear_sRGB_to_log_luminance"
     set fragment shader "linear_sRGB_to_log_luminance.fragment"
 }
 
+technique "tonemap_reinhard"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform sampler2D linearsRGB
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform float key;
+    uniform float averageLuminance;
+    uniform float whiteLuminance;
+
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+
+    # fragment streams
+    out vec4 target : 0;
+
+    # shaders
+    set vertex shader "simpletextured.vertex"
+    set fragment shader "tonemap_reinhard.fragment"
+}
+
 
 
