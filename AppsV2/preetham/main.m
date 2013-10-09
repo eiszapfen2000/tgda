@@ -128,7 +128,7 @@ static NSString * const NPGraphicsStartupError = @"NPEngineGraphics failed to st
 
 int main (int argc, char **argv)
 {
-    //feenableexcept(FE_DIVBYZERO | FE_INVALID);
+    feenableexcept(FE_DIVBYZERO | FE_INVALID);
 
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
@@ -148,7 +148,7 @@ int main (int argc, char **argv)
     glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_FALSE);
     
     // Open a window and create its OpenGL context
-    if( !glfwOpenWindow( 512, 512, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
+    if( !glfwOpenWindow( 1024, 1024, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
     {
         NSLog(@"Failed to open GLFW window");
         glfwTerminate();
@@ -161,7 +161,7 @@ int main (int argc, char **argv)
     mousePosition.x = mousePosition.y = 0;
 
     // VSync
-    glfwSwapInterval(0);
+    glfwSwapInterval(1);
     // do not poll events on glfwSwapBuffers
     glfwDisable(GLFW_AUTO_POLL_EVENTS);
     // register keyboard callback
@@ -205,126 +205,7 @@ int main (int argc, char **argv)
 
     NSAutoreleasePool * rPool = [ NSAutoreleasePool new ];
 
-    /*
-    NPTexture2D * sourceTexture      = [[ NPTexture2D alloc ] initWithName:@"Source" ];
-    NPTexture2D * obstructionTexture = [[ NPTexture2D alloc ] initWithName:@"Obstruction" ];
-    NPTexture2D * depthTexture       = [[ NPTexture2D alloc ] initWithName:@"Depth" ];
-
-    NPBufferObject  * kernelBuffer  = [[ NPBufferObject alloc ]  initWithName:@"Kernel BO" ];
-    NPTextureBuffer * kernelTexture = [[ NPTextureBuffer alloc ] initWithName:@"Kernel TB" ];
-
-    NPRenderTexture * heightsTarget         = [[ NPRenderTexture alloc ] initWithName:@"Height Target"           ];
-    NPRenderTexture * prevHeightsTarget     = [[ NPRenderTexture alloc ] initWithName:@"Prev Height Target"      ];
-    NPRenderTexture * depthDerivativeTarget = [[ NPRenderTexture alloc ] initWithName:@"Depth Derivative Target" ];
-    NPRenderTexture * derivativeTarget      = [[ NPRenderTexture alloc ] initWithName:@"Derivative Target"       ];
-    NPRenderTexture * tempTarget            = [[ NPRenderTexture alloc ] initWithName:@"Temp Target"             ];
-
-    NPRenderTargetConfiguration * rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC" ];
-    NPRenderTargetConfiguration * rtcCopy = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC Copy" ];
-
-    BOOL allok
-        = [ kernelBuffer
-               generate:NpBufferObjectTypeTexture
-             updateRate:NpBufferDataUpdateOnceUseOften
-              dataUsage:NpBufferDataWriteCPUToGPU
-             dataFormat:NpBufferDataFormatFloat32
-             components:1
-                   data:kernelData
-             dataLength:[ kernelData length ]
-                  error:NULL ];
-
-    assert(allok == YES);
-
-    [ kernelTexture attachBuffer:kernelBuffer
-                numberOfElements:kernelSize * kernelSize
-                     pixelFormat:NpTexturePixelFormatR
-                      dataFormat:NpTextureDataFormatFloat32 ];
-
-    [ heightsTarget generate:NpRenderTargetColor
-                       width:gridWidth
-                      height:gridHeight
-                 pixelFormat:NpTexturePixelFormatR
-                  dataFormat:NpTextureDataFormatFloat32
-               mipmapStorage:NO
-                       error:NULL ];
-
-    [ prevHeightsTarget generate:NpRenderTargetColor
-                           width:gridWidth
-                          height:gridHeight
-                     pixelFormat:NpTexturePixelFormatR
-                      dataFormat:NpTextureDataFormatFloat32
-                   mipmapStorage:NO
-                           error:NULL ];
-
-    [ depthDerivativeTarget generate:NpRenderTargetColor
-                               width:gridWidth
-                              height:gridHeight
-                         pixelFormat:NpTexturePixelFormatR
-                          dataFormat:NpTextureDataFormatFloat32
-                       mipmapStorage:NO
-                               error:NULL ];
-
-    [ derivativeTarget generate:NpRenderTargetColor
-                          width:gridWidth
-                         height:gridHeight
-                    pixelFormat:NpTexturePixelFormatR
-                     dataFormat:NpTextureDataFormatFloat32
-                  mipmapStorage:NO
-                          error:NULL ];
-
-    [ tempTarget generate:NpRenderTargetColor
-                    width:gridWidth
-                   height:gridHeight
-              pixelFormat:NpTexturePixelFormatR
-               dataFormat:NpTextureDataFormatFloat32
-            mipmapStorage:NO
-                    error:NULL ];
-
-    [ rtc setWidth:gridWidth ];
-    [ rtc setHeight:gridHeight ];
-
-    [ rtc bindFBO ];
-
-    [ heightsTarget
-        attachToRenderTargetConfiguration:rtc
-                         colorBufferIndex:0
-                                  bindFBO:NO ];
-
-    [ prevHeightsTarget
-        attachToRenderTargetConfiguration:rtc
-                         colorBufferIndex:1
-                                  bindFBO:NO ];
-
-    [ derivativeTarget
-        attachToRenderTargetConfiguration:rtc
-                         colorBufferIndex:2
-                                  bindFBO:NO ];
-
-    [ depthDerivativeTarget
-        attachToRenderTargetConfiguration:rtc
-                         colorBufferIndex:3
-                                  bindFBO:NO ];
-
-    [ tempTarget
-        attachToRenderTargetConfiguration:rtc
-                         colorBufferIndex:4
-                                  bindFBO:NO ];
-
-    [ rtc activateDrawBuffers ];
-    [ rtc activateViewport ];
-
-    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
-
-    [ tempTarget            detach:NO ];
-    [ depthDerivativeTarget detach:NO ];
-    [ derivativeTarget      detach:NO ];
-    [ prevHeightsTarget     detach:NO ];
-    [ heightsTarget         detach:NO ];
-
-    [ rtc deactivate ];
-    */
-
-    const uint32_t skyResolution = 512;
+    const uint32_t skyResolution = 1024;
 
     NPRenderTargetConfiguration * rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC"  ];
     NPRenderTexture * preethamTarget  = [[ NPRenderTexture alloc ] initWithName:@"Preetham Target"  ];
@@ -364,11 +245,15 @@ int main (int argc, char **argv)
     NPEffectTechnique * logLuminance
         = [ effect techniqueWithName:@"linear_sRGB_to_log_luminance" ];
 
-    assert(preetham != nil && texture != nil && logLuminance != nil);
+    NPEffectTechnique * tonemap
+        = [ effect techniqueWithName:@"tonemap_reinhard" ];
+
+    assert(preetham != nil && texture != nil && logLuminance != nil && tonemap != nil);
 
     RETAIN(preetham);
     RETAIN(texture);
     RETAIN(logLuminance);
+    RETAIN(tonemap);
 
     NPEffectVariableFloat * radiusForMaxTheta_P
         = [ effect variableWithName:@"radiusForMaxTheta" ];
@@ -388,9 +273,14 @@ int main (int argc, char **argv)
     NPEffectVariableFloat3 * D_xyY_P = [ effect variableWithName:@"D" ];
     NPEffectVariableFloat3 * E_xyY_P = [ effect variableWithName:@"E" ];
 
+    NPEffectVariableFloat * key_P = [ effect variableWithName:@"key" ];
+    NPEffectVariableFloat * averageLuminance_P = [ effect variableWithName:@"averageLuminance" ];
+    NPEffectVariableFloat * whiteLuminance_P = [ effect variableWithName:@"whiteLuminance" ];
+
     assert(A_xyY_P != nil && B_xyY_P != nil && C_xyY_P != nil && D_xyY_P != nil
            && E_xyY_P != nil && radiusForMaxTheta_P != nil && directionToSun_P != nil
-           && zenithColor_P != nil && denominator_P != nil);
+           && zenithColor_P != nil && denominator_P != nil && key_P != nil
+           && averageLuminance_P != nil && whiteLuminance_P != nil);
 
     NPInputAction * leftClick
         = [[[ NP Input ] inputActions ] 
@@ -420,18 +310,20 @@ int main (int argc, char **argv)
     DESTROY(rPool);
 
     BOOL running = YES;
+
+    // preetham
     double turbidity = 2.0;
     double phiSun = 0.0;
     double thetaSun = MATH_PI_DIV_4;
+
+    // tonemap
+    double a = 0.05;
+    double L_white = 1.0;
 
     const float halfSkyResolution = ((float)skyResolution) / (2.0f);
 
     const float cStart = -halfSkyResolution;
     const float cEnd   =  halfSkyResolution;
-
-    const double infinity = log(0.0);
-
-    printf("\n%lf\n", MAX(infinity, 0.0));
 
     // run loop
     while ( running )
@@ -462,6 +354,38 @@ int main (int argc, char **argv)
         if ([ wheelDown activated ] == YES )
         {
             thetaSun -= MATH_DEG_TO_RAD * 3.0;
+        }
+
+        if ( [ leftClick activated ] == YES )
+        {
+            int32_t x = [[[ NP Input ] mouse ] x ];
+            int32_t y = [[[ NP Input ] mouse ] y ];
+            y = widgetSize.y - y - 1;
+
+            double dx = 0.0;
+            double dy = 0.0;
+
+            if ( x < (widgetSize.x / 2))
+            {
+                dx = (double)(x - (widgetSize.x / 2));
+            }
+            else
+            {
+                dx = (double)(x - (widgetSize.x / 2) + 1);
+            }
+
+            if ( y < (widgetSize.y / 2))
+            {
+                dy = (double)(y - (widgetSize.y / 2));
+            }
+            else
+            {
+                dy = (double)(y - (widgetSize.y / 2) + 1);
+            }
+
+            //NSLog(@"%d %d %lf %lf", x, y, dx, dy);
+
+            phiSun = atan2(dy, dx);
         }
 
         thetaSun = MIN(thetaSun, MATH_PI_DIV_2);
@@ -539,7 +463,7 @@ int main (int argc, char **argv)
         [ rtc activateDrawBuffers ];
         [ rtc activateViewport ];
 
-        const FVector4 clearColor = {.x = 1.0f, .y = 0.0f, .z = 0.0f, .w = 0.0f};
+        const FVector4 clearColor = {.x = 0.0f, .y = 0.0f, .z = 0.0f, .w = 0.0f};
         [[ NP Graphics ] clearDrawBuffer:0 color:clearColor ];
 
         [ preetham activate ];
@@ -589,14 +513,16 @@ int main (int argc, char **argv)
 
         [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:[ luminanceTarget texture ]];
 
-        float averageLuminance = FLT_MAX;
+        float Lw_average = FLT_MAX;
 
         glGenerateMipmap(GL_TEXTURE_2D);
-        glGetTexImage(GL_TEXTURE_2D, numberOfLevels - 1, GL_RED, GL_FLOAT, &averageLuminance);
+        glGetTexImage(GL_TEXTURE_2D, numberOfLevels - 1, GL_RED, GL_FLOAT, &Lw_average);
 
         [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
 
-        NSLog(@"%f %f", averageLuminance, expf(averageLuminance));
+        assert(Lw_average != FLT_MAX);
+
+        //NSLog(@"%f %f", averageLuminance, expf(averageLuminance));
 
         // activate culling, depth write and depth test
         NPCullingState * cullingState = [[[ NP Graphics ] stateConfiguration ] cullingState ];
@@ -615,10 +541,14 @@ int main (int argc, char **argv)
         [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
         [[[ NP Graphics ] textureBindingState ] clear ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:[ luminanceTarget texture ] texelUnit:0 ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:[ preethamTarget texture ] texelUnit:0 ];
         [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
-        [ texture activate ];
+        [ key_P setValue:a ];
+        [ whiteLuminance_P setValue:L_white ];
+        [ averageLuminance_P setFValue:expf(Lw_average) ];
+
+        [ tonemap activate ];
 
         glBegin(GL_QUADS);
             glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f,  0.0f);
@@ -655,6 +585,7 @@ int main (int argc, char **argv)
     DESTROY(wheelUp);
     DESTROY(wheelDown);
 
+    DESTROY(tonemap);
     DESTROY(logLuminance);
     DESTROY(preetham);
     DESTROY(texture);
