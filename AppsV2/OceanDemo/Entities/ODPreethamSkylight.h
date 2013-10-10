@@ -16,6 +16,7 @@
     double turbidity;
     double thetaSun;
     double phiSun;
+    Vector3 directionToSun;
 
     NPEffectVariableFloat3 * A_Yxy_P;
     NPEffectVariableFloat3 * B_Yxy_P;
@@ -32,7 +33,9 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-- (FVector3) lightDirection;
+- (Vector3) directionToSun;
+
+- (void) update:(const double)frameTime;
 
 @end
 

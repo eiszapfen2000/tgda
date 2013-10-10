@@ -535,9 +535,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
                                      farPlane:[testProjector farPlane]
                                   aspectRatio:[testProjector aspectRatio]];
 
-/*
     [ skylight      update:frameTime ];
-*/
     //[ iwave         update:frameTime ];
     [ ocean         update:frameTime ];
     [ projectedGrid update:frameTime ];
