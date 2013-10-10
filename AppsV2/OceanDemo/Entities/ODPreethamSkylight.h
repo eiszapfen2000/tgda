@@ -13,8 +13,11 @@
     NPInputAction * sunAzimuthIncreaseAction;
     NPInputAction * sunAzimuthDecreaseAction;
 
+    double lastTurbidity;
     double turbidity;
+    double lastThetaSun;
     double thetaSun;
+    double lastPhiSun;
     double phiSun;
     Vector3 directionToSun;
 
@@ -35,7 +38,7 @@
 
 - (Vector3) directionToSun;
 
-- (void) update:(const double)frameTime;
+- (void) update:(double)frameTime;
 
 @end
 

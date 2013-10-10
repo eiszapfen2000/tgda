@@ -69,62 +69,16 @@ static double digamma(double theta, double gamma, double ABCDE[5])
     return term_one * term_two;
 }
 
+@interface ODPreethamSkylight (Private)
 
-@implementation ODPreethamSkylight
+- (void) updateInput:(double)frameTime;
 
-- (id) init
+@end
+
+@implementation ODPreethamSkylight (Private)
+
+- (void) updateInput:(double)frameTime
 {
-    return [ self initWithName:@"ODPreethamSkylight" ];
-}
-
-- (id) initWithName:(NSString *)newName
-{
-    self =  [ super initWithName:newName ];
-
-    sunZenithDistanceIncreaseAction
-        = [[[ NP Input ] inputActions ]
-                addInputActionWithName:@"SunZenithDistanceIncrease" inputEvent:NpKeyboardKeypad2 ];
-
-    sunZenithDistanceDecreaseAction
-        = [[[ NP Input ] inputActions ]
-                addInputActionWithName:@"SunZenithDistanceDecrease" inputEvent:NpKeyboardKeypad8 ];
-
-    sunAzimuthIncreaseAction
-        = [[[ NP Input ] inputActions ]
-                addInputActionWithName:@"SunAzimuthIncrease" inputEvent:NpKeyboardKeypad4 ];
-
-    sunAzimuthDecreaseAction
-        = [[[ NP Input ] inputActions ]
-                addInputActionWithName:@"SunAzimuthDecrease" inputEvent:NpKeyboardKeypad6 ];
-
-    // turbidity must be in the range 2 - 6
-    turbidity = 2.0;
-
-    // thetaSun must be between 0 and PI/2
-    thetaSun = MATH_PI_DIV_4;
-    phiSun = 0.0;
-
-    return self;
-}
-
-- (void) dealloc
-{
-    [[[ NP Input ] inputActions ] removeInputAction:sunZenithDistanceIncreaseAction ];
-    [[[ NP Input ] inputActions ] removeInputAction:sunZenithDistanceDecreaseAction ];
-    [[[ NP Input ] inputActions ] removeInputAction:sunAzimuthIncreaseAction ];
-    [[[ NP Input ] inputActions ] removeInputAction:sunAzimuthDecreaseAction ];
-
-    [ super dealloc ];
-}
-
-- (Vector3) directionToSun
-{
-    return directionToSun;
-}
-
-- (void) update:(const double)frameTime
-{
-
     if ( [ sunZenithDistanceIncreaseAction active ] == YES )
     {
         thetaSun += (MATH_DEG_TO_RAD * 25.0 * frameTime);
@@ -156,59 +110,132 @@ static double digamma(double theta, double gamma, double ABCDE[5])
     {
         phiSun += MATH_2_MUL_PI;
     }
-
-    const double sinThetaSun = sin(thetaSun);
-    const double cosThetaSun = cos(thetaSun);
-    const double sinPhiSun = sin(phiSun);
-    const double cosPhiSun = cos(phiSun);
-
-    directionToSun.x = sinThetaSun * sinPhiSun;
-    directionToSun.y = cosThetaSun;
-    directionToSun.z = sinThetaSun * cosPhiSun;
 }
 
-- (void) render
+@end
+
+
+@implementation ODPreethamSkylight
+
+- (id) init
 {
-	double ABCDE_x[5], ABCDE_y[5], ABCDE_Y[5];
+    return [ self initWithName:@"ODPreethamSkylight" ];
+}
 
-	ABCDE_x[0] = -0.01925 * turbidity - 0.25922;
-	ABCDE_x[1] = -0.06651 * turbidity + 0.00081;
-	ABCDE_x[2] = -0.00041 * turbidity + 0.21247;
-	ABCDE_x[3] = -0.06409 * turbidity - 0.89887;
-	ABCDE_x[4] = -0.00325 * turbidity + 0.04517;
+- (id) initWithName:(NSString *)newName
+{
+    self =  [ super initWithName:newName ];
 
-	ABCDE_y[0] = -0.01669 * turbidity - 0.26078;
-	ABCDE_y[1] = -0.09495 * turbidity + 0.00921;
-	ABCDE_y[2] = -0.00792 * turbidity + 0.21023;
-	ABCDE_y[3] = -0.04405 * turbidity - 1.65369;
-	ABCDE_y[4] = -0.01092 * turbidity + 0.05291;
+    sunZenithDistanceIncreaseAction
+        = [[[ NP Input ] inputActions ]
+                addInputActionWithName:@"SunZenithDistanceIncrease" inputEvent:NpKeyboardKeypad2 ];
 
-	ABCDE_Y[0] =  0.17872 * turbidity - 1.46303;
-	ABCDE_Y[1] = -0.35540 * turbidity + 0.42749;
-	ABCDE_Y[2] = -0.02266 * turbidity + 5.32505;
-	ABCDE_Y[3] =  0.12064 * turbidity - 2.57705;
-	ABCDE_Y[4] = -0.06696 * turbidity + 0.37027;
+    sunZenithDistanceDecreaseAction
+        = [[[ NP Input ] inputActions ]
+                addInputActionWithName:@"SunZenithDistanceDecrease" inputEvent:NpKeyboardKeypad8 ];
 
-    Vector3 denominator;
-    denominator.x = digamma(0.0, thetaSun, ABCDE_x);
-    denominator.y = digamma(0.0, thetaSun, ABCDE_y);
-    denominator.z = digamma(0.0, thetaSun, ABCDE_Y);
+    sunAzimuthIncreaseAction
+        = [[[ NP Input ] inputActions ]
+                addInputActionWithName:@"SunAzimuthIncrease" inputEvent:NpKeyboardKeypad4 ];
 
-    Vector3 zenithColor = preetham_zenith_color(turbidity, thetaSun);
+    sunAzimuthDecreaseAction
+        = [[[ NP Input ] inputActions ]
+                addInputActionWithName:@"SunAzimuthDecrease" inputEvent:NpKeyboardKeypad6 ];
 
-    const FVector3 A = { ABCDE_x[0], ABCDE_y[0], ABCDE_Y[0] };
-    const FVector3 B = { ABCDE_x[1], ABCDE_y[1], ABCDE_Y[1] };
-    const FVector3 C = { ABCDE_x[2], ABCDE_y[2], ABCDE_Y[2] };
-    const FVector3 D = { ABCDE_x[3], ABCDE_y[3], ABCDE_Y[3] };
-    const FVector3 E = { ABCDE_x[4], ABCDE_y[4], ABCDE_Y[4] };
+    lastTurbidity = lastThetaSun = lastPhiSun = DBL_MAX;
 
-    [ A_Yxy_P setFValue:A ];
-    [ B_Yxy_P setFValue:B ];
-    [ C_Yxy_P setFValue:C ];
-    [ D_Yxy_P setFValue:D ];
-    [ E_Yxy_P setFValue:E ];
-    //[ zenithColor_P setFValue:zenithColor ];
-    //[ lighDirection_P setFValue:lightDirection ];
+    // turbidity must be in the range 2 - 6
+    turbidity = 2.0;
+
+    // thetaSun range 0 ... PI/2
+    thetaSun = MATH_PI_DIV_4;
+
+    // phi range 0 ... 2*PI
+    phiSun = 0.0;
+
+    directionToSun = v3_zero();
+
+    return self;
+}
+
+- (void) dealloc
+{
+    [[[ NP Input ] inputActions ] removeInputAction:sunZenithDistanceIncreaseAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:sunZenithDistanceDecreaseAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:sunAzimuthIncreaseAction ];
+    [[[ NP Input ] inputActions ] removeInputAction:sunAzimuthDecreaseAction ];
+
+    [ super dealloc ];
+}
+
+- (Vector3) directionToSun
+{
+    return directionToSun;
+}
+
+- (void) update:(double)frameTime
+{
+    [ self updateInput:frameTime ];
+
+    if ( turbidity != lastTurbidity
+         || thetaSun != lastThetaSun || phiSun != lastPhiSun )
+    {
+	    double ABCDE_x[5], ABCDE_y[5], ABCDE_Y[5];
+
+	    ABCDE_x[0] = -0.01925 * turbidity - 0.25922;
+	    ABCDE_x[1] = -0.06651 * turbidity + 0.00081;
+	    ABCDE_x[2] = -0.00041 * turbidity + 0.21247;
+	    ABCDE_x[3] = -0.06409 * turbidity - 0.89887;
+	    ABCDE_x[4] = -0.00325 * turbidity + 0.04517;
+
+	    ABCDE_y[0] = -0.01669 * turbidity - 0.26078;
+	    ABCDE_y[1] = -0.09495 * turbidity + 0.00921;
+	    ABCDE_y[2] = -0.00792 * turbidity + 0.21023;
+	    ABCDE_y[3] = -0.04405 * turbidity - 1.65369;
+	    ABCDE_y[4] = -0.01092 * turbidity + 0.05291;
+
+	    ABCDE_Y[0] =  0.17872 * turbidity - 1.46303;
+	    ABCDE_Y[1] = -0.35540 * turbidity + 0.42749;
+	    ABCDE_Y[2] = -0.02266 * turbidity + 5.32505;
+	    ABCDE_Y[3] =  0.12064 * turbidity - 2.57705;
+	    ABCDE_Y[4] = -0.06696 * turbidity + 0.37027;
+
+        Vector3 zenithColor = preetham_zenith_color(turbidity, thetaSun);
+
+        Vector3 denominator;
+        denominator.x = digamma(0.0, thetaSun, ABCDE_x);
+        denominator.y = digamma(0.0, thetaSun, ABCDE_y);
+        denominator.z = digamma(0.0, thetaSun, ABCDE_Y);
+
+        const double sinThetaSun = sin(thetaSun);
+        const double cosThetaSun = cos(thetaSun);
+        const double sinPhiSun = sin(phiSun);
+        const double cosPhiSun = cos(phiSun);
+
+        directionToSun.x = sinThetaSun * sinPhiSun;
+        directionToSun.y = cosThetaSun;
+        directionToSun.z = sinThetaSun * cosPhiSun;
+
+        /*
+        const FVector3 A = { ABCDE_x[0], ABCDE_y[0], ABCDE_Y[0] };
+        const FVector3 B = { ABCDE_x[1], ABCDE_y[1], ABCDE_Y[1] };
+        const FVector3 C = { ABCDE_x[2], ABCDE_y[2], ABCDE_Y[2] };
+        const FVector3 D = { ABCDE_x[3], ABCDE_y[3], ABCDE_Y[3] };
+        const FVector3 E = { ABCDE_x[4], ABCDE_y[4], ABCDE_Y[4] };
+
+        [ A_Yxy_P setFValue:A ];
+        [ B_Yxy_P setFValue:B ];
+        [ C_Yxy_P setFValue:C ];
+        [ D_Yxy_P setFValue:D ];
+        [ E_Yxy_P setFValue:E ];
+        //[ zenithColor_P setFValue:zenithColor ];
+        //[ lighDirection_P setFValue:lightDirection ];
+        */
+
+        lastTurbidity = turbidity;
+        lastThetaSun  = thetaSun;
+        lastPhiSun    = phiSun;
+    }
 }
 
 @end
