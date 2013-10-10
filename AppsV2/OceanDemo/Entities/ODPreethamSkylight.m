@@ -66,8 +66,6 @@
     [[[ NP Input ] inputActions ] removeInputAction:sunAzimuthIncreaseAction ];
     [[[ NP Input ] inputActions ] removeInputAction:sunAzimuthDecreaseAction ];
 
-    SAFE_DESTROY(camera);
-
     [ super dealloc ];
 }
 
@@ -105,11 +103,6 @@
 - (FVector3) lightDirection
 {
     return lightDirection;
-}
-
-- (void) setCamera:(ODCamera *)newCamera
-{
-    ASSIGN(camera, newCamera);
 }
 
 - (void) update:(const double)frameTime
@@ -250,12 +243,6 @@
     XYZ[2] = 0.0193339 * RGB[0] + 0.1191920 * RGB[1] + 0.9503041 * RGB[2];
 
     //NSLog(@"2: %f %f %f", XYZ[0], XYZ[1], XYZ[2]);
-
-    Vector3 p = [ camera position ];
-    position.x = p.x;
-    position.y = p.y;
-    position.z = p.z;
-    position.y -= 2.0f;
 }
 
 - (void) render
