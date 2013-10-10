@@ -242,6 +242,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     iwave = [[ ODIWave alloc ] init ];
     ocean = [[ ODOceanEntity alloc ] initWithName:@"Ocean" ];
+    skylight = [[ ODPreethamSkylight alloc ] init ];
     projectedGrid = [[ ODProjectedGrid alloc ] initWithName:@"ProjGrid" ];
 
     // camera animation
@@ -419,15 +420,10 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     NSDictionary * sceneContents
         = [ NSDictionary dictionaryWithContentsOfFile:absoluteFileName ];
 
-    NSString * sceneName          = [ sceneContents objectForKey:@"Name"     ];
-    NSString * skylightEntityFile = [ sceneContents objectForKey:@"Skylight" ];
-    NSArray  * entityFiles        = [ sceneContents objectForKey:@"Entities" ];
+    NSString * sceneName   = [ sceneContents objectForKey:@"Name"     ];
+    NSArray  * entityFiles = [ sceneContents objectForKey:@"Entities" ];
 
     [ self setName:sceneName ];
-
-    skylight = [ self loadEntityFromFile:skylightEntityFile error:NULL ];
-
-    ASSERT_RETAIN(skylight);
 
     [ ocean setCamera:camera ];
 
