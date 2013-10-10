@@ -429,8 +429,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     ASSERT_RETAIN(skylight);
 
-    [ skylight  setCamera:camera ];
-    [ ocean     setCamera:camera ];
+    [ ocean setCamera:camera ];
 
     //[ projectedGrid setProjector:[ ocean projector ]];
     [ projectedGrid setProjector:testProjector ];

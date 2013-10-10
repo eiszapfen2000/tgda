@@ -12,7 +12,6 @@
 
 @interface ODPreethamSkylight : ODEntity
 {
-    ODCamera * camera;
     NPInputAction * sunZenithDistanceIncreaseAction;
     NPInputAction * sunZenithDistanceDecreaseAction;
     NPInputAction * sunAzimuthIncreaseAction;
@@ -40,7 +39,6 @@
 - (void) dealloc;
 
 - (FVector3) lightDirection;
-- (void) setCamera:(ODCamera *)newCamera;
 
 @end
 
