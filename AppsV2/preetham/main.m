@@ -389,7 +389,9 @@ int main (int argc, char **argv)
         }
 
         thetaSun = MIN(thetaSun, MATH_PI_DIV_2);
-        thetaSun = MAX(thetaSun, 0.1);
+        thetaSun = MAX(thetaSun, 0.0);
+
+        NSLog(@"phi:%lf theta:%lf", phiSun * MATH_RAD_TO_DEG, thetaSun * MATH_RAD_TO_DEG);
 
         //
         const double maxThetaRadius = halfSkyResolution;
@@ -399,9 +401,15 @@ int main (int argc, char **argv)
         const double cosPhiSun = cos(phiSun);
 
         Vector3 directionToSun;
+        /*
         directionToSun.x = maxThetaRadius * sinThetaSun * cosPhiSun;
         directionToSun.y = maxThetaRadius * sinThetaSun * sinPhiSun;
         directionToSun.z = maxThetaRadius * cosThetaSun;
+        */
+        directionToSun.x = maxThetaRadius * sinThetaSun * sinPhiSun;
+        directionToSun.y = maxThetaRadius * cosThetaSun;
+        directionToSun.z = maxThetaRadius * sinThetaSun * cosPhiSun;
+
         Vector3 directionToSunNormalised = v3_v_normalised(&directionToSun);
 
         // Preetham Skylight Zenith color
