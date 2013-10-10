@@ -15,8 +15,59 @@
 #import "Input/NPInputActions.h"
 #import "Input/NPEngineInput.h"
 #import "NP.h"
-#import "ODCamera.h"
 #import "ODPreethamSkylight.h"
+
+static Vector3 preetham_zenith_color(double turbidity, double thetaSun)
+{
+    // zenith color computation
+    // A Practical Analytic Model for Daylight                              
+    // page 22/23    
+
+    #define CBQ(X)		((X) * (X) * (X))
+    #define SQR(X)		((X) * (X))
+
+    Vector3 zenithColor;
+
+    zenithColor.x
+        = ( 0.00166 * CBQ(thetaSun) - 0.00375  * SQR(thetaSun) +
+            0.00209 * thetaSun + 0.0f) * SQR(turbidity) +
+          (-0.02903 * CBQ(thetaSun) + 0.06377  * SQR(thetaSun) -
+            0.03202 * thetaSun  + 0.00394) * turbidity +
+          ( 0.11693 * CBQ(thetaSun) - 0.21196  * SQR(thetaSun) +
+            0.06052 * thetaSun + 0.25886);
+
+    zenithColor.y
+        = ( 0.00275 * CBQ(thetaSun) - 0.00610  * SQR(thetaSun) +
+            0.00317 * thetaSun + 0.0) * SQR(turbidity) +
+          (-0.04214 * CBQ(thetaSun) + 0.08970  * SQR(thetaSun) -
+            0.04153 * thetaSun  + 0.00516) * turbidity  +
+          ( 0.15346 * CBQ(thetaSun) - 0.26756  * SQR(thetaSun) +
+            0.06670 * thetaSun  + 0.26688);
+
+    zenithColor.z
+        = (4.0453 * turbidity - 4.9710) * 
+          tan((4.0 / 9.0 - turbidity / 120.0) * (MATH_PI - 2.0 * thetaSun))
+          - 0.2155 * turbidity + 2.4192;
+
+    // convert kcd/m² to cd/m²
+    zenithColor.z *= 1000.0;
+
+    #undef SQR
+    #undef CBQ
+
+    return zenithColor;
+}
+
+static double digamma(double theta, double gamma, double ABCDE[5])
+{
+    const double cosTheta = cos(theta);
+    const double cosGamma = cos(gamma);
+
+    const double term_one = 1.0 + ABCDE[0] * exp(ABCDE[1] / cosTheta);
+    const double term_two = 1.0 + ABCDE[2] * exp(ABCDE[3] * gamma) + (ABCDE[4] * cosGamma * cosGamma);
+
+    return term_one * term_two;
+}
 
 
 @implementation ODPreethamSkylight
@@ -66,9 +117,9 @@
     [ super dealloc ];
 }
 
-- (FVector3) lightDirection
+- (Vector3) directionToSun
 {
-    return fv3_zero();
+    return directionToSun;
 }
 
 - (void) update:(const double)frameTime
@@ -96,7 +147,6 @@
 
     thetaSun = MIN(MAX(0.0, thetaSun), MATH_PI_DIV_2);
 
-
     if ( phiSun > MATH_2_MUL_PI )
     {
         phiSun -= MATH_2_MUL_PI;
@@ -112,45 +162,9 @@
     const double sinPhiSun = sin(phiSun);
     const double cosPhiSun = cos(phiSun);
 
-    Vector3 directionToSun;
     directionToSun.x = sinThetaSun * sinPhiSun;
     directionToSun.y = cosThetaSun;
     directionToSun.z = sinThetaSun * cosPhiSun;
-
-    // zenith color computation
-    // A Practical Analytic Model for Daylight
-    // page 22/23    
-
-    #define CBQ(X)		((X) * (X) * (X))
-    #define SQR(X)		((X) * (X))
-
-    Vector3 zenithColor;
-    zenithColor.x
-        = ( 0.00165 * CBQ(thetaSun) - 0.00374  * SQR(thetaSun) +
-            0.00208 * thetaSun + 0.0f) * SQR(turbidity) +
-          (-0.02902 * CBQ(thetaSun) + 0.06377  * SQR(thetaSun) -
-            0.03202 * thetaSun  + 0.00394) * turbidity +
-          ( 0.11693 * CBQ(thetaSun) - 0.21196  * SQR(thetaSun) +
-            0.06052 * thetaSun + 0.25885);
-
-    zenithColor.y
-        = ( 0.00275 * CBQ(thetaSun) - 0.00610  * SQR(thetaSun) +
-            0.00316 * thetaSun + 0.0) * SQR(turbidity) +
-          (-0.04214 * CBQ(thetaSun) + 0.08970  * SQR(thetaSun) -
-            0.04153 * thetaSun  + 0.00515) * turbidity  +
-          ( 0.15346 * CBQ(thetaSun) - 0.26756  * SQR(thetaSun) +
-            0.06669 * thetaSun  + 0.26688);
-
-    zenithColor.z
-        = (4.0453 * turbidity - 4.9710) * 
-          tan((4.0 / 9.0 - turbidity / 120.0) * (M_PI - 2.0 * thetaSun))
-          - 0.2155 * turbidity + 2.4192;
-
-	// convert kcd/m² to cd/m²
-	zenithColor.z *= 1000.0f;
-
-    #undef SQR
-    #undef CBQ
 }
 
 - (void) render
@@ -174,6 +188,13 @@
 	ABCDE_Y[2] = -0.02266 * turbidity + 5.32505;
 	ABCDE_Y[3] =  0.12064 * turbidity - 2.57705;
 	ABCDE_Y[4] = -0.06696 * turbidity + 0.37027;
+
+    Vector3 denominator;
+    denominator.x = digamma(0.0, thetaSun, ABCDE_x);
+    denominator.y = digamma(0.0, thetaSun, ABCDE_y);
+    denominator.z = digamma(0.0, thetaSun, ABCDE_Y);
+
+    Vector3 zenithColor = preetham_zenith_color(turbidity, thetaSun);
 
     const FVector3 A = { ABCDE_x[0], ABCDE_y[0], ABCDE_Y[0] };
     const FVector3 B = { ABCDE_x[1], ABCDE_y[1], ABCDE_Y[1] };
