@@ -71,13 +71,13 @@ static double digamma(double theta, double gamma, double ABCDE[5])
 
 @interface ODPreethamSkylight (Private)
 
-- (void) updateInput:(double)frameTime;
+- (void) processInput:(double)frameTime;
 
 @end
 
 @implementation ODPreethamSkylight (Private)
 
-- (void) updateInput:(double)frameTime
+- (void) processInput:(double)frameTime
 {
     if ( [ sunZenithDistanceIncreaseAction active ] == YES )
     {
@@ -175,7 +175,7 @@ static double digamma(double theta, double gamma, double ABCDE[5])
 
 - (void) update:(double)frameTime
 {
-    [ self updateInput:frameTime ];
+    [ self processInput:frameTime ];
 
     if ( turbidity != lastTurbidity
          || thetaSun != lastThetaSun || phiSun != lastPhiSun )
@@ -235,6 +235,8 @@ static double digamma(double theta, double gamma, double ABCDE[5])
         lastTurbidity = turbidity;
         lastThetaSun  = thetaSun;
         lastPhiSun    = phiSun;
+
+        //NSLog(@"%lf %lf", thetaSun, phiSun);
     }
 }
 
