@@ -46,15 +46,12 @@
         = [[[ NP Input ] inputActions ]
                 addInputActionWithName:@"SunAzimuthDecrease" inputEvent:NpKeyboardKeypad6 ];
 
-    thetaSunDegrees = 45.0f;
-    phiSunDegrees = 0.0f;
-
-    fv2_v_init_with_zeros(&sunTheta);
-    fv3_v_init_with_zeros(&lightDirection);
-    fv3_v_init_with_zeros(&zenithColor);
-
     // turbidity must be in the range 2 - 6
-    turbidity = 4.0f;
+    turbidity = 2.0;
+
+    // thetaSun must be between 0 and PI/2
+    thetaSun = MATH_PI_DIV_4;
+    phiSun = 0.0;
 
     return self;
 }
@@ -69,40 +66,9 @@
     [ super dealloc ];
 }
 
-- (BOOL) loadFromDictionary:(NSDictionary *)config
-                      error:(NSError **)error
-{
-    BOOL result
-        = [ super loadFromDictionary:config
-                               error:error ];
-
-    if ( result == NO )
-    {
-        return NO;
-    }
-
-
-    NPSUX2MaterialInstance * mInstance = [ model materialInstanceAtIndex:0 ];
-    NPEffect * effect = [ mInstance effect ];
-    NPEffectTechnique * technique
-        = [ effect techniqueWithName:[ mInstance techniqueName ]];
-
-    NSAssert(technique != nil, @"");
-
-    A_Yxy_P = [ effect variableWithName:@"AColor" ];
-    B_Yxy_P = [ effect variableWithName:@"BColor" ];
-    C_Yxy_P = [ effect variableWithName:@"CColor" ];
-    D_Yxy_P = [ effect variableWithName:@"DColor" ];
-    E_Yxy_P = [ effect variableWithName:@"EColor" ];
-    zenithColor_P = [ effect variableWithName:@"ZenithColor" ];
-    lighDirection_P = [ effect variableWithName:@"DirectionToSun" ];
-
-    return YES;
-}
-
 - (FVector3) lightDirection
 {
-    return lightDirection;
+    return fv3_zero();
 }
 
 - (void) update:(const double)frameTime
@@ -110,55 +76,46 @@
 
     if ( [ sunZenithDistanceIncreaseAction active ] == YES )
     {
-        thetaSunDegrees += (25.0f * frameTime);
+        thetaSun += (MATH_DEG_TO_RAD * 25.0 * frameTime);
     }
 
     if ( [ sunZenithDistanceDecreaseAction active ] == YES )
     {
-        thetaSunDegrees -= (25.0f * frameTime);
+        thetaSun -= (MATH_DEG_TO_RAD * 25.0 * frameTime);
     }
 
     if ( [ sunAzimuthIncreaseAction active ] == YES )
     {
-        phiSunDegrees += (25.0f * frameTime);
+        phiSun += (MATH_DEG_TO_RAD * 25.0 * frameTime);
     }
 
     if ( [ sunAzimuthDecreaseAction active ] == YES )
     {
-        phiSunDegrees -= (25.0f * frameTime);
+        phiSun -= (MATH_DEG_TO_RAD * 25.0 * frameTime);
     }
 
-    if ( thetaSunDegrees < 0.0f )
+    thetaSun = MIN(MAX(0.0, thetaSun), MATH_PI_DIV_2);
+
+
+    if ( phiSun > MATH_2_MUL_PI )
     {
-        thetaSunDegrees = 0.0f;
+        phiSun -= MATH_2_MUL_PI;
     }
 
-    if (thetaSunDegrees > 90.0f)
+    if ( phiSun < 0.0f )
     {
-        thetaSunDegrees = 90.0f;
+        phiSun += MATH_2_MUL_PI;
     }
 
-    if ( phiSunDegrees > 360.0f )
-    {
-        phiSunDegrees -= 360.0f;
-    }
+    const double sinThetaSun = sin(thetaSun);
+    const double cosThetaSun = cos(thetaSun);
+    const double sinPhiSun = sin(phiSun);
+    const double cosPhiSun = cos(phiSun);
 
-    if ( phiSunDegrees < 0.0f )
-    {
-        phiSunDegrees += 360.0f;
-    }
-
-    const double thetaSunAngle = DEGREE_TO_RADIANS(thetaSunDegrees);
-    const double phiSunAngle   = DEGREE_TO_RADIANS(phiSunDegrees);
-
-    const double sinThetaSun = sin(thetaSunAngle);
-    const double cosThetaSun = cos(thetaSunAngle);
-    const double sinPhiSun = sin(phiSunAngle);
-    const double cosPhiSun = cos(phiSunAngle);
-
-    lightDirection.x = sinThetaSun * sinPhiSun;
-    lightDirection.y = cosThetaSun;
-    lightDirection.z = sinThetaSun * cosPhiSun;
+    Vector3 directionToSun;
+    directionToSun.x = sinThetaSun * sinPhiSun;
+    directionToSun.y = cosThetaSun;
+    directionToSun.z = sinThetaSun * cosPhiSun;
 
     // zenith color computation
     // A Practical Analytic Model for Daylight
@@ -167,25 +124,26 @@
     #define CBQ(X)		((X) * (X) * (X))
     #define SQR(X)		((X) * (X))
 
+    Vector3 zenithColor;
     zenithColor.x
-        = ( 0.00165 * CBQ(thetaSunAngle) - 0.00374  * SQR(thetaSunAngle) +
-            0.00208 * thetaSunAngle + 0.0f) * SQR(turbidity) +
-          (-0.02902 * CBQ(thetaSunAngle) + 0.06377  * SQR(thetaSunAngle) -
-            0.03202 * thetaSunAngle  + 0.00394) * turbidity +
-          ( 0.11693 * CBQ(thetaSunAngle) - 0.21196  * SQR(thetaSunAngle) +
-            0.06052 * thetaSunAngle + 0.25885);
+        = ( 0.00165 * CBQ(thetaSun) - 0.00374  * SQR(thetaSun) +
+            0.00208 * thetaSun + 0.0f) * SQR(turbidity) +
+          (-0.02902 * CBQ(thetaSun) + 0.06377  * SQR(thetaSun) -
+            0.03202 * thetaSun  + 0.00394) * turbidity +
+          ( 0.11693 * CBQ(thetaSun) - 0.21196  * SQR(thetaSun) +
+            0.06052 * thetaSun + 0.25885);
 
     zenithColor.y
-        = ( 0.00275 * CBQ(thetaSunAngle) - 0.00610  * SQR(thetaSunAngle) +
-            0.00316 * thetaSunAngle + 0.0) * SQR(turbidity) +
-          (-0.04214 * CBQ(thetaSunAngle) + 0.08970  * SQR(thetaSunAngle) -
-            0.04153 * thetaSunAngle  + 0.00515) * turbidity  +
-          ( 0.15346 * CBQ(thetaSunAngle) - 0.26756  * SQR(thetaSunAngle) +
-            0.06669 * thetaSunAngle  + 0.26688);
+        = ( 0.00275 * CBQ(thetaSun) - 0.00610  * SQR(thetaSun) +
+            0.00316 * thetaSun + 0.0) * SQR(turbidity) +
+          (-0.04214 * CBQ(thetaSun) + 0.08970  * SQR(thetaSun) -
+            0.04153 * thetaSun  + 0.00515) * turbidity  +
+          ( 0.15346 * CBQ(thetaSun) - 0.26756  * SQR(thetaSun) +
+            0.06669 * thetaSun  + 0.26688);
 
     zenithColor.z
         = (4.0453 * turbidity - 4.9710) * 
-          tan((4.0 / 9.0 - turbidity / 120.0) * (M_PI - 2.0 * thetaSunAngle))
+          tan((4.0 / 9.0 - turbidity / 120.0) * (M_PI - 2.0 * thetaSun))
           - 0.2155 * turbidity + 2.4192;
 
 	// convert kcd/m² to cd/m²
@@ -193,56 +151,6 @@
 
     #undef SQR
     #undef CBQ
-
-    // max skylight luminance (right at sun position)
-    // A Practical Analytic Model for Daylight
-    // page 9
-    //             F(thetaSunAngle, 0)
-    // Ymax = Yz ----------------------
-    //             F(0, thetaSunAngle)
-
-    double ABCDE_Y[5];
-
-	ABCDE_Y[0] =  0.17872 * turbidity - 1.46303;
-	ABCDE_Y[1] = -0.35540 * turbidity + 0.42749;
-	ABCDE_Y[2] = -0.02266 * turbidity + 5.32505;
-	ABCDE_Y[3] =  0.12064 * turbidity - 2.57705;
-	ABCDE_Y[4] = -0.06696 * turbidity + 0.37027;
-
-    const double numerator
-        = ( 1.0 + ABCDE_Y[0] * exp( ABCDE_Y[1] / cosThetaSun )) * ( 1.0 + ABCDE_Y[2] + ABCDE_Y[4] );
-
-    const double denominator
-        = ( 1.0 + ABCDE_Y[0] * exp( ABCDE_Y[1] )) * ( 1.0 + ABCDE_Y[2] * exp( ABCDE_Y[3] * thetaSunAngle) + ABCDE_Y[4] * cosThetaSun * cosThetaSun);
-
-    const double factor = numerator / denominator;
-
-    double xyY[3];
-    xyY[0] = zenithColor.x * factor;
-    xyY[1] = zenithColor.y * factor;
-    xyY[2] = zenithColor.z * factor;
-
-    double XYZ[3];
-    XYZ[0] = (xyY[0] / xyY[1]) * xyY[2];
-    XYZ[1] = xyY[2];
-    XYZ[2] = ((1.0 - xyY[0] - xyY[1]) / xyY[1]) * xyY[2];
-
-    //NSLog(@"1: %f %f %f", XYZ[0], XYZ[1], XYZ[2]);
-
-    double RGB[3];
-    RGB[0] =  3.2404542 * XYZ[0] - 1.5371385 * XYZ[1] - 0.4985314 * XYZ[2];
-    RGB[1] = -0.9692660 * XYZ[0] + 1.8760108 * XYZ[1] + 0.0415560 * XYZ[2];
-    RGB[2] =  0.0556434 * XYZ[0] - 0.2040259 * XYZ[1] + 1.0572252 * XYZ[2];
-
-    RGB[0] *= 0.00025f;
-    RGB[1] *= 0.00025f;
-    RGB[2] *= 0.00025f;
-
-    XYZ[0] = 0.4124564 * RGB[0] + 0.3575761 * RGB[1] + 0.1804375 * RGB[2];
-    XYZ[1] = 0.2126729 * RGB[0] + 0.7151522 * RGB[1] + 0.0721750 * RGB[2];
-    XYZ[2] = 0.0193339 * RGB[0] + 0.1191920 * RGB[1] + 0.9503041 * RGB[2];
-
-    //NSLog(@"2: %f %f %f", XYZ[0], XYZ[1], XYZ[2]);
 }
 
 - (void) render
@@ -278,12 +186,8 @@
     [ C_Yxy_P setFValue:C ];
     [ D_Yxy_P setFValue:D ];
     [ E_Yxy_P setFValue:E ];
-    [ zenithColor_P setFValue:zenithColor ];
-    [ lighDirection_P setFValue:lightDirection ];
-
-    fm4_mv_translation_matrix(&modelMatrix, &position);
-    [[[ NPEngineCore instance ] transformationState ] setFModelMatrix:&modelMatrix ];
-    [ model renderLOD:0 withMaterial:YES ];
+    //[ zenithColor_P setFValue:zenithColor ];
+    //[ lighDirection_P setFValue:lightDirection ];
 }
 
 @end
