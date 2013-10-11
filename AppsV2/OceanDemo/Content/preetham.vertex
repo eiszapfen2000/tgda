@@ -1,40 +1,9 @@
 #version 150
-#extension GL_ARB_explicit_attrib_location : enable
 
-layout(location = 0) in vec3 position;
-layout(location = 1) in vec3 normal;
-
-out vec4 colorOut;
-
-const mat3 XYZ2LinearsRGB
-    = mat3( 3.2404542f, -0.9692660f,  0.0556434f,
-           -1.5371385f,  1.8760108f, -0.2040259f,
-           -0.4985314f,  0.0415560f,  1.0572252f );
+out vec2 out_texcoords;
 
 void main()
 {
-    float cosTheta = dot(vec3(0.0f, 1.0f, 0.0f), normal);
-    float cosThetaSun = dot(vec3(0.0f, 1.0f, 0.0f), DirectionToSun);
-    float cos2ThetaSun = cosThetaSun * cosThetaSun;
-    float thetaSun = acos(cosThetaSun);
-
-    float cosGamma = dot(DirectionToSun, normal);
-    float cos2Gamma = cosGamma * cosGamma;
-    float gamma = acos(cosGamma);
-
-    vec3 numerator   = (1.0f + AColor * exp( BColor / cosTheta )) * (1.0f + CColor * exp( DColor * gamma ) + EColor * cos2Gamma);
-    vec3 denominator = (1.0f + AColor * exp( BColor )) * (1.0f + CColor * exp( DColor * thetaSun ) + EColor * cos2ThetaSun);
-    vec3 xyY = ZenithColor * (numerator / denominator);
-
-    vec3 XYZ;
-    XYZ.x = (xyY.x / xyY.y) * xyY.z;
-    XYZ.y = xyY.z;
-    XYZ.z = ((1.0f - xyY.x - xyY.y) / xyY.y) * xyY.z;
-
-    colorOut = vec4(XYZ2LinearsRGB * XYZ, 1.0f);
-
-    // REMOVE THE FOLLOWING LINE
-    colorOut.rgb *= 0.00025f;
-
-	gl_Position = np_modelviewprojectionmatrix * vec4(position.xyz, 1.0f);
+    out_texcoords = in_texcoords;
+	gl_Position = vec4(in_position.x, in_position.y, 0.0, 1.0);
 }

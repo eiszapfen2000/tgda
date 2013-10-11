@@ -3,7 +3,10 @@
 
 @class NPEffect;
 @class NPEffectTechnique;
+@class NPEffectVariableFloat;
 @class NPEffectVariableFloat3;
+@class NPRenderTargetConfiguration;
+@class NPRenderTexture;
 @class NPInputAction;
 
 @interface ODPreethamSkylight : NPObject
@@ -21,13 +24,21 @@
     double phiSun;
     Vector3 directionToSun;
 
-    NPEffectVariableFloat3 * A_Yxy_P;
-    NPEffectVariableFloat3 * B_Yxy_P;
-    NPEffectVariableFloat3 * C_Yxy_P;
-    NPEffectVariableFloat3 * D_Yxy_P;
-    NPEffectVariableFloat3 * E_Yxy_P;
+    NPRenderTargetConfiguration * rtc;
+    NPRenderTexture * skylightTarget;
+
+    int32_t lastSkylightResolution;
+    int32_t skylightResolution;
+
+    NPEffect * effect;
+    NPEffectTechnique * preetham;
+    NPEffectVariableFloat3 * A_xyY_P;
+    NPEffectVariableFloat3 * B_xyY_P;
+    NPEffectVariableFloat3 * C_xyY_P;
+    NPEffectVariableFloat3 * D_xyY_P;
+    NPEffectVariableFloat3 * E_xyY_P;
     NPEffectVariableFloat3 * zenithColor_P;
-    NPEffectVariableFloat3 * lighDirection_P;
+    NPEffectVariableFloat3 * directionToSun_P;
     NPEffectVariableFloat3 * denominator_P;
     NPEffectVariableFloat  * radiusForMaxTheta_P;
 }

@@ -8,9 +8,8 @@
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
-#import "Graphics/Model/NPSUX2Model.h"
-#import "Graphics/Model/NPSUX2MaterialInstance.h"
-#import "Graphics/State/NPStateSet.h"
+#import "Graphics/RenderTarget/NPRenderTargetConfiguration.h"
+#import "Graphics/RenderTarget/NPRenderTexture.h"
 #import "Input/NPInputAction.h"
 #import "Input/NPInputActions.h"
 #import "Input/NPEngineInput.h"
@@ -72,6 +71,7 @@ static double digamma(double theta, double gamma, double ABCDE[5])
 @interface ODPreethamSkylight (Private)
 
 - (void) processInput:(double)frameTime;
+- (BOOL) generateRenderTarget:(NSError **)error;
 
 @end
 
@@ -110,6 +110,18 @@ static double digamma(double theta, double gamma, double ABCDE[5])
     {
         phiSun += MATH_2_MUL_PI;
     }
+}
+
+- (BOOL) generateRenderTarget:(NSError **)error
+{
+    return 
+        [ skylightTarget generate:NpRenderTargetColor
+                            width:skylightResolution
+                           height:skylightResolution
+                      pixelFormat:NpTexturePixelFormatRGBA
+                       dataFormat:NpTextureDataFormatFloat16
+                    mipmapStorage:NO
+                            error:error ];
 }
 
 @end
@@ -155,11 +167,42 @@ static double digamma(double theta, double gamma, double ABCDE[5])
 
     directionToSun = v3_zero();
 
+    rtc = [[ NPRenderTargetConfiguration alloc] initWithName:@"Preetham RTC" ];
+    skylightTarget = [[ NPRenderTexture alloc ] initWithName:@"Skylight Target" ];
+
+    lastSkylightResolution = INT_MAX;
+    skylightResolution = 1024;
+
+    effect = [[[ NP Graphics ] effects ] getAssetWithFileName:@"preetham.effect" ];
+    ASSERT_RETAIN(effect);
+    preetham = [ effect techniqueWithName:@"preetham" ];
+    ASSERT_RETAIN(preetham);
+
+    radiusForMaxTheta_P = [ effect variableWithName:@"radiusForMaxTheta" ];
+    directionToSun_P    = [ effect variableWithName:@"directionToSun"    ];
+    zenithColor_P       = [ effect variableWithName:@"zenithColor"       ];
+    denominator_P       = [ effect variableWithName:@"denominator"       ];
+
+    A_xyY_P = [ effect variableWithName:@"A" ];
+    B_xyY_P = [ effect variableWithName:@"B" ];
+    C_xyY_P = [ effect variableWithName:@"C" ];
+    D_xyY_P = [ effect variableWithName:@"D" ];
+    E_xyY_P = [ effect variableWithName:@"E" ];
+
+    NSAssert(radiusForMaxTheta_P != nil && directionToSun_P != nil
+             && zenithColor_P != nil && denominator_P != nil && A_xyY_P != nil
+             && B_xyY_P != nil && C_xyY_P != nil && D_xyY_P != nil && E_xyY_P != nil, @"");
+
     return self;
 }
 
 - (void) dealloc
 {
+    DESTROY(skylightTarget);
+    DESTROY(rtc);
+    DESTROY(preetham);
+    DESTROY(effect);
+
     [[[ NP Input ] inputActions ] removeInputAction:sunZenithDistanceIncreaseAction ];
     [[[ NP Input ] inputActions ] removeInputAction:sunZenithDistanceDecreaseAction ];
     [[[ NP Input ] inputActions ] removeInputAction:sunAzimuthIncreaseAction ];
@@ -177,8 +220,8 @@ static double digamma(double theta, double gamma, double ABCDE[5])
 {
     [ self processInput:frameTime ];
 
-    if ( turbidity != lastTurbidity
-         || thetaSun != lastThetaSun || phiSun != lastPhiSun )
+    if ( turbidity != lastTurbidity || thetaSun != lastThetaSun
+         || phiSun != lastPhiSun || skylightResolution != lastSkylightResolution )
     {
 	    double ABCDE_x[5], ABCDE_y[5], ABCDE_Y[5];
 
@@ -216,25 +259,69 @@ static double digamma(double theta, double gamma, double ABCDE[5])
         directionToSun.y = cosThetaSun;
         directionToSun.z = sinThetaSun * cosPhiSun;
 
-        /*
-        const FVector3 A = { ABCDE_x[0], ABCDE_y[0], ABCDE_Y[0] };
-        const FVector3 B = { ABCDE_x[1], ABCDE_y[1], ABCDE_Y[1] };
-        const FVector3 C = { ABCDE_x[2], ABCDE_y[2], ABCDE_Y[2] };
-        const FVector3 D = { ABCDE_x[3], ABCDE_y[3], ABCDE_Y[3] };
-        const FVector3 E = { ABCDE_x[4], ABCDE_y[4], ABCDE_Y[4] };
+        const float halfSkyResolution = ((float)skylightResolution) / (2.0f);
 
-        [ A_Yxy_P setFValue:A ];
-        [ B_Yxy_P setFValue:B ];
-        [ C_Yxy_P setFValue:C ];
-        [ D_Yxy_P setFValue:D ];
-        [ E_Yxy_P setFValue:E ];
-        //[ zenithColor_P setFValue:zenithColor ];
-        //[ lighDirection_P setFValue:lightDirection ];
-        */
+        const float cStart = -halfSkyResolution;
+        const float cEnd   =  halfSkyResolution;
+
+        const Vector3 A = { ABCDE_x[0], ABCDE_y[0], ABCDE_Y[0] };
+        const Vector3 B = { ABCDE_x[1], ABCDE_y[1], ABCDE_Y[1] };
+        const Vector3 C = { ABCDE_x[2], ABCDE_y[2], ABCDE_Y[2] };
+        const Vector3 D = { ABCDE_x[3], ABCDE_y[3], ABCDE_Y[3] };
+        const Vector3 E = { ABCDE_x[4], ABCDE_y[4], ABCDE_Y[4] };
+
+        [ radiusForMaxTheta_P setFValue:halfSkyResolution ];
+        [ directionToSun_P setValue:directionToSun ];
+        [ zenithColor_P setValue:zenithColor ];
+        [ denominator_P setValue:denominator ];
+
+        [ A_xyY_P setValue:A ];
+        [ B_xyY_P setValue:B ];
+        [ C_xyY_P setValue:C ];
+        [ D_xyY_P setValue:D ];
+        [ E_xyY_P setValue:E ];
+
+        [ rtc setWidth:skylightResolution  ];
+        [ rtc setHeight:skylightResolution ];
+
+        NSError * error = nil;
+        if ( [ self generateRenderTarget:&error ] == NO )
+        {
+            NPLOG_ERROR(error);
+        }
+
+        [ rtc bindFBO ];
+
+        [ skylightTarget
+            attachToRenderTargetConfiguration:rtc
+                             colorBufferIndex:0
+                                      bindFBO:NO ];
+
+        [ rtc activateDrawBuffers ];
+        [ rtc activateViewport ];
+
+        [ preetham activate ];
+
+        glBegin(GL_QUADS);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, cStart, cStart);
+            glVertexAttrib2f(NpVertexStreamPositions, -1.0f, -1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, cEnd, cStart);
+            glVertexAttrib2f(NpVertexStreamPositions,  1.0f, -1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, cEnd,  cEnd);
+            glVertexAttrib2f(NpVertexStreamPositions,  1.0f,  1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, cStart,  cEnd);
+            glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
+        glEnd();
+
+        [ skylightTarget detach:NO ];
+
+        [ rtc deactivate ];
 
         lastTurbidity = turbidity;
         lastThetaSun  = thetaSun;
         lastPhiSun    = phiSun;
+
+        lastSkylightResolution = skylightResolution;
 
         //NSLog(@"%lf %lf", thetaSun, phiSun);
     }

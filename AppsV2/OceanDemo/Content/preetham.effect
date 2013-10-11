@@ -3,17 +3,25 @@ effect "preetham":
 technique "preetham"
 {
     # effect variables
-    uniform mat4 np_modelviewprojectionmatrix;
-    uniform vec3 AColor;
-    uniform vec3 BColor;
-    uniform vec3 CColor;
-    uniform vec3 DColor;
-    uniform vec3 EColor;
-    uniform vec3 ZenithColor;
-    uniform vec3 DirectionToSun;
+    uniform float radiusForMaxTheta;
+    uniform vec3 directionToSun;
+    uniform vec3 zenithColor;
+    uniform vec3 denominator;
+    uniform vec3 A;
+    uniform vec3 B;
+    uniform vec3 C;
+    uniform vec3 D;
+    uniform vec3 E;
+
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+
+    # fragment streams
+    out vec4 target : 0;
+
     # shaders
     set vertex shader "preetham.vertex"
     set fragment shader "preetham.fragment"
 }
-
 
