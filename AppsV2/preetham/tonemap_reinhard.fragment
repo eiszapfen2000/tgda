@@ -14,6 +14,11 @@ const mat3 XYZ2LinearsRGB
 
 void main()
 {
+    float averageLogLuminance
+         = texelFetch(logLuminance, ivec2(0, 0), averageLuminanceLevel).r;
+
+    float averageLuminance = exp(averageLogLuminance);
+
     vec4 c = texture(linearsRGB, out_texcoords);
     vec3 XYZ = LinearsRGBToXYZ * c.rgb;
 
