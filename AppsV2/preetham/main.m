@@ -346,7 +346,7 @@ int main (int argc, char **argv)
         const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
 
-        NSLog(@"%lf %d", frameTime, fps);
+        //NSLog(@"%lf %d", frameTime, fps);
 
         if ([ wheelUp activated ] == YES )
         {
