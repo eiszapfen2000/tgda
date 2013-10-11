@@ -27,7 +27,6 @@ technique "texture"
 technique "preetham"
 {
     # effect variables
-    uniform mat4 np_modelviewprojectionmatrix;
     uniform float radiusForMaxTheta;
     uniform vec3 directionToSun;
     uniform vec3 zenithColor;
