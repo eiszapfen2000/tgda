@@ -85,8 +85,15 @@ technique "tonemap_reinhard"
         MinFilter = Nearest;
         MagFilter = Nearest;
     };
+    uniform sampler2D logLuminance
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
     uniform float key;
-    uniform float averageLuminance;
+    uniform int   averageLuminanceLevel;
     uniform float whiteLuminance;
 
     # vertex streams

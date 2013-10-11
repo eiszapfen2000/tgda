@@ -161,7 +161,7 @@ int main (int argc, char **argv)
     mousePosition.x = mousePosition.y = 0;
 
     // VSync
-    glfwSwapInterval(1);
+    glfwSwapInterval(0);
     // do not poll events on glfwSwapBuffers
     glfwDisable(GLFW_AUTO_POLL_EVENTS);
     // register keyboard callback
@@ -215,7 +215,7 @@ int main (int argc, char **argv)
                         width:skyResolution
                        height:skyResolution
                   pixelFormat:NpTexturePixelFormatRGBA
-                   dataFormat:NpTextureDataFormatFloat32
+                   dataFormat:NpTextureDataFormatFloat16
                 mipmapStorage:NO
                         error:NULL ];
 
@@ -223,7 +223,7 @@ int main (int argc, char **argv)
                          width:skyResolution
                         height:skyResolution
                    pixelFormat:NpTexturePixelFormatR
-                    dataFormat:NpTextureDataFormatFloat32
+                    dataFormat:NpTextureDataFormatFloat16
                  mipmapStorage:YES
                          error:NULL ];
 
@@ -274,13 +274,13 @@ int main (int argc, char **argv)
     NPEffectVariableFloat3 * E_xyY_P = [ effect variableWithName:@"E" ];
 
     NPEffectVariableFloat * key_P = [ effect variableWithName:@"key" ];
-    NPEffectVariableFloat * averageLuminance_P = [ effect variableWithName:@"averageLuminance" ];
+    NPEffectVariableInt   * averageLuminanceLevel_P = [ effect variableWithName:@"averageLuminanceLevel" ];
     NPEffectVariableFloat * whiteLuminance_P = [ effect variableWithName:@"whiteLuminance" ];
 
     assert(A_xyY_P != nil && B_xyY_P != nil && C_xyY_P != nil && D_xyY_P != nil
            && E_xyY_P != nil && radiusForMaxTheta_P != nil && directionToSun_P != nil
            && zenithColor_P != nil && denominator_P != nil && key_P != nil
-           && averageLuminance_P != nil && whiteLuminance_P != nil);
+           && averageLuminanceLevel_P != nil && whiteLuminance_P != nil);
 
     NPInputAction * leftClick
         = [[[ NP Input ] inputActions ] 
@@ -346,6 +346,8 @@ int main (int argc, char **argv)
         const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
 
+        NSLog(@"%lf %d", frameTime, fps);
+
         if ([ wheelUp activated ] == YES )
         {
             thetaSun += MATH_DEG_TO_RAD * 3.0;
@@ -391,7 +393,7 @@ int main (int argc, char **argv)
         thetaSun = MIN(thetaSun, MATH_PI_DIV_2);
         thetaSun = MAX(thetaSun, 0.0);
 
-        NSLog(@"phi:%lf theta:%lf", phiSun * MATH_RAD_TO_DEG, thetaSun * MATH_RAD_TO_DEG);
+        //NSLog(@"phi:%lf theta:%lf", phiSun * MATH_RAD_TO_DEG, thetaSun * MATH_RAD_TO_DEG);
 
         //
         const double maxThetaRadius = halfSkyResolution;
@@ -516,21 +518,11 @@ int main (int argc, char **argv)
 
         [ rtc deactivate ];
 
-        const int32_t numberOfLevels
-            = 1 + (int32_t)floor(logb(skyResolution));
-
-        [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:[ luminanceTarget texture ]];
-
-        float Lw_average = FLT_MAX;
-
+        // generate logluminance mipmap pyramid
+        // highest level contains average log luminance
+        [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ luminanceTarget texture ] ];
         glGenerateMipmap(GL_TEXTURE_2D);
-        glGetTexImage(GL_TEXTURE_2D, numberOfLevels - 1, GL_RED, GL_FLOAT, &Lw_average);
-
         [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
-
-        assert(Lw_average != FLT_MAX);
-
-        //NSLog(@"%f %f", averageLuminance, expf(averageLuminance));
 
         // activate culling, depth write and depth test
         NPCullingState * cullingState = [[[ NP Graphics ] stateConfiguration ] cullingState ];
@@ -549,12 +541,16 @@ int main (int argc, char **argv)
         [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
         [[[ NP Graphics ] textureBindingState ] clear ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:[ preethamTarget texture ] texelUnit:0 ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:[ preethamTarget  texture ] texelUnit:0 ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:[ luminanceTarget texture ] texelUnit:1 ];
         [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
+
+        const int32_t numberOfLevels
+            = 1 + (int32_t)floor(logb(skyResolution));
 
         [ key_P setValue:a ];
         [ whiteLuminance_P setValue:L_white ];
-        [ averageLuminance_P setFValue:expf(Lw_average) ];
+        [ averageLuminanceLevel_P setValue:(numberOfLevels - 1) ];
 
         [ tonemap activate ];
 
