@@ -8,6 +8,7 @@
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
+#import "Graphics/Texture/NPTexture2D.h"
 #import "Graphics/RenderTarget/NPRenderTargetConfiguration.h"
 #import "Graphics/RenderTarget/NPRenderTexture.h"
 #import "Input/NPInputAction.h"
@@ -211,6 +212,11 @@ static double digamma(double theta, double gamma, double ABCDE[5])
     [ super dealloc ];
 }
 
+- (NPTexture2D *) skylightTexture
+{
+    return [ skylightTarget texture ];
+}
+
 - (Vector3) directionToSun
 {
     return directionToSun;
@@ -281,13 +287,16 @@ static double digamma(double theta, double gamma, double ABCDE[5])
         [ D_xyY_P setValue:D ];
         [ E_xyY_P setValue:E ];
 
-        [ rtc setWidth:skylightResolution  ];
-        [ rtc setHeight:skylightResolution ];
-
-        NSError * error = nil;
-        if ( [ self generateRenderTarget:&error ] == NO )
+        if ( skylightResolution != lastSkylightResolution )
         {
-            NPLOG_ERROR(error);
+            [ rtc setWidth:skylightResolution  ];
+            [ rtc setHeight:skylightResolution ];
+
+            NSError * error = nil;
+            if ( [ self generateRenderTarget:&error ] == NO )
+            {
+                NPLOG_ERROR(error);
+            }
         }
 
         [ rtc bindFBO ];
@@ -299,6 +308,8 @@ static double digamma(double theta, double gamma, double ABCDE[5])
 
         [ rtc activateDrawBuffers ];
         [ rtc activateViewport ];
+
+        [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
 
         [ preetham activate ];
 
