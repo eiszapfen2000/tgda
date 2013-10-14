@@ -6,6 +6,7 @@
 @class NPEffectVariableFloat;
 @class NPEffectVariableFloat3;
 @class NPRenderTargetConfiguration;
+@class NPTexture2D;
 @class NPRenderTexture;
 @class NPInputAction;
 
@@ -47,6 +48,7 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
+- (NPTexture2D *) skylightTexture;
 - (Vector3) directionToSun;
 
 - (void) update:(double)frameTime;
