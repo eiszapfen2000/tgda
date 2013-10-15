@@ -44,6 +44,8 @@
     NPBufferObject * transformedVertexStream;
     NPBufferObject * transformedNonDisplacedVertexStream;
     NPVertexArray * transformTarget;
+    //
+    Vector2 vertexStep;
 }
 
 - (id) init;
@@ -51,6 +53,7 @@
 - (void) dealloc;
 
 - (IVector2) resolution;
+- (Vector2)  vertexStep;
 - (void) setResolution:(const IVector2)newResolution;
 - (void) setProjector:(ODProjector *)newProjector;
 

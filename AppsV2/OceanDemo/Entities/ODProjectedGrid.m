@@ -170,6 +170,9 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
         }
     }
 
+    vertexStep.x = deltaX;
+    vertexStep.y = deltaY;
+
     // IMPORTANT
     // vertex coordinates after render to vertexbuffer
     // fragment at pixel center, shifted in respect to vertices!?!?
@@ -283,6 +286,8 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
     resolutionLastFrame.x = resolutionLastFrame.y = 0;
     resolution.x = resolution.y = 0;
 
+    vertexStep = v2_zero();
+
     // y = 0 plane
     plane_pssss_init_with_components(&basePlane, 0.0, 1.0, 0.0, 0.0);
 
@@ -377,6 +382,11 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
     return resolution;
 }
 
+- (Vector2) vertexStep
+{
+    return vertexStep;
+}
+
 - (void) setResolution:(const IVector2)newResolution
 {
     resolution = newResolution;
@@ -426,14 +436,6 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
         renderWithPrimitiveType:NpPrimitiveTriangles
                      firstIndex:0
                       lastIndex:(primitivesWritten * 3) - 1];
-
-    /*
-    glBindBuffer(GL_ARRAY_BUFFER, [ transformedVertexStream glID ]);
-    FVector3* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
-    glUnmapBuffer(GL_ARRAY_BUFFER);
-    NSLog(@"%f %f %f", ptr[0].x, ptr[0].y, ptr[0].z);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    */
 }
 
 - (void) render
