@@ -41,6 +41,7 @@ technique "proj_grid_tf_feedback"
     uniform mat4 np_modelviewprojectionmatrix;
     uniform float area;
     uniform vec3 cameraPosition;
+    uniform vec3 directionToSun;
     uniform sampler2D heightmap
     {
         WrapS = Repeat;
