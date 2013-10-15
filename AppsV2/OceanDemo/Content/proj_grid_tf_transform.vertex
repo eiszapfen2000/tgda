@@ -29,11 +29,12 @@ void main()
 
     float h = textureLod(heightmap, texcoord, 0.0).x;
 
-    
+    /*
     float ht = textureLodOffset(heightmap, texcoord, 0.0, ivec2(0,  1)).x;
     float hb = textureLodOffset(heightmap, texcoord, 0.0, ivec2(0, -1)).x;
     float hl = textureLodOffset(heightmap, texcoord, 0.0, ivec2(-1, 0)).x;
     float hr = textureLodOffset(heightmap, texcoord, 0.0, ivec2( 1, 0)).x;
+    */
     
     vec2 d  = textureLod(displacement, texcoord, 0.0).xy;
     vec2 g  = textureLod(gradient, texcoord, 0.0).xy;

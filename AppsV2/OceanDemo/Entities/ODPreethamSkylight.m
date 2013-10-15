@@ -164,7 +164,7 @@ static double digamma(double theta, double gamma, double ABCDE[5])
     thetaSun = MATH_PI_DIV_4;
 
     // phi range 0 ... 2*PI
-    phiSun = 0.0;
+    phiSun = MATH_PI;
 
     directionToSun = v3_zero();
 
