@@ -27,8 +27,10 @@ vec3 world_space_position(in vec2 position)
 void main()
 {
     vec3 intersection = world_space_position(in_position.xy);
-    //vec3 intersection_dx = world_space_position(in_position.xy + vec2(vertexStep.x, 0.0));
-    //vec3 intersection_dy = world_space_position(in_position.xy + vec2(0.0, vertexStep.y));
+    vec3 intersection_dx = world_space_position(in_position.xy + vec2(vertexStep.x, 0.0));
+    vec3 intersection_dy = world_space_position(in_position.xy + vec2(0.0, vertexStep.y));
+    vec2 d_dx = (abs(intersection_dx.xz - intersection.xz) * 2.0) / area;
+    vec2 d_dy = (abs(intersection_dy.xz - intersection.xz) * 2.0) / area;
 
     vec2 texcoord = intersection.xz;
     texcoord *= (1.0 / area);
@@ -37,7 +39,10 @@ void main()
     // it does not matter for heights, but displacement as well
     // gradient in z direction have to invert sign
 
-    float h = textureLod(heightmap, texcoord, 0.0).x;
+    //float h = textureLod(heightmap, texcoord, 0.0).x;
+    //vec2 d  = textureLod(displacement, texcoord, 0.0).xy;
+    float h = textureGrad(heightmap, texcoord, d_dx, d_dy).x;
+    vec2 d = textureGrad(displacement, texcoord, d_dx, d_dy).xy;
 
     /*
     float ht = textureLodOffset(heightmap, texcoord, 0.0, ivec2(0,  1)).x;
@@ -46,8 +51,6 @@ void main()
     float hr = textureLodOffset(heightmap, texcoord, 0.0, ivec2( 1, 0)).x;
     vec2 g  = textureLod(gradient, texcoord, 0.0).xy;
     */
-    
-    vec2 d  = textureLod(displacement, texcoord, 0.0).xy;
 
     out_non_disp_position = intersection.xz;
     out_position.xz = intersection.xz;

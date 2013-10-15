@@ -54,8 +54,9 @@ technique "proj_grid_tf_feedback"
     {
         WrapS = Repeat;
         WrapT = Repeat;
-        MinFilter = Linear;
+        MinFilter = TriLinear;
         MagFilter = Linear;
+        Anisotropy = 16;
     };
     uniform sampler3D variance
     {
