@@ -976,21 +976,21 @@ static NSUInteger od_variance_size(const void * item)
                                       height:hf->geometryResolution.y
                                  pixelFormat:NpTexturePixelFormatR
                                   dataFormat:NpTextureDataFormatFloat32
-                                     mipmaps:NO
+                                     mipmaps:YES
                                         data:heightsData ];
 
             [ displacement generateUsingWidth:hf->geometryResolution.x
                                        height:hf->geometryResolution.y
                                   pixelFormat:NpTexturePixelFormatRG
                                    dataFormat:NpTextureDataFormatFloat32
-                                      mipmaps:NO
+                                      mipmaps:YES
                                          data:displacementsData ];
 
             [ gradient generateUsingWidth:hf->gradientResolution.x
                                    height:hf->gradientResolution.y
                               pixelFormat:NpTexturePixelFormatRG
                                dataFormat:NpTextureDataFormatFloat32
-                                  mipmaps:NO
+                                  mipmaps:YES
                                      data:gradientsData ];
 
             if ( variance != NULL && variance->baseSpectrum != NULL )
