@@ -7,25 +7,19 @@ technique "proj_grid_tf_transform"
     uniform mat4 invMVP;
     uniform float area;
     uniform float displacementScale;
+    uniform vec2  vertexStep;
     uniform sampler2D heightmap
     {
         WrapS = Repeat;
         WrapT = Repeat;
-        MinFilter = Linear;
+        MinFilter = TriLinear;
         MagFilter = Linear;
     };
     uniform sampler2D displacement
     {
         WrapS = Repeat;
         WrapT = Repeat;
-        MinFilter = Linear;
-        MagFilter = Linear;
-    };
-    uniform sampler2D gradient
-    {
-        WrapS = Repeat;
-        WrapT = Repeat;
-        MinFilter = Linear;
+        MinFilter = TriLinear;
         MagFilter = Linear;
     };
 
