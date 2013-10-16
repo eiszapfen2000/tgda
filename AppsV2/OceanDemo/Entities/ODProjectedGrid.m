@@ -180,17 +180,21 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
                                       length:sizeof(uint16_t) * numberOfIndices ];
 
     BOOL result
-        = [ gridVertexStream generate:NpCPUBufferTypeGeometry
-                           dataFormat:NpBufferDataFormatFloat32
-                           components:2
-                                 data:vertexData
-                                error:NULL ];
+        = [ gridVertexStream
+                generateStaticGeometryBuffer:NpBufferDataFormatFloat32
+                                  components:2
+                                        data:vertexData
+                                  dataLength:[ vertexData length ]
+                                       error:NULL ];
 
     result
-        = result && [ gridIndexStream generate:NpCPUBufferTypeIndices
+        = result && [ gridIndexStream generate:NpBufferObjectTypeIndices
+                                    updateRate:NpBufferDataUpdateOnceUseOften
+                                     dataUsage:NpBufferDataWriteCPUToGPU
                                     dataFormat:NpBufferDataFormatUInt16
                                     components:1
                                           data:indexData
+                                    dataLength:[ indexData length ]
                                          error:NULL ];
 
     result
@@ -269,13 +273,12 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
     cornerIndices[4] = 3;
     cornerIndices[5] = 0;
 
-    cornerVertexArray = [[ NPCPUVertexArray alloc ] init ];
-    gridVertexArray   = [[ NPCPUVertexArray alloc ] init ];
+    gridVertexArray  = [[ NPVertexArray alloc ] init ];
+    transformTarget  = [[ NPVertexArray alloc ] init ];
+    gridVertexStream = [[ NPBufferObject alloc ] initWithName:@"gridVertexStream" ];
+    gridIndexStream  = [[ NPBufferObject alloc ] initWithName:@"gridIndexStream"  ];
 
-    transformTarget = [[ NPVertexArray alloc ] init ];
-
-    gridVertexStream   = [[ NPCPUBuffer alloc ] initWithName:@"gridVertexStream" ];
-    gridIndexStream    = [[ NPCPUBuffer alloc ] initWithName:@"gridIndexStream" ];
+    cornerVertexArray  = [[ NPCPUVertexArray alloc ] init ];
     cornerVertexStream = [[ NPCPUBuffer alloc ] initWithName:@"cornerVertexStream" ];
     cornerIndexStream  = [[ NPCPUBuffer alloc ] initWithName:@"cornerIndexStream" ];
 
