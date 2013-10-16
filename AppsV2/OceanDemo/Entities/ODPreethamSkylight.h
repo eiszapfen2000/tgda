@@ -48,7 +48,7 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
-- (NPTexture2D *) skylightTexture;
+- (id < NPPTexture >) skylightTexture;
 - (Vector3) directionToSun;
 
 - (void) update:(double)frameTime;

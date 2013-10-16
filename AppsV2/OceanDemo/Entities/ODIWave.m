@@ -499,17 +499,17 @@ static const double desiredDeltaTime = 1.0 / 60.0;
     return obstructionTexture;
 }
 
-- (NPTexture2D *) derivativeTexture
+- (id < NPPTexture >) derivativeTexture
 {
     return [ derivativeTarget texture ];
 }
 
-- (NPTexture2D *) heightTexture
+- (id < NPPTexture >) heightTexture
 {
     return [ heightsTarget texture ];
 }
 
-- (NPTexture2D *) prevHeightTexture
+- (id < NPPTexture >) prevHeightTexture
 {
     return [ prevHeightsTarget texture ];
 }
