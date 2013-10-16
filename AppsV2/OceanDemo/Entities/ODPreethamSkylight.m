@@ -212,7 +212,7 @@ static double digamma(double theta, double gamma, double ABCDE[5])
     [ super dealloc ];
 }
 
-- (NPTexture2D *) skylightTexture
+- (id < NPPTexture >) skylightTexture
 {
     return [ skylightTarget texture ];
 }

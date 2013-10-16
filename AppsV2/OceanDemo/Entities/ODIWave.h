@@ -73,9 +73,9 @@
 
 - (NPTexture2D *) sourceTexture;
 - (NPTexture2D *) obstructionTexture;
-- (NPTexture2D *) derivativeTexture;
-- (NPTexture2D *) heightTexture;
-- (NPTexture2D *) prevHeightTexture;
+- (id < NPPTexture >) derivativeTexture;
+- (id < NPPTexture >) heightTexture;
+- (id < NPPTexture >) prevHeightTexture;
 
 - (void) update:(const double)frameTime;
 - (void) render;
