@@ -29,9 +29,9 @@
     // the projector we are connected to
     ODProjector * projector;
     // buffers and vertex array for grid based rendering
-    NPCPUBuffer * gridVertexStream;
-    NPCPUBuffer * gridIndexStream;
-    NPCPUVertexArray * gridVertexArray;
+    NPBufferObject * gridVertexStream;
+    NPBufferObject * gridIndexStream;
+    NPVertexArray  * gridVertexArray;
     // buffer and vertex array for GPU interpolation based rendering
     NPCPUBuffer * cornerVertexStream;
     NPCPUBuffer * cornerIndexStream;
