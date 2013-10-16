@@ -112,30 +112,29 @@
 - (BOOL) generateRenderTargets:(NSError **)error
 {
     BOOL result
-        = [ positionsTarget generate:NpRenderTargetColor
-                               width:currentResolution.x
-                              height:currentResolution.y
-                         pixelFormat:NpTexturePixelFormatRGBA
-                          dataFormat:NpTextureDataFormatFloat32
-                       mipmapStorage:NO
-                               error:error ];
+        = [ linearsRGBTarget generate:NpRenderTargetColor
+                                width:currentResolution.x
+                               height:currentResolution.y
+                          pixelFormat:NpTexturePixelFormatRGBA
+                           dataFormat:NpTextureDataFormatFloat32
+                        mipmapStorage:NO
+                                error:error ];
 
     result
-        = result && [ normalsTarget generate:NpRenderTargetColor
-                                       width:currentResolution.x
-                                      height:currentResolution.y
-                                 pixelFormat:NpTexturePixelFormatRGBA
-                                  dataFormat:NpTextureDataFormatFloat16
-                               mipmapStorage:NO
-                                       error:error ];
+        = result && [ logLuminanceTarget generate:NpRenderTargetColor
+                                            width:currentResolution.x
+                                           height:currentResolution.y
+                                      pixelFormat:NpTexturePixelFormatR
+                                       dataFormat:NpTextureDataFormatFloat32
+                                    mipmapStorage:YES
+                                            error:error ];
 
     result
-        = result && [ depthTarget generate:NpRenderTargetDepthStencil
+        = result && [ depthBuffer generate:NpRenderTargetDepthStencil
                                      width:currentResolution.x
                                     height:currentResolution.y
                                pixelFormat:NpTexturePixelFormatDepthStencil
                                 dataFormat:NpTextureDataFormatUInt32N
-                             mipmapStorage:NO
                                      error:error ];
 
     return result;
@@ -143,17 +142,15 @@
 
 - (BOOL) generateVarianceLUTRenderTarget:(NSError **)error
 {
-    BOOL result
-        = [ varianceLUT generate3D:NpRenderTargetColor
-                             width:varianceLUTResolution
-                            height:varianceLUTResolution
-                             depth:varianceLUTResolution
-                       pixelFormat:NpTexturePixelFormatRG
-                        dataFormat:NpTextureDataFormatFloat32
-                     mipmapStorage:NO
-                             error:error ];
-
-    return result;
+    return
+        [ varianceLUT generate3D:NpRenderTargetColor
+                           width:varianceLUTResolution
+                          height:varianceLUTResolution
+                           depth:varianceLUTResolution
+                     pixelFormat:NpTexturePixelFormatRG
+                      dataFormat:NpTextureDataFormatFloat32
+                   mipmapStorage:NO
+                           error:error ];
 }
 
 - (void) updateSlopeVarianceLUT
@@ -265,10 +262,10 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     currentResolution.x = currentResolution.y = 0;
 
     // g buffer
-    gBuffer = [[ NPRenderTargetConfiguration alloc ] initWithName:@"GBUffer" ];
-    positionsTarget = [[ NPRenderTexture alloc ] init ];
-    normalsTarget   = [[ NPRenderTexture alloc ] init ];
-    depthTarget     = [[ NPRenderTexture alloc ] init ];
+    rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"General RTC" ];
+    linearsRGBTarget   = [[ NPRenderTexture alloc ] init ];
+    logLuminanceTarget = [[ NPRenderTexture alloc ] init ];
+    depthBuffer        = [[ NPRenderBuffer  alloc ] init ];
 
     deferredEffect
         = [[[ NP Graphics ] effects ] getAssetWithFileName:@"deferred.effect" ];
@@ -359,10 +356,10 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     DESTROY(varianceLUT);
     DESTROY(varianceRTC);
 
-    DESTROY(depthTarget);
-    DESTROY(positionsTarget);
-    DESTROY(normalsTarget);
-    DESTROY(gBuffer);
+    DESTROY(depthBuffer);
+    DESTROY(logLuminanceTarget);
+    DESTROY(linearsRGBTarget);
+    DESTROY(rtc);
 
     DESTROY(fullscreenQuad);
     DESTROY(projectedGridTFFeedback);
@@ -552,8 +549,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     if (( currentResolution.x != lastFrameResolution.x )
           || ( currentResolution.y != lastFrameResolution.y ))
     {
-        [ gBuffer setWidth:currentResolution.x  ];
-        [ gBuffer setHeight:currentResolution.y ];
+        [ rtc setWidth:currentResolution.x  ];
+        [ rtc setHeight:currentResolution.y ];
 
         NSAssert(([ self generateRenderTargets:NULL ] == YES), @"");
 
