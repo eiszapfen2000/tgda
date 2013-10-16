@@ -59,11 +59,11 @@
     IVector2 currentResolution;
     IVector2 lastFrameResolution;
 
-    // G buffer
-    NPRenderTargetConfiguration * gBuffer;
-    NPRenderTexture * positionsTarget;
-    NPRenderTexture * normalsTarget;
-    NPRenderTexture * depthTarget;
+    // general rendering stuff
+    NPRenderTargetConfiguration * rtc;
+    NPRenderTexture * linearsRGBTarget;
+    NPRenderTexture * logLuminanceTarget;
+    NPRenderBuffer  * depthBuffer;
 
     // effect + variables
     NPEffect * deferredEffect;
@@ -75,6 +75,7 @@
     NPEffectTechnique * projectedGridTFTransform;
     NPEffectTechnique * projectedGridTFFeedback;
 
+    // variance LUT for Ross BRDF
     uint32_t varianceLUTLastResolution;
     uint32_t varianceLUTResolution;
     NPRenderTargetConfiguration * varianceRTC;
