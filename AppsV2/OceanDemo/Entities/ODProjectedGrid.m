@@ -107,39 +107,7 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
     cornerVertices[0] = computeBasePlanePosition(invViewProjection, basePlane, lowerLeft);
     cornerVertices[1] = computeBasePlanePosition(invViewProjection, basePlane, lowerRight);
     cornerVertices[2] = computeBasePlanePosition(invViewProjection, basePlane, upperRight);
-    cornerVertices[3] = computeBasePlanePosition(invViewProjection, basePlane, upperLeft);
-
-    FPlane plane;
-    FMatrix4 invVP;
-    fm4_m_init_with_m4(&invVP, invViewProjection);
-
-    fplane_pssss_init_with_components(&plane, 0.0f, 1.0f, 0.0f, 0.0f);
-
-    const FVector2 upperLeftf  = {-1.0f,  1.0f};
-    const FVector2 upperRightf = { 1.0f,  1.0f};
-    const FVector2 lowerLeftf  = {-1.0f, -1.0f};
-    const FVector2 lowerRightf = { 1.0f, -1.0f};
-
-    FVector3 cornersF[4];
-
-    cornersF[0] = computeBasePlanePositionF(&invVP, plane, lowerLeftf);
-    cornersF[1] = computeBasePlanePositionF(&invVP, plane, lowerRightf);
-    cornersF[2] = computeBasePlanePositionF(&invVP, plane, upperRightf);
-    cornersF[3] = computeBasePlanePositionF(&invVP, plane, upperLeftf);
-
-    
-    /*
-    for (int32_t i = 0; i < 4; i++)
-    {
-        //NSLog(@"\n%s\n%s", fv3_v_to_string(&(cornerVertices[i])), fv3_v_to_string(&(cornersF[i])));
-        NSLog(@"%d %s", i, fv3_v_to_string(&(cornerVertices[i])));
-    }
-    */
-    
-    cornerVertices[0] = (FVector3){-1.0, 0.0, -1.0};
-    cornerVertices[1] = (FVector3){ 1.0, 0.0, -1.0};
-    cornerVertices[2] = (FVector3){ 1.0, 0.0,  1.0};
-    cornerVertices[3] = (FVector3){-1.0, 0.0,  1.0};    
+    cornerVertices[3] = computeBasePlanePosition(invViewProjection, basePlane, upperLeft);  
 }
 
 - (void) updateResolution
@@ -436,11 +404,6 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
         renderWithPrimitiveType:NpPrimitiveTriangles
                      firstIndex:0
                       lastIndex:(primitivesWritten * 3) - 1];
-}
-
-- (void) render
-{
-    [ gridVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
 }
 
 @end

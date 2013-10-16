@@ -12,7 +12,7 @@
 @class NPEffectVariableFloat4;
 @class NPTexture2D;
 
-@interface ODProjectedGrid : NPObject// < ODPEntity >
+@interface ODProjectedGrid : NPObject
 {
     // resolution
     IVector2 resolutionLastFrame;
@@ -21,8 +21,6 @@
     Plane basePlane;
     // vertices on the near plane in post projection space
     FVertex2 * nearPlanePostProjectionPositions;
-    // vertices projected from near plane onto basePlane
-    FVertex3 * worldSpacePositions;
     // near plane corner vertices projected onto basePlane
     FVertex3 * cornerVertices;
     // mesh indices for rendering
@@ -61,7 +59,6 @@
 
 - (void) renderTFTransform;
 - (void) renderTFFeedback;
-- (void) render;
 
 @end
 
