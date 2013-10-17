@@ -279,13 +279,11 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     logLuminance
         = [ deferredEffect techniqueWithName:@"linear_sRGB_to_log_luminance" ];
 
+    tonemap
+        = [ deferredEffect techniqueWithName:@"tonemap_reinhard" ];
+
     ASSERT_RETAIN(logLuminance);
-
-    lightDirection    = [ deferredEffect variableWithName:@"lightDirection" ];
-    cameraPosition    = [ deferredEffect variableWithName:@"cameraPosition" ];
-
-    NSAssert(lightDirection != nil, @"lightDirection invalid");
-    NSAssert(cameraPosition != nil, @"cameraPosition invalid");
+    ASSERT_RETAIN(tonemap);
 
     projectedGridTFTransform = [ projectedGridEffect techniqueWithName:@"proj_grid_tf_transform" ];
     projectedGridTFFeedback  = [ projectedGridEffect techniqueWithName:@"proj_grid_tf_feedback"  ];
@@ -369,6 +367,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     DESTROY(projectedGridTFFeedback);
     DESTROY(projectedGridTFTransform);
     DESTROY(logLuminance);
+    DESTROY(tonemap);
     DESTROY(deferredEffect);
     DESTROY(projectedGridEffect);
 
@@ -686,11 +685,14 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
                                       bindFBO:NO ];
 
     // disable culling, blending, depthwrite, depthtest
-    [ blendingState setEnabled:NO ];
+    [ blendingState  setEnabled:NO ];
     [ cullingState   setEnabled:NO ];
     [ depthTestState setWriteEnabled:NO ];
     [ depthTestState setEnabled:NO ];
     [ stateConfiguration activate ];
+
+    // reset matrices
+    [[[ NP Core ] transformationState ] reset ];
 
     [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ linearsRGBTarget texture ] texelUnit:0 ];
@@ -712,7 +714,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
 
     [[[ NP Graphics ] textureBindingState ] clear ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ linearsRGBTarget texture ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ linearsRGBTarget   texture ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ logLuminanceTarget texture ] texelUnit:1 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
     [[ deferredEffect techniqueWithName:@"texture" ] activate ];

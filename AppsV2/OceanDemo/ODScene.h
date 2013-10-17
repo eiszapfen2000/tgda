@@ -68,8 +68,7 @@
     // effect + variables
     NPEffect * deferredEffect;
     NPEffectTechnique * logLuminance;
-    NPEffectVariableFloat3 * lightDirection;
-    NPEffectVariableFloat3 * cameraPosition;
+    NPEffectTechnique * tonemap;
 
     NPEffect * projectedGridEffect;
     NPEffectTechnique * projectedGridTFTransform;
