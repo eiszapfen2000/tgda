@@ -84,6 +84,29 @@ technique "texture"
     set fragment shader "fullscreen_quad.fragment"
 }
 
+technique "linear_sRGB_to_log_luminance"
+{
+    # effect variables
+    uniform sampler2D linearsRGB
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+
+    # fragment streams
+    out float target : 0;
+
+    # shaders
+    set vertex shader "fullscreen_quad.vertex"
+    set fragment shader "linear_sRGB_to_log_luminance.fragment"
+}
+
 technique "directional_light"
 {
     # effect variables
@@ -98,44 +121,6 @@ technique "directional_light"
     # shaders
     set vertex shader "deferred_directional_light.vertex"
     set fragment shader "deferred_directional_light.fragment"
-}
-
-technique "water_surface"
-{
-    # effect variables
-    uniform vec3 cameraPosition;
-    uniform vec2 heightfieldMinMax;
-    uniform sampler2D positions;
-    uniform sampler2D normals;
-    uniform sampler2D heightfield
-    {
-        WrapS = Repeat;
-        WrapT = Repeat;
-        MinFilter = Linear;
-        MagFilter = Linear;
-    };
-    uniform sampler2D gradientX
-    {
-        WrapS = Repeat;
-        WrapT = Repeat;
-        MinFilter = Linear;
-        MagFilter = Linear;
-    };
-    uniform sampler2D gradientZ
-    {
-        WrapS = Repeat;
-        WrapT = Repeat;
-        MinFilter = Linear;
-        MagFilter = Linear;
-    };
-    # vertex streams
-    in vec2 in_position : 0;
-    in vec2 in_texcoords : 3;
-    # fragment streams
-    out vec4 target : 0;
-    # shaders
-    set vertex shader "deferred_water_surface.vertex"
-    set fragment shader "deferred_water_surface.fragment"
 }
 
 technique "variance"

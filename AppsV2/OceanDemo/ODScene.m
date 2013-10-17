@@ -276,11 +276,14 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     ASSERT_RETAIN(deferredEffect);
     ASSERT_RETAIN(projectedGridEffect);
 
-    heightfieldMinMax = [ deferredEffect variableWithName:@"heightfieldMinMax" ];
+    logLuminance
+        = [ deferredEffect techniqueWithName:@"linear_sRGB_to_log_luminance" ];
+
+    ASSERT_RETAIN(logLuminance);
+
     lightDirection    = [ deferredEffect variableWithName:@"lightDirection" ];
     cameraPosition    = [ deferredEffect variableWithName:@"cameraPosition" ];
 
-    NSAssert(heightfieldMinMax != nil, @"heightfieldMinMax invalid");
     NSAssert(lightDirection != nil, @"lightDirection invalid");
     NSAssert(cameraPosition != nil, @"cameraPosition invalid");
 
@@ -365,6 +368,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     DESTROY(fullscreenQuad);
     DESTROY(projectedGridTFFeedback);
     DESTROY(projectedGridTFTransform);
+    DESTROY(logLuminance);
     DESTROY(deferredEffect);
     DESTROY(projectedGridEffect);
 
@@ -534,15 +538,17 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
                                   aspectRatio:[testProjector aspectRatio]];
 
     [ skylight      update:frameTime ];
-    //[ iwave         update:frameTime ];
     [ ocean         update:frameTime ];
+    //[ iwave         update:frameTime ];
     [ projectedGrid update:frameTime ];
 
+    /*
     const NSUInteger numberOfEntities = [ entities count ];
     for ( NSUInteger i = 0; i < numberOfEntities; i++ )
     {
-        //[[ entities objectAtIndex:i ] update:frameTime ];
+        [[ entities objectAtIndex:i ] update:frameTime ];
     }
+    */
 }
 
 - (void) render
@@ -591,9 +597,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     //[ fillState      setBackFaceFill:NpPolygonFillLine ];
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
-    // clear back buffer
-    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
-
     // setup linear sRGB target
     [ rtc bindFBO ];
     [ linearsRGBTarget
@@ -608,7 +611,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [ camera render ];
 
-    [[[ NP Core] transformationState] resetModelMatrix];
+    [[[ NP Core ] transformationState ] resetModelMatrix ];
     
     [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean heightfield   ] texelUnit:0 ];
@@ -682,14 +685,31 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
                              colorBufferIndex:0
                                       bindFBO:NO ];
 
-    [ logLuminanceTarget detach:NO ];
-    [ rtc deactivate ];
-
+    // disable culling, blending, depthwrite, depthtest
     [ blendingState setEnabled:NO ];
     [ cullingState   setEnabled:NO ];
     [ depthTestState setWriteEnabled:NO ];
     [ depthTestState setEnabled:NO ];
     [ stateConfiguration activate ];
+
+    [[[ NP Graphics ] textureBindingState ] clear ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ linearsRGBTarget texture ] texelUnit:0 ];
+    [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
+    [ logLuminance activate ];
+
+    [ fullscreenQuad render ];
+
+    [ logLuminanceTarget detach:NO ];
+    [ rtc deactivate ];
+
+    // clear back buffer
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
+
+    // generate logluminance mipmap pyramid
+    // highest level contains average log luminance
+    [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ logLuminanceTarget texture ] ];
+    glGenerateMipmap(GL_TEXTURE_2D);
+    [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
 
     [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ linearsRGBTarget texture ] texelUnit:0 ];

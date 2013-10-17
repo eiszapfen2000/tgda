@@ -67,7 +67,7 @@
 
     // effect + variables
     NPEffect * deferredEffect;
-    NPEffectVariableFloat2 * heightfieldMinMax;
+    NPEffectTechnique * logLuminance;
     NPEffectVariableFloat3 * lightDirection;
     NPEffectVariableFloat3 * cameraPosition;
 
