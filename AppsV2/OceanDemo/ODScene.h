@@ -14,6 +14,7 @@
 @class NPRenderBuffer;
 @class NPEffect;
 @class NPEffectTechniqueVariable;
+@class NPEffectVariableInt;
 @class NPEffectVariableFloat;
 @class NPEffectVariableFloat2;
 @class NPEffectVariableFloat3;
@@ -69,6 +70,9 @@
     NPEffect * deferredEffect;
     NPEffectTechnique * logLuminance;
     NPEffectTechnique * tonemap;
+    NPEffectVariableFloat * tonemapKey;
+    NPEffectVariableInt   * tonemapAverageLuminanceLevel;
+    NPEffectVariableFloat * tonemapWhiteLuminance;
 
     NPEffect * projectedGridEffect;
     NPEffectTechnique * projectedGridTFTransform;
