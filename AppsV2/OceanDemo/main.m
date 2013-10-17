@@ -99,15 +99,6 @@ int main (int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    /*
-    int d = glfwGetWindowParam(GLFW_DEPTH_BITS);
-    int major = glfwGetWindowParam(GLFW_OPENGL_VERSION_MAJOR);
-    int minor = glfwGetWindowParam(GLFW_OPENGL_VERSION_MINOR);
-    int profile = glfwGetWindowParam(GLFW_OPENGL_PROFILE);
-    NSLog(@"%d %d %d %d", major, minor, profile, d);
-    */
-    
-
     glClearDepth(1);
     glClearStencil(0);
 
@@ -120,7 +111,7 @@ int main (int argc, char **argv)
     mousePosition.x = mousePosition.y = 0;
 
     // VSync
-    glfwSwapInterval(1);
+    glfwSwapInterval(0);
     // do not poll events on glfwSwapBuffers
     glfwDisable(GLFW_AUTO_POLL_EVENTS);
     // register keyboard callback
@@ -266,9 +257,6 @@ int main (int argc, char **argv)
 
         // check if ESC key was pressed or window was closed
         running = running && glfwGetWindowParam( GLFW_OPENED );
-
-        //printf("%f %d\n", frameTime, fps);
-        //fflush(stdout);
 
         // kill autorelease pool
         DESTROY(innerPool);
