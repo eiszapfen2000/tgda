@@ -10,6 +10,7 @@
 #import "Graphics/Texture/NPTexture2D.h"
 #import "Graphics/Texture/NPTexture3D.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
+#import "Graphics/Effect/NPEffectVariableInt.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffect.h"
@@ -284,6 +285,12 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     ASSERT_RETAIN(logLuminance);
     ASSERT_RETAIN(tonemap);
+
+    tonemapKey = [ deferredEffect variableWithName:@"key" ];
+    tonemapAverageLuminanceLevel = [ deferredEffect variableWithName:@"averageLuminanceLevel" ];
+    tonemapWhiteLuminance = [ deferredEffect variableWithName:@"whiteLuminance" ];
+
+    NSAssert(tonemapKey != nil && tonemapAverageLuminanceLevel != nil && tonemapWhiteLuminance != nil, @"");
 
     projectedGridTFTransform = [ projectedGridEffect techniqueWithName:@"proj_grid_tf_transform" ];
     projectedGridTFFeedback  = [ projectedGridEffect techniqueWithName:@"proj_grid_tf_feedback"  ];
@@ -718,7 +725,15 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[[ NP Graphics ] textureBindingState ] setTexture:[ logLuminanceTarget texture ] texelUnit:1 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
-    [[ deferredEffect techniqueWithName:@"texture" ] activate ];
+    const int32_t numberOfLevels
+        = 1 + (int32_t)floor(logb(MAX(currentResolution.x, currentResolution.y)));
+
+    [ tonemapKey setFValue:key ];
+    [ tonemapWhiteLuminance setFValue:referenceWhite ];
+    [ tonemapAverageLuminanceLevel setValue:(numberOfLevels - 1) ];
+
+    //[[ deferredEffect techniqueWithName:@"texture" ] activate ];
+    [ tonemap activate ];
     [ fullscreenQuad render ];
 
     [ stateConfiguration deactivate ];
