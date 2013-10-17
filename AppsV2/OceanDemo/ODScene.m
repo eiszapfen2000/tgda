@@ -312,7 +312,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     NSAssert(result, @"Transform Feedback setup failed");
 
     varianceLUTLastResolution = UINT_MAX;
-    varianceLUTResolution = 8;
+    varianceLUTResolution = 4;
     varianceRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Variance RTC" ];
     varianceLUT = [[ NPRenderTexture alloc ] initWithName:@"Variance LUT" ];
 
@@ -324,7 +324,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     deltaVariance    = [ deferredEffect variableWithName:@"deltaVariance" ];
     varianceTextureResolution = [ deferredEffect variableWithName:@"varianceTextureResolution" ];
 
-    NSAssert(layer != nil && baseSpectrumSize != nil && deltaVariance != nil && varianceTextureResolution != nil, @"");
+    NSAssert(layer != nil && baseSpectrumSize != nil
+             && deltaVariance != nil && varianceTextureResolution != nil, @"");
 
     // fullscreen quad for render target display
     fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
@@ -572,11 +573,13 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         [ self updateSlopeVarianceLUT ];
     }
 
-    NPCullingState * cullingState = [[[ NP Graphics ] stateConfiguration ] cullingState ];
-    NPBlendingState * blendingState = [[[ NP Graphics ] stateConfiguration ] blendingState ];
-    NPDepthTestState * depthTestState = [[[ NP Graphics ] stateConfiguration ] depthTestState ];
-    NPPolygonFillState * fillState = [[[ NP Graphics ] stateConfiguration ] polygonFillState ];
-    NPStencilTestState * stencilTestState = [[[ NP Graphics ] stateConfiguration ] stencilTestState ];
+    NPStateConfiguration * stateConfiguration = [[ NP Graphics ] stateConfiguration ];
+
+    NPCullingState * cullingState         = [ stateConfiguration cullingState     ];
+    NPBlendingState * blendingState       = [ stateConfiguration blendingState    ];
+    NPDepthTestState * depthTestState     = [ stateConfiguration depthTestState   ];
+    NPPolygonFillState * fillState        = [ stateConfiguration polygonFillState ];
+    NPStencilTestState * stencilTestState = [ stateConfiguration stencilTestState ];
 
     // activate culling, depth write and depth test
     [ blendingState  setEnabled:NO ];
@@ -589,6 +592,18 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[[ NP Graphics ] stateConfiguration ] activate ];
 
     // clear back buffer
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
+
+    // setup linear sRGB target
+    [ rtc bindFBO ];
+    [ linearsRGBTarget
+            attachToRenderTargetConfiguration:rtc
+                             colorBufferIndex:0
+                                      bindFBO:NO ];
+
+    [ rtc activateDrawBuffers ];
+    [ rtc activateViewport ];
+
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
     [ camera render ];
@@ -637,9 +652,11 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ depthTestState setWriteEnabled:NO ];
     [ depthTestState activate ];
 
+    /*
     [ fillState setFrontFaceFill:NpPolygonFillFace ];
     [ fillState setBackFaceFill:NpPolygonFillFace ];
     [ fillState activate ];
+    */
 
     FVector4 fc = {0.0f, 1.0f, 0.0f, 0.5f};
     FVector4 lc = {1.0f, 0.0f, 0.0f, 0.5f};
@@ -657,7 +674,31 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [ testProjectorFrustum render ];
 
-    [[[ NP Graphics ] stateConfiguration ] deactivate ];
+    [ linearsRGBTarget detach:NO ];
+
+    // log luminance computation for tonemapping
+    [ logLuminanceTarget
+            attachToRenderTargetConfiguration:rtc
+                             colorBufferIndex:0
+                                      bindFBO:NO ];
+
+    [ logLuminanceTarget detach:NO ];
+    [ rtc deactivate ];
+
+    [ blendingState setEnabled:NO ];
+    [ cullingState   setEnabled:NO ];
+    [ depthTestState setWriteEnabled:NO ];
+    [ depthTestState setEnabled:NO ];
+    [ stateConfiguration activate ];
+
+    [[[ NP Graphics ] textureBindingState ] clear ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ linearsRGBTarget texture ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] activate ];
+
+    [[ deferredEffect techniqueWithName:@"texture" ] activate ];
+    [ fullscreenQuad render ];
+
+    [ stateConfiguration deactivate ];
 
 //-------------------------------------------
 
