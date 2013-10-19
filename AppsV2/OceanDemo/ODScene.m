@@ -117,7 +117,7 @@
                                 width:currentResolution.x
                                height:currentResolution.y
                           pixelFormat:NpTexturePixelFormatRGBA
-                           dataFormat:NpTextureDataFormatFloat32
+                           dataFormat:NpTextureDataFormatFloat16
                         mipmapStorage:NO
                                 error:error ];
 
@@ -126,7 +126,7 @@
                                             width:currentResolution.x
                                            height:currentResolution.y
                                       pixelFormat:NpTexturePixelFormatR
-                                       dataFormat:NpTextureDataFormatFloat32
+                                       dataFormat:NpTextureDataFormatFloat16
                                     mipmapStorage:YES
                                             error:error ];
 
