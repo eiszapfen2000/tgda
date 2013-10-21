@@ -203,6 +203,38 @@
             TargetObject = "Ocean";
             TargetProperty = "displacementScale";
         };
+
+        PSliderKey =
+        {
+            Type = "ODSliderItem";
+            Label = "Key";
+            Alignment = "TopLeft";
+            Position = ("30", "70" );
+            Size = ( "50", "1" );
+            TextSize = "16";
+            MinimumValue = "0.0";
+            MaximumValue = "1.0";
+            LineSize = ("85", "3");
+            HeadSize = ("3", "21");
+            TargetObject = "Scene";
+            TargetProperty = "key";
+        };
+
+        PSliderWhiteLuminance =
+        {
+            Type = "ODSliderItem";
+            Label = "Key";
+            Alignment = "TopLeft";
+            Position = ("30", "120" );
+            Size = ( "50", "1" );
+            TextSize = "16";
+            MinimumValue = "0.0";
+            MaximumValue = "10.0";
+            LineSize = ("85", "3");
+            HeadSize = ("3", "21");
+            TargetObject = "Scene";
+            TargetProperty = "referenceWhite";
+        };
     };
 }
  

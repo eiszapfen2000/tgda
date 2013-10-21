@@ -253,10 +253,10 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     disconnecting = NO;
 
     // tonemapping parameters
-    referenceWhite = 1.0f;
-    key = 0.72f;
-    adaptationTimeScale = 10.0f;
-    lastFrameLuminance = currentFrameLuminance = 1.0f;
+    referenceWhite = 4.0;
+    key = 0.72;
+    adaptationTimeScale = 10.0;
+    lastFrameLuminance = currentFrameLuminance = 1.0;
 
     // render target resolution
     lastFrameResolution.x = lastFrameResolution.y = INT_MAX;
@@ -624,6 +624,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacement  ] texelUnit:1 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean gradient      ] texelUnit:2 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ varianceLUT texture ] texelUnit:3 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ skylight skylightTexture ] texelUnit:4 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
     NPEffectVariableMatrix4x4 * v = [ deferredEffect variableWithName:@"invMVP"];
@@ -728,8 +729,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     const int32_t numberOfLevels
         = 1 + (int32_t)floor(logb(MAX(currentResolution.x, currentResolution.y)));
 
-    [ tonemapKey setFValue:key ];
-    [ tonemapWhiteLuminance setFValue:referenceWhite ];
+    [ tonemapKey setValue:key ];
+    [ tonemapWhiteLuminance setValue:referenceWhite ];
     [ tonemapAverageLuminanceLevel setValue:(numberOfLevels - 1) ];
 
     //[[ deferredEffect techniqueWithName:@"texture" ] activate ];

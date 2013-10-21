@@ -166,6 +166,30 @@ float meanFresnel(vec3 V, vec3 N, vec2 sigmaSq)
     return meanFresnel(dot(V, N), sqrt(sigmaV2));
 }
 
+// V in world space
+vec2 U(vec2 zeta, vec3 v, mat3 TBN)
+{
+    vec3 f = normalize(vec3(-zeta.y, 1.0, -zeta.x)); // tangent space
+    vec3 f_ws = TBN * f; // world space
+    vec3 r = 2.0 * dot(f_ws, v) * f_ws - v;
+    vec2 r_projected = r.xz / (1.0 + r.y);
+
+    return r_projected;
+}
+
+// V, N, Tx, Ty in world space;
+vec3 meanSkyRadiance(vec3 v, mat3 TBN, vec2 sigmaSq)
+{
+    const float eps = 0.001;
+    vec2 u0 = U(vec2(0.0), v, TBN);
+    vec2 dux = 2.0 * (U(vec2(eps, 0.0), v, TBN) - u0) / eps * sqrt(sigmaSq.x);
+    vec2 duy = 2.0 * (U(vec2(0.0, eps), v, TBN) - u0) / eps * sqrt(sigmaSq.y);
+
+    return textureGrad(skylight, u0 * 0.5 + 0.5, dux * 0.5, duy * 0.5).rgb;
+    //return texture(skylight, u0 * 0.5 + 0.5).rgb;
+}
+
+
 void main()
 {
     float Jxx = dFdx(out_ws_non_disp_position.x);
@@ -191,6 +215,12 @@ void main()
     //vec3 lightDir = vec3(1.0, 1.0, 0.0);
     vec3 lightDir = directionToSun;
     vec3 viewDir  = cameraPosition - out_ws_position;
+
+    if (dot(viewDir, normal) < 0.0)
+    {
+            normal = reflect(normal, viewDir);
+    }
+
     vec3 l        = normalize(lightDir);
     vec3 v        = normalize(viewDir);
     //vec3 n        = normalize(out_normal);
@@ -245,8 +275,16 @@ void main()
 
     vec3 result = f_schlick * (q_vn / denominator);
 
-    vec3 L_zero = (result * MATH_PI) * (c_light * max(0.01, dot(l_ross, n_ross)));
+    //vec3 L_zero = (result * MATH_PI) * (c_light * max(0.01, dot(l_ross, n_ross)));
+
+    float f_mean = meanFresnel(v, n, sigmaSq);
+    vec3 meanSky = meanSkyRadiance(v, ross, sigmaSq);
+
+    vec3 L_zero = f_mean * meanSky;
 
     target = vec4(L_zero, 1.0);
+
+    if (target.x <= 0.5)
+        target = vec4(1000.0, 0.0, 0.0, 1.0);
 }
 

@@ -65,6 +65,14 @@ technique "proj_grid_tf_feedback"
         MinFilter = Linear;
         MagFilter = Linear;
     };
+    uniform sampler2D skylight
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Trilinear;
+        MagFilter = Linear;
+        Anisotropy = 16;
+    };
     # vertex streams
     in vec3 in_position : 0;
     in vec2 in_non_disp_position : 1;

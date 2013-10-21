@@ -50,11 +50,11 @@
     BOOL disconnecting;
 
     // tonemapping parameters
-    float referenceWhite;
-    float key;
-    float adaptationTimeScale;
-    float lastFrameLuminance;
-    float currentFrameLuminance;
+    double referenceWhite;
+    double key;
+    double adaptationTimeScale;
+    double lastFrameLuminance;
+    double currentFrameLuminance;
 
     //
     IVector2 currentResolution;
