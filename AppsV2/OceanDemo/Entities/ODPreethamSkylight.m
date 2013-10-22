@@ -9,6 +9,7 @@
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/Texture/NPTexture2D.h"
+#import "Graphics/Texture/NPTextureBindingState.h"
 #import "Graphics/RenderTarget/NPRenderTargetConfiguration.h"
 #import "Graphics/RenderTarget/NPRenderTexture.h"
 #import "Input/NPInputAction.h"
@@ -121,7 +122,7 @@ static double digamma(double theta, double gamma, double ABCDE[5])
                            height:skylightResolution
                       pixelFormat:NpTexturePixelFormatRGBA
                        dataFormat:NpTextureDataFormatFloat16
-                    mipmapStorage:NO
+                    mipmapStorage:YES
                             error:error ];
 }
 
@@ -327,6 +328,10 @@ static double digamma(double theta, double gamma, double ABCDE[5])
         [ skylightTarget detach:NO ];
 
         [ rtc deactivate ];
+
+        [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ skylightTarget texture ]];
+        glGenerateMipmap(GL_TEXTURE_2D);
+        [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
 
         lastTurbidity = turbidity;
         lastThetaSun  = thetaSun;
