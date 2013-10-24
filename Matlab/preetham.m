@@ -134,18 +134,11 @@ for y = 1:resolution
     end
 end
 
-figure
-imshow(power(sRGB, 1/2.2));
+% convert to non-linear sRGB 
+mask = (sRGB > 0.0031308);
+sRGB(mask) = ((1.055 * sRGB(mask)) .^ (1 / 2.4)) - 0.055;
+sRGB(~mask) = 12.92 * sRGB(~mask);
 
-% lresult = tonemap(sRGB);
-% figure
-% imshow(lresult);
-% 
-% mask = (sRGB > 0.0031308);
-% sRGB(mask) = ((1.055 * sRGB(mask)) .^ (1 / 2.4)) - 0.055;
-% sRGB(~mask) = 12.92 * sRGB(~mask);
-% 
-% result = tonemap(sRGB);
-% figure
-% imshow(result);
+figure
+imshow(sRGB);
 
