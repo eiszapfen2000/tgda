@@ -396,7 +396,6 @@ int main (int argc, char **argv)
         //NSLog(@"phi:%lf theta:%lf", phiSun * MATH_RAD_TO_DEG, thetaSun * MATH_RAD_TO_DEG);
 
         //
-        const double maxThetaRadius = halfSkyResolution;
         const double sinThetaSun = sin(thetaSun);
         const double cosThetaSun = cos(thetaSun);
         const double sinPhiSun = sin(phiSun);
@@ -404,15 +403,13 @@ int main (int argc, char **argv)
 
         Vector3 directionToSun;
         /*
-        directionToSun.x = maxThetaRadius * sinThetaSun * cosPhiSun;
-        directionToSun.y = maxThetaRadius * sinThetaSun * sinPhiSun;
-        directionToSun.z = maxThetaRadius * cosThetaSun;
+        directionToSun.x = sinThetaSun * cosPhiSun;
+        directionToSun.y = sinThetaSun * sinPhiSun;
+        directionToSun.z = cosThetaSun;
         */
-        directionToSun.x = maxThetaRadius * sinThetaSun * sinPhiSun;
-        directionToSun.y = maxThetaRadius * cosThetaSun;
-        directionToSun.z = maxThetaRadius * sinThetaSun * cosPhiSun;
-
-        Vector3 directionToSunNormalised = v3_v_normalised(&directionToSun);
+        directionToSun.x = sinThetaSun * sinPhiSun;
+        directionToSun.y = cosThetaSun;
+        directionToSun.z = sinThetaSun * cosPhiSun;
 
         // Preetham Skylight Zenith color
         // xyY space, cd/m²
@@ -458,7 +455,7 @@ int main (int argc, char **argv)
         [ E_xyY_P setFValue:E ];
 
         [ radiusForMaxTheta_P setFValue:halfSkyResolution ];
-        [ directionToSun_P setValue:directionToSunNormalised ];
+        [ directionToSun_P setValue:directionToSun ];
         [ zenithColor_P setValue:zenithColor ];
         [ denominator_P setValue:denominator ];
 
