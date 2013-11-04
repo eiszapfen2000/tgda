@@ -312,7 +312,7 @@ int main (int argc, char **argv)
     BOOL running = YES;
 
     // preetham
-    double turbidity = 2.0;
+    double turbidity = 4.0;
     double phiSun = 0.0;
     double thetaSun = MATH_PI_DIV_4;
 
@@ -324,6 +324,8 @@ int main (int argc, char **argv)
 
     const float cStart = -halfSkyResolution;
     const float cEnd   =  halfSkyResolution;
+
+    BOOL modified = YES;
 
     // run loop
     while ( running )
@@ -351,11 +353,13 @@ int main (int argc, char **argv)
         if ([ wheelUp activated ] == YES )
         {
             thetaSun += MATH_DEG_TO_RAD * 3.0;
+            modified = YES;
         }
 
         if ([ wheelDown activated ] == YES )
         {
             thetaSun -= MATH_DEG_TO_RAD * 3.0;
+            modified = YES;
         }
 
         if ( [ leftClick activated ] == YES )
@@ -388,12 +392,16 @@ int main (int argc, char **argv)
             //NSLog(@"%d %d %lf %lf", x, y, dx, dy);
 
             phiSun = atan2(dy, dx);
+            modified = YES;
         }
 
         thetaSun = MIN(thetaSun, MATH_PI_DIV_2);
         thetaSun = MAX(thetaSun, 0.0);
 
-        //NSLog(@"phi:%lf theta:%lf", phiSun * MATH_RAD_TO_DEG, thetaSun * MATH_RAD_TO_DEG);
+        if ( modified == YES )
+            NSLog(@"phi:%lf theta:%lf", phiSun * MATH_RAD_TO_DEG, thetaSun * MATH_RAD_TO_DEG);
+
+        modified = NO;
 
         //
         const double sinThetaSun = sin(thetaSun);
