@@ -255,8 +255,8 @@ int main (int argc, char **argv)
     RETAIN(logLuminance);
     RETAIN(tonemap);
 
-    NPEffectVariableFloat * radiusForMaxTheta_P
-        = [ effect variableWithName:@"radiusForMaxTheta" ];
+    NPEffectVariableFloat * radiusInPixel_P
+        = [ effect variableWithName:@"radiusInPixel" ];
 
     NPEffectVariableFloat3 * directionToSun_P
         = [ effect variableWithName:@"directionToSun" ];
@@ -278,7 +278,7 @@ int main (int argc, char **argv)
     NPEffectVariableFloat * whiteLuminance_P = [ effect variableWithName:@"whiteLuminance" ];
 
     assert(A_xyY_P != nil && B_xyY_P != nil && C_xyY_P != nil && D_xyY_P != nil
-           && E_xyY_P != nil && radiusForMaxTheta_P != nil && directionToSun_P != nil
+           && E_xyY_P != nil && radiusInPixel_P != nil && directionToSun_P != nil
            && zenithColor_P != nil && denominator_P != nil && key_P != nil
            && averageLuminanceLevel_P != nil && whiteLuminance_P != nil);
 
@@ -454,7 +454,7 @@ int main (int argc, char **argv)
         [ D_xyY_P setFValue:D ];
         [ E_xyY_P setFValue:E ];
 
-        [ radiusForMaxTheta_P setFValue:halfSkyResolution ];
+        [ radiusInPixel_P setFValue:halfSkyResolution ];
         [ directionToSun_P setValue:directionToSun ];
         [ zenithColor_P setValue:zenithColor ];
         [ denominator_P setValue:denominator ];

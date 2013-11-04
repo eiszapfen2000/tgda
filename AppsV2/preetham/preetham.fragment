@@ -13,7 +13,7 @@ const mat3 XYZ2LinearsRGB
 void main()
 {
     float radius = length(out_texcoords);
-    float radiusNormalised = radius / radiusForMaxTheta;
+    float radiusNormalised = radius / radiusInPixel;
 
     if (radiusNormalised > 1.0)
     {
@@ -23,7 +23,7 @@ void main()
     float theta = MATH_PI_DIV_2 * radiusNormalised;
     float cosTheta = cos(theta);
 
-    vec3 v = vec3(out_texcoords.y, radiusForMaxTheta * cosTheta, out_texcoords.x);
+    vec3 v = vec3(out_texcoords.y, radiusInPixel * cosTheta, out_texcoords.x);
     v = normalize(v);
 
     float cosGamma = dot(v, directionToSun);
