@@ -64,7 +64,7 @@ void main()
     float thetaAngle = MATH_PI_DIV_2 - atan(z / length(vec2(x, y)));
 
     // convert to OpenGL coord system
-    vec3 v = vec3(y, z, x);
+    vec3 v = vec3(x, y, z);
     v = normalize(v);
 
     float cosGamma = dot(v, directionToSun);
