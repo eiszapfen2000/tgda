@@ -312,7 +312,7 @@ int main (int argc, char **argv)
     BOOL running = YES;
 
     // preetham
-    double turbidity = 4.0;
+    double turbidity = 2.0;
     double phiSun = 0.0;
     double thetaSun = MATH_PI_DIV_4;
 
@@ -399,7 +399,9 @@ int main (int argc, char **argv)
         thetaSun = MAX(thetaSun, 0.0);
 
         if ( modified == YES )
+        {
             NSLog(@"phi:%lf theta:%lf", phiSun * MATH_RAD_TO_DEG, thetaSun * MATH_RAD_TO_DEG);
+        }
 
         modified = NO;
 
@@ -410,14 +412,14 @@ int main (int argc, char **argv)
         const double cosPhiSun = cos(phiSun);
 
         Vector3 directionToSun;
-        /*
         directionToSun.x = sinThetaSun * cosPhiSun;
         directionToSun.y = sinThetaSun * sinPhiSun;
         directionToSun.z = cosThetaSun;
-        */
+        /*        
         directionToSun.x = sinThetaSun * sinPhiSun;
         directionToSun.y = cosThetaSun;
         directionToSun.z = sinThetaSun * cosPhiSun;
+        */
 
         // Preetham Skylight Zenith color
         // xyY space, cd/m²
