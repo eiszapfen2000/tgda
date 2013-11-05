@@ -4,7 +4,6 @@ clear all
 XYZ2sRGBD50 = [3.1338561 -1.6168667 -0.4906146; -0.9787684  1.9161415  0.0334540; 0.0719453 -0.2289914  1.4052427];
 
 turbidity = 4.0;
-
 thetaSun = 70 * (pi / 180);
 phiSun = pi / 4;
 
@@ -92,47 +91,72 @@ radiusInPixel = resolution / 2;
 rangeStart = -radiusInPixel + 0.5;
 rangeEnd = radiusInPixel - 0.5;
 
+% direction to sun
 s = [ sin(thetaSun) * cos(phiSun), sin(thetaSun) * sin(phiSun), cos(thetaSun) ];
+
+% precompute denominator which stays constant for each
+% point on the hemisphere
 denominator_x = digamma(0, thetaSun, Ax);
 denominator_y = digamma(0, thetaSun, Ay);
 denominator_Y = digamma(0, thetaSun, AY);
 
+% MATLAB memory layout, image coordinate (1,1) is at top left
+
+% start j at top
 for j = rangeEnd:-1:rangeStart
+    % start i at left
     for i = rangeStart:rangeEnd
         radius = norm([i j]);
         
+        % if we are inside circle the hemisphere is projected onto
         if ( radius <= radiusInPixel )
+            % indices into result array
             ix = i - rangeStart + 1;
-            %iy = j - rangeStart + 1;
             iy = rangeEnd - j + 1;
             
+            % http://en.wikipedia.org/wiki/Stereographic_projection
+            % we use the south pole (0, 0, -1) as projection point
+            % because we want to project the upper hemisphere onto
+            % a circle
+            
+            % X Y represent coordinates after stereographic projection
             radiusNormalised = radius / radiusInPixel;
             X = i / radiusInPixel;
             Y = j / radiusInPixel;
             
             l = 1 + X*X + Y*Y;
             
-            % stereographic projection using southpole
+            % convert X Y to coordinates on the unit sphere
             x = 2*X / l;
             y = 2*Y / l;
             z = (1 - X*X - Y*Y) / l;
             
-            v = [x y z];
+            % http://de.wikipedia.org/wiki/Kugelkoordinaten
+            % We use the same coordinate system as shown at the site above
+            % coordinate axes of said coordinate system and the one for
+            % stereographic projection match
             
+            % compute spherical coordinates
             phiAngle   = atan2(y, x);
             thetaAngle = (pi / 2) - atan(z/norm([x y]));
             
+            % compute angle between direction to sun and current coordinate
+            % on hemisphere
+            v = [x y z];
             cosGamma = s * v';
             gammaAngle = acos(cosGamma);
             
+            % compute preetham model for current coordinate on hemisphere
             v_x = xz * (digamma(thetaAngle, gammaAngle, Ax) / denominator_x);
             v_y = yz * (digamma(thetaAngle, gammaAngle, Ay) / denominator_y);
             v_Y = Yz * (digamma(thetaAngle, gammaAngle, AY) / denominator_Y);
             
+            % preetham gives results in xyY space
             xyY(iy,ix,1) = v_x;
             xyY(iy,ix,2) = v_y;
             xyY(iy,ix,3) = v_Y;
             
+            % convert xyY to XYZ
             lXYZ = zeros(1,3);
             lXYZ(1) = (v_x / v_y) * v_Y;
             lXYZ(2) = v_Y;
@@ -142,6 +166,7 @@ for j = rangeEnd:-1:rangeStart
             XYZ(iy,ix,2) = lXYZ(2);
             XYZ(iy,ix,3) = lXYZ(3);
             
+            % convert XYZ to linear sRGB
             lsRGB = XYZ2sRGBD50 * lXYZ';
             sRGB(iy,ix,1) = lsRGB(1);
             sRGB(iy,ix,2) = lsRGB(2);
