@@ -593,6 +593,21 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     NPPolygonFillState * fillState        = [ stateConfiguration polygonFillState ];
     NPStencilTestState * stencilTestState = [ stateConfiguration stencilTestState ];
 
+    // setup linear sRGB target
+    [ rtc bindFBO ];
+    [ linearsRGBTarget
+            attachToRenderTargetConfiguration:rtc
+                             colorBufferIndex:0
+                                      bindFBO:NO ];
+
+    [ depthBuffer
+            attachToRenderTargetConfiguration:rtc
+                             colorBufferIndex:0
+                                      bindFBO:NO ];
+
+    [ rtc activateDrawBuffers ];
+    [ rtc activateViewport ];
+
     // activate culling, depth write and depth test
     [ blendingState  setEnabled:NO ];
     [ cullingState   setCullFace:NpCullfaceBack ];
@@ -601,17 +616,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ depthTestState setEnabled:YES ];
     //[ fillState      setFrontFaceFill:NpPolygonFillLine ];
     //[ fillState      setBackFaceFill:NpPolygonFillLine ];
-    [[[ NP Graphics ] stateConfiguration ] activate ];
-
-    // setup linear sRGB target
-    [ rtc bindFBO ];
-    [ linearsRGBTarget
-            attachToRenderTargetConfiguration:rtc
-                             colorBufferIndex:0
-                                      bindFBO:NO ];
-
-    [ rtc activateDrawBuffers ];
-    [ rtc activateViewport ];
+    [ stateConfiguration activate ];
 
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
@@ -685,6 +690,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ testProjectorFrustum render ];
 
     [ linearsRGBTarget detach:NO ];
+    [ depthBuffer      detach:NO ];
 
     // log luminance computation for tonemapping
     [ logLuminanceTarget
