@@ -165,7 +165,7 @@ static double digamma(double theta, double gamma, double ABCDE[5])
     thetaSun = MATH_PI_DIV_4;
 
     // phi range 0 ... 2*PI
-    phiSun = MATH_PI;
+    phiSun = MATH_PI_DIV_2;
 
     directionToSun = v3_zero();
 
@@ -180,10 +180,10 @@ static double digamma(double theta, double gamma, double ABCDE[5])
     preetham = [ effect techniqueWithName:@"preetham" ];
     ASSERT_RETAIN(preetham);
 
-    radiusForMaxTheta_P = [ effect variableWithName:@"radiusForMaxTheta" ];
-    directionToSun_P    = [ effect variableWithName:@"directionToSun"    ];
-    zenithColor_P       = [ effect variableWithName:@"zenithColor"       ];
-    denominator_P       = [ effect variableWithName:@"denominator"       ];
+    radiusInPixel_P   = [ effect variableWithName:@"radiusInPixel"  ];
+    directionToSun_P  = [ effect variableWithName:@"directionToSun" ];
+    zenithColor_P     = [ effect variableWithName:@"zenithColor"    ];
+    denominator_P     = [ effect variableWithName:@"denominator"    ];
 
     A_xyY_P = [ effect variableWithName:@"A" ];
     B_xyY_P = [ effect variableWithName:@"B" ];
@@ -191,7 +191,7 @@ static double digamma(double theta, double gamma, double ABCDE[5])
     D_xyY_P = [ effect variableWithName:@"D" ];
     E_xyY_P = [ effect variableWithName:@"E" ];
 
-    NSAssert(radiusForMaxTheta_P != nil && directionToSun_P != nil
+    NSAssert(radiusInPixel_P != nil && directionToSun_P != nil
              && zenithColor_P != nil && denominator_P != nil && A_xyY_P != nil
              && B_xyY_P != nil && C_xyY_P != nil && D_xyY_P != nil && E_xyY_P != nil, @"");
 
@@ -262,9 +262,11 @@ static double digamma(double theta, double gamma, double ABCDE[5])
         const double sinPhiSun = sin(phiSun);
         const double cosPhiSun = cos(phiSun);
 
-        directionToSun.x = sinThetaSun * sinPhiSun;
+        directionToSun.x = sinThetaSun * cosPhiSun;
         directionToSun.y = cosThetaSun;
-        directionToSun.z = sinThetaSun * cosPhiSun;
+        directionToSun.z = -sinThetaSun * sinPhiSun;
+
+        //NSLog(@"%lf %lf : %lf %lf %lf", phiSun, thetaSun, directionToSun.x, directionToSun.y, directionToSun.z);
 
         const float halfSkyResolution = ((float)skylightResolution) / (2.0f);
 
@@ -277,8 +279,13 @@ static double digamma(double theta, double gamma, double ABCDE[5])
         const Vector3 D = { ABCDE_x[3], ABCDE_y[3], ABCDE_Y[3] };
         const Vector3 E = { ABCDE_x[4], ABCDE_y[4], ABCDE_Y[4] };
 
-        [ radiusForMaxTheta_P setFValue:halfSkyResolution ];
-        [ directionToSun_P setValue:directionToSun ];
+        Vector3 localDirectionToSun;
+        localDirectionToSun.x = sinThetaSun * cosPhiSun;
+        localDirectionToSun.y = sinThetaSun * sinPhiSun;
+        localDirectionToSun.z = cosThetaSun;
+
+        [ radiusInPixel_P setFValue:halfSkyResolution ];
+        [ directionToSun_P setValue:localDirectionToSun ];
         [ zenithColor_P setValue:zenithColor ];
         [ denominator_P setValue:denominator ];
 
