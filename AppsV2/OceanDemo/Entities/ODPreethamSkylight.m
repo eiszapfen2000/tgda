@@ -168,6 +168,7 @@ static double digamma(double theta, double gamma, double ABCDE[5])
     phiSun = MATH_PI_DIV_2;
 
     directionToSun = v3_zero();
+    sunColor = v3_zero();
 
     rtc = [[ NPRenderTargetConfiguration alloc] initWithName:@"Preetham RTC" ];
     skylightTarget = [[ NPRenderTexture alloc ] initWithName:@"Skylight Target" ];
@@ -223,6 +224,11 @@ static double digamma(double theta, double gamma, double ABCDE[5])
     return directionToSun;
 }
 
+- (Vector3) sunColor
+{
+    return sunColor;
+}
+
 - (void) update:(double)frameTime
 {
     [ self processInput:frameTime ];
@@ -257,6 +263,34 @@ static double digamma(double theta, double gamma, double ABCDE[5])
         denominator.y = digamma(0.0, thetaSun, ABCDE_y);
         denominator.z = digamma(0.0, thetaSun, ABCDE_Y);
 
+        Vector3 nominatorSun;
+        nominatorSun.x = digamma(thetaSun, 0.0, ABCDE_x);
+        nominatorSun.y = digamma(thetaSun, 0.0, ABCDE_y);
+        nominatorSun.z = digamma(thetaSun, 0.0, ABCDE_Y);
+
+        Vector3 xyY;
+        xyY.x = zenithColor.x * (nominatorSun.x / denominator.x);
+        xyY.y = zenithColor.y * (nominatorSun.y / denominator.y);
+        xyY.z = zenithColor.z * (nominatorSun.z / denominator.z);
+
+        Vector3 XYZ;
+        XYZ.x = (xyY.x / xyY.y) * xyY.z;        
+        XYZ.y = xyY.z;
+        XYZ.z = ((1.0 - xyY.x - xyY.y) / xyY.y) * xyY.z;
+
+        Matrix3 lsRGB;
+        M_EL(lsRGB, 0, 0) =  3.1338561;
+        M_EL(lsRGB, 0, 1) = -0.9787684;
+        M_EL(lsRGB, 0, 2) =  0.0719453;
+        M_EL(lsRGB, 1, 0) = -1.6168667;
+        M_EL(lsRGB, 1, 1) =  1.9161415;
+        M_EL(lsRGB, 1, 2) = -0.2289914;
+        M_EL(lsRGB, 2, 0) = -0.4906146;
+        M_EL(lsRGB, 2, 1) =  0.0334540;
+        M_EL(lsRGB, 2, 2) =  1.4052427;
+
+        sunColor = m3_mv_multiply(&lsRGB, &XYZ);
+
         const double sinThetaSun = sin(thetaSun);
         const double cosThetaSun = cos(thetaSun);
         const double sinPhiSun = sin(phiSun);
@@ -266,6 +300,7 @@ static double digamma(double theta, double gamma, double ABCDE[5])
         directionToSun.y = cosThetaSun;
         directionToSun.z = -sinThetaSun * sinPhiSun;
 
+        //NSLog(@"xyY: %lf %lf %lf lsRGB: %lf %lf %lf", xyY.x, xyY.y, xyY.z, sunColor.x, sunColor.y, sunColor.z);
         //NSLog(@"%lf %lf : %lf %lf %lf", phiSun, thetaSun, directionToSun.x, directionToSun.y, directionToSun.z);
 
         const float halfSkyResolution = ((float)skylightResolution) / (2.0f);
