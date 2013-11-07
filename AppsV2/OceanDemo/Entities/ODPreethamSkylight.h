@@ -41,7 +41,7 @@
     NPEffectVariableFloat3 * zenithColor_P;
     NPEffectVariableFloat3 * directionToSun_P;
     NPEffectVariableFloat3 * denominator_P;
-    NPEffectVariableFloat  * radiusForMaxTheta_P;
+    NPEffectVariableFloat  * radiusInPixel_P;
 }
 
 - (id) init;

@@ -3,7 +3,7 @@ effect "preetham":
 technique "preetham"
 {
     # effect variables
-    uniform float radiusForMaxTheta;
+    uniform float radiusInPixel;
     uniform vec3 directionToSun;
     uniform vec3 zenithColor;
     uniform vec3 denominator;
