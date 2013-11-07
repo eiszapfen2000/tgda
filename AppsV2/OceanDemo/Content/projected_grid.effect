@@ -36,6 +36,7 @@ technique "proj_grid_tf_feedback"
     uniform float area;
     uniform vec3 cameraPosition;
     uniform vec3 directionToSun;
+    uniform vec3 sunColor;
     uniform sampler2D heightmap
     {
         WrapS = Repeat;

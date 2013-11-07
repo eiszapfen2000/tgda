@@ -24,6 +24,7 @@
     double lastPhiSun;
     double phiSun;
     Vector3 directionToSun;
+    Vector3 sunColor;
 
     NPRenderTargetConfiguration * rtc;
     NPRenderTexture * skylightTarget;
@@ -50,6 +51,7 @@
 
 - (id < NPPTexture >) skylightTexture;
 - (Vector3) directionToSun;
+- (Vector3) sunColor;
 
 - (void) update:(double)frameTime;
 
