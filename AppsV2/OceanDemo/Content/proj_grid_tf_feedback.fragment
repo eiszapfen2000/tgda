@@ -172,7 +172,7 @@ vec2 U(vec2 zeta, vec3 v, mat3 TBN)
     vec3 f = normalize(vec3(-zeta.y, 1.0, -zeta.x)); // tangent space
     vec3 f_ws = TBN * f; // world space
     vec3 r = 2.0 * dot(f_ws, v) * f_ws - v;
-    vec2 r_projected = (r.xz / (1.0 + r.y));
+    vec2 r_projected = (vec2(r.x, -r.z) / max(1.0, (1.0 + r.y)));
 
     return r_projected;
 }
@@ -212,28 +212,30 @@ void main()
     vec2 grad = texture(gradient, texcoord).xy;
     vec3 normal = vec3(-grad.x, 1.0, grad.y);
 
-    //vec3 lightDir = vec3(1.0, 1.0, 0.0);
     vec3 lightDir = directionToSun;
     vec3 viewDir  = cameraPosition - out_ws_position;
 
+    vec3 l = normalize(lightDir);
+    vec3 v = normalize(viewDir);
+
     if (dot(viewDir, normal) < 0.0)
     {
-            normal = reflect(normal, viewDir);
+        normal = reflect(normal, v);
     }
 
-    vec3 l        = normalize(lightDir);
-    vec3 v        = normalize(viewDir);
-    vec3 n        = normalize(normal);
-    vec3 h        = normalize(v + l);
-    vec3 r        = 2.0 * dot(l, n) * n - l;
+    vec3 n = normalize(normal);
+    vec3 h = normalize(v + l);
+    vec3 r = 2.0 * dot(l, n) * n - l;
 
     //vec3 c_light = vec3(1000000);
     vec3 c_light = sunColor;
     vec3 c_diff  = vec3(0.0, 0.15, 0.25);
     vec3 c_spec  = vec3(0.02);
 
-    vec3 tx = normalize(vec3(1.0, grad.x, 0.0));
-    vec3 ty = normalize(vec3(0.0, -grad.y, 1.0));
+    //vec3 tx = normalize(vec3(1.0, grad.x, 0.0));
+    //vec3 ty = normalize(vec3(0.0, -grad.y, 1.0));
+    vec3 tx = normalize(vec3(1.0, -normal.x, 0.0));
+    vec3 ty = normalize(vec3(0.0, -normal.z, 1.0));
 
     mat3 ross = mat3(ty, n, tx);
     mat3 iross = inverse(ross);
@@ -291,6 +293,5 @@ void main()
     L_zero += brak;
 
     target = vec4(L_zero, 1.0);
-    //target = vec4(vec3(f_mean), 1.0);
 }
 
