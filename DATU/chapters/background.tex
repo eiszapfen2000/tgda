@@ -35,19 +35,6 @@ the image plane and its associated non-uniform spaced worldspace positions.}
 %  \item run the grid through the rendering pipeline as usual
 % \end{itemize}
 
-% Typically, vertices in world space are transformed to clip space through application
-% of the combined view and projection matrix. After clipping has been performed, the
-% resulting vertices are converted to normalised device coordinates by performing the
-% perspective division.
-% 
-% 
-% Clip Coordinates result from transforming Eye Coordinates by the Projection matrix.
-% Clip Coordinate space ranges from -Wc to Wc in all three axes, where Wc is the Clip
-% Coordinate W value. OpenGL clips all coordinates outside this range.
-% 
-% Perspective division performed on the Clip Coordinates produces Normalized Device
-% Coordinates, ranging from -1 to 1 in all three axes.
-
 \newcommand{\mvec}[1]{\mathbf{#1}}
 \newcommand{\mvecx}[1]{\mathbf{#1}_x}
 \newcommand{\mvecy}[1]{\mathbf{#1}_y}
@@ -86,32 +73,22 @@ which defines the space NDC reside in, namely the \textit{canonical view volume}
 a three dimensional cube centered at the origin, with a side length equal two.\\
 
 
-The clip space vertices are calculated like the following:
-Homogenise clip space coordinates, the result are normalised device coordinates.
+The projected grid, on the other hand, starts inside the canonical view volume
+and needs to transform the vertices back to world space.
 
-
-The projected grid on the other hand starts inside the canonical view volume,
-and needs to transform the vertices back to world space. The matrix used
-herefore may look like the following:
-\begin{align}
- \mathbf{M}_{inv}& = (\mathbf{M}_{proj} \cdot \mathbf{M}_{view})^{-1}\\
- \mathbf{x}_{hw}& = \mathbf{M}_{inv} \cdot \mathbf{x}_{clip}\\
- \mathbf{x}_{world}& = homogenize(\mathbf{x}_{hw})
-\end{align}
-
-\begin{align}
- \mathbf{x}_{near}& = \begin{pmatrix} x & y & -1 & 1 \end{pmatrix} && x,y \in \interval{-1}{1}\\
- \mathbf{x}_{far}& = \begin{pmatrix} x & y & 1 & 1 \end{pmatrix}
-\end{align}
-
-Apply the matrix to the vertices:
 \begin{equation}
- \mathbf{x_{w}} = \mathbf{M_{inv}} \cdot \mathbf{x_{c}}
+\label{eq:ndc_to_cs}
+ \mvec{c} = (\mvecx{n}, \mvecy{n}, \mvecz{n}, 1)^\mathsf{T}
 \end{equation}
 
-Homogenise the coordinates:
 \begin{equation}
- \mathbf{x_{h}} = (x_{w}/w_{w}, y_{w}/w_{w}, z_{w}/w_{w}, w_{w}/w_{w})
+\label{eq:cs_to_wsh}
+ \mvec{w} = (\mmat{P} \mmat{V})^\mathsf{-1} \mvec{c}
+\end{equation}
+
+\begin{equation}
+\label{eq:wsh_to_ws}
+ \mvec{x} = \frac{1}{\mvecw{w}}(\mvecx{w}, \mvecy{w}, \mvecz{w}, \mvecw{w})^\mathsf{T}
 \end{equation}
 
 To simplify matters the grid may be consist of vertices defined by
