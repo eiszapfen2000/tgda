@@ -48,23 +48,43 @@ the image plane and its associated non-uniform spaced worldspace positions.}
 % Perspective division performed on the Clip Coordinates produces Normalized Device
 % Coordinates, ranging from -1 to 1 in all three axes.
 
-Let $\mathbf{x}$ be a column vector representing the homogeneous world space
-coordinates of a vertex, $\mathbf{V}$ the view matrix and $\mathbf{P}$ the
+\newcommand{\mvec}[1]{\mathbf{#1}}
+\newcommand{\mvecx}[1]{\mathbf{#1}_x}
+\newcommand{\mvecy}[1]{\mathbf{#1}_y}
+\newcommand{\mvecz}[1]{\mathbf{#1}_z}
+\newcommand{\mvecw}[1]{\mathbf{#1}_w}
+\newcommand{\mmat}[1]{\mathbf{#1}}
+
+Let $\mvec{x}$ be a column vector representing the homogeneous world space
+coordinate of a vertex, $\mmat{V}$ the view matrix and $\mmat{P}$ the
 projection matrix, then
 \begin{equation}
- \mathbf{c} = \mathbf{P} \mathbf{V} \mathbf{x}
+\label{eq:ws_to_cs}
+ \mvec{c} = \mmat{P} \mmat{V} \mvec{x}
 \end{equation}
-where $\mathbf{c}$ lies in clip space. The three dimensional viewing volume for
-a vertex $\mathbf{c}$ in clip space is defined as
+where $\mvec{c}$ is the \textit{clip space} coordinate of $\mvec{x}$. For $\mvec{c}$ to
+be inside the view frustum defined by $\mmat{P}$, $\mvec{c}$ is required to
+meet the following condition
 \begin{equation}
- \mathbf{c}_x, \mathbf{c}_y, \mathbf{c}_z \in \interval{-\mathbf{c}_w}{\mathbf{c}_w}
+\label{eq:cs_bounds}
+ \mvecx{c}, \mvecy{c}, \mvecz{c} \in \interval{-\mvecw{c}}{\mvecw{c}}
 \end{equation}
-In case one or more of $\mathbf{c}_x$, $\mathbf{c}_y$ and $\mathbf{c}_z$ are outside
-the range defined by $\mathbf{c}_w}$, the vertex is clipped.
+where $\mvecw{c}$ is the homogeneous component of $\mvec{c}$. Next, clip space
+vertex $\mvec{c}$ is transformed by the \textit{perspective division} as follows
+\begin{equation}
+\label{eq:cs_to_ndc}
+ \mvec{n} = \frac{1}{\mvecw{c}}(\mvecx{c}, \mvecy{c}, \mvecz{c})^\mathsf{T}
+\end{equation}
+where $\mvec{n}$ corresponds to the \textit{normalised device coordinate},
+\textit{NDC} in short, of $\mvec{c}$. As one can see, equations~\ref{eq:cs_bounds}
+and~\ref{eq:cs_to_ndc} imply
+\begin{equation}
+\label{eq:ndc_bounds}
+ \mvecx{n}, \mvecy{n}, \mvecz{n} \in \interval{-1}{1}
+\end{equation}
+which defines the space NDC reside in, namely the \textit{canonical view volume},
+a three dimensional cube centered at the origin, with a side length equal two.\\
 
-\begin{equation}
- \mathbf{n} = \frac{1}{\mathbf{c}_w}(\mathbf{c}_x, \mathbf{c}_y, \mathbf{c}_z)^\mathsf{T}
-\end{equation}
 
 The clip space vertices are calculated like the following:
 Homogenise clip space coordinates, the result are normalised device coordinates.
