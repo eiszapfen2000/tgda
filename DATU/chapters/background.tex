@@ -42,14 +42,18 @@ the image plane and its associated non-uniform spaced worldspace positions.}
 \newcommand{\mvecw}[1]{\mathbf{#1}_w}
 \newcommand{\mmat}[1]{\mathbf{#1}}
 
-Let $\mvec{x}$ be a column vector representing the homogeneous world space
-coordinate of a vertex, $\mmat{V}$ the view matrix and $\mmat{P}$ the
-projection matrix, then
+Let $\mvec{x}$ be a vector representing the three dimensional carthesian
+world space coordinate of a vertex, then
+\begin{equation}
+ \mvec{w} = (\mvecx{x}, \mvecy{x}, \mvecz{x}, 1)^\mathsf{T}
+\end{equation}
+where $\mvec{w}$ is a homogeneous world space coordinate of $\mvec{x}$.
+Let $\mmat{V}$ be the view matrix and $\mmat{P}$ the projection matrix, then
 \begin{equation}
 \label{eq:ws_to_cs}
- \mvec{c} = \mmat{P} \mmat{V} \mvec{x}
+ \mvec{c} = \mmat{P} \mmat{V} \mvec{w}
 \end{equation}
-where $\mvec{c}$ is the \textit{clip space} coordinate of $\mvec{x}$. For $\mvec{c}$ to
+where $\mvec{c}$ is the \textit{clip space} coordinate of $\mvec{w}$. For $\mvec{c}$ to
 be inside the view frustum defined by $\mmat{P}$, $\mvec{c}$ is required to
 meet the following condition
 \begin{equation}
@@ -74,21 +78,25 @@ a three dimensional cube centered at the origin, with a side length equal two.\\
 
 
 The projected grid, on the other hand, starts inside the canonical view volume
-and needs to transform the vertices back to world space.
-
+and needs to transform vertices back to world space. Let $\mvec{n}$ be the
+normalised device coordinate of a vertex, then
 \begin{equation}
 \label{eq:ndc_to_cs}
  \mvec{c} = (\mvecx{n}, \mvecy{n}, \mvecz{n}, 1)^\mathsf{T}
 \end{equation}
-
+where $\mvec{c}$ is a valid representation of $\mvec{n}$ in clip space. One may choose
+a value for $\mvecw{c}$ different from $1$, making it necessary to scale $\mvecx{n}$,
+$\mvecy{n}$ and $\mvecz{n}$ accordingly. Again, let $\mmat{V}$ be the view matrix and
+$\mmat{P}$ the projection matrix, then
 \begin{equation}
 \label{eq:cs_to_wsh}
  \mvec{w} = (\mmat{P} \mmat{V})^\mathsf{-1} \mvec{c}
 \end{equation}
-
+where $\mvec{w}$ is a homogeneous world space coordinate of $\mvec{c}$. Conversion
+to three dimensional carthesian world space is accomplished as follows
 \begin{equation}
 \label{eq:wsh_to_ws}
- \mvec{x} = \frac{1}{\mvecw{w}}(\mvecx{w}, \mvecy{w}, \mvecz{w}, \mvecw{w})^\mathsf{T}
+ \mvec{x} = \frac{1}{\mvecw{w}}(\mvecx{w}, \mvecy{w}, \mvecz{w})^\mathsf{T}
 \end{equation}
 
 To simplify matters the grid may be consist of vertices defined by
