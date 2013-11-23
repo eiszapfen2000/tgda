@@ -145,10 +145,10 @@ int main (int argc, char **argv)
     glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
     // glew needs compatibility profile
     glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_FALSE);
+    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
     
     // Open a window and create its OpenGL context
-    if( !glfwOpenWindow( 1024, 1024, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
+    if( !glfwOpenWindow( 512, 512, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
     {
         NSLog(@"Failed to open GLFW window");
         glfwTerminate();
@@ -205,7 +205,7 @@ int main (int argc, char **argv)
 
     NSAutoreleasePool * rPool = [ NSAutoreleasePool new ];
 
-    const uint32_t skyResolution = 1024;
+    const uint32_t skyResolution = 512;
 
     NPRenderTargetConfiguration * rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC"  ];
     NPRenderTexture * preethamTarget  = [[ NPRenderTexture alloc ] initWithName:@"Preetham Target"  ];
@@ -348,7 +348,7 @@ int main (int argc, char **argv)
         const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
 
-        //NSLog(@"%lf %d", frameTime, fps);
+        NSLog(@"%lf %d", frameTime, fps);
 
         if ([ wheelUp activated ] == YES )
         {

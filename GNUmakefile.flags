@@ -39,6 +39,7 @@ BASIC_CFLAGS += \
 #    -Wmissing-declarations \
 
 ifeq ($(debug),no)
+    BASIC_CFLAGS += \
     -O3 -mtune=native -ffast-math -ggdb
 endif
 

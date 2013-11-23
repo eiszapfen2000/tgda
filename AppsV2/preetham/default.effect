@@ -8,8 +8,8 @@ technique "texture"
     {
         WrapS = ClampToBorder;
         WrapT = ClampToBorder;
-        MinFilter = Nearest;
-        MagFilter = Nearest;
+        MinFilter = Linear;
+        MagFilter = Linear;
     };
 
     # vertex streams
@@ -81,8 +81,8 @@ technique "tonemap_reinhard"
     {
         WrapS = ClampToBorder;
         WrapT = ClampToBorder;
-        MinFilter = Nearest;
-        MagFilter = Nearest;
+        MinFilter = Linear;
+        MagFilter = Linear;
     };
     uniform sampler2D logLuminance
     {

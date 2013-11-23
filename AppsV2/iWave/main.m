@@ -255,6 +255,7 @@ int main (int argc, char **argv)
                              0, NULL,
                              GL_TRUE);
     */
+    
 
     [[ NP Graphics ] checkForGLErrors ];
 
@@ -264,8 +265,8 @@ int main (int argc, char **argv)
     [ viewport setWidgetHeight:widgetSize.y ];
     [ viewport reset ];
 
-    const int32_t gridWidth  = 800;
-    const int32_t gridHeight = 600;
+    const int32_t gridWidth  = 400;
+    const int32_t gridHeight = 300;
     const double scaleX = ((double)gridWidth) / ((double)widgetSize.x);
     const double scaleY = ((double)gridHeight) / ((double)widgetSize.y);
 
@@ -595,8 +596,6 @@ int main (int argc, char **argv)
 
         if ( process == YES )
         {
-            deltaTime = 0.0;
-
             NSData * sourceData
                 = [ NSData dataWithBytesNoCopy:source
                                         length:sizeof(float) * gridWidth * gridHeight
@@ -753,7 +752,7 @@ int main (int argc, char **argv)
             const float alpha = 0.3;
             const float dt = 1.0f / 60.0f;
 
-            FVector2 parameters = {.x = dt, .y = alpha};
+            FVector2 parameters = {.x = deltaTime, .y = alpha};
             NPEffectVariableFloat2 * parametersV  = [ effect variableWithName:@"parameters" ];
             [ parametersV setFValue:parameters ];
             
