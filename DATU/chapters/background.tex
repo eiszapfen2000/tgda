@@ -40,11 +40,13 @@ the image plane and its associated non-uniform spaced worldspace positions.}
 \newcommand{\mvecz}[1]{\mathbf{#1}_z}
 \newcommand{\mvecw}[1]{\mathbf{#1}_w}
 \newcommand{\mmat}[1]{\mathbf{#1}}
+\newcommand{\transpose}[1]{#1^{\mathsf{T}}}
+\newcommand{\inverse}[1]{#1^{\mathsf{-1}}}
 
 Let $\mvec{x}$ be a vector representing the three dimensional carthesian
 world space coordinate of a vertex, then
 \begin{equation}
- \mvec{w} = (\mvecx{x}, \mvecy{x}, \mvecz{x}, 1)^\mathsf{T}
+ \mvec{w} = \transpose{(\mvecx{x}, \mvecy{x}, \mvecz{x}, 1)}
 \end{equation}
 where $\mvec{w}$ is a homogeneous world space coordinate of $\mvec{x}$.
 Let $\mmat{V}$ be the view matrix and $\mmat{P}$ the projection matrix, then
@@ -63,7 +65,7 @@ where $\mvecw{c}$ is the homogeneous component of $\mvec{c}$. Next, clip space
 vertex $\mvec{c}$ is transformed by the \textit{perspective division} as follows
 \begin{equation}
 \label{eq:cs_to_ndc}
- \mvec{n} = \frac{1}{\mvecw{c}}(\mvecx{c}, \mvecy{c}, \mvecz{c})^\mathsf{T}
+ \mvec{n} = \frac{1}{\mvecw{c}}\transpose{(\mvecx{c}, \mvecy{c}, \mvecz{c})}
 \end{equation}
 where $\mvec{n}$ corresponds to the \textit{normalised device coordinate},
 \textit{NDC} in short, of $\mvec{c}$. As one can see, equations~\ref{eq:cs_bounds}
@@ -81,7 +83,7 @@ and needs to transform vertices back to world space. Let $\mvec{n}$ be the
 normalised device coordinate of a vertex, then
 \begin{equation}
 \label{eq:ndc_to_cs}
- \mvec{c} = (\mvecx{n}, \mvecy{n}, \mvecz{n}, 1)^\mathsf{T}
+ \mvec{c} = \transpose{(\mvecx{n}, \mvecy{n}, \mvecz{n}, 1)}
 \end{equation}
 where $\mvec{c}$ is a valid representation of $\mvec{n}$ in clip space. One may choose
 a value for $\mvecw{c}$ different from $1$, making it necessary to scale $\mvecx{n}$,
@@ -89,13 +91,13 @@ $\mvecy{n}$ and $\mvecz{n}$ accordingly. Again, let $\mmat{V}$ be the view matri
 $\mmat{P}$ the projection matrix, then
 \begin{equation}
 \label{eq:cs_to_wsh}
- \mvec{w} = (\mmat{P} \mmat{V})^\mathsf{-1} \mvec{c}
+ \mvec{w} = \inverse{(\mmat{P} \mmat{V})} \mvec{c}
 \end{equation}
 where $\mvec{w}$ is a homogeneous world space coordinate of $\mvec{c}$. Conversion
 to three dimensional carthesian world space is accomplished as follows
 \begin{equation}
 \label{eq:wsh_to_ws}
- \mvec{x} = \frac{1}{\mvecw{w}}(\mvecx{w}, \mvecy{w}, \mvecz{w})^\mathsf{T}
+ \mvec{x} = \frac{1}{\mvecw{w}}\transpose{(\mvecx{w}, \mvecy{w}, \mvecz{w})}
 \end{equation}
 
 To simplify matters the grid may be consist of vertices defined by
