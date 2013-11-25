@@ -7,10 +7,12 @@ ODGaussianRNG.h \
 ODPFrequencySpectrumGeneration.h \
 ODPhillipsSpectrum.h \
 ODPhillipsSpectrumFloat.h \
-ODPhillipsSpectrumDouble.h
+ODPhillipsSpectrumDouble.h \
+ODAmplitude.h
 
 ODOcean_C_FILES = \
-ODGaussianRNG.c
+ODGaussianRNG.c \
+ODAmplitude.c
 
 ODOcean_OBJC_FILES = \
 ODPhillipsSpectrum.m \
