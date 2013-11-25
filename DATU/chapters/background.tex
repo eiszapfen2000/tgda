@@ -6,20 +6,21 @@ Figure~\ref{fig:projectedgrid} illustrates the difference between a classic
 world space approach and the projected grid.
 \begin{figure}[h]
 \centering
-\subbottom[Increase]
+\subbottom[Classic]
 {
 \includegraphics[scale=0.75]{figures/ProjectedGridVsWorldSpace.pdf}
 \label{fig:subfigprojgrid1}
 }
-\subbottom[Increase]
+\subbottom[Projected Grid]
 {
 \includegraphics[scale=0.75]{figures/ProjectedGridUniform.pdf}
 \label{fig:subfigprojgrid2}
 }
-\caption[The Projected Grid Concept]{The image on the left shows an uniform
-grid in worldspace, its projection onto the image plane is not uniformly
-spaced though. The image on the right on the other hand depicts an uniform grid on
-the image plane and its associated non-uniform spaced worldspace positions.}
+\caption{The image on the left shows an uniform grid in worldspace,
+its projection onto the image plane is not uniformly spaced though.
+The image on the right on the other hand depicts an uniform grid on
+the image plane and its associated non-uniform spaced worldspace
+positions.}
 \label{fig:projectedgrid}
 \end{figure}
 
@@ -43,6 +44,7 @@ the image plane and its associated non-uniform spaced worldspace positions.}
 \newcommand{\transpose}[1]{#1^{\mathsf{T}}}
 \newcommand{\inverse}[1]{#1^{\mathsf{-1}}}
 
+\subsection{Coordinate Systems}
 Let $\mvec{x}$ be a vector representing the three dimensional carthesian
 world space coordinate of a vertex, then
 \begin{equation}
@@ -68,14 +70,35 @@ vertex $\mvec{c}$ is transformed by the \textit{perspective division} as follows
  \mvec{n} = \frac{1}{\mvecw{c}}\transpose{(\mvecx{c}, \mvecy{c}, \mvecz{c})}
 \end{equation}
 where $\mvec{n}$ corresponds to the \textit{normalised device coordinate},
-\textit{NDC} in short, of $\mvec{c}$. As one can see, equations~\ref{eq:cs_bounds}
+\textit{NDC} in short, of $\mvec{c}$.
+%
+%
+\begin{figure}
+\centering
+\subbottom[View Frustum]
+{
+\includegraphics[width=0.4\textwidth]{figures/ProjectiveFrustum.pdf}
+\label{fig:subfig_proj_frustum}
+}
+\subbottom[Canonical view volume]
+{
+\includegraphics[width=0.4\textwidth]{figures/CanonicalCube.pdf}
+\label{fig:subfig_canonical_view_volume}
+}
+\caption{Left: An example view frustum in view space. Right: The same view frustum
+after applying projection and perspective division.}
+\label{fig:proj_frustum_ndc}
+\end{figure}
+%
+%
+As one can see, equations~\ref{eq:cs_bounds}
 and~\ref{eq:cs_to_ndc} imply
 \begin{equation}
 \label{eq:ndc_bounds}
  \mvecx{n}, \mvecy{n}, \mvecz{n} \in \interval{-1}{1}
 \end{equation}
 which defines the space NDC reside in, namely the \textit{canonical view volume},
-a three dimensional cube centered at the origin, with a side length equal two.\\
+see Figure~\ref{fig:proj_frustum_ndc}.\\
 
 
 The projected grid, on the other hand, starts inside the canonical view volume
@@ -100,6 +123,7 @@ to three dimensional carthesian world space is accomplished as follows
  \mvec{x} = \frac{1}{\mvecw{w}}\transpose{(\mvecx{w}, \mvecy{w}, \mvecz{w})}
 \end{equation}
 
+\subsection{Projection onto Plane}
 To simplify matters the grid may be consist of vertices defined by
 two-dimensional normalised device coordinates. In order to project the grid
 onto a plane a ray has to be setup for every vertex.
