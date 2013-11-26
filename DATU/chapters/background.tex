@@ -1,4 +1,5 @@
 \section{The Projected Grid}
+\label{sec_projected_grid}
 The projected grid is based on a simple concept: in order to achieve an
 uniform distribution of details on the image plane, a uniformly spaced grid is
 created in post-perspective space and transformed back to world space.
@@ -45,6 +46,7 @@ positions.}
 \newcommand{\inverse}[1]{#1^{\mathsf{-1}}}
 
 \subsection{Coordinate Systems}
+\label{sec:coordinate_systems}
 Let $\mvec{x}$ be a vector representing the three dimensional carthesian
 world space coordinate of a vertex, then
 \begin{equation}
@@ -124,23 +126,56 @@ to three dimensional carthesian world space is accomplished as follows
 \end{equation}
 
 \subsection{Projection onto Plane}
-
+As noted before, the vertices of the projected grid are represented as normalised
+device coordinates. Assuming the plane the grid shall be projected on is specified
+in world space coordinates, the following steps need to be computed for each vertex:
+\begin{itemize}
+ \item Transform vertex from canonical view volume to world space
+ \item Setup vertex specific ray
+ \item Intersect ray with target plane to compute actual position
+\end{itemize}
+Step one is already covered by Section~\ref{sec:coordinate_systems}. Step two
+requires to setup a ray for each vertex, which implies both a position and a
+direction. The position we already have, but to create a direction we need two
+different positions. The solution is rather straightforward: let $\mvec{n}$ be
+a \textit{two dimensional} vector representing the \textit{X} and \textit{Y}
+components of a position in normalised device coordinates, then
 \begin{align}
-\label{eq:plane_and_ray}
- \mvec{p}\transpose{\mvec{n}} - d & = 0 & \mvec{p} & = \mvec{a} + t\mvec{b}
+ \mvec{a} & = (\mvecx{n}, \mvecy{n}, -1, 1)\\
+ \mvec{b} & = (\mvecx{n}, \mvecy{n}, +1, 1)
 \end{align}
+where $\mvec{a}$ corresponds to $\mvec{n}$ on the \textit{near plane} in clip space,
+and $\mvec{b}$ to $\mvec{n}$ on the \textit{far plane} in clip space. Let $\mvec{d}$
+and $\mvec{e}$ be the carthesian world space positions of $\mvec{a}$ and $\mvec{b}$
+respectively, then
+\begin{equation}
+ \label{eq:proj_grid_ray}
+ \mvec{p} = \mvec{d} + t(\mvec{e} - \mvec{d})
+\end{equation}
+where $\mvec{p}$ represents a ray starting at point $\mvec{d}$, pointing in direction
+$(\mvec{e} - \mvec{d})$ with variable parameter $t$ controlling the actual position on
+the ray.\\
 
-\begin{align}
+Step three is about intersecting ray $\mvec{p}$ resulting from step two with the target plane.
+We define the target plane using the \textit{Hesse normal form} as follows
+\begin{equation}
+\label{eq:proj_grid_plane}
+ \mvec{p}\transpose{\mvec{n}} - d = 0
+\end{equation}
+where $\mvec{n}$ is the plane's normal vector with unit length and $d$ the plane's distance
+from the origin. Next, we insert $\mvec{p}$ from equation~\ref{eq:proj_grid_ray}
+into equation~\ref{eq:proj_grid_plane}, resulting in
+%
+\begin{gather}
 \label{eq:plane_and_ray_intersection}
-(\mvec{a} + t\mvec{b})\transpose{\mvec{n}} - d & = 0\notag\\
-\mvec{a}\transpose{\mvec{n}} + t\mvec{b}\transpose{\mvec{n}} - d & = 0\notag\\
-\Longrightarrow t & = \cfrac{d - \mvec{a}\transpose{\mvec{n}}}{\mvec{b}\transpose{\mvec{n}}}
-\end{align}
+(\mvec{d} + t(\mvec{e} - \mvec{d})\transpose{\mvec{n}} - d = 0\\
+\mvec{d}\transpose{\mvec{n}} + t(\mvec{e} - \mvec{d})\transpose{\mvec{n}} - d = 0\\
+\intertext{solve for $t$}
+t = \cfrac{d - \mvec{d}\transpose{\mvec{n}}}{(\mvec{e} - \mvec{d})\transpose{\mvec{n}}}
+\end{gather}
+%
+where $t$ in combination with equation~\ref{eq:proj_grid_ray} gives the intersection of
+the ray with the plane. If $(\mvec{e} - \mvec{d})\transpose{\mvec{n}} = 0$, then there
+is no intersection.
 
-To simplify matters the grid may be consist of vertices defined by
-two-dimensional normalised device coordinates. In order to project the grid
-onto a plane a ray has to be setup for every vertex.
-
-postprojection coordinates transformed to worldspace
-grid on near and far plane, intersection with the y=0 plane
 decouple projector from camera
