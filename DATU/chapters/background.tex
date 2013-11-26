@@ -124,6 +124,19 @@ to three dimensional carthesian world space is accomplished as follows
 \end{equation}
 
 \subsection{Projection onto Plane}
+
+\begin{align}
+\label{eq:plane_and_ray}
+ \mvec{p}\transpose{\mvec{n}} - d & = 0 & \mvec{p} & = \mvec{a} + t\mvec{b}
+\end{align}
+
+\begin{align}
+\label{eq:plane_and_ray_intersection}
+(\mvec{a} + t\mvec{b})\transpose{\mvec{n}} - d & = 0\notag\\
+\mvec{a}\transpose{\mvec{n}} + t\mvec{b}\transpose{\mvec{n}} - d & = 0\notag\\
+\Longrightarrow t & = \cfrac{d - \mvec{a}\transpose{\mvec{n}}}{\mvec{b}\transpose{\mvec{n}}}
+\end{align}
+
 To simplify matters the grid may be consist of vertices defined by
 two-dimensional normalised device coordinates. In order to project the grid
 onto a plane a ray has to be setup for every vertex.
