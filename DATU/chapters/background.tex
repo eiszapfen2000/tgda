@@ -174,8 +174,6 @@ into equation~\ref{eq:proj_grid_plane}, resulting in
 t = \cfrac{d - \mvec{d}\transpose{\mvec{n}}}{(\mvec{e} - \mvec{d})\transpose{\mvec{n}}}
 \end{gather}
 %
-where $t$ in combination with equation~\ref{eq:proj_grid_ray} gives the intersection of
-the ray with the plane. If $(\mvec{e} - \mvec{d})\transpose{\mvec{n}} = 0$, then there
-is no intersection.
-
-decouple projector from camera
+where $t$ in combination with equation~\ref{eq:proj_grid_ray} gives the point of intersection
+between the ray and the plane. In case $(\mvec{e} - \mvec{d})\transpose{\mvec{n}} = 0$, meaning the
+ray is parallel to the plane, then there is no point of intersection.
