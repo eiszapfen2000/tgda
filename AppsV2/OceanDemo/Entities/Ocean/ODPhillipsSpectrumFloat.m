@@ -1,6 +1,7 @@
 #import "Foundation/NSException.h"
 #import "Core/Timer/NPTimer.h"
 #import "ODConstants.h"
+#import "ODAmplitude.h"
 #import "ODPhillipsSpectrumFloat.h"
 
 #define FFTW_FREE(_pointer)        do {void *_ptr=(void *)(_pointer); fftwf_free(_ptr); _pointer=NULL; } while (0)
@@ -18,6 +19,7 @@ static inline float omegaf_for_k(FVector2 const * const k)
     return sqrtf(EARTH_ACCELERATIONf * fv2_v_length(k));
 }
 
+/*
 static float amplitudef_cartesian(const FVector2 windDirectionNormalised,
                                   const FVector2 k, const float A,
                                   const float L, const float l)
@@ -33,10 +35,10 @@ static float amplitudef_cartesian(const FVector2 windDirectionNormalised,
     const FVector2 kNormalised = { .x = k.x / kLength, .y = k.y / kLength };
 
     float amplitude = A;
-/*
-    Use exp because glibc on Ubuntu 10.04 does not contain a optimised
-    version of expf yet, expf is way slower than exp
-*/
+
+    //Use exp because glibc on Ubuntu 10.04 does not contain a optimised
+    //version of expf yet, expf is way slower than exp
+
     amplitude = amplitude * (float)exp(( -1.0 / (kSquareLength * L * L)) - (kSquareLength * l * l));
     amplitude = amplitude * ( 1.0f / (kSquareLength * kSquareLength) );
 
@@ -82,6 +84,7 @@ static float amplitudef_polar(const FVector2 windDirectionNormalised,
     return amplitudef_cartesian(windDirectionNormalised,
                                 kv, A, L, l);
 }
+*/
 
 static NPTimer * timer = nil;
 
@@ -183,7 +186,7 @@ static NPTimer * timer = nil;
             const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
 
             const FVector2 k = {kx, ky};
-            const float s = amplitudef_cartesian(windDirectionNormalised, k, A, L, l);
+            const float s = amplitudef_phillips_cartesian(windDirectionNormalised, k, A, L, l);
             const float a = sqrtf(s);
 
             varianceX += (kx * kx) * (dkx * dky) * s;
@@ -204,7 +207,7 @@ static NPTimer * timer = nil;
         const float dk = (k * 1.001f) - k;
 
         // eq A3
-        float sk = amplitudef_cartesian_omnidirectional(k, A, L, l);
+        float sk = amplitudef_phillips_cartesian_omnidirectional(k, A, L, l);
 
         // eq A6
         mss += kSquare * sk * dk;

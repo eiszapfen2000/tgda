@@ -186,6 +186,7 @@ float amplitudef_unified_cartesian_omnidirectional(
     // friction velocity
     // eq 66
     const float z_0 = 3.7e-5f * ((U10 * U10) / g) * powf(U10 / c_p, 0.9f);
+
     // eq 61, solve for u* with z=10.0
     const float u_star = U10 * kappa / logf(10.0f / z_0);
 
