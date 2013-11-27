@@ -16,29 +16,15 @@
     self = [ super initWithName:newName ];
 
     floatGenerator  = [[ ODPhillipsSpectrumFloat  alloc ] init ];
-    doubleGenerator = [[ ODPhillipsSpectrumDouble alloc ] init ];
 
     return self;
 }
 
 - (void) dealloc
 {
-    DESTROY(doubleGenerator);
     DESTROY(floatGenerator);
 
     [ super dealloc ];
-}
-
-- (OdFrequencySpectrumDouble) generateDoubleFrequencySpectrum:(const ODSpectrumSettings)settings
-                                                       atTime:(const double)time
-{
-    return [ doubleGenerator generateDoubleFrequencySpectrum:settings atTime:time ];
-}
-
-- (OdFrequencySpectrumDouble) generateDoubleFrequencySpectrumHC:(const ODSpectrumSettings)settings
-                                                         atTime:(const double)time
-{
-    return [ doubleGenerator generateDoubleFrequencySpectrumHC:settings atTime:time ];
 }
 
 - (OdFrequencySpectrumFloat) generateFloatFrequencySpectrum:(const ODSpectrumSettings)settings

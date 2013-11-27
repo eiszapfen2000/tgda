@@ -5,10 +5,9 @@
 @class ODPhillipsSpectrumFloat;
 @class ODPhillipsSpectrumDouble;
 
-@interface ODPhillipsSpectrum : NPObject < ODPFrequencySpectrumGenerationDouble, ODPFrequencySpectrumGenerationFloat >
+@interface ODPhillipsSpectrum : NPObject < ODPFrequencySpectrumGenerationFloat >
 {
     ODPhillipsSpectrumFloat * floatGenerator;
-    ODPhillipsSpectrumDouble * doubleGenerator;
 }
 
 - (id) init;
