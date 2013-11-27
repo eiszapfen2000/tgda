@@ -142,6 +142,7 @@ static inline float omegaf_for_k(FVector2 const * const k)
          && currentGeometry.gradientResolution.x == lastGeometry.gradientResolution.x
          && currentGeometry.gradientResolution.y == lastGeometry.gradientResolution.y
          && force == NO
+         #warning FIXME - comparison must be done in some other way
          && memcmp(&lastGeneratorSettings, &currentGeneratorSettings, sizeof(ODGeneratorSettings)) == 0 )
     {
         return;
@@ -170,13 +171,12 @@ static inline float omegaf_for_k(FVector2 const * const k)
         }
     }
 
-    NSLog(@"%d %d", H0Resolution.x, H0Resolution.y);
-
     if ( generateRandomNumbers == YES )
     {
         odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * H0Resolution.x * H0Resolution.y);
     }
 
+    #warning FIXME - do not call unconditionally
     [ self generatePhillipsSpectrum:force ];
 
     /*
