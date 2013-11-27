@@ -7,7 +7,6 @@ ODGaussianRNG.h \
 ODPFrequencySpectrumGeneration.h \
 ODPhillipsSpectrum.h \
 ODPhillipsSpectrumFloat.h \
-ODPhillipsSpectrumDouble.h \
 ODAmplitude.h
 
 ODOcean_C_FILES = \
@@ -16,8 +15,7 @@ ODAmplitude.c
 
 ODOcean_OBJC_FILES = \
 ODPhillipsSpectrum.m \
-ODPhillipsSpectrumFloat.m \
-ODPhillipsSpectrumDouble.m
+ODPhillipsSpectrumFloat.m
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make
