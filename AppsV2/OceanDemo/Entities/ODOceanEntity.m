@@ -236,17 +236,18 @@ static size_t index_for_resolution(int32_t resolution)
 
         if ( [[ NSThread currentThread ] isCancelled ] == NO )
         {
-            ODSpectrumSettings settings;
+            ODSpectrumGeometry geometry;
+            ODGeneratorSettings generatorSettings;
             NSUInteger geometryResIndex;
             NSUInteger gradientResIndex;
 
             {
                 [ settingsMutex lock ];
 
-                settings.windDirection = defaultWindDirection;
-                settings.windSpeed = generatorWindSpeed;
-                settings.size = (Vector2){generatorSize, generatorSize};
-                settings.dampening = generatorDampening;
+                generatorSettings.base.phillips.windDirection = defaultWindDirection;
+                generatorSettings.base.phillips.windSpeed = generatorWindSpeed;
+                geometry.size = (Vector2){generatorSize, generatorSize};
+                generatorSettings.base.phillips.dampening = generatorDampening;
                 geometryResIndex = generatorGeometryResolutionIndex;
                 gradientResIndex = generatorGradientResolutionIndex;
 
@@ -255,17 +256,18 @@ static size_t index_for_resolution(int32_t resolution)
 
             const int32_t geometryRes = resolutions[geometryResIndex];
             const int32_t gradientRes = resolutions[gradientResIndex];
-            settings.geometryResolution = (IVector2){geometryRes, geometryRes};
-            settings.gradientResolution = (IVector2){gradientRes, gradientRes};
+            geometry.geometryResolution = (IVector2){geometryRes, geometryRes};
+            geometry.gradientResolution = (IVector2){gradientRes, gradientRes};
 
             //NSLog(@"%d %d", geometryRes, gradientRes);
 
             [ timer update ];
 
             OdFrequencySpectrumFloat complexSpectrum
-                = [ s generateFloatFrequencySpectrum:settings
-                                              atTime:generationTime
-                                generateBaseGeometry:NO ];
+                = [ s generateFloatSpectrumWithGeometry:geometry
+                                              generator:generatorSettings
+                                                 atTime:generationTime
+                                   generateBaseGeometry:NO ];
 
             [ timer update ];
 
