@@ -1,7 +1,6 @@
 #import "Core/NPEngineCore.h"
 #import "Core/Timer/NPTimer.h"
 #import "ODPhillipsSpectrumFloat.h"
-#import "ODPhillipsSpectrumDouble.h"
 #import "ODPhillipsSpectrum.h"
 
 @implementation ODPhillipsSpectrum
