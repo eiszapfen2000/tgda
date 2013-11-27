@@ -26,26 +26,32 @@
     [ super dealloc ];
 }
 
-- (OdFrequencySpectrumFloat) generateFloatFrequencySpectrum:(const ODSpectrumSettings)settings
-                                            atTime:(const float)time
-                              generateBaseGeometry:(BOOL)generateBaseGeometry
+- (OdFrequencySpectrumFloat)
+    generateFloatSpectrumWithGeometry:(ODSpectrumGeometry)geometry
+                            generator:(ODGeneratorSettings)generatorSettings
+                               atTime:(const float)time
+                 generateBaseGeometry:(BOOL)generateBaseGeometry
 {
     return
         [ floatGenerator
-            generateFloatFrequencySpectrum:settings
-                                    atTime:time
-                      generateBaseGeometry:generateBaseGeometry ];
+            generateFloatSpectrumWithGeometry:geometry
+                                    generator:generatorSettings
+                                       atTime:time
+                         generateBaseGeometry:generateBaseGeometry ];
 }
 
-- (OdFrequencySpectrumFloat) generateFloatFrequencySpectrumHC:(const ODSpectrumSettings)settings
-                                              atTime:(const float)time
-                                generateBaseGeometry:(BOOL)generateBaseGeometry
+- (OdFrequencySpectrumFloat)
+    generateFloatSpectrumHCWithGeometry:(ODSpectrumGeometry)geometry
+                              generator:(ODGeneratorSettings)generatorSettings
+                                 atTime:(const float)time
+                   generateBaseGeometry:(BOOL)generateBaseGeometry
 {
     return
         [ floatGenerator
-            generateFloatFrequencySpectrumHC:settings
-                                      atTime:time
-                        generateBaseGeometry:generateBaseGeometry ];
+            generateFloatSpectrumHCWithGeometry:geometry
+                                      generator:generatorSettings
+                                         atTime:time
+                           generateBaseGeometry:generateBaseGeometry ];
 }
 
 @end

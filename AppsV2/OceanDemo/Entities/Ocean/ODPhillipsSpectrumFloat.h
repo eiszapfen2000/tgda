@@ -12,8 +12,10 @@
     OdGaussianRng * gaussianRNG;
     float maxMeanSlopeVariance;
     float effectiveMeanSlopeVariance;
-    ODSpectrumSettings lastSettings;
-    ODSpectrumSettings currentSettings;
+    ODSpectrumGeometry lastGeometry;
+    ODSpectrumGeometry currentGeometry;
+    ODGeneratorSettings lastGeneratorSettings;
+    ODGeneratorSettings currentGeneratorSettings;
 }
 
 - (id) init;

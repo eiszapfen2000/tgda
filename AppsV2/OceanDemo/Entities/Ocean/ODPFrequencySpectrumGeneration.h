@@ -2,16 +2,49 @@
 #import "Core/Math/NpMath.h"
 #import "fftw3.h"
 
-typedef struct ODSpectrumSettings
+typedef enum ODSpectrumGenerator
+{
+    Phillips = 0,
+    Unified  = 1
+}
+ODSpectrumGenerator;
+
+typedef struct ODSpectrumGeometry
 {
     IVector2 geometryResolution;
     IVector2 gradientResolution;
     Vector2  size;
+}
+ODSpectrumGeometry;
+
+typedef struct ODPhillipsGeneratorSettings
+{
+    ODSpectrumGenerator generator;
     Vector2  windDirection;
     double   windSpeed;
     double   dampening;
 }
-ODSpectrumSettings;
+ODPhillipsGeneratorSettings;
+
+typedef struct ODUnifiedGeneratorSettings
+{
+    ODSpectrumGenerator generator;
+    double   U10;
+    double   Omega;
+}
+ODUnifiedGeneratorSettings;
+
+typedef struct ODGeneratorSettings
+{
+    ODSpectrumGenerator generatorType;
+    union
+    {
+        ODPhillipsGeneratorSettings phillips;
+        ODUnifiedGeneratorSettings  unified;
+    }
+    base;
+}
+ODGeneratorSettings;
 
 typedef struct OdFrequencySpectrumDouble
 {
@@ -44,6 +77,7 @@ typedef struct OdFrequencySpectrumFloat
 }
 OdFrequencySpectrumFloat;
 
+/*
 @protocol ODPFrequencySpectrumGenerationDouble
 
 - (OdFrequencySpectrumDouble) generateDoubleFrequencySpectrum:(const ODSpectrumSettings)settings
@@ -55,17 +89,22 @@ OdFrequencySpectrumFloat;
                                                     ;
 
 @end
+*/
 
 @protocol ODPFrequencySpectrumGenerationFloat
 
-- (OdFrequencySpectrumFloat) generateFloatFrequencySpectrum:(const ODSpectrumSettings)settings
-                                            atTime:(const float)time
-                              generateBaseGeometry:(BOOL)generateBaseGeometry
-                                                  ;
+- (OdFrequencySpectrumFloat)
+    generateFloatSpectrumWithGeometry:(ODSpectrumGeometry)geometry
+                            generator:(ODGeneratorSettings)generatorSettings
+                               atTime:(const float)time
+                 generateBaseGeometry:(BOOL)generateBaseGeometry
+                                     ;
 
-- (OdFrequencySpectrumFloat) generateFloatFrequencySpectrumHC:(const ODSpectrumSettings)settings
-                                              atTime:(const float)time
-                                generateBaseGeometry:(BOOL)generateBaseGeometry
-                                                    ;
+- (OdFrequencySpectrumFloat)
+    generateFloatSpectrumHCWithGeometry:(ODSpectrumGeometry)geometry
+                              generator:(ODGeneratorSettings)generatorSettings
+                                 atTime:(const float)time
+                   generateBaseGeometry:(BOOL)generateBaseGeometry
+                                       ;
 
 @end

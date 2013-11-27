@@ -19,134 +19,51 @@ static inline float omegaf_for_k(FVector2 const * const k)
     return sqrtf(EARTH_ACCELERATIONf * fv2_v_length(k));
 }
 
-/*
-static float amplitudef_cartesian(const FVector2 windDirectionNormalised,
-                                  const FVector2 k, const float A,
-                                  const float L, const float l)
-{
-    const float kSquareLength = k.x * k.x + k.y * k.y;
-
-    if ( kSquareLength == 0.0f )
-    {
-        return 0.0f;
-    }
-
-    const float kLength = sqrtf(kSquareLength);
-    const FVector2 kNormalised = { .x = k.x / kLength, .y = k.y / kLength };
-
-    float amplitude = A;
-
-    //Use exp because glibc on Ubuntu 10.04 does not contain a optimised
-    //version of expf yet, expf is way slower than exp
-
-    amplitude = amplitude * (float)exp(( -1.0 / (kSquareLength * L * L)) - (kSquareLength * l * l));
-    amplitude = amplitude * ( 1.0f / (kSquareLength * kSquareLength) );
-
-    const float kdotw
-        = kNormalised.x * windDirectionNormalised.x + kNormalised.y * windDirectionNormalised.y;
-
-    amplitude = amplitude * kdotw * kdotw * kdotw * kdotw;
-
-    return amplitude;
-}
-
-static float amplitudef_cartesian_omnidirectional(
-      const float k, const float A,
-      const float L, const float l)
-{
-    if ( k == 0.0f )
-    {
-        return 0.0f;
-    }
-
-    float amplitude = A;
-    amplitude = amplitude * (float)exp(( -1.0 / (k * k * L * L)) - (k * k * l * l));
-    amplitude = amplitude * ( 1.0f / (k * k * k * k) );
-
-    // This is dependent on the dot(k, wind) term in the directional version
-    // 0.75 * PI represents the integral over dot(k, wind) ^ 4
-    amplitude = amplitude * ( 0.75f * MATH_PIf );
-    amplitude = amplitude * k;
-
-    return amplitude;
-}
-
-static float amplitudef_polar(const FVector2 windDirectionNormalised,
-                              const float k, const float phi, const float A,
-                              const float L, const float l)
-{
-    // rotate (1,0) by phi
-
-    const float x = cosf(phi);
-    const float y = sinf(phi);
-    const FVector2 kv = {.x = x * k, .y = y * k};
-
-    return amplitudef_cartesian(windDirectionNormalised,
-                                kv, A, L, l);
-}
-*/
-
-static NPTimer * timer = nil;
-
 @interface ODPhillipsSpectrumFloat (Private)
 
 - (void) generateH0:(BOOL)force;
+- (void) generatePhillipsSpectrum:(BOOL)force;
+- (void) generateUnifiedSpectrum:(BOOL)force;
 
 @end
 
 @implementation ODPhillipsSpectrumFloat (Private)
 
-- (void) generateH0:(BOOL)force
+- (void) generateUnifiedSpectrum:(BOOL)force
 {
-    if ( currentSettings.size.x == lastSettings.size.x
-         && currentSettings.size.y == lastSettings.size.y
-         && currentSettings.windDirection.x == lastSettings.windDirection.x
-         && currentSettings.windDirection.y == lastSettings.windDirection.y
-         && currentSettings.windSpeed == lastSettings.windSpeed
-         && currentSettings.dampening == lastSettings.dampening
-         && currentSettings.geometryResolution.x == lastSettings.geometryResolution.x
-         && currentSettings.geometryResolution.y == lastSettings.geometryResolution.y
-         && currentSettings.gradientResolution.x == lastSettings.gradientResolution.x
-         && currentSettings.gradientResolution.y == lastSettings.gradientResolution.y
+}
+
+- (void) generatePhillipsSpectrum:(BOOL)force
+{
+    const ODPhillipsGeneratorSettings lastSettings
+        = lastGeneratorSettings.base.phillips;
+
+    const ODPhillipsGeneratorSettings settings
+        = currentGeneratorSettings.base.phillips;
+
+    /*
+    if ( settings.windDirection.x == lastSettings.windDirection.x
+         && settings.windDirection.y == lastSettings.windDirection.y
+         && settings.windSpeed == lastSettings.windSpeed
+         && settings.dampening == lastSettings.dampening
          && force == NO )
     {
         return;
     }
-
-    BOOL generateRandomNumbers = force;
-
-    if ( currentSettings.geometryResolution.x != lastSettings.geometryResolution.x
-         || currentSettings.geometryResolution.y != lastSettings.geometryResolution.y
-         || currentSettings.gradientResolution.x != lastSettings.gradientResolution.x
-         || currentSettings.gradientResolution.y != lastSettings.gradientResolution.y )
-    {
-        IVector2 resolution;
-        resolution.x = MAX(currentSettings.geometryResolution.x, currentSettings.gradientResolution.x);
-        resolution.y = MAX(currentSettings.geometryResolution.y, currentSettings.gradientResolution.y);
-
-        if ( resolution.x != H0Resolution.x || resolution.y != H0Resolution.y )
-        {
-            FFTW_SAFE_FREE(H0);
-            SAFE_FREE(randomNumbers);
-	        H0 = fftwf_alloc_complex(resolution.x * resolution.y);
-	        randomNumbers = ALLOC_ARRAY(double, 2 * resolution.x * resolution.y);
-
-            H0Resolution = resolution;
-            generateRandomNumbers = YES;
-        }
-    }
+    */
 
     const IVector2 resolution = H0Resolution;
-    const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
-    const FVector2 windDirection = (FVector2){currentSettings.windDirection.x, currentSettings.windDirection.y};
-    const FVector2 windDirectionNormalised = fv2_v_normalised(&windDirection);
-    const float    windSpeed = currentSettings.windSpeed;
-    const float    dampening = currentSettings.dampening;
-
-    assert(dampening < 1.0f);
 
     FFTW_SAFE_FREE(baseSpectrum);
     baseSpectrum = fftwf_alloc_real(resolution.x * resolution.y);
+
+    const FVector2 size = (FVector2){currentGeometry.size.x, currentGeometry.size.y};
+    const FVector2 windDirection = (FVector2){settings.windDirection.x, settings.windDirection.y};
+    const FVector2 windDirectionNormalised = fv2_v_normalised(&windDirection);
+    const float    windSpeed = settings.windSpeed;
+    const float    dampening = settings.dampening;
+
+    assert(dampening < 1.0f);
 
     const float A = PHILLIPS_CONSTANT * (1.0 / (size.x * size.y));
     const float L = (windSpeed * windSpeed) / EARTH_ACCELERATIONf;
@@ -161,13 +78,8 @@ static NPTimer * timer = nil;
     const float dkx = MATH_2_MUL_PIf * dsizex;
     const float dky = MATH_2_MUL_PIf * dsizey;
 
-    if ( generateRandomNumbers == YES )
-    {
-        odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * resolution.x * resolution.y);
-    }
-
-    float varianceX = 0.0;
-    float varianceY = 0.0;
+    float varianceX  = 0.0;
+    float varianceY  = 0.0;
     float varianceXY = 0.0;
 
     for ( int32_t i = 0; i < resolution.y; i++ )
@@ -215,6 +127,130 @@ static NPTimer * timer = nil;
 
     maxMeanSlopeVariance = mss;
     effectiveMeanSlopeVariance = varianceXY;
+}
+
+- (void) generateH0:(BOOL)force
+{
+    if ( currentGeometry.size.x == lastGeometry.size.x
+         && currentGeometry.size.y == lastGeometry.size.y
+         //&& currentSettings.windDirection.x == lastSettings.windDirection.x
+         //&& currentSettings.windDirection.y == lastSettings.windDirection.y
+         //&& currentSettings.windSpeed == lastSettings.windSpeed
+         //&& currentSettings.dampening == lastSettings.dampening
+         && currentGeometry.geometryResolution.x == lastGeometry.geometryResolution.x
+         && currentGeometry.geometryResolution.y == lastGeometry.geometryResolution.y
+         && currentGeometry.gradientResolution.x == lastGeometry.gradientResolution.x
+         && currentGeometry.gradientResolution.y == lastGeometry.gradientResolution.y
+         && force == NO
+         && memcmp(&lastGeneratorSettings, &currentGeneratorSettings, sizeof(ODGeneratorSettings)) == 0 )
+    {
+        return;
+    }
+
+    BOOL generateRandomNumbers = force;
+
+    if ( currentGeometry.geometryResolution.x != lastGeometry.geometryResolution.x
+         || currentGeometry.geometryResolution.y != lastGeometry.geometryResolution.y
+         || currentGeometry.gradientResolution.x != lastGeometry.gradientResolution.x
+         || currentGeometry.gradientResolution.y != lastGeometry.gradientResolution.y )
+    {
+        IVector2 resolution;
+        resolution.x = MAX(currentGeometry.geometryResolution.x, currentGeometry.gradientResolution.x);
+        resolution.y = MAX(currentGeometry.geometryResolution.y, currentGeometry.gradientResolution.y);
+
+        if ( resolution.x != H0Resolution.x || resolution.y != H0Resolution.y )
+        {
+            FFTW_SAFE_FREE(H0);
+            SAFE_FREE(randomNumbers);
+	        H0 = fftwf_alloc_complex(resolution.x * resolution.y);
+	        randomNumbers = ALLOC_ARRAY(double, 2 * resolution.x * resolution.y);
+
+            H0Resolution = resolution;
+            generateRandomNumbers = YES;
+        }
+    }
+
+    NSLog(@"%d %d", H0Resolution.x, H0Resolution.y);
+
+    if ( generateRandomNumbers == YES )
+    {
+        odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * H0Resolution.x * H0Resolution.y);
+    }
+
+    [ self generatePhillipsSpectrum:force ];
+
+    /*
+    const FVector2 size = (FVector2){currentGeometry.size.x, currentGeometry.size.y};
+    const FVector2 windDirection = (FVector2){currentSettings.windDirection.x, currentSettings.windDirection.y};
+    const FVector2 windDirectionNormalised = fv2_v_normalised(&windDirection);
+    const float    windSpeed = currentSettings.windSpeed;
+    const float    dampening = currentSettings.dampening;
+
+    assert(dampening < 1.0f);
+
+    const float A = PHILLIPS_CONSTANT * (1.0 / (size.x * size.y));
+    const float L = (windSpeed * windSpeed) / EARTH_ACCELERATIONf;
+    const float l = dampening * L;
+
+    const float n = -(resolution.x / 2.0f);
+    const float m =  (resolution.y / 2.0f);
+
+    const float dsizex = 1.0f / size.x;
+    const float dsizey = 1.0f / size.y;
+
+    const float dkx = MATH_2_MUL_PIf * dsizex;
+    const float dky = MATH_2_MUL_PIf * dsizey;
+
+    float varianceX  = 0.0;
+    float varianceY  = 0.0;
+    float varianceXY = 0.0;
+
+    for ( int32_t i = 0; i < resolution.y; i++ )
+    {
+        for ( int32_t j = 0; j < resolution.x; j++ )
+        {
+            const float xi_r = (float)randomNumbers[2 * (j + resolution.x * i)    ];
+            const float xi_i = (float)randomNumbers[2 * (j + resolution.x * i) + 1];
+            //const float xi_r = (float)odgaussianrng_get_next(gaussianRNG);
+            //const float xi_i = (float)odgaussianrng_get_next(gaussianRNG);
+
+            const float di = i;
+            const float dj = j;
+
+            const float kx = (n + dj) * MATH_2_MUL_PIf * dsizex;
+            const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
+
+            const FVector2 k = {kx, ky};
+            const float s = amplitudef_phillips_cartesian(windDirectionNormalised, k, A, L, l);
+            const float a = sqrtf(s);
+
+            varianceX += (kx * kx) * (dkx * dky) * s;
+            varianceY += (ky * ky) * (dkx * dky) * s;
+            varianceXY += (kx * kx + ky * ky) * (dkx * dky) * s;
+
+            baseSpectrum[j + resolution.x * i] = s;
+            H0[j + resolution.x * i][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
+            H0[j + resolution.x * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
+        }
+    }
+
+    float mss = 0.0f;
+
+    for ( float k = 0.001f; k < 1000.0f; k = k * 1.001f )
+    {
+        const float kSquare = k * k;
+        const float dk = (k * 1.001f) - k;
+
+        // eq A3
+        float sk = amplitudef_phillips_cartesian_omnidirectional(k, A, L, l);
+
+        // eq A6
+        mss += kSquare * sk * dk;
+    }
+
+    maxMeanSlopeVariance = mss;
+    effectiveMeanSlopeVariance = varianceXY;
+    */
 
     //NSLog(@"%f %f %f %f", varianceX, varianceY, varianceXY, varianceX + varianceY);
     //NSLog(@"%f", mss);
@@ -283,17 +319,6 @@ static NPTimer * timer = nil;
 
 @implementation ODPhillipsSpectrumFloat
 
-+ (void) initialize
-{
-	if ( [ ODPhillipsSpectrumFloat class ] == self )
-    {
-        if ( timer == nil )
-        {
-            timer = [[ NPTimer alloc ] initWithName:@"SpectrumTimer" ];
-        }
-    }
-}
-
 - (id) init
 {
     return [ self initWithName:@"Phillips Spectrum Float" ];
@@ -312,19 +337,21 @@ static NPTimer * timer = nil;
 
     maxMeanSlopeVariance = effectiveMeanSlopeVariance = 0.0f;
 
-    lastSettings.geometryResolution = iv2_max();
-    lastSettings.gradientResolution = iv2_max();
-    lastSettings.size = v2_max();
-    lastSettings.windDirection = v2_max();
-    lastSettings.windSpeed = DBL_MAX;
-    lastSettings.dampening = DBL_MAX;
+    lastGeometry.geometryResolution = iv2_max();
+    lastGeometry.gradientResolution = iv2_max();
+    lastGeometry.size = v2_max();
 
-    currentSettings.geometryResolution = iv2_zero();
-    currentSettings.gradientResolution = iv2_zero();
-    currentSettings.size = v2_zero();
-    currentSettings.windDirection = v2_zero();
-    currentSettings.windSpeed = 0.0;
-    currentSettings.dampening = 0.0;
+    currentGeometry.geometryResolution = iv2_zero();
+    currentGeometry.gradientResolution = iv2_zero();
+    currentGeometry.size = v2_zero();
+
+    lastGeneratorSettings.base.phillips.windDirection = v2_max();
+    lastGeneratorSettings.base.phillips.windSpeed = DBL_MAX;
+    lastGeneratorSettings.base.phillips.dampening = DBL_MAX;
+
+    currentGeneratorSettings.base.phillips.windDirection = v2_zero();
+    currentGeneratorSettings.base.phillips.windSpeed = 0.0;
+    currentGeneratorSettings.base.phillips.dampening = 0.0;
 
     return self;
 }
@@ -342,9 +369,9 @@ static NPTimer * timer = nil;
 - (OdFrequencySpectrumFloat) generateHAtTime:(const float)time
 {
     const IVector2 resolution = H0Resolution;
-    const IVector2 geometryResolution = currentSettings.geometryResolution;
-    const IVector2 gradientResolution = currentSettings.gradientResolution;
-    const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
+    const IVector2 geometryResolution = currentGeometry.geometryResolution;
+    const IVector2 gradientResolution = currentGeometry.gradientResolution;
+    const FVector2 size = (FVector2){currentGeometry.size.x, currentGeometry.size.y};
 
 	fftwf_complex * frequencySpectrum
         = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
@@ -506,7 +533,7 @@ static NPTimer * timer = nil;
         = { .timestamp     = time,
             .geometryResolution = geometryResolution,
             .gradientResolution = gradientResolution,
-            .size          = currentSettings.size,
+            .size          = currentGeometry.size,
             .baseSpectrum  = NULL,
             .maxMeanSlopeVariance = 0.0f,
             .effectiveMeanSlopeVariance = 0.0f,
@@ -526,6 +553,7 @@ static NPTimer * timer = nil;
     return [ self generateHAtTime:1.0f ];
 }
 
+/*
 - (OdFrequencySpectrumFloat) generateHHCAtTime:(const float)time
 {
     const IVector2 resolution = currentSettings.gradientResolution;
@@ -786,6 +814,7 @@ static NPTimer * timer = nil;
 
     return result;
 }
+*/
 
 - (OdFrequencySpectrumFloat) generateTimeIndependentHHC
 {
@@ -864,80 +893,73 @@ right way.
     }
 }
 
-- (OdFrequencySpectrumFloat) generateFloatFrequencySpectrum:(const ODSpectrumSettings)settings
-                                                     atTime:(const float)time
-                                       generateBaseGeometry:(BOOL)generateBaseGeometry
+- (OdFrequencySpectrumFloat)
+    generateFloatSpectrumWithGeometry:(ODSpectrumGeometry)geometry
+                            generator:(ODGeneratorSettings)generatorSettings
+                               atTime:(const float)time
+                 generateBaseGeometry:(BOOL)generateBaseGeometry
 {
-    currentSettings = settings;
+    currentGeometry = geometry;
+    currentGeneratorSettings = generatorSettings;
 
-    [ timer update];
     [ self generateH0:generateBaseGeometry ];
-    [ timer update];
-
-    const double h0time = [ timer frameTime ];
 
     OdFrequencySpectrumFloat result = [ self generateHAtTime:time ];
-    [ timer update ];
-
-    const double htime = [ timer frameTime ];
 
     [ self swapFrequencySpectrum:result.waveSpectrum
-                      resolution:currentSettings.geometryResolution
+                      resolution:currentGeometry.geometryResolution
                        quadrants:ODQuadrant_1_3 ];
 
     [ self swapFrequencySpectrum:result.waveSpectrum
-                      resolution:currentSettings.geometryResolution
+                      resolution:currentGeometry.geometryResolution
                        quadrants:ODQuadrant_2_4 ];
 
     if ( result.gradientX != NULL )
     {
         [ self swapFrequencySpectrum:result.gradientX
-                          resolution:currentSettings.gradientResolution
+                          resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_1_3 ];
 
         [ self swapFrequencySpectrum:result.gradientX
-                          resolution:currentSettings.gradientResolution
+                          resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_2_4 ];
     }
 
     if ( result.gradientZ != NULL )
     {
         [ self swapFrequencySpectrum:result.gradientZ
-                          resolution:currentSettings.gradientResolution
+                          resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_1_3 ];
 
         [ self swapFrequencySpectrum:result.gradientZ
-                          resolution:currentSettings.gradientResolution
+                          resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_2_4 ];
     }
 
     if ( result.displacementX != NULL )
     {
         [ self swapFrequencySpectrum:result.displacementX
-                          resolution:currentSettings.geometryResolution
+                          resolution:currentGeometry.geometryResolution
                            quadrants:ODQuadrant_1_3 ];
 
         [ self swapFrequencySpectrum:result.displacementX
-                          resolution:currentSettings.geometryResolution
+                          resolution:currentGeometry.geometryResolution
                            quadrants:ODQuadrant_2_4 ];
     }
 
     if ( result.displacementZ != NULL )
     {
         [ self swapFrequencySpectrum:result.displacementZ
-                          resolution:currentSettings.geometryResolution
+                          resolution:currentGeometry.geometryResolution
                            quadrants:ODQuadrant_1_3 ];
 
         [ self swapFrequencySpectrum:result.displacementZ
-                          resolution:currentSettings.geometryResolution
+                          resolution:currentGeometry.geometryResolution
                            quadrants:ODQuadrant_2_4 ];
     }
 
-    [ timer update ];
-
-    lastSettings = currentSettings;
-
-    const double swaptime = [ timer frameTime ];
+    lastGeometry = currentGeometry;
+    lastGeneratorSettings = currentGeneratorSettings;
 
     //NSLog(@"H0: %f H:%f Swap:%f", h0time, htime, swaptime);
 
@@ -954,11 +976,14 @@ right way.
     return result;
 }
 
-- (OdFrequencySpectrumFloat) generateFloatFrequencySpectrumHC:(const ODSpectrumSettings)settings
-                                                       atTime:(const float)time
-                                         generateBaseGeometry:(BOOL)generateBaseGeometry
+- (OdFrequencySpectrumFloat)
+    generateFloatSpectrumHCWithGeometry:(ODSpectrumGeometry)geometry
+                              generator:(ODGeneratorSettings)generatorSettings
+                                 atTime:(const float)time
+                   generateBaseGeometry:(BOOL)generateBaseGeometry
 {
-    currentSettings = settings;
+    currentGeometry = geometry;
+    currentGeneratorSettings = generatorSettings;
 
     [ self generateH0:generateBaseGeometry ];
     OdFrequencySpectrumFloat result= [ self generateHHCAtTime:time ];
@@ -973,7 +998,8 @@ right way.
         maxMeanSlopeVariance = effectiveMeanSlopeVariance = 0.0f;
     }
 
-    lastSettings = currentSettings;
+    lastGeometry = currentGeometry;
+    lastGeneratorSettings = currentGeneratorSettings;
 
     return result;
 }
