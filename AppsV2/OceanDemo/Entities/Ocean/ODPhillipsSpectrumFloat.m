@@ -41,17 +41,6 @@ static inline float omegaf_for_k(FVector2 const * const k)
     const ODPhillipsGeneratorSettings settings
         = currentGeneratorSettings.phillips;
 
-    /*
-    if ( settings.windDirection.x == lastSettings.windDirection.x
-         && settings.windDirection.y == lastSettings.windDirection.y
-         && settings.windSpeed == lastSettings.windSpeed
-         && settings.dampening == lastSettings.dampening
-         && force == NO )
-    {
-        return;
-    }
-    */
-
     const IVector2 resolution = H0Resolution;
 
     FFTW_SAFE_FREE(baseSpectrum);
@@ -127,135 +116,8 @@ static inline float omegaf_for_k(FVector2 const * const k)
 
     maxMeanSlopeVariance = mss;
     effectiveMeanSlopeVariance = varianceXY;
-}
 
-- (void) generateH0:(BOOL)force
-{
-    if ( currentGeometry.size.x == lastGeometry.size.x
-         && currentGeometry.size.y == lastGeometry.size.y
-         //&& currentSettings.windDirection.x == lastSettings.windDirection.x
-         //&& currentSettings.windDirection.y == lastSettings.windDirection.y
-         //&& currentSettings.windSpeed == lastSettings.windSpeed
-         //&& currentSettings.dampening == lastSettings.dampening
-         && currentGeometry.geometryResolution.x == lastGeometry.geometryResolution.x
-         && currentGeometry.geometryResolution.y == lastGeometry.geometryResolution.y
-         && currentGeometry.gradientResolution.x == lastGeometry.gradientResolution.x
-         && currentGeometry.gradientResolution.y == lastGeometry.gradientResolution.y
-         && force == NO
-         #warning FIXME - comparison must be done in some other way
-         && memcmp(&lastGeneratorSettings, &currentGeneratorSettings, sizeof(ODGeneratorSettings)) == 0 )
-    {
-        return;
-    }
-
-    BOOL generateRandomNumbers = force;
-
-    if ( currentGeometry.geometryResolution.x != lastGeometry.geometryResolution.x
-         || currentGeometry.geometryResolution.y != lastGeometry.geometryResolution.y
-         || currentGeometry.gradientResolution.x != lastGeometry.gradientResolution.x
-         || currentGeometry.gradientResolution.y != lastGeometry.gradientResolution.y )
-    {
-        IVector2 resolution;
-        resolution.x = MAX(currentGeometry.geometryResolution.x, currentGeometry.gradientResolution.x);
-        resolution.y = MAX(currentGeometry.geometryResolution.y, currentGeometry.gradientResolution.y);
-
-        if ( resolution.x != H0Resolution.x || resolution.y != H0Resolution.y )
-        {
-            FFTW_SAFE_FREE(H0);
-            SAFE_FREE(randomNumbers);
-	        H0 = fftwf_alloc_complex(resolution.x * resolution.y);
-	        randomNumbers = ALLOC_ARRAY(double, 2 * resolution.x * resolution.y);
-
-            H0Resolution = resolution;
-            generateRandomNumbers = YES;
-        }
-    }
-
-    if ( generateRandomNumbers == YES )
-    {
-        odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * H0Resolution.x * H0Resolution.y);
-    }
-
-    #warning FIXME - do not call unconditionally
-    [ self generatePhillipsSpectrum:force ];
-
-    /*
-    const FVector2 size = (FVector2){currentGeometry.size.x, currentGeometry.size.y};
-    const FVector2 windDirection = (FVector2){currentSettings.windDirection.x, currentSettings.windDirection.y};
-    const FVector2 windDirectionNormalised = fv2_v_normalised(&windDirection);
-    const float    windSpeed = currentSettings.windSpeed;
-    const float    dampening = currentSettings.dampening;
-
-    assert(dampening < 1.0f);
-
-    const float A = PHILLIPS_CONSTANT * (1.0 / (size.x * size.y));
-    const float L = (windSpeed * windSpeed) / EARTH_ACCELERATIONf;
-    const float l = dampening * L;
-
-    const float n = -(resolution.x / 2.0f);
-    const float m =  (resolution.y / 2.0f);
-
-    const float dsizex = 1.0f / size.x;
-    const float dsizey = 1.0f / size.y;
-
-    const float dkx = MATH_2_MUL_PIf * dsizex;
-    const float dky = MATH_2_MUL_PIf * dsizey;
-
-    float varianceX  = 0.0;
-    float varianceY  = 0.0;
-    float varianceXY = 0.0;
-
-    for ( int32_t i = 0; i < resolution.y; i++ )
-    {
-        for ( int32_t j = 0; j < resolution.x; j++ )
-        {
-            const float xi_r = (float)randomNumbers[2 * (j + resolution.x * i)    ];
-            const float xi_i = (float)randomNumbers[2 * (j + resolution.x * i) + 1];
-            //const float xi_r = (float)odgaussianrng_get_next(gaussianRNG);
-            //const float xi_i = (float)odgaussianrng_get_next(gaussianRNG);
-
-            const float di = i;
-            const float dj = j;
-
-            const float kx = (n + dj) * MATH_2_MUL_PIf * dsizex;
-            const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
-
-            const FVector2 k = {kx, ky};
-            const float s = amplitudef_phillips_cartesian(windDirectionNormalised, k, A, L, l);
-            const float a = sqrtf(s);
-
-            varianceX += (kx * kx) * (dkx * dky) * s;
-            varianceY += (ky * ky) * (dkx * dky) * s;
-            varianceXY += (kx * kx + ky * ky) * (dkx * dky) * s;
-
-            baseSpectrum[j + resolution.x * i] = s;
-            H0[j + resolution.x * i][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
-            H0[j + resolution.x * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
-        }
-    }
-
-    float mss = 0.0f;
-
-    for ( float k = 0.001f; k < 1000.0f; k = k * 1.001f )
-    {
-        const float kSquare = k * k;
-        const float dk = (k * 1.001f) - k;
-
-        // eq A3
-        float sk = amplitudef_phillips_cartesian_omnidirectional(k, A, L, l);
-
-        // eq A6
-        mss += kSquare * sk * dk;
-    }
-
-    maxMeanSlopeVariance = mss;
-    effectiveMeanSlopeVariance = varianceXY;
-    */
-
-    //NSLog(@"%f %f %f %f", varianceX, varianceY, varianceXY, varianceX + varianceY);
-    //NSLog(@"%f", mss);
-
-    /*
+/*
     const float deltaVariance = mss - varianceXY;
 
     const int32_t slopeVarianceResolution = 4;
@@ -312,6 +174,43 @@ static inline float omegaf_for_k(FVector2 const * const k)
         }
     }
     */
+}
+
+- (void) generateH0:(BOOL)force
+{
+    if ( geometries_equal(&currentGeometry, &lastGeometry) == YES
+         && generator_settings_equal(&currentGeneratorSettings, &lastGeneratorSettings) == YES
+         && force == NO )
+    {
+        return;
+    }
+
+    BOOL generateRandomNumbers = force;
+
+    if ( geometries_equal_resolution(&currentGeometry, &lastGeometry) == NO )
+    {
+        IVector2 resolution;
+        resolution.x = MAX(currentGeometry.geometryResolution.x, currentGeometry.gradientResolution.x);
+        resolution.y = MAX(currentGeometry.geometryResolution.y, currentGeometry.gradientResolution.y);
+
+        if ( resolution.x != H0Resolution.x || resolution.y != H0Resolution.y )
+        {
+            FFTW_SAFE_FREE(H0);
+            SAFE_FREE(randomNumbers);
+	        H0 = fftwf_alloc_complex(resolution.x * resolution.y);
+	        randomNumbers = ALLOC_ARRAY(double, 2 * resolution.x * resolution.y);
+
+            H0Resolution = resolution;
+            generateRandomNumbers = YES;
+        }
+    }
+
+    if ( generateRandomNumbers == YES )
+    {
+        odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * H0Resolution.x * H0Resolution.y);
+    }
+
+    [ self generatePhillipsSpectrum:force ];  
 }
 
 @end
