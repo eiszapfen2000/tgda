@@ -36,10 +36,10 @@ static inline float omegaf_for_k(FVector2 const * const k)
 - (void) generatePhillipsSpectrum:(BOOL)force
 {
     const ODPhillipsGeneratorSettings lastSettings
-        = lastGeneratorSettings.base.phillips;
+        = lastGeneratorSettings.phillips;
 
     const ODPhillipsGeneratorSettings settings
-        = currentGeneratorSettings.base.phillips;
+        = currentGeneratorSettings.phillips;
 
     /*
     if ( settings.windDirection.x == lastSettings.windDirection.x
@@ -345,13 +345,13 @@ static inline float omegaf_for_k(FVector2 const * const k)
     currentGeometry.gradientResolution = iv2_zero();
     currentGeometry.size = v2_zero();
 
-    lastGeneratorSettings.base.phillips.windDirection = v2_max();
-    lastGeneratorSettings.base.phillips.windSpeed = DBL_MAX;
-    lastGeneratorSettings.base.phillips.dampening = DBL_MAX;
+    lastGeneratorSettings.phillips.windDirection = v2_max();
+    lastGeneratorSettings.phillips.windSpeed = DBL_MAX;
+    lastGeneratorSettings.phillips.dampening = DBL_MAX;
 
-    currentGeneratorSettings.base.phillips.windDirection = v2_zero();
-    currentGeneratorSettings.base.phillips.windSpeed = 0.0;
-    currentGeneratorSettings.base.phillips.dampening = 0.0;
+    currentGeneratorSettings.phillips.windDirection = v2_zero();
+    currentGeneratorSettings.phillips.windSpeed = 0.0;
+    currentGeneratorSettings.phillips.dampening = 0.0;
 
     return self;
 }

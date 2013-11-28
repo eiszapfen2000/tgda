@@ -1,5 +1,6 @@
 #import "Core/Basics/NpBasics.h"
 #import "Core/Math/NpMath.h"
+#import "Core/NPObject/NPObject.h"
 #import "fftw3.h"
 
 typedef enum ODSpectrumGenerator
@@ -17,9 +18,12 @@ typedef struct ODSpectrumGeometry
 }
 ODSpectrumGeometry;
 
+BOOL geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
+BOOL geometries_equal_size(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
+BOOL geometries_equal_resolution(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
+
 typedef struct ODPhillipsGeneratorSettings
 {
-    ODSpectrumGenerator generator;
     Vector2  windDirection;
     double   windSpeed;
     double   dampening;
@@ -28,7 +32,6 @@ ODPhillipsGeneratorSettings;
 
 typedef struct ODUnifiedGeneratorSettings
 {
-    ODSpectrumGenerator generator;
     double   U10;
     double   Omega;
 }
@@ -41,10 +44,13 @@ typedef struct ODGeneratorSettings
     {
         ODPhillipsGeneratorSettings phillips;
         ODUnifiedGeneratorSettings  unified;
-    }
-    base;
+    };
 }
 ODGeneratorSettings;
+
+BOOL phillips_settings_equal(const ODPhillipsGeneratorSettings * pOne, const ODPhillipsGeneratorSettings * pTwo);
+BOOL unified_settings_equal(const ODUnifiedGeneratorSettings * pOne, const ODUnifiedGeneratorSettings * pTwo);
+BOOL generator_settings_equal(const ODGeneratorSettings * pOne, const ODGeneratorSettings * pTwo);
 
 typedef struct OdFrequencySpectrumDouble
 {

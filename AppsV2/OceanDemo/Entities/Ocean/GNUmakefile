@@ -14,6 +14,7 @@ ODGaussianRNG.c \
 ODAmplitude.c
 
 ODOcean_OBJC_FILES = \
+ODPFrequencySpectrumGeneration.m \
 ODPhillipsSpectrum.m \
 ODPhillipsSpectrumFloat.m
 
