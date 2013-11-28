@@ -35,9 +35,6 @@ static inline float omegaf_for_k(FVector2 const * const k)
 
 - (void) generatePhillipsSpectrum:(BOOL)force
 {
-    const ODPhillipsGeneratorSettings lastSettings
-        = lastGeneratorSettings.phillips;
-
     const ODPhillipsGeneratorSettings settings
         = currentGeneratorSettings.phillips;
 
@@ -90,8 +87,8 @@ static inline float omegaf_for_k(FVector2 const * const k)
             const float s = amplitudef_phillips_cartesian(windDirectionNormalised, k, A, L, l);
             const float a = sqrtf(s);
 
-            varianceX += (kx * kx) * (dkx * dky) * s;
-            varianceY += (ky * ky) * (dkx * dky) * s;
+            varianceX  += (kx * kx) * (dkx * dky) * s;
+            varianceY  += (ky * ky) * (dkx * dky) * s;
             varianceXY += (kx * kx + ky * ky) * (dkx * dky) * s;
 
             baseSpectrum[j + resolution.x * i] = s;
@@ -178,8 +175,8 @@ static inline float omegaf_for_k(FVector2 const * const k)
 
 - (void) generateH0:(BOOL)force
 {
-    if ( geometries_equal(&currentGeometry, &lastGeometry) == YES
-         && generator_settings_equal(&currentGeneratorSettings, &lastGeneratorSettings) == YES
+    if ( geometries_equal(&currentGeometry, &lastGeometry) == true
+         && generator_settings_equal(&currentGeneratorSettings, &lastGeneratorSettings) == true
          && force == NO )
     {
         return;
@@ -187,7 +184,7 @@ static inline float omegaf_for_k(FVector2 const * const k)
 
     BOOL generateRandomNumbers = force;
 
-    if ( geometries_equal_resolution(&currentGeometry, &lastGeometry) == NO )
+    if ( geometries_equal_resolution(&currentGeometry, &lastGeometry) == false)
     {
         IVector2 resolution;
         resolution.x = MAX(currentGeometry.geometryResolution.x, currentGeometry.gradientResolution.x);
