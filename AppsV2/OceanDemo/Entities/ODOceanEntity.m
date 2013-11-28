@@ -244,6 +244,7 @@ static size_t index_for_resolution(int32_t resolution)
             {
                 [ settingsMutex lock ];
 
+                generatorSettings.generatorType = Phillips;
                 generatorSettings.phillips.windDirection = defaultWindDirection;
                 generatorSettings.phillips.windSpeed = generatorWindSpeed;
                 geometry.size = (Vector2){generatorSize, generatorSize};
