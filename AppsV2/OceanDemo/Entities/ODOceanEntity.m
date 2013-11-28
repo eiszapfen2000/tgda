@@ -244,10 +244,10 @@ static size_t index_for_resolution(int32_t resolution)
             {
                 [ settingsMutex lock ];
 
-                generatorSettings.base.phillips.windDirection = defaultWindDirection;
-                generatorSettings.base.phillips.windSpeed = generatorWindSpeed;
+                generatorSettings.phillips.windDirection = defaultWindDirection;
+                generatorSettings.phillips.windSpeed = generatorWindSpeed;
                 geometry.size = (Vector2){generatorSize, generatorSize};
-                generatorSettings.base.phillips.dampening = generatorDampening;
+                generatorSettings.phillips.dampening = generatorDampening;
                 geometryResIndex = generatorGeometryResolutionIndex;
                 gradientResIndex = generatorGradientResolutionIndex;
 
