@@ -2,6 +2,7 @@
 #define _NP_BASICS_TYPES_H_
 
 #include <stddef.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <limits.h>
 #include <float.h>
