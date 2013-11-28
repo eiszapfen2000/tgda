@@ -22,18 +22,90 @@ static inline float omegaf_for_k(FVector2 const * const k)
 @interface ODPhillipsSpectrumFloat (Private)
 
 - (void) generateH0:(BOOL)force;
-- (void) generatePhillipsSpectrum:(BOOL)force;
-- (void) generateUnifiedSpectrum:(BOOL)force;
+- (void) generatePhillipsSpectrum;
+- (void) generateUnifiedSpectrum;
 
 @end
 
 @implementation ODPhillipsSpectrumFloat (Private)
 
-- (void) generateUnifiedSpectrum:(BOOL)force
+- (void) generateUnifiedSpectrum
 {
+    const ODUnifiedGeneratorSettings settings
+        = currentGeneratorSettings.unified;
+
+    const IVector2 resolution = H0Resolution;
+
+    FFTW_SAFE_FREE(baseSpectrum);
+    baseSpectrum = fftwf_alloc_real(resolution.x * resolution.y);
+
+    const FVector2 size = (FVector2){currentGeometry.size.x, currentGeometry.size.y};
+    const float U10 = settings.U10;
+    const float Omega = settings.Omega;
+
+    NSLog(@"%f %f", U10, Omega);
+
+
+    const float n = -(resolution.x / 2.0f);
+    const float m =  (resolution.y / 2.0f);
+
+    const float dsizex = 1.0f / size.x;
+    const float dsizey = 1.0f / size.y;
+
+    const float dkx = MATH_2_MUL_PIf * dsizex;
+    const float dky = MATH_2_MUL_PIf * dsizey;
+
+    float varianceX  = 0.0;
+    float varianceY  = 0.0;
+    float varianceXY = 0.0;
+
+    for ( int32_t i = 0; i < resolution.y; i++ )
+    {
+        for ( int32_t j = 0; j < resolution.x; j++ )
+        {
+            const float xi_r = (float)randomNumbers[2 * (j + resolution.x * i)    ];
+            const float xi_i = (float)randomNumbers[2 * (j + resolution.x * i) + 1];
+
+            const float di = i;
+            const float dj = j;
+
+            const float kx = (n + dj) * MATH_2_MUL_PIf * dsizex;
+            const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
+
+            const FVector2 k = {kx, ky};
+            const float s = MAX(0.0f, amplitudef_unified_cartesian(k, U10, Omega));
+            const float a = sqrtf(s);
+
+            varianceX  += (kx * kx) * (dkx * dky) * s;
+            varianceY  += (ky * ky) * (dkx * dky) * s;
+            varianceXY += (kx * kx + ky * ky) * (dkx * dky) * s;
+
+            baseSpectrum[j + resolution.x * i] = s;
+            H0[j + resolution.x * i][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
+            H0[j + resolution.x * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
+        }
+    }
+
+    float mss = 0.0f;
+
+    for ( float k = 0.001f; k < 1000.0f; k = k * 1.001f )
+    {
+        const float kSquare = k * k;
+        const float dk = (k * 1.001f) - k;
+
+        // eq A3
+        float sk = amplitudef_unified_cartesian_omnidirectional(k, U10, Omega);
+
+        // eq A6
+        mss += kSquare * sk * dk;
+    }
+
+    maxMeanSlopeVariance = mss;
+    effectiveMeanSlopeVariance = varianceXY;
+
 }
 
-- (void) generatePhillipsSpectrum:(BOOL)force
+- (void) generatePhillipsSpectrum
 {
     const ODPhillipsGeneratorSettings settings
         = currentGeneratorSettings.phillips;
@@ -207,7 +279,21 @@ static inline float omegaf_for_k(FVector2 const * const k)
         odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * H0Resolution.x * H0Resolution.y);
     }
 
-    [ self generatePhillipsSpectrum:force ];  
+    switch ( currentGeneratorSettings.generatorType )
+    {
+        case Phillips:
+        {
+            [ self generatePhillipsSpectrum ];
+            break;
+        }
+
+        case Unified:
+        {
+            [ self generateUnifiedSpectrum ];
+            break;
+        }
+    }
+
 }
 
 @end
