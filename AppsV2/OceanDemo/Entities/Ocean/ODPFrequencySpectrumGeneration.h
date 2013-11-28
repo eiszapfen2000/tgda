@@ -18,9 +18,9 @@ typedef struct ODSpectrumGeometry
 }
 ODSpectrumGeometry;
 
-BOOL geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
-BOOL geometries_equal_size(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
-BOOL geometries_equal_resolution(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
+bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
+bool geometries_equal_size(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
+bool geometries_equal_resolution(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
 
 typedef struct ODPhillipsGeneratorSettings
 {
@@ -48,9 +48,9 @@ typedef struct ODGeneratorSettings
 }
 ODGeneratorSettings;
 
-BOOL phillips_settings_equal(const ODPhillipsGeneratorSettings * pOne, const ODPhillipsGeneratorSettings * pTwo);
-BOOL unified_settings_equal(const ODUnifiedGeneratorSettings * pOne, const ODUnifiedGeneratorSettings * pTwo);
-BOOL generator_settings_equal(const ODGeneratorSettings * pOne, const ODGeneratorSettings * pTwo);
+bool phillips_settings_equal(const ODPhillipsGeneratorSettings * pOne, const ODPhillipsGeneratorSettings * pTwo);
+bool unified_settings_equal(const ODUnifiedGeneratorSettings * pOne, const ODUnifiedGeneratorSettings * pTwo);
+bool generator_settings_equal(const ODGeneratorSettings * pOne, const ODGeneratorSettings * pTwo);
 
 typedef struct OdFrequencySpectrumDouble
 {
