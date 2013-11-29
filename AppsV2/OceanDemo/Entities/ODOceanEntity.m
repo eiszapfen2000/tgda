@@ -67,6 +67,7 @@ typedef struct OdSpectrumVariance
 }
 OdSpectrumVariance;
 
+static const NSUInteger defaultSpectrumType = 0;
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
 static const double defaultSize = 80.0;
@@ -244,11 +245,14 @@ static size_t index_for_resolution(int32_t resolution)
             {
                 [ settingsMutex lock ];
 
-                generatorSettings.generatorType = Phillips;
-                generatorSettings.phillips.windDirection = defaultWindDirection;
-                generatorSettings.phillips.windSpeed = generatorWindSpeed;
+                generatorSettings.generatorType = Unified;
+                //generatorSettings.generatorType = Phillips;
+                //generatorSettings.phillips.windDirection = defaultWindDirection;
+                //generatorSettings.phillips.windSpeed = generatorWindSpeed;
+                generatorSettings.unified.U10 = generatorWindSpeed;
+                generatorSettings.unified.Omega = 0.84;
                 geometry.size = (Vector2){generatorSize, generatorSize};
-                generatorSettings.phillips.dampening = generatorDampening;
+                //generatorSettings.phillips.dampening = generatorDampening;
                 geometryResIndex = generatorGeometryResolutionIndex;
                 gradientResIndex = generatorGradientResolutionIndex;
 
@@ -532,6 +536,9 @@ static NSUInteger od_variance_size(const void * item)
     lastGeometryResolutionIndex = lastGradientResolutionIndex = ULONG_MAX;
     geometryResolutionIndex = generatorGeometryResolutionIndex = defaultGeometryResolutionIndex;
     gradientResolutionIndex = generatorGradientResolutionIndex = defaultGradientResolutionIndex;
+
+    lastSpectrumType = ULONG_MAX;
+    spectrumType = generatorSpectrumType = defaultSpectrumType;
 
     windDirection = defaultWindDirection;
 

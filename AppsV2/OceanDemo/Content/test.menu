@@ -88,7 +88,7 @@
             Type = "ODSelectionGroupItem";
             Label = "BRAK";
             Alignment = "TopRight";
-            Position = ("30", "30" );
+            Position = ("20", "5" );
             Size = ( "40", "40" );
             TextSize = "16";
             ItemSize = ("40", "40");
@@ -104,7 +104,7 @@
             Type = "ODSelectionGroupItem";
             Label = "BRAK";
             Alignment = "TopRight";
-            Position = ("30", "180" );
+            Position = ("20", "155" );
             Size = ( "40", "40" );
             TextSize = "16";
             ItemSize = ("40", "40");
@@ -115,29 +115,32 @@
             TargetProperty = "gradientResolutionIndex";
         };
 
+        PSpectrumType =
+        {
+            Type = "ODSelectionGroupItem";
+            Label = "BRAK";
+            Alignment = "TopRight";
+            Position = ("15", "305" );
+            Size = ( "40", "40" );
+            TextSize = "16";
+            ItemSize = ("45", "45");
+            Spacing = ("5", "5");
+            Layout = ("2", "1");
+            Labels = ("Phillips", "Unified");
+            TargetObject = "Ocean";
+            TargetProperty = "spectrumType";
+        };
 
         PAnimation =
         {
             Type = "ODButtonItem";
             Label = "Animation";
             Alignment = "TopRight";
-            Position = ("30", "330" );
+            Position = ("20", "370" );
             Size = ( "85", "20" );
             TextSize = "16";
             TargetObject = "Ocean";
             TargetProperty = "animated";
-        };
-
-        PDirection =
-        {
-            Type = "ODWindDirectionItem";
-            Label = "DIR";
-            Alignment = "TopRight";
-            Position = ("30", "370" );
-            Size = ( "85", "85" );
-            TextSize = "16";
-            TargetObject = "Ocean";
-            TargetProperty = "windDirection";
         };
 
         PSliderWindSpeed =
@@ -145,7 +148,7 @@
             Type = "ODSliderItem";
             Label = "Wind Speed";
             Alignment = "TopRight";
-            Position = ("30", "465" );
+            Position = ("20", "405" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
@@ -161,7 +164,7 @@
             Type = "ODSliderItem";
             Label = "Tile Area";
             Alignment = "TopRight";
-            Position = ("30", "495" );
+            Position = ("20", "435" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "1.0";
@@ -177,7 +180,7 @@
             Type = "ODSliderItem";
             Label = "Dampening Factor";
             Alignment = "TopRight";
-            Position = ("30", "525" );
+            Position = ("20", "465" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
