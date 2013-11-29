@@ -26,6 +26,10 @@ typedef struct FVector4
 }
 FVector4;
 
+struct Vector2;
+struct Vector3;
+struct Vector4;
+
 extern FVector3 * NP_WORLDF_X_AXIS;
 extern FVector3 * NP_WORLDF_Y_AXIS;
 extern FVector3 * NP_WORLDF_Z_AXIS;
@@ -55,6 +59,7 @@ float fv2_v_length(const FVector2 * const v);
 FVector2 fv2_zero(void);
 FVector2 fv2_min(void);
 FVector2 fv2_max(void);
+FVector2 fv2_v_from_v2(const struct Vector2 * const d);
 FVector2 fv2_v_inverted(const FVector2 * const v);
 FVector2 fv2_v_normalised(const FVector2 * const v);
 FVector2 fv2_vv_add(const FVector2 * const v, const FVector2 * const w);
