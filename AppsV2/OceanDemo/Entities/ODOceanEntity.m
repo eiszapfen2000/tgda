@@ -245,14 +245,30 @@ static size_t index_for_resolution(int32_t resolution)
             {
                 [ settingsMutex lock ];
 
-                generatorSettings.generatorType = Unified;
-                //generatorSettings.generatorType = Phillips;
-                //generatorSettings.phillips.windDirection = defaultWindDirection;
-                //generatorSettings.phillips.windSpeed = generatorWindSpeed;
-                generatorSettings.unified.U10 = generatorWindSpeed;
-                generatorSettings.unified.Omega = 0.84;
+                const ODSpectrumGenerator generatorType
+                     = (ODSpectrumGenerator)generatorSpectrumType;
+
+                switch ( generatorType )
+                {
+                    case Phillips:
+                    {
+                        generatorSettings.generatorType = Phillips;
+                        generatorSettings.phillips.windDirection = defaultWindDirection;
+                        generatorSettings.phillips.windSpeed = generatorWindSpeed;
+                        generatorSettings.phillips.dampening = generatorDampening;
+                        break;
+                    }
+
+                    case Unified:
+                    {
+                        generatorSettings.generatorType = Unified;
+                        generatorSettings.unified.U10 = generatorWindSpeed;
+                        generatorSettings.unified.Omega = 0.84;
+                        break;
+                    }
+                }
+
                 geometry.size = (Vector2){generatorSize, generatorSize};
-                //generatorSettings.phillips.dampening = generatorDampening;
                 geometryResIndex = generatorGeometryResolutionIndex;
                 gradientResIndex = generatorGradientResolutionIndex;
 
@@ -836,12 +852,14 @@ static NSUInteger od_variance_size(const void * item)
     // in case spectrum generation settings changed
     // update the generator thread's' settings and clear
     // the resultQueue of still therein residing data
-    if ( windSpeed != lastWindSpeed
+    if ( spectrumType != lastSpectrumType
+         || windSpeed != lastWindSpeed
          || size != lastSize
          || dampening != lastDampening
          || geometryResolutionIndex != lastGeometryResolutionIndex
          || gradientResolutionIndex != lastGradientResolutionIndex )
     {
+        lastSpectrumType = spectrumType;
         lastWindSpeed = windSpeed;
         lastSize = size;
         lastDampening = dampening;
@@ -853,6 +871,7 @@ static NSUInteger od_variance_size(const void * item)
     if ( settingsChanged == YES )
     {
         [ settingsMutex lock ];
+        generatorSpectrumType = spectrumType;
         generatorWindSpeed = windSpeed;
         generatorSize = size;
         generatorDampening = dampening;
