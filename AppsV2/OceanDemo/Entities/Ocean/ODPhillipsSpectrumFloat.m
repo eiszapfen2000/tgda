@@ -39,12 +39,10 @@ static inline float omegaf_for_k(FVector2 const * const k)
     FFTW_SAFE_FREE(baseSpectrum);
     baseSpectrum = fftwf_alloc_real(resolution.x * resolution.y);
 
-    const FVector2 size = (FVector2){currentGeometry.size.x, currentGeometry.size.y};
-    const float U10 = settings.U10;
+    const float U10   = settings.U10;
     const float Omega = settings.Omega;
 
-    NSLog(@"%f %f", U10, Omega);
-
+    const FVector2 size = fv2_v_from_v2(&(currentGeometry.size));
 
     const float n = -(resolution.x / 2.0f);
     const float m =  (resolution.y / 2.0f);
@@ -115,8 +113,8 @@ static inline float omegaf_for_k(FVector2 const * const k)
     FFTW_SAFE_FREE(baseSpectrum);
     baseSpectrum = fftwf_alloc_real(resolution.x * resolution.y);
 
-    const FVector2 size = (FVector2){currentGeometry.size.x, currentGeometry.size.y};
-    const FVector2 windDirection = (FVector2){settings.windDirection.x, settings.windDirection.y};
+    const FVector2 size = fv2_v_from_v2(&(currentGeometry.size));
+    const FVector2 windDirection = fv2_v_from_v2(&(settings.windDirection));
     const FVector2 windDirectionNormalised = fv2_v_normalised(&windDirection);
     const float    windSpeed = settings.windSpeed;
     const float    dampening = settings.dampening;
@@ -293,7 +291,6 @@ static inline float omegaf_for_k(FVector2 const * const k)
             break;
         }
     }
-
 }
 
 @end
