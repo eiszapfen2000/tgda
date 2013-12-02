@@ -218,7 +218,7 @@ static size_t index_for_resolution(int32_t resolution)
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
     NPTimer * timer = [[ NPTimer alloc ] initWithName:@"Thread Timer" ];
-    ODPhillipsSpectrum * s = [[ ODPhillipsSpectrum alloc ] init ];
+    ODFrequencySpectrum * s = [[ ODFrequencySpectrum alloc ] init ];
 
     float generationTime = 0.0;
 

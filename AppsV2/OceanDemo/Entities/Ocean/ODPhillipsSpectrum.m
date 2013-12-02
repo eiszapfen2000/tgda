@@ -3,7 +3,7 @@
 #import "ODPhillipsSpectrumFloat.h"
 #import "ODPhillipsSpectrum.h"
 
-@implementation ODPhillipsSpectrum
+@implementation ODFrequencySpectrum
 
 - (id) init
 {
