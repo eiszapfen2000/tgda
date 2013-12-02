@@ -3,7 +3,7 @@
 #import "ODGaussianRNG.h"
 #import "ODPFrequencySpectrumGeneration.h"
 
-@interface ODPhillipsSpectrumFloat : NPObject < ODPFrequencySpectrumGenerationFloat >
+@interface ODFrequencySpectrumFloat : NPObject < ODPFrequencySpectrumGenerationFloat >
 {
     fftwf_complex * H0;
     float * baseSpectrum;

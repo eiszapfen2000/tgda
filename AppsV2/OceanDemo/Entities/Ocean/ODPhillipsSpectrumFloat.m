@@ -19,7 +19,7 @@ static inline float omegaf_for_k(FVector2 const * const k)
     return sqrtf(EARTH_ACCELERATIONf * fv2_v_length(k));
 }
 
-@interface ODPhillipsSpectrumFloat (Private)
+@interface ODFrequencySpectrumFloat (Private)
 
 - (void) generateH0:(BOOL)force;
 - (void) generatePhillipsSpectrum;
@@ -27,7 +27,7 @@ static inline float omegaf_for_k(FVector2 const * const k)
 
 @end
 
-@implementation ODPhillipsSpectrumFloat (Private)
+@implementation ODFrequencySpectrumFloat (Private)
 
 - (void) generateUnifiedSpectrum
 {
@@ -296,7 +296,7 @@ static inline float omegaf_for_k(FVector2 const * const k)
 @end
 
 
-@implementation ODPhillipsSpectrumFloat
+@implementation ODFrequencySpectrumFloat
 
 - (id) init
 {
