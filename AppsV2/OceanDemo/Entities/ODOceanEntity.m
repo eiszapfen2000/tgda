@@ -27,7 +27,7 @@
 #import "Graphics/NPEngineGraphics.h"
 #import "ODProjector.h"
 #import "ODBasePlane.h"
-#import "Ocean/ODPhillipsSpectrum.h"
+#import "Ocean/ODFrequencySpectrum.h"
 #import "ODHeightfieldQueue.h"
 #import "ODOceanBaseMesh.h"
 #import "ODOceanBaseMeshes.h"
