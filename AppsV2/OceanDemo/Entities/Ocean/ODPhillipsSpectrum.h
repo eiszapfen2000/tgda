@@ -3,9 +3,8 @@
 #import "ODPFrequencySpectrumGeneration.h"
 
 @class ODPhillipsSpectrumFloat;
-@class ODPhillipsSpectrumDouble;
 
-@interface ODPhillipsSpectrum : NPObject < ODPFrequencySpectrumGenerationFloat >
+@interface ODFrequencySpectrum : NPObject < ODPFrequencySpectrumGenerationFloat >
 {
     ODPhillipsSpectrumFloat * floatGenerator;
 }
