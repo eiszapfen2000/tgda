@@ -1,13 +1,13 @@
 #import "Core/NPEngineCore.h"
 #import "Core/Timer/NPTimer.h"
-#import "ODPhillipsSpectrumFloat.h"
+#import "ODFrequencySpectrumFloat.h"
 #import "ODFrequencySpectrum.h"
 
 @implementation ODFrequencySpectrum
 
 - (id) init
 {
-    return [ self initWithName:@"Phillips Spectrum" ];
+    return [ self initWithName:@"Frequency Spectrum" ];
 }
 
 - (id) initWithName:(NSString *)newName

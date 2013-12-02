@@ -2,7 +2,7 @@
 #import "Core/Timer/NPTimer.h"
 #import "ODConstants.h"
 #import "ODAmplitude.h"
-#import "ODPhillipsSpectrumFloat.h"
+#import "ODFrequencySpectrumFloat.h"
 
 #define FFTW_FREE(_pointer)        do {void *_ptr=(void *)(_pointer); fftwf_free(_ptr); _pointer=NULL; } while (0)
 #define FFTW_SAFE_FREE(_pointer)   { if ( (_pointer) != NULL ) FFTW_FREE((_pointer)); }
