@@ -675,6 +675,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ fillState activate ];
     */
 
+    /*
     FVector4 fc = {0.0f, 1.0f, 0.0f, 0.5f};
     FVector4 lc = {1.0f, 0.0f, 0.0f, 0.5f};
 
@@ -690,6 +691,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[ deferredEffect techniqueWithName:@"color" ] activate ];
 
     [ testProjectorFrustum render ];
+    */
 
     [ linearsRGBTarget detach:NO ];
     [ depthBuffer      detach:NO ];
