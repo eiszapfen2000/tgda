@@ -14,7 +14,7 @@
 {
     self = [ super initWithName:newName ];
 
-    floatGenerator  = [[ ODPhillipsSpectrumFloat  alloc ] init ];
+    floatGenerator  = [[ ODFrequencySpectrumFloat  alloc ] init ];
 
     return self;
 }

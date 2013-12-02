@@ -2,11 +2,11 @@
 #import "Core/NPObject/NPObject.h"
 #import "ODPFrequencySpectrumGeneration.h"
 
-@class ODPhillipsSpectrumFloat;
+@class ODFrequencySpectrumFloat;
 
 @interface ODFrequencySpectrum : NPObject < ODPFrequencySpectrumGenerationFloat >
 {
-    ODPhillipsSpectrumFloat * floatGenerator;
+    ODFrequencySpectrumFloat * floatGenerator;
 }
 
 - (id) init;
