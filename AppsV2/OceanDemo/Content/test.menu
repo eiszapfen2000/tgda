@@ -175,12 +175,28 @@
             TargetProperty = "size";
         };
 
-        PSliderDampening =
+        PSliderSpectrumScale =
         {
             Type = "ODSliderItem";
             Label = "Dampening Factor";
             Alignment = "TopRight";
             Position = ("20", "465" );
+            Size = ( "50", "1" );
+            TextSize = "16";
+            MinimumValue = "0.0";
+            MaximumValue = "5.0";
+            LineSize = ("85", "3");
+            HeadSize = ("3", "21");
+            TargetObject = "Ocean";
+            TargetProperty = "spectrumScale";
+        };
+
+        PSliderDampening =
+        {
+            Type = "ODSliderItem";
+            Label = "Dampening Factor";
+            Alignment = "TopRight";
+            Position = ("20", "495" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
@@ -228,7 +244,7 @@
             Type = "ODSliderItem";
             Label = "Key";
             Alignment = "BottomLeft";
-            Position = ("30", "70" );
+            Position = ("30", "230" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
@@ -244,7 +260,7 @@
             Type = "ODSliderItem";
             Label = "Key";
             Alignment = "BottomLeft";
-            Position = ("30", "120" );
+            Position = ("30", "200" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
