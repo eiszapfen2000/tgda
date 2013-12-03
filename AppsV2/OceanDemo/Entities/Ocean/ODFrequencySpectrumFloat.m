@@ -43,7 +43,7 @@ static inline float omegaf_for_k(FVector2 const * const k)
     const float Omega = settings.Omega;
 
     const FVector2 size = fv2_v_from_v2(&(currentGeometry.size));
-    const float A = PHILLIPS_CONSTANT * (1.0 / (size.x * size.y));
+    const float A = currentGeneratorSettings.spectrumScale / (size.x * size.y);
 
     const float n = -(resolution.x / 2.0f);
     const float m =  (resolution.y / 2.0f);
@@ -121,7 +121,7 @@ static inline float omegaf_for_k(FVector2 const * const k)
 
     assert(dampening < 1.0f);
 
-    const float A = PHILLIPS_CONSTANT * (1.0 / (size.x * size.y));
+    const float A = currentGeneratorSettings.spectrumScale / (size.x * size.y);
     const float L = (windSpeed * windSpeed) / EARTH_ACCELERATIONf;
     const float l = dampening * L;
 
@@ -251,8 +251,6 @@ static inline float omegaf_for_k(FVector2 const * const k)
     {
         return;
     }
-
-    NSLog(@"H0");
 
     BOOL generateRandomNumbers = force;
 

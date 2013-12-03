@@ -39,6 +39,9 @@
     double lastDampening;
     double dampening;
     double generatorDampening;
+    double lastSpectrumScale;
+    double spectrumScale;
+    double generatorSpectrumScale;
     NSUInteger lastGeometryResolutionIndex;
     NSUInteger geometryResolutionIndex;
     NSUInteger generatorGeometryResolutionIndex;
