@@ -100,7 +100,6 @@ static inline float omegaf_for_k(FVector2 const * const k)
 
     maxMeanSlopeVariance = mss;
     effectiveMeanSlopeVariance = varianceXY;
-
 }
 
 - (void) generatePhillipsSpectrum

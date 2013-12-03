@@ -4,7 +4,8 @@
 float amplitudef_phillips_cartesian(
     const FVector2 windDirectionNormalised,
     const FVector2 k, const float A,
-    const float L, const float l)
+    const float L, const float l
+    )
 {
     const float kSquareLength = k.x * k.x + k.y * k.y;
 
@@ -33,8 +34,9 @@ float amplitudef_phillips_cartesian(
 }
 
 float amplitudef_phillips_cartesian_omnidirectional(
-      const float k, const float A,
-      const float L, const float l)
+    const float k, const float A,
+    const float L, const float l
+    )
 {
     if ( k == 0.0f )
     {
@@ -56,7 +58,8 @@ float amplitudef_phillips_cartesian_omnidirectional(
 float amplitudef_phillips_polar(
     const FVector2 windDirectionNormalised,
     const float k, const float phi, const float A,
-    const float L, const float l)
+    const float L, const float l
+    )
 {
     // rotate (1,0) by phi
 
