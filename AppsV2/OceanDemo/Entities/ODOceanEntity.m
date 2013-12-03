@@ -241,6 +241,7 @@ static size_t index_for_resolution(int32_t resolution)
         {
             ODSpectrumGeometry geometry;
             ODGeneratorSettings generatorSettings;
+            generatorSettings.spectrumScale = 1.0;
             NSUInteger geometryResIndex;
             NSUInteger gradientResIndex;
 
@@ -939,7 +940,6 @@ static NSUInteger od_variance_size(const void * item)
                 }
             }
                     
-            /*    
             if ( f != NSNotFound )
             {
                 hf = [ resultQueue heightfieldAtIndex:f ];
@@ -954,10 +954,9 @@ static NSUInteger od_variance_size(const void * item)
                 hf = [ resultQueue heightfieldAtIndex:0 ];
                 variance = [ varianceQueue pointerAtIndex:0 ];
             }
-            */
             
-            hf = [ resultQueue heightfieldAtIndex:0 ];
-            variance = [ varianceQueue pointerAtIndex:0 ];
+            //hf = [ resultQueue heightfieldAtIndex:0 ];
+            //variance = [ varianceQueue pointerAtIndex:0 ];
         }
 
         queueCount = [ resultQueue count ];
@@ -1120,8 +1119,8 @@ static NSUInteger od_variance_size(const void * item)
             */
         }
 
-        [ resultQueue removeHeightfieldAtIndex:0 ];
-        [ varianceQueue removePointerAtIndex:0 ];
+        //[ resultQueue removeHeightfieldAtIndex:0 ];
+        //[ varianceQueue removePointerAtIndex:0 ];
     }
 
     if ( baseMeshIndex != ULONG_MAX )

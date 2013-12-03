@@ -22,17 +22,17 @@ float amplitudef_phillips_polar(
     );
 
 float amplitudef_unified_cartesian(
-    const FVector2 k, const float U10,
-    const float Omega
+    const FVector2 k, const float A,
+    const float U10, const float Omega
     );
 
 float amplitudef_unified_cartesian_omnidirectional(
-    const float k, const float U10,
-    const float Omega
+    const float k, const float A,
+    const float U10, const float Omega
     );
 
 float amplitudef_unified_polar(
-    const float k, const float phi,
+    const float k, const float phi, const float A,
     const float U10, const float Omega
     );
 

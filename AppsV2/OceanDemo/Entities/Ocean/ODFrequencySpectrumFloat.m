@@ -43,6 +43,7 @@ static inline float omegaf_for_k(FVector2 const * const k)
     const float Omega = settings.Omega;
 
     const FVector2 size = fv2_v_from_v2(&(currentGeometry.size));
+    const float A = PHILLIPS_CONSTANT * (1.0 / (size.x * size.y));
 
     const float n = -(resolution.x / 2.0f);
     const float m =  (resolution.y / 2.0f);
@@ -71,7 +72,7 @@ static inline float omegaf_for_k(FVector2 const * const k)
             const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
 
             const FVector2 k = {kx, ky};
-            const float s = MAX(0.0f, amplitudef_unified_cartesian(k, U10, Omega));
+            const float s = MAX(0.0f, amplitudef_unified_cartesian(k, A, U10, Omega));
             const float a = sqrtf(s);
 
             varianceX  += (kx * kx) * (dkx * dky) * s;
@@ -92,7 +93,7 @@ static inline float omegaf_for_k(FVector2 const * const k)
         const float dk = (k * 1.001f) - k;
 
         // eq A3
-        float sk = amplitudef_unified_cartesian_omnidirectional(k, U10, Omega);
+        float sk = amplitudef_unified_cartesian_omnidirectional(k, A, U10, Omega);
 
         // eq A6
         mss += kSquare * sk * dk;
@@ -250,6 +251,8 @@ static inline float omegaf_for_k(FVector2 const * const k)
     {
         return;
     }
+
+    NSLog(@"H0");
 
     BOOL generateRandomNumbers = force;
 

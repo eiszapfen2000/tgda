@@ -40,6 +40,7 @@ ODUnifiedGeneratorSettings;
 typedef struct ODGeneratorSettings
 {
     ODSpectrumGenerator generatorType;
+    double spectrumScale;
     union
     {
         ODPhillipsGeneratorSettings phillips;

@@ -196,7 +196,7 @@
             Type = "ODSliderItem";
             Label = "Displacement";
             Alignment = "TopLeft";
-            Position = ("30", "30" );
+            Position = ("20", "5" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
@@ -207,11 +207,27 @@
             TargetProperty = "displacementScale";
         };
 
+        PSliderAreaScale =
+        {
+            Type = "ODSliderItem";
+            Label = "Area";
+            Alignment = "TopLeft";
+            Position = ("20", "35" );
+            Size = ( "50", "1" );
+            TextSize = "16";
+            MinimumValue = "0.0";
+            MaximumValue = "20.0";
+            LineSize = ("85", "3");
+            HeadSize = ("3", "21");
+            TargetObject = "Ocean";
+            TargetProperty = "areaScale";
+        };
+
         PSliderKey =
         {
             Type = "ODSliderItem";
             Label = "Key";
-            Alignment = "TopLeft";
+            Alignment = "BottomLeft";
             Position = ("30", "70" );
             Size = ( "50", "1" );
             TextSize = "16";
@@ -227,7 +243,7 @@
         {
             Type = "ODSliderItem";
             Label = "Key";
-            Alignment = "TopLeft";
+            Alignment = "BottomLeft";
             Position = ("30", "120" );
             Size = ( "50", "1" );
             TextSize = "16";

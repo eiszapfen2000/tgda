@@ -65,7 +65,8 @@ bool unified_settings_equal(const ODUnifiedGeneratorSettings * pOne, const ODUni
 
 bool generator_settings_equal(const ODGeneratorSettings * pOne, const ODGeneratorSettings * pTwo)
 {
-    if ( pOne->generatorType != pTwo->generatorType )
+    if ( pOne->generatorType != pTwo->generatorType
+         || pOne->spectrumScale != pTwo->spectrumScale )
     {
         return false;
     }
