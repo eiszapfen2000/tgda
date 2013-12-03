@@ -71,7 +71,9 @@ static const NSUInteger defaultSpectrumType = 0;
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
 static const double defaultSize = 80.0;
+static const double defaultAreaScale = 1.0;
 static const double defaultDisplacementScale = 1.0;
+static const double defaultHeightScale = 1.0;
 static const double defaultDampening = 0.001;
 static const int32_t resolutions[6] = {8, 64, 128, 256, 512, 1024};
 static const NSUInteger defaultGeometryResolutionIndex = 0;
@@ -613,7 +615,10 @@ static NSUInteger od_variance_size(const void * item)
     timeStamp = DBL_MAX;
 
     area = 0.0;
+
     displacementScale = defaultDisplacementScale;
+    areaScale = defaultAreaScale;
+    heightScale = defaultHeightScale;
 
     heightRange    = (FVector2){.x = 0.0f, .y = 0.0f};
     gradientXRange = (FVector2){.x = 0.0f, .y = 1.0f};
@@ -779,9 +784,19 @@ static NSUInteger od_variance_size(const void * item)
     return area;
 }
 
+- (double) areaScale
+{
+    return areaScale;
+}
+
 - (double) displacementScale
 {
     return displacementScale;
+}
+
+- (double) heightScale
+{
+    return heightScale;
 }
 
 - (FVector2) heightRange

@@ -646,7 +646,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     NSAssert(w != nil && a != nil && ds != nil && cP != nil && dsP != nil && scP != nil && vsP != nil, @"");
 
     [ w setValue:[testProjector inverseViewProjection]];
-    [ a setValue:[ ocean area ]];
+    [ a setValue:[ ocean area ] * [ocean areaScale ]];
     [ ds setValue:[ ocean displacementScale ]];
     [ cP setValue:[ camera position ]];
     [ dsP setValue:[ skylight directionToSun ]];
