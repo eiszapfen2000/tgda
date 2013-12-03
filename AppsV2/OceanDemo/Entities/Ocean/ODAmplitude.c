@@ -74,8 +74,8 @@ float amplitudef_phillips_polar(
 }
 
 float amplitudef_unified_cartesian(
-    const FVector2 k, const float U10,
-    const float Omega
+    const FVector2 k, const float A,
+    const float U10, const float Omega
     )
 {
     const float g = 9.81f;
@@ -154,12 +154,12 @@ float amplitudef_unified_cartesian(
     const float phi = atan2f(k.y, k.x);
     const float Psi = (B_l + B_h) * (1.0f + delta_k * cosf(2.0f * phi)) / (MATH_2_MUL_PI * klength * klength * klength * klength);
 
-    return Psi;
+    return A * Psi;
 }
 
 float amplitudef_unified_cartesian_omnidirectional(
-    const float k, const float U10,
-    const float Omega
+    const float k, const float A,
+    const float U10, const float Omega
     )
 {
     const float g = 9.81f;
@@ -227,11 +227,11 @@ float amplitudef_unified_cartesian_omnidirectional(
     const float B_h = (0.5f * alpha_m) * (c_m / c) * F_m;
 
     // eq 30
-    return (B_l + B_h) / (k * k * k);
+    return A * (B_l + B_h) / (k * k * k);
 }
 
 float amplitudef_unified_polar(
-    const float k, const float phi,
+    const float k, const float phi, const float A,
     const float U10, const float Omega
     )
 {
@@ -243,7 +243,7 @@ float amplitudef_unified_polar(
 
     return
         amplitudef_unified_cartesian(
-            kv, U10, Omega);
+            kv, A, U10, Omega);
 }
 
 
