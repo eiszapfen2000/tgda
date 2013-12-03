@@ -27,6 +27,7 @@
 #import "Graphics/NPEngineGraphics.h"
 #import "ODProjector.h"
 #import "ODBasePlane.h"
+#import "Ocean/ODConstants.h"
 #import "Ocean/ODFrequencySpectrum.h"
 #import "ODHeightfieldQueue.h"
 #import "ODOceanBaseMesh.h"
@@ -71,14 +72,17 @@ static const NSUInteger defaultSpectrumType = 0;
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
 static const double defaultSize = 80.0;
-static const double defaultAreaScale = 1.0;
-static const double defaultDisplacementScale = 1.0;
-static const double defaultHeightScale = 1.0;
 static const double defaultDampening = 0.001;
+static const double defaultSpectrumScale = PHILLIPS_CONSTANT;
 static const int32_t resolutions[6] = {8, 64, 128, 256, 512, 1024};
 static const NSUInteger defaultGeometryResolutionIndex = 0;
 static const NSUInteger defaultGradientResolutionIndex = 1;
 static const double OneDivSixty = 1.0 / 60.0;
+
+static const double defaultAreaScale = 1.0;
+static const double defaultDisplacementScale = 1.0;
+static const double defaultHeightScale = 1.0;
+
 
 static size_t index_for_resolution(int32_t resolution)
 {
@@ -241,7 +245,6 @@ static size_t index_for_resolution(int32_t resolution)
         {
             ODSpectrumGeometry geometry;
             ODGeneratorSettings generatorSettings;
-            generatorSettings.spectrumScale = 1.0;
             NSUInteger geometryResIndex;
             NSUInteger gradientResIndex;
 
@@ -270,6 +273,8 @@ static size_t index_for_resolution(int32_t resolution)
                         break;
                     }
                 }
+
+                generatorSettings.spectrumScale = generatorSpectrumScale;
 
                 geometry.size = (Vector2){generatorSize, generatorSize};
                 geometryResIndex = generatorGeometryResolutionIndex;
@@ -569,6 +574,9 @@ static NSUInteger od_variance_size(const void * item)
 
     lastDampening = DBL_MAX;
     dampening = generatorDampening = defaultDampening;
+
+    lastSpectrumScale = DBL_MAX;
+    spectrumScale = generatorSpectrumScale = defaultSpectrumScale;
 
     const NSUInteger options
         = NSPointerFunctionsMallocMemory
@@ -872,6 +880,7 @@ static NSUInteger od_variance_size(const void * item)
          || windSpeed != lastWindSpeed
          || size != lastSize
          || dampening != lastDampening
+         || spectrumScale != lastSpectrumScale
          || geometryResolutionIndex != lastGeometryResolutionIndex
          || gradientResolutionIndex != lastGradientResolutionIndex )
     {
@@ -879,6 +888,7 @@ static NSUInteger od_variance_size(const void * item)
         lastWindSpeed = windSpeed;
         lastSize = size;
         lastDampening = dampening;
+        lastSpectrumScale = spectrumScale;
         lastGeometryResolutionIndex = geometryResolutionIndex;
         lastGradientResolutionIndex = gradientResolutionIndex;
         settingsChanged = YES;
@@ -891,6 +901,7 @@ static NSUInteger od_variance_size(const void * item)
         generatorWindSpeed = windSpeed;
         generatorSize = size;
         generatorDampening = dampening;
+        generatorSpectrumScale = spectrumScale;
         generatorGeometryResolutionIndex = geometryResolutionIndex;
         generatorGradientResolutionIndex = gradientResolutionIndex;
         [ settingsMutex unlock ];
