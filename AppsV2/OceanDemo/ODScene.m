@@ -638,16 +638,18 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     NPEffectVariableMatrix4x4 * w = [ projectedGridEffect variableWithName:@"invMVP"];
     NPEffectVariableFloat * a = [ projectedGridEffect variableWithName:@"area"];
     NPEffectVariableFloat * ds = [ projectedGridEffect variableWithName:@"displacementScale"];
+    NPEffectVariableFloat * hs = [ projectedGridEffect variableWithName:@"heightScale"];
     NPEffectVariableFloat3 * cP = [ projectedGridEffect variableWithName:@"cameraPosition"];
     NPEffectVariableFloat3 * dsP = [ projectedGridEffect variableWithName:@"directionToSun"];
     NPEffectVariableFloat3 * scP = [ projectedGridEffect variableWithName:@"sunColor"];
     NPEffectVariableFloat2 * vsP = [ projectedGridEffect variableWithName:@"vertexStep"];
 
-    NSAssert(w != nil && a != nil && ds != nil && cP != nil && dsP != nil && scP != nil && vsP != nil, @"");
+    NSAssert(w != nil && a != nil && ds != nil && hs != nil && cP != nil && dsP != nil && scP != nil && vsP != nil, @"");
 
     [ w setValue:[testProjector inverseViewProjection]];
     [ a setValue:[ ocean area ] * [ocean areaScale ]];
     [ ds setValue:[ ocean displacementScale ]];
+    [ hs setValue:[ ocean heightScale ]];
     [ cP setValue:[ camera position ]];
     [ dsP setValue:[ skylight directionToSun ]];
     [ scP setValue:[ skylight sunColor ]];
