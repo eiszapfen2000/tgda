@@ -7,6 +7,7 @@ technique "proj_grid_tf_transform"
     uniform mat4 invMVP;
     uniform float area;
     uniform float displacementScale;
+    uniform float heightScale;
     uniform vec2  vertexStep;
     uniform sampler2D heightmap
     {
@@ -34,6 +35,7 @@ technique "proj_grid_tf_feedback"
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
     uniform float area;
+    uniform float heightScale;
     uniform vec3 cameraPosition;
     uniform vec3 directionToSun;
     uniform vec3 sunColor;
