@@ -35,28 +35,22 @@ void main()
     vec2 texcoord = intersection.xz;
     texcoord *= (1.0 / area);
 
+    float h = textureGrad(heightmap, texcoord, d_dx, d_dy).x;
+
+    // I do not know if we should scale displacement with
+    // areaScale or not. It makes sense regarding correctness
+    // but not necessarily for tweaking
+    vec2 d = textureGrad(displacement, texcoord, d_dx, d_dy).xy;
+
     // due to fftw memory layout textures are upside down
     // it does not matter for heights, but displacement as well
     // gradient in z direction have to invert sign
-
-    //float h = textureLod(heightmap, texcoord, 0.0).x;
-    //vec2 d  = textureLod(displacement, texcoord, 0.0).xy;
-    float h = textureGrad(heightmap, texcoord, d_dx, d_dy).x;
-    vec2 d = textureGrad(displacement, texcoord, d_dx, d_dy).xy;
-
-    /*
-    float ht = textureLodOffset(heightmap, texcoord, 0.0, ivec2(0,  1)).x;
-    float hb = textureLodOffset(heightmap, texcoord, 0.0, ivec2(0, -1)).x;
-    float hl = textureLodOffset(heightmap, texcoord, 0.0, ivec2(-1, 0)).x;
-    float hr = textureLodOffset(heightmap, texcoord, 0.0, ivec2( 1, 0)).x;
-    vec2 g  = textureLod(gradient, texcoord, 0.0).xy;
-    */
 
     out_non_disp_position = intersection.xz;
     out_position.xz = intersection.xz;
     out_position.x -= displacementScale * d.x;
     out_position.z += displacementScale * d.y;
-    out_position.y = h;
+    out_position.y = h * heightScale;
 
     gl_Position = np_modelviewprojectionmatrix * vec4(intersection, 1.0);
 }

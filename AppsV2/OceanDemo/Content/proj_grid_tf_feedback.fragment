@@ -209,7 +209,7 @@ void main()
     vec2 texcoord = out_ws_non_disp_position;
     texcoord *= (1.0 / area);
 
-    vec2 grad = texture(gradient, texcoord).xy;
+    vec2 grad = texture(gradient, texcoord).xy * heightScale;
     vec3 normal = vec3(-grad.x, 1.0, grad.y);
 
     vec3 lightDir = directionToSun;
