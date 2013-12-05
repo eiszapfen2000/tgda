@@ -1,7 +1,7 @@
 function [z x y] = h0_x(resolution, area, randomnumbers, wind, A, l)
 
-tmpm = -resolution(1)/2:1:resolution(1)/2-1;
-tmpn = resolution(2)/2-1:-1:-resolution(2)/2;
+tmpm  = -resolution(1)/2:1:resolution(1)/2-1;
+tmpn  =  resolution(2)/2:-1:-(resolution(2)/2)+1;
 tmpms = tmpm.*(2*pi)./area(1);
 tmpns = tmpn.*(2*pi)./area(2);
 k = zeros(resolution(1), resolution(2), 2);

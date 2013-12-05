@@ -1,7 +1,7 @@
 function [gradx grady] = freq_spec_grad(resolution, area, freqspectrum)
 
 tmpm  = -resolution(1)/2:1:resolution(1)/2-1;
-tmpn  =  resolution(2)/2-1:-1:-resolution(2)/2;
+tmpn  =  resolution(2)/2:-1:-(resolution(2)/2)+1;
 tmpms =  tmpm.*(2*pi)./area(1);
 tmpns =  tmpn.*(2*pi)./area(2);
 
