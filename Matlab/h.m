@@ -5,8 +5,8 @@ function [x y z dispx dispy gradx grady ] = h(resolution, area, wind, l, time)
 % g = 9.81;
 % L = dot(wind, wind)/g
 
-tmpm = -resolution(1)/2:1:resolution(1)/2-1;
-tmpn = resolution(2)/2-1:-1:-resolution(2)/2;
+tmpm  = -resolution(1)/2:1:resolution(1)/2-1;
+tmpn  =  resolution(2)/2:-1:-(resolution(2)/2)+1;
 tmpms = tmpm.*(2*pi)./area(1);
 tmpns = tmpn.*(2*pi)./area(2);
 k = zeros(resolution(1), resolution(2), 2);
