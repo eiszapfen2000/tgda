@@ -550,9 +550,13 @@ ODQuadrants;
     const IVector2 gradientResolutionHC = { (gradientResolution.x / 2) + 1, gradientResolution.y };
 
     const IVector2 quadrantResolution = { resolution.x / 2, resolution.y / 2 };
+    const IVector2 geometryQuadrantResolution = { geometryResolution.x / 2, geometryResolution.y / 2 };
+    const IVector2 gradientQuadrantResolution = { gradientResolution.x / 2, gradientResolution.y / 2 };
 
 	fftwf_complex * frequencySpectrumHC
         = fftwf_alloc_complex(geometryResolutionHC.x * geometryResolutionHC.y);
+
+    memset(frequencySpectrumHC, 0, geometryResolutionHC.x * geometryResolutionHC.y * 2 * sizeof(float));
 
     const IVector2 geometryPadding
         = { .x = (H0Resolution.x - geometryResolution.x) / 2, .y = (H0Resolution.y - geometryResolution.y) / 2 };
@@ -659,10 +663,13 @@ ODQuadrants;
             const int32_t indexForKConjugateInH0
                 = ((resolution.x - jInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
 
-            const int32_t geometryIndexHC = j + (geometryResolutionHC.x * (i + quadrantResolution.y));
-            const int32_t gradientIndexHC = j + (gradientResolutionHC.x * (i + quadrantResolution.y));
+            const int32_t geometryIndexHC
+                = j + (geometryResolutionHC.x * (i - geometryPadding.y + geometryQuadrantResolution.y));
 
-            //printf("%d %d %d %d %d %d %d\n", j, i, jInH0, iInH0, indexForKInH0, indexForKConjugateInH0, indexHC);
+            const int32_t gradientIndexHC
+                = j + (gradientResolutionHC.x * (i - gradientPadding.y + gradientQuadrantResolution.y));
+
+            //printf("%d %d %d %d %d %d\n", j, i, geometryResolutionHC.x, geometryPadding.y, geometryQuadrantResolution.y, geometryIndexHC);
 
             const float di = i;
             const float dj = j;
@@ -696,6 +703,7 @@ ODQuadrants;
             if ( j > q2geometryXRange.x && j < q2geometryXRange.y
                  && i > q2geometryYRange.x && i < q2geometryYRange.y )
             {
+            //printf("%d %d %d %d %d %d %d\n", j, i, jInH0, iInH0, indexForKInH0, indexForKConjugateInH0, geometryIndexHC);
                 // H = H0expOmega + H0expMinusomega
                 frequencySpectrumHC[geometryIndexHC][0] = H0expOmega[0] + H0expMinusOmega[0];
                 frequencySpectrumHC[geometryIndexHC][1] = H0expOmega[1] + H0expMinusOmega[1];
@@ -732,8 +740,13 @@ ODQuadrants;
         const int32_t gradientIndexForKConjugateInH0
             = ((resolution.x - jGradientInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
 
-        const int32_t geometryIndexHC = quadrantResolution.x + (geometryResolutionHC.x * (i + quadrantResolution.y));
-        const int32_t gradientIndexHC = quadrantResolution.x + (gradientResolutionHC.x * (i + quadrantResolution.y));
+        const int32_t geometryIndexHC
+            = geometryQuadrantResolution.x
+              + (geometryResolutionHC.x * (i - geometryPadding.y + geometryQuadrantResolution.y));
+
+        const int32_t gradientIndexHC
+            = gradientQuadrantResolution.x
+              + (gradientResolutionHC.x * (i - gradientPadding.y + gradientQuadrantResolution.y));
 
         //printf("%d %d %d %d %d %d %d\n", j, i, jInH0, iInH0, indexForKInH0, indexForKConjugateInH0, indexHC);
 
@@ -821,8 +834,8 @@ ODQuadrants;
         const int32_t gradientIndexForKConjugateInH0
             = ((resolution.x - jGradientInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
 
-        const int32_t geometryIndexHC = quadrantResolution.x + (geometryResolutionHC.x * i);
-        const int32_t gradientIndexHC = quadrantResolution.x + (gradientResolutionHC.x * i);
+        const int32_t geometryIndexHC = geometryQuadrantResolution.x + (geometryResolutionHC.x * i);
+        const int32_t gradientIndexHC = gradientQuadrantResolution.x + (gradientResolutionHC.x * i);
 
         const float di = i;
         const float geometryDj = jGeometry;
@@ -877,7 +890,6 @@ ODQuadrants;
             frequencySpectrumHC[geometryIndexHC][0] = geometryH0expOmega[0] + geometryH0expMinusOmega[0];
             frequencySpectrumHC[geometryIndexHC][1] = geometryH0expOmega[1] + geometryH0expMinusOmega[1];
         }
-
 
         /*
         const int32_t jInH0 = 0;
