@@ -641,6 +641,12 @@ ODQuadrants;
     const float q2n = 0.0f;
     const float q2m = resolution.y / 2.0f;
 
+    const IVector2 q2geometryXRange = { .x = -1, .y = quadrantResolution.x - geometryPadding.x };
+    const IVector2 q2geometryYRange = { .x = geometryPadding.y - 1, .y = quadrantResolution.y  };
+
+    const IVector2 q2gradientXRange = { .x = -1, .y = quadrantResolution.x - gradientPadding.x };
+    const IVector2 q2gradientYRange = { .x = gradientPadding.y - 1, .y = quadrantResolution.y  };
+
     for ( int32_t i = 0; i < quadrantResolution.y; i++ )
     {
         for ( int32_t j = 0; j < quadrantResolution.x; j++ )
@@ -654,6 +660,7 @@ ODQuadrants;
                 = ((resolution.x - jInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
 
             const int32_t geometryIndexHC = j + (geometryResolutionHC.x * (i + quadrantResolution.y));
+            const int32_t gradientIndexHC = j + (gradientResolutionHC.x * (i + quadrantResolution.y));
 
             //printf("%d %d %d %d %d %d %d\n", j, i, jInH0, iInH0, indexForKInH0, indexForKConjugateInH0, indexHC);
 
@@ -686,9 +693,13 @@ ODQuadrants;
                 = { H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1],
                     H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0] };
 
-            // H = H0expOmega + H0expMinusomega
-            frequencySpectrumHC[geometryIndexHC][0] = H0expOmega[0] + H0expMinusOmega[0];
-            frequencySpectrumHC[geometryIndexHC][1] = H0expOmega[1] + H0expMinusOmega[1];
+            if ( j > q2geometryXRange.x && j < q2geometryXRange.y
+                 && i > q2geometryYRange.x && i < q2geometryYRange.y )
+            {
+                // H = H0expOmega + H0expMinusomega
+                frequencySpectrumHC[geometryIndexHC][0] = H0expOmega[0] + H0expMinusOmega[0];
+                frequencySpectrumHC[geometryIndexHC][1] = H0expOmega[1] + H0expMinusOmega[1];
+            }
         }
     }
 
