@@ -544,11 +544,12 @@ static inline float omegaf_for_k(FVector2 const * const k)
     return [ self generateHAtTime:1.0f ];
 }
 
-/*
 - (OdFrequencySpectrumFloat) generateHHCAtTime:(const float)time
 {
-    const IVector2 resolution = currentSettings.gradientResolution;
-    const FVector2 size = (FVector2){currentSettings.size.x, currentSettings.size.y};
+    const IVector2 resolution = H0Resolution;
+    const IVector2 geometryResolution = currentGeometry.geometryResolution;
+    const IVector2 gradientResolution = currentGeometry.gradientResolution;
+    const FVector2 size = (FVector2){currentGeometry.size.x, currentGeometry.size.y};
 
     const IVector2 resolutionHC = { (resolution.x / 2) + 1, resolution.y };
     const IVector2 quadrantResolution = { resolution.x / 2, resolution.y / 2 };
@@ -790,22 +791,21 @@ static inline float omegaf_for_k(FVector2 const * const k)
     }
 
     OdFrequencySpectrumFloat result
-        = { .timestamp = time,
-            .geometryResolution = resolution,
-            .gradientResolution = resolution,
-            .size = currentSettings.size,
+        = { .timestamp     = time,
+            .geometryResolution = geometryResolution,
+            .gradientResolution = gradientResolution,
+            .size          = currentGeometry.size,
             .baseSpectrum  = NULL,
             .maxMeanSlopeVariance = 0.0f,
             .effectiveMeanSlopeVariance = 0.0f,
-            .waveSpectrum = frequencySpectrumHC,
-            .gradientX = NULL,
-            .gradientZ = NULL,
+            .waveSpectrum  = frequencySpectrumHC,
+            .gradientX     = NULL,
+            .gradientZ     = NULL,
             .displacementX = NULL,
             .displacementZ = NULL };
 
     return result;
 }
-*/
 
 - (OdFrequencySpectrumFloat) generateTimeIndependentHHC
 {
