@@ -36,28 +36,34 @@
 
 static void print_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
 {
+    printf("Complex spectrum\n");
     for ( int32_t j = 0; j < resolution.y; j++ )
     {
         for ( int32_t k = 0; k < resolution.x; k++ )
         {
-            printf("%f %fi ", spectrum[j * resolution.x + k][0], spectrum[j * resolution.x + k][1]);
+            printf("%+f %+fi ", spectrum[j * resolution.x + k][0], spectrum[j * resolution.x + k][1]);
         }
 
         printf("\n");
     }
+
+    printf("\n");
 }
 
 static void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
 {
+    printf("Half Complex spectrum\n");
     for ( int32_t j = 0; j < resolution.y; j++ )
     {
         for ( int32_t k = 0; k < ((resolution.x/2)+1); k++ )
         {
-            printf("%f %fi ", spectrum[j * ((resolution.x/2)+1) + k][0], spectrum[j * ((resolution.x/2)+1) + k][1]);
+            printf("%+f %+fi ", spectrum[j * ((resolution.x/2)+1) + k][0], spectrum[j * ((resolution.x/2)+1) + k][1]);
         }
 
         printf("\n");
     }
+
+    printf("\n");
 }
 
 typedef struct OdSpectrumVariance
@@ -74,7 +80,7 @@ static const Vector2 defaultWindDirection = {1.0, 0.0};
 static const double defaultSize = 80.0;
 static const double defaultDampening = 0.001;
 static const double defaultSpectrumScale = PHILLIPS_CONSTANT;
-static const int32_t resolutions[6] = {8, 64, 128, 256, 512, 1024};
+static const int32_t resolutions[6] = {4, 8, 128, 256, 512, 1024};
 static const NSUInteger defaultGeometryResolutionIndex = 0;
 static const NSUInteger defaultGradientResolutionIndex = 1;
 static const double OneDivSixty = 1.0 / 60.0;
@@ -83,7 +89,7 @@ static const double defaultAreaScale = 1.0;
 static const double defaultDisplacementScale = 1.0;
 static const double defaultHeightScale = 1.0;
 
-
+/*
 static size_t index_for_resolution(int32_t resolution)
 {
     switch ( resolution )
@@ -91,6 +97,28 @@ static size_t index_for_resolution(int32_t resolution)
         case 8:
             return 0;
         case 64:
+            return 1;
+        case 128:
+            return 2;
+        case 256:
+            return 3;
+        case 512:
+            return 4;
+        case 1024:
+            return 5;
+        default:
+            return SIZE_MAX;
+    }
+}
+*/
+
+static size_t index_for_resolution(int32_t resolution)
+{
+    switch ( resolution )
+    {
+        case 4:
+            return 0;
+        case 8:
             return 1;
         case 128:
             return 2;
@@ -298,11 +326,20 @@ static size_t index_for_resolution(int32_t resolution)
                                                  atTime:generationTime
                                    generateBaseGeometry:NO ];
 
+            OdFrequencySpectrumFloat halfcomplexSpectrum
+                = [ s generateFloatSpectrumHCWithGeometry:geometry
+                                                generator:generatorSettings
+                                                   atTime:generationTime
+                                     generateBaseGeometry:NO ];
+
             [ timer update ];
 
             //NSLog(@"%d %d %d %d", complexSpectrum.geometryResolution.x, complexSpectrum.geometryResolution.y, complexSpectrum.gradientResolution.x, complexSpectrum.gradientResolution.y);
 
             //NSLog(@"Gen Time %f", [ timer frameTime ]);
+
+            print_complex_spectrum(geometry.geometryResolution, complexSpectrum.waveSpectrum);
+            print_half_complex_spectrum(geometry.geometryResolution, halfcomplexSpectrum.waveSpectrum);
 
             generationTime += 1.0f/60.0f;
 
