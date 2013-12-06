@@ -420,6 +420,18 @@ static inline float omegaf_for_k(FVector2 const * const k)
                x = a + i*b
                y = c + i*d
                xy = (ac-bd) + i(ad+bc)
+
+               b = 0
+               x = a + i*0
+               y = c + i*d
+               xy = (ac-0d) + i(ad+0c)
+                  = ac + i(ad)
+
+               a = 0
+               x = 0 + i*b
+               y = c + i*d
+               xy = (0c-bd) + i(0d+bc)
+                  = (-bd) + i(bc)
             */
 
             // H0[indexForK] * exp(i*omega*t)
@@ -937,9 +949,6 @@ right way.
                            quadrants:ODQuadrant_2_4 ];
     }
 
-    lastGeometry = currentGeometry;
-    lastGeneratorSettings = currentGeneratorSettings;
-
     //NSLog(@"H0: %f H:%f Swap:%f", h0time, htime, swaptime);
 
     if ( baseSpectrum != NULL )
@@ -951,6 +960,9 @@ right way.
         baseSpectrum = NULL;
         maxMeanSlopeVariance = effectiveMeanSlopeVariance = 0.0f;
     }
+
+    lastGeometry = currentGeometry;
+    lastGeneratorSettings = currentGeneratorSettings;
 
     return result;
 }
