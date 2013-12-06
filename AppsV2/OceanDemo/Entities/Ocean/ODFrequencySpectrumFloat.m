@@ -14,11 +14,6 @@ typedef enum ODQuadrants
 }
 ODQuadrants;
 
-static inline float omegaf_for_k(FVector2 const * const k)
-{
-    return sqrtf(EARTH_ACCELERATIONf * fv2_v_length(k));
-}
-
 @interface ODFrequencySpectrumFloat (Private)
 
 - (void) generateH0:(BOOL)force;
@@ -591,8 +586,8 @@ static inline float omegaf_for_k(FVector2 const * const k)
             const float kx = (q3n + dj) * MATH_2_MUL_PIf * dsizex;
             const float ky = (q3m - di) * MATH_2_MUL_PIf * dsizey;
 
-            const FVector2 k = {kx, ky};
-            const float omega = omegaf_for_k(&k);
+            const float lengthK = sqrtf(kx * kx + ky * ky);
+            const float omega = sqrtf(EARTH_ACCELERATIONf * lengthK);
             const float omegaT = fmodf(omega * time, MATH_2_MUL_PIf);
 
             // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
@@ -649,8 +644,8 @@ static inline float omegaf_for_k(FVector2 const * const k)
             const float kx = (q2n + dj) * MATH_2_MUL_PIf * dsizex;
             const float ky = (q2m - di) * MATH_2_MUL_PIf * dsizey;
 
-            const FVector2 k = {kx, ky};
-            const float omega = omegaf_for_k(&k);
+            const float lengthK = sqrtf(kx * kx + ky * ky);
+            const float omega = sqrtf(EARTH_ACCELERATIONf * lengthK);
             const float omegaT = fmodf(omega * time, MATH_2_MUL_PIf);
 
             // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
@@ -706,8 +701,8 @@ static inline float omegaf_for_k(FVector2 const * const k)
         const float kx = (q1n + dj) * MATH_2_MUL_PIf * dsizex;
         const float ky = (q1m - di) * MATH_2_MUL_PIf * dsizey;
 
-        const FVector2 k = {kx, ky};
-        const float omega = omegaf_for_k(&k);
+        const float lengthK = sqrtf(kx * kx + ky * ky);
+        const float omega = sqrtf(EARTH_ACCELERATIONf * lengthK);
         const float omegaT = fmodf(omega * time, MATH_2_MUL_PIf);
 
         // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
@@ -762,8 +757,8 @@ static inline float omegaf_for_k(FVector2 const * const k)
         const float kx = (q4n + dj) * MATH_2_MUL_PIf * dsizex;
         const float ky = (q4m - di) * MATH_2_MUL_PIf * dsizey;
 
-        const FVector2 k = {kx, ky};
-        const float omega = omegaf_for_k(&k);
+        const float lengthK = sqrtf(kx * kx + ky * ky);
+        const float omega = sqrtf(EARTH_ACCELERATIONf * lengthK);
         const float omegaT = fmodf(omega * time, MATH_2_MUL_PIf);
 
         // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
