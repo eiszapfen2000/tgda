@@ -388,7 +388,14 @@ ODQuadrants;
         for ( int32_t j = 0; j < resolution.x; j++ )
         {
             const int32_t indexForK = j + resolution.x * i;
-            const int32_t indexForConjugate = ((resolution.x - j) % resolution.x) + resolution.x * ((resolution.y - i) % resolution.y);
+
+            const int32_t jConjugateGeometry = MAX(0, (resolution.x - j - geometryPadding.x) % geometryResolution.x);
+            const int32_t iConjugateGeometry = MAX(0, (resolution.y - i - geometryPadding.y) % geometryResolution.y);
+            const int32_t jConjugateGradient = MAX(0, (resolution.x - j - gradientPadding.x) % gradientResolution.x);
+            const int32_t iConjugateGradient = MAX(0, (resolution.y - i - gradientPadding.y) % gradientResolution.y);
+
+            const int32_t indexForConjugateGeometry = jConjugateGeometry + geometryPadding.x + resolution.x * (iConjugateGeometry + geometryPadding.y);
+            const int32_t indexForConjugateGradient = jConjugateGradient + gradientPadding.x + resolution.x * (iConjugateGradient + gradientPadding.y);
 
             const int32_t geometryIndex = (i - geometryPadding.y) * geometryResolution.x + j - geometryPadding.x;
             const int32_t gradientIndex = (i - gradientPadding.y) * gradientResolution.x + j - gradientPadding.x;
@@ -434,13 +441,21 @@ ODQuadrants;
                 = { H0[indexForK][0] * expOmega[0] - H0[indexForK][1] * expOmega[1],
                     H0[indexForK][0] * expOmega[1] + H0[indexForK][1] * expOmega[0] };
 
-            const fftwf_complex H0conjugate
-                = { H0[indexForConjugate][0], -H0[indexForConjugate][1] };
+            const fftwf_complex geometryH0conjugate
+                = { H0[indexForConjugateGeometry][0], -H0[indexForConjugateGeometry][1] };
+
+            const fftwf_complex gradientH0conjugate
+                = { H0[indexForConjugateGradient][0], -H0[indexForConjugateGradient][1] };
+
 
             // H0[indexForConjugate] * exp(-i*omega*t)
-            const fftwf_complex H0expMinusOmega
-                = { H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1],
-                    H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0] };
+            const fftwf_complex geometryH0expMinusOmega
+                = { geometryH0conjugate[0] * expMinusOmega[0] - geometryH0conjugate[1] * expMinusOmega[1],
+                    geometryH0conjugate[0] * expMinusOmega[1] + geometryH0conjugate[1] * expMinusOmega[0] };
+
+            const fftwf_complex gradientH0expMinusOmega
+                = { gradientH0conjugate[0] * expMinusOmega[0] - gradientH0conjugate[1] * expMinusOmega[1],
+                    gradientH0conjugate[0] * expMinusOmega[1] + gradientH0conjugate[1] * expMinusOmega[0] };
 
             /* complex addition
                x = a + i*b
@@ -450,18 +465,21 @@ ODQuadrants;
 
 
             // hTilde = H0expOmega + H0expMinusomega            
-            const fftwf_complex hTilde
-                = { H0expOmega[0] + H0expMinusOmega[0],
-                    H0expOmega[1] + H0expMinusOmega[1] } ;
+            const fftwf_complex geometryhTilde
+                = { H0expOmega[0] + geometryH0expMinusOmega[0],
+                    H0expOmega[1] + geometryH0expMinusOmega[1] };
+
+            const fftwf_complex gradienthTilde
+                = { H0expOmega[0] + gradientH0expMinusOmega[0],
+                    H0expOmega[1] + gradientH0expMinusOmega[1] };
 
 
             //if ( indexForK >= geometryStartIndex && indexForK <= geometryEndIndex )
             if ( j > geometryXRange.x && j < geometryXRange.y
                  && i > geometryYRange.x && i < geometryYRange.y )
             {
-                //printf("%d %d\n", geometryIndex, gradientIndex);
-                frequencySpectrum[geometryIndex][0] = hTilde[0];
-                frequencySpectrum[geometryIndex][1] = hTilde[1];
+                frequencySpectrum[geometryIndex][0] = geometryhTilde[0];
+                frequencySpectrum[geometryIndex][1] = geometryhTilde[1];
             }
 
             // i * kx
@@ -483,12 +501,11 @@ ODQuadrants;
                  && j > gradientXRange.x && j < gradientXRange.y
                  && i > gradientYRange.x && i < gradientYRange.y )
             {
+                gradientX[gradientIndex][0] = -kx * gradienthTilde[1];
+                gradientX[gradientIndex][1] =  kx * gradienthTilde[0];
 
-                gradientX[gradientIndex][0] = -kx * hTilde[1];
-                gradientX[gradientIndex][1] =  kx * hTilde[0];
-
-                gradientZ[gradientIndex][0] = -ky * hTilde[1];
-                gradientZ[gradientIndex][1] =  ky * hTilde[0];
+                gradientZ[gradientIndex][0] = -ky * gradienthTilde[1];
+                gradientZ[gradientIndex][1] =  ky * gradienthTilde[0];
             }
 
             // -i * kx/|k| * H
@@ -506,11 +523,11 @@ ODQuadrants;
             {
                 const float factor = (lengthK != 0.0f) ? 1.0f/lengthK : 0.0f;
 
-                displacementX[geometryIndex][0] = factor * kx * hTilde[1];
-                displacementX[geometryIndex][1] = factor * kx * hTilde[0] * -1.0f;
+                displacementX[geometryIndex][0] = factor * kx * geometryhTilde[1];
+                displacementX[geometryIndex][1] = factor * kx * geometryhTilde[0] * -1.0f;
 
-                displacementZ[geometryIndex][0] = factor * ky * hTilde[1];
-                displacementZ[geometryIndex][1] = factor * ky * hTilde[0] * -1.0f;
+                displacementZ[geometryIndex][0] = factor * ky * geometryhTilde[1];
+                displacementZ[geometryIndex][1] = factor * ky * geometryhTilde[0] * -1.0f;
             }
         }
     }

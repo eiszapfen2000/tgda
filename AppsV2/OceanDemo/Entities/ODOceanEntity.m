@@ -80,7 +80,7 @@ static const Vector2 defaultWindDirection = {1.0, 0.0};
 static const double defaultSize = 80.0;
 static const double defaultDampening = 0.001;
 static const double defaultSpectrumScale = PHILLIPS_CONSTANT;
-static const int32_t resolutions[6] = {4, 8, 128, 256, 512, 1024};
+static const int32_t resolutions[6] = {8, 64, 128, 256, 512, 1024};
 static const NSUInteger defaultGeometryResolutionIndex = 0;
 static const NSUInteger defaultGradientResolutionIndex = 1;
 static const double OneDivSixty = 1.0 / 60.0;
@@ -89,7 +89,6 @@ static const double defaultAreaScale = 1.0;
 static const double defaultDisplacementScale = 1.0;
 static const double defaultHeightScale = 1.0;
 
-/*
 static size_t index_for_resolution(int32_t resolution)
 {
     switch ( resolution )
@@ -110,8 +109,8 @@ static size_t index_for_resolution(int32_t resolution)
             return SIZE_MAX;
     }
 }
-*/
 
+/*
 static size_t index_for_resolution(int32_t resolution)
 {
     switch ( resolution )
@@ -132,6 +131,7 @@ static size_t index_for_resolution(int32_t resolution)
             return SIZE_MAX;
     }
 }
+*/
 
 @interface ODOceanEntity (Private)
 
@@ -338,8 +338,26 @@ static size_t index_for_resolution(int32_t resolution)
 
             //NSLog(@"Gen Time %f", [ timer frameTime ]);
 
-            print_complex_spectrum(geometry.geometryResolution, complexSpectrum.waveSpectrum);
-            print_half_complex_spectrum(geometry.geometryResolution, halfcomplexSpectrum.waveSpectrum);
+            //print_complex_spectrum(geometry.geometryResolution, complexSpectrum.waveSpectrum);
+            //print_half_complex_spectrum(geometry.geometryResolution, halfcomplexSpectrum.waveSpectrum);
+            //print_complex_spectrum(geometry.gradientResolution, complexSpectrum.gradientX);
+
+            /*
+            const size_t numberOfGeometryElements = geometry.geometryResolution.x * geometry.geometryResolution.y;
+
+            fftwf_complex * complexHeights = fftwf_alloc_complex(numberOfGeometryElements);
+            float * realHeights = fftwf_alloc_real(numberOfGeometryElements);
+
+            NSLog(@"%d", geometryResIndex);
+            fftwf_execute_dft(complexPlans[geometryResIndex], complexSpectrum.waveSpectrum, complexHeights);
+            fftwf_execute_dft_c2r(halfComplexPlans[geometryResIndex], halfcomplexSpectrum.waveSpectrum, realHeights);
+
+            printf("Complex Result\n");
+            print_complex_spectrum(geometry.geometryResolution, complexHeights);
+
+            fftwf_free(realHeights);
+            fftwf_free(complexHeights);
+            */
 
             generationTime += 1.0f/60.0f;
 
@@ -359,6 +377,7 @@ static size_t index_for_resolution(int32_t resolution)
 
             [ transformCondition lock ];
             transformData = YES;
+            //transformData = NO;
             [ transformCondition signal ];
             [ transformCondition unlock ];
         }
@@ -387,6 +406,8 @@ static size_t index_for_resolution(int32_t resolution)
         }
 
         [ transformCondition unlock ];
+
+//        NSLog(@"Transform");
 
         NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
 
