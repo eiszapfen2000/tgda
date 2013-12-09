@@ -494,15 +494,18 @@ ODQuadrants;
             xH = (0*c - kx*d) + i*(0*d+kx*c)
             */
 
+            const float derivativeXScale = (j == 0) ? 0.0f : 1.0f;
+            const float derivativeZScale = (i == 0) ? 0.0f : 1.0f;
+
             if ( gradientX != NULL && gradientZ != NULL
                  && j > gradientXRange.x && j < gradientXRange.y
                  && i > gradientYRange.x && i < gradientYRange.y )
             {
-                gradientX[gradientIndex][0] = -kx * gradienthTilde[1];
-                gradientX[gradientIndex][1] =  kx * gradienthTilde[0];
+                gradientX[gradientIndex][0] = -kx * gradienthTilde[1] * derivativeXScale;
+                gradientX[gradientIndex][1] =  kx * gradienthTilde[0] * derivativeXScale;
 
-                gradientZ[gradientIndex][0] = -ky * gradienthTilde[1];
-                gradientZ[gradientIndex][1] =  ky * gradienthTilde[0];
+                gradientZ[gradientIndex][0] = -ky * gradienthTilde[1] * derivativeZScale;
+                gradientZ[gradientIndex][1] =  ky * gradienthTilde[0] * derivativeZScale;
             }
 
             // -i * kx/|k| * H
@@ -520,11 +523,11 @@ ODQuadrants;
             {
                 const float factor = (lengthK != 0.0f) ? 1.0f/lengthK : 0.0f;
 
-                displacementX[geometryIndex][0] = factor * kx * geometryhTilde[1];
-                displacementX[geometryIndex][1] = factor * kx * geometryhTilde[0] * -1.0f;
+                displacementX[geometryIndex][0] = derivativeXScale * factor * kx * geometryhTilde[1];
+                displacementX[geometryIndex][1] = derivativeXScale * factor * kx * geometryhTilde[0] * -1.0f;
 
-                displacementZ[geometryIndex][0] = factor * ky * geometryhTilde[1];
-                displacementZ[geometryIndex][1] = factor * ky * geometryhTilde[0] * -1.0f;
+                displacementZ[geometryIndex][0] = derivativeZScale * factor * ky * geometryhTilde[1];
+                displacementZ[geometryIndex][1] = derivativeZScale * factor * ky * geometryhTilde[0] * -1.0f;
             }
         }
     }
@@ -575,13 +578,13 @@ ODQuadrants;
         = fftwf_alloc_complex(gradientResolutionHC.x * gradientResolutionHC.y);
 
     fftwf_complex * displacementXHC
-        = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
+        = fftwf_alloc_complex(geometryResolutionHC.x * geometryResolutionHC.y);
 
     fftwf_complex * displacementZHC
-        = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
+        = fftwf_alloc_complex(geometryResolutionHC.x * geometryResolutionHC.y);
 
-    memset(frequencySpectrumHC, 0, geometryResolutionHC.x * geometryResolutionHC.y * 2 * sizeof(float));
-    memset(gradientXHC, 0, geometryResolutionHC.x * geometryResolutionHC.y * 2 * sizeof(float));
+    //memset(frequencySpectrumHC, 0, geometryResolutionHC.x * geometryResolutionHC.y * 2 * sizeof(float));
+    //memset(gradientXHC, 0, geometryResolutionHC.x * geometryResolutionHC.y * 2 * sizeof(float));
 
     const IVector2 geometryPadding
         = { .x = (H0Resolution.x - geometryResolution.x) / 2, .y = (H0Resolution.y - geometryResolution.y) / 2 };
@@ -787,6 +790,8 @@ ODQuadrants;
                 = { H0expOmega[0] + gradientH0expMinusOmega[0],
                     H0expOmega[1] + gradientH0expMinusOmega[1] };
 
+            const float derivativeZScale = (i == 0) ? 0.0f : 1.0f;
+
             if ( j > q2geometryXRange.x && j < q2geometryXRange.y
                  && i > q2geometryYRange.x && i < q2geometryYRange.y )
             {
@@ -802,8 +807,8 @@ ODQuadrants;
                 gradientXHC[gradientIndexHC][0] = -kx * gradienthTilde[1];
                 gradientXHC[gradientIndexHC][1] =  kx * gradienthTilde[0];
 
-                gradientZHC[gradientIndexHC][0] = -ky * gradienthTilde[1];
-                gradientZHC[gradientIndexHC][1] =  ky * gradienthTilde[0];
+                gradientZHC[gradientIndexHC][0] = -ky * gradienthTilde[1] * derivativeZScale;
+                gradientZHC[gradientIndexHC][1] =  ky * gradienthTilde[0] * derivativeZScale;
             }
 
             if ( displacementXHC != NULL && displacementZHC != NULL
@@ -815,8 +820,8 @@ ODQuadrants;
                 displacementXHC[geometryIndexHC][0] = factor * kx * geometryhTilde[1];
                 displacementXHC[geometryIndexHC][1] = factor * kx * geometryhTilde[0] * -1.0f;
 
-                displacementZHC[geometryIndexHC][0] = factor * ky * geometryhTilde[1];
-                displacementZHC[geometryIndexHC][1] = factor * ky * geometryhTilde[0] * -1.0f;
+                displacementZHC[geometryIndexHC][0] = derivativeZScale * factor * ky * geometryhTilde[1];
+                displacementZHC[geometryIndexHC][1] = derivativeZScale * factor * ky * geometryhTilde[0] * -1.0f;
             }
         }
     }
@@ -918,6 +923,9 @@ ODQuadrants;
             = { gradientH0expOmega[0] + gradientH0expMinusOmega[0],
                 gradientH0expOmega[1] + gradientH0expMinusOmega[1] };
 
+        const float derivativeXScale = 0.0f;
+        const float derivativeZScale = (i == 0) ? 0.0f : 1.0f;
+
         if ( i > q1geometryYRange.x && i < q1geometryYRange.y )
         {
             frequencySpectrumHC[geometryIndexHC][0] = geometryhTilde[0];
@@ -927,11 +935,11 @@ ODQuadrants;
         if ( gradientXHC != NULL && gradientZHC != NULL
              && i > q1gradientYRange.x && i < q1gradientYRange.y )
         {
-            gradientXHC[gradientIndexHC][0] = -gradientkx * gradienthTilde[1];
-            gradientXHC[gradientIndexHC][1] =  gradientkx * gradienthTilde[0];
+            gradientXHC[gradientIndexHC][0] = -gradientkx * gradienthTilde[1] * derivativeXScale;
+            gradientXHC[gradientIndexHC][1] =  gradientkx * gradienthTilde[0] * derivativeXScale;
 
-            gradientZHC[gradientIndexHC][0] = -ky * gradienthTilde[1];
-            gradientZHC[gradientIndexHC][1] =  ky * gradienthTilde[0];
+            gradientZHC[gradientIndexHC][0] = -ky * gradienthTilde[1] * derivativeZScale;
+            gradientZHC[gradientIndexHC][1] =  ky * gradienthTilde[0] * derivativeZScale;
         }
 
         if ( displacementXHC != NULL && displacementZHC != NULL
@@ -939,11 +947,11 @@ ODQuadrants;
         {
             const float factor = (geometryLengthK != 0.0f) ? 1.0f/geometryLengthK : 0.0f;
 
-            displacementXHC[geometryIndexHC][0] = factor * geometrykx * geometryhTilde[1];
-            displacementXHC[geometryIndexHC][1] = factor * geometrykx * geometryhTilde[0] * -1.0f;
+            displacementXHC[geometryIndexHC][0] = derivativeXScale * factor * geometrykx * geometryhTilde[1];
+            displacementXHC[geometryIndexHC][1] = derivativeXScale * factor * geometrykx * geometryhTilde[0] * -1.0f;
 
-            displacementZHC[geometryIndexHC][0] = factor * ky * geometryhTilde[1];
-            displacementZHC[geometryIndexHC][1] = factor * ky * geometryhTilde[0] * -1.0f;
+            displacementZHC[geometryIndexHC][0] = derivativeZScale * factor * ky * geometryhTilde[1];
+            displacementZHC[geometryIndexHC][1] = derivativeZScale * factor * ky * geometryhTilde[0] * -1.0f;
         }
     }
 
@@ -1037,6 +1045,8 @@ ODQuadrants;
             = { gradientH0expOmega[0] + gradientH0expMinusOmega[0],
                 gradientH0expOmega[1] + gradientH0expMinusOmega[1] };
 
+        const float derivativeXScale = 0.0f;
+
         if ( i > q4geometryYRange.x && i < q4geometryYRange.y )
         {
             frequencySpectrumHC[geometryIndexHC][0] = geometryhTilde[0];
@@ -1046,8 +1056,8 @@ ODQuadrants;
         if ( gradientXHC != NULL && gradientZHC != NULL
              && i > q4gradientYRange.x && i < q4gradientYRange.y )
         {
-            gradientXHC[gradientIndexHC][0] = -gradientkx * gradienthTilde[1];
-            gradientXHC[gradientIndexHC][1] =  gradientkx * gradienthTilde[0];
+            gradientXHC[gradientIndexHC][0] = -gradientkx * gradienthTilde[1] * derivativeXScale;
+            gradientXHC[gradientIndexHC][1] =  gradientkx * gradienthTilde[0] * derivativeXScale;
 
             gradientZHC[gradientIndexHC][0] = -ky * gradienthTilde[1];
             gradientZHC[gradientIndexHC][1] =  ky * gradienthTilde[0];
@@ -1058,8 +1068,8 @@ ODQuadrants;
         {
             const float factor = (geometryLengthK != 0.0f) ? 1.0f/geometryLengthK : 0.0f;
 
-            displacementXHC[geometryIndexHC][0] = factor * geometrykx * geometryhTilde[1];
-            displacementXHC[geometryIndexHC][1] = factor * geometrykx * geometryhTilde[0] * -1.0f;
+            displacementXHC[geometryIndexHC][0] = derivativeXScale * factor * geometrykx * geometryhTilde[1];
+            displacementXHC[geometryIndexHC][1] = derivativeXScale * factor * geometrykx * geometryhTilde[0] * -1.0f;
 
             displacementZHC[geometryIndexHC][0] = factor * ky * geometryhTilde[1];
             displacementZHC[geometryIndexHC][1] = factor * ky * geometryhTilde[0] * -1.0f;
