@@ -374,9 +374,6 @@ ODQuadrants;
     const IVector2 gradientXRange = {.x = gradientPadding.x - 1, .y = resolution.x - gradientPadding.x };
     const IVector2 gradientYRange = {.x = gradientPadding.y - 1, .y = resolution.y - gradientPadding.y };
 
-
-    //NSLog(@"H: %d %d %d %d", geometryStartIndex, geometryEndIndex, gradientStartIndex, gradientEndIndex);
-
     const float n = -(resolution.x / 2.0f);
     const float m =  (resolution.y / 2.0f);
 
@@ -546,8 +543,6 @@ ODQuadrants;
             .displacementX = displacementX,
             .displacementZ = displacementZ };
 
-    //NSLog(@"H end");
-
     return result;
 }
 
@@ -608,8 +603,13 @@ ODQuadrants;
 
             const int32_t indexForKInH0 = jInH0 + (resolution.x * iInH0);
 
-            const int32_t indexForKConjugateInH0
-                = ((resolution.x - jInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
+            const int32_t jConjugateGeometry = MAX(0, (resolution.x - jInH0 - geometryPadding.x) % geometryResolution.x);
+            const int32_t iConjugateGeometry = MAX(0, (resolution.y - iInH0 - geometryPadding.y) % geometryResolution.y);
+            const int32_t jConjugateGradient = MAX(0, (resolution.x - jInH0 - gradientPadding.x) % gradientResolution.x);
+            const int32_t iConjugateGradient = MAX(0, (resolution.y - iInH0 - gradientPadding.y) % gradientResolution.y);
+
+            const int32_t indexForConjugateGeometry = jConjugateGeometry + geometryPadding.x + resolution.x * (iConjugateGeometry + geometryPadding.y);
+            const int32_t indexForConjugateGradient = jConjugateGradient + gradientPadding.x + resolution.x * (iConjugateGradient + gradientPadding.y);
 
             const int32_t geometryIndexHC = j + (geometryResolutionHC.x * i);
             const int32_t gradientIndexHC = j + (gradientResolutionHC.x * i);
@@ -635,22 +635,27 @@ ODQuadrants;
                 = { H0[indexForKInH0][0] * expOmega[0] - H0[indexForKInH0][1] * expOmega[1],
                     H0[indexForKInH0][0] * expOmega[1] + H0[indexForKInH0][1] * expOmega[0] };
 
-            const fftwf_complex H0conjugate
-                = { H0[indexForKConjugateInH0][0], -H0[indexForKConjugateInH0][1] };
+            const fftwf_complex geometryH0conjugate
+                = { H0[indexForConjugateGeometry][0], -H0[indexForConjugateGeometry][1] };
+
+            const fftwf_complex gradientH0conjugate
+                = { H0[indexForConjugateGradient][0], -H0[indexForConjugateGradient][1] };
 
             // H0[indexForConjugate] * exp(-i*omega*t)
-            const fftwf_complex H0expMinusOmega
-                = { H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1],
-                    H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0] };
+            const fftwf_complex geometryH0expMinusOmega
+                = { geometryH0conjugate[0] * expMinusOmega[0] - geometryH0conjugate[1] * expMinusOmega[1],
+                    geometryH0conjugate[0] * expMinusOmega[1] + geometryH0conjugate[1] * expMinusOmega[0] };
 
+            const fftwf_complex gradientH0expMinusOmega
+                = { gradientH0conjugate[0] * expMinusOmega[0] - gradientH0conjugate[1] * expMinusOmega[1],
+                    gradientH0conjugate[0] * expMinusOmega[1] + gradientH0conjugate[1] * expMinusOmega[0] };
 
             if ( j > q3geometryXRange.x && j < q3geometryXRange.y
                  && i > q3geometryYRange.x && i < q3geometryYRange.y )
             {
-            //printf("%d %d %d %d %d %d %d\n", j, i, jInH0, iInH0, indexForKInH0, indexForKConjugateInH0, geometryIndexHC);
                 // H = H0expOmega + H0expMinusomega
-                frequencySpectrumHC[geometryIndexHC][0] = H0expOmega[0] + H0expMinusOmega[0];
-                frequencySpectrumHC[geometryIndexHC][1] = H0expOmega[1] + H0expMinusOmega[1];
+                frequencySpectrumHC[geometryIndexHC][0] = H0expOmega[0] + geometryH0expMinusOmega[0];
+                frequencySpectrumHC[geometryIndexHC][1] = H0expOmega[1] + geometryH0expMinusOmega[1];
             }
         }
     }
@@ -677,16 +682,19 @@ ODQuadrants;
 
             const int32_t indexForKInH0 = jInH0 + (resolution.x * iInH0);
 
-            const int32_t indexForKConjugateInH0
-                = ((resolution.x - jInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
+            const int32_t jConjugateGeometry = MAX(0, (resolution.x - jInH0 - geometryPadding.x) % geometryResolution.x);
+            const int32_t iConjugateGeometry = MAX(0, (resolution.y - iInH0 - geometryPadding.y) % geometryResolution.y);
+            const int32_t jConjugateGradient = MAX(0, (resolution.x - jInH0 - gradientPadding.x) % gradientResolution.x);
+            const int32_t iConjugateGradient = MAX(0, (resolution.y - iInH0 - gradientPadding.y) % gradientResolution.y);
+
+            const int32_t indexForConjugateGeometry = jConjugateGeometry + geometryPadding.x + resolution.x * (iConjugateGeometry + geometryPadding.y);
+            const int32_t indexForConjugateGradient = jConjugateGradient + gradientPadding.x + resolution.x * (iConjugateGradient + gradientPadding.y);
 
             const int32_t geometryIndexHC
                 = j + (geometryResolutionHC.x * (i - geometryPadding.y + geometryQuadrantResolution.y));
 
             const int32_t gradientIndexHC
                 = j + (gradientResolutionHC.x * (i - gradientPadding.y + gradientQuadrantResolution.y));
-
-            //printf("%d %d %d %d %d %d\n", j, i, geometryResolutionHC.x, geometryPadding.y, geometryQuadrantResolution.y, geometryIndexHC);
 
             const float di = i;
             const float dj = j;
@@ -709,21 +717,28 @@ ODQuadrants;
                 = { H0[indexForKInH0][0] * expOmega[0] - H0[indexForKInH0][1] * expOmega[1],
                     H0[indexForKInH0][0] * expOmega[1] + H0[indexForKInH0][1] * expOmega[0] };
 
-            const fftwf_complex H0conjugate
-                = { H0[indexForKConjugateInH0][0], -H0[indexForKConjugateInH0][1] };
+                        const fftwf_complex geometryH0conjugate
+                = { H0[indexForConjugateGeometry][0], -H0[indexForConjugateGeometry][1] };
+
+            const fftwf_complex gradientH0conjugate
+                = { H0[indexForConjugateGradient][0], -H0[indexForConjugateGradient][1] };
 
             // H0[indexForConjugate] * exp(-i*omega*t)
-            const fftwf_complex H0expMinusOmega
-                = { H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1],
-                    H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0] };
+            const fftwf_complex geometryH0expMinusOmega
+                = { geometryH0conjugate[0] * expMinusOmega[0] - geometryH0conjugate[1] * expMinusOmega[1],
+                    geometryH0conjugate[0] * expMinusOmega[1] + geometryH0conjugate[1] * expMinusOmega[0] };
+
+            const fftwf_complex gradientH0expMinusOmega
+                = { gradientH0conjugate[0] * expMinusOmega[0] - gradientH0conjugate[1] * expMinusOmega[1],
+                    gradientH0conjugate[0] * expMinusOmega[1] + gradientH0conjugate[1] * expMinusOmega[0] };
 
             if ( j > q2geometryXRange.x && j < q2geometryXRange.y
                  && i > q2geometryYRange.x && i < q2geometryYRange.y )
             {
             //printf("%d %d %d %d %d %d %d\n", j, i, jInH0, iInH0, indexForKInH0, indexForKConjugateInH0, geometryIndexHC);
                 // H = H0expOmega + H0expMinusomega
-                frequencySpectrumHC[geometryIndexHC][0] = H0expOmega[0] + H0expMinusOmega[0];
-                frequencySpectrumHC[geometryIndexHC][1] = H0expOmega[1] + H0expMinusOmega[1];
+                frequencySpectrumHC[geometryIndexHC][0] = H0expOmega[0] + geometryH0expMinusOmega[0];
+                frequencySpectrumHC[geometryIndexHC][1] = H0expOmega[1] + geometryH0expMinusOmega[1];
             }
         }
     }
