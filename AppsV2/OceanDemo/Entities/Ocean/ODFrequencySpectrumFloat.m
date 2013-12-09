@@ -568,7 +568,20 @@ ODQuadrants;
 	fftwf_complex * frequencySpectrumHC
         = fftwf_alloc_complex(geometryResolutionHC.x * geometryResolutionHC.y);
 
+	fftwf_complex * gradientXHC
+        = fftwf_alloc_complex(gradientResolutionHC.x * gradientResolutionHC.y);
+
+	fftwf_complex * gradientZHC
+        = fftwf_alloc_complex(gradientResolutionHC.x * gradientResolutionHC.y);
+
+    fftwf_complex * displacementXHC
+        = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
+
+    fftwf_complex * displacementZHC
+        = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
+
     memset(frequencySpectrumHC, 0, geometryResolutionHC.x * geometryResolutionHC.y * 2 * sizeof(float));
+    memset(gradientXHC, 0, geometryResolutionHC.x * geometryResolutionHC.y * 2 * sizeof(float));
 
     const IVector2 geometryPadding
         = { .x = (H0Resolution.x - geometryResolution.x) / 2, .y = (H0Resolution.y - geometryResolution.y) / 2 };
@@ -650,12 +663,45 @@ ODQuadrants;
                 = { gradientH0conjugate[0] * expMinusOmega[0] - gradientH0conjugate[1] * expMinusOmega[1],
                     gradientH0conjugate[0] * expMinusOmega[1] + gradientH0conjugate[1] * expMinusOmega[0] };
 
+            // hTilde = H0expOmega + H0expMinusomega            
+            const fftwf_complex geometryhTilde
+                = { H0expOmega[0] + geometryH0expMinusOmega[0],
+                    H0expOmega[1] + geometryH0expMinusOmega[1] };
+
+            const fftwf_complex gradienthTilde
+                = { H0expOmega[0] + gradientH0expMinusOmega[0],
+                    H0expOmega[1] + gradientH0expMinusOmega[1] };
+
             if ( j > q3geometryXRange.x && j < q3geometryXRange.y
                  && i > q3geometryYRange.x && i < q3geometryYRange.y )
             {
                 // H = H0expOmega + H0expMinusomega
-                frequencySpectrumHC[geometryIndexHC][0] = H0expOmega[0] + geometryH0expMinusOmega[0];
-                frequencySpectrumHC[geometryIndexHC][1] = H0expOmega[1] + geometryH0expMinusOmega[1];
+                frequencySpectrumHC[geometryIndexHC][0] = geometryhTilde[0];
+                frequencySpectrumHC[geometryIndexHC][1] = geometryhTilde[1];
+            }
+
+            if ( gradientXHC != NULL && gradientZHC != NULL
+                 && j > q3gradientXRange.x && j < q3gradientXRange.y
+                 && i > q3gradientYRange.x && i < q3gradientYRange.y )
+            {
+                gradientXHC[gradientIndexHC][0] = -kx * gradienthTilde[1];
+                gradientXHC[gradientIndexHC][1] =  kx * gradienthTilde[0];
+
+                gradientZHC[gradientIndexHC][0] = -ky * gradienthTilde[1];
+                gradientZHC[gradientIndexHC][1] =  ky * gradienthTilde[0];
+            }
+
+            if ( displacementXHC != NULL && displacementZHC != NULL
+                 && j > q3geometryXRange.x && j < q3geometryXRange.y
+                 && i > q3geometryYRange.x && i < q3geometryYRange.y )
+            {
+                const float factor = (lengthK != 0.0f) ? 1.0f/lengthK : 0.0f;
+
+                displacementXHC[geometryIndexHC][0] = factor * kx * geometryhTilde[1];
+                displacementXHC[geometryIndexHC][1] = factor * kx * geometryhTilde[0] * -1.0f;
+
+                displacementZHC[geometryIndexHC][0] = factor * ky * geometryhTilde[1];
+                displacementZHC[geometryIndexHC][1] = factor * ky * geometryhTilde[0] * -1.0f;
             }
         }
     }
@@ -732,13 +778,45 @@ ODQuadrants;
                 = { gradientH0conjugate[0] * expMinusOmega[0] - gradientH0conjugate[1] * expMinusOmega[1],
                     gradientH0conjugate[0] * expMinusOmega[1] + gradientH0conjugate[1] * expMinusOmega[0] };
 
+            // hTilde = H0expOmega + H0expMinusomega            
+            const fftwf_complex geometryhTilde
+                = { H0expOmega[0] + geometryH0expMinusOmega[0],
+                    H0expOmega[1] + geometryH0expMinusOmega[1] };
+
+            const fftwf_complex gradienthTilde
+                = { H0expOmega[0] + gradientH0expMinusOmega[0],
+                    H0expOmega[1] + gradientH0expMinusOmega[1] };
+
             if ( j > q2geometryXRange.x && j < q2geometryXRange.y
                  && i > q2geometryYRange.x && i < q2geometryYRange.y )
             {
-            //printf("%d %d %d %d %d %d %d\n", j, i, jInH0, iInH0, indexForKInH0, indexForKConjugateInH0, geometryIndexHC);
                 // H = H0expOmega + H0expMinusomega
-                frequencySpectrumHC[geometryIndexHC][0] = H0expOmega[0] + geometryH0expMinusOmega[0];
-                frequencySpectrumHC[geometryIndexHC][1] = H0expOmega[1] + geometryH0expMinusOmega[1];
+                frequencySpectrumHC[geometryIndexHC][0] = geometryhTilde[0];
+                frequencySpectrumHC[geometryIndexHC][1] = geometryhTilde[1];
+            }
+
+            if ( gradientXHC != NULL && gradientZHC != NULL
+                 && j > q2gradientXRange.x && j < q2gradientXRange.y
+                 && i > q2gradientYRange.x && i < q2gradientYRange.y )
+            {
+                gradientXHC[gradientIndexHC][0] = -kx * gradienthTilde[1];
+                gradientXHC[gradientIndexHC][1] =  kx * gradienthTilde[0];
+
+                gradientZHC[gradientIndexHC][0] = -ky * gradienthTilde[1];
+                gradientZHC[gradientIndexHC][1] =  ky * gradienthTilde[0];
+            }
+
+            if ( displacementXHC != NULL && displacementZHC != NULL
+                 && j > q2geometryXRange.x && j < q2geometryXRange.y
+                 && i > q2geometryYRange.x && i < q2geometryYRange.y )
+            {
+                const float factor = (lengthK != 0.0f) ? 1.0f/lengthK : 0.0f;
+
+                displacementXHC[geometryIndexHC][0] = factor * kx * geometryhTilde[1];
+                displacementXHC[geometryIndexHC][1] = factor * kx * geometryhTilde[0] * -1.0f;
+
+                displacementZHC[geometryIndexHC][0] = factor * ky * geometryhTilde[1];
+                displacementZHC[geometryIndexHC][1] = factor * ky * geometryhTilde[0] * -1.0f;
             }
         }
     }
@@ -831,11 +909,41 @@ ODQuadrants;
             = { gradientH0conjugate[0] * gradientExpMinusOmega[0] - gradientH0conjugate[1] * gradientExpMinusOmega[1],
                 gradientH0conjugate[0] * gradientExpMinusOmega[1] + gradientH0conjugate[1] * gradientExpMinusOmega[0] };
 
+        // hTilde = H0expOmega + H0expMinusomega            
+        const fftwf_complex geometryhTilde
+            = { geometryH0expOmega[0] + geometryH0expMinusOmega[0],
+                geometryH0expOmega[1] + geometryH0expMinusOmega[1] };
+
+        const fftwf_complex gradienthTilde
+            = { gradientH0expOmega[0] + gradientH0expMinusOmega[0],
+                gradientH0expOmega[1] + gradientH0expMinusOmega[1] };
+
         if ( i > q1geometryYRange.x && i < q1geometryYRange.y )
         {
-            // H = H0expOmega + H0expMinusomega
-            frequencySpectrumHC[geometryIndexHC][0] = geometryH0expOmega[0] + geometryH0expMinusOmega[0];
-            frequencySpectrumHC[geometryIndexHC][1] = geometryH0expOmega[1] + geometryH0expMinusOmega[1];
+            frequencySpectrumHC[geometryIndexHC][0] = geometryhTilde[0];
+            frequencySpectrumHC[geometryIndexHC][1] = geometryhTilde[1];
+        }
+
+        if ( gradientXHC != NULL && gradientZHC != NULL
+             && i > q1gradientYRange.x && i < q1gradientYRange.y )
+        {
+            gradientXHC[gradientIndexHC][0] = -gradientkx * gradienthTilde[1];
+            gradientXHC[gradientIndexHC][1] =  gradientkx * gradienthTilde[0];
+
+            gradientZHC[gradientIndexHC][0] = -ky * gradienthTilde[1];
+            gradientZHC[gradientIndexHC][1] =  ky * gradienthTilde[0];
+        }
+
+        if ( displacementXHC != NULL && displacementZHC != NULL
+             && i > q1geometryYRange.x && i < q1geometryYRange.y )
+        {
+            const float factor = (geometryLengthK != 0.0f) ? 1.0f/geometryLengthK : 0.0f;
+
+            displacementXHC[geometryIndexHC][0] = factor * geometrykx * geometryhTilde[1];
+            displacementXHC[geometryIndexHC][1] = factor * geometrykx * geometryhTilde[0] * -1.0f;
+
+            displacementZHC[geometryIndexHC][0] = factor * ky * geometryhTilde[1];
+            displacementZHC[geometryIndexHC][1] = factor * ky * geometryhTilde[0] * -1.0f;
         }
     }
 
@@ -920,60 +1028,42 @@ ODQuadrants;
             = { gradientH0conjugate[0] * gradientExpMinusOmega[0] - gradientH0conjugate[1] * gradientExpMinusOmega[1],
                 gradientH0conjugate[0] * gradientExpMinusOmega[1] + gradientH0conjugate[1] * gradientExpMinusOmega[0] };
 
+        // hTilde = H0expOmega + H0expMinusomega            
+        const fftwf_complex geometryhTilde
+            = { geometryH0expOmega[0] + geometryH0expMinusOmega[0],
+                geometryH0expOmega[1] + geometryH0expMinusOmega[1] };
+
+        const fftwf_complex gradienthTilde
+            = { gradientH0expOmega[0] + gradientH0expMinusOmega[0],
+                gradientH0expOmega[1] + gradientH0expMinusOmega[1] };
+
         if ( i > q4geometryYRange.x && i < q4geometryYRange.y )
         {
-            // H = H0expOmega + H0expMinusomega
-            frequencySpectrumHC[geometryIndexHC][0] = geometryH0expOmega[0] + geometryH0expMinusOmega[0];
-            frequencySpectrumHC[geometryIndexHC][1] = geometryH0expOmega[1] + geometryH0expMinusOmega[1];
+            frequencySpectrumHC[geometryIndexHC][0] = geometryhTilde[0];
+            frequencySpectrumHC[geometryIndexHC][1] = geometryhTilde[1];
         }
 
-        /*
-        const int32_t jInH0 = 0;
-        const int32_t iInH0 = i + quadrantResolution.y;
-        const int32_t j = 0;
+        if ( gradientXHC != NULL && gradientZHC != NULL
+             && i > q4gradientYRange.x && i < q4gradientYRange.y )
+        {
+            gradientXHC[gradientIndexHC][0] = -gradientkx * gradienthTilde[1];
+            gradientXHC[gradientIndexHC][1] =  gradientkx * gradienthTilde[0];
 
-        const int32_t indexForKInH0 = jInH0 + (resolution.x * iInH0);
+            gradientZHC[gradientIndexHC][0] = -ky * gradienthTilde[1];
+            gradientZHC[gradientIndexHC][1] =  ky * gradienthTilde[0];
+        }
 
-        const int32_t indexForKConjugateInH0
-            = ((resolution.x - jInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
+        if ( displacementXHC != NULL && displacementZHC != NULL
+             && i > q4geometryYRange.x && i < q4geometryYRange.y )
+        {
+            const float factor = (geometryLengthK != 0.0f) ? 1.0f/geometryLengthK : 0.0f;
 
-        const int32_t geometryIndexHC = quadrantResolution.x + (geometryResolutionHC.x * i);
+            displacementXHC[geometryIndexHC][0] = factor * geometrykx * geometryhTilde[1];
+            displacementXHC[geometryIndexHC][1] = factor * geometrykx * geometryhTilde[0] * -1.0f;
 
-        //printf("%d %d %d %d %d %d %d\n", j, i, jInH0, iInH0, indexForKInH0, indexForKConjugateInH0, indexHC);
-
-        const float di = i;
-        const float dj = j;
-
-        const float kx = (q4n + dj) * MATH_2_MUL_PIf * dsizex;
-        const float ky = (q4m - di) * MATH_2_MUL_PIf * dsizey;
-
-        const float lengthK = sqrtf(kx * kx + ky * ky);
-        const float omega = sqrtf(EARTH_ACCELERATIONf * lengthK);
-        const float omegaT = fmodf(omega * time, MATH_2_MUL_PIf);
-
-        // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
-        const fftwf_complex expOmega = { cosf(omegaT), sinf(omegaT) };
-
-        // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
-        const fftwf_complex expMinusOmega = { expOmega[0], -expOmega[1] };
-
-        // H0[indexForK] * exp(i*omega*t)
-        const fftwf_complex H0expOmega
-            = { H0[indexForKInH0][0] * expOmega[0] - H0[indexForKInH0][1] * expOmega[1],
-                H0[indexForKInH0][0] * expOmega[1] + H0[indexForKInH0][1] * expOmega[0] };
-
-        const fftwf_complex H0conjugate
-            = { H0[indexForKConjugateInH0][0], -H0[indexForKConjugateInH0][1] };
-
-        // H0[indexForConjugate] * exp(-i*omega*t)
-        const fftwf_complex H0expMinusOmega
-            = { H0conjugate[0] * expMinusOmega[0] - H0conjugate[1] * expMinusOmega[1],
-                H0conjugate[0] * expMinusOmega[1] + H0conjugate[1] * expMinusOmega[0] };
-
-        // H = H0expOmega + H0expMinusomega
-        frequencySpectrumHC[geometryIndexHC][0] = H0expOmega[0] + H0expMinusOmega[0];
-        frequencySpectrumHC[geometryIndexHC][1] = H0expOmega[1] + H0expMinusOmega[1];
-        */
+            displacementZHC[geometryIndexHC][0] = factor * ky * geometryhTilde[1];
+            displacementZHC[geometryIndexHC][1] = factor * ky * geometryhTilde[0] * -1.0f;
+        }
     }
 
     OdFrequencySpectrumFloat result
@@ -985,10 +1075,10 @@ ODQuadrants;
             .maxMeanSlopeVariance = 0.0f,
             .effectiveMeanSlopeVariance = 0.0f,
             .waveSpectrum  = frequencySpectrumHC,
-            .gradientX     = NULL,
-            .gradientZ     = NULL,
-            .displacementX = NULL,
-            .displacementZ = NULL };
+            .gradientX     = gradientXHC,
+            .gradientZ     = gradientZHC,
+            .displacementX = displacementXHC,
+            .displacementZ = displacementZHC };
 
     return result;
 }
