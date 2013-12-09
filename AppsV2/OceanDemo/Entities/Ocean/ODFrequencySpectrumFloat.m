@@ -766,11 +766,13 @@ ODQuadrants;
         const int32_t geometryIndexForKInH0 = jGeometryInH0 + (resolution.x * iInH0);
         const int32_t gradientIndexForKInH0 = jGradientInH0 + (resolution.x * iInH0);
 
-        const int32_t geometryIndexForKConjugateInH0
-            = ((resolution.x - jGeometryInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
+        const int32_t jConjugateGeometry = MAX(0, (resolution.x - jGeometryInH0 - geometryPadding.x) % geometryResolution.x);
+        const int32_t iConjugateGeometry = MAX(0, (resolution.y - iInH0         - geometryPadding.y) % geometryResolution.y);
+        const int32_t jConjugateGradient = MAX(0, (resolution.x - jGradientInH0 - gradientPadding.x) % gradientResolution.x);
+        const int32_t iConjugateGradient = MAX(0, (resolution.y - iInH0         - gradientPadding.y) % gradientResolution.y);
 
-        const int32_t gradientIndexForKConjugateInH0
-            = ((resolution.x - jGradientInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
+        const int32_t geometryIndexForKConjugateInH0 = jConjugateGeometry + geometryPadding.x + resolution.x * (iConjugateGeometry + geometryPadding.y);
+        const int32_t gradientIndexForKConjugateInH0 = jConjugateGradient + gradientPadding.x + resolution.x * (iConjugateGradient + gradientPadding.y);
 
         const int32_t geometryIndexHC
             = geometryQuadrantResolution.x
@@ -860,11 +862,13 @@ ODQuadrants;
         const int32_t geometryIndexForKInH0 = jGeometryInH0 + (resolution.x * iInH0);
         const int32_t gradientIndexForKInH0 = jGradientInH0 + (resolution.x * iInH0);
 
-        const int32_t geometryIndexForKConjugateInH0
-            = ((resolution.x - jGeometryInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
+        const int32_t jConjugateGeometry = MAX(0, (resolution.x - jGeometryInH0 - geometryPadding.x) % geometryResolution.x);
+        const int32_t iConjugateGeometry = MAX(0, (resolution.y - iInH0         - geometryPadding.y) % geometryResolution.y);
+        const int32_t jConjugateGradient = MAX(0, (resolution.x - jGradientInH0 - gradientPadding.x) % gradientResolution.x);
+        const int32_t iConjugateGradient = MAX(0, (resolution.y - iInH0         - gradientPadding.y) % gradientResolution.y);
 
-        const int32_t gradientIndexForKConjugateInH0
-            = ((resolution.x - jGradientInH0) % resolution.x) + resolution.x * ((resolution.y - iInH0) % resolution.y);
+        const int32_t geometryIndexForKConjugateInH0 = jConjugateGeometry + geometryPadding.x + resolution.x * (iConjugateGeometry + geometryPadding.y);
+        const int32_t gradientIndexForKConjugateInH0 = jConjugateGradient + gradientPadding.x + resolution.x * (iConjugateGradient + gradientPadding.y);
 
         const int32_t geometryIndexHC = geometryQuadrantResolution.x + (geometryResolutionHC.x * i);
         const int32_t gradientIndexHC = gradientQuadrantResolution.x + (gradientResolutionHC.x * i);
