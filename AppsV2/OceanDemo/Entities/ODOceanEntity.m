@@ -396,7 +396,6 @@ static size_t index_for_resolution(int32_t resolution)
 
         if ( [[ NSThread currentThread ] isCancelled ] == NO )
         {
-
             NSUInteger hfCount = 0;
 
             {
@@ -475,14 +474,8 @@ static size_t index_for_resolution(int32_t resolution)
                     NSAssert2(geometryIndex != SIZE_MAX && gradientIndex != SIZE_MAX,
                               @"Invalid resolution %d %d", item.geometryResolution.x, item.gradientResolution.x);
 
-                    //NSLog(@"TRANSFORM %f", item.timestamp);
-
-                    //fftwf_complex * complexHeights = fftwf_alloc_complex(numberOfGeometryElements);
-                    //fftwf_execute_dft(complexPlans[geometryIndex], item.waveSpectrum, complexHeights);
-
                     float * realHeights = fftwf_alloc_real(numberOfGeometryElements);
 
-                    [ timer update ];
                     fftwf_execute_dft_c2r(halfComplexPlans[geometryIndex], item.waveSpectrum, realHeights);
                     result->timeStamp = item.timestamp;
 
@@ -495,12 +488,6 @@ static size_t index_for_resolution(int32_t resolution)
 
                     if ( item.gradientX != NULL && item.gradientZ != NULL )
                     {
-                        //fftwf_complex * complexGradientX = fftwf_alloc_complex(numberOfGradientElements);
-                        //fftwf_complex * complexGradientZ = fftwf_alloc_complex(numberOfGradientElements);
-
-                        //fftwf_execute_dft(complexPlans[gradientIndex], item.gradientX, complexGradientX);
-                        //fftwf_execute_dft(complexPlans[gradientIndex], item.gradientZ, complexGradientZ);
-
                         float * realGradientX = fftwf_alloc_real(numberOfGradientElements);
                         float * realGradientZ = fftwf_alloc_real(numberOfGradientElements);
 
@@ -509,8 +496,6 @@ static size_t index_for_resolution(int32_t resolution)
 
                         for ( size_t i = 0; i < numberOfGradientElements; i++ )
                         {
-                            //result->gradients32f[i].x = complexGradientX[i];
-                            //result->gradients32f[i].y = complexGradientZ[i];
                             result->gradients32f[i].x = realGradientX[i];
                             result->gradients32f[i].y = realGradientZ[i];
                         }
@@ -519,19 +504,10 @@ static size_t index_for_resolution(int32_t resolution)
 
                         fftwf_free(realGradientX);
                         fftwf_free(realGradientZ);
-
-                        //fftwf_free(complexGradientX);
-                        //fftwf_free(complexGradientZ);
                     }
 
                     if ( item.displacementX != NULL && item.displacementZ != NULL )
                     {
-                        //fftwf_complex * complexDisplacementX = fftwf_alloc_complex(numberOfGeometryElements);
-                        //fftwf_complex * complexDisplacementZ = fftwf_alloc_complex(numberOfGeometryElements);
-
-                        //fftwf_execute_dft(complexPlans[geometryIndex], item.displacementX, complexDisplacementX);
-                        //fftwf_execute_dft(complexPlans[geometryIndex], item.displacementZ, complexDisplacementZ);
-
                         float * realDisplacementX = fftwf_alloc_real(numberOfGeometryElements);
                         float * realDisplacementZ = fftwf_alloc_real(numberOfGeometryElements);
 
@@ -540,8 +516,6 @@ static size_t index_for_resolution(int32_t resolution)
 
                         for ( size_t i = 0; i < numberOfGeometryElements; i++ )
                         {
-                            //result->displacements32f[i].x = complexDisplacementX[i][0];
-                            //result->displacements32f[i].y = complexDisplacementZ[i][0];
                             result->displacements32f[i].x = realDisplacementX[i];
                             result->displacements32f[i].y = realDisplacementZ[i];
                         }
@@ -550,14 +524,7 @@ static size_t index_for_resolution(int32_t resolution)
 
                         fftwf_free(realDisplacementX);
                         fftwf_free(realDisplacementZ);
-
-                        //fftwf_free(complexDisplacementX);
-                        //fftwf_free(complexDisplacementZ);
                     }
-
-                    [ timer update ];
-                    //NSLog(@"%lf", [ timer frameTime ]);
-
 
                     {
                         [ heightfieldQueueMutex lock ];
@@ -577,7 +544,6 @@ static size_t index_for_resolution(int32_t resolution)
                     transformData = ( spectrumCount != 0 ) ? YES : NO;
                     [ transformCondition unlock ];
 
-                    //fftwf_free(complexHeights);
                     fftwf_free(realHeights);
                 }
 
@@ -587,6 +553,7 @@ static size_t index_for_resolution(int32_t resolution)
                 fftwf_free(item.displacementX);
                 fftwf_free(item.displacementZ);
             }
+
         }
 
         DESTROY(innerPool);
