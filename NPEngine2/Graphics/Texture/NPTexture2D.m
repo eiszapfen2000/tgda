@@ -404,6 +404,11 @@ static const GLint masks[][4]
             //update data, is a lot faster than glTexImage2D
             glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height,
                 glPixelFormat, glDataFormat, data);
+
+            if ( filterState.mipmaps == YES )
+            {
+                glGenerateMipmap(GL_TEXTURE_2D);
+            }
         }
     }
     else
