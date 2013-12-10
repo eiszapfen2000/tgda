@@ -50,6 +50,22 @@ static void print_complex_spectrum(const IVector2 resolution, fftwf_complex * sp
     printf("\n");
 }
 
+static void print_real_spectrum(const IVector2 resolution, float * spectrum)
+{
+    printf("Real spectrum\n");
+    for ( int32_t j = 0; j < resolution.y; j++ )
+    {
+        for ( int32_t k = 0; k < resolution.x; k++ )
+        {
+            printf("%+f ", spectrum[j * resolution.x + k]);
+        }
+
+        printf("\n");
+    }
+
+    printf("\n");
+}
+
 static void print_half_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
 {
     printf("Half Complex spectrum\n");
@@ -82,7 +98,7 @@ static const double defaultDampening = 0.001;
 static const double defaultSpectrumScale = PHILLIPS_CONSTANT;
 static const int32_t resolutions[6] = {8, 64, 128, 256, 512, 1024};
 static const NSUInteger defaultGeometryResolutionIndex = 0;
-static const NSUInteger defaultGradientResolutionIndex = 1;
+static const NSUInteger defaultGradientResolutionIndex = 0;
 static const double OneDivSixty = 1.0 / 60.0;
 
 static const double defaultAreaScale = 1.0;
@@ -251,7 +267,7 @@ static size_t index_for_resolution(int32_t resolution)
 
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
-    NPTimer * timer = [[ NPTimer alloc ] initWithName:@"Thread Timer" ];
+    NPTimer * timer = [[ NPTimer alloc ] initWithName:@"Generator Timer" ];
     ODFrequencySpectrum * s = [[ ODFrequencySpectrum alloc ] init ];
 
     float generationTime = 0.0;
@@ -326,6 +342,9 @@ static size_t index_for_resolution(int32_t resolution)
                                                  atTime:generationTime
                                    generateBaseGeometry:NO ];
 
+            [ timer update ];
+            const double complexTime = [ timer frameTime ];
+
             OdFrequencySpectrumFloat halfcomplexSpectrum
                 = [ s generateFloatSpectrumHCWithGeometry:geometry
                                                 generator:generatorSettings
@@ -333,30 +352,36 @@ static size_t index_for_resolution(int32_t resolution)
                                      generateBaseGeometry:NO ];
 
             [ timer update ];
+            const double halfComplexTime = [ timer frameTime ];
 
             //NSLog(@"%d %d %d %d", complexSpectrum.geometryResolution.x, complexSpectrum.geometryResolution.y, complexSpectrum.gradientResolution.x, complexSpectrum.gradientResolution.y);
 
-            //NSLog(@"Gen Time %f", [ timer frameTime ]);
-
-            //print_complex_spectrum(geometry.geometryResolution, complexSpectrum.waveSpectrum);
-            //print_half_complex_spectrum(geometry.geometryResolution, halfcomplexSpectrum.waveSpectrum);
-            //print_complex_spectrum(geometry.gradientResolution, complexSpectrum.gradientX);
+            //NSLog(@"C: %lf H: %lf", complexTime, halfComplexTime);
 
             /*
+            print_complex_spectrum(geometry.gradientResolution, complexSpectrum.gradientZ);
+            print_half_complex_spectrum(geometry.gradientResolution, halfcomplexSpectrum.gradientZ);
+            //print_complex_spectrum(geometry.gradientResolution, complexSpectrum.gradientX);
+
             const size_t numberOfGeometryElements = geometry.geometryResolution.x * geometry.geometryResolution.y;
+            const size_t numberOfGradientElements = geometry.gradientResolution.x * geometry.gradientResolution.y;
 
-            fftwf_complex * complexHeights = fftwf_alloc_complex(numberOfGeometryElements);
-            float * realHeights = fftwf_alloc_real(numberOfGeometryElements);
+            //fftwf_complex * complexHeights = fftwf_alloc_complex(numberOfGeometryElements);
+            fftwf_complex * complexGradients = fftwf_alloc_complex(numberOfGradientElements);
+            float * realGradients = fftwf_alloc_real(numberOfGradientElements);
 
-            NSLog(@"%d", geometryResIndex);
-            fftwf_execute_dft(complexPlans[geometryResIndex], complexSpectrum.waveSpectrum, complexHeights);
-            fftwf_execute_dft_c2r(halfComplexPlans[geometryResIndex], halfcomplexSpectrum.waveSpectrum, realHeights);
+            fftwf_execute_dft(complexPlans[gradientResIndex], complexSpectrum.gradientZ, complexGradients);
+            fftwf_execute_dft_c2r(halfComplexPlans[gradientResIndex], halfcomplexSpectrum.gradientZ, realGradients);
 
             printf("Complex Result\n");
-            print_complex_spectrum(geometry.geometryResolution, complexHeights);
+            print_complex_spectrum(geometry.gradientResolution, complexGradients);
+            printf("Half Complex Result\n");
+            print_real_spectrum(geometry.gradientResolution, realGradients);
 
-            fftwf_free(realHeights);
-            fftwf_free(complexHeights);
+            //fftwf_free(realHeights);
+            //fftwf_free(complexHeights);
+            fftwf_free(realGradients);
+            fftwf_free(complexGradients);
             */
 
             generationTime += 1.0f/60.0f;
@@ -368,8 +393,6 @@ static size_t index_for_resolution(int32_t resolution)
                 queueCount = [ spectrumQueue count ];
                 [ spectrumQueueMutex unlock ];
             }
-
-            //NSLog(@"GENERATE %f", complexSpectrum.timestamp);
 
             [ generateCondition lock ];
             generateData = ( queueCount < 16 ) ? YES : NO;
@@ -395,6 +418,7 @@ static size_t index_for_resolution(int32_t resolution)
     feenableexcept(FE_DIVBYZERO | FE_INVALID);
 
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
+    NPTimer * timer = [[ NPTimer alloc ] initWithName:@"Transform Timer" ];
 
     while ( [[ NSThread currentThread ] isCancelled ] == NO )
     {    
@@ -406,8 +430,6 @@ static size_t index_for_resolution(int32_t resolution)
         }
 
         [ transformCondition unlock ];
-
-//        NSLog(@"Transform");
 
         NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
 
@@ -579,6 +601,7 @@ static size_t index_for_resolution(int32_t resolution)
         DESTROY(innerPool);
     }
 
+    DESTROY(timer);
     DESTROY(pool);
 }
 
