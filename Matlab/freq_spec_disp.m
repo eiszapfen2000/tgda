@@ -23,4 +23,7 @@ dyTerm(isnan(dyTerm))=0;
 dispx = dxTerm .* freqspectrum;
 dispy = dyTerm .* freqspectrum;
 
+dispx(:,1) = 0;
+dispy(1,:) = 0;
+
 end

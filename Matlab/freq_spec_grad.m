@@ -11,4 +11,7 @@ k = zeros(resolution(1), resolution(2), 2);
 gradx = 1i .* k(:,:,1) .* freqspectrum;
 grady = 1i .* k(:,:,2) .* freqspectrum;
 
+gradx(:,1) = 0;
+grady(1,:) = 0;
+
 end
