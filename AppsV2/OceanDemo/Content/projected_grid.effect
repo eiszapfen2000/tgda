@@ -43,14 +43,14 @@ technique "proj_grid_tf_feedback"
     {
         WrapS = Repeat;
         WrapT = Repeat;
-        MinFilter = Linear;
+        MinFilter = TriLinear;
         MagFilter = Linear;
     };
     uniform sampler2D displacement
     {
         WrapS = Repeat;
         WrapT = Repeat;
-        MinFilter = Linear;
+        MinFilter = TriLinear;
         MagFilter = Linear;
     };
     uniform sampler2D gradient

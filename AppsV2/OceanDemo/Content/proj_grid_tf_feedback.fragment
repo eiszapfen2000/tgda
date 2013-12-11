@@ -210,7 +210,7 @@ void main()
     texcoord *= (1.0 / area);
 
     vec2 grad = texture(gradient, texcoord).xy * heightScale;
-    vec3 normal = vec3(-grad.x, 1.0, grad.y);
+    vec3 normal = vec3(-grad.x, 1.0, -grad.y);
 
     vec3 lightDir = directionToSun;
     vec3 viewDir  = cameraPosition - out_ws_position;
@@ -232,8 +232,6 @@ void main()
     vec3 c_diff  = vec3(0.0, 0.15, 0.25);
     vec3 c_spec  = vec3(0.02);
 
-    //vec3 tx = normalize(vec3(1.0, grad.x, 0.0));
-    //vec3 ty = normalize(vec3(0.0, -grad.y, 1.0));
     vec3 tx = normalize(vec3(1.0, -normal.x, 0.0));
     vec3 ty = normalize(vec3(0.0, -normal.z, 1.0));
 

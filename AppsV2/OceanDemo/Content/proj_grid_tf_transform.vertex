@@ -42,15 +42,9 @@ void main()
     // but not necessarily for tweaking
     vec2 d = textureGrad(displacement, texcoord, d_dx, d_dy).xy;
 
-    // due to fftw memory layout textures are upside down
-    // it does not matter for heights, but displacement as well
-    // gradient in z direction have to invert sign
-
     out_non_disp_position = intersection.xz;
-    out_position.xz = intersection.xz;
-    out_position.x -= displacementScale * d.x;
-    out_position.z += displacementScale * d.y;
-    out_position.y = h * heightScale;
+    out_position.xz  = intersection.xz - displacementScale * d.xy;
+    out_position.y   = h * heightScale;
 
     gl_Position = np_modelviewprojectionmatrix * vec4(intersection, 1.0);
 }

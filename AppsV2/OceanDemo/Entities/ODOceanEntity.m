@@ -479,9 +479,22 @@ static size_t index_for_resolution(int32_t resolution)
                     fftwf_execute_dft_c2r(halfComplexPlans[geometryIndex], item.waveSpectrum, realHeights);
                     result->timeStamp = item.timestamp;
 
+                    /*
                     for ( size_t i = 0; i < numberOfGeometryElements; i++ )
                     {
                         result->heights32f[i] = realHeights[i];
+                    }
+                    */
+
+                    for ( int32_t i = 0; i < item.geometryResolution.y; i++ )
+                    {
+                        for ( int32_t j = 0; j < item.geometryResolution.x; j++ )
+                        {
+                            const int32_t k = item.geometryResolution.y - 1 - i;
+                            const int32_t sourceIndex = i * item.geometryResolution.x + j;
+                            const int32_t targetIndex = k * item.geometryResolution.x + j;
+                            result->heights32f[targetIndex] = realHeights[sourceIndex];
+                        }
                     }
 
                     heightfield_hf_compute_min_max(result);
@@ -494,10 +507,25 @@ static size_t index_for_resolution(int32_t resolution)
                         fftwf_execute_dft_c2r(halfComplexPlans[gradientIndex], item.gradientX, realGradientX);
                         fftwf_execute_dft_c2r(halfComplexPlans[gradientIndex], item.gradientZ, realGradientZ);
 
+                        /*
                         for ( size_t i = 0; i < numberOfGradientElements; i++ )
                         {
                             result->gradients32f[i].x = realGradientX[i];
                             result->gradients32f[i].y = realGradientZ[i];
+                        }
+                        */
+
+                        for ( int32_t i = 0; i < item.gradientResolution.y; i++ )
+                        {
+                            for ( int32_t j = 0; j < item.gradientResolution.x; j++ )
+                            {
+                                const int32_t k = item.gradientResolution.y - 1 - i;
+                                const int32_t sourceIndex = i * item.gradientResolution.x + j;
+                                const int32_t targetIndex = k * item.gradientResolution.x + j;
+
+                                result->gradients32f[targetIndex].x = realGradientX[sourceIndex];
+                                result->gradients32f[targetIndex].y = realGradientZ[sourceIndex];
+                            }
                         }
 
                         heightfield_hf_compute_min_max_gradients(result);
@@ -514,10 +542,25 @@ static size_t index_for_resolution(int32_t resolution)
                         fftwf_execute_dft_c2r(halfComplexPlans[geometryIndex], item.displacementX, realDisplacementX);
                         fftwf_execute_dft_c2r(halfComplexPlans[geometryIndex], item.displacementZ, realDisplacementZ);
 
+                        /*
                         for ( size_t i = 0; i < numberOfGeometryElements; i++ )
                         {
                             result->displacements32f[i].x = realDisplacementX[i];
                             result->displacements32f[i].y = realDisplacementZ[i];
+                        }
+                        */
+
+                        for ( int32_t i = 0; i < item.geometryResolution.y; i++ )
+                        {
+                            for ( int32_t j = 0; j < item.geometryResolution.x; j++ )
+                            {
+                                const int32_t k = item.geometryResolution.y - 1 - i;
+                                const int32_t sourceIndex = i * item.geometryResolution.x + j;
+                                const int32_t targetIndex = k * item.geometryResolution.x + j;
+
+                                result->displacements32f[targetIndex].x = realDisplacementX[sourceIndex];
+                                result->displacements32f[targetIndex].y = realDisplacementZ[sourceIndex];
+                            }
                         }
 
                         heightfield_hf_compute_min_max_displacements(result);
