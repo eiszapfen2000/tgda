@@ -344,6 +344,14 @@ static size_t index_for_resolution(int32_t resolution)
 
             [ timer update ];
 
+            /*
+            OdFrequencySpectrumFloat complexSpectrum
+                = [ s generateFloatSpectrumWithGeometry:geometry
+                                              generator:generatorSettings
+                                                 atTime:generationTime
+                                   generateBaseGeometry:NO ];
+            */
+
             OdFrequencySpectrumFloat halfcomplexSpectrum
                 = [ s generateFloatSpectrumHCWithGeometry:geometry
                                                 generator:generatorSettings
@@ -358,6 +366,7 @@ static size_t index_for_resolution(int32_t resolution)
             NSUInteger queueCount = 0;
             {
                 [ spectrumQueueMutex lock ];
+                //[ spectrumQueue addPointer:&complexSpectrum ];
                 [ spectrumQueue addPointer:&halfcomplexSpectrum ];
                 queueCount = [ spectrumQueue count ];
                 [ spectrumQueueMutex unlock ];
@@ -385,6 +394,88 @@ static size_t index_for_resolution(int32_t resolution)
 - (void) transformSpectra:(const OdFrequencySpectrumFloat *)item
                      into:(OdHeightfieldData *)result
 {
+    const size_t geometryIndex = index_for_resolution(item->geometryResolution.x);
+    const size_t gradientIndex = index_for_resolution(item->gradientResolution.x);
+
+    const size_t numberOfGeometryElements = item->geometryResolution.x * item->geometryResolution.y;
+    const size_t numberOfGradientElements = item->gradientResolution.x * item->gradientResolution.y;
+
+    NSAssert2(geometryIndex != SIZE_MAX && gradientIndex != SIZE_MAX,
+              @"Invalid resolution %d %d", item->geometryResolution.x, item->gradientResolution.x);
+
+    fftwf_complex * complexHeights = fftwf_alloc_complex(numberOfGeometryElements);
+
+    fftwf_execute_dft(complexPlans[geometryIndex], item->waveSpectrum, complexHeights);
+    result->timeStamp = item->timestamp;
+
+    for ( int32_t i = 0; i < item->geometryResolution.y; i++ )
+    {
+        for ( int32_t j = 0; j < item->geometryResolution.x; j++ )
+        {
+            const int32_t k = item->geometryResolution.y - 1 - i;
+            const int32_t sourceIndex = i * item->geometryResolution.x + j;
+            const int32_t targetIndex = k * item->geometryResolution.x + j;
+            result->heights32f[targetIndex] = complexHeights[sourceIndex][0];
+        }
+    }
+
+    heightfield_hf_compute_min_max(result);
+
+    if ( item->gradientX != NULL && item->gradientZ != NULL )
+    {
+        fftwf_complex * complexGradientX = fftwf_alloc_complex(numberOfGradientElements);
+        fftwf_complex * complexGradientZ = fftwf_alloc_complex(numberOfGradientElements);
+
+        fftwf_execute_dft(complexPlans[gradientIndex], item->gradientX, complexGradientX);
+        fftwf_execute_dft(complexPlans[gradientIndex], item->gradientZ, complexGradientZ);
+
+        for ( int32_t i = 0; i < item->gradientResolution.y; i++ )
+        {
+            for ( int32_t j = 0; j < item->gradientResolution.x; j++ )
+            {
+                const int32_t k = item->gradientResolution.y - 1 - i;
+                const int32_t sourceIndex = i * item->gradientResolution.x + j;
+                const int32_t targetIndex = k * item->gradientResolution.x + j;
+
+                result->gradients32f[targetIndex].x = complexGradientX[sourceIndex][0];
+                result->gradients32f[targetIndex].y = complexGradientZ[sourceIndex][0];
+            }
+        }
+
+        heightfield_hf_compute_min_max_gradients(result);
+
+        fftwf_free(complexGradientX);
+        fftwf_free(complexGradientZ);
+    }
+
+    if ( item->displacementX != NULL && item->displacementZ != NULL )
+    {
+        fftwf_complex * complexDisplacementX = fftwf_alloc_complex(numberOfGeometryElements);
+        fftwf_complex * complexDisplacementZ = fftwf_alloc_complex(numberOfGeometryElements);
+
+        fftwf_execute_dft(complexPlans[geometryIndex], item->displacementX, complexDisplacementX);
+        fftwf_execute_dft(complexPlans[geometryIndex], item->displacementZ, complexDisplacementZ);
+
+        for ( int32_t i = 0; i < item->geometryResolution.y; i++ )
+        {
+            for ( int32_t j = 0; j < item->geometryResolution.x; j++ )
+            {
+                const int32_t k = item->geometryResolution.y - 1 - i;
+                const int32_t sourceIndex = i * item->geometryResolution.x + j;
+                const int32_t targetIndex = k * item->geometryResolution.x + j;
+
+                result->displacements32f[targetIndex].x = complexDisplacementX[sourceIndex][0];
+                result->displacements32f[targetIndex].y = complexDisplacementZ[sourceIndex][0];
+            }
+        }
+
+        heightfield_hf_compute_min_max_displacements(result);
+
+        fftwf_free(complexDisplacementX);
+        fftwf_free(complexDisplacementZ);
+    }
+
+    fftwf_free(complexHeights);
 }
 
 - (void) transformSpectraHC:(const OdFrequencySpectrumFloat *)item
@@ -567,6 +658,7 @@ static size_t index_for_resolution(int32_t resolution)
                     }
 
                     [ self transformSpectraHC:&item into:result ];
+//                    [ self transformSpectra:&item into:result ];
 
                     {
                         [ heightfieldQueueMutex lock ];
