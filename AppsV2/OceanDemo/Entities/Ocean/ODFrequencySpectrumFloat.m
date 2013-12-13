@@ -356,6 +356,9 @@ ODQuadrants;
 	fftwf_complex * gradientZ //= NULL;
         = fftwf_alloc_complex(gradientResolution.x * gradientResolution.y);
 
+	fftwf_complex * gradient
+        = fftwf_alloc_complex(gradientResolution.x * gradientResolution.y);
+
     fftwf_complex * displacementX //= NULL;
         = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
 
@@ -501,11 +504,20 @@ ODQuadrants;
                  && j > gradientXRange.x && j < gradientXRange.y
                  && i > gradientYRange.x && i < gradientYRange.y )
             {
-                gradientX[gradientIndex][0] = -kx * gradienthTilde[1] * derivativeXScale;
-                gradientX[gradientIndex][1] =  kx * gradienthTilde[0] * derivativeXScale;
+                const fftwf_complex gx
+                    = {-kx * gradienthTilde[1] * derivativeXScale, kx * gradienthTilde[0] * derivativeXScale};
 
-                gradientZ[gradientIndex][0] = -ky * gradienthTilde[1] * derivativeZScale;
-                gradientZ[gradientIndex][1] =  ky * gradienthTilde[0] * derivativeZScale;
+                const fftwf_complex gz
+                    = {-ky * gradienthTilde[1] * derivativeZScale, ky * gradienthTilde[0] * derivativeZScale};
+
+                gradientX[gradientIndex][0] = gx[0];
+                gradientX[gradientIndex][1] = gx[1];
+
+                gradientZ[gradientIndex][0] = gz[0];
+                gradientZ[gradientIndex][1] = gz[1];
+
+                gradient[gradientIndex][0] = gx[0] - gz[1];
+                gradient[gradientIndex][1] = gx[1] + gz[0];
             }
 
             // -i * kx/|k| * H
@@ -543,7 +555,7 @@ ODQuadrants;
             .waveSpectrum  = frequencySpectrum,
             .gradientX     = gradientX,
             .gradientZ     = gradientZ,
-            .gradient      = NULL,
+            .gradient      = gradient,
             .displacementX = displacementX,
             .displacementZ = displacementZ,
             .displacement  = NULL };
