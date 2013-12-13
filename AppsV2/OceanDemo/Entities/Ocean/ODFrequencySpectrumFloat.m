@@ -543,8 +543,10 @@ ODQuadrants;
             .waveSpectrum  = frequencySpectrum,
             .gradientX     = gradientX,
             .gradientZ     = gradientZ,
+            .gradient      = NULL,
             .displacementX = displacementX,
-            .displacementZ = displacementZ };
+            .displacementZ = displacementZ,
+            .displacement  = NULL };
 
     return result;
 }
@@ -1087,8 +1089,10 @@ ODQuadrants;
             .waveSpectrum  = frequencySpectrumHC,
             .gradientX     = gradientXHC,
             .gradientZ     = gradientZHC,
+            .gradient      = NULL,
             .displacementX = displacementXHC,
-            .displacementZ = displacementZHC };
+            .displacementZ = displacementZHC,
+            .displacement  = NULL };
 
     return result;
 }
