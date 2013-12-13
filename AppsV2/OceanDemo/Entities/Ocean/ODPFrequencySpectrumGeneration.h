@@ -79,8 +79,10 @@ typedef struct OdFrequencySpectrumFloat
     fftwf_complex * waveSpectrum; // zeros frequency upper left
     fftwf_complex * gradientX;
     fftwf_complex * gradientZ;
+    fftwf_complex * gradient;
     fftwf_complex * displacementX;
     fftwf_complex * displacementZ;
+    fftwf_complex * displacement;
 }
 OdFrequencySpectrumFloat;
 
