@@ -682,6 +682,7 @@ static size_t index_for_resolution(int32_t resolution)
                 fftwf_free(item.waveSpectrum);
                 fftwf_free(item.gradientX);
                 fftwf_free(item.gradientZ);
+                fftwf_free(item.gradient);
                 fftwf_free(item.displacementX);
                 fftwf_free(item.displacementZ);
             }
