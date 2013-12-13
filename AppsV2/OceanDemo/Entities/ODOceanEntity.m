@@ -421,13 +421,11 @@ static size_t index_for_resolution(int32_t resolution)
 
     heightfield_hf_compute_min_max(result);
 
-    if ( item->gradientX != NULL && item->gradientZ != NULL )
+    if ( item->gradient != NULL )
     {
-        fftwf_complex * complexGradientX = fftwf_alloc_complex(numberOfGradientElements);
-        fftwf_complex * complexGradientZ = fftwf_alloc_complex(numberOfGradientElements);
+        fftwf_complex * complexGradient = fftwf_alloc_complex(numberOfGradientElements);
 
-        fftwf_execute_dft(complexPlans[gradientIndex], item->gradientX, complexGradientX);
-        fftwf_execute_dft(complexPlans[gradientIndex], item->gradientZ, complexGradientZ);
+        fftwf_execute_dft(complexPlans[gradientIndex], item->gradient,  complexGradient);
 
         for ( int32_t i = 0; i < item->gradientResolution.y; i++ )
         {
@@ -437,15 +435,14 @@ static size_t index_for_resolution(int32_t resolution)
                 const int32_t sourceIndex = i * item->gradientResolution.x + j;
                 const int32_t targetIndex = k * item->gradientResolution.x + j;
 
-                result->gradients32f[targetIndex].x = complexGradientX[sourceIndex][0];
-                result->gradients32f[targetIndex].y = complexGradientZ[sourceIndex][0];
+                result->gradients32f[targetIndex].x = complexGradient[sourceIndex][0];
+                result->gradients32f[targetIndex].y = complexGradient[sourceIndex][1];
             }
         }
 
         heightfield_hf_compute_min_max_gradients(result);
 
-        fftwf_free(complexGradientX);
-        fftwf_free(complexGradientZ);
+        fftwf_free(complexGradient);
     }
 
     if ( item->displacementX != NULL && item->displacementZ != NULL )

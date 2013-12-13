@@ -350,12 +350,6 @@ ODQuadrants;
 	fftwf_complex * frequencySpectrum
         = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
 
-	fftwf_complex * gradientX //= NULL;
-        = fftwf_alloc_complex(gradientResolution.x * gradientResolution.y);
-
-	fftwf_complex * gradientZ //= NULL;
-        = fftwf_alloc_complex(gradientResolution.x * gradientResolution.y);
-
 	fftwf_complex * gradient
         = fftwf_alloc_complex(gradientResolution.x * gradientResolution.y);
 
@@ -500,7 +494,7 @@ ODQuadrants;
             const float derivativeXScale = (j == 0) ? 0.0f : 1.0f;
             const float derivativeZScale = (i == 0) ? 0.0f : 1.0f;
 
-            if ( gradientX != NULL && gradientZ != NULL
+            if ( gradient != NULL
                  && j > gradientXRange.x && j < gradientXRange.y
                  && i > gradientYRange.x && i < gradientYRange.y )
             {
@@ -510,12 +504,7 @@ ODQuadrants;
                 const fftwf_complex gz
                     = {-ky * gradienthTilde[1] * derivativeZScale, ky * gradienthTilde[0] * derivativeZScale};
 
-                gradientX[gradientIndex][0] = gx[0];
-                gradientX[gradientIndex][1] = gx[1];
-
-                gradientZ[gradientIndex][0] = gz[0];
-                gradientZ[gradientIndex][1] = gz[1];
-
+                // gx + i*gz
                 gradient[gradientIndex][0] = gx[0] - gz[1];
                 gradient[gradientIndex][1] = gx[1] + gz[0];
             }
@@ -553,8 +542,8 @@ ODQuadrants;
             .maxMeanSlopeVariance = 0.0f,
             .effectiveMeanSlopeVariance = 0.0f,
             .waveSpectrum  = frequencySpectrum,
-            .gradientX     = gradientX,
-            .gradientZ     = gradientZ,
+            .gradientX     = NULL,
+            .gradientZ     = NULL,
             .gradient      = gradient,
             .displacementX = displacementX,
             .displacementZ = displacementZ,
@@ -1225,6 +1214,17 @@ right way.
                            quadrants:ODQuadrant_1_3 ];
 
         [ self swapFrequencySpectrum:result.gradientZ
+                          resolution:currentGeometry.gradientResolution
+                           quadrants:ODQuadrant_2_4 ];
+    }
+
+    if ( result.gradient != NULL )
+    {
+        [ self swapFrequencySpectrum:result.gradient
+                          resolution:currentGeometry.gradientResolution
+                           quadrants:ODQuadrant_1_3 ];
+
+        [ self swapFrequencySpectrum:result.gradient
                           resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_2_4 ];
     }
