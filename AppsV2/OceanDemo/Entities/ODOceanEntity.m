@@ -344,19 +344,19 @@ static size_t index_for_resolution(int32_t resolution)
 
             [ timer update ];
 
-            /*
             OdFrequencySpectrumFloat complexSpectrum
                 = [ s generateFloatSpectrumWithGeometry:geometry
                                               generator:generatorSettings
                                                  atTime:generationTime
                                    generateBaseGeometry:NO ];
-            */
 
+            /*
             OdFrequencySpectrumFloat halfcomplexSpectrum
                 = [ s generateFloatSpectrumHCWithGeometry:geometry
                                                 generator:generatorSettings
                                                    atTime:generationTime
                                      generateBaseGeometry:NO ];
+            */
 
             [ timer update ];
             const double halfComplexTime = [ timer frameTime ];
@@ -366,8 +366,8 @@ static size_t index_for_resolution(int32_t resolution)
             NSUInteger queueCount = 0;
             {
                 [ spectrumQueueMutex lock ];
-                //[ spectrumQueue addPointer:&complexSpectrum ];
-                [ spectrumQueue addPointer:&halfcomplexSpectrum ];
+                [ spectrumQueue addPointer:&complexSpectrum ];
+                //[ spectrumQueue addPointer:&halfcomplexSpectrum ];
                 queueCount = [ spectrumQueue count ];
                 [ spectrumQueueMutex unlock ];
             }
@@ -657,8 +657,8 @@ static size_t index_for_resolution(int32_t resolution)
                         [ heightfieldQueueMutex unlock ];
                     }
 
-                    [ self transformSpectraHC:&item into:result ];
-//                    [ self transformSpectra:&item into:result ];
+//                    [ self transformSpectraHC:&item into:result ];
+                    [ self transformSpectra:&item into:result ];
 
                     {
                         [ heightfieldQueueMutex lock ];
