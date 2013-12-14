@@ -41,6 +41,7 @@ OdHeightfieldData * heightfield_alloc_init_with_resolutions_and_size(
     result->size = size;
     result->heights32f = fftwf_alloc_real(geometryResolution.x * geometryResolution.y);
     result->displacements32f = (FVector2 *)fftwf_alloc_real(geometryResolution.x * geometryResolution.y * 2);
+    result->displacementDerivatives32f = (FVector4 *)fftwf_alloc_real(geometryResolution.x * geometryResolution.y * 4);
     result->gradients32f = (FVector2 *)fftwf_alloc_real(gradientResolution.x * gradientResolution.y * 2);
 
     return result;
@@ -52,6 +53,7 @@ void heightfield_free(OdHeightfieldData * heightfield)
     {
         fftwf_free(heightfield->heights32f);
         fftwf_free(heightfield->displacements32f);
+        fftwf_free(heightfield->displacementDerivatives32f);
         fftwf_free(heightfield->gradients32f);
 
         npfreenode_free(heightfield, OD_HEIGHTFIELDDATA_FREELIST);
