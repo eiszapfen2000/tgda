@@ -524,11 +524,20 @@ ODQuadrants;
             {
                 const float factor = (lengthK != 0.0f) ? 1.0f/lengthK : 0.0f;
 
-                displacementX[geometryIndex][0] = derivativeXScale * factor * kx * geometryhTilde[1];
-                displacementX[geometryIndex][1] = derivativeXScale * factor * kx * geometryhTilde[0] * -1.0f;
+                const fftwf_complex dx
+                    = { derivativeXScale * factor * kx * geometryhTilde[1],
+                        derivativeXScale * factor * kx * geometryhTilde[0] * -1.0f };
 
-                displacementZ[geometryIndex][0] = derivativeZScale * factor * ky * geometryhTilde[1];
-                displacementZ[geometryIndex][1] = derivativeZScale * factor * ky * geometryhTilde[0] * -1.0f;
+                const fftwf_complex dz
+                    = { derivativeZScale * factor * ky * geometryhTilde[1],
+                        derivativeZScale * factor * ky * geometryhTilde[0] * -1.0f };
+
+                displacementX[geometryIndex][0] = dx[0];
+                displacementX[geometryIndex][1] = dx[1];
+
+                displacementZ[geometryIndex][0] = dz[0];
+                displacementZ[geometryIndex][1] = dz[1];
+
             }
         }
     }
