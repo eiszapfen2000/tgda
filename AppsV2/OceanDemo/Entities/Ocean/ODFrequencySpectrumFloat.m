@@ -356,6 +356,12 @@ ODQuadrants;
     fftwf_complex * displacement //= NULL;
         = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
 
+    fftwf_complex * displacementXdXdZ
+        = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
+
+    fftwf_complex * displacementZdXdZ
+        = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
+
     const IVector2 geometryPadding
         = { .x = (H0Resolution.x - geometryResolution.x) / 2, .y = (H0Resolution.y - geometryResolution.y) / 2 };
 
@@ -529,10 +535,37 @@ ODQuadrants;
                     = { derivativeZScale * factor * ky * geometryhTilde[1],
                         derivativeZScale * factor * ky * geometryhTilde[0] * -1.0f };
 
-                // dx +i*dz
+                // dx + i*dz
                 displacement[geometryIndex][0] = dx[0] - dz[1];
                 displacement[geometryIndex][1] = dx[1] + dz[0];
 
+                // partial derivatives of dx and dz
+                const float dx_x_term = kx * kx * factor * derivativeXScale;
+                const float dz_z_term = ky * ky * factor * derivativeZScale;
+                const float dx_z_term = ky * kx * factor * derivativeXScale;
+                const float dz_x_term = kx * ky * factor * derivativeZScale;
+
+                const fftwf_complex dx_x
+                    = { dx_x_term * derivativeXScale * geometryhTilde[0],
+                        dx_x_term * derivativeXScale * geometryhTilde[1] };
+
+                const fftwf_complex dx_z
+                    = { dx_z_term * derivativeZScale * geometryhTilde[0],
+                        dx_z_term * derivativeZScale * geometryhTilde[1] };
+
+                const fftwf_complex dz_x
+                    = { dz_x_term * derivativeXScale * geometryhTilde[0],
+                        dz_x_term * derivativeXScale * geometryhTilde[1] };
+
+                const fftwf_complex dz_z
+                    = { dz_z_term * derivativeZScale * geometryhTilde[0],
+                        dz_z_term * derivativeZScale * geometryhTilde[1] };
+
+                displacementXdXdZ[geometryIndex][0] = dx_x[0] - dx_z[1];
+                displacementXdXdZ[geometryIndex][1] = dx_x[1] + dx_z[0];
+
+                displacementZdXdZ[geometryIndex][0] = dz_x[0] - dz_z[1];
+                displacementZdXdZ[geometryIndex][1] = dz_x[1] + dz_z[0];
             }
         }
     }
@@ -551,7 +584,9 @@ ODQuadrants;
             .gradient      = gradient,
             .displacementX = NULL,
             .displacementZ = NULL,
-            .displacement  = displacement };
+            .displacement  = displacement,
+            .displacementXdXdZ = displacementXdXdZ,
+            .displacementZdXdZ = displacementZdXdZ };
 
     return result;
 }
@@ -1097,7 +1132,9 @@ ODQuadrants;
             .gradient      = NULL,
             .displacementX = displacementXHC,
             .displacementZ = displacementZHC,
-            .displacement  = NULL };
+            .displacement  = NULL,
+            .displacementXdXdZ = NULL,
+            .displacementZdXdZ = NULL };
 
     return result;
 }
@@ -1262,6 +1299,28 @@ right way.
                            quadrants:ODQuadrant_1_3 ];
 
         [ self swapFrequencySpectrum:result.displacement
+                          resolution:currentGeometry.geometryResolution
+                           quadrants:ODQuadrant_2_4 ];
+    }
+
+    if ( result.displacementXdXdZ != NULL )
+    {
+        [ self swapFrequencySpectrum:result.displacementXdXdZ
+                          resolution:currentGeometry.geometryResolution
+                           quadrants:ODQuadrant_1_3 ];
+
+        [ self swapFrequencySpectrum:result.displacementXdXdZ
+                          resolution:currentGeometry.geometryResolution
+                           quadrants:ODQuadrant_2_4 ];
+    }
+
+    if ( result.displacementZdXdZ != NULL )
+    {
+        [ self swapFrequencySpectrum:result.displacementZdXdZ
+                          resolution:currentGeometry.geometryResolution
+                           quadrants:ODQuadrant_1_3 ];
+
+        [ self swapFrequencySpectrum:result.displacementZdXdZ
                           resolution:currentGeometry.geometryResolution
                            quadrants:ODQuadrant_2_4 ];
     }

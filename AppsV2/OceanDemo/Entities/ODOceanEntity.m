@@ -447,9 +447,13 @@ static size_t index_for_resolution(int32_t resolution)
 
     if ( item->displacement != NULL )
     {
-        fftwf_complex * complexDisplacement  = fftwf_alloc_complex(numberOfGeometryElements);
+        fftwf_complex * complexDisplacement = fftwf_alloc_complex(numberOfGeometryElements);
+        fftwf_complex * complexDisplacementXdXdZ = fftwf_alloc_complex(numberOfGeometryElements);
+        fftwf_complex * complexDisplacementZdXdZ = fftwf_alloc_complex(numberOfGeometryElements);
 
-        fftwf_execute_dft(complexPlans[geometryIndex], item->displacement,  complexDisplacement);
+        fftwf_execute_dft(complexPlans[geometryIndex], item->displacement, complexDisplacement);
+        fftwf_execute_dft(complexPlans[geometryIndex], item->displacementXdXdZ, complexDisplacementXdXdZ);
+        fftwf_execute_dft(complexPlans[geometryIndex], item->displacementZdXdZ, complexDisplacementZdXdZ);
 
         for ( int32_t i = 0; i < item->geometryResolution.y; i++ )
         {
@@ -464,8 +468,13 @@ static size_t index_for_resolution(int32_t resolution)
             }
         }
 
+        //print_complex_spectrum(item->geometryResolution, complexDisplacementXdXdZ);
+        //print_complex_spectrum(item->geometryResolution, complexDisplacementZdXdZ);
+
         heightfield_hf_compute_min_max_displacements(result);
 
+        fftwf_free(complexDisplacementZdXdZ);
+        fftwf_free(complexDisplacementXdXdZ);
         fftwf_free(complexDisplacement);
     }
 
@@ -680,6 +689,8 @@ static size_t index_for_resolution(int32_t resolution)
                 fftwf_free(item.displacementX);
                 fftwf_free(item.displacementZ);
                 fftwf_free(item.displacement);
+                fftwf_free(item.displacementXdXdZ);
+                fftwf_free(item.displacementZdXdZ);
             }
 
         }

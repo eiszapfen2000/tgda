@@ -76,13 +76,15 @@ typedef struct OdFrequencySpectrumFloat
     float * baseSpectrum; // zero frequency at center
     float maxMeanSlopeVariance;
     float effectiveMeanSlopeVariance;
-    fftwf_complex * waveSpectrum; // zeros frequency upper left
+    fftwf_complex * waveSpectrum; // zero frequency upper left
     fftwf_complex * gradientX;
     fftwf_complex * gradientZ;
     fftwf_complex * gradient;
     fftwf_complex * displacementX;
     fftwf_complex * displacementZ;
     fftwf_complex * displacement;
+    fftwf_complex * displacementXdXdZ;
+    fftwf_complex * displacementZdXdZ;
 }
 OdFrequencySpectrumFloat;
 
