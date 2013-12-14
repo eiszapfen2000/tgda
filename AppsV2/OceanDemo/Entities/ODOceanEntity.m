@@ -445,13 +445,11 @@ static size_t index_for_resolution(int32_t resolution)
         fftwf_free(complexGradient);
     }
 
-    if ( item->displacementX != NULL && item->displacementZ != NULL )
+    if ( item->displacement != NULL )
     {
-        fftwf_complex * complexDisplacementX = fftwf_alloc_complex(numberOfGeometryElements);
-        fftwf_complex * complexDisplacementZ = fftwf_alloc_complex(numberOfGeometryElements);
+        fftwf_complex * complexDisplacement  = fftwf_alloc_complex(numberOfGeometryElements);
 
-        fftwf_execute_dft(complexPlans[geometryIndex], item->displacementX, complexDisplacementX);
-        fftwf_execute_dft(complexPlans[geometryIndex], item->displacementZ, complexDisplacementZ);
+        fftwf_execute_dft(complexPlans[geometryIndex], item->displacement,  complexDisplacement);
 
         for ( int32_t i = 0; i < item->geometryResolution.y; i++ )
         {
@@ -461,15 +459,14 @@ static size_t index_for_resolution(int32_t resolution)
                 const int32_t sourceIndex = i * item->geometryResolution.x + j;
                 const int32_t targetIndex = k * item->geometryResolution.x + j;
 
-                result->displacements32f[targetIndex].x = complexDisplacementX[sourceIndex][0];
-                result->displacements32f[targetIndex].y = complexDisplacementZ[sourceIndex][0];
+                result->displacements32f[targetIndex].x = complexDisplacement[sourceIndex][0];
+                result->displacements32f[targetIndex].y = complexDisplacement[sourceIndex][1];
             }
         }
 
         heightfield_hf_compute_min_max_displacements(result);
 
-        fftwf_free(complexDisplacementX);
-        fftwf_free(complexDisplacementZ);
+        fftwf_free(complexDisplacement);
     }
 
     fftwf_free(complexHeights);
@@ -682,6 +679,7 @@ static size_t index_for_resolution(int32_t resolution)
                 fftwf_free(item.gradient);
                 fftwf_free(item.displacementX);
                 fftwf_free(item.displacementZ);
+                fftwf_free(item.displacement);
             }
 
         }
