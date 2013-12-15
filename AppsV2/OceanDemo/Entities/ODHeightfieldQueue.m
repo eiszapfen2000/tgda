@@ -145,6 +145,42 @@ void heightfield_hf_compute_min_max_displacements(OdHeightfieldData * heightfiel
     heightfield->displacementZRange = (FVector2){minDisplacementZ, maxDisplacementZ};
 }
 
+void heightfield_hf_compute_min_max_displacement_derivatives(OdHeightfieldData * heightfield)
+{
+    assert( heightfield->displacementDerivatives32f != NULL );
+
+    float maxDisplacementXdX = -FLT_MAX;
+    float maxDisplacementXdZ = -FLT_MAX;
+    float maxDisplacementZdX = -FLT_MAX;
+    float maxDisplacementZdZ = -FLT_MAX;
+
+    float minDisplacementXdX =  FLT_MAX;
+    float minDisplacementXdZ =  FLT_MAX;
+    float minDisplacementZdX =  FLT_MAX;
+    float minDisplacementZdZ =  FLT_MAX;
+
+    const int32_t numberOfElements
+        = heightfield->geometryResolution.x * heightfield->geometryResolution.y;
+
+    for ( int32_t i = 0; i < numberOfElements; i++ )
+    {
+        maxDisplacementXdX = MAX(maxDisplacementXdX, heightfield->displacementDerivatives32f[i].x);
+        maxDisplacementXdZ = MAX(maxDisplacementXdZ, heightfield->displacementDerivatives32f[i].y);
+        maxDisplacementZdX = MAX(maxDisplacementZdX, heightfield->displacementDerivatives32f[i].z);
+        maxDisplacementZdZ = MAX(maxDisplacementZdZ, heightfield->displacementDerivatives32f[i].w);
+
+        minDisplacementXdX = MIN(minDisplacementXdX, heightfield->displacementDerivatives32f[i].x);
+        minDisplacementXdZ = MIN(minDisplacementXdZ, heightfield->displacementDerivatives32f[i].y);
+        minDisplacementZdX = MIN(minDisplacementZdX, heightfield->displacementDerivatives32f[i].z);
+        minDisplacementZdZ = MIN(minDisplacementZdZ, heightfield->displacementDerivatives32f[i].w);
+    }
+
+    heightfield->displacementXdXRange = (FVector2){minDisplacementXdX, maxDisplacementXdX};
+    heightfield->displacementXdZRange = (FVector2){maxDisplacementXdZ, minDisplacementXdZ};
+    heightfield->displacementZdXRange = (FVector2){minDisplacementZdX, maxDisplacementZdX};
+    heightfield->displacementZdZRange = (FVector2){maxDisplacementZdZ, minDisplacementZdZ};
+}
+
 @implementation ODHeightfieldQueue
 
 + (void) initialize
