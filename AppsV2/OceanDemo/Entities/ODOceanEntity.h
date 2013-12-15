@@ -89,6 +89,10 @@
     FVector2 gradientZRange;
     FVector2 displacementXRange;
     FVector2 displacementZRange;
+    FVector2 displacementXdXRange;
+    FVector2 displacementXdZRange;
+    FVector2 displacementZdXRange;
+    FVector2 displacementZdZRange;
     IVector2 baseSpectrumResolution;
     Vector2  baseSpectrumSize;
     float baseSpectrumDeltaVariance;
