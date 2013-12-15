@@ -12,17 +12,12 @@ typedef struct OdHeightfieldData
     float * heights32f;
     FVector2 * displacements32f; //  x = displacement x, y = displacement z
     FVector2 * gradients32f; // x = gradient x, y = gradient z
-    FVector4 * displacementDerivatives32f;    
-    float minHeight;
-    float maxHeight;
-    float minGradientX;
-    float maxGradientX;
-    float minGradientZ;
-    float maxGradientZ;
-    float minDisplacementX;
-    float maxDisplacementX;
-    float minDisplacementZ;
-    float maxDisplacementZ;
+    FVector4 * displacementDerivatives32f;
+    FVector2 heightRange;
+    FVector2 gradientXRange;
+    FVector2 gradientZRange;
+    FVector2 displacementXRange;
+    FVector2 displacementZRange;
 }
 OdHeightfieldData;
 
