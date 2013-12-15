@@ -12,12 +12,16 @@ typedef struct OdHeightfieldData
     float * heights32f;
     FVector2 * displacements32f; //  x = displacement x, y = displacement z
     FVector2 * gradients32f; // x = gradient x, y = gradient z
-    FVector4 * displacementDerivatives32f;
+    FVector4 * displacementDerivatives32f; // x = dx_x , y = dx_z, z = dz_x, w = dz_z
     FVector2 heightRange;
     FVector2 gradientXRange;
     FVector2 gradientZRange;
     FVector2 displacementXRange;
     FVector2 displacementZRange;
+    FVector2 displacementXdXRange;
+    FVector2 displacementXdZRange;
+    FVector2 displacementZdXRange;
+    FVector2 displacementZdZRange;
 }
 OdHeightfieldData;
 
@@ -33,6 +37,7 @@ void heightfield_free(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max_gradients(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max_displacements(OdHeightfieldData * heightfield);
+void heightfield_hf_compute_min_max_displacement_derivatives(OdHeightfieldData * heightfield);
 
 @interface ODHeightfieldQueue : NPObject
 {
