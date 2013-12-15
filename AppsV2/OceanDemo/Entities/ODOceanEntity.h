@@ -70,6 +70,7 @@
     NPTexture2D * baseSpectrum;
     NPTexture2D * heightfield;
     NPTexture2D * displacement;
+    NPTexture2D * displacementDerivatives;
     NPTexture2D * gradient;
 
     ODOceanBaseMeshes * baseMeshes;
@@ -110,6 +111,7 @@
 - (NPTexture2D *) baseSpectrum;
 - (NPTexture2D *) heightfield;
 - (NPTexture2D *) displacement;
+- (NPTexture2D *) displacementDerivatives;
 - (NPTexture2D *) gradient;
 
 - (double) area;
