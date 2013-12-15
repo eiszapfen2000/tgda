@@ -1185,11 +1185,18 @@ static NSUInteger od_variance_size(const void * item)
 
         area = hf->size.x;
 
+        /*
         heightRange    = (FVector2){.x = hf->minHeight,    .y = hf->maxHeight   };
         gradientXRange = (FVector2){.x = hf->minGradientX, .y = hf->maxGradientX};
         gradientZRange = (FVector2){.x = hf->minGradientZ, .y = hf->maxGradientZ};
         displacementXRange = (FVector2){.x = hf->minDisplacementX, .y = hf->maxDisplacementX};
         displacementZRange = (FVector2){.x = hf->minDisplacementZ, .y = hf->maxDisplacementZ};
+        */
+        heightRange = hf->heightRange;
+        gradientXRange = hf->gradientXRange;
+        gradientZRange = hf->gradientZRange;
+        displacementXRange = hf->displacementXRange;
+        displacementZRange = hf->displacementZRange;
 
         //printf("stamp %f\n", hf->timeStamp);
         //NSLog(@"X:%f %f Z:%f %f", displacementXRange.x, displacementXRange.y, displacementZRange.x, displacementZRange.y);
