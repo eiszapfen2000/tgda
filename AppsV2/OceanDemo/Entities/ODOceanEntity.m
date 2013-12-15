@@ -784,15 +784,22 @@ static NSUInteger od_variance_size(const void * item)
     displacement = [[ NPTexture2D alloc ] initWithName:@"Height Texture Displacement" ];
     gradient     = [[ NPTexture2D alloc ] initWithName:@"Height Texture Gradient" ];
 
+    displacementDerivatives
+        = [[ NPTexture2D alloc ] initWithName:@"Height Texture Displacement Derivatives" ];
+
     [ baseSpectrum setTextureFilter:NpTextureFilterNearest ];
     [ heightfield  setTextureFilter:NpTextureFilterLinear  ];
     [ displacement setTextureFilter:NpTextureFilterLinear  ];
     [ gradient     setTextureFilter:NpTextureFilterLinear  ];
 
+    [ displacementDerivatives setTextureFilter:NpTextureFilterLinear  ];
+
     [ baseSpectrum setTextureWrap:NpTextureWrapToBorder ];
     [ heightfield  setTextureWrap:NpTextureWrapRepeat   ];
     [ displacement setTextureWrap:NpTextureWrapRepeat   ];
     [ gradient     setTextureWrap:NpTextureWrapRepeat   ];
+
+    [ displacementDerivatives setTextureWrap:NpTextureWrapRepeat   ];
 
     baseMeshes = [[ ODOceanBaseMeshes alloc ] init ];
     NSAssert(YES == [ baseMeshes generateWithResolutions:resolutions numberOfResolutions:6 ], @"");
@@ -830,6 +837,7 @@ static NSUInteger od_variance_size(const void * item)
     DESTROY(baseMeshes);
     DESTROY(heightfield);
     DESTROY(displacement);
+    DESTROY(displacementDerivatives);
     DESTROY(gradient);
     DESTROY(baseSpectrum);
     DESTROY(projector);
@@ -959,6 +967,11 @@ static NSUInteger od_variance_size(const void * item)
 - (NPTexture2D *) displacement
 {
     return displacement;
+}
+
+- (NPTexture2D *) displacementDerivatives
+{
+    return displacementDerivatives;
 }
 
 - (NPTexture2D *) gradient
@@ -1203,6 +1216,10 @@ static NSUInteger od_variance_size(const void * item)
                 = [ NSData dataWithBytesNoCopyNoFree:hf->displacements32f
                                               length:numberOfGeometryBytes * 2 ];
 
+            NSData * displacementDerivativesData
+                = [ NSData dataWithBytesNoCopyNoFree:hf->displacementDerivatives32f
+                                              length:numberOfGeometryBytes * 4 ];
+
             NSData * gradientsData
                 = [ NSData dataWithBytesNoCopyNoFree:hf->gradients32f
                                               length:numberOfGradientBytes ];
@@ -1220,6 +1237,14 @@ static NSUInteger od_variance_size(const void * item)
                                    dataFormat:NpTextureDataFormatFloat32
                                       mipmaps:YES
                                          data:displacementsData ];
+
+            [ displacementDerivatives
+                generateUsingWidth:hf->geometryResolution.x
+                            height:hf->geometryResolution.y
+                       pixelFormat:NpTexturePixelFormatRGBA
+                        dataFormat:NpTextureDataFormatFloat32
+                           mipmaps:YES
+                              data:displacementDerivativesData ];
 
             [ gradient generateUsingWidth:hf->gradientResolution.x
                                    height:hf->gradientResolution.y

@@ -36,13 +36,27 @@ OdHeightfieldData * heightfield_alloc_init_with_resolutions_and_size(
 
     memset(result, 0, sizeof(OdHeightfieldData));
 
+    const size_t numberOfGeometryElements
+        = geometryResolution.x * geometryResolution.y;
+
+    const size_t numberOfGradientElements
+        = gradientResolution.x * gradientResolution.y;
+
     result->geometryResolution = geometryResolution;
     result->gradientResolution = gradientResolution;
     result->size = size;
-    result->heights32f = fftwf_alloc_real(geometryResolution.x * geometryResolution.y);
-    result->displacements32f = (FVector2 *)fftwf_alloc_real(geometryResolution.x * geometryResolution.y * 2);
-    result->displacementDerivatives32f = (FVector4 *)fftwf_alloc_real(geometryResolution.x * geometryResolution.y * 4);
-    result->gradients32f = (FVector2 *)fftwf_alloc_real(gradientResolution.x * gradientResolution.y * 2);
+
+    result->heights32f
+        = fftwf_alloc_real(numberOfGeometryElements);
+
+    result->displacements32f
+        = (FVector2 *)fftwf_alloc_real(numberOfGeometryElements * 2);
+
+    result->displacementDerivatives32f
+        = (FVector4 *)fftwf_alloc_real(numberOfGeometryElements * 4);
+
+    result->gradients32f
+        = (FVector2 *)fftwf_alloc_real(numberOfGradientElements * 2);
 
     return result;
 }
