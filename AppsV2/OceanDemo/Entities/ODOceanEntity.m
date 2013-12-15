@@ -465,6 +465,11 @@ static size_t index_for_resolution(int32_t resolution)
 
                 result->displacements32f[targetIndex].x = complexDisplacement[sourceIndex][0];
                 result->displacements32f[targetIndex].y = complexDisplacement[sourceIndex][1];
+
+                result->displacementDerivatives32f[targetIndex].x = complexDisplacementXdXdZ[sourceIndex][0];
+                result->displacementDerivatives32f[targetIndex].y = complexDisplacementXdXdZ[sourceIndex][1];
+                result->displacementDerivatives32f[targetIndex].z = complexDisplacementZdXdZ[sourceIndex][0];
+                result->displacementDerivatives32f[targetIndex].w = complexDisplacementZdXdZ[sourceIndex][1];
             }
         }
 
@@ -472,6 +477,7 @@ static size_t index_for_resolution(int32_t resolution)
         //print_complex_spectrum(item->geometryResolution, complexDisplacementZdXdZ);
 
         heightfield_hf_compute_min_max_displacements(result);
+        heightfield_hf_compute_min_max_displacement_derivatives(result);
 
         fftwf_free(complexDisplacementZdXdZ);
         fftwf_free(complexDisplacementXdXdZ);
@@ -819,6 +825,10 @@ static NSUInteger od_variance_size(const void * item)
     gradientZRange = (FVector2){.x = 0.0f, .y = 1.0f};
     displacementXRange = (FVector2){.x = 0.0f, .y = 1.0f};
     displacementZRange = (FVector2){.x = 0.0f, .y = 1.0f};
+    displacementXdXRange = (FVector2){.x = 0.0f, .y = 1.0f};
+    displacementXdZRange = (FVector2){.x = 0.0f, .y = 1.0f};
+    displacementZdXRange = (FVector2){.x = 0.0f, .y = 1.0f};
+    displacementZdZRange = (FVector2){.x = 0.0f, .y = 1.0f};
 
     animated = YES;
     updateSlopeVariance = NO;
@@ -1197,9 +1207,13 @@ static NSUInteger od_variance_size(const void * item)
         gradientZRange = hf->gradientZRange;
         displacementXRange = hf->displacementXRange;
         displacementZRange = hf->displacementZRange;
+        displacementXdXRange = hf->displacementXdXRange;
+        displacementXdZRange = hf->displacementXdZRange;
+        displacementZdXRange = hf->displacementZdXRange;
+        displacementZdZRange = hf->displacementZdZRange;
 
         //printf("stamp %f\n", hf->timeStamp);
-        //NSLog(@"X:%f %f Z:%f %f", displacementXRange.x, displacementXRange.y, displacementZRange.x, displacementZRange.y);
+        //NSLog(@"X:%f %f Z:%f %f", displacementXdXRange.x, displacementXdXRange.y, displacementXdZRange.x, displacementXdZRange.y);
 
         {
             const double resX = hf->geometryResolution.x;

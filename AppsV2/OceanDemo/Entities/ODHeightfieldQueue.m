@@ -176,9 +176,9 @@ void heightfield_hf_compute_min_max_displacement_derivatives(OdHeightfieldData *
     }
 
     heightfield->displacementXdXRange = (FVector2){minDisplacementXdX, maxDisplacementXdX};
-    heightfield->displacementXdZRange = (FVector2){maxDisplacementXdZ, minDisplacementXdZ};
+    heightfield->displacementXdZRange = (FVector2){minDisplacementXdZ, maxDisplacementXdZ};
     heightfield->displacementZdXRange = (FVector2){minDisplacementZdX, maxDisplacementZdX};
-    heightfield->displacementZdZRange = (FVector2){maxDisplacementZdZ, minDisplacementZdZ};
+    heightfield->displacementZdZRange = (FVector2){minDisplacementZdZ, maxDisplacementZdZ};
 }
 
 @implementation ODHeightfieldQueue
