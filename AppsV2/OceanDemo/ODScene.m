@@ -264,6 +264,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     // g buffer
     rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"General RTC" ];
+    whitecapsTarget    = [[ NPRenderTexture alloc ] init ];
     linearsRGBTarget   = [[ NPRenderTexture alloc ] init ];
     logLuminanceTarget = [[ NPRenderTexture alloc ] init ];
     depthBuffer        = [[ NPRenderBuffer  alloc ] init ];
@@ -292,9 +293,11 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     NSAssert(tonemapKey != nil && tonemapAverageLuminanceLevel != nil && tonemapWhiteLuminance != nil, @"");
 
+    whitecapsPrecompute      = [ projectedGridEffect techniqueWithName:@"whitecaps_precompute" ];
     projectedGridTFTransform = [ projectedGridEffect techniqueWithName:@"proj_grid_tf_transform" ];
     projectedGridTFFeedback  = [ projectedGridEffect techniqueWithName:@"proj_grid_tf_feedback"  ];
 
+    ASSERT_RETAIN(whitecapsPrecompute);
     ASSERT_RETAIN(projectedGridTFTransform);
     ASSERT_RETAIN(projectedGridTFFeedback);
 
@@ -368,9 +371,11 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     DESTROY(depthBuffer);
     DESTROY(logLuminanceTarget);
     DESTROY(linearsRGBTarget);
+    DESTROY(whitecapsTarget);
     DESTROY(rtc);
 
     DESTROY(fullscreenQuad);
+    DESTROY(whitecapsPrecompute);
     DESTROY(projectedGridTFFeedback);
     DESTROY(projectedGridTFTransform);
     DESTROY(logLuminance);
