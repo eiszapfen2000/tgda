@@ -1,5 +1,28 @@
 effect "Projected Grid":
 
+technique "whitecaps_precompute"
+{
+    # effect variables
+    uniform float displacementScale;
+    uniform sampler2D displacementDerivatives
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = TriLinear;
+        MagFilter = Linear;
+        Anisotropy = 2;
+    };
+
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoord : 1;
+    # fragment streams
+    out vec2 ki : 0;
+    # shaders
+    set vertex   shader "whitecaps_precompute.vertex"
+    set fragment shader "whitecaps_precompute.fragment"
+}
+
 technique "proj_grid_tf_transform"
 {
     # effect variables
