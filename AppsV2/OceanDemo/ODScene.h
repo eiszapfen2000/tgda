@@ -49,6 +49,9 @@
     BOOL connecting;
     BOOL disconnecting;
 
+    //
+    double jacobianEpsilon;
+
     // tonemapping parameters
     double referenceWhite;
     double key;

@@ -184,7 +184,7 @@
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
-            MaximumValue = "1.0";
+            MaximumValue = "1000.0";
             LineSize = ("85", "3");
             HeadSize = ("3", "21");
             TargetObject = "Ocean";
@@ -253,6 +253,22 @@
             HeadSize = ("3", "21");
             TargetObject = "Ocean";
             TargetProperty = "heightScale";
+        };
+
+        PSliderJacobianEpsilon =
+        {
+            Type = "ODSliderItem";
+            Label = "Jacobian Epsilon";
+            Alignment = "TopLeft";
+            Position = ("20", "95" );
+            Size = ( "50", "1" );
+            TextSize = "16";
+            MinimumValue = "-5.0";
+            MaximumValue = "5.0";
+            LineSize = ("85", "3");
+            HeadSize = ("3", "21");
+            TargetObject = "Scene";
+            TargetProperty = "jacobianEpsilon";
         };
 
         PSliderKey =
