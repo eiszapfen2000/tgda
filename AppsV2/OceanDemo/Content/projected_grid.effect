@@ -58,6 +58,7 @@ technique "proj_grid_tf_feedback"
     uniform mat4 np_modelviewprojectionmatrix;
     uniform float area;
     uniform float heightScale;
+    uniform float jacobianEpsilon;
     uniform vec3 cameraPosition;
     uniform vec3 directionToSun;
     uniform vec3 sunColor;
@@ -94,6 +95,14 @@ technique "proj_grid_tf_feedback"
     {
         WrapS = ClampToEdge;
         WrapT = ClampToEdge;
+        MinFilter = Trilinear;
+        MagFilter = Linear;
+        Anisotropy = 2;
+    };
+    uniform sampler2D whitecaps
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
         MinFilter = Trilinear;
         MagFilter = Linear;
         Anisotropy = 16;

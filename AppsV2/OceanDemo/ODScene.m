@@ -252,6 +252,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     connecting = NO;
     disconnecting = NO;
 
+    jacobianEpsilon = 0.2;
+
     // tonemapping parameters
     referenceWhite = 4.0;
     key = 0.72;
@@ -673,6 +675,11 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [ whitecapsRtc deactivate ];
 
+    // Generate whhitecaps derivative stuff mipmaps
+    [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ whitecapsTarget texture ] ];
+    glGenerateMipmap(GL_TEXTURE_2D);
+    [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
+
     // setup linear sRGB target
     [ rtc bindFBO ];
     [ linearsRGBTarget
@@ -710,6 +717,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean gradient      ] texelUnit:2 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ varianceLUT texture ] texelUnit:3 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ skylight skylightTexture ] texelUnit:4 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ whitecapsTarget texture ] texelUnit:5 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
     NPEffectVariableMatrix4x4 * v = [ deferredEffect variableWithName:@"invMVP"];
@@ -718,16 +726,18 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     NPEffectVariableMatrix4x4 * w = [ projectedGridEffect variableWithName:@"invMVP"];
     NPEffectVariableFloat * a = [ projectedGridEffect variableWithName:@"area"];
     NPEffectVariableFloat * hs = [ projectedGridEffect variableWithName:@"heightScale"];
+    NPEffectVariableFloat * je = [ projectedGridEffect variableWithName:@"jacobianEpsilon"];
     NPEffectVariableFloat3 * cP = [ projectedGridEffect variableWithName:@"cameraPosition"];
     NPEffectVariableFloat3 * dsP = [ projectedGridEffect variableWithName:@"directionToSun"];
     NPEffectVariableFloat3 * scP = [ projectedGridEffect variableWithName:@"sunColor"];
     NPEffectVariableFloat2 * vsP = [ projectedGridEffect variableWithName:@"vertexStep"];
 
-    NSAssert(w != nil && a != nil && ds != nil && hs != nil && cP != nil && dsP != nil && scP != nil && vsP != nil, @"");
+    NSAssert(w != nil && a != nil && ds != nil && hs != nil && je != nil && cP != nil && dsP != nil && scP != nil && vsP != nil, @"");
 
     [ w setValue:[testProjector inverseViewProjection]];
     [ a setValue:[ ocean area ] * [ocean areaScale ]];
     [ hs setValue:[ ocean heightScale ]];
+    [ je setValue:jacobianEpsilon ];
     [ cP setValue:[ camera position ]];
     [ dsP setValue:[ skylight directionToSun ]];
     [ scP setValue:[ skylight sunColor ]];
