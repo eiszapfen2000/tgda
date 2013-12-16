@@ -62,6 +62,7 @@
 
     // general rendering stuff
     NPRenderTargetConfiguration * rtc;
+    NPRenderTexture * whitecapsTarget;
     NPRenderTexture * linearsRGBTarget;
     NPRenderTexture * logLuminanceTarget;
     NPRenderBuffer  * depthBuffer;
@@ -75,6 +76,7 @@
     NPEffectVariableFloat * tonemapWhiteLuminance;
 
     NPEffect * projectedGridEffect;
+    NPEffectTechnique * whitecapsPrecompute;
     NPEffectTechnique * projectedGridTFTransform;
     NPEffectTechnique * projectedGridTFFeedback;
 
