@@ -60,9 +60,12 @@
     IVector2 currentResolution;
     IVector2 lastFrameResolution;
 
+    //
+    NPRenderTargetConfiguration * whitecapsRtc;
+    NPRenderTexture * whitecapsTarget;
+
     // general rendering stuff
     NPRenderTargetConfiguration * rtc;
-    NPRenderTexture * whitecapsTarget;
     NPRenderTexture * linearsRGBTarget;
     NPRenderTexture * logLuminanceTarget;
     NPRenderBuffer  * depthBuffer;

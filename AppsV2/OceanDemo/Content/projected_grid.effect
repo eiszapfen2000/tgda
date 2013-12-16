@@ -8,14 +8,13 @@ technique "whitecaps_precompute"
     {
         WrapS = Repeat;
         WrapT = Repeat;
-        MinFilter = TriLinear;
+        MinFilter = Linear;
         MagFilter = Linear;
-        Anisotropy = 2;
     };
 
     # vertex streams
     in vec2 in_position : 0;
-    in vec2 in_texcoord : 1;
+    in vec2 in_texcoord : 3;
     # fragment streams
     out vec2 ki : 0;
     # shaders

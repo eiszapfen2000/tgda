@@ -1195,13 +1195,6 @@ static NSUInteger od_variance_size(const void * item)
 
         area = hf->size.x;
 
-        /*
-        heightRange    = (FVector2){.x = hf->minHeight,    .y = hf->maxHeight   };
-        gradientXRange = (FVector2){.x = hf->minGradientX, .y = hf->maxGradientX};
-        gradientZRange = (FVector2){.x = hf->minGradientZ, .y = hf->maxGradientZ};
-        displacementXRange = (FVector2){.x = hf->minDisplacementX, .y = hf->maxDisplacementX};
-        displacementZRange = (FVector2){.x = hf->minDisplacementZ, .y = hf->maxDisplacementZ};
-        */
         heightRange = hf->heightRange;
         gradientXRange = hf->gradientXRange;
         gradientZRange = hf->gradientZRange;
@@ -1212,16 +1205,11 @@ static NSUInteger od_variance_size(const void * item)
         displacementZdXRange = hf->displacementZdXRange;
         displacementZdZRange = hf->displacementZdZRange;
 
-        //printf("stamp %f\n", hf->timeStamp);
-        //NSLog(@"X:%f %f Z:%f %f", displacementXdXRange.x, displacementXdXRange.y, displacementXdZRange.x, displacementXdZRange.y);
-
         {
             const double resX = hf->geometryResolution.x;
             const double resY = hf->geometryResolution.y;
             baseMeshScale.x = hf->size.x / resX;
             baseMeshScale.y = hf->size.y / resY;
-
-            //NSLog(@"HF %d %d", hf->geometryResolution.x, hf->gradientResolution.x);
 
             const NSUInteger numberOfGeometryBytes
                 = hf->geometryResolution.x * hf->geometryResolution.y * sizeof(float);
@@ -1280,8 +1268,6 @@ static NSUInteger od_variance_size(const void * item)
                 baseSpectrumResolution.x = MAX(hf->geometryResolution.x, hf->gradientResolution.x);
                 baseSpectrumResolution.y = MAX(hf->geometryResolution.y, hf->gradientResolution.y);
 
-                //NSLog(@"%d %d", baseSpectrumResolution.x, baseSpectrumResolution.y);
-
                 const NSUInteger numberOfBaseSpectrumBytes
                     = baseSpectrumResolution.x * baseSpectrumResolution.y * sizeof(float);
 
@@ -1304,6 +1290,7 @@ static NSUInteger od_variance_size(const void * item)
 
                 updateSlopeVariance = YES;
             }
+
             /*
             baseMeshIndex = index_for_resolution(hf->resolution.x);
 
