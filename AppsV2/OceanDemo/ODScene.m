@@ -262,9 +262,12 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     lastFrameResolution.x = lastFrameResolution.y = INT_MAX;
     currentResolution.x = currentResolution.y = 0;
 
+    //
+    whitecapsRtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Whitecaps RTC" ];   
+    whitecapsTarget = [[ NPRenderTexture alloc ] init ];
+
     // g buffer
     rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"General RTC" ];
-    whitecapsTarget    = [[ NPRenderTexture alloc ] init ];
     linearsRGBTarget   = [[ NPRenderTexture alloc ] init ];
     logLuminanceTarget = [[ NPRenderTexture alloc ] init ];
     depthBuffer        = [[ NPRenderBuffer  alloc ] init ];
@@ -371,8 +374,10 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     DESTROY(depthBuffer);
     DESTROY(logLuminanceTarget);
     DESTROY(linearsRGBTarget);
-    DESTROY(whitecapsTarget);
     DESTROY(rtc);
+
+    DESTROY(whitecapsTarget);
+    DESTROY(whitecapsRtc);
 
     DESTROY(fullscreenQuad);
     DESTROY(whitecapsPrecompute);
@@ -590,6 +595,45 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         [ self updateSlopeVarianceLUT ];
     }
 
+    NPTexture2D * dispDerivatives = [ ocean displacementDerivatives ];
+    const uint32_t dispDerivativesWidth  = [ dispDerivatives width  ];
+    const uint32_t dispDerivativesHeight = [ dispDerivatives height ];
+    const uint32_t whitecapsTargetWidth  = [ whitecapsTarget width  ];
+    const uint32_t whitecapsTargetHeight = [ whitecapsTarget height ];
+
+    if ( dispDerivativesWidth == 0 ||  dispDerivativesHeight == 0 )
+    {
+        NSLog(@"BRAAAAAK");
+        return;
+    }
+
+
+    if ( dispDerivativesWidth != 0 && dispDerivativesHeight != 0
+         && dispDerivativesWidth  != whitecapsTargetWidth
+         && dispDerivativesHeight != whitecapsTargetHeight )
+    {
+        //NSLog(@"%u %u", dispDerivativesWidth,  dispDerivativesHeight);
+
+        BOOL result
+            = [ whitecapsTarget generate:NpRenderTargetColor
+                                   width:dispDerivativesWidth
+                                  height:dispDerivativesHeight
+                             pixelFormat:NpTexturePixelFormatRG
+                              dataFormat:NpTextureDataFormatFloat32
+                           mipmapStorage:YES
+                                   error:NULL ];
+
+        NSAssert(result == YES, @"KABUMM");
+
+        [ whitecapsRtc setWidth:dispDerivativesWidth ];
+        [ whitecapsRtc setHeight:dispDerivativesHeight ];
+
+        [ whitecapsTarget
+                attachToRenderTargetConfiguration:whitecapsRtc
+                                 colorBufferIndex:0
+                                          bindFBO:YES ];
+    }
+
     NPStateConfiguration * stateConfiguration = [[ NP Graphics ] stateConfiguration ];
 
     NPCullingState * cullingState         = [ stateConfiguration cullingState     ];
@@ -597,6 +641,37 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     NPDepthTestState * depthTestState     = [ stateConfiguration depthTestState   ];
     NPPolygonFillState * fillState        = [ stateConfiguration polygonFillState ];
     NPStencilTestState * stencilTestState = [ stateConfiguration stencilTestState ];
+
+    // deactivate culling, depth write and depth test
+    [ blendingState  setEnabled:NO ];
+    [ cullingState   setEnabled:NO ];
+    [ depthTestState setWriteEnabled:NO ];
+    [ depthTestState setEnabled:NO ];
+    [ stateConfiguration activate ];
+
+    // reset all matrices
+    [[[ NP Core ] transformationState ] reset ];
+
+    // precompute whitecaps derivative stuff
+    [ whitecapsRtc activate ];
+
+    NSError * wce = nil;
+    if ( [ whitecapsRtc checkFrameBufferCompleteness:&wce ] == NO )
+    {
+        NPLOG_ERROR(wce);
+    }
+
+    [[[ NP Graphics ] textureBindingState ] clear ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacementDerivatives ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] activate ];
+
+    NPEffectVariableFloat * ds = [ projectedGridEffect variableWithName:@"displacementScale"];
+    [ ds setValue:[ ocean displacementScale ]];
+
+    [ whitecapsPrecompute activate ];
+    [ fullscreenQuad render ];
+
+    [ whitecapsRtc deactivate ];
 
     // setup linear sRGB target
     [ rtc bindFBO ];
@@ -642,7 +717,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     NPEffectVariableMatrix4x4 * w = [ projectedGridEffect variableWithName:@"invMVP"];
     NPEffectVariableFloat * a = [ projectedGridEffect variableWithName:@"area"];
-    NPEffectVariableFloat * ds = [ projectedGridEffect variableWithName:@"displacementScale"];
     NPEffectVariableFloat * hs = [ projectedGridEffect variableWithName:@"heightScale"];
     NPEffectVariableFloat3 * cP = [ projectedGridEffect variableWithName:@"cameraPosition"];
     NPEffectVariableFloat3 * dsP = [ projectedGridEffect variableWithName:@"directionToSun"];
@@ -653,7 +727,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [ w setValue:[testProjector inverseViewProjection]];
     [ a setValue:[ ocean area ] * [ocean areaScale ]];
-    [ ds setValue:[ ocean displacementScale ]];
     [ hs setValue:[ ocean heightScale ]];
     [ cP setValue:[ camera position ]];
     [ dsP setValue:[ skylight directionToSun ]];
@@ -740,6 +813,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ linearsRGBTarget   texture ] texelUnit:0 ];
+    //[[[ NP Graphics ] textureBindingState ] setTexture:[ whitecapsTarget     texture ] texelUnit:0 ];
+    //[[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacementDerivatives ] texelUnit:0 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ logLuminanceTarget texture ] texelUnit:1 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 

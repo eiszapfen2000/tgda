@@ -4,9 +4,8 @@ in vec2 out_texcoord;
 
 void main()
 {
-    vec4 derivatives = displacementScale * texture(displacementDerivatives, out_texcoord);
-
     // .x = dx_x .y = dx_z .z = dz_x .w = dz_z
+    vec4 derivatives = displacementScale * texture(displacementDerivatives, out_texcoord);
 
     // 1/n + ai + bi + ai*bi - ci*ci
     float res = 1.0 + derivatives.x + derivatives.w + derivatives.xw - (derivatives.y * derivatives.z);
