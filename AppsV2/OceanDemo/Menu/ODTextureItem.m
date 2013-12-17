@@ -49,6 +49,7 @@
     SAFE_DESTROY(range);
     SAFE_DESTROY(mask);
     SAFE_DESTROY(texture);
+    SAFE_DESTROY(label);
 
     [ super dealloc ];
 }
