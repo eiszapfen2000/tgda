@@ -870,7 +870,7 @@ void m4_m_inverse_m(const Matrix4 * const m, Matrix4 * result)
     }
 
     double scalar = 1.0/determinant;
-    Matrix3 * subMatrix = m3_alloc_init();
+    Matrix3 subMatrix;
     int sign;
 
     for ( int i = 0; i < 4; i++ )
@@ -878,13 +878,11 @@ void m4_m_inverse_m(const Matrix4 * const m, Matrix4 * result)
         for ( int j = 0; j < 4; j++ )
         {
             sign = 1 - ( (i + j) % 2 ) * 2;
-            m4_mss_sub_matrix_m(m,i,j,subMatrix);
-            double subMatrixDeterminant = m3_m_determinant(subMatrix);
+            m4_mss_sub_matrix_m(m,i,j,&subMatrix);
+            double subMatrixDeterminant = m3_m_determinant(&subMatrix);
             M_EL(*result,i,j) = sign * subMatrixDeterminant * scalar;
         }
     }
-
-    m3_free(subMatrix);
 }
 
 void m4_m_get_right_vector_v(const Matrix4 * const m, Vector3 * right)
@@ -944,18 +942,16 @@ void m4_s_rotatez_m(double degree, Matrix4 * result)
 double m4_m_determinant(const Matrix4 * const m)
 {
     double subMatrixDeterminant, determinant = 0.0;
-    Matrix3 * subMatrix = m3_alloc_init();
+    Matrix3 subMatrix;
     int scalar = 1;
 
     for ( int x = 0; x < 4; x++ )
     {
-        m4_mss_sub_matrix_m(m, 0, x, subMatrix);
-        subMatrixDeterminant = m3_m_determinant(subMatrix);
+        m4_mss_sub_matrix_m(m, 0, x, &subMatrix);
+        subMatrixDeterminant = m3_m_determinant(&subMatrix);
         determinant += M_EL(*m,x,0) * subMatrixDeterminant * scalar;
         scalar *= -1;
     }
-
-    m3_free(subMatrix);
 
     return determinant;
 }
