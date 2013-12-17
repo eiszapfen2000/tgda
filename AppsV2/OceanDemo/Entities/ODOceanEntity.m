@@ -284,6 +284,8 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
         [ generateCondition unlock ];
 
+        //NSLog(@"Generate");
+
         NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
 
         if ( [[ NSThread currentThread ] isCancelled ] == NO )
@@ -586,6 +588,8 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
         [ transformCondition unlock ];
 
+        //NSLog(@"Transform");
+
         NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
 
         if ( [[ NSThread currentThread ] isCancelled ] == NO )
@@ -652,6 +656,8 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 //                    [ self transformSpectraHC:&item into:result ];
                     [ self transformSpectra:&item into:result ];
 
+                    NSUInteger queueCount = 0;
+
                     {
                         [ heightfieldQueueMutex lock ];
 
@@ -662,6 +668,8 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
                         [ varianceQueue addPointer:&variance ];
                         [ resultQueue addHeightfield:result ];
+
+                        queueCount = [ resultQueue count ];
 
                         [ heightfieldQueueMutex unlock ];
                     }
@@ -1109,26 +1117,35 @@ static NSUInteger od_variance_size(const void * item)
         [ heightfieldQueueMutex unlock ];
     }
 
-    NSUInteger queueCount = 0;
+    NSUInteger spectrumQueueCount = 0;
+    NSUInteger resultQueueCount = 0;
+    NSUInteger varianceQueueCount = 0;
+
     OdHeightfieldData * hf = NULL;
     OdSpectrumVariance * variance = NULL;
 
     {
+        [ spectrumQueueMutex lock ];
+        spectrumQueueCount = [ spectrumQueue count ];
+        [ spectrumQueueMutex unlock ];
+    }
+
+    {
         [ heightfieldQueueMutex lock ];
 
-        queueCount = [ resultQueue count ];
-        NSUInteger q = [ varianceQueue count ];
+        resultQueueCount   = [ resultQueue   count ];
+        varianceQueueCount = [ varianceQueue count ];
 
-        NSAssert2(queueCount == q, @"%lu %lu", queueCount, q);
+        NSAssert2(resultQueueCount == varianceQueueCount, @"%lu %lu", resultQueueCount, varianceQueueCount);
 
         // get heightfield data
-        if ( queueCount != 0 )
+        if ( resultQueueCount != 0 )
         {
             NSUInteger f = NSNotFound;
             double queueMinTimeStamp =  DBL_MAX;
             double queueMaxTimeStamp = -DBL_MAX;
 
-            for ( NSUInteger i = 0; i < queueCount; i++ )
+            for ( NSUInteger i = 0; i < resultQueueCount; i++ )
             {
                 OdHeightfieldData * h = [ resultQueue heightfieldAtIndex:i ];
                 const double x = totalElapsedTime - 0.5 * OneDivSixty;
@@ -1163,7 +1180,7 @@ static NSUInteger od_variance_size(const void * item)
             //variance = [ varianceQueue pointerAtIndex:0 ];
         }
 
-        queueCount = [ resultQueue count ];
+        resultQueueCount = [ resultQueue count ];
 
         [ heightfieldQueueMutex unlock ];
     }
@@ -1173,7 +1190,7 @@ static NSUInteger od_variance_size(const void * item)
     // the generating thread will be put to sleep
     {
         [ generateCondition lock ];
-        generateData = ( queueCount < 16 ) ? YES : NO;
+        generateData = ( spectrumQueueCount < 16 ) ? YES : NO;
         [ generateCondition signal ];
         [ generateCondition unlock ];
     }
