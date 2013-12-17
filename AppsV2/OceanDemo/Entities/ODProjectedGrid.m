@@ -273,6 +273,9 @@ static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProj
     cornerIndices[4] = 3;
     cornerIndices[5] = 0;
 
+    nearPlanePostProjectionPositions = NULL;
+    gridIndices = NULL;
+
     gridVertexArray  = [[ NPVertexArray alloc ] init ];
     transformTarget  = [[ NPVertexArray alloc ] init ];
     gridVertexStream = [[ NPBufferObject alloc ] initWithName:@"gridVertexStream" ];
