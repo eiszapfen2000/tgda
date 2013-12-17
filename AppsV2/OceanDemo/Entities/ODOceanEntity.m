@@ -126,28 +126,21 @@ static size_t index_for_resolution(int32_t resolution)
     }
 }
 
-/*
-static size_t index_for_resolution(int32_t resolution)
+void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 {
-    switch ( resolution )
+    if ( item != NULL )
     {
-        case 4:
-            return 0;
-        case 8:
-            return 1;
-        case 128:
-            return 2;
-        case 256:
-            return 3;
-        case 512:
-            return 4;
-        case 1024:
-            return 5;
-        default:
-            return SIZE_MAX;
+        fftwf_free(item->waveSpectrum);
+        fftwf_free(item->gradientX);
+        fftwf_free(item->gradientZ);
+        fftwf_free(item->gradient);
+        fftwf_free(item->displacementX);
+        fftwf_free(item->displacementZ);
+        fftwf_free(item->displacement);
+        fftwf_free(item->displacementXdXdZ);
+        fftwf_free(item->displacementZdXdZ);
     }
 }
-*/
 
 @interface ODOceanEntity (Private)
 
@@ -607,19 +600,9 @@ static size_t index_for_resolution(int32_t resolution)
 
             if ( hfCount < 16 )
             {
-                OdFrequencySpectrumFloat item
-                    = { .timestamp = FLT_MAX,
-                        .geometryResolution = {.x = 0, .y = 0},
-                        .gradientResolution = {.x = 0, .y = 0},
-                        .size          = {.x = 0.0, .y = 0.0},
-                        .baseSpectrum  = NULL,
-                        .maxMeanSlopeVariance = 0.0f,
-                        .effectiveMeanSlopeVariance = 0.0f,
-                        .waveSpectrum  = NULL,
-                        .gradientX     = NULL,
-                        .gradientZ     = NULL,
-                        .displacementX = NULL,
-                        .displacementZ = NULL };
+                OdFrequencySpectrumFloat item;
+                memset(&item, 0, sizeof(item));
+                item.timestamp = FLT_MAX;
 
                 NSUInteger spectrumCount = 0;
 
@@ -688,15 +671,7 @@ static size_t index_for_resolution(int32_t resolution)
                     [ transformCondition unlock ];
                 }
 
-                fftwf_free(item.waveSpectrum);
-                fftwf_free(item.gradientX);
-                fftwf_free(item.gradientZ);
-                fftwf_free(item.gradient);
-                fftwf_free(item.displacementX);
-                fftwf_free(item.displacementZ);
-                fftwf_free(item.displacement);
-                fftwf_free(item.displacementXdXdZ);
-                fftwf_free(item.displacementZdXdZ);
+                od_freq_spectrum_clear(&item);
             }
 
         }
@@ -773,7 +748,7 @@ static NSUInteger od_variance_size(const void * item)
     NSPointerFunctions * pFunctionsVariance
         = [ NSPointerFunctions pointerFunctionsWithOptions:options ];
 
-    [ pFunctionsSpectrum setSizeFunction:&od_freq_spectrum_size];
+    [ pFunctionsSpectrum setSizeFunction:&od_freq_spectrum_size ];
     [ pFunctionsVariance setSizeFunction:&od_variance_size];
 
     spectrumQueue = [[ NSPointerArray alloc ] initWithPointerFunctions:pFunctionsSpectrum ];
@@ -844,6 +819,16 @@ static NSUInteger od_variance_size(const void * item)
 
 - (void) dealloc
 {
+    NSUInteger spectrumCount = [ spectrumQueue count ];
+    for ( NSUInteger i = 0; i < spectrumCount; i++ )
+    {
+        od_freq_spectrum_clear([ spectrumQueue pointerAtIndex:i ]);
+    }
+
+    [ spectrumQueue removeAllPointers ];
+    [ varianceQueue removeAllPointers ];
+    [ resultQueue removeAllHeightfields ];
+
     DESTROY(baseMeshes);
     DESTROY(heightfield);
     DESTROY(displacement);
@@ -1108,6 +1093,13 @@ static NSUInteger od_variance_size(const void * item)
         [ settingsMutex unlock ];
 
         [ spectrumQueueMutex lock ];
+
+        NSUInteger spectrumCount = [ spectrumQueue count ];
+        for ( NSUInteger i = 0; i < spectrumCount; i++ )
+        {
+            od_freq_spectrum_clear([ spectrumQueue pointerAtIndex:i ]);
+        }
+
         [ spectrumQueue removeAllPointers ];
         [ spectrumQueueMutex unlock ];
 
