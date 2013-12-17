@@ -211,6 +211,8 @@ void heightfield_hf_compute_min_max_displacement_derivatives(OdHeightfieldData *
 - (void) dealloc
 {
     [ self removeAllHeightfields ];
+    DESTROY(queue);
+
     [ super dealloc ];
 }
 
