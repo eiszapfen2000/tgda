@@ -93,6 +93,7 @@
 {
     SAFE_DESTROY(technique);
     SAFE_DESTROY(color);
+    SAFE_DESTROY(label);
 
     [ super dealloc ];
 }
