@@ -67,7 +67,7 @@ ODQuadrants;
             const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
 
             const FVector2 k = {kx, ky};
-            const float s = MAX(0.0f, amplitudef_unified_cartesian(k, A, U10, Omega));
+            const float s = MAX(0.0f, amplitudef_unified_cartesian(k, 0.0f, A, U10, Omega));
             const float a = sqrtf(s);
 
             varianceX  += (kx * kx) * (dkx * dky) * s;
@@ -88,7 +88,7 @@ ODQuadrants;
         const float dk = (k * 1.001f) - k;
 
         // eq A3
-        float sk = amplitudef_unified_cartesian_omnidirectional(k, A, U10, Omega);
+        float sk = amplitudef_unified_cartesian_omnidirectional(k, 0.0f, A, U10, Omega);
 
         // eq A6
         mss += kSquare * sk * dk;
@@ -149,7 +149,7 @@ ODQuadrants;
             const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
 
             const FVector2 k = {kx, ky};
-            const float s = amplitudef_phillips_cartesian(windDirectionNormalised, k, A, L, l);
+            const float s = amplitudef_phillips_cartesian(windDirectionNormalised, k, 0.0f, A, L, l);
             const float a = sqrtf(s);
 
             varianceX  += (kx * kx) * (dkx * dky) * s;
@@ -170,7 +170,7 @@ ODQuadrants;
         const float dk = (k * 1.001f) - k;
 
         // eq A3
-        float sk = amplitudef_phillips_cartesian_omnidirectional(k, A, L, l);
+        float sk = amplitudef_phillips_cartesian_omnidirectional(k, 0.0f, A, L, l);
 
         // eq A6
         mss += kSquare * sk * dk;
