@@ -290,8 +290,14 @@ ODQuadrants;
 
 @end
 
+static NPTimer * timer = nil;
 
 @implementation ODFrequencySpectrumFloat
+
++ (void) initialize
+{
+    timer = [[ NPTimer alloc ] initWithName:@"Spectrum Timer" ];
+}
 
 - (id) init
 {
