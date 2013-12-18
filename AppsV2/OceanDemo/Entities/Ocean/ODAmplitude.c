@@ -1,3 +1,4 @@
+
 #include "ODConstants.h"
 #include "ODAmplitude.h"
 
@@ -9,7 +10,7 @@ float amplitudef_phillips_cartesian(
 {
     const float kSquareLength = k.x * k.x + k.y * k.y;
 
-    if ( kSquareLength == 0.0f )
+    if ( kSquareLength == 0.0f || ( fabsf(k.x) < kMin && fabsf(k.y) < kMin ))
     {
         return 0.0f;
     }
@@ -38,7 +39,7 @@ float amplitudef_phillips_cartesian_omnidirectional(
     const float A, const float L, const float l
     )
 {
-    if ( k == 0.0f )
+    if ( k == 0.0f || fabsf(k) < kMin )
     {
         return 0.0f;
     }
@@ -88,7 +89,7 @@ float amplitudef_unified_cartesian(
 
     const float kSquareLength = k.x * k.x + k.y * k.y;
 
-    if ( kSquareLength == 0.0f )
+    if ( kSquareLength == 0.0f || ( fabsf(k.x) < kMin && fabsf(k.y) < kMin ))
     {
         return 0.0f;
     }
@@ -170,7 +171,7 @@ float amplitudef_unified_cartesian_omnidirectional(
     const float k_m = 370.0;                //eq 24
     const float kappa = 0.41f;              //von Karman constant
 
-    if ( k == 0.0f )
+    if ( k == 0.0f || fabsf(k) < kMin )
     {
         return 0.0f;
     }
