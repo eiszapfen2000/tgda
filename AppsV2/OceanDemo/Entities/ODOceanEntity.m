@@ -321,6 +321,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                     }
                 }
 
+                generatorSettings.numberOfLods  = 1;
                 generatorSettings.spectrumScale = generatorSpectrumScale;
 
                 geometry.size = (Vector2){generatorSize, generatorSize};
