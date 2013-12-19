@@ -192,7 +192,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
     {
         printf("Loading FFTW wisdom...\n");
 
-        if ( fftw_import_wisdom_from_filename([ wisdomFileName UTF8String ]) != 0 )
+        if ( fftwf_import_wisdom_from_filename([ wisdomFileName UTF8String ]) != 0 )
         {
             printf("FFTW Wisdom obtained.\n");
             obtainedWisdom = YES;
@@ -221,7 +221,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                                     resolutions[i],
                                     source,
                                     realTarget,
-                                    FFTW_MEASURE);
+                                    FFTW_PATIENT);
 
         complexPlans[i]
             = fftwf_plan_dft_2d(resolutions[i],
@@ -229,7 +229,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                                 source,
                                 complexTarget,
                                 FFTW_BACKWARD,
-                                FFTW_MEASURE);
+                                FFTW_PATIENT);
 
         fftwf_free(source);
         fftwf_free(complexTarget);
@@ -238,7 +238,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
     if ( obtainedWisdom == NO )
     {
-        if ( fftw_export_wisdom_to_filename([ wisdomFileName UTF8String ]) != 0 )
+        if ( fftwf_export_wisdom_to_filename([ wisdomFileName UTF8String ]) != 0 )
         {
             printf("FFTW Wisdom stored\n");
         }
@@ -260,7 +260,8 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
         }
     }
 
-    fftw_forget_wisdom();
+    fftwf_forget_wisdom();
+    fftwf_cleanup();
 }
 
 - (void) generate:(id)argument
