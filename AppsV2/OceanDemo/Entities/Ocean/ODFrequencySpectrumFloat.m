@@ -37,7 +37,7 @@ ODQuadrants;
     const float U10   = settings.U10;
     const float Omega = settings.Omega;
 
-    const FVector2 size = fv2_v_from_v2(&(currentGeometry.size));
+    const FVector2 size = fv2_v_from_v2(&(currentGeometry.sizes[0]));
     const float A = currentGeneratorSettings.spectrumScale / (size.x * size.y);
 
     const float n = -(resolution.x / 2.0f);
@@ -108,7 +108,7 @@ ODQuadrants;
     FFTW_SAFE_FREE(baseSpectrum);
     baseSpectrum = fftwf_alloc_real(resolution.x * resolution.y);
 
-    const FVector2 size = fv2_v_from_v2(&(currentGeometry.size));
+    const FVector2 size = fv2_v_from_v2(&(currentGeometry.sizes[0]));
     const FVector2 windDirection = fv2_v_from_v2(&(settings.windDirection));
     const FVector2 windDirectionNormalised = fv2_v_normalised(&windDirection);
     const float    windSpeed = settings.windSpeed;
@@ -317,13 +317,15 @@ static NPTimer * timer = nil;
 
     maxMeanSlopeVariance = effectiveMeanSlopeVariance = 0.0f;
 
+    lastGeometry.numberOfLods = UINT32_MAX;
     lastGeometry.geometryResolution = iv2_max();
     lastGeometry.gradientResolution = iv2_max();
-    lastGeometry.size = v2_max();
+    lastGeometry.sizes = NULL;
 
+    currentGeometry.numberOfLods = 0;
     currentGeometry.geometryResolution = iv2_zero();
     currentGeometry.gradientResolution = iv2_zero();
-    currentGeometry.size = v2_zero();
+    currentGeometry.sizes = NULL;
 
     lastGeneratorSettings.phillips.windDirection = v2_max();
     lastGeneratorSettings.phillips.windSpeed = DBL_MAX;
@@ -338,6 +340,9 @@ static NPTimer * timer = nil;
 
 - (void) dealloc
 {
+    SAFE_FREE(lastGeometry.sizes);
+    SAFE_FREE(currentGeometry.sizes);
+
     FFTW_SAFE_FREE(H0);
     FFTW_SAFE_FREE(baseSpectrum);
     SAFE_FREE(randomNumbers);
@@ -351,7 +356,7 @@ static NPTimer * timer = nil;
     const IVector2 resolution = H0Resolution;
     const IVector2 geometryResolution = currentGeometry.geometryResolution;
     const IVector2 gradientResolution = currentGeometry.gradientResolution;
-    const FVector2 size = (FVector2){currentGeometry.size.x, currentGeometry.size.y};
+    const FVector2 size = (FVector2){currentGeometry.sizes[0].x, currentGeometry.sizes[0].y};
 
 	fftwf_complex * frequencySpectrum
         = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
@@ -580,7 +585,7 @@ static NPTimer * timer = nil;
         = { .timestamp     = time,
             .geometryResolution = geometryResolution,
             .gradientResolution = gradientResolution,
-            .size          = currentGeometry.size,
+            .size          = currentGeometry.sizes[0],
             .baseSpectrum  = NULL,
             .maxMeanSlopeVariance = 0.0f,
             .effectiveMeanSlopeVariance = 0.0f,
@@ -607,7 +612,7 @@ static NPTimer * timer = nil;
     const IVector2 resolution = H0Resolution;
     const IVector2 geometryResolution = currentGeometry.geometryResolution;
     const IVector2 gradientResolution = currentGeometry.gradientResolution;
-    const FVector2 size = (FVector2){currentGeometry.size.x, currentGeometry.size.y};
+    const FVector2 size = (FVector2){currentGeometry.sizes[0].x, currentGeometry.sizes[0].y};
 
     const IVector2 geometryResolutionHC = { (geometryResolution.x / 2) + 1, geometryResolution.y };
     const IVector2 gradientResolutionHC = { (gradientResolution.x / 2) + 1, gradientResolution.y };
@@ -1128,7 +1133,7 @@ static NPTimer * timer = nil;
         = { .timestamp     = time,
             .geometryResolution = geometryResolution,
             .gradientResolution = gradientResolution,
-            .size          = currentGeometry.size,
+            .size          = currentGeometry.sizes[0],
             .baseSpectrum  = NULL,
             .maxMeanSlopeVariance = 0.0f,
             .effectiveMeanSlopeVariance = 0.0f,
@@ -1228,7 +1233,13 @@ right way.
                                atTime:(const float)time
                  generateBaseGeometry:(BOOL)generateBaseGeometry
 {
-    currentGeometry = geometry;
+    SAFE_FREE(currentGeometry.sizes);
+
+    currentGeometry.numberOfLods = geometry.numberOfLods;
+    currentGeometry.sizes = ALLOC_ARRAY(Vector2, geometry.numberOfLods);
+    memcpy(currentGeometry.sizes, geometry.sizes, sizeof(Vector2) * geometry.numberOfLods);
+    currentGeometry.geometryResolution = geometry.geometryResolution;
+    currentGeometry.gradientResolution = geometry.gradientResolution;
     currentGeneratorSettings = generatorSettings;
 
     [ self generateH0:generateBaseGeometry ];
@@ -1343,7 +1354,13 @@ right way.
         maxMeanSlopeVariance = effectiveMeanSlopeVariance = 0.0f;
     }
 
-    lastGeometry = currentGeometry;
+    SAFE_FREE(lastGeometry.sizes);
+    lastGeometry.numberOfLods = currentGeometry.numberOfLods;
+    lastGeometry.sizes = ALLOC_ARRAY(Vector2, currentGeometry.numberOfLods);
+    memcpy(lastGeometry.sizes, currentGeometry.sizes, sizeof(Vector2) * currentGeometry.numberOfLods);
+    lastGeometry.geometryResolution = currentGeometry.geometryResolution;
+    lastGeometry.gradientResolution = currentGeometry.gradientResolution;
+
     lastGeneratorSettings = currentGeneratorSettings;
 
     return result;
@@ -1355,7 +1372,14 @@ right way.
                                  atTime:(const float)time
                    generateBaseGeometry:(BOOL)generateBaseGeometry
 {
-    currentGeometry = geometry;
+    SAFE_FREE(currentGeometry.sizes);
+
+    currentGeometry.numberOfLods = geometry.numberOfLods;
+    currentGeometry.sizes = ALLOC_ARRAY(Vector2, geometry.numberOfLods);
+    memcpy(currentGeometry.sizes, geometry.sizes, sizeof(Vector2) * geometry.numberOfLods);
+    currentGeometry.geometryResolution = geometry.geometryResolution;
+    currentGeometry.gradientResolution = geometry.gradientResolution;
+
     currentGeneratorSettings = generatorSettings;
 
     [ self generateH0:generateBaseGeometry ];
@@ -1371,7 +1395,13 @@ right way.
         maxMeanSlopeVariance = effectiveMeanSlopeVariance = 0.0f;
     }
 
-    lastGeometry = currentGeometry;
+    SAFE_FREE(lastGeometry.sizes);
+    lastGeometry.numberOfLods = currentGeometry.numberOfLods;
+    lastGeometry.sizes = ALLOC_ARRAY(Vector2, currentGeometry.numberOfLods);
+    memcpy(lastGeometry.sizes, currentGeometry.sizes, sizeof(Vector2) * currentGeometry.numberOfLods);
+    lastGeometry.geometryResolution = currentGeometry.geometryResolution;
+    lastGeometry.gradientResolution = currentGeometry.gradientResolution;
+
     lastGeneratorSettings = currentGeneratorSettings;
 
     return result;

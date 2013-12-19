@@ -2,8 +2,7 @@
 
 bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo)
 {
-    if ( gOne->size.x != gTwo->size.x
-         || gOne->size.y != gTwo->size.y
+    if ( gOne->numberOfLods != gTwo->numberOfLods
          || gOne->geometryResolution.x != gTwo->geometryResolution.x
          || gOne->geometryResolution.y != gTwo->geometryResolution.y
          || gOne->gradientResolution.x != gTwo->gradientResolution.x
@@ -12,15 +11,32 @@ bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry 
         return false;
     }
 
+    for (uint32_t i = 0; i < gOne->numberOfLods; i++ )
+    {
+        if ( gOne->sizes[i].x != gTwo->sizes[i].x 
+             || gOne->sizes[i].y != gTwo->sizes[i].y )
+        {
+            return false;
+        }
+    }
+
     return true;
 }
 
 bool geometries_equal_size(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo)
 {
-    if ( gOne->size.x != gTwo->size.x
-         || gOne->size.y != gTwo->size.y )
+    if ( gOne->numberOfLods != gTwo->numberOfLods )
     {
         return false;
+    }
+
+    for (uint32_t i = 0; i < gOne->numberOfLods; i++ )
+    {
+        if ( gOne->sizes[i].x != gTwo->sizes[i].x 
+             || gOne->sizes[i].y != gTwo->sizes[i].y )
+        {
+            return false;
+        }
     }
 
     return true;
