@@ -249,7 +249,7 @@ ODQuadrants;
 
     BOOL generateRandomNumbers = force;
 
-    if ( geometries_equal_resolution(&currentGeometry, &lastGeometry) == false)
+    if ( geometries_equal_resolution(&currentGeometry, &lastGeometry) == false )
     {
         IVector2 necessaryResolution;
         necessaryResolution.x = MAX(currentGeometry.geometryResolution.x, currentGeometry.gradientResolution.x);
@@ -261,8 +261,12 @@ ODQuadrants;
         {
             FFTW_SAFE_FREE(H0);
             SAFE_FREE(randomNumbers);
-	        H0 = fftwf_alloc_complex(necessaryResolution.x * necessaryResolution.y);
-	        randomNumbers = ALLOC_ARRAY(double, 2 * necessaryResolution.x * necessaryResolution.y);
+
+            const size_t n
+                = necessaryResolution.x * necessaryResolution.y * currentGeometry.numberOfLods;
+
+	        H0 = fftwf_alloc_complex(n);
+	        randomNumbers = ALLOC_ARRAY(double, 2 * n);
 
             H0Lods = currentGeometry.numberOfLods;
             H0Resolution = necessaryResolution;
@@ -272,7 +276,7 @@ ODQuadrants;
 
     if ( generateRandomNumbers == YES )
     {
-        odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * H0Resolution.x * H0Resolution.y);
+        odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * H0Lods * H0Resolution.x * H0Resolution.y);
     }
 
     switch ( currentGeneratorSettings.generatorType )
