@@ -14,7 +14,8 @@ typedef struct ODSpectrumGeometry
 {
     IVector2 geometryResolution;
     IVector2 gradientResolution;
-    Vector2  size;
+    uint32_t numberOfLods;    
+    Vector2 * sizes;
 }
 ODSpectrumGeometry;
 
@@ -40,7 +41,6 @@ ODUnifiedGeneratorSettings;
 typedef struct ODGeneratorSettings
 {
     ODSpectrumGenerator generatorType;
-    uint32_t numberOfLods;
     double spectrumScale;
     union
     {

@@ -99,7 +99,7 @@ static const double defaultSpectrumScale = PHILLIPS_CONSTANT;
 static const int32_t resolutions[6] = {8, 64, 128, 256, 512, 1024};
 static const NSUInteger defaultGeometryResolutionIndex = 0;
 static const NSUInteger defaultGradientResolutionIndex = 0;
-static const double OneDivSixty = 1.0 / 60.0;
+static const double OneDivSixty = 1.0 / 30.0;
 
 static const double defaultAreaScale = 1.0;
 static const double defaultDisplacementScale = 1.0;
@@ -321,10 +321,11 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                     }
                 }
 
-                generatorSettings.numberOfLods  = 1;
                 generatorSettings.spectrumScale = generatorSpectrumScale;
 
-                geometry.size = (Vector2){generatorSize, generatorSize};
+                geometry.numberOfLods = 1;
+                geometry.sizes = ALLOC_ARRAY(Vector2, 1);
+                geometry.sizes[0] = (Vector2){generatorSize, generatorSize};
                 geometryResIndex = generatorGeometryResolutionIndex;
                 gradientResIndex = generatorGradientResolutionIndex;
 
@@ -355,9 +356,12 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
             */
 
             [ timer update ];
-            const double halfComplexTime = [ timer frameTime ];
+            const double genTime = [ timer frameTime ];
+            //NSLog(@"%lf", genTime);
 
-            generationTime += 1.0f/60.0f;
+            generationTime += 1.0f/30.0f;
+
+            FREE(geometry.sizes);
 
             NSUInteger queueCount = 0;
             {
