@@ -90,6 +90,7 @@ typedef struct OdSpectrumVariance
 }
 OdSpectrumVariance;
 
+static const NSUInteger defaultNumberOfLods = 1;
 static const NSUInteger defaultSpectrumType = 0;
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
@@ -323,11 +324,15 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
                 generatorSettings.spectrumScale = generatorSpectrumScale;
 
-                geometry.numberOfLods = 1;
-                geometry.sizes = ALLOC_ARRAY(Vector2, 1);
+                NSAssert(generatorNumberOfLods <= UINT32_MAX, @"Lod out of bounds");
+
+                geometry.numberOfLods = (uint32_t)generatorNumberOfLods;
+                geometry.sizes = ALLOC_ARRAY(Vector2, geometry.numberOfLods);
                 geometry.sizes[0] = (Vector2){generatorSize, generatorSize};
                 geometryResIndex = generatorGeometryResolutionIndex;
                 gradientResIndex = generatorGradientResolutionIndex;
+
+                //NSLog(@"%lu", generatorNumberOfLods);
 
                 [ settingsMutex unlock ];
             }
@@ -733,6 +738,9 @@ static NSUInteger od_variance_size(const void * item)
     geometryResolutionIndex = generatorGeometryResolutionIndex = defaultGeometryResolutionIndex;
     gradientResolutionIndex = generatorGradientResolutionIndex = defaultGradientResolutionIndex;
 
+    lastNumberOfLods = ULONG_MAX;
+    numberOfLods = generatorNumberOfLods = defaultNumberOfLods;
+
     lastSpectrumType = ULONG_MAX;
     spectrumType = generatorSpectrumType = defaultSpectrumType;
 
@@ -1076,6 +1084,7 @@ static NSUInteger od_variance_size(const void * item)
     // update the generator thread's' settings and clear
     // the resultQueue of still therein residing data
     if ( spectrumType != lastSpectrumType
+         || numberOfLods != lastNumberOfLods
          || windSpeed != lastWindSpeed
          || size != lastSize
          || dampening != lastDampening
@@ -1084,6 +1093,7 @@ static NSUInteger od_variance_size(const void * item)
          || gradientResolutionIndex != lastGradientResolutionIndex )
     {
         lastSpectrumType = spectrumType;
+        lastNumberOfLods = numberOfLods;
         lastWindSpeed = windSpeed;
         lastSize = size;
         lastDampening = dampening;
@@ -1097,6 +1107,7 @@ static NSUInteger od_variance_size(const void * item)
     {
         [ settingsMutex lock ];
         generatorSpectrumType = spectrumType;
+        generatorNumberOfLods = numberOfLods;
         generatorWindSpeed = windSpeed;
         generatorSize = size;
         generatorDampening = dampening;
@@ -1123,7 +1134,7 @@ static NSUInteger od_variance_size(const void * item)
     }
 
     NSUInteger spectrumQueueCount = 0;
-    NSUInteger resultQueueCount = 0;
+    NSUInteger resultQueueCount   = 0;
     NSUInteger varianceQueueCount = 0;
 
     OdHeightfieldData * hf = NULL;
