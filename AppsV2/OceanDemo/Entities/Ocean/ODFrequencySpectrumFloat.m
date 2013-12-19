@@ -251,18 +251,21 @@ ODQuadrants;
 
     if ( geometries_equal_resolution(&currentGeometry, &lastGeometry) == false)
     {
-        IVector2 resolution;
-        resolution.x = MAX(currentGeometry.geometryResolution.x, currentGeometry.gradientResolution.x);
-        resolution.y = MAX(currentGeometry.geometryResolution.y, currentGeometry.gradientResolution.y);
+        IVector2 necessaryResolution;
+        necessaryResolution.x = MAX(currentGeometry.geometryResolution.x, currentGeometry.gradientResolution.x);
+        necessaryResolution.y = MAX(currentGeometry.geometryResolution.y, currentGeometry.gradientResolution.y);
 
-        if ( resolution.x != H0Resolution.x || resolution.y != H0Resolution.y )
+        if ( currentGeometry.numberOfLods != H0Lods
+             || necessaryResolution.x != H0Resolution.x
+             || necessaryResolution.y != H0Resolution.y )
         {
             FFTW_SAFE_FREE(H0);
             SAFE_FREE(randomNumbers);
-	        H0 = fftwf_alloc_complex(resolution.x * resolution.y);
-	        randomNumbers = ALLOC_ARRAY(double, 2 * resolution.x * resolution.y);
+	        H0 = fftwf_alloc_complex(necessaryResolution.x * necessaryResolution.y);
+	        randomNumbers = ALLOC_ARRAY(double, 2 * necessaryResolution.x * necessaryResolution.y);
 
-            H0Resolution = resolution;
+            H0Lods = currentGeometry.numberOfLods;
+            H0Resolution = necessaryResolution;
             generateRandomNumbers = YES;
         }
     }
@@ -312,6 +315,7 @@ static NPTimer * timer = nil;
     baseSpectrum = NULL;
     randomNumbers = NULL;
     H0Resolution = iv2_zero();
+    H0Lods = 0;
 
     gaussianRNG = odgaussianrng_alloc_init();
 
