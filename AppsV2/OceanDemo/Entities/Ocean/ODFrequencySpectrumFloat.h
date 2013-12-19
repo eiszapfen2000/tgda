@@ -9,6 +9,7 @@
     float * baseSpectrum;
     double * randomNumbers;
     IVector2 H0Resolution;
+    uint32_t H0Lods;
     OdGaussianRng * gaussianRNG;
     float maxMeanSlopeVariance;
     float effectiveMeanSlopeVariance;
