@@ -3,6 +3,7 @@
 #import <fenv.h>
 #import <math.h>
 #import <stdlib.h>
+#import <string.h>
 #import <time.h>
 #import "fftw3.h"
 
@@ -47,6 +48,8 @@ static void print_interleaved_spectrum(int32_t lods, int32_t resolution, fftwf_c
 
         printf("\n");
     }
+
+    printf("\n");
 }
 
 int main (int argc, char **argv)
@@ -54,13 +57,21 @@ int main (int argc, char **argv)
     feenableexcept(FE_DIVBYZERO | FE_INVALID);
 
     const int32_t resolution = 4;
+
+    const int32_t rank = 2;
+    const int32_t n[] = {resolution, resolution};
+    const int32_t iStride = 1;
+    const int32_t oStride = 1;
+    const int32_t iDist = resolution * resolution;
+    const int32_t oDist = resolution * resolution;
     const int32_t lods = 2;
 
     fftwf_complex * dataSeparate    = fftwf_alloc_complex(resolution * resolution * lods);
     fftwf_complex * dataInterleaved = fftwf_alloc_complex(resolution * resolution * lods);
 
-    fftwf_complex * targetSeparate    = fftwf_alloc_complex(resolution * resolution * lods);
-    fftwf_complex * targetInterleaved = fftwf_alloc_complex(resolution * resolution * lods);
+    fftwf_complex * targetSeparate      = fftwf_alloc_complex(resolution * resolution * lods);
+    fftwf_complex * targetBatchSeparate = fftwf_alloc_complex(resolution * resolution * lods);
+    fftwf_complex * targetInterleaved   = fftwf_alloc_complex(resolution * resolution * lods);
 
     const float rf = RAND_MAX;
 
@@ -71,6 +82,21 @@ int main (int argc, char **argv)
                             targetSeparate,
                             FFTW_BACKWARD,
                             FFTW_ESTIMATE);
+
+    fftwf_plan batchSeparatePlan
+        = fftwf_plan_many_dft(
+            rank, n, lods,
+            dataSeparate, n, 1, iDist,
+            targetBatchSeparate, n, 1, iDist,
+            FFTW_BACKWARD, FFTW_ESTIMATE
+            );
+
+
+    memset(dataSeparate,        0, resolution * resolution * lods * sizeof(fftwf_complex));
+    memset(dataInterleaved,     0, resolution * resolution * lods * sizeof(fftwf_complex));
+    memset(targetSeparate,      0, resolution * resolution * lods * sizeof(fftwf_complex));
+    memset(targetInterleaved,   0, resolution * resolution * lods * sizeof(fftwf_complex));
+    memset(targetBatchSeparate, 0, resolution * resolution * lods * sizeof(fftwf_complex));
 
     for ( int32_t l = 0; l < lods; l++ )
     {
@@ -104,12 +130,25 @@ int main (int argc, char **argv)
     print_separate_spectrum(lods, resolution, dataSeparate);
     print_interleaved_spectrum(lods, resolution, dataInterleaved);
 
+    for ( int32_t l = 0; l < lods; l++ )
+    {
+        int32_t separateOffset = l * resolution * resolution;
+
+        fftwf_execute_dft(planSeparate, &dataSeparate[separateOffset], &targetSeparate[separateOffset]);
+    }
+
+    print_separate_spectrum(lods, resolution, targetSeparate);
+
     fftwf_destroy_plan(planSeparate);
+    fftwf_destroy_plan(batchSeparatePlan);
 
     fftwf_free(dataSeparate);
     fftwf_free(dataInterleaved);
     fftwf_free(targetSeparate);
     fftwf_free(targetInterleaved);
+    fftwf_free(targetBatchSeparate);
+
+    fftwf_cleanup();
 
     return 0;
 }
