@@ -315,6 +315,11 @@ void reset_texture3d_wrapstate(NpTexture3DWrapState * wrapState)
             //update data, is a lot faster than glTexImage2D
             glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, 0, width, height,
                 depth, glPixelFormat, glDataFormat, data);
+
+            if ( filterState.mipmaps == YES )
+            {
+                glGenerateMipmap(GL_TEXTURE_3D);
+            }
         }
     }
     else
