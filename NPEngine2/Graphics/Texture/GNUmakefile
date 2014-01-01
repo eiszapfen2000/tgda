@@ -8,6 +8,7 @@ NpTextureSamplerParameter.c
 libNPEngineGraphicsTexture_OBJC_FILES = \
 NPSamplerObject.m \
 NPTexture2D.m \
+NPTexture2DArray.m \
 NPTexture3D.m \
 NPTextureBindingState.m \
 NPTextureBuffer.m \
@@ -17,6 +18,7 @@ libNPEngineGraphicsTexture_HEADER_FILES = \
 NpTextureSamplerParameter.h \
 NPSamplerObject.h \
 NPTexture2D.h \
+NPTexture2DArray.h \
 NPTexture3D.h \
 NPTextureBuffer.h \
 NPTextureBindingState.h \
