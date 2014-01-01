@@ -29,7 +29,6 @@ void reset_texture3d_wrapstate(NpTexture3DWrapState * wrapState);
 
 @interface NPTexture3D : NPObject < NPPPersistentObject, NPPTexture >
 {
-    NSString * file;
     BOOL ready;
 
     uint32_t width;
