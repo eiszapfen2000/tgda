@@ -67,8 +67,6 @@ void reset_texture3d_wrapstate(NpTexture3DWrapState * wrapState)
         glID = 0;
     }
 
-    SAFE_DESTROY(file);
-
     [ super dealloc ];
 }
 
@@ -79,12 +77,11 @@ void reset_texture3d_wrapstate(NpTexture3DWrapState * wrapState)
 
 - (NSString *) fileName
 {
-    return file;
+    return nil;
 }
 
 - (void) clear
 {
-    SAFE_DESTROY(file);
     [ self reset ];
 }
 
