@@ -10,7 +10,9 @@
         id object = [ self objectAtIndex:i ];
         if ( [ object conformsToProtocol:@protocol(NPPPersistentObject) ] == YES )
         {
-            if ( [[ object fileName ] isEqual:fileName ] == YES )
+            NSString * objectFileName = [ object fileName ];
+
+            if ( objectFileName != nil && [ objectFileName isEqual:fileName ] == YES )
             {
                 return object;
             }
