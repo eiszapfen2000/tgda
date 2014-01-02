@@ -81,6 +81,8 @@ static NSMutableDictionary * imageDataFormats = nil;
     INSERTENUM(textureTypes, NpTextureTypeTexture3D, @"sampler3D");
     INSERTENUM(textureTypes, NpTextureTypeTextureCube, @"samplerCUBE");
     INSERTENUM(textureTypes, NpTextureTypeTextureBuffer, @"samplerBuffer");
+    INSERTENUM(textureTypes, NpTextureTypeTexture1DArray, @"sampler1DArray");
+    INSERTENUM(textureTypes, NpTextureTypeTexture2DArray, @"sampler2DArray");
 
     INSERTENUM(semantics, NpModelMatrix, @"np_modelmatrix");
     INSERTENUM(semantics, NpInverseModelMatrix, @"np_inversemodelmatrix");
