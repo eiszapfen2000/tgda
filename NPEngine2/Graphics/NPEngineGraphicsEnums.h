@@ -35,12 +35,14 @@ NpImageDataFormat;
 
 typedef enum NpTextureType
 {
-    NpTextureTypeUnknown       = -1,
-    NpTextureTypeTexture1D     =  0,
-    NpTextureTypeTexture2D     =  1,
-    NpTextureTypeTexture3D     =  2,
-    NpTextureTypeTextureCube   =  3,
-    NpTextureTypeTextureBuffer =  4
+    NpTextureTypeUnknown        = -1,
+    NpTextureTypeTexture1D      =  0,
+    NpTextureTypeTexture2D      =  1,
+    NpTextureTypeTexture3D      =  2,
+    NpTextureTypeTextureCube    =  3,
+    NpTextureTypeTextureBuffer  =  4,
+    NpTextureTypeTexture1DArray =  5,
+    NpTextureTypeTexture2DArray =  6
 }
 NpTextureType;
 

@@ -235,8 +235,7 @@
 
 - (NpTextureType) textureType
 {
-    #warning FIXME Correct enum
-    return NpTextureTypeTexture2D;
+    return NpTextureTypeTexture2DArray;
 }
 
 - (GLuint) glID
