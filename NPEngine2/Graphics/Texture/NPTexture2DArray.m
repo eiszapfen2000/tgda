@@ -306,15 +306,14 @@ static const GLint masks[][4]
 
 - (void) uploadToGL:(const GLvoid *)data allowNull:(BOOL)allowNull
 {
-    /*
     if ( ready == YES )
     {
         // glTexSubImage2D does not handle NULL
         if ( allowNull == YES || data != NULL )
         {
             //update data, is a lot faster than glTexImage2D
-            glTexSubImage2D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, width, height,
-                glPixelFormat, glDataFormat, data);
+            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, width, height,
+                layers, glPixelFormat, glDataFormat, data);
 
             if ( filterState.mipmaps == YES )
             {
@@ -329,8 +328,8 @@ static const GLint masks[][4]
                  &glDataFormat, &glPixelFormat);
 
         // specify entire texture
-        glTexImage2D(GL_TEXTURE_2D_ARRAY, 0, glInternalFormat, width, height, 
-            0, glPixelFormat, glDataFormat, data);
+        glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, glInternalFormat, width, height, 
+            layers, 0, glPixelFormat, glDataFormat, data);
 
         // this is here because of broken AMD drivers
         // if the call is moved somewhere else mipmap
@@ -344,12 +343,13 @@ static const GLint masks[][4]
             glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_LEVEL, 0);
         }
 
+        /*
         set_texture2d_filter(filterState.textureFilter);
         set_texture2d_anisotropy(filterState.anisotropy);
         set_texture2d_wrap(wrapState.wrapS, wrapState.wrapT);
         set_texture2d_swizzle_mask(colorFormat);
+        */
     }
-    */
 }
 
 @end
