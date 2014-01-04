@@ -250,37 +250,18 @@
 
 @end
 
-static const GLint masks[][4]
-    = {
-        {GL_RED, GL_RED, GL_RED, GL_ZERO},
-        {GL_RED, GL_RED, GL_RED, GL_ONE},
-        {GL_GREEN, GL_GREEN, GL_GREEN, GL_ZERO},
-        {GL_GREEN, GL_GREEN, GL_GREEN, GL_ONE},
-        {GL_BLUE, GL_BLUE, GL_BLUE, GL_ZERO},
-        {GL_BLUE, GL_BLUE, GL_BLUE, GL_ONE},
-        {GL_ALPHA, GL_ALPHA, GL_ALPHA, GL_ZERO},
-        {GL_ALPHA, GL_ALPHA, GL_ALPHA, GL_ONE},
-        {GL_RED, GL_GREEN, GL_ZERO, GL_ZERO},
-        {GL_RED, GL_GREEN, GL_ZERO, GL_ONE},
-        {GL_RED, GL_GREEN, GL_BLUE, GL_ZERO},
-        {GL_RED, GL_GREEN, GL_BLUE, GL_ONE},
-        {GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA}
-      };
-
 @implementation NPTexture2DArray (Private)
 
 - (void) updateGLTextureState
 {
-    /*
     [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:self ];
 
-    set_texture2d_filter(filterState.textureFilter);
-    set_texture2d_anisotropy(filterState.anisotropy);
-    set_texture2d_wrap(wrapState.wrapS, wrapState.wrapT);
-    set_texture2d_swizzle_mask(colorFormat);
+    set_texture2darray_filter(filterState.textureFilter);
+    set_texture2darray_anisotropy(filterState.anisotropy);
+    set_texture2darray_wrap(wrapState.wrapS, wrapState.wrapT);
+    set_texture2darray_swizzle_mask(colorFormat);
 
     [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
-    */
 }
 
 - (void) uploadToGLWithData:(NSData *)data
@@ -343,12 +324,10 @@ static const GLint masks[][4]
             glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_LEVEL, 0);
         }
 
-        /*
-        set_texture2d_filter(filterState.textureFilter);
-        set_texture2d_anisotropy(filterState.anisotropy);
-        set_texture2d_wrap(wrapState.wrapS, wrapState.wrapT);
-        set_texture2d_swizzle_mask(colorFormat);
-        */
+        set_texture2darray_filter(filterState.textureFilter);
+        set_texture2darray_anisotropy(filterState.anisotropy);
+        set_texture2darray_wrap(wrapState.wrapS, wrapState.wrapT);
+        set_texture2darray_swizzle_mask(colorFormat);
     }
 }
 

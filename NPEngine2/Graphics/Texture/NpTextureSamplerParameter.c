@@ -88,6 +88,61 @@ void set_texture2d_swizzle_mask(NpTextureColorFormat colorFormat)
     }
 }
 
+void set_texture2darray_filter(NpTexture2DFilter filter)
+{
+    GLint minFilter = GL_NONE;
+    GLint magFilter = GL_NONE;
+
+    switch ( filter )
+    {
+        case NpTextureFilterNearest:
+        {
+            minFilter = magFilter = GL_NEAREST;
+            break;
+        }
+
+        case NpTextureFilterLinear:
+        {
+            minFilter = magFilter = GL_LINEAR;
+            break;
+        }
+
+        case NpTextureFilterTrilinear:
+        {
+            minFilter = GL_LINEAR_MIPMAP_LINEAR;
+            magFilter = GL_LINEAR;
+        }
+    }
+
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, minFilter);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, magFilter);
+}
+
+void set_texture2darray_wrap(NpTextureWrap s, NpTextureWrap t)
+{
+    GLint wrapS = getGLTextureWrap(s);
+    GLint wrapT = getGLTextureWrap(t);
+
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, wrapS);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, wrapT);
+}
+
+void set_texture2darray_anisotropy(uint32_t anisotropy)
+{
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_ANISOTROPY_EXT,
+                    (GLint)anisotropy);
+}
+
+void set_texture2darray_swizzle_mask(NpTextureColorFormat colorFormat)
+{
+    //assert(colorFormat != NpTextureColorFormatUnknown);
+
+    if ( colorFormat != NpTextureColorFormatUnknown )
+    {
+        glTexParameteriv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SWIZZLE_RGBA, masks[colorFormat]);
+    }
+}
+
 void set_texture3d_filter(NpTexture3DFilter filter)
 {
     GLint minFilter = GL_NONE;
