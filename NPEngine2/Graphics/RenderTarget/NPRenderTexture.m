@@ -234,7 +234,8 @@
     GLenum attachment = getGLAttachment(type, colorBufferIndex);
 
     NSAssert(attachment != GL_NONE, @"Unknown attachment");
-    glFramebufferTexture3D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_3D, glID, newLevel, newLayer);
+    //glFramebufferTexture3D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_3D, glID, newLevel, newLayer);
+    glFramebufferTextureLayer(GL_FRAMEBUFFER, attachment, glID, newLevel, newLayer);
 
     if ( bindFBO == YES )
     {
