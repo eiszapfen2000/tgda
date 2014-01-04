@@ -342,23 +342,6 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
 
 @end
 
-static const GLint masks[][4]
-    = {
-        {GL_RED, GL_RED, GL_RED, GL_ZERO},
-        {GL_RED, GL_RED, GL_RED, GL_ONE},
-        {GL_GREEN, GL_GREEN, GL_GREEN, GL_ZERO},
-        {GL_GREEN, GL_GREEN, GL_GREEN, GL_ONE},
-        {GL_BLUE, GL_BLUE, GL_BLUE, GL_ZERO},
-        {GL_BLUE, GL_BLUE, GL_BLUE, GL_ONE},
-        {GL_ALPHA, GL_ALPHA, GL_ALPHA, GL_ZERO},
-        {GL_ALPHA, GL_ALPHA, GL_ALPHA, GL_ONE},
-        {GL_RED, GL_GREEN, GL_ZERO, GL_ZERO},
-        {GL_RED, GL_GREEN, GL_ZERO, GL_ONE},
-        {GL_RED, GL_GREEN, GL_BLUE, GL_ZERO},
-        {GL_RED, GL_GREEN, GL_BLUE, GL_ONE},
-        {GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA}
-      };
-
 @implementation NPTexture2D (Private)
 
 - (void) updateGLTextureState
