@@ -38,6 +38,16 @@
             error:(NSError **)error
                  ;
 
+- (BOOL) generate2DArray:(NpRenderTargetType)newType
+                   width:(uint32_t)newWidth
+                  height:(uint32_t)newHeight
+                  layers:(uint32_t)newLayers
+             pixelFormat:(NpTexturePixelFormat)newPixelFormat
+              dataFormat:(NpTextureDataFormat)newDataFormat
+           mipmapStorage:(BOOL)mipmapStorage
+                   error:(NSError **)error
+                        ;
+
 - (BOOL) generate3D:(NpRenderTargetType)newType
               width:(uint32_t)newWidth
              height:(uint32_t)newHeight
