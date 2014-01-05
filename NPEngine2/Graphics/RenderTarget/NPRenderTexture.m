@@ -3,6 +3,7 @@
 #import <Foundation/NSException.h>
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Graphics/Texture/NPTexture2D.h"
+#import "Graphics/Texture/NPTexture2DArray.h"
 #import "Graphics/Texture/NPTexture3D.h"
 #import "Graphics/NPEngineGraphics.h"
 #import "NPRenderTargetConfiguration.h"
@@ -12,6 +13,7 @@
 
 - (void) deleteTexture;
 - (void) createTextureWithMipmaps:(BOOL)mipmaps;
+- (void) createTexture2DArrayWithMipmaps:(BOOL)mipmaps;
 - (void) createTexture3DWithMipmaps:(BOOL)mipmaps;
 
 @end
@@ -40,6 +42,27 @@
 
     texture = RETAIN(texture2D);
     DESTROY(texture2D);
+
+    glID = [ texture glID ];
+    ready = YES;
+}
+
+- (void) createTexture2DArrayWithMipmaps:(BOOL)mipmaps
+{
+    [ self deleteTexture ];
+
+    NPTexture2DArray * texture2DArray = [[ NPTexture2DArray alloc ] init ];
+
+    [ texture2DArray generateUsingWidth:width
+                                 height:height
+                                 layers:depth
+                            pixelFormat:pixelFormat
+                             dataFormat:dataFormat
+                                mipmaps:mipmaps
+                                   data:[ NSData data ]];
+
+    texture = RETAIN(texture2DArray);
+    DESTROY(texture2DArray);
 
     glID = [ texture glID ];
     ready = YES;
@@ -143,6 +166,27 @@
     return YES;
 }
 
+- (BOOL) generate2DArray:(NpRenderTargetType)newType
+                   width:(uint32_t)newWidth
+                  height:(uint32_t)newHeight
+                  layers:(uint32_t)newLayers
+             pixelFormat:(NpTexturePixelFormat)newPixelFormat
+              dataFormat:(NpTextureDataFormat)newDataFormat
+           mipmapStorage:(BOOL)mipmapStorage
+                   error:(NSError **)error
+{
+    type   = newType;
+    width  = newWidth;
+    height = newHeight;
+    depth  = newLayers;
+    pixelFormat = newPixelFormat;
+    dataFormat  = newDataFormat;
+
+    [ self createTexture2DArrayWithMipmaps:mipmapStorage ];
+
+    return YES;
+}
+
 - (BOOL) generate3D:(NpRenderTargetType)newType
               width:(uint32_t)newWidth
              height:(uint32_t)newHeight
@@ -218,7 +262,10 @@
           colorBufferIndex:(uint32_t)newColorBufferIndex
                    bindFBO:(BOOL)bindFBO
 {
-    NSAssert([ texture isKindOfClass:[ NPTexture3D class ]] == YES, @"Render texture is not a 3D texture");
+    NSAssert( [ texture isKindOfClass:[ NPTexture3D class ]] == YES
+              || [ texture isKindOfClass:[ NPTexture2DArray class ]] == YES,
+              @"Render texture is not a 3D texture" );
+
     NSAssert1(configuration != nil, @"%@: Invalid NPRenderTargetConfiguration", name);
     NSAssert2((int32_t)newColorBufferIndex < [[ NPEngineGraphics instance ] numberOfColorAttachments ],
         @"%@: Invalid color buffer index %u", name, newColorBufferIndex);
