@@ -515,6 +515,7 @@ static NPTimer * timer = nil;
 
             const float derivativeXScale = (j == 0) ? 0.0f : 1.0f;
             const float derivativeZScale = (i == 0) ? 0.0f : 1.0f;
+            const float factor = (lengthK != 0.0f) ? 1.0f/lengthK : 0.0f;
 
             if ( gradient != NULL
                  && j > gradientXRange.x && j < gradientXRange.y
@@ -544,8 +545,6 @@ static NPTimer * timer = nil;
                  && j > geometryXRange.x && j < geometryXRange.y
                  && i > geometryYRange.x && i < geometryYRange.y )
             {
-                const float factor = (lengthK != 0.0f) ? 1.0f/lengthK : 0.0f;
-
                 const fftwf_complex dx
                     = { derivativeXScale * factor * kx * geometryhTilde[1],
                         derivativeXScale * factor * kx * geometryhTilde[0] * -1.0f };
