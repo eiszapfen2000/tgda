@@ -430,8 +430,12 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
     if ( item->gradient != NULL )
     {
         fftwf_complex * complexGradient = fftwf_alloc_complex(numberOfGradientElements);
+        fftwf_complex * complexDisplacementXdXdZ = fftwf_alloc_complex(numberOfGradientElements);
+        fftwf_complex * complexDisplacementZdXdZ = fftwf_alloc_complex(numberOfGradientElements);
 
-        fftwf_execute_dft(complexPlans[gradientIndex], item->gradient,  complexGradient);
+        fftwf_execute_dft(complexPlans[gradientIndex], item->gradient, complexGradient);
+        fftwf_execute_dft(complexPlans[gradientIndex], item->displacementXdXdZ, complexDisplacementXdXdZ);
+        fftwf_execute_dft(complexPlans[gradientIndex], item->displacementZdXdZ, complexDisplacementZdXdZ);
 
         for ( int32_t i = 0; i < item->gradientResolution.y; i++ )
         {
@@ -443,23 +447,27 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
                 result->gradients32f[targetIndex].x = complexGradient[sourceIndex][0];
                 result->gradients32f[targetIndex].y = complexGradient[sourceIndex][1];
+
+                result->displacementDerivatives32f[targetIndex].x = complexDisplacementXdXdZ[sourceIndex][0];
+                result->displacementDerivatives32f[targetIndex].y = complexDisplacementXdXdZ[sourceIndex][1];
+                result->displacementDerivatives32f[targetIndex].z = complexDisplacementZdXdZ[sourceIndex][0];
+                result->displacementDerivatives32f[targetIndex].w = complexDisplacementZdXdZ[sourceIndex][1];
             }
         }
 
         heightfield_hf_compute_min_max_gradients(result);
+        heightfield_hf_compute_min_max_displacement_derivatives(result);
 
+        fftwf_free(complexDisplacementZdXdZ);
+        fftwf_free(complexDisplacementXdXdZ);
         fftwf_free(complexGradient);
     }
 
     if ( item->displacement != NULL )
     {
         fftwf_complex * complexDisplacement = fftwf_alloc_complex(numberOfGeometryElements);
-        fftwf_complex * complexDisplacementXdXdZ = fftwf_alloc_complex(numberOfGeometryElements);
-        fftwf_complex * complexDisplacementZdXdZ = fftwf_alloc_complex(numberOfGeometryElements);
 
         fftwf_execute_dft(complexPlans[geometryIndex], item->displacement, complexDisplacement);
-        fftwf_execute_dft(complexPlans[geometryIndex], item->displacementXdXdZ, complexDisplacementXdXdZ);
-        fftwf_execute_dft(complexPlans[geometryIndex], item->displacementZdXdZ, complexDisplacementZdXdZ);
 
         for ( int32_t i = 0; i < item->geometryResolution.y; i++ )
         {
@@ -471,22 +479,10 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
                 result->displacements32f[targetIndex].x = complexDisplacement[sourceIndex][0];
                 result->displacements32f[targetIndex].y = complexDisplacement[sourceIndex][1];
-
-                result->displacementDerivatives32f[targetIndex].x = complexDisplacementXdXdZ[sourceIndex][0];
-                result->displacementDerivatives32f[targetIndex].y = complexDisplacementXdXdZ[sourceIndex][1];
-                result->displacementDerivatives32f[targetIndex].z = complexDisplacementZdXdZ[sourceIndex][0];
-                result->displacementDerivatives32f[targetIndex].w = complexDisplacementZdXdZ[sourceIndex][1];
             }
         }
 
-        //print_complex_spectrum(item->geometryResolution, complexDisplacementXdXdZ);
-        //print_complex_spectrum(item->geometryResolution, complexDisplacementZdXdZ);
-
         heightfield_hf_compute_min_max_displacements(result);
-        heightfield_hf_compute_min_max_displacement_derivatives(result);
-
-        fftwf_free(complexDisplacementZdXdZ);
-        fftwf_free(complexDisplacementXdXdZ);
         fftwf_free(complexDisplacement);
     }
 
@@ -1241,7 +1237,7 @@ static NSUInteger od_variance_size(const void * item)
                 = hf->geometryResolution.x * hf->geometryResolution.y * sizeof(float);
 
             const NSUInteger numberOfGradientBytes
-                = hf->gradientResolution.x * hf->gradientResolution.y * sizeof(float) * 2;
+                = hf->gradientResolution.x * hf->gradientResolution.y * sizeof(float);
 
             NSData * heightsData
                 = [ NSData dataWithBytesNoCopyNoFree:hf->heights32f
@@ -1253,11 +1249,11 @@ static NSUInteger od_variance_size(const void * item)
 
             NSData * displacementDerivativesData
                 = [ NSData dataWithBytesNoCopyNoFree:hf->displacementDerivatives32f
-                                              length:numberOfGeometryBytes * 4 ];
+                                              length:numberOfGradientBytes * 4 ];
 
             NSData * gradientsData
                 = [ NSData dataWithBytesNoCopyNoFree:hf->gradients32f
-                                              length:numberOfGradientBytes ];
+                                              length:numberOfGradientBytes * 2 ];
 
             [ heightfield generateUsingWidth:hf->geometryResolution.x
                                       height:hf->geometryResolution.y
@@ -1274,8 +1270,8 @@ static NSUInteger od_variance_size(const void * item)
                                          data:displacementsData ];
 
             [ displacementDerivatives
-                generateUsingWidth:hf->geometryResolution.x
-                            height:hf->geometryResolution.y
+                generateUsingWidth:hf->gradientResolution.x
+                            height:hf->gradientResolution.y
                        pixelFormat:NpTexturePixelFormatRGBA
                         dataFormat:NpTextureDataFormatFloat32
                            mipmaps:YES
