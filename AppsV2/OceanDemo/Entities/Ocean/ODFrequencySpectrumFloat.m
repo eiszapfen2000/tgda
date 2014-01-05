@@ -376,10 +376,10 @@ static NPTimer * timer = nil;
         = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
 
     fftwf_complex * displacementXdXdZ
-        = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
+        = fftwf_alloc_complex(gradientResolution.x * gradientResolution.y);
 
     fftwf_complex * displacementZdXdZ
-        = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
+        = fftwf_alloc_complex(gradientResolution.x * gradientResolution.y);
 
     const IVector2 geometryPadding
         = { .x = (H0Resolution.x - geometryResolution.x) / 2, .y = (H0Resolution.y - geometryResolution.y) / 2 };
@@ -513,12 +513,16 @@ static NPTimer * timer = nil;
             xH = (0*c - kx*d) + i*(0*d+kx*c)
             */
 
-            const float derivativeXScale = (j == 0) ? 0.0f : 1.0f;
-            const float derivativeZScale = (i == 0) ? 0.0f : 1.0f;
+            //const float derivativeXScale = (j == 0) ? 0.0f : 1.0f;
+            //const float derivativeZScale = (i == 0) ? 0.0f : 1.0f;
+            const float derivativeXScale   = (j == gradientPadding.x) ? 0.0f : 1.0f;
+            const float derivativeZScale   = (i == gradientPadding.y) ? 0.0f : 1.0f;
+            const float displacementXScale = (j == geometryPadding.x) ? 0.0f : 1.0f;
+            const float displacementZScale = (i == geometryPadding.y) ? 0.0f : 1.0f;
+
             const float factor = (lengthK != 0.0f) ? 1.0f/lengthK : 0.0f;
 
-            if ( gradient != NULL
-                 && j > gradientXRange.x && j < gradientXRange.y
+            if ( j > gradientXRange.x && j < gradientXRange.y
                  && i > gradientYRange.x && i < gradientYRange.y )
             {
                 const fftwf_complex gx
@@ -530,6 +534,34 @@ static NPTimer * timer = nil;
                 // gx + i*gz
                 gradient[gradientIndex][0] = gx[0] - gz[1];
                 gradient[gradientIndex][1] = gx[1] + gz[0];
+
+                // partial derivatives of dx and dz
+                const float dx_x_term = kx * kx * factor * derivativeXScale;
+                const float dz_z_term = ky * ky * factor * derivativeZScale;
+                const float dx_z_term = ky * kx * factor * derivativeXScale;
+                const float dz_x_term = kx * ky * factor * derivativeZScale;
+
+                const fftwf_complex dx_x
+                    = { dx_x_term * derivativeXScale * gradienthTilde[0],
+                        dx_x_term * derivativeXScale * gradienthTilde[1] };
+
+                const fftwf_complex dx_z
+                    = { dx_z_term * derivativeZScale * gradienthTilde[0],
+                        dx_z_term * derivativeZScale * gradienthTilde[1] };
+
+                const fftwf_complex dz_x
+                    = { dz_x_term * derivativeXScale * gradienthTilde[0],
+                        dz_x_term * derivativeXScale * gradienthTilde[1] };
+
+                const fftwf_complex dz_z
+                    = { dz_z_term * derivativeZScale * gradienthTilde[0],
+                        dz_z_term * derivativeZScale * gradienthTilde[1] };
+
+                displacementXdXdZ[gradientIndex][0] = dx_x[0] - dx_z[1];
+                displacementXdXdZ[gradientIndex][1] = dx_x[1] + dx_z[0];
+
+                displacementZdXdZ[gradientIndex][0] = dz_x[0] - dz_z[1];
+                displacementZdXdZ[gradientIndex][1] = dz_x[1] + dz_z[0];
             }
 
             // -i * kx/|k| * H
@@ -546,44 +578,16 @@ static NPTimer * timer = nil;
                  && i > geometryYRange.x && i < geometryYRange.y )
             {
                 const fftwf_complex dx
-                    = { derivativeXScale * factor * kx * geometryhTilde[1],
-                        derivativeXScale * factor * kx * geometryhTilde[0] * -1.0f };
+                    = { displacementXScale * factor * kx * geometryhTilde[1],
+                        displacementXScale * factor * kx * geometryhTilde[0] * -1.0f };
 
                 const fftwf_complex dz
-                    = { derivativeZScale * factor * ky * geometryhTilde[1],
-                        derivativeZScale * factor * ky * geometryhTilde[0] * -1.0f };
+                    = { displacementZScale * factor * ky * geometryhTilde[1],
+                        displacementZScale * factor * ky * geometryhTilde[0] * -1.0f };
 
                 // dx + i*dz
                 displacement[geometryIndex][0] = dx[0] - dz[1];
                 displacement[geometryIndex][1] = dx[1] + dz[0];
-
-                // partial derivatives of dx and dz
-                const float dx_x_term = kx * kx * factor * derivativeXScale;
-                const float dz_z_term = ky * ky * factor * derivativeZScale;
-                const float dx_z_term = ky * kx * factor * derivativeXScale;
-                const float dz_x_term = kx * ky * factor * derivativeZScale;
-
-                const fftwf_complex dx_x
-                    = { dx_x_term * derivativeXScale * geometryhTilde[0],
-                        dx_x_term * derivativeXScale * geometryhTilde[1] };
-
-                const fftwf_complex dx_z
-                    = { dx_z_term * derivativeZScale * geometryhTilde[0],
-                        dx_z_term * derivativeZScale * geometryhTilde[1] };
-
-                const fftwf_complex dz_x
-                    = { dz_x_term * derivativeXScale * geometryhTilde[0],
-                        dz_x_term * derivativeXScale * geometryhTilde[1] };
-
-                const fftwf_complex dz_z
-                    = { dz_z_term * derivativeZScale * geometryhTilde[0],
-                        dz_z_term * derivativeZScale * geometryhTilde[1] };
-
-                displacementXdXdZ[geometryIndex][0] = dx_x[0] - dx_z[1];
-                displacementXdXdZ[geometryIndex][1] = dx_x[1] + dx_z[0];
-
-                displacementZdXdZ[geometryIndex][0] = dz_x[0] - dz_z[1];
-                displacementZdXdZ[geometryIndex][1] = dz_x[1] + dz_z[0];
             }
         }
     }
@@ -1330,22 +1334,22 @@ right way.
     if ( result.displacementXdXdZ != NULL )
     {
         [ self swapFrequencySpectrum:result.displacementXdXdZ
-                          resolution:currentGeometry.geometryResolution
+                          resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_1_3 ];
 
         [ self swapFrequencySpectrum:result.displacementXdXdZ
-                          resolution:currentGeometry.geometryResolution
+                          resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_2_4 ];
     }
 
     if ( result.displacementZdXdZ != NULL )
     {
         [ self swapFrequencySpectrum:result.displacementZdXdZ
-                          resolution:currentGeometry.geometryResolution
+                          resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_1_3 ];
 
         [ self swapFrequencySpectrum:result.displacementZdXdZ
-                          resolution:currentGeometry.geometryResolution
+                          resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_2_4 ];
     }
 

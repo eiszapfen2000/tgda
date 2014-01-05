@@ -53,7 +53,7 @@ OdHeightfieldData * heightfield_alloc_init_with_resolutions_and_size(
         = (FVector2 *)fftwf_alloc_real(numberOfGeometryElements * 2);
 
     result->displacementDerivatives32f
-        = (FVector4 *)fftwf_alloc_real(numberOfGeometryElements * 4);
+        = (FVector4 *)fftwf_alloc_real(numberOfGradientElements * 4);
 
     result->gradients32f
         = (FVector2 *)fftwf_alloc_real(numberOfGradientElements * 2);
@@ -160,7 +160,7 @@ void heightfield_hf_compute_min_max_displacement_derivatives(OdHeightfieldData *
     float minDisplacementZdZ =  FLT_MAX;
 
     const int32_t numberOfElements
-        = heightfield->geometryResolution.x * heightfield->geometryResolution.y;
+        = heightfield->gradientResolution.x * heightfield->gradientResolution.y;
 
     for ( int32_t i = 0; i < numberOfElements; i++ )
     {
