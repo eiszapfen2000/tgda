@@ -1,7 +1,0 @@
-{
-    Type = "ODEntity";
-    Name = "Debug_Plane";
-    Model = "plane.model";
-    Position = ( "0.0", "0.0", "0.0" );
-}
- 
