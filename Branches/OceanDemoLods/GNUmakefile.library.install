@@ -34,7 +34,7 @@ after-all::
         mkdir $(NP_LIBS_DIR) ; \
     fi; \
     cp -du $(LIBRARY_NAME).so* $(NP_LIBS_DIR);
-after-clean::
+after-distclean::
 	if [ -d $(NP_LIBS_DIR) ] ; then \
         rm $(NP_LIBS_DIR)/$(LIBRARY_NAME).*;\
     fi;
