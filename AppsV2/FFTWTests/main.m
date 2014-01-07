@@ -101,8 +101,8 @@ int main (int argc, char **argv)
     fftwf_plan planInterleavedBatch
         = fftwf_plan_many_dft(
             rank, n, lods,
-            dataInterleaved, n, 2, 1,
-            targetInterleaved, n, 2, 1,
+            dataInterleaved, n, lods, 1,
+            targetInterleaved, n, lods, 1,
             FFTW_BACKWARD, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT
             );
 
