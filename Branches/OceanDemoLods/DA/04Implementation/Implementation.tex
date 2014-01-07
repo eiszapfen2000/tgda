@@ -1,0 +1,394 @@
+\chapter{Implementation}
+
+This chapter discusses all software modules implemented during the
+development of the demo application, as well as the design decisions made in
+the process.
+
+\begin{itemize}
+ \item \textit{NPEngine}, a realtime rendering framework
+ \item \textit{Ocean Bakery}, a preprocessing tool which bakes all
+necessary ocean data
+ \item \textit{Demo Application}, shaders an ocean
+\end{itemize}
+
+\section{NPEngine}
+
+For the implementation of the Demo application a lightweight realtime
+rendering framework has been developed from scratch. It is written in
+\textit{Objective-C} and uses \textit{GNUstep} as basis.
+
+\subsection{Objective-C}
+
+Objective-C has been designed as an object-oriented extension to the
+\textit{C} programming language. As such it is a very thin layer on top of, as
+well as a strict superset of C. As a result Objective-C can freely include C
+code within it's classes, and the Objective-C compiler is able to compile any
+existing C code. 
+Five reasons that make Objective-C most suiting for the task at hand:
+
+\begin{itemize}
+ \item \textit{Messages}
+ \item \textit{Protocols}
+ \item \textit{Categories}
+ \item \textit{Dynamic typing}
+ \item \textit{Reflection}
+\end{itemize}
+
+\subsubsection{Messages}
+Objective-C inherits it's object-oriented model from Smalltalk, which is based
+on sending messages to object instances. There is a fundamental difference
+between calling a method and sending a message. The former implies more or less
+hardwiring between a method name and a section of code at compile time, while
+the latter remains a name which is resolved at runtime. Basically it is the
+receiving object's job to interpret the messages which get sent to it. As a
+consequence the message passing system has no type checking: the receiving
+object is not guaranteed to be able to respond to a certain message; in the
+case it does not, it ignores the message and returns a null pointer.
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet}}
+\begin{lstlisting}[captionpos=b, caption=An Objective-C message send,
+label=lst_objcmsgsend]{}
+[ object method:parameter ];
+\end{lstlisting}
+
+\subsubsection{Protocols}
+Protocols are similar to \textit{Java}\cite{book:java-language} and
+\textit{C\#}\cite{book:csharp-language} \textit{Interfaces}. A protocol defines
+a set of methods which any class can declare itself to implement,
+listing~\ref{lst_objcprotocol} shows a simple example. Protocols, like
+Interfaces, are a neat way to decouple functionality from the class hierarchy.
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet}}
+\begin{lstlisting}[captionpos=b, caption=An Objective-C protocol and a
+class adopting it.,
+label=lst_objcprotocol]{}
+@protocol MyProtocol
+- (id) aMethod:(id)aParameter;
+- (id) anotherMethod:(id)anotherParameter;
+@end
+
+@interface MyClass : NSObject < MyProtocol >
+@end
+\end{lstlisting}
+
+\subsubsection{Categories}
+Categories make it possible to distribute the implementation of a single class
+to different files. Therefore the developer can group related methods into a
+category to achieve better readability. For instance, one could create a
+\textit{Splitting} category on the \textit{NSString} class, collecting all of
+the string splitting methods in one place.
+Furthermore a categories methods are added to a class at runtime, thus
+removing the need to recompile that class or even have access to its source
+code. By using categories the developer is given a tool to extend existing
+classes without resorting to modify the original class or to create a subclass.
+Moreover, due to the runtime resolve of categories, it is possible to overwrite
+the existing methods of a class. Category methods are generally preferred over
+the original methods, providing a way to modify existing classes. Categories are
+only able to add new methods to a class, but not new instance variables.
+Listing~\ref{lst_objccategory} shows how to define a simple category.
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet}}
+\begin{lstlisting}[captionpos=b, caption=An Objective-C category added to the
+NSString class., label=lst_objccategory]{}
+@interface NSString (MyCategory)
+- (id) appendInteger:(int)anInteger;
+@end
+\end{lstlisting}
+
+Categories also make it possible to attach protocols to a class outside of its
+main interface, listing~\ref{lst_objccategoryprotocol} shows a minimal example.
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet}}
+\begin{lstlisting}[captionpos=b, caption=Attaching a protocol to an existing
+class by the means of a category., label=lst_objccategoryprotocol]{}
+
+@protocol CategoryProtocol
+- (id) aMethod:(id)aParameter;
+@end
+
+@interface MyClass (MyCategory) < CategoryProtcol >
+@end
+
+\end{lstlisting}
+
+\subsubsection{Dynamic typing}
+Objective-C, like Smalltalk, makes heavy use of dynamic typing: every message
+can be sent to every object, without even knowing if the receiving object is
+able to respond; the message is not interpreted until runtime anyway, because
+of the dynamic dispatching mechanism. This provides the means for some
+interesting design decisions in \textit{Foundation} and \textit{AppKit}, which
+are discussed later. \FIXME{Add references to sections.}
+Objective-C makes heavy use of the \textit{id} type. Simply put, id is a pointer
+to an object, no matter what the actual type of the object pointed to is. By
+using id the compiler can not make any assumptions about the object pointed to,
+meaning the compiler does not know to which messages the object pointed to is
+acutally able to respond. In that case all responsibility lies with the runtime.
+
+On the other hand, the developer may add static type information to variables,
+this information is then checked at compile time. It is the developer's task to
+find a sane balance between untyped and typed information, since both have their
+assets and drawbacks. Listing~\ref{lst_objctypesnoinfo},
+\ref{lst_objctypesprotocolinfo} and \ref{lst_objctypesclasslinfo} show the same
+method with increasing type information for it's argument.
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet}}
+\begin{lstlisting}[captionpos=b, caption=Argument without type information.,
+label=lst_objctypesnoinfo]{}
+- (void) setValue:(id)newValue;
+\end{lstlisting}
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet}}
+\begin{lstlisting}[captionpos=b, caption=Argument with protocol type
+information.,
+label=lst_objctypesprotocolinfo]{}
+- (void) setValue:(id <SomeProtocol>)newValue;
+\end{lstlisting}
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet}}
+\begin{lstlisting}[captionpos=b, caption=Argument with class type information.,
+label=lst_objctypesclasslinfo]{}
+- (void) setValue:(NSNumber *)newValue;
+\end{lstlisting}
+
+\subsubsection{Reflection}
+The Objective-C runtime provides support for some reflective features: objects
+can be asked about their class, the methods they implement, the protocols they
+implement, and even what member variables they have. Those features are made
+possible due every object having a pointer to the \textit{Class} object it was
+created by. \textit{Class} objects are structs holding all information about an
+implemented class, like member variables, methods and protocols. It is even
+possible to use those class objects in actual code,
+listing~\ref{lst_objcclassfromstring} shows a simple example.
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet},
+morecomment=[s]{@"}{"}}
+\begin{lstlisting}[captionpos=b, caption=Creating an object of a class given
+only the class name., label=lst_objcclassfromstring, morekeywords={Class}]{}
+    Class myClass = NSClassFromString(@"MyClass");
+    id myObject = [[ myClass alloc ] init ];
+\end{lstlisting}
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet},
+commentstyle=\color{DarkGreen}}
+\begin{lstlisting}[captionpos=b, caption=Check if an object responds to a
+specific message.,
+label=lst_objcinstancerespindstoselector]{}
+if ( [ myObject respondsToSelector:@selector(myMethod:) ] == YES )
+{
+    // do something
+}
+\end{lstlisting}
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet},
+commentstyle=\color{DarkGreen}}
+\begin{lstlisting}[captionpos=b, caption=Check if an object implements a
+specific protocol.,
+label=lst_objcinstanceimplementsprotocol]{}
+if ( [ myObject conformsToProtocol:@protocol(MyProtocol) ] == YES )
+{
+    // do something
+}
+\end{lstlisting}
+
+Actually getting information about member variables is more difficult, one has
+to dive deeper in the runtime to be able to retrieve it. There are rare cases
+where this kind of object introspection is really needed, the most prominent
+being the user interface loading mechanism in AppKit, where one objects needs
+to be connected to a member variable of another object, but no setter method is
+available. Another use case the author can think of, would be a scripting
+mechnism. One could probably get away by just constructing message identifiers
+(selectors) using strings, on the other hand direct member variable access
+through the use of strings would imply less message sending overhead.
+
+\subsection{GNUstep}
+GNUstep is an open source implementation of the OpenStep
+specification\cite{misc:OpenStepSpec} by NeXT Computer Inc.\cite{misc:NeXT}.
+OpenStep is based heavily on Objective-C, placing two separate libraries at
+the developers disposal: the \textit{Foundation} and the \textit{AppKit}. In
+1996 Apple bought NeXT and based it's new operating system Mac OS X, which has
+been released in 2001, on the OpenStep specification. What once was called
+OpenStep is now known by the name Cocoa. Cocoa has undergone major improvements
+during the further development of Mac OS X, which as of now has reached version
+10.6. GNUstep is an open-source implementation of OpenStep which runs on a
+number of different platforms, including the major Unices and Windows. Since
+the release of Mac OS X the GNUstep project seeks to implement most of the
+extensions Apple made to the original OpenStep.
+
+\subsubsection{Foundation}
+
+The foundation contains a set of non-graphical Objective-C classes which deal
+with strings, containers, date and time, distributed objects, networking,
+threading,  interthread and interprocess communication, file management and
+more.
+
+Collections, that is what containers are called in Foundation, have a rather
+unusual property: they do not have to be homogenous, meaning that one instance
+of a collection can not hold just one type of objects, it can hold everything
+as long as it is an object. Listing~\ref{lst_objcheterocontainer} shows an
+example. The downside is, the developer can not use these collections for
+integral types such as int or float.
+
+\lstset{language=[Objective]C, backgroundcolor=\color{LightViolet},
+commentstyle=\color{DarkGreen}}
+\begin{lstlisting}[captionpos=b, caption=Argument with class type information.,
+label=lst_objcheterocontainer]{}
+NSArray * array = [NSArray arrayWithObjects:[NSDate
+date], [NSData data], @"MyString", nil];
+\end{lstlisting}
+
+Due the heterogeneous property of collections the developer is not forced to
+implement a common superclass for all objects he wants to put in one concrete
+instance of a container anymore.
+
+\subsubsection{AppKit}
+
+The AppKit provides classes aimed at the development of graphical applications.
+The most interesting concept of AppKit is that it does not represent graphical
+user interfaces as code. Instead, a graphical user interface created in
+Interface Builder/Gorm is saved as a bunch of serialised objects and their
+connections to each other. There are two distinct connection types:
+\begin{itemize}
+ \item \textit{Outlets} assign a GUI element to a member variable of a
+controlling object instance.
+ \item \textit{Actions} do consist of a \textit{target} and a message which
+gets sent to the target.
+\end{itemize}
+
+Typically at program startup the file containing the GUI gets loaded, meaning
+that the objects contained are deserialised and afterwards all connections are
+setup using names of member variables and messages in conjunction with the
+Objective-C reflection system. In the case a message or a member variable can
+not be found, related connections are simply not setup, but all others are.
+
+\subsection{OpenGL}
+OpenGL, short for \textit{Open Graphics Library}, is a specification defining a
+platform-independent 3D application programming interface. OpenGL was first
+released to the public in 1992 by SGI, as a successor to the company's
+internally developed IrisGL. OpenGL is designed to standardise access to
+graphics hardware, pushing the development responsibility for hardware interface
+programs, also known as device drivers, to hardware manufacturers. After the
+release of OpenGL to the public, SGI led the creation of the OpenGL
+architectural review board (OpenGL ARB)\cite{misc:opengl-arb}, an independent
+consortium consisting of a group of companies that would maintain and expand the
+OpenGL standard. In 2006 further development of the OpenGL standard has been
+taken over by the \textit{KhronosGroup} \cite{misc:opengl-khronos}, bringing
+significant advancements to the OpenGL standard since then.
+
+OpenGL consists of two separate parts, the platform-independent core API and a
+platform-dependent layer. The core API gives programmers access to all
+rendering pipeline stages described in Section \ref{RenderingPipelineS}. The
+platform-dependent layer establishes a connection between an OpenGL
+\textit{rendering context} and the operating system's actual windowing system.
+Prominent examples for such an platform-dependent OpenGL layer are \textit{WGL}
+on Microsoft Windows and \textit{GLX} on the X Windowing System.
+
+OpenGL is designed as an extensible API. Each vendor who provides an actual
+OpenGL implementation, be it in software or hardware accelerated, is given the
+means to augment his implementation of the OpenGL standard through the use of
+OpenGL \textit{extensions}. Extensions as such are addenda to the OpenGL
+specification, usually implementing new features not yet included in the OpenGL
+core. A list of all OpenGL extensions and their textual additions to the
+standard are to be found in the OpenGL \textit{extension registry}
+\cite{misc:opengl-registry}. Each new release of the OpenGL core specification
+incorporates a set of extensions in order to integrate new functionality. At the
+time of writing, the current version of the OpenGL standard was 3.2.
+
+\subsection{Other Libraries}
+
+In addition to GNUstep as class library and OpenGL for rendering, NPEngine
+integrates several other libraries and frameworks either at engine or at
+application level.
+
+\subsubsection{DevIL}
+
+The \textit{Developer's Image Library}\cite{misc:devil} allows for loading and
+storing of a large set of image file formats, qualifiying it as an adequate
+tool for texture loading. Furthermore \textit{DevIL} provides an OpenGL like
+interface, hence upvalueing it's ease of use in the context of a framework
+mostly based on OpenGL.
+
+\subsubsection{OpenAL}
+
+\textit{NPEngine}'s sound system uses \textit{OpenAL}~\cite{misc:openal}, a free
+cross-platform 3D audio API for playing sound, maintained by
+\textit{Creative}~\cite{misc:creative}. As the name may suggest, OpenAL's
+programming interface is similar to the one of OpenGL. OpenAL also inherits
+the implementation philosophy behind OpenGL: the specification has to be
+implemented in it's entirety, but it does not matter which parts run in software
+or are hardware accelerated. Furthermore the concept of extensions has been
+adopted too, making it easy for vendors to implement new features.
+
+Creative does provide an OpenAL sample implementation, which at the time of
+writing is already deprecated and replaced by either \textit{OpenAL
+Soft}~\cite{misc:openal-soft} or vendor specific implementations. In contrast to
+some vendor implementations of OpenAL, OpenAL Soft is a pure software
+implementation unable to take advantage of any hardware acceleration. On the
+other hand it does implement most of the existing extensions, hence making
+developers less dependent on specific (hardware, implementation) combinations.
+
+\subsubsection{Ogg Vorbis}
+
+The \textit{Ogg Vorbis}~\cite{misc:ogg-vorbis} library is used to decode Ogg
+sound files. Vorbis is an open, patent- and royalty-free, compressed audio
+codec, for lossy audio compression on par with \textit{MPEG-4
+AAC}\cite{misc:mpeg-aac}~\cite{misc:mpeg-aac-standard} regarding quality and
+compression ratio. Ogg is the associated multimedia container format which may
+encapsulates the Vorbis data stream as well as other data streams such as
+\textit{Theora}\cite{misc:ogg-theora}. The NPEngine sound system uses Ogg Vorbis
+files both as fixed-size samples and as continuous streams for playing audio.
+
+\subsubsection{NVIDIA CgFX}
+
+\textit{NVIDIA CgFX}\cite{misc:nvcg} is a toolkit which places a high
+level programming interface for GPU shader programs at the programmer's
+disposal. CgFX is similar in functionality to the \textit{DirectX Effect
+Framework}\cite{misc:directx}\cite{book:effect-hlsl}, as it gives the
+shader programmer the means to group different vertex, geometry and fragment
+programs to so called \textit{techniques}. A technique consists of one or more
+\textit{pass(es)}, each of which is made up of an optional set of state
+assignments and a set of programs. CgFX's goal is to reduce complexity on the
+implementation side and add it to the shader authoring side. One can create
+rather complex rendering passes consisting of various vertex, geometry and
+fragment programs as well as render state changes just by writing a CgFX shader.
+
+There are a number of downsides to CgFX, the most disturbing one of them is that
+CgFX takes away a lot of control from the actual programmer, especially texture
+unit management is completely taken over by CgFX. Additionally CgFX is known to
+be overly CPU intensive and generally prone to regressions regarding performance
+and feature completeness. Moreover CgFX is a library maintained by NVIDIA,
+so there is no guarantee that CgFX will work as well on rivaling hardware as on
+their own.
+
+\subsubsection{PRNG}
+
+\textit{PRNG}\cite{misc:prng} is a collection of state-of-the-art random number
+generators implemented as a highly portable C library. The library is used to
+generate gaussian random numbers for all wave spectra related computations in
+the preprocessing tool.
+
+\subsubsection{FFTW}
+The \textit{Fastest Fourier Transform in the West} library\cite{misc:fftw} is an
+open source C library for computing the discrete Fourier transform in one or
+more dimensions. The preprocessing tool employs FFTW to transform the wave
+spectra from frequency domain to spatial domain.
+
+\section{Projected Grid}
+Viewing Pipeline
+Projected Grid
+
+\section{R2VB}
+Render to VertexBuffer
+
+\section{Lighting}
+Reflection
+Refraction
+
+\section{Animation}
+2D Textures
+3D Texture
+CUDA
+
+\section{Color management}
+color profiles
+gamma
+srgb sampler/framebuffer

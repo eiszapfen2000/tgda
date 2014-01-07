@@ -1,0 +1,38 @@
+#version 150
+
+in vec2 out_texcoords;
+
+const mat3 LinearsRGBToXYZ
+    = mat3( 0.4124564f, 0.2126729f, 0.0193339f,
+            0.3575761f, 0.7151522f, 0.1191920f,
+            0.1804375f, 0.0721750f, 0.9503041f );
+
+const mat3 XYZToLinearsRGB
+    = mat3(  3.2404542f, -0.9692660f,  0.0556434f,
+            -1.5371385f,  1.8760108f, -0.2040259f,
+            -0.4985314f,  0.0415560f,  1.0572252f );
+
+void main()
+{
+    vec4 sceneColor = texture2D(colormap, out_texcoords);
+
+    vec3 XYZ = LinearsRGBToXYZ * sceneColor.rgb;
+
+    vec3 xyY;
+    xyY.z = XYZ.y;                           // copy luminance Y
+    xyY.x = XYZ.x / (XYZ.x + XYZ.y + XYZ.z); // x = X / (X + Y + Z)
+    xyY.y = XYZ.y / (XYZ.x + XYZ.y + XYZ.z); // y = Y / (X + Y + Z)
+
+    float Lscaled = xyY.z * toneMappingParameters.z / toneMappingParameters.x;
+    xyY.z = Lscaled * ( 1.0f + ( Lscaled / (toneMappingParameters.y * toneMappingParameters.y) ) ) / (1.0f + Lscaled);
+
+    // xyY -> XYZ conversion
+    XYZ.r = xyY.z * xyY.x / xyY.y;                  // X = Y * x / y
+    XYZ.g = xyY.z;                                  // copy luminance Y
+    XYZ.b = xyY.z * (1.0f - xyY.x - xyY.y) / xyY.y; // Z = Y * (1-x-y) / y
+
+    target.rgb = pow(XYZToLinearsRGB * XYZ, vec3(1.0f/2.2f));
+    //color.rgb = 
+    target.a = 1.0f;
+}
+

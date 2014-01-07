@@ -1,0 +1,10 @@
+#version 150
+
+in vec2 out_texcoords;
+
+void main()
+{
+	vec4 sample = texture2D(characterpage, out_texcoords);
+	target = vec4(sample.rgb * textcolor.rgb, sample.a * textcolor.a);
+}
+

@@ -1,0 +1,23 @@
+#version 150
+
+in vec2 out_texcoords;
+
+void main()
+{
+    const float depthFactor = (1.0 / 5.0) * 0.25;
+
+    float height = texture(heightmap, out_texcoords).r;
+    float source = texture(sourcemap, out_texcoords).r;
+    float obstruction = texture(obstructionmap, out_texcoords).r;
+    float depth = texture(depthmap, out_texcoords).r;
+
+    //target = vec4(height, height, height, 1.0);
+    //target = vec4(depth, depth, depth, 1.0);
+
+    depth = depth * depthFactor;
+
+    if (obstruction < 1.0)
+        target = obstruction * vec4(1.0, 0.0, 1.0, 1.0);
+    else
+        target = vec4(height, height, depth, 1.0);
+}

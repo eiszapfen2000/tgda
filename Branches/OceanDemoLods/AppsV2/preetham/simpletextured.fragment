@@ -1,0 +1,26 @@
+#version 150
+
+in vec2 out_texcoords;
+
+void main()
+{
+    vec4 result = texture(colormap, out_texcoords);
+
+    target = pow(result, vec4(1/2.2));
+
+    /*
+    float lala = log(0.0);
+
+    if (isinf(lala))
+    {
+        target = vec4(1.0, 0.0, 0.0, 1.0);
+    }
+
+    float nix = max(lala, 0.0);
+
+    if (nix == 0.0)
+    {
+        target = vec4(0.0, 1.0, 0.0, 1.0);
+    }
+    */
+}
