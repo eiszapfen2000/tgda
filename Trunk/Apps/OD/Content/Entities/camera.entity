@@ -1,6 +1,0 @@
-{
-    Type = "ODCamera";
-    Name = "Camera";
-    Position = ("0.0", "2.0", "5.0");
-}
- 
