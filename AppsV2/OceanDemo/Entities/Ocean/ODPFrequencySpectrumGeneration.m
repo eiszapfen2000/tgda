@@ -11,7 +11,7 @@ bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry 
         return false;
     }
 
-    for (uint32_t i = 0; i < gOne->numberOfLods; i++ )
+    for ( uint32_t i = 0; i < gOne->numberOfLods; i++ )
     {
         if ( gOne->sizes[i].x != gTwo->sizes[i].x 
              || gOne->sizes[i].y != gTwo->sizes[i].y )
@@ -30,7 +30,7 @@ bool geometries_equal_size(const ODSpectrumGeometry * gOne, const ODSpectrumGeom
         return false;
     }
 
-    for (uint32_t i = 0; i < gOne->numberOfLods; i++ )
+    for ( uint32_t i = 0; i < gOne->numberOfLods; i++ )
     {
         if ( gOne->sizes[i].x != gTwo->sizes[i].x 
              || gOne->sizes[i].y != gTwo->sizes[i].y )
