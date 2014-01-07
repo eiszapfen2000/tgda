@@ -1,0 +1,9 @@
+#version 150
+
+out vec2 out_texcoord;
+
+void main()
+{
+    out_texcoord = in_texcoord;
+    gl_Position = vec4(in_position.x, in_position.y, 0.0f, 1.0f);
+}

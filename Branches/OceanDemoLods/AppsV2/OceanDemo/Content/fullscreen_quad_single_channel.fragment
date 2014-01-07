@@ -1,0 +1,10 @@
+#version 150
+
+in vec2 out_texcoords;
+
+void main()
+{
+    float c = texture2D(colormap, out_texcoords).r;
+    target = vec4(c, c, c, 1.0f);
+}
+

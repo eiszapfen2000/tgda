@@ -1,0 +1,119 @@
+effect "Projected Grid":
+
+technique "whitecaps_precompute"
+{
+    # effect variables
+    uniform float displacementScale;
+    uniform sampler2D displacementDerivatives
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
+
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoord : 3;
+    # fragment streams
+    out vec2 ki : 0;
+    # shaders
+    set vertex   shader "whitecaps_precompute.vertex"
+    set fragment shader "whitecaps_precompute.fragment"
+}
+
+technique "proj_grid_tf_transform"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform mat4 invMVP;
+    uniform float area;
+    uniform float displacementScale;
+    uniform float heightScale;
+    uniform vec2  vertexStep;
+    uniform sampler2D heightmap
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = TriLinear;
+        MagFilter = Linear;
+    };
+    uniform sampler2D displacement
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = TriLinear;
+        MagFilter = Linear;
+    };
+
+    # vertex streams
+    in vec2 in_position : 0;
+    # shaders
+    set vertex shader "proj_grid_tf_transform.vertex"
+}
+
+technique "proj_grid_tf_feedback"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform float area;
+    uniform float heightScale;
+    uniform float jacobianEpsilon;
+    uniform vec3 cameraPosition;
+    uniform vec3 directionToSun;
+    uniform vec3 sunColor;
+    uniform sampler2D heightmap
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = TriLinear;
+        MagFilter = Linear;
+    };
+    uniform sampler2D displacement
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = TriLinear;
+        MagFilter = Linear;
+    };
+    uniform sampler2D gradient
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = TriLinear;
+        MagFilter = Linear;
+        Anisotropy = 16;
+    };
+    uniform sampler3D variance
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
+    uniform sampler2D skylight
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Trilinear;
+        MagFilter = Linear;
+        Anisotropy = 2;
+    };
+    uniform sampler2D whitecaps
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = Trilinear;
+        MagFilter = Linear;
+        Anisotropy = 16;
+    };
+    # vertex streams
+    in vec3 in_position : 0;
+    in vec2 in_non_disp_position : 1;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "proj_grid_tf_feedback.vertex"
+    set fragment shader "proj_grid_tf_feedback.fragment"
+}
+
