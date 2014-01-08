@@ -29,11 +29,12 @@ ODQuadrants;
     const ODUnifiedGeneratorSettings settings
         = currentGeneratorSettings.unified;
 
-    const IVector2 resolution = H0Resolution;
-    const int32_t numberOfLods = currentGeometry.numberOfLods;
+    const IVector2 resolution   = H0Resolution;
+    const int32_t  numberOfLods = H0Lods;
+    const int32_t  numberOfLodElements = resolution.x * resolution.y;
 
     FFTW_SAFE_FREE(baseSpectrum);
-    baseSpectrum = fftwf_alloc_real(numberOfLods * resolution.x * resolution.y);
+    baseSpectrum = fftwf_alloc_real(numberOfLods * numberOfLodElements);
 
     const float U10   = settings.U10;
     const float Omega = settings.Omega;
@@ -55,12 +56,16 @@ ODQuadrants;
         const float dkx = MATH_2_MUL_PIf / size.x;
         const float dky = MATH_2_MUL_PIf / size.y;
 
+        const int32_t offset = l * numberOfLodElements;
+
         for ( int32_t i = 0; i < resolution.y; i++ )
         {
             for ( int32_t j = 0; j < resolution.x; j++ )
             {
-                const float xi_r = (float)randomNumbers[2 * (j + resolution.x * i)    ];
-                const float xi_i = (float)randomNumbers[2 * (j + resolution.x * i) + 1];
+                const int32_t index = offset + j + resolution.x * i;
+
+                const float xi_r = (float)randomNumbers[2 * index    ];
+                const float xi_i = (float)randomNumbers[2 * index + 1];
 
                 const float di = i;
                 const float dj = j;
@@ -76,9 +81,9 @@ ODQuadrants;
                 varianceY  += (ky * ky) * (dkx * dky) * s;
                 varianceXY += (kx * kx + ky * ky) * (dkx * dky) * s;
 
-                baseSpectrum[j + resolution.x * i] = s;
-                H0[j + resolution.x * i][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
-                H0[j + resolution.x * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
+                baseSpectrum[index] = s;
+                H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
+                H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
             }
         }
     }
@@ -106,11 +111,12 @@ ODQuadrants;
     const ODPhillipsGeneratorSettings settings
         = currentGeneratorSettings.phillips;
 
-    const IVector2 resolution = H0Resolution;
-    const int32_t numberOfLods = currentGeometry.numberOfLods;
+    const IVector2 resolution   = H0Resolution;
+    const int32_t  numberOfLods = H0Lods;
+    const int32_t  numberOfLodElements = resolution.x * resolution.y;
 
     FFTW_SAFE_FREE(baseSpectrum);
-    baseSpectrum = fftwf_alloc_real(numberOfLods * resolution.x * resolution.y);
+    baseSpectrum = fftwf_alloc_real(numberOfLods * numberOfLodElements);
 
     const FVector2 maxSize = fv2_v_from_v2(&currentGeometry.sizes[0]);
 
@@ -138,12 +144,16 @@ ODQuadrants;
         const float dkx = MATH_2_MUL_PIf / size.x;
         const float dky = MATH_2_MUL_PIf / size.y;
 
+        const int32_t offset = l * numberOfLodElements;
+
         for ( int32_t i = 0; i < resolution.y; i++ )
         {
             for ( int32_t j = 0; j < resolution.x; j++ )
             {
-                const float xi_r = (float)randomNumbers[2 * (j + resolution.x * i)    ];
-                const float xi_i = (float)randomNumbers[2 * (j + resolution.x * i) + 1];
+                const int32_t index = offset + j + resolution.x * i;
+
+                const float xi_r = (float)randomNumbers[2 * index    ];
+                const float xi_i = (float)randomNumbers[2 * index + 1];
 
                 const float di = i;
                 const float dj = j;
@@ -159,9 +169,9 @@ ODQuadrants;
                 varianceY  += (ky * ky) * (dkx * dky) * s;
                 varianceXY += (kx * kx + ky * ky) * (dkx * dky) * s;
 
-                baseSpectrum[j + resolution.x * i] = s;
-                H0[j + resolution.x * i][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
-                H0[j + resolution.x * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
+                baseSpectrum[index] = s;
+                H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
+                H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
             }
         }
     }
