@@ -30,53 +30,56 @@ ODQuadrants;
         = currentGeneratorSettings.unified;
 
     const IVector2 resolution = H0Resolution;
+    const int32_t numberOfLods = currentGeometry.numberOfLods;
 
     FFTW_SAFE_FREE(baseSpectrum);
-    baseSpectrum = fftwf_alloc_real(resolution.x * resolution.y);
+    baseSpectrum = fftwf_alloc_real(numberOfLods * resolution.x * resolution.y);
 
     const float U10   = settings.U10;
     const float Omega = settings.Omega;
 
-    const FVector2 size = fv2_v_from_v2(&(currentGeometry.sizes[0]));
-    const float A = currentGeneratorSettings.spectrumScale / (size.x * size.y);
+    const FVector2 maxSize = fv2_v_from_v2(&currentGeometry.sizes[0]);
+
+    const float A = currentGeneratorSettings.spectrumScale / (maxSize.x * maxSize.y);
 
     const float n = -(resolution.x / 2.0f);
     const float m =  (resolution.y / 2.0f);
-
-    const float dsizex = 1.0f / size.x;
-    const float dsizey = 1.0f / size.y;
-
-    const float dkx = MATH_2_MUL_PIf * dsizex;
-    const float dky = MATH_2_MUL_PIf * dsizey;
 
     float varianceX  = 0.0;
     float varianceY  = 0.0;
     float varianceXY = 0.0;
 
-    for ( int32_t i = 0; i < resolution.y; i++ )
+    for ( int32_t l = 0; l < numberOfLods; l++ )
     {
-        for ( int32_t j = 0; j < resolution.x; j++ )
+        const FVector2 size = fv2_v_from_v2(&currentGeometry.sizes[l]);
+        const float dkx = MATH_2_MUL_PIf / size.x;
+        const float dky = MATH_2_MUL_PIf / size.y;
+
+        for ( int32_t i = 0; i < resolution.y; i++ )
         {
-            const float xi_r = (float)randomNumbers[2 * (j + resolution.x * i)    ];
-            const float xi_i = (float)randomNumbers[2 * (j + resolution.x * i) + 1];
+            for ( int32_t j = 0; j < resolution.x; j++ )
+            {
+                const float xi_r = (float)randomNumbers[2 * (j + resolution.x * i)    ];
+                const float xi_i = (float)randomNumbers[2 * (j + resolution.x * i) + 1];
 
-            const float di = i;
-            const float dj = j;
+                const float di = i;
+                const float dj = j;
 
-            const float kx = (n + dj) * MATH_2_MUL_PIf * dsizex;
-            const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
+                const float kx = (n + dj) * dkx;
+                const float ky = (m - di) * dky;
 
-            const FVector2 k = {kx, ky};
-            const float s = MAX(0.0f, amplitudef_unified_cartesian(k, 0.0f, A, U10, Omega));
-            const float a = sqrtf(s);
+                const FVector2 k = {kx, ky};
+                const float s = MAX(0.0f, amplitudef_unified_cartesian(k, 0.0f, A, U10, Omega));
+                const float a = sqrtf(s);
 
-            varianceX  += (kx * kx) * (dkx * dky) * s;
-            varianceY  += (ky * ky) * (dkx * dky) * s;
-            varianceXY += (kx * kx + ky * ky) * (dkx * dky) * s;
+                varianceX  += (kx * kx) * (dkx * dky) * s;
+                varianceY  += (ky * ky) * (dkx * dky) * s;
+                varianceXY += (kx * kx + ky * ky) * (dkx * dky) * s;
 
-            baseSpectrum[j + resolution.x * i] = s;
-            H0[j + resolution.x * i][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
-            H0[j + resolution.x * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
+                baseSpectrum[j + resolution.x * i] = s;
+                H0[j + resolution.x * i][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
+                H0[j + resolution.x * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
+            }
         }
     }
 
@@ -107,9 +110,9 @@ ODQuadrants;
     const int32_t numberOfLods = currentGeometry.numberOfLods;
 
     FFTW_SAFE_FREE(baseSpectrum);
-    baseSpectrum = fftwf_alloc_real(resolution.x * resolution.y);
+    baseSpectrum = fftwf_alloc_real(numberOfLods * resolution.x * resolution.y);
 
-    const FVector2 size = fv2_v_from_v2(&currentGeometry.sizes[numberOfLods - 1]);
+    const FVector2 maxSize = fv2_v_from_v2(&currentGeometry.sizes[0]);
 
     const FVector2 windDirection = fv2_v_from_v2(&settings.windDirection);
     const FVector2 windDirectionNormalised = fv2_v_normalised(&windDirection);
@@ -118,47 +121,48 @@ ODQuadrants;
 
     assert(dampening < 1.0f);
 
-    const float A = currentGeneratorSettings.spectrumScale / (size.x * size.y);
+    const float A = currentGeneratorSettings.spectrumScale / (maxSize.x * maxSize.y);
     const float L = (windSpeed * windSpeed) / EARTH_ACCELERATIONf;
     const float l = dampening * L;
 
     const float n = -(resolution.x / 2.0f);
     const float m =  (resolution.y / 2.0f);
 
-    const float dsizex = 1.0f / size.x;
-    const float dsizey = 1.0f / size.y;
-
-    const float dkx = MATH_2_MUL_PIf * dsizex;
-    const float dky = MATH_2_MUL_PIf * dsizey;
-
     float varianceX  = 0.0;
     float varianceY  = 0.0;
     float varianceXY = 0.0;
 
-    for ( int32_t i = 0; i < resolution.y; i++ )
+    for ( int32_t l = 0; l < numberOfLods; l++ )
     {
-        for ( int32_t j = 0; j < resolution.x; j++ )
+        const FVector2 size = fv2_v_from_v2(&currentGeometry.sizes[l]);
+        const float dkx = MATH_2_MUL_PIf / size.x;
+        const float dky = MATH_2_MUL_PIf / size.y;
+
+        for ( int32_t i = 0; i < resolution.y; i++ )
         {
-            const float xi_r = (float)randomNumbers[2 * (j + resolution.x * i)    ];
-            const float xi_i = (float)randomNumbers[2 * (j + resolution.x * i) + 1];
+            for ( int32_t j = 0; j < resolution.x; j++ )
+            {
+                const float xi_r = (float)randomNumbers[2 * (j + resolution.x * i)    ];
+                const float xi_i = (float)randomNumbers[2 * (j + resolution.x * i) + 1];
 
-            const float di = i;
-            const float dj = j;
+                const float di = i;
+                const float dj = j;
 
-            const float kx = (n + dj) * MATH_2_MUL_PIf * dsizex;
-            const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
+                const float kx = (n + dj) * dkx;
+                const float ky = (m - di) * dky;
 
-            const FVector2 k = {kx, ky};
-            const float s = amplitudef_phillips_cartesian(windDirectionNormalised, k, 0.0f, A, L, l);
-            const float a = sqrtf(s);
+                const FVector2 k = {kx, ky};
+                const float s = amplitudef_phillips_cartesian(windDirectionNormalised, k, 0.0f, A, L, l);
+                const float a = sqrtf(s);
 
-            varianceX  += (kx * kx) * (dkx * dky) * s;
-            varianceY  += (ky * ky) * (dkx * dky) * s;
-            varianceXY += (kx * kx + ky * ky) * (dkx * dky) * s;
+                varianceX  += (kx * kx) * (dkx * dky) * s;
+                varianceY  += (ky * ky) * (dkx * dky) * s;
+                varianceXY += (kx * kx + ky * ky) * (dkx * dky) * s;
 
-            baseSpectrum[j + resolution.x * i] = s;
-            H0[j + resolution.x * i][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
-            H0[j + resolution.x * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
+                baseSpectrum[j + resolution.x * i] = s;
+                H0[j + resolution.x * i][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
+                H0[j + resolution.x * i][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
+            }
         }
     }
 
