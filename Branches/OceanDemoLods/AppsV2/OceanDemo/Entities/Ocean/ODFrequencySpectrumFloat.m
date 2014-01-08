@@ -104,12 +104,14 @@ ODQuadrants;
         = currentGeneratorSettings.phillips;
 
     const IVector2 resolution = H0Resolution;
+    const int32_t numberOfLods = currentGeometry.numberOfLods;
 
     FFTW_SAFE_FREE(baseSpectrum);
     baseSpectrum = fftwf_alloc_real(resolution.x * resolution.y);
 
-    const FVector2 size = fv2_v_from_v2(&(currentGeometry.sizes[0]));
-    const FVector2 windDirection = fv2_v_from_v2(&(settings.windDirection));
+    const FVector2 size = fv2_v_from_v2(&currentGeometry.sizes[numberOfLods - 1]);
+
+    const FVector2 windDirection = fv2_v_from_v2(&settings.windDirection);
     const FVector2 windDirectionNormalised = fv2_v_normalised(&windDirection);
     const float    windSpeed = settings.windSpeed;
     const float    dampening = settings.dampening;
@@ -139,8 +141,6 @@ ODQuadrants;
         {
             const float xi_r = (float)randomNumbers[2 * (j + resolution.x * i)    ];
             const float xi_i = (float)randomNumbers[2 * (j + resolution.x * i) + 1];
-            //const float xi_r = (float)odgaussianrng_get_next(gaussianRNG);
-            //const float xi_i = (float)odgaussianrng_get_next(gaussianRNG);
 
             const float di = i;
             const float dj = j;
