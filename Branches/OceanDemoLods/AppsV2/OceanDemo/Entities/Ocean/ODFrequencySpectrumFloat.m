@@ -29,7 +29,9 @@ ODQuadrants;
     const ODUnifiedGeneratorSettings settings
         = currentGeneratorSettings.unified;
 
-    const IVector2 resolution   = H0Resolution;
+    const IVector2 resolution  = H0Resolution;
+    const FVector2 fresolution = fv2_v_from_iv2(&resolution);
+
     const int32_t  numberOfLods = H0Lods;
     const int32_t  numberOfLodElements = resolution.x * resolution.y;
 
@@ -43,8 +45,8 @@ ODQuadrants;
 
     const float A = currentGeneratorSettings.spectrumScale / (maxSize.x * maxSize.y);
 
-    const float n = -(resolution.x / 2.0f);
-    const float m =  (resolution.y / 2.0f);
+    const float n = -(fresolution.x / 2.0f);
+    const float m =  (fresolution.y / 2.0f);
 
     float varianceX  = 0.0;
     float varianceY  = 0.0;
@@ -52,9 +54,19 @@ ODQuadrants;
 
     for ( int32_t l = 0; l < numberOfLods; l++ )
     {
-        const FVector2 size = fv2_v_from_v2(&currentGeometry.sizes[l]);
-        const float dkx = MATH_2_MUL_PIf / size.x;
-        const float dky = MATH_2_MUL_PIf / size.y;
+        printf("LOD %d\n", l);
+
+        const FVector2 lastSize
+            = ( l == 0 ) ? (fv2_zero()) : (fv2_v_from_v2(&currentGeometry.sizes[l - 1]));
+
+        const FVector2 currentSize = fv2_v_from_v2(&currentGeometry.sizes[l]);
+
+        const float dkx = MATH_2_MUL_PIf / currentSize.x;
+        const float dky = MATH_2_MUL_PIf / currentSize.y;
+
+        const float kMin = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
+
+        //printf("%f %f %f %f %f\n", currentSize.x, currentSize.y, lastSize.x, lastSize.y, kMin);
 
         const int32_t offset = l * numberOfLodElements;
 
@@ -73,8 +85,11 @@ ODQuadrants;
                 const float kx = (n + dj) * dkx;
                 const float ky = (m - di) * dky;
 
+//                printf("%d %d\n", j, i);
+
                 const FVector2 k = {kx, ky};
-                const float s = MAX(0.0f, amplitudef_unified_cartesian(k, 0.0f, A, U10, Omega));
+                const float t = amplitudef_unified_cartesian(k, kMin, A, U10, Omega);
+                const float s = MAX(0.0f, t);
                 const float a = sqrtf(s);
 
                 varianceX  += (kx * kx) * (dkx * dky) * s;

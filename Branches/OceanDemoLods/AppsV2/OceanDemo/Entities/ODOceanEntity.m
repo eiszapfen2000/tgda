@@ -90,8 +90,8 @@ typedef struct OdSpectrumVariance
 }
 OdSpectrumVariance;
 
-static const NSUInteger defaultNumberOfLods = 1;
-static const NSUInteger defaultSpectrumType = 0;
+static const NSUInteger defaultNumberOfLods = 2;
+static const NSUInteger defaultSpectrumType = 1;
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
 static const double defaultSize = 80.0;
@@ -329,11 +329,12 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
                 geometry.numberOfLods = (uint32_t)generatorNumberOfLods;
                 geometry.sizes = ALLOC_ARRAY(Vector2, geometry.numberOfLods);
+
+                // first LOD is the largest one, set it to our desired size
                 geometry.sizes[0] = (Vector2){generatorSize, generatorSize};
+
                 geometryResIndex = generatorGeometryResolutionIndex;
                 gradientResIndex = generatorGradientResolutionIndex;
-
-                //NSLog(@"%lu", generatorNumberOfLods);
 
                 [ settingsMutex unlock ];
             }
@@ -342,6 +343,29 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
             const int32_t gradientRes = resolutions[gradientResIndex];
             geometry.geometryResolution = (IVector2){geometryRes, geometryRes};
             geometry.gradientResolution = (IVector2){gradientRes, gradientRes};
+
+            const int32_t largerResolution = MAX(geometryRes, gradientRes);
+            const float halfResolution = ((float)largerResolution) / 2.0f;
+
+            // compute size of smaller LODS
+            // in order not to compute redundant frequencies we have to
+            // scale down by at least half the resolution and epsilon
+            // ac < (al / (res/2))
+            for ( NSUInteger i = 1; i < generatorNumberOfLods; i++ )
+            {
+                const float x = geometry.sizes[i-1].x / halfResolution;
+                const float y = geometry.sizes[i-1].y / halfResolution;
+
+                geometry.sizes[i]
+                    = (Vector2){x * (-FLT_EPSILON + 1.0f), y * (-FLT_EPSILON + 1.0f)};
+            }
+
+            /*
+            for ( NSUInteger i = 0; i < generatorNumberOfLods; i++ )
+            {
+                NSLog(@"%lu %lf %lf", i, geometry.sizes[i].x, geometry.sizes[i].y);
+            }
+            */
 
             //NSLog(@"%d %d", geometryRes, gradientRes);
 
