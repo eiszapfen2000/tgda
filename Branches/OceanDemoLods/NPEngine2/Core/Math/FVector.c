@@ -3,6 +3,7 @@
 #include <math.h>
 
 #include "Core/Basics/NpFreeList.h"
+#include "IVector.h"
 #include "Vector.h"
 #include "FVector.h"
 
@@ -164,7 +165,12 @@ FVector2 fv2_max(void)
 
 FVector2 fv2_v_from_v2(const struct Vector2 * const d)
 {
-    return (FVector2){d->x, d->y};
+    return (FVector2){(float)d->x, (float)d->y};
+}
+
+FVector2 fv2_v_from_iv2(const struct IVector2 * const i)
+{
+    return (FVector2){(float)i->x, (float)i->y};
 }
 
 FVector2 fv2_v_inverted(const FVector2 * const v)
