@@ -9,13 +9,14 @@ float amplitudef_phillips_cartesian(
     )
 {
     const float kSquareLength = k.x * k.x + k.y * k.y;
+    const float kLength = sqrtf(kSquareLength);
 
-    if ( kSquareLength == 0.0f || ( fabsf(k.x) < kMin && fabsf(k.y) < kMin ))
+    if ( kLength == 0.0f || kLength <= kMin )
     {
+        printf("P Zero %f %f %f %f \n", k.x, k.y, kLength, kMin);
         return 0.0f;
     }
 
-    const float kLength = sqrtf(kSquareLength);
     const FVector2 kNormalised = { .x = k.x / kLength, .y = k.y / kLength };
 
     float amplitude = A;
@@ -88,13 +89,13 @@ float amplitudef_unified_cartesian(
     const float kappa = 0.41f;              //von Karman constant
 
     const float kSquareLength = k.x * k.x + k.y * k.y;
+    const float klength = sqrtf(kSquareLength);
 
-    if ( kSquareLength == 0.0f || ( fabsf(k.x) < kMin && fabsf(k.y) < kMin ))
+    if ( klength == 0.0f || klength <= kMin )
     {
+        printf("U Zero %f %f %f %f \n", k.x, k.y, klength, kMin);
         return 0.0f;
     }
-
-    const float klength = sqrtf(kSquareLength);
 
     //eq 24, angular frequency
     const float omega = sqrtf(g * klength * (1.0f + (klength / k_m) * (klength / k_m)));
