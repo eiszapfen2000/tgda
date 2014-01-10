@@ -401,24 +401,31 @@ static NPTimer * timer = nil;
 - (OdFrequencySpectrumFloat) generateHAtTime:(const float)time
 {
     const IVector2 resolution = H0Resolution;
+    const FVector2 fresolution = fv2_v_from_iv2(&resolution);
+
+    const int32_t numberOfLods = H0Lods;
+    const int32_t numberOfLodElements = resolution.x * resolution.y;
+
     const IVector2 geometryResolution = currentGeometry.geometryResolution;
     const IVector2 gradientResolution = currentGeometry.gradientResolution;
-    const FVector2 size = (FVector2){currentGeometry.sizes[0].x, currentGeometry.sizes[0].y};
+
+    const int32_t numberOfGeometryElements = geometryResolution.x * geometryResolution.y;
+    const int32_t numberOfGradientElements = gradientResolution.x * gradientResolution.y;
 
 	fftwf_complex * frequencySpectrum
-        = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
+        = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
 
 	fftwf_complex * gradient
-        = fftwf_alloc_complex(gradientResolution.x * gradientResolution.y);
+        = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
 
-    fftwf_complex * displacement //= NULL;
-        = fftwf_alloc_complex(geometryResolution.x * geometryResolution.y);
+    fftwf_complex * displacement
+        = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
 
     fftwf_complex * displacementXdXdZ
-        = fftwf_alloc_complex(gradientResolution.x * gradientResolution.y);
+        = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
 
     fftwf_complex * displacementZdXdZ
-        = fftwf_alloc_complex(gradientResolution.x * gradientResolution.y);
+        = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
 
     const IVector2 geometryPadding
         = { .x = (H0Resolution.x - geometryResolution.x) / 2, .y = (H0Resolution.y - geometryResolution.y) / 2 };
@@ -432,201 +439,210 @@ static NPTimer * timer = nil;
     const IVector2 gradientXRange = {.x = gradientPadding.x - 1, .y = resolution.x - gradientPadding.x };
     const IVector2 gradientYRange = {.x = gradientPadding.y - 1, .y = resolution.y - gradientPadding.y };
 
-    const float n = -(resolution.x / 2.0f);
-    const float m =  (resolution.y / 2.0f);
+    const float n = -(fresolution.x / 2.0f);
+    const float m =  (fresolution.y / 2.0f);
 
-    const float dsizex = 1.0f / size.x;
-    const float dsizey = 1.0f / size.y;
-
-    for ( int32_t i = 0; i < resolution.y; i++ )
+    for ( int32_t l = 0; l < numberOfLods; l++ )
     {
-        for ( int32_t j = 0; j < resolution.x; j++ )
+        const FVector2 currentSize = fv2_v_from_v2(&currentGeometry.sizes[l]);
+
+        const float dkx = MATH_2_MUL_PIf / currentSize.x;
+        const float dky = MATH_2_MUL_PIf / currentSize.y;
+
+        const int32_t offset = l * numberOfLodElements;
+        const int32_t geometryOffset = l * numberOfGeometryElements;
+        const int32_t gradientOffset = l * numberOfGradientElements;
+
+        for ( int32_t i = 0; i < resolution.y; i++ )
         {
-            const int32_t indexForK = j + resolution.x * i;
-
-            const int32_t jConjugateGeometry = MAX(0, (resolution.x - j - geometryPadding.x) % geometryResolution.x);
-            const int32_t iConjugateGeometry = MAX(0, (resolution.y - i - geometryPadding.y) % geometryResolution.y);
-            const int32_t jConjugateGradient = MAX(0, (resolution.x - j - gradientPadding.x) % gradientResolution.x);
-            const int32_t iConjugateGradient = MAX(0, (resolution.y - i - gradientPadding.y) % gradientResolution.y);
-
-            const int32_t indexForConjugateGeometry = jConjugateGeometry + geometryPadding.x + resolution.x * (iConjugateGeometry + geometryPadding.y);
-            const int32_t indexForConjugateGradient = jConjugateGradient + gradientPadding.x + resolution.x * (iConjugateGradient + gradientPadding.y);
-
-            const int32_t geometryIndex = (i - geometryPadding.y) * geometryResolution.x + j - geometryPadding.x;
-            const int32_t gradientIndex = (i - gradientPadding.y) * gradientResolution.x + j - gradientPadding.x;
-
-            const float di = i;
-            const float dj = j;
-
-            const float kx = (n + dj) * MATH_2_MUL_PIf * dsizex;
-            const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
-
-            //const FVector2 k = {kx, ky};
-            //const float omega = omegaf_for_k(&k);
-            const float lengthK = sqrtf(kx * kx + ky * ky);
-            const float omega = sqrtf(EARTH_ACCELERATIONf * lengthK);
-            const float omegaT = fmodf(omega * time, MATH_2_MUL_PIf);
-
-            // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
-            const fftwf_complex expOmega = { cosf(omegaT), sinf(omegaT) };
-
-            // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
-            const fftwf_complex expMinusOmega = { expOmega[0], -expOmega[1] };
-
-            /* complex multiplication
-               x = a + i*b
-               y = c + i*d
-               xy = (ac-bd) + i(ad+bc)
-
-               b = 0
-               x = a + i*0
-               y = c + i*d
-               xy = (ac-0d) + i(ad+0c)
-                  = ac + i(ad)
-
-               a = 0
-               x = 0 + i*b
-               y = c + i*d
-               xy = (0c-bd) + i(0d+bc)
-                  = (-bd) + i(bc)
-            */
-
-            // H0[indexForK] * exp(i*omega*t)
-            const fftwf_complex H0expOmega
-                = { H0[indexForK][0] * expOmega[0] - H0[indexForK][1] * expOmega[1],
-                    H0[indexForK][0] * expOmega[1] + H0[indexForK][1] * expOmega[0] };
-
-            const fftwf_complex geometryH0conjugate
-                = { H0[indexForConjugateGeometry][0], -H0[indexForConjugateGeometry][1] };
-
-            const fftwf_complex gradientH0conjugate
-                = { H0[indexForConjugateGradient][0], -H0[indexForConjugateGradient][1] };
-
-
-            // H0[indexForConjugate] * exp(-i*omega*t)
-            const fftwf_complex geometryH0expMinusOmega
-                = { geometryH0conjugate[0] * expMinusOmega[0] - geometryH0conjugate[1] * expMinusOmega[1],
-                    geometryH0conjugate[0] * expMinusOmega[1] + geometryH0conjugate[1] * expMinusOmega[0] };
-
-            const fftwf_complex gradientH0expMinusOmega
-                = { gradientH0conjugate[0] * expMinusOmega[0] - gradientH0conjugate[1] * expMinusOmega[1],
-                    gradientH0conjugate[0] * expMinusOmega[1] + gradientH0conjugate[1] * expMinusOmega[0] };
-
-            /* complex addition
-               x = a + i*b
-               y = c + i*d
-               x+y = (a+c)+i(b+d)
-            */
-
-
-            // hTilde = H0expOmega + H0expMinusomega            
-            const fftwf_complex geometryhTilde
-                = { H0expOmega[0] + geometryH0expMinusOmega[0],
-                    H0expOmega[1] + geometryH0expMinusOmega[1] };
-
-            const fftwf_complex gradienthTilde
-                = { H0expOmega[0] + gradientH0expMinusOmega[0],
-                    H0expOmega[1] + gradientH0expMinusOmega[1] };
-
-
-            //if ( indexForK >= geometryStartIndex && indexForK <= geometryEndIndex )
-            if ( j > geometryXRange.x && j < geometryXRange.y
-                 && i > geometryYRange.x && i < geometryYRange.y )
+            for ( int32_t j = 0; j < resolution.x; j++ )
             {
-                frequencySpectrum[geometryIndex][0] = geometryhTilde[0];
-                frequencySpectrum[geometryIndex][1] = geometryhTilde[1];
-            }
+                const int32_t indexForK = offset + j + resolution.x * i;
 
-            // i * kx
-            /*
-            x = 0  + i*1
-            y = kx + i*0
-            xy = (0*k - 1*0) + i*(0*0+1*kx)
-               = 0 + i*kx
-            */
+                const int32_t jConjugateGeometry = MAX(0, (resolution.x - j - geometryPadding.x) % geometryResolution.x);
+                const int32_t iConjugateGeometry = MAX(0, (resolution.y - i - geometryPadding.y) % geometryResolution.y);
+                const int32_t jConjugateGradient = MAX(0, (resolution.x - j - gradientPadding.x) % gradientResolution.x);
+                const int32_t iConjugateGradient = MAX(0, (resolution.y - i - gradientPadding.y) % gradientResolution.y);
 
-            // i * kx * H
-            /*
-            x = 0 + i*kx
-            H = c + i*d
-            xH = (0*c - kx*d) + i*(0*d+kx*c)
-            */
+                const int32_t indexForConjugateGeometry = offset + jConjugateGeometry + geometryPadding.x + resolution.x * (iConjugateGeometry + geometryPadding.y);
+                const int32_t indexForConjugateGradient = offset + jConjugateGradient + gradientPadding.x + resolution.x * (iConjugateGradient + gradientPadding.y);
 
-            //const float derivativeXScale = (j == 0) ? 0.0f : 1.0f;
-            //const float derivativeZScale = (i == 0) ? 0.0f : 1.0f;
-            const float derivativeXScale   = (j == gradientPadding.x) ? 0.0f : 1.0f;
-            const float derivativeZScale   = (i == gradientPadding.y) ? 0.0f : 1.0f;
-            const float displacementXScale = (j == geometryPadding.x) ? 0.0f : 1.0f;
-            const float displacementZScale = (i == geometryPadding.y) ? 0.0f : 1.0f;
+                const int32_t geometryIndex = geometryOffset + (i - geometryPadding.y) * geometryResolution.x + j - geometryPadding.x;
+                const int32_t gradientIndex = gradientOffset + (i - gradientPadding.y) * gradientResolution.x + j - gradientPadding.x;
 
-            const float factor = (lengthK != 0.0f) ? 1.0f/lengthK : 0.0f;
+                const float di = i;
+                const float dj = j;
 
-            if ( j > gradientXRange.x && j < gradientXRange.y
-                 && i > gradientYRange.x && i < gradientYRange.y )
-            {
-                const fftwf_complex gx
-                    = {-kx * gradienthTilde[1] * derivativeXScale, kx * gradienthTilde[0] * derivativeXScale};
+                const float kx = (n + dj) * dkx;
+                const float ky = (m - di) * dky;
 
-                const fftwf_complex gz
-                    = {-ky * gradienthTilde[1] * derivativeZScale, ky * gradienthTilde[0] * derivativeZScale};
+                //const FVector2 k = {kx, ky};
+                //const float omega = omegaf_for_k(&k);
+                const float lengthK = sqrtf(kx * kx + ky * ky);
+                const float omega = sqrtf(EARTH_ACCELERATIONf * lengthK);
+                const float omegaT = fmodf(omega * time, MATH_2_MUL_PIf);
 
-                // gx + i*gz
-                gradient[gradientIndex][0] = gx[0] - gz[1];
-                gradient[gradientIndex][1] = gx[1] + gz[0];
+                // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
+                const fftwf_complex expOmega = { cosf(omegaT), sinf(omegaT) };
 
-                // partial derivatives of dx and dz
-                const float dx_x_term = kx * kx * factor * derivativeXScale;
-                const float dz_z_term = ky * ky * factor * derivativeZScale;
-                const float dx_z_term = ky * kx * factor * derivativeXScale;
-                const float dz_x_term = kx * ky * factor * derivativeZScale;
+                // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
+                const fftwf_complex expMinusOmega = { expOmega[0], -expOmega[1] };
 
-                const fftwf_complex dx_x
-                    = { dx_x_term * derivativeXScale * gradienthTilde[0],
-                        dx_x_term * derivativeXScale * gradienthTilde[1] };
+                /* complex multiplication
+                   x = a + i*b
+                   y = c + i*d
+                   xy = (ac-bd) + i(ad+bc)
 
-                const fftwf_complex dx_z
-                    = { dx_z_term * derivativeZScale * gradienthTilde[0],
-                        dx_z_term * derivativeZScale * gradienthTilde[1] };
+                   b = 0
+                   x = a + i*0
+                   y = c + i*d
+                   xy = (ac-0d) + i(ad+0c)
+                      = ac + i(ad)
 
-                const fftwf_complex dz_x
-                    = { dz_x_term * derivativeXScale * gradienthTilde[0],
-                        dz_x_term * derivativeXScale * gradienthTilde[1] };
+                   a = 0
+                   x = 0 + i*b
+                   y = c + i*d
+                   xy = (0c-bd) + i(0d+bc)
+                      = (-bd) + i(bc)
+                */
 
-                const fftwf_complex dz_z
-                    = { dz_z_term * derivativeZScale * gradienthTilde[0],
-                        dz_z_term * derivativeZScale * gradienthTilde[1] };
+                // H0[indexForK] * exp(i*omega*t)
+                const fftwf_complex H0expOmega
+                    = { H0[indexForK][0] * expOmega[0] - H0[indexForK][1] * expOmega[1],
+                        H0[indexForK][0] * expOmega[1] + H0[indexForK][1] * expOmega[0] };
 
-                displacementXdXdZ[gradientIndex][0] = dx_x[0] - dx_z[1];
-                displacementXdXdZ[gradientIndex][1] = dx_x[1] + dx_z[0];
+                const fftwf_complex geometryH0conjugate
+                    = { H0[indexForConjugateGeometry][0], -H0[indexForConjugateGeometry][1] };
 
-                displacementZdXdZ[gradientIndex][0] = dz_x[0] - dz_z[1];
-                displacementZdXdZ[gradientIndex][1] = dz_x[1] + dz_z[0];
-            }
+                const fftwf_complex gradientH0conjugate
+                    = { H0[indexForConjugateGradient][0], -H0[indexForConjugateGradient][1] };
 
-            // -i * kx/|k| * H
-            /*
-            x  = 0 + i*(-kx/|k|)
-            H  = c + i*d
-            xH = (0*c - (-kx/|k| * d)) + i*(0*d + (-kx/|k| * c))
-               = d*kx/|k| + i*(-c*kx/|k|)
-            */
 
-            
-            if ( displacement != NULL
-                 && j > geometryXRange.x && j < geometryXRange.y
-                 && i > geometryYRange.x && i < geometryYRange.y )
-            {
-                const fftwf_complex dx
-                    = { displacementXScale * factor * kx * geometryhTilde[1],
-                        displacementXScale * factor * kx * geometryhTilde[0] * -1.0f };
+                // H0[indexForConjugate] * exp(-i*omega*t)
+                const fftwf_complex geometryH0expMinusOmega
+                    = { geometryH0conjugate[0] * expMinusOmega[0] - geometryH0conjugate[1] * expMinusOmega[1],
+                        geometryH0conjugate[0] * expMinusOmega[1] + geometryH0conjugate[1] * expMinusOmega[0] };
 
-                const fftwf_complex dz
-                    = { displacementZScale * factor * ky * geometryhTilde[1],
-                        displacementZScale * factor * ky * geometryhTilde[0] * -1.0f };
+                const fftwf_complex gradientH0expMinusOmega
+                    = { gradientH0conjugate[0] * expMinusOmega[0] - gradientH0conjugate[1] * expMinusOmega[1],
+                        gradientH0conjugate[0] * expMinusOmega[1] + gradientH0conjugate[1] * expMinusOmega[0] };
 
-                // dx + i*dz
-                displacement[geometryIndex][0] = dx[0] - dz[1];
-                displacement[geometryIndex][1] = dx[1] + dz[0];
+                /* complex addition
+                   x = a + i*b
+                   y = c + i*d
+                   x+y = (a+c)+i(b+d)
+                */
+
+
+                // hTilde = H0expOmega + H0expMinusomega            
+                const fftwf_complex geometryhTilde
+                    = { H0expOmega[0] + geometryH0expMinusOmega[0],
+                        H0expOmega[1] + geometryH0expMinusOmega[1] };
+
+                const fftwf_complex gradienthTilde
+                    = { H0expOmega[0] + gradientH0expMinusOmega[0],
+                        H0expOmega[1] + gradientH0expMinusOmega[1] };
+
+
+                //if ( indexForK >= geometryStartIndex && indexForK <= geometryEndIndex )
+                if ( j > geometryXRange.x && j < geometryXRange.y
+                     && i > geometryYRange.x && i < geometryYRange.y )
+                {
+                    frequencySpectrum[geometryIndex][0] = geometryhTilde[0];
+                    frequencySpectrum[geometryIndex][1] = geometryhTilde[1];
+                }
+
+                // i * kx
+                /*
+                x = 0  + i*1
+                y = kx + i*0
+                xy = (0*k - 1*0) + i*(0*0+1*kx)
+                   = 0 + i*kx
+                */
+
+                // i * kx * H
+                /*
+                x = 0 + i*kx
+                H = c + i*d
+                xH = (0*c - kx*d) + i*(0*d+kx*c)
+                */
+
+                //const float derivativeXScale = (j == 0) ? 0.0f : 1.0f;
+                //const float derivativeZScale = (i == 0) ? 0.0f : 1.0f;
+                const float derivativeXScale   = (j == gradientPadding.x) ? 0.0f : 1.0f;
+                const float derivativeZScale   = (i == gradientPadding.y) ? 0.0f : 1.0f;
+                const float displacementXScale = (j == geometryPadding.x) ? 0.0f : 1.0f;
+                const float displacementZScale = (i == geometryPadding.y) ? 0.0f : 1.0f;
+
+                const float factor = (lengthK != 0.0f) ? 1.0f/lengthK : 0.0f;
+
+                if ( j > gradientXRange.x && j < gradientXRange.y
+                     && i > gradientYRange.x && i < gradientYRange.y )
+                {
+                    const fftwf_complex gx
+                        = {-kx * gradienthTilde[1] * derivativeXScale, kx * gradienthTilde[0] * derivativeXScale};
+
+                    const fftwf_complex gz
+                        = {-ky * gradienthTilde[1] * derivativeZScale, ky * gradienthTilde[0] * derivativeZScale};
+
+                    // gx + i*gz
+                    gradient[gradientIndex][0] = gx[0] - gz[1];
+                    gradient[gradientIndex][1] = gx[1] + gz[0];
+
+                    // partial derivatives of dx and dz
+                    const float dx_x_term = kx * kx * factor * derivativeXScale;
+                    const float dz_z_term = ky * ky * factor * derivativeZScale;
+                    const float dx_z_term = ky * kx * factor * derivativeXScale;
+                    const float dz_x_term = kx * ky * factor * derivativeZScale;
+
+                    const fftwf_complex dx_x
+                        = { dx_x_term * derivativeXScale * gradienthTilde[0],
+                            dx_x_term * derivativeXScale * gradienthTilde[1] };
+
+                    const fftwf_complex dx_z
+                        = { dx_z_term * derivativeZScale * gradienthTilde[0],
+                            dx_z_term * derivativeZScale * gradienthTilde[1] };
+
+                    const fftwf_complex dz_x
+                        = { dz_x_term * derivativeXScale * gradienthTilde[0],
+                            dz_x_term * derivativeXScale * gradienthTilde[1] };
+
+                    const fftwf_complex dz_z
+                        = { dz_z_term * derivativeZScale * gradienthTilde[0],
+                            dz_z_term * derivativeZScale * gradienthTilde[1] };
+
+                    displacementXdXdZ[gradientIndex][0] = dx_x[0] - dx_z[1];
+                    displacementXdXdZ[gradientIndex][1] = dx_x[1] + dx_z[0];
+
+                    displacementZdXdZ[gradientIndex][0] = dz_x[0] - dz_z[1];
+                    displacementZdXdZ[gradientIndex][1] = dz_x[1] + dz_z[0];
+                }
+
+                // -i * kx/|k| * H
+                /*
+                x  = 0 + i*(-kx/|k|)
+                H  = c + i*d
+                xH = (0*c - (-kx/|k| * d)) + i*(0*d + (-kx/|k| * c))
+                   = d*kx/|k| + i*(-c*kx/|k|)
+                */
+
+                
+                if ( displacement != NULL
+                     && j > geometryXRange.x && j < geometryXRange.y
+                     && i > geometryYRange.x && i < geometryYRange.y )
+                {
+                    const fftwf_complex dx
+                        = { displacementXScale * factor * kx * geometryhTilde[1],
+                            displacementXScale * factor * kx * geometryhTilde[0] * -1.0f };
+
+                    const fftwf_complex dz
+                        = { displacementZScale * factor * ky * geometryhTilde[1],
+                            displacementZScale * factor * ky * geometryhTilde[0] * -1.0f };
+
+                    // dx + i*dz
+                    displacement[geometryIndex][0] = dx[0] - dz[1];
+                    displacement[geometryIndex][1] = dx[1] + dz[0];
+                }
             }
         }
     }
