@@ -1,6 +1,6 @@
 #import "ODPFrequencySpectrumGeneration.h"
 
-bool geometries_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * target)
+bool geometry_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * target)
 {
     if ( source == NULL || (source->numberOfLods == 0) || target == NULL )
     {

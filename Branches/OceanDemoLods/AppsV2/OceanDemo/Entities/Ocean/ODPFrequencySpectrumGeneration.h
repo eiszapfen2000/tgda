@@ -19,7 +19,7 @@ typedef struct ODSpectrumGeometry
 }
 ODSpectrumGeometry;
 
-bool geometries_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * target);
+bool geometry_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * target);
 
 bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
 bool geometries_equal_size(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);

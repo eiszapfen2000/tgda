@@ -533,7 +533,6 @@ static NPTimer * timer = nil;
                    x+y = (a+c)+i(b+d)
                 */
 
-
                 // hTilde = H0expOmega + H0expMinusomega            
                 const fftwf_complex geometryhTilde
                     = { H0expOmega[0] + geometryH0expMinusOmega[0],
@@ -567,8 +566,8 @@ static NPTimer * timer = nil;
                 xH = (0*c - kx*d) + i*(0*d+kx*c)
                 */
 
-                //const float derivativeXScale = (j == 0) ? 0.0f : 1.0f;
-                //const float derivativeZScale = (i == 0) ? 0.0f : 1.0f;
+                // first column of a derivative in X direction has to be zero
+                // first row of a derivative in Z direction has to be zero
                 const float derivativeXScale   = (j == gradientPadding.x) ? 0.0f : 1.0f;
                 const float derivativeZScale   = (i == gradientPadding.y) ? 0.0f : 1.0f;
                 const float displacementXScale = (j == geometryPadding.x) ? 0.0f : 1.0f;
@@ -1299,13 +1298,7 @@ right way.
                                atTime:(const float)time
                  generateBaseGeometry:(BOOL)generateBaseGeometry
 {
-    SAFE_FREE(currentGeometry.sizes);
-
-    currentGeometry.numberOfLods = geometry.numberOfLods;
-    currentGeometry.sizes = ALLOC_ARRAY(Vector2, geometry.numberOfLods);
-    memcpy(currentGeometry.sizes, geometry.sizes, sizeof(Vector2) * geometry.numberOfLods);
-    currentGeometry.geometryResolution = geometry.geometryResolution;
-    currentGeometry.gradientResolution = geometry.gradientResolution;
+    geometry_copy(&geometry, &currentGeometry);
     currentGeneratorSettings = generatorSettings;
 
     [ self generateH0:generateBaseGeometry ];
@@ -1420,13 +1413,7 @@ right way.
         maxMeanSlopeVariance = effectiveMeanSlopeVariance = 0.0f;
     }
 
-    SAFE_FREE(lastGeometry.sizes);
-    lastGeometry.numberOfLods = currentGeometry.numberOfLods;
-    lastGeometry.sizes = ALLOC_ARRAY(Vector2, currentGeometry.numberOfLods);
-    memcpy(lastGeometry.sizes, currentGeometry.sizes, sizeof(Vector2) * currentGeometry.numberOfLods);
-    lastGeometry.geometryResolution = currentGeometry.geometryResolution;
-    lastGeometry.gradientResolution = currentGeometry.gradientResolution;
-
+    geometry_copy(&currentGeometry, &lastGeometry);
     lastGeneratorSettings = currentGeneratorSettings;
 
     return result;
@@ -1438,14 +1425,7 @@ right way.
                                  atTime:(const float)time
                    generateBaseGeometry:(BOOL)generateBaseGeometry
 {
-    SAFE_FREE(currentGeometry.sizes);
-
-    currentGeometry.numberOfLods = geometry.numberOfLods;
-    currentGeometry.sizes = ALLOC_ARRAY(Vector2, geometry.numberOfLods);
-    memcpy(currentGeometry.sizes, geometry.sizes, sizeof(Vector2) * geometry.numberOfLods);
-    currentGeometry.geometryResolution = geometry.geometryResolution;
-    currentGeometry.gradientResolution = geometry.gradientResolution;
-
+    geometry_copy(&geometry, &currentGeometry);
     currentGeneratorSettings = generatorSettings;
 
     [ self generateH0:generateBaseGeometry ];
@@ -1461,13 +1441,7 @@ right way.
         maxMeanSlopeVariance = effectiveMeanSlopeVariance = 0.0f;
     }
 
-    SAFE_FREE(lastGeometry.sizes);
-    lastGeometry.numberOfLods = currentGeometry.numberOfLods;
-    lastGeometry.sizes = ALLOC_ARRAY(Vector2, currentGeometry.numberOfLods);
-    memcpy(lastGeometry.sizes, currentGeometry.sizes, sizeof(Vector2) * currentGeometry.numberOfLods);
-    lastGeometry.geometryResolution = currentGeometry.geometryResolution;
-    lastGeometry.gradientResolution = currentGeometry.gradientResolution;
-
+    geometry_copy(&currentGeometry, &lastGeometry);
     lastGeneratorSettings = currentGeneratorSettings;
 
     return result;
