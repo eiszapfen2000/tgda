@@ -670,22 +670,15 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
                 if ( process == YES )
                 {
-                    OdHeightfieldData * result = NULL;
-
-                    {
-                        [ heightfieldQueueMutex lock ];
-
-                        result
-                            = heightfield_alloc_init_with_resolutions_and_size(
+                    OdHeightfieldData result;
+                    heightfield_hf_init_with_resolutions_and_size(
+                                &result,
                                 item.geometryResolution,
                                 item.gradientResolution,
                                 item.size);
 
-                        [ heightfieldQueueMutex unlock ];
-                    }
-
 //                    [ self transformSpectraHC:&item into:result ];
-                    [ self transformSpectra:&item into:result ];
+                    [ self transformSpectra:&item into:&result ];
 
                     NSUInteger queueCount = 0;
 
@@ -698,7 +691,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                         variance.effectiveMeanSlopeVariance = item.effectiveMeanSlopeVariance;
 
                         [ varianceQueue addPointer:&variance ];
-                        [ resultQueue addHeightfield:result ];
+                        [ resultQueue addHeightfield:&result ];
 
                         queueCount = [ resultQueue count ];
 

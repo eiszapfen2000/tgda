@@ -5,75 +5,6 @@
 #import "Core/Container/NSPointerArray+NPEngine.h"
 #import "ODHeightfieldQueue.h"
 
-static NpFreeList * OD_HEIGHTFIELDDATA_FREELIST = NULL;
-
-void od_heightfielddata_initialise(void)
-{
-    NPFREELIST_ALLOC_INIT(OD_HEIGHTFIELDDATA_FREELIST, OdHeightfieldData, 128)
-}
-
-OdHeightfieldData * heightfield_alloc(void)
-{
-    return (OdHeightfieldData *)npfreenode_alloc(OD_HEIGHTFIELDDATA_FREELIST);
-}
-
-OdHeightfieldData * heightfield_alloc_init(void)
-{
-    OdHeightfieldData * result
-        = (OdHeightfieldData *)npfreenode_alloc(OD_HEIGHTFIELDDATA_FREELIST);
-
-    memset(result, 0, sizeof(OdHeightfieldData));
-
-    return result;
-}
-
-OdHeightfieldData * heightfield_alloc_init_with_resolutions_and_size(
-    IVector2 geometryResolution, IVector2 gradientResolution,
-    Vector2 size)
-{
-    OdHeightfieldData * result
-        = (OdHeightfieldData *)npfreenode_alloc(OD_HEIGHTFIELDDATA_FREELIST);
-
-    memset(result, 0, sizeof(OdHeightfieldData));
-
-    const size_t numberOfGeometryElements
-        = geometryResolution.x * geometryResolution.y;
-
-    const size_t numberOfGradientElements
-        = gradientResolution.x * gradientResolution.y;
-
-    result->geometryResolution = geometryResolution;
-    result->gradientResolution = gradientResolution;
-    result->size = size;
-
-    result->heights32f
-        = fftwf_alloc_real(numberOfGeometryElements);
-
-    result->displacements32f
-        = (FVector2 *)fftwf_alloc_real(numberOfGeometryElements * 2);
-
-    result->displacementDerivatives32f
-        = (FVector4 *)fftwf_alloc_real(numberOfGradientElements * 4);
-
-    result->gradients32f
-        = (FVector2 *)fftwf_alloc_real(numberOfGradientElements * 2);
-
-    return result;
-}
-
-void heightfield_free(OdHeightfieldData * heightfield)
-{
-    if ( heightfield != NULL )
-    {
-        fftwf_free(heightfield->heights32f);
-        fftwf_free(heightfield->displacements32f);
-        fftwf_free(heightfield->displacementDerivatives32f);
-        fftwf_free(heightfield->gradients32f);
-
-        npfreenode_free(heightfield, OD_HEIGHTFIELDDATA_FREELIST);
-    }
-}
-
 void heightfield_hf_init_with_resolutions_and_size(
     OdHeightfieldData * heightfield,
     IVector2 geometryResolution,
@@ -224,15 +155,12 @@ void heightfield_hf_compute_min_max_displacement_derivatives(OdHeightfieldData *
     heightfield->displacementZdZRange = (FVector2){minDisplacementZdZ, maxDisplacementZdZ};
 }
 
-@implementation ODHeightfieldQueue
-
-+ (void) initialize
+static NSUInteger heightfield_size(const void * item)
 {
-	if ( [ ODHeightfieldQueue class ] == self )
-	{
-        od_heightfielddata_initialise();
-	}
+    return sizeof(OdHeightfieldData);
 }
+
+@implementation ODHeightfieldQueue
 
 - (id) init
 {
@@ -243,10 +171,17 @@ void heightfield_hf_compute_min_max_displacement_derivatives(OdHeightfieldData *
 {
     self =  [ super initWithName:newName ];
 
-    NSPointerFunctionsOptions options
-        = NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality;
+    const NSUInteger options
+        = NSPointerFunctionsMallocMemory
+          | NSPointerFunctionsStructPersonality
+          | NSPointerFunctionsCopyIn;
 
-    queue = [[ NSPointerArray alloc ] initWithOptions:options ];
+    NSPointerFunctions * pFunctions
+        = [ NSPointerFunctions pointerFunctionsWithOptions:options ];
+
+    [ pFunctions setSizeFunction:&heightfield_size ];
+
+    queue = [[ NSPointerArray alloc ] initWithPointerFunctions:pFunctions ];
 
     return self;
 }
@@ -312,7 +247,7 @@ void heightfield_hf_compute_min_max_displacement_derivatives(OdHeightfieldData *
 
 - (void) removeHeightfieldAtIndex:(NSUInteger)index
 {
-    heightfield_free([ queue pointerAtIndex:index ]);
+    heightfield_hf_clear([ queue pointerAtIndex:index ]);
 
     [ queue removePointerAtIndex:index ];
 }
@@ -323,7 +258,7 @@ void heightfield_hf_compute_min_max_displacement_derivatives(OdHeightfieldData *
 
     for ( NSUInteger i = 0; i < count; i++ )
     {
-        heightfield_free([ queue pointerAtIndex:i ]);
+        heightfield_hf_clear([ queue pointerAtIndex:i ]);
     }
 
     [ queue removeAllPointers ];
@@ -359,7 +294,7 @@ void heightfield_hf_compute_min_max_displacement_derivatives(OdHeightfieldData *
 - (void) replaceHeightfieldAtIndex:(NSUInteger)index
                    withHeightfield:(OdHeightfieldData *)heightfield
 {
-    heightfield_free([ queue pointerAtIndex:index ]);
+    heightfield_hf_clear([ queue pointerAtIndex:index ]);
     [ queue replacePointerAtIndex:index withPointer:heightfield ];
 }
 

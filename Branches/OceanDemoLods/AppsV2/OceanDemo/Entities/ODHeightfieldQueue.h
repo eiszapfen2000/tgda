@@ -25,22 +25,13 @@ typedef struct OdHeightfieldData
 }
 OdHeightfieldData;
 
-void od_heightfielddata_initialise(void);
-
-OdHeightfieldData * heightfield_alloc(void);
-OdHeightfieldData * heightfield_alloc_init(void);
-OdHeightfieldData * heightfield_alloc_init_with_resolutions_and_size(
-    IVector2 geometryResolution, IVector2 gradientResolution,
-    Vector2 size);
-
-void heightfield_free(OdHeightfieldData * heightfield);
-
 void heightfield_hf_init_with_resolutions_and_size(
     OdHeightfieldData * heightfield,
     IVector2 geometryResolution,
     IVector2 gradientResolution,
     Vector2 size
     );
+
 void heightfield_hf_clear(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max_gradients(OdHeightfieldData * heightfield);
