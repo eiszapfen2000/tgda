@@ -646,23 +646,20 @@ static NPTimer * timer = nil;
         }
     }
 
-    OdFrequencySpectrumFloat result
-        = { .timestamp     = time,
-            .geometryResolution = geometryResolution,
-            .gradientResolution = gradientResolution,
-            .size          = currentGeometry.sizes[0],
-            .baseSpectrum  = NULL,
-            .maxMeanSlopeVariance = 0.0f,
-            .effectiveMeanSlopeVariance = 0.0f,
-            .height        = height,
-            .gradientX     = NULL,
-            .gradientZ     = NULL,
-            .gradient      = gradient,
-            .displacementX = NULL,
-            .displacementZ = NULL,
-            .displacement  = displacement,
-            .displacementXdXdZ = displacementXdXdZ,
-            .displacementZdXdZ = displacementZdXdZ };
+    OdFrequencySpectrumFloat result;
+    memset(&result, 0, sizeof(result));
+
+    result.timestamp = time;
+    result.size      = currentGeometry.sizes[0];
+
+    result.data.height             = height;
+    result.data.gradient           = gradient;
+    result.data.displacement       = displacement;
+    result.data.displacementXdXdZ  = displacementXdXdZ;
+    result.data.displacementZdXdZ  = displacementZdXdZ;
+
+    result.geometryResolution = geometryResolution;
+    result.gradientResolution = gradientResolution;
 
     return result;
 }
@@ -1194,23 +1191,20 @@ static NPTimer * timer = nil;
         }
     }
 
-    OdFrequencySpectrumFloat result
-        = { .timestamp     = time,
-            .geometryResolution = geometryResolution,
-            .gradientResolution = gradientResolution,
-            .size          = currentGeometry.sizes[0],
-            .baseSpectrum  = NULL,
-            .maxMeanSlopeVariance = 0.0f,
-            .effectiveMeanSlopeVariance = 0.0f,
-            .height        = frequencySpectrumHC,
-            .gradientX     = gradientXHC,
-            .gradientZ     = gradientZHC,
-            .gradient      = NULL,
-            .displacementX = displacementXHC,
-            .displacementZ = displacementZHC,
-            .displacement  = NULL,
-            .displacementXdXdZ = NULL,
-            .displacementZdXdZ = NULL };
+    OdFrequencySpectrumFloat result;
+    memset(&result, 0, sizeof(result));
+
+    result.timestamp = time;
+    result.size      = currentGeometry.sizes[0];
+
+    result.dataHC.height        = frequencySpectrumHC;
+    result.dataHC.gradientX     = gradientXHC;
+    result.dataHC.gradientZ     = gradientZHC;
+    result.dataHC.displacementX = displacementXHC;
+    result.dataHC.displacementZ = displacementZHC;
+
+    result.geometryResolution = geometryResolution;
+    result.gradientResolution = gradientResolution;
 
     return result;
 }
@@ -1305,98 +1299,55 @@ right way.
 
     OdFrequencySpectrumFloat result = [ self generateHAtTime:time ];
 
-    [ self swapFrequencySpectrum:result.height
+    [ self swapFrequencySpectrum:result.data.height
                       resolution:currentGeometry.geometryResolution
                        quadrants:ODQuadrant_1_3 ];
 
-    [ self swapFrequencySpectrum:result.height
+    [ self swapFrequencySpectrum:result.data.height
                       resolution:currentGeometry.geometryResolution
                        quadrants:ODQuadrant_2_4 ];
 
-    if ( result.gradientX != NULL )
+
+    if ( result.data.gradient != NULL )
     {
-        [ self swapFrequencySpectrum:result.gradientX
+        [ self swapFrequencySpectrum:result.data.gradient
                           resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_1_3 ];
 
-        [ self swapFrequencySpectrum:result.gradientX
+        [ self swapFrequencySpectrum:result.data.gradient
                           resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_2_4 ];
     }
 
-    if ( result.gradientZ != NULL )
+    if ( result.data.displacement != NULL )
     {
-        [ self swapFrequencySpectrum:result.gradientZ
-                          resolution:currentGeometry.gradientResolution
-                           quadrants:ODQuadrant_1_3 ];
-
-        [ self swapFrequencySpectrum:result.gradientZ
-                          resolution:currentGeometry.gradientResolution
-                           quadrants:ODQuadrant_2_4 ];
-    }
-
-    if ( result.gradient != NULL )
-    {
-        [ self swapFrequencySpectrum:result.gradient
-                          resolution:currentGeometry.gradientResolution
-                           quadrants:ODQuadrant_1_3 ];
-
-        [ self swapFrequencySpectrum:result.gradient
-                          resolution:currentGeometry.gradientResolution
-                           quadrants:ODQuadrant_2_4 ];
-    }
-
-    if ( result.displacementX != NULL )
-    {
-        [ self swapFrequencySpectrum:result.displacementX
+        [ self swapFrequencySpectrum:result.data.displacement
                           resolution:currentGeometry.geometryResolution
                            quadrants:ODQuadrant_1_3 ];
 
-        [ self swapFrequencySpectrum:result.displacementX
+        [ self swapFrequencySpectrum:result.data.displacement
                           resolution:currentGeometry.geometryResolution
                            quadrants:ODQuadrant_2_4 ];
     }
 
-    if ( result.displacementZ != NULL )
+    if ( result.data.displacementXdXdZ != NULL )
     {
-        [ self swapFrequencySpectrum:result.displacementZ
-                          resolution:currentGeometry.geometryResolution
-                           quadrants:ODQuadrant_1_3 ];
-
-        [ self swapFrequencySpectrum:result.displacementZ
-                          resolution:currentGeometry.geometryResolution
-                           quadrants:ODQuadrant_2_4 ];
-    }
-
-    if ( result.displacement != NULL )
-    {
-        [ self swapFrequencySpectrum:result.displacement
-                          resolution:currentGeometry.geometryResolution
-                           quadrants:ODQuadrant_1_3 ];
-
-        [ self swapFrequencySpectrum:result.displacement
-                          resolution:currentGeometry.geometryResolution
-                           quadrants:ODQuadrant_2_4 ];
-    }
-
-    if ( result.displacementXdXdZ != NULL )
-    {
-        [ self swapFrequencySpectrum:result.displacementXdXdZ
+        [ self swapFrequencySpectrum:result.data.displacementXdXdZ
                           resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_1_3 ];
 
-        [ self swapFrequencySpectrum:result.displacementXdXdZ
+        [ self swapFrequencySpectrum:result.data.displacementXdXdZ
                           resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_2_4 ];
     }
 
-    if ( result.displacementZdXdZ != NULL )
+    if ( result.data.displacementZdXdZ != NULL )
     {
-        [ self swapFrequencySpectrum:result.displacementZdXdZ
+        [ self swapFrequencySpectrum:result.data.displacementZdXdZ
                           resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_1_3 ];
 
-        [ self swapFrequencySpectrum:result.displacementZdXdZ
+        [ self swapFrequencySpectrum:result.data.displacementZdXdZ
                           resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_2_4 ];
     }

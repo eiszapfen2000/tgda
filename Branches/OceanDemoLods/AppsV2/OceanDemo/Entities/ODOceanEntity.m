@@ -131,15 +131,11 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 {
     if ( item != NULL )
     {
-        fftwf_free(item->height);
-        fftwf_free(item->gradientX);
-        fftwf_free(item->gradientZ);
-        fftwf_free(item->gradient);
-        fftwf_free(item->displacementX);
-        fftwf_free(item->displacementZ);
-        fftwf_free(item->displacement);
-        fftwf_free(item->displacementXdXdZ);
-        fftwf_free(item->displacementZdXdZ);
+        fftwf_free(item->data.height);
+        fftwf_free(item->data.gradient);
+        fftwf_free(item->data.displacement);
+        fftwf_free(item->data.displacementXdXdZ);
+        fftwf_free(item->data.displacementZdXdZ);
     }
 }
 
@@ -435,7 +431,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
     fftwf_complex * complexHeights = fftwf_alloc_complex(numberOfGeometryElements);
 
-    fftwf_execute_dft(complexPlans[geometryIndex], item->height, complexHeights);
+    fftwf_execute_dft(complexPlans[geometryIndex], item->data.height, complexHeights);
     result->timeStamp = item->timestamp;
 
     for ( int32_t i = 0; i < item->geometryResolution.y; i++ )
@@ -451,15 +447,15 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
     heightfield_hf_compute_min_max(result);
 
-    if ( item->gradient != NULL )
+    if ( item->data.gradient != NULL )
     {
         fftwf_complex * complexGradient = fftwf_alloc_complex(numberOfGradientElements);
         fftwf_complex * complexDisplacementXdXdZ = fftwf_alloc_complex(numberOfGradientElements);
         fftwf_complex * complexDisplacementZdXdZ = fftwf_alloc_complex(numberOfGradientElements);
 
-        fftwf_execute_dft(complexPlans[gradientIndex], item->gradient, complexGradient);
-        fftwf_execute_dft(complexPlans[gradientIndex], item->displacementXdXdZ, complexDisplacementXdXdZ);
-        fftwf_execute_dft(complexPlans[gradientIndex], item->displacementZdXdZ, complexDisplacementZdXdZ);
+        fftwf_execute_dft(complexPlans[gradientIndex], item->data.gradient, complexGradient);
+        fftwf_execute_dft(complexPlans[gradientIndex], item->data.displacementXdXdZ, complexDisplacementXdXdZ);
+        fftwf_execute_dft(complexPlans[gradientIndex], item->data.displacementZdXdZ, complexDisplacementZdXdZ);
 
         for ( int32_t i = 0; i < item->gradientResolution.y; i++ )
         {
@@ -487,11 +483,11 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
         fftwf_free(complexGradient);
     }
 
-    if ( item->displacement != NULL )
+    if ( item->data.displacement != NULL )
     {
         fftwf_complex * complexDisplacement = fftwf_alloc_complex(numberOfGeometryElements);
 
-        fftwf_execute_dft(complexPlans[geometryIndex], item->displacement, complexDisplacement);
+        fftwf_execute_dft(complexPlans[geometryIndex], item->data.displacement, complexDisplacement);
 
         for ( int32_t i = 0; i < item->geometryResolution.y; i++ )
         {
@@ -527,7 +523,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
     float * realHeights = fftwf_alloc_real(numberOfGeometryElements);
 
-    fftwf_execute_dft_c2r(halfComplexPlans[geometryIndex], item->height, realHeights);
+    fftwf_execute_dft_c2r(halfComplexPlans[geometryIndex], item->dataHC.height, realHeights);
     result->timeStamp = item->timestamp;
 
     for ( int32_t i = 0; i < item->geometryResolution.y; i++ )
@@ -543,13 +539,13 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
     heightfield_hf_compute_min_max(result);
 
-    if ( item->gradientX != NULL && item->gradientZ != NULL )
+    if ( item->dataHC.gradientX != NULL && item->dataHC.gradientZ != NULL )
     {
         float * realGradientX = fftwf_alloc_real(numberOfGradientElements);
         float * realGradientZ = fftwf_alloc_real(numberOfGradientElements);
 
-        fftwf_execute_dft_c2r(halfComplexPlans[gradientIndex], item->gradientX, realGradientX);
-        fftwf_execute_dft_c2r(halfComplexPlans[gradientIndex], item->gradientZ, realGradientZ);
+        fftwf_execute_dft_c2r(halfComplexPlans[gradientIndex], item->dataHC.gradientX, realGradientX);
+        fftwf_execute_dft_c2r(halfComplexPlans[gradientIndex], item->dataHC.gradientZ, realGradientZ);
 
         for ( int32_t i = 0; i < item->gradientResolution.y; i++ )
         {
@@ -570,13 +566,13 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
         fftwf_free(realGradientZ);
     }
 
-    if ( item->displacementX != NULL && item->displacementZ != NULL )
+    if ( item->dataHC.displacementX != NULL && item->dataHC.displacementZ != NULL )
     {
         float * realDisplacementX = fftwf_alloc_real(numberOfGeometryElements);
         float * realDisplacementZ = fftwf_alloc_real(numberOfGeometryElements);
 
-        fftwf_execute_dft_c2r(halfComplexPlans[geometryIndex], item->displacementX, realDisplacementX);
-        fftwf_execute_dft_c2r(halfComplexPlans[geometryIndex], item->displacementZ, realDisplacementZ);
+        fftwf_execute_dft_c2r(halfComplexPlans[geometryIndex], item->dataHC.displacementX, realDisplacementX);
+        fftwf_execute_dft_c2r(halfComplexPlans[geometryIndex], item->dataHC.displacementZ, realDisplacementZ);
 
         for ( int32_t i = 0; i < item->geometryResolution.y; i++ )
         {
@@ -660,10 +656,11 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
                 BOOL process = YES;
 
-                if ( item.timestamp == FLT_MAX || item.geometryResolution.x == 0
-                     || item.geometryResolution.y == 0 || item.gradientResolution.x == 0
-                     || item.gradientResolution.y == 0 || item.size.x == 0.0
-                     || item.size.y == 0.0 || item.height == NULL )
+                if ( item.timestamp == FLT_MAX
+                     || item.geometryResolution.x == 0 || item.geometryResolution.y == 0
+                     || item.gradientResolution.x == 0 || item.gradientResolution.y == 0
+                     || item.size.x == 0.0 || item.size.y == 0.0
+                     || ( item.data.height == NULL && item.dataHC.height == NULL ))
                 {
                     process = NO;
                 }
