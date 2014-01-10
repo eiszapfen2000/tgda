@@ -1,5 +1,24 @@
 #import "ODPFrequencySpectrumGeneration.h"
 
+bool geometries_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * target)
+{
+    if ( source == NULL || (source->numberOfLods == 0) || target == NULL )
+    {
+        return false;
+    }
+
+    SAFE_FREE(target->sizes);
+
+    target->geometryResolution = source->geometryResolution;
+    target->gradientResolution = source->gradientResolution;
+    target->numberOfLods = source->numberOfLods;
+
+    target->sizes = ALLOC_ARRAY(Vector2, source->numberOfLods);
+    memcpy(target->sizes, source->sizes, sizeof(Vector2) * source->numberOfLods);
+
+    return true;
+}
+
 bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo)
 {
     if ( gOne->numberOfLods != gTwo->numberOfLods
