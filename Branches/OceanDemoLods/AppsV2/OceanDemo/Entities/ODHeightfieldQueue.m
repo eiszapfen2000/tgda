@@ -74,6 +74,49 @@ void heightfield_free(OdHeightfieldData * heightfield)
     }
 }
 
+void heightfield_hf_init_with_resolutions_and_size(
+    OdHeightfieldData * heightfield,
+    IVector2 geometryResolution,
+    IVector2 gradientResolution,
+    Vector2 size
+    )
+{
+    memset(heightfield, 0, sizeof(OdHeightfieldData));
+
+    const size_t numberOfGeometryElements
+        = geometryResolution.x * geometryResolution.y;
+
+    const size_t numberOfGradientElements
+        = gradientResolution.x * gradientResolution.y;
+
+    heightfield->geometryResolution = geometryResolution;
+    heightfield->gradientResolution = gradientResolution;
+    heightfield->size = size;
+
+    heightfield->heights32f
+        = fftwf_alloc_real(numberOfGeometryElements);
+
+    heightfield->displacements32f
+        = (FVector2 *)fftwf_alloc_real(numberOfGeometryElements * 2);
+
+    heightfield->displacementDerivatives32f
+        = (FVector4 *)fftwf_alloc_real(numberOfGradientElements * 4);
+
+    heightfield->gradients32f
+        = (FVector2 *)fftwf_alloc_real(numberOfGradientElements * 2);
+}
+
+void heightfield_hf_clear(OdHeightfieldData * heightfield)
+{
+    if ( heightfield != NULL )
+    {
+        fftwf_free(heightfield->heights32f);
+        fftwf_free(heightfield->displacements32f);
+        fftwf_free(heightfield->displacementDerivatives32f);
+        fftwf_free(heightfield->gradients32f);
+    }
+}
+
 void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield)
 {
     assert( heightfield->heights32f != NULL );
