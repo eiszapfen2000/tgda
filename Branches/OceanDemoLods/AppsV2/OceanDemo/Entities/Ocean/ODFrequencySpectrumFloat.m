@@ -57,7 +57,7 @@ ODQuadrants;
         printf("LOD %d\n", l);
 
         const FVector2 lastSize
-            = ( l == 0 ) ? (fv2_zero()) : (fv2_v_from_v2(&currentGeometry.sizes[l - 1]));
+            = ( l == 0 ) ? fv2_zero() : fv2_v_from_v2(&currentGeometry.sizes[l - 1]);
 
         const FVector2 currentSize = fv2_v_from_v2(&currentGeometry.sizes[l]);
 
@@ -127,6 +127,8 @@ ODQuadrants;
         = currentGeneratorSettings.phillips;
 
     const IVector2 resolution   = H0Resolution;
+    const FVector2 fresolution = fv2_v_from_iv2(&resolution);
+
     const int32_t  numberOfLods = H0Lods;
     const int32_t  numberOfLodElements = resolution.x * resolution.y;
 
@@ -155,9 +157,17 @@ ODQuadrants;
 
     for ( int32_t l = 0; l < numberOfLods; l++ )
     {
-        const FVector2 size = fv2_v_from_v2(&currentGeometry.sizes[l]);
-        const float dkx = MATH_2_MUL_PIf / size.x;
-        const float dky = MATH_2_MUL_PIf / size.y;
+        printf("LOD %d\n", l);
+
+        const FVector2 lastSize
+            = ( l == 0 ) ? fv2_zero() : fv2_v_from_v2(&currentGeometry.sizes[l - 1]);
+
+        const FVector2 currentSize = fv2_v_from_v2(&currentGeometry.sizes[l]);
+
+        const float dkx = MATH_2_MUL_PIf / currentSize.x;
+        const float dky = MATH_2_MUL_PIf / currentSize.y;
+
+        const float kMin = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
 
         const int32_t offset = l * numberOfLodElements;
 
@@ -177,7 +187,7 @@ ODQuadrants;
                 const float ky = (m - di) * dky;
 
                 const FVector2 k = {kx, ky};
-                const float s = amplitudef_phillips_cartesian(windDirectionNormalised, k, 0.0f, A, L, l);
+                const float s = amplitudef_phillips_cartesian(windDirectionNormalised, k, kMin, A, L, l);
                 const float a = sqrtf(s);
 
                 varianceX  += (kx * kx) * (dkx * dky) * s;
