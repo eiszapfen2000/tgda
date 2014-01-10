@@ -131,7 +131,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 {
     if ( item != NULL )
     {
-        fftwf_free(item->waveSpectrum);
+        fftwf_free(item->height);
         fftwf_free(item->gradientX);
         fftwf_free(item->gradientZ);
         fftwf_free(item->gradient);
@@ -435,7 +435,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
     fftwf_complex * complexHeights = fftwf_alloc_complex(numberOfGeometryElements);
 
-    fftwf_execute_dft(complexPlans[geometryIndex], item->waveSpectrum, complexHeights);
+    fftwf_execute_dft(complexPlans[geometryIndex], item->height, complexHeights);
     result->timeStamp = item->timestamp;
 
     for ( int32_t i = 0; i < item->geometryResolution.y; i++ )
@@ -527,7 +527,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
     float * realHeights = fftwf_alloc_real(numberOfGeometryElements);
 
-    fftwf_execute_dft_c2r(halfComplexPlans[geometryIndex], item->waveSpectrum, realHeights);
+    fftwf_execute_dft_c2r(halfComplexPlans[geometryIndex], item->height, realHeights);
     result->timeStamp = item->timestamp;
 
     for ( int32_t i = 0; i < item->geometryResolution.y; i++ )
@@ -663,7 +663,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                 if ( item.timestamp == FLT_MAX || item.geometryResolution.x == 0
                      || item.geometryResolution.y == 0 || item.gradientResolution.x == 0
                      || item.gradientResolution.y == 0 || item.size.x == 0.0
-                     || item.size.y == 0.0 || item.waveSpectrum == NULL )
+                     || item.size.y == 0.0 || item.height == NULL )
                 {
                     process = NO;
                 }

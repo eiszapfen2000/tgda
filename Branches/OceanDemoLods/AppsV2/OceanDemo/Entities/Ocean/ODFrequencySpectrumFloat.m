@@ -412,7 +412,7 @@ static NPTimer * timer = nil;
     const int32_t numberOfGeometryElements = geometryResolution.x * geometryResolution.y;
     const int32_t numberOfGradientElements = gradientResolution.x * gradientResolution.y;
 
-	fftwf_complex * frequencySpectrum
+	fftwf_complex * height
         = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
 
 	fftwf_complex * gradient
@@ -547,8 +547,8 @@ static NPTimer * timer = nil;
                 if ( j > geometryXRange.x && j < geometryXRange.y
                      && i > geometryYRange.x && i < geometryYRange.y )
                 {
-                    frequencySpectrum[geometryIndex][0] = geometryhTilde[0];
-                    frequencySpectrum[geometryIndex][1] = geometryhTilde[1];
+                    height[geometryIndex][0] = geometryhTilde[0];
+                    height[geometryIndex][1] = geometryhTilde[1];
                 }
 
                 // i * kx
@@ -654,7 +654,7 @@ static NPTimer * timer = nil;
             .baseSpectrum  = NULL,
             .maxMeanSlopeVariance = 0.0f,
             .effectiveMeanSlopeVariance = 0.0f,
-            .waveSpectrum  = frequencySpectrum,
+            .height        = height,
             .gradientX     = NULL,
             .gradientZ     = NULL,
             .gradient      = gradient,
@@ -1202,7 +1202,7 @@ static NPTimer * timer = nil;
             .baseSpectrum  = NULL,
             .maxMeanSlopeVariance = 0.0f,
             .effectiveMeanSlopeVariance = 0.0f,
-            .waveSpectrum  = frequencySpectrumHC,
+            .height        = frequencySpectrumHC,
             .gradientX     = gradientXHC,
             .gradientZ     = gradientZHC,
             .gradient      = NULL,
@@ -1305,11 +1305,11 @@ right way.
 
     OdFrequencySpectrumFloat result = [ self generateHAtTime:time ];
 
-    [ self swapFrequencySpectrum:result.waveSpectrum
+    [ self swapFrequencySpectrum:result.height
                       resolution:currentGeometry.geometryResolution
                        quadrants:ODQuadrant_1_3 ];
 
-    [ self swapFrequencySpectrum:result.waveSpectrum
+    [ self swapFrequencySpectrum:result.height
                       resolution:currentGeometry.geometryResolution
                        quadrants:ODQuadrant_2_4 ];
 
