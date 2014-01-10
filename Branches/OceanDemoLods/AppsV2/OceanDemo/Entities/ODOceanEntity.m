@@ -357,7 +357,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                 const float y = geometry.sizes[i-1].y / halfResolution;
 
                 geometry.sizes[i]
-                    = (Vector2){x * (-FLT_EPSILON + 1.0f), y * (-FLT_EPSILON + 1.0f)};
+                    = (Vector2){x * (-2.0f * FLT_EPSILON + 1.0f), y * (-2.0f * FLT_EPSILON + 1.0f)};
             }
 
             /*

@@ -40,7 +40,7 @@ float amplitudef_phillips_cartesian_omnidirectional(
     const float A, const float L, const float l
     )
 {
-    if ( k == 0.0f || fabsf(k) < kMin )
+    if ( k == 0.0f || fabsf(k) <= kMin )
     {
         return 0.0f;
     }
@@ -172,7 +172,7 @@ float amplitudef_unified_cartesian_omnidirectional(
     const float k_m = 370.0;                //eq 24
     const float kappa = 0.41f;              //von Karman constant
 
-    if ( k == 0.0f || fabsf(k) < kMin )
+    if ( k == 0.0f || fabsf(k) <= kMin )
     {
         return 0.0f;
     }
