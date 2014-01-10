@@ -14,10 +14,12 @@ typedef struct ODSpectrumGeometry
 {
     IVector2 geometryResolution;
     IVector2 gradientResolution;
-    uint32_t numberOfLods;    
+    uint32_t numberOfLods;
     Vector2 * sizes;
 }
 ODSpectrumGeometry;
+
+bool geometries_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * target);
 
 bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
 bool geometries_equal_size(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
@@ -54,20 +56,6 @@ bool phillips_settings_equal(const ODPhillipsGeneratorSettings * pOne, const ODP
 bool unified_settings_equal(const ODUnifiedGeneratorSettings * pOne, const ODUnifiedGeneratorSettings * pTwo);
 bool generator_settings_equal(const ODGeneratorSettings * pOne, const ODGeneratorSettings * pTwo);
 
-typedef struct OdFrequencySpectrumDouble
-{
-    double timestamp;
-    IVector2 geometryResolution;
-    IVector2 gradientResolution;
-    Vector2  size;
-    fftw_complex * waveSpectrum;
-    fftw_complex * gradientX;
-    fftw_complex * gradientZ;
-    fftw_complex * displacementX;
-    fftw_complex * displacementZ;
-}
-OdFrequencySpectrumDouble;
-
 typedef struct OdFrequencySpectrumFloat
 {
     float timestamp;
@@ -88,20 +76,6 @@ typedef struct OdFrequencySpectrumFloat
     fftwf_complex * displacementZdXdZ;
 }
 OdFrequencySpectrumFloat;
-
-/*
-@protocol ODPFrequencySpectrumGenerationDouble
-
-- (OdFrequencySpectrumDouble) generateDoubleFrequencySpectrum:(const ODSpectrumSettings)settings
-                                            atTime:(const double)time
-                                                  ;
-
-- (OdFrequencySpectrumDouble) generateDoubleFrequencySpectrumHC:(const ODSpectrumSettings)settings
-                                              atTime:(const double)time
-                                                    ;
-
-@end
-*/
 
 @protocol ODPFrequencySpectrumGenerationFloat
 
