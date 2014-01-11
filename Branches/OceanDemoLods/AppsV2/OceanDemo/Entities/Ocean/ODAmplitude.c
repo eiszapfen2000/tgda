@@ -13,7 +13,6 @@ float amplitudef_phillips_cartesian(
 
     if ( kLength == 0.0f || kLength <= kMin )
     {
-        printf("P Zero %f %f %f %f \n", k.x, k.y, kLength, kMin);
         return 0.0f;
     }
 
@@ -93,7 +92,6 @@ float amplitudef_unified_cartesian(
 
     if ( klength == 0.0f || klength <= kMin )
     {
-        printf("U Zero %f %f %f %f \n", k.x, k.y, klength, kMin);
         return 0.0f;
     }
 

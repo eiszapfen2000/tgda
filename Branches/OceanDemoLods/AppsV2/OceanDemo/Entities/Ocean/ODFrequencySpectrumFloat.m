@@ -54,8 +54,6 @@ ODQuadrants;
 
     for ( int32_t l = 0; l < numberOfLods; l++ )
     {
-        printf("LOD %d\n", l);
-
         const FVector2 lastSize
             = ( l == 0 ) ? fv2_zero() : fv2_v_from_v2(&currentGeometry.sizes[l - 1]);
 
@@ -65,8 +63,6 @@ ODQuadrants;
         const float dky = MATH_2_MUL_PIf / currentSize.y;
 
         const float kMin = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
-
-        //printf("%f %f %f %f %f\n", currentSize.x, currentSize.y, lastSize.x, lastSize.y, kMin);
 
         const int32_t offset = l * numberOfLodElements;
 
@@ -84,8 +80,6 @@ ODQuadrants;
 
                 const float kx = (n + dj) * dkx;
                 const float ky = (m - di) * dky;
-
-//                printf("%d %d\n", j, i);
 
                 const FVector2 k = {kx, ky};
                 const float t = amplitudef_unified_cartesian(k, kMin, A, U10, Omega);
@@ -157,8 +151,6 @@ ODQuadrants;
 
     for ( int32_t l = 0; l < numberOfLods; l++ )
     {
-        printf("LOD %d\n", l);
-
         const FVector2 lastSize
             = ( l == 0 ) ? fv2_zero() : fv2_v_from_v2(&currentGeometry.sizes[l - 1]);
 
