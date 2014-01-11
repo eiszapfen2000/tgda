@@ -356,15 +356,6 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                     = (Vector2){x * (-2.0f * FLT_EPSILON + 1.0f), y * (-2.0f * FLT_EPSILON + 1.0f)};
             }
 
-            /*
-            for ( NSUInteger i = 0; i < generatorNumberOfLods; i++ )
-            {
-                NSLog(@"%lu %lf %lf", i, geometry.sizes[i].x, geometry.sizes[i].y);
-            }
-            */
-
-            //NSLog(@"%d %d", geometryRes, gradientRes);
-
             [ timer update ];
 
             OdFrequencySpectrumFloat complexSpectrum
