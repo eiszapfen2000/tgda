@@ -291,14 +291,16 @@ void main()
     vec3 Lsea = seaColor.rgb * (meanSky / MATH_PI);
     vec3 seaContribution = (1.0 - f_mean) * Lsea;
 
+    /*
     vec2 jmean = texture(whitecaps, texcoord).xy;
     float jSigmaSqr = max(jmean.y - jmean.x * jmean.x, 0.0);
     float W = whitecapCoverage(jacobianEpsilon, jmean.x, jSigmaSqr);
     // compute and add whitecap radiance
     vec3 Lfoam = (c_light * (max(dot(n, l), 0.0)) + meanSky) / MATH_PI;
     vec3 foamContribution = vec3(W * Lfoam * 0.4);
+    */
 
-    vec3 L_zero = rossContribution + skyContribution + seaContribution + foamContribution;
+    vec3 L_zero = rossContribution + skyContribution + seaContribution;// + foamContribution;
     //vec3 L_zero = foamContribution;
 
     target = vec4(L_zero, 1.0);
