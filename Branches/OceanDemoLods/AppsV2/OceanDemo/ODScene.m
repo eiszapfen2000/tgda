@@ -597,6 +597,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         [ self updateSlopeVarianceLUT ];
     }
 
+    /*
     NPTexture2D * dispDerivatives = [ ocean displacementDerivatives ];
     const uint32_t dispDerivativesWidth  = [ dispDerivatives width  ];
     const uint32_t dispDerivativesHeight = [ dispDerivatives height ];
@@ -635,6 +636,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
                                  colorBufferIndex:0
                                           bindFBO:YES ];
     }
+    */
 
     NPStateConfiguration * stateConfiguration = [[ NP Graphics ] stateConfiguration ];
 
@@ -654,6 +656,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     // reset all matrices
     [[[ NP Core ] transformationState ] reset ];
 
+    /*
     // precompute whitecaps derivative stuff
     [ whitecapsRtc activate ];
 
@@ -679,6 +682,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ whitecapsTarget texture ] ];
     glGenerateMipmap(GL_TEXTURE_2D);
     [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
+    */
 
     // setup linear sRGB target
     [ rtc bindFBO ];
@@ -731,9 +735,11 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     NPEffectVariableFloat3 * dsP = [ projectedGridEffect variableWithName:@"directionToSun"];
     NPEffectVariableFloat3 * scP = [ projectedGridEffect variableWithName:@"sunColor"];
     NPEffectVariableFloat2 * vsP = [ projectedGridEffect variableWithName:@"vertexStep"];
+    NPEffectVariableFloat * ds = [ projectedGridEffect variableWithName:@"displacementScale"];
 
     NSAssert(w != nil && a != nil && ds != nil && hs != nil && je != nil && cP != nil && dsP != nil && scP != nil && vsP != nil, @"");
 
+    [ ds setValue:[ ocean displacementScale ]];
     [ w setValue:[testProjector inverseViewProjection]];
     [ a setValue:[ ocean area ] * [ocean areaScale ]];
     [ hs setValue:[ ocean heightScale ]];
