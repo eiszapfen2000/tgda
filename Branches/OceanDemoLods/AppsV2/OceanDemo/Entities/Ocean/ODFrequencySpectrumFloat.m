@@ -369,10 +369,14 @@ static NPTimer * timer = nil;
     lastGeneratorSettings.phillips.windDirection = v2_max();
     lastGeneratorSettings.phillips.windSpeed = DBL_MAX;
     lastGeneratorSettings.phillips.dampening = DBL_MAX;
+    lastGeneratorSettings.unified.U10   = DBL_MAX;
+    lastGeneratorSettings.unified.Omega = DBL_MAX;
 
     currentGeneratorSettings.phillips.windDirection = v2_zero();
     currentGeneratorSettings.phillips.windSpeed = 0.0;
     currentGeneratorSettings.phillips.dampening = 0.0;
+    currentGeneratorSettings.unified.U10   = 0.0;
+    currentGeneratorSettings.unified.Omega = 0.0;
 
     return self;
 }
