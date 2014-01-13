@@ -20,7 +20,9 @@ typedef struct ODSpectrumGeometry
 }
 ODSpectrumGeometry;
 
-void geometry_init_with_lods(ODSpectrumGeometry * geometry, uint32_t numberOfLods);
+void geometry_init_with_resolutions_and_lods(ODSpectrumGeometry * geometry,
+    int32_t geometryRes, int32_t gradientRes, uint32_t numberOfLods);
+
 void geometry_clear(ODSpectrumGeometry * geometry);
 bool geometry_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * target);
 

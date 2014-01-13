@@ -1,7 +1,10 @@
 #import "ODPFrequencySpectrumGeneration.h"
 
-void geometry_init_with_lods(ODSpectrumGeometry * geometry, uint32_t numberOfLods)
+void geometry_init_with_resolutions_and_lods(ODSpectrumGeometry * geometry,
+    int32_t geometryRes, int32_t gradientRes, uint32_t numberOfLods)
 {
+    geometry->geometryResolution = (IVector2){geometryRes, geometryRes};
+    geometry->gradientResolution = (IVector2){gradientRes, gradientRes};
     geometry->numberOfLods = numberOfLods;
     geometry->sizes = ALLOC_ARRAY(Vector2, numberOfLods);
 }
