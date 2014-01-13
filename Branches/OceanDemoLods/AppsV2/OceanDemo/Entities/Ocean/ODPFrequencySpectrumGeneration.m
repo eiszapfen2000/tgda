@@ -9,6 +9,15 @@ void geometry_init_with_resolutions_and_lods(ODSpectrumGeometry * geometry,
     geometry->sizes = ALLOC_ARRAY(Vector2, numberOfLods);
 }
 
+void geometry_set_size(ODSpectrumGeometry * geometry,
+    uint32_t lodIndex, double lodSize)
+{
+    if ( lodIndex < geometry->numberOfLods )
+    {
+        geometry->sizes[lodIndex] = (Vector2){lodSize, lodSize};
+    }
+}
+
 void geometry_clear(ODSpectrumGeometry * geometry)
 {
     if ( geometry != NULL )
