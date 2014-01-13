@@ -3,14 +3,6 @@
 #import "Core/NPObject/NPObject.h"
 #import "fftw3.h"
 
-typedef enum ODSpectrumGenerator
-{
-    Unknown  = -1,
-    Phillips =  0,
-    Unified  =  1
-}
-ODSpectrumGenerator;
-
 typedef struct ODSpectrumGeometry
 {
     IVector2 geometryResolution;
@@ -38,13 +30,20 @@ bool geometries_equal_resolution(const ODSpectrumGeometry * gOne, const ODSpectr
 ODSpectrumGeometry geometry_zero();
 ODSpectrumGeometry geometry_max();
 
+typedef enum ODSpectrumGenerator
+{
+    Unknown  = -1,
+    Phillips =  0,
+    Unified  =  1
+}
+ODSpectrumGenerator;
+
 enum
 {
-    ODGeneratorOptionsHalfComplex  = (1 << 0),
-    ODGeneratorOptionsHeights      = (1 << 1),
-    ODGeneratorOptionsDisplacement = (1 << 2),
-    ODGeneratorOptionsGradient     = (1 << 3),
-    ODGeneratorOptionsDisplacementDerivatives = (1 << 4)
+    ODGeneratorOptionsHeights      = (1 << 0),
+    ODGeneratorOptionsDisplacement = (1 << 1),
+    ODGeneratorOptionsGradient     = (1 << 2),
+    ODGeneratorOptionsDisplacementDerivatives = (1 << 3)
 };
 
 typedef NSUInteger ODGeneratorOptions;
