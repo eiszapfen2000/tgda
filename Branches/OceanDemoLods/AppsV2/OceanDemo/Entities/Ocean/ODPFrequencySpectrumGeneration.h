@@ -5,8 +5,9 @@
 
 typedef enum ODSpectrumGenerator
 {
-    Phillips = 0,
-    Unified  = 1
+    Unknown  = -1,
+    Phillips =  0,
+    Unified  =  1
 }
 ODSpectrumGenerator;
 
@@ -26,6 +27,9 @@ bool geometry_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * targe
 bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
 bool geometries_equal_size(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
 bool geometries_equal_resolution(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
+
+ODSpectrumGeometry geometry_zero();
+ODSpectrumGeometry geometry_max();
 
 enum
 {
