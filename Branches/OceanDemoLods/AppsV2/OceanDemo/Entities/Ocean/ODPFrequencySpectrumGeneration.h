@@ -29,10 +29,10 @@ bool geometries_equal_resolution(const ODSpectrumGeometry * gOne, const ODSpectr
 
 enum
 {
-    ODGeneratorOptionsHalfComplex = (1 << 0),
-    ODGeneratorOptionsHeights = (1 << 1),
+    ODGeneratorOptionsHalfComplex  = (1 << 0),
+    ODGeneratorOptionsHeights      = (1 << 1),
     ODGeneratorOptionsDisplacement = (1 << 2),
-    ODGeneratorOptionsGradient = (1 << 3),
+    ODGeneratorOptionsGradient     = (1 << 3),
     ODGeneratorOptionsDisplacementDerivatives = (1 << 4)
 };
 
