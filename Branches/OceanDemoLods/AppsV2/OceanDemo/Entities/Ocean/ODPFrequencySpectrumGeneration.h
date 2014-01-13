@@ -74,6 +74,9 @@ bool phillips_settings_equal(const ODPhillipsGeneratorSettings * pOne, const ODP
 bool unified_settings_equal(const ODUnifiedGeneratorSettings * pOne, const ODUnifiedGeneratorSettings * pTwo);
 bool generator_settings_equal(const ODGeneratorSettings * pOne, const ODGeneratorSettings * pTwo);
 
+ODGeneratorSettings generator_settings_zero();
+ODGeneratorSettings generator_settings_max();
+
 typedef struct OdSpectrumDataFloat
 {
     // zero frequency upper left
