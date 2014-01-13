@@ -88,6 +88,30 @@ bool geometries_equal_resolution(const ODSpectrumGeometry * gOne, const ODSpectr
     return true;
 }
 
+ODSpectrumGeometry geometry_zero()
+{
+    ODSpectrumGeometry result;
+
+    result.geometryResolution = iv2_zero();
+    result.gradientResolution = iv2_zero();
+    result.numberOfLods = 0;
+    result.sizes = NULL;
+
+    return result;
+}
+
+ODSpectrumGeometry geometry_max()
+{
+    ODSpectrumGeometry result;
+
+    result.geometryResolution = iv2_max();
+    result.gradientResolution = iv2_max();
+    result.numberOfLods = UINT32_MAX;
+    result.sizes = NULL;
+
+    return result;
+}
+
 bool phillips_settings_equal(const ODPhillipsGeneratorSettings * pOne, const ODPhillipsGeneratorSettings * pTwo)
 {
     if ( pOne->windSpeed != pTwo->windSpeed

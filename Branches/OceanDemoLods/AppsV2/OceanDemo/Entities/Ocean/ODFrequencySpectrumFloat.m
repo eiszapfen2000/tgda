@@ -356,22 +356,19 @@ static NPTimer * timer = nil;
 
     maxMeanSlopeVariance = effectiveMeanSlopeVariance = 0.0f;
 
-    lastGeometry.numberOfLods = UINT32_MAX;
-    lastGeometry.geometryResolution = iv2_max();
-    lastGeometry.gradientResolution = iv2_max();
-    lastGeometry.sizes = NULL;
+    lastGeometry    = geometry_max();
+    currentGeometry = geometry_zero();
 
-    currentGeometry.numberOfLods = 0;
-    currentGeometry.geometryResolution = iv2_zero();
-    currentGeometry.gradientResolution = iv2_zero();
-    currentGeometry.sizes = NULL;
-
+    lastGeneratorSettings.generatorType = Unknown;
+    lastGeneratorSettings.spectrumScale = DBL_MAX;
     lastGeneratorSettings.phillips.windDirection = v2_max();
     lastGeneratorSettings.phillips.windSpeed = DBL_MAX;
     lastGeneratorSettings.phillips.dampening = DBL_MAX;
     lastGeneratorSettings.unified.U10   = DBL_MAX;
     lastGeneratorSettings.unified.Omega = DBL_MAX;
 
+    currentGeneratorSettings.generatorType = Unknown;
+    currentGeneratorSettings.spectrumScale = 0.0;
     currentGeneratorSettings.phillips.windDirection = v2_zero();
     currentGeneratorSettings.phillips.windSpeed = 0.0;
     currentGeneratorSettings.phillips.dampening = 0.0;
