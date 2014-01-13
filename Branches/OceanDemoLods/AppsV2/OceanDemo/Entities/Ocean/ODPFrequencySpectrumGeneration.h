@@ -25,6 +25,17 @@ bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry 
 bool geometries_equal_size(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
 bool geometries_equal_resolution(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
 
+enum
+{
+    ODGeneratorOptionsHalfComplex = (1 << 0),
+    ODGeneratorOptionsHeights = (1 << 1),
+    ODGeneratorOptionsDisplacement = (1 << 2),
+    ODGeneratorOptionsGradient = (1 << 3),
+    ODGeneratorOptionsDisplacementDerivatives = (1 << 4)
+};
+
+typedef NSUInteger ODGeneratorOptions;
+
 typedef struct ODPhillipsGeneratorSettings
 {
     Vector2  windDirection;
@@ -43,6 +54,7 @@ ODUnifiedGeneratorSettings;
 typedef struct ODGeneratorSettings
 {
     ODSpectrumGenerator generatorType;
+    ODGeneratorOptions  generatorOptions;
     double spectrumScale;
     union
     {
