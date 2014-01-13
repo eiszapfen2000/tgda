@@ -19,6 +19,8 @@ typedef struct ODSpectrumGeometry
 }
 ODSpectrumGeometry;
 
+void geometry_init_with_lods(ODSpectrumGeometry * geometry, uint32_t numberOfLods);
+void geometry_clear(ODSpectrumGeometry * geometry);
 bool geometry_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * target);
 
 bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
@@ -54,7 +56,7 @@ ODUnifiedGeneratorSettings;
 typedef struct ODGeneratorSettings
 {
     ODSpectrumGenerator generatorType;
-    ODGeneratorOptions  generatorOptions;
+    ODGeneratorOptions  options;
     double spectrumScale;
     union
     {

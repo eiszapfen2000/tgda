@@ -1,5 +1,19 @@
 #import "ODPFrequencySpectrumGeneration.h"
 
+void geometry_init_with_lods(ODSpectrumGeometry * geometry, uint32_t numberOfLods)
+{
+    geometry->numberOfLods = numberOfLods;
+    geometry->sizes = ALLOC_ARRAY(Vector2, numberOfLods);
+}
+
+void geometry_clear(ODSpectrumGeometry * geometry)
+{
+    if ( geometry != NULL )
+    {
+        SAFE_FREE(geometry->sizes);
+    }
+}
+
 bool geometry_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * target)
 {
     if ( source == NULL || (source->numberOfLods == 0) || target == NULL )

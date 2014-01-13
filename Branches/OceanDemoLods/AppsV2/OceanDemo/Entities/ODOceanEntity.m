@@ -286,12 +286,17 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
         NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
 
+        #define ODZERO(_type, _name) \
+            _type _name; \
+            memset(&(_name), 0, sizeof((_name)));
+
         if ( [[ NSThread currentThread ] isCancelled ] == NO )
         {
-            ODSpectrumGeometry geometry;
             ODGeneratorSettings generatorSettings;
             NSUInteger geometryResIndex;
             NSUInteger gradientResIndex;
+            uint32_t lodCount;
+            double maxSize;
 
             {
                 [ settingsMutex lock ];
@@ -320,14 +325,12 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                 }
 
                 generatorSettings.spectrumScale = generatorSpectrumScale;
+                generatorSettings.options = 0;
 
                 NSAssert(generatorNumberOfLods <= UINT32_MAX, @"Lod out of bounds");
 
-                geometry.numberOfLods = (uint32_t)generatorNumberOfLods;
-                geometry.sizes = ALLOC_ARRAY(Vector2, geometry.numberOfLods);
-
-                // first LOD is the largest one, set it to our desired size
-                geometry.sizes[0] = (Vector2){generatorSize, generatorSize};
+                lodCount = (uint32_t)generatorNumberOfLods;
+                maxSize = generatorSize;
 
                 geometryResIndex = generatorGeometryResolutionIndex;
                 gradientResIndex = generatorGradientResolutionIndex;
@@ -337,6 +340,11 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
             const int32_t geometryRes = resolutions[geometryResIndex];
             const int32_t gradientRes = resolutions[gradientResIndex];
+
+            ODSpectrumGeometry geometry;
+            geometry_init_with_lods(&geometry, lodCount);
+            // first LOD is the largest one, set it to our desired size
+            geometry.sizes[0] = (Vector2){maxSize, maxSize};
             geometry.geometryResolution = (IVector2){geometryRes, geometryRes};
             geometry.gradientResolution = (IVector2){gradientRes, gradientRes};
 
@@ -364,13 +372,6 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                                                  atTime:generationTime
                                    generateBaseGeometry:NO ];
 
-            /*
-            OdFrequencySpectrumFloat halfcomplexSpectrum
-                = [ s generateFloatSpectrumHCWithGeometry:geometry
-                                                generator:generatorSettings
-                                                   atTime:generationTime
-                                     generateBaseGeometry:NO ];
-            */
 
             [ timer update ];
             const double genTime = [ timer frameTime ];
@@ -378,7 +379,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
             generationTime += 1.0f/30.0f;
 
-            FREE(geometry.sizes);
+            geometry_clear(&geometry);
 
             NSUInteger queueCount = 0;
             {
