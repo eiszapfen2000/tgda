@@ -3,15 +3,26 @@
 void geometry_init_with_resolutions_and_lods(ODSpectrumGeometry * geometry,
     int32_t geometryRes, int32_t gradientRes, uint32_t numberOfLods)
 {
+    assert(geometry != NULL && geometry->sizes == NULL);
+
     geometry->geometryResolution = (IVector2){geometryRes, geometryRes};
     geometry->gradientResolution = (IVector2){gradientRes, gradientRes};
     geometry->numberOfLods = numberOfLods;
     geometry->sizes = ALLOC_ARRAY(Vector2, numberOfLods);
 }
 
+void geometry_set_max_size(ODSpectrumGeometry * geometry, double maxSize)
+{
+    assert(geometry != NULL && geometry->sizes != NULL);
+
+    geometry->sizes[0] = (Vector2){maxSize, maxSize};
+}
+
 void geometry_set_size(ODSpectrumGeometry * geometry,
     uint32_t lodIndex, double lodSize)
 {
+    assert(geometry != NULL && geometry->sizes != NULL);
+
     if ( lodIndex < geometry->numberOfLods )
     {
         geometry->sizes[lodIndex] = (Vector2){lodSize, lodSize};
@@ -47,11 +58,19 @@ bool geometry_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * targe
 
 bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo)
 {
+    assert(gOne != NULL && gTwo != NULL);
+
     if ( gOne->numberOfLods != gTwo->numberOfLods
          || gOne->geometryResolution.x != gTwo->geometryResolution.x
          || gOne->geometryResolution.y != gTwo->geometryResolution.y
          || gOne->gradientResolution.x != gTwo->gradientResolution.x
          || gOne->gradientResolution.y != gTwo->gradientResolution.y )
+    {
+        return false;
+    }
+
+    if (( gOne->sizes == NULL && gTwo->sizes != NULL )
+        || ( gOne->sizes != NULL && gTwo->sizes == NULL ))
     {
         return false;
     }
@@ -70,6 +89,8 @@ bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry 
 
 bool geometries_equal_size(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo)
 {
+    assert(gOne != NULL && gTwo != NULL && gOne->sizes != NULL && gTwo->sizes != NULL);
+
     if ( gOne->numberOfLods != gTwo->numberOfLods )
     {
         return false;
@@ -89,6 +110,8 @@ bool geometries_equal_size(const ODSpectrumGeometry * gOne, const ODSpectrumGeom
 
 bool geometries_equal_resolution(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo)
 {
+    assert(gOne != NULL && gTwo != NULL);
+
     if ( gOne->geometryResolution.x != gTwo->geometryResolution.x
          || gOne->geometryResolution.y != gTwo->geometryResolution.y
          || gOne->gradientResolution.x != gTwo->gradientResolution.x
