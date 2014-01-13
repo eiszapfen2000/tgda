@@ -29,7 +29,7 @@ void geometry_set_size(ODSpectrumGeometry * geometry,
     uint32_t lodIndex, double lodSize);
 
 void geometry_clear(ODSpectrumGeometry * geometry);
-bool geometry_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * target);
+void geometry_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * target);
 
 bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
 bool geometries_equal_size(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);

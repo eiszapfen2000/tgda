@@ -37,12 +37,9 @@ void geometry_clear(ODSpectrumGeometry * geometry)
     }
 }
 
-bool geometry_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * target)
+void geometry_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * target)
 {
-    if ( source == NULL || (source->numberOfLods == 0) || target == NULL )
-    {
-        return false;
-    }
+    assert(source != NULL || target != NULL );
 
     SAFE_FREE(target->sizes);
 
@@ -50,10 +47,11 @@ bool geometry_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * targe
     target->gradientResolution = source->gradientResolution;
     target->numberOfLods = source->numberOfLods;
 
-    target->sizes = ALLOC_ARRAY(Vector2, source->numberOfLods);
-    memcpy(target->sizes, source->sizes, sizeof(Vector2) * source->numberOfLods);
-
-    return true;
+    if ( source->numberOfLods != 0 )
+    {
+        target->sizes = ALLOC_ARRAY(Vector2, source->numberOfLods);
+        memcpy(target->sizes, source->sizes, sizeof(Vector2) * source->numberOfLods);
+    }
 }
 
 bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo)
@@ -65,12 +63,6 @@ bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry 
          || gOne->geometryResolution.y != gTwo->geometryResolution.y
          || gOne->gradientResolution.x != gTwo->gradientResolution.x
          || gOne->gradientResolution.y != gTwo->gradientResolution.y )
-    {
-        return false;
-    }
-
-    if (( gOne->sizes == NULL && gTwo->sizes != NULL )
-        || ( gOne->sizes != NULL && gTwo->sizes == NULL ))
     {
         return false;
     }
