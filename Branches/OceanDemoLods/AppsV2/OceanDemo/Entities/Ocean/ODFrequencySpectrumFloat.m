@@ -388,23 +388,37 @@ static NPTimer * timer = nil;
     const IVector2 geometryResolution = currentGeometry.geometryResolution;
     const IVector2 gradientResolution = currentGeometry.gradientResolution;
 
+    const NSUInteger options = currentGeneratorSettings.options;
+
     const int32_t numberOfGeometryElements = geometryResolution.x * geometryResolution.y;
     const int32_t numberOfGradientElements = gradientResolution.x * gradientResolution.y;
 
-	fftwf_complex * height
-        = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
+	fftwf_complex * height = NULL;
+	fftwf_complex * gradient = NULL;
+	fftwf_complex * displacement = NULL;
+	fftwf_complex * displacementXdXdZ = NULL;
+	fftwf_complex * displacementZdXdZ = NULL;
 
-	fftwf_complex * gradient
-        = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+    if ( options & ODGeneratorOptionsHeights )
+    {
+    	height = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
+    }
 
-    fftwf_complex * displacement
-        = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
+    if ( options & ODGeneratorOptionsGradient )
+    {
+        gradient = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+    }
 
-    fftwf_complex * displacementXdXdZ
-        = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+    if ( options & ODGeneratorOptionsDisplacement )
+    {
+        displacement = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
+    }
 
-    fftwf_complex * displacementZdXdZ
-        = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+    if ( options & ODGeneratorOptionsDisplacementDerivatives )
+    {
+        displacementXdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+        displacementZdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+    }
 
     const IVector2 geometryPadding
         = { .x = (H0Resolution.x - geometryResolution.x) / 2, .y = (H0Resolution.y - geometryResolution.y) / 2 };
@@ -523,7 +537,8 @@ static NPTimer * timer = nil;
 
 
                 //if ( indexForK >= geometryStartIndex && indexForK <= geometryEndIndex )
-                if ( j > geometryXRange.x && j < geometryXRange.y
+                if ( height != NULL
+                     &&  j > geometryXRange.x && j < geometryXRange.y
                      && i > geometryYRange.x && i < geometryYRange.y )
                 {
                     height[geometryIndex][0] = geometryhTilde[0];
@@ -557,43 +572,49 @@ static NPTimer * timer = nil;
                 if ( j > gradientXRange.x && j < gradientXRange.y
                      && i > gradientYRange.x && i < gradientYRange.y )
                 {
-                    const fftwf_complex gx
-                        = {-kx * gradienthTilde[1] * derivativeXScale, kx * gradienthTilde[0] * derivativeXScale};
+                    if ( gradient != NULL )
+                    {
+                        const fftwf_complex gx
+                            = {-kx * gradienthTilde[1] * derivativeXScale, kx * gradienthTilde[0] * derivativeXScale};
 
-                    const fftwf_complex gz
-                        = {-ky * gradienthTilde[1] * derivativeZScale, ky * gradienthTilde[0] * derivativeZScale};
+                        const fftwf_complex gz
+                            = {-ky * gradienthTilde[1] * derivativeZScale, ky * gradienthTilde[0] * derivativeZScale};
 
-                    // gx + i*gz
-                    gradient[gradientIndex][0] = gx[0] - gz[1];
-                    gradient[gradientIndex][1] = gx[1] + gz[0];
+                        // gx + i*gz
+                        gradient[gradientIndex][0] = gx[0] - gz[1];
+                        gradient[gradientIndex][1] = gx[1] + gz[0];
+                    }
 
-                    // partial derivatives of dx and dz
-                    const float dx_x_term = kx * kx * factor * derivativeXScale;
-                    const float dz_z_term = ky * ky * factor * derivativeZScale;
-                    const float dx_z_term = ky * kx * factor * derivativeXScale;
-                    const float dz_x_term = kx * ky * factor * derivativeZScale;
+                    if ( displacementXdXdZ != NULL && displacementZdXdZ != NULL )
+                    {
+                        // partial derivatives of dx and dz
+                        const float dx_x_term = kx * kx * factor * derivativeXScale;
+                        const float dz_z_term = ky * ky * factor * derivativeZScale;
+                        const float dx_z_term = ky * kx * factor * derivativeXScale;
+                        const float dz_x_term = kx * ky * factor * derivativeZScale;
 
-                    const fftwf_complex dx_x
-                        = { dx_x_term * derivativeXScale * gradienthTilde[0],
-                            dx_x_term * derivativeXScale * gradienthTilde[1] };
+                        const fftwf_complex dx_x
+                            = { dx_x_term * derivativeXScale * gradienthTilde[0],
+                                dx_x_term * derivativeXScale * gradienthTilde[1] };
 
-                    const fftwf_complex dx_z
-                        = { dx_z_term * derivativeZScale * gradienthTilde[0],
-                            dx_z_term * derivativeZScale * gradienthTilde[1] };
+                        const fftwf_complex dx_z
+                            = { dx_z_term * derivativeZScale * gradienthTilde[0],
+                                dx_z_term * derivativeZScale * gradienthTilde[1] };
 
-                    const fftwf_complex dz_x
-                        = { dz_x_term * derivativeXScale * gradienthTilde[0],
-                            dz_x_term * derivativeXScale * gradienthTilde[1] };
+                        const fftwf_complex dz_x
+                            = { dz_x_term * derivativeXScale * gradienthTilde[0],
+                                dz_x_term * derivativeXScale * gradienthTilde[1] };
 
-                    const fftwf_complex dz_z
-                        = { dz_z_term * derivativeZScale * gradienthTilde[0],
-                            dz_z_term * derivativeZScale * gradienthTilde[1] };
+                        const fftwf_complex dz_z
+                            = { dz_z_term * derivativeZScale * gradienthTilde[0],
+                                dz_z_term * derivativeZScale * gradienthTilde[1] };
 
-                    displacementXdXdZ[gradientIndex][0] = dx_x[0] - dx_z[1];
-                    displacementXdXdZ[gradientIndex][1] = dx_x[1] + dx_z[0];
+                        displacementXdXdZ[gradientIndex][0] = dx_x[0] - dx_z[1];
+                        displacementXdXdZ[gradientIndex][1] = dx_x[1] + dx_z[0];
 
-                    displacementZdXdZ[gradientIndex][0] = dz_x[0] - dz_z[1];
-                    displacementZdXdZ[gradientIndex][1] = dz_x[1] + dz_z[0];
+                        displacementZdXdZ[gradientIndex][0] = dz_x[0] - dz_z[1];
+                        displacementZdXdZ[gradientIndex][1] = dz_x[1] + dz_z[0];
+                    }
                 }
 
                 // -i * kx/|k| * H
@@ -1278,14 +1299,16 @@ right way.
 
     OdFrequencySpectrumFloat result = [ self generateHAtTime:time ];
 
-    [ self swapFrequencySpectrum:result.data.height
-                      resolution:currentGeometry.geometryResolution
-                       quadrants:ODQuadrant_1_3 ];
+    if ( result.data.height != NULL )
+    {
+        [ self swapFrequencySpectrum:result.data.height
+                          resolution:currentGeometry.geometryResolution
+                           quadrants:ODQuadrant_1_3 ];
 
-    [ self swapFrequencySpectrum:result.data.height
-                      resolution:currentGeometry.geometryResolution
-                       quadrants:ODQuadrant_2_4 ];
-
+        [ self swapFrequencySpectrum:result.data.height
+                          resolution:currentGeometry.geometryResolution
+                           quadrants:ODQuadrant_2_4 ];
+    }
 
     if ( result.data.gradient != NULL )
     {
