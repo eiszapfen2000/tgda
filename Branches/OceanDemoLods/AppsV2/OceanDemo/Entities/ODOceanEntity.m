@@ -325,7 +325,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                 }
 
                 generatorSettings.spectrumScale = generatorSpectrumScale;
-                generatorSettings.options = 0;
+                generatorSettings.options = ULONG_MAX;
 
                 NSAssert(generatorNumberOfLods <= UINT32_MAX, @"Lod out of bounds");
 
