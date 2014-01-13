@@ -155,3 +155,34 @@ bool generator_settings_equal(const ODGeneratorSettings * pOne, const ODGenerato
     }
 }
 
+ODGeneratorSettings generator_settings_zero()
+{
+    ODGeneratorSettings result;
+
+    result.generatorType = Unknown;
+    result.spectrumScale = 0.0;
+    result.phillips.windDirection = v2_zero();
+    result.phillips.windSpeed = 0.0;
+    result.phillips.dampening = 0.0;
+    result.unified.U10   = 0.0;
+    result.unified.Omega = 0.0;
+
+    return result;
+}
+
+ODGeneratorSettings generator_settings_max()
+{
+    ODGeneratorSettings result;
+
+    result.generatorType = Unknown;
+    result.spectrumScale = DBL_MAX;
+    result.phillips.windDirection = v2_max();
+    result.phillips.windSpeed = DBL_MAX;
+    result.phillips.dampening = DBL_MAX;
+    result.unified.U10   = DBL_MAX;
+    result.unified.Omega = DBL_MAX;
+
+    return result;
+}
+
+

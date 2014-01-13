@@ -358,22 +358,8 @@ static NPTimer * timer = nil;
 
     lastGeometry    = geometry_max();
     currentGeometry = geometry_zero();
-
-    lastGeneratorSettings.generatorType = Unknown;
-    lastGeneratorSettings.spectrumScale = DBL_MAX;
-    lastGeneratorSettings.phillips.windDirection = v2_max();
-    lastGeneratorSettings.phillips.windSpeed = DBL_MAX;
-    lastGeneratorSettings.phillips.dampening = DBL_MAX;
-    lastGeneratorSettings.unified.U10   = DBL_MAX;
-    lastGeneratorSettings.unified.Omega = DBL_MAX;
-
-    currentGeneratorSettings.generatorType = Unknown;
-    currentGeneratorSettings.spectrumScale = 0.0;
-    currentGeneratorSettings.phillips.windDirection = v2_zero();
-    currentGeneratorSettings.phillips.windSpeed = 0.0;
-    currentGeneratorSettings.phillips.dampening = 0.0;
-    currentGeneratorSettings.unified.U10   = 0.0;
-    currentGeneratorSettings.unified.Omega = 0.0;
+    lastGeneratorSettings    = generator_settings_max();
+    currentGeneratorSettings = generator_settings_zero();
 
     return self;
 }
