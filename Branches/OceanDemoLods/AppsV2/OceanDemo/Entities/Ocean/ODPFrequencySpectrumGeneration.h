@@ -23,6 +23,9 @@ ODSpectrumGeometry;
 void geometry_init_with_resolutions_and_lods(ODSpectrumGeometry * geometry,
     int32_t geometryRes, int32_t gradientRes, uint32_t numberOfLods);
 
+void geometry_set_size(ODSpectrumGeometry * geometry,
+    uint32_t lodIndex, double lodSize);
+
 void geometry_clear(ODSpectrumGeometry * geometry);
 bool geometry_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * target);
 
