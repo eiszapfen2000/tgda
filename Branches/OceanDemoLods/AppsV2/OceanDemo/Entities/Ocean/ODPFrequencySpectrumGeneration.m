@@ -1,6 +1,6 @@
 #import "ODPFrequencySpectrumGeneration.h"
 
-void geometry_init_with_resolutions_and_lods(ODSpectrumGeometry * geometry,
+void geometry_init_with_resolutions_and_lods(OdSpectrumGeometry * geometry,
     int32_t geometryRes, int32_t gradientRes, uint32_t numberOfLods)
 {
     assert(geometry != NULL && geometry->sizes == NULL);
@@ -11,14 +11,14 @@ void geometry_init_with_resolutions_and_lods(ODSpectrumGeometry * geometry,
     geometry->sizes = ALLOC_ARRAY(Vector2, numberOfLods);
 }
 
-void geometry_set_max_size(ODSpectrumGeometry * geometry, double maxSize)
+void geometry_set_max_size(OdSpectrumGeometry * geometry, double maxSize)
 {
     assert(geometry != NULL && geometry->sizes != NULL);
 
     geometry->sizes[0] = (Vector2){maxSize, maxSize};
 }
 
-void geometry_set_size(ODSpectrumGeometry * geometry,
+void geometry_set_size(OdSpectrumGeometry * geometry,
     uint32_t lodIndex, double lodSize)
 {
     assert(geometry != NULL && geometry->sizes != NULL);
@@ -29,7 +29,7 @@ void geometry_set_size(ODSpectrumGeometry * geometry,
     }
 }
 
-void geometry_clear(ODSpectrumGeometry * geometry)
+void geometry_clear(OdSpectrumGeometry * geometry)
 {
     if ( geometry != NULL )
     {
@@ -37,7 +37,7 @@ void geometry_clear(ODSpectrumGeometry * geometry)
     }
 }
 
-void geometry_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * target)
+void geometry_copy(const OdSpectrumGeometry * source, OdSpectrumGeometry * target)
 {
     assert(source != NULL || target != NULL );
 
@@ -54,7 +54,7 @@ void geometry_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * targe
     }
 }
 
-bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo)
+bool geometries_equal(const OdSpectrumGeometry * gOne, const OdSpectrumGeometry * gTwo)
 {
     assert(gOne != NULL && gTwo != NULL);
 
@@ -79,7 +79,7 @@ bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry 
     return true;
 }
 
-bool geometries_equal_size(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo)
+bool geometries_equal_size(const OdSpectrumGeometry * gOne, const OdSpectrumGeometry * gTwo)
 {
     assert(gOne != NULL && gTwo != NULL && gOne->sizes != NULL && gTwo->sizes != NULL);
 
@@ -100,7 +100,7 @@ bool geometries_equal_size(const ODSpectrumGeometry * gOne, const ODSpectrumGeom
     return true;
 }
 
-bool geometries_equal_resolution(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo)
+bool geometries_equal_resolution(const OdSpectrumGeometry * gOne, const OdSpectrumGeometry * gTwo)
 {
     assert(gOne != NULL && gTwo != NULL);
 
@@ -115,9 +115,9 @@ bool geometries_equal_resolution(const ODSpectrumGeometry * gOne, const ODSpectr
     return true;
 }
 
-ODSpectrumGeometry geometry_zero()
+OdSpectrumGeometry geometry_zero()
 {
-    ODSpectrumGeometry result;
+    OdSpectrumGeometry result;
 
     result.geometryResolution = iv2_zero();
     result.gradientResolution = iv2_zero();
@@ -127,9 +127,9 @@ ODSpectrumGeometry geometry_zero()
     return result;
 }
 
-ODSpectrumGeometry geometry_max()
+OdSpectrumGeometry geometry_max()
 {
-    ODSpectrumGeometry result;
+    OdSpectrumGeometry result;
 
     result.geometryResolution = iv2_max();
     result.gradientResolution = iv2_max();

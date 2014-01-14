@@ -3,32 +3,32 @@
 #import "Core/NPObject/NPObject.h"
 #import "fftw3.h"
 
-typedef struct ODSpectrumGeometry
+typedef struct OdSpectrumGeometry
 {
     IVector2 geometryResolution;
     IVector2 gradientResolution;
     uint32_t numberOfLods;
     Vector2 * sizes;
 }
-ODSpectrumGeometry;
+OdSpectrumGeometry;
 
-void geometry_init_with_resolutions_and_lods(ODSpectrumGeometry * geometry,
+void geometry_init_with_resolutions_and_lods(OdSpectrumGeometry * geometry,
     int32_t geometryRes, int32_t gradientRes, uint32_t numberOfLods);
 
-void geometry_set_max_size(ODSpectrumGeometry * geometry, double maxSize);
+void geometry_set_max_size(OdSpectrumGeometry * geometry, double maxSize);
 
-void geometry_set_size(ODSpectrumGeometry * geometry,
+void geometry_set_size(OdSpectrumGeometry * geometry,
     uint32_t lodIndex, double lodSize);
 
-void geometry_clear(ODSpectrumGeometry * geometry);
-void geometry_copy(const ODSpectrumGeometry * source, ODSpectrumGeometry * target);
+void geometry_clear(OdSpectrumGeometry * geometry);
+void geometry_copy(const OdSpectrumGeometry * source, OdSpectrumGeometry * target);
 
-bool geometries_equal(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
-bool geometries_equal_size(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
-bool geometries_equal_resolution(const ODSpectrumGeometry * gOne, const ODSpectrumGeometry * gTwo);
+bool geometries_equal(const OdSpectrumGeometry * gOne, const OdSpectrumGeometry * gTwo);
+bool geometries_equal_size(const OdSpectrumGeometry * gOne, const OdSpectrumGeometry * gTwo);
+bool geometries_equal_resolution(const OdSpectrumGeometry * gOne, const OdSpectrumGeometry * gTwo);
 
-ODSpectrumGeometry geometry_zero();
-ODSpectrumGeometry geometry_max();
+OdSpectrumGeometry geometry_zero();
+OdSpectrumGeometry geometry_max();
 
 typedef enum ODSpectrumGenerator
 {
@@ -132,14 +132,14 @@ OdFrequencySpectrumFloat;
 @protocol ODPFrequencySpectrumGenerationFloat
 
 - (OdFrequencySpectrumFloat)
-    generateFloatSpectrumWithGeometry:(ODSpectrumGeometry)geometry
+    generateFloatSpectrumWithGeometry:(OdSpectrumGeometry)geometry
                             generator:(ODGeneratorSettings)generatorSettings
                                atTime:(const float)time
                  generateBaseGeometry:(BOOL)generateBaseGeometry
                                      ;
 
 - (OdFrequencySpectrumFloat)
-    generateFloatSpectrumHCWithGeometry:(ODSpectrumGeometry)geometry
+    generateFloatSpectrumHCWithGeometry:(OdSpectrumGeometry)geometry
                               generator:(ODGeneratorSettings)generatorSettings
                                  atTime:(const float)time
                    generateBaseGeometry:(BOOL)generateBaseGeometry
