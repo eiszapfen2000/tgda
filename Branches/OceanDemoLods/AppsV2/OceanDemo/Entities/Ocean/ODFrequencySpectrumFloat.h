@@ -15,8 +15,8 @@
     float effectiveMeanSlopeVariance;
     OdSpectrumGeometry lastGeometry;
     OdSpectrumGeometry currentGeometry;
-    ODGeneratorSettings lastGeneratorSettings;
-    ODGeneratorSettings currentGeneratorSettings;
+    OdGeneratorSettings lastGeneratorSettings;
+    OdGeneratorSettings currentGeneratorSettings;
 }
 
 - (id) init;

@@ -292,7 +292,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
         if ( [[ NSThread currentThread ] isCancelled ] == NO )
         {
-            ODGeneratorSettings generatorSettings;
+            OdGeneratorSettings generatorSettings;
             NSUInteger geometryResIndex;
             NSUInteger gradientResIndex;
             uint32_t lodCount;
