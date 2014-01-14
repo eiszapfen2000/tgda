@@ -94,7 +94,15 @@ typedef struct OdSpectrumDataFloat
 }
 OdSpectrumDataFloat;
 
+void spectrum_data_init_with_geometry_and_options(
+    OdSpectrumDataFloat * spectrumData,
+    const OdSpectrumGeometry * const geometry,
+    OdGeneratorOptions options
+    );
+
 void spectrum_data_clear(OdSpectrumDataFloat * spectrumData);
+
+OdSpectrumDataFloat spectrum_data_zero();
 
 typedef struct OdSpectrumDataHCFloat
 {
@@ -111,7 +119,15 @@ typedef struct OdSpectrumDataHCFloat
 }
 OdSpectrumDataHCFloat;
 
+void spectrum_data_hc_init_with_geometry_and_options(
+    OdSpectrumDataHCFloat * spectrumData,
+    const OdSpectrumGeometry * const geometry,
+    OdGeneratorOptions options
+    );
+
 void spectrum_data_hc_clear(OdSpectrumDataHCFloat * spectrumData);
+
+OdSpectrumDataHCFloat spectrum_data_hc_zero();
 
 typedef struct OdFrequencySpectrumFloat
 {
