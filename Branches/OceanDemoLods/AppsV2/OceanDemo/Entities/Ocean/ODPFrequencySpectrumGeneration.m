@@ -1,5 +1,8 @@
 #import "ODPFrequencySpectrumGeneration.h"
 
+#define FFTWF_FREE(_pointer)        do {void *_ptr=(void *)(_pointer); fftwf_free(_ptr); _pointer=NULL; } while (0)
+#define FFTWF_SAFE_FREE(_pointer)   { if ( (_pointer) != NULL ) FFTWF_FREE((_pointer)); }
+
 void geometry_init_with_resolutions_and_lods(OdSpectrumGeometry * geometry,
     int32_t geometryRes, int32_t gradientRes, uint32_t numberOfLods)
 {
@@ -212,6 +215,50 @@ OdGeneratorSettings generator_settings_max()
     return result;
 }
 
+void spectrum_data_init_with_geometry_and_options(
+    OdSpectrumDataFloat * spectrumData,
+    const OdSpectrumGeometry * const geometry,
+    OdGeneratorOptions options
+    )
+{
+    assert(spectrumData != NULL && geometry != NULL);
+
+    const int32_t numberOfLods = geometry->numberOfLods;
+
+    const int32_t numberOfGeometryElements
+        = geometry->geometryResolution.x * geometry->geometryResolution.y;
+
+    const int32_t numberOfGradientElements
+        = geometry->gradientResolution.x * geometry->gradientResolution.y;
+
+	FFTWF_SAFE_FREE(spectrumData->height);
+	FFTWF_SAFE_FREE(spectrumData->gradient);
+	FFTWF_SAFE_FREE(spectrumData->displacement);
+	FFTWF_SAFE_FREE(spectrumData->displacementXdXdZ);
+	FFTWF_SAFE_FREE(spectrumData->displacementZdXdZ);
+
+    if ( options & OdGeneratorOptionsHeights )
+    {
+    	spectrumData->height = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
+    }
+
+    if ( options & OdGeneratorOptionsGradient )
+    {
+        spectrumData->gradient = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+    }
+
+    if ( options & OdGeneratorOptionsDisplacement )
+    {
+        spectrumData->displacement = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
+    }
+
+    if ( options & OdGeneratorOptionsDisplacementDerivatives )
+    {
+        spectrumData->displacementXdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+        spectrumData->displacementZdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+    }    
+}
+
 void spectrum_data_clear(OdSpectrumDataFloat * spectrumData)
 {
     if ( spectrumData != NULL )
@@ -221,6 +268,66 @@ void spectrum_data_clear(OdSpectrumDataFloat * spectrumData)
         fftwf_free(spectrumData->displacement);
         fftwf_free(spectrumData->displacementXdXdZ);
         fftwf_free(spectrumData->displacementZdXdZ);
+    }
+}
+
+OdSpectrumDataFloat spectrum_data_zero()
+{
+    OdSpectrumDataFloat result;
+    memset(&result, 0, sizeof(result));
+
+    return result;
+}
+
+void spectrum_data_hc_init_with_geometry_and_options(
+    OdSpectrumDataHCFloat * spectrumData,
+    const OdSpectrumGeometry * const geometry,
+    OdGeneratorOptions options
+    )
+{
+    assert(spectrumData != NULL && geometry != NULL);
+
+    const int32_t numberOfLods = geometry->numberOfLods;
+
+    const int32_t numberOfGeometryElements
+        = ((geometry->geometryResolution.x / 2) + 1) * geometry->geometryResolution.y;
+
+    const int32_t numberOfGradientElements
+        = ((geometry->gradientResolution.x / 2) + 1) * geometry->gradientResolution.y;
+
+    FFTWF_SAFE_FREE(spectrumData->height);
+    FFTWF_SAFE_FREE(spectrumData->gradientX);
+    FFTWF_SAFE_FREE(spectrumData->gradientZ);
+    FFTWF_SAFE_FREE(spectrumData->displacementX);
+    FFTWF_SAFE_FREE(spectrumData->displacementZ);
+    FFTWF_SAFE_FREE(spectrumData->displacementXdX);
+    FFTWF_SAFE_FREE(spectrumData->displacementXdZ);
+    FFTWF_SAFE_FREE(spectrumData->displacementZdX);
+    FFTWF_SAFE_FREE(spectrumData->displacementZdZ);
+
+    if ( options & OdGeneratorOptionsHeights )
+    {
+    	spectrumData->height = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
+    }
+
+    if ( options & OdGeneratorOptionsGradient )
+    {
+        spectrumData->gradientX = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+        spectrumData->gradientZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+    }
+
+    if ( options & OdGeneratorOptionsDisplacement )
+    {
+        spectrumData->displacementX = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
+        spectrumData->displacementZ = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
+    }
+
+    if ( options & OdGeneratorOptionsDisplacementDerivatives )
+    {
+        spectrumData->displacementXdX = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+        spectrumData->displacementXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+        spectrumData->displacementZdX = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+        spectrumData->displacementZdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
     }
 }
 
@@ -238,5 +345,13 @@ void spectrum_data_hc_clear(OdSpectrumDataHCFloat * spectrumData)
         fftwf_free(spectrumData->displacementZdX);
         fftwf_free(spectrumData->displacementZdZ);
     }
+}
+
+OdSpectrumDataHCFloat spectrum_data_hc_zero()
+{
+    OdSpectrumDataHCFloat result;
+    memset(&result, 0, sizeof(result));
+
+    return result;
 }
 
