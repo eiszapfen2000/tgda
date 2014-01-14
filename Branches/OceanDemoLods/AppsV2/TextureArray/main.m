@@ -11,21 +11,14 @@
 #import "Core/Container/NPAssetArray.h"
 #import "Core/Thread/NPSemaphore.h"
 #import "Core/Timer/NPTimer.h"
-#import "Graphics/Buffer/NPBufferObject.h"
-#import "Graphics/Buffer/NPCPUBuffer.h"
-#import "Graphics/Geometry/NPCPUVertexArray.h"
-#import "Graphics/Geometry/NPVertexArray.h"
-#import "Graphics/Model/NPSUX2Model.h"
-#import "Graphics/Texture/NPTexture2D.h"
+#import "Core/Utilities/NSData+NPEngine.h"
+#import "Graphics/Texture/NPTexture2DArray.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
-#import "Graphics/Texture/NPTextureBuffer.h"
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/Effect/NPEffectVariableInt.h"
 #import "Graphics/Font/NPFont.h"
-#import "Graphics/RenderTarget/NPRenderTargetConfiguration.h"
-#import "Graphics/RenderTarget/NPRenderTexture.h"
 #import "Graphics/State/NPStateConfiguration.h"
 #import "Graphics/State/NPBlendingState.h"
 #import "Graphics/State/NPCullingState.h"
@@ -123,7 +116,7 @@ int main (int argc, char **argv)
 
     glClearDepth(1);
     glClearStencil(0);
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearColor(0.0, 1.0, 0.0, 1.0);
 
     // create and register log file
     NPLogFile * logFile = AUTORELEASE([[ NPLogFile alloc ] init ]);
@@ -152,6 +145,50 @@ int main (int argc, char **argv)
     [ viewport reset ];
 
     NSAutoreleasePool * rPool = [ NSAutoreleasePool new ];
+
+    NPEffect * effect
+        = [[[ NPEngineGraphics instance ]
+                effects ] getAssetWithFileName:@"default.effect" ];
+
+    assert( effect != nil );
+
+    RETAIN(effect);
+
+    const uint32_t resolution = 4;
+    const uint32_t layers = 4;
+
+    FVector4 colors[4] = {{1.0f, 0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 0.0f, 1.0f}};
+    FVector4 * textureData = ALLOC_ARRAY(FVector4, resolution * resolution  * layers);
+
+    for ( uint32_t l = 0; l < layers; l++ )
+    {
+        uint32_t offset = resolution * resolution  * l;
+
+        for ( uint32_t i = 0; i < resolution * resolution; i++ )
+        {
+            textureData[offset + i] = colors[l];
+            printf("%u ", offset + i);
+        }
+
+        printf("\n");
+    }
+
+    const NSUInteger numberOfBytes
+        = resolution * resolution * layers * sizeof(FVector4);
+
+    NSData * data
+        = [ NSData dataWithBytesNoCopyNoFree:textureData
+                                      length:numberOfBytes ];
+
+    NPTexture2DArray * texture = [[ NPTexture2DArray alloc ] init ];
+
+    [ texture generateUsingWidth:resolution
+                          height:resolution
+                          layers:layers
+                     pixelFormat:NpTexturePixelFormatRGBA
+                      dataFormat:NpTextureDataFormatFloat32
+                         mipmaps:NO
+                            data:data ];
 
     DESTROY(rPool);
 
@@ -183,13 +220,22 @@ int main (int argc, char **argv)
         // clear context framebuffer
         [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
-        /*
         [[[ NP Graphics ] textureBindingState ] clear ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:[ preethamTarget  texture ] texelUnit:0 ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:[ luminanceTarget texture ] texelUnit:1 ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:texture texelUnit:0 ];
         [[[ NP Graphics ] textureBindingState ] activate ];
-        */
 
+        [[ effect techniqueWithName:@"texture" ] activate ];
+
+        glBegin(GL_QUADS);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f,  0.0f);
+            glVertexAttrib2f(NpVertexStreamPositions, -1.0f, -1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f,  0.0f);
+            glVertexAttrib2f(NpVertexStreamPositions,  1.0f, -1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f,  1.0f);
+            glVertexAttrib2f(NpVertexStreamPositions,  1.0f,  1.0f);
+            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f,  1.0f);
+            glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
+        glEnd();
 
         // check for GL errors
         [[ NP Graphics ] checkForGLErrors ];        
@@ -209,6 +255,9 @@ int main (int argc, char **argv)
         // kill autorelease pool
         DESTROY(innerPool);
     }
+
+    DESTROY(texture);
+    DESTROY(effect);
 
     // Shutdown NPGraphics, deallocates a lot of stuff
     [[ NP Graphics ] shutdown ];
