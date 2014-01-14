@@ -149,6 +149,8 @@ typedef struct OdFrequencySpectrumFloat
 }
 OdFrequencySpectrumFloat;
 
+OdFrequencySpectrumFloat frequency_spectrum_zero();
+
 @protocol ODPFrequencySpectrumGenerationFloat
 
 - (OdFrequencySpectrumFloat)
