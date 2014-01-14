@@ -399,22 +399,22 @@ static NPTimer * timer = nil;
 	fftwf_complex * displacementXdXdZ = NULL;
 	fftwf_complex * displacementZdXdZ = NULL;
 
-    if ( options & ODGeneratorOptionsHeights )
+    if ( options & OdGeneratorOptionsHeights )
     {
     	height = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
     }
 
-    if ( options & ODGeneratorOptionsGradient )
+    if ( options & OdGeneratorOptionsGradient )
     {
         gradient = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
     }
 
-    if ( options & ODGeneratorOptionsDisplacement )
+    if ( options & OdGeneratorOptionsDisplacement )
     {
         displacement = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
     }
 
-    if ( options & ODGeneratorOptionsDisplacementDerivatives )
+    if ( options & OdGeneratorOptionsDisplacementDerivatives )
     {
         displacementXdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
         displacementZdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);

@@ -40,13 +40,13 @@ OdSpectrumGenerator;
 
 enum
 {
-    ODGeneratorOptionsHeights      = (1 << 0),
-    ODGeneratorOptionsDisplacement = (1 << 1),
-    ODGeneratorOptionsGradient     = (1 << 2),
-    ODGeneratorOptionsDisplacementDerivatives = (1 << 3)
+    OdGeneratorOptionsHeights      = (1 << 0),
+    OdGeneratorOptionsDisplacement = (1 << 1),
+    OdGeneratorOptionsGradient     = (1 << 2),
+    OdGeneratorOptionsDisplacementDerivatives = (1 << 3)
 };
 
-typedef NSUInteger ODGeneratorOptions;
+typedef NSUInteger OdGeneratorOptions;
 
 typedef struct ODPhillipsGeneratorSettings
 {
@@ -66,7 +66,7 @@ ODUnifiedGeneratorSettings;
 typedef struct ODGeneratorSettings
 {
     OdSpectrumGenerator generatorType;
-    ODGeneratorOptions  options;
+    OdGeneratorOptions  options;
     double spectrumScale;
     union
     {
