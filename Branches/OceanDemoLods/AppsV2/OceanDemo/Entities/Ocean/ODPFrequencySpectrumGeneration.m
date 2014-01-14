@@ -283,7 +283,7 @@ void frequency_spectrum_clear(OdFrequencySpectrumFloat * spectrum)
 {
     if ( spectrum != NULL )
     {
-        SAFE_FREE(spectrum->sizes);
+        geometry_clear(&spectrum->geometry);
         spectrum_data_clear(&spectrum->data);
     }
 }
