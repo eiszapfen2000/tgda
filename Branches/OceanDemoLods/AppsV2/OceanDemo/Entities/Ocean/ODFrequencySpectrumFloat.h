@@ -25,7 +25,5 @@
 
 - (OdFrequencySpectrumFloat) generateHAtTime:(const float)time;
 - (OdFrequencySpectrumFloat) generateTimeIndependentH;
-- (OdFrequencySpectrumFloat) generateHHCAtTime:(const float)time;
-- (OdFrequencySpectrumFloat) generateTimeIndependentHHC;
 
 @end

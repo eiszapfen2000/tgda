@@ -104,31 +104,6 @@ void spectrum_data_clear(OdSpectrumDataFloat * spectrumData);
 
 OdSpectrumDataFloat spectrum_data_zero();
 
-typedef struct OdSpectrumDataHCFloat
-{
-    // zero frequency upper left
-    fftwf_complex * height;
-    fftwf_complex * gradientX;
-    fftwf_complex * gradientZ;
-    fftwf_complex * displacementX;
-    fftwf_complex * displacementZ;
-    fftwf_complex * displacementXdX;
-    fftwf_complex * displacementXdZ;
-    fftwf_complex * displacementZdX;
-    fftwf_complex * displacementZdZ;
-}
-OdSpectrumDataHCFloat;
-
-void spectrum_data_hc_init_with_geometry_and_options(
-    OdSpectrumDataHCFloat * spectrumData,
-    const OdSpectrumGeometry * const geometry,
-    OdGeneratorOptions options
-    );
-
-void spectrum_data_hc_clear(OdSpectrumDataHCFloat * spectrumData);
-
-OdSpectrumDataHCFloat spectrum_data_hc_zero();
-
 typedef struct OdFrequencySpectrumFloat
 {
     float timestamp;
@@ -141,11 +116,7 @@ typedef struct OdFrequencySpectrumFloat
     float maxMeanSlopeVariance;
     float effectiveMeanSlopeVariance;
 
-    union
-    {
-        OdSpectrumDataFloat   data;
-        OdSpectrumDataHCFloat dataHC;
-    };
+    OdSpectrumDataFloat   data;
 }
 OdFrequencySpectrumFloat;
 
@@ -156,15 +127,8 @@ OdFrequencySpectrumFloat frequency_spectrum_zero();
 - (OdFrequencySpectrumFloat)
     generateFloatSpectrumWithGeometry:(OdSpectrumGeometry)geometry
                             generator:(OdGeneratorSettings)generatorSettings
-                               atTime:(const float)time
+                               atTime:(float)time
                  generateBaseGeometry:(BOOL)generateBaseGeometry
                                      ;
-
-- (OdFrequencySpectrumFloat)
-    generateFloatSpectrumHCWithGeometry:(OdSpectrumGeometry)geometry
-                              generator:(OdGeneratorSettings)generatorSettings
-                                 atTime:(const float)time
-                   generateBaseGeometry:(BOOL)generateBaseGeometry
-                                       ;
 
 @end
