@@ -139,7 +139,7 @@ OdSpectrumGeometry geometry_max()
     return result;
 }
 
-bool phillips_settings_equal(const ODPhillipsGeneratorSettings * pOne, const ODPhillipsGeneratorSettings * pTwo)
+bool phillips_settings_equal(const OdPhillipsGeneratorSettings * pOne, const OdPhillipsGeneratorSettings * pTwo)
 {
     if ( pOne->windSpeed != pTwo->windSpeed
          || pOne->dampening != pTwo->dampening
@@ -152,7 +152,7 @@ bool phillips_settings_equal(const ODPhillipsGeneratorSettings * pOne, const ODP
     return true;
 }
 
-bool unified_settings_equal(const ODUnifiedGeneratorSettings * pOne, const ODUnifiedGeneratorSettings * pTwo)
+bool unified_settings_equal(const OdUnifiedGeneratorSettings * pOne, const OdUnifiedGeneratorSettings * pTwo)
 {
     if ( pOne->U10 != pTwo->U10
          || pOne->Omega != pTwo->Omega )
@@ -163,7 +163,7 @@ bool unified_settings_equal(const ODUnifiedGeneratorSettings * pOne, const ODUni
     return true;
 }
 
-bool generator_settings_equal(const ODGeneratorSettings * pOne, const ODGeneratorSettings * pTwo)
+bool generator_settings_equal(const OdGeneratorSettings * pOne, const OdGeneratorSettings * pTwo)
 {
     if ( pOne->generatorType != pTwo->generatorType
          || pOne->spectrumScale != pTwo->spectrumScale )
@@ -182,9 +182,9 @@ bool generator_settings_equal(const ODGeneratorSettings * pOne, const ODGenerato
     }
 }
 
-ODGeneratorSettings generator_settings_zero()
+OdGeneratorSettings generator_settings_zero()
 {
-    ODGeneratorSettings result;
+    OdGeneratorSettings result;
 
     result.generatorType = Unknown;
     result.spectrumScale = 0.0;
@@ -197,9 +197,9 @@ ODGeneratorSettings generator_settings_zero()
     return result;
 }
 
-ODGeneratorSettings generator_settings_max()
+OdGeneratorSettings generator_settings_max()
 {
-    ODGeneratorSettings result;
+    OdGeneratorSettings result;
 
     result.generatorType = Unknown;
     result.spectrumScale = DBL_MAX;

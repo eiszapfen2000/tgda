@@ -26,7 +26,7 @@ ODQuadrants;
 
 - (void) generateUnifiedSpectrum
 {
-    const ODUnifiedGeneratorSettings settings
+    const OdUnifiedGeneratorSettings settings
         = currentGeneratorSettings.unified;
 
     const IVector2 resolution  = H0Resolution;
@@ -117,7 +117,7 @@ ODQuadrants;
 
 - (void) generatePhillipsSpectrum
 {
-    const ODPhillipsGeneratorSettings settings
+    const OdPhillipsGeneratorSettings settings
         = currentGeneratorSettings.phillips;
 
     const IVector2 resolution   = H0Resolution;
@@ -1288,7 +1288,7 @@ right way.
 
 - (OdFrequencySpectrumFloat)
     generateFloatSpectrumWithGeometry:(OdSpectrumGeometry)geometry
-                            generator:(ODGeneratorSettings)generatorSettings
+                            generator:(OdGeneratorSettings)generatorSettings
                                atTime:(const float)time
                  generateBaseGeometry:(BOOL)generateBaseGeometry
 {
@@ -1374,7 +1374,7 @@ right way.
 
 - (OdFrequencySpectrumFloat)
     generateFloatSpectrumHCWithGeometry:(OdSpectrumGeometry)geometry
-                              generator:(ODGeneratorSettings)generatorSettings
+                              generator:(OdGeneratorSettings)generatorSettings
                                  atTime:(const float)time
                    generateBaseGeometry:(BOOL)generateBaseGeometry
 {

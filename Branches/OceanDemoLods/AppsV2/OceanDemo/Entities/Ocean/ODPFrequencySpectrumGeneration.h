@@ -48,40 +48,40 @@ enum
 
 typedef NSUInteger OdGeneratorOptions;
 
-typedef struct ODPhillipsGeneratorSettings
+typedef struct OdPhillipsGeneratorSettings
 {
     Vector2  windDirection;
     double   windSpeed;
     double   dampening;
 }
-ODPhillipsGeneratorSettings;
+OdPhillipsGeneratorSettings;
 
-typedef struct ODUnifiedGeneratorSettings
+typedef struct OdUnifiedGeneratorSettings
 {
     double   U10;
     double   Omega;
 }
-ODUnifiedGeneratorSettings;
+OdUnifiedGeneratorSettings;
 
-typedef struct ODGeneratorSettings
+typedef struct OdGeneratorSettings
 {
     OdSpectrumGenerator generatorType;
     OdGeneratorOptions  options;
     double spectrumScale;
     union
     {
-        ODPhillipsGeneratorSettings phillips;
-        ODUnifiedGeneratorSettings  unified;
+        OdPhillipsGeneratorSettings phillips;
+        OdUnifiedGeneratorSettings  unified;
     };
 }
-ODGeneratorSettings;
+OdGeneratorSettings;
 
-bool phillips_settings_equal(const ODPhillipsGeneratorSettings * pOne, const ODPhillipsGeneratorSettings * pTwo);
-bool unified_settings_equal(const ODUnifiedGeneratorSettings * pOne, const ODUnifiedGeneratorSettings * pTwo);
-bool generator_settings_equal(const ODGeneratorSettings * pOne, const ODGeneratorSettings * pTwo);
+bool phillips_settings_equal(const OdPhillipsGeneratorSettings * pOne, const OdPhillipsGeneratorSettings * pTwo);
+bool unified_settings_equal(const OdUnifiedGeneratorSettings * pOne, const OdUnifiedGeneratorSettings * pTwo);
+bool generator_settings_equal(const OdGeneratorSettings * pOne, const OdGeneratorSettings * pTwo);
 
-ODGeneratorSettings generator_settings_zero();
-ODGeneratorSettings generator_settings_max();
+OdGeneratorSettings generator_settings_zero();
+OdGeneratorSettings generator_settings_max();
 
 typedef struct OdSpectrumDataFloat
 {
@@ -133,14 +133,14 @@ OdFrequencySpectrumFloat;
 
 - (OdFrequencySpectrumFloat)
     generateFloatSpectrumWithGeometry:(OdSpectrumGeometry)geometry
-                            generator:(ODGeneratorSettings)generatorSettings
+                            generator:(OdGeneratorSettings)generatorSettings
                                atTime:(const float)time
                  generateBaseGeometry:(BOOL)generateBaseGeometry
                                      ;
 
 - (OdFrequencySpectrumFloat)
     generateFloatSpectrumHCWithGeometry:(OdSpectrumGeometry)geometry
-                              generator:(ODGeneratorSettings)generatorSettings
+                              generator:(OdGeneratorSettings)generatorSettings
                                  atTime:(const float)time
                    generateBaseGeometry:(BOOL)generateBaseGeometry
                                        ;
