@@ -341,7 +341,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
             const int32_t geometryRes = resolutions[geometryResIndex];
             const int32_t gradientRes = resolutions[gradientResIndex];
 
-            ODSpectrumGeometry geometry = geometry_zero();
+            OdSpectrumGeometry geometry = geometry_zero();
             geometry_init_with_resolutions_and_lods(&geometry, geometryRes, gradientRes, lodCount);
             // first LOD is the largest one, set it to our desired size
             geometry_set_max_size(&geometry, maxSize);

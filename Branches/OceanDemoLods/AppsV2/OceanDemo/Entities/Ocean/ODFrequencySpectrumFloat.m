@@ -1287,7 +1287,7 @@ right way.
 }
 
 - (OdFrequencySpectrumFloat)
-    generateFloatSpectrumWithGeometry:(ODSpectrumGeometry)geometry
+    generateFloatSpectrumWithGeometry:(OdSpectrumGeometry)geometry
                             generator:(ODGeneratorSettings)generatorSettings
                                atTime:(const float)time
                  generateBaseGeometry:(BOOL)generateBaseGeometry
@@ -1373,7 +1373,7 @@ right way.
 }
 
 - (OdFrequencySpectrumFloat)
-    generateFloatSpectrumHCWithGeometry:(ODSpectrumGeometry)geometry
+    generateFloatSpectrumHCWithGeometry:(OdSpectrumGeometry)geometry
                               generator:(ODGeneratorSettings)generatorSettings
                                  atTime:(const float)time
                    generateBaseGeometry:(BOOL)generateBaseGeometry
