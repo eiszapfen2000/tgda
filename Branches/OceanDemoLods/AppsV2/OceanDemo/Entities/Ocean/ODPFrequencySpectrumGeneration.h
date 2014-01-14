@@ -30,13 +30,13 @@ bool geometries_equal_resolution(const OdSpectrumGeometry * gOne, const OdSpectr
 OdSpectrumGeometry geometry_zero();
 OdSpectrumGeometry geometry_max();
 
-typedef enum ODSpectrumGenerator
+typedef enum OdSpectrumGenerator
 {
     Unknown  = -1,
     Phillips =  0,
     Unified  =  1
 }
-ODSpectrumGenerator;
+OdSpectrumGenerator;
 
 enum
 {
@@ -65,7 +65,7 @@ ODUnifiedGeneratorSettings;
 
 typedef struct ODGeneratorSettings
 {
-    ODSpectrumGenerator generatorType;
+    OdSpectrumGenerator generatorType;
     ODGeneratorOptions  options;
     double spectrumScale;
     union
