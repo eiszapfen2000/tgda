@@ -124,6 +124,12 @@ typedef struct OdFrequencySpectrumFloat
 }
 OdFrequencySpectrumFloat;
 
+void frequency_spectrum_init_with_geometry_and_options(
+    OdFrequencySpectrumFloat * spectrum,
+    const OdSpectrumGeometry * const geometry,
+    OdGeneratorOptions options
+    );
+
 void frequency_spectrum_clear(OdFrequencySpectrumFloat * spectrum);
 
 OdFrequencySpectrumFloat frequency_spectrum_zero();
