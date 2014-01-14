@@ -131,6 +131,8 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 {
     if ( item != NULL )
     {
+        free(item->sizes);
+
         fftwf_free(item->data.height);
         fftwf_free(item->data.gradient);
         fftwf_free(item->data.displacement);
@@ -557,8 +559,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                 if ( item.timestamp == FLT_MAX
                      || item.geometryResolution.x == 0 || item.geometryResolution.y == 0
                      || item.gradientResolution.x == 0 || item.gradientResolution.y == 0
-                     || item.size.x == 0.0 || item.size.y == 0.0
-                     ||  item.data.height == NULL )
+                     || item.sizes == NULL ||  item.data.height == NULL )
                 {
                     process = NO;
                 }
@@ -570,7 +571,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                                 &result,
                                 item.geometryResolution,
                                 item.gradientResolution,
-                                item.size);
+                                item.sizes[0]);
 
                     [ self transformSpectra:&item into:&result ];
 

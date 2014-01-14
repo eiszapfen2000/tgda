@@ -627,12 +627,14 @@ static NPTimer * timer = nil;
     OdFrequencySpectrumFloat result = frequency_spectrum_zero();
 
     result.timestamp = time;
-    result.size      = currentGeometry.sizes[0];
+    result.geometryResolution = geometryResolution;
+    result.gradientResolution = gradientResolution;
+    result.numberOfLods = 1;
+    result.sizes = ALLOC_ARRAY(Vector2, 1);
+    result.sizes[0] = currentGeometry.sizes[0];
 
     result.data = resultData;
 
-    result.geometryResolution = geometryResolution;
-    result.gradientResolution = gradientResolution;
 
     return result;
 }
