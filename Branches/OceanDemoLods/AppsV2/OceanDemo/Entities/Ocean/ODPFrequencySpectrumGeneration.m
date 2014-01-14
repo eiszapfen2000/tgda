@@ -355,3 +355,11 @@ OdSpectrumDataHCFloat spectrum_data_hc_zero()
     return result;
 }
 
+OdFrequencySpectrumFloat frequency_spectrum_zero()
+{
+    OdFrequencySpectrumFloat result;
+    memset(&result, 0, sizeof(result));
+
+    return result;
+}
+

@@ -388,37 +388,15 @@ static NPTimer * timer = nil;
     const IVector2 geometryResolution = currentGeometry.geometryResolution;
     const IVector2 gradientResolution = currentGeometry.gradientResolution;
 
-    const NSUInteger options = currentGeneratorSettings.options;
-
     const int32_t numberOfGeometryElements = geometryResolution.x * geometryResolution.y;
     const int32_t numberOfGradientElements = gradientResolution.x * gradientResolution.y;
 
-	fftwf_complex * height = NULL;
-	fftwf_complex * gradient = NULL;
-	fftwf_complex * displacement = NULL;
-	fftwf_complex * displacementXdXdZ = NULL;
-	fftwf_complex * displacementZdXdZ = NULL;
+    OdSpectrumDataFloat resultData = spectrum_data_zero();
 
-    if ( options & OdGeneratorOptionsHeights )
-    {
-    	height = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
-    }
-
-    if ( options & OdGeneratorOptionsGradient )
-    {
-        gradient = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
-    }
-
-    if ( options & OdGeneratorOptionsDisplacement )
-    {
-        displacement = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
-    }
-
-    if ( options & OdGeneratorOptionsDisplacementDerivatives )
-    {
-        displacementXdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
-        displacementZdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
-    }
+    spectrum_data_init_with_geometry_and_options(
+        &resultData, &currentGeometry,
+        currentGeneratorSettings.options
+        );
 
     const IVector2 geometryPadding
         = { .x = (H0Resolution.x - geometryResolution.x) / 2, .y = (H0Resolution.y - geometryResolution.y) / 2 };
@@ -537,12 +515,12 @@ static NPTimer * timer = nil;
 
 
                 //if ( indexForK >= geometryStartIndex && indexForK <= geometryEndIndex )
-                if ( height != NULL
+                if ( resultData.height != NULL
                      &&  j > geometryXRange.x && j < geometryXRange.y
                      && i > geometryYRange.x && i < geometryYRange.y )
                 {
-                    height[geometryIndex][0] = geometryhTilde[0];
-                    height[geometryIndex][1] = geometryhTilde[1];
+                    resultData.height[geometryIndex][0] = geometryhTilde[0];
+                    resultData.height[geometryIndex][1] = geometryhTilde[1];
                 }
 
                 // i * kx
@@ -572,7 +550,7 @@ static NPTimer * timer = nil;
                 if ( j > gradientXRange.x && j < gradientXRange.y
                      && i > gradientYRange.x && i < gradientYRange.y )
                 {
-                    if ( gradient != NULL )
+                    if ( resultData.gradient != NULL )
                     {
                         const fftwf_complex gx
                             = {-kx * gradienthTilde[1] * derivativeXScale, kx * gradienthTilde[0] * derivativeXScale};
@@ -581,11 +559,11 @@ static NPTimer * timer = nil;
                             = {-ky * gradienthTilde[1] * derivativeZScale, ky * gradienthTilde[0] * derivativeZScale};
 
                         // gx + i*gz
-                        gradient[gradientIndex][0] = gx[0] - gz[1];
-                        gradient[gradientIndex][1] = gx[1] + gz[0];
+                        resultData.gradient[gradientIndex][0] = gx[0] - gz[1];
+                        resultData.gradient[gradientIndex][1] = gx[1] + gz[0];
                     }
 
-                    if ( displacementXdXdZ != NULL && displacementZdXdZ != NULL )
+                    if ( resultData.displacementXdXdZ != NULL && resultData.displacementZdXdZ != NULL )
                     {
                         // partial derivatives of dx and dz
                         const float dx_x_term = kx * kx * factor * derivativeXScale;
@@ -609,11 +587,11 @@ static NPTimer * timer = nil;
                             = { dz_z_term * derivativeZScale * gradienthTilde[0],
                                 dz_z_term * derivativeZScale * gradienthTilde[1] };
 
-                        displacementXdXdZ[gradientIndex][0] = dx_x[0] - dx_z[1];
-                        displacementXdXdZ[gradientIndex][1] = dx_x[1] + dx_z[0];
+                        resultData.displacementXdXdZ[gradientIndex][0] = dx_x[0] - dx_z[1];
+                        resultData.displacementXdXdZ[gradientIndex][1] = dx_x[1] + dx_z[0];
 
-                        displacementZdXdZ[gradientIndex][0] = dz_x[0] - dz_z[1];
-                        displacementZdXdZ[gradientIndex][1] = dz_x[1] + dz_z[0];
+                        resultData.displacementZdXdZ[gradientIndex][0] = dz_x[0] - dz_z[1];
+                        resultData.displacementZdXdZ[gradientIndex][1] = dz_x[1] + dz_z[0];
                     }
                 }
 
@@ -626,7 +604,7 @@ static NPTimer * timer = nil;
                 */
 
                 
-                if ( displacement != NULL
+                if ( resultData.displacement != NULL
                      && j > geometryXRange.x && j < geometryXRange.y
                      && i > geometryYRange.x && i < geometryYRange.y )
                 {
@@ -639,24 +617,19 @@ static NPTimer * timer = nil;
                             displacementZScale * factor * ky * geometryhTilde[0] * -1.0f };
 
                     // dx + i*dz
-                    displacement[geometryIndex][0] = dx[0] - dz[1];
-                    displacement[geometryIndex][1] = dx[1] + dz[0];
+                    resultData.displacement[geometryIndex][0] = dx[0] - dz[1];
+                    resultData.displacement[geometryIndex][1] = dx[1] + dz[0];
                 }
             }
         }
     }
 
-    OdFrequencySpectrumFloat result;
-    memset(&result, 0, sizeof(result));
+    OdFrequencySpectrumFloat result = frequency_spectrum_zero();
 
     result.timestamp = time;
     result.size      = currentGeometry.sizes[0];
 
-    result.data.height             = height;
-    result.data.gradient           = gradient;
-    result.data.displacement       = displacement;
-    result.data.displacementXdXdZ  = displacementXdXdZ;
-    result.data.displacementZdXdZ  = displacementZdXdZ;
+    result.data = resultData;
 
     result.geometryResolution = geometryResolution;
     result.gradientResolution = gradientResolution;
