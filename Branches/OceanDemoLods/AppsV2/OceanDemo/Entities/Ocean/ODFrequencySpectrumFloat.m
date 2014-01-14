@@ -391,10 +391,11 @@ static NPTimer * timer = nil;
     const int32_t numberOfGeometryElements = geometryResolution.x * geometryResolution.y;
     const int32_t numberOfGradientElements = gradientResolution.x * gradientResolution.y;
 
-    OdSpectrumDataFloat resultData = spectrum_data_zero();
+    OdFrequencySpectrumFloat result = frequency_spectrum_zero();
+    result.timestamp = time;
 
-    spectrum_data_init_with_geometry_and_options(
-        &resultData, &currentGeometry,
+    frequency_spectrum_init_with_geometry_and_options(
+        &result, &currentGeometry,
         currentGeneratorSettings.options
         );
 
@@ -515,12 +516,12 @@ static NPTimer * timer = nil;
 
 
                 //if ( indexForK >= geometryStartIndex && indexForK <= geometryEndIndex )
-                if ( resultData.height != NULL
+                if ( result.height != NULL
                      &&  j > geometryXRange.x && j < geometryXRange.y
                      && i > geometryYRange.x && i < geometryYRange.y )
                 {
-                    resultData.height[geometryIndex][0] = geometryhTilde[0];
-                    resultData.height[geometryIndex][1] = geometryhTilde[1];
+                    result.height[geometryIndex][0] = geometryhTilde[0];
+                    result.height[geometryIndex][1] = geometryhTilde[1];
                 }
 
                 // i * kx
@@ -550,7 +551,7 @@ static NPTimer * timer = nil;
                 if ( j > gradientXRange.x && j < gradientXRange.y
                      && i > gradientYRange.x && i < gradientYRange.y )
                 {
-                    if ( resultData.gradient != NULL )
+                    if ( result.gradient != NULL )
                     {
                         const fftwf_complex gx
                             = {-kx * gradienthTilde[1] * derivativeXScale, kx * gradienthTilde[0] * derivativeXScale};
@@ -559,11 +560,11 @@ static NPTimer * timer = nil;
                             = {-ky * gradienthTilde[1] * derivativeZScale, ky * gradienthTilde[0] * derivativeZScale};
 
                         // gx + i*gz
-                        resultData.gradient[gradientIndex][0] = gx[0] - gz[1];
-                        resultData.gradient[gradientIndex][1] = gx[1] + gz[0];
+                        result.gradient[gradientIndex][0] = gx[0] - gz[1];
+                        result.gradient[gradientIndex][1] = gx[1] + gz[0];
                     }
 
-                    if ( resultData.displacementXdXdZ != NULL && resultData.displacementZdXdZ != NULL )
+                    if ( result.displacementXdXdZ != NULL && result.displacementZdXdZ != NULL )
                     {
                         // partial derivatives of dx and dz
                         const float dx_x_term = kx * kx * factor * derivativeXScale;
@@ -587,11 +588,11 @@ static NPTimer * timer = nil;
                             = { dz_z_term * derivativeZScale * gradienthTilde[0],
                                 dz_z_term * derivativeZScale * gradienthTilde[1] };
 
-                        resultData.displacementXdXdZ[gradientIndex][0] = dx_x[0] - dx_z[1];
-                        resultData.displacementXdXdZ[gradientIndex][1] = dx_x[1] + dx_z[0];
+                        result.displacementXdXdZ[gradientIndex][0] = dx_x[0] - dx_z[1];
+                        result.displacementXdXdZ[gradientIndex][1] = dx_x[1] + dx_z[0];
 
-                        resultData.displacementZdXdZ[gradientIndex][0] = dz_x[0] - dz_z[1];
-                        resultData.displacementZdXdZ[gradientIndex][1] = dz_x[1] + dz_z[0];
+                        result.displacementZdXdZ[gradientIndex][0] = dz_x[0] - dz_z[1];
+                        result.displacementZdXdZ[gradientIndex][1] = dz_x[1] + dz_z[0];
                     }
                 }
 
@@ -604,7 +605,7 @@ static NPTimer * timer = nil;
                 */
 
                 
-                if ( resultData.displacement != NULL
+                if ( result.displacement != NULL
                      && j > geometryXRange.x && j < geometryXRange.y
                      && i > geometryYRange.x && i < geometryYRange.y )
                 {
@@ -617,20 +618,12 @@ static NPTimer * timer = nil;
                             displacementZScale * factor * ky * geometryhTilde[0] * -1.0f };
 
                     // dx + i*dz
-                    resultData.displacement[geometryIndex][0] = dx[0] - dz[1];
-                    resultData.displacement[geometryIndex][1] = dx[1] + dz[0];
+                    result.displacement[geometryIndex][0] = dx[0] - dz[1];
+                    result.displacement[geometryIndex][1] = dx[1] + dz[0];
                 }
             }
         }
     }
-
-    OdFrequencySpectrumFloat result = frequency_spectrum_zero();
-
-    result.timestamp = time;
-    geometry_copy(&currentGeometry, &result.geometry);
-
-    result.data = resultData;
-
 
     return result;
 }
@@ -725,57 +718,57 @@ right way.
 
     OdFrequencySpectrumFloat result = [ self generateHAtTime:time ];
 
-    if ( result.data.height != NULL )
+    if ( result.height != NULL )
     {
-        [ self swapFrequencySpectrum:result.data.height
+        [ self swapFrequencySpectrum:result.height
                           resolution:currentGeometry.geometryResolution
                            quadrants:ODQuadrant_1_3 ];
 
-        [ self swapFrequencySpectrum:result.data.height
-                          resolution:currentGeometry.geometryResolution
-                           quadrants:ODQuadrant_2_4 ];
-    }
-
-    if ( result.data.gradient != NULL )
-    {
-        [ self swapFrequencySpectrum:result.data.gradient
-                          resolution:currentGeometry.gradientResolution
-                           quadrants:ODQuadrant_1_3 ];
-
-        [ self swapFrequencySpectrum:result.data.gradient
-                          resolution:currentGeometry.gradientResolution
-                           quadrants:ODQuadrant_2_4 ];
-    }
-
-    if ( result.data.displacement != NULL )
-    {
-        [ self swapFrequencySpectrum:result.data.displacement
-                          resolution:currentGeometry.geometryResolution
-                           quadrants:ODQuadrant_1_3 ];
-
-        [ self swapFrequencySpectrum:result.data.displacement
+        [ self swapFrequencySpectrum:result.height
                           resolution:currentGeometry.geometryResolution
                            quadrants:ODQuadrant_2_4 ];
     }
 
-    if ( result.data.displacementXdXdZ != NULL )
+    if ( result.gradient != NULL )
     {
-        [ self swapFrequencySpectrum:result.data.displacementXdXdZ
+        [ self swapFrequencySpectrum:result.gradient
                           resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_1_3 ];
 
-        [ self swapFrequencySpectrum:result.data.displacementXdXdZ
+        [ self swapFrequencySpectrum:result.gradient
                           resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_2_4 ];
     }
 
-    if ( result.data.displacementZdXdZ != NULL )
+    if ( result.displacement != NULL )
     {
-        [ self swapFrequencySpectrum:result.data.displacementZdXdZ
+        [ self swapFrequencySpectrum:result.displacement
+                          resolution:currentGeometry.geometryResolution
+                           quadrants:ODQuadrant_1_3 ];
+
+        [ self swapFrequencySpectrum:result.displacement
+                          resolution:currentGeometry.geometryResolution
+                           quadrants:ODQuadrant_2_4 ];
+    }
+
+    if ( result.displacementXdXdZ != NULL )
+    {
+        [ self swapFrequencySpectrum:result.displacementXdXdZ
                           resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_1_3 ];
 
-        [ self swapFrequencySpectrum:result.data.displacementZdXdZ
+        [ self swapFrequencySpectrum:result.displacementXdXdZ
+                          resolution:currentGeometry.gradientResolution
+                           quadrants:ODQuadrant_2_4 ];
+    }
+
+    if ( result.displacementZdXdZ != NULL )
+    {
+        [ self swapFrequencySpectrum:result.displacementZdXdZ
+                          resolution:currentGeometry.gradientResolution
+                           quadrants:ODQuadrant_1_3 ];
+
+        [ self swapFrequencySpectrum:result.displacementZdXdZ
                           resolution:currentGeometry.gradientResolution
                            quadrants:ODQuadrant_2_4 ];
     }
