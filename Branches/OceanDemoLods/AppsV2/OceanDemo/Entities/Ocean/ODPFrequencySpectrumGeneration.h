@@ -106,18 +106,20 @@ OdSpectrumDataFloat spectrum_data_zero();
 
 typedef struct OdFrequencySpectrumFloat
 {
+    // corresponds to the time parameter used in
+    // the ODPFrequencySpectrumGenerationFloat protocol
     float timestamp;
 
-    IVector2 geometryResolution;
-    IVector2 gradientResolution;
-    uint32_t numberOfLods;
-    Vector2 * sizes;
+    // geometry
+    OdSpectrumGeometry geometry;
 
+    // variance related stuff
     // zero frequency at center
     float * baseSpectrum;
     float maxMeanSlopeVariance;
     float effectiveMeanSlopeVariance;
 
+    // actual data
     OdSpectrumDataFloat data;
 }
 OdFrequencySpectrumFloat;

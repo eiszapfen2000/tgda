@@ -394,27 +394,30 @@ static size_t index_for_resolution(int32_t resolution)
 - (void) transformSpectra:(const OdFrequencySpectrumFloat *)item
                      into:(OdHeightfieldData *)result
 {
-    const size_t geometryIndex = index_for_resolution(item->geometryResolution.x);
-    const size_t gradientIndex = index_for_resolution(item->gradientResolution.x);
+    const IVector2 geometryResolution = item->geometry.geometryResolution;
+    const IVector2 gradientResolution = item->geometry.gradientResolution;
 
-    const size_t numberOfGeometryElements = item->geometryResolution.x * item->geometryResolution.y;
-    const size_t numberOfGradientElements = item->gradientResolution.x * item->gradientResolution.y;
+    const size_t geometryIndex = index_for_resolution(geometryResolution.x);
+    const size_t gradientIndex = index_for_resolution(gradientResolution.x);
+
+    const size_t numberOfGeometryElements = geometryResolution.x * geometryResolution.y;
+    const size_t numberOfGradientElements = gradientResolution.x * gradientResolution.y;
 
     NSAssert2(geometryIndex != SIZE_MAX && gradientIndex != SIZE_MAX,
-              @"Invalid resolution %d %d", item->geometryResolution.x, item->gradientResolution.x);
+              @"Invalid resolution %d %d", geometryResolution.x, gradientResolution.x);
 
     fftwf_complex * complexHeights = fftwf_alloc_complex(numberOfGeometryElements);
 
     fftwf_execute_dft(complexPlans[geometryIndex], item->data.height, complexHeights);
     result->timeStamp = item->timestamp;
 
-    for ( int32_t i = 0; i < item->geometryResolution.y; i++ )
+    for ( int32_t i = 0; i < geometryResolution.y; i++ )
     {
-        for ( int32_t j = 0; j < item->geometryResolution.x; j++ )
+        for ( int32_t j = 0; j < geometryResolution.x; j++ )
         {
-            const int32_t k = item->geometryResolution.y - 1 - i;
-            const int32_t sourceIndex = i * item->geometryResolution.x + j;
-            const int32_t targetIndex = k * item->geometryResolution.x + j;
+            const int32_t k = geometryResolution.y - 1 - i;
+            const int32_t sourceIndex = i * geometryResolution.x + j;
+            const int32_t targetIndex = k * geometryResolution.x + j;
             result->heights32f[targetIndex] = complexHeights[sourceIndex][0];
         }
     }
@@ -431,13 +434,13 @@ static size_t index_for_resolution(int32_t resolution)
         fftwf_execute_dft(complexPlans[gradientIndex], item->data.displacementXdXdZ, complexDisplacementXdXdZ);
         fftwf_execute_dft(complexPlans[gradientIndex], item->data.displacementZdXdZ, complexDisplacementZdXdZ);
 
-        for ( int32_t i = 0; i < item->gradientResolution.y; i++ )
+        for ( int32_t i = 0; i < gradientResolution.y; i++ )
         {
-            for ( int32_t j = 0; j < item->gradientResolution.x; j++ )
+            for ( int32_t j = 0; j < gradientResolution.x; j++ )
             {
-                const int32_t k = item->gradientResolution.y - 1 - i;
-                const int32_t sourceIndex = i * item->gradientResolution.x + j;
-                const int32_t targetIndex = k * item->gradientResolution.x + j;
+                const int32_t k = gradientResolution.y - 1 - i;
+                const int32_t sourceIndex = i * gradientResolution.x + j;
+                const int32_t targetIndex = k * gradientResolution.x + j;
 
                 result->gradients32f[targetIndex].x = complexGradient[sourceIndex][0];
                 result->gradients32f[targetIndex].y = complexGradient[sourceIndex][1];
@@ -463,13 +466,13 @@ static size_t index_for_resolution(int32_t resolution)
 
         fftwf_execute_dft(complexPlans[geometryIndex], item->data.displacement, complexDisplacement);
 
-        for ( int32_t i = 0; i < item->geometryResolution.y; i++ )
+        for ( int32_t i = 0; i < geometryResolution.y; i++ )
         {
-            for ( int32_t j = 0; j < item->geometryResolution.x; j++ )
+            for ( int32_t j = 0; j < geometryResolution.x; j++ )
             {
-                const int32_t k = item->geometryResolution.y - 1 - i;
-                const int32_t sourceIndex = i * item->geometryResolution.x + j;
-                const int32_t targetIndex = k * item->geometryResolution.x + j;
+                const int32_t k = geometryResolution.y - 1 - i;
+                const int32_t sourceIndex = i * geometryResolution.x + j;
+                const int32_t targetIndex = k * geometryResolution.x + j;
 
                 result->displacements32f[targetIndex].x = complexDisplacement[sourceIndex][0];
                 result->displacements32f[targetIndex].y = complexDisplacement[sourceIndex][1];
@@ -543,9 +546,9 @@ static size_t index_for_resolution(int32_t resolution)
                 BOOL process = YES;
 
                 if ( item.timestamp == FLT_MAX
-                     || item.geometryResolution.x == 0 || item.geometryResolution.y == 0
-                     || item.gradientResolution.x == 0 || item.gradientResolution.y == 0
-                     || item.sizes == NULL ||  item.data.height == NULL )
+                     || item.geometry.geometryResolution.x == 0 || item.geometry.geometryResolution.y == 0
+                     || item.geometry.gradientResolution.x == 0 || item.geometry.gradientResolution.y == 0
+                     || item.geometry.sizes == NULL ||  item.data.height == NULL )
                 {
                     process = NO;
                 }
@@ -555,9 +558,9 @@ static size_t index_for_resolution(int32_t resolution)
                     OdHeightfieldData result;
                     heightfield_hf_init_with_resolutions_and_size(
                                 &result,
-                                item.geometryResolution,
-                                item.gradientResolution,
-                                item.sizes[0]);
+                                item.geometry.geometryResolution,
+                                item.geometry.gradientResolution,
+                                item.geometry.sizes[0]);
 
                     [ self transformSpectra:&item into:&result ];
 
