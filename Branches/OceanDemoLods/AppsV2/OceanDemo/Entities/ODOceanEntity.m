@@ -127,20 +127,6 @@ static size_t index_for_resolution(int32_t resolution)
     }
 }
 
-void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
-{
-    if ( item != NULL )
-    {
-        free(item->sizes);
-
-        fftwf_free(item->data.height);
-        fftwf_free(item->data.gradient);
-        fftwf_free(item->data.displacement);
-        fftwf_free(item->data.displacementXdXdZ);
-        fftwf_free(item->data.displacementZdXdZ);
-    }
-}
-
 @interface ODOceanEntity (Private)
 
 - (void) startupFFTW;
@@ -598,7 +584,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                     [ transformCondition unlock ];
                 }
 
-                od_freq_spectrum_clear(&item);
+                frequency_spectrum_clear(&item);
             }
 
         }
@@ -752,7 +738,7 @@ static NSUInteger od_variance_size(const void * item)
     NSUInteger spectrumCount = [ spectrumQueue count ];
     for ( NSUInteger i = 0; i < spectrumCount; i++ )
     {
-        od_freq_spectrum_clear([ spectrumQueue pointerAtIndex:i ]);
+        frequency_spectrum_clear([ spectrumQueue pointerAtIndex:i ]);
     }
 
     [ spectrumQueue removeAllPointers ];
@@ -1030,7 +1016,7 @@ static NSUInteger od_variance_size(const void * item)
         NSUInteger spectrumCount = [ spectrumQueue count ];
         for ( NSUInteger i = 0; i < spectrumCount; i++ )
         {
-            od_freq_spectrum_clear([ spectrumQueue pointerAtIndex:i ]);
+            frequency_spectrum_clear([ spectrumQueue pointerAtIndex:i ]);
         }
 
         [ spectrumQueue removeAllPointers ];

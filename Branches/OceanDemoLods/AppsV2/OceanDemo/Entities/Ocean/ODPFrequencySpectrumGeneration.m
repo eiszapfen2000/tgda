@@ -279,6 +279,15 @@ OdSpectrumDataFloat spectrum_data_zero()
     return result;
 }
 
+void frequency_spectrum_clear(OdFrequencySpectrumFloat * spectrum)
+{
+    if ( spectrum != NULL )
+    {
+        SAFE_FREE(spectrum->sizes);
+        spectrum_data_clear(&spectrum->data);
+    }
+}
+
 OdFrequencySpectrumFloat frequency_spectrum_zero()
 {
     OdFrequencySpectrumFloat result;
