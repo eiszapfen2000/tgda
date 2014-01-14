@@ -301,8 +301,8 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
             {
                 [ settingsMutex lock ];
 
-                const ODSpectrumGenerator generatorType
-                     = (ODSpectrumGenerator)generatorSpectrumType;
+                const OdSpectrumGenerator generatorType
+                     = (OdSpectrumGenerator)generatorSpectrumType;
 
                 switch ( generatorType )
                 {
