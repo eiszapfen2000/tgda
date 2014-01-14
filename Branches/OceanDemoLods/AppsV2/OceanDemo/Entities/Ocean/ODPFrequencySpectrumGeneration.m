@@ -212,4 +212,31 @@ OdGeneratorSettings generator_settings_max()
     return result;
 }
 
+void spectrum_data_clear(OdSpectrumDataFloat * spectrumData)
+{
+    if ( spectrumData != NULL )
+    {
+        fftwf_free(spectrumData->height);
+        fftwf_free(spectrumData->gradient);
+        fftwf_free(spectrumData->displacement);
+        fftwf_free(spectrumData->displacementXdXdZ);
+        fftwf_free(spectrumData->displacementZdXdZ);
+    }
+}
+
+void spectrum_data_hc_clear(OdSpectrumDataHCFloat * spectrumData)
+{
+    if ( spectrumData != NULL )
+    {
+        fftwf_free(spectrumData->height);
+        fftwf_free(spectrumData->gradientX);
+        fftwf_free(spectrumData->gradientZ);
+        fftwf_free(spectrumData->displacementX);
+        fftwf_free(spectrumData->displacementZ);
+        fftwf_free(spectrumData->displacementXdX);
+        fftwf_free(spectrumData->displacementXdZ);
+        fftwf_free(spectrumData->displacementZdX);
+        fftwf_free(spectrumData->displacementZdZ);
+    }
+}
 

@@ -94,6 +94,8 @@ typedef struct OdSpectrumDataFloat
 }
 OdSpectrumDataFloat;
 
+void spectrum_data_clear(OdSpectrumDataFloat * spectrumData);
+
 typedef struct OdSpectrumDataHCFloat
 {
     // zero frequency upper left
@@ -108,6 +110,8 @@ typedef struct OdSpectrumDataHCFloat
     fftwf_complex * displacementZdZ;
 }
 OdSpectrumDataHCFloat;
+
+void spectrum_data_hc_clear(OdSpectrumDataHCFloat * spectrumData);
 
 typedef struct OdFrequencySpectrumFloat
 {
