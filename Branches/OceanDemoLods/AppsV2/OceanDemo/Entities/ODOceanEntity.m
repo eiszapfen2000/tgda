@@ -408,7 +408,7 @@ static size_t index_for_resolution(int32_t resolution)
 
     fftwf_complex * complexHeights = fftwf_alloc_complex(numberOfGeometryElements);
 
-    fftwf_execute_dft(complexPlans[geometryIndex], item->data.height, complexHeights);
+    fftwf_execute_dft(complexPlans[geometryIndex], item->height, complexHeights);
     result->timeStamp = item->timestamp;
 
     for ( int32_t i = 0; i < geometryResolution.y; i++ )
@@ -424,15 +424,15 @@ static size_t index_for_resolution(int32_t resolution)
 
     heightfield_hf_compute_min_max(result);
 
-    if ( item->data.gradient != NULL )
+    if ( item->gradient != NULL )
     {
         fftwf_complex * complexGradient = fftwf_alloc_complex(numberOfGradientElements);
         fftwf_complex * complexDisplacementXdXdZ = fftwf_alloc_complex(numberOfGradientElements);
         fftwf_complex * complexDisplacementZdXdZ = fftwf_alloc_complex(numberOfGradientElements);
 
-        fftwf_execute_dft(complexPlans[gradientIndex], item->data.gradient, complexGradient);
-        fftwf_execute_dft(complexPlans[gradientIndex], item->data.displacementXdXdZ, complexDisplacementXdXdZ);
-        fftwf_execute_dft(complexPlans[gradientIndex], item->data.displacementZdXdZ, complexDisplacementZdXdZ);
+        fftwf_execute_dft(complexPlans[gradientIndex], item->gradient, complexGradient);
+        fftwf_execute_dft(complexPlans[gradientIndex], item->displacementXdXdZ, complexDisplacementXdXdZ);
+        fftwf_execute_dft(complexPlans[gradientIndex], item->displacementZdXdZ, complexDisplacementZdXdZ);
 
         for ( int32_t i = 0; i < gradientResolution.y; i++ )
         {
@@ -460,11 +460,11 @@ static size_t index_for_resolution(int32_t resolution)
         fftwf_free(complexGradient);
     }
 
-    if ( item->data.displacement != NULL )
+    if ( item->displacement != NULL )
     {
         fftwf_complex * complexDisplacement = fftwf_alloc_complex(numberOfGeometryElements);
 
-        fftwf_execute_dft(complexPlans[geometryIndex], item->data.displacement, complexDisplacement);
+        fftwf_execute_dft(complexPlans[geometryIndex], item->displacement, complexDisplacement);
 
         for ( int32_t i = 0; i < geometryResolution.y; i++ )
         {
@@ -548,7 +548,7 @@ static size_t index_for_resolution(int32_t resolution)
                 if ( item.timestamp == FLT_MAX
                      || item.geometry.geometryResolution.x == 0 || item.geometry.geometryResolution.y == 0
                      || item.geometry.gradientResolution.x == 0 || item.geometry.gradientResolution.y == 0
-                     || item.geometry.sizes == NULL ||  item.data.height == NULL )
+                     || item.geometry.sizes == NULL )
                 {
                     process = NO;
                 }

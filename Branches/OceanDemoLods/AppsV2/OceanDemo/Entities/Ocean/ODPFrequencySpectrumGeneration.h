@@ -83,27 +83,6 @@ bool generator_settings_equal(const OdGeneratorSettings * pOne, const OdGenerato
 OdGeneratorSettings generator_settings_zero();
 OdGeneratorSettings generator_settings_max();
 
-typedef struct OdSpectrumDataFloat
-{
-    // zero frequency upper left
-    fftwf_complex * height;
-    fftwf_complex * gradient;
-    fftwf_complex * displacement;
-    fftwf_complex * displacementXdXdZ;
-    fftwf_complex * displacementZdXdZ;
-}
-OdSpectrumDataFloat;
-
-void spectrum_data_init_with_geometry_and_options(
-    OdSpectrumDataFloat * spectrumData,
-    const OdSpectrumGeometry * const geometry,
-    OdGeneratorOptions options
-    );
-
-void spectrum_data_clear(OdSpectrumDataFloat * spectrumData);
-
-OdSpectrumDataFloat spectrum_data_zero();
-
 typedef struct OdFrequencySpectrumFloat
 {
     // corresponds to the time parameter used in
@@ -120,7 +99,11 @@ typedef struct OdFrequencySpectrumFloat
     float effectiveMeanSlopeVariance;
 
     // actual data
-    OdSpectrumDataFloat data;
+    fftwf_complex * height;
+    fftwf_complex * gradient;
+    fftwf_complex * displacement;
+    fftwf_complex * displacementXdXdZ;
+    fftwf_complex * displacementZdXdZ;
 }
 OdFrequencySpectrumFloat;
 
