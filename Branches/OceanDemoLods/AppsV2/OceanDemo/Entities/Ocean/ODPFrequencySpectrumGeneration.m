@@ -279,12 +279,67 @@ OdSpectrumDataFloat spectrum_data_zero()
     return result;
 }
 
+void frequency_spectrum_init_with_geometry_and_options(
+    OdFrequencySpectrumFloat * spectrum,
+    const OdSpectrumGeometry * const geometry,
+    OdGeneratorOptions options
+    )
+{
+    assert(spectrum != NULL && geometry != NULL);
+
+    const int32_t numberOfLods = geometry->numberOfLods;
+
+    const int32_t numberOfGeometryElements
+        = geometry->geometryResolution.x * geometry->geometryResolution.y;
+
+    const int32_t numberOfGradientElements
+        = geometry->gradientResolution.x * geometry->gradientResolution.y;
+
+    frequency_spectrum_clear(spectrum);
+
+    spectrum->timestamp = 0.0f;
+    spectrum->baseSpectrum = NULL;
+    spectrum->maxMeanSlopeVariance = 0.0f;
+    spectrum->effectiveMeanSlopeVariance = 0.0f;
+
+    geometry_copy(geometry, &spectrum->geometry);
+
+    if ( options & OdGeneratorOptionsHeights )
+    {
+    	spectrum->data.height = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
+    }
+
+    if ( options & OdGeneratorOptionsGradient )
+    {
+        spectrum->data.gradient = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+    }
+
+    if ( options & OdGeneratorOptionsDisplacement )
+    {
+        spectrum->data.displacement = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
+    }
+
+    if ( options & OdGeneratorOptionsDisplacementDerivatives )
+    {
+        spectrum->data.displacementXdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+        spectrum->data.displacementZdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+    }   
+}
+
 void frequency_spectrum_clear(OdFrequencySpectrumFloat * spectrum)
 {
     if ( spectrum != NULL )
     {
         geometry_clear(&spectrum->geometry);
         spectrum_data_clear(&spectrum->data);
+
+        /*
+	    FFTWF_SAFE_FREE(spectrum->height);
+	    FFTWF_SAFE_FREE(spectrum->gradient);
+	    FFTWF_SAFE_FREE(spectrum->displacement);
+	    FFTWF_SAFE_FREE(spectrum->displacementXdXdZ);
+	    FFTWF_SAFE_FREE(spectrum->displacementZdXdZ);
+        */
     }
 }
 
