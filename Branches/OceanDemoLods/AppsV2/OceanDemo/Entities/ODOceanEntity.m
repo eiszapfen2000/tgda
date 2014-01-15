@@ -192,16 +192,8 @@ static size_t index_for_resolution(int32_t resolution)
     {
         const size_t arraySize = resolutions[i] * resolutions[i];
 
-        float * realTarget = fftwf_alloc_real(arraySize);
         fftwf_complex * source = fftwf_alloc_complex(arraySize);
         fftwf_complex * complexTarget = fftwf_alloc_complex(arraySize);
-
-        halfComplexPlans[i]
-            = fftwf_plan_dft_c2r_2d(resolutions[i],
-                                    resolutions[i],
-                                    source,
-                                    realTarget,
-                                    FFTW_PATIENT);
 
         complexPlans[i]
             = fftwf_plan_dft_2d(resolutions[i],
@@ -213,7 +205,6 @@ static size_t index_for_resolution(int32_t resolution)
 
         fftwf_free(source);
         fftwf_free(complexTarget);
-        fftwf_free(realTarget);
     }
 
     if ( obtainedWisdom == NO )
@@ -229,11 +220,6 @@ static size_t index_for_resolution(int32_t resolution)
 {
     for ( uint32_t i = 0; i < ODOCEANENTITY_NUMBER_OF_RESOLUTIONS; i++ )
     {
-        if ( halfComplexPlans[i] != NULL )
-        {
-            fftwf_destroy_plan(halfComplexPlans[i]);
-        }
-
         if ( complexPlans[i] != NULL )
         {
             fftwf_destroy_plan(complexPlans[i]);

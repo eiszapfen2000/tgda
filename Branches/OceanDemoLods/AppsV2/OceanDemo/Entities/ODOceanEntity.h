@@ -59,7 +59,6 @@
     BOOL transformData;
 
     fftwf_plan complexPlans[ODOCEANENTITY_NUMBER_OF_RESOLUTIONS];
-    fftwf_plan halfComplexPlans[ODOCEANENTITY_NUMBER_OF_RESOLUTIONS];
     
     NSThread * generatorThread;
     NSThread * transformThread;
