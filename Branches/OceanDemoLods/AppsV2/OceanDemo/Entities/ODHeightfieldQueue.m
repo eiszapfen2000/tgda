@@ -5,36 +5,37 @@
 #import "Core/Container/NSPointerArray+NPEngine.h"
 #import "ODHeightfieldQueue.h"
 
-void heightfield_hf_init_with_resolutions_and_size(
+void heightfield_hf_init_with_geometry_and_options(
     OdHeightfieldData * heightfield,
-    IVector2 geometryResolution,
-    IVector2 gradientResolution,
-    Vector2 size
+    const OdHeightfieldGeometry * const geometry,
+    OdGeneratorOptions options    
     )
 {
-    memset(heightfield, 0, sizeof(OdHeightfieldData));
+    assert(heightfield != NULL && geometry != NULL);
+
+    heightfield_hf_clear(heightfield);
+
+    geometry_copy(geometry, &heightfield->geometry);
+
+    const size_t numberOfLods = geometry->numberOfLods;
 
     const size_t numberOfGeometryElements
-        = geometryResolution.x * geometryResolution.y;
+        = geometry->geometryResolution.x * geometry->geometryResolution.y;
 
     const size_t numberOfGradientElements
-        = gradientResolution.x * gradientResolution.y;
-
-    heightfield->geometryResolution = geometryResolution;
-    heightfield->gradientResolution = gradientResolution;
-    heightfield->size = size;
+        = geometry->gradientResolution.x * geometry->gradientResolution.y;
 
     heightfield->heights32f
-        = fftwf_alloc_real(numberOfGeometryElements);
+        = fftwf_alloc_real(numberOfLods * numberOfGeometryElements);
 
     heightfield->displacements32f
-        = (FVector2 *)fftwf_alloc_real(numberOfGeometryElements * 2);
+        = (FVector2 *)fftwf_alloc_real(numberOfLods * numberOfGeometryElements * 2);
 
     heightfield->displacementDerivatives32f
-        = (FVector4 *)fftwf_alloc_real(numberOfGradientElements * 4);
+        = (FVector4 *)fftwf_alloc_real(numberOfLods * numberOfGradientElements * 4);
 
     heightfield->gradients32f
-        = (FVector2 *)fftwf_alloc_real(numberOfGradientElements * 2);
+        = (FVector2 *)fftwf_alloc_real(numberOfLods * numberOfGradientElements * 2);
 }
 
 void heightfield_hf_clear(OdHeightfieldData * heightfield)
@@ -61,7 +62,7 @@ void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield)
     float minSurfaceHeight =  FLT_MAX;
 
     int32_t numberOfElements
-        = heightfield->geometryResolution.x * heightfield->geometryResolution.y;
+        = heightfield->geometry.geometryResolution.x * heightfield->geometry.geometryResolution.y;
 
     for ( int32_t i = 0; i < numberOfElements; i++ )
     {
@@ -88,7 +89,7 @@ void heightfield_hf_compute_min_max_gradients(OdHeightfieldData * heightfield)
     float minGradientZ = FLT_MAX;
 
     const int32_t numberOfElements
-        = heightfield->gradientResolution.x * heightfield->gradientResolution.y;
+        = heightfield->geometry.gradientResolution.x * heightfield->geometry.gradientResolution.y;
 
     for ( int32_t i = 0; i < numberOfElements; i++ )
     {
@@ -119,7 +120,7 @@ void heightfield_hf_compute_min_max_displacements(OdHeightfieldData * heightfiel
     float minDisplacementZ = FLT_MAX;
 
     const int32_t numberOfElements
-        = heightfield->geometryResolution.x * heightfield->geometryResolution.y;
+        = heightfield->geometry.geometryResolution.x * heightfield->geometry.geometryResolution.y;
 
     for ( int32_t i = 0; i < numberOfElements; i++ )
     {
@@ -154,7 +155,7 @@ void heightfield_hf_compute_min_max_displacement_derivatives(OdHeightfieldData *
     float minDisplacementZdZ =  FLT_MAX;
 
     const int32_t numberOfElements
-        = heightfield->gradientResolution.x * heightfield->gradientResolution.y;
+        = heightfield->geometry.gradientResolution.x * heightfield->geometry.gradientResolution.y;
 
     for ( int32_t i = 0; i < numberOfElements; i++ )
     {

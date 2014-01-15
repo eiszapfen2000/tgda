@@ -576,11 +576,12 @@ static size_t index_for_resolution(int32_t resolution)
                 if ( process == YES )
                 {
                     OdHeightfieldData result;
-                    heightfield_hf_init_with_resolutions_and_size(
+                    memset(&result, 0, sizeof(result));
+
+                    heightfield_hf_init_with_geometry_and_options(
                                 &result,
-                                item.geometry.geometryResolution,
-                                item.geometry.gradientResolution,
-                                item.geometry.sizes[0]);
+                                &item.geometry,
+                                item.options);
 
                     [ self transformSpectra:&item into:&result ];
 
@@ -1136,7 +1137,7 @@ static NSUInteger od_variance_size(const void * item)
     {
         timeStamp = hf->timeStamp;
 
-        area = hf->size.x;
+        area = hf->geometry.sizes[0].x;
 
         heightRange = hf->heightRange;
         gradientXRange = hf->gradientXRange;
@@ -1149,16 +1150,19 @@ static NSUInteger od_variance_size(const void * item)
         displacementZdZRange = hf->displacementZdZRange;
 
         {
-            const double resX = hf->geometryResolution.x;
-            const double resY = hf->geometryResolution.y;
-            baseMeshScale.x = hf->size.x / resX;
-            baseMeshScale.y = hf->size.y / resY;
+            const IVector2 geometryResolution = hf->geometry.geometryResolution;
+            const IVector2 gradientResolution = hf->geometry.gradientResolution;
+
+            const double resX = geometryResolution.x;
+            const double resY = geometryResolution.y;
+            baseMeshScale.x = hf->geometry.sizes[0].x / resX;
+            baseMeshScale.y = hf->geometry.sizes[0].y / resY;
 
             const NSUInteger numberOfGeometryBytes
-                = hf->geometryResolution.x * hf->geometryResolution.y * sizeof(float);
+                = geometryResolution.x * geometryResolution.y * sizeof(float);
 
             const NSUInteger numberOfGradientBytes
-                = hf->gradientResolution.x * hf->gradientResolution.y * sizeof(float);
+                = gradientResolution.x * gradientResolution.y * sizeof(float);
 
             NSData * heightsData
                 = [ NSData dataWithBytesNoCopyNoFree:hf->heights32f
@@ -1176,30 +1180,30 @@ static NSUInteger od_variance_size(const void * item)
                 = [ NSData dataWithBytesNoCopyNoFree:hf->gradients32f
                                               length:numberOfGradientBytes * 2 ];
 
-            [ heightfield generateUsingWidth:hf->geometryResolution.x
-                                      height:hf->geometryResolution.y
+            [ heightfield generateUsingWidth:geometryResolution.x
+                                      height:geometryResolution.y
                                  pixelFormat:NpTexturePixelFormatR
                                   dataFormat:NpTextureDataFormatFloat32
                                      mipmaps:YES
                                         data:heightsData ];
 
-            [ displacement generateUsingWidth:hf->geometryResolution.x
-                                       height:hf->geometryResolution.y
+            [ displacement generateUsingWidth:geometryResolution.x
+                                       height:geometryResolution.y
                                   pixelFormat:NpTexturePixelFormatRG
                                    dataFormat:NpTextureDataFormatFloat32
                                       mipmaps:YES
                                          data:displacementsData ];
 
             [ displacementDerivatives
-                generateUsingWidth:hf->gradientResolution.x
-                            height:hf->gradientResolution.y
+                generateUsingWidth:gradientResolution.x
+                            height:gradientResolution.y
                        pixelFormat:NpTexturePixelFormatRGBA
                         dataFormat:NpTextureDataFormatFloat32
                            mipmaps:YES
                               data:displacementDerivativesData ];
 
-            [ gradient generateUsingWidth:hf->gradientResolution.x
-                                   height:hf->gradientResolution.y
+            [ gradient generateUsingWidth:gradientResolution.x
+                                   height:gradientResolution.y
                               pixelFormat:NpTexturePixelFormatRG
                                dataFormat:NpTextureDataFormatFloat32
                                   mipmaps:YES
@@ -1207,9 +1211,9 @@ static NSUInteger od_variance_size(const void * item)
 
             if ( variance != NULL && variance->baseSpectrum != NULL )
             {
-                baseSpectrumSize = hf->size;
-                baseSpectrumResolution.x = MAX(hf->geometryResolution.x, hf->gradientResolution.x);
-                baseSpectrumResolution.y = MAX(hf->geometryResolution.y, hf->gradientResolution.y);
+                baseSpectrumSize = hf->geometry.sizes[0];
+                baseSpectrumResolution.x = MAX(geometryResolution.x, gradientResolution.x);
+                baseSpectrumResolution.y = MAX(geometryResolution.y, gradientResolution.y);
 
                 const NSUInteger numberOfBaseSpectrumBytes
                     = baseSpectrumResolution.x * baseSpectrumResolution.y * sizeof(float);

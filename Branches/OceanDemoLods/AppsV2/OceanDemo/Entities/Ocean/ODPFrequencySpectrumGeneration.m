@@ -234,6 +234,7 @@ void frequency_spectrum_init_with_geometry_and_options(
     frequency_spectrum_clear(spectrum);
 
     geometry_copy(geometry, &spectrum->geometry);
+    spectrum->options = options;
 
     if ( options & OdGeneratorOptionsHeights )
     {
@@ -254,7 +255,7 @@ void frequency_spectrum_init_with_geometry_and_options(
     {
         spectrum->displacementXdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
         spectrum->displacementZdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
-    }   
+    }
 }
 
 void frequency_spectrum_clear(OdFrequencySpectrumFloat * spectrum)
