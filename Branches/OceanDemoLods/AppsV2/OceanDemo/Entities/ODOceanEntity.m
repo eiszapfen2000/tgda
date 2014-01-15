@@ -575,8 +575,7 @@ static size_t index_for_resolution(int32_t resolution)
 
                 if ( process == YES )
                 {
-                    OdHeightfieldData result;
-                    memset(&result, 0, sizeof(result));
+                    OdHeightfieldData result = heightfield_zero();
 
                     heightfield_hf_init_with_geometry_and_options(
                                 &result,

@@ -38,6 +38,8 @@ void heightfield_hf_compute_min_max_gradients(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max_displacements(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max_displacement_derivatives(OdHeightfieldData * heightfield);
 
+OdHeightfieldData heightfield_zero();
+
 @interface ODHeightfieldQueue : NPObject
 {
     NSPointerArray * queue;
