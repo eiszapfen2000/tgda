@@ -92,6 +92,9 @@ typedef struct OdFrequencySpectrumFloat
     // geometry
     OdSpectrumGeometry geometry;
 
+    // options this was created with
+    OdGeneratorOptions  options;
+
     // variance related stuff
     // zero frequency at center
     float * baseSpectrum;

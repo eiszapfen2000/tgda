@@ -4,12 +4,12 @@
 
 @class NSPointerArray;
 
+typedef OdSpectrumGeometry OdHeightfieldGeometry;
+
 typedef struct OdHeightfieldData
 {
     float timeStamp;
-    IVector2 geometryResolution;
-    IVector2 gradientResolution;
-    Vector2 size;
+    OdHeightfieldGeometry geometry;
     float * heights32f;
     FVector2 * displacements32f; //  x = displacement x, y = displacement z
     FVector2 * gradients32f; // x = gradient x, y = gradient z
@@ -26,11 +26,10 @@ typedef struct OdHeightfieldData
 }
 OdHeightfieldData;
 
-void heightfield_hf_init_with_resolutions_and_size(
+void heightfield_hf_init_with_geometry_and_options(
     OdHeightfieldData * heightfield,
-    IVector2 geometryResolution,
-    IVector2 gradientResolution,
-    Vector2 size
+    const OdHeightfieldGeometry * const geometry,
+    OdGeneratorOptions options    
     );
 
 void heightfield_hf_clear(OdHeightfieldData * heightfield);
