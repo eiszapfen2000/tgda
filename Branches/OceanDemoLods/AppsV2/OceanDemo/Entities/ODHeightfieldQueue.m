@@ -25,17 +25,34 @@ void heightfield_hf_init_with_geometry_and_options(
     const size_t numberOfGradientElements
         = geometry->gradientResolution.x * geometry->gradientResolution.y;
 
-    heightfield->heights32f
-        = fftwf_alloc_real(numberOfLods * numberOfGeometryElements);
+    heightfield->heights32f = NULL;
+    heightfield->displacements32f = NULL;
+    heightfield->gradients32f = NULL;
+    heightfield->displacementDerivatives32f = NULL;
 
-    heightfield->displacements32f
-        = (FVector2 *)fftwf_alloc_real(numberOfLods * numberOfGeometryElements * 2);
+    if ( options & OdGeneratorOptionsHeights )
+    {
+        heightfield->heights32f
+            = fftwf_alloc_real(numberOfLods * numberOfGeometryElements);
+    }
 
-    heightfield->displacementDerivatives32f
-        = (FVector4 *)fftwf_alloc_real(numberOfLods * numberOfGradientElements * 4);
+    if ( options & OdGeneratorOptionsDisplacement )
+    {
+        heightfield->displacements32f
+            = (FVector2 *)fftwf_alloc_real(numberOfLods * numberOfGeometryElements * 2);
+    }
 
-    heightfield->gradients32f
-        = (FVector2 *)fftwf_alloc_real(numberOfLods * numberOfGradientElements * 2);
+    if ( options & OdGeneratorOptionsGradient )
+    {
+        heightfield->gradients32f
+            = (FVector2 *)fftwf_alloc_real(numberOfLods * numberOfGradientElements * 2);
+    }
+
+    if ( options & OdGeneratorOptionsDisplacementDerivatives )
+    {
+        heightfield->displacementDerivatives32f
+            = (FVector4 *)fftwf_alloc_real(numberOfLods * numberOfGradientElements * 4);
+    }
 }
 
 void heightfield_hf_clear(OdHeightfieldData * heightfield)
