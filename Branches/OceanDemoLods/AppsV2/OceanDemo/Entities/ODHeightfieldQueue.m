@@ -176,6 +176,14 @@ void heightfield_hf_compute_min_max_displacement_derivatives(OdHeightfieldData *
     heightfield->displacementZdZRange = (FVector2){minDisplacementZdZ, maxDisplacementZdZ};
 }
 
+OdHeightfieldData heightfield_zero()
+{
+    OdHeightfieldData result;
+    memset(&result, 0, sizeof(result));
+
+    return result;
+}
+
 static NSUInteger heightfield_size(const void * item)
 {
     return sizeof(OdHeightfieldData);
