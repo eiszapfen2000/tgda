@@ -299,6 +299,7 @@ static size_t index_for_resolution(int32_t resolution)
 
                 generatorSettings.spectrumScale = generatorSpectrumScale;
                 generatorSettings.options = ULONG_MAX;
+                //generatorSettings.options = 1;
 
                 NSAssert(generatorNumberOfLods <= UINT32_MAX, @"Lod out of bounds");
 
@@ -1163,50 +1164,65 @@ static NSUInteger od_variance_size(const void * item)
             const NSUInteger numberOfGradientBytes
                 = gradientResolution.x * gradientResolution.y * sizeof(float);
 
-            NSData * heightsData
-                = [ NSData dataWithBytesNoCopyNoFree:hf->heights32f
-                                              length:numberOfGeometryBytes ];
+            if ( hf->heights32f != NULL )
+            {
 
-            NSData * displacementsData
-                = [ NSData dataWithBytesNoCopyNoFree:hf->displacements32f
-                                              length:numberOfGeometryBytes * 2 ];
+                NSData * heightsData
+                    = [ NSData dataWithBytesNoCopyNoFree:hf->heights32f
+                                                  length:numberOfGeometryBytes ];
 
-            NSData * displacementDerivativesData
-                = [ NSData dataWithBytesNoCopyNoFree:hf->displacementDerivatives32f
-                                              length:numberOfGradientBytes * 4 ];
+                [ heightfield generateUsingWidth:geometryResolution.x
+                                          height:geometryResolution.y
+                                     pixelFormat:NpTexturePixelFormatR
+                                      dataFormat:NpTextureDataFormatFloat32
+                                         mipmaps:YES
+                                            data:heightsData ];
+            }
 
-            NSData * gradientsData
-                = [ NSData dataWithBytesNoCopyNoFree:hf->gradients32f
-                                              length:numberOfGradientBytes * 2 ];
+            if ( hf->displacements32f != NULL )
+            {
+                NSData * displacementsData
+                    = [ NSData dataWithBytesNoCopyNoFree:hf->displacements32f
+                                                  length:numberOfGeometryBytes * 2 ];
 
-            [ heightfield generateUsingWidth:geometryResolution.x
-                                      height:geometryResolution.y
-                                 pixelFormat:NpTexturePixelFormatR
-                                  dataFormat:NpTextureDataFormatFloat32
-                                     mipmaps:YES
-                                        data:heightsData ];
+                [ displacement generateUsingWidth:geometryResolution.x
+                                           height:geometryResolution.y
+                                      pixelFormat:NpTexturePixelFormatRG
+                                       dataFormat:NpTextureDataFormatFloat32
+                                          mipmaps:YES
+                                             data:displacementsData ];
+            }
 
-            [ displacement generateUsingWidth:geometryResolution.x
-                                       height:geometryResolution.y
+            if ( hf->gradients32f != NULL )
+            {
+                NSData * gradientsData
+                    = [ NSData dataWithBytesNoCopyNoFree:hf->gradients32f
+                                                  length:numberOfGradientBytes * 2 ];
+
+                [ gradient generateUsingWidth:gradientResolution.x
+                                       height:gradientResolution.y
                                   pixelFormat:NpTexturePixelFormatRG
                                    dataFormat:NpTextureDataFormatFloat32
                                       mipmaps:YES
-                                         data:displacementsData ];
+                                         data:gradientsData ];
+            }
 
-            [ displacementDerivatives
-                generateUsingWidth:gradientResolution.x
-                            height:gradientResolution.y
-                       pixelFormat:NpTexturePixelFormatRGBA
-                        dataFormat:NpTextureDataFormatFloat32
-                           mipmaps:YES
-                              data:displacementDerivativesData ];
+            if ( hf->displacementDerivatives32f != NULL )
+            {
+                NSData * displacementDerivativesData
+                    = [ NSData dataWithBytesNoCopyNoFree:hf->displacementDerivatives32f
+                                                  length:numberOfGradientBytes * 4 ];
 
-            [ gradient generateUsingWidth:gradientResolution.x
-                                   height:gradientResolution.y
-                              pixelFormat:NpTexturePixelFormatRG
-                               dataFormat:NpTextureDataFormatFloat32
-                                  mipmaps:YES
-                                     data:gradientsData ];
+                [ displacementDerivatives
+                    generateUsingWidth:gradientResolution.x
+                                height:gradientResolution.y
+                           pixelFormat:NpTexturePixelFormatRGBA
+                            dataFormat:NpTextureDataFormatFloat32
+                               mipmaps:YES
+                                  data:displacementDerivativesData ];
+            }
+
+
 
             if ( variance != NULL && variance->baseSpectrum != NULL )
             {
