@@ -7,7 +7,7 @@
 
 void heightfield_hf_init_with_geometry_and_options(
     OdHeightfieldData * heightfield,
-    const OdHeightfieldGeometry * const geometry,
+    const OdSpectrumGeometry * const geometry,
     OdGeneratorOptions options    
     )
 {
@@ -53,6 +53,9 @@ void heightfield_hf_init_with_geometry_and_options(
         heightfield->displacementDerivatives32f
             = (FVector4 *)fftwf_alloc_real(numberOfLods * numberOfGradientElements * 4);
     }
+
+    heightfield->ranges = ALLOC_ARRAY(FVector2, NUMBER_OF_RANGES * numberOfLods);
+    memset(heightfield->ranges, 0, sizeof(FVector2) * NUMBER_OF_RANGES * numberOfLods);
 }
 
 void heightfield_hf_clear(OdHeightfieldData * heightfield)
@@ -63,6 +66,9 @@ void heightfield_hf_clear(OdHeightfieldData * heightfield)
         fftwf_free(heightfield->displacements32f);
         fftwf_free(heightfield->displacementDerivatives32f);
         fftwf_free(heightfield->gradients32f);
+
+        geometry_clear(&heightfield->geometry);
+        SAFE_FREE(heightfield->ranges);
     }
 }
 
@@ -87,7 +93,7 @@ void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield)
         minSurfaceHeight = MIN(minSurfaceHeight, heightfield->heights32f[i]);
     }
 
-    heightfield->heightRange = (FVector2){minSurfaceHeight, maxSurfaceHeight};
+    heightfield->ranges[HEIGHT_RANGE] = (FVector2){minSurfaceHeight, maxSurfaceHeight};
 }
 
 void heightfield_hf_compute_min_max_gradients(OdHeightfieldData * heightfield)
@@ -117,8 +123,8 @@ void heightfield_hf_compute_min_max_gradients(OdHeightfieldData * heightfield)
         minGradientZ = MIN(minGradientZ, heightfield->gradients32f[i].y);
     }
 
-    heightfield->gradientXRange = (FVector2){minGradientX, maxGradientX};
-    heightfield->gradientZRange = (FVector2){minGradientZ, maxGradientZ};
+    heightfield->ranges[GRADIENT_X_RANGE] = (FVector2){minGradientX, maxGradientX};
+    heightfield->ranges[GRADIENT_Z_RANGE] = (FVector2){minGradientZ, maxGradientZ};
 }
 
 void heightfield_hf_compute_min_max_displacements(OdHeightfieldData * heightfield)
@@ -148,8 +154,8 @@ void heightfield_hf_compute_min_max_displacements(OdHeightfieldData * heightfiel
         minDisplacementZ = MIN(minDisplacementZ, heightfield->displacements32f[i].y);
     }
 
-    heightfield->displacementXRange = (FVector2){minDisplacementX, maxDisplacementX};
-    heightfield->displacementZRange = (FVector2){minDisplacementZ, maxDisplacementZ};
+    heightfield->ranges[DISPLACEMENT_X_RANGE] = (FVector2){minDisplacementX, maxDisplacementX};
+    heightfield->ranges[DISPLACEMENT_Z_RANGE] = (FVector2){minDisplacementZ, maxDisplacementZ};
 }
 
 void heightfield_hf_compute_min_max_displacement_derivatives(OdHeightfieldData * heightfield)
@@ -187,10 +193,10 @@ void heightfield_hf_compute_min_max_displacement_derivatives(OdHeightfieldData *
         minDisplacementZdZ = MIN(minDisplacementZdZ, heightfield->displacementDerivatives32f[i].w);
     }
 
-    heightfield->displacementXdXRange = (FVector2){minDisplacementXdX, maxDisplacementXdX};
-    heightfield->displacementXdZRange = (FVector2){minDisplacementXdZ, maxDisplacementXdZ};
-    heightfield->displacementZdXRange = (FVector2){minDisplacementZdX, maxDisplacementZdX};
-    heightfield->displacementZdZRange = (FVector2){minDisplacementZdZ, maxDisplacementZdZ};
+    heightfield->ranges[DISPLACEMENT_X_DX_RANGE] = (FVector2){minDisplacementXdX, maxDisplacementXdX};
+    heightfield->ranges[DISPLACEMENT_X_DZ_RANGE] = (FVector2){minDisplacementXdZ, maxDisplacementXdZ};
+    heightfield->ranges[DISPLACEMENT_Z_DX_RANGE] = (FVector2){minDisplacementZdX, maxDisplacementZdX};
+    heightfield->ranges[DISPLACEMENT_Z_DZ_RANGE] = (FVector2){minDisplacementZdZ, maxDisplacementZdZ};
 }
 
 OdHeightfieldData heightfield_zero()
