@@ -299,7 +299,7 @@ static size_t index_for_resolution(int32_t resolution)
 
                 generatorSettings.spectrumScale = generatorSpectrumScale;
                 generatorSettings.options = ULONG_MAX;
-                //generatorSettings.options = 1;
+                //generatorSettings.options = 4;
 
                 NSAssert(generatorNumberOfLods <= UINT32_MAX, @"Lod out of bounds");
 
@@ -1139,15 +1139,15 @@ static NSUInteger od_variance_size(const void * item)
 
         area = hf->geometry.sizes[0].x;
 
-        heightRange = hf->heightRange;
-        gradientXRange = hf->gradientXRange;
-        gradientZRange = hf->gradientZRange;
-        displacementXRange = hf->displacementXRange;
-        displacementZRange = hf->displacementZRange;
-        displacementXdXRange = hf->displacementXdXRange;
-        displacementXdZRange = hf->displacementXdZRange;
-        displacementZdXRange = hf->displacementZdXRange;
-        displacementZdZRange = hf->displacementZdZRange;
+        heightRange = hf->ranges[HEIGHT_RANGE];
+        gradientXRange = hf->ranges[GRADIENT_X_RANGE];
+        gradientZRange = hf->ranges[GRADIENT_Z_RANGE];
+        displacementXRange = hf->ranges[DISPLACEMENT_X_RANGE];
+        displacementZRange = hf->ranges[DISPLACEMENT_Z_RANGE];
+        displacementXdXRange = hf->ranges[DISPLACEMENT_X_DX_RANGE];
+        displacementXdZRange = hf->ranges[DISPLACEMENT_X_DZ_RANGE];
+        displacementZdXRange = hf->ranges[DISPLACEMENT_Z_DX_RANGE];
+        displacementZdZRange = hf->ranges[DISPLACEMENT_Z_DZ_RANGE];
 
         {
             const IVector2 geometryResolution = hf->geometry.geometryResolution;

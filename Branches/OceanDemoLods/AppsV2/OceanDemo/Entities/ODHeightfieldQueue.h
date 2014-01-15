@@ -14,21 +14,26 @@ typedef struct OdHeightfieldData
     FVector2 * displacements32f; //  x = displacement x, y = displacement z
     FVector2 * gradients32f; // x = gradient x, y = gradient z
     FVector4 * displacementDerivatives32f; // x = dx_x , y = dx_z, z = dz_x, w = dz_z
-    FVector2 heightRange;
-    FVector2 gradientXRange;
-    FVector2 gradientZRange;
-    FVector2 displacementXRange;
-    FVector2 displacementZRange;
-    FVector2 displacementXdXRange;
-    FVector2 displacementXdZRange;
-    FVector2 displacementZdXRange;
-    FVector2 displacementZdZRange;
+    FVector2 * ranges;
 }
 OdHeightfieldData;
 
+#define NUMBER_OF_RANGES        9
+
+#define HEIGHT_RANGE            0
+#define GRADIENT_X_RANGE        1
+#define GRADIENT_Z_RANGE        2
+#define DISPLACEMENT_X_RANGE    3
+#define DISPLACEMENT_Z_RANGE    4
+#define DISPLACEMENT_X_DX_RANGE 5
+#define DISPLACEMENT_X_DZ_RANGE 6
+#define DISPLACEMENT_Z_DX_RANGE 7
+#define DISPLACEMENT_Z_DZ_RANGE 8
+
+
 void heightfield_hf_init_with_geometry_and_options(
     OdHeightfieldData * heightfield,
-    const OdHeightfieldGeometry * const geometry,
+    const OdSpectrumGeometry * const geometry,
     OdGeneratorOptions options    
     );
 
