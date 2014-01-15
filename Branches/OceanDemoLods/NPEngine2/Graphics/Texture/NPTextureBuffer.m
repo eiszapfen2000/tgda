@@ -1,5 +1,6 @@
 #import <Foundation/NSException.h>
 #import "Graphics/NPEngineGraphics.h"
+#import "Graphics/Buffer/NPBufferObject.h"
 #import "NPTextureBindingState.h"
 #import "NPTextureBuffer.h"
 
