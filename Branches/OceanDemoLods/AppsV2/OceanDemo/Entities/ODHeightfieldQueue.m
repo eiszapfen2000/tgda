@@ -50,7 +50,12 @@ void heightfield_hf_clear(OdHeightfieldData * heightfield)
 
 void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield)
 {
-    assert( heightfield->heights32f != NULL );
+    assert( heightfield != NULL );
+
+    if ( heightfield->heights32f == NULL )
+    {
+        return;
+    }
 
     float maxSurfaceHeight = -FLT_MAX;
     float minSurfaceHeight =  FLT_MAX;
@@ -69,7 +74,12 @@ void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield)
 
 void heightfield_hf_compute_min_max_gradients(OdHeightfieldData * heightfield)
 {
-    assert( heightfield->gradients32f != NULL );
+    assert( heightfield != NULL );
+
+    if ( heightfield->gradients32f == NULL )
+    {
+        return;
+    }
 
     float maxGradientX = -FLT_MAX;
     float maxGradientZ = -FLT_MAX;
@@ -95,7 +105,12 @@ void heightfield_hf_compute_min_max_gradients(OdHeightfieldData * heightfield)
 
 void heightfield_hf_compute_min_max_displacements(OdHeightfieldData * heightfield)
 {
-    assert( heightfield->displacements32f != NULL );
+    assert( heightfield != NULL );
+
+    if ( heightfield->displacements32f == NULL )
+    {
+        return;
+    }
 
     float maxDisplacementX = -FLT_MAX;
     float maxDisplacementZ = -FLT_MAX;
@@ -121,7 +136,12 @@ void heightfield_hf_compute_min_max_displacements(OdHeightfieldData * heightfiel
 
 void heightfield_hf_compute_min_max_displacement_derivatives(OdHeightfieldData * heightfield)
 {
-    assert( heightfield->displacementDerivatives32f != NULL );
+    assert( heightfield != NULL );
+
+    if ( heightfield->displacementDerivatives32f == NULL )
+    {
+        return;
+    }
 
     float maxDisplacementXdX = -FLT_MAX;
     float maxDisplacementXdZ = -FLT_MAX;
