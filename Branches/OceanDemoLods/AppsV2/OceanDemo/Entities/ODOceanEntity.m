@@ -299,7 +299,7 @@ static size_t index_for_resolution(int32_t resolution)
 
                 generatorSettings.spectrumScale = generatorSpectrumScale;
                 generatorSettings.options = ULONG_MAX;
-                //generatorSettings.options = 4;
+                //generatorSettings.options = 1;
 
                 NSAssert(generatorNumberOfLods <= UINT32_MAX, @"Lod out of bounds");
 
@@ -390,8 +390,10 @@ static size_t index_for_resolution(int32_t resolution)
     const size_t geometryIndex = index_for_resolution(geometryResolution.x);
     const size_t gradientIndex = index_for_resolution(gradientResolution.x);
 
-    const size_t numberOfGeometryElements = geometryResolution.x * geometryResolution.y;
-    const size_t numberOfGradientElements = gradientResolution.x * gradientResolution.y;
+    const int32_t lodCount = (int32_t)item->geometry.numberOfLods;
+
+    const int32_t numberOfGeometryElements = geometryResolution.x * geometryResolution.y;
+    const int32_t numberOfGradientElements = gradientResolution.x * gradientResolution.y;
 
     NSAssert2(geometryIndex != SIZE_MAX && gradientIndex != SIZE_MAX,
               @"Invalid resolution %d %d", geometryResolution.x, gradientResolution.x);
@@ -406,91 +408,155 @@ static size_t index_for_resolution(int32_t resolution)
 
     if ( item->height != NULL )
     {
-        complexHeights = fftwf_alloc_complex(numberOfGeometryElements);
-        fftwf_execute_dft(complexPlans[geometryIndex], item->height, complexHeights);
+        complexHeights = fftwf_alloc_complex(lodCount * numberOfGeometryElements);
+
+        for ( int32_t l = 0; l < lodCount; l++ )
+        {
+            const int32_t offset = l * numberOfGeometryElements;
+
+            fftwf_execute_dft(
+                complexPlans[geometryIndex],
+                item->height   + offset,
+                complexHeights + offset
+                );
+        }
     }
 
     if ( item->displacement != NULL )
     {
-        complexDisplacement = fftwf_alloc_complex(numberOfGeometryElements);
-        fftwf_execute_dft(complexPlans[geometryIndex], item->displacement, complexDisplacement);
+        complexDisplacement = fftwf_alloc_complex(lodCount * numberOfGeometryElements);
+
+        for ( int32_t l = 0; l < lodCount; l++ )
+        {
+            const int32_t offset = l * numberOfGeometryElements;
+
+            fftwf_execute_dft(
+                complexPlans[geometryIndex],
+                item->displacement  + offset,
+                complexDisplacement + offset
+                );
+        }
     }
 
     if ( item->gradient != NULL )
     {
-        complexGradient = fftwf_alloc_complex(numberOfGradientElements);
-        fftwf_execute_dft(complexPlans[gradientIndex], item->gradient, complexGradient);
+        complexGradient = fftwf_alloc_complex(lodCount * numberOfGradientElements);
+
+        for ( int32_t l = 0; l < lodCount; l++ )
+        {
+            const int32_t offset = l * numberOfGradientElements;
+
+            fftwf_execute_dft(
+                complexPlans[gradientIndex],
+                item->gradient  + offset,
+                complexGradient + offset
+                );
+        }
     }
 
     if ( item->displacementXdXdZ != NULL && item->displacementZdXdZ != NULL )
     {
-        complexDisplacementXdXdZ = fftwf_alloc_complex(numberOfGradientElements);
-        complexDisplacementZdXdZ = fftwf_alloc_complex(numberOfGradientElements);
+        complexDisplacementXdXdZ = fftwf_alloc_complex(lodCount * numberOfGradientElements);
+        complexDisplacementZdXdZ = fftwf_alloc_complex(lodCount * numberOfGradientElements);
 
-        fftwf_execute_dft(complexPlans[gradientIndex], item->displacementXdXdZ, complexDisplacementXdXdZ);
-        fftwf_execute_dft(complexPlans[gradientIndex], item->displacementZdXdZ, complexDisplacementZdXdZ);
+        for ( int32_t l = 0; l < lodCount; l++ )
+        {
+            const int32_t offset = l * numberOfGradientElements;
+
+            fftwf_execute_dft(
+                complexPlans[gradientIndex],
+                item->displacementXdXdZ  + offset,
+                complexDisplacementXdXdZ + offset
+                );
+
+            fftwf_execute_dft(
+                complexPlans[gradientIndex],
+                item->displacementZdXdZ  + offset,
+                complexDisplacementZdXdZ + offset
+                );
+        }
     }
 
     if ( item->height != NULL )
-    {      
-        for ( int32_t i = 0; i < geometryResolution.y; i++ )
-        {
-            for ( int32_t j = 0; j < geometryResolution.x; j++ )
-            {
-                const int32_t k = geometryResolution.y - 1 - i;
-                const int32_t sourceIndex = i * geometryResolution.x + j;
-                const int32_t targetIndex = k * geometryResolution.x + j;
-                result->heights32f[targetIndex] = complexHeights[sourceIndex][0];
-            }
-        }
-    }
-
-    if ( item->gradient != NULL )
     {
-        for ( int32_t i = 0; i < gradientResolution.y; i++ )
+        for ( int32_t l = 0; l < lodCount; l++ )
         {
-            for ( int32_t j = 0; j < gradientResolution.x; j++ )
+            const int32_t offset = l * numberOfGeometryElements;
+
+            for ( int32_t i = 0; i < geometryResolution.y; i++ )
             {
-                const int32_t k = gradientResolution.y - 1 - i;
-                const int32_t sourceIndex = i * gradientResolution.x + j;
-                const int32_t targetIndex = k * gradientResolution.x + j;
-
-                result->gradients32f[targetIndex].x = complexGradient[sourceIndex][0];
-                result->gradients32f[targetIndex].y = complexGradient[sourceIndex][1];
-            }
-        }
-    }
-
-    if ( item->displacementXdXdZ != NULL && item->displacementZdXdZ != NULL )
-    {
-        for ( int32_t i = 0; i < gradientResolution.y; i++ )
-        {
-            for ( int32_t j = 0; j < gradientResolution.x; j++ )
-            {
-                const int32_t k = gradientResolution.y - 1 - i;
-                const int32_t sourceIndex = i * gradientResolution.x + j;
-                const int32_t targetIndex = k * gradientResolution.x + j;
-
-                result->displacementDerivatives32f[targetIndex].x = complexDisplacementXdXdZ[sourceIndex][0];
-                result->displacementDerivatives32f[targetIndex].y = complexDisplacementXdXdZ[sourceIndex][1];
-                result->displacementDerivatives32f[targetIndex].z = complexDisplacementZdXdZ[sourceIndex][0];
-                result->displacementDerivatives32f[targetIndex].w = complexDisplacementZdXdZ[sourceIndex][1];
+                for ( int32_t j = 0; j < geometryResolution.x; j++ )
+                {
+                    const int32_t k = geometryResolution.y - 1 - i;
+                    const int32_t sourceIndex = i * geometryResolution.x + j;
+                    const int32_t targetIndex = k * geometryResolution.x + j;
+                    result->heights32f[offset + targetIndex] = complexHeights[offset + sourceIndex][0];
+                }
             }
         }
     }
 
     if ( item->displacement != NULL )
     {
-        for ( int32_t i = 0; i < geometryResolution.y; i++ )
+        for ( int32_t l = 0; l < lodCount; l++ )
         {
-            for ( int32_t j = 0; j < geometryResolution.x; j++ )
-            {
-                const int32_t k = geometryResolution.y - 1 - i;
-                const int32_t sourceIndex = i * geometryResolution.x + j;
-                const int32_t targetIndex = k * geometryResolution.x + j;
+            const int32_t offset = l * numberOfGeometryElements;
 
-                result->displacements32f[targetIndex].x = complexDisplacement[sourceIndex][0];
-                result->displacements32f[targetIndex].y = complexDisplacement[sourceIndex][1];
+            for ( int32_t i = 0; i < geometryResolution.y; i++ )
+            {
+                for ( int32_t j = 0; j < geometryResolution.x; j++ )
+                {
+                    const int32_t k = geometryResolution.y - 1 - i;
+                    const int32_t sourceIndex = i * geometryResolution.x + j;
+                    const int32_t targetIndex = k * geometryResolution.x + j;
+
+                    result->displacements32f[offset + targetIndex].x = complexDisplacement[offset + sourceIndex][0];
+                    result->displacements32f[offset + targetIndex].y = complexDisplacement[offset + sourceIndex][1];
+                }
+            }
+        }
+    }
+
+    if ( item->gradient != NULL )
+    {
+        for ( int32_t l = 0; l < lodCount; l++ )
+        {
+            const int32_t offset = l * numberOfGradientElements;
+
+            for ( int32_t i = 0; i < gradientResolution.y; i++ )
+            {
+                for ( int32_t j = 0; j < gradientResolution.x; j++ )
+                {
+                    const int32_t k = gradientResolution.y - 1 - i;
+                    const int32_t sourceIndex = i * gradientResolution.x + j;
+                    const int32_t targetIndex = k * gradientResolution.x + j;
+
+                    result->gradients32f[offset + targetIndex].x = complexGradient[offset + sourceIndex][0];
+                    result->gradients32f[offset + targetIndex].y = complexGradient[offset + sourceIndex][1];
+                }
+            }
+        }
+    }
+
+    if ( item->displacementXdXdZ != NULL && item->displacementZdXdZ != NULL )
+    {
+        for ( int32_t l = 0; l < lodCount; l++ )
+        {
+            const int32_t offset = l * numberOfGradientElements;
+
+            for ( int32_t i = 0; i < gradientResolution.y; i++ )
+            {
+                for ( int32_t j = 0; j < gradientResolution.x; j++ )
+                {
+                    const int32_t k = gradientResolution.y - 1 - i;
+                    const int32_t sourceIndex = i * gradientResolution.x + j;
+                    const int32_t targetIndex = k * gradientResolution.x + j;
+
+                    result->displacementDerivatives32f[offset + targetIndex].x = complexDisplacementXdXdZ[offset + sourceIndex][0];
+                    result->displacementDerivatives32f[offset + targetIndex].y = complexDisplacementXdXdZ[offset + sourceIndex][1];
+                    result->displacementDerivatives32f[offset + targetIndex].z = complexDisplacementZdXdZ[offset + sourceIndex][0];
+                    result->displacementDerivatives32f[offset + targetIndex].w = complexDisplacementZdXdZ[offset + sourceIndex][1];
+                }
             }
         }
     }
