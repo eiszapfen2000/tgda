@@ -392,23 +392,27 @@ static size_t index_for_resolution(int32_t resolution)
     NSAssert2(geometryIndex != SIZE_MAX && gradientIndex != SIZE_MAX,
               @"Invalid resolution %d %d", geometryResolution.x, gradientResolution.x);
 
-    fftwf_complex * complexHeights = fftwf_alloc_complex(numberOfGeometryElements);
-
-    fftwf_execute_dft(complexPlans[geometryIndex], item->height, complexHeights);
     result->timeStamp = item->timestamp;
 
-    for ( int32_t i = 0; i < geometryResolution.y; i++ )
+    if ( item->height != NULL )
     {
-        for ( int32_t j = 0; j < geometryResolution.x; j++ )
-        {
-            const int32_t k = geometryResolution.y - 1 - i;
-            const int32_t sourceIndex = i * geometryResolution.x + j;
-            const int32_t targetIndex = k * geometryResolution.x + j;
-            result->heights32f[targetIndex] = complexHeights[sourceIndex][0];
-        }
-    }
+        fftwf_complex * complexHeights = fftwf_alloc_complex(numberOfGeometryElements);
 
-    heightfield_hf_compute_min_max(result);
+        fftwf_execute_dft(complexPlans[geometryIndex], item->height, complexHeights);
+
+        for ( int32_t i = 0; i < geometryResolution.y; i++ )
+        {
+            for ( int32_t j = 0; j < geometryResolution.x; j++ )
+            {
+                const int32_t k = geometryResolution.y - 1 - i;
+                const int32_t sourceIndex = i * geometryResolution.x + j;
+                const int32_t targetIndex = k * geometryResolution.x + j;
+                result->heights32f[targetIndex] = complexHeights[sourceIndex][0];
+            }
+        }
+
+        fftwf_free(complexHeights);
+    }
 
     if ( item->gradient != NULL )
     {
@@ -438,8 +442,7 @@ static size_t index_for_resolution(int32_t resolution)
             }
         }
 
-        heightfield_hf_compute_min_max_gradients(result);
-        heightfield_hf_compute_min_max_displacement_derivatives(result);
+
 
         fftwf_free(complexDisplacementZdXdZ);
         fftwf_free(complexDisplacementXdXdZ);
@@ -465,11 +468,14 @@ static size_t index_for_resolution(int32_t resolution)
             }
         }
 
-        heightfield_hf_compute_min_max_displacements(result);
+
         fftwf_free(complexDisplacement);
     }
 
-    fftwf_free(complexHeights);
+    heightfield_hf_compute_min_max(result);
+    heightfield_hf_compute_min_max_displacements(result);
+    heightfield_hf_compute_min_max_gradients(result);
+    heightfield_hf_compute_min_max_displacement_derivatives(result);
 }
 
 - (void) transform:(id)argument
