@@ -34,6 +34,9 @@
 #import "ODOceanBaseMeshes.h"
 #import "ODOceanEntity.h"
 
+#define FFTWF_FREE(_pointer)        do {void *_ptr=(void *)(_pointer); fftwf_free(_ptr); _pointer=NULL; } while (0)
+#define FFTWF_SAFE_FREE(_pointer)   { if ( (_pointer) != NULL ) FFTWF_FREE((_pointer)); }
+
 static void print_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
 {
     printf("Complex spectrum\n");
@@ -394,12 +397,41 @@ static size_t index_for_resolution(int32_t resolution)
 
     result->timeStamp = item->timestamp;
 
+    fftwf_complex * complexHeights = NULL;
+    fftwf_complex * complexDisplacement = NULL;
+    fftwf_complex * complexGradient = NULL;
+    fftwf_complex * complexDisplacementXdXdZ = NULL;
+    fftwf_complex * complexDisplacementZdXdZ = NULL;
+
     if ( item->height != NULL )
     {
-        fftwf_complex * complexHeights = fftwf_alloc_complex(numberOfGeometryElements);
-
+        complexHeights = fftwf_alloc_complex(numberOfGeometryElements);
         fftwf_execute_dft(complexPlans[geometryIndex], item->height, complexHeights);
+    }
 
+    if ( item->displacement != NULL )
+    {
+        complexDisplacement = fftwf_alloc_complex(numberOfGeometryElements);
+        fftwf_execute_dft(complexPlans[geometryIndex], item->displacement, complexDisplacement);
+    }
+
+    if ( item->gradient != NULL )
+    {
+        complexGradient = fftwf_alloc_complex(numberOfGradientElements);
+        fftwf_execute_dft(complexPlans[gradientIndex], item->gradient, complexGradient);
+    }
+
+    if ( item->displacementXdXdZ != NULL && item->displacementZdXdZ != NULL )
+    {
+        complexDisplacementXdXdZ = fftwf_alloc_complex(numberOfGradientElements);
+        complexDisplacementZdXdZ = fftwf_alloc_complex(numberOfGradientElements);
+
+        fftwf_execute_dft(complexPlans[gradientIndex], item->displacementXdXdZ, complexDisplacementXdXdZ);
+        fftwf_execute_dft(complexPlans[gradientIndex], item->displacementZdXdZ, complexDisplacementZdXdZ);
+    }
+
+    if ( item->height != NULL )
+    {      
         for ( int32_t i = 0; i < geometryResolution.y; i++ )
         {
             for ( int32_t j = 0; j < geometryResolution.x; j++ )
@@ -410,20 +442,10 @@ static size_t index_for_resolution(int32_t resolution)
                 result->heights32f[targetIndex] = complexHeights[sourceIndex][0];
             }
         }
-
-        fftwf_free(complexHeights);
     }
 
     if ( item->gradient != NULL )
     {
-        fftwf_complex * complexGradient = fftwf_alloc_complex(numberOfGradientElements);
-        fftwf_complex * complexDisplacementXdXdZ = fftwf_alloc_complex(numberOfGradientElements);
-        fftwf_complex * complexDisplacementZdXdZ = fftwf_alloc_complex(numberOfGradientElements);
-
-        fftwf_execute_dft(complexPlans[gradientIndex], item->gradient, complexGradient);
-        fftwf_execute_dft(complexPlans[gradientIndex], item->displacementXdXdZ, complexDisplacementXdXdZ);
-        fftwf_execute_dft(complexPlans[gradientIndex], item->displacementZdXdZ, complexDisplacementZdXdZ);
-
         for ( int32_t i = 0; i < gradientResolution.y; i++ )
         {
             for ( int32_t j = 0; j < gradientResolution.x; j++ )
@@ -434,6 +456,19 @@ static size_t index_for_resolution(int32_t resolution)
 
                 result->gradients32f[targetIndex].x = complexGradient[sourceIndex][0];
                 result->gradients32f[targetIndex].y = complexGradient[sourceIndex][1];
+            }
+        }
+    }
+
+    if ( item->displacementXdXdZ != NULL && item->displacementZdXdZ != NULL )
+    {
+        for ( int32_t i = 0; i < gradientResolution.y; i++ )
+        {
+            for ( int32_t j = 0; j < gradientResolution.x; j++ )
+            {
+                const int32_t k = gradientResolution.y - 1 - i;
+                const int32_t sourceIndex = i * gradientResolution.x + j;
+                const int32_t targetIndex = k * gradientResolution.x + j;
 
                 result->displacementDerivatives32f[targetIndex].x = complexDisplacementXdXdZ[sourceIndex][0];
                 result->displacementDerivatives32f[targetIndex].y = complexDisplacementXdXdZ[sourceIndex][1];
@@ -441,20 +476,10 @@ static size_t index_for_resolution(int32_t resolution)
                 result->displacementDerivatives32f[targetIndex].w = complexDisplacementZdXdZ[sourceIndex][1];
             }
         }
-
-
-
-        fftwf_free(complexDisplacementZdXdZ);
-        fftwf_free(complexDisplacementXdXdZ);
-        fftwf_free(complexGradient);
     }
 
     if ( item->displacement != NULL )
     {
-        fftwf_complex * complexDisplacement = fftwf_alloc_complex(numberOfGeometryElements);
-
-        fftwf_execute_dft(complexPlans[geometryIndex], item->displacement, complexDisplacement);
-
         for ( int32_t i = 0; i < geometryResolution.y; i++ )
         {
             for ( int32_t j = 0; j < geometryResolution.x; j++ )
@@ -467,10 +492,13 @@ static size_t index_for_resolution(int32_t resolution)
                 result->displacements32f[targetIndex].y = complexDisplacement[sourceIndex][1];
             }
         }
-
-
-        fftwf_free(complexDisplacement);
     }
+
+    FFTWF_SAFE_FREE(complexHeights);
+    FFTWF_SAFE_FREE(complexDisplacement);
+    FFTWF_SAFE_FREE(complexGradient);
+    FFTWF_SAFE_FREE(complexDisplacementXdXdZ);
+    FFTWF_SAFE_FREE(complexDisplacementZdXdZ);
 
     heightfield_hf_compute_min_max(result);
     heightfield_hf_compute_min_max_displacements(result);
