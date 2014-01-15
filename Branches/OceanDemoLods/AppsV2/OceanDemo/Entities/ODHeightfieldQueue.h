@@ -1,14 +1,15 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
+#import "Ocean/ODPFrequencySpectrumGeneration.h"
 
 @class NSPointerArray;
 
 typedef struct OdHeightfieldData
 {
+    float timeStamp;
     IVector2 geometryResolution;
     IVector2 gradientResolution;
     Vector2 size;
-    double timeStamp;
     float * heights32f;
     FVector2 * displacements32f; //  x = displacement x, y = displacement z
     FVector2 * gradients32f; // x = gradient x, y = gradient z

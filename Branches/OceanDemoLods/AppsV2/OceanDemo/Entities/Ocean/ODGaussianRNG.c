@@ -100,7 +100,7 @@ double odgaussianrng_get_next(OdGaussianRng * grng)
 
 void odgaussianrng_get_array(OdGaussianRng * grng, double * array, int numberOfElements)
 {
-    assert( grng != NULL && grng->rng != NULL && array != NULL );
+    assert( grng != NULL && grng->rng != NULL && array != NULL && numberOfElements > 0 );
 
     const int danglingElement = numberOfElements % 2;
     const int numberOfLoopElements = numberOfElements - danglingElement;
