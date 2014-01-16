@@ -18,11 +18,13 @@
 #import "Core/Utilities/NSData+NPEngine.h"
 #import "Core/World/NPTransformationState.h"
 #import "Core/NPEngineCore.h"
+#import "Graphics/Buffer/NPBufferObject.h"
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/Texture/NPTexture2D.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
+#import "Graphics/Texture/NPTextureBuffer.h"
 #import "Graphics/NPOrthographic.h"
 #import "Graphics/NPEngineGraphics.h"
 #import "ODProjector.h"
@@ -93,8 +95,8 @@ typedef struct OdSpectrumVariance
 }
 OdSpectrumVariance;
 
-static const NSUInteger defaultNumberOfLods = 2;
-static const NSUInteger defaultSpectrumType = 1;
+static const NSUInteger defaultNumberOfLods = 4;
+static const NSUInteger defaultSpectrumType = 0;
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
 static const double defaultSize = 80.0;
@@ -258,10 +260,6 @@ static size_t index_for_resolution(int32_t resolution)
         //NSLog(@"Generate");
 
         NSAutoreleasePool * innerPool = [ NSAutoreleasePool new ];
-
-        #define ODZERO(_type, _name) \
-            _type _name; \
-            memset(&(_name), 0, sizeof((_name)));
 
         if ( [[ NSThread currentThread ] isCancelled ] == NO )
         {
@@ -766,6 +764,9 @@ static NSUInteger od_variance_size(const void * item)
     basePlane = [[ ODBasePlane alloc ] initWithName:@"BasePlane" ];
     [ basePlane setProjector:projector ];
 
+    sizesStorage = [[ NPBufferObject alloc ] initWithName:@"Sizes Storage" ];
+    sizes = [[ NPTextureBuffer alloc ] initWithName:@"Sizes Texture Buffer" ];
+
     baseSpectrum = [[ NPTexture2D alloc ] initWithName:@"Base Spectrum Texture" ];
     heightfield  = [[ NPTexture2D alloc ] initWithName:@"Height Texture" ];
     displacement = [[ NPTexture2D alloc ] initWithName:@"Height Texture Displacement" ];
@@ -841,6 +842,8 @@ static NSUInteger od_variance_size(const void * item)
     DESTROY(displacementDerivatives);
     DESTROY(gradient);
     DESTROY(baseSpectrum);
+    DESTROY(sizesStorage);
+    DESTROY(sizes);
     DESTROY(projector);
     DESTROY(basePlane);
     DESTROY(resultQueue);
