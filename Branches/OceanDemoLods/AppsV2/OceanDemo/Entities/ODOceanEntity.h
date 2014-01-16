@@ -10,6 +10,7 @@
 @class NSPointerArray;
 @class NSThread;
 @class NPTimer;
+@class NPTextureBuffer;
 @class NPTexture2D;
 @class NPBufferObject;
 @class NPVertexArray;
@@ -69,6 +70,8 @@
     ODProjector * projector;
     ODBasePlane * basePlane;
 
+    NPBufferObject * sizesStorage;
+    NPTextureBuffer * sizes;
     NPTexture2D * baseSpectrum;
     NPTexture2D * heightfield;
     NPTexture2D * displacement;
