@@ -167,7 +167,7 @@
             Position = ("20", "435" );
             Size = ( "50", "1" );
             TextSize = "16";
-            MinimumValue = "1.0";
+            MinimumValue = "50.0";
             MaximumValue = "500.0";
             LineSize = ("85", "3");
             HeadSize = ("3", "21");
