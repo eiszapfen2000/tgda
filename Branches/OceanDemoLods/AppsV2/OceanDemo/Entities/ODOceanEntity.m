@@ -975,6 +975,11 @@ static NSUInteger od_variance_size(const void * item)
     return gradient;
 }
 
+- (NPTextureBuffer *) sizes
+{
+    return sizes;
+}
+
 - (double) area
 {
     return area;
@@ -1191,6 +1196,38 @@ static NSUInteger od_variance_size(const void * item)
     // update texture and associated min max
     if ( hf != NULL && animated == YES)
     {
+        // geometry sizes texture buffer update
+        const uint32_t lodCount = hf->geometry.numberOfLods;
+        FVector2 * geometrySizes = ALLOC_ARRAY(FVector2, lodCount);
+
+        for ( uint32_t i = 0; i < lodCount; i++ )
+        {
+            geometrySizes[i] = fv2_v_from_v2(&hf->geometry.sizes[i]);
+        }
+
+        NSData * geometrySizesData
+            = [ NSData dataWithBytesNoCopyNoFree:geometrySizes
+                                          length:lodCount * sizeof(FVector2) ];
+
+        [ sizesStorage generate:NpBufferObjectTypeTexture
+                     updateRate:NpBufferDataUpdateOftenUseOften
+                      dataUsage:NpBufferDataWriteCPUToGPU
+                     dataFormat:NpBufferDataFormatFloat32
+                     components:2
+                           data:geometrySizesData
+                     dataLength:[ geometrySizesData length ]
+                          error:NULL ];
+
+        [ sizes
+            attachBuffer:sizesStorage
+        numberOfElements:0
+             pixelFormat:NpTexturePixelFormatRG
+              dataFormat:NpTextureDataFormatFloat32 ];
+
+        FREE(geometrySizes);
+        //---------------------------------------------
+
+
         timeStamp = hf->timeStamp;
 
         area = hf->geometry.sizes[0].x;

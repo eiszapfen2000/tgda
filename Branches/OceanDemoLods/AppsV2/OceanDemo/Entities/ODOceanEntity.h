@@ -117,6 +117,7 @@
 - (NPTexture2D *) displacement;
 - (NPTexture2D *) displacementDerivatives;
 - (NPTexture2D *) gradient;
+- (NPTextureBuffer *) sizes;
 
 - (double) area;
 - (double) areaScale;
