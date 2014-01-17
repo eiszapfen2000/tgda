@@ -6,6 +6,8 @@ in vec2 out_texcoords;
 
 void main()
 {
+    int numberOfLods = textureSize(sizes);
+
     float divisor = varianceTextureResolution - 1.0f;
 
     float a = floor(out_texcoords.x);
@@ -18,7 +20,7 @@ void main()
     B = -B;
     C = -0.5f * C;
 
-    ivec2 resolution = textureSize(baseSpectrum, 0);
+    ivec3 resolution = textureSize(baseSpectrum, 0);
 
     float n = -(float(resolution.x) / 2.0f);
     float m =  (float(resolution.y) / 2.0f);
@@ -40,7 +42,7 @@ void main()
 
             // switch i and j due to to different memory layout
             // of fftw and opengl
-            float s = texelFetch(baseSpectrum, ivec2(j, i), 0);
+            float s = texelFetch(baseSpectrum, ivec3(j, i, 0), 0);
             float w = 1.0f - exp(A * kx * kx + B * kx * ky + C * ky * ky);
 
             variance.x += ((kx * kx * w * w) * (dk.x * dk.x) * s);

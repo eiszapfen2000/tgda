@@ -8,8 +8,10 @@
 #import "Graphics/Geometry/NPFullscreenQuad.h"
 #import "Graphics/Geometry/NPIMRendering.h"
 #import "Graphics/Texture/NPTexture2D.h"
+#import "Graphics/Texture/NPTexture2DArray.h"
 #import "Graphics/Texture/NPTexture3D.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
+#import "Graphics/Texture/NPTextureBuffer.h"
 #import "Graphics/Effect/NPEffectVariableInt.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
@@ -149,7 +151,7 @@
                           height:varianceLUTResolution
                            depth:varianceLUTResolution
                      pixelFormat:NpTexturePixelFormatRG
-                      dataFormat:NpTextureDataFormatFloat16
+                      dataFormat:NpTextureDataFormatFloat32
                    mipmapStorage:NO
                            error:error ];
 }
@@ -162,6 +164,7 @@
 
     [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean baseSpectrum ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]        texelUnit:1 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
     FRectangle vertices;
@@ -194,6 +197,24 @@
     }
 
     [ varianceRTC deactivate ];
+
+    /*
+    const size_t n = varianceLUTResolution * varianceLUTResolution * varianceLUTResolution;
+    FVector2 * vresult = ALLOC_ARRAY(FVector2, n);
+
+    [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ varianceLUT texture ]];
+
+    glGetTexImage(GL_TEXTURE_3D, 0, GL_RG, GL_FLOAT, vresult);
+
+    [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
+
+    for ( size_t i = 0; i < n; i++ )
+    {
+        NSLog(@"V: %f %f", vresult[i].x, vresult[i].y);
+    }
+
+    FREE(vresult);
+    */
 }
 
 - (void) renderProjectedGrid
