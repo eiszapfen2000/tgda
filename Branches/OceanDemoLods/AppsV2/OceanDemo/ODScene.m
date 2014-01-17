@@ -159,7 +159,6 @@
 - (void) updateSlopeVarianceLUT
 {
     [ varianceTextureResolution setFValue:varianceLUTResolution ];
-    [ baseSpectrumSize setValue:[ ocean baseSpectrumSize ]];
     [ deltaVariance setFValue:[ ocean baseSpectrumDeltaVariance ]];
 
     [[[ NP Graphics ] textureBindingState ] clear ];
@@ -210,7 +209,7 @@
 
     for ( size_t i = 0; i < n; i++ )
     {
-        NSLog(@"V: %f %f", vresult[i].x, vresult[i].y);
+        NSLog(@"V: %+f %+f", vresult[i].x, vresult[i].y);
     }
 
     FREE(vresult);
@@ -357,12 +356,11 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     ASSERT_RETAIN(variance);
 
     layer            = [ deferredEffect variableWithName:@"layer" ];
-    baseSpectrumSize = [ deferredEffect variableWithName:@"baseSpectrumSize" ];
     deltaVariance    = [ deferredEffect variableWithName:@"deltaVariance" ];
     varianceTextureResolution = [ deferredEffect variableWithName:@"varianceTextureResolution" ];
 
-    NSAssert(layer != nil && baseSpectrumSize != nil
-             && deltaVariance != nil && varianceTextureResolution != nil, @"");
+    NSAssert(layer != nil && deltaVariance != nil
+             && varianceTextureResolution != nil, @"");
 
     // fullscreen quad for render target display
     fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];

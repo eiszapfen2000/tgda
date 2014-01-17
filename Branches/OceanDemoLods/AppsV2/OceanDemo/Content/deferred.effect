@@ -162,7 +162,6 @@ technique "variance"
     # .x = layer .y = resolution .z = size .w = deltaVariance
     uniform float layer;
     uniform float varianceTextureResolution;
-    uniform vec2  baseSpectrumSize;
     uniform float deltaVariance;
     uniform sampler2DArray baseSpectrum;
     uniform samplerBuffer sizes;
