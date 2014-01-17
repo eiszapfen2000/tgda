@@ -103,7 +103,7 @@ static const double defaultSpectrumScale = PHILLIPS_CONSTANT;
 static const int32_t resolutions[6] = {8, 64, 128, 256, 512, 1024};
 static const NSUInteger defaultGeometryResolutionIndex = 0;
 static const NSUInteger defaultGradientResolutionIndex = 0;
-static const double OneDivSixty = 1.0 / 30.0;
+static const double OneDivSixty = 1.0 / 60.0;
 
 static const double defaultAreaScale = 1.0;
 static const double defaultDisplacementScale = 1.0;
@@ -345,7 +345,7 @@ static size_t index_for_resolution(int32_t resolution)
             const double genTime = [ timer frameTime ];
             //NSLog(@"%lf", genTime);
 
-            generationTime += 1.0f/30.0f;
+            generationTime += OneDivSixty;
 
             geometry_clear(&geometry);
 
