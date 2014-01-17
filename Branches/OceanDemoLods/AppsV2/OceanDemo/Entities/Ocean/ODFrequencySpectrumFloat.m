@@ -210,12 +210,19 @@ ODQuadrants;
     maxMeanSlopeVariance = mss;
     effectiveMeanSlopeVariance = varianceXY;
 
-/*
+    /*
     const float deltaVariance = mss - varianceXY;
 
     const int32_t slopeVarianceResolution = 4;
     const float divisor = (float)(slopeVarianceResolution - 1);
     const float AA = A;
+
+    NSLog(@"-------------------------------");
+
+    const FVector2 currentSize = fv2_v_from_v2(&currentGeometry.sizes[0]);
+
+    const float dkx = MATH_2_MUL_PIf / currentSize.x;
+    const float dky = MATH_2_MUL_PIf / currentSize.y;
 
     for ( int32_t c = 0; c < slopeVarianceResolution; c++ )
     {
@@ -248,12 +255,12 @@ ODQuadrants;
                         const float di = i;
                         const float dj = j;
 
-                        const float kx = (n + dj) * MATH_2_MUL_PIf * dsizex;
-                        const float ky = (m - di) * MATH_2_MUL_PIf * dsizey;
+                        const float kx = (n + dj) * dkx;
+                        const float ky = (m - di) * dky;
 
                         const FVector2 k = {kx, ky};
                         const float w = 1.0f - exp(A * k.x * k.x + B * k.x * k.y + C * k.y * k.y);
-                        const float s = amplitudef_cartesian(windDirectionNormalised, k, AA, L, l);
+                        const float s = amplitudef_phillips_cartesian(windDirectionNormalised, k, 0.0f, AA, L, l);
 
                         lvarianceX += ((kx * kx * w * w) * (dkx * dky) * s);
                         lvarianceY += ((ky * ky * w * w) * (dkx * dky) * s);
@@ -262,7 +269,7 @@ ODQuadrants;
                     }
                 }
 
-                //NSLog(@"%d %d %d %f %f %f", a, b, c, lvarianceX, lvarianceY, lvarianceX + lvarianceY);
+                NSLog(@"%d %d %d %f %f %f", a, b, c, lvarianceX, lvarianceY, lvarianceX + lvarianceY);
             }
         }
     }

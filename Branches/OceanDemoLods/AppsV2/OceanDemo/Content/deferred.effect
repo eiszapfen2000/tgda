@@ -164,7 +164,8 @@ technique "variance"
     uniform float varianceTextureResolution;
     uniform vec2  baseSpectrumSize;
     uniform float deltaVariance;
-    uniform sampler2D baseSpectrum;
+    uniform sampler2DArray baseSpectrum;
+    uniform samplerBuffer sizes;
     # vertex streams
     in vec2 in_position : 0;
     in vec2 in_texcoords : 3;

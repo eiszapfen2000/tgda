@@ -23,6 +23,7 @@
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/Texture/NPTexture2D.h"
+#import "Graphics/Texture/NPTexture2DArray.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
 #import "Graphics/Texture/NPTextureBuffer.h"
 #import "Graphics/NPOrthographic.h"
@@ -765,7 +766,8 @@ static NSUInteger od_variance_size(const void * item)
     sizesStorage = [[ NPBufferObject alloc ] initWithName:@"Sizes Storage" ];
     sizes = [[ NPTextureBuffer alloc ] initWithName:@"Sizes Texture Buffer" ];
 
-    baseSpectrum = [[ NPTexture2D alloc ] initWithName:@"Base Spectrum Texture" ];
+    baseSpectrum = [[ NPTexture2DArray alloc ] initWithName:@"Base Spectrum Texture" ];
+
     heightfield  = [[ NPTexture2D alloc ] initWithName:@"Height Texture" ];
     displacement = [[ NPTexture2D alloc ] initWithName:@"Height Texture Displacement" ];
     gradient     = [[ NPTexture2D alloc ] initWithName:@"Height Texture Gradient" ];
@@ -950,7 +952,7 @@ static NSUInteger od_variance_size(const void * item)
     return basePlane;
 }
 
-- (NPTexture2D *) baseSpectrum
+- (NPTexture2DArray *) baseSpectrum
 {
     return baseSpectrum;
 }
@@ -1319,7 +1321,8 @@ static NSUInteger od_variance_size(const void * item)
                 baseSpectrumResolution.y = MAX(geometryResolution.y, gradientResolution.y);
 
                 const NSUInteger numberOfBaseSpectrumBytes
-                    = baseSpectrumResolution.x * baseSpectrumResolution.y * sizeof(float);
+                    = baseSpectrumResolution.x * baseSpectrumResolution.y 
+                      * lodCount * sizeof(float);
 
                 NSData * baseSpectrumData
                     = [ NSData dataWithBytesNoCopyNoFree:variance->baseSpectrum
@@ -1327,6 +1330,7 @@ static NSUInteger od_variance_size(const void * item)
 
                 [ baseSpectrum generateUsingWidth:baseSpectrumResolution.x
                                            height:baseSpectrumResolution.y
+                                           layers:lodCount
                                       pixelFormat:NpTexturePixelFormatR
                                        dataFormat:NpTextureDataFormatFloat32
                                           mipmaps:NO

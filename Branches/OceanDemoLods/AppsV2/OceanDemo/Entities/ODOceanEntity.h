@@ -12,6 +12,7 @@
 @class NPTimer;
 @class NPTextureBuffer;
 @class NPTexture2D;
+@class NPTexture2DArray;
 @class NPBufferObject;
 @class NPVertexArray;
 @class ODCamera;
@@ -71,7 +72,8 @@
 
     NPBufferObject * sizesStorage;
     NPTextureBuffer * sizes;
-    NPTexture2D * baseSpectrum;
+    NPTexture2DArray * baseSpectrum;
+
     NPTexture2D * heightfield;
     NPTexture2D * displacement;
     NPTexture2D * displacementDerivatives;
@@ -112,7 +114,7 @@
 - (const FMatrix4 * const) modelMatrix;
 - (ODProjector *) projector;
 - (ODBasePlane *) basePlane;
-- (NPTexture2D *) baseSpectrum;
+- (NPTexture2DArray *) baseSpectrum;
 - (NPTexture2D *) heightfield;
 - (NPTexture2D *) displacement;
 - (NPTexture2D *) displacementDerivatives;
