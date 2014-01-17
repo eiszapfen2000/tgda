@@ -74,10 +74,10 @@
     NPTextureBuffer * sizes;
     NPTexture2DArray * baseSpectrum;
 
-    NPTexture2D * heightfield;
-    NPTexture2D * displacement;
-    NPTexture2D * displacementDerivatives;
-    NPTexture2D * gradient;
+    NPTexture2DArray * heightfield;
+    NPTexture2DArray * displacement;
+    NPTexture2DArray * gradient;
+    NPTexture2DArray * displacementDerivatives;
 
     double timeStamp;
     double area;
@@ -115,10 +115,10 @@
 - (ODProjector *) projector;
 - (ODBasePlane *) basePlane;
 - (NPTexture2DArray *) baseSpectrum;
-- (NPTexture2D *) heightfield;
-- (NPTexture2D *) displacement;
-- (NPTexture2D *) displacementDerivatives;
-- (NPTexture2D *) gradient;
+- (NPTexture2DArray *) heightfield;
+- (NPTexture2DArray *) displacement;
+- (NPTexture2DArray *) displacementDerivatives;
+- (NPTexture2DArray *) gradient;
 - (NPTextureBuffer *) sizes;
 
 - (double) area;

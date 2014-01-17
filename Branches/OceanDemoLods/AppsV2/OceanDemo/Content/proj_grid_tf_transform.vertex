@@ -35,12 +35,12 @@ void main()
     vec2 texcoord = intersection.xz;
     texcoord *= (1.0 / area);
 
-    float h = textureGrad(heightmap, texcoord, d_dx, d_dy).x;
+    float h = textureGrad(heightmap, vec3(texcoord, 0), d_dx, d_dy).x;
 
     // I do not know if we should scale displacement with
     // areaScale or not. It makes sense regarding correctness
     // but not necessarily for tweaking
-    vec2 d = textureGrad(displacement, texcoord, d_dx, d_dy).xy;
+    vec2 d = textureGrad(displacement, vec3(texcoord, 0), d_dx, d_dy).xy;
 
     out_non_disp_position = intersection.xz;
     out_position.xz  = intersection.xz - displacementScale * d.xy;

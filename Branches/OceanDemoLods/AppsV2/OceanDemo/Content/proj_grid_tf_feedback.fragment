@@ -108,46 +108,6 @@ float H(float x)
     return x < 0.0 ? 0.0 : 1.0;
 }
 
-/*
-float Lambda(float cosTheta, float sigmaSq)
-{
-    float v = cosTheta / sqrt((1.0 - cosTheta * cosTheta) * (2.0 * sigmaSq));
-
-    return max(0.0, (exp(-v * v) - v * sqrt(MATH_PI) * erfc(v)) / (2.0 * v * sqrt(MATH_PI)));
-}
-
-// L, V, N, Tx, Ty in world space
-float reflectedSunRadiance(vec3 L, vec3 V, vec3 N, vec3 Tx, vec3 Ty, vec2 sigmaSq)
-{
-    vec3 H = normalize(L + V);
-    float zetax = dot(H, Tx) / dot(H, N);
-    float zetay = dot(H, Ty) / dot(H, N);
-
-    float zL = dot(L, N); // cos of source zenith angle
-    float zV = dot(V, N); // cos of receiver zenith angle
-    float zH = dot(H, N); // cos of facet normal zenith angle
-    float zH2 = zH * zH;
-
-    float p = exp(-0.5 * (zetax * zetax / sigmaSq.x + zetay * zetay / sigmaSq.y))
-                / (2.0 * MATH_PI * sqrt(sigmaSq.x * sigmaSq.y));
-
-    float tanV = atan(dot(V, Ty), dot(V, Tx));
-    float cosV2 = 1.0 / (1.0 + tanV * tanV);
-    float sigmaV2 = sigmaSq.x * cosV2 + sigmaSq.y * (1.0 - cosV2);
-
-    float tanL = atan(dot(L, Ty), dot(L, Tx));
-    float cosL2 = 1.0 / (1.0 + tanL * tanL);
-    float sigmaL2 = sigmaSq.x * cosL2 + sigmaSq.y * (1.0 - cosL2);
-
-    float fresnel = 0.02 + 0.98 * pow(1.0 - dot(V, H), 5.0);
-
-    zL = max(zL, 0.01);
-    zV = max(zV, 0.01);
-
-    return fresnel * p / ((1.0 + Lambda(zL, sigmaL2) + Lambda(zV, sigmaV2)) * zV * zH2 * zH2 * 4.0);
-}
-*/
-
 float meanFresnel(float cosThetaV, float sigmaV)
 {
     return pow(1.0 - cosThetaV, 5.0 * exp(-2.69 * sigmaV)) / (1.0 + 22.7 * pow(sigmaV, 1.5));
@@ -213,7 +173,7 @@ void main()
     vec2 texcoord = out_ws_non_disp_position;
     texcoord *= (1.0 / area);
 
-    vec2 grad = texture(gradient, texcoord).xy * heightScale;
+    vec2 grad = texture(gradient, vec3(texcoord, 0)).xy * heightScale;
     vec3 normal = vec3(-grad.x, 1.0, -grad.y);
 
     vec3 lightDir = directionToSun;
