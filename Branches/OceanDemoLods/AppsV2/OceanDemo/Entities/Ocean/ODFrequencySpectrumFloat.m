@@ -149,19 +149,19 @@ ODQuadrants;
     float varianceY  = 0.0;
     float varianceXY = 0.0;
 
-    for ( int32_t l = 0; l < numberOfLods; l++ )
+    for ( int32_t lod = 0; lod < numberOfLods; lod++ )
     {
         const FVector2 lastSize
-            = ( l == 0 ) ? fv2_zero() : fv2_v_from_v2(&currentGeometry.sizes[l - 1]);
+            = ( l == 0 ) ? fv2_zero() : fv2_v_from_v2(&currentGeometry.sizes[lod - 1]);
 
-        const FVector2 currentSize = fv2_v_from_v2(&currentGeometry.sizes[l]);
+        const FVector2 currentSize = fv2_v_from_v2(&currentGeometry.sizes[lod]);
 
         const float dkx = MATH_2_MUL_PIf / currentSize.x;
         const float dky = MATH_2_MUL_PIf / currentSize.y;
 
-        const float kMin = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
+        const float kMin = ( lod == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
 
-        const int32_t offset = l * numberOfLodElements;
+        const int32_t offset = lod * numberOfLodElements;
 
         for ( int32_t i = 0; i < resolution.y; i++ )
         {
@@ -210,14 +210,15 @@ ODQuadrants;
     maxMeanSlopeVariance = mss;
     effectiveMeanSlopeVariance = varianceXY;
 
-    /*
     const float deltaVariance = mss - varianceXY;
 
     const int32_t slopeVarianceResolution = 4;
     const float divisor = (float)(slopeVarianceResolution - 1);
     const float AA = A;
 
-    NSLog(@"-------------------------------");
+    //NSLog(@"-------------------------------");
+
+    /*
 
     const FVector2 currentSize = fv2_v_from_v2(&currentGeometry.sizes[0]);
 
@@ -270,6 +271,77 @@ ODQuadrants;
                 }
 
                 NSLog(@"%d %d %d %f %f %f", a, b, c, lvarianceX, lvarianceY, lvarianceX + lvarianceY);
+            }
+        }
+    }
+    */
+
+    /*
+    for ( int32_t c = 0; c < slopeVarianceResolution; c++ )
+    {
+        for ( int32_t b = 0; b < slopeVarianceResolution; b++ )
+        {
+            for ( int32_t a = 0; a < slopeVarianceResolution; a++ )
+            {
+                const float fa = a;
+                const float fb = b;
+                const float fc = c;
+                float A = powf(a / divisor, 4.0f);
+                float C = powf(c / divisor, 4.0f);
+                float B = (2.0f * b / divisor - 1.0) * sqrt(A * C);
+
+                //NSLog(@"1 %d %d %d %f %f %f", a, b, c, A, B, C);
+
+                A = -0.5f * A;
+                B = -B;
+                C = -0.5f * C;
+
+                //NSLog(@"%d %d %d %f %f %f", a, b, c, A, B, C);
+
+                float lvarianceX = deltaVariance;
+                float lvarianceY = deltaVariance;
+
+                for ( int32_t lod = 0; lod < numberOfLods; lod++ )
+                {
+                    const FVector2 lastSize
+                        = ( lod == 0 ) ? fv2_zero() : fv2_v_from_v2(&currentGeometry.sizes[lod - 1]);
+
+                    const FVector2 currentSize = fv2_v_from_v2(&currentGeometry.sizes[lod]);
+
+                    //NSLog(@"%f %f %f %f", currentSize.x, currentSize.y, lastSize.x, lastSize.y);
+
+                    const float dkx = MATH_2_MUL_PIf / currentSize.x;
+                    const float dky = MATH_2_MUL_PIf / currentSize.y;
+
+                    const float kMin = ( lod == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
+
+                    for ( int32_t i = 0; i < resolution.y; i++ )
+                    {
+                        for ( int32_t j = 0; j < resolution.x; j++ )
+                        {
+                            const float di = i;
+                            const float dj = j;
+
+                            const float kx = (n + dj) * dkx;
+                            const float ky = (m - di) * dky;
+
+                            const FVector2 k = {kx, ky};
+                            const float earg = A * k.x * k.x + B * k.x * k.y + C * k.y * k.y;
+                            const float eres = (float)exp(earg);
+                            const float w = 1.0f - eres;
+                            const float s = amplitudef_phillips_cartesian(windDirectionNormalised, k, kMin, AA, L, l);
+
+                            //printf("earg:%f eres:%f w:%f\n", earg, eres, w);
+
+                            lvarianceX += ((kx * kx * w * w) * (dkx * dky) * s);
+                            lvarianceY += ((ky * ky * w * w) * (dkx * dky) * s);
+
+                            //NSLog(@"%f %f", lvarianceX, lvarianceY);
+                        }
+                    }
+                }
+
+                NSLog(@"%d %d %d %+f %+f %+f", a, b, c, lvarianceX, lvarianceY, lvarianceX + lvarianceY);
             }
         }
     }

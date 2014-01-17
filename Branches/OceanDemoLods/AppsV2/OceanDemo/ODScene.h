@@ -94,7 +94,6 @@
     NPEffectTechnique * variance;
     NPEffectVariableFloat * layer;
     NPEffectVariableFloat * varianceTextureResolution;
-    NPEffectVariableFloat2 * baseSpectrumSize;
     NPEffectVariableFloat * deltaVariance;
 
     // fullscreen quad geometry
