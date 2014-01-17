@@ -32,8 +32,6 @@
 #import "Ocean/ODConstants.h"
 #import "Ocean/ODFrequencySpectrum.h"
 #import "ODHeightfieldQueue.h"
-#import "ODOceanBaseMesh.h"
-#import "ODOceanBaseMeshes.h"
 #import "ODOceanEntity.h"
 
 #define FFTWF_FREE(_pointer)        do {void *_ptr=(void *)(_pointer); fftwf_free(_ptr); _pointer=NULL; } while (0)
@@ -789,11 +787,6 @@ static NSUInteger od_variance_size(const void * item)
 
     [ displacementDerivatives setTextureWrap:NpTextureWrapRepeat   ];
 
-    baseMeshes = [[ ODOceanBaseMeshes alloc ] init ];
-    NSAssert(YES == [ baseMeshes generateWithResolutions:resolutions numberOfResolutions:6 ], @"");
-    baseMeshIndex = ULONG_MAX;
-    baseMeshScale = (FVector2){.x = 1.0f, .y = 1.0f};
-
     timeStamp = DBL_MAX;
 
     area = 0.0;
@@ -836,7 +829,6 @@ static NSUInteger od_variance_size(const void * item)
     [ varianceQueue removeAllPointers ];
     [ resultQueue removeAllHeightfields ];
 
-    DESTROY(baseMeshes);
     DESTROY(heightfield);
     DESTROY(displacement);
     DESTROY(displacementDerivatives);
@@ -1043,11 +1035,6 @@ static NSUInteger od_variance_size(const void * item)
     return baseSpectrumDeltaVariance;
 }
 
-- (FVector2) baseMeshScale
-{
-    return baseMeshScale;
-}
-
 - (BOOL) updateSlopeVariance
 {
     return updateSlopeVariance;
@@ -1222,11 +1209,6 @@ static NSUInteger od_variance_size(const void * item)
             const IVector2 geometryResolution = hf->geometry.geometryResolution;
             const IVector2 gradientResolution = hf->geometry.gradientResolution;
 
-            const double resX = geometryResolution.x;
-            const double resY = geometryResolution.y;
-            baseMeshScale.x = hf->geometry.sizes[0].x / resX;
-            baseMeshScale.y = hf->geometry.sizes[0].y / resY;
-
             const NSUInteger numberOfGeometryBytes
                 = geometryResolution.x * geometryResolution.y * sizeof(float);
 
@@ -1321,88 +1303,10 @@ static NSUInteger od_variance_size(const void * item)
 
                 updateSlopeVariance = YES;
             }
-
-            /*
-            baseMeshIndex = index_for_resolution(hf->resolution.x);
-
-            const double resX = hf->resolution.x;
-            const double resY = hf->resolution.y;
-            baseMeshScale.x = hf->size.x / resX;
-            baseMeshScale.y = hf->size.y / resY;
-
-            const NSUInteger numberOfBytes
-                = hf->resolution.x * hf->resolution.y * sizeof(float);
-
-            NSData * textureData
-                = [ NSData dataWithBytesNoCopy:hf->heights32f
-                                        length:numberOfBytes
-                                  freeWhenDone:NO ];
-
-            NSData * supplemental
-                = [ NSData dataWithBytesNoCopy:hf->supplementalData32f
-                                        length:numberOfBytes * 4
-                                  freeWhenDone:NO ];
-
-            NSData * empty = [ NSData data ];
-
-            [ baseMeshes
-                updateMeshAtIndex:baseMeshIndex
-                        withYData:textureData
-                 supplementalData:supplemental ];
-
-            NPBufferObject * yStream
-                = [[ baseMeshes meshAtIndex:baseMeshIndex ] yStream ];
-
-            NPBufferObject * supplementalStream
-                = [[ baseMeshes meshAtIndex:baseMeshIndex ] supplementalStream ];
-
-            [ heightfield generateUsingWidth:hf->resolution.x
-                                      height:hf->resolution.y
-                                 pixelFormat:NpTexturePixelFormatR
-                                  dataFormat:NpTextureDataFormatFloat32
-                                     mipmaps:NO
-                                bufferObject:yStream ];
-
-            [ supplementalData generateUsingWidth:hf->resolution.x
-                                           height:hf->resolution.y
-                                      pixelFormat:NpTexturePixelFormatRGBA
-                                       dataFormat:NpTextureDataFormatFloat32
-                                          mipmaps:NO
-                                     bufferObject:supplementalStream ];
-            */
         }
 
         //[ resultQueue removeHeightfieldAtIndex:0 ];
         //[ varianceQueue removePointerAtIndex:0 ];
-    }
-
-    if ( baseMeshIndex != ULONG_MAX )
-    {
-        FMatrix4 rotation;
-        FMatrix4 invTranslation;
-        FMatrix4 translation;
-
-        fm4_m_set_identity(&rotation);
-        fm4_m_set_identity(&invTranslation);
-        fm4_m_set_identity(&translation);
-
-        const double angle = atan2(windDirection.y, windDirection.x);
-        const double degree = RADIANS_TO_DEGREE(angle);
-
-        fm4_s_rotatey_m(degree, &rotation);
-
-        const FVector3 center = [[ baseMeshes meshAtIndex:baseMeshIndex ] center ];
-
-        M_EL(invTranslation, 3, 0) = -center.x * baseMeshScale.x;
-        M_EL(invTranslation, 3, 1) = -center.y;
-        M_EL(invTranslation, 3, 2) = -center.z * baseMeshScale.y;
-
-        M_EL(translation, 3, 0) = center.x * baseMeshScale.x;
-        M_EL(translation, 3, 1) = center.y;
-        M_EL(translation, 3, 2) = center.z * baseMeshScale.y;
-
-        FMatrix4 tmp = fm4_mm_multiply(&rotation, &invTranslation);
-        modelMatrix = fm4_mm_multiply(&translation, &tmp);
     }
 }
 
@@ -1410,33 +1314,6 @@ static NSUInteger od_variance_size(const void * item)
 {
     [ basePlane render ];
 }
-
-- (void) renderBaseMesh
-{
-    if ( baseMeshIndex != ULONG_MAX )
-    {
-        [ baseMeshes renderMeshAtIndex:baseMeshIndex ];
-    }
-}
-
-/*
-[[[ NPEngineGraphics instance ] orthographic ] activate ];
-[[[ NPEngineGraphics instance ] textureBindingState ] setTexture:heightfield texelUnit:0 ];
-[[[ NPEngineGraphics instance ] textureBindingState ] activate ];
-[[ effect techniqueWithName:@"texture" ] activate ];
-glBegin(GL_QUADS);
-    glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
-    glVertex2i(0, 0);
-    glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
-    glVertex2i(1, 0);
-    glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
-    glVertex2i(1, 1);
-    glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
-    glVertex2i(0, 1);
-glEnd();
-
-[[[ NPEngineGraphics instance ] orthographic ] deactivate ];
-*/
 
 @end
 

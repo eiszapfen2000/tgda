@@ -18,7 +18,6 @@
 @class ODProjector;
 @class ODBasePlane;
 @class ODHeightfieldQueue;
-@class ODOceanBaseMeshes;
 
 #define ODOCEANENTITY_NUMBER_OF_RESOLUTIONS 6
 
@@ -78,10 +77,6 @@
     NPTexture2D * displacementDerivatives;
     NPTexture2D * gradient;
 
-    ODOceanBaseMeshes * baseMeshes;
-    NSUInteger baseMeshIndex;
-    FVector2 baseMeshScale;
-
     double timeStamp;
     double area;
 
@@ -135,7 +130,6 @@
 - (IVector2) baseSpectrumResolution;
 - (Vector2)  baseSpectrumSize;
 - (float)    baseSpectrumDeltaVariance;
-- (FVector2) baseMeshScale;
 
 - (BOOL) updateSlopeVariance;
 
@@ -143,7 +137,6 @@
 
 - (void) update:(const double)frameTime;
 - (void) renderBasePlane;
-- (void) renderBaseMesh;
 
 @end
 
