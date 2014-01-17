@@ -768,12 +768,12 @@ static NSUInteger od_variance_size(const void * item)
 
     baseSpectrum = [[ NPTexture2DArray alloc ] initWithName:@"Base Spectrum Texture" ];
 
-    heightfield  = [[ NPTexture2D alloc ] initWithName:@"Height Texture" ];
-    displacement = [[ NPTexture2D alloc ] initWithName:@"Height Texture Displacement" ];
-    gradient     = [[ NPTexture2D alloc ] initWithName:@"Height Texture Gradient" ];
+    heightfield  = [[ NPTexture2DArray alloc ] initWithName:@"Height Texture" ];
+    displacement = [[ NPTexture2DArray alloc ] initWithName:@"Height Texture Displacement" ];
+    gradient     = [[ NPTexture2DArray alloc ] initWithName:@"Height Texture Gradient" ];
 
     displacementDerivatives
-        = [[ NPTexture2D alloc ] initWithName:@"Height Texture Displacement Derivatives" ];
+        = [[ NPTexture2DArray alloc ] initWithName:@"Height Texture Displacement Derivatives" ];
 
     [ baseSpectrum setTextureFilter:NpTextureFilterNearest ];
     [ heightfield  setTextureFilter:NpTextureFilterLinear  ];
@@ -957,22 +957,22 @@ static NSUInteger od_variance_size(const void * item)
     return baseSpectrum;
 }
 
-- (NPTexture2D *) heightfield
+- (NPTexture2DArray *) heightfield
 {
     return heightfield;
 }
 
-- (NPTexture2D *) displacement
+- (NPTexture2DArray *) displacement
 {
     return displacement;
 }
 
-- (NPTexture2D *) displacementDerivatives
+- (NPTexture2DArray *) displacementDerivatives
 {
     return displacementDerivatives;
 }
 
-- (NPTexture2D *) gradient
+- (NPTexture2DArray *) gradient
 {
     return gradient;
 }
@@ -1249,10 +1249,13 @@ static NSUInteger od_variance_size(const void * item)
             const IVector2 gradientResolution = hf->geometry.gradientResolution;
 
             const NSUInteger numberOfGeometryBytes
-                = geometryResolution.x * geometryResolution.y * sizeof(float);
+                = geometryResolution.x * geometryResolution.y
+                  * lodCount * sizeof(float);
 
             const NSUInteger numberOfGradientBytes
-                = gradientResolution.x * gradientResolution.y * sizeof(float);
+                = gradientResolution.x * gradientResolution.y
+                  * lodCount * sizeof(float);
+
 
             if ( hf->heights32f != NULL )
             {
@@ -1263,6 +1266,7 @@ static NSUInteger od_variance_size(const void * item)
 
                 [ heightfield generateUsingWidth:geometryResolution.x
                                           height:geometryResolution.y
+                                          layers:lodCount
                                      pixelFormat:NpTexturePixelFormatR
                                       dataFormat:NpTextureDataFormatFloat32
                                          mipmaps:YES
@@ -1277,6 +1281,7 @@ static NSUInteger od_variance_size(const void * item)
 
                 [ displacement generateUsingWidth:geometryResolution.x
                                            height:geometryResolution.y
+                                          layers:lodCount
                                       pixelFormat:NpTexturePixelFormatRG
                                        dataFormat:NpTextureDataFormatFloat32
                                           mipmaps:YES
@@ -1291,6 +1296,7 @@ static NSUInteger od_variance_size(const void * item)
 
                 [ gradient generateUsingWidth:gradientResolution.x
                                        height:gradientResolution.y
+                                       layers:lodCount
                                   pixelFormat:NpTexturePixelFormatRG
                                    dataFormat:NpTextureDataFormatFloat32
                                       mipmaps:YES
@@ -1306,6 +1312,7 @@ static NSUInteger od_variance_size(const void * item)
                 [ displacementDerivatives
                     generateUsingWidth:gradientResolution.x
                                 height:gradientResolution.y
+                                layers:lodCount
                            pixelFormat:NpTexturePixelFormatRGBA
                             dataFormat:NpTextureDataFormatFloat32
                                mipmaps:YES
