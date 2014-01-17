@@ -62,20 +62,6 @@ technique "proj_grid_tf_feedback"
     uniform vec3 cameraPosition;
     uniform vec3 directionToSun;
     uniform vec3 sunColor;
-    uniform sampler2DArray heightmap
-    {
-        WrapS = Repeat;
-        WrapT = Repeat;
-        MinFilter = TriLinear;
-        MagFilter = Linear;
-    };
-    uniform sampler2DArray displacement
-    {
-        WrapS = Repeat;
-        WrapT = Repeat;
-        MinFilter = TriLinear;
-        MagFilter = Linear;
-    };
     uniform sampler2DArray gradient
     {
         WrapS = Repeat;
