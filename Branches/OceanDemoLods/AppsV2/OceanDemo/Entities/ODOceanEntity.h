@@ -100,8 +100,6 @@
     float baseSpectrumDeltaVariance;
     BOOL animated;
     BOOL updateSlopeVariance;
-
-    FMatrix4 modelMatrix;
 }
 
 - (id) init;
@@ -111,7 +109,6 @@
 - (void) start;
 - (void) stop;
 
-- (const FMatrix4 * const) modelMatrix;
 - (ODProjector *) projector;
 - (ODBasePlane *) basePlane;
 - (NPTexture2DArray *) baseSpectrum;
