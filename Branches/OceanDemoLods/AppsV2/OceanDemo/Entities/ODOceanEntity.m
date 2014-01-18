@@ -94,7 +94,7 @@ typedef struct OdSpectrumVariance
 }
 OdSpectrumVariance;
 
-static const NSUInteger defaultNumberOfLods = 4;
+static const NSUInteger defaultNumberOfLods = 1;
 static const NSUInteger defaultSpectrumType = 0;
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
@@ -104,7 +104,7 @@ static const double defaultSpectrumScale = PHILLIPS_CONSTANT;
 static const int32_t resolutions[6] = {8, 64, 128, 256, 512, 1024};
 static const NSUInteger defaultGeometryResolutionIndex = 0;
 static const NSUInteger defaultGradientResolutionIndex = 0;
-static const double OneDivSixty = 1.0 / 60.0;
+static const double OneDivSixty = 1.0 / 30.0;
 
 static const double defaultAreaScale = 1.0;
 static const double defaultDisplacementScale = 1.0;
@@ -814,8 +814,6 @@ static NSUInteger od_variance_size(const void * item)
     baseSpectrumSize = v2_zero();
     baseSpectrumDeltaVariance = 0.0f;
 
-    fm4_m_set_identity(&modelMatrix);
-
     return self;
 }
 
@@ -935,11 +933,6 @@ static NSUInteger od_variance_size(const void * item)
     }
 
     [ self shutdownFFTW ];
-}
-
-- (const FMatrix4 * const) modelMatrix
-{
-    return &modelMatrix;
 }
 
 - (ODProjector *) projector
