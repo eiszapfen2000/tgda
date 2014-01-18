@@ -151,7 +151,7 @@
                           height:varianceLUTResolution
                            depth:varianceLUTResolution
                      pixelFormat:NpTexturePixelFormatRG
-                      dataFormat:NpTextureDataFormatFloat32
+                      dataFormat:NpTextureDataFormatFloat16
                    mipmapStorage:NO
                            error:error ];
 }
