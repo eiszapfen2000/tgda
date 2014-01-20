@@ -94,11 +94,11 @@ typedef struct OdSpectrumVariance
 }
 OdSpectrumVariance;
 
-static const NSUInteger defaultNumberOfLods = 1;
+static const NSUInteger defaultNumberOfLods = 3;
 static const NSUInteger defaultSpectrumType = 0;
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
-static const double defaultSize = 80.0;
+static const double defaultSize =237.0;
 static const double defaultDampening = 0.001;
 static const double defaultSpectrumScale = PHILLIPS_CONSTANT;
 static const int32_t resolutions[6] = {8, 16, 32, 64, 128, 256};
@@ -295,8 +295,8 @@ static size_t index_for_resolution(int32_t resolution)
                 }
 
                 generatorSettings.spectrumScale = generatorSpectrumScale;
-                //generatorSettings.options = OdGeneratorOptionsHeights | OdGeneratorOptionsGradient;
-                generatorSettings.options = ULONG_MAX;
+                generatorSettings.options = OdGeneratorOptionsHeights | OdGeneratorOptionsGradient | OdGeneratorOptionsDisplacement;
+                //generatorSettings.options = ULONG_MAX;
 
                 NSAssert(generatorNumberOfLods <= UINT32_MAX, @"Lod out of bounds");
 
@@ -331,7 +331,13 @@ static size_t index_for_resolution(int32_t resolution)
 
                 geometry.sizes[i]
                     = (Vector2){x * (-2.0f * FLT_EPSILON + 1.0f), y * (-2.0f * FLT_EPSILON + 1.0f)};
+
+                //NSLog(@"A %f %f", x, y);
             }
+
+            geometry.sizes[1] = (Vector2){74.0, 74.0};
+            geometry.sizes[2] = (Vector2){21.0, 21.0};
+//            geometry.sizes[3] = (Vector2){11.0, 11.0};
 
             [ timer update ];
 
@@ -1198,6 +1204,7 @@ static NSUInteger od_variance_size(const void * item)
         for ( uint32_t i = 0; i < lodCount; i++ )
         {
             geometrySizes[i] = fv2_v_from_v2(&hf->geometry.sizes[i]);
+//            NSLog(@"BBB %f %f", geometrySizes[i].x, geometrySizes[i].y);
         }
 
         NSData * geometrySizesData
@@ -1236,6 +1243,19 @@ static NSUInteger od_variance_size(const void * item)
         displacementXdZRange = hf->ranges[DISPLACEMENT_X_DZ_RANGE];
         displacementZdXRange = hf->ranges[DISPLACEMENT_Z_DX_RANGE];
         displacementZdZRange = hf->ranges[DISPLACEMENT_Z_DZ_RANGE];
+
+        /*
+        heightRange = hf->ranges[NUMBER_OF_RANGES + HEIGHT_RANGE];
+        gradientXRange = hf->ranges[NUMBER_OF_RANGES + GRADIENT_X_RANGE];
+        gradientZRange = hf->ranges[NUMBER_OF_RANGES + GRADIENT_Z_RANGE];
+        displacementXRange = hf->ranges[NUMBER_OF_RANGES + DISPLACEMENT_X_RANGE];
+        displacementZRange = hf->ranges[NUMBER_OF_RANGES + DISPLACEMENT_Z_RANGE];
+        displacementXdXRange = hf->ranges[NUMBER_OF_RANGES + DISPLACEMENT_X_DX_RANGE];
+        displacementXdZRange = hf->ranges[NUMBER_OF_RANGES + DISPLACEMENT_X_DZ_RANGE];
+        displacementZdXRange = hf->ranges[NUMBER_OF_RANGES + DISPLACEMENT_Z_DX_RANGE];
+        displacementZdZRange = hf->ranges[NUMBER_OF_RANGES + DISPLACEMENT_Z_DZ_RANGE];
+        */
+
 
         {
             const IVector2 geometryResolution = hf->geometry.geometryResolution;
