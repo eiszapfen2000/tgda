@@ -726,7 +726,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ v setValue:[testProjector inverseViewProjection]];
 
     NPEffectVariableMatrix4x4 * w = [ projectedGridEffect variableWithName:@"invMVP"];
-    NPEffectVariableFloat * a = [ projectedGridEffect variableWithName:@"area"];
+    NPEffectVariableFloat * a = [ projectedGridEffect variableWithName:@"areaScale"];
     NPEffectVariableFloat * hs = [ projectedGridEffect variableWithName:@"heightScale"];
     NPEffectVariableFloat * je = [ projectedGridEffect variableWithName:@"jacobianEpsilon"];
     NPEffectVariableFloat3 * cP = [ projectedGridEffect variableWithName:@"cameraPosition"];
@@ -739,7 +739,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [ ds setValue:[ ocean displacementScale ]];
     [ w setValue:[testProjector inverseViewProjection]];
-    [ a setValue:[ ocean area ] * [ocean areaScale ]];
+    [ a setValue:[ocean areaScale ]];
     [ hs setValue:[ ocean heightScale ]];
     [ je setValue:jacobianEpsilon ];
     [ cP setValue:[ camera position ]];
@@ -750,6 +750,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ projectedGridTFTransform activate ];
     [ projectedGrid renderTFTransform ];
 
+    [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean gradient ]           texelUnit:0 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]              texelUnit:1 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ varianceLUT texture ]      texelUnit:2 ];
