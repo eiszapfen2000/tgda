@@ -34,7 +34,7 @@ technique "texture_range"
 {
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
-    uniform sampler2D colormap;
+    uniform sampler2DArray colormap;
     uniform vec4 color;
     uniform vec2 range;
     uniform vec4 mask;

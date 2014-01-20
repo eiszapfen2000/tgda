@@ -4,7 +4,7 @@ in vec2 out_texcoords;
 
 void main()
 {
-    vec4 sample = texture(colormap, out_texcoords);
+    vec4 sample = texture(colormap, vec3(out_texcoords, 0));
 
     float vRange = range.y - range.x;
     vec4 rescaled = (sample - range.x) / vRange;
