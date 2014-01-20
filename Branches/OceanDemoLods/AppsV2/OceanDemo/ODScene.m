@@ -717,8 +717,9 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[[ NP Core ] transformationState ] resetModelMatrix ];
     
     [[[ NP Graphics ] textureBindingState ] clear ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean heightfield   ] texelUnit:0 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacement  ] texelUnit:1 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean heightfield  ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacement ] texelUnit:1 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]        texelUnit:2 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
     NPEffectVariableMatrix4x4 * v = [ deferredEffect variableWithName:@"invMVP"];
@@ -749,10 +750,11 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ projectedGridTFTransform activate ];
     [ projectedGrid renderTFTransform ];
 
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean gradient      ] texelUnit:0 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ varianceLUT texture ] texelUnit:1 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ skylight skylightTexture ] texelUnit:2 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ whitecapsTarget texture ] texelUnit:3 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean gradient ]           texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]              texelUnit:1 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ varianceLUT texture ]      texelUnit:2 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ skylight skylightTexture ] texelUnit:3 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ whitecapsTarget texture  ] texelUnit:4 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
 
