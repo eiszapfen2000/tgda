@@ -83,6 +83,62 @@
             Channels = ("n", "y", "n", "n");
         };
 
+        PDisplacementXDX =
+        {
+            Type = "ODTextureItem";
+            Label = "Displacement X dX";
+            Alignment = "BottomLeft";
+            Position = ("620", "20" );
+            Size = ( "100", "100" );
+            TextSize = "16";
+            Texture = "Height Texture Displacement Derivatives";
+            TargetObject = "Ocean";
+            TargetProperty = "displacementXdXRange";
+            Channels = ("y", "n", "n", "n");
+        };
+
+        PDisplacementXDZ =
+        {
+            Type = "ODTextureItem";
+            Label = "Displacement X dZ";
+            Alignment = "BottomLeft";
+            Position = ("740", "20" );
+            Size = ( "100", "100" );
+            TextSize = "16";
+            Texture = "Height Texture Displacement Derivatives";
+            TargetObject = "Ocean";
+            TargetProperty = "displacementXdZRange";
+            Channels = ("n", "y", "n", "n");
+        };
+
+        PDisplacementZDX =
+        {
+            Type = "ODTextureItem";
+            Label = "Displacement Z dX";
+            Alignment = "BottomLeft";
+            Position = ("860", "20" );
+            Size = ( "100", "100" );
+            TextSize = "16";
+            Texture = "Height Texture Displacement Derivatives";
+            TargetObject = "Ocean";
+            TargetProperty = "displacementZdXRange";
+            Channels = ("n", "n", "y", "n");
+        };
+
+        PDisplacementZDZ =
+        {
+            Type = "ODTextureItem";
+            Label = "Displacement Z dZ";
+            Alignment = "BottomLeft";
+            Position = ("980", "20" );
+            Size = ( "100", "100" );
+            TextSize = "16";
+            Texture = "Height Texture Displacement Derivatives";
+            TargetObject = "Ocean";
+            TargetProperty = "displacementZdZRange";
+            Channels = ("n", "n", "n", "y");
+        };
+
         PGeometryResolution =
         {
             Type = "ODSelectionGroupItem";
