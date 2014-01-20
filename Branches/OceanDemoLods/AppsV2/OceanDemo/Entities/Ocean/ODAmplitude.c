@@ -11,7 +11,7 @@ float amplitudef_phillips_cartesian(
     const float kSquareLength = k.x * k.x + k.y * k.y;
     const float kLength = sqrtf(kSquareLength);
 
-    if ( kLength == 0.0f || kLength <= kMin )
+    if ( kLength == 0.0f || ( fabsf(k.x) <= kMin && fabsf(k.y) <= kMin ))
     {
         return 0.0f;
     }
@@ -90,7 +90,7 @@ float amplitudef_unified_cartesian(
     const float kSquareLength = k.x * k.x + k.y * k.y;
     const float klength = sqrtf(kSquareLength);
 
-    if ( klength == 0.0f || klength <= kMin )
+    if ( klength == 0.0f || ( fabsf(k.x) <= kMin && fabsf(k.y) <= kMin ))
     {
         return 0.0f;
     }
