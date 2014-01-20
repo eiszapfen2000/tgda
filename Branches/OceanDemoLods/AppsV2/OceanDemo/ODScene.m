@@ -196,24 +196,6 @@
     }
 
     [ varianceRTC deactivate ];
-
-    /*
-    const size_t n = varianceLUTResolution * varianceLUTResolution * varianceLUTResolution;
-    FVector2 * vresult = ALLOC_ARRAY(FVector2, n);
-
-    [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ varianceLUT texture ]];
-
-    glGetTexImage(GL_TEXTURE_3D, 0, GL_RG, GL_FLOAT, vresult);
-
-    [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
-
-    for ( size_t i = 0; i < n; i++ )
-    {
-        NSLog(@"V: %+f %+f", vresult[i].x, vresult[i].y);
-    }
-
-    FREE(vresult);
-    */
 }
 
 - (void) renderProjectedGrid
