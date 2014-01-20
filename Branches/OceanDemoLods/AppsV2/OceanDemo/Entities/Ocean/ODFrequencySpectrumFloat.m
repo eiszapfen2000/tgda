@@ -82,7 +82,8 @@ ODQuadrants;
                 const float ky = (m - di) * dky;
 
                 const FVector2 k = {kx, ky};
-                const float t = amplitudef_unified_cartesian(k, kMin, A, U10, Omega);
+//                const float t = amplitudef_unified_cartesian(k, kMin, A, U10, Omega);
+                const float t = amplitudef_unified_cartesian(k, 0.0f, A, U10, Omega);
                 const float s = MAX(0.0f, t);
                 const float a = sqrtf(s);
 
@@ -179,7 +180,8 @@ ODQuadrants;
                 const float ky = (m - di) * dky;
 
                 const FVector2 k = {kx, ky};
-                const float s = amplitudef_phillips_cartesian(windDirectionNormalised, k, kMin, A, L, l);
+//                const float s = amplitudef_phillips_cartesian(windDirectionNormalised, k, kMin, A, L, l);
+                const float s = amplitudef_phillips_cartesian(windDirectionNormalised, k, 0.0f, A, L, l);
                 const float a = sqrtf(s);
 
                 varianceX  += (kx * kx) * (dkx * dky) * s;
@@ -735,6 +737,7 @@ right way.
 
 - (void) swapFrequencySpectrum:(fftwf_complex *)spectrum
                     resolution:(IVector2)resolution
+                  numberOfLods:(uint32_t)numberOfLods
                      quadrants:(ODQuadrants)quadrants
 {
     fftwf_complex tmp;
@@ -765,21 +768,28 @@ right way.
     const int32_t halfResX = resolution.x / 2;
     const int32_t halfResY = resolution.y / 2;
 
-    for ( int32_t i = startX; i < endX; i++ )
+    const int32_t numberOfLodElements = resolution.x * resolution.y;
+
+    for ( uint32_t l = 0; l < numberOfLods; l++ )
     {
-        for ( int32_t j = startY; j < endY; j++ )
+        const int32_t offset = l * numberOfLodElements;
+
+        for ( int32_t i = startX; i < endX; i++ )
         {
-            index = j + resolution.y * i;
-            oppositeQuadrantIndex = (j + (halfResY * quadrants)) + resolution.y * (i + halfResX);
+            for ( int32_t j = startY; j < endY; j++ )
+            {
+                index = offset + j + resolution.y * i;
+                oppositeQuadrantIndex = offset + (j + (halfResY * quadrants)) + resolution.y * (i + halfResX);
 
-            tmp[0] = spectrum[index][0];
-            tmp[1] = spectrum[index][1];
+                tmp[0] = spectrum[index][0];
+                tmp[1] = spectrum[index][1];
 
-            spectrum[index][0] = spectrum[oppositeQuadrantIndex][0];
-            spectrum[index][1] = spectrum[oppositeQuadrantIndex][1];
+                spectrum[index][0] = spectrum[oppositeQuadrantIndex][0];
+                spectrum[index][1] = spectrum[oppositeQuadrantIndex][1];
 
-            spectrum[oppositeQuadrantIndex][0] = tmp[0];
-            spectrum[oppositeQuadrantIndex][1] = tmp[1];
+                spectrum[oppositeQuadrantIndex][0] = tmp[0];
+                spectrum[oppositeQuadrantIndex][1] = tmp[1];
+            }
         }
     }
 }
@@ -801,10 +811,12 @@ right way.
     {
         [ self swapFrequencySpectrum:result.height
                           resolution:currentGeometry.geometryResolution
+                        numberOfLods:currentGeometry.numberOfLods
                            quadrants:ODQuadrant_1_3 ];
 
         [ self swapFrequencySpectrum:result.height
                           resolution:currentGeometry.geometryResolution
+                        numberOfLods:currentGeometry.numberOfLods
                            quadrants:ODQuadrant_2_4 ];
     }
 
@@ -812,10 +824,12 @@ right way.
     {
         [ self swapFrequencySpectrum:result.gradient
                           resolution:currentGeometry.gradientResolution
+                        numberOfLods:currentGeometry.numberOfLods
                            quadrants:ODQuadrant_1_3 ];
 
         [ self swapFrequencySpectrum:result.gradient
                           resolution:currentGeometry.gradientResolution
+                        numberOfLods:currentGeometry.numberOfLods
                            quadrants:ODQuadrant_2_4 ];
     }
 
@@ -823,10 +837,12 @@ right way.
     {
         [ self swapFrequencySpectrum:result.displacement
                           resolution:currentGeometry.geometryResolution
+                        numberOfLods:currentGeometry.numberOfLods
                            quadrants:ODQuadrant_1_3 ];
 
         [ self swapFrequencySpectrum:result.displacement
                           resolution:currentGeometry.geometryResolution
+                        numberOfLods:currentGeometry.numberOfLods
                            quadrants:ODQuadrant_2_4 ];
     }
 
@@ -834,10 +850,12 @@ right way.
     {
         [ self swapFrequencySpectrum:result.displacementXdXdZ
                           resolution:currentGeometry.gradientResolution
+                        numberOfLods:currentGeometry.numberOfLods
                            quadrants:ODQuadrant_1_3 ];
 
         [ self swapFrequencySpectrum:result.displacementXdXdZ
                           resolution:currentGeometry.gradientResolution
+                        numberOfLods:currentGeometry.numberOfLods
                            quadrants:ODQuadrant_2_4 ];
     }
 
@@ -845,10 +863,12 @@ right way.
     {
         [ self swapFrequencySpectrum:result.displacementZdXdZ
                           resolution:currentGeometry.gradientResolution
+                        numberOfLods:currentGeometry.numberOfLods
                            quadrants:ODQuadrant_1_3 ];
 
         [ self swapFrequencySpectrum:result.displacementZdXdZ
                           resolution:currentGeometry.gradientResolution
+                        numberOfLods:currentGeometry.numberOfLods
                            quadrants:ODQuadrant_2_4 ];
     }
 
