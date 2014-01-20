@@ -45,6 +45,7 @@ technique "proj_grid_tf_transform"
         MinFilter = TriLinear;
         MagFilter = Linear;
     };
+    uniform samplerBuffer sizes;
 
     # vertex streams
     in vec2 in_position : 0;
@@ -70,6 +71,7 @@ technique "proj_grid_tf_feedback"
         MagFilter = Linear;
         Anisotropy = 16;
     };
+    uniform samplerBuffer sizes;
     uniform sampler3D variance
     {
         WrapS = ClampToEdge;
