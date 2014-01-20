@@ -94,7 +94,7 @@
             ItemSize = ("40", "40");
             Spacing = ("5", "5");
             Layout = ("2", "3");
-            Labels = ("8", "64", "128", "256", "512", "1024");
+            Labels = ("8", "16", "32", "64", "128", "256");
             TargetObject = "Ocean";
             TargetProperty = "geometryResolutionIndex";
         };
@@ -110,7 +110,7 @@
             ItemSize = ("40", "40");
             Spacing = ("5", "5");
             Layout = ("2", "3");
-            Labels = ("8", "64", "128", "256", "512", "1024");
+            Labels = ("8", "16", "32", "64", "128", "256");
             TargetObject = "Ocean";
             TargetProperty = "gradientResolutionIndex";
         };

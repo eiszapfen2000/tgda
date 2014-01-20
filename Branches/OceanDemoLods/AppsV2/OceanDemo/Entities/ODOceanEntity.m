@@ -101,7 +101,7 @@ static const Vector2 defaultWindDirection = {1.0, 0.0};
 static const double defaultSize = 80.0;
 static const double defaultDampening = 0.001;
 static const double defaultSpectrumScale = PHILLIPS_CONSTANT;
-static const int32_t resolutions[6] = {8, 64, 128, 256, 512, 1024};
+static const int32_t resolutions[6] = {8, 16, 32, 64, 128, 256};
 static const NSUInteger defaultGeometryResolutionIndex = 0;
 static const NSUInteger defaultGradientResolutionIndex = 0;
 static const double OneDivSixty = 1.0 / 30.0;
@@ -116,15 +116,15 @@ static size_t index_for_resolution(int32_t resolution)
     {
         case 8:
             return 0;
-        case 64:
+        case 16:
             return 1;
-        case 128:
+        case 32:
             return 2;
-        case 256:
+        case 64:
             return 3;
-        case 512:
+        case 128:
             return 4;
-        case 1024:
+        case 256:
             return 5;
         default:
             return SIZE_MAX;
@@ -295,8 +295,8 @@ static size_t index_for_resolution(int32_t resolution)
                 }
 
                 generatorSettings.spectrumScale = generatorSpectrumScale;
+                //generatorSettings.options = OdGeneratorOptionsHeights | OdGeneratorOptionsGradient;
                 generatorSettings.options = ULONG_MAX;
-                //generatorSettings.options = 1;
 
                 NSAssert(generatorNumberOfLods <= UINT32_MAX, @"Lod out of bounds");
 
