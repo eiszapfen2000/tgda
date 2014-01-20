@@ -240,6 +240,7 @@ void main()
     float H_ross = H(dot(l_ross, h_ross));
     float v_dot_f = max(0.0, dot(v_ross, h_ross));
 
+    /*
     float q_vn = (probability * v_dot_f * H_ross) / (l_v_smith * max(0.01, h_ross.y) * max(0.01, dot(v_ross, n_ross)));
 
     vec3 f_schlick = c_spec + ((vec3(1.0) - c_spec) * pow(1.0 - clamp(dot(l_ross, h_ross), 0.0, 1.0), 5.0));
@@ -249,6 +250,12 @@ void main()
     vec3 result = f_schlick * (q_vn / denominator);
 
     vec3 rossContribution = (result * MATH_PI) * (c_light * max(0.0, dot(l_ross, n_ross)));
+    */
+
+    vec3 f_schlick = c_spec + ((vec3(1.0) - c_spec) * pow(1.0 - clamp(dot(v_ross, h_ross), 0.0, 1.0), 5.0));
+    float denominator = 4.0 * (h_ross.y * h_ross.y * h_ross.y * h_ross.y) * max(0.01, dot(n_ross, v_ross)) * l_v_smith;
+    vec3 rossContribution = c_light * probability * (f_schlick / denominator);
+
 
     float f_mean = 0.02 + 0.98 * meanFresnel(v, n, sigmaSq);
     vec3 meanSky = meanSkyRadiance(v, ross, sigmaSq);
