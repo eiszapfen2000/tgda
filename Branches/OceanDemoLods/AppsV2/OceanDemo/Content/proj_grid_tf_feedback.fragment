@@ -156,6 +156,8 @@ float whitecapCoverage(float epsilon, float mu, float sigmaSqr)
 
 void main()
 {
+    int numberOfLods = textureSize(sizes);
+
     float Jxx = dFdx(out_ws_non_disp_position.x);
     float Jxy = dFdy(out_ws_non_disp_position.x);
     float Jyx = dFdx(out_ws_non_disp_position.y);
@@ -170,10 +172,17 @@ void main()
     vec2 sigmaSq = texture(variance, vec3(ua, ub, uc)).xy;
     sigmaSq = max(sigmaSq, 2e-5);
 
-    vec2 texcoord = out_ws_non_disp_position;
-    texcoord *= (1.0 / area);
+    vec2 grad = vec2(0.0);
 
-    vec2 grad = texture(gradient, vec3(texcoord, 0)).xy * heightScale;
+    for ( int l = 0; l < numberOfLods; l++ )
+    {
+        vec2 lodSize = texelFetch(sizes, l).xy;
+        vec2 scaledLodSize = areaScale * lodSize;
+        vec2 texcoord = out_ws_non_disp_position / scaledLodSize;
+
+        grad += texture(gradient, vec3(texcoord, l)).xy * heightScale;
+    }
+
     vec3 normal = vec3(-grad.x, 1.0, -grad.y);
 
     vec3 lightDir = directionToSun;

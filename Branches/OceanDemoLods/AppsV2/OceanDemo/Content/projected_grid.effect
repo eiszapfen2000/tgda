@@ -27,7 +27,7 @@ technique "proj_grid_tf_transform"
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
     uniform mat4 invMVP;
-    uniform float area;
+    uniform float areaScale;
     uniform float displacementScale;
     uniform float heightScale;
     uniform vec2  vertexStep;
@@ -37,6 +37,7 @@ technique "proj_grid_tf_transform"
         WrapT = Repeat;
         MinFilter = TriLinear;
         MagFilter = Linear;
+        Anisotropy = 4;
     };
     uniform sampler2DArray displacement
     {
@@ -44,8 +45,9 @@ technique "proj_grid_tf_transform"
         WrapT = Repeat;
         MinFilter = TriLinear;
         MagFilter = Linear;
+        Anisotropy = 4;
     };
-    uniform samplerBuffer sizes;
+    uniform samplerBuffer tsizes;
 
     # vertex streams
     in vec2 in_position : 0;
@@ -57,7 +59,7 @@ technique "proj_grid_tf_feedback"
 {
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
-    uniform float area;
+    uniform float areaScale;
     uniform float heightScale;
     uniform float jacobianEpsilon;
     uniform vec3 cameraPosition;
