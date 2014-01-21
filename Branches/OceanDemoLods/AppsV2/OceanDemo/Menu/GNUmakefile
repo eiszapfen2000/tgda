@@ -7,6 +7,7 @@ ODMenu.h \
 ODMenuItem.h \
 ODButtonItem.h \
 ODCheckboxItem.h \
+ODCombinationGroupItem.h \
 ODSelectionGroupItem.h \
 ODSliderItem.h \
 ODTextureItem.h \
@@ -17,6 +18,7 @@ ODMenu.m \
 ODMenuItem.m \
 ODButtonItem.m \
 ODCheckboxItem.m \
+ODCombinationGroupItem.m \
 ODSelectionGroupItem.m \
 ODSliderItem.m \
 ODTextureItem.m \

@@ -8,16 +8,16 @@
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Font/NPFont.h"
 #import "ODMenu.h"
-#import "ODSelectionGroupItem.h"
+#import "ODCombinationGroupItem.h"
 
-@interface ODSelectionGroupItem (Private)
+@interface ODCombinationGroupItem (Private)
 
 - (void) renderGeometry;
 - (void) renderLabels;
 
 @end
 
-@implementation ODSelectionGroupItem (Private)
+@implementation ODCombinationGroupItem (Private)
 
 - (void) renderGeometry
 {
@@ -38,7 +38,7 @@
             FRectangle itemGeometry;
             frectangle_rvv_init_with_min_and_size(&itemGeometry, &lowerLeft, &itemSize);
 
-            if ( index == indexOfActiveItem )
+            if ( active[index] == YES )
             {
                 [ color setFValue:quadColor ];
                 [ technique activate ];
@@ -110,7 +110,7 @@
 
 @end
 
-@implementation ODSelectionGroupItem
+@implementation ODCombinationGroupItem
 
 - (id) init
 {
@@ -132,13 +132,14 @@
     itemSize.x = itemSize.y = 0.0f;
     itemSpacing.x = itemSpacing.y = 0.0f;
     layout.x = layout.y = 0;
-    indexOfActiveItem = ULONG_MAX;
+    active = NULL;
 
     return self;
 }
 
 - (void) dealloc
 {
+    SAFE_FREE(active);
     SAFE_DESTROY(labels);
     SAFE_DESTROY(technique);
     SAFE_DESTROY(color);
@@ -174,10 +175,15 @@
     layout.x = [[ layoutStrings objectAtIndex:0 ] intValue ];
     layout.y = [[ layoutStrings objectAtIndex:1 ] intValue ];
 
+    NSAssert1(layout.x > 0 && layout.y > 0, @"%@ - invalid layout", name);
+
     labels = [[ NSArray alloc ] initWithArray:itemLabels copyItems:YES ];
 
+    SAFE_FREE(active);
+    active = ALLOC_ARRAY(BOOL, layout.x * layout.y);
+    memset(active, 0, sizeof(BOOL) * layout.x * layout.y);
 
-    FVector2 realSize = {0.0f, 0.0f};
+    FVector2 realSize = fv2_zero();
 
 	for ( int32_t i = 0; i < layout.x; i++ )
 	{
@@ -223,15 +229,8 @@
             frectangle_rvv_init_with_min_and_size(&itemGeometry, &lowerLeft, &itemSize);
             if ( frectangle_vr_is_point_inside(&mousePosition, &itemGeometry) != 0 )
             {
-                indexOfActiveItem = index;
-
-                // set target property
-                if ( target != nil )
-                {
-                    ODObjCSetVariable(target, offset, size, &indexOfActiveItem);
-                }
-
-                return;
+                active[index] = !active[index];
+                break;
             }
 
 			lowerLeft.x = lowerLeft.x + itemSize.x + itemSpacing.x;
@@ -240,6 +239,28 @@
 		lowerLeft.x = alignedGeometry.min.x;
 		lowerLeft.y = lowerLeft.y - itemSpacing.y - itemSize.y;
     }
+
+    NSUInteger mask = 0;
+
+    for ( int32_t i = 0; i < layout.y; i++ )
+    {
+        for ( int32_t j = 0; j < layout.x; j++ )
+        {
+            const NSUInteger index = i * layout.x + j;
+
+            if ( active[index] == YES )
+            {
+                mask = mask | (1 << index);
+            }
+        }
+    }
+
+    // set target property
+    if ( target != nil )
+    {
+        ODObjCSetVariable(target, offset, size, &mask);
+    }
+
 }
 
 - (void) update:(const float)frameTime
@@ -250,7 +271,20 @@
     // get value from target
     if ( target != nil )
     {
-        ODObjCGetVariable(target, offset, size, &indexOfActiveItem);
+        NSUInteger mask = 0;
+        ODObjCGetVariable(target, offset, size, &mask);
+
+        for ( int32_t i = 0; i < layout.y; i++ )
+        {
+            for ( int32_t j = 0; j < layout.x; j++ )
+            {
+                const NSUInteger index = i * layout.x + j;
+                const NSUInteger bit = (1 << index);
+                const NSUInteger c = mask & bit;
+
+                active[index] = (c != 0) ? YES : NO;
+            }
+        }
     }
 }
 
