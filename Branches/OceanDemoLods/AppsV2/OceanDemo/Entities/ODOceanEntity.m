@@ -95,7 +95,8 @@ typedef struct OdSpectrumVariance
 OdSpectrumVariance;
 
 static const NSUInteger defaultNumberOfLods = 3;
-static const NSUInteger defaultSpectrumType = 0;
+static const NSUInteger defaultSpectrumType = 1;
+static const NSUInteger defaultOptions = ULONG_MAX;
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
 static const double defaultSize =237.0;
@@ -295,8 +296,9 @@ static size_t index_for_resolution(int32_t resolution)
                 }
 
                 generatorSettings.spectrumScale = generatorSpectrumScale;
-                generatorSettings.options = OdGeneratorOptionsHeights | OdGeneratorOptionsGradient | OdGeneratorOptionsDisplacement;
+                //generatorSettings.options = OdGeneratorOptionsHeights | OdGeneratorOptionsGradient | OdGeneratorOptionsDisplacement;
                 //generatorSettings.options = ULONG_MAX;
+                generatorSettings.options = generatorOptions;
 
                 NSAssert(generatorNumberOfLods <= UINT32_MAX, @"Lod out of bounds");
 
@@ -729,6 +731,9 @@ static NSUInteger od_variance_size(const void * item)
     lastNumberOfLods = ULONG_MAX;
     numberOfLods = generatorNumberOfLods = defaultNumberOfLods;
 
+    lastOptions = 0;
+    options = generatorOptions = defaultOptions;
+
     lastSpectrumType = ULONG_MAX;
     spectrumType = generatorSpectrumType = defaultSpectrumType;
 
@@ -746,16 +751,16 @@ static NSUInteger od_variance_size(const void * item)
     lastSpectrumScale = DBL_MAX;
     spectrumScale = generatorSpectrumScale = defaultSpectrumScale;
 
-    const NSUInteger options
+    const NSUInteger pfoptions
         = NSPointerFunctionsMallocMemory
           | NSPointerFunctionsStructPersonality
           | NSPointerFunctionsCopyIn;
 
     NSPointerFunctions * pFunctionsSpectrum
-        = [ NSPointerFunctions pointerFunctionsWithOptions:options ];
+        = [ NSPointerFunctions pointerFunctionsWithOptions:pfoptions ];
 
     NSPointerFunctions * pFunctionsVariance
-        = [ NSPointerFunctions pointerFunctionsWithOptions:options ];
+        = [ NSPointerFunctions pointerFunctionsWithOptions:pfoptions ];
 
     [ pFunctionsSpectrum setSizeFunction:&od_freq_spectrum_size ];
     [ pFunctionsVariance setSizeFunction:&od_variance_size];
@@ -1066,6 +1071,7 @@ static NSUInteger od_variance_size(const void * item)
     // the resultQueue of still therein residing data
     if ( spectrumType != lastSpectrumType
          || numberOfLods != lastNumberOfLods
+         || options != lastOptions
          || windSpeed != lastWindSpeed
          || size != lastSize
          || dampening != lastDampening
@@ -1075,6 +1081,7 @@ static NSUInteger od_variance_size(const void * item)
     {
         lastSpectrumType = spectrumType;
         lastNumberOfLods = numberOfLods;
+        lastOptions = options;
         lastWindSpeed = windSpeed;
         lastSize = size;
         lastDampening = dampening;
@@ -1089,6 +1096,7 @@ static NSUInteger od_variance_size(const void * item)
         [ settingsMutex lock ];
         generatorSpectrumType = spectrumType;
         generatorNumberOfLods = numberOfLods;
+        generatorOptions = options;
         generatorWindSpeed = windSpeed;
         generatorSize = size;
         generatorDampening = dampening;

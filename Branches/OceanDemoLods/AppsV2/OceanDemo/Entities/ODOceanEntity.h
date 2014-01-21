@@ -55,6 +55,9 @@
     NSUInteger lastSpectrumType;
     NSUInteger spectrumType;
     NSUInteger generatorSpectrumType;
+    NSUInteger lastOptions;
+    NSUInteger options;
+    NSUInteger generatorOptions;
 
     BOOL generateData;
     BOOL transformData;
