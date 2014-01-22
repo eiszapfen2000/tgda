@@ -802,8 +802,6 @@ static NSUInteger od_variance_size(const void * item)
 
     timeStamp = DBL_MAX;
 
-    area = 0.0;
-
     displacementScale = defaultDisplacementScale;
     areaScale = defaultAreaScale;
     heightScale = defaultHeightScale;
@@ -984,11 +982,6 @@ static NSUInteger od_variance_size(const void * item)
 - (NPTextureBuffer *) sizes
 {
     return sizes;
-}
-
-- (double) area
-{
-    return area;
 }
 
 - (double) areaScale
@@ -1239,8 +1232,6 @@ static NSUInteger od_variance_size(const void * item)
 
 
         timeStamp = hf->timeStamp;
-
-        area = hf->geometry.sizes[0].x;
 
         heightRange = hf->ranges[HEIGHT_RANGE];
         gradientXRange = hf->ranges[GRADIENT_X_RANGE];

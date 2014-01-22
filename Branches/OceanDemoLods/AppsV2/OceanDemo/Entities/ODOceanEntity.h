@@ -83,8 +83,6 @@
     NPTexture2DArray * displacementDerivatives;
 
     double timeStamp;
-    double area;
-
     double displacementScale;
     double areaScale;
     double heightScale;
@@ -121,7 +119,6 @@
 - (NPTexture2DArray *) gradient;
 - (NPTextureBuffer *) sizes;
 
-- (double) area;
 - (double) areaScale;
 - (double) displacementScale;
 - (double) heightScale;
