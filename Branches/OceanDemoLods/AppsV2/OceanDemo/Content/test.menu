@@ -349,9 +349,11 @@
             Label = "";
             Alignment = "TopLeft";
             Position = ("20", "125" );
-            Size = ( "100", "20" );
+            Size = ( "128", "20" );
             TextSize = "16";
             TextureFilename = "WaterColor.png";
+            TargetObject = "Ocean";
+            TargetProperty = "waterColorCoordinate";
         };
 
         PSliderKey =
