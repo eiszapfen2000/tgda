@@ -154,6 +154,11 @@ Vector2 v2_zero(void)
     return (Vector2){0.0, 0.0};
 }
 
+Vector2 v2_one(void)
+{
+    return (Vector2){1.0, 1.0};
+}
+
 Vector2 v2_min(void)
 {
     return (Vector2){-DBL_MAX, -DBL_MAX};

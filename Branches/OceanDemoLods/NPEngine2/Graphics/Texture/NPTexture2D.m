@@ -259,7 +259,8 @@ void reset_texture2d_wrapstate(NpTexture2DWrapState * wrapState)
         return NO;
     }
 
-    [ self setName:completeFileName ];
+    //[ self setName:completeFileName ];
+    [ self setName:fileName ];
     ASSIGNCOPY(file, completeFileName);
 
     NPLOG(@"");

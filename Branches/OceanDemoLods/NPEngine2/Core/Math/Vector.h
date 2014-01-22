@@ -51,6 +51,7 @@ double v2_vv_dot_product(const Vector2 * const v, const Vector2 * const w);
 double v2_v_square_length(const Vector2 * const v);
 double v2_v_length(const Vector2 * const v);
 Vector2 v2_zero(void);
+Vector2 v2_one(void);
 Vector2 v2_min(void);
 Vector2 v2_max(void);
 Vector2 v2_v_inverted(Vector2 * v);
