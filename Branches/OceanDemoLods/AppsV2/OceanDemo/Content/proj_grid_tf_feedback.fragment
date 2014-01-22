@@ -208,37 +208,27 @@ void main()
     vec3 tx = normalize(vec3(1.0, -normal.x, 0.0));
     vec3 ty = normalize(vec3(0.0, -normal.z, 1.0));
 
-    mat3 ross = mat3(ty, n, tx);
-    mat3 iross = inverse(ross);
-
     // target space
     // tx = +z
     // ty = +x
     // n  = +y
-
-    vec3 tx_ross = vec3(0.0, 0.0, 1.0);
-    vec3 ty_ross = vec3(1.0, 0.0, 0.0);
-    vec3 n_ross  = vec3(0.0, 1.0, 0.0);
-
-    vec3 l_ross = iross * l;
-    vec3 v_ross = iross * v;
-    vec3 h_ross = normalize(l_ross + v_ross);
+    mat3 ross = mat3(ty, n, tx);
 
     vec2 zeta;
-    zeta.x = dot(h_ross, tx_ross) / dot(h_ross, n_ross);
-    zeta.y = dot(h_ross, ty_ross) / dot(h_ross, n_ross);
+    zeta.x = dot(h, tx) / dot(h, n);
+    zeta.y = dot(h, ty) / dot(h, n);
 
     float probability = p(sigmaSq, zeta);
 
-    float l_nu = nu(l_ross, tx_ross, n_ross, sigmaSq);
-    float v_nu = nu(v_ross, tx_ross, n_ross, sigmaSq);
+    float l_nu = nu(l, tx, n, sigmaSq);
+    float v_nu = nu(v, tx, n, sigmaSq);
 
     float l_lambda = Lambda(l_nu);
     float v_lambda = Lambda(v_nu);
     float l_v_smith = 1.0 + l_lambda + v_lambda;
 
-    float H_ross = H(dot(l_ross, h_ross));
-    float v_dot_f = max(0.0, dot(v_ross, h_ross));
+    float H_ross = H(dot(l, h));
+    float v_dot_f = max(0.0, dot(v, h));
 
     /*
     float q_vn = (probability * v_dot_f * H_ross) / (l_v_smith * max(0.01, h_ross.y) * max(0.01, dot(v_ross, n_ross)));
@@ -252,8 +242,8 @@ void main()
     vec3 rossContribution = (result * MATH_PI) * (c_light * max(0.0, dot(l_ross, n_ross)));
     */
 
-    vec3 f_schlick = c_spec + ((vec3(1.0) - c_spec) * pow(1.0 - clamp(dot(v_ross, h_ross), 0.0, 1.0), 5.0));
-    float denominator = 4.0 * (h_ross.y * h_ross.y * h_ross.y * h_ross.y) * max(0.01, dot(n_ross, v_ross)) * l_v_smith;
+    vec3 f_schlick = c_spec + ((vec3(1.0) - c_spec) * pow(1.0 - clamp(dot(v, h), 0.0, 1.0), 5.0));
+    float denominator = 4.0 * (h.y * h.y * h.y * h.y) * max(0.01, dot(n, v)) * l_v_smith;
     vec3 rossContribution = c_light * probability * (f_schlick / denominator);
 
 
