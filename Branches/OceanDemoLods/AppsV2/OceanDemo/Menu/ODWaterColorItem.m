@@ -38,6 +38,8 @@
     frectangle_rssss_init_with_min_max(&pixelCenterGeometry, 0.0f, 0.0f, 0.0f, 0.0f);
     channels = (FVector4){1.0f, 1.0f, 1.0f, 1.0f};
 
+    coordinate = fv2_zero();
+
     return self;
 }
 
@@ -101,14 +103,16 @@
 
 - (void) onClick:(const FVector2)mousePosition
 {
-    /*
-    active == YES ? (active = NO) : (active = YES);
+    coordinate.x
+        = (mousePosition.x - alignedGeometry.min.x) / (alignedGeometry.max.x - alignedGeometry.min.x);
+
+    coordinate.y
+        = (mousePosition.y - alignedGeometry.min.y) / (alignedGeometry.max.y - alignedGeometry.min.y);
 
     if ( target != nil )
     {
-        ODObjCSetVariable(target, offset, size, &active);
+        ODObjCSetVariable(target, offset, size, &coordinate);
     }
-    */
 }
 
 - (void) update:(const float)frameTime
@@ -122,6 +126,12 @@
     pixelCenterGeometry.min.y = alignedGeometry.min.y + 0.5f;
     pixelCenterGeometry.max.x = alignedGeometry.max.x - 0.5f;
     pixelCenterGeometry.max.y = alignedGeometry.max.y - 0.5f;
+
+    // get value from target
+    if ( target != nil )
+    {
+        ODObjCGetVariable(target, offset, size, &coordinate);
+    }
 }
 
 - (void) render
