@@ -374,6 +374,11 @@ Vector3 v3_zero(void)
     return (Vector3){0.0, 0.0, 0.0};
 }
 
+Vector3 v3_one(void)
+{
+    return (Vector3){1.0, 1.0, 1.0};
+}
+
 Vector3 v3_min(void)
 {
     return (Vector3){-DBL_MAX, -DBL_MAX, -DBL_MAX};

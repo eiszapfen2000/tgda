@@ -88,6 +88,7 @@ double v3_vv_dot_product(const Vector3 * const v, const Vector3 * const w);
 double v3_v_square_length(const Vector3 * const v);
 double v3_v_length(const Vector3 * const v);
 Vector3 v3_zero(void);
+Vector3 v3_one(void);
 Vector3 v3_min(void);
 Vector3 v3_max(void);
 Vector3 v3_v_inverted(Vector3 * v);
