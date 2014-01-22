@@ -82,6 +82,9 @@
     NPTexture2DArray * gradient;
     NPTexture2DArray * displacementDerivatives;
 
+    NPTexture2D * waterColor;
+    FVector2 waterColorCoordinate;
+
     double timeStamp;
     double displacementScale;
     double areaScale;
@@ -113,11 +116,12 @@
 - (ODProjector *) projector;
 - (ODBasePlane *) basePlane;
 - (NPTexture2DArray *) baseSpectrum;
+- (NPTextureBuffer *) sizes;
 - (NPTexture2DArray *) heightfield;
 - (NPTexture2DArray *) displacement;
-- (NPTexture2DArray *) displacementDerivatives;
 - (NPTexture2DArray *) gradient;
-- (NPTextureBuffer *) sizes;
+- (NPTexture2DArray *) displacementDerivatives;
+- (NPTexture2D *) waterColor;
 
 - (double) areaScale;
 - (double) displacementScale;

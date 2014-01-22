@@ -94,7 +94,7 @@ typedef struct OdSpectrumVariance
 }
 OdSpectrumVariance;
 
-static const NSUInteger defaultNumberOfLods = 3;
+static const NSUInteger defaultNumberOfLods = 1;
 static const NSUInteger defaultSpectrumType = 1;
 static const NSUInteger defaultOptions = ULONG_MAX;
 static const double defaultWindSpeed = 4.5;
@@ -337,8 +337,8 @@ static size_t index_for_resolution(int32_t resolution)
                 //NSLog(@"A %f %f", x, y);
             }
 
-            geometry.sizes[1] = (Vector2){74.0, 74.0};
-            geometry.sizes[2] = (Vector2){21.0, 21.0};
+            //geometry.sizes[1] = (Vector2){74.0, 74.0};
+            //geometry.sizes[2] = (Vector2){21.0, 21.0};
 //            geometry.sizes[3] = (Vector2){11.0, 11.0};
 
             [ timer update ];
@@ -786,6 +786,13 @@ static NSUInteger od_variance_size(const void * item)
     displacementDerivatives
         = [[ NPTexture2DArray alloc ] initWithName:@"Height Texture Displacement Derivatives" ];
 
+    waterColor
+        = [[[ NPEngineGraphics instance ] textures2D ] getAssetWithFileName:@"WaterColor.png" ];
+
+    ASSERT_RETAIN(waterColor);
+
+    waterColorCoordinate = fv2_zero();
+
     [ baseSpectrum setTextureFilter:NpTextureFilterNearest ];
     [ heightfield  setTextureFilter:NpTextureFilterLinear  ];
     [ displacement setTextureFilter:NpTextureFilterLinear  ];
@@ -959,6 +966,11 @@ static NSUInteger od_variance_size(const void * item)
     return baseSpectrum;
 }
 
+- (NPTextureBuffer *) sizes
+{
+    return sizes;
+}
+
 - (NPTexture2DArray *) heightfield
 {
     return heightfield;
@@ -969,19 +981,19 @@ static NSUInteger od_variance_size(const void * item)
     return displacement;
 }
 
-- (NPTexture2DArray *) displacementDerivatives
-{
-    return displacementDerivatives;
-}
-
 - (NPTexture2DArray *) gradient
 {
     return gradient;
 }
 
-- (NPTextureBuffer *) sizes
+- (NPTexture2DArray *) displacementDerivatives
 {
-    return sizes;
+    return displacementDerivatives;
+}
+
+- (NPTexture2D *) waterColor
+{
+    return waterColor;
 }
 
 - (double) areaScale
