@@ -65,6 +65,7 @@ technique "proj_grid_tf_feedback"
     uniform vec3 cameraPosition;
     uniform vec3 directionToSun;
     uniform vec3 sunColor;
+    uniform vec2 waterColorCoordinate;
     uniform sampler2DArray gradient
     {
         WrapS = Repeat;
@@ -72,6 +73,13 @@ technique "proj_grid_tf_feedback"
         MinFilter = TriLinear;
         MagFilter = Linear;
         Anisotropy = 16;
+    };
+    uniform sampler2D watercolor
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
     };
     uniform samplerBuffer sizes;
     uniform sampler3D variance
@@ -97,6 +105,7 @@ technique "proj_grid_tf_feedback"
         MagFilter = Linear;
         Anisotropy = 16;
     };
+
     # vertex streams
     in vec3 in_position : 0;
     in vec2 in_non_disp_position : 1;
