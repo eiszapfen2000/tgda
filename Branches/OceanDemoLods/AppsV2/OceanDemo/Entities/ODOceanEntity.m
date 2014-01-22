@@ -789,9 +789,14 @@ static NSUInteger od_variance_size(const void * item)
     waterColor
         = [[[ NPEngineGraphics instance ] textures2D ] getAssetWithFileName:@"WaterColor.png" ];
 
+    waterColorIntensity
+        = [[[ NPEngineGraphics instance ] textures2D ] getAssetWithFileName:@"BlackToWhiteRamp.png" ];
+
     ASSERT_RETAIN(waterColor);
+    ASSERT_RETAIN(waterColorIntensity);
 
     waterColorCoordinate = v2_zero();
+    waterColorIntensityCoordinate = v2_one();
 
     [ baseSpectrum setTextureFilter:NpTextureFilterNearest ];
     [ heightfield  setTextureFilter:NpTextureFilterLinear  ];
@@ -845,6 +850,8 @@ static NSUInteger od_variance_size(const void * item)
     [ varianceQueue removeAllPointers ];
     [ resultQueue removeAllHeightfields ];
 
+    DESTROY(waterColor);
+    DESTROY(waterColorIntensity);
     DESTROY(heightfield);
     DESTROY(displacement);
     DESTROY(displacementDerivatives);
@@ -994,6 +1001,11 @@ static NSUInteger od_variance_size(const void * item)
 - (NPTexture2D *) waterColor
 {
     return waterColor;
+}
+
+- (NPTexture2D *) waterColorIntensity
+{
+    return waterColorIntensity;
 }
 
 - (double) areaScale
