@@ -83,7 +83,7 @@
     NPTexture2DArray * displacementDerivatives;
 
     NPTexture2D * waterColor;
-    FVector2 waterColorCoordinate;
+    Vector2 waterColorCoordinate;
 
     double timeStamp;
     double displacementScale;
@@ -126,6 +126,7 @@
 - (double) areaScale;
 - (double) displacementScale;
 - (double) heightScale;
+- (Vector2) waterColorCoordinate;
 - (FVector2) heightRange;
 - (FVector2) gradientXRange;
 - (FVector2) gradientZRange;

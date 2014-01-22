@@ -38,7 +38,7 @@
     frectangle_rssss_init_with_min_max(&pixelCenterGeometry, 0.0f, 0.0f, 0.0f, 0.0f);
     channels = (FVector4){1.0f, 1.0f, 1.0f, 1.0f};
 
-    coordinate = fv2_zero();
+    coordinate = v2_zero();
 
     return self;
 }

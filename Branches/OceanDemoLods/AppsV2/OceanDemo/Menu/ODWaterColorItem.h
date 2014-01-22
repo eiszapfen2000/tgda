@@ -16,7 +16,7 @@
     NPEffectVariableFloat4 * color;
     NPTexture2D * texture;
 
-    FVector2 coordinate;
+    Vector2 coordinate;
 }
 
 - (id) init;
