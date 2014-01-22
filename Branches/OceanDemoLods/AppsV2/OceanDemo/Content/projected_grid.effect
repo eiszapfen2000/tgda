@@ -66,6 +66,7 @@ technique "proj_grid_tf_feedback"
     uniform vec3 directionToSun;
     uniform vec3 sunColor;
     uniform vec2 waterColorCoordinate;
+    uniform vec2 waterColorIntensityCoordinate;
     uniform sampler2DArray gradient
     {
         WrapS = Repeat;
@@ -75,6 +76,13 @@ technique "proj_grid_tf_feedback"
         Anisotropy = 16;
     };
     uniform sampler2D watercolor
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform sampler2D watercolorIntensity
     {
         WrapS = ClampToEdge;
         WrapT = ClampToEdge;

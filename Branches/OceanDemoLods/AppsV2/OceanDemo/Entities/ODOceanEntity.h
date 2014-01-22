@@ -130,6 +130,7 @@
 - (double) displacementScale;
 - (double) heightScale;
 - (Vector2) waterColorCoordinate;
+- (Vector2) waterColorIntensityCoordinate;
 - (FVector2) heightRange;
 - (FVector2) gradientXRange;
 - (FVector2) gradientZRange;

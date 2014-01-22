@@ -1028,6 +1028,11 @@ static NSUInteger od_variance_size(const void * item)
     return waterColorCoordinate;
 }
 
+- (Vector2) waterColorIntensityCoordinate
+{
+    return waterColorIntensityCoordinate;
+}
+
 - (FVector2) heightRange
 {
     return heightRange;

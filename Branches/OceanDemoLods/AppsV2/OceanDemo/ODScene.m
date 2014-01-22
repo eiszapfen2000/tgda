@@ -733,10 +733,11 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     NPEffectVariableFloat3 * dsP = [ projectedGridEffect variableWithName:@"directionToSun"];
     NPEffectVariableFloat3 * scP = [ projectedGridEffect variableWithName:@"sunColor"];
     NPEffectVariableFloat2 * wcP = [ projectedGridEffect variableWithName:@"waterColorCoordinate"];
+    NPEffectVariableFloat2 * wciP = [ projectedGridEffect variableWithName:@"waterColorIntensityCoordinate"];
     NPEffectVariableFloat2 * vsP = [ projectedGridEffect variableWithName:@"vertexStep"];
     NPEffectVariableFloat * ds = [ projectedGridEffect variableWithName:@"displacementScale"];
 
-    NSAssert(w != nil && a != nil && ds != nil && hs != nil && je != nil && cP != nil && dsP != nil && scP != nil && vsP != nil && wcP != nil, @"");
+    NSAssert(w != nil && a != nil && ds != nil && hs != nil && je != nil && cP != nil && dsP != nil && scP != nil && vsP != nil && wcP != nil && wciP != nil, @"");
 
     [ ds setValue:[ ocean displacementScale ]];
     [ w setValue:[testProjector inverseViewProjection]];
@@ -747,18 +748,20 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ dsP setValue:[ skylight directionToSun ]];
     [ scP setValue:[ skylight sunColor ]];
     [ wcP setValue:[ ocean waterColorCoordinate ]];
+    [ wciP setValue:[ ocean waterColorIntensityCoordinate ]];
     [ vsP setValue:[ projectedGrid vertexStep ]];
 
     [ projectedGridTFTransform activate ];
     [ projectedGrid renderTFTransform ];
 
     [[[ NP Graphics ] textureBindingState ] clear ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean gradient ]           texelUnit:0 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean waterColor ]         texelUnit:1 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]              texelUnit:2 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ varianceLUT texture ]      texelUnit:3 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ skylight skylightTexture ] texelUnit:4 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ whitecapsTarget texture  ] texelUnit:5 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean gradient ]            texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean waterColor ]          texelUnit:1 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean waterColorIntensity ] texelUnit:2 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]               texelUnit:3 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ varianceLUT texture ]       texelUnit:4 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ skylight skylightTexture ]  texelUnit:5 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ whitecapsTarget texture  ]  texelUnit:6 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
 
