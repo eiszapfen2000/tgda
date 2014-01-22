@@ -791,7 +791,7 @@ static NSUInteger od_variance_size(const void * item)
 
     ASSERT_RETAIN(waterColor);
 
-    waterColorCoordinate = fv2_zero();
+    waterColorCoordinate = v2_zero();
 
     [ baseSpectrum setTextureFilter:NpTextureFilterNearest ];
     [ heightfield  setTextureFilter:NpTextureFilterLinear  ];
@@ -1009,6 +1009,11 @@ static NSUInteger od_variance_size(const void * item)
 - (double) heightScale
 {
     return heightScale;
+}
+
+- (Vector2) waterColorCoordinate
+{
+    return waterColorCoordinate;
 }
 
 - (FVector2) heightRange
