@@ -267,6 +267,8 @@ void main()
     */
 
     vec3 seaColor = texture(watercolor, waterColorCoordinate).rgb;
+    vec3 seaColorIntensity = texture(watercolorIntensity, waterColorIntensityCoordinate).rgb;
+    seaColor *= seaColorIntensity;
 
     //vec3 Lsea = seaColor.rgb * (c_light * 0.001 / MATH_PI);
     vec3 Lsea = seaColor.rgb * (meanSky / MATH_PI);

@@ -356,6 +356,19 @@
             TargetProperty = "waterColorCoordinate";
         };
 
+        PWaterColorIntensity =
+        {
+            Type = "ODWaterColorItem";
+            Label = "";
+            Alignment = "TopLeft";
+            Position = ("20", "155" );
+            Size = ( "128", "20" );
+            TextSize = "16";
+            TextureFilename = "BlackToWhiteRamp.png";
+            TargetObject = "Ocean";
+            TargetProperty = "waterColorIntensityCoordinate";
+        };
+
         PSliderKey =
         {
             Type = "ODSliderItem";
