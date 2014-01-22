@@ -343,6 +343,17 @@
             TargetProperty = "jacobianEpsilon";
         };
 
+        PWaterColor =
+        {
+            Type = "ODWaterColorItem";
+            Label = "";
+            Alignment = "TopLeft";
+            Position = ("20", "125" );
+            Size = ( "100", "20" );
+            TextSize = "16";
+            TextureFilename = "WaterColor.png";
+        };
+
         PSliderKey =
         {
             Type = "ODSliderItem";
