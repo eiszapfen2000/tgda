@@ -11,7 +11,8 @@ ODCombinationGroupItem.h \
 ODSelectionGroupItem.h \
 ODSliderItem.h \
 ODTextureItem.h \
-ODWindDirectionItem.h
+ODWindDirectionItem.h \
+ODWaterColorItem.h
 
 ODMenu_OBJC_FILES = \
 ODMenu.m \
@@ -22,7 +23,8 @@ ODCombinationGroupItem.m \
 ODSelectionGroupItem.m \
 ODSliderItem.m \
 ODTextureItem.m \
-ODWindDirectionItem.m
+ODWindDirectionItem.m \
+ODWaterColorItem.m
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make
