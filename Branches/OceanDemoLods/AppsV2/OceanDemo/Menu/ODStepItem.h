@@ -9,10 +9,12 @@
 
     NSInteger minimumIntegerValue;
     NSInteger maximumIntegerValue;
-    NSInteger stepInteger;
+    NSInteger integerStep;
+    NSInteger integerValue;
     double minimumDoubleValue;
     double maximumDoubleValue;
-    double stepDouble;
+    double doubleStep;
+    double doubleValue;
 
     NPEffectTechnique * technique;
     NPEffectVariableFloat4 * color;
