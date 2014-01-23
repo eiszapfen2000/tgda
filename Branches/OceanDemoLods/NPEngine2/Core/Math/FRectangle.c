@@ -2,8 +2,13 @@
 #include <stdio.h>
 #include "FRectangle.h"
 
+#ifndef MIN
 #define MIN(_a,_b) ((_a < _b )? _a:_b)
+#endif
+
+#ifndef MAX
 #define MAX(_a,_b) ((_a > _b )? _a:_b)
+#endif
 
 NpFreeList * NP_FRECTANGLE_FREELIST = NULL;
 

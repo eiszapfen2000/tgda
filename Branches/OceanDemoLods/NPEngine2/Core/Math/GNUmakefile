@@ -20,6 +20,7 @@ FRectangle.c \
 FVertex.c \
 Pluecker.c \
 FPluecker.c \
+FTriangle.c \
 NpMath.c
 
 libNPEngineCoreMath_HEADER_FILES = \
@@ -42,6 +43,7 @@ FRectangle.h \
 FVertex.h \
 Pluecker.h \
 FPluecker.h \
+FTriangle.h \
 NpMath.h
 
 include $(TGDA_DIR)/GNUmakefile.flags
