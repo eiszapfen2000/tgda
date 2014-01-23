@@ -10,6 +10,7 @@ ODCheckboxItem.h \
 ODCombinationGroupItem.h \
 ODSelectionGroupItem.h \
 ODSliderItem.h \
+ODStepItem.h \
 ODTextureItem.h \
 ODWindDirectionItem.h \
 ODWaterColorItem.h
@@ -22,6 +23,7 @@ ODCheckboxItem.m \
 ODCombinationGroupItem.m \
 ODSelectionGroupItem.m \
 ODSliderItem.m \
+ODStepItem.m \
 ODTextureItem.m \
 ODWindDirectionItem.m \
 ODWaterColorItem.m
