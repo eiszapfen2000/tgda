@@ -24,5 +24,9 @@ void ftriangle_tvvv_init_with_vertices(FTriangle * triangle,
     const FVector2 * const b,
     const FVector2 * const c);
 
+int32_t ftriangle_vt_is_point_inside(const FVector2 * const point,
+    const FTriangle * const triangle);
+
+
 #endif
 
