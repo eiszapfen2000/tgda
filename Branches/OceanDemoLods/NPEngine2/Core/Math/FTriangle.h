@@ -9,11 +9,20 @@ void npmath_ftriangle_initialise(void);
 
 typedef struct FTriangle
 {
-    FVector3 a;
-    FVector3 b;
-    FVector3 c;
+    FVector2 a;
+    FVector2 b;
+    FVector2 c;
 }
 FTriangle;
+
+FTriangle * ftriangle_alloc(void);
+FTriangle * ftriangle_alloc_init(void);
+void ftriangle_free(FTriangle * t);
+
+void ftriangle_tvvv_init_with_vertices(FTriangle * triangle,
+    const FVector2 * const a,
+    const FVector2 * const b,
+    const FVector2 * const c);
 
 #endif
 

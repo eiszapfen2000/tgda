@@ -1,7 +1,7 @@
 #ifndef _NP_MATH_FRECTANGLE_H_
 #define _NP_MATH_FRECTANGLE_H_
 
-#include "Core/Basics/NpBasics.h"
+#include "Core/Basics/NpTypes.h"
 #include "FVector.h"
 
 void npmath_frectangle_initialise(void);
