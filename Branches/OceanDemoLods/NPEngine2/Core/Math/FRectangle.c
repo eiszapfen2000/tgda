@@ -1,5 +1,6 @@
 #define _GNU_SOURCE
 #include <stdio.h>
+#include "Core/Basics/NpFreeList.h"
 #include "FRectangle.h"
 
 #ifndef MIN
