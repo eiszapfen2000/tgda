@@ -25,6 +25,16 @@
     glEnd();
 }
 
++ (void) renderFTriangle:(const FTriangle)triangle
+           primitiveType:(const NpPrimitveType)primitiveType
+{
+    glBegin(primitiveType);
+        glVertexAttrib2f(NpVertexStreamPositions, triangle.a.x, triangle.a.y);
+        glVertexAttrib2f(NpVertexStreamPositions, triangle.b.x, triangle.b.y);
+        glVertexAttrib2f(NpVertexStreamPositions, triangle.c.x, triangle.c.y);
+    glEnd();
+}
+
 + (void) renderFRectangle:(const FRectangle)rectangle
                 texCoords:(const FRectangle)texCoords
             primitiveType:(const NpPrimitveType)primitiveType
@@ -54,6 +64,20 @@
         glVertexAttribI2i(NpVertexStreamPositions, rectangle.max.x, rectangle.max.y);
         glVertexAttribI2i(NpVertexStreamTexCoords0, texCoords.min.x, texCoords.max.y);
         glVertexAttribI2i(NpVertexStreamPositions, rectangle.min.x, rectangle.max.y);
+    glEnd();
+}
+
++ (void) renderFTriangle:(const FTriangle)triangle
+               texCoords:(const FTriangle)texCoords
+           primitiveType:(const NpPrimitveType)primitiveType
+{
+    glBegin(primitiveType);
+        glVertexAttrib2f(NpVertexStreamTexCoords0, texCoords.a.x, texCoords.a.y);
+        glVertexAttrib2f(NpVertexStreamPositions,  triangle.a.x,  triangle.a.y);
+        glVertexAttrib2f(NpVertexStreamTexCoords0, texCoords.b.x, texCoords.b.y);
+        glVertexAttrib2f(NpVertexStreamPositions,  triangle.b.x,  triangle.b.y);
+        glVertexAttrib2f(NpVertexStreamTexCoords0, texCoords.c.x, texCoords.c.y);
+        glVertexAttrib2f(NpVertexStreamPositions,  triangle.c.x,  triangle.c.y);
     glEnd();
 }
 
