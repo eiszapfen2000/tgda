@@ -343,6 +343,16 @@
             TargetProperty = "jacobianEpsilon";
         };
 
+        PLods =
+        {
+            Type = "ODStepItem";
+            Label = "BRAK";
+            Alignment = "TopRight";
+            Position = ("200", "370" );
+            Size = ( "20", "30" );
+            TextSize = "16";
+        };
+
         PWaterColor =
         {
             Type = "ODWaterColorItem";
