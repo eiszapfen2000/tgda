@@ -78,66 +78,33 @@
     return YES;
 }
 
-static bool sameSide(
-    const FVector3 * const A,
-    const FVector3 * const B,
-    const FVector3 * const C,
-    const FVector3 * const p
-    )
-{
-    const FVector3 ab = fv3_vv_sub(B, A);
-    const FVector3 ac = fv3_vv_sub(C, A);
-    const FVector3 ap = fv3_vv_sub(p, A);
-
-    const FVector3 c_ab_ac = fv3_vv_cross_product(&ab, &ac);
-    const FVector3 c_ab_ap = fv3_vv_cross_product(&ab, &ap);
-
-    return (fv3_vv_dot_product(&c_ab_ac, &c_ab_ap) >= 0) ? true : false;
-}
-
 - (void) onClick:(const FVector2)mousePosition
 {
+    //NSLog(@"Click");
+
     const float geometryWidth  = frectangle_r_calculate_width(&alignedGeometry);
     const float geometryHeight = frectangle_r_calculate_height(&alignedGeometry);
 
-    FVector3 topL, topR, topT, bottomL, bottomR, bottomB, mouse;
+    FRectangle top = alignedGeometry;
+    FRectangle bottom = alignedGeometry;
 
-    topL.x = bottomL.x = alignedGeometry.min.x;
-    topR.x = bottomR.x = alignedGeometry.max.x;
+    top.min.y    = alignedGeometry.max.y - ceilf(geometryHeight / 4.0f) - 2.0f;
+    top.max.y    = top.max.y + 2.0f;
+    bottom.max.y = alignedGeometry.min.y + ceilf(geometryHeight / 4.0f) + 2.0f;
+    bottom.min.y = bottom.min.y - 4.0f;
 
-    topT.x = bottomB.x = alignedGeometry.min.x + floorf(geometryWidth / 2.0f);
+    const int32_t insideTop    = frectangle_vr_is_point_inside(&mousePosition, &top);
+    const int32_t insideBottom = frectangle_vr_is_point_inside(&mousePosition, &bottom);
 
-    topL.y    = topR.y    = alignedGeometry.max.y - floorf(geometryHeight / 4.0f);
-    bottomL.y = bottomR.y = alignedGeometry.min.y + floorf(geometryHeight / 4.0f);
-
-    topT.y    = alignedGeometry.max.y;
-    bottomB.y = alignedGeometry.min.y;
-
-    topL.z = bottomL.z = 0.0f;
-    topR.z = bottomR.z = 0.0f;
-    topT.z = bottomB.z = 0.0f;
-
-    mouse.x = mousePosition.x;
-    mouse.y = mousePosition.y;
-    mouse.z = 0.0f;
-
-    const bool one   = sameSide(&topL, &topR, &topT, &mouse);
-    const bool two   = sameSide(&topL, &topT, &topR, &mouse);
-    const bool three = sameSide(&topT, &topR, &topL, &mouse);
-
-    const bool four = sameSide(&bottomL, &bottomR, &bottomB, &mouse);
-    const bool five = sameSide(&bottomL, &bottomB, &bottomR, &mouse);
-    const bool six  = sameSide(&bottomB, &bottomR, &bottomL, &mouse);
-
-    if ( one && two && three )
+    if (insideTop)
     {
         integerValue += integerStep;
         doubleValue += doubleStep;
 
-        //NSLog(@"%ld %lf", integerValue, doubleValue);
+        //NSLog(@"ADD %ld %lf", integerValue, doubleValue);
     }
 
-    if ( four && five && six )
+    if ( insideBottom)
     {
         integerValue -= integerStep;
         doubleValue -= doubleStep;
@@ -152,12 +119,6 @@ static bool sameSide(
 
     doubleValue = MIN(doubleValue,  maximumDoubleValue);
     doubleValue = MAX(minimumDoubleValue, doubleValue);
-
-    //NSLog(@"%ld %lf", integerValue, doubleValue);
-
-
-//    NSLog(@"%f %f", bottomB.y, mouse.y);
-//    NSLog(@"%d %d %d", (int32_t)one, (int32_t)two, (int32_t)three);
 }
 
 - (void) update:(const float)frameTime
@@ -171,6 +132,14 @@ static bool sameSide(
     const FVector4 lineColor = {1.0f, 1.0f, 1.0f, [ menu opacity ]};
     const FVector4 quadColor = {1.0f, 1.0f, 1.0f, [ menu opacity ] * 0.25f};
     const FVector4 textColor = {1.0f, 1.0f, 1.0f, [ menu opacity ]};
+
+    FRectangle pixelCenterGeometry = alignedGeometry;
+    // move to pixel centers in order for the line to be
+    // rasterised with 1 pixel thickness
+    pixelCenterGeometry.min.x = alignedGeometry.min.x + 0.5f;
+    pixelCenterGeometry.min.y = alignedGeometry.min.y + 0.5f;
+    pixelCenterGeometry.max.x = alignedGeometry.max.x - 0.5f;
+    pixelCenterGeometry.max.y = alignedGeometry.max.y - 0.5f;
 
     // draw line
     [ color setFValue:lineColor ];
@@ -189,6 +158,9 @@ static bool sameSide(
         glVertex2f(alignedGeometry.max.x, alignedGeometry.min.y + floorf(height / 4.0f));
         glVertex2f(alignedGeometry.min.x + floorf(width / 2.0f), alignedGeometry.min.y);
     glEnd();
+
+    [ NPIMRendering renderFRectangle:pixelCenterGeometry
+                       primitiveType:NpPrimitiveLineLoop ];
 
     NSString * renderString = [ NSString stringWithFormat:@"%ld", integerValue ];
 
