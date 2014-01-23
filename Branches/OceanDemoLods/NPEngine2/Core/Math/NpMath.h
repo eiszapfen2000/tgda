@@ -24,6 +24,7 @@
 #include "FPlane.h"
 
 #include "FRectangle.h"
+#include "FTriangle.h"
 
 #include "FTexCoord.h"
 #include "FVertex.h"
