@@ -176,8 +176,6 @@
                 break;
         }        
     }
-
-    NSLog(@"%ld %lf", integerValue, doubleValue);
 }
 
 - (void) update:(const float)frameTime
@@ -205,8 +203,6 @@
                 break;
         }        
     }
-
-    //NSLog(@"%ld %lf", integerValue, doubleValue);
 }
 
 - (void) render
