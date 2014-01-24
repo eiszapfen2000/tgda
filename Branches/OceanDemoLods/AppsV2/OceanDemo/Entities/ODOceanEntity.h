@@ -92,6 +92,11 @@
     double areaScale;
     double heightScale;
 
+    BOOL receivedHeight;
+    BOOL receivedDisplacement;
+    BOOL receivedGradient;
+    BOOL receivedDisplacementDerivatives;
+
     FVector2 heightRange;
     FVector2 gradientXRange;
     FVector2 gradientZRange;
