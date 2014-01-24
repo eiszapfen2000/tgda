@@ -237,9 +237,6 @@
         glVertex2f(alignedGeometry.min.x + floorf(width / 2.0f), alignedGeometry.min.y);
     glEnd();
 
-    [ NPIMRendering renderFRectangle:pixelCenterGeometry
-                       primitiveType:NpPrimitiveLineLoop ];
-
     NSString * renderString = [ NSString stringWithFormat:@"%ld", integerValue ];
 
     NPFont * font = [ menu fontForSize:textSize ];

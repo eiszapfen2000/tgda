@@ -279,6 +279,22 @@
             TargetProperty = "dampening";
         };
 
+        PLods =
+        {
+            Type = "ODStepItem";
+            Label = "BRAK";
+            Alignment = "TopRight";
+            Position = ("20", "525" );
+            Size = ( "20", "30" );
+            TextSize = "16";
+            Mode = "Integer";
+            MinimumValue = "1";
+            MaximumValue = "4";
+            Step = "1";
+            TargetObject = "Ocean";
+            TargetProperty = "numberOfLods";
+        };
+
         PSliderDisplacementScale =
         {
             Type = "ODSliderItem";
@@ -341,16 +357,6 @@
             HeadSize = ("3", "21");
             TargetObject = "Scene";
             TargetProperty = "jacobianEpsilon";
-        };
-
-        PLods =
-        {
-            Type = "ODStepItem";
-            Label = "BRAK";
-            Alignment = "TopRight";
-            Position = ("200", "370" );
-            Size = ( "20", "30" );
-            TextSize = "16";
         };
 
         PWaterColor =
