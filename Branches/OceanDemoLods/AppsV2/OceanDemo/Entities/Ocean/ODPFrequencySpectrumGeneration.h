@@ -26,6 +26,7 @@ void geometry_copy(const OdSpectrumGeometry * source, OdSpectrumGeometry * targe
 bool geometries_equal(const OdSpectrumGeometry * gOne, const OdSpectrumGeometry * gTwo);
 bool geometries_equal_size(const OdSpectrumGeometry * gOne, const OdSpectrumGeometry * gTwo);
 bool geometries_equal_resolution(const OdSpectrumGeometry * gOne, const OdSpectrumGeometry * gTwo);
+bool geometries_equal_lods(const OdSpectrumGeometry * gOne, const OdSpectrumGeometry * gTwo);
 
 OdSpectrumGeometry geometry_zero();
 OdSpectrumGeometry geometry_max();

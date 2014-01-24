@@ -118,6 +118,13 @@ bool geometries_equal_resolution(const OdSpectrumGeometry * gOne, const OdSpectr
     return true;
 }
 
+bool geometries_equal_lods(const OdSpectrumGeometry * gOne, const OdSpectrumGeometry * gTwo)
+{
+    assert(gOne != NULL && gTwo != NULL);
+
+    return (gOne->numberOfLods == gTwo->numberOfLods);
+}
+
 OdSpectrumGeometry geometry_zero()
 {
     OdSpectrumGeometry result;

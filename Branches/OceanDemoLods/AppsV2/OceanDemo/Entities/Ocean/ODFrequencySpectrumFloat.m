@@ -361,7 +361,8 @@ ODQuadrants;
 
     BOOL generateRandomNumbers = force;
 
-    if ( geometries_equal_resolution(&currentGeometry, &lastGeometry) == false )
+    if ( geometries_equal_resolution(&currentGeometry, &lastGeometry) == false
+         || geometries_equal_lods(&currentGeometry, &lastGeometry) == false )
     {
         IVector2 necessaryResolution;
         necessaryResolution.x = MAX(currentGeometry.geometryResolution.x, currentGeometry.gradientResolution.x);
