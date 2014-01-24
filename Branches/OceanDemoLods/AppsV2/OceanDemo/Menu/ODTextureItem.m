@@ -37,6 +37,7 @@
 
     frectangle_rssss_init_with_min_max(&pixelCenterGeometry, 0.0f, 0.0f, 0.0f, 0.0f);
     channels = (FVector4){1.0f, 1.0f, 1.0f, 1.0f};
+    visible = YES;
 
     return self;
 }
@@ -85,6 +86,30 @@
         channels.w = ([[ channelStrings objectAtIndex:3 ] boolValue ] == YES) ? 1.0f : 0.0f;
     }
 
+    NSString * visibleTargetString   = [ source objectForKey:@"VisibleTarget"   ];
+    NSString * visiblePropertyString = [ source objectForKey:@"VisibleProperty" ];
+
+    if ( visibleTargetString != nil )
+    {
+        visibleTarget.target
+            = [[[ NPEngineCore instance ]
+                     objectManager ] objectByName:visibleTargetString ];
+
+        NSAssert1(visibleTarget.target != nil, @"Object with name \"%@\" not found",
+                  visibleTargetString);
+
+        if ( visiblePropertyString != nil )
+        {
+            BOOL propertyFound
+                = ODObjCFindVariable(visibleTarget.target,
+                    [ visiblePropertyString cStringUsingEncoding:NSASCIIStringEncoding ],
+                    &visibleTarget.size, &visibleTarget.offset );
+
+            NSAssert1(propertyFound != NO, @"Property with name \"%@\" not found",
+                      visiblePropertyString);
+        }
+    }
+
     colorTechnique        = [ menu colorTechnique ];
     textureRangeTechnique = [ menu textureRangeTechnique ];
 
@@ -109,14 +134,6 @@
 
 - (void) onClick:(const FVector2)mousePosition
 {
-    /*
-    active == YES ? (active = NO) : (active = YES);
-
-    if ( target != nil )
-    {
-        ODObjCSetVariable(target, offset, size, &active);
-    }
-    */
 }
 
 - (void) update:(const float)frameTime
@@ -130,10 +147,24 @@
     pixelCenterGeometry.min.y = alignedGeometry.min.y + 0.5f;
     pixelCenterGeometry.max.x = alignedGeometry.max.x - 0.5f;
     pixelCenterGeometry.max.y = alignedGeometry.max.y - 0.5f;
+
+    // get value from target
+    if ( visibleTarget.target != nil )
+    {
+        ODObjCGetVariable(visibleTarget.target,
+            visibleTarget.offset,
+            visibleTarget.size,
+            &visible);
+    }
 }
 
 - (void) render
 {
+    if ( visible == NO )
+    {
+        return;
+    }
+
     const FVector4 lineColor = {1.0f, 1.0f, 1.0f, [ menu opacity ]};
     const FVector4 quadColor = {1.0f, 1.0f, 1.0f, [ menu opacity ] * 0.25f};
     const FVector4 textColor = {1.0f, 1.0f, 1.0f, [ menu opacity ]};

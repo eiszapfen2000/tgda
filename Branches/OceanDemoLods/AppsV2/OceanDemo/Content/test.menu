@@ -25,6 +25,8 @@
             TargetObject = "Ocean";
             TargetProperty = "heightRange";
             Channels = ("y", "n", "n", "n");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedHeight";
         };
 
         PGradientX =
@@ -39,6 +41,8 @@
             TargetObject = "Ocean";
             TargetProperty = "gradientXRange";
             Channels = ("y", "n", "n", "n");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedGradient";
         };
 
         PGradientZ =
@@ -53,6 +57,8 @@
             TargetObject = "Ocean";
             TargetProperty = "gradientZRange";
             Channels = ("n", "y", "n", "n");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedGradient";
         };
 
         PDisplacementX =
@@ -67,6 +73,8 @@
             TargetObject = "Ocean";
             TargetProperty = "displacementXRange";
             Channels = ("y", "n", "n", "n");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedDisplacement";
         };
 
         PDisplacementZ =
@@ -81,6 +89,8 @@
             TargetObject = "Ocean";
             TargetProperty = "displacementZRange";
             Channels = ("n", "y", "n", "n");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedDisplacement";
         };
 
         PDisplacementXDX =
@@ -95,6 +105,8 @@
             TargetObject = "Ocean";
             TargetProperty = "displacementXdXRange";
             Channels = ("y", "n", "n", "n");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedDisplacementDerivatives";
         };
 
         PDisplacementXDZ =
@@ -109,6 +121,8 @@
             TargetObject = "Ocean";
             TargetProperty = "displacementXdZRange";
             Channels = ("n", "y", "n", "n");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedDisplacementDerivatives";
         };
 
         PDisplacementZDX =
@@ -123,6 +137,8 @@
             TargetObject = "Ocean";
             TargetProperty = "displacementZdXRange";
             Channels = ("n", "n", "y", "n");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedDisplacementDerivatives";
         };
 
         PDisplacementZDZ =
@@ -137,6 +153,8 @@
             TargetObject = "Ocean";
             TargetProperty = "displacementZdZRange";
             Channels = ("n", "n", "n", "y");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedDisplacementDerivatives";
         };
 
         PGeometryResolution =
