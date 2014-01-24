@@ -49,9 +49,9 @@
     NSUInteger lastGradientResolutionIndex;
     NSUInteger gradientResolutionIndex;
     NSUInteger generatorGradientResolutionIndex;
-    NSUInteger lastNumberOfLods;
-    NSUInteger numberOfLods;
-    NSUInteger generatorNumberOfLods;
+    NSInteger lastNumberOfLods;
+    NSInteger numberOfLods;
+    NSInteger generatorNumberOfLods;
     NSUInteger lastSpectrumType;
     NSUInteger spectrumType;
     NSUInteger generatorSpectrumType;

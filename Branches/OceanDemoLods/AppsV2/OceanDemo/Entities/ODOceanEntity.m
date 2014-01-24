@@ -300,7 +300,7 @@ static size_t index_for_resolution(int32_t resolution)
                 //generatorSettings.options = ULONG_MAX;
                 generatorSettings.options = generatorOptions;
 
-                NSAssert(generatorNumberOfLods <= UINT32_MAX, @"Lod out of bounds");
+                NSAssert(generatorNumberOfLods > 0 &&  generatorNumberOfLods < UINT32_MAX, @"Lod out of bounds");
 
                 lodCount = (uint32_t)generatorNumberOfLods;
                 maxSize = generatorSize;
@@ -326,7 +326,7 @@ static size_t index_for_resolution(int32_t resolution)
             // in order not to compute redundant frequencies we have to
             // scale down by at least half the resolution and epsilon
             // ac < (al / (res/2))
-            for ( NSUInteger i = 1; i < generatorNumberOfLods; i++ )
+            for ( NSInteger i = 1; i < generatorNumberOfLods; i++ )
             {
                 const float x = geometry.sizes[i-1].x / halfResolution;
                 const float y = geometry.sizes[i-1].y / halfResolution;
