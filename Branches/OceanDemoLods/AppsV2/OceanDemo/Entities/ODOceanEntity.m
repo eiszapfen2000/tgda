@@ -823,6 +823,11 @@ static NSUInteger od_variance_size(const void * item)
     areaScale = defaultAreaScale;
     heightScale = defaultHeightScale;
 
+    receivedHeight = NO;
+    receivedDisplacement = NO;
+    receivedGradient = NO;
+    receivedDisplacementDerivatives = NO;
+
     heightRange    = (FVector2){.x = 0.0f, .y = 0.0f};
     gradientXRange = (FVector2){.x = 0.0f, .y = 1.0f};
     gradientZRange = (FVector2){.x = 0.0f, .y = 1.0f};
@@ -1237,6 +1242,11 @@ static NSUInteger od_variance_size(const void * item)
     // update texture and associated min max
     if ( hf != NULL && animated == YES)
     {
+        receivedHeight = NO;
+        receivedDisplacement = NO;
+        receivedGradient = NO;
+        receivedDisplacementDerivatives = NO;
+
         // geometry sizes texture buffer update
         const uint32_t lodCount = hf->geometry.numberOfLods;
         FVector2 * geometrySizes = ALLOC_ARRAY(FVector2, lodCount);
@@ -1282,19 +1292,6 @@ static NSUInteger od_variance_size(const void * item)
         displacementZdXRange = hf->ranges[DISPLACEMENT_Z_DX_RANGE];
         displacementZdZRange = hf->ranges[DISPLACEMENT_Z_DZ_RANGE];
 
-        /*
-        heightRange = hf->ranges[NUMBER_OF_RANGES + HEIGHT_RANGE];
-        gradientXRange = hf->ranges[NUMBER_OF_RANGES + GRADIENT_X_RANGE];
-        gradientZRange = hf->ranges[NUMBER_OF_RANGES + GRADIENT_Z_RANGE];
-        displacementXRange = hf->ranges[NUMBER_OF_RANGES + DISPLACEMENT_X_RANGE];
-        displacementZRange = hf->ranges[NUMBER_OF_RANGES + DISPLACEMENT_Z_RANGE];
-        displacementXdXRange = hf->ranges[NUMBER_OF_RANGES + DISPLACEMENT_X_DX_RANGE];
-        displacementXdZRange = hf->ranges[NUMBER_OF_RANGES + DISPLACEMENT_X_DZ_RANGE];
-        displacementZdXRange = hf->ranges[NUMBER_OF_RANGES + DISPLACEMENT_Z_DX_RANGE];
-        displacementZdZRange = hf->ranges[NUMBER_OF_RANGES + DISPLACEMENT_Z_DZ_RANGE];
-        */
-
-
         {
             const IVector2 geometryResolution = hf->geometry.geometryResolution;
             const IVector2 gradientResolution = hf->geometry.gradientResolution;
@@ -1310,6 +1307,7 @@ static NSUInteger od_variance_size(const void * item)
 
             if ( hf->heights32f != NULL )
             {
+                receivedHeight = YES;
 
                 NSData * heightsData
                     = [ NSData dataWithBytesNoCopyNoFree:hf->heights32f
@@ -1326,6 +1324,8 @@ static NSUInteger od_variance_size(const void * item)
 
             if ( hf->displacements32f != NULL )
             {
+                receivedDisplacement = YES;
+
                 NSData * displacementsData
                     = [ NSData dataWithBytesNoCopyNoFree:hf->displacements32f
                                                   length:numberOfGeometryBytes * 2 ];
@@ -1341,6 +1341,8 @@ static NSUInteger od_variance_size(const void * item)
 
             if ( hf->gradients32f != NULL )
             {
+                receivedGradient = YES;
+
                 NSData * gradientsData
                     = [ NSData dataWithBytesNoCopyNoFree:hf->gradients32f
                                                   length:numberOfGradientBytes * 2 ];
@@ -1356,6 +1358,8 @@ static NSUInteger od_variance_size(const void * item)
 
             if ( hf->displacementDerivatives32f != NULL )
             {
+                receivedDisplacementDerivatives = YES;
+
                 NSData * displacementDerivativesData
                     = [ NSData dataWithBytesNoCopyNoFree:hf->displacementDerivatives32f
                                                   length:numberOfGradientBytes * 4 ];
