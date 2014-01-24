@@ -62,13 +62,19 @@
 
     ASSIGNCOPY(label, l);
 
-    if ( target != nil )
+    if ( targetProperty.target != nil )
     {
-        ODObjCGetVariable(target, offset, size, &active);
+        ODObjCGetVariable(targetProperty.target,
+            targetProperty.offset,
+            targetProperty.size,
+            &active);
     }
 
-    technique = RETAIN([ menu colorTechnique ]);
-    color = RETAIN([[ menu effect ] variableWithName:@"color" ]);
+    technique = [ menu colorTechnique ];
+    color = [[ menu effect ] variableWithName:@"color" ];
+
+    ASSERT_RETAIN(technique);
+    ASSERT_RETAIN(color);
 
     return result;
 }
@@ -77,9 +83,12 @@
 {
     active == YES ? (active = NO) : (active = YES);
 
-    if ( target != nil )
+    if ( targetProperty.target != nil )
     {
-        ODObjCSetVariable(target, offset, size, &active);
+        ODObjCSetVariable(targetProperty.target,
+            targetProperty.offset,
+            targetProperty.size,
+            &active);
     }
 }
 

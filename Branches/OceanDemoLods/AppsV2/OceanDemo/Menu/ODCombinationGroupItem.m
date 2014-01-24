@@ -256,9 +256,12 @@
     }
 
     // set target property
-    if ( target != nil )
+    if ( targetProperty.target != nil )
     {
-        ODObjCSetVariable(target, offset, size, &mask);
+        ODObjCSetVariable(targetProperty.target,
+            targetProperty.offset,
+            targetProperty.size,
+            &mask);
     }
 
 }
@@ -269,10 +272,14 @@
         = [ ODMenu alignRectangle:geometry withAlignment:alignment ];
 
     // get value from target
-    if ( target != nil )
+    if ( targetProperty.target != nil )
     {
         NSUInteger mask = 0;
-        ODObjCGetVariable(target, offset, size, &mask);
+
+        ODObjCGetVariable(targetProperty.target,
+            targetProperty.offset,
+            targetProperty.size,
+            &mask);
 
         for ( int32_t i = 0; i < layout.y; i++ )
         {

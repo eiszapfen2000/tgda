@@ -121,19 +121,19 @@ void ODObjCSetVariable(id obj, const ptrdiff_t offset,
 
     if ( targetObjectString != nil )
     {
-        target
+        targetProperty.target
             = [[[ NPEngineCore instance ]
                      objectManager ] objectByName:targetObjectString ];
 
-        NSAssert1(target != nil, @"Object with name \"%@\" not found",
+        NSAssert1(targetProperty.target != nil, @"Object with name \"%@\" not found",
                   targetObjectString);
 
         if ( targetPropertyString != nil )
         {
             BOOL propertyFound
-                = ODObjCFindVariable(target,
+                = ODObjCFindVariable(targetProperty.target,
                     [ targetPropertyString cStringUsingEncoding:NSASCIIStringEncoding ],
-                    &size, &offset );
+                    &targetProperty.size, &targetProperty.offset );
 
             NSAssert1(propertyFound != NO, @"Property with name \"%@\" not found",
                       targetPropertyString);

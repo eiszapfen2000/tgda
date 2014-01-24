@@ -158,18 +158,26 @@
     doubleValue = MIN(doubleValue,  maximumDoubleValue);
     doubleValue = MAX(minimumDoubleValue, doubleValue);
 
-    if ( target != nil )
+    if ( targetProperty.target != nil )
     {
         switch ( mode )
         {
             case OdStepItemIntegerMode:
             {
-                ODObjCSetVariable(target, offset, size, &integerValue);
+                ODObjCSetVariable(targetProperty.target,
+                    targetProperty.offset,
+                    targetProperty.size,
+                    &integerValue);
+
                 break;
             }
             case OdStepItemFloatMode:
             {
-                ODObjCSetVariable(target, offset, size, &doubleValue);
+                ODObjCSetVariable(targetProperty.target,
+                    targetProperty.offset,
+                    targetProperty.size,
+                    &doubleValue);
+
                 break;
             }
             default:
@@ -184,19 +192,27 @@
         = [ ODMenu alignRectangle:geometry withAlignment:alignment ];
 
     // get value from target
-    if ( target != nil )
+    if ( targetProperty.target != nil )
     {
 
         switch ( mode )
         {
             case OdStepItemIntegerMode:
             {
-                ODObjCGetVariable(target, offset, size, &integerValue);
+                ODObjCGetVariable(targetProperty.target,
+                    targetProperty.offset,
+                    targetProperty.size,
+                    &integerValue);
+
                 break;
             }
             case OdStepItemFloatMode:
             {
-                ODObjCGetVariable(target, offset, size, &doubleValue);
+                ODObjCGetVariable(targetProperty.target,
+                    targetProperty.offset,
+                    targetProperty.size,
+                    &doubleValue);
+
                 break;
             }
             default:

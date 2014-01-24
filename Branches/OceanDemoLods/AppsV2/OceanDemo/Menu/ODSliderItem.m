@@ -164,12 +164,16 @@
 
     frectangle_rvv_init_with_min_and_size(&lineGeometry, &linePosition, &lineSize);
 
-    if ( target != nil )
+    if ( targetProperty.target != nil )
     {
         double currentValue;
         double normalisedValue;
 
-        ODObjCGetVariable(target, offset, size, &currentValue);
+        ODObjCGetVariable(targetProperty.target,
+            targetProperty.offset,
+            targetProperty.size,
+            &currentValue);
+
         normalisedValue = (currentValue - minimumValue) / (maximumValue - minimumValue);
 
         switch ( direction )
@@ -218,10 +222,14 @@
         }
     }
 
-    if ( target != nil )
+    if ( targetProperty.target != nil )
     {
         const double scaledValue = [ self scaledValue ];
-        ODObjCSetVariable(target, offset, size, &scaledValue);
+
+        ODObjCSetVariable(targetProperty.target,
+            targetProperty.offset,
+            targetProperty.size,
+            &scaledValue);
     }
 }
 

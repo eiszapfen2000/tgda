@@ -140,9 +140,12 @@
     const FRectangle texcoords = {{0.0f, 0.0f}, {1.0f, 1.0f}};
     FVector2 valueRange = {.x = 0.0f, .y = 1.0f};
 
-    if ( target != nil )
+    if ( targetProperty.target != nil )
     {
-        ODObjCGetVariable(target, offset, size, &valueRange);
+        ODObjCGetVariable(targetProperty.target,
+            targetProperty.offset,
+            targetProperty.size,
+            &valueRange);
     }
 
     //NSLog(@"%@ %f %f", label, valueRange.x, valueRange.y);
