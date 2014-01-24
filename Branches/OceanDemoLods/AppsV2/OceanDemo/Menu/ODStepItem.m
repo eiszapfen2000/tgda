@@ -97,20 +97,23 @@
         case OdStepItemIntegerMode:
         {
             minimumIntegerValue = [ minimumValueString integerValue ];
-            maximumIntegerValue = [ minimumValueString integerValue ];
-            integerStep = [ minimumValueString integerValue ];
+            maximumIntegerValue = [ maximumValueString integerValue ];
+            integerStep = [ stepString integerValue ];
             break;
         }
         case OdStepItemFloatMode:
         {
             minimumDoubleValue = [ minimumValueString doubleValue ];
-            maximumDoubleValue = [ minimumValueString doubleValue ];
-            doubleStep = [ minimumValueString doubleValue ];
+            maximumDoubleValue = [ maximumValueString doubleValue ];
+            doubleStep = [ stepString doubleValue ];
             break;
         }
         default:
             break;
     }
+
+    integerValue = minimumIntegerValue;
+    doubleValue  = minimumDoubleValue;
 
     technique = [ menu colorTechnique ];
     color = [[ menu effect ] variableWithName:@"color" ];
@@ -154,12 +157,56 @@
 
     doubleValue = MIN(doubleValue,  maximumDoubleValue);
     doubleValue = MAX(minimumDoubleValue, doubleValue);
+
+    if ( target != nil )
+    {
+        switch ( mode )
+        {
+            case OdStepItemIntegerMode:
+            {
+                ODObjCSetVariable(target, offset, size, &integerValue);
+                break;
+            }
+            case OdStepItemFloatMode:
+            {
+                ODObjCSetVariable(target, offset, size, &doubleValue);
+                break;
+            }
+            default:
+                break;
+        }        
+    }
+
+    NSLog(@"%ld %lf", integerValue, doubleValue);
 }
 
 - (void) update:(const float)frameTime
 {
     alignedGeometry
         = [ ODMenu alignRectangle:geometry withAlignment:alignment ];
+
+    // get value from target
+    if ( target != nil )
+    {
+
+        switch ( mode )
+        {
+            case OdStepItemIntegerMode:
+            {
+                ODObjCGetVariable(target, offset, size, &integerValue);
+                break;
+            }
+            case OdStepItemFloatMode:
+            {
+                ODObjCGetVariable(target, offset, size, &doubleValue);
+                break;
+            }
+            default:
+                break;
+        }        
+    }
+
+    //NSLog(@"%ld %lf", integerValue, doubleValue);
 }
 
 - (void) render

@@ -94,7 +94,7 @@ typedef struct OdSpectrumVariance
 }
 OdSpectrumVariance;
 
-static const NSUInteger defaultNumberOfLods = 1;
+static const NSUInteger defaultNumberOfLods = 2;
 static const NSUInteger defaultSpectrumType = 1;
 static const NSUInteger defaultOptions = OdGeneratorOptionsHeights | OdGeneratorOptionsGradient | OdGeneratorOptionsDisplacement;
 static const double defaultWindSpeed = 4.5;
@@ -103,8 +103,8 @@ static const double defaultSize =237.0;
 static const double defaultDampening = 0.001;
 static const double defaultSpectrumScale = PHILLIPS_CONSTANT;
 static const int32_t resolutions[6] = {8, 16, 32, 64, 128, 256};
-static const NSUInteger defaultGeometryResolutionIndex = 3;
-static const NSUInteger defaultGradientResolutionIndex = 3;
+static const NSUInteger defaultGeometryResolutionIndex = 0;
+static const NSUInteger defaultGradientResolutionIndex = 0;
 static const double OneDivSixty = 1.0 / 30.0;
 
 static const double defaultAreaScale = 1.0;
@@ -326,7 +326,7 @@ static size_t index_for_resolution(int32_t resolution)
             // in order not to compute redundant frequencies we have to
             // scale down by at least half the resolution and epsilon
             // ac < (al / (res/2))
-            for ( NSInteger i = 1; i < generatorNumberOfLods; i++ )
+            for ( NSInteger i = 1; i < lodCount; i++ )
             {
                 const float x = geometry.sizes[i-1].x / halfResolution;
                 const float y = geometry.sizes[i-1].y / halfResolution;
@@ -337,9 +337,14 @@ static size_t index_for_resolution(int32_t resolution)
                 //NSLog(@"A %f %f", x, y);
             }
 
-            //geometry.sizes[1] = (Vector2){74.0, 74.0};
-            //geometry.sizes[2] = (Vector2){21.0, 21.0};
-//            geometry.sizes[3] = (Vector2){11.0, 11.0};
+            if ( lodCount > 1 )
+                geometry.sizes[1] = (Vector2){74.0, 74.0};
+
+            if ( lodCount > 2 )
+                geometry.sizes[2] = (Vector2){21.0, 21.0};
+
+            if ( lodCount > 3 )
+                geometry.sizes[3] = (Vector2){11.0, 11.0};
 
             [ timer update ];
 
