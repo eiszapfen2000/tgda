@@ -31,6 +31,8 @@
 {
     self = [ super initWithName:newName menu:newMenu ];
 
+    mode = OdStepItemUnknownMode;
+
     minimumIntegerValue = NSIntegerMin;
     maximumIntegerValue = NSIntegerMax;
     integerStep = 1;
@@ -69,6 +71,47 @@
 
     ASSIGNCOPY(label, l);
 
+    NSString * modeString = [ source objectForKey:@"Mode" ];
+    NSString * minimumValueString = [ source objectForKey:@"MinimumValue" ];
+    NSString * maximumValueString = [ source objectForKey:@"MaximumValue" ];
+    NSString * stepString = [ source objectForKey:@"Step" ];
+
+    NSAssert1(modeString != nil && minimumValueString != nil
+              && maximumValueString != nil && stepString != nil,
+              @"Item \"%@\" does not contain all necessary elements", name);
+
+    if ( [[ modeString lowercaseString ] isEqual:@"integer" ])
+    {
+        mode = OdStepItemIntegerMode;
+    }
+
+    if ( [[ modeString lowercaseString ] isEqual:@"float" ])
+    {
+        mode = OdStepItemFloatMode;
+    }
+
+    NSAssert2(mode != OdStepItemUnknownMode, @"Item \"%@\": Unrecognized mode \"%@\"", name, modeString);
+
+    switch ( mode )
+    {
+        case OdStepItemIntegerMode:
+        {
+            minimumIntegerValue = [ minimumValueString integerValue ];
+            maximumIntegerValue = [ minimumValueString integerValue ];
+            integerStep = [ minimumValueString integerValue ];
+            break;
+        }
+        case OdStepItemFloatMode:
+        {
+            minimumDoubleValue = [ minimumValueString doubleValue ];
+            maximumDoubleValue = [ minimumValueString doubleValue ];
+            doubleStep = [ minimumValueString doubleValue ];
+            break;
+        }
+        default:
+            break;
+    }
+
     technique = [ menu colorTechnique ];
     color = [[ menu effect ] variableWithName:@"color" ];
 
@@ -80,8 +123,6 @@
 
 - (void) onClick:(const FVector2)mousePosition
 {
-    //NSLog(@"Click");
-
     const float geometryWidth  = frectangle_r_calculate_width(&alignedGeometry);
     const float geometryHeight = frectangle_r_calculate_height(&alignedGeometry);
 
@@ -100,19 +141,13 @@
     {
         integerValue += integerStep;
         doubleValue += doubleStep;
-
-        //NSLog(@"ADD %ld %lf", integerValue, doubleValue);
     }
 
     if ( insideBottom)
     {
         integerValue -= integerStep;
         doubleValue -= doubleStep;
-
-        //NSLog(@"%ld %lf", integerValue, doubleValue);
     }
-
-    //NSLog(@"%ld", NSIntegerMin);
 
     integerValue = MIN(integerValue, maximumIntegerValue);
     integerValue = MAX(minimumIntegerValue, integerValue);
