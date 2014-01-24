@@ -109,9 +109,12 @@
     coordinate.y
         = (mousePosition.y - alignedGeometry.min.y) / (alignedGeometry.max.y - alignedGeometry.min.y);
 
-    if ( target != nil )
+    if ( targetProperty.target != nil )
     {
-        ODObjCSetVariable(target, offset, size, &coordinate);
+        ODObjCSetVariable(targetProperty.target,
+            targetProperty.offset,
+            targetProperty.size,
+            &coordinate);
     }
 }
 
@@ -128,9 +131,12 @@
     pixelCenterGeometry.max.y = alignedGeometry.max.y - 0.5f;
 
     // get value from target
-    if ( target != nil )
+    if ( targetProperty.target != nil )
     {
-        ODObjCGetVariable(target, offset, size, &coordinate);
+        ODObjCGetVariable(targetProperty.target,
+            targetProperty.offset,
+            targetProperty.size,
+            &coordinate);
     }
 }
 

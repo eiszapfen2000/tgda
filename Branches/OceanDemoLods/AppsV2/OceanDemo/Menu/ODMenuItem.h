@@ -15,6 +15,14 @@ void ODObjCSetVariable(id obj, const ptrdiff_t offset,
 @class NSError;
 @class ODMenu;
 
+typedef struct OdTargetProperty
+{
+    id target;
+    NSUInteger size;
+    ptrdiff_t offset;
+}
+OdTargetProperty;
+
 @interface ODMenuItem : NPObject
 {
     ODMenu * menu;
@@ -24,9 +32,7 @@ void ODObjCSetVariable(id obj, const ptrdiff_t offset,
     uint32_t textSize;
 
     // reflection stuff
-    id target;
-    NSUInteger size;
-    ptrdiff_t offset;
+    OdTargetProperty targetProperty;
 }
 
 - (id) init;

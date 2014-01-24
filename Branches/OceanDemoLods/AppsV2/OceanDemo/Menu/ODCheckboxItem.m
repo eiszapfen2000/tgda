@@ -45,9 +45,12 @@
         return NO;
     }
 
-    if ( target != nil )
+    if ( targetProperty.target != nil )
     {
-        ODObjCSetVariable(target, offset, size, &checked);
+        ODObjCSetVariable(targetProperty.target,
+            targetProperty.offset,
+            targetProperty.size,
+            &checked);
     }
 
     return result;
@@ -56,15 +59,6 @@
 - (void) onClick:(const FVector2)mousePosition
 {
     checked == YES ? (checked = NO) : (checked = YES);
-
-    /*
-    if ( target != nil )
-    {
-        GSObjCSetVariable(target, offset, size, &checked);
-    }
-    */
-
-    NSLog(@"%d", (int32_t)checked);
 }
 
 - (void) update:(const float)frameTime

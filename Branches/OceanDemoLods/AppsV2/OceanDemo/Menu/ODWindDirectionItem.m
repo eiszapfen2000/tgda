@@ -134,9 +134,12 @@
     v2_v_normalise(&windDirection);
 
     // set target property
-    if ( target != nil )
+    if ( targetProperty.target != nil )
     {
-        ODObjCSetVariable(target, offset, size, &windDirection);
+        ODObjCSetVariable(targetProperty.target,
+            targetProperty.offset,
+            targetProperty.size,
+            &windDirection);
     }
 }
 
@@ -161,9 +164,13 @@
     fm4_mv_translation_matrix(&translation, &center3D);
 
     // get value from target
-    if ( target != nil )
+    if ( targetProperty.target != nil )
     {
-        ODObjCGetVariable(target, offset, size, &windDirection);
+        ODObjCGetVariable(targetProperty.target,
+            targetProperty.offset,
+            targetProperty.size,
+            &windDirection);
+
         v2_v_normalise(&windDirection);
     }
 }
