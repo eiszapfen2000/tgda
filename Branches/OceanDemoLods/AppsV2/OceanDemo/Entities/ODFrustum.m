@@ -248,28 +248,6 @@ static int compare_floats (const void * a, const void * b)
 
 - (void) render
 {
-    /*
-    [[[ NPEngineCore instance ] transformationState ] resetModelMatrix ];
-
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ] setEnabled:YES ];
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ] setBlendingMode:NpBlendingAverage ];
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ] activate ];
-
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] cullingState ] setEnabled:NO ];
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] cullingState ] activate ];
-
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] setWriteEnabled:NO ];
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] activate ];
-
-    [ color setFValue:faceColor ];
-    [[ effect techniqueWithName:@"color" ] activate ];
-
-    glLineWidth(5.0f);
-    [ color setFValue:lineColor ];
-    [[ effect techniqueWithName:@"color" ] activate ];
-    glLineWidth(1.0f);
-    */
-
     [ facesVertexArray renderWithPrimitiveType:NpPrimitiveQuads ];
     [ linesVertexArray renderWithPrimitiveType:NpPrimitiveLines ];
 }
