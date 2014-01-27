@@ -106,6 +106,8 @@ float fv3_vv_distance(const FVector3 * const v, const FVector3 * const w);
 FVector3 fv3_zero(void);
 FVector3 fv3_min(void);
 FVector3 fv3_max(void);
+FVector3 fv3_v_from_v3(const struct Vector3 * const d);
+FVector3 fv3_v_from_iv3(const struct IVector3 * const i);
 FVector3 fv3_v_inverted(const FVector3 * const v);
 FVector3 fv3_v_normalised(const FVector3 * const v);
 FVector3 fv3_vv_add(const FVector3 * const v, const FVector3 * const w);

@@ -425,6 +425,16 @@ FVector3 fv3_max(void)
     return (FVector3){FLT_MAX, FLT_MAX, FLT_MAX};
 }
 
+FVector3 fv3_v_from_v3(const struct Vector3 * const d)
+{
+    return (FVector3){(float)d->x, (float)d->y, (float)d->z};
+}
+
+FVector3 fv3_v_from_iv3(const struct IVector3 * const i)
+{
+    return (FVector3){(float)i->x, (float)i->y, (float)i->z};
+}
+
 FVector3 fv3_v_inverted(const FVector3 * const v)
 {
     return (FVector3){ -V_X(*v), -V_Y(*v), -V_Z(*v) };
