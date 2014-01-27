@@ -58,7 +58,7 @@ technique "proj_grid_tf_transform"
 technique "proj_grid_tf_feedback"
 {
     # effect variables
-    uniform mat4 np_modelviewprojectionmatrix;
+    uniform mat4 np_viewprojectionmatrix;
     uniform float areaScale;
     uniform float heightScale;
     uniform float jacobianEpsilon;
