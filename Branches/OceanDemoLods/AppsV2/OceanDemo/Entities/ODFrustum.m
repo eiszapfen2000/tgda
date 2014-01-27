@@ -28,6 +28,8 @@
 {
     self =  [ super initWithName:newName ];
 
+    memset(frustumCornerPositions,   0, sizeof(frustumCornerPositions));
+
     frustumLineIndices[0]  = frustumLineIndices[7]  = frustumLineIndices[16] = 0;
     frustumLineIndices[1]  = frustumLineIndices[2]  = frustumLineIndices[18] = 1;
     frustumLineIndices[3]  = frustumLineIndices[4]  = frustumLineIndices[20] = 2;
@@ -139,6 +141,11 @@
     [ super dealloc ];
 }
 
+- (const FVector3 * const) frustumCornerPositions
+{
+    return frustumCornerPositions;
+}
+
 - (void) updateWithPosition:(const Vector3)position
                 orientation:(const Quaternion)orientation
                         fov:(const double)fov
@@ -203,27 +210,19 @@
 
     for ( int32_t i = 0; i < 8; i++ )
     {
-        frustumCornerPositions[i]
-            = (FVector3){ cornerPositions[i].x, cornerPositions[i].y, cornerPositions[i].z };
-    }
-
-    // scale frustum geometry
-    const FMatrix3 scale = fm3_s_scale(1.0f);
-
-    for ( int32_t i = 0; i < 8; i++ )
-    {
-        frustumCornerPositions[i] = fm3_mv_multiply(&scale, &(frustumCornerPositions[i]));
+        frustumCornerPositions[i] = fv3_v_from_v3(&cornerPositions[i]);
     }
 
     // translate frustum to world space
     const Vector3 fromPositionToNearPlane = v3_sv_scaled(nearPlane, &forward);
-    const Vector3 nearPlaneWorldSpacePosition  = v3_vv_add(&position, &fromPositionToNearPlane);
-    const FVector3 nearPlaneWorldSpacePositionF
-        = (FVector3){ nearPlaneWorldSpacePosition.x, nearPlaneWorldSpacePosition.y, nearPlaneWorldSpacePosition.z };
+    const Vector3 nearPlaneWorldSpacePosition = v3_vv_add(&position, &fromPositionToNearPlane);
+
+    const FVector3 fromPositionToNearPlaneF = fv3_v_from_v3(&fromPositionToNearPlane);
+    const FVector3 nearPlaneWorldSpacePositionF = fv3_v_from_v3(&nearPlaneWorldSpacePosition);
 
     for ( int32_t i = 0; i < 8; i++ )
     {
-        frustumCornerPositions[i] = fv3_vv_add(&(frustumCornerPositions[i]), &nearPlaneWorldSpacePositionF);
+        frustumCornerPositions[i]   = fv3_vv_add(&(frustumCornerPositions[i]),   &nearPlaneWorldSpacePositionF);
     }
 }
 
