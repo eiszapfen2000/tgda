@@ -772,15 +772,24 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ projectedGrid renderTFFeedback  ];
 
     [[[ NPEngineCore instance ] transformationState ] resetModelMatrix ];
-    [ blendingState setEnabled:YES ];
-    [ blendingState setBlendingMode:NpBlendingAverage ];
-    [ blendingState activate ];
 
     [ cullingState setEnabled:NO ];
-    [ cullingState activate ];
-
     [ depthTestState setWriteEnabled:NO ];
-    [ depthTestState activate ];
+    [ depthTestState setEnabled:NO ];
+    [ stateConfiguration activate ];
+
+    const Vector3 directionToSun = [ skylight directionToSun ];
+    const float length = [ axes axisLength ];
+
+    glLineWidth(4.0);
+    [[ deferredEffect techniqueWithName:@"v3c3" ] activate ];
+    [ axes render ];
+    glBegin(GL_LINES);
+        glVertexAttrib3f(NpVertexStreamColors, 1.0f, 1.0f, 0.0f);
+        glVertexAttrib3f(NpVertexStreamPositions, 0.0f, 0.0f, 0.0f);
+        glVertexAttrib3f(NpVertexStreamPositions, directionToSun.x * length, directionToSun.y * length, directionToSun.z * length);
+    glEnd();
+    glLineWidth(1.0);
 
     /*
     [ fillState setFrontFaceFill:NpPolygonFillFace ];
@@ -794,6 +803,10 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     NPEffectVariableFloat4 * c = [ deferredEffect variableWithName:@"color" ];
     NSAssert(c != nil, @"");
+
+    [ blendingState setEnabled:YES ];
+    [ blendingState setBlendingMode:NpBlendingAverage ];
+    [ blendingState activate ];
 
     [ c setFValue:fc ];
     [[ deferredEffect techniqueWithName:@"color" ] activate ];
