@@ -30,6 +30,7 @@
 
     // enitities
     ODCamera * camera;
+    ODFrustum * cameraFrustum;
     ODIWave * iwave;
     ODOceanEntity * ocean;
     ODProjectedGrid * projectedGrid;
