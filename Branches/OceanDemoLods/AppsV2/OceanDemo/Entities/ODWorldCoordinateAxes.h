@@ -3,11 +3,15 @@
 
 @interface ODWorldCoordinateAxes : NPObject
 {
+    float axisLength;
 }
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
+
+- (float) axisLength;
+- (void) setAxisLength:(float)newAxisLength;
 
 - (void) update:(double)frameTime;
 - (void) render;
