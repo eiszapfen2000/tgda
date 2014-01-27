@@ -17,25 +17,6 @@
 #import "Graphics/NPEngineGraphics.h"
 #import "ODFrustum.h"
 
-static int compare_floats (const void * a, const void * b)
-{
-    float temp = *((float *)a) - *((float *)b);
-
-    if (temp > 0.0f)
-    {
-        return -1;
-    }
-    else if (temp < 0.0f)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-
 @implementation ODFrustum
 
 - (id) init
@@ -47,12 +28,12 @@ static int compare_floats (const void * a, const void * b)
 {
     self =  [ super initWithName:newName ];
 
-    frustumLineIndices[0] = frustumLineIndices[7] = frustumLineIndices[16] = 0;
-    frustumLineIndices[1] = frustumLineIndices[2] = frustumLineIndices[18] = 1;
-    frustumLineIndices[3] = frustumLineIndices[4] = frustumLineIndices[20] = 2;
-    frustumLineIndices[5] = frustumLineIndices[6] = frustumLineIndices[22] = 3;
-    frustumLineIndices[8] = frustumLineIndices[15] = frustumLineIndices[17] = 4;
-    frustumLineIndices[9] = frustumLineIndices[10] = frustumLineIndices[19] = 5;
+    frustumLineIndices[0]  = frustumLineIndices[7]  = frustumLineIndices[16] = 0;
+    frustumLineIndices[1]  = frustumLineIndices[2]  = frustumLineIndices[18] = 1;
+    frustumLineIndices[3]  = frustumLineIndices[4]  = frustumLineIndices[20] = 2;
+    frustumLineIndices[5]  = frustumLineIndices[6]  = frustumLineIndices[22] = 3;
+    frustumLineIndices[8]  = frustumLineIndices[15] = frustumLineIndices[17] = 4;
+    frustumLineIndices[9]  = frustumLineIndices[10] = frustumLineIndices[19] = 5;
     frustumLineIndices[11] = frustumLineIndices[12] = frustumLineIndices[21] = 6;
     frustumLineIndices[13] = frustumLineIndices[14] = frustumLineIndices[23] = 7;
 
@@ -63,14 +44,14 @@ static int compare_floats (const void * a, const void * b)
     frustumFaceIndices[3] = 3;      frustumFaceIndices[7] = 7;
 
     //Top Quad                      //Bottom Quad
-    frustumFaceIndices[8] = 3;      frustumFaceIndices[12] = 0;
-    frustumFaceIndices[9] = 2;      frustumFaceIndices[13] = 1;
+    frustumFaceIndices[8]  = 3;     frustumFaceIndices[12] = 0;
+    frustumFaceIndices[9]  = 2;     frustumFaceIndices[13] = 1;
     frustumFaceIndices[10] = 6;     frustumFaceIndices[14] = 5;
     frustumFaceIndices[11] = 7;     frustumFaceIndices[15] = 4;
 
     // Left quad                    //Right Quad
-    frustumFaceIndices[16]  = 3;    frustumFaceIndices[20] = 1;
-    frustumFaceIndices[17]  = 0;    frustumFaceIndices[21] = 2;
+    frustumFaceIndices[16] = 3;     frustumFaceIndices[20] = 1;
+    frustumFaceIndices[17] = 0;     frustumFaceIndices[21] = 2;
     frustumFaceIndices[18] = 4;     frustumFaceIndices[22] = 6;
     frustumFaceIndices[19] = 7;     frustumFaceIndices[23] = 5;
 
