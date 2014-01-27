@@ -554,6 +554,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
                               farPlane:[camera farPlane]
                            aspectRatio:[camera aspectRatio]];
 
+    /*
     [ testCameraFrustum updateWithPosition:[testCamera position]
                                orientation:[testCamera orientation]
                                        fov:[testCamera fov]
@@ -567,6 +568,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
                                     nearPlane:[testProjector nearPlane]
                                      farPlane:[testProjector farPlane]
                                   aspectRatio:[testProjector aspectRatio]];
+    */
 
     [ skylight      update:frameTime ];
     [ ocean         update:frameTime ];
@@ -712,21 +714,40 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ rtc activateDrawBuffers ];
     [ rtc activateViewport ];
 
+    [ depthTestState setWriteEnabled:YES ];
+    [ stateConfiguration activate ];
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
+
+    [ camera render ];
+
+    [[[ NP Core ] transformationState ] resetModelMatrix ];
+
+    [ depthTestState setWriteEnabled:NO ];
+    [ depthTestState setEnabled:NO ];
+    [ stateConfiguration activate ];
+
+    [[[ NP Graphics ] textureBindingState ] clear ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ skylight skylightTexture ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] activate ];
+
+    NPEffectVariableFloat3 * dcp = [ deferredEffect variableWithName:@"cameraPosition"];
+    [ dcp setValue:[camera position ]];
+    [[ deferredEffect techniqueWithName:@"skylight"] activate ];
+    const FVector3 * const frustumP = [ cameraFrustum frustumCornerPositions ];
+    glBegin(GL_QUADS);
+        glVertexAttrib3f(NpVertexStreamPositions, frustumP[4].x, frustumP[4].y, frustumP[4].z);
+        glVertexAttrib3f(NpVertexStreamPositions, frustumP[5].x, frustumP[5].y, frustumP[5].z);
+        glVertexAttrib3f(NpVertexStreamPositions, frustumP[6].x, frustumP[6].y, frustumP[6].z);
+        glVertexAttrib3f(NpVertexStreamPositions, frustumP[7].x, frustumP[7].y, frustumP[7].z);
+    glEnd();
+
     // activate culling, depth write and depth test
     [ blendingState  setEnabled:NO ];
     [ cullingState   setCullFace:NpCullfaceBack ];
     [ cullingState   setEnabled:YES ];
     [ depthTestState setWriteEnabled:YES ];
     [ depthTestState setEnabled:YES ];
-    //[ fillState      setFrontFaceFill:NpPolygonFillLine ];
-    //[ fillState      setBackFaceFill:NpPolygonFillLine ];
     [ stateConfiguration activate ];
-
-    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
-
-    [ camera render ];
-
-    [[[ NP Core ] transformationState ] resetModelMatrix ];
     
     [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean heightfield  ] texelUnit:0 ];
