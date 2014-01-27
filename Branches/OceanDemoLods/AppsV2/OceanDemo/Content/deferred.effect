@@ -159,7 +159,6 @@ technique "directional_light"
 technique "variance"
 {
     # effect variables
-    # .x = layer .y = resolution .z = size .w = deltaVariance
     uniform float layer;
     uniform float varianceTextureResolution;
     uniform float deltaVariance;
@@ -173,5 +172,19 @@ technique "variance"
     # shaders
     set vertex shader "variance.vertex"
     set fragment shader "variance.fragment"
+}
+
+technique "v3c3"
+{
+    # effect variables
+    uniform mat4 np_viewprojectionmatrix;
+    # vertex streams
+    in vec3 in_position : 0;
+    in vec3 in_color : 2;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "v3c3.vertex"
+    set fragment shader "v3c3.fragment"
 }
 
