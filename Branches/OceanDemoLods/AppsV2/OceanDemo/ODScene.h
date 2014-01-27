@@ -21,6 +21,7 @@
 @class NPFullscreenQuad;
 @class ODBasePlane;
 @class ODIWave;
+@class ODWorldCoordinateAxes;
 
 @interface ODScene : NPObject < NPPPersistentObject >
 {
@@ -33,6 +34,7 @@
     ODOceanEntity * ocean;
     ODProjectedGrid * projectedGrid;
     ODPreethamSkylight * skylight;
+    ODWorldCoordinateAxes * axes;
     NSMutableArray * entities;
 
     ODCamera * testCamera;

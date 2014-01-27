@@ -32,6 +32,7 @@
 #import "Entities/ODPreethamSkylight.h"
 #import "Entities/ODOceanEntity.h"
 #import "Entities/ODEntity.h"
+#import "Entities/ODWorldCoordinateAxes.h"
 #import "ODScene.h"
 
 @interface ODScene (Private)
@@ -244,6 +245,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     ocean = [[ ODOceanEntity alloc ] initWithName:@"Ocean" ];
     skylight = [[ ODPreethamSkylight alloc ] init ];
     projectedGrid = [[ ODProjectedGrid alloc ] initWithName:@"ProjGrid" ];
+    axes = [[ ODWorldCoordinateAxes alloc ] init ];
 
     // camera animation
     fquat_set_identity(&startOrientation);
@@ -355,6 +357,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ entities removeAllObjects ];
     DESTROY(entities);
     DESTROY(camera);
+    DESTROY(axes);
 
     DESTROY(testCamera);
     DESTROY(testProjector);
