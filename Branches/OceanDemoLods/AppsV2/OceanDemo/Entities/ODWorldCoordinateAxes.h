@@ -4,6 +4,7 @@
 @interface ODWorldCoordinateAxes : NPObject
 {
     float axisLength;
+    float colorMultiplier;
 }
 
 - (id) init;

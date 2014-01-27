@@ -12,7 +12,8 @@
 {
     self = [ super initWithName:newName ];
 
-    axisLength = 10.0f;
+    axisLength = 100.0f;
+    colorMultiplier = 10000.0f;
 
     return self;
 }
@@ -42,9 +43,9 @@
     FVector3 yAxis = fv3_sv_scaled(axisLength, NP_WORLDF_Y_AXIS);
     FVector3 zAxis = fv3_sv_scaled(axisLength, NP_WORLDF_Z_AXIS);
 
-    const FVector3 red   = (FVector3){1.0, 0.0, 0.0};
-    const FVector3 green = (FVector3){0.0, 1.0, 0.0};
-    const FVector3 blue  = (FVector3){0.0, 0.0, 1.0};
+    const FVector3 red   = (FVector3){colorMultiplier, 0.0, 0.0};
+    const FVector3 green = (FVector3){0.0, colorMultiplier, 0.0};
+    const FVector3 blue  = (FVector3){0.0, 0.0, colorMultiplier};
 
     glBegin(GL_LINES);
         glVertexAttrib3f(NpVertexStreamColors, red.x, red.y, red.z);
