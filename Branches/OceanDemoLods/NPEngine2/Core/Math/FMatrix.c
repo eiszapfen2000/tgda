@@ -914,7 +914,6 @@ void fm4_m_inverse_m(const FMatrix4 * const m, FMatrix4 * result)
     }
 
     float scalar = 1.0f/determinant;
-    //FMatrix3 * subMatrix = fm3_alloc_init();
     FMatrix3 subMatrix;
     int sign;
 
