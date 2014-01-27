@@ -238,8 +238,9 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ testCamera setFarPlane:50.0 ];
     [ testProjector setCamera:testCamera ];
 
-    testCameraFrustum = [[ ODFrustum alloc ] initWithName:@"CFrustum" ];
-    testProjectorFrustum = [[ ODFrustum alloc ] initWithName:@"PFrustum" ];
+    cameraFrustum = [[ ODFrustum alloc ] initWithName:@"CFrustum" ];
+    testCameraFrustum = [[ ODFrustum alloc ] initWithName:@"TCFrustum" ];
+    testProjectorFrustum = [[ ODFrustum alloc ] initWithName:@"TPFrustum" ];
 
     iwave = [[ ODIWave alloc ] init ];
     ocean = [[ ODOceanEntity alloc ] initWithName:@"Ocean" ];
@@ -363,6 +364,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     DESTROY(testProjector);
     DESTROY(testCameraFrustum);
     DESTROY(testProjectorFrustum);
+    DESTROY(cameraFrustum);
 
     [ iwave stop ];
     [ ocean stop ];
@@ -544,6 +546,13 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ camera        update:frameTime ];
     [ testCamera    update:frameTime ];
     [ testProjector update:frameTime ];
+
+    [ cameraFrustum updateWithPosition:[camera position]
+                           orientation:[camera orientation]
+                                   fov:[camera fov]
+                             nearPlane:[camera nearPlane]
+                              farPlane:[camera farPlane]
+                           aspectRatio:[camera aspectRatio]];
 
     [ testCameraFrustum updateWithPosition:[testCamera position]
                                orientation:[testCamera orientation]
