@@ -1,0 +1,19 @@
+#version 150
+
+in vec3 ws_position;
+
+void main()
+{
+    if ( ws_position.y < 0.0 )
+        discard;
+
+    vec3 pos = ws_position - vec3(cameraPosition.x, 0.0, cameraPosition.z);
+    vec3 r = normalize(pos);
+    vec2 r_p = vec2(r.x, -r.z) / clamp(1.0 + r.y, 1.0, 2.0);
+    vec2 r_p_o = r_p * 0.5 + 0.5;
+
+    vec3 color = texture(skylightTexture, r_p_o).rgb;
+
+    target = vec4(color, 1.0);
+}
+
