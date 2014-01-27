@@ -188,3 +188,24 @@ technique "v3c3"
     set fragment shader "v3c3.fragment"
 }
 
+technique "skylight"
+{
+    # effect variables
+    uniform mat4 np_viewprojectionmatrix;
+    uniform sampler2D skylightTexture
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform vec3 cameraPosition;
+    # vertex streams
+    in vec3 in_position : 0;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "skylight.vertex"
+    set fragment shader "skylight.fragment"
+}
+
