@@ -191,17 +191,17 @@ technique "v3c3"
 technique "skylight"
 {
     # effect variables
-    uniform mat4 np_viewprojectionmatrix;
     uniform sampler2D skylightTexture
     {
-        WrapS = ClampToBorder;
-        WrapT = ClampToBorder;
-        MinFilter = Nearest;
-        MagFilter = Nearest;
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Linear;
+        MagFilter = Linear;
     };
     uniform vec3 cameraPosition;
     # vertex streams
-    in vec3 in_position : 0;
+    in vec2 in_position : 0;
+    in vec3 in_texcoords : 3;
     # fragment streams
     out vec4 target : 0;
     # shaders

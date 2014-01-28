@@ -4,9 +4,6 @@ out vec3 ws_position;
 
 void main()
 {
-    ws_position = in_position;
-
-	vec4 position = np_viewprojectionmatrix * vec4(in_position.xyz, 1.0f);
-    vec3 pp = position.xyz / position.w;
-    gl_Position = vec4(pp.xy, 1.0, 1.0);
+    ws_position = in_texcoords;
+    gl_Position = vec4(in_position, 1.0, 1.0);
 }
