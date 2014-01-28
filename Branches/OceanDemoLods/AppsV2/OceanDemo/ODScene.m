@@ -718,10 +718,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ stateConfiguration activate ];
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
-    [ camera render ];
-
-    [[[ NP Core ] transformationState ] resetModelMatrix ];
-
     [ depthTestState setWriteEnabled:NO ];
     [ depthTestState setEnabled:NO ];
     [ stateConfiguration activate ];
@@ -735,11 +731,17 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[ deferredEffect techniqueWithName:@"skylight"] activate ];
     const FVector3 * const frustumP = [ cameraFrustum frustumCornerPositions ];
     glBegin(GL_QUADS);
-        glVertexAttrib3f(NpVertexStreamPositions, frustumP[4].x, frustumP[4].y, frustumP[4].z);
-        glVertexAttrib3f(NpVertexStreamPositions, frustumP[5].x, frustumP[5].y, frustumP[5].z);
-        glVertexAttrib3f(NpVertexStreamPositions, frustumP[6].x, frustumP[6].y, frustumP[6].z);
-        glVertexAttrib3f(NpVertexStreamPositions, frustumP[7].x, frustumP[7].y, frustumP[7].z);
+        glVertexAttrib3f(NpVertexStreamTexCoords, frustumP[4].x, frustumP[4].y, frustumP[4].z);
+        glVertexAttrib2f(NpVertexStreamPositions, -1.0f, -1.0f);
+        glVertexAttrib3f(NpVertexStreamTexCoords, frustumP[5].x, frustumP[5].y, frustumP[5].z);
+        glVertexAttrib2f(NpVertexStreamPositions,  1.0f, -1.0f);
+        glVertexAttrib3f(NpVertexStreamTexCoords, frustumP[6].x, frustumP[6].y, frustumP[6].z);
+        glVertexAttrib2f(NpVertexStreamPositions,  1.0f,  1.0f);
+        glVertexAttrib3f(NpVertexStreamTexCoords, frustumP[7].x, frustumP[7].y, frustumP[7].z);
+        glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
     glEnd();
+
+    [ camera render ];
 
     // activate culling, depth write and depth test
     [ blendingState  setEnabled:NO ];
