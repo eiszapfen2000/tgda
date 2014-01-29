@@ -400,6 +400,18 @@ static Vector3 sun_color(double turbidity, double thetaSun)
         denominator.y = digamma(0.0, thetaSun, ABCDE_y);
         denominator.z = digamma(0.0, thetaSun, ABCDE_Y);
 
+        Matrix3 lsRGB;
+        M_EL(lsRGB, 0, 0) =  3.1338561;
+        M_EL(lsRGB, 0, 1) = -0.9787684;
+        M_EL(lsRGB, 0, 2) =  0.0719453;
+        M_EL(lsRGB, 1, 0) = -1.6168667;
+        M_EL(lsRGB, 1, 1) =  1.9161415;
+        M_EL(lsRGB, 1, 2) = -0.2289914;
+        M_EL(lsRGB, 2, 0) = -0.4906146;
+        M_EL(lsRGB, 2, 1) =  0.0334540;
+        M_EL(lsRGB, 2, 2) =  1.4052427;
+
+        /*
         Vector3 nominatorSun;
         nominatorSun.x = digamma(thetaSun, 0.0, ABCDE_x);
         nominatorSun.y = digamma(thetaSun, 0.0, ABCDE_y);
@@ -415,18 +427,11 @@ static Vector3 sun_color(double turbidity, double thetaSun)
         XYZ.y = xyY.z;
         XYZ.z = ((1.0 - xyY.x - xyY.y) / xyY.y) * xyY.z;
 
-        Matrix3 lsRGB;
-        M_EL(lsRGB, 0, 0) =  3.1338561;
-        M_EL(lsRGB, 0, 1) = -0.9787684;
-        M_EL(lsRGB, 0, 2) =  0.0719453;
-        M_EL(lsRGB, 1, 0) = -1.6168667;
-        M_EL(lsRGB, 1, 1) =  1.9161415;
-        M_EL(lsRGB, 1, 2) = -0.2289914;
-        M_EL(lsRGB, 2, 0) = -0.4906146;
-        M_EL(lsRGB, 2, 1) =  0.0334540;
-        M_EL(lsRGB, 2, 2) =  1.4052427;
+        Vector3 sColor = m3_mv_multiply(&lsRGB, &XYZ);
+        */
 
-        sunColor = m3_mv_multiply(&lsRGB, &XYZ);
+        Vector3 sunXYZ = sun_color(turbidity, thetaSun);
+        sunColor = m3_mv_multiply(&lsRGB, &sunXYZ);
 
         const double sinThetaSun = sin(thetaSun);
         const double cosThetaSun = cos(thetaSun);
