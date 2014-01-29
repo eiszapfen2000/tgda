@@ -28,6 +28,7 @@
 
     NPRenderTargetConfiguration * rtc;
     NPRenderTexture * skylightTarget;
+    NPRenderTexture * sunlightTarget;
 
     int32_t lastSkylightResolution;
     int32_t skylightResolution;
