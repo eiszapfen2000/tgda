@@ -40,10 +40,19 @@
 #import "GL/glew.h"
 #import "GL/glfw.h"
 
+/*
+sun disc implementation from
+
+http://svn.gna.org/svn/pflex-framework/trunk/examples/flexray/lights/distant/preetham/preetham.cpp
+
+*/
+
 #define NUMBER_OF_SPECTRAL_COMPONENTS   41
 
 static const double sun_spectral_radiance[NUMBER_OF_SPECTRAL_COMPONENTS] =
 {
+//in W.cm^{-2}.um^{-1}.sr^{-1}
+
 1655.9,  1623.37, 2112.75, 2588.82, 2582.91, 2423.23, 2676.05, 2965.83, 3054.54, 3005.75,
 3066.37, 2883.04, 2871.21, 2782.5,  2710.06, 2723.36, 2636.13, 2550.38, 2506.02, 2531.16,
 2535.59, 2513.42, 2463.15, 2417.32, 2368.53, 2321.21, 2282.77, 2233.98, 2197.02, 2152.67,
@@ -174,6 +183,72 @@ static double digamma(double theta, double gamma, double ABCDE[5])
     const double term_two = 1.0 + ABCDE[2] * exp(ABCDE[3] * gamma) + (ABCDE[4] * cosGamma * cosGamma);
 
     return term_one * term_two;
+}
+
+static Vector3 compute_sun_color(double turbidity, double thetaSun)
+{
+    // transmittance computation
+    // A Practical Analytic Model for Daylight                              
+    // page 21 
+
+    const double thetaSunDegrees = MATH_RAD_TO_DEG * thetaSun;
+    const double m = 1.0 / (thetaSunDegrees + 0.15 * pow(93.885 - thetaSunDegrees, -1.253));
+
+    const double beta = 0.04608 * turbidity - 0.04586;
+    const double l = 0.35;
+    const double alpha = 1.3;
+    const double w = 2.0;
+
+    double spectralRadiance[NUMBER_OF_SPECTRAL_COMPONENTS];
+    memset(spectralRadiance, 0, sizeof(spectralRadiance));
+
+    for ( int32_t i = 0; i < NUMBER_OF_SPECTRAL_COMPONENTS; i++ )
+    {
+        const double lambda = lambda_micrometer[i];
+
+		//apply each transmittance function, no particular order.
+        double exponent = 0.0;
+
+		//Rayleigh
+		exponent += -0.008735 * pow(lambda, -4.08 * m);
+
+		//Angstrom
+		exponent += -beta * powf (lambda, - alpha * m);
+
+		//ozone
+		exponent += -sun_spectral_k_o[i] * l * m;
+
+		//mixed gases absorption
+		const double k_g = sun_spectral_k_g[i];
+		exponent += (-1.41 * k_g * m) / pow(1.0 + 118.93 * k_g * m, 0.45);
+
+		//water vapor absorption
+		const double k_wa = sun_spectral_k_wa[i];
+		exponent += (-0.2385 * k_wa * w * m) / pow(1.0 + 20.07 * k_wa * w * m, 0.45);
+
+		spectralRadiance[i] = sun_spectral_radiance[i] * exp(exponent);
+    }
+
+	double XYZ[3] = {0};
+
+	//the sun spectral radiances are expressed in cm^{-2} => we have to scale it by 10000 to obtain
+	//the spectral radiance in W.m^{-2}.um^{-1}.sr^{-1},
+	
+	//the sun spectral radiances have wavelengthes expressed in micro-meters => we first have to convert it to wavelengthes
+	//expressed in nanometers, as the color matching functions are expressed with wavelengthes in nanometers => we scale the
+	//spectral radiance by 0.001. The delta_lambda is 10nm => the scaling factor for the wavelength change of unit is 0.01f	
+	
+	float delta = 10000.f * 0.01f;
+	
+	for ( int32_t i = 0; i < NUMBER_OF_SPECTRAL_COMPONENTS; i++ )
+    {
+		for ( int32_t coord = 0; coord < 3; coord++ )
+        {
+			XYZ[coord] += spectralRadiance[i] * xyz_matching_functions[coord][i] * delta;
+		}
+	}
+
+    return (Vector3){XYZ[0], XYZ[1], XYZ[2]};
 }
 
 static NSString * const NPGraphicsStartupError = @"NPEngineGraphics failed to start up. Consult %@/np.log for details.";
@@ -313,6 +388,12 @@ int main (int argc, char **argv)
     NPEffectVariableFloat3 * directionToSun_P
         = [ effect variableWithName:@"directionToSun" ];
 
+    NPEffectVariableFloat3 * sunColor_P
+        = [ effect variableWithName:@"sunColor" ];
+
+    NPEffectVariableFloat * sunHalfApparentAngle_P
+        = [ effect variableWithName:@"sunHalfApparentAngle" ];
+
     NPEffectVariableFloat3 * zenithColor_P
         = [ effect variableWithName:@"zenithColor" ];
 
@@ -331,8 +412,9 @@ int main (int argc, char **argv)
 
     assert(A_xyY_P != nil && B_xyY_P != nil && C_xyY_P != nil && D_xyY_P != nil
            && E_xyY_P != nil && radiusInPixel_P != nil && directionToSun_P != nil
-           && zenithColor_P != nil && denominator_P != nil && key_P != nil
-           && averageLuminanceLevel_P != nil && whiteLuminance_P != nil);
+           && sunColor_P != nil && sunHalfApparentAngle_P != nil
+           && zenithColor_P != nil && denominator_P != nil
+           && key_P != nil && averageLuminanceLevel_P != nil && whiteLuminance_P != nil);
 
     NPInputAction * leftClick
         = [[[ NP Input ] inputActions ] 
@@ -370,7 +452,7 @@ int main (int argc, char **argv)
 
     // tonemap
     double a = 0.05;
-    double L_white = 4.0;
+    double L_white = 2.0;
 
     const float halfSkyResolution = ((float)skyResolution) / (2.0f);
 
@@ -400,7 +482,7 @@ int main (int argc, char **argv)
         const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
 
-        NSLog(@"%lf %d", frameTime, fps);
+//        NSLog(@"%lf %d", frameTime, fps);
 
         if ([ wheelUp activated ] == YES )
         {
@@ -441,8 +523,6 @@ int main (int argc, char **argv)
                 dy = (double)(y - (widgetSize.y / 2) + 1);
             }
 
-            //NSLog(@"%d %d %lf %lf", x, y, dx, dy);
-
             phiSun = atan2(dy, dx);
             modified = YES;
         }
@@ -457,6 +537,9 @@ int main (int argc, char **argv)
 
         modified = NO;
 
+        double sunHalfApparentAngle = 0.25 * MATH_PI / 360.0;
+        double sunDiskRadius = tan(sunHalfApparentAngle);
+
         //
         const double sinThetaSun = sin(thetaSun);
         const double cosThetaSun = cos(thetaSun);
@@ -467,15 +550,38 @@ int main (int argc, char **argv)
         directionToSun.x = sinThetaSun * cosPhiSun;
         directionToSun.y = sinThetaSun * sinPhiSun;
         directionToSun.z = cosThetaSun;
-        /*        
-        directionToSun.x = sinThetaSun * sinPhiSun;
-        directionToSun.y = cosThetaSun;
-        directionToSun.z = sinThetaSun * cosPhiSun;
-        */
+
+
+        Vector3 p_v1, p_v2;
+        if ( fabs(directionToSun.x) > fabs(directionToSun.y) )
+        {
+            double ilen = 1.0 / sqrt(directionToSun.x * directionToSun.x + directionToSun.z * directionToSun.z);
+            p_v1 = (Vector3){-directionToSun.z * ilen, 0.0, directionToSun.x * ilen};
+        }
+        else
+        {
+            double ilen = 1.0 / sqrt(directionToSun.y * directionToSun.y + directionToSun.z * directionToSun.z);
+            p_v1 = (Vector3){0.0, directionToSun.z * ilen, -directionToSun.y * ilen};
+        }
+
+        p_v2 = v3_vv_cross_product(&directionToSun, &p_v1);
+
+        Vector3 dir;
+        dir.x = directionToSun.x + p_v1.x * sunDiskRadius + p_v2.x * sunDiskRadius;
+        dir.y = directionToSun.y + p_v1.y * sunDiskRadius + p_v2.y * sunDiskRadius;
+        dir.z = directionToSun.z + p_v1.z * sunDiskRadius + p_v2.z * sunDiskRadius;
+        Vector3 dirN = v3_v_normalised(&dir);
+
+        double sunCosHalfApparentAngle = v3_vv_dot_product(&dirN, &directionToSun);
+        sunHalfApparentAngle = MAX(sunHalfApparentAngle, acos(sunCosHalfApparentAngle));
 
         // Preetham Skylight Zenith color
         // xyY space, cd/m²
         Vector3 zenithColor = preetham_zenith(turbidity, thetaSun);
+
+        // Preetham Skylight sun disc color
+        // XYZ
+        Vector3 sunColor = compute_sun_color(turbidity, thetaSun);
 
         // Page 22/23 compute coefficients
 	    double ABCDE_x[5], ABCDE_y[5], ABCDE_Y[5];
@@ -518,6 +624,8 @@ int main (int argc, char **argv)
 
         [ radiusInPixel_P setFValue:halfSkyResolution ];
         [ directionToSun_P setValue:directionToSun ];
+        [ sunColor_P setValue:sunColor ];
+        [ sunHalfApparentAngle_P setValue:sunHalfApparentAngle ];
         [ zenithColor_P setValue:zenithColor ];
         [ denominator_P setValue:denominator ];
 
