@@ -229,26 +229,25 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
 		spectralRadiance[i] = sun_spectral_radiance[i] * exp(exponent);
     }
 
-	double XYZ[3] = {0};
-
 	//the sun spectral radiances are expressed in cm^{-2} => we have to scale it by 10000 to obtain
 	//the spectral radiance in W.m^{-2}.um^{-1}.sr^{-1},
 	
 	//the sun spectral radiances have wavelengthes expressed in micro-meters => we first have to convert it to wavelengthes
 	//expressed in nanometers, as the color matching functions are expressed with wavelengthes in nanometers => we scale the
 	//spectral radiance by 0.001. The delta_lambda is 10nm => the scaling factor for the wavelength change of unit is 0.01f	
+
+    Vector3 XYZ = v3_zero();
 	
-	float delta = 10000.f * 0.01f;
-	
+	float delta = 10000.f * 0.01f;	
+
 	for ( int32_t i = 0; i < NUMBER_OF_SPECTRAL_COMPONENTS; i++ )
     {
-		for ( int32_t coord = 0; coord < 3; coord++ )
-        {
-			XYZ[coord] += spectralRadiance[i] * xyz_matching_functions[coord][i] * delta;
-		}
-	}
+        XYZ.x += spectralRadiance[i] * xyz_matching_functions[0][i] * delta;
+        XYZ.y += spectralRadiance[i] * xyz_matching_functions[1][i] * delta;
+        XYZ.z += spectralRadiance[i] * xyz_matching_functions[2][i] * delta;
+    }
 
-    return (Vector3){XYZ[0], XYZ[1], XYZ[2]};
+    return XYZ;
 }
 
 static NSString * const NPGraphicsStartupError = @"NPEngineGraphics failed to start up. Consult %@/np.log for details.";
