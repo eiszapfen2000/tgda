@@ -317,8 +317,11 @@ static Vector3 sun_color(double turbidity, double thetaSun)
     preetham = [ effect techniqueWithName:@"preetham" ];
     ASSERT_RETAIN(preetham);
 
-    radiusInPixel_P   = [ effect variableWithName:@"radiusInPixel"  ];
+    radiusInPixel_P        = [ effect variableWithName:@"radiusInPixel" ];
+    sunHalfApparentAngle_P = [ effect variableWithName:@"sunHalfApparentAngle" ];
+
     directionToSun_P  = [ effect variableWithName:@"directionToSun" ];
+    sunColor_P        = [ effect variableWithName:@"sunColor"       ];
     zenithColor_P     = [ effect variableWithName:@"zenithColor"    ];
     denominator_P     = [ effect variableWithName:@"denominator"    ];
 
@@ -328,7 +331,8 @@ static Vector3 sun_color(double turbidity, double thetaSun)
     D_xyY_P = [ effect variableWithName:@"D" ];
     E_xyY_P = [ effect variableWithName:@"E" ];
 
-    NSAssert(radiusInPixel_P != nil && directionToSun_P != nil
+    NSAssert(radiusInPixel_P != nil && sunHalfApparentAngle_P != nil 
+             && directionToSun_P != nil && sunColor_P != nil
              && zenithColor_P != nil && denominator_P != nil && A_xyY_P != nil
              && B_xyY_P != nil && C_xyY_P != nil && D_xyY_P != nil && E_xyY_P != nil, @"");
 
@@ -433,6 +437,18 @@ static Vector3 sun_color(double turbidity, double thetaSun)
         Vector3 sunXYZ = sun_color(turbidity, thetaSun);
         sunColor = m3_mv_multiply(&lsRGB, &sunXYZ);
 
+        /*
+        http://en.wikipedia.org/wiki/Solid_angle#Sun_and_Moon
+
+        avg sun diameter 9.35×10−3 radians
+        radius = 0.5 * diameter
+
+        */
+
+        double sunHalfApparentAngle = 0.00935 * 0.5;
+        double sunDiskRadius = tan(sunHalfApparentAngle);
+        double sunSolidAngle = sunDiskRadius * sunDiskRadius * MATH_PI;
+
         const double sinThetaSun = sin(thetaSun);
         const double cosThetaSun = cos(thetaSun);
         const double sinPhiSun = sin(phiSun);
@@ -458,8 +474,35 @@ static Vector3 sun_color(double turbidity, double thetaSun)
         localDirectionToSun.y = sinThetaSun * sinPhiSun;
         localDirectionToSun.z = cosThetaSun;
 
+        // set up coordinate system onsun disc
+        Vector3 p_v1;
+
+        if ( fabs(localDirectionToSun.x) > fabs(localDirectionToSun.y) )
+        {
+            double ilen = 1.0 / sqrt(localDirectionToSun.x * localDirectionToSun.x + localDirectionToSun.z * localDirectionToSun.z);
+            p_v1 = (Vector3){-localDirectionToSun.z * ilen, 0.0, localDirectionToSun.x * ilen};
+        }
+        else
+        {
+            double ilen = 1.0 / sqrt(localDirectionToSun.y * localDirectionToSun.y + localDirectionToSun.z * localDirectionToSun.z);
+            p_v1 = (Vector3){0.0, localDirectionToSun.z * ilen, -localDirectionToSun.y * ilen};
+        }
+
+        Vector3 p_v2 = v3_vv_cross_product(&localDirectionToSun, &p_v1);
+
+        Vector3 dir;
+        dir.x = localDirectionToSun.x + p_v1.x * sunDiskRadius + p_v2.x * sunDiskRadius;
+        dir.y = localDirectionToSun.y + p_v1.y * sunDiskRadius + p_v2.y * sunDiskRadius;
+        dir.z = localDirectionToSun.z + p_v1.z * sunDiskRadius + p_v2.z * sunDiskRadius;
+        Vector3 dirN = v3_v_normalised(&dir);
+
+        double sunCosHalfApparentAngle = v3_vv_dot_product(&dirN, &localDirectionToSun);
+        sunHalfApparentAngle = MAX(sunHalfApparentAngle, acos(sunCosHalfApparentAngle));
+
         [ radiusInPixel_P setFValue:halfSkyResolution ];
+        [ sunHalfApparentAngle_P setValue:sunHalfApparentAngle ];
         [ directionToSun_P setValue:localDirectionToSun ];
+        [ sunColor_P setValue:sunColor ];
         [ zenithColor_P setValue:zenithColor ];
         [ denominator_P setValue:denominator ];
 
@@ -487,6 +530,13 @@ static Vector3 sun_color(double turbidity, double thetaSun)
             attachToRenderTargetConfiguration:rtc
                              colorBufferIndex:0
                                       bindFBO:NO ];
+
+        /*
+        [ sunlightTarget
+            attachToRenderTargetConfiguration:rtc
+                             colorBufferIndex:1
+                                      bindFBO:NO ];
+        */
 
         [ rtc activateDrawBuffers ];
         [ rtc activateViewport ];
