@@ -47,5 +47,23 @@ void main()
     XYZ.y = xyY.z;
     XYZ.z = ((1.0f - xyY.x - xyY.y) / xyY.y) * xyY.z;
 
+    /*
+    float f = gamma - sunHalfApparentAngle;
+
+    float a = 200.0;
+    float b = 0.0;
+    float c = 150.0;
+
+    float falloff = (1.0 / exp(a * f)) + b * (1.0 / exp(c * f));
+    falloff = clamp(falloff, 0.0, 1.0);
+
+    XYZ += falloff * sunColor;
+    */
+
+    if ( cosGamma >= cos(sunHalfApparentAngle) )
+    {
+        XYZ += sunColor;
+    }
+
     target = vec4(XYZ2LinearsRGB * XYZ, 1.0);
 }
