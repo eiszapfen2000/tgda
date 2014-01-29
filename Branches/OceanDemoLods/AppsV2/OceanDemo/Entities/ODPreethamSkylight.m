@@ -116,14 +116,23 @@ static double digamma(double theta, double gamma, double ABCDE[5])
 
 - (BOOL) generateRenderTarget:(NSError **)error
 {
-    return 
-        [ skylightTarget generate:NpRenderTargetColor
-                            width:skylightResolution
-                           height:skylightResolution
-                      pixelFormat:NpTexturePixelFormatRGBA
-                       dataFormat:NpTextureDataFormatFloat16
-                    mipmapStorage:YES
-                            error:error ];
+    BOOL result
+        = [ skylightTarget generate:NpRenderTargetColor
+                              width:skylightResolution
+                             height:skylightResolution
+                        pixelFormat:NpTexturePixelFormatRGBA
+                         dataFormat:NpTextureDataFormatFloat16
+                      mipmapStorage:YES
+                              error:error ];
+
+    return
+        result && [ sunlightTarget generate:NpRenderTargetColor
+                                      width:skylightResolution
+                                     height:skylightResolution
+                                pixelFormat:NpTexturePixelFormatRGBA
+                                 dataFormat:NpTextureDataFormatFloat16
+                              mipmapStorage:YES
+                                      error:error ];
 }
 
 @end
@@ -172,6 +181,7 @@ static double digamma(double theta, double gamma, double ABCDE[5])
 
     rtc = [[ NPRenderTargetConfiguration alloc] initWithName:@"Preetham RTC" ];
     skylightTarget = [[ NPRenderTexture alloc ] initWithName:@"Skylight Target" ];
+    sunlightTarget = [[ NPRenderTexture alloc ] initWithName:@"Sunlight Target" ];
 
     lastSkylightResolution = INT_MAX;
     skylightResolution = 1024;
@@ -201,6 +211,7 @@ static double digamma(double theta, double gamma, double ABCDE[5])
 
 - (void) dealloc
 {
+    DESTROY(sunlightTarget);
     DESTROY(skylightTarget);
     DESTROY(rtc);
     DESTROY(preetham);
@@ -300,9 +311,6 @@ static double digamma(double theta, double gamma, double ABCDE[5])
         directionToSun.y = cosThetaSun;
         directionToSun.z = -sinThetaSun * sinPhiSun;
 
-        //NSLog(@"xyY: %lf %lf %lf lsRGB: %lf %lf %lf", xyY.x, xyY.y, xyY.z, sunColor.x, sunColor.y, sunColor.z);
-        //NSLog(@"%lf %lf : %lf %lf %lf", phiSun, thetaSun, directionToSun.x, directionToSun.y, directionToSun.z);
-
         const float halfSkyResolution = ((float)skylightResolution) / (2.0f);
 
         const float cStart = -halfSkyResolution;
@@ -380,8 +388,6 @@ static double digamma(double theta, double gamma, double ABCDE[5])
         lastPhiSun    = phiSun;
 
         lastSkylightResolution = skylightResolution;
-
-        //NSLog(@"%lf %lf", thetaSun, phiSun);
     }
 }
 
