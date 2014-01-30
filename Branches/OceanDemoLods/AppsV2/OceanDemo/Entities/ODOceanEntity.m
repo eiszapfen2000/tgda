@@ -817,8 +817,6 @@ static NSUInteger od_variance_size(const void * item)
 
     [ displacementDerivatives setTextureWrap:NpTextureWrapRepeat   ];
 
-    timeStamp = DBL_MAX;
-
     displacementScale = defaultDisplacementScale;
     areaScale = defaultAreaScale;
     heightScale = defaultHeightScale;
@@ -1279,8 +1277,6 @@ static NSUInteger od_variance_size(const void * item)
 
         //---------------------------------------------
 
-
-        timeStamp = hf->timeStamp;
 
         heightRange = hf->ranges[HEIGHT_RANGE];
         gradientXRange = hf->ranges[GRADIENT_X_RANGE];

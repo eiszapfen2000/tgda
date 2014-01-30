@@ -87,7 +87,6 @@
     Vector2 waterColorCoordinate;
     Vector2 waterColorIntensityCoordinate;
 
-    double timeStamp;
     double displacementScale;
     double areaScale;
     double heightScale;
