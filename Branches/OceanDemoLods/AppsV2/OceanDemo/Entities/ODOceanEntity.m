@@ -293,6 +293,13 @@ static size_t index_for_resolution(int32_t resolution)
                         generatorSettings.unified.Omega = 0.84;
                         break;
                     }
+
+                    default:
+                    {
+                        generatorSettings.generatorType = Unknown;
+                        NSAssert1(NO, @"Unknown Spectrum Type %d", generatorType);
+                        break;
+                    }
                 }
 
                 generatorSettings.spectrumScale = generatorSpectrumScale;
@@ -1063,9 +1070,6 @@ static NSUInteger od_variance_size(const void * item)
 
 - (void) update:(const double)frameTime
 {
-    [ projector update:frameTime ];
-    [ basePlane update:frameTime ];
-
     const double totalElapsedTime
         = [[[ NPEngineCore instance ] timer ] totalElapsedTime ];
 
@@ -1269,6 +1273,9 @@ static NSUInteger od_variance_size(const void * item)
         displacementZdXRanges = ALLOC_ARRAY(FVector2, lodCount);
         displacementZdZRanges = ALLOC_ARRAY(FVector2, lodCount);
 
+        float minHeight = 0.0;
+        float maxHeight = 0.0;
+
         for ( uint32_t i = 0; i < lodCount; i++ )
         {
             heightRanges[i]          = hf->ranges[i * NUMBER_OF_RANGES + HEIGHT_RANGE];
@@ -1280,7 +1287,24 @@ static NSUInteger od_variance_size(const void * item)
             displacementXdZRanges[i] = hf->ranges[i * NUMBER_OF_RANGES + DISPLACEMENT_X_DZ_RANGE];
             displacementZdXRanges[i] = hf->ranges[i * NUMBER_OF_RANGES + DISPLACEMENT_Z_DX_RANGE];
             displacementZdZRanges[i] = hf->ranges[i * NUMBER_OF_RANGES + DISPLACEMENT_Z_DZ_RANGE];
+
+            minHeight += heightRanges[i].x;
+            maxHeight += heightRanges[i].y;
         }
+
+        const FVector3 planeNormal = {0.0f, 1.0f, 0.0f};
+
+        FPlane minPlane, maxPlane;
+        fplane_pvs_init_with_normal_and_scalar(&minPlane, &planeNormal, minHeight);
+        fplane_pvs_init_with_normal_and_scalar(&maxPlane, &planeNormal, maxHeight);
+
+        FVector3 minV = {0.0, minHeight, 0.0};
+        FVector3 maxV = {0.0, maxHeight, 0.0};
+
+        const float a = fplane_pv_signed_distance_from_plane(&minPlane, &maxV);
+        const float b = fplane_pv_signed_distance_from_plane(&maxPlane, &minV);
+
+        ///NSLog(@"%f %f %f", a, b, maxHeight - minHeight);
 
         //---------------------------------------------
 
@@ -1401,6 +1425,9 @@ static NSUInteger od_variance_size(const void * item)
         //[ resultQueue removeHeightfieldAtIndex:0 ];
         //[ varianceQueue removePointerAtIndex:0 ];
     }
+
+    [ projector update:frameTime ];
+    [ basePlane update:frameTime ];
 }
 
 - (void) renderBasePlane
