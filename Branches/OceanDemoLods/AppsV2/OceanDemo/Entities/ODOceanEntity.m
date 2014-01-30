@@ -826,22 +826,17 @@ static NSUInteger od_variance_size(const void * item)
     receivedGradient = NO;
     receivedDisplacementDerivatives = NO;
 
-    heightRange    = (FVector2){.x = 0.0f, .y = 0.0f};
-    gradientXRange = (FVector2){.x = 0.0f, .y = 1.0f};
-    gradientZRange = (FVector2){.x = 0.0f, .y = 1.0f};
-    displacementXRange = (FVector2){.x = 0.0f, .y = 1.0f};
-    displacementZRange = (FVector2){.x = 0.0f, .y = 1.0f};
-    displacementXdXRange = (FVector2){.x = 0.0f, .y = 1.0f};
-    displacementXdZRange = (FVector2){.x = 0.0f, .y = 1.0f};
-    displacementZdXRange = (FVector2){.x = 0.0f, .y = 1.0f};
-    displacementZdZRange = (FVector2){.x = 0.0f, .y = 1.0f};
-
-    animated = YES;
-    updateSlopeVariance = NO;
+    heightRanges = gradientXRanges = gradientZRanges
+        = displacementXRanges = displacementZRanges = displacementXdXRanges
+        = displacementXdZRanges = displacementZdXRanges = displacementZdZRanges
+        = NULL;
 
     baseSpectrumResolution = iv2_zero();
     baseSpectrumSize = v2_zero();
     baseSpectrumDeltaVariance = 0.0f;
+    updateSlopeVariance = NO;
+
+    animated = YES;
 
     return self;
 }
@@ -1041,31 +1036,6 @@ static NSUInteger od_variance_size(const void * item)
     return waterColorIntensityCoordinate;
 }
 
-- (FVector2) heightRange
-{
-    return heightRange;
-}
-
-- (FVector2) gradientXRange
-{
-    return gradientXRange;
-}
-
-- (FVector2) gradientZRange
-{
-    return gradientZRange;
-}
-
-- (FVector2) displacementXRange
-{
-    return displacementXRange;
-}
-
-- (FVector2) displacementZRange
-{
-    return displacementZRange;
-}
-
 - (IVector2) baseSpectrumResolution
 {
     return baseSpectrumResolution;
@@ -1245,6 +1215,16 @@ static NSUInteger od_variance_size(const void * item)
         receivedGradient = NO;
         receivedDisplacementDerivatives = NO;
 
+        SAFE_FREE(heightRanges);
+        SAFE_FREE(gradientXRanges);
+        SAFE_FREE(gradientZRanges);
+        SAFE_FREE(displacementXRanges);
+        SAFE_FREE(displacementZRanges);
+        SAFE_FREE(displacementXdXRanges);
+        SAFE_FREE(displacementXdZRanges);
+        SAFE_FREE(displacementZdXRanges);
+        SAFE_FREE(displacementZdZRanges);
+
         //---------------------------------------------
 
         // geometry sizes texture buffer update
@@ -1277,16 +1257,32 @@ static NSUInteger od_variance_size(const void * item)
 
         //---------------------------------------------
 
+        // ranges update
 
-        heightRange = hf->ranges[HEIGHT_RANGE];
-        gradientXRange = hf->ranges[GRADIENT_X_RANGE];
-        gradientZRange = hf->ranges[GRADIENT_Z_RANGE];
-        displacementXRange = hf->ranges[DISPLACEMENT_X_RANGE];
-        displacementZRange = hf->ranges[DISPLACEMENT_Z_RANGE];
-        displacementXdXRange = hf->ranges[DISPLACEMENT_X_DX_RANGE];
-        displacementXdZRange = hf->ranges[DISPLACEMENT_X_DZ_RANGE];
-        displacementZdXRange = hf->ranges[DISPLACEMENT_Z_DX_RANGE];
-        displacementZdZRange = hf->ranges[DISPLACEMENT_Z_DZ_RANGE];
+        heightRanges = ALLOC_ARRAY(FVector2, lodCount);
+        gradientXRanges = ALLOC_ARRAY(FVector2, lodCount);
+        gradientZRanges = ALLOC_ARRAY(FVector2, lodCount);
+        displacementXRanges = ALLOC_ARRAY(FVector2, lodCount);
+        displacementZRanges = ALLOC_ARRAY(FVector2, lodCount);
+        displacementXdXRanges = ALLOC_ARRAY(FVector2, lodCount);
+        displacementXdZRanges = ALLOC_ARRAY(FVector2, lodCount);
+        displacementZdXRanges = ALLOC_ARRAY(FVector2, lodCount);
+        displacementZdZRanges = ALLOC_ARRAY(FVector2, lodCount);
+
+        for ( uint32_t i = 0; i < lodCount; i++ )
+        {
+            heightRanges[i]          = hf->ranges[i * NUMBER_OF_RANGES + HEIGHT_RANGE];
+            gradientXRanges[i]       = hf->ranges[i * NUMBER_OF_RANGES + GRADIENT_X_RANGE];
+            gradientZRanges[i]       = hf->ranges[i * NUMBER_OF_RANGES + GRADIENT_Z_RANGE];
+            displacementXRanges[i]   = hf->ranges[i * NUMBER_OF_RANGES + DISPLACEMENT_X_RANGE];
+            displacementZRanges[i]   = hf->ranges[i * NUMBER_OF_RANGES + DISPLACEMENT_Z_RANGE];
+            displacementXdXRanges[i] = hf->ranges[i * NUMBER_OF_RANGES + DISPLACEMENT_X_DX_RANGE];
+            displacementXdZRanges[i] = hf->ranges[i * NUMBER_OF_RANGES + DISPLACEMENT_X_DZ_RANGE];
+            displacementZdXRanges[i] = hf->ranges[i * NUMBER_OF_RANGES + DISPLACEMENT_Z_DX_RANGE];
+            displacementZdZRanges[i] = hf->ranges[i * NUMBER_OF_RANGES + DISPLACEMENT_Z_DZ_RANGE];
+        }
+
+        //---------------------------------------------
 
         {
             const IVector2 geometryResolution = hf->geometry.geometryResolution;
