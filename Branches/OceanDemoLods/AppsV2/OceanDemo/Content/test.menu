@@ -23,7 +23,7 @@
             TextSize = "16";
             Texture = "Height Texture";
             TargetObject = "Ocean";
-            TargetProperty = "heightRange";
+            TargetProperty = "heightRanges";
             Channels = ("y", "n", "n", "n");
             VisibleTarget = "Ocean";
             VisibleProperty = "receivedHeight";
@@ -39,7 +39,7 @@
             TextSize = "16";
             Texture = "Height Texture Gradient";
             TargetObject = "Ocean";
-            TargetProperty = "gradientXRange";
+            TargetProperty = "gradientXRanges";
             Channels = ("y", "n", "n", "n");
             VisibleTarget = "Ocean";
             VisibleProperty = "receivedGradient";
@@ -55,7 +55,7 @@
             TextSize = "16";
             Texture = "Height Texture Gradient";
             TargetObject = "Ocean";
-            TargetProperty = "gradientZRange";
+            TargetProperty = "gradientZRanges";
             Channels = ("n", "y", "n", "n");
             VisibleTarget = "Ocean";
             VisibleProperty = "receivedGradient";
@@ -71,7 +71,7 @@
             TextSize = "16";
             Texture = "Height Texture Displacement";
             TargetObject = "Ocean";
-            TargetProperty = "displacementXRange";
+            TargetProperty = "displacementXRanges";
             Channels = ("y", "n", "n", "n");
             VisibleTarget = "Ocean";
             VisibleProperty = "receivedDisplacement";
@@ -87,7 +87,7 @@
             TextSize = "16";
             Texture = "Height Texture Displacement";
             TargetObject = "Ocean";
-            TargetProperty = "displacementZRange";
+            TargetProperty = "displacementZRanges";
             Channels = ("n", "y", "n", "n");
             VisibleTarget = "Ocean";
             VisibleProperty = "receivedDisplacement";
@@ -103,7 +103,7 @@
             TextSize = "16";
             Texture = "Height Texture Displacement Derivatives";
             TargetObject = "Ocean";
-            TargetProperty = "displacementXdXRange";
+            TargetProperty = "displacementXdXRanges";
             Channels = ("y", "n", "n", "n");
             VisibleTarget = "Ocean";
             VisibleProperty = "receivedDisplacementDerivatives";
@@ -119,7 +119,7 @@
             TextSize = "16";
             Texture = "Height Texture Displacement Derivatives";
             TargetObject = "Ocean";
-            TargetProperty = "displacementXdZRange";
+            TargetProperty = "displacementXdZRanges";
             Channels = ("n", "y", "n", "n");
             VisibleTarget = "Ocean";
             VisibleProperty = "receivedDisplacementDerivatives";
@@ -135,7 +135,7 @@
             TextSize = "16";
             Texture = "Height Texture Displacement Derivatives";
             TargetObject = "Ocean";
-            TargetProperty = "displacementZdXRange";
+            TargetProperty = "displacementZdXRanges";
             Channels = ("n", "n", "y", "n");
             VisibleTarget = "Ocean";
             VisibleProperty = "receivedDisplacementDerivatives";
@@ -151,7 +151,7 @@
             TextSize = "16";
             Texture = "Height Texture Displacement Derivatives";
             TargetObject = "Ocean";
-            TargetProperty = "displacementZdZRange";
+            TargetProperty = "displacementZdZRanges";
             Channels = ("n", "n", "n", "y");
             VisibleTarget = "Ocean";
             VisibleProperty = "receivedDisplacementDerivatives";
