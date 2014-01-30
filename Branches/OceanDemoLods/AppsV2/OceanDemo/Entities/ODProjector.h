@@ -30,6 +30,10 @@ OdProjectorRotationEvents;
     Vector3 right;
     Vector3 up;
 
+    double lowerBound;
+    double base;
+    double upperBound;
+
     double fov;
     double nearPlane;
     double farPlane;
@@ -52,6 +56,10 @@ OdProjectorRotationEvents;
                    ;
 - (void) dealloc;
 
+- (double) lowerBound;
+- (double) base;
+- (double) upperBound;
+
 - (double) fov;
 - (double) aspectRatio;
 - (double) nearPlane;
@@ -67,6 +75,10 @@ OdProjectorRotationEvents;
 
 - (BOOL) connecting;
 - (BOOL) disconnecting;
+
+- (void) setLowerBound:(double)newLowerBound;
+- (void) setBase:(double)newBase;
+- (void) setUpperBound:(double)newUpperBound;
 
 - (void) setPosition:(const Vector3)newPosition;
 - (void) setCamera:(ODCamera *)newCamera;
