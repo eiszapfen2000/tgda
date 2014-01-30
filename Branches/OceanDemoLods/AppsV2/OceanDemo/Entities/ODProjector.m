@@ -132,8 +132,8 @@
 @end
 
 static const OdProjectorRotationEvents defaultRotationEvents
-    = {.pitchMinus = NpKeyboardS, .pitchPlus = NpKeyboardW,
-       .yawMinus   = NpKeyboardA, .yawPlus   = NpKeyboardD };
+    = {.pitchMinus = NpInputEventUnknown, .pitchPlus = NpInputEventUnknown,
+       .yawMinus   = NpInputEventUnknown, .yawPlus   = NpInputEventUnknown };
 
 static NSString * const pitchMinusActionString = @"PitchMinus";
 static NSString * const pitchPlusActionString  = @"PitchPlus";
