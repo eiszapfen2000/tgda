@@ -1247,14 +1247,15 @@ static NSUInteger od_variance_size(const void * item)
         receivedGradient = NO;
         receivedDisplacementDerivatives = NO;
 
+        //---------------------------------------------
+
         // geometry sizes texture buffer update
         const uint32_t lodCount = hf->geometry.numberOfLods;
-        FVector2 * geometrySizes = ALLOC_ARRAY(FVector2, lodCount);
+        FVector2 geometrySizes[lodCount];
 
         for ( uint32_t i = 0; i < lodCount; i++ )
         {
             geometrySizes[i] = fv2_v_from_v2(&hf->geometry.sizes[i]);
-//            NSLog(@"BBB %f %f", geometrySizes[i].x, geometrySizes[i].y);
         }
 
         NSData * geometrySizesData
@@ -1276,7 +1277,6 @@ static NSUInteger od_variance_size(const void * item)
              pixelFormat:NpTexturePixelFormatRG
               dataFormat:NpTextureDataFormatFloat32 ];
 
-        FREE(geometrySizes);
         //---------------------------------------------
 
 
@@ -1373,8 +1373,6 @@ static NSUInteger od_variance_size(const void * item)
                                mipmaps:YES
                                   data:displacementDerivativesData ];
             }
-
-
 
             if ( variance != NULL && variance->baseSpectrum != NULL )
             {
