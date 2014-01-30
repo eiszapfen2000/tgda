@@ -207,7 +207,7 @@
 
 static const OdCameraMovementEvents testCameraMovementEvents
     = {.rotate  = NpKeyboardG, .strafe   = NpInputEventUnknown,
-       .forward = NpInputEventUnknown, .backward = NpInputEventUnknown };
+       .forward = NpKeyboardW, .backward = NpKeyboardS };
 
 static const OdProjectorRotationEvents testProjectorRotationEvents
     = {.pitchMinus = NpInputEventUnknown, .pitchPlus = NpInputEventUnknown,
@@ -233,10 +233,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     entities  = [[ NSMutableArray alloc ] init ];
 
     testCamera = [[ ODCamera alloc ] initWithName:@"TestCamera"  movementEvents:testCameraMovementEvents ];
-    testProjector = [[ ODProjector alloc ] initWithName:@"TestProj" ];
-
     [ testCamera setFarPlane:50.0 ];
-    [ testProjector setCamera:testCamera ];
 
     cameraFrustum = [[ ODFrustum alloc ] initWithName:@"CFrustum" ];
     testCameraFrustum = [[ ODFrustum alloc ] initWithName:@"TCFrustum" ];
@@ -361,7 +358,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     DESTROY(axes);
 
     DESTROY(testCamera);
-    DESTROY(testProjector);
     DESTROY(testCameraFrustum);
     DESTROY(testProjectorFrustum);
     DESTROY(cameraFrustum);
@@ -451,10 +447,9 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [ self setName:sceneName ];
 
-    [ ocean setCamera:camera ];
+    [ ocean setCamera:testCamera ];
 
-    //[ projectedGrid setProjector:[ ocean projector ]];
-    [ projectedGrid setProjector:testProjector ];
+    [ projectedGrid setProjector:[ ocean projector ]];
 
     [ iwave start ];
     [ ocean start ];
@@ -545,7 +540,11 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [ camera        update:frameTime ];
     [ testCamera    update:frameTime ];
-    [ testProjector update:frameTime ];
+
+    [ skylight      update:frameTime ];
+    [ ocean         update:frameTime ];
+    //[ iwave         update:frameTime ];
+    [ projectedGrid update:frameTime ];
 
     [ cameraFrustum updateWithPosition:[camera position]
                            orientation:[camera orientation]
@@ -554,7 +553,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
                               farPlane:[camera farPlane]
                            aspectRatio:[camera aspectRatio]];
 
-    /*
     [ testCameraFrustum updateWithPosition:[testCamera position]
                                orientation:[testCamera orientation]
                                        fov:[testCamera fov]
@@ -562,18 +560,12 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
                                   farPlane:[testCamera farPlane]
                                aspectRatio:[testCamera aspectRatio]];
 
-    [ testProjectorFrustum updateWithPosition:[testProjector position]
-                                  orientation:[testProjector orientation]
-                                          fov:[testProjector fov]
-                                    nearPlane:[testProjector nearPlane]
-                                     farPlane:[testProjector farPlane]
-                                  aspectRatio:[testProjector aspectRatio]];
-    */
-
-    [ skylight      update:frameTime ];
-    [ ocean         update:frameTime ];
-    //[ iwave         update:frameTime ];
-    [ projectedGrid update:frameTime ];
+    [ testProjectorFrustum updateWithPosition:[[ ocean projector ] position]
+                                  orientation:[[ ocean projector ] orientation]
+                                          fov:[[ ocean projector ] fov]
+                                    nearPlane:[[ ocean projector ] nearPlane]
+                                     farPlane:[[ ocean projector ] farPlane]
+                                  aspectRatio:[[ ocean projector ] aspectRatio]];
 
     /*
     const NSUInteger numberOfEntities = [ entities count ];
@@ -758,7 +750,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[[ NP Graphics ] textureBindingState ] activate ];
 
     NPEffectVariableMatrix4x4 * v = [ deferredEffect variableWithName:@"invMVP"];
-    [ v setValue:[testProjector inverseViewProjection]];
+    [ v setValue:[[ ocean projector ] inverseViewProjection]];
 
     NPEffectVariableMatrix4x4 * w = [ projectedGridEffect variableWithName:@"invMVP"];
     NPEffectVariableFloat * a = [ projectedGridEffect variableWithName:@"areaScale"];
@@ -775,7 +767,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     NSAssert(w != nil && a != nil && ds != nil && hs != nil && je != nil && cP != nil && dsP != nil && scP != nil && vsP != nil && wcP != nil && wciP != nil, @"");
 
     [ ds setValue:[ ocean displacementScale ]];
-    [ w setValue:[testProjector inverseViewProjection]];
+    [ w setValue:[[ ocean projector ] inverseViewProjection]];
     [ a setValue:[ocean areaScale ]];
     [ hs setValue:[ ocean heightScale ]];
     [ je setValue:jacobianEpsilon ];
@@ -829,7 +821,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ fillState activate ];
     */
 
-    /*
     FVector4 fc = {0.0f, 1.0f, 0.0f, 0.5f};
     FVector4 lc = {1.0f, 0.0f, 0.0f, 0.5f};
 
@@ -849,7 +840,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[ deferredEffect techniqueWithName:@"color" ] activate ];
 
     [ testProjectorFrustum render ];
-    */
 
     [ linearsRGBTarget detach:NO ];
     [ depthBuffer      detach:NO ];

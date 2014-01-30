@@ -40,7 +40,6 @@
 
     ODCamera * testCamera;
     ODFrustum * testCameraFrustum;
-    ODProjector * testProjector;
     ODFrustum * testProjectorFrustum;
 
     // camera animation
