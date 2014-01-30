@@ -169,14 +169,21 @@
     const FVector4 quadColor = {1.0f, 1.0f, 1.0f, [ menu opacity ] * 0.25f};
     const FVector4 textColor = {1.0f, 1.0f, 1.0f, [ menu opacity ]};
     const FRectangle texcoords = {{0.0f, 0.0f}, {1.0f, 1.0f}};
-    FVector2 valueRange = {.x = 0.0f, .y = 1.0f};
+
+    FVector2 valueRange = {0.0f, 1.0f};
+    FVector2 * valueRanges = NULL;
 
     if ( targetProperty.target != nil )
     {
         ODObjCGetVariable(targetProperty.target,
             targetProperty.offset,
             targetProperty.size,
-            &valueRange);
+            &valueRanges);
+    }
+
+    if ( valueRanges != NULL )
+    {
+        valueRange = valueRanges[0];
     }
 
     //NSLog(@"%@ %f %f", label, valueRange.x, valueRange.y);
