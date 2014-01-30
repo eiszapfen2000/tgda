@@ -1273,8 +1273,8 @@ static NSUInteger od_variance_size(const void * item)
         displacementZdXRanges = ALLOC_ARRAY(FVector2, lodCount);
         displacementZdZRanges = ALLOC_ARRAY(FVector2, lodCount);
 
-        float minHeight = 0.0;
-        float maxHeight = 0.0;
+        double minHeight = 0.0;
+        double maxHeight = 0.0;
 
         for ( uint32_t i = 0; i < lodCount; i++ )
         {
@@ -1292,19 +1292,8 @@ static NSUInteger od_variance_size(const void * item)
             maxHeight += heightRanges[i].y;
         }
 
-        const FVector3 planeNormal = {0.0f, 1.0f, 0.0f};
-
-        FPlane minPlane, maxPlane;
-        fplane_pvs_init_with_normal_and_scalar(&minPlane, &planeNormal, minHeight);
-        fplane_pvs_init_with_normal_and_scalar(&maxPlane, &planeNormal, maxHeight);
-
-        FVector3 minV = {0.0, minHeight, 0.0};
-        FVector3 maxV = {0.0, maxHeight, 0.0};
-
-        const float a = fplane_pv_signed_distance_from_plane(&minPlane, &maxV);
-        const float b = fplane_pv_signed_distance_from_plane(&maxPlane, &minV);
-
-        ///NSLog(@"%f %f %f", a, b, maxHeight - minHeight);
+        [ projector setLowerBound:minHeight ];
+        [ projector setUpperBound:maxHeight ];
 
         //---------------------------------------------
 
