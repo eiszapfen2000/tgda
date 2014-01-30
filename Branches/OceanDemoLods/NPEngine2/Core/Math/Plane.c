@@ -105,12 +105,12 @@ double plane_pv_signed_distance_from_plane(const Plane * const plane, const Vect
 {
     const double tmp = v3_vv_dot_product(&(plane->normal), point);
 
-    return tmp + plane->d;
+    return tmp - plane->d;
 }
 
 double plane_pv_distance_from_plane(Plane * plane, Vector3 * point)
 {
     double tmp = v3_vv_dot_product(&(plane->normal), point);
 
-    return fabs(tmp + plane->d);
+    return fabs(tmp - plane->d);
 }
