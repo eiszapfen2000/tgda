@@ -1259,11 +1259,11 @@ static NSUInteger od_variance_size(const void * item)
 
         // ranges update
 
-        heightRanges = ALLOC_ARRAY(FVector2, lodCount);
-        gradientXRanges = ALLOC_ARRAY(FVector2, lodCount);
-        gradientZRanges = ALLOC_ARRAY(FVector2, lodCount);
-        displacementXRanges = ALLOC_ARRAY(FVector2, lodCount);
-        displacementZRanges = ALLOC_ARRAY(FVector2, lodCount);
+        heightRanges          = ALLOC_ARRAY(FVector2, lodCount);
+        gradientXRanges       = ALLOC_ARRAY(FVector2, lodCount);
+        gradientZRanges       = ALLOC_ARRAY(FVector2, lodCount);
+        displacementXRanges   = ALLOC_ARRAY(FVector2, lodCount);
+        displacementZRanges   = ALLOC_ARRAY(FVector2, lodCount);
         displacementXdXRanges = ALLOC_ARRAY(FVector2, lodCount);
         displacementXdZRanges = ALLOC_ARRAY(FVector2, lodCount);
         displacementZdXRanges = ALLOC_ARRAY(FVector2, lodCount);
