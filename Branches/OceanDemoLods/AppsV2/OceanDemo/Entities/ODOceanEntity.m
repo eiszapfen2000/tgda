@@ -1292,8 +1292,8 @@ static NSUInteger od_variance_size(const void * item)
             maxHeight += heightRanges[i].y;
         }
 
-        [ projector setLowerBound:minHeight ];
-        [ projector setUpperBound:maxHeight ];
+        [ projector setLowerBound:minHeight * heightScale ];
+        [ projector setUpperBound:maxHeight * heightScale ];
 
         //---------------------------------------------
 

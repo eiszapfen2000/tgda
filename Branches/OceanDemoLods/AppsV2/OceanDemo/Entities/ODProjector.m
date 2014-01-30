@@ -58,6 +58,88 @@
 
 - (void) updateView
 {
+    /*
+    const Vector3 planeNormal = *NP_WORLD_Y_AXIS;
+
+    Plane lowerPlane, basePlane, upperPlane;
+    plane_pvs_init_with_normal_and_scalar(&lowerPlane, &planeNormal, lowerBound);
+    plane_pvs_init_with_normal_and_scalar(&basePlane,  &planeNormal, base);
+    plane_pvs_init_with_normal_and_scalar(&upperPlane, &planeNormal, upperBound);
+
+    Vector3 cameraPosition = [ camera position ];
+    Vector3 cameraForward  = [ camera forward  ];
+
+    const double dotNF = v3_vv_dot_product(&planeNormal, &cameraForward);
+
+    const double distanceToLowerPlane = plane_pv_signed_distance_from_plane(&lowerPlane, &cameraPosition);
+    const double distanceToBasePlane  = plane_pv_signed_distance_from_plane(&basePlane,  &cameraPosition);
+    const double distanceToUpperPlane = plane_pv_signed_distance_from_plane(&upperPlane, &cameraPosition);
+
+    NSLog(@"%lf %lf %lf", distanceToLowerPlane, distanceToBasePlane, distanceToUpperPlane);
+
+    const bool lookingDown = (dotNF < 0.0);
+    const bool underWater  = (distanceToLowerPlane <  0.0 );
+    const bool lowerSector = (distanceToLowerPlane >= 0.0 && distanceToBasePlane  < 0.0);
+    const bool upperSector = (distanceToBasePlane  >= 0.0 && distanceToUpperPlane < 0.0);
+    const bool outside     = (distanceToUpperPlane >= 0.0);
+
+    double move = 1.0;
+
+    // keep projector y position at least as high as upperBound
+    if ( !outside )
+    {
+        move = -distanceToUpperPlane;
+    }
+
+    Vector3 moveUp = v3_sv_scaled(move, &planeNormal);
+
+    NSLog(@"%lf", move);
+
+    Vector3 direction;
+
+    if ((lookingDown && !(lowerSector || underWater)) || (!lookingDown && (lowerSector || underWater)))
+    {
+        direction = cameraForward;
+    }
+    else
+    {
+        const double rf = 2.0 * dotNF;
+        const Vector3 tmp = v3_sv_scaled(rf, &planeNormal);
+        direction = v3_vv_sub(&cameraForward, &tmp);
+    }
+
+    Ray ray;
+    Vector3 aimOne;
+
+    ray.point = cameraPosition;
+    ray.direction = direction;
+
+    const int32_t result = plane_pr_intersect_with_ray_v(&basePlane, &ray, &aimOne);
+
+    const Vector3 forwardScaled = v3_sv_scaled(10.0, &cameraForward);
+    const Vector3 forwardDirection = v3_vv_add(&cameraPosition, &forwardScaled);
+    const double dotNForwardDirection = v3_vv_dot_product(&planeNormal, &forwardDirection);
+    const Vector3 normalScaled = v3_sv_scaled(dotNForwardDirection, &planeNormal);
+    const Vector3 aimTwo = v3_vv_sub(&forwardDirection, &normalScaled);
+
+    NSLog(@"%d\n%s\n%s", result, v3_v_to_string(&aimOne), v3_v_to_string(&aimTwo));
+
+    const double dotNFA = fabs(dotNF);
+    const Vector3 ao = v3_sv_scaled(dotNFA, &aimOne);
+    const Vector3 at = v3_sv_scaled(1.0 - dotNFA, &aimTwo);
+
+    const Vector3 aim = v3_vv_add(&ao, &at);
+
+    NSLog(@"%s", v3_v_to_string(&aim));
+
+    position = v3_vv_add(&cameraPosition, &moveUp);
+
+    m4_vvv_look_at_matrix_m(&position, &aim, NP_WORLD_Y_AXIS, &view);
+
+    Quaternion q = quat_m4_to_quaternion(&view);
+    orientation = quat_q_conjugated(&q);
+    */
+
     yaw   = fmod(yaw,   360.0);
     pitch = fmod(pitch, 360.0);
 
