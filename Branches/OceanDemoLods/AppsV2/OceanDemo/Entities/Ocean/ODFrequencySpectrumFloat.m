@@ -405,6 +405,12 @@ ODQuadrants;
             [ self generateUnifiedSpectrum ];
             break;
         }
+
+        default:
+        {
+            NSAssert(NO, @"Unknown generator type");
+            break;
+        }
     }
 }
 
