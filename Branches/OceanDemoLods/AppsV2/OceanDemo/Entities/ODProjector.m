@@ -186,6 +186,8 @@ static NPInputAction * create_input_action(NSString * projectorName, NSString * 
     yaw   = 0.0;
     pitch = 0.0;
 
+    lowerBound = base = upperBound = 0.0;
+
     fov = 45.0;
     nearPlane = 0.1;
     farPlane = 100.0;
@@ -211,6 +213,21 @@ static NPInputAction * create_input_action(NSString * projectorName, NSString * 
     SAFE_DESTROY(camera);
 
 	[ super dealloc ];
+}
+
+- (double) lowerBound
+{
+    return lowerBound;
+}
+
+- (double) base
+{
+    return base;
+}
+
+- (double) upperBound
+{
+    return upperBound;
 }
 
 - (double) fov
@@ -286,6 +303,21 @@ static NPInputAction * create_input_action(NSString * projectorName, NSString * 
 - (void) setPosition:(const Vector3)newPosition
 {
 	position = newPosition;
+}
+
+- (void) setLowerBound:(double)newLowerBound
+{
+    lowerBound = newLowerBound;
+}
+
+- (void) setBase:(double)newBase
+{
+    base = newBase;
+}
+
+- (void) setUpperBound:(double)newUpperBound
+{
+    upperBound = newUpperBound;
 }
 
 - (void) setCamera:(ODCamera *)newCamera
