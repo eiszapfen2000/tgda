@@ -703,6 +703,34 @@ void m4_mv_multiply_v(const Matrix4 * const m, const Vector4 * const v, Vector4 
     V_W(*result) = M_EL(*m,0,3) * V_X(*v) + M_EL(*m,1,3) * V_Y(*v) + M_EL(*m,2,3) * V_Z(*v) + M_EL(*m,3,3) * V_W(*v);
 }
 
+void m4_v3m_multiply_v3(const Vector3 * const v, const Matrix4 * const m, Vector3 * result)
+{
+    Vector4 tr;
+
+    V_X(tr) = V_X(*v) * M_EL(*m,0,0) + V_Y(*v) * M_EL(*m,0,1) + V_Z(*v) * M_EL(*m,0,2) + M_EL(*m,0,3);
+    V_Y(tr) = V_X(*v) * M_EL(*m,1,0) + V_Y(*v) * M_EL(*m,1,1) + V_Z(*v) * M_EL(*m,1,2) + M_EL(*m,1,3);
+    V_Z(tr) = V_X(*v) * M_EL(*m,2,0) + V_Y(*v) * M_EL(*m,2,1) + V_Z(*v) * M_EL(*m,2,2) + M_EL(*m,2,3);
+    V_W(tr) = V_X(*v) * M_EL(*m,3,0) + V_Y(*v) * M_EL(*m,3,1) + V_Z(*v) * M_EL(*m,3,2) + M_EL(*m,3,3);
+
+    result->x = tr.x / tr.w;
+    result->y = tr.y / tr.w;
+    result->z = tr.z / tr.w;
+}
+
+void m4_mv3_multiply_v3(const Matrix4 * const m, const Vector3 * const v, Vector3 * result)
+{
+    Vector4 tr;
+
+    V_X(tr) = M_EL(*m,0,0) * V_X(*v) + M_EL(*m,1,0) * V_Y(*v) + M_EL(*m,2,0) * V_Z(*v) + M_EL(*m,3,0);
+    V_Y(tr) = M_EL(*m,0,1) * V_X(*v) + M_EL(*m,1,1) * V_Y(*v) + M_EL(*m,2,1) * V_Z(*v) + M_EL(*m,3,1);
+    V_Z(tr) = M_EL(*m,0,2) * V_X(*v) + M_EL(*m,1,2) * V_Y(*v) + M_EL(*m,2,2) * V_Z(*v) + M_EL(*m,3,2);
+    V_W(tr) = M_EL(*m,0,3) * V_X(*v) + M_EL(*m,1,3) * V_Y(*v) + M_EL(*m,2,3) * V_Z(*v) + M_EL(*m,3,3);
+
+    result->x = tr.x / tr.w;
+    result->y = tr.y / tr.w;
+    result->z = tr.z / tr.w;
+}
+
 void m4_mv_translation_matrix(Matrix4 * m, const Vector3 * const v)
 {
     m4_m_set_identity(m);
@@ -745,7 +773,7 @@ void m4_msss_scale_matrix_xyz(Matrix4 * m, double x, double y, double z)
     M_EL(*m,2,2) = z;
 }
 
-void m4_vvv_look_at_matrix_m(Vector3 * eyePosition, Vector3 * lookAtPosition, Vector3 * upVector, Matrix4 * result)
+void m4_vvv_look_at_matrix_m(const Vector3 * const eyePosition, const Vector3 * const lookAtPosition, const Vector3 * const upVector, Matrix4 * result)
 {
     m4_m_set_identity(result);
 
@@ -761,7 +789,7 @@ void m4_vvv_look_at_matrix_m(Vector3 * eyePosition, Vector3 * lookAtPosition, Ve
     m4_vvvv_look_at_matrix_m(&rightVector, &normalisedUpVector, &lookAtVector, eyePosition, result);
 }
 
-void m4_vvvv_look_at_matrix_m(Vector3 * rightVector, Vector3 * upVector, Vector3 * forwardVector, Vector3 * position, Matrix4 * result)
+void m4_vvvv_look_at_matrix_m(const Vector3 * const rightVector, const Vector3 * const upVector, const Vector3 * const forwardVector, const Vector3 * const position, Matrix4 * result)
 {
     Matrix4 rotation;
     m4_m_set_identity(&rotation);
@@ -1000,6 +1028,22 @@ Vector4 m4_mv_multiply(const Matrix4 * const m, const Vector4 * const v)
 {
     Vector4 result;
     m4_mv_multiply_v(m, v, &result);
+
+    return result;
+}
+
+Vector3 m4_v3m_multiply(const Vector3 * const v, const Matrix4 * const m)
+{
+    Vector3 result;
+    m4_v3m_multiply_v3(v, m, &result);
+
+    return result;
+}
+
+Vector3 m4_mv3_multiply(const Matrix4 * const m, const Vector3 * const v)
+{
+    Vector3 result;
+    m4_mv3_multiply_v3(m, v, &result);
 
     return result;
 }
