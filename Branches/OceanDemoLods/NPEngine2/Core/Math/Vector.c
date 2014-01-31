@@ -169,7 +169,7 @@ Vector2 v2_max(void)
     return (Vector2){DBL_MAX, DBL_MAX};
 }
 
-Vector2 v2_v_inverted(Vector2 * v)
+Vector2 v2_v_inverted(const Vector2 * const v)
 {
     return (Vector2){-V_X(*v), -V_Y(*v)};
 }
@@ -389,7 +389,7 @@ Vector3 v3_max(void)
     return (Vector3){DBL_MAX, DBL_MAX, DBL_MAX};
 }
 
-Vector3 v3_v_inverted(Vector3 * v)
+Vector3 v3_v_inverted(const Vector3 * const v)
 {
     return (Vector3){-V_X(*v), -V_Y(*v), -V_Z(*v)};
 }
