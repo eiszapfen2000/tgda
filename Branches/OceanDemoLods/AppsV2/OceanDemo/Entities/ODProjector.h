@@ -19,6 +19,7 @@ OdProjectorRotationEvents;
 {
 	Matrix4 view;
     Matrix4 projection;
+    Matrix4 range;
     Matrix4 viewProjection;
     Matrix4 inverseViewProjection;
     Quaternion orientation;
