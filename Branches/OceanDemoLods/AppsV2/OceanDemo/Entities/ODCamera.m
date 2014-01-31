@@ -256,17 +256,17 @@ static NPInputAction * create_input_action(NSString * cameraName, NSString * act
     return pitch;
 }
 
-- (Matrix4 *) view
+- (const Matrix4 * const) view
 {
     return &view;
 }
 
-- (Matrix4 *) projection
+- (const Matrix4 * const) projection
 {
     return &projection;
 }
 
-- (Matrix4 *) inverseViewProjection
+- (const Matrix4 * const) inverseViewProjection
 {
     return &inverseViewProjection;
 }

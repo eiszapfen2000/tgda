@@ -52,9 +52,9 @@ OdCameraMovementEvents;
 - (Quaternion) orientation;
 - (double) yaw;
 - (double) pitch;
-- (Matrix4 *) view;
-- (Matrix4 *) projection;
-- (Matrix4 *) inverseViewProjection;
+- (const Matrix4 * const) view;
+- (const Matrix4 * const) projection;
+- (const Matrix4 * const) inverseViewProjection;
 - (BOOL) inputLocked;
 
 - (void) setNearPlane:(double)newNearPlane;
