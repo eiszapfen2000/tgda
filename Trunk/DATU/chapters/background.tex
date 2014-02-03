@@ -1,3 +1,32 @@
+\section{Statistical Wave Models}
+
+\newcommand{\mvec}[1]{\mathbf{#1}}
+\newcommand{\mvecx}[1]{\mathbf{#1}_x}
+\newcommand{\mvecy}[1]{\mathbf{#1}_y}
+\newcommand{\mvecz}[1]{\mathbf{#1}_z}
+\newcommand{\mvecw}[1]{\mathbf{#1}_w}
+\newcommand{\mmat}[1]{\mathbf{#1}}
+\newcommand{\transpose}[1]{#1^{\mathsf{T}}}
+\newcommand{\inverse}[1]{#1^{\mathsf{-1}}}
+\newcommand{\normalise}[1]{\frac{#1}{\norm{#1}}}
+
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}
+
+\subsection{Phillips Spectrum}
+\label{sec_phillips_spectrum}
+
+\begin{align}
+  k &= \norm{\mvec{k}}\\
+  w &= \norm{\mvec{w}}\\
+  P(\mvec{k}) &= A\frac{exp(-(kL)^{-2})}{k^4}\abs*{\frac{\transpose{\mvec{k}}}{k}\frac{\mvec{w}}{w}}^2\\
+  P(\mvec{k}) &= A\frac{exp(-(kL)^{-2}-(kl)^2)}{k^4}\abs*{\frac{\transpose{\mvec{k}}}{k}\frac{\mvec{w}}{w}}^4
+\end{align}
+
+
+\subsection{Unified Spectrum}
+\label{sec_unified_spectrum}
+
 \section{The Projected Grid}
 \label{sec_projected_grid}
 The projected grid is based on a simple concept: in order to achieve an
@@ -35,15 +64,6 @@ positions.}
 %  \item apply height displacement
 %  \item run the grid through the rendering pipeline as usual
 % \end{itemize}
-
-\newcommand{\mvec}[1]{\mathbf{#1}}
-\newcommand{\mvecx}[1]{\mathbf{#1}_x}
-\newcommand{\mvecy}[1]{\mathbf{#1}_y}
-\newcommand{\mvecz}[1]{\mathbf{#1}_z}
-\newcommand{\mvecw}[1]{\mathbf{#1}_w}
-\newcommand{\mmat}[1]{\mathbf{#1}}
-\newcommand{\transpose}[1]{#1^{\mathsf{T}}}
-\newcommand{\inverse}[1]{#1^{\mathsf{-1}}}
 
 \subsection{Coordinate Systems}
 \label{sec:coordinate_systems}
