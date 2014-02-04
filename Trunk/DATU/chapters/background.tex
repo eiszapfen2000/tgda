@@ -1,5 +1,3 @@
-\section{Statistical Wave Models}
-
 \newcommand{\mvec}[1]{\mathbf{#1}}
 \newcommand{\mvecx}[1]{\mathbf{#1}_x}
 \newcommand{\mvecy}[1]{\mathbf{#1}_y}
@@ -12,6 +10,29 @@
 
 \DeclarePairedDelimiter\abs{\lvert}{\rvert}
 \DeclarePairedDelimiter\norm{\lVert}{\rVert}
+
+\section{Linear Theory of Ocean Surface Waves}
+\label{sec_linear_theory_ocean_waves}
+
+Assume we observe an idealized ocean in which exactly one sine wave is travelling constantly.
+The parameters defining the sine wave - amplitude, frequency, length and direction - are all fixed.
+Furthermore we restrict our observation to the vertical displacement $\eta$ at location $\mvec{x}$.
+To simplify the mathematics we assume a two-dimensional ocean, with the abscissa representing the
+wave's direction of travel and the ordinate its vertical displacement. With these assumptions it
+follows in terms of the one-dimensional parameters that:
+%
+\begin{align}
+ \eta = Asin(kx - \omega t)\\
+\intertext{with}
+ k = \frac{2\pi}{\lambda}
+\quad\text{and}\quad
+ \omega = 2\pi f 
+\end{align}
+%
+where $k$ is the~\emph{wave number},~$\lambda$ is the~\emph{wave length},~$\omega$ is the~\emph{wave frequency}
+in radians per second and $f$ is the~\emph{wave frequency} in Hertz (Hz).
+
+\section{Statistical Wave Models}
 
 \subsection{Phillips Spectrum}
 \label{sec_phillips_spectrum}
