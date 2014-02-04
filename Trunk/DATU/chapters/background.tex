@@ -17,20 +17,21 @@
 Assume we observe an idealized ocean in which exactly one sine wave is travelling constantly.
 The parameters defining the sine wave - amplitude, frequency, length and direction - are all fixed.
 Furthermore we restrict our observation to the vertical displacement $\eta$ at location $\mvec{x}$.
-To simplify the mathematics we assume a two-dimensional ocean, with the abscissa representing the
-wave's direction of travel and the ordinate its vertical displacement. With these assumptions it
-follows in terms of the one-dimensional parameters that:
+To simplify the mathematics we assume a two-dimensional ocean, with one dimension representing the
+wave's direction of travel and the other dimension the wave's vertical displacement.
+With these assumptions it follows that:
 %
-\begin{align}
+\begin{equation}
  \eta = Asin(kx - \omega t)\\
-\intertext{with}
- k = \frac{2\pi}{\lambda}
-\quad\text{and}\quad
- \omega = 2\pi f 
+\end{equation}
+with
+\begin{align}
+ k &= \frac{2\pi}{\lambda} & \omega &= 2\pi f & f &= \frac{1}{T}
 \end{align}
 %
-where $k$ is the~\emph{wave number},~$\lambda$ is the~\emph{wave length},~$\omega$ is the~\emph{wave frequency}
-in radians per second and $f$ is the~\emph{wave frequency} in Hertz (Hz).
+where $A$ is the amplitude, $k$ is the~\emph{wave number},~$\lambda$ is the~\emph{wave length},
+~$\omega$ is the~\emph{wave frequency} in radians per second,~$f$ is the~\emph{wave frequency}
+in Hertz (Hz) and~$T$ is the wave period.
 
 \section{Statistical Wave Models}
 
