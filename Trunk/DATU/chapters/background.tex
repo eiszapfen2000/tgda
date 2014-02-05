@@ -99,17 +99,23 @@ equal to the wave length $\lambda$. Let $c$ be the phase speed, then:
 \end{equation}
 %
 As one can see, the phase speed is dependent on the dispersion relation. Given the dispersion relation
+from equation~\ref{eq:dispersion_relation}, the phase speed is
+\begin{equation}
+ c = \sqrt{\frac{g}{k}\tanh{kd}}
+\end{equation}
+
+Given the dispersion relation
 approximations for shallow and deep water in Section~\ref{sec:dispersion_relation}, the corresponding
 phase speeds are derived as follows:
 %
 \begin{align}
- c &= \sqrt{\frac{\omega^2}{k^2}} = \sqrt{\frac{gk^2d}{k^2}} = \sqrt{gd} && \text{Shallow water phase speed}\\ \label{eq:phase_speed_shallow_water}
- c &= \sqrt{\frac{\omega^2}{k^2}} = \sqrt{\frac{gk}{k^2}} = \sqrt{\frac{g}{k}} = \frac{g}{\omega} && \text{Deep water phase speed} \label{eq:phase_speed_deep_water}
+ c &= \sqrt{gd} && \text{Shallow water phase speed}\\ \label{eq:phase_speed_shallow_water}
+ c &= \sqrt{\frac{g}{k}} = \frac{g}{\omega} && \text{Deep water phase speed} \label{eq:phase_speed_deep_water}
 \end{align}
 %
 In deep water the phase speed depends on the wave length (because of $k$) or the wave frequency (because of $\omega$).
 Equation~\ref{eq:phase_speed_deep_water} implies that longer waves travel faster in deep water. Hence it is said, that
-deep water waves are dispersive. Shallow water waves on the other hand depend only on water depth, they are not considered
+deep water waves are dispersive. Shallow water waves, on the other hand, depend only on water depth, they are not considered
 as dispersive.
 
 \subsection{Give me a name}
