@@ -12,7 +12,7 @@
 \DeclarePairedDelimiter\norm{\lVert}{\rVert}
 
 \section{Linear Theory of Ocean Surface Waves}
-\label{sec_linear_theory_ocean_waves}
+\label{sec:linear_theory_ocean_waves}
 
 We begin with the assumption that the amplitudes of waves on the ocean surface are infinitely
 small in relation to the size of the water body. Moreover, suppose we observe an idealized ocean
@@ -32,21 +32,24 @@ with
 %
 where $A$ is the amplitude, $k$ is the~\emph{wave number},~$x$ is the horizontal position,
 $\omega$ is the~\emph{wave frequency} in radians per second,~$t$ represents the time,
-$\lambda$ is the~\emph{wave length},~$f$ is the~\emph{wave frequency} in Hertz (Hz) and~$T$ is the wave period.
+$\lambda$ is the~\emph{wave length},~$f$ is the~\emph{wave frequency} in Hertz (Hz) and~$T$
+is the wave period in seconds.
 %
 \fxfatal{Add image}
 
 \subsection{The Dispersion Relation}
-\label{sec_dispersion_relation}
+\label{sec:dispersion_relation}
 
 In linear wave theory there is a well known functional relationship between angular frequency~$\omega$
 and wave number~$k$:
 %
 \begin{equation}
+\label{eq:dispersion_relation}
  \omega^2 = gk\tanh(kd)
 \end{equation}
 %
-where $g$ is the acceleration of earth's gravity and $d$ is the water depth.
+where $g$ is the acceleration of earth's gravity and $d$ is the water depth. Equation~\ref{eq:dispersion_relation}
+is called the~\emph{dispersion relation}.
 
 There exist a useful set of modifications to the dispersion relation based on different conditions:
 \begin{itemize}
@@ -69,6 +72,32 @@ In contrast, for deep water the respective dispersion relation is reduced as fol
  \Rightarrow \tanh(kd) & = 1 \\
  \Rightarrow \omega^2 & = gk
 \end{align}
+
+\subsection{Phase Velocity}
+\label{sec:phase_velocity}
+The rate at which a particular phase of a wave propagates in space is called the~\emph{phase velocity}.
+The phase velocity is a vector and has an associated direction, the \emph{phase speed} on the other hand
+refers only to the magnitude of the phase velocity. The most comprehensible example of phase speed
+is rate of propagation of the wave crest. During one wave period $T$ the wave crest travels a distance
+equal to the wave length $\lambda$. Let $c$ be the phase speed, then:
+%
+\begin{equation}
+ c = \frac{\lambda}{T} = \frac{\omega}{k}
+\end{equation}
+%
+As one can see, the phase speed is dependent on the dispersion relation. Given the dispersion relation
+approximations for shallow and deep water in Section~\ref{sec:dispersion_relation}, the corresponding
+phase speeds are derived as follows:
+%
+\begin{align}
+ c &= \sqrt{\frac{\omega^2}{k^2}} = \sqrt{\frac{gk^2d}{k^2}} = \sqrt{gd} && \text{Shallow water phase speed}\\ \label{eq:phase_speed_shallow_water}
+ c &= \sqrt{\frac{\omega^2}{k^2}} = \sqrt{\frac{gk}{k^2}} = \sqrt{\frac{g}{k}} = \frac{g}{\omega} && \text{Deep water phase speed} \label{eq:phase_speed_deep_water}
+\end{align}
+%
+In deep water the phase speed depends on the wave length (because of $k$) or the wave frequency (because of $\omega$).
+Equation~\ref{eq:phase_speed_deep_water} implies that longer waves travel faster in deep water. Hence it is said, that
+deep water waves are dispersive. Shallow water waves on the other hand depend only on water depth, they are not considered
+as dispersive.
 
 \section{Statistical Wave Models}
 
