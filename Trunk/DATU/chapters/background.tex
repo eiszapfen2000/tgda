@@ -36,6 +36,17 @@ where $A$ is the amplitude, $k$ is the~\emph{wave number},~$x$ is the horizontal
 $\omega$ is the~\emph{wave frequency} in radians per second,~$t$ represents the time,
 $\lambda$ is the~\emph{wave length},~$f$ is the~\emph{wave frequency} in Hertz (Hz) and~$T$
 is the wave period in seconds.
+
+It follows from equation~\ref{eq:sinusoid} that the surface elevation $\eta$ is limited by the amplitude $A$.
+Moreover, for
+\begin{equation}
+kx - \omega t = const
+\end{equation}
+the surface elevation $\eta$ always has the same value. We rewrite the term to
+\begin{equation}
+x = \frac{\omega}{k}t + \frac{const}{k}
+\end{equation}
+which gives us all positions $x$ the wave has the same value at.
 %
 \fxfatal{Add image}
 
@@ -84,7 +95,7 @@ is rate of propagation of the wave crest. During one wave period $T$ the wave cr
 equal to the wave length $\lambda$. Let $c$ be the phase speed, then:
 %
 \begin{equation}
- c = \frac{\lambda}{T} = \frac{\omega}{k}
+ c = \frac{\mathrm dx}{\mathrm dt} = \frac{\lambda}{T} = \frac{\omega}{k}
 \end{equation}
 %
 As one can see, the phase speed is dependent on the dispersion relation. Given the dispersion relation
