@@ -116,11 +116,15 @@ phase speeds are derived as follows:
 In deep water the phase speed depends on the wave length (because of $k$) or the wave frequency (because of $\omega$).
 Equation~\ref{eq:phase_speed_deep_water} implies that longer waves travel faster in deep water. Hence it is said, that
 \emph{deep water waves are dispersive}. Shallow water waves, on the other hand, depend only on water depth, they are not considered
-as dispersive.
+dispersive.
 
 \subsection{Three Dimensional Wave}
-Since we want to allow a wave to be able to travel in an arbitrary direction on a plane, we extend
-equation~\ref{eq:sinusoid} in a straightforward manner to handle two dimensional input positions:
+Until now we were discussing a two dimensional ocean defined by exactly one sinus wave. As a first
+step to get to a more realistic ocean surface representation we will extend equation~\ref{eq:sinusoid}
+to form a wave in three dimensional space. In contrast to equation~\ref{eq:sinusoid}, where the wave's
+travelling direction is fixed, the wave has to be able to travel in an arbitrary direction on a plane.
+Moreover, we need to handle two dimensional input positions. The sinusoid describing surface elevation
+in three dimensional space is defined as follows:
 \begin{equation}
  \eta(\mvec{x}, t) = A\sin(\transpose{\mvec{k}}\mvec{x} - \omega t)
 \end{equation}
