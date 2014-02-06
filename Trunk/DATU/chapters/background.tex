@@ -25,7 +25,7 @@ at our observed location as a sinusoid
 %
 \begin{equation}
 \label{eq:sinusoid}
- \eta(x, t) = A\sin(kx - \omega t)\\
+ \eta(x, t) = A\cos(kx - \omega t)\\
 \end{equation}
 with
 \begin{align}
@@ -126,7 +126,7 @@ travelling direction is fixed, the wave has to be able to travel in an arbitrary
 Moreover, we need to handle two dimensional input positions. The sinusoid describing surface elevation
 in three dimensional space is defined as follows:
 \begin{equation}
- \eta(\mvec{x}, t) = A\sin(\transpose{\mvec{k}}\mvec{x} - \omega t)
+ \eta(\mvec{x}, t) = A\cos(\transpose{\mvec{k}}\mvec{x} - \omega t)
 \end{equation}
 where $\mvec{x} = (x_x, x_z)$ denotes the observed point on a plane and $\mvec{k} = (k_x, k_z)$ represents
 the travelling direction of the wave. The wave number $k$ of wave vector $\mvec{k}$ is determined by the wave vector's
@@ -135,6 +135,41 @@ magnitude
  k = \norm{\mvec{k}}
 \end{equation}
 Thus, because of the dispersion relation, all waves of same magnitude share the same frequency.
+
+\subsection{Sum of Waves}
+Use euler identity for wave representation
+\begin{equation}
+ e^ix = \cos{x} + \mathrm{i}\sin{x}
+\end{equation}
+%
+surface elevation looks as follows
+%
+\begin{equation}
+ \eta(\mvec{x}, t) = \mathrm{Re}(A\mathrm{e}^{\mathrm{i}[\transpose{\mvec{k}}\mvec{x} - {\omega}t]})
+\end{equation}
+%
+or equivalent
+%
+\begin{align}
+ p &= A\mathrm{e}^{\mathrm{i}[\transpose{\mvec{k}}\mvec{x} - {\omega}t]} \\
+ \eta &= \frac{1}{2}p + \frac{1}{2}p^*
+\end{align}
+where $p^*$ is the complex conjugate of $p$
+
+Now the sum of waves
+%
+\begin{equation}
+ \eta(\mvec{x}, t) = \sum_{\mvec{k}}a(\mvec{k})\mathrm{e}^{\mathrm{i}[\transpose{\mvec{k}}\mvec{x} - {\omega}t]}
+\end{equation}
+%
+transform to
+\begin{equation}
+ \eta(\mvec{x}, t) = \sum_{\mvec{k}}B(\mvec{k})\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\end{equation}
+%
+we need $B(\mvec{k})$ for every $\mvec{x}$, which is not feasible
+%
+gaussian stationary process
 
 
 \section{Statistical Wave Models}
