@@ -66,15 +66,21 @@ limited amount of time.
 
 \section{Linear Theory of Ocean Surface Waves}
 \label{sec:linear_theory_ocean_waves}
- \cite{book:kinsman2002wind}
-We begin with the assumption that the amplitudes of waves on the ocean surface are infinitely
-small in relation to the size of the water body. Moreover, suppose we observe an idealized ocean
-in which exactly one sine wave is travelling constantly. The parameters defining the sine wave
-- amplitude, frequency, length and direction - are all fixed. Furthermore we restrict our observation
-to the vertical displacement $\eta$ at a fixed position. To simplify the mathematics we assume
-a two-dimensional ocean, with one dimension representing the wave's direction of travel and the
- other the wave's vertical displacement. With these assumptions we can describe surface elevation
-at our observed location as a sinusoid
+Linear wave theory makes a set of assumptions about the properties of the fluid, such as its viscosity,
+compressibility and curl. We will neither discuss these fluid properties, fluid dynamics nor the derivation
+of the linear wave theory, Airy~\cite{book:airy1845tides}, Batchelor~\cite{book:batchelor2000introduction}
+and Kinsman~\cite{book:kinsman2002wind} provide all related in depth information. But we will mention
+two core assumptions of the linear wave theory which are easy to picture:
+\begin{itemize}
+ \item The water body has a uniform mean depth
+ \item The wave amplitudes are small in relation to the size of the water body
+\end{itemize}
+Suppose we observe an idealized ocean in which exactly one sine wave is travelling constantly.
+The parameters defining the sine wave - amplitude, frequency, length and direction - are all fixed.
+Furthermore we restrict our observation to the vertical displacement $\eta$ at a fixed position
+or a fixed point in time. To simplify the mathematics we assume a two-dimensional ocean, with one
+dimension representing the wave's direction of travel and the  other the wave's vertical displacement.
+With these assumptions we can describe surface elevation at our observed location as a sinusoid
 %
 \begin{equation}
 \label{eq:sinusoid}
@@ -95,11 +101,12 @@ Moreover, for
 \begin{equation}
 kx - \omega t = const
 \end{equation}
-the surface elevation $\eta$ always has the same value. We rewrite the term to
-\begin{equation}
-x = \frac{\omega}{k}t + \frac{const}{k}
-\end{equation}
-which gives us all positions $x$ the wave has the same value at.
+the surface elevation $\eta$ is always the same. We rewrite the term to
+\begin{align}
+x &= \frac{\omega}{k}t + \frac{const}{k} \\
+t &= \frac{kx}{\omega}t - \frac{const}{\omega}
+\end{align}
+which gives us all positions $x$ or times $t$ the wave has the same value at.
 %
 \fxfatal{Add image}
 
