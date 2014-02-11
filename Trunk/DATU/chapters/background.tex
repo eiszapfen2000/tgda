@@ -42,6 +42,12 @@ Moreover, since wind blowing over a vast stretch of the air-sea interface is the
 the ocean surface, this kind of waves are called~\emph{wind generated waves}, or in short,~\emph{wind waves}.
 Wind waves on the ocean surface represent gravity waves, while e.g. tsunamis and ocean tides do not.\\
 
+The process behind surface gravity waves is a simple one - the moment a fluid element at the interface is displaced, gravity
+will try to restore it to equilibrium which results in oscillation of said fluid element. We mentioned before,
+that wind is the most prominent force causing displacement on the water surface. As it blows, it causes pressure and friction
+forces which perturb the water surface's equilibrium. Therefore, the combination of wind transferring energy from the air
+to the water and gravitational acceleration cause the formation of waves on the water surface.\\
+
 In order to be able to model the surface of such an intricate fluid system as the ocean, one has to reduce complexity.
 Research fields such as ocean engineering or coastal engineering employ the~\emph{Airy wave theory}\cite{book:airy1845tides}
 to model the properties of the sea. Airy wave theory, also known as~\emph{linear wave theory}, describes the propagation of
@@ -105,7 +111,7 @@ kx - \omega t = const
 the surface elevation $\eta$ is always the same. We rewrite the term to
 \begin{align}
 x &= \frac{\omega}{k}t + \frac{const}{k} \\
-t &= \frac{kx}{\omega}t - \frac{const}{\omega}
+t &= \frac{kx}{\omega} - \frac{const}{\omega}
 \end{align}
 which gives us all positions $x$ or times $t$ the wave has the same value at.
 %
