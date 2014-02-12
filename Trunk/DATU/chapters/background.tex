@@ -118,36 +118,49 @@ wave height $H$ as
 \end{equation}
 \\
 
-Moreover, for
+\subsection{Phase Velocity}
+\label{sec:phase_velocity}
+%In linear wave theory a sinusoid as defined in Equation~\ref{eq:sinusoid} propagates with the phase velocity.
+In linear wave theory the rate at which a particular phase of a wave propagates in space is called
+the~\emph{phase velocity}. The phase velocity is a vector and has an associated direction,
+the \emph{phase speed} on the other hand refers only to the magnitude of the phase velocity.
+The most comprehensible example of phase speed is the rate of propagation of the wave crest.
+During one wave period $T$ the wave crest travels a distance equal to the wave length $\lambda$.
+We may generalize this - given
 \begin{equation}
-kx - \omega t = const
+  kx - \omega t = const
 \end{equation}
-the surface elevation $\eta$ is always the same. We rewrite the term to
-\begin{align}
-x &= \frac{\omega}{k}t + \frac{const}{k} \\
-t &= \frac{kx}{\omega} - \frac{const}{\omega}
-\end{align}
-which gives us all positions $x$ or times $t$ the wave has the same value at.
-%
+the surface elevation $\eta$ will always be the same. We rewrite the term to
+\begin{equation}
+  x = \frac{\omega}{k}t + \frac{const}{k}
+\end{equation}
+which gives us all positions $x$ the wave has the same value at. These positions are time dependent,
+therefore differentiation gives us phase speed $c$:
+\begin{equation}
+  c = \frac{\mathrm dx}{\mathrm dt} = \frac{\lambda}{T} = \frac{\omega}{k}
+\end{equation}
 
 \subsection{The Dispersion Relation}
 \label{sec:dispersion_relation}
 
-Linear wave theory describes a functional relationship between angular frequency~$\omega$
-and wave number~$k$:
-%
+In the context of water surface waves,~\emph{dispersion} refers to~\emph{frequency dispersion}, which describes
+the effect of waves at different wavelengths travelling at different phase speeds. We have seen that
+phase speed involves wave length and frequency, therefore we will start with the functional relationship
+between angular frequency~$\omega$ and wave number~$k$ as defined by linear wave theory:
 \begin{equation}
 \label{eq:dispersion_relation}
  \omega^2 = gk\tanh(kd)
 \end{equation}
 %
 where $g$ is the acceleration of earth's gravity and $d$ is the water depth. Equation~\ref{eq:dispersion_relation}
-is called the~\emph{dispersion relation}.
+is called the~\emph{dispersion relation}.\\
 
-There exist a useful set of modifications to the dispersion relation based on different conditions:
+There exist two useful approximations of Equation~\ref{eq:dispersion_relation} which do not involve the $\tanh$ term:
 \begin{itemize}
  \item \emph{Shallow water approximation} - the water depth $d$ is much smaller than the wave length $\lambda$.
+ Assume $d \ll \lambda$, then $0 \leq kd \ll 1$ and $\tanh(kd) \approx kd$.
  \item \emph{Deep water approximation} - the water depth $d$ is much larger than the wave length $\lambda$.
+ Assume $d \gg \lambda$, then $kd \gg 1$ and $\tanh(kd) \approx 1$.
 \end{itemize}
 
 In case of shallow water the respective dispersion relation is derived as follows:
@@ -166,37 +179,37 @@ In contrast, for deep water the respective dispersion relation is reduced as fol
  \Rightarrow \omega^2 & = gk
 \end{align}
 
-\subsection{Phase Velocity}
-\label{sec:phase_velocity}
-The rate at which a particular phase of a wave propagates in space is called the~\emph{phase velocity}.
-The phase velocity is a vector and has an associated direction, the \emph{phase speed} on the other hand
-refers only to the magnitude of the phase velocity. The most comprehensible example of phase speed
-is rate of propagation of the wave crest. During one wave period $T$ the wave crest travels a distance
-equal to the wave length $\lambda$. Let $c$ be the phase speed, then:
-%
-\begin{equation}
- c = \frac{\mathrm dx}{\mathrm dt} = \frac{\lambda}{T} = \frac{\omega}{k}
-\end{equation}
-%
-As one can see, the phase speed is dependent on the dispersion relation. Given the dispersion relation
-from equation~\ref{eq:dispersion_relation}, the phase speed is
-\begin{equation}
- c = \sqrt{\frac{g}{k}\tanh{kd}}
-\end{equation}
-
-Given the dispersion relation
-approximations for shallow and deep water in Section~\ref{sec:dispersion_relation}, the corresponding
-phase speeds are derived as follows:
-%
-\begin{align}
- c &= \sqrt{gd} && \text{Shallow water phase speed}\\ \label{eq:phase_speed_shallow_water}
- c &= \sqrt{\frac{g}{k}} = \frac{g}{\omega} && \text{Deep water phase speed} \label{eq:phase_speed_deep_water}
-\end{align}
-%
-In deep water the phase speed depends on the wave length (because of $k$) or the wave frequency (because of $\omega$).
-Equation~\ref{eq:phase_speed_deep_water} implies that longer waves travel faster in deep water. Hence it is said, that
-\emph{deep water waves are dispersive}. Shallow water waves, on the other hand, depend only on water depth, they are not considered
-dispersive.
+% \subsection{Phase Velocity}
+% \label{sec:phase_velocity}
+% The rate at which a particular phase of a wave propagates in space is called the~\emph{phase velocity}.
+% The phase velocity is a vector and has an associated direction, the \emph{phase speed} on the other hand
+% refers only to the magnitude of the phase velocity. The most comprehensible example of phase speed
+% is rate of propagation of the wave crest. During one wave period $T$ the wave crest travels a distance
+% equal to the wave length $\lambda$. Let $c$ be the phase speed, then:
+% %
+% \begin{equation}
+%  c = \frac{\mathrm dx}{\mathrm dt} = \frac{\lambda}{T} = \frac{\omega}{k}
+% \end{equation}
+% %
+% As one can see, the phase speed is dependent on the dispersion relation. Given the dispersion relation
+% from equation~\ref{eq:dispersion_relation}, the phase speed is
+% \begin{equation}
+%  c = \sqrt{\frac{g}{k}\tanh{kd}}
+% \end{equation}
+% 
+% Given the dispersion relation
+% approximations for shallow and deep water in Section~\ref{sec:dispersion_relation}, the corresponding
+% phase speeds are derived as follows:
+% %
+% \begin{align}
+%  c &= \sqrt{gd} && \text{Shallow water phase speed}\\ \label{eq:phase_speed_shallow_water}
+%  c &= \sqrt{\frac{g}{k}} = \frac{g}{\omega} && \text{Deep water phase speed} \label{eq:phase_speed_deep_water}
+% \end{align}
+% %
+% In deep water the phase speed depends on the wave length (because of $k$) or the wave frequency (because of $\omega$).
+% Equation~\ref{eq:phase_speed_deep_water} implies that longer waves travel faster in deep water. Hence it is said, that
+% \emph{deep water waves are dispersive}. Shallow water waves, on the other hand, depend only on water depth, they are not considered
+% dispersive.
 
 \subsection{Three Dimensional Wave}
 Until now we were discussing a two dimensional ocean defined by exactly one sinus wave. As a first
