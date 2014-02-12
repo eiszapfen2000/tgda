@@ -73,15 +73,15 @@ and Kinsman~\cite{book:kinsman2002wind}, which provide a good starting point for
 
 \emph{But} we will mention two core assumptions of the linear wave theory which are easy to picture:
 \begin{itemize}
- \item The water body has a uniform mean depth
- \item The wave amplitudes are small in relation to the size of the water body
+ \item The water body has a uniform mean depth.
+ \item The wave amplitudes are small in relation to the size of the water body.
 \end{itemize}
 Suppose we observe an idealized ocean in which exactly one sine wave is travelling constantly.
 The parameters defining the sine wave - amplitude, frequency, length and direction - are all fixed.
-Furthermore we restrict our observation to the vertical displacement $\eta$ at a fixed position
-or a fixed point in time. To simplify the mathematics we assume a two-dimensional ocean, with one
-dimension representing the wave's direction of travel and the  other the wave's vertical displacement.
-With these assumptions we can describe surface elevation at our observed location as a sinusoid
+%Furthermore we restrict our observation to the vertical displacement $\eta$ at a fixed position or a fixed point in time.
+To simplify the mathematics we assume a two-dimensional ocean, with one dimension representing
+the wave's direction of travel and the  other the wave's vertical displacement.
+With these assumptions we can describe surface elevation as a sinusoid
 %
 \begin{equation}
 \label{eq:sinusoid}
@@ -95,16 +95,29 @@ with
 where $A$ is the amplitude, $k$ is the~\emph{wave number},~$x$ is the horizontal position,
 $\omega$ is the~\emph{wave frequency} in radians per second,~$t$ represents the time,
 $\lambda$ is the~\emph{wave length},~$f$ is the~\emph{wave frequency} in Hertz (Hz) and~$T$
-is the wave period in seconds.
+is the wave period in seconds.\\
 
-\begin{figure}
+\begin{figure}[b]
 	\centering
 	\includegraphics[width=\textwidth]{figures/sinusoid}
 	\caption{Sample figure}
 	\label{fig:sinusoid}
 \end{figure}
+%
+We may picture Equation~\ref{eq:sinusoid} in an easy way if we either focus on a fixed position $x$
+or a fixed point in time $t$, see Figure~\ref{fig:sinusoid}. If we assume a fixed position, we can
+see the surface elevation evolve through time at that position. On the other hand, if we assume a fixed
+point in time, we can observe surface elevation at all positions at that specific time.
+The wave's high point is called a~\emph{crest}, its low point a~\emph{trough}. Because surface elevation
+is described by a cosinus function, all crests and all troughs will have the same elevations. Another effect
+of the cosinus function is that the surface elevation is limited by the amplitude $A$. We will call the
+difference in elevation between crest and trough the~\emph{wave height}. It is obvious that we can define
+wave height $H$ as
+\begin{equation}
+ H = 2A
+\end{equation}
+\\
 
-It follows from equation~\ref{eq:sinusoid} that the surface elevation $\eta$ is limited by the amplitude $A$.
 Moreover, for
 \begin{equation}
 kx - \omega t = const
@@ -116,7 +129,6 @@ t &= \frac{kx}{\omega} - \frac{const}{\omega}
 \end{align}
 which gives us all positions $x$ or times $t$ the wave has the same value at.
 %
-\fxfatal{Add image}
 
 \subsection{The Dispersion Relation}
 \label{sec:dispersion_relation}
