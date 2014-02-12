@@ -162,23 +162,34 @@ There exist two useful approximations of Equation~\ref{eq:dispersion_relation} w
  \item \emph{Deep water approximation} - the water depth $d$ is much larger than the wave length $\lambda$.
  Assume $d \gg \lambda$, then $kd \gg 1$ and $\tanh(kd) \approx 1$.
 \end{itemize}
-
-In case of shallow water the respective dispersion relation is derived as follows:
+%
+The reduced dispersion relations are as follows:
 \begin{align}
- d & \ll \lambda \\
- \Rightarrow 0 \leq kd & \ll 1 \\
- \Rightarrow \tanh(kd) & = kd \\
- \Rightarrow \omega^2 & = gk^2d
+ \omega^2 & = gk^2d && \text{with} & d &> \frac{\lambda}{2}  && \text{Shallow water dispersion relation}\\
+ \omega^2 & = gk    && \text{with} & d &< \frac{\lambda}{20} && \text{Deep water dispersion relation}
 \end{align}
-
-In contrast, for deep water the respective dispersion relation is reduced as follows:
+%
+Given the dispersion relation approximations for shallow and deep water, the corresponding
+phase speeds are:
 \begin{align}
- d & \gg \lambda \\
- \Rightarrow kd & \gg 1 \\
- \Rightarrow \tanh(kd) & = 1 \\
- \Rightarrow \omega^2 & = gk
+ \label{eq:phase_speed_shallow_water} c &= \sqrt{gd} && \text{Shallow water phase speed}\\
+  \label{eq:phase_speed_deep_water}   c &= \sqrt{\frac{g}{k}} = \frac{g}{\omega} && \text{Deep water phase speed}
 \end{align}
-
+%
+According to Equation~\ref{eq:phase_speed_shallow_water}, in shallow water phase speed depends exclusively
+on water depth and gravitational acceleration, there is no connection to wave length or frequency.
+We may conclude that~\emph{shallow water is not dispersive}. Phase speed in deep water, on the other hand,
+does not relate to water depth, but to wave length and frequency, which makes~\emph{deep water dispersive}.
+We can expand Equation~\ref{eq:phase_speed_deep_water} to:
+%
+\begin{equation}
+\label{eq:phase_speed_deep_water_l}
+ c = \sqrt{\frac{g\lambda}{2\pi}} = \frac{gT}{2\pi}
+\end{equation}
+%
+Looking at Equation~\ref{eq:phase_speed_deep_water_l} we can conclude that phase speed in deep water increases
+with wave length $\lambda$ ~\emph{and} with wave period $T$.
+%
 % \subsection{Phase Velocity}
 % \label{sec:phase_velocity}
 % The rate at which a particular phase of a wave propagates in space is called the~\emph{phase velocity}.
