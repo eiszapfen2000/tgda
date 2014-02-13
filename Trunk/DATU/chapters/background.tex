@@ -11,6 +11,12 @@
 \DeclarePairedDelimiter\abs{\lvert}{\rvert}
 \DeclarePairedDelimiter\norm{\lVert}{\rVert}
 
+%\renewcommand\Re{\operatorname{Re}}
+%\renewcommand\Im{\operatorname{Im}}
+
+\renewcommand{\Re}{\mathcal{R}}
+\renewcommand{\Im}{\mathcal{I}} 
+
 \begin{table}[b]
 \begin{tabularx}{\textwidth}{X | X X | X X }
  %\hline
@@ -78,10 +84,10 @@ and Kinsman~\cite{book:kinsman2002wind}, which provide a good starting point for
 \end{itemize}
 Suppose we observe an idealized ocean in which exactly one sine wave is travelling constantly.
 The parameters defining the sine wave - amplitude, frequency, length and direction - are all fixed.
-%Furthermore we restrict our observation to the vertical displacement $\eta$ at a fixed position or a fixed point in time.
-To simplify the mathematics we assume a two-dimensional ocean, with one dimension representing
-the wave's direction of travel and the  other the wave's vertical displacement.
-With these assumptions we can describe surface elevation as a sinusoid
+To simplify the mathematics we assume a two-dimensional ocean, with one
+dimension representing the wave's direction of travel and the  other the wave's
+vertical displacement. With these assumptions we can describe surface elevation
+as a sinusoid
 %
 \begin{equation}
 \label{eq:sinusoid}
@@ -109,10 +115,11 @@ or a fixed point in time $t$, see Figure~\ref{fig:sinusoid}. If we assume a fixe
 see the surface elevation evolve through time at that position. On the other hand, if we assume a fixed
 point in time, we can observe surface elevation at all positions at that specific time.
 The wave's high point is called a~\emph{crest}, its low point a~\emph{trough}. Because surface elevation
-is described by a cosinus function, all crests and all troughs will have the same elevations. Another effect
-of the cosinus function is that the surface elevation is limited by the amplitude $A$. We will call the
-difference in elevation between crest and trough the~\emph{wave height}. It is obvious that we can define
-wave height $H$ as
+is described by a cosinus function, all crests and all troughs will have the
+same elevation. Another effect of the cosinus function is that the surface
+elevation is limited by the amplitude $A$. We will call the difference in
+elevation between crest and trough the~\emph{wave height}. It is obvious that we
+can define wave height $H$ as
 \begin{equation}
  H = 2A
 \end{equation}
@@ -201,23 +208,41 @@ in three dimensional space is defined as follows:
  \eta(\mvec{x}, t) = A\cos(\transpose{\mvec{k}}\mvec{x} - \omega t)
 \end{equation}
 where $\mvec{x} = (x_x, x_z)$ denotes the observed point on a plane and $\mvec{k} = (k_x, k_z)$ represents
-the travelling direction of the wave. The wave number $k$ of wave vector $\mvec{k}$ is determined by the wave vector's
-magnitude
+the travelling direction of the wave. The wave number $k$ of wave vector $\mvec{k}$ is determined by
+the wave vector's magnitude
 \begin{equation}
  k = \norm{\mvec{k}}
 \end{equation}
 Thus, because of the dispersion relation, all waves of same magnitude share the same frequency.
 
 \subsection{Sum of Waves}
-Use euler identity for wave representation
-\begin{equation}
- e^ix = \cos{x} + \mathrm{i}\sin{x}
-\end{equation}
+Now that we have a description of waves in three-dimensional space, we need to
+enhance the description of the ocean surface. It is obvious that the ocean does
+not consist of only one wave travelling, but of a infinite number of waves with
+different lengths and directions. Because we find ourselves still in the realm
+of~\emph{linear} wave theory, we may reach an adequate solution
+by~\emph{combination}. A linear combination of solutions constitutes a valid
+solution as well.\\
+
+Before we start handling a large number of sinusoids, we will improve our
+notation to make it more compact. In order to do that we employ~\emph{Euler's
+formula}:
+\begin{align*}
+ e^{ix} &= \cos{x} + \mathrm{i}\sin{x} && x \in \mathbb{R}
+\end{align*}
 %
+We may extract both the real part and the imaginary part separately:
+\begin{align*}
+ \cos{x} &= \Re\{e^{ix}\} \\
+ \sin{x} &= \Im\{e^{ix}\}
+\end{align*}
+
+
 surface elevation looks as follows
 %
 \begin{equation}
- \eta(\mvec{x}, t) = \mathrm{Re}(A\mathrm{e}^{\mathrm{i}[\transpose{\mvec{k}}\mvec{x} - {\omega}t]})
+ \eta(\mvec{x}, t) = \Re\{A\mathrm{e}^{\mathrm{i}[\transpose{\mvec{k}}\mvec{x} -
+{\omega}t]}\}
 \end{equation}
 %
 or equivalent
