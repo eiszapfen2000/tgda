@@ -264,13 +264,24 @@ amplitude $A$ for all wave components. We replace the constant amplitude $A$
 with $a(\mvec{k})$ in order to create a dependency between wave number and wave
 amplitude. Furthermore, because of the dispersion relation, we can express
 frequency as a function of the wave number, $\omega = \omega(\mvec{k})$. Now we
-are able to rewrite Equation~\ref{eq:sinusoid_exponential_sa} as
+are able to rewrite Equation~\ref{eq:sinusoid_exponential_sa} as follows:
 \begin{equation}
-\label{eq:sinusoid_exponential_ma}
+\label{eq:sinusoid_exponential_ak_wk}
 \eta(\mvec{x}, t) =
 \Re\{a(\mvec{k})\mathrm{e}^{\mathrm{i}[\transpose{\mvec{k}}\mvec{x}-
 \omega(\mvec{k})t]}\}
 \end{equation}
+%
+We already mentioned that we seek a solution by linear combination. Armed with
+Equation~\ref{eq:sinusoid_exponential_ak_wk} we may write an infinite sum of
+sinusoids:
+\begin{equation}
+ \eta(\mvec{x}, t) = \Re\{ \iint
+a(\mvec{k})\mathrm{e}^{\mathrm{i}[\transpose{\mvec{k}}\mvec{x}-
+\omega(\mvec{k})t]} \mathrm{d}\mvec{k}\}
+\end{equation}
+where $a(\mvec{k})$ is called the~\emph{amplitude spectrum} of
+$\eta(\mvec{x}, t)$.
 
 
 \pagebreak
