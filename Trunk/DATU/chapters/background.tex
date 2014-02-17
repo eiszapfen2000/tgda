@@ -257,7 +257,9 @@ dimensional space from Equation~\ref{eq:sinusoid_3d} as an exponential:
  \eta(\mvec{x}, t) &= \frac{p+p^*}{2}
 \end{align}
 %
-where $p^*$ denotes the~\emph{complex conjugate} of $p$. Each combination of
+where $p^*$ denotes the~\emph{complex conjugate} of $p$. From now on we will
+omit the explicit $\Re$ in equations expressing $\eta$, because it is obvious
+that surface elevation is a real number. Each combination of
 amplitude $A$, wave number $\mvec{k}$ and wave frequency $\omega$ identifies one
 particular wave. As a next step we get rid of the restriction of one single
 amplitude $A$ for all wave components. We replace the constant amplitude $A$
@@ -268,20 +270,26 @@ are able to rewrite Equation~\ref{eq:sinusoid_exponential_sa} as follows:
 \begin{equation}
 \label{eq:sinusoid_exponential_ak_wk}
 \eta(\mvec{x}, t) =
-\Re\{a(\mvec{k})\mathrm{e}^{\mathrm{i}[\transpose{\mvec{k}}\mvec{x}-
-\omega(\mvec{k})t]}\}
+a(\mvec{k})\mathrm{e}^{\mathrm{i}[\transpose{\mvec{k}}\mvec{x}-
+\omega(\mvec{k})t]}
 \end{equation}
 %
 We already mentioned that we seek a solution by linear combination. Armed with
-Equation~\ref{eq:sinusoid_exponential_ak_wk} we may write an infinite sum of
+Equation~\ref{eq:sinusoid_exponential_ak_wk} we may write a finite sum of
 sinusoids:
 \begin{equation}
- \eta(\mvec{x}, t) = \Re\{ \iint
-a(\mvec{k})\mathrm{e}^{\mathrm{i}[\transpose{\mvec{k}}\mvec{x}-
-\omega(\mvec{k})t]} \mathrm{d}\mvec{k}\}
+\label{eq:surface_elevation_ak}
+ \eta(\mvec{x}, t) = \sum_{v=1}^N
+a(\mvec{k}_v)\mathrm{e}^{\mathrm{i}[\transpose{\mvec{k}}_v\mvec{x}-
+\omega(\mvec{k}_v)t]}
 \end{equation}
 where $a(\mvec{k})$ is called the~\emph{amplitude spectrum} of
-$\eta(\mvec{x}, t)$.
+$\eta(\mvec{x}, t)$. We are able to rewrite
+Equation~\ref{eq:surface_elevation_ak} as a sum of~\emph{Fourier components}:
+\begin{equation}
+ \eta(\mvec{x}, t) = \sum_{v=1}^N
+B(\mvec{k}_v, t)\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}_v\mvec{x}}
+\end{equation}
 
 
 \pagebreak
