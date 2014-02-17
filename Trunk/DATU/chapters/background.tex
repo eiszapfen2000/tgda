@@ -270,40 +270,50 @@ are able to rewrite Equation~\ref{eq:sinusoid_exponential_sa} as follows:
 \begin{equation}
 \label{eq:sinusoid_exponential_ak_wk}
 \eta(\mvec{x}, t) =
-a(\mvec{k})\mathrm{e}^{\mathrm{i}[\transpose{\mvec{k}}\mvec{x}-
-\omega(\mvec{k})t]}
+a(\mvec{k})\mathrm{e}^{\mathrm{i}(\transpose{\mvec{k}}\mvec{x}-
+\omega(\mvec{k})t)}
 \end{equation}
 %
 We already mentioned that we seek a solution by linear combination. Armed with
-Equation~\ref{eq:sinusoid_exponential_ak_wk} we may write a finite sum of
-sinusoids:
+Equation~\ref{eq:sinusoid_exponential_ak_wk} we may express surface
+elevation as an infinite sum of sinusoids:
 \begin{equation}
-\label{eq:surface_elevation_ak}
- \eta(\mvec{x}, t) = \sum_{v=1}^N
-a(\mvec{k}_v)\mathrm{e}^{\mathrm{i}[\transpose{\mvec{k}}_v\mvec{x}-
-\omega(\mvec{k}_v)t]}
+\label{eq:surface_elevation_akwt}
+ \eta(\mvec{x}, t) = \int_{\mvec{k}}
+a(\mvec{k})\mathrm{e}^{\mathrm{i}(\transpose{\mvec{k}}\mvec{x}-
+\omega(\mvec{k})t)} \mathrm{d}\mvec{k}
 \end{equation}
 where $a(\mvec{k})$ is called the~\emph{amplitude spectrum} of
-$\eta(\mvec{x}, t)$. We are able to rewrite
-Equation~\ref{eq:surface_elevation_ak} as a sum of~\emph{Fourier components}:
-\begin{equation}
- \eta(\mvec{x}, t) = \sum_{v=1}^N
-B(\mvec{k}_v, t)\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}_v\mvec{x}}
-\end{equation}
-
-
-\pagebreak
-
-Now the sum of waves
+$\eta(\mvec{x}, t)$. Equation~\ref{eq:surface_elevation_akwt} has similarities
+with an inverse ~\emph{Fourier transform}, therefore we will reformulate it as
+such. According to Kinsman~\cite{book:kinsman2002wind} it is possible to
+represent the vertical displacement of the water surface by~\emph{Generalized
+Fourier Transforms}. We may write the sea surface in two spatial dimensions and
+one time dimension as
 %
 \begin{equation}
- \eta(\mvec{x}, t) = \sum_{\mvec{k}}a(\mvec{k})\mathrm{e}^{\mathrm{i}[\transpose{\mvec{k}}\mvec{x} - {\omega}t]}
+\label{eq:surface_elevation_bkwt}
+ \eta(\mvec{x}, t) = \iint_{\mvec{k}}\int_{\omega} B(\mvec{k},
+\omega)~\mathrm{e}^{\mathrm{i}(\transpose{\mvec{k}}\mvec{x}-
+\omega t)}
+\mathrm{d}\mvec{k}~\mathrm{d}\omega
+\end{equation}
+where the $\mvec{k}$ integration is over all wave-number space and the $\omega$
+integration is over all frequencies. Now, we may integrate the frequencies
+separately
+\begin{equation}
+ B(\mvec{k}, t) = \int_{\omega=-\infty}^{\infty} B(\mvec{k},
+\omega)~\mathrm{e}^{-\mathrm{i}\omega t}~\mathrm{d}\omega
+\end{equation}
+and rewrite Equation~\ref{eq:surface_elevation_bkwt} as
+\begin{equation}
+\label{eq:surface_elevation_bk}
+ \eta(\mvec{x}, t) = \iint_{\mvec{k}} B(\mvec{k},t)
+~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\mathrm{d}\mvec{k}
 \end{equation}
 %
-transform to
-\begin{equation}
- \eta(\mvec{x}, t) = \sum_{\mvec{k}}B(\mvec{k})\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
-\end{equation}
+which has the same form as an inverse Fourier Transform.
 %
 we need $B(\mvec{k})$ for every $\mvec{x}$, which is not feasible
 %
