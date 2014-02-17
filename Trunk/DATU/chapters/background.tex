@@ -322,8 +322,25 @@ which has the same form as an inverse Fourier Transform.
 \section{The Specification of a Random Sea}
 \label{sec:random_sea}
 %
-we need $B(\mvec{k})$ for every $\mvec{x}$, which is not feasible
-%
+Equation~\ref{eq:surface_elevation_bk} may be able to describe the ocean
+surface, but at the cost of deducing an amplitude spectrum $B(\mvec{k},t)$ for
+each observed point on the sea surface, which poses a both tedious and
+unfeasible task. At this point we are in need of a general description of
+$B(\mvec{k},t)$ which is valid at all points $\mvec{x}$ and times $t$.
+Fortunately, modern physical oceanography is based on exactly such a
+formulation, which has been developed in the 1950s by~\emph{Pierson}
+and~\emph{von Neumann}. \fxerror{References} We will refer to said formulation
+as~\emph{Pierson-Neumann theory} throughout the remainder of this document.\\
+
+Pierson and von Neumann combine oceanography, physics and stochastics in order
+to describe the ocean surface. A fundamental assumption of their theory is that
+surface disturbance is formed from many contributions caused by relatively
+unrelated forces at different times. Therefore it is reasonable to presume that
+the elements in the summation of Equation~\ref{eq:surface_elevation_bk} are
+statistically independent. As a consequence the central limit theorem with the
+resulting distribution being a Gaussian is applied. The result is a spatially
+quasi-stationary gaussian process which models a wind driven ocean surface,
+where $B(\mvec{k},t)$ represents the amplitudes of the involved components.
 
 \section{Statistical Wave Models}
 
