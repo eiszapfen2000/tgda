@@ -341,6 +341,14 @@ statistically independent. As a consequence the central limit theorem with the
 resulting distribution being a Gaussian is applied. The result is a spatially
 quasi-stationary gaussian process which models a wind driven ocean surface,
 where $B(\mvec{k},t)$ represents the amplitudes of the involved components.
+The probability of the surface elevation at position $\mvec{x}$ and time $t$ to
+be equal $\eta$ is
+\begin{equation}
+ pr[\eta] = \frac{1}{\sigma\sqrt{2\pi}}~\mathrm{e}^{-\frac{\eta^2}{2\sigma^2}}
+\end{equation}
+which is a Gaussian distribution with mean $0$ and variance $\sigma^2$. Note
+that neither $\mvec{x}$ nor $t$ appear in the distribution, because the process
+is modeled as spatially homogeneous and temporally stationary.
 
 \section{Statistical Wave Models}
 
