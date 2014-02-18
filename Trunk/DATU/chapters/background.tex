@@ -317,7 +317,7 @@ and rewrite Equation~\ref{eq:surface_elevation_bkwt} as
 \mathrm{d}\mvec{k}
 \end{equation}
 %
-which has the same form as an inverse Fourier Transform.
+which resembles an inverse Fourier Transform without scaling term.
 
 \section{The Specification of a Random Sea}
 \label{sec:random_sea}
@@ -340,15 +340,66 @@ the elements in the summation of Equation~\ref{eq:surface_elevation_bk} are
 statistically independent. As a consequence the central limit theorem with the
 resulting distribution being a Gaussian is applied. The result is a spatially
 quasi-stationary gaussian process which models a wind driven ocean surface,
-where $B(\mvec{k},t)$ represents the amplitudes of the involved components.
+where $B(\mvec{k},t)$ represents the amplitudes of the involved components.\\
+
 The probability of the surface elevation at position $\mvec{x}$ and time $t$ to
 be equal $\eta$ is
 \begin{equation}
+\label{eq:gauss_dist}
  pr[\eta] = \frac{1}{\sigma\sqrt{2\pi}}~\mathrm{e}^{-\frac{\eta^2}{2\sigma^2}}
 \end{equation}
-which is a Gaussian distribution with mean $0$ and variance $\sigma^2$. Note
-that neither $\mvec{x}$ nor $t$ appear in the distribution, because the process
-is modeled as spatially homogeneous and temporally stationary.
+which is a Gaussian distribution with mean surface elevation $\overline{\eta}
+= 0$ and variance $\sigma^2 \equiv \overline{\eta^2}$. Note that neither
+$\mvec{x}$ nor $t$ appear in the distribution, because the process
+is modeled as spatially and temporally invariant. The process is said to be
+\emph{homogeneous}, because it is independent of the origin of positions
+$\mvec{x}$, futhermore it is stationary since only time differences matter.\\
+
+At this point we are missing a connection between the spectral
+representation of the ocean surface as in Equation~\ref{eq:surface_elevation_bk}
+and the variance $\sigma^2$ in Equation~\ref{eq:gauss_dist}. Given the
+amplitude spectrum $B(\mvec{k}, t)$, a homogeneous sea, and simultaneous
+observation of the surface displacement at different spatial positions, then we 
+may write
+\begin{equation}
+\label{eq:energy_spectrum}
+ \Theta(\mvec{k}, t) = \overline{B(\mvec{k}, t)B^*(\mvec{k}, t)}
+\end{equation}
+where $\Theta(\mvec{k},t)$ represents the~\emph{energy spectrum} associated
+with $B(\mvec{k},t)$. The energy spectrum gives the contribution to the wave
+energy arising from wave components with wave number $\mvec{k}$, irrespective
+of the frequencies $\omega$ associated with that wave number. By integrating
+the energy spectrum
+\begin{equation}
+\label{eq:variance_integral}
+ \sigma^2 = \overline{\eta^2} = \iint_{\mvec{k}} \Theta(\mvec{k},
+t)~\mathrm{d}\mvec{k}
+\end{equation}
+we get the variance.\\
+
+Pierson-Neumann theory does not represent surface elevation $\eta$ or energy
+spectrum $\Theta$ as single functions, but as an ensemble of functions.
+Therefore we have to rewrite Equation~\ref{eq:energy_spectrum} as follows:
+\begin{equation}
+\label{eq:energy_spectrum_e}
+ \Theta(\mvec{k}, t) = \langle B(\mvec{k}, t)B^*(\mvec{k}, t) \rangle
+\end{equation}
+where the $\langle \rangle$ operator denotes the~\emph{ensemble average}.
+The ensemble contains an infinite number of different sea surfaces, each with
+its own probability of actually being realized. As of now we may formulate
+surface elevation as the~\emph{i}th realization of a stochastic process
+\begin{equation}
+\label{eq:surface_elevation_gauss}
+ \eta(\mvec{x}, t) = \iint_{\mvec{k}}
+\xi~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}~
+\mathrm{d}\mvec{k}
+\end{equation}
+where $\xi$ is a Gauss distributed variable with mean $0$ and variance
+$\sigma^2$ according to Equation~\ref{eq:variance_integral}. For the remainder
+of the document Equation~\ref{eq:surface_elevation_gauss} will be the basis for
+all further discussions of specific wave spectrum models. One may realize that
+$\Theta$ is the key to believable ocean surfaces, as it needs to be able to
+model the underlying physical processes to give realistic results.
 
 \section{Statistical Wave Models}
 
