@@ -301,10 +301,11 @@ one time dimension as
 \mathrm{d}\mvec{k}~\mathrm{d}\omega
 \end{equation}
 where the $\mvec{k}$ integration is over all wave-number space and the $\omega$
-integration is over all frequencies. Notice the missing dependency of $\omega$
-on $\mvec{k}$ in the exponent, it is the responsibility of $B(\mvec{k},
-\omega)$ to model that relationship. Next we may integrate separately over
-all frequencies
+integration is over all frequencies. $B(\mvec{k},\omega)$ is called the
+three dimensional amplitude spectrum of $\eta(\mvec{x}, t)$. Notice the missing
+dependency of $\omega$ on $\mvec{k}$ in the exponent, it is the responsibility
+of $B(\mvec{k},\omega)$ to model that relationship. Next we may integrate
+separately over all frequencies
 \begin{equation}
  B(\mvec{k}, t) = \int_{\omega=-\infty}^{\infty} B(\mvec{k},
 \omega)~\mathrm{e}^{-\mathrm{i}\omega t}~\mathrm{d}\omega
@@ -317,7 +318,7 @@ and rewrite Equation~\ref{eq:surface_elevation_bkwt} as
 \mathrm{d}\mvec{k}
 \end{equation}
 %
-which resembles an inverse Fourier Transform without scaling term.
+which closely resembles an inverse Fourier Transform without scaling term.
 
 \section{The Specification of a Random Sea}
 \label{sec:random_sea}
@@ -358,32 +359,56 @@ $\mvec{x}$, futhermore it is stationary since only time differences matter.\\
 
 At this point we are missing a connection between the spectral
 representation of the ocean surface as in Equation~\ref{eq:surface_elevation_bk}
-and the variance $\sigma^2$ in Equation~\ref{eq:gauss_dist}. Given the
-amplitude spectrum $B(\mvec{k}, t)$, a homogeneous sea, and simultaneous
-observation of the surface displacement at different spatial positions, then we 
-may write
+and the variance $\sigma^2$ in Equation~\ref{eq:gauss_dist}. Given the three
+dimensional amplitude spectrum $B(\mvec{k},\omega)$, a spatially homogeneous and
+temporally stationary wave field, then we may write
 \begin{equation}
-\label{eq:energy_spectrum}
- \Theta(\mvec{k}, t) = \overline{B(\mvec{k}, t)B^*(\mvec{k}, t)}
+\label{eq:energy_spectrum_3d}
+ \Theta(\mvec{k}, \omega) = \overline{B(\mvec{k}, \omega)B^*(\mvec{k}, \omega)}
 \end{equation}
-where $\Theta(\mvec{k},t)$ represents the~\emph{energy spectrum} associated
-with $B(\mvec{k},t)$. The energy spectrum gives the contribution to the wave
-energy arising from wave components with wave number $\mvec{k}$, irrespective
-of the frequencies $\omega$ associated with that wave number. By integrating
-the energy spectrum
+where $\Theta(\mvec{k},\omega)$ represents the three dimensional~\emph{energy
+spectrum} associated with $B(\mvec{k},\omega)$. Said spectrum models waves on
+an ocean with infinite extend over which a uniform wind has been blowing
+forever. In context of this document such a model of the ocean is sufficient,
+there is no need to simulate the actual generation of waves over time from a
+perfectly flat sea as well as their decay. The two dimensional energy
+spectrum, in literature known as~\emph{wave number spectrum}, is as follows:
+\begin{equation}
+\label{eq:energy_spectrum_2d}
+% \Theta(\mvec{k}, t) = \overline{B(\mvec{k}, t)B^*(\mvec{k}, t)}
+ \Theta(\mvec{k}) = \int_{\omega} \Theta(\mvec{k}, \omega)~\mathrm{d}\omega
+\end{equation}
+The wave number spectrum gives the contribution to the wave energy arising from
+wave components with wave number $\mvec{k}$, irrespective of the frequencies
+$\omega$ associated with that wave number. In contrast, the one dimensional
+energy spectrum, in literature known as~\emph{frequency spectrum}, is defined
+as follows:
+\begin{equation}
+\label{eq:energy_spectrum_1d}
+ \Theta(\omega) = \int_{\mvec{k}} \Theta(\mvec{k}, \omega)~\mathrm{d}\mvec{k}
+\end{equation}
+The frequency spectrum gives the contributions to the energy coming from eaach
+frequency $\omega$, irrespective of the wave numbers associated with that
+frequency.
+
+By integrating the energy spectrum, be it three-, two- or one-dimensional, we
+get the variance $\sigma^2$, which is represented by the mean square
+displacement of the water surface. The variance $\sigma^2$ based on the two
+dimensional wave spectrum is computed as follows:
 \begin{equation}
 \label{eq:variance_integral}
  \sigma^2 = \overline{\eta^2} = \iint_{\mvec{k}} \Theta(\mvec{k},
 t)~\mathrm{d}\mvec{k}
 \end{equation}
-we get the variance.\\
+\\
 
 Pierson-Neumann theory does not represent surface elevation $\eta$ or energy
 spectrum $\Theta$ as single functions, but as an ensemble of functions.
-Therefore we have to rewrite Equation~\ref{eq:energy_spectrum} as follows:
+Therefore we have to rewrite Equation~\ref{eq:energy_spectrum_3d} as follows:
 \begin{equation}
 \label{eq:energy_spectrum_e}
- \Theta(\mvec{k}, t) = \langle B(\mvec{k}, t)B^*(\mvec{k}, t) \rangle
+ \Theta(\mvec{k}, \omega) = \langle B(\mvec{k}, \omega)B^*(\mvec{k}, \omega)
+\rangle
 \end{equation}
 where the $\langle \rangle$ operator denotes the~\emph{ensemble average}.
 The ensemble contains an infinite number of different sea surfaces, each with
@@ -396,11 +421,11 @@ surface elevation as the~\emph{i}th realization of a stochastic process
 \mathrm{d}\mvec{k}
 \end{equation}
 where $\xi$ is a Gauss distributed variable with mean $0$ and variance
-$\sigma^2$ according to Equation~\ref{eq:variance_integral}. For the remainder
-of the document Equation~\ref{eq:surface_elevation_gauss} will be the basis for
-all further discussions of specific wave spectrum models. One may realize that
-$\Theta$ is the key to believable ocean surfaces, as it needs to be able to
-model the underlying physical processes to give realistic results.
+$\sigma^2$ defined by $\Theta$. One may realize that $\Theta$ is the key to
+believable ocean surfaces, as it needs to be able to model the underlying
+physical processes to give realistic results. For the remainder of the document,
+Equation~\ref{eq:surface_elevation_gauss} will be the basis for all further
+discussions of specific wave spectrum models.
 
 \section{Statistical Wave Models}
 
