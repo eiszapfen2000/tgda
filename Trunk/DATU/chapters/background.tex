@@ -359,9 +359,12 @@ since only time differences matter.\\
 
 At this point we are missing a connection between the spectral
 representation of the ocean surface as in Equation~\ref{eq:surface_elevation_bk}
-and the variance $\sigma^2$ in Equation~\ref{eq:gauss_dist}. Given the three
-dimensional amplitude spectrum $B(\mvec{k},\omega)$, a spatially homogeneous and
-temporally stationary wave field, then we may write
+and the variance $\sigma^2$ in Equation~\ref{eq:gauss_dist}. Given a spatially
+homogeneous and temporally stationary wave field, and a respective three
+dimensional amplitude spectrum $B(\mvec{k},\omega)$, then we may write
+%Given the three
+%dimensional amplitude spectrum $B(\mvec{k},\omega)$, a spatially homogeneous
+%and temporally stationary wave field, then we may write
 \begin{equation}
 \label{eq:energy_spectrum_3d}
  \Theta(\mvec{k}, \omega) = \overline{B(\mvec{k}, \omega)B^*(\mvec{k}, \omega)}
@@ -393,8 +396,8 @@ frequency.
 
 By integrating the energy spectrum, be it three-, two- or one-dimensional, we
 get the variance $\sigma^2$, which is represented by the mean square
-displacement of the water surface. The variance $\sigma^2$ based on the two
-dimensional wave spectrum is computed as follows:
+displacement of the water surface. For example, we may compute the variance
+using the two dimensional wave spectrum as follows:
 \begin{equation}
 \label{eq:variance_integral}
  \sigma^2 = \overline{\eta^2} = \iint_{\mvec{k}} \Theta(\mvec{k},
