@@ -321,7 +321,7 @@ Equation~\ref{eq:surface_elevation_bkwt} as
 \mathrm{d}\mvec{k}
 \end{equation}
 %
-Alternatively we may integrate over all wave numbers
+Alternatively, we may integrate over all wave numbers
 \begin{equation}
  B(\mvec{x}, \omega) = \iint_{\mvec{k}} B(\mvec{k},
 \omega)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}~\mathrm{d}\mvec{k}
@@ -339,14 +339,14 @@ rewrite Equation~\ref{eq:surface_elevation_bkwt} as
 \label{sec:random_sea}
 %
 Equation~\ref{eq:surface_elevation_bk} may be able to describe the ocean
-surface, but at the cost of deducing an amplitude spectrum $B(\mvec{k},t)$ for
-each observed point on the sea surface, which poses a both tedious and
-unfeasible task. At this point we are in need of a general description of
-$B(\mvec{k},t)$ which is valid at all points $\mvec{x}$ and times $t$.
-Fortunately, modern physical oceanography is based on exactly such a
-formulation, which has been developed in the 1950s by~\emph{Pierson}
-and~\emph{von Neumann}. \fxerror{References} We will refer to said formulation
-as~\emph{Pierson-Neumann theory} throughout the remainder of this document.\\
+surface, but at the cost of deducing an amplitude spectrum for each observed
+point on the sea surface, which poses a both tedious and unfeasible task. At
+this point we are in need of a general description of $B$ which is valid at all
+points $\mvec{x}$ and times $t$. Fortunately, modern physical oceanography is
+based on exactly such a formulation, which has been developed in the 1950s
+by~\emph{Pierson} and~\emph{von Neumann}. \fxerror{References} We will refer to
+said formulation as~\emph{Pierson-Neumann theory} throughout the remainder of
+this document.\\
 
 Pierson and von Neumann combine oceanography, physics and stochastics in order
 to describe the ocean surface. A fundamental assumption of their theory is that
@@ -355,12 +355,12 @@ unrelated forces at different times. Therefore it is reasonable to presume that
 the elements in the summation of Equation~\ref{eq:surface_elevation_bk} are
 statistically independent. As a consequence the central limit theorem with the
 resulting distribution being a Gaussian is applied. The result is a spatially
-quasi-stationary gaussian random process which models a wind driven ocean
-surface, where $B(\mvec{k},t)$ represents the amplitudes of the involved
-components. Said random process represents an entire~\emph{ensemble} of sea
-surfaces, where, if we ignore any non-linear interactions which may
-destroy statistical independence, the value of the sea surface elevation is
-drawn from the following gaussian distribution
+quasi-stationary gaussian random process $\xi$ which models a wind driven ocean
+surface, where $B$ represent the amplitudes of the involved components. Said
+random process represents an entire~\emph{ensemble} of sea surfaces, where, if
+we ignore any non-linear interactions which may destroy statistical
+independence, the value of the sea surface elevation is drawn from the following
+gaussian distribution
 \begin{equation}
 \label{eq:gauss_dist}
  pr\{\eta\} = \frac{1}{\sigma\sqrt{2\pi}}~\mathrm{e}^{-\frac{\eta^2}{2\sigma^2}}
@@ -369,8 +369,8 @@ with mean surface elevation $\overline{\eta} = 0$ and variance $\sigma^2 \equiv
 \overline{\eta^2}$. Note that neither position nor time appear in the
 distribution, because the process is modeled as spatially and temporally
 invariant. The process is said to be \emph{homogeneous}, because it is
-independent of the origin of positions $\mvec{x}$, futhermore it is stationary
-since only time differences matter.\\
+independent of the origin of positions $\mvec{x}$, futhermore it
+is~\emph{stationary} since only time differences matter.\\
 
 At this point we are missing a connection between the spectral
 representation of the ocean surface as in Equation~\ref{eq:surface_elevation_bk}
@@ -407,11 +407,10 @@ as follows:
 \end{equation}
 The frequency spectrum gives the contributions to the energy coming from each
 frequency $\omega$, irrespective of the wave numbers associated with that
-frequency.
-By integrating the energy spectrum, be it three-, two- or one-dimensional, we
-get the variance $\sigma^2$, which is represented by the mean square
-displacement of the water surface. For example, we may compute the variance
-using the two dimensional wave spectrum as follows:
+frequency. By integrating the energy spectrum, be it three-, two- or
+one-dimensional, we get the variance $\sigma^2$, which is equivalent the
+mean square displacement of the water surface $\overline{\eta^2}$. For example,
+we may compute the variance using the two dimensional wave spectrum as follows:
 \begin{equation}
 \label{eq:variance_integral}
  \sigma^2 = \overline{\eta^2} = \iint_{\mvec{k}} \Theta(\mvec{k},
