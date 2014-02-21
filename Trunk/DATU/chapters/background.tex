@@ -304,13 +304,16 @@ where the $\mvec{k}$ integration is over all wave-number space and the $\omega$
 integration is over all frequencies. $B(\mvec{k},\omega)$ is called the
 three dimensional amplitude spectrum of $\eta(\mvec{x}, t)$. Notice the missing
 dependency of $\omega$ on $\mvec{k}$ in the exponent, it is the responsibility
-of $B(\mvec{k},\omega)$ to model that relationship. Next we may integrate
-separately over all frequencies
+of $B(\mvec{k},\omega)$ to model that relationship.\\
+
+We may integrate separately over all frequencies
+%
 \begin{equation}
- B(\mvec{k}, t) = \int_{\omega=-\infty}^{\infty} B(\mvec{k},
+ B(\mvec{k}, t) = \int_{\omega} B(\mvec{k},
 \omega)~\mathrm{e}^{-\mathrm{i}\omega t}~\mathrm{d}\omega
 \end{equation}
-and rewrite Equation~\ref{eq:surface_elevation_bkwt} as
+to obtain the two dimensional amplitude spectrum $B(\mvec{k}, t)$. We rewrite
+Equation~\ref{eq:surface_elevation_bkwt} as
 \begin{equation}
 \label{eq:surface_elevation_bk}
  \eta(\mvec{x}, t) = \iint_{\mvec{k}} B(\mvec{k},t)
@@ -318,8 +321,20 @@ and rewrite Equation~\ref{eq:surface_elevation_bkwt} as
 \mathrm{d}\mvec{k}
 \end{equation}
 %
-which closely resembles an inverse Fourier Transform without scaling term.
-
+Alternatively we may integrate over all wave numbers
+\begin{equation}
+ B(\mvec{x}, \omega) = \iint_{\mvec{k}} B(\mvec{k},
+\omega)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}~\mathrm{d}\mvec{k}
+\end{equation}
+%
+to obtain the one dimensional amplitude spectrum $B(\mvec{x}, \omega)$. We
+rewrite Equation~\ref{eq:surface_elevation_bkwt} as
+\begin{equation}
+\label{eq:surface_elevation_bk}
+ \eta(\mvec{x}, t) = \int_{\omega} B(\mvec{x},\omega)
+~~\mathrm{e}^{-\mathrm{i}\omega t}~\mathrm{d}\omega
+\end{equation}
+%
 \section{The Specification of a Random Sea}
 \label{sec:random_sea}
 %
@@ -425,11 +440,11 @@ surface elevation as the~\emph{i}th realization of a stochastic process
 \mathrm{d}\mvec{k}
 \end{equation}
 where $\xi$ is a Gauss distributed variable with mean $0$, and variance
-$\sigma^2$ defined by $\Theta$. One may realize that the energy spectrum
-$\Theta$ is the key to believable ocean surfaces, as it needs to be able to
-model the underlying physical processes to give realistic results. For the
-remainder of the document, Equation~\ref{eq:surface_elevation_gauss} will be the
-basis for all further discussions of specific wave spectrum models.
+$\sigma^2$ defined by the energy spectrum $\Theta$. One may realize that the
+energy spectrum $\Theta$ is the key to believable ocean surfaces, as it needs to
+be able to model the underlying physical processes to give realistic results.
+For the remainder of the document, Equation~\ref{eq:surface_elevation_gauss}
+will be the basis for all further discussions of specific wave spectrum models.
 
 \section{Statistical Wave Models}
 
