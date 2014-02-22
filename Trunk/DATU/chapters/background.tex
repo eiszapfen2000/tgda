@@ -133,7 +133,7 @@ the~\emph{phase velocity}. The phase velocity is a vector and has an associated 
 the \emph{phase speed} on the other hand refers only to the magnitude of the phase velocity.
 The most comprehensible example of phase speed is the rate of propagation of the wave crest.
 During one wave period $T$ the wave crest travels a distance equal to the wave length $\lambda$.
-We may generalize this - given
+We may generalize this to other phases than the wave crest - given a constant phase
 \begin{equation}
   kx - \omega t = const
 \end{equation}
@@ -142,7 +142,7 @@ the surface elevation $\eta$ will always be the same. We rewrite the term to
   x = \frac{\omega}{k}t + \frac{const}{k}
 \end{equation}
 which gives us all positions $x$ the wave has the same value at. These positions are time dependent,
-therefore differentiation gives us phase speed $c$:
+differentiation gives us phase speed $c$:
 \begin{equation}
   c = \frac{\mathrm dx}{\mathrm dt} = \frac{\lambda}{T} = \frac{\omega}{k}
 \end{equation}
@@ -152,8 +152,11 @@ therefore differentiation gives us phase speed $c$:
 
 In the context of water surface waves,~\emph{dispersion} refers to~\emph{frequency dispersion}, which describes
 the effect of waves at different wavelengths travelling at different phase speeds. We have seen that
-phase speed involves wave length and frequency, therefore we will start with the functional relationship
-between angular frequency~$\omega$ and wave number~$k$ as defined by linear wave theory:
+phase speed $c = \frac{\lambda}{T}$ involves wave length and frequency, and alternatively $c = \frac{\omega}{k}$
+which includes angular frequency and wave number. We focus on the latter formulation for phase speed, because
+linear wave theory defines a functional relationship between the two factors involved:
+%therefore we will start with the functional relationship
+%between angular frequency~$\omega$ and wave number~$k$ as defined by linear wave theory:
 \begin{equation}
 \label{eq:dispersion_relation}
  \omega^2 = gk\tanh(kd)
@@ -185,7 +188,8 @@ phase speeds are:
 %
 According to Equation~\ref{eq:phase_speed_shallow_water}, in shallow water phase speed depends exclusively
 on water depth and gravitational acceleration, there is no connection to wave length or frequency.
-We may conclude that~\emph{shallow water is not dispersive}. Phase speed in deep water, on the other hand,
+We may conclude that waves with different wave lengths travel with the same phase speed, it follows that
+~\emph{shallow water is not dispersive}. Phase speed in deep water, on the other hand,
 does not relate to water depth, but to wave length and frequency, which makes~\emph{deep water dispersive}.
 We can expand Equation~\ref{eq:phase_speed_deep_water} to:
 %
@@ -195,7 +199,8 @@ We can expand Equation~\ref{eq:phase_speed_deep_water} to:
 \end{equation}
 %
 Looking at Equation~\ref{eq:phase_speed_deep_water_l} we can conclude that phase speed in deep water increases
-with wave length $\lambda$ ~\emph{and} with wave period $T$.
+with wave length $\lambda$ ~\emph{and} with wave period $T$. Waves in deep water with large wavelengths/periods
+travel faster than those with smaller ones.
 %
 \subsection{Three Dimensional Wave}
 Until now we were discussing a two dimensional ocean defined by exactly one sinus wave. As a first
@@ -219,7 +224,7 @@ Thus, because of the dispersion relation, all waves of same magnitude share the 
 \subsection{Sum of Waves}
 Now that we have a description of waves in three-dimensional space, we need to
 enhance the description of the ocean surface. It is obvious that the ocean does
-not consist of only one wave travelling, but of a infinite number of waves with
+not consist of only one wave travelling, but of an infinite number of waves with
 different lengths and directions. Because we find ourselves still in the realm
 of~\emph{linear} wave theory, we may reach an adequate solution
 by~\emph{combination}. A linear combination of solutions constitutes a valid
@@ -286,9 +291,7 @@ a(\mvec{k})~\mathrm{e}^{\mathrm{i}(\transpose{\mvec{k}}\mvec{x}-
 \omega(\mvec{k})t)}~\mathrm{d}\mvec{k}
 \end{equation}
 where $a(\mvec{k})$ is called the~\emph{amplitude spectrum} of
-$\eta(\mvec{x}, t)$. Equation~\ref{eq:surface_elevation_akwt} has similarities
-with an inverse ~\emph{Fourier transform}, therefore we will reformulate it as
-such. According to Kinsman~\cite{book:kinsman2002wind} it is possible to
+$\eta(\mvec{x}, t)$. According to Kinsman~\cite{book:kinsman2002wind} it is possible to
 represent the vertical displacement of the water surface by~\emph{Generalized
 Fourier Transforms}. We may write the sea surface in two spatial dimensions and
 one time dimension as
@@ -425,14 +428,15 @@ mean is easily found
  E[\eta] = 0
 \end{equation}
 %
-Moreover, all spectral components are statistically independent, each with mean
-$0$ and variance $\Theta$, therefore the variance of all components combined is
+Moreover, all spectral components $B$ are assumed to be~\emph{statistically independent},
+each with mean zero and variance $\Theta$, therefore the variance of all components
+combined is
 \begin{equation}
 \label{eq:random_process_variance}
 Var[\eta] = \sigma^2 = \iint_{\mvec{k}}
 \int_{\omega}\Theta(\mvec{k},\omega)~\mathrm{d}\mvec{k}~\mathrm{ d}\omega
 \end{equation}
-with $\sigma^2$ equal the mean square surface elevation $\overline{\eta^2}$.
+where $\sigma^2$ equals the mean square surface elevation $\overline{\eta^2}$.
 With mean and variance in our hands, we may write the gaussian distribution the
 values of sea surface elevation are drawn from, as follows:
 \begin{equation}
@@ -455,12 +459,14 @@ process
 \omega t)}~
 \mathrm{d}\mvec{k}~\mathrm{d}\omega
 \end{equation}
-where $\xi$ is a gauss distributed variable with mean $0$, and variance
-$\sigma^2$ defined by the energy spectrum $\Theta$. One may realize that the
-energy spectrum $\Theta$ is the key to believable ocean surfaces, as it needs to
-be able to model the underlying physical processes to give realistic results.
-For the remainder of the document, Equation~\ref{eq:surface_elevation_gauss}
-will be the basis for all further discussions of specific wave spectrum models.
+where $\xi$ is a gauss distributed variable with mean $E[\eta] = 0$ and variance
+$Var[\eta] = \sigma^2$ defined by the energy spectrum $\Theta(\mvec{k}, \omega)$.
+One may realize that in context
+of this formulation of sea surface elevation, the energy spectrum $\Theta$ is the key
+to believable ocean surfaces, as it needs to be able to model the underlying physical
+processes to give realistic results. For the remainder of the document,
+Equation~\ref{eq:surface_elevation_gauss} will be the basis for all further discussions
+of specific wave spectrum models.
 
 % As a matter of fact,
 % Equation~\ref{eq:gaussian_dist} represents an accurate approximation according
