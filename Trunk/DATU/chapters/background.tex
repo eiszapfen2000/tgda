@@ -49,7 +49,7 @@ the ocean surface, this kind of waves are called~\emph{wind generated waves}, or
 Wind waves on the ocean surface represent gravity waves, while e.g. tsunamis and ocean tides do not.\\
 
 The process behind surface gravity waves is a simple one - the moment a fluid element at the interface is displaced, gravity
-will try to restore it to equilibrium which results in oscillation of said fluid element. We mentioned before,
+will try to restore it to equilibrium which results in oscillation of said fluid element. We mentioned before
 that wind is the most prominent force causing displacement on the water surface. As it blows, it causes pressure and friction
 forces which perturb the water surface's equilibrium. Therefore, the combination of wind transferring energy from the air
 to the water and gravitational acceleration cause the formation of waves on the water surface.\\
@@ -75,7 +75,7 @@ Linear wave theory makes a set of assumptions about the properties of the fluid,
 compressibility and curl. Because fluid mechanics and fluid dynamics, associated fluid properties, and the derivation
 of the linear wave theory go beyond the scope of this thesis, we will refer the interested reader
 to Airy~\cite{book:airy1845tides}, Batchelor~\cite{book:batchelor2000introduction}
-and Kinsman~\cite{book:kinsman2002wind}, which provide a good starting point for in depth information.\\
+and Kinsman~\cite{book:kinsman2002wind}, which provide a good starting point for in-depth information.\\
 
 \emph{But} we will mention two core assumptions of the linear wave theory which are easy to picture:
 \begin{itemize}
@@ -98,7 +98,7 @@ with
  k &= \frac{2\pi}{\lambda} & \omega &= 2\pi f & f &= \frac{1}{T}
 \end{align}
 %
-where $A$ is the amplitude, $k$ is the~\emph{wave number},~$x$ is the horizontal position,
+where $A$ is the amplitude, $k$ is called the~\emph{wave number},~$x$ is the horizontal position,
 $\omega$ is the~\emph{wave frequency} in radians per second,~$t$ represents the time,
 $\lambda$ is the~\emph{wave length},~$f$ is the~\emph{wave frequency} in Hertz (Hz) and~$T$
 is the wave period in seconds.\\
@@ -127,8 +127,7 @@ can define wave height $H$ as
 
 \subsection{Phase Velocity}
 \label{sec:phase_velocity}
-%In linear wave theory a sinusoid as defined in Equation~\ref{eq:sinusoid} propagates with the phase velocity.
-In linear wave theory the rate at which a particular phase of a wave propagates in space is called
+In linear wave theory, the rate at which a particular phase of a wave propagates in space is called
 the~\emph{phase velocity}. The phase velocity is a vector and has an associated direction,
 the \emph{phase speed} on the other hand refers only to the magnitude of the phase velocity.
 The most comprehensible example of phase speed is the rate of propagation of the wave crest.
@@ -175,8 +174,8 @@ There exist two useful approximations of Equation~\ref{eq:dispersion_relation} w
 %
 The reduced dispersion relations are as follows:
 \begin{align}
- \omega^2 & = gk^2d && \text{with} & d &> \frac{\lambda}{2}  && \text{Shallow water dispersion relation}\\
- \omega^2 & = gk    && \text{with} & d &< \frac{\lambda}{20} && \text{Deep water dispersion relation}
+ \omega^2 & = gk^2d && \text{with} & d &< \frac{\lambda}{20}  && \text{Shallow water dispersion relation}\\
+ \omega^2 & = gk    && \text{with} & d &> \frac{\lambda}{2} && \text{Deep water dispersion relation}
 \end{align}
 %
 Given the dispersion relation approximations for shallow and deep water, the corresponding
@@ -214,7 +213,7 @@ in three dimensional space is defined as follows:
  \eta(\mvec{x}, t) = A\cos(\transpose{\mvec{k}}\mvec{x} - \omega t)
 \end{equation}
 where $\mvec{x} = (x_x, x_z)$ denotes the observed point on a plane and $\mvec{k} = (k_x, k_z)$ represents
-the travelling direction of the wave. The wave number $k$ of wave vector $\mvec{k}$ is determined by
+the travelling direction of the wave. The wave number $k$ of~\emph{wave vector} $\mvec{k}$ is determined by
 the wave vector's magnitude
 \begin{equation}
  k = \norm{\mvec{k}}
@@ -266,12 +265,12 @@ where $p^*$ denotes the~\emph{complex conjugate} of $p$. From now on we will
 omit the explicit $\Re$ in equations expressing $\eta$, because it is obvious
 that surface elevation is a real number.\\
 
-Each combination of amplitude $A$, wave number $\mvec{k}$ and wave frequency
+Each combination of amplitude $A$, wave vector $\mvec{k}$ and wave frequency
 $\omega$ identifies one particular wave. As a next step we get rid of the
 restriction of one single amplitude $A$ for all wave components. We replace the
 constant amplitude $A$ with $a(\mvec{k})$ in order to create a dependency
-between wave number and wave amplitude. Furthermore, because of the dispersion
-relation, we can express frequency as a function of the wave number, $\omega =
+between wave vector and wave amplitude. Furthermore, because of the dispersion
+relation, we can express frequency as a function of the wave vector, $\omega =
 \omega(\mvec{k})$. Now we are able to rewrite
 Equation~\ref{eq:sinusoid_exponential_sa} as follows:
 \begin{equation}
@@ -374,16 +373,14 @@ may write
 \end{equation}
 where $\Theta(\mvec{k},\omega)$ represents the three dimensional~\emph{energy
 spectrum} associated with $B(\mvec{k},\omega)$. A wave component with amplitude
-$B(\mvec{k}, \omega)$ has an associated energy equal its mean square
-displacement $\Theta(\mvec{k},\omega)$. The integral of the energy spectrum
-gives the energy of the entire wave:
+$B(\mvec{k}, \omega)$ has an associated energy equal to its~\emph{mean square
+displacement} $\Theta(\mvec{k},\omega)$. The integral of the energy spectrum
+gives both the energy and the mean square displacement of the entire wave:
 %
 \begin{equation}
 \label{eq:wave_energy_3d}
  \overline{\eta(\mvec{x}, t)^2} = \iint_{\mvec{k}}\int_{\omega} \Theta(\mvec{k},
-\omega)~\mathrm{e}^{\mathrm{i}(\transpose{\mvec{k}}\mvec{x}-
-\omega t)}~
-\mathrm{d}\mvec{k}~\mathrm{d}\omega
+\omega)~\mathrm{d}\mvec{k}~\mathrm{d}\omega
 \end{equation}
 %
 The two dimensional energy spectrum, in literature known as~\emph{wave number
@@ -428,17 +425,17 @@ mean is easily found
  E[\eta] = 0
 \end{equation}
 %
-Moreover, all spectral components $B$ are assumed to be~\emph{statistically independent},
-each with mean zero and variance $\Theta$, therefore the variance of all components
-combined is
+Moreover, all spectral components $B(\mvec{k},\omega)$ are assumed to be
+\emph{statistically independent}, each with mean zero and variance $\Theta(\mvec{k},\omega)$,
+therefore the variance of all components combined is
 \begin{equation}
 \label{eq:random_process_variance}
 Var[\eta] = \sigma^2 = \iint_{\mvec{k}}
 \int_{\omega}\Theta(\mvec{k},\omega)~\mathrm{d}\mvec{k}~\mathrm{ d}\omega
 \end{equation}
-where $\sigma^2$ equals the mean square surface elevation $\overline{\eta^2}$.
-With mean and variance in our hands, we may write the gaussian distribution the
-values of sea surface elevation are drawn from, as follows:
+where, according to Equation~\ref{eq:wave_energy_3d}, $\sigma^2$ equals the mean square
+surface elevation $\overline{\eta^2}$. With mean and variance in our hands, we may write
+the gaussian distribution that the values of sea surface elevation are drawn from, as follows:
 \begin{equation}
 \label{eq:gaussian_dist}
  pr[\eta] = \frac{1}{\sigma\sqrt{2\pi}}~\mathrm{e}^{-\frac{\eta^2}{2\sigma^2}}
@@ -450,8 +447,7 @@ We already mentioned that Pierson-Neumann theory does not represent surface
 elevation $\eta$ as one single function, but as an ensemble of functions
 $\{\eta\}$. The ensemble contains an infinite number of different sea surfaces,
 each with its own probability of actually being realised. As of now, we may
-formulate surface elevation as the~\emph{i}th realization of a stochastic
-process
+formulate surface elevation as a realisation of a stochastic process
 \begin{equation}
 \label{eq:surface_elevation_gauss}
  \eta(\mvec{x}, t) = \iint_{\mvec{k}}\int_{\omega} \xi
