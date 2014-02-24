@@ -108,7 +108,7 @@ is the wave period in seconds.\\
 \begin{figure}[b]
 	\centering
 	\includegraphics[width=\textwidth]{figures/sinusoid}
-	\caption{Sample figure}
+	\caption{An example of a sinusoidal wave.}
 	\label{fig:sinusoid}
 \end{figure}
 %
@@ -373,7 +373,7 @@ may write
 \label{eq:energy_spectrum_3d}
  \Theta(\mvec{k}, \omega) = \overline{B(\mvec{k}, \omega)B^*(\mvec{k}, \omega)}
 \end{equation}
-where the $\overline{xx^*}$ operator denotes the mean, and
+where the $\overline{B}$ operator denotes the mean, and
 $\Theta(\mvec{k},\omega)$ represents the three dimensional~\emph{energy
 spectrum} associated with $B(\mvec{k},\omega)$. A wave component with amplitude
 $B(\mvec{k}, \omega)$ has an associated energy equal to its~\emph{mean square
@@ -421,12 +421,12 @@ Pierson-Neumann theory describes the sea surface as a gaussian random process.
 As such, we are not dealing with one concrete ocean surface $\eta$, but with an
 \emph{ensemble} of different sea surfaces $\{\eta\}$, each associated with its
 own probabilty to be actually realised. Because the random process is a
-gaussian one, it has an associated gaussian distribution with mean $E[\eta]$ and
-variance $Var[\eta] = \sigma^2$. Considering a sea surface in combination with
-linear wave theory, where a symmetry between troughs and crests is a given, the
-mean is easily found
+gaussian one, it has an associated gaussian distribution with mean
+$\mathrm{E}[\eta]$ and variance $\mathrm{Var}[\eta] = \sigma^2$. Considering a
+sea surface in combination with linear wave theory, where a symmetry between
+troughs and crests is a given, the mean is easily found
 \begin{equation}
- E[\eta] = 0
+ \mathrm{E}[\eta] = 0
 \end{equation}
 %
 Moreover, all spectral components $B(\mvec{k},\omega)$ are assumed to be
@@ -434,7 +434,7 @@ Moreover, all spectral components $B(\mvec{k},\omega)$ are assumed to be
 therefore the variance of all components combined is
 \begin{equation}
 \label{eq:random_process_variance}
-Var[\eta] = \sigma^2 = \iint_{\mvec{k}}
+\mathrm{Var}[\eta] = \sigma^2 = \iint_{\mvec{k}}
 \int_{\omega}\Theta(\mvec{k},\omega)~\mathrm{d}\mvec{k}~\mathrm{ d}\omega
 \end{equation}
 which is the same as Equation~\ref{eq:wave_energy_3d}. The variance
@@ -444,7 +444,7 @@ the gaussian distribution that the values of sea surface elevation are drawn
 from, as follows:
 \begin{equation}
 \label{eq:gaussian_dist}
- pr[\eta] = \frac{1}{\sigma\sqrt{2\pi}}~\mathrm{e}^{-\frac{\eta^2}{2\sigma^2}}
+ pr[\eta] = \frac{1}{\sqrt{2\pi E}}~\mathrm{e}^{-\frac{\eta^2}{2E}}
 \end{equation}
 Note that neither position nor time appear in the distribution, because the
 process is modeled as spatially and temporally invariant.\\
@@ -461,11 +461,11 @@ formulate surface elevation as a realisation of a stochastic process
 \omega t)}~
 \mathrm{d}\mvec{k}~\mathrm{d}\omega
 \end{equation}
-where $\xi$ is a gauss distributed variable with mean $E[\eta] = 0$ and variance
-$Var[\eta] = \sigma^2$ defined by the energy spectrum $\Theta(\mvec{k}, \omega)$.
-One may realize that in context
-of this formulation of sea surface elevation, the energy spectrum $\Theta$ is the key
-to believable ocean surfaces, as it needs to be able to model the underlying physical
+where $\xi$ is a gauss distributed variable with mean $\mathrm{E}[\eta] = 0$ and
+variance $\mathrm{Var}[\eta] = \sigma^2$ defined by the energy spectrum
+$\Theta(\mvec{k}, \omega)$. One may realize that in context of this formulation
+of sea surface elevation, the energy spectrum $\Theta$ is the key to believable
+ocean surfaces, as it needs to be able to model the underlying physical
 processes to give realistic results. For the remainder of the document,
 Equation~\ref{eq:surface_elevation_gauss} will be the basis for all further discussions
 of specific wave spectrum models.
