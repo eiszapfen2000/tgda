@@ -469,19 +469,63 @@ ocean surfaces, as it needs to be able to model the underlying physical
 processes to give realistic results. For the remainder of the document,
 Equation~\ref{eq:surface_elevation_gauss} will be the basis for all further discussions
 of specific wave spectrum models.
+%
+\section{Discretisation}
+BRAK
 
-\section{Statistical Wave Models}
+\section{Energy Spectra}
+
+\subsection{Pierson Moskovitz Spectrum}
+\label{sec:pierson_moskovitz}
+
+\begin{subequations}
+\begin{gather}
+ \Theta(\omega) = \frac{\alpha
+g^2}{\omega^5}~\exp\left[-\beta\left(\frac{\omega_0}{\omega}\right)^4\right]\\
+\intertext{with}
+\alpha = 8.1\times 10^{-3}\\
+\beta = 0.74\\
+\omega_0 = \frac{g}{U_{19.5}}
+\end{gather}
+\end{subequations}
+where $U_{19.5}$ is the wind speed at a height of 19.5 meters above the sea
+surface, the height of the measurement equipment used by Pierson and Moskovitz.
+
+\subsection{JONSWAP Spectrum}
+\label{sec:jonswap}
+
+\begin{subequations}
+\begin{gather}
+ \Theta(\omega) = \frac{\alpha
+g^2}{\omega^5}~\exp\left[-\frac{5}{4}\left(\frac{\omega_p}{\omega}
+\right)^4\right]\gamma^r\\
+\intertext{with}
+r = \exp\left[-\frac{\left(\omega -
+\omega_p\right)^2}{2\sigma^2\omega_p^2}\right] \\
+\alpha = 0.076\left(\frac{U_{10}^2}{Fg}\right)^{0.22} \\
+\omega_{p} = 22\left(\frac{g^2}{U_{10}F}\right)^{1/3} \\
+\sigma = \begin{cases}
+	0.07 & \omega\leq\omega_p\\
+	0.09 & \omega > \omega_p
+    \end{cases} \\
+\gamma = 3.3
+\end{gather}
+\end{subequations}
+
 
 \subsection{Phillips Spectrum}
-\label{sec_phillips_spectrum}
+\label{sec:phillips_spectrum}
 
 \begin{align}
   k &= \norm{\mvec{k}}\\
   w &= \norm{\mvec{w}}\\
-  P(\mvec{k}) &= A\frac{exp(-(kL)^{-2})}{k^4}\abs*{\frac{\transpose{\mvec{k}}}{k}\frac{\mvec{w}}{w}}^2\\
-  P(\mvec{k}) &= A\frac{exp(-(kL)^{-2}-(kl)^2)}{k^4}\abs*{\frac{\transpose{\mvec{k}}}{k}\frac{\mvec{w}}{w}}^4
+  P(\mvec{k}) &=
+A\frac{exp(-(kL)^{-2})}{k^4}\abs*{\frac{\transpose{\mvec{k}}}{k}\frac{\mvec{w}}{
+w}}^2\\
+  P(\mvec{k}) &=
+A\frac{exp(-(kL)^{-2}-(kl)^2)}{k^4}\abs*{\frac{\transpose{\mvec{k}}}{k}\frac{
+\mvec{w}}{w}}^4
 \end{align}
-
 
 \subsection{Unified Spectrum}
 \label{sec_unified_spectrum}
