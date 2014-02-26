@@ -366,6 +366,7 @@ positions $\mvec{x}$, futhermore it is~\emph{stationary} since absolute time is
 irrelevant, only time differences matter.
 %
 \subsection{The Energy Spectrum}
+\label{sec:energy_spectrum}
 Given a spatially homogeneous and temporally stationary wave field, and a
 respective three dimensional amplitude spectrum $B(\mvec{k},\omega)$, then we
 may write
@@ -391,7 +392,6 @@ The two dimensional energy spectrum, in literature known as~\emph{wave number
 spectrum}, is as follows:
 \begin{equation}
 \label{eq:energy_spectrum_2d}
-% \Theta(\mvec{k}, t) = \overline{B(\mvec{k}, t)B^*(\mvec{k}, t)}
  \Theta(\mvec{k}) = \int_{\omega} \Theta(\mvec{k}, \omega)~\mathrm{d}\omega
 \end{equation}
 The wave number spectrum gives the contribution to the wave energy arising from
@@ -473,7 +473,37 @@ of specific wave spectrum models.
 \section{Discretisation}
 BRAK
 
-\section{Energy Spectra}
+\section{One dimensional Frequency Spectra}
+Oceanographic literature provides a rather large set of different one
+dimensional frequency spectra. As we have seen in
+Section~\ref{sec:energy_spectrum}, the one dimensional frequency spectrum does
+not hold any positional information, which makes it the most easiest one to
+measure. One needs to fix a device that senses water elevation at some position
+and make a long record. But in order to be able to synthesize a finite area of a
+virtual ocean surface we depend on spatial information. We are in need of
+a~\emph{directional filter}, which directionally distributes the energy provided
+by $\Theta(\omega)$ as well as filters wave trains which move in the opposite
+direction of the wind. We may call the product of a normal one dimensional
+frequency spectrum and a directional filter a~\emph{directional spectrum}.
+There exist other forms of a directional spectrum which we will discuss later.
+For now, we may write a directional spectrum as follows:
+\begin{subequations}
+\begin{gather}
+ \Theta(\omega, \theta) = \Theta(\omega)D(\omega,\theta)\\
+\intertext{with}
+\label{eq:int_directional_filter}
+\int_{\theta=-\pi}^{\pi}D(\omega,\theta)~\mathrm{d}\theta = 1\\
+\end{gather}
+\end{subequations}
+where $\theta$ is the angle to the wind direction.
+Equation~\ref{eq:int_directional_filter} makes sure the amount of energy per
+frequency does not change. Therefore we are able to write
+\begin{equation}
+ \Theta(\omega) = \int_{\theta=-\pi}^{\pi}\Theta(\omega,
+\theta)~\mathrm{d}\theta
+\end{equation}
+
+\subsection{Directional Filter}
 
 \subsection{Pierson Moskovitz Spectrum}
 \label{sec:pierson_moskovitz}
