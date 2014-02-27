@@ -477,25 +477,26 @@ BRAK
 Oceanographic literature provides a rather large set of different one
 dimensional frequency spectra. As we have seen in
 Section~\ref{sec:energy_spectrum}, the one dimensional frequency spectrum does
-not hold any positional information, which makes it the most easiest one to
-measure. One needs to fix a device that senses water elevation at some position
-and make a long record. But in order to be able to synthesize a finite area of a
+not hold any positional or directional information, which makes it the most
+easiest one to measure. But in order to be able to synthesize a finite area of a
 virtual ocean surface we depend on spatial information. We are in need of
-a~\emph{directional filter}, which directionally distributes the energy provided
-by $\Theta(\omega)$ as well as filters wave trains which move in the opposite
-direction of the wind. We may call the product of a normal one dimensional
-frequency spectrum and a directional filter a~\emph{directional spectrum}.
-There exist other forms of a directional spectrum which we will discuss later.
-For now, we may write a directional spectrum as follows:
+a~\emph{directional spreading function}, which directionally distributes the
+energy provided by $\Theta(\omega)$ as well as filters wave trains which move in
+the opposite direction of the wind. We may call the product of a normal one
+dimensional frequency spectrum and a directional spreading function
+a~\emph{directional spectrum}. There exist other forms of a directional spectrum
+which we will discuss later. For now, we may write a directional spectrum as
+follows:
 \begin{subequations}
-\begin{gather}
- \Theta(\omega, \theta) = \Theta(\omega)D(\omega,\theta)\\
+\begin{align}
+ \Theta(\omega, \theta) &= \Theta(\omega)D(\omega,\theta) \\
 \intertext{with}
 \label{eq:int_directional_filter}
-\int_{\theta=-\pi}^{\pi}D(\omega,\theta)~\mathrm{d}\theta = 1\\
-\end{gather}
+\int_{\theta=-\pi}^{\pi}D(\omega,\theta)~\mathrm{d}\theta &= 1 \\
+D(\omega,\theta) &\geq 0
+\end{align}
 \end{subequations}
-where $\theta$ is the angle to the wind direction.
+where $\theta$ is the angle relative to the wind direction.
 Equation~\ref{eq:int_directional_filter} makes sure the amount of energy per
 frequency does not change. Therefore we are able to write
 \begin{equation}
@@ -503,7 +504,30 @@ frequency does not change. Therefore we are able to write
 \theta)~\mathrm{d}\theta
 \end{equation}
 
-\subsection{Directional Filter}
+\subsection{Directional Spreading Function}
+Literature provides us with a large set of different directional spreading
+functions to choose from. We picked a~\emph{Cosine-2s} variant based on the
+work of Mitsuyasu et al. as well as Hasselmann et al. Expressed in terms of
+angular frequency $\omega$ it is as follows:
+\begin{subequations}
+\label{eq:directional_filter_mitsuyasu}
+\begin{align}
+ D(\omega, \theta) &=
+\frac{2^{2s-1}}{\pi}~\frac{\Gamma^2(s+1)}{\Gamma(2s+1)}~|\cos(\theta/2)|^{2s}
+\intertext{with}
+\frac{s}{s_p} &= \begin{cases}
+(\frac{\omega}{\omega_p})^{-2.5} & \omega \geq \omega_p\\
+(\frac{\omega}{\omega_p})^{5} & \omega < \omega_p\\
+\end{cases}
+\intertext{where, according to Hasselmann et al.}
+s_p &= \begin{cases}
+9.77 & \omega \geq \omega_p\\
+6.97 & \omega < \omega_p\\
+\end{cases}
+\end{align}
+\end{subequations}
+$\Gamma$ is the \emph{gamma} function, $s$ is the spreading factor and
+$\omega_p$ is the peak angular frequency.
 
 \subsection{Pierson Moskovitz Spectrum}
 \label{sec:pierson_moskovitz}
