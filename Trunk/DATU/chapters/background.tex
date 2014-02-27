@@ -471,7 +471,11 @@ Equation~\ref{eq:surface_elevation_gauss} will be the basis for all further disc
 of specific wave spectrum models.
 %
 \section{Discretisation}
-BRAK
+We define the sea surface we want to synthesize as a rectangular area, with $L$
+and $K$ denoting width and height respectively. Moreover, we discretise said
+rectangle into a grid with horizontal resolution $N$ and vertical resolution
+$M$. Therefore we will define sea surface elevation at $N\times M$ discrete
+points.
 
 \section{One dimensional Frequency Spectra}
 Oceanographic literature provides a rather large set of different one
@@ -611,7 +615,7 @@ r = \exp\left[-\frac{\left(\omega -
 where $F$ denotes the fetch in meters and $U_{10}$ the wind speed at a height
 of 10 meters above the sea surface.
 
-
+\section{Two dimensional Frequency Spectra}
 
 \subsection{Phillips Spectrum}
 \label{sec:phillips_spectrum}
