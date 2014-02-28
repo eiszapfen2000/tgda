@@ -27,4 +27,12 @@ tmpy = tmpn .* area(2);
 tmpy = tmpy ./ resolution(2);
 y = repmat(tmpy', 1, resolution(1));
 
+spectrum = ifftshift(z);
+heights = real(ifft2(spectrum));
+heights = heights .* resolution(1) .* resolution(2);
+
+figure
+surf(x, y, heights);
+axis('equal');
+
 end

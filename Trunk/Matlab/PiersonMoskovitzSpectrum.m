@@ -46,4 +46,10 @@ exponent(isinf(exponent))=0;
 Theta = (alpha*g*g) ./ power(omega, 5.0) .* exp(exponent);
 Theta(isinf(Theta))=0;
 
+Theta_k = Theta .* 0.5 .* (g ./ omega) ./ knorm;
+Theta_k(isinf(Theta_k))=0;
+Theta_k(isnan(Theta_k))=0;
+
+y = Theta_k .* d;
+
 end
