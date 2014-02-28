@@ -97,6 +97,7 @@ as a sinusoid
 \end{equation}
 with
 \begin{align}
+\label{eq:sinusoid_parameters}
  k &= \frac{2\pi}{\lambda} & \omega &= 2\pi f & f &= \frac{1}{T}
 \end{align}
 %
@@ -472,11 +473,12 @@ of specific wave spectrum models.
 %
 \section{Discretisation}
 We define the sea surface we want to synthesize as a rectangular area, with $L$
-and $K$ denoting width and height respectively. Moreover, we discretise said
-rectangle into a grid with horizontal resolution $N$ and vertical resolution
-$M$. Therefore we will define sea surface elevation at $N\times M$ discrete
-points. We will follow Tessendorf's lead~\cite{course:simulatingocean} and
-compute surface elevation at the following points:
+and $K$ denoting width and height in meters respectively. Moreover, we
+discretise said rectangle into a grid with horizontal resolution $N$ and
+vertical resolution $M$. Therefore we will define sea surface elevation at
+$N\times M$ discrete points. We will follow
+Tessendorf's lead~\cite{course:simulatingocean} and compute surface elevation at
+the following points:
 \begin{equation}
  \mvec{x} = (x,
 y)~\in~\{(\alpha,\beta)|-\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}
@@ -486,11 +488,54 @@ At first glance the choice of interval for positions~$\mvec{x}$ may seem
 arbitrary, but it will allow us to make a direct connection to the wave
 number domain later on.\\
 
-Let
+To simplify matters, from now on we will handle a square area instead of a
+rectangular one.
 \begin{align}
- \Delta x = \frac{L}{N} && \Delta y = \frac{K}{M}
+\label{eq:square_area}
+ N = M && L = K
 \end{align}
-denote the horizontal and vertical distance between consecutive grid points.
+One may always come back and do the math for a rectangular area in case it is
+needed, but in the context of this thesis we used only square areas. Next, we
+will denote the horizontal and vertical distance between consecutive grid points
+as follows:
+\begin{subequations}
+\begin{align}
+ \Delta x &= \frac{L}{N}\\
+ \Delta y &= \frac{K}{M}\\
+\intertext{where}
+ \Delta x &= \Delta y
+\end{align}
+\end{subequations}
+Based on the~\emph{Nyquist-Shannon sampling
+theorem}\cite{book:bracewell2000fourier} we are able to compute the minimum and
+maximum wavelengths which are taken into respect without loss of information.
+We may write said minimum and maximum wavelengths as follows: \fxerror{Figure
+spatial domain}
+\begin{align}
+ \lambda_{min} &= 2\Delta x \\
+ \lambda_{max} &= \sqrt{2}~\frac{N}{2}
+\end{align}
+With $\lambda_{min}$ and $\lambda_{max}$ in our hands we may compute the
+corresponding wave numbers according to Equation~\ref{eq:sinusoid_parameters} as
+follows:
+\begin{align}
+ k_{min} &= \frac{2\pi}{\lambda_{min}} \\
+ k_{max} &= \frac{2\pi}{\lambda_{max}}
+\end{align}
+\fxerror{Figure wave number domain}
+Now that we know the minimum and maximum wave numbers, we can define the wave
+vectors $\mvec{k}$ which will be used to transform from the wave vector domain
+to the spatial one:
+\begin{equation}
+ \mvec{k} =
+(k_x,k_y)~\in~\{(\frac{2\pi\alpha}{L},\frac{2\pi\beta}{K})|
+-\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}
+\leq\beta<\frac{M}{2}\}
+\end{equation}
+The wave vector domain is centered, which means wave number $k = 0$ is at the
+center and $|k|$ grows if we move towards the border. Moreover, with this choice
+of domain we include wave numbers up to exactly $k_{min}$.
+
 
 \section{One dimensional Frequency Spectra}
 Oceanographic literature provides a rather large set of different one
