@@ -472,6 +472,8 @@ Equation~\ref{eq:surface_elevation_gauss} will be the basis for all further disc
 of specific wave spectrum models.
 %
 \section{Discretisation}
+
+\subsection{Domain Discretisation}
 We define the sea surface we want to synthesize as a rectangular area, with $L$
 and $K$ denoting width and height in meters respectively. Moreover, we
 discretise said rectangle into a grid with horizontal resolution $N$ and
@@ -489,7 +491,7 @@ arbitrary, but it will allow us to make a direct connection to the wave
 vector domain later on.\\
 
 To simplify matters, from now on we will handle a square area instead of a
-rectangular one.
+rectangular one, thus
 \begin{align}
 \label{eq:square_area}
  N = M && L = K
