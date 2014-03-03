@@ -1,10 +1,5 @@
 function y = DirectionalFilter(omega, omega_p, theta)
 
-% exponent_s = 2.*s - 1;
-% brak = power(2, exponent_s) ./ pi;
-% 
-% d = brak .* g_n_d .* pow_cos;
-
 s_p = zeros(size(omega));
 s_p(omega >= omega_p) = 9.77;
 s_p(omega < omega_p) = 6.97;

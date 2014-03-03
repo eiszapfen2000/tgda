@@ -477,10 +477,11 @@ of specific wave spectrum models.
 We define the sea surface we want to synthesize as a rectangular area, with $L$
 and $K$ denoting width and height in meters respectively. Moreover, we
 discretise said rectangle into a grid with horizontal resolution $N$ and
-vertical resolution $M$. Therefore we will define sea surface elevation at
-$N\times M$ discrete points. We will follow
-Tessendorf's lead~\cite{course:simulatingocean} and compute surface elevation at
-the following points:
+vertical resolution $M$, where both $N$ and $M$ shall be an integer which can
+be represented as a power of two. Therefore we will define sea surface elevation 
+at $N\times M$ discrete points. We will follow Tessendorf's 
+lead~\cite{course:simulatingocean} and compute surface elevation at the 
+following points:
 \begin{equation}
  \mvec{x} = (x,
 y)~\in~\{(\alpha,\beta)|-\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}
@@ -496,6 +497,7 @@ rectangular one, thus
 \label{eq:square_area}
  N = M && L = K
 \end{align}
+
 One may always come back and do the math for a rectangular area in case it is
 needed, but in the context of this thesis we used only square areas. Next, we
 will denote the horizontal and vertical distance between consecutive grid points
@@ -538,7 +540,12 @@ The wave vector domain is centered, which means wave number $k = 0$ is at the
 center and $|k|$ grows while we move towards the domain border. Moreover, with
 this choice of domain we include wave numbers up to exactly $|k_{min}|$, giving
 us a set of wave vectors which are optimally fitted to our spatial positions
-$\mvec{x}$.
+$\mvec{x}$. The distances between consecutive wave vectors in the $k_x$ and 
+$k_y$ directions are as follows:
+\begin{align}
+ \Delta k_x = \frac{2\pi}{L} && \Delta k_y = \frac{2\pi}{K}
+\end{align}
+
 
 
 \section{One dimensional Frequency Spectra}
@@ -701,6 +708,9 @@ r = \exp\left[-\frac{\left(\omega -
 \end{subequations}
 where $F$ denotes the fetch in meters and $U_{10}$ the wind speed at a height
 of 10 meters above the sea surface.
+
+\subsection{Integral Domain Conversion}
+
 
 \section{Two dimensional Frequency Spectra}
 
