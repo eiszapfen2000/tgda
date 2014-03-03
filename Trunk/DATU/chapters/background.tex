@@ -720,8 +720,10 @@ $\Theta(\mvec{k})$, but Equation~\ref{eq:directional_frequency_spectrum} gives
 us a directional frequency spectrum $\Theta(\omega,\theta)$. We will convert one 
 spectrum form to the other according to the substitution rule, with the deep 
 water dispersion relation from Equation~\ref{eq:disp_rel_deep_water} serving as 
-a link between angular frequency $\omega$ and wave number $k$. As a first step 
-we may transform $\Theta(\omega)$ to $\Theta(k)$ as follows:
+a link between angular frequency $\omega$ and wave number $k$. To avoid 
+possible confusion we will add subscripts to each occurence of $\Theta$ in 
+order to explicitely show the arguments it takes. As a first step we may 
+transform $\Theta_{\omega}(\omega)$ to $\Theta_k(k)$ as follows:
 \begin{subequations}
 \begin{multline}
  \int\Theta_k(k)~\mathrm{d}k = \int\Theta_{\omega}(\omega)~\mathrm{d}\omega\\ = 
@@ -758,7 +760,11 @@ number spectrum:
 \intertext{where}
 \theta &= \arctan\left(\frac{k_y}{k_x}\right)
 \end{align}
-
+Now we are able to preserve integral equality between different representations 
+of $\Theta$, as long as we use the deep water dispersion relation. One may do 
+the math for another dispersion relation, now that the path to take is shown. 
+Still, in the context of this work we only concern ourselves with waves in deep 
+water.
 
 \section{Two dimensional Frequency Spectra}
 
