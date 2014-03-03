@@ -177,8 +177,12 @@ There exist two useful approximations of Equation~\ref{eq:dispersion_relation} w
 %
 The reduced dispersion relations are as follows:
 \begin{align}
- \omega^2 & = gk^2d && \text{with} & d &< \frac{\lambda}{20}  && \text{Shallow water dispersion relation}\\
- \omega^2 & = gk    && \text{with} & d &> \frac{\lambda}{2} && \text{Deep water dispersion relation}
+\label{eq:disp_rel_shallow_water}
+\omega^2 & = gk^2d && \text{with} & d &< \frac{\lambda}{20}  && \text{Shallow 
+water dispersion relation}\\
+\label{eq:disp_rel_deep_water}
+\omega^2 & = gk    && \text{with} & d &> \frac{\lambda}{2} && \text{Deep water 
+dispersion relation}
 \end{align}
 %
 Given the dispersion relation approximations for shallow and deep water, the corresponding
@@ -563,7 +567,9 @@ a~\emph{directional spectrum}. There exist other forms of directional spectra
 which we will discuss later. For now, we may write a directional spectrum as
 follows:
 \begin{subequations}
+%\label{eq:directional_frequency_spectrum}
 \begin{align}
+\label{eq:directional_frequency_spectrum}
  \Theta(\omega, \theta) &= \Theta(\omega)D(\omega,\theta) \\
 \intertext{with}
 \label{eq:int_directional_filter}
@@ -710,6 +716,51 @@ where $F$ denotes the fetch in meters and $U_{10}$ the wind speed at a height
 of 10 meters above the sea surface.
 
 \subsection{Integral Domain Conversion}
+Recall that we transform from the cartesian wave number domain to the spatial 
+one, thus, as a prerequisite we are in need of a wave number spectrum 
+$\Theta(\mvec{k})$, but Equation~\ref{eq:directional_frequency_spectrum} gives 
+us a directional frequency spectrum $\Theta(\omega,\theta)$. We will convert one 
+spectrum form to the other according to the substitution rule, with the deep 
+water dispersion relation from Equation~\ref{eq:disp_rel_deep_water} serving as 
+a link between angular frequency $\omega$ and wave number $k$. As a first step 
+we may transform $\Theta(\omega)$ to $\Theta(k)$ as follows:
+\begin{subequations}
+\begin{multline}
+ \int\Theta_k(k)~\mathrm{d}k = \int\Theta_{\omega}(\omega)~\mathrm{d}\omega\\ = 
+\int\Theta_{\omega}(\omega(k))\frac{\mathrm{d}\omega}{\mathrm{d}k}~\mathrm{d}k
+= \int\Theta_{\omega}(\sqrt{gk})\frac{1}{2}\sqrt{\frac{g}{k}}~\mathrm{d}k
+\end{multline}
+which gives us
+\begin{equation}
+\label{eq:theta_k}
+ \Theta_k(k) = \Theta_{\omega}(\sqrt{gk})\frac{1}{2}\sqrt{\frac{g}{k}}
+\end{equation}
+\end{subequations}
+Now we are able to rewrite Equation~\ref{eq:directional_frequency_spectrum} in 
+terms of wave number $k$:
+\begin{equation}
+\label{eq:theta_k_polar}
+ \Theta_{k,\theta}(k,\theta) = \Theta_k(k)D(\omega(k),\theta) = 
+\Theta_k(k)D(\sqrt{gk},\theta)
+\end{equation}
+where $\Theta_{k,\theta}(k,\theta)$ is called the~\emph{directional wave number 
+spectrum}. As the last step we need to convert from polar coordinate pairs 
+$(k,\theta)$ to Cartesian wave number coordinates $\mvec{k}$. Said conversion 
+is accomplished as follows:
+\begin{equation}
+\label{eq:theta_cart_to_polar}
+\int\Theta_{\mvec{k}}(\mvec{k})~\mathrm{d}\mvec{k} = 
+\int\int\Theta_{k,\theta}(k,\theta)\frac{1}{k}~\mathrm{d}\theta~\mathrm{d}k
+\end{equation}
+By combining Equations~\ref{eq:directional_frequency_spectrum}, 
+~\ref{eq:theta_k} and~\ref{eq:theta_cart_to_polar} we get the Cartesian wave 
+number spectrum:
+\begin{align}
+\Theta_{\mvec{k}}(\mvec{k}) &= \Theta_{\omega,\theta}(\sqrt{gk}, 
+\theta)\frac{1}{2k}\sqrt{\frac{g}{k}}\\
+\intertext{where}
+\theta &= \arctan\left(\frac{k_y}{k_x}\right)
+\end{align}
 
 
 \section{Two dimensional Frequency Spectra}
