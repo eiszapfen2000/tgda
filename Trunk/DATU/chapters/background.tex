@@ -510,7 +510,7 @@ as follows:
 \end{subequations}
 Based on the~\emph{Nyquist-Shannon sampling
 theorem}\cite{book:bracewell2000fourier} we are able to compute the minimum and
-maximum wavelengths which are taken into respect without loss of information.
+maximum wavelengths which are reconstructible without loss of information.
 We may write said minimum and maximum wavelengths as follows: \fxerror{Figure
 spatial domain}
 \begin{align}
@@ -536,7 +536,7 @@ to the spatial one:
 \end{equation}
 The wave vector domain is centered, which means wave number $k = 0$ is at the
 center and $|k|$ grows while we move towards the domain border. Moreover, with
-this choice of domain we include wave numbers up to exactly $k_{min}$, giving
+this choice of domain we include wave numbers up to exactly $|k_{min}|$, giving
 us a set of wave vectors which are optimally fitted to our spatial positions
 $\mvec{x}$.
 
@@ -578,7 +578,7 @@ functions to choose from. We picked a~\emph{Cosine-2s} variant based on the
 work of Mitsuyasu et al. and Hasselmann et al. Expressed in terms of
 angular frequency $\omega$ it is as follows:
 \begin{subequations}
-\label{eq:directional_filter_mitsuyasu}
+\label{eq:directional_spread_mitsuyasu}
 \begin{align}
  D(\omega, \theta) &=
 \frac{2^{2s-1}}{\pi}~\frac{\Gamma^2(s+1)}{\Gamma(2s+1)}~|\cos(\theta/2)|^{2s}
@@ -594,9 +594,32 @@ s_p &= \begin{cases}
 \end{cases}
 \end{align}
 \end{subequations}
-$\Gamma$ is the \emph{gamma} function, $s$ is the spreading factor and
-$\omega_p$ is the peak angular frequency.
-
+$\Gamma$ is the \emph{gamma function}, $s$ is called the~\emph{spreading 
+factor} and $\omega_p$ represents the angular frequency the frequency spectrum 
+has its peak at. Figure~\ref{fig:projectedgrid} depicts example instances of 
+Equation~\ref{eq:directional_spread_mitsuyasu}.
+%
+\begin{figure}
+ \centering
+ \subbottom[Weak Wind]
+ {
+ \includegraphics[scale=1]{figures/directional_filter_weak_wind.png}
+ \label{fig:subfigdfilt1}
+ }
+ \subbottom[Moderate Wind]
+ {
+ \includegraphics[scale=1]{figures/directional_filter_moderate_wind.png}
+ \label{fig:subfigdfilt2}
+ }
+ \subbottom[Strong Wind]
+ {
+ \includegraphics[scale=1]{figures/directional_filter_strong_wind.png}
+ \label{fig:subfigdfilt3}
+ }
+\caption{Three instances of the directional spreading function, each generated with a different wind speed. The wind direction points to the right.}
+\label{fig:directional_filter}
+\end{figure}
+%
 \subsection{Pierson Moskovitz Spectrum}
 \label{sec:pierson_moskovitz}
 %
