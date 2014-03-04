@@ -633,14 +633,14 @@ Equation~\ref{eq:directional_spread_mitsuyasu}.
 \label{fig:directional_filter}
 \end{figure}
 %
-\subsection{Pierson Moskovitz Spectrum}
-\label{sec:pierson_moskovitz}
+\subsection{Pierson Moskowitz Spectrum}
+\label{sec:pierson_moskowitz}
 %
-The Pierson Moskovitz spectrum \fxerror{reference} is a well known and widely
+The Pierson Moskowitz spectrum \fxerror{reference} is a well known and widely
 used one dimensional frequency spectrum. At the time it was introduced, it was
 expressed in terms of wind speed as follows:
 \begin{subequations}
-\label{eq:pierson_moskovitz_old}
+\label{eq:pierson_moskowitz_old}
 \begin{align}
  \Theta(\omega) &= \frac{\alpha
 g^2}{\omega^5}~\exp\left[-\beta\left(\frac{g}{U_{19.5}\omega}\right)^4\right]\\
@@ -650,16 +650,16 @@ g^2}{\omega^5}~\exp\left[-\beta\left(\frac{g}{U_{19.5}\omega}\right)^4\right]\\
 \end{align}
 \end{subequations}
 where $U_{19.5}$ is the wind speed at a height of 19.5 meters above the sea
-surface, the height of the anemometers used by Pierson and Moskovitz. Further
+surface, the height of the anemometers used by Pierson and Moskowitz. Further
 analysis of the data brought to light a relationship between wind speed and
 peak frequency $\omega_p$
 \begin{equation}
  \beta\left(\frac{g}{U_{19.5}}\right)^4 = \frac{5}{4}~\omega_p^4
 \end{equation}
-which lead to a rephrasing of Equation~\ref{eq:pierson_moskovitz_old} in terms
+which lead to a rephrasing of Equation~\ref{eq:pierson_moskowitz_old} in terms
 of peak frequency
 \begin{subequations}
-\label{eq:pierson_moskovitz}
+\label{eq:pierson_moskowitz}
 \begin{gather}
  \Theta(\omega) = \frac{\alpha
 g^2}{\omega^5}~\exp\left[-\frac{5}{4}\left(\frac{\omega_p}{\omega}
@@ -669,7 +669,7 @@ g^2}{\omega^5}~\exp\left[-\frac{5}{4}\left(\frac{\omega_p}{\omega}
 0.877~\frac{g}{U_{19.5}}
 \end{gather}
 \end{subequations}
-The proper use of the Pierson Moskovitz spectrum is restricted to~\emph{fully
+The proper use of the Pierson Moskowitz spectrum is restricted to~\emph{fully
 developed seas}. A fully developed sea is a sea for which the energy input
 to the waves from the wind is in equilibrium with the transfer of energy
 among different wave components, and with the dissipation of energy by wave 
@@ -678,20 +678,68 @@ current conditions. Moreover, a fully developed sea is independent
 of~\emph{fetch}, which is the distance over which the wind blows, usually
 limited by the upwind distance to shore.
 %
+%
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+	width=0.75\paperwidth,
+    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
+    ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+    every axis legend/.append style={nodes={right}},
+    ]
+
+\addplot[
+    color=red,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_10.dat};
+\addlegendentry{$10.0~\text{m}\cdot\text{s}^{-1}$}
+\addplot[
+    color=green,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_12.dat};
+\addlegendentry{$12.5~\text{m}\cdot\text{s}^{-1}$}
+\addplot[
+    color=magenta,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_15.dat};
+\addlegendentry{$15.0~\text{m}\cdot\text{s}^{-1}$}
+\addplot[
+    color=black,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_17.dat};
+\addlegendentry{$17.5~\text{m}\cdot\text{s}^{-1}$}
+\addplot[
+    color=blue,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_20.dat};
+\addlegendentry{$20.0~\text{m}\cdot\text{s}^{-1}$}
+\end{axis}
+\end{tikzpicture}
+\caption{The Pierson Moskowitz frequency spectrum with different wind speed 
+values.}
+\label{fig:samplefigure_tikz}
+\end{figure}
+%
 \subsection{JONSWAP Spectrum}
 \label{sec:jonswap}
 %
 The JONSWAP spectrum is one dimensional frequency spectrum related to the
-Pierson Moskovitz spectrum. It has been developed by Hasselmann et al. based
+Pierson Moskowitz spectrum. It has been developed by Hasselmann et al. based
 on data collected during the~\emph{Joint North Sea Wave Observation Project}. 
 One of the key findings is that the sea is actually never fully developed, the 
-spectrum does not converge to the basic Pierson Moskovitz spectrum as fetch 
+spectrum does not converge to the basic Pierson Moskowitz spectrum as fetch 
 increases. Said effect is attributed to non-linear wave-wave interactions. The 
 spectral peak of the JONSWAP spectrum both may take a even more narrow form 
-than the already pronounced peak of the Pierson Moskovitz spectrum and move to 
+than the already pronounced peak of the Pierson Moskowitz spectrum and move to 
 an even lower frequency range.\\
 
-The JONSWAP spectrum is expressed with Equation~\ref{eq:pierson_moskovitz} as
+The JONSWAP spectrum is expressed with Equation~\ref{eq:pierson_moskowitz} as
 basis, and an additional peak factor
 \begin{subequations}
 \begin{gather}
