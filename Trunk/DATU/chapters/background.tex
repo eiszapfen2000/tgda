@@ -697,7 +697,8 @@ limited by the upwind distance to shore.
 \centering
 \begin{tikzpicture}
 \begin{axis}[
-	width=0.75\paperwidth,
+    width=0.5\paperwidth,
+    legend style={draw=none},
     xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
     ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
     every axis legend/.append style={nodes={right}},
@@ -779,7 +780,8 @@ of 10 meters above the sea surface.
 \centering
 \begin{tikzpicture}
 \begin{axis}[
-    width=0.75\paperwidth,
+    width=0.5\paperwidth,
+    legend style={draw=none},
     xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
     ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
     every axis legend/.append style={nodes={right}},
@@ -818,7 +820,54 @@ of 10 meters above the sea surface.
 \end{tikzpicture}
 \caption{The JONSWAP frequency spectrum with a wind speed of $U_{10} = 15m\cdot 
 s^{-1}$, and different fetch values $F$.}
-\label{fig:jonswap_spectra}
+\label{fig:jonswap_spectra_15}
+\end{figure}
+%
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.5\paperwidth,
+    legend style={draw=none},
+    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
+    ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+    every axis legend/.append style={nodes={right}},
+    ]
+\addplot[
+    color=blue,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_20.dat};
+\addlegendentry{Pierson Moskowitz}
+\addplot[
+    color=red,
+    solid,
+	]
+    table [col sep=comma]{figures/j_20_100km.dat};
+\addlegendentry{100km}
+\addplot[
+    color=green,
+    solid,
+	]
+    table [col sep=comma]{figures/j_20_200km.dat};
+\addlegendentry{200km}
+\addplot[
+    color=magenta,
+    solid,
+	]
+    table [col sep=comma]{figures/j_20_300km.dat};
+\addlegendentry{300km}
+\addplot[
+    color=black,
+    solid,
+	]
+    table [col sep=comma]{figures/j_20_400km.dat};
+\addlegendentry{400km}
+\end{axis}
+\end{tikzpicture}
+\caption{The JONSWAP frequency spectrum with a wind speed of $U_{10} = 20m\cdot 
+s^{-1}$, and different fetch values $F$.}
+\label{fig:jonswap_spectra_20}
 \end{figure}
 %
 \subsection{Integral Domain Conversion}
