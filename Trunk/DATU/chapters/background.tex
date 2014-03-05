@@ -872,15 +872,19 @@ s^{-1}$, and different fetch values $F$.}
 %
 \subsection{Integral Domain Conversion}
 Recall that we transform from the cartesian wave number domain to the spatial 
-one. Thus, as a prerequisite, we are in need of a wave number spectrum 
-$\Theta(\mvec{k})$, but Equation~\ref{eq:directional_frequency_spectrum} gives 
-us a directional frequency spectrum $\Theta(\omega,\theta)$. We will convert one 
-spectrum form to the other according to the substitution rule, with the deep 
-water dispersion relation from Equation~\ref{eq:disp_rel_deep_water} serving as 
-a link between angular frequency $\omega$ and wave number $k$. To avoid 
-possible confusion we will add subscripts to each occurence of $\Theta$ in 
-order to explicitely show the arguments it takes. As a first step we may 
-transform $\Theta_{\omega}(\omega)$ to $\Theta_k(k)$ as follows:
+one. Thus, as a prerequisite, we are in need of a two dimensional wave number 
+spectrum $\Theta(\mvec{k})$, but 
+Equation~\ref{eq:directional_frequency_spectrum} 
+gives us a directional frequency spectrum $\Theta(\omega,\theta)$. We will 
+convert one spectrum form to the other according to the substitution rule, with 
+the deep water dispersion relation from Equation~\ref{eq:disp_rel_deep_water} 
+serving as a link between angular frequency $\omega$ and wave number $k$. To 
+avoid possible confusion we will add subscripts to each occurence of $\Theta$ 
+in order to explicitely show the arguments it takes.\\
+
+As a first step we may transform the one dimensional frequency spectrum 
+$\Theta_{\omega}(\omega)$ to the one dimensional wave number 
+spectrum $\Theta_k(k)$ as follows:
 \begin{subequations}
 \begin{multline}
  \int\Theta_k(k)~\mathrm{d}k = \int\Theta_{\omega}(\omega)~\mathrm{d}\omega\\ = 
@@ -893,15 +897,15 @@ which gives us
  \Theta_k(k) = \Theta_{\omega}(\sqrt{gk})\frac{1}{2}\sqrt{\frac{g}{k}}
 \end{equation}
 \end{subequations}
-Now we are able to rewrite Equation~\ref{eq:directional_frequency_spectrum} in 
-terms of wave number $k$:
+Now we are able to rewrite the directional frequency spectrum from 
+Equation~\ref{eq:directional_frequency_spectrum} in terms of wave number $k$:
 \begin{equation}
 \label{eq:theta_k_polar}
  \Theta_{k,\theta}(k,\theta) = \Theta_k(k)D(\sqrt{gk},\theta)
 \end{equation}
 where $\Theta_{k,\theta}(k,\theta)$ is called the~\emph{directional wave number 
 spectrum}. As the last step we need to convert from polar coordinate pairs 
-$(k,\theta)$ to Cartesian wave number coordinates $\mvec{k}$. Said conversion 
+$(k,\theta)$ to cartesian wave number coordinates $\mvec{k}$. Said conversion 
 is accomplished as follows:
 \begin{equation}
 \label{eq:theta_cart_to_polar}
@@ -920,7 +924,8 @@ number spectrum:
 Now we are able to preserve integral equality between different representations 
 of $\Theta$, as long as we use the deep water dispersion relation. One may do 
 the math for another dispersion relation, now that the path to take is shown. 
-Still, in the context of this work we only concern ourselves with waves in deep 
+Still, in the context of this work, we only concern ourselves with waves in 
+deep 
 water.
 
 \section{Two dimensional Frequency Spectra}
