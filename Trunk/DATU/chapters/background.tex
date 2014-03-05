@@ -950,7 +950,32 @@ the math for another dispersion relation, now that the path to take is shown.
 Still, in the context of this work, we only concern ourselves with waves in 
 deep 
 water.
-
+%
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    view={-20}{30},
+%    yticklabel shift={.1cm},
+    xtick = {0,0.1,0.2},
+    zlabel={Energy~$\Theta$~($\text{m}^4$)},
+    xlabel={$k_x$~($\text{m}^{-1}$)},
+    ylabel={$k_y$~($\text{m}^{-1}$)},
+    ]
+\addplot3[surf,
+%    faceted = color black,
+%    white,
+    mesh/ordering=y varies,
+    ]
+    table [col sep=comma]{figures/jonswap_w15_f100_kx_ky.dat};
+\end{axis}
+\end{tikzpicture}
+\caption{The JONSWAP frequency spectrum with wind speed $U_{10} = 15m\cdot 
+s^{-1}$ and fetch $F = 100km$ in the wave vector domain $k_x \times k_y$. The 
+wind direction points in the direction of the positive $k_x$ axis.}
+\label{fig:brakdibrak}
+\end{figure}
+%
 \section{Two dimensional Frequency Spectra}
 
 \subsection{Phillips Spectrum}
