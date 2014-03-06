@@ -1,4 +1,4 @@
-function y = JONSWAPSpectrum(k, knorm, knormalised, wind, A, l)
+function [x y] = JONSWAPSpectrum(k, knorm, knormalised, wind, A, l)
 
 g = 9.81;
 U = norm(wind);
@@ -29,8 +29,13 @@ exponent = (-5/4) .* power(omega_p ./ omega, 4.0);
 Theta = ((alpha*g*g) ./ power(omega, 5.0)) .* exp(exponent) .* gamma_r;
 
 Theta_k = Theta .* (1./(2.*kn)) .* (g./omega);
-%Theta_k = Theta .* 0.5 .* (g ./ omega) ./ kn;
 
-y = Theta_k .* d;
+x = Theta_k .* d;
+
+omega(omega==Inf) = 0;
+y = zeros([size(omega), 3]);
+y(:,:,1) = omega;
+y(:,:,2) = theta;
+y(:,:,3) = Theta .* d;
 
 end
