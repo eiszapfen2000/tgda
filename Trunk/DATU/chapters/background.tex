@@ -339,9 +339,9 @@ Alternatively, we may integrate over all wave numbers
 to obtain the one dimensional amplitude spectrum $B(\mvec{x}, \omega)$. We
 rewrite Equation~\ref{eq:surface_elevation_bkwt} as
 \begin{equation}
-\label{eq:surface_elevation_bk}
- \eta(\mvec{x}, t) = \int_{\omega} B(\mvec{x},\omega)
-~~\mathrm{e}^{-\mathrm{i}\omega t}~\mathrm{d}\omega
+\label{eq:surface_elevation_bw}
+\eta(\mvec{x}, t) = \int_{\omega} B(\mvec{x},\omega)
+~\mathrm{e}^{-\mathrm{i}\omega t}~\mathrm{d}\omega
 \end{equation}
 %
 \section{The Specification of a Random Sea}
@@ -659,7 +659,7 @@ to the upper right.}
 \subsection{Pierson Moskowitz Spectrum}
 \label{sec:pierson_moskowitz}
 %
-The Pierson Moskowitz spectrum~\cite{article:Pierson&Moskowitz1964} is a well 
+The Pierson Moskowitz spectrum~\cite{article:PiersonMoskowitz1964} is a well 
 known and widely used one dimensional frequency spectrum. At the time it was 
 introduced, it was expressed in terms of wind speed as follows:
 \begin{subequations}
@@ -795,9 +795,9 @@ of 10 meters above the sea surface.\\
 One of the key findings is that the sea is actually never fully developed, the 
 spectrum does not converge to the basic Pierson Moskowitz spectrum as fetch 
 increases. Said effect is attributed to non-linear wave-wave interactions. The 
-spectral peak of the JONSWAP spectrum both may take a even more narrow form  
-than the already pronounced peak of the Pierson Moskowitz spectrum and move to 
-an even lower frequency range.
+spectral peak of the JONSWAP spectrum may take a even more narrow form than the 
+already pronounced peak of the Pierson Moskowitz spectrum, and move to an even 
+lower frequency range with increasing fetch.
 %
 \begin{figure}
 \centering
@@ -956,6 +956,7 @@ water.
 \begin{tikzpicture}
 \begin{axis}[
     view={-20}{30},
+    mesh/ordering=y varies,
 %    yticklabel shift={.1cm},
     xtick = {0,0.1,0.2},
     zlabel={Energy~$\Theta$~($\text{m}^4$)},
@@ -965,7 +966,6 @@ water.
 \addplot3[surf,
 %    faceted = color black,
 %    white,
-    mesh/ordering=y varies,
     ]
     table [col sep=comma]{figures/jonswap_w15_f100_kx_ky.dat};
 \end{axis}
@@ -973,8 +973,25 @@ water.
 \caption{The JONSWAP frequency spectrum with wind speed $U_{10} = 15m\cdot 
 s^{-1}$ and fetch $F = 100km$ in the wave vector domain $k_x \times k_y$. The 
 wind direction points in the direction of the positive $k_x$ axis.}
-\label{fig:brakdibrak}
+\label{fig:jonswap_3d_kx_ky}
 \end{figure}
+%
+% \begin{figure}
+% \centering
+% \begin{tikzpicture}
+% \begin{axis}[
+%     view={-20}{30},
+%     mesh/ordering=y varies,
+%     mesh/rows = 21,
+%     ]
+% \addplot3[surf,
+%     ]
+%     table [col sep=comma]{figures/3dtest.txt};
+% \end{axis}
+% \end{tikzpicture}
+% \caption{NIX}
+% \label{fig:brakdilala}
+% \end{figure}
 %
 \section{Two dimensional Frequency Spectra}
 
