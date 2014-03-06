@@ -944,12 +944,28 @@ number spectrum:
 \intertext{where}
 \theta &= \arctan\left(\frac{k_y}{k_x}\right)
 \end{align}
-Now we are able to preserve integral equality between different representations 
-of $\Theta$, as long as we use the deep water dispersion relation. One may do 
-the math for another dispersion relation, now that the path to take is shown. 
-Still, in the context of this work, we only concern ourselves with waves in 
-deep 
-water.
+%
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    view={-20}{30},
+    mesh/ordering=y varies,
+    zlabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
+    ylabel={Direction~$\theta$~($\text{rad}$)},
+    ]
+\addplot3[surf,
+    ]
+    table [col sep=comma]{figures/jonswap_w15_f100_omega_angle.dat};
+\end{axis}
+\end{tikzpicture}
+\caption{The JONSWAP frequency spectrum with wind speed $U_{10} = 15m\cdot 
+s^{-1}$ and fetch $F = 100km$ in the polar coordinate domain $\omega \times 
+\theta$. The wind direction points in the direction of the positive $\omega$ 
+axis.}
+\label{fig:brakdilala}
+\end{figure}
 %
 \begin{figure}
 \centering
@@ -976,23 +992,11 @@ wind direction points in the direction of the positive $k_x$ axis.}
 \label{fig:jonswap_3d_kx_ky}
 \end{figure}
 %
-% \begin{figure}
-% \centering
-% \begin{tikzpicture}
-% \begin{axis}[
-%     view={-20}{30},
-%     mesh/ordering=y varies,
-%     mesh/rows = 21,
-%     ]
-% \addplot3[surf,
-%     ]
-%     table [col sep=comma]{figures/3dtest.txt};
-% \end{axis}
-% \end{tikzpicture}
-% \caption{NIX}
-% \label{fig:brakdilala}
-% \end{figure}
-%
+Now we are able to preserve integral equality between different representations 
+of $\Theta$, as long as we use the deep water dispersion relation. One may do 
+the math for another dispersion relation, now that the path to take is shown. 
+Still, in the context of this work, we only concern ourselves with waves in 
+deep water.
 \section{Two dimensional Frequency Spectra}
 
 \subsection{Phillips Spectrum}
