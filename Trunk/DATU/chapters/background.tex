@@ -549,7 +549,62 @@ $k_y$ directions are as follows:
 \begin{align}
  \Delta k_x = \frac{2\pi}{L} && \Delta k_y = \frac{2\pi}{K}
 \end{align}
-
+%
+\begin{figure}
+\begin{tikzpicture}
+% let both axes use the same layers
+\pgfplotsset{set layers}
+\begin{axis}[
+    grid=major,
+    enlargelimits=false,
+    scale only axis,
+    axis equal=true,
+    width = \textwidth,
+    xmin=-5,
+    xmax=5,
+    ymin=-5,
+    ymax=5,
+    xtick = {-4,0, 4},
+    ytick = {-4,0, 4},
+    xticklabels={$-\frac{N}{2}$,0,$\frac{N}{2}$},
+    yticklabels={$-\frac{N}{2}$,0,$\frac{M}{2}$},
+    xlabel={$\alpha$},
+    ylabel={$\beta$},
+    ]
+\addplot graphics[
+    xmin=-5,
+    xmax=5,
+    ymin=-5,
+    ymax=5,
+]
+{figures/ifft_spatial_domain};
+\end{axis}
+%
+\begin{axis}[
+    enlargelimits=false,
+    scale only axis,
+    axis equal=true,
+    width = \textwidth,
+    xmin=-5,
+    xmax=5,
+    axis x line = top,
+    ymin=-5,
+    ymax=5,
+    axis y line = right,
+    xtick = {-4,0, 4},
+    ytick = {-4,0, 4},
+    xticklabels={$-\frac{L}{2}$,0,$\frac{L}{2}$},
+    yticklabels={$-\frac{K}{2}$,0,$\frac{K}{2}$},
+    xlabel = {$\alpha\cdot\Delta x$},
+    ylabel={$\beta\cdot\Delta y$},
+    ]
+ 
+\end{axis}
+%
+\end{tikzpicture}
+\caption{The spatial domain.}
+\end{figure}
+%
 
 
 \section{One dimensional Frequency Spectra}
@@ -973,15 +1028,12 @@ axis.}
 \begin{axis}[
     view={-20}{30},
     mesh/ordering=y varies,
-%    yticklabel shift={.1cm},
     xtick = {0,0.1,0.2},
     zlabel={Energy~$\Theta$~($\text{m}^4$)},
     xlabel={$k_x$~($\text{m}^{-1}$)},
     ylabel={$k_y$~($\text{m}^{-1}$)},
     ]
 \addplot3[surf,
-%    faceted = color black,
-%    white,
     ]
     table [col sep=comma]{figures/jonswap_w15_f100_kx_ky.dat};
 \end{axis}
@@ -997,44 +1049,6 @@ of $\Theta$, as long as we use the deep water dispersion relation. One may do
 the math for another dispersion relation, now that the path to take is shown. 
 Still, in the context of this work, we only concern ourselves with waves in 
 deep water.
-%
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.75]{figures/ifft_spatial_domain}
-	\caption{Spatial Domain.}
-	\label{fig:spatial_domain}
-\end{figure}
-%
-\begin{figure}
-\begin{tikzpicture}
-\begin{axis}[
-    grid=major,
-    enlargelimits=false,
-    %axis on top,
-    axis equal=true,
-    width = \textwidth,
-    xmin=-5,
-    xmax=5,
-    ymin=-5,
-    ymax=5,
-    xtick = {-4,0, 4},
-    ytick = {-4,0, 4},
-    xticklabels={$-\frac{N}{2}$,0,$\frac{N}{2}$},
-    yticklabels={$-\frac{N}{2}$,0,$\frac{M}{2}$},
-    xlabel={$\alpha$},
-    ylabel={$\beta$},
-    ]
-\addplot graphics[
-    xmin=-5,
-    xmax=5,
-    ymin=-5,
-    ymax=5,
-]
-{figures/ifft_spatial_domain};
-\end{axis}
-\end{tikzpicture}
-\caption{The spatial domain.}
-\end{figure}
 %
 \section{Two dimensional Frequency Spectra}
 
