@@ -477,6 +477,30 @@ of specific wave spectrum models.
 %
 \section{Discretisation}
 
+\begin{equation}
+\label{eq:surface_elevation_ifft_bk}
+ \eta(\mvec{x}, t) = \iint_{\mvec{k}} B(\mvec{k},t)
+~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}~
+\mathrm{d}\mvec{k}
+\end{equation}
+
+\begin{equation}
+\eta(\mvec{x}, t) = \sum_{\mvec{k}} B(\mvec{k},t)
+~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\end{equation}
+%
+\begin{equation}
+\eta(\mvec{x}, t) = \sum_{\mvec{k}} B(\mvec{k})~\mathrm{e}^{-\mathrm{i}\omega t}
+~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\end{equation}
+%
+\begin{equation}
+ B(\mvec{k}) = \sqrt{2\Theta(\mvec{k})}
+\end{equation}
+
+%
+
+
 \subsection{Domain Discretisation}
 %
 \begin{figure}
@@ -562,19 +586,7 @@ rectangular one, thus
 \label{eq:square_area}
  N = M && L = K &&\Rightarrow \Delta x = \Delta y
 \end{align}
-% One may always come back and do the math for a rectangular area in case it is
-% needed, but in the context of this thesis we used only square areas. Next, we
-% will denote the horizontal and vertical distance between consecutive grid
-% points
-% as follows:
-% \begin{subequations}
-% \begin{align}
-%  \Delta x &= \frac{L}{N}\\
-%  \Delta y &= \frac{K}{M}\\
-% \intertext{where}
-%  \Delta x &= \Delta y
-% \end{align}
-% \end{subequations}
+%
 Based on the~\emph{Nyquist-Shannon sampling
 theorem}\cite{book:bracewell2000fourier} we are able to compute the minimum and
 maximum wavelengths which are reconstructible without loss of information.
