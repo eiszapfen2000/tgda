@@ -14,7 +14,7 @@
    height="401"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.4 r"
+   inkscape:version="0.48.4 r9939"
    sodipodi:docname="ifft_wave_vector_domain.svg">
   <defs
      id="defs4">
@@ -603,10 +603,10 @@
        fx="767.28516"
        cy="396.77188"
        cx="767.28516"
-       gradientTransform="matrix(-1.333333,0.66666662,-0.14907135,-0.29814208,1292.6939,-237.72901)"
+       gradientTransform="matrix(-1.3421754,0.68071515,-0.15005996,-0.30442477,1299.7381,-246.28003)"
        gradientUnits="userSpaceOnUse"
        id="radialGradient3263"
-       xlink:href="#linearGradient8533"
+       xlink:href="#linearGradient3949"
        inkscape:collect="always" />
   </defs>
   <sodipodi:namedview
@@ -616,16 +616,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.6"
-     inkscape:cx="202.06474"
-     inkscape:cy="216.28707"
+     inkscape:zoom="22.4"
+     inkscape:cx="302.63367"
+     inkscape:cy="213.28307"
      inkscape:document-units="px"
      inkscape:current-layer="layer3"
      showgrid="true"
-     inkscape:window-width="1280"
-     inkscape:window-height="973"
-     inkscape:window-x="0"
-     inkscape:window-y="24"
+     inkscape:window-width="1920"
+     inkscape:window-height="1138"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:snap-global="true"
      guidetolerance="20"
@@ -909,33 +909,33 @@
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Serif;-inkscape-font-specification:Serif"
-       x="285.5"
+       x="288.5"
        y="190.5"
        id="text8442-0-6-9"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan8444-2-8-6"
-         x="285.5"
+         x="288.5"
          y="190.5"
          style="font-size:16px">k<tspan
    style="font-size:65.00091553%;baseline-shift:sub"
    id="tspan3116-5">min</tspan></tspan></text>
     <path
        inkscape:connector-curvature="0"
-       d="m 192.41992,144.08765 0,23.96817 34.95668,0 L 230.5,155.5 227.3766,144.08765 z"
+       d="m 192.16738,143.58257 0,24.47325 35.18851,0 3.14411,-12.82041 -3.14411,-11.65284 z"
        id="path4134-3"
        style="fill:url(#radialGradient3263);fill-opacity:1;stroke:none;display:inline"
        sodipodi:nodetypes="cccccc" />
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Serif;-inkscape-font-specification:Serif"
-       x="193.5"
+       x="197.5"
        y="159.5"
        id="text8442-0-6-9-6"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan8444-2-8-6-0"
-         x="193.5"
+         x="197.5"
          y="159.5"
          style="font-size:16px">k<tspan
    style="font-size:65.00091553%;baseline-shift:sub"
