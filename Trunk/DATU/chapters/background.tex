@@ -499,7 +499,7 @@ of specific wave spectrum models.
     xticklabels={$-\frac{N}{2}$,0,$\frac{N}{2}$},
     yticklabels={$-\frac{M}{2}$,0,$\frac{M}{2}$},
     xlabel={$\alpha$},
-  http://www.golem.de/ticker/  ylabel={$\beta$},
+    ylabel={$\beta$},
     ]
 \addplot graphics[
     xmin=-5,
@@ -548,6 +548,7 @@ distance between consecutive grid points as follows:
 We will follow Tessendorf's lead~\cite{course:simulatingocean} and compute
 surface elevation at the following points:
 \begin{equation}
+\label{eq:spatial_domain}
  \mvec{x} = (x,y)~\in~\{(\alpha\Delta x,\beta\Delta y)|
 -\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}\leq\beta<\frac{M}{2}\}
 \end{equation}
@@ -645,24 +646,32 @@ Equation~\ref{eq:sinusoid_parameters} as follows:
 \begin{align}
  k_{min} = \frac{2\pi}{\lambda_{min}} && k_{max} = \frac{2\pi}{\lambda_{max}}
 \end{align}
-Now that we know the minimum and maximum wave numbers, we can define the wave
-vectors $\mvec{k}$ which will be used to transform from the wave vector domain
-to the spatial one:
-\begin{equation}
- \mvec{k} =
-(k_x,k_y)~\in~\{(\frac{2\pi\alpha}{L},\frac{2\pi\beta}{K})|
--\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}
-\leq\beta<\frac{M}{2}\}
-\end{equation}
-The wave vector domain is centered, which means wave number $k = 0$ is at the
-center and $|k|$ grows while we move towards the domain border. Moreover, with
-this choice of domain we include wave numbers up to exactly $|k_{min}|$, giving
-us a set of wave vectors which are optimally fitted to our spatial positions
-$\mvec{x}$. The distances between neighboring wave vectors in the $k_x$ and 
-$k_y$ directions are as follows:
+%
+Analogous to the spatial domain, we have to define the horizontal and vertical 
+distance between consecutive grid points for the wave vector domain. We denote 
+said distances as follows:
 \begin{align}
  \Delta k_x = \frac{2\pi}{L} && \Delta k_y = \frac{2\pi}{K}
 \end{align}
+%
+Given $\Delta k_x$ and $\Delta k_y$, we will define wave vectors $\mvec{k}$ in 
+the same fashion as Equation~\ref{eq:spatial_domain} defines spatial positions 
+$\mvec{x}$:
+\begin{equation}
+\label{eq:wave_vector_domain}
+ \mvec{k} = (k_x,k_y)~\in~\{(\alpha\Delta k_x,\beta\Delta k_y)|
+-\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}\leq\beta<\frac{M}{2}\}
+\end{equation}
+%
+As one may see in Figure~\ref{fig:wave_vector_domain}, the wave vector domain 
+is centered. Wave number $k = 0$ is at the center, and $|k|$ grows while we 
+move outwards, towards the domain border. Moreover, $|k_{min}|$ and 
+$|k_{max}|$, while not being the smallest and largest wave numbers defined by 
+Equation~\ref{eq:wave_vector_domain}, have exact representatives and are each 
+at least near the minimum and maximum wave numbers defined by 
+Equation~\ref{eq:wave_vector_domain}. We conclude, that we are given a set of 
+wave vectors $\mvec{k}$ which are \emph{reasonably well fitted} to our spatial 
+positions $\mvec{x}$.
 %
 \section{One dimensional Frequency Spectra}
 Oceanographic literature provides a rather large set of different one
