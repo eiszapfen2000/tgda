@@ -377,9 +377,10 @@ respective three dimensional amplitude spectrum $B(\mvec{k},\omega)$, then we
 may write
 \begin{equation}
 \label{eq:energy_spectrum_3d}
- \Theta(\mvec{k}, \omega) = \overline{B(\mvec{k}, \omega)B^*(\mvec{k}, \omega)}
+ \Theta(\mvec{k}, \omega) = \frac{B(\mvec{k}, \omega)^2}{2} = 
+\overline{B(\mvec{k}, \omega)B^{*}(\mvec{k}, \omega)}
 \end{equation}
-where the $\overline{B}$ operator denotes the mean, and
+where the $\overline{B}$ operator denotes the mean and 
 $\Theta(\mvec{k},\omega)$ represents the three dimensional~\emph{energy
 spectrum} associated with $B(\mvec{k},\omega)$. A wave component with amplitude
 $B(\mvec{k}, \omega)$ has an associated energy equal to its~\emph{mean square
@@ -471,36 +472,37 @@ variance $\mathrm{Var}[\eta] = \sigma^2$ defined by the energy spectrum
 $\Theta(\mvec{k}, \omega)$. One may realize that in context of this formulation
 of sea surface elevation, the energy spectrum $\Theta$ is the key to believable
 ocean surfaces, as it needs to be able to model the underlying physical
-processes to give realistic results. For the remainder of the document,
-Equation~\ref{eq:surface_elevation_gauss} will be the basis for all further discussions
-of specific wave spectrum models.
+processes to give realistic results.
+% For the remainder of the document,
+% Equation~\ref{eq:surface_elevation_gauss} will be the basis for all further discussions
+% of specific wave spectrum models.
 %
 \section{Discretisation}
-
+Recall that we are able to write surface elevation $\eta$ in terms of the two 
+dimensional amplitude spectrum $B(\mvec{k},t)$ as follows:
 \begin{equation}
 \label{eq:surface_elevation_ifft_bk}
  \eta(\mvec{x}, t) = \iint_{\mvec{k}} B(\mvec{k},t)
 ~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}~
 \mathrm{d}\mvec{k}
 \end{equation}
-
+Equation~\ref{eq:surface_elevation_ifft_bk} represents a two dimensional 
+inverse Fourier 
+transform~\cite{book:bracewell2000fourier}\cite{book:numericalrecipes} from the 
+Cartesian wave vector domain into Euclidean space. We rewrite 
+Equation~\ref{eq:surface_elevation_ifft_bk} as an~\emph{inverse discrete 
+Fourier Transform}
 \begin{equation}
-\eta(\mvec{x}, t) = \sum_{\mvec{k}} B(\mvec{k},t)
+\label{eq:surface_elevation_idfft_bk}
+ \eta(\mvec{x}, t) = \sum_{\mvec{k}} B_d(\mvec{k},t)
 ~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation}
+where $B_d(\mvec{k},t)$ represents the discrete approximation of 
+$B(\mvec{k},t)$. In order for Equation~\ref{eq:surface_elevation_idfft_bk} to 
+be a reasonable approximation of Equation~\ref{eq:surface_elevation_ifft_bk} we 
+have to choose a finite range of wave vectors $\mvec{k}$ such that they are
+representative for the whole energy $\overline{\eta(\mvec{x}, t)^2}$.
 %
-\begin{equation}
-\eta(\mvec{x}, t) = \sum_{\mvec{k}} B(\mvec{k})~\mathrm{e}^{-\mathrm{i}\omega t}
-~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
-\end{equation}
-%
-\begin{equation}
- B(\mvec{k}) = \sqrt{2\Theta(\mvec{k})}
-\end{equation}
-
-%
-
-
 \subsection{Domain Discretisation}
 %
 \begin{figure}
@@ -654,7 +656,7 @@ associated coordinate pairs $(\alpha\Delta k_x,\beta\Delta k_y)$.}
 %
 With $\lambda_{min}$ and $\lambda_{max}$ in our hands we may compute the
 corresponding minimum and maximum wave numbers according to
-Equation~\ref{eq:sinusoid_parameters} as follows:
+Equation~\ref{eq:sinusoid_parameters}:
 \begin{align}
  k_{min} = \frac{2\pi}{\lambda_{min}} && k_{max} = \frac{2\pi}{\lambda_{max}}
 \end{align}
@@ -678,9 +680,9 @@ $\mvec{x}$:
 As one may see in Figure~\ref{fig:wave_vector_domain}, the wave vector domain 
 is centered. Wave number $k = 0$ is at the center, and $|k|$ grows while we 
 move outwards, towards the domain border. Moreover, $|k_{min}|$ and 
-$|k_{max}|$, while not being the smallest and largest wave numbers defined by 
-Equation~\ref{eq:wave_vector_domain}, have exact representatives and are each 
-at least near the minimum and maximum wave numbers defined by 
+$|k_{max}|$, while not being the smallest and largest wave number defined by 
+Equation~\ref{eq:wave_vector_domain}, have exact representatives and are near 
+the minimum and maximum wave numbers defined by 
 Equation~\ref{eq:wave_vector_domain}. We conclude, that we are given a set of 
 wave vectors $\mvec{k}$ which are \emph{reasonably well fitted} to our spatial 
 positions $\mvec{x}$.
