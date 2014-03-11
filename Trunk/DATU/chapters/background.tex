@@ -478,7 +478,7 @@ At this point we have to face the reality of oceanographic research, which does
 not provide us with any three dimensional energy spectra 
 $\Theta(\mvec{k},\omega)$. On the other hand, we are given a set of 
 parametric one dimensional frequency spectra $\Theta(\omega)$ which we are not 
-albe to use as-is, because they do not contain any information about the 
+able to use as-is, because they do not contain any information about the 
 travelling direction of the waves, and therefore are not able to simulate 
 surface elevation with two dimensional positions $\mvec{x}$ as input. Hence, we 
 have to settle for the two dimensional wave number spectrum $\Theta(\mvec{k})$ 
@@ -486,20 +486,41 @@ as the basis from which we will compute surface elevation. We write surface
 elevation as follows:
 \begin{equation}
 \label{eq:surface_elevation_gauss_2d}
- \eta(\mvec{x}, t) = \iint_{\mvec{k}} \xi~\mathrm{e}^{-\mathrm{i}\omega t}
+ \eta(\mvec{x}, t) = \iint_{\mvec{k}} 
+\xi~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}
 ~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}~\mathrm{d}\mvec{k}
 \end{equation}
 where, in lieu with Equation~\ref{eq:surface_elevation_gauss}, $\xi$ is 
 a gauss distributed variable with mean $\mathrm{E}[\eta] = 0$ and
 variance $\mathrm{Var}[\eta] = \sigma^2$ defined by the energy spectrum
-$\Theta(\mvec{k})$. Moreover we separated out the handling of time $t$, which 
-makes Equation~\ref{eq:surface_elevation_gauss_2d} a two dimensional 
-~\emph{inverse Fourier Transform} of Fourier components 
-$\xi\mathrm{e}^{-\mathrm{i}\omega t}$. For the remainder of the document,
-Equation~\ref{eq:surface_elevation_gauss_2d} will be the basis for all further 
-discussions of specific wave spectrum models.
+$\Theta(\mvec{k})$. Moreover, for animation purposes, we did add the term 
+$\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}$ in order to explicitely handle 
+time $t$, because the two dimensional wave number spectrum has no notion of 
+it. Equation~\ref{eq:surface_elevation_gauss_2d} represents a two dimensional 
+\emph{inverse Fourier Transform} of Fourier components 
+$\xi\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}$. For the remainder of the 
+document, Equation~\ref{eq:surface_elevation_gauss_2d} will be the basis for all 
+further discussions of specific wave spectrum models.
 %
 \section{Discretisation}
+For computer graphics applications we are in need of a discrete approximation 
+of surface elevation as given by Equation~\ref{eq:surface_elevation_gauss_2d}, 
+which gives acceptable results as well as computes said results in a reasonable 
+amount of time. We give a rough sketch of such a discrete formulation which 
+looks like the following:
+\begin{equation}
+\label{eq:surface_elevation_sketch}
+ \eta(\mvec{x}, t) = \sum_{\mvec{k}} 
+\xi~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}
+~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\end{equation}
+Equation~\ref{eq:surface_elevation_sketch} represents a discrete inverse 
+Fourier transform of Fourier components $\xi\mathrm{e}^{-\mathrm{i}\omega t}$, 
+which we are able to compute in a very efficient manner by means of 
+the~\emph{Fast Fourier Transform}
+\cite{book:numericalrecipes}\cite{book:bracewell2000fourier},~\emph{FFT} in 
+short.
+
 Recall that we are able to write surface elevation $\eta$ in terms of the two 
 dimensional amplitude spectrum $B(\mvec{k},t)$ as follows:
 \begin{equation}
