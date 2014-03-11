@@ -515,36 +515,23 @@ looks like the following:
 ~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation}
 Equation~\ref{eq:surface_elevation_sketch} represents a discrete inverse 
-Fourier transform of Fourier components $\xi\mathrm{e}^{-\mathrm{i}\omega t}$, 
-which we are able to compute in a very efficient manner by means of 
-the~\emph{Fast Fourier Transform}
+Fourier transform of Fourier components 
+$\xi\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}$, which we are able to compute in 
+a very efficient manner by means of the~\emph{Fast Fourier Transform}
 \cite{book:numericalrecipes}\cite{book:bracewell2000fourier},~\emph{FFT} in 
-short.
+short.\\
 
-Recall that we are able to write surface elevation $\eta$ in terms of the two 
-dimensional amplitude spectrum $B(\mvec{k},t)$ as follows:
-\begin{equation}
-\label{eq:surface_elevation_ifft_bk}
- \eta(\mvec{x}, t) = \iint_{\mvec{k}} B(\mvec{k},t)
-~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}~
-\mathrm{d}\mvec{k}
-\end{equation}
-Equation~\ref{eq:surface_elevation_ifft_bk} represents a two dimensional 
-inverse Fourier 
-transform~\cite{book:bracewell2000fourier}\cite{book:numericalrecipes} from the 
-Cartesian wave vector domain into Euclidean space. We rewrite 
-Equation~\ref{eq:surface_elevation_ifft_bk} as an~\emph{inverse discrete 
-Fourier Transform}
-\begin{equation}
-\label{eq:surface_elevation_idfft_bk}
- \eta(\mvec{x}, t) = \sum_{\mvec{k}} B_d(\mvec{k},t)
-~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
-\end{equation}
-where $B_d(\mvec{k},t)$ represents the discrete approximation of 
-$B(\mvec{k},t)$. In order for Equation~\ref{eq:surface_elevation_idfft_bk} to 
-be a reasonable approximation of Equation~\ref{eq:surface_elevation_ifft_bk} we 
-have to choose a finite range of wave vectors $\mvec{k}$ such that they are
-representative for the whole energy $\overline{\eta(\mvec{x}, t)^2}$.
+Employing the FFT algorithm may solve our concerns relating to performance, but 
+we still have to make sure we compute an as good as possible approximation to 
+Equation~\ref{eq:surface_elevation_gauss_2d}. Since our model for surface 
+elevation is based on wave energy, the best way forward seems to be, that we 
+choose a finite range of wave vectors $\mvec{k}$ such that they are 
+representative of the whole energy $Var[\eta]$ defined by $\Theta(\mvec{k})$. 
+Because wave vectors $\mvec{k}$ are related to wave length, they are also 
+related to the spatial domain, and as such to positions $\mvec{x}$. Hence, the 
+quality of our approximation depends on how we discretise both the spatial 
+domain into a finite set of positions $\mvec{x}$ and the wave vector domain 
+into a finite set of wave vectors $\mvec{k}$.
 %
 \subsection{Domain Discretisation}
 %
