@@ -472,10 +472,32 @@ variance $\mathrm{Var}[\eta] = \sigma^2$ defined by the energy spectrum
 $\Theta(\mvec{k}, \omega)$. One may realize that in context of this formulation
 of sea surface elevation, the energy spectrum $\Theta$ is the key to believable
 ocean surfaces, as it needs to be able to model the underlying physical
-processes to give realistic results.
-% For the remainder of the document,
-% Equation~\ref{eq:surface_elevation_gauss} will be the basis for all further discussions
-% of specific wave spectrum models.
+processes to give realistic results.\\
+
+At this point we have to face the reality of oceanographic research, which does 
+not provide us with any three dimensional energy spectra 
+$\Theta(\mvec{k},\omega)$. On the other hand, we are given a set of 
+parametric one dimensional frequency spectra $\Theta(\omega)$ which we are not 
+albe to use as-is, because they do not contain any information about the 
+travelling direction of the waves, and therefore are not able to simulate 
+surface elevation with two dimensional positions $\mvec{x}$ as input. Hence, we 
+have to settle for the two dimensional wave number spectrum $\Theta(\mvec{k})$ 
+as the basis from which we will compute surface elevation. We write surface 
+elevation as follows:
+\begin{equation}
+\label{eq:surface_elevation_gauss_2d}
+ \eta(\mvec{x}, t) = \iint_{\mvec{k}} \xi~\mathrm{e}^{-\mathrm{i}\omega t}
+~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}~\mathrm{d}\mvec{k}
+\end{equation}
+where, in lieu with Equation~\ref{eq:surface_elevation_gauss}, $\xi$ is 
+a gauss distributed variable with mean $\mathrm{E}[\eta] = 0$ and
+variance $\mathrm{Var}[\eta] = \sigma^2$ defined by the energy spectrum
+$\Theta(\mvec{k})$. Moreover we separated out the handling of time $t$, which 
+makes Equation~\ref{eq:surface_elevation_gauss_2d} a two dimensional 
+~\emph{inverse Fourier Transform} of Fourier components 
+$\xi\mathrm{e}^{-\mathrm{i}\omega t}$. For the remainder of the document,
+Equation~\ref{eq:surface_elevation_gauss_2d} will be the basis for all further 
+discussions of specific wave spectrum models.
 %
 \section{Discretisation}
 Recall that we are able to write surface elevation $\eta$ in terms of the two 
