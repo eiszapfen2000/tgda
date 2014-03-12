@@ -739,9 +739,31 @@ samples $N$ and $M$, knowing that they will define the smallest wave length
 representable by wave vectors $\mvec{k}$.
 %
 \subsection{Sum}
+
 \begin{equation}
- \int_{\Delta k_x}\int_{\Delta k_y}\xi~\mathrm{d}k_x~\mathrm{d}k_y \approx \xi 
-k_x k_y
+Var[\eta] = \int\int_{\mvec{k}}\Theta(\mvec{k})~\mathrm{d}\mvec{k} \approx
+\int_{-k_{amin}}^{k_{amin}}\int_{-k_{amin}}^{k_{amin}}\Theta(\mvec{k})~\mathrm{d
+}\mvec{k} 
+\end{equation}
+
+\begin{equation}
+ Var[\eta] = \sum_{\alpha}\sum_{\beta}\Theta(\mvec{k}_{\alpha,\beta})
+\end{equation}
+
+\begin{equation}
+ Var[\eta] = \sum_{\alpha}\sum_{\beta}\int_{\Delta k_x}\int_{\Delta 
+k_y}\Theta(\mvec{k})~\mathrm{d}\mvec{k}
+\end{equation}
+
+\begin{equation}
+ \Theta(\mvec{k}_{\alpha,\beta}) = \int_{\Delta k_x}\int_{\Delta 
+k_y}\Theta(\mvec{k})~\mathrm{d}\mvec{k} \approx 
+\Theta(\mvec{k}_{\alpha,\beta})\Delta k_x\Delta k_y
+\end{equation}
+
+\begin{equation}
+ B(\mvec{k}_{\alpha,\beta})^2 = 2\Theta(\mvec{k}_{\alpha,\beta})\Delta 
+k_x\Delta k_y
 \end{equation}
 
 \begin{equation}
