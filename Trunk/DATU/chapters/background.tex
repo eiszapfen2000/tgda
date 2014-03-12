@@ -504,10 +504,11 @@ further discussions of specific wave spectrum models.
 %
 \section{Discretisation}
 For computer graphics applications we are in need of a discrete approximation 
-of surface elevation as given by Equation~\ref{eq:surface_elevation_gauss_2d}, 
+of surface elevation as defined by 
+Equation~\ref{eq:surface_elevation_gauss_2d}, 
 which gives acceptable results as well as computes said results in a reasonable 
-amount of time. We give a rough sketch of such a discrete formulation which 
-looks like the following:
+amount of time. We may write a rough sketch of such a discrete formulation like 
+the following:
 \begin{equation}
 \label{eq:surface_elevation_sketch}
  \eta(\mvec{x}, t) = \sum_{\mvec{k}} 
@@ -517,9 +518,11 @@ looks like the following:
 Equation~\ref{eq:surface_elevation_sketch} represents a discrete inverse 
 Fourier transform of Fourier components 
 $\xi\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}$, which we are able to compute in 
-a very efficient manner by means of the~\emph{Fast Fourier Transform}
-\cite{book:numericalrecipes}\cite{book:bracewell2000fourier},~\emph{FFT} in 
-short.\\
+a very efficient manner by means of the~\emph{Fast Fourier Transform}, 
+~\emph{FFT} in short. The interested reader may find extensive discussions of 
+the discrete Fourier transform and the Fast Fourier algorithm
+in~\emph{Bracewell}\cite{book:bracewell2000fourier} 
+and~\emph{Press}\cite{book:numericalrecipes}.\\
 
 Employing the FFT algorithm may solve our concerns relating to performance, but 
 we still have to make sure we compute an as good as possible approximation to 
