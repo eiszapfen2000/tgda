@@ -729,7 +729,7 @@ the largest finite wave length is as follows:
 k_{amax} = \frac{2\pi}{L} = \frac{2\pi}{K} = \Delta k_x = \Delta k_y
 \end{equation}
 Hence, by choosing surface dimensions $L$ and $K$ we determine the maximum 
-wave length we will we able to include in our computation. The wave number 
+wave length we are able to include in our computation. The wave number 
 corresponding to the smallest finite wave length is defined as follows:
 \begin{equation}
 k_{amin} = \sqrt{2}\frac{\pi N}{L} = \sqrt{2}\frac{\pi M}{K}
@@ -737,6 +737,21 @@ k_{amin} = \sqrt{2}\frac{\pi N}{L} = \sqrt{2}\frac{\pi M}{K}
 With surface dimensions $L$ and $K$ already fixed, we choose the number of 
 samples $N$ and $M$, knowing that they will define the smallest wave length 
 representable by wave vectors $\mvec{k}$.
+%
+\subsection{Sum}
+\begin{equation}
+ \int_{\Delta k_x}\int_{\Delta k_y}\xi~\mathrm{d}k_x~\mathrm{d}k_y \approx \xi 
+k_x k_y
+\end{equation}
+
+\begin{equation}
+ \eta(\mvec{x}, t) = 
+\sum_{\mvec{k}}\frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)\sqrt{2\Theta(\mvec{k})
+\Delta k_x \Delta k_y}~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) 
+t}~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\end{equation}
+
+
 %
 \section{One dimensional Frequency Spectra}
 Oceanographic literature provides a rather large set of different one
