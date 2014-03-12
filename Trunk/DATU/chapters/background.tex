@@ -712,12 +712,31 @@ $\mvec{x}$:
 %
 As one may see in Figure~\ref{fig:wave_vector_domain}, the wave vector domain 
 is centered. Wave number $k = 0$ is at the center, and $|k|$ grows while we 
-move outwards, towards the domain border. Moreover, $|k_{min}|$ and 
-$|k_{max}|$, while not being the smallest and largest wave number of the 
-set, have exact representatives and are near the actual minimum and maximum 
-wave numbers defined by Equation~\ref{eq:wave_vector_domain}. We conclude, that 
-we are given a set of wave vectors $\mvec{k}$ which are \emph{reasonably well 
-fitted} to our spatial positions $\mvec{x}$.
+move outwards, towards the domain border. From
+Equation~\ref{eq:sinusoid_parameters} we know that the relation between wave 
+length and wave number is an inverse one, while $|k|$ increases, wave length 
+decreases. Therefore we find the larger wave lengths near the domain center, 
+and the smaller ones near the domain border. We may ignore the center element 
+with wave number $k = 0$, which maps to wave length $\lambda = \infty$, because 
+$\Theta(\mvec{k})$ is always equal zero for wave vector $\mvec{k} = (0, 0)$.
+Moreover, one may notice that $|k_{min}|$ and $|k_{max}|$ are not the smallest 
+and largest wave number of the set defined by 
+Equation~\ref{eq:wave_vector_domain}, but both have exact representatives and 
+are close to the actual minimum and maximum wave number. From 
+Figure~\ref{fig:wave_vector_domain} it is easy to see, that the wave number for 
+the largest finite wave length is as follows:
+\begin{equation}
+k_{amax} = \frac{2\pi}{L} = \frac{2\pi}{K} = \Delta k_x = \Delta k_y
+\end{equation}
+Hence, by choosing surface dimensions $L$ and $K$ we determine the maximum 
+wave length we will we able to include in our computation. The wave number 
+corresponding to the smallest finite wave length is defined as follows:
+\begin{equation}
+k_{amin} = \sqrt{2}\frac{\pi N}{L} = \sqrt{2}\frac{\pi M}{K}
+\end{equation}
+With surface dimensions $L$ and $K$ already fixed, we choose the number of 
+samples $N$ and $M$, knowing that they will define the smallest wave length 
+representable by wave vectors $\mvec{k}$.
 %
 \section{One dimensional Frequency Spectra}
 Oceanographic literature provides a rather large set of different one
