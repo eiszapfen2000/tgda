@@ -537,6 +537,7 @@ domain into a finite set of positions $\mvec{x}$ and the wave vector domain
 into a finite set of wave vectors $\mvec{k}$.
 %
 \subsection{Domain Discretisation}
+\label{sec:domain_discretisation}
 %
 \begin{figure}
 \centering
@@ -698,6 +699,7 @@ Analogous to the spatial domain, we have to define the horizontal and vertical
 distance between consecutive grid points for the wave vector domain. We denote 
 said distances as follows:
 \begin{align}
+\label{eq:delta_kx_delta_ky}
  \Delta k_x = \frac{2\pi}{L} && \Delta k_y = \frac{2\pi}{K}
 \end{align}
 %
@@ -737,28 +739,55 @@ With surface dimensions $L$ and $K$ already fixed, we choose the number of
 samples $N$ and $M$, knowing that they will define the smallest wave length 
 representable by wave vectors $\mvec{k}$.
 %
-\subsection{Sum}
-
+\subsection{Energy Discretisation}
+We have discretised the wave vector domain into a finite set of wave vectors, 
+where $\pm k_{min}$ represent the largest positive and negative wave numbers on 
+the horizontal and vertical axes. Since we seek a representative approximation 
+of whole wave energy $Var[\eta]$ based on our finite set of wave vectors, we may 
+start by limiting the respective integral with $\pm k_{min}$:
 \begin{equation}
-Var[\eta] = \int\int_{\mvec{k}}\Theta(\mvec{k})~\mathrm{d}\mvec{k} \approx
-\int_{-k_{min}}^{k_{min}}\int_{-k_{min}}^{k_{min}}\Theta(\mvec{k})~\mathrm{d
-}\mvec{k} 
+\label{eq:variance_int_approx_limited}
+Var[\eta] = \int\int_{\mvec{k}}\Theta(\mvec{k})~\mathrm{d}\mvec{k}
+\approx\int_{-k_{min}}^{k_{min}}\int_{-k_{min}}^{k_{min}}\Theta(\mvec{k}
+)~\mathrm{d}\mvec{k}
 \end{equation}
-
+We may rewrite the approximation in 
+Equation~\ref{eq:variance_int_approx_limited} as a sum of integrals:
+%
 \begin{equation}
- Var[\eta] = \sum_{\alpha}\sum_{\beta}\Theta(\mvec{k}_{\alpha,\beta})
-\end{equation}
-
-\begin{equation}
- Var[\eta] = \sum_{\alpha}\sum_{\beta}\int_{\Delta k_x}\int_{\Delta 
+\label{eq:variance_int_approx_sums}
+ Var[\eta] = \int_{-k_{min}}^{k_{min}}\int_{-k_{min}}^{k_{min}}\Theta(\mvec{k}
+)~\mathrm{d}\mvec{k} = \sum_{\alpha}\sum_{\beta}\int_{\Delta k_x}\int_{\Delta 
 k_y}\Theta(\mvec{k})~\mathrm{d}\mvec{k}
 \end{equation}
-
+%
+where $\alpha$ and $\beta$ are the indices from 
+Equation~\ref{eq:wave_vector_domain}, and $\Delta k_x$ and $\Delta k_y$ 
+represent the distances between grid points as defined by 
+Equation~\ref{eq:delta_kx_delta_ky}. Alternatively, we may compute an 
+approximation of wave energy in a pure discrete way. Let 
+$\mvec{k}_{\alpha,\beta}$ be the wave vectors defined by 
+Equation~\ref{eq:wave_vector_domain}, then:
+%
+\begin{equation}
+\label{eq:variance_naive_sum}
+ Var[\eta] = \sum_{\alpha}\sum_{\beta}\Theta(\mvec{k}_{\alpha,\beta})
+\end{equation}
+%
+By combining Equation~\ref{eq:variance_int_approx_sums} 
+and~\ref{eq:variance_naive_sum} we get:
+%
 \begin{equation}
  \Theta(\mvec{k}_{\alpha,\beta}) = \int_{\Delta k_x}\int_{\Delta 
 k_y}\Theta(\mvec{k})~\mathrm{d}\mvec{k} \approx 
 \Theta(\mvec{k}_{\alpha,\beta})\Delta k_x\Delta k_y
 \end{equation}
+Now we may write our approximation of wave energy as a simple sum:
+\begin{equation}
+ Var[\eta] = \sum_{\alpha}\sum_{\beta}\Theta(\mvec{k}_{\alpha,\beta})\Delta k_x 
+\Delta k_y
+\end{equation}
+
 
 \begin{equation}
  B(\mvec{k}_{\alpha,\beta})^2 = 2\Theta(\mvec{k}_{\alpha,\beta})\Delta 
