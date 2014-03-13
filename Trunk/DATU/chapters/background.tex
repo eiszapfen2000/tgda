@@ -718,21 +718,20 @@ length and wave number is an inverse one, while $|k|$ increases, wave length
 decreases. Therefore we find the larger wave lengths near the domain center, 
 and the smaller ones near the domain border. We may ignore the center element 
 with wave number $k = 0$, which maps to wave length $\lambda = \infty$, because 
-$\Theta(\mvec{k})$ is always equal zero for wave vector $\mvec{k} = (0, 0)$.
-Moreover, one may notice that $|k_{min}|$ and $|k_{max}|$ are not the smallest 
-and largest wave number of the set defined by 
-Equation~\ref{eq:wave_vector_domain}, but both have exact representatives and 
-are close to the actual minimum and maximum wave number. From 
-Figure~\ref{fig:wave_vector_domain} it is easy to see, that the wave number for 
-the largest finite wave length is as follows:
+$\Theta(\mvec{k})$ is always equal zero for wave vector $\mvec{k} = (0, 0)$.\\
+
+From Figure~\ref{fig:wave_vector_domain} it is easy to see that  
+Equation~\ref{eq:wave_vector_domain} includes wave vectors which are exact 
+representatives for wave number $k_{min}$ and $k_{max}$. We may rewrite wave 
+number $k_{max}$ in terms of Equation~\ref{eq:wave_vector_domain} as follows:
 \begin{equation}
-k_{amax} = \frac{2\pi}{L} = \frac{2\pi}{K} = \Delta k_x = \Delta k_y
+ k_{max} = \sqrt{2}\frac{2\pi}{L} = \sqrt{2}\frac{2\pi}{K}
 \end{equation}
-Hence, by choosing surface dimensions $L$ and $K$ we determine the maximum 
-wave length we are able to include in our computation. The wave number 
-corresponding to the smallest finite wave length is defined as follows:
+Hence, by choosing surface dimensions $L$ and $K$ we implicitely determine the 
+maximum wave length we are able to include in our computation. Next, we rewrite 
+$k_{min}$ to the following:
 \begin{equation}
-k_{amin} = \sqrt{2}\frac{\pi N}{L} = \sqrt{2}\frac{\pi M}{K}
+ k_{min} = \frac{\pi N}{L} = \frac{\pi M}{K}
 \end{equation}
 With surface dimensions $L$ and $K$ already fixed, we choose the number of 
 samples $N$ and $M$, knowing that they will define the smallest wave length 
@@ -742,7 +741,7 @@ representable by wave vectors $\mvec{k}$.
 
 \begin{equation}
 Var[\eta] = \int\int_{\mvec{k}}\Theta(\mvec{k})~\mathrm{d}\mvec{k} \approx
-\int_{-k_{amin}}^{k_{amin}}\int_{-k_{amin}}^{k_{amin}}\Theta(\mvec{k})~\mathrm{d
+\int_{-k_{min}}^{k_{min}}\int_{-k_{min}}^{k_{min}}\Theta(\mvec{k})~\mathrm{d
 }\mvec{k} 
 \end{equation}
 
