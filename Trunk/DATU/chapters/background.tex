@@ -693,8 +693,7 @@ associated coordinate pairs $(\alpha\Delta k_x,\beta\Delta k_y)$.}
 \end{figure}
 %
 With $\lambda_{min}$ and $\lambda_{max}$ in our hands we may compute the
-corresponding minimum and maximum wave numbers according to
-Equation~\ref{eq:sinusoid_parameters}:
+corresponding wave numbers according to Equation~\ref{eq:sinusoid_parameters}:
 \begin{align}
  k_{min} = \frac{2\pi}{\lambda_{min}} && k_{max} = \frac{2\pi}{\lambda_{max}}
 \end{align}
@@ -808,9 +807,10 @@ Equation~\ref{eq:variance_discrete}:
 \end{equation}
 As described in Section~\ref{sec:random_process}, in order to generate random 
 wave amplitudes, we employ a Gauss distribution with mean $\mathrm{E}[\eta] 
-= 0$ and variance $\mathrm{Var}[\eta] = \sigma^2$ defined by the energy spectrum
-$\Theta(\mvec{k})$. Since all Gauss distributions may be written based on the 
-standard normal distribution, we may write surface elevation as follows:
+= 0$ and variance $\mathrm{Var}[\eta]$ defined by the energy spectrum
+$\Theta(\mvec{k})$. Since all Gaussian distributions may be written based on 
+the standard normal distribution, we are able to write surface elevation as 
+follows:
 \begin{equation}
  \eta(\mvec{x}, t) = 
 \sum_{\alpha}\sum_{\beta}\frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)\sqrt{B(\mvec{
@@ -818,15 +818,23 @@ k}_{\alpha,\beta})^2}~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}_{\alpha,\beta})
 t}~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}_{\alpha,\beta}}\mvec{x}}
 \end{equation}
 where $\xi_r$ and $\xi_i$ are Gauss distributed random variables with mean zero 
-and standard deviation one. If we drop indices $\alpha$ and $\beta$ we may give 
-a more compact formulation based on our finite set of wave vectors $\mvec{k}$:
+and standard deviation one. We will drop indices $\alpha$ and $\beta$ and give 
+a formulation in terms of wave enery $\Theta(\mvec{k})$ and our finite set of 
+wave vectors $\mvec{k}$:
 \begin{equation}
+\label{eq:surface_elevation_discrete}
  \eta(\mvec{x}, t) = 
 \sum_{\mvec{k}}\frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)
 \sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_y} 
 ~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
 ~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation}
+%
+We have found a discrete approximation of surface elevation which is fast to 
+compute and is able to give satisfying results as long as we choose wave 
+vectors $\mvec{k}$ wisely. We will move on and discuss parametric wave energy 
+models, because those constitute the basis for the generation of plausible 
+ocean surfaces.
 %
 \section{One dimensional Frequency Spectra}
 \label{sec:1d_frequency_spectra}
@@ -835,8 +843,8 @@ dimensional frequency spectra. As we have seen in
 Section~\ref{sec:energy_spectrum}, the one dimensional frequency spectrum does
 not hold any positional or directional information, which makes it the most
 easiest one to measure. But in order to be able to synthesize a finite area of a
-virtual ocean surface we depend on spatial information. We are in need of
-a~\emph{directional spreading function}, which directionally distributes the
+virtual ocean surface we depend on directional wave information. We are in need 
+of a~\emph{directional spreading function}, which directionally distributes the
 energy provided by $\Theta(\omega)$ as well as filters wave trains which move in
 the opposite direction of the wind. We may call the product of a normal one
 dimensional frequency spectrum and a directional spreading function
@@ -1199,22 +1207,27 @@ which gives us
 \end{subequations}
 Now we are able to rewrite the directional frequency spectrum from 
 Equation~\ref{eq:directional_frequency_spectrum} in terms of wave number $k$:
+%
 \begin{equation}
 \label{eq:theta_k_polar}
  \Theta_{k,\theta}(k,\theta) = \Theta_k(k)D(\sqrt{gk},\theta)
 \end{equation}
+%
 where $\Theta_{k,\theta}(k,\theta)$ is called the~\emph{directional wave number 
 spectrum}. As the last step we need to convert from polar coordinate pairs 
 $(k,\theta)$ to cartesian wave number coordinates $\mvec{k}$. Said conversion 
 is accomplished as follows:
+%
 \begin{equation}
 \label{eq:theta_cart_to_polar}
 \int\Theta_{\mvec{k}}(\mvec{k})~\mathrm{d}\mvec{k} = 
 \int\int\Theta_{k,\theta}(k,\theta)\frac{1}{k}~\mathrm{d}\theta~\mathrm{d}k
 \end{equation}
+%
 By combining Equations~\ref{eq:directional_frequency_spectrum}, 
 ~\ref{eq:theta_k} and~\ref{eq:theta_cart_to_polar} we get the Cartesian wave 
 number spectrum:
+%
 \begin{align}
 \Theta_{\mvec{k}}(\mvec{k}) &= \Theta_{\omega,\theta}(\sqrt{gk}, 
 \theta)\frac{1}{2k}\sqrt{\frac{g}{k}}\\
@@ -1268,9 +1281,9 @@ wind direction points in the direction of the positive $k_x$ axis.}
 %
 Now we are able to preserve integral equality between different representations 
 of $\Theta$, as long as we use the deep water dispersion relation. One may do 
-the math for another dispersion relation, now that the path to take is shown. 
-Still, in the context of this work, we only concern ourselves with waves in 
-deep water.
+the math for another dispersion relation, now that the path to walk is laid 
+out. Still, in the context of this work, we only concern ourselves with waves 
+in deep water.
 %
 \section{Two dimensional Frequency Spectra}
 
