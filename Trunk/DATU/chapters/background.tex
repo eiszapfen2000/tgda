@@ -423,6 +423,7 @@ document such a model of the ocean is sufficient, there is no need to simulate
 the actual generation and decay of waves over time.
 
 \subsection{The Random Process}
+\label{sec:random_process}
 Pierson-Neumann theory describes the sea surface as a gaussian random process.
 As such, we are not dealing with one concrete ocean surface $\eta$, but with an
 \emph{ensemble} of different sea surfaces $\{\eta\}$, each associated with its
@@ -500,7 +501,10 @@ it. Equation~\ref{eq:surface_elevation_gauss_2d} represents a two dimensional
 \emph{inverse Fourier Transform} of Fourier components 
 $\xi\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}$. For the remainder of the 
 document, Equation~\ref{eq:surface_elevation_gauss_2d} will be the basis for all 
-further discussions of specific wave spectrum models.
+further discussions of specific wave spectrum models. Moreover, in 
+Section~\ref{sec:1d_frequency_spectra} we will discuss the conversion of the 
+more common one dimensional frequency spectra $\Theta(\omega)$ into two 
+dimensional wave number spectra $\Theta(\mvec{k})$ for our practical usage.
 %
 \section{Discretisation}
 For computer graphics applications we are in need of a discrete approximation 
@@ -784,27 +788,48 @@ k_y}\Theta(\mvec{k})~\mathrm{d}\mvec{k} \approx
 \end{equation}
 Now we may write our approximation of wave energy as a simple sum:
 \begin{equation}
+\label{eq:variance_discrete}
  Var[\eta] = \sum_{\alpha}\sum_{\beta}\Theta(\mvec{k}_{\alpha,\beta})\Delta k_x 
 \Delta k_y
 \end{equation}
 %
-\subsection{Amplitudes}
-%
+\subsection{Random Amplitudes}
+Recall that wave energy is defined as the mean square of the wave amplitude, so,
+given wave energy $\Theta(\mvec{k})$ we may compute wave amplitude 
+$B(\mvec{k})$ as follows:
 \begin{equation}
- B(\mvec{k}_{\alpha,\beta})^2 = 2\Theta(\mvec{k}_{\alpha,\beta})\Delta 
-k_x\Delta k_y
+ B(\mvec{k})^2 = 2\Theta(\mvec{k})
 \end{equation}
-%
+We may convert to a discrete formulation based on 
+Equation~\ref{eq:variance_discrete}:
+\begin{equation}
+ B(\mvec{k}_{\alpha,\beta})^2 = 2\Theta(\mvec{k}_{\alpha,\beta})\Delta k_x 
+\Delta k_y
+\end{equation}
+As described in Section~\ref{sec:random_process}, in order to generate random 
+wave amplitudes, we employ a Gauss distribution with mean $\mathrm{E}[\eta] 
+= 0$ and variance $\mathrm{Var}[\eta] = \sigma^2$ defined by the energy spectrum
+$\Theta(\mvec{k})$. Since all Gauss distributions may be written based on the 
+standard normal distribution, we may write surface elevation as follows:
 \begin{equation}
  \eta(\mvec{x}, t) = 
-\sum_{\mvec{k}}\frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)\sqrt{2\Theta(\mvec{k})
-\Delta k_x \Delta k_y}~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) 
-t}~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\sum_{\alpha}\sum_{\beta}\frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)\sqrt{B(\mvec{
+k}_{\alpha,\beta})^2}~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}_{\alpha,\beta}) 
+t}~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}_{\alpha,\beta}}\mvec{x}}
 \end{equation}
-
-
+where $\xi_r$ and $\xi_i$ are Gauss distributed random variables with mean zero 
+and standard deviation one. If we drop indices $\alpha$ and $\beta$ we may give 
+a more compact formulation based on our finite set of wave vectors $\mvec{k}$:
+\begin{equation}
+ \eta(\mvec{x}, t) = 
+\sum_{\mvec{k}}\frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)
+\sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_y} 
+~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
+~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\end{equation}
 %
 \section{One dimensional Frequency Spectra}
+\label{sec:1d_frequency_spectra}
 Oceanographic literature provides a rather large set of different one
 dimensional frequency spectra. As we have seen in
 Section~\ref{sec:energy_spectrum}, the one dimensional frequency spectrum does
