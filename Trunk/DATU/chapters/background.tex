@@ -494,7 +494,7 @@ elevation as follows:
 where, in lieu with Equation~\ref{eq:surface_elevation_gauss}, $\xi$ is 
 a gauss distributed variable with mean $\mathrm{E}[\eta] = 0$ and
 variance $\mathrm{Var}[\eta] = \sigma^2$ defined by the energy spectrum
-$\Theta(\mvec{k})$. Moreover, for animation purposes, we did add the term 
+$\Theta(\mvec{k})$. Moreover, for animation purposes, we add the term 
 $\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}$ in order to explicitely handle 
 time $t$, because the two dimensional wave number spectrum has no notion of 
 it. Equation~\ref{eq:surface_elevation_gauss_2d} represents a two dimensional 
@@ -740,8 +740,14 @@ $k_{min}$ to the following:
 \end{equation}
 With surface dimensions $L$ and $K$ already fixed, we choose the number of 
 samples $N$ and $M$, knowing that they will define the smallest wave length 
-representable by wave vectors $\mvec{k}$.
-%
+representable by wave vectors $\mvec{k}$. Later on we will see that the 
+distribution of wave energy among wave vectors is highly dependent on the 
+actual model employed as well as the input parameters to those models. Wave 
+energy may be focused in a very narrow range of wave vectors, or be wide spread 
+among a large portion of the entire wave vector spectrum. As a consequence, 
+sometimes it is necessary to choose more than one set of wave vectors 
+$\mvec{k}$ which complement one another, and to combine the results in order 
+to get satisfactory results.
 \subsection{Energy Discretisation}
 We have discretised the wave vector domain into a finite set of wave vectors, 
 where $\pm k_{min}$ represent the largest positive and negative wave numbers on 
