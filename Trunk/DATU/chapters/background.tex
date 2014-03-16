@@ -380,31 +380,53 @@ may write
  \Theta(\mvec{k}, \omega) = \frac{B(\mvec{k}, \omega)^2}{2} = 
 \overline{B(\mvec{k}, \omega)B^{*}(\mvec{k}, \omega)}
 \end{equation}
-where the $\overline{B}$ operator denotes the mean and 
-$\Theta(\mvec{k},\omega)$ represents the three dimensional~\emph{energy
-spectrum} associated with $B(\mvec{k},\omega)$. A wave component with amplitude
-$B(\mvec{k}, \omega)$ has an associated energy equal to its~\emph{mean square
-displacement} $\Theta(\mvec{k},\omega)$. The integral of the energy spectrum
-gives both the energy and the mean square displacement of the entire wave:
+where the $\overline{B}$ operator denotes the mean and
+$\Theta(\mvec{k},\omega)$ represents the~\emph{mean square displacement} of
+wave amplitude $B(\mvec{k},\omega)$. The mean square displacement of a wave
+is connected to wave energy $E_w$ as follows:
+%
+\begin{equation}
+\label{eq:wave_energy_single}
+ E_w = \rho g~\Theta(\mvec{k},\omega)
+\end{equation}
+%
+where $\rho$ is the water density and $g$ the accleration of earth's gravity.
+Equation~\ref{eq:wave_energy_single} is the reason $\Theta(\mvec{k},\omega)$
+in literature is referred to as the three dimensional~\emph{energy spectrum}
+associated with $B(\mvec{k},\omega)$. Now we are able to define mean surface
+energy $E_s$ based on combined wave energy:
 %
 \begin{equation}
 \label{eq:wave_energy_3d}
- E = \overline{\eta(\mvec{x}, t)^2} = \iint_{\mvec{k}}\int_{\omega}
-\Theta(\mvec{k},
-\omega)~\mathrm{d}\mvec{k}~\mathrm{d}\omega
+ E_s = \rho g~\iint_{\mvec{k}}\int_{\omega}\Theta(\mvec{k},\omega)
+~\mathrm{d}\mvec{k}~\mathrm{ d}\omega
 \end{equation}
 %
-The two dimensional energy spectrum, in literature known as~\emph{wave number
-spectrum}, is as follows:
+Looking back at Equation~\ref{eq:wave_energy_single}, which makes wave energy
+dependent on the mean square displacement of wave amplitudes, we may deduce that
+mean surface energy is dependent on the~\emph{mean square surface displacement},
+denoted as $\overline{\eta^2}$. Therefore, we may write:
+%
+\begin{equation}
+\label{eq:mean_square_eta}
+\overline{\eta^2} = \iint_{\mvec{k}}\int_{\omega}\Theta(\mvec{k},\omega)
+~\mathrm{d}\mvec{k}~\mathrm{d}\omega
+\end{equation}
+%
+\\
+Later on we will be in need of energy spectrum formulations which have a lower
+dimensionality than the three dimensional $\Theta(\mvec{k},\omega)$. As such,
+we introduce the two dimensional energy spectrum, in literature known
+as~\emph{wave number spectrum}, which is as follows:
 \begin{equation}
 \label{eq:energy_spectrum_2d}
  \Theta(\mvec{k}) = \int_{\omega} \Theta(\mvec{k}, \omega)~\mathrm{d}\omega
 \end{equation}
 The wave number spectrum gives the contribution to the wave energy arising from
-wave components with wave number $\mvec{k}$, irrespective of the frequencies
-$\omega$ associated with that wave number. In contrast, the one dimensional
-energy spectrum, in literature known as~\emph{frequency spectrum}, is defined
-as follows:
+wave components with wave number $k$ dependent on wave vector $\mvec{k}$,
+irrespective of the frequencies $\omega$ associated with that wave number. In
+contrast, the one dimensional energy spectrum, in literature known
+as~\emph{frequency spectrum}, is defined as follows:
 \begin{equation}
 \label{eq:energy_spectrum_1d}
  \Theta(\omega) = \int_{\mvec{k}} \Theta(\mvec{k}, \omega)~\mathrm{d}\mvec{k}
@@ -444,11 +466,10 @@ therefore the variance of all components combined is
 \mathrm{Var}[\eta] = \sigma^2 = \iint_{\mvec{k}}
 \int_{\omega}\Theta(\mvec{k},\omega)~\mathrm{d}\mvec{k}~\mathrm{ d}\omega
 \end{equation}
-which is the same as Equation~\ref{eq:wave_energy_3d}. The variance
-$\sigma^2$ is equal the energy $E$ as well as the mean square surface elevation
-$\overline{\eta^2}$. With mean and variance in our hands, we may write
-the gaussian distribution that the values of sea surface elevation are drawn
-from, as follows:
+which is the same as Equation~\ref{eq:mean_square_eta}. The variance
+$\sigma^2$ is equal the mean square surface elevation $\overline{\eta^2}$. With
+mean and variance in our hands, we may write the gaussian distribution that the
+values of sea surface elevation are drawn from, as follows:
 \begin{equation}
 \label{eq:gaussian_dist}
  pr[\eta] = \frac{1}{\sqrt{2\pi E}}~\mathrm{e}^{-\frac{\eta^2}{2E}}
@@ -480,10 +501,10 @@ not provide us with any three dimensional energy spectra
 $\Theta(\mvec{k},\omega)$. On the other hand, we are given a set of 
 parametric one dimensional frequency spectra $\Theta(\omega)$ which we are not 
 able to use as-is, because they do not contain any information about the 
-travelling direction of the waves, and therefore are not able to simulate 
+travelling direction of waves, and therefore are not able to simulate 
 surface elevation with two dimensional positions $\mvec{x}$ as input. Hence, we 
 have to settle for the two dimensional wave number spectrum $\Theta(\mvec{k})$ 
-as the basis from which we will compute surface elevation. We write surface 
+as basis from which we will compute surface elevation. We write surface 
 elevation as follows:
 \begin{equation}
 \label{eq:surface_elevation_gauss_2d}
@@ -837,10 +858,10 @@ wave vectors $\mvec{k}$:
 \end{equation}
 %
 We have found a discrete approximation of surface elevation which is fast to 
-compute and is able to give satisfying results as long as we choose wave 
-vectors $\mvec{k}$ wisely. We will move on and discuss parametric wave energy 
-models, because those constitute the basis for the generation of plausible 
-ocean surfaces.
+compute and is able to give satisfying results as long as we choose one or more
+sets of wave vectors $\mvec{k}$ wisely. We will now move on and discuss
+parametric wave energy models, because those constitute the basis for the
+generation of visually pleasing as well as plausible ocean surfaces.
 %
 \section{One dimensional Frequency Spectra}
 \label{sec:1d_frequency_spectra}
@@ -903,7 +924,7 @@ s_p &= \begin{cases}
 $\Gamma$ is the \emph{gamma function}, $s$ is called the~\emph{spreading 
 factor}, $\theta_w$ is the direction of the wind and $\omega_p$ represents the 
 angular frequency the frequency spectrum has its peak at. 
-Figure~\ref{fig:projectedgrid} depicts example instances of 
+Figure~\ref{fig:directional_filter} depicts example instances of 
 Equation~\ref{eq:directional_spread_mitsuyasu}.
 %
 \begin{figure}
