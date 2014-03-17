@@ -858,8 +858,8 @@ wave vectors $\mvec{k}$:
 \end{equation}
 %
 We have found a discrete approximation of surface elevation which is fast to 
-compute and is able to give satisfying results as long as we choose one or more
-sets of wave vectors $\mvec{k}$ wisely. We will now move on and discuss
+compute and is able to give satisfactory results as long as we choose one or 
+more sets of wave vectors $\mvec{k}$ wisely. We will now move on and discuss
 parametric wave energy models, because those constitute the basis for the
 generation of visually pleasing as well as plausible ocean surfaces.
 %
@@ -1104,12 +1104,17 @@ r = \exp\left[-\frac{\left(\omega -
 where $F$ denotes the fetch in meters and $U_{10}$ the wind speed at a height
 of 10 meters above the sea surface.\\
 
-One of the key findings is that the sea is actually never fully developed, the 
-spectrum does not converge to the basic Pierson Moskowitz spectrum as fetch 
-increases. Said effect is attributed to non-linear wave-wave interactions. The 
-spectral peak of the JONSWAP spectrum may take a even more narrow form than the 
-already pronounced peak of the Pierson Moskowitz spectrum, and move to an even 
-lower frequency range with increasing fetch.
+Hasselmann et al. found that in context of their model the sea is actually 
+never fully developed, the  spectrum does not converge to the basic Pierson 
+Moskowitz spectrum as fetch increases. Said effect is discussed at 
+length by Hasselmann et al. and in the end attributed to non-linear wave-wave 
+interactions. Figure~\ref{fig:jonswap_spectra_15} gives a tentative 
+overview of the development of a JONSWAP modeled sea as fetch increases, 
+including a Pierson Moskowitz spectrum for comparison. One may see that the 
+spectral peak of the JONSWAP spectrum may take a more narrow form than the 
+already pronounced peak of the Pierson Moskowitz spectrum. Moreover, with 
+increasing fetch, said peak may move to an even lower frequency range than its 
+Pierson Moskowitz counterpart, see Figure~\ref{fig:jonswap_spectra_10}.
 %
 \begin{figure}
 \centering
@@ -1154,7 +1159,8 @@ lower frequency range with increasing fetch.
 \end{axis}
 \end{tikzpicture}
 \caption{The JONSWAP frequency spectrum with a wind speed of $U_{10} = 15m\cdot 
-s^{-1}$, and different fetch values $F$.}
+s^{-1}$, and different fetch values $F$. Note the more and more pronounced peak 
+of the JONSWAP spectrum as fetch increases. }
 \label{fig:jonswap_spectra_15}
 \end{figure}
 %
@@ -1172,37 +1178,39 @@ s^{-1}$, and different fetch values $F$.}
     color=blue,
     solid,
 	]
-    table [col sep=comma]{figures/pm_20.dat};
+    table [col sep=comma]{figures/pm_10.dat};
 \addlegendentry{Pierson Moskowitz}
 \addplot[
     color=red,
     solid,
 	]
-    table [col sep=comma]{figures/j_20_100km.dat};
+    table [col sep=comma]{figures/j_10_100km.dat};
 \addlegendentry{100km}
 \addplot[
     color=green,
     solid,
 	]
-    table [col sep=comma]{figures/j_20_200km.dat};
+    table [col sep=comma]{figures/j_10_200km.dat};
 \addlegendentry{200km}
 \addplot[
     color=magenta,
     solid,
 	]
-    table [col sep=comma]{figures/j_20_300km.dat};
+    table [col sep=comma]{figures/j_10_300km.dat};
 \addlegendentry{300km}
 \addplot[
     color=black,
     solid,
 	]
-    table [col sep=comma]{figures/j_20_400km.dat};
+    table [col sep=comma]{figures/j_10_400km.dat};
 \addlegendentry{400km}
 \end{axis}
 \end{tikzpicture}
-\caption{The JONSWAP frequency spectrum with a wind speed of $U_{10} = 20m\cdot 
-s^{-1}$, and different fetch values $F$.}
-\label{fig:jonswap_spectra_20}
+\caption{The JONSWAP frequency spectrum with a wind speed of $U_{10} = 10m\cdot 
+s^{-1}$, and different fetch values $F$. Note, that the frequency range the 
+peak of the JONSWAP spectrum lies in, tends towards lower frequencies as fetch 
+increases.}
+\label{fig:jonswap_spectra_10}
 \end{figure}
 %
 \subsection{Integral Domain Conversion}
