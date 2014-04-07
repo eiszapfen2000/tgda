@@ -1325,31 +1325,6 @@ in deep water.
 \subsection{Phillips Spectrum}
 \label{sec:phillips_spectrum}
 %
-\begin{figure}
- \centering
- \subbottom[]
- {
- \includegraphics[scale=0.6]{figures/phillips_dir_r_exponent_2.png}
- }
- \subbottom[]
- {
- \includegraphics[scale=0.6]{figures/phillips_dir_r_exponent_4.png}
- }
- \subbottom[]
- {
- \includegraphics[scale=0.6]{figures/phillips_dir_ur_exponent_2.png}
- }
- \subbottom[]
- {
- \includegraphics[scale=0.6]{figures/phillips_dir_ur_exponent_4.png}
- }
-\caption{A set of instances of the directional spreading function, each column 
-corresponds to a different wind speed, starting with the weakest one at the 
-left. In the top row, the wind direction points to the right, in the bottom row 
-to the upper right.}
-\label{fig:phillips_directional_term}
-\end{figure}
-%
 The Phillips Spectrum, as introduced by Tessendorf~\cite{course:simulatingocean}, is an ad-hoc formulation of a two dimensional wave number spectrum $\Theta(\mvec{k})$. It has been developed with computer graphic purposes in mind, and as such it lacks a solid oceanographic foundation. We may write Tessendorf's formulation of the Phillips Spectrum in a manner consistent with our notation as follows:
 %
 \begin{subequations}
@@ -1373,11 +1348,38 @@ smaller than $L$. We chose the following as a default value for $l$:
  l = 10^{-3}L
 \end{equation}
 Moreover, one may conclude from Equation~\ref{eq:phillips_spectrum} that choosing $l = 0$ disables
-any wave number based suppression of energy.\\
+any wave number based suppression of energy.
+%
+\begin{figure}
+ \centering
+ \subbottom[$\cos^2$]
+ {
+ \includegraphics[scale=0.6]{figures/phillips_dir_r_exponent_2.png}
+ }
+ \subbottom[$\cos^4$]
+ {
+ \includegraphics[scale=0.6]{figures/phillips_dir_r_exponent_4.png}
+ }
+ \subbottom[$\cos^2$]
+ {
+ \includegraphics[scale=0.6]{figures/phillips_dir_ur_exponent_2.png}
+ }
+ \subbottom[$\cos^4$]
+ {
+ \includegraphics[scale=0.6]{figures/phillips_dir_ur_exponent_4.png}
+ }
+\caption{A set of instances of the directional spreading function, each column 
+corresponds to a different wind speed, starting with the weakest one at the 
+left. In the top row, the wind direction points to the right, in the bottom row 
+to the upper right.}
+\label{fig:phillips_directional_term}
+\end{figure}
+%
+\\
 
 If we take a closer look at Equation~\ref{eq:phillips_spectrum} we may notice similarities to a one dimensional frequency spectrum in combination with a directional spread as seen in Equation~\ref{eq:directional_frequency_spectrum}. We may separate the terms involved as follows:
 \begin{equation}
- \Theta(\mvec{k}) = \underbrace{A}_{Scale}\underbrace{\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}}_{\substack{wave~ number\\spectrum}}\underbrace{\abs*{\transpose{\mvec{k}_n}\mvec{w}_n}^2}_{\substack{directional\\spread}}
+ \Theta(\mvec{k}) = \underbrace{A}_{Scale}\underbrace{\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}}_{\substack{one~dimensional\\wave~ number\\spectrum}}\underbrace{\abs*{\transpose{\mvec{k}_n}\mvec{w}_n}^2}_{\substack{directional\\spread}}
 \end{equation}
 
 
