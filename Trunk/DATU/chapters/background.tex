@@ -1350,9 +1350,10 @@ to the upper right.}
 \label{fig:phillips_directional_term}
 \end{figure}
 %
-The Phillips Spectrum, as introduced by Tessendorf~\cite{course:simulatingocean}, is an ad-hoc formulation of a two dimensional wave number spectrum $\Theta(\mvec{k})$. It has been developed with computer graphic purposes in mind, and as such it lacks a solid oceanographic foundation. We may write Tessendorf's formulation of the Phillips Spectrum in a manner consistent with the notation used in this document as follows:
+The Phillips Spectrum, as introduced by Tessendorf~\cite{course:simulatingocean}, is an ad-hoc formulation of a two dimensional wave number spectrum $\Theta(\mvec{k})$. It has been developed with computer graphic purposes in mind, and as such it lacks a solid oceanographic foundation. We may write Tessendorf's formulation of the Phillips Spectrum in a manner consistent with our notation as follows:
 %
 \begin{subequations}
+\label{eq:phillips_spectrum}
 \begin{gather}
  \Theta(\mvec{k}) = A\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}\abs*{\transpose{\mvec{k}_n}\mvec{w}_n}^2\\
 \intertext{with}
@@ -1366,13 +1367,15 @@ where $A$ and $l$ are numeric constants, and $\mvec{w}$ encodes wind direction a
 According to Tessendorf~\cite{course:simulatingocean}, $L$ defines the largest possible wave
 arising from a continuous wind of speed $\norm{\mvec{w}}$. The parameter $l$ on the other hand
 acts as a frequency filter, it is meant to make the suppression of energy contributed by high
-wave numbers $k$ possible.
+wave numbers $k$ possible. Therefore it is mandatory for $l$ to be several orders of magnitude
+smaller than $L$. We chose the following as a default value for $l$:
+\begin{equation}
+ l = 10^{-3}L
+\end{equation}
+Moreover, one may conclude from Equation~\ref{eq:phillips_spectrum} that choosing $l = 0$ disables
+any wave number based suppression of energy.
+
 \begin{align}
-  k &= \norm{\mvec{k}}\\
-  w &= \norm{\mvec{w}}\\
-  P(\mvec{k}) &=
-A\frac{exp(-(kL)^{-2})}{k^4}\abs*{\frac{\transpose{\mvec{k}}}{k}\frac{\mvec{w}}{
-w}}^2\\
   P(\mvec{k}) &=
 A\frac{exp(-(kL)^{-2}-(kl)^2)}{k^4}\abs*{\frac{\transpose{\mvec{k}}}{k}\frac{
 \mvec{w}}{w}}^4
