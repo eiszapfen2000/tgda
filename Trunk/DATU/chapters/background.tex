@@ -1324,7 +1324,7 @@ in deep water.
 
 \subsection{Phillips Spectrum}
 \label{sec:phillips_spectrum}
-
+%
 \begin{figure}
  \centering
  \subbottom[]
@@ -1349,7 +1349,24 @@ left. In the top row, the wind direction points to the right, in the bottom row
 to the upper right.}
 \label{fig:phillips_directional_term}
 \end{figure}
-
+%
+The Phillips Spectrum, as introduced by Tessendorf~\cite{course:simulatingocean}, is an ad-hoc formulation of a two dimensional wave number spectrum $\Theta(\mvec{k})$. It has been developed with computer graphic purposes in mind, and as such it lacks a solid oceanographic foundation. We may write Tessendorf's formulation of the Phillips Spectrum in a manner consistent with the notation used in this document as follows:
+%
+\begin{subequations}
+\begin{gather}
+ \Theta(\mvec{k}) = A\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}\abs*{\transpose{\mvec{k}_n}\mvec{w}_n}^2\\
+\intertext{with}
+\mvec{k}_n = \frac{\mvec{k}}{\norm{\mvec{k}}} = \frac{\mvec{k}}{k}\\
+\mvec{w}_n = \frac{\mvec{w}}{\norm{\mvec{w}}}\\
+L = \frac{\norm{\mvec{w}}^2}{g}
+\end{gather}
+\end{subequations}
+%
+where $A$ and $l$ are numeric constants, and $\mvec{w}$ encodes wind direction and wind speed.
+According to Tessendorf~\cite{course:simulatingocean}, $L$ defines the largest possible wave
+arising from a continuous wind of speed $\norm{\mvec{w}}$. The parameter $l$ on the other hand
+acts as a frequency filter, it is meant to make the suppression of energy contributed by high
+wave numbers $k$ possible.
 \begin{align}
   k &= \norm{\mvec{k}}\\
   w &= \norm{\mvec{w}}\\
