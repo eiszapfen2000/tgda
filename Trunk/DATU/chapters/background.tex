@@ -1353,8 +1353,8 @@ to the upper right.}
 The Phillips Spectrum, as introduced by Tessendorf~\cite{course:simulatingocean}, is an ad-hoc formulation of a two dimensional wave number spectrum $\Theta(\mvec{k})$. It has been developed with computer graphic purposes in mind, and as such it lacks a solid oceanographic foundation. We may write Tessendorf's formulation of the Phillips Spectrum in a manner consistent with our notation as follows:
 %
 \begin{subequations}
-\label{eq:phillips_spectrum}
 \begin{gather}
+\label{eq:phillips_spectrum}
  \Theta(\mvec{k}) = A\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}\abs*{\transpose{\mvec{k}_n}\mvec{w}_n}^2\\
 \intertext{with}
 \mvec{k}_n = \frac{\mvec{k}}{\norm{\mvec{k}}} = \frac{\mvec{k}}{k}\\
@@ -1373,7 +1373,13 @@ smaller than $L$. We chose the following as a default value for $l$:
  l = 10^{-3}L
 \end{equation}
 Moreover, one may conclude from Equation~\ref{eq:phillips_spectrum} that choosing $l = 0$ disables
-any wave number based suppression of energy.
+any wave number based suppression of energy.\\
+
+If we take a closer look at Equation~\ref{eq:phillips_spectrum} we may notice similarities to a one dimensional frequency spectrum in combination with a directional spread as seen in Equation~\ref{eq:directional_frequency_spectrum}. We may separate the terms involved as follows:
+\begin{equation}
+ \Theta(\mvec{k}) = \underbrace{A}_{Scale}\underbrace{\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}}_{\substack{wave~ number\\spectrum}}\underbrace{\abs*{\transpose{\mvec{k}_n}\mvec{w}_n}^2}_{\substack{directional\\spread}}
+\end{equation}
+
 
 \begin{align}
   P(\mvec{k}) &=
