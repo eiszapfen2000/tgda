@@ -1381,8 +1381,61 @@ If we take a closer look at Equation~\ref{eq:phillips_spectrum} we may notice si
 \begin{equation}
  \Theta(\mvec{k}) = \underbrace{A}_{Scale}\underbrace{\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}}_{\substack{one~dimensional\\wave~ number\\spectrum}}\underbrace{\abs*{\transpose{\mvec{k}_n}\mvec{w}_n}^2}_{\substack{directional\\spread}}
 \end{equation}
+%
+%
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.5\paperwidth,
+    legend style={draw=none},
+    xlabel={Wave number~$k$~($\text{m}^{-1}$)},
+    ylabel={Energy~$\Theta$},
+    %xtick = {0, 0.05, 0.1, 0.15},
+    %xticklabels = {0, 0.05, 0.1, 0.15},
+    scaled ticks=false,
+    xticklabel style={/pgf/number format/fixed},
+    every axis legend/.append style={nodes={right}},
+    ]
 
-
+\addplot[
+    color=red,
+    solid,
+	]
+    table [col sep=comma]{figures/phillips_10.dat};
+\addlegendentry{$10.0~\text{m}\cdot\text{s}^{-1}$}
+\addplot[
+    color=green,
+    solid,
+	]
+    table [col sep=comma]{figures/phillips_12.dat};
+\addlegendentry{$12.5~\text{m}\cdot\text{s}^{-1}$}
+\addplot[
+    color=magenta,
+    solid,
+	]
+    table [col sep=comma]{figures/phillips_15.dat};
+\addlegendentry{$15.0~\text{m}\cdot\text{s}^{-1}$}
+\addplot[
+    color=black,
+    solid,
+	]
+    table [col sep=comma]{figures/phillips_17.dat};
+\addlegendentry{$17.5~\text{m}\cdot\text{s}^{-1}$}
+\addplot[
+    color=blue,
+    solid,
+	]
+    table [col sep=comma]{figures/phillips_20.dat};
+\addlegendentry{$20.0~\text{m}\cdot\text{s}^{-1}$}
+\end{axis}
+\end{tikzpicture}
+\caption{The Phillips frequency spectrum with different wind speed 
+values $\norm{\mvec{w}}$.}
+\label{fig:phillips_spectra}
+\end{figure}
+%
+%
 \begin{align}
   P(\mvec{k}) &=
 A\frac{exp(-(kL)^{-2}-(kl)^2)}{k^4}\abs*{\frac{\transpose{\mvec{k}}}{k}\frac{
