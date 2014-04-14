@@ -1,3 +1,5 @@
+close all
+
 %1d spectra
 % omega = [0:0.005:pi/2];
 % 
@@ -91,23 +93,30 @@ phillips_energy_w_15 = Phillips1D(kp, [15 0], 1, 0);
 phillips_energy_w_17 = Phillips1D(kp, [17.5 0], 1, 0);
 phillips_energy_w_20 = Phillips1D(kp, [20 0], 1, 0);
 
-o_phillips_10 = [kp', phillips_energy_w_10'];
-o_phillips_12 = [kp', phillips_energy_w_12'];
-o_phillips_15 = [kp', phillips_energy_w_15'];
-o_phillips_17 = [kp', phillips_energy_w_17'];
-o_phillips_20 = [kp', phillips_energy_w_20'];
+phillips_energy_w_10_a = Phillips1D(kp, [10 0], 0.0081, 0);
+phillips_energy_w_12_a = Phillips1D(kp, [12.5 0], 0.0081, 0);
+phillips_energy_w_15_a = Phillips1D(kp, [15 0], 0.0081, 0);
+phillips_energy_w_17_a = Phillips1D(kp, [17.5 0], 0.0081, 0);
+phillips_energy_w_20_a = Phillips1D(kp, [20 0], 0.0081, 0);
 
-csvwrite('phillips_10.dat', o_phillips_10);
-csvwrite('phillips_12.dat', o_phillips_12);
-csvwrite('phillips_15.dat', o_phillips_15);
-csvwrite('phillips_17.dat', o_phillips_17);
-csvwrite('phillips_20.dat', o_phillips_20);
 
-% figure;
-% hold on;
-% plot(kp, phillips_energy_w_10);
-% plot(kp, phillips_energy_w_12);
-% plot(kp, phillips_energy_w_15);
-% plot(kp, phillips_energy_w_17);
-% plot(kp, phillips_energy_w_20);
-% hold off;
+% o_phillips_10 = [kp', phillips_energy_w_10'];
+% o_phillips_12 = [kp', phillips_energy_w_12'];
+% o_phillips_15 = [kp', phillips_energy_w_15'];
+% o_phillips_17 = [kp', phillips_energy_w_17'];
+% o_phillips_20 = [kp', phillips_energy_w_20'];
+% 
+% csvwrite('phillips_10.dat', o_phillips_10);
+% csvwrite('phillips_12.dat', o_phillips_12);
+% csvwrite('phillips_15.dat', o_phillips_15);
+% csvwrite('phillips_17.dat', o_phillips_17);
+% csvwrite('phillips_20.dat', o_phillips_20);
+
+figure;
+hold on;
+plot(kp, phillips_energy_w_10_a);
+plot(kp, phillips_energy_w_12_a);
+plot(kp, phillips_energy_w_15_a);
+plot(kp, phillips_energy_w_17_a);
+plot(kp, phillips_energy_w_20_a);
+hold off;
