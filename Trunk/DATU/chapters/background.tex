@@ -898,34 +898,6 @@ frequency does not change. Therefore we are able to write
 \end{equation}
 
 \subsection{Directional Spreading Function}
-Literature provides us with a large set of different directional spreading
-functions to choose from. We picked a~\emph{Cosine-2s} variant based on the
-work of Mitsuyasu et al.\cite{article:Mitsuyasu1975} and Hasselmann et 
-al\cite{article:Hasselmann1980}. Expressed in terms of angular frequency 
-$\omega$ it is as follows:
-\begin{subequations}
-\label{eq:directional_spread_mitsuyasu}
-\begin{align}
- D(\omega, \theta) &=
-\frac{2^{2s-1}}{\pi}~\frac{\Gamma^2(s+1)}{\Gamma(2s+1)}
-~\left|\cos\left(\frac{\theta_{w}-\theta}{2}\right)\right|^{2s}
-\intertext{with}
-\frac{s}{s_p} &= \begin{cases}
-(\frac{\omega}{\omega_p})^{-2.5} & \omega \geq \omega_p\\
-(\frac{\omega}{\omega_p})^{5} & \omega < \omega_p\\
-\end{cases}
-\intertext{where, according to Hasselmann et al.}
-s_p &= \begin{cases}
-9.77 & \omega \geq \omega_p\\
-6.97 & \omega < \omega_p\\
-\end{cases}
-\end{align}
-\end{subequations}
-$\Gamma$ is the \emph{gamma function}, $s$ is called the~\emph{spreading 
-factor}, $\theta_w$ is the direction of the wind and $\omega_p$ represents the 
-angular frequency the frequency spectrum has its peak at. 
-Figure~\ref{fig:directional_filter} depicts example instances of 
-Equation~\ref{eq:directional_spread_mitsuyasu}.
 %
 \begin{figure}
  \centering
@@ -968,8 +940,85 @@ to the upper right.}
 \label{fig:directional_filter}
 \end{figure}
 %
+Literature provides us with a large set of different directional spreading
+functions to choose from. We picked a~\emph{Cosine-2s} variant based on the
+work of Mitsuyasu et al.\cite{article:Mitsuyasu1975} and Hasselmann et 
+al\cite{article:Hasselmann1980}. Expressed in terms of angular frequency 
+$\omega$ it is as follows:
+\begin{subequations}
+\label{eq:directional_spread_mitsuyasu}
+\begin{align}
+ D(\omega, \theta) &=
+\frac{2^{2s-1}}{\pi}~\frac{\Gamma^2(s+1)}{\Gamma(2s+1)}
+~\left|\cos\left(\frac{\theta_{w}-\theta}{2}\right)\right|^{2s}
+\intertext{with}
+\frac{s}{s_p} &= \begin{cases}
+(\frac{\omega}{\omega_p})^{-2.5} & \omega \geq \omega_p\\
+(\frac{\omega}{\omega_p})^{5} & \omega < \omega_p\\
+\end{cases}
+\intertext{where, according to Hasselmann et al.}
+s_p &= \begin{cases}
+9.77 & \omega \geq \omega_p\\
+6.97 & \omega < \omega_p\\
+\end{cases}
+\end{align}
+\end{subequations}
+$\Gamma$ is the \emph{gamma function}, $s$ is called the~\emph{spreading 
+factor}, $\theta_w$ is the direction of the wind and $\omega_p$ represents the 
+angular frequency the frequency spectrum has its peak at. 
+Figure~\ref{fig:directional_filter} depicts example instances of 
+Equation~\ref{eq:directional_spread_mitsuyasu}.
+%
 \subsection{Pierson Moskowitz Spectrum}
 \label{sec:pierson_moskowitz}
+%
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.5\paperwidth,
+    legend style={draw=none},
+    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
+    ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+    every axis legend/.append style={nodes={right}},
+    ]
+
+\addplot[
+    color=red,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_10.dat};
+\addlegendentry{$10.0~\text{m}\cdot\text{s}^{-1}$}
+\addplot[
+    color=green,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_12.dat};
+\addlegendentry{$12.5~\text{m}\cdot\text{s}^{-1}$}
+\addplot[
+    color=magenta,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_15.dat};
+\addlegendentry{$15.0~\text{m}\cdot\text{s}^{-1}$}
+\addplot[
+    color=black,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_17.dat};
+\addlegendentry{$17.5~\text{m}\cdot\text{s}^{-1}$}
+\addplot[
+    color=blue,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_20.dat};
+\addlegendentry{$20.0~\text{m}\cdot\text{s}^{-1}$}
+\end{axis}
+\end{tikzpicture}
+\caption{The Pierson Moskowitz frequency spectrum with different wind speed 
+values $U_{10}$.}
+\label{fig:pm_spectra}
+\end{figure}
 %
 The Pierson Moskowitz spectrum~\cite{article:PiersonMoskowitz1964} is a well 
 known and widely used one dimensional frequency spectrum. At the time it was 
@@ -1028,54 +1077,6 @@ of~\emph{fetch}, which is the distance over which the wind blows, usually
 limited by the upwind distance to shore.
 %
 %
-\begin{figure}
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    width=0.5\paperwidth,
-    legend style={draw=none},
-    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
-    ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
-    every axis legend/.append style={nodes={right}},
-    ]
-
-\addplot[
-    color=red,
-    solid,
-	]
-    table [col sep=comma]{figures/pm_10.dat};
-\addlegendentry{$10.0~\text{m}\cdot\text{s}^{-1}$}
-\addplot[
-    color=green,
-    solid,
-	]
-    table [col sep=comma]{figures/pm_12.dat};
-\addlegendentry{$12.5~\text{m}\cdot\text{s}^{-1}$}
-\addplot[
-    color=magenta,
-    solid,
-	]
-    table [col sep=comma]{figures/pm_15.dat};
-\addlegendentry{$15.0~\text{m}\cdot\text{s}^{-1}$}
-\addplot[
-    color=black,
-    solid,
-	]
-    table [col sep=comma]{figures/pm_17.dat};
-\addlegendentry{$17.5~\text{m}\cdot\text{s}^{-1}$}
-\addplot[
-    color=blue,
-    solid,
-	]
-    table [col sep=comma]{figures/pm_20.dat};
-\addlegendentry{$20.0~\text{m}\cdot\text{s}^{-1}$}
-\end{axis}
-\end{tikzpicture}
-\caption{The Pierson Moskowitz frequency spectrum with different wind speed 
-values $U_{10}$.}
-\label{fig:pm_spectra}
-\end{figure}
-%
 \subsection{JONSWAP Spectrum}
 \label{sec:jonswap}
 %
@@ -1083,7 +1084,8 @@ The JONSWAP spectrum is one dimensional frequency spectrum  which has been
 developed by Hasselmann et al.\cite{article:Hasselman1973} based on data 
 collected during the~\emph{Joint North Sea Wave Project}. The JONSWAP spectrum 
 is expressed with the Pierson Moskowitz spectrum from 
-Equation~\ref{eq:pierson_moskowitz} as basis, and an additional peak factor
+Equation~\ref{eq:pierson_moskowitz} as basis, and an additional peak factor:
+%
 \begin{subequations}
 \begin{gather}
  \Theta(\omega) = \frac{\alpha
@@ -1104,17 +1106,6 @@ r = \exp\left[-\frac{\left(\omega -
 where $F$ denotes the fetch in meters and $U_{10}$ the wind speed at a height
 of 10 meters above the sea surface.\\
 
-Hasselmann et al. found that in context of their model the sea is actually 
-never fully developed, the  spectrum does not converge to the basic Pierson 
-Moskowitz spectrum as fetch increases. Said effect is discussed at 
-length by Hasselmann et al. and in the end attributed to non-linear wave-wave 
-interactions. Figure~\ref{fig:jonswap_spectra_15} gives a tentative 
-overview of the development of a JONSWAP modeled sea as fetch increases, 
-including a Pierson Moskowitz spectrum for comparison. One may see that the 
-spectral peak of the JONSWAP spectrum may take a more narrow form than the 
-already pronounced peak of the Pierson Moskowitz spectrum. Moreover, with 
-increasing fetch, said peak may move to an even lower frequency range than its 
-Pierson Moskowitz counterpart, see Figure~\ref{fig:jonswap_spectra_10}.
 %
 \begin{figure}
 \centering
@@ -1160,7 +1151,7 @@ Pierson Moskowitz counterpart, see Figure~\ref{fig:jonswap_spectra_10}.
 \end{tikzpicture}
 \caption{The JONSWAP frequency spectrum with a wind speed of $U_{10} = 15m\cdot 
 s^{-1}$, and different fetch values $F$. Note the more and more pronounced peak 
-of the JONSWAP spectrum as fetch increases. }
+of the JONSWAP spectrum as fetch increases.}
 \label{fig:jonswap_spectra_15}
 \end{figure}
 %
@@ -1213,7 +1204,70 @@ increases.}
 \label{fig:jonswap_spectra_10}
 \end{figure}
 %
+Hasselmann et al. found that in context of their model the sea is actually 
+never fully developed, the  spectrum does not converge to the basic Pierson 
+Moskowitz spectrum as fetch increases. Said effect is discussed at 
+length by Hasselmann et al. and in the end attributed to non-linear wave-wave 
+interactions. Figure~\ref{fig:jonswap_spectra_15} gives a tentative 
+overview of the development of a JONSWAP modeled sea as fetch increases, 
+including a Pierson Moskowitz spectrum for comparison. One may see that the 
+spectral peak of the JONSWAP spectrum may take a more narrow form than the 
+already pronounced peak of the Pierson Moskowitz spectrum. Moreover, with 
+increasing fetch, said peak may move to an even lower frequency range than its 
+Pierson Moskowitz counterpart, see Figure~\ref{fig:jonswap_spectra_10}.
+%
 \subsection{Integral Domain Conversion}
+%
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.5\paperwidth,
+    legend style={draw=none},
+%    xticklabels = {0,0.05,0.1,0.15,0.2,0.25},
+    scaled ticks=false,
+    xticklabel style={/pgf/number format/fixed},
+    xlabel={Wave number $k$~($\text{m}^{-1}$)},
+    ylabel={Energy~$\Theta$~($\text{m}^2$)},
+    every axis legend/.append style={nodes={right}},
+    ]
+\addplot[
+    color=blue,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_10_k.dat};
+\addlegendentry{Pierson Moskowitz}
+\addplot[
+    color=red,
+    solid,
+	]
+    table [col sep=comma]{figures/j_10_100km_k.dat};
+\addlegendentry{100km}
+\addplot[
+    color=green,
+    solid,
+	]
+    table [col sep=comma]{figures/j_10_200km_k.dat};
+\addlegendentry{200km}
+\addplot[
+    color=magenta,
+    solid,
+	]
+    table [col sep=comma]{figures/j_10_300km_k.dat};
+\addlegendentry{300km}
+\addplot[
+    color=black,
+    solid,
+	]
+    table [col sep=comma]{figures/j_10_400km_k.dat};
+\addlegendentry{400km}
+\end{axis}
+\end{tikzpicture}
+\caption{Pierson Moskowitz and JONSWAP frequency spectra from Figure~\ref{fig:jonswap_spectra_10}
+converted into one dimensional wave number spectra.}
+\label{fig:jonswap_spectra_10_k}
+\end{figure}
+%
 Recall that we transform from the cartesian wave number domain to the spatial 
 one. Thus, as a prerequisite, we are in need of a two dimensional wave number 
 spectrum $\Theta(\mvec{k})$, but 
@@ -1240,7 +1294,84 @@ which gives us
  \Theta_k(k) = \Theta_{\omega}(\sqrt{gk})\frac{1}{2}\sqrt{\frac{g}{k}}
 \end{equation}
 \end{subequations}
-Now we are able to rewrite the directional frequency spectrum from 
+%
+A set of one dimensional wave spectra $\Theta_k(k)$ may be seen in
+Figure~\ref{fig:jonswap_spectra_10}. Note the difference in scale on the ordinate
+in comparison to the one dimensional frequency spectra $\Theta_{\omega}(\omega)$
+depicted in Figure~\ref{fig:jonswap_spectra_10_k}.\\
+
+%
+\begin{figure}
+\centering
+\subbottom
+{
+\label{sfig:polar}
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.5\paperwidth,
+    view={-20}{30},
+    mesh/ordering=y varies,
+    zlabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
+    ylabel={Direction~$\theta$~($\text{rad}$)},
+    ]
+\addplot3[surf,
+    ]
+    table [col sep=comma]{figures/jonswap_w15_f100_omega_angle.dat};
+\end{axis}
+\end{tikzpicture}
+}
+\subbottom
+{
+\label{sfig:wave_vector}
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.5\paperwidth,
+    view={-20}{30},
+    mesh/ordering=y varies,
+    xtick = {0,0.1,0.2},
+    zlabel={Energy~$\Theta$~($\text{m}^4$)},
+    xlabel={$k_x$~($\text{m}^{-1}$)},
+    ylabel={$k_y$~($\text{m}^{-1}$)},
+    ]
+\addplot3[surf,
+    ]
+    table [col sep=comma]{figures/jonswap_w15_f100_kx_ky.dat};
+\end{axis}
+\end{tikzpicture}
+}
+\caption{The JONSWAP frequency spectrum with wind speed $U_{10} = 15m\cdot 
+s^{-1}$ and fetch $F = 100km$, located in two different domains. Top: the polar
+coordinate domain $\omega \times \theta$, the wind direction points in the
+direction of the positive $\omega$ axis. Bottom: the wave vector domain
+$k_x \times k_y$, the wind direction points in the direction of the positive
+$k_x$ axis. Note the difference in scale on the vertical axis.}
+\label{fig:jonswap_3d_omega_theta}
+\end{figure}
+%
+% \begin{figure}
+% \centering
+% \begin{tikzpicture}
+% \begin{axis}[
+%     view={-20}{30},
+%     mesh/ordering=y varies,
+%     xtick = {0,0.1,0.2},
+%     zlabel={Energy~$\Theta$~($\text{m}^4$)},
+%     xlabel={$k_x$~($\text{m}^{-1}$)},
+%     ylabel={$k_y$~($\text{m}^{-1}$)},
+%     ]
+% \addplot3[surf,
+%     ]
+%     table [col sep=comma]{figures/jonswap_w15_f100_kx_ky.dat};
+% \end{axis}
+% \end{tikzpicture}
+% \caption{The JONSWAP frequency spectrum with wind speed $U_{10} = 15m\cdot 
+% s^{-1}$ and fetch $F = 100km$ in the wave vector domain $k_x \times k_y$. The 
+% wind direction points in the direction of the positive $k_x$ axis.}
+% \label{fig:jonswap_3d_kx_ky}
+% \end{figure}
+%
+Given $\Theta_k(k)$ we are able to rewrite the directional frequency spectrum from 
 Equation~\ref{eq:directional_frequency_spectrum} in terms of wave number $k$:
 %
 \begin{equation}
@@ -1270,50 +1401,6 @@ number spectrum:
 \theta &= \arctan\left(\frac{k_y}{k_x}\right)
 \end{align}
 %
-\begin{figure}
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    view={-20}{30},
-    mesh/ordering=y varies,
-    zlabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
-    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
-    ylabel={Direction~$\theta$~($\text{rad}$)},
-    ]
-\addplot3[surf,
-    ]
-    table [col sep=comma]{figures/jonswap_w15_f100_omega_angle.dat};
-\end{axis}
-\end{tikzpicture}
-\caption{The JONSWAP frequency spectrum with wind speed $U_{10} = 15m\cdot 
-s^{-1}$ and fetch $F = 100km$ in the polar coordinate domain $\omega \times 
-\theta$. The wind direction points in the direction of the positive $\omega$ 
-axis.}
-\label{fig:brakdilala}
-\end{figure}
-%
-\begin{figure}
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    view={-20}{30},
-    mesh/ordering=y varies,
-    xtick = {0,0.1,0.2},
-    zlabel={Energy~$\Theta$~($\text{m}^4$)},
-    xlabel={$k_x$~($\text{m}^{-1}$)},
-    ylabel={$k_y$~($\text{m}^{-1}$)},
-    ]
-\addplot3[surf,
-    ]
-    table [col sep=comma]{figures/jonswap_w15_f100_kx_ky.dat};
-\end{axis}
-\end{tikzpicture}
-\caption{The JONSWAP frequency spectrum with wind speed $U_{10} = 15m\cdot 
-s^{-1}$ and fetch $F = 100km$ in the wave vector domain $k_x \times k_y$. The 
-wind direction points in the direction of the positive $k_x$ axis.}
-\label{fig:jonswap_3d_kx_ky}
-\end{figure}
-%
 Now we are able to preserve integral equality between different representations 
 of $\Theta$, as long as we use the deep water dispersion relation. One may do 
 the math for another dispersion relation, now that the path to walk is laid 
@@ -1338,7 +1425,7 @@ L = \frac{\norm{\mvec{w}}^2}{g}
 \end{gather}
 \end{subequations}
 %
-where $A$ and $l$ are numeric constants, and $\mvec{w}$ encodes wind direction and wind speed.
+where $A$ and $l$ are numeric constants, and $\mvec{w}$ encodes wind direction and wind speed $\norm{\mvec{w}}$.
 According to Tessendorf~\cite{course:simulatingocean}, $L$ defines the largest possible wave
 arising from a continuous wind of speed $\norm{\mvec{w}}$. The parameter $l$ on the other hand
 acts as a frequency filter, it is meant to make the suppression of energy contributed by high
@@ -1347,7 +1434,7 @@ smaller than $L$. We chose the following as a default value for $l$:
 \begin{equation}
  l = 10^{-3}L
 \end{equation}
-Moreover, one may conclude from Equation~\ref{eq:phillips_spectrum} that choosing $l = 0$ disables
+Moreover, one may conclude from Equation~\ref{eq:phillips_spectrum} that settings $l = 0$ disables
 any wave number based suppression of energy.
 %
 \begin{figure}
