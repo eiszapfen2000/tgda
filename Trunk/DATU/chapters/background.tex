@@ -1114,42 +1114,40 @@ of 10 meters above the sea surface.\\
 \label{subfig:jonswap_spectra_15}
 \begin{tikzpicture}
 \begin{axis}[
-    width=0.5\paperwidth,
-    %legend style={draw=none},
+    width=0.7\textwidth,
     xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
     ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
-    %every axis legend/.append style={nodes={right}},
     legend to name=jonswap_fetches_legend,
     legend columns=-1,
     ]
 \addplot[
     color=blue,
     solid,
-	]
+    ]
     table [col sep=comma]{figures/pm_15.dat};
 \addlegendentry{Pierson Moskowitz}
 \addplot[
     color=red,
     solid,
-	]
+    ]
     table [col sep=comma]{figures/j_15_100km.dat};
 \addlegendentry{100km}
 \addplot[
     color=green,
     solid,
-	]
+    ]
     table [col sep=comma]{figures/j_15_200km.dat};
 \addlegendentry{200km}
 \addplot[
     color=magenta,
     solid,
-	]
+    ]
     table [col sep=comma]{figures/j_15_300km.dat};
 \addlegendentry{300km}
 \addplot[
     color=black,
     solid,
-	]
+    ]
     table [col sep=comma]{figures/j_15_400km.dat};
 \addlegendentry{400km}
 \end{axis}
@@ -1160,42 +1158,35 @@ of 10 meters above the sea surface.\\
 \label{subfig:jonswap_spectra_10}
 \begin{tikzpicture}
 \begin{axis}[
-    width=0.5\paperwidth,
-   % legend style={draw=none},
+    width=0.7\textwidth,
     xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
     ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
-    %every axis legend/.append style={nodes={right}},
     ]
 \addplot[
     color=blue,
     solid,
-	]
+    ]
     table [col sep=comma]{figures/pm_10.dat};
-%\addlegendentry{Pierson Moskowitz}
 \addplot[
     color=red,
     solid,
-	]
+    ]
     table [col sep=comma]{figures/j_10_100km.dat};
-%\addlegendentry{100km}
 \addplot[
     color=green,
     solid,
-	]
+    ]
     table [col sep=comma]{figures/j_10_200km.dat};
-%\addlegendentry{200km}
 \addplot[
     color=magenta,
     solid,
-	]
+    ]
     table [col sep=comma]{figures/j_10_300km.dat};
-%\addlegendentry{300km}
 \addplot[
     color=black,
     solid,
-	]
+    ]
     table [col sep=comma]{figures/j_10_400km.dat};
-%\addlegendentry{400km}
 \end{axis}
 \end{tikzpicture}
 }
@@ -1206,55 +1197,6 @@ the frequency range the  peak of the JONSWAP spectrum lies in, tends towards
 lower frequencies as fetch increases.}
 \label{fig:jonswap_spectra_fetches}
 \end{figure}
-%
-% \begin{figure}
-% \centering
-% \begin{tikzpicture}
-% \begin{axis}[
-%     width=0.5\paperwidth,
-%     legend style={draw=none},
-%     xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
-%     ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
-%     every axis legend/.append style={nodes={right}},
-%     ]
-% \addplot[
-%     color=blue,
-%     solid,
-% 	]
-%     table [col sep=comma]{figures/pm_10.dat};
-% \addlegendentry{Pierson Moskowitz}
-% \addplot[
-%     color=red,
-%     solid,
-% 	]
-%     table [col sep=comma]{figures/j_10_100km.dat};
-% \addlegendentry{100km}
-% \addplot[
-%     color=green,
-%     solid,
-% 	]
-%     table [col sep=comma]{figures/j_10_200km.dat};
-% \addlegendentry{200km}
-% \addplot[
-%     color=magenta,
-%     solid,
-% 	]
-%     table [col sep=comma]{figures/j_10_300km.dat};
-% \addlegendentry{300km}
-% \addplot[
-%     color=black,
-%     solid,
-% 	]
-%     table [col sep=comma]{figures/j_10_400km.dat};
-% \addlegendentry{400km}
-% \end{axis}
-% \end{tikzpicture}
-% \caption{The JONSWAP frequency spectrum with a wind speed of $U_{10} = 10m\cdot 
-% s^{-1}$, and different fetch values $F$. Note, that the frequency range the 
-% peak of the JONSWAP spectrum lies in, tends towards lower frequencies as fetch 
-% increases.}
-% \label{fig:jonswap_spectra_10}
-% \end{figure}
 %
 Hasselmann et al. found that in context of their model the sea is actually 
 never fully developed, the  spectrum does not converge to the basic Pierson 
@@ -1273,52 +1215,94 @@ counterpart, see Figure~\ref{subfig:jonswap_spectra_10}.
 %
 \begin{figure}
 \centering
+\subbottom
+{
 \begin{tikzpicture}
 \begin{axis}[
-    width=0.5\paperwidth,
-    legend style={draw=none},
-%    xticklabels = {0,0.05,0.1,0.15,0.2,0.25},
+    width=0.49\textwidth,
+    legend to name=jonswap_spectra_k_legend,
+    legend columns=-1,
     scaled ticks=false,
     xticklabel style={/pgf/number format/fixed},
     xlabel={Wave number $k$~($\text{m}^{-1}$)},
     ylabel={Energy~$\Theta$~($\text{m}^2$)},
-    every axis legend/.append style={nodes={right}},
     ]
 \addplot[
     color=blue,
     solid,
 	]
-    table [col sep=comma]{figures/pm_10_k.dat};
+    table [col sep=comma]{figures/pm_15_k.dat};
 \addlegendentry{Pierson Moskowitz}
 \addplot[
     color=red,
     solid,
 	]
-    table [col sep=comma]{figures/j_10_100km_k.dat};
+    table [col sep=comma]{figures/j_15_100km_k.dat};
 \addlegendentry{100km}
 \addplot[
     color=green,
     solid,
 	]
-    table [col sep=comma]{figures/j_10_200km_k.dat};
+    table [col sep=comma]{figures/j_15_200km_k.dat};
 \addlegendentry{200km}
 \addplot[
     color=magenta,
     solid,
 	]
-    table [col sep=comma]{figures/j_10_300km_k.dat};
+    table [col sep=comma]{figures/j_15_300km_k.dat};
 \addlegendentry{300km}
 \addplot[
     color=black,
     solid,
 	]
-    table [col sep=comma]{figures/j_10_400km_k.dat};
+    table [col sep=comma]{figures/j_15_400km_k.dat};
 \addlegendentry{400km}
 \end{axis}
 \end{tikzpicture}
-\caption{Pierson Moskowitz and JONSWAP frequency spectra from Figure~\ref{fig:jonswap_spectra_10}
+}
+\subbottom
+{
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.49\textwidth,
+    scaled ticks=false,
+    xticklabel style={/pgf/number format/fixed},
+    yticklabel pos=right,
+    xlabel={Wave number $k$~($\text{m}^{-1}$)},
+    ylabel={Energy~$\Theta$~($\text{m}^2$)},
+    ]
+\addplot[
+    color=blue,
+    solid,
+    ]
+    table [col sep=comma]{figures/pm_10_k.dat};
+\addplot[
+    color=red,
+    solid,
+    ]
+    table [col sep=comma]{figures/j_10_100km_k.dat};
+\addplot[
+    color=green,
+    solid,
+    ]
+    table [col sep=comma]{figures/j_10_200km_k.dat};
+\addplot[
+    color=magenta,
+    solid,
+    ]
+    table [col sep=comma]{figures/j_10_300km_k.dat};
+\addplot[
+    color=black,
+    solid,
+    ]
+    table [col sep=comma]{figures/j_10_400km_k.dat};
+\end{axis}
+\end{tikzpicture}
+}
+\ref{jonswap_spectra_k_legend}
+\caption{Pierson Moskowitz and JONSWAP frequency spectra from Figure~\ref{fig:jonswap_spectra_fetches}
 converted into one dimensional wave number spectra.}
-\label{fig:jonswap_spectra_10_k}
+\label{fig:jonswap_spectra_fetches_k}
 \end{figure}
 %
 Recall that we transform from the cartesian wave number domain to the spatial 
@@ -1349,9 +1333,9 @@ which gives us
 \end{subequations}
 %
 A set of one dimensional wave spectra $\Theta_k(k)$ may be seen in
-Figure~\ref{fig:jonswap_spectra_10}. Note the difference in scale on the ordinate
+Figure~\ref{fig:jonswap_spectra_fetches_k}. Note the difference in scale on the ordinate
 in comparison to the one dimensional frequency spectra $\Theta_{\omega}(\omega)$
-depicted in Figure~\ref{fig:jonswap_spectra_10_k}.\\
+depicted in Figure~\ref{fig:jonswap_spectra_fetches}.\\
 
 %
 \begin{figure}
@@ -1399,7 +1383,7 @@ coordinate domain $\omega \times \theta$, the wind direction points in the
 direction of the positive $\omega$ axis. Bottom: the wave vector domain
 $k_x \times k_y$, the wind direction points in the direction of the positive
 $k_x$ axis. Note the difference in scale between the two vertical axes.}
-\label{fig:jonswap_3d_omega_theta}
+\label{fig:jonswap_3d_omega_theta_kx_ky}
 \end{figure}
 %
 % \begin{figure}
@@ -1424,7 +1408,8 @@ $k_x$ axis. Note the difference in scale between the two vertical axes.}
 % \label{fig:jonswap_3d_kx_ky}
 % \end{figure}
 %
-Given $\Theta_k(k)$ we are able to rewrite the directional frequency spectrum from 
+Given $\Theta_k(k)$ we are able to rewrite the directional frequency spectrum
+$\Theta_{\omega, \theta}(\omega, \theta)$ from
 Equation~\ref{eq:directional_frequency_spectrum} in terms of wave number $k$:
 %
 \begin{equation}
@@ -1454,6 +1439,10 @@ number spectrum:
 \theta &= \arctan\left(\frac{k_y}{k_x}\right)
 \end{align}
 %
+An instance of a directional frequency spectrum as well as its equivalent
+directional wave number spectrum are depicted in Figure
+\ref{fig:jonswap_3d_omega_theta_kx_ky}.\\
+
 Now we are able to preserve integral equality between different representations 
 of $\Theta$, as long as we use the deep water dispersion relation. One may do 
 the math for another dispersion relation, now that the path to walk is laid 
