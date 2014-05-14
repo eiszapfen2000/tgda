@@ -1215,17 +1215,15 @@ counterpart, see Figure~\ref{subfig:jonswap_spectra_10}.
 %
 \begin{figure}
 \centering
-\subbottom
-{
 \begin{tikzpicture}
 \begin{axis}[
-    width=0.49\textwidth,
-    legend to name=jonswap_spectra_k_legend,
-    legend columns=-1,
+    width=0.5\paperwidth,
     scaled ticks=false,
     xticklabel style={/pgf/number format/fixed},
     xlabel={Wave number $k$~($\text{m}^{-1}$)},
     ylabel={Energy~$\Theta$~($\text{m}^2$)},
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
     ]
 \addplot[
     color=blue,
@@ -1259,49 +1257,9 @@ counterpart, see Figure~\ref{subfig:jonswap_spectra_10}.
 \addlegendentry{400km}
 \end{axis}
 \end{tikzpicture}
-}
-\subbottom
-{
-\begin{tikzpicture}
-\begin{axis}[
-    width=0.49\textwidth,
-    scaled ticks=false,
-    xticklabel style={/pgf/number format/fixed},
-    yticklabel pos=right,
-    xlabel={Wave number $k$~($\text{m}^{-1}$)},
-    ylabel={Energy~$\Theta$~($\text{m}^2$)},
-    ]
-\addplot[
-    color=blue,
-    solid,
-    ]
-    table [col sep=comma]{figures/pm_10_k.dat};
-\addplot[
-    color=red,
-    solid,
-    ]
-    table [col sep=comma]{figures/j_10_100km_k.dat};
-\addplot[
-    color=green,
-    solid,
-    ]
-    table [col sep=comma]{figures/j_10_200km_k.dat};
-\addplot[
-    color=magenta,
-    solid,
-    ]
-    table [col sep=comma]{figures/j_10_300km_k.dat};
-\addplot[
-    color=black,
-    solid,
-    ]
-    table [col sep=comma]{figures/j_10_400km_k.dat};
-\end{axis}
-\end{tikzpicture}
-}
-\ref{jonswap_spectra_k_legend}
-\caption{Pierson Moskowitz and JONSWAP frequency spectra from Figure~\ref{fig:jonswap_spectra_fetches}
-converted into one dimensional wave number spectra.}
+\caption{Pierson Moskowitz and JONSWAP frequency spectra
+$\Theta_{\omega}(\omega$) from Figure~\ref{subfig:jonswap_spectra_15}
+converted into one dimensional wave number spectra $\Theta_k(k)$.}
 \label{fig:jonswap_spectra_fetches_k}
 \end{figure}
 %
