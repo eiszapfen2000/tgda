@@ -141,58 +141,58 @@ k_j_20_1000km = [k', j_20_1000km_k'];
 % csvwrite('j_20_500km.dat', o_j_20_500km);
 % csvwrite('j_20_1000km.dat', o_j_20_1000km);
 
-csvwrite('pm_10_k.dat', k_pm_10);
-csvwrite('pm_12_k.dat', k_pm_12);
-csvwrite('pm_15_k.dat', k_pm_15);
-csvwrite('pm_17_k.dat', k_pm_17);
-csvwrite('pm_20_k.dat', k_pm_20);
+% csvwrite('pm_10_k.dat', k_pm_10);
+% csvwrite('pm_12_k.dat', k_pm_12);
+% csvwrite('pm_15_k.dat', k_pm_15);
+% csvwrite('pm_17_k.dat', k_pm_17);
+% csvwrite('pm_20_k.dat', k_pm_20);
+% 
+% csvwrite('j_10_100km_k.dat', k_j_10_100km);
+% csvwrite('j_10_200km_k.dat', k_j_10_200km);
+% csvwrite('j_10_300km_k.dat', k_j_10_300km);
+% csvwrite('j_10_400km_k.dat', k_j_10_400km);
+% csvwrite('j_10_500km_k.dat', k_j_10_500km);
+% csvwrite('j_10_1000km_k.dat', k_j_10_1000km);
+% 
+% csvwrite('j_15_100km_k.dat', k_j_15_100km);
+% csvwrite('j_15_200km_k.dat', k_j_15_200km);
+% csvwrite('j_15_300km_k.dat', k_j_15_300km);
+% csvwrite('j_15_400km_k.dat', k_j_15_400km);
+% csvwrite('j_15_500km_k.dat', k_j_15_500km);
+% csvwrite('j_15_1000km_k.dat', k_j_15_1000km);
+% 
+% csvwrite('j_20_100km_k.dat', k_j_20_100km);
+% csvwrite('j_20_200km_k.dat', k_j_20_200km);
+% csvwrite('j_20_300km_k.dat', k_j_20_300km);
+% csvwrite('j_20_400km_k.dat', k_j_20_400km);
+% csvwrite('j_20_500km_k.dat', k_j_20_500km);
+% csvwrite('j_20_1000km_k.dat', k_j_20_1000km);
 
-csvwrite('j_10_100km_k.dat', k_j_10_100km);
-csvwrite('j_10_200km_k.dat', k_j_10_200km);
-csvwrite('j_10_300km_k.dat', k_j_10_300km);
-csvwrite('j_10_400km_k.dat', k_j_10_400km);
-csvwrite('j_10_500km_k.dat', k_j_10_500km);
-csvwrite('j_10_1000km_k.dat', k_j_10_1000km);
-
-csvwrite('j_15_100km_k.dat', k_j_15_100km);
-csvwrite('j_15_200km_k.dat', k_j_15_200km);
-csvwrite('j_15_300km_k.dat', k_j_15_300km);
-csvwrite('j_15_400km_k.dat', k_j_15_400km);
-csvwrite('j_15_500km_k.dat', k_j_15_500km);
-csvwrite('j_15_1000km_k.dat', k_j_15_1000km);
-
-csvwrite('j_20_100km_k.dat', k_j_20_100km);
-csvwrite('j_20_200km_k.dat', k_j_20_200km);
-csvwrite('j_20_300km_k.dat', k_j_20_300km);
-csvwrite('j_20_400km_k.dat', k_j_20_400km);
-csvwrite('j_20_500km_k.dat', k_j_20_500km);
-csvwrite('j_20_1000km_k.dat', k_j_20_1000km);
-
-figure
-hold on
-plot(k, pm_10_k);
-plot(k, j_10_100km_k);
-plot(k, j_10_200km_k);
-plot(k, j_10_300km_k);
-plot(k, j_10_400km_k);
-plot(k, j_10_500km_k);
-plot(k, j_10_1000km_k);
-hold off
+% figure
+% hold on
+% plot(k, pm_10_k);
+% plot(k, j_10_100km_k);
+% plot(k, j_10_200km_k);
+% plot(k, j_10_300km_k);
+% plot(k, j_10_400km_k);
+% plot(k, j_10_500km_k);
+% plot(k, j_10_1000km_k);
+% hold off
 
 % kp = [0.0:0.00025:0.15];
 % wp = [ 15 0 ];
 % 
-% phillips_energy_w_10 = Phillips1D(kp, [10 0], 1, 0);
-% phillips_energy_w_12 = Phillips1D(kp, [12.5 0], 1, 0);
-% phillips_energy_w_15 = Phillips1D(kp, [15 0], 1, 0);
-% phillips_energy_w_17 = Phillips1D(kp, [17.5 0], 1, 0);
-% phillips_energy_w_20 = Phillips1D(kp, [20 0], 1, 0);
+phillips_energy_w_10 = Phillips1D(k, [10 0], 1, 0);
+phillips_energy_w_12 = Phillips1D(k, [12.5 0], 1, 0);
+phillips_energy_w_15 = Phillips1D(k, [15 0], 1, 0);
+phillips_energy_w_17 = Phillips1D(k, [17.5 0], 1, 0);
+phillips_energy_w_20 = Phillips1D(k, [20 0], 1, 0);
 % 
-% phillips_energy_w_10_a = Phillips1D(kp, [10 0], 0.0081, 0);
-% phillips_energy_w_12_a = Phillips1D(kp, [12.5 0], 0.0081, 0);
-% phillips_energy_w_15_a = Phillips1D(kp, [15 0], 0.0081, 0);
-% phillips_energy_w_17_a = Phillips1D(kp, [17.5 0], 0.0081, 0);
-% phillips_energy_w_20_a = Phillips1D(kp, [20 0], 0.0081, 0);
+phillips_energy_w_10_a = Phillips1D(k, [10 0], 0.0081, 0);
+phillips_energy_w_12_a = Phillips1D(k, [12.5 0], 0.0081, 0);
+phillips_energy_w_15_a = Phillips1D(k, [15 0], 0.0081, 0);
+phillips_energy_w_17_a = Phillips1D(k, [17.5 0], 0.0081, 0);
+phillips_energy_w_20_a = Phillips1D(k, [20 0], 0.0081, 0);
 
 
 % o_phillips_10 = [kp', phillips_energy_w_10'];
@@ -207,11 +207,12 @@ hold off
 % csvwrite('phillips_17.dat', o_phillips_17);
 % csvwrite('phillips_20.dat', o_phillips_20);
 
-% figure;
-% hold on;
-% plot(kp, phillips_energy_w_10_a);
-% plot(kp, phillips_energy_w_12_a);
-% plot(kp, phillips_energy_w_15_a);
-% plot(kp, phillips_energy_w_17_a);
-% plot(kp, phillips_energy_w_20_a);
-% hold off;
+figure;
+hold on;
+%plot(k, pm_10_k);
+plot(k, phillips_energy_w_10);
+plot(k, phillips_energy_w_12);
+plot(k, phillips_energy_w_15);
+plot(k, phillips_energy_w_17);
+plot(k, phillips_energy_w_20);
+hold off;
