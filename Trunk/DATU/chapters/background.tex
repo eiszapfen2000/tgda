@@ -1263,6 +1263,99 @@ converted into one dimensional wave number spectra $\Theta_k(k)$.}
 \label{fig:jonswap_spectra_fetches_k}
 \end{figure}
 %
+% \begin{figure}
+% \centering
+% \begin{tikzpicture}
+% \begin{groupplot}[
+%   group style={
+%     group size=2 by 1,
+% %    horizontal sep=2cm
+%   },
+% ]
+% \nextgroupplot[
+%     width=0.5\textwidth,
+%     scaled ticks=false,
+%     xticklabel style={/pgf/number format/fixed},
+%     xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
+%     ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+%     legend to name=brak_legend,
+%     legend columns=-1,
+%     legend style={draw=none, /tikz/every even column/.append 
+% style={column sep=0.25cm}},
+% ]
+% \addplot[
+%     color=blue,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/pm_15.dat};
+% \addlegendentry{Pierson Moskowitz}
+% \addplot[
+%     color=red,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/j_15_100km.dat};
+% \addlegendentry{100km}
+% \addplot[
+%     color=green,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/j_15_200km.dat};
+% \addlegendentry{200km}
+% \addplot[
+%     color=magenta,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/j_15_300km.dat};
+% \addlegendentry{300km}
+% \addplot[
+%     color=black,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/j_15_400km.dat};
+% \addlegendentry{400km}
+% 
+% \nextgroupplot[
+%     width=0.5\textwidth,
+%     scaled ticks=false,
+%     xticklabel style={/pgf/number format/fixed},
+%     xlabel={Wave number $k$~($\text{m}^{-1}$)},
+%     ylabel={Energy~$\Theta$~($\text{m}^2$)},
+%     ytick pos=right,
+% ]
+% \addplot[
+%     color=blue,
+%     solid,
+% 	]
+%     table [col sep=comma]{figures/pm_15_k.dat};
+% \addplot[
+%     color=red,
+%     solid,
+% 	]
+%     table [col sep=comma]{figures/j_15_100km_k.dat};
+% \addplot[
+%     color=green,
+%     solid,
+% 	]
+%     table [col sep=comma]{figures/j_15_200km_k.dat};
+% \addplot[
+%     color=magenta,
+%     solid,
+% 	]
+%     table [col sep=comma]{figures/j_15_300km_k.dat};
+% \addplot[
+%     color=black,
+%     solid,
+% 	]
+%     table [col sep=comma]{figures/j_15_400km_k.dat};
+% \end{groupplot}
+% %\node at (plots c1r1.north) [anchor=south, yshift=.6cm] {\ref{brak_legend}};
+% \node (l1) at ($(group c1r1.south)!0.5!(group c2r1.south)$)
+%       [below, yshift=-3\pgfkeysvalueof{/pgfplots/every axis title shift}]
+%       {\ref{brak_legend}};
+% \end{tikzpicture}
+% \caption{BRAK.}
+% \end{figure}
+%
 Recall that we transform from the cartesian wave number domain to the spatial 
 one. Thus, as a prerequisite, we are in need of a two dimensional wave number 
 spectrum $\Theta(\mvec{k})$, but 
@@ -1404,7 +1497,8 @@ L = \frac{\norm{\mvec{w}}^2}{g}
 \end{subequations}
 %
 where $A$ and $l$ are numeric constants, and $\mvec{w}$ encodes wind 
-direction and wind speed $\norm{\mvec{w}}$. According to 
+direction and wind speed $\norm{\mvec{w}}$. The numeric constant $A$ represents 
+a scaling factor which we will discuss at a later point.  According to 
 Tessendorf~\cite{course:simulatingocean}, $L$ defines the largest possible wave
 arising from a continuous wind of speed $\norm{\mvec{w}}$. The parameter $l$ on 
 the other hand acts as a frequency filter, it is meant to make the suppression 
@@ -1415,17 +1509,16 @@ the following as a default value for $l$:
  l = 10^{-3}L
 \end{equation}
 Moreover, one may conclude from Equation~\ref{eq:phillips_spectrum} that setting 
-$l = 0$ disables
-any wave number based suppression of energy.\\
+$l = 0$ disables any wave number based suppression of energy.\\
 
 If we take a closer look at Equation~\ref{eq:phillips_spectrum} we may notice 
 similarities to a one dimensional frequency spectrum in combination with a 
 directional spread as seen in Equation~\ref{eq:directional_frequency_spectrum}. 
 We may separate the terms involved as follows:
 \begin{equation}
+\label{eq:phillips_spectrum_separated}
  \Theta(\mvec{k}) = \underbrace{A}_{Scale}\underbrace{\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}}_{\substack{one~dimensional\\wave~ number\\spectrum}}\underbrace{\abs*{\transpose{\mvec{k}_n}\mvec{w}_n}^2}_{\substack{directional\\spread}}
 \end{equation}
-%
 %
 \begin{figure}
 \centering
@@ -1435,8 +1528,6 @@ We may separate the terms involved as follows:
     legend style={draw=none},
     xlabel={Wave number~$k$~($\text{m}^{-1}$)},
     ylabel={Energy~$\Theta$},
-    %xtick = {0, 0.05, 0.1, 0.15},
-    %xticklabels = {0, 0.05, 0.1, 0.15},
     scaled ticks=false,
     xticklabel style={/pgf/number format/fixed},
     every axis legend/.append style={nodes={right}},
@@ -1481,6 +1572,20 @@ other hand differs at least by a magnitude of $10^4$.}
 \label{fig:phillips_spectra}
 \end{figure}
 %
+A set of instances of the one dimensional wave number spectrum term is depicted 
+in Figure~\ref{fig:phillips_spectra}. One may notice that the shape of the 
+spectrum is similar to the Pierson Moskowitz one in 
+Figure~\ref{fig:pm_spectra}, with the frequency range of the spectrum peak 
+being located at even lower frequencies than the Pierson Moskowitz and JONSWAP 
+ones. The magnitude of the energy on the other hand exceeds the Pierson 
+Moskowitz and JONWAP one by at least a factor of $10^4$. Recall that both the 
+Pierson Moskowitz and the JONSWAP model are based on real world data aquired on 
+the ocean, then we may conclude that those models give us a value range for  
+energy to lie in precise enough for believable results. Therefore we need to 
+rescale the energy obtained from the one dimensional wave number spectrum. To 
+the author it seems reasonable that that is the purpose of the scale 
+factor $A$ in Equations~\ref{eq:phillips_spectrum} and 
+\ref{eq:phillips_spectrum_separated}.
 %
 \begin{figure}
  \centering
