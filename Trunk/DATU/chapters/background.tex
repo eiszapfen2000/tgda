@@ -1030,8 +1030,8 @@ introduced, it was expressed in terms of wind speed as follows:
 g^2}{\omega^5}~\exp\left[-\beta\left(\frac{g}{U_{19.5}}\frac{1}{\omega}
 \right)^4\right ]\\
 \intertext{with}
-\alpha &= 8.1 \times 10^{-3}\\
-\beta &= 74 \times 10^{-1}
+\alpha &= 8.1 \times 10^{-3} \label{eq:pierson_moskowitz_alpha} \\
+\beta &= 74 \times 10^{-1} \label{eq:pierson_moskowitz_beta}
 \end{align}
 \end{subequations}
 where $U_{19.5}$ is the wind speed at a height of 19.5 meters above the sea
@@ -1584,20 +1584,17 @@ reason that those models give us a value range for energy precise enough to
 generate believable results. Therefore we need to rescale the energy obtained 
 from the Phillips spectrum into that range. To the author it seems reasonable 
 that that is the purpose of the numeric constant $A$ in 
-Equations~\ref{eq:phillips_spectrum} and \ref{eq:phillips_spectrum_separated}.\\
-
-Now that we have discussed the one dimensional wave number spectrum and the 
-scale factor $A$, we move on to the directional term from 
-Equation~\ref{eq:phillips_spectrum_separated}. Said term is a simple cosinus 
-term raised to the power of two, with normalised wave vector $\mvec{k}$ and 
-normalised wind vector $\mvec{w}$ as input. We may increase the exponent in 
-order to make the resulting directional spread more narrow. Moreover, since 
-only the absolute value of the cosinus is taken into account, results for 
-$\mvec{k}$ and $-\mvec{k}$ are the same. A direct consequence is a symmetry not 
-only of the directional spread but of the entire Phillips spectrum: 
-$\Theta(\mvec{k}) = \Theta(-\mvec{k})$. Figure 
-\ref{fig:phillips_directional_term} gives an illustration of the directional 
-spread with different wind directions and different exponents.
+Equations~\ref{eq:phillips_spectrum} and \ref{eq:phillips_spectrum_separated}. 
+Since Tessendorf does not give any information about $A$, choosing a value that 
+scales energy appropriately for all reasonable input parametrisations has proven 
+to be difficult. The constant $\alpha = 8.1 \times 10^{-3}$ from Equation
+\ref{eq:pierson_moskowitz_old} seemed to be promising initially, but in the end 
+the author settled for the following more complex solution:
+\begin{align}
+ A = \frac{0.81}{LK}B && B \in \interval{0}{1}
+\end{align}
+where $L$ and $K$ represent side lengths in meters of the rectangular area 
+we want to synthesize.
 %
 \begin{figure}
  \centering
@@ -1632,6 +1629,40 @@ to identify symmetry axis.}
 \label{fig:phillips_directional_term}
 \end{figure}
 %
+Now that we have discussed the one dimensional wave number spectrum and the 
+scale factor $A$, we move on to the directional term from 
+Equation~\ref{eq:phillips_spectrum_separated}. Said term is a simple cosinus 
+term raised to the power of two, with normalised wave vector $\mvec{k}$ and 
+normalised wind vector $\mvec{w}$ as input. We may increase the exponent in 
+order to make the resulting directional spread more narrow. Moreover, since 
+only the absolute value of the cosinus is taken into account, results for 
+$\mvec{k}$ and $-\mvec{k}$ are the same. A direct consequence is a symmetry not 
+only of the directional spread but of the entire Phillips spectrum: 
+$\Theta(\mvec{k}) = \Theta(-\mvec{k})$. Figure 
+\ref{fig:phillips_directional_term} gives an illustration of the directional 
+spread with different wind directions and different exponents. Recall that the 
+directional spread $D$ distributes the energy represented by $\Theta(k)$ among 
+all directions, without changing the amount of energy at wave number $k$.  
+Energy is conserved, therefore we may write similar to Section 
+\ref{sec:1d_frequency_spectra}:
+\begin{subequations}
+\begin{align}
+\int_{\theta=-\pi}^{\pi}D(\sqrt{gk},\theta)~\mathrm{d}\theta &= 1 \\
+D(\sqrt{gk},\theta) &\geq 0
+\end{align}
+\end{subequations}
+We insert two variants of the Phillips directional spread into the integral:
+\begin{subequations}
+\begin{align}
+\int_{\theta=-\pi}^{\pi} \abs{\cos(\theta)}^2~\mathrm{d}\theta &= \pi \\
+\int_{\theta=-\pi}^{\pi} \abs{\cos(\theta)}^4~\mathrm{d}\theta &= \frac{3\pi}{4}
+\end{align}
+\end{subequations}
+As one can see, the results are \emph{not} equal one, therefore energy is 
+\emph{not} conserved. In combination with the unusual magnitude of energy 
+output by the one dimensional Phillips wave number spectrum, it is really 
+difficult to find an appropriate scale factor $A$ in order to generate 
+believable ocean surfaces with the Phillips spectrum as basis.
 %
 \subsection{Unified Spectrum}
 \label{sec_unified_spectrum}
