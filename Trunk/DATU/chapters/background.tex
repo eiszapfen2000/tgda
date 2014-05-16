@@ -1502,9 +1502,9 @@ a scaling factor which we will discuss at a later point.  According to
 Tessendorf~\cite{course:simulatingocean}, $L$ defines the largest possible wave
 arising from a continuous wind of speed $\norm{\mvec{w}}$. The parameter $l$ on 
 the other hand acts as a frequency filter, it is meant to make the suppression 
-of energy contributed by high wave numbers $k$ possible. Therefore it is 
-mandatory for $l$ to be several orders of magnitude smaller than $L$. We chose 
-the following as a default value for $l$:
+of energy contributed by high wave numbers $k$ possible. In order to do that it 
+is mandatory for $l$ to be several orders of magnitude smaller than $L$. We 
+chose the following as a default value for $l$:
 \begin{equation}
  l = 10^{-3}L
 \end{equation}
@@ -1574,41 +1574,55 @@ other hand differs at least by a magnitude of $10^4$.}
 %
 A set of instances of the one dimensional wave number spectrum term is depicted 
 in Figure~\ref{fig:phillips_spectra}. One may see that the shape of the 
-spectrum is similar to the Pierson Moskowitz one in 
-Figure~\ref{fig:pm_spectra}, with the frequency range of the spectrum peak 
-being located at even lower frequencies than the Pierson Moskowitz and JONSWAP 
-ones. The magnitude of the energy on the other hand exceeds the Pierson 
-Moskowitz and JONWAP one by at least a factor of $10^4$. Recall that both the 
-Pierson Moskowitz and the JONSWAP model are based on real world data aquired on 
-the ocean, then we may reason that those models give us a value range for  
-energy precise enough to generate believable results. Therefore we need to 
-rescale the energy obtained from the Phillips based one dimensional 
-wave number spectrum. To the author it seems reasonable that that is the purpose 
-of the numeric constant $A$ in Equations~\ref{eq:phillips_spectrum} and 
-\ref{eq:phillips_spectrum_separated}.
+spectrum is similar to the Pierson Moskowitz one in Figure~\ref{fig:pm_spectra}, 
+with the frequency range of the spectrum peak being located at even lower 
+frequencies than the Pierson Moskowitz and JONSWAP ones. The magnitude of the 
+energy on the other hand exceeds the one given by Pierson Moskowitz and JONWAP 
+by at least a factor of $10^4$. Recall that both the Pierson Moskowitz and the 
+JONSWAP model are based on real world data aquired on the ocean, then we may 
+reason that those models give us a value range for energy precise enough to 
+generate believable results. Therefore we need to rescale the energy obtained 
+from the Phillips spectrum into that range. To the author it seems reasonable 
+that that is the purpose of the numeric constant $A$ in 
+Equations~\ref{eq:phillips_spectrum} and \ref{eq:phillips_spectrum_separated}.\\
+
+Now that we have discussed the one dimensional wave number spectrum and the 
+scale factor $A$, we move on to the directional term from 
+Equation~\ref{eq:phillips_spectrum_separated}. Said term is a simple cosinus 
+term raised to the power of two, with normalised wave vector $\mvec{k}$ and 
+normalised wind vector $\mvec{w}$ as inputs. We may increase the exponent in 
+order to make the resulting directional spread more narrow, see 
+Figure~\ref{fig:phillips_directional_term}.
 %
 \begin{figure}
  \centering
  \subbottom[$\cos^2$]
  {
+ \label{subfig:directional_spread_cos2_r}
  \includegraphics[scale=0.6]{figures/phillips_dir_r_exponent_2.png}
  }
  \subbottom[$\cos^4$]
  {
+\label{subfig:directional_spread_cos4_r}
  \includegraphics[scale=0.6]{figures/phillips_dir_r_exponent_4.png}
  }
  \subbottom[$\cos^2$]
  {
+ \label{subfig:directional_spread_cos2_ur}
  \includegraphics[scale=0.6]{figures/phillips_dir_ur_exponent_2.png}
  }
  \subbottom[$\cos^4$]
  {
+ \label{subfig:directional_spread_cos4_ur}
  \includegraphics[scale=0.6]{figures/phillips_dir_ur_exponent_4.png}
  }
-\caption{A set of instances of the directional spreading function, each column 
-corresponds to a different wind speed, starting with the weakest one at the 
-left. In the top row, the wind direction points to the right, in the bottom row 
-to the upper right.}
+\caption{Example instances of the Phillips directional spreading function with 
+exponents $2$ and $4$. For~\subcaptionref{subfig:directional_spread_cos2_r} and
+\subcaptionref{subfig:directional_spread_cos4_r} the wind direction poins to 
+the right, for \subcaptionref{subfig:directional_spread_cos2_ur} and
+\subcaptionref{subfig:directional_spread_cos4_ur} it points to the upper right. 
+The directional spread with an exponent of $4$ is distinctly more narrow than 
+the one with an exponent equal $2$.}
 \label{fig:phillips_directional_term}
 \end{figure}
 %
