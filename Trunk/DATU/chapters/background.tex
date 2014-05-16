@@ -1590,9 +1590,14 @@ Now that we have discussed the one dimensional wave number spectrum and the
 scale factor $A$, we move on to the directional term from 
 Equation~\ref{eq:phillips_spectrum_separated}. Said term is a simple cosinus 
 term raised to the power of two, with normalised wave vector $\mvec{k}$ and 
-normalised wind vector $\mvec{w}$ as inputs. We may increase the exponent in 
-order to make the resulting directional spread more narrow, see 
-Figure~\ref{fig:phillips_directional_term}.
+normalised wind vector $\mvec{w}$ as input. We may increase the exponent in 
+order to make the resulting directional spread more narrow. Moreover, since 
+only the absolute value of the cosinus is taken into account, results for 
+$\mvec{k}$ and $-\mvec{k}$ are the same. A direct consequence is a symmetry not 
+only of the directional spread but of the entire Phillips spectrum: 
+$\Theta(\mvec{k}) = \Theta(-\mvec{k})$. Figure 
+\ref{fig:phillips_directional_term} gives an illustration of the directional 
+spread with different wind directions and different exponents.
 %
 \begin{figure}
  \centering
@@ -1621,18 +1626,13 @@ exponents $2$ and $4$. For~\subcaptionref{subfig:directional_spread_cos2_r} and
 \subcaptionref{subfig:directional_spread_cos4_r} the wind direction poins to 
 the right, for \subcaptionref{subfig:directional_spread_cos2_ur} and
 \subcaptionref{subfig:directional_spread_cos4_ur} it points to the upper right. 
-The directional spread with an exponent of $4$ is distinctly more narrow than 
-the one with an exponent equal $2$.}
+The directional spread with an exponent equal $4$ is distinctly more narrow 
+than the one with an exponent equal $2$. Moreover, all instances have an easy 
+to identify symmetry axis.}
 \label{fig:phillips_directional_term}
 \end{figure}
 %
 %
-\begin{align}
-  P(\mvec{k}) &=
-A\frac{exp(-(kL)^{-2}-(kl)^2)}{k^4}\abs*{\frac{\transpose{\mvec{k}}}{k}\frac{
-\mvec{w}}{w}}^4
-\end{align}
-
 \subsection{Unified Spectrum}
 \label{sec_unified_spectrum}
 
