@@ -1,9 +1,9 @@
-function y = PiersonMoskovitz1D(omega, wind)
+function y = PiersonMoskovitz1D(omega, wind, alphaScale, wpScale)
 
 g = 9.81;
-alpha = 0.0081;
+alpha = 0.0081 * alphaScale;
 U = norm(wind);
-omega_p = 0.855 * g / U;
+omega_p = (0.855 * g / U) * wpScale;
 
 omega(omega==0) = Inf;
 
