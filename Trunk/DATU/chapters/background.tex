@@ -1027,7 +1027,7 @@ $\omega_p$ as well as numeric constant $\alpha$.
 \begin{tikzpicture}
 \begin{groupplot}[
 	group style={
-		group size=2 by 1,
+		columns=2,
 		xlabels at=edge bottom,
 		ylabels at=edge left,
 	},
@@ -1150,22 +1150,26 @@ r = \exp\left[-\frac{\left(\omega -
 \end{gather}
 \end{subequations}
 where $F$ denotes the fetch in centimeters and $U_{10}$ the wind speed in 
-meters per second at a height of 10 meters above the sea surface.\\
-
+meters per second at a height of ten meters above the sea surface.
 %
 \begin{figure}
 \centering
-\subtop[Wind speed $U_{10} = 15m\cdot s^{-1}$]
-{
-\label{subfig:jonswap_spectra_15}
 \begin{tikzpicture}
-\begin{axis}[
-    width=0.7\textwidth,
+\begin{groupplot}[
+	group style={
+		columns=2,
+		xlabels at=edge bottom,
+		ylabels at=edge left,
+		group name=plots,
+	},
     xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
     ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
-    legend to name=jonswap_fetches_legend,
     legend columns=-1,
-    ]
+	]
+\nextgroupplot[
+	title={Wind speed $U_{10} = 15m\cdot s^{-1}$},
+    legend to name=jonswap_fetches_legend,
+	]
 \addplot[
     color=blue,
     solid,
@@ -1196,18 +1200,7 @@ meters per second at a height of 10 meters above the sea surface.\\
     ]
     table [col sep=comma]{figures/j_15_400km.dat};
 \addlegendentry{400km}
-\end{axis}
-\end{tikzpicture}
-}
-\subtop[Wind speed $U_{10} = 10m\cdot s^{-1}$]
-{
-\label{subfig:jonswap_spectra_10}
-\begin{tikzpicture}
-\begin{axis}[
-    width=0.7\textwidth,
-    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
-    ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
-    ]
+\nextgroupplot[title={Wind speed $U_{10} = 10m\cdot s^{-1}$}]
 \addplot[
     color=blue,
     solid,
@@ -1233,17 +1226,115 @@ meters per second at a height of 10 meters above the sea surface.\\
     solid,
     ]
     table [col sep=comma]{figures/j_10_400km.dat};
-\end{axis}
+\end{groupplot}
+% \node at (plots c1r1.south) [inner sep=0pt,anchor=north, yshift=-5ex] 
+% {\ref{jonswap_fetches_legend}};
+
+\node at ($(plots c1r1.north)!0.5!(group c2r1.north)$)
+      [above, yshift=2\pgfkeysvalueof{/pgfplots/every axis title shift}]
+      {\ref{jonswap_fetches_legend}};
+
 \end{tikzpicture}
-}
-\ref{jonswap_fetches_legend}
-\caption{JONSWAP frequency spectra with different fetch values $F$. Note the more
-and more pronounced peak of the JONSWAP spectrum as fetch increases. Moreover,
-the frequency range the  peak of the JONSWAP spectrum lies in, tends towards
-lower frequencies as fetch increases.}
+\caption{JONSWAP frequency spectra with different fetch values $F$. Note the 
+more and more pronounced peak of the JONSWAP spectrum as fetch increases.
+Moreover, the frequency range the  peak of the JONSWAP spectrum lies in, tends 
+towards lower frequencies as fetch increases.}
 \label{fig:jonswap_spectra_fetches}
 \end{figure}
 %
+% \begin{figure}
+% \centering
+% \subtop[Wind speed $U_{10} = 15m\cdot s^{-1}$]
+% {
+% \label{subfig:jonswap_spectra_15}
+% \begin{tikzpicture}
+% \begin{axis}[
+%     width=0.45\textwidth,
+%     xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
+%     ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+%     legend to name=jonswap_fetches_legend,
+%     legend columns=-1,
+%     ]
+% \addplot[
+%     color=blue,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/pm_15.dat};
+% \addlegendentry{Pierson Moskowitz}
+% \addplot[
+%     color=red,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/j_15_100km.dat};
+% \addlegendentry{100km}
+% \addplot[
+%     color=green,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/j_15_200km.dat};
+% \addlegendentry{200km}
+% \addplot[
+%     color=magenta,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/j_15_300km.dat};
+% \addlegendentry{300km}
+% \addplot[
+%     color=black,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/j_15_400km.dat};
+% \addlegendentry{400km}
+% \end{axis}
+% \end{tikzpicture}
+% }
+% \subtop[Wind speed $U_{10} = 10m\cdot s^{-1}$]
+% {
+% \label{subfig:jonswap_spectra_10}
+% \begin{tikzpicture}
+% \begin{axis}[
+%     width=0.45\textwidth,
+%     xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
+%     ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+%     ]
+% \addplot[
+%     color=blue,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/pm_10.dat};
+% \addplot[
+%     color=red,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/j_10_100km.dat};
+% \addplot[
+%     color=green,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/j_10_200km.dat};
+% \addplot[
+%     color=magenta,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/j_10_300km.dat};
+% \addplot[
+%     color=black,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/j_10_400km.dat};
+% \end{axis}
+% \end{tikzpicture}
+% }
+% \ref{jonswap_fetches_legend}
+% \caption{JONSWAP frequency spectra with different fetch values $F$. Note the more
+% and more pronounced peak of the JONSWAP spectrum as fetch increases. Moreover,
+% the frequency range the  peak of the JONSWAP spectrum lies in, tends towards
+% lower frequencies as fetch increases.}
+% \label{fig:jonswap_spectra_fetches}
+% \end{figure}
+%
+\\
+
 Hasselmann et al. found that in context of their model the sea is actually 
 never fully developed, the  spectrum does not converge to the basic Pierson 
 Moskowitz spectrum as fetch increases. Said effect is discussed at 
@@ -1252,10 +1343,9 @@ interactions. Figure~\ref{fig:jonswap_spectra_fetches} gives a tentative
 overview of the development of a JONSWAP modeled sea as fetch increases, 
 including a Pierson Moskowitz spectrum for comparison. One may see that the 
 spectral peak of the JONSWAP spectrum may take a more narrow form than the 
-already pronounced peak of the Pierson Moskowitz spectrum, see
-Figure~\ref{subfig:jonswap_spectra_15}. Moreover, with increasing fetch, said
-peak may move to an even lower frequency range than its Pierson Moskowitz
-counterpart, see Figure~\ref{subfig:jonswap_spectra_10}.
+already pronounced peak of the Pierson Moskowitz spectrum. Moreover, with 
+increasing fetch, said peak may move to an even lower frequency range than its 
+Pierson Moskowitz counterpart.
 %
 \subsection{Integral Domain Conversion}
 %
