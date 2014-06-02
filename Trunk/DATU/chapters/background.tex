@@ -1166,7 +1166,7 @@ meters per second at a height of ten meters above the sea surface.
     xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
     ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
     legend columns=-1,
-	width=0.5\textwidth,
+	width=0.52\textwidth,
 	]
 \nextgroupplot[
 	title={Wind speed $U_{10} = 15m\cdot s^{-1}$},
@@ -1252,6 +1252,54 @@ spectral peak of the JONSWAP spectrum may take a more narrow form than the
 already pronounced peak of the Pierson Moskowitz spectrum. Moreover, with 
 increasing fetch, said peak may move to an even lower frequency range than its 
 Pierson Moskowitz counterpart.
+%
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.6\textwidth,
+    legend style={draw=none},
+    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
+    ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+    scaled ticks=false,
+    xticklabel style={/pgf/number format/fixed},
+    every axis legend/.append style={nodes={right}},
+    ]
+\addplot[
+    color=red,
+    solid,
+	]
+    table [col sep=comma]{figures/j_15_50km.dat};
+\addlegendentry{Unmodified}
+\addplot[
+    color=green,
+    solid,
+	]
+    table [col sep=comma]{figures/j_15_50km_alpha_13.dat};
+\addlegendentry{$\alpha \times 1.3$}
+\addplot[
+    color=magenta,
+    solid,
+	]
+    table [col sep=comma]{figures/j_15_50km_gamma_1.dat};
+\addlegendentry{$\gamma=1$}
+\addplot[
+    color=black,
+    solid,
+	]
+    table [col sep=comma]{figures/j_15_50km_omegap_12.dat};
+\addlegendentry{$\omega_p \times 1.2$}
+\addplot[
+    color=blue,
+    solid,
+	]
+    table [col sep=comma]{figures/j_15_50km_sigma_003.dat};
+\addlegendentry{$\sigma=0.03$}
+\end{axis}
+\end{tikzpicture}
+\caption{BRAK.}
+\label{fig:jonswap_parameters}
+\end{figure}
 %
 \subsection{Integral Domain Conversion}
 %
