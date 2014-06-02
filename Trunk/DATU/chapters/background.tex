@@ -973,51 +973,139 @@ Equation~\ref{eq:directional_spread_mitsuyasu}.
 \subsection{Pierson Moskowitz Spectrum}
 \label{sec:pierson_moskowitz}
 %
+% \begin{figure}
+% \centering
+% \begin{tikzpicture}
+% \begin{axis}[
+%     width=0.5\paperwidth,
+%     legend style={draw=none},
+%     xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
+%     ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+%     every axis legend/.append style={nodes={right}},
+%     ]
+% 
+% \addplot[
+%     color=red,
+%     solid,
+% 	]
+%     table [col sep=comma]{figures/pm_10.dat};
+% \addlegendentry{$10.0~\text{m}\cdot\text{s}^{-1}$}
+% \addplot[
+%     color=green,
+%     solid,
+% 	]
+%     table [col sep=comma]{figures/pm_12.dat};
+% \addlegendentry{$12.5~\text{m}\cdot\text{s}^{-1}$}
+% \addplot[
+%     color=magenta,
+%     solid,
+% 	]
+%     table [col sep=comma]{figures/pm_15.dat};
+% \addlegendentry{$15.0~\text{m}\cdot\text{s}^{-1}$}
+% \addplot[
+%     color=black,
+%     solid,
+% 	]
+%     table [col sep=comma]{figures/pm_17.dat};
+% \addlegendentry{$17.5~\text{m}\cdot\text{s}^{-1}$}
+% \addplot[
+%     color=blue,
+%     solid,
+% 	]
+%     table [col sep=comma]{figures/pm_20.dat};
+% \addlegendentry{$20.0~\text{m}\cdot\text{s}^{-1}$}
+% \end{axis}
+% \end{tikzpicture}
+% \caption{The Pierson Moskowitz frequency spectrum with different wind speed 
+% values $U_{10}$.}
+% \label{fig:pm_spectra}
+% \end{figure}
 \begin{figure}
 \centering
 \begin{tikzpicture}
-\begin{axis}[
-    width=0.5\paperwidth,
-    legend style={draw=none},
+\begin{groupplot}[
+	group style={
+		group size=2 by 1,
+		xlabels at=edge bottom,
+		ylabels at=edge left,
+	},
     xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
     ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
-    every axis legend/.append style={nodes={right}},
-    ]
-
+	]
+\nextgroupplot[
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}}
+	]
 \addplot[
     color=red,
     solid,
 	]
     table [col sep=comma]{figures/pm_10.dat};
-\addlegendentry{$10.0~\text{m}\cdot\text{s}^{-1}$}
+	\addlegendentry{$10.0~\text{m}\cdot\text{s}^{-1}$}
 \addplot[
     color=green,
     solid,
 	]
     table [col sep=comma]{figures/pm_12.dat};
-\addlegendentry{$12.5~\text{m}\cdot\text{s}^{-1}$}
+	\addlegendentry{$12.5~\text{m}\cdot\text{s}^{-1}$}
 \addplot[
     color=magenta,
     solid,
 	]
     table [col sep=comma]{figures/pm_15.dat};
-\addlegendentry{$15.0~\text{m}\cdot\text{s}^{-1}$}
+	\addlegendentry{$15.0~\text{m}\cdot\text{s}^{-1}$}
 \addplot[
     color=black,
     solid,
 	]
     table [col sep=comma]{figures/pm_17.dat};
-\addlegendentry{$17.5~\text{m}\cdot\text{s}^{-1}$}
+	\addlegendentry{$17.5~\text{m}\cdot\text{s}^{-1}$}
 \addplot[
     color=blue,
     solid,
 	]
     table [col sep=comma]{figures/pm_20.dat};
-\addlegendentry{$20.0~\text{m}\cdot\text{s}^{-1}$}
-\end{axis}
+	\addlegendentry{$20.0~\text{m}\cdot\text{s}^{-1}$}
+\nextgroupplot[
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}}
+	]
+\addplot[
+    color=magenta,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_15.dat};
+	\addlegendentry{Unmodified}
+\addplot[
+    color=green,
+    densely dashed,
+	]
+    table [col sep=comma]{figures/pm_15_alpha_07.dat};
+	\addlegendentry{$\alpha \times 0.7$}
+\addplot[
+    color=blue,
+    densely dashed,
+	]
+    table [col sep=comma]{figures/pm_15_alpha_12.dat};
+	\addlegendentry{$\alpha \times 1.2$}
+\addplot[
+    color=black,
+    dashdotted,
+	]
+    table [col sep=comma]{figures/pm_15_omegap_09.dat};
+	\addlegendentry{$\omega_p \times 0.9$}
+\addplot[
+    color=red,
+    dashdotted,
+	]
+    table [col sep=comma]{figures/pm_15_omegap_13.dat};
+	\addlegendentry{$\omega_p \times 1.3$}
+\end{groupplot}
 \end{tikzpicture}
-\caption{The Pierson Moskowitz frequency spectrum with different wind speed 
-values $U_{10}$.}
+\caption{Left: The Pierson Moskowitz frequency spectrum with different wind 
+speed values $U_{10}$. Right: Influence of the constant $\alpha$ and
+the peak frequency $\omega_p$ on the resulting spectrum ($U_{10} = 
+15.0~\text{m}\cdot\text{s}^{-1}$).}
 \label{fig:pm_spectra}
 \end{figure}
 %
