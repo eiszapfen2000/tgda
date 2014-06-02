@@ -973,53 +973,53 @@ Equation~\ref{eq:directional_spread_mitsuyasu}.
 \subsection{Pierson Moskowitz Spectrum}
 \label{sec:pierson_moskowitz}
 %
-% \begin{figure}
-% \centering
-% \begin{tikzpicture}
-% \begin{axis}[
-%     width=0.5\paperwidth,
-%     legend style={draw=none},
-%     xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
-%     ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
-%     every axis legend/.append style={nodes={right}},
-%     ]
-% 
-% \addplot[
-%     color=red,
-%     solid,
-% 	]
-%     table [col sep=comma]{figures/pm_10.dat};
-% \addlegendentry{$10.0~\text{m}\cdot\text{s}^{-1}$}
-% \addplot[
-%     color=green,
-%     solid,
-% 	]
-%     table [col sep=comma]{figures/pm_12.dat};
-% \addlegendentry{$12.5~\text{m}\cdot\text{s}^{-1}$}
-% \addplot[
-%     color=magenta,
-%     solid,
-% 	]
-%     table [col sep=comma]{figures/pm_15.dat};
-% \addlegendentry{$15.0~\text{m}\cdot\text{s}^{-1}$}
-% \addplot[
-%     color=black,
-%     solid,
-% 	]
-%     table [col sep=comma]{figures/pm_17.dat};
-% \addlegendentry{$17.5~\text{m}\cdot\text{s}^{-1}$}
-% \addplot[
-%     color=blue,
-%     solid,
-% 	]
-%     table [col sep=comma]{figures/pm_20.dat};
-% \addlegendentry{$20.0~\text{m}\cdot\text{s}^{-1}$}
-% \end{axis}
-% \end{tikzpicture}
-% \caption{The Pierson Moskowitz frequency spectrum with different wind speed 
-% values $U_{10}$.}
-% \label{fig:pm_spectra}
-% \end{figure}
+The Pierson Moskowitz spectrum~\cite{article:PiersonMoskowitz1964} is a well 
+known and widely used one dimensional frequency spectrum. At the time it was 
+introduced, it was expressed in terms of wind speed as follows:
+\begin{subequations}
+\label{eq:pierson_moskowitz_old}
+\begin{align}
+ \Theta(\omega) &= \frac{\alpha
+g^2}{\omega^5}~\exp\left[-\beta\left(\frac{g}{U_{19.5}}\frac{1}{\omega}
+\right)^4\right ]\\
+\intertext{with}
+\alpha &= 8.1 \times 10^{-3} \label{eq:pierson_moskowitz_alpha} \\
+\beta &= 74 \times 10^{-1} \label{eq:pierson_moskowitz_beta}
+\end{align}
+\end{subequations}
+where $U_{19.5}$ is the wind speed at a height of 19.5 meters above the sea
+surface, the height of the anemometers used by Pierson and Moskowitz. Further
+analysis of the data brought to light a relationship between wind speed and
+peak frequency $\omega_p$
+\begin{equation}
+ \beta\left(\frac{g}{U_{19.5}}\right)^4 = \frac{5}{4}~\omega_p^4
+\end{equation}
+which lead to a rephrasing of Equation~\ref{eq:pierson_moskowitz_old} in terms
+of peak frequency
+\begin{subequations}
+\label{eq:pierson_moskowitz}
+\begin{gather}
+ \Theta(\omega) = \frac{\alpha
+g^2}{\omega^5}~\exp\left[-\frac{5}{4}\left(\frac{\omega_p}{\omega}
+\right)^4\right ]\\
+\intertext{with}
+\omega_p = \sqrt[4]{\beta~\frac{4}{5}}~\frac{g}{U_{19.5}} \approx
+0.877~\frac{g}{U_{19.5}}
+\end{gather}
+\end{subequations}
+Most spectral models, which were published after the Pierson Moskowitz spectrum,
+use wind speed at ten meters height above the sea surface, $U_{10}$, as a 
+standard. We may convert between $U_{19.5}$ and $U_{10}$ as follows:
+\begin{equation}
+ U_{10} \approx 1.026\times U_{19.5}
+\end{equation}
+Now we are able to rewrite peak frequency $\omega_p$ in terms of $U_{10}$
+\begin{equation}
+ \omega_p \approx 0.855~\frac{g}{U_{10}}
+\end{equation}
+which completes our conversion of the Pierson Moskowitz model to standard wind 
+speed $U_{10}$.
+%
 \begin{figure}
 \centering
 \begin{tikzpicture}
@@ -1109,52 +1109,7 @@ the peak frequency $\omega_p$ on the resulting spectrum ($U_{10} =
 \label{fig:pm_spectra}
 \end{figure}
 %
-The Pierson Moskowitz spectrum~\cite{article:PiersonMoskowitz1964} is a well 
-known and widely used one dimensional frequency spectrum. At the time it was 
-introduced, it was expressed in terms of wind speed as follows:
-\begin{subequations}
-\label{eq:pierson_moskowitz_old}
-\begin{align}
- \Theta(\omega) &= \frac{\alpha
-g^2}{\omega^5}~\exp\left[-\beta\left(\frac{g}{U_{19.5}}\frac{1}{\omega}
-\right)^4\right ]\\
-\intertext{with}
-\alpha &= 8.1 \times 10^{-3} \label{eq:pierson_moskowitz_alpha} \\
-\beta &= 74 \times 10^{-1} \label{eq:pierson_moskowitz_beta}
-\end{align}
-\end{subequations}
-where $U_{19.5}$ is the wind speed at a height of 19.5 meters above the sea
-surface, the height of the anemometers used by Pierson and Moskowitz. Further
-analysis of the data brought to light a relationship between wind speed and
-peak frequency $\omega_p$
-\begin{equation}
- \beta\left(\frac{g}{U_{19.5}}\right)^4 = \frac{5}{4}~\omega_p^4
-\end{equation}
-which lead to a rephrasing of Equation~\ref{eq:pierson_moskowitz_old} in terms
-of peak frequency
-\begin{subequations}
-\label{eq:pierson_moskowitz}
-\begin{gather}
- \Theta(\omega) = \frac{\alpha
-g^2}{\omega^5}~\exp\left[-\frac{5}{4}\left(\frac{\omega_p}{\omega}
-\right)^4\right ]\\
-\intertext{with}
-\omega_p = \sqrt[4]{\beta~\frac{4}{5}}~\frac{g}{U_{19.5}} \approx
-0.877~\frac{g}{U_{19.5}}
-\end{gather}
-\end{subequations}
-Most spectral models, which were published after the Pierson Moskowitz spectrum,
-use wind speed at ten meters height above the sea surface, $U_{10}$, as a 
-standard. We may convert between $U_{19.5}$ and $U_{10}$ as follows:
-\begin{equation}
- U_{10} \approx 1.026\times U_{19.5}
-\end{equation}
-Now we are able to rewrite peak frequency $\omega_p$ in terms of $U_{10}$
-\begin{equation}
- \omega_p \approx 0.855~\frac{g}{U_{10}}
-\end{equation}
-which completes our conversion of the Pierson Moskowitz model to standard wind 
-speed $U_{10}$.\\
+\\
 
 The proper use of the Pierson Moskowitz spectrum is restricted to~\emph{fully
 developed seas}. A fully developed sea is a sea for which the energy input
