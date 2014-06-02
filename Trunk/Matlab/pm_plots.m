@@ -73,7 +73,20 @@ k_pm_20 = [k', pm_20_k'];
 % csvwrite('pm_15.dat', o_pm_15);
 % csvwrite('pm_17.dat', o_pm_17);
 % csvwrite('pm_20.dat', o_pm_20);
-% 
+
+% csvwrite('pm_15_alpha_07.dat', o_pm_15_alpha_07);
+% csvwrite('pm_15_alpha_08.dat', o_pm_15_alpha_08);
+% csvwrite('pm_15_alpha_09.dat', o_pm_15_alpha_09);
+% csvwrite('pm_15_alpha_11.dat', o_pm_15_alpha_11);
+% csvwrite('pm_15_alpha_12.dat', o_pm_15_alpha_12);
+% csvwrite('pm_15_alpha_13.dat', o_pm_15_alpha_13);
+
+csvwrite('pm_15_omegap_08.dat', o_pm_15_omegap_08);
+csvwrite('pm_15_omegap_09.dat', o_pm_15_omegap_09);
+csvwrite('pm_15_omegap_11.dat', o_pm_15_omegap_11);
+csvwrite('pm_15_omegap_12.dat', o_pm_15_omegap_12);
+csvwrite('pm_15_omegap_13.dat', o_pm_15_omegap_13);
+
 % csvwrite('pm_10_k.dat', k_pm_10);
 % csvwrite('pm_12_k.dat', k_pm_12);
 % csvwrite('pm_15_k.dat', k_pm_15);
