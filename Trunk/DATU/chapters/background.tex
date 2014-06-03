@@ -981,7 +981,7 @@ introduced, it was expressed in terms of wind speed as follows:
 \begin{align}
  \Theta(\omega) &= \frac{\alpha
 g^2}{\omega^5}~\exp\left[-\beta\left(\frac{g}{U_{19.5}}\frac{1}{\omega}
-\right)^4\right ]\\
+\right)^4\right ] \label{eq:pierson_moskowitz_theta_old}\\
 \intertext{with}
 \alpha &= 8.1 \times 10^{-3} \label{eq:pierson_moskowitz_alpha} \\
 \beta &= 74 \times 10^{-1} \label{eq:pierson_moskowitz_beta}
@@ -989,19 +989,18 @@ g^2}{\omega^5}~\exp\left[-\beta\left(\frac{g}{U_{19.5}}\frac{1}{\omega}
 \end{subequations}
 where $U_{19.5}$ is the wind speed at a height of 19.5 meters above the sea
 surface, the height of the anemometers used by Pierson and Moskowitz. Further
-analysis of the data brought to light a relationship between wind speed and
-peak frequency $\omega_p$
+analysis of the data brought to light the subsequent relationship between wind 
+speed and peak frequency $\omega_p$
 \begin{equation}
  \beta\left(\frac{g}{U_{19.5}}\right)^4 = \frac{5}{4}~\omega_p^4
 \end{equation}
-which lead to a rephrasing of Equation~\ref{eq:pierson_moskowitz_old} in terms
-of peak frequency
+which lead to a rephrasing of Equation~\ref{eq:pierson_moskowitz_theta_old} in 
+terms of peak frequency:
 \begin{subequations}
-\label{eq:pierson_moskowitz}
 \begin{gather}
  \Theta(\omega) = \frac{\alpha
 g^2}{\omega^5}~\exp\left[-\frac{5}{4}\left(\frac{\omega_p}{\omega}
-\right)^4\right ]\\
+\right)^4\right ] \label{eq:pierson_moskowitz_theta}\\
 \intertext{with}
 \omega_p = \sqrt[4]{\beta~\frac{4}{5}}~\frac{g}{U_{19.5}} \approx
 0.877~\frac{g}{U_{19.5}}
@@ -1036,6 +1035,7 @@ $\omega_p$ as well as numeric constant $\alpha$.
 	width=0.5\textwidth,
 	]
 \nextgroupplot[
+	title={(a)},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}}
 	]
@@ -1070,6 +1070,7 @@ $\omega_p$ as well as numeric constant $\alpha$.
     table [col sep=comma]{figures/pm_20.dat};
 	\addlegendentry{$20.0~\text{m}\cdot\text{s}^{-1}$}
 \nextgroupplot[
+	title={(b)},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}}
 	]
@@ -1131,7 +1132,8 @@ The JONSWAP spectrum is one dimensional frequency spectrum  which has been
 developed by Hasselmann et al.\cite{article:Hasselman1973} based on data 
 collected during the~\emph{Joint North Sea Wave Project}. The JONSWAP spectrum 
 is expressed with the Pierson Moskowitz spectrum from 
-Equation~\ref{eq:pierson_moskowitz} as basis, and an additional peak factor:
+Equation~\ref{eq:pierson_moskowitz_theta} as basis, and an additional peak 
+factor:
 %
 \begin{subequations}
 \begin{gather}
@@ -1169,6 +1171,7 @@ meters per second at a height of ten meters above the sea surface.
 	width=0.5\textwidth,
 	]
 \nextgroupplot[
+	title={(a)},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
 	]
@@ -1203,6 +1206,7 @@ meters per second at a height of ten meters above the sea surface.
     table [col sep=comma]{figures/j_10_400km.dat};
 \addlegendentry{400 km}
 \nextgroupplot[
+	title={(b)},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
 ]
@@ -1349,10 +1353,8 @@ Pierson Moskowitz counterpart.
 \end{tikzpicture}
 \caption{One dimensional frequency spectra $\Theta_{\omega}(\omega$) converted
 into one dimensional wave number spectra $\Theta_k(k)$. Left: The Pierson 
-Moskowitz spectra with different wind speed values $U-{10}$ from 
-Figure~\ref{fig:pm_spectra}. Right: The JONSWAP spectra with wind speed $U_{10} 
-= 10m\cdot s^{-1}$ and different fetch values $F$ from 
-Figure~\ref{fig:jonswap_spectra}.}
+Moskowitz spectra from Figure~\ref{fig:pm_spectra}(a). Right: The JONSWAP 
+spectra from Figure~\ref{fig:jonswap_spectra}(a).}
 \label{fig:jonswap_spectra_fetches_k}
 \end{figure}
 %
