@@ -1078,7 +1078,7 @@ $\omega_p$ as well as numeric constant $\alpha$.
     solid,
 	]
     table [col sep=comma]{figures/pm_15.dat};
-	\addlegendentry{Unmodified}
+	\addlegendentry{Original}
 \addplot[
     color=green,
     densely dashed,
@@ -1165,78 +1165,88 @@ meters per second at a height of ten meters above the sea surface.
 	},
     xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
     ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
-    legend columns=-1,
-	width=0.52\textwidth,
+ %   legend columns=-1,
+	width=0.5\textwidth,
 	]
 \nextgroupplot[
-	title={Wind speed $U_{10} = 15m\cdot s^{-1}$},
-    legend to name=jonswap_fetches_legend,
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
 	]
-\addplot[
-    color=blue,
-    solid,
-    ]
-    table [col sep=comma]{figures/pm_15.dat};
-\addlegendentry{Pierson Moskowitz}
-\addplot[
-    color=red,
-    solid,
-    ]
-    table [col sep=comma]{figures/j_15_100km.dat};
-\addlegendentry{100km}
-\addplot[
-    color=green,
-    solid,
-    ]
-    table [col sep=comma]{figures/j_15_200km.dat};
-\addlegendentry{200km}
-\addplot[
-    color=magenta,
-    solid,
-    ]
-    table [col sep=comma]{figures/j_15_300km.dat};
-\addlegendentry{300km}
-\addplot[
-    color=black,
-    solid,
-    ]
-    table [col sep=comma]{figures/j_15_400km.dat};
-\addlegendentry{400km}
-\nextgroupplot[title={Wind speed $U_{10} = 10m\cdot s^{-1}$}]
 \addplot[
     color=blue,
     solid,
     ]
     table [col sep=comma]{figures/pm_10.dat};
+\addlegendentry{PM}
 \addplot[
     color=red,
     solid,
     ]
     table [col sep=comma]{figures/j_10_100km.dat};
+\addlegendentry{100km}
 \addplot[
     color=green,
     solid,
     ]
     table [col sep=comma]{figures/j_10_200km.dat};
+\addlegendentry{200km}
 \addplot[
     color=magenta,
     solid,
     ]
     table [col sep=comma]{figures/j_10_300km.dat};
+\addlegendentry{300km}
 \addplot[
     color=black,
     solid,
     ]
     table [col sep=comma]{figures/j_10_400km.dat};
+\addlegendentry{400km}
+\nextgroupplot[
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+]
+\addplot[
+    color=black,
+    solid,
+	]
+    table [col sep=comma]{figures/j_15_50km.dat};
+\addlegendentry{Original}
+\addplot[
+    color=green,
+    densely dashed,
+	]
+    table [col sep=comma]{figures/j_15_50km_alpha_13.dat};
+\addlegendentry{$\alpha \times 1.3$}
+\addplot[
+    color=blue,
+    dashed,
+	]
+    table [col sep=comma]{figures/j_15_50km_sigma_003.dat};
+\addlegendentry{$\sigma=0.03$}
+\addplot[
+    color=magenta,
+    densely dotted,
+	]
+    table [col sep=comma]{figures/j_15_50km_gamma_1.dat};
+\addlegendentry{$\gamma=1$}
+\addplot[
+    color=red,
+    solid,
+	]
+    table [col sep=comma]{figures/j_15_50km_omegap_12.dat};
+\addlegendentry{$\omega_p \times 1.2$}
 \end{groupplot}
-\node at ($(plots c1r1.north)!0.5!(group c2r1.north)$)
-	[above, yshift=2\pgfkeysvalueof{/pgfplots/every axis title shift}]
-	{\ref{jonswap_fetches_legend}};
+% \node at ($(plots c1r1.north)!0.5!(group c2r1.north)$)
+% 	[above, yshift=2\pgfkeysvalueof{/pgfplots/every axis title shift}]
+% 	{\ref{jonswap_fetches_legend}};
 \end{tikzpicture}
-\caption{JONSWAP frequency spectra with different fetch values $F$. Note the 
-more and more pronounced peak of the JONSWAP spectrum as fetch increases.
-Moreover, the frequency range the  peak of the JONSWAP spectrum lies in, tends 
-towards lower frequencies as fetch increases.}
+\caption{Left: JONSWAP frequency spectra with wind speed $U_{10} = 10m\cdot 
+s^{-1}$ and different fetch values $F$. Note the more and more pronounced peak 
+of the JONSWAP spectrum as fetch increases. Moreover, the frequency range the  
+peak of the JONSWAP spectrum lies in, tends towards lower frequencies as fetch 
+increases. Right: Influence of the involved constants and parameters on the 
+resulting spectrum ($U_{10} = 15m\cdot s^{-1}$, $F=50km$).}
 \label{fig:jonswap_spectra_fetches}
 \end{figure}
 \\
@@ -1252,54 +1262,6 @@ spectral peak of the JONSWAP spectrum may take a more narrow form than the
 already pronounced peak of the Pierson Moskowitz spectrum. Moreover, with 
 increasing fetch, said peak may move to an even lower frequency range than its 
 Pierson Moskowitz counterpart.
-%
-\begin{figure}
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    width=0.6\textwidth,
-    legend style={draw=none},
-    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
-    ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
-    scaled ticks=false,
-    xticklabel style={/pgf/number format/fixed},
-    every axis legend/.append style={nodes={right}},
-    ]
-\addplot[
-    color=red,
-    solid,
-	]
-    table [col sep=comma]{figures/j_15_50km.dat};
-\addlegendentry{Unmodified}
-\addplot[
-    color=green,
-    solid,
-	]
-    table [col sep=comma]{figures/j_15_50km_alpha_13.dat};
-\addlegendentry{$\alpha \times 1.3$}
-\addplot[
-    color=magenta,
-    solid,
-	]
-    table [col sep=comma]{figures/j_15_50km_gamma_1.dat};
-\addlegendentry{$\gamma=1$}
-\addplot[
-    color=black,
-    solid,
-	]
-    table [col sep=comma]{figures/j_15_50km_omegap_12.dat};
-\addlegendentry{$\omega_p \times 1.2$}
-\addplot[
-    color=blue,
-    solid,
-	]
-    table [col sep=comma]{figures/j_15_50km_sigma_003.dat};
-\addlegendentry{$\sigma=0.03$}
-\end{axis}
-\end{tikzpicture}
-\caption{BRAK.}
-\label{fig:jonswap_parameters}
-\end{figure}
 %
 \subsection{Integral Domain Conversion}
 %
