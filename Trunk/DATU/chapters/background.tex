@@ -1266,6 +1266,33 @@ Pierson Moskowitz counterpart.
 %
 \subsection{Integral Domain Conversion}
 %
+Recall that we transform from the cartesian wave number domain to the spatial 
+one. Thus, as a prerequisite, we are in need of a two dimensional wave number 
+spectrum $\Theta(\mvec{k})$, but 
+Equation~\ref{eq:directional_frequency_spectrum} 
+gives us a directional frequency spectrum $\Theta(\omega,\theta)$. We will 
+convert one spectrum form to the other according to the substitution rule, with 
+the deep water dispersion relation from Equation~\ref{eq:disp_rel_deep_water} 
+serving as a link between angular frequency $\omega$ and wave number $k$. To 
+avoid possible confusion we will add subscripts to each occurence of $\Theta$ 
+in order to explicitely show the parameters it takes as input.\\
+
+As a first step we may transform the one dimensional frequency spectrum 
+$\Theta_{\omega}(\omega)$ to the one dimensional wave number 
+spectrum $\Theta_k(k)$ as follows:
+\begin{subequations}
+\begin{multline}
+ \int\Theta_k(k)~\mathrm{d}k = \int\Theta_{\omega}(\omega)~\mathrm{d}\omega\\ = 
+\int\Theta_{\omega}(\omega(k))\frac{\mathrm{d}\omega}{\mathrm{d}k}~\mathrm{d}k
+= \int\Theta_{\omega}(\sqrt{gk})\frac{1}{2}\sqrt{\frac{g}{k}}~\mathrm{d}k
+\end{multline}
+which gives us
+\begin{equation}
+\label{eq:theta_k}
+ \Theta_k(k) = \Theta_{\omega}(\sqrt{gk})\frac{1}{2}\sqrt{\frac{g}{k}}
+\end{equation}
+\end{subequations}
+%
 \begin{figure}
 \centering
 \begin{tikzpicture}
@@ -1357,33 +1384,6 @@ Moskowitz spectra from Figure~\ref{fig:pm_spectra}(a). Right: The JONSWAP
 spectra from Figure~\ref{fig:jonswap_spectra}(a).}
 \label{fig:jonswap_spectra_fetches_k}
 \end{figure}
-%
-Recall that we transform from the cartesian wave number domain to the spatial 
-one. Thus, as a prerequisite, we are in need of a two dimensional wave number 
-spectrum $\Theta(\mvec{k})$, but 
-Equation~\ref{eq:directional_frequency_spectrum} 
-gives us a directional frequency spectrum $\Theta(\omega,\theta)$. We will 
-convert one spectrum form to the other according to the substitution rule, with 
-the deep water dispersion relation from Equation~\ref{eq:disp_rel_deep_water} 
-serving as a link between angular frequency $\omega$ and wave number $k$. To 
-avoid possible confusion we will add subscripts to each occurence of $\Theta$ 
-in order to explicitely show the parameters it takes as input.\\
-
-As a first step we may transform the one dimensional frequency spectrum 
-$\Theta_{\omega}(\omega)$ to the one dimensional wave number 
-spectrum $\Theta_k(k)$ as follows:
-\begin{subequations}
-\begin{multline}
- \int\Theta_k(k)~\mathrm{d}k = \int\Theta_{\omega}(\omega)~\mathrm{d}\omega\\ = 
-\int\Theta_{\omega}(\omega(k))\frac{\mathrm{d}\omega}{\mathrm{d}k}~\mathrm{d}k
-= \int\Theta_{\omega}(\sqrt{gk})\frac{1}{2}\sqrt{\frac{g}{k}}~\mathrm{d}k
-\end{multline}
-which gives us
-\begin{equation}
-\label{eq:theta_k}
- \Theta_k(k) = \Theta_{\omega}(\sqrt{gk})\frac{1}{2}\sqrt{\frac{g}{k}}
-\end{equation}
-\end{subequations}
 %
 A set of one dimensional wave spectra $\Theta_k(k)$ may be seen in
 Figure~\ref{fig:jonswap_spectra_fetches_k}. Note the difference in scale on the ordinate
