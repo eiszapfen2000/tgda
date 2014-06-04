@@ -4,8 +4,9 @@ resolution = size(k);
 
 g = 9.81;
 
-U10 = 10; % wind speed
-Omega = 12.0; % inverse wave age
+%U10 = 10; % wind speed
+U10 = norm(wind); % wind speed
+Omega = 3.0; % inverse wave age
 
 a_0 = log(2) / 4; %eq 59
 a_p = 4;          %eq 59
