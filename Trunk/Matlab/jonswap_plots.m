@@ -181,7 +181,7 @@ g = 9.81;
 % csvwrite('j_15_50km_gamma_1.dat', o_j_15_50km_gamma_1);
 
 % These are for comparsion with the Phillips spectrum
-k = 0.0:0.005:0.2;
+k = 0.0:0.001:0.2;
 j_10_200km_k_0_02 = JONSWAP1Dk(k, 10.0, 200000);
 j_12_200km_k_0_02 = JONSWAP1Dk(k, 12.5, 200000);
 j_15_200km_k_0_02 = JONSWAP1Dk(k, 15.0, 200000);
