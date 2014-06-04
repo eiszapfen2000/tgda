@@ -1504,9 +1504,9 @@ a scaling factor which we will discuss at a later point.  According to
 Tessendorf~\cite{course:simulatingocean}, $L$ defines the largest possible wave
 arising from a continuous wind of speed $\norm{\mvec{w}}$. The parameter $l$ on 
 the other hand acts as a frequency filter, it is meant to make the suppression 
-of energy contributed by high wave numbers $k$ possible. In order to do that it 
-is mandatory for $l$ to be several orders of magnitude smaller than $L$. We 
-chose the following as a default value for $l$:
+of energy contributed by high wave numbers $k$ possible. In order to accomplish 
+that, it is mandatory for $l$ to be several orders of magnitude smaller than 
+$L$. We chose the following as a default value for $l$:
 \begin{equation}
  l = 10^{-3}L
 \end{equation}
@@ -1525,52 +1525,95 @@ We may separate the terms involved as follows:
 \begin{figure}
 \centering
 \begin{tikzpicture}
-\begin{axis}[
-    width=0.5\paperwidth,
+\begin{groupplot}[
+	group style={
+		columns=2,
+		xlabels at=edge bottom,
+		ylabels at=edge left,
+		group name=plots,
+	},
+    xlabel={Wave number $k$~($\text{m}^{-1}$)},
+    ylabel={Energy~$\Theta$~($\text{m}^2$)},
+%     legend columns=-1,
+	width=0.5\textwidth,
+	]
+\nextgroupplot[
     legend style={draw=none},
-    xlabel={Wave number~$k$~($\text{m}^{-1}$)},
-    ylabel={Energy~$\Theta$},
-    scaled ticks=false,
-    xticklabel style={/pgf/number format/fixed},
     every axis legend/.append style={nodes={right}},
-    ]
-
+	xticklabel style={/pgf/number format/fixed},
+	]
 \addplot[
     color=red,
     solid,
 	]
-    table [col sep=comma]{figures/phillips_10.dat};
-\addlegendentry{$10.0~\text{m}\cdot\text{s}^{-1}$}
+    table [col sep=comma]{figures/phillips_10_k.dat};
+	\addlegendentry{$10.0~\text{m}\cdot\text{s}^{-1}$}
 \addplot[
     color=green,
     solid,
 	]
-    table [col sep=comma]{figures/phillips_12.dat};
-\addlegendentry{$12.5~\text{m}\cdot\text{s}^{-1}$}
+    table [col sep=comma]{figures/phillips_12_k.dat};
+	\addlegendentry{$12.5~\text{m}\cdot\text{s}^{-1}$}
 \addplot[
     color=magenta,
     solid,
 	]
-    table [col sep=comma]{figures/phillips_15.dat};
-\addlegendentry{$15.0~\text{m}\cdot\text{s}^{-1}$}
+    table [col sep=comma]{figures/phillips_15_k.dat};
+	\addlegendentry{$15.0~\text{m}\cdot\text{s}^{-1}$}
 \addplot[
     color=black,
     solid,
 	]
-    table [col sep=comma]{figures/phillips_17.dat};
-\addlegendentry{$17.5~\text{m}\cdot\text{s}^{-1}$}
+    table [col sep=comma]{figures/phillips_17_k.dat};
+	\addlegendentry{$17.5~\text{m}\cdot\text{s}^{-1}$}
 \addplot[
     color=blue,
     solid,
 	]
-    table [col sep=comma]{figures/phillips_20.dat};
-\addlegendentry{$20.0~\text{m}\cdot\text{s}^{-1}$}
-\end{axis}
+    table [col sep=comma]{figures/phillips_20_k.dat};
+	\addlegendentry{$20.0~\text{m}\cdot\text{s}^{-1}$}
+\nextgroupplot[
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+]
+\addplot[
+    color=black,
+    solid,
+    ]
+    table [col sep=comma]{figures/phillips_12_k_0_025.dat};
+\addlegendentry{Phillips}
+\addplot[
+    color=blue,
+    solid,
+	]
+    table [
+		col sep=comma, 
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*1000,
+	]
+	{figures/pm_12_k.dat};
+\addlegendentry{PM~$\times 10^3$}
+\addplot[
+    color=magenta,
+    solid,
+	]
+    table [
+		col sep=comma, 
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*1000,
+	]
+	{figures/j_12_200km_k.dat};
+\addlegendentry{JONSWAP~$\times 10^3$}
+\addlegendentry{Phillips}
+\end{groupplot}
 \end{tikzpicture}
-\caption{The one dimensional wave number spectrum term of the Phillips 
-frequency spectrum with different wind speed values $\norm{\mvec{w}}$. The shape 
-of the spectrum resembles the Pierson Moskowitz spectrum, the scale on the 
-other hand differs at least by a magnitude of $10^4$.}
+\caption{Left: The one dimensional wave number spectrum term of the Phillips 
+frequency spectrum with different wind speed values $\norm{\mvec{w}}$. Right: 
+The difference in scale between the Phillips spectrum and both, the Pierson 
+Moskowitz spectrum and the JONSWAP spectrum, amounts to at least a factor of 
+$10^3$ ($U_{10}=\norm{\mvec{w}}=12.5m\cdot s^{-1}$, $F=200km$).
+% The shape of the spectrum resembles the Pierson Moskowitz spectrum.
+}
 \label{fig:phillips_spectra}
 \end{figure}
 %
@@ -1580,7 +1623,7 @@ spectrum is similar to the Pierson Moskowitz one in Figure~\ref{fig:pm_spectra},
 with the frequency range of the spectrum peak being located at even lower 
 frequencies than the Pierson Moskowitz and JONSWAP ones. The magnitude of the 
 energy on the other hand exceeds the one given by Pierson Moskowitz and JONWAP 
-by at least a factor of $10^4$. Recall that both the Pierson Moskowitz and the 
+by at least a factor of $10^3$. Recall that both the Pierson Moskowitz and the 
 JONSWAP model are based on real world data aquired on the ocean, then we may 
 reason that those models give us a value range for energy precise enough to 
 generate believable results. Therefore we need to rescale the energy obtained 
