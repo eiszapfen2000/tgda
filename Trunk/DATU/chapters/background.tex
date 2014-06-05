@@ -365,7 +365,7 @@ unrelated forces at different times. Therefore it is reasonable to presume that
 the elements in the summation of Equation~\ref{eq:surface_elevation_bk} are
 statistically independent. As a consequence the central limit theorem with the
 resulting distribution being a Gaussian is applied. The result is
-a~\emph{spatially homogeneous} and~\emph{temporally stationary} gaussian random
+a~\emph{spatially homogeneous} and~\emph{temporally stationary} Gaussian random
 process which models a wind driven ocean surface. The process is said to be
 \emph{homogeneous}, because it is independent of the origin selected for
 positions $\mvec{x}$, futhermore it is~\emph{stationary} since absolute time is
@@ -447,11 +447,11 @@ the actual generation and decay of waves over time.
 
 \subsection{The Random Process}
 \label{sec:random_process}
-Pierson-Neumann theory describes the sea surface as a gaussian random process.
+Pierson-Neumann theory describes the sea surface as a Gaussian random process.
 As such, we are not dealing with one concrete ocean surface $\eta$, but with an
 \emph{ensemble} of different sea surfaces $\{\eta\}$, each associated with its
 own probabilty to be actually realised. Because the random process is a
-gaussian one, it has an associated gaussian distribution with mean
+Gaussian one, it has an associated Gaussian distribution with mean
 $\mathrm{E}[\eta]$ and variance $\mathrm{Var}[\eta] = \sigma^2$. Considering a
 sea surface in combination with linear wave theory, where a symmetry between
 troughs and crests is a given, the mean is easily found
@@ -469,7 +469,7 @@ therefore the variance of all components combined is
 \end{equation}
 which is the same as Equation~\ref{eq:mean_square_eta}. The variance
 $\sigma^2$ is equal the mean square surface elevation $\overline{\eta^2}$. With
-mean and variance in our hands, we may write the gaussian distribution that the
+mean and variance in our hands, we may write the Gaussian distribution that the
 values of sea surface elevation are drawn from, as follows:
 \begin{equation}
 \label{eq:gaussian_dist}
@@ -490,7 +490,7 @@ formulate surface elevation as a realisation of a stochastic process
 \omega t)}~
 \mathrm{d}\mvec{k}~\mathrm{d}\omega
 \end{equation}
-where $\xi$ is a gauss distributed variable with mean $\mathrm{E}[\eta] = 0$ and
+where $\xi$ is a Gauss distributed variable with mean $\mathrm{E}[\eta] = 0$ and
 variance $\mathrm{Var}[\eta] = \sigma^2$ defined by the energy spectrum
 $\Theta(\mvec{k}, \omega)$. One may realize that in context of this formulation
 of sea surface elevation, the energy spectrum $\Theta$ is the key to believable
@@ -514,7 +514,7 @@ elevation as follows:
 ~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}~\mathrm{d}\mvec{k}
 \end{equation}
 where, in lieu with Equation~\ref{eq:surface_elevation_gauss}, $\xi$ is 
-a gauss distributed variable with mean $\mathrm{E}[\eta] = 0$ and
+a Gauss distributed variable with mean $\mathrm{E}[\eta] = 0$ and
 variance $\mathrm{Var}[\eta] = \sigma^2$ defined by the energy spectrum
 $\Theta(\mvec{k})$. Moreover, for animation purposes, we add the term 
 $\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}$ in order to explicitely handle 
