@@ -187,12 +187,26 @@ phillips_energy_w_12 = Phillips1D(k, [12.5 0], 1, 0);
 phillips_energy_w_15 = Phillips1D(k, [15 0], 1, 0);
 phillips_energy_w_17 = Phillips1D(k, [17.5 0], 1, 0);
 phillips_energy_w_20 = Phillips1D(k, [20 0], 1, 0);
+
+l = 10^(-3);
+phillips_energy_w_10_l = Phillips1D(k, [10 0], 1, l);
+phillips_energy_w_12_l = Phillips1D(k, [12.5 0], 1, l);
+phillips_energy_w_15_l = Phillips1D(k, [15 0], 1, l);
+phillips_energy_w_17_l = Phillips1D(k, [17.5 0], 1, l);
+phillips_energy_w_20_l = Phillips1D(k, [20 0], 1, l);
+
 % 
-phillips_energy_w_10_a = Phillips1D(k, [10 0], 0.0081, 0);
-phillips_energy_w_12_a = Phillips1D(k, [12.5 0], 0.0081, 0);
-phillips_energy_w_15_a = Phillips1D(k, [15 0], 0.0081, 0);
-phillips_energy_w_17_a = Phillips1D(k, [17.5 0], 0.0081, 0);
-phillips_energy_w_20_a = Phillips1D(k, [20 0], 0.0081, 0);
+phillips_energy_w_10_a = Phillips1D(k, [10 0], 0.000081, 0);
+phillips_energy_w_12_a = Phillips1D(k, [12.5 0], 0.000081, 0);
+phillips_energy_w_15_a = Phillips1D(k, [15 0], 0.000081, 0);
+phillips_energy_w_17_a = Phillips1D(k, [17.5 0], 0.000081, 0);
+phillips_energy_w_20_a = Phillips1D(k, [20 0], 0.000081, 0);
+
+phillips_energy_w_10_a_l = Phillips1D(k, [10 0], 0.0081, l);
+phillips_energy_w_12_a_l = Phillips1D(k, [12.5 0], 0.0081, l);
+phillips_energy_w_15_a_l = Phillips1D(k, [15 0], 0.0081, l);
+phillips_energy_w_17_a_l = Phillips1D(k, [17.5 0], 0.0081, l);
+phillips_energy_w_20_a_l = Phillips1D(k, [20 0], 0.0081, l);
 
 
 % o_phillips_10 = [kp', phillips_energy_w_10'];
@@ -207,12 +221,31 @@ phillips_energy_w_20_a = Phillips1D(k, [20 0], 0.0081, 0);
 % csvwrite('phillips_17.dat', o_phillips_17);
 % csvwrite('phillips_20.dat', o_phillips_20);
 
-figure;
-hold on;
-%plot(k, pm_10_k);
-plot(k, phillips_energy_w_10);
-plot(k, phillips_energy_w_12);
-plot(k, phillips_energy_w_15);
-plot(k, phillips_energy_w_17);
-plot(k, phillips_energy_w_20);
-hold off;
+figure
+hold on
+plot(k, phillips_energy_w_10_a);
+plot(k, phillips_energy_w_12_a);
+plot(k, phillips_energy_w_15_a);
+plot(k, phillips_energy_w_17_a);
+plot(k, phillips_energy_w_20_a);
+
+plot(k, phillips_energy_w_10_a_l, 'Color', 'red');
+plot(k, phillips_energy_w_12_a_l, 'Color', 'red');
+plot(k, phillips_energy_w_15_a_l, 'Color', 'red');
+plot(k, phillips_energy_w_17_a_l, 'Color', 'red');
+plot(k, phillips_energy_w_20_a_l, 'Color', 'red');
+hold off
+
+% figure;
+% hold on;
+% plot(k, pm_10_k, 'Color', 'red');
+% plot(k, pm_12_k, 'Color', 'red');
+% plot(k, pm_15_k, 'Color', 'red');
+% plot(k, pm_17_k, 'Color', 'red');
+% plot(k, pm_20_k, 'Color', 'red');
+% plot(k, phillips_energy_w_10_a);
+% plot(k, phillips_energy_w_12_a);
+% plot(k, phillips_energy_w_15_a);
+% plot(k, phillips_energy_w_17_a);
+% plot(k, phillips_energy_w_20_a);
+% hold off;
