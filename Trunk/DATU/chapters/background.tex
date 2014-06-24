@@ -1264,6 +1264,31 @@ already pronounced peak of the Pierson Moskowitz spectrum. Moreover, with
 increasing fetch, said peak may move to an even lower frequency range than its 
 Pierson Moskowitz counterpart.
 %
+\subsection{Donelan Spectrum}
+%
+\begin{subequations}
+\begin{align}
+ \Theta(\omega) &= \frac{\alpha
+g^2}{\omega^4\omega_p}~\exp\left[-\left(\frac{\omega_p}{\omega}
+\right)^4\right]\gamma^r\\
+\intertext{with}
+\gamma &= \begin{cases}
+	1.7 & 0.83 < \Omega_c < 1\\
+	1.7 + 6.0\log{\Omega_c} & 1\leq\Omega_c < 5
+	\end{cases}\\
+r &= \exp\left[-\frac{\left(\omega -
+\omega_p\right)^2}{2\sigma^2\omega_p^2}\right] \\
+\sigma &= 0.08\left[1 + \frac{4}{\Omega_c^3}\right]\\
+\alpha &= 0.006~\Omega_c^{0.55} \\
+\omega_{p} &= \frac{g\Omega_c}{U_{10}}\\
+\Omega_c &= \frac{U_{10}}{c_p} = 11.6\chi^{-0.23}\\
+\chi &= \frac{gF}{U_{10}^{2}}
+\end{align}
+\end{subequations}
+where $\chi$ is called the \emph{dimensionless fetch}, $\Omega_c$ represents 
+the \emph{inverse wave age}, $F$ denotes the fetch in meters and $U_{10}$ the 
+wind speed in meters per second at a height of ten meters above the sea surface.
+
 \subsection{Integral Domain Conversion}
 %
 Recall that we transform from the cartesian wave number domain to the spatial 
