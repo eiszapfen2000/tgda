@@ -1128,12 +1128,11 @@ limited by the upwind distance to shore.
 \subsection{JONSWAP Spectrum}
 \label{sec:jonswap}
 %
-The JONSWAP spectrum is one dimensional frequency spectrum  which has been 
+The JONSWAP spectrum is a one dimensional frequency spectrum  which has been 
 developed by Hasselmann et al.\cite{article:Hasselman1973} based on data 
 collected during the~\emph{Joint North Sea Wave Project}. The JONSWAP spectrum 
-is expressed with the Pierson Moskowitz spectrum from 
-Equation~\ref{eq:pierson_moskowitz_theta} as basis, and an additional peak 
-factor:
+is expressed as a combination of the Pierson Moskowitz spectrum from 
+Equation~\ref{eq:pierson_moskowitz_theta} and an additional peak factor:
 %
 \begin{subequations}
 \begin{gather}
@@ -1252,13 +1251,11 @@ resulting spectrum ($U_{10} = 15m\cdot s^{-1}$, $F=50km$).}
 \end{figure}
 \\
 
-Hasselmann et al. found that in context of their model the sea is actually 
-never fully developed, the  spectrum does not converge to the basic Pierson 
-Moskowitz spectrum as fetch increases. Said effect is discussed at 
-length by Hasselmann et al. and in the end attributed to non-linear wave-wave 
-interactions. Figure~\ref{fig:jonswap_spectra} gives a tentative 
+Hasselmann et al. state that in context of their model the sea is never fully 
+developed, the  spectrum does not converge to the basic Pierson Moskowitz 
+spectrum as fetch increases. Figure~\ref{fig:jonswap_spectra} gives a tentative 
 overview of the development of a JONSWAP modeled sea as fetch increases, 
-including a Pierson Moskowitz spectrum for comparison. One may see that the 
+including a Pierson Moskowitz spectrum for comparison. One may notice that the 
 spectral peak of the JONSWAP spectrum may take a more narrow form than the 
 already pronounced peak of the Pierson Moskowitz spectrum. Moreover, with 
 increasing fetch, said peak may move to an even lower frequency range than its 
@@ -1281,13 +1278,14 @@ r &= \exp\left[-\frac{\left(\omega -
 \sigma &= 0.08\left[1 + \frac{4}{\Omega_c^3}\right]\\
 \alpha &= 0.006~\Omega_c^{0.55} \\
 \omega_{p} &= \frac{g\Omega_c}{U_{10}}\\
-\Omega_c &= \frac{U_{10}}{c_p} = 11.6\chi^{-0.23}\\
+\Omega_c &= 11.6\chi^{-0.23}\\
 \chi &= \frac{gF}{U_{10}^{2}}
 \end{align}
 \end{subequations}
 where $\chi$ is called the \emph{dimensionless fetch}, $\Omega_c$ represents 
-the \emph{inverse wave age}, $F$ denotes the fetch in meters and $U_{10}$ the 
-wind speed in meters per second at a height of ten meters above the sea surface.
+the \emph{inverse wave age}, $F$ denotes the fetch in meters and $U_{10}$ 
+denotes the wind speed in meters per second at a height of ten meters above the 
+sea surface.
 
 \subsection{Integral Domain Conversion}
 %
