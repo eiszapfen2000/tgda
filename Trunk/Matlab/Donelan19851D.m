@@ -10,35 +10,23 @@ U10 = norm(wind);
 
 % Omega_c = U10 / C_p = 11.6 * X^-0.23
 % v = 1.85 * X^-0.23
+% U10 / C_p = 2 *pi * v
 
 X = g * fetch / (U10^2);
-v = 1.85 * (X^(-0.23));
 Omega_c = 11.6 * (X^(-0.23));
-f_p = v * g / U10;
-
-if Omega_c >= 5 || Omega_c < 0.82
-    error('U10/C_p out of range (0.82, 5)');
-end
+Omega_c = max(min(Omega_c, 5), 0.83);
 
 alpha = 0.006 * (Omega_c^(0.55));
-omega_p = 2 * pi * f_p;
-
-% alpha = 0.076 * power((U^2) / (fetch*g), 0.22);
-% omega_p = 22 * power((g*g) / (U*fetch), 1/3);
+omega_p = Omega_c * g / U10;
 
 alpha = alpha .* scale.alphaScale;
 omega_p = omega_p .* scale.wpScale;
-
-% sigma = zeros(size(omega));
-% sigma(omega <= omega_p) = 0.07;
-% sigma(omega > omega_p) = 0.09;
 
 sigma = 0.08 * (1 + (4/(Omega_c^3)));
 
 if scale.sigma ~= 0
     sigma = scale.sigma;
 end
-
 
 gamma_base = 0.0;
 if Omega_c < 1 
