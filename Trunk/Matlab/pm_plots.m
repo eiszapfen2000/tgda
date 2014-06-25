@@ -6,23 +6,27 @@ g = 9.81;
 omega = [0:0.005:pi/2];
 k = (omega .* omega) ./ g;
 
-pm_10 = PiersonMoskovitz1D(omega, 10.0, 1, 1);
-pm_12 = PiersonMoskovitz1D(omega, 12.5, 1, 1);
-pm_15 = PiersonMoskovitz1D(omega, 15.0, 1, 1);
-pm_17 = PiersonMoskovitz1D(omega, 17.5, 1, 1);
-pm_20 = PiersonMoskovitz1D(omega, 20.0, 1, 1);
+pm_parameters = [];
+pm_parameters.alphaScale = 1;
+pm_parameters.wpScale = 1;
 
-pm_15_alpha_07 = PiersonMoskovitz1D(omega, 15.0, 0.7, 1);
-pm_15_alpha_08 = PiersonMoskovitz1D(omega, 15.0, 0.8, 1);
-pm_15_alpha_09 = PiersonMoskovitz1D(omega, 15.0, 0.9, 1);
-pm_15_alpha_11 = PiersonMoskovitz1D(omega, 15.0, 1.1, 1);
-pm_15_alpha_12 = PiersonMoskovitz1D(omega, 15.0, 1.2, 1);
-pm_15_alpha_13 = PiersonMoskovitz1D(omega, 15.0, 1.3, 1);
-pm_15_omegap_08 = PiersonMoskovitz1D(omega, 15.0, 1, 0.8);
-pm_15_omegap_09 = PiersonMoskovitz1D(omega, 15.0, 1, 0.9);
-pm_15_omegap_11 = PiersonMoskovitz1D(omega, 15.0, 1, 1.1);
-pm_15_omegap_12 = PiersonMoskovitz1D(omega, 15.0, 1, 1.2);
-pm_15_omegap_13 = PiersonMoskovitz1D(omega, 15.0, 1, 1.3);
+pm_10 = PiersonMoskovitz1D(omega, 10.0, []);
+pm_12 = PiersonMoskovitz1D(omega, 12.5, []);
+pm_15 = PiersonMoskovitz1D(omega, 15.0, []);
+pm_17 = PiersonMoskovitz1D(omega, 17.5, []);
+pm_20 = PiersonMoskovitz1D(omega, 20.0, []);
+
+pm_15_alpha_07 = PiersonMoskovitz1D(omega, 15.0, struct('alphaScale', 0.7));
+pm_15_alpha_08 = PiersonMoskovitz1D(omega, 15.0, struct('alphaScale', 0.8));
+pm_15_alpha_09 = PiersonMoskovitz1D(omega, 15.0, struct('alphaScale', 0.9));
+pm_15_alpha_11 = PiersonMoskovitz1D(omega, 15.0, struct('alphaScale', 1.1));
+pm_15_alpha_12 = PiersonMoskovitz1D(omega, 15.0, struct('alphaScale', 1.2));
+pm_15_alpha_13 = PiersonMoskovitz1D(omega, 15.0, struct('alphaScale', 1.3));
+pm_15_omegap_08 = PiersonMoskovitz1D(omega, 15.0, struct('wpScale', 0.8));
+pm_15_omegap_09 = PiersonMoskovitz1D(omega, 15.0, struct('wpScale', 0.9));
+pm_15_omegap_11 = PiersonMoskovitz1D(omega, 15.0, struct('wpScale', 1.1));
+pm_15_omegap_12 = PiersonMoskovitz1D(omega, 15.0, struct('wpScale', 1.2));
+pm_15_omegap_13 = PiersonMoskovitz1D(omega, 15.0, struct('wpScale', 1.3));
 
 pm_10_k = PiersonMoskovitz1Dk(k, 10.0);
 pm_12_k = PiersonMoskovitz1Dk(k, 12.5);
