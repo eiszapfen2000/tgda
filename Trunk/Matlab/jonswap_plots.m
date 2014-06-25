@@ -6,14 +6,14 @@ g = 9.81;
 % omega 0...pi/2
 % k 0...0.25
 
-omega = 0.0:0.005:5;
-k = (omega .* omega) ./ g;
-
-scale = [];
-scale.alphaScale = 1;
-scale.wpScale = 1;
-scale.sigma = 0;
-scale.gamma = 0;
+% omega = 0.0:0.005:pi/2;
+% k = (omega .* omega) ./ g;
+% 
+% scale = [];
+% scale.alphaScale = 1;
+% scale.wpScale = 1;
+% scale.sigma = 0;
+% scale.gamma = 0;
 
 % j_10_100km = JONSWAP1D(omega, 10.0, 100000, scale);
 % j_10_200km = JONSWAP1D(omega, 10.0, 200000, scale);
@@ -21,23 +21,6 @@ scale.gamma = 0;
 % j_10_400km = JONSWAP1D(omega, 10.0, 400000, scale);
 % j_10_500km = JONSWAP1D(omega, 10.0, 500000, scale);
 % j_10_1000km = JONSWAP1D(omega, 10.0, 1000000, scale);
-
-j_156_25km = JONSWAP1D(omega, 15.6, 2500, scale);
-j_32_104km = JONSWAP1D(omega, 3.2, 104000, scale);
-
-d_156_25km = Donelan19851D(omega, 15.6, 2500, scale);
-d_32_104km = Donelan19851D(omega, 3.2, 104000, scale);
-
-
-figure
-hold on
-plot(omega, j_156_25km);
-plot(omega, j_32_104km);
-plot(omega, d_156_25km);
-plot(omega, d_32_104km);
-hold off
-
-
 % 
 % j_15_100km = JONSWAP1D(omega, 15.0, 100000, scale);
 % j_15_200km = JONSWAP1D(omega, 15.0, 200000, scale);
