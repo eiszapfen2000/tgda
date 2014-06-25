@@ -1,10 +1,12 @@
 function y = JONSWAP1D(omega, wind, fetch, scale)
 
 g = 9.81;
-U = norm(wind);
+U10 = norm(wind);
 
-alpha = 0.076 * power((U^2) / (fetch*g), 0.22);
-omega_p = 22 * power((g*g) / (U*fetch), 1/3);
+X = g * fetch / (U10^2);
+alpha = 0.076 * (X^(-0.22));
+Omega_c = 22 * (X^(-0.33));
+omega_p = Omega_c * g / U10;
 
 alpha = alpha .* scale.alphaScale;
 omega_p = omega_p .* scale.wpScale;
