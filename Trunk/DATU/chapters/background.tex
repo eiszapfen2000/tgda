@@ -1142,8 +1142,8 @@ g^2}{\omega^5}~\exp\left[-\frac{5}{4}\left(\frac{\omega_p}{\omega}
 \intertext{with}
 r& = \exp\left[-\frac{\left(\omega -
 \omega_p\right)^2}{2\sigma^2\omega_p^2}\right] \\
-\alpha &= 0.076\left(\frac{U_{10}^2}{Fg}\right)^{0.22} \\
-\omega_{p} &= 22\left(\frac{g^2}{U_{10}F}\right)^{0.33} \\
+\alpha &= 0.076\left(\frac{gF}{U_{10}^2}\right)^{-0.22} \\
+\omega_{p} &= 22\left(\frac{U_{10}F}{g^2}\right)^{-0.33} \\
 \sigma &= \begin{cases}
 	0.07 & \omega\leq\omega_p\\
 	0.09 & \omega > \omega_p
@@ -1156,6 +1156,28 @@ second at a height of ten meters above the sea surface. Moreover, $\gamma$ is
 called the peak enhancement factor, $\sigma$ the~\emph{peak width parameter}, 
 $\alpha$ the~\emph{equilibrium range parameter} and $\omega_p$ the angular 
 frequency of the spectral peak.
+
+Non-dimensional peak frequency
+\begin{equation}
+ \nu = \frac{f_p U_{10}}{g} \implies f_p = \frac{g\nu}{U_{10}}
+\end{equation}
+Non-dimensional fetch
+\begin{equation}
+ \chi = \frac{gF}{U_{10}^{2}}
+\end{equation}
+
+\begin{subequations}
+\begin{align}
+ \alpha &= 0.076 \chi^{-0.22} \\
+ \nu &= 3.5\chi^{-0.33}\\
+ \omega_p &= 2\pi\frac{g\nu}{U_{10}}
+\end{align}
+\end{subequations}
+
+%    alpha = 0.076 * (X^(-0.22));
+%    Omega_c = 22 * (X^(-0.33));
+%    omega_p = Omega_c * g / U10;
+
 %
 \begin{figure}
 \centering
@@ -1252,7 +1274,7 @@ increases. Right: Influence of the involved constants and parameters on the
 resulting spectrum ($U_{10} = 15m\cdot s^{-1}$, $F=50km$).}
 \label{fig:jonswap_spectra}
 \end{figure}
-\\
+%\\
 
 In contrast to the Pierson Moskowitz spectrum, which exclusively models fully 
 developed seas, the JONSWAP spectrum solely models developing seas. Hasselmann 
@@ -1267,6 +1289,7 @@ move to an even lower frequency range than its Pierson Moskowitz counterpart.
 %
 \subsection{Donelan Spectrum}
 %
+Donelan et al. \cite{article:Donelan1985}
 \begin{subequations}
 \begin{align}
  \Theta(\omega) &= \frac{\alpha
@@ -1275,7 +1298,7 @@ g^2}{\omega^4\omega_p}~\exp\left[-\left(\frac{\omega_p}{\omega}
 \intertext{with}
 \gamma &= \begin{cases}
 	1.7 & 0.83 < \Omega_c < 1\\
-	1.7 + 6.0\log{\Omega_c} & 1\leq\Omega_c < 5
+	1.7 + 6.0\lg{\Omega_c} & 1\leq\Omega_c < 5
 	\end{cases}\\
 r &= \exp\left[-\frac{\left(\omega -
 \omega_p\right)^2}{2\sigma^2\omega_p^2}\right] \\
