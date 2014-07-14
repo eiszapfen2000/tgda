@@ -71,11 +71,11 @@ gamma_base = 0.0;
 if Omega_c < 1 
     gamma_base = 1.7;
 else
-    gamma_base = 1.7 + 6 * log(Omega_c);
+    gamma_base = 1.7 + 6 * log10(Omega_c);
 end
 
-r_exponent = -((omega-omega_p).^2)./(2.*(sigma.^2).*(omega_p^2));
-r = exp(r_exponent);
+r_exponent = ((omega-omega_p).^2)./(2*(sigma^2)*(omega_p^2));
+r = exp(-r_exponent);
 gamma_r = gamma_base .^ r;
 
 if fixed_gamma_r ~= 0
