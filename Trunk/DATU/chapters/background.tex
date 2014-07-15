@@ -1280,10 +1280,6 @@ Literature defines them as follows:
  \chi &= \frac{gF}{U_{10}^{2}} \label{eq:dimensionless_fetch}\\
  \nu &= \frac{f_p U_{10}}{g} \label{eq:dimensionless_peak_frequency}
 \end{align}
-Note that the definition of these dimensionless variables is not specific to the 
-JONSWAP spectrum, but is valid for all energy spectra found in oceanographic 
-research.
-
 The JONSWAP spectrum simulates fetch limited wave growth, therefore it has to 
 specify how the dimensionless peak frequency is dependent on dimensionless 
 fetch. Hasselmann et al. provide the following relationship:
@@ -1302,6 +1298,12 @@ dimensionless fetch:
  \alpha = 0.076 \chi^{-0.22}
 \end{equation}
 %
+This completes our conversion of the JONSWAP spectrum to make explicit use of 
+dimensionless peak frequency and dimensionless fetch. We may add, that 
+Equations \ref{eq:dimensionless_fetch} and
+\ref{eq:dimensionless_peak_frequency}, which define dimensionless variables 
+$\nu$ and $\chi$, are not specific to the JONSWAP spectrum, but are valid for 
+all energy spectra found in oceanographic research.
 \subsection{Donelan Spectrum}
 %
 Donelan et al. \cite{article:Donelan1985}
