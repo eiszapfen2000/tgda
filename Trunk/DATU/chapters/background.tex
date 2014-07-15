@@ -1135,6 +1135,7 @@ is expressed as a combination of the Pierson Moskowitz spectrum and an
 additional~\emph{peak enhancement factor}:
 %
 \begin{subequations}
+\label{eq:jonswap_omega}
 \begin{align}
  \Theta(\omega) &= \frac{\alpha
 g^2}{\omega^5}~\exp\left[-\frac{5}{4}\left(\frac{\omega_p}{\omega}
@@ -1156,28 +1157,6 @@ second at a height of ten meters above the sea surface. Moreover, $\gamma$ is
 called the peak enhancement factor, $\sigma$ the~\emph{peak width parameter}, 
 $\alpha$ the~\emph{equilibrium range parameter} and $\omega_p$ the angular 
 frequency of the spectral peak.
-
-Non-dimensional peak frequency
-\begin{equation}
- \nu = \frac{f_p U_{10}}{g} \implies f_p = \frac{g\nu}{U_{10}}
-\end{equation}
-Non-dimensional fetch
-\begin{equation}
- \chi = \frac{gF}{U_{10}^{2}}
-\end{equation}
-
-\begin{subequations}
-\begin{align}
- \alpha &= 0.076 \chi^{-0.22} \\
- \nu &= 3.5\chi^{-0.33}\\
- \omega_p &= 2\pi\frac{g\nu}{U_{10}}
-\end{align}
-\end{subequations}
-
-%    alpha = 0.076 * (X^(-0.22));
-%    Omega_c = 22 * (X^(-0.33));
-%    omega_p = Omega_c * g / U10;
-
 %
 \begin{figure}
 \centering
@@ -1274,7 +1253,8 @@ increases. Right: Influence of the involved constants and parameters on the
 resulting spectrum ($U_{10} = 15m\cdot s^{-1}$, $F=50km$).}
 \label{fig:jonswap_spectra}
 \end{figure}
-%\\
+%
+\\
 
 In contrast to the Pierson Moskowitz spectrum, which exclusively models fully 
 developed seas, the JONSWAP spectrum solely models developing seas. Hasselmann 
@@ -1285,7 +1265,42 @@ development of a JONSWAP modeled sea as fetch increases, including a Pierson
 Moskowitz spectrum for comparison. One may notice that the spectral peak of the 
 JONSWAP spectrum may take a more narrow form than the already pronounced peak of 
 the Pierson Moskowitz spectrum. Moreover, with increasing fetch, said peak may 
-move to an even lower frequency range than its Pierson Moskowitz counterpart.
+move to an even lower frequency range than its Pierson Moskowitz counterpart.\\
+
+Although Equation~\ref{eq:jonswap_omega} is a compact representation of the 
+JONSWAP spectrum, it does omit explicit use of the involved dimensionless 
+variables, which wave growth simulating spectrum models found in oceanographic 
+literature hinge on. Because later on we will present energy spectra which 
+do not provide a formulation without dimensionless variables, we may introduce 
+them  by means of the JONSWAP spectrum. A formulation of the JONSWAP spectrum 
+including dimensionless variables requires two of them, namely 
+\emph{dimensionless fetch} $\chi$ and~\emph{dimensionless peak frequency} $\nu$. 
+Literature defines them as follows:
+\begin{align}
+ \chi &= \frac{gF}{U_{10}^{2}} \label{eq:dimensionless_fetch}\\
+ \nu &= \frac{f_p U_{10}}{g} \label{eq:dimensionless_peak_frequency}
+\end{align}
+Note that the definition of these dimensionless variables is not specific to the 
+JONSWAP spectrum, but is valid for all energy spectra found in oceanographic 
+research.
+
+The JONSWAP spectrum simulates fetch limited wave growth, therefore it has to 
+specify how the dimensionless peak frequency is dependent on dimensionless 
+fetch. Hasselmann et al. provide the following relationship:
+\begin{equation}
+\label{eq:jonswap_nu}
+ \nu = 3.5\chi^{-0.33}
+\end{equation}
+By combining Equation \ref{eq:dimensionless_peak_frequency} with Equation 
+\ref{eq:jonswap_nu} we are able to write peak angular frequency as follows:
+\begin{equation}
+ \omega_p = 2\pi\frac{g\nu}{U_{10}}
+\end{equation}
+Moreover, we may rewrite the equilibrium range parameter $\alpha$ based on 
+dimensionless fetch:
+\begin{equation}
+ \alpha = 0.076 \chi^{-0.22}
+\end{equation}
 %
 \subsection{Donelan Spectrum}
 %
