@@ -1120,11 +1120,52 @@ developed seas}. A fully developed sea is a sea for which the energy input
 to the waves from the wind is in equilibrium with the transfer of energy
 among different wave components, and with the dissipation of energy by wave 
 breaking. All wind generated waves are as large as they can be under the 
-current conditions. Moreover, a fully developed sea is independent 
-of~\emph{fetch}, which is the distance over which the wind blows, usually
-limited by the upwind distance to shore.
+current conditions. Moreover, a fully developed sea is independent of 
+\emph{fetch}, which is the distance over which the wind blows, usually limited 
+by the upwind distance to shore.
 %
+\subsection{Fetch limited wave growth}
 %
+Before we move on to dicuss wave spectra which model a~\emph{developing sea}, we 
+introduce some common terms shared by all those models. A developing sea is a 
+sea where, given a constant wind blowing over the sea surface, waves may still 
+grow, either based on distance from shore e.g. fetch, or based on time. We will 
+focus on wave spectra which model~\emph{fetch limited wave growth}, leaving 
+aside models which simulate~\emph{duration limited wave growth}, because the 
+former has been investigated more thoroughly both in the laboratory and the 
+field\cite{book:windgeneratedoceanwaves}.
+
+Fetch limited wave growth occurs when a wind of constant magnitude and 
+direction blows perpendicular to a long and straight coastline. The water is 
+assumed deep and the wind blows for a sufficiently long time for the wave field 
+to reach steady state (independent of time). As a consequence, given wind speed 
+$U_{10}$, the wave spectrum becomes a function of fetch $F$.
+
+Kitaigorodskii~\cite{book:Kitaigorodskii1970}\cite{article:Kitaigorodskii1962} 
+identified the following quantities to be of importance for fetch limited wave
+growth:
+\begin{itemize}
+ \item $\sigma^2$ - the variance of the water surface elevation
+ \item $U_{10}$ - the wind speed measured at a reference height of 10 meters
+ \item $F$ - the fetch
+ \item $g$ - gravitational acceleration
+ \item $f_p$ - the frequency of the spectral peak
+\end{itemize}
+Moreover, after dimensional analysis, he defined the following non-dimensional 
+groupings of these parameters:
+\begin{alignat}{2}
+& \epsilon = \frac{\sigma^2 g^2}{U_{10}^{4}} \quad && \text{- the 
+non-dimensional energy}\\
+& \nu = \frac{f_p U_{10}}{g} \quad && \text{- the non-dimensional peak 
+frequency}\\
+& \chi = \frac{gF}{U_{10}^{2}} \quad && \text{- the non-dimensional fetch}
+\end{alignat}
+Since the wave spectrum is a function of fetch, the following must hold: 
+\begin{align}
+ \epsilon = f_1(\chi) && \nu = f_2(\chi)
+\end{align}
+where $f_1$ and $f_2$ are functions to be determined.
+
 \subsection{JONSWAP Spectrum}
 \label{sec:jonswap}
 %
@@ -1304,6 +1345,8 @@ Equations \ref{eq:dimensionless_fetch} and
 \ref{eq:dimensionless_peak_frequency}, which define dimensionless variables 
 $\nu$ and $\chi$, are not specific to the JONSWAP spectrum, but are valid for 
 all energy spectra found in oceanographic research.
+
+
 \subsection{Donelan Spectrum}
 %
 Donelan et al. \cite{article:Donelan1985}
