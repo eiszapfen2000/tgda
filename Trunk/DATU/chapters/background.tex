@@ -974,8 +974,9 @@ Equation~\ref{eq:directional_spread_mitsuyasu}.
 \label{sec:pierson_moskowitz}
 %
 The Pierson Moskowitz spectrum~\cite{article:PiersonMoskowitz1964} is a well 
-known and widely used one dimensional frequency spectrum. At the time it was 
-introduced, it was expressed in terms of wind speed as follows:
+known and widely used one dimensional frequency spectrum based on data aquired 
+in the North Atlantic Ocean . At the time it was introduced, it was expressed in 
+terms of wind speed as follows:
 \begin{subequations}
 \label{eq:pierson_moskowitz_old}
 \begin{align}
@@ -1141,7 +1142,8 @@ assumed deep and the wind blows for a sufficiently long time for the wave field
 to reach steady state (independent of time). As a consequence, given wind speed 
 $U_{10}$, the wave spectrum becomes a function of fetch $F$.
 
-Kitaigorodskii~\cite{book:Kitaigorodskii1970}\cite{article:Kitaigorodskii1962} 
+Sverdrup and Munk~\cite{report:SverdrupMunk1947} as well as
+Kitaigorodskii~\cite{article:Kitaigorodskii1962}\cite{book:Kitaigorodskii1970} 
 identified the following quantities to be of importance for fetch limited wave
 growth:
 \begin{itemize}
@@ -1151,8 +1153,8 @@ growth:
  \item $g$ - the gravitational acceleration
  \item $f_p$ - the frequency of the spectral peak
 \end{itemize}
-Moreover, after dimensional analysis, he defined the following non-dimensional 
-groupings of the listed parameters:
+After application of dimensional analysis, the following non-dimensional 
+groupings of the listed parameters have been defined:
 \begin{alignat}{2}
 & \epsilon = \frac{\sigma^2 g^2}{U_{10}^{4}} \quad && \text{- the 
 non-dimensional energy}\\
@@ -1160,27 +1162,30 @@ non-dimensional energy}\\
 frequency}\\
 & \chi = \frac{gF}{U_{10}^{2}} \quad && \text{- the non-dimensional fetch}
 \end{alignat}
-Because the wave spectrum is a function of fetch, the following must hold: 
+Since we assume the wave spectrum is a function of fetch, the following must 
+hold: 
 \begin{align}
  \epsilon = f_1(\chi) && \nu = f_2(\chi)
 \end{align}
-where $f_1$ and $f_2$ are functions to be determined. It has been shown 
-(FIXME by who) that for large values of dimensionless fetch $\chi$, 
-dimensionless energy $\epsilon$ as well as dimensionless peak frequency $\nu$ 
-reach asymptotic limits. These limits indicate that all further development 
-ceases, the sea has reached a fully developed state.
-
-Through the remainder of this document we will omit any discussion regarding 
-function $f_1$, because, contrary to function $f_2$, it is not a prerequisite to 
-be able to compute the energy spectrum. Function $f_2$ on the other hand is of 
-fundamental importance to any wave spectrum model, because it serves as basis to 
-compute peak frequency $f_p$ and consequently peak angular frequency $\omega_p$. 
-We may write:
+where $f_1$ and $f_2$ are functions to be determined. Through the remainder of 
+this document we will omit any discussion regarding function $f_1$, because, 
+contrary to function $f_2$, it is not a prerequisite to be able to 
+actually compute the energy spectrum. Function $f_2$ on the other hand is of 
+fundamental importance, because it serves as basis to calculate peak frequency 
+$f_p$ and consequently peak angular frequency $\omega_p$. We may write:
 \begin{align}
  \nu &= f_2(\chi) \\
  f_p &= \frac{g\nu}{U_{10}} \\
  \omega_p &= 2\pi f_p \label{eq:omega_nu}
 \end{align}
+
+
+It has been shown 
+(FIXME by who) that for large values of dimensionless fetch $\chi$, 
+dimensionless energy $\epsilon$ as well as dimensionless peak frequency $\nu$ 
+reach asymptotic limits. These limits indicate that all further development 
+ceases at that point, the sea has reached a fully developed state.
+
 Additionally we may introduce the~\emph{inverse wave age}, $\Omega$, which is 
 defined as follows:
 \begin{equation}
