@@ -975,7 +975,8 @@ Equation~\ref{eq:directional_spread_mitsuyasu}.
 %
 The Pierson Moskowitz spectrum~\cite{article:PiersonMoskowitz1964} is a well 
 known and widely used one dimensional frequency spectrum based on data aquired 
-in the North Atlantic Ocean . At the time it was introduced, it was expressed in 
+by weather ships in the North Atlantic Ocean. At the time it was introduced, 
+it was expressed in 
 terms of wind speed as follows:
 \begin{subequations}
 \label{eq:pierson_moskowitz_old}
@@ -1015,6 +1016,7 @@ standard. We may convert between $U_{19.5}$ and $U_{10}$ as follows:
 \end{equation}
 Now we are able to rewrite peak frequency $\omega_p$ in terms of $U_{10}$
 \begin{equation}
+\label{eq:pm_omega_p_u10}
  \omega_p \approx 0.855~\frac{g}{U_{10}}
 \end{equation}
 which completes our conversion of the Pierson Moskowitz model to standard wind 
@@ -1172,7 +1174,7 @@ must hold:
 where $f_1$ and $f_2$ are functions to be determined. Finding instances of 
 these two functions which fit both laboratory and field data has proven to be a 
 key aspect of oceanographic research. Through the remainder of 
-this document we will omit any discussion regarding dimensionless 
+this document we will omit any detailed discussion regarding dimensionless 
 energy $\epsilon$ and function $f_1$, because, contrary to 
 dimensionless fetch $\nu$ and function $f_2$, those are not a prerequisite to 
 be able to actually synthesise the energy spectrum. Function $f_2$ on the other 
@@ -1180,13 +1182,15 @@ hand is of fundamental importance, because, given wind speed and fetch, it
 allows us to compute peak frequency $f_p$ and consequently peak angular 
 frequency $\omega_p$. We may combine Equation 
 \ref{eq:dimensionless_peak_frequency} and Equation~\ref{eq:dimensionless_f1_f2}
-to the following:
+into the following:
 \begin{align}
  f_p &= \frac{g\nu}{U_{10}} = \frac{gf_2(\chi)}{U_{10}} 
 \label{eq:f_p_from_dimensionless}\\
  \omega_p &= 2\pi f_p \label{eq:omega_p_from_dimensionless}
 \end{align}
-
+%
+\subsection{Growth limits}
+%
 The first significant attempts to predict fetch limited waves were ventured by
 Sverdrup and Munk\cite{book:breakersandsurf1944}
 \cite{book:breakersandsurfsupplement1945}, based on data from several sources, 
@@ -1195,7 +1199,7 @@ including both field and laboratory. Bretschneider
 results. The combined findings of Sverdrup, Munk and Bretschneider, a set of 
 non-dimensional growth curves, are known as the~\emph{SMB growth curves}
 \cite{book:cerc1977}. The latter show that for large values of dimensionless 
-fetch $\chi$, both dimensionless energy $\epsilon$ and dimensionless peak 
+fetch $\chi$ both dimensionless energy $\epsilon$ and dimensionless peak 
 frequency $\nu$ reach asymptotic limits. These limits indicate that all further 
 development ceases at that point, the sea has reached a fully developed state. 
 We may write said limits as follows:
@@ -1203,21 +1207,45 @@ We may write said limits as follows:
  \epsilon &= 5\times10^{-3} \quad && \text{for large } \chi \\
  \nu &= 0.133 \quad && \text{for large } \chi
 \end{alignat}
-
-Additionally we may introduce the~\emph{inverse wave age}, $\Omega$, which is 
-defined as follows:
+Pierson and Moskowitz on the other hand provide the limits of dimensionless 
+energy and dimensionless peak frequency based on data retrieved solely from 
+fully developed seas. These limits are as follows:
+\begin{align}
+ \epsilon &= 3.64\times10^{-3} \\
+ \nu &= 0.13 \label{eq:pm_nu}
+\end{align}
+where $\epsilon$ and $\nu$ are independent of fetch. As a result, functions 
+$f_1$ and $f_2$ from Equation~\ref{eq:dimensionless_f1_f2} are constant for the 
+Pierson Moskowitz spectrum. Therefor we may compute the peak angular frequency 
+of the Pierson Moskowitz spectrum by 
+combining Equations \ref{eq:f_p_from_dimensionless}, 
+\ref{eq:omega_p_from_dimensionless} and \ref{eq:pm_nu} as follows:
+\begin{equation}
+ \omega_p = 2\pi\frac{0.13g}{U_{10}}
+\end{equation}
+which matches the Pierson and Moskowitz definition of peak angular frequency in 
+Equation \ref{eq:pm_omega_p_u10}. Still in the context of the Pierson Moskowitz 
+spectrum  we may introduce the~\emph{inverse wave age}, $\Omega$, which is 
+related to the dimensionless peak frequency. The inverse wave age is defined as 
+follows:
 \begin{equation}
 \label{eq:inverse_wave_age_u10_cp}
  \Omega = \frac{U_{10}}{c_p}
 \end{equation}
-where $c_p$ is the phase speed at peak angular frequency $\omega_p$. As already 
-mentioned, we may assume deep water, therefore $c_p = \frac{g}{\omega_p}$. 
+where $c_p$ is the phase speed at peak angular frequency $\omega_p$. Recall 
+that in deep water, the phase speed is $g/\omega$, therefore $c_p = g/\omega_p$.
 By combining 
 Equations~\ref{eq:f_p_from_dimensionless},~\ref{eq:omega_p_from_dimensionless} 
-and~\ref{eq:inverse_wave_age_u10_cp} we may write inverse wave age as follows:
+and~\ref{eq:inverse_wave_age_u10_cp} we are able to rewrite the inverse wave 
+age in terms of dimensionless peak frequency:
 \begin{equation}
  \Omega = \frac{U_{10}}{c_p} = \frac{U_{10}}{\frac{g}{\omega_p}} = 2\pi\nu
 \end{equation}
+The Pierson Moskowitz spectrum therefore has $\Omega \approx 0.82$ . We conclude 
+that at full development the phase speed of the waves may actually exceed the 
+speed of the generating wind. The general consensus in oceanographic research 
+is that non-linear interactions are able to transfer energy to such waves, 
+making it possible for this limit to growth being such that $U_{10}/c_p < 1$.
 
 
 \subsection{JONSWAP Spectrum}
