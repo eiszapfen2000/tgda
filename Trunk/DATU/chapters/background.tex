@@ -1132,9 +1132,9 @@ introduce some common terms shared by all those models. A developing sea is a
 sea where, given a constant wind blowing over the sea surface, waves may still 
 grow, either based on distance from shore e.g. fetch, or based on time. We will 
 focus on wave spectra which model~\emph{fetch limited wave growth}, leaving 
-aside models which simulate~\emph{duration limited wave growth}, because the 
-former has been investigated more thoroughly both in the laboratory and the 
-field\cite{book:windgeneratedoceanwaves}.
+aside models which simulate~\emph{duration limited wave growth}. This is a 
+reasonable choice, because the former has been investigated more thoroughly 
+both in the laboratory and the field\cite{book:windgeneratedoceanwaves}.
 
 Fetch limited wave growth occurs when a wind of constant magnitude and 
 direction blows perpendicular to a long and straight coastline. The water is 
@@ -1156,36 +1156,53 @@ growth:
 After application of dimensional analysis, they defined the following 
 non-dimensional groupings of the listed parameters:
 \begin{alignat}{2}
-& \epsilon = \frac{\sigma^2 g^2}{U_{10}^{4}} \quad && \text{- the 
+ \epsilon &= \frac{\sigma^2 g^2}{U_{10}^{4}} \quad && \text{- the 
 non-dimensional energy}\\
-& \nu = \frac{f_p U_{10}}{g} \quad && \text{- the non-dimensional peak 
-frequency}\\
-& \chi = \frac{gF}{U_{10}^{2}} \quad && \text{- the non-dimensional fetch}
+ \nu &= \frac{f_p U_{10}}{g} \quad && \text{- the non-dimensional peak 
+frequency} \label{eq:dimensionless_peak_frequency} \\
+ \chi &= \frac{gF}{U_{10}^{2}} \quad && \text{- the non-dimensional fetch} 
+\label{eq:dimensionless_fetch}
 \end{alignat}
 Since the wave spectrum is assumed to be a function of fetch, the following 
 must hold: 
 \begin{align}
+\label{eq:dimensionless_f1_f2}
  \epsilon = f_1(\chi) && \nu = f_2(\chi)
 \end{align}
-where $f_1$ and $f_2$ are functions to be determined. Through the remainder of 
-this document we will omit any discussion regarding function $f_1$, because, 
-contrary to function $f_2$, it is not a prerequisite to be able to 
-actually compute the energy spectrum. Function $f_2$ on the other hand is of 
-fundamental importance, because it serves as basis to calculate peak frequency 
-$f_p$ and consequently peak angular frequency $\omega_p$:
+where $f_1$ and $f_2$ are functions to be determined. Finding instances of 
+these two functions which fit both laboratory and field data has proven to be a 
+key aspect of oceanographic research. Through the remainder of 
+this document we will omit any discussion regarding dimensionless 
+energy $\epsilon$ and function $f_1$, because, contrary to 
+dimensionless fetch $\nu$ and function $f_2$, those are not a prerequisite to 
+be able to actually synthesise the energy spectrum. Function $f_2$ on the other 
+hand is of fundamental importance, because, given wind speed and fetch, it 
+allows us to compute peak frequency $f_p$ and consequently peak angular 
+frequency $\omega_p$. We may combine Equation 
+\ref{eq:dimensionless_peak_frequency} and Equation~\ref{eq:dimensionless_f1_f2}
+to the following:
 \begin{align}
- \nu &= f_2(\chi) \\
- f_p &= \frac{g\nu}{U_{10}} \\
- \omega_p &= 2\pi f_p \label{eq:omega_nu}
+ f_p &= \frac{g\nu}{U_{10}} = \frac{gf_2(\chi)}{U_{10}} 
+\label{eq:f_p_from_dimensionless}\\
+ \omega_p &= 2\pi f_p \label{eq:omega_p_from_dimensionless}
 \end{align}
 
-
-The SMB growth curves~\cite{book:cerc1977}, initially compiled by Sverdrup and 
-Munk~\cite{book:breakersandsurf1944}\cite{book:breakersandsurfsupplement1945}, 
-later on improved by Bretschneider, show that for large values of dimensionless 
-fetch $\chi$, dimensionless energy $\epsilon$ as well as dimensionless peak 
+The first significant attempts to predict fetch limited waves were ventured by
+Sverdrup and Munk\cite{book:breakersandsurf1944}
+\cite{book:breakersandsurfsupplement1945}, based on data from several sources, 
+including both field and laboratory. Bretschneider 
+\cite{article:Bretschneider1952} augmented said data set and refined the 
+results. The combined findings of Sverdrup, Munk and Bretschneider, a set of 
+non-dimensional growth curves, are known as the~\emph{SMB growth curves}
+\cite{book:cerc1977}. The latter show that for large values of dimensionless 
+fetch $\chi$, both dimensionless energy $\epsilon$ and dimensionless peak 
 frequency $\nu$ reach asymptotic limits. These limits indicate that all further 
-development ceases at that point, the sea has reached a fully developed state.\\
+development ceases at that point, the sea has reached a fully developed state. 
+We may write said limits as follows:
+\begin{alignat}{2}
+ \epsilon &= 5\times10^{-3} \quad && \text{for large } \chi \\
+ \nu &= 0.133 \quad && \text{for large } \chi
+\end{alignat}
 
 Additionally we may introduce the~\emph{inverse wave age}, $\Omega$, which is 
 defined as follows:
@@ -1195,8 +1212,9 @@ defined as follows:
 \end{equation}
 where $c_p$ is the phase speed at peak angular frequency $\omega_p$. As already 
 mentioned, we may assume deep water, therefore $c_p = \frac{g}{\omega_p}$. 
-By combining Equation~\ref{eq:omega_nu} and Equation 
-\ref{eq:inverse_wave_age_u10_cp} we may write inverse wave age as follows:
+By combining 
+Equations~\ref{eq:f_p_from_dimensionless},~\ref{eq:omega_p_from_dimensionless} 
+and~\ref{eq:inverse_wave_age_u10_cp} we may write inverse wave age as follows:
 \begin{equation}
  \Omega = \frac{U_{10}}{c_p} = \frac{U_{10}}{\frac{g}{\omega_p}} = 2\pi\nu
 \end{equation}
@@ -1354,8 +1372,8 @@ including dimensionless variables requires two of them, namely
 \emph{dimensionless fetch} $\chi$ and~\emph{dimensionless peak frequency} $\nu$. 
 Literature defines them as follows:
 \begin{align}
- \chi &= \frac{gF}{U_{10}^{2}} \label{eq:dimensionless_fetch}\\
- \nu &= \frac{f_p U_{10}}{g} \label{eq:dimensionless_peak_frequency}
+ \chi &= \frac{gF}{U_{10}^{2}} \\
+ \nu &= \frac{f_p U_{10}}{g}
 \end{align}
 The JONSWAP spectrum simulates fetch limited wave growth, therefore it has to 
 specify how the dimensionless peak frequency is dependent on dimensionless 
