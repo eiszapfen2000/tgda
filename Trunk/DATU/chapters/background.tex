@@ -1219,7 +1219,7 @@ fully developed seas. These limits are as follows:
 \end{align}
 where $\epsilon$ and $\nu$ are independent of fetch. As a result, functions 
 $f_1$ and $f_2$ from Equation~\ref{eq:dimensionless_f1_f2} are constant for the 
-Pierson Moskowitz spectrum. Therefor we may compute the peak angular frequency 
+Pierson Moskowitz spectrum. Therefore we may compute the peak angular frequency 
 of the Pierson Moskowitz spectrum by 
 combining Equations \ref{eq:f_p_from_dimensionless}, 
 \ref{eq:omega_p_from_dimensionless} and \ref{eq:pm_nu} as follows:
@@ -1258,7 +1258,8 @@ The JONSWAP spectrum is a one dimensional frequency spectrum  which has been
 developed by Hasselmann et al.\cite{article:Hasselman1973} based on data 
 collected during the~\emph{Joint North Sea Wave Project}. The JONSWAP spectrum 
 is expressed as a combination of the Pierson Moskowitz spectrum and an 
-additional~\emph{peak enhancement factor}:
+additional~\emph{peak enhancement factor}. A compact form of the JONSWAP
+spectrum often found in literature looks as follows:
 %
 \begin{subequations}
 \label{eq:jonswap_omega}
@@ -1279,7 +1280,7 @@ r& = \exp\left[-\frac{\left(\omega -
 \end{align}
 \end{subequations}
 where $F$ denotes the fetch in meters and $U_{10}$ the wind speed in meters per 
-second at a height of ten meters above the sea surface. Moreover, $\gamma$ is 
+second at a height of ten meters above the sea surface. Moreover, $\gamma^r$ is 
 called the peak enhancement factor, $\sigma$ the~\emph{peak width parameter}, 
 $\alpha$ the~\emph{equilibrium range parameter} and $\omega_p$ the angular 
 frequency of the spectral peak.
@@ -1394,44 +1395,31 @@ the Pierson Moskowitz spectrum. Moreover, with increasing fetch, said peak may
 move to an even lower frequency range than its Pierson Moskowitz counterpart.\\
 
 Although Equation~\ref{eq:jonswap_omega} is a compact representation of the
-JONSWAP spectrum which is often found in literature, it does omit explicit use
-of the involved dimensionless variables, which wave growth simulating spectrum
-models found in oceanographic literature hinge on. Because later on we will
-present energy spectra which do not provide a formulation without dimensionless
-variables, we may introduce them  by means of the JONSWAP spectrum. A
-formulation of the JONSWAP spectrum including dimensionless variables requires
-two of them, namely \emph{dimensionless fetch} $\chi$ and~\emph{dimensionless
-peak frequency} $\nu$. Literature defines them as follows:
-\begin{align}
- \chi &= \frac{gF}{U_{10}^{2}} \\
- \nu &= \frac{f_p U_{10}}{g}
-\end{align}
-The JONSWAP spectrum simulates fetch limited wave growth, therefore it has to 
-specify how the dimensionless peak frequency is dependent on dimensionless 
-fetch. Hasselmann et al. provide the following relationship:
+JONSWAP spectrum, it does omit explicit use of the involved dimensionless
+variables which we discussed earlier. The JONSWAP spectrum simulates fetch
+limited wave growth, therefore it has to specify how dimensionless peak
+frequency $\nu$ is dependent on dimensionless fetch $\chi$. Hasselmann et al.
+provide the following relationship:
 \begin{equation}
 \label{eq:jonswap_nu}
  \nu = 3.5\chi^{-0.33}
 \end{equation}
-By combining Equation \ref{eq:dimensionless_peak_frequency} with Equation 
-\ref{eq:jonswap_nu} we are able to write peak angular frequency as follows:
+We may combine Equation \ref{eq:dimensionless_peak_frequency} with Equation
+\ref{eq:jonswap_nu} to write peak angular frequency as follows:
 \begin{equation}
  \omega_p = 2\pi\frac{g\nu}{U_{10}}
 \end{equation}
-Moreover, we may rewrite the equilibrium range parameter $\alpha$ based on 
+Moreover, Hasselmann et al. base the equilibrium range parameter $\alpha$ on
 dimensionless fetch:
 \begin{equation}
  \alpha = 0.076 \chi^{-0.22}
 \end{equation}
 %
 This completes our conversion of the JONSWAP spectrum to make explicit use of 
-dimensionless peak frequency and dimensionless fetch. We may add, that 
-Equations \ref{eq:dimensionless_fetch} and
-\ref{eq:dimensionless_peak_frequency}, which define dimensionless variables 
-$\nu$ and $\chi$, are not specific to the JONSWAP spectrum, but are valid for 
-all energy spectra found in oceanographic research.
-
-
+dimensionless peak frequency and dimensionless fetch. The spectra which we will
+introduce next are given in a formulation explicitely based on dimensionless
+variables.
+%
 \subsection{Donelan Spectrum}
 %
 Donelan et al. \cite{article:Donelan1985}
