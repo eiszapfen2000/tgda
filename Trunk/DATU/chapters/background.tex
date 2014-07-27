@@ -1138,8 +1138,9 @@ sea where, given a constant wind blowing over the sea surface, waves may still
 grow, either based on distance from shore e.g. fetch, or based on time. We will 
 focus on wave spectra which model~\emph{fetch limited wave growth}, leaving 
 aside models which simulate~\emph{duration limited wave growth}. This is a 
-reasonable choice, because the former has been investigated more thoroughly 
-both in the laboratory and the field\cite{book:windgeneratedoceanwaves}.
+reasonable choice, because the former has been investigated more thoroughly than
+the latter, both in the laboratory and the
+field\cite{book:windgeneratedoceanwaves}.
 
 Fetch limited wave growth occurs when a wind of constant magnitude and 
 direction blows perpendicular to a long and straight coastline. The water is 
@@ -1158,8 +1159,7 @@ growth:
  \item $g$ - the gravitational acceleration
  \item $f_p$ - the frequency of the spectral peak
 \end{itemize}
-After application of dimensional analysis, they defined the following 
-non-dimensional groupings of the listed parameters:
+They defined the following non-dimensional groupings of the listed parameters:
 \begin{alignat}{2}
  \epsilon &= \frac{\sigma^2 g^2}{U_{10}^{4}} \quad && \text{- the 
 non-dimensional energy}\\
@@ -1176,7 +1176,9 @@ must hold:
 \end{align}
 where $f_1$ and $f_2$ are functions to be determined. Finding instances of 
 these two functions which fit both laboratory and field data has proven to be a 
-key aspect of oceanographic research. Through the remainder of 
+key aspect of oceanographic research.\\
+
+Through the remainder of 
 this document we will omit any detailed discussion regarding dimensionless 
 energy $\epsilon$ and function $f_1$, because, contrary to 
 dimensionless fetch $\nu$ and function $f_2$, those are not a prerequisite to 
@@ -1226,11 +1228,12 @@ combining Equations \ref{eq:f_p_from_dimensionless},
 \begin{equation}
  \omega_p = 2\pi\frac{0.13g}{U_{10}}
 \end{equation}
-which matches the Pierson and Moskowitz definition of peak angular frequency in 
-Equation \ref{eq:pm_omega_p_u10}. Still in the context of the Pierson Moskowitz 
-spectrum  we may introduce the~\emph{inverse wave age}, $\Omega$, which is 
-related to the dimensionless peak frequency. The inverse wave age is defined as 
-follows:
+which matches the Pierson Moskowitz definition of peak angular frequency
+given in Equation \ref{eq:pm_omega_p_u10}.\\
+
+Still in the context of the Pierson Moskowitz spectrum  we may introduce
+the~\emph{inverse wave age}, $\Omega$, which is related to the dimensionless
+peak frequency. The inverse wave age is defined as follows:
 \begin{equation}
 \label{eq:inverse_wave_age_u10_cp}
  \Omega = \frac{U_{10}}{c_p}
@@ -1395,17 +1398,16 @@ the Pierson Moskowitz spectrum. Moreover, with increasing fetch, said peak may
 move to an even lower frequency range than its Pierson Moskowitz counterpart.\\
 
 Although Equation~\ref{eq:jonswap_omega} is a compact representation of the
-JONSWAP spectrum, it does omit explicit use of the involved dimensionless
-variables which we discussed earlier. The JONSWAP spectrum simulates fetch
-limited wave growth, therefore it has to specify how dimensionless peak
-frequency $\nu$ is dependent on dimensionless fetch $\chi$. Hasselmann et al.
-provide the following relationship:
+JONSWAP spectrum, it does omit explicit use of dimensionless variables.
+The JONSWAP spectrum simulates fetch limited wave growth, therefore it has to
+specify how dimensionless peak frequency $\nu$ is dependent on dimensionless
+fetch $\chi$. Hasselmann et al. provide the following relationship:
 \begin{equation}
 \label{eq:jonswap_nu}
  \nu = 3.5\chi^{-0.33}
 \end{equation}
-We may combine Equation \ref{eq:dimensionless_peak_frequency} with Equation
-\ref{eq:jonswap_nu} to write peak angular frequency as follows:
+Now that we are given dimensionless peak frequency $\nu$, we may write peak
+angular frequency $\omega_p$ as follows:
 \begin{equation}
  \omega_p = 2\pi\frac{g\nu}{U_{10}}
 \end{equation}
@@ -1417,7 +1419,7 @@ dimensionless fetch:
 %
 This completes our conversion of the JONSWAP spectrum to make explicit use of 
 dimensionless peak frequency and dimensionless fetch. The spectra which we will
-introduce next are given in a formulation explicitely based on dimensionless
+introduce next will be given in a formulation explicitely based on dimensionless
 variables.
 %
 \subsection{Donelan Spectrum}
