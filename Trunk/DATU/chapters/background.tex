@@ -1389,11 +1389,11 @@ developed seas, the JONSWAP spectrum solely models developing seas. Hasselmann
 et al. state that in context of their model the sea is never fully developed, 
 the spectrum does not converge to the Pierson Moskowitz spectrum as fetch 
 increases. Figure~\ref{fig:jonswap_spectra} gives a tentative overview of the 
-development of a JONSWAP modeled sea as fetch increases, including a Pierson 
-Moskowitz spectrum for comparison. One may notice that the spectral peak of the 
-JONSWAP spectrum may take a more narrow form than the already pronounced peak of 
-the Pierson Moskowitz spectrum. Moreover, with increasing fetch, said peak may 
-move to an even lower frequency range than its Pierson Moskowitz counterpart.\\
+development of a JONSWAP modeled sea, including a Pierson Moskowitz spectrum for 
+comparison. One may notice that the spectral peak of the JONSWAP spectrum may 
+take a more narrow form than the already pronounced peak of the Pierson 
+Moskowitz spectrum. Moreover, with increasing fetch, said peak may move to an 
+even lower frequency range than its Pierson Moskowitz counterpart.\\
 
 Although Equation~\ref{eq:jonswap_omega} is a compact representation of the
 JONSWAP spectrum, it does omit explicit use of dimensionless variables.
@@ -1404,20 +1404,23 @@ fetch $\chi$. Hasselmann et al. provide the following relationship:
 \label{eq:jonswap_nu}
  \nu = 3.5\chi^{-0.33}
 \end{equation}
-Now that we are given dimensionless peak frequency $\nu$, we may write peak
+Because Equation\ref{eq:jonswap_nu} does not attempt to accomodate a transition 
+to full development, it is not applicable at large values of $\chi$. Based on 
+the JONSWAP datasets, Hasselmann et al. confined their model to $\chi < 
+1\times10^4$. Given dimensionless peak frequency $\nu$, we may write peak 
 angular frequency $\omega_p$ as follows:
 \begin{equation}
- \omega_p = 2\pi\frac{g\nu}{U_{10}}
+ \omega_p = 2\pi\frac{g\nu}{U_{10}} = \Omega\frac{g}{U_{10}}
 \end{equation}
-Moreover, Hasselmann et al. base the equilibrium range parameter $\alpha$ on
-dimensionless fetch:
+Moreover, Hasselmann et al. also base the equilibrium range parameter $\alpha$ 
+on dimensionless fetch:
 \begin{equation}
  \alpha = 0.076 \chi^{-0.22}
 \end{equation}
 %
 This completes our conversion of the JONSWAP spectrum to make explicit use of 
-dimensionless peak frequency and dimensionless fetch. The spectra which we will
-introduce next will be given in a formulation explicitely based on dimensionless
+dimensionless peak frequency and dimensionless fetch. The spectra introduced 
+next will be given in a formulation explicitely based on dimensionless
 variables.
 %
 \subsection{Donelan Spectrum}
