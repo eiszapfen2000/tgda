@@ -4,7 +4,7 @@ g = 9.81;
 
 alphaScale = 1;
 wpScale = 1;
-wp = 0;
+fixed_omega_p = 0;
 
 if isfield(parameters, 'alphaScale') && isnumeric(parameters.alphaScale)
 alphaScale = parameters.alphaScale;
@@ -15,15 +15,19 @@ wpScale = parameters.wpScale;
 end
 
 if isfield(parameters, 'wp') && isnumeric(parameters.wp)
-wp = parameters.wp;
+fixed_omega_p = parameters.wp;
 end
 
-alpha = 0.0081 * alphaScale;
-U = norm(wind);
-omega_p = (0.855 * g / U) * wpScale;
+alpha = 0;
+omega_p = 0;
 
-if wp ~= 0
-    omega_p = wp;
+if fixed_omega_p == 0
+    U = norm(wind);
+    omega_p = (0.855 * g / U) * wpScale;
+    alpha = 0.0081 * alphaScale;
+else
+    omega_p = fixed_omega_p;
+    alpha = 0.0081;
 end
 
 omega(omega==0) = Inf;
