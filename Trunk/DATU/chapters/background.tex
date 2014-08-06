@@ -1344,6 +1344,99 @@ frequency of the spectral peak.
     table [col sep=comma]{figures/j_10_75km.dat};
 \addlegendentry{75 km}
 \nextgroupplot[
+%	title={(a)},
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+	restrict x to domain=0.6:1.8,
+]
+\addplot[
+    color=black,
+    solid,
+	]
+    table [col sep=comma]{figures/j_15_50km.dat};
+\addlegendentry{Original}
+\addplot[
+    color=green,
+    densely dashed,
+	]
+    table [col sep=comma]{figures/j_15_50km_alpha_13.dat};
+\addlegendentry{$\alpha \times 1.3$}
+\addplot[
+    color=blue,
+    dashed,
+	]
+    table [col sep=comma]{figures/j_15_50km_sigma_003.dat};
+\addlegendentry{$\sigma=0.03$}
+\addplot[
+    color=magenta,
+    densely dotted,
+	]
+    table [col sep=comma]{figures/j_15_50km_gamma_1.dat};
+\addlegendentry{$\gamma=1$}
+\addplot[
+    color=red,
+    solid,
+	]
+    table [col sep=comma]{figures/j_15_50km_omegap_12.dat};
+\addlegendentry{$\omega_p \times 1.2$}
+\end{groupplot}
+\end{tikzpicture}
+\caption{Left: JONSWAP frequency spectra with different fetch values $F$, 
+matching Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot 
+s^{-1}$). Right: Influence of the involved parameters on the resulting JONSWAP 
+spectrum ($U_{10} = 15m\cdot s^{-1}$, $F=50km$).}
+\label{fig:jonswap_spectra}
+\end{figure}
+%
+\begin{figure}
+\centering
+%\tikzset{external/force remake}
+\begin{tikzpicture}
+\begin{groupplot}[
+	group style={
+		columns=2,
+		xlabels at=edge bottom,
+		ylabels at=edge left,
+		% group name=plots,
+	},
+    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
+    ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+ %   legend columns=-1,
+	width=0.5\textwidth,
+	]
+\nextgroupplot[
+%	title={(b)},
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+	scaled ticks=false,
+	yticklabel style={/pgf/number format/fixed},
+	restrict x to domain=1:5,
+]
+\addplot[
+    color=blue,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_wp_25.dat};
+\addlegendentry{PM}
+\addplot[
+    color=black,
+    solid,
+	]
+    table [col sep=comma]{figures/j_wp_25_wc_4.dat};
+\addlegendentry{$\Omega=4$}
+\addplot[
+    color=green,
+    solid,
+	]
+    table [col sep=comma]{figures/j_wp_25_wc_2.dat};
+\addlegendentry{$\Omega=2$}
+\addplot[
+    color=magenta,
+    solid,
+	]
+    table [col sep=comma]{figures/j_wp_25_wc_083.dat};
+\addlegendentry{$\Omega=0.83$}
+\nextgroupplot[
 %	title={(b)},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
@@ -1381,103 +1474,12 @@ frequency of the spectral peak.
 \addlegendentry{400 km}
 \end{groupplot}
 \end{tikzpicture}
-\caption{JONSWAP frequency spectra with different fetch values $F$. 
-Additionally, the same Pierson Moskowitz spectrum in both images for comparison 
-purposes. All spectra have been generated with wind speed $U_{10} = 10m\cdot 
-s^{-1}$.}
-\label{fig:jonswap_spectra}
-\end{figure}
-%
-\begin{figure}
-\centering
-%\tikzset{external/force remake}
-\begin{tikzpicture}
-\begin{groupplot}[
-	group style={
-		columns=2,
-		xlabels at=edge bottom,
-		ylabels at=edge left,
-		% group name=plots,
-	},
-    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
-    ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
- %   legend columns=-1,
-	width=0.5\textwidth,
-	]
-\nextgroupplot[
-	title={(a)},
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}},
-	restrict x to domain=0.6:1.8,
-]
-\addplot[
-    color=black,
-    solid,
-	]
-    table [col sep=comma]{figures/j_15_50km.dat};
-\addlegendentry{Original}
-\addplot[
-    color=green,
-    densely dashed,
-	]
-    table [col sep=comma]{figures/j_15_50km_alpha_13.dat};
-\addlegendentry{$\alpha \times 1.3$}
-\addplot[
-    color=blue,
-    dashed,
-	]
-    table [col sep=comma]{figures/j_15_50km_sigma_003.dat};
-\addlegendentry{$\sigma=0.03$}
-\addplot[
-    color=magenta,
-    densely dotted,
-	]
-    table [col sep=comma]{figures/j_15_50km_gamma_1.dat};
-\addlegendentry{$\gamma=1$}
-\addplot[
-    color=red,
-    solid,
-	]
-    table [col sep=comma]{figures/j_15_50km_omegap_12.dat};
-\addlegendentry{$\omega_p \times 1.2$}
-\nextgroupplot[
-	title={(b)},
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}},
-	scaled ticks=false,
-	yticklabel style={/pgf/number format/fixed},
-	restrict x to domain=1:5,
-]
-\addplot[
-    color=blue,
-    solid,
-	]
-    table [col sep=comma]{figures/pm_wp_25.dat};
-\addlegendentry{PM}
-\addplot[
-    color=black,
-    solid,
-	]
-    table [col sep=comma]{figures/j_wp_25_wc_4.dat};
-\addlegendentry{$\Omega=4$}
-\addplot[
-    color=green,
-    solid,
-	]
-    table [col sep=comma]{figures/j_wp_25_wc_2.dat};
-\addlegendentry{$\Omega=2$}
-\addplot[
-    color=magenta,
-    solid,
-	]
-    table [col sep=comma]{figures/j_wp_25_wc_083.dat};
-\addlegendentry{$\Omega=0.83$}
-\end{groupplot}
-\end{tikzpicture}
-\caption{Left: Influence of the involved parameters on the resulting 
-spectrum ($U_{10} = 15m\cdot s^{-1}$, $F=50km$). Right: Influence of inverse 
-wave age $\Omega$ on the resulting spectrum ($\omega_p=2.5$).}
-\label{fig:jonswap_spectra_parameters}
+\caption{Left: Influence of inverse wave age $\Omega$ on the resulting 
+JONSWAP spectrum, matching Pierson Moskowitz spectrum for comparison 
+($\omega_p=2.5$). Right: JONSWAP frequency spectra with large fetch values $F$, 
+matching Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot 
+s^{-1}$).}
+\label{fig:jonswap_spectra_mismatch}
 \end{figure}
 \\
 
@@ -1489,8 +1491,10 @@ increases. Figure~\ref{fig:jonswap_spectra} gives a tentative overview of the
 development of a JONSWAP modeled sea, including a Pierson Moskowitz spectrum for 
 comparison. One may notice that the spectral peak of the JONSWAP spectrum may 
 take a more narrow form than the already pronounced peak of the Pierson 
-Moskowitz spectrum. Moreover, with increasing fetch, the JONSWAP spectrum 
-diverges more and more from the Pierson Moskowitz spectrum.\\
+Moskowitz spectrum. Moreover, Figure~\ref{fig:jonswap_spectra_mismatch} 
+depicts the inabilty of the the JONSWAP spectrum to converge to the 
+Pierson Moskowitz spectrum, be it with increasing fetch or with decreasing 
+inverse wave age.\\
 
 Although Equation~\ref{eq:jonswap_omega} is a compact representation of the
 JONSWAP spectrum, it does omit explicit use of dimensionless variables.
@@ -1515,13 +1519,6 @@ on dimensionless fetch:
  \alpha = 0.076 \chi^{-0.22}
 \end{equation}
 %
-Figure~\ref{fig:jonswap_spectra_parameters}(a) depicts how all the 
-involved parameters ($\alpha$, $\sigma$, $\gamma$, $\omega_p$) affect the 
-resulting spectrum. Figure~\ref{fig:jonswap_spectra_parameters}(b) on the other 
-hand shows the inability of the JONSWAP spectrum to converge to the Pierson 
-Moskowitz spectrum with increasing development, where development is measured 
-using the inverse age $\Omega$.
-
 This completes our conversion of the JONSWAP spectrum to make explicit use of 
 dimensionless peak frequency and dimensionless fetch. The spectra introduced 
 next will be given in a formulation explicitely based on dimensionless
