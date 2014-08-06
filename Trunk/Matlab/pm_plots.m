@@ -49,11 +49,11 @@ write2dcsv(omega, pm_15_omegap_11);
 write2dcsv(omega, pm_15_omegap_12);
 write2dcsv(omega, pm_15_omegap_13);
 
-write2dcsv(omega, pm_10_k);
-write2dcsv(omega, pm_12_k);
-write2dcsv(omega, pm_15_k);
-write2dcsv(omega, pm_17_k);
-write2dcsv(omega, pm_20_k);
+write2dcsv(k, pm_10_k);
+write2dcsv(k, pm_12_k);
+write2dcsv(k, pm_15_k);
+write2dcsv(k, pm_17_k);
+write2dcsv(k, pm_20_k);
 
 % figure;
 % hold on;
