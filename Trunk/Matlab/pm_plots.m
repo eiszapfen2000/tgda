@@ -23,6 +23,7 @@ pm_15_omegap_09 = PiersonMoskovitz1D(omega, 15.0, struct('wpScale', 0.9));
 pm_15_omegap_11 = PiersonMoskovitz1D(omega, 15.0, struct('wpScale', 1.1));
 pm_15_omegap_12 = PiersonMoskovitz1D(omega, 15.0, struct('wpScale', 1.2));
 pm_15_omegap_13 = PiersonMoskovitz1D(omega, 15.0, struct('wpScale', 1.3));
+pm_wp_25 = PiersonMoskovitz1D(omega, [], struct('wp', 2.5));
 
 pm_10_k = PiersonMoskovitz1Dk(k, 10.0);
 pm_12_k = PiersonMoskovitz1Dk(k, 12.5);
@@ -42,6 +43,7 @@ write2dcsv(omega, pm_15_alpha_09);
 write2dcsv(omega, pm_15_alpha_11);
 write2dcsv(omega, pm_15_alpha_12);
 write2dcsv(omega, pm_15_alpha_13);
+write2dcsv(omega, pm_wp_25);
 
 write2dcsv(omega, pm_15_omegap_08);
 write2dcsv(omega, pm_15_omegap_09);

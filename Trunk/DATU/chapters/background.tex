@@ -476,7 +476,7 @@ mean and variance in our hands, we may write the Gaussian distribution that the
 values of sea surface elevation are drawn from, as follows:
 \begin{equation}
 \label{eq:gaussian_dist}
- pr[\eta] = \frac{1}{\sqrt{2\pi E}}~\mathrm{e}^{-\frac{\eta^2}{2E}}
+ pr[\eta] = \frac{1}{\sqrt{2\pi\sigma^2}}~\mathrm{e}^{-\frac{\eta^2}{2\sigma^2}}
 \end{equation}
 Note that neither position nor time appear in the distribution, because the
 process is modeled as spatially and temporally invariant.\\
@@ -1043,7 +1043,8 @@ $\omega_p$ as well as numeric constant $\alpha$.
 \nextgroupplot[
 	title={(a)},
     legend style={draw=none},
-    every axis legend/.append style={nodes={right}}
+    every axis legend/.append style={nodes={right}},
+	restrict x to domain=0:1.57,
 	]
 \addplot[
     color=red,
@@ -1078,7 +1079,8 @@ $\omega_p$ as well as numeric constant $\alpha$.
 \nextgroupplot[
 	title={(b)},
     legend style={draw=none},
-    every axis legend/.append style={nodes={right}}
+    every axis legend/.append style={nodes={right}},
+	restrict x to domain=0:1.57,
 	]
 \addplot[
     color=magenta,
@@ -1291,13 +1293,14 @@ frequency of the spectral peak.
 %
 \begin{figure}
 \centering
+%\tikzset{external/force remake}
 \begin{tikzpicture}
 \begin{groupplot}[
 	group style={
 		columns=2,
 		xlabels at=edge bottom,
 		ylabels at=edge left,
-		group name=plots,
+		% group name=plots,
 	},
     xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
     ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
@@ -1305,9 +1308,46 @@ frequency of the spectral peak.
 	width=0.5\textwidth,
 	]
 \nextgroupplot[
-	title={(a)},
+%	title={(a)},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
+	restrict x to domain=0.4:2.8,
+	]
+\addplot[
+    color=blue,
+    solid,
+    ]
+    table [col sep=comma]{figures/pm_10.dat};
+\addlegendentry{PM}
+\addplot[
+    color=red,
+    solid,
+    ]
+    table [col sep=comma]{figures/j_10_10km.dat};
+\addlegendentry{10 km}
+\addplot[
+    color=green,
+    solid,
+    ]
+    table [col sep=comma]{figures/j_10_25km.dat};
+\addlegendentry{25 km}
+\addplot[
+    color=magenta,
+    solid,
+    ]
+    table [col sep=comma]{figures/j_10_50km.dat};
+\addlegendentry{50 km}
+\addplot[
+    color=black,
+    solid,
+    ]
+    table [col sep=comma]{figures/j_10_75km.dat};
+\addlegendentry{75 km}
+\nextgroupplot[
+%	title={(b)},
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+	restrict x to domain=0:1.57,
 	]
 \addplot[
     color=blue,
@@ -1339,10 +1379,36 @@ frequency of the spectral peak.
     ]
     table [col sep=comma]{figures/j_10_400km.dat};
 \addlegendentry{400 km}
+\end{groupplot}
+\end{tikzpicture}
+\caption{JONSWAP frequency spectra with different fetch values $F$. 
+Additionally, the same Pierson Moskowitz spectrum in both images for comparison 
+purposes. All spectra have been generated with wind speed $U_{10} = 10m\cdot 
+s^{-1}$.}
+\label{fig:jonswap_spectra}
+\end{figure}
+%
+\begin{figure}
+\centering
+%\tikzset{external/force remake}
+\begin{tikzpicture}
+\begin{groupplot}[
+	group style={
+		columns=2,
+		xlabels at=edge bottom,
+		ylabels at=edge left,
+		% group name=plots,
+	},
+    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
+    ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+ %   legend columns=-1,
+	width=0.5\textwidth,
+	]
 \nextgroupplot[
-	title={(b)},
+	title={(a)},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
+	restrict x to domain=0.6:1.8,
 ]
 \addplot[
     color=black,
@@ -1374,14 +1440,45 @@ frequency of the spectral peak.
 	]
     table [col sep=comma]{figures/j_15_50km_omegap_12.dat};
 \addlegendentry{$\omega_p \times 1.2$}
+\nextgroupplot[
+	title={(b)},
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+	scaled ticks=false,
+	yticklabel style={/pgf/number format/fixed},
+	restrict x to domain=1:5,
+]
+\addplot[
+    color=blue,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_wp_25.dat};
+\addlegendentry{PM}
+\addplot[
+    color=black,
+    solid,
+	]
+    table [col sep=comma]{figures/j_wp_25_wc_4.dat};
+\addlegendentry{$\Omega=4$}
+\addplot[
+    color=green,
+    solid,
+	]
+    table [col sep=comma]{figures/j_wp_25_wc_2.dat};
+\addlegendentry{$\Omega=2$}
+\addplot[
+    color=magenta,
+    solid,
+	]
+    table [col sep=comma]{figures/j_wp_25_wc_083.dat};
+\addlegendentry{$\Omega=0.83$}
 \end{groupplot}
 \end{tikzpicture}
-\caption{Left: JONSWAP frequency spectra with wind speed $U_{10} = 10m\cdot 
-s^{-1}$ and different fetch values $F$. Right: Influence of the involved
-parameters on the resulting spectrum ($U_{10} = 15m\cdot s^{-1}$, $F=50km$).}
-\label{fig:jonswap_spectra}
+\caption{Left: Influence of the involved parameters on the resulting 
+spectrum ($U_{10} = 15m\cdot s^{-1}$, $F=50km$). Right: Influence of inverse 
+wave age $\Omega$ on the resulting spectrum ($\omega_p=2.5$).}
+\label{fig:jonswap_spectra_parameters}
 \end{figure}
-%
 \\
 
 In contrast to the Pierson Moskowitz spectrum, which exclusively models fully 
@@ -1392,8 +1489,8 @@ increases. Figure~\ref{fig:jonswap_spectra} gives a tentative overview of the
 development of a JONSWAP modeled sea, including a Pierson Moskowitz spectrum for 
 comparison. One may notice that the spectral peak of the JONSWAP spectrum may 
 take a more narrow form than the already pronounced peak of the Pierson 
-Moskowitz spectrum. Moreover, with increasing fetch, said peak may move to an 
-even lower frequency range than its Pierson Moskowitz counterpart.\\
+Moskowitz spectrum. Moreover, with increasing fetch, the JONSWAP spectrum 
+diverges more and more from the Pierson Moskowitz spectrum.\\
 
 Although Equation~\ref{eq:jonswap_omega} is a compact representation of the
 JONSWAP spectrum, it does omit explicit use of dimensionless variables.
@@ -1418,12 +1515,111 @@ on dimensionless fetch:
  \alpha = 0.076 \chi^{-0.22}
 \end{equation}
 %
+Figure~\ref{fig:jonswap_spectra_parameters}(a) depicts how all the 
+involved parameters ($\alpha$, $\sigma$, $\gamma$, $\omega_p$) affect the 
+resulting spectrum. Figure~\ref{fig:jonswap_spectra_parameters}(b) on the other 
+hand shows the inability of the JONSWAP spectrum to converge to the Pierson 
+Moskowitz spectrum with increasing development, where development is measured 
+using the inverse age $\Omega$.
+
 This completes our conversion of the JONSWAP spectrum to make explicit use of 
 dimensionless peak frequency and dimensionless fetch. The spectra introduced 
 next will be given in a formulation explicitely based on dimensionless
 variables.
 %
 \subsection{Donelan Spectrum}
+%
+PGF version: \pgfversion
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[
+	group style={
+		columns=2,
+		xlabels at=edge bottom,
+		ylabels at=edge left,
+	},
+    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
+    ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+	width=0.5\textwidth,
+	]
+\nextgroupplot[
+	title={(a)},
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+	]
+\addplot[
+    color=blue,
+    solid,
+    ]
+    table [col sep=comma]{figures/d_pm_10.dat};
+\addlegendentry{PM}
+\addplot[
+    color=black,
+    solid,
+    ]
+    table [col sep=comma]{figures/d_10_500km.dat};
+\addlegendentry{500 km}
+\addplot[
+    color=magenta,
+    solid,
+    ]
+    table [col sep=comma]{figures/d_10_250km.dat};
+\addlegendentry{250 km}
+\addplot[
+    color=green,
+    solid,
+    ]
+    table [col sep=comma]{figures/d_10_100km.dat};
+\addlegendentry{100 km}
+\addplot[
+    color=red,
+    solid,
+    ]
+    table [col sep=comma]{figures/d_10_50km.dat};
+\addlegendentry{50 km}
+\nextgroupplot[
+	title={(b)},
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+	xtick = {0,2.5,5},
+]
+\addplot[
+    color=blue,
+    solid,
+	]
+    table [col sep=comma]{figures/d_pm_wp_25.dat};
+\addlegendentry{PM}
+\addplot[
+    color=green,
+    solid,
+	]
+    table [col sep=comma]{figures/d_j_wp_25_wc_083.dat};
+\addlegendentry{J $0.83$}
+\addplot[
+    color=magenta,
+    solid,
+	]
+    table [col sep=comma]{figures/d_j_wp_25_wc_4.dat};
+\addlegendentry{J $4$}
+\addplot[
+    color=red,
+    solid,
+	]
+    table [col sep=comma]{figures/d_wp_25_wc_083.dat};
+\addlegendentry{D $0.83$}
+\addplot[
+    color=black,
+    solid,
+	]
+    table [col sep=comma]{figures/d_wp_25_wc_4.dat};
+\addlegendentry{D $4$}
+\end{groupplot}
+\end{tikzpicture}
+\caption{Brak.}
+\label{fig:donelan_spectra}
+\end{figure}
 %
 Donelan et al. \cite{article:Donelan1985}
 \begin{subequations}
@@ -1449,6 +1645,7 @@ where $\chi$ is called the \emph{dimensionless fetch}, $\Omega_c$ represents
 the \emph{inverse wave age}, $F$ denotes the fetch in meters and $U_{10}$ 
 denotes the wind speed in meters per second at a height of ten meters above the 
 sea surface.
+\ref{fig:donelan_spectra}
 
 \subsection{Integral Domain Conversion}
 %
@@ -1497,6 +1694,9 @@ which gives us
 \nextgroupplot[
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
+	restrict x to domain=0:0.1,
+	xtick = {0,0.05,0.1},
+	xticklabel style={/pgf/number format/fixed},
 	]
 \addplot[
     color=red,
@@ -1531,6 +1731,9 @@ which gives us
 \nextgroupplot[
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
+	restrict x to domain=0:0.15,
+	xtick = {0,0.15},
+	xticklabel style={/pgf/number format/fixed},
 ]
 \addplot[
     color=blue,
