@@ -1250,46 +1250,17 @@ age in terms of dimensionless peak frequency:
 \end{equation}
 Hence, the Pierson Moskowitz spectrum has a constant inverse wave age, $\Omega
 \approx 0.82$, which represents the lower limit of $\Omega$, reached only by a 
-fully developed sea. Since the lower limit is actually less than one, we 
-conclude that at full development the phase speed of the waves may actually 
-exceed the speed of the generating wind. The general consensus in oceanographic 
-research is that non-linear interactions are able to transfer energy to such 
-waves, making it possible for this limit to growth being such that $\Omega 
-< 1$.
+fully developed sea. The upper limit of the inverse wave age for a spectrum 
+which simulates fetch based wave growth, usually is set at $\Omega = 4$ or 
+$\Omega = 5$. Since the lower limit of the inverse wave age is actually less 
+than one, we conclude that at full development the phase speed of the waves may 
+actually exceed the speed of the generating wind. The general consensus in 
+oceanographic research is that non-linear interactions are able to transfer 
+energy to such waves, making it possible for this limit to growth being such 
+that $\Omega < 1$.
 %
 \subsection{JONSWAP Spectrum}
 \label{sec:jonswap}
-%
-The JONSWAP spectrum is a one dimensional frequency spectrum  which has been 
-developed by Hasselmann et al.\cite{article:Hasselman1973} based on data 
-collected during the~\emph{Joint North Sea Wave Project}. The JONSWAP spectrum 
-is expressed as a combination of the Pierson Moskowitz spectrum and an 
-additional~\emph{peak enhancement factor}. A compact form of the JONSWAP
-spectrum often found in literature looks as follows:
-%
-\begin{subequations}
-\label{eq:jonswap_omega}
-\begin{align}
- \Theta(\omega) &= \frac{\alpha
-g^2}{\omega^5}~\exp\left[-\frac{5}{4}\left(\frac{\omega_p}{\omega}
-\right)^4\right]\gamma^r\\
-\intertext{with}
-r& = \exp\left[-\frac{\left(\omega -
-\omega_p\right)^2}{2\sigma^2\omega_p^2}\right] \\
-\alpha &= 0.076\left(\frac{gF}{U_{10}^2}\right)^{-0.22} \\
-\omega_{p} &= 22\left(\frac{U_{10}F}{g^2}\right)^{-0.33} \\
-\sigma &= \begin{cases}
-	0.07 & \omega\leq\omega_p\\
-	0.09 & \omega > \omega_p
-    \end{cases} \\
-\gamma &= 3.3
-\end{align}
-\end{subequations}
-where $F$ denotes the fetch in meters and $U_{10}$ the wind speed in meters per 
-second at a height of ten meters above the sea surface. Moreover, $\gamma^r$ is 
-called the peak enhancement factor, $\sigma$ the~\emph{peak width parameter}, 
-$\alpha$ the~\emph{equilibrium range parameter} and $\omega_p$ the angular 
-frequency of the spectral peak.
 %
 \begin{figure}
 \centering
@@ -1387,6 +1358,37 @@ Influence of the involved parameters on the resulting JONSWAP
 spectrum ($U_{10} = 15m\cdot s^{-1}$, $F=50km$).}
 \label{fig:jonswap_spectra}
 \end{figure}
+%
+The JONSWAP spectrum is a one dimensional frequency spectrum  which has been 
+developed by Hasselmann et al.\cite{article:Hasselman1973} based on data 
+collected during the~\emph{Joint North Sea Wave Project}. The JONSWAP spectrum 
+simulates fetch based wave growth and is expressed as a combination of the 
+Pierson Moskowitz spectrum and an additional~\emph{peak enhancement factor}. A 
+compact form of the JONSWAP spectrum often found in literature looks as follows:
+%
+\begin{subequations}
+\label{eq:jonswap_omega}
+\begin{align}
+ \Theta(\omega) &= \frac{\alpha
+g^2}{\omega^5}~\exp\left[-\frac{5}{4}\left(\frac{\omega_p}{\omega}
+\right)^4\right]\gamma^r\\
+\intertext{with}
+r& = \exp\left[-\frac{\left(\omega -
+\omega_p\right)^2}{2\sigma^2\omega_p^2}\right] \\
+\alpha &= 0.076\left(\frac{gF}{U_{10}^2}\right)^{-0.22} \\
+\omega_{p} &= 22\left(\frac{U_{10}F}{g^2}\right)^{-0.33} \\
+\sigma &= \begin{cases}
+	0.07 & \omega\leq\omega_p\\
+	0.09 & \omega > \omega_p
+    \end{cases} \\
+\gamma &= 3.3
+\end{align}
+\end{subequations}
+where $F$ denotes the fetch in meters and $U_{10}$ the wind speed in meters per 
+second at a height of ten meters above the sea surface. Moreover, $\gamma^r$ is 
+called the peak enhancement factor, $\sigma$ the~\emph{peak width parameter}, 
+$\alpha$ the~\emph{equilibrium range parameter} and $\omega_p$ the angular 
+frequency of the spectral peak.
 %
 \begin{figure}
 \centering
@@ -1520,9 +1522,236 @@ on dimensionless fetch:
 \end{equation}
 %
 This completes our conversion of the JONSWAP spectrum to make explicit use of 
-dimensionless peak frequency and dimensionless fetch. The spectra introduced 
-next will be given in a formulation explicitely based on dimensionless
-variables.
+dimensionless peak frequency and dimensionless fetch. Before we move on to 
+two dimensional frequency spectra we may clarify how we intend to convert the 
+presented directional frequency spectra into two dimensional wave number
+spectra.
+%
+\subsection{Integral Domain Conversion}
+%
+Recall that we transform from the Cartesian wave number domain to the spatial 
+one. Thus, as a prerequisite, we are in need of a two dimensional wave number 
+spectrum $\Theta(\mvec{k})$, but 
+Equation~\ref{eq:directional_frequency_spectrum} 
+gives us a directional frequency spectrum $\Theta(\omega,\theta)$. We will 
+convert one spectrum form to the other according to the substitution rule, with 
+the deep water dispersion relation from Equation~\ref{eq:disp_rel_deep_water} 
+serving as a link between angular frequency $\omega$ and wave number $k$. To 
+avoid possible confusion we will add subscripts to each occurence of $\Theta$ 
+in order to explicitely show the parameters it takes as input.\\
+
+As a first step we may transform the one dimensional frequency spectrum 
+$\Theta_{\omega}(\omega)$ to the one dimensional wave number 
+spectrum $\Theta_k(k)$ as follows:
+\begin{subequations}
+\begin{multline}
+ \int\Theta_k(k)~\mathrm{d}k = \int\Theta_{\omega}(\omega)~\mathrm{d}\omega\\ = 
+\int\Theta_{\omega}(\omega(k))\frac{\mathrm{d}\omega}{\mathrm{d}k}~\mathrm{d}k
+= \int\Theta_{\omega}(\sqrt{gk})\frac{1}{2}\sqrt{\frac{g}{k}}~\mathrm{d}k
+\end{multline}
+which gives us
+\begin{equation}
+\label{eq:theta_k}
+ \Theta_k(k) = \Theta_{\omega}(\sqrt{gk})\frac{1}{2}\sqrt{\frac{g}{k}}
+\end{equation}
+\end{subequations}
+%
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[
+	group style={
+		columns=2,
+		xlabels at=edge bottom,
+		ylabels at=edge left,
+		group name=plots,
+	},
+    xlabel={Wave number $k$~($\text{m}^{-1}$)},
+    ylabel={Energy~$\Theta$~($\text{m}^2$)},
+%     legend columns=-1,
+	width=0.5\textwidth,
+	]
+\nextgroupplot[
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+	restrict x to domain=0:0.15,
+	xtick = {0,0.05,0.1,0.15},
+	xticklabel style={/pgf/number format/fixed},
+	]
+\addplot[
+    color=red,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_10_k.dat};
+	\addlegendentry{$10.0~\text{m}\cdot\text{s}^{-1}$}
+\addplot[
+    color=green,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_12_k.dat};
+	\addlegendentry{$12.5~\text{m}\cdot\text{s}^{-1}$}
+\addplot[
+    color=magenta,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_15_k.dat};
+	\addlegendentry{$15.0~\text{m}\cdot\text{s}^{-1}$}
+\addplot[
+    color=black,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_17_k.dat};
+	\addlegendentry{$17.5~\text{m}\cdot\text{s}^{-1}$}
+\addplot[
+    color=blue,
+    solid,
+	]
+    table [col sep=comma]{figures/pm_20_k.dat};
+	\addlegendentry{$20.0~\text{m}\cdot\text{s}^{-1}$}
+\nextgroupplot[
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+	restrict x to domain=0:0.6,
+	%xtick = {0,0.15},
+	xticklabel style={/pgf/number format/fixed},
+]
+\addplot[
+    color=blue,
+    solid,
+    ]
+    table [col sep=comma]{figures/pm_10_k.dat};
+\addlegendentry{PM}
+\addplot[
+    color=red,
+    solid,
+    ]
+    table [col sep=comma]{figures/j_10_10km_k.dat};
+\addlegendentry{10 km}
+\addplot[
+    color=green,
+    solid,
+    ]
+    table [col sep=comma]{figures/j_10_25km_k.dat};
+\addlegendentry{25 km}
+\addplot[
+    color=magenta,
+    solid,
+    ]
+    table [col sep=comma]{figures/j_10_50km_k.dat};
+\addlegendentry{50 km}
+\addplot[
+    color=black,
+    solid,
+    ]
+    table [col sep=comma]{figures/j_10_75km_k.dat};
+\addlegendentry{75 km}
+\end{groupplot}
+\end{tikzpicture}
+\caption{One dimensional frequency spectra $\Theta_{\omega}(\omega$) converted
+into one dimensional wave number spectra $\Theta_k(k)$. Left: The Pierson 
+Moskowitz spectra from Figure~\ref{fig:pm_spectra}(a). Right: The JONSWAP 
+spectra from Figure~\ref{fig:jonswap_spectra}(a).}
+\label{fig:jonswap_spectra_fetches_k}
+\end{figure}
+%
+A set of one dimensional wave spectra $\Theta_k(k)$ may be seen in
+Figure~\ref{fig:jonswap_spectra_fetches_k}. Note the difference in scale on the ordinate
+in comparison to the one dimensional frequency spectra $\Theta_{\omega}(\omega)$
+depicted in Figure~\ref{fig:pm_spectra} and Figure~\ref{fig:jonswap_spectra}.\\
+
+%
+\begin{figure}
+\centering
+\subbottom
+{
+\label{sfig:polar}
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.5\paperwidth,
+    view={-20}{30},
+    mesh/ordering=y varies,
+    zlabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
+    ylabel={Direction~$\theta$~($\text{rad}$)},
+    ]
+\addplot3[surf,
+    ]
+    table [col sep=comma]{figures/jonswap_w15_f100_omega_angle.dat};
+\end{axis}
+\end{tikzpicture}
+}
+\subbottom
+{
+\label{sfig:wave_vector}
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.5\paperwidth,
+    view={-20}{30},
+    mesh/ordering=y varies,
+    xtick = {0,0.1,0.2},
+    zlabel={Energy~$\Theta$~($\text{m}^4$)},
+    xlabel={$k_x$~($\text{m}^{-1}$)},
+    ylabel={$k_y$~($\text{m}^{-1}$)},
+    ]
+\addplot3[surf,
+    ]
+    table [col sep=comma]{figures/jonswap_w15_f100_kx_ky.dat};
+\end{axis}
+\end{tikzpicture}
+}
+\caption{The JONSWAP frequency spectrum with wind speed $U_{10} = 15m\cdot 
+s^{-1}$ and fetch $F = 100km$, located in two different domains. Top: The polar
+coordinate domain $\omega \times \theta$, the wind direction points in the
+direction of the positive $\omega$ axis. Bottom: The wave vector domain
+$k_x \times k_y$, the wind direction points in the direction of the positive
+$k_x$ axis. Note the difference in scale between the two vertical axes.}
+\label{fig:jonswap_3d_omega_theta_kx_ky}
+\end{figure}
+%
+Given $\Theta_k(k)$ we are able to rewrite the directional frequency spectrum
+$\Theta_{\omega, \theta}(\omega, \theta)$ from
+Equation~\ref{eq:directional_frequency_spectrum} in terms of wave number $k$:
+%
+\begin{equation}
+\label{eq:theta_k_polar}
+ \Theta_{k,\theta}(k,\theta) = \Theta_k(k)D(\sqrt{gk},\theta)
+\end{equation}
+%
+where $\Theta_{k,\theta}(k,\theta)$ is called the~\emph{directional wave number 
+spectrum}. As the last step we need to convert from polar coordinate pairs 
+$(k,\theta)$ to cartesian wave number coordinates $\mvec{k}$. Said conversion 
+is accomplished as follows:
+%
+\begin{equation}
+\label{eq:theta_cart_to_polar}
+\int\Theta_{\mvec{k}}(\mvec{k})~\mathrm{d}\mvec{k} = 
+\int\int\Theta_{k,\theta}(k,\theta)\frac{1}{k}~\mathrm{d}\theta~\mathrm{d}k
+\end{equation}
+%
+By combining Equations~\ref{eq:directional_frequency_spectrum}, 
+~\ref{eq:theta_k} and~\ref{eq:theta_cart_to_polar} we get the Cartesian wave 
+number spectrum:
+%
+\begin{align}
+\Theta_{\mvec{k}}(\mvec{k}) &= \Theta_{\omega,\theta}(\sqrt{gk}, 
+\theta)\frac{1}{2k}\sqrt{\frac{g}{k}}\\
+\intertext{where}
+\theta &= \arctan\left(\frac{k_y}{k_x}\right)
+\end{align}
+%
+An instance of a directional frequency spectrum as well as its equivalent
+directional wave number spectrum are depicted in Figure
+\ref{fig:jonswap_3d_omega_theta_kx_ky}.\\
+
+Now we are able to preserve integral equality between different representations 
+of $\Theta$, as long as we use the deep water dispersion relation. One may do 
+the math for another dispersion relation, now that the path to walk is laid 
+out. Still, in the context of this work, we only concern ourselves with waves 
+in deep water.
+%
+\pagebreak
+\section{Two dimensional Frequency Spectra}
+\label{sec:two_dimensional_frequency_spectra}
 %
 \subsection{Donelan Spectrum}
 %
@@ -1643,231 +1872,7 @@ the \emph{inverse wave age}, $F$ denotes the fetch in meters and $U_{10}$
 denotes the wind speed in meters per second at a height of ten meters above the 
 sea surface.
 \ref{fig:donelan_spectra}
-
-\subsection{Integral Domain Conversion}
 %
-Recall that we transform from the cartesian wave number domain to the spatial 
-one. Thus, as a prerequisite, we are in need of a two dimensional wave number 
-spectrum $\Theta(\mvec{k})$, but 
-Equation~\ref{eq:directional_frequency_spectrum} 
-gives us a directional frequency spectrum $\Theta(\omega,\theta)$. We will 
-convert one spectrum form to the other according to the substitution rule, with 
-the deep water dispersion relation from Equation~\ref{eq:disp_rel_deep_water} 
-serving as a link between angular frequency $\omega$ and wave number $k$. To 
-avoid possible confusion we will add subscripts to each occurence of $\Theta$ 
-in order to explicitely show the parameters it takes as input.\\
-
-As a first step we may transform the one dimensional frequency spectrum 
-$\Theta_{\omega}(\omega)$ to the one dimensional wave number 
-spectrum $\Theta_k(k)$ as follows:
-\begin{subequations}
-\begin{multline}
- \int\Theta_k(k)~\mathrm{d}k = \int\Theta_{\omega}(\omega)~\mathrm{d}\omega\\ = 
-\int\Theta_{\omega}(\omega(k))\frac{\mathrm{d}\omega}{\mathrm{d}k}~\mathrm{d}k
-= \int\Theta_{\omega}(\sqrt{gk})\frac{1}{2}\sqrt{\frac{g}{k}}~\mathrm{d}k
-\end{multline}
-which gives us
-\begin{equation}
-\label{eq:theta_k}
- \Theta_k(k) = \Theta_{\omega}(\sqrt{gk})\frac{1}{2}\sqrt{\frac{g}{k}}
-\end{equation}
-\end{subequations}
-%
-\begin{figure}
-\centering
-\begin{tikzpicture}
-\begin{groupplot}[
-	group style={
-		columns=2,
-		xlabels at=edge bottom,
-		ylabels at=edge left,
-		group name=plots,
-	},
-    xlabel={Wave number $k$~($\text{m}^{-1}$)},
-    ylabel={Energy~$\Theta$~($\text{m}^2$)},
-%     legend columns=-1,
-	width=0.5\textwidth,
-	]
-\nextgroupplot[
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}},
-	restrict x to domain=0:0.1,
-	xtick = {0,0.05,0.1},
-	xticklabel style={/pgf/number format/fixed},
-	]
-\addplot[
-    color=red,
-    solid,
-	]
-    table [col sep=comma]{figures/pm_10_k.dat};
-	\addlegendentry{$10.0~\text{m}\cdot\text{s}^{-1}$}
-\addplot[
-    color=green,
-    solid,
-	]
-    table [col sep=comma]{figures/pm_12_k.dat};
-	\addlegendentry{$12.5~\text{m}\cdot\text{s}^{-1}$}
-\addplot[
-    color=magenta,
-    solid,
-	]
-    table [col sep=comma]{figures/pm_15_k.dat};
-	\addlegendentry{$15.0~\text{m}\cdot\text{s}^{-1}$}
-\addplot[
-    color=black,
-    solid,
-	]
-    table [col sep=comma]{figures/pm_17_k.dat};
-	\addlegendentry{$17.5~\text{m}\cdot\text{s}^{-1}$}
-\addplot[
-    color=blue,
-    solid,
-	]
-    table [col sep=comma]{figures/pm_20_k.dat};
-	\addlegendentry{$20.0~\text{m}\cdot\text{s}^{-1}$}
-\nextgroupplot[
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}},
-	restrict x to domain=0:0.15,
-	xtick = {0,0.15},
-	xticklabel style={/pgf/number format/fixed},
-]
-\addplot[
-    color=blue,
-    solid,
-    ]
-    table [col sep=comma]{figures/pm_10_k.dat};
-\addlegendentry{PM}
-\addplot[
-    color=red,
-    solid,
-    ]
-    table [col sep=comma]{figures/j_10_100km_k.dat};
-\addlegendentry{100 km}
-\addplot[
-    color=green,
-    solid,
-    ]
-    table [col sep=comma]{figures/j_10_200km_k.dat};
-\addlegendentry{200 km}
-\addplot[
-    color=magenta,
-    solid,
-    ]
-    table [col sep=comma]{figures/j_10_300km_k.dat};
-\addlegendentry{300 km}
-\addplot[
-    color=black,
-    solid,
-    ]
-    table [col sep=comma]{figures/j_10_400km_k.dat};
-\addlegendentry{400 km}
-\end{groupplot}
-\end{tikzpicture}
-\caption{One dimensional frequency spectra $\Theta_{\omega}(\omega$) converted
-into one dimensional wave number spectra $\Theta_k(k)$. Left: The Pierson 
-Moskowitz spectra from Figure~\ref{fig:pm_spectra}(a). Right: The JONSWAP 
-spectra from Figure~\ref{fig:jonswap_spectra}(a).}
-\label{fig:jonswap_spectra_fetches_k}
-\end{figure}
-%
-A set of one dimensional wave spectra $\Theta_k(k)$ may be seen in
-Figure~\ref{fig:jonswap_spectra_fetches_k}. Note the difference in scale on the ordinate
-in comparison to the one dimensional frequency spectra $\Theta_{\omega}(\omega)$
-depicted in Figure~\ref{fig:pm_spectra} and Figure~\ref{fig:jonswap_spectra}.\\
-
-%
-\begin{figure}
-\centering
-\subbottom
-{
-\label{sfig:polar}
-\begin{tikzpicture}
-\begin{axis}[
-    width=0.5\paperwidth,
-    view={-20}{30},
-    mesh/ordering=y varies,
-    zlabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
-    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
-    ylabel={Direction~$\theta$~($\text{rad}$)},
-    ]
-\addplot3[surf,
-    ]
-    table [col sep=comma]{figures/jonswap_w15_f100_omega_angle.dat};
-\end{axis}
-\end{tikzpicture}
-}
-\subbottom
-{
-\label{sfig:wave_vector}
-\begin{tikzpicture}
-\begin{axis}[
-    width=0.5\paperwidth,
-    view={-20}{30},
-    mesh/ordering=y varies,
-    xtick = {0,0.1,0.2},
-    zlabel={Energy~$\Theta$~($\text{m}^4$)},
-    xlabel={$k_x$~($\text{m}^{-1}$)},
-    ylabel={$k_y$~($\text{m}^{-1}$)},
-    ]
-\addplot3[surf,
-    ]
-    table [col sep=comma]{figures/jonswap_w15_f100_kx_ky.dat};
-\end{axis}
-\end{tikzpicture}
-}
-\caption{The JONSWAP frequency spectrum with wind speed $U_{10} = 15m\cdot 
-s^{-1}$ and fetch $F = 100km$, located in two different domains. Top: the polar
-coordinate domain $\omega \times \theta$, the wind direction points in the
-direction of the positive $\omega$ axis. Bottom: the wave vector domain
-$k_x \times k_y$, the wind direction points in the direction of the positive
-$k_x$ axis. Note the difference in scale between the two vertical axes.}
-\label{fig:jonswap_3d_omega_theta_kx_ky}
-\end{figure}
-%
-Given $\Theta_k(k)$ we are able to rewrite the directional frequency spectrum
-$\Theta_{\omega, \theta}(\omega, \theta)$ from
-Equation~\ref{eq:directional_frequency_spectrum} in terms of wave number $k$:
-%
-\begin{equation}
-\label{eq:theta_k_polar}
- \Theta_{k,\theta}(k,\theta) = \Theta_k(k)D(\sqrt{gk},\theta)
-\end{equation}
-%
-where $\Theta_{k,\theta}(k,\theta)$ is called the~\emph{directional wave number 
-spectrum}. As the last step we need to convert from polar coordinate pairs 
-$(k,\theta)$ to cartesian wave number coordinates $\mvec{k}$. Said conversion 
-is accomplished as follows:
-%
-\begin{equation}
-\label{eq:theta_cart_to_polar}
-\int\Theta_{\mvec{k}}(\mvec{k})~\mathrm{d}\mvec{k} = 
-\int\int\Theta_{k,\theta}(k,\theta)\frac{1}{k}~\mathrm{d}\theta~\mathrm{d}k
-\end{equation}
-%
-By combining Equations~\ref{eq:directional_frequency_spectrum}, 
-~\ref{eq:theta_k} and~\ref{eq:theta_cart_to_polar} we get the Cartesian wave 
-number spectrum:
-%
-\begin{align}
-\Theta_{\mvec{k}}(\mvec{k}) &= \Theta_{\omega,\theta}(\sqrt{gk}, 
-\theta)\frac{1}{2k}\sqrt{\frac{g}{k}}\\
-\intertext{where}
-\theta &= \arctan\left(\frac{k_y}{k_x}\right)
-\end{align}
-%
-An instance of a directional frequency spectrum as well as its equivalent
-directional wave number spectrum are depicted in Figure
-\ref{fig:jonswap_3d_omega_theta_kx_ky}.\\
-
-Now we are able to preserve integral equality between different representations 
-of $\Theta$, as long as we use the deep water dispersion relation. One may do 
-the math for another dispersion relation, now that the path to walk is laid 
-out. Still, in the context of this work, we only concern ourselves with waves 
-in deep water.
-%
-\section{Two dimensional Frequency Spectra}
-
 \subsection{Phillips Spectrum}
 \label{sec:phillips_spectrum}
 %
