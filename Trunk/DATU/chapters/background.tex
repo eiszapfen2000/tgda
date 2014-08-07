@@ -1279,7 +1279,7 @@ that $\Omega < 1$.
 	width=0.5\textwidth,
 	]
 \nextgroupplot[
-%	title={(a)},
+	title={(a)},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
 	restrict x to domain=0.4:2.8,
@@ -1315,7 +1315,7 @@ that $\Omega < 1$.
     table [col sep=comma]{figures/j_10_75km.dat};
 \addlegendentry{75 km}
 \nextgroupplot[
-%	title={(a)},
+	title={(b)},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
 	restrict x to domain=0.6:1.8,
@@ -1442,7 +1442,7 @@ frequency of the spectral peak.
 %	title={(b)},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
-	restrict x to domain=0:1.57,
+	restrict x to domain=0.25:1.57,
 	]
 \addplot[
     color=blue,
@@ -1574,8 +1574,9 @@ which gives us
 \nextgroupplot[
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
-	restrict x to domain=0:0.15,
-	xtick = {0,0.05,0.1,0.15},
+	restrict x to domain=0:0.1,
+	scaled ticks=false,
+	xtick = {0,0.05,0.1},
 	xticklabel style={/pgf/number format/fixed},
 	]
 \addplot[
@@ -1611,8 +1612,8 @@ which gives us
 \nextgroupplot[
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
-	restrict x to domain=0:0.6,
-	%xtick = {0,0.15},
+	restrict x to domain=0:0.5,
+	xtick = {0,0.25,0.5},
 	xticklabel style={/pgf/number format/fixed},
 ]
 \addplot[
