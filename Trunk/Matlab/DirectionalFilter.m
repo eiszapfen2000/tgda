@@ -14,7 +14,7 @@ s = zeros(size(omega));
 s(omega >= omega_p) = s_g_p(omega >= omega_p);
 s(omega < omega_p) = s_l_p(omega < omega_p);
 
-cos_theta_half = abs(cos((theta_w - theta)./ 2));
+cos_theta_half = abs(cos((theta - theta_w)./ 2));
 term_three = power(cos_theta_half, 2 .* s);
 
 gamma_num = gamma(s + 1) .^ 2;
