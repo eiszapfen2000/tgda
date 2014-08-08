@@ -1,4 +1,4 @@
-function y = PiersonMoskovitz1D(omega, wind, parameters)
+function [y wp] = PiersonMoskovitz1D(omega, wind, parameters)
 
 g = 9.81;
 
@@ -36,5 +36,6 @@ exponent = (-5/4) .* power(omega_p ./ omega, 4.0);
 Theta = ((alpha*g*g) ./ power(omega, 5.0)) .* exp(exponent);
 
 y = Theta;
+wp = omega_p;
 
 end
