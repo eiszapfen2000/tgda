@@ -1,4 +1,4 @@
-function y = Donelan19851D(omega, wind, fetch, parameters)
+function [y wp] = Donelan19851D(omega, wind, fetch, parameters)
 
 g = 9.81;
 
@@ -87,5 +87,6 @@ exponent = -power(omega_p ./ omega, 4.0);
 Theta = ((alpha*g*g) ./ (power(omega, 4.0) .* omega_p)) .* exp(exponent) .* gamma_r;
 
 y = Theta;
+wp = omega_p;
 
 end
