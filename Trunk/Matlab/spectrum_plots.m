@@ -12,6 +12,15 @@ pm_15 = PiersonMoskovitz1D(omega, 15.0);
 pm_17 = PiersonMoskovitz1D(omega, 17.5);
 pm_20 = PiersonMoskovitz1D(omega, 20.0);
 
+figure;
+hold on;
+plot(omega, pm_10);
+plot(omega, pm_12);
+plot(omega, pm_15);
+plot(omega, pm_17);
+plot(omega, pm_20);
+hold off;
+
 pm_10_k = PiersonMoskovitz1Dk(k, 10.0);
 pm_12_k = PiersonMoskovitz1Dk(k, 12.5);
 pm_15_k = PiersonMoskovitz1Dk(k, 15.0);
