@@ -1753,6 +1753,17 @@ in deep water.
 \section{Two dimensional Frequency Spectra}
 \label{sec:two_dimensional_frequency_spectra}
 %
+In the previous section we did introduce the combination of a one dimensional 
+frequency spectrum with a directional spreading function in order to generate a 
+two dimensional frequency spectrum which contains directional information. We 
+have seen that there are different forms of two dimensional frequency spectra, 
+such as the directional frequency spectrum $\Theta(\omega, \theta)$, the 
+directional wave number spectrum $\Theta(k, \theta)$ and the Cartesian wave 
+number spectrum $\Theta(\mvec{k})$. Moreover, given a dispersion relation, we 
+are able to convert between all these different forms of a spectrum. Now, we 
+may move on to frequency spectra which have been explicitely introduced in a two 
+dimensional form by oceanographic research.
+
 \subsection{Donelan Spectrum}
 %
 %
@@ -1894,6 +1905,13 @@ Donelan et al. \cite{article:Donelan1985}
 \begin{align}
  \Theta(\omega, \theta) &= \frac{1}{2}\Theta(\omega)\beta\sech^2
 \{\beta[\theta - \theta_m(\omega)]\}\\
+\intertext{where $\theta_m$ is the mean wave direction and}
+\beta &= \begin{cases}
+	2.61(\omega/\omega_p)^{1.3} & 0.56 < \omega/\omega_p < 0.95\\
+	2.28(\omega/\omega_p)^{-1.3} & 0.95 < \omega/\omega_p < 1.6\\
+	1.24 & \text{otherwise}
+    \end{cases} \\
+\intertext{The frequency spectrum is:}
  \Theta(\omega) &= \frac{\alpha
 g^2}{\omega^4\omega_p}~\exp\left[-\left(\frac{\omega_p}{\omega}
 \right)^4\right]\gamma^r\\
