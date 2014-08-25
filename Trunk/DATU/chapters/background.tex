@@ -1811,96 +1811,102 @@ to the upper right.}
 %
 % PGF version: \pgfversion
 % 
-% \begin{figure}
-% \centering
-% \begin{tikzpicture}
-% \begin{groupplot}[
-% 	group style={
-% 		columns=2,
-% 		xlabels at=edge bottom,
-% 		ylabels at=edge left,
-% 	},
-%     xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
-%     ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
-% 	width=0.5\textwidth,
-% 	]
-% \nextgroupplot[
-% 	title={(a)},
-%     legend style={draw=none},
-%     every axis legend/.append style={nodes={right}},
-% 	]
-% \addplot[
-%     color=blue,
-%     solid,
-%     ]
-%     table [col sep=comma]{figures/d_pm_10.dat};
-% \addlegendentry{PM}
-% \addplot[
-%     color=black,
-%     solid,
-%     ]
-%     table [col sep=comma]{figures/d_10_500km.dat};
-% \addlegendentry{500 km}
-% \addplot[
-%     color=magenta,
-%     solid,
-%     ]
-%     table [col sep=comma]{figures/d_10_250km.dat};
-% \addlegendentry{250 km}
-% \addplot[
-%     color=green,
-%     solid,
-%     ]
-%     table [col sep=comma]{figures/d_10_100km.dat};
-% \addlegendentry{100 km}
-% \addplot[
-%     color=red,
-%     solid,
-%     ]
-%     table [col sep=comma]{figures/d_10_50km.dat};
-% \addlegendentry{50 km}
-% \nextgroupplot[
-% 	title={(b)},
-%     legend style={draw=none},
-%     every axis legend/.append style={nodes={right}},
-% 	xtick = {0,2.5,5},
-% ]
-% \addplot[
-%     color=blue,
-%     solid,
-% 	]
-%     table [col sep=comma]{figures/d_pm_wp_25.dat};
-% \addlegendentry{PM}
-% \addplot[
-%     color=green,
-%     solid,
-% 	]
-%     table [col sep=comma]{figures/d_j_wp_25_wc_083.dat};
-% \addlegendentry{J $0.83$}
-% \addplot[
-%     color=magenta,
-%     solid,
-% 	]
-%     table [col sep=comma]{figures/d_j_wp_25_wc_4.dat};
-% \addlegendentry{J $4$}
-% \addplot[
-%     color=red,
-%     solid,
-% 	]
-%     table [col sep=comma]{figures/d_wp_25_wc_083.dat};
-% \addlegendentry{D $0.83$}
-% \addplot[
-%     color=black,
-%     solid,
-% 	]
-%     table [col sep=comma]{figures/d_wp_25_wc_4.dat};
-% \addlegendentry{D $4$}
-% \end{groupplot}
-% \end{tikzpicture}
-% \caption{Brak.}
-% \label{fig:donelan_spectra}
-% \end{figure}
-%
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[
+	group style={
+		columns=2,
+		xlabels at=edge bottom,
+		ylabels at=edge left,
+	},
+    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
+    ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+	width=0.5\textwidth,
+	scaled ticks=false,
+	]
+\nextgroupplot[
+	title={(a)},
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+	]
+\addplot[
+    color=blue,
+    solid,
+    ]
+    table [col sep=comma]{figures/d_pm_10.dat};
+\addlegendentry{PM}
+\addplot[
+    color=black,
+    solid,
+    ]
+    table [col sep=comma]{figures/d_10_500km.dat};
+\addlegendentry{500 km}
+\addplot[
+    color=magenta,
+    solid,
+    ]
+    table [col sep=comma]{figures/d_10_250km.dat};
+\addlegendentry{250 km}
+\addplot[
+    color=green,
+    solid,
+    ]
+    table [col sep=comma]{figures/d_10_100km.dat};
+\addlegendentry{100 km}
+\addplot[
+    color=red,
+    solid,
+    ]
+    table [col sep=comma]{figures/d_10_50km.dat};
+\addlegendentry{50 km}
+\nextgroupplot[
+	title={(b)},
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+	xtick = {0,2.5,5},
+	yticklabel style={/pgf/number format/fixed},
+	restrict x to domain=1.8:5,
+]
+\addplot[
+    color=blue,
+    solid,
+	]
+    table [col sep=comma]{figures/d_pm_wp_25.dat};
+\addlegendentry{PM}
+\addplot[
+    color=green,
+    solid,
+	]
+    table [col sep=comma]{figures/d_j_wp_25_wc_083.dat};
+\addlegendentry{JONSWAP $0.83$}
+\addplot[
+    color=magenta,
+    solid,
+	]
+    table [col sep=comma]{figures/d_j_wp_25_wc_4.dat};
+\addlegendentry{JONSWAP $4$}
+\addplot[
+    color=red,
+    solid,
+	]
+    table [col sep=comma]{figures/d_wp_25_wc_083.dat};
+\addlegendentry{Donelan $0.83$}
+\addplot[
+    color=black,
+    solid,
+	]
+    table [col sep=comma]{figures/d_wp_25_wc_4.dat};
+\addlegendentry{Donelan $4$}
+\end{groupplot}
+\end{tikzpicture}
+\caption{Left: Donelan frequency spectra with different fetch values $F$, 
+Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$). Right: 
+JONSWAP and Donelan spectra with different inverse wave age values $\Omega$, 
+Pierson Moskowitz for comparison ($\omega_p = 2.5$).}
+\label{fig:donelan_spectra}
+\end{figure}
+
 The Donelan spectrum is a directional frequency spectrum which has 
 been developed by Donelan et al. \cite{article:Donelan1985} based on data 
 collected both on Lake Ontario and at the \emph{Canadian Centre for Inland 
@@ -1915,11 +1921,11 @@ matches existing data more closely and is simpler in formulation than the one
 introduced by Mitsuyasu et al. The energy given by the one dimensional 
 Donelan frequency spectrum depends on the frequency itself, the position of 
 that frequency in the spectrum ($(\omega/\omega_p)$ and on the intensity of 
-wind input $U_c/c_p$, where $U_c = U_{10}\cos{\theta}$ is the component of the 
-wind in the direction of travel of the waves at the spectral peak, and $c_p$ 
-is the phase velocity of the waves at the spectral peak. The directional 
-spreading on the other hand is related only to $\omega/\omega_p$. We may write 
-the directional Donelan frequency spectrum as follows:
+wind input $\Omega_c = U_c/c_p$, where $U_c = U_{10}\cos{\theta}$ is the 
+component of the wind in the direction of travel of the waves at the spectral 
+peak, and $c_p$ is the phase velocity of the waves at the spectral peak. The 
+directional spreading on the other hand is related only to $\omega/\omega_p$. We 
+may write the directional Donelan frequency spectrum as follows:
 \begin{subequations}
 \begin{align}
  \Theta(\omega, \theta) &= \frac{1}{2}\Theta(\omega)\beta\sech^2
@@ -1930,7 +1936,8 @@ the directional Donelan frequency spectrum as follows:
 	2.28(\omega/\omega_p)^{-1.3} & 0.95 < \omega/\omega_p < 1.6\\
 	1.24 & \text{otherwise}
     \end{cases} \\
-\intertext{The frequency spectrum is:}
+\intertext{Based on the JONSWAP spectrum formulation, the frequency spectrum 
+is:}
  \Theta(\omega) &= 
 \alpha g^2 \omega^{-5}(\omega/\omega_p) \exp\left[-\left(\frac{\omega_p}{\omega}
 \right)^4\right]\gamma^r\\
@@ -1944,15 +1951,27 @@ r &= \exp\left[-\frac{\left(\omega -
 \sigma &= 0.08\left(1 + \frac{4}{\Omega_c^3}\right)\\
 \alpha &= 0.006~\Omega_c^{0.55} \\
 \omega_{p} &= \frac{g\Omega_c}{U_{10}}\\
-\Omega_c &= 11.6\chi^{-0.23}\\
+\Omega_c &= 11.6\chi^{-0.23} \\
 \chi &= \frac{gF}{U_{10}^{2}}
 \end{align}
 \end{subequations}
-where $\chi$ is called the \emph{dimensionless fetch}, $\Omega_c$ represents 
-the \emph{inverse wave age}, $F$ denotes the fetch in meters and $U_{10}$ 
-denotes the wind speed in meters per second at a height of ten meters above the 
-sea surface.
-\ref{fig:donelan_spectra}
+where $F$ denotes the fetch in meters, $U_{10}$ denotes the wind speed in meters 
+per second at a height of ten meters above the sea surface and $\chi$ is the 
+dimensionless fetch. $\Omega_c$ is the inverse wave age based on the component 
+of the wind in the direction of the peak waves, and is restricted to the 
+interval $\Omega_c \in \interval[open left, open right]{0.83}{5}$.\\
+
+The directional spreading function as introduced by Donelan et al. does 
+not only differ in form from the one proposed by Mitsuyasu et al., but also in
+sensitivity, or rather insensitivity, to wind speed $U_{10}$, see Figure 
+\ref{fig:donelan_directional_filter}. That is, because the Donelan 
+formulation employs the ratio $\omega/\omega_p$ where Mitsuyasu et al. use 
+comparisons with absoolute values.\\
+
+In contrast to the JONSWAP spectrum introduced earlier, the one dimensional 
+frequency spectrum as given by Donelan et al. is able to complete a transition 
+to fully developed state, be it with increasing fetch or with decreasing 
+inverse wave age, see Figure~\ref{fig:donelan_spectra}.
 %
 \subsection{Phillips Spectrum}
 \label{sec:phillips_spectrum}
