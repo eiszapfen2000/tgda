@@ -1910,9 +1910,16 @@ but it improves upon certain key aspects compared to the models discussed
 beforehand. The most prominent of said improvements is the ability of the 
 Donelan spectrum to model the transition between developing and fully developed 
 seas. Other improvements include the possibility for wind direction and peak 
-wave direction to differ, as well as a directional spreading function which 
+wave direction to differ, as well as a directional spreading function which both
 matches existing data more closely and is simpler in formulation than the one 
-introduced by Mitsuyasu.
+introduced by Mitsuyasu et al. The energy given by the one dimensional 
+Donelan frequency spectrum depends on the frequency itself, the position of 
+that frequency in the spectrum ($(\omega/\omega_p)$ and on the intensity of 
+wind input $U_c/c_p$, where $U_c = U_{10}\cos{\theta}$ is the component of the 
+wind in the direction of travel of the waves at the spectral peak, and $c_p$ 
+is the phase velocity of the waves at the spectral peak. The directional 
+spreading on the other hand is related only to $\omega/\omega_p$. We may write 
+the directional Donelan frequency spectrum as follows:
 \begin{subequations}
 \begin{align}
  \Theta(\omega, \theta) &= \frac{1}{2}\Theta(\omega)\beta\sech^2
