@@ -2050,8 +2050,8 @@ frequency spectrum as given by Donelan et al. is able to complete a transition
 to fully developed state, be it with increasing fetch or with decreasing 
 inverse wave age, see Figure~\ref{fig:donelan_spectra}.
 %
-\subsection{Unified Spectrum}
-\label{sec:unified_spectrum}
+%\subsection{Unified Spectrum}
+%\label{sec:unified_spectrum}
 %
 \subsection{Phillips Spectrum}
 \label{sec:phillips_spectrum}
@@ -2112,6 +2112,7 @@ We may separate the terms involved as follows:
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
 	xticklabel style={/pgf/number format/fixed},
+	restrict x to domain=0:0.125,
 	]
 \addplot[
     color=red,
@@ -2146,6 +2147,7 @@ We may separate the terms involved as follows:
 \nextgroupplot[
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
+	restrict x to domain=0:0.25,
 ]
 \addplot[
     color=black,
@@ -2281,9 +2283,6 @@ output by the one dimensional Phillips wave number spectrum, it is really
 difficult to find an appropriate scale factor $A$ in order to generate 
 believable ocean surfaces.
 %
-\subsection{Unified Spectrum}
-\label{sec_unified_spectrum}
-
 \section{The Projected Grid}
 \label{sec_projected_grid}
 The projected grid is based on a simple concept: in order to achieve an
