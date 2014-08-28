@@ -14,7 +14,6 @@ kappa = 0.41; % von Karman constant
 X = k_0 * fetch;
 %eq 37, inverse wave age
 Omega_c = 0.84 * tanh((X/X_0)^0.4)^(-0.75);
-%Omega_c = 0.84;
 
 %eq 24, angular frequency
 omega = sqrt(g .* k .* (1.0 + (k./k_m).*(k./k_m)));
@@ -43,10 +42,10 @@ gamma = zeros(size(k));
 if Omega_c < 1.0
     gamma(:,:) = 1.7;
 else
-    gamma(:,:) = 1.7 + 6.0 * log(Omega_c);
+    gamma(:,:) = 1.7 + 6.0 * log10(Omega_c);
 end
 % after eq 3
-sigma = 0.08 * ( 1.0 + (4.0/(Omega_c*Omega_c*Omega_c)));
+sigma = 0.08 * (1.0 + (4.0/(Omega_c^3)));
 % after eq 3
 Gamma = exp(((sqrt(k ./ k_p) - 1).^2)./(-2*sigma*sigma));
 % eq 3
@@ -82,6 +81,6 @@ ik = (k.^(-3));
 ik(isinf(ik)) = 0;
 ik(isnan(ik)) = 0;
 
-y = ik.*B_l;% + B_h);
+y = ik.*(B_l + B_h);
 
 end
