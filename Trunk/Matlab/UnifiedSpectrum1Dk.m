@@ -69,12 +69,12 @@ end
 % eq 41
 F_m = exp(-0.25 .* (((k./k_m) - 1).^2));
 % eq 40
-
 B_h = zeros(size(k));
 B_h = (0.5 * alpha_m) .* (c_m ./ c) .* F_m;
 %B_h(k <= 0.01) = 0;
 B_h(isinf(B_h)) = 0;
 B_h(isnan(B_h)) = 0;
+% ADD TERMS MISSING IN PAPER
 B_h = B_h .* L_pm .* J_p;
 
 ik = (k.^(-3));

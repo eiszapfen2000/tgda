@@ -24,6 +24,11 @@ ky2tmp = realpow(k(:,:,2), 2);
 kx2y2tmp = kx2tmp + ky2tmp;
 knorm = realsqrt(kx2y2tmp);
 
+[s u1] = UnifiedSpectrum(k, knorm, [sqrt(50) 0], 50000);
+
+figure
+imshow(u1,[0 1])
+
 [s m1 d1] = PiersonMoskovitzSpectrum(k, knorm, [sqrt(2) 0]);
 [s m2 d2] = PiersonMoskovitzSpectrum(k, knorm, [sqrt(8) 0]);
 [s m3 d3] = PiersonMoskovitzSpectrum(k, knorm, [sqrt(50) 0]);
