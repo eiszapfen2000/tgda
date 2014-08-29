@@ -1,9 +1,9 @@
 close all
 
 k = 10^(-3):0.005:10^3;
-ik = (k.^(3));
-ik(isinf(ik)) = 0;
-ik(isnan(ik)) = 0;
+% ik = (k.^(3));
+% ik(isinf(ik)) = 0;
+% ik(isnan(ik)) = 0;
 
 % u_10_5km_k = UnifiedSpectrum1Dk(k, 10.0, 5000);
 % u_10_10km_k = UnifiedSpectrum1Dk(k, 10.0, 10000);
@@ -13,6 +13,10 @@ ik(isnan(ik)) = 0;
 % u_10_250km_k = UnifiedSpectrum1Dk(k, 10.0, 250000);
 % u_10_500km_k = UnifiedSpectrum1Dk(k, 10.0, 500000);
 % u_10_600km_k = UnifiedSpectrum1Dk(k, 10.0, 600000);
+
+%k = 0 : 0.0005 : 0.5;
+
+pm_10_k = PiersonMoskovitz1Dk(k, 10.0);
 
 u_3_500km_k = UnifiedSpectrum1Dk(k, 3.0, 500000);
 u_5_500km_k= UnifiedSpectrum1Dk(k, 5.0, 500000);
@@ -25,30 +29,44 @@ u_17_500km_k = UnifiedSpectrum1Dk(k, 17.0, 500000);
 u_19_500km_k = UnifiedSpectrum1Dk(k, 19.0, 500000);
 u_21_500km_k = UnifiedSpectrum1Dk(k, 21.0, 500000);
 
+u_10_5km_k = UnifiedSpectrum1Dk(k, 10.0, 5000);
+u_10_10km_k = UnifiedSpectrum1Dk(k, 10.0, 10000);
+u_10_25km_k = UnifiedSpectrum1Dk(k, 10.0, 25000);
+u_10_50km_k = UnifiedSpectrum1Dk(k, 10.0, 50000);
+u_10_75km_k = UnifiedSpectrum1Dk(k, 10.0, 75000);
+u_10_100km_k = UnifiedSpectrum1Dk(k, 10.0, 100000);
+u_10_200km_k = UnifiedSpectrum1Dk(k, 10.0, 200000);
+u_10_300km_k = UnifiedSpectrum1Dk(k, 10.0, 300000);
+u_10_400km_k = UnifiedSpectrum1Dk(k, 10.0, 400000);
+u_10_500km_k = UnifiedSpectrum1Dk(k, 10.0, 500000);
+u_10_1000km_k = UnifiedSpectrum1Dk(k, 10.0, 1000000);
+
+% write2dcsv(k, u_10_5km_k);
+% write2dcsv(k, u_10_10km_k);
+% write2dcsv(k, u_10_25km_k);
+% write2dcsv(k, u_10_50km_k);
+% write2dcsv(k, u_10_75km_k);
+% write2dcsv(k, u_10_100km_k);
+% write2dcsv(k, u_10_200km_k);
+% write2dcsv(k, u_10_300km_k);
+% write2dcsv(k, u_10_400km_k);
+% write2dcsv(k, u_10_500km_k);
+% write2dcsv(k, u_10_1000km_k);
+
+d_10_5km_k = Donelan19851Dk(k, 10.0, 5000);
+d_10_10km_k = Donelan19851Dk(k, 10.0, 10000);
+d_10_25km_k = Donelan19851Dk(k, 10.0, 25000);
+d_10_50km_k = Donelan19851Dk(k, 10.0, 50000);
+d_10_75km_k = Donelan19851Dk(k, 10.0, 75000);
+d_10_100km_k = Donelan19851Dk(k, 10.0, 100000);
+d_10_200km_k = Donelan19851Dk(k, 10.0, 200000);
+d_10_300km_k = Donelan19851Dk(k, 10.0, 300000);
+d_10_400km_k = Donelan19851Dk(k, 10.0, 400000);
+d_10_500km_k = Donelan19851Dk(k, 10.0, 500000);
+d_10_1000km_k = Donelan19851Dk(k, 10.0, 1000000);
+
 figure
 hold on
-% plot(k(1:512), pm_k(1:512));
-% plot(k(1:512), d_10_5km_k(1:512));
-% plot(k(1:512), d_10_10km_k(1:512));
-% plot(k(1:512), d_10_25km_k(1:512));
-% plot(k(1:512), d_10_50km_k(1:512));
-% plot(k(1:512), d_10_100km_k(1:512));
-% plot(k(1:512), d_10_250km_k(1:512));
-% plot(k(1:512), d_10_500km_k(1:512));
-% plot(k(1:512), u_10_5km_k(1:512), 'r');
-% plot(k(1:512), u_10_10km_k(1:512), 'r');
-% plot(k(1:512), u_10_25km_k(1:512), 'r');
-% plot(k(1:512), u_10_50km_k(1:512), 'r');
-% plot(k(1:512), u_10_100km_k(1:512), 'r');
-% plot(k(1:512), u_10_250km_k(1:512), 'r');
-% plot(k(1:512), u_10_500km_k(1:512), 'r');
-
-% plot(k(1:512), u_10_5km_k(1:512), 'r');
-% plot(k(1:512), u_10_10km_k(1:512), 'r');
-% plot(k(1:512), u_10_25km_k(1:512), 'r');
-% plot(k(1:512), u_10_50km_k(1:512), 'r');
-% plot(k(1:512), u_10_100km_k(1:512), 'r');
-% plot(k(1:512), u_10_250km_k(1:512), 'r');
 plot(log10(k), log10(u_3_500km_k), 'r');
 plot(log10(k), log10(u_5_500km_k), 'r');
 plot(log10(k), log10(u_7_500km_k), 'r');
@@ -64,28 +82,6 @@ hold off
 
 figure
 hold on
-% plot(k(1:512), pm_k(1:512));
-% plot(k(1:512), d_10_5km_k(1:512));
-% plot(k(1:512), d_10_10km_k(1:512));
-% plot(k(1:512), d_10_25km_k(1:512));
-% plot(k(1:512), d_10_50km_k(1:512));
-% plot(k(1:512), d_10_100km_k(1:512));
-% plot(k(1:512), d_10_250km_k(1:512));
-% plot(k(1:512), d_10_500km_k(1:512));
-% plot(k(1:512), u_10_5km_k(1:512), 'r');
-% plot(k(1:512), u_10_10km_k(1:512), 'r');
-% plot(k(1:512), u_10_25km_k(1:512), 'r');
-% plot(k(1:512), u_10_50km_k(1:512), 'r');
-% plot(k(1:512), u_10_100km_k(1:512), 'r');
-% plot(k(1:512), u_10_250km_k(1:512), 'r');
-% plot(k(1:512), u_10_500km_k(1:512), 'r');
-
-% plot(k(1:512), u_10_5km_k(1:512), 'r');
-% plot(k(1:512), u_10_10km_k(1:512), 'r');
-% plot(k(1:512), u_10_25km_k(1:512), 'r');
-% plot(k(1:512), u_10_50km_k(1:512), 'r');
-% plot(k(1:512), u_10_100km_k(1:512), 'r');
-% plot(k(1:512), u_10_250km_k(1:512), 'r');
 plot(log10(k), log10(u_3_500km_k .* ik), 'r');
 plot(log10(k), log10(u_5_500km_k .* ik), 'r');
 plot(log10(k), log10(u_7_500km_k .* ik), 'r');
@@ -99,5 +95,30 @@ plot(log10(k), log10(u_21_500km_k .* ik), 'r');
 axis([-3, 4, -4, 0]);
 hold off
 
-
+% figure
+% hold on
+% plot(k, pm_10_k, 'g');
+% plot(k, u_10_5km_k);
+% plot(k, u_10_10km_k);
+% plot(k, u_10_25km_k);
+% plot(k, u_10_50km_k);
+% plot(k, u_10_75km_k);
+% plot(k, u_10_100km_k);
+% plot(k, u_10_200km_k);
+% plot(k, u_10_300km_k);
+% plot(k, u_10_400km_k);
+% plot(k, u_10_500km_k);
+% plot(k, u_10_1000km_k);
+% plot(k, d_10_5km_k, 'r');
+% plot(k, d_10_10km_k, 'r');
+% plot(k, d_10_25km_k, 'r');
+% plot(k, d_10_50km_k, 'r');
+% plot(k, d_10_75km_k, 'r');
+% plot(k, d_10_100km_k, 'r');
+% plot(k, d_10_200km_k, 'r');
+% plot(k, d_10_300km_k, 'r');
+% plot(k, d_10_400km_k, 'r');
+% plot(k, d_10_500km_k, 'r');
+% plot(k, d_10_1000km_k, 'r');
+% hold off
 
