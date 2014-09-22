@@ -43,11 +43,11 @@ u_star = U10 * kappa / log(10.0/z_0);
 L_pm = exp((-5/4).*((k_p ./ knorm).^2));
 L_pm(knorm == 0.0) = 0;
 % after eq 3
-gamma = zeros(resolution(1), resolution(2));
+gamma = 0;
 if Omega_c < 1.0
-    gamma(:,:) = 1.7;
+    gamma = 1.7;
 else
-    gamma(:,:) = 1.7 + 6.0 * log10(Omega_c);
+    gamma = 1.7 + 6.0 * log10(Omega_c);
 end
 % after eq 3
 sigma = 0.08 * (1.0 + (4.0/(Omega_c^3)));
@@ -74,11 +74,11 @@ end
 % eq 41
 F_m = L_pm .* J_p .* exp(-0.25 .* (((knorm./k_m) - 1).^2));
 % eq 40
-% B_h = zeros(size(k));
 B_h = (0.5 * alpha_m) .* (c_m ./ c) .* F_m;
-%B_h(k <= 0.01) = 0;
 B_h(isinf(B_h)) = 0;
 B_h(isnan(B_h)) = 0;
+% ADD TERMS MISSING IN PAPER
+B_h = B_h .* L_pm .* J_p;
 
 % eq 59
 a_m = 0.13 * (u_star ./ c_m);
@@ -90,7 +90,7 @@ Psi = (1/(2*pi)) .* (1./(knorm.^4)) .* (B_l + B_h) .* (1 + delta_k .* cos(2.*phi
 Psi(isinf(Psi)) = 0;
 Psi(isnan(Psi)) = 0;
 
-du = (1/(2*pi)) .* (1./knorm) .* (1 + delta_k .* cos(phi));
+du = (1/(2*pi)) .* (1 + delta_k .* cos(2.*phi));
 du(isinf(du)) = 0;
 du(isnan(du)) = 0;
 
