@@ -38,11 +38,11 @@ u_star = U10 * kappa / log(10.0/z_0);
 L_pm = exp((-5/4).*((k_p ./ k).^2));
 L_pm(k == 0.0) = 0;
 % after eq 3
-gamma = zeros(size(k));
+gamma = 0;
 if Omega_c < 1.0
-    gamma(:,:) = 1.7;
+    gamma = 1.7;
 else
-    gamma(:,:) = 1.7 + 6.0 * log10(Omega_c);
+    gamma = 1.7 + 6.0 * log10(Omega_c);
 end
 % after eq 3
 sigma = 0.08 * (1.0 + (4.0/(Omega_c^3)));
@@ -69,9 +69,7 @@ end
 % eq 41
 F_m = exp(-0.25 .* (((k./k_m) - 1).^2));
 % eq 40
-B_h = zeros(size(k));
 B_h = (0.5 * alpha_m) .* (c_m ./ c) .* F_m;
-%B_h(k <= 0.01) = 0;
 B_h(isinf(B_h)) = 0;
 B_h(isnan(B_h)) = 0;
 % ADD TERMS MISSING IN PAPER
