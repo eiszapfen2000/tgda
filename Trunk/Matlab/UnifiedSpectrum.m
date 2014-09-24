@@ -84,8 +84,13 @@ B_h = B_h .* L_pm .* J_p;
 a_m = 0.13 * (u_star ./ c_m);
 % eq 57
 delta_k = tanh(a_0 + a_p.*realpow((c./c_p), 2.5) + a_m.*realpow((c_m./c), 2.5));
+
+% compute angle relative to the wind
+theta_w = atan2(wind(2), wind(1));
+theta = atan2(k(:,:,2), k(:,:,1));
+phi = theta - theta_w;
+
 % eq 67
-phi = atan2(k(:,:,2), k(:,:,1));
 Psi = (1/(2*pi)) .* (1./(knorm.^4)) .* (B_l + B_h) .* (1 + delta_k .* cos(2.*phi));
 Psi(isinf(Psi)) = 0;
 Psi(isnan(Psi)) = 0;
