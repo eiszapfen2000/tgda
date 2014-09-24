@@ -1935,7 +1935,7 @@ to the upper right.}
  \includegraphics[scale=0.115]{figures/dfilt_wur_sqrt200.png}
  }
 \caption{Comparison between Donelan directional spread (top row) and Mitsuyasu 
-directional spread (bottom row), generated with the same input data.}
+directional spread (bottom row), both generated with the same input data.}
 \label{fig:directional_filter_comp}
 \end{figure}
 %
@@ -1963,7 +1963,7 @@ absolute values.\\
 	scaled ticks=false,
 	]
 \nextgroupplot[
-	title={(a)},
+%	title={(a)},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
 	restrict x to domain=0.25:3,
@@ -1999,7 +1999,7 @@ absolute values.\\
     table [col sep=comma]{figures/d_10_50km.dat};
 \addlegendentry{50 km}
 \nextgroupplot[
-	title={(b)},
+	%title={(b)},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
 	xtick = {0,2.5,5},
@@ -2068,10 +2068,10 @@ inverse wave age, see Figure~\ref{fig:donelan_spectra}.
 	scaled ticks=false,
 	]
 \nextgroupplot[
-	title={(a)},
+%	title={(a)},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
-	restrict x to domain=0:0.5,
+	restrict x to domain=0:0.4,
 	]
 \addplot[
     color=blue,
@@ -2104,7 +2104,7 @@ inverse wave age, see Figure~\ref{fig:donelan_spectra}.
     table [col sep=comma]{figures/u_10_50km_k.dat};
 \addlegendentry{50 km}
 \nextgroupplot[
-	title={(b)},
+%	title={(b)},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
 	xtick = {0,2.5,5},
