@@ -46,33 +46,33 @@ j_15_50km_omegap_12 = JONSWAP1D(omega, 15.0, 50000, struct('wpScale', 1.2));
 j_15_50km_sigma_003 = JONSWAP1D(omega, 15.0, 50000, struct('sigma', 0.03));
 j_15_50km_gamma_1 = JONSWAP1D(omega, 15.0, 50000, struct('gamma_r', 1));
 
-j_10_5km_k = JONSWAP1Dk(k, 10.0, 5000);
-j_10_10km_k = JONSWAP1Dk(k, 10.0, 10000);
-j_10_25km_k = JONSWAP1Dk(k, 10.0, 25000);
-j_10_50km_k = JONSWAP1Dk(k, 10.0, 50000);
-j_10_75km_k = JONSWAP1Dk(k, 10.0, 75000);
-j_10_100km_k = JONSWAP1Dk(k, 10.0, 100000);
-j_10_200km_k = JONSWAP1Dk(k, 10.0, 200000);
-j_10_300km_k = JONSWAP1Dk(k, 10.0, 300000);
-j_10_400km_k = JONSWAP1Dk(k, 10.0, 400000);
-j_10_500km_k = JONSWAP1Dk(k, 10.0, 500000);
-j_10_1000km_k = JONSWAP1Dk(k, 10.0, 1000000);
+j_10_5km_k = JONSWAP1Dk(k, 10.0, 5000, []);
+j_10_10km_k = JONSWAP1Dk(k, 10.0, 10000, []);
+j_10_25km_k = JONSWAP1Dk(k, 10.0, 25000, []);
+j_10_50km_k = JONSWAP1Dk(k, 10.0, 50000, []);
+j_10_75km_k = JONSWAP1Dk(k, 10.0, 75000, []);
+j_10_100km_k = JONSWAP1Dk(k, 10.0, 100000, []);
+j_10_200km_k = JONSWAP1Dk(k, 10.0, 200000, []);
+j_10_300km_k = JONSWAP1Dk(k, 10.0, 300000, []);
+j_10_400km_k = JONSWAP1Dk(k, 10.0, 400000, []);
+j_10_500km_k = JONSWAP1Dk(k, 10.0, 500000, []);
+j_10_1000km_k = JONSWAP1Dk(k, 10.0, 1000000, []);
 
-j_12_200km_k = JONSWAP1Dk(k, 12.5, 200000);
+j_12_200km_k = JONSWAP1Dk(k, 12.5, 200000, []);
 
-j_15_100km_k = JONSWAP1Dk(k, 15.0, 100000);
-j_15_200km_k = JONSWAP1Dk(k, 15.0, 200000);
-j_15_300km_k = JONSWAP1Dk(k, 15.0, 300000);
-j_15_400km_k = JONSWAP1Dk(k, 15.0, 400000);
-j_15_500km_k = JONSWAP1Dk(k, 15.0, 500000);
-j_15_1000km_k = JONSWAP1Dk(k, 15.0, 1000000);
+j_15_100km_k = JONSWAP1Dk(k, 15.0, 100000, []);
+j_15_200km_k = JONSWAP1Dk(k, 15.0, 200000, []);
+j_15_300km_k = JONSWAP1Dk(k, 15.0, 300000, []);
+j_15_400km_k = JONSWAP1Dk(k, 15.0, 400000, []);
+j_15_500km_k = JONSWAP1Dk(k, 15.0, 500000, []);
+j_15_1000km_k = JONSWAP1Dk(k, 15.0, 1000000, []);
 
-j_20_100km_k = JONSWAP1Dk(k, 20.0, 100000);
-j_20_200km_k = JONSWAP1Dk(k, 20.0, 200000);
-j_20_300km_k = JONSWAP1Dk(k, 20.0, 300000);
-j_20_400km_k = JONSWAP1Dk(k, 20.0, 400000);
-j_20_500km_k = JONSWAP1Dk(k, 20.0, 500000);
-j_20_1000km_k = JONSWAP1Dk(k, 20.0, 1000000);
+j_20_100km_k = JONSWAP1Dk(k, 20.0, 100000, []);
+j_20_200km_k = JONSWAP1Dk(k, 20.0, 200000, []);
+j_20_300km_k = JONSWAP1Dk(k, 20.0, 300000, []);
+j_20_400km_k = JONSWAP1Dk(k, 20.0, 400000, []);
+j_20_500km_k = JONSWAP1Dk(k, 20.0, 500000, []);
+j_20_1000km_k = JONSWAP1Dk(k, 20.0, 1000000, []);
 
 write2dcsv(omega, j_10_5km);
 write2dcsv(omega, j_10_10km);

@@ -1,4 +1,4 @@
-function y = JONSWAP1D(omega, wind, fetch, parameters)
+function [y wp] = JONSWAP1D(omega, wind, fetch, parameters)
 
 g = 9.81;
 
@@ -71,5 +71,6 @@ exponent = (-5/4) .* power(omega_p ./ omega, 4.0);
 Theta = ((alpha*g*g) ./ power(omega, 5.0)) .* exp(exponent) .* gamma_r;
 
 y = Theta;
+wp = omega_p;
 
 end
