@@ -5,7 +5,7 @@ g = 9.81;
 omega = 0:0.005:2*pi;
 k = (omega .* omega) ./ g;
 
-pm_10_k = PiersonMoskovitz1Dk(k, 10.0);
+pm_10_k = PiersonMoskovitz1Dk(k, 10.0, []);
 
 u_3_500km_k = UnifiedSpectrum1Dk(k, 3.0, 500000);
 u_5_500km_k= UnifiedSpectrum1Dk(k, 5.0, 500000);
@@ -25,6 +25,7 @@ u_10_50km_k = UnifiedSpectrum1Dk(k, 10.0, 50000);
 u_10_75km_k = UnifiedSpectrum1Dk(k, 10.0, 75000);
 u_10_100km_k = UnifiedSpectrum1Dk(k, 10.0, 100000);
 u_10_200km_k = UnifiedSpectrum1Dk(k, 10.0, 200000);
+u_10_250km_k = UnifiedSpectrum1Dk(k, 10.0, 250000);
 u_10_300km_k = UnifiedSpectrum1Dk(k, 10.0, 300000);
 u_10_400km_k = UnifiedSpectrum1Dk(k, 10.0, 400000);
 u_10_500km_k = UnifiedSpectrum1Dk(k, 10.0, 500000);
@@ -37,6 +38,7 @@ write2dcsv(k, u_10_50km_k);
 write2dcsv(k, u_10_75km_k);
 write2dcsv(k, u_10_100km_k);
 write2dcsv(k, u_10_200km_k);
+write2dcsv(k, u_10_250km_k);
 write2dcsv(k, u_10_300km_k);
 write2dcsv(k, u_10_400km_k);
 write2dcsv(k, u_10_500km_k);

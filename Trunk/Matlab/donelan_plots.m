@@ -29,7 +29,7 @@ write2dcsv(omega, d_10_250km);
 write2dcsv(omega, d_10_500km);
 write2dcsv(omega, d_10_600km);
 
-pm_k = PiersonMoskovitz1Dk(k, 10.0);
+pm_k = PiersonMoskovitz1Dk(k, 10.0, []);
 d_10_5km_k = Donelan19851Dk(k, 10.0, 5000);
 d_10_10km_k = Donelan19851Dk(k, 10.0, 10000);
 d_10_25km_k = Donelan19851Dk(k, 10.0, 25000);
