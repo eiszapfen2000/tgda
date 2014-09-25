@@ -6,7 +6,7 @@ omega = sqrt(k * g);
 fixed_k_p = 0;
 
 if isfield(parameters, 'kp') && isnumeric(parameters.kp)
-fixed_k_p = parameters.kp;
+    fixed_k_p = parameters.kp;
 end
 
 if fixed_k_p ~= 0
