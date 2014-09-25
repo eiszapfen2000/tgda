@@ -2107,46 +2107,46 @@ inverse wave age, see Figure~\ref{fig:donelan_spectra}.
 %	title={(b)},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
-	xtick = {0,2.5,5},
+	xtick = {1,2.5},
 	yticklabel style={/pgf/number format/fixed},
-	restrict x to domain=1.8:5,
+	restrict x to domain=0.5:2.5,
 ]
 \addplot[
     color=blue,
     solid,
 	]
-    table [col sep=comma]{figures/d_pm_wp_25.dat};
+    table [col sep=comma]{figures/u_pm_kp_1.dat};
 \addlegendentry{PM}
 \addplot[
     color=green,
     solid,
 	]
-    table [col sep=comma]{figures/d_j_wp_25_wc_083.dat};
-\addlegendentry{JONSWAP $0.83$}
+    table [col sep=comma]{figures/u_d_kp_1_wc_083.dat};
+\addlegendentry{Donelan $0.83$}
 \addplot[
     color=magenta,
     solid,
 	]
-    table [col sep=comma]{figures/d_j_wp_25_wc_4.dat};
-\addlegendentry{JONSWAP $4$}
+    table [col sep=comma]{figures/u_d_kp_1_wc_4.dat};
+\addlegendentry{Donelan $4$}
 \addplot[
     color=red,
     solid,
 	]
-    table [col sep=comma]{figures/d_wp_25_wc_083.dat};
-\addlegendentry{Donelan $0.83$}
+    table [col sep=comma]{figures/u_kp_1_wc_083.dat};
+\addlegendentry{Unified $0.83$}
 \addplot[
     color=black,
     solid,
 	]
-    table [col sep=comma]{figures/d_wp_25_wc_4.dat};
-\addlegendentry{Donelan $4$}
+    table [col sep=comma]{figures/u_kp_1_wc_4.dat};
+\addlegendentry{Unified $4$}
 \end{groupplot}
 \end{tikzpicture}
 \caption{Left: Unified frequency spectra with different fetch values $F$, 
 Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$). Right: 
-JONSWAP and Donelan spectra with different inverse wave age values $\Omega$, 
-Pierson Moskowitz spectrum for comparison ($\omega_p = 2.5$).}
+Unified and Donelan spectra with different inverse wave age values $\Omega$, 
+Pierson Moskowitz spectrum for comparison ($k_p = 1$).}
 \label{fig:unified_spectra}
 \end{figure}
 %
@@ -2317,7 +2317,6 @@ We may separate the terms involved as follows:
 	]
 	{figures/j_12_200km_k.dat};
 \addlegendentry{JONSWAP~$\times 10^3$}
-\addlegendentry{Phillips}
 \end{groupplot}
 \end{tikzpicture}
 \caption{Left: The one dimensional wave number spectrum term of the Phillips 
