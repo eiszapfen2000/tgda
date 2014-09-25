@@ -1,19 +1,38 @@
-function y = UnifiedSpectrum1Dk(k, wind, fetch)
+function y = UnifiedSpectrum1Dk(k, wind, fetch, parameters)
 
 g = 9.81;
 
-U10 = norm(wind); % wind speed
+fixed_k_p = 0;
+fixed_omega_c = 0;
 
+if isfield(parameters, 'kp') && isnumeric(parameters.kp)...
+   && isfield(parameters, 'wc') && isnumeric(parameters.wc)
+    fixed_k_p = parameters.kp;
+    fixed_omega_c = parameters.wc;
+end
+
+U10 = norm(wind); % wind speed
 c_m = 0.23;       %eq 59
 k_0 = g/(U10^2);  %between eq 3 and 4
 k_m = 370.0;      %eq 24
 X_0 = 2.2 * 10^4; %eq 37
 kappa = 0.41; % von Karman constant
 
-%eq 4, dimensionless fetch
-X = k_0 * fetch;
-%eq 37, inverse wave age
-Omega_c = 0.84 * tanh((X/X_0)^0.4)^(-0.75);
+Omega_c = 0;
+k_p = 0;
+
+if fixed_k_p == 0 && fixed_omega_c == 0
+    %eq 4, dimensionless fetch
+    X = k_0 * fetch;
+    %eq 37, inverse wave age
+    Omega_c = 0.84 * tanh((X/X_0)^0.4)^(-0.75);
+    % spectral peak
+    % right after eq 3
+    k_p = k_0 * (Omega_c ^ 2);
+else
+    Omega_c = fixed_omega_c;
+    k_p = fixed_k_p;
+end
 
 %eq 24, angular frequency
 omega = sqrt(g .* k .* (1.0 + (k./k_m).*(k./k_m)));
@@ -24,9 +43,15 @@ c(isnan(c)) = 0;
 
 % spectral peak
 % right after eq 3
-k_p = k_0 * (Omega_c ^ 2);
 omega_p = sqrt(g * k_p * (1.0 + (k_p/k_m)*(k_p/k_m)));
 c_p = omega_p / k_p;
+
+% recompute if necessary
+if fixed_k_p ~= 0 && fixed_omega_c ~= 0
+    % Omega_c = U10 / C_p => U10 = Omega_c * C_p
+    U10 = Omega_c * c_p;
+    k_0 = g/(U10^2);
+end
 
 % friction velocity
 % eq 66
