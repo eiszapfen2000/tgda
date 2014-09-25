@@ -50,6 +50,13 @@ u_d_kp_1_wc_083 = Donelan19851Dk(k, [], [], struct('kp', 1, 'wc', 0.83));
 u_kp_1_wc_4 = UnifiedSpectrum1Dk(k, [], [], struct('kp', 1, 'wc', 4));
 u_kp_1_wc_083 = UnifiedSpectrum1Dk(k, [], [], struct('kp', 1, 'wc', 0.83));
 
+write2dcsv(k, u_pm_kp_1);
+write2dcsv(k, u_d_kp_1_wc_4);
+write2dcsv(k, u_d_kp_1_wc_083);
+write2dcsv(k, u_kp_1_wc_4);
+write2dcsv(k, u_kp_1_wc_083);
+
+
 % figure
 % hold on
 % plot(k, u_pm_kp_1);
