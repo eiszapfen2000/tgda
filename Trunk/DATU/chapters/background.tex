@@ -1809,7 +1809,7 @@ is:}
 \intertext{with}
 \gamma &= \begin{cases}
 	1.7 & 0.83 < \Omega_c < 1\\
-	1.7 + 6.0\lg{\Omega_c} & 1\leq\Omega_c < 5
+	1.7 + 6.0\lg(\Omega_c) & 1\leq\Omega_c < 5
 	\end{cases}\\
 r &= \exp\left[-\frac{\left(\omega -
 \omega_p\right)^2}{2\sigma^2\omega_p^2}\right] \\
@@ -2052,6 +2052,89 @@ inverse wave age, see Figure~\ref{fig:donelan_spectra}.
 %
 \subsection{Unified Spectrum}
 \label{sec:unified_spectrum}
+%
+\begin{subequations}
+\begin{align}
+ \Theta(k, \theta) &= \frac{1}{2\pi}\Theta(k)\{1 + \Delta(k) + \cos[2(\theta - 
+\theta_p)]\}\\
+\intertext{where $\theta_p$ is the direction of travel of the waves at the 
+spectral peak. Based on the JONSWAP spectrum formulation, the frequency 
+spectrum is:}
+ \Theta(\omega) &= 
+\alpha g^2 \omega^{-5}(\omega/\omega_p) \exp\left[-\left(\frac{\omega_p}{\omega}
+\right)^4\right]\gamma^r\\
+\intertext{with}
+\gamma &= \begin{cases}
+	1.7 & 0.83 < \Omega_c < 1\\
+	1.7 + 6.0\lg{\Omega_c} & 1\leq\Omega_c < 5
+	\end{cases}\\
+r &= \exp\left[-\frac{\left(\omega -
+\omega_p\right)^2}{2\sigma^2\omega_p^2}\right] \\
+\sigma &= 0.08\left(1 + \frac{4}{\Omega_c^3}\right)\\
+\alpha &= 0.006~\Omega_c^{0.55} \\
+\omega_{p} &= \frac{g\Omega_c}{U_{10}}\\
+\Omega_c &= 0.84 
+\tanh\left[\left(\frac{\chi}{\chi_0}\right)^{0.4}\right]^{-0.75} \\
+\chi &= \frac{gF}{U_{10}^{2}} \\
+\chi_0 &= 2.2 \times 10^4 \\
+k_m &= 370.0
+\end{align}
+\end{subequations}
+
+\begin{subequations}
+\begin{align}
+ \Theta(k) &= k^{-3}(B_l + B_h) \\
+ B_l &= \frac{1}{2}\alpha_p\frac{c_p}{c}F_p \\
+ B_h &= \frac{1}{2}\alpha_m\frac{c_m}{c}F_m \\
+ \alpha_p &= 0.006\sqrt{\Omega_c} \\
+ \alpha_m &= 10^{-2}\begin{cases}
+	1 + \log\left(\frac{u^{\ast}}{c_m}\right) & u^{\ast} < c_m \\
+	1 + 3\log\left(\frac{u^{\ast}}{c_m}\right) & u^{\ast} > c_m
+	\end{cases} \\
+ F_p &= L_{PM}J_p\exp\left[- 
+\frac{\Omega_c}{\sqrt{10}}\left(\sqrt{\frac{k}{k_p}} - 1\right)\right] \\
+ F_m &= L_{PM}J_p\exp\left[- 
+\frac{1}{4}\left(\frac{k}{k_m} - 1\right)^2\right]
+\end{align}
+\end{subequations}
+
+
+\begin{subequations}
+\begin{align}
+L_{PM} &= \exp\left[-\frac{5}{4} \left(\frac{k_p}{k}\right)^2 \right] \\
+J_p &= \gamma^{\Gamma} \\
+\intertext{with}
+k_p &= g\frac{\Omega_c^2}{U_{10}^2} \\
+\gamma &= \begin{cases}
+	1.7 & 0.83 < \Omega_c < 1 \\
+	1.7 + 6.0\lg(\Omega_c) & 1\leq\Omega_c < 5
+	\end{cases} \\
+\Gamma &= \exp\left[-
+\frac{\left(\sqrt{\frac{k}{k_p}}-1\right)^2}{2\sigma^2}\right] \\
+\sigma &= 0.08\left(1 + \frac{4}{\Omega_c^3}\right) \\
+\Omega_c &= 0.84 
+\tanh\left[\left(\frac{\chi}{\chi_0}\right)^{0.4}\right]^{-0.75} \\
+\chi &= \frac{gF}{U_{10}^{2}} \\
+\chi_0 &= 2.2 \times 10^4
+\end{align}
+\end{subequations}
+
+\begin{subequations}
+\begin{align}
+D(k, \theta) &= \frac{1}{2\pi}\{1 + \Delta(k) + \cos[2(\theta - 
+\theta_p)]\} \\
+\Delta(k) &= \tanh\left[a_0 + a_p\left(\frac{c}{c_p}\right)^{2.5} + 
+a_m\left(\frac{c_m}{c}\right)^{2.5}\right] \\
+a_0 &= \frac{\log(2)}{4} \\
+a_p &= 4 \\
+a_m &= 0.13 \frac{u^{\ast}}{c_m} \\
+c_m &= 0.23 \\
+u^{\ast} &= \kappa~U_{10} \left[\log\left(\frac{10}{z_0}\right)\right]^{-1}\\
+\kappa &= 0.41 \\
+z_0 &= 3.7 \times 10^{-5}~\frac{U_{10}^2}{g}
+\left(\frac{U_{10}}{c_p}\right)^{0.9}
+\end{align}
+\end{subequations}
 %
 \begin{figure}
 \centering
