@@ -2,32 +2,9 @@ clear all;
 close all;
 
 resolution = [ 512 512 ];
-x = zeros(resolution(1), resolution(2), 2);
-k = zeros(resolution(1), resolution(2), 2);
-alphas = -resolution(1)/2:1:resolution(1)/2-1;
-betas  =  resolution(2)/2:-1:-(resolution(2)/2)+1;
-
-
 area = [ 40 40 ];
-deltax = area(1) / resolution(1);
-deltay = area(2) / resolution(2);
-deltakx = 2*pi / area(1);
-deltaky = 2*pi / area(2);
 
-% spatial domain
-[ x(:,:,1) x(:,:,2) ] = meshgrid(alphas.*deltax, betas.*deltay);
-% wave vector domain
-[ k(:,:,1) k(:,:,2) ] = meshgrid(alphas.*deltakx, betas.*deltaky);
-
-kx2tmp = realpow(k(:,:,1), 2);
-ky2tmp = realpow(k(:,:,2), 2);
-kx2y2tmp = kx2tmp + ky2tmp;
-knorm = realsqrt(kx2y2tmp);
-
-[s u1] = UnifiedSpectrum(k, knorm, [sqrt(50) 0], 50000);
-
-figure
-imshow(u1,[0 1])
+[k knorm x] = build_wave_vectors(resolution, area);
 
 [s m1 d1] = PiersonMoskovitzSpectrum(k, knorm, [sqrt(2) 0]);
 [s m2 d2] = PiersonMoskovitzSpectrum(k, knorm, [sqrt(8) 0]);
@@ -39,15 +16,17 @@ imshow(u1,[0 1])
 [s m7 d7] = PiersonMoskovitzSpectrum(k, knorm, [5 5]);
 [s m8 d8] = PiersonMoskovitzSpectrum(k, knorm, [10 10]);
 
-% figure
-% hold on
-% imshow(m4, [0 1]);
-% hold off
-% 
-% figure
-% hold on
-% imshow(d4, [0 1]);
-% hold off
+area = [ 100 100 ];
+[k knorm x] = build_wave_vectors(resolution, area);
+
+[s u1] = UnifiedSpectrum(k, knorm, [sqrt(2) 0], 100000);
+[s u2] = UnifiedSpectrum(k, knorm, [sqrt(8) 0], 100000);
+[s u3] = UnifiedSpectrum(k, knorm, [sqrt(50) 0], 100000);
+[s u4] = UnifiedSpectrum(k, knorm, [sqrt(200) 0], 100000);
+[s u5] = UnifiedSpectrum(k, knorm, [1 1], 100000);
+[s u6] = UnifiedSpectrum(k, knorm, [2 2], 100000);
+[s u7] = UnifiedSpectrum(k, knorm, [5 5], 100000);
+[s u8] = UnifiedSpectrum(k, knorm, [10 10], 100000);
 
 ppi2meters = ceil((96 / 2.54) * 100);
 
@@ -68,6 +47,18 @@ imwrite(d5, 'donelan_dfilt_wur_sqrt2.png', 'ResolutionUnit', 'meter', 'XResoluti
 imwrite(d6, 'donelan_dfilt_wur_sqrt8.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
 imwrite(d7, 'donelan_dfilt_wur_sqrt50.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
 imwrite(d8, 'donelan_dfilt_wur_sqrt200.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
+
+minU = min(min([u1;u2;u3;u4;u5;u6;u7;u8]));
+maxU = max(max([u1;u2;u3;u4;u5;u6;u7;u8]));
+
+imwrite(imadjust(u1, [minU maxU], [0, 0.6]), 'unified_dfilt_wr_sqrt2.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
+imwrite(imadjust(u2, [minU maxU], [0, 0.6]), 'unified_dfilt_wr_sqrt8.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
+imwrite(imadjust(u3, [minU maxU], [0, 0.6]), 'unified_dfilt_wr_sqrt50.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
+imwrite(imadjust(u4, [minU maxU], [0, 0.6]), 'unified_dfilt_wr_sqrt200.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
+imwrite(imadjust(u5, [minU maxU], [0, 0.6]), 'unified_dfilt_wur_sqrt2.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
+imwrite(imadjust(u6, [minU maxU], [0, 0.6]), 'unified_dfilt_wur_sqrt8.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
+imwrite(imadjust(u7, [minU maxU], [0, 0.6]), 'unified_dfilt_wur_sqrt50.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
+imwrite(imadjust(u8, [minU maxU], [0, 0.6]), 'unified_dfilt_wur_sqrt200.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
 
 
 % 
