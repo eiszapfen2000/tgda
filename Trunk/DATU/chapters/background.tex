@@ -2212,15 +2212,15 @@ k_m &= 370.0 \\
 c_m &= 0.23
 \end{align}
 \end{subequations}
-where $B_l$ represents the low frequency regime and $B_h$ the high frequency 
-regime, respectively. The long wave regime input $B_l$ depends on the 
-equilibrium range parameter for long waves, $\alpha_p$, the wave phase speed 
-$c$, the phase speed at the spectral peak $c_p$, and the \emph{long wave side 
-effect function} $F_p$. The short wave regime input $B_h$ on the other hand 
-depends on the equilibrium range parameter for short waves, $\alpha_m$, the 
-friction velocity at the water surface $u^{\ast}$, the wave phase speed $c$, 
-the minimum phase speed $c_m$ at the wavenumber $k_m$, and the \emph{short wave 
-side effect function} $F_m$. We may compute the friction velocity $u^{\ast}$ 
+where $B_l$ represents the low frequency regime and $B_h$ the high frequency
+regime, respectively. The long wave regime input $B_l$ depends on the
+equilibrium range parameter for long waves, $\alpha_p$, the wave phase speed
+$c$, the phase speed at the spectral peak $c_p$, and the \emph{long wave side
+effect function} $F_p$. The short wave regime input $B_h$, on the other hand,
+depends on the equilibrium range parameter for short waves, $\alpha_m$, the
+friction velocity at the water surface $u^{\ast}$, the wave phase speed $c$,
+the minimum phase speed $c_m$ at the wavenumber $k_m$, and the \emph{short wave
+side effect function} $F_m$. We may compute the friction velocity $u^{\ast}$
 through application of the \emph{law of the wall}:
 %
 \begin{subequations}
@@ -2232,8 +2232,10 @@ z_0 &= 3.7 \times 10^{-5}~\frac{U_{10}^2}{g}
 \end{align}
 \end{subequations}
 %
-where $z_0$ is called the \emph{roughness parameter} and $\kappa$ represents 
-the \emph{von K\'arm\'an constant}.
+where $z_0$ is called the \emph{roughness parameter} and $\kappa$ is the 
+\emph{von K\'arm\'an constant}. Now that we have given the one dimensional 
+wavenumber spectrum of the Unified spectrum, we may proceed to the directional 
+distribution as defined by Elfouhaily et al. We may write:
 %
 \begin{subequations}
 \begin{align}
@@ -2243,12 +2245,7 @@ D(k, \theta) &= \frac{1}{2\pi}\{1 + \Delta(k) + \cos[2(\theta -
 a_m\left(\frac{c_m}{c}\right)^{2.5}\right] \\
 a_0 &= \frac{\log(2)}{4} \\
 a_p &= 4 \\
-a_m &= 0.13 \frac{u^{\ast}}{c_m} \\
-c_m &= 0.23 \\
-u^{\ast} &= \kappa~U_{10} \left[\log\left(\frac{10}{z_0}\right)\right]^{-1}\\
-\kappa &= 0.41 \\
-z_0 &= 3.7 \times 10^{-5}~\frac{U_{10}^2}{g}
-\left(\frac{U_{10}}{c_p}\right)^{0.9}
+a_m &= 0.13 \frac{u^{\ast}}{c_m}
 \end{align}
 \end{subequations}
 %
