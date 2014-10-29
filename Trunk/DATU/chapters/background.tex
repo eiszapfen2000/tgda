@@ -1820,11 +1820,15 @@ r &= \exp\left[-\frac{\left(\omega -
 \chi &= \frac{gF}{U_{10}^{2}}
 \end{align}
 \end{subequations}
-where $F$ denotes the fetch in meters, $U_{10}$ denotes the wind speed in meters 
-per second at a height of ten meters above the sea surface and $\chi$ is the 
-dimensionless fetch. $\Omega_c$ is the inverse wave age based on the component 
-of the wind in the direction of the peak waves, and is restricted to the 
-interval $\Omega_c \in \interval[open left, open right]{0.83}{5}$.\\
+where $F$ denotes the fetch in meters, $U_{10}$ denotes the wind speed in 
+meters per second at a height of ten meters above the sea surface, and $\chi$ 
+represents the dimensionless fetch. In lockstep with the JONSWAP spectrum, 
+$\gamma^r$ is called the peak enhancement factor, $\sigma$ the peak width 
+parameter, $\alpha$ the equilibrium range parameter and $\omega_p$ the angular 
+frequency of the spectral peak. Moreover, $\Omega_c$, which denotes the inverse 
+wave age based on the component of the wind in the direction of the peak waves,
+is restricted to the interval $\Omega_c \in \interval[open left, open 
+right]{0.83}{5}$.\\
 
 %
 \begin{figure}
@@ -2156,7 +2160,9 @@ component of the wind in the direction of the peak waves, and is restricted to
 the interval $\Omega_c \in \interval[open right]{0.84}{5}$. As one 
 may see, $\Omega_c$ is guaranteed an asymptotic value of $0.84$ for large fetch 
 e.g. fully developed seas, which is a notable improvement compared to the 
-spectral models introduced beforehand.
+spectral models of Hasselmann et al. and Donelan et al. With the basic terms at 
+hand, we are able to move on to the one dimensional wavenumber spectrum as 
+given by Elfouhaily et al. We may write:
 %
 % \begin{subequations}
 % \begin{align}
@@ -2199,9 +2205,13 @@ spectral models introduced beforehand.
  F_p &= L_{PM}J_p\exp\left[- 
 \frac{\Omega_c}{\sqrt{10}}\left(\sqrt{\frac{k}{k_p}} - 1\right)\right] \\
  F_m &= L_{PM}J_p\exp\left[- 
-\frac{1}{4}\left(\frac{k}{k_m} - 1\right)^2\right]
+\frac{1}{4}\left(\frac{k}{k_m} - 1\right)^2\right] \\
+k_m &= 370.0 \\
+c_m &= 0.23
 \end{align}
 \end{subequations}
+where $B_l$ represents the low frequency regime and $B_h$ the high frequency 
+regime, respectively.
 
 
 \begin{subequations}
