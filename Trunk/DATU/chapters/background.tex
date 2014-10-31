@@ -2258,6 +2258,386 @@ a_m &= 0.13 \frac{u^{\ast}}{c_m}
 		columns=2,
 		xlabels at=edge bottom,
 		ylabels at=edge left,
+		%horizontal sep=1.5cm,
+	},
+    xlabel={Wave number~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
+    ylabel={Energy~$\Theta$~($\text{m}^3\cdot\text{rad}^{-1}$)},
+	width=0.5\textwidth,
+	%scaled ticks=false,
+	xmode = log,
+	ymode = log,
+	log basis x=10,
+	log basis y=10,
+	]
+\nextgroupplot[
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+ 	restrict x to domain=-3:4,
+ 	restrict y to domain=-15:2,
+	]
+\addplot[
+    color=blue,
+    solid,
+    ]
+    table [col sep=comma]{figures/u_3_500km_k.dat};
+\addlegendentry{Unified}
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_5_500km_k.dat};
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_7_500km_k.dat};
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_9_500km_k.dat};
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_11_500km_k.dat};
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_13_500km_k.dat};
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_15_500km_k.dat};
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_17_500km_k.dat};
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_19_500km_k.dat};
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_21_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+    ]
+    table [col sep=comma]{figures/u_d_3_500km_k.dat};
+\addlegendentry{Donelan}
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_d_5_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_d_7_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_d_9_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_d_11_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_d_13_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_d_15_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_d_17_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_d_19_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_d_21_500km_k.dat};
+\nextgroupplot[
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}, legend pos=north west},
+ 	%restrict x to domain=-3:4,
+ 	restrict y to domain=-5:3,
+	]
+\addplot[
+    color=blue,
+    solid,
+    ]
+    table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_3_500km_k.dat};
+\addlegendentry{Unified}
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+    table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_5_500km_k.dat};
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+	table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_7_500km_k.dat};
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+	table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_9_500km_k.dat};
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+	table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_11_500km_k.dat};
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+	table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_13_500km_k.dat};
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+	table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_15_500km_k.dat};
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+	table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_17_500km_k.dat};
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+	table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_19_500km_k.dat};
+\addplot[
+    color=blue,
+    solid,
+	forget plot,
+    ]
+	table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_21_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+    ]
+    table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_d_3_500km_k.dat};
+\addlegendentry{Donelan}
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+    table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_d_5_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+	table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_d_7_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+	table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_d_9_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+	table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_d_11_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+	table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_d_13_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+	table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_d_15_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+	table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_d_17_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+	table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_d_19_500km_k.dat};
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+	table [
+		col sep=comma,
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{1}*(\thisrowno{0}^3),
+		]
+	{figures/u_d_21_500km_k.dat};
+\end{groupplot}
+\end{tikzpicture}
+\caption{BRAK.}
+\label{fig:unified_log}
+\end{figure}
+%
+%
+%
+%
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[
+	group style={
+		columns=2,
+		xlabels at=edge bottom,
+		ylabels at=edge left,
 		horizontal sep=1.5cm,
 	},
     xlabel={Wave number~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
@@ -2266,7 +2646,6 @@ a_m &= 0.13 \frac{u^{\ast}}{c_m}
 	scaled ticks=false,
 	]
 \nextgroupplot[
-%	title={(a)},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
 	restrict x to domain=0:0.4,
@@ -2302,11 +2681,8 @@ a_m &= 0.13 \frac{u^{\ast}}{c_m}
     table [col sep=comma]{figures/u_10_50km_k.dat};
 \addlegendentry{50 km}
 \nextgroupplot[
-%	title={(b)},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
-	%xtick = {0.5, 1,2.5},
-	%ytick = {0, 0.005, 0.01},
 	yticklabel style={
 		/pgf/number format/fixed,
 		/pgf/number format/precision=3,
