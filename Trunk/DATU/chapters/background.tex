@@ -2257,22 +2257,28 @@ a_m &= 0.13 \frac{u^{\ast}}{c_m}
 	group style={
 		columns=2,
 		xlabels at=edge bottom,
-		ylabels at=edge left,
+		ylabels at=all,
 		%horizontal sep=1.5cm,
 	},
     xlabel={Wave number~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
-    ylabel={Energy~$\Theta$~($\text{m}^3\cdot\text{rad}^{-1}$)},
 	width=0.5\textwidth,
 	%scaled ticks=false,
 	xmode = log,
 	ymode = log,
 	log basis x=10,
 	log basis y=10,
+	legend columns=-1,
+	legend style={/tikz/every even column/.append style={column sep=0.5cm}},
 	]
 \nextgroupplot[
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}},
- 	restrict x to domain=-3:4,
+    ylabel={Energy~$\Theta$~($\text{m}^3\cdot\text{rad}^{-1}$)},
+% 	legend columns=-1,
+	legend to name=grouplegend,
+	xmin = 10^-3,
+	xmax = 10^4,
+	ymin = 10^-15,
+	ymax = 10^3,
+ 	%restrict x to domain=-3:4,
  	restrict y to domain=-15:2,
 	]
 \addplot[
@@ -2280,7 +2286,7 @@ a_m &= 0.13 \frac{u^{\ast}}{c_m}
     solid,
     ]
     table [col sep=comma]{figures/u_3_500km_k.dat};
-\addlegendentry{Unified}
+\addlegendentry{Unified Spectrum}
 \addplot[
     color=blue,
     solid,
@@ -2340,7 +2346,7 @@ a_m &= 0.13 \frac{u^{\ast}}{c_m}
     solid,
     ]
     table [col sep=comma]{figures/u_d_3_500km_k.dat};
-\addlegendentry{Donelan}
+\addlegendentry{Donelan Spectrum}
 \addplot[
     color=red,
     solid,
@@ -2396,10 +2402,16 @@ a_m &= 0.13 \frac{u^{\ast}}{c_m}
     ]
     table [col sep=comma]{figures/u_d_21_500km_k.dat};
 \nextgroupplot[
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}, legend pos=north west},
- 	%restrict x to domain=-3:4,
- 	restrict y to domain=-5:3,
+%     legend style={draw=none},
+%     every axis legend/.append style={nodes={right}, legend pos=north west},
+	xmin = 10^-3,
+	xmax = 10^4,
+	ymin = 10^-4,
+	ymax = 1,
+	restrict x to domain=-2:4,
+ 	restrict y to domain=-4:1,
+	ylabel={Curvature~($\text{rad}^{2}$)},
+	ytick pos=right,	
 	]
 \addplot[
     color=blue,
@@ -2411,7 +2423,7 @@ a_m &= 0.13 \frac{u^{\ast}}{c_m}
 		y expr=\thisrowno{1}*(\thisrowno{0}^3),
 		]
 	{figures/u_3_500km_k.dat};
-\addlegendentry{Unified}
+%\addlegendentry{Unified}
 \addplot[
     color=blue,
     solid,
@@ -2521,7 +2533,7 @@ a_m &= 0.13 \frac{u^{\ast}}{c_m}
 		y expr=\thisrowno{1}*(\thisrowno{0}^3),
 		]
 	{figures/u_d_3_500km_k.dat};
-\addlegendentry{Donelan}
+%\addlegendentry{Donelan}
 \addplot[
     color=red,
     solid,
@@ -2622,12 +2634,410 @@ a_m &= 0.13 \frac{u^{\ast}}{c_m}
 		]
 	{figures/u_d_21_500km_k.dat};
 \end{groupplot}
+\node at ($(group c1r1.north)!0.5!(group c2r1.north)$)
+[below,
+yshift=3\pgfkeysvalueof{/pgfplots/every axis title shift}
+] 
+{\pgfplotslegendfromname{grouplegend}};
 \end{tikzpicture}
+% \ref{grouplegend}
 \caption{BRAK.}
 \label{fig:unified_log}
 \end{figure}
 %
 %
+% \begin{figure}
+% \centering
+% \subbottom
+% {
+% \label{sfig:unified_vs_donelan_log}
+% \begin{tikzpicture}
+% \begin{axis}[
+%     width=0.45\textwidth,
+% 	xmode = log,
+% 	ymode = log,
+% 	log basis x=10,
+% 	log basis y=10,
+%     xlabel={Wave number~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
+%     ylabel={Energy~$\Theta$~($\text{m}^3\cdot\text{rad}^{-1}$)},
+% 	yticklabel pos=left,
+%     legend style={draw=none},
+%     every axis legend/.append style={nodes={right}},
+%  	restrict x to domain=-3:4,
+%  	restrict y to domain=-15:2,
+%     ]
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		]
+% 		table [col sep=comma]{figures/u_3_500km_k.dat};
+% 	\addlegendentry{Unified}
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_5_500km_k.dat};
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_7_500km_k.dat};
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_9_500km_k.dat};
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_11_500km_k.dat};
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_13_500km_k.dat};
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_15_500km_k.dat};
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_17_500km_k.dat};
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_19_500km_k.dat};
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_21_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		]
+% 		table [col sep=comma]{figures/u_d_3_500km_k.dat};
+% 	\addlegendentry{Donelan}
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_d_5_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_d_7_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_d_9_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_d_11_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_d_13_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_d_15_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_d_17_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_d_19_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [col sep=comma]{figures/u_d_21_500km_k.dat};
+% % \addplot3[surf,
+% %     ]
+% %     table [col sep=comma]{figures/jonswap_w15_f100_omega_angle.dat};
+% \end{axis}
+% \end{tikzpicture}
+% }
+% \subbottom
+% {
+% \label{sfig:unified_vs_donelan_curvature_log}
+% \begin{tikzpicture}
+% \begin{axis}[
+%     width=0.45\textwidth,
+% 	xmode = log,
+% 	ymode = log,
+% 	log basis x=10,
+% 	log basis y=10,
+%     xlabel={Wave number~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
+%     %ylabel={Energy~$\Theta$~($\text{m}^3\cdot\text{rad}^{-1}$)},
+% 	ylabel={Curvature~($\text{rad}^{2}$)},
+% 	yticklabel pos=right,
+%     legend style={draw=none},
+% 	legend pos=north west,
+%     every axis legend/.append style={nodes={right}},
+% 	restrict x to domain=-3:4,
+% 	restrict y to domain=-5:3,
+%     ]
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_3_500km_k.dat};
+% 	\addlegendentry{Unified}
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_5_500km_k.dat};
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_7_500km_k.dat};
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_9_500km_k.dat};
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_11_500km_k.dat};
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_13_500km_k.dat};
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_15_500km_k.dat};
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_17_500km_k.dat};
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_19_500km_k.dat};
+% 	\addplot[
+% 		color=blue,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_21_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_d_3_500km_k.dat};
+% 	\addlegendentry{Donelan}
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_d_5_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_d_7_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_d_9_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_d_11_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_d_13_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_d_15_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_d_17_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_d_19_500km_k.dat};
+% 	\addplot[
+% 		color=red,
+% 		solid,
+% 		forget plot,
+% 		]
+% 		table [
+% 			col sep=comma,
+% 			x expr=\thisrowno{0},
+% 			y expr=\thisrowno{1}*(\thisrowno{0}^3),
+% 			]
+% 		{figures/u_d_21_500km_k.dat};
+% \end{axis}
+% \end{tikzpicture}
+% }
+% \caption{TEST}
+% \label{fig:unified_brak}
+% \end{figure}
 %
 %
 \begin{figure}
