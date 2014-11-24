@@ -2069,7 +2069,7 @@ range, including the \emph{short-wave regime}, which is defined as $k >=
 10\times k_p$.\\
 
 The combined works of Hasselmann et al. \cite{article:Hasselman1973}, Mitsuyasu 
-et al. \cite{article:Mitsuyasu1975} and Donelan et al. 
+et al. \cite{article:Mitsuyasu1975}, and Donelan et al. 
 \cite{article:Donelan1985} serve as foundation for the Unified spectrum. 
 Moreover, Elfouhaily et al. did expand their model to the short-wave regime by 
 incorporating related theory (Kitaigorodskii \cite{book:Kitaigorodskii1970}, 
@@ -2256,9 +2256,9 @@ a_m &= 0.13 \frac{u^{\ast}}{c_m}
 \begin{groupplot}[
 	group style={
 		columns=2,
-		xlabels at=edge bottom,
-		ylabels at=all,
-		%horizontal sep=1.5cm,
+		%xlabels at=edge bottom,
+		%ylabels at=all,
+		horizontal sep=2.0cm,
 	},
     xlabel={Wave number~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
 	width=0.5\textwidth,
@@ -2278,8 +2278,9 @@ a_m &= 0.13 \frac{u^{\ast}}{c_m}
 	xmax = 10^4,
 	ymin = 10^-15,
 	ymax = 10^3,
- 	%restrict x to domain=-3:4,
- 	restrict y to domain=-15:2,
+	%xtick = {0.01, 0.1, 1, 10, 100, 1000},
+	%restrict x to domain=-3:4,
+	%restrict y to domain=-15:2,
 	]
 \addplot[
     color=blue,
@@ -2408,10 +2409,11 @@ a_m &= 0.13 \frac{u^{\ast}}{c_m}
 	xmax = 10^4,
 	ymin = 10^-4,
 	ymax = 1,
-	restrict x to domain=-2:4,
- 	restrict y to domain=-4:1,
+	%xtick = {0.01, 0.1, 1, 10, 100, 1000},
+	%restrict x to domain=-2:4,
+	%restrict y to domain=-4:1,
 	ylabel={Curvature~($\text{rad}^{2}$)},
-	ytick pos=right,	
+	%ytick pos=right,	
 	]
 \addplot[
     color=blue,
