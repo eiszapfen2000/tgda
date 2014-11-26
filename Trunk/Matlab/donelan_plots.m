@@ -2,10 +2,6 @@ close all
 
 g = 9.81;
 
-% create standard spectra with ranges as below
-% omega 0...pi/2
-% k 0...0.25
-
 omega = 0.0:0.005:2*pi;
 k = (omega .* omega) ./ g;
 
@@ -17,7 +13,6 @@ d_10_50km = Donelan19851D(omega, 10.0, 50000, []);
 d_10_100km = Donelan19851D(omega, 10.0, 100000, []);
 d_10_250km = Donelan19851D(omega, 10.0, 250000, []);
 d_10_500km = Donelan19851D(omega, 10.0, 500000, []);
-d_10_600km = Donelan19851D(omega, 10.0, 600000, []);
 
 write2dcsv(omega, d_pm_10);
 write2dcsv(omega, d_10_5km);
@@ -27,17 +22,37 @@ write2dcsv(omega, d_10_50km);
 write2dcsv(omega, d_10_100km);
 write2dcsv(omega, d_10_250km);
 write2dcsv(omega, d_10_500km);
-write2dcsv(omega, d_10_600km);
 
 pm_k = PiersonMoskovitz1Dk(k, 10.0, []);
+
 d_10_5km_k = Donelan19851Dk(k, 10.0, 5000, []);
 d_10_10km_k = Donelan19851Dk(k, 10.0, 10000, []);
 d_10_25km_k = Donelan19851Dk(k, 10.0, 25000, []);
 d_10_50km_k = Donelan19851Dk(k, 10.0, 50000, []);
+d_10_75km_k = Donelan19851Dk(k, 10.0, 75000, []);
 d_10_100km_k = Donelan19851Dk(k, 10.0, 100000, []);
-d_10_250km_k = Donelan19851Dk(k, 10.0, 250000, []);
+d_10_200km_k = Donelan19851Dk(k, 10.0, 200000, []);
+d_10_300km_k = Donelan19851Dk(k, 10.0, 300000, []);
+d_10_400km_k = Donelan19851Dk(k, 10.0, 400000, []);
 d_10_500km_k = Donelan19851Dk(k, 10.0, 500000, []);
-d_10_600km_k = Donelan19851Dk(k, 10.0, 600000, []);
+d_10_1000km_k = Donelan19851Dk(k, 10.0, 1000000, []);
+d_10_1500km_k = Donelan19851Dk(k, 10.0, 1500000, []);
+d_10_2000km_k = Donelan19851Dk(k, 10.0, 2000000, []);
+
+write2dcsv(omega, d_10_5km_k);
+write2dcsv(omega, d_10_10km_k);
+write2dcsv(omega, d_10_25km_k);
+write2dcsv(omega, d_10_50km_k);
+write2dcsv(omega, d_10_75km_k);
+write2dcsv(omega, d_10_100km_k);
+write2dcsv(omega, d_10_200km_k);
+write2dcsv(omega, d_10_300km_k);
+write2dcsv(omega, d_10_400km_k);
+write2dcsv(omega, d_10_500km_k);
+write2dcsv(omega, d_10_1000km_k);
+write2dcsv(omega, d_10_1500km_k);
+write2dcsv(omega, d_10_2000km_k);
+
 
 % figure
 % hold on
