@@ -39,19 +39,19 @@ d_10_1000km_k = Donelan19851Dk(k, 10.0, 1000000, []);
 d_10_1500km_k = Donelan19851Dk(k, 10.0, 1500000, []);
 d_10_2000km_k = Donelan19851Dk(k, 10.0, 2000000, []);
 
-write2dcsv(omega, d_10_5km_k);
-write2dcsv(omega, d_10_10km_k);
-write2dcsv(omega, d_10_25km_k);
-write2dcsv(omega, d_10_50km_k);
-write2dcsv(omega, d_10_75km_k);
-write2dcsv(omega, d_10_100km_k);
-write2dcsv(omega, d_10_200km_k);
-write2dcsv(omega, d_10_300km_k);
-write2dcsv(omega, d_10_400km_k);
-write2dcsv(omega, d_10_500km_k);
-write2dcsv(omega, d_10_1000km_k);
-write2dcsv(omega, d_10_1500km_k);
-write2dcsv(omega, d_10_2000km_k);
+write2dcsv(k, d_10_5km_k);
+write2dcsv(k, d_10_10km_k);
+write2dcsv(k, d_10_25km_k);
+write2dcsv(k, d_10_50km_k);
+write2dcsv(k, d_10_75km_k);
+write2dcsv(k, d_10_100km_k);
+write2dcsv(k, d_10_200km_k);
+write2dcsv(k, d_10_300km_k);
+write2dcsv(k, d_10_400km_k);
+write2dcsv(k, d_10_500km_k);
+write2dcsv(k, d_10_1000km_k);
+write2dcsv(k, d_10_1500km_k);
+write2dcsv(k, d_10_2000km_k);
 
 
 % figure

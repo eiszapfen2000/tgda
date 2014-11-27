@@ -1,4 +1,4 @@
-% close all
+close all
 
 g = 9.81;
 omega = 0.0:0.005:2*pi;
@@ -57,6 +57,8 @@ j_10_300km_k = JONSWAP1Dk(k, 10.0, 300000, []);
 j_10_400km_k = JONSWAP1Dk(k, 10.0, 400000, []);
 j_10_500km_k = JONSWAP1Dk(k, 10.0, 500000, []);
 j_10_1000km_k = JONSWAP1Dk(k, 10.0, 1000000, []);
+j_10_1500km_k = JONSWAP1Dk(k, 10.0, 1500000, []);
+j_10_2000km_k = JONSWAP1Dk(k, 10.0, 2000000, []);
 
 j_12_200km_k = JONSWAP1Dk(k, 12.5, 200000, []);
 
@@ -123,6 +125,8 @@ write2dcsv(k, j_10_300km_k);
 write2dcsv(k, j_10_400km_k);
 write2dcsv(k, j_10_500km_k);
 write2dcsv(k, j_10_1000km_k);
+write2dcsv(k, j_10_1500km_k);
+write2dcsv(k, j_10_2000km_k);
 
 write2dcsv(k, j_12_200km_k);
 
