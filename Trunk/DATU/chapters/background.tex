@@ -2063,16 +2063,60 @@ inverse wave age, see Figure~\ref{fig:donelan_spectra}.
 \begin{tikzpicture}
 \begin{groupplot}[
 	group style={
+		rows=2,
 		columns=2,
 		xlabels at=edge bottom,
 		ylabels at=edge left,
-		horizontal sep=1.5cm,
+ 		vertical sep=0pt,
+% 		horizontal sep=1.5cm,
 	},
     xlabel={Wave number~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
     ylabel={Energy~$\Theta$~($\text{m}^3\cdot\text{rad}^{-1}$)},
 	width=0.5\textwidth,
 	scaled ticks=false,
 	]
+\nextgroupplot[group/empty plot]
+\nextgroupplot[
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+	xticklabels={},
+	xmin = 0,
+	xmax = 0.2,
+	ymin = 15,
+	ymax = 31.5,
+	enlarge x limits = true,
+%	legend pos=south east,
+	]
+\addplot[
+    color=blue,
+    solid,
+    ]
+    table [col sep=comma]{figures/pm_10_k.dat};
+% \addlegendentry{PM}
+\addplot[
+    color=red,
+    solid,
+    ]
+    table [col sep=comma]{figures/j_10_1000km_k.dat};
+% \addlegendentry{JONSWAP}
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/j_10_1500km_k.dat};
+\addplot[
+    color=black,
+    solid,
+    ]
+    table [col sep=comma]{figures/d_10_1000km_k.dat};
+% \addlegendentry{Donelan}
+\addplot[
+    color=green,
+    solid,
+    ]
+    table [col sep=comma]{figures/u_10_1000km_k.dat};
+% \addlegendentry{Unified}
 \nextgroupplot[
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
@@ -2111,43 +2155,56 @@ inverse wave age, see Figure~\ref{fig:donelan_spectra}.
 \nextgroupplot[
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
-	yticklabel style={
+	xticklabel style={
 		/pgf/number format/fixed,
-		/pgf/number format/precision=3,
-		/pgf/number format/fixed zerofill,
 	},
-	restrict x to domain=0.5:2.5,
-]
+	xmin = 0,
+	xmax = 0.2,
+	ymax = 15,
+	enlarge x limits = true,
+	]
 \addplot[
     color=blue,
     solid,
-	]
-    table [col sep=comma]{figures/u_pm_kp_1.dat};
+    ]
+    table [col sep=comma]{figures/pm_10_k.dat};
 \addlegendentry{PM}
-\addplot[
-    color=green,
-    solid,
-	]
-    table [col sep=comma]{figures/u_d_kp_1_wc_083.dat};
-\addlegendentry{Donelan $0.83$}
-\addplot[
-    color=magenta,
-    solid,
-	]
-    table [col sep=comma]{figures/u_d_kp_1_wc_4.dat};
-\addlegendentry{Donelan $4$}
 \addplot[
     color=red,
     solid,
-	]
-    table [col sep=comma]{figures/u_kp_1_wc_083.dat};
-\addlegendentry{Unified $0.83$}
+    ]
+    table [col sep=comma]{figures/j_10_1000km_k.dat};
+\addlegendentry{JONSWAP}
+\addplot[
+    color=red,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/j_10_1500km_k.dat};
 \addplot[
     color=black,
     solid,
-	]
-    table [col sep=comma]{figures/u_kp_1_wc_4.dat};
-\addlegendentry{Unified $4$}
+    ]
+    table [col sep=comma]{figures/d_10_1000km_k.dat};
+\addlegendentry{Donelan}
+\addplot[
+    color=black,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/d_10_1500km_k.dat};
+\addplot[
+    color=green,
+    solid,
+    ]
+    table [col sep=comma]{figures/u_10_1000km_k.dat};
+\addlegendentry{Unified}
+\addplot[
+    color=green,
+    solid,
+	forget plot,
+    ]
+    table [col sep=comma]{figures/u_10_1500km_k.dat};
 \end{groupplot}
 \end{tikzpicture}
 \caption{Left: Unified frequency spectra with different fetch values $F$, 
@@ -2219,7 +2276,7 @@ component of the wind in the direction of the peak waves, and is restricted to
 the interval $\Omega_c \in \interval[open right]{0.84}{5}$. As one may see, 
 $\Omega_c$ is guaranteed an asymptotic value of $0.84$ for large fetch e.g. 
 fully developed seas, which is a notable improvement compared to the 
-spectral models of Hasselmann et al. and Donelan et al.
+spectral models of Hasselmann et al. and Donelan et al., see Figure
 
 With the basic terms at hand, we are able to move on to the one dimensional 
 wavenumber spectrum as given by Elfouhaily et al. We may write:
@@ -2270,125 +2327,120 @@ Donelan et al.\cite{article:Donelan1993}.
 % dimensional wavenumber spectrum of the Unified spectrum, we may compare it to 
 % the Donelan spectrum, with focus on the high frequency regime.
 %
-\begin{figure}
-\centering
-\begin{tikzpicture}
-\begin{groupplot}[
-	group style={
-		columns=2,
-		xlabels at=edge bottom,
-		ylabels at=edge left,
-% 		horizontal sep=1.5cm,
-	},
-    xlabel={Wave number~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
-    ylabel={Energy~$\Theta$~($\text{m}^3\cdot\text{rad}^{-1}$)},
-	width=0.5\textwidth,
-	scaled ticks=false,
-	]
-\nextgroupplot[
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}},
-	restrict x to domain=0:0.4,
-	]
-\addplot[
-    color=blue,
-    solid,
-    ]
-    table [col sep=comma]{figures/pm_10_k.dat};
-\addlegendentry{PM}
-\addplot[
-    color=black,
-    solid,
-    ]
-    table [col sep=comma]{figures/u_10_500km_k.dat};
-\addlegendentry{500 km}
-\addplot[
-    color=magenta,
-    solid,
-    ]
-    table [col sep=comma]{figures/u_10_250km_k.dat};
-\addlegendentry{250 km}
-\addplot[
-    color=green,
-    solid,
-    ]
-    table [col sep=comma]{figures/u_10_100km_k.dat};
-\addlegendentry{100 km}
-\addplot[
-    color=red,
-    solid,
-    ]
-    table [col sep=comma]{figures/u_10_50km_k.dat};
-\addlegendentry{50 km}
-\nextgroupplot[
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}},
-% 	yticklabel style={
-% 		/pgf/number format/fixed,
-% 		/pgf/number format/precision=3,
-% 		/pgf/number format/fixed zerofill,
+% \begin{figure}
+% \centering
+% \begin{tikzpicture}
+% \begin{groupplot}[
+% 	group style={
+% 		columns=2,
+% 		xlabels at=edge bottom,
+% 		ylabels at=edge left,
+% % 		horizontal sep=1.5cm,
 % 	},
-	restrict x to domain=0:0.4,
-]
-\addplot[
-    color=blue,
-    solid,
-	]
-    table [col sep=comma]{figures/pm_10_k.dat};
-\addlegendentry{PM}
-\addplot[
-    color=green,
-    solid,
-	]
-    table [col sep=comma]{figures/u_10_1000km_k.dat};
-\addlegendentry{Unified 1000km}
-% \addplot[
-%     color=magenta,
-%     solid,
+%     xlabel={Wave number~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
+%     ylabel={Energy~$\Theta$~($\text{m}^3\cdot\text{rad}^{-1}$)},
+% 	width=0.5\textwidth,
+% %	height=0.75\textwidth,
+% 	scaled ticks=false,
 % 	]
+% \nextgroupplot[
+%     legend style={draw=none},
+%     every axis legend/.append style={nodes={right}},
+% 	restrict x to domain=0:0.25,
+% %	restrict y to domain=0:15,
+% %	ymin = 10^-15,
+% 	ymax = 16,
+% 	]
+% \addplot[
+%     color=blue,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/pm_10_k.dat};
+% \addlegendentry{PM}
+% \addplot[
+%     color=red,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/j_10_1000km_k.dat};
+% \addlegendentry{JONSWAP}
+% \addplot[
+%     color=red,
+%     solid,
+% 	forget plot,
+%     ]
+%     table [col sep=comma]{figures/j_10_1500km_k.dat};
+% %\addlegendentry{250 km}
+% \addplot[
+%     color=black,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/d_10_1000km_k.dat};
+% \addlegendentry{Donelan}
+% \addplot[
+%     color=black,
+%     solid,
+% 	forget plot,
+%     ]
+%     table [col sep=comma]{figures/d_10_1500km_k.dat};
+% %\addlegendentry{250 km}
+% \addplot[
+%     color=green,
+%     solid,
+%     ]
 %     table [col sep=comma]{figures/u_10_1000km_k.dat};
-% \addlegendentry{U 1000km}
+% \addlegendentry{Unified}
 % \addplot[
-%     color=red,
+%     color=green,
+%     solid,
+% 	forget plot,
+%     ]
+%     table [col sep=comma]{figures/u_10_1500km_k.dat};
+% %\addlegendentry{250 km}
+% \nextgroupplot[
+%     legend style={draw=none},
+%     every axis legend/.append style={nodes={right}},
+% % 	yticklabel style={
+% % 		/pgf/number format/fixed,
+% % 		/pgf/number format/precision=3,
+% % 		/pgf/number format/fixed zerofill,
+% % 	},
+% 	restrict x to domain=0:0.4,
+% ]
+% \addplot[
+%     color=blue,
 %     solid,
 % 	]
-%     table [col sep=comma]{figures/u_10_1500km_k.dat};
-% \addlegendentry{U 1500km}
-\addplot[
-    color=red,
-    solid,
-	]
-    table [col sep=comma]{figures/u_10_1500km_k.dat};
-\addlegendentry{Unified 1500km}
-\addplot[
-    color=magenta,
-    solid,
-	]
-    table [col sep=comma]{figures/u_d_10_1000km_k.dat};
-\addlegendentry{Donelan 1000km}
+%     table [col sep=comma]{figures/pm_10_k.dat};
+% \addlegendentry{PM}
+% \addplot[
+%     color=black,
+%     solid,
+% 	]
+%     table [col sep=comma]{figures/u_10_500km_k.dat};
+% \addlegendentry{500km}
 % \addplot[
 %     color=magenta,
 %     solid,
 % 	]
-%     table [col sep=comma]{figures/u_d_10_1000km_k.dat};
-% \addlegendentry{D 1000km}
+%     table [col sep=comma]{figures/u_10_250km_k.dat};
+% \addlegendentry{250km}
+% \addplot[
+%     color=green,
+%     solid,
+% 	]
+%     table [col sep=comma]{figures/u_10_100km_k.dat};
+% \addlegendentry{100km}
 % \addplot[
 %     color=red,
 %     solid,
 % 	]
-%     table [col sep=comma]{figures/u_d_10_1500km_k.dat};
-% \addlegendentry{D 1500km}
-\addplot[
-    color=black,
-    solid,
-	]
-    table [col sep=comma]{figures/u_d_10_1500km_k.dat};
-\addlegendentry{Donelan 1500km}
-\end{groupplot}
-\end{tikzpicture}
-\caption{LOLZ}
-\label{fig:unified_spectra_improvements}
-\end{figure}
+%     table [col sep=comma]{figures/u_10_50km_k.dat};
+% \addlegendentry{50km}
+% \end{groupplot}
+% \end{tikzpicture}
+% \caption{LOLZ}
+% \label{fig:unified_spectra_improvements}
+% \end{figure}
 %
 \begin{subequations}
 \begin{align}
