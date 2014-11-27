@@ -2,7 +2,7 @@ close all
 
 g = 9.81;
 
-omega = 0:0.005:2*pi;
+omega = 0:0.005:0.5*pi;
 k = (omega .* omega) ./ g;
 
 pm_10_k = PiersonMoskovitz1Dk(k, 10.0, []);
@@ -19,6 +19,8 @@ u_10_300km_k = UnifiedSpectrum1Dk(k, 10.0, 300000, []);
 u_10_400km_k = UnifiedSpectrum1Dk(k, 10.0, 400000, []);
 u_10_500km_k = UnifiedSpectrum1Dk(k, 10.0, 500000, []);
 u_10_1000km_k = UnifiedSpectrum1Dk(k, 10.0, 1000000, []);
+u_10_1500km_k = UnifiedSpectrum1Dk(k, 10.0, 1500000, []);
+u_10_2000km_k = UnifiedSpectrum1Dk(k, 10.0, 2000000, []);
 
 write2dcsv(k, u_10_5km_k);
 write2dcsv(k, u_10_10km_k);
@@ -32,6 +34,33 @@ write2dcsv(k, u_10_300km_k);
 write2dcsv(k, u_10_400km_k);
 write2dcsv(k, u_10_500km_k);
 write2dcsv(k, u_10_1000km_k);
+write2dcsv(k, u_10_1500km_k);
+write2dcsv(k, u_10_2000km_k);
+
+u_d_10_100km_k = Donelan19851Dk(k, 10.0, 100000, []);
+u_d_10_500km_k = Donelan19851Dk(k, 10.0, 500000, []);
+u_d_10_1000km_k = Donelan19851Dk(k, 10.0, 1000000, []);
+u_d_10_1500km_k = Donelan19851Dk(k, 10.0, 1500000, []);
+u_d_10_2000km_k = Donelan19851Dk(k, 10.0, 2000000, []);
+
+write2dcsv(k, u_d_10_500km_k);
+write2dcsv(k, u_d_10_1000km_k);
+write2dcsv(k, u_d_10_1500km_k);
+write2dcsv(k, u_d_10_2000km_k);
+
+u_j_10_100km_k = JONSWAP1Dk(k, 10.0, 100000, []);
+u_j_10_500km_k = JONSWAP1Dk(k, 10.0, 500000, []);
+u_j_10_1000km_k = JONSWAP1Dk(k, 10.0, 1000000, []);
+u_j_10_1500km_k = JONSWAP1Dk(k, 10.0, 1500000, []);
+u_j_10_2000km_k = JONSWAP1Dk(k, 10.0, 2000000, []);
+
+figure
+hold on
+plot(k, pm_10_k, 'xb');
+plot(k, u_10_100km_k, 'r');
+plot(k, u_d_10_100km_k, 'g');
+plot(k, u_j_10_100km_k, 'black');
+hold off
 
 u_pm_kp_1 = PiersonMoskovitz1Dk(k, [], struct('kp', 1));
 u_d_kp_1_wc_4 = Donelan19851Dk(k, [], [], struct('kp', 1, 'wc', 4));
