@@ -2209,8 +2209,11 @@ inverse wave age, see Figure~\ref{fig:donelan_spectra}.
 \end{tikzpicture}
 \caption{Left: Unified frequency spectra with different fetch values $F$, 
 Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$). Right: 
-Unified and Donelan spectra with different inverse wave age values $\Omega$, 
-Pierson Moskowitz spectrum for comparison ($k_p = 1$).}
+%Unified and Donelan spectra with different inverse wave age values $\Omega$, 
+%Pierson Moskowitz spectrum for comparison ($k_p = 1$).
+Fetch limited spectral models, each with a fetch of $1000km$ and $1500km$, 
+Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$).
+}
 \label{fig:unified_spectra}
 \end{figure}
 %
@@ -2275,8 +2278,10 @@ parameter. Moreover, $\Omega_c$ denotes the inverse wave age based on the
 component of the wind in the direction of the peak waves, and is restricted to 
 the interval $\Omega_c \in \interval[open right]{0.84}{5}$. As one may see, 
 $\Omega_c$ is guaranteed an asymptotic value of $0.84$ for large fetch e.g. 
-fully developed seas, which is a notable improvement compared to the 
-spectral models of Hasselmann et al. and Donelan et al., see Figure
+fully developed seas. Hence, the Unified spectrum is not prone to 
+overdevelopment with increasining fetch, which is a notable improvement 
+compared to the spectral models of Hasselmann et al. and Donelan et al., see 
+Figure~\ref{fig:unified_spectra}.
 
 With the basic terms at hand, we are able to move on to the one dimensional 
 wavenumber spectrum as given by Elfouhaily et al. We may write:
