@@ -69,8 +69,9 @@ limited amount of time.
 \begin{figure}[tb]
 	\centering
 	\includegraphics[width=\textwidth]{figures/SurfaceWavesEnergy}
-	\caption{A tentative overview of which forces influence which wave band, as well as the relative amount of energy
-each wave band contains.}
+	\caption{A tentative overview of which forces influence which wave 
+frequency band, as well as the relative amount of energy
+each wave frequency band contains.}
 	\label{fig:surface_waves_energy}
 \end{figure}
 
@@ -2325,20 +2326,7 @@ z_0 &= 3.7 \times 10^{-5}~\frac{U_{10}^2}{g}
 where $z_0$ is called the \emph{roughness parameter} and is modeled according 
 to Donelan et al.\cite{article:Donelan1993}. $\kappa$ is the 
 \emph{von K\'arm\'an constant}~\cite{article:vonKarman1931}.
-%Equation~\ref{eq:z_0} models the roughness parameter $z_0$ according to 
-%Donelan et al.\cite{article:Donelan1993}.
 %
-\begin{subequations}
-\begin{align}
-D(k, \theta) &= \frac{1}{2\pi}\{1 + \Delta(k) + \cos[2(\theta - 
-\theta_p)]\} \\
-\Delta(k) &= \tanh\left[a_0 + a_p\left(\frac{c}{c_p}\right)^{2.5} + 
-a_m\left(\frac{c_m}{c}\right)^{2.5}\right] \\
-a_0 &= \frac{\log(2)}{4} \\
-a_p &= 4 \\
-a_m &= 0.13 \frac{u^{\ast}}{c_m}
-\end{align}
-\end{subequations}
 %
 \begin{figure}
 \centering
@@ -2734,12 +2722,36 @@ yshift=3\pgfkeysvalueof{/pgfplots/every axis title shift}
 \end{tikzpicture}
 \caption{Unified spectra and Donelan spectra for the full wavenumber range and 
 for wind speeds from $3m\cdot s^{-1}$ up to $21m\cdot s^{-1}$ with a $2m\cdot 
-s^{-1}$ step. Left: One dimensional wavenumber spectra $\Theta(k)$. Right: One 
-dimensional curvature spectra $B(k)$, the peak to the right is at $k_m = 
-370rad\cdot m^{-1}$.}
+s^{-1}$ step ($F=500km$). Left: One dimensional wavenumber spectra $\Theta(k)$. 
+Right: One dimensional curvature spectra $B(k)$. %The Unified spectra's peak to 
+%the right is at $k_m = 370rad\cdot m^{-1}$.
+}
 \label{fig:unified_log}
 \end{figure}
 %
+\\
+
+At this point we may look at both the low, and the high frequency regime of the 
+Unified spectrum, including the Donelan spectrum for comparison, see 
+Figure~\ref{fig:unified_log}. One can see that the Unified spectrum matches the 
+Donelan spectrum rather well in the long wave regime, but differs in the short 
+wave regime. Moreover, one may notice the the former does not give any energy 
+beyond the gravity-capillary wave band. In addition, we may look at the 
+\emph{curvature spectrum} $B(k) = k^3\Theta(k)$ to see that the Unified 
+spectrum properly models the secondary gravity-capillary peak at wavenumber 
+$k_m = 370~\text{rad}\cdot\text{m}^{-1}$.
+%
+\begin{subequations}
+\begin{align}
+D(k, \theta) &= \frac{1}{2\pi}\{1 + \Delta(k) + \cos[2(\theta - 
+\theta_p)]\} \\
+\Delta(k) &= \tanh\left[a_0 + a_p\left(\frac{c}{c_p}\right)^{2.5} + 
+a_m\left(\frac{c_m}{c}\right)^{2.5}\right] \\
+a_0 &= \frac{\log(2)}{4} \\
+a_p &= 4 \\
+a_m &= 0.13 \frac{u^{\ast}}{c_m}
+\end{align}
+\end{subequations}
 %
 \begin{figure}
  \centering
