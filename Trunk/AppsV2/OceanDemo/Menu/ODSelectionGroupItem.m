@@ -226,9 +226,12 @@
                 indexOfActiveItem = index;
 
                 // set target property
-                if ( target != nil )
+                if ( targetProperty.target != nil )
                 {
-                    ODObjCSetVariable(target, offset, size, &indexOfActiveItem);
+                    ODObjCSetVariable(targetProperty.target,
+                        targetProperty.offset,
+                        targetProperty.size,
+                        &indexOfActiveItem);
                 }
 
                 return;
@@ -247,10 +250,13 @@
     alignedGeometry
         = [ ODMenu alignRectangle:geometry withAlignment:alignment ];
 
-        // get value from target
-    if ( target != nil )
+    // get value from target
+    if ( targetProperty.target != nil )
     {
-        ODObjCGetVariable(target, offset, size, &indexOfActiveItem);
+        ODObjCGetVariable(targetProperty.target,
+            targetProperty.offset,
+            targetProperty.size,
+            &indexOfActiveItem);
     }
 }
 

@@ -43,6 +43,8 @@
 - (id) initWithName:(NSString *)newName;
 - (void) dealloc;
 
+- (const FVector3 * const) frustumCornerPositions;
+
 - (void) updateWithPosition:(const Vector3)position
                 orientation:(const Quaternion)orientation
                         fov:(const double)fov

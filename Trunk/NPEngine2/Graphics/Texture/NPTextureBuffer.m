@@ -1,5 +1,6 @@
 #import <Foundation/NSException.h>
 #import "Graphics/NPEngineGraphics.h"
+#import "Graphics/Buffer/NPBufferObject.h"
 #import "NPTextureBindingState.h"
 #import "NPTextureBuffer.h"
 
@@ -60,9 +61,14 @@
         = getGLTextureInternalFormat(newDataFormat, newPixelFormat, YES,
                                      NULL, NULL);
 
+    GLuint bufferID = [ buffer glID ];
+    glBindBuffer(GL_TEXTURE_BUFFER, bufferID);
+
     [[[ NPEngineGraphics instance ] textureBindingState ] setTextureImmediately:self ];
-    glTexBuffer(GL_TEXTURE_BUFFER, glInternalFormat, [ buffer glID ]);
+    glTexBuffer(GL_TEXTURE_BUFFER, glInternalFormat, bufferID);
     [[[ NPEngineGraphics instance ] textureBindingState ] restoreOriginalTextureImmediately ];
+
+    glBindBuffer(GL_TEXTURE_BUFFER, 0);
 }
 
 - (void) detachBuffer

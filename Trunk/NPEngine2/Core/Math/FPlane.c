@@ -118,12 +118,12 @@ float fplane_pv_signed_distance_from_plane(const FPlane * const plane, const FVe
 {
     const float tmp = fv3_vv_dot_product(&(plane->normal), point);
 
-    return tmp + plane->d;
+    return tmp - plane->d;
 }
 
 float fplane_pv_distance_from_plane(const FPlane * const plane, const FVector3 * const point)
 {
     const float tmp = fv3_vv_dot_product(&(plane->normal), point);
 
-    return fabsf(tmp + plane->d);
+    return fabsf(tmp - plane->d);
 }

@@ -23,8 +23,10 @@
             TextSize = "16";
             Texture = "Height Texture";
             TargetObject = "Ocean";
-            TargetProperty = "heightRange";
+            TargetProperty = "heightRanges";
             Channels = ("y", "n", "n", "n");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedHeight";
         };
 
         PGradientX =
@@ -37,8 +39,10 @@
             TextSize = "16";
             Texture = "Height Texture Gradient";
             TargetObject = "Ocean";
-            TargetProperty = "gradientXRange";
+            TargetProperty = "gradientXRanges";
             Channels = ("y", "n", "n", "n");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedGradient";
         };
 
         PGradientZ =
@@ -51,8 +55,10 @@
             TextSize = "16";
             Texture = "Height Texture Gradient";
             TargetObject = "Ocean";
-            TargetProperty = "gradientZRange";
+            TargetProperty = "gradientZRanges";
             Channels = ("n", "y", "n", "n");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedGradient";
         };
 
         PDisplacementX =
@@ -65,8 +71,10 @@
             TextSize = "16";
             Texture = "Height Texture Displacement";
             TargetObject = "Ocean";
-            TargetProperty = "displacementXRange";
+            TargetProperty = "displacementXRanges";
             Channels = ("y", "n", "n", "n");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedDisplacement";
         };
 
         PDisplacementZ =
@@ -79,8 +87,74 @@
             TextSize = "16";
             Texture = "Height Texture Displacement";
             TargetObject = "Ocean";
-            TargetProperty = "displacementZRange";
+            TargetProperty = "displacementZRanges";
             Channels = ("n", "y", "n", "n");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedDisplacement";
+        };
+
+        PDisplacementXDX =
+        {
+            Type = "ODTextureItem";
+            Label = "Displacement X dX";
+            Alignment = "BottomLeft";
+            Position = ("620", "20" );
+            Size = ( "100", "100" );
+            TextSize = "16";
+            Texture = "Height Texture Displacement Derivatives";
+            TargetObject = "Ocean";
+            TargetProperty = "displacementXdXRanges";
+            Channels = ("y", "n", "n", "n");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedDisplacementDerivatives";
+        };
+
+        PDisplacementXDZ =
+        {
+            Type = "ODTextureItem";
+            Label = "Displacement X dZ";
+            Alignment = "BottomLeft";
+            Position = ("740", "20" );
+            Size = ( "100", "100" );
+            TextSize = "16";
+            Texture = "Height Texture Displacement Derivatives";
+            TargetObject = "Ocean";
+            TargetProperty = "displacementXdZRanges";
+            Channels = ("n", "y", "n", "n");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedDisplacementDerivatives";
+        };
+
+        PDisplacementZDX =
+        {
+            Type = "ODTextureItem";
+            Label = "Displacement Z dX";
+            Alignment = "BottomLeft";
+            Position = ("860", "20" );
+            Size = ( "100", "100" );
+            TextSize = "16";
+            Texture = "Height Texture Displacement Derivatives";
+            TargetObject = "Ocean";
+            TargetProperty = "displacementZdXRanges";
+            Channels = ("n", "n", "y", "n");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedDisplacementDerivatives";
+        };
+
+        PDisplacementZDZ =
+        {
+            Type = "ODTextureItem";
+            Label = "Displacement Z dZ";
+            Alignment = "BottomLeft";
+            Position = ("980", "20" );
+            Size = ( "100", "100" );
+            TextSize = "16";
+            Texture = "Height Texture Displacement Derivatives";
+            TargetObject = "Ocean";
+            TargetProperty = "displacementZdZRanges";
+            Channels = ("n", "n", "n", "y");
+            VisibleTarget = "Ocean";
+            VisibleProperty = "receivedDisplacementDerivatives";
         };
 
         PGeometryResolution =
@@ -94,7 +168,7 @@
             ItemSize = ("40", "40");
             Spacing = ("5", "5");
             Layout = ("2", "3");
-            Labels = ("8", "64", "128", "256", "512", "1024");
+            Labels = ("8", "16", "32", "64", "128", "256");
             TargetObject = "Ocean";
             TargetProperty = "geometryResolutionIndex";
         };
@@ -110,9 +184,25 @@
             ItemSize = ("40", "40");
             Spacing = ("5", "5");
             Layout = ("2", "3");
-            Labels = ("8", "64", "128", "256", "512", "1024");
+            Labels = ("8", "16", "32", "64", "128", "256");
             TargetObject = "Ocean";
             TargetProperty = "gradientResolutionIndex";
+        };
+
+        PGeneratorOptions =
+        {
+            Type = "ODCombinationGroupItem";
+            Label = "BRAK";
+            Alignment = "TopRight";
+            Position = ("130", "5" );
+            Size = ( "40", "40" );
+            TextSize = "16";
+            ItemSize = ("90", "25");
+            Spacing = ("5", "5");
+            Layout = ("2", "2");
+            Labels = ("Height", "Displacement", "Normals", "Whitecaps");
+            TargetObject = "Ocean";
+            TargetProperty = "options";
         };
 
         PSpectrumType =
@@ -167,7 +257,7 @@
             Position = ("20", "435" );
             Size = ( "50", "1" );
             TextSize = "16";
-            MinimumValue = "1.0";
+            MinimumValue = "50.0";
             MaximumValue = "500.0";
             LineSize = ("85", "3");
             HeadSize = ("3", "21");
@@ -184,7 +274,7 @@
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
-            MaximumValue = "200.0";
+            MaximumValue = "20.0";
             LineSize = ("85", "3");
             HeadSize = ("3", "21");
             TargetObject = "Ocean";
@@ -205,6 +295,22 @@
             HeadSize = ("3", "21");
             TargetObject = "Ocean";
             TargetProperty = "dampening";
+        };
+
+        PLods =
+        {
+            Type = "ODStepItem";
+            Label = "BRAK";
+            Alignment = "TopRight";
+            Position = ("20", "525" );
+            Size = ( "20", "30" );
+            TextSize = "16";
+            Mode = "Integer";
+            MinimumValue = "1";
+            MaximumValue = "4";
+            Step = "1";
+            TargetObject = "Ocean";
+            TargetProperty = "numberOfLods";
         };
 
         PSliderDisplacementScale =
@@ -269,6 +375,32 @@
             HeadSize = ("3", "21");
             TargetObject = "Scene";
             TargetProperty = "jacobianEpsilon";
+        };
+
+        PWaterColor =
+        {
+            Type = "ODWaterColorItem";
+            Label = "";
+            Alignment = "TopLeft";
+            Position = ("20", "125" );
+            Size = ( "128", "20" );
+            TextSize = "16";
+            TextureFilename = "WaterColor.png";
+            TargetObject = "Ocean";
+            TargetProperty = "waterColorCoordinate";
+        };
+
+        PWaterColorIntensity =
+        {
+            Type = "ODWaterColorItem";
+            Label = "";
+            Alignment = "TopLeft";
+            Position = ("20", "155" );
+            Size = ( "128", "20" );
+            TextSize = "16";
+            TextureFilename = "BlackToWhiteRamp.png";
+            TargetObject = "Ocean";
+            TargetProperty = "waterColorIntensityCoordinate";
         };
 
         PSliderKey =

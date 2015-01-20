@@ -789,7 +789,7 @@ void fm4_msss_scale_matrix_xyz(FMatrix4 * m, float x, float y, float z)
     M_EL(*m,2,2) = z;
 }
 
-void fm4_vvv_look_at_matrix_m(FVector3 * eyePosition, FVector3 * lookAtPosition, FVector3 * upVector, FMatrix4 * result)
+void fm4_vvv_look_at_matrix_m(const FVector3 * const eyePosition, const FVector3 * const lookAtPosition, const FVector3 * const upVector, FMatrix4 * result)
 {
     fm4_m_set_identity(result);
 
@@ -805,7 +805,7 @@ void fm4_vvv_look_at_matrix_m(FVector3 * eyePosition, FVector3 * lookAtPosition,
     fm4_vvvv_look_at_matrix_m(&rightVector, &normalisedUpVector, &lookAtVector, eyePosition, result);
 }
 
-void fm4_vvvv_look_at_matrix_m(FVector3 * rightVector, FVector3 * upVector, FVector3 * forwardVector, FVector3 * position, FMatrix4 * result)
+void fm4_vvvv_look_at_matrix_m(const FVector3 * const rightVector, const FVector3 * const upVector, const FVector3 * const forwardVector, const FVector3 * const position, FMatrix4 * result)
 {
     FMatrix4 rotation;
     fm4_m_set_identity(&rotation);
@@ -914,7 +914,6 @@ void fm4_m_inverse_m(const FMatrix4 * const m, FMatrix4 * result)
     }
 
     float scalar = 1.0f/determinant;
-    //FMatrix3 * subMatrix = fm3_alloc_init();
     FMatrix3 subMatrix;
     int sign;
 

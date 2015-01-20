@@ -19,6 +19,7 @@ OdProjectorRotationEvents;
 {
 	Matrix4 view;
     Matrix4 projection;
+    Matrix4 range;
     Matrix4 viewProjection;
     Matrix4 inverseViewProjection;
     Quaternion orientation;
@@ -29,6 +30,10 @@ OdProjectorRotationEvents;
     Vector3 forward;
     Vector3 right;
     Vector3 up;
+
+    double lowerBound;
+    double base;
+    double upperBound;
 
     double fov;
     double nearPlane;
@@ -52,6 +57,10 @@ OdProjectorRotationEvents;
                    ;
 - (void) dealloc;
 
+- (double) lowerBound;
+- (double) base;
+- (double) upperBound;
+
 - (double) fov;
 - (double) aspectRatio;
 - (double) nearPlane;
@@ -67,6 +76,10 @@ OdProjectorRotationEvents;
 
 - (BOOL) connecting;
 - (BOOL) disconnecting;
+
+- (void) setLowerBound:(double)newLowerBound;
+- (void) setBase:(double)newBase;
+- (void) setUpperBound:(double)newUpperBound;
 
 - (void) setPosition:(const Vector3)newPosition;
 - (void) setCamera:(ODCamera *)newCamera;

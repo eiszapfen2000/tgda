@@ -27,24 +27,27 @@ technique "proj_grid_tf_transform"
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
     uniform mat4 invMVP;
-    uniform float area;
+    uniform float areaScale;
     uniform float displacementScale;
     uniform float heightScale;
     uniform vec2  vertexStep;
-    uniform sampler2D heightmap
+    uniform sampler2DArray heightmap
     {
         WrapS = Repeat;
         WrapT = Repeat;
         MinFilter = TriLinear;
         MagFilter = Linear;
+        Anisotropy = 4;
     };
-    uniform sampler2D displacement
+    uniform sampler2DArray displacement
     {
         WrapS = Repeat;
         WrapT = Repeat;
         MinFilter = TriLinear;
         MagFilter = Linear;
+        Anisotropy = 4;
     };
+    uniform samplerBuffer tsizes;
 
     # vertex streams
     in vec2 in_position : 0;
@@ -55,28 +58,16 @@ technique "proj_grid_tf_transform"
 technique "proj_grid_tf_feedback"
 {
     # effect variables
-    uniform mat4 np_modelviewprojectionmatrix;
-    uniform float area;
+    uniform mat4 np_viewprojectionmatrix;
+    uniform float areaScale;
     uniform float heightScale;
     uniform float jacobianEpsilon;
     uniform vec3 cameraPosition;
     uniform vec3 directionToSun;
     uniform vec3 sunColor;
-    uniform sampler2D heightmap
-    {
-        WrapS = Repeat;
-        WrapT = Repeat;
-        MinFilter = TriLinear;
-        MagFilter = Linear;
-    };
-    uniform sampler2D displacement
-    {
-        WrapS = Repeat;
-        WrapT = Repeat;
-        MinFilter = TriLinear;
-        MagFilter = Linear;
-    };
-    uniform sampler2D gradient
+    uniform vec2 waterColorCoordinate;
+    uniform vec2 waterColorIntensityCoordinate;
+    uniform sampler2DArray gradient
     {
         WrapS = Repeat;
         WrapT = Repeat;
@@ -84,6 +75,21 @@ technique "proj_grid_tf_feedback"
         MagFilter = Linear;
         Anisotropy = 16;
     };
+    uniform sampler2D watercolor
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform sampler2D watercolorIntensity
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform samplerBuffer sizes;
     uniform sampler3D variance
     {
         WrapS = ClampToEdge;
@@ -107,6 +113,7 @@ technique "proj_grid_tf_feedback"
         MagFilter = Linear;
         Anisotropy = 16;
     };
+
     # vertex streams
     in vec3 in_position : 0;
     in vec2 in_non_disp_position : 1;

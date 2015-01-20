@@ -103,14 +103,16 @@ void m4_mm_subtract_m(const Matrix4 * const m1, const Matrix4 * const m2, Matrix
 void m4_mm_multiply_m(const Matrix4 * const m1, const Matrix4 * const m2, Matrix4 * result);
 void m4_vm_multiply_v(const Vector4 * const v, const Matrix4 * const m, Vector4 * result);
 void m4_mv_multiply_v(const Matrix4 * const m, const Vector4 * const v, Vector4 * result);
+void m4_v3m_multiply_v3(const Vector3 * const v, const Matrix4 * const m, Vector3 * result);
+void m4_mv3_multiply_v3(const Matrix4 * const m, const Vector3 * const v, Vector3 * result);
 void m4_mv_translation_matrix(Matrix4 * m, const Vector3 * const v);
 void m4_mv_scale_matrix(Matrix4 * m, const Vector3 * const v);
 void m4_ms_scale_matrix_x(Matrix4 * m, double x);
 void m4_ms_scale_matrix_y(Matrix4 * m, double y);
 void m4_ms_scale_matrix_z(Matrix4 * m, double z);
 void m4_msss_scale_matrix_xyz(Matrix4 * m, double x, double y, double z);
-void m4_vvv_look_at_matrix_m(Vector3 * eyePosition, Vector3 * lookAtPosition, Vector3 * upVector, Matrix4 * result);
-void m4_vvvv_look_at_matrix_m(Vector3 * rightVector, Vector3 * upVector, Vector3 * forwardVector, Vector3 * position, Matrix4 * result);
+void m4_vvv_look_at_matrix_m(const Vector3 * const eyePosition, const Vector3 * const lookAtPosition, const Vector3 * const upVector, Matrix4 * result);
+void m4_vvvv_look_at_matrix_m(const Vector3 * const rightVector, const Vector3 * const upVector, const Vector3 * const forwardVector, const Vector3 * const position, Matrix4 * result);
 void m4_mssss_projection_matrix(Matrix4 * m, double aspectratio, double fovdegrees, double nearplane, double farplane);
 void m4_ms_simple_orthographic_projection_matrix(Matrix4 * m, double aspectratio);
 void m4_mssssss_orthographic_projection_matrix(Matrix4 * m, double left, double right, double bottom, double top, double near, double far);
@@ -130,6 +132,8 @@ Matrix4 m4_mm_subtract(const Matrix4 * const m1, const Matrix4 * const m2);
 Matrix4 m4_mm_multiply(const Matrix4 * const m1, const Matrix4 * const m2);
 Vector4 m4_vm_multiply(const Vector4 * const v, const Matrix4 * const m);
 Vector4 m4_mv_multiply(const Matrix4 * const m, const Vector4 * const v);
+Vector3 m4_v3m_multiply(const Vector3 * const v, const Matrix4 * const m);
+Vector3 m4_mv3_multiply(const Matrix4 * const m, const Vector3 * const v);
 Matrix4 m4_v_translation_matrix(const Vector3 * const v);
 const char * m4_m_to_string(Matrix4 * m);
 

@@ -17,25 +17,6 @@
 #import "Graphics/NPEngineGraphics.h"
 #import "ODFrustum.h"
 
-static int compare_floats (const void * a, const void * b)
-{
-    float temp = *((float *)a) - *((float *)b);
-
-    if (temp > 0.0f)
-    {
-        return -1;
-    }
-    else if (temp < 0.0f)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-
 @implementation ODFrustum
 
 - (id) init
@@ -47,12 +28,14 @@ static int compare_floats (const void * a, const void * b)
 {
     self =  [ super initWithName:newName ];
 
-    frustumLineIndices[0] = frustumLineIndices[7] = frustumLineIndices[16] = 0;
-    frustumLineIndices[1] = frustumLineIndices[2] = frustumLineIndices[18] = 1;
-    frustumLineIndices[3] = frustumLineIndices[4] = frustumLineIndices[20] = 2;
-    frustumLineIndices[5] = frustumLineIndices[6] = frustumLineIndices[22] = 3;
-    frustumLineIndices[8] = frustumLineIndices[15] = frustumLineIndices[17] = 4;
-    frustumLineIndices[9] = frustumLineIndices[10] = frustumLineIndices[19] = 5;
+    memset(frustumCornerPositions,   0, sizeof(frustumCornerPositions));
+
+    frustumLineIndices[0]  = frustumLineIndices[7]  = frustumLineIndices[16] = 0;
+    frustumLineIndices[1]  = frustumLineIndices[2]  = frustumLineIndices[18] = 1;
+    frustumLineIndices[3]  = frustumLineIndices[4]  = frustumLineIndices[20] = 2;
+    frustumLineIndices[5]  = frustumLineIndices[6]  = frustumLineIndices[22] = 3;
+    frustumLineIndices[8]  = frustumLineIndices[15] = frustumLineIndices[17] = 4;
+    frustumLineIndices[9]  = frustumLineIndices[10] = frustumLineIndices[19] = 5;
     frustumLineIndices[11] = frustumLineIndices[12] = frustumLineIndices[21] = 6;
     frustumLineIndices[13] = frustumLineIndices[14] = frustumLineIndices[23] = 7;
 
@@ -63,14 +46,14 @@ static int compare_floats (const void * a, const void * b)
     frustumFaceIndices[3] = 3;      frustumFaceIndices[7] = 7;
 
     //Top Quad                      //Bottom Quad
-    frustumFaceIndices[8] = 3;      frustumFaceIndices[12] = 0;
-    frustumFaceIndices[9] = 2;      frustumFaceIndices[13] = 1;
+    frustumFaceIndices[8]  = 3;     frustumFaceIndices[12] = 0;
+    frustumFaceIndices[9]  = 2;     frustumFaceIndices[13] = 1;
     frustumFaceIndices[10] = 6;     frustumFaceIndices[14] = 5;
     frustumFaceIndices[11] = 7;     frustumFaceIndices[15] = 4;
 
     // Left quad                    //Right Quad
-    frustumFaceIndices[16]  = 3;    frustumFaceIndices[20] = 1;
-    frustumFaceIndices[17]  = 0;    frustumFaceIndices[21] = 2;
+    frustumFaceIndices[16] = 3;     frustumFaceIndices[20] = 1;
+    frustumFaceIndices[17] = 0;     frustumFaceIndices[21] = 2;
     frustumFaceIndices[18] = 4;     frustumFaceIndices[22] = 6;
     frustumFaceIndices[19] = 7;     frustumFaceIndices[23] = 5;
 
@@ -158,6 +141,11 @@ static int compare_floats (const void * a, const void * b)
     [ super dealloc ];
 }
 
+- (const FVector3 * const) frustumCornerPositions
+{
+    return frustumCornerPositions;
+}
+
 - (void) updateWithPosition:(const Vector3)position
                 orientation:(const Quaternion)orientation
                         fov:(const double)fov
@@ -222,54 +210,24 @@ static int compare_floats (const void * a, const void * b)
 
     for ( int32_t i = 0; i < 8; i++ )
     {
-        frustumCornerPositions[i]
-            = (FVector3){ cornerPositions[i].x, cornerPositions[i].y, cornerPositions[i].z };
-    }
-
-    // scale frustum geometry
-    const FMatrix3 scale = fm3_s_scale(1.0f);
-
-    for ( int32_t i = 0; i < 8; i++ )
-    {
-        frustumCornerPositions[i] = fm3_mv_multiply(&scale, &(frustumCornerPositions[i]));
+        frustumCornerPositions[i] = fv3_v_from_v3(&cornerPositions[i]);
     }
 
     // translate frustum to world space
     const Vector3 fromPositionToNearPlane = v3_sv_scaled(nearPlane, &forward);
-    const Vector3 nearPlaneWorldSpacePosition  = v3_vv_add(&position, &fromPositionToNearPlane);
-    const FVector3 nearPlaneWorldSpacePositionF
-        = (FVector3){ nearPlaneWorldSpacePosition.x, nearPlaneWorldSpacePosition.y, nearPlaneWorldSpacePosition.z };
+    const Vector3 nearPlaneWorldSpacePosition = v3_vv_add(&position, &fromPositionToNearPlane);
+
+    const FVector3 fromPositionToNearPlaneF = fv3_v_from_v3(&fromPositionToNearPlane);
+    const FVector3 nearPlaneWorldSpacePositionF = fv3_v_from_v3(&nearPlaneWorldSpacePosition);
 
     for ( int32_t i = 0; i < 8; i++ )
     {
-        frustumCornerPositions[i] = fv3_vv_add(&(frustumCornerPositions[i]), &nearPlaneWorldSpacePositionF);
+        frustumCornerPositions[i]   = fv3_vv_add(&(frustumCornerPositions[i]),   &nearPlaneWorldSpacePositionF);
     }
 }
 
 - (void) render
 {
-    /*
-    [[[ NPEngineCore instance ] transformationState ] resetModelMatrix ];
-
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ] setEnabled:YES ];
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ] setBlendingMode:NpBlendingAverage ];
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ] activate ];
-
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] cullingState ] setEnabled:NO ];
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] cullingState ] activate ];
-
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] setWriteEnabled:NO ];
-    [[[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ] activate ];
-
-    [ color setFValue:faceColor ];
-    [[ effect techniqueWithName:@"color" ] activate ];
-
-    glLineWidth(5.0f);
-    [ color setFValue:lineColor ];
-    [[ effect techniqueWithName:@"color" ] activate ];
-    glLineWidth(1.0f);
-    */
-
     [ facesVertexArray renderWithPrimitiveType:NpPrimitiveQuads ];
     [ linesVertexArray renderWithPrimitiveType:NpPrimitiveLines ];
 }

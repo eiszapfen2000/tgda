@@ -29,6 +29,8 @@ technique "preetham"
     # effect variables
     uniform float radiusInPixel;
     uniform vec3 directionToSun;
+    uniform vec3 sunColor;
+    uniform float sunHalfApparentAngle;
     uniform vec3 zenithColor;
     uniform vec3 denominator;
     uniform vec3 A;

@@ -177,9 +177,9 @@ static NPInputAction * create_input_action(NSString * cameraName, NSString * act
     quat_set_identity(&orientation);
     v3_v_init_with_zeros(&position);
 
-    position.x = 100.0f;
+    position.x = 0.0f;
     position.y = 120.0f;
-    position.z = 270.0;
+    position.z = 0.0;
     v3_v_init_with_zeros(&forward);
     forward.z  = -1.0;
 
@@ -256,17 +256,17 @@ static NPInputAction * create_input_action(NSString * cameraName, NSString * act
     return pitch;
 }
 
-- (Matrix4 *) view
+- (const Matrix4 * const) view
 {
     return &view;
 }
 
-- (Matrix4 *) projection
+- (const Matrix4 * const) projection
 {
     return &projection;
 }
 
-- (Matrix4 *) inverseViewProjection
+- (const Matrix4 * const) inverseViewProjection
 {
     return &inverseViewProjection;
 }

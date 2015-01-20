@@ -8,8 +8,10 @@
 #import "Graphics/Geometry/NPFullscreenQuad.h"
 #import "Graphics/Geometry/NPIMRendering.h"
 #import "Graphics/Texture/NPTexture2D.h"
+#import "Graphics/Texture/NPTexture2DArray.h"
 #import "Graphics/Texture/NPTexture3D.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
+#import "Graphics/Texture/NPTextureBuffer.h"
 #import "Graphics/Effect/NPEffectVariableInt.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
@@ -17,7 +19,12 @@
 #import "Graphics/RenderTarget/NPRenderBuffer.h"
 #import "Graphics/RenderTarget/NPRenderTexture.h"
 #import "Graphics/RenderTarget/NPRenderTargetConfiguration.h"
-#import "Graphics/State/NpState.h"
+#import "Graphics/State/NPBlendingState.h"
+#import "Graphics/State/NPCullingState.h"
+#import "Graphics/State/NPDepthTestState.h"
+#import "Graphics/State/NPPolygonFillState.h"
+#import "Graphics/State/NPStencilTestState.h"
+#import "Graphics/State/NPStateConfiguration.h"
 #import "Graphics/NPViewport.h"
 #import "NP.h"
 #import "Entities/ODBasePlane.h"
@@ -30,6 +37,7 @@
 #import "Entities/ODPreethamSkylight.h"
 #import "Entities/ODOceanEntity.h"
 #import "Entities/ODEntity.h"
+#import "Entities/ODWorldCoordinateAxes.h"
 #import "ODScene.h"
 
 @interface ODScene (Private)
@@ -157,11 +165,11 @@
 - (void) updateSlopeVarianceLUT
 {
     [ varianceTextureResolution setFValue:varianceLUTResolution ];
-    [ baseSpectrumSize setValue:[ ocean baseSpectrumSize ]];
     [ deltaVariance setFValue:[ ocean baseSpectrumDeltaVariance ]];
 
     [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean baseSpectrum ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]        texelUnit:1 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
     FRectangle vertices;
@@ -204,7 +212,7 @@
 
 static const OdCameraMovementEvents testCameraMovementEvents
     = {.rotate  = NpKeyboardG, .strafe   = NpInputEventUnknown,
-       .forward = NpInputEventUnknown, .backward = NpInputEventUnknown };
+       .forward = NpKeyboardW, .backward = NpKeyboardS };
 
 static const OdProjectorRotationEvents testProjectorRotationEvents
     = {.pitchMinus = NpInputEventUnknown, .pitchPlus = NpInputEventUnknown,
@@ -230,18 +238,17 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     entities  = [[ NSMutableArray alloc ] init ];
 
     testCamera = [[ ODCamera alloc ] initWithName:@"TestCamera"  movementEvents:testCameraMovementEvents ];
-    testProjector = [[ ODProjector alloc ] initWithName:@"TestProj" ];
-
     [ testCamera setFarPlane:50.0 ];
-    [ testProjector setCamera:testCamera ];
 
-    testCameraFrustum = [[ ODFrustum alloc ] initWithName:@"CFrustum" ];
-    testProjectorFrustum = [[ ODFrustum alloc ] initWithName:@"PFrustum" ];
+    cameraFrustum = [[ ODFrustum alloc ] initWithName:@"CFrustum" ];
+    testCameraFrustum = [[ ODFrustum alloc ] initWithName:@"TCFrustum" ];
+    testProjectorFrustum = [[ ODFrustum alloc ] initWithName:@"TPFrustum" ];
 
     iwave = [[ ODIWave alloc ] init ];
     ocean = [[ ODOceanEntity alloc ] initWithName:@"Ocean" ];
     skylight = [[ ODPreethamSkylight alloc ] init ];
     projectedGrid = [[ ODProjectedGrid alloc ] initWithName:@"ProjGrid" ];
+    axes = [[ ODWorldCoordinateAxes alloc ] init ];
 
     // camera animation
     fquat_set_identity(&startOrientation);
@@ -336,12 +343,11 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     ASSERT_RETAIN(variance);
 
     layer            = [ deferredEffect variableWithName:@"layer" ];
-    baseSpectrumSize = [ deferredEffect variableWithName:@"baseSpectrumSize" ];
     deltaVariance    = [ deferredEffect variableWithName:@"deltaVariance" ];
     varianceTextureResolution = [ deferredEffect variableWithName:@"varianceTextureResolution" ];
 
-    NSAssert(layer != nil && baseSpectrumSize != nil
-             && deltaVariance != nil && varianceTextureResolution != nil, @"");
+    NSAssert(layer != nil && deltaVariance != nil
+             && varianceTextureResolution != nil, @"");
 
     // fullscreen quad for render target display
     fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
@@ -354,11 +360,12 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ entities removeAllObjects ];
     DESTROY(entities);
     DESTROY(camera);
+    DESTROY(axes);
 
     DESTROY(testCamera);
-    DESTROY(testProjector);
     DESTROY(testCameraFrustum);
     DESTROY(testProjectorFrustum);
+    DESTROY(cameraFrustum);
 
     [ iwave stop ];
     [ ocean stop ];
@@ -445,10 +452,10 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [ self setName:sceneName ];
 
+    //[ ocean setCamera:testCamera ];
     [ ocean setCamera:camera ];
 
-    //[ projectedGrid setProjector:[ ocean projector ]];
-    [ projectedGrid setProjector:testProjector ];
+    [ projectedGrid setProjector:[ ocean projector ]];
 
     [ iwave start ];
     [ ocean start ];
@@ -539,7 +546,18 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [ camera        update:frameTime ];
     [ testCamera    update:frameTime ];
-    [ testProjector update:frameTime ];
+
+    [ skylight      update:frameTime ];
+    [ ocean         update:frameTime ];
+    //[ iwave         update:frameTime ];
+    [ projectedGrid update:frameTime ];
+
+    [ cameraFrustum updateWithPosition:[camera position]
+                           orientation:[camera orientation]
+                                   fov:[camera fov]
+                             nearPlane:[camera nearPlane]
+                              farPlane:[camera farPlane]
+                           aspectRatio:[camera aspectRatio]];
 
     [ testCameraFrustum updateWithPosition:[testCamera position]
                                orientation:[testCamera orientation]
@@ -548,17 +566,12 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
                                   farPlane:[testCamera farPlane]
                                aspectRatio:[testCamera aspectRatio]];
 
-    [ testProjectorFrustum updateWithPosition:[testProjector position]
-                                  orientation:[testProjector orientation]
-                                          fov:[testProjector fov]
-                                    nearPlane:[testProjector nearPlane]
-                                     farPlane:[testProjector farPlane]
-                                  aspectRatio:[testProjector aspectRatio]];
-
-    [ skylight      update:frameTime ];
-    [ ocean         update:frameTime ];
-    //[ iwave         update:frameTime ];
-    [ projectedGrid update:frameTime ];
+    [ testProjectorFrustum updateWithPosition:[[ ocean projector ] position]
+                                  orientation:[[ ocean projector ] orientation]
+                                          fov:[[ ocean projector ] fov]
+                                    nearPlane:[[ ocean projector ] nearPlane]
+                                     farPlane:[[ ocean projector ] farPlane]
+                                  aspectRatio:[[ ocean projector ] aspectRatio]];
 
     /*
     const NSUInteger numberOfEntities = [ entities count ];
@@ -597,6 +610,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         [ self updateSlopeVarianceLUT ];
     }
 
+    /*
     NPTexture2D * dispDerivatives = [ ocean displacementDerivatives ];
     const uint32_t dispDerivativesWidth  = [ dispDerivatives width  ];
     const uint32_t dispDerivativesHeight = [ dispDerivatives height ];
@@ -635,6 +649,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
                                  colorBufferIndex:0
                                           bindFBO:YES ];
     }
+    */
 
     NPStateConfiguration * stateConfiguration = [[ NP Graphics ] stateConfiguration ];
 
@@ -654,6 +669,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     // reset all matrices
     [[[ NP Core ] transformationState ] reset ];
 
+    /*
     // precompute whitecaps derivative stuff
     [ whitecapsRtc activate ];
 
@@ -679,6 +695,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ whitecapsTarget texture ] ];
     glGenerateMipmap(GL_TEXTURE_2D);
     [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
+    */
 
     // setup linear sRGB target
     [ rtc bindFBO ];
@@ -695,69 +712,114 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ rtc activateDrawBuffers ];
     [ rtc activateViewport ];
 
+    [ depthTestState setWriteEnabled:YES ];
+    [ stateConfiguration activate ];
+    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
+
+    [ depthTestState setWriteEnabled:NO ];
+    [ depthTestState setEnabled:NO ];
+    [ stateConfiguration activate ];
+
+    [[[ NP Graphics ] textureBindingState ] clear ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ skylight skylightTexture ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] activate ];
+
+    NPEffectVariableFloat3 * dcp = [ deferredEffect variableWithName:@"cameraPosition"];
+    [ dcp setValue:[camera position ]];
+    [[ deferredEffect techniqueWithName:@"skylight"] activate ];
+    const FVector3 * const frustumP = [ cameraFrustum frustumCornerPositions ];
+    glBegin(GL_QUADS);
+        glVertexAttrib3f(NpVertexStreamTexCoords, frustumP[4].x, frustumP[4].y, frustumP[4].z);
+        glVertexAttrib2f(NpVertexStreamPositions, -1.0f, -1.0f);
+        glVertexAttrib3f(NpVertexStreamTexCoords, frustumP[5].x, frustumP[5].y, frustumP[5].z);
+        glVertexAttrib2f(NpVertexStreamPositions,  1.0f, -1.0f);
+        glVertexAttrib3f(NpVertexStreamTexCoords, frustumP[6].x, frustumP[6].y, frustumP[6].z);
+        glVertexAttrib2f(NpVertexStreamPositions,  1.0f,  1.0f);
+        glVertexAttrib3f(NpVertexStreamTexCoords, frustumP[7].x, frustumP[7].y, frustumP[7].z);
+        glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
+    glEnd();
+
+    [ camera render ];
+
     // activate culling, depth write and depth test
     [ blendingState  setEnabled:NO ];
     [ cullingState   setCullFace:NpCullfaceBack ];
     [ cullingState   setEnabled:YES ];
     [ depthTestState setWriteEnabled:YES ];
     [ depthTestState setEnabled:YES ];
-    //[ fillState      setFrontFaceFill:NpPolygonFillLine ];
-    //[ fillState      setBackFaceFill:NpPolygonFillLine ];
     [ stateConfiguration activate ];
-
-    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
-
-    [ camera render ];
-
-    [[[ NP Core ] transformationState ] resetModelMatrix ];
     
     [[[ NP Graphics ] textureBindingState ] clear ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean heightfield   ] texelUnit:0 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacement  ] texelUnit:1 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean gradient      ] texelUnit:2 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ varianceLUT texture ] texelUnit:3 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ skylight skylightTexture ] texelUnit:4 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ whitecapsTarget texture ] texelUnit:5 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean heightfield  ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacement ] texelUnit:1 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]        texelUnit:2 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
     NPEffectVariableMatrix4x4 * v = [ deferredEffect variableWithName:@"invMVP"];
-    [ v setValue:[testProjector inverseViewProjection]];
+    [ v setValue:[[ ocean projector ] inverseViewProjection]];
 
     NPEffectVariableMatrix4x4 * w = [ projectedGridEffect variableWithName:@"invMVP"];
-    NPEffectVariableFloat * a = [ projectedGridEffect variableWithName:@"area"];
+    NPEffectVariableFloat * a = [ projectedGridEffect variableWithName:@"areaScale"];
     NPEffectVariableFloat * hs = [ projectedGridEffect variableWithName:@"heightScale"];
     NPEffectVariableFloat * je = [ projectedGridEffect variableWithName:@"jacobianEpsilon"];
     NPEffectVariableFloat3 * cP = [ projectedGridEffect variableWithName:@"cameraPosition"];
     NPEffectVariableFloat3 * dsP = [ projectedGridEffect variableWithName:@"directionToSun"];
     NPEffectVariableFloat3 * scP = [ projectedGridEffect variableWithName:@"sunColor"];
+    NPEffectVariableFloat2 * wcP = [ projectedGridEffect variableWithName:@"waterColorCoordinate"];
+    NPEffectVariableFloat2 * wciP = [ projectedGridEffect variableWithName:@"waterColorIntensityCoordinate"];
     NPEffectVariableFloat2 * vsP = [ projectedGridEffect variableWithName:@"vertexStep"];
+    NPEffectVariableFloat * ds = [ projectedGridEffect variableWithName:@"displacementScale"];
 
-    NSAssert(w != nil && a != nil && ds != nil && hs != nil && je != nil && cP != nil && dsP != nil && scP != nil && vsP != nil, @"");
+    NSAssert(w != nil && a != nil && ds != nil && hs != nil && je != nil && cP != nil && dsP != nil && scP != nil && vsP != nil && wcP != nil && wciP != nil, @"");
 
-    [ w setValue:[testProjector inverseViewProjection]];
-    [ a setValue:[ ocean area ] * [ocean areaScale ]];
+    [ ds setValue:[ ocean displacementScale ]];
+    [ w setValue:[[ ocean projector ] inverseViewProjection]];
+    [ a setValue:[ocean areaScale ]];
     [ hs setValue:[ ocean heightScale ]];
     [ je setValue:jacobianEpsilon ];
     [ cP setValue:[ camera position ]];
     [ dsP setValue:[ skylight directionToSun ]];
     [ scP setValue:[ skylight sunColor ]];
+    [ wcP setValue:[ ocean waterColorCoordinate ]];
+    [ wciP setValue:[ ocean waterColorIntensityCoordinate ]];
     [ vsP setValue:[ projectedGrid vertexStep ]];
 
     [ projectedGridTFTransform activate ];
     [ projectedGrid renderTFTransform ];
+
+    [[[ NP Graphics ] textureBindingState ] clear ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean gradient ]            texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean waterColor ]          texelUnit:1 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean waterColorIntensity ] texelUnit:2 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]               texelUnit:3 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ varianceLUT texture ]       texelUnit:4 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ skylight skylightTexture ]  texelUnit:5 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ whitecapsTarget texture  ]  texelUnit:6 ];
+    [[[ NP Graphics ] textureBindingState ] activate ];
+
+
     [ projectedGridTFFeedback activate ];
     [ projectedGrid renderTFFeedback  ];
 
     [[[ NPEngineCore instance ] transformationState ] resetModelMatrix ];
-    [ blendingState setEnabled:YES ];
-    [ blendingState setBlendingMode:NpBlendingAverage ];
-    [ blendingState activate ];
 
     [ cullingState setEnabled:NO ];
-    [ cullingState activate ];
-
     [ depthTestState setWriteEnabled:NO ];
-    [ depthTestState activate ];
+    [ depthTestState setEnabled:NO ];
+    [ stateConfiguration activate ];
+
+    const Vector3 directionToSun = [ skylight directionToSun ];
+    const float length = [ axes axisLength ];
+
+    glLineWidth(4.0);
+    [[ deferredEffect techniqueWithName:@"v3c3" ] activate ];
+    [ axes render ];
+    glBegin(GL_LINES);
+        glVertexAttrib3f(NpVertexStreamColors, 1.0f, 1.0f, 0.0f);
+        glVertexAttrib3f(NpVertexStreamPositions, 0.0f, 0.0f, 0.0f);
+        glVertexAttrib3f(NpVertexStreamPositions, directionToSun.x * length, directionToSun.y * length, directionToSun.z * length);
+    glEnd();
+    glLineWidth(1.0);
 
     /*
     [ fillState setFrontFaceFill:NpPolygonFillFace ];
@@ -771,6 +833,10 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     NPEffectVariableFloat4 * c = [ deferredEffect variableWithName:@"color" ];
     NSAssert(c != nil, @"");
+
+    [ blendingState setEnabled:YES ];
+    [ blendingState setBlendingMode:NpBlendingAverage ];
+    [ blendingState activate ];
 
     [ c setFValue:fc ];
     [[ deferredEffect techniqueWithName:@"color" ] activate ];
@@ -821,10 +887,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     glGenerateMipmap(GL_TEXTURE_2D);
     [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
 
-    [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ linearsRGBTarget   texture ] texelUnit:0 ];
-    //[[[ NP Graphics ] textureBindingState ] setTexture:[ whitecapsTarget     texture ] texelUnit:0 ];
-    //[[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacementDerivatives ] texelUnit:0 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ logLuminanceTarget texture ] texelUnit:1 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
@@ -871,253 +934,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     */
     
 //-------------------------------------------
-    /*
-    [ gBuffer bindFBO ];
 
-    // attach G-Buffer positions target texture
-    [ positionsTarget
-        attachToRenderTargetConfiguration:gBuffer
-                         colorBufferIndex:0
-                                  bindFBO:NO ];
-
-    // attach G-Buffer normals target texture
-    [ normalsTarget
-        attachToRenderTargetConfiguration:gBuffer
-                         colorBufferIndex:1
-                                  bindFBO:NO ];
-
-    // attach depth stencil target texture
-    [ depthTarget
-        attachToRenderTargetConfiguration:gBuffer
-                         colorBufferIndex:0
-                                  bindFBO:NO ];
-
-    // configure draw buffers
-    [ gBuffer activateDrawBuffers ];
-
-    // set viewport
-    [ gBuffer activateViewport ];
-
-    // check FBO completeness
-    NSError * fboError = nil;
-    if ([ gBuffer checkFrameBufferCompleteness:&fboError ] == NO )
-    {
-        NPLOG_ERROR(fboError);
-    }
-
-    // make stencil buffer writable before clearing
-    [ stencilTestState setWriteEnabled:YES ];
-
-    // clear G-Buffer
-    // [[ NP Graphics ] clearFrameBuffer:NO depthBuffer:YES stencilBuffer:YES ];
-    const FVector4 v = (FVector4){FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX};
-    [[ NP Graphics ] clearDepthBuffer:1.0f stencilBuffer:0 ];
-    [[ NP Graphics ] clearDrawBuffer:0 color:v ];
-    [[ NP Graphics ] clearDrawBuffer:1 color:v ];
-
-    // set up view and projection matrices
-    [ camera render ];
-
-    //
-    NPEffectTechnique * t = [ deferredEffect techniqueWithName:@"geometry" ];
-    [ t lock ];
-    [ t activate:YES ];
-    */
-
-    /*
-    [ stencilTestState setComparisonFunction:NpComparisonAlways ];
-    [ stencilTestState setOperationOnStencilTestFail:NpStencilKeepValue ];
-    [ stencilTestState setOperationOnDepthTestFail:NpStencilKeepValue ];
-    [ stencilTestState setOperationOnDepthTestPass:NpStencilIncrementValue ];
-    [ stencilTestState setEnabled:YES ];
-    [ stencilTestState activate ];
-    */
-
-    /*
-    glBegin(GL_QUADS);
-        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
-        glVertex3f(0.0f, 0.0f, 5.0f);
-        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
-        glVertex3f(10.0f, 0.0f, 5.0f);
-        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
-        glVertex3f(10.0f, 10.0f, 5.0f);
-        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
-        glVertex3f(0.0f, 10.0f, 5.0f);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
-        glVertex3f(0.0f, 0.0f, -5.0f);
-        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
-        glVertex3f(10.0f, 0.0f, -5.0f);
-        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
-        glVertex3f(10.0f, 10.0f, -5.0f);
-        glVertexAttrib3f(NpVertexStreamNormals, 0.0f, 0.0f, 1.0f);
-        glVertex3f(0.0f, 10.0f, -5.0f);
-    glEnd();
-
-    [ entities makeObjectsPerformSelector:@selector(render) ];
-
-    [ ocean renderBasePlane ];
-    */
-
-    /*
-    [ stencilTestState setComparisonFunction:NpComparisonEqual ];
-    [ stencilTestState setOperationOnStencilTestFail:NpStencilKeepValue ];
-    [ stencilTestState setOperationOnDepthTestFail:NpStencilKeepValue ];
-    [ stencilTestState setOperationOnDepthTestPass:NpStencilKeepValue ];
-    [ stencilTestState activate ];
-
-    [ cullingState setEnabled:NO ];
-    [ cullingState activate ];
-
-    [ skylight render ];
-    */
-
-    /*
-    [ stencilTestState deactivate ];
-
-    [ t unlock ];
-
-    [[[ NP Graphics ] stateConfiguration ] deactivate ];
-
-    [ gBuffer deactivate ];
-    */
-
-    /*
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, [ gBuffer glID ]);
-    glReadBuffer(GL_COLOR_ATTACHMENT0);
-    glBlitFramebuffer(0, 0, 800, 600, 0, 0, 400, 300, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-    glReadBuffer(GL_COLOR_ATTACHMENT1);
-    glBlitFramebuffer(0, 0, 800, 600, 400, 0, 800, 300, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-    glReadBuffer(GL_BACK);
-    */
-
-    /*
-    //[[ positionsTarget texture ] setColorFormat:NpTextureColorFormatAAA1 ];
-
-    // reset matrices
-    [[[ NP Core ] transformationState ] reset ];
-    // bind scene target as texture source
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ positionsTarget texture ] texelUnit:0 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ normalsTarget   texture ] texelUnit:1 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean       heightfield ] texelUnit:2 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean  supplementalData ] texelUnit:3 ];
-    [[[ NP Graphics ] textureBindingState ] activate ];
-
-    const FVector2 minMax = [ ocean heightRange ];
-
-    [ heightfieldMinMax setFValue:minMax ];
-    [ lightDirection setFValue:[ skylight lightDirection ]];
-    [ cameraPosition setValue:[ camera position ]];
-    [[ deferredEffect techniqueWithName:@"water_surface" ] activate ];
-    //[[ deferredEffect techniqueWithName:@"texture" ] activate ];
-    [ fullscreenQuad render ];
-    */
 }
-
-    //[[ positionsTarget texture ] setColorFormat:NpTextureColorFormatRGBA ];
-
-    /*
-    // clear back buffer and depth buffer
-    [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
-
-    // bind FBO
-    [ rtc bindFBO ];
-
-    // attach scene target texture
-    [ sceneTarget
-        attachToRenderTargetConfiguration:rtc
-                         colorBufferIndex:0
-                                  bindFBO:NO ];
-
-    // attach depth buffer
-    [ depthBuffer
-        attachToRenderTargetConfiguration:rtc
-                         colorBufferIndex:0
-                                  bindFBO:NO ];
-
-    // set drawbuffers and viewport
-    [ rtc activateDrawBuffers ];
-    [ rtc activateViewport ];
-
-    // check for completeness
-    NSError * fboError = nil;
-    if ([ rtc checkFrameBufferCompleteness:&fboError ] == NO )
-    {
-        NPLOG_ERROR(fboError);
-    }
-
-    // render scene
-    [ self renderScene ];
-
-    // detach depth buffer and scene texture
-    [ depthBuffer detach:NO ];
-    [ sceneTarget detach:NO ];
-
-    // attach luminance target
-    [ luminanceTarget
-        attachToRenderTargetConfiguration:rtc
-                         colorBufferIndex:0
-                                  bindFBO:NO ];
-
-    // check for completeness
-    if ([ rtc checkFrameBufferCompleteness:&fboError ] == NO )
-    {
-        NPLOG_ERROR(fboError);
-    }
-
-    // reset matrices
-    [[[ NP Core ] transformationState ] reset ];
-
-    // bind scene target as texture source
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ sceneTarget texture ] texelUnit:0 ];
-    [[[ NP Graphics ] textureBindingState ] activate ];
-
-    // compute luminance from scene texture
-    [[ fullscreenEffect techniqueWithName:@"luminance" ] activate ];
-    [ fullscreenQuad render ];
-
-    // detach luminance target
-    [ luminanceTarget detach:NO ];
-
-    // deactivate fbo, reset drawbuffers and viewport
-    [ rtc deactivate ];
-
-    // Generate mipmaps for luminance texture, since we want only the highest mipmaplevel
-    // as an approximation to the average luminance of the scene
-    Half averageLuminance = 0;
-    const int32_t  numberOfLevels
-        = 1 + (int32_t)floor(logb(MAX(currentResolution.x, currentResolution.y)));
-
-    [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ luminanceTarget texture ]];
-
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glGetTexImage(GL_TEXTURE_2D, numberOfLevels - 1, GL_RED, GL_HALF_FLOAT, &averageLuminance);
-
-    [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
-
-    lastFrameLuminance = currentFrameLuminance;
-    const float currentFrameAverageLuminance = exp(half_to_float(averageLuminance));
-    const float frameTime = [[[ NP Core ] timer ] frameTime ];
-
-    currentFrameLuminance = lastFrameLuminance + (currentFrameAverageLuminance - lastFrameLuminance)
-         * (1.0 - pow(0.9, adaptationTimeScale * frameTime));
-
-    //NSLog(@"%f %f", currentFrameAverageLuminance, currentFrameLuminance);
-
-    // bind scene target as texture source
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ sceneTarget texture ] texelUnit:0 ];
-    [[[ NP Graphics ] textureBindingState ] activate ];
-
-    // set tonemapping paramters
-    FVector3 toneMappingParameterVector = {currentFrameLuminance, referenceWhite, key};
-    [ toneMappingParameters setValue:toneMappingParameterVector ];
-
-    // render tonemapped scene to screen
-    [[ fullscreenEffect techniqueWithName:@"tonemap_reinhard" ] activate ];
-    [ fullscreenQuad render ];
-    */
 
 @end

@@ -20,7 +20,8 @@ ODProjectedGrid.h \
 ODPerlinNoise.h \
 ODPreethamSkylight.h \
 ODTerrain.h \
-ODHeightfieldQueue.h
+ODHeightfieldQueue.h \
+ODWorldCoordinateAxes.h
 
 ODEntities_OBJC_FILES = \
 ODBasePlane.m \
@@ -36,7 +37,8 @@ ODProjectedGrid.m \
 ODPerlinNoise.m \
 ODPreethamSkylight.m \
 ODTerrain.m \
-ODHeightfieldQueue.m
+ODHeightfieldQueue.m \
+ODWorldCoordinateAxes.m
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/subproject.make

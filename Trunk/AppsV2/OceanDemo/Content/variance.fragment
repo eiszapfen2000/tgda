@@ -6,6 +6,8 @@ in vec2 out_texcoords;
 
 void main()
 {
+    int numberOfLods = textureSize(sizes);
+
     float divisor = varianceTextureResolution - 1.0f;
 
     float a = floor(out_texcoords.x);
@@ -18,33 +20,36 @@ void main()
     B = -B;
     C = -0.5f * C;
 
-    ivec2 resolution = textureSize(baseSpectrum, 0);
+    ivec3 resolution = textureSize(baseSpectrum, 0);
 
     float n = -(float(resolution.x) / 2.0f);
     float m =  (float(resolution.y) / 2.0f);
 
-    vec2 dsize = vec2(1.0f) / baseSpectrumSize;
-    vec2 dk = MATH_2_MUL_PIf * dsize;
-
     vec2 variance = vec2(deltaVariance);
 
-    for ( int i = 0; i < resolution.y; i++ )
+    for ( int l = 0; l < numberOfLods; l++ )
     {
-        for ( int j = 0; j < resolution.x; j++ )
+        vec2 lodSize = texelFetch(sizes, l).xy;
+        vec2 dk = vec2(MATH_2_MUL_PIf) / lodSize;
+
+        for ( int i = 0; i < resolution.y; i++ )
         {
-            float di = i;
-            float dj = j;
-            
-            float kx = (n + dj) * MATH_2_MUL_PIf * dsize.x;
-            float ky = (m - di) * MATH_2_MUL_PIf * dsize.x;
+            for ( int j = 0; j < resolution.x; j++ )
+            {
+                float di = i;
+                float dj = j;
+                
+                float kx = (n + dj) * dk.x;
+                float ky = (m - di) * dk.y;
 
-            // switch i and j due to to different memory layout
-            // of fftw and opengl
-            float s = texelFetch(baseSpectrum, ivec2(j, i), 0);
-            float w = 1.0f - exp(A * kx * kx + B * kx * ky + C * ky * ky);
+                // switch i and j due to to different memory layout
+                // of fftw and opengl
+                float s = texelFetch(baseSpectrum, ivec3(j, i, l), 0);
+                float w = 1.0f - exp(A * kx * kx + B * kx * ky + C * ky * ky);
 
-            variance.x += ((kx * kx * w * w) * (dk.x * dk.x) * s);
-            variance.y += ((ky * ky * w * w) * (dk.y * dk.y) * s);
+                variance.x += ((kx * kx * w * w) * (dk.x * dk.x) * s);
+                variance.y += ((ky * ky * w * w) * (dk.y * dk.y) * s);
+            }
         }
     }
 

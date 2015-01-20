@@ -154,6 +154,11 @@ Vector2 v2_zero(void)
     return (Vector2){0.0, 0.0};
 }
 
+Vector2 v2_one(void)
+{
+    return (Vector2){1.0, 1.0};
+}
+
 Vector2 v2_min(void)
 {
     return (Vector2){-DBL_MAX, -DBL_MAX};
@@ -164,7 +169,7 @@ Vector2 v2_max(void)
     return (Vector2){DBL_MAX, DBL_MAX};
 }
 
-Vector2 v2_v_inverted(Vector2 * v)
+Vector2 v2_v_inverted(const Vector2 * const v)
 {
     return (Vector2){-V_X(*v), -V_Y(*v)};
 }
@@ -369,6 +374,11 @@ Vector3 v3_zero(void)
     return (Vector3){0.0, 0.0, 0.0};
 }
 
+Vector3 v3_one(void)
+{
+    return (Vector3){1.0, 1.0, 1.0};
+}
+
 Vector3 v3_min(void)
 {
     return (Vector3){-DBL_MAX, -DBL_MAX, -DBL_MAX};
@@ -379,7 +389,7 @@ Vector3 v3_max(void)
     return (Vector3){DBL_MAX, DBL_MAX, DBL_MAX};
 }
 
-Vector3 v3_v_inverted(Vector3 * v)
+Vector3 v3_v_inverted(const Vector3 * const v)
 {
     return (Vector3){-V_X(*v), -V_Y(*v), -V_Z(*v)};
 }

@@ -108,6 +108,8 @@
             error:(NSError **)error
 
 {
+    #warning Implement fast path
+
     NSAssert(newData != nil, @"");
 
     type = newType;

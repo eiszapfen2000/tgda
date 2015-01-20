@@ -1,43 +1,49 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
+#import "Ocean/ODPFrequencySpectrumGeneration.h"
 
 @class NSPointerArray;
 
+typedef OdSpectrumGeometry OdHeightfieldGeometry;
+
 typedef struct OdHeightfieldData
 {
-    IVector2 geometryResolution;
-    IVector2 gradientResolution;
-    Vector2 size;
-    double timeStamp;
+    float timeStamp;
+    OdHeightfieldGeometry geometry;
     float * heights32f;
     FVector2 * displacements32f; //  x = displacement x, y = displacement z
     FVector2 * gradients32f; // x = gradient x, y = gradient z
     FVector4 * displacementDerivatives32f; // x = dx_x , y = dx_z, z = dz_x, w = dz_z
-    FVector2 heightRange;
-    FVector2 gradientXRange;
-    FVector2 gradientZRange;
-    FVector2 displacementXRange;
-    FVector2 displacementZRange;
-    FVector2 displacementXdXRange;
-    FVector2 displacementXdZRange;
-    FVector2 displacementZdXRange;
-    FVector2 displacementZdZRange;
+    FVector2 * ranges;
 }
 OdHeightfieldData;
 
-void od_heightfielddata_initialise(void);
+#define NUMBER_OF_RANGES        9
 
-OdHeightfieldData * heightfield_alloc(void);
-OdHeightfieldData * heightfield_alloc_init(void);
-OdHeightfieldData * heightfield_alloc_init_with_resolutions_and_size(
-    IVector2 geometryResolution, IVector2 gradientResolution,
-    Vector2 size);
+#define HEIGHT_RANGE            0
+#define GRADIENT_X_RANGE        1
+#define GRADIENT_Z_RANGE        2
+#define DISPLACEMENT_X_RANGE    3
+#define DISPLACEMENT_Z_RANGE    4
+#define DISPLACEMENT_X_DX_RANGE 5
+#define DISPLACEMENT_X_DZ_RANGE 6
+#define DISPLACEMENT_Z_DX_RANGE 7
+#define DISPLACEMENT_Z_DZ_RANGE 8
 
-void heightfield_free(OdHeightfieldData * heightfield);
+
+void heightfield_hf_init_with_geometry_and_options(
+    OdHeightfieldData * heightfield,
+    const OdSpectrumGeometry * const geometry,
+    OdGeneratorOptions options    
+    );
+
+void heightfield_hf_clear(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max_gradients(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max_displacements(OdHeightfieldData * heightfield);
 void heightfield_hf_compute_min_max_displacement_derivatives(OdHeightfieldData * heightfield);
+
+OdHeightfieldData heightfield_zero();
 
 @interface ODHeightfieldQueue : NPObject
 {

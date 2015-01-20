@@ -21,6 +21,7 @@
 @class NPFullscreenQuad;
 @class ODBasePlane;
 @class ODIWave;
+@class ODWorldCoordinateAxes;
 
 @interface ODScene : NPObject < NPPPersistentObject >
 {
@@ -29,15 +30,16 @@
 
     // enitities
     ODCamera * camera;
+    ODFrustum * cameraFrustum;
     ODIWave * iwave;
     ODOceanEntity * ocean;
     ODProjectedGrid * projectedGrid;
     ODPreethamSkylight * skylight;
+    ODWorldCoordinateAxes * axes;
     NSMutableArray * entities;
 
     ODCamera * testCamera;
     ODFrustum * testCameraFrustum;
-    ODProjector * testProjector;
     ODFrustum * testProjectorFrustum;
 
     // camera animation
@@ -94,7 +96,6 @@
     NPEffectTechnique * variance;
     NPEffectVariableFloat * layer;
     NPEffectVariableFloat * varianceTextureResolution;
-    NPEffectVariableFloat2 * baseSpectrumSize;
     NPEffectVariableFloat * deltaVariance;
 
     // fullscreen quad geometry

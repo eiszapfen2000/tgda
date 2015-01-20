@@ -26,25 +26,31 @@ vec3 world_space_position(in vec2 position)
 
 void main()
 {
+    int numberOfLods = textureSize(tsizes);
+
     vec3 intersection = world_space_position(in_position.xy);
     vec3 intersection_dx = world_space_position(in_position.xy + vec2(vertexStep.x, 0.0));
     vec3 intersection_dy = world_space_position(in_position.xy + vec2(0.0, vertexStep.y));
-    vec2 d_dx = (abs(intersection_dx.xz - intersection.xz) * 2.0) / area;
-    vec2 d_dy = (abs(intersection_dy.xz - intersection.xz) * 2.0) / area;
 
-    vec2 texcoord = intersection.xz;
-    texcoord *= (1.0 / area);
+    float h = 0.0;
+    vec2  d = vec2(0.0);
 
-    float h = textureGrad(heightmap, texcoord, d_dx, d_dy).x;
+    for ( int l = 0; l < numberOfLods; l++ )
+    {
+        vec2 lodSize = texelFetch(tsizes, l).xy;
+        vec2 scaledLodSize = areaScale * lodSize;
+        vec2 texcoord = intersection.xz / scaledLodSize;
 
-    // I do not know if we should scale displacement with
-    // areaScale or not. It makes sense regarding correctness
-    // but not necessarily for tweaking
-    vec2 d = textureGrad(displacement, texcoord, d_dx, d_dy).xy;
+        vec2 d_dx = (abs(intersection_dx.xz - intersection.xz) * 2.0) / scaledLodSize.x;
+        vec2 d_dy = (abs(intersection_dy.xz - intersection.xz) * 2.0) / scaledLodSize.y;
+
+        h += textureGrad(heightmap, vec3(texcoord, l), d_dx, d_dy).x;
+        d += textureGrad(displacement, vec3(texcoord, l), d_dx, d_dy).xy;
+    }
 
     out_non_disp_position = intersection.xz;
-    out_position.xz  = intersection.xz - displacementScale * d.xy;
-    out_position.y   = h * heightScale;
+    out_position.xz = intersection.xz - displacementScale * d.xy;
+    out_position.y  = h * heightScale;
 
     gl_Position = np_modelviewprojectionmatrix * vec4(intersection, 1.0);
 }

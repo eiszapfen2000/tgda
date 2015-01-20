@@ -159,12 +159,11 @@ technique "directional_light"
 technique "variance"
 {
     # effect variables
-    # .x = layer .y = resolution .z = size .w = deltaVariance
     uniform float layer;
     uniform float varianceTextureResolution;
-    uniform vec2  baseSpectrumSize;
     uniform float deltaVariance;
-    uniform sampler2D baseSpectrum;
+    uniform sampler2DArray baseSpectrum;
+    uniform samplerBuffer sizes;
     # vertex streams
     in vec2 in_position : 0;
     in vec2 in_texcoords : 3;
@@ -173,5 +172,40 @@ technique "variance"
     # shaders
     set vertex shader "variance.vertex"
     set fragment shader "variance.fragment"
+}
+
+technique "v3c3"
+{
+    # effect variables
+    uniform mat4 np_viewprojectionmatrix;
+    # vertex streams
+    in vec3 in_position : 0;
+    in vec3 in_color : 2;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "v3c3.vertex"
+    set fragment shader "v3c3.fragment"
+}
+
+technique "skylight"
+{
+    # effect variables
+    uniform sampler2D skylightTexture
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
+    uniform vec3 cameraPosition;
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec3 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "skylight.vertex"
+    set fragment shader "skylight.fragment"
 }
 

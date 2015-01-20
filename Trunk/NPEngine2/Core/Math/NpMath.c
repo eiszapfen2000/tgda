@@ -9,6 +9,7 @@ void npmath_initialise(void)
     npmath_fplane_initialise();
     npmath_fpluecker_initialise();
     npmath_frectangle_initialise();
+    npmath_ftriangle_initialise();
 
     npmath_vector_initialise();
     npmath_matrix_initialise();

@@ -335,6 +335,10 @@ static BOOL locked = NO;
         NSAssert1([ v variableType ] == NpEffectVariableTypeSampler,
              @"Effect Variable \"%@\" is not a sampler", variableName);
 
+        NSAssert3([ v texelUnit ] == texelUnit,
+             @"Cannot bind sampler \"%@\" to texel unit %u, already bound to texel unit %u",
+             variableName, texelUnit, [ v texelUnit ]);
+
         return v;
     }
 
