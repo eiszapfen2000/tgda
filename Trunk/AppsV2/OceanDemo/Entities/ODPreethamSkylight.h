@@ -28,6 +28,7 @@
 
     NPRenderTargetConfiguration * rtc;
     NPRenderTexture * skylightTarget;
+    NPRenderTexture * sunlightTarget;
 
     int32_t lastSkylightResolution;
     int32_t skylightResolution;
@@ -41,8 +42,10 @@
     NPEffectVariableFloat3 * E_xyY_P;
     NPEffectVariableFloat3 * zenithColor_P;
     NPEffectVariableFloat3 * directionToSun_P;
+    NPEffectVariableFloat3 * sunColor_P;
     NPEffectVariableFloat3 * denominator_P;
     NPEffectVariableFloat  * radiusInPixel_P;
+    NPEffectVariableFloat  * sunHalfApparentAngle_P;
 }
 
 - (id) init;

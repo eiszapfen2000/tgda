@@ -10,14 +10,15 @@
 @class NSPointerArray;
 @class NSThread;
 @class NPTimer;
+@class NPTextureBuffer;
 @class NPTexture2D;
+@class NPTexture2DArray;
 @class NPBufferObject;
 @class NPVertexArray;
 @class ODCamera;
 @class ODProjector;
 @class ODBasePlane;
 @class ODHeightfieldQueue;
-@class ODOceanBaseMeshes;
 
 #define ODOCEANENTITY_NUMBER_OF_RESOLUTIONS 6
 
@@ -48,18 +49,20 @@
     NSUInteger lastGradientResolutionIndex;
     NSUInteger gradientResolutionIndex;
     NSUInteger generatorGradientResolutionIndex;
-    NSUInteger lastNumberOfLods;
-    NSUInteger numberOfLods;
-    NSUInteger generatorNumberOfLods;
+    NSInteger lastNumberOfLods;
+    NSInteger numberOfLods;
+    NSInteger generatorNumberOfLods;
     NSUInteger lastSpectrumType;
     NSUInteger spectrumType;
     NSUInteger generatorSpectrumType;
+    NSUInteger lastOptions;
+    NSUInteger options;
+    NSUInteger generatorOptions;
 
     BOOL generateData;
     BOOL transformData;
 
     fftwf_plan complexPlans[ODOCEANENTITY_NUMBER_OF_RESOLUTIONS];
-    fftwf_plan halfComplexPlans[ODOCEANENTITY_NUMBER_OF_RESOLUTIONS];
     
     NSThread * generatorThread;
     NSThread * transformThread;
@@ -70,39 +73,45 @@
     ODProjector * projector;
     ODBasePlane * basePlane;
 
-    NPTexture2D * baseSpectrum;
-    NPTexture2D * heightfield;
-    NPTexture2D * displacement;
-    NPTexture2D * displacementDerivatives;
-    NPTexture2D * gradient;
+    NPBufferObject * sizesStorage;
+    NPTextureBuffer * sizes;
+    NPTexture2DArray * baseSpectrum;
 
-    ODOceanBaseMeshes * baseMeshes;
-    NSUInteger baseMeshIndex;
-    FVector2 baseMeshScale;
+    NPTexture2DArray * heightfield;
+    NPTexture2DArray * displacement;
+    NPTexture2DArray * gradient;
+    NPTexture2DArray * displacementDerivatives;
 
-    double timeStamp;
-    double area;
+    NPTexture2D * waterColor;
+    NPTexture2D * waterColorIntensity;
+    Vector2 waterColorCoordinate;
+    Vector2 waterColorIntensityCoordinate;
 
     double displacementScale;
     double areaScale;
     double heightScale;
 
-    FVector2 heightRange;
-    FVector2 gradientXRange;
-    FVector2 gradientZRange;
-    FVector2 displacementXRange;
-    FVector2 displacementZRange;
-    FVector2 displacementXdXRange;
-    FVector2 displacementXdZRange;
-    FVector2 displacementZdXRange;
-    FVector2 displacementZdZRange;
+    BOOL receivedHeight;
+    BOOL receivedDisplacement;
+    BOOL receivedGradient;
+    BOOL receivedDisplacementDerivatives;
+
+    FVector2 * heightRanges;
+    FVector2 * gradientXRanges;
+    FVector2 * gradientZRanges;
+    FVector2 * displacementXRanges;
+    FVector2 * displacementZRanges;
+    FVector2 * displacementXdXRanges;
+    FVector2 * displacementXdZRanges;
+    FVector2 * displacementZdXRanges;
+    FVector2 * displacementZdZRanges;
+
     IVector2 baseSpectrumResolution;
     Vector2  baseSpectrumSize;
     float baseSpectrumDeltaVariance;
-    BOOL animated;
     BOOL updateSlopeVariance;
 
-    FMatrix4 modelMatrix;
+    BOOL animated;
 }
 
 - (id) init;
@@ -112,28 +121,26 @@
 - (void) start;
 - (void) stop;
 
-- (const FMatrix4 * const) modelMatrix;
 - (ODProjector *) projector;
 - (ODBasePlane *) basePlane;
-- (NPTexture2D *) baseSpectrum;
-- (NPTexture2D *) heightfield;
-- (NPTexture2D *) displacement;
-- (NPTexture2D *) displacementDerivatives;
-- (NPTexture2D *) gradient;
+- (NPTexture2DArray *) baseSpectrum;
+- (NPTextureBuffer *) sizes;
+- (NPTexture2DArray *) heightfield;
+- (NPTexture2DArray *) displacement;
+- (NPTexture2DArray *) gradient;
+- (NPTexture2DArray *) displacementDerivatives;
+- (NPTexture2D *) waterColor;
+- (NPTexture2D *) waterColorIntensity;
 
-- (double) area;
 - (double) areaScale;
 - (double) displacementScale;
 - (double) heightScale;
-- (FVector2) heightRange;
-- (FVector2) gradientXRange;
-- (FVector2) gradientZRange;
-- (FVector2) displacementXRange;
-- (FVector2) displacementZRange;
+- (Vector2) waterColorCoordinate;
+- (Vector2) waterColorIntensityCoordinate;
+
 - (IVector2) baseSpectrumResolution;
 - (Vector2)  baseSpectrumSize;
 - (float)    baseSpectrumDeltaVariance;
-- (FVector2) baseMeshScale;
 
 - (BOOL) updateSlopeVariance;
 
@@ -141,7 +148,6 @@
 
 - (void) update:(const double)frameTime;
 - (void) renderBasePlane;
-- (void) renderBaseMesh;
 
 @end
 

@@ -30,6 +30,10 @@ struct Vector2;
 struct Vector3;
 struct Vector4;
 
+struct IVector2;
+struct IVector3;
+struct IVector4;
+
 extern FVector3 * NP_WORLDF_X_AXIS;
 extern FVector3 * NP_WORLDF_Y_AXIS;
 extern FVector3 * NP_WORLDF_Z_AXIS;
@@ -60,6 +64,7 @@ FVector2 fv2_zero(void);
 FVector2 fv2_min(void);
 FVector2 fv2_max(void);
 FVector2 fv2_v_from_v2(const struct Vector2 * const d);
+FVector2 fv2_v_from_iv2(const struct IVector2 * const i);
 FVector2 fv2_v_inverted(const FVector2 * const v);
 FVector2 fv2_v_normalised(const FVector2 * const v);
 FVector2 fv2_vv_add(const FVector2 * const v, const FVector2 * const w);
@@ -101,6 +106,8 @@ float fv3_vv_distance(const FVector3 * const v, const FVector3 * const w);
 FVector3 fv3_zero(void);
 FVector3 fv3_min(void);
 FVector3 fv3_max(void);
+FVector3 fv3_v_from_v3(const struct Vector3 * const d);
+FVector3 fv3_v_from_iv3(const struct IVector3 * const i);
 FVector3 fv3_v_inverted(const FVector3 * const v);
 FVector3 fv3_v_normalised(const FVector3 * const v);
 FVector3 fv3_vv_add(const FVector3 * const v, const FVector3 * const w);

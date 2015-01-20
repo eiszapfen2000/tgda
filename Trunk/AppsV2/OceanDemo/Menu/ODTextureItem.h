@@ -17,6 +17,9 @@
     NPEffectVariableFloat2 * range;
     NPEffectVariableFloat4 * mask;
     NPTexture2D * texture;
+
+    OdTargetProperty visibleTarget;
+    BOOL visible;
 }
 
 - (id) init;

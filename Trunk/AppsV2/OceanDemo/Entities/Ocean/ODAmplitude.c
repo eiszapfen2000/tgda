@@ -9,13 +9,13 @@ float amplitudef_phillips_cartesian(
     )
 {
     const float kSquareLength = k.x * k.x + k.y * k.y;
+    const float kLength = sqrtf(kSquareLength);
 
-    if ( kSquareLength == 0.0f || ( fabsf(k.x) < kMin && fabsf(k.y) < kMin ))
+    if ( kLength == 0.0f || ( fabsf(k.x) <= kMin && fabsf(k.y) <= kMin ))
     {
         return 0.0f;
     }
 
-    const float kLength = sqrtf(kSquareLength);
     const FVector2 kNormalised = { .x = k.x / kLength, .y = k.y / kLength };
 
     float amplitude = A;
@@ -39,7 +39,7 @@ float amplitudef_phillips_cartesian_omnidirectional(
     const float A, const float L, const float l
     )
 {
-    if ( k == 0.0f || fabsf(k) < kMin )
+    if ( k == 0.0f || fabsf(k) <= kMin )
     {
         return 0.0f;
     }
@@ -82,19 +82,18 @@ float amplitudef_unified_cartesian(
 {
     const float g = 9.81f;
     const float a_0 = logf(2.0f) / 4.0f;    //eq 59
-    const float a_p = 4;                    //eq 59
-    const float c_m = 0.23;                 //eq 59
-    const float k_m = 370.0;                //eq 24
+    const float a_p = 4.0f;                 //eq 59
+    const float c_m = 0.23f;                //eq 59
+    const float k_m = 370.0f;               //eq 24
     const float kappa = 0.41f;              //von Karman constant
 
     const float kSquareLength = k.x * k.x + k.y * k.y;
+    const float klength = sqrtf(kSquareLength);
 
-    if ( kSquareLength == 0.0f || ( fabsf(k.x) < kMin && fabsf(k.y) < kMin ))
+    if ( klength == 0.0f || ( fabsf(k.x) <= kMin && fabsf(k.y) <= kMin ))
     {
         return 0.0f;
     }
-
-    const float klength = sqrtf(kSquareLength);
 
     //eq 24, angular frequency
     const float omega = sqrtf(g * klength * (1.0f + (klength / k_m) * (klength / k_m)));
@@ -139,7 +138,7 @@ float amplitudef_unified_cartesian(
     const float B_l = (0.5f * alpha_p) * (c_p / c) * F_p;
 
     // eq 44
-    const float alpha_m = 0.01 * (u_star < c_m ? (1.0f + logf(u_star / c_m)) : (1.0f + 3.0f * logf(u_star / c_m)));
+    const float alpha_m = 0.01f * (u_star < c_m ? (1.0f + logf(u_star / c_m)) : (1.0f + 3.0f * logf(u_star / c_m)));
 
     // eq 41
     const float F_m = (float)exp(-0.25 * ((klength / k_m) - 1.0) * ((klength / k_m) - 1.0));
@@ -154,7 +153,7 @@ float amplitudef_unified_cartesian(
 
     // eq 67
     const float phi = atan2f(k.y, k.x);
-    const float Psi = (B_l + B_h) * (1.0f + delta_k * cosf(2.0f * phi)) / (MATH_2_MUL_PI * klength * klength * klength * klength);
+    const float Psi = (B_l + B_h) * (1.0f + delta_k * cosf(2.0f * phi)) / (MATH_2_MUL_PIf * klength * klength * klength * klength);
 
     return A * Psi;
 }
@@ -166,12 +165,12 @@ float amplitudef_unified_cartesian_omnidirectional(
 {
     const float g = 9.81f;
     const float a_0 = logf(2.0f) / 4.0f;    //eq 59
-    const float a_p = 4;                    //eq 59
-    const float c_m = 0.23;                 //eq 59
-    const float k_m = 370.0;                //eq 24
+    const float a_p = 4.0f;                 //eq 59
+    const float c_m = 0.23f;                //eq 59
+    const float k_m = 370.0f;               //eq 24
     const float kappa = 0.41f;              //von Karman constant
 
-    if ( k == 0.0f || fabsf(k) < kMin )
+    if ( k == 0.0f || fabsf(k) <= kMin )
     {
         return 0.0f;
     }
@@ -220,7 +219,7 @@ float amplitudef_unified_cartesian_omnidirectional(
     const float B_l = (0.5f * alpha_p) * (c_p / c) * F_p;
 
     // eq 44
-    const float alpha_m = 0.01 * (u_star < c_m ? (1.0f + logf(u_star / c_m)) : (1.0f + 3.0f * logf(u_star / c_m)));
+    const float alpha_m = 0.01f * (u_star < c_m ? (1.0f + logf(u_star / c_m)) : (1.0f + 3.0f * logf(u_star / c_m)));
 
     // eq 41
     const float F_m = (float)exp(-0.25 * ((k / k_m) - 1.0) * ((k / k_m) - 1.0));

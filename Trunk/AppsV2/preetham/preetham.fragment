@@ -13,35 +13,6 @@ const mat3 XYZ2LinearsRGB
 
 void main()
 {
-    /*
-    float radius = length(out_texcoords);
-    float radiusNormalised = radius / radiusInPixel;
-
-    if (radiusNormalised > 1.0)
-    {
-        discard;
-    }
-
-    float theta = MATH_PI_DIV_2 * radiusNormalised;
-    float cosTheta = cos(theta);
-
-    vec3 v = vec3(out_texcoords.y, radiusInPixel * cosTheta, out_texcoords.x);
-    v = normalize(v);
-
-    float cosGamma = dot(v, directionToSun);
-    float gamma = acos(cosGamma);
-
-    vec3 numerator = (1.0f + A * exp( B / cosTheta )) * (1.0f + C * exp( D * gamma ) + (E * cosGamma * cosGamma));
-    vec3 xyY = zenithColor * (numerator / denominator);
-
-    vec3 XYZ;
-    XYZ.x = (xyY.x / xyY.y) * xyY.z;
-    XYZ.y = xyY.z;
-    XYZ.z = ((1.0f - xyY.x - xyY.y) / xyY.y) * xyY.z;
-
-    target = vec4(XYZ2LinearsRGB * XYZ, 1.0);
-    */
-
     float radius = length(out_texcoords);
 
     if (radius > radiusInPixel)
@@ -67,7 +38,7 @@ void main()
     vec3 v = vec3(x, y, z);
     v = normalize(v);
 
-    float cosGamma = dot(v, directionToSun);
+    float cosGamma = clamp(dot(v, directionToSun), -1.0, 1.0);
     float gamma = acos(cosGamma);
 
     vec3 numerator = (1.0f + A * exp( B / cos(thetaAngle) )) * (1.0f + C * exp( D * gamma ) + (E * cosGamma * cosGamma));
@@ -77,6 +48,17 @@ void main()
     XYZ.x = (xyY.x / xyY.y) * xyY.z;
     XYZ.y = xyY.z;
     XYZ.z = ((1.0f - xyY.x - xyY.y) / xyY.y) * xyY.z;
+
+    float f = gamma - sunHalfApparentAngle;
+
+    float a = 200.0;
+    float b = 1.0;
+    float c = 150.0;
+
+    float falloff = (1.0 / exp(a * f)) + b * (1.0 / exp(c * f));
+    falloff = clamp(falloff, 0.0, 1.0);
+
+    XYZ += falloff * sunColor;
 
     target = vec4(XYZ2LinearsRGB * XYZ, 1.0);
 }

@@ -27,9 +27,9 @@
 }
 
 - (OdFrequencySpectrumFloat)
-    generateFloatSpectrumWithGeometry:(ODSpectrumGeometry)geometry
-                            generator:(ODGeneratorSettings)generatorSettings
-                               atTime:(const float)time
+    generateFloatSpectrumWithGeometry:(OdSpectrumGeometry)geometry
+                            generator:(OdGeneratorSettings)generatorSettings
+                               atTime:(float)time
                  generateBaseGeometry:(BOOL)generateBaseGeometry
 {
     return
@@ -38,20 +38,6 @@
                                     generator:generatorSettings
                                        atTime:time
                          generateBaseGeometry:generateBaseGeometry ];
-}
-
-- (OdFrequencySpectrumFloat)
-    generateFloatSpectrumHCWithGeometry:(ODSpectrumGeometry)geometry
-                              generator:(ODGeneratorSettings)generatorSettings
-                                 atTime:(const float)time
-                   generateBaseGeometry:(BOOL)generateBaseGeometry
-{
-    return
-        [ floatGenerator
-            generateFloatSpectrumHCWithGeometry:geometry
-                                      generator:generatorSettings
-                                         atTime:time
-                           generateBaseGeometry:generateBaseGeometry ];
 }
 
 @end

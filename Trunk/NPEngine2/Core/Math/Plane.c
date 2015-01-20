@@ -77,7 +77,7 @@ void plane_pssss_init_with_components(Plane * plane, const double x, const doubl
     v3_v_normalise(&(plane->normal));
 }
 
-int32_t plane_pr_intersect_with_ray_v(Plane * plane, Ray * ray, Vector3 * result)
+int32_t plane_pr_intersect_with_ray_v(const Plane * const plane, const Ray * const ray, Vector3 * result)
 {
     const double raypoint_dot_planenormal     = v3_vv_dot_product(&(ray->point),     &(plane->normal));
     const double raydirection_dot_planenormal = v3_vv_dot_product(&(ray->direction), &(plane->normal));
@@ -101,16 +101,25 @@ int32_t plane_pr_intersect_with_ray_v(Plane * plane, Ray * ray, Vector3 * result
     return r;
 }
 
+int32_t plane_pvv_intersect_with_line_v(const Plane * const plane, const Vector3 * const lineStart, const Vector3 * const lineEnd, Vector3 * result)
+{
+    Ray ray;
+    ray.point = *lineStart;
+    ray.direction = v3_vv_sub(lineEnd, lineStart);
+
+    return plane_pr_intersect_with_ray_v(plane, &ray, result);
+}
+
 double plane_pv_signed_distance_from_plane(const Plane * const plane, const Vector3 * const point)
 {
     const double tmp = v3_vv_dot_product(&(plane->normal), point);
 
-    return tmp + plane->d;
+    return tmp - plane->d;
 }
 
 double plane_pv_distance_from_plane(Plane * plane, Vector3 * point)
 {
     double tmp = v3_vv_dot_product(&(plane->normal), point);
 
-    return fabs(tmp + plane->d);
+    return fabs(tmp - plane->d);
 }

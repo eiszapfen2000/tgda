@@ -13,10 +13,10 @@
     OdGaussianRng * gaussianRNG;
     float maxMeanSlopeVariance;
     float effectiveMeanSlopeVariance;
-    ODSpectrumGeometry lastGeometry;
-    ODSpectrumGeometry currentGeometry;
-    ODGeneratorSettings lastGeneratorSettings;
-    ODGeneratorSettings currentGeneratorSettings;
+    OdSpectrumGeometry lastGeometry;
+    OdSpectrumGeometry currentGeometry;
+    OdGeneratorSettings lastGeneratorSettings;
+    OdGeneratorSettings currentGeneratorSettings;
 }
 
 - (id) init;
@@ -25,7 +25,5 @@
 
 - (OdFrequencySpectrumFloat) generateHAtTime:(const float)time;
 - (OdFrequencySpectrumFloat) generateTimeIndependentH;
-- (OdFrequencySpectrumFloat) generateHHCAtTime:(const float)time;
-- (OdFrequencySpectrumFloat) generateTimeIndependentHHC;
 
 @end

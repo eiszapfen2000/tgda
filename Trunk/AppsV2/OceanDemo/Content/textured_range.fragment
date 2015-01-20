@@ -4,12 +4,12 @@ in vec2 out_texcoords;
 
 void main()
 {
-    vec4 sample = texture(colormap, out_texcoords);
+    vec4 sample = texture(colormap, vec3(out_texcoords, 0));
 
-    float vRange = range.y - range.x;
+    float vRange = max(range.y - range.x, 0.5);
     vec4 rescaled = (sample - range.x) / vRange;
     vec4 masked = rescaled * mask;
     float r = masked.x + masked.y + masked.z + masked.w;
 
-    target = vec4(vec3(r), 1.0);
+    target = vec4(vec3(r), color.a);
 }

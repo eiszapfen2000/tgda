@@ -18,11 +18,14 @@
 #import "Core/Utilities/NSData+NPEngine.h"
 #import "Core/World/NPTransformationState.h"
 #import "Core/NPEngineCore.h"
+#import "Graphics/Buffer/NPBufferObject.h"
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/Texture/NPTexture2D.h"
+#import "Graphics/Texture/NPTexture2DArray.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
+#import "Graphics/Texture/NPTextureBuffer.h"
 #import "Graphics/NPOrthographic.h"
 #import "Graphics/NPEngineGraphics.h"
 #import "ODProjector.h"
@@ -30,9 +33,10 @@
 #import "Ocean/ODConstants.h"
 #import "Ocean/ODFrequencySpectrum.h"
 #import "ODHeightfieldQueue.h"
-#import "ODOceanBaseMesh.h"
-#import "ODOceanBaseMeshes.h"
 #import "ODOceanEntity.h"
+
+#define FFTWF_FREE(_pointer)        do {void *_ptr=(void *)(_pointer); fftwf_free(_ptr); _pointer=NULL; } while (0)
+#define FFTWF_SAFE_FREE(_pointer)   { if ( (_pointer) != NULL ) FFTWF_FREE((_pointer)); }
 
 static void print_complex_spectrum(const IVector2 resolution, fftwf_complex * spectrum)
 {
@@ -90,14 +94,15 @@ typedef struct OdSpectrumVariance
 }
 OdSpectrumVariance;
 
-static const NSUInteger defaultNumberOfLods = 1;
-static const NSUInteger defaultSpectrumType = 0;
+static const NSUInteger defaultNumberOfLods = 2;
+static const NSUInteger defaultSpectrumType = 1;
+static const NSUInteger defaultOptions = OdGeneratorOptionsHeights | OdGeneratorOptionsGradient | OdGeneratorOptionsDisplacement;
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
-static const double defaultSize = 80.0;
+static const double defaultSize =237.0;
 static const double defaultDampening = 0.001;
 static const double defaultSpectrumScale = PHILLIPS_CONSTANT;
-static const int32_t resolutions[6] = {8, 64, 128, 256, 512, 1024};
+static const int32_t resolutions[6] = {8, 16, 32, 64, 128, 256};
 static const NSUInteger defaultGeometryResolutionIndex = 0;
 static const NSUInteger defaultGradientResolutionIndex = 0;
 static const double OneDivSixty = 1.0 / 30.0;
@@ -112,34 +117,18 @@ static size_t index_for_resolution(int32_t resolution)
     {
         case 8:
             return 0;
-        case 64:
+        case 16:
             return 1;
-        case 128:
+        case 32:
             return 2;
-        case 256:
+        case 64:
             return 3;
-        case 512:
+        case 128:
             return 4;
-        case 1024:
+        case 256:
             return 5;
         default:
             return SIZE_MAX;
-    }
-}
-
-void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
-{
-    if ( item != NULL )
-    {
-        fftwf_free(item->waveSpectrum);
-        fftwf_free(item->gradientX);
-        fftwf_free(item->gradientZ);
-        fftwf_free(item->gradient);
-        fftwf_free(item->displacementX);
-        fftwf_free(item->displacementZ);
-        fftwf_free(item->displacement);
-        fftwf_free(item->displacementXdXdZ);
-        fftwf_free(item->displacementZdXdZ);
     }
 }
 
@@ -151,10 +140,6 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 - (void) transformSpectra:(const OdFrequencySpectrumFloat *)item
                      into:(OdHeightfieldData *)result
                          ;
-
-- (void) transformSpectraHC:(const OdFrequencySpectrumFloat *)item
-                       into:(OdHeightfieldData *)result
-                           ;
 
 - (void) transform:(id)argument;
 
@@ -212,16 +197,8 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
     {
         const size_t arraySize = resolutions[i] * resolutions[i];
 
-        float * realTarget = fftwf_alloc_real(arraySize);
         fftwf_complex * source = fftwf_alloc_complex(arraySize);
         fftwf_complex * complexTarget = fftwf_alloc_complex(arraySize);
-
-        halfComplexPlans[i]
-            = fftwf_plan_dft_c2r_2d(resolutions[i],
-                                    resolutions[i],
-                                    source,
-                                    realTarget,
-                                    FFTW_PATIENT);
 
         complexPlans[i]
             = fftwf_plan_dft_2d(resolutions[i],
@@ -233,7 +210,6 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
         fftwf_free(source);
         fftwf_free(complexTarget);
-        fftwf_free(realTarget);
     }
 
     if ( obtainedWisdom == NO )
@@ -249,11 +225,6 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 {
     for ( uint32_t i = 0; i < ODOCEANENTITY_NUMBER_OF_RESOLUTIONS; i++ )
     {
-        if ( halfComplexPlans[i] != NULL )
-        {
-            fftwf_destroy_plan(halfComplexPlans[i]);
-        }
-
         if ( complexPlans[i] != NULL )
         {
             fftwf_destroy_plan(complexPlans[i]);
@@ -292,16 +263,17 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
         if ( [[ NSThread currentThread ] isCancelled ] == NO )
         {
-            ODSpectrumGeometry geometry;
-            ODGeneratorSettings generatorSettings;
+            OdGeneratorSettings generatorSettings;
             NSUInteger geometryResIndex;
             NSUInteger gradientResIndex;
+            uint32_t lodCount;
+            double maxSize;
 
             {
                 [ settingsMutex lock ];
 
-                const ODSpectrumGenerator generatorType
-                     = (ODSpectrumGenerator)generatorSpectrumType;
+                const OdSpectrumGenerator generatorType
+                     = (OdSpectrumGenerator)generatorSpectrumType;
 
                 switch ( generatorType )
                 {
@@ -321,29 +293,65 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                         generatorSettings.unified.Omega = 0.84;
                         break;
                     }
+
+                    default:
+                    {
+                        generatorSettings.generatorType = Unknown;
+                        NSAssert1(NO, @"Unknown Spectrum Type %d", generatorType);
+                        break;
+                    }
                 }
 
                 generatorSettings.spectrumScale = generatorSpectrumScale;
+                //generatorSettings.options = OdGeneratorOptionsHeights | OdGeneratorOptionsGradient | OdGeneratorOptionsDisplacement;
+                //generatorSettings.options = ULONG_MAX;
+                generatorSettings.options = generatorOptions;
 
-                NSAssert(generatorNumberOfLods <= UINT32_MAX, @"Lod out of bounds");
+                NSAssert(generatorNumberOfLods > 0 &&  generatorNumberOfLods < UINT32_MAX, @"Lod out of bounds");
 
-                geometry.numberOfLods = (uint32_t)generatorNumberOfLods;
-                geometry.sizes = ALLOC_ARRAY(Vector2, geometry.numberOfLods);
-                geometry.sizes[0] = (Vector2){generatorSize, generatorSize};
+                lodCount = (uint32_t)generatorNumberOfLods;
+                maxSize = generatorSize;
+
                 geometryResIndex = generatorGeometryResolutionIndex;
                 gradientResIndex = generatorGradientResolutionIndex;
-
-                //NSLog(@"%lu", generatorNumberOfLods);
 
                 [ settingsMutex unlock ];
             }
 
             const int32_t geometryRes = resolutions[geometryResIndex];
             const int32_t gradientRes = resolutions[gradientResIndex];
-            geometry.geometryResolution = (IVector2){geometryRes, geometryRes};
-            geometry.gradientResolution = (IVector2){gradientRes, gradientRes};
 
-            //NSLog(@"%d %d", geometryRes, gradientRes);
+            OdSpectrumGeometry geometry = geometry_zero();
+            geometry_init_with_resolutions_and_lods(&geometry, geometryRes, gradientRes, lodCount);
+            // first LOD is the largest one, set it to our desired size
+            geometry_set_max_size(&geometry, maxSize);
+
+            const int32_t largerResolution = MAX(geometryRes, gradientRes);
+            const float halfResolution = ((float)largerResolution) / 2.0f;
+
+            // compute size of smaller LODS
+            // in order not to compute redundant frequencies we have to
+            // scale down by at least half the resolution and epsilon
+            // ac < (al / (res/2))
+            for ( NSInteger i = 1; i < lodCount; i++ )
+            {
+                const float x = geometry.sizes[i-1].x / halfResolution;
+                const float y = geometry.sizes[i-1].y / halfResolution;
+
+                geometry.sizes[i]
+                    = (Vector2){x * (-2.0f * FLT_EPSILON + 1.0f), y * (-2.0f * FLT_EPSILON + 1.0f)};
+
+                //NSLog(@"A %f %f", x, y);
+            }
+
+            if ( lodCount > 1 )
+                geometry.sizes[1] = (Vector2){74.0, 74.0};
+
+            if ( lodCount > 2 )
+                geometry.sizes[2] = (Vector2){21.0, 21.0};
+
+            if ( lodCount > 3 )
+                geometry.sizes[3] = (Vector2){11.0, 11.0};
 
             [ timer update ];
 
@@ -353,21 +361,14 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                                                  atTime:generationTime
                                    generateBaseGeometry:NO ];
 
-            /*
-            OdFrequencySpectrumFloat halfcomplexSpectrum
-                = [ s generateFloatSpectrumHCWithGeometry:geometry
-                                                generator:generatorSettings
-                                                   atTime:generationTime
-                                     generateBaseGeometry:NO ];
-            */
 
             [ timer update ];
             const double genTime = [ timer frameTime ];
             //NSLog(@"%lf", genTime);
 
-            generationTime += 1.0f/30.0f;
+            generationTime += OneDivSixty;
 
-            FREE(geometry.sizes);
+            geometry_clear(&geometry);
 
             NSUInteger queueCount = 0;
             {
@@ -400,182 +401,194 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 - (void) transformSpectra:(const OdFrequencySpectrumFloat *)item
                      into:(OdHeightfieldData *)result
 {
-    const size_t geometryIndex = index_for_resolution(item->geometryResolution.x);
-    const size_t gradientIndex = index_for_resolution(item->gradientResolution.x);
+    const IVector2 geometryResolution = item->geometry.geometryResolution;
+    const IVector2 gradientResolution = item->geometry.gradientResolution;
 
-    const size_t numberOfGeometryElements = item->geometryResolution.x * item->geometryResolution.y;
-    const size_t numberOfGradientElements = item->gradientResolution.x * item->gradientResolution.y;
+    const size_t geometryIndex = index_for_resolution(geometryResolution.x);
+    const size_t gradientIndex = index_for_resolution(gradientResolution.x);
+
+    const int32_t lodCount = (int32_t)item->geometry.numberOfLods;
+
+    const int32_t numberOfGeometryElements = geometryResolution.x * geometryResolution.y;
+    const int32_t numberOfGradientElements = gradientResolution.x * gradientResolution.y;
 
     NSAssert2(geometryIndex != SIZE_MAX && gradientIndex != SIZE_MAX,
-              @"Invalid resolution %d %d", item->geometryResolution.x, item->gradientResolution.x);
+              @"Invalid resolution %d %d", geometryResolution.x, gradientResolution.x);
 
-    fftwf_complex * complexHeights = fftwf_alloc_complex(numberOfGeometryElements);
-
-    fftwf_execute_dft(complexPlans[geometryIndex], item->waveSpectrum, complexHeights);
     result->timeStamp = item->timestamp;
 
-    for ( int32_t i = 0; i < item->geometryResolution.y; i++ )
+    fftwf_complex * complexHeights = NULL;
+    fftwf_complex * complexDisplacement = NULL;
+    fftwf_complex * complexGradient = NULL;
+    fftwf_complex * complexDisplacementXdXdZ = NULL;
+    fftwf_complex * complexDisplacementZdXdZ = NULL;
+
+    if ( item->height != NULL )
     {
-        for ( int32_t j = 0; j < item->geometryResolution.x; j++ )
+        complexHeights = fftwf_alloc_complex(lodCount * numberOfGeometryElements);
+
+        for ( int32_t l = 0; l < lodCount; l++ )
         {
-            const int32_t k = item->geometryResolution.y - 1 - i;
-            const int32_t sourceIndex = i * item->geometryResolution.x + j;
-            const int32_t targetIndex = k * item->geometryResolution.x + j;
-            result->heights32f[targetIndex] = complexHeights[sourceIndex][0];
+            const int32_t offset = l * numberOfGeometryElements;
+
+            fftwf_execute_dft(
+                complexPlans[geometryIndex],
+                item->height   + offset,
+                complexHeights + offset
+                );
         }
-    }
-
-    heightfield_hf_compute_min_max(result);
-
-    if ( item->gradient != NULL )
-    {
-        fftwf_complex * complexGradient = fftwf_alloc_complex(numberOfGradientElements);
-        fftwf_complex * complexDisplacementXdXdZ = fftwf_alloc_complex(numberOfGradientElements);
-        fftwf_complex * complexDisplacementZdXdZ = fftwf_alloc_complex(numberOfGradientElements);
-
-        fftwf_execute_dft(complexPlans[gradientIndex], item->gradient, complexGradient);
-        fftwf_execute_dft(complexPlans[gradientIndex], item->displacementXdXdZ, complexDisplacementXdXdZ);
-        fftwf_execute_dft(complexPlans[gradientIndex], item->displacementZdXdZ, complexDisplacementZdXdZ);
-
-        for ( int32_t i = 0; i < item->gradientResolution.y; i++ )
-        {
-            for ( int32_t j = 0; j < item->gradientResolution.x; j++ )
-            {
-                const int32_t k = item->gradientResolution.y - 1 - i;
-                const int32_t sourceIndex = i * item->gradientResolution.x + j;
-                const int32_t targetIndex = k * item->gradientResolution.x + j;
-
-                result->gradients32f[targetIndex].x = complexGradient[sourceIndex][0];
-                result->gradients32f[targetIndex].y = complexGradient[sourceIndex][1];
-
-                result->displacementDerivatives32f[targetIndex].x = complexDisplacementXdXdZ[sourceIndex][0];
-                result->displacementDerivatives32f[targetIndex].y = complexDisplacementXdXdZ[sourceIndex][1];
-                result->displacementDerivatives32f[targetIndex].z = complexDisplacementZdXdZ[sourceIndex][0];
-                result->displacementDerivatives32f[targetIndex].w = complexDisplacementZdXdZ[sourceIndex][1];
-            }
-        }
-
-        heightfield_hf_compute_min_max_gradients(result);
-        heightfield_hf_compute_min_max_displacement_derivatives(result);
-
-        fftwf_free(complexDisplacementZdXdZ);
-        fftwf_free(complexDisplacementXdXdZ);
-        fftwf_free(complexGradient);
     }
 
     if ( item->displacement != NULL )
     {
-        fftwf_complex * complexDisplacement = fftwf_alloc_complex(numberOfGeometryElements);
+        complexDisplacement = fftwf_alloc_complex(lodCount * numberOfGeometryElements);
 
-        fftwf_execute_dft(complexPlans[geometryIndex], item->displacement, complexDisplacement);
-
-        for ( int32_t i = 0; i < item->geometryResolution.y; i++ )
+        for ( int32_t l = 0; l < lodCount; l++ )
         {
-            for ( int32_t j = 0; j < item->geometryResolution.x; j++ )
-            {
-                const int32_t k = item->geometryResolution.y - 1 - i;
-                const int32_t sourceIndex = i * item->geometryResolution.x + j;
-                const int32_t targetIndex = k * item->geometryResolution.x + j;
+            const int32_t offset = l * numberOfGeometryElements;
 
-                result->displacements32f[targetIndex].x = complexDisplacement[sourceIndex][0];
-                result->displacements32f[targetIndex].y = complexDisplacement[sourceIndex][1];
+            fftwf_execute_dft(
+                complexPlans[geometryIndex],
+                item->displacement  + offset,
+                complexDisplacement + offset
+                );
+        }
+    }
+
+    if ( item->gradient != NULL )
+    {
+        complexGradient = fftwf_alloc_complex(lodCount * numberOfGradientElements);
+
+        for ( int32_t l = 0; l < lodCount; l++ )
+        {
+            const int32_t offset = l * numberOfGradientElements;
+
+            fftwf_execute_dft(
+                complexPlans[gradientIndex],
+                item->gradient  + offset,
+                complexGradient + offset
+                );
+        }
+    }
+
+    if ( item->displacementXdXdZ != NULL && item->displacementZdXdZ != NULL )
+    {
+        complexDisplacementXdXdZ = fftwf_alloc_complex(lodCount * numberOfGradientElements);
+        complexDisplacementZdXdZ = fftwf_alloc_complex(lodCount * numberOfGradientElements);
+
+        for ( int32_t l = 0; l < lodCount; l++ )
+        {
+            const int32_t offset = l * numberOfGradientElements;
+
+            fftwf_execute_dft(
+                complexPlans[gradientIndex],
+                item->displacementXdXdZ  + offset,
+                complexDisplacementXdXdZ + offset
+                );
+
+            fftwf_execute_dft(
+                complexPlans[gradientIndex],
+                item->displacementZdXdZ  + offset,
+                complexDisplacementZdXdZ + offset
+                );
+        }
+    }
+
+    if ( item->height != NULL )
+    {
+        for ( int32_t l = 0; l < lodCount; l++ )
+        {
+            const int32_t offset = l * numberOfGeometryElements;
+
+            for ( int32_t i = 0; i < geometryResolution.y; i++ )
+            {
+                for ( int32_t j = 0; j < geometryResolution.x; j++ )
+                {
+                    const int32_t k = geometryResolution.y - 1 - i;
+                    const int32_t sourceIndex = i * geometryResolution.x + j;
+                    const int32_t targetIndex = k * geometryResolution.x + j;
+                    result->heights32f[offset + targetIndex] = complexHeights[offset + sourceIndex][0];
+                }
             }
         }
-
-        heightfield_hf_compute_min_max_displacements(result);
-        fftwf_free(complexDisplacement);
     }
 
-    fftwf_free(complexHeights);
-}
-
-- (void) transformSpectraHC:(const OdFrequencySpectrumFloat *)item
-                       into:(OdHeightfieldData *)result
-{
-    const size_t geometryIndex = index_for_resolution(item->geometryResolution.x);
-    const size_t gradientIndex = index_for_resolution(item->gradientResolution.x);
-
-    const size_t numberOfGeometryElements = item->geometryResolution.x * item->geometryResolution.y;
-    const size_t numberOfGradientElements = item->gradientResolution.x * item->gradientResolution.y;
-
-    NSAssert2(geometryIndex != SIZE_MAX && gradientIndex != SIZE_MAX,
-              @"Invalid resolution %d %d", item->geometryResolution.x, item->gradientResolution.x);
-
-    float * realHeights = fftwf_alloc_real(numberOfGeometryElements);
-
-    fftwf_execute_dft_c2r(halfComplexPlans[geometryIndex], item->waveSpectrum, realHeights);
-    result->timeStamp = item->timestamp;
-
-    for ( int32_t i = 0; i < item->geometryResolution.y; i++ )
+    if ( item->displacement != NULL )
     {
-        for ( int32_t j = 0; j < item->geometryResolution.x; j++ )
+        for ( int32_t l = 0; l < lodCount; l++ )
         {
-            const int32_t k = item->geometryResolution.y - 1 - i;
-            const int32_t sourceIndex = i * item->geometryResolution.x + j;
-            const int32_t targetIndex = k * item->geometryResolution.x + j;
-            result->heights32f[targetIndex] = realHeights[sourceIndex];
+            const int32_t offset = l * numberOfGeometryElements;
+
+            for ( int32_t i = 0; i < geometryResolution.y; i++ )
+            {
+                for ( int32_t j = 0; j < geometryResolution.x; j++ )
+                {
+                    const int32_t k = geometryResolution.y - 1 - i;
+                    const int32_t sourceIndex = i * geometryResolution.x + j;
+                    const int32_t targetIndex = k * geometryResolution.x + j;
+
+                    result->displacements32f[offset + targetIndex].x = complexDisplacement[offset + sourceIndex][0];
+                    result->displacements32f[offset + targetIndex].y = complexDisplacement[offset + sourceIndex][1];
+                }
+            }
         }
     }
+
+    if ( item->gradient != NULL )
+    {
+        for ( int32_t l = 0; l < lodCount; l++ )
+        {
+            const int32_t offset = l * numberOfGradientElements;
+
+            for ( int32_t i = 0; i < gradientResolution.y; i++ )
+            {
+                for ( int32_t j = 0; j < gradientResolution.x; j++ )
+                {
+                    const int32_t k = gradientResolution.y - 1 - i;
+                    const int32_t sourceIndex = i * gradientResolution.x + j;
+                    const int32_t targetIndex = k * gradientResolution.x + j;
+
+                    result->gradients32f[offset + targetIndex].x = complexGradient[offset + sourceIndex][0];
+                    result->gradients32f[offset + targetIndex].y = complexGradient[offset + sourceIndex][1];
+                }
+            }
+        }
+    }
+
+    if ( item->displacementXdXdZ != NULL && item->displacementZdXdZ != NULL )
+    {
+        for ( int32_t l = 0; l < lodCount; l++ )
+        {
+            const int32_t offset = l * numberOfGradientElements;
+
+            for ( int32_t i = 0; i < gradientResolution.y; i++ )
+            {
+                for ( int32_t j = 0; j < gradientResolution.x; j++ )
+                {
+                    const int32_t k = gradientResolution.y - 1 - i;
+                    const int32_t sourceIndex = i * gradientResolution.x + j;
+                    const int32_t targetIndex = k * gradientResolution.x + j;
+
+                    result->displacementDerivatives32f[offset + targetIndex].x = complexDisplacementXdXdZ[offset + sourceIndex][0];
+                    result->displacementDerivatives32f[offset + targetIndex].y = complexDisplacementXdXdZ[offset + sourceIndex][1];
+                    result->displacementDerivatives32f[offset + targetIndex].z = complexDisplacementZdXdZ[offset + sourceIndex][0];
+                    result->displacementDerivatives32f[offset + targetIndex].w = complexDisplacementZdXdZ[offset + sourceIndex][1];
+                }
+            }
+        }
+    }
+
+    FFTWF_SAFE_FREE(complexHeights);
+    FFTWF_SAFE_FREE(complexDisplacement);
+    FFTWF_SAFE_FREE(complexGradient);
+    FFTWF_SAFE_FREE(complexDisplacementXdXdZ);
+    FFTWF_SAFE_FREE(complexDisplacementZdXdZ);
 
     heightfield_hf_compute_min_max(result);
-
-    if ( item->gradientX != NULL && item->gradientZ != NULL )
-    {
-        float * realGradientX = fftwf_alloc_real(numberOfGradientElements);
-        float * realGradientZ = fftwf_alloc_real(numberOfGradientElements);
-
-        fftwf_execute_dft_c2r(halfComplexPlans[gradientIndex], item->gradientX, realGradientX);
-        fftwf_execute_dft_c2r(halfComplexPlans[gradientIndex], item->gradientZ, realGradientZ);
-
-        for ( int32_t i = 0; i < item->gradientResolution.y; i++ )
-        {
-            for ( int32_t j = 0; j < item->gradientResolution.x; j++ )
-            {
-                const int32_t k = item->gradientResolution.y - 1 - i;
-                const int32_t sourceIndex = i * item->gradientResolution.x + j;
-                const int32_t targetIndex = k * item->gradientResolution.x + j;
-
-                result->gradients32f[targetIndex].x = realGradientX[sourceIndex];
-                result->gradients32f[targetIndex].y = realGradientZ[sourceIndex];
-            }
-        }
-
-        heightfield_hf_compute_min_max_gradients(result);
-
-        fftwf_free(realGradientX);
-        fftwf_free(realGradientZ);
-    }
-
-    if ( item->displacementX != NULL && item->displacementZ != NULL )
-    {
-        float * realDisplacementX = fftwf_alloc_real(numberOfGeometryElements);
-        float * realDisplacementZ = fftwf_alloc_real(numberOfGeometryElements);
-
-        fftwf_execute_dft_c2r(halfComplexPlans[geometryIndex], item->displacementX, realDisplacementX);
-        fftwf_execute_dft_c2r(halfComplexPlans[geometryIndex], item->displacementZ, realDisplacementZ);
-
-        for ( int32_t i = 0; i < item->geometryResolution.y; i++ )
-        {
-            for ( int32_t j = 0; j < item->geometryResolution.x; j++ )
-            {
-                const int32_t k = item->geometryResolution.y - 1 - i;
-                const int32_t sourceIndex = i * item->geometryResolution.x + j;
-                const int32_t targetIndex = k * item->geometryResolution.x + j;
-
-                result->displacements32f[targetIndex].x = realDisplacementX[sourceIndex];
-                result->displacements32f[targetIndex].y = realDisplacementZ[sourceIndex];
-            }
-        }
-
-        heightfield_hf_compute_min_max_displacements(result);
-
-        fftwf_free(realDisplacementX);
-        fftwf_free(realDisplacementZ);
-    }
-
-    fftwf_free(realHeights);
+    heightfield_hf_compute_min_max_displacements(result);
+    heightfield_hf_compute_min_max_gradients(result);
+    heightfield_hf_compute_min_max_displacement_derivatives(result);
 }
-
 
 - (void) transform:(id)argument
 {
@@ -636,32 +649,24 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
 
                 BOOL process = YES;
 
-                if ( item.timestamp == FLT_MAX || item.geometryResolution.x == 0
-                     || item.geometryResolution.y == 0 || item.gradientResolution.x == 0
-                     || item.gradientResolution.y == 0 || item.size.x == 0.0
-                     || item.size.y == 0.0 || item.waveSpectrum == NULL )
+                if ( item.timestamp == FLT_MAX
+                     || item.geometry.geometryResolution.x == 0 || item.geometry.geometryResolution.y == 0
+                     || item.geometry.gradientResolution.x == 0 || item.geometry.gradientResolution.y == 0
+                     || item.geometry.sizes == NULL )
                 {
                     process = NO;
                 }
 
                 if ( process == YES )
                 {
-                    OdHeightfieldData * result = NULL;
+                    OdHeightfieldData result = heightfield_zero();
 
-                    {
-                        [ heightfieldQueueMutex lock ];
+                    heightfield_hf_init_with_geometry_and_options(
+                                &result,
+                                &item.geometry,
+                                item.options);
 
-                        result
-                            = heightfield_alloc_init_with_resolutions_and_size(
-                                item.geometryResolution,
-                                item.gradientResolution,
-                                item.size);
-
-                        [ heightfieldQueueMutex unlock ];
-                    }
-
-//                    [ self transformSpectraHC:&item into:result ];
-                    [ self transformSpectra:&item into:result ];
+                    [ self transformSpectra:&item into:&result ];
 
                     NSUInteger queueCount = 0;
 
@@ -674,7 +679,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                         variance.effectiveMeanSlopeVariance = item.effectiveMeanSlopeVariance;
 
                         [ varianceQueue addPointer:&variance ];
-                        [ resultQueue addHeightfield:result ];
+                        [ resultQueue addHeightfield:&result ];
 
                         queueCount = [ resultQueue count ];
 
@@ -686,7 +691,7 @@ void od_freq_spectrum_clear(const OdFrequencySpectrumFloat * item)
                     [ transformCondition unlock ];
                 }
 
-                od_freq_spectrum_clear(&item);
+                frequency_spectrum_clear(&item);
             }
 
         }
@@ -738,6 +743,9 @@ static NSUInteger od_variance_size(const void * item)
     lastNumberOfLods = ULONG_MAX;
     numberOfLods = generatorNumberOfLods = defaultNumberOfLods;
 
+    lastOptions = 0;
+    options = generatorOptions = defaultOptions;
+
     lastSpectrumType = ULONG_MAX;
     spectrumType = generatorSpectrumType = defaultSpectrumType;
 
@@ -755,16 +763,16 @@ static NSUInteger od_variance_size(const void * item)
     lastSpectrumScale = DBL_MAX;
     spectrumScale = generatorSpectrumScale = defaultSpectrumScale;
 
-    const NSUInteger options
+    const NSUInteger pfoptions
         = NSPointerFunctionsMallocMemory
           | NSPointerFunctionsStructPersonality
           | NSPointerFunctionsCopyIn;
 
     NSPointerFunctions * pFunctionsSpectrum
-        = [ NSPointerFunctions pointerFunctionsWithOptions:options ];
+        = [ NSPointerFunctions pointerFunctionsWithOptions:pfoptions ];
 
     NSPointerFunctions * pFunctionsVariance
-        = [ NSPointerFunctions pointerFunctionsWithOptions:options ];
+        = [ NSPointerFunctions pointerFunctionsWithOptions:pfoptions ];
 
     [ pFunctionsSpectrum setSizeFunction:&od_freq_spectrum_size ];
     [ pFunctionsVariance setSizeFunction:&od_variance_size];
@@ -778,13 +786,29 @@ static NSUInteger od_variance_size(const void * item)
     basePlane = [[ ODBasePlane alloc ] initWithName:@"BasePlane" ];
     [ basePlane setProjector:projector ];
 
-    baseSpectrum = [[ NPTexture2D alloc ] initWithName:@"Base Spectrum Texture" ];
-    heightfield  = [[ NPTexture2D alloc ] initWithName:@"Height Texture" ];
-    displacement = [[ NPTexture2D alloc ] initWithName:@"Height Texture Displacement" ];
-    gradient     = [[ NPTexture2D alloc ] initWithName:@"Height Texture Gradient" ];
+    sizesStorage = [[ NPBufferObject alloc ] initWithName:@"Sizes Storage" ];
+    sizes = [[ NPTextureBuffer alloc ] initWithName:@"Sizes Texture Buffer" ];
+
+    baseSpectrum = [[ NPTexture2DArray alloc ] initWithName:@"Base Spectrum Texture" ];
+
+    heightfield  = [[ NPTexture2DArray alloc ] initWithName:@"Height Texture" ];
+    displacement = [[ NPTexture2DArray alloc ] initWithName:@"Height Texture Displacement" ];
+    gradient     = [[ NPTexture2DArray alloc ] initWithName:@"Height Texture Gradient" ];
 
     displacementDerivatives
-        = [[ NPTexture2D alloc ] initWithName:@"Height Texture Displacement Derivatives" ];
+        = [[ NPTexture2DArray alloc ] initWithName:@"Height Texture Displacement Derivatives" ];
+
+    waterColor
+        = [[[ NPEngineGraphics instance ] textures2D ] getAssetWithFileName:@"WaterColor.png" ];
+
+    waterColorIntensity
+        = [[[ NPEngineGraphics instance ] textures2D ] getAssetWithFileName:@"BlackToWhiteRamp.png" ];
+
+    ASSERT_RETAIN(waterColor);
+    ASSERT_RETAIN(waterColorIntensity);
+
+    waterColorCoordinate = v2_zero();
+    waterColorIntensityCoordinate = v2_one();
 
     [ baseSpectrum setTextureFilter:NpTextureFilterNearest ];
     [ heightfield  setTextureFilter:NpTextureFilterLinear  ];
@@ -800,37 +824,26 @@ static NSUInteger od_variance_size(const void * item)
 
     [ displacementDerivatives setTextureWrap:NpTextureWrapRepeat   ];
 
-    baseMeshes = [[ ODOceanBaseMeshes alloc ] init ];
-    NSAssert(YES == [ baseMeshes generateWithResolutions:resolutions numberOfResolutions:6 ], @"");
-    baseMeshIndex = ULONG_MAX;
-    baseMeshScale = (FVector2){.x = 1.0f, .y = 1.0f};
-
-    timeStamp = DBL_MAX;
-
-    area = 0.0;
-
     displacementScale = defaultDisplacementScale;
     areaScale = defaultAreaScale;
     heightScale = defaultHeightScale;
 
-    heightRange    = (FVector2){.x = 0.0f, .y = 0.0f};
-    gradientXRange = (FVector2){.x = 0.0f, .y = 1.0f};
-    gradientZRange = (FVector2){.x = 0.0f, .y = 1.0f};
-    displacementXRange = (FVector2){.x = 0.0f, .y = 1.0f};
-    displacementZRange = (FVector2){.x = 0.0f, .y = 1.0f};
-    displacementXdXRange = (FVector2){.x = 0.0f, .y = 1.0f};
-    displacementXdZRange = (FVector2){.x = 0.0f, .y = 1.0f};
-    displacementZdXRange = (FVector2){.x = 0.0f, .y = 1.0f};
-    displacementZdZRange = (FVector2){.x = 0.0f, .y = 1.0f};
+    receivedHeight = NO;
+    receivedDisplacement = NO;
+    receivedGradient = NO;
+    receivedDisplacementDerivatives = NO;
 
-    animated = YES;
-    updateSlopeVariance = NO;
+    heightRanges = gradientXRanges = gradientZRanges
+        = displacementXRanges = displacementZRanges = displacementXdXRanges
+        = displacementXdZRanges = displacementZdXRanges = displacementZdZRanges
+        = NULL;
 
     baseSpectrumResolution = iv2_zero();
     baseSpectrumSize = v2_zero();
     baseSpectrumDeltaVariance = 0.0f;
+    updateSlopeVariance = NO;
 
-    fm4_m_set_identity(&modelMatrix);
+    animated = YES;
 
     return self;
 }
@@ -840,19 +853,22 @@ static NSUInteger od_variance_size(const void * item)
     NSUInteger spectrumCount = [ spectrumQueue count ];
     for ( NSUInteger i = 0; i < spectrumCount; i++ )
     {
-        od_freq_spectrum_clear([ spectrumQueue pointerAtIndex:i ]);
+        frequency_spectrum_clear([ spectrumQueue pointerAtIndex:i ]);
     }
 
     [ spectrumQueue removeAllPointers ];
     [ varianceQueue removeAllPointers ];
     [ resultQueue removeAllHeightfields ];
 
-    DESTROY(baseMeshes);
+    DESTROY(waterColor);
+    DESTROY(waterColorIntensity);
     DESTROY(heightfield);
     DESTROY(displacement);
     DESTROY(displacementDerivatives);
     DESTROY(gradient);
     DESTROY(baseSpectrum);
+    DESTROY(sizesStorage);
+    DESTROY(sizes);
     DESTROY(projector);
     DESTROY(basePlane);
     DESTROY(resultQueue);
@@ -952,11 +968,6 @@ static NSUInteger od_variance_size(const void * item)
     [ self shutdownFFTW ];
 }
 
-- (const FMatrix4 * const) modelMatrix
-{
-    return &modelMatrix;
-}
-
 - (ODProjector *) projector
 {
     return projector;
@@ -967,34 +978,44 @@ static NSUInteger od_variance_size(const void * item)
     return basePlane;
 }
 
-- (NPTexture2D *) baseSpectrum
+- (NPTexture2DArray *) baseSpectrum
 {
     return baseSpectrum;
 }
 
-- (NPTexture2D *) heightfield
+- (NPTextureBuffer *) sizes
+{
+    return sizes;
+}
+
+- (NPTexture2DArray *) heightfield
 {
     return heightfield;
 }
 
-- (NPTexture2D *) displacement
+- (NPTexture2DArray *) displacement
 {
     return displacement;
 }
 
-- (NPTexture2D *) displacementDerivatives
-{
-    return displacementDerivatives;
-}
-
-- (NPTexture2D *) gradient
+- (NPTexture2DArray *) gradient
 {
     return gradient;
 }
 
-- (double) area
+- (NPTexture2DArray *) displacementDerivatives
 {
-    return area;
+    return displacementDerivatives;
+}
+
+- (NPTexture2D *) waterColor
+{
+    return waterColor;
+}
+
+- (NPTexture2D *) waterColorIntensity
+{
+    return waterColorIntensity;
 }
 
 - (double) areaScale
@@ -1012,29 +1033,14 @@ static NSUInteger od_variance_size(const void * item)
     return heightScale;
 }
 
-- (FVector2) heightRange
+- (Vector2) waterColorCoordinate
 {
-    return heightRange;
+    return waterColorCoordinate;
 }
 
-- (FVector2) gradientXRange
+- (Vector2) waterColorIntensityCoordinate
 {
-    return gradientXRange;
-}
-
-- (FVector2) gradientZRange
-{
-    return gradientZRange;
-}
-
-- (FVector2) displacementXRange
-{
-    return displacementXRange;
-}
-
-- (FVector2) displacementZRange
-{
-    return displacementZRange;
+    return waterColorIntensityCoordinate;
 }
 
 - (IVector2) baseSpectrumResolution
@@ -1052,11 +1058,6 @@ static NSUInteger od_variance_size(const void * item)
     return baseSpectrumDeltaVariance;
 }
 
-- (FVector2) baseMeshScale
-{
-    return baseMeshScale;
-}
-
 - (BOOL) updateSlopeVariance
 {
     return updateSlopeVariance;
@@ -1069,9 +1070,6 @@ static NSUInteger od_variance_size(const void * item)
 
 - (void) update:(const double)frameTime
 {
-    [ projector update:frameTime ];
-    [ basePlane update:frameTime ];
-
     const double totalElapsedTime
         = [[[ NPEngineCore instance ] timer ] totalElapsedTime ];
 
@@ -1082,6 +1080,7 @@ static NSUInteger od_variance_size(const void * item)
     // the resultQueue of still therein residing data
     if ( spectrumType != lastSpectrumType
          || numberOfLods != lastNumberOfLods
+         || options != lastOptions
          || windSpeed != lastWindSpeed
          || size != lastSize
          || dampening != lastDampening
@@ -1091,6 +1090,7 @@ static NSUInteger od_variance_size(const void * item)
     {
         lastSpectrumType = spectrumType;
         lastNumberOfLods = numberOfLods;
+        lastOptions = options;
         lastWindSpeed = windSpeed;
         lastSize = size;
         lastDampening = dampening;
@@ -1105,6 +1105,7 @@ static NSUInteger od_variance_size(const void * item)
         [ settingsMutex lock ];
         generatorSpectrumType = spectrumType;
         generatorNumberOfLods = numberOfLods;
+        generatorOptions = options;
         generatorWindSpeed = windSpeed;
         generatorSize = size;
         generatorDampening = dampening;
@@ -1118,7 +1119,7 @@ static NSUInteger od_variance_size(const void * item)
         NSUInteger spectrumCount = [ spectrumQueue count ];
         for ( NSUInteger i = 0; i < spectrumCount; i++ )
         {
-            od_freq_spectrum_clear([ spectrumQueue pointerAtIndex:i ]);
+            frequency_spectrum_clear([ spectrumQueue pointerAtIndex:i ]);
         }
 
         [ spectrumQueue removeAllPointers ];
@@ -1213,85 +1214,180 @@ static NSUInteger od_variance_size(const void * item)
     // update texture and associated min max
     if ( hf != NULL && animated == YES)
     {
-        timeStamp = hf->timeStamp;
+        receivedHeight = NO;
+        receivedDisplacement = NO;
+        receivedGradient = NO;
+        receivedDisplacementDerivatives = NO;
 
-        area = hf->size.x;
+        SAFE_FREE(heightRanges);
+        SAFE_FREE(gradientXRanges);
+        SAFE_FREE(gradientZRanges);
+        SAFE_FREE(displacementXRanges);
+        SAFE_FREE(displacementZRanges);
+        SAFE_FREE(displacementXdXRanges);
+        SAFE_FREE(displacementXdZRanges);
+        SAFE_FREE(displacementZdXRanges);
+        SAFE_FREE(displacementZdZRanges);
 
-        heightRange = hf->heightRange;
-        gradientXRange = hf->gradientXRange;
-        gradientZRange = hf->gradientZRange;
-        displacementXRange = hf->displacementXRange;
-        displacementZRange = hf->displacementZRange;
-        displacementXdXRange = hf->displacementXdXRange;
-        displacementXdZRange = hf->displacementXdZRange;
-        displacementZdXRange = hf->displacementZdXRange;
-        displacementZdZRange = hf->displacementZdZRange;
+        //---------------------------------------------
+
+        // geometry sizes texture buffer update
+        const uint32_t lodCount = hf->geometry.numberOfLods;
+        FVector2 geometrySizes[lodCount];
+
+        for ( uint32_t i = 0; i < lodCount; i++ )
+        {
+            geometrySizes[i] = fv2_v_from_v2(&hf->geometry.sizes[i]);
+        }
+
+        NSData * geometrySizesData
+            = [ NSData dataWithBytesNoCopyNoFree:geometrySizes
+                                          length:lodCount * sizeof(FVector2) ];
+
+        [ sizesStorage generate:NpBufferObjectTypeTexture
+                     updateRate:NpBufferDataUpdateOftenUseOften
+                      dataUsage:NpBufferDataWriteCPUToGPU
+                     dataFormat:NpBufferDataFormatFloat32
+                     components:2
+                           data:geometrySizesData
+                     dataLength:[ geometrySizesData length ]
+                          error:NULL ];
+
+        [ sizes
+            attachBuffer:sizesStorage
+        numberOfElements:0
+             pixelFormat:NpTexturePixelFormatRG
+              dataFormat:NpTextureDataFormatFloat32 ];
+
+        //---------------------------------------------
+
+        // ranges update
+
+        heightRanges          = ALLOC_ARRAY(FVector2, lodCount);
+        gradientXRanges       = ALLOC_ARRAY(FVector2, lodCount);
+        gradientZRanges       = ALLOC_ARRAY(FVector2, lodCount);
+        displacementXRanges   = ALLOC_ARRAY(FVector2, lodCount);
+        displacementZRanges   = ALLOC_ARRAY(FVector2, lodCount);
+        displacementXdXRanges = ALLOC_ARRAY(FVector2, lodCount);
+        displacementXdZRanges = ALLOC_ARRAY(FVector2, lodCount);
+        displacementZdXRanges = ALLOC_ARRAY(FVector2, lodCount);
+        displacementZdZRanges = ALLOC_ARRAY(FVector2, lodCount);
+
+        double minHeight = 0.0;
+        double maxHeight = 0.0;
+
+        for ( uint32_t i = 0; i < lodCount; i++ )
+        {
+            heightRanges[i]          = hf->ranges[i * NUMBER_OF_RANGES + HEIGHT_RANGE];
+            gradientXRanges[i]       = hf->ranges[i * NUMBER_OF_RANGES + GRADIENT_X_RANGE];
+            gradientZRanges[i]       = hf->ranges[i * NUMBER_OF_RANGES + GRADIENT_Z_RANGE];
+            displacementXRanges[i]   = hf->ranges[i * NUMBER_OF_RANGES + DISPLACEMENT_X_RANGE];
+            displacementZRanges[i]   = hf->ranges[i * NUMBER_OF_RANGES + DISPLACEMENT_Z_RANGE];
+            displacementXdXRanges[i] = hf->ranges[i * NUMBER_OF_RANGES + DISPLACEMENT_X_DX_RANGE];
+            displacementXdZRanges[i] = hf->ranges[i * NUMBER_OF_RANGES + DISPLACEMENT_X_DZ_RANGE];
+            displacementZdXRanges[i] = hf->ranges[i * NUMBER_OF_RANGES + DISPLACEMENT_Z_DX_RANGE];
+            displacementZdZRanges[i] = hf->ranges[i * NUMBER_OF_RANGES + DISPLACEMENT_Z_DZ_RANGE];
+
+            minHeight += heightRanges[i].x;
+            maxHeight += heightRanges[i].y;
+        }
+
+        [ projector setLowerBound:minHeight * heightScale ];
+        [ projector setUpperBound:maxHeight * heightScale ];
+
+        //---------------------------------------------
 
         {
-            const double resX = hf->geometryResolution.x;
-            const double resY = hf->geometryResolution.y;
-            baseMeshScale.x = hf->size.x / resX;
-            baseMeshScale.y = hf->size.y / resY;
+            const IVector2 geometryResolution = hf->geometry.geometryResolution;
+            const IVector2 gradientResolution = hf->geometry.gradientResolution;
 
             const NSUInteger numberOfGeometryBytes
-                = hf->geometryResolution.x * hf->geometryResolution.y * sizeof(float);
+                = geometryResolution.x * geometryResolution.y
+                  * lodCount * sizeof(float);
 
             const NSUInteger numberOfGradientBytes
-                = hf->gradientResolution.x * hf->gradientResolution.y * sizeof(float);
+                = gradientResolution.x * gradientResolution.y
+                  * lodCount * sizeof(float);
 
-            NSData * heightsData
-                = [ NSData dataWithBytesNoCopyNoFree:hf->heights32f
-                                              length:numberOfGeometryBytes ];
 
-            NSData * displacementsData
-                = [ NSData dataWithBytesNoCopyNoFree:hf->displacements32f
-                                              length:numberOfGeometryBytes * 2 ];
+            if ( hf->heights32f != NULL )
+            {
+                receivedHeight = YES;
 
-            NSData * displacementDerivativesData
-                = [ NSData dataWithBytesNoCopyNoFree:hf->displacementDerivatives32f
-                                              length:numberOfGradientBytes * 4 ];
+                NSData * heightsData
+                    = [ NSData dataWithBytesNoCopyNoFree:hf->heights32f
+                                                  length:numberOfGeometryBytes ];
 
-            NSData * gradientsData
-                = [ NSData dataWithBytesNoCopyNoFree:hf->gradients32f
-                                              length:numberOfGradientBytes * 2 ];
+                [ heightfield generateUsingWidth:geometryResolution.x
+                                          height:geometryResolution.y
+                                          layers:lodCount
+                                     pixelFormat:NpTexturePixelFormatR
+                                      dataFormat:NpTextureDataFormatFloat32
+                                         mipmaps:YES
+                                            data:heightsData ];
+            }
 
-            [ heightfield generateUsingWidth:hf->geometryResolution.x
-                                      height:hf->geometryResolution.y
-                                 pixelFormat:NpTexturePixelFormatR
-                                  dataFormat:NpTextureDataFormatFloat32
-                                     mipmaps:YES
-                                        data:heightsData ];
+            if ( hf->displacements32f != NULL )
+            {
+                receivedDisplacement = YES;
 
-            [ displacement generateUsingWidth:hf->geometryResolution.x
-                                       height:hf->geometryResolution.y
+                NSData * displacementsData
+                    = [ NSData dataWithBytesNoCopyNoFree:hf->displacements32f
+                                                  length:numberOfGeometryBytes * 2 ];
+
+                [ displacement generateUsingWidth:geometryResolution.x
+                                           height:geometryResolution.y
+                                          layers:lodCount
+                                      pixelFormat:NpTexturePixelFormatRG
+                                       dataFormat:NpTextureDataFormatFloat32
+                                          mipmaps:YES
+                                             data:displacementsData ];
+            }
+
+            if ( hf->gradients32f != NULL )
+            {
+                receivedGradient = YES;
+
+                NSData * gradientsData
+                    = [ NSData dataWithBytesNoCopyNoFree:hf->gradients32f
+                                                  length:numberOfGradientBytes * 2 ];
+
+                [ gradient generateUsingWidth:gradientResolution.x
+                                       height:gradientResolution.y
+                                       layers:lodCount
                                   pixelFormat:NpTexturePixelFormatRG
                                    dataFormat:NpTextureDataFormatFloat32
                                       mipmaps:YES
-                                         data:displacementsData ];
+                                         data:gradientsData ];
+            }
 
-            [ displacementDerivatives
-                generateUsingWidth:hf->gradientResolution.x
-                            height:hf->gradientResolution.y
-                       pixelFormat:NpTexturePixelFormatRGBA
-                        dataFormat:NpTextureDataFormatFloat32
-                           mipmaps:YES
-                              data:displacementDerivativesData ];
+            if ( hf->displacementDerivatives32f != NULL )
+            {
+                receivedDisplacementDerivatives = YES;
 
-            [ gradient generateUsingWidth:hf->gradientResolution.x
-                                   height:hf->gradientResolution.y
-                              pixelFormat:NpTexturePixelFormatRG
-                               dataFormat:NpTextureDataFormatFloat32
-                                  mipmaps:YES
-                                     data:gradientsData ];
+                NSData * displacementDerivativesData
+                    = [ NSData dataWithBytesNoCopyNoFree:hf->displacementDerivatives32f
+                                                  length:numberOfGradientBytes * 4 ];
+
+                [ displacementDerivatives
+                    generateUsingWidth:gradientResolution.x
+                                height:gradientResolution.y
+                                layers:lodCount
+                           pixelFormat:NpTexturePixelFormatRGBA
+                            dataFormat:NpTextureDataFormatFloat32
+                               mipmaps:YES
+                                  data:displacementDerivativesData ];
+            }
 
             if ( variance != NULL && variance->baseSpectrum != NULL )
             {
-                baseSpectrumSize = hf->size;
-                baseSpectrumResolution.x = MAX(hf->geometryResolution.x, hf->gradientResolution.x);
-                baseSpectrumResolution.y = MAX(hf->geometryResolution.y, hf->gradientResolution.y);
+                baseSpectrumSize = hf->geometry.sizes[0];
+                baseSpectrumResolution.x = MAX(geometryResolution.x, gradientResolution.x);
+                baseSpectrumResolution.y = MAX(geometryResolution.y, gradientResolution.y);
 
                 const NSUInteger numberOfBaseSpectrumBytes
-                    = baseSpectrumResolution.x * baseSpectrumResolution.y * sizeof(float);
+                    = baseSpectrumResolution.x * baseSpectrumResolution.y 
+                      * lodCount * sizeof(float);
 
                 NSData * baseSpectrumData
                     = [ NSData dataWithBytesNoCopyNoFree:variance->baseSpectrum
@@ -1299,6 +1395,7 @@ static NSUInteger od_variance_size(const void * item)
 
                 [ baseSpectrum generateUsingWidth:baseSpectrumResolution.x
                                            height:baseSpectrumResolution.y
+                                           layers:lodCount
                                       pixelFormat:NpTexturePixelFormatR
                                        dataFormat:NpTextureDataFormatFloat32
                                           mipmaps:NO
@@ -1312,122 +1409,20 @@ static NSUInteger od_variance_size(const void * item)
 
                 updateSlopeVariance = YES;
             }
-
-            /*
-            baseMeshIndex = index_for_resolution(hf->resolution.x);
-
-            const double resX = hf->resolution.x;
-            const double resY = hf->resolution.y;
-            baseMeshScale.x = hf->size.x / resX;
-            baseMeshScale.y = hf->size.y / resY;
-
-            const NSUInteger numberOfBytes
-                = hf->resolution.x * hf->resolution.y * sizeof(float);
-
-            NSData * textureData
-                = [ NSData dataWithBytesNoCopy:hf->heights32f
-                                        length:numberOfBytes
-                                  freeWhenDone:NO ];
-
-            NSData * supplemental
-                = [ NSData dataWithBytesNoCopy:hf->supplementalData32f
-                                        length:numberOfBytes * 4
-                                  freeWhenDone:NO ];
-
-            NSData * empty = [ NSData data ];
-
-            [ baseMeshes
-                updateMeshAtIndex:baseMeshIndex
-                        withYData:textureData
-                 supplementalData:supplemental ];
-
-            NPBufferObject * yStream
-                = [[ baseMeshes meshAtIndex:baseMeshIndex ] yStream ];
-
-            NPBufferObject * supplementalStream
-                = [[ baseMeshes meshAtIndex:baseMeshIndex ] supplementalStream ];
-
-            [ heightfield generateUsingWidth:hf->resolution.x
-                                      height:hf->resolution.y
-                                 pixelFormat:NpTexturePixelFormatR
-                                  dataFormat:NpTextureDataFormatFloat32
-                                     mipmaps:NO
-                                bufferObject:yStream ];
-
-            [ supplementalData generateUsingWidth:hf->resolution.x
-                                           height:hf->resolution.y
-                                      pixelFormat:NpTexturePixelFormatRGBA
-                                       dataFormat:NpTextureDataFormatFloat32
-                                          mipmaps:NO
-                                     bufferObject:supplementalStream ];
-            */
         }
 
         //[ resultQueue removeHeightfieldAtIndex:0 ];
         //[ varianceQueue removePointerAtIndex:0 ];
     }
 
-    if ( baseMeshIndex != ULONG_MAX )
-    {
-        FMatrix4 rotation;
-        FMatrix4 invTranslation;
-        FMatrix4 translation;
-
-        fm4_m_set_identity(&rotation);
-        fm4_m_set_identity(&invTranslation);
-        fm4_m_set_identity(&translation);
-
-        const double angle = atan2(windDirection.y, windDirection.x);
-        const double degree = RADIANS_TO_DEGREE(angle);
-
-        fm4_s_rotatey_m(degree, &rotation);
-
-        const FVector3 center = [[ baseMeshes meshAtIndex:baseMeshIndex ] center ];
-
-        M_EL(invTranslation, 3, 0) = -center.x * baseMeshScale.x;
-        M_EL(invTranslation, 3, 1) = -center.y;
-        M_EL(invTranslation, 3, 2) = -center.z * baseMeshScale.y;
-
-        M_EL(translation, 3, 0) = center.x * baseMeshScale.x;
-        M_EL(translation, 3, 1) = center.y;
-        M_EL(translation, 3, 2) = center.z * baseMeshScale.y;
-
-        FMatrix4 tmp = fm4_mm_multiply(&rotation, &invTranslation);
-        modelMatrix = fm4_mm_multiply(&translation, &tmp);
-    }
+    [ projector update:frameTime ];
+    [ basePlane update:frameTime ];
 }
 
 - (void) renderBasePlane
 {
     [ basePlane render ];
 }
-
-- (void) renderBaseMesh
-{
-    if ( baseMeshIndex != ULONG_MAX )
-    {
-        [ baseMeshes renderMeshAtIndex:baseMeshIndex ];
-    }
-}
-
-/*
-[[[ NPEngineGraphics instance ] orthographic ] activate ];
-[[[ NPEngineGraphics instance ] textureBindingState ] setTexture:heightfield texelUnit:0 ];
-[[[ NPEngineGraphics instance ] textureBindingState ] activate ];
-[[ effect techniqueWithName:@"texture" ] activate ];
-glBegin(GL_QUADS);
-    glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
-    glVertex2i(0, 0);
-    glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 1.0f);
-    glVertex2i(1, 0);
-    glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f, 0.0f);
-    glVertex2i(1, 1);
-    glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
-    glVertex2i(0, 1);
-glEnd();
-
-[[[ NPEngineGraphics instance ] orthographic ] deactivate ];
-*/
 
 @end
 
