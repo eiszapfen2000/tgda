@@ -20,7 +20,7 @@ end
 
 result.lods = [];
 necessaryRes = max(geometry.geometryRes, geometry.gradientRes);
-numberOfLods = size(geometry.lodAreas, 1);
+numberOfLods = size(geometry.lodAreas, 2);
 
 for l=1:numberOfLods
     [k kn deltakx deltaky] = generate_k(necessaryRes, geometry.lodAreas(l));
