@@ -1,17 +1,114 @@
 clear
 
-resolution = [128 128];
-area1 = [10 10];
-area2 = [100 100];
-wind1 = [1.5  2.8];
-wind2 = [10.5 2.8];
-phillipsconstant = 0.81;
-A1 = phillipsconstant / (area1(1) * area1(2));
-A2 = phillipsconstant / (area2(1) * area2(2));
+g = 9.81;
 
-gaussrandr = normrnd(0, 1, resolution(1), resolution(2));
-gaussrandi = normrnd(0, 1, resolution(1), resolution(2));
-gaussrand = complex(gaussrandr, gaussrandi);
+resolution = [ 8 8 ];
+area = [ 10 10 ];
+wind = [ 10 0 ];
+fetch = 100000;
+time = 1;
+
+geometry = [];
+geometry.geometryRes = 8;
+geometry.gradientRes = 8;
+geometry.lodAreas = [ 10 ];
+
+settings = [];
+settings.generatorName = 'PM';
+settings.wind = [ 10 0 ];
+
+lolz = ocean_init(geometry, settings);
+lolz = ocean_animate(lolz, time);
+lolz = ocean_transform(lolz);
+
+% gaussrandr = normrnd(0, 1, resolution(1), resolution(2));
+% gaussrandi = normrnd(0, 1, resolution(1), resolution(2));
+% gaussrand = complex(gaussrandr, gaussrandi);
+gaussrand = lolz.lods(1).randomNumbers;
+
+deltakx = 2*pi / area(1);
+deltaky = 2*pi / area(2);
+[k kn xz ] = build_wave_vectors(resolution, area);
+
+omega = sqrt(kn * g);
+expomega = exp(1i.*omega.*time);
+expminusomega = exp(-1i.*omega.*time);
+
+generator = 'PM';
+
+Theta = [];
+
+switch lower(generator)
+    case 'pm'
+        Theta = PiersonMoskovitzSpectrum(k, kn, wind);
+    case 'jonswap'
+        Theta = JONSWAPSpectrum(k, kn, wind, fetch);
+    case 'donelan'
+        Theta = DonelanSpectrum(k, kn, wind, fetch);
+    case 'unified'
+        Theta = UnifiedSpectrum(k, kn, wind, fetch);
+end
+
+% energy Theta(k)
+% Theta = PiersonMoskovitzSpectrum(k, kn, wind);
+% Theta = UnifiedSpectrum(k, kn, wind, 100000);
+% amplitude B(k)
+amplitude = sqrt(2.*Theta.*deltakx.*deltaky);
+
+% 1/sqrt(2) * complex(grng_r, grng_i)
+randomFactor = 1/sqrt(2) .* gaussrand;
+
+h_zero = randomFactor .* complex(amplitude ./ 2);
+h_tilde = zeros(resolution(1), resolution(2));
+for x=1:resolution(1)
+    for y=1:resolution(2)
+        index1 = mod(resolution(1)-x+1,resolution(1))+1;
+        index2 = mod(resolution(2)-y+1,resolution(2))+1;
+        h_tilde(x,y) = h_zero(x,y)*expminusomega(x,y) + conj(h_zero(index1, index2))*expomega(index1, index2);
+    end
+end
+
+spectrum = randomFactor .* complex(amplitude) .* expminusomega;
+
+spectrum_shifted = ifftshift(spectrum);
+h_tilde_shifted = ifftshift(h_tilde);
+
+z1 = real(ifft2(spectrum_shifted));
+z2 = real(ifft2(h_tilde_shifted));
+z1 = z1 .* (resolution(1) * resolution(2));
+z2 = z2 .* (resolution(1) * resolution(2));
+
+close all
+
+% figure
+% surf(xz(:,:,1), xz(:,:,2), z1);
+% axis equal
+% 
+% figure
+% surf(xz(:,:,1), xz(:,:,2), z2);
+% axis equal
+
+min(min(z1))
+min(min(z2))
+max(max(z1))
+max(max(z2))
+max(max(abs(z2 - z1)))
+
+
+
+
+% resolution = [128 128];
+% area1 = [10 10];
+% area2 = [100 100];
+% wind1 = [1.5  2.8];
+% wind2 = [10.5 2.8];
+% phillipsconstant = 0.81;
+% A1 = phillipsconstant / (area1(1) * area1(2));
+% A2 = phillipsconstant / (area2(1) * area2(2));
+% 
+% gaussrandr = normrnd(0, 1, resolution(1), resolution(2));
+% gaussrandi = normrnd(0, 1, resolution(1), resolution(2));
+% gaussrand = complex(gaussrandr, gaussrandi);
 
 % h0_a1_w1 = h0_x(resolution, area1, gaussrand, wind1, A1, 0);
 % h0_a1_w2 = h0_x(resolution, area1, gaussrand, wind2, A1, 0);
@@ -64,8 +161,8 @@ gaussrand = complex(gaussrandr, gaussrandi);
 % k2 = zeros(resolution(1), resolution(2), 2);
 % [ k2(:,:,1) k2(:,:,2) ] = meshgrid(tmpms2, tmpns2);
 
-[ z1 x1 y1 dispx1 dispy1 gradx1 grady1] = heightfield(resolution, resolution, area1, area1, gaussrand, wind2, A1, 0, 1);
-[ z2 x2 y2 dispx2 dispy2 gradx2 grady2] = heightfield(resolution, resolution, area2, area2, gaussrand, wind2, A2, 0, 1);
+% [ z1 x1 y1 dispx1 dispy1 gradx1 grady1] = heightfield(resolution, resolution, area1, area1, gaussrand, wind2, A1, 0, 1);
+% [ z2 x2 y2 dispx2 dispy2 gradx2 grady2] = heightfield(resolution, resolution, area2, area2, gaussrand, wind2, A2, 0, 1);
 
 % gr = normrnd(0, 1, 128, 128);
 % gi = normrnd(0, 1, 128, 128);
@@ -74,14 +171,14 @@ gaussrand = complex(gaussrandr, gaussrandi);
 % [ z1 x1 y1 dispx1 dispy1 gradx1 grady1] = heightfield([64 64], [128 128], area1, area1, gd, wind2, A1, 0, 1);
 
 
-close all
-figure
-surf(x1, y1, z1);
-axis equal
-
-figure
-surf(x2, y2, z2);
-axis equal
+% close all
+% figure
+% surf(x1, y1, z1);
+% axis equal
+% 
+% figure
+% surf(x2, y2, z2);
+% axis equal
 
 % [x y z dispx dispy gradx grady] = h([8 8], [10 10], [25.5 24.8], 1, 5);
 % 
