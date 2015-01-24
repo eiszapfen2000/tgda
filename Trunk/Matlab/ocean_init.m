@@ -19,6 +19,9 @@ if isempty(geometry.lodAreas)
 end
 
 result.lods = [];
+result.geometry = geometry;
+result.settings = settings;
+
 necessaryRes = max(geometry.geometryRes, geometry.gradientRes);
 numberOfLods = size(geometry.lodAreas, 2);
 
