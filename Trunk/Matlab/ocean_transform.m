@@ -34,6 +34,30 @@ for i=1:numel(ocean.lods)
     ocean.lods(i).dx = real(ifft2(ifftshift(ocean.lods(i).displacement_x))) .* (resolution^2);
     ocean.lods(i).dz = real(ifft2(ifftshift(ocean.lods(i).displacement_z))) .* (resolution^2);
     
+#    gradient_x = 1i .* ocean.lods(i).k(:,:,1) .* ocean.lods(i).h_tilde;
+#    gradient_z = 1i .* ocean.lods(i).k(:,:,2) .* ocean.lods(i).h_tilde;
+#    gradient_x(:,1) = 0;
+#    gradient_z(1,:) = 0;
+#    gradient_xz = gradient_x + (1i.*gradient_z);
+#    
+#    gradient_x
+#    gradient_z
+#    gradient_xz
+#    
+#    gx = ifft2(ifftshift(gradient_x)) .* (resolution^2);
+#    gz = ifft2(ifftshift(gradient_z)) .* (resolution^2);
+#    
+#    gxz = ifft2(ifftshift(gradient_xz)) .* (resolution^2);
+#    
+#    gx
+#    gz
+#    gxz
+#    
+#    lolz = ocean.lods(i).gx;
+#    lalz = ocean.lods(i).gz;
+#    
+#    lolz
+#    lalz
 end
 
 result = ocean;

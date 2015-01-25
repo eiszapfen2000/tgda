@@ -32,6 +32,20 @@ for l=1:numberOfLods
     Theta = generateSpectrum(k, kn, settings);
     amplitudes = sqrt(2.*Theta.*deltakx.*deltaky);
     
+    mss_x = (k(:,:,1).^2) .* Theta .* (deltakx^2);
+    mss_z = (k(:,:,2).^2) .* Theta .* (deltaky^2);
+    mss = ((k(:,:,1).^2) + (k(:,:,2).^2)) .* Theta .* (deltakx * deltaky);
+    
+    mss_x
+    mss_z
+    mss
+    
+    sum(sum(mss_x))
+    sum(sum(mss_z))
+    sum(sum(mss))
+    
+    sum(sum(mss_x)) + sum(sum(mss_z))
+    
     gaussrandr = normrnd(0, 1, necessaryRes, necessaryRes);
     gaussrandi = normrnd(0, 1, necessaryRes, necessaryRes);
     
