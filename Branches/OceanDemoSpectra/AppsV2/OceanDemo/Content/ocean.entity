@@ -1,0 +1,6 @@
+{
+    Type = "ODOceanEntity";
+    Name = "Ocean";
+    Resolution = ("64", "64");
+}
+

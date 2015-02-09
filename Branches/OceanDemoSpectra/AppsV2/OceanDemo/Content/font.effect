@@ -1,0 +1,14 @@
+effect "font":
+
+technique "font"
+{
+    # effect variables
+    uniform sampler2D characterpage;
+    uniform vec3 textcolor;
+    uniform mat4 np_modelviewprojectionmatrix;
+    # shaders
+    set vertex shader "font.vertex"
+    set fragment shader "font.fragment"
+}
+
+

@@ -1,0 +1,89 @@
+#version 150
+
+in vec2 out_texcoords;
+
+void main()
+{
+    int kernelWidth = 2 * kernelRadius + 1;
+    ivec2 sourceSize = textureSize(convolution_source, 0);
+    vec2 v = vec2(sourceSize);
+    vec2 sourceDxy = vec2(1.0 / v.x, 1.0 / v.y);
+
+    /*
+    int kstart = -kernelRadius;
+    int kend   =  kernelRadius + 1;
+    float result = 0.0;
+
+    for (int i = kstart; i < kend; i++)
+    {
+        for (int j = kstart; j < kend; j++)
+        {
+            int indexki = i + kernelRadius;
+            int indexkj = j + kernelRadius;
+            int indexk  = indexki * kernelWidth + indexkj;
+            float fi = i;
+            float fj = j;
+
+            vec2 sourceCoords = out_texcoords + vec2(fj * sourceDxy.x, fi * sourceDxy.y);
+
+            float ks = texelFetch(convolution_kernel, indexk).r;
+            float ss = textureLod(convolution_source, sourceCoords, 0).r;
+
+            result += (ks * ss);
+        }
+    }
+    */
+
+    int kend = kernelRadius + 1;
+    int lend = kend;
+
+    float result = textureLod(convolution_source, out_texcoords, 0).r;
+
+    for (int k = 1; k < kend; k++)
+    {
+        for (int l = 1; l < lend; l++)
+        {
+            int indexk = k + kernelRadius;
+            int indexl = l + kernelRadius;
+            int indexkernel = indexl * kernelWidth + indexk;
+
+            vec2 o = vec2(k, l) * sourceDxy;
+            vec2 opkml = vec2( o.x, -o.y);
+            vec2 omkpl = vec2(-o.x,  o.y);
+
+            float ks = texelFetch(convolution_kernel, indexkernel).r;
+
+            vec4 ss;
+            ss.x  = textureLod(convolution_source, out_texcoords + o, 0).r;
+            ss.y  = textureLod(convolution_source, out_texcoords - o, 0).r;
+            ss.z  = textureLod(convolution_source, out_texcoords + opkml, 0).r;
+            ss.w  = textureLod(convolution_source, out_texcoords + omkpl, 0).r;
+
+            result += (ks * (ss.x + ss.y + ss.z + ss.w));
+        }
+    }
+
+    for (int l = 1; l < lend; l++)
+    {
+        int k = 0;
+        int indexk = k + kernelRadius;
+        int indexl = l + kernelRadius;
+        int indexkernel = indexl * kernelWidth + indexk;
+
+        vec2 o = l * sourceDxy;
+        vec2 oy = vec2(0.0, o.y);
+        vec2 ox = vec2(o.x, 0.0);
+
+        float ks = texelFetch(convolution_kernel, indexkernel).r;
+
+        vec4 ss;
+        ss.x = textureLod(convolution_source, out_texcoords + oy, 0).r;
+        ss.y = textureLod(convolution_source, out_texcoords - oy, 0).r;
+        ss.z = textureLod(convolution_source, out_texcoords + ox, 0).r;
+        ss.w = textureLod(convolution_source, out_texcoords - ox, 0).r;
+
+        result += (ks * (ss.x + ss.y + ss.z + ss.w));
+    }
+
+    target = vec4(result);
+}

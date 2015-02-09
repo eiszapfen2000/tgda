@@ -1,0 +1,20 @@
+#version 150
+
+in vec2 out_texcoords;
+
+void main()
+{
+    const float gravity = 9.81f;
+    float gdtdt = gravity * dt_alpha.x * dt_alpha.x;
+    float adt  = dt_alpha.x * dt_alpha.y;
+    float adt2 = 1.0f / (1.0f + adt);
+
+    float h  = textureLod(height_plus_source_mul_obstruction, out_texcoords, 0).r;
+    float ph = textureLod(previous_height,                    out_texcoords, 0).r;
+    float dh = textureLod(height_vertical_derivative,         out_texcoords, 0).r;
+
+    float result = (-adt + 2.0) * h - ph - (gdtdt * dh);
+    result *= adt2;
+
+    target = vec4(result);
+}

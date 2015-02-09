@@ -1,0 +1,71 @@
+ODFrustum:
+    - depth sort frustum faces for proper transparency
+
+ODProjector
+    - implement - done
+    - render frustum - done
+    - implement connected mode
+
+ODProjectedGrid
+    - implement - done
+    - needs resolution - done
+    - first project on cpu - done
+    - then project every vertex on gpu
+    - lastly project 4 corner vertices and interpolate the rest on gpu - done
+
+ODGaussianRNG
+    - implement method which generates a whole array of numbers
+
+ODOceanEntity
+    - load data from OceanBakery - won't do
+    - use projected grid - done
+    - render to vertexbuffer?
+    - transform feedback?
+    - fork thread for online spectrum creation - done
+    - inverse FFT on spectrum - done
+    - upload data to gpu - done
+    - display heightfield data - done
+    - apply heightfield data on projected grid
+
+ODPhillipsSpectrum
+    - generates spectrum for now
+    - make faster - half complex & float version - done
+    - save last used parameters - done
+    - compare current to last parameters for memory allocation, re-generation of H0, ... - done
+    - MEMORY LAYOUT madness - need scanline based layout for texture - texture memory starts at lower left, fftw memory at upper left - done
+
+ODPerlinNoise
+    - recheck for correctness
+    - upload data to gpu
+    - display data
+
+NPFont
+    - loading - done
+    - render - done
+
+ODMenu
+    - loading - done
+    - render - done
+    - test hit testing - done
+    - picking - done
+    - ODCheckboxItem - chekced/unchecked/label rendering
+    - ODSliderItem - label rendering
+    - ODSelectionGroupItem - label rendering
+    - ODButtonItem - label rendering
+    - Fade-In / Fade-out - done
+    - ODWindDirectionItem - partially done
+
+- ODPreethamSkylight
+    - loading - mostly done, scaling factor missing
+    - move light direction - done
+    - compute max luminance
+    - render with scaling
+
+- FQuaternion
+    - SLERP - done
+
+- HDR rendering - done
+- sRGB sampling 
+- tone mapping - reinhard done
+
+

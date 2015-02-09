@@ -1,0 +1,29 @@
+effect "preetham":
+
+technique "preetham"
+{
+    # effect variables
+    uniform float radiusInPixel;
+    uniform float sunHalfApparentAngle;
+    uniform vec3 directionToSun;
+    uniform vec3 sunColor;
+    uniform vec3 zenithColor;
+    uniform vec3 denominator;
+    uniform vec3 A;
+    uniform vec3 B;
+    uniform vec3 C;
+    uniform vec3 D;
+    uniform vec3 E;
+
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+
+    # fragment streams
+    out vec4 target : 0;
+
+    # shaders
+    set vertex shader "preetham.vertex"
+    set fragment shader "preetham.fragment"
+}
+
