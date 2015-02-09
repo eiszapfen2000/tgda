@@ -1,0 +1,113 @@
+effect "default":
+
+technique "texture"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform sampler2D colormap
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
+
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+
+    # fragment streams
+    out vec4 target : 0;
+
+    # shaders
+    set vertex shader "simpletextured.vertex"
+    set fragment shader "simpletextured.fragment"
+}
+
+technique "preetham"
+{
+    # effect variables
+    uniform float radiusInPixel;
+    uniform vec3 directionToSun;
+    uniform vec3 sunColor;
+    uniform float sunHalfApparentAngle;
+    uniform vec3 zenithColor;
+    uniform vec3 denominator;
+    uniform vec3 A;
+    uniform vec3 B;
+    uniform vec3 C;
+    uniform vec3 D;
+    uniform vec3 E;
+
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+
+    # fragment streams
+    out vec4 target : 0;
+
+    # shaders
+    set vertex shader "preetham.vertex"
+    set fragment shader "preetham.fragment"
+}
+
+technique "linear_sRGB_to_log_luminance"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform sampler2D linearsRGB
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+
+    # fragment streams
+    out float target : 0;
+
+    # shaders
+    set vertex shader "simpletextured.vertex"
+    set fragment shader "linear_sRGB_to_log_luminance.fragment"
+}
+
+technique "tonemap_reinhard"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform sampler2D linearsRGB
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
+    uniform sampler2D logLuminance
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform float key;
+    uniform int   averageLuminanceLevel;
+    uniform float whiteLuminance;
+
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+
+    # fragment streams
+    out vec4 target : 0;
+
+    # shaders
+    set vertex shader "simpletextured.vertex"
+    set fragment shader "tonemap_reinhard.fragment"
+}
+
+
+

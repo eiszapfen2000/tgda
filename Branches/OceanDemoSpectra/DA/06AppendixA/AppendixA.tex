@@ -1,0 +1,30 @@
+%% ==========================================================================================
+%% IMPORTING MODEL DATA
+%% ==========================================================================================
+
+\chapter{Plücker Coordinates}
+
+Why Plücker coordinates are awesome.
+
+\chapter{Matlab Code}
+\label{lbl_code1}
+
+\section{Matlab code to generate wave heightfields.}
+
+% workaround for lstlistoflistings
+%\addtocontents{lol}{\protect\addvspace{10pt}}
+
+\lstset{language=Matlab, backgroundcolor=\color{LightViolet},
+commentstyle=\color{DarkGreen}, basicstyle=\ttfamily\fontsize{8}{8}\selectfont}
+
+\lstinputlisting[label=lst_matlabh,caption=Heightfield
+generation]{06AppendixA/h.m}
+
+\lstinputlisting[label=lst_matlabhtilde, caption=Force complex conjugate
+property]{06AppendixA/htilde.m}
+
+\lstinputlisting[label=lst_matlabh0, caption=Apply Gaussian Random
+Numbers]{06AppendixA/h0.m}
+
+\lstinputlisting[label=lst_matlabphillipsspectrum, caption=Phillips Spectrum
+generation]{06AppendixA/PhillipsSpectrum.m}

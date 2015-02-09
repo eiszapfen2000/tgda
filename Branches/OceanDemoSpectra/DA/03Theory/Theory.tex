@@ -1,0 +1,483 @@
+\chapter{Background}
+\label{Background}
+
+%Energy Spectrum
+%
+%$\int x(t) dt$
+%
+%$k=\frac{\pi}{\mathbf y}$
+%
+%\begin{equation}\label{eq:test} x = y \end{equation}
+%
+%We can give an equation a label so that we can refer to it later.
+%\begin{equation}
+%\label{eq:ising}
+%E = -J \sum_{i=1}^N s_i s_{i+1} ,
+%\end{equation}
+%Equation~\eqref{eq:ising} expresses the energy of a configuration
+%of spins in the Ising model.
+
+\section{The Rendering Pipeline}
+\label{RenderingPipelineS}
+The rendering pipeline constitutes the core of real-time graphics. It's task
+consists in generating, or rendering, a two-dimensional output image given a
+virtual camera, scene geometry, materials and
+lightsources\cite{book:akenine-rtr}. As shown in Figure~\ref{fig:RAGR} the
+rendering pipeline can be divided into three conceptual stages:
+\begin{itemize}
+ \item The \textit{application stage} holds all necessary information to break
+down the scene geometry into smaller chunks which actually are passed on to the
+geometry stage.
+ \item The \textit{geometry stage} transforms the input geometry to a
+two-dimensional output coordinate system.
+ \item The \textit{rasterizer stage} fills the primitives output by the
+geometry stage with color.
+\end{itemize}
+Whereas the geometry and rasterizer stages are to be found on the graphics
+hardware, the application stage is typically executed in software on the CPU.
+Ever since the release of \textit{DirectX 9} and compatible hardware in 2002
+parts of the geometry and rasterizer stage have become programmable in order
+to place more finegrained control over the graphics hardware at the developers
+disposal.
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Images/Rendering-Pipeline-AGR.pdf}
+\caption{The three stages of the rendering pipeline.}
+\label{fig:RAGR}
+\end{center}
+\end{figure}
+
+\subsection{The Application Stage}
+The application stage implements the whole program logic. It's structure and
+implementation is entirely dependent on the the task it should perform. One
+such a task could be a simple triangle mesh visualisation, another, more
+complex one, a complete 3D computer game. What these tasks have in common, is
+that all of them require the application stage to provide the geometry stage
+with appropriately prepared data for further processing.
+
+Usually the application stage's main task is broken down into three subtasks:
+\begin{itemize}
+ \item Take \textit{user input}
+ \item \textit{Update} the internal state
+ \item \textit{Render} by feeding data to the next stage
+\end{itemize}
+
+A common task which resides in the application stage is \textit{collision
+detection and response}: to detect if two objects collide and update their
+internal state accordingly. Nowadays this is often done by a physics library,
+such as \textit{NVIDIA PhysX}\cite{misc:ageia-physx} or \textit{Havok
+Physics}\cite{misc:havok}.
+
+In the case the application stage deals with large amounts of geometric
+objects in a scene, it may prove necessary to reduce the amount of data which
+is sent to the geometry stage. This is done by discarding objects invisible to
+the viewer before they are actually handed over to the geometry stage,
+effectively reducing the geometry stage's workload.
+
+As already stated before, the application stage is typically executed in
+software on the CPU, but there are known exceptions e.g. hardware accelerated
+physics and sound.
+
+\subsection{The Geometry Stage}
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Images/Geometry-Stage.pdf}
+\caption[The Geometry Stage]{Coordinate systems and operations which make up the
+Geometry stage. All substages up to and including the perspective transformation
+are programmable, the subsequent parts starting from clip coordinates are not.}
+\label{fig:GeometryStage}
+\end{center}
+\end{figure}
+
+The geometry stage takes geometric primitives as input from the application
+stage and processes them, so that the next stage, the rasterizer stage, may
+calculate the final color for a pixel or fragment. As today's graphics
+hardware is entirely tailored to triangle processing, \textit{primitives} may 
+be equated to \textit{triangles} in the remainder of this text. All geometry
+sent from the application to the geometry stage has to consist of triangle
+primitives. The \textit{OpenGL} programming interface may pose an exception,
+since it accepts other primitives, decomposing them internally to triangles
+though.
+
+For the geometry primitives to reach image space they have to be
+\textit{transformed} through several \textit{coordinate systems}. Figure
+\ref{fig:GeometryStage} shows all coordinate systems and operations
+involved. Transformations, such as rotation, translation, scaling and shearing,
+usually are represented by matrices. For a three-dimensional space 4x4 matrices
+are needed to be able to specify the aforementioned transformations. In addition
+those transformations can be concatenated by multiplying the matrices together,
+thereby reducing the arithmetic workload to compute multiple transformations.
+As aforementioned in \ref{RenderingPipelineS}, parts of the geometry stage are
+programmable through the use of \textit{vertex programs}. Vertex programs are
+responsible for transforming vertices properly to \textit{clip space}, they
+may compute additional per-vertex information too, such as basic lighting, which
+are passed on to the resterizer stage.
+
+The geometry stage can be broken down into two larger parts:
+\begin{itemize}
+ \item the \textit{model-view stage}, which is concerned with the setup of a
+scene by positioning different models and the camera
+ \item the \textit{projection stage}, which has to depict the assembled scene
+onto the image plane
+\end{itemize}
+
+\subsubsection{The Model-View Transformation}
+
+The \textit{model space} serves as starting point, as each model resides
+therein, simply meaning that no transformation has been applied to the model
+coordinates. By orienting and positioning such a model in the world, it gets
+transformed to \textit{world space}. There may be more instances of the same
+model in the world, possibly differing in orientation and position. The world
+space itself is unique, all models are transformed with their respective model
+transform and thereafter all are located in the world space. The next
+coordinate system in the pipeline is the \textit{view space}, also known as
+\textit{eye space}, which represents all objects or models in the world relative
+to the camera. The camera itself is able to capture only a part of the world,
+depending on the camera's position, viewing direction, field of view and viewing
+range. The subvolume of the world the camera is actually able to see is called
+the \textit{view frustum}. Figure~\ref{fig:ModelWorldView} pictures the
+steps from model to view space in a simplified manner.
+\begin{figure}[t]
+\centering
+\subfigure[Model Space]
+{
+  \includegraphics[scale=0.7]{Images/ModelSpace.pdf}
+  \label{fig:subfigmodelspace}
+}
+\subfigure[World Space]
+{
+  \includegraphics[scale=0.7]{Images/WorldSpace.pdf}
+  \label{fig:subfigworldspace}
+}
+\subfigure[Camera Frustum]
+{
+  \includegraphics[scale=0.7]{Images/WorldSpaceWithCamera.pdf}
+  \label{fig:subfigworldspacewithcamera}
+}
+\subfigure[View Space]
+{
+  \includegraphics[scale=0.7]{Images/ViewSpace.pdf}
+  \label{fig:subfigviewspace}
+}
+\caption[Model, World and View space]{Starting point is the model
+space~\subref{fig:subfigmodelspace}, next our sample model ist rotated and
+positioned in the world \subref{fig:subfigworldspace}. Since we want to view the
+scene from within world space we add an observing camera
+\subref{fig:subfigworldspacewithcamera}. The view frustum is highlighted in
+red. At last, \subref{fig:subfigviewspace} shows the world relative to the
+camera.}
+\label{fig:ModelWorldView}
+\end{figure}
+
+\subsubsection{The Projection}
+
+The projection's task is to transform objects or models from three-dimensional
+view space onto a two-dimensional image plane. On current graphics hardware the
+task at hand consists of four steps in the following order:
+\begin{itemize}
+ \item the \textit{projection}
+ \item \textit{viewport clipping}
+ \item the \textit{perspective division}
+ \item the \textit{viewport transform}
+\end{itemize}
+
+The projection in combination with the perspective division transforms
+coordinates from view space into \textit{normalised device coordinates},
+\textit{NDC} in short. NDC are located in a space called \textit{the canonical
+view volume}, see Figure~\ref{fig:canonicalviewvolume}. The target volume is
+represented by a cube, but the shape of the source volume, meaning the view
+frustum, depends on the actual projection. Figure~\ref{fig:viewfrustum3d} shows
+a possible view frustum in detail. There are a variety of different projections
+to be found in computer graphics, the two most common types are the
+\textit{parallel projection} and the \textit{perspective projection}.
+Figure~\ref{fig:projections2d} illustrates their working principle,
+Figure~\ref{fig:parallelandperspectivefrustum} shows their associated view
+frusta. In short, the projection in combination with the perspective division
+warps the view frustum into a cube.
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.8]{Images/CanonicalCube.pdf}
+\caption[The canonical view volume]{The canonical view volume ranging from lower
+left (-1, -1, -1) to uppper right (1, 1, 1). As opposed to the model, world and
+view space, normalised device coordinates are lefthanded, with the positive z
+axis pointing away from the viewer. The nearplane lies at z = -1, the far plane
+at z = 1.}
+\label{fig:canonicalviewvolume}
+\end{center}
+\end{figure}
+\begin{figure}
+\begin{center}
+ \includegraphics[scale=1.0]{Images/Frustum.pdf}
+ \caption[The view frustum]{The far plane, which represents the camera's viewing
+range is shown in blue. The near plane, which is the plane where the objects in
+the scene get projected onto, is highlighted in red. The green line depicts the
+viewing direction, intersecting the center of the near and far plane.}
+ \label{fig:viewfrustum3d}
+\end{center} 
+\end{figure}
+\begin{figure}
+\centering
+\subfigure[Parallel Projection]
+{
+  \includegraphics[scale=1.1]{Images/ParallelProjection2D.pdf}
+  \label{fig:subfigparallelprojection2d}
+}
+\subfigure[Perspective Projection]
+{
+  \includegraphics[scale=1.1]{Images/PerspectiveProjection2D.pdf}
+  \label{fig:subfigperspectiveprojection2d}
+}
+\caption[Parallel and Perspective Projection]{Parallel lines are still parallel
+after parallel projection~\subref{fig:subfigparallelprojection2d}, but not
+after perspective projection~\subref{fig:subfigperspectiveprojection2d}.
+The key property of the perspective projection is that objects that lie
+farther away are depicted smaller than objects which lie near the image plane.}
+\label{fig:projections2d}
+\end{figure}
+\begin{figure}
+\centering
+\subfigure[Parallel frustum]
+{
+  \includegraphics[scale=0.8]{Images/ParallelFrustum.pdf}
+  \label{fig:subfigorthofrustum}
+}
+\subfigure[Perspective frustum]
+{
+  \includegraphics[scale=0.8]{Images/PerspectiveFrustum.pdf}
+  \label{fig:subfigperspectivefrustum}
+}
+\caption[Parallel and Perspective Frustum]{The parallel frustum shown
+in~\subref{fig:subfigorthofrustum} is a rectangular box, the perspective 
+frustum in \subref{fig:subfigperspectivefrustum} resembles a truncated
+pyramid. The paramters \textit{n} and \textit{f} represent the distance from the
+camera to the near and far plane. \textit{t}, \textit{b}, \textit{l} and
+\textit{r} are derived from the camera's field of view as well as the image
+plane's aspect ratio.}
+\label{fig:parallelandperspectivefrustum}
+\end{figure}
+
+Clipping removes all primitives which lie outside the view frustum and clips
+those which are partially inside to the frustum's border. Hence only
+primitives inside the canonical view volume are passed on to the rasterizer
+stage, thus minimising it's workload. Clipping is done in clip space, right
+after the projection, but before the perspective division. As mentioned before,
+after the perspective division coordinates are in NDC, but they are still not
+related to the output window, which is what the user actually will be able to
+see on the output device. The viewport transform is the missing piece, it takes
+NDC as input, discards the depth coordinate, and maps the remaining
+two-dimensional coordinates to window coordinates using the size and origin of
+the current viewport as parameters.
+
+\subsection{The Rasterizer Stage}
+The rasterizer stage takes input data from the geometry stage and processes it
+in order to output pixel color values. As there is no guarantee that the color
+value computed for a pixel at this stage will actually be displayed on screen,
+such \textit{pre-display} pixels may be called \textit{fragments}. Figure
+\ref{fig:RasterizerStage} shows the rough structure of the rasterizer stage.
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{Images/Rasterizer-Stage.pdf}
+\caption{The Rasterizer stage.}
+\label{fig:RasterizerStage}
+\end{center}
+\end{figure}
+All the geometry stage did was transforming vertex coordinates to
+two-dimensional window coordinates. Now the rasterizer stage needs to connect
+those coordinates to form an actual primitive. The process of forming these
+triangles is called \textit{triangle setup}. The triangles on screen still are
+an aggregation of point coordinates, they do not cover any area. Hence it has
+to be determined what pixels in the rendering window are covered by the area
+a triangle defines. The operation which converts primitves defined by
+vertices to actual pixels is called \textit{Scanline conversion},
+Figure~\ref{fig:rasteriser} illustrates an example. In parallel to the scanline
+conversion additional vertex attributes are interpolated across pixels. At this
+point the transition from \textit{per-vertex operations} to \textit{per-fragment
+operations} is complete.
+\begin{figure}
+\centering
+\subfigure
+{
+  \includegraphics[scale=1.0]{Images/Rasteriser1.pdf}
+  \label{fig:subfigrasteriser1}
+}
+\subfigure
+{
+  \includegraphics[scale=1.0]{Images/Rasteriser2.pdf}
+  \label{fig:subfigrasteriser2}
+}
+\caption[Triangle Rasterisation]{The figure on the left shows a triangle in
+window coordinates lying on the image plane, the figure on the right shows the
+triangle after rasterisation.}
+\label{fig:rasteriser}
+\end{figure}
+
+Henceforward operations are done per fragment through the use of
+\textit{fragment programs} to calculate actual color values. Fragment programs
+define an usually not overly complex program which is executed per fragment,
+using the interpolated per-vertex data, textures and data global to the fragment
+program as input. In contrast to the classic \textit{fixed-function pipeline},
+which implements transforming and lighting directly and exposes a set of
+parameters for the developer to tweak, the programmable pipeline nowadays places
+much more direct control at the developer's disposal.
+
+\section{The Projected Grid}
+The projected grid has been developed in order to enable today's graphics
+hardware to render large terrainscapes without the need for complex
+level-of-detail (\textit{LOD}) schemes, potentially decreasing algorithmic
+complexity while increasing optical fidelity.
+
+\subsection{Classic LOD schemes}
+Typically large terrains and water surfaces are represented as a rectangular
+grid in worldspace. Due the perspective nature of the camera's projection the
+grid is not spread uniformly throughout the view frustum, surface details are
+high near the camera, but low at larger distances. \FIXME{does that apply to
+parallel projection?} In order to cope with the issue at hand, LOD schemes are
+applied. The surface is split into a set of patches and data for each patch is
+made available at multiple resolutions. At rendering time the actual resolution
+used for each patch is determined based on criteria usually dependent on the
+distance to the viewer. Figure \ref{fig:lodscheme} depicts a possible instance
+of a LOD scheme.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.6]{Images/LODScheme.pdf}
+\caption[LOD scheme]{A possible LOD scheme: near the viewer high resolution
+patches may be used, decreasing as the distance to the viewer increases. }
+\label{fig:lodscheme}
+\end{center}
+\end{figure}
+The application of such LOD schemes typically brings additional computational
+complexity and memory usage. Patches at different resolutions have to be held
+in memory, either directly on the GPU or on the CPU, the latter would imply an
+additional overhead of transfering the necessary data to the GPU every frame.
+In addition the patches' visibility has to be computed in order not to draw the
+parts of the grid invisible to the viewer. Another drawback may be so called
+\textit{popping artifacts} caused by switching between different levels of
+detail of a patch. As such a change of resolution happens instantaneously as
+well as frequently in the case of a moving camera, it is often noticable for an
+actual observer. Furthermore the LOD approach described has to deal with
+discontinuities at the border between two adjacent patches with different
+resolutions.
+
+\subsection{The Projected Grid Concept}
+The projected grid is based on a simple concept: in order to achieve an
+uniform distribution of details on the image plane, an uniformly spaced grid is
+created in post-perspective space and transformed back to world space.
+Figure~\ref{fig:projectedgrid} illustrates the difference between a classic
+world space approach and the projected grid.
+\begin{figure}
+\centering
+\subfigure[]
+{
+  \includegraphics[scale=0.75]{Images/ProjectedGridVsWorldSpace.pdf}
+  \label{fig:subfigprojgrid1}
+}
+\subfigure[]
+{
+  \includegraphics[scale=0.75]{Images/ProjectedGridUniform.pdf}
+  \label{fig:subfigprojgrid2}
+}
+\caption[The Projected Grid Concept]{The image on the left
+\subref{fig:subfigprojgrid1} shows an uniform grid in worldspace, it's
+projection onto the image plane is not uniformly spaced though. The image on the
+right \subref{fig:subfigprojgrid2} on the other hand depicts an uniform grid on
+the image plane and it's associated non-uniform spaced worldspace positions.}
+\label{fig:projectedgrid}
+\end{figure}
+
+%By the means of starting in post-projection space two issues of classic LOD
+%schemes may be sorted out:
+%\begin{itemize}
+% \item render only visible parts of the grid without the need for complex
+%visibility computations 
+% \item keep the grid's level of detail consistent throughout the entire view
+%frustum
+%\end{itemize}
+%As the grid geometry is created in normalised device coordinates 
+The algorithm used for the projected grid can be broken down into the following
+steps:
+\begin{itemize}
+ \item create an uniformly spaced grid orthogonal to the viewer using normalised
+device coordinates
+ \item transform the grid to worldspace
+ \item project the grid onto the desired base plane
+ \item apply height displacement
+ \item run the grid through the rendering pipeline as usual
+\end{itemize}
+
+Typically a vertex in world space is transformed to clip space through
+application of the following matrix:
+\begin{equation}
+\label{ViewProjectionMatrix}
+ \mathbf{M_{vp}} = \mathbf{M_{proj}} \cdot \mathbf{M_{view}}
+\end{equation}
+
+The transformed vertices may be calculated like the following:
+\begin{equation}
+\label{ViewProjectionMatrixX}
+ \mathbf{x_{c}} = \mathbf{M_{vp}} \cdot \mathbf{x_{w}}
+\end{equation}
+
+The projected grid on the other hand starts inside the canonical view volume,
+and needs to transform the vertices back to world space. The matrix used
+herefore may look like the following:
+\begin{equation}
+ \mathbf{M_{inv}} = (\mathbf{M_{proj}} \cdot \mathbf{M_{view}})^{-1}
+\end{equation}
+
+Apply the matrix to the vertices:
+\begin{equation}
+ \mathbf{x_{w}} = \mathbf{M_{inv}} \cdot \mathbf{x_{c}}
+\end{equation}
+
+Homogenise the coordinates:
+\begin{equation}
+ \mathbf{x_{h}} = (x_{w}/w_{w}, y_{w}/w_{w}, z_{w}/w_{w}, w_{w}/w_{w})
+\end{equation}
+
+To simplify matters the grid may be consist of vertices defined by
+two-dimensional normalised device coordinates. In order to project the grid
+onto a plane a ray has to be setup for every vertex.
+
+postprojection coordinates transformed to worldspace
+grid on near and far plane, intersection with the y=0 plane
+decouple projector from camera
+
+\subsection{The Projector}
+positioning
+rotating
+original is a hack, persistent grid mapping has a more stable approach
+not optimal, because of "popping" at great distances
+not so optimal distribution of the mesh resolution throughout worldspace
+visual range issues
+do some modifications to the mesh vertex distribution
+reference to original paper from 2004 + persistent grid mapping
+
+\section{Water optics}
+reflection
+refraction
+transmittance
+depth
+
+\section{Colour Management}
+Explain color and gamma problem
+linear vs nonlinear space
+
+\subsection{gamma}
+sRGB(gamma 2.2) support in hardware, convert from nonlinear space to linear
+space do calculations on lighting and so on, back to srgb space
+do tonemapping sRGB -> XYZ -> xyY -> modify Y -> XYZ -> sRGB
+
+\subsection{device calibration}
+short explanation of monitor calibration and so on
+tools available
+
+\section{Wave Theory}
+
+Simple Wave Theory
+
+\section{Energy Spectra}
+
+\subsection{Phillips Spectrum}
+\subsection{Mobley Spectrum}
+\subsection{SWAP}
+\subsection{JONSWAP}

@@ -1,0 +1,9 @@
+#version 150
+
+in vec2 out_texcoords;
+
+void main()
+{
+    vec4 sample = texture(colormap, out_texcoords);
+	target = sample;
+}

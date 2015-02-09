@@ -1,0 +1,99 @@
+effect "iWave":
+
+technique "height_plus_source_mul_obstruction"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform sampler2D source_plus
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform sampler2D obstruction_mul
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform sampler2D height_unmodified
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+
+    # vertex streams
+    in vec4 in_position  : 0;
+    in vec2 in_texcoords : 3;
+
+    # fragment streams
+    out vec4 target : 0;
+
+    # shaders
+    set vertex shader "simpletextured.vertex"
+    set fragment shader "source_and_obstruction.fragment"
+}
+
+technique "convolution"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform sampler2D convolution_source
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform samplerBuffer convolution_kernel;
+    uniform int kernelRadius;
+    # vertex streams
+    in vec4 in_position : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "simpletextured.vertex"
+    set fragment shader "convolution.fragment"
+}
+
+technique "propagation"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform sampler2D height_plus_source_mul_obstruction
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform sampler2D previous_height
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform sampler2D height_vertical_derivative
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform vec2 dt_alpha;
+    # vertex streams
+    in vec4 in_position  : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "simpletextured.vertex"
+    set fragment shader "propagation.fragment"
+}
+

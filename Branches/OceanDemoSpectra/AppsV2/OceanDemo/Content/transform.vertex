@@ -1,0 +1,18 @@
+#version 150
+
+void main()
+{
+    ivec2 resolution = textureSize(heights, 0);
+    vec4 p = in_position;
+
+    vec2 g;
+    g.x = mod(abs(p.x), 40.0);
+    g.y = mod(abs(p.z), 40.0);
+    g.x = g.x / 40.0;
+    g.y = 1.0 - (g.y / 40.0);
+
+    p.y = textureLod(heights, g, 0).x * 5.0;
+    //p.y = 5.0;
+	gl_Position = p;
+}
+
