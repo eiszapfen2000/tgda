@@ -105,7 +105,7 @@ static double directional_mitsuyasu(double omega_p, double omega, double theta_p
     const double omega_div_omega_p = (omega >= omega_p) ? pow(omega / omega_p, -2.5) : pow(omega / omega_p, 5.0);
     const double s = s_p * omega_div_omega_p;
 
-    printf("%f %f\n",s, fabs(cos((theta - theta_p) * 0.5)));
+    //printf("%f %f\n",s, fabs(cos((theta - theta_p) * 0.5)));
 
     const double numerator = tgamma(s + 1.0);
     const double numeratorSquare = numerator * numerator;
@@ -115,7 +115,7 @@ static double directional_mitsuyasu(double omega_p, double omega, double theta_p
     const double term_two = numeratorSquare / denominator;
     const double term_three = pow(fabs(cos((theta - theta_p) * 0.5)), 2.0 * s);
 
-    printf("1:%f 2:%f 3:%f\n", term_one, term_two, term_three);
+    //printf("1:%f 2:%f 3:%f\n", term_one, term_two, term_three);
 
     return term_one * term_two * term_three;
 }
@@ -140,8 +140,8 @@ int main (int argc, char **argv)
     */
 
     const int32_t resolution = 4;
-    const double area = 100.0;
-    const double U10 = 100.0;
+    const double area = 10.0;
+    const double U10 = 10.0;
     const double omega_p = energy_pm_omega_p(U10);
 
     const double deltakx = 2.0 * M_PI / area;
@@ -160,13 +160,16 @@ int main (int argc, char **argv)
             double omega = sqrtf(k * MATH_g);
             double Theta = energy_pm_wave_frequency(omega, U10);
 
-//            printf("%f %f\n", omega, Theta);
+            Vector2 k_wv = {.x = kx, .y = ky};
+            double Theta_k_wv = energy_pm_wave_vector(k_wv, U10);
+
+            //printf("%f %f\n", omega, Theta_k_wv);
 
             double theta = atan2(ky, kx);
 
             double dir = directional_mitsuyasu(omega_p, omega, 0.0, theta);
 
-            //printf("%f %f\n", omega, theta);
+            printf("%f\n", Theta_k_wv * dir);
         }
     }
 
