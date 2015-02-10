@@ -41,6 +41,16 @@
 #import "GL/glew.h"
 #import "GL/glfw.h"
 
+#define MATH_g 9.81
+
+static double energy_pm_omega_p(double U10)
+{
+    const double g = 9.81;
+    const double omega_p = (0.855 * g / U10);
+
+    return omega_p;
+}
+
 static double energy_pm_wave_frequency(double omega, double U10)
 {
     if (omega == 0.0)
@@ -48,7 +58,7 @@ static double energy_pm_wave_frequency(double omega, double U10)
         return 0.0;
     }
 
-    const double g = 9.81;
+    const double g = MATH_g;
     const double alpha = 0.0081;
     const double omega_p = (0.855 * g / U10);
 
@@ -65,7 +75,7 @@ static double energy_pm_wave_number(double k, double U10)
         return 0.0;
     }
 
-    const double g = 9.81;
+    const double g = MATH_g;
     const double omega = sqrt(k * g);
     const double Theta = energy_pm_wave_frequency(omega, U10);
     const double Theta_k = Theta * 0.5 * (g / omega);
@@ -132,6 +142,7 @@ int main (int argc, char **argv)
     const int32_t resolution = 4;
     const double area = 100.0;
     const double U10 = 100.0;
+    const double omega_p = energy_pm_omega_p(U10);
 
     const double deltakx = 2.0 * M_PI / area;
     const double deltaky = 2.0 * M_PI / area;
@@ -146,14 +157,14 @@ int main (int argc, char **argv)
 
             //printf("%d %d %f %f %f\n", alpha, beta, kx , ky, k);
 
-            double omega = sqrtf(k * 9.81f);
+            double omega = sqrtf(k * MATH_g);
             double Theta = energy_pm_wave_frequency(omega, U10);
 
 //            printf("%f %f\n", omega, Theta);
 
             double theta = atan2(ky, kx);
 
-            double dir = directional_mitsuyasu(0.083876, omega, 0.0, theta);
+            double dir = directional_mitsuyasu(omega_p, omega, 0.0, theta);
 
             //printf("%f %f\n", omega, theta);
         }
