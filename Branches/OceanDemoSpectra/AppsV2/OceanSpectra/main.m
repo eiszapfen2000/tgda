@@ -23,12 +23,13 @@
 #import "Core/Utilities/NSData+NPEngine.h"
 #import "Core/World/NPTransformationState.h"
 #import "Core/NPEngineCore.h"
+#import "ODFrequencySpectrumFloat.h"
 
 #define MATH_g 9.81
 
 static double energy_pm_omega_p(double U10)
 {
-    const double g = 9.81;
+    const double g = MATH_g;
     const double omega_p = (0.855 * g / U10);
 
     return omega_p;
@@ -103,9 +104,51 @@ static double directional_mitsuyasu(double omega_p, double omega, double theta_p
     return term_one * term_two * term_three;
 }
 
+static void print_complex_spectrum(int32_t resolution, fftwf_complex * spectrum)
+{
+    printf("Complex spectrum\n");
+    for ( int32_t j = 0; j < resolution; j++ )
+    {
+        for ( int32_t k = 0; k < resolution; k++ )
+        {
+            printf("%+f %+fi ", spectrum[j * resolution + k][0], spectrum[j * resolution + k][1]);
+        }
+
+        printf("\n");
+    }
+
+    printf("\n");
+}
+
 int main (int argc, char **argv)
 {
     feenableexcept(FE_DIVBYZERO | FE_INVALID);
+
+    NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
+
+    ODFrequencySpectrumFloat * s = [[ ODFrequencySpectrumFloat alloc ] init ];
+
+    OdGeneratorSettings generatorSettings;
+    generatorSettings.generatorType = PiersonMoskowitz;
+    generatorSettings.piersonmoskowitz.U10 = 10.0;
+    generatorSettings.options = OdGeneratorOptionsHeights;
+    generatorSettings.spectrumScale = 1.0;
+
+    OdSpectrumGeometry geometry = geometry_zero();
+    geometry_init_with_resolutions_and_lods(&geometry, 4, 4, 1);
+    // first LOD is the largest one, set it to our desired size
+    geometry_set_max_size(&geometry, 10.0);
+
+    OdFrequencySpectrumFloat complexSpectrum
+        = [ s generateFloatSpectrumWithGeometry:geometry
+                                      generator:generatorSettings
+                                         atTime:1.0
+                           generateBaseGeometry:YES ];
+
+//    print_complex_spectrum(4, complexSpectrum.height);
+
+    DESTROY(s);
+    DESTROY(pool);
 
     /*
     for (double o = 0.0; o <= 2.0 * M_PI; o += 0.5)
@@ -122,6 +165,7 @@ int main (int argc, char **argv)
     }
     */
 
+    /*
     const int32_t resolution = 4;
     const double area = 10.0;
     const double U10 = 10.0;
@@ -166,6 +210,7 @@ int main (int argc, char **argv)
     }
 
     printf("%f %f %f\n", mss_x, mss_z, mss);
+    */
 
     return EXIT_SUCCESS;
 }

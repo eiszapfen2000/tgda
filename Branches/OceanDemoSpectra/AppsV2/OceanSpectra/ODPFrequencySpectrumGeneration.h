@@ -35,7 +35,8 @@ typedef enum OdSpectrumGenerator
 {
     Unknown  = -1,
     Phillips =  0,
-    Unified  =  1
+    Unified  =  1,
+    PiersonMoskowitz = 2
 }
 OdSpectrumGenerator;
 
@@ -64,6 +65,12 @@ typedef struct OdUnifiedGeneratorSettings
 }
 OdUnifiedGeneratorSettings;
 
+typedef struct OdPiersonMoskowitzGeneratorSettings
+{
+    double U10;
+}
+OdPiersonMoskowitzGeneratorSettings;
+
 typedef struct OdGeneratorSettings
 {
     OdSpectrumGenerator generatorType;
@@ -73,6 +80,7 @@ typedef struct OdGeneratorSettings
     {
         OdPhillipsGeneratorSettings phillips;
         OdUnifiedGeneratorSettings  unified;
+        OdPiersonMoskowitzGeneratorSettings piersonmoskowitz;
     };
 }
 OdGeneratorSettings;
