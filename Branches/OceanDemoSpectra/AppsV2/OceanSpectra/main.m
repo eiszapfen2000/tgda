@@ -147,6 +147,10 @@ int main (int argc, char **argv)
     const double deltakx = 2.0 * M_PI / area;
     const double deltaky = 2.0 * M_PI / area;
 
+    double mss_x = 0.0;
+    double mss_z = 0.0;
+    double mss = 0.0;
+
     for (int32_t alpha = -resolution/2; alpha < resolution/2; alpha++)
     {
         for (int32_t beta = resolution/2; beta > -resolution/2; beta--)
@@ -168,10 +172,17 @@ int main (int argc, char **argv)
             double theta = atan2(ky, kx);
 
             double dir = directional_mitsuyasu(omega_p, omega, 0.0, theta);
+            double amplitude = sqrt(2.0 * Theta_k_wv * dir * deltakx * deltaky);
 
-            printf("%f\n", Theta_k_wv * dir);
+            mss_x += kx*kx*Theta_k_wv*dir*deltakx*deltakx;
+            mss_z += ky*ky*Theta_k_wv*dir*deltaky*deltaky;
+            mss += (kx*kx+ky*ky)*Theta_k_wv*dir*deltakx*deltaky;
+
+            printf("%f\n", amplitude);
         }
     }
+
+    printf("%f %f %f\n", mss_x, mss_z, mss);
 
     return EXIT_SUCCESS;
 }
