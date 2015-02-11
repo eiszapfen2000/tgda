@@ -6,8 +6,8 @@
 #define POLAR_RADIUS            6356752.3141
 
 // m/s²
-#define EARTH_ACCELERATION      9.80665
-#define EARTH_ACCELERATIONf     9.80665f
+#define EARTH_ACCELERATION      9.81
+#define EARTH_ACCELERATIONf     9.81f
 
 //
 #define PHILLIPS_CONSTANT       0.81

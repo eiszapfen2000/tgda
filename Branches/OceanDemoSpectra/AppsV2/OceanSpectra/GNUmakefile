@@ -9,6 +9,7 @@ OceanSpectra_OBJC_FILES = \
 
 OceanSpectra_C_FILES = \
     ODAmplitude.c \
+    ODEnergy.c \
     ODGaussianRNG.c
 
 ADDITIONAL_TOOL_LIBS += -lNPEngine2 -lglfw -lprng -lfftw3 -lfftw3f
