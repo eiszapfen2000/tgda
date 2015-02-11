@@ -3,9 +3,15 @@ include $(GNUSTEP_MAKEFILES)/common.make
 TOOL_NAME=OceanSpectra
 
 OceanSpectra_OBJC_FILES = \
-    main.m
+    main.m \
+    ODFrequencySpectrumFloat.m \
+    ODPFrequencySpectrumGeneration.m
 
-ADDITIONAL_TOOL_LIBS += -lNPEngine2 -lglfw
+OceanSpectra_C_FILES = \
+    ODAmplitude.c \
+    ODGaussianRNG.c
+
+ADDITIONAL_TOOL_LIBS += -lNPEngine2 -lglfw -lprng -lfftw3 -lfftw3f
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/tool.make
