@@ -9,12 +9,18 @@
 
 float peak_energy_wave_frequency_pm(float U10)
 {
-    return (0.855f * EARTH_ACCELERATIONf / U10);
+    const float omega_p = (0.855f * EARTH_ACCELERATIONf / U10);
+
+    return omega_p;
 }
 
-float peak_energy_wave_frequency_jonswap(float U10)
+float peak_energy_wave_frequency_jonswap(float U10, float fetch)
 {
-    return 0.0f;
+    const float X = (EARTH_ACCELERATIONf * fetch) / (U10 * U10);
+    const float Omega_c = 22.0f * powf(X, -0.33f);
+    const float omega_p = (Omega_c * EARTH_ACCELERATIONf / U10);
+
+    return omega_p;
 }
 
 float energy_pm_wave_frequency(float omega, float U10)
@@ -33,7 +39,23 @@ float energy_pm_wave_frequency(float omega, float U10)
 
 float energy_jonswap_wave_frequency(float omega, float U10, float fetch)
 {
-    return 0.0f;
+    assert(omega != 0.0f);
+
+    const float g = EARTH_ACCELERATIONf;
+    const float X = (g * fetch) / (U10 * U10);
+    const float Omega_c = 22.0f * powf(X, -0.33f);
+    const float omega_p = (Omega_c * g / U10);
+    const float alpha = 0.076f * powf(X, -0.22f);
+
+    const float sigma = (omega > omega_p) ? 0.09f : 0.07f;
+    const float omegaDiff = omega - omega_p;
+    const float r_exponent = (omegaDiff*omegaDiff) / (2.0f * sigma * sigma * omega_p * omega_p);
+    const float r = expf(-r_exponent);
+    const float gamma_r = powf(3.3f, r);
+    const float exponent = (-5.0f/4.0f) * powf(omega_p / omega, 4.0f);
+    const float Theta = ((alpha*g*g) / powf(omega, 5.0f)) * expf(exponent) * gamma_r;
+
+    return Theta;    
 }
 
 float directional_spreading_mitsuyasu_hasselmann(float omega_p, float omega, float theta_p, float theta)
