@@ -110,6 +110,16 @@ float directional_spreading_mitsuyasu_hasselmann(float omega_p, float omega, flo
 
 float directional_spreading_donelan(float omega_p, float omega, float theta_p, float theta)
 {
-    return 1.0f;
+    const float ratio = omega / omega_p;
+    const float beta = (ratio > 0.56f && ratio < 0.95f) ? (2.61f * powf(ratio, 1.3f)) : ((ratio > 0.95f && ratio < 1.6f) ? (2.28f * powf(ratio, -1.3f)) : 1.24f);
+
+#define sechf(x) (1.0f / coshf(x))
+
+    const float s = sechf(beta * (theta - theta_p));
+    const float result = 0.5f * beta * s * s;
+
+#undef sechf
+
+    return result;
 }
 
