@@ -21,6 +21,7 @@ ODQuadrants;
 - (void) generatePhillipsSpectrum;
 - (void) generateUnifiedSpectrum;
 - (void) generatePMSpectrum;
+- (void) generateJONSWAPSpectrum;
 
 @end
 
@@ -94,6 +95,100 @@ ODQuadrants;
                 {
                     // Theta in wave frequency domain
                     const float Theta = energy_pm_wave_frequency(omega, U10);
+                    // convert Theta to wave number domain
+                    const float Theta_wavenumber = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
+                    // convert Theta to wave vector domain
+                    Theta_wavevector = Theta_wavenumber / k;
+                }
+
+                const float directionalSpread
+                    = directional_spreading_mitsuyasu_hasselmann(omega_p, omega, 0.0f, atan2f(ky, kx));
+
+                const float Theta_complete = Theta_wavevector * directionalSpread;
+
+                const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
+
+                baseSpectrum[index] = Theta_complete;
+                H0[index][0] = MATH_1_DIV_SQRT_2f * /*xi_r **/ amplitude * 0.5f;
+                H0[index][1] = MATH_1_DIV_SQRT_2f * /*xi_i **/ amplitude * 0.5f;
+
+                printf("%+f %+fi ", H0[index][0], H0[index][1]);
+            }
+
+            printf("\n");
+        }
+    }
+}
+
+- (void) generateJONSWAPSpectrum
+{
+    const OdJONSWAPGeneratorSettings settings
+        = currentGeneratorSettings.jonswap;
+
+    const IVector2 resolution  = H0Resolution;
+    const FVector2 fresolution = fv2_v_from_iv2(&resolution);
+
+    const int32_t  numberOfLods = H0Lods;
+    const int32_t  numberOfLodElements = resolution.x * resolution.y;
+
+    FFTW_SAFE_FREE(baseSpectrum);
+    baseSpectrum = fftwf_alloc_real(numberOfLods * numberOfLodElements);
+
+    const float U10   = settings.U10;
+    const float fetch = settings.fetch;
+
+    const FVector2 maxSize = fv2_v_from_v2(&currentGeometry.sizes[0]);
+
+    const float A = currentGeneratorSettings.spectrumScale / (maxSize.x * maxSize.y);
+
+    const float n = -(fresolution.x / 2.0f);
+    const float m =  (fresolution.y / 2.0f);
+
+    const float omega_p = peak_energy_wave_frequency_jonswap(U10, fetch);
+
+    for ( int32_t l = 0; l < numberOfLods; l++ )
+    {
+        const FVector2 lastSize
+            = ( l == 0 ) ? fv2_zero() : fv2_v_from_v2(&currentGeometry.sizes[l - 1]);
+
+        const FVector2 currentSize = fv2_v_from_v2(&currentGeometry.sizes[l]);
+
+        const float dkx = MATH_2_MUL_PIf / currentSize.x;
+        const float dky = MATH_2_MUL_PIf / currentSize.y;
+
+        const float kMin = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
+
+        const int32_t offset = l * numberOfLodElements;
+
+        for ( int32_t i = 0; i < resolution.y; i++ )
+        {
+            for ( int32_t j = 0; j < resolution.x; j++ )
+            {
+                const int32_t index = offset + j + resolution.x * i;
+
+                const float xi_r = (float)randomNumbers[2 * index    ];
+                const float xi_i = (float)randomNumbers[2 * index + 1];
+
+                const float di = i;
+                const float dj = j;
+
+                // wave vector
+                const float kx = (n + dj) * dkx;
+                const float ky = (m - di) * dky;
+
+                // wave number
+                const float k = sqrtf(kx*kx + ky*ky);
+
+                // deep water dispersion relation
+                const float omega = sqrtf(k * EARTH_ACCELERATIONf);
+
+                // Theta in wave vector domain
+                float Theta_wavevector = 0.0f;
+
+                if (k != 0.0f)
+                {
+                    // Theta in wave frequency domain
+                    const float Theta = energy_jonswap_wave_frequency(omega, U10, fetch);
                     // convert Theta to wave number domain
                     const float Theta_wavenumber = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
                     // convert Theta to wave vector domain
@@ -375,6 +470,12 @@ ODQuadrants;
         case PiersonMoskowitz:
         {
             [ self generatePMSpectrum ];
+            break;
+        }
+
+        case JONSWAP:
+        {
+            [ self generateJONSWAPSpectrum ];
             break;
         }
 

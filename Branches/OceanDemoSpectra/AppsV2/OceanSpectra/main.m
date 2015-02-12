@@ -129,8 +129,9 @@ int main (int argc, char **argv)
     ODFrequencySpectrumFloat * s = [[ ODFrequencySpectrumFloat alloc ] init ];
 
     OdGeneratorSettings generatorSettings;
-    generatorSettings.generatorType = PiersonMoskowitz;
-    generatorSettings.piersonmoskowitz.U10 = 10.0;
+    generatorSettings.generatorType = JONSWAP;
+    generatorSettings.jonswap.U10 = 10.0;
+    generatorSettings.jonswap.fetch = 100000.0;
     generatorSettings.options = OdGeneratorOptionsHeights;
     generatorSettings.spectrumScale = 1.0;
 
