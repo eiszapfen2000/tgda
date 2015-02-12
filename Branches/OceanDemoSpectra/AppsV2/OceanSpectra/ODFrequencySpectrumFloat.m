@@ -107,13 +107,11 @@ ODQuadrants;
 
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
 
-                /*
-                baseSpectrum[index] = s;
-                H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
-                H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
-                */
+                baseSpectrum[index] = Theta_complete;
+                H0[index][0] = MATH_1_DIV_SQRT_2f * /*xi_r **/ amplitude * 0.5f;
+                H0[index][1] = MATH_1_DIV_SQRT_2f * /*xi_i **/ amplitude * 0.5f;
 
-                printf("%f ", amplitude);
+                printf("%+f %+fi ", H0[index][0], H0[index][1]);
             }
 
             printf("\n");
@@ -522,6 +520,8 @@ static NPTimer * timer = nil;
                 // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
                 const fftwf_complex expMinusOmega = { expOmega[0], -expOmega[1] };
 
+                //printf("%+f %+fi ", expOmega[0], expOmega[1]);
+
                 /* complex multiplication
                    x = a + i*b
                    y = c + i*d
@@ -540,10 +540,10 @@ static NPTimer * timer = nil;
                       = (-bd) + i(bc)
                 */
 
-                // H0[indexForK] * exp(i*omega*t)
-                const fftwf_complex H0expOmega
-                    = { H0[indexForK][0] * expOmega[0] - H0[indexForK][1] * expOmega[1],
-                        H0[indexForK][0] * expOmega[1] + H0[indexForK][1] * expOmega[0] };
+                // H0[indexForK] * exp(-i*omega*t)
+                const fftwf_complex H0expMinusOmega
+                    = { H0[indexForK][0] * expMinusOmega[0] - H0[indexForK][1] * expMinusOmega[1],
+                        H0[indexForK][0] * expMinusOmega[1] + H0[indexForK][1] * expMinusOmega[0] };
 
                 const fftwf_complex geometryH0conjugate
                     = { H0[indexForConjugateGeometry][0], -H0[indexForConjugateGeometry][1] };
@@ -552,14 +552,14 @@ static NPTimer * timer = nil;
                     = { H0[indexForConjugateGradient][0], -H0[indexForConjugateGradient][1] };
 
 
-                // H0[indexForConjugate] * exp(-i*omega*t)
-                const fftwf_complex geometryH0expMinusOmega
-                    = { geometryH0conjugate[0] * expMinusOmega[0] - geometryH0conjugate[1] * expMinusOmega[1],
-                        geometryH0conjugate[0] * expMinusOmega[1] + geometryH0conjugate[1] * expMinusOmega[0] };
+                // H0[indexForConjugate] * exp(i*omega*t)
+                const fftwf_complex geometryH0expOmega
+                    = { geometryH0conjugate[0] * expOmega[0] - geometryH0conjugate[1] * expOmega[1],
+                        geometryH0conjugate[0] * expOmega[1] + geometryH0conjugate[1] * expOmega[0] };
 
-                const fftwf_complex gradientH0expMinusOmega
-                    = { gradientH0conjugate[0] * expMinusOmega[0] - gradientH0conjugate[1] * expMinusOmega[1],
-                        gradientH0conjugate[0] * expMinusOmega[1] + gradientH0conjugate[1] * expMinusOmega[0] };
+                const fftwf_complex gradientH0expOmega
+                    = { gradientH0conjugate[0] * expOmega[0] - gradientH0conjugate[1] * expOmega[1],
+                        gradientH0conjugate[0] * expOmega[1] + gradientH0conjugate[1] * expOmega[0] };
 
                 /* complex addition
                    x = a + i*b
@@ -569,12 +569,14 @@ static NPTimer * timer = nil;
 
                 // hTilde = H0expOmega + H0expMinusomega            
                 const fftwf_complex geometryhTilde
-                    = { H0expOmega[0] + geometryH0expMinusOmega[0],
-                        H0expOmega[1] + geometryH0expMinusOmega[1] };
+                    = { H0expMinusOmega[0] + geometryH0expOmega[0],
+                        H0expMinusOmega[1] + geometryH0expOmega[1] };
 
                 const fftwf_complex gradienthTilde
-                    = { H0expOmega[0] + gradientH0expMinusOmega[0],
-                        H0expOmega[1] + gradientH0expMinusOmega[1] };
+                    = { H0expMinusOmega[0] + gradientH0expOmega[0],
+                        H0expMinusOmega[1] + gradientH0expOmega[1] };
+
+                printf("%+f %+fi ", geometryhTilde[0], geometryhTilde[1]);
 
 
                 //if ( indexForK >= geometryStartIndex && indexForK <= geometryEndIndex )
@@ -684,6 +686,8 @@ static NPTimer * timer = nil;
                     result.displacement[geometryIndex][1] = dx[1] + dz[0];
                 }
             }
+
+            printf("\n");
         }
     }
 
