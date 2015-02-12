@@ -173,6 +173,27 @@ bool unified_settings_equal(const OdUnifiedGeneratorSettings * pOne, const OdUni
     return true;
 }
 
+bool piersonmoskowitz_settings_equal(const OdPiersonMoskowitzGeneratorSettings * pOne, const OdPiersonMoskowitzGeneratorSettings * pTwo)
+{
+    if (pOne->U10 != pTwo->U10)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool jonswap_settings_equal(const OdJONSWAPGeneratorSettings * pOne, const OdJONSWAPGeneratorSettings * pTwo)
+{
+    if (pOne->U10 != pTwo->U10
+        || pOne->fetch != pTwo->fetch)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 bool generator_settings_equal(const OdGeneratorSettings * pOne, const OdGeneratorSettings * pTwo)
 {
     if ( pOne->generatorType != pTwo->generatorType
@@ -187,6 +208,10 @@ bool generator_settings_equal(const OdGeneratorSettings * pOne, const OdGenerato
             return phillips_settings_equal(&(pOne->phillips), &(pTwo->phillips));
         case Unified:
             return unified_settings_equal(&(pOne->unified), &(pTwo->unified));
+        case PiersonMoskowitz:
+            return piersonmoskowitz_settings_equal(&(pOne->piersonmoskowitz), &(pTwo->piersonmoskowitz));
+        case JONSWAP:
+            return jonswap_settings_equal(&(pOne->jonswap), &(pTwo->jonswap));
         default:
             return false;
     }
@@ -203,6 +228,9 @@ OdGeneratorSettings generator_settings_zero()
     result.phillips.dampening = 0.0;
     result.unified.U10   = 0.0;
     result.unified.Omega = 0.0;
+    result.piersonmoskowitz.U10 = 0.0;
+    result.jonswap.U10 = 0.0;
+    result.jonswap.fetch = 0.0;
 
     return result;
 }
@@ -218,6 +246,9 @@ OdGeneratorSettings generator_settings_max()
     result.phillips.dampening = DBL_MAX;
     result.unified.U10   = DBL_MAX;
     result.unified.Omega = DBL_MAX;
+    result.piersonmoskowitz.U10 = DBL_MAX;
+    result.jonswap.U10 = DBL_MAX;
+    result.jonswap.fetch = DBL_MAX;
 
     return result;
 }
