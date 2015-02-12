@@ -16,9 +16,20 @@ float peak_energy_wave_frequency_pm(float U10)
 
 float peak_energy_wave_frequency_jonswap(float U10, float fetch)
 {
-    const float X = (EARTH_ACCELERATIONf * fetch) / (U10 * U10);
+    const float g = EARTH_ACCELERATIONf;
+    const float X = (g * fetch) / (U10 * U10);
     const float Omega_c = 22.0f * powf(X, -0.33f);
-    const float omega_p = (Omega_c * EARTH_ACCELERATIONf / U10);
+    const float omega_p = (Omega_c * g / U10);
+
+    return omega_p;
+}
+
+float peak_energy_wave_frequency_donelan(float U10, float fetch)
+{
+    const float g = EARTH_ACCELERATIONf;
+    const float X = (g * fetch) / (U10 * U10);
+    const float Omega_c = 11.6f * powf(X, -0.23f);
+    const float omega_p = (Omega_c * g / U10);
 
     return omega_p;
 }
@@ -58,6 +69,28 @@ float energy_jonswap_wave_frequency(float omega, float U10, float fetch)
     return Theta;    
 }
 
+float energy_donelan_wave_frequency(float omega, float U10, float fetch)
+{
+    assert(omega != 0.0f);
+
+    const float g = EARTH_ACCELERATIONf;
+    const float X = (g * fetch) / (U10 * U10);
+    const float Omega_c = 11.6f * powf(X, -0.23f);
+    const float omega_p = (Omega_c * g / U10);
+    const float alpha = 0.006f * powf(Omega_c, 0.55f);
+
+    const float sigma = 0.08f * (1.0f + (4.0f / (Omega_c * Omega_c * Omega_c)));
+    const float gamma_base = (Omega_c < 1.0f) ? 1.7f : (1.7f + 6.0f * log10f(Omega_c));
+    const float omegaDiff = omega - omega_p;
+    const float r_exponent = (omegaDiff*omegaDiff) / (2.0f * sigma * sigma * omega_p * omega_p);
+    const float r = expf(-r_exponent);
+    const float gamma_r = powf(gamma_base, r);
+    const float exponent = -powf(omega_p / omega, 4.0f);
+    const float Theta = ((alpha*g*g) / (powf(omega, 4.0f) * omega_p)) * expf(exponent) * gamma_r;
+
+    return Theta;
+}
+
 float directional_spreading_mitsuyasu_hasselmann(float omega_p, float omega, float theta_p, float theta)
 {
     const float s_p = (omega >= omega_p) ? 9.77f : 6.97f;
@@ -73,5 +106,10 @@ float directional_spreading_mitsuyasu_hasselmann(float omega_p, float omega, flo
     const float term_three = powf(fabsf(cosf((theta - theta_p) * 0.5f)), 2.0f * s);
 
     return term_one * term_two * term_three;
+}
+
+float directional_spreading_donelan(float omega_p, float omega, float theta_p, float theta)
+{
+    return 1.0f;
 }
 
