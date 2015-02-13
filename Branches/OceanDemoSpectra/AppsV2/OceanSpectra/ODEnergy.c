@@ -105,7 +105,49 @@ float energy_donelan_wave_frequency(float omega, float U10, float fetch)
 
 float energy_unified_wave_number(float k, float U10, float fetch)
 {
-    return 0.0;
+    assert(k != 0.0f);
+
+    const float g = EARTH_ACCELERATIONf;
+    const float c_m = 0.23f;
+    const float k_0 = g / (U10 * U10);
+    const float k_m = 370.0f;
+    const float X_0 = 2.2f * 10e4f;
+    const float kappa = 0.41;
+
+    const float X = k_0 * fetch;
+    const float Omega_c = 0.84f * powf(tanhf(powf(X/X_0, 0.4f)), -0.75f);
+    const float k_p = k_0 * (Omega_c * Omega_c);
+
+    const float omega = sqrtf(g * k * (1.0f + (k/k_m) * (k/k_m)));
+    const float c = omega / k;
+
+    const float omega_p = sqrtf(g * k_p * (1.0f + (k_p/k_m) * (k_p/k_m)));
+    const float c_p = omega_p / k_p;
+
+    const float z_0 = 3.4e-5f * ((U10 * U10) / g) * powf(U10 / c_p, 0.9f);
+    const float u_star = U10 * kappa / logf(10.0f / z_0);
+
+    const float L_pm = expf((-5.0f/4.0f) * (k_p / k) * (k_p / k));
+    const float gamma = (Omega_c < 1.0f) ? 1.7f : (1.7f + 6.0f * log10f(Omega_c));
+    const float sigma = 0.08f * (1.0f + (4.0f / (Omega_c * Omega_c * Omega_c)));
+
+    const float tmp = sqrtf(k / k_p) - 1.0f;
+    const float Gamma = expf((tmp * tmp) / (-2.0f * sigma * sigma));
+    const float J_p = powf(gamma, Gamma);
+    const float F_p = L_pm * J_p * expf(tmp * (-Omega_c / sqrtf(10.0f)));
+    const float alpha_p = 0.006f * sqrtf(Omega_c);
+    const float B_l = (0.5f * alpha_p) * (c_p / c) * F_p;
+
+    const float alpha_m
+        = (u_star < c_m) ? (0.01f * (1.0f + logf(u_star / c_m)))
+                         : (0.01f * (1.0f + 3.0f * logf(u_star / c_m)));
+
+    const float F_m = L_pm * J_p * expf(-0.25f * ((k / k_m) - 1.0f) * ((k / k_m) - 1.0f));
+    const float B_h = (0.5f * alpha_m) * (c_m / c) * F_m;
+
+    const float Theta = (1.0f / (k * k * k)) * (B_l + B_h);
+
+    return Theta;
 }
 
 float directional_spreading_mitsuyasu_hasselmann(float omega_p, float omega, float theta_p, float theta)
@@ -142,4 +184,10 @@ float directional_spreading_donelan(float omega_p, float omega, float theta_p, f
 
     return result;
 }
+
+float directional_spreading_unified(float k_p, float k, float theta_p, float theta)
+{
+    return 0.0f;
+}
+
 
