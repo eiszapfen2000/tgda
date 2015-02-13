@@ -37,7 +37,8 @@ typedef enum OdSpectrumGenerator
     Phillips =  0,
     Unified  =  1,
     PiersonMoskowitz = 2,
-    JONSWAP = 3
+    JONSWAP = 3,
+    Donelan = 4
 }
 OdSpectrumGenerator;
 
@@ -79,6 +80,13 @@ typedef struct OdJONSWAPGeneratorSettings
 }
 OdJONSWAPGeneratorSettings;
 
+typedef struct OdDonelanGeneratorSettings
+{
+    double U10;
+    double fetch;
+}
+OdDonelanGeneratorSettings;
+
 typedef struct OdGeneratorSettings
 {
     OdSpectrumGenerator generatorType;
@@ -90,6 +98,7 @@ typedef struct OdGeneratorSettings
         OdUnifiedGeneratorSettings  unified;
         OdPiersonMoskowitzGeneratorSettings piersonmoskowitz;
         OdJONSWAPGeneratorSettings jonswap;
+        OdDonelanGeneratorSettings donelan;
     };
 }
 OdGeneratorSettings;
@@ -98,6 +107,7 @@ bool phillips_settings_equal(const OdPhillipsGeneratorSettings * pOne, const OdP
 bool unified_settings_equal(const OdUnifiedGeneratorSettings * pOne, const OdUnifiedGeneratorSettings * pTwo);
 bool piersonmoskowitz_settings_equal(const OdPiersonMoskowitzGeneratorSettings * pOne, const OdPiersonMoskowitzGeneratorSettings * pTwo);
 bool jonswap_settings_equal(const OdJONSWAPGeneratorSettings * pOne, const OdJONSWAPGeneratorSettings * pTwo);
+bool donelan_settings_equal(const OdDonelanGeneratorSettings * pOne, const OdDonelanGeneratorSettings * pTwo);
 bool generator_settings_equal(const OdGeneratorSettings * pOne, const OdGeneratorSettings * pTwo);
 
 OdGeneratorSettings generator_settings_zero();
