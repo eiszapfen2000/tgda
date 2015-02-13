@@ -34,6 +34,18 @@ float peak_energy_wave_frequency_donelan(float U10, float fetch)
     return omega_p;
 }
 
+float peak_energy_wave_number_unified(float U10, float fetch)
+{
+    const float g = EARTH_ACCELERATIONf;
+    const float X_0 = 2.2f * powf(10.0f, 4.0f);
+    const float k_0 = g / (U10 * U10);
+    const float X = k_0 * fetch;
+    const float Omega_c = 0.84f * powf(tanhf(powf(X/X_0, 0.4f)), -0.75f);
+    const float k_p = k_0 * (Omega_c * Omega_c);
+
+    return k_p;
+}
+
 float energy_pm_wave_frequency(float omega, float U10)
 {
     assert(omega != 0.0f);
@@ -89,6 +101,11 @@ float energy_donelan_wave_frequency(float omega, float U10, float fetch)
     const float Theta = ((alpha*g*g) / (powf(omega, 4.0f) * omega_p)) * expf(exponent) * gamma_r;
 
     return Theta;
+}
+
+float energy_unified_wave_number(float k, float U10, float fetch)
+{
+    return 0.0;
 }
 
 float directional_spreading_mitsuyasu_hasselmann(float omega_p, float omega, float theta_p, float theta)
