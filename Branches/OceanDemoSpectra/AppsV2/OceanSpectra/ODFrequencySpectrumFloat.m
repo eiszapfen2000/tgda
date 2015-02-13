@@ -284,9 +284,9 @@ ODQuadrants;
                 {
                     // Theta in wave frequency domain
                     const float Theta = energy_donelan_wave_frequency(omega, U10, fetch);
-                    // convert Theta to wave number domain
+                    // convert Theta from wave frequency domain to wave number domain
                     const float Theta_wavenumber = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
-                    // convert Theta to wave vector domain
+                    // convert Theta from wave number domain to wave vector domain
                     Theta_wavevector = Theta_wavenumber / k;
                 }
 
