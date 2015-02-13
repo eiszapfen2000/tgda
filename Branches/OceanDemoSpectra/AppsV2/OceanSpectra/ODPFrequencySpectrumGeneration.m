@@ -149,30 +149,6 @@ OdSpectrumGeometry geometry_max()
     return result;
 }
 
-bool phillips_settings_equal(const OdPhillipsGeneratorSettings * pOne, const OdPhillipsGeneratorSettings * pTwo)
-{
-    if ( pOne->windSpeed != pTwo->windSpeed
-         || pOne->dampening != pTwo->dampening
-         || pOne->windDirection.x != pTwo->windDirection.x
-         || pOne->windDirection.y != pTwo->windDirection.y )
-    {
-        return false;
-    }
-
-    return true;
-}
-
-bool unified_settings_equal(const OdUnifiedGeneratorSettings * pOne, const OdUnifiedGeneratorSettings * pTwo)
-{
-    if ( pOne->U10 != pTwo->U10
-         || pOne->Omega != pTwo->Omega )
-    {
-        return false;
-    }
-
-    return true;
-}
-
 bool piersonmoskowitz_settings_equal(const OdPiersonMoskowitzGeneratorSettings * pOne, const OdPiersonMoskowitzGeneratorSettings * pTwo)
 {
     if (pOne->U10 != pTwo->U10)
@@ -205,6 +181,17 @@ bool donelan_settings_equal(const OdDonelanGeneratorSettings * pOne, const OdDon
     return true;
 }
 
+bool unified_settings_equal(const OdUnifiedGeneratorSettings * pOne, const OdUnifiedGeneratorSettings * pTwo)
+{
+    if ( pOne->U10 != pTwo->U10
+         || pOne->fetch != pTwo->fetch )
+    {
+        return false;
+    }
+
+    return true;
+}
+
 bool generator_settings_equal(const OdGeneratorSettings * pOne, const OdGeneratorSettings * pTwo)
 {
     if ( pOne->generatorType != pTwo->generatorType
@@ -215,16 +202,14 @@ bool generator_settings_equal(const OdGeneratorSettings * pOne, const OdGenerato
 
     switch ( pOne->generatorType )
     {
-        case Phillips:
-            return phillips_settings_equal(&(pOne->phillips), &(pTwo->phillips));
-        case Unified:
-            return unified_settings_equal(&(pOne->unified), &(pTwo->unified));
         case PiersonMoskowitz:
             return piersonmoskowitz_settings_equal(&(pOne->piersonmoskowitz), &(pTwo->piersonmoskowitz));
         case JONSWAP:
             return jonswap_settings_equal(&(pOne->jonswap), &(pTwo->jonswap));
         case Donelan:
             return donelan_settings_equal(&(pOne->donelan), &(pTwo->donelan));
+        case Unified:
+            return unified_settings_equal(&(pOne->unified), &(pTwo->unified));
         default:
             return false;
     }
@@ -236,16 +221,13 @@ OdGeneratorSettings generator_settings_zero()
 
     result.generatorType = Unknown;
     result.spectrumScale = 0.0;
-    result.phillips.windDirection = v2_zero();
-    result.phillips.windSpeed = 0.0;
-    result.phillips.dampening = 0.0;
-    result.unified.U10   = 0.0;
-    result.unified.Omega = 0.0;
     result.piersonmoskowitz.U10 = 0.0;
     result.jonswap.U10 = 0.0;
     result.jonswap.fetch = 0.0;
     result.donelan.U10 = 0.0;
     result.donelan.fetch = 0.0;
+    result.unified.U10   = 0.0;
+    result.unified.fetch = 0.0;
 
     return result;
 }
@@ -256,16 +238,13 @@ OdGeneratorSettings generator_settings_max()
 
     result.generatorType = Unknown;
     result.spectrumScale = DBL_MAX;
-    result.phillips.windDirection = v2_max();
-    result.phillips.windSpeed = DBL_MAX;
-    result.phillips.dampening = DBL_MAX;
-    result.unified.U10   = DBL_MAX;
-    result.unified.Omega = DBL_MAX;
     result.piersonmoskowitz.U10 = DBL_MAX;
     result.jonswap.U10 = DBL_MAX;
     result.jonswap.fetch = DBL_MAX;
     result.donelan.U10 = DBL_MAX;
     result.donelan.fetch = DBL_MAX;
+    result.unified.U10   = DBL_MAX;
+    result.unified.fetch = DBL_MAX;
 
     return result;
 }

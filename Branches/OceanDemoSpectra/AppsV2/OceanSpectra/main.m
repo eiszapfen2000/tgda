@@ -124,14 +124,22 @@ int main (int argc, char **argv)
 {
     feenableexcept(FE_DIVBYZERO | FE_INVALID);
 
+    float a = 3.7 * powf(10.0f, -5.0f);
+    float b = 3.7e-5;
+
+    const float c = 2.2f * powf(10.0f, 4.0f);
+    const float d = 2.2e4f;
+
+    printf("%f %f\n", c, d);
+
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
     ODFrequencySpectrumFloat * s = [[ ODFrequencySpectrumFloat alloc ] init ];
 
     OdGeneratorSettings generatorSettings;
-    generatorSettings.generatorType = Donelan;
-    generatorSettings.donelan.U10 = 10.0;
-    generatorSettings.donelan.fetch = 100000.0;
+    generatorSettings.generatorType = Unified;
+    generatorSettings.unified.U10 = 10.0;
+    generatorSettings.unified.fetch = 100000.0;
     generatorSettings.options = OdGeneratorOptionsHeights;
     generatorSettings.spectrumScale = 1.0;
 
