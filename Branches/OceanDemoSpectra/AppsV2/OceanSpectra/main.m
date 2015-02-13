@@ -129,9 +129,9 @@ int main (int argc, char **argv)
     ODFrequencySpectrumFloat * s = [[ ODFrequencySpectrumFloat alloc ] init ];
 
     OdGeneratorSettings generatorSettings;
-    generatorSettings.generatorType = JONSWAP;
-    generatorSettings.jonswap.U10 = 10.0;
-    generatorSettings.jonswap.fetch = 100000.0;
+    generatorSettings.generatorType = Donelan;
+    generatorSettings.donelan.U10 = 10.0;
+    generatorSettings.donelan.fetch = 100000.0;
     generatorSettings.options = OdGeneratorOptionsHeights;
     generatorSettings.spectrumScale = 1.0;
 
