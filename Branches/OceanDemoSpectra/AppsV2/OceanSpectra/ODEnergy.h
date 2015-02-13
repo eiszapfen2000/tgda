@@ -13,7 +13,7 @@ float energy_unified_wave_number(float k, float U10, float fetch);
 
 float directional_spreading_mitsuyasu_hasselmann(float omega_p, float omega, float theta_p, float theta);
 float directional_spreading_donelan(float omega_p, float omega, float theta_p, float theta);
-float directional_spreading_unified(float k_p, float k, float theta_p, float theta);
+float directional_spreading_unified(float U10, float k_p, float k, float theta_p, float theta);
 
 #endif
 

@@ -185,9 +185,29 @@ float directional_spreading_donelan(float omega_p, float omega, float theta_p, f
     return result;
 }
 
-float directional_spreading_unified(float k_p, float k, float theta_p, float theta)
+float directional_spreading_unified(float U10, float k_p, float k, float theta_p, float theta)
 {
-    return 0.0f;
+    const float g = EARTH_ACCELERATIONf;
+    const float a_0 = logf(2.0f) / 4.0f;
+    const float a_p = 4.0f;
+    const float c_m = 0.23f;
+    const float k_m = 370.0f;
+    const float kappa = 0.41;
+
+    const float omega = sqrtf(g * k * (1.0f + (k/k_m) * (k/k_m)));
+    const float c = omega / k;
+
+    const float omega_p = sqrtf(g * k_p * (1.0f + (k_p/k_m) * (k_p/k_m)));
+    const float c_p = omega_p / k_p;
+
+    const float z_0 = 3.4e-5f * ((U10 * U10) / g) * powf(U10 / c_p, 0.9f);
+    const float u_star = U10 * kappa / logf(10.0f / z_0);
+
+    const float a_m = 0.13f * (u_star / c_m);
+    const float delta_k = tanhf(a_0 + a_p * powf(c /c_p, 2.5f) + a_m * powf(c_m / c, 2.5f));
+    const float result = (1.0f / MATH_2_MUL_PIf) * (1.0f + delta_k * cosf(2.0f * (theta - theta_p)));
+
+    return result;
 }
 
 
