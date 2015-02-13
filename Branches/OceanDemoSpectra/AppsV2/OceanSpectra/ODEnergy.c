@@ -1,6 +1,7 @@
 #define _GNU_SOURCE
 #include <assert.h>
 #include <math.h>
+#include <stdio.h>
 #include "ODConstants.h"
 #include "ODEnergy.h"
 
@@ -111,7 +112,7 @@ float energy_unified_wave_number(float k, float U10, float fetch)
     const float c_m = 0.23f;
     const float k_0 = g / (U10 * U10);
     const float k_m = 370.0f;
-    const float X_0 = 2.2f * 10e4f;
+    const float X_0 = 2.2f * powf(10.0f, 4.0f);
     const float kappa = 0.41;
 
     const float X = k_0 * fetch;
@@ -124,7 +125,7 @@ float energy_unified_wave_number(float k, float U10, float fetch)
     const float omega_p = sqrtf(g * k_p * (1.0f + (k_p/k_m) * (k_p/k_m)));
     const float c_p = omega_p / k_p;
 
-    const float z_0 = 3.4e-5f * ((U10 * U10) / g) * powf(U10 / c_p, 0.9f);
+    const float z_0 = 3.7e-5f * ((U10 * U10) / g) * powf(U10 / c_p, 0.9f);
     const float u_star = U10 * kappa / logf(10.0f / z_0);
 
     const float L_pm = expf((-5.0f/4.0f) * (k_p / k) * (k_p / k));
@@ -187,6 +188,8 @@ float directional_spreading_donelan(float omega_p, float omega, float theta_p, f
 
 float directional_spreading_unified(float U10, float k_p, float k, float theta_p, float theta)
 {
+    assert(k != 0.0f);
+
     const float g = EARTH_ACCELERATIONf;
     const float a_0 = logf(2.0f) / 4.0f;
     const float a_p = 4.0f;
@@ -200,7 +203,7 @@ float directional_spreading_unified(float U10, float k_p, float k, float theta_p
     const float omega_p = sqrtf(g * k_p * (1.0f + (k_p/k_m) * (k_p/k_m)));
     const float c_p = omega_p / k_p;
 
-    const float z_0 = 3.4e-5f * ((U10 * U10) / g) * powf(U10 / c_p, 0.9f);
+    const float z_0 = 3.7e-5f * ((U10 * U10) / g) * powf(U10 / c_p, 0.9f);
     const float u_star = U10 * kappa / logf(10.0f / z_0);
 
     const float a_m = 0.13f * (u_star / c_m);
