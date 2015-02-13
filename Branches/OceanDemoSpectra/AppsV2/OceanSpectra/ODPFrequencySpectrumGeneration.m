@@ -194,6 +194,17 @@ bool jonswap_settings_equal(const OdJONSWAPGeneratorSettings * pOne, const OdJON
     return true;
 }
 
+bool donelan_settings_equal(const OdDonelanGeneratorSettings * pOne, const OdDonelanGeneratorSettings * pTwo)
+{
+    if (pOne->U10 != pTwo->U10
+        || pOne->fetch != pTwo->fetch)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 bool generator_settings_equal(const OdGeneratorSettings * pOne, const OdGeneratorSettings * pTwo)
 {
     if ( pOne->generatorType != pTwo->generatorType
@@ -212,6 +223,8 @@ bool generator_settings_equal(const OdGeneratorSettings * pOne, const OdGenerato
             return piersonmoskowitz_settings_equal(&(pOne->piersonmoskowitz), &(pTwo->piersonmoskowitz));
         case JONSWAP:
             return jonswap_settings_equal(&(pOne->jonswap), &(pTwo->jonswap));
+        case Donelan:
+            return donelan_settings_equal(&(pOne->donelan), &(pTwo->donelan));
         default:
             return false;
     }
@@ -231,6 +244,8 @@ OdGeneratorSettings generator_settings_zero()
     result.piersonmoskowitz.U10 = 0.0;
     result.jonswap.U10 = 0.0;
     result.jonswap.fetch = 0.0;
+    result.donelan.U10 = 0.0;
+    result.donelan.fetch = 0.0;
 
     return result;
 }
@@ -249,6 +264,8 @@ OdGeneratorSettings generator_settings_max()
     result.piersonmoskowitz.U10 = DBL_MAX;
     result.jonswap.U10 = DBL_MAX;
     result.jonswap.fetch = DBL_MAX;
+    result.donelan.U10 = DBL_MAX;
+    result.donelan.fetch = DBL_MAX;
 
     return result;
 }
