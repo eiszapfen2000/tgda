@@ -144,9 +144,10 @@ int main (int argc, char **argv)
     generatorSettings.spectrumScale = 1.0;
 
     OdSpectrumGeometry geometry = geometry_zero();
-    geometry_init_with_resolutions_and_lods(&geometry, 4, 4, 1);
+    geometry_init_with_resolutions_and_lods(&geometry, 512, 512, 2);
     // first LOD is the largest one, set it to our desired size
-    geometry_set_max_size(&geometry, 10.0);
+    geometry_set_size(&geometry, 0, 83.0);
+    geometry_set_size(&geometry, 1, 7.0);
 
     OdFrequencySpectrumFloat complexSpectrum
         = [ s generateFloatSpectrumWithGeometry:geometry

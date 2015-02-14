@@ -332,7 +332,11 @@ ODQuadrants;
         const float dkx = MATH_2_MUL_PIf / currentSize.x;
         const float dky = MATH_2_MUL_PIf / currentSize.y;
 
-        const float kMin = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
+        const float kMinX = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
+        const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.y ) / lastSize.y );
+        const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
+
+        printf("%f %f %f\n", kMinX, kMinY, kMin);
 
         const int32_t offset = l * numberOfLodElements;
 
@@ -355,10 +359,12 @@ ODQuadrants;
                 // wave number
                 const float k = sqrtf(kx*kx + ky*ky);
 
+                //printf("%f ", k);
+
                 // Theta in wave vector domain
                 float Theta_complete = 0.0f;
 
-                if (k != 0.0f)
+                if (k > kMin)
                 {
                     const float Theta_wavenumber = energy_unified_wave_number(k, U10, fetch);
                     const float Theta_wavevector = Theta_wavenumber / k;
@@ -376,14 +382,16 @@ ODQuadrants;
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
 
                 baseSpectrum[index] = Theta_complete;
-                H0[index][0] = MATH_1_DIV_SQRT_2f * /*xi_r **/ amplitude * 0.5f;
-                H0[index][1] = MATH_1_DIV_SQRT_2f * /*xi_i **/ amplitude * 0.5f;
+                H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
+                H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
 
                 //printf("%+f %+fi ", H0[index][0], H0[index][1]);
             }
 
             //printf("\n");
         }
+
+        printf("\n");
     }
 
     float mss = 0.0f;
