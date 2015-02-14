@@ -324,9 +324,9 @@ ODQuadrants;
 
     const float k_p = peak_energy_wave_number_unified(U10, fetch);
 
-    float varianceX  = 0.0;
-    float varianceY  = 0.0;
-    float varianceXY = 0.0;
+    float mssX  = 0.0;
+    float mssY  = 0.0;
+    float mssXY = 0.0;
 
     for ( int32_t l = 0; l < numberOfLods; l++ )
     {
@@ -381,9 +381,9 @@ ODQuadrants;
                     Theta_complete = Theta_wavevector * directionalSpread;
                 }
 
-                varianceX  += (kx * kx) * (dkx * dky) * Theta_complete;
-                varianceY  += (ky * ky) * (dkx * dky) * Theta_complete;
-                varianceXY += (kx * kx + ky * ky) * (dkx * dky) * Theta_complete;
+                mssX  += (kx * kx) * (dkx * dky) * Theta_complete;
+                mssY  += (ky * ky) * (dkx * dky) * Theta_complete;
+                mssXY += (kx * kx + ky * ky) * (dkx * dky) * Theta_complete;
 
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
 
@@ -414,7 +414,7 @@ ODQuadrants;
         mss += kSquare * sk * dk;
     }
 
-    printf("mssx: %f mssy: %f mss: %f mss: %f\n", varianceX, varianceY, varianceXY, mss);
+    printf("mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
 }
 
 /*
