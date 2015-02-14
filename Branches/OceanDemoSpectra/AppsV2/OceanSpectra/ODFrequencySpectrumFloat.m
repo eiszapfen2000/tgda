@@ -58,7 +58,9 @@ ODQuadrants;
         const float dkx = MATH_2_MUL_PIf / currentSize.x;
         const float dky = MATH_2_MUL_PIf / currentSize.y;
 
-        const float kMin = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
+        const float kMinX = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
+        const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.y ) / lastSize.y );
+        const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
 
         const int32_t offset = l * numberOfLodElements;
 
@@ -87,7 +89,7 @@ ODQuadrants;
                 // Theta in wave vector domain
                 float Theta_complete = 0.0f;
 
-                if (k != 0.0f)
+                if (k > kMin)
                 {
                     // Theta in wave frequency domain
                     const float Theta = energy_pm_wave_frequency(omega, U10);
@@ -148,7 +150,9 @@ ODQuadrants;
         const float dkx = MATH_2_MUL_PIf / currentSize.x;
         const float dky = MATH_2_MUL_PIf / currentSize.y;
 
-        const float kMin = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
+        const float kMinX = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
+        const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.y ) / lastSize.y );
+        const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
 
         const int32_t offset = l * numberOfLodElements;
 
@@ -177,7 +181,7 @@ ODQuadrants;
                 // Theta in wave vector domain
                 float Theta_complete = 0.0f;
 
-                if (k != 0.0f)
+                if (k > kMin)
                 {
                     // Theta in wave frequency domain
                     const float Theta = energy_jonswap_wave_frequency(omega, U10, fetch);
@@ -238,7 +242,9 @@ ODQuadrants;
         const float dkx = MATH_2_MUL_PIf / currentSize.x;
         const float dky = MATH_2_MUL_PIf / currentSize.y;
 
-        const float kMin = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
+        const float kMinX = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
+        const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.y ) / lastSize.y );
+        const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
 
         const int32_t offset = l * numberOfLodElements;
 
@@ -267,7 +273,7 @@ ODQuadrants;
                 // Theta in wave vector domain
                 float Theta_complete = 0.0f;
 
-                if (k != 0.0f)
+                if (k > kMin)
                 {
                     // Theta in wave frequency domain
                     const float Theta = energy_donelan_wave_frequency(omega, U10, fetch);
