@@ -318,6 +318,10 @@ ODQuadrants;
 
     const float k_p = peak_energy_wave_number_unified(U10, fetch);
 
+    float varianceX  = 0.0;
+    float varianceY  = 0.0;
+    float varianceXY = 0.0;
+
     for ( int32_t l = 0; l < numberOfLods; l++ )
     {
         const FVector2 lastSize
@@ -365,18 +369,38 @@ ODQuadrants;
                     Theta_complete = Theta_wavevector * directionalSpread;
                 }
 
+                varianceX  += (kx * kx) * (dkx * dky) * Theta_complete;
+                varianceY  += (ky * ky) * (dkx * dky) * Theta_complete;
+                varianceXY += (kx * kx + ky * ky) * (dkx * dky) * Theta_complete;
+
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
 
                 baseSpectrum[index] = Theta_complete;
                 H0[index][0] = MATH_1_DIV_SQRT_2f * /*xi_r **/ amplitude * 0.5f;
                 H0[index][1] = MATH_1_DIV_SQRT_2f * /*xi_i **/ amplitude * 0.5f;
 
-                printf("%+f %+fi ", H0[index][0], H0[index][1]);
+                //printf("%+f %+fi ", H0[index][0], H0[index][1]);
             }
 
-            printf("\n");
+            //printf("\n");
         }
     }
+
+    float mss = 0.0f;
+
+    for ( float k = 0.001f; k < 1000.0f; k = k * 1.001f )
+    {
+        const float kSquare = k * k;
+        const float dk = (k * 1.001f) - k;
+
+        // eq A3
+        const float sk = energy_unified_wave_number(k, U10, fetch);
+
+        // eq A6
+        mss += kSquare * sk * dk;
+    }
+
+    printf("mssx: %f mssy: %f mss: %f mss: %f\n", varianceX, varianceY, varianceXY, mss);
 }
 
 /*
@@ -846,7 +870,7 @@ static NPTimer * timer = nil;
                     = { H0expMinusOmega[0] + gradientH0expOmega[0],
                         H0expMinusOmega[1] + gradientH0expOmega[1] };
 
-                printf("%+f %+fi ", geometryhTilde[0], geometryhTilde[1]);
+                //printf("%+f %+fi ", geometryhTilde[0], geometryhTilde[1]);
 
 
                 //if ( indexForK >= geometryStartIndex && indexForK <= geometryEndIndex )
@@ -957,7 +981,7 @@ static NPTimer * timer = nil;
                 }
             }
 
-            printf("\n");
+            //printf("\n");
         }
     }
 
