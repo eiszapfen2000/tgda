@@ -106,11 +106,11 @@ ODQuadrants;
                         = directional_spreading_mitsuyasu_hasselmann(omega_p, omega, 0.0f, atan2f(ky, kx));
 
                     Theta_complete = Theta_wavevector * directionalSpread;
-                }
 
-                mssX  += (kx * kx) * (dkx * dky) * Theta_complete;
-                mssY  += (ky * ky) * (dkx * dky) * Theta_complete;
-                mssXY += (kx * kx + ky * ky) * (dkx * dky) * Theta_complete;
+                    mssX  += (kx * kx) * (dkx * dky) * Theta_complete;
+                    mssY  += (ky * ky) * (dkx * dky) * Theta_complete;
+                    mssXY += (kx * kx + ky * ky) * (dkx * dky) * Theta_complete;
+                }
 
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
 
@@ -118,12 +118,57 @@ ODQuadrants;
                 H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
                 H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
 
-                printf("%+f %+fi ", H0[index][0], H0[index][1]);
+                //printf("%+f %+fi ", H0[index][0], H0[index][1]);
             }
 
-            printf("\n");
+            //printf("\n");
         }
     }
+
+    float mss = 0.0f;
+
+    /*
+    for ( float k = 0.001f; k < 1000.0f; k = k * 1.001f )
+    {
+        // deep water dispersion relation
+        const float omega = sqrtf(k * EARTH_ACCELERATIONf);
+
+        const float kSquare = k * k;
+        const float dk = (k * 1.001f) - k;
+
+        // eq A3
+        const float Theta = energy_pm_wave_frequency(omega, U10);
+        const float sk = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
+
+        // eq A6
+        mss += kSquare * sk * dk;
+    }
+
+    printf("PM mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+
+    mss = 0.0f;
+    */
+
+    for ( float omega = 0.001f; omega < 100.0f; omega = omega * 1.001f )
+    {
+        const float nextOmega = omega * 1.001f;
+        // deep water dispersion relation
+        const float k = (omega * omega) / EARTH_ACCELERATIONf;
+        const float nextk = (nextOmega * nextOmega) / EARTH_ACCELERATIONf;
+
+        const float kSquare = k * k;
+        const float dk = nextk - k;
+
+        // eq A3
+        const float Theta = energy_pm_wave_frequency(omega, U10);
+        const float sk = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
+
+        // eq A6
+        mss += kSquare * sk * dk;
+    }
+
+
+    printf("PM mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
 }
 
 - (void) generateJONSWAPSpectrum
@@ -206,11 +251,11 @@ ODQuadrants;
                         = directional_spreading_mitsuyasu_hasselmann(omega_p, omega, 0.0f, atan2f(ky, kx));
 
                     Theta_complete = Theta_wavevector * directionalSpread;
-                }
 
-                mssX  += (kx * kx) * (dkx * dky) * Theta_complete;
-                mssY  += (ky * ky) * (dkx * dky) * Theta_complete;
-                mssXY += (kx * kx + ky * ky) * (dkx * dky) * Theta_complete;
+                    mssX  += (kx * kx) * (dkx * dky) * Theta_complete;
+                    mssY  += (ky * ky) * (dkx * dky) * Theta_complete;
+                    mssXY += (kx * kx + ky * ky) * (dkx * dky) * Theta_complete;
+                }
 
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
 
@@ -218,12 +263,57 @@ ODQuadrants;
                 H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
                 H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
 
-                printf("%+f %+fi ", H0[index][0], H0[index][1]);
+                //printf("%+f %+fi ", H0[index][0], H0[index][1]);
             }
 
-            printf("\n");
+            //printf("\n");
         }
     }
+
+    float mss = 0.0f;
+
+    /*
+    for ( float k = 0.001f; k < 1000.0f; k = k * 1.001f )
+    {
+        // deep water dispersion relation
+        const float omega = sqrtf(k * EARTH_ACCELERATIONf);
+
+        const float kSquare = k * k;
+        const float dk = (k * 1.001f) - k;
+
+        // eq A3
+        const float Theta = energy_jonswap_wave_frequency(omega, U10, fetch);
+        const float sk = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
+
+        // eq A6
+        mss += kSquare * sk * dk;
+    }
+
+    printf("J mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+
+    mss = 0.0f;
+    */
+
+    for ( float omega = 0.001f; omega < 100.0f; omega = omega * 1.001f )
+    {
+        const float nextOmega = omega * 1.001f;
+        // deep water dispersion relation
+        const float k = (omega * omega) / EARTH_ACCELERATIONf;
+        const float nextk = (nextOmega * nextOmega) / EARTH_ACCELERATIONf;
+
+        const float kSquare = k * k;
+        const float dk = nextk - k;
+
+        // eq A3
+        const float Theta = energy_jonswap_wave_frequency(omega, U10, fetch);
+        const float sk = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
+
+        // eq A6
+        mss += kSquare * sk * dk;
+    }
+
+
+    printf("J mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
 }
 
 - (void) generateDonelanSpectrum
@@ -306,11 +396,11 @@ ODQuadrants;
                         = directional_spreading_donelan(omega_p, omega, 0.0f, atan2f(ky, kx));
 
                     Theta_complete = Theta_wavevector * directionalSpread;
-                }
 
-                mssX  += (kx * kx) * (dkx * dky) * Theta_complete;
-                mssY  += (ky * ky) * (dkx * dky) * Theta_complete;
-                mssXY += (kx * kx + ky * ky) * (dkx * dky) * Theta_complete;
+                    mssX  += (kx * kx) * (dkx * dky) * Theta_complete;
+                    mssY  += (ky * ky) * (dkx * dky) * Theta_complete;
+                    mssXY += (kx * kx + ky * ky) * (dkx * dky) * Theta_complete;
+                }
 
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
 
@@ -323,10 +413,13 @@ ODQuadrants;
 
             //printf("\n");
         }
+
+        //printf("\n");
     }
 
     float mss = 0.0f;
 
+    /*
     for ( float k = 0.001f; k < 1000.0f; k = k * 1.001f )
     {
         // deep water dispersion relation
@@ -343,9 +436,10 @@ ODQuadrants;
         mss += kSquare * sk * dk;
     }
 
-    printf("mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+    printf("D mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
 
     mss = 0.0f;
+    */
 
     for ( float omega = 0.001f; omega < 100.0f; omega = omega * 1.001f )
     {
@@ -366,7 +460,7 @@ ODQuadrants;
     }
 
 
-    printf("mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+    printf("D mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
 }
 
 - (void) generateUnifiedSpectrum
@@ -446,11 +540,11 @@ ODQuadrants;
                         = directional_spreading_unified(U10, k_p, k, 0.0f, atan2f(ky, kx));
 
                     Theta_complete = Theta_wavevector * directionalSpread;
-                }
 
-                mssX  += (kx * kx) * (dkx * dky) * Theta_complete;
-                mssY  += (ky * ky) * (dkx * dky) * Theta_complete;
-                mssXY += (kx * kx + ky * ky) * (dkx * dky) * Theta_complete;
+                    mssX  += (kx * kx) * (dkx * dky) * Theta_complete;
+                    mssY  += (ky * ky) * (dkx * dky) * Theta_complete;
+                    mssXY += (kx * kx + ky * ky) * (dkx * dky) * Theta_complete;
+                }
 
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
 
@@ -481,7 +575,7 @@ ODQuadrants;
         mss += kSquare * sk * dk;
     }
 
-    printf("mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+    printf("U mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
 }
 
 /*
