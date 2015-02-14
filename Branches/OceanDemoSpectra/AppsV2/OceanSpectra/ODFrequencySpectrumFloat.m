@@ -43,10 +43,6 @@ ODQuadrants;
 
     const float U10   = settings.U10;
 
-    const FVector2 maxSize = fv2_v_from_v2(&currentGeometry.sizes[0]);
-
-    const float A = currentGeneratorSettings.spectrumScale / (maxSize.x * maxSize.y);
-
     const float n = -(fresolution.x / 2.0f);
     const float m =  (fresolution.y / 2.0f);
 
@@ -136,10 +132,6 @@ ODQuadrants;
 
     const float U10   = settings.U10;
     const float fetch = settings.fetch;
-
-    const FVector2 maxSize = fv2_v_from_v2(&currentGeometry.sizes[0]);
-
-    const float A = currentGeneratorSettings.spectrumScale / (maxSize.x * maxSize.y);
 
     const float n = -(fresolution.x / 2.0f);
     const float m =  (fresolution.y / 2.0f);
@@ -231,10 +223,6 @@ ODQuadrants;
     const float U10   = settings.U10;
     const float fetch = settings.fetch;
 
-    const FVector2 maxSize = fv2_v_from_v2(&currentGeometry.sizes[0]);
-
-    const float A = currentGeneratorSettings.spectrumScale / (maxSize.x * maxSize.y);
-
     const float n = -(fresolution.x / 2.0f);
     const float m =  (fresolution.y / 2.0f);
 
@@ -324,10 +312,6 @@ ODQuadrants;
 
     const float U10   = settings.U10;
     const float fetch = settings.fetch;
-
-    const FVector2 maxSize = fv2_v_from_v2(&currentGeometry.sizes[0]);
-
-    const float A = currentGeneratorSettings.spectrumScale / (maxSize.x * maxSize.y);
 
     const float n = -(fresolution.x / 2.0f);
     const float m =  (fresolution.y / 2.0f);
