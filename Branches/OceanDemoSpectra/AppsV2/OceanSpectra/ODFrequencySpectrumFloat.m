@@ -85,7 +85,7 @@ ODQuadrants;
                 const float omega = sqrtf(k * EARTH_ACCELERATIONf);
 
                 // Theta in wave vector domain
-                float Theta_wavevector = 0.0f;
+                float Theta_complete = 0.0f;
 
                 if (k != 0.0f)
                 {
@@ -94,13 +94,13 @@ ODQuadrants;
                     // convert Theta to wave number domain
                     const float Theta_wavenumber = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
                     // convert Theta to wave vector domain
-                    Theta_wavevector = Theta_wavenumber / k;
+                    const float Theta_wavevector = Theta_wavenumber / k;
+
+                    const float directionalSpread
+                        = directional_spreading_mitsuyasu_hasselmann(omega_p, omega, 0.0f, atan2f(ky, kx));
+
+                    Theta_complete = Theta_wavevector * directionalSpread;
                 }
-
-                const float directionalSpread
-                    = directional_spreading_mitsuyasu_hasselmann(omega_p, omega, 0.0f, atan2f(ky, kx));
-
-                const float Theta_complete = Theta_wavevector * directionalSpread;
 
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
 
@@ -175,7 +175,7 @@ ODQuadrants;
                 const float omega = sqrtf(k * EARTH_ACCELERATIONf);
 
                 // Theta in wave vector domain
-                float Theta_wavevector = 0.0f;
+                float Theta_complete = 0.0f;
 
                 if (k != 0.0f)
                 {
@@ -184,13 +184,13 @@ ODQuadrants;
                     // convert Theta to wave number domain
                     const float Theta_wavenumber = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
                     // convert Theta to wave vector domain
-                    Theta_wavevector = Theta_wavenumber / k;
+                    const float Theta_wavevector = Theta_wavenumber / k;
+
+                    const float directionalSpread
+                        = directional_spreading_mitsuyasu_hasselmann(omega_p, omega, 0.0f, atan2f(ky, kx));
+
+                    Theta_complete = Theta_wavevector * directionalSpread;
                 }
-
-                const float directionalSpread
-                    = directional_spreading_mitsuyasu_hasselmann(omega_p, omega, 0.0f, atan2f(ky, kx));
-
-                const float Theta_complete = Theta_wavevector * directionalSpread;
 
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
 
@@ -265,7 +265,7 @@ ODQuadrants;
                 const float omega = sqrtf(k * EARTH_ACCELERATIONf);
 
                 // Theta in wave vector domain
-                float Theta_wavevector = 0.0f;
+                float Theta_complete = 0.0f;
 
                 if (k != 0.0f)
                 {
@@ -274,13 +274,13 @@ ODQuadrants;
                     // convert Theta from wave frequency domain to wave number domain
                     const float Theta_wavenumber = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
                     // convert Theta from wave number domain to wave vector domain
-                    Theta_wavevector = Theta_wavenumber / k;
+                    const float Theta_wavevector = Theta_wavenumber / k;
+
+                    const float directionalSpread
+                        = directional_spreading_donelan(omega_p, omega, 0.0f, atan2f(ky, kx));
+
+                    Theta_complete = Theta_wavevector * directionalSpread;
                 }
-
-                const float directionalSpread
-                    = directional_spreading_donelan(omega_p, omega, 0.0f, atan2f(ky, kx));
-
-                const float Theta_complete = Theta_wavevector * directionalSpread;
 
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
 
