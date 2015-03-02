@@ -27,83 +27,6 @@
 
 #define MATH_g 9.81
 
-static double energy_pm_omega_p(double U10)
-{
-    const double g = MATH_g;
-    const double omega_p = (0.855 * g / U10);
-
-    return omega_p;
-}
-
-static double energy_pm_wave_frequency(double omega, double U10)
-{
-    if (omega == 0.0)
-    {
-        return 0.0;
-    }
-
-    const double g = MATH_g;
-    const double alpha = 0.0081;
-    const double omega_p = (0.855 * g / U10);
-
-    const double exponent = (-5.0/4.0) * pow(omega_p / omega, 4.0);
-    const double Theta = ((alpha*g*g) / pow(omega, 5.0)) * exp(exponent);
-
-    return Theta;
-}
-
-static double energy_pm_wave_number(double k, double U10)
-{
-    if (k == 0.0)
-    {
-        return 0.0;
-    }
-
-    const double g = MATH_g;
-    const double omega = sqrt(k * g);
-    const double Theta = energy_pm_wave_frequency(omega, U10);
-    const double Theta_k = Theta * 0.5 * (g / omega);
-
-    return Theta_k;
-}
-
-static double energy_pm_wave_vector(Vector2 k_wv, double U10)
-{
-    const double kSquareLength = k_wv.x * k_wv.x + k_wv.y * k_wv.y;
-
-    if (kSquareLength == 0.0)
-    {
-        return 0.0;
-    }
-
-    const double k = sqrt(kSquareLength);
-    const double Theta_k = energy_pm_wave_number(k, U10);
-    const double Theta_k_wv = Theta_k / k;
-
-    return Theta_k_wv;    
-}
-
-static double directional_mitsuyasu(double omega_p, double omega, double theta_p, double theta)
-{
-    const double s_p = (omega >= omega_p) ? 9.77 : 6.97;
-    const double omega_div_omega_p = (omega >= omega_p) ? pow(omega / omega_p, -2.5) : pow(omega / omega_p, 5.0);
-    const double s = s_p * omega_div_omega_p;
-
-    //printf("%f %f\n",s, fabs(cos((theta - theta_p) * 0.5)));
-
-    const double numerator = tgamma(s + 1.0);
-    const double numeratorSquare = numerator * numerator;
-    const double denominator = tgamma(2.0 * s + 1.0);
-
-    const double term_one = pow(2.0, 2.0 * s - 1.0) / M_PI;
-    const double term_two = numeratorSquare / denominator;
-    const double term_three = pow(fabs(cos((theta - theta_p) * 0.5)), 2.0 * s);
-
-    //printf("1:%f 2:%f 3:%f\n", term_one, term_two, term_three);
-
-    return term_one * term_two * term_three;
-}
-
 static void print_complex_spectrum(int32_t resolution, fftwf_complex * spectrum)
 {
     printf("Complex spectrum\n");
@@ -144,12 +67,17 @@ int main (int argc, char **argv)
     generatorSettings.spectrumScale = 1.0;
 
     OdSpectrumGeometry geometry = geometry_zero();
-    geometry_init_with_resolutions_and_lods(&geometry, 512, 512, 2);
+    geometry_init_with_resolutions_and_lods(&geometry, 4, 4, 2);
     // first LOD is the largest one, set it to our desired size
     geometry_set_size(&geometry, 0, 83.0);
     geometry_set_size(&geometry, 1, 7.0);
 
-    OdFrequencySpectrumFloat complexSpectrum
+    OdFrequencySpectrumFloat complexSpectrumPM;
+    OdFrequencySpectrumFloat complexSpectrumJONSWAP;
+    OdFrequencySpectrumFloat complexSpectrumDonelan;
+    OdFrequencySpectrumFloat complexSpectrumUnified;
+
+    complexSpectrumPM
         = [ s generateFloatSpectrumWithGeometry:geometry
                                       generator:generatorSettings
                                          atTime:1.0
@@ -159,7 +87,7 @@ int main (int argc, char **argv)
     generatorSettings.jonswap.U10 = 10.0;
     generatorSettings.jonswap.fetch = 100000.0;
 
-    complexSpectrum
+    complexSpectrumJONSWAP
         = [ s generateFloatSpectrumWithGeometry:geometry
                                       generator:generatorSettings
                                          atTime:1.0
@@ -169,7 +97,7 @@ int main (int argc, char **argv)
     generatorSettings.donelan.U10 = 10.0;
     generatorSettings.donelan.fetch = 100000.0;
 
-    complexSpectrum
+    complexSpectrumDonelan
         = [ s generateFloatSpectrumWithGeometry:geometry
                                       generator:generatorSettings
                                          atTime:1.0
@@ -179,13 +107,16 @@ int main (int argc, char **argv)
     generatorSettings.unified.U10 = 10.0;
     generatorSettings.unified.fetch = 100000.0;
 
-    complexSpectrum
+    complexSpectrumUnified
         = [ s generateFloatSpectrumWithGeometry:geometry
                                       generator:generatorSettings
                                          atTime:1.0
                            generateBaseGeometry:YES ];
 
-//    print_complex_spectrum(4, complexSpectrum.height);
+    print_complex_spectrum(4, complexSpectrumPM.height);
+    print_complex_spectrum(4, complexSpectrumJONSWAP.height);
+    print_complex_spectrum(4, complexSpectrumDonelan.height);
+    print_complex_spectrum(4, complexSpectrumPM.height);
 
     DESTROY(s);
     DESTROY(pool);
