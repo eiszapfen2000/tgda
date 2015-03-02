@@ -312,8 +312,7 @@ ODQuadrants;
         mss += kSquare * sk * dk;
     }
 
-
-    printf("J mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+    printf("J  mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
 }
 
 - (void) generateDonelanSpectrum
@@ -460,7 +459,7 @@ ODQuadrants;
     }
 
 
-    printf("D mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+    printf("D  mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
 }
 
 - (void) generateUnifiedSpectrum
@@ -503,7 +502,7 @@ ODQuadrants;
         const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.y ) / lastSize.y );
         const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
 
-        printf("%f %f %f\n", kMinX, kMinY, kMin);
+        //printf("%f %f %f\n", kMinX, kMinY, kMin);
 
         const int32_t offset = l * numberOfLodElements;
 
@@ -558,7 +557,7 @@ ODQuadrants;
             //printf("\n");
         }
 
-        printf("\n");
+        //printf("\n");
     }
 
     float mss = 0.0f;
@@ -575,7 +574,7 @@ ODQuadrants;
         mss += kSquare * sk * dk;
     }
 
-    printf("U mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+    printf("U  mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
 }
 
 /*

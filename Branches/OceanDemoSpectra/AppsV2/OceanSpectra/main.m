@@ -137,10 +137,10 @@ int main (int argc, char **argv)
     ODFrequencySpectrumFloat * s = [[ ODFrequencySpectrumFloat alloc ] init ];
 
     OdGeneratorSettings generatorSettings;
-    generatorSettings.generatorType = Donelan;
-    generatorSettings.donelan.U10 = 10.0;
-    generatorSettings.donelan.fetch = 100000.0;
+
     generatorSettings.options = OdGeneratorOptionsHeights;
+    generatorSettings.generatorType = PiersonMoskowitz;
+    generatorSettings.piersonmoskowitz.U10 = 10.0;
     generatorSettings.spectrumScale = 1.0;
 
     OdSpectrumGeometry geometry = geometry_zero();
@@ -150,6 +150,36 @@ int main (int argc, char **argv)
     geometry_set_size(&geometry, 1, 7.0);
 
     OdFrequencySpectrumFloat complexSpectrum
+        = [ s generateFloatSpectrumWithGeometry:geometry
+                                      generator:generatorSettings
+                                         atTime:1.0
+                           generateBaseGeometry:YES ];
+
+    generatorSettings.generatorType = JONSWAP;
+    generatorSettings.jonswap.U10 = 10.0;
+    generatorSettings.jonswap.fetch = 100000.0;
+
+    complexSpectrum
+        = [ s generateFloatSpectrumWithGeometry:geometry
+                                      generator:generatorSettings
+                                         atTime:1.0
+                           generateBaseGeometry:YES ];
+
+    generatorSettings.generatorType = Donelan;
+    generatorSettings.donelan.U10 = 10.0;
+    generatorSettings.donelan.fetch = 100000.0;
+
+    complexSpectrum
+        = [ s generateFloatSpectrumWithGeometry:geometry
+                                      generator:generatorSettings
+                                         atTime:1.0
+                           generateBaseGeometry:YES ];
+
+    generatorSettings.generatorType = Unified;
+    generatorSettings.unified.U10 = 10.0;
+    generatorSettings.unified.fetch = 100000.0;
+
+    complexSpectrum
         = [ s generateFloatSpectrumWithGeometry:geometry
                                       generator:generatorSettings
                                          atTime:1.0
