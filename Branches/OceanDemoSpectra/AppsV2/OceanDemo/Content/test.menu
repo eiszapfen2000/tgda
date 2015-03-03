@@ -265,12 +265,28 @@
             TargetProperty = "size";
         };
 
+        PSliderFetch =
+        {
+            Type = "ODSliderItem";
+            Label = "Fetch";
+            Alignment = "TopRight";
+            Position = ("20", "465" );
+            Size = ( "50", "1" );
+            TextSize = "16";
+            MinimumValue = "5000.0";
+            MaximumValue = "1000000.0";
+            LineSize = ("85", "3");
+            HeadSize = ("3", "21");
+            TargetObject = "Ocean";
+            TargetProperty = "fetch";
+        };
+
         PSliderSpectrumScale =
         {
             Type = "ODSliderItem";
             Label = "Dampening Factor";
             Alignment = "TopRight";
-            Position = ("20", "465" );
+            Position = ("20", "495" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
