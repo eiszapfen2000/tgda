@@ -99,7 +99,8 @@ static const NSUInteger defaultSpectrumType = 1;
 static const NSUInteger defaultOptions = OdGeneratorOptionsHeights | OdGeneratorOptionsGradient | OdGeneratorOptionsDisplacement;
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
-static const double defaultSize =237.0;
+static const double defaultSize = 237.0;
+static const double defaultFetch = 100000.0;
 static const double defaultSpectrumScale = PHILLIPS_CONSTANT;
 static const int32_t resolutions[6] = {8, 16, 32, 64, 128, 256};
 static const NSUInteger defaultGeometryResolutionIndex = 0;
@@ -287,7 +288,7 @@ static size_t index_for_resolution(int32_t resolution)
                     {
                         generatorSettings.generatorType = JONSWAP;
                         generatorSettings.jonswap.U10 = generatorWindSpeed;
-                        generatorSettings.jonswap.fetch = 50000.0;
+                        generatorSettings.jonswap.fetch = generatorFetch;
                         break;
                     }
 
@@ -295,7 +296,7 @@ static size_t index_for_resolution(int32_t resolution)
                     {
                         generatorSettings.generatorType = Donelan;
                         generatorSettings.donelan.U10 = generatorWindSpeed;
-                        generatorSettings.donelan.fetch = 500000.0;
+                        generatorSettings.donelan.fetch = generatorFetch;
                         break;
                     }
 
@@ -303,7 +304,7 @@ static size_t index_for_resolution(int32_t resolution)
                     {
                         generatorSettings.generatorType = Unified;
                         generatorSettings.unified.U10 = generatorWindSpeed;
-                        generatorSettings.unified.fetch = 50000.0;
+                        generatorSettings.unified.fetch = generatorFetch;
 
                         break;
                     }
@@ -758,6 +759,9 @@ static NSUInteger od_variance_size(const void * item)
     lastSize = DBL_MAX;
     size = generatorSize = defaultSize;
 
+    lastFetch = DBL_MAX;
+    fetch = generatorFetch = defaultFetch;
+
     lastSpectrumScale = DBL_MAX;
     spectrumScale = generatorSpectrumScale = defaultSpectrumScale;
 
@@ -1081,6 +1085,7 @@ static NSUInteger od_variance_size(const void * item)
          || options != lastOptions
          || windSpeed != lastWindSpeed
          || size != lastSize
+         || fetch != lastFetch
          || spectrumScale != lastSpectrumScale
          || geometryResolutionIndex != lastGeometryResolutionIndex
          || gradientResolutionIndex != lastGradientResolutionIndex )
@@ -1090,6 +1095,7 @@ static NSUInteger od_variance_size(const void * item)
         lastOptions = options;
         lastWindSpeed = windSpeed;
         lastSize = size;
+        lastFetch = fetch;
         lastSpectrumScale = spectrumScale;
         lastGeometryResolutionIndex = geometryResolutionIndex;
         lastGradientResolutionIndex = gradientResolutionIndex;
@@ -1104,6 +1110,7 @@ static NSUInteger od_variance_size(const void * item)
         generatorOptions = options;
         generatorWindSpeed = windSpeed;
         generatorSize = size;
+        generatorFetch = fetch;
         generatorSpectrumScale = spectrumScale;
         generatorGeometryResolutionIndex = geometryResolutionIndex;
         generatorGradientResolutionIndex = gradientResolutionIndex;
