@@ -281,22 +281,6 @@
             TargetProperty = "spectrumScale";
         };
 
-        PSliderDampening =
-        {
-            Type = "ODSliderItem";
-            Label = "Dampening Factor";
-            Alignment = "TopRight";
-            Position = ("20", "495" );
-            Size = ( "50", "1" );
-            TextSize = "16";
-            MinimumValue = "0.0";
-            MaximumValue = "0.05";
-            LineSize = ("85", "3");
-            HeadSize = ("3", "21");
-            TargetObject = "Ocean";
-            TargetProperty = "dampening";
-        };
-
         PLods =
         {
             Type = "ODStepItem";
