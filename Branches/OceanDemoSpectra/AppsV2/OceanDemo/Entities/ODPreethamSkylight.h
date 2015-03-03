@@ -23,6 +23,14 @@
     double thetaSun;
     double lastPhiSun;
     double phiSun;
+
+    double lastSunDiskA;
+    double lastSunDiskB;
+    double lastSunDiskC;
+    double sunDiskA;
+    double sunDiskB;
+    double sunDiskC;
+
     Vector3 directionToSun;
     Vector3 sunColor;
 

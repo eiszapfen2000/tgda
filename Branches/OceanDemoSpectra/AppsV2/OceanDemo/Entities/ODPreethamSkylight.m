@@ -294,6 +294,7 @@ static Vector3 sun_color(double turbidity, double thetaSun)
                 addInputActionWithName:@"SunAzimuthDecrease" inputEvent:NpKeyboardKeypad6 ];
 
     lastTurbidity = lastThetaSun = lastPhiSun = DBL_MAX;
+    lastSunDiskA = lastSunDiskB = lastSunDiskC = DBL_MAX;
 
     // turbidity must be in the range 2 - 6
     turbidity = 2.0;
@@ -303,6 +304,10 @@ static Vector3 sun_color(double turbidity, double thetaSun)
 
     // phi range 0 ... 2*PI
     phiSun = MATH_PI_DIV_2;
+
+    sunDiskA = 200.0;
+    sunDiskB = 1.0;
+    sunDiskC = 150.0;
 
     directionToSun = v3_zero();
     sunColor = v3_zero();
@@ -505,7 +510,7 @@ static Vector3 sun_color(double turbidity, double thetaSun)
 
         //NSLog(@"%f %f %f", sunCosHalfApparentAngle, sunCosHalfApparentAngleInRange, sunHalfApparentAngle);
 
-        Vector3 abc = {300.0, 1.0, 150.0};
+        Vector3 abc = {sunDiskA, sunDiskB, sunDiskC};
 
         //NSLog(@"%f %f %f", zenithColor.x, zenithColor.y, zenithColor.z);
         //NSLog(@"%f %f %f", sunColor.x, sunColor.y, sunColor.z);
