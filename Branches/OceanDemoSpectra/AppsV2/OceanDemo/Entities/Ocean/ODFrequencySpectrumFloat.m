@@ -1,7 +1,7 @@
 #import "Foundation/NSException.h"
 #import "Core/Timer/NPTimer.h"
 #import "ODConstants.h"
-#import "ODAmplitude.h"
+#import "ODEnergy.h"
 #import "ODFrequencySpectrumFloat.h"
 
 #define FFTW_FREE(_pointer)        do {void *_ptr=(void *)(_pointer); fftwf_free(_ptr); _pointer=NULL; } while (0)
@@ -17,13 +17,573 @@ ODQuadrants;
 @interface ODFrequencySpectrumFloat (Private)
 
 - (void) generateH0:(BOOL)force;
-- (void) generatePhillipsSpectrum;
+- (void) generatePMSpectrum;
+- (void) generateJONSWAPSpectrum;
+- (void) generateDonelanSpectrum;
 - (void) generateUnifiedSpectrum;
 
 @end
 
 @implementation ODFrequencySpectrumFloat (Private)
 
+- (void) generatePMSpectrum
+{
+    const OdPiersonMoskowitzGeneratorSettings settings
+        = currentGeneratorSettings.piersonmoskowitz;
+
+    const IVector2 resolution  = H0Resolution;
+    const FVector2 fresolution = fv2_v_from_iv2(&resolution);
+
+    const int32_t  numberOfLods = H0Lods;
+    const int32_t  numberOfLodElements = resolution.x * resolution.y;
+
+    FFTW_SAFE_FREE(baseSpectrum);
+    baseSpectrum = fftwf_alloc_real(numberOfLods * numberOfLodElements);
+
+    const float U10   = settings.U10;
+
+    const float n = -(fresolution.x / 2.0f);
+    const float m =  (fresolution.y / 2.0f);
+
+    const float omega_p = peak_energy_wave_frequency_pm(U10);
+
+    float mssX  = 0.0;
+    float mssY  = 0.0;
+    float mssXY = 0.0;
+
+    for ( int32_t l = 0; l < numberOfLods; l++ )
+    {
+        const FVector2 lastSize
+            = ( l == 0 ) ? fv2_zero() : fv2_v_from_v2(&currentGeometry.sizes[l - 1]);
+
+        const FVector2 currentSize = fv2_v_from_v2(&currentGeometry.sizes[l]);
+
+        const float dkx = MATH_2_MUL_PIf / currentSize.x;
+        const float dky = MATH_2_MUL_PIf / currentSize.y;
+
+        const float kMinX = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
+        const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.y ) / lastSize.y );
+        const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
+
+        const int32_t offset = l * numberOfLodElements;
+
+        for ( int32_t i = 0; i < resolution.y; i++ )
+        {
+            for ( int32_t j = 0; j < resolution.x; j++ )
+            {
+                const int32_t index = offset + j + resolution.x * i;
+
+                const float xi_r = (float)randomNumbers[2 * index    ];
+                const float xi_i = (float)randomNumbers[2 * index + 1];
+
+                const float di = i;
+                const float dj = j;
+
+                // wave vector
+                const float kx = (n + dj) * dkx;
+                const float ky = (m - di) * dky;
+
+                // wave number
+                const float k = sqrtf(kx*kx + ky*ky);
+
+                // deep water dispersion relation
+                const float omega = sqrtf(k * EARTH_ACCELERATIONf);
+
+                // Theta in wave vector domain
+                float Theta_complete = 0.0f;
+
+                if (k > kMin)
+                {
+                    // Theta in wave frequency domain
+                    const float Theta = energy_pm_wave_frequency(omega, U10);
+                    // convert Theta to wave number domain
+                    const float Theta_wavenumber = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
+                    // convert Theta to wave vector domain
+                    const float Theta_wavevector = Theta_wavenumber / k;
+
+                    const float directionalSpread
+                        = directional_spreading_mitsuyasu_hasselmann(omega_p, omega, 0.0f, atan2f(ky, kx));
+
+                    Theta_complete = Theta_wavevector * directionalSpread;
+
+                    mssX  += (kx * kx) * (dkx * dky) * Theta_complete;
+                    mssY  += (ky * ky) * (dkx * dky) * Theta_complete;
+                    mssXY += (kx * kx + ky * ky) * (dkx * dky) * Theta_complete;
+                }
+
+                const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
+
+                baseSpectrum[index] = Theta_complete;
+                H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
+                H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
+
+                //printf("%+f %+fi ", H0[index][0], H0[index][1]);
+            }
+
+            //printf("\n");
+        }
+    }
+
+    float mss = 0.0f;
+
+    /*
+    for ( float k = 0.001f; k < 1000.0f; k = k * 1.001f )
+    {
+        // deep water dispersion relation
+        const float omega = sqrtf(k * EARTH_ACCELERATIONf);
+
+        const float kSquare = k * k;
+        const float dk = (k * 1.001f) - k;
+
+        // eq A3
+        const float Theta = energy_pm_wave_frequency(omega, U10);
+        const float sk = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
+
+        // eq A6
+        mss += kSquare * sk * dk;
+    }
+
+    printf("PM mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+
+    mss = 0.0f;
+    */
+
+    for ( float omega = 0.001f; omega < 100.0f; omega = omega * 1.001f )
+    {
+        const float nextOmega = omega * 1.001f;
+        // deep water dispersion relation
+        const float k = (omega * omega) / EARTH_ACCELERATIONf;
+        const float nextk = (nextOmega * nextOmega) / EARTH_ACCELERATIONf;
+
+        const float kSquare = k * k;
+        const float dk = nextk - k;
+
+        // eq A3
+        const float Theta = energy_pm_wave_frequency(omega, U10);
+        const float sk = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
+
+        // eq A6
+        mss += kSquare * sk * dk;
+    }
+
+
+    printf("PM mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+}
+
+- (void) generateJONSWAPSpectrum
+{
+    const OdJONSWAPGeneratorSettings settings
+        = currentGeneratorSettings.jonswap;
+
+    const IVector2 resolution  = H0Resolution;
+    const FVector2 fresolution = fv2_v_from_iv2(&resolution);
+
+    const int32_t  numberOfLods = H0Lods;
+    const int32_t  numberOfLodElements = resolution.x * resolution.y;
+
+    FFTW_SAFE_FREE(baseSpectrum);
+    baseSpectrum = fftwf_alloc_real(numberOfLods * numberOfLodElements);
+
+    const float U10   = settings.U10;
+    const float fetch = settings.fetch;
+
+    const float n = -(fresolution.x / 2.0f);
+    const float m =  (fresolution.y / 2.0f);
+
+    const float omega_p = peak_energy_wave_frequency_jonswap(U10, fetch);
+
+    float mssX  = 0.0;
+    float mssY  = 0.0;
+    float mssXY = 0.0;
+
+    for ( int32_t l = 0; l < numberOfLods; l++ )
+    {
+        const FVector2 lastSize
+            = ( l == 0 ) ? fv2_zero() : fv2_v_from_v2(&currentGeometry.sizes[l - 1]);
+
+        const FVector2 currentSize = fv2_v_from_v2(&currentGeometry.sizes[l]);
+
+        const float dkx = MATH_2_MUL_PIf / currentSize.x;
+        const float dky = MATH_2_MUL_PIf / currentSize.y;
+
+        const float kMinX = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
+        const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.y ) / lastSize.y );
+        const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
+
+        const int32_t offset = l * numberOfLodElements;
+
+        for ( int32_t i = 0; i < resolution.y; i++ )
+        {
+            for ( int32_t j = 0; j < resolution.x; j++ )
+            {
+                const int32_t index = offset + j + resolution.x * i;
+
+                const float xi_r = (float)randomNumbers[2 * index    ];
+                const float xi_i = (float)randomNumbers[2 * index + 1];
+
+                const float di = i;
+                const float dj = j;
+
+                // wave vector
+                const float kx = (n + dj) * dkx;
+                const float ky = (m - di) * dky;
+
+                // wave number
+                const float k = sqrtf(kx*kx + ky*ky);
+
+                // deep water dispersion relation
+                const float omega = sqrtf(k * EARTH_ACCELERATIONf);
+
+                // Theta in wave vector domain
+                float Theta_complete = 0.0f;
+
+                if (k > kMin)
+                {
+                    // Theta in wave frequency domain
+                    const float Theta = energy_jonswap_wave_frequency(omega, U10, fetch);
+                    // convert Theta to wave number domain
+                    const float Theta_wavenumber = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
+                    // convert Theta to wave vector domain
+                    const float Theta_wavevector = Theta_wavenumber / k;
+
+                    const float directionalSpread
+                        = directional_spreading_mitsuyasu_hasselmann(omega_p, omega, 0.0f, atan2f(ky, kx));
+
+                    Theta_complete = Theta_wavevector * directionalSpread;
+
+                    mssX  += (kx * kx) * (dkx * dky) * Theta_complete;
+                    mssY  += (ky * ky) * (dkx * dky) * Theta_complete;
+                    mssXY += (kx * kx + ky * ky) * (dkx * dky) * Theta_complete;
+                }
+
+                const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
+
+                baseSpectrum[index] = Theta_complete;
+                H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
+                H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
+
+                //printf("%+f %+fi ", H0[index][0], H0[index][1]);
+            }
+
+            //printf("\n");
+        }
+    }
+
+    float mss = 0.0f;
+
+    /*
+    for ( float k = 0.001f; k < 1000.0f; k = k * 1.001f )
+    {
+        // deep water dispersion relation
+        const float omega = sqrtf(k * EARTH_ACCELERATIONf);
+
+        const float kSquare = k * k;
+        const float dk = (k * 1.001f) - k;
+
+        // eq A3
+        const float Theta = energy_jonswap_wave_frequency(omega, U10, fetch);
+        const float sk = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
+
+        // eq A6
+        mss += kSquare * sk * dk;
+    }
+
+    printf("J mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+
+    mss = 0.0f;
+    */
+
+    for ( float omega = 0.001f; omega < 100.0f; omega = omega * 1.001f )
+    {
+        const float nextOmega = omega * 1.001f;
+        // deep water dispersion relation
+        const float k = (omega * omega) / EARTH_ACCELERATIONf;
+        const float nextk = (nextOmega * nextOmega) / EARTH_ACCELERATIONf;
+
+        const float kSquare = k * k;
+        const float dk = nextk - k;
+
+        // eq A3
+        const float Theta = energy_jonswap_wave_frequency(omega, U10, fetch);
+        const float sk = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
+
+        // eq A6
+        mss += kSquare * sk * dk;
+    }
+
+    printf("J  mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+}
+
+- (void) generateDonelanSpectrum
+{
+    const OdDonelanGeneratorSettings settings
+        = currentGeneratorSettings.donelan;
+
+    const IVector2 resolution  = H0Resolution;
+    const FVector2 fresolution = fv2_v_from_iv2(&resolution);
+
+    const int32_t  numberOfLods = H0Lods;
+    const int32_t  numberOfLodElements = resolution.x * resolution.y;
+
+    FFTW_SAFE_FREE(baseSpectrum);
+    baseSpectrum = fftwf_alloc_real(numberOfLods * numberOfLodElements);
+
+    const float U10   = settings.U10;
+    const float fetch = settings.fetch;
+
+    const float n = -(fresolution.x / 2.0f);
+    const float m =  (fresolution.y / 2.0f);
+
+    const float omega_p = peak_energy_wave_frequency_donelan(U10, fetch);
+
+    float mssX  = 0.0;
+    float mssY  = 0.0;
+    float mssXY = 0.0;
+
+    for ( int32_t l = 0; l < numberOfLods; l++ )
+    {
+        const FVector2 lastSize
+            = ( l == 0 ) ? fv2_zero() : fv2_v_from_v2(&currentGeometry.sizes[l - 1]);
+
+        const FVector2 currentSize = fv2_v_from_v2(&currentGeometry.sizes[l]);
+
+        const float dkx = MATH_2_MUL_PIf / currentSize.x;
+        const float dky = MATH_2_MUL_PIf / currentSize.y;
+
+        const float kMinX = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
+        const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.y ) / lastSize.y );
+        const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
+
+        const int32_t offset = l * numberOfLodElements;
+
+        for ( int32_t i = 0; i < resolution.y; i++ )
+        {
+            for ( int32_t j = 0; j < resolution.x; j++ )
+            {
+                const int32_t index = offset + j + resolution.x * i;
+
+                const float xi_r = (float)randomNumbers[2 * index    ];
+                const float xi_i = (float)randomNumbers[2 * index + 1];
+
+                const float di = i;
+                const float dj = j;
+
+                // wave vector
+                const float kx = (n + dj) * dkx;
+                const float ky = (m - di) * dky;
+
+                // wave number
+                const float k = sqrtf(kx*kx + ky*ky);
+
+                // deep water dispersion relation
+                const float omega = sqrtf(k * EARTH_ACCELERATIONf);
+
+                // Theta in wave vector domain
+                float Theta_complete = 0.0f;
+
+                if (k > kMin)
+                {
+                    // Theta in wave frequency domain
+                    const float Theta = energy_donelan_wave_frequency(omega, U10, fetch);
+                    // convert Theta from wave frequency domain to wave number domain
+                    const float Theta_wavenumber = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
+                    // convert Theta from wave number domain to wave vector domain
+                    const float Theta_wavevector = Theta_wavenumber / k;
+
+                    const float directionalSpread
+                        = directional_spreading_mitsuyasu_hasselmann(omega_p, omega, 0.0f, atan2f(ky, kx));
+
+                    Theta_complete = Theta_wavevector * directionalSpread;
+
+                    mssX  += (kx * kx) * (dkx * dky) * Theta_complete;
+                    mssY  += (ky * ky) * (dkx * dky) * Theta_complete;
+                    mssXY += (kx * kx + ky * ky) * (dkx * dky) * Theta_complete;
+                }
+
+                const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
+
+                baseSpectrum[index] = Theta_complete;
+                H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
+                H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
+
+                //printf("%+f %+fi ", H0[index][0], H0[index][1]);
+            }
+
+            //printf("\n");
+        }
+
+        //printf("\n");
+    }
+
+    float mss = 0.0f;
+
+    /*
+    for ( float k = 0.001f; k < 1000.0f; k = k * 1.001f )
+    {
+        // deep water dispersion relation
+        const float omega = sqrtf(k * EARTH_ACCELERATIONf);
+
+        const float kSquare = k * k;
+        const float dk = (k * 1.001f) - k;
+
+        // eq A3
+        const float Theta = energy_donelan_wave_frequency(omega, U10, fetch);
+        const float sk = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
+
+        // eq A6
+        mss += kSquare * sk * dk;
+    }
+
+    printf("D mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+
+    mss = 0.0f;
+    */
+
+    for ( float omega = 0.001f; omega < 100.0f; omega = omega * 1.001f )
+    {
+        const float nextOmega = omega * 1.001f;
+        // deep water dispersion relation
+        const float k = (omega * omega) / EARTH_ACCELERATIONf;
+        const float nextk = (nextOmega * nextOmega) / EARTH_ACCELERATIONf;
+
+        const float kSquare = k * k;
+        const float dk = nextk - k;
+
+        // eq A3
+        const float Theta = energy_donelan_wave_frequency(omega, U10, fetch);
+        const float sk = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
+
+        // eq A6
+        mss += kSquare * sk * dk;
+    }
+
+
+    printf("D  mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+}
+
+- (void) generateUnifiedSpectrum
+{
+    const OdJONSWAPGeneratorSettings settings
+        = currentGeneratorSettings.jonswap;
+
+    const IVector2 resolution  = H0Resolution;
+    const FVector2 fresolution = fv2_v_from_iv2(&resolution);
+
+    const int32_t  numberOfLods = H0Lods;
+    const int32_t  numberOfLodElements = resolution.x * resolution.y;
+
+    FFTW_SAFE_FREE(baseSpectrum);
+    baseSpectrum = fftwf_alloc_real(numberOfLods * numberOfLodElements);
+
+    const float U10   = settings.U10;
+    const float fetch = settings.fetch;
+
+    const float n = -(fresolution.x / 2.0f);
+    const float m =  (fresolution.y / 2.0f);
+
+    const float k_p = peak_energy_wave_number_unified(U10, fetch);
+
+    float mssX  = 0.0;
+    float mssY  = 0.0;
+    float mssXY = 0.0;
+
+    float mink =  FLT_MAX;
+    float maxk = -FLT_MAX;
+
+    for ( int32_t l = 0; l < numberOfLods; l++ )
+    {
+        const FVector2 lastSize
+            = ( l == 0 ) ? fv2_zero() : fv2_v_from_v2(&currentGeometry.sizes[l - 1]);
+
+        const FVector2 currentSize = fv2_v_from_v2(&currentGeometry.sizes[l]);
+
+        const float dkx = MATH_2_MUL_PIf / currentSize.x;
+        const float dky = MATH_2_MUL_PIf / currentSize.y;
+
+        const float kMinX = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
+        const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution.y ) / lastSize.y );
+        const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
+
+        //printf("%f %f %f\n", kMinX, kMinY, kMin);
+
+        const int32_t offset = l * numberOfLodElements;
+
+        for ( int32_t i = 0; i < resolution.y; i++ )
+        {
+            for ( int32_t j = 0; j < resolution.x; j++ )
+            {
+                const int32_t index = offset + j + resolution.x * i;
+
+                const float xi_r = (float)randomNumbers[2 * index    ];
+                const float xi_i = (float)randomNumbers[2 * index + 1];
+
+                const float di = i;
+                const float dj = j;
+
+                // wave vector
+                const float kx = (n + dj) * dkx;
+                const float ky = (m - di) * dky;
+
+                // wave number
+                const float k = sqrtf(kx*kx + ky*ky);
+
+                //printf("%f ", k);
+
+                // Theta in wave vector domain
+                float Theta_complete = 0.0f;
+
+                if (k > kMin)
+                {
+                    const float Theta_wavenumber = energy_unified_wave_number(k, U10, fetch);
+                    const float Theta_wavevector = Theta_wavenumber / k;
+
+                    const float directionalSpread
+                        = directional_spreading_unified(U10, k_p, k, 0.0f, atan2f(ky, kx));
+
+                    Theta_complete = Theta_wavevector * directionalSpread;
+
+                    mssX  += (kx * kx) * (dkx * dky) * Theta_complete;
+                    mssY  += (ky * ky) * (dkx * dky) * Theta_complete;
+                    mssXY += (kx * kx + ky * ky) * (dkx * dky) * Theta_complete;
+                }
+
+                const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
+
+                baseSpectrum[index] = Theta_complete;
+                H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
+                H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
+
+                mink = MIN(mink, k);
+                maxk = MAX(maxk, k);
+
+                //printf("%+f %+fi ", H0[index][0], H0[index][1]);
+            }
+
+            //printf("\n");
+        }
+
+        //printf("\n");
+    }
+
+    float mss = 0.0f;
+
+    for ( float k = 0.001f; k < 1000.0f; k = k * 1.001f )
+    {
+        const float kSquare = k * k;
+        const float dk = (k * 1.001f) - k;
+
+        // eq A3
+        const float sk = energy_unified_wave_number(k, U10, fetch);
+
+        // eq A6
+        mss += kSquare * sk * dk;
+    }
+
+    printf("Min k: %f Max k: %f\n", mink, maxk);
+    printf("U  mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+}
+
+/*
 - (void) generateUnifiedSpectrum
 {
     const OdUnifiedGeneratorSettings settings
@@ -94,7 +654,11 @@ ODQuadrants;
                 baseSpectrum[index] = s;
                 H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
                 H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
+
+                printf("%f ", s);
             }
+
+            printf("\n");
         }
     }
 
@@ -115,7 +679,9 @@ ODQuadrants;
     maxMeanSlopeVariance = mss;
     effectiveMeanSlopeVariance = varianceXY;
 }
+*/
 
+/*
 - (void) generatePhillipsSpectrum
 {
     const OdPhillipsGeneratorSettings settings
@@ -191,7 +757,11 @@ ODQuadrants;
                 baseSpectrum[index] = s;
                 H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * a;
                 H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * a;
+
+                printf("%f ", s);
             }
+
+            printf("\n");
         }
     }
 
@@ -211,144 +781,8 @@ ODQuadrants;
 
     maxMeanSlopeVariance = mss;
     effectiveMeanSlopeVariance = varianceXY;
-
-    const float deltaVariance = mss - varianceXY;
-
-    const int32_t slopeVarianceResolution = 4;
-    const float divisor = (float)(slopeVarianceResolution - 1);
-    const float AA = A;
-
-    //NSLog(@"-------------------------------");
-
-    /*
-
-    const FVector2 currentSize = fv2_v_from_v2(&currentGeometry.sizes[0]);
-
-    const float dkx = MATH_2_MUL_PIf / currentSize.x;
-    const float dky = MATH_2_MUL_PIf / currentSize.y;
-
-    for ( int32_t c = 0; c < slopeVarianceResolution; c++ )
-    {
-        for ( int32_t b = 0; b < slopeVarianceResolution; b++ )
-        {
-            for ( int32_t a = 0; a < slopeVarianceResolution; a++ )
-            {
-                const float fa = a;
-                const float fb = b;
-                const float fc = c;
-                float A = powf(a / divisor, 4.0f);
-                float C = powf(c / divisor, 4.0f);
-                float B = (2.0f * b / divisor - 1.0) * sqrt(A * C);
-
-                //NSLog(@"1 %d %d %d %f %f %f", a, b, c, A, B, C);
-
-                A = -0.5f * A;
-                B = -B;
-                C = -0.5f * C;
-
-                //NSLog(@"2 %d %d %d %f %f %f", a, b, c, A, B, C);
-
-                float lvarianceX = deltaVariance;
-                float lvarianceY = deltaVariance;
-
-                for ( int32_t i = 0; i < resolution.y; i++ )
-                {
-                    for ( int32_t j = 0; j < resolution.x; j++ )
-                    {
-                        const float di = i;
-                        const float dj = j;
-
-                        const float kx = (n + dj) * dkx;
-                        const float ky = (m - di) * dky;
-
-                        const FVector2 k = {kx, ky};
-                        const float w = 1.0f - exp(A * k.x * k.x + B * k.x * k.y + C * k.y * k.y);
-                        const float s = amplitudef_phillips_cartesian(windDirectionNormalised, k, 0.0f, AA, L, l);
-
-                        lvarianceX += ((kx * kx * w * w) * (dkx * dky) * s);
-                        lvarianceY += ((ky * ky * w * w) * (dkx * dky) * s);
-
-                        //NSLog(@"%f %f", lvarianceX, lvarianceY);
-                    }
-                }
-
-                NSLog(@"%d %d %d %f %f %f", a, b, c, lvarianceX, lvarianceY, lvarianceX + lvarianceY);
-            }
-        }
-    }
-    */
-
-    /*
-    for ( int32_t c = 0; c < slopeVarianceResolution; c++ )
-    {
-        for ( int32_t b = 0; b < slopeVarianceResolution; b++ )
-        {
-            for ( int32_t a = 0; a < slopeVarianceResolution; a++ )
-            {
-                const float fa = a;
-                const float fb = b;
-                const float fc = c;
-                float A = powf(a / divisor, 4.0f);
-                float C = powf(c / divisor, 4.0f);
-                float B = (2.0f * b / divisor - 1.0) * sqrt(A * C);
-
-                //NSLog(@"1 %d %d %d %f %f %f", a, b, c, A, B, C);
-
-                A = -0.5f * A;
-                B = -B;
-                C = -0.5f * C;
-
-                //NSLog(@"%d %d %d %f %f %f", a, b, c, A, B, C);
-
-                float lvarianceX = deltaVariance;
-                float lvarianceY = deltaVariance;
-
-                for ( int32_t lod = 0; lod < numberOfLods; lod++ )
-                {
-                    const FVector2 lastSize
-                        = ( lod == 0 ) ? fv2_zero() : fv2_v_from_v2(&currentGeometry.sizes[lod - 1]);
-
-                    const FVector2 currentSize = fv2_v_from_v2(&currentGeometry.sizes[lod]);
-
-                    //NSLog(@"%f %f %f %f", currentSize.x, currentSize.y, lastSize.x, lastSize.y);
-
-                    const float dkx = MATH_2_MUL_PIf / currentSize.x;
-                    const float dky = MATH_2_MUL_PIf / currentSize.y;
-
-                    const float kMin = ( lod == 0 ) ? 0.0f : (( MATH_PI * fresolution.x ) / lastSize.x );
-
-                    for ( int32_t i = 0; i < resolution.y; i++ )
-                    {
-                        for ( int32_t j = 0; j < resolution.x; j++ )
-                        {
-                            const float di = i;
-                            const float dj = j;
-
-                            const float kx = (n + dj) * dkx;
-                            const float ky = (m - di) * dky;
-
-                            const FVector2 k = {kx, ky};
-                            const float earg = A * k.x * k.x + B * k.x * k.y + C * k.y * k.y;
-                            const float eres = (float)exp(earg);
-                            const float w = 1.0f - eres;
-                            const float s = amplitudef_phillips_cartesian(windDirectionNormalised, k, kMin, AA, L, l);
-
-                            //printf("earg:%f eres:%f w:%f\n", earg, eres, w);
-
-                            lvarianceX += ((kx * kx * w * w) * (dkx * dky) * s);
-                            lvarianceY += ((ky * ky * w * w) * (dkx * dky) * s);
-
-                            //NSLog(@"%f %f", lvarianceX, lvarianceY);
-                        }
-                    }
-                }
-
-                NSLog(@"%d %d %d %+f %+f %+f", a, b, c, lvarianceX, lvarianceY, lvarianceX + lvarianceY);
-            }
-        }
-    }
-    */
 }
+*/
 
 - (void) generateH0:(BOOL)force
 {
@@ -394,9 +828,21 @@ ODQuadrants;
 
     switch ( currentGeneratorSettings.generatorType )
     {
-        case Phillips:
+        case PiersonMoskowitz:
         {
-            [ self generatePhillipsSpectrum ];
+            [ self generatePMSpectrum ];
+            break;
+        }
+
+        case JONSWAP:
+        {
+            [ self generateJONSWAPSpectrum ];
+            break;
+        }
+
+        case Donelan:
+        {
+            [ self generateDonelanSpectrum ];
             break;
         }
 
@@ -548,6 +994,8 @@ static NPTimer * timer = nil;
                 // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
                 const fftwf_complex expMinusOmega = { expOmega[0], -expOmega[1] };
 
+                //printf("%+f %+fi ", expOmega[0], expOmega[1]);
+
                 /* complex multiplication
                    x = a + i*b
                    y = c + i*d
@@ -566,10 +1014,10 @@ static NPTimer * timer = nil;
                       = (-bd) + i(bc)
                 */
 
-                // H0[indexForK] * exp(i*omega*t)
-                const fftwf_complex H0expOmega
-                    = { H0[indexForK][0] * expOmega[0] - H0[indexForK][1] * expOmega[1],
-                        H0[indexForK][0] * expOmega[1] + H0[indexForK][1] * expOmega[0] };
+                // H0[indexForK] * exp(-i*omega*t)
+                const fftwf_complex H0expMinusOmega
+                    = { H0[indexForK][0] * expMinusOmega[0] - H0[indexForK][1] * expMinusOmega[1],
+                        H0[indexForK][0] * expMinusOmega[1] + H0[indexForK][1] * expMinusOmega[0] };
 
                 const fftwf_complex geometryH0conjugate
                     = { H0[indexForConjugateGeometry][0], -H0[indexForConjugateGeometry][1] };
@@ -578,14 +1026,14 @@ static NPTimer * timer = nil;
                     = { H0[indexForConjugateGradient][0], -H0[indexForConjugateGradient][1] };
 
 
-                // H0[indexForConjugate] * exp(-i*omega*t)
-                const fftwf_complex geometryH0expMinusOmega
-                    = { geometryH0conjugate[0] * expMinusOmega[0] - geometryH0conjugate[1] * expMinusOmega[1],
-                        geometryH0conjugate[0] * expMinusOmega[1] + geometryH0conjugate[1] * expMinusOmega[0] };
+                // H0[indexForConjugate] * exp(i*omega*t)
+                const fftwf_complex geometryH0expOmega
+                    = { geometryH0conjugate[0] * expOmega[0] - geometryH0conjugate[1] * expOmega[1],
+                        geometryH0conjugate[0] * expOmega[1] + geometryH0conjugate[1] * expOmega[0] };
 
-                const fftwf_complex gradientH0expMinusOmega
-                    = { gradientH0conjugate[0] * expMinusOmega[0] - gradientH0conjugate[1] * expMinusOmega[1],
-                        gradientH0conjugate[0] * expMinusOmega[1] + gradientH0conjugate[1] * expMinusOmega[0] };
+                const fftwf_complex gradientH0expOmega
+                    = { gradientH0conjugate[0] * expOmega[0] - gradientH0conjugate[1] * expOmega[1],
+                        gradientH0conjugate[0] * expOmega[1] + gradientH0conjugate[1] * expOmega[0] };
 
                 /* complex addition
                    x = a + i*b
@@ -595,12 +1043,14 @@ static NPTimer * timer = nil;
 
                 // hTilde = H0expOmega + H0expMinusomega            
                 const fftwf_complex geometryhTilde
-                    = { H0expOmega[0] + geometryH0expMinusOmega[0],
-                        H0expOmega[1] + geometryH0expMinusOmega[1] };
+                    = { H0expMinusOmega[0] + geometryH0expOmega[0],
+                        H0expMinusOmega[1] + geometryH0expOmega[1] };
 
                 const fftwf_complex gradienthTilde
-                    = { H0expOmega[0] + gradientH0expMinusOmega[0],
-                        H0expOmega[1] + gradientH0expMinusOmega[1] };
+                    = { H0expMinusOmega[0] + gradientH0expOmega[0],
+                        H0expMinusOmega[1] + gradientH0expOmega[1] };
+
+                //printf("%+f %+fi ", geometryhTilde[0], geometryhTilde[1]);
 
 
                 //if ( indexForK >= geometryStartIndex && indexForK <= geometryEndIndex )
@@ -710,6 +1160,8 @@ static NPTimer * timer = nil;
                     result.displacement[geometryIndex][1] = dx[1] + dz[0];
                 }
             }
+
+            //printf("\n");
         }
     }
 
