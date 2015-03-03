@@ -7,11 +7,11 @@ ODGaussianRNG.h \
 ODPFrequencySpectrumGeneration.h \
 ODFrequencySpectrum.h \
 ODFrequencySpectrumFloat.h \
-ODAmplitude.h
+ODEnergy.h
 
 ODOcean_C_FILES = \
 ODGaussianRNG.c \
-ODAmplitude.c
+ODEnergy.c
 
 ODOcean_OBJC_FILES = \
 ODPFrequencySpectrumGeneration.m \

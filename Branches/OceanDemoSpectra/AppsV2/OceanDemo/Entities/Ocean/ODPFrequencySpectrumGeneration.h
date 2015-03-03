@@ -34,8 +34,10 @@ OdSpectrumGeometry geometry_max();
 typedef enum OdSpectrumGenerator
 {
     Unknown  = -1,
-    Phillips =  0,
-    Unified  =  1
+    PiersonMoskowitz = 0,
+    JONSWAP = 1,
+    Donelan = 2,
+    Unified  = 3
 }
 OdSpectrumGenerator;
 
@@ -49,20 +51,33 @@ enum
 
 typedef NSUInteger OdGeneratorOptions;
 
-typedef struct OdPhillipsGeneratorSettings
+typedef struct OdPiersonMoskowitzGeneratorSettings
 {
-    Vector2  windDirection;
-    double   windSpeed;
-    double   dampening;
+    double U10;
 }
-OdPhillipsGeneratorSettings;
+OdPiersonMoskowitzGeneratorSettings;
+
+typedef struct OdJONSWAPGeneratorSettings
+{
+    double U10;
+    double fetch;
+}
+OdJONSWAPGeneratorSettings;
+
+typedef struct OdDonelanGeneratorSettings
+{
+    double U10;
+    double fetch;
+}
+OdDonelanGeneratorSettings;
 
 typedef struct OdUnifiedGeneratorSettings
 {
-    double   U10;
-    double   Omega;
+    double U10;
+    double fetch;
 }
 OdUnifiedGeneratorSettings;
+
 
 typedef struct OdGeneratorSettings
 {
@@ -71,13 +86,17 @@ typedef struct OdGeneratorSettings
     double spectrumScale;
     union
     {
-        OdPhillipsGeneratorSettings phillips;
-        OdUnifiedGeneratorSettings  unified;
+        OdPiersonMoskowitzGeneratorSettings piersonmoskowitz;
+        OdJONSWAPGeneratorSettings jonswap;
+        OdDonelanGeneratorSettings donelan;
+        OdUnifiedGeneratorSettings unified;
     };
 }
 OdGeneratorSettings;
 
-bool phillips_settings_equal(const OdPhillipsGeneratorSettings * pOne, const OdPhillipsGeneratorSettings * pTwo);
+bool piersonmoskowitz_settings_equal(const OdPiersonMoskowitzGeneratorSettings * pOne, const OdPiersonMoskowitzGeneratorSettings * pTwo);
+bool jonswap_settings_equal(const OdJONSWAPGeneratorSettings * pOne, const OdJONSWAPGeneratorSettings * pTwo);
+bool donelan_settings_equal(const OdDonelanGeneratorSettings * pOne, const OdDonelanGeneratorSettings * pTwo);
 bool unified_settings_equal(const OdUnifiedGeneratorSettings * pOne, const OdUnifiedGeneratorSettings * pTwo);
 bool generator_settings_equal(const OdGeneratorSettings * pOne, const OdGeneratorSettings * pTwo);
 

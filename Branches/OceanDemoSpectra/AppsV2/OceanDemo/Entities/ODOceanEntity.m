@@ -277,6 +277,40 @@ static size_t index_for_resolution(int32_t resolution)
 
                 switch ( generatorType )
                 {
+                    case PiersonMoskowitz:
+                    {
+                        generatorSettings.generatorType = PiersonMoskowitz;
+                        generatorSettings.piersonmoskowitz.U10 = generatorWindSpeed;
+                        break;
+                    }
+
+                    case JONSWAP:
+                    {
+                        generatorSettings.generatorType = JONSWAP;
+                        generatorSettings.jonswap.U10 = generatorWindSpeed;
+                        generatorSettings.jonswap.fetch = 50000.0;
+                        break;
+                    }
+
+                    case Donelan:
+                    {
+                        generatorSettings.generatorType = Donelan;
+                        generatorSettings.donelan.U10 = generatorWindSpeed;
+                        generatorSettings.donelan.fetch = 500000.0;
+                        break;
+                    }
+
+                    case Unified:
+                    {
+                        generatorSettings.generatorType = Unified;
+                        generatorSettings.unified.U10 = generatorWindSpeed;
+                        generatorSettings.unified.fetch = 50000.0;
+
+                        break;
+                    }
+
+
+                    /*
                     case Phillips:
                     {
                         generatorSettings.generatorType = Phillips;
@@ -293,6 +327,7 @@ static size_t index_for_resolution(int32_t resolution)
                         generatorSettings.unified.Omega = 0.84;
                         break;
                     }
+                    */
 
                     default:
                     {
@@ -330,28 +365,15 @@ static size_t index_for_resolution(int32_t resolution)
             const float halfResolution = ((float)largerResolution) / 2.0f;
 
             // compute size of smaller LODS
-            // in order not to compute redundant frequencies we have to
-            // scale down by at least half the resolution and epsilon
-            // ac < (al / (res/2))
+            // use golden ratio
             for ( NSInteger i = 1; i < lodCount; i++ )
             {
-                const float x = geometry.sizes[i-1].x / halfResolution;
-                const float y = geometry.sizes[i-1].y / halfResolution;
+                const float x = geometry.sizes[i-1].x;// / halfResolution;
+                const float y = geometry.sizes[i-1].y;// / halfResolution;
 
                 geometry.sizes[i]
-                    = (Vector2){x * (-2.0f * FLT_EPSILON + 1.0f), y * (-2.0f * FLT_EPSILON + 1.0f)};
-
-                //NSLog(@"A %f %f", x, y);
+                    = (Vector2){x * 0.382f, y * 0.382f};
             }
-
-            if ( lodCount > 1 )
-                geometry.sizes[1] = (Vector2){74.0, 74.0};
-
-            if ( lodCount > 2 )
-                geometry.sizes[2] = (Vector2){21.0, 21.0};
-
-            if ( lodCount > 3 )
-                geometry.sizes[3] = (Vector2){11.0, 11.0};
 
             [ timer update ];
 
