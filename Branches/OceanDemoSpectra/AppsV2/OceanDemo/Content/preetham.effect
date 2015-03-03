@@ -5,6 +5,7 @@ technique "preetham"
     # effect variables
     uniform float radiusInPixel;
     uniform float sunHalfApparentAngle;
+    uniform vec3 sunDiskABC;
     uniform vec3 directionToSun;
     uniform vec3 sunColor;
     uniform vec3 zenithColor;

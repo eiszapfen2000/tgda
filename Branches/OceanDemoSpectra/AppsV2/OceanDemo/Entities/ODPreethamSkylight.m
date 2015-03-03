@@ -137,8 +137,10 @@ static Vector3 sun_color(double turbidity, double thetaSun)
     // A Practical Analytic Model for Daylight                              
     // page 21 
 
-    const double thetaSunDegrees = MATH_RAD_TO_DEG * thetaSun;
+    const double thetaSunDegrees = MAX(1.0, MIN(MATH_RAD_TO_DEG * thetaSun, 90.0));
     const double m = 1.0 / (thetaSunDegrees + 0.15 * pow(93.885 - thetaSunDegrees, -1.253));
+
+    // NSLog(@"%f %f", thetaSunDegrees, m);
 
     const double beta = 0.04608 * turbidity - 0.04586;
     const double l = 0.35;
@@ -319,6 +321,7 @@ static Vector3 sun_color(double turbidity, double thetaSun)
 
     radiusInPixel_P        = [ effect variableWithName:@"radiusInPixel" ];
     sunHalfApparentAngle_P = [ effect variableWithName:@"sunHalfApparentAngle" ];
+    sunDisk_abc_P          = [ effect variableWithName:@"sunDiskABC" ];
 
     directionToSun_P  = [ effect variableWithName:@"directionToSun" ];
     sunColor_P        = [ effect variableWithName:@"sunColor"       ];
@@ -331,7 +334,7 @@ static Vector3 sun_color(double turbidity, double thetaSun)
     D_xyY_P = [ effect variableWithName:@"D" ];
     E_xyY_P = [ effect variableWithName:@"E" ];
 
-    NSAssert(radiusInPixel_P != nil && sunHalfApparentAngle_P != nil 
+    NSAssert(radiusInPixel_P != nil && sunHalfApparentAngle_P != nil && sunDisk_abc_P != nil
              && directionToSun_P != nil && sunColor_P != nil
              && zenithColor_P != nil && denominator_P != nil && A_xyY_P != nil
              && B_xyY_P != nil && C_xyY_P != nil && D_xyY_P != nil && E_xyY_P != nil, @"");
@@ -502,8 +505,14 @@ static Vector3 sun_color(double turbidity, double thetaSun)
 
         //NSLog(@"%f %f %f", sunCosHalfApparentAngle, sunCosHalfApparentAngleInRange, sunHalfApparentAngle);
 
+        Vector3 abc = {300.0, 1.0, 150.0};
+
+        //NSLog(@"%f %f %f", zenithColor.x, zenithColor.y, zenithColor.z);
+        //NSLog(@"%f %f %f", sunColor.x, sunColor.y, sunColor.z);
+
         [ radiusInPixel_P setFValue:halfSkyResolution ];
         [ sunHalfApparentAngle_P setValue:sunHalfApparentAngle ];
+        [ sunDisk_abc_P setValue:abc ];
         [ directionToSun_P setValue:localDirectionToSun ];
         [ sunColor_P setValue:sunColor ];
         [ zenithColor_P setValue:zenithColor ];
