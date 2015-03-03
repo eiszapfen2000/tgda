@@ -216,7 +216,7 @@
             ItemSize = ("45", "45");
             Spacing = ("5", "5");
             Layout = ("2", "2");
-            Labels = ("PM", "JONSWAP", "Donelan", "Unified");
+            Labels = ("PM", "JON", "Don", "Uni");
             TargetObject = "Ocean";
             TargetProperty = "spectrumType";
         };
@@ -226,7 +226,7 @@
             Type = "ODButtonItem";
             Label = "Animation";
             Alignment = "TopRight";
-            Position = ("20", "370" );
+            Position = ("20", "420" );
             Size = ( "85", "20" );
             TextSize = "16";
             TargetObject = "Ocean";
@@ -238,7 +238,7 @@
             Type = "ODSliderItem";
             Label = "Wind Speed";
             Alignment = "TopRight";
-            Position = ("20", "405" );
+            Position = ("20", "460" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
@@ -254,7 +254,7 @@
             Type = "ODSliderItem";
             Label = "Tile Area";
             Alignment = "TopRight";
-            Position = ("20", "435" );
+            Position = ("20", "490" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "50.0";
@@ -270,7 +270,7 @@
             Type = "ODSliderItem";
             Label = "Fetch";
             Alignment = "TopRight";
-            Position = ("20", "465" );
+            Position = ("20", "520" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "5000.0";
@@ -286,7 +286,7 @@
             Type = "ODSliderItem";
             Label = "Dampening Factor";
             Alignment = "TopRight";
-            Position = ("20", "495" );
+            Position = ("20", "550" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
@@ -302,7 +302,7 @@
             Type = "ODStepItem";
             Label = "BRAK";
             Alignment = "TopRight";
-            Position = ("20", "525" );
+            Position = ("20", "580" );
             Size = ( "20", "30" );
             TextSize = "16";
             Mode = "Integer";
@@ -408,7 +408,7 @@
             Type = "ODSliderItem";
             Label = "Key";
             Alignment = "BottomLeft";
-            Position = ("30", "230" );
+            Position = ("20", "230" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
@@ -424,7 +424,7 @@
             Type = "ODSliderItem";
             Label = "Key";
             Alignment = "BottomLeft";
-            Position = ("30", "200" );
+            Position = ("20", "200" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
