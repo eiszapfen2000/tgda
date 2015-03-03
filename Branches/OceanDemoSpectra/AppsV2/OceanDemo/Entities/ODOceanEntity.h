@@ -37,9 +37,6 @@
     double lastSize;
     double size;
     double generatorSize;
-    double lastDampening;
-    double dampening;
-    double generatorDampening;
     double lastSpectrumScale;
     double spectrumScale;
     double generatorSpectrumScale;
