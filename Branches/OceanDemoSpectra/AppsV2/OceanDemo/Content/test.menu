@@ -215,8 +215,8 @@
             TextSize = "16";
             ItemSize = ("45", "45");
             Spacing = ("5", "5");
-            Layout = ("2", "1");
-            Labels = ("Phillips", "Unified");
+            Layout = ("2", "2");
+            Labels = ("PM", "JONSWAP", "Donelan", "Unified");
             TargetObject = "Ocean";
             TargetProperty = "spectrumType";
         };
@@ -242,7 +242,7 @@
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
-            MaximumValue = "40.0";
+            MaximumValue = "100.0";
             LineSize = ("85", "3");
             HeadSize = ("3", "21");
             TargetObject = "Ocean";
@@ -337,7 +337,7 @@
             Position = ("20", "35" );
             Size = ( "50", "1" );
             TextSize = "16";
-            MinimumValue = "0.0";
+            MinimumValue = "1.0";
             MaximumValue = "10.0";
             LineSize = ("85", "3");
             HeadSize = ("3", "21");
@@ -353,7 +353,7 @@
             Position = ("20", "65" );
             Size = ( "50", "1" );
             TextSize = "16";
-            MinimumValue = "0.0";
+            MinimumValue = "1.0";
             MaximumValue = "10.0";
             LineSize = ("85", "3");
             HeadSize = ("3", "21");
