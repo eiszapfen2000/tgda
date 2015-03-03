@@ -100,7 +100,6 @@ static const NSUInteger defaultOptions = OdGeneratorOptionsHeights | OdGenerator
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
 static const double defaultSize =237.0;
-static const double defaultDampening = 0.001;
 static const double defaultSpectrumScale = PHILLIPS_CONSTANT;
 static const int32_t resolutions[6] = {8, 16, 32, 64, 128, 256};
 static const NSUInteger defaultGeometryResolutionIndex = 0;
@@ -308,26 +307,6 @@ static size_t index_for_resolution(int32_t resolution)
 
                         break;
                     }
-
-
-                    /*
-                    case Phillips:
-                    {
-                        generatorSettings.generatorType = Phillips;
-                        generatorSettings.phillips.windDirection = defaultWindDirection;
-                        generatorSettings.phillips.windSpeed = generatorWindSpeed;
-                        generatorSettings.phillips.dampening = generatorDampening;
-                        break;
-                    }
-
-                    case Unified:
-                    {
-                        generatorSettings.generatorType = Unified;
-                        generatorSettings.unified.U10 = generatorWindSpeed;
-                        generatorSettings.unified.Omega = 0.84;
-                        break;
-                    }
-                    */
 
                     default:
                     {
@@ -779,9 +758,6 @@ static NSUInteger od_variance_size(const void * item)
     lastSize = DBL_MAX;
     size = generatorSize = defaultSize;
 
-    lastDampening = DBL_MAX;
-    dampening = generatorDampening = defaultDampening;
-
     lastSpectrumScale = DBL_MAX;
     spectrumScale = generatorSpectrumScale = defaultSpectrumScale;
 
@@ -1105,7 +1081,6 @@ static NSUInteger od_variance_size(const void * item)
          || options != lastOptions
          || windSpeed != lastWindSpeed
          || size != lastSize
-         || dampening != lastDampening
          || spectrumScale != lastSpectrumScale
          || geometryResolutionIndex != lastGeometryResolutionIndex
          || gradientResolutionIndex != lastGradientResolutionIndex )
@@ -1115,7 +1090,6 @@ static NSUInteger od_variance_size(const void * item)
         lastOptions = options;
         lastWindSpeed = windSpeed;
         lastSize = size;
-        lastDampening = dampening;
         lastSpectrumScale = spectrumScale;
         lastGeometryResolutionIndex = geometryResolutionIndex;
         lastGradientResolutionIndex = gradientResolutionIndex;
@@ -1130,7 +1104,6 @@ static NSUInteger od_variance_size(const void * item)
         generatorOptions = options;
         generatorWindSpeed = windSpeed;
         generatorSize = size;
-        generatorDampening = dampening;
         generatorSpectrumScale = spectrumScale;
         generatorGeometryResolutionIndex = geometryResolutionIndex;
         generatorGradientResolutionIndex = gradientResolutionIndex;
