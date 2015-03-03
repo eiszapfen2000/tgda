@@ -135,8 +135,8 @@ void ODObjCSetVariable(id obj, const ptrdiff_t offset,
                     [ targetPropertyString cStringUsingEncoding:NSASCIIStringEncoding ],
                     &targetProperty.size, &targetProperty.offset );
 
-            NSAssert1(propertyFound != NO, @"Property with name \"%@\" not found",
-                      targetPropertyString);
+            NSAssert2(propertyFound != NO, @"Property with name \"%@\" not found for Object \"%@\"",
+                      targetPropertyString, targetObjectString);
         }
     }
 
