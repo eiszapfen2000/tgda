@@ -184,7 +184,7 @@ static Vector3 sun_color(double turbidity, double thetaSun)
 
     Vector3 XYZ = v3_zero();
 	
-	float delta = 10000.f * 0.01f;	
+	double delta = 10000.0 * 0.01;	
 
 	for ( int32_t i = 0; i < NUMBER_OF_SPECTRAL_COMPONENTS; i++ )
     {
@@ -497,7 +497,10 @@ static Vector3 sun_color(double turbidity, double thetaSun)
         Vector3 dirN = v3_v_normalised(&dir);
 
         double sunCosHalfApparentAngle = v3_vv_dot_product(&dirN, &localDirectionToSun);
-        sunHalfApparentAngle = MAX(sunHalfApparentAngle, acos(sunCosHalfApparentAngle));
+        double sunCosHalfApparentAngleInRange = MAX(MIN(sunCosHalfApparentAngle, 1.0), -1.0);
+        sunHalfApparentAngle = MAX(sunHalfApparentAngle, acos(sunCosHalfApparentAngleInRange));
+
+        //NSLog(@"%f %f %f", sunCosHalfApparentAngle, sunCosHalfApparentAngleInRange, sunHalfApparentAngle);
 
         [ radiusInPixel_P setFValue:halfSkyResolution ];
         [ sunHalfApparentAngle_P setValue:sunHalfApparentAngle ];
