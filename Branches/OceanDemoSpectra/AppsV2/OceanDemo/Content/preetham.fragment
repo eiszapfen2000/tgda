@@ -47,18 +47,20 @@ void main()
     XYZ.y = xyY.z;
     XYZ.z = ((1.0f - xyY.x - xyY.y) / xyY.y) * xyY.z;
 
-    /*
     float f = gamma - sunHalfApparentAngle;
 
-    float a = 200.0;
-    float b = 0.0;
-    float c = 150.0;
+    //float a = 200.0;
+    //float b = 20.0;
+    //float c = 150.0;
+
+    float a = sunDiskABC.x;
+    float b = sunDiskABC.y;
+    float c = sunDiskABC.z;
 
     float falloff = (1.0 / exp(a * f)) + b * (1.0 / exp(c * f));
     falloff = clamp(falloff, 0.0, 1.0);
 
     XYZ += falloff * sunColor;
-    */
 
     if ( cosGamma >= cos(sunHalfApparentAngle) )
     {
