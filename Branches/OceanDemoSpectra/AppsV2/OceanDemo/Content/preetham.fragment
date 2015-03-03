@@ -49,10 +49,6 @@ void main()
 
     float f = gamma - sunHalfApparentAngle;
 
-    //float a = 200.0;
-    //float b = 20.0;
-    //float c = 150.0;
-
     float a = sunDiskABC.x;
     float b = sunDiskABC.y;
     float c = sunDiskABC.z;
