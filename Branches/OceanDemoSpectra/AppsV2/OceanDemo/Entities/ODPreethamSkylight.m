@@ -383,7 +383,9 @@ static Vector3 sun_color(double turbidity, double thetaSun)
     [ self processInput:frameTime ];
 
     if ( turbidity != lastTurbidity || thetaSun != lastThetaSun
-         || phiSun != lastPhiSun || skylightResolution != lastSkylightResolution )
+         || phiSun != lastPhiSun || skylightResolution != lastSkylightResolution 
+         || lastSunDiskA != sunDiskA || lastSunDiskB != sunDiskB
+         || lastSunDiskC != sunDiskC )
     {
 	    double ABCDE_x[5], ABCDE_y[5], ABCDE_Y[5];
 
@@ -586,6 +588,10 @@ static Vector3 sun_color(double turbidity, double thetaSun)
         lastPhiSun    = phiSun;
 
         lastSkylightResolution = skylightResolution;
+
+        lastSunDiskA = sunDiskA;
+        lastSunDiskB = sunDiskB;
+        lastSunDiskC = sunDiskC;
     }
 }
 
