@@ -37,6 +37,9 @@
     double lastSize;
     double size;
     double generatorSize;
+    double lastFetch;
+    double fetch;
+    double generatorFetch;
     double lastSpectrumScale;
     double spectrumScale;
     double generatorSpectrumScale;
