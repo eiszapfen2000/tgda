@@ -403,6 +403,54 @@
             TargetProperty = "waterColorIntensityCoordinate";
         };
 
+        PSliderSunDiskA =
+        {
+            Type = "ODSliderItem";
+            Label = "SunDiskA";
+            Alignment = "BottomLeft";
+            Position = ("20", "330" );
+            Size = ( "50", "1" );
+            TextSize = "16";
+            MinimumValue = "10.0";
+            MaximumValue = "300.0";
+            LineSize = ("85", "3");
+            HeadSize = ("3", "21");
+            TargetObject = "ODPreethamSkylight";
+            TargetProperty = "sunDiskA";
+        };
+
+        PSliderSunDiskB =
+        {
+            Type = "ODSliderItem";
+            Label = "SunDiskB";
+            Alignment = "BottomLeft";
+            Position = ("20", "300" );
+            Size = ( "50", "1" );
+            TextSize = "16";
+            MinimumValue = "0.0";
+            MaximumValue = "10.0";
+            LineSize = ("85", "3");
+            HeadSize = ("3", "21");
+            TargetObject = "ODPreethamSkylight";
+            TargetProperty = "sunDiskB";
+        };
+
+        PSliderSunDiskC =
+        {
+            Type = "ODSliderItem";
+            Label = "SunDiskC";
+            Alignment = "BottomLeft";
+            Position = ("20", "270" );
+            Size = ( "50", "1" );
+            TextSize = "16";
+            MinimumValue = "1.0";
+            MaximumValue = "150.0";
+            LineSize = ("85", "3");
+            HeadSize = ("3", "21");
+            TargetObject = "ODPreethamSkylight";
+            TargetProperty = "sunDiskC";
+        };
+
         PSliderKey =
         {
             Type = "ODSliderItem";
