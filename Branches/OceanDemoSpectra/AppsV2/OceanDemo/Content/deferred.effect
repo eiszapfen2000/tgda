@@ -126,6 +126,7 @@ technique "tonemap_reinhard"
     };
     uniform float key;
     uniform int   averageLuminanceLevel;
+    uniform float adaptedAverageLuminance;
     uniform float whiteLuminance;
 
     # vertex streams
