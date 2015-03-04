@@ -827,34 +827,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     glEnd();
     glLineWidth(1.0);
 
-    /*
-    [ fillState setFrontFaceFill:NpPolygonFillFace ];
-    [ fillState setBackFaceFill:NpPolygonFillFace ];
-    [ fillState activate ];
-    */
-
-    /*
-    FVector4 fc = {0.0f, 1.0f, 0.0f, 0.5f};
-    FVector4 lc = {1.0f, 0.0f, 0.0f, 0.5f};
-
-    NPEffectVariableFloat4 * c = [ deferredEffect variableWithName:@"color" ];
-    NSAssert(c != nil, @"");
-
-    [ blendingState setEnabled:YES ];
-    [ blendingState setBlendingMode:NpBlendingAverage ];
-    [ blendingState activate ];
-
-    [ c setFValue:fc ];
-    [[ deferredEffect techniqueWithName:@"color" ] activate ];
-
-    [ testCameraFrustum render ];
-
-    [ c setFValue:lc ];
-    [[ deferredEffect techniqueWithName:@"color" ] activate ];
-
-    [ testProjectorFrustum render ];
-    */
-
     [ linearsRGBTarget detach:NO ];
     [ depthBuffer      detach:NO ];
 
@@ -899,7 +871,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     glGetTexImage(GL_TEXTURE_2D, numberOfLevels - 1, GL_RED, GL_HALF_FLOAT, &averageLogLuminance);
     double averageLuminance = exp(half_to_float(averageLogLuminance));
 
-    // "Perceptual effects in real-time tone mapping"
+    // "Perceptual effects in real-time tone mapping - Krawczyk 2005"
     // 2.3 scoptic vision
     double rodSensitivity = 0.04 / (0.04 + averageLuminance); // eq 7
     // 2.2 temporal luminance adaptation
@@ -915,8 +887,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     // 3.1 Key value
     double automaticKey = 1.03 - (2.0 / (2.0 + log10(adaptedLuminance + 1.0))); // eq 11
-
-    //NSLog(@"%f %f %f %f", averageLuminance, lastAdaptedLuminance, adaptedLuminance, automaticKey);
 
     lastAdaptedLuminance = adaptedLuminance;
 
@@ -935,38 +905,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ fullscreenQuad render ];
 
     [ stateConfiguration deactivate ];
-
-//-------------------------------------------
-
-    /*
-    NPEffectVariableFloat2 * v = [ deferredEffect variableWithName:@"scale"];
-    NPEffectVariableFloat3 * c = [ deferredEffect variableWithName:@"cameraPosition"];
-    [ v setFValue:[ ocean baseMeshScale ]];
-    [ c setValue:[ camera position ]];
-    [[[ NP Core] transformationState] setFModelMatrix:[ ocean modelMatrix ]];
-    [[[ NP Graphics ] textureBindingState ] clear ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ocean supplementalData] texelUnit:0 ];
-    [[[ NP Graphics ] textureBindingState ] activate ];
-
-    [[ deferredEffect techniqueWithName:@"base_xz" ] activate ];
-    [ ocean renderBaseMesh ];
-    */
-    
-    /*
-    [[ deferredEffect techniqueWithName:@"iwave_base_xz" ] activate ];
-    [ iwave render ];
-    */
-    
-    /*
-    [[[ NP Graphics ] textureBindingState ] clear ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[iwave heightTexture] texelUnit:0 ];
-    [[[ NP Graphics ] textureBindingState ] activate ];
-    [[ deferredEffect techniqueWithName:@"texture" ] activate ];
-    [ fullscreenQuad render ];
-    */
-    
-//-------------------------------------------
-
 }
 
 @end
