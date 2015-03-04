@@ -616,46 +616,54 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         [ self updateSlopeVarianceLUT ];
     }
 
-    /*
-    NPTexture2D * dispDerivatives = [ ocean displacementDerivatives ];
+
+    NPTexture2DArray * dispDerivatives = [ ocean displacementDerivatives ];
     const uint32_t dispDerivativesWidth  = [ dispDerivatives width  ];
     const uint32_t dispDerivativesHeight = [ dispDerivatives height ];
+    const uint32_t dispDerivativesLayers = [ dispDerivatives layers ];
     const uint32_t whitecapsTargetWidth  = [ whitecapsTarget width  ];
     const uint32_t whitecapsTargetHeight = [ whitecapsTarget height ];
+    const uint32_t whitecapsTargetLayers = [ whitecapsTarget depth  ];
 
-    if ( dispDerivativesWidth == 0 ||  dispDerivativesHeight == 0 )
+    const uint32_t necessaryWhiteCapsTargetLayers
+        = (dispDerivativesLayers / 2) + (dispDerivativesLayers % 2);
+
+    if (( dispDerivativesWidth != 0 && dispDerivativesHeight != 0 )
+        && (dispDerivativesWidth  != whitecapsTargetWidth
+            || dispDerivativesHeight != whitecapsTargetHeight
+            || necessaryWhiteCapsTargetLayers != whitecapsTargetLayers)
+         )
     {
-        NSLog(@"BRAAAAAK");
-        return;
-    }
-
-
-    if ( dispDerivativesWidth != 0 && dispDerivativesHeight != 0
-         && dispDerivativesWidth  != whitecapsTargetWidth
-         && dispDerivativesHeight != whitecapsTargetHeight )
-    {
-        //NSLog(@"%u %u", dispDerivativesWidth,  dispDerivativesHeight);
-
         BOOL result
-            = [ whitecapsTarget generate:NpRenderTargetColor
-                                   width:dispDerivativesWidth
-                                  height:dispDerivativesHeight
-                             pixelFormat:NpTexturePixelFormatRG
-                              dataFormat:NpTextureDataFormatFloat32
-                           mipmapStorage:YES
-                                   error:NULL ];
+            = [ whitecapsTarget
+                    generate2DArray:NpRenderTargetColor
+                              width:dispDerivativesWidth
+                             height:dispDerivativesHeight
+                             layers:necessaryWhiteCapsTargetLayers
+                        pixelFormat:NpTexturePixelFormatRGBA
+                         dataFormat:NpTextureDataFormatFloat32
+                      mipmapStorage:YES
+                              error:NULL ];
 
         NSAssert(result == YES, @"KABUMM");
 
         [ whitecapsRtc setWidth:dispDerivativesWidth ];
         [ whitecapsRtc setHeight:dispDerivativesHeight ];
+        [ whitecapsRtc bindFBO ];
 
-        [ whitecapsTarget
-                attachToRenderTargetConfiguration:whitecapsRtc
-                                 colorBufferIndex:0
-                                          bindFBO:YES ];
+        for (uint32_t l = 0; l < necessaryWhiteCapsTargetLayers; l++)
+        {
+                [ whitecapsTarget
+                        attachLevel:0
+                              layer:l
+          renderTargetConfiguration:whitecapsRtc
+                   colorBufferIndex:l
+                            bindFBO:NO ];
+
+        }
+
+        [ whitecapsRtc unbindFBO ];
     }
-    */
 
     NPStateConfiguration * stateConfiguration = [[ NP Graphics ] stateConfiguration ];
 
