@@ -55,6 +55,8 @@
     double jacobianEpsilon;
 
     // tonemapping parameters
+    double deltaTime;
+    double lastAdaptedLuminance;
     double referenceWhite;
     double key;
     double adaptationTimeScale;
@@ -81,6 +83,7 @@
     NPEffectTechnique * tonemap;
     NPEffectVariableFloat * tonemapKey;
     NPEffectVariableInt   * tonemapAverageLuminanceLevel;
+    NPEffectVariableFloat * tonemapAdaptedAverageLuminance;
     NPEffectVariableFloat * tonemapWhiteLuminance;
 
     NPEffect * projectedGridEffect;

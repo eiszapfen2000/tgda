@@ -262,6 +262,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     jacobianEpsilon = 0.2;
 
     // tonemapping parameters
+    deltaTime = 0.0;
+    lastAdaptedLuminance = 0.0;
     referenceWhite = 4.0;
     key = 0.72;
     adaptationTimeScale = 10.0;
@@ -301,9 +303,11 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     tonemapKey = [ deferredEffect variableWithName:@"key" ];
     tonemapAverageLuminanceLevel = [ deferredEffect variableWithName:@"averageLuminanceLevel" ];
+    tonemapAdaptedAverageLuminance = [ deferredEffect variableWithName:@"adaptedAverageLuminance" ];
     tonemapWhiteLuminance = [ deferredEffect variableWithName:@"whiteLuminance" ];
 
-    NSAssert(tonemapKey != nil && tonemapAverageLuminanceLevel != nil && tonemapWhiteLuminance != nil, @"");
+    NSAssert(tonemapKey != nil && tonemapAverageLuminanceLevel != nil
+             && tonemapAdaptedAverageLuminance != nil && tonemapWhiteLuminance != nil, @"");
 
     whitecapsPrecompute      = [ projectedGridEffect techniqueWithName:@"whitecaps_precompute" ];
     projectedGridTFTransform = [ projectedGridEffect techniqueWithName:@"proj_grid_tf_transform" ];
@@ -493,6 +497,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
 - (void) update:(const double)frameTime
 {
+    deltaTime = frameTime;
+
     NPViewport * viewport = [[ NP Graphics] viewport ];
     currentResolution.x = [ viewport width  ];
     currentResolution.y = [ viewport height ];
@@ -885,20 +891,46 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     // highest level contains average log luminance
     [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ logLuminanceTarget texture ] ];
     glGenerateMipmap(GL_TEXTURE_2D);
+
+    const int32_t numberOfLevels
+        = 1 + (int32_t)floor(logb(MAX(currentResolution.x, currentResolution.y)));
+
+    Half averageLogLuminance = 0;
+    glGetTexImage(GL_TEXTURE_2D, numberOfLevels - 1, GL_RED, GL_HALF_FLOAT, &averageLogLuminance);
+    double averageLuminance = exp(half_to_float(averageLogLuminance));
+
+    // "Perceptual effects in real-time tone mapping"
+    // 2.3 scoptic vision
+    double rodSensitivity = 0.04 / (0.04 + averageLuminance); // eq 7
+    // 2.2 temporal luminance adaptation
+    double adaptationConstantRods = 0.4; // eq 6
+    double adaptationConstantCones = 0.1; // eq 6
+    // 3.2 temporal luminance adaptation
+    double adaptationConstant = adaptationConstantRods * rodSensitivity + (1.0 - rodSensitivity) * adaptationConstantCones; // eq 12
+    // 2.2 temporal luminance adaptation
+    double adaptedLuminance
+        = lastAdaptedLuminance
+          + (averageLuminance - lastAdaptedLuminance)
+          * (1.0 - exp(-(deltaTime / adaptationConstant))); // eq 5
+
+    // 3.1 Key value
+    double automaticKey = 1.03 - (2.0 / (2.0 + log10(adaptedLuminance + 1.0))); // eq 11
+
+    //NSLog(@"%f %f %f %f", averageLuminance, lastAdaptedLuminance, adaptedLuminance, automaticKey);
+
+    lastAdaptedLuminance = adaptedLuminance;
+
     [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
 
     [[[ NP Graphics ] textureBindingState ] setTexture:[ linearsRGBTarget   texture ] texelUnit:0 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ logLuminanceTarget texture ] texelUnit:1 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
-    const int32_t numberOfLevels
-        = 1 + (int32_t)floor(logb(MAX(currentResolution.x, currentResolution.y)));
-
-    [ tonemapKey setValue:key ];
+    [ tonemapKey setValue:automaticKey ];
     [ tonemapWhiteLuminance setValue:referenceWhite ];
     [ tonemapAverageLuminanceLevel setValue:(numberOfLevels - 1) ];
+    [ tonemapAdaptedAverageLuminance setValue:adaptedLuminance ];
 
-    //[[ deferredEffect techniqueWithName:@"texture" ] activate ];
     [ tonemap activate ];
     [ fullscreenQuad render ];
 
