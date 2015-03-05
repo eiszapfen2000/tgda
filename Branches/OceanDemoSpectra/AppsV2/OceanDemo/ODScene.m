@@ -40,6 +40,10 @@
 #import "Entities/ODWorldCoordinateAxes.h"
 #import "ODScene.h"
 
+static const NSUInteger defaultVarianceLUTResolutionIndex = 0;
+static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
+
+
 @interface ODScene (Private)
 
 - (id <ODPEntity>) loadEntityFromFile:(NSString *)fileName
@@ -47,9 +51,11 @@
                                      ;
 
 - (BOOL) generateRenderTargets:(NSError **)error;
-- (BOOL) generateVarianceLUTRenderTarget:(NSError **)error;
+- (BOOL) generateVarianceLUTRenderTarget:(uint32_t)resolution
+                                   error:(NSError **)error
+                                        ;
 
-- (void) updateSlopeVarianceLUT;
+- (void) updateSlopeVarianceLUT:(uint32_t)resolution;
 - (void) renderProjectedGrid;
 
 @end
@@ -149,22 +155,23 @@
     return result;
 }
 
-- (BOOL) generateVarianceLUTRenderTarget:(NSError **)error
+- (BOOL) generateVarianceLUTRenderTarget:(uint32_t)resolution
+                                   error:(NSError **)error
 {
     return
         [ varianceLUT generate3D:NpRenderTargetColor
-                           width:varianceLUTResolution
-                          height:varianceLUTResolution
-                           depth:varianceLUTResolution
+                           width:resolution
+                          height:resolution
+                           depth:resolution
                      pixelFormat:NpTexturePixelFormatRG
                       dataFormat:NpTextureDataFormatFloat16
                    mipmapStorage:NO
                            error:error ];
 }
 
-- (void) updateSlopeVarianceLUT
+- (void) updateSlopeVarianceLUT:(uint32_t)resolution
 {
-    [ varianceTextureResolution setFValue:varianceLUTResolution ];
+    [ varianceTextureResolution setFValue:(float)resolution ];
     [ deltaVariance setFValue:[ ocean baseSpectrumDeltaVariance ]];
 
     [[[ NP Graphics ] textureBindingState ] clear ];
@@ -176,12 +183,12 @@
     FRectangle texcoords;
 
     frectangle_rssss_init_with_min_max(&vertices, -1.0f, -1.0f, 1.0f, 1.0f);
-    frectangle_rssss_init_with_min_max(&texcoords, 0.0f, 0.0f, varianceLUTResolution, varianceLUTResolution);
+    frectangle_rssss_init_with_min_max(&texcoords, 0.0f, 0.0f, resolution, resolution);
 
     [ varianceRTC bindFBO ];
     [ varianceRTC activateViewport ];
 
-    for ( uint32_t c = 0; c < varianceLUTResolution; c++ )
+    for ( uint32_t c = 0; c < resolution; c++ )
     {
         [ varianceLUT attachLevel:0
                             layer:c
@@ -338,8 +345,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     NSAssert(result, @"Transform Feedback setup failed");
 
-    varianceLUTLastResolution = UINT_MAX;
-    varianceLUTResolution = 4;
+    varianceLUTLastResolutionIndex = ULONG_MAX;
+    varianceLUTResolutionIndex = defaultVarianceLUTResolutionIndex;
     varianceRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Variance RTC" ];
     varianceLUT = [[ NPRenderTexture alloc ] initWithName:@"Variance LUT" ];
 
@@ -601,21 +608,24 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         lastFrameResolution = currentResolution;
     }
 
-    if ( varianceLUTResolution != varianceLUTLastResolution )
+    BOOL forceSlopeVarianceUpdate = NO;
+    if (varianceLUTResolutionIndex != varianceLUTLastResolutionIndex)
     {
-        [ varianceRTC setWidth:varianceLUTResolution ];
-        [ varianceRTC setHeight:varianceLUTResolution ];
+        uint32_t varianceLUTRes = varianceLUTResolutions[varianceLUTResolutionIndex];
 
-        NSAssert(([ self generateVarianceLUTRenderTarget:NULL ] == YES), @"");
+        [ varianceRTC setWidth:varianceLUTRes ];
+        [ varianceRTC setHeight:varianceLUTRes ];
 
-        varianceLUTLastResolution = varianceLUTResolution;
+        NSAssert(([ self generateVarianceLUTRenderTarget:varianceLUTRes error:NULL ] == YES), @"");
+
+        varianceLUTLastResolutionIndex = varianceLUTResolutionIndex;
+        forceSlopeVarianceUpdate = YES;
     }
 
-    if ( [ ocean updateSlopeVariance ] == YES )
+    if ( [ ocean updateSlopeVariance ] == YES || forceSlopeVarianceUpdate == YES )
     {
-        [ self updateSlopeVarianceLUT ];
+        [ self updateSlopeVarianceLUT:varianceLUTResolutions[varianceLUTResolutionIndex] ];
     }
-
 
     NPTexture2DArray * dispDerivatives = [ ocean displacementDerivatives ];
     const uint32_t dispDerivativesWidth  = [ dispDerivatives width  ];
@@ -625,6 +635,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     const uint32_t whitecapsTargetHeight = [ whitecapsTarget height ];
     const uint32_t whitecapsTargetLayers = [ whitecapsTarget depth  ];
 
+    // 4 channels in dispDerivatives -> 2 channels in whitecapsTarget
     const uint32_t necessaryWhiteCapsTargetLayers
         = (dispDerivativesLayers / 2) + (dispDerivativesLayers % 2);
 

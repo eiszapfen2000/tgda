@@ -92,8 +92,8 @@
     NPEffectTechnique * projectedGridTFFeedback;
 
     // variance LUT for Ross BRDF
-    uint32_t varianceLUTLastResolution;
-    uint32_t varianceLUTResolution;
+    NSUInteger varianceLUTLastResolutionIndex;
+    NSUInteger varianceLUTResolutionIndex;
     NPRenderTargetConfiguration * varianceRTC;
     NPRenderTexture * varianceLUT;
     NPEffectTechnique * variance;
