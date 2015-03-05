@@ -609,14 +609,19 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     }
 
     BOOL forceSlopeVarianceUpdate = NO;
+    const uint32_t varianceLUTResolution
+        = varianceLUTResolutions[varianceLUTResolutionIndex];
+
     if (varianceLUTResolutionIndex != varianceLUTLastResolutionIndex)
     {
-        uint32_t varianceLUTRes = varianceLUTResolutions[varianceLUTResolutionIndex];
+        [ varianceRTC setWidth:varianceLUTResolution ];
+        [ varianceRTC setHeight:varianceLUTResolution ];
 
-        [ varianceRTC setWidth:varianceLUTRes ];
-        [ varianceRTC setHeight:varianceLUTRes ];
-
-        NSAssert(([ self generateVarianceLUTRenderTarget:varianceLUTRes error:NULL ] == YES), @"");
+        NSAssert(
+            ([ self
+                generateVarianceLUTRenderTarget:varianceLUTResolution
+                                          error:NULL ] == YES), @""
+            );
 
         varianceLUTLastResolutionIndex = varianceLUTResolutionIndex;
         forceSlopeVarianceUpdate = YES;
@@ -624,7 +629,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     if ( [ ocean updateSlopeVariance ] == YES || forceSlopeVarianceUpdate == YES )
     {
-        [ self updateSlopeVarianceLUT:varianceLUTResolutions[varianceLUTResolutionIndex] ];
+        [ self updateSlopeVarianceLUT:varianceLUTResolution ];
     }
 
     NPTexture2DArray * dispDerivatives = [ ocean displacementDerivatives ];
