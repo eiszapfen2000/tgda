@@ -4,7 +4,7 @@ technique "whitecaps_precompute"
 {
     # effect variables
     uniform float displacementScale;
-    uniform sampler2D displacementDerivatives
+    uniform sampler2DArray displacementDerivatives
     {
         WrapS = Repeat;
         WrapT = Repeat;
@@ -105,11 +105,11 @@ technique "proj_grid_tf_feedback"
         MagFilter = Linear;
         Anisotropy = 2;
     };
-    uniform sampler2D whitecaps
+    uniform sampler2DArray whitecaps
     {
         WrapS = Repeat;
         WrapT = Repeat;
-        MinFilter = Trilinear;
+        MinFilter = Linear;
         MagFilter = Linear;
         Anisotropy = 16;
     };

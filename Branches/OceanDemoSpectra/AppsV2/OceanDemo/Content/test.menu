@@ -210,10 +210,10 @@
             Type = "ODSelectionGroupItem";
             Label = "BRAK";
             Alignment = "TopRight";
-            Position = ("15", "305" );
+            Position = ("20", "305" );
             Size = ( "40", "40" );
             TextSize = "16";
-            ItemSize = ("45", "45");
+            ItemSize = ("40", "40");
             Spacing = ("5", "5");
             Layout = ("2", "2");
             Labels = ("PM", "JON", "Don", "Uni");
@@ -242,7 +242,7 @@
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
-            MaximumValue = "100.0";
+            MaximumValue = "200.0";
             LineSize = ("85", "3");
             HeadSize = ("3", "21");
             TargetObject = "Ocean";
@@ -369,8 +369,8 @@
             Position = ("20", "95" );
             Size = ( "50", "1" );
             TextSize = "16";
-            MinimumValue = "-5.0";
-            MaximumValue = "5.0";
+            MinimumValue = "-1.0";
+            MaximumValue = "2.0";
             LineSize = ("85", "3");
             HeadSize = ("3", "21");
             TargetObject = "Scene";
@@ -403,6 +403,22 @@
             TargetProperty = "waterColorIntensityCoordinate";
         };
 
+        PVarianceLUTResolution =
+        {
+            Type = "ODSelectionGroupItem";
+            Label = "LUT";
+            Alignment = "TopLeft";
+            Position = ("20", "195" );
+            Size = ( "40", "40" );
+            TextSize = "16";
+            ItemSize = ("40", "40");
+            Spacing = ("5", "5");
+            Layout = ("2", "2");
+            Labels = ("4", "8", "12", "16");
+            TargetObject = "Scene";
+            TargetProperty = "varianceLUTResolutionIndex";
+        };
+
         PSliderSunDiskA =
         {
             Type = "ODSliderItem";
@@ -411,8 +427,8 @@
             Position = ("20", "330" );
             Size = ( "50", "1" );
             TextSize = "16";
-            MinimumValue = "10.0";
-            MaximumValue = "300.0";
+            MinimumValue = "1.0";
+            MaximumValue = "500.0";
             LineSize = ("85", "3");
             HeadSize = ("3", "21");
             TargetObject = "ODPreethamSkylight";
@@ -444,7 +460,7 @@
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "1.0";
-            MaximumValue = "150.0";
+            MaximumValue = "500.0";
             LineSize = ("85", "3");
             HeadSize = ("3", "21");
             TargetObject = "ODPreethamSkylight";
@@ -476,7 +492,7 @@
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
-            MaximumValue = "10.0";
+            MaximumValue = "20.0";
             LineSize = ("85", "3");
             HeadSize = ("3", "21");
             TargetObject = "Scene";
