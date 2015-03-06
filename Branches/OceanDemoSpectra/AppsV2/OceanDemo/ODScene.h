@@ -71,6 +71,7 @@
     // whitecaps precompute render target
     NPRenderTargetConfiguration * whitecapsRtc;
     NPRenderTexture * whitecapsTarget;
+    uint32_t lastDispDerivativesLayers;
 
     // general rendering stuff
     NPRenderTargetConfiguration * rtc;
