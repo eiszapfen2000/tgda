@@ -5,10 +5,10 @@ in vec2 out_texcoord;
 void main()
 {
     // .x = dx_x .y = dx_z .z = dz_x .w = dz_z
-    vec4 derivatives = -displacementScale * texture(displacementDerivatives, out_texcoord);
+    vec4 derivatives = -displacementScale * texture(displacementDerivatives, vec3(out_texcoord, 0.0));
 
     // 1/n + ai + bi + ai*bi - ci*ci
-    float res = 1.0 + derivatives.x + derivatives.w + derivatives.xw - (derivatives.y * derivatives.z);
+    float res = 1.0 + derivatives.x + derivatives.w + (derivatives.x * derivatives.w) - (derivatives.y * derivatives.z);
 
     ki = vec2(res, res*res);
 }

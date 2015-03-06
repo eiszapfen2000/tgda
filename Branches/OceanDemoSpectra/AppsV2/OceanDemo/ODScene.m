@@ -597,6 +597,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
 - (void) render
 {
+    // update main render target resolution
     if (( currentResolution.x != lastFrameResolution.x )
           || ( currentResolution.y != lastFrameResolution.y ))
     {
@@ -608,6 +609,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         lastFrameResolution = currentResolution;
     }
 
+    // update sloope variance LUT resolution if necessary
     BOOL forceSlopeVarianceUpdate = NO;
     const uint32_t varianceLUTResolution
         = varianceLUTResolutions[varianceLUTResolutionIndex];
@@ -627,11 +629,13 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         forceSlopeVarianceUpdate = YES;
     }
 
+    // update slope variance LUT
     if ( [ ocean updateSlopeVariance ] == YES || forceSlopeVarianceUpdate == YES )
     {
         [ self updateSlopeVarianceLUT:varianceLUTResolution ];
     }
 
+    // update whitecaps target resolution if necessary
     NPTexture2DArray * dispDerivatives = [ ocean displacementDerivatives ];
     const uint32_t dispDerivativesWidth  = [ dispDerivatives width  ];
     const uint32_t dispDerivativesHeight = [ dispDerivatives height ];
@@ -681,6 +685,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         [ whitecapsRtc unbindFBO ];
     }
 
+    // get state related objects for later use
     NPStateConfiguration * stateConfiguration = [[ NP Graphics ] stateConfiguration ];
 
     NPCullingState * cullingState         = [ stateConfiguration cullingState     ];
@@ -699,33 +704,39 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     // reset all matrices
     [[[ NP Core ] transformationState ] reset ];
 
-    /*
-    // precompute whitecaps derivative stuff
-    [ whitecapsRtc activate ];
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    NSError * wce = nil;
-    if ( [ whitecapsRtc checkFrameBufferCompleteness:&wce ] == NO )
+    // generate whitecaps related data
+    if ( dispDerivativesWidth != 0 && dispDerivativesHeight != 0 )
     {
-        NPLOG_ERROR(wce);
+        // precompute whitecaps derivative stuff
+        [ whitecapsRtc activate ];
+
+        NSError * wce = nil;
+        if ( [ whitecapsRtc checkFrameBufferCompleteness:&wce ] == NO )
+        {
+            NPLOG_ERROR(wce);
+        }
+
+        [[[ NP Graphics ] textureBindingState ] clear ];
+        [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacementDerivatives ] texelUnit:0 ];
+        [[[ NP Graphics ] textureBindingState ] activate ];
+
+        NPEffectVariableFloat * dslolz = [ projectedGridEffect variableWithName:@"displacementScale"];
+        [ dslolz setValue:[ ocean displacementScale ]];
+
+        [ whitecapsPrecompute activate ];
+        [ fullscreenQuad render ];
+
+        [ whitecapsRtc deactivate ];
+
+        // Generate whhitecaps derivative stuff mipmaps
+        [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ whitecapsTarget texture ] ];
+        glGenerateMipmap(GL_TEXTURE_2D);
+        [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
     }
 
-    [[[ NP Graphics ] textureBindingState ] clear ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacementDerivatives ] texelUnit:0 ];
-    [[[ NP Graphics ] textureBindingState ] activate ];
-
-    NPEffectVariableFloat * ds = [ projectedGridEffect variableWithName:@"displacementScale"];
-    [ ds setValue:[ ocean displacementScale ]];
-
-    [ whitecapsPrecompute activate ];
-    [ fullscreenQuad render ];
-
-    [ whitecapsRtc deactivate ];
-
-    // Generate whhitecaps derivative stuff mipmaps
-    [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ whitecapsTarget texture ] ];
-    glGenerateMipmap(GL_TEXTURE_2D);
-    [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
-    */
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // setup linear sRGB target
     [ rtc bindFBO ];
@@ -742,10 +753,12 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ rtc activateDrawBuffers ];
     [ rtc activateViewport ];
 
+    // clear color and depth buffer
     [ depthTestState setWriteEnabled:YES ];
     [ stateConfiguration activate ];
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
 
+    // render sky on farplane
     [ depthTestState setWriteEnabled:NO ];
     [ depthTestState setEnabled:NO ];
     [ stateConfiguration activate ];
@@ -769,6 +782,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
     glEnd();
 
+    // now the serious stuff starts
     [ camera render ];
 
     // activate culling, depth write and depth test
@@ -779,6 +793,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ depthTestState setEnabled:YES ];
     [ stateConfiguration activate ];
     
+    // bind ocean geometry data: heights, displacements and LOD areas
     [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean heightfield  ] texelUnit:0 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacement ] texelUnit:1 ];
@@ -814,9 +829,14 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ wciP setValue:[ ocean waterColorIntensityCoordinate ]];
     [ vsP setValue:[ projectedGrid vertexStep ]];
 
+
+    // transform feedback starts here
+
+    // transform step
     [ projectedGridTFTransform activate ];
     [ projectedGrid renderTFTransform ];
 
+    // bind all ocean data necessary for per-pixel computations
     [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean gradient ]            texelUnit:0 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean waterColor ]          texelUnit:1 ];
@@ -827,10 +847,11 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[[ NP Graphics ] textureBindingState ] setTexture:[ whitecapsTarget texture  ]  texelUnit:6 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
-
+    // feedback step
     [ projectedGridTFFeedback activate ];
     [ projectedGrid renderTFFeedback  ];
 
+    // render world coordinate system axes
     [[[ NPEngineCore instance ] transformationState ] resetModelMatrix ];
 
     [ cullingState setEnabled:NO ];
@@ -854,7 +875,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ linearsRGBTarget detach:NO ];
     [ depthBuffer      detach:NO ];
 
-    // log luminance computation for tonemapping
     [ logLuminanceTarget
             attachToRenderTargetConfiguration:rtc
                              colorBufferIndex:0
@@ -870,11 +890,11 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     // reset matrices
     [[[ NP Core ] transformationState ] reset ];
 
+    // log luminance computation for tonemapping
     [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ linearsRGBTarget texture ] texelUnit:0 ];
     [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
     [ logLuminance activate ];
-
     [ fullscreenQuad render ];
 
     [ logLuminanceTarget detach:NO ];

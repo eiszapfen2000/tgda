@@ -202,7 +202,7 @@ void main()
 
     //vec3 c_light = vec3(1000000);
     vec3 c_light = sunColor;
-    vec3 c_diff  = vec3(0.0, 0.15, 0.25);
+    //vec3 c_diff  = vec3(0.0, 0.15, 0.25);
     vec3 c_spec  = vec3(0.02);
 
     vec3 tx = normalize(vec3(1.0, -normal.x, 0.0));
@@ -246,34 +246,30 @@ void main()
     float denominator = 4.0 * (h.y * h.y * h.y * h.y) * max(0.01, dot(n, v)) * l_v_smith;
     vec3 rossContribution = c_light * probability * (f_schlick / denominator);
 
-
     float f_mean = 0.02 + 0.98 * meanFresnel(v, n, sigmaSq);
     vec3 meanSky = meanSkyRadiance(v, ross, sigmaSq);
     vec3 skyContribution = f_mean * meanSky;
-
-    /*
-    vec4 seaColor = vec4(11.0 / 255.0, 121.0 / 255.0, 49.0 / 255.0, 140 / 255.0);
-    seaColor.rgb = seaColor.rgb * seaColor.a;
-    */
 
     vec3 seaColor = texture(watercolor, waterColorCoordinate).rgb;
     vec3 seaColorIntensity = texture(watercolorIntensity, waterColorIntensityCoordinate).rgb;
     seaColor *= seaColorIntensity;
 
-    //vec3 Lsea = seaColor.rgb * (c_light * 0.001 / MATH_PI);
-    vec3 Lsea = seaColor.rgb * (meanSky / MATH_PI);
+    vec3 Lsea = seaColor.rgb * (c_light * 0.001 / MATH_PI);
+    //vec3 Lsea = seaColor.rgb * (meanSky / MATH_PI);
     vec3 seaContribution = (1.0 - f_mean) * Lsea;
 
-    /*
-    vec2 jmean = texture(whitecaps, texcoord).xy;
+
+    vec2 lodSize = texelFetch(sizes, 0).xy;
+    vec2 scaledLodSize = areaScale * lodSize;
+    vec2 wctexcoord = out_ws_non_disp_position / scaledLodSize;
+    vec2 jmean = texture(whitecaps, vec3(wctexcoord, 0)).xy;
     float jSigmaSqr = max(jmean.y - jmean.x * jmean.x, 0.0);
     float W = whitecapCoverage(jacobianEpsilon, jmean.x, jSigmaSqr);
     // compute and add whitecap radiance
     vec3 Lfoam = (c_light * (max(dot(n, l), 0.0)) + meanSky) / MATH_PI;
     vec3 foamContribution = vec3(W * Lfoam * 0.4);
-    */
 
-    vec3 L_zero = rossContribution + skyContribution + seaContribution;// + foamContribution;
+    vec3 L_zero = rossContribution + skyContribution + seaContribution + foamContribution;
     //vec3 L_zero = foamContribution;
 
     target = vec4(L_zero, 1.0);
