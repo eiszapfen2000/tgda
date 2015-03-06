@@ -97,6 +97,13 @@
     NPEffectVariableFloat * transformHeightScale;
     NPEffectVariableFloat2 * transformVertexStep;
     NPEffectVariableMatrix4x4 * transformInvMVP;
+    // projected grid, feedback phase
+    NPEffectVariableFloat  * feedbackJacobianEpsilon;
+    NPEffectVariableFloat3 * feedbackCameraPosition;
+    NPEffectVariableFloat3 * feedbackDirectionToSun;
+    NPEffectVariableFloat3 * feedbackSunColor;
+    NPEffectVariableFloat2 * feedbackWaterColorCoordinate;
+    NPEffectVariableFloat2 * feedbackWaterColorIntensityCoordinate;
 
     // variance LUT for Ross BRDF
     NSUInteger varianceLUTLastResolutionIndex;
