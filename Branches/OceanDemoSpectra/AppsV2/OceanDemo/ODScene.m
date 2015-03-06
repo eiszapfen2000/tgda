@@ -283,6 +283,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     //
     whitecapsRtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Whitecaps RTC" ];   
     whitecapsTarget = [[ NPRenderTexture alloc ] init ];
+    lastDispDerivativesLayers = UINT_MAX;
 
     // g buffer
     rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"General RTC" ];
@@ -676,17 +677,21 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         = (dispDerivativesLayers / 2) + (dispDerivativesLayers % 2);
 
     if (( dispDerivativesWidth != 0 && dispDerivativesHeight != 0 )
-        && (dispDerivativesWidth  != whitecapsTargetWidth
-            || dispDerivativesHeight != whitecapsTargetHeight
-            || necessaryWhiteCapsTargetLayers != whitecapsTargetLayers)
-         )
+        && ( dispDerivativesWidth  != whitecapsTargetWidth
+             || dispDerivativesHeight != whitecapsTargetHeight 
+             || dispDerivativesLayers != lastDispDerivativesLayers ))
     {
+        NSLog(@"BLLLLL");
+
+        NSAssert(dispDerivativesLayers > 0 && dispDerivativesLayers <= 4, @"");
+        lastDispDerivativesLayers = dispDerivativesLayers;
+
         BOOL result
             = [ whitecapsTarget
                     generate2DArray:NpRenderTargetColor
                               width:dispDerivativesWidth
                              height:dispDerivativesHeight
-                             layers:necessaryWhiteCapsTargetLayers
+                             layers:2
                         pixelFormat:NpTexturePixelFormatRGBA
                          dataFormat:NpTextureDataFormatFloat32
                       mipmapStorage:YES
@@ -698,18 +703,22 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         [ whitecapsRtc setHeight:dispDerivativesHeight ];
         [ whitecapsRtc bindFBO ];
 
-        for (uint32_t l = 0; l < necessaryWhiteCapsTargetLayers; l++)
+        for (uint32_t l = 0; l < 2; l++)
         {
-                [ whitecapsTarget
-                        attachLevel:0
-                              layer:l
-          renderTargetConfiguration:whitecapsRtc
-                   colorBufferIndex:l
-                            bindFBO:NO ];
+            [ whitecapsTarget attachLevel:0
+                                    layer:l
+                renderTargetConfiguration:whitecapsRtc
+                         colorBufferIndex:l
+                                  bindFBO:NO ];
 
         }
 
-        [ whitecapsRtc unbindFBO ];
+        [ whitecapsRtc activateDrawBuffers ];
+        [ whitecapsRtc activateViewport ];
+
+        [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+
+        [ whitecapsRtc deactivate ];
     }
 
     // get state related objects for later use
