@@ -96,7 +96,7 @@ OdSpectrumVariance;
 
 static const NSUInteger defaultNumberOfLods = 2;
 static const NSUInteger defaultSpectrumType = 1;
-static const NSUInteger defaultOptions = OdGeneratorOptionsHeights | OdGeneratorOptionsGradient | OdGeneratorOptionsDisplacement;
+static const NSUInteger defaultOptions = OdGeneratorOptionsHeights | OdGeneratorOptionsGradient | OdGeneratorOptionsDisplacement | OdGeneratorOptionsDisplacementDerivatives;
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
 static const double defaultSize = 237.0;
