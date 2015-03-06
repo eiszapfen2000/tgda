@@ -222,7 +222,7 @@
 
     for ( int32_t i = 0; i < 8; i++ )
     {
-        frustumCornerPositions[i]   = fv3_vv_add(&(frustumCornerPositions[i]),   &nearPlaneWorldSpacePositionF);
+        frustumCornerPositions[i] = fv3_vv_add(&(frustumCornerPositions[i]), &nearPlaneWorldSpacePositionF);
     }
 }
 
