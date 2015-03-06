@@ -109,7 +109,7 @@ technique "proj_grid_tf_feedback"
     {
         WrapS = Repeat;
         WrapT = Repeat;
-        MinFilter = Linear;
+        MinFilter = Trilinear;
         MagFilter = Linear;
         Anisotropy = 16;
     };

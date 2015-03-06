@@ -681,8 +681,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
              || dispDerivativesHeight != whitecapsTargetHeight 
              || dispDerivativesLayers != lastDispDerivativesLayers ))
     {
-        NSLog(@"BLLLLL");
-
         NSAssert(dispDerivativesLayers > 0 && dispDerivativesLayers <= 4, @"");
         lastDispDerivativesLayers = dispDerivativesLayers;
 
@@ -748,11 +746,13 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         // precompute whitecaps derivative stuff
         [ whitecapsRtc activate ];
 
+        /*
         NSError * wce = nil;
         if ( [ whitecapsRtc checkFrameBufferCompleteness:&wce ] == NO )
         {
             NPLOG_ERROR(wce);
         }
+        */
 
         [[[ NP Graphics ] textureBindingState ] clear ];
         [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacementDerivatives ] texelUnit:0 ];
