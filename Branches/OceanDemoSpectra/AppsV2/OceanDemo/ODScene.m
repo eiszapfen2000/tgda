@@ -345,6 +345,16 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     NSAssert(result, @"Transform Feedback setup failed");
 
+    transformAreaScale = [ projectedGridEffect variableWithName:@"areaScale" ];
+    transformDisplacementScale = [ projectedGridEffect variableWithName:@"displacementScale" ];
+    transformHeightScale = [ projectedGridEffect variableWithName:@"heightScale" ];
+    transformVertexStep = [ projectedGridEffect variableWithName:@"vertexStep" ];
+    transformInvMVP = [ projectedGridEffect variableWithName:@"invMVP" ];
+
+    NSAssert(transformAreaScale != nil && transformDisplacementScale != nil
+             && transformHeightScale != nil && transformVertexStep != nil
+             && transformInvMVP != nil, @"");
+
     varianceLUTLastResolutionIndex = ULONG_MAX;
     varianceLUTResolutionIndex = defaultVarianceLUTResolutionIndex;
     varianceRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Variance RTC" ];
@@ -800,32 +810,27 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]        texelUnit:2 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
-    NPEffectVariableMatrix4x4 * w = [ projectedGridEffect variableWithName:@"invMVP"];
-    NPEffectVariableFloat * a = [ projectedGridEffect variableWithName:@"areaScale"];
-    NPEffectVariableFloat * hs = [ projectedGridEffect variableWithName:@"heightScale"];
     NPEffectVariableFloat * je = [ projectedGridEffect variableWithName:@"jacobianEpsilon"];
     NPEffectVariableFloat3 * cP = [ projectedGridEffect variableWithName:@"cameraPosition"];
     NPEffectVariableFloat3 * dsP = [ projectedGridEffect variableWithName:@"directionToSun"];
     NPEffectVariableFloat3 * scP = [ projectedGridEffect variableWithName:@"sunColor"];
     NPEffectVariableFloat2 * wcP = [ projectedGridEffect variableWithName:@"waterColorCoordinate"];
     NPEffectVariableFloat2 * wciP = [ projectedGridEffect variableWithName:@"waterColorIntensityCoordinate"];
-    NPEffectVariableFloat2 * vsP = [ projectedGridEffect variableWithName:@"vertexStep"];
-    NPEffectVariableFloat * ds = [ projectedGridEffect variableWithName:@"displacementScale"];
 
-    NSAssert(w != nil && a != nil && ds != nil && hs != nil && je != nil && cP != nil && dsP != nil && scP != nil && vsP != nil && wcP != nil && wciP != nil, @"");
+    NSAssert(je != nil && cP != nil && dsP != nil && scP != nil && wcP != nil && wciP != nil, @"");
 
-    [ ds setValue:[ ocean displacementScale ]];
-    [ w setValue:[[ ocean projector ] inverseViewProjection]];
-    [ a setValue:[ocean areaScale ]];
-    [ hs setValue:[ ocean heightScale ]];
+    [ transformAreaScale setValue:[ocean areaScale ]];
+    [ transformDisplacementScale setValue:[ocean displacementScale ]];
+    [ transformHeightScale setValue:[ocean heightScale ]];
+    [ transformVertexStep setValue:[ projectedGrid vertexStep ]];
+    [ transformInvMVP setValue:[[ ocean projector ] inverseViewProjection]];
+
     [ je setValue:jacobianEpsilon ];
     [ cP setValue:[ camera position ]];
     [ dsP setValue:[ skylight directionToSun ]];
     [ scP setValue:[ skylight sunColor ]];
     [ wcP setValue:[ ocean waterColorCoordinate ]];
     [ wciP setValue:[ ocean waterColorIntensityCoordinate ]];
-    [ vsP setValue:[ projectedGrid vertexStep ]];
-
 
     // transform feedback starts here
 
