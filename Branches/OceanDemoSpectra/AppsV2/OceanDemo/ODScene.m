@@ -746,20 +746,17 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
         // precompute whitecaps derivative stuff
         [ whitecapsRtc activate ];
 
-        /*
         NSError * wce = nil;
         if ( [ whitecapsRtc checkFrameBufferCompleteness:&wce ] == NO )
         {
             NPLOG_ERROR(wce);
         }
-        */
 
         [[[ NP Graphics ] textureBindingState ] clear ];
         [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacementDerivatives ] texelUnit:0 ];
         [[[ NP Graphics ] textureBindingState ] activate ];
 
-        NPEffectVariableFloat * dslolz = [ projectedGridEffect variableWithName:@"displacementScale"];
-        [ dslolz setValue:[ ocean displacementScale ]];
+        [ transformDisplacementScale setValue:[ocean displacementScale ]];
 
         [ whitecapsPrecompute activate ];
         [ fullscreenQuad render ];
@@ -768,7 +765,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
         // Generate whhitecaps derivative stuff mipmaps
         [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ whitecapsTarget texture ] ];
-        glGenerateMipmap(GL_TEXTURE_2D);
+        glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
         [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
     }
 
