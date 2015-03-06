@@ -18,6 +18,7 @@
 @class NPEffectVariableFloat;
 @class NPEffectVariableFloat2;
 @class NPEffectVariableFloat3;
+@class NPEffectVariableMatrix4x4;
 @class NPFullscreenQuad;
 @class ODBasePlane;
 @class ODIWave;
@@ -90,6 +91,12 @@
     NPEffectTechnique * whitecapsPrecompute;
     NPEffectTechnique * projectedGridTFTransform;
     NPEffectTechnique * projectedGridTFFeedback;
+    // projected grid, transform phase    
+    NPEffectVariableFloat * transformAreaScale;
+    NPEffectVariableFloat * transformDisplacementScale;
+    NPEffectVariableFloat * transformHeightScale;
+    NPEffectVariableFloat2 * transformVertexStep;
+    NPEffectVariableMatrix4x4 * transformInvMVP;
 
     // variance LUT for Ross BRDF
     NSUInteger varianceLUTLastResolutionIndex;
