@@ -1,15 +1,22 @@
-#version 150
+#version 330
 
 in vec2 out_texcoord;
 
 void main()
 {
-    // .x = dx_x .y = dx_z .z = dz_x .w = dz_z
-    vec4 derivatives = -displacementScale * texture(displacementDerivatives, vec3(out_texcoord, 0.0));
+    int numberOfLods = textureSize(displacementDerivatives, 0).z;
 
-    // 1/n + ai + bi + ai*bi - ci*ci
-    float res = 1.0 + derivatives.x + derivatives.w + (derivatives.x * derivatives.w) - (derivatives.y * derivatives.z);
+    vec4 ki = vec4(0.0);
+    for (int l = 0; l < numberOfLods; l++)
+    {
+        // .x = dx_x .y = dx_z .z = dz_x .w = dz_z
+        vec4 derivatives = -displacementScale * texture(displacementDerivatives, vec3(out_texcoord, l));
 
-    ki = vec2(res, res*res);
+        // 1/n + ai + bi + ai*bi - ci*ci
+        ki[l] = (1.0 / numberOfLods) + derivatives.x + derivatives.w + (derivatives.x * derivatives.w) - (derivatives.y * derivatives.z);
+    }
+
+    ki_lod_0_1 = vec4(ki.x, ki.x * ki.x, ki.y, ki.y * ki.y);
+    ki_lod_2_3 = vec4(ki.z, ki.z * ki.z, ki.w, ki.w * ki.w);
 }
 
