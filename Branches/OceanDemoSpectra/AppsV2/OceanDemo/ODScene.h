@@ -51,7 +51,7 @@
     BOOL connecting;
     BOOL disconnecting;
 
-    //
+    // whitecaps threshold
     double jacobianEpsilon;
 
     // tonemapping parameters
@@ -63,11 +63,11 @@
     double lastFrameLuminance;
     double currentFrameLuminance;
 
-    //
+    // scene render target resolution
     IVector2 currentResolution;
     IVector2 lastFrameResolution;
 
-    //
+    // whitecaps precompute render target
     NPRenderTargetConfiguration * whitecapsRtc;
     NPRenderTexture * whitecapsTarget;
 
