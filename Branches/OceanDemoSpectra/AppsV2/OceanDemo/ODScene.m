@@ -800,9 +800,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]        texelUnit:2 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
-    NPEffectVariableMatrix4x4 * v = [ deferredEffect variableWithName:@"invMVP"];
-    [ v setValue:[[ ocean projector ] inverseViewProjection]];
-
     NPEffectVariableMatrix4x4 * w = [ projectedGridEffect variableWithName:@"invMVP"];
     NPEffectVariableFloat * a = [ projectedGridEffect variableWithName:@"areaScale"];
     NPEffectVariableFloat * hs = [ projectedGridEffect variableWithName:@"heightScale"];
