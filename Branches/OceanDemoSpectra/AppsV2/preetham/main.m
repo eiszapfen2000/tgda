@@ -250,6 +250,30 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
     return XYZ;
 }
 
+static Vector3 xyY_to_XYZ(Vector3 xyY)
+{
+    assert(xyY.z > 0.0);
+
+    Vector3 XYZ;
+    XYZ.x = (xyY.x / xyY.y) * xyY.z;        
+    XYZ.y = xyY.z;
+    XYZ.z = ((1.0 - xyY.x - xyY.y) / xyY.y) * xyY.z;
+
+    return XYZ;
+}
+
+static Vector3 XYZ_to_xyY(Vector3 XYZ)
+{
+    assert(!(XYZ.x == 0.0 && XYZ.y == 0.0 && XYZ.z ));
+
+    Vector3 xyY;
+    xyY.x = XYZ.x / (XYZ.x + XYZ.y + XYZ.z);
+    xyY.y = XYZ.y / (XYZ.x + XYZ.y + XYZ.z);
+    xyY.z = XYZ.y;
+
+    return xyY;
+}
+
 static NSString * const NPGraphicsStartupError = @"NPEngineGraphics failed to start up. Consult %@/np.log for details.";
 
 int main (int argc, char **argv)
@@ -274,7 +298,7 @@ int main (int argc, char **argv)
     glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
     
     // Open a window and create its OpenGL context
-    if( !glfwOpenWindow( 800, 800, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
+    if( !glfwOpenWindow( 512, 512, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
     {
         NSLog(@"Failed to open GLFW window");
         glfwTerminate();
@@ -331,7 +355,7 @@ int main (int argc, char **argv)
 
     NSAutoreleasePool * rPool = [ NSAutoreleasePool new ];
 
-    const uint32_t skyResolution = 800;
+    const uint32_t skyResolution = 512;
 
     NPRenderTargetConfiguration * rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC"  ];
     NPRenderTexture * preethamTarget  = [[ NPRenderTexture alloc ] initWithName:@"Preetham Target"  ];
@@ -405,6 +429,8 @@ int main (int argc, char **argv)
     NPEffectVariableFloat3 * D_xyY_P = [ effect variableWithName:@"D" ];
     NPEffectVariableFloat3 * E_xyY_P = [ effect variableWithName:@"E" ];
 
+    NPEffectVariableFloat3 * irradiance_P = [ effect variableWithName:@"irradiance" ];
+
     NPEffectVariableFloat * key_P = [ effect variableWithName:@"key" ];
     NPEffectVariableInt   * averageLuminanceLevel_P = [ effect variableWithName:@"averageLuminanceLevel" ];
     NPEffectVariableFloat * whiteLuminance_P = [ effect variableWithName:@"whiteLuminance" ];
@@ -412,7 +438,7 @@ int main (int argc, char **argv)
     assert(A_xyY_P != nil && B_xyY_P != nil && C_xyY_P != nil && D_xyY_P != nil
            && E_xyY_P != nil && radiusInPixel_P != nil && directionToSun_P != nil
            && sunColor_P != nil && sunHalfApparentAngle_P != nil
-           && zenithColor_P != nil && denominator_P != nil
+           && zenithColor_P != nil && denominator_P != nil && irradiance_P != nil
            && key_P != nil && averageLuminanceLevel_P != nil && whiteLuminance_P != nil);
 
     NPInputAction * leftClick
@@ -610,6 +636,72 @@ int main (int argc, char **argv)
         denominator.y = digamma(0.0, thetaSun, ABCDE_y);
         denominator.z = digamma(0.0, thetaSun, ABCDE_Y);
 
+        Vector3 irradiance_xyY = v3_zero();
+        Vector3 irradiance_XYZ = v3_zero();
+
+        const double phiStep   = 5.0 * MATH_DEG_TO_RAD;
+        const double thetaStep = 5.0 * MATH_DEG_TO_RAD;
+
+        for (double phi = 0.0; phi < MATH_2_MUL_PI; phi += phiStep)
+        {
+            for (double theta = 0.0; theta < MATH_PI_DIV_4; theta += thetaStep)
+            {
+                const double sinTheta = sin(theta);
+                const double cosTheta = cos(theta);
+                const double sinPhi = sin(phi);
+                const double cosPhi = cos(phi);
+
+                Vector3 v;
+                v.x = sinTheta * cosPhi;
+                v.y = sinTheta * sinPhi;
+                v.z = cosTheta;
+                // float cosGamma = clamp(dot(v, directionToSun), -1.0, 1.0);
+                double cosGamma = v3_vv_dot_product(&directionToSun, &v);
+                cosGamma = MAX(MIN(cosGamma, 1.0), -1.0);
+                double gamma = acos(cosGamma);
+
+                Vector3 nominator;
+                nominator.x = digamma(theta, gamma, ABCDE_x);
+                nominator.y = digamma(theta, gamma, ABCDE_y);
+                nominator.z = digamma(theta, gamma, ABCDE_Y);
+
+                Vector3 xyY;
+                xyY.x = zenithColor_xyY.x * (nominator.x / denominator.x);
+                xyY.y = zenithColor_xyY.y * (nominator.y / denominator.y);
+                xyY.z = zenithColor_xyY.z * (nominator.z / denominator.z);
+
+                double n_dot_v = v3_vv_dot_product(NP_WORLD_Z_AXIS, &v);
+
+                irradiance_xyY.x += xyY.x * phiStep * thetaStep * n_dot_v;
+                irradiance_xyY.y += xyY.y * phiStep * thetaStep * n_dot_v;
+                irradiance_xyY.z += xyY.z * phiStep * thetaStep * n_dot_v;
+
+                Vector3 XYZ = xyY_to_XYZ(xyY);
+                irradiance_XYZ.x += XYZ.x * phiStep * thetaStep * n_dot_v;
+                irradiance_XYZ.y += XYZ.y * phiStep * thetaStep * n_dot_v;
+                irradiance_XYZ.z += XYZ.z * phiStep * thetaStep * n_dot_v;
+            }
+        }
+
+        Vector3 c = xyY_to_XYZ(irradiance_xyY);
+        NSLog(@"%f %f %f", irradiance_xyY.x, irradiance_xyY.y, irradiance_xyY.z);
+        NSLog(@"I XYZ %f %f %f", irradiance_XYZ.x, irradiance_XYZ.y, irradiance_XYZ.z);
+        NSLog(@"%f %f %f", c.x, c.y, c.z);
+
+        Vector3 nominatorSun;
+        nominatorSun.x = digamma(thetaSun, 0.0, ABCDE_x);
+        nominatorSun.y = digamma(thetaSun, 0.0, ABCDE_y);
+        nominatorSun.z = digamma(thetaSun, 0.0, ABCDE_Y);
+
+        Vector3 sun_xyY;
+        sun_xyY.x = zenithColor_xyY.x * (nominatorSun.x / denominator.x);
+        sun_xyY.y = zenithColor_xyY.y * (nominatorSun.y / denominator.y);
+        sun_xyY.z = zenithColor_xyY.z * (nominatorSun.z / denominator.z);
+
+        Vector3 sun_XYZ = xyY_to_XYZ(sun_xyY);
+        NSLog(@"S XYZ %f %f %f", sun_XYZ.x, sun_XYZ.y, sun_XYZ.z);
+
+
         const FVector3 A = { ABCDE_x[0], ABCDE_y[0], ABCDE_Y[0] };
         const FVector3 B = { ABCDE_x[1], ABCDE_y[1], ABCDE_Y[1] };
         const FVector3 C = { ABCDE_x[2], ABCDE_y[2], ABCDE_Y[2] };
@@ -621,6 +713,7 @@ int main (int argc, char **argv)
         [ C_xyY_P setFValue:C ];
         [ D_xyY_P setFValue:D ];
         [ E_xyY_P setFValue:E ];
+        [ irradiance_P setValue:irradiance_XYZ ];
 
         [ radiusInPixel_P setFValue:halfSkyResolution ];
         [ directionToSun_P setValue:directionToSun ];
