@@ -103,6 +103,7 @@
     NPEffectVariableFloat3 * feedbackCameraPosition;
     NPEffectVariableFloat3 * feedbackDirectionToSun;
     NPEffectVariableFloat3 * feedbackSunColor;
+    NPEffectVariableFloat3 * feedbackSkyIrradiance;
     NPEffectVariableFloat2 * feedbackWaterColorCoordinate;
     NPEffectVariableFloat2 * feedbackWaterColorIntensityCoordinate;
 
