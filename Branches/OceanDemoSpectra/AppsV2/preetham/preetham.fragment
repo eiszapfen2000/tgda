@@ -74,7 +74,7 @@ void main()
     else
     {
         const float avgFresnel = 0.17;
-        XYZ = (irradiance / MATH_PI);// * avgFresnel;
+        XYZ = (irradiance / MATH_PI) * avgFresnel;
     }
 
     target = vec4(XYZ2LinearsRGB * XYZ, 1.0);
