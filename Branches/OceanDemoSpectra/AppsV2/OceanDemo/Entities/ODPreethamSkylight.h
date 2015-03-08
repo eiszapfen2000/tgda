@@ -32,7 +32,8 @@
     double sunDiskC;
 
     Vector3 directionToSun;
-    Vector3 irradiance;
+    Vector3 irradianceXYZ;
+    Vector3 irradianceRGB;
     Vector3 sunColor;
 
     NPRenderTargetConfiguration * rtc;

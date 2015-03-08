@@ -193,10 +193,12 @@ void main()
     vec3 l = normalize(lightDir);
     vec3 v = normalize(viewDir);
 
+    /*
     if (dot(viewDir, normal) < 0.0)
     {
         normal = reflect(normal, v);
     }
+    */
 
     vec3 n = normalize(normal);
     vec3 h = normalize(v + l);
@@ -242,8 +244,8 @@ void main()
     vec3 seaColorIntensity = texture(watercolorIntensity, waterColorIntensityCoordinate).rgb;
     seaColor *= seaColorIntensity;
 
-    vec3 Lsea = seaColor.rgb * (c_light * 0.005 / MATH_PI);
-    //vec3 Lsea = seaColor.rgb * (meanSky / MATH_PI);
+    vec3 Lsea = seaColor.rgb * skyIrradiance / MATH_PI;
+    //vec3 Lsea = seaColor.rgb * (c_light * 0.001 / MATH_PI);
     vec3 seaContribution = (1.0 - f_mean) * Lsea;
 
     /*
@@ -268,8 +270,8 @@ void main()
     vec3 foamContribution = vec3(W * Lfoam * 0.4);
     */
 
-    //vec3 L_zero = rossContribution + skyContribution + seaContribution + foamContribution;
-    vec3 L_zero = skyContribution;
+    vec3 L_zero = rossContribution + skyContribution + seaContribution;// + foamContribution;
+    //vec3 L_zero = seaContribution;
 
     target = vec4(L_zero, 1.0);
 }
