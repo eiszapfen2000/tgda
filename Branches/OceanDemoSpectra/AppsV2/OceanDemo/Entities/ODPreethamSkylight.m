@@ -310,6 +310,7 @@ static Vector3 sun_color(double turbidity, double thetaSun)
     sunDiskC = 150.0;
 
     directionToSun = v3_zero();
+    irradiance = v3_zero();
     sunColor = v3_zero();
 
     rtc = [[ NPRenderTargetConfiguration alloc] initWithName:@"Preetham RTC" ];
@@ -328,10 +329,11 @@ static Vector3 sun_color(double turbidity, double thetaSun)
     sunHalfApparentAngle_P = [ effect variableWithName:@"sunHalfApparentAngle" ];
     sunDisk_abc_P          = [ effect variableWithName:@"sunDiskABC" ];
 
-    directionToSun_P  = [ effect variableWithName:@"directionToSun" ];
-    sunColor_P        = [ effect variableWithName:@"sunColor"       ];
-    zenithColor_P     = [ effect variableWithName:@"zenithColor"    ];
-    denominator_P     = [ effect variableWithName:@"denominator"    ];
+    directionToSun_P = [ effect variableWithName:@"directionToSun" ];
+    sunColor_P       = [ effect variableWithName:@"sunColor"       ];
+    zenithColor_P    = [ effect variableWithName:@"zenithColor"    ];
+    denominator_P    = [ effect variableWithName:@"denominator"    ];
+    irradiance_P     = [ effect variableWithName:@"irradiance"     ];
 
     A_xyY_P = [ effect variableWithName:@"A" ];
     B_xyY_P = [ effect variableWithName:@"B" ];
@@ -340,7 +342,7 @@ static Vector3 sun_color(double turbidity, double thetaSun)
     E_xyY_P = [ effect variableWithName:@"E" ];
 
     NSAssert(radiusInPixel_P != nil && sunHalfApparentAngle_P != nil && sunDisk_abc_P != nil
-             && directionToSun_P != nil && sunColor_P != nil
+             && directionToSun_P != nil && sunColor_P != nil && irradiance_P != nil
              && zenithColor_P != nil && denominator_P != nil && A_xyY_P != nil
              && B_xyY_P != nil && C_xyY_P != nil && D_xyY_P != nil && E_xyY_P != nil, @"");
 
@@ -373,9 +375,38 @@ static Vector3 sun_color(double turbidity, double thetaSun)
     return directionToSun;
 }
 
+- (Vector3) irradiance
+{
+    return irradiance;
+}
+
 - (Vector3) sunColor
 {
     return sunColor;
+}
+
+static Vector3 xyY_to_XYZ(Vector3 xyY)
+{
+    assert(xyY.z > 0.0);
+
+    Vector3 XYZ;
+    XYZ.x = (xyY.x / xyY.y) * xyY.z;        
+    XYZ.y = xyY.z;
+    XYZ.z = ((1.0 - xyY.x - xyY.y) / xyY.y) * xyY.z;
+
+    return XYZ;
+}
+
+static Vector3 XYZ_to_xyY(Vector3 XYZ)
+{
+    assert(!(XYZ.x == 0.0 && XYZ.y == 0.0 && XYZ.z ));
+
+    Vector3 xyY;
+    xyY.x = XYZ.x / (XYZ.x + XYZ.y + XYZ.z);
+    xyY.y = XYZ.y / (XYZ.x + XYZ.y + XYZ.z);
+    xyY.z = XYZ.y;
+
+    return xyY;
 }
 
 - (void) update:(double)frameTime
@@ -387,6 +418,17 @@ static Vector3 sun_color(double turbidity, double thetaSun)
          || lastSunDiskA != sunDiskA || lastSunDiskB != sunDiskB
          || lastSunDiskC != sunDiskC )
     {
+        Matrix3 lsRGB;
+        M_EL(lsRGB, 0, 0) =  3.1338561;
+        M_EL(lsRGB, 0, 1) = -0.9787684;
+        M_EL(lsRGB, 0, 2) =  0.0719453;
+        M_EL(lsRGB, 1, 0) = -1.6168667;
+        M_EL(lsRGB, 1, 1) =  1.9161415;
+        M_EL(lsRGB, 1, 2) = -0.2289914;
+        M_EL(lsRGB, 2, 0) = -0.4906146;
+        M_EL(lsRGB, 2, 1) =  0.0334540;
+        M_EL(lsRGB, 2, 2) =  1.4052427;
+
 	    double ABCDE_x[5], ABCDE_y[5], ABCDE_Y[5];
 
 	    ABCDE_x[0] = -0.01925 * turbidity - 0.25922;
@@ -409,21 +451,74 @@ static Vector3 sun_color(double turbidity, double thetaSun)
 
         Vector3 zenithColor = preetham_zenith_color(turbidity, thetaSun);
 
+        Vector3 sunXYZ = sun_color(turbidity, thetaSun);
+        sunColor = m3_mv_multiply(&lsRGB, &sunXYZ);
+
         Vector3 denominator;
         denominator.x = digamma(0.0, thetaSun, ABCDE_x);
         denominator.y = digamma(0.0, thetaSun, ABCDE_y);
         denominator.z = digamma(0.0, thetaSun, ABCDE_Y);
 
-        Matrix3 lsRGB;
-        M_EL(lsRGB, 0, 0) =  3.1338561;
-        M_EL(lsRGB, 0, 1) = -0.9787684;
-        M_EL(lsRGB, 0, 2) =  0.0719453;
-        M_EL(lsRGB, 1, 0) = -1.6168667;
-        M_EL(lsRGB, 1, 1) =  1.9161415;
-        M_EL(lsRGB, 1, 2) = -0.2289914;
-        M_EL(lsRGB, 2, 0) = -0.4906146;
-        M_EL(lsRGB, 2, 1) =  0.0334540;
-        M_EL(lsRGB, 2, 2) =  1.4052427;
+        const double sinThetaSun = sin(thetaSun);
+        const double cosThetaSun = cos(thetaSun);
+        const double sinPhiSun = sin(phiSun);
+        const double cosPhiSun = cos(phiSun);
+
+        directionToSun.x = sinThetaSun * cosPhiSun;
+        directionToSun.y = cosThetaSun;
+        directionToSun.z = -sinThetaSun * sinPhiSun;
+
+        Vector3 localDirectionToSun;
+        localDirectionToSun.x = sinThetaSun * cosPhiSun;
+        localDirectionToSun.y = sinThetaSun * sinPhiSun;
+        localDirectionToSun.z = cosThetaSun;
+
+        const double phiStep   = 10.0 * MATH_DEG_TO_RAD;
+        const double thetaStep = 10.0 * MATH_DEG_TO_RAD;
+
+        //NSLog(@"%f %f", thetaSun, turbidity);
+
+        for (double phi = 0.0; phi < MATH_2_MUL_PI; phi += phiStep)
+        {
+            for (double theta = 0.0; theta < MATH_PI_DIV_4; theta += thetaStep)
+            {
+                const double sinTheta = sin(theta);
+                const double cosTheta = cos(theta);
+                const double sinPhi = sin(phi);
+                const double cosPhi = cos(phi);
+
+                Vector3 v;
+                v.x = sinTheta * cosPhi;
+                v.y = sinTheta * sinPhi;
+                v.z = cosTheta;
+                double cosGamma = v3_vv_dot_product(&localDirectionToSun, &v);
+                cosGamma = MAX(MIN(cosGamma, 1.0), -1.0);
+                double gamma = acos(cosGamma);
+
+                //NSLog(@"%f", gamma);
+
+                Vector3 nominator;
+                nominator.x = digamma(theta, gamma, ABCDE_x);
+                nominator.y = digamma(theta, gamma, ABCDE_y);
+                nominator.z = digamma(theta, gamma, ABCDE_Y);
+
+                Vector3 xyY;
+                xyY.x = zenithColor.x * (nominator.x / denominator.x);
+                xyY.y = zenithColor.y * (nominator.y / denominator.y);
+                xyY.z = zenithColor.z * (nominator.z / denominator.z);
+
+                //NSLog(@"%f %f %f", xyY.x, xyY.y, xyY.z);
+
+                double n_dot_v = v3_vv_dot_product(NP_WORLD_Z_AXIS, &v);
+
+                Vector3 XYZ = xyY_to_XYZ(xyY);
+                irradiance.x += XYZ.x * phiStep * thetaStep * n_dot_v;
+                irradiance.y += XYZ.y * phiStep * thetaStep * n_dot_v;
+                irradiance.z += XYZ.z * phiStep * thetaStep * n_dot_v;
+            }
+        }
+
+        NSLog(@"%f %f %f", irradiance.x, irradiance.y, irradiance.z);
 
         /*
         Vector3 nominatorSun;
@@ -444,9 +539,6 @@ static Vector3 sun_color(double turbidity, double thetaSun)
         Vector3 sColor = m3_mv_multiply(&lsRGB, &XYZ);
         */
 
-        Vector3 sunXYZ = sun_color(turbidity, thetaSun);
-        sunColor = m3_mv_multiply(&lsRGB, &sunXYZ);
-
         /*
         http://en.wikipedia.org/wiki/Solid_angle#Sun_and_Moon
 
@@ -459,15 +551,6 @@ static Vector3 sun_color(double turbidity, double thetaSun)
         double sunDiskRadius = tan(sunHalfApparentAngle);
         double sunSolidAngle = sunDiskRadius * sunDiskRadius * MATH_PI;
 
-        const double sinThetaSun = sin(thetaSun);
-        const double cosThetaSun = cos(thetaSun);
-        const double sinPhiSun = sin(phiSun);
-        const double cosPhiSun = cos(phiSun);
-
-        directionToSun.x = sinThetaSun * cosPhiSun;
-        directionToSun.y = cosThetaSun;
-        directionToSun.z = -sinThetaSun * sinPhiSun;
-
         const float halfSkyResolution = ((float)skylightResolution) / (2.0f);
 
         const float cStart = -halfSkyResolution;
@@ -478,11 +561,6 @@ static Vector3 sun_color(double turbidity, double thetaSun)
         const Vector3 C = { ABCDE_x[2], ABCDE_y[2], ABCDE_Y[2] };
         const Vector3 D = { ABCDE_x[3], ABCDE_y[3], ABCDE_Y[3] };
         const Vector3 E = { ABCDE_x[4], ABCDE_y[4], ABCDE_Y[4] };
-
-        Vector3 localDirectionToSun;
-        localDirectionToSun.x = sinThetaSun * cosPhiSun;
-        localDirectionToSun.y = sinThetaSun * sinPhiSun;
-        localDirectionToSun.z = cosThetaSun;
 
         // set up coordinate system onsun disc
         Vector3 p_v1;
@@ -524,6 +602,7 @@ static Vector3 sun_color(double turbidity, double thetaSun)
         [ sunColor_P setValue:sunColor ];
         [ zenithColor_P setValue:zenithColor ];
         [ denominator_P setValue:denominator ];
+        [ irradiance_P setValue:irradiance ];
 
         [ A_xyY_P setValue:A ];
         [ B_xyY_P setValue:B ];

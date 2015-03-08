@@ -92,7 +92,7 @@ int main (int argc, char **argv)
     glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_FALSE);
     
     // Open a window and create its OpenGL context
-    if( !glfwOpenWindow( 1280, 720, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
+    if( !glfwOpenWindow( 800, 600, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
     {
         NSLog(@"Failed to open GLFW window");
         glfwTerminate();

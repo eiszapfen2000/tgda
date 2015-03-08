@@ -956,7 +956,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [[[ NP Graphics ] textureBindingState ] setTexture:[ logLuminanceTarget texture ] texelUnit:1 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
-    [ tonemapKey setValue:automaticKey ];
+    //[ tonemapKey setValue:automaticKey ];
+    [ tonemapKey setValue:key ];
     [ tonemapWhiteLuminance setValue:referenceWhite ];
     [ tonemapAverageLuminanceLevel setValue:(numberOfLevels - 1) ];
     [ tonemapAdaptedAverageLuminance setValue:adaptedLuminance ];
