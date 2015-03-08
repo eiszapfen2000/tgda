@@ -192,7 +192,7 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
     // page 21 
 
     const double thetaSunDegrees = MATH_RAD_TO_DEG * thetaSun;
-    const double m = 1.0 / (thetaSunDegrees + 0.15 * pow(93.885 - thetaSunDegrees, -1.253));
+    const double m = MIN(1.0, 1.0 / (thetaSunDegrees + 0.15 * pow(93.885 - thetaSunDegrees, -1.253)));
 
     const double beta = 0.04608 * turbidity - 0.04586;
     const double l = 0.35;
@@ -274,7 +274,7 @@ int main (int argc, char **argv)
     glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
     
     // Open a window and create its OpenGL context
-    if( !glfwOpenWindow( 512, 512, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
+    if( !glfwOpenWindow( 800, 800, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
     {
         NSLog(@"Failed to open GLFW window");
         glfwTerminate();
@@ -331,7 +331,7 @@ int main (int argc, char **argv)
 
     NSAutoreleasePool * rPool = [ NSAutoreleasePool new ];
 
-    const uint32_t skyResolution = 512;
+    const uint32_t skyResolution = 800;
 
     NPRenderTargetConfiguration * rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC"  ];
     NPRenderTexture * preethamTarget  = [[ NPRenderTexture alloc ] initWithName:@"Preetham Target"  ];
@@ -536,7 +536,8 @@ int main (int argc, char **argv)
 
         modified = NO;
 
-        double sunHalfApparentAngle = 0.25 * MATH_PI / 360.0;
+        double sunHalfApparentAngle = 0.00935 * 0.5;
+        //double sunHalfApparentAngle = 0.25 * MATH_PI / 360.0;
         double sunDiskRadius = tan(sunHalfApparentAngle);
 
         //
@@ -576,11 +577,11 @@ int main (int argc, char **argv)
 
         // Preetham Skylight Zenith color
         // xyY space, cd/m²
-        Vector3 zenithColor = preetham_zenith(turbidity, thetaSun);
+        Vector3 zenithColor_xyY = preetham_zenith(turbidity, thetaSun);
 
         // Preetham Skylight sun disc color
         // XYZ
-        Vector3 sunColor = compute_sun_color(turbidity, thetaSun);
+        Vector3 sunColor_XYZ = compute_sun_color(turbidity, thetaSun);
 
         // Page 22/23 compute coefficients
 	    double ABCDE_x[5], ABCDE_y[5], ABCDE_Y[5];
@@ -623,9 +624,9 @@ int main (int argc, char **argv)
 
         [ radiusInPixel_P setFValue:halfSkyResolution ];
         [ directionToSun_P setValue:directionToSun ];
-        [ sunColor_P setValue:sunColor ];
+        [ sunColor_P setValue:sunColor_XYZ ];
         [ sunHalfApparentAngle_P setValue:sunHalfApparentAngle ];
-        [ zenithColor_P setValue:zenithColor ];
+        [ zenithColor_P setValue:zenithColor_xyY ];
         [ denominator_P setValue:denominator ];
 
         // clear preetham target
