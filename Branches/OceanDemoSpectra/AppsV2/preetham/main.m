@@ -636,9 +636,8 @@ int main (int argc, char **argv)
         denominator.y = digamma(0.0, thetaSun, ABCDE_y);
         denominator.z = digamma(0.0, thetaSun, ABCDE_Y);
 
-        Vector3 irradiance_xyY = v3_zero();
-        Vector3 irradiance_XYZ = v3_zero();
 
+        Vector3 irradiance_XYZ = v3_zero();
         const double phiStep   = 5.0 * MATH_DEG_TO_RAD;
         const double thetaStep = 5.0 * MATH_DEG_TO_RAD;
 
@@ -672,21 +671,12 @@ int main (int argc, char **argv)
 
                 double n_dot_v = v3_vv_dot_product(NP_WORLD_Z_AXIS, &v);
 
-                irradiance_xyY.x += xyY.x * phiStep * thetaStep * n_dot_v;
-                irradiance_xyY.y += xyY.y * phiStep * thetaStep * n_dot_v;
-                irradiance_xyY.z += xyY.z * phiStep * thetaStep * n_dot_v;
-
                 Vector3 XYZ = xyY_to_XYZ(xyY);
                 irradiance_XYZ.x += XYZ.x * phiStep * thetaStep * n_dot_v;
                 irradiance_XYZ.y += XYZ.y * phiStep * thetaStep * n_dot_v;
                 irradiance_XYZ.z += XYZ.z * phiStep * thetaStep * n_dot_v;
             }
         }
-
-        Vector3 c = xyY_to_XYZ(irradiance_xyY);
-        NSLog(@"%f %f %f", irradiance_xyY.x, irradiance_xyY.y, irradiance_xyY.z);
-        NSLog(@"I XYZ %f %f %f", irradiance_XYZ.x, irradiance_XYZ.y, irradiance_XYZ.z);
-        NSLog(@"%f %f %f", c.x, c.y, c.z);
 
         Vector3 nominatorSun;
         nominatorSun.x = digamma(thetaSun, 0.0, ABCDE_x);
@@ -699,8 +689,6 @@ int main (int argc, char **argv)
         sun_xyY.z = zenithColor_xyY.z * (nominatorSun.z / denominator.z);
 
         Vector3 sun_XYZ = xyY_to_XYZ(sun_xyY);
-        NSLog(@"S XYZ %f %f %f", sun_XYZ.x, sun_XYZ.y, sun_XYZ.z);
-
 
         const FVector3 A = { ABCDE_x[0], ABCDE_y[0], ABCDE_Y[0] };
         const FVector3 B = { ABCDE_x[1], ABCDE_y[1], ABCDE_Y[1] };
