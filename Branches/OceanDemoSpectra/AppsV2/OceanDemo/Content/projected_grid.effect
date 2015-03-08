@@ -104,7 +104,7 @@ technique "proj_grid_tf_feedback"
         WrapT = ClampToEdge;
         MinFilter = Trilinear;
         MagFilter = Linear;
-        Anisotropy = 2;
+        Anisotropy = 16;
     };
     uniform sampler2DArray whitecaps
     {

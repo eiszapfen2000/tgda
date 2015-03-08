@@ -32,6 +32,7 @@
     double sunDiskC;
 
     Vector3 directionToSun;
+    Vector3 irradiance;
     Vector3 sunColor;
 
     NPRenderTargetConfiguration * rtc;
@@ -55,6 +56,7 @@
     NPEffectVariableFloat  * radiusInPixel_P;
     NPEffectVariableFloat  * sunHalfApparentAngle_P;
     NPEffectVariableFloat3 * sunDisk_abc_P;
+    NPEffectVariableFloat3 * irradiance_P;
 }
 
 - (id) init;
@@ -63,6 +65,7 @@
 
 - (id < NPPTexture >) skylightTexture;
 - (Vector3) directionToSun;
+- (Vector3) irradiance;
 - (Vector3) sunColor;
 
 - (void) update:(double)frameTime;

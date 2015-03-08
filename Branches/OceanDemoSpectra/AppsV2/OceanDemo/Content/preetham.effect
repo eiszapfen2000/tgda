@@ -15,6 +15,7 @@ technique "preetham"
     uniform vec3 C;
     uniform vec3 D;
     uniform vec3 E;
+    uniform vec3 irradiance;
 
     # vertex streams
     in vec2 in_position : 0;
