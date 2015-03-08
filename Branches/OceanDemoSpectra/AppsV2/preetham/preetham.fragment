@@ -16,12 +16,8 @@ void main()
     float radius = length(out_texcoords);
 
     vec3 XYZ = vec3(0.0);
-    if (radius > radiusInPixel)
-    {
-        const float avgFresnel = 0.17;
-        XYZ = (irradiance / MATH_PI);// * avgFresnel;
-    }
-    else
+    
+    if (radius <= radiusInPixel)
     {
         //  http://en.wikipedia.org/wiki/Stereographic_projection
         float X = out_texcoords.x / radiusInPixel;
@@ -74,6 +70,11 @@ void main()
         {
             XYZ += sunColor;
         }
+    }
+    else
+    {
+        const float avgFresnel = 0.17;
+        XYZ = (irradiance / MATH_PI);// * avgFresnel;
     }
 
     target = vec4(XYZ2LinearsRGB * XYZ, 1.0);
