@@ -202,9 +202,7 @@ void main()
     vec3 h = normalize(v + l);
     vec3 r = 2.0 * dot(l, n) * n - l;
 
-    //vec3 c_light = vec3(1000000);
     vec3 c_light = sunColor;
-    //vec3 c_diff  = vec3(0.0, 0.15, 0.25);
     vec3 c_spec  = vec3(0.02);
 
     vec3 tx = normalize(vec3(1.0, -normal.x, 0.0));
@@ -238,8 +236,7 @@ void main()
 
     float f_mean = 0.02 + 0.98 * meanFresnel(v, n, sigmaSq);
     vec3 meanSky = meanSkyRadiance(v, ross, sigmaSq);
-    //vec3 skyContribution = f_mean * meanSky;
-    vec3 skyContribution = meanSky;
+    vec3 skyContribution = f_mean * meanSky;
 
     vec3 seaColor = texture(watercolor, waterColorCoordinate).rgb;
     vec3 seaColorIntensity = texture(watercolorIntensity, waterColorIntensityCoordinate).rgb;

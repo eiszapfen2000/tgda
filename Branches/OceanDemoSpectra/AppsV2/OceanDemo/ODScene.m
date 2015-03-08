@@ -844,6 +844,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     [ feedbackCameraPosition setValue:[ camera position ]];
     [ feedbackDirectionToSun setValue:[ skylight directionToSun ]];
     [ feedbackSunColor setValue:[ skylight sunColor ]];
+    [ feedbackSkyIrradiance setValue:[skylight irradiance ]];
     [ feedbackWaterColorCoordinate setValue:[ ocean waterColorCoordinate ]];
     [ feedbackWaterColorIntensityCoordinate setValue:[ ocean waterColorIntensityCoordinate ]];
 
