@@ -472,7 +472,7 @@ int main (int argc, char **argv)
 
     // preetham
     double turbidity = 2.0;
-    double phiSun = 0.0;
+    double phiSun = MATH_PI_DIV_2;
     double thetaSun = MATH_PI_DIV_4;
 
     // tonemap
