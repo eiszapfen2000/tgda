@@ -357,6 +357,7 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
              && transformInvMVP != nil, @"");
 
     feedbackSunColor = [ projectedGridEffect variableWithName:@"sunColor" ];
+    feedbackSkyIrradiance = [ projectedGridEffect variableWithName:@"skyIrradiance" ];
     feedbackCameraPosition = [ projectedGridEffect variableWithName:@"cameraPosition" ];
     feedbackDirectionToSun = [ projectedGridEffect variableWithName:@"directionToSun" ];
     feedbackJacobianEpsilon = [ projectedGridEffect variableWithName:@"jacobianEpsilon" ];
@@ -367,9 +368,9 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     feedbackWaterColorIntensityCoordinate
         = [ projectedGridEffect variableWithName:@"waterColorIntensityCoordinate" ];
 
-    NSAssert(feedbackSunColor != nil && feedbackCameraPosition != nil
-             && feedbackDirectionToSun != nil && feedbackJacobianEpsilon != nil
-             && feedbackWaterColorCoordinate != nil
+    NSAssert(feedbackSunColor != nil && feedbackSkyIrradiance != nil
+             && feedbackCameraPosition != nil && feedbackDirectionToSun != nil
+             && feedbackJacobianEpsilon != nil && feedbackWaterColorCoordinate != nil
              && feedbackWaterColorIntensityCoordinate != nil,
              @"");
 

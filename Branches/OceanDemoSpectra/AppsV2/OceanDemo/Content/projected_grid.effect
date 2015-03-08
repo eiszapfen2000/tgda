@@ -66,6 +66,7 @@ technique "proj_grid_tf_feedback"
     uniform vec3 cameraPosition;
     uniform vec3 directionToSun;
     uniform vec3 sunColor;
+    uniform vec3 skyIrradiance;
     uniform vec2 waterColorCoordinate;
     uniform vec2 waterColorIntensityCoordinate;
     uniform sampler2DArray gradient
