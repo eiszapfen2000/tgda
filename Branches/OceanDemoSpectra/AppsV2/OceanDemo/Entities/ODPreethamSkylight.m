@@ -310,7 +310,8 @@ static Vector3 sun_color(double turbidity, double thetaSun)
     sunDiskC = 150.0;
 
     directionToSun = v3_zero();
-    irradiance = v3_zero();
+    irradianceXYZ = v3_zero();
+    irradianceRGB = v3_zero();
     sunColor = v3_zero();
 
     rtc = [[ NPRenderTargetConfiguration alloc] initWithName:@"Preetham RTC" ];
@@ -377,7 +378,7 @@ static Vector3 sun_color(double turbidity, double thetaSun)
 
 - (Vector3) irradiance
 {
-    return irradiance;
+    return irradianceRGB;
 }
 
 - (Vector3) sunColor
@@ -512,13 +513,13 @@ static Vector3 XYZ_to_xyY(Vector3 XYZ)
                 double n_dot_v = v3_vv_dot_product(NP_WORLD_Z_AXIS, &v);
 
                 Vector3 XYZ = xyY_to_XYZ(xyY);
-                irradiance.x += XYZ.x * phiStep * thetaStep * n_dot_v;
-                irradiance.y += XYZ.y * phiStep * thetaStep * n_dot_v;
-                irradiance.z += XYZ.z * phiStep * thetaStep * n_dot_v;
+                irradianceXYZ.x += XYZ.x * phiStep * thetaStep * n_dot_v;
+                irradianceXYZ.y += XYZ.y * phiStep * thetaStep * n_dot_v;
+                irradianceXYZ.z += XYZ.z * phiStep * thetaStep * n_dot_v;
             }
         }
 
-        NSLog(@"%f %f %f", irradiance.x, irradiance.y, irradiance.z);
+        irradianceRGB = m3_mv_multiply(&lsRGB, &irradianceXYZ);
 
         /*
         Vector3 nominatorSun;
@@ -602,7 +603,7 @@ static Vector3 XYZ_to_xyY(Vector3 XYZ)
         [ sunColor_P setValue:sunColor ];
         [ zenithColor_P setValue:zenithColor ];
         [ denominator_P setValue:denominator ];
-        [ irradiance_P setValue:irradiance ];
+        [ irradiance_P setValue:irradianceXYZ ];
 
         [ A_xyY_P setValue:A ];
         [ B_xyY_P setValue:B ];
