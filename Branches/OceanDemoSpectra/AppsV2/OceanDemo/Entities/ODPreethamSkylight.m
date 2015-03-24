@@ -474,10 +474,11 @@ static Vector3 XYZ_to_xyY(Vector3 XYZ)
         localDirectionToSun.y = sinThetaSun * sinPhiSun;
         localDirectionToSun.z = cosThetaSun;
 
-        const double phiStep   = 10.0 * MATH_DEG_TO_RAD;
-        const double thetaStep = 10.0 * MATH_DEG_TO_RAD;
+        const double phiStep   = 5.0 * MATH_DEG_TO_RAD;
+        const double thetaStep = 5.0 * MATH_DEG_TO_RAD;
 
-        //NSLog(@"%f %f", thetaSun, turbidity);
+        irradianceXYZ = v3_zero();
+        irradianceRGB = v3_zero();
 
         for (double phi = 0.0; phi < MATH_2_MUL_PI; phi += phiStep)
         {
@@ -496,8 +497,6 @@ static Vector3 XYZ_to_xyY(Vector3 XYZ)
                 cosGamma = MAX(MIN(cosGamma, 1.0), -1.0);
                 double gamma = acos(cosGamma);
 
-                //NSLog(@"%f", gamma);
-
                 Vector3 nominator;
                 nominator.x = digamma(theta, gamma, ABCDE_x);
                 nominator.y = digamma(theta, gamma, ABCDE_y);
@@ -507,8 +506,6 @@ static Vector3 XYZ_to_xyY(Vector3 XYZ)
                 xyY.x = zenithColor.x * (nominator.x / denominator.x);
                 xyY.y = zenithColor.y * (nominator.y / denominator.y);
                 xyY.z = zenithColor.z * (nominator.z / denominator.z);
-
-                //NSLog(@"%f %f %f", xyY.x, xyY.y, xyY.z);
 
                 double n_dot_v = v3_vv_dot_product(NP_WORLD_Z_AXIS, &v);
 
