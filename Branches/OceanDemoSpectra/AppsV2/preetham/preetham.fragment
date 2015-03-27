@@ -13,21 +13,30 @@ const mat3 XYZ2LinearsRGB
 
 void main()
 {
-    float radius = length(out_texcoords);
+    //float radius = length(out_texcoords);
+    vec2 u = out_texcoords;
+    float lMinusOne = dot(u, u);
 
     vec3 XYZ = vec3(0.0);
     
-    if (radius <= radiusInPixel)
+    if (lMinusOne <= 1.02)
     {
+        if (lMinusOne > 1.0)
+        {
+            u = u / lMinusOne;
+            //XYZ = vec3(10000,0,0);
+        }
+        //else
+        //{
         //  http://en.wikipedia.org/wiki/Stereographic_projection
-        float X = out_texcoords.x / radiusInPixel;
-        float Y = out_texcoords.y / radiusInPixel;
+        float X = u.x;
+        float Y = u.y;
         float l = 1.0 + X*X + Y*Y;
 
         //  stereographic projection using southpole
         float x = 2*X / l;
         float y = 2*Y / l;
-        float z = (1.0 - X*X - Y*Y) / l;
+        float z = (1.0 - X*X -Y*Y) / l;
 
         // http://de.wikipedia.org/wiki/Kugelkoordinaten
         // float phiAngle = atan(y, x);
@@ -70,6 +79,7 @@ void main()
         {
             XYZ += sunColor;
         }
+        //}
     }
     else
     {
