@@ -42,7 +42,6 @@ technique "preetham"
 
     # vertex streams
     in vec2 in_position : 0;
-    in vec2 in_texcoords : 3;
 
     # fragment streams
     out vec4 target : 0;

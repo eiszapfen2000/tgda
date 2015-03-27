@@ -727,13 +727,9 @@ int main (int argc, char **argv)
         [ preetham activate ];
 
         glBegin(GL_QUADS);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, cStart, cStart);
             glVertexAttrib2f(NpVertexStreamPositions, -1.0f, -1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, cEnd, cStart);
             glVertexAttrib2f(NpVertexStreamPositions,  1.0f, -1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, cEnd,  cEnd);
             glVertexAttrib2f(NpVertexStreamPositions,  1.0f,  1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, cStart,  cEnd);
             glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
         glEnd();
 
