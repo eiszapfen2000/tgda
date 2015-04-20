@@ -556,7 +556,7 @@ elevation as follows:
 \xi~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}
 ~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}~\mathrm{d}\mvec{k}
 \end{equation}
-where, in lieu with Equation~\ref{eq:surface_elevation_gauss}, $\xi$ is 
+where, in line with Equation~\ref{eq:surface_elevation_gauss}, $\xi$ is 
 a Gauss distributed variable with mean $\mathrm{E}[\eta] = 0$ and
 variance $\mathrm{Var}[\eta] = \sigma^2$ defined by the energy spectrum
 $\Theta(\mvec{k})$. Moreover, for animation purposes, we add the term 
@@ -2098,65 +2098,22 @@ inverse wave age, see Figure~\ref{fig:donelan_spectra}.
 \label{sec:unified_spectrum}
 %
 %
-\begin{figure}
+\begin{figure}[h!]
 \centering
+\tikzset{external/force remake}
 \begin{tikzpicture}
 \begin{groupplot}[
 	group style={
-		rows=2,
+		rows=1,
 		columns=2,
 		xlabels at=edge bottom,
 		ylabels at=edge left,
- 		vertical sep=0pt,
-% 		horizontal sep=1.5cm,
 	},
     xlabel={Wave number~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
     ylabel={Energy~$\Theta$~($\text{m}^3\cdot\text{rad}^{-1}$)},
 	width=0.5\textwidth,
 	scaled ticks=false,
 	]
-\nextgroupplot[group/empty plot]
-\nextgroupplot[
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}},
-	xticklabels={},
-	xmin = 0,
-	xmax = 0.2,
-	ymin = 15,
-	ymax = 31.5,
-	enlarge x limits = true,
-%	legend pos=south east,
-	]
-\addplot[
-    color=blue,
-    solid,
-    ]
-    table [col sep=comma]{figures/pm_10_k.dat};
-% \addlegendentry{PM}
-\addplot[
-    color=red,
-    solid,
-    ]
-    table [col sep=comma]{figures/j_10_1000km_k.dat};
-% \addlegendentry{JONSWAP}
-\addplot[
-    color=red,
-    solid,
-	forget plot,
-    ]
-    table [col sep=comma]{figures/j_10_1500km_k.dat};
-\addplot[
-    color=black,
-    solid,
-    ]
-    table [col sep=comma]{figures/d_10_1000km_k.dat};
-% \addlegendentry{Donelan}
-\addplot[
-    color=green,
-    solid,
-    ]
-    table [col sep=comma]{figures/u_10_1000km_k.dat};
-% \addlegendentry{Unified}
 \nextgroupplot[
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
@@ -2249,8 +2206,6 @@ inverse wave age, see Figure~\ref{fig:donelan_spectra}.
 \end{tikzpicture}
 \caption{Left: Unified frequency spectra with different fetch values $F$, 
 Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$). Right: 
-%Unified and Donelan spectra with different inverse wave age values $\Omega$, 
-%Pierson Moskowitz spectrum for comparison ($k_p = 1$).
 Fetch limited spectral models, each with a fetch of $1000km$ and $1500km$, 
 Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$).
 }
@@ -2342,6 +2297,7 @@ k_m &= 370.0 \\
 c_m &= 0.23
 \end{align}
 \end{subequations}
+%
 where $B_l$ represents the low frequency regime and $B_h$ the high frequency
 regime, respectively. The long wave regime input $B_l$ depends on the
 equilibrium range parameter for long waves, $\alpha_p$, the wave phase speed
@@ -2762,21 +2718,19 @@ yshift=3\pgfkeysvalueof{/pgfplots/every axis title shift}
 \caption{Unified spectra and Donelan spectra for the full wavenumber range and 
 for wind speeds from $3m\cdot s^{-1}$ up to $21m\cdot s^{-1}$ with a $2m\cdot 
 s^{-1}$ step ($F=500km$). Left: One dimensional wavenumber spectra $\Theta(k)$. 
-Right: One dimensional curvature spectra $B(k)$. %The Unified spectra's peak to 
+Right: One dimensional curvature spectra $C(k)$. %The Unified spectra's peak to 
 %the right is at $k_m = 370rad\cdot m^{-1}$.
 }
 \label{fig:unified_log}
 \end{figure}
 %
-\\
-
 At this point we may look at both the low, and the high frequency regime of the 
 Unified spectrum, including the Donelan spectrum for comparison, see 
 Figure~\ref{fig:unified_log}. One can see that the Unified spectrum matches the 
 Donelan spectrum rather well in the long wave regime, but differs in the short 
 wave regime. Moreover, one may notice the the former does not give any energy 
 beyond the gravity-capillary wave band. In addition, we may look at the 
-\emph{curvature spectrum} $B(k) = k^3\Theta(k)$ to see that the Unified 
+\emph{curvature spectrum} $C(k) = k^3\Theta(k)$ to see that the Unified 
 spectrum properly models the secondary gravity-capillary peak at wavenumber 
 $k_m = 370~\text{rad}\cdot\text{m}^{-1}$.
 %
