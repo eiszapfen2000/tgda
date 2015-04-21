@@ -2269,7 +2269,7 @@ is the dimensionless fetch. In lockstep with the JONSWAP spectrum, $\gamma^r$ is
 called the peak enhancement factor and $\sigma$ represents the peak width 
 parameter. Moreover, $\Omega_c$ denotes the inverse wave age based on the 
 component of the wind in the direction of the peak waves, and is restricted to 
-the interval $\Omega_c \in \interval[open right]{0.84}{5}$. As one may see, 
+the range $\Omega_c \in \interval[open right]{0.84}{5}$. As one may see, 
 $\Omega_c$ is guaranteed an asymptotic value of $0.84$ for large fetch e.g. 
 fully developed seas. Hence, the Unified spectrum is not prone to 
 overdevelopment with increasining fetch, which is a notable improvement 
@@ -2302,12 +2302,16 @@ where $B_l$ represents the low frequency regime and $B_h$ the high frequency
 regime respectively. The long wave regime input $B_l$ depends on the
 equilibrium range parameter for long waves, $\alpha_p$, the wave phase speed
 $c$, the phase speed at the spectral peak $c_p$, and the \emph{long wave side
-effect function} $F_p$. The short wave regime input $B_h$, on the other hand,
-depends on the equilibrium range parameter for short waves, $\alpha_m$, the
-friction velocity at the water surface $u^{\ast}$, the wave phase speed $c$,
-the minimum phase speed $c_m$ at the wavenumber $k_m$, and the \emph{short wave
-side effect function} $F_m$. We may compute the friction velocity $u^{\ast}$
-through application of the \emph{law of the wall}~\cite{article:vonKarman1931}:
+effect function} $F_p$. The latter restricts the energy contribution of the
+$B_l$ term to the low frequency regime. The short wave regime input $B_h$,
+on the other hand, depends on the equilibrium range parameter for short waves,
+$\alpha_m$, the friction velocity at the water surface, $u^{\ast}$, the wave
+phase speed $c$, the minimum phase speed $c_m$ at the wavenumber $k_m$, and
+the \emph{short wave side effect function} $F_m$. The term $F_m$ accounts for
+the bandwidth of gravity-capillary waves as well as for the~\emph{viscous cutoff}.
+Effects of viscosity result in a viscous cutoff, beyond which there is no wave
+energy. We may compute the friction velocity $u^{\ast}$ through application of the
+\emph{law of the wall}~\cite{article:vonKarman1931}:
 %
 \begin{subequations}
 \begin{align}
