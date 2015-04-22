@@ -2221,7 +2221,19 @@ the \emph{long-wave regime}, which, according to Elfouhaily et al.
 10\times k_p$, where $k_p$ is the wave number the spectrum has its peak at. The 
 Unified spectrum on the other hand models the~\emph{entire} wave number 
 range, including the \emph{short-wave regime}, which is defined as $k >= 
-10\times k_p$.\\
+10\times k_p$. Because the short-wave regime extends into the gravity-capillary
+wave domain, we need a dispersion relation which extends into said domain too.
+We may write:
+\begin{subequations}
+\begin{align}
+\omega^2 &= gk\left[1 + \left(\frac{k}{k_m}\right)^2\right] \\
+k_m &= \sqrt{\frac{p_w g}{T}} = 370~\text{rad/m}
+\end{align}
+\end{subequations}
+where $k_m$ is the wavenumber, where gravity-capillary waves on an air-water
+interface have their minimum phase velocity at. The constants $p_w$, $g$ and
+$T$ are water density, acceleration due to gravity, and water surface tension,
+respectively.
 
 The combined works of Hasselmann et al. \cite{article:Hasselman1973}, Mitsuyasu 
 et al. \cite{article:Mitsuyasu1975}, and Donelan et al. 
@@ -2293,7 +2305,6 @@ wavenumber spectrum as given by Elfouhaily et al.:
 \frac{\Omega_c}{\sqrt{10}}\left(\sqrt{\frac{k}{k_p}} - 1\right)\right] \\
  F_m &= L_{PM}J_p\exp\left[- 
 \frac{1}{4}\left(\frac{k}{k_m} - 1\right)^2\right] \\
-k_m &= 370.0 \\
 c_m &= 0.23
 \end{align}
 \end{subequations}
@@ -2301,7 +2312,7 @@ c_m &= 0.23
 where $B_l$ represents the low frequency regime and $B_h$ the high frequency
 regime respectively. The long wave regime input $B_l$ depends on the
 equilibrium range parameter for long waves, $\alpha_p$, the wave phase speed
-$c$, the phase speed at the spectral peak $c_p$, and the \emph{long wave side
+$c = \omega/k$, the phase speed at the spectral peak $c_p$, and the \emph{long wave side
 effect function} $F_p$. The latter restricts the energy contribution of the
 $B_l$ term to the low frequency regime. The short wave regime input $B_h$,
 on the other hand, depends on the equilibrium range parameter for short waves,
@@ -2309,24 +2320,23 @@ $\alpha_m$, the friction velocity at the water surface, $u^{\ast}$, the wave
 phase speed $c$, the minimum phase speed $c_m$ at the wavenumber $k_m$, and
 the \emph{short wave side effect function} $F_m$. The term $F_m$ accounts for
 the bandwidth of gravity-capillary waves as well as for the~\emph{viscous cutoff},
-beyond which there is no wave energy. We may compute the friction velocity $u^{\ast}$
-through application of the \emph{law of the wall}~\cite{article:vonKarman1931}:
+beyond which there is no wave energy. We may compute the friction velocity
+$u^{\ast}$ through application of the \emph{law of the wall}~\cite{article:vonKarman1931}:
 %
 \begin{subequations}
 \begin{align}
 u^{\ast} &= \kappa~U_{10} \left[\log\left(\frac{10}{z_0}\right)\right]^{-1}\\
 z_0 &= 3.7 \times 10^{-5}~\frac{U_{10}^2}{g}
 \left(\frac{U_{10}}{c_p}\right)^{0.9} \label{eq:z_0}\\
-\kappa &= 0.41 \\
+\kappa &= 0.41
 \end{align}
 \end{subequations}
 %
 where $z_0$ is the \emph{roughness parameter} modeled according to Donelan et
 al.\cite{article:Donelan1993}, and $\kappa$ is the \emph{von K\'arm\'an constant}
-~\cite{article:vonKarman1931}. Elfouhaily et al. point out that the similarity in
-description of both wave regimes, namely the air-sea interaction process of friction
-between wind and waves $u/c$ i.e. the \emph{generalized wave age}, is a key feature
-of their model.
+~\cite{article:vonKarman1931}. Elfouhaily et al. point out that both wave regimes
+are modeled based on the air-sea interaction process of friction between wind and
+waves, $u/c$, i.e. the \emph{generalized wave age}.\\
 %
 %
 \begin{figure}
@@ -2734,15 +2744,15 @@ Right: One dimensional curvature spectra $C(k)$. %The Unified spectra's peak to
 At this point we may look at both the low, and the high frequency regime of the 
 Unified spectrum, including the Donelan spectrum for comparison, see 
 Figure~\ref{fig:unified_log}. We employ logarithmic scaling for better
-emphasis on differences in the high frequency regime. One can see that the Unified
-spectrum matches the Donelan spectrum rather well in the long wave regime, but
-differs in the short wave regime. Moreover, one may notice that the former does
-not give any energy beyond the gravity-capillary wave band. In addition, we may
+emphasis on differences in the high frequency regime. One can see that the shapes
+of both spectrum types match rather well up to the spectral peak in the long wave regime,
+but start to differ afterwards. Moreover, one may notice that the Unified spectrum
+does not give any energy beyond the gravity-capillary wave band. In addition, we may
 look at the \emph{curvature spectrum} $C(k) = k^3\Theta(k)$ to see that the Unified 
 spectrum properly models the secondary gravity-capillary peak at wavenumber 
-$k_m = 370~\text{rad}\cdot\text{m}^{-1}$.
+$k_m = 370~\text{rad}\cdot\text{m}^{-1}$.\\
 
-The Unified spectrum's direction term is given as follows:
+The Unified spectrum's directional spread is given as follows:
 %
 \begin{subequations}
 \begin{align}
@@ -2755,6 +2765,14 @@ a_p &= 4 \\
 a_m &= 0.13 \frac{u^{\ast}}{c_m}
 \end{align}
 \end{subequations}
+where $\theta_p$ is the direction of travel of the waves at the spectral peak,
+$c$ is the phase speed, $c_p$ is the phase speed at the spectral peak, $c_m$
+is the minimum phase speed at $k_m$, $a_0$ and $a_p$ are constants, whereas $a_m$
+is a function for high-frequency waves dependent upon the friction velocity
+$u^\ast$ and $c_m$. Figure\ref{fig:unified_directional_filter} depicts example
+instances of the Unified spectrum's direction spread. One can see that the
+directional spread is~\emph{centrosymmetrical}, where Mitsuyasu et al.'s as well
+as Donelan et al.'s is not.
 %
 \begin{figure}
  \centering
