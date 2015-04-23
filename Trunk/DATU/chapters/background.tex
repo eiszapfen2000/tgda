@@ -2770,9 +2770,17 @@ $c$ is the phase speed, $c_p$ is the phase speed at the spectral peak, $c_m$
 is the minimum phase speed at $k_m$, $a_0$ and $a_p$ are constants, whereas $a_m$
 is a function for high-frequency waves dependent upon the friction velocity
 $u^\ast$ and $c_m$. Figure\ref{fig:unified_directional_filter} depicts example
-instances of the Unified spectrum's direction spread. One can see that the
-directional spread is~\emph{centrosymmetrical}, where Mitsuyasu et al.'s as well
-as Donelan et al.'s is not.
+instances of the Unified spectrum's directional spread. One can see that the
+directional spread is~\emph{centrosymmetrical}, in short
+$D(k, \theta) = D(k, \theta \pm \pi)$. As a consequence the two dimensional
+spectrum is centrosymmetrical, too. Therefore, the Unified spectrum satisfies
+the following conditions:
+\begin{subequations}
+\begin{align}
+\Theta(k, \theta) &= \Theta(k, \theta \pm \pi) \\
+\Theta(\mvec{k}) &= \Theta(-\mvec{k})
+\end{align}
+\end{subequations}
 %
 \begin{figure}
  \centering
@@ -2836,14 +2844,14 @@ direction and wind speed $\norm{\mvec{w}}$. The numeric constant $A$ represents
 a scaling factor which we will discuss at a later point.  According to 
 Tessendorf~\cite{course:simulatingocean}, $L$ defines the largest possible wave
 arising from a continuous wind of speed $\norm{\mvec{w}}$. The parameter $l$ on 
-the other hand acts as a frequency filter, it is meant to make the suppression 
-of energy contributed by high wave numbers $k$ possible. In order to accomplish 
-that, it is mandatory for $l$ to be several orders of magnitude smaller than 
-$L$. We chose the following as a default value for $l$:
+the other hand acts as a frequency filter, it controls the suppression of energy
+contributed by high wave numbers $k$. In order to accomplish that, it is
+mandatory for $l$ to be several orders of magnitude smaller than $L$. We chose
+the following as a default value for $l$:
 \begin{equation}
  l = 10^{-3}L
 \end{equation}
-Moreover, one may conclude from Equation~\ref{eq:phillips_spectrum} that setting 
+Moreover, it follows from Equation~\ref{eq:phillips_spectrum} that setting 
 $l = 0$ disables any wave number based suppression of energy.\\
 
 If we take a closer look at Equation~\ref{eq:phillips_spectrum} one may notice 
@@ -3003,8 +3011,8 @@ exponents $2$ and $4$. For~\subcaptionref{subfig:directional_spread_cos2_r} and
 the right, for \subcaptionref{subfig:directional_spread_cos2_ur} and
 \subcaptionref{subfig:directional_spread_cos4_ur} it points to the upper right. 
 The directional spread with an exponent equal $4$ is distinctly more narrow 
-than the one with an exponent equal $2$. Moreover, all instances have an easy 
-to identify symmetry axis.}
+than the one with an exponent equal $2$. Moreover, all instances are
+centrosymmetrical.}
 \label{fig:phillips_directional_term}
 \end{figure}
 %
@@ -3015,12 +3023,14 @@ scale factor $A$, we move on to the directional term from
 Equation~\ref{eq:phillips_spectrum_separated}. Said term is a simple cosinus 
 term raised to the power of two, with normalised wave vector $\mvec{k}$ and 
 normalised wind vector $\mvec{w}$ as input. We may increase the exponent in 
-order to make the resulting directional spread more narrow. Moreover, since 
-only the absolute value of the cosinus is taken into account, results for 
-$\mvec{k}$ and $-\mvec{k}$ are the same. A direct consequence is a symmetry not 
-only of the directional spread but of the entire Phillips spectrum: 
-$\Theta(\mvec{k}) = \Theta(-\mvec{k})$. Figure 
-\ref{fig:phillips_directional_term} gives an illustration of the directional 
+order to make the resulting directional spread more narrow. Moreover, as only
+the  absolute value of the cosinus is taken into account, the result is
+centrosymmetrical.
+% Moreover, since only the absolute value of the cosinus is taken into account,
+% results for $\mvec{k}$ and $-\mvec{k}$ are the same. A direct consequence is
+% a symmetry not only of the directional spread but of the entire Phillips spectrum: 
+% $\Theta(\mvec{k}) = \Theta(-\mvec{k})$. 
+Figure \ref{fig:phillips_directional_term} gives an illustration of the directional 
 spread with different wind directions and different exponents. Recall that the 
 directional spread $D$ distributes the energy represented by $\Theta(k)$ among 
 all directions, without changing the amount of energy at wave number $k$.  
