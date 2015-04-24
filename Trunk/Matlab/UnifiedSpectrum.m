@@ -71,14 +71,12 @@ if u_star < c_m
 else
     alpha_m = 0.01 * (1.0 + 3.0 * log(u_star/c_m));
 end
-% eq 41
+% eq 41, ADD TERMS MISSING IN PAPER
 F_m = L_pm .* J_p .* exp(-0.25 .* (((knorm./k_m) - 1).^2));
 % eq 40
 B_h = (0.5 * alpha_m) .* (c_m ./ c) .* F_m;
 B_h(isinf(B_h)) = 0;
 B_h(isnan(B_h)) = 0;
-% ADD TERMS MISSING IN PAPER
-B_h = B_h .* L_pm .* J_p;
 
 % eq 59
 a_m = 0.13 * (u_star ./ c_m);
