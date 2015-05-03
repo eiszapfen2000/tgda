@@ -203,13 +203,54 @@ h_0(\mvec{k}) =
  + h_0^\ast(\mvec{-k})\mathrm{e}^{\mathrm{i}\omega(\mvec{k})t}
 \end{equation}
 
-
-
+Let $g(k)$ be the Fourier transform of $f(x)$, then we may write the
+backward Fourier transform as follows:
 \begin{equation}
-\nabla~\eta(\mvec{x},t) =
-\sum_{\mvec{k}}\mathrm{i}\mvec{k}~h_0(\mvec{k},t)
-~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+ f(x) = \sum_{k}g(k)~\mathrm{e}^{\mathrm{i}kt}
 \end{equation}
+Note, that we omit the scaling factors involved in the Fourier transform
+because in the context of this work they are not needed.
+Given the backward Fourier transform, we may compute the derivative of $f(x)$
+as follows:
+\begin{equation}
+  \diff{f(x)}{x} = \sum_{k}\mathrm{i}k~g(k)~\mathrm{e}^{\mathrm{i}kt}
+\end{equation}
+Let $n \in \mathbb{N}$, then the general rule for derivation is as follows:
+\begin{equation}
+  \diff[n]{f(x)}{x} = \sum_{k}(\mathrm{i}k)^n~g(k)~\mathrm{e}^{\mathrm{i}kt}
+\end{equation}
+
+
+\begin{align}
+ f(\mvec{x}) &= \sum_{\mvec{k}}g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+ \nabla f(\mvec{x}) &= \sum_{\mvec{k}}\mathrm{i}\mvec{k}~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+ \Rightarrow~&\diffp{f(\mvec{x})}{x} = \sum_{\mvec{k}}\mathrm{i}k_{x}~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+ &\diffp{f(\mvec{x})}{y} = \sum_{\mvec{k}}\mathrm{i}k_{y}~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\end{align}
+
+\begin{align}
+\nabla\eta(\mvec{x},t) =
+\sum_{\mvec{k}}&\mathrm{i}\mvec{k}~h_0(\mvec{k},t)
+~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+\Rightarrow \frac{d\eta(\mvec{x},t)}{dx} &=
+\sum_{\mvec{k}}\mathrm{i}k_x~h_0(\mvec{k},t)
+~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+\frac{d\eta(\mvec{x},t)}{dy} &=
+\sum_{\mvec{k}}\mathrm{i}k_y~h_0(\mvec{k},t)
+~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\end{align}
+
+\begin{align}
+\mvec{d}(\mvec{x},t) =
+\sum_{\mvec{k}}&\mathrm{-i}\frac{\mvec{k}}{k}~h_0(\mvec{k},t)
+~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+\Rightarrow d_x(\mvec{x},t) &=
+\sum_{\mvec{k}}\mathrm{-i}\frac{k_x}{k}~h_0(\mvec{k},t)
+~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+d_y(\mvec{x},t) &=
+\sum_{\mvec{k}}\mathrm{-i}\frac{k_y}{k}~h_0(\mvec{k},t)
+~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\end{align}
 
 \newcommand{\mcomplex}[2]{\ensuremath{{#1}{#2}\mathrm{i}}}
 
