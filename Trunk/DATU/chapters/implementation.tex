@@ -175,7 +175,7 @@ there is no point of intersection because the ray is parallel to the plane.
 \subsection{Projector}
 \fxnote*{JÖSSAS}{Backfiring, etc}
 
-\subsection{FFT}
+\subsection{Discrete Fourier Transform}
 Quadrant switching
 
 Complex conjugate symmetry / Half-complex transform
@@ -253,6 +253,82 @@ d_y(\mvec{x},t) &=
 \end{align}
 
 \newcommand{\mcomplex}[2]{\ensuremath{{#1}{#2}\mathrm{i}}}
+
+\pgfplotstabletypeset[
+  sci zerofill,
+  every head row/.style={ 
+        output empty row,
+    }
+]
+{
+0.61000   0.35000   0.36000
+0.48000   0.81000   0.71000
+0.96000   0.23000   0.88000
+}
+
+\def\SP{\hspace{5pt}}
+
+\begin{multline}
+\sisetup{
+round-mode      = places,
+round-precision = 2,
+%explicit-sign = +,
+}
+\small
+\left(
+\begin{array}{S@{\SP}S@{\SP}S}
+\num{0.61} & \num{0.35} & \num{0.36} \\
+\num{0.48} & \num{0.81} & \num{0.71} \\
+\num{0.96} & \num{0.23} & \num{0.88}
+\end{array}
+\right) \\
+\xrightarrow{FT}
+\sisetup{
+round-mode      = places,
+round-precision = 3,
+explicit-sign = +,
+}
+\left(
+\begin{array}{SSS}
+\num{ 5.39000 + 0.00000i} & \num{ 0.38000 + 0.48497i} &\num{ 0.38000 - 0.48497i} \\
+\num{-0.71500 + 0.06062i} & \num{-0.37000 + 0.36373i} &\num{ 0.75500 + 0.82272i} \\
+\num{-0.71500 - 0.06062i} & \num{ 0.75500 - 0.82272i} &\num{-0.37000 - 0.36373i} \\
+\end{array}
+\right) \\
+\Rightarrow
+\sisetup{
+round-mode      = places,
+round-precision = 3,
+explicit-sign = +,
+}
+\left(
+\begin{array}{SSS}
+\num{-0.37000 - 0.36373i} & \num{-0.71500 - 0.06062i} & \num{ 0.75500 - 0.82272i} \\
+\num{ 0.38000 - 0.48497i} & \num{ 5.39000 + 0.00000i} & \num{ 0.38000 + 0.48497i} \\
+\num{ 0.75500 + 0.82272i} & \num{-0.71500 + 0.06062i} & \num{-0.37000 + 0.36373i} \\
+\end{array}
+\right)
+\end{multline}
+
+
+\pgfplotstabletypeset[
+    col sep=comma,
+    every head row/.style={ 
+        output empty row,
+    },
+    %column style={string type,column type={S[table-format=-1.6]}},%
+    columns/x/.style={string type,column type={S[table-format=-1.6]},column type/.add={|}{|}},%
+    columns/y/.style={string type,column type={S[table-format=-1.6]}},%
+    columns/z/.style={string type,column type={S[table-format=-1.6]},column type/.add={|}{|}},%
+]
+{
+x,y,z
+\num{5.39000 + 0.00000i},\num{0.38000 + 0.48497i},\num{0.38000 - 0.48497i}
+\num{-0.71500 + 0.06062i},\num{-0.37000 + 0.36373i},\num{0.75500 + 0.82272i}
+\num{-0.71500 - 0.06062i},\num{0.75500 - 0.82272i},\num{-0.37000 - 0.36373i}
+}
+
+
 
 \begin{table}
 \small
