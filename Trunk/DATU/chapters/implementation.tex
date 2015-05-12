@@ -176,13 +176,55 @@ there is no point of intersection because the ray is parallel to the plane.
 \fxnote*{JÖSSAS}{Backfiring, etc}
 
 \subsection{Discrete Fourier Transform}
+We defined surface elevation as follows in Chapter~\ref{sec:random_amplitudes}:
+\begin{equation}
+\label{eq:dft_surface_elevation}
+\eta(\mvec{x}, t) = 
+\sum_{\mvec{k}}\frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)
+\sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_y} 
+~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
+~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\end{equation}
+where both the spatial domain $\mvec{x}$ and the wavevector domain $\mvec{k}$ are
+of resolution $N \times N$. $N$ is a natural number, even, and a power of two.
+The latter two requirements are concessions to the~\emph{Fast Fourier Transform}
+algorithm, which works fastest at such resolutions. We may extract the following
+two terms from Equation~\ref{eq:dft_surface_elevation}:
+\begin{align}
+\label{eq:dft_h0}
+h_0(\mvec{k})   &= \frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)\sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_y} \\
+h_0(\mvec{k},t) &= h_0(\mvec{k})~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
+\end{align}
+The term $h_0(\mvec{k})$ represents a random generated sea based on the energy
+spectrum $\Theta(\mvec{k})$. The term $h_0(\mvec{k},t)$ takes care of the
+animation of $h_0(\mvec{k})$. As long as there are no changes to the spatial domain,
+the wavevector domain, and the energy spectrum, $h_0(\mvec{k})$ stays the same.
+
+
+\begin{equation}
+\label{eq:spatial_domain}
+ \mvec{x} = (x,y)~\in~\{(\alpha\Delta x,\beta\Delta y)|
+-\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}\leq\beta<\frac{M}{2}\}
+\end{equation}
+\begin{equation}
+\label{eq:wave_vector_domain}
+ \mvec{k} = (k_x,k_y)~\in~\{(\alpha\Delta k_x,\beta\Delta k_y)|
+-\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}\leq\beta<\frac{M}{2}\}
+\end{equation}
+\begin{align}
+\label{eq:delta_kx_delta_ky}
+ \Delta k_x = \frac{2\pi}{L} && \Delta k_y = \frac{2\pi}{K}
+\end{align}
+\begin{align}
+ \Delta x = \frac{L}{N} && \Delta y = \frac{K}{M}
+\end{align}
 %https://www.cv.nrao.edu/course/astr534/FourierTransforms.html
 %https://ccrma.stanford.edu/~jos/mdft/Even_Odd_Functions.html
 %https://ccrma.stanford.edu/~jos/mdft/mdft.html
 %https://web.eecs.umich.edu/~fessler/course/451/l/pdf/c5.pdf
 The Fourier Transform of real-valued input is~\emph{hermitian} - the real part of the resulting spectrum
-is an even function and the imaginary part is odd. A function $f(n)$ is said to be~\emph{even} if
-$f(-n) = f(n)$. On the other hand, a function $f(n)$ is said to be~\emph{odd} if $f(-n) = -f(n)$,
+is an~\emph{even} function and the imaginary part is~\emph{odd}. A function $f(n)$ is said to be even if
+$f(-n) = f(n)$. On the other hand, a function $f(n)$ is said to be odd if $f(-n) = -f(n)$,
 with $f(0) = 0$.
 
 
@@ -192,13 +234,7 @@ Complex conjugate symmetry / Half-complex transform
 
 Gradients
 
-\begin{equation}
-\eta(\mvec{x}, t) = 
-\sum_{\mvec{k}}\frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)
-\sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_y} 
-~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
-~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
-\end{equation}
+
 
 \begin{equation}
 h_0(\mvec{k}) =
