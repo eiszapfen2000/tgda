@@ -188,19 +188,55 @@ We defined surface elevation as follows in Chapter~\ref{sec:random_amplitudes}:
 where both the spatial domain $\mvec{x}$ and the wavevector domain $\mvec{k}$ are
 of resolution $N \times N$. $N$ is a natural number, even, and a power of two.
 The latter two requirements are concessions to the~\emph{Fast Fourier Transform}
-algorithm, which works fastest at such resolutions. We may extract the following
-two terms from Equation~\ref{eq:dft_surface_elevation}:
+algorithm, which works fastest at such resolutions. We may define the following
+two terms based on Equation~\ref{eq:dft_surface_elevation}:
 \begin{align}
 \label{eq:dft_h0}
 h_0(\mvec{k})   &= \frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)\sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_y} \\
 h_0(\mvec{k},t) &= h_0(\mvec{k})~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
 \end{align}
-The term $h_0(\mvec{k})$ represents a random generated sea based on the energy
+The term $h_0(\mvec{k})$ represents a random generated spectrum based on the energy
 spectrum $\Theta(\mvec{k})$. The term $h_0(\mvec{k},t)$ takes care of the
-animation of $h_0(\mvec{k})$. As long as there are no changes to the spatial domain,
-the wavevector domain, and the energy spectrum, $h_0(\mvec{k})$ stays the same.
-
-
+animation over time of $h_0(\mvec{k})$. As long as the spatial domain,
+the wavevector domain, and the energy spectrum do not change, $h_0(\mvec{k})$
+stays the same. Hence, it is necessary to generate $h_0(\mvec{k})$ only once
+for a specific set of parameters (area, resolution, wind, fetch, ...).
+%
+\subsubsection{Zero Frequency}
+%
+\begin{table}
+\scriptsize
+\sisetup{
+round-mode      = places,
+round-precision = 1,
+explicit-sign = +,
+}
+\begin{tabular}{| S[table-number-alignment=right] | S[table-number-alignment=right] | S[table-number-alignment=right] | S[table-number-alignment=right] |}
+\hline
+\cellcolor{ForestGreen!60}\num{1.36000 + 0.00000i} & \cellcolor{ForestGreen!60}\num{-1.34000 + 1.24000i} & \cellcolor{ProcessBlue!50}\num{-1.04000 + 0.00000i} & \cellcolor{ProcessBlue!50}\num{-1.34000 - 1.24000i}\\
+\hline
+\cellcolor{ForestGreen!60}\num{0.67000 - 0.65000i} & \cellcolor{ForestGreen!60}\num{ 0.07000 + 0.37000i} & \cellcolor{ProcessBlue!50}\num{ 0.87000 + 0.03000i} & \cellcolor{ProcessBlue!50}\num{ 0.71000 + 0.21000i}\\
+\hline
+\cellcolor{Plum!50}\num{1.62000 + 0.00000i} & \cellcolor{Plum!50}\num{ 0.04000 + 0.16000i} & \cellcolor{red!15}\num{ 9.62000 + 0.00000i} & \num{ 0.04000 - 0.16000i}\\
+\hline
+\cellcolor{Plum!50}\num{0.67000 + 0.65000i} & \cellcolor{Plum!50}\num{ 0.71000 - 0.21000i} & \num{ 0.87000 - 0.03000i} & \num{ 0.07000 - 0.37000i}\\
+\hline
+\end{tabular}
+\quad
+\begin{tabular}{| S[table-number-alignment=right] | S[table-number-alignment=right] | S[table-number-alignment=right] | S[table-number-alignment=right] |}
+\hline
+\cellcolor{red!15}\num{ 9.62000 + 0.00000i} & \num{ 0.04000 - 0.16000i} & \cellcolor{Plum!50}\num{1.62000 + 0.00000i} & \cellcolor{Plum!50}\num{ 0.04000 + 0.16000i}\\
+\hline
+\num{ 0.87000 - 0.03000i} & \num{ 0.07000 - 0.37000i} & \cellcolor{Plum!50}\num{0.67000 + 0.65000i} & \cellcolor{Plum!50}\num{ 0.71000 - 0.21000i}\\
+\hline
+\cellcolor{ProcessBlue!50}\num{-1.04000 + 0.00000i} & \cellcolor{ProcessBlue!50}\num{-1.34000 - 1.24000i} & \cellcolor{ForestGreen!60}\num{1.36000 + 0.00000i} & \cellcolor{ForestGreen!60}\num{-1.34000 + 1.24000i}\\
+\hline
+\cellcolor{ProcessBlue!50}\num{ 0.87000 + 0.03000i} & \cellcolor{ProcessBlue!50}\num{ 0.71000 + 0.21000i} & \cellcolor{ForestGreen!60}\num{0.67000 - 0.65000i} & \cellcolor{ForestGreen!60}\num{ 0.07000 + 0.37000i}\\
+\hline
+\end{tabular}
+\caption{Left: Zero frequency at the center. Right: Zero frequency at upper left.}
+\end{table}
+%
 \begin{equation}
 \label{eq:spatial_domain}
  \mvec{x} = (x,y)~\in~\{(\alpha\Delta x,\beta\Delta y)|
@@ -331,7 +367,7 @@ round-precision = 2,
 \xrightarrow{FT}
 \sisetup{
 round-mode      = places,
-round-precision = 3,
+round-precision = 2,
 explicit-sign = +,
 }
 \left(
@@ -344,17 +380,51 @@ explicit-sign = +,
 \Rightarrow
 \sisetup{
 round-mode      = places,
-round-precision = 3,
+round-precision = 2,
 explicit-sign = +,
 }
 \left(
 \begin{array}{SSS}
-\num{-0.37000 - 0.36373i} & \num{-0.71500 - 0.06062i} & \num{ 0.75500 - 0.82272i} \\
+\cellcolor{blue!25} \num{-0.37000 - 0.36373i} & \num{-0.71500 - 0.06062i} & \num{ 0.75500 - 0.82272i} \\
 \num{ 0.38000 - 0.48497i} & \num{ 5.39000 + 0.00000i} & \num{ 0.38000 + 0.48497i} \\
 \num{ 0.75500 + 0.82272i} & \num{-0.71500 + 0.06062i} & \num{-0.37000 + 0.36373i} \\
 \end{array}
 \right)
 \end{multline}
+
+\begin{table}
+\small
+$
+\sisetup{
+round-mode      = places,
+round-precision = 1,
+explicit-sign = +,
+}
+\left(
+\begin{array}{S[table-number-alignment = left]S[table-number-alignment = left]S[table-number-alignment = left]S[table-number-alignment = left]}
+\num{ 16.36462 +  0.00000i} & \num{ 0.52990 + 17.57366i} & \num{-4.70974 +  0.00000i} & \num{ 0.52990 - 17.57366i} \\
+\num{  5.90265 -  5.02624i} & \num{-7.59064 -  3.96207i} & \num{ 0.36357 +  6.33148i} & \num{ 8.48330 +  4.45058i} \\
+\num{-15.80487 +  0.00000i} & \num{ 4.78730 +  4.18503i} & \num{61.78001 +  0.00000i} & \num{ 4.78730 -  4.18503i} \\
+\num{  5.90265 +  5.02624i} & \num{ 8.48330 -  4.45058i} & \num{ 0.36357 -  6.33148i} & \num{-7.59064 +  3.96207i} \\
+\end{array}
+\right)
+\Rightarrow
+\sisetup{
+round-mode      = places,
+round-precision = 1,
+explicit-sign = +,
+}
+\left(
+\begin{array}{SSS}
+\cellcolor{blue!25} \num{-0.37000 - 0.36373i} & \num{-0.71500 - 0.06062i} & \num{ 0.75500 - 0.82272i} \\
+\num{ 0.38000 - 0.48497i} & \num{ 5.39000 + 0.00000i} & \num{ 0.38000 + 0.48497i} \\
+\num{ 0.75500 + 0.82272i} & \num{-0.71500 + 0.06062i} & \num{-0.37000 + 0.36373i} \\
+\end{array}
+\right)
+$
+\caption{LOLZ}
+\end{table}
+
 
 
 \pgfplotstabletypeset[
@@ -374,12 +444,23 @@ x,y,z
 \num{-0.71500 - 0.06062i},\num{0.75500 - 0.82272i},\num{-0.37000 - 0.36373i}
 }
 
+\begin{tabular}{lS[table-format = 3]S[table-format = 3.2]}
+\toprule
+  \textbf{Bus} & \multicolumn{2}{c}{\textbf{Bus Load (MVA)}} \\
+               & {Real} & {Complex} \\
+  \midrule
+  b1 &  50 &  30.99 \\
+  b2 & 170 & 105.35 \\
+  b3 & 200 & 123.94 \\
+  b4 & 150 &  49.58 \\
+  \bottomrule
+\end{tabular}
 
 
 \begin{table}
 \small
 \setlength{\tabcolsep}{3.5pt} % default value: 6pt
-\begin{tabular}{| S | S | S |}
+\begin{tabular}{| S[table-number-alignment = left] | S[table-number-alignment = left] | S[table-number-alignment = left] |}
 \hline
 0.30 & 0.72 & 1.00 \\
 \hline
@@ -393,45 +474,13 @@ x,y,z
 round-mode      = places,
 round-precision = 3,
 }
-\begin{tabular}{| S | S | S |}
+\begin{tabular}{| S[table-number-alignment = right] | S[table-number-alignment = right] | S[table-number-alignment = right] |}
 \hline
 \cellcolor{blue!25}        \num{-0.410 - 0.15588i} & \cellcolor{ProcessBlue!50}\num{1.42 - 0.01732i} & \cellcolor{Plum!50}        \num{-0.455 - 0.06062i}\\
 \hline
 \cellcolor{MidnightBlue!50}\num{-0.815 - 0.6322i}  & \cellcolor{red!50}\num{3.22 + 0.0i}     & \cellcolor{MidnightBlue!50}\num{-0.815 + 0.6322i}\\
 \hline
 \cellcolor{Plum!50}        \num{-0.455 + 0.06062i} & \cellcolor{ProcessBlue!50}\num{1.42 + 0.01732i} & \cellcolor{blue!25}        \num{-0.410 + 0.15588i}\\
-\hline
-\end{tabular}
-\end{table}
-
-\begin{table}
-\small
-\setlength{\tabcolsep}{3.5pt} % default value: 6pt
-\begin{tabular}{| S | S | S | S |}
-\hline
-   0.85 &  0.57 &  0.98 &  0.18 \\
-\hline
-   0.85 &  0.68 &  0.36 &  0.79 \\
-\hline
-   0.27 &  0.48 &  0.79 &  0.17 \\
-\hline
-   0.86 &  0.35 &  0.66 &  0.78 \\
-\hline
-\end{tabular}
-\quad
-\sisetup{
-round-mode      = places,
-round-precision = 3,
-}
-\begin{tabular}{| S[table-number-alignment=right] | S[table-number-alignment=right] | S[table-number-alignment=right] | S[table-number-alignment=right] |}
-\hline
-\num{1.36000 + 0.00000i} & \cellcolor{ForestGreen!60}\num{-1.34000 + 1.24000i} & \num{-1.04000 + 0.00000i} & \cellcolor{ForestGreen!60}\num{-1.34000 - 1.24000i}\\
-\hline
-\cellcolor{Green!15}\num{0.67000 - 0.65000i} & \cellcolor{blue!25}\num{ 0.07000 + 0.37000i} & \cellcolor{ProcessBlue!50}\num{ 0.87000 + 0.03000i} & \cellcolor{Plum!50}\num{ 0.71000 + 0.21000i}\\
-\hline
-\num{1.62000 + 0.00000i} & \cellcolor{MidnightBlue!50}\num{ 0.04000 + 0.16000i} & \cellcolor{red!50}\num{ 9.62000 + 0.00000i} & \cellcolor{MidnightBlue!50}\num{ 0.04000 - 0.16000i}\\
-\hline
-\cellcolor{Green!15}\num{0.67000 + 0.65000i} & \cellcolor{Plum!50}\num{ 0.71000 - 0.21000i} & \cellcolor{ProcessBlue!50}\num{ 0.87000 - 0.03000i} & \cellcolor{blue!25}\num{ 0.07000 - 0.37000i}\\
 \hline
 \end{tabular}
 \end{table}
