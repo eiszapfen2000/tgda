@@ -206,6 +206,8 @@ for a specific set of parameters (area, resolution, wind, fetch, ...).
 %
 %\newcommand{\transpose}[1]{#1^{\mathsf{T}}}
 \newcommand{\ccellnum}[2]{\cellcolor{#1}\num{#2}}
+\newcommand{\mcleft}[2]{\multicolumn{1}{!{\color{#1}\vline}S}{#2}}
+\newcommand{\mcright}[2]{\multicolumn{1}{S !{\color{#1}\vline}}{#2}}
 %\DeclareRobustCommand{\ccellnum}[2]{\cellcolor{#1}\num{#2}}
 
 \begin{table}
@@ -229,14 +231,20 @@ table-number-alignment=right
 %
 \begin{tabular}{SSSSSS}
 \hhline{>{\arrayrulecolor{Line1Color}}*{4}{-}~~}
-\multicolumn{1}{!{\color{Line1Color}\vline}S}{\ccellnum{Q1Color}{1.36000 + 0.00000i}} & \ccellnum{Q1Color}{-1.34000 + 1.24000i} & \ccellnum{Q2Color}{-1.04000 + 0.00000i} & \multicolumn{1}{S !{\color{Line1Color}\vline}}{\ccellnum{Q2Color}{-1.34000 - 1.24000i}} & \ccellnum{Q1Color}{1.36000 + 0.00000i} & \ccellnum{Q1Color}{-1.34000 + 1.24000i} \\
-\multicolumn{1}{!{\color{Line1Color}\vline}S}{\ccellnum{Q1Color}{0.67000 - 0.65000i}} & \ccellnum{Q1Color}{ 0.07000 + 0.37000i} & \ccellnum{Q2Color}{ 0.87000 + 0.03000i} & \multicolumn{1}{S !{\color{Line1Color}\vline}}{\ccellnum{Q2Color}{ 0.71000 + 0.21000i}} & \ccellnum{Q1Color}{0.67000 - 0.65000i} & \ccellnum{Q1Color}{ 0.07000 + 0.37000i}\\
+%
+\mcleft{Line1Color}{\ccellnum{Q1Color}{1.36 + 0.00i}} & \ccellnum{Q1Color}{-1.34 + 1.24i} & \ccellnum{Q2Color}{-1.04 + 0.00i} & \mcright{Line1Color}{\ccellnum{Q2Color}{-1.34 - 1.24i}} & \ccellnum{Q1Color}{1.36 + 0.00i} & \ccellnum{Q1Color}{-1.34 + 1.24i} \\
+\mcleft{Line1Color}{\ccellnum{Q1Color}{0.67 - 0.65i}} & \ccellnum{Q1Color}{ 0.07 + 0.37i} & \ccellnum{Q2Color}{ 0.87 + 0.03i} & \mcright{Line1Color}{\ccellnum{Q2Color}{ 0.71 + 0.21i}} & \ccellnum{Q1Color}{0.67 - 0.65i} & \ccellnum{Q1Color}{ 0.07 + 0.37i}\\
+%
 \hhline{>{\arrayrulecolor{Line1Color}}|>{\arrayrulecolor{Q1Color}}-->{\arrayrulecolor{Line2Color}}*{4}{-}>{\arrayrulecolor{black}}}
-\multicolumn{1}{!{\color{Line1Color}\vline}S}{\ccellnum{Q3Color}{1.62000 + 0.00000i}} & \ccellnum{Q3Color}{ 0.04000 + 0.16000i} & \multicolumn{1}{!{\color{Line2Color}\vline}S}{\textcolor{red}{\num{ 9.62000 + 0.00000i}}} & \multicolumn{1}{S !{\color{Line1Color}\vline}}{\num{ 0.04000 - 0.16000i}} & \ccellnum{Q3Color}{1.62000 + 0.00000i} & \multicolumn{1}{S !{\color{Line2Color}\vline}}{\ccellnum{Q3Color}{ 0.04000 + 0.16000i}}\\
-\multicolumn{1}{!{\color{Line1Color}\vline}S}{\ccellnum{Q3Color}{0.67000 + 0.65000i}} & \ccellnum{Q3Color}{ 0.71000 - 0.21000i} & \multicolumn{1}{!{\color{Line2Color}\vline}S}{\num{ 0.87000 - 0.03000i}} & \multicolumn{1}{S !{\color{Line1Color}\vline}}{\num{ 0.07000 - 0.37000i}} & \ccellnum{Q3Color}{0.67000 + 0.65000i} & \multicolumn{1}{S !{\color{Line2Color}\vline}}{\ccellnum{Q3Color}{ 0.71000 - 0.21000i}}\\
+%
+\mcleft{Line1Color}{\ccellnum{Q3Color}{1.62 + 0.00i}} & \ccellnum{Q3Color}{ 0.04 + 0.16i} & \mcleft{Line2Color}{\textcolor{red}{\num{ 9.62 + 0.0i}}} & \mcright{Line1Color}{\num{ 0.04 - 0.16i}} & \ccellnum{Q3Color}{1.62 + 0.0i} & \mcright{Line2Color}{\ccellnum{Q3Color}{ 0.04 + 0.16i}}\\
+\mcleft{Line1Color}{\ccellnum{Q3Color}{0.67 + 0.65i}} & \ccellnum{Q3Color}{ 0.71 - 0.21i} & \mcleft{Line2Color}{\num{ 0.87 - 0.03i}} & \mcright{Line1Color}{\num{ 0.07 - 0.37i}} & \ccellnum{Q3Color}{0.67 + 0.65i} & \mcright{Line2Color}{\ccellnum{Q3Color}{ 0.71 - 0.21i}}\\
+%
 \hhline{>{\arrayrulecolor{Line1Color}}*{4}{-}>{\arrayrulecolor{Q3Color}}-->{\arrayrulecolor{Line2Color}}|}
-\ccellnum{Q1Color}{1.36000 + 0.00000i} & \ccellnum{Q1Color}{-1.34000 + 1.24000i} & \multicolumn{1}{!{\color{Line2Color}\vline}S}{\ccellnum{Q2Color}{-1.04000 + 0.00000i}} & \ccellnum{Q2Color}{-1.34000 - 1.24000i} & \ccellnum{Q1Color}{1.36000 + 0.00000i} & \multicolumn{1}{S !{\color{Line2Color}\vline}}{\ccellnum{Q1Color}{-1.34000 + 1.24000i}} \\
-\ccellnum{Q1Color}{0.67000 - 0.65000i} & \ccellnum{Q1Color}{ 0.07000 + 0.37000i} & \multicolumn{1}{!{\color{Line2Color}\vline}S}{\ccellnum{Q2Color}{ 0.87000 + 0.03000i}} & \ccellnum{Q2Color}{ 0.71000 + 0.21000i} & \ccellnum{Q1Color}{0.67000 - 0.65000i} & \multicolumn{1}{S !{\color{Line2Color}\vline}}{\ccellnum{Q1Color}{ 0.07000 + 0.37000i}}\\
+%
+\ccellnum{Q1Color}{1.36 + 0.00i} & \ccellnum{Q1Color}{-1.34 + 1.24i} & \mcleft{Line2Color}{\ccellnum{Q2Color}{-1.04 + 0.00i}} & \ccellnum{Q2Color}{-1.34 - 1.24i} & \ccellnum{Q1Color}{1.36 + 0.00i} & \mcright{Line2Color}{\ccellnum{Q1Color}{-1.34 + 1.24i}} \\
+\ccellnum{Q1Color}{0.67 - 0.65i} & \ccellnum{Q1Color}{ 0.07 + 0.37i} & \mcleft{Line2Color}{\ccellnum{Q2Color}{ 0.87 + 0.03i}} & \ccellnum{Q2Color}{ 0.71 + 0.21i} & \ccellnum{Q1Color}{0.67 - 0.65i} & \mcright{Line2Color}{\ccellnum{Q1Color}{ 0.07 + 0.37i}}\\
+%
 \hhline{~~>{\arrayrulecolor{Line2Color}}*{4}{-}>{\arrayrulecolor{black}}}
 \end{tabular}
 \caption{Example spectrum which consists of four colour-coded quadrants, the zero frequency is in red.
