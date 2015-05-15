@@ -231,22 +231,27 @@ detect-weight=true,detect-inline-weight=math
 
 \colorlet{Q1Color}{cyan!25}
 \colorlet{Q2Color}{NavyBlue!50}
-\colorlet{Q3Color}{violet!25}
+\colorlet{Q3Color}{violet!45}
 \colorlet{Q4Color}{white}
+\colorlet{Line1Color}{blue}
+\colorlet{Line2Color}{violet}
+
+%
+%\cellcolor{blue!25}        \num{-0.410 - 0.15588i} & \cellcolor{ProcessBlue!50}\num{1.42 - 0.01732i} & \cellcolor{Plum!50}        \num{-0.455 - 0.06062i}\\
+%\cellcolor{MidnightBlue!50}\num{-0.815 - 0.6322i}  & \cellcolor{red!50}\num{3.22 + 0.0i} 
 
 \setlength{\arrayrulewidth}{1pt}
 \begin{tabular}{ S[table-number-alignment=right] S[table-number-alignment=right] S[table-number-alignment=right] S[table-number-alignment=right] S[table-number-alignment=right] S[table-number-alignment=right] }
-\hhline{>{\arrayrulecolor{blue}}*{4}{-}~~}
-\multicolumn{1}{!{\color{blue}\vline}S[table-number-alignment=right]}{\cellcolor{Q1Color}\num{1.36000 + 0.00000i}} & \cellcolor{Q1Color}\num{-1.34000 + 1.24000i} & \cellcolor{Q2Color}\num{-1.04000 + 0.00000i} & \multicolumn{1}{S[table-number-alignment=right] !{\color{blue}\vline}}{\cellcolor{Q2Color}\num{-1.34000 - 1.24000i}} & \cellcolor{Q1Color}\num{1.36000 + 0.00000i} & \cellcolor{Q1Color}\num{-1.34000 + 1.24000i} \\
-\multicolumn{1}{!{\color{blue}\vline}S[table-number-alignment=right]}{\cellcolor{Q1Color}\num{0.67000 - 0.65000i}} & \cellcolor{Q1Color}\num{ 0.07000 + 0.37000i} & \cellcolor{Q2Color}\num{ 0.87000 + 0.03000i} & \multicolumn{1}{S[table-number-alignment=right] !{\color{blue}\vline}}{\cellcolor{Q2Color}\num{ 0.71000 + 0.21000i}} & \cellcolor{Q1Color}\num{0.67000 - 0.65000i} & \cellcolor{Q1Color}\num{ 0.07000 + 0.37000i}\\
-\hhline{>{\arrayrulecolor{blue}}|>{\arrayrulecolor{Q1Color}}-->{\arrayrulecolor{red}}*{4}{-}>{\arrayrulecolor{black}}}
-%\arrayrulecolor{red}
-\multicolumn{1}{!{\color{blue}\vline}S[table-number-alignment=right]}{\cellcolor{Q3Color}\num{1.62000 + 0.00000i}} & \cellcolor{Q3Color}\num{ 0.04000 + 0.16000i} & \multicolumn{1}{!{\color{red}\vline}S[table-number-alignment=right]}{\num{ 9.62000 + 0.00000i}} & \multicolumn{1}{S[table-number-alignment=right] !{\color{blue}\vline}}{\num{ 0.04000 - 0.16000i}} & \cellcolor{Q3Color}\num{1.62000 + 0.00000i} & \multicolumn{1}{S[table-number-alignment=right] !{\color{red}\vline}}{\cellcolor{Q3Color}\num{ 0.04000 + 0.16000i}}\\
-\multicolumn{1}{!{\color{blue}\vline}S[table-number-alignment=right]}{\cellcolor{Q3Color}\num{0.67000 + 0.65000i}} & \cellcolor{Q3Color}\num{ 0.71000 - 0.21000i} & \multicolumn{1}{!{\color{red}\vline}S[table-number-alignment=right]}{\num{ 0.87000 - 0.03000i}} & \multicolumn{1}{S[table-number-alignment=right] !{\color{blue}\vline}}{\num{ 0.07000 - 0.37000i}} & \cellcolor{Q3Color}\num{0.67000 + 0.65000i} & \multicolumn{1}{S[table-number-alignment=right] !{\color{red}\vline}}{\cellcolor{Q3Color}\num{ 0.71000 - 0.21000i}}\\
-\hhline{>{\arrayrulecolor{blue}}*{4}{-}>{\arrayrulecolor{Q3Color}}-->{\arrayrulecolor{red}}|}
-\cellcolor{Q1Color}\num{1.36000 + 0.00000i} & \cellcolor{Q1Color}\num{-1.34000 + 1.24000i} & \multicolumn{1}{!{\color{red}\vline}S[table-number-alignment=right]}{\cellcolor{Q2Color}\num{-1.04000 + 0.00000i}} & \cellcolor{Q2Color}\num{-1.34000 - 1.24000i} & \cellcolor{Q1Color}\num{1.36000 + 0.00000i} & \multicolumn{1}{S[table-number-alignment=right] !{\color{red}\vline}}{\cellcolor{Q1Color}\num{-1.34000 + 1.24000i}} \\
-\cellcolor{Q1Color}\num{0.67000 - 0.65000i} & \cellcolor{Q1Color}\num{ 0.07000 + 0.37000i} & \multicolumn{1}{!{\color{red}\vline}S[table-number-alignment=right]}{\cellcolor{Q2Color}\num{ 0.87000 + 0.03000i}} & \cellcolor{Q2Color}\num{ 0.71000 + 0.21000i} & \cellcolor{Q1Color}\num{0.67000 - 0.65000i} & \multicolumn{1}{S[table-number-alignment=right] !{\color{red}\vline}}{\cellcolor{Q1Color}\num{ 0.07000 + 0.37000i}}\\
-\hhline{~~>{\arrayrulecolor{red}}*{4}{-}>{\arrayrulecolor{black}}}
+\hhline{>{\arrayrulecolor{Line1Color}}*{4}{-}~~}
+\multicolumn{1}{!{\color{Line1Color}\vline}S[table-number-alignment=right]}{\cellcolor{Q1Color}\num{1.36000 + 0.00000i}} & \cellcolor{Q1Color}\num{-1.34000 + 1.24000i} & \cellcolor{Q2Color}\num{-1.04000 + 0.00000i} & \multicolumn{1}{S[table-number-alignment=right] !{\color{Line1Color}\vline}}{\cellcolor{Q2Color}\num{-1.34000 - 1.24000i}} & \cellcolor{Q1Color}\num{1.36000 + 0.00000i} & \cellcolor{Q1Color}\num{-1.34000 + 1.24000i} \\
+\multicolumn{1}{!{\color{Line1Color}\vline}S[table-number-alignment=right]}{\cellcolor{Q1Color}\num{0.67000 - 0.65000i}} & \cellcolor{Q1Color}\num{ 0.07000 + 0.37000i} & \cellcolor{Q2Color}\num{ 0.87000 + 0.03000i} & \multicolumn{1}{S[table-number-alignment=right] !{\color{Line1Color}\vline}}{\cellcolor{Q2Color}\num{ 0.71000 + 0.21000i}} & \cellcolor{Q1Color}\num{0.67000 - 0.65000i} & \cellcolor{Q1Color}\num{ 0.07000 + 0.37000i}\\
+\hhline{>{\arrayrulecolor{Line1Color}}|>{\arrayrulecolor{Q1Color}}-->{\arrayrulecolor{Line2Color}}*{4}{-}>{\arrayrulecolor{black}}}
+\multicolumn{1}{!{\color{Line1Color}\vline}S[table-number-alignment=right]}{\cellcolor{Q3Color}\num{1.62000 + 0.00000i}} & \cellcolor{Q3Color}\num{ 0.04000 + 0.16000i} & \multicolumn{1}{!{\color{Line2Color}\vline}S[table-number-alignment=right]}{\textcolor{red}{\num{ 9.62000 + 0.00000i}}} & \multicolumn{1}{S[table-number-alignment=right] !{\color{Line1Color}\vline}}{\num{ 0.04000 - 0.16000i}} & \cellcolor{Q3Color}\num{1.62000 + 0.00000i} & \multicolumn{1}{S[table-number-alignment=right] !{\color{Line2Color}\vline}}{\cellcolor{Q3Color}\num{ 0.04000 + 0.16000i}}\\
+\multicolumn{1}{!{\color{Line1Color}\vline}S[table-number-alignment=right]}{\cellcolor{Q3Color}\num{0.67000 + 0.65000i}} & \cellcolor{Q3Color}\num{ 0.71000 - 0.21000i} & \multicolumn{1}{!{\color{Line2Color}\vline}S[table-number-alignment=right]}{\num{ 0.87000 - 0.03000i}} & \multicolumn{1}{S[table-number-alignment=right] !{\color{Line1Color}\vline}}{\num{ 0.07000 - 0.37000i}} & \cellcolor{Q3Color}\num{0.67000 + 0.65000i} & \multicolumn{1}{S[table-number-alignment=right] !{\color{Line2Color}\vline}}{\cellcolor{Q3Color}\num{ 0.71000 - 0.21000i}}\\
+\hhline{>{\arrayrulecolor{Line1Color}}*{4}{-}>{\arrayrulecolor{Q3Color}}-->{\arrayrulecolor{Line2Color}}|}
+\cellcolor{Q1Color}\num{1.36000 + 0.00000i} & \cellcolor{Q1Color}\num{-1.34000 + 1.24000i} & \multicolumn{1}{!{\color{Line2Color}\vline}S[table-number-alignment=right]}{\cellcolor{Q2Color}\num{-1.04000 + 0.00000i}} & \cellcolor{Q2Color}\num{-1.34000 - 1.24000i} & \cellcolor{Q1Color}\num{1.36000 + 0.00000i} & \multicolumn{1}{S[table-number-alignment=right] !{\color{Line2Color}\vline}}{\cellcolor{Q1Color}\num{-1.34000 + 1.24000i}} \\
+\cellcolor{Q1Color}\num{0.67000 - 0.65000i} & \cellcolor{Q1Color}\num{ 0.07000 + 0.37000i} & \multicolumn{1}{!{\color{Line2Color}\vline}S[table-number-alignment=right]}{\cellcolor{Q2Color}\num{ 0.87000 + 0.03000i}} & \cellcolor{Q2Color}\num{ 0.71000 + 0.21000i} & \cellcolor{Q1Color}\num{0.67000 - 0.65000i} & \multicolumn{1}{S[table-number-alignment=right] !{\color{Line2Color}\vline}}{\cellcolor{Q1Color}\num{ 0.07000 + 0.37000i}}\\
+\hhline{~~>{\arrayrulecolor{Line2Color}}*{4}{-}>{\arrayrulecolor{black}}}
 \end{tabular}
 
 % \\
@@ -269,29 +274,36 @@ detect-weight=true,detect-inline-weight=math
 % \cellcolor{ProcessBlue!50}\num{ 0.87000 + 0.03000i} & \cellcolor{ProcessBlue!50}\num{ 0.71000 + 0.21000i} & \cellcolor{ForestGreen!60}\num{0.67000 - 0.65000i} & \cellcolor{ForestGreen!60}\num{ 0.07000 + 0.37000i}\\
 % \hline
 % \end{tabular}
-\caption{Left: Zero frequency at the center. Right: Zero frequency at upper left.}
+\caption{Example spectrum which consists of four colour-coded quadrants, the zero frequency is in red.
+The spectrum repeats itself towards the right and the bottom. Blue frame: Zero frequency at the center.
+Violet frame: Zero frequency at upper left.}
 \end{table}
 %
 We compute surface elevation in the form of an inverse Discrete Fourier Transform as follows:
-\begin{gather}
+\begin{gather*}
 \label{eq:dft_surface_elevation}
 \eta(\mvec{x}, t) = \sum_{\mvec{k}}~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
 \intertext{with}
 \mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
 -\frac{N}{2}\leq\alpha,\beta<\frac{N}{2}\} \\
 \Delta k = \frac{2\pi}{L}
-\end{gather}
+\end{gather*}
 As one can see, the wavevector $\mvec{k} = (0,0)$ lies at the center of the wavevector domain,
 where $\alpha=0$ and $\beta=0$. But actual implementations of the inverse Discrete Fourier Transform
-expect the zero wavevector as the first element. The wavevector domain of such implementations is
-defined as follows:
-\begin{gather}
+expect the zero wavevector as the first element i.e. at the upper left. The wavevector domain
+of such implementations is defined as follows:
+\begin{equation*}
 \mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
-0\leq\alpha,\beta<N-1\} \\
-\Delta k = \frac{2\pi}{L}
-\end{gather}
-Since the spectrum is a periodic signal, i.e. it repeats itself at infinity in all directions,
-the solution is a simple one: swap quadrants diagonally.
+0\leq\alpha,\beta<N-1\}
+\end{equation*}
+We know that the spectrum represents a periodic signal, i.e. it repeats itself at infinity in both directions.
+Hence, independent of where the zero frequency is located inside the wavevector domain, we may write:
+\begin{align*}
+ h_0(\mvec{k}(\alpha\Delta k,\beta\Delta k)) &\equiv h_0(\mvec{k}((\alpha\pm N)\Delta k, \beta\Delta k) \\
+					     &\equiv h_0(\mvec{k}(\alpha\Delta k, (\beta\pm N)\Delta k) \\
+					     &\equiv h_0(\mvec{k}((\alpha\pm N)\Delta k, (\beta\pm N)\Delta k)
+\end{align*}
+
 %https://www.cv.nrao.edu/course/astr534/FourierTransforms.html
 %https://ccrma.stanford.edu/~jos/mdft/Even_Odd_Functions.html
 %https://ccrma.stanford.edu/~jos/mdft/mdft.html
