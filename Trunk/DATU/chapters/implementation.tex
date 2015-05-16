@@ -207,6 +207,12 @@ for a specific set of parameters (area, resolution, wind, fetch, ...).
 \newcommand{\ccellnum}[2]{\cellcolor{#1}\num{#2}}
 \newcommand{\mcleft}[2]{\multicolumn{1}{!{\color{#1}\vline}S}{#2}}
 \newcommand{\mcright}[2]{\multicolumn{1}{S !{\color{#1}\vline}}{#2}}
+\colorlet{Q1Color}{cyan!25}
+\colorlet{Q2Color}{NavyBlue!50}
+\colorlet{Q3Color}{violet!45}
+\colorlet{Q4Color}{white}
+\colorlet{Line1Color}{blue}
+\colorlet{Line2Color}{black}
 %
 \begin{table}
 \footnotesize
@@ -216,16 +222,8 @@ for a specific set of parameters (area, resolution, wind, fetch, ...).
 round-mode      = places,
 round-precision = 1,
 explicit-sign = +,
-detect-weight=true,detect-inline-weight=math,
 table-number-alignment=right
 }
-%
-\colorlet{Q1Color}{cyan!25}
-\colorlet{Q2Color}{NavyBlue!50}
-\colorlet{Q3Color}{violet!45}
-\colorlet{Q4Color}{white}
-\colorlet{Line1Color}{blue}
-\colorlet{Line2Color}{violet}
 \setlength{\arrayrulewidth}{2pt}
 \setlength{\tabcolsep}{3pt}
 %
@@ -252,7 +250,7 @@ table-number-alignment=right
 \end{tabular}
 \caption{Example spectrum which consists of four colour-coded quadrants, the zero frequency is in red.
 The spectrum repeats itself towards the right and the bottom. Blue frame: wavevector domain with zero
-frequency at the center. Violet frame: wavevector domain with zero frequency at the upper left.}
+frequency at the center. Black frame: wavevector domain with zero frequency at the upper left.}
 \label{tab:spectrum_q_repeat}
 \end{table}
 %
@@ -282,7 +280,40 @@ Hence, independent of where the zero frequency is located inside the wavevector 
 \end{align*}
 Table~\ref{tab:spectrum_q_repeat} depicts such a periodic spectrum, and in addition shows
 the relation between the two wavevector domains.
-
+%
+\newsubfloat{table}
+\begin{table}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\sisetup{
+round-mode      = places,
+round-precision = 1,
+explicit-sign = +,
+table-number-alignment=right
+}
+\subbottom[Center]{%
+\begin{tabular}{|SSSS|}
+\hline
+{\ccellnum{Q1Color}{1.36+0.00i}} & \ccellnum{Q1Color}{-1.34+1.24i} & \ccellnum{Q2Color}{-1.04+0.00i} & {\ccellnum{Q2Color}{-1.34-1.24i}} \\
+{\ccellnum{Q1Color}{0.67-0.65i}} & \ccellnum{Q1Color}{ 0.07+0.37i} & \ccellnum{Q2Color}{ 0.87+0.03i} & {\ccellnum{Q2Color}{ 0.71+0.21i}} \\
+{\ccellnum{Q3Color}{1.62+0.00i}} & \ccellnum{Q3Color}{0.04+0.16i}  & {\textcolor{red}{\num{9.62+0.0i}}} & {\num{0.04-0.16i}} \\
+{\ccellnum{Q3Color}{0.67+0.65i}} & \ccellnum{Q3Color}{0.71-0.21i}  & {                \num{0.87-0.03i}} & {\num{0.07-0.37i}} \\
+\hline
+\end{tabular}
+}
+\subbottom[Upper Left]{%
+\begin{tabular}{|SSSS|}
+\hline
+{\textcolor{red}{\num{9.62+0.0i}}} & {\num{0.04-0.16i}} & {\ccellnum{Q3Color}{1.62+0.00i}} & \ccellnum{Q3Color}{0.04+0.16i} \\
+{                \num{0.87-0.03i}} & {\num{0.07-0.37i}} & {\ccellnum{Q3Color}{0.67+0.65i}} & \ccellnum{Q3Color}{0.71-0.21i} \\
+{\ccellnum{Q2Color}{-1.04+0.00i}}  & {\ccellnum{Q2Color}{-1.34-1.24i}} & {\ccellnum{Q1Color}{1.36+0.00i}} & \ccellnum{Q1Color}{-1.34+1.24i} \\
+{\ccellnum{Q2Color}{ 0.87+0.03i}}  & {\ccellnum{Q2Color}{ 0.71+0.21i}} & {\ccellnum{Q1Color}{0.67-0.65i}} & \ccellnum{Q1Color}{ 0.07+0.37i} \\
+\hline
+\end{tabular}
+}
+\caption{Swap quadrants diagonally to convert between wavevector domains.}
+\end{table}
+%
 %https://www.cv.nrao.edu/course/astr534/FourierTransforms.html
 %https://ccrma.stanford.edu/~jos/mdft/Even_Odd_Functions.html
 %https://ccrma.stanford.edu/~jos/mdft/mdft.html
