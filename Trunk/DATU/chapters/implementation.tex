@@ -214,6 +214,31 @@ for a specific set of parameters (area, resolution, wind, fetch, ...).
 \colorlet{Line1Color}{blue}
 \colorlet{Line2Color}{black}
 %
+We compute surface elevation in the form of an inverse Discrete Fourier Transform as follows:
+\begin{gather*}
+\label{eq:dft_surface_elevation}
+\eta(\mvec{x}, t) = \sum_{\mvec{k}}~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+\intertext{with}
+\mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
+-\frac{N}{2}\leq\alpha,\beta<\frac{N}{2}\} \\
+\Delta k = \frac{2\pi}{L}
+\end{gather*}
+As one can see, the wavevector $\mvec{k} = (0,0)$ lies at the center of the wavevector domain,
+where $\alpha=0$ and $\beta=0$. But actual implementations of the inverse Discrete Fourier Transform
+expect the zero wavevector as the first element i.e. at the upper left. The wavevector domain
+of such implementations is defined as follows:
+\begin{equation*}
+\mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
+0\leq\alpha,\beta<N-1\}
+\end{equation*}
+We know that the spectrum represents a periodic signal, i.e. it repeats itself at infinity in both directions.
+Hence, independent of where the zero frequency is located inside the wavevector domain, we may write:
+\begin{align*}
+ h_0(\mvec{k}(\alpha\Delta k,\beta\Delta k)) &\equiv h_0(\mvec{k}((\alpha\pm N)\Delta k, \beta\Delta k) \\
+					     &\equiv h_0(\mvec{k}(\alpha\Delta k, (\beta\pm N)\Delta k) \\
+					     &\equiv h_0(\mvec{k}((\alpha\pm N)\Delta k, (\beta\pm N)\Delta k)
+\end{align*}
+%
 \begin{table}
 \footnotesize
 \centering
@@ -248,38 +273,12 @@ table-number-alignment=right
 {\ccellnum{Q3Color}{0.67+0.65i}} & \ccellnum{Q3Color}{0.71-0.21i} & {                \num{0.87-0.03i}} & {\num{0.07-0.37i}} & \ccellnum{Q3Color}{0.67+0.65i} & {\ccellnum{Q3Color}{0.71-0.21i}} &                  \num{0.87-0.03i} & \num{0.07-0.37i} \\
 
 \end{tabular}
-\caption{Example spectrum which consists of four colour-coded quadrants, the zero frequency is in red.
-The spectrum repeats itself towards the right and the bottom. Blue frame: wavevector domain with zero
-frequency at the center. Black frame: wavevector domain with zero frequency at the upper left.}
+\caption{Example spectrum ($N = 4)$ which consists of four colour-coded quadrants, the zero frequency is in red.
+The spectrum repeats itself towards the right and the bottom. Blue frame: spectrum where the zero frequency
+is at the center of the wavevector domain. Black frame: spectrum where the zero frequency is at the
+upper left of the wavevector domain.}
 \label{tab:spectrum_q_repeat}
 \end{table}
-%
-We compute surface elevation in the form of an inverse Discrete Fourier Transform as follows:
-\begin{gather*}
-\label{eq:dft_surface_elevation}
-\eta(\mvec{x}, t) = \sum_{\mvec{k}}~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
-\intertext{with}
-\mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
--\frac{N}{2}\leq\alpha,\beta<\frac{N}{2}\} \\
-\Delta k = \frac{2\pi}{L}
-\end{gather*}
-As one can see, the wavevector $\mvec{k} = (0,0)$ lies at the center of the wavevector domain,
-where $\alpha=0$ and $\beta=0$. But actual implementations of the inverse Discrete Fourier Transform
-expect the zero wavevector as the first element i.e. at the upper left. The wavevector domain
-of such implementations is defined as follows:
-\begin{equation*}
-\mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
-0\leq\alpha,\beta<N-1\}
-\end{equation*}
-We know that the spectrum represents a periodic signal, i.e. it repeats itself at infinity in both directions.
-Hence, independent of where the zero frequency is located inside the wavevector domain, we may write:
-\begin{align*}
- h_0(\mvec{k}(\alpha\Delta k,\beta\Delta k)) &\equiv h_0(\mvec{k}((\alpha\pm N)\Delta k, \beta\Delta k) \\
-					     &\equiv h_0(\mvec{k}(\alpha\Delta k, (\beta\pm N)\Delta k) \\
-					     &\equiv h_0(\mvec{k}((\alpha\pm N)\Delta k, (\beta\pm N)\Delta k)
-\end{align*}
-Table~\ref{tab:spectrum_q_repeat} depicts such a periodic spectrum, and in addition shows
-the relation between the two wavevector domains.
 %
 \newsubfloat{table}
 \begin{table}
@@ -291,7 +290,7 @@ round-precision = 1,
 explicit-sign = +,
 table-number-alignment=right
 }
-\subbottom[Center]{%
+\subbottom[Zero frequency at the center.]{%
 \begin{tabular}{|SSSS|}
 \hline
 {\ccellnum{Q1Color}{1.36+0.00i}} & \ccellnum{Q1Color}{-1.34+1.24i} & \ccellnum{Q2Color}{-1.04+0.00i} & {\ccellnum{Q2Color}{-1.34-1.24i}} \\
@@ -301,7 +300,7 @@ table-number-alignment=right
 \hline
 \end{tabular}
 }
-\subbottom[Upper Left]{%
+\subbottom[Zero frequency at the upper left.]{%
 \begin{tabular}{|SSSS|}
 \hline
 {\textcolor{red}{\num{9.62+0.0i}}} & {\num{0.04-0.16i}} & {\ccellnum{Q3Color}{1.62+0.00i}} & \ccellnum{Q3Color}{0.04+0.16i} \\
@@ -311,9 +310,20 @@ table-number-alignment=right
 \hline
 \end{tabular}
 }
-\caption{Swap quadrants diagonally to convert between wavevector domains.}
+\caption{Swap quadrants diagonally to convert between the two wavevector domains of interest.}
+\label{tab:quadrant_swap}
 \end{table}
 %
+Table~\ref{tab:spectrum_q_repeat} depicts such a periodic spectrum, where each instance
+of the spectrum is divided into four quadrants. The spectrum always consists of those
+four quadrants, independent of where the wavevector domain may begin or end. It is only
+the~\emph{layout} of the four quadrants that changes with the wavevector domain.
+Table~\ref{tab:quadrant_swap} shows that the conversion from a layout
+where the zero frequency is at the center, to a layout where the zero
+frequency is at the upper left, is accomplished by a swap between
+diagonally opposite quadrants.
+
+
 %https://www.cv.nrao.edu/course/astr534/FourierTransforms.html
 %https://ccrma.stanford.edu/~jos/mdft/Even_Odd_Functions.html
 %https://ccrma.stanford.edu/~jos/mdft/mdft.html
