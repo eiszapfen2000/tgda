@@ -195,12 +195,12 @@ two terms based on Equation~\ref{eq:dft_surface_elevation}:
 h_0(\mvec{k})   &= \frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)\sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_y} \\
 h_0(\mvec{k},t) &= h_0(\mvec{k})~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
 \end{align}
-The term $h_0(\mvec{k})$ represents a random generated spectrum based on the energy
+The term $h_0(\mvec{k})$ represents a random generated spectrum based on wave
 spectrum $\Theta(\mvec{k})$. The term $h_0(\mvec{k},t)$ takes care of the
 animation over time of $h_0(\mvec{k})$. As long as the spatial domain,
-the wavevector domain, and the energy spectrum do not change, $h_0(\mvec{k})$
-stays the same. Hence, it is necessary to generate $h_0(\mvec{k})$ only once
-for a specific set of parameters (area, resolution, wind, fetch, ...).
+the wavevector domain, and the wave spectrum do not change, $h_0(\mvec{k})$
+does not change either. Hence, it is necessary to generate $h_0(\mvec{k})$ only once
+for a specific set of parameters such as area, resolution, wind and fetch.
 %
 \subsubsection{Zero Frequency}
 %
@@ -216,7 +216,6 @@ for a specific set of parameters (area, resolution, wind, fetch, ...).
 %
 We compute surface elevation in the form of an inverse Discrete Fourier Transform as follows:
 \begin{gather*}
-\label{eq:dft_surface_elevation}
 \eta(\mvec{x}, t) = \sum_{\mvec{k}}~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
 \intertext{with}
 \mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
@@ -319,11 +318,11 @@ of the spectrum is divided into four quadrants. The spectrum always consists of 
 four quadrants, independent of where the wavevector domain may begin or end. It is only
 the~\emph{layout} of the four quadrants that changes with the wavevector domain.
 Table~\ref{tab:quadrant_swap} shows that the conversion from a layout
-where the zero frequency is at the center, to a layout where the zero
-frequency is at the upper left, is accomplished by a swap between
+where the zero frequency is at the center to a layout where the zero
+frequency is at the upper left is accomplished by a swap between
 diagonally opposite quadrants.
 
-
+\subsubsection{Symmetry}
 %https://www.cv.nrao.edu/course/astr534/FourierTransforms.html
 %https://ccrma.stanford.edu/~jos/mdft/Even_Odd_Functions.html
 %https://ccrma.stanford.edu/~jos/mdft/mdft.html
@@ -331,13 +330,19 @@ diagonally opposite quadrants.
 The Fourier Transform of real-valued input is~\emph{hermitian} - the real part of the resulting spectrum
 is an~\emph{even} function and the imaginary part is~\emph{odd}. A function $f(n)$ is said to be even if
 $f(-n) = f(n)$. On the other hand, a function $f(n)$ is said to be odd if $f(-n) = -f(n)$,
-with $f(0) = 0$.
-
-
-Quadrant switching
+with $f(0) = 0$. Let $\mathcal{F}(k)$ be the Fourier Transform of a real-valued function $f(n)$, then
+the following must hold:
+\begin{equation}
+ \mathcal{F}(-k) = \mathcal{F}(k)^*
+\end{equation}
+where $*$ denotes the complex conjugate operator. Surface elevation $\eta$ is a real-valued
+function, therefore its spectrum $h_0$ must be hermitian, too. We may write
+\begin{equation}
+ h_0(\mvec{-k},t) = h_0(\mvec{k},t)^*
+\end{equation}
+Two issues. Find matching k for -k is not trivial.
 
 Complex conjugate symmetry / Half-complex transform
-
 Gradients
 
 
