@@ -200,7 +200,9 @@ spectrum $\Theta(\mvec{k})$. The term $h_0(\mvec{k},t)$ takes care of the
 animation over time of $h_0(\mvec{k})$. As long as the spatial domain,
 the wavevector domain, and the wave spectrum do not change, $h_0(\mvec{k})$
 does not change either. Hence, it is necessary to generate $h_0(\mvec{k})$ only once
-for a specific set of parameters such as area, resolution, wind and fetch.
+for a specific set of parameters such as area, resolution, wind and fetch. Thus,
+only the exponential responsible for the animation has to be computed for all
+frames.
 %
 \subsubsection{Zero Frequency}
 %
@@ -272,7 +274,7 @@ table-number-alignment=right
 {\ccellnum{Q3Color}{0.67+0.65i}} & \ccellnum{Q3Color}{0.71-0.21i} & {                \num{0.87-0.03i}} & {\num{0.07-0.37i}} & \ccellnum{Q3Color}{0.67+0.65i} & {\ccellnum{Q3Color}{0.71-0.21i}} &                  \num{0.87-0.03i} & \num{0.07-0.37i} \\
 
 \end{tabular}
-\caption{Example spectrum ($N = 4)$ which consists of four colour-coded quadrants, the zero frequency is in red.
+\caption{Example spectrum ($N = 4$) which consists of four colour-coded quadrants, the zero frequency is in red.
 The spectrum repeats itself towards the right and the bottom. Blue frame: spectrum where the zero frequency
 is at the center of the wavevector domain. Black frame: spectrum where the zero frequency is at the
 upper left of the wavevector domain.}
@@ -323,6 +325,10 @@ frequency is at the upper left is accomplished by a swap between
 diagonally opposite quadrants.
 
 \subsubsection{Symmetry}
+%
+\colorlet{BorderColor}{gray!10}
+\colorlet{CenterColor}{white}
+\colorlet{Brak}{blue!25}
 %https://www.cv.nrao.edu/course/astr534/FourierTransforms.html
 %https://ccrma.stanford.edu/~jos/mdft/Even_Odd_Functions.html
 %https://ccrma.stanford.edu/~jos/mdft/mdft.html
@@ -335,15 +341,109 @@ the following must hold:
 \begin{equation}
  \mathcal{F}(-k) = \mathcal{F}(k)^*
 \end{equation}
-where $*$ denotes the complex conjugate operator. Surface elevation $\eta$ is a real-valued
-function, therefore its spectrum $h_0$ must be hermitian, too. We may write
+where $*$ denotes the complex conjugate operator. The relation is similar to a centrosymmetric one
+with $\mathcal{F}(0)$ as a fixpoint at the center, the only difference is the complex conjugation.
+
+
+Surface elevation $\eta$ is a real-valued function, therefore its spectrum $h_0$ must be hermitian,
+too. We may write
 \begin{equation}
  h_0(\mvec{-k},t) = h_0(\mvec{k},t)^*
 \end{equation}
-Two issues. Find matching k for -k is not trivial.
+where finding wavevector $\mvec{k}$ for its counterpart $-\mvec{k}$ has proven to be non-trivial
+for even-sized spectra.
+%
+%
+\begin{table}
+\footnotesize
+\centering
+%
+\sisetup{
+round-mode      = places,
+round-precision = 1,
+explicit-sign = +,
+table-number-alignment=right
+}
+\setlength{\arrayrulewidth}{.5pt}
+\setlength{\tabcolsep}{3pt}
+\subbottom{%
+\begin{tabular}{SSSS}
+{\ccellnum{BorderColor}{1.36+0.00i}} & \ccellnum{BorderColor}{-1.34+1.24i}                & \ccellnum{BorderColor}{-1.04+0.00i}                       & {\ccellnum{BorderColor}{-1.34-1.24i}} \\
+\hhline{>{\arrayrulecolor{BorderColor}}->{\arrayrulecolor{black}}*{3}{-}}
+{\ccellnum{BorderColor}{0.67-0.65i}} & \mcleft{black}{\ccellnum{CenterColor}{0.07+0.37i}} & {\ccellnum{CenterColor}{0.87+0.03i}}                      & \mcright{black}{\ccellnum{CenterColor}{0.71+0.21i}} \\
+{\ccellnum{BorderColor}{1.62+0.00i}} & \mcleft{black}{\ccellnum{CenterColor}{0.04+0.16i}} & {\cellcolor{CenterColor}\textcolor{red}{\num{9.62+0.0i}}} & \mcright{black}{\ccellnum{CenterColor}{0.04-0.16i}} \\
+{\ccellnum{BorderColor}{0.67+0.65i}} & \mcleft{black}{\ccellnum{CenterColor}{0.71-0.21i}} & {\ccellnum{CenterColor}{0.87-0.03i}}                      & \mcright{black}{\ccellnum{CenterColor}{0.07-0.37i}} \\
+\hhline{>{\arrayrulecolor{BorderColor}}->{\arrayrulecolor{black}}*{3}{-}}
+\end{tabular}
+}
+\subbottom{%
+\begin{tabular}{SSSS}
+{\ccellnum{BorderColor}{1.36+0.00i}} & \ccellnum{BorderColor}{-1.34+1.24i} & \ccellnum{BorderColor}{-1.04+0.00i}    & {\ccellnum{BorderColor}{-1.34-1.24i}} \\
+\hhline{>{\arrayrulecolor{BorderColor}}->{\arrayrulecolor{black}}*{3}{-}}
+{\ccellnum{BorderColor}{0.67-0.65i}} & \mcleft{black}{\ccellnum{blue!15}  { 0.07+0.37i}} & {\ccellnum{violet!40}{0.87+0.03i}}                        & \mcright{black}{\ccellnum{violet!15}{0.71+0.21i}} \\
+{\ccellnum{BorderColor}{1.62+0.00i}} & \mcleft{black}{\ccellnum{blue!40}  { 0.04+0.16i}} & {\cellcolor{CenterColor}\textcolor{red}{\num{9.62+0.0i}}} & \mcright{black}{\ccellnum{blue!40}  {0.04-0.16i}} \\
+{\ccellnum{BorderColor}{0.67+0.65i}} & \mcleft{black}{\ccellnum{violet!15}{ 0.71-0.21i}} & {\ccellnum{violet!40}{0.87-0.03i}}                        & \mcright{black}{\ccellnum{blue!15}  {0.07-0.37i}} \\
+\hhline{>{\arrayrulecolor{BorderColor}}->{\arrayrulecolor{black}}*{3}{-}}
+\end{tabular}
+}
+\caption{Left: The spectrum $\mathcal{F}(\mvec{k})$ of an even-sized ($N = 4$) and real-valued function $f(\mvec{x})$.
+The zero frequency $\mvec{k} = (0,0)$ is at the center, coloured in red.
+Right: The matching pairs $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$ of the spectrum are colour-coded. One may notice
+that the cells in the top row and in the first column to the left lack such pairing.}
+\label{tab:spectrum_k_minusk}
+\end{table}
+%
+%
+\begin{table}
+\footnotesize
+\centering
+%
+\sisetup{
+round-mode      = places,
+round-precision = 1,
+explicit-sign = +,
+table-number-alignment=right
+}
+\setlength{\arrayrulewidth}{.5pt}
+\setlength{\tabcolsep}{3pt}
+\subbottom{%
+\begin{tabular}{SSSSS}
+{\ccellnum{CenterColor}{1.36+0.00i}} & \ccellnum{CenterColor}{-1.34+1.24i}                & \ccellnum{CenterColor}{-1.04+0.00i}                       & {\ccellnum{CenterColor}{-1.34-1.24i}} & {\ccellnum{CenterColor}{1.36+0.00i}}\\
+\hhline{>{\arrayrulecolor{CenterColor}}->{\arrayrulecolor{black}}*{3}{-}>{\arrayrulecolor{CenterColor}}-}
+{\ccellnum{CenterColor}{0.67-0.65i}} & \mcleft{black}{\ccellnum{BorderColor}{0.07+0.37i}} & {\ccellnum{BorderColor}{0.87+0.03i}}                      & \mcright{black}{\ccellnum{BorderColor}{0.71+0.21i}} & {\ccellnum{CenterColor}{0.67-0.65i}}\\
+{\ccellnum{CenterColor}{1.62+0.00i}} & \mcleft{black}{\ccellnum{BorderColor}{0.04+0.16i}} & {\cellcolor{BorderColor}\textcolor{red}{\num{9.62+0.0i}}} & \mcright{black}{\ccellnum{BorderColor}{0.04-0.16i}} & {\ccellnum{CenterColor}{1.62+0.00i}}\\
+{\ccellnum{CenterColor}{0.67+0.65i}} & \mcleft{black}{\ccellnum{BorderColor}{0.71-0.21i}} & {\ccellnum{BorderColor}{0.87-0.03i}}                      & \mcright{black}{\ccellnum{BorderColor}{0.07-0.37i}} & {\ccellnum{CenterColor}{0.67+0.65i}}\\
+\hhline{>{\arrayrulecolor{CenterColor}}->{\arrayrulecolor{black}}*{3}{-}>{\arrayrulecolor{CenterColor}}-}
+{\ccellnum{CenterColor}{1.36+0.00i}} & \ccellnum{CenterColor}{-1.34+1.24i}                & \ccellnum{CenterColor}{-1.04+0.00i}                       & {\ccellnum{CenterColor}{-1.34-1.24i}} & {\ccellnum{CenterColor}{1.36+0.00i}}\\
+\end{tabular}
+}
+\subbottom{%
+\begin{tabular}{SSSSS}
+{\ccellnum{BorderColor}{1.36+0.00i}} & \ccellnum{BorderColor}{-1.34+1.24i} & \ccellnum{BorderColor}{-1.04+0.00i}    & {\ccellnum{BorderColor}{-1.34-1.24i}} \\
+\hhline{>{\arrayrulecolor{BorderColor}}->{\arrayrulecolor{black}}*{3}{-}}
+{\ccellnum{BorderColor}{0.67-0.65i}} & \mcleft{black}{\ccellnum{blue!15}  { 0.07+0.37i}} & {\ccellnum{violet!40}{0.87+0.03i}}                        & \mcright{black}{\ccellnum{violet!15}{0.71+0.21i}} \\
+{\ccellnum{BorderColor}{1.62+0.00i}} & \mcleft{black}{\ccellnum{blue!40}  { 0.04+0.16i}} & {\cellcolor{CenterColor}\textcolor{red}{\num{9.62+0.0i}}} & \mcright{black}{\ccellnum{blue!40}  {0.04-0.16i}} \\
+{\ccellnum{BorderColor}{0.67+0.65i}} & \mcleft{black}{\ccellnum{violet!15}{ 0.71-0.21i}} & {\ccellnum{violet!40}{0.87-0.03i}}                        & \mcright{black}{\ccellnum{blue!15}  {0.07-0.37i}} \\
+\hhline{>{\arrayrulecolor{BorderColor}}->{\arrayrulecolor{black}}*{3}{-}}
+\end{tabular}
+}
+\caption{}
+\label{tab:spectrum_k_minusk_border}
+\end{table}
+%
+%
+Let the discretised wavevector domain be zero centered and of even size in both dimensions,
+then there is one row and one column of wavevectors $\mvec{k}$ which lack
+matching wavevectors $-\mvec{k}$ inside said domain, see Table~\ref{tab:spectrum_k_minusk}.
+Again, it is the periodic nature of the spectrum that gives us the solution. If we replicate
+the spectrum in both directions, we obtain an additional row and an additional column which
+allow us to find matching pairs for all wavevectors, see Table~\ref{tab:spectrum_k_minusk_border}.
 
-Complex conjugate symmetry / Half-complex transform
-Gradients
+% That is, because we employ a Discrete Fourier Transform with even-sized input data
+% Two issues. Find matching k for -k is not trivial.
+% The spectrum would need both an additional row at the bottom, and an additional column to the right.
+% Complex conjugate symmetry / Half-complex transform
+% Gradients
 
 
 
