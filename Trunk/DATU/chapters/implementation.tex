@@ -342,16 +342,15 @@ the following must hold:
 \begin{equation}
  \mathcal{F}(-k) = \mathcal{F}(k)^*
 \end{equation}
-where $*$ denotes the complex conjugate operator. The relation is similar to a centrosymmetric one
-with $\mathcal{F}(0)$ as a fixpoint at the center, the only difference is the complex conjugation.
-
-
+where $*$ denotes the complex conjugate operator. The relation is similar to a centrosymmetric one,
+$\mathcal{F}(-k) = \mathcal{F}(k)$, with $\mathcal{F}(0)$ as a fixpoint at the center. The only
+difference is the complex conjugation.
 Surface elevation $\eta$ is a real-valued function, therefore its spectrum $h_0$ must be hermitian,
 too. We may write
 \begin{equation}
  h_0(\mvec{-k},t) = h_0(\mvec{k},t)^*
 \end{equation}
-where finding wavevector $\mvec{k}$ for its counterpart $-\mvec{k}$ has proven to be non-trivial
+where finding $h_0(\mvec{k},t)$ for its counterpart $h_0(-\mvec{k},t)$ has proven to be non-trivial
 for even-sized spectra.
 %
 %
@@ -438,11 +437,11 @@ there is a pair which satisfies $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$
 %
 %
 Let the discretised wavevector domain be zero centered and of even size in both dimensions,
-then there is one row and one column of wavevectors $\mvec{k}$ which lack
-matching wavevectors $-\mvec{k}$ inside said domain, see Table~\ref{tab:spectrum_k_minusk}.
+then there is one row and one column of the spectrum $h_0(\mvec{k},t)$ which lacks
+matching elements $h_0(-\mvec{k},t)$ inside said domain, see Table~\ref{tab:spectrum_k_minusk}.
 Again, it is the periodic nature of the spectrum that gives us the solution. If we replicate
 the spectrum in both directions, we obtain an additional row and an additional column which
-allow us to find matching pairs for all wavevectors, see Table~\ref{tab:spectrum_k_minusk_border}.
+allows us to find matching pairs for all elements of the spectrum, see Table~\ref{tab:spectrum_k_minusk_border}.
 
 % That is, because we employ a Discrete Fourier Transform with even-sized input data
 % Two issues. Find matching k for -k is not trivial.
