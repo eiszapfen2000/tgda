@@ -437,11 +437,22 @@ there is a pair which satisfies $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$
 %
 %
 Let the discretised wavevector domain be zero centered and of even size in both dimensions,
-then there is one row and one column of the spectrum $h_0(-\mvec{k},t)$ which lacks
-matching elements $h_0(\mvec{k},t)^*$ inside said domain, see Table~\ref{tab:spectrum_k_minusk}.
+then there is one row and one column of the spectrum which lacks
+matching complex conjugate elements inside said domain, see Table~\ref{tab:spectrum_k_minusk}.
 Again, it is the periodic nature of the spectrum that gives us the solution. If we replicate
 the spectrum in both directions, we obtain an additional row and an additional column which
 allows us to find matching pairs for all elements of the spectrum, see Table~\ref{tab:spectrum_k_minusk_border}.
+
+
+Let us view the spectrum $h_0$ as a two dimensional hermitian array with size $N \times N$.
+Each element may be identified by a pair of indices $(i,j)$, with $0\leq i,j <N$. Then, for
+an element at index $(i,j)$, we may compute the index $(m,n)$ of the corresponding complex
+conjugate element as follows:
+\begin{align}
+m &= (N - i)\mod N \\
+n &= (N - j)\mod N
+\end{align}
+
 
 % That is, because we employ a Discrete Fourier Transform with even-sized input data
 % Two issues. Find matching k for -k is not trivial.
