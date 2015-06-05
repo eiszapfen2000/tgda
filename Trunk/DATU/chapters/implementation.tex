@@ -191,8 +191,9 @@ The latter two requirements are concessions to the~\emph{Fast Fourier Transform}
 algorithm, which works fastest at such resolutions. We may define the following
 two terms based on Equation~\ref{eq:dft_surface_elevation}:
 \begin{align}
-\label{eq:dft_h0}
+\label{eq:dft_h0_k}
 h_0(\mvec{k})   &= \frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)\sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_y} \\
+\label{eq:dft_h0_k_t}
 h_0(\mvec{k},t) &= h_0(\mvec{k})~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
 \end{align}
 The term $h_0(\mvec{k})$ represents a random generated spectrum based on wave
@@ -330,28 +331,6 @@ diagonally opposite quadrants.
 \colorlet{BorderColor}{gray!10}
 \colorlet{CenterColor}{white}
 \colorlet{Brak}{blue!25}
-%https://www.cv.nrao.edu/course/astr534/FourierTransforms.html
-%https://ccrma.stanford.edu/~jos/mdft/Even_Odd_Functions.html
-%https://ccrma.stanford.edu/~jos/mdft/mdft.html
-%https://web.eecs.umich.edu/~fessler/course/451/l/pdf/c5.pdf
-The Fourier Transform of real-valued input is~\emph{hermitian} - the real part of the resulting spectrum
-is an~\emph{even} function and the imaginary part is~\emph{odd}. A function $f(n)$ is said to be even if
-$f(-n) = f(n)$. On the other hand, a function $f(n)$ is said to be odd if $f(-n) = -f(n)$,
-with $f(0) = 0$. Let $\mathcal{F}(k)$ be the Fourier Transform of a real-valued function $f(n)$, then
-the following must hold:
-\begin{equation}
- \mathcal{F}(-k) = \mathcal{F}(k)^*
-\end{equation}
-where $*$ denotes the complex conjugate operator. The relation is similar to a centrosymmetric one,
-$\mathcal{F}(-k) = \mathcal{F}(k)$, with $\mathcal{F}(0)$ as a fixpoint at the center. The only
-difference is the complex conjugation.
-Surface elevation $\eta$ is a real-valued function, therefore its spectrum $h_0$ must be hermitian,
-too. We may write
-\begin{equation}
- h_0(\mvec{-k},t) = h_0(\mvec{k},t)^*
-\end{equation}
-where finding $h_0(\mvec{k},t)$ for its counterpart $h_0(-\mvec{k},t)$ has proven to be non-trivial
-for even-sized spectra.
 %
 %
 \begin{table}
@@ -435,7 +414,29 @@ there is a pair which satisfies $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$
 \label{tab:spectrum_k_minusk_border}
 \end{table}
 %
-%
+%https://www.cv.nrao.edu/course/astr534/FourierTransforms.html
+%https://ccrma.stanford.edu/~jos/mdft/Even_Odd_Functions.html
+%https://ccrma.stanford.edu/~jos/mdft/mdft.html
+%https://web.eecs.umich.edu/~fessler/course/451/l/pdf/c5.pdf
+The Fourier Transform of real-valued input is~\emph{hermitian} - the real part of the resulting spectrum
+is an~\emph{even} function and the imaginary part is~\emph{odd}. A function $f(n)$ is said to be even if
+$f(-n) = f(n)$. On the other hand, a function $f(n)$ is said to be odd if $f(-n) = -f(n)$,
+with $f(0) = 0$. Let $\mathcal{F}(k)$ be the Fourier Transform of a real-valued function $f(n)$, then
+the following is true:
+\begin{equation}
+ \mathcal{F}(-k) = \mathcal{F}(k)^*
+\end{equation}
+where $*$ denotes the complex conjugate operator. The relation is similar to a centrosymmetric one,
+$\mathcal{F}(-k) = \mathcal{F}(k)$, with $\mathcal{F}(0)$ as a fixpoint at the center. The only
+difference is the complex conjugation.
+Surface elevation $\eta$ is a real-valued function, therefore its spectrum $h_0$ must be hermitian,
+too. We may write
+\begin{equation}
+\label{eq:h0_k_complex_conjugate}
+ h_0(\mvec{-k},t) = h_0(\mvec{k},t)^*
+\end{equation}
+where finding $h_0(\mvec{k},t)$ for its counterpart $h_0(-\mvec{k},t)$ has proven to be non-trivial
+for even-sized spectra.
 Let the discretised wavevector domain be zero centered and of even size in both dimensions,
 then there is one row and one column of the spectrum which lacks
 matching complex conjugate elements inside said domain, see Table~\ref{tab:spectrum_k_minusk}.
@@ -445,14 +446,32 @@ allows us to find matching pairs for all elements of the spectrum, see Table~\re
 
 
 Let us view the spectrum $h_0$ as a two dimensional hermitian array with size $N \times N$.
-Each element may be identified by a pair of indices $(i,j)$, with $0\leq i,j <N$. Then, for
+Each element of $h_0$ is identified by a pair of indices $(i,j)$, with $0\leq i,j <N$. Then, for
 an element at index $(i,j)$, we may compute the index $(m,n)$ of the corresponding complex
 conjugate element as follows:
 \begin{align}
-m &= (N - i)\mod N \\
-n &= (N - j)\mod N
+m &= (N - i)\bmod N & n &= (N - j)\bmod N
 \end{align}
+We may rewrite Equation~\ref{eq:h0_k_complex_conjugate} in terms of indices:
+\begin{equation}
+ h_0(i,j) = h_0(m,n)^*
+\end{equation}
 
+The spectrum $h_0(\mvec{k},t)$ as given in Equation~\ref{eq:dft_h0_k_t} is not hermitian
+because of two reasons. First, the wave energy spectrum $\Theta(\mvec{k})$ would need
+to be centrosymmetric, which is only the case if the directional spread employed by
+the wave energy spectrum is centrosymmetric. Only two of the directional spreading functions
+presented in this work are centrosymmetric, the Unified spectrum's and the Phillips spectrum's.
+Second, random numbers are generated for each element of $h_0(\mvec{k})$, which makes it close
+to impossible to end up with matching pairs $h_0(-\mvec{k})=h_0(\mvec{k})^*$. As a
+consequence we employ a simple trick to guarantee the spectrum is hermitian, we may
+rewrite Equation~\ref{eq:dft_h0_k_t} as follows:
+%
+\begin{equation}
+ h_0(\mvec{k}, t) =
+ \frac{1}{2} h_0(\mvec{k})\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
+ + \frac{1}{2} h_0(\mvec{-k})^*\mathrm{e}^{\mathrm{i}\omega(\mvec{k})t}
+\end{equation}
 
 % That is, because we employ a Discrete Fourier Transform with even-sized input data
 % Two issues. Find matching k for -k is not trivial.
@@ -467,12 +486,6 @@ h_0(\mvec{k}) =
 \frac{1}{2}
 \frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)
 \sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_y}
-\end{equation}
-
-\begin{equation}
- h_0(\mvec{k}, t) =
- h_0(\mvec{k})\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
- + h_0^\ast(\mvec{-k})\mathrm{e}^{\mathrm{i}\omega(\mvec{k})t}
 \end{equation}
 
 Let $g(k)$ be the Fourier transform of $f(x)$, then we may write the
