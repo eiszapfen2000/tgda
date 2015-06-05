@@ -220,6 +220,7 @@ frames.
 %
 We compute surface elevation in the form of an inverse Discrete Fourier Transform as follows:
 \begin{align}
+\label{eq:surface_elevation_h0_k_t}
 \eta(\mvec{x}, t) = \sum_{\mvec{k}}~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
 \intertext{with}
 \notag \mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
@@ -439,10 +440,28 @@ where finding $h_0(\mvec{k},t)$ for its counterpart $h_0(-\mvec{k},t)$ has prove
 for even-sized spectra.
 Let the discretised wavevector domain be zero centered and of even size in both dimensions,
 then there is one row and one column of the spectrum which lacks
-matching complex conjugate elements inside said domain, see Table~\ref{tab:spectrum_k_minusk}.
+matching complex conjugate elements inside said domain, see the example spectrum in Table~\ref{tab:spectrum_k_minusk}.
 Again, it is the periodic nature of the spectrum that gives us the solution. If we replicate
 the spectrum in both directions, we obtain an additional row and an additional column which
 allows us to find matching pairs for all elements of the spectrum, see Table~\ref{tab:spectrum_k_minusk_border}.
+
+
+The spectrum $h_0(\mvec{k},t)$ as we generate it with Equation~\ref{eq:dft_h0_k_t} is~\emph{not}
+hermitian because of two reasons. First, the wave energy spectrum $\Theta(\mvec{k})$ would need
+to be an even function, which is only the case if the directional spread employed by
+the wave energy spectrum is centrosymmetric. Only two of the directional spreading functions
+presented in this work are centrosymmetric, the Unified spectrum's and the Phillips spectrum's.
+Second, each element of $h_0(\mvec{k})$ is generated in combination with a pair of random numbers,
+which makes it close to impossible to end up with matching pairs $h_0(-\mvec{k})=h_0(\mvec{k})^*$.
+As a consequence we employ a simple trick to guarantee that the spectrum is hermitian, whether
+$\Theta(\mvec{k})$ is an even function or not. We may rewrite Equation~\ref{eq:dft_h0_k_t} as follows:
+%
+\begin{equation}
+ h_0(\mvec{k}, t) =
+ \frac{1}{2} h_0(\mvec{k})\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
+ + \frac{1}{2} h_0(\mvec{-k})^*\mathrm{e}^{\mathrm{i}\omega(\mvec{k})t}
+\end{equation}
+%
 
 
 Let us view the spectrum $h_0$ as a two dimensional hermitian array with size $N \times N$.
@@ -457,21 +476,8 @@ We may rewrite Equation~\ref{eq:h0_k_complex_conjugate} in terms of indices:
  h_0(i,j) = h_0(m,n)^*
 \end{equation}
 
-The spectrum $h_0(\mvec{k},t)$ as we generate it with Equation~\ref{eq:dft_h0_k_t} is~\emph{not}
-hermitian because of two reasons. First, the wave energy spectrum $\Theta(\mvec{k})$ would need
-to be centrosymmetric, which is only the case if the directional spread employed by
-the wave energy spectrum is centrosymmetric. Only two of the directional spreading functions
-presented in this work are centrosymmetric, the Unified spectrum's and the Phillips spectrum's.
-Second, each element of $h_0(\mvec{k})$ is generated in combination with a pair of random numbers,
-which makes it close to impossible to end up with matching pairs $h_0(-\mvec{k})=h_0(\mvec{k})^*$.
-As a consequence we employ a simple trick to guarantee that the spectrum is hermitian, whether
-$\Theta(\mvec{k})$ is centrosymmetric or not. We may rewrite Equation~\ref{eq:dft_h0_k_t} as follows:
-%
-\begin{equation}
- h_0(\mvec{k}, t) =
- \frac{1}{2} h_0(\mvec{k})\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
- + \frac{1}{2} h_0(\mvec{-k})^*\mathrm{e}^{\mathrm{i}\omega(\mvec{k})t}
-\end{equation}
+
+Equation~\ref{eq:surface_elevation_h0_k_t}
 
 % That is, because we employ a Discrete Fourier Transform with even-sized input data
 % Two issues. Find matching k for -k is not trivial.
