@@ -425,12 +425,22 @@ $f(-n) = f(n)$. On the other hand, a function $f(n)$ is said to be odd if $f(-n)
 with $f(0) = 0$. Let $\mathcal{F}(k)$ be the Fourier Transform of a real-valued function $f(n)$, then
 the following is true:
 \begin{equation}
+\label{eq:dft_real_complex_conjugate}
  \mathcal{F}(-k) = \mathcal{F}(k)^*
 \end{equation}
 where $*$ denotes the complex conjugate operator. The relation is similar to a centrosymmetric one,
 $\mathcal{F}(-k) = \mathcal{F}(k)$, with $\mathcal{F}(0)$ as a fixpoint at the center. The only
-difference is the complex conjugation.
-Surface elevation $\eta$ is a real-valued function, therefore its spectrum $h_0$ must be hermitian,
+difference is the complex conjugation. Fourier Transform implementations may take advantage of
+Equation~\ref{eq:dft_real_complex_conjugate} to be able to provide optimised transform functionality 
+for real-valued data. For example, for a forward Fourier Transform of real-valued data it is
+necessary to compute only half of the spectrum, since the other half is implicitely given as the
+complex conjugate of the first half. Likewise, for the inverse Fourier Transform only half of the
+spectrum is necessary, the other half is implicitely given. Such optimised transforms provide
+gain in performance memory-wise, the spectrum's size is halved, as well as computation-wise, only
+half the data is actually processed.\\
+
+
+Surface elevation $\eta$ is a real-valued function, therefore we assume $h_0$ must be hermitian,
 too. We may write
 \begin{equation}
 \label{eq:h0_k_complex_conjugate}
