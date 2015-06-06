@@ -453,28 +453,55 @@ then there is one row and one column of the spectrum which lacks
 matching complex conjugate elements inside said domain, see the example spectrum in Table~\ref{tab:spectrum_k_minusk}.
 Again, it is the periodic nature of the spectrum that gives us the solution. If we replicate
 the spectrum in both directions, we obtain an additional row and an additional column which
-allows us to find matching pairs for all elements of the spectrum, see Table~\ref{tab:spectrum_k_minusk_border}.
+allows us to find matching pairs for all elements of the spectrum, see Table~\ref{tab:spectrum_k_minusk_border}.\\
 
 
 The spectrum $h_0(\mvec{k},t)$ as we generate it with Equation~\ref{eq:dft_h0_k_t} is~\emph{not}
-hermitian because of two reasons. First, the wave energy spectrum $\Theta(\mvec{k})$ would need
+hermitian, mainly because of two reasons. First, the wave energy spectrum $\Theta(\mvec{k})$ would need
 to be an even function, which is only the case if the directional spread employed by
 the wave energy spectrum is centrosymmetric. Only two of the directional spreading functions
 presented in this work are centrosymmetric, the Unified spectrum's and the Phillips spectrum's.
 Second, each element of $h_0(\mvec{k})$ is generated in combination with a pair of random numbers,
 which makes it close to impossible to end up with matching pairs $h_0(-\mvec{k})=h_0(\mvec{k})^*$.
-As a consequence we employ a simple trick to guarantee that the spectrum is hermitian, whether
-$\Theta(\mvec{k})$ is an even function or not. We may rewrite Equation~\ref{eq:dft_h0_k_t} as follows:
+As we would like to profit from the performance gains an optimised inverse Fourier Transform
+for real-valued functions offers, we are in need of a hermitian spectrum. We may rewrite
+Equation~\ref{eq:dft_h0_k_t} as follows:
 %
 \begin{equation}
+\label{eq:dft_h0_k_t_hermitian}
  h_0(\mvec{k}, t) =
  \frac{1}{2} h_0(\mvec{k})\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
  + \frac{1}{2} h_0(\mvec{-k})^*\mathrm{e}^{\mathrm{i}\omega(\mvec{k})t}
 \end{equation}
 %
+which gives us a hermitian spectrum, independent both of the generated random numbers and 
+whether the wave energy spectrum is an even function or not.\\
 
 
-Let us view the spectrum $h_0$ as a two dimensional hermitian array with size $N \times N$.
+Note that surface elevation $\eta$ as computed by Equation~\ref{eq:surface_elevation_h0_k_t}
+gives the same results for both variants of the spectrum, the default one given by
+Equation~\ref{eq:dft_h0_k_t} as well as the hermitian given by Equation~\ref{eq:dft_h0_k_t_hermitian}.
+The actual difference is that the former demands a standard inverse Fourier Transform with
+a complete complex-valued source spectrum and a complex-valued result the same size. The real part
+of the result represents the surface elevation, the imaginary part is to be discarded.
+The latter on the other hand allows for two different kinds of optimisation. We did discuss
+the first kind of optimisation already, a inverse Fourier Transform for real-valued
+functions which needs less memory and less time for the computation itself. The second kind
+of optimisation allows us to combine two inverse Fourier Transforms into one. Let $a(\mvec{k})$
+and $b(\mvec{k})$ be hermitian spectra with the same wavevector domain $\mvec{k}$. Let $c(\mvec{x})$
+and $d(\mvec{x})$ be the corresponding real-valued functions of $a(\mvec{k})$ and $b(\mvec{k})$,
+then we may write:
+\begin{align}
+ e(\mvec{x}) &= \mathrm{IFT}(a(\mvec{k})-\mathrm{i}b(\mvec{k})) \\
+ c(\mvec{x}) &= \Re(e(\mvec{x})) \\
+ d(\mvec{x}) &= \Im(e(\mvec{x})) 
+\end{align}
+where $\mathrm{IFT}$ is shorthand for the standard inverse Fourier Transform. In short, we combine
+two complex-valued hermitian spectra to obtain two real-valued results. We will make heavy use of
+this kind of optimisation later on.\\
+
+
+Let us view the hermitian spectrum $h_0$ as a two dimensional array with size $N \times N$.
 Each element of $h_0$ is identified by a pair of indices $(i,j)$, with $0\leq i,j <N$. Then, for
 an element at index $(i,j)$, we may compute the index $(m,n)$ of the corresponding complex
 conjugate element as follows:
