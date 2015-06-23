@@ -497,8 +497,8 @@ then we may write:
  d(\mvec{x}) &= \Im(e(\mvec{x})) 
 \end{align}
 where $\mathrm{IFT}$ is shorthand for the standard inverse Fourier Transform. In short, we combine
-two complex-valued hermitian spectra to obtain two real-valued results. We will make heavy use of
-this kind of optimisation later on.\\
+two complex-valued hermitian spectra to obtain two real-valued results with just one transformation.
+We will make heavy use of this kind of optimisation later on.\\
 
 
 Let us view the hermitian spectrum $h_0$ as a two dimensional array with size $N \times N$.
@@ -513,36 +513,31 @@ We may rewrite Equation~\ref{eq:h0_k_complex_conjugate} in terms of indices:
  h_0(i,j) = h_0(m,n)^*
 \end{equation}
 
+\subsubsection{Derivatives}
 
-Equation~\ref{eq:surface_elevation_h0_k_t}
-
-% That is, because we employ a Discrete Fourier Transform with even-sized input data
-% Two issues. Find matching k for -k is not trivial.
-% The spectrum would need both an additional row at the bottom, and an additional column to the right.
-% Complex conjugate symmetry / Half-complex transform
-% Gradients
-
-
-
-\begin{equation}
-h_0(\mvec{k}) =
-\frac{1}{2}
-\frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)
-\sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_y}
-\end{equation}
-
-Let $g(k)$ be the Fourier transform of $f(x)$, then we may write the
-backward Fourier transform as follows:
+Let $g(k)$ be the discrete Fourier Transform of $f(x)$ and let $N$ be the number
+of elements of $g(k)$, then we may write the discrete inverse Fourier Transform as follows:
 \begin{equation}
  f(x) = \sum_{k}g(k)~\mathrm{e}^{\mathrm{i}kt}
 \end{equation}
 Note, that we omit the scaling factors involved in the Fourier transform
-because in the context of this work they are not needed.
-Given the backward Fourier transform, we may compute the derivative of $f(x)$
-as follows:
+because in the context of this work they are not needed. Given the discrete
+inverse Fourier Transform, we may compute the derivative of $f(x)$ as follows:
 \begin{equation}
   \diff{f(x)}{x} = \sum_{k}\mathrm{i}k~g(k)~\mathrm{e}^{\mathrm{i}kt}
 \end{equation}
+If $N$ is even, then we need to modify the above equation. Let $\alpha \in \mathbb{N}$
+with $-\frac{N}{2} \leq \alpha < \frac{N}{2}$, let $x \in \alpha \frac{L}{N}$,
+and let $k \in \alpha \frac{2\pi}{L}$, then:
+\begin{align}
+  \diff{f(x)}{x} &= \sum_{k}b(\mathrm{i}k)~g(k)~\mathrm{e}^{\mathrm{i}kt} \\
+  b(\mathrm{i}k) &= \begin{cases}
+                   0 &\text{if $\alpha = -\frac{N}{2}$,} \\
+                   \mathrm{i}k &\text{else.}
+                   \end{cases}
+\end{align}
+
+
 Let $n \in \mathbb{N}$, then the general rule for derivation is as follows:
 \begin{equation}
   \diff[n]{f(x)}{x} = \sum_{k}(\mathrm{i}k)^n~g(k)~\mathrm{e}^{\mathrm{i}kt}
