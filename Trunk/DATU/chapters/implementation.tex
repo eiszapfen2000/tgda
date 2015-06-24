@@ -175,7 +175,7 @@ there is no point of intersection because the ray is parallel to the plane.
 \subsection{Projector}
 \fxnote*{JÖSSAS}{Backfiring, etc}
 
-\subsection{Discrete Fourier Transform}
+\section{Discrete Fourier Transform}
 We defined surface elevation as follows in Chapter~\ref{sec:random_amplitudes}:
 \begin{equation}
 \label{eq:dft_surface_elevation}
@@ -500,6 +500,7 @@ where $\mathrm{IFT}$ is shorthand for the standard inverse Fourier Transform. In
 two complex-valued hermitian spectra to obtain two real-valued results with just one transformation.
 We will make heavy use of this kind of optimisation later on.\\
 
+\subsubsection{Complex conjugate indices}
 
 Let us view the hermitian spectrum $h_0$ as a two dimensional array with size $N \times N$.
 Each element of $h_0$ is identified by a pair of indices $(i,j)$, with $0\leq i,j <N$. Then, for
@@ -514,25 +515,42 @@ We may rewrite Equation~\ref{eq:h0_k_complex_conjugate} in terms of indices:
 \end{equation}
 
 \subsubsection{Derivatives}
-
-Let $g(k)$ be the discrete Fourier Transform of $f(x)$ and let $N$ be the number
-of elements of $g(k)$, then we may write the discrete inverse Fourier Transform as follows:
+At this point we are able to compute surface elevation by application of the
+inverse discrete Fourier Transform on a spectrum we generate. For lighting
+purposes we also need to find the surface slope vector to be able to compute
+the surface's normal vectors. The most simple way to compute the slope is
+through finite differences in the spatial domain of the surface. Such an
+approach is efficient memory- and computation-wise, but may lack quality,
+because it can be a poor approximation to the slope of waves with small
+wavelengths. We are able to obtain more precise slope vectors by employing
+\emph{spectral differentation}. First we will look at the more simple,
+one-dimensional case of spectral differentation. We reduce the spatial domain
+as well as the wavevector domain from beforehand to one dimension. Let $N$
+be the resolution of the spatial and spectral domains, and $L$ the size of the
+spatial domain. Moreover, let $\alpha \in \mathbb{N}$ with
+$-\ceil{\frac{N}{2}} \leq \alpha < \floor{\frac{N}{2}}$, let the spatial
+domain be $x \in \alpha \frac{L}{N}$, and let the spectral domain be
+$k \in \alpha \frac{2\pi}{L}$. Let $g(k)$ be the discrete Fourier Transform of
+$f(x)$, then we may write the discrete inverse Fourier Transform as follows:
 \begin{equation}
- f(x) = \sum_{k}g(k)~\mathrm{e}^{\mathrm{i}kt}
+ f(x) = \sum_{k}g(k)~\mathrm{e}^{\mathrm{i}kx}
 \end{equation}
 Note, that we omit the scaling factors involved in the Fourier transform
-because in the context of this work they are not needed. Given the discrete
-inverse Fourier Transform, we may compute the derivative of $f(x)$ as follows:
+because in the context of this work they are not needed. If we follow the
+lead of the continuous Fourier Transform, then we may compute the derivative
+of $f(x)$ as follows:
 \begin{equation}
-  \diff{f(x)}{x} = \sum_{k}\mathrm{i}k~g(k)~\mathrm{e}^{\mathrm{i}kt}
+  \diff{f(x)}{x} = f'(x) = \sum_{k}\mathrm{i}k~g(k)~\mathrm{e}^{\mathrm{i}kt}
 \end{equation}
-If $N$ is even, then we need to modify the above equation. Let $\alpha \in \mathbb{N}$
-with $-\frac{N}{2} \leq \alpha < \frac{N}{2}$, let $x \in \alpha \frac{L}{N}$,
-and let $k \in \alpha \frac{2\pi}{L}$, then:
+Due to aliasing issues the above is not correct for even resolutions.
+For example, if $f(x)$ is a real function, then $g(k)$ is hermitian. But
+$\mathrm{i}k~g(k)$ is not hermitian anymore for even $N$, therefore
+$f'(x)$ would end up a complex function instead of a real one. To get correct
+results for all $N$, we rewrite the above equation as follows:
 \begin{align}
   \diff{f(x)}{x} &= \sum_{k}b(\mathrm{i}k)~g(k)~\mathrm{e}^{\mathrm{i}kt} \\
   b(\mathrm{i}k) &= \begin{cases}
-                   0 &\text{if $\alpha = -\frac{N}{2}$,} \\
+                   0 &\text{if $N$ even and $k = -\frac{\pi N}{L}$,} \\
                    \mathrm{i}k &\text{else.}
                    \end{cases}
 \end{align}
