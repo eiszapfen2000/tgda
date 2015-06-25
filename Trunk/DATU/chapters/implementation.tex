@@ -537,21 +537,21 @@ $f(x)$, then we may write the discrete inverse Fourier Transform as follows:
 \end{equation}
 Note, that we omit the scaling factors involved in the Fourier transform
 because in the context of this work they are not needed. If we follow the
-lead of the continuous Fourier Transform, then we may compute the derivative
-of $f(x)$ as follows:
+lead of the continuous Fourier Transform, then we may compute the $n$th
+derivative of $f(x)$ as follows:
 \begin{equation}
-  \diff{f(x)}{x} = f'(x) = \sum_{k}\mathrm{i}k~g(k)~\mathrm{e}^{\mathrm{i}kt}
+  \diff[n]{f(x)}{x} = \sum_{k}(\mathrm{i}k)^n~g(k)~\mathrm{e}^{\mathrm{i}kx}
 \end{equation}
-Due to aliasing issues the above is not correct for even resolutions.
-For example, if $f(x)$ is a real function, then $g(k)$ is hermitian. But
-$\mathrm{i}k~g(k)$ is not hermitian anymore for even $N$, therefore
-$f'(x)$ would end up a complex function instead of a real one. To get correct
-results for all $N$, we rewrite the above equation as follows:
+Due to aliasing issues the above is not correct for odd $n$ in combination
+with even $N$. For example, if $f(x)$ is a real function, then $g(k)$ is hermitian.
+But $\mathrm{i}k~g(k)$ is~\emph{not} hermitian for even $N$, therefore the first
+order derivative of $f(x)$ would end up a complex function instead of a real one.
+To get correct results for all $n$ and $N$, we rewrite the above equation as follows:
 \begin{align}
-  \diff{f(x)}{x} &= \sum_{k}b(\mathrm{i}k)~g(k)~\mathrm{e}^{\mathrm{i}kt} \\
-  b(\mathrm{i}k) &= \begin{cases}
-                   0 &\text{if $N$ even and $k = -\ceil{\frac{N}{2}}\frac{2\pi}{L}$,} \\
-                   \mathrm{i}k &\text{else.}
+  \diff[n]{f(x)}{x} &= \sum_{k}b(\mathrm{i}k, n)~g(k)~\mathrm{e}^{\mathrm{i}kx} \\
+  b(\mathrm{i}k, n) &= \begin{cases}
+                   0 &\text{if $n$ odd, $N$ even, and $k = -\ceil{\frac{N}{2}}\frac{2\pi}{L}$,} \\
+                   (\mathrm{i}k)^n &\text{else.}
                    \end{cases}
 \end{align}
 
