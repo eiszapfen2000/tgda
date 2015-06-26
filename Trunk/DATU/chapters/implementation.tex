@@ -516,26 +516,30 @@ We may rewrite Equation~\ref{eq:h0_k_complex_conjugate} in terms of indices:
 
 \subsubsection{Derivatives}
 At this point we are able to compute surface elevation by application of the
-inverse discrete Fourier Transform on a spectrum we generate. For lighting
-purposes we also need to find the surface slope vector to be able to compute
+inverse Discrete Fourier Transform on a spectrum we generate. For lighting
+purposes we also need to find the surface's slope vectors to be able to compute
 the surface's normal vectors. The most simple way to compute the slope is
 through finite differences in the spatial domain of the surface. Such an
 approach is efficient memory- and computation-wise, but may lack quality,
 because it can be a poor approximation to the slope of waves with small
 wavelengths. We are able to obtain more precise slope vectors by employing
-\emph{spectral differentation}. First we will look at the more simple,
-one-dimensional case of spectral differentation. We reduce the spatial domain
-as well as the wavevector domain from beforehand to one dimension. Let $N$
-be the resolution of the spatial and spectral domains, and $L$ the size of the
-spatial domain. Moreover, let $\alpha \in \mathbb{N}$ with
-$-\ceil{\frac{N}{2}} \leq \alpha < \floor{\frac{N}{2}}$, let the spatial
-domain be $x \in \alpha \frac{L}{N}$, and let the spectral domain be
-$k \in \alpha \frac{2\pi}{L}$. Let $g(k)$ be the discrete Fourier Transform of
-$f(x)$, then we may write the discrete inverse Fourier Transform as follows:
+\emph{spectral differentation}. Spectral differentiation allows us to find
+the derivatives of a function via the Fourier Transform.\\
+
+
+First we will look at the more simple, one-dimensional case of spectral
+differentation. We reduce the spatial domain as well as the wavevector domain
+from beforehand to one dimension. Let $N$ be the resolution of the spatial
+and wavenumber domains, and $L$ the size of the spatial domain. Moreover, let
+$\alpha \in \mathbb{N}$ with $\ceil{-\frac{N}{2}} \leq \alpha < \floor{\frac{N}{2}}$,
+let the spatial domain be $x \in \alpha \frac{L}{N}$, and let the wavenumber
+domain be $k \in \alpha \frac{2\pi}{L}$. Let $g(k)$ be the Discrete Fourier
+Transform of $f(x)$, then we may write the inverse Discrete Fourier Transform
+as follows:
 \begin{equation}
  f(x) = \sum_{k}g(k)~\mathrm{e}^{\mathrm{i}kx}
 \end{equation}
-Note, that we omit the scaling factors involved in the Fourier transform
+Note, that we omit the scaling factors involved in the standard Fourier Transform
 because in the context of this work they are not needed. If we follow the
 lead of the continuous Fourier Transform, then we may compute the $n$th
 derivative of $f(x)$ as follows:
@@ -548,18 +552,45 @@ But $\mathrm{i}k~g(k)$ is~\emph{not} hermitian for even $N$, therefore the first
 order derivative of $f(x)$ would end up a complex function instead of a real one.
 To get correct results for all $n$ and $N$, we rewrite the above equation as follows:
 \begin{align}
-  \diff[n]{f(x)}{x} &= \sum_{k}b(\mathrm{i}k, n)~g(k)~\mathrm{e}^{\mathrm{i}kx} \\
-  b(\mathrm{i}k, n) &= \begin{cases}
-                   0 &\text{if $n$ odd, $N$ even, and $k = -\ceil{\frac{N}{2}}\frac{2\pi}{L}$,} \\
+\label{eq:dft_derivative}
+  \diff[n]{f(x)}{x} &= \sum_{k}d(k, n)~g(k)~\mathrm{e}^{\mathrm{i}kx} \\
+\label{eq:dft_derivative_correction}
+  d(k, n) &= \begin{cases}
+                   0 &\text{if $n$ odd, $N$ even, and $k = \ceil{-\frac{N}{2}}\frac{2\pi}{L}$,} \\
                    (\mathrm{i}k)^n &\text{else.}
                    \end{cases}
 \end{align}
-
-
-Let $n \in \mathbb{N}$, then the general rule for derivation is as follows:
+%
+We may go back to the two dimensional case, with our original domains $\mvec{x}$
+and $\mvec{k}$. The resolution of said domains is $N \times N$, the size of the
+spatial domain is $L \times L$. Let $g(\mvec{k})$ be the Discrete Fourier Transform
+of $f(\mvec{x})$, then we may write the inverse Discrete Fourier Transform in
+two dimensions as follows:
 \begin{equation}
-  \diff[n]{f(x)}{x} = \sum_{k}(\mathrm{i}k)^n~g(k)~\mathrm{e}^{\mathrm{i}kt}
+ f(\mvec{x}) = \sum_{\mvec{k}}g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation}
+Similar to Equation~\ref{eq:dft_derivative}, and by reusing Equation~\ref{eq:dft_derivative_correction}
+because $N$ and $L$ are equal for both dimensions, we find the first order partial
+derivatives of $f(\mvec{x})$:
+\begin{align}
+\label{eq:dft_2d_partial_derivative_x}
+ \diffp{f(\mvec{x})}{x} = \sum_{\mvec{k}}d(k_{x}, 1)~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+\label{eq:dft_2d_partial_derivative_y} 
+ \diffp{f(\mvec{x})}{y} = \sum_{\mvec{k}}d(k_{y}, 1)~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\end{align}
+
+The surface slope vector consists of the first order partial derivatives
+of the surface elevation. We leave it as an exercise for the reader to substitute
+the terms $\eta(\mvec{x},t)$ and $h_0(\mvec{k},t)$ into
+Equations~\ref{eq:dft_2d_partial_derivative_x}~\ref{eq:dft_2d_partial_derivative_y}.
+Given the surface slope vector $\mvec{s} = \left(\diffp{\eta(\mvec{x},t)}{x}, \diffp{\eta(\mvec{x},t)}{y}\right)$,
+where $\mvec{s}$ lies in the xz-plane, we may compute the surface normal vector as
+$\mvec{n} = (-\mvecx{s}, 1, -\mvecy{s})$.
+
+$\eta(\mvec{x},t)$ gives us surface
+elevation, to find surface slope we need to compute the partial derivatives
+of $\eta$ in both spatial dimensions. Based on Equation~\ref{eq:dft_derivative}
+and Equation~\ref{eq:dft_derivative_correction}, we may write:
 
 
 \begin{align}
