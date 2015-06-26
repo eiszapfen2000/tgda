@@ -574,6 +574,19 @@ because $N$ and $L$ are equal for both dimensions, we find the derivatives of $f
 \begin{equation}
  \dmd{f(\mvec{x})}{n+m}{x}{n}{y}{m} = \sum_{\mvec{k}}d(k_{x}, n)d(k_{y}, m)~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation}
+As we need to find the surface slope vector, we need to compute the surface
+elevation's first order partial derivatives. Given surface elevation $\eta(\mvec{x},t)$,
+we obtain surface slope vector $\mvec{s}$ as follows:
+\begin{equation}
+ \mvec{s} = \left(\dpd{\eta(\mvec{x},t)}{x}, \dpd{\eta(\mvec{x},t)}{y}\right)
+\end{equation}
+
+
+and its Discrete Fourier Transform
+$h_0(\mvec{k},t)$, we may compute the surface slope vector $\nabla\eta(\mvec{x},t)$
+by computing 
+
+
 \begin{align}
 \label{eq:dft_2d_partial_derivative_x}
  \dpd{f(\mvec{x})}{x} = \sum_{\mvec{k}}d(k_{x}, 1)~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
