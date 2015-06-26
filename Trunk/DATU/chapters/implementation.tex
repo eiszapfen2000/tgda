@@ -572,72 +572,32 @@ Transform in two dimensions as follows:
 Based on Equation~\ref{eq:dft_derivative}, and by reusing Equation~\ref{eq:dft_derivative_correction}
 because $N$ and $L$ are equal for both dimensions, we find the derivatives of $f(\mvec{x})$:
 \begin{equation}
+\label{eq:dft_derivates_2d}
  \dmd{f(\mvec{x})}{n+m}{x}{n}{y}{m} = \sum_{\mvec{k}}d(k_{x}, n)d(k_{y}, m)~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation}
 As we need to find the surface slope vector, we need to compute the surface
 elevation's first order partial derivatives. Given surface elevation $\eta(\mvec{x},t)$,
-we obtain surface slope vector $\mvec{s}$ as follows:
+we obtain the two dimensional surface slope vector $\mvec{s}$ as follows:
 \begin{equation}
+\label{eq:dft_slope_2d}
  \mvec{s} = \left(\dpd{\eta(\mvec{x},t)}{x}, \dpd{\eta(\mvec{x},t)}{y}\right)
 \end{equation}
+We leave it as an exercise for the reader to substitute the terms $\eta(\mvec{x},t)$
+and $h_0(\mvec{k},t)$ into Equation~\ref{eq:dft_derivates_2d} to be able to
+compute the surface slope vector as given in Equation~\ref{eq:dft_slope_2d}.\\
 
 
-and its Discrete Fourier Transform
-$h_0(\mvec{k},t)$, we may compute the surface slope vector $\nabla\eta(\mvec{x},t)$
-by computing 
-
-
-\begin{align}
-\label{eq:dft_2d_partial_derivative_x}
- \dpd{f(\mvec{x})}{x} = \sum_{\mvec{k}}d(k_{x}, 1)~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
-\label{eq:dft_2d_partial_derivative_y} 
- \dpd{f(\mvec{x})}{y} = \sum_{\mvec{k}}d(k_{y}, 1)~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
-\end{align}
-
-The surface slope vector consists of the first order partial derivatives
-of the surface elevation. We leave it as an exercise for the reader to substitute
-the terms $\eta(\mvec{x},t)$ and $h_0(\mvec{k},t)$ into
-Equations~\ref{eq:dft_2d_partial_derivative_x}~\ref{eq:dft_2d_partial_derivative_y}.
-Given the surface slope vector $\mvec{s} = \left(\pd{\eta(\mvec{x},t)}{x}, \pd{\eta(\mvec{x},t)}{y}\right)$,
-where $\mvec{s}$ lies in the xz-plane, we may compute the surface normal vector as
-$\mvec{n} = (-\mvecx{s}, 1, -\mvecy{s})$.
-
-$\eta(\mvec{x},t)$ gives us surface
-elevation, to find surface slope we need to compute the partial derivatives
-of $\eta$ in both spatial dimensions. Based on Equation~\ref{eq:dft_derivative}
-and Equation~\ref{eq:dft_derivative_correction}, we may write:
-
-
-% \begin{align}
-%  f(\mvec{x}) &= \sum_{\mvec{k}}g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
-%  \nabla f(\mvec{x}) &= \sum_{\mvec{k}}\mathrm{i}\mvec{k}~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
-%  \Rightarrow~&\diffp{f(\mvec{x})}{x} = \sum_{\mvec{k}}\mathrm{i}k_{x}~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
-%  &\diffp{f(\mvec{x})}{y} = \sum_{\mvec{k}}\mathrm{i}k_{y}~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
-% \end{align}
-
-\begin{align}
-\nabla\eta(\mvec{x},t) =
-\sum_{\mvec{k}}&\mathrm{i}\mvec{k}~h_0(\mvec{k},t)
-~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
-\Rightarrow \frac{d\eta(\mvec{x},t)}{dx} &=
-\sum_{\mvec{k}}\mathrm{i}k_x~h_0(\mvec{k},t)
-~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
-\frac{d\eta(\mvec{x},t)}{dy} &=
-\sum_{\mvec{k}}\mathrm{i}k_y~h_0(\mvec{k},t)
-~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
-\end{align}
-
-\begin{align}
-\mvec{d}(\mvec{x},t) =
-\sum_{\mvec{k}}&\mathrm{-i}\frac{\mvec{k}}{k}~h_0(\mvec{k},t)
-~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
-\Rightarrow d_x(\mvec{x},t) &=
-\sum_{\mvec{k}}\mathrm{-i}\frac{k_x}{k}~h_0(\mvec{k},t)
-~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
-d_y(\mvec{x},t) &=
-\sum_{\mvec{k}}\mathrm{-i}\frac{k_y}{k}~h_0(\mvec{k},t)
-~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
-\end{align}
+In this work we employ a right-handed Carthesian coordinate system where the positive
+Y-axis points up. The two dimensional surface slope vector $\mvec{s}$ lies in the
+coordinate system's XZ-plane. Based on the surface slope vector we may find the unit
+length surface normal vector $\mvec{n}$ as follows:
+\begin{equation}
+ \mvec{n} = \frac{(-\mvecx{s}, 1, -\mvecy{s})}{\norm{(-\mvecx{s}, 1, -\mvecy{s})}}
+\end{equation}
+%
+\subsubsection{Displacements}
+%
+Brak
 
 \newcommand{\mcomplex}[2]{\ensuremath{{#1}{#2}\mathrm{i}}}
 
