@@ -8,8 +8,8 @@
 \newcommand{\inverse}[1]{#1^{\mathsf{-1}}}
 \newcommand{\normalise}[1]{\frac{#1}{\norm{#1}}}
 
-\DeclarePairedDelimiter\abs{\lvert}{\rvert}
-\DeclarePairedDelimiter\norm{\lVert}{\rVert}
+%\DeclarePairedDelimiter\abs{\lvert}{\rvert}
+%\DeclarePairedDelimiter\norm{\lVert}{\rVert}
 
 %\renewcommand\Re{\operatorname{Re}}
 %\renewcommand\Im{\operatorname{Im}}
@@ -2832,7 +2832,7 @@ The Phillips Spectrum, as introduced by Tessendorf~\cite{course:simulatingocean}
 \begin{subequations}
 \begin{gather}
 \label{eq:phillips_spectrum}
- \Theta(\mvec{k}) = A\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}\abs*{\transpose{\mvec{k}_n}\mvec{w}_n}^2\\
+ \Theta(\mvec{k}) = A\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}\abs{\transpose{\mvec{k}_n}\mvec{w}_n}^2\\
 \intertext{with}
 \mvec{k}_n = \frac{\mvec{k}}{\norm{\mvec{k}}} = \frac{\mvec{k}}{k}\\
 \mvec{w}_n = \frac{\mvec{w}}{\norm{\mvec{w}}}\\

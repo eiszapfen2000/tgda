@@ -544,7 +544,7 @@ because in the context of this work they are not needed. If we follow the
 lead of the continuous Fourier Transform, then we may compute the $n$th
 derivative of $f(x)$ as follows:
 \begin{equation}
-  \diff[n]{f(x)}{x} = \sum_{k}(\mathrm{i}k)^n~g(k)~\mathrm{e}^{\mathrm{i}kx}
+  \dod[n]{f(x)}{x} = \sum_{k}(\mathrm{i}k)^n~g(k)~\mathrm{e}^{\mathrm{i}kx}
 \end{equation}
 Due to aliasing issues the above is not correct for odd $n$ in combination
 with even $N$. For example, if $f(x)$ is a real function, then $g(k)$ is hermitian.
@@ -553,7 +553,7 @@ order derivative of $f(x)$ would end up a complex function instead of a real one
 To get correct results for all $n$ and $N$, we rewrite the above equation as follows:
 \begin{align}
 \label{eq:dft_derivative}
-  \diff[n]{f(x)}{x} &= \sum_{k}d(k, n)~g(k)~\mathrm{e}^{\mathrm{i}kx} \\
+  \dod[n]{f(x)}{x} &= \sum_{k}d(k, n)~g(k)~\mathrm{e}^{\mathrm{i}kx} \\
 \label{eq:dft_derivative_correction}
   d(k, n) &= \begin{cases}
                    0 &\text{if $n$ odd, $N$ even, and $k = \ceil{-\frac{N}{2}}\frac{2\pi}{L}$,} \\
@@ -561,29 +561,31 @@ To get correct results for all $n$ and $N$, we rewrite the above equation as fol
                    \end{cases}
 \end{align}
 %
-We may go back to the two dimensional case, with our original domains $\mvec{x}$
-and $\mvec{k}$. The resolution of said domains is $N \times N$, the size of the
-spatial domain is $L \times L$. Let $g(\mvec{k})$ be the Discrete Fourier Transform
-of $f(\mvec{x})$, then we may write the inverse Discrete Fourier Transform in
-two dimensions as follows:
+Now we may go back to the two dimensional case, with our original two dimensional
+domains $\mvec{x}$ and $\mvec{k}$. The resolution of said domains is $N \times N$,
+the size of the spatial domain is $L \times L$. Let $g(\mvec{k})$ be the Discrete
+Fourier Transform of $f(\mvec{x})$, then we may write the inverse Discrete Fourier
+Transform in two dimensions as follows:
 \begin{equation}
  f(\mvec{x}) = \sum_{\mvec{k}}g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation}
-Similar to Equation~\ref{eq:dft_derivative}, and by reusing Equation~\ref{eq:dft_derivative_correction}
-because $N$ and $L$ are equal for both dimensions, we find the first order partial
-derivatives of $f(\mvec{x})$:
+Based on Equation~\ref{eq:dft_derivative}, and by reusing Equation~\ref{eq:dft_derivative_correction}
+because $N$ and $L$ are equal for both dimensions, we find the derivatives of $f(\mvec{x})$:
+\begin{equation}
+ \dmd{f(\mvec{x})}{n+m}{x}{n}{y}{m} = \sum_{\mvec{k}}d(k_{x}, n)d(k_{y}, m)~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\end{equation}
 \begin{align}
 \label{eq:dft_2d_partial_derivative_x}
- \diffp{f(\mvec{x})}{x} = \sum_{\mvec{k}}d(k_{x}, 1)~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+ \dpd{f(\mvec{x})}{x} = \sum_{\mvec{k}}d(k_{x}, 1)~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
 \label{eq:dft_2d_partial_derivative_y} 
- \diffp{f(\mvec{x})}{y} = \sum_{\mvec{k}}d(k_{y}, 1)~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+ \dpd{f(\mvec{x})}{y} = \sum_{\mvec{k}}d(k_{y}, 1)~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{align}
 
 The surface slope vector consists of the first order partial derivatives
 of the surface elevation. We leave it as an exercise for the reader to substitute
 the terms $\eta(\mvec{x},t)$ and $h_0(\mvec{k},t)$ into
 Equations~\ref{eq:dft_2d_partial_derivative_x}~\ref{eq:dft_2d_partial_derivative_y}.
-Given the surface slope vector $\mvec{s} = \left(\diffp{\eta(\mvec{x},t)}{x}, \diffp{\eta(\mvec{x},t)}{y}\right)$,
+Given the surface slope vector $\mvec{s} = \left(\pd{\eta(\mvec{x},t)}{x}, \pd{\eta(\mvec{x},t)}{y}\right)$,
 where $\mvec{s}$ lies in the xz-plane, we may compute the surface normal vector as
 $\mvec{n} = (-\mvecx{s}, 1, -\mvecy{s})$.
 
@@ -593,12 +595,12 @@ of $\eta$ in both spatial dimensions. Based on Equation~\ref{eq:dft_derivative}
 and Equation~\ref{eq:dft_derivative_correction}, we may write:
 
 
-\begin{align}
- f(\mvec{x}) &= \sum_{\mvec{k}}g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
- \nabla f(\mvec{x}) &= \sum_{\mvec{k}}\mathrm{i}\mvec{k}~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
- \Rightarrow~&\diffp{f(\mvec{x})}{x} = \sum_{\mvec{k}}\mathrm{i}k_{x}~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
- &\diffp{f(\mvec{x})}{y} = \sum_{\mvec{k}}\mathrm{i}k_{y}~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
-\end{align}
+% \begin{align}
+%  f(\mvec{x}) &= \sum_{\mvec{k}}g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+%  \nabla f(\mvec{x}) &= \sum_{\mvec{k}}\mathrm{i}\mvec{k}~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+%  \Rightarrow~&\diffp{f(\mvec{x})}{x} = \sum_{\mvec{k}}\mathrm{i}k_{x}~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+%  &\diffp{f(\mvec{x})}{y} = \sum_{\mvec{k}}\mathrm{i}k_{y}~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+% \end{align}
 
 \begin{align}
 \nabla\eta(\mvec{x},t) =
