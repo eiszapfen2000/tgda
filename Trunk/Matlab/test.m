@@ -30,61 +30,61 @@ axis equal
 % gaussrandr = normrnd(0, 1, resolution(1), resolution(2));
 % gaussrandi = normrnd(0, 1, resolution(1), resolution(2));
 % gaussrand = complex(gaussrandr, gaussrandi);
-#gaussrand = lolz.lods(1).randomNumbers;
-#
-#deltakx = 2*pi / area(1);
-#deltaky = 2*pi / area(2);
-#[k kn xz ] = build_wave_vectors(resolution, area);
-#
-#omega = sqrt(kn * g);
-#expomega = exp(1i.*omega.*time);
-#expminusomega = exp(-1i.*omega.*time);
-#
-#generator = 'PM';
-#
-#Theta = [];
-#
-#switch lower(generator)
-#    case 'pm'
-#        Theta = PiersonMoskovitzSpectrum(k, kn, wind);
-#    case 'jonswap'
-#        Theta = JONSWAPSpectrum(k, kn, wind, fetch);
-#    case 'donelan'
-#        Theta = DonelanSpectrum(k, kn, wind, fetch);
-#    case 'unified'
-#        Theta = UnifiedSpectrum(k, kn, wind, fetch);
-#end
+% gaussrand = lolz.lods(1).randomNumbers;
+% 
+% deltakx = 2*pi / area(1);
+% deltaky = 2*pi / area(2);
+% [k kn xz ] = build_wave_vectors(resolution, area);
+% 
+% omega = sqrt(kn * g);
+% expomega = exp(1i.*omega.*time);
+% expminusomega = exp(-1i.*omega.*time);
+% 
+% generator = 'PM';
+% 
+% Theta = [];
+% 
+% switch lower(generator)
+%     case 'pm'
+%         Theta = PiersonMoskovitzSpectrum(k, kn, wind);
+%     case 'jonswap'
+%         Theta = JONSWAPSpectrum(k, kn, wind, fetch);
+%     case 'donelan'
+%         Theta = DonelanSpectrum(k, kn, wind, fetch);
+%     case 'unified'
+%         Theta = UnifiedSpectrum(k, kn, wind, fetch);
+% end
 
 % energy Theta(k)
 % Theta = PiersonMoskovitzSpectrum(k, kn, wind);
 % Theta = UnifiedSpectrum(k, kn, wind, 100000);
 % amplitude B(k)
-#amplitude = sqrt(2.*Theta.*deltakx.*deltaky);
+% amplitude = sqrt(2.*Theta.*deltakx.*deltaky);
 
 % 1/sqrt(2) * complex(grng_r, grng_i)
-#randomFactor = 1/sqrt(2) .* gaussrand;
-#
-#h_zero = randomFactor .* complex(amplitude ./ 2);
-#h_tilde = zeros(resolution(1), resolution(2));
-#for x=1:resolution(1)
-#    for y=1:resolution(2)
-#        index1 = mod(resolution(1)-x+1,resolution(1))+1;
-#        index2 = mod(resolution(2)-y+1,resolution(2))+1;
-#        h_tilde(x,y) = h_zero(x,y)*expminusomega(x,y) + conj(h_zero(index1, index2))*expomega(index1, index2);
-#    end
-#end
-#
-#spectrum = randomFactor .* complex(amplitude) .* expminusomega;
-#
-#spectrum_shifted = ifftshift(spectrum);
-#h_tilde_shifted = ifftshift(h_tilde);
-#
-#z1 = real(ifft2(spectrum_shifted));
-#z2 = real(ifft2(h_tilde_shifted));
-#z1 = z1 .* (resolution(1) * resolution(2));
-#z2 = z2 .* (resolution(1) * resolution(2));
-#
-#close all
+% randomFactor = 1/sqrt(2) .* gaussrand;
+% 
+% h_zero = randomFactor .* complex(amplitude ./ 2);
+% h_tilde = zeros(resolution(1), resolution(2));
+% for x=1:resolution(1)
+%     for y=1:resolution(2)
+%         index1 = mod(resolution(1)-x+1,resolution(1))+1;
+%         index2 = mod(resolution(2)-y+1,resolution(2))+1;
+%         h_tilde(x,y) = h_zero(x,y)*expminusomega(x,y) + conj(h_zero(index1, index2))*expomega(index1, index2);
+%     end
+% end
+% 
+% spectrum = randomFactor .* complex(amplitude) .* expminusomega;
+% 
+% spectrum_shifted = ifftshift(spectrum);
+% h_tilde_shifted = ifftshift(h_tilde);
+% 
+% z1 = real(ifft2(spectrum_shifted));
+% z2 = real(ifft2(h_tilde_shifted));
+% z1 = z1 .* (resolution(1) * resolution(2));
+% z2 = z2 .* (resolution(1) * resolution(2));
+% 
+% close all
 
 % figure
 % surf(xz(:,:,1), xz(:,:,2), z1);
