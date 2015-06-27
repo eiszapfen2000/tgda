@@ -26,25 +26,25 @@ necessaryRes = max(geometry.geometryRes, geometry.gradientRes);
 numberOfLods = size(geometry.lodAreas, 2);
 
 for l=1:numberOfLods
-    [k kn deltakx deltaky] = generate_k(necessaryRes, geometry.lodAreas(l));
-    [x z deltax deltay]  = generate_xz(necessaryRes, geometry.lodAreas(l));
+    [k, kn, deltakx, deltaky] = generate_k(necessaryRes, geometry.lodAreas(l));
+    [x, z, deltax, deltay]  = generate_xz(necessaryRes, geometry.lodAreas(l));
     
     Theta = generateSpectrum(k, kn, settings);
     amplitudes = sqrt(2.*Theta.*deltakx.*deltaky);
     
-    mss_x = (k(:,:,1).^2) .* Theta .* (deltakx^2);
-    mss_z = (k(:,:,2).^2) .* Theta .* (deltaky^2);
-    mss = ((k(:,:,1).^2) + (k(:,:,2).^2)) .* Theta .* (deltakx * deltaky);
-    
-    mss_x
-    mss_z
-    mss
-    
-    sum(sum(mss_x))
-    sum(sum(mss_z))
-    sum(sum(mss))
-    
-    sum(sum(mss_x)) + sum(sum(mss_z))
+%     mss_x = (k(:,:,1).^2) .* Theta .* (deltakx^2);
+%     mss_z = (k(:,:,2).^2) .* Theta .* (deltaky^2);
+%     mss = ((k(:,:,1).^2) + (k(:,:,2).^2)) .* Theta .* (deltakx * deltaky);
+%     
+%     mss_x
+%     mss_z
+%     mss
+%     
+%     sum(sum(mss_x))
+%     sum(sum(mss_z))
+%     sum(sum(mss))
+%     
+%     sum(sum(mss_x)) + sum(sum(mss_z))
     
     gaussrandr = normrnd(0, 1, necessaryRes, necessaryRes);
     gaussrandi = normrnd(0, 1, necessaryRes, necessaryRes);
