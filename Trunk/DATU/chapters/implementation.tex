@@ -580,7 +580,7 @@ elevation's first order partial derivatives. Given surface elevation $\eta(\mvec
 we obtain the two dimensional surface slope vector $\mvec{s}$ as follows:
 \begin{equation}
 \label{eq:dft_slope_2d}
- \mvec{s} = \left(\dpd{\eta(\mvec{x},t)}{x}, \dpd{\eta(\mvec{x},t)}{y}\right)
+ \mvec{s} = \left[\dpd{\eta(\mvec{x},t)}{x}, \dpd{\eta(\mvec{x},t)}{y}\right]
 \end{equation}
 We leave it as an exercise for the reader to substitute the terms $\eta(\mvec{x},t)$
 and $h_0(\mvec{k},t)$ into Equation~\ref{eq:dft_derivates_2d} to be able to
@@ -596,160 +596,45 @@ length surface normal vector $\mvec{n}$ as follows:
 \end{equation}
 %
 \subsubsection{Displacements}
+\label{sec:displacements}
 %
-Brak
-
-\newcommand{\mcomplex}[2]{\ensuremath{{#1}{#2}\mathrm{i}}}
-
-\pgfplotstabletypeset[
-  sci zerofill,
-  every head row/.style={ 
-        output empty row,
-    }
-]
-{
-0.61000   0.35000   0.36000
-0.48000   0.81000   0.71000
-0.96000   0.23000   0.88000
-}
-
-\def\SP{\hspace{5pt}}
-
-\begin{multline}
-\sisetup{
-round-mode      = places,
-round-precision = 2,
-%explicit-sign = +,
-}
-\small
-\left(
-\begin{array}{S@{\SP}S@{\SP}S}
-\num{0.61} & \num{0.35} & \num{0.36} \\
-\num{0.48} & \num{0.81} & \num{0.71} \\
-\num{0.96} & \num{0.23} & \num{0.88}
-\end{array}
-\right) \\
-\xrightarrow{FT}
-\sisetup{
-round-mode      = places,
-round-precision = 2,
-explicit-sign = +,
-}
-\left(
-\begin{array}{SSS}
-\num{ 5.39000 + 0.00000i} & \num{ 0.38000 + 0.48497i} &\num{ 0.38000 - 0.48497i} \\
-\num{-0.71500 + 0.06062i} & \num{-0.37000 + 0.36373i} &\num{ 0.75500 + 0.82272i} \\
-\num{-0.71500 - 0.06062i} & \num{ 0.75500 - 0.82272i} &\num{-0.37000 - 0.36373i} \\
-\end{array}
-\right) \\
-\Rightarrow
-\sisetup{
-round-mode      = places,
-round-precision = 2,
-explicit-sign = +,
-}
-\left(
-\begin{array}{SSS}
-\cellcolor{blue!25} \num{-0.37000 - 0.36373i} & \num{-0.71500 - 0.06062i} & \num{ 0.75500 - 0.82272i} \\
-\num{ 0.38000 - 0.48497i} & \num{ 5.39000 + 0.00000i} & \num{ 0.38000 + 0.48497i} \\
-\num{ 0.75500 + 0.82272i} & \num{-0.71500 + 0.06062i} & \num{-0.37000 + 0.36373i} \\
-\end{array}
-\right)
-\end{multline}
-
-\begin{table}
-\small
-$
-\sisetup{
-round-mode      = places,
-round-precision = 1,
-explicit-sign = +,
-}
-\left(
-\begin{array}{S[table-number-alignment = left]S[table-number-alignment = left]S[table-number-alignment = left]S[table-number-alignment = left]}
-\num{ 16.36462 +  0.00000i} & \num{ 0.52990 + 17.57366i} & \num{-4.70974 +  0.00000i} & \num{ 0.52990 - 17.57366i} \\
-\num{  5.90265 -  5.02624i} & \num{-7.59064 -  3.96207i} & \num{ 0.36357 +  6.33148i} & \num{ 8.48330 +  4.45058i} \\
-\num{-15.80487 +  0.00000i} & \num{ 4.78730 +  4.18503i} & \num{61.78001 +  0.00000i} & \num{ 4.78730 -  4.18503i} \\
-\num{  5.90265 +  5.02624i} & \num{ 8.48330 -  4.45058i} & \num{ 0.36357 -  6.33148i} & \num{-7.59064 +  3.96207i} \\
-\end{array}
-\right)
-\Rightarrow
-\sisetup{
-round-mode      = places,
-round-precision = 1,
-explicit-sign = +,
-}
-\left(
-\begin{array}{SSS}
-\cellcolor{blue!25} \num{-0.37000 - 0.36373i} & \num{-0.71500 - 0.06062i} & \num{ 0.75500 - 0.82272i} \\
-\num{ 0.38000 - 0.48497i} & \num{ 5.39000 + 0.00000i} & \num{ 0.38000 + 0.48497i} \\
-\num{ 0.75500 + 0.82272i} & \num{-0.71500 + 0.06062i} & \num{-0.37000 + 0.36373i} \\
-\end{array}
-\right)
-$
-\caption{LOLZ}
-\end{table}
+The waves generated with the methods presented up to now tend to have rounded peaks and throughs,
+which is typical for fair weather conditions. But we also would like to be able to synthesize waves
+matching poor weather conditions, such as strong winds or even storms. During such weather, ocean waves
+are sharply peaked at their tops and flattened at the bottoms. Tessendorf\cite{course:simulatingocean}
+describes a Fourier Transform based method to produce such choppy waves. The concept is simple: displace
+the grid points of the spatial domain in the XZ-plane, with the displacement varying locally with the waves.
+The two dimensional displacement vector field $\mvec{D}$ is computed based on the spectrum $h_0$ as follows:
+\begin{align}
+%\label{eq:dft_displacement}
+ \mvec{D}(\mvec{x},t) &= \left[D_x(\mvec{x},t), D_y(\mvec{x},t)\right]\\
+ D_x(\mvec{x},t) &= \sum_{\mvec{k}}d(k_x, k)~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+ D_y(\mvec{x},t) &= \sum_{\mvec{k}}d(k_y, k)~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+%\label{eq:dft_displacement_correction}
+ d(l, k) &= \begin{cases}
+             0 &\text{if $N$ even, and $k = 0$ or $k = \ceil{-\frac{N}{2}}\frac{2\pi}{L}$,} \\
+             -\mathrm{i}\frac{l}{k} &\text{else.}
+            \end{cases}
+\end{align}
+where, similar to spectral differentiation, the term $d(l, k)$ makes sure the resulting spectrum is hermitian.
+Given the displacement vectors $\mvec{D}$, as well as the original grid points $\mvec{x}$, we may compute
+the displaced gridpoints $\mvec{y}$ as follows:
+\begin{equation}
+ \mvec{y} = \mvec{x} - \lambda \mvec{D}(\mvec{x}, t)
+\end{equation}
+where $\lambda$ is a user-controlled parameter to scale the importance of the displacement vector.
 
 
-
-\pgfplotstabletypeset[
-    col sep=comma,
-    every head row/.style={ 
-        output empty row,
-    },
-    %column style={string type,column type={S[table-format=-1.6]}},%
-    columns/x/.style={string type,column type={S[table-format=-1.6]},column type/.add={|}{|}},%
-    columns/y/.style={string type,column type={S[table-format=-1.6]}},%
-    columns/z/.style={string type,column type={S[table-format=-1.6]},column type/.add={|}{|}},%
-]
-{
-x,y,z
-\num{5.39000 + 0.00000i},\num{0.38000 + 0.48497i},\num{0.38000 - 0.48497i}
-\num{-0.71500 + 0.06062i},\num{-0.37000 + 0.36373i},\num{0.75500 + 0.82272i}
-\num{-0.71500 - 0.06062i},\num{0.75500 - 0.82272i},\num{-0.37000 - 0.36373i}
-}
-
-\begin{tabular}{lS[table-format = 3]S[table-format = 3.2]}
-\toprule
-  \textbf{Bus} & \multicolumn{2}{c}{\textbf{Bus Load (MVA)}} \\
-               & {Real} & {Complex} \\
-  \midrule
-  b1 &  50 &  30.99 \\
-  b2 & 170 & 105.35 \\
-  b3 & 200 & 123.94 \\
-  b4 & 150 &  49.58 \\
-  \bottomrule
-\end{tabular}
+% \begin{tabular}{lS[table-format = 3]S[table-format = 3.2]}
+% \toprule
+%   \textbf{Bus} & \multicolumn{2}{c}{\textbf{Bus Load (MVA)}} \\
+%                & {Real} & {Complex} \\
+%   \midrule
+%   b1 &  50 &  30.99 \\
+%   b2 & 170 & 105.35 \\
+%   b3 & 200 & 123.94 \\
+%   b4 & 150 &  49.58 \\
+%   \bottomrule
+% \end{tabular}
 
 
-\begin{table}
-\small
-\setlength{\tabcolsep}{3.5pt} % default value: 6pt
-\begin{tabular}{| S[table-number-alignment = left] | S[table-number-alignment = left] | S[table-number-alignment = left] |}
-\hline
-0.30 & 0.72 & 1.00 \\
-\hline
-0.07 & 0.14 & 0.38 \\
-\hline
-0.16 & 0.12 & 0.33 \\
-\hline
-\end{tabular}
-\quad
-\sisetup{
-round-mode      = places,
-round-precision = 3,
-}
-\begin{tabular}{| S[table-number-alignment = right] | S[table-number-alignment = right] | S[table-number-alignment = right] |}
-\hline
-\cellcolor{blue!25}        \num{-0.410 - 0.15588i} & \cellcolor{ProcessBlue!50}\num{1.42 - 0.01732i} & \cellcolor{Plum!50}        \num{-0.455 - 0.06062i}\\
-\hline
-\cellcolor{MidnightBlue!50}\num{-0.815 - 0.6322i}  & \cellcolor{red!50}\num{3.22 + 0.0i}     & \cellcolor{MidnightBlue!50}\num{-0.815 + 0.6322i}\\
-\hline
-\cellcolor{Plum!50}        \num{-0.455 + 0.06062i} & \cellcolor{ProcessBlue!50}\num{1.42 + 0.01732i} & \cellcolor{blue!25}        \num{-0.410 + 0.15588i}\\
-\hline
-\end{tabular}
-\end{table}
-
-Displacement
-
-Displacement Derivatives
