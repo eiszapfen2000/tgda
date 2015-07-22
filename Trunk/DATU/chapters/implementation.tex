@@ -604,7 +604,9 @@ matching poor weather conditions, such as strong winds or even storms. During su
 are sharply peaked at their tops and flattened at the bottoms. Tessendorf\cite{course:simulatingocean}
 describes a Fourier Transform based method to produce such choppy waves. The concept is simple: displace
 the grid points of the spatial domain in the XZ-plane, with the displacement varying locally with the waves.
-The two dimensional displacement vector field $\mvec{D}$ is computed based on the spectrum $h_0$ as follows:
+Note that the displacement is a two-dimensional vector, therefore we end up computing a vector field.
+Similar to spectral differentiation, we compute an inverse Fourier transform of the spectrum $h_0$
+modified with an additional term. We may write the displacement vector field as follows:
 \begin{align}
 %\label{eq:dft_displacement}
  \mvec{D}(\mvec{x},t) &= \left[D_x(\mvec{x},t), D_y(\mvec{x},t)\right]\\
@@ -616,14 +618,16 @@ The two dimensional displacement vector field $\mvec{D}$ is computed based on th
              -\mathrm{i}\frac{l}{k} &\text{else.}
             \end{cases}
 \end{align}
-where, similar to spectral differentiation, the term $d(l, k)$ makes sure the resulting spectrum is hermitian.
+where the term $d(l, k)$ makes sure the resulting spectrum is hermitian.
 Given the displacement vectors $\mvec{D}$, as well as the original grid points $\mvec{x}$, we may compute
 the displaced gridpoints $\mvec{y}$ as follows:
 \begin{equation}
  \mvec{y} = \mvec{x} - \lambda \mvec{D}(\mvec{x}, t)
 \end{equation}
 where $\lambda$ is a user-controlled parameter to scale the importance of the displacement vector.
-
+As one can see, the wave heights are not altered, instead the grid points on the XZ-plane
+are transformed based on the spatial structure of the height field. This particular transformation
+accomplishes the desired effect, it sharpens the peaks of the waves, as well as broadens the waves' valleys.
 
 % \begin{tabular}{lS[table-format = 3]S[table-format = 3.2]}
 % \toprule
