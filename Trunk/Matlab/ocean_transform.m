@@ -63,3 +63,10 @@ end
 result = ocean;
 
 end
+
+function y = derivative_x(resolution, area, kx, spectrum)
+k_to_zero = (resolution/2) * 2 * pi / area;
+correction = ~(kx == k_to_zero);
+spectrum_x = 1i .* kx .* spectrum;
+y = correction .* spectrum_x;
+end
