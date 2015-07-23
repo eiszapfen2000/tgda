@@ -7,15 +7,17 @@ end
 geometryResLog2 = log2(geometry.geometryRes);
 gradientResLog2 = log2(geometry.gradientRes);
 
-[ ige fge ] = modf(geometryResLog2);
-[ igr fgr ] = modf(gradientResLog2);
+[ ~, fge ] = modf(geometryResLog2);
+[ ~, fgr ] = modf(gradientResLog2);
 
 if ~isequal(fge, 0) || ~isequal(fgr, 0)
-    error('Resolution not power of 2');
+    msg = 'Resolution not power of 2';
+    error(msg);
 end
 
 if isempty(geometry.lodAreas)
-    error('LOLZ');
+    msg = 'lodAreas is empty';
+    error(msg);
 end
 
 result.lods = [];
