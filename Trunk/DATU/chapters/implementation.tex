@@ -561,6 +561,28 @@ To get correct results for all $n$ and $N$, we rewrite the above equation as fol
                    \end{cases}
 \end{align}
 %
+\begin{figure}
+ \centering
+ \subtop[][$\eta(\mvec{x},t)$]
+ {
+ \includegraphics[scale=0.34]{figures/u_30_500km_heights.png}
+ }
+ \hfill
+ \subtop[$\dpd{\eta(\mvec{x},t)}{x}$]
+ {
+ \includegraphics[scale=0.34]{figures/u_30_500km_gradient_x.png}
+ }
+ \hfill
+ \subtop[$\dpd{\eta(\mvec{x},t)}{y}$]
+ {
+ \includegraphics[scale=0.34]{figures/u_30_500km_gradient_z.png}
+ }
+\caption{To the left, an example instance of a heightfield (\emph{Unified} 
+spectrum, $U_{10}=30m\cdot s^{-1}$, $F=500km$), next to it its first order 
+partial derivatives.}
+\label{fig:derivatives}
+\end{figure}
+%
 Now we may go back to the two dimensional case, with our original two dimensional
 domains $\mvec{x}$ and $\mvec{k}$. The resolution of said domains is $N \times N$,
 the size of the spatial domain is $L \times L$. Let $g(\mvec{k})$ be the Discrete
@@ -627,7 +649,8 @@ the displaced gridpoints $\mvec{y}$ as follows:
 where $\lambda$ is a user-controlled parameter to scale the importance of the displacement vector.
 As one can see, the wave heights are not altered, instead the grid points on the XZ-plane
 are transformed based on the spatial structure of the height field. This particular transformation
-accomplishes the effects we sought after, the waves' peaks are sharpened and the waves' valleys are broadened.
+accomplishes the effects we sought, the waves' peaks are sharpened and the 
+waves' valleys are broadened.
 
 % \begin{tabular}{lS[table-format = 3]S[table-format = 3.2]}
 % \toprule
