@@ -580,11 +580,11 @@ To get correct results for all $n$ and $N$, we rewrite the above equation as fol
  \label{sfig:derivative_z}
  \includegraphics[scale=0.34]{figures/u_30_500km_gradient_z.png}
  }
-\caption{\subcaptionref{sfig:derivative_heights} Example instance of a 
-heightfield (Unified spectrum, $U_{10}=30m\cdot s^{-1}$, $F=500km$). 
-\subcaptionref{sfig:derivative_x} The heightfield's first order partial 
-derivative in the X-direction. \subcaptionref{sfig:derivative_z} The 
-heightfield's first order partial derivative in the Y-direction.
+\caption{\subcaptionref{sfig:derivative_heights} An example
+surface wave height realization, displayed in greyscale (Unified spectrum, 
+$U_{10}=30m\cdot s^{-1}$, $F=500km$). \subcaptionref{sfig:derivative_x} The 
+X-component of the slope vector.\subcaptionref{sfig:derivative_z} The 
+Y-component of the slope vector.
 }
 \label{fig:derivatives}
 \end{figure}
@@ -613,10 +613,16 @@ we obtain the two dimensional surface slope vector $\mvec{s}$ as follows:
 We leave it as an exercise for the reader to substitute the terms $\eta(\mvec{x},t)$
 and $h_0(\mvec{k},t)$ into Equation~\ref{eq:dft_derivates_2d} to be able to
 compute the surface slope vector as given in Equation~\ref{eq:dft_slope_2d}.
-Figure~\ref{fig:displacements} depicts an example instance of surface 
-elevation $\eta$ and its associated slope vector.\\
-
-
+Figure~\ref{fig:derivatives} depicts an example instance of surface 
+elevation $\eta$ and its associated slope vector in greyscale. Brighter means 
+larger values, darker means lower values. One may notice that 
+Figure~\ref{sfig:derivative_heights}, without prior knowledge, is not 
+recognizable as a wave heightfield. The wave heightfield's gradients in
+Figure~\ref{sfig:derivative_x} and \subcaptionref{sfig:derivative_z}, on the 
+other hand, are more easily identified as water waves by the human eye.
+%
+\subsubsection{Normals}
+%
 In this work we employ a right-handed Carthesian coordinate system where the positive
 Y-axis points up. The two dimensional surface slope vector $\mvec{s}$ lies in the
 coordinate system's XZ-plane. Based on the surface slope vector we may find the unit
