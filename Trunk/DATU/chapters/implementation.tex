@@ -556,7 +556,8 @@ To get correct results for all $n$ and $N$, we rewrite the above equation as fol
   \dod[n]{f(x)}{x} &= \sum_{k}d(k, n)~g(k)~\mathrm{e}^{\mathrm{i}kx} \\
 \label{eq:dft_derivative_correction}
   d(k, n) &= \begin{cases}
-                   0 &\text{if $n$ odd, $N$ even, and $k = \ceil{-\frac{N}{2}}\frac{2\pi}{L}$,} \\
+                   0 &\text{if $n$ odd, $N$ even, and $\abs{k} 
+= \frac{N}{2}\frac{2\pi}{L}$,} \\
                    (\mathrm{i}k)^n &\text{else.}
                    \end{cases}
 \end{align}
