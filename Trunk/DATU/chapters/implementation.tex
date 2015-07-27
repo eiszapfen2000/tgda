@@ -563,23 +563,29 @@ To get correct results for all $n$ and $N$, we rewrite the above equation as fol
 %
 \begin{figure}
  \centering
- \subtop[][$\eta(\mvec{x},t)$]
+ \subtop[$\eta(\mvec{x},t)$]
  {
+ \label{sfig:derivative_heights}
  \includegraphics[scale=0.34]{figures/u_30_500km_heights.png}
  }
  \hfill
  \subtop[$\dpd{\eta(\mvec{x},t)}{x}$]
  {
+ \label{sfig:derivative_x}
  \includegraphics[scale=0.34]{figures/u_30_500km_gradient_x.png}
  }
  \hfill
  \subtop[$\dpd{\eta(\mvec{x},t)}{y}$]
  {
+ \label{sfig:derivative_z}
  \includegraphics[scale=0.34]{figures/u_30_500km_gradient_z.png}
  }
-\caption{To the left, an example instance of a heightfield (\emph{Unified} 
-spectrum, $U_{10}=30m\cdot s^{-1}$, $F=500km$), next to it its first order 
-partial derivatives.}
+\caption{\subcaptionref{sfig:derivative_heights} Example instance of a 
+heightfield (Unified spectrum, $U_{10}=30m\cdot s^{-1}$, $F=500km$). 
+\subcaptionref{sfig:derivative_x} The heightfield's first order partial 
+derivative in the X-direction. \subcaptionref{sfig:derivative_z} The 
+heightfield's first order partial derivative in the Y-direction.
+}
 \label{fig:derivatives}
 \end{figure}
 %
@@ -606,7 +612,9 @@ we obtain the two dimensional surface slope vector $\mvec{s}$ as follows:
 \end{equation}
 We leave it as an exercise for the reader to substitute the terms $\eta(\mvec{x},t)$
 and $h_0(\mvec{k},t)$ into Equation~\ref{eq:dft_derivates_2d} to be able to
-compute the surface slope vector as given in Equation~\ref{eq:dft_slope_2d}.\\
+compute the surface slope vector as given in Equation~\ref{eq:dft_slope_2d}.
+Figure~\ref{fig:displacements} depicts an example instance of surface 
+elevation $\eta$ and its associated slope vector.\\
 
 
 In this work we employ a right-handed Carthesian coordinate system where the positive
@@ -619,6 +627,28 @@ length surface normal vector $\mvec{n}$ as follows:
 %
 \subsubsection{Displacements}
 \label{sec:displacements}
+%
+\begin{figure}
+ \centering
+ \subtop[][$\eta(\mvec{x},t)$]
+ {
+ \includegraphics[scale=0.34]{figures/u_30_500km_heights.png}
+ }
+ \hfill
+ \subtop[$D_x(\mvec{x},t)$]
+ {
+ \includegraphics[scale=0.34]{figures/u_30_500km_displacement_x.png}
+ }
+ \hfill
+ \subtop[$D_y(\mvec{x},t)$]
+ {
+ \includegraphics[scale=0.34]{figures/u_30_500km_displacement_z.png}
+ }
+\caption{To the left, an example instance of a heightfield (\emph{Unified} 
+spectrum, $U_{10}=30m\cdot s^{-1}$, $F=500km$), next to it its first order 
+partial derivatives.}
+\label{fig:displacements}
+\end{figure}
 %
 The waves generated with the methods presented up to now tend to have rounded peaks and throughs,
 which is typical for fair weather conditions. But we also would like to be able to synthesize waves
