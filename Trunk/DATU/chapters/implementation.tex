@@ -686,15 +686,20 @@ modified with an additional term. We may write the displacement vector field as 
              -\mathrm{i}\frac{l}{k} &\text{else.}
             \end{cases}
 \end{align}
-where the term $d(l, k)$ makes sure the resulting spectrum is hermitian.
-Given the displacement vectors $\mvec{D}$, as well as the original grid points $\mvec{x}$, we may compute
-the displaced gridpoints $\mvec{y}$ as follows:
+where the term $d(l, k)$ in addition to make sure the resulting spectrum is 
+hermitian also avoids a division by zero at $k = 0$. 
+Figure~\ref{fig:displacements} shows an example instance of surface elevation 
+$\eta$ as well as its associated displacements in greyscale. As before, 
+brighter means larger values, darker means lower values. Given the displacement 
+vectors $\mvec{D}$, as well as the original grid points $\mvec{x}$, we may 
+compute the displaced gridpoints $\mvec{y}$ as follows:
 \begin{equation}
  \mvec{y} = \mvec{x} - \lambda \mvec{D}(\mvec{x}, t)
 \end{equation}
-where $\lambda$ is a user-controlled parameter to scale the importance of the displacement vector.
-As one can see, the wave heights are not altered, instead the grid points on the XZ-plane
-are transformed based on the spatial structure of the height field. This particular transformation
+where $\lambda$ is a user-controlled parameter to scale the importance of the
+displacement vector. As one can see, it is not the wave heights that are 
+altered, but instead the grid points on the XZ-plane are transformed based on 
+the spatial structure of the height field. This particular transformation
 accomplishes the effects we sought, the waves' peaks are sharpened and the 
 waves' valleys are broadened.
 
