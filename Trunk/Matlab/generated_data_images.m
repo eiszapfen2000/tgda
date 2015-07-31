@@ -13,32 +13,43 @@ settings.generatorName = 'Unified';
 settings.wind = [ 100 0];
 settings.fetch = 500000;
 
-nplots = 1;
 lolz = ocean_init(geometry, settings);
-figure
+lolz = ocean_animate(lolz, time);
+lolz = ocean_transform(lolz);
 
-for i=1:nplots
-    time = i * 0.5;
-    lolz = ocean_animate(lolz, time);
-    lolz = ocean_transform(lolz);
+x = lolz.lods(1).x(256,:);
+h = lolz.lods(1).heights(256,:);
+dx = lolz.lods(1).dx(256,:);
 
-    x = lolz.lods(1).x(256,:);
-    h = lolz.lods(1).heights(256,:);
-    dx = lolz.lods(1).dx(256,:);
-    
-    minX = min(x);
-    maxX = max(x);
-    x = [ x (x + (maxX - minX)) ];
-    h = [ h h ];
-    dx = [ dx dx ];
-    
-    subplot(nplots, 1, i);
-    hold on
-    plot(x, h)
-    %axis off
-    plot(x-5.*dx,h,'r')
-    hold off
-end
+output = [x', dx', h'];
+csvwrite('u_30_500km_x_dx_h.dat', output);
+
+% nplots = 1;
+% lolz = ocean_init(geometry, settings);
+% figure
+% 
+% for i=1:nplots
+%     time = i * 0.5;
+%     lolz = ocean_animate(lolz, time);
+%     lolz = ocean_transform(lolz);
+% 
+%     x = lolz.lods(1).x(256,:);
+%     h = lolz.lods(1).heights(256,:);
+%     dx = lolz.lods(1).dx(256,:);
+%     
+%     minX = min(x);
+%     maxX = max(x);
+%     x = [ x (x + (maxX - minX)) ];
+%     h = [ h h ];
+%     dx = [ dx dx ];
+%     
+%     subplot(nplots, 1, i);
+%     hold on
+%     plot(x, h)
+%     %axis off
+%     plot(x-5.*dx,h,'r')
+%     hold off
+% end
 
 % writelodimages('u_30_500km_', lolz.lods(1));
 % figure
