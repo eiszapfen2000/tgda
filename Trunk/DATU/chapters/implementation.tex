@@ -701,8 +701,53 @@ displacement vector. As one can see, it is not the wave heights that are
 altered, but instead the grid points on the XZ-plane are transformed based on 
 the spatial structure of the height field. This particular transformation
 accomplishes the effects we sought, the waves' peaks are sharpened and the 
-waves' valleys are broadened.
+waves' valleys are broadened, see Figure~\ref{fig:grid_displaced}.
 %
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+	width=\textwidth,
+	height=4cm,
+    legend style={draw=none},
+    %legend/.append style={nodes={right}},
+	legend pos= south west,
+	legend cell align=left,
+	xtick = {-50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50},
+	ytick = {-0.5, 0, 0.5},
+    xlabel={Spatial domain coordinate~$x$~($\text{m}$)},
+    ylabel={Surface height~$\eta$~($\text{m}$)},
+%	enlarge x limits = auto,
+]
+\addplot[
+    color=red,
+    solid,
+	]
+    table [
+		col sep=comma, 
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{2},
+	]
+	{figures/u_30_500km_x_dx_h.dat};
+\addlegendentry{$x$}
+\addplot[
+    color=blue,
+    solid,
+	]
+    table [
+		col sep=comma, 
+		x expr=\thisrowno{0} - 5*\thisrowno{1},
+		y expr=\thisrowno{2},
+	]
+	{figures/u_30_500km_x_dx_h.dat};
+\addlegendentry{$x - \lambda D_x$}
+\end{axis}
+\end{tikzpicture}
+\caption{Red: the original grid points. Blue: the displaced grid points, note 
+the steep tops and the flattened valleys.}
+\label{fig:grid_displaced}
+\end{figure}
+
 \subsubsection{Whitecaps}
 %
 \cite{course:simulatingocean}
