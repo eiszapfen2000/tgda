@@ -492,6 +492,7 @@ and $b(\mvec{k})$ be hermitian spectra with the same wavevector domain $\mvec{k}
 and $d(\mvec{x})$ be the corresponding real-valued functions of $a(\mvec{k})$ and $b(\mvec{k})$,
 then we may write:
 \begin{align}
+\label{eq:idft_combined}
  e(\mvec{x}) &= \mathrm{IFT}(a(\mvec{k})+\mathrm{i}b(\mvec{k})) \\
  c(\mvec{x}) &= \Re(e(\mvec{x})) \\
  d(\mvec{x}) &= \Im(e(\mvec{x})) 
@@ -611,7 +612,7 @@ elevation $\eta(\mvec{x},t)$, we obtain the two dimensional surface slope
 vector $\mvec{s}$ as follows:
 \begin{equation}
 \label{eq:dft_slope_2d}
- \mvec{s} = \left[\dpd{\eta(\mvec{x},t)}{x}, \dpd{\eta(\mvec{x},t)}{y}\right]
+ \mvec{s}(\mvec{x},t) = \left[\dpd{\eta(\mvec{x},t)}{x}, \dpd{\eta(\mvec{x},t)}{y}\right]
 \end{equation}
 We leave it as an exercise for the reader to substitute the terms $\eta(\mvec{x},t)$
 and $h_0(\mvec{k},t)$ into Equation~\ref{eq:dft_derivates_2d} to be able to
@@ -622,7 +623,12 @@ means larger values, darker means lower values. One may notice that
 Figure~\ref{sfig:derivative_heights}, without prior knowledge, is not 
 recognizable as a wave heightfield. The wave heightfield's gradients in
 Figure~\ref{sfig:derivative_x} and \subcaptionref{sfig:derivative_z}, on the 
-other hand, are more easily identified as water waves by the human eye.
+other hand, are more easily identified as water waves by the human eye.\\
+
+The two spectra which constitute the surface slope vector in the wavevector domain
+are hermitian. Therefore we are able to apply the optimisation from
+Equation~\ref{eq:idft_combined} which allows us to combine both spectra into one,
+obtaining both components of the surface slope vector with just one inverse Fourier transform.
 %
 \subsubsection{Normals}
 %
