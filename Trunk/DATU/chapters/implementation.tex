@@ -711,13 +711,14 @@ gridpoints $\mvec{y}$ as follows:
 \end{equation}
 where $\lambda$ is a user-controlled parameter to scale the importance of the
 displacement vector. The author of this work has found that the above formula
-is correct if $\lambda \leq 0$, otherwise the effect is the opposite of what
-we want to achieve. Looking at Equation~\ref{eq:displacement_gridpoints},
+is correct as long as $\lambda \leq 0$, otherwise the effect is the opposite of 
+what we want to achieve. Looking at Equation~\ref{eq:displacement_gridpoints},
 one can see that it is not the wave heights that are altered, but instead the grid
 points on the XZ-plane are transformed based on the spatial structure of the
 height field. This particular transformation accomplishes the effects we sought:
-the waves' peaks are sharpened and the waves' valleys are broadened, see
-Figure~\ref{fig:grid_displaced}.
+the waves' peaks are sharpened and the waves' valleys are broadened. See
+Figure~\ref{fig:grid_displaced} for a comparison between an example instance of 
+a displaced wave profile and its original wave profile.
 %
 \begin{figure}
 \centering
