@@ -696,8 +696,8 @@ where the term $d(l, k)$ in addition to make sure the resulting spectrum is
 hermitian also avoids a division by zero at $k = 0$. 
 Figure~\ref{fig:displacements} shows an example instance of surface elevation 
 $\eta$ as well as its associated displacements in greyscale. As before, 
-brighter means larger values, darker means lower values. Because both spectra,
-that represent displacement vectors $\mvec{D}$, are hermitian, we are again able 
+brighter means larger values, darker means lower values. Because both spectra
+that represent displacement vectors $\mvec{D}$ are hermitian, we are again able 
 to apply Equation~\ref{eq:idft_combined} and obtain both components with
 just one inverse Fourier Transform.\\
 
@@ -712,7 +712,7 @@ gridpoints $\mvec{y}$ as follows:
 where $\lambda$ is a user-controlled parameter to scale the importance of the
 displacement vector. The author of this work has found that the above formula
 is correct if $\lambda \leq 0$, otherwise the effect is the opposite of what
-we wanted to achieve. Looking at Equation~\ref{eq:displacement_gridpoints},
+we want to achieve. Looking at Equation~\ref{eq:displacement_gridpoints},
 one can see that it is not the wave heights that are altered, but instead the grid
 points on the XZ-plane are transformed based on the spatial structure of the
 height field. This particular transformation accomplishes the effects we sought,
@@ -733,7 +733,59 @@ Figure~\ref{fig:grid_displaced}.
 	ytick = {-0.5, 0, 0.5},
     xlabel={Spatial domain coordinate~$x$~($\text{m}$)},
     ylabel={Surface height~$\eta$~($\text{m}$)},
-%	enlarge x limits = auto,
+	%enlarge y limits = 0.3,
+]
+\addplot[
+    color=red,
+    solid,
+	]
+    table [
+		col sep=comma, 
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{2},
+	]
+	{figures/u_30_500km_x_dx_h.dat};
+\addlegendentry{$x$}
+\addplot[
+    color=blue,
+    solid,
+	]
+    table [
+		col sep=comma, 
+		x expr=\thisrowno{0} - 3*\thisrowno{1},
+		y expr=\thisrowno{2},
+	]
+	{figures/u_30_500km_x_dx_h.dat};
+\addlegendentry{$x - \lambda D_x$}
+\end{axis}
+\end{tikzpicture}
+\caption{Red: the original grid points. Blue: the displaced grid points, note 
+the steep tops and the flattened valleys.}
+\label{fig:grid_displaced}
+\end{figure}
+
+\subsubsection{Whitecaps}
+%
+\cite{course:simulatingocean}
+\cite{article:whitecaps}
+%
+\begin{figure}
+\centering
+\begin{tikzpicture}[
+	spy using outlines={circle, magnification=5, connect spies}
+]
+\begin{axis}[
+	width=\textwidth,
+	height=4cm,
+    legend style={draw=none},
+    %legend/.append style={nodes={right}},
+	legend pos= south west,
+	legend cell align=left,
+	xtick = {-50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50},
+	ytick = {-0.5, 0, 0.5},
+    xlabel={Spatial domain coordinate~$x$~($\text{m}$)},
+    ylabel={Surface height~$\eta$~($\text{m}$)},
+	%enlarge y limits = 0.3,
 ]
 \addplot[
     color=red,
@@ -757,17 +809,21 @@ Figure~\ref{fig:grid_displaced}.
 	]
 	{figures/u_30_500km_x_dx_h.dat};
 \addlegendentry{$x - \lambda D_x$}
+\coordinate (spypoint1) at (axis cs:47.9,0.73);
+\coordinate (magnifyglass1) at (axis cs:47.9,2);
+\coordinate (spypoint2) at (axis cs:-44,0.45);
+\coordinate (magnifyglass2) at (axis cs:-44,2);
+
+%\draw [blue] (45,0.4) rectangle (48,1);
 \end{axis}
+\spy [black, size=2cm] on (spypoint1) in node[fill=white] at (magnifyglass1);
+\spy [black, size=2cm] on (spypoint2) in node[fill=white] at (magnifyglass2);
 \end{tikzpicture}
 \caption{Red: the original grid points. Blue: the displaced grid points, note 
 the steep tops and the flattened valleys.}
-\label{fig:grid_displaced}
+\label{fig:grid_displaced_self_intersection}
 \end{figure}
-
-\subsubsection{Whitecaps}
 %
-\cite{course:simulatingocean}
-\cite{article:whitecaps}
 
 % \begin{tabular}{lS[table-format = 3]S[table-format = 3.2]}
 % \toprule
