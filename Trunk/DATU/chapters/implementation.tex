@@ -715,7 +715,7 @@ is correct if $\lambda \leq 0$, otherwise the effect is the opposite of what
 we want to achieve. Looking at Equation~\ref{eq:displacement_gridpoints},
 one can see that it is not the wave heights that are altered, but instead the grid
 points on the XZ-plane are transformed based on the spatial structure of the
-height field. This particular transformation accomplishes the effects we sought,
+height field. This particular transformation accomplishes the effects we sought:
 the waves' peaks are sharpened and the waves' valleys are broadened, see
 Figure~\ref{fig:grid_displaced}.
 %
@@ -756,7 +756,7 @@ Figure~\ref{fig:grid_displaced}.
 		y expr=\thisrowno{2},
 	]
 	{figures/u_30_500km_x_dx_h.dat};
-\addlegendentry{$x - \lambda D_x$}
+\addlegendentry{$x + \lambda D_x$}
 \end{axis}
 \end{tikzpicture}
 \caption{Red: the original grid points. Blue: the displaced grid points, note 
@@ -785,11 +785,13 @@ the steep tops and the flattened valleys.}
 	ytick = {-0.5, 0, 0.5},
     xlabel={Spatial domain coordinate~$x$~($\text{m}$)},
     ylabel={Surface height~$\eta$~($\text{m}$)},
+	axis lines = left,
 	%enlarge y limits = 0.3,
 ]
 \addplot[
-    color=red,
+    color=red!15!white,
     solid,
+	forget plot
 	]
     table [
 		col sep=comma, 
@@ -797,27 +799,35 @@ the steep tops and the flattened valleys.}
 		y expr=\thisrowno{2},
 	]
 	{figures/u_30_500km_x_dx_h.dat};
-\addlegendentry{$x$}
+%\addlegendentry{$x$}
 \addplot[
     color=blue,
     solid,
 	]
     table [
 		col sep=comma, 
-		x expr=\thisrowno{0} - 5*\thisrowno{1},
+		x expr=\thisrowno{0} - 7.5*\thisrowno{1},
 		y expr=\thisrowno{2},
 	]
 	{figures/u_30_500km_x_dx_h.dat};
 \addlegendentry{$x - \lambda D_x$}
-\coordinate (spypoint1) at (axis cs:47.9,0.73);
-\coordinate (magnifyglass1) at (axis cs:47.9,2);
-\coordinate (spypoint2) at (axis cs:-44,0.45);
-\coordinate (magnifyglass2) at (axis cs:-44,2);
+\coordinate (spypoint1) at (axis cs:-44,0.45);
+\coordinate (magnifyglass1) at (axis cs:-44,2);
 
-%\draw [blue] (45,0.4) rectangle (48,1);
+\coordinate (spypoint2) at (axis cs:-16,0);
+\coordinate (magnifyglass2) at (axis cs:-16,2);
+
+\coordinate (spypoint3) at (axis cs:5.5,-0.425);
+\coordinate (magnifyglass3) at (axis cs:5.5,2);
+
+\coordinate (spypoint4) at (axis cs:48.25,0.7);
+\coordinate (magnifyglass4) at (axis cs:48.25,2);
+
 \end{axis}
 \spy [black, size=2cm] on (spypoint1) in node[fill=white] at (magnifyglass1);
 \spy [black, size=2cm] on (spypoint2) in node[fill=white] at (magnifyglass2);
+\spy [black, size=2cm] on (spypoint3) in node[fill=white] at (magnifyglass3);
+\spy [black, size=2cm] on (spypoint4) in node[fill=white] at (magnifyglass4);
 \end{tikzpicture}
 \caption{Red: the original grid points. Blue: the displaced grid points, note 
 the steep tops and the flattened valleys.}
