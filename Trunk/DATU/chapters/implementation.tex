@@ -692,15 +692,14 @@ modified with an additional term. We may write the displacement vector field as 
              -\mathrm{i}\frac{l}{k} &\text{else.}
             \end{cases}
 \end{align}
-where the term $d(l, k)$ in addition to make sure the resulting spectrum is 
-hermitian also avoids a division by zero at $k = 0$. 
+where the term $d(l, k)$, in addition to make sure the resulting spectrum is 
+hermitian, also avoids a division by zero at $k = 0$. 
 Figure~\ref{fig:displacements} shows an example instance of surface elevation 
 $\eta$ as well as its associated displacements in greyscale. As before, 
 brighter means larger values, darker means lower values. Because both spectra
 that represent displacement vectors $\mvec{D}$ are hermitian, we are again able 
-to apply Equation~\ref{eq:idft_combined} and obtain both components with
+to apply Equation~\ref{eq:idft_combined} and obtain both vector components with
 just one inverse Fourier Transform.\\
-
 
 Given the displacement vectors $\mvec{D}$, as well as the original grid
 points $\mvec{x}$, according to Tessendorf we may compute the displaced
@@ -716,9 +715,7 @@ what we want to achieve. Looking at Equation~\ref{eq:displacement_gridpoints},
 one can see that it is not the wave heights that are altered, but instead the grid
 points on the XZ-plane are transformed based on the spatial structure of the
 height field. This particular transformation accomplishes the effects we sought:
-the waves' peaks are sharpened and the waves' valleys are broadened. See
-Figure~\ref{fig:grid_displaced} for a comparison between an example instance of 
-a displaced wave profile and its original wave profile.
+the waves' peaks are sharpened and the waves' valleys are broadened.
 %
 \begin{figure}
 \centering
@@ -764,6 +761,11 @@ a displaced wave profile and its original wave profile.
 the steep tops and the flattened valleys.}
 \label{fig:grid_displaced}
 \end{figure}
+%
+See
+Figure~\ref{fig:grid_displaced} for a comparison between an example instance of 
+a displaced wave profile and its original wave profile.
+%
 
 \subsubsection{Whitecaps}
 %
