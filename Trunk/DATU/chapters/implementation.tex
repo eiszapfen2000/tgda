@@ -790,9 +790,6 @@ not.
 %
 \subsubsection{Whitecaps}
 %
-\cite{course:simulatingocean}
-\cite{article:whitecaps}
-%
 \begin{figure}
 \centering
 \begin{tikzpicture}[
@@ -834,7 +831,7 @@ not.
 		y expr=\thisrowno{2},
 	]
 	{figures/u_30_500km_x_dx_h.dat};
-\addlegendentry{$x - \lambda D_x$}
+\addlegendentry{$x + u D_x(x,t)$}
 \coordinate (spypoint1) at (axis cs:-44,0.45);
 \coordinate (magnifyglass1) at (axis cs:-44,2);
 
@@ -853,12 +850,24 @@ not.
 \spy [black, size=2cm] on (spypoint3) in node[fill=white] at (magnifyglass3);
 \spy [black, size=2cm] on (spypoint4) in node[fill=white] at (magnifyglass4);
 \end{tikzpicture}
-\caption{Red: the original grid points. Blue: the displaced grid points, note 
-the steep tops and the flattened valleys.}
+\caption{The wave profile from Figure~\ref{fig:grid_displaced}, but with 
+displacement scaling parameter $u=-7.5$ to better emphasize the effect of 
+self-intersection.}
 \label{fig:grid_displaced_self_intersection}
 \end{figure}
 %
-
+The method by Tessendorf~\cite{course:simulatingocean} we use to generate 
+choppy waves is not devoid of drawbacks. Some of the displacement vectors we 
+compute may be large enough to cause the displaced geometry to self-intersect, 
+see Figure~\ref{fig:grid_displaced_self_intersection}. Near the top of some 
+waves the surface actually passes through itself, and as a consequence inverts, 
+with the surface normal pointing inwards instead of outwards. We may get rid of 
+this undesired side-effect in a rather simple way: reduce the magnitude of 
+displacement scaling parameter $u$.
+On the other hand, Tessendorf suggests that we use said self-intersections to 
+our advantage, because they may be able to signal the breaking of waves, as 
+well as the production of foam and spray.
+\cite{article:whitecaps}
 % \begin{tabular}{lS[table-format = 3]S[table-format = 3.2]}
 % \toprule
 %   \textbf{Bus} & \multicolumn{2}{c}{\textbf{Bus Load (MVA)}} \\
