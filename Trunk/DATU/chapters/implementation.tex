@@ -683,8 +683,10 @@ modified with an additional term. We may write the displacement vector field as 
 \begin{align}
 %\label{eq:dft_displacement}
  \mvec{D}(\mvec{x},t) &= \left[D_x(\mvec{x},t), D_y(\mvec{x},t)\right]\\
- D_x(\mvec{x},t) &= \sum_{\mvec{k}}d(k_x, k)~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
- D_y(\mvec{x},t) &= \sum_{\mvec{k}}d(k_y, k)~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+\label{eq:displacement_x} D_x(\mvec{x},t) &= \sum_{\mvec{k}}d(k_x, 
+k)~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+\label{eq:displacement_z} D_y(\mvec{x},t) &= \sum_{\mvec{k}}d(k_y, 
+k)~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
 %\label{eq:dft_displacement_correction}
  d(l, k) &= \begin{cases}
              0 &\text{if $N$ even, and $k = 0$ or $\abs{l} = 
@@ -696,17 +698,24 @@ where the term $d(l, k)$, in addition to make sure the resulting spectrum is
 hermitian, also avoids a division by zero at $k = 0$. 
 Figure~\ref{fig:displacements} shows an example instance of surface elevation 
 $\eta$ as well as its associated displacements in greyscale. As before, 
-brighter means larger values, darker means lower values. Because both spectra
-that represent displacement vectors $\mvec{D}$ are hermitian, we are again able 
-to apply Equation~\ref{eq:idft_combined} and obtain both vector components with
-just one inverse Fourier Transform.\\
+brighter means larger values, darker means lower values. 
+Because the spectra on the righthand side of Equations~\ref{eq:displacement_x} 
+and~\ref{eq:displacement_z} are hermitian, we are again able to apply 
+Equation~\ref{eq:idft_combined} and obtain both components of the displacement 
+vector field with just one inverse Fourier Transform.\\
 
-Given the displacement vectors $\mvec{D}$, as well as the original grid
-points $\mvec{x}$, according to Tessendorf we may compute the displaced
-gridpoints $\mvec{y}$ as follows:
+% The grid points of the spatial domain are two dimensional, $\mvec{x} = [x_x, 
+% x_y]$, and lie in the XZ-plane of our three dimensional space. Embedded into 
+% three dimensional space, they represent the ocean plane at rest, $\mvec{p} = 
+% [x_x, 0, x_y]$. We may add surface elevation $\eta$ $[x_x, \eta(\mvec{x},t), 
+% x_y]$
+
+Given the displacement vector $\mvec{D}$, as well as the original grid
+point $\mvec{x}$, according to Tessendorf we may compute the displaced
+gridpoint $\mvec{y}$ as follows:
 \begin{equation}
 \label{eq:displacement_gridpoints}
- \mvec{y} = \mvec{x} + \lambda \mvec{D}(\mvec{x}, t)
+ \mvec{y}(\mvec{x},t) = \mvec{x} + \lambda \mvec{D}(\mvec{x},t)
 \end{equation}
 where $\lambda$ is a user-controlled parameter to scale the importance of the
 displacement vector. The author of this work has found that the above formula
@@ -722,7 +731,7 @@ the waves' peaks are sharpened and the waves' valleys are broadened.
 \begin{tikzpicture}
 \begin{axis}[
 	width=\textwidth,
-	height=4cm,
+	height=5cm,
     legend style={draw=none},
     %legend/.append style={nodes={right}},
 	legend pos= south west,
@@ -731,7 +740,7 @@ the waves' peaks are sharpened and the waves' valleys are broadened.
 	ytick = {-0.5, 0, 0.5},
     xlabel={Spatial domain coordinate~$x$~($\text{m}$)},
     ylabel={Surface height~$\eta$~($\text{m}$)},
-	%enlarge y limits = 0.3,
+	enlarge y limits = 0.2,
 ]
 \addplot[
     color=red,
@@ -743,7 +752,7 @@ the waves' peaks are sharpened and the waves' valleys are broadened.
 		y expr=\thisrowno{2},
 	]
 	{figures/u_30_500km_x_dx_h.dat};
-\addlegendentry{$x$}
+\addlegendentry{$[x,\eta(x)]$}
 \addplot[
     color=blue,
     solid,
@@ -754,19 +763,17 @@ the waves' peaks are sharpened and the waves' valleys are broadened.
 		y expr=\thisrowno{2},
 	]
 	{figures/u_30_500km_x_dx_h.dat};
-\addlegendentry{$x + \lambda D_x$}
+\addlegendentry{$[x + \lambda D_x, \eta(x)]$}
 \end{axis}
 \end{tikzpicture}
-\caption{Red: the original grid points. Blue: the displaced grid points, note 
+\caption{Red: the original wave profile. Blue: the displaced wave profile, note 
 the steep tops and the flattened valleys.}
 \label{fig:grid_displaced}
 \end{figure}
 %
-See
-Figure~\ref{fig:grid_displaced} for a comparison between an example instance of 
-a displaced wave profile and its original wave profile.
+See Figure~\ref{fig:grid_displaced} for a comparison between an example instance 
+of a wave profile and its displaced version.
 %
-
 \subsubsection{Whitecaps}
 %
 \cite{course:simulatingocean}
