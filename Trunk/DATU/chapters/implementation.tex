@@ -710,16 +710,29 @@ vector field with just one inverse Fourier Transform.\\
 % [x_x, 0, x_y]$. We may add surface elevation $\eta$ $[x_x, \eta(\mvec{x},t), 
 % x_y]$
 
-Given the displacement vector $\mvec{D}$, as well as the original grid
-point $\mvec{x}$, according to Tessendorf we may compute the displaced
-gridpoint $\mvec{y}$ as follows:
+Given grid point $\mvec{x} = \left[ \begin{smallmatrix} x_x \\ x_y 
+\end{smallmatrix}\right]$, time $t$ and surface elevation $\eta(\mvec{x},t)$, 
+we may write the corresponding three dimensional, non-displaced vertex 
+coordinate as follows:
+\begin{equation}
+ \mvec{v}(\mvec{x},t) = \begin{bmatrix}x_x\\ \eta(\mvec{x},t)\\ x_y 
+\end{bmatrix} 
+\end{equation}
+With displacement vector $\mvec{D}(\mvec{x},t)$ at hand, according to 
+Tessendorf we may compute the three dimensional, displaced vertex coordinate as 
+follows:
 \begin{equation}
 \label{eq:displacement_gridpoints}
- \mvec{y}(\mvec{x},t) = \mvec{x} + \lambda \mvec{D}(\mvec{x},t)
+ \mvec{w}(\mvec{x},t) =
+ \begin{bmatrix}
+  x_x + u D_x(\mvec{x},t)\\ 
+  \eta(\mvec{x},t)\\
+  x_y + u D_y(\mvec{x},t)
+ \end{bmatrix}
 \end{equation}
-where $\lambda$ is a user-controlled parameter to scale the importance of the
+where $u$ is a user-controlled parameter to scale the importance of the
 displacement vector. The author of this work has found that the above formula
-is correct as long as $\lambda \leq 0$, otherwise the effect is the opposite of 
+is correct as long as $u \leq 0$, otherwise the effect is the opposite of 
 what we want to achieve. Looking at Equation~\ref{eq:displacement_gridpoints},
 one can see that it is not the wave heights that are altered, but instead the grid
 points on the XZ-plane are transformed based on the spatial structure of the
@@ -731,7 +744,7 @@ the waves' peaks are sharpened and the waves' valleys are broadened.
 \begin{tikzpicture}
 \begin{axis}[
 	width=\textwidth,
-	height=5cm,
+	height=4cm,
     legend style={draw=none},
     %legend/.append style={nodes={right}},
 	legend pos= south west,
@@ -740,7 +753,7 @@ the waves' peaks are sharpened and the waves' valleys are broadened.
 	ytick = {-0.5, 0, 0.5},
     xlabel={Spatial domain coordinate~$x$~($\text{m}$)},
     ylabel={Surface height~$\eta$~($\text{m}$)},
-	enlarge y limits = 0.2,
+	%enlarge y limits = 0.2,
 ]
 \addplot[
     color=red,
@@ -752,7 +765,7 @@ the waves' peaks are sharpened and the waves' valleys are broadened.
 		y expr=\thisrowno{2},
 	]
 	{figures/u_30_500km_x_dx_h.dat};
-\addlegendentry{$[x,\eta(x)]$}
+\addlegendentry{$x$}
 \addplot[
     color=blue,
     solid,
@@ -763,16 +776,16 @@ the waves' peaks are sharpened and the waves' valleys are broadened.
 		y expr=\thisrowno{2},
 	]
 	{figures/u_30_500km_x_dx_h.dat};
-\addlegendentry{$[x + \lambda D_x, \eta(x)]$}
+\addlegendentry{$x + u D_x(x)$}
 \end{axis}
 \end{tikzpicture}
 \caption{Red: the original wave profile. Blue: the displaced wave profile, note 
-the steep tops and the flattened valleys.}
+the steep tops and the flattened valleys ($u = -3$).}
 \label{fig:grid_displaced}
 \end{figure}
 %
-See Figure~\ref{fig:grid_displaced} for a comparison between an example instance 
-of a wave profile and its displaced version.
+Figure~\ref{fig:grid_displaced} shows a wave profile along one direction, as 
+well as its displaced version.
 %
 \subsubsection{Whitecaps}
 %
