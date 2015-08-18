@@ -776,7 +776,7 @@ the waves' peaks are sharpened and the waves' valleys are broadened.
 		y expr=\thisrowno{2},
 	]
 	{figures/u_30_500km_x_dx_h.dat};
-\addlegendentry{$x + u D_x(x)$}
+\addlegendentry{$x + u D_x(x,t)$}
 \end{axis}
 \end{tikzpicture}
 \caption{Red: the original wave profile. Blue: the displaced wave profile, note 
@@ -784,8 +784,9 @@ the steep tops and the flattened valleys ($u = -3$).}
 \label{fig:grid_displaced}
 \end{figure}
 %
-Figure~\ref{fig:grid_displaced} shows a wave profile along one direction, as 
-well as its displaced version.
+Figure~\ref{fig:grid_displaced} shows two profiles of the wave height along one 
+direction, where one profile uses displaced coordinates, while the other does 
+not.
 %
 \subsubsection{Whitecaps}
 %
