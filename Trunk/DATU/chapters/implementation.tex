@@ -866,7 +866,20 @@ this undesired side-effect in a rather simple way: reduce the magnitude of
 displacement scaling parameter $u$.
 On the other hand, Tessendorf suggests that we use said self-intersections to 
 our advantage, because they may be able to signal the breaking of waves, as 
-well as the production of foam and spray.
+well as the production of foam and spray. Hence, we need to be able to test
+for such self-intersections in an efficient manner. Tessendorf recommends to 
+compute the determinant of the~\emph{Jacobian matrix} of the transformation 
+from grid point $\mvec{x}$ to displaced grid point 
+$\mvec{x}+u\mvec{D}(\mvec{x},t)$. The Jacobian matrix is the matrix of all 
+first-order partial derivatives of a vector-valued function.
+\begin{equation}
+ \mvec{J}(\mvec{x},t) =
+ \begin{bmatrix}
+   1 + u\dpd{D_x(\mvec{x},t)}{x} & u\dpd{D_x(\mvec{x},t)}{y} \\
+   u\dpd{D_y(\mvec{x},t)}{x} & 1 + u\dpd{D_y(\mvec{x},t)}{y}
+ \end{bmatrix}
+\end{equation}
+
 \cite{article:whitecaps}
 % \begin{tabular}{lS[table-format = 3]S[table-format = 3.2]}
 % \toprule
