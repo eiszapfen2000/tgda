@@ -6,11 +6,11 @@ time = 1;
 geometry = [];
 geometry.geometryRes = 512;
 geometry.gradientRes = 512;
-geometry.lodAreas = [ 100 ];
+geometry.lodAreas = [ 50 ];
 
 settings = [];
-settings.generatorName = 'Unified';
-settings.wind = [ 100 0];
+settings.generatorName = 'donelan';
+settings.wind = [ 30 0];
 settings.fetch = 500000;
 
 lolz = ocean_init(geometry, settings);
@@ -20,9 +20,28 @@ lolz = ocean_transform(lolz);
 x = lolz.lods(1).x(256,:);
 h = lolz.lods(1).heights(256,:);
 dx = lolz.lods(1).dx(256,:);
+dx_x = lolz.lods(1).dx_x(256,:);
+dx_z = lolz.lods(1).dx_z(256,:);
+dz_x = lolz.lods(1).dz_x(256,:);
+dz_z = lolz.lods(1).dz_z(256,:);
 
-output = [x', dx', h'];
-csvwrite('u_30_500km_x_dx_h.dat', output);
+%output = [x', dx', h'];
+%csvwrite('u_30_500km_x_dx_h.dat', output);
+
+df = -1.25;
+jdet = ((1+df.*dx_x) .* (1+df.*dz_z)) - ((df.*dx_z) .* (df.*dz_x));
+
+output = [x', dx', h', dx_x', dx_z', dz_x', dz_z' ];
+csvwrite('d_25_500km_x_dx_h_dxx_dxz_dzx_dzz.dat', output);
+
+figure
+hold on
+plot(x,h);
+plot(x, zeros(1, size(x,2)), 'black');
+plot(x+df.*dx, jdet, 'green');
+plot(x+df.*dx, h, 'r');
+%axis equal
+hold off
 
 % nplots = 1;
 % lolz = ocean_init(geometry, settings);
