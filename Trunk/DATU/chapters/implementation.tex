@@ -870,15 +870,102 @@ well as the production of foam and spray. Hence, we need to be able to test
 for such self-intersections in an efficient manner. Tessendorf recommends to 
 compute the determinant of the~\emph{Jacobian matrix} of the transformation 
 from grid point $\mvec{x}$ to displaced grid point 
-$\mvec{x}+u\mvec{D}(\mvec{x},t)$. The Jacobian matrix is the matrix of all 
-first-order partial derivatives of a vector-valued function.
+$\mvec{x}+u\mvec{D}(\mvec{x},t)$. Based on the determinant we may decide if 
+self-intersection is taking place.
+
+First, we need the Jacobian matrix of the grid point transformation 
+$\mvec{y}(\mvec{x},t)=\mvec{x}+u\mvec{D}(\mvec{x},t)$. The Jacobian matrix is 
+the matrix of all first order partial derivatives of a vector valued function. 
+Because the grid point transformation maps from $\mathbb{R}^2$ to 
+$\mathbb{R}^2$, the Jacobian matrix is $2\times 2$ in size. Let $\mvec{J}$ be 
+the Jacobian matrix of function $\mvec{y}$, then we may write:
 \begin{equation}
  \mvec{J}(\mvec{x},t) =
+ \begin{bmatrix}
+ J_{xx} & J_{xy} \\
+ J_{yx} & J_{yy}
+ \end{bmatrix}
+ =
  \begin{bmatrix}
    1 + u\dpd{D_x(\mvec{x},t)}{x} & u\dpd{D_x(\mvec{x},t)}{y} \\
    u\dpd{D_y(\mvec{x},t)}{x} & 1 + u\dpd{D_y(\mvec{x},t)}{y}
  \end{bmatrix}
 \end{equation}
+Next, we compute the determinant of the Jacobian matrix:
+\begin{equation}
+ det(\mvec{J}(\mvec{x},t)) = J_{xx}J_{yy}-J_{yx}J_{xy}
+\end{equation}
+%
+%
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+	width=\textwidth,
+	%height=10cm,
+    legend style={draw=none},
+    %legend/.append style={nodes={right}},
+	legend pos= south west,
+	legend cell align=left,
+	%xtick = {-50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50},
+	%ytick = {-0.5, 0, 0.5},
+    xlabel={Spatial domain coordinate~$x$~($\text{m}$)},
+    ylabel={Surface height~$\eta$~($\text{m}$)},
+	xmin = 10,
+	xmax = 15,
+	%enlarge y limits = 0.2,
+]
+\addplot[
+    color=red,
+    solid,
+	]
+    table [
+		col sep=comma, 
+		x expr=\thisrowno{0},
+		y expr=\thisrowno{2},
+	]
+	{figures/d_25_500km_x_dx_h_dxx_dxz_dzx_dzz.dat};
+%\addlegendentry{$x$}
+\addplot[
+    color=ForestGreen,
+    solid,
+	]
+    table [
+		col sep=comma, 
+		x expr=\thisrowno{0} - 1.5*\thisrowno{1},
+		y expr=(1-1.5*\thisrowno{3})*(1-1.5*\thisrowno{6}) - 
+				((-1.5*\thisrowno{5}) * (-1.5*\thisrowno{4})),
+	]
+	{figures/d_25_500km_x_dx_h_dxx_dxz_dzx_dzz.dat};
+\addplot[
+    color=blue,
+    solid,
+	]
+    table [
+		col sep=comma, 
+		x expr=\thisrowno{0} - 1.5*\thisrowno{1},
+		y expr=\thisrowno{2},
+	]
+	{figures/d_25_500km_x_dx_h_dxx_dxz_dzx_dzz.dat};
+\addplot[
+    color=black,
+    solid,
+	]
+    table [
+		col sep=comma, 
+		x expr=\thisrowno{0},
+		y expr=0,
+	]
+	{figures/d_25_500km_x_dx_h_dxx_dxz_dzx_dzz.dat};
+%\addlegendentry{$x + u D_x(x,t)$}
+\end{axis}
+\end{tikzpicture}
+\caption{Red: the original wave profile. Blue: the displaced wave profile, note 
+the steep tops and the flattened valleys ($u = -3$).}
+\label{fig:grid_displaced_j}
+\end{figure}
+%
+%
 
 \cite{article:whitecaps}
 % \begin{tabular}{lS[table-format = 3]S[table-format = 3.2]}
