@@ -6,10 +6,10 @@ time = 1;
 geometry = [];
 geometry.geometryRes = 512;
 geometry.gradientRes = 512;
-geometry.lodAreas = [ 50 ];
+geometry.lodAreas = [ 100 ];
 
 settings = [];
-settings.generatorName = 'donelan';
+settings.generatorName = 'unified';
 settings.wind = [ 30 0];
 settings.fetch = 500000;
 
@@ -28,7 +28,7 @@ dz_z = lolz.lods(1).dz_z(256,:);
 %output = [x', dx', h'];
 %csvwrite('u_30_500km_x_dx_h.dat', output);
 
-df = -1.25;
+df = -7.5;
 jdet = ((1+df.*dx_x) .* (1+df.*dz_z)) - ((df.*dx_z) .* (df.*dz_x));
 
 output = [x', dx', h', dx_x', dx_z', dz_x', dz_z' ];
