@@ -876,7 +876,7 @@ self-intersection is taking place.
 First, we need the Jacobian matrix of the grid point transformation 
 $\mvec{y}(\mvec{x},t)=\mvec{x}+u\mvec{D}(\mvec{x},t)$. The Jacobian matrix is 
 the matrix of all first order partial derivatives of a vector valued function. 
-Because the grid point transformation maps from $\mathbb{R}^2$ to 
+As grid point transformation $\mvec{y}$ maps from $\mathbb{R}^2$ to 
 $\mathbb{R}^2$, the Jacobian matrix is $2\times 2$ in size. Let $\mvec{J}$ be 
 the Jacobian matrix of function $\mvec{y}$, then we may write:
 \begin{equation}
@@ -961,12 +961,20 @@ Next, we compute the determinant of the Jacobian matrix:
 %\addlegendentry{$x + u D_x(x,t)$}
 \end{axis}
 \end{tikzpicture}
-\caption{Red: the original wave profile. Blue: the displaced wave profile, note 
-the steep tops and the flattened valleys ($u = -3$).}
+\caption{Blue: the displaced wave profile ($u = -7.5$). Green: the Jacobian 
+determinant. Note, that surface self-intersections and negative Jacobian 
+determinants overlap to a satisfying degree.}
 \label{fig:grid_displaced_j}
 \end{figure}
 %
-%
+If the Jacobian determinant at $\mvec{x}$ is positive, then $\mvec{y}$ 
+preserves orientation near $\mvec{x}$. If it is negative, $\mvec{y}$ reverses 
+orientation. We are interested in the latter case, because wherever the 
+surface self-intersects, it actually folds back on itself via a loop, and a 
+loop requires a reversal of orientation. Figure~\ref{fig:grid_displaced_j} 
+depicts a displaced surface as well as the corresponding Jacobian determinant. 
+We conclude, that we are able to find surface self-intersections based on the 
+Jacobian determinant.
 
 \cite{article:whitecaps}
 % \begin{tabular}{lS[table-format = 3]S[table-format = 3.2]}
