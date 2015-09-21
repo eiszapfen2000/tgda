@@ -872,29 +872,6 @@ compute the determinant of the~\emph{Jacobian matrix} of the transformation
 from grid point $\mvec{x}$ to displaced grid point 
 $\mvec{x}+u\mvec{D}(\mvec{x},t)$. Based on the determinant we may decide if 
 self-intersection is taking place.
-
-First, we need the Jacobian matrix of the grid point transformation 
-$\mvec{y}(\mvec{x},t)=\mvec{x}+u\mvec{D}(\mvec{x},t)$. The Jacobian matrix is 
-the matrix of all first order partial derivatives of a vector valued function. 
-As grid point transformation $\mvec{y}$ maps from $\mathbb{R}^2$ to 
-$\mathbb{R}^2$, the Jacobian matrix is $2\times 2$ in size. Let $\mvec{J}$ be 
-the Jacobian matrix of function $\mvec{y}$, then we may write:
-\begin{equation}
- \mvec{J}(\mvec{x},t) =
- \begin{bmatrix}
- J_{xx} & J_{xy} \\
- J_{yx} & J_{yy}
- \end{bmatrix}
- =
- \begin{bmatrix}
-   1 + u\dpd{D_x(\mvec{x},t)}{x} & u\dpd{D_x(\mvec{x},t)}{y} \\
-   u\dpd{D_y(\mvec{x},t)}{x} & 1 + u\dpd{D_y(\mvec{x},t)}{y}
- \end{bmatrix}
-\end{equation}
-Next, we compute the determinant of the Jacobian matrix:
-\begin{equation}
- det(\mvec{J}(\mvec{x},t)) = J_{xx}J_{yy}-J_{yx}J_{xy}
-\end{equation}
 %
 %
 \begin{figure}
@@ -966,6 +943,30 @@ determinant. Note, that each instance of surface self-intersection is
 accompanied by negative Jacobian determinants.}
 \label{fig:grid_displaced_j}
 \end{figure}
+%
+First, we need the Jacobian matrix of the grid point transformation 
+$\mvec{y}(\mvec{x},t)=\mvec{x}+u\mvec{D}(\mvec{x},t)$. The Jacobian matrix is 
+the matrix of all first order partial derivatives of a vector valued function. 
+As grid point transformation $\mvec{y}$ maps from $\mathbb{R}^2$ to 
+$\mathbb{R}^2$, the Jacobian matrix is $2\times 2$ in size. Let $\mvec{J}$ be 
+the Jacobian matrix of function $\mvec{y}$, then we may write:
+%
+\begin{equation}
+ \mvec{J}(\mvec{x},t) =
+ \begin{bmatrix}
+ J_{xx} & J_{xy} \\
+ J_{yx} & J_{yy}
+ \end{bmatrix}
+ =
+ \begin{bmatrix}
+   1 + u\dpd{D_x(\mvec{x},t)}{x} & u\dpd{D_x(\mvec{x},t)}{y} \\
+   u\dpd{D_y(\mvec{x},t)}{x} & 1 + u\dpd{D_y(\mvec{x},t)}{y}
+ \end{bmatrix}
+\end{equation}
+Next, we compute the determinant of the Jacobian matrix:
+\begin{equation}
+ det(\mvec{J}(\mvec{x},t)) = J_{xx}J_{yy}-J_{yx}J_{xy}
+\end{equation}
 %
 If the Jacobian determinant at $\mvec{x}$ is positive, then $\mvec{y}$ 
 preserves orientation near $\mvec{x}$. If it is negative, $\mvec{y}$ reverses 
