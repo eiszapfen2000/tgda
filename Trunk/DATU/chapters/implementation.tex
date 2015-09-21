@@ -788,7 +788,7 @@ Figure~\ref{fig:grid_displaced} shows two profiles of the wave height along one
 direction, where one profile uses displaced coordinates, while the other does 
 not.
 %
-\subsubsection{Whitecaps}
+\subsubsection{Self-Intersections}
 %
 \begin{figure}
 \centering
@@ -962,8 +962,8 @@ Next, we compute the determinant of the Jacobian matrix:
 \end{axis}
 \end{tikzpicture}
 \caption{Blue: the displaced wave profile ($u = -7.5$). Green: the Jacobian 
-determinant. Note, that surface self-intersections and negative Jacobian 
-determinants overlap to a satisfying degree.}
+determinant. Note, that each instance of surface self-intersection is 
+accompanied by negative Jacobian determinants.}
 \label{fig:grid_displaced_j}
 \end{figure}
 %
@@ -972,9 +972,9 @@ preserves orientation near $\mvec{x}$. If it is negative, $\mvec{y}$ reverses
 orientation. We are interested in the latter case, because wherever the 
 surface self-intersects, it actually folds back on itself via a loop, and a 
 loop requires a reversal of orientation. Figure~\ref{fig:grid_displaced_j} 
-depicts a displaced surface as well as the corresponding Jacobian determinant. 
-We conclude, that we are able to find surface self-intersections based on the 
-Jacobian determinant.
+depicts a displaced surface, as well as the corresponding Jacobian 
+determinants. One can see that wherever the surface self-intersects, the 
+Jacobian determinant is negative.
 
 \cite{article:whitecaps}
 % \begin{tabular}{lS[table-format = 3]S[table-format = 3.2]}
