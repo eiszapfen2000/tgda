@@ -788,20 +788,28 @@ Figure~\ref{fig:grid_displaced} shows two profiles of the wave height along one
 direction, where one profile uses displaced coordinates, while the other does 
 not.
 %
-\subsubsection{Normals and Displacements}
+\subsubsection{Slopes and Displacements}
 %
 Based on Figure~\ref{fig:grid_displaced} it is easy to see that the application 
 of displacements does not only alter the underlying grid points, but as a 
-direct consequence the surface's slopes, too. Given surface elevation 
-$\eta(\mvec{x},t)$, displacement vector $\mvec{D}(\mvec{x},t) = 
+direct consequence the surface's slopes, too. Hence, we need to adjust our 
+computation of the slope vector to the new circumstances. Given surface 
+elevation $\eta(\mvec{x},t)$, displacement vector $\mvec{D}(\mvec{x},t) = 
 \left[D_x(\mvec{x},t), D_y(\mvec{x},t)\right]$, and grid point transformation 
 $\mvec{x} + u\mvec{D}(\mvec{x},t)$, then we obtain the two dimensional surface 
-slope  vector $\mvec{s}$ as follows:
+slope $\mvec{s}$ as follows:
 \begin{equation}
 \mvec{s}(\mvec{x},t) = \left[\frac{\dpd{\eta(\mvec{x},t)}{x}}{1 + u 
 \dpd{D_x(\mvec{x},t)}{x}}, \frac{\dpd{\eta(\mvec{x},t)}{y}}{1 + u 
 \dpd{D_y(\mvec{x},t)}{y}}\right]
 \end{equation}
+Now, in addition to surface height $\eta$, the first order partial derivatives 
+of $\eta$, and displacement vector $\mvec{D}$, we also need to compute one 
+partial derivative of $D_x$ as well as of $D_y$. As with the partial 
+derivatives mentioned beforehand, we may compute them by means of spectral 
+differentiation, see Equation~\ref{eq:dft_derivates_2d}. Morever, we are again 
+able to apply the optimisation from Equation~\ref{eq:idft_combined} which allows 
+us to transform two spectra like one.
 %
 \subsubsection{Self-Intersections}
 %
