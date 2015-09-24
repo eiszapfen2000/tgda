@@ -788,6 +788,21 @@ Figure~\ref{fig:grid_displaced} shows two profiles of the wave height along one
 direction, where one profile uses displaced coordinates, while the other does 
 not.
 %
+\subsubsection{Normals and Displacements}
+%
+Based on Figure~\ref{fig:grid_displaced} it is easy to see that the application 
+of displacements does not only alter the underlying grid points, but as a 
+direct consequence the surface's slopes, too. Given surface elevation 
+$\eta(\mvec{x},t)$, displacement vector $\mvec{D}(\mvec{x},t) = 
+\left[D_x(\mvec{x},t), D_y(\mvec{x},t)\right]$, and grid point transformation 
+$\mvec{x} + u\mvec{D}(\mvec{x},t)$, then we obtain the two dimensional surface 
+slope  vector $\mvec{s}$ as follows:
+\begin{equation}
+\mvec{s}(\mvec{x},t) = \left[\frac{\dpd{\eta(\mvec{x},t)}{x}}{1 + u 
+\dpd{D_x(\mvec{x},t)}{x}}, \frac{\dpd{\eta(\mvec{x},t)}{y}}{1 + u 
+\dpd{D_y(\mvec{x},t)}{y}}\right]
+\end{equation}
+%
 \subsubsection{Self-Intersections}
 %
 \begin{figure}
@@ -977,7 +992,6 @@ depicts a displaced surface, as well as the corresponding Jacobian
 determinants. One can see that wherever the surface self-intersects, the 
 Jacobian determinant is negative.
 
-% \cite{article:whitecaps}
 % \begin{tabular}{lS[table-format = 3]S[table-format = 3.2]}
 % \toprule
 %   \textbf{Bus} & \multicolumn{2}{c}{\textbf{Bus Load (MVA)}} \\
@@ -1004,3 +1018,8 @@ and gradients
 
 heights and displacement have same resolution, gradients and displacement 
 derivatives have same resolution
+
+\subsubsection{Ocean Lighting}
+\cite{article:oceanlighting}
+\subsubsection{Whitecaps}
+\cite{article:whitecaps}
