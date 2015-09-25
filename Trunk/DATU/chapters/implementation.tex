@@ -1021,15 +1021,23 @@ frequency space to obtain vertical and horizontal displacements produced by
 ocean waves. Because the sampling process is done by means of a Fourier 
 Transform, the resulting data may be seamlessy tiled on the ocean surface. 
 However, tiling a single perturbation pattern either leads to repetitive 
-artifacts if the tile's footprint in worldspace is small, or to lack of detail 
-if the tile's footprint in worldspace is large. We chose to tackle this 
+artifacts if the tile's footprint in world space is small, or to lack of detail 
+if the tile's footprint in world space is large. We chose to tackle this 
 issue similar to Bruneton et al.\cite{misc:oceanlightingfft} and Dupuy et 
 al.\cite{article:whitecaps}, which do compute not only one perturbation 
-pattern, but an entire set, where each pattern samples a different part of the 
-spectrum. Although we are not able to remove periodicity from the wave 
-field, this way we increase it to the least common multiple of the pattern 
-periods. Let $l \in \mathrm{N}^+$ represent the number of % In short, 
-$\mvec{x}_i,\mvec{k}_i$
+pattern, but a set, where each pattern samples a different part of the spectrum. 
+Although we are not able to remove periodicity from the wave field, this way we 
+increase it to the least common multiple of the pattern periods.
+
+At this point, one perturbation pattern consists of surface elevation $\eta$, 
+displacement vector $\mvec{D}$, and slope vector $\mvec{s}$. We know that 
+surface elevation $\eta$ and displacement vector $\mvec{D}$ are periodic, 
+therefore their first order partial derivatives are periodic, too. As such, it 
+is straightforward to extend our computations of displaced vertex coordinates 
+as well as slopes to incorporate not just one perturbation pattern, but a set 
+of patterns.
+ Let $l \in 
+\mathrm{N}^+$ represent the number of % In short, $\mvec{x}_i,\mvec{k}_i$
 
 different sets of $\mvec{k}$, how to choose resolution and size: by hand or 
 golden section
