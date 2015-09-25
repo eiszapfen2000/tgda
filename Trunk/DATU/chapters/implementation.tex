@@ -804,12 +804,12 @@ slope $\mvec{s}$ as follows:
 \dpd{D_y(\mvec{x},t)}{y}}\right]
 \end{equation}
 Now, in addition to surface height $\eta$, the first order partial derivatives 
-of $\eta$, and displacement vector $\mvec{D}$, we also need to compute one 
-partial derivative of $D_x$ as well as of $D_y$. As with the partial 
-derivatives mentioned beforehand, we may compute them by means of spectral 
-differentiation, see Equation~\ref{eq:dft_derivates_2d}. Morever, we are again 
-able to apply the optimisation from Equation~\ref{eq:idft_combined} which allows 
-us to transform two spectra like one.
+of $\eta$, and displacement vector $\mvec{D}$, we also need to compute a
+partial derivative of $D_x$ and $D_y$ each. Again, we may compute the latter 
+two by means of spectral differentiation, see 
+Equation~\ref{eq:dft_derivates_2d}. Morever, we are again able to apply the 
+optimisation from Equation~\ref{eq:idft_combined} which allows us to transform 
+the spectra of the two partial derivatives as one.
 %
 \subsubsection{Self-Intersections}
 %
@@ -1013,6 +1013,23 @@ Jacobian determinant is negative.
 % \end{tabular}
 
 \subsubsection{Level of Detail}
+
+The core of our ocean model are the spectra discussed in 
+Section~\ref{sec:1d_frequency_spectra} and 
+Section~\ref{sec:two_dimensional_frequency_spectra}. We sample the spectra in 
+frequency space to obtain vertical and horizontal displacements produced by 
+ocean waves. Because the sampling process is done by means of a Fourier 
+Transform, the resulting data may be seamlessy tiled on the ocean surface. 
+However, tiling a single perturbation pattern either leads to repetitive 
+artifacts if the tile's footprint in worldspace is small, or to lack of detail 
+if the tile's footprint in worldspace is large. We chose to tackle this 
+issue similar to Bruneton et al.\cite{misc:oceanlightingfft} and Dupuy et 
+al.\cite{article:whitecaps}, which do compute not only one perturbation 
+pattern, but an entire set, where each pattern samples a different part of the 
+spectrum. Although we are not able to remove periodicity from the wave 
+field, this way we increase it to the least common multiple of the pattern 
+periods. Let $l \in \mathrm{N}^+$ represent the number of % In short, 
+$\mvec{x}_i,\mvec{k}_i$
 
 different sets of $\mvec{k}$, how to choose resolution and size: by hand or 
 golden section
