@@ -730,7 +730,7 @@ follows:
   x_y + u D_y(\mvec{x},t)
  \end{bmatrix}
 \end{equation}
-where $u$ is a user-controlled parameter to scale the importance of the
+where $u\in\mathbb{R}$ is a user-controlled parameter to scale the importance of the
 displacement vector. The author of this work has found that the above formula
 is correct as long as $u \leq 0$, otherwise the effect is the opposite of 
 what we want to achieve. Looking at Equation~\ref{eq:displacement_gridpoints},
@@ -1019,7 +1019,7 @@ Section~\ref{sec:1d_frequency_spectra} and
 Section~\ref{sec:two_dimensional_frequency_spectra}. We sample the spectra in 
 frequency space to obtain vertical and horizontal displacements produced by 
 ocean waves. Because the sampling process is done by means of a Fourier 
-Transform, the resulting data may be seamlessy tiled on the ocean surface. 
+Transform, the resulting data can be seamlessy tiled on the ocean surface. 
 However, tiling a single perturbation pattern either leads to repetitive 
 artifacts if the tile's footprint in world space is small, or to lack of detail 
 if the tile's footprint in world space is large. We chose to tackle this 
@@ -1031,14 +1031,20 @@ from the wave field, this way we increase it to the least common multiple of
 the pattern periods.
 
 At this point, one perturbation pattern consists of surface elevation $\eta$, 
-displacement vector $\mvec{D}$, and slope vector $\mvec{s}$. We know that 
-surface elevation $\eta$ and displacement vector $\mvec{D}$ are periodic, 
-and their first order partial derivatives are periodic, too. As such, it is 
-straightforward to extend our computations of displaced vertex coordinates as 
-well as slopes to incorporate not just one perturbation pattern, but a set of 
-patterns.
- Let $l \in 
-\mathrm{N}^+$ represent the number of % In short, $\mvec{x}_i,\mvec{k}_i$
+displacement vector $\mvec{D}$, and the slope of $\eta$. Because we compute the
+surface displacements as a sum of waves, it is straightforward to extend our
+computations to incorporate not just one perturbation pattern, but a set of 
+patterns. Let $l \in \mathbb{N}^+$ represent the number of different patterns,
+then we may compute the combined surface elevation as follows:
+\begin{equation}
+z(\mvec{x},t) = \sum\limits_{i=0}^{l-1}\eta_i(\mvec{x},t)
+\end{equation}
+Similar to the above, we may write the grid point transformation which incorporates
+a set of patterns as follows:
+\begin{equation}
+\mvec{y}(\mvec{x},t) = \mvec{x}+\sum\limits_{i=0}^{l-1}u_i\mvec{D}_i(\mvec{x},t) 
+\end{equation}
+
 
 different sets of $\mvec{k}$, how to choose resolution and size: by hand or 
 golden section
