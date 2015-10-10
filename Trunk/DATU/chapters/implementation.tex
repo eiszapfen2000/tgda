@@ -1037,14 +1037,26 @@ computations to incorporate not just one perturbation pattern, but a set of
 patterns. Let $l \in \mathbb{N}^+$ represent the number of different patterns,
 then we may compute the combined surface elevation as follows:
 \begin{equation}
-z(\mvec{x},t) = \sum\limits_{i=0}^{l-1}\eta_i(\mvec{x},t)
+ z(\mvec{x},t) = \sum\limits_{i=0}^{l-1}\eta_i(\mvec{x},t)
 \end{equation}
-Similar to the above, we may write the grid point transformation which incorporates
-a set of patterns as follows:
+In lockstep with the above we compute the slope of the combined surface elevation:
+\begin{equation}
+ \left[\dpd{z(\mvec{x},t)}{x},\dpd{z(\mvec{x},t)}{y}\right] = \sum\limits_{i=0}^{l-1}\left[\dpd{\eta_i(\mvec{x},t)}{x}, \dpd{\eta_i(\mvec{x},t)}{y}\right]
+\end{equation}
+Furthermore, we may write the grid point displacement, which incorporates
+a set of patterns, as follows:
 \begin{equation}
 \mvec{y}(\mvec{x},t) = \mvec{x}+\sum\limits_{i=0}^{l-1}u_i\mvec{D}_i(\mvec{x},t) 
 \end{equation}
-
+Given the new grid point transformation $\mvec{y}$, we are in need of the corresponding
+Jacobian matrix to be able to locate surface self-intersections. We may write:
+\begin{equation}
+ \mvec{J}(\mvec{x},t) =
+ \begin{bmatrix}
+   1 + \sum_i u_i\dpd{D_{xi}(\mvec{x},t)}{x} & \sum_i u_i\dpd{D_{xi}(\mvec{x},t)}{y} \\
+   \sum_i u_i\dpd{D_{yi}(\mvec{x},t)}{x} & 1 + \sum_i u_i\dpd{D_{yi}(\mvec{x},t)}{y}
+ \end{bmatrix}
+\end{equation}
 
 different sets of $\mvec{k}$, how to choose resolution and size: by hand or 
 golden section
