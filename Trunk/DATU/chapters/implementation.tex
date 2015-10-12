@@ -1031,15 +1031,21 @@ from the wave field, this way we increase it to the least common multiple of
 the pattern periods.
 
 It is important to keep in mind that resolution and size define not only the
-spatial domain $\mvec{x}$, but the wavevector domain $\mvec{k}$, too. As we would
-like to sample the spectrum at as much wavenumbers as possible, we need to
+spatial domain $\mvec{x}$, but the wavevector domain $\mvec{k}$, too. Since we
+would like to sample the spectrum at as much wavenumbers as possible, we need to
 choose resolution and size in a way to minimize overlap in the spectral domain
 of the different patterns. Moreover, care has to be taken not to sample the same
 part of the spectrum multiple times. Not doing so, would imply including the
 same wavenumber(s) multiple times in the sum of waves. Thus, if the spectrum
 of one pattern already covers a specific wavenumber range, a second spectrum
 covering parts or the entirety of that same range, has to be zeroed in the
-region of overlap.
+region of overlap. As for the different sizes of the spatial domains, we need
+them not to be integral multiples of each other, otherwise the surface may seem
+repetitive at a smaller scale than expected. Instead, we employ multiples based
+on the golden section $\varphi = \frac{1 + \sqrt{5}}{2}$: start with the largest
+desired pattern size, reduce each following size by a factor $\varphi^{-1}$. If
+this does not give satisfying results, the user may always choose all sizes by
+hand.
 
 At this point, one perturbation pattern consists of surface elevation $\eta$, 
 displacement vector $\mvec{D}$, and the first order partial derivatives of
