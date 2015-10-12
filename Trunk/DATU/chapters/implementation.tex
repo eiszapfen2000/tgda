@@ -796,8 +796,8 @@ direct consequence the surface's slopes, too. Hence, we need to adjust our
 computation of the slope vector to the new circumstances. Given surface 
 elevation $\eta(\mvec{x},t)$, displacement vector $\mvec{D}(\mvec{x},t) = 
 \left[D_x(\mvec{x},t), D_y(\mvec{x},t)\right]$, and grid point transformation 
-$\mvec{x} + u\mvec{D}(\mvec{x},t)$, then we obtain the two dimensional surface 
-slope $\mvec{s}$ as follows:
+$\mvec{x} + u\mvec{D}(\mvec{x},t)$, we obtain the two dimensional surface slope
+$\mvec{s}$ as follows:
 \begin{equation}
 \mvec{s}(\mvec{x},t) = \left[\frac{\dpd{\eta(\mvec{x},t)}{x}}{1 + u 
 \dpd{D_x(\mvec{x},t)}{x}}, \frac{\dpd{\eta(\mvec{x},t)}{y}}{1 + u 
@@ -1030,31 +1030,44 @@ different part of the spectrum. Although we are not able to remove periodicity
 from the wave field, this way we increase it to the least common multiple of 
 the pattern periods.
 
+It is important to keep in mind that resolution and size define not only the
+spatial domain $\mvec{x}$, but the wavevector domain $\mvec{k}$, too. As we would
+like to sample the spectrum at as much wavenumbers as possible, we need to
+choose resolution and size in a way to minimize overlap in the spectral domain
+of the different patterns. Moreover, care has to be taken not to sample the same
+part of the spectrum multiple times. Not doing so, would imply including the
+same wavenumber(s) multiple times in the sum of waves. Therefore, if one pattern
+already covers a specific wavenumber range, a second pattern covering parts or
+the entirety of that same range, has to be zeroed in the region of overlap.
+
 At this point, one perturbation pattern consists of surface elevation $\eta$, 
-displacement vector $\mvec{D}$, and the slope of $\eta$. Because we compute the
-surface displacements as a sum of waves, it is straightforward to extend our
-computations to incorporate not just one perturbation pattern, but a set of 
-patterns. Let $l \in \mathbb{N}^+$ represent the number of different patterns,
-then we may compute the combined surface elevation as follows:
+displacement vector $\mvec{D}$, and the first order partial derivatives of
+$\eta$, $D_x$ and $D_y$. Because we compute the surface displacements as a sum
+of waves, it is straightforward to extend our computations to incorporate not
+just one perturbation pattern, but a set of patterns. Let
+$l \in \mathbb{N}^+$ represent the number of different patterns, then we may
+compute the combined surface elevation as follows:
 \begin{equation}
  z(\mvec{x},t) = \sum\limits_{i=0}^{l-1}\eta_i(\mvec{x},t)
 \end{equation}
-In lockstep with the above we compute the slope of the combined surface elevation:
-\begin{equation}
- \left[\dpd{z(\mvec{x},t)}{x},\dpd{z(\mvec{x},t)}{y}\right] = \sum\limits_{i=0}^{l-1}\left[\dpd{\eta_i(\mvec{x},t)}{x}, \dpd{\eta_i(\mvec{x},t)}{y}\right]
-\end{equation}
-Furthermore, we may write the grid point displacement, which incorporates
-a set of patterns, as follows:
+Furthermore, we may write the extended grid point transformation as follows:
 \begin{equation}
 \mvec{y}(\mvec{x},t) = \mvec{x}+\sum\limits_{i=0}^{l-1}u_i\mvec{D}_i(\mvec{x},t) 
+\end{equation}
+In lockstep with the above we compute the slope of the combined surface elevation:
+\begin{equation}
+\mvec{s}(\mvec{x},t) = \left[\frac{\sum\limits_i \dpd{\eta_i(\mvec{x},t)}{x}}{1 
++ \sum\limits_i u_i \dpd{D_{xi}(\mvec{x},t)}{x}}, \frac{\sum\limits_i 
+\dpd{\eta_i(\mvec{x},t)}{y}}{1 + \sum\limits_i 
+u_i\dpd{D_{yi}(\mvec{x},t)}{y}}\right]
 \end{equation}
 Given the new grid point transformation $\mvec{y}$, we are in need of the corresponding
 Jacobian matrix to be able to locate surface self-intersections. We may write:
 \begin{equation}
  \mvec{J}(\mvec{x},t) =
  \begin{bmatrix}
-   1 + \sum_i u_i\dpd{D_{xi}(\mvec{x},t)}{x} & \sum_i u_i\dpd{D_{xi}(\mvec{x},t)}{y} \\
-   \sum_i u_i\dpd{D_{yi}(\mvec{x},t)}{x} & 1 + \sum_i u_i\dpd{D_{yi}(\mvec{x},t)}{y}
+   1 + \sum\limits_i u_i\dpd{D_{xi}(\mvec{x},t)}{x} & \sum\limits_i u_i\dpd{D_{xi}(\mvec{x},t)}{y} \\
+   \sum\limits_i u_i\dpd{D_{yi}(\mvec{x},t)}{x} & 1 + \sum\limits_i u_i\dpd{D_{yi}(\mvec{x},t)}{y}
  \end{bmatrix}
 \end{equation}
 
