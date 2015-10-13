@@ -1032,7 +1032,7 @@ the pattern periods.
 
 It is important to keep in mind that resolution and size define not only the
 spatial domain $\mvec{x}$, but the wavevector domain $\mvec{k}$, too. Since we
-would like to sample the spectrum at as much wavenumbers as possible, we need to
+would like to sample the spectrum with as many wavenumbers as possible, we need to
 choose resolution and size in a way to minimize overlap in the spectral domain
 of the different patterns. Moreover, care has to be taken not to sample the same
 part of the spectrum multiple times. Not doing so, would imply including the
@@ -1046,8 +1046,8 @@ for the different sizes not to be integral multiples of each other, otherwise
 the surface may seem repetitive at a smaller scale than expected. Instead, we
 employ multiples based on the golden section $\varphi = \frac{1 + \sqrt{5}}{2}$.
 The user sets the largest desired pattern size, each following size is reduced
-by the factor $\varphi^{-1}$. If the results are not satisfying, the user may
-choose all sizes by hand.\\
+by the factor $\varphi^{-1}$. If the results do not seem satisfying, it is up to
+the user to choose all sizes by hand.\\
 
 
 At this point, one perturbation pattern consists of surface elevation $\eta$, 
