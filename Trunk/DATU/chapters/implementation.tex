@@ -205,7 +205,7 @@ for a specific set of parameters such as area, resolution, wind and fetch. Thus,
 only the exponential responsible for the animation has to be computed for all
 frames.
 %
-\subsubsection{Zero Frequency}
+\subsection{Zero Frequency}
 %
 \newcommand{\ccellnum}[2]{\cellcolor{#1}\num{#2}}
 \newcommand{\mcleft}[2]{\multicolumn{1}{!{\color{#1}\vline}S}{#2}}
@@ -327,7 +327,7 @@ where the zero frequency is at the center to a layout where the zero
 frequency is at the upper left is accomplished by a swap between
 diagonally opposite quadrants.
 
-\subsubsection{Symmetry}
+\subsection{Symmetry}
 %
 \colorlet{BorderColor}{gray!10}
 \colorlet{CenterColor}{white}
@@ -501,7 +501,7 @@ where $\mathrm{IFT}$ is shorthand for the standard inverse Fourier Transform. In
 two complex-valued hermitian spectra to obtain two real-valued results with just one transformation.
 We will make heavy use of this kind of optimisation later on.\\
 
-\subsubsection{Complex conjugate indices}
+\subsection{Complex conjugate indices}
 
 Let us view the hermitian spectrum $h_0$ as a two dimensional array with size $N \times N$.
 Each element of $h_0$ is identified by a pair of indices $(i,j)$, with $0\leq i,j <N$. Then, for
@@ -515,7 +515,7 @@ We may rewrite Equation~\ref{eq:h0_k_complex_conjugate} in terms of indices:
  h_0(i,j) = h_0(m,n)^*
 \end{equation}
 
-\subsubsection{Derivatives}
+\subsection{Derivatives}
 At this point we are able to compute surface elevation by application of the
 inverse Discrete Fourier Transform on a spectrum we generate. For lighting
 purposes we also need to find the surface's slope vectors to be able to compute
@@ -630,7 +630,7 @@ are hermitian. Therefore we are able to apply the optimisation from
 Equation~\ref{eq:idft_combined} which allows us to combine both spectra into one,
 obtaining both components of the surface slope vector with just one inverse Fourier transform.
 %
-\subsubsection{Normals}
+\subsection{Normals}
 %
 In this work we employ a right-handed Carthesian coordinate system where the positive
 Y-axis points up. The two dimensional surface slope vector $\mvec{s}$ lies in the
@@ -642,7 +642,7 @@ length surface normal vector $\mvec{n}$ as follows:
 where $s_x$ and $s_y$ denote the X- and Y-component of slope vector $\mvec{s}$ 
 respectively.
 %
-\subsubsection{Displacements}
+\subsection{Displacements}
 \label{sec:displacements}
 %
 \begin{figure}
@@ -788,30 +788,31 @@ Figure~\ref{fig:grid_displaced} shows two profiles of the wave height along one
 direction, where one profile uses displaced coordinates, while the other does 
 not.
 %
-\subsubsection{Slopes and Displacements}
+\subsection{Slopes and Displacements}
 %
 Based on Figure~\ref{fig:grid_displaced} it is easy to see that the application 
 of displacements does not only alter the underlying grid points, but as a 
 direct consequence the surface's slopes, too. Hence, we need to adjust our 
 computation of the slope vector to the new circumstances. Given surface 
-elevation $\eta(\mvec{x},t)$, displacement vector $\mvec{D}(\mvec{x},t) = 
-\left[D_x(\mvec{x},t), D_y(\mvec{x},t)\right]$, and grid point transformation 
-$\mvec{x} + u\mvec{D}(\mvec{x},t)$, we obtain the two dimensional surface slope
+elevation $\eta(\mvec{x},t)$, displacement vector $\mvec{D}(\mvec{x},t)$,
+and grid point transformation  $\mvec{x} + u\mvec{D}(\mvec{x},t)$, we obtain the
+two dimensional surface slope
 $\mvec{s}$ as follows:
 \begin{equation}
 \mvec{s}(\mvec{x},t) = \left[\frac{\dpd{\eta(\mvec{x},t)}{x}}{1 + u 
 \dpd{D_x(\mvec{x},t)}{x}}, \frac{\dpd{\eta(\mvec{x},t)}{y}}{1 + u 
 \dpd{D_y(\mvec{x},t)}{y}}\right]
 \end{equation}
-Now, in addition to surface height $\eta$, the first order partial derivatives 
-of $\eta$, and displacement vector $\mvec{D}$, we also need to compute a
-partial derivative of $D_x$ and $D_y$ each. Again, we may compute the latter 
-two by means of spectral differentiation, see 
-Equation~\ref{eq:dft_derivates_2d}. Morever, we are again able to apply the 
-optimisation from Equation~\ref{eq:idft_combined} which allows us to transform 
-the spectra of the two partial derivatives as one.
+where $u$ is the displacement scale parameter, and $D_x$ and $D_y$ denote the X-
+and Y-component of displacement vector $\mvec{D}$ respectively. Now, in addition
+to surface height $\eta$, the first order partial derivatives of $\eta$, and
+displacement vector $\mvec{D}$, we also need to compute a partial derivative of
+$D_x$ and $D_y$ each. Again, we may compute the latter two by means of spectral
+differentiation, see Equation~\ref{eq:dft_derivates_2d}. Morever, we are again
+able to apply the optimisation from Equation~\ref{eq:idft_combined} which allows
+us to transform the spectra of the two partial derivatives as one.
 %
-\subsubsection{Self-Intersections}
+\subsection{Self-Intersections}
 %
 \begin{figure}
 \centering
@@ -986,6 +987,8 @@ the Jacobian matrix of transformation $\mvec{y}$, then we may write:
    u\dpd{D_y(\mvec{x},t)}{x} & 1 + u\dpd{D_y(\mvec{x},t)}{y}
  \end{bmatrix}
 \end{equation}
+where $u$ is the displacement scale parameter, and $D_x$ and $D_y$ denote the X-
+and Y-component of displacement vector $\mvec{D}$ respectively.
 Next, we compute the determinant of the Jacobian matrix:
 \begin{equation}
  det(\mvec{J}(\mvec{x},t)) = J_{xx}J_{yy}-J_{yx}J_{xy}
@@ -1012,7 +1015,7 @@ Jacobian determinant is negative.
 %   \bottomrule
 % \end{tabular}
 
-\subsubsection{Level of Detail}
+\section{Level of Detail}
 
 The core of our ocean model are the spectra discussed in 
 Section~\ref{sec:1d_frequency_spectra} and 
@@ -1027,36 +1030,17 @@ issue similar to Bruneton et al.\cite{misc:oceanlightingfft} and Dupuy et
 al.\cite{article:whitecaps}, which do compute not only one perturbation 
 pattern, but a set of perturbation patterns, where each pattern samples a 
 different part of the spectrum. Although we are not able to remove periodicity 
-from the wave field, this way we increase it to the least common multiple of 
-the pattern periods.
+from the wave field, we may increase it to the least common multiple of the
+pattern periods.
 
-It is important to keep in mind that resolution and size define not only the
-spatial domain $\mvec{x}$, but the wavevector domain $\mvec{k}$, too. Since we
-would like to sample the spectrum with as many wavenumbers as possible, we need to
-choose resolution and size in a way to minimize overlap in the spectral domain
-of the different patterns. Moreover, care has to be taken not to sample the same
-part of the spectrum multiple times. Not doing so, would imply including the
-same wavenumber(s) multiple times in the sum of waves. Thus, if the spectrum
-of one pattern already covers a specific wavenumber range, a second spectrum
-covering parts or the entirety of that same range, has to be zeroed in the
-region of overlap. As for the different sizes of the spatial domains, it is
-clear that we need at least a large one to avoid repetitive artifacts as much as
-possible, and a small one for closeup detail. In addition we have to look out
-for the different sizes not to be integral multiples of each other, otherwise
-the surface may seem repetitive at a smaller scale than expected. Instead, we
-employ multiples based on the golden section $\varphi = \frac{1 + \sqrt{5}}{2}$.
-The user sets the largest desired pattern size, each following size is reduced
-by the factor $\varphi^{-1}$. If the results do not seem satisfying, it is up to
-the user to choose all sizes by hand.\\
-
-
-At this point, one perturbation pattern consists of surface elevation $\eta$, 
-displacement vector $\mvec{D}$, and the first order partial derivatives of
-$\eta$, $D_x$ and $D_y$. Because we compute the surface displacements as a sum
-of waves, it is straightforward to extend our computations to incorporate not
-just one perturbation pattern, but a set of patterns. Let
-$l \in \mathbb{N}^+$ represent the number of different patterns, then we may
-compute the combined surface elevation as follows:
+Before we delve into details, we may adapt our equations to the new
+circumstances. At this point, one perturbation pattern consists of surface
+elevation $\eta$, displacement vector $\mvec{D}$, and the first order partial
+derivatives of $\eta$, $D_x$ and $D_y$. Because we compute the surface
+displacements as a sum of waves, it is straightforward to extend our
+computations to incorporate not just one perturbation pattern, but a set of
+patterns. Let $l \in \mathbb{N}^+$ represent the number of different patterns,
+then we may compute the combined surface elevation as follows:
 \begin{equation}
  z(\mvec{x},t) = \sum\limits_{i=0}^{l-1}\eta_i(\mvec{x},t)
 \end{equation}
@@ -1080,6 +1064,30 @@ Jacobian matrix to be able to locate surface self-intersections. We may write:
    \sum\limits_i u_i\dpd{D_{yi}(\mvec{x},t)}{x} & 1 + \sum\limits_i u_i\dpd{D_{yi}(\mvec{x},t)}{y}
  \end{bmatrix}
 \end{equation}
+%
+\subsection{Sampling}
+%
+It is important to keep in mind that resolution and size define not only the
+spatial domain $\mvec{x}$, but the wavevector domain $\mvec{k}$, too. Since we
+would like to sample the spectrum at as many wavenumbers as possible, we need to
+choose resolution and size in a way to minimize overlap in the spectral domain
+of the different patterns. Moreover, care has to be taken not to sample the same
+part of the spectrum multiple times. Not doing so, would imply including the
+same wavenumber(s) multiple times in the sum of waves. Thus, if the spectrum
+of one pattern already covers a specific wavenumber range, a second spectrum
+covering parts or the entirety of that same range, has to be zeroed in the
+region of overlap. As for the different sizes of the spatial domains, it is
+clear that we need at least a large one to avoid repetitive artifacts as much as
+possible, and a small one for closeup detail. In addition we have to look out
+for the different sizes not to be integral multiples of each other, otherwise
+the surface may seem repetitive at a smaller scale than expected. Instead, we
+employ multiples based on the golden section $\varphi = \frac{1 + \sqrt{5}}{2}$.
+The user sets the largest desired pattern size, each following size is reduced
+by the factor $\varphi^{-1}$. If the results do not seem satisfying, it is up to
+the user to choose all sizes by hand.\\
+
+
+
 
 different sets of $\mvec{k}$, how to choose resolution and size: by hand or 
 golden section
