@@ -1031,10 +1031,16 @@ al.\cite{article:whitecaps}, which do compute not only one perturbation
 pattern, but a set of perturbation patterns, where each pattern samples a 
 different part of the spectrum. Although we are not able to remove periodicity 
 from the wave field, we may increase it to the least common multiple of the
-pattern periods.
+pattern periods. In practice, four different perturbation patterns suffice to
+obtain satisfactory results.
 
-Before we delve into details, we may adapt our equations to the new
-circumstances. At this point, one perturbation pattern consists of surface
+In the remainder of this section we upgrade our equations to handle more than
+one perturbation pattern, we explain how to parametrize the different pattern
+periods to be able to sample as much of the spectrum as possible, and we discuss
+the multi-resolution approach we took to reduce the computational load of pattern
+data synthesis.
+\subsection{Equations}
+At this point, one perturbation pattern consists of surface
 elevation $\eta$, displacement vector $\mvec{D}$, and the first order partial
 derivatives of $\eta$, $D_x$ and $D_y$. Because we compute the surface
 displacements as a sum of waves, it is straightforward to extend our
@@ -1044,21 +1050,26 @@ then we may compute the combined surface elevation as follows:
 \begin{equation}
  z(\mvec{x},t) = \sum\limits_{i=0}^{l-1}\eta_i(\mvec{x},t)
 \end{equation}
-Furthermore, we may write the extended grid point transformation as follows:
+Furthermore, we may extend our grid point transformation to the following:
 \begin{equation}
 \mvec{y}(\mvec{x},t) = \mvec{x}+\sum\limits_{i=0}^{l-1}u_i\mvec{D}_i(\mvec{x},t) 
 \end{equation}
 In lockstep with the above we compute the slope of the combined surface elevation:
 \begin{equation}
-\mvec{s}(\mvec{x},t) = \left[\frac{\sum\limits_i \dpd{\eta_i(\mvec{x},t)}{x}}{1 
+\mvec{s}(\mvec{x},t) = \left[\dpd{z(\mvec{x},t)}{x},\dpd{z(\mvec{x},t)}{y}\right] = \left[\frac{\sum\limits_i \dpd{\eta_i(\mvec{x},t)}{x}}{1 
 + \sum\limits_i u_i \dpd{D_{xi}(\mvec{x},t)}{x}}, \frac{\sum\limits_i 
 \dpd{\eta_i(\mvec{x},t)}{y}}{1 + \sum\limits_i 
 u_i\dpd{D_{yi}(\mvec{x},t)}{y}}\right]
 \end{equation}
-Given the new grid point transformation $\mvec{y}$, we are in need of the corresponding
+Given the new grid point transformation, we are in need of the corresponding
 Jacobian matrix to be able to locate surface self-intersections. We may write:
 \begin{equation}
  \mvec{J}(\mvec{x},t) =
+ \begin{bmatrix}
+ J_{xx} & J_{xy} \\
+ J_{yx} & J_{yy}
+ \end{bmatrix}
+ =
  \begin{bmatrix}
    1 + \sum\limits_i u_i\dpd{D_{xi}(\mvec{x},t)}{x} & \sum\limits_i u_i\dpd{D_{xi}(\mvec{x},t)}{y} \\
    \sum\limits_i u_i\dpd{D_{yi}(\mvec{x},t)}{x} & 1 + \sum\limits_i u_i\dpd{D_{yi}(\mvec{x},t)}{y}
