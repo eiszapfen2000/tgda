@@ -1050,7 +1050,8 @@ then we may compute the combined surface elevation as follows:
 \begin{equation}
  z(\mvec{x},t) = \sum\limits_{i=0}^{l-1}\eta_i(\mvec{x},t)
 \end{equation}
-Furthermore, we may extend our grid point transformation to the following:
+Furthermore, we may extend the horizontal grid point transformation to the
+following:
 \begin{equation}
 \mvec{y}(\mvec{x},t) = \mvec{x}+\sum\limits_{i=0}^{l-1}u_i\mvec{D}_i(\mvec{x},t) 
 \end{equation}
@@ -1076,6 +1077,8 @@ Jacobian matrix to be able to locate surface self-intersections. We may write:
  \end{bmatrix}
 \end{equation}
 %
+One can see that in case the number of patterns equals one, the new equations
+simply fall back to the original ones.
 \subsection{Sampling}
 %
 It is important to keep in mind that resolution and size define not only the
@@ -1104,7 +1107,21 @@ different sets of $\mvec{k}$, how to choose resolution and size: by hand or
 golden section
 
 
-compute $h_0(\mvec{k})$ for maximum resolution
+\subsection{Resolutions}
+Low resolution geometry, augmented with additional data for detailed lighting.
+Vertical and horizontal surface displacement have same resolution, all partial
+derivatives have the same resolution. Across all patterns.
+Compute $h_0(\mvec{k})$ for the larger resolution, automatically encapsulates
+all low res data. That is because same $\Delta k$ for same underlying pattern
+size. Zero frequency at center, low frequency data for low res near center,
+high frequency data for high res outwards. For low res spectrum use only data
+near center, for high res spectrum use all data. We can generate high res slopes
+for low res geometry. And high res displacement derivates for low res
+displacement.
+
+Because we use low res data for height and displacement, we save a lot of
+computation time. The time saves is proportional to the difference in
+resolution.
 
 
 assemble $h_0(\mvec{k},t)$ on demand, with separate resolutions for geometry 
