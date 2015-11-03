@@ -1081,6 +1081,25 @@ One can see that in case the number of patterns equals one, the new equations
 simply fall back to the original ones.
 \subsection{Sampling}
 %
+For us to generate a believable as well as visually pleasing ocean surface, we
+are required to include as many different wavenumbers as possible into our sum
+of waves. If we generate one pattern only, based on size and resolution, we
+either sparsely sample inside a major range of wavenumbers, or we densely sample
+a small range of wavenumbers. The former results in a poor reconstruction of a
+large part of the spectrum, the latter in a better reconstruction of a smaller
+part of the spectrum, but missing other relevant parts of the spectrum.
+
+Interlude: The typical profile of a one dimensional wavenumber spectrum suggests
+that it would be beneficial to employ an adaptive sampling scheme which allows
+for tight sampling especially near the peak wavenumber, and sparse sampling in
+the high wavenumbers, see NEED CITATION. Because we employ a discrete Fourier
+Transform to compute the sum of waves, we are subject to its constraints. One of
+those constraints is to be seen in the definition of the wavevector domain
+$\mvec{k}$: the spacing between subsequent coordinates is constant. Hence, we
+are not allowed to employ a sampling scheme where $\Delta k$ changes dependent on
+the current position on the wavenumber profile.
+
+%
 It is important to keep in mind that resolution and size define not only the
 spatial domain $\mvec{x}$, but the wavevector domain $\mvec{k}$, too. Since we
 would like to sample the spectrum at as many wavenumbers as possible, we need to
