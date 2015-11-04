@@ -1081,23 +1081,25 @@ One can see that in case the number of patterns equals one, the new equations
 simply fall back to the original ones.
 \subsection{Sampling}
 %
-For us to generate a believable as well as visually pleasing ocean surface, we
+For us to generate a believable, as well as visually pleasing ocean surface, we
 are required to include as many different wavenumbers as possible into our sum
-of waves. If we generate one pattern only, based on size and resolution, we
-either sparsely sample inside a major range of wavenumbers, or we densely sample
-a small range of wavenumbers. The former results in a poor reconstruction of a
+of waves. If we generate only one pattern, based on size and resolution, we
+either sparsely sample inside a large wavenumber range, or we densely sample
+inside a small wavenumber range. The former results in a poor reconstruction of a
 large part of the spectrum, the latter in a better reconstruction of a smaller
 part of the spectrum, but missing other relevant parts of the spectrum.
 
 Interlude: The typical profile of a one dimensional wavenumber spectrum suggests
 that it would be beneficial to employ an adaptive sampling scheme which allows
 for tight sampling especially near the peak wavenumber, and sparse sampling in
-the high wavenumbers, see NEED CITATION. Because we employ a discrete Fourier
+the high wavenumbers, see {Fr{\'e}chot}~\cite{article:frechot2007}. Because we employ a discrete Fourier
 Transform to compute the sum of waves, we are subject to its constraints. One of
 those constraints is to be seen in the definition of the wavevector domain
-$\mvec{k}$: the spacing between subsequent coordinates is constant. Hence, we
-are not allowed to employ a sampling scheme where $\Delta k$ changes dependent on
-the current position on the wavenumber profile.
+$\mvec{k}$: the spacing between subsequent coordinates is constant, namely
+$\Delta k = {2\pi}/{L}$, where $L$ is the size in meters of the ocean tile.
+Hence, in combination with a discrete Fourier Transform, we are not allowed to
+employ a sampling scheme where $\Delta k$ changes dependent on which part of the
+wavenumber profile is being sampled.
 
 %
 It is important to keep in mind that resolution and size define not only the
