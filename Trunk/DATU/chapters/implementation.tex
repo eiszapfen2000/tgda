@@ -1082,8 +1082,17 @@ simply fall back to the original ones.
 \subsection{Sampling}
 %
 For us to generate a believable, as well as visually pleasing ocean surface, we
-are required to include as many different wavenumbers as possible into our sum
-of waves. If we generate only one pattern, based on size and resolution, we
+are required to include into our sum of waves a finite set of wavenumbers such
+that it is representative of the whole energy. Recall that both, the spatial
+domain and the wavevector domain, are defined entirely by size $L$ and resolution
+$N$. The minimal wavenumber $\abs{k_{min}} > 0$ representable by the wavevector
+domain is $k_{min} = 2\pi/L$, it depends only on size. Moreover, the distance
+between subsequent sample points in both dimensions, $\Delta k$, is defined as
+$\Delta k = k_{min} = 2\pi/L$. Hence, $\Delta k$ depends only on size. Therefore,
+by setting size $L$, we do not only define the minimal wavenumber we are able to sample, but also define how densely we are able to sample the spectrum.
+
+
+If we generate only one pattern, based on size and resolution, we
 either sparsely sample inside a large wavenumber range, or we densely sample
 inside a small wavenumber range. The former results in a poor reconstruction of a
 large part of the spectrum, the latter in a better reconstruction of a smaller
@@ -1092,7 +1101,7 @@ part of the spectrum, but missing other relevant parts of the spectrum.
 Interlude: The typical profile of a one dimensional wavenumber spectrum suggests
 that it would be beneficial to employ an adaptive sampling scheme which allows
 for tight sampling especially near the peak wavenumber, and sparse sampling in
-the high wavenumbers, see {Fr{\'e}chot}~\cite{article:frechot2007}. Because we employ a discrete Fourier
+the high wavenumbers, see Fr\'{e}chot~\cite{article:frechot2007}. Because we employ a discrete Fourier
 Transform to compute the sum of waves, we are subject to its constraints. One of
 those constraints is to be seen in the definition of the wavevector domain
 $\mvec{k}$: the spacing between subsequent coordinates is constant, namely
