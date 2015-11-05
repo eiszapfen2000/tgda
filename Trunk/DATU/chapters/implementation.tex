@@ -1085,11 +1085,18 @@ For us to generate a believable, as well as visually pleasing ocean surface, we
 are required to include into our sum of waves a finite set of wavenumbers such
 that it is representative of the whole energy. Recall that both, the spatial
 domain and the wavevector domain, are defined entirely by size $L$ and resolution
-$N$. The minimal wavenumber $\abs{k_{min}} > 0$ representable by the wavevector
-domain is $k_{min} = 2\pi/L$, it depends only on size. Moreover, the distance
-between subsequent sample points in both dimensions, $\Delta k$, is defined as
-$\Delta k = k_{min} = 2\pi/L$. Hence, $\Delta k$ depends only on size. Therefore,
-by setting size $L$, we do not only define the minimal wavenumber we are able to sample, but also define how densely we are able to sample the spectrum.
+$N$. The smallest wavenumber $k = \norm{\mvec{k}}$, where $k > 0$, representable
+by the wavevector domain is $k = 2\pi/L$, it depends only on size. Moreover, the
+distance between subsequent sample points in both dimensions, $\Delta k$, is
+defined as $\Delta k = 2\pi/L$. Hence, $\Delta k$ depends only on size.
+Therefore, by choosing size $L$, we do not only define the minimal wavenumber we
+are able to sample, but also define how densely we are able to sample the
+spectrum. The largest wavenumber contained in the wavevector domain is
+$k = \sqrt{2}\pi N/L$. So, given size $L$, resolution $N$ defines how large
+the wavenumbers are allowed to grow, giving us an upper limit of the wavenumbers
+involved in the sum of waves.
+
+\ref{sec:domain_discretisation}
 
 
 If we generate only one pattern, based on size and resolution, we
