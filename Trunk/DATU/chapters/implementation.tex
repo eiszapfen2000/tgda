@@ -1125,12 +1125,12 @@ part of the spectrum multiple times. Not doing so, would imply including the
 same wavenumber(s) multiple times in the sum of waves. Thus, if the spectrum
 of one pattern already covers a specific wavenumber range, a second spectrum
 covering parts or the entirety of that same range, has to be zeroed in the
-region of overlap.
+region of overlap. \\
 
-Note: The typical profile of a one dimensional wavenumber spectrum suggests
+\emph{Note}: The typical profile of a one dimensional wavenumber spectrum suggests
 that it would be beneficial to employ an adaptive sampling scheme which allows
-for tight sampling, especially near the peak wavenumber, and sparse sampling in
-the high wavenumber range, see Fr\'{e}chot~\cite{article:frechot2007}. Because
+for tight sampling in the low wavenumber range, especially near the peak
+wavenumber, and sparse sampling in the high wavenumber range, see Fr\'{e}chot~\cite{article:frechot2007}. Because
 we employ a Discrete Fourier Transform to compute the sum of waves, we are
 subject to its constraints. One of those constraints is that the spacing between
 subsequent coordinates is constant, namely $\Delta k$. Hence, in combination

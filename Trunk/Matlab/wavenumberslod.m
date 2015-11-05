@@ -8,8 +8,8 @@ igs = 1 / (1 + sqrt(5));
 %igs = 0.382;
 
 geometry = [];
-geometry.geometryRes = 16;
-geometry.gradientRes = 16;
+geometry.geometryRes = 8;
+geometry.gradientRes = 8;
 
 maxArea = 2000;
 geometry.lodAreas = [ maxArea, maxArea*igs maxArea*igs*igs maxArea*igs*igs*igs ];
