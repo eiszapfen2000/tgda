@@ -1104,51 +1104,39 @@ in the wavevector domain is $k = \sqrt{2}\pi N/L$. So, given size $L$,
 resolution $N$ defines how large the wavenumbers are allowed to grow, giving us
 an upper limit of the wavenumbers involved in the sum of waves. In short, with
 size $L$ and resolution $N$ specified for a pattern, we may compute the
-pattern's wavenumber range.
+pattern's wavenumber range. Since we would like to sample the spectrum at as
+many wavenumbers as possible, we need to minimize overlap of the wavenumber
+ranges of different patterns.
 
-\ref{sec:domain_discretisation}
+We employ one resolution for all patterns, therefore our focus is on size to
+reduce wavenumber overlap. We need at least one large pattern to avoid
+repetitive artifacts as much as possible, and a small one for closeup detail.
+In addition, we have to look out for the different sizes not to be integral
+multiples of each other, otherwise the surface may seem repetitive at a smaller
+scale than expected. We chose to tackle both requirements by employing multiples
+based on the golden ratio $\varphi = (1 + \sqrt{5})/2$. The user sets the
+largest desired pattern size, each following size is reduced either by
+the factor $\varphi^{-1}$ or by the factor $1 - \varphi^{-1}$.
+The former generates more overlap in the wavenumber range than the latter, but
+is better at reducing repetitive artifacts.
 
-
-
-
-Interlude: The typical profile of a one dimensional wavenumber spectrum suggests
-that it would be beneficial to employ an adaptive sampling scheme which allows
-for tight sampling especially near the peak wavenumber, and sparse sampling in
-the high wavenumbers, see Fr\'{e}chot~\cite{article:frechot2007}. Because we employ a discrete Fourier
-Transform to compute the sum of waves, we are subject to its constraints. One of
-those constraints is to be seen in the definition of the wavevector domain
-$\mvec{k}$: the spacing between subsequent coordinates is constant, namely
-$\Delta k = {2\pi}/{L}$, where $L$ is the size in meters of the ocean tile.
-Hence, in combination with a discrete Fourier Transform, we are not allowed to
-employ a sampling scheme where $\Delta k$ changes dependent on which part of the
-wavenumber profile is being sampled.
-
-%
-It is important to keep in mind that resolution and size define not only the
-spatial domain $\mvec{x}$, but the wavevector domain $\mvec{k}$, too. Since we
-would like to sample the spectrum at as many wavenumbers as possible, we need to
-choose resolution and size in a way to minimize overlap in the spectral domain
-of the different patterns. Moreover, care has to be taken not to sample the same
+Care has to be taken not to sample the same
 part of the spectrum multiple times. Not doing so, would imply including the
 same wavenumber(s) multiple times in the sum of waves. Thus, if the spectrum
 of one pattern already covers a specific wavenumber range, a second spectrum
 covering parts or the entirety of that same range, has to be zeroed in the
-region of overlap. As for the different sizes of the spatial domains, it is
-clear that we need at least a large one to avoid repetitive artifacts as much as
-possible, and a small one for closeup detail. In addition we have to look out
-for the different sizes not to be integral multiples of each other, otherwise
-the surface may seem repetitive at a smaller scale than expected. Instead, we
-employ multiples based on the golden section $\varphi = \frac{1 + \sqrt{5}}{2}$.
-The user sets the largest desired pattern size, each following size is reduced
-by the factor $\varphi^{-1}$. If the results do not seem satisfying, it is up to
-the user to choose all sizes by hand.\\
+region of overlap.
 
-
-
-
-different sets of $\mvec{k}$, how to choose resolution and size: by hand or 
-golden section
-
+Note: The typical profile of a one dimensional wavenumber spectrum suggests
+that it would be beneficial to employ an adaptive sampling scheme which allows
+for tight sampling, especially near the peak wavenumber, and sparse sampling in
+the high wavenumber range, see Fr\'{e}chot~\cite{article:frechot2007}. Because
+we employ a Discrete Fourier Transform to compute the sum of waves, we are
+subject to its constraints. One of those constraints is that the spacing between
+subsequent coordinates is constant, namely $\Delta k$. Hence, in combination
+with a discrete Fourier Transform, we are not allowed to employ a sampling
+scheme where $\Delta k$ changes dependent on which part of the wavenumber
+profile is being sampled.
 
 \subsection{Resolutions}
 Low resolution geometry, augmented with additional data for detailed lighting.
