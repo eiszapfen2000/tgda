@@ -1108,24 +1108,23 @@ pattern's wavenumber range. Since we would like to sample the spectrum at as
 many wavenumbers as possible, we need to minimize overlap of the wavenumber
 ranges of different patterns.
 
-We employ one resolution for all patterns, therefore our focus is on size to
-reduce wavenumber overlap. We need at least one large pattern to avoid
-repetitive artifacts as much as possible, and a small one for closeup detail.
-In addition, we have to look out for the different sizes not to be integral
-multiples of each other, otherwise the surface may seem repetitive at a smaller
-scale than expected. We chose to tackle both requirements by employing multiples
-based on the golden ratio $\varphi = (1 + \sqrt{5})/2$. The user sets the
-largest desired pattern size, each following size is reduced either by
-the factor $\varphi^{-1}$ or by the factor $1 - \varphi^{-1}$.
-The former generates more overlap in the wavenumber range than the latter, but
-is better at reducing repetitive artifacts.
+We employ the same resolution for all patterns, therefore we focus on pattern
+size to reduce wavenumber overlap. We need at least one large pattern size, to
+avoid repetitive artifacts as much as possible, and one small pattern size for
+closeup detail. In addition, we have to look out for the different sizes not to
+be integral multiples of each other, otherwise the surface may seem repetitive
+at a smaller scale than expected. We chose to tackle both requirements by
+employing multiples based on the golden ratio $\varphi = (1 + \sqrt{5})/2$. The
+user sets the largest desired pattern size, each following size is reduced
+either by the factor $\varphi^{-1}$ or by the factor $1 - \varphi^{-1}$. The
+former generates more overlap in the wavenumber range than the latter, but is
+better at reducing repetitive artifacts.
 
-Care has to be taken not to sample the same
-part of the spectrum multiple times. Not doing so, would imply including the
-same wavenumber(s) multiple times in the sum of waves. Thus, if the spectrum
-of one pattern already covers a specific wavenumber range, a second spectrum
-covering parts or the entirety of that same range, has to be zeroed in the
-region of overlap. \\
+Care has to be taken not to sample the same part of the spectrum multiple times.
+Not doing so, would imply including the same wavenumber(s) multiple times in the
+sum of waves. Thus, if the spectrum of one pattern already covers a specific
+wavenumber range, a second spectrum covering parts or the entirety of that same
+range, has to be zeroed in the region of overlap.
 
 \emph{Note}: The typical profile of a one dimensional wavenumber spectrum suggests
 that it would be beneficial to employ an adaptive sampling scheme which allows
@@ -1139,6 +1138,11 @@ scheme where $\Delta k$ changes dependent on which part of the wavenumber
 profile is being sampled.
 
 \subsection{Resolutions}
+At this point, one perturbation pattern consists of surface
+elevation $\eta$, displacement vector $\mvec{D}$, and the first order partial
+derivatives of $\eta$, $D_x$ and $D_y$.
+
+
 Low resolution geometry, augmented with additional data for detailed lighting.
 Vertical and horizontal surface displacement have same resolution, all partial
 derivatives have the same resolution. Across all patterns.
