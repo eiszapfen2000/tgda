@@ -1137,6 +1137,342 @@ with a discrete Fourier Transform, we are not allowed to employ a sampling
 scheme where $\Delta k$ changes dependent on which part of the wavenumber
 profile is being sampled.
 
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[
+	group style={
+		columns=4,
+		rows=2,
+		xlabels at=edge bottom,
+		ylabels at=edge left,
+	},
+    xlabel=\empty,
+    ylabel=\empty,
+	width=0.3\textwidth,
+	axis x line=bottom,
+	ymin = 0,
+	ymax = 0.001,
+	]
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_1.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_2.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=green,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_3.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=yellow,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_4.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_03_lod_1.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_03_lod_2.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=green,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_03_lod_3.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=yellow,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_03_lod_4.dat} \closedcycle;
+\end{groupplot}
+\end{tikzpicture}
+\caption{Top row: spectra of patterns with sizes reduced by $\varphi^{-1}$.
+Bottom row: spectra of patterns with sizes reduced by $1-\varphi^{-1}$.}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[
+	group style={
+		columns=3,
+		rows=2,
+		xlabels at=edge bottom,
+		ylabels at=edge left,
+	},
+    xlabel=\empty,
+    ylabel=\empty,
+	width=0.35\textwidth,
+	axis x line=bottom,
+	ymin = 0,
+	ymax = 0.001,
+	]
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_1.dat} \closedcycle;
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_2_capped.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_1.dat} \closedcycle;
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_2_capped.dat} \closedcycle;
+\addplot[
+  color=green,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_3_capped.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_1.dat} \closedcycle;
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_2_capped.dat} \closedcycle;
+\addplot[
+  color=green,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_3_capped.dat} \closedcycle;
+\addplot[
+  color=yellow,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_4_capped.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_03_lod_1.dat} \closedcycle;
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_03_lod_2_capped.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_03_lod_1.dat} \closedcycle;
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_03_lod_2_capped.dat} \closedcycle;
+\addplot[
+  color=green,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_03_lod_3_capped.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_03_lod_1.dat} \closedcycle;
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_03_lod_2_capped.dat} \closedcycle;
+\addplot[
+  color=green,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_03_lod_3_capped.dat} \closedcycle;
+\addplot[
+  color=yellow,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_03_lod_4_capped.dat} \closedcycle;
+\end{groupplot}
+\end{tikzpicture}
+\caption{Spectra assembled from partial spectra.}
+\end{figure}
+
 \subsection{Resolutions}
 Recall, that one perturbation pattern consists of surface elevation $\eta$,
 displacement vector $\mvec{D}$, and the first order partial derivatives of
@@ -1144,7 +1480,7 @@ $\eta$, $D_x$ and $D_y$. Moreover, we have a set of such patterns. The
 computational load to synthesize all the cumulated pattern data has proven to be
 substantial. To improve upon the status quo, we chose to implement an approach
 similar to~\emph{Normal Mapping}, namely low resolution geometry augmented with
-high resolution data to generate detailed lighting. Four our specific case, that
+high resolution data to generate detailed lighting. For our specific case, that
 means we may synthesize vertical and horizontal displacements at a lower
 resolution than the associated first order partial derivatives.
 
