@@ -3,38 +3,30 @@ function wavenumberslod
 clear
 close all
 
-time = 1;
+maxArea = 2000;
 igs = 2 / (1 + sqrt(5));
-%igs = 1 / (1 + sqrt(5));
-%igs = 0.5;
 
-geometry = [];
 geometry.geometryRes = 256;
 geometry.gradientRes = 256;
 
-maxArea = 2000;
-geometry.lodAreas = areas(maxArea, 4, igs);
-
-settings = [];
-settings.generatorName = 'Unified';
-settings.wind = [ 2.5 0 ];
 settings.fetch = 500000;
+settings.wind = [ 7.5 0 ];
+settings.generatorName = 'Unified';
 
+geometry.lodAreas = areas(maxArea, 4, igs);
 o = ocean_init(geometry, settings);
 
 minK = [0 maxWavenumbers(o)];
-writeRangedSpectra(o, 'sampling_scale_06_lod_%d.dat', 4);
-writeRangedSpectra(o, 'sampling_scale_06_lod_%d_capped.dat', 4, minK);
+writeRangedSpectra(o, 'sampling_scale_06_lod_%d.dat', 2);
+writeRangedSpectra(o, 'sampling_scale_06_lod_%d_capped.dat', 2, minK);
 
 igs = 1 / (1 + sqrt(5));
-geometry.geometryRes = 256;
-geometry.gradientRes = 256;
 geometry.lodAreas = areas(maxArea, 4, igs);
 o = ocean_init(geometry, settings);
 
 minK = [0 maxWavenumbers(o)];
-writeRangedSpectra(o, 'sampling_scale_03_lod_%d.dat', 4);
-writeRangedSpectra(o, 'sampling_scale_03_lod_%d_capped.dat', 4, minK);
+writeRangedSpectra(o, 'sampling_scale_03_lod_%d.dat', 2);
+writeRangedSpectra(o, 'sampling_scale_03_lod_%d_capped.dat', 2, minK);
 
 end
 
