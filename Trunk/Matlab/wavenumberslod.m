@@ -9,8 +9,8 @@ igs = 2 / (1 + sqrt(5));
 %igs = 0.5;
 
 geometry = [];
-geometry.geometryRes = 512;
-geometry.gradientRes = 512;
+geometry.geometryRes = 256;
+geometry.gradientRes = 256;
 
 maxArea = 2000;
 geometry.lodAreas = [ maxArea, maxArea*igs maxArea*igs*igs maxArea*igs*igs*igs ];
@@ -22,20 +22,9 @@ settings.fetch = 500000;
 
 o = ocean_init(geometry, settings);
 
-maxK = 0;
-for l=1:numel(o.lods)
-    maxK(end+1) = sqrt(2)* pi * (o.lods{l}.resolution / o.lods{l}.area);
-end
-
-for l=1:numel(o.lods)
-    [ kn, a ] = rangedSpectrum(o.lods{l}, 0, 4, settings);
-    write2dcsv(kn', a', sprintf('sampling_scale_06_lod_%d.dat', l));
-end
-
-for l=1:numel(o.lods)
-    [ kn, a ] = rangedSpectrum(o.lods{l}, maxK(l), 4, settings);
-    write2dcsv(kn', a', sprintf('sampling_scale_06_lod_%d_capped.dat', l));
-end
+minK = [0 maxWavenumbers(o)];
+writeRangedSpectra(o, 'sampling_scale_06_lod_%d.dat', 4);
+writeRangedSpectra(o, 'sampling_scale_06_lod_%d_capped.dat', 4, minK);
 
 igs = 1 / (1 + sqrt(5));
 geometry.geometryRes = 256;
@@ -43,34 +32,54 @@ geometry.gradientRes = 256;
 geometry.lodAreas = [ maxArea, maxArea*igs maxArea*igs*igs maxArea*igs*igs*igs ];
 o = ocean_init(geometry, settings);
 
-maxK = 0;
-for l=1:numel(o.lods)
-    maxK(end+1) = sqrt(2)* pi * (o.lods{l}.resolution / o.lods{l}.area);
-end
-
-for l=1:numel(o.lods)
-    [ kn, a ] = rangedSpectrum(o.lods{l}, 0, 2, settings);
-    write2dcsv(kn', a', sprintf('sampling_scale_03_lod_%d.dat', l));
-end
-
-for l=1:numel(o.lods)
-    [ kn, a ] = rangedSpectrum(o.lods{l}, maxK(l), 2, settings);
-    write2dcsv(kn', a', sprintf('sampling_scale_03_lod_%d_capped.dat', l));
-end
+minK = [0 maxWavenumbers(o)];
+writeRangedSpectra(o, 'sampling_scale_03_lod_%d.dat', 4);
+writeRangedSpectra(o, 'sampling_scale_03_lod_%d_capped.dat', 4, minK);
 
 end
 
-function k = wavenumberrange(kn, minK)
+%%
+function k = uniqueWavenumbers(kn, minK)
 k = sort(unique(kn));
 ix = find(k > minK, 1, 'first');
 k = k(ix:end);
 end
-
+%%
 function [kn, a] = rangedSpectrum(lod, minK, delta, settings)
-    kn = wavenumberrange(lod.kn, minK);
+    kn = uniqueWavenumbers(lod.kn, minK);
     kn = kn(1:delta:end);
     a  = UnifiedSpectrum1Dk(kn, settings.wind, settings.fetch, []);
 end
+%%
+function maxK = maxWavenumbers(ocean)
+    maxK = zeros(1, numel(ocean.lods));
+    for l=1:numel(ocean.lods)
+        maxK(l) = sqrt(2)* pi * (ocean.lods{l}.resolution / ocean.lods{l}.area);
+    end
+end
+%%
+function writeRangedSpectra(ocean, baseFileame, varargin)
+
+delta = 1;
+minK = zeros(1, numel(ocean.lods));
+
+optargin = size(varargin,2);
+
+if optargin > 0
+    delta = varargin{1};
+end
+
+if optargin > 1
+    minK = varargin{2};
+end
+
+for l=1:numel(ocean.lods)
+    [ kn, a ] = rangedSpectrum(ocean.lods{l}, minK(l), delta, ocean.settings);
+    write2dcsv(kn', a', sprintf(baseFileame, l));
+end
+
+end
+%%
 
 % figure
 % hold on
