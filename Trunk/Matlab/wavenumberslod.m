@@ -13,7 +13,7 @@ geometry.geometryRes = 256;
 geometry.gradientRes = 256;
 
 maxArea = 2000;
-geometry.lodAreas = [ maxArea, maxArea*igs maxArea*igs*igs maxArea*igs*igs*igs ];
+geometry.lodAreas = areas(maxArea, 4, igs);
 
 settings = [];
 settings.generatorName = 'Unified';
@@ -29,7 +29,7 @@ writeRangedSpectra(o, 'sampling_scale_06_lod_%d_capped.dat', 4, minK);
 igs = 1 / (1 + sqrt(5));
 geometry.geometryRes = 256;
 geometry.gradientRes = 256;
-geometry.lodAreas = [ maxArea, maxArea*igs maxArea*igs*igs maxArea*igs*igs*igs ];
+geometry.lodAreas = areas(maxArea, 4, igs);
 o = ocean_init(geometry, settings);
 
 minK = [0 maxWavenumbers(o)];
@@ -38,6 +38,10 @@ writeRangedSpectra(o, 'sampling_scale_03_lod_%d_capped.dat', 4, minK);
 
 end
 
+%%
+function a = areas(largestArea, nAreas, scale)
+    a = power(scale,0:1:nAreas-1) .* largestArea;
+end
 %%
 function k = uniqueWavenumbers(kn, minK)
 k = sort(unique(kn));
