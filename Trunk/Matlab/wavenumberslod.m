@@ -3,30 +3,33 @@ function wavenumberslod
 clear
 close all
 
-maxArea = 2000;
-igs = 2 / (1 + sqrt(5));
+gsLong = 2 / (1 + sqrt(5));
 
-geometry.geometryRes = 256;
-geometry.gradientRes = 256;
+config.fetch = 500000;
+config.wind = [ 4.5 0 ];
+config.maxArea = 100;
+config.nLods = 1;
+config.areaScaleFactor = gsLong;
 
-settings.fetch = 500000;
-settings.wind = [ 7.5 0 ];
-settings.generatorName = 'Unified';
+config.resolution = 32;
+ol1 = generateOcean(config);
+config.resolution = 128;
+ol2 = generateOcean(config);
 
-geometry.lodAreas = areas(maxArea, 4, igs);
-o = ocean_init(geometry, settings);
 
-minK = [0 maxWavenumbers(o)];
-writeRangedSpectra(o, 'sampling_scale_06_lod_%d.dat', 2);
-writeRangedSpectra(o, 'sampling_scale_06_lod_%d_capped.dat', 2, minK);
+config.maxArea = 120;
+config.resolution = 16;
+ol3 = generateOcean(config);
 
-igs = 1 / (1 + sqrt(5));
-geometry.lodAreas = areas(maxArea, 4, igs);
-o = ocean_init(geometry, settings);
+config.maxArea = 40;
+config.resolution = 16;
+ol4 = generateOcean(config);
 
-minK = [0 maxWavenumbers(o)];
-writeRangedSpectra(o, 'sampling_scale_03_lod_%d.dat', 2);
-writeRangedSpectra(o, 'sampling_scale_03_lod_%d_capped.dat', 2, minK);
+plotRangedSpectra(ol1,2);
+plotRangedSpectra(ol2,2);
+
+% plotRangedSpectra(ol3, 1);
+% plotRangedSpectra(ol4, 1);
 
 end
 
@@ -69,10 +72,53 @@ if optargin > 1
     minK = varargin{2};
 end
 
+figure
+hold on
+cmap = hsv(numel(ocean.lods));
 for l=1:numel(ocean.lods)
     [ kn, a ] = rangedSpectrum(ocean.lods{l}, minK(l), delta, ocean.settings);
-    write2dcsv(kn', a', sprintf(baseFileame, l));
+    %write2dcsv(kn', a', sprintf(baseFileame, l));
+    plot(kn, a, 'Color', cmap(l,:));
 end
+hold off
+
+end
+%%
+function plotRangedSpectra(ocean, varargin)
+delta = 1;
+minK = zeros(1, numel(ocean.lods));
+
+optargin = size(varargin,2);
+
+if optargin > 0
+    delta = varargin{1};
+end
+
+if optargin > 1
+    minK = varargin{2};
+end
+
+figure
+hold on
+cmap = hsv(numel(ocean.lods));
+for l=1:numel(ocean.lods)
+    [ kn, a ] = rangedSpectrum(ocean.lods{l}, minK(l), delta, ocean.settings);
+    plot(kn, a, 'Color', cmap(l,:));
+end
+hold off
+end
+%%
+function o = generateOcean(c)
+
+settings.fetch = c.fetch;
+settings.wind = c.wind;
+settings.generatorName = 'Unified';
+
+geometry.geometryRes = c.resolution;
+geometry.gradientRes = c.resolution;
+geometry.lodAreas = areas(c.maxArea, c.nLods, c.areaScaleFactor);
+
+o = ocean_init(geometry, settings);
 
 end
 %%
