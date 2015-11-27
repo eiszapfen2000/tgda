@@ -11,9 +11,9 @@ config.maxArea = 100;
 config.nLods = 1;
 config.areaScaleFactor = gsLong;
 
-config.resolution = 32;
+config.resolution = 16;
 ol1 = generateOcean(config);
-config.resolution = 128;
+config.resolution = 64;
 ol2 = generateOcean(config);
 
 
@@ -25,11 +25,17 @@ config.maxArea = 40;
 config.resolution = 16;
 ol4 = generateOcean(config);
 
-plotRangedSpectra(ol1,2);
-plotRangedSpectra(ol2,2);
+plotRangedSpectra(ol1, 1);
+plotRangedSpectra(ol2, 1);
 
 % plotRangedSpectra(ol3, 1);
 % plotRangedSpectra(ol4, 1);
+
+% writeRangedSpectra(ol1, 'sampling_area_100_res_16.dat');
+% writeRangedSpectra(ol2, 'sampling_area_100_res_64.dat');
+% 
+% writeRangedSpectra(ol3, 'sampling_res_16_area_120.dat');
+% writeRangedSpectra(ol4, 'sampling_res_16_area_40.dat');
 
 end
 
@@ -60,7 +66,7 @@ end
 function writeRangedSpectra(ocean, baseFileame, varargin)
 
 delta = 1;
-minK = zeros(1, numel(ocean.lods));
+minK = -ones(1, numel(ocean.lods));
 
 optargin = size(varargin,2);
 
@@ -72,21 +78,16 @@ if optargin > 1
     minK = varargin{2};
 end
 
-figure
-hold on
-cmap = hsv(numel(ocean.lods));
 for l=1:numel(ocean.lods)
     [ kn, a ] = rangedSpectrum(ocean.lods{l}, minK(l), delta, ocean.settings);
-    %write2dcsv(kn', a', sprintf(baseFileame, l));
-    plot(kn, a, 'Color', cmap(l,:));
+    write2dcsv(kn', a', sprintf(baseFileame, l));
 end
-hold off
 
 end
 %%
 function plotRangedSpectra(ocean, varargin)
 delta = 1;
-minK = zeros(1, numel(ocean.lods));
+minK = -ones(1, numel(ocean.lods));
 
 optargin = size(varargin,2);
 

@@ -1143,6 +1143,101 @@ profile is being sampled.
 \begin{groupplot}[
 	group style={
 		columns=4,
+		rows=1,
+		xlabels at=edge bottom,
+		ylabels at=edge left,
+	},
+    xlabel=\empty,
+    ylabel=\empty,
+	width=0.3\textwidth,
+	axis x line=bottom,
+%	ymin = 0,
+%	ymax = 0.001,
+	]
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	title = {(a) $L=120m$},
+	xmin = 0,
+	xmax = 1.8,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  unbounded coords=discard,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_res_16_area_120.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	title = {(b) $L=40m$},
+	xmin = 0,
+	xmax = 1.8,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  unbounded coords=discard,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_res_16_area_40.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	title = {(c) $N=16$},
+	xmin = 0,
+	xmax = 2.8,
+	]
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  unbounded coords=discard,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_area_100_res_16.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	title = {(d) $N=64$},
+	xmin = 0,
+	xmax = 2.8,
+	]
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  unbounded coords=discard,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_area_100_res_64.dat} \closedcycle;
+\end{groupplot}
+\end{tikzpicture}
+\caption{Red: Equal resolution, different size $L$. Both, (a) and (b), consist
+of the same number of samples. (a) covers a smaller wavenumber range than (b)
+because the former employs a smaller distance between consecutive sample points.
+Blue: Equal size, different resolution $N$. The distance between consecutive
+sample points is equivalent in (c) and (d). (d) covers a larger wavenumber range
+because it contains more samples than (c).}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[
+	group style={
+		columns=4,
 		rows=2,
 		xlabels at=edge bottom,
 		ylabels at=edge left,
@@ -1151,8 +1246,8 @@ profile is being sampled.
     ylabel=\empty,
 	width=0.3\textwidth,
 	axis x line=bottom,
-	ymin = 0,
-	ymax = 0.001,
+%	ymin = 0,
+%	ymax = 0.001,
 	]
 \nextgroupplot[
 	ytick=\empty,
@@ -1162,6 +1257,7 @@ profile is being sampled.
   color=red,
   fill,
   fill opacity=0.2,
+  unbounded coords=discard,
   ]
   table [
     col sep=comma, 
@@ -1175,6 +1271,7 @@ profile is being sampled.
   color=blue,
   fill,
   fill opacity=0.2,
+  unbounded coords=discard,
   ]
   table [
     col sep=comma, 
@@ -1188,6 +1285,7 @@ profile is being sampled.
   color=green,
   fill,
   fill opacity=0.2,
+  unbounded coords=discard,
   ]
   table [
     col sep=comma, 
@@ -1201,6 +1299,7 @@ profile is being sampled.
   color=yellow,
   fill,
   fill opacity=0.2,
+  unbounded coords=discard,
   ]
   table [
     col sep=comma, 
@@ -1214,6 +1313,7 @@ profile is being sampled.
   color=red,
   fill,
   fill opacity=0.2,
+  unbounded coords=discard,
   ]
   table [
     col sep=comma, 
@@ -1227,6 +1327,7 @@ profile is being sampled.
   color=blue,
   fill,
   fill opacity=0.2,
+  unbounded coords=discard,
   ]
   table [
     col sep=comma, 
@@ -1240,6 +1341,7 @@ profile is being sampled.
   color=green,
   fill,
   fill opacity=0.2,
+  unbounded coords=discard,
   ]
   table [
     col sep=comma, 
@@ -1253,6 +1355,7 @@ profile is being sampled.
   color=yellow,
   fill,
   fill opacity=0.2,
+  unbounded coords=discard,
   ]
   table [
     col sep=comma, 
@@ -1279,8 +1382,8 @@ Bottom row: spectra of patterns with sizes reduced by $1-\varphi^{-1}$.}
     ylabel=\empty,
 	width=0.35\textwidth,
 	axis x line=bottom,
-	ymin = 0,
-	ymax = 0.001,
+%	ymin = 0,
+%	ymax = 0.001,
 	]
 \nextgroupplot[
 	ytick=\empty,
