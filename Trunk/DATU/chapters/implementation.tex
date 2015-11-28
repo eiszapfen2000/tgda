@@ -1091,52 +1091,7 @@ latter in a better reconstruction of a smaller part of the spectrum, but
 possibly missing other relevant parts of the spectrum. Thus, we generate more
 than one pattern, where the goal is for each pattern to sample as many distinct
 wavenumbers as possible.
-
-Recall that both, the spatial domain and the wavevector domain, are defined
-entirely by size $L$ and resolution $N$. The smallest wavenumber
-$k = \norm{\mvec{k}}$, where $k > 0$, representable by the wavevector domain is
-$k = 2\pi/L$, it depends only on size. Moreover, the distance between subsequent
-sample points in both dimensions, $\Delta k$, is defined as $\Delta k = 2\pi/L$.
-Hence, $\Delta k$ depends only on size. Therefore, by choosing size $L$, we do
-not only define the minimal wavenumber we are able to sample, but also define
-how densely we are able to sample the spectrum. The largest wavenumber contained
-in the wavevector domain is $k = \sqrt{2}\pi N/L$. So, given size $L$,
-resolution $N$ defines how large the wavenumbers are allowed to grow, giving us
-an upper limit of the wavenumbers involved in the sum of waves. In short, with
-size $L$ and resolution $N$ specified for a pattern, we may compute the
-pattern's wavenumber range. Since we would like to sample the spectrum at as
-many wavenumbers as possible, we need to minimize overlap of the wavenumber
-ranges of different patterns.
-
-We employ the same resolution for all patterns, therefore we focus on pattern
-size to reduce wavenumber overlap. We need at least one large pattern size, to
-avoid repetitive artifacts as much as possible, and one small pattern size for
-closeup detail. In addition, we have to look out for the different sizes not to
-be integral multiples of each other, otherwise the surface may seem repetitive
-at a smaller scale than expected. We chose to tackle both requirements by
-employing multiples based on the golden ratio $\varphi = (1 + \sqrt{5})/2$. The
-user sets the largest desired pattern size, each following size is reduced
-either by the factor $\varphi^{-1}$ or by the factor $1 - \varphi^{-1}$. The
-former generates more overlap in the wavenumber range than the latter, but is
-better at reducing repetitive artifacts.
-
-Care has to be taken not to sample the same part of the spectrum multiple times.
-Not doing so, would imply including the same wavenumber(s) multiple times in the
-sum of waves. Thus, if the spectrum of one pattern already covers a specific
-wavenumber range, a second spectrum covering parts or the entirety of that same
-range, has to be zeroed in the region of overlap.
-
-\emph{Note}: The typical profile of a one dimensional wavenumber spectrum suggests
-that it would be beneficial to employ an adaptive sampling scheme which allows
-for tight sampling in the low wavenumber range, especially near the peak
-wavenumber, and sparse sampling in the high wavenumber range, see Fr\'{e}chot~\cite{article:frechot2007}. Because
-we employ a Discrete Fourier Transform to compute the sum of waves, we are
-subject to its constraints. One of those constraints is that the spacing between
-subsequent coordinates is constant, namely $\Delta k$. Hence, in combination
-with a discrete Fourier Transform, we are not allowed to employ a sampling
-scheme where $\Delta k$ changes dependent on which part of the wavenumber
-profile is being sampled.
-
+%
 \begin{figure}
 \centering
 \begin{tikzpicture}
@@ -1147,7 +1102,7 @@ profile is being sampled.
 		xlabels at=edge bottom,
 		ylabels at=edge left,
 	},
-    xlabel=\empty,
+    xlabel={$k_d$},
     ylabel=\empty,
 	width=0.3\textwidth,
 	axis x line=bottom,
@@ -1230,7 +1185,67 @@ because the former employs a smaller distance between consecutive sample points.
 Blue: Equal size, different resolution $N$. The distance between consecutive
 sample points is equivalent in (c) and (d). (d) covers a larger wavenumber range
 because it contains more samples than (c).}
+\label{fig:sampling_area_vs_res}
 \end{figure}
+%
+
+Recall that both, the spatial domain and the wavevector domain, are defined
+entirely by size $L$ and resolution $N$. The smallest wavenumber
+$k = \norm{\mvec{k}}$, where $k > 0$, representable by the wavevector domain is
+$k = 2\pi/L$, it depends only on size. Moreover, the distance between subsequent
+sample points in both dimensions, $\Delta k$, is defined as $\Delta k = 2\pi/L$.
+Hence, $\Delta k$ depends only on size. Therefore, by choosing size $L$, we do
+not only define the minimal wavenumber we are able to sample, but also define
+how densely we are able to sample the spectrum. The largest wavenumber contained
+in the wavevector domain is $k = \sqrt{2}\pi N/L$. So, given size $L$,
+resolution $N$ defines how large the wavenumbers are allowed to grow, giving us
+an upper limit of the wavenumbers involved in the sum of waves. In short, with
+size $L$ and resolution $N$ specified for a pattern, we are able to compute the
+pattern's wavenumber range.
+
+Let $\mvec{k}$
+denote the wavevector domain  based on parameters $L$ and $N$, where we compute
+all distinct wavenumbers $k_d$ represented by $\mvec{k}$. With the wavenumber
+set $k_d$ at hand we may sample the one-dimensional wavenumber spectrum.
+Figure~\ref{fig:sampling_area_vs_res} depicts a set of reconstructions of the
+same one-dimensional wavenumber spectrum, where one can see the
+effects of size $L$ and resolution $N$ on the wavenumber set $k_d$, and thus on
+the reconstructed pattern. \\
+
+With size $L$ and resolution $N$ specified for a pattern, we may compute the
+pattern's wavenumber range. Since we would like to sample the spectrum at as
+many wavenumbers as possible, we need to minimize overlap of the wavenumber
+ranges of different patterns. Our implementation employs the same resolution for
+all patterns, therefore we focus on pattern
+size to reduce wavenumber overlap. We need at least one large pattern size, to
+avoid repetitive artifacts as much as possible, and one small pattern size for
+closeup detail. In addition, we have to look out for the different sizes not to
+be integral multiples of each other, otherwise the surface may seem repetitive
+at a smaller scale than expected. We chose to tackle both requirements by
+employing multiples based on the golden ratio $\varphi = (1 + \sqrt{5})/2$. The
+user sets the largest desired pattern size, each following size is reduced
+either by the factor $\varphi^{-1}$ or by the factor $1 - \varphi^{-1}$. The
+former generates more overlap in the wavenumber range than the latter, but is
+better at reducing repetitive artifacts.
+
+Care has to be taken not to sample the same part of the spectrum multiple times.
+Not doing so, would imply including the same wavenumber(s) multiple times in the
+sum of waves. Thus, if the spectrum of one pattern already covers a specific
+wavenumber range, a second spectrum covering parts or the entirety of that same
+range, has to be zeroed in the region of overlap.
+
+\emph{Note}: The typical profile of a one dimensional wavenumber spectrum suggests
+that it would be beneficial to employ an adaptive sampling scheme which allows
+for tight sampling in the low wavenumber range, especially near the peak
+wavenumber, and sparse sampling in the high wavenumber range, see Fr\'{e}chot~\cite{article:frechot2007}. Because
+we employ a Discrete Fourier Transform to compute the sum of waves, we are
+subject to its constraints. One of those constraints is that the spacing between
+subsequent coordinates is constant, namely $\Delta k$. Hence, in combination
+with a discrete Fourier Transform, we are not allowed to employ a sampling
+scheme where $\Delta k$ changes dependent on which part of the wavenumber
+profile is being sampled.
+
+
 
 \begin{figure}
 \centering
