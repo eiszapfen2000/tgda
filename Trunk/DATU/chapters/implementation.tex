@@ -1408,22 +1408,7 @@ with repetitve artifacts. The two rows in Figure~\ref{fig:sampling_pattern_size_
 depict the reconstructions of one and the same spectrum, based on patterns with
 the same resolution $N$, but size $L$ reduced by the two different factors.
 
-Care has to be taken not to sample the same part of the spectrum multiple times.
-Not doing so, would imply including the same wavenumber(s) multiple times in the
-sum of waves. Thus, if the spectrum of one pattern already covers a specific
-wavenumber range, a second spectrum covering parts or the entirety of that same
-range, has to be zeroed in the region of overlap.
-
-\emph{Note}: The typical profile of a one dimensional wavenumber spectrum suggests
-that it would be beneficial to employ an adaptive sampling scheme which allows
-for tight sampling in the low wavenumber range, especially near the peak
-wavenumber, and sparse sampling in the high wavenumber range, see Fr\'{e}chot~\cite{article:frechot2007}. Because
-we employ a Discrete Fourier Transform to compute the sum of waves, we are
-subject to its constraints. One of those constraints is that the spacing between
-subsequent coordinates is constant, namely $\Delta k$. Hence, in combination
-with a discrete Fourier Transform, we are not allowed to employ a sampling
-scheme where $\Delta k$ changes dependent on which part of the wavenumber
-profile is being sampled.
+%
 %
 \begin{figure}
 \centering
@@ -1630,8 +1615,32 @@ profile is being sampled.
   {figures/sampling_scale_03_lod_4_capped.dat} \closedcycle;
 \end{groupplot}
 \end{tikzpicture}
-\caption{Spectra assembled from partial spectra.}
+\caption{Assembly of the spectra from Figure~\ref{fig:sampling_pattern_size_reduction}.}
+\label{fig:sampling_pattern_assembly}
 \end{figure}
+%
+Care has to be taken not to sample the same part of the spectrum multiple times.
+Not doing so, would imply including the same wavenumber(s) multiple times in the
+sum of waves. Thus, if the spectrum of one pattern already covers a specific
+wavenumber range, a second spectrum covering parts or the entirety of that same
+range, has to be zeroed in the region of overlap.
+Figure~\ref{fig:sampling_pattern_assembly} shows the assembly of the overlapping
+spectra from Figure~\ref{fig:sampling_pattern_size_reduction} into one coherent
+spectrum. The transition from data from one spectrum to data from the next
+spectrum always happens at the maximum wavenumber of the spectrum with the
+smaller wavenumber range.
+
+\emph{Note}: The typical profile of a one dimensional wavenumber spectrum suggests
+that it would be beneficial to employ an adaptive sampling scheme which allows
+for tight sampling in the low wavenumber range, especially near the peak
+wavenumber, and sparse sampling in the high wavenumber range, see Fr\'{e}chot~\cite{article:frechot2007}. Because
+we employ a Discrete Fourier Transform to compute the sum of waves, we are
+subject to its constraints. One of those constraints is that the spacing between
+subsequent coordinates is constant, namely $\Delta k$. Hence, in combination
+with a discrete Fourier Transform, we are not allowed to employ a sampling
+scheme where $\Delta k$ changes dependent on which part of the wavenumber
+profile is being sampled.
+
 
 \subsection{Resolutions}
 Recall, that one perturbation pattern consists of surface elevation $\eta$,
