@@ -1647,13 +1647,11 @@ Recall, that one perturbation pattern consists of surface elevation $\eta$,
 displacement vector $\mvec{D}$, and the first order partial derivatives of
 $\eta$, $D_x$ and $D_y$. Moreover, we have a set of such patterns. The
 computational load to synthesize all the cumulated pattern data has proven to be
-substantial. To improve upon the status quo, we chose to implement an approach
-similar to~\emph{Normal Mapping}, namely low resolution geometry augmented with
+substantial. To improve upon the status quo, we chose to implement a common
+approach in computer graphics: combine low resolution geometry augmented with
 high resolution data to generate detailed lighting. For our specific case, that
 means we may synthesize vertical and horizontal displacements at a lower
 resolution than the associated first order partial derivatives.
-
-
 
 Low resolution geometry, augmented with additional data for detailed lighting.
 Vertical and horizontal surface displacement have same resolution, all partial
