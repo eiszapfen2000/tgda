@@ -1263,10 +1263,11 @@ reduced by the same multiplicative factor $f$, where $f \in \{\varphi^{-1},
 	group style={
 		columns=4,
 		rows=2,
-		xlabels at=edge bottom,
+		%xlabels at=edge bottom,
+		xlabels at=all,
 		ylabels at=edge left,
 	},
-    xlabel=\empty,
+    xlabel={$k$},
     ylabel=\empty,
 	width=0.3\textwidth,
 	axis x line=bottom,
@@ -1388,8 +1389,8 @@ reduced by the same multiplicative factor $f$, where $f \in \{\varphi^{-1},
 \end{groupplot}
 \end{tikzpicture}
 \caption{Top row: reconstructed spectra of patterns with sizes reduced by
- $\varphi^{-1}$. Bottom row: spectra of patterns with sizes reduced by
-$1-\varphi^{-1}$.}
+ $\varphi^{-1}$. Bottom row: reconstructed spectra of patterns with sizes
+reduced by $1-\varphi^{-1}$.}
 \label{fig:sampling_pattern_size_reduction}
 \end{figure}
 %
@@ -1417,10 +1418,11 @@ the same resolution $N$, but size $L$ reduced by the two different factors.
 	group style={
 		columns=3,
 		rows=2,
-		xlabels at=edge bottom,
+		%xlabels at=edge bottom,
+		xlabels at=all,
 		ylabels at=edge left,
 	},
-    xlabel=\empty,
+    xlabel={$k$},
     ylabel=\empty,
 	width=0.35\textwidth,
 	axis x line=bottom,
@@ -1653,6 +1655,217 @@ high resolution data to generate detailed lighting. For our specific case, that
 means we may synthesize vertical and horizontal displacements at a lower
 resolution than the associated first order partial derivatives.
 
+%
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[
+	group style={
+		columns=4,
+		rows=2,
+		%xlabels at=edge bottom,
+		xlabels at=all,
+		ylabels at=edge left,
+	},
+    xlabel={$k$},
+    ylabel=\empty,
+	width=0.3\textwidth,
+	axis x line=bottom,
+%	ymin = 0,
+%	ymax = 0.001,
+	]
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	xmin = 0,
+	xmax = 0.45,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_lod_1.dat} \closedcycle;
+\addplot[
+  ycomb,
+  color=red,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_8_lod_1.dat};
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	xmin = 0,
+	xmax = 0.74,
+	]
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_lod_2.dat} \closedcycle;
+\addplot[
+  ycomb,
+  color=blue,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_8_lod_2.dat};
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	xmin = 0,
+	xmax = 1.2,
+	]
+\addplot[
+  color=green,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_lod_3.dat} \closedcycle;
+\addplot[
+  ycomb,
+  color=green,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_8_lod_3.dat};
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	xmin = 0,
+	xmax = 1.94,
+	]
+\addplot[
+  color=yellow,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_lod_4.dat} \closedcycle;
+\addplot[
+  ycomb,
+  color=yellow,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_8_lod_4.dat};
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	xmin = 0,
+	xmax = 0.45,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_lod_1.dat} \closedcycle;
+\addplot[
+  ycomb,
+  color=red,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_8_lod_1.dat};
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	xmin = 0,
+	xmax = 0.74,
+	]
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_lod_2.dat} \closedcycle;
+\addplot[
+  ycomb,
+  color=blue,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_8_lod_2.dat};
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	xmin = 0,
+	xmax = 1.2,
+	]
+\addplot[
+  color=green,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_lod_3.dat} \closedcycle;
+\addplot[
+  ycomb,
+  color=green,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_8_lod_3.dat};
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	xmin = 0,
+	xmax = 1.94,
+	]
+\addplot[
+  color=yellow,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_lod_4.dat} \closedcycle;
+\addplot[
+  ycomb,
+  color=yellow,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_8_lod_4.dat};
+\end{groupplot}
+\end{tikzpicture}
+\caption{Reconstructions of one and the same spectrum. Top and bottom row use
+the same pattern sizes, it follows that all samples are equidistant. Top row
+employs half the resolution of bottom row, hence it covers only half of the
+wavenumber range.}
+\end{figure}
+%
 Low resolution geometry, augmented with additional data for detailed lighting.
 Vertical and horizontal surface displacement have same resolution, all partial
 derivatives have the same resolution. Across all patterns.
