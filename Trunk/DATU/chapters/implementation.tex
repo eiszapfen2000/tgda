@@ -1239,7 +1239,7 @@ the wavenumber set $k_d$ at hand we may sample a one-dimensional wavenumber
 spectrum. Figure~\ref{fig:sampling_area_vs_res} depicts a set of reconstructions
 of one specific one-dimensional wavenumber spectrum, where one can see the
 effects of size $L$ and resolution $N$ on the wavenumber set $k_d$, and thus on
-the reconstructed pattern.\\
+the reconstructed pattern.
 
 With size $L$ and resolution $N$ specified for a pattern, we may compute the
 pattern's wavenumber range. Since we would like to sample the spectrum at as
@@ -1274,62 +1274,6 @@ reduced by the same multiplicative factor $f$, where $f \in \{\varphi^{-1},
 %	ymin = 0,
 %	ymax = 0.001,
 	]
-\nextgroupplot[
-	ytick=\empty,
-	axis y line=none,
-	]
-\addplot[
-  color=red,
-  fill,
-  fill opacity=0.2,
-  unbounded coords=discard,
-  ]
-  table [
-    col sep=comma, 
-  ]
-  {figures/sampling_scale_06_lod_1.dat} \closedcycle;
-\nextgroupplot[
-	ytick=\empty,
-	axis y line=none,
-	]
-\addplot[
-  color=blue,
-  fill,
-  fill opacity=0.2,
-  unbounded coords=discard,
-  ]
-  table [
-    col sep=comma, 
-  ]
-  {figures/sampling_scale_06_lod_2.dat} \closedcycle;
-\nextgroupplot[
-	ytick=\empty,
-	axis y line=none,
-	]
-\addplot[
-  color=green,
-  fill,
-  fill opacity=0.2,
-  unbounded coords=discard,
-  ]
-  table [
-    col sep=comma, 
-  ]
-  {figures/sampling_scale_06_lod_3.dat} \closedcycle;
-\nextgroupplot[
-	ytick=\empty,
-	axis y line=none,
-	]
-\addplot[
-  color=yellow,
-  fill,
-  fill opacity=0.2,
-  unbounded coords=discard,
-  ]
-  table [
-    col sep=comma, 
-  ]
-  {figures/sampling_scale_06_lod_4.dat} \closedcycle;
 \nextgroupplot[
 	ytick=\empty,
 	axis y line=none,
@@ -1386,11 +1330,67 @@ reduced by the same multiplicative factor $f$, where $f \in \{\varphi^{-1},
     col sep=comma, 
   ]
   {figures/sampling_scale_03_lod_4.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  unbounded coords=discard,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_1.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  unbounded coords=discard,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_2.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=green,
+  fill,
+  fill opacity=0.2,
+  unbounded coords=discard,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_3.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=yellow,
+  fill,
+  fill opacity=0.2,
+  unbounded coords=discard,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_4.dat} \closedcycle;
 \end{groupplot}
 \end{tikzpicture}
 \caption{Top row: reconstructed spectra of patterns with sizes reduced by
- $\varphi^{-1}$. Bottom row: reconstructed spectra of patterns with sizes
-reduced by $1-\varphi^{-1}$.}
+ $1-\varphi^{-1}$. Bottom row: reconstructed spectra of patterns with sizes
+reduced by $\varphi^{-1}$.}
 \label{fig:sampling_pattern_size_reduction}
 \end{figure}
 %
@@ -1407,7 +1407,8 @@ high wavenumber range. Thus, it is the large wavelengths we are able to
 reconstruct, but missing close-up detail. On the other hand, we have less issues
 with repetitve artifacts. The two rows in Figure~\ref{fig:sampling_pattern_size_reduction}
 depict the reconstructions of one and the same spectrum, based on patterns with
-the same resolution $N$, but size $L$ reduced by the two different factors.
+the same resolution $N$, but initial size $L$ reduced by the two different
+factors.
 
 %
 %
@@ -1429,99 +1430,6 @@ the same resolution $N$, but size $L$ reduced by the two different factors.
 %	ymin = 0,
 %	ymax = 0.001,
 	]
-\nextgroupplot[
-	ytick=\empty,
-	axis y line=none,
-	]
-\addplot[
-  color=red,
-  fill,
-  fill opacity=0.2,
-  ]
-  table [
-    col sep=comma, 
-  ]
-  {figures/sampling_scale_06_lod_1.dat} \closedcycle;
-\addplot[
-  color=blue,
-  fill,
-  fill opacity=0.2,
-  ]
-  table [
-    col sep=comma, 
-  ]
-  {figures/sampling_scale_06_lod_2_capped.dat} \closedcycle;
-\nextgroupplot[
-	ytick=\empty,
-	axis y line=none,
-	]
-\addplot[
-  color=red,
-  fill,
-  fill opacity=0.2,
-  ]
-  table [
-    col sep=comma, 
-  ]
-  {figures/sampling_scale_06_lod_1.dat} \closedcycle;
-\addplot[
-  color=blue,
-  fill,
-  fill opacity=0.2,
-  ]
-  table [
-    col sep=comma, 
-  ]
-  {figures/sampling_scale_06_lod_2_capped.dat} \closedcycle;
-\addplot[
-  color=green,
-  fill,
-  fill opacity=0.2,
-  ]
-  table [
-    col sep=comma, 
-  ]
-  {figures/sampling_scale_06_lod_3_capped.dat} \closedcycle;
-\nextgroupplot[
-	ytick=\empty,
-	axis y line=none,
-	]
-\addplot[
-  color=red,
-  fill,
-  fill opacity=0.2,
-  ]
-  table [
-    col sep=comma, 
-  ]
-  {figures/sampling_scale_06_lod_1.dat} \closedcycle;
-\addplot[
-  color=blue,
-  fill,
-  fill opacity=0.2,
-  ]
-  table [
-    col sep=comma, 
-  ]
-  {figures/sampling_scale_06_lod_2_capped.dat} \closedcycle;
-\addplot[
-  color=green,
-  fill,
-  fill opacity=0.2,
-  ]
-  table [
-    col sep=comma, 
-  ]
-  {figures/sampling_scale_06_lod_3_capped.dat} \closedcycle;
-\addplot[
-  color=yellow,
-  fill,
-  fill opacity=0.2,
-  ]
-  table [
-    col sep=comma, 
-  ]
-  {figures/sampling_scale_06_lod_4_capped.dat} \closedcycle;
 \nextgroupplot[
 	ytick=\empty,
 	axis y line=none,
@@ -1615,6 +1523,99 @@ the same resolution $N$, but size $L$ reduced by the two different factors.
     col sep=comma, 
   ]
   {figures/sampling_scale_03_lod_4_capped.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_1.dat} \closedcycle;
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_2_capped.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_1.dat} \closedcycle;
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_2_capped.dat} \closedcycle;
+\addplot[
+  color=green,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_3_capped.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_1.dat} \closedcycle;
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_2_capped.dat} \closedcycle;
+\addplot[
+  color=green,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_3_capped.dat} \closedcycle;
+\addplot[
+  color=yellow,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_scale_06_lod_4_capped.dat} \closedcycle;
 \end{groupplot}
 \end{tikzpicture}
 \caption{Assembly of the spectra from Figure~\ref{fig:sampling_pattern_size_reduction}.}
