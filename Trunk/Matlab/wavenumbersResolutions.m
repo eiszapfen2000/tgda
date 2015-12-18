@@ -12,8 +12,11 @@ config.maxArea = 1750;
 config.areas = areas(config.maxArea, 4, gsLong);
 
 x = generateSpectra(config);
+xmaxK = [ 0 maxWavenumbers(x) ];
+
 config.resolution = 64;
 y = generateSpectra(config);
+ymaxK = [ 0 maxWavenumbers(y) ];
 
 figure
 for i=1:numel(x)
@@ -28,9 +31,13 @@ plot(y{i}.k, y{i}.a);
 end
 
 writeRangedSpectra(x, 'sampling_multires_scale_06_res_128_lod_%d.dat');
+writeRangedSpectra(x, 'sampling_multires_scale_06_res_128_lod_%d_capped.dat', 1, xmaxK);
 writeRangedSpectra(x, 'sampling_multires_scale_06_res_128_8_lod_%d.dat', 8);
+
 writeRangedSpectra(y, 'sampling_multires_scale_06_res_64_lod_%d.dat');
+writeRangedSpectra(y, 'sampling_multires_scale_06_res_64_lod_%d_capped.dat', 1, ymaxK);
 writeRangedSpectra(y, 'sampling_multires_scale_06_res_64_8_lod_%d.dat', 8);
+
 
 
 % writeRangedSpectra(x, 'sampling_scale_03_lod_%d.dat');
