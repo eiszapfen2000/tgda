@@ -1683,7 +1683,15 @@ resolution than the associated first order partial derivatives.
 	xmax = 0.45,
 	]
 \addplot[
+  color=red!20!white,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_lod_1.dat};
+\addplot[
   color=red,
+  %draw=red,
   fill,
   fill opacity=0.2,
   ]
@@ -1706,14 +1714,12 @@ resolution than the associated first order partial derivatives.
 	xmax = 0.74,
 	]
 \addplot[
-  color=blue,
-  fill,
-  fill opacity=0.2,
+  color=blue!20!white,
   ]
   table [
     col sep=comma, 
   ]
-  {figures/sampling_multires_scale_06_res_64_lod_2.dat} \closedcycle;
+  {figures/sampling_multires_scale_06_res_128_lod_2.dat};
 \addplot[
   ycomb,
   color=blue,
@@ -1722,12 +1728,36 @@ resolution than the associated first order partial derivatives.
     col sep=comma, 
   ]
   {figures/sampling_multires_scale_06_res_64_8_lod_2.dat};
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_lod_2.dat} \closedcycle;
 \nextgroupplot[
 	ytick=\empty,
 	axis y line=none,
 	xmin = 0,
 	xmax = 1.2,
 	]
+\addplot[
+  color=green!20!white,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_lod_3.dat};
+\addplot[
+  ycomb,
+  color=green,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_8_lod_3.dat};
 \addplot[
   color=green,
   fill,
@@ -1737,20 +1767,27 @@ resolution than the associated first order partial derivatives.
     col sep=comma, 
   ]
   {figures/sampling_multires_scale_06_res_64_lod_3.dat} \closedcycle;
-\addplot[
-  ycomb,
-  color=green,
-  ]
-  table [
-    col sep=comma, 
-  ]
-  {figures/sampling_multires_scale_06_res_64_8_lod_3.dat};
 \nextgroupplot[
 	ytick=\empty,
 	axis y line=none,
 	xmin = 0,
 	xmax = 1.94,
 	]
+\addplot[
+  color=yellow!20!white,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_lod_4.dat};
+\addplot[
+  ycomb,
+  color=yellow,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_8_lod_4.dat};
 \addplot[
   color=yellow,
   fill,
@@ -1760,14 +1797,6 @@ resolution than the associated first order partial derivatives.
     col sep=comma, 
   ]
   {figures/sampling_multires_scale_06_res_64_lod_4.dat} \closedcycle;
-\addplot[
-  ycomb,
-  color=yellow,
-  ]
-  table [
-    col sep=comma, 
-  ]
-  {figures/sampling_multires_scale_06_res_64_8_lod_4.dat};
 \nextgroupplot[
 	ytick=\empty,
 	axis y line=none,
