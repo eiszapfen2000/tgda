@@ -1667,10 +1667,11 @@ wavevector domains:
 \end{align}
 where $\mvec{h}$ is based on the higher resolution $N_h$, and $\mvec{l}$ on the
 lower resolution $N_l$. One may notice that $\mvec{l}$ is a subset of $\mvec{h}$,
-all pairs $(k_x, k_y)$ in $\mvec{l}$ are also found in $\mvec{h}$. Hence, it is
-not necessary to generate a separate low resolution version of the wave spectrum
-$\Theta(\mvec{k})$, because it is already embedded inside the high resolution
-wave spectrum.
+all pairs $(k_x, k_y)$ in $\mvec{l}$ are also to be found in $\mvec{h}$. Hence,
+there is no need to generate two separate instances of the wave spectrum
+$\Theta(\mvec{k})$ with differing resolutions. The low resolution variant is
+already embedded inside the high resolution variant.
+
 
 %
 %
