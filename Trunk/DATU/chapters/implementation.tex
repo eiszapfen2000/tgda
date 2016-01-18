@@ -1649,11 +1649,11 @@ profile is being sampled.
 \subsection{Resolutions}
 Recall, that one perturbation pattern consists of surface elevation $\eta$,
 displacement vector $\mvec{D}$, and the first order partial derivatives of
-$\eta$, $D_x$ and $D_y$. Moreover, we have a set of such patterns. The
+$\eta$ and $\mvec{D}$. Moreover, we have a set of such patterns. The
 computational load to synthesize all the cumulated pattern data has proven to be
 substantial. To improve upon the status quo, we chose to implement an approach
-common in computer graphics: combine low resolution geometry augmented with
-high resolution data to generate detailed lighting. For our specific case, that
+common in computer graphics: augment low resolution geometry with high resolution
+surface information to generate detailed lighting. For our specific case, that
 means we may synthesize vertical and horizontal displacements at a lower
 resolution than the associated first order partial derivatives.
 
