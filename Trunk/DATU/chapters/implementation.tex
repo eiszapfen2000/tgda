@@ -1647,15 +1647,6 @@ profile is being sampled.
 
 
 \subsection{Resolutions}
-Recall, that one perturbation pattern consists of surface elevation $\eta$,
-displacement vector $\mvec{D}$, and the first order partial derivatives of
-$\eta$ and $\mvec{D}$. Moreover, we have a set of such patterns. The
-computational load to synthesize all the cumulated pattern data has proven to be
-substantial. To improve upon the status quo, we chose to implement an approach
-common in computer graphics: augment low resolution geometry with high resolution
-surface information to generate detailed lighting. For our specific case, that
-means we may synthesize vertical and horizontal displacements at a lower
-resolution than the associated first order partial derivatives.
 %
 %
 \begin{figure}
@@ -1899,6 +1890,18 @@ reconstruction in bottom row.}
 \label{fig:sampling_different_resolutions}
 \end{figure}
 %
+%
+Recall, that one perturbation pattern consists of surface elevation $\eta$,
+displacement vector $\mvec{D}$, and the first order partial derivatives of
+$\eta$ and $\mvec{D}$. Moreover, we have a set of such patterns. The
+computational load to synthesize all the cumulated pattern data has proven to be
+substantial. To improve upon the status quo, we chose to implement an approach
+common in computer graphics: augment low resolution geometry with high resolution
+surface information to generate detailed lighting. For our specific case, that
+means we may synthesize vertical and horizontal displacements at a lower
+resolution than the associated first order partial derivatives.
+%
+%
 Given pattern size $L$, grid point spacing $\Delta k = 2\pi/L$, pattern
 resolutions $N_h,N_l \in \mathbb{N}$ with $N_l < N_h$, then we may define the
 two following wavevector domains:
@@ -1919,28 +1922,254 @@ resolution variant of the wave energy spectrum is already embedded inside the
 high resolution variant. See Figure~\ref{fig:sampling_different_resolutions} for
 a display of the relation between two reconstructions of the same one
 dimensional wavenumber spectrum with different resolutions, but the same size.
+%
+%
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[
+	group style={
+		columns=3,
+		rows=2,
+		%xlabels at=edge bottom,
+		xlabels at=all,
+		ylabels at=edge left,
+	},
+    xlabel={$k$},
+    ylabel=\empty,
+	width=0.375\textwidth,
+	axis x line=bottom,
+%	ymin = 0,
+%	ymax = 0.001,
+	]
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_8_lod_1_capped.dat} \closedcycle;
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_8_lod_2_capped.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_8_lod_1_capped.dat} \closedcycle;
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_8_lod_2_capped.dat} \closedcycle;
+\addplot[
+  color=green,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_8_lod_3_capped.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_8_lod_1_capped.dat} \closedcycle;
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_8_lod_2_capped.dat} \closedcycle;
+\addplot[
+  color=green,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_8_lod_3_capped.dat} \closedcycle;
+\addplot[
+  color=yellow,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_8_lod_4_capped.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_8_lod_1_capped.dat} \closedcycle;
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_8_lod_2_capped.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_8_lod_1_capped.dat} \closedcycle;
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_8_lod_2_capped.dat} \closedcycle;
+\addplot[
+  color=green,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_8_lod_3_capped.dat} \closedcycle;
+\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	]
+\addplot[
+  color=red,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_8_lod_1_capped.dat} \closedcycle;
+\addplot[
+  color=blue,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_8_lod_2_capped.dat} \closedcycle;
+\addplot[
+  color=green,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_8_lod_3_capped.dat} \closedcycle;
+\addplot[
+  color=yellow,
+  fill,
+  fill opacity=0.2,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_128_8_lod_4_capped.dat} \closedcycle;
+\end{groupplot}
+\end{tikzpicture}
+\caption{Gradual assembly of the reconstructed spectra from Figure
+\ref{fig:sampling_different_resolutions}. Top row and bottom row transition
+between two subsequent spectral datasets at different wavenumbers.}
+\label{fig:sampling_different_resolutions_pattern_assembly}
+\end{figure}
+%
+%
+At this point we have two sets of reconstructions of the same spectrum, based on
+two different resolutions. For each set, we need to assemble the overlapping
+spectral data into one coherent spectrum. As before, the transition from one
+spectrum to the next takes place at the maximum wavenumber of the spectrum with
+the smaller wavenumber range. In addition, we must take into consideration that
+the two sets of spectral data have different wavenumber ranges, therefore
+the transitions take place at different wavenumbers. Figure
+\ref{fig:sampling_different_resolutions_pattern_assembly} depicts the gradual
+assembly of the spectral data from Figure
+\ref{fig:sampling_different_resolutions}.
 
-Low resolution geometry, augmented with additional data for detailed lighting.
-Vertical and horizontal surface displacement have same resolution, all partial
-derivatives have the same resolution. Across all patterns.
-Compute $h_0(\mvec{k})$ for the larger resolution, automatically encapsulates
-all low res data. That is because same $\Delta k$ for same underlying pattern
-size. Zero frequency at center, low frequency data for low res near center,
-high frequency data for high res outwards. For low res spectrum use only data
-near center, for high res spectrum use all data. We can generate high res slopes
-for low res geometry. And high res displacement derivates for low res
-displacement.
 
-Because we use low res data for height and displacement, we save a lot of
-computation time. The time saves is proportional to the difference in
-resolution.
-
-
-assemble $h_0(\mvec{k},t)$ on demand, with separate resolutions for geometry 
-and gradients
-
-heights and displacement have same resolution, gradients and displacement 
-derivatives have same resolution
+% Low resolution geometry, augmented with additional data for detailed lighting.
+% Vertical and horizontal surface displacement have same resolution, all partial
+% derivatives have the same resolution. Across all patterns.
+% Compute $h_0(\mvec{k})$ for the larger resolution, automatically encapsulates
+% all low res data. That is because same $\Delta k$ for same underlying pattern
+% size. Zero frequency at center, low frequency data for low res near center,
+% high frequency data for high res outwards. For low res spectrum use only data
+% near center, for high res spectrum use all data. We can generate high res slopes
+% for low res geometry. And high res displacement derivates for low res
+% displacement.
+% 
+% Because we use low res data for height and displacement, we save a lot of
+% computation time. The time saves is proportional to the difference in
+% resolution.
+% 
+% 
+% assemble $h_0(\mvec{k},t)$ on demand, with separate resolutions for geometry 
+% and gradients
+% 
+% heights and displacement have same resolution, gradients and displacement 
+% derivatives have same resolution
 
 \subsubsection{Ocean Lighting}
 \cite{article:oceanlighting}

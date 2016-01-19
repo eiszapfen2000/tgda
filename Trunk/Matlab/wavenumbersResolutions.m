@@ -30,13 +30,18 @@ subplot(2, 2, i);
 plot(y{i}.k, y{i}.a);
 end
 
-writeRangedSpectra(x, 'sampling_multires_scale_06_res_128_lod_%d.dat');
-writeRangedSpectra(x, 'sampling_multires_scale_06_res_128_lod_%d_capped.dat', 1, xmaxK);
-writeRangedSpectra(x, 'sampling_multires_scale_06_res_128_8_lod_%d.dat', 8);
+%plotRangedSpectra(x, 1, xmaxK);
+%plotRangedSpectra(y, 1, ymaxK);
 
-writeRangedSpectra(y, 'sampling_multires_scale_06_res_64_lod_%d.dat');
-writeRangedSpectra(y, 'sampling_multires_scale_06_res_64_lod_%d_capped.dat', 1, ymaxK);
-writeRangedSpectra(y, 'sampling_multires_scale_06_res_64_8_lod_%d.dat', 8);
+% writeRangedSpectra(x, 'sampling_multires_scale_06_res_128_lod_%d.dat');
+% writeRangedSpectra(x, 'sampling_multires_scale_06_res_128_lod_%d_capped.dat', 1, xmaxK);
+writeRangedSpectra(x, 'sampling_multires_scale_06_res_128_8_lod_%d_capped.dat', 8, xmaxK);
+% writeRangedSpectra(x, 'sampling_multires_scale_06_res_128_8_lod_%d.dat', 8);
+% 
+% writeRangedSpectra(y, 'sampling_multires_scale_06_res_64_lod_%d.dat');
+% writeRangedSpectra(y, 'sampling_multires_scale_06_res_64_lod_%d_capped.dat', 1, ymaxK);
+writeRangedSpectra(y, 'sampling_multires_scale_06_res_64_8_lod_%d_capped.dat', 8, ymaxK);
+% writeRangedSpectra(y, 'sampling_multires_scale_06_res_64_8_lod_%d.dat', 8);
 
 
 
@@ -114,6 +119,11 @@ for l=1:numel(spectra)
     a = spectra{l}.a;
     a = a(ix:end);
     rs{l}.a = a(1:delta:end);
+    
+%     if (l > 1)
+%         rs{l}.k = [ rs{l-1}.k(end) rs{l}.k ];
+%         rs{l}.a = [ rs{l-1}.a(end) rs{l}.a ];
+%     end
 end
 end
 %%
