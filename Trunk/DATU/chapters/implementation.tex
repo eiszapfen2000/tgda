@@ -1658,19 +1658,23 @@ means we may synthesize vertical and horizontal displacements at a lower
 resolution than the associated first order partial derivatives.\\
 
 Given pattern size $L$, grid point spacing $\Delta k = 2\pi/L$, pattern
-resolutions $N_h,N_l \in \mathbb{N}$ with $N_l < N_h$, then we may write two
-wavevector domains:
+resolutions $N_h,N_l \in \mathbb{N}$ with $N_l < N_h$, then we may define the
+two following wavevector domains:
 %
 \begin{align}
 \mvec{h} = (k_x,k_y)~&\in~\{(\alpha\Delta k,\alpha\Delta k)|-\frac{N_h}{2}\leq\alpha<\frac{N_h}{2}\}\\
 \mvec{l} = (k_x,k_y)~&\in~\{(\alpha\Delta k,\alpha\Delta k)|-\frac{N_l}{2}\leq\alpha<\frac{N_l}{2}\}
 \end{align}
-where $\mvec{h}$ is based on the higher resolution $N_h$, and $\mvec{l}$ on the
-lower resolution $N_l$. One may notice that $\mvec{l}$ is a subset of $\mvec{h}$,
+where $\mvec{h}$ is based on the higher resolution $N_h$ and therefore contains
+more pairs $(k_x, k_y)$ than $\mvec{l}$.
+One may notice that $\mvec{l}$ is a subset of $\mvec{h}$,
 all pairs $(k_x, k_y)$ in $\mvec{l}$ are also to be found in $\mvec{h}$. Hence,
-there is no need to generate two separate instances of the wave spectrum
-$\Theta(\mvec{k})$ with differing resolutions. The low resolution variant is
-already embedded inside the high resolution variant.
+there is no need to generate two separate instances of the wave spectrum with
+differing resolutions, $\Theta(\mvec{h})$ and $\Theta(\mvec{l})$. As long as
+the two different wavevector domains are based on the same pattern size,
+$\mvec{l}$ is a subset of $\mvec{h}$, it follows that $\Theta(\mvec{l})$ is a
+subset of $\Theta(\mvec{h})$. In short, the low resolution variant of the
+wave spectrum is already embedded inside the high resolution variant.\\
 
 
 %
