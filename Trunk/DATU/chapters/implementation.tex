@@ -2147,7 +2147,7 @@ the two sets of spectral data have different wavenumber ranges, therefore
 the transitions take place at different wavenumbers. Figure
 \ref{fig:sampling_different_resolutions_pattern_assembly} depicts the gradual
 assembly of the spectral data from Figure
-\ref{fig:sampling_different_resolutions}.
+\ref{fig:sampling_different_resolutions}.\\
 
 Recall Equation~\ref{eq:dft_surface_elevation}, where we synthesize a random
 surface based on wavevector domain $\mvec{k}$. For each wavevector we compute
@@ -2157,17 +2157,17 @@ an instance of the same surface at a lower resolution, we need to take the
 following steps:
 \begin{itemize}
  \item Define a wavevector domain $\mvec{l}$ with a lower resolution than
- $\mvec{k}$, but the same underlying size $L$.
- \item Extract $\Theta(\mvec{l})$ from $\Theta(\mvec{k})$.
- \item For each $\Theta(\mvec{k})$ extracted, also copy its associated random
- number pair $(\xi_r,\xi_i)$.
+ wavevector domain $\mvec{k}$, but the same underlying size $L$.
+ \item Extract subset $\Theta(\mvec{l})$ from $\Theta(\mvec{k})$.
+ \item For each extracted element of $\Theta(\mvec{k})$, also copy its
+ associated random number pair $(\xi_r,\xi_i)$.
 \end{itemize}
 The last step makes sure that each wavevector is associated with one specific
 pair of random numbers, be it as part of the low resolution surface as well as
 part of the high resolution surface. The random number pair basically defines
-the amplitude associated with a wavevector. For us to be able to reproduce the
-same random surface at different resolutions, the pairing between amplitude and
-wavevector needs to be the same across resolutions.
+the amplitude associated with a wavevector. To be able to reproduce the same
+random surface at different resolutions, the pairing between amplitude and
+wavevector needs to remain the same across resolutions.
 
 % Low resolution geometry, augmented with additional data for detailed lighting.
 % Vertical and horizontal surface displacement have same resolution, all partial
