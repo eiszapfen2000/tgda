@@ -1637,13 +1637,13 @@ smaller wavenumber range.
 \emph{Note}: The typical profile of a one dimensional wavenumber spectrum suggests
 that it would be beneficial to employ an adaptive sampling scheme which allows
 for tight sampling in the low wavenumber range, especially near the peak
-wavenumber, and sparse sampling in the high wavenumber range, see Fr\'{e}chot~\cite{article:frechot2007}. Because
-we employ a Discrete Fourier Transform to compute the sum of waves, we are
-subject to its constraints. One of those constraints is that the spacing between
-subsequent coordinates is constant, namely $\Delta k$. Hence, in combination
-with a discrete Fourier Transform, we are not allowed to employ a sampling
-scheme where $\Delta k$ changes dependent on which part of the wavenumber
-profile is being sampled.
+wavenumber, and sparse sampling in the high wavenumber range, see
+Fr\'{e}chot~\cite{article:frechot2007}. Because we employ a Discrete Fourier
+Transform to compute the sum of waves, we are subject to its constraints. One of
+those constraints is that the spacing between subsequent coordinates is constant,
+namely $\Delta k$. Hence, in combination with a Discrete Fourier Transform, we
+are not allowed to employ a sampling scheme where $\Delta k$ changes dependent
+on which part of the wavenumber profile is being sampled.
 
 
 \subsection{Resolutions}
@@ -2137,6 +2137,7 @@ between two subsequent spectral datasets at different wavenumbers.}
 \end{figure}
 %
 %
+
 At this point we have two sets of reconstructions of the same spectrum, based on
 two different resolutions. For each set, we need to assemble the overlapping
 spectral data into one coherent spectrum. As before, the transition from one
