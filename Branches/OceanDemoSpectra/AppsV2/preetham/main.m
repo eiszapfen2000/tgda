@@ -255,7 +255,7 @@ static Vector3 xyY_to_XYZ(Vector3 xyY)
     assert(xyY.z > 0.0);
 
     Vector3 XYZ;
-    XYZ.x = (xyY.x / xyY.y) * xyY.z;        
+    XYZ.x = (xyY.x / xyY.y) * xyY.z;
     XYZ.y = xyY.z;
     XYZ.z = ((1.0 - xyY.x - xyY.y) / xyY.y) * xyY.z;
 
@@ -273,6 +273,68 @@ static Vector3 XYZ_to_xyY(Vector3 XYZ)
 
     return xyY;
 }
+
+static Vector3 Lab_to_XYZ(Vector3 Lab, Vector3 RefWhiteXYZ)
+{
+	const double epsilon = 216.0 / 24389.0;
+	const double kappa = 24389.0 / 27.0;
+
+	const double fy = (Lab.x + 16.0) / 116.0;
+	const double fx = (Lab.y / 500.0) + fy;
+	const double fz = fy - (Lab.z / 200.0);
+
+	const double fx3 = pow(fx, 3.0);
+	const double fy3 = pow(fy, 3.0);
+	const double fz3 = pow(fz, 3.0);
+
+	const double xr = (fx3 > epsilon) ? fx3 : ((116.0*fx - 16.0) / kappa);
+	const double yr = (Lab.x > (kappa*epsilon)) ? fy3 : (Lab.x / kappa);
+	const double zr = (fz3 > epsilon) ? fz3 : ((116.0*fz - 16.0) / kappa);
+
+	Vector3 XYZ;
+	XYZ.x = xr * RefWhiteXYZ.x;
+	XYZ.y = yr * RefWhiteXYZ.y;
+	XYZ.z = zr * RefWhiteXYZ.z;
+
+	return XYZ;
+}
+
+static Vector3 XYZ_to_Lab(Vector3 XYZ, Vector3 RefWhiteXYZ)
+{
+	const double epsilon = 216.0 / 24389.0;
+	const double kappa = 24389.0 / 27.0;
+
+	const double xr = XYZ.x / RefWhiteXYZ.x;
+	const double yr = XYZ.y / RefWhiteXYZ.y;
+	const double zr = XYZ.z / RefWhiteXYZ.z;
+
+	const double fx = (xr > epsilon) ? pow(xr, 1.0/3.0) : ((kappa*xr + 16.0) / 116.0);
+	const double fy = (yr > epsilon) ? pow(yr, 1.0/3.0) : ((kappa*yr + 16.0) / 116.0);
+	const double fz = (zr > epsilon) ? pow(zr, 1.0/3.0) : ((kappa*zr + 16.0) / 116.0);
+
+	Vector3 Lab;
+	Lab.x = 116.0 * fy - 16.0;
+	Lab.y = 500.0 * (fx - fy);
+	Lab.z = 200.0 * (fy - fz);
+
+	return Lab;
+}
+
+/**
+ * reference white in XYZ coordinates
+ */
+static const Vector3 D50 = {96.4212, 100.0, 82.5188};
+static const Vector3 D55 = {95.6797, 100.0, 92.1481};
+static const Vector3 D65 = {95.0429, 100.0, 108.8900};
+static const Vector3 D75 = {94.9722, 100.0, 122.6394};
+
+/**
+ * reference white in xyY coordinates
+ */
+static const Vector3 chromaD50 = {0.3457, 0.3585, 100.0};
+static const Vector3 chromaD55 = {0.3324, 0.3474, 100.0};
+static const Vector3 chromaD65 = {0.3127, 0.3290, 100.0};
+static const Vector3 chromaD75 = {0.2990, 0.3149, 100.0};
 
 static NSString * const NPGraphicsStartupError = @"NPEngineGraphics failed to start up. Consult %@/np.log for details.";
 
@@ -298,7 +360,7 @@ int main (int argc, char **argv)
     glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
     
     // Open a window and create its OpenGL context
-    if( !glfwOpenWindow( 512, 512, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
+    if( !glfwOpenWindow( 1024, 1024, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
     {
         NSLog(@"Failed to open GLFW window");
         glfwTerminate();
@@ -355,7 +417,7 @@ int main (int argc, char **argv)
 
     NSAutoreleasePool * rPool = [ NSAutoreleasePool new ];
 
-    const uint32_t skyResolution = 512;
+    const uint32_t skyResolution = 1024;
 
     NPRenderTargetConfiguration * rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC"  ];
     NPRenderTexture * preethamTarget  = [[ NPRenderTexture alloc ] initWithName:@"Preetham Target"  ];
@@ -689,6 +751,24 @@ int main (int argc, char **argv)
         sun_xyY.z = zenithColor_xyY.z * (nominatorSun.z / denominator.z);
 
         Vector3 sun_XYZ = xyY_to_XYZ(sun_xyY);
+		Vector3 sun_Lab = XYZ_to_Lab(sun_XYZ, D50);
+		Vector3 sun_XYZ_from_Lab = Lab_to_XYZ(sun_Lab, D50);
+
+		NSLog(@"Sun XYZ %f %f %f", sun_XYZ.x, sun_XYZ.y, sun_XYZ.z);
+		NSLog(@"Sun XYZ from Lab %f %f %f", sun_XYZ_from_Lab.x, sun_XYZ_from_Lab.y, sun_XYZ_from_Lab.z);
+
+		Vector3 sunColor_Lab = XYZ_to_Lab(sunColor_XYZ, D50);
+
+		NSLog(@"Sun Lab %f %f %f", sun_Lab.x, sun_Lab.y, sun_Lab.z);
+		NSLog(@"Sun Disc Lab %f %f %f", sunColor_Lab.x, sunColor_Lab.y, sunColor_Lab.z);
+
+		Vector3 combined_Lab;
+		combined_Lab.x = sunColor_Lab.x;
+		combined_Lab.y = sun_Lab.y;
+		combined_Lab.z = sun_Lab.z;
+
+		Vector3 combined_XYZ = Lab_to_XYZ(combined_Lab, D50);
+
 
         const FVector3 A = { ABCDE_x[0], ABCDE_y[0], ABCDE_Y[0] };
         const FVector3 B = { ABCDE_x[1], ABCDE_y[1], ABCDE_Y[1] };
@@ -705,7 +785,9 @@ int main (int argc, char **argv)
 
         [ radiusInPixel_P setFValue:halfSkyResolution ];
         [ directionToSun_P setValue:directionToSun ];
-        [ sunColor_P setValue:sunColor_XYZ ];
+        //[ sunColor_P setValue:sunColor_XYZ ];
+		//[ sunColor_P setValue:sun_XYZ ];
+		[ sunColor_P setValue:combined_XYZ ];
         [ sunHalfApparentAngle_P setValue:sunHalfApparentAngle ];
         [ zenithColor_P setValue:zenithColor_xyY ];
         [ denominator_P setValue:denominator ];
