@@ -6,10 +6,15 @@ in vec2 out_texcoords;
 #define MATH_PI         3.1415926536
 #define MATH_PI_DIV_2   1.5707963268
 
-const mat3 XYZ2LinearsRGB
+const mat3 XYZ2LinearsRGB_D50
     = mat3(3.1338561, -0.9787684,  0.0719453,
            -1.6168667, 1.9161415, -0.2289914,
             -0.4906146, 0.0334540, 1.4052427);
+
+const mat3 XYZ2LinearsRGB_D65
+	= mat3(3.2404542, -0.9692660, 0.0556434,
+		   -1.5371385, 1.8760108, -0.2040259,
+		   -0.4985314, 0.0415560, 1.0572252);
 
 void main()
 {
@@ -87,5 +92,5 @@ void main()
         XYZ = (irradiance / MATH_PI) * avgFresnel;
     }
 
-    target = vec4(XYZ2LinearsRGB * XYZ, 1.0);
+    target = vec4(XYZ2LinearsRGB_D50 * XYZ, 1.0);
 }
