@@ -31,8 +31,7 @@ void main()
             u = u / lMinusOne;
             //XYZ = vec3(10000,0,0);
         }
-        //else
-        //{
+
         //  http://en.wikipedia.org/wiki/Stereographic_projection
         float X = u.x;
         float Y = u.y;
@@ -70,21 +69,12 @@ void main()
         float falloff = (1.0 / exp(a * f)) + b * (1.0 / exp(c * f));
         falloff = clamp(falloff, 0.0, 1.0);
 
-        /*
-        vec3 zs = vec3(zenithColor.x, zenithColor.y, sunColor.y);
-        vec3 zenithColorXYZ;
-        zenithColorXYZ.x = (zs.x / zs.y) * zs.z;
-        zenithColorXYZ.y = zs.z;
-        zenithColorXYZ.z = ((1.0f - zs.x - zs.y) / zs.y) * zs.z;
-        */
-
         XYZ += falloff * sunColor;
 
         if ( cosGamma >= cos(sunHalfApparentAngle) )
         {
             XYZ += sunColor;
         }
-        //}
     }
     else
     {
