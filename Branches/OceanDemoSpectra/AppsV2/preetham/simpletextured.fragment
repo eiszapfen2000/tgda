@@ -6,21 +6,5 @@ void main()
 {
     vec4 result = texture(colormap, out_texcoords);
 
-    target = pow(result, vec4(1/2.2));
-
-    /*
-    float lala = log(0.0);
-
-    if (isinf(lala))
-    {
-        target = vec4(1.0, 0.0, 0.0, 1.0);
-    }
-
-    float nix = max(lala, 0.0);
-
-    if (nix == 0.0)
-    {
-        target = vec4(0.0, 1.0, 0.0, 1.0);
-    }
-    */
+    target = vec4(pow(result.rgb / 50000, vec3(1/2.2)), 1.0);
 }

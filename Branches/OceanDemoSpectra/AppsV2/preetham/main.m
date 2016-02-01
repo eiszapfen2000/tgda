@@ -39,6 +39,8 @@
 #import "NP.h"
 #import "GL/glew.h"
 #import "GL/glfw.h"
+#define ILUT_USE_OPENGL
+#import "IL/ilut.h"
 
 /*
 sun disc implementation from
@@ -403,9 +405,7 @@ int main (int argc, char **argv)
     [[ NP Graphics ] checkForGLErrors ];
     [[[ NP Core ] timer ] reset ];
 
-    /*
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
-    */
 
     [[ NP Graphics ] checkForGLErrors ];
 
@@ -452,6 +452,7 @@ int main (int argc, char **argv)
     RETAIN(effect);
 
     NPEffectTechnique * preetham = [ effect techniqueWithName:@"preetham" ];
+    NPEffectTechnique * preethamSunDisc = [ effect techniqueWithName:@"preetham_sundisc" ];
     NPEffectTechnique * texture  = [ effect techniqueWithName:@"texture"  ];
 
     NPEffectTechnique * logLuminance
@@ -523,10 +524,35 @@ int main (int argc, char **argv)
                 addInputActionWithName:@"WheelDown"
                             inputEvent:NpMouseWheelDown ];
 
+    NPInputAction * irradiance
+        = [[[ NP Input ] inputActions ] 
+                addInputActionWithName:@"Irradiance"
+                            inputEvent:NpKeyboardI ];
+
+    NPInputAction * sunDisc
+        = [[[ NP Input ] inputActions ] 
+                addInputActionWithName:@"SunDisc"
+                            inputEvent:NpKeyboardD ];
+
+    NPInputAction * tmap
+        = [[[ NP Input ] inputActions ] 
+                addInputActionWithName:@"Tonemap"
+                            inputEvent:NpKeyboardT ];
+
+    NPInputAction * screenShot
+        = [[[ NP Input ] inputActions ] 
+                addInputActionWithName:@"Screenshot"
+                            inputEvent:NpKeyboardS ];
+	
+
     RETAIN(leftClick);
     RETAIN(rightClick);
     RETAIN(wheelUp);
     RETAIN(wheelDown);
+	RETAIN(irradiance);
+	RETAIN(sunDisc);
+	RETAIN(tmap);
+	RETAIN(screenShot);
 
     DESTROY(rPool);
 
@@ -547,6 +573,9 @@ int main (int argc, char **argv)
     const float cEnd   =  halfSkyResolution;
 
     BOOL modified = YES;
+	BOOL useIrradiance = YES;
+	BOOL renderSunDisc = YES;
+	BOOL tonemapping = YES;
 
     // run loop
     while ( running )
@@ -614,6 +643,21 @@ int main (int argc, char **argv)
             modified = YES;
         }
 
+		if ([ irradiance deactivated ] == YES )
+		{
+			useIrradiance = !useIrradiance;
+		}
+
+		if ([ sunDisc deactivated ] == YES )
+		{
+			renderSunDisc = !renderSunDisc;
+		}
+
+		if ([ tmap deactivated ] == YES )
+		{
+			tonemapping = !tonemapping;
+		}
+
         thetaSun = MIN(thetaSun, MATH_PI_DIV_2);
         thetaSun = MAX(thetaSun, 0.0);
 
@@ -626,6 +670,7 @@ int main (int argc, char **argv)
 
         double sunHalfApparentAngle = 0.00935 * 0.5;
         //double sunHalfApparentAngle = 0.25 * MATH_PI / 360.0;
+		//double sunHalfApparentAngle = 0.25 * MATH_DEG_TO_RAD;
         double sunDiskRadius = tan(sunHalfApparentAngle);
 
         //
@@ -698,47 +743,50 @@ int main (int argc, char **argv)
         denominator.y = digamma(0.0, thetaSun, ABCDE_y);
         denominator.z = digamma(0.0, thetaSun, ABCDE_Y);
 
-
         Vector3 irradiance_XYZ = v3_zero();
-        const double phiStep   = 5.0 * MATH_DEG_TO_RAD;
-        const double thetaStep = 5.0 * MATH_DEG_TO_RAD;
 
-        for (double phi = 0.0; phi < MATH_2_MUL_PI; phi += phiStep)
-        {
-            for (double theta = 0.0; theta < MATH_PI_DIV_4; theta += thetaStep)
-            {
-                const double sinTheta = sin(theta);
-                const double cosTheta = cos(theta);
-                const double sinPhi = sin(phi);
-                const double cosPhi = cos(phi);
+		if ( useIrradiance == YES )
+		{
+		    const double phiStep   = 1.0 * MATH_DEG_TO_RAD;
+		    const double thetaStep = 1.0 * MATH_DEG_TO_RAD;
 
-                Vector3 v;
-                v.x = sinTheta * cosPhi;
-                v.y = sinTheta * sinPhi;
-                v.z = cosTheta;
-                // float cosGamma = clamp(dot(v, directionToSun), -1.0, 1.0);
-                double cosGamma = v3_vv_dot_product(&directionToSun, &v);
-                cosGamma = MAX(MIN(cosGamma, 1.0), -1.0);
-                double gamma = acos(cosGamma);
+		    for (double phi = 0.0; phi < MATH_2_MUL_PI; phi += phiStep)
+		    {
+		        for (double theta = 0.0; theta < MATH_PI_DIV_4; theta += thetaStep)
+		        {
+		            const double sinTheta = sin(theta);
+		            const double cosTheta = cos(theta);
+		            const double sinPhi = sin(phi);
+		            const double cosPhi = cos(phi);
 
-                Vector3 nominator;
-                nominator.x = digamma(theta, gamma, ABCDE_x);
-                nominator.y = digamma(theta, gamma, ABCDE_y);
-                nominator.z = digamma(theta, gamma, ABCDE_Y);
+		            Vector3 v;
+		            v.x = sinTheta * cosPhi;
+		            v.y = sinTheta * sinPhi;
+		            v.z = cosTheta;
+		            // float cosGamma = clamp(dot(v, directionToSun), -1.0, 1.0);
+		            double cosGamma = v3_vv_dot_product(&directionToSun, &v);
+		            cosGamma = MAX(MIN(cosGamma, 1.0), -1.0);
+		            double gamma = acos(cosGamma);
 
-                Vector3 xyY;
-                xyY.x = zenithColor_xyY.x * (nominator.x / denominator.x);
-                xyY.y = zenithColor_xyY.y * (nominator.y / denominator.y);
-                xyY.z = zenithColor_xyY.z * (nominator.z / denominator.z);
+		            Vector3 nominator;
+		            nominator.x = digamma(theta, gamma, ABCDE_x);
+		            nominator.y = digamma(theta, gamma, ABCDE_y);
+		            nominator.z = digamma(theta, gamma, ABCDE_Y);
 
-                double n_dot_v = v3_vv_dot_product(NP_WORLD_Z_AXIS, &v);
+		            Vector3 xyY;
+		            xyY.x = zenithColor_xyY.x * (nominator.x / denominator.x);
+		            xyY.y = zenithColor_xyY.y * (nominator.y / denominator.y);
+		            xyY.z = zenithColor_xyY.z * (nominator.z / denominator.z);
 
-                Vector3 XYZ = xyY_to_XYZ(xyY);
-                irradiance_XYZ.x += XYZ.x * phiStep * thetaStep * n_dot_v;
-                irradiance_XYZ.y += XYZ.y * phiStep * thetaStep * n_dot_v;
-                irradiance_XYZ.z += XYZ.z * phiStep * thetaStep * n_dot_v;
-            }
-        }
+		            double n_dot_v = v3_vv_dot_product(NP_WORLD_Z_AXIS, &v);
+
+		            Vector3 XYZ = xyY_to_XYZ(xyY);
+		            irradiance_XYZ.x += XYZ.x * phiStep * thetaStep * n_dot_v;
+		            irradiance_XYZ.y += XYZ.y * phiStep * thetaStep * n_dot_v;
+		            irradiance_XYZ.z += XYZ.z * phiStep * thetaStep * n_dot_v;
+		        }
+		    }
+		}
 
         Vector3 nominatorSun;
         nominatorSun.x = digamma(thetaSun, 0.0, ABCDE_x);
@@ -757,7 +805,8 @@ int main (int argc, char **argv)
 		Vector3 sunColor_Lab = XYZ_to_Lab(sunColor_XYZ, D50);
 
 		Vector3 combined_Lab;
-		combined_Lab.x = MAX(sunColor_Lab.x, sun_Lab.x*2.0);
+		//combined_Lab.x = MAX(sunColor_Lab.x, sun_Lab.x*2.0);
+		combined_Lab.x = MAX(sun_Lab.x, sunColor_Lab.x);
 		combined_Lab.y = sun_Lab.y;
 		combined_Lab.z = sun_Lab.z;
 
@@ -800,7 +849,14 @@ int main (int argc, char **argv)
         const FVector4 clearColor = {.x = 0.0f, .y = 0.0f, .z = 0.0f, .w = 0.0f};
         [[ NP Graphics ] clearDrawBuffer:0 color:clearColor ];
 
-        [ preetham activate ];
+		if ( renderSunDisc == YES )
+		{
+			[ preethamSunDisc activate ];
+		}
+		else
+		{
+	        [ preetham activate ];
+		}
 
         glBegin(GL_QUADS);
             glVertexAttrib2f(NpVertexStreamPositions, -1.0f, -1.0f);
@@ -872,7 +928,15 @@ int main (int argc, char **argv)
         [ whiteLuminance_P setValue:L_white ];
         [ averageLuminanceLevel_P setValue:(numberOfLevels - 1) ];
 
-        [ tonemap activate ];
+		if ( tonemapping == YES )
+		{
+			[ tonemap activate ];
+		}
+		else
+		{
+	        [ texture activate ];
+		}
+
 
         glBegin(GL_QUADS);
             glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f,  0.0f);
@@ -886,7 +950,13 @@ int main (int argc, char **argv)
         glEnd();
 
         // check for GL errors
-        [[ NP Graphics ] checkForGLErrors ];        
+        [[ NP Graphics ] checkForGLErrors ];
+
+		if ( [screenShot deactivated] == YES )
+		{
+			NSLog(@"CHeeeers");
+			ilutGLScreenie();
+		}
 
         // swap front and back rendering buffers
         glfwSwapBuffers();
@@ -908,6 +978,10 @@ int main (int argc, char **argv)
     DESTROY(rightClick);
     DESTROY(wheelUp);
     DESTROY(wheelDown);
+	DESTROY(irradiance);
+	DESTROY(sunDisc);
+	DESTROY(tmap);
+	DESTROY(screenShot);
 
     DESTROY(tonemap);
     DESTROY(logLuminance);
