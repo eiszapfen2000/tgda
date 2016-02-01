@@ -192,7 +192,7 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
     // page 21 
 
     const double thetaSunDegrees = MATH_RAD_TO_DEG * thetaSun;
-    const double m = MIN(1.0, 1.0 / (thetaSunDegrees + 0.15 * pow(93.885 - thetaSunDegrees, -1.253)));
+    double m = 1.0 / (cos(thetaSun) + 0.15 * pow(93.885 - thetaSunDegrees, -1.253));
 
     const double beta = 0.04608 * turbidity - 0.04586;
     const double l = 0.35;
@@ -238,7 +238,7 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
 
     Vector3 XYZ = v3_zero();
 	
-	float delta = 10000.f * 0.01f;	
+	double delta = 10000.0 * 0.01;
 
 	for ( int32_t i = 0; i < NUMBER_OF_SPECTRAL_COMPONENTS; i++ )
     {
@@ -754,16 +754,10 @@ int main (int argc, char **argv)
 		Vector3 sun_Lab = XYZ_to_Lab(sun_XYZ, D50);
 		Vector3 sun_XYZ_from_Lab = Lab_to_XYZ(sun_Lab, D50);
 
-		NSLog(@"Sun XYZ %f %f %f", sun_XYZ.x, sun_XYZ.y, sun_XYZ.z);
-		NSLog(@"Sun XYZ from Lab %f %f %f", sun_XYZ_from_Lab.x, sun_XYZ_from_Lab.y, sun_XYZ_from_Lab.z);
-
 		Vector3 sunColor_Lab = XYZ_to_Lab(sunColor_XYZ, D50);
 
-		NSLog(@"Sun Lab %f %f %f", sun_Lab.x, sun_Lab.y, sun_Lab.z);
-		NSLog(@"Sun Disc Lab %f %f %f", sunColor_Lab.x, sunColor_Lab.y, sunColor_Lab.z);
-
 		Vector3 combined_Lab;
-		combined_Lab.x = sunColor_Lab.x;
+		combined_Lab.x = MAX(sunColor_Lab.x, sun_Lab.x*2.0);
 		combined_Lab.y = sun_Lab.y;
 		combined_Lab.z = sun_Lab.z;
 
