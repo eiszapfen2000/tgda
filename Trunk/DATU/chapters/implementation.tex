@@ -2169,6 +2169,21 @@ the amplitude associated with a wavevector. To be able to reproduce the same
 random surface at different resolutions, the pairing between amplitude and
 wavevector needs to remain the same across resolutions.
 
+\section{Demo Application}
+
+ObjectiveC
+GNUstep Foundation
+GLFW \cite{misc:glfw}
+OpenGL \cite{misc:opengl}
+FFTW \cite{misc:fftw}
+One thread for spectral data generation
+One thread for Fourier Transforms
+Projective Grid
+Preetham Sky + Sun Disc
+Bruneton Seamless Ocean Lighting
+Ocean Whitecaps
+Reinhard Tonemap \cite{Reinhard:2002}
+
 % Low resolution geometry, augmented with additional data for detailed lighting.
 % Vertical and horizontal surface displacement have same resolution, all partial
 % derivatives have the same resolution. Across all patterns.
@@ -2191,6 +2206,51 @@ wavevector needs to remain the same across resolutions.
 % heights and displacement have same resolution, gradients and displacement 
 % derivatives have same resolution
 
+\subsubsection{Skylight}
+%
+\begin{figure}
+ \centering
+ \subtop[Sky]
+ {
+ \includegraphics[scale=0.125]{figures/preetham_1.png}
+ }
+ \subtop[Sky + Solar Disc]
+ {
+ \includegraphics[scale=0.125]{figures/preetham_solar_disk_1.png}
+ }
+ \subtop[Sky + Solar Disc + Irradiance]
+ {
+ \includegraphics[scale=0.125]{figures/preetham_solar_disk_irradiance_1.png}
+ }
+ \subtop
+ {
+ \includegraphics[scale=0.125]{figures/preetham_2.png}
+ }
+ \subtop
+ {
+ \includegraphics[scale=0.125]{figures/preetham_solar_disk_2.png}
+ }
+ \subtop
+ {
+ \includegraphics[scale=0.125]{figures/preetham_solar_disk_irradiance_2.png}
+ }
+ \subtop
+ {
+ \includegraphics[scale=0.125]{figures/preetham_3.png}
+ }
+ \subtop
+ {
+ \includegraphics[scale=0.125]{figures/preetham_solar_disk_3.png}
+ }
+ \subtop
+ {
+ \includegraphics[scale=0.125]{figures/preetham_solar_disk_irradiance_3.png}
+ }
+\caption{Brak.}
+\label{fig:preetham}
+\end{figure}
+%
+\cite{Preetham:1999}
 \subsubsection{Ocean Lighting}
 \cite{article:oceanlighting}
 \subsubsection{Whitecaps}
