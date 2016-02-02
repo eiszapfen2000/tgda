@@ -643,20 +643,20 @@ int main (int argc, char **argv)
             modified = YES;
         }
 
-		if ([ irradiance deactivated ] == YES )
-		{
-			useIrradiance = !useIrradiance;
-		}
+        if ([ irradiance deactivated ] == YES )
+        {
+	        useIrradiance = !useIrradiance;
+        }
 
-		if ([ sunDisc deactivated ] == YES )
-		{
-			renderSunDisc = !renderSunDisc;
-		}
+        if ([ sunDisc deactivated ] == YES )
+        {
+	        renderSunDisc = !renderSunDisc;
+        }
 
-		if ([ tmap deactivated ] == YES )
-		{
-			tonemapping = !tonemapping;
-		}
+        if ([ tmap deactivated ] == YES )
+        {
+	        tonemapping = !tonemapping;
+        }
 
         thetaSun = MIN(thetaSun, MATH_PI_DIV_2);
         thetaSun = MAX(thetaSun, 0.0);
