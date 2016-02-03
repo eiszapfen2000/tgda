@@ -2193,10 +2193,10 @@ data is then given to the main thread for rendering.
 
 
 Projected Grid\cite{thesis:johanson}
-Preetham Sky + Sun Disc
-Bruneton Seamless Ocean Lighting
-Ocean Whitecaps
-Reinhard Tonemap \cite{Reinhard:2002}
+Preetham Sky + Sun Disc\cite{Preetham:1999}
+Bruneton Seamless Ocean Lighting \cite{article:oceanlighting}\cite{misc:oceanlightingfft}
+Ocean Whitecaps\cite{article:whitecaps}
+
 
 \subsubsection{Skylight}
 %
@@ -2247,3 +2247,9 @@ Reinhard Tonemap \cite{Reinhard:2002}
 \cite{article:oceanlighting}
 \subsubsection{Whitecaps}
 \cite{article:whitecaps}
+\subsubsection{Tonemapping}
+Rendering the Preetham sky and the ocean results in an image with a high dynamic range.
+We need to map said image to the lower dynamic range of a standard monitor, by means
+of a tonemapping operator. We chose Reinhard's global tonemapping operator, see
+Equation 4 in\cite{Reinhard:2002}, because it is straightforward to implement and
+works well on the class of images the demo application renders.
