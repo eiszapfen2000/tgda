@@ -2170,14 +2170,24 @@ random surface at different resolutions, the pairing between amplitude and
 wavevector needs to remain the same across resolutions.
 
 \section{Demo Application}
+For showcasing purposes we implemented a compact demo application on Linux.
+It is written in Objective-C and employs the GNUstep\cite{misc:gnustep}
+Base Library which provides container classes as well as basic algorithms.
+We use the compatibility profile of OpenGL\cite{misc:opengl} version 3.3
+\cite{misc:opengl33} for rendering, where the GLFW library\cite{misc:glfw}
+handles the creation of a window with the desired OpenGL context. Moreover,
+it is GLFW which gives us the means to handle mouse and keyboard input.
 
-ObjectiveC
-GNUstep Foundation
-GLFW \cite{misc:glfw}
-OpenGL \cite{misc:opengl}
-FFTW \cite{misc:fftw}
-One thread for spectral data generation
-One thread for Fourier Transforms
+All of the ocean energy spectra presented in this work were, in a first step,
+implemented in MATLAB\cite{misc:matlab}. This allowed for easy analysis,
+debugging and visualisation. Only in a second step did we integrate the energy
+spectra into the demo application, making sure the results were the same as in
+the MATLAB version. In addition, we chose to employ the same library for
+Fast Fourier Transforms as MATLAB, namely FFTW\cite{misc:fftw}.
+
+We use one thread to generate frequency spectra, a second thread to apply the inverse
+DFT on said spectra, while the main thread does all the rendering.
+
 Projective Grid
 Preetham Sky + Sun Disc
 Bruneton Seamless Ocean Lighting
