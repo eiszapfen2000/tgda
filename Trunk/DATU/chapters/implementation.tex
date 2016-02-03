@@ -2177,18 +2177,22 @@ We use the compatibility profile of OpenGL\cite{misc:opengl} version 3.3
 \cite{misc:opengl33} for rendering, where the GLFW library\cite{misc:glfw}
 handles the creation of a window with the desired OpenGL context. Moreover,
 it is GLFW which gives us the means to handle mouse and keyboard input.
-
 All of the ocean energy spectra presented in this work were, in a first step,
 implemented in MATLAB\cite{misc:matlab}. This allowed for easy analysis,
 debugging and visualisation. Only in a second step did we integrate the energy
-spectra into the demo application, making sure the results were the same as in
+spectra into the demo application, making sure the results match the ones of
 the MATLAB version. In addition, we chose to employ the same library for
-Fast Fourier Transforms as MATLAB, namely FFTW\cite{misc:fftw}.
+Fast Fourier Transforms as MATLAB, namely FFTW\cite{misc:fftw}. FFTW does
+not only provide a standard complex-to-complex DFT, but also a more specialised
+complex-to-real DFT, which proves to be beneficial for our use case.
 
-We use one thread to generate frequency spectra, a second thread to apply the inverse
-DFT on said spectra, while the main thread does all the rendering.
+The application consists of three running threads: the first thread continuously
+generates frequency spectra for the desired number of patterns, then hands them
+to a second thread which applies the inverse DFT on said spectra. The transformed
+data is then given to the main thread for rendering.
 
-Projective Grid
+
+Projected Grid\cite{thesis:johanson}
 Preetham Sky + Sun Disc
 Bruneton Seamless Ocean Lighting
 Ocean Whitecaps
