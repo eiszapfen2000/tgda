@@ -2198,28 +2198,6 @@ Bruneton Seamless Ocean Lighting
 Ocean Whitecaps
 Reinhard Tonemap \cite{Reinhard:2002}
 
-% Low resolution geometry, augmented with additional data for detailed lighting.
-% Vertical and horizontal surface displacement have same resolution, all partial
-% derivatives have the same resolution. Across all patterns.
-% Compute $h_0(\mvec{k})$ for the larger resolution, automatically encapsulates
-% all low res data. That is because same $\Delta k$ for same underlying pattern
-% size. Zero frequency at center, low frequency data for low res near center,
-% high frequency data for high res outwards. For low res spectrum use only data
-% near center, for high res spectrum use all data. We can generate high res slopes
-% for low res geometry. And high res displacement derivates for low res
-% displacement.
-% 
-% Because we use low res data for height and displacement, we save a lot of
-% computation time. The time saves is proportional to the difference in
-% resolution.
-% 
-% 
-% assemble $h_0(\mvec{k},t)$ on demand, with separate resolutions for geometry 
-% and gradients
-% 
-% heights and displacement have same resolution, gradients and displacement 
-% derivatives have same resolution
-
 \subsubsection{Skylight}
 %
 \begin{figure}
