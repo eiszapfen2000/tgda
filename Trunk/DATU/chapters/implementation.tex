@@ -1914,8 +1914,8 @@ where $\mvec{h}$ is based on the higher resolution $N_h$ and therefore contains
 more pairs $(k_x, k_y)$ than $\mvec{l}$. One may notice that $\mvec{l}$ is a
 subset of $\mvec{h}$, all pairs $(k_x, k_y)$ in $\mvec{l}$ are also to be found
 in $\mvec{h}$. Hence, there is no need to generate two separate instances of the
-wave energy spectrum with differing resolutions, $\Theta(\mvec{h})$ and
-$\Theta(\mvec{l})$. As long as the two different wavevector domains are based on
+wave energy spectrum with differing resolutions.
+As long as the two different wavevector domains are based on
 the same pattern size, $\mvec{l}$ is a subset of $\mvec{h}$, it follows that
 $\Theta(\mvec{l})$ is a subset of $\Theta(\mvec{h})$. In short, the low
 resolution variant of the wave energy spectrum is already embedded inside the
@@ -2191,6 +2191,11 @@ generates frequency spectra for the desired number of patterns, then hands them
 to a second thread which applies the inverse DFT on said spectra. The transformed
 data is then given to the main thread for rendering.
 
+The user is given a wide range of control over frequency spectrum generation.
+He may configure the number of patterns, the resolution of the vertical and horizontal
+displacements, the resolution of the first order partial derivatives,
+the spectrum type, wind velocity $U_{10}$, the size $L$ of the largest pattern,
+and fetch $F$.
 
 
 Preetham Sky + Sun Disc\cite{Preetham:1999}
@@ -2253,4 +2258,15 @@ Rendering the Preetham sky and the ocean results in an image with a high dynamic
 We need to map said image to the lower dynamic range of a standard monitor, by means
 of a tonemapping operator. We chose Reinhard's global tonemapping operator, see
 Equation 4 in\cite{Reinhard:2002}, because it is straightforward to implement and
-works well on the class of images the demo application renders.
+works well on the class of images the demo application renders. Note, that Equation 1
+in\cite{Reinhard:2002} is incorrect, see\cite{Reinhard:2002:erratum}. The correct
+form is as follows:
+\begin{equation}
+ \bar L_w = \exp\left(\frac{1}{N}\log(\delta + L_w(x,y))\right)
+\end{equation}
+where $N$ is the number of pixels in the image, $L_w(x,y)$ is the luminance for
+pixel $(x,y)$, and $\delta$ is small positive value to avoid the singularity at
+$\log(0)$. For $L_w(x,y)$, we first convert the pixel's RGB color to CIE XYZ, and
+then use the luminance component Y. We write $\log(\delta + L_w(x,y))$ values to a separate
+render target for which we generate mipmaps. The highest mipmap level, which consists
+of one pixel, gives us $\bar L_w$.
