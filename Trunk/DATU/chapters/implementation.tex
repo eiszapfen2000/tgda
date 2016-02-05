@@ -2257,16 +2257,20 @@ Projected Grid\cite{thesis:johanson}
 Rendering the Preetham sky and the ocean results in an image with a high dynamic range.
 We need to map said image to the lower dynamic range of a standard monitor, by means
 of a tonemapping operator. We chose Reinhard's global tonemapping operator, see
-Equation 4 in\cite{Reinhard:2002}, because it is straightforward to implement and
+Equation 4 in\cite{Reinhard:2002}. It is straightforward to implement and
 works well on the class of images the demo application renders. Note, that Equation 1
 in\cite{Reinhard:2002} is incorrect, see\cite{Reinhard:2002:erratum}. The correct
-form is as follows:
-\begin{equation}
+form to compute the log-average luminance of an image is as follows:
+\begin{equation*}
  \bar L_w = \exp\left(\frac{1}{N}\log(\delta + L_w(x,y))\right)
-\end{equation}
-where $N$ is the number of pixels in the image, $L_w(x,y)$ is the luminance for
+\end{equation*}
+where $N$ is the number of pixels in the image, $L_w(x,y)$ is the ''world'' luminance for
 pixel $(x,y)$, and $\delta$ is small positive value to avoid the singularity at
-$\log(0)$. For $L_w(x,y)$, we first convert the pixel's RGB color to CIE XYZ, and
-then use the luminance component Y. We write $\log(\delta + L_w(x,y))$ values to a separate
-render target for which we generate mipmaps. The highest mipmap level, which consists
-of one pixel, gives us $\bar L_w$.
+$\log(0)$. We compute $\bar L_w$ by simple means directly on the GPU. We employ a render
+target the same size as the source image, where for each pixel of the source image
+we compute $\log(\delta + L_w(x,y))$ and write it to the render target. We obtain
+$L_w(x,y)$ by converting the source pixel's RGB color to CIE XYZ, and then using the
+luminance component Y of the latter. Next, we generate the mipmap pyramid for
+our render target. The highest mipmap level is one pixel in size and gives us
+$\frac{1}{N}\log(\delta + L_w(x,y))$. Hence, we are able to get $\bar L_w$ by sampling
+the highest mipmap level of our render target and then applying $\exp$ on the result.
