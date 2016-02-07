@@ -2255,31 +2255,22 @@ Projected Grid\cite{thesis:johanson}
 \subsubsection{Ocean Lighting}
 \cite{article:oceanlighting}
 \subsubsection{Whitecaps}
-The ocean lighting scheme by Bruneton et al.
-\cite{article:oceanlighting}\cite{misc:oceanlightingfft} does not account
-for the breaking of waves on the open ocean. Neither the geometric deformations,
-nor the changes in reflectance caused by foam and spray, so called whitecaps,
-are incorporated in their model. But an extension of their FFT based work
-\cite{misc:oceanlightingfft}, namely Dupuy et al.\cite{article:whitecaps},
-includes whitecaps. The latter is based on a GPU optimized version of Tessendorf's
-approach\cite{course:simulatingocean} to locate self intersections on the ocean
-surface via the Jacobian determinant of the horizontal displacements, see the
-discussion in Section~\ref{sec:self_intersections}.
-Additional preprocessing step which computes the two terms, $k_i$ and $k_i^2$
-from Equation 7 and 8 in \cite{article:whitecaps}.
+The ocean lighting scheme by Bruneton et al. \cite{article:oceanlighting} does
+not account for the breaking of waves on the open ocean. Neither the geometric
+deformations, nor the changes in reflectance caused by foam and spray, so called
+\emph{whitecaps}, are incorporated in their model. Dupuy et al.\cite{article:whitecaps},
+on the other hand, extend the FFT version of Bruneton et al.\cite{misc:oceanlightingfft}
+to include whitecaps. Their work is based on Tessendorf's approach\cite{course:simulatingocean}
+to locate self intersections on the ocean surface, see the discussion in Section~\ref{sec:self_intersections}. Given the location of a self intersection,
+the reflectance at that position may be modified. Said modification is based on
+the magnitude of the Jacobian determinant $det(\mvec{J}(\mvec{x},t))$ of the
+horizontal displacement $\mvec{x}+u\mvec{D}(\mvec{x},t)$.
 
-
-% and related
-%Equations \ref{eq:jacobian_of_displacement}\ref{eq:jacobian_of_displacement_multi}.
-
-
-
-which employs the Jacobian $\mvec{J}(\mvec{x},t)$
-of horizontal displacements $\mvec{D}(\mvec{x},t)$ to locate self intersections
-on the ocean surface. 
-
-
-Equation 7 and 8 
+Dupuy et al. contribute  a GPU optimized version of the above. Their algorithm
+requires an additional preprocessing step, where terms $k_i$ and $k_i^2$ from
+Equation 7 and 8 in \cite{article:whitecaps} are precomputed, with the first
+order partial derivatives of $\mvec{D}(\mvec{x},t)$ of all patterns as input.
+%
 \subsubsection{Tonemapping}
 Rendering the Preetham sky and the ocean results in an image with a high dynamic range.
 We need to map said image to the lower dynamic range of a standard monitor, by means
