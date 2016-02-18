@@ -2281,18 +2281,18 @@ works well on the class of images the demo application renders.
 In a first step we compute the log-average luminance $\bar L_w$ of the input image.
 Note, that Equation 1 in\cite{Reinhard:2002} is incorrect, see\cite{Reinhard:2002:erratum}.
 The correct form to compute the log-average luminance of an image is as follows:
-\begin{equation*}
+\begin{equation}
  \bar L_w = \exp\left(\frac{1}{N}\log(\delta + L_w(x,y))\right)
-\end{equation*}
+\end{equation}
 where $N$ is the number of pixels in the image, $L_w(x,y)$ is the ''world'' luminance
 for pixel $(x,y)$, and $\delta$ is small positive value to avoid the singularity at
 $\log(0)$. The value of $\bar L_w$ serves as an approximation to the~\emph{key} of
 the scene. The key indicates whether a scene appears subjectively light, normal, or
 dark. Next we define what luminance the log-average luminance is mapped to in the
 result image. We may write:
-\begin{equation*}
+\begin{equation}
  L(x,y) = \frac{a}{\bar L_w}L_w(x,y)
-\end{equation*}
+\end{equation}
 where $L(x,y)$ denotes the scaled luminance, and $a$ represents the value
 $\bar L_w$ is mapped to.
 We may call $a$ the key value, because it controls the key of the resulting image.
@@ -2302,19 +2302,26 @@ displayed image, hence to $a=0.18$, where $a$ lies in the interval
 $\interval{0}{1}$. Lower values for $a$ result in a more darker image, higher
 values in a more brighter image. It is in the last step that we actually
 compute the luminance for each pixel of the result image:
-\begin{equation*}
+\begin{equation}
+\label{eq:reinhard_operator}
  L_d(x,y) = \frac{L(x,y)\left(1+\frac{L(x,y)}{L^2_{white}}\right)}{1+L(x,y)}
-\end{equation*}
+\end{equation}
 where $L_{white}$ is the smallest luminance that will be mapped to pure white.
 This formulation brings all luminances $L \leq L_{white}$ within displayable
 range, whereas all luminances $L > L_{white}$ will appear as pure white,
 simulating a simple oversaturation effect.
 
-We compute $\bar L_w$ by simple means directly on the GPU. We employ a render
-target the same size as the source image, where for each pixel of the source image
-we compute $\log(\delta + L_w(x,y))$ and write it to the render target. We obtain
-$L_w(x,y)$ by converting the source pixel's RGB color to CIE XYZ, and then using the
-luminance component Y of the latter. Next, we generate the mipmap pyramid for
-our render target. The highest mipmap level is one pixel in size and gives us
+Notes on our implementation:
+The overall tonemapping algorithm is simple, first convert each source pixel
+from RGB to CIE xyY, where the luminance component Y acts as the pixel's
+''world'' luminance $L_w$. Next, we update the luminance component Y according to
+Equation~\ref{eq:reinhard_operator}, and as a last step convert the luminance
+adjusted xyY color back to RGB and store it in the target. The actual colorimetric
+conversion functions we use are documented in \cite{misc:colorconversion}.
+The log-average luminance $\bar L_w$ is precomputed for each frame by simple means
+directly on the GPU. We employ a render target the same size as the source image,
+where for each pixel of the source image we compute $\log(\delta + L_w(x,y))$ and
+write it to the render target. Next, we generate the mipmap pyramid for our render
+ target. The highest mipmap level is one pixel in size and gives us
 $\frac{1}{N}\log(\delta + L_w(x,y))$. Hence, we are able to get $\bar L_w$ by sampling
 the highest mipmap level of our render target and then applying $\exp$ on the result.
