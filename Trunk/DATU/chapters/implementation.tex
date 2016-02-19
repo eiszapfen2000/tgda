@@ -2311,17 +2311,17 @@ This formulation brings all luminances $L \leq L_{white}$ within displayable
 range, whereas all luminances $L > L_{white}$ will appear as pure white,
 simulating a simple oversaturation effect.
 
-Notes on our implementation:
-The overall tonemapping algorithm is simple, first convert each source pixel
-from RGB to CIE xyY, where the luminance component Y acts as the pixel's
-''world'' luminance $L_w$. Next, we update the luminance component Y according to
-Equation~\ref{eq:reinhard_operator}, and as a last step convert the luminance
-adjusted xyY color back to RGB and store it in the target. The actual colorimetric
-conversion functions we use are documented in \cite{misc:colorconversion}.
-The log-average luminance $\bar L_w$ is precomputed for each frame by simple means
+The implementation of the overall tonemapping algorithm is simple: first convert
+each source pixel from RGB to CIE xyY, where the luminance component Y acts as
+the pixel's ''world'' luminance $L_w$. Next, we update the luminance component Y
+according to Equation~\ref{eq:reinhard_operator}, and as a last step convert the
+luminance adjusted xyY color back to RGB and store it in the target. The actual
+colorimetric conversion functions we use are documented in \cite{misc:colorconversion}.
+The log-average luminance $\bar L_w$ is computed for each frame by simple means
 directly on the GPU. We employ a render target the same size as the source image,
 where for each pixel of the source image we compute $\log(\delta + L_w(x,y))$ and
 write it to the render target. Next, we generate the mipmap pyramid for our render
  target. The highest mipmap level is one pixel in size and gives us
 $\frac{1}{N}\log(\delta + L_w(x,y))$. Hence, we are able to get $\bar L_w$ by sampling
 the highest mipmap level of our render target and then applying $\exp$ on the result.
+\cite{Krawczyk:2005}
