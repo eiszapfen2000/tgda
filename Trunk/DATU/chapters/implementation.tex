@@ -2291,6 +2291,7 @@ the scene. The key indicates whether a scene appears subjectively light, normal,
 dark. Next we define what luminance the log-average luminance is mapped to in the
 result image. We may write:
 \begin{equation}
+\label{eq:luminance_scaling_reinhard}
  L(x,y) = \frac{a}{\bar L_w}L_w(x,y)
 \end{equation}
 where $L(x,y)$ denotes the scaled luminance, and $a$ represents the value
@@ -2311,18 +2312,26 @@ This formulation brings all luminances $L \leq L_{white}$ within displayable
 range, whereas all luminances $L > L_{white}$ will appear as pure white,
 simulating a simple oversaturation effect.
 
-Temporal luminance adaptation.
+As luminance conditions may change from frame to frame, we would like to emulate
+the behaviour of the temporal luminance adaptation process of human vision. We
+employ the temporal luminance adaptation algorithm by Krawczyk et. al.
+\cite{Krawczyk:2005}, namely Equations 5, 6, 7 on page three, and Equation 12 on
+page 5. In short, we replace the $\bar L_w$ term in Equation\ref{eq:luminance_scaling_reinhard}
+with a filtered value $\bar L_a$. Based on our notation from above, we may write
+$\bar L_a$ as follows:
 \begin{subequations}
 \begin{align}
  \bar L_a^{new} &= \bar L_a + (\bar L_w - \bar L_a) (1-e^{-\frac{T}{\tau}}) \\
 \intertext{with}
  \tau &= \sigma(\bar L_w)\tau_{rod} + (1-\sigma(\bar L_w))\tau_{cone} \\
- \sigma(Y) &= \frac{0.04}{0.04 + Y}\\
+ \sigma(L) &= \frac{0.04}{0.04 + L}\\
  \tau_{rod} &= 0.4\text{s} \\
  \tau_{cone} &= 0.1\text{s}
 \end{align}
 \end{subequations}
-
+where $T$ denotes the timestep between two frames, and $\tau$ represents the
+speed of the adaptation process. For further details the reader may consult
+Krawczyk et. al.\cite{Krawczyk:2005}.
 
 The implementation of the overall tonemapping algorithm is simple: first convert
 each source pixel from RGB to CIE xyY, where the luminance component Y acts as
@@ -2337,4 +2346,4 @@ write it to the render target. Next, we generate the mipmap pyramid for our rend
  target. The highest mipmap level is one pixel in size and gives us
 $\frac{1}{N}\log(\delta + L_w(x,y))$. Hence, we are able to get $\bar L_w$ by sampling
 the highest mipmap level of our render target and then applying $\exp$ on the result.
-\cite{Krawczyk:2005}
+Given $\bar L_w$ we are also able to compute the adapted log-average luminance $\bar L_a$.
