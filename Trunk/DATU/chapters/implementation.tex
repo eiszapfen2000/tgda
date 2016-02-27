@@ -548,7 +548,8 @@ derivative of $f(x)$ as follows:
   \dod[n]{f(x)}{x} = \sum_{k}(\mathrm{i}k)^n~g(k)~\mathrm{e}^{\mathrm{i}kx}
 \end{equation}
 Due to aliasing issues the above is not correct for odd $n$ in combination
-with even $N$. For example, if $f(x)$ is a real function, then $g(k)$ is hermitian.
+with even $N$, see~\cite{Johnson:2011}. For example, if $f(x)$ is a real
+function, then $g(k)$ is hermitian.
 But $\mathrm{i}k~g(k)$ is~\emph{not} hermitian for even $N$, therefore the first
 order derivative of $f(x)$ would end up a complex function instead of a real one.
 To get correct results for all $n$ and $N$, we rewrite the above equation as follows:
