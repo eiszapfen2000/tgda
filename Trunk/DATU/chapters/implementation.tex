@@ -2283,7 +2283,7 @@ In a first step we compute the log-average luminance $\bar L_w$ of the input ima
 Note, that Equation 1 in\cite{Reinhard:2002} is incorrect, see\cite{Reinhard:2002:erratum}.
 The correct form to compute the log-average luminance of an image is as follows:
 \begin{equation}
- \bar L_w = \exp\left(\frac{1}{N}\log(\delta + L_w(x,y))\right)
+ \bar L_w = \exp\left(\frac{1}{N}\sum\limits_{x,y}\log(\delta + L_w(x,y))\right)
 \end{equation}
 where $N$ is the number of pixels in the image, $L_w(x,y)$ is the ''world'' luminance
 for pixel $(x,y)$, and $\delta$ is small positive value to avoid the singularity at
