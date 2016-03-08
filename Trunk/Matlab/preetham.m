@@ -5,7 +5,7 @@ XYZ2sRGBD50 = [3.1338561 -1.6168667 -0.4906146; -0.9787684  1.9161415  0.0334540
 
 turbidity = 4.0;
 thetaSun = 70 * (pi / 180);
-phiSun = pi;
+phiSun = -pi/2;
 
 mAY = [ 0.1787 -1.4630; -0.3554 0.4275; -0.0227 5.3251; 0.1206 -2.5771; -0.0670 0.3703 ];
 mAx = [ -0.0193 -0.2592; -0.0665 0.0008; -0.0004 0.2125; -0.0641 -0.8989; -0.0033 0.0452 ];
@@ -30,7 +30,7 @@ Yz = (4.0453 * turbidity - 4.9710) * tan(chi) - 0.2155 * turbidity + 2.4192;
 % convert kcd/m² to cd/m²
 Yz = Yz * 1000.0;
 
-resolution = 256;
+resolution = 1024;
 xyY = ones(resolution, resolution, 3);
 XYZ = zeros(resolution, resolution, 3);
 sRGB = zeros(resolution, resolution, 3);
@@ -162,15 +162,11 @@ for j = rangeEnd:-1:rangeStart
             lXYZ(2) = v_Y;
             lXYZ(3) = ((1.0 - v_x - v_y) / v_y) * v_Y;
             
-            XYZ(iy,ix,1) = lXYZ(1);
-            XYZ(iy,ix,2) = lXYZ(2);
-            XYZ(iy,ix,3) = lXYZ(3);
+            XYZ(iy,ix,:) = lXYZ;
             
             % convert XYZ to linear sRGB
             lsRGB = XYZ2sRGBD50 * lXYZ';
-            sRGB(iy,ix,1) = lsRGB(1);
-            sRGB(iy,ix,2) = lsRGB(2);
-            sRGB(iy,ix,3) = lsRGB(3);            
+            sRGB(iy,ix,:) = lsRGB;
         end
     end
 end
@@ -186,10 +182,10 @@ sumOfLogarithms = sum(sum(logarithms));
 Lw_average = exp(sumOfLogarithms / numberOfElements);
 
 % between 0 and 1
-a = 0.05;
+a = 0.18;
 
 %Lwhite = max(max(Lw));
-Lwhite = 1;
+Lwhite = 2;
 invLwhite = 1.0 / (Lwhite * Lwhite);
 
 L = (a / Lw_average) * Lw;
@@ -210,14 +206,10 @@ for y = 1:resolution
         lXYZ(2) = v_Y;
         lXYZ(3) = ((1.0 - v_x - v_y) / v_y) * v_Y;
 
-        XYZ(y,x,1) = lXYZ(1);
-        XYZ(y,x,2) = lXYZ(2);
-        XYZ(y,x,3) = lXYZ(3);
+        XYZ(y,x,:) = lXYZ;
 
         lsRGB = XYZ2sRGBD50 * lXYZ';
-        sRGB(y,x,1) = lsRGB(1);
-        sRGB(y,x,2) = lsRGB(2);
-        sRGB(y,x,3) = lsRGB(3);
+        sRGB(y,x,:) = lsRGB;
     end
 end
 
