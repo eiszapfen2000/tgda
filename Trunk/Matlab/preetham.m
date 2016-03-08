@@ -3,8 +3,8 @@ clear all
 
 XYZ2sRGBD50 = [3.1338561 -1.6168667 -0.4906146; -0.9787684  1.9161415  0.0334540; 0.0719453 -0.2289914  1.4052427];
 
-turbidity = 4.0;
-thetaSun = 70 * (pi / 180);
+turbidity = 2.0;
+thetaSun = 45 * (pi / 180);
 phiSun = -pi/2;
 
 mAY = [ 0.1787 -1.4630; -0.3554 0.4275; -0.0227 5.3251; 0.1206 -2.5771; -0.0670 0.3703 ];
@@ -30,7 +30,7 @@ Yz = (4.0453 * turbidity - 4.9710) * tan(chi) - 0.2155 * turbidity + 2.4192;
 % convert kcd/m² to cd/m²
 Yz = Yz * 1000.0;
 
-resolution = 1024;
+resolution = 4;
 xyY = ones(resolution, resolution, 3);
 XYZ = zeros(resolution, resolution, 3);
 sRGB = zeros(resolution, resolution, 3);
@@ -175,40 +175,50 @@ dimensions = size(xyY);
 numberOfElements = dimensions(1) * dimensions(2);
 Lw = xyY(:,:,3);
 
-%logarithms = log(Lw + 0.001);
-%logarithms = max(log(Lw), 0.0);
-logarithms = max(log(Lw + 0.001), 0.0);
+% compute log average luminance
+logarithms = max(log(Lw + eps), 0.0);
 sumOfLogarithms = sum(sum(logarithms));
 Lw_average = exp(sumOfLogarithms / numberOfElements);
 
 % between 0 and 1
 a = 0.18;
 
-%Lwhite = max(max(Lw));
-Lwhite = 2;
+% Lwhite = max(max(Lw));
+Lwhite = 2.5;
 invLwhite = 1.0 / (Lwhite * Lwhite);
 
+% compute relative luminance
 L = (a / Lw_average) * Lw;
 
-%Ld = L ./ (L + 1);
+% adapt luminance
 Ld = (L .* ((L .* invLwhite) + 1)) ./ (L + 1);
 
+% write adapted luminance back into xyY data
 xyY(:,:,3) = Ld;
 
+% convert xyY to XYZ
+XYZ = zeros(size(xyY));
+XYZ(:,:,1) = (xyY(:,:,1) ./ xyY(:,:,2)) .* xyY(:,:,3);
+XYZ(:,:,2) = xyY(:,:,3);
+XYZ(:,:,3) = ((1.0 - xyY(:,:,1) - xyY(:,:,2)) ./ xyY(:,:,2)) .* xyY(:,:,3);
+
+% convert XYZ to linear sRGB
 for y = 1:resolution
     for x = 1:resolution
-        v_x = xyY(y,x,1);
-        v_y = xyY(y,x,2);
-        v_Y = xyY(y,x,3);
-
-        lXYZ = zeros(1,3);
-        lXYZ(1) = (v_x / v_y) * v_Y;
-        lXYZ(2) = v_Y;
-        lXYZ(3) = ((1.0 - v_x - v_y) / v_y) * v_Y;
-
-        XYZ(y,x,:) = lXYZ;
-
-        lsRGB = XYZ2sRGBD50 * lXYZ';
+%         v_x = xyY(y,x,1);
+%         v_y = xyY(y,x,2);
+%         v_Y = xyY(y,x,3);
+% 
+%         lXYZ = zeros(1,3);
+%         lXYZ(1) = (v_x / v_y) * v_Y;
+%         lXYZ(2) = v_Y;
+%         lXYZ(3) = ((1.0 - v_x - v_y) / v_y) * v_Y;
+% 
+%         XYZ(y,x,:) = lXYZ;
+% 
+%         lsRGB = XYZ2sRGBD50 * lXYZ';
+        
+        lsRGB = XYZ2sRGBD50 * reshape(XYZ(y,x,:), 3, 1);
         sRGB(y,x,:) = lsRGB;
     end
 end
