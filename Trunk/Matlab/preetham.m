@@ -30,7 +30,7 @@ Yz = (4.0453 * turbidity - 4.9710) * tan(chi) - 0.2155 * turbidity + 2.4192;
 % convert kcd/m² to cd/m²
 Yz = Yz * 1000.0;
 
-resolution = 4;
+resolution = 256;
 xyY = ones(resolution, resolution, 3);
 XYZ = zeros(resolution, resolution, 3);
 sRGB = zeros(resolution, resolution, 3);
@@ -203,25 +203,15 @@ XYZ(:,:,2) = xyY(:,:,3);
 XYZ(:,:,3) = ((1.0 - xyY(:,:,1) - xyY(:,:,2)) ./ xyY(:,:,2)) .* xyY(:,:,3);
 
 % convert XYZ to linear sRGB
-for y = 1:resolution
-    for x = 1:resolution
-%         v_x = xyY(y,x,1);
-%         v_y = xyY(y,x,2);
-%         v_Y = xyY(y,x,3);
-% 
-%         lXYZ = zeros(1,3);
-%         lXYZ(1) = (v_x / v_y) * v_Y;
-%         lXYZ(2) = v_Y;
-%         lXYZ(3) = ((1.0 - v_x - v_y) / v_y) * v_Y;
-% 
-%         XYZ(y,x,:) = lXYZ;
-% 
-%         lsRGB = XYZ2sRGBD50 * lXYZ';
-        
-        lsRGB = XYZ2sRGBD50 * reshape(XYZ(y,x,:), 3, 1);
-        sRGB(y,x,:) = lsRGB;
-    end
-end
+XYZ_vectors(1,:) = reshape(XYZ(:,:,1), 1, numel(XYZ(:,:,1)));
+XYZ_vectors(2,:) = reshape(XYZ(:,:,2), 1, numel(XYZ(:,:,2)));
+XYZ_vectors(3,:) = reshape(XYZ(:,:,3), 1, numel(XYZ(:,:,3)));
+
+sRGB_vectors = XYZ2sRGBD50 * XYZ_vectors;
+
+sRGB(:,:,1) = reshape(sRGB_vectors(1,:), size(XYZ,1), []);
+sRGB(:,:,2) = reshape(sRGB_vectors(2,:), size(XYZ,1), []);
+sRGB(:,:,3) = reshape(sRGB_vectors(3,:), size(XYZ,1), []);
 
 % convert to non-linear sRGB 
 mask = (sRGB > 0.0031308);
