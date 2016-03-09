@@ -30,7 +30,7 @@ Yz = (4.0453 * turbidity - 4.9710) * tan(chi) - 0.2155 * turbidity + 2.4192;
 % convert kcd/m² to cd/m²
 Yz = Yz * 1000.0;
 
-resolution = 1024;
+resolution = 4;
 xyY = ones(resolution, resolution, 3);
 XYZ = zeros(resolution, resolution, 3);
 sRGB = zeros(resolution, resolution, 3);
@@ -158,36 +158,13 @@ xyY(:,:,3) = v_Y;
 %     end
 % end
 
-dimensions = size(xyY);
-numberOfElements = dimensions(1) * dimensions(2);
-Lw = xyY(:,:,3);
-
-% compute log average luminance
-logarithms = max(log(Lw + eps), 0.0);
-sumOfLogarithms = sum(sum(logarithms));
-Lw_average = exp(sumOfLogarithms / numberOfElements);
-
-% between 0 and 1
 a = 0.18;
+Lwhite = 200;
 
-% Lwhite = max(max(Lw));
-Lwhite = 2.5;
-invLwhite = 1.0 / (Lwhite * Lwhite);
-
-% compute relative luminance
-L = (a / Lw_average) * Lw;
-
-% adapt luminance
-Ld = (L .* ((L .* invLwhite) + 1)) ./ (L + 1);
-
-% write adapted luminance back into xyY data
-xyY(:,:,3) = Ld;
+xyY = tonemapReinhard(xyY, a, Lwhite);
 
 % convert xyY to XYZ
-XYZ = zeros(size(xyY));
-XYZ(:,:,1) = (xyY(:,:,1) ./ xyY(:,:,2)) .* xyY(:,:,3);
-XYZ(:,:,2) = xyY(:,:,3);
-XYZ(:,:,3) = ((1.0 - xyY(:,:,1) - xyY(:,:,2)) ./ xyY(:,:,2)) .* xyY(:,:,3);
+XYZ = xyY2XYZ(xyY);
 
 % convert XYZ to linear sRGB
 XYZ_vectors(1,:) = reshape(XYZ(:,:,1), 1, numel(XYZ(:,:,1)));
