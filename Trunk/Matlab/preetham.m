@@ -30,7 +30,7 @@ Yz = (4.0453 * turbidity - 4.9710) * tan(chi) - 0.2155 * turbidity + 2.4192;
 % convert kcd/m² to cd/m²
 Yz = Yz * 1000.0;
 
-resolution = 5;
+resolution = 1024;
 xyY = ones(resolution, resolution, 3);
 XYZ = zeros(resolution, resolution, 3);
 sRGB = zeros(resolution, resolution, 3);
@@ -75,76 +75,88 @@ v(:,:,3) = z_unit_sphere;
 
 rot_axes = cross(v, repmat(reshape(s,[1 1 3]),resolution,resolution), 3);
 norm_rot_axes = sqrt(sum(abs(rot_axes).^2,3));
-gammaAngle = atan2(norm_rot_axes, dot( repmat(reshape(s,[1 1 3]),resolution,resolution), v, 3));
+gamma_unit_sphere = atan2(norm_rot_axes, dot( repmat(reshape(s,[1 1 3]),resolution,resolution), v, 3));
+
+v_x = xz .* (digamma(theta_unit_sphere, gamma_unit_sphere, Ax) ./ denominator_x);
+v_y = yz .* (digamma(theta_unit_sphere, gamma_unit_sphere, Ay) ./ denominator_y);
+v_Y = Yz .* (digamma(theta_unit_sphere, gamma_unit_sphere, AY) ./ denominator_Y);
+
+v_x(radii > radiusInPixel) = 0;
+v_y(radii > radiusInPixel) = 0;
+v_Y(radii > radiusInPixel) = 0;
+
+xyY(:,:,1) = v_x;
+xyY(:,:,2) = v_y;
+xyY(:,:,3) = v_Y;
 
 % start j at top
-for j = rangeEnd:-1:rangeStart
-    % start i at left
-    for i = rangeStart:rangeEnd
-        radius = norm([i j]);
-        
-        % if we are inside circle the hemisphere is projected onto
-        if ( radius <= radiusInPixel )
-            % indices into result array
-            ix = i - rangeStart + 1;
-            iy = rangeEnd - j + 1;
-            
-            % http://en.wikipedia.org/wiki/Stereographic_projection
-            % we use the south pole (0, 0, -1) as projection point
-            % because we want to project the upper hemisphere onto
-            % a circle
-            
-            % X Y represent coordinates after stereographic projection
-            radiusNormalised = radius / radiusInPixel;
-            X = i / radiusInPixel;
-            Y = j / radiusInPixel;
-            
-            l = 1 + X*X + Y*Y;
-            
-            % convert X Y to coordinates on the unit sphere
-            x = 2*X / l;
-            y = 2*Y / l;
-            z = (1 - X*X - Y*Y) / l;
-            
-            % http://de.wikipedia.org/wiki/Kugelkoordinaten
-            % We use the same coordinate system as shown at the site above
-            % coordinate axes of said coordinate system and the one for
-            % stereographic projection match
-            
-            % compute spherical coordinates
-            phiAngle   = atan2(y, x);
-            thetaAngle = (pi / 2) - atan(z/norm([x y]));
-            
-            % compute angle between direction to sun and current coordinate
-            % on hemisphere
-            v = [x y z];
-            cosGamma = s * v';
-            gammaAngle = acos(cosGamma);
-            
-            % compute preetham model for current coordinate on hemisphere
-            v_x = xz * (digamma(thetaAngle, gammaAngle, Ax) / denominator_x);
-            v_y = yz * (digamma(thetaAngle, gammaAngle, Ay) / denominator_y);
-            v_Y = Yz * (digamma(thetaAngle, gammaAngle, AY) / denominator_Y);
-            
-            % preetham gives results in xyY space
-            xyY(iy,ix,1) = v_x;
-            xyY(iy,ix,2) = v_y;
-            xyY(iy,ix,3) = v_Y;
-            
-            % convert xyY to XYZ
-            lXYZ = zeros(1,3);
-            lXYZ(1) = (v_x / v_y) * v_Y;
-            lXYZ(2) = v_Y;
-            lXYZ(3) = ((1.0 - v_x - v_y) / v_y) * v_Y;
-            
-            XYZ(iy,ix,:) = lXYZ;
-            
-            % convert XYZ to linear sRGB
-            lsRGB = XYZ2sRGBD50 * lXYZ';
-            sRGB(iy,ix,:) = lsRGB;
-        end
-    end
-end
+% for j = rangeEnd:-1:rangeStart
+%     % start i at left
+%     for i = rangeStart:rangeEnd
+%         radius = norm([i j]);
+%         
+%         % if we are inside circle the hemisphere is projected onto
+%         if ( radius <= radiusInPixel )
+%             % indices into result array
+%             ix = i - rangeStart + 1;
+%             iy = rangeEnd - j + 1;
+%             
+%             % http://en.wikipedia.org/wiki/Stereographic_projection
+%             % we use the south pole (0, 0, -1) as projection point
+%             % because we want to project the upper hemisphere onto
+%             % a circle
+%             
+%             % X Y represent coordinates after stereographic projection
+%             radiusNormalised = radius / radiusInPixel;
+%             X = i / radiusInPixel;
+%             Y = j / radiusInPixel;
+%             
+%             l = 1 + X*X + Y*Y;
+%             
+%             % convert X Y to coordinates on the unit sphere
+%             x = 2*X / l;
+%             y = 2*Y / l;
+%             z = (1 - X*X - Y*Y) / l;
+%             
+%             % http://de.wikipedia.org/wiki/Kugelkoordinaten
+%             % We use the same coordinate system as shown at the site above
+%             % coordinate axes of said coordinate system and the one for
+%             % stereographic projection match
+%             
+%             % compute spherical coordinates
+%             phiAngle   = atan2(y, x);
+%             thetaAngle = (pi / 2) - atan(z/norm([x y]));
+%             
+%             % compute angle between direction to sun and current coordinate
+%             % on hemisphere
+%             v = [x y z];
+%             cosGamma = s * v';
+%             gammaAngle = acos(cosGamma);
+%             
+%             % compute preetham model for current coordinate on hemisphere
+%             v_x = xz * (digamma(thetaAngle, gammaAngle, Ax) / denominator_x);
+%             v_y = yz * (digamma(thetaAngle, gammaAngle, Ay) / denominator_y);
+%             v_Y = Yz * (digamma(thetaAngle, gammaAngle, AY) / denominator_Y);
+%             
+%             % preetham gives results in xyY space
+%             xyY(iy,ix,1) = v_x;
+%             xyY(iy,ix,2) = v_y;
+%             xyY(iy,ix,3) = v_Y;
+%             
+%             % convert xyY to XYZ
+%             lXYZ = zeros(1,3);
+%             lXYZ(1) = (v_x / v_y) * v_Y;
+%             lXYZ(2) = v_Y;
+%             lXYZ(3) = ((1.0 - v_x - v_y) / v_y) * v_Y;
+%             
+%             XYZ(iy,ix,:) = lXYZ;
+%             
+%             % convert XYZ to linear sRGB
+%             lsRGB = XYZ2sRGBD50 * lXYZ';
+%             sRGB(iy,ix,:) = lsRGB;
+%         end
+%     end
+% end
 
 dimensions = size(xyY);
 numberOfElements = dimensions(1) * dimensions(2);
