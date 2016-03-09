@@ -60,45 +60,6 @@ sun_xyY(1,1,2) = yz * (nominatorSun_y / denominator_y);
 sun_xyY(1,1,3) = Yz * (nominatorSun_Y / denominator_Y);
 
 % MATLAB memory layout, image coordinate (1,1) is at top left
-
-[a,b] = meshgrid(rangeStart:rangeEnd, rangeEnd:-1:rangeStart);
-radii = sqrt((abs(a).^2)+(abs(b).^2));
-ind_x = a - rangeStart + 1;
-ind_y = rangeEnd - b + 1;
-radii_normalised = radii ./ radiusInPixel;
-X_stereo = a ./ radiusInPixel;
-Y_stereo = b ./ radiusInPixel;
-
-l_stereo = 1 + X_stereo.^2 + Y_stereo.^2;
-
-x_unit_sphere = 2.*X_stereo ./ l_stereo;
-y_unit_sphere = 2.*Y_stereo ./ l_stereo;
-z_unit_sphere = (1 - X_stereo.^2 - Y_stereo.^2) ./ l_stereo;
-xy_norm = sqrt((abs(x_unit_sphere).^2)+(abs(y_unit_sphere).^2));
-
-phi_unit_sphere = atan2(y_unit_sphere, x_unit_sphere);
-theta_unit_sphere = (pi / 2) - atan(z_unit_sphere ./ xy_norm);
-
-v(:,:,1) = x_unit_sphere;
-v(:,:,2) = y_unit_sphere;
-v(:,:,3) = z_unit_sphere;
-
-rot_axes = cross(v, repmat(reshape(s,[1 1 3]),resolution,resolution), 3);
-norm_rot_axes = sqrt(sum(abs(rot_axes).^2,3));
-gamma_unit_sphere = atan2(norm_rot_axes, dot( repmat(reshape(s,[1 1 3]),resolution,resolution), v, 3));
-
-v_x = xz .* (digamma(theta_unit_sphere, gamma_unit_sphere, Ax) ./ denominator_x);
-v_y = yz .* (digamma(theta_unit_sphere, gamma_unit_sphere, Ay) ./ denominator_y);
-v_Y = Yz .* (digamma(theta_unit_sphere, gamma_unit_sphere, AY) ./ denominator_Y);
-
-v_x(radii > radiusInPixel) = 0;
-v_y(radii > radiusInPixel) = 0;
-v_Y(radii > radiusInPixel) = 0;
-
-xyY(:,:,1) = v_x;
-xyY(:,:,2) = v_y;
-xyY(:,:,3) = v_Y;
-
 % start j at top
 % for j = rangeEnd:-1:rangeStart
 %     % start i at left
@@ -168,6 +129,45 @@ xyY(:,:,3) = v_Y;
 %     end
 % end
 
+[a,b] = meshgrid(rangeStart:rangeEnd, rangeEnd:-1:rangeStart);
+
+radius = sqrt((abs(a).^2)+(abs(b).^2));
+
+X = a ./ radiusInPixel;
+Y = b ./ radiusInPixel;
+
+l = 1 + X.^2 + Y.^2;
+
+x = 2.*X ./ l;
+y = 2.*Y ./ l;
+z = (1 - X.^2 - Y.^2) ./ l;
+xy_norm = sqrt((abs(x).^2)+(abs(y).^2));
+
+phiAngle = atan2(y, x);
+thetaAngle = (pi / 2) - atan(z ./ xy_norm);
+
+v(:,:,1) = x;
+v(:,:,2) = y;
+v(:,:,3) = z;
+
+ss = repmat(reshape(s,[1 1 3]),resolution,resolution);
+rotAxes = cross(v, ss, 3);
+normRotAxes = sqrt(sum(abs(rotAxes).^2,3));
+gammaAngle = atan2(normRotAxes, dot(ss, v, 3));
+
+v_x = xz .* (digamma(thetaAngle, gammaAngle, Ax) ./ denominator_x);
+v_y = yz .* (digamma(thetaAngle, gammaAngle, Ay) ./ denominator_y);
+v_Y = Yz .* (digamma(thetaAngle, gammaAngle, AY) ./ denominator_Y);
+
+v_x(radius > radiusInPixel) = 0;
+v_y(radius > radiusInPixel) = 0;
+v_Y(radius > radiusInPixel) = 0;
+
+xyY(:,:,1) = v_x;
+xyY(:,:,2) = v_y;
+xyY(:,:,3) = v_Y;
+
+% tonemapping
 a = 0.18;
 Lwhite = 200;
 
