@@ -30,7 +30,7 @@ Yz = (4.0453 * turbidity - 4.9710) * tan(chi) - 0.2155 * turbidity + 2.4192;
 % convert kcd/m² to cd/m²
 Yz = Yz * 1000.0;
 
-resolution = 4;
+resolution = 1024;
 xyY = ones(resolution, resolution, 3);
 XYZ = zeros(resolution, resolution, 3);
 sRGB = zeros(resolution, resolution, 3);
@@ -48,6 +48,16 @@ s = [ sin(thetaSun) * cos(phiSun), sin(thetaSun) * sin(phiSun), cos(thetaSun) ];
 denominator_x = digamma(0, thetaSun, Ax);
 denominator_y = digamma(0, thetaSun, Ay);
 denominator_Y = digamma(0, thetaSun, AY);
+
+% compute preetham model at sun position
+nominatorSun_x = digamma(thetaSun, 0, Ax);
+nominatorSun_y = digamma(thetaSun, 0, Ay);
+nominatorSun_Y = digamma(thetaSun, 0, AY);
+
+sun_xyY = zeros(1,1,3);
+sun_xyY(1,1,1) = xz * (nominatorSun_x / denominator_x);
+sun_xyY(1,1,2) = yz * (nominatorSun_y / denominator_y);
+sun_xyY(1,1,3) = Yz * (nominatorSun_Y / denominator_Y);
 
 % MATLAB memory layout, image coordinate (1,1) is at top left
 
