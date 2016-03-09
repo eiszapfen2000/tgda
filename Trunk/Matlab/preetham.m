@@ -30,7 +30,7 @@ Yz = (4.0453 * turbidity - 4.9710) * tan(chi) - 0.2155 * turbidity + 2.4192;
 % convert kcd/m² to cd/m²
 Yz = Yz * 1000.0;
 
-resolution = 256;
+resolution = 5;
 xyY = ones(resolution, resolution, 3);
 XYZ = zeros(resolution, resolution, 3);
 sRGB = zeros(resolution, resolution, 3);
@@ -50,6 +50,32 @@ denominator_y = digamma(0, thetaSun, Ay);
 denominator_Y = digamma(0, thetaSun, AY);
 
 % MATLAB memory layout, image coordinate (1,1) is at top left
+
+[a,b] = meshgrid(rangeStart:rangeEnd, rangeEnd:-1:rangeStart);
+radii = sqrt((abs(a).^2)+(abs(b).^2));
+ind_x = a - rangeStart + 1;
+ind_y = rangeEnd - b + 1;
+radii_normalised = radii ./ radiusInPixel;
+X_stereo = a ./ radiusInPixel;
+Y_stereo = b ./ radiusInPixel;
+
+l_stereo = 1 + X_stereo.^2 + Y_stereo.^2;
+
+x_unit_sphere = 2.*X_stereo ./ l_stereo;
+y_unit_sphere = 2.*Y_stereo ./ l_stereo;
+z_unit_sphere = (1 - X_stereo.^2 - Y_stereo.^2) ./ l_stereo;
+xy_norm = sqrt((abs(x_unit_sphere).^2)+(abs(y_unit_sphere).^2));
+
+phi_unit_sphere = atan2(y_unit_sphere, x_unit_sphere);
+theta_unit_sphere = (pi / 2) - atan(z_unit_sphere ./ xy_norm);
+
+v(:,:,1) = x_unit_sphere;
+v(:,:,2) = y_unit_sphere;
+v(:,:,3) = z_unit_sphere;
+
+rot_axes = cross(v, repmat(reshape(s,[1 1 3]),resolution,resolution), 3);
+norm_rot_axes = sqrt(sum(abs(rot_axes).^2,3));
+gammaAngle = atan2(norm_rot_axes, dot( repmat(reshape(s,[1 1 3]),resolution,resolution), v, 3));
 
 % start j at top
 for j = rangeEnd:-1:rangeStart
