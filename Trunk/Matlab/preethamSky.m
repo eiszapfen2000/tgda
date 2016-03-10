@@ -39,42 +39,59 @@ denominator_x = digamma(0, thetaSun, Ax);
 denominator_y = digamma(0, thetaSun, Ay);
 denominator_Y = digamma(0, thetaSun, AY);
 
+% create zero centered pixel coordinates
 [a,b] = meshgrid(rangeStart:rangeEnd, rangeEnd:-1:rangeStart);
 
+% compute distance from center for each pixel coordinate pair
 radius = sqrt((abs(a).^2)+(abs(b).^2));
 
+% http://en.wikipedia.org/wiki/Stereographic_projection
+% we use the south pole (0, 0, -1) as projection point
+% because we want to project the upper hemisphere onto
+% a circle
+% X Y represent coordinates after stereographic projection
 X = a ./ radiusInPixel;
 Y = b ./ radiusInPixel;
-
 l = 1 + X.^2 + Y.^2;
 
+% convert X Y to coordinates on the unit sphere
 x = 2.*X ./ l;
 y = 2.*Y ./ l;
 z = (1 - X.^2 - Y.^2) ./ l;
 xy_norm = sqrt((abs(x).^2)+(abs(y).^2));
 
-phiAngle = atan2(y, x);
-thetaAngle = (pi / 2) - atan(z ./ xy_norm);
-
 v(:,:,1) = x;
 v(:,:,2) = y;
 v(:,:,3) = z;
 
+% http://de.wikipedia.org/wiki/Kugelkoordinaten
+% We use the same coordinate system as shown at the site above
+% coordinate axes of said coordinate system and the one for
+% stereographic projection match
+
+% compute spherical coordinates
+phiAngle = atan2(y, x);
+thetaAngle = (pi / 2) - atan(z ./ xy_norm);
+
+% compute angle between direction to sun and coordinates
+% on hemisphere
 ss = repmat(reshape(s,[1 1 3]),resolution,resolution);
 rotAxes = cross(v, ss, 3);
 normRotAxes = sqrt(sum(abs(rotAxes).^2,3));
 gammaAngle = atan2(normRotAxes, dot(ss, v, 3));
 
+% compute preetham model for coordinates on hemisphere
 v_x = xz .* (digamma(thetaAngle, gammaAngle, Ax) ./ denominator_x);
 v_y = yz .* (digamma(thetaAngle, gammaAngle, Ay) ./ denominator_y);
 v_Y = Yz .* (digamma(thetaAngle, gammaAngle, AY) ./ denominator_Y);
 
+% pixels outside of the projected hemisphere are set to 0
 mask = radius > radiusInPixel;
-
 v_x(mask) = 0;
 v_y(mask) = 0;
 v_Y(mask) = 0;
 
+% preetham gives results in xyY space
 xyY(:,:,1) = v_x;
 xyY(:,:,2) = v_y;
 xyY(:,:,3) = v_Y;
