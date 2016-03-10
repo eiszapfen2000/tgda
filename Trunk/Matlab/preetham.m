@@ -162,49 +162,8 @@ irradiance = sum(sum(irrXYZ));
 %     end
 % end
 
-[a,b] = meshgrid(rangeStart:rangeEnd, rangeEnd:-1:rangeStart);
-
-radius = sqrt((abs(a).^2)+(abs(b).^2));
-
-X = a ./ radiusInPixel;
-Y = b ./ radiusInPixel;
-
-l = 1 + X.^2 + Y.^2;
-
-x = 2.*X ./ l;
-y = 2.*Y ./ l;
-z = (1 - X.^2 - Y.^2) ./ l;
-xy_norm = sqrt((abs(x).^2)+(abs(y).^2));
-
-phiAngle = atan2(y, x);
-thetaAngle = (pi / 2) - atan(z ./ xy_norm);
-
-v(:,:,1) = x;
-v(:,:,2) = y;
-v(:,:,3) = z;
-
-ss = repmat(reshape(s,[1 1 3]),resolution,resolution);
-rotAxes = cross(v, ss, 3);
-normRotAxes = sqrt(sum(abs(rotAxes).^2,3));
-gammaAngle = atan2(normRotAxes, dot(ss, v, 3));
-
-v_x = xz .* (digamma(thetaAngle, gammaAngle, Ax) ./ denominator_x);
-v_y = yz .* (digamma(thetaAngle, gammaAngle, Ay) ./ denominator_y);
-v_Y = Yz .* (digamma(thetaAngle, gammaAngle, AY) ./ denominator_Y);
-
-% v_x(radius > radiusInPixel) = 0;
-% v_y(radius > radiusInPixel) = 0;
-% v_Y(radius > radiusInPixel) = 0;
 
 irradiancexyY = XYZ2xyY(irradiance);
-
-v_x(radius > radiusInPixel) = irradiancexyY(1,1,1);
-v_y(radius > radiusInPixel) = irradiancexyY(1,1,2);
-v_Y(radius > radiusInPixel) = irradiancexyY(1,1,3);
-
-xyY(:,:,1) = v_x;
-xyY(:,:,2) = v_y;
-xyY(:,:,3) = v_Y;
 
 [xyY mask] = preethamSky(resolution, phiSun, thetaSun, turbidity);
 
