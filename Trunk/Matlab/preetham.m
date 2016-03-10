@@ -206,6 +206,20 @@ xyY(:,:,1) = v_x;
 xyY(:,:,2) = v_y;
 xyY(:,:,3) = v_Y;
 
+[xyY mask] = preethamSky(resolution, phiSun, thetaSun, turbidity);
+
+x_c = xyY(:,:,1);
+y_c = xyY(:,:,2);
+Y_c = xyY(:,:,3);
+
+x_c(mask) = irradiancexyY(1,1,1);
+y_c(mask) = irradiancexyY(1,1,2);
+Y_c(mask) = irradiancexyY(1,1,3);
+
+xyY(:,:,1) = x_c;
+xyY(:,:,2) = y_c;
+xyY(:,:,3) = Y_c;
+
 % tonemapping
 a = 0.18;
 Lwhite = 200;
