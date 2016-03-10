@@ -1,8 +1,6 @@
 clear all
 %close all
 
-XYZ2sRGBD50 = [3.1338561 -1.6168667 -0.4906146; -0.9787684  1.9161415  0.0334540; 0.0719453 -0.2289914  1.4052427];
-
 turbidity = 2.0;
 thetaSun = 45 * (pi / 180);
 phiSun = -pi/2;
@@ -58,6 +56,7 @@ sun_xyY(1,1,1) = xz * (nominatorSun_x / denominator_x);
 sun_xyY(1,1,2) = yz * (nominatorSun_y / denominator_y);
 sun_xyY(1,1,3) = Yz * (nominatorSun_Y / denominator_Y);
 
+% compute sky model irradiance
 degreeToRadians = pi / 180;
 
 phiStep = 1 * degreeToRadians;
@@ -88,10 +87,10 @@ irrxyY(:,:,3) = Yz .* (digamma(irrTheta, gammaAngle, AY) ./ denominator_Y);
 
 irrXYZ = xyY2XYZ(irrxyY);
 
+% integraion over the hemisphere
+% Documentation/Radiometry.pdf
 irrXYZ = irrXYZ .* repmat(irrSinTheta,[1 1 3]) .* repmat(nDotv,[1 1 3]) .* phiStep .* thetaStep;
-% irrXYZ = irrXYZ .* repmat(nDotv,[1 1 3]) .* phiStep .* thetaStep;
-
-irr = sum(sum(irrXYZ));
+irradiance = sum(sum(irrXYZ));
 
 % MATLAB memory layout, image coordinate (1,1) is at top left
 % start j at top
@@ -197,11 +196,11 @@ v_Y = Yz .* (digamma(thetaAngle, gammaAngle, AY) ./ denominator_Y);
 % v_y(radius > radiusInPixel) = 0;
 % v_Y(radius > radiusInPixel) = 0;
 
-irrxyY = XYZ2xyY(irr);
+irradiancexyY = XYZ2xyY(irradiance);
 
-v_x(radius > radiusInPixel) = irrxyY(1,1,1);
-v_y(radius > radiusInPixel) = irrxyY(1,1,2);
-v_Y(radius > radiusInPixel) = irrxyY(1,1,3);
+v_x(radius > radiusInPixel) = irradiancexyY(1,1,1);
+v_y(radius > radiusInPixel) = irradiancexyY(1,1,2);
+v_Y(radius > radiusInPixel) = irradiancexyY(1,1,3);
 
 xyY(:,:,1) = v_x;
 xyY(:,:,2) = v_y;
@@ -216,6 +215,8 @@ xyY = tonemapReinhard(xyY, a, Lwhite);
 XYZ = xyY2XYZ(xyY);
 
 % convert XYZ to linear sRGB
+XYZ2sRGBD50 = [3.1338561 -1.6168667 -0.4906146; -0.9787684  1.9161415  0.0334540; 0.0719453 -0.2289914  1.4052427];
+
 XYZ_vectors(1,:) = reshape(XYZ(:,:,1), 1, numel(XYZ(:,:,1)));
 XYZ_vectors(2,:) = reshape(XYZ(:,:,2), 1, numel(XYZ(:,:,2)));
 XYZ_vectors(3,:) = reshape(XYZ(:,:,3), 1, numel(XYZ(:,:,3)));
