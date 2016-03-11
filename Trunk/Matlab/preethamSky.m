@@ -101,7 +101,14 @@ if nargout > 1
 end
 
 if nargout > 2
-    % compute sky model irradiance
+    zenith_xyY = [xz yz Yz];
+    denominator =  [denominator_x, denominator_y, denominator_Y];
+    irradiance = irradianceXYZ(s, zenith_xyY, denominator, [Ax Ay AY]);
+    varargout{2} = XYZ2xyY(irradiance);
+end
+end
+
+function r = irradianceXYZ(s, zenith_xyY, denominator_xyY, A)
     degreeToRadians = pi / 180;
 
     phiStep = 1 * degreeToRadians;
@@ -126,17 +133,15 @@ if nargout > 2
     normRotAxes = sqrt(sum(abs(rotAxes).^2,3));
     gammaAngle = atan2(normRotAxes, dot(ss, irrv, 3));
 
-    irrxyY(:,:,1) = xz .* (digamma(irrTheta, gammaAngle, Ax) ./ denominator_x);
-    irrxyY(:,:,2) = yz .* (digamma(irrTheta, gammaAngle, Ay) ./ denominator_y);
-    irrxyY(:,:,3) = Yz .* (digamma(irrTheta, gammaAngle, AY) ./ denominator_Y);
+    irrxyY(:,:,1) = zenith_xyY(1) .* (digamma(irrTheta, gammaAngle, A(:,1)) ./ denominator_xyY(1));
+    irrxyY(:,:,2) = zenith_xyY(2) .* (digamma(irrTheta, gammaAngle, A(:,2)) ./ denominator_xyY(2));
+    irrxyY(:,:,3) = zenith_xyY(3) .* (digamma(irrTheta, gammaAngle, A(:,3)) ./ denominator_xyY(3));
 
     % integraion over the hemisphere
     % Documentation/Radiometry.pdf
     irrXYZ = xyY2XYZ(irrxyY);
     irrXYZ = irrXYZ .* repmat(irrSinTheta,[1 1 3]) .* repmat(nDotv,[1 1 3]) .* phiStep .* thetaStep;
-    irradiance = sum(sum(irrXYZ));
-    irradiance = reshape(irradiance,[3 1 1]);
-    varargout{2} = XYZ2xyY(irradiance);
+    r = reshape(sum(sum(irrXYZ)),[3 1 1]);
 end
 
 %% Old implementation
@@ -209,5 +214,3 @@ end
 %         end
 %     end
 % end
-
-end
