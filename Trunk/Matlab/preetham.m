@@ -56,58 +56,15 @@ sun_xyY(1,1,1) = xz * (nominatorSun_x / denominator_x);
 sun_xyY(1,1,2) = yz * (nominatorSun_y / denominator_y);
 sun_xyY(1,1,3) = Yz * (nominatorSun_Y / denominator_Y);
 
-% compute sky model irradiance
-degreeToRadians = pi / 180;
-
-phiStep = 1 * degreeToRadians;
-thetaStep = 1 * degreeToRadians;
-
-[irrPhi irrTheta] = meshgrid(0:phiStep:2*pi,0:thetaStep:pi/2);
-
-irrSinPhi = sin(irrPhi);
-irrCosPhi = cos(irrPhi);
-irrSinTheta = sin(irrTheta);
-irrCosTheta = cos(irrTheta);
-
-irrv(:,:,1) = irrSinTheta .* irrCosPhi;
-irrv(:,:,2) = irrSinTheta .* irrSinPhi;
-irrv(:,:,3) = irrCosTheta;
-
-n = repmat(reshape([0 0 1],[1 1 3]),size(irrPhi,1),size(irrPhi,2));
-nDotv = dot(n,irrv,3);
-
-ss = repmat(reshape(s,[1 1 3]),size(irrPhi,1),size(irrPhi,2));
-rotAxes = cross(irrv, ss, 3);
-normRotAxes = sqrt(sum(abs(rotAxes).^2,3));
-gammaAngle = atan2(normRotAxes, dot(ss, irrv, 3));
-
-irrxyY(:,:,1) = xz .* (digamma(irrTheta, gammaAngle, Ax) ./ denominator_x);
-irrxyY(:,:,2) = yz .* (digamma(irrTheta, gammaAngle, Ay) ./ denominator_y);
-irrxyY(:,:,3) = Yz .* (digamma(irrTheta, gammaAngle, AY) ./ denominator_Y);
-
-irrXYZ = xyY2XYZ(irrxyY);
-
-% integraion over the hemisphere
-% Documentation/Radiometry.pdf
-irrXYZ = irrXYZ .* repmat(irrSinTheta,[1 1 3]) .* repmat(nDotv,[1 1 3]) .* phiStep .* thetaStep;
-irradiance = sum(sum(irrXYZ));
-
-bla = reshape(irradiance,[3,1,1]);
-blu = reshape(irradiance,[1,3,1]);
-
-irradiancexyY = XYZ2xyY(irradiance);
-blaxyY = XYZ2xyY(bla);
-bluxyY = XYZ2xyY(blu);
-
-[xyY mask] = preethamSky(resolution, phiSun, thetaSun, turbidity);
+[xyY mask, irradiancexyY] = preethamSky(resolution, phiSun, thetaSun, turbidity);
 
 x_c = xyY(:,:,1);
 y_c = xyY(:,:,2);
 Y_c = xyY(:,:,3);
 
-x_c(mask) = irradiancexyY(1,1,1);
-y_c(mask) = irradiancexyY(1,1,2);
-Y_c(mask) = irradiancexyY(1,1,3);
+x_c(mask) = irradiancexyY(1);
+y_c(mask) = irradiancexyY(2);
+Y_c(mask) = irradiancexyY(3);
 
 xyY(:,:,1) = x_c;
 xyY(:,:,2) = y_c;
@@ -116,7 +73,7 @@ xyY(:,:,3) = Y_c;
 % tonemapping
 a = 0.18;
 Lwhite = 200;
-xyY = tonemapReinhard(xyY, a, Lwhite);
+[xyY, Lw_average] = tonemapReinhard(xyY, a, Lwhite);
 
 % convert xyY to XYZ
 XYZ = xyY2XYZ(xyY);
