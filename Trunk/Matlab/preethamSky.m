@@ -58,7 +58,6 @@ l = 1 + X.^2 + Y.^2;
 x = 2.*X ./ l;
 y = 2.*Y ./ l;
 z = (1 - X.^2 - Y.^2) ./ l;
-xy_norm = sqrt((abs(x).^2)+(abs(y).^2));
 
 v(:,:,1) = x;
 v(:,:,2) = y;
@@ -70,6 +69,7 @@ v(:,:,3) = z;
 % stereographic projection match
 
 % compute spherical coordinates
+xy_norm = sqrt((abs(x).^2)+(abs(y).^2));
 phiAngle = atan2(y, x);
 thetaAngle = (pi / 2) - atan(z ./ xy_norm);
 
