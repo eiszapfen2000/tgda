@@ -106,6 +106,20 @@ if nargout > 2
     irradiance = irradianceXYZ(s, zenith_xyY, denominator, [Ax Ay AY]);
     varargout{2} = XYZ2xyY(irradiance);
 end
+
+if nargout > 3
+    % compute preetham model at sun position
+    nominatorSun_x = digamma(thetaSun, 0, Ax);
+    nominatorSun_y = digamma(thetaSun, 0, Ay);
+    nominatorSun_Y = digamma(thetaSun, 0, AY);
+
+    sun_xyY = zeros(3,1);
+    sun_xyY(1) = xz * (nominatorSun_x / denominator_x);
+    sun_xyY(2) = yz * (nominatorSun_y / denominator_y);
+    sun_xyY(3) = Yz * (nominatorSun_Y / denominator_Y);
+    
+    varargout{3} = sun_xyY;
+end
 end
 
 function r = irradianceXYZ(s, zenith_xyY, denominator_xyY, A)
