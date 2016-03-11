@@ -43,10 +43,8 @@ sRGB(:,:,1) = reshape(sRGB_vectors(1,:), size(XYZ,1), []);
 sRGB(:,:,2) = reshape(sRGB_vectors(2,:), size(XYZ,1), []);
 sRGB(:,:,3) = reshape(sRGB_vectors(3,:), size(XYZ,1), []);
 
-% convert to non-linear sRGB 
-mask = (sRGB > 0.0031308);
-sRGB(mask) = ((1.055 * sRGB(mask)) .^ (1 / 2.4)) - 0.055;
-sRGB(~mask) = 12.92 * sRGB(~mask);
+% convert from linear sRGB to sRGB
+sRGB = lsRGB2sRGB(sRGB);
 
 figure
 imshow(sRGB);
