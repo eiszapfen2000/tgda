@@ -162,8 +162,12 @@ irradiance = sum(sum(irrXYZ));
 %     end
 % end
 
+bla = reshape(irradiance,[3,1,1]);
+blu = reshape(irradiance,[1,3,1]);
 
 irradiancexyY = XYZ2xyY(irradiance);
+blaxyY = XYZ2xyY(bla);
+bluxyY = XYZ2xyY(blu);
 
 [xyY mask] = preethamSky(resolution, phiSun, thetaSun, turbidity);
 
