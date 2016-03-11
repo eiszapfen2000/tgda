@@ -6,8 +6,6 @@ thetaSun = 45 * (pi / 180);
 phiSun = -pi/2;
 
 resolution = 1024;
-xyY = ones(resolution, resolution, 3);
-XYZ = zeros(resolution, resolution, 3);
 sRGB = zeros(resolution, resolution, 3);
 
 [xyY, mask, irradiancexyY, s_xyY] = preethamSky(resolution, phiSun, thetaSun, turbidity);
