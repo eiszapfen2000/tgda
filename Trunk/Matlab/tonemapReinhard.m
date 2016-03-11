@@ -9,9 +9,14 @@ dimensions = size(xyY_in);
 numberOfElements = dimensions(1) * dimensions(2);
 Lw = xyY_in(:,:,3);
 
+mask = true(size(Lw));
+if nargin > 4
+    mask = varargin{2};
+end
+
 % compute log average luminance
 if Lw_average == -1
-    logarithms = max(log(Lw + eps), 0.0);
+    logarithms = max(log(Lw(mask) + eps), 0.0);
     sumOfLogarithms = sum(sum(logarithms));
     Lw_average = exp(sumOfLogarithms / numberOfElements);
 end
