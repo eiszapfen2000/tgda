@@ -1,4 +1,4 @@
-function [xyY, mask] = preethamSky(resolution, phiSun, thetaSun, turbidity)
+function [xyY, varargout] = preethamSky(resolution, phiSun, thetaSun, turbidity)
 
 mAY = [  0.1787 -1.4630; -0.3554 0.4275; -0.0227 5.3251;  0.1206 -2.5771; -0.0670 0.3703 ];
 mAx = [ -0.0193 -0.2592; -0.0665 0.0008; -0.0004 0.2125; -0.0641 -0.8989; -0.0033 0.0452 ];
@@ -96,6 +96,49 @@ xyY(:,:,1) = v_x;
 xyY(:,:,2) = v_y;
 xyY(:,:,3) = v_Y;
 
+if nargout > 1
+    varargout{1} = mask;
+end
+
+if nargout > 2
+    % compute sky model irradiance
+    degreeToRadians = pi / 180;
+
+    phiStep = 1 * degreeToRadians;
+    thetaStep = 1 * degreeToRadians;
+
+    [irrPhi irrTheta] = meshgrid(0:phiStep:2*pi,0:thetaStep:pi/2);
+
+    irrSinPhi = sin(irrPhi);
+    irrCosPhi = cos(irrPhi);
+    irrSinTheta = sin(irrTheta);
+    irrCosTheta = cos(irrTheta);
+
+    irrv(:,:,1) = irrSinTheta .* irrCosPhi;
+    irrv(:,:,2) = irrSinTheta .* irrSinPhi;
+    irrv(:,:,3) = irrCosTheta;
+
+    n = repmat(reshape([0 0 1],[1 1 3]),size(irrPhi,1),size(irrPhi,2));
+    nDotv = dot(n,irrv,3);
+
+    ss = repmat(reshape(s,[1 1 3]),size(irrPhi,1),size(irrPhi,2));
+    rotAxes = cross(irrv, ss, 3);
+    normRotAxes = sqrt(sum(abs(rotAxes).^2,3));
+    gammaAngle = atan2(normRotAxes, dot(ss, irrv, 3));
+
+    irrxyY(:,:,1) = xz .* (digamma(irrTheta, gammaAngle, Ax) ./ denominator_x);
+    irrxyY(:,:,2) = yz .* (digamma(irrTheta, gammaAngle, Ay) ./ denominator_y);
+    irrxyY(:,:,3) = Yz .* (digamma(irrTheta, gammaAngle, AY) ./ denominator_Y);
+
+    % integraion over the hemisphere
+    % Documentation/Radiometry.pdf
+    irrXYZ = xyY2XYZ(irrxyY);
+    irrXYZ = irrXYZ .* repmat(irrSinTheta,[1 1 3]) .* repmat(nDotv,[1 1 3]) .* phiStep .* thetaStep;
+    irradiance = sum(sum(irrXYZ));
+    irradiance = reshape(irradiance,[3 1 1]);
+    varargout{2} = XYZ2xyY(irradiance);
+end
+
 %% Old implementation
 % MATLAB memory layout, image coordinate (1,1) is at top left
 % start j at top
@@ -166,6 +209,5 @@ xyY(:,:,3) = v_Y;
 %         end
 %     end
 % end
-
 
 end

@@ -1,13 +1,20 @@
-function xyY_out = tonemapReinhard(xyY_in, a, Lwhite)
+function [xyY_out, Lw_average] = tonemapReinhard(xyY_in, a, Lwhite, varargin)
+
+Lw_average = -1;
+if nargin > 3
+    Lw_average = varargin{1};
+end
 
 dimensions = size(xyY_in);
 numberOfElements = dimensions(1) * dimensions(2);
 Lw = xyY_in(:,:,3);
 
 % compute log average luminance
-logarithms = max(log(Lw + eps), 0.0);
-sumOfLogarithms = sum(sum(logarithms));
-Lw_average = exp(sumOfLogarithms / numberOfElements);
+if Lw_average == -1
+    logarithms = max(log(Lw + eps), 0.0);
+    sumOfLogarithms = sum(sum(logarithms));
+    Lw_average = exp(sumOfLogarithms / numberOfElements);
+end
 
 invLwhite = 1.0 / (Lwhite * Lwhite);
 
