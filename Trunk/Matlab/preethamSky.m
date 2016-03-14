@@ -96,27 +96,6 @@ xyY(:,:,1) = v_x;
 xyY(:,:,2) = v_y;
 xyY(:,:,3) = v_Y;
 
-% sun disk
-sunApparentDiameter = 9.35 * 10^-3; % radians
-sunHalfApparentAngle = 0.5 * sunApparentDiameter;
-sunDiskRadius = tan(sunHalfApparentAngle);
-
-if abs(s(1)) > abs(s(2))
-    ilen = 1.0 / norm([s(1) s(3)]);
-    pv1 = ilen .* [-s(3) 0 s(1)];
-else
-    ilen = 1.0 / norm(s(2:3));
-    pv1 = ilen .* [0 s(3) -s(2)];
-end
-pv2 = cross(s,pv1,2);
-directionOnDisk = s + sunDiskRadius .* pv1 + sunDiskRadius .* pv2;
-directionOnDiskN = directionOnDisk ./ norm(directionOnDisk);
-
-rotAxes = cross(directionOnDiskN, s, 2);
-normRotAxes = sqrt(sum(abs(rotAxes).^2,2));
-sunHalfApparentAngle = atan2(normRotAxes, dot(s, directionOnDiskN, 2));
-
-
 if nargout > 1
     varargout{1} = mask;
 end
@@ -144,6 +123,60 @@ end
 
 if nargout > 4
     varargout{4} = sunRadiance(thetaSun, turbidity);
+end
+
+if nargout > 5
+    % sun disk
+    sunApparentDiameter = 9.35 * 10^-3; % radians
+    sunHalfApparentAngle = 0.5 * sunApparentDiameter;
+    sunDiskRadius = tan(sunHalfApparentAngle);
+
+    if abs(s(1)) > abs(s(2))
+        ilen = 1.0 / norm([s(1) s(3)]);
+        pv1 = ilen .* [-s(3) 0 s(1)];
+    else
+        ilen = 1.0 / norm(s(2:3));
+        pv1 = ilen .* [0 s(3) -s(2)];
+    end
+    pv2 = cross(s,pv1,2);
+    pv2 = pv2 ./ norm(pv2);
+    directionOnDisk = s + sunDiskRadius .* pv1 + sunDiskRadius .* pv2;
+    directionOnDiskN = directionOnDisk ./ norm(directionOnDisk);
+
+    rotAxes = cross(directionOnDiskN, s, 2);
+    normRotAxes = sqrt(sum(abs(rotAxes).^2,2));
+    sunHalfApparentAngle = max(sunHalfApparentAngle,atan2(normRotAxes, dot(s, directionOnDiskN, 2)));
+    
+    f = gammaAngle - sunHalfApparentAngle;
+    a = 200; b = 0.1; c = 150;
+    falloff = (1 ./ exp(a .* f)) + b .* (1 ./ exp(c .* f));
+    falloff(falloff < 0) = 0;
+    falloff(falloff > 1) = 1;
+    
+    sunDiskPixels = cos(gammaAngle) >= cos(sunHalfApparentAngle);
+    falloffPixels = falloff > 0;
+    falloffWithoutSunDiskPixels = falloffPixels & ~sunDiskPixels;
+    
+    skyXYZ = xyY2XYZ(xyY);
+    sunXYZ = xyY2XYZ(sunRadiance(thetaSun, turbidity));
+    
+    skyX = skyXYZ(:,:,1);
+    skyY = skyXYZ(:,:,2);
+    skyZ = skyXYZ(:,:,3);
+    
+    skyX(sunDiskPixels) = skyX(sunDiskPixels) + sunXYZ(1);
+    skyY(sunDiskPixels) = skyY(sunDiskPixels) + sunXYZ(2);
+    skyZ(sunDiskPixels) = skyZ(sunDiskPixels) + sunXYZ(3);
+
+    skyX(falloffWithoutSunDiskPixels) = skyX(falloffWithoutSunDiskPixels) + falloff(falloffWithoutSunDiskPixels) .* sunXYZ(1);
+    skyY(falloffWithoutSunDiskPixels) = skyY(falloffWithoutSunDiskPixels) + falloff(falloffWithoutSunDiskPixels) .* sunXYZ(2);
+    skyZ(falloffWithoutSunDiskPixels) = skyZ(falloffWithoutSunDiskPixels) + falloff(falloffWithoutSunDiskPixels) .* sunXYZ(3);
+    
+    skyXYZ(:,:,1) = skyX;
+    skyXYZ(:,:,2) = skyY;
+    skyXYZ(:,:,3) = skyZ;
+    
+    varargout{5} = XYZ2xyY(skyXYZ);
 end
 
 end
