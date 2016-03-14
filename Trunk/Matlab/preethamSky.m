@@ -96,6 +96,27 @@ xyY(:,:,1) = v_x;
 xyY(:,:,2) = v_y;
 xyY(:,:,3) = v_Y;
 
+% sun disk
+sunApparentDiameter = 9.35 * 10^-3; % radians
+sunHalfApparentAngle = 0.5 * sunApparentDiameter;
+sunDiskRadius = tan(sunHalfApparentAngle);
+
+if abs(s(1)) > abs(s(2))
+    ilen = 1.0 / norm([s(1) s(3)]);
+    pv1 = ilen .* [-s(3) 0 s(1)];
+else
+    ilen = 1.0 / norm(s(2:3));
+    pv1 = ilen .* [0 s(3) -s(2)];
+end
+pv2 = cross(s,pv1,2);
+directionOnDisk = s + sunDiskRadius .* pv1 + sunDiskRadius .* pv2;
+directionOnDiskN = directionOnDisk ./ norm(directionOnDisk);
+
+rotAxes = cross(directionOnDiskN, s, 2);
+normRotAxes = sqrt(sum(abs(rotAxes).^2,2));
+sunHalfApparentAngle = atan2(normRotAxes, dot(s, directionOnDiskN, 2));
+
+
 if nargout > 1
     varargout{1} = mask;
 end
@@ -191,14 +212,15 @@ scaling = (100^2) * (1/10^3);
 deltanm = 10.0;
 combined = scaling * deltanm;
 
-blub = [0 0 0];
-for n = 1:41
-blub(1) = blub(1) + (spectralRadiance(n) * xyz_matching_functions(1,n) * combined);
-blub(2) = blub(2) + (spectralRadiance(n) * xyz_matching_functions(2,n) * combined);
-blub(3) = blub(3) + (spectralRadiance(n) * xyz_matching_functions(3,n) * combined);
-end
+transmittance = [0 0 0];
+transmittance(1) = (spectralRadiance * xyz_matching_functions(1,:)') .* combined;
+transmittance(2) = (spectralRadiance * xyz_matching_functions(2,:)') .* combined;
+transmittance(3) = (spectralRadiance * xyz_matching_functions(3,:)') .* combined;
 
-varargout{4} = XYZ2xyY(blub);
+varargout{4} = XYZ2xyY(transmittance);
+
+bla = sunRadiance(thetaSun, turbidity);
+blu = XYZ2xyY(transmittance);
 
 end
 

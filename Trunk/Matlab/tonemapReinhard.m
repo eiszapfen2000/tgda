@@ -21,6 +21,10 @@ if Lw_average == -1
     Lw_average = exp(sumOfLogarithms / numberOfElements);
 end
 
+if Lwhite < 0
+    Lwhite = max(max(Lw));
+end
+
 invLwhite = 1.0 / (Lwhite * Lwhite);
 
 % compute relative luminance
