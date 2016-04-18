@@ -8,13 +8,65 @@ Natural phenomena are a challenging topic in the field of computer graphics.
 Actual examples are complex structures which are to be found throughout nature,
 such as mountains, trees and water. The latter is especially interesting
 because of its highly dynamic form which poses a lot of challenging problems.
-Our interest focuses on the geometry of ocean surfaces using
-consolidated findings from the oceanographic research community.
+For computer graphics to reproduce the ever-changing appearance of ocean
+surfaces represents one such problem. But to cover all the dynamics as well
+as the lighting of an entire ocean would exceed the scope of this work.
+Therefore, we may approach a more specific subject, namely the synthesis of 
+believable ocean surface geometry~\emph{based on} consolidated findings from the
+oceanographic research community.
+% . We focus our interest on the generation of believable
+% ocean surface geometry based on consolidated findings from the oceanographic
+% research community.
+
+% Based on consolidated findings from the
+% oceanographic research community we focus ourselves on the generation of
+% believable ocean surface geometry
+
+% Hence, our interest focuses on the
+% geometry of ocean surfaces using consolidated findings from the oceanographic
+% research community.
+% 
+% In the context of this work we focus our interest on the ocean surfaces.
+% 
+% In the context of this work we focus our interest on the ever-changing shape of
+% ocean surfaces.
+% 
+% Our interest focuses on the geometry of ocean surfaces using
+% consolidated findings from the oceanographic research community.
 
 \section{Problem Statement}
 \label{sec:problem_statement}
 
-BRAK.
+Rendering an ocean is a demanding task for several reasons. First, consider the
+sheer size of a water body as large as an ocean, which in numerous viewing
+situations will be visible all the way to the horizon. Second, the ocean surface
+is dynamic, therefore it needs to be constantly updated with the passage of time.
+The wave interactions that give the ocean surface its shape are huge in terms of
+complexity, thus we employ approximative models published by the oceanographic
+research community.
+Third, the optics of water are complex. The appearance of an ocean surface is
+highly dependent on its surroundings, because it reflects light from various
+sources e.g the sun, the skydome, clouds, as well as objects close to the
+water surface, such as boats and ships. Water does not only reflect light, it
+also refracts light, where the amount of refracted light to find its way back
+to the water surface is highly dependent on the depth of the water body.
+Moreover, the particulets contained inside the water body interact with the
+refracted light and therefore may cause a tint of the ocean surface.
+In addition, waves may break and cause surf and foam. Both interact with light
+drastically different than the surrounding water surface, adding another layer
+of detail.
+
+
+%  (reflections), the depth of the underlying
+% water body (refractions), as well as on the particulets contained in the water
+% body itself (scattering).
+% 
+% The generation and animation of a water surface as large as an ocean is a demanding
+% task. In most situations will often span all the way to the horizon, 
+% 
+% Some light is reflected, some is
+% refracted, where the latter may or may not find its way back to the water
+% surface.
 
 \section{Scope and Focus of the Work}
 \label{sec:scope_and_focus}
