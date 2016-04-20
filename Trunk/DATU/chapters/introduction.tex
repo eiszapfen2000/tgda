@@ -52,17 +52,29 @@ is dynamic, therefore it needs to be constantly updated with the passage of time
 The wave interactions that give the ocean surface its shape are huge in terms of
 complexity, thus we employ approximative models published by the oceanographic
 research community.
-Third, the optics of water are complex. The appearance of an ocean surface is
-highly dependent on its surroundings, because it reflects light from various
-sources e.g the sun, the skydome, clouds, as well as objects close to the
-water surface, such as boats and ships. Water does not only reflect light, it
-also refracts light, where the amount of refracted light to find its way back
-to the water surface is highly dependent on the depth of the water body.
-Moreover, the particulets contained inside the water body interact with the
-refracted light and therefore may cause a tint of the ocean surface.
-In addition, waves may break and cause surf and foam. Both interact with light
-drastically different than the surrounding water surface, adding another layer
-of detail.
+Third, the optics of water are intricate. Incoming light may be reflected at the
+surface or may be refracted into the water body, where the ratio between both is
+dependent on the angle of incidence between the incoming light and the surface
+normal at the point of incidence. Some of the refracted light may find its way
+back to the ocean's surface, either by scattering inside the water body or by
+reflection at the sea bottom, or possibly by a combination of both. Moreover,
+waves on the ocean surface may break and cause surf and foam, both of which
+interact with light drastically different than the surrounding water surface.
+
+%  adding another
+% layer of detail to the visual appearance of the ocean surface.
+
+% The visual appearance of an ocean
+% surface is highly dependent on its surroundings, because it reflects light from various
+% sources e.g the sun, the skydome, clouds, as well as objects close to the
+% water surface, such as boats and ships. Water does not only reflect light, it
+% also refracts light, where the amount of refracted light to find its way back
+% to the water surface is highly dependent on the depth of the water body.
+% Moreover, the particulets contained inside the water body interact with the
+% refracted light and therefore may cause a tint of the ocean surface.
+% In addition, waves may break and cause surf and foam. Both interact with light
+% drastically different than the surrounding water surface, adding another layer
+% of detail.
 
 
 %  (reflections), the depth of the underlying
@@ -78,16 +90,17 @@ of detail.
 
 \section{Scope and Focus of the Work}
 \label{sec:scope_and_focus}
+The scope of this thesis includes the generation, animation and rendering of an
+ocean surface in real-time. We focus our interest on the synthesis of animated
+ocean surface geometry, for which we will adopt a set of mathematical models
+from oceanographic research. Specific properties of said models allow for easy
+addition and reduction of detail, as well as for a range of algorithmic
+optimisations, giving us the opportunity to strike a well-adjusted balance
+between model detail and computational workload.
 
-This thesis scope includes the generation of wind driven ocean surfaces, their
-animation and illumination. //FIXME
-Since the mathematical models used are not based on fluid dynamics,
-convincing interaction between the ocean surface and other objects is beyond the
-scope of this work.
-
-wind driven ocean surfaces
-
-Surface geometry, animation, illumination.
+Note: The oceanographic models discussed in this work are not based on fluid
+dynamics, hence, convincing interaction between the ocean surface and other
+objects is beyond the scope of this thesis.
 
 \section{Structure of the Work}
 \label{sec:structure}
