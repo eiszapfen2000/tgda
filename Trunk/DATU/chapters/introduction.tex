@@ -12,12 +12,11 @@ For computer graphics to reproduce the ever-changing appearance of ocean
 surfaces represents one such problem. But to cover all the dynamics as well
 as the lighting of an entire ocean would exceed the scope of this work.
 We may approach a more specific subject, namely the synthesis of animated ocean
-surface geometry which is both believable and computationally feasible.
+surfaces which are both believable and computationally feasible.
 Fortunately, the oceanographic research community did already develop models
 which satisfy those requirements, as they are essential for oceanographic
-simulations. Therefore, to complete the task at hand, we combine consolidated
-findings from oceanographic research with algorithms from the field of computer
-graphics.
+simulations. Therefore, we combine consolidated findings from oceanographic
+research with computer graphics algorithms to complete the task at hand.
 
 % believable ocean surface geometry~\emph{based on} consolidated findings from the
 % oceanographic research community.
@@ -90,13 +89,14 @@ interact with light drastically different than the surrounding water surface.
 
 \section{Scope and Focus of the Work}
 \label{sec:scope_and_focus}
-The scope of this thesis includes the generation, animation and rendering of an
-ocean surface in real-time. We focus our interest on the synthesis of animated
-ocean surface geometry, for which we will adopt a set of mathematical models
-from oceanographic research. Specific properties of said models allow for easy
-addition and reduction of detail, as well as for a range of algorithmic
-optimisations, giving us the opportunity to strike a well-adjusted balance
-between model detail and computational workload.
+The scope of this thesis includes the generation, animation and rendering of the
+surface of an open ocean in real-time. We focus our interest on the synthesis of
+animated ocean surface geometry, for which we will adopt a set of mathematical
+models from oceanographic research. Specific properties of said models allow for
+easy addition and reduction of detail, as well as for a range of algorithmic
+optimisations. The former combined with the latter gives us the opportunity to
+strike a well-adjusted balance between model detail and computational workload,
+and thereby to improve upon the status quo of current implementations.
 
 Note: The oceanographic models discussed in this work are not based on fluid
 dynamics, hence, convincing interaction between the ocean surface and other
@@ -104,9 +104,15 @@ objects is beyond the scope of this thesis.
 
 \section{Structure of the Work}
 \label{sec:structure}
+The remainder of this work is organized into the following chapters: Chapter
+\ref{ch:state_of_the_art} discusses a set of state-of-the-art approaches to
+ocean surface rendering. Chapter~\ref{ch:background} elaborates on the
+theoretical background the oceanographic models are based on, as well as on the
+models themselves. Chapter~\ref{ch:implementation} describes in detail the
+synthesis of all data related to the ocean surface, including both the algorithmic
+optimisations and the level of detail mechanism.
 
 \begin{itemize}
-
 \item State of the Art
 \item Theoretical background
 \item Implementation
