@@ -58,16 +58,16 @@ lr = dot(gradient_lr, delta_lr);
 ul = dot(gradient_ul, delta_ul);
 ur = dot(gradient_ur, delta_ur);
 
-% ll = reshape(ll, size(x))';
-% lr = reshape(lr, size(x))';
-% ul = reshape(ul, size(x))';
-% ur = reshape(ur, size(x))';
+ll = reshape(ll, size(x))';
+lr = reshape(lr, size(x))';
+ul = reshape(ul, size(x))';
+ur = reshape(ur, size(x))';
 
-% s_x = scurve(x - grid_xf);
-% s_y = scurve(y - grid_yf);
+s_x = scurve(x - grid_xf);
+s_y = scurve(y - grid_yf);
 
-s_x = reshape(scurve(x - grid_xf)',1,[]);
-s_y = reshape(scurve(y - grid_yf)',1,[]);
+% s_x = reshape(scurve(x - grid_xf)',1,[]);
+% s_y = reshape(scurve(y - grid_yf)',1,[]);
 
 a = ll + s_x .* (lr - ll);
 b = ul + s_x .* (ur - ul);
