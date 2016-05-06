@@ -69,10 +69,15 @@ s_y = scurve(y - grid_yf);
 % s_x = reshape(scurve(x - grid_xf)',1,[]);
 % s_y = reshape(scurve(y - grid_yf)',1,[]);
 
-a = ll + s_x .* (lr - ll);
-b = ul + s_x .* (ur - ul);
+% a = ll + s_x .* (lr - ll);
+% b = ul + s_x .* (ur - ul);
+% 
+% n = a + s_y .* (b - a);
 
-n = a + s_y .* (b - a);
+a = ll .* (1 - s_x) + lr .* s_x;
+b = ul .* (1 - s_x) + ur .* s_x;
+
+n = a .* (1 - s_y) + b .* s_y;
 
 end
 
