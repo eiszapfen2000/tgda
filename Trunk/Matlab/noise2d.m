@@ -20,6 +20,44 @@ if ~isfield(pnoise, 'G2')
     pnoise.G2(2,:) = pnoise.G2(2,:) ./ gn;
 end
 
+nrows = size(x,1);
+ncols = size(x,2);
+image = zeros(nrows,ncols);
+
+for ys=1:nrows
+    for xs=1:ncols
+        mx = x(ys,xs);
+        my = y(ys,xs);
+        
+        grid_xf = floor(mx);
+        grid_xc = floor(mx) + 1;
+        grid_yf = floor(my);
+        grid_yc = floor(my) + 1;
+        
+        grid_xf_index = mod(grid_xf - 1, pnoise.res) + 1;
+        grid_xc_index = mod(grid_xc - 1, pnoise.res) + 1;
+        grid_yf_index = mod(grid_yf - 1, pnoise.res) + 1;
+        grid_yc_index = mod(grid_yc - 1, pnoise.res) + 1;
+        
+        ll_index = mod(grid_yf_index + pnoise.P(grid_xf_index) - 1, pnoise.res) + 1;
+        lr_index = mod(grid_yf_index + pnoise.P(grid_xc_index) - 1, pnoise.res) + 1;
+        ul_index = mod(grid_yc_index + pnoise.P(grid_xf_index) - 1, pnoise.res) + 1;
+        ur_index = mod(grid_yc_index + pnoise.P(grid_xc_index) - 1, pnoise.res) + 1;
+        
+        gradient_ll = pnoise.G2(:,pnoise.P(ll_index));
+        gradient_lr = pnoise.G2(:,pnoise.P(lr_index));
+        gradient_ul = pnoise.G2(:,pnoise.P(ul_index));
+        gradient_ur = pnoise.G2(:,pnoise.P(ur_index));
+        
+        image(ys,xs) = noise2d_test(...
+            gradient_ll,gradient_ul,gradient_lr,gradient_ur,...
+            [grid_xf,grid_yf]',[grid_xf,grid_yc]',[grid_xc,grid_yf]',[grid_xc,grid_yc]',...
+            [mx,my]');
+    end
+end
+
+imshow(image,[]);
+
 grid_xf = floor(x);
 grid_xc = floor(x) + 1;
 grid_yf = floor(y);
@@ -35,10 +73,10 @@ lr_indices = mod(grid_yf_indices + pnoise.P(grid_xc_indices) - 1, pnoise.res) + 
 ul_indices = mod(grid_yc_indices + pnoise.P(grid_xf_indices) - 1, pnoise.res) + 1;
 ur_indices = mod(grid_yc_indices + pnoise.P(grid_xc_indices) - 1, pnoise.res) + 1;
 
-gradient_ll = pnoise.G2(:,pnoise.P(ll_indices));
-gradient_lr = pnoise.G2(:,pnoise.P(lr_indices));
-gradient_ul = pnoise.G2(:,pnoise.P(ul_indices));
-gradient_ur = pnoise.G2(:,pnoise.P(ur_indices));
+gradient_ll = pnoise.G2(:,pnoise.P(ll_indices)');
+gradient_lr = pnoise.G2(:,pnoise.P(lr_indices)');
+gradient_ul = pnoise.G2(:,pnoise.P(ul_indices)');
+gradient_ur = pnoise.G2(:,pnoise.P(ur_indices)');
 
 % delta_ll = [x - grid_xf; y - grid_yf];
 % delta_lr = [x - grid_xc; y - grid_yf];
@@ -65,14 +103,6 @@ ur = reshape(ur, size(x))';
 
 s_x = scurve(x - grid_xf);
 s_y = scurve(y - grid_yf);
-
-% s_x = reshape(scurve(x - grid_xf)',1,[]);
-% s_y = reshape(scurve(y - grid_yf)',1,[]);
-
-% a = ll + s_x .* (lr - ll);
-% b = ul + s_x .* (ur - ul);
-% 
-% n = a + s_y .* (b - a);
 
 a = ll .* (1 - s_x) + lr .* s_x;
 b = ul .* (1 - s_x) + ur .* s_x;

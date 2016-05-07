@@ -20,9 +20,16 @@ i_y(2) = x(2) - lr(2);
 i_y(3) = delta_ll(2);
 i_y(4) = delta_lr(2);
 
-a = n_ll * (1 - i_x(1)) + n_lr * i_x(1);
-b = n_ul * (1 - i_x(1)) + n_ur * i_x(1);
+s_x = scurve(i_x(1));
+s_y = scurve(i_y(1));
 
-n = a * (1 - i_y(1)) + b * i_y(1);
+a = n_ll * (1 - s_x) + n_lr * s_x;
+b = n_ul * (1 - s_x) + n_ur * s_x;
 
+n = a * (1 - s_y) + b * s_y;
+
+end
+
+function s = scurve(p)
+    s = 3.*(p.^2) - 2.*(p.^3);
 end
