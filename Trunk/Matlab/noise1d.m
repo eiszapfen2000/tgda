@@ -33,7 +33,7 @@ s = gradient_xf .* delta_xf;
 t = gradient_xc .* delta_xc;
 
 s_x = scurve(delta_xf);
-n = s + s_x .* (t - s);
+n = s .* (1 - s_x) + t .* s_x;
 
 end
 

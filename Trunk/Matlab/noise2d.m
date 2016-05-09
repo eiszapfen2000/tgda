@@ -20,43 +20,43 @@ if ~isfield(pnoise, 'G2')
     pnoise.G2(2,:) = pnoise.G2(2,:) ./ gn;
 end
 
-nrows = size(x,1);
-ncols = size(x,2);
-image = zeros(nrows,ncols);
-
-for ys=1:nrows
-    for xs=1:ncols
-        mx = x(ys,xs);
-        my = y(ys,xs);
-        
-        grid_xf = floor(mx);
-        grid_xc = floor(mx) + 1;
-        grid_yf = floor(my);
-        grid_yc = floor(my) + 1;
-        
-        grid_xf_index = mod(grid_xf - 1, pnoise.res) + 1;
-        grid_xc_index = mod(grid_xc - 1, pnoise.res) + 1;
-        grid_yf_index = mod(grid_yf - 1, pnoise.res) + 1;
-        grid_yc_index = mod(grid_yc - 1, pnoise.res) + 1;
-        
-        ll_index = mod(grid_yf_index + pnoise.P(grid_xf_index) - 1, pnoise.res) + 1;
-        lr_index = mod(grid_yf_index + pnoise.P(grid_xc_index) - 1, pnoise.res) + 1;
-        ul_index = mod(grid_yc_index + pnoise.P(grid_xf_index) - 1, pnoise.res) + 1;
-        ur_index = mod(grid_yc_index + pnoise.P(grid_xc_index) - 1, pnoise.res) + 1;
-        
-        gradient_ll = pnoise.G2(:,pnoise.P(ll_index));
-        gradient_lr = pnoise.G2(:,pnoise.P(lr_index));
-        gradient_ul = pnoise.G2(:,pnoise.P(ul_index));
-        gradient_ur = pnoise.G2(:,pnoise.P(ur_index));
-        
-        image(ys,xs) = noise2d_test(...
-            gradient_ll,gradient_ul,gradient_lr,gradient_ur,...
-            [grid_xf,grid_yf]',[grid_xf,grid_yc]',[grid_xc,grid_yf]',[grid_xc,grid_yc]',...
-            [mx,my]');
-    end
-end
-
-imshow(image,[]);
+% nrows = size(x,1);
+% ncols = size(x,2);
+% image = zeros(nrows,ncols);
+% 
+% for ys=1:nrows
+%     for xs=1:ncols
+%         mx = x(ys,xs);
+%         my = y(ys,xs);
+%         
+%         grid_xf = floor(mx);
+%         grid_xc = floor(mx) + 1;
+%         grid_yf = floor(my);
+%         grid_yc = floor(my) + 1;
+%         
+%         grid_xf_index = mod(grid_xf - 1, pnoise.res) + 1;
+%         grid_xc_index = mod(grid_xc - 1, pnoise.res) + 1;
+%         grid_yf_index = mod(grid_yf - 1, pnoise.res) + 1;
+%         grid_yc_index = mod(grid_yc - 1, pnoise.res) + 1;
+%         
+%         ll_index = mod(grid_yf_index + pnoise.P(grid_xf_index) - 1, pnoise.res) + 1;
+%         lr_index = mod(grid_yf_index + pnoise.P(grid_xc_index) - 1, pnoise.res) + 1;
+%         ul_index = mod(grid_yc_index + pnoise.P(grid_xf_index) - 1, pnoise.res) + 1;
+%         ur_index = mod(grid_yc_index + pnoise.P(grid_xc_index) - 1, pnoise.res) + 1;
+%         
+%         gradient_ll = pnoise.G2(:,pnoise.P(ll_index));
+%         gradient_lr = pnoise.G2(:,pnoise.P(lr_index));
+%         gradient_ul = pnoise.G2(:,pnoise.P(ul_index));
+%         gradient_ur = pnoise.G2(:,pnoise.P(ur_index));
+%         
+%         image(ys,xs) = noise2d_test(...
+%             gradient_ll,gradient_ul,gradient_lr,gradient_ur,...
+%             [grid_xf,grid_yf]',[grid_xf,grid_yc]',[grid_xc,grid_yf]',[grid_xc,grid_yc]',...
+%             [mx,my]');
+%     end
+% end
+% 
+% imshow(image,[]);
 
 grid_xf = floor(x);
 grid_xc = floor(x) + 1;
