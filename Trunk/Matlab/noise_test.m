@@ -1,43 +1,88 @@
 clear all
+close all
 
-% noise_res = 4;
-% gradients = -1 + (1 - (-1)) .* rand(noise_res, noise_res, 2);
-% gn = sqrt(sum(abs(gradients).^2, 3));
-% gradients(:,:,1) = gradients(:,:,1) ./ gn;
-% gradients(:,:,2) = gradients(:,:,2) ./ gn;
-% 
-% p = randperm(noise_res);
+pnoise = [];
+res = 256;
 
-% noise_res = 256;
-% G = -1 + (1 - (-1)) .* rand(noise_res, 1);
-% P = randperm(noise_res);
+nO = 7;
+persistence = 1/2;
 
-G2 = -1 + (1 - (-1)) .* rand(2, 6);
+n = zeros(res,res);
+octaves = zeros([res,res,nO]);
+
+
+for i=1:nO
+    f = 2^(i-1);
+    amplitude = persistence^(i-1);
     
-% normalise gradient vectors
-gn = sqrt(sum(abs(G2).^2, 1));
-G2(1,:) = G2(1,:) ./ gn;
-G2(2,:) = G2(2,:) ./ gn;
-
-% x = [1:0.05:3];
-% y = [2:-0.05:1];
-% [xm, ym] = meshgrid(x,y);
-width = 32;
-height = 32;
-image = zeros(height,width*2-1);
-
-for ys=1:height
-    y = 1 + (ys - 1) ./ (height - 1);
-    for xs=1:width
-        x = 1 + (xs - 1) ./ (width - 1);
-        n = noise2d_test(G2(:,1),G2(:,2),G2(:,3),G2(:,4),[1,1]',[1,2]',[2,1]',[2,2]',[x,y]');
-        image(ys,xs) = n;
-    end
-    for xs=2:width
-        x = 2 + (xs - 1) ./ (width - 1)
-        n = noise2d_test(G2(:,3),G2(:,4),G2(:,5),G2(:,6),[2,1]',[2,2]',[3,1]',[3,2]',[x,y]');
-        image(ys,xs+width-1) = n;
-    end
+    x = [1:(1/(res-1))*f:1+f];
+    y = x(end:-1:1);
+    [xm,ym]=meshgrid(x,y);
+    
+    [pn,pnoise]=noise2d(pnoise,xm,ym);
+    subplot(1,nO,i); imshow(pn,[]);
+    
+    n = n + pn .* amplitude;
 end
 
-imshow(image,[]);
+figure
+imshow(n,[]);
+
+c = n - 0.02;
+c(c < 0) = 0;
+cd = 1.0 - 0.25.^c;
+
+figure
+imshow(cd,[]);
+
+% x = [1:1/(res-1):2];
+% y = x(end:-1:1);
+% [xm,ym]=meshgrid(x,y);
+% [n1,pnoise]=noise2d(pnoise,xm,ym);
+% 
+% x = [1:(1/(res-1))*2:3];
+% y = x(end:-1:1);
+% [xm,ym]=meshgrid(x,y);
+% [n2,pnoise]=noise2d(pnoise,xm,ym);
+% 
+% x = [1:(1/(res-1))*4:5];
+% y = x(end:-1:1);
+% [xm,ym]=meshgrid(x,y);
+% [n3,pnoise]=noise2d(pnoise,xm,ym);
+% 
+% x = [1:(1/(res-1))*8:9];
+% y = x(end:-1:1);
+% [xm,ym]=meshgrid(x,y);
+% [n4,pnoise]=noise2d(pnoise,xm,ym);
+% 
+% x = [1:(1/(res-1))*16:17];
+% y = x(end:-1:1);
+% [xm,ym]=meshgrid(x,y);
+% [n5,pnoise]=noise2d(pnoise,xm,ym);
+% 
+% x = [1:(1/(res-1))*32:33];
+% y = x(end:-1:1);
+% [xm,ym]=meshgrid(x,y);
+% [n6,pnoise]=noise2d(pnoise,xm,ym);
+% 
+% x = [1:(1/(res-1))*64:65];
+% y = x(end:-1:1);
+% [xm,ym]=meshgrid(x,y);
+% [n7,pnoise]=noise2d(pnoise,xm,ym);
+% 
+% figure
+% subplot(1,8,1); imshow(n1,[]);
+% subplot(1,8,2); imshow(n2,[]);
+% subplot(1,8,3); imshow(n3,[]);
+% subplot(1,8,4); imshow(n4,[]);
+% subplot(1,8,5); imshow(n5,[]);
+% subplot(1,8,6); imshow(n6,[]);
+% subplot(1,8,7); imshow(n7,[]);
+% subplot(1,8,8); imshow(128.*n1+64.*n2+32.*n3+16.*n4+8.*n5+4.*n6+2.*n7,[]);
+
+% x = [1.5:1:256.5];
+% y = x(end:-1:1);
+% [xm,ym]=meshgrid(x,y);
+% [n1,pnoise]=noise2d(pnoise,xm,ym);
+% 
+% imshow(n1,[]);
