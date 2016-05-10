@@ -1,39 +1,83 @@
-clear all
 close all
 
-pnoise = [];
 res = 256;
+pnoise = [];
 
-nO = 7;
+startOctave = 4;
+nOctaves = 6;
 persistence = 1/2;
+[n1, o1, ~] = perlinNoise2d(pnoise, res, [startOctave nOctaves], persistence);
+[n2, o2, ~] = perlinNoise2d(pnoise, res, [startOctave nOctaves], persistence);
 
-n = zeros(res,res);
-octaves = zeros([res,res,nO]);
-
-
-for i=1:nO
-    f = 2^(i-1);
-    amplitude = persistence^(i-1);
-    
-    x = [1:(1/(res-1))*f:1+f];
-    y = x(end:-1:1);
-    [xm,ym]=meshgrid(x,y);
-    
-    [pn,pnoise]=noise2d(pnoise,xm,ym);
-    subplot(1,nO,i); imshow(pn,[]);
-    
-    n = n + pn .* amplitude;
+% figure
+% imshow(n1,[]);
+% figure
+% imshow(n2,[]);
+% 
+figure
+for i=1:nOctaves
+    subplot(2,ceil(nOctaves/2),i); imshow(o1(:,:,i),[]);
+end
+figure
+for i=1:nOctaves
+    subplot(2,ceil(nOctaves/2),i); imshow(o2(:,:,i),[]);
 end
 
-figure
-imshow(n,[]);
+% nc = o1(:,:,4)+o1(:,:,5)+o1(:,:,6)+o1(:,:,7);
+nc = n1;
+n1Min = min(min(nc));
+n1Max = max(max(nc));
+n1Range = n1Max - n1Min;
+np1 = (nc - n1Min) ./ n1Range;
 
-c = n - 0.02;
-c(c < 0) = 0;
-cd = 1.0 - 0.25.^c;
+figure
+imshow(np1,[]);
+
+c1 = np1 - 0.475;
+c1(c1 < 0) = 0;
+cd1 = 1.0 - 0.01.^c1;
 
 figure
-imshow(cd,[]);
+imshow(cd1,[]);
+
+imf = fspecial('gaussian',[7 7]);
+figure;
+imshow(imfilter(cd1,imf),[]);
+
+
+% n1Min = min(min(n1));
+% n1Max = max(max(n1));
+% n1Range = n1Max - n1Min;
+% np1 = (n1 - n1Min) ./ n1Range;
+% 
+% n2Min = min(min(n2));
+% n2Max = max(max(n2));
+% n2Range = n2Max - n2Min;
+% np2 = (n2 - n2Min) ./ n2Range;
+% 
+% c1 = np1 - 0.5;
+% c1(c1 < 0) = 0;
+% cd1 = 1.0 - 0.15.^c1;
+% 
+% c2 = np2 - 0.5;
+% c2(c2 < 0) = 0;
+% cd2 = 1.0 - 0.15.^c2;
+% 
+% figure
+% imshow(cd1,[]);
+% figure
+% imshow(cd2,[]);
+% 
+% figure
+% hold on
+% 
+% for t= 0:0.05:1
+% c = c1 .* (1-t) + c2 .* t;
+% imshow(c,[]);
+% pause(0.5);
+% end
+% hold off
+
 
 % x = [1:1/(res-1):2];
 % y = x(end:-1:1);
