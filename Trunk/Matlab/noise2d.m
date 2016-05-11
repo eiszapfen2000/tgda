@@ -63,13 +63,21 @@ grid_xc = floor(x) + 1;
 grid_yf = floor(y);
 grid_yc = floor(y) + 1;
 
-grid_xf_indices = mod(grid_xf - 1, pnoise.res) + 1;
-grid_xc_indices = mod(grid_xc - 1, pnoise.res) + 1;
+% grid_xf_indices = mod(grid_xf - 1, pnoise.res) + 1;
+% grid_xc_indices = mod(grid_xc - 1, pnoise.res) + 1;
+% 
+% ll_indices = mod(grid_yf + pnoise.P(grid_xf_indices) - 1, pnoise.res) + 1;
+% lr_indices = mod(grid_yf + pnoise.P(grid_xc_indices) - 1, pnoise.res) + 1;
+% ul_indices = mod(grid_yc + pnoise.P(grid_xf_indices) - 1, pnoise.res) + 1;
+% ur_indices = mod(grid_yc + pnoise.P(grid_xc_indices) - 1, pnoise.res) + 1;
 
-ll_indices = mod(grid_yf + pnoise.P(grid_xf_indices) - 1, pnoise.res) + 1;
-lr_indices = mod(grid_yf + pnoise.P(grid_xc_indices) - 1, pnoise.res) + 1;
-ul_indices = mod(grid_yc + pnoise.P(grid_xf_indices) - 1, pnoise.res) + 1;
-ur_indices = mod(grid_yc + pnoise.P(grid_xc_indices) - 1, pnoise.res) + 1;
+grid_xf_indices = indexmod(grid_xf, pnoise.res);
+grid_xc_indices = indexmod(grid_xc, pnoise.res);
+
+ll_indices = indexmod(grid_yf + pnoise.P(grid_xf_indices), pnoise.res);
+lr_indices = indexmod(grid_yf + pnoise.P(grid_xc_indices), pnoise.res);
+ul_indices = indexmod(grid_yc + pnoise.P(grid_xf_indices), pnoise.res);
+ur_indices = indexmod(grid_yc + pnoise.P(grid_xc_indices), pnoise.res);
 
 gradient_ll = pnoise.G2(:,pnoise.P(ll_indices)');
 gradient_lr = pnoise.G2(:,pnoise.P(lr_indices)');
@@ -107,6 +115,10 @@ b = ul .* (1 - s_x) + ur .* s_x;
 
 n = a .* (1 - s_y) + b .* s_y;
 
+end
+
+function r = indexmod(x,res)
+    r = mod(x - 1, res) + 1;
 end
 
 function s = scurve(p)
