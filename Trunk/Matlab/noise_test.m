@@ -1,48 +1,76 @@
 close all
 
-res = 256;
+res = 64;
 pnoise = [];
 
-startOctave = 4;
-nOctaves = 6;
-persistence = 1/2;
-[n1, o1, ~] = perlinNoise2d(pnoise, res, [startOctave nOctaves], persistence);
-[n2, o2, ~] = perlinNoise2d(pnoise, res, [startOctave nOctaves], persistence);
-
-% figure
-% imshow(n1,[]);
-% figure
-% imshow(n2,[]);
+% x1=[1:0.1:20];
+% y1 = x1(end:-1:1);
+% z1 = [1:0.1:10];
+% [xm,ym,zm] = meshgrid(x1,y1,z1);
+% [n,pnoise] = noise3d(pnoise, xm, ym, zm);
 % 
-figure
-for i=1:nOctaves
-    subplot(2,ceil(nOctaves/2),i); imshow(o1(:,:,i),[]);
-end
-figure
-for i=1:nOctaves
-    subplot(2,ceil(nOctaves/2),i); imshow(o2(:,:,i),[]);
-end
+% for i=1:size(n,3)
+%     imshow(n(:,:,i),[]);
+%     pause(0.1);
+% end
 
-% nc = o1(:,:,4)+o1(:,:,5)+o1(:,:,6)+o1(:,:,7);
-nc = n1;
-n1Min = min(min(nc));
-n1Max = max(max(nc));
-n1Range = n1Max - n1Min;
-np1 = (nc - n1Min) ./ n1Range;
+startOctave = 3;
+nOctaves = 4;
+persistence = 1/2;
 
-figure
-imshow(np1,[]);
+[n, o, ~] = perlinNoise3d(pnoise, [128 128 128], [startOctave nOctaves], persistence);
 
-c1 = np1 - 0.475;
+nMin = min(min(min(n)));
+nMax = max(max(max(n)));
+nRange = nMax - nMin;
+np = (n - nMin) ./ nRange;
+
+c1 = np - 0.475;
 c1(c1 < 0) = 0;
 cd1 = 1.0 - 0.01.^c1;
 
-figure
-imshow(cd1,[]);
+for i=1:size(n,3)
+    imshow(cd1(:,:,i),[]);
+    pause(0.25);
+end
 
-imf = fspecial('gaussian',[7 7]);
-figure;
-imshow(imfilter(cd1,imf),[]);
+% [n1, o1, ~] = perlinNoise2d(pnoise, res, [startOctave nOctaves], persistence);
+% [n2, o2, ~] = perlinNoise2d(pnoise, res, [startOctave nOctaves], persistence);
+% 
+% % figure
+% % imshow(n1,[]);
+% % figure
+% % imshow(n2,[]);
+% % 
+% figure
+% for i=1:nOctaves
+%     subplot(2,ceil(nOctaves/2),i); imshow(o1(:,:,i),[]);
+% end
+% figure
+% for i=1:nOctaves
+%     subplot(2,ceil(nOctaves/2),i); imshow(o2(:,:,i),[]);
+% end
+% 
+% % nc = o1(:,:,4)+o1(:,:,5)+o1(:,:,6)+o1(:,:,7);
+% nc = n1;
+% n1Min = min(min(nc));
+% n1Max = max(max(nc));
+% n1Range = n1Max - n1Min;
+% np1 = (nc - n1Min) ./ n1Range;
+% 
+% figure
+% imshow(np1,[]);
+% 
+% c1 = np1 - 0.475;
+% c1(c1 < 0) = 0;
+% cd1 = 1.0 - 0.01.^c1;
+% 
+% figure
+% imshow(cd1,[]);
+% 
+% imf = fspecial('gaussian',[7 7]);
+% figure;
+% imshow(imfilter(cd1,imf),[]);
 
 
 % n1Min = min(min(n1));
