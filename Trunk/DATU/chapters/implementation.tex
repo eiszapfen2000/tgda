@@ -2266,25 +2266,45 @@ to locate self intersections on the ocean surface, see the discussion in Section
 the reflectance at that surface position may be modified to account for foam
 and spray.
 
-Given the Jacobian determinant $det(\mvec{J}(\mvec{x},t))$ of the horizontal
-displacement function $\mvec{y}(\mvec{x},t) = \mvec{x}+u\mvec{D}(\mvec{x},t)$,
-we may generate whitecaps whenever the following function gives a result equal
+We may generate whitecaps whenever the following function gives a result equal
 one:
 \begin{equation}
  whitecap(\mvec{x},t) = H(\epsilon - det(\mvec{J}(\mvec{x},t)))
 \end{equation}
-where $H$ is the Heaviside function and the variable $\epsilon$ controls the
-amount of breaking.
+where $det(\mvec{J}(\mvec{x},t))$ is the Jacobian determinant of the horizontal
+displacement function $\mvec{y}(\mvec{x},t) = \mvec{x}+u\mvec{D}(\mvec{x},t)$,
+$H$ is the Heaviside function and the variable $\epsilon$ controls the amount of
+breaking. According to Dupuy et al. we may approximate the whitecap fractional
+coverage $W$ inside a pixel as follows:
+\begin{equation}
+ W = \frac{1}{A}\iint\limits_A whitecap(\mvec{x},t)\mathrm{d}\mvec{x}
+\end{equation}
+where $A$ represents the footprint of the pixel on the ocean plane. Dupuy et al.
+contribute an optimized algorithm to compute $W$ per pixel on the GPU. Their
+algorithm is based on fast linear prefiltering methods, allowing it to leverage
+the hardware accelerated mipmap generator on modern GPUs. It requires an
+additional preprocessing step, with the first order partial derivatives of
+displacements $\mvec{D}(\mvec{x},t)$ of all patterns as input. The output
+consists of variables $k_i$ and $k_i^2$ from Equation 7 and 8 in
+\cite{article:whitecaps}, which are used to compute the per-pixel whitecap
+fractional coverage $W$ via Equation 6 in \cite{article:whitecaps}.
 
- Said modification is based on
-the magnitude of the Jacobian determinant $det(\mvec{J}(\mvec{x},t))$ of the
-horizontal displacement $\mvec{x}+u\mvec{D}(\mvec{x},t)$.
+% Given the Jacobian determinant $det(\mvec{J}(\mvec{x},t))$ of the horizontal
+% displacement function $\mvec{y}(\mvec{x},t) = \mvec{x}+u\mvec{D}(\mvec{x},t)$,
+% we may generate whitecaps whenever the following function gives a result equal
+% one:
+% \begin{equation}
+%  whitecap(\mvec{x},t) = H(\epsilon - det(\mvec{J}(\mvec{x},t)))
+% \end{equation}
+% where $H$ is the Heaviside function and the variable $\epsilon$ controls the
+% amount of breaking.
+
+%  Said modification is based on
+% the magnitude of the Jacobian determinant $det(\mvec{J}(\mvec{x},t))$ of the
+% horizontal displacement $\mvec{x}+u\mvec{D}(\mvec{x},t)$.
 
 
-Dupuy et al. contribute  a GPU optimized version of the above. Their algorithm
-requires an additional preprocessing step, where terms $k_i$ and $k_i^2$ from
-Equation 7 and 8 in \cite{article:whitecaps} are precomputed, with the first
-order partial derivatives of $\mvec{D}(\mvec{x},t)$ of all patterns as input.
+
 %
 \subsubsection{Tonemapping}
 Rendering the Preetham sky and the ocean results in an image with a high dynamic range.
