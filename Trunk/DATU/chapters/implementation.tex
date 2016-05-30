@@ -2201,13 +2201,21 @@ displacements, the resolution of the first order partial derivatives,
 the spectrum type, wind velocity $U_{10}$, the size $L$ of the largest pattern,
 and fetch $F$.
 
+\subsubsection{Surface Mesh}
+%\ref{sec:problem_statement}
+The ocean surface requires a meshing scheme which is able to adapt to highly
+distinct viewing situations, such as closeups of the water surface as well as
+views with the ocean spanning to the horizon. We chose to employ the projected
+grid \cite{Hinsinger:2002}\cite{thesis:johanson}, which provides adaptive level
+of detail in combination with constant memory consumption. The projected grid is
+based on a simple concept: in order to achieve an uniform distribution of
+details on the image plane, a uniformly spaced grid is created in
+post-perspective space, transformed back to world space and projected onto the
+$z=0$ plane. The resulting vertices are displaced vertically and horizontally
+with surface elevation $z(\mvec{x},t)$ and displacement $\mvec{y}(\mvec{x},t)$
+respectively. After that, all vertices are projected normally on the screen via
+the viewing pipeline.
 
-Preetham Sky + Sun Disc\cite{Preetham:1999}
-Bruneton Seamless Ocean Lighting \cite{article:oceanlighting}\cite{misc:oceanlightingfft}
-Ocean Whitecaps\cite{article:whitecaps}
-
-\subsubsection{Projected Grid}
-Projected Grid\cite{Hinsinger:2002}\cite{thesis:johanson}
 \subsubsection{Skylight}
 %
 % \begin{figure}
