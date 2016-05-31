@@ -2211,21 +2211,15 @@ views with the ocean spanning to the horizon. We chose to employ the projected
 grid\cite{Hinsinger:2002}\cite{thesis:johanson}, which is based on a simple
 concept: in order to achieve an uniform distribution of details on the image
 plane, a uniformly spaced grid is created in post-perspective space,
-transformed to world space and projected onto the $y=0$ plane. Thus, we have
+transformed to world space and projected onto the $y=0$ plane, see
+Figure~\ref{fig:dprojectedgrid}. Thus, we have
 constant memory consumption, as the resolution of the grid in screen-space is
 constant, and we have adaptive level of detail, because all screen-space
 grid points are projected to points inside the view frustum, independent of the
-actual viewing situation.
-
-which provides adaptive level
-of detail in combination with constant memory consumption. The projected grid is
-based on a simple concept: in order to achieve an uniform distribution of
-details on the image plane, a uniformly spaced grid is created in
-post-perspective space, transformed back to world space and projected onto the
-$z=0$ plane. The resulting vertices are displaced vertically and horizontally
-with surface elevation $z(\mvec{x},t)$ and displacement $\mvec{y}(\mvec{x},t)$
-respectively. After that, all vertices are projected normally on the screen via
-the viewing pipeline.
+actual viewing situation. The vertices projected onto the $y=0$ plane are
+displaced vertically and horizontally by surface elevation $z(\mvec{x},t)$
+and displacement $\mvec{y}(\mvec{x},t)$ respectively. After that, all vertices
+are projected normally on the screen via the viewing pipeline.
 %
 \begin{figure}[h]
 \centering
@@ -2250,47 +2244,47 @@ positions.}
 
 \subsubsection{Skylight}
 %
-% \begin{figure}
-%  \centering
-%  \subtop[Sky]
-%  {
-%  \includegraphics[scale=0.125]{figures/preetham_1.png}
-%  }
-%  \subtop[Sky + Solar Disc]
-%  {
-%  \includegraphics[scale=0.125]{figures/preetham_solar_disk_1.png}
-%  }
-%  \subtop[Sky + Solar Disc + Irradiance]
-%  {
-%  \includegraphics[scale=0.125]{figures/preetham_solar_disk_irradiance_1.png}
-%  }
-%  \subtop
-%  {
-%  \includegraphics[scale=0.125]{figures/preetham_2.png}
-%  }
-%  \subtop
-%  {
-%  \includegraphics[scale=0.125]{figures/preetham_solar_disk_2.png}
-%  }
-%  \subtop
-%  {
-%  \includegraphics[scale=0.125]{figures/preetham_solar_disk_irradiance_2.png}
-%  }
-%  \subtop
-%  {
-%  \includegraphics[scale=0.125]{figures/preetham_3.png}
-%  }
-%  \subtop
-%  {
-%  \includegraphics[scale=0.125]{figures/preetham_solar_disk_3.png}
-%  }
-%  \subtop
-%  {
-%  \includegraphics[scale=0.125]{figures/preetham_solar_disk_irradiance_3.png}
-%  }
-% \caption{Brak.}
-% \label{fig:preetham}
-% \end{figure}
+\begin{figure}
+ \centering
+ \subtop[Sky]
+ {
+ \includegraphics[scale=0.125]{figures/preetham_1.png}
+ }
+ \subtop[Sky + Solar Disc]
+ {
+ \includegraphics[scale=0.125]{figures/preetham_solar_disk_1.png}
+ }
+ \subtop[Sky + Solar Disc + Irradiance]
+ {
+ \includegraphics[scale=0.125]{figures/preetham_solar_disk_irradiance_1.png}
+ }
+ \subtop
+ {
+ \includegraphics[scale=0.125]{figures/preetham_2.png}
+ }
+ \subtop
+ {
+ \includegraphics[scale=0.125]{figures/preetham_solar_disk_2.png}
+ }
+ \subtop
+ {
+ \includegraphics[scale=0.125]{figures/preetham_solar_disk_irradiance_2.png}
+ }
+ \subtop
+ {
+ \includegraphics[scale=0.125]{figures/preetham_3.png}
+ }
+ \subtop
+ {
+ \includegraphics[scale=0.125]{figures/preetham_solar_disk_3.png}
+ }
+ \subtop
+ {
+ \includegraphics[scale=0.125]{figures/preetham_solar_disk_irradiance_3.png}
+ }
+\caption{Brak.}
+\label{fig:preetham}
+\end{figure}
 %
 \cite{Preetham:1999}
 \subsubsection{Ocean Lighting}
