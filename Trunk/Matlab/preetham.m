@@ -1,16 +1,50 @@
-clear all
+clear variables
 %close all
 
+XYZ2sRGBD50 = [...
+    3.1338561 -1.6168667 -0.4906146;...
+    -0.9787684  1.9161415  0.0334540;...
+    0.0719453 -0.2289914  1.4052427...
+    ];
+
+XYZ2sRGBD65 = [...
+    3.2404542 -1.5371385 -0.4985314;...
+    -0.9692660  1.8760108  0.0415560;...
+    0.0556434 -0.2040259  1.0572252;...
+    ];
+
 turbidity = 2.0;
-thetaSun = 45 * (pi / 180);
+thetaSun = 0 * (pi / 180);
 phiSun = -pi/2;
 
 resolution = 1025;
-[xyY, mask, irradiancexyY, s_xyY, nix, nux] = preethamSky(resolution, phiSun, thetaSun, turbidity);
+preetham_xyY_thetaSun_0  = preethamSky(resolution, phiSun,  0 * (pi / 180), turbidity);
+preetham_xyY_thetaSun_30 = preethamSky(resolution, phiSun, 30 * (pi / 180), turbidity);
+preetham_xyY_thetaSun_60 = preethamSky(resolution, phiSun, 60 * (pi / 180), turbidity);
+preetham_xyY_thetaSun_90 = preethamSky(resolution, phiSun, 90 * (pi / 180), turbidity);
 
-blub = lsRGB2sRGB(XYZ2lsRGB(xyY2XYZ(tonemapReinhard(nux, 0.18, -1))));
-figure;
-imshow(blub);
+tonemapped_preetham_sRGB_D65_thetaSun_0  = lsRGB2sRGB(XYZ2lsRGB(xyY2XYZ(tonemapReinhard(preetham_xyY_thetaSun_0,  0.18, -1)),XYZ2sRGBD65));
+tonemapped_preetham_sRGB_D65_thetaSun_30 = lsRGB2sRGB(XYZ2lsRGB(xyY2XYZ(tonemapReinhard(preetham_xyY_thetaSun_30, 0.18, -1)),XYZ2sRGBD65));
+tonemapped_preetham_sRGB_D65_thetaSun_60 = lsRGB2sRGB(XYZ2lsRGB(xyY2XYZ(tonemapReinhard(preetham_xyY_thetaSun_60, 0.18, -1)),XYZ2sRGBD65));
+tonemapped_preetham_sRGB_D65_thetaSun_90 = lsRGB2sRGB(XYZ2lsRGB(xyY2XYZ(tonemapReinhard(preetham_xyY_thetaSun_90, 0.18, -1)),XYZ2sRGBD65));
+
+tonemapped_preetham_sRGB_D50_thetaSun_0  = lsRGB2sRGB(XYZ2lsRGB(xyY2XYZ(tonemapReinhard(preetham_xyY_thetaSun_0,  0.18, -1)),XYZ2sRGBD50));
+tonemapped_preetham_sRGB_D50_thetaSun_30 = lsRGB2sRGB(XYZ2lsRGB(xyY2XYZ(tonemapReinhard(preetham_xyY_thetaSun_30, 0.18, -1)),XYZ2sRGBD50));
+tonemapped_preetham_sRGB_D50_thetaSun_60 = lsRGB2sRGB(XYZ2lsRGB(xyY2XYZ(tonemapReinhard(preetham_xyY_thetaSun_60, 0.18, -1)),XYZ2sRGBD50));
+tonemapped_preetham_sRGB_D50_thetaSun_90 = lsRGB2sRGB(XYZ2lsRGB(xyY2XYZ(tonemapReinhard(preetham_xyY_thetaSun_90, 0.18, -1)),XYZ2sRGBD50));
+
+figure
+imshow(tonemapped_preetham_sRGB_D65_thetaSun_0);
+figure
+imshow(tonemapped_preetham_sRGB_D50_thetaSun_0);
+% imwrite(tonemapped_preetham_xyY_thetaSun_90, 'brak.png');
+% blub = imread('brak.png');
+% figure
+% imshow(blub);
+% % [xyY, mask, irradiancexyY, s_xyY, nix, nux] = preethamSky(resolution, phiSun, thetaSun, turbidity);
+% blub = lsRGB2sRGB(XYZ2lsRGB(xyY2XYZ(tonemapReinhard(xyY, 0.18, -1))));
+% figure;
+% imshow(blub);
 
 % x_c = xyY(:,:,1);
 % y_c = xyY(:,:,2);

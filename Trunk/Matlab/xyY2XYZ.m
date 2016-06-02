@@ -3,7 +3,7 @@ function XYZ = xyY2XYZ(xyY)
 if size(xyY,3) == 3
     x = xyY(:,:,1); y = xyY(:,:,2);
     X = zeros(size(x)); Y = xyY(:,:,3); Z = zeros(size(x));
-    nzero = Y > 0;
+    nzero = y > 0;
     
     X(nzero) = (x(nzero) ./ y(nzero)) .* Y(nzero);
     Z(nzero) = ((1.0 - x(nzero) - y(nzero)) ./ y(nzero)) .* Y(nzero);
@@ -13,7 +13,7 @@ else
     if size(xyY,2) == 3
         x = xyY(:,1); y = xyY(:,2);
         X = zeros(size(x)); Y = xyY(:,3); Z = zeros(size(x));
-        nzero = Y > 0;
+        nzero = y > 0;
         
         X(nzero) = (x(nzero) ./ y(nzero)) .* Y(nzero);
         Z(nzero) = ((1.0 - x(nzero) - y(nzero)) ./ y(nzero)) .* Y(nzero);
@@ -23,7 +23,7 @@ else
         if size(xyY,1) == 3
             x = xyY(1,:); y = xyY(2,:);
             X = zeros(size(x)); Y = xyY(3,:); Z = zeros(size(x));
-            nzero = Y > 0;
+            nzero = y > 0;
 
             X(nzero) = (x(nzero) ./ y(nzero)) .* Y(nzero);
             Z(nzero) = ((1.0 - x(nzero) - y(nzero)) ./ y(nzero)) .* Y(nzero);
