@@ -59,6 +59,7 @@ static BOOL locked = NO;
                     fragmentStreams:(NPStringList *)fragmentStreams
                                    ;
 
+- (NPStringList *) extractPreprocessorLines:(NPStringList *)stringList;
 - (NPStringList *) extractStreamLines:(NPStringList *)stringList;
 
 - (void) parseShader:(NPParser *)parser
@@ -111,7 +112,7 @@ static BOOL locked = NO;
     {
         char infoLog[infoLogLength];
         glGetProgramInfoLog(glID, infoLogLength, &infoLogLength, infoLog);
-        
+
         NSString * description
             = AUTORELEASE([[ NSString alloc ] 
                                 initWithCString:infoLog
@@ -221,13 +222,18 @@ static BOOL locked = NO;
     NPParser * parser = AUTORELEASE([[ NPParser alloc ] init ]);
     [ parser parse:stringList ];
 
+    NPStringList * preprocessorLines    = [ NPStringList stringList ];
     NPStringList * uniformVariableLines = [ NPStringList stringList ];
     NPStringList * vertexStreamLines    = [ NPStringList stringList ];
     NPStringList * fragmentStreamLines  = [ NPStringList stringList ];
 
+    [ preprocessorLines    addStringList:[ stringList stringsWithPrefix:@"define"  ]];
     [ uniformVariableLines addStringList:[ stringList stringsWithPrefix:@"uniform" ]];
-    [ vertexStreamLines    addStringList:[ stringList stringsWithPrefix:@"in"  ]];
-    [ fragmentStreamLines  addStringList:[ stringList stringsWithPrefix:@"out" ]];
+    [ vertexStreamLines    addStringList:[ stringList stringsWithPrefix:@"in"      ]];
+    [ fragmentStreamLines  addStringList:[ stringList stringsWithPrefix:@"out"     ]];
+
+    NPStringList * preprocessorLinesStripped
+        = [ self extractPreprocessorLines:preprocessorLines ];
 
     // separate stream related strings at ":", trim first component
     // and append ";"
@@ -464,6 +470,40 @@ static BOOL locked = NO;
     {
         fragmentShader = RETAIN(shader);
     }
+}
+
+- (NPStringList *) extractPreprocessorLines:(NPStringList *)stringList
+{
+    NPStringList * result = [ NPStringList stringList ];
+    NSCharacterSet * whitespace = [ NSCharacterSet whitespaceCharacterSet ];
+
+    // assemble "#define FOO VALUE" or just "#define FOO"
+    NSUInteger numberOfStrings = [ stringList count ];
+    for (NSUInteger i = 0; i < numberOfStrings; i++)
+    {
+        NSString * trimmedString
+            = [[ stringList stringAtIndex:i ] stringByTrimmingCharactersInSet:whitespace ];
+
+        NSArray * components
+            = [ trimmedString componentsSeparatedByCharactersInSet:whitespace ];
+
+        NSUInteger componentCount = [ components count ];
+
+        if (componentCount < 2 || componentCount > 3)
+        {
+            continue;
+        }
+
+        NSString * line = @"#";
+        for (NSUInteger c = 0; c < componentCount; c++)
+        {
+            line = [ line stringByAppendingFormat:@"%@ ", [ components objectAtIndex:c ]];
+        }
+
+        [ result addString:line ];
+    }
+
+    return result;
 }
 
 - (NPStringList *) extractStreamLines:(NPStringList *)stringList
