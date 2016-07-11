@@ -416,11 +416,12 @@ static BOOL locked = NO;
         startIndex = vIndex + 1;
     }
 
-    NPStringList * variablesAndStreams = [ NPStringList stringList ];
-    [ variablesAndStreams addStringList:effectVariables ];
-    [ variablesAndStreams addStringList:streams ];
+    NPStringList * linesToInsert = [ NPStringList stringList ];
+    [ linesToInsert addStringList:preprocessorDefines ];
+    [ linesToInsert addStringList:effectVariables ];
+    [ linesToInsert addStringList:streams ];
 
-    [ shaderSource insertStringList:variablesAndStreams
+    [ shaderSource insertStringList:linesToInsert
                             atIndex:startIndex ];
 
     // DAMN FUCKING NVIDIA GLSL Compiler needs \n
