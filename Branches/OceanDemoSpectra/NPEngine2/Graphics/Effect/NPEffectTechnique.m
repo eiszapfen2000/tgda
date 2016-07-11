@@ -45,16 +45,19 @@ static BOOL locked = NO;
 @interface NPEffectTechnique (Private)
 
 - (NPShader *) loadShaderFromFile:(NSString *)fileName
+        insertPreprocessorDefines:(NPStringList *)preprocessorDefines
             insertEffectVariables:(NPStringList *)effectVariables
                     insertStreams:(NPStringList *)streams
                                  ;
 
 - (void) loadVertexShaderFromFile:(NSString *)fileName
+              preprocessorDefines:(NPStringList *)preprocessorDefines
                   effectVariables:(NPStringList *)effectVariables
                     vertexStreams:(NPStringList *)vertexStreams
                                  ;
 
 - (void) loadFragmentShaderFromFile:(NSString *)fileName
+                preprocessorDefines:(NPStringList *)preprocessorDefines
                     effectVariables:(NPStringList *)effectVariables
                     fragmentStreams:(NPStringList *)fragmentStreams
                                    ;
@@ -63,6 +66,7 @@ static BOOL locked = NO;
 - (NPStringList *) extractStreamLines:(NPStringList *)stringList;
 
 - (void) parseShader:(NPParser *)parser
+ preprocessorDefines:(NPStringList *)preprocessorDefines
      effectVariables:(NPStringList *)effectVariables
        vertexStreams:(NPStringList *)vertexStreams
      fragmentStreams:(NPStringList *)fragmentStreams
@@ -259,6 +263,7 @@ static BOOL locked = NO;
 
     // assemble and compile shaders
     [ self parseShader:parser
+   preprocessorDefines:preprocessorLinesStripped
        effectVariables:uniformVariableLines 
          vertexStreams:vertexStreamLinesStripped
        fragmentStreams:fragmentStreamLinesStripped ];
@@ -383,6 +388,7 @@ static BOOL locked = NO;
 @implementation NPEffectTechnique (Private)
 
 - (NPShader *) loadShaderFromFile:(NSString *)fileName
+        insertPreprocessorDefines:(NPStringList *)preprocessorDefines
             insertEffectVariables:(NPStringList *)effectVariables
                     insertStreams:(NPStringList *)streams
 {
@@ -435,6 +441,7 @@ static BOOL locked = NO;
 }
 
 - (void) loadVertexShaderFromFile:(NSString *)fileName
+              preprocessorDefines:(NPStringList *)preprocessorDefines
                   effectVariables:(NPStringList *)effectVariables
                     vertexStreams:(NPStringList *)vertexStreams
 {
@@ -444,6 +451,7 @@ static BOOL locked = NO;
 
     NPShader * shader
         = [ self loadShaderFromFile:fileName
+          insertPreprocessorDefines:preprocessorDefines
               insertEffectVariables:effectVariables
                       insertStreams:vertexStreams ];
 
@@ -454,6 +462,7 @@ static BOOL locked = NO;
 }
 
 - (void) loadFragmentShaderFromFile:(NSString *)fileName
+                preprocessorDefines:(NPStringList *)preprocessorDefines
                     effectVariables:(NPStringList *)effectVariables
                     fragmentStreams:(NPStringList *)fragmentStreams
 {
@@ -463,6 +472,7 @@ static BOOL locked = NO;
 
     NPShader * shader
         = [ self loadShaderFromFile:fileName
+          insertPreprocessorDefines:preprocessorDefines
               insertEffectVariables:effectVariables
                       insertStreams:fragmentStreams ];
 
@@ -528,6 +538,7 @@ static BOOL locked = NO;
 }
 
 - (void) parseShader:(NPParser *)parser
+ preprocessorDefines:(NPStringList *)preprocessorDefines
      effectVariables:(NPStringList *)effectVariables
        vertexStreams:(NPStringList *)vertexStreams
      fragmentStreams:(NPStringList *)fragmentStreams
@@ -546,6 +557,7 @@ static BOOL locked = NO;
             if ( [ shaderType isEqual:@"vertex" ] == YES )
             {
                 [ self loadVertexShaderFromFile:shaderFileName
+                            preprocessorDefines:preprocessorDefines
                                 effectVariables:effectVariables
                                   vertexStreams:vertexStreams ];
             }
@@ -553,6 +565,7 @@ static BOOL locked = NO;
             if ( [ shaderType isEqual:@"fragment" ] == YES )
             {
                 [ self loadFragmentShaderFromFile:shaderFileName
+                              preprocessorDefines:preprocessorDefines
                                   effectVariables:effectVariables
                                   fragmentStreams:fragmentStreams ];
             }
