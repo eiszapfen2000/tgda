@@ -91,38 +91,37 @@ static BOOL locked = NO;
 		return NO;
 	}
 
-	BOOL result = YES;
-
 	GLint successful;
 	glGetProgramiv(glID, GL_LINK_STATUS, &successful);
 
-	if ( successful == GL_FALSE )
+	if ( successful == GL_TRUE )
 	{
-		GLsizei infoLogLength = 0;
-		GLsizei charsWritten = 0;
-
-		glGetProgramiv(glID, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-		char* infoLog = ALLOC_ARRAY(char, (size_t)infoLogLength);
-		glGetProgramInfoLog(glID, infoLogLength, &charsWritten, infoLog);
-
-        if ( error != NULL )
-        {
-            NSString * description
-                = AUTORELEASE([[ NSString alloc ] 
-                                    initWithCString:infoLog
-                                           encoding:NSASCIIStringEncoding ]);
-
-            *error = [ NSError errorWithCode:NPEngineGraphicsEffectTechniqueGLSLLinkError
-                                 description:description ];
-        }
-		
-		FREE(infoLog);
-
-		result = NO;
+		return YES;
 	}
 
-	return result;
+	GLsizei infoLogLength = 0;
+	glGetProgramiv(glID, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+	if ( infoLogLength == 0 )
+	{
+		return NO;
+	}
+
+    if ( error != NULL )
+    {
+        char infoLog[infoLogLength];
+        glGetProgramInfoLog(glID, infoLogLength, &infoLogLength, infoLog);
+        
+        NSString * description
+            = AUTORELEASE([[ NSString alloc ] 
+                                initWithCString:infoLog
+                                       encoding:NSASCIIStringEncoding ]);
+
+        *error = [ NSError errorWithCode:NPEngineGraphicsEffectTechniqueGLSLLinkError
+                             description:description ];
+    }
+	
+	return NO;
 }
 
 + (void) activate
