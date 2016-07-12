@@ -36,10 +36,11 @@
 #import "GL/glew.h"
 #import "GL/glfw.h"
 
-NpKeyboardState keyboardState;
-NpMouseState mouseState;
-IVector2 mousePosition;
 IVector2 widgetSize;
+IVector2 mousePosition;
+
+NpMouseState mouseState;
+NpKeyboardState keyboardState;
 
 static void GLFWCALL keyboard_callback(int key, int state)
 {
@@ -68,8 +69,6 @@ static void GLFWCALL window_resize_callback(int width, int height)
     widgetSize.y = height;
 }
 
-int running = GL_TRUE;
-
 int main (int argc, char **argv)
 {
     //feenableexcept(FE_DIVBYZERO | FE_INVALID);
@@ -89,10 +88,10 @@ int main (int argc, char **argv)
     glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
     // glew needs compatibility profile
     glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_FALSE);
+    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
     
     // Open a window and create its OpenGL context
-    if( !glfwOpenWindow( 800, 600, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
+    if( !glfwOpenWindow( 1280, 720, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
     {
         NSLog(@"Failed to open GLFW window");
         glfwTerminate();
@@ -176,7 +175,7 @@ int main (int argc, char **argv)
 
     [[[ NP Core ] timer ] reset ];
 
-    BOOL sceneRender = YES;
+    int running = GL_TRUE;
 
     // run loop
     while ( running )
