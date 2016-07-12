@@ -17,8 +17,6 @@
     fps = 0;
     fpsThisSecond = 0;
     paused = NO;
-
-   	//gettimeofday(&lastUpdate, 0);
     clock_gettime(CLOCK_MONOTONIC, &lastUpdate);
 
     return self;
@@ -53,29 +51,6 @@
 {
     if ( paused == NO )
     {
-        /*
-        struct timeval updateTime;
-        gettimeofday(&updateTime, 0);
-
-        double lastUpdateInSeconds = ((double)lastUpdate.tv_sec) + (((double)lastUpdate.tv_usec) / (1000000.0));
-        double updateTimeInSeconds = ((double)updateTime.tv_sec) + (((double)updateTime.tv_usec) / (1000000.0));
-        frameTime  = updateTimeInSeconds - lastUpdateInSeconds;
-        lastUpdate = updateTime;
-
-        totalElapsedTime += frameTime;
-
-        fpsThisSecond++;
-
-        int64_t totalSeconds = (int64_t)totalElapsedTime;
-
-        if ( totalSeconds != secondsPassed )
-        {
-            fps = fpsThisSecond;
-            fpsThisSecond = 0;
-            secondsPassed = totalSeconds;
-        }
-        */
-
         struct timespec updateTime;
         clock_gettime(CLOCK_MONOTONIC, &updateTime);
 
@@ -131,7 +106,6 @@
     secondsPassed = 0;
     fps = 0;
     fpsThisSecond = 0;
-
    	clock_gettime(CLOCK_MONOTONIC, &lastUpdate);
 }
 
