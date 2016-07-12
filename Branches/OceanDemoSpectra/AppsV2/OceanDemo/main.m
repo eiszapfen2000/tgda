@@ -88,7 +88,7 @@ int main (int argc, char **argv)
     glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
     // glew needs compatibility profile
     glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_FALSE);
     
     // Open a window and create its OpenGL context
     if( !glfwOpenWindow( 1280, 720, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
@@ -216,28 +216,7 @@ int main (int argc, char **argv)
         [ scene render ];
 
         // menu
-        [[[ NP Graphics ] orthographic ] activate ];
-
-        NPBlendingState * bState
-            = [[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ];
-
-        NPDepthTestState * dState
-            = [[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ];
-
-        [ bState setBlendingMode:NpBlendingAverage ];
-        [ bState setEnabled:YES ];
-        [ bState activate ];
-
-        [ dState setWriteEnabled:NO ];
-        [ dState setEnabled:NO ];
-        [ dState activate ];
-
         [ menu render ];
-
-        [ bState deactivate ];
-        [ dState deactivate ];
-
-        [[[ NP Graphics ] orthographic ] deactivate ];
 
         // check for debug messages
         //[[ NP Graphics ] checkForDebugMessages ];
