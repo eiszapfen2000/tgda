@@ -7,6 +7,9 @@
 #import "Core/Container/NPAssetArray.h"
 #import "Core/Utilities/NSError+NPEngine.h"
 #import "Core/NPEngineCore.h"
+#import "Graphics/State/NPStateConfiguration.h"
+#import "Graphics/State/NPBlendingState.h"
+#import "Graphics/State/NPDepthTestState.h"
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Font/NPFont.h"
 #import "Graphics/NPOrthographic.h"
@@ -417,7 +420,28 @@
 {
     if ( menuActive == YES || menuActivating == YES || menuDeactivating == YES )
     {
+        [[[ NPEngineGraphics instance ] orthographic ] activate ];
+
+        NPBlendingState * blendginState
+            = [[[ NPEngineGraphics instance ] stateConfiguration ] blendingState ];
+
+        NPDepthTestState * depthTestState
+            = [[[ NPEngineGraphics instance ] stateConfiguration ] depthTestState ];
+
+        [ blendginState setBlendingMode:NpBlendingAverage ];
+        [ blendginState setEnabled:YES ];
+        [ blendginState activate ];
+
+        [ depthTestState setWriteEnabled:NO ];
+        [ depthTestState setEnabled:NO ];
+        [ depthTestState activate ];
+
         [ menuItems makeObjectsPerformSelector:@selector(render) ];
+
+        [ blendginState deactivate ];
+        [ depthTestState deactivate ];
+
+        [[[ NPEngineGraphics instance ] orthographic ] deactivate ];        
     }
 }
 
