@@ -95,16 +95,20 @@ typedef struct OdSpectrumVariance
 OdSpectrumVariance;
 
 static const NSUInteger defaultNumberOfLods = 2;
-static const NSUInteger defaultSpectrumType = 1;
-static const NSUInteger defaultOptions = OdGeneratorOptionsHeights | OdGeneratorOptionsGradient | OdGeneratorOptionsDisplacement | OdGeneratorOptionsDisplacementDerivatives;
+static const NSUInteger defaultSpectrumType = 0;
+
+static const NSUInteger defaultOptions
+	= OdGeneratorOptionsHeights | OdGeneratorOptionsGradient
+	  | OdGeneratorOptionsDisplacement | OdGeneratorOptionsDisplacementDerivatives;
+
 static const double defaultWindSpeed = 4.5;
 static const Vector2 defaultWindDirection = {1.0, 0.0};
 static const double defaultSize = 237.0;
 static const double defaultFetch = 100000.0;
 static const double defaultSpectrumScale = PHILLIPS_CONSTANT;
 static const int32_t resolutions[6] = {8, 16, 32, 64, 128, 256};
-static const NSUInteger defaultGeometryResolutionIndex = 0;
-static const NSUInteger defaultGradientResolutionIndex = 0;
+static const NSUInteger defaultGeometryResolutionIndex = 3;
+static const NSUInteger defaultGradientResolutionIndex = 5;
 static const double OneDivSixty = 1.0 / 30.0;
 
 static const double defaultAreaScale = 1.0;
