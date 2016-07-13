@@ -581,6 +581,7 @@ int main (int argc, char **argv)
 	BOOL useIrradiance = YES;
 	BOOL renderSunDisc = YES;
 	BOOL tonemapping = YES;
+	Vector3 irradiance_XYZ = v3_zero();
 
 	FRectangle vertices;
 	vertices.min.x = vertices.min.y = -1.0;
@@ -611,7 +612,7 @@ int main (int argc, char **argv)
         const double frameTime = [[[ NP Core ] timer ] frameTime ];
         const int32_t fps = [[[ NP Core ] timer ] fps ];
 
-//        NSLog(@"%lf %d", frameTime, fps);
+        //NSLog(@"%lf %d", frameTime, fps);
 
         if ([ wheelUp activated ] == YES )
         {
@@ -659,6 +660,8 @@ int main (int argc, char **argv)
         if ([ irradiance deactivated ] == YES )
         {
 	        useIrradiance = !useIrradiance;
+	        irradiance_XYZ = v3_zero();
+	        modified = YES;
         }
 
         if ([ sunDisc deactivated ] == YES )
@@ -678,8 +681,6 @@ int main (int argc, char **argv)
         {
             NSLog(@"phi:%lf theta:%lf", phiSun * MATH_RAD_TO_DEG, thetaSun * MATH_RAD_TO_DEG);
         }
-
-        modified = NO;
 
         double sunHalfApparentAngle = 0.00935 * 0.5;
         //double sunHalfApparentAngle = 0.25 * MATH_PI / 360.0;
@@ -756,10 +757,10 @@ int main (int argc, char **argv)
         denominator.y = digamma(0.0, thetaSun, ABCDE_y);
         denominator.z = digamma(0.0, thetaSun, ABCDE_Y);
 
-        Vector3 irradiance_XYZ = v3_zero();
-
-		if ( useIrradiance == YES )
+        if ( useIrradiance == YES && modified == YES)
 		{
+			irradiance_XYZ = v3_zero();
+
 		    const double phiStep   = 1.0 * MATH_DEG_TO_RAD;
 		    const double thetaStep = 1.0 * MATH_DEG_TO_RAD;
 
@@ -801,6 +802,8 @@ int main (int argc, char **argv)
 		    }
 		}
 
+		modified = NO;
+
         Vector3 nominatorSun;
         nominatorSun.x = digamma(thetaSun, 0.0, ABCDE_x);
         nominatorSun.y = digamma(thetaSun, 0.0, ABCDE_y);
@@ -824,7 +827,6 @@ int main (int argc, char **argv)
 		combined_Lab.z = sun_Lab.z;
 
 		Vector3 combined_XYZ = Lab_to_XYZ(combined_Lab, D50);
-
 
         const FVector3 A = { ABCDE_x[0], ABCDE_y[0], ABCDE_Y[0] };
         const FVector3 B = { ABCDE_x[1], ABCDE_y[1], ABCDE_Y[1] };

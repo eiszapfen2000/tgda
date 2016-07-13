@@ -24,16 +24,11 @@ void main()
 
     vec3 XYZ = vec3(0.0);
 
-    if (lMinusOne > 1.02)
+    if (lMinusOne > 1.0)
     {
         discard;
     }
     
-    if (lMinusOne > 1.0)
-    {
-        u = u / lMinusOne;
-    }
-
     //  http://en.wikipedia.org/wiki/Stereographic_projection
     float X = u.x;
     float Y = u.y;
