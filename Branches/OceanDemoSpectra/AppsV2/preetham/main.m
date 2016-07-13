@@ -849,7 +849,24 @@ int main (int argc, char **argv)
         [ rtc activateDrawBuffers ];
         [ rtc activateViewport ];
 
-        const FVector4 clearColor = {.x = 0.0f, .y = 0.0f, .z = 0.0f, .w = 0.0f};
+        const float avgFresnel = 0.17;
+        Vector3 averageReflectance_XYZ = v3_sv_scaled(avgFresnel / MATH_PI, &irradiance_XYZ);
+
+        Matrix3 XYZ2LinearsRGB_D50;
+        M_EL(XYZ2LinearsRGB_D50,0,0) =  3.1338561; M_EL(XYZ2LinearsRGB_D50,1,0) = -1.6168667; M_EL(XYZ2LinearsRGB_D50,2,0) = -0.4906146;
+        M_EL(XYZ2LinearsRGB_D50,0,1) = -0.9787684; M_EL(XYZ2LinearsRGB_D50,1,1) =  1.9161415; M_EL(XYZ2LinearsRGB_D50,2,1) =  0.0334540;
+        M_EL(XYZ2LinearsRGB_D50,0,2) =  0.0719453; M_EL(XYZ2LinearsRGB_D50,1,2) = -0.2289914; M_EL(XYZ2LinearsRGB_D50,2,2) =  1.4052427;
+
+        Vector3 averageReflectance_LinearsRGB = m3_mv_multiply(&XYZ2LinearsRGB_D50, &averageReflectance_XYZ);
+
+		const FVector4 clearColor 
+			= {
+				.x = averageReflectance_LinearsRGB.x,
+			    .y = averageReflectance_LinearsRGB.y,
+			    .z = averageReflectance_LinearsRGB.z,
+			    .w = 0.0f
+			  };
+
         [[ NP Graphics ] clearDrawBuffer:0 color:clearColor ];
 
 		if ( renderSunDisc == YES )
@@ -875,6 +892,7 @@ int main (int argc, char **argv)
                              colorBufferIndex:0
                                       bindFBO:NO ];
 
+		const FVector4 zeroColor = {.x = 0.0f, .y = 0.0f, .z = 0.0f, .w = 0.0f};
         [[ NP Graphics ] clearDrawBuffer:0 color:clearColor ];
 
         [[[ NP Graphics ] textureBindingState ] setTexture:[ preethamTarget texture ] texelUnit:0 ];
