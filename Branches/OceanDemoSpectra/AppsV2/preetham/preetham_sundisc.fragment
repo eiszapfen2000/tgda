@@ -59,6 +59,7 @@ void main()
         XYZ.y = xyY.z;
         XYZ.z = ((1.0f - xyY.x - xyY.y) / xyY.y) * xyY.z;
 
+		#ifdef SUNDISK
         float f = gamma - sunHalfApparentAngle;
 
         float a = 200.0;
@@ -74,6 +75,7 @@ void main()
         {
             XYZ += sunColor;
         }
+		#endif
     }
     else
     {

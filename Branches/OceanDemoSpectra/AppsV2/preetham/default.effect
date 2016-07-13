@@ -46,11 +46,12 @@ technique "preetham"
 
     # shaders
     set vertex shader "preetham.vertex"
-    set fragment shader "preetham.fragment"
+    set fragment shader "preetham_sundisc.fragment"
 }
 
 technique "preetham_sundisc"
 {
+	define SUNDISK
     # effect variables
     uniform float radiusInPixel;
     uniform vec3 directionToSun;
