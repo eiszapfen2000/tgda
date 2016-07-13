@@ -8,6 +8,7 @@
 #import <Foundation/NSPointerArray.h>
 #import <Foundation/Foundation.h>
 #import "Log/NPLogFile.h"
+#import "Core/Math/FRectangle.h"
 #import "Core/Container/NPAssetArray.h"
 #import "Core/Thread/NPSemaphore.h"
 #import "Core/Timer/NPTimer.h"
@@ -15,6 +16,7 @@
 #import "Graphics/Buffer/NPCPUBuffer.h"
 #import "Graphics/Geometry/NPCPUVertexArray.h"
 #import "Graphics/Geometry/NPVertexArray.h"
+#import "Graphics/Geometry/NPIMRendering.h"
 #import "Graphics/Model/NPSUX2Model.h"
 #import "Graphics/Texture/NPTexture2D.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
@@ -580,6 +582,14 @@ int main (int argc, char **argv)
 	BOOL renderSunDisc = YES;
 	BOOL tonemapping = YES;
 
+	FRectangle vertices;
+	vertices.min.x = vertices.min.y = -1.0;
+	vertices.max.x = vertices.max.y =  1.0;
+
+	FRectangle texCoords;
+	texCoords.min.x = texCoords.min.y = 0.0;
+	texCoords.max.x = texCoords.max.y = 1.0;
+
     // run loop
     while ( running )
     {
@@ -878,12 +888,9 @@ int main (int argc, char **argv)
 	        [ preetham activate ];
 		}
 
-        glBegin(GL_QUADS);
-            glVertexAttrib2f(NpVertexStreamPositions, -1.0f, -1.0f);
-            glVertexAttrib2f(NpVertexStreamPositions,  1.0f, -1.0f);
-            glVertexAttrib2f(NpVertexStreamPositions,  1.0f,  1.0f);
-            glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
-        glEnd();
+		[ NPIMRendering
+			renderFRectangle:vertices
+			   primitiveType:NpPrimitiveQuads ];
 
         [ preethamTarget detach:NO ];
 
@@ -900,16 +907,10 @@ int main (int argc, char **argv)
 
         [ logLuminance activate ];
 
-        glBegin(GL_QUADS);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f,  0.0f);
-            glVertexAttrib2f(NpVertexStreamPositions, -1.0f, -1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f,  0.0f);
-            glVertexAttrib2f(NpVertexStreamPositions,  1.0f, -1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f,  1.0f);
-            glVertexAttrib2f(NpVertexStreamPositions,  1.0f,  1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f,  1.0f);
-            glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
-        glEnd();
+		[ NPIMRendering
+			renderFRectangle:vertices
+				   texCoords:texCoords
+			   primitiveType:NpPrimitiveQuads ];
 
         [ luminanceTarget detach:NO ];
 
@@ -957,17 +958,10 @@ int main (int argc, char **argv)
 	        [ texture activate ];
 		}
 
-
-        glBegin(GL_QUADS);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f,  0.0f);
-            glVertexAttrib2f(NpVertexStreamPositions, -1.0f, -1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f,  0.0f);
-            glVertexAttrib2f(NpVertexStreamPositions,  1.0f, -1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 1.0f,  1.0f);
-            glVertexAttrib2f(NpVertexStreamPositions,  1.0f,  1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f,  1.0f);
-            glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
-        glEnd();
+		[ NPIMRendering
+			renderFRectangle:vertices
+				   texCoords:texCoords
+			   primitiveType:NpPrimitiveQuads ];
 
         // check for GL errors
         [[ NP Graphics ] checkForGLErrors ];
