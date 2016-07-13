@@ -105,10 +105,11 @@ static const double xyz_matching_functions[3][NUMBER_OF_SPECTRAL_COMPONENTS] =
 {0.000704776,0.0104822,0.0860109,0.389366,0.972542,1.55348,1.96728,1.9948,1.74537,1.31756,0.772125,0.415254,0.218502,0.112044,0.060709,0.030451,0.013676,0.003988,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 };
 
-NpKeyboardState keyboardState;
-NpMouseState mouseState;
-IVector2 mousePosition;
 IVector2 widgetSize;
+IVector2 mousePosition;
+
+NpMouseState mouseState;
+NpKeyboardState keyboardState;
 
 static void GLFWCALL keyboard_callback(int key, int state)
 {
@@ -242,7 +243,7 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
 
     Vector3 XYZ = v3_zero();
 	
-	double delta = 10000.0 * 0.01;
+	double delta = 10000.0 * 0.001 * 10.0;
 
 	for ( int32_t i = 0; i < NUMBER_OF_SPECTRAL_COMPONENTS; i++ )
     {
@@ -906,7 +907,6 @@ int main (int argc, char **argv)
         NPCullingState * cullingState = [[[ NP Graphics ] stateConfiguration ] cullingState ];
         NPBlendingState * blendingState = [[[ NP Graphics ] stateConfiguration ] blendingState ];
         NPDepthTestState * depthTestState = [[[ NP Graphics ] stateConfiguration ] depthTestState ];
-        NPStencilTestState * stencilTestState = [[[ NP Graphics ] stateConfiguration ] stencilTestState ];
 
         [ blendingState  setEnabled:NO ];
         [ cullingState   setCullFace:NpCullfaceBack ];
