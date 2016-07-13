@@ -181,7 +181,7 @@ static Vector3 preetham_zenith(double turbidity, double thetaSun)
     return zenithColor;
 }
 
-static double digamma(double theta, double gamma, double ABCDE[5])
+static double preetham_digamma(double theta, double gamma, double ABCDE[5])
 {
     const double cosTheta = cos(theta);
     const double cosGamma = cos(gamma);
@@ -753,9 +753,9 @@ int main (int argc, char **argv)
 
         // Page 9 eq. 4, precompute F(0, thetaSun)
         Vector3 denominator;
-        denominator.x = digamma(0.0, thetaSun, ABCDE_x);
-        denominator.y = digamma(0.0, thetaSun, ABCDE_y);
-        denominator.z = digamma(0.0, thetaSun, ABCDE_Y);
+        denominator.x = preetham_digamma(0.0, thetaSun, ABCDE_x);
+        denominator.y = preetham_digamma(0.0, thetaSun, ABCDE_y);
+        denominator.z = preetham_digamma(0.0, thetaSun, ABCDE_Y);
 
         if ( useIrradiance == YES && modified == YES)
 		{
@@ -783,9 +783,9 @@ int main (int argc, char **argv)
 		            double gamma = acos(cosGamma);
 
 		            Vector3 nominator;
-		            nominator.x = digamma(theta, gamma, ABCDE_x);
-		            nominator.y = digamma(theta, gamma, ABCDE_y);
-		            nominator.z = digamma(theta, gamma, ABCDE_Y);
+		            nominator.x = preetham_digamma(theta, gamma, ABCDE_x);
+		            nominator.y = preetham_digamma(theta, gamma, ABCDE_y);
+		            nominator.z = preetham_digamma(theta, gamma, ABCDE_Y);
 
 		            Vector3 xyY;
 		            xyY.x = zenithColor_xyY.x * (nominator.x / denominator.x);
@@ -805,9 +805,9 @@ int main (int argc, char **argv)
 		modified = NO;
 
         Vector3 nominatorSun;
-        nominatorSun.x = digamma(thetaSun, 0.0, ABCDE_x);
-        nominatorSun.y = digamma(thetaSun, 0.0, ABCDE_y);
-        nominatorSun.z = digamma(thetaSun, 0.0, ABCDE_Y);
+        nominatorSun.x = preetham_digamma(thetaSun, 0.0, ABCDE_x);
+        nominatorSun.y = preetham_digamma(thetaSun, 0.0, ABCDE_y);
+        nominatorSun.z = preetham_digamma(thetaSun, 0.0, ABCDE_Y);
 
         Vector3 sun_xyY;
         sun_xyY.x = zenithColor_xyY.x * (nominatorSun.x / denominator.x);
