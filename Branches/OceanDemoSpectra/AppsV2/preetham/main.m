@@ -217,13 +217,13 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
         double exponent = 0.0;
 
 		//Rayleigh
-		exponent += -0.008735 * pow(lambda, -4.08 * m);
+		//exponent += (-0.008735 * pow(lambda, -4.08 * m));
 
 		//Angstrom
-		exponent += -beta * powf (lambda, - alpha * m);
+		exponent += (-beta * pow(lambda, - alpha * m));
 
 		//ozone
-		exponent += -sun_spectral_k_o[i] * l * m;
+		exponent += (-sun_spectral_k_o[i] * l * m);
 
 		//mixed gases absorption
 		const double k_g = sun_spectral_k_g[i];
@@ -843,9 +843,9 @@ int main (int argc, char **argv)
 
         [ radiusInPixel_P setFValue:halfSkyResolution ];
         [ directionToSun_P setValue:directionToSun ];
-        //[ sunColor_P setValue:sunColor_XYZ ];
+        [ sunColor_P setValue:sunColor_XYZ ];
 		//[ sunColor_P setValue:sun_XYZ ];
-		[ sunColor_P setValue:combined_XYZ ];
+		//[ sunColor_P setValue:combined_XYZ ];
         [ sunHalfApparentAngle_P setValue:sunHalfApparentAngle ];
         [ zenithColor_P setValue:zenithColor_xyY ];
         [ denominator_P setValue:denominator ];

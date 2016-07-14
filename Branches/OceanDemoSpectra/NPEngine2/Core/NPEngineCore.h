@@ -1,5 +1,6 @@
 #import "Core/Basics/NpBasics.h"
 #import "Core/Math/NpMath.h"
+#import "Core/Color/NpColor.h"
 #import "Core/Protocols/NPPObject.h"
 #import "Core/NPObject/NPObject.h"
 #import "Core/NPObject/NPObjectManager.h"

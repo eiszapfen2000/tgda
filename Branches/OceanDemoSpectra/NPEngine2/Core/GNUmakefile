@@ -5,6 +5,7 @@ SUBPROJECT_NAME=libNPEngineCore
 libNPEngineCore_SUBPROJECTS = \
 	Basics \
 	Math \
+	Color \
 	NPObject \
     String \
     Container \
