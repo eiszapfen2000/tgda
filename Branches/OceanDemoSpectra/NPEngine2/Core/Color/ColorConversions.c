@@ -1,3 +1,4 @@
+#include <math.h>
 #include "ColorConversions.h"
 
 void npcolor_colorconversions_initialise(void)
@@ -51,4 +52,64 @@ void npcolor_colorconversions_initialise(void)
   	M_EL(*NP_XYZ_TO_LINEAR_sRGB_65, 0, 0) =  3.1338561; M_EL(*NP_XYZ_TO_LINEAR_sRGB_65, 1, 0) = -1.6168667; M_EL(*NP_XYZ_TO_LINEAR_sRGB_65, 2, 0) = -0.4906146;
 	M_EL(*NP_XYZ_TO_LINEAR_sRGB_65, 0, 1) = -0.9787684; M_EL(*NP_XYZ_TO_LINEAR_sRGB_65, 1, 1) =  1.9161415; M_EL(*NP_XYZ_TO_LINEAR_sRGB_65, 2, 1) =  0.0334540;
 	M_EL(*NP_XYZ_TO_LINEAR_sRGB_65, 0, 2) =  0.0719453; M_EL(*NP_XYZ_TO_LINEAR_sRGB_65, 1, 2) = -0.2289914; M_EL(*NP_XYZ_TO_LINEAR_sRGB_65, 2, 2) =  1.4052427;
+}
+
+void xyY_to_XYZ(const Vector3 * const xyY, Vector3 * XYZ)
+{
+	XYZ->x = XYZ->y = XYZ->z = 0.0;
+
+	if (xyY->y > 0.0)
+	{
+		XYZ->x = (xyY->x * xyY->z) / xyY->y;
+		XYZ->y = xyY->z;
+		XYZ->z = ((1.0 - xyY->x - xyY->y) * xyY->z) / xyY->y;
+	}
+}
+
+void XYZ_to_xyY(const Vector3 * const XYZ, Vector3 * xyY)
+{
+	double d = 1.0 / (XYZ->x + XYZ->y + XYZ->z);
+	xyY->x = XYZ->x * d;
+	xyY->y = XYZ->y * d;
+	xyY->z = XYZ->y;
+}
+
+void Lab_to_XYZ(const Vector3 * Lab, const Vector3 * RefWhiteXYZ, Vector3 * XYZ)
+{
+	const double epsilon = 216.0 / 24389.0;
+	const double kappa = 24389.0 / 27.0;
+
+	const double fy = (Lab->x + 16.0) / 116.0;
+	const double fx = (Lab->y / 500.0) + fy;
+	const double fz = fy - (Lab->z / 200.0);
+
+	const double fx3 = pow(fx, 3.0);
+	const double fy3 = pow(fy, 3.0);
+	const double fz3 = pow(fz, 3.0);
+
+	const double xr = (fx3 > epsilon) ? fx3 : ((116.0*fx - 16.0) / kappa);
+	const double yr = (Lab->x > (kappa*epsilon)) ? fy3 : (Lab->x / kappa);
+	const double zr = (fz3 > epsilon) ? fz3 : ((116.0*fz - 16.0) / kappa);
+
+	XYZ->x = xr * RefWhiteXYZ->x;
+	XYZ->y = yr * RefWhiteXYZ->y;
+	XYZ->z = zr * RefWhiteXYZ->z;
+}
+
+void XYZ_to_Lab(const Vector3 * XYZ, const Vector3 * RefWhiteXYZ, Vector3 * Lab)
+{
+	const double epsilon = 216.0 / 24389.0;
+	const double kappa = 24389.0 / 27.0;
+
+	const double xr = XYZ->x / RefWhiteXYZ->x;
+	const double yr = XYZ->y / RefWhiteXYZ->y;
+	const double zr = XYZ->z / RefWhiteXYZ->z;
+
+	const double fx = (xr > epsilon) ? pow(xr, 1.0/3.0) : ((kappa*xr + 16.0) / 116.0);
+	const double fy = (yr > epsilon) ? pow(yr, 1.0/3.0) : ((kappa*yr + 16.0) / 116.0);
+	const double fz = (zr > epsilon) ? pow(zr, 1.0/3.0) : ((kappa*zr + 16.0) / 116.0);
+
+	Lab->x = 116.0 * fy - 16.0;
+	Lab->y = 500.0 * (fx - fy);
+	Lab->z = 200.0 * (fy - fz);
 }
