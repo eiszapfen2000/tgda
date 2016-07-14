@@ -247,3 +247,7 @@ void set_sampler_anisotropy(GLuint sampler, uint32_t anisotropy)
     glSamplerParameteri(sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT, (GLint)anisotropy);
 }
 
+void set_sampler_border_color(GLuint sampler, FVector4 color)
+{
+    glSamplerParameterfv(sampler, GL_TEXTURE_BORDER_COLOR, (GLfloat*)(&color));
+}
