@@ -16,7 +16,7 @@ OceanDemo_OBJC_FILES = \
 OceanDemo_RESOURCE_FILES = \
 Content
 
-ADDITIONAL_TOOL_LIBS += -lNPEngine2 -lglfw -lprng -lfftw3 -lfftw3f
+ADDITIONAL_TOOL_LIBS += -lNPEngine2 -lglfw -lGLEW -lGL -lprng -lfftw3 -lfftw3f
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/tool.make

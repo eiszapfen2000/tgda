@@ -2,6 +2,7 @@ effect "Projected Grid":
 
 technique "whitecaps_precompute"
 {
+	define BRAK 1
     # effect variables
     uniform float displacementScale;
     uniform sampler2DArray displacementDerivatives
@@ -101,8 +102,8 @@ technique "proj_grid_tf_feedback"
     };
     uniform sampler2D skylight
     {
-        WrapS = ClampToEdge;
-        WrapT = ClampToEdge;
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
         MinFilter = Trilinear;
         MagFilter = Linear;
         Anisotropy = 16;

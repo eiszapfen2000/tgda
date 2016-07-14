@@ -39,6 +39,7 @@ static NPEngineCore * NP_ENGINE_CORE = nil;
 {
     npbasics_initialise();
     npmath_initialise();
+    npcolor_initalise();
 
     self = [ super init ];
     objectID = crc32_of_pointer(self);
