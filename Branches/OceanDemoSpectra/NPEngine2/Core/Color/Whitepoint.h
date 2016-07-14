@@ -6,12 +6,12 @@
 
 void npcolor_whitepoint_initialise(void);
 
-extern Vector3 * NP_WHITEPOINT_CIE_A;
-extern Vector3 * NP_WHITEPOINT_CIE_B;
-extern Vector3 * NP_WHITEPOINT_CIE_C;
-extern Vector3 * NP_WHITEPOINT_CIE_D50;
-extern Vector3 * NP_WHITEPOINT_CIE_D55;
-extern Vector3 * NP_WHITEPOINT_CIE_D65;
-extern Vector3 * NP_WHITEPOINT_CIE_D75;
+extern Vector3 * NP_WHITEPOINT_XYZ_CIE_A;
+extern Vector3 * NP_WHITEPOINT_XYZ_CIE_B;
+extern Vector3 * NP_WHITEPOINT_XYZ_CIE_C;
+extern Vector3 * NP_WHITEPOINT_XYZ_CIE_D50;
+extern Vector3 * NP_WHITEPOINT_XYZ_CIE_D55;
+extern Vector3 * NP_WHITEPOINT_XYZ_CIE_D65;
+extern Vector3 * NP_WHITEPOINT_XYZ_CIE_D75;
 
 #endif
