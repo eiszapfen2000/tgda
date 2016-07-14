@@ -1,3 +1,4 @@
+#include "Core/Math/FVector.h"
 #include "Graphics/NPEngineGraphicsEnums.h"
 
 typedef struct NpSamplerFilterState
@@ -40,3 +41,4 @@ void set_sampler_wrapstate(GLuint sampler, NpSamplerWrapState wrapState);
 void set_sampler_filter(GLuint sampler, NpTextureMinFilter minFilter, NpTextureMagFilter magFilter);
 void set_sampler_wrap(GLuint sampler, NpTextureWrap s, NpTextureWrap t, NpTextureWrap r);
 void set_sampler_anisotropy(GLuint sampler, uint32_t anisotropy);
+void set_sampler_border_color(GLuint sampler, FVector4 color);
