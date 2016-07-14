@@ -19,6 +19,7 @@
 - (uint32_t) texelUnit;
 - (NpSamplerFilterState) filterState;
 - (NpSamplerWrapState) wrapState;
+- (NPSamplerObject *) samplerObject;
 
 - (void) setFilterState:(NpSamplerFilterState)newFilterState;
 - (void) setWrapState:(NpSamplerWrapState)newWrapState;

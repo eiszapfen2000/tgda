@@ -56,6 +56,11 @@
     return wrapState;
 }
 
+- (NPSamplerObject *) samplerObject
+{
+    return samplerObject;
+}
+
 - (void) setFilterState:(NpSamplerFilterState)newFilterState
 {
     filterState = newFilterState;
