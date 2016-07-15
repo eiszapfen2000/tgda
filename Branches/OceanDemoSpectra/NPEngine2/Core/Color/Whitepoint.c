@@ -1,5 +1,13 @@
 #include "Whitepoint.h"
 
+Vector3 * NP_WHITEPOINT_XYZ_CIE_A = NULL;
+Vector3 * NP_WHITEPOINT_XYZ_CIE_B = NULL;
+Vector3 * NP_WHITEPOINT_XYZ_CIE_C = NULL;
+Vector3 * NP_WHITEPOINT_XYZ_CIE_D50 = NULL;
+Vector3 * NP_WHITEPOINT_XYZ_CIE_D55 = NULL;
+Vector3 * NP_WHITEPOINT_XYZ_CIE_D65 = NULL;
+Vector3 * NP_WHITEPOINT_XYZ_CIE_D75 = NULL;
+
 void npcolor_whitepoint_initialise(void)
 {
 	NP_WHITEPOINT_XYZ_CIE_A = v3_alloc_init();
