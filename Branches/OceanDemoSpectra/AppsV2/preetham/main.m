@@ -413,6 +413,7 @@ int main (int argc, char **argv)
 
     NPEffectVariableFloat3 * irradiance_P = [ effect variableWithName:@"irradiance" ];
 
+    NPEffectVariableMatrix3x3 * linearsRGBToXYZ_P = [ effect variableWithName:@"linearsRGBToXYZ" ];
     NPEffectVariableFloat * key_P = [ effect variableWithName:@"key" ];
     NPEffectVariableInt   * averageLuminanceLevel_P = [ effect variableWithName:@"averageLuminanceLevel" ];
     NPEffectVariableFloat * whiteLuminance_P = [ effect variableWithName:@"whiteLuminance" ];
@@ -421,7 +422,8 @@ int main (int argc, char **argv)
            && E_xyY_P != nil && radiusInPixel_P != nil && directionToSun_P != nil
            && sunColor_P != nil && sunHalfApparentAngle_P != nil
            && zenithColor_P != nil && denominator_P != nil && irradiance_P != nil
-           && key_P != nil && averageLuminanceLevel_P != nil && whiteLuminance_P != nil);
+           && linearsRGBToXYZ_P != nil && key_P != nil && averageLuminanceLevel_P != nil
+           && whiteLuminance_P != nil);
 
     NPInputAction * leftClick
         = [[[ NP Input ] inputActions ] 
@@ -785,7 +787,6 @@ int main (int argc, char **argv)
 
         const float avgFresnel = 0.17;
         Vector3 averageReflectance_XYZ = v3_sv_scaled(avgFresnel / MATH_PI, &irradiance_XYZ);
-
         Vector3 averageReflectance_LinearsRGB = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D50, &averageReflectance_XYZ);
 
 		const FVector4 clearColor 
@@ -818,7 +819,6 @@ int main (int argc, char **argv)
                              colorBufferIndex:0
                                       bindFBO:NO ];
 
-		const FVector4 zeroColor = {.x = 0.0f, .y = 0.0f, .z = 0.0f, .w = 0.0f};
         [[ NP Graphics ] clearDrawBuffer:0 color:clearColor ];
 
         [[[ NP Graphics ] textureBindingState ] setTexture:[ preethamTarget texture ] texelUnit:0 ];
@@ -864,6 +864,7 @@ int main (int argc, char **argv)
         const int32_t numberOfLevels
             = 1 + (int32_t)floor(logb(skyResolution));
 
+        [ linearsRGBToXYZ_P setValue:NP_LINEAR_sRGB_D50_TO_XYZ ];
         [ key_P setValue:a ];
         [ whiteLuminance_P setValue:L_white ];
         [ averageLuminanceLevel_P setValue:(numberOfLevels - 1) ];
