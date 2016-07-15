@@ -81,6 +81,7 @@ technique "linear_sRGB_to_log_luminance"
 {
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
+    uniform mat3 linearsRGBToXYZ;
     uniform sampler2D linearsRGB
     {
         WrapS = ClampToBorder;

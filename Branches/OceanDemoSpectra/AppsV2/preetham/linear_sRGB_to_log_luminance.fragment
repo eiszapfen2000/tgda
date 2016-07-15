@@ -2,15 +2,9 @@
 
 in vec2 out_texcoords;
 
-const mat3 LinearsRGBToXYZ
-    = mat3(0.4360747, 0.2225045, 0.0139322,
-           0.3850649, 0.7168786, 0.0971045,
-           0.1430804, 0.0606169, 0.7141733);
-
 void main()
 {
     vec4 c = texture(linearsRGB, out_texcoords);
-    vec3 XYZ = LinearsRGBToXYZ * c.rgb;
+    vec3 XYZ = linearsRGBToXYZ * c.rgb;
     target = max(log(XYZ.y), 0.0);
 }
-
