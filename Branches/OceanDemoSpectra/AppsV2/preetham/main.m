@@ -749,13 +749,13 @@ int main (int argc, char **argv)
         xyY_to_XYZ(&sun_xyY, &sun_XYZ);
 
 		Vector3 sun_Lab;
-        XYZ_to_Lab(&sun_XYZ, &D50, &sun_Lab);
+        XYZ_to_Lab(&sun_XYZ, NP_WHITEPOINT_XYZ_CIE_D50, &sun_Lab);
 
 		Vector3 sun_XYZ_from_Lab;
-        Lab_to_XYZ(&sun_Lab, &D50, &sun_XYZ_from_Lab);
+        Lab_to_XYZ(&sun_Lab, NP_WHITEPOINT_XYZ_CIE_D50, &sun_XYZ_from_Lab);
 
 		Vector3 sunColor_Lab;
-        XYZ_to_Lab(&sunColor_XYZ, &D50, &sunColor_Lab);
+        XYZ_to_Lab(&sunColor_XYZ, NP_WHITEPOINT_XYZ_CIE_D50, &sunColor_Lab);
 
 		Vector3 combined_Lab;
 		//combined_Lab.x = MAX(sunColor_Lab.x, sun_Lab.x*2.0);
@@ -764,7 +764,7 @@ int main (int argc, char **argv)
 		combined_Lab.z = sun_Lab.z;
 
 		Vector3 combined_XYZ;
-        Lab_to_XYZ(&combined_Lab, &D50, &combined_XYZ);
+        Lab_to_XYZ(&combined_Lab, NP_WHITEPOINT_XYZ_CIE_D50, &combined_XYZ);
 
         const FVector3 A = { ABCDE_x[0], ABCDE_y[0], ABCDE_Y[0] };
         const FVector3 B = { ABCDE_x[1], ABCDE_y[1], ABCDE_Y[1] };
@@ -802,12 +802,7 @@ int main (int argc, char **argv)
         const float avgFresnel = 0.17;
         Vector3 averageReflectance_XYZ = v3_sv_scaled(avgFresnel / MATH_PI, &irradiance_XYZ);
 
-        Matrix3 XYZ2LinearsRGB_D50;
-        M_EL(XYZ2LinearsRGB_D50,0,0) =  3.1338561; M_EL(XYZ2LinearsRGB_D50,1,0) = -1.6168667; M_EL(XYZ2LinearsRGB_D50,2,0) = -0.4906146;
-        M_EL(XYZ2LinearsRGB_D50,0,1) = -0.9787684; M_EL(XYZ2LinearsRGB_D50,1,1) =  1.9161415; M_EL(XYZ2LinearsRGB_D50,2,1) =  0.0334540;
-        M_EL(XYZ2LinearsRGB_D50,0,2) =  0.0719453; M_EL(XYZ2LinearsRGB_D50,1,2) = -0.2289914; M_EL(XYZ2LinearsRGB_D50,2,2) =  1.4052427;
-
-        Vector3 averageReflectance_LinearsRGB = m3_mv_multiply(&XYZ2LinearsRGB_D50, &averageReflectance_XYZ);
+        Vector3 averageReflectance_LinearsRGB = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D50, &averageReflectance_XYZ);
 
 		const FVector4 clearColor 
 			= {
