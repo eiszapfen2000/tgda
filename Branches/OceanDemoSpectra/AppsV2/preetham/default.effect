@@ -106,6 +106,8 @@ technique "tonemap_reinhard"
 {
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
+	uniform mat3 linearsRGBToXYZ;
+	uniform mat3 XYZToLinearsRGB;
     uniform sampler2D linearsRGB
     {
         WrapS = ClampToBorder;

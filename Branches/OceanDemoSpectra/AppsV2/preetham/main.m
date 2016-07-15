@@ -217,7 +217,7 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
         double exponent = 0.0;
 
 		//Rayleigh
-		//exponent += (-0.008735 * pow(lambda, -4.08 * m));
+		exponent += (-0.008735 * pow(lambda, -4.08 * m));
 
 		//Angstrom
 		exponent += (-beta * pow(lambda, - alpha * m));
@@ -414,6 +414,7 @@ int main (int argc, char **argv)
     NPEffectVariableFloat3 * irradiance_P = [ effect variableWithName:@"irradiance" ];
 
     NPEffectVariableMatrix3x3 * linearsRGBToXYZ_P = [ effect variableWithName:@"linearsRGBToXYZ" ];
+    NPEffectVariableMatrix3x3 * XYZToLinearsRGB_P = [ effect variableWithName:@"XYZToLinearsRGB" ];
     NPEffectVariableFloat * key_P = [ effect variableWithName:@"key" ];
     NPEffectVariableInt   * averageLuminanceLevel_P = [ effect variableWithName:@"averageLuminanceLevel" ];
     NPEffectVariableFloat * whiteLuminance_P = [ effect variableWithName:@"whiteLuminance" ];
@@ -422,7 +423,8 @@ int main (int argc, char **argv)
            && E_xyY_P != nil && radiusInPixel_P != nil && directionToSun_P != nil
            && sunColor_P != nil && sunHalfApparentAngle_P != nil
            && zenithColor_P != nil && denominator_P != nil && irradiance_P != nil
-           && linearsRGBToXYZ_P != nil && key_P != nil && averageLuminanceLevel_P != nil
+           && linearsRGBToXYZ_P != nil && XYZToLinearsRGB_P != nil
+           && key_P != nil && averageLuminanceLevel_P != nil
            && whiteLuminance_P != nil);
 
     NPInputAction * leftClick
@@ -865,6 +867,7 @@ int main (int argc, char **argv)
             = 1 + (int32_t)floor(logb(skyResolution));
 
         [ linearsRGBToXYZ_P setValue:NP_LINEAR_sRGB_D50_TO_XYZ ];
+        [ XYZToLinearsRGB_P setValue:NP_XYZ_TO_LINEAR_sRGB_D50 ];
         [ key_P setValue:a ];
         [ whiteLuminance_P setValue:L_white ];
         [ averageLuminanceLevel_P setValue:(numberOfLevels - 1) ];
