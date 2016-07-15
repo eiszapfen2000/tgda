@@ -775,6 +775,7 @@ int main (int argc, char **argv)
         [ sunHalfApparentAngle_P setValue:sunHalfApparentAngle ];
         [ zenithColor_P setValue:zenithColor_xyY ];
         [ denominator_P setValue:denominator ];
+        [ XYZToLinearsRGB_P setValue:NP_XYZ_TO_LINEAR_sRGB_D50 ];
 
         // clear preetham target
         [ rtc bindFBO ];
@@ -867,7 +868,6 @@ int main (int argc, char **argv)
             = 1 + (int32_t)floor(logb(skyResolution));
 
         [ linearsRGBToXYZ_P setValue:NP_LINEAR_sRGB_D50_TO_XYZ ];
-        [ XYZToLinearsRGB_P setValue:NP_XYZ_TO_LINEAR_sRGB_D50 ];
         [ key_P setValue:a ];
         [ whiteLuminance_P setValue:L_white ];
         [ averageLuminanceLevel_P setValue:(numberOfLevels - 1) ];

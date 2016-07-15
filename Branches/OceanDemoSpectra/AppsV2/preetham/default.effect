@@ -27,6 +27,7 @@ technique "texture"
 technique "preetham"
 {
     # effect variables
+	uniform mat3 XYZToLinearsRGB;
     uniform float radiusInPixel;
     uniform vec3 directionToSun;
     uniform vec3 zenithColor;
@@ -53,6 +54,7 @@ technique "preetham_sundisc"
 {
 	define SUNDISK
     # effect variables
+	uniform mat3 XYZToLinearsRGB;
     uniform float radiusInPixel;
     uniform vec3 directionToSun;
     uniform vec3 zenithColor;
