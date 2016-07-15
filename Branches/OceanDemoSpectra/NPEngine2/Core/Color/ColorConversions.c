@@ -1,6 +1,12 @@
 #include <math.h>
 #include "ColorConversions.h"
 
+Matrix3 * NP_LINEAR_sRGB_D65_TO_XYZ = NULL;
+Matrix3 * NP_LINEAR_sRGB_D50_TO_XYZ = NULL;
+Matrix3 * NP_XYZ_TO_LINEAR_sRGB_65 = NULL;
+Matrix3 * NP_XYZ_TO_LINEAR_sRGB_50 = NULL;
+
+
 void npcolor_colorconversions_initialise(void)
 {
 	NP_LINEAR_sRGB_D65_TO_XYZ = m3_alloc_init();
@@ -9,7 +15,8 @@ void npcolor_colorconversions_initialise(void)
 	NP_XYZ_TO_LINEAR_sRGB_65 = m3_alloc_init();
 	NP_XYZ_TO_LINEAR_sRGB_50 = m3_alloc_init();
 
-
+	// http://www.brucelindbloom.com/Eqn_RGB_XYZ_Matrix.html
+	
 	/*
 	sRGB D65 to XYZ
 	0.4124564  0.3575761  0.1804375
