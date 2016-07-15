@@ -257,22 +257,6 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
     return XYZ;
 }
 
-/**
- * reference white in XYZ coordinates
- */
-static const Vector3 D50 = {96.4212, 100.0, 82.5188};
-static const Vector3 D55 = {95.6797, 100.0, 92.1481};
-static const Vector3 D65 = {95.0429, 100.0, 108.8900};
-static const Vector3 D75 = {94.9722, 100.0, 122.6394};
-
-/**
- * reference white in xyY coordinates
- */
-static const Vector3 chromaD50 = {0.3457, 0.3585, 100.0};
-static const Vector3 chromaD55 = {0.3324, 0.3474, 100.0};
-static const Vector3 chromaD65 = {0.3127, 0.3290, 100.0};
-static const Vector3 chromaD75 = {0.2990, 0.3149, 100.0};
-
 static NSString * const NPGraphicsStartupError = @"NPEngineGraphics failed to start up. Consult %@/np.log for details.";
 
 int main (int argc, char **argv)
