@@ -219,6 +219,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     supportsSGIGenerateMipMap = NO;
     supportsAnisotropicTextureFilter = NO;
     supportsSamplerObjects = NO;
+    coreContext = NO;
     debugContext = NO;
 
     maximumAnisotropy = 1;
@@ -383,13 +384,27 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         return NO;
     }
 
+    if ( GLEW_VERSION_3_2 )
+    {
+        GLint profileMask = 0;
+        glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &profileMask);
+
+        if ( profileMask & GL_CONTEXT_CORE_PROFILE_BIT )
+        {
+            coreContext = YES;
+
+            NPLOG(@"Core Context Enabled");
+        }
+    }
+
     if ( GLEW_ARB_debug_output )
     {
         debugContext = YES;
+
         glGetIntegerv(GL_MAX_DEBUG_MESSAGE_LENGTH_ARB, &maximumDebugMessageLength);
-
+        // register debug callback
         glDebugMessageCallbackARB(&debug_callback, NULL);
-
+        // enable ALL debug messages
         glDebugMessageControlARB(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
 
         NPLOG(@"Debug Context Enabled");
@@ -450,14 +465,24 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     return supportsAnisotropicTextureFilter;
 }
 
-- (int32_t) maximumAnisotropy
-{
-    return maximumAnisotropy;
-}
-
 - (BOOL) supportsSamplerObjects
 {
     return supportsSamplerObjects;
+}
+
+- (BOOL) coreContext
+{
+    return coreContext;
+}
+
+- (BOOL) debugContext
+{
+    return debugContext;
+}
+
+- (int32_t) maximumAnisotropy
+{
+    return maximumAnisotropy;
 }
 
 - (int32_t) numberOfDrawBuffers
@@ -473,6 +498,11 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 - (int32_t) maximalRenderbufferSize
 {
     return maximalRenderbufferSize;
+}
+
+- (int32_t) maximumDebugMessageLength
+{
+    return maximumDebugMessageLength;
 }
 
 - (void) checkForDebugMessages
