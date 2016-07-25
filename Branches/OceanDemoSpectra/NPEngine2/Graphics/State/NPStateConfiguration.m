@@ -52,6 +52,16 @@
     locked = newLocked;
 }
 
+- (BOOL) coreProfileOnly
+{
+    return coreProfileOnly;
+}
+
+- (void) setCoreProfileOnly:(BOOL)newCoreProfileOnly
+{
+    coreProfileOnly = newCoreProfileOnly;
+}
+
 - (id) alphaTestState
 {
     return alphaTestState;
@@ -86,11 +96,15 @@
 {
     if ( locked == NO )
     {
-        [ alphaTestState   activate ];
+        if ( coreProfileOnly == NO )
+        {
+            [ alphaTestState   activate ];
+            [ polygonFillState activate ];
+        }
+
         [ blendingState    activate ];
         [ cullingState     activate ];
         [ depthTestState   activate ];
-        [ polygonFillState activate ];
         [ stencilTestState activate ];
     }
 }
@@ -99,11 +113,15 @@
 {
     if ( locked == NO )
     {
-        [ alphaTestState   deactivate ];
+        if ( coreProfileOnly == NO )
+        {
+            [ alphaTestState   deactivate ];
+            [ polygonFillState deactivate ];
+        }
+
         [ blendingState    deactivate ];
         [ cullingState     deactivate ];
         [ depthTestState   deactivate ];
-        [ polygonFillState deactivate ];
         [ stencilTestState deactivate ];
     }
 }
@@ -112,11 +130,15 @@
 {
     if ( locked == NO )
     {
-        [ alphaTestState   reset ];
+        if ( coreProfileOnly == NO )
+        {
+            [ alphaTestState   reset ];
+            [ polygonFillState reset ];
+        }
+
         [ blendingState    reset ];
         [ cullingState     reset ];
         [ depthTestState   reset ];
-        [ polygonFillState reset ];
         [ stencilTestState reset ];
     }
 }

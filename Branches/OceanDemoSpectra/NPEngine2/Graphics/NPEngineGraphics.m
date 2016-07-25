@@ -392,7 +392,6 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
         if ( profileMask & GL_CONTEXT_CORE_PROFILE_BIT )
         {
             coreContext = YES;
-
             NPLOG(@"Core Context Enabled");
         }
     }
@@ -444,6 +443,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
 
     NPLOG(@"%@ started\n", [ self name ]);
 
+    [ stateConfiguration setCoreProfileOnly:coreContext ];
     [ stateConfiguration activate ];
 
     return YES;

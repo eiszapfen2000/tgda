@@ -10,6 +10,7 @@
 @interface NPStateConfiguration : NPObject
 {
     BOOL locked;
+    BOOL coreProfileOnly;
 
     NPAlphaTestState   * alphaTestState;
     NPBlendingState    * blendingState;
@@ -24,6 +25,8 @@
 
 - (BOOL) locked;
 - (void) setLocked:(BOOL)newLocked;
+- (BOOL) coreProfileOnly;
+- (void) setCoreProfileOnly:(BOOL)newCoreProfileOnly;
 
 - (id) alphaTestState;
 - (id) blendingState;
