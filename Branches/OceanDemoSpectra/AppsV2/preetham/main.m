@@ -15,6 +15,7 @@
 #import "Graphics/Buffer/NPBufferObject.h"
 #import "Graphics/Buffer/NPCPUBuffer.h"
 #import "Graphics/Geometry/NPCPUVertexArray.h"
+#import "Graphics/Geometry/NPFullscreenQuad.h"
 #import "Graphics/Geometry/NPVertexArray.h"
 #import "Graphics/Geometry/NPIMRendering.h"
 #import "Graphics/Model/NPSUX2Model.h"
@@ -501,13 +502,7 @@ int main (int argc, char **argv)
 	BOOL tonemapping = YES;
 	Vector3 irradiance_XYZ = v3_zero();
 
-	FRectangle vertices;
-	vertices.min.x = vertices.min.y = -1.0;
-	vertices.max.x = vertices.max.y =  1.0;
-
-	FRectangle texCoords;
-	texCoords.min.x = texCoords.min.y = 0.0;
-	texCoords.max.x = texCoords.max.y = 1.0;
+    NPFullscreenQuad * fsQuad = [[ NPFullscreenQuad alloc ] init ];
 
     // run loop
     while ( running )
@@ -811,10 +806,7 @@ int main (int argc, char **argv)
 	        [ preetham activate ];
 		}
 
-		[ NPIMRendering
-			renderFRectangle:vertices
-			   primitiveType:NpPrimitiveQuads ];
-
+        [ fsQuad render ];
         [ preethamTarget detach:NO ];
 
         [ luminanceTarget
@@ -828,12 +820,7 @@ int main (int argc, char **argv)
         [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
         [ logLuminance activate ];
-
-		[ NPIMRendering
-			renderFRectangle:vertices
-				   texCoords:texCoords
-			   primitiveType:NpPrimitiveQuads ];
-
+        [ fsQuad render ];
         [ luminanceTarget detach:NO ];
 
         [ rtc deactivate ];
@@ -881,10 +868,7 @@ int main (int argc, char **argv)
 	        [ texture activate ];
 		}
 
-		[ NPIMRendering
-			renderFRectangle:vertices
-				   texCoords:texCoords
-			   primitiveType:NpPrimitiveQuads ];
+        [ fsQuad render ];
 
         // check for GL errors
         [[ NP Graphics ] checkForGLErrors ];
@@ -910,6 +894,8 @@ int main (int argc, char **argv)
         // kill autorelease pool
         DESTROY(innerPool);
     }
+
+    DESTROY(fsQuad);
 
     DESTROY(leftClick);
     DESTROY(rightClick);
