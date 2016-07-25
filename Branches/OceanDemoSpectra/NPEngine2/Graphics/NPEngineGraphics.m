@@ -155,7 +155,7 @@ static NSString * debug_severity_to_string(GLenum debugSeverity)
 
         default:
         {
-            result = @"";
+            result = @"None";
             break;
         }
     }
@@ -356,6 +356,7 @@ static NPEngineGraphics * NP_ENGINE_GRAPHICS = nil;
     NPLOG(@"");
     NPLOG(@"%@ starting up...", [ self name ]);
 
+    glewExperimental = GL_TRUE;
     GLenum glewInitError = glewInit();
     if ( glewInitError != GLEW_OK )
     {
