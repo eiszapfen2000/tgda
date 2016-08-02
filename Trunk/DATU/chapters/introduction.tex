@@ -5,6 +5,7 @@ Natural phenomena are a challenging topic in the field of computer graphics.
 Actual examples are complex structures which are to be found throughout nature,
 such as mountains, trees and water. The latter is especially interesting
 because of its highly dynamic form which poses a variety of sophisticated problems.
+%
 \section{Motivation}
 \label{sec:motivation}
 For computer graphics to reproduce the diverse appearance of ocean surfaces
@@ -16,18 +17,18 @@ Fortunately, the oceanographic research community did already develop models
 which satisfy those requirements, as they are essential for oceanographic
 simulations. Therefore, we combine consolidated findings from oceanographic
 research with computer graphics algorithms to complete the task at hand.
-
+%
 % believable ocean surface geometry~\emph{based on} consolidated findings from the
 % oceanographic research community.
-
+%
 % . We focus our interest on the generation of believable
 % ocean surface geometry based on consolidated findings from the oceanographic
 % research community.
-
+%
 % Based on consolidated findings from the
 % oceanographic research community we focus ourselves on the generation of
 % believable ocean surface geometry
-
+%
 % Hence, our interest focuses on the
 % geometry of ocean surfaces using consolidated findings from the oceanographic
 % research community.
@@ -39,10 +40,16 @@ research with computer graphics algorithms to complete the task at hand.
 % 
 % Our interest focuses on the geometry of ocean surfaces using
 % consolidated findings from the oceanographic research community.
-
+%
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.75]{figures/ocean300.jpg}
+\caption{The late afternoon sun illuminating the ocean surface. Source: NOAA~\cite{misc:noaa}}
+\end{figure}
+%
 \section{Problem Statement}
 \label{sec:problem_statement}
-
+%
 Rendering an ocean is a demanding task for several reasons. First, consider the
 sheer size of a water body as large as an ocean, which in numerous viewing
 situations will be visible all the way to the horizon. Second, the ocean surface
@@ -58,10 +65,10 @@ back to the ocean's surface, either by scattering inside the water body or by
 reflection at the sea bottom, or possibly by a combination of both. Moreover,
 waves on the ocean surface may break and cause surf and foam, both of which
 interact with light drastically different than the surrounding water surface.
-
+%
 %  adding another
 % layer of detail to the visual appearance of the ocean surface.
-
+%
 % The visual appearance of an ocean
 % surface is highly dependent on its surroundings, because it reflects light from various
 % sources e.g the sun, the skydome, clouds, as well as objects close to the
@@ -73,8 +80,8 @@ interact with light drastically different than the surrounding water surface.
 % In addition, waves may break and cause surf and foam. Both interact with light
 % drastically different than the surrounding water surface, adding another layer
 % of detail.
-
-
+%
+%
 %  (reflections), the depth of the underlying
 % water body (refractions), as well as on the particulets contained in the water
 % body itself (scattering).
@@ -85,7 +92,7 @@ interact with light drastically different than the surrounding water surface.
 % Some light is reflected, some is
 % refracted, where the latter may or may not find its way back to the water
 % surface.
-
+%
 \section{Scope and Focus of the Work}
 \label{sec:scope_and_focus}
 The scope of this thesis includes the generation, animation and rendering of the
@@ -96,11 +103,11 @@ easy addition and reduction of detail, as well as for a range of algorithmic
 optimisations. The former combined with the latter gives us the opportunity to
 strike a well-adjusted balance between model detail and computational workload,
 and thereby to improve upon the status quo of current implementations.
-
+%
 % Note: The oceanographic models discussed in this work are not based on fluid
 % dynamics, hence, convincing interaction between the ocean surface and other
 % objects is beyond the scope of this thesis.
-
+%
 \section{Structure of the Work}
 \label{sec:structure}
 The remainder of this work is organized as follows: Chapter
