@@ -9,6 +9,10 @@ and shallow water e.g. water close to the shore.  The former is governed by the 
 of wind and gravity at the interface between air and water, whereas the latter is
 characterized by waves breaking near the shore.
 
+To date, computer graphics employs several ocean wave models, which can be separated into
+three families: parametric description, spectral description, computational fluid dynamics.
+
+
 Simulation, Animation
 
 Parametric model
@@ -28,12 +32,31 @@ Perlin - An Image Synthesizer \cite{Perlin:1985}\\
 Nelson Max - Vectorized Procedural Models for Natural Terrain: Waves and Islands in the Sunset \cite{Max:1981}\\
 Peachey - Modeling Waves and Surf \cite{Peachey:1986}\\
 Fournier - A simple model of ocean waves \cite{Fournier:1986}\\
-Ts'o - Modeling and rendering waves: Wave-tracing using beta-splines and reflective and refractive texture mapping \cite{Ts'o:1987}\\
+Ts'o - Modeling and rendering waves: Wave-tracing using beta-splines and reflective and refractive texture mapping \cite{Ts'o:1987}\\Hinsinger - Interactive Animation of Ocean Waves \cite{Hinsinger:2002}\\
 
 Spectral\\
 Mastin - Fourier Synthesis of Ocean Scenes \cite{Mastin:1987}\\
 Tessendorf - Simulating Ocean Water \cite{course:simulatingocean}\\
 Premoze - Rendering Natural Waters \cite{Premoze:2000} \\
+
+Hybrid\\
+Thon - Ocean waves synthesis using a spectrum based turbulence function \cite{thon:2000}\\
+Lee - Real-Time Simulation of Surface Gravity Ocean Waves Based on the TMA Spectrum\cite{lee:2007}\\
+
+
+\begin{figure}
+\centering
+ \subtop
+ {
+  \includegraphics[scale=0.45]{figures/ocean300_5.jpg}
+ }
+ \hfill
+ \subtop
+ {
+  \includegraphics[scale=0.45]{figures/ocean_storm300.jpg}
+ }
+\caption{The late afternoon sun illuminating the ocean surface. Source: NOAA~\cite{misc:noaa}}
+\end{figure}
 
 \begin{figure}
  \centering
