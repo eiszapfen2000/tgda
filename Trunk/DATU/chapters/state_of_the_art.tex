@@ -1,23 +1,46 @@
 \chapter{Related Work}
 \label{ch:state_of_the_art}
 
-The ocean surface is an intricate phenomenon which owes its complexity in large part
-to its highly dynamic nature. Be it a quiet sea or an agitated one, small turbulent waves
-or huge breaking ones, the underlying mechanisms are manifold and act on different scales.
-Oceanographic research distinguishes between the deep ocean e.g. water far from the coast,
-and shallow water e.g. water close to the shore.  The former is governed by the interaction
-of wind and gravity at the interface between air and water, whereas the latter is
-characterized by waves breaking near the shore.
+The ocean surface is an intricate phenomenon which owes its complexity
+to its highly dynamic nature. Be it a quiet sea or an agitated one, small
+turbulent waves or huge breaking ones, the underlying mechanisms are manifold
+and act on a variety of scales. Oceanographic research defines the behaviour of
+an ocean surface based on its location. Water areas far from the coast are
+called~\emph{the deep ocean}, water areas close to shore are called
+\emph{shallow water}. Deep ocean surfaces are governed by the interaction of
+wind and gravity at the interface between air and water, whereas shallow water
+surfaces are characterized by waves breaking near the shore.\\
+%
+\section{Simulation}
+%
+To date, computer graphics employs several ocean wave models which may be
+separated roughly into three families: parametric description, spectral
+description, computational fluid dynamics. The first describes the water surface
+by means of parametric equations which have been derived based on real world
+observations \cite{Gerstner:1809}\cite{Rankine:1863}\cite{Biesel:1952}.
+The second family approximate the ocean surface using wave spectra which
+simulate the sea as a random process based on the distribution of wave energy
+in frequency space \cite{book:kinsman2002wind}\cite{article:PiersonMoskowitz1964}
+\cite{article:Hasselman1973}\cite{article:Donelan1985}\cite{article:Elfouhaily1997}.
+Third, computational fluid dynamics and more specifically the Navier-Stokes
+equations are able to fully describe the dynamics of all kinds of fluid,
+including the ocean.
+%
+\subsection{Parametric Models}
+%
+The parametric models are generally bound to the spatial domain, where they
+generate and animate the ocean surface by means of a sum of periodical functions
+which are able to evolve throughout time.
+The ocean surface may be represented as a heightmap
+\begin{equation}
+h(x,z,t) = y + \sum_{j=1}^n a_j \cos (l_j x + m_j z - \omega_j t)
+\end{equation}
+where $y$ is the mean height of the free surface, $n$ is the number of waves, $a_j$
+is the amplitude of the jth wave, $\mvec{k}_j = (l_j, m_j)$ its wave vector,
+and $\omega_j$ its angular frequency.
 
-To date, computer graphics employs several ocean wave models, which can be separated into
-three families: parametric description, spectral description, computational fluid dynamics.
 
-
-Simulation, Animation
-
-Parametric model
 Spectral Models
-Computational Fluid Dynamics
 Navier Stokes
 
 Rendering
