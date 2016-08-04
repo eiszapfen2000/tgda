@@ -39,9 +39,19 @@
 \usepackage{commath}
 \usepackage{hhline}
 \usepackage{pdflscape}
+\usepackage{natbib}
 
 \DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
 \DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\newcommand{\mvec}[1]{\mathbf{#1}}
+\newcommand{\mvecx}[1]{\mathbf{#1}_x}
+\newcommand{\mvecy}[1]{\mathbf{#1}_y}
+\newcommand{\mvecz}[1]{\mathbf{#1}_z}
+\newcommand{\mvecw}[1]{\mathbf{#1}_w}
+\newcommand{\mmat}[1]{\mathbf{#1}}
+\newcommand{\transpose}[1]{#1^{\mathsf{T}}}
+\newcommand{\inverse}[1]{#1^{\mathsf{-1}}}
+\newcommand{\normalise}[1]{\frac{#1}{\norm{#1}}}
 
 \thesistitle{Ocean Surface Generation and Rendering}
 %\thesissubtitle{Optional Subtitle} % optional
@@ -75,7 +85,6 @@ soft open fences,
 }
 
 \begin{document}
-
 \captionnamefont{\bfseries}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -197,7 +206,7 @@ soft open fences,
 \listofalgorithms
 \listoffixmes
 
-\bibliographystyle{plain}
+\bibliographystyle{plainnat}
 \bibliography{references}
 
 \end{document}

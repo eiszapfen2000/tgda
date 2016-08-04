@@ -1,6 +1,6 @@
 \chapter{Related Work}
 \label{ch:state_of_the_art}
-
+%
 The ocean surface is an intricate phenomenon which owes its complexity
 to its highly dynamic nature. Be it a quiet sea or an agitated one, small
 turbulent waves or huge breaking ones, the underlying mechanisms are manifold
@@ -9,7 +9,7 @@ an ocean surface based on its location. Water areas far from the coast are
 called~\emph{the deep ocean}, water areas close to shore are called
 \emph{shallow water}. Deep ocean surfaces are governed by the interaction of
 wind and gravity at the interface between air and water, whereas shallow water
-surfaces are characterized by waves breaking near the shore.\\
+surfaces are characterized by waves breaking near the shore.
 %
 \section{Simulation}
 %
@@ -17,11 +17,11 @@ To date, computer graphics employs several ocean wave models which may be
 separated roughly into three families: parametric description, spectral
 description, computational fluid dynamics. The first describes the water surface
 by means of parametric equations which have been derived based on real world
-observations \cite{Gerstner:1809}\cite{Rankine:1863}\cite{Biesel:1952}.
+observations \citep{Gerstner:1809,Rankine:1863,Biesel:1952}.
 The second family approximate the ocean surface using wave spectra which
 simulate the sea as a random process based on the distribution of wave energy
-in frequency space \cite{book:kinsman2002wind}\cite{article:PiersonMoskowitz1964}
-\cite{article:Hasselman1973}\cite{article:Donelan1985}\cite{article:Elfouhaily1997}.
+in frequency space \citep{book:kinsman2002wind,article:PiersonMoskowitz1964,
+article:Hasselman1973,article:Donelan1985,article:Elfouhaily1997}.
 Third, computational fluid dynamics and more specifically the Navier-Stokes
 equations are able to fully describe the dynamics of all kinds of fluid,
 including the ocean.
@@ -30,14 +30,25 @@ including the ocean.
 %
 The parametric models are generally bound to the spatial domain, where they
 generate and animate the ocean surface by means of a sum of periodical functions
-which are able to evolve throughout time.
-The ocean surface may be represented as a heightmap
+which evolve throughout time. One of the earliest works in this realm of
+computer graphics has been done by~\citet{Max:1981}. The ocean surface is
+represented as a heightmap, where for each point $(x,z)$ at time $t$ the height
+is computed as follows:
 \begin{equation}
-h(x,z,t) = y + \sum_{j=1}^n a_j \cos (l_j x + m_j z - \omega_j t)
+h(x,z,t) = y + \sum_{i=1}^N A_i \cos (l_i x + m_i z - \omega_i t)
 \end{equation}
-where $y$ is the mean height of the free surface, $n$ is the number of waves, $a_j$
-is the amplitude of the jth wave, $\mvec{k}_j = (l_j, m_j)$ its wave vector,
-and $\omega_j$ its angular frequency.
+where $y$ is the mean height of the free surface, $N$ is the number of waves,
+$A_i$ is the amplitude of the $i$th wave, $\mvec{k}_i = (l_i, m_i)$ its wave
+vector, and $\omega_i$ its angular frequency. The wave vector defines the
+travelling direction of the wave, with the the positive X-axis pointing towards
+the coastline, the Y-axis pointing in the opposite direction of earth's gravity,
+and the Z-axis aligned with the coastline. The waves on the water surface are
+assumed to be controlled by gravity only, the wave amplitudes are assumed to
+be small in relation to the size of the water body, and the water body is
+assumed to have infinite depth. According to linear wave theory it follows that
+the wave vector $\mvec{k}$ and the angular frequency $\omega$ are related by
+$\omega^2=kg$, where $k=\norm{\mvec{k}}$ and $g=9.81$ denotes earth's gravity.
+Results obtained by~\citet{Max:1981} are shown in Figure~\ref{fig:max1981}.
 
 
 Spectral Models
@@ -66,6 +77,30 @@ Hybrid\\
 Thon - Ocean waves synthesis using a spectrum based turbulence function \cite{thon:2000}\\
 Lee - Real-Time Simulation of Surface Gravity Ocean Waves Based on the TMA Spectrum\cite{lee:2007}\\
 
+\begin{figure}
+\centering
+ \subtop
+ {
+  \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-006_1.png}
+ }
+ \hfill
+ \subtop
+ {
+  \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-007_1.png}
+ }
+ \hfill
+ \subtop
+ {
+  \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-006_2.png}
+ }
+ \hfill
+ \subtop
+ {
+  \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-007_2.png}
+ }
+\caption{Source:~\cite{Max:1981}}
+\label{fig:max1981}
+\end{figure}
 
 \begin{figure}
 \centering
@@ -78,7 +113,7 @@ Lee - Real-Time Simulation of Surface Gravity Ocean Waves Based on the TMA Spect
  {
   \includegraphics[scale=0.45]{figures/ocean_storm300.jpg}
  }
-\caption{The late afternoon sun illuminating the ocean surface. Source: NOAA~\cite{misc:noaa}}
+\caption{The late afternoon sun illuminating the ocean surface. Source:~\cite{misc:noaa}}
 \end{figure}
 
 \begin{figure}
