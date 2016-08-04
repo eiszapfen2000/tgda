@@ -28,12 +28,37 @@ including the ocean.
 %
 \subsection{Parametric Models}
 %
+\begin{figure}
+\centering
+ \subtop
+ {
+  \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-006_1.png}
+ }
+ \hfill
+ \subtop
+ {
+  \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-007_1.png}
+ }
+ \hfill
+ \subtop
+ {
+  \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-006_2.png}
+ }
+ \hfill
+ \subtop
+ {
+  \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-007_2.png}
+ }
+\caption{Source:~\cite{Max:1981}}
+\label{fig:max1981}
+\end{figure}
+%
 The parametric models are generally bound to the spatial domain, where they
 generate and animate the ocean surface by means of a sum of periodical functions
-which evolve throughout time. One of the earliest works in this realm of
-computer graphics has been done by~\citet{Max:1981}. The ocean surface is
-represented as a heightmap, where for each point $(x,z)$ at time $t$ the height
-is computed as follows:
+which evolve throughout time using a phase difference. One of the earliest works
+in this realm of computer graphics has been done by~\citet{Max:1981}. The ocean
+surface is represented as a height map, where for each point $(x,z)$ at time $t$
+the height is computed as a sum of sinusoids:
 \begin{equation}
 h(x,z,t) = y + \sum_{i=1}^N A_i \cos (l_i x + m_i z - \omega_i t)
 \end{equation}
@@ -44,14 +69,25 @@ travelling direction of the wave, with the the positive X-axis pointing towards
 the coastline, the Y-axis pointing in the opposite direction of earth's gravity,
 and the Z-axis aligned with the coastline. For the sum of waves to achieve a
 realistic shape, \citeauthor{Max:1981} applies linear wave theory.
-The waves on the water surface are assumed to be controlled by gravity only,
-the wave amplitudes are assumed to be small in relation to the size of the water
-body, and the water body is assumed to have infinite depth. According to linear
+The waves on the water surface are assumed to be dominated by gravity, the wave
+amplitudes are assumed to be small in relation to the size of the water body,
+and the water body is assumed to have infinite depth. According to linear
 wave theory it follows that the wave vector $\mvec{k}$ and the angular frequency
 $\omega$ are related by $\omega^2=kg$, where $k=\norm{\mvec{k}}$ and $g=9.81$
 denotes earth's gravity. Results obtained by~\citeauthor{Max:1981} are shown in
 Figure~\ref{fig:max1981}.
-
+%
+\begin{figure}
+ \centering
+ \includegraphics[scale=0.25]{figures/An_Image_Synthesizer_-_Perlin_1985-021.png}
+ \caption{Perlin 1985}
+\label{fig:perlin1985}
+\end{figure}
+%
+Both,~\cite{Perlin:1985} and~\cite{Schachter:1980}
+developed similar approaches, where instead of generating any actual geometry
+they simply distorted the normal vectors of given surfaces using a variable
+number of cycloids.
 
 Spectral Models
 Navier Stokes
@@ -79,30 +115,7 @@ Hybrid\\
 Thon - Ocean waves synthesis using a spectrum based turbulence function \cite{thon:2000}\\
 Lee - Real-Time Simulation of Surface Gravity Ocean Waves Based on the TMA Spectrum\cite{lee:2007}\\
 
-\begin{figure}
-\centering
- \subtop
- {
-  \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-006_1.png}
- }
- \hfill
- \subtop
- {
-  \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-007_1.png}
- }
- \hfill
- \subtop
- {
-  \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-006_2.png}
- }
- \hfill
- \subtop
- {
-  \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-007_2.png}
- }
-\caption{Source:~\cite{Max:1981}}
-\label{fig:max1981}
-\end{figure}
+
 
 \begin{figure}
 \centering
@@ -118,11 +131,7 @@ Lee - Real-Time Simulation of Surface Gravity Ocean Waves Based on the TMA Spect
 \caption{The late afternoon sun illuminating the ocean surface. Source:~\cite{misc:noaa}}
 \end{figure}
 
-\begin{figure}
- \centering
- \includegraphics[scale=0.25]{figures/An_Image_Synthesizer_-_Perlin_1985-021.png}
- \caption{Perlin 1985}
-\end{figure}
+
 
 \begin{figure}
  \centering
