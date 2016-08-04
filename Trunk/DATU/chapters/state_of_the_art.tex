@@ -9,7 +9,8 @@ an ocean surface based on its location. Water areas far from the coast are
 called~\emph{the deep ocean}, water areas close to shore are called
 \emph{shallow water}. Deep ocean surfaces are governed by the interaction of
 wind and gravity at the interface between air and water, whereas shallow water
-surfaces are characterized by waves breaking near the shore.
+surfaces are characterized by waves breaking near the shore. FIXME: give an
+overview of what is to come.
 %
 \section{Simulation}
 %
@@ -24,32 +25,41 @@ in frequency space \citep{book:kinsman2002wind,article:PiersonMoskowitz1964,
 article:Hasselman1973,article:Donelan1985,article:Elfouhaily1997}.
 Third, computational fluid dynamics and more specifically the Navier-Stokes
 equations are able to fully describe the dynamics of all kinds of fluid,
-including the ocean.
+including the ocean. FIXME: Short discussion of NSE and dismiss them, because
+out of scope.
 %
 \subsection{Parametric Models}
 %
 \begin{figure}
 \centering
- \subtop
+ \subtop[]
  {
   \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-006_1.png}
+	\label{fig:max1981:1}
  }
  \hfill
- \subtop
+ \subtop[]
  {
   \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-007_1.png}
+	\label{fig:max1981:2}
  }
  \hfill
- \subtop
+ \subtop[]
  {
   \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-006_2.png}
+	\label{fig:max1981:3}
  }
  \hfill
- \subtop
+ \subtop[]
  {
   \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-007_2.png}
+	\label{fig:max1981:4}
  }
-\caption{Source:~\cite{Max:1981}}
+\caption{\subcaptionref{fig:max1981:1}~Still water near sunset.
+\subcaptionref{fig:max1981:2} One reflection from waves.
+\subcaptionref{fig:max1981:3} Two reflections from waves.
+\subcaptionref{fig:max1981:4} Early afternoon, two reflections from waves.
+Source:~\cite{Max:1981}}
 \label{fig:max1981}
 \end{figure}
 %
@@ -71,23 +81,59 @@ and the Z-axis aligned with the coastline. For the sum of waves to achieve a
 realistic shape, \citeauthor{Max:1981} applies linear wave theory.
 The waves on the water surface are assumed to be dominated by gravity, the wave
 amplitudes are assumed to be small in relation to the size of the water body,
-and the water body is assumed to have infinite depth. According to linear
-wave theory it follows that the wave vector $\mvec{k}$ and the angular frequency
-$\omega$ are related by $\omega^2=kg$, where $k=\norm{\mvec{k}}$ and $g=9.81$
-denotes earth's gravity. Results obtained by~\citeauthor{Max:1981} are shown in
+and the water body is assumed to have infinite depth. Then, according to linear
+wave theory it follows that the wave number $k=\norm{\mvec{k}}$ and the angular
+frequency $\omega$ are related by $\omega^2=kg$, where $g=9.81$ denotes earth's
+gravity. Results obtained by~\citeauthor{Max:1981} are shown in
 Figure~\ref{fig:max1981}.
+
 %
 \begin{figure}
  \centering
  \includegraphics[scale=0.25]{figures/An_Image_Synthesizer_-_Perlin_1985-021.png}
- \caption{Perlin 1985}
+ \caption{Ocean sunset. Source:~\cite{Perlin:1985}}
 \label{fig:perlin1985}
 \end{figure}
 %
-Both,~\cite{Perlin:1985} and~\cite{Schachter:1980}
-developed similar approaches, where instead of generating any actual geometry
-they simply distorted the normal vectors of given surfaces using a variable
-number of cycloids.
+Both,~\cite{Schachter:1980} and~\cite{Perlin:1985}, developed similar approaches,
+where instead of generating any actual geometry they simply distort the normal
+vectors of given surfaces.
+
+%
+\begin{figure}
+ \centering
+ \subtop[]
+ {
+  \includegraphics[scale=0.25]{figures/Modeling_Waves_and_Surf_-_Peachey_1986-009.png}
+	\label{fig:peachey1986:1}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[scale=0.25]{figures/Modeling_Waves_and_Surf_-_Peachey_1986-010.png}
+	\label{fig:peachey1986:2}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[scale=0.125]{figures/Modeling_Waves_and_Surf_-_Peachey_1986-012.png}
+	\label{fig:peachey1986:3}
+ }
+ \caption{\subcaptionref{fig:peachey1986:1}~Waves on the beach.
+\subcaptionref{fig:peachey1986:2}~Breaking waves on the beach.
+\subcaptionref{fig:peachey1986:3}~Breaking waves with obstacle.
+Source:~\cite{Peachey:1986}}
+\label{fig:peachey1986}
+\end{figure}
+%
+The assumption of infinite depth restricts these methods to deep water, they are
+unable to include phenomena which arise near the shore, such as breaking waves
+and wave refraction. \cite{Peachey:1986}, still in the realm of linear wave
+theory, simulates waves near the shore through the relationship
+$\omega^2=kg\tanh (kh)$, where $h$ is the uniform water depth. Moreover,
+\citeauthor{Peachey:1986} distorts the waves so that they resemble breaking
+waves more closely, and adds particle systems to generate spray. Results of
+\cite{Peachey:1986} are shown in Figure~\ref{fig:peachey1986}.
 
 Spectral Models
 Navier Stokes
@@ -100,8 +146,8 @@ Refraction
 Foam, Sprays
 
 Parametric\\
-Perlin - An Image Synthesizer \cite{Perlin:1985}\\
-Nelson Max - Vectorized Procedural Models for Natural Terrain: Waves and Islands in the Sunset \cite{Max:1981}\\
+%Perlin - An Image Synthesizer \cite{Perlin:1985}\\
+%Nelson Max - Vectorized Procedural Models for Natural Terrain: Waves and Islands in the Sunset \cite{Max:1981}\\
 Peachey - Modeling Waves and Surf \cite{Peachey:1986}\\
 Fournier - A simple model of ocean waves \cite{Fournier:1986}\\
 Ts'o - Modeling and rendering waves: Wave-tracing using beta-splines and reflective and refractive texture mapping \cite{Ts'o:1987}\\Hinsinger - Interactive Animation of Ocean Waves \cite{Hinsinger:2002}\\
@@ -117,40 +163,23 @@ Lee - Real-Time Simulation of Surface Gravity Ocean Waves Based on the TMA Spect
 
 
 
-\begin{figure}
-\centering
- \subtop
- {
-  \includegraphics[scale=0.45]{figures/ocean300_5.jpg}
- }
- \hfill
- \subtop
- {
-  \includegraphics[scale=0.45]{figures/ocean_storm300.jpg}
- }
-\caption{The late afternoon sun illuminating the ocean surface. Source:~\cite{misc:noaa}}
-\end{figure}
+%\begin{figure}
+%\centering
+ %\subtop
+ %{
+  %\includegraphics[scale=0.45]{figures/ocean300_5.jpg}
+ %}
+ %\hfill
+ %\subtop
+ %{
+  %\includegraphics[scale=0.45]{figures/ocean_storm300.jpg}
+ %}
+%\caption{The late afternoon sun illuminating the ocean surface. Source:~\cite{misc:noaa}}
+%\end{figure}
 
 
 
-\begin{figure}
- \centering
- \subtop
- {
-  \includegraphics[scale=0.25]{figures/Modeling_Waves_and_Surf_-_Peachey_1986-009.png}
- }
- \hfill
- \subtop
- {
-  \includegraphics[scale=0.25]{figures/Modeling_Waves_and_Surf_-_Peachey_1986-010.png}
- }
- \hfill
- \subtop
- {
-  \includegraphics[scale=0.125]{figures/Modeling_Waves_and_Surf_-_Peachey_1986-012.png}
- }
- \caption{Peachey 1986}
-\end{figure}
+
 
 \begin{figure}
  \centering
