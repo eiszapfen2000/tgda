@@ -131,10 +131,59 @@ The assumption of infinite depth restricts these methods to deep water, they are
 unable to include phenomena which arise near the shore, such as breaking waves
 and wave refraction. \cite{Peachey:1986}, still in the realm of linear wave
 theory, simulates waves near the shore through the relationship
-$\omega^2=kg\tanh (kh)$, where $h$ is the uniform water depth. Moreover,
-\citeauthor{Peachey:1986} distorts the waves so that they resemble breaking
-waves more closely, and adds particle systems to generate spray. Results of
-\cite{Peachey:1986} are shown in Figure~\ref{fig:peachey1986}.
+$\omega^2=kg\tanh (kh)$, where $h$ is the water depth. Moreover,
+\citeauthor{Peachey:1986} distorts waves approaching the sloping beach so that
+they resemble breaking waves more closely. Additionally, particle systems are
+added to generate spray. Results of \cite{Peachey:1986} are shown in
+Figure~\ref{fig:peachey1986}.
+%
+\begin{figure}
+ \centering
+ \subtop[]
+ {
+  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-008.png}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-010.png}
+ }
+ \subtop[]
+ {
+  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-011.png}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-013.png}
+	}
+ \caption{Source:~\cite{Fournier:1986}}
+\end{figure}
+%
+
+\cite{Fournier:1986}, instead of using sinusoids, build on Gerstner's work
+\citep{Gerstner:1809, Rankine:1863} to synthesize waves. Gerstner waves assume
+a water surface dominated by gravity and an incompressible water body of
+infinite depth. A single wave may be written as follows:
+\begin{align}
+\mvec{x} &= \mvec{x}_0 - \frac{\mvec{k}}{\norm{\mvec{k}}} A \sin\left(\mvec{k}\cdot\mvec{x}_0-\omega t\right)\\
+y &= y_0 - A \cos\left(\mvec{k}\cdot\mvec{x}_0-\omega t\right)
+\end{align}
+where $\mvec{x}$ denotes the horizontal coordinate and $y$ the vertical coordinate
+of the wave particle at time $t$, with $\mvec{x}_0$ and $y_0$ its horizontal
+and vertical position at rest respectively. As before, $A$ is the amplitude,
+$\mvec{k}$ the wave vector and $\omega$ the wave's angular frequency. The sum of
+of Gerstner waves is as follows:
+\begin{align}
+\mvec{x} &= \mvec{x}_0 - \sum_i^N\frac{\mvec{k}_i}{\norm{\mvec{k_i}}} A_i \sin\left(\mvec{k}_i\cdot\mvec{x}_0-\omega t\right)\\
+y &= y_0 - \sum_i^N A_i \cos\left(\mvec{k}_i\cdot\mvec{x}_0-\omega t\right)
+\end{align}
+%
+\citeauthor{Fournier:1986} improve upon the above model in two ways. First, wave
+particle motion takes the underlying sea bed into account, allowing for waves
+to change their wavelength, their speed and their direction of travel. Second,
+the circular orbit of Gerstner waves approaching the shore is transformed into
+an elliptical orbit, which matches the shape of breaking waves more closely.
 
 Spectral Models
 Navier Stokes
@@ -149,7 +198,7 @@ Foam, Sprays
 Parametric\\
 %Perlin - An Image Synthesizer \cite{Perlin:1985}\\
 %Nelson Max - Vectorized Procedural Models for Natural Terrain: Waves and Islands in the Sunset \cite{Max:1981}\\
-Peachey - Modeling Waves and Surf \cite{Peachey:1986}\\
+%Peachey - Modeling Waves and Surf \cite{Peachey:1986}\\
 Fournier - A simple model of ocean waves \cite{Fournier:1986}\\
 Ts'o - Modeling and rendering waves: Wave-tracing using beta-splines and reflective and refractive texture mapping \cite{Ts'o:1987}\\Hinsinger - Interactive Animation of Ocean Waves \cite{Hinsinger:2002}\\
 
@@ -182,28 +231,7 @@ Lee - Real-Time Simulation of Surface Gravity Ocean Waves Based on the TMA Spect
 
 
 
-\begin{figure}
- \centering
- \subtop
- {
-  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-008.png}
- }
- \hfill
- \subtop
- {
-  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-010.png}
- }
- \subtop
- {
-  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-011.png}
- }
- \hfill
- \subtop
- {
-  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-013.png}
-	}
- \caption{Fournier 1986}
-\end{figure}
+
 
 \begin{figure}
  \centering
