@@ -86,7 +86,6 @@ wave theory it follows that the wave number $k=\norm{\mvec{k}}$ and the angular
 frequency $\omega$ are related by $\omega^2=kg$, where $g=9.81$ denotes earth's
 gravity. Results obtained by~\citeauthor{Max:1981} are shown in
 Figure~\ref{fig:max1981}.
-
 %
 \begin{figure}
  \centering
@@ -95,11 +94,11 @@ Figure~\ref{fig:max1981}.
 \label{fig:perlin1985}
 \end{figure}
 %
+
 Both,~\cite{Schachter:1980} and~\cite{Perlin:1985}, developed similar approaches,
 where instead of generating any actual geometry they simply distort the normal
 vectors of given surfaces. Results obtained by~\citeauthor{Perlin:1985} are
 shown in Figure \ref{fig:perlin1985}.
-
 %
 \begin{figure}
  \centering
@@ -127,10 +126,10 @@ Source:~\cite{Peachey:1986}}
 \label{fig:peachey1986}
 \end{figure}
 %
-The assumption of infinite depth restricts these methods to deep water, they are
-unable to include phenomena which arise near the shore, such as breaking waves
-and wave refraction. \cite{Peachey:1986}, still in the realm of linear wave
-theory, simulates waves near the shore through the relationship
+The assumption of infinite depth restricts the above methods to deep water, they
+are unable to include phenomena which arise near the shore, such as breaking
+waves and wave refraction. \cite{Peachey:1986}, still in the realm of linear
+wave theory, simulates waves near the shore through the relationship
 $\omega^2=kg\tanh (kh)$, where $h$ is the water depth. Moreover,
 \citeauthor{Peachey:1986} distorts waves approaching the sloping beach so that
 they resemble breaking waves more closely. Additionally, particle systems are
@@ -141,23 +140,30 @@ Figure~\ref{fig:peachey1986}.
  \centering
  \subtop[]
  {
-  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-008.png}
+  \includegraphics[scale=0.175]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-004_1.png}
+	\label{fig:fournier1986:refraction:1}
  }
  \hfill
  \subtop[]
  {
-  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-010.png}
- }
- \subtop[]
- {
-  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-011.png}
+  \includegraphics[scale=0.175]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-004_2.png}
+	\label{fig:fournier1986:refraction:2}
  }
  \hfill
  \subtop[]
  {
-  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-013.png}
-	}
- \caption{Source:~\cite{Fournier:1986}}
+  \includegraphics[scale=0.175]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-005_1.png}
+	\label{fig:fournier1986:refraction:3}
+ }
+ \caption{The refraction of waves.
+\subcaptionref{fig:fournier1986:refraction:1} Two bottoms of constant depth, the
+wavelengths are halved as the waves reach the shallow bottom on the left.
+\subcaptionref{fig:fournier1986:refraction:2} The beach slopes gently down from
+the left. One can see the wave fronts aligning themselves with the beach.
+\subcaptionref{fig:fournier1986:refraction:3} An undersea valley that affects
+both, the wavelengths as well as the travelling direction of the waves.
+Source:~\cite{Fournier:1986}}
+\label{fig:fournier1986:refraction}
 \end{figure}
 %
 
@@ -179,9 +185,44 @@ of Gerstner waves is as follows:
 y &= y_0 - \sum_i^N A_i \cos\left(\mvec{k}_i\cdot\mvec{x}_0-\omega t\right)
 \end{align}
 %
+\begin{figure}
+ \centering
+ \subtop[]
+ {
+  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-008.png}
+	\label{fig:fournier1986:results:1}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-010.png}
+	\label{fig:fournier1986:results:2}
+ }
+ \subtop[]
+ {
+  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-011.png}
+	\label{fig:fournier1986:results:3}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-013.png}
+	\label{fig:fournier1986:results:4}
+ }
+ \caption{
+ \subcaptionref{fig:fournier1986:results:1} Breaking waves on the shore, where the crests take the shape of the shore.
+ \subcaptionref{fig:fournier1986:results:2} Wave refraction.
+ \subcaptionref{fig:fournier1986:results:3} Waves with spray and foam.
+ \subcaptionref{fig:fournier1986:results:4} A large breaking wave.
+ Source:~\cite{Fournier:1986}
+ }
+ \label{fig:fournier1986:results}
+\end{figure}
+%
 \citeauthor{Fournier:1986} improve upon the above model in two ways. First, wave
 particle motion takes the underlying sea bed into account, allowing for waves
-to change their wavelength, their speed and their direction of travel. Second,
+to change their wavelength, their speed and their direction of travel, see
+Figure~\ref{fig:fournier1986:refraction}. Second,
 the circular orbit of Gerstner waves approaching the shore is transformed into
 an elliptical orbit, which matches the shape of breaking waves more closely.
 
