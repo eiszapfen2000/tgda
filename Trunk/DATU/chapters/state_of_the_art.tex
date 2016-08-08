@@ -265,10 +265,15 @@ launches orthogonal wave rays from the open sea along the direction of wave
 propagation. Wave refraction is computed based on Snell's law, the wave trains
 are traced inside a uniform grid. In case rays tracing the waves path diverge
 significantly from a straight line, there may remain undersampled areas,
-leading to parts of the surface lacking detail. \cite{Gonzato:1997} improves
+leading to parts of the surface lacking detail. \cite{Gonzato:1997} improve
 upon this by generating new rays in undersampled areas, allowing the algorithm
 to more densely sample the water surface surrounding an island and the water
-surface inside bays.
+surface inside bays. Moreover, \citeauthor{Gonzato:1997} modify the wave model to
+include plunging breaking waves. Three additional functions achieve said goal.
+A stretch function which imitates Biesel law~\citep{Biesel:1952} by
+progressively stretching the wave on the crest along its major axis. An
+orientation and a displacement function to rotate the wave's crest downwards,
+towards the water surface below the crest.
 
 Spectral Models
 Navier Stokes
@@ -285,7 +290,8 @@ Parametric\\
 %Nelson Max - Vectorized Procedural Models for Natural Terrain: Waves and Islands in the Sunset \cite{Max:1981}\\
 %Peachey - Modeling Waves and Surf \cite{Peachey:1986}\\
 %Fournier - A simple model of ocean waves \cite{Fournier:1986}\\
-Ts'o - Modeling and rendering waves: Wave-tracing using beta-splines and reflective and refractive texture mapping \cite{Ts'o:1987}\\Hinsinger - Interactive Animation of Ocean Waves \cite{Hinsinger:2002}\\
+%Ts'o - Modeling and rendering waves: Wave-tracing using beta-splines and reflective and refractive texture mapping \cite{Ts'o:1987}
+Hinsinger - Interactive Animation of Ocean Waves \cite{Hinsinger:2002}\\
 
 Spectral\\
 Mastin - Fourier Synthesis of Ocean Scenes \cite{Mastin:1987}\\
