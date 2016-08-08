@@ -178,8 +178,41 @@ y &= y_0 - A \cos\left(\mvec{k}\cdot\mvec{x}_0-\omega t\right)
 where $\mvec{x}$ denotes the horizontal coordinate and $y$ the vertical coordinate
 of the wave particle at time $t$, with $\mvec{x}_0$ and $y_0$ its horizontal
 and vertical position at rest respectively. As before, $A$ is the amplitude,
-$\mvec{k}$ the wave vector and $\omega$ the wave's angular frequency. The sum of
-of Gerstner waves is as follows:
+$\mvec{k}$ the wave vector and $\omega$ the wave's angular frequency. Given the
+wave number $k=\norm{\mvec{k}}$, the term $kA$ defines the sharpness of the wave
+crest. With $kA<1$ the wave takes the form of an upside-down trochoid, with
+$kA=1$ the form of an upside-down cycloid, and with $kA>1$ the wave intersects
+itself, an undesired effect which does not resemble real waves.
+See Figure~\ref{fig:trochoid:crests} for waves with different $kA$.
+%Gerstner waves take the form of an upside-down trochoid.
+%
+\begin{figure}
+\begin{tikzpicture}
+\begin{axis}[
+	width=\textwidth,
+	height=0.5\textwidth,
+	domain=0:40,
+	%xmin = 0,
+	%xmax = 40,
+	%axis equal,
+	xtick=\empty,
+	%ytick=\empty,
+	%y tick label style={anchor=west,xshift=\pgfkeysvalueof{/pgfplots/major tick length}},
+	yticklabels={$kA=0.2$,$kA=0.7$,$kA=1.0$,$kA=1.3$},
+	ytick={12,8,4,0} 
+	]
+\addplot[samples=300,domain=0:40] ({x+0.2*sin(deg(1*x-sqrt(9.81*1)*0))}, {12-0.2*cos(deg(1*x-sqrt(9.81*1)*0))});
+\addplot[samples=300,domain=0:40] ({x+0.7*sin(deg(1*x-sqrt(9.81*1)*0))}, { 8-0.7*cos(deg(1*x-sqrt(9.81*1)*0))});
+\addplot[samples=300,domain=0:40] ({x+1.0*sin(deg(1*x-sqrt(9.81*1)*0))}, { 4-1.0*cos(deg(1*x-sqrt(9.81*1)*0))});
+\addplot[samples=300,domain=0:40] ({x+1.3*sin(deg(1*x-sqrt(9.81*1)*0))}, { 0-1.3*cos(deg(1*x-sqrt(9.81*1)*0))});
+\end{axis}
+\end{tikzpicture}
+\caption{Brak.}
+\label{fig:trochoid:crests}
+\end{figure}
+%
+
+The sum of of Gerstner waves is as follows:
 \begin{align}
 \mvec{x} &= \mvec{x}_0 - \sum_i^N\frac{\mvec{k}_i}{\norm{\mvec{k_i}}} A_i \sin\left(\mvec{k}_i\cdot\mvec{x}_0-\omega t\right)\\
 y &= y_0 - \sum_i^N A_i \cos\left(\mvec{k}_i\cdot\mvec{x}_0-\omega t\right)
@@ -222,9 +255,11 @@ y &= y_0 - \sum_i^N A_i \cos\left(\mvec{k}_i\cdot\mvec{x}_0-\omega t\right)
 \citeauthor{Fournier:1986} improve upon the above model in two ways. First, wave
 particle motion takes the underlying sea bed into account, allowing for waves
 to change their wavelength, their speed and their direction of travel, see
-Figure~\ref{fig:fournier1986:refraction}. Second,
-the circular orbit of Gerstner waves approaching the shore is transformed into
-an elliptical orbit, which matches the shape of breaking waves more closely.
+Figure~\ref{fig:fournier1986:refraction}. Second, the circular orbit of Gerstner
+waves approaching the shore is transformed into an elliptical orbit, which
+matches the shape of breaking waves more closely. Results of \cite{Fournier:1986}
+are shown in Figure~\ref{fig:fournier1986:results}.
+
 
 Spectral Models
 Navier Stokes
@@ -240,7 +275,7 @@ Parametric\\
 %Perlin - An Image Synthesizer \cite{Perlin:1985}\\
 %Nelson Max - Vectorized Procedural Models for Natural Terrain: Waves and Islands in the Sunset \cite{Max:1981}\\
 %Peachey - Modeling Waves and Surf \cite{Peachey:1986}\\
-Fournier - A simple model of ocean waves \cite{Fournier:1986}\\
+%Fournier - A simple model of ocean waves \cite{Fournier:1986}\\
 Ts'o - Modeling and rendering waves: Wave-tracing using beta-splines and reflective and refractive texture mapping \cite{Ts'o:1987}\\Hinsinger - Interactive Animation of Ocean Waves \cite{Hinsinger:2002}\\
 
 Spectral\\
