@@ -254,12 +254,21 @@ y &= y_0 - \sum_i^N A_i \cos\left(\mvec{k}_i\cdot\mvec{x}_0-\omega t\right)
 %
 \citeauthor{Fournier:1986} improve upon the above model in two ways. First, wave
 particle motion takes the underlying sea bed into account, allowing for waves
-to change their wavelength, their speed and their direction of travel, see
-Figure~\ref{fig:fournier1986:refraction}. Second, the circular orbit of Gerstner
-waves approaching the shore is transformed into an elliptical orbit, which
-matches the shape of breaking waves more closely. Results of \cite{Fournier:1986}
-are shown in Figure~\ref{fig:fournier1986:results}.
+to be refracted i.e. to change their wavelength, their speed and their direction
+of travel, see Figure~\ref{fig:fournier1986:refraction}. Second, the circular
+orbit of Gerstner waves approaching the shore is transformed into an elliptical
+orbit, which allows the formation of breaking waves near the beach. Results of
+\cite{Fournier:1986} are shown in Figure~\ref{fig:fournier1986:results}.
 
+\cite{Ts'o:1987} implement an algorithm called \emph{wave tracing} which
+launches orthogonal wave rays from the open sea along the direction of wave
+propagation. Wave refraction is computed based on Snell's law, the wave trains
+are traced inside a uniform grid. In case rays tracing the waves path diverge
+significantly from a straight line, there may remain undersampled areas,
+leading to parts of the surface lacking detail. \cite{Gonzato:1997} improves
+upon this by generating new rays in undersampled areas, allowing the algorithm
+to more densely sample the water surface surrounding an island and the water
+surface inside bays.
 
 Spectral Models
 Navier Stokes
