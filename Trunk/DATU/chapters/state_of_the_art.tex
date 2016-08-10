@@ -6,11 +6,11 @@ to its highly dynamic nature. Be it a quiet sea or an agitated one, small
 turbulent waves or huge breaking ones, the underlying mechanisms are manifold
 and act on a variety of scales. Oceanographic research defines the behaviour of
 an ocean surface based on its location. Water areas far from the coast are
-called~\emph{the deep ocean}, water areas close to shore are called
-\emph{shallow water}. Deep ocean surfaces are governed by the interaction of
-wind and gravity at the interface between air and water, whereas shallow water
-surfaces are characterized by waves breaking near the shore. FIXME: give an
-overview of what is to come.
+called~\emph{deep water}, water areas close to shore are called
+\emph{shallow water}, with \emph{intermediate} areas in between. Deep ocean
+surfaces are governed by the interaction of wind and gravity at the interface
+between air and water, whereas shallow water surfaces are characterized by waves
+breaking near the shore. FIXME: give an overview of what is to come.
 %
 \section{Simulation}
 %
@@ -277,9 +277,22 @@ downwards, towards the water surface below the crest. Later,
 \citeauthor{Gonzato:2000} extend their work to include wave diffraction, see
 \cite{Gonzato:2000}.
 \subsection{Spectral Models}
+Oceanographic research employs~\emph{wave spectra} to model the deep ocean. The
+sea is assumed as a linear superposition of sinusoids with many different wave
+lengths, frequencies and phases travelling in different directions. The wave
+spectrum gives the distribution of wave energy among different wave frequencies
+or wave lengths. Given horizontal coordinate $\mvec{x}$, we may compute the
+vertical coordinate via an inverse Discrete Fourier Transform as follows:
 \begin{equation}
 h(\mvec{x},t) = \sum_{\mvec{k}}A(\mvec{k},t)\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation}
+where $\mvec{k}$ represent the wave vectors of the most significant frequency
+components, and $A(\mvec{k},t)$ are the amplitudes of the associated Fourier
+components obtained from a wave spectrum. We will discuss wave spectra more
+thoroughly in Chapter~\ref{ch:background}, so we let this rough overview suffice
+for now.
+
+
 Spectral\\
 Mastin - Fourier Synthesis of Ocean Scenes \cite{Mastin:1987}\\
 Tessendorf - Simulating Ocean Water \cite{course:simulatingocean}
