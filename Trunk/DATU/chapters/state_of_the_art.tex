@@ -182,7 +182,7 @@ $\mvec{k}$ the wave vector and $\omega$ the wave's angular frequency. Given the
 wave number $k=\norm{\mvec{k}}$, the term $kA$ defines the sharpness of the wave
 crest. With $kA<1$ the wave takes the form of an upside-down trochoid, with
 $kA=1$ the form of an upside-down cycloid, and with $kA>1$ the wave intersects
-itself, an undesired effect which does not resemble real waves.
+itself, an undesireable effect which does not resemble real waves.
 See Figure~\ref{fig:trochoid:crests} for waves with different $kA$.
 %Gerstner waves take the form of an upside-down trochoid.
 %
@@ -207,7 +207,7 @@ See Figure~\ref{fig:trochoid:crests} for waves with different $kA$.
 \addplot[samples=300,domain=0:40] ({x+1.3*sin(deg(1*x-sqrt(9.81*1)*0))}, { 0-1.3*cos(deg(1*x-sqrt(9.81*1)*0))});
 \end{axis}
 \end{tikzpicture}
-\caption{Brak.}
+\caption{Example waves with different $kA$. One can see that the wave crest gets more pronounced as $kA$ grows.}
 \label{fig:trochoid:crests}
 \end{figure}
 %
@@ -254,10 +254,11 @@ y &= y_0 - \sum_i^N A_i \cos\left(\mvec{k}_i\cdot\mvec{x}_0-\omega t\right)
 \citeauthor{Fournier:1986} improve upon the above model in two ways. First, wave
 particle motion takes the underlying sea bed into account, allowing for waves
 to be refracted i.e. to change their wavelength, their speed and their direction
-of travel, see Figure~\ref{fig:fournier1986:refraction}. Second, the circular
-orbit of Gerstner waves approaching the shore is transformed into an elliptical
-orbit, which allows the formation of breaking waves near the beach. Results of
-\cite{Fournier:1986} are shown in Figure~\ref{fig:fournier1986:results}.
+of travel based on water depth, see Figure~\ref{fig:fournier1986:refraction}.
+Second, the circular orbit of Gerstner waves approaching the shore is
+transformed into an elliptical orbit, which allows to approximate the form of
+breaking waves near the beach. Results of \cite{Fournier:1986} are shown in
+Figure~\ref{fig:fournier1986:results}.
 
 \cite{Ts'o:1987} implement an algorithm called \emph{wave tracing} which
 launches orthogonal wave rays from the open sea along the direction of wave
@@ -269,21 +270,30 @@ upon this by generating new rays in undersampled areas, allowing the algorithm
 to more densely sample the water surface surrounding islands and the water
 surface inside bays. Moreover, \citeauthor{Gonzato:1997} modify the wave model to
 include plunging breaking waves. Three additional functions achieve said goal.
-A stretch function which imitates Biesel law~\citep{Biesel:1952} by
-progressively stretching the wave on the crest along its major axis. An
-orientation and a displacement function to rotate the wave's crest downwards,
-towards the water surface below the crest. Later,~\citeauthor{Gonzato:2000}
-extend their own work to include wave diffraction, see~\cite{Gonzato:2000}.
+First, a stretch function which imitates Biesel law~\citep{Biesel:1952} by
+progressively stretching the wave on the crest along its major axis. Second and
+third, an orientation and a displacement function to rotate the wave's crest
+downwards, towards the water surface below the crest. Later,
+\citeauthor{Gonzato:2000} extend their work to include wave diffraction, see
+\cite{Gonzato:2000}.
+\subsection{Spectral Models}
+\begin{equation}
+h(\mvec{x},t) = \sum_{\mvec{k}}A(\mvec{k},t)\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\end{equation}
+Spectral\\
+Mastin - Fourier Synthesis of Ocean Scenes \cite{Mastin:1987}\\
+Tessendorf - Simulating Ocean Water \cite{course:simulatingocean}
 
+\subsection{Hybrid Approaches}
+Hybrid\\
+Thon - Ocean waves synthesis using a spectrum based turbulence function \cite{thon:2000}\\
+Lee - Real-Time Simulation of Surface Gravity Ocean Waves Based on the TMA Spectrum\cite{lee:2007}
+
+\section{Rendering}
 %
+Premoze - Rendering Natural Waters \cite{Premoze:2000}\\
 Schneider - Towards Real-Time Visual Simulation of Water Surfaces \cite{Schneider:2001}\\
 Hinsinger - Interactive Animation of Ocean Waves \cite{Hinsinger:2002}\\
-\subsection{Spectral Models}
-%
-Navier Stokes
-
-Rendering
-
 Particles
 Reflection
 Refraction
@@ -291,14 +301,7 @@ Foam, Sprays
 
 
 
-Spectral\\
-Mastin - Fourier Synthesis of Ocean Scenes \cite{Mastin:1987}\\
-Tessendorf - Simulating Ocean Water \cite{course:simulatingocean}\\
-Premoze - Rendering Natural Waters \cite{Premoze:2000} \\
 
-Hybrid\\
-Thon - Ocean waves synthesis using a spectrum based turbulence function \cite{thon:2000}\\
-Lee - Real-Time Simulation of Surface Gravity Ocean Waves Based on the TMA Spectrum\cite{lee:2007}\\
 
 
 
