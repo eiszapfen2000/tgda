@@ -259,23 +259,60 @@ Second, the circular orbit of Gerstner waves approaching the shore is
 transformed into an elliptical orbit, which allows to approximate the form of
 breaking waves near the beach. Results of \cite{Fournier:1986} are shown in
 Figure~\ref{fig:fournier1986:results}.
-
+%
+\begin{figure}
+ \centering
+ \subtop[]
+ {
+  \includegraphics[width=0.2\textwidth]{figures/A_phenomenological_model_of_coastal_scenes_based_on_physical_considerations_-_Gonzato_1997-051.png}
+	\label{fig:gonzato1997:results:1}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[width=0.2\textwidth]{figures/A_phenomenological_model_of_coastal_scenes_based_on_physical_considerations_-_Gonzato_1997-055.png}
+	\label{fig:gonzato1997:results:2}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[width=0.2\textwidth]{figures/A_phenomenological_model_of_coastal_scenes_based_on_physical_considerations_-_Gonzato_1997-052.png}
+	\label{fig:gonzato1997:results:3}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[width=0.2\textwidth]{figures/A_phenomenological_model_of_coastal_scenes_based_on_physical_considerations_-_Gonzato_1997-056.png}
+	\label{fig:gonzato1997:results:4}
+ }
+ \caption{
+ \subcaptionref{fig:gonzato1997:results:1} Wave Trace of an island.
+ \subcaptionref{fig:gonzato1997:results:2} Dynamic Wave Trace of the same island.
+ \subcaptionref{fig:gonzato1997:results:3} Wave Trace of a bay.
+ \subcaptionref{fig:gonzato1997:results:4} Dynamic Wave Trace of the same bay.
+ Source:~\cite{Gonzato:1997}
+ }
+ \label{fig:gonzato1997:results}
+\end{figure}
+%
 \cite{Ts'o:1987} implement an algorithm called \emph{wave tracing} which
 launches orthogonal wave rays from the open sea along the direction of wave
 propagation. Wave refraction is computed based on Snell's law, the wave trains
 are traced inside a uniform grid. In case rays tracing the waves path diverge
 significantly from a straight line, there may remain undersampled areas,
 leading to parts of the surface lacking detail. \cite{Gonzato:1997} improve
-upon this by generating new rays in undersampled areas, allowing the algorithm
-to more densely sample the water surface surrounding islands and the water
-surface inside bays. Moreover, \citeauthor{Gonzato:1997} modify the wave model to
-include plunging breaking waves. Three additional functions achieve said goal.
+upon this by generating new rays in undersampled areas, allowing the
+\emph{dynamic wave tracing} algorithm to more densely sample the water surface
+surrounding islands and the water surface inside bays. Moreover,
+\citeauthor{Gonzato:1997} modify the wave model to include plunging breaking
+waves. Three additional functions achieve said goal.
 First, a stretch function which imitates Biesel law~\citep{Biesel:1952} by
 progressively stretching the wave on the crest along its major axis. Second and
 third, an orientation and a displacement function to rotate the wave's crest
 downwards, towards the water surface below the crest. Later,
 \citeauthor{Gonzato:2000} extend their work to include wave diffraction, see
 \cite{Gonzato:2000}.
+%
 \subsection{Spectral Models}
 Oceanographic research employs~\emph{wave spectra} to model the deep ocean. The
 sea is assumed as a linear superposition of sinusoids with many different wave
