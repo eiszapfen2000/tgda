@@ -347,11 +347,14 @@ assumed planar and parallel to the ocean surface at rest. It follows that no
 wave transitions from one water depth to another, therefore no wave refraction
 may take place. Third, the inverse Discrete Fourier Transform may leverage the
 Fast Fourier Transform algorithm, which makes the computation of
-Equation~\ref{eq:spectral_models} most efficient. The downside of the Fourier
-Transform is that the range and sampling density of spatial coordinates
+Equation~\ref{eq:spectral_models} most efficient. Moreover, thanks to the
+Discrete Fourier Transform we get a tileable surface. The downside of the
+Fourier Transform is that the range and sampling density of spatial coordinates
 $\mvec{x}$ directly defines the set of wave vectors $\mvec{k}$ contributing to
-the sum of waves. Neither are we able to cherry-pick certain wave vectors, nor
-to omit a range of wave vectors.
+the sum of waves. In contrast to the parametric models we are neither able to
+cherry-pick certain wave vectors, nor to omit a range of wave vectors, nor to
+to exert some form of local control where we modify the set of wave vectors
+based on location $\mvec{x}$.
 %We will discuss wave spectra more thoroughly in Chapter~\ref{ch:background}, so we let this rough overview suffice for now.
 %Section \ref{sec:linear_theory_ocean_waves} discusses linear wave theory and how
 %it facilitates the representation of the ocean surface as a linear superposition
