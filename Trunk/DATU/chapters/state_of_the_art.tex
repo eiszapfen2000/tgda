@@ -349,26 +349,31 @@ may take place. Third, the inverse Discrete Fourier Transform may leverage the
 Fast Fourier Transform algorithm, which makes the computation of
 Equation~\ref{eq:spectral_models} most efficient. Moreover, thanks to the
 Discrete Fourier Transform we get a tileable surface. The downside of the
-Fourier Transform is that the range and sampling density of spatial coordinates
-$\mvec{x}$ directly defines the set of wave vectors $\mvec{k}$ contributing to
-the sum of waves. In contrast to the parametric models we are neither able to
-cherry-pick certain wave vectors, nor to omit a range of wave vectors, nor to
-to exert some form of local control where we modify the set of wave vectors
-based on location $\mvec{x}$.
-%We will discuss wave spectra more thoroughly in Chapter~\ref{ch:background}, so we let this rough overview suffice for now.
-%Section \ref{sec:linear_theory_ocean_waves} discusses linear wave theory and how
-%it facilitates the representation of the ocean surface as a linear superposition
-%of sinusoids in frequency space. Section \ref{sec:random_sea} shows that the
-%ocean surface may be seen as a stochastic process based on wave energy in
-%frequency space. Section \ref{sec:random_sea_discretisation} describes how to
-%actually generate discrete ocean surface geometry given a wave energy spectrum
-%and a finite number of wave vectors.
+Fourier Transform is that the range and uniform sampling density of spatial
+coordinates $\mvec{x}$ directly defines the set of wave vectors $\mvec{k}$
+contributing to the sum of waves. In contrast to the parametric models we are
+neither able to cherry-pick certain wave vectors, nor to omit a range of wave
+vectors, nor to to exert some form of local control where we modify the set of
+wave vectors based on location $\mvec{x}$.\\
+
+\cite{Mastin:1987} introduced wave spectra to computer graphics. Their approach
+is a simple one: generate white noise to represent random amplitudes and phases,
+then filter it with the Pierson-Moskowitz spectrum
+\citep{article:PiersonMoskowitz1964} in frequency space. The Pierson-Moskowitz
+spectrum gives wave energy per wave number, but not its distribution across
+wave vectors. In short, there is no information telling in which direction the
+waves are moving. Thus, \citeauthor{Mastin:1987} combine the Pierson-Moskowitz
+spectrum with a \emph{directional spreading function}, namely the one proposed
+in \cite{article:Hasselmann1980}. A directional
+spreading function distributes wave energy across wave vectors, where
+the energy peak is usually to be found aligned with the wind direction and the
+remaining energy fanning out at its sides. An in-depth discussion of the
+Pierson-Moskowitz spectrum as well as directional spreading functions is to
+be found in Section \ref{sec:pierson_moskowitz}.
 
 
-\cite{Mastin:1987} introduced wave spectra to computer graphics. The core idea
-is to generate a water surface by filtering white noise with the
-Pierson-Moskowitz spectrum \citep{article:PiersonMoskowitz1964}.
-Mastin  - Fourier Synthesis of Ocean Scenes \cite{Mastin:1987} \cite{article:PiersonMoskowitz1964} \ref{sec:pierson_moskowitz}\\
+
+%Mastin  - Fourier Synthesis of Ocean Scenes \cite{Mastin:1987} \cite{article:PiersonMoskowitz1964} \ref{sec:pierson_moskowitz}\\
 Premoze - Rendering Natural Waters \cite{Premoze:2000} \cite{article:Hasselman1973} \ref{sec:jonswap}\\
 Tessendorf - Simulating Ocean Water \cite{course:simulatingocean}
 
