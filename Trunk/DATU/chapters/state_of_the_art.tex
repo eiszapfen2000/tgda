@@ -389,9 +389,17 @@ describes how the ocean was brought to life for productions such as
 random numbers, because waves in deep sea areas are often observed to follow a
 Gaussian distribution. Moreover, \citeauthor{course:simulatingocean}
 makes use of the Phillips spectrum, a spectrum not found in oceanographic
-research, but devised specifically for computer graphics purposes.
+research, but devised by himself specifically for computer graphics purposes.
 %\cite{article:Phillips1958,article:Phillips1985}
-Tessendorf - Simulating Ocean Water \cite{course:simulatingocean}
+Ocean surfaces based on wave spectra all share the same issue, namely the all to
+gentle form of wave troughs and wave crests. Because the surface is computed as
+a linear superposition of sinusoids, it is only natural that the result shares
+the general form of its underlying building blocks. But a sea exposed to strong
+winds or even a storm is characterized by steep waves with sharp crests.
+\cite{course:simulatingocean} presents an algorithm which overcomes this
+specific issue by allowing the waves to take a form similar to Gerstner waves,
+with deep troughs and sharp crests, see Figure~\ref{fig:tessendorf_choppy_waves}.
+%Tessendorf - Simulating Ocean Water \cite{course:simulatingocean}
 
 \subsection{Hybrid Approaches}
 Hybrid\\
@@ -445,6 +453,7 @@ Foam, Sprays
   \includegraphics[scale=0.125]{figures/Simulating_Ocean_Water-013.png}
  }
  \caption{Source: \cite{course:simulatingocean}}
+\label{fig:tessendorf_choppy_waves}
 \end{figure}
 
 \begin{figure}
