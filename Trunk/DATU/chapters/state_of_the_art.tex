@@ -330,13 +330,17 @@ spectrum. At this point we refer to Sections \ref{sec:linear_theory_ocean_waves}
 and \ref{sec:random_sea} for a more thorough discussion of the theoretical
 background of wave spectra, whereas Section \ref{sec:random_sea_discretisation}
 explains Equation~\ref{eq:spectral_models} in detail. For now it shall suffice
-to give an overview of key properties of wave spectra. First, all wave spectra
+to give an overview of key properties of wave spectra. 
+
+First, all wave spectra
 are static. Static in the sense, that a wave spectrum represents a certain sea
 state based on parameters such as wind speed and the distance from shore. To
 change the sea state requires the synthesis of a new wave spectrum. Thus, for
 example, if one would like to simulate a calm sea which gets agitated as a storm
 approaches, then one needs to generate different wave spectra and interpolate
-between them. Second, wave spectra are compact models which require only a small
+between them.
+
+Second, wave spectra are compact models which require only a small
 number of input parameters defining the desired sea state. Wave spectra assume
 the ocean surface to be dominated by the interplay of wind and gravity, hence
 wind speed is the parameter common to all models. Another well established
@@ -345,7 +349,9 @@ before it reaches the ocean patch the wave spectrum simulates. Water depth,
 if supported by the wave spectrum model, is uniform, hence the sea bed is
 assumed planar and parallel to the ocean surface at rest. It follows that no
 wave transitions from one water depth to another, therefore no wave refraction
-may take place. Third, the inverse Discrete Fourier Transform may leverage the
+may take place.
+
+Third, the inverse Discrete Fourier Transform may leverage the
 Fast Fourier Transform algorithm, which makes the computation of
 Equation~\ref{eq:spectral_models} most efficient. Moreover, thanks to the
 Discrete Fourier Transform we get a tileable surface. The downside of the
@@ -367,14 +373,24 @@ spectrum with a \emph{directional spreading function}, namely the one proposed
 in \cite{article:Hasselmann1980}. A directional
 spreading function distributes wave energy across wave vectors, where
 the energy peak is usually to be found aligned with the wind direction and the
-remaining energy fanning out at its sides. An in-depth discussion of the
-Pierson-Moskowitz spectrum as well as directional spreading functions is to
-be found in Section \ref{sec:pierson_moskowitz}.
+remaining energy fanning out at its sides.
+\cite{Premoze:2000} on the other hand make use of the JONSWAP spectrum
+\citep{article:Hasselman1973}, as it allows for more varied ocean surfaces than
+the Pierson-Moskowitz spectrum.
+An in-depth discussion of the Pierson-Moskowitz spectrum, the JONSWAP spectrum,
+as well as directional spreading functions is to be found in Section
+\ref{sec:1d_frequency_spectra}.
 
-
-
-%Mastin  - Fourier Synthesis of Ocean Scenes \cite{Mastin:1987} \cite{article:PiersonMoskowitz1964} \ref{sec:pierson_moskowitz}\\
-Premoze - Rendering Natural Waters \cite{Premoze:2000} \cite{article:Hasselman1973} \ref{sec:jonswap}\\
+On of the most known works in computer graphics related to wave spectra is
+\cite{course:simulatingocean}. Therein, \citeauthor{course:simulatingocean}
+describes how the ocean was brought to life for productions such as
+\emph{Waterworld} and \emph{Titanic}. In contrast to \citeauthor{Mastin:1987},
+\citeauthor{course:simulatingocean} does not use white noise, but Gaussian
+random numbers, because waves in deep sea areas are often observed to follow a
+Gaussian distribution. Moreover, \citeauthor{course:simulatingocean}
+makes use of the Phillips spectrum, a spectrum not found in oceanographic
+research, but devised specifically for computer graphics purposes.
+%\cite{article:Phillips1958,article:Phillips1985}
 Tessendorf - Simulating Ocean Water \cite{course:simulatingocean}
 
 \subsection{Hybrid Approaches}
@@ -428,7 +444,7 @@ Foam, Sprays
  {
   \includegraphics[scale=0.125]{figures/Simulating_Ocean_Water-013.png}
  }
- \caption{Tessendorf 1999}
+ \caption{Source: \cite{course:simulatingocean}}
 \end{figure}
 
 \begin{figure}
