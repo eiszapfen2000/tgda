@@ -391,7 +391,28 @@ An in-depth discussion of the Pierson-Moskowitz spectrum, the JONSWAP spectrum,
 as well as directional spreading functions is to be found in Section
 \ref{sec:1d_frequency_spectra}.
 
-On of the most known works in computer graphics related to wave spectra is
+%
+\begin{figure}
+ \centering
+ \subtop[]
+ {
+  \includegraphics[scale=0.125]{figures/Simulating_Ocean_Water-012.png}
+	\label{fig:tessendorf_choppy_waves:1}
+ }
+ \subtop[]
+ {
+  \includegraphics[scale=0.125]{figures/Simulating_Ocean_Water-013.png}
+	\label{fig:tessendorf_choppy_waves:2}
+ }
+ \caption{
+\subcaptionref{fig:tessendorf_choppy_waves:1} Ocean surface sythesized with the Phillips spectrum.
+\subcaptionref{fig:tessendorf_choppy_waves:2} The same surface with the choppy wave algorithm applied.
+Source: \cite{course:simulatingocean}
+}
+\label{fig:tessendorf_choppy_waves}
+\end{figure}
+%
+One of the most known works in computer graphics related to wave spectra is
 \cite{course:simulatingocean}. Therein, \citeauthor{course:simulatingocean}
 describes how the ocean was brought to life for productions such as
 \emph{Waterworld} and \emph{Titanic}. In contrast to \citeauthor{Mastin:1987},
@@ -406,15 +427,21 @@ gentle form of wave troughs and wave crests. Because the surface is computed as
 a linear superposition of sinusoids, it is only natural that the result shares
 the general form of its underlying building blocks. But a sea exposed to strong
 winds or even a storm is characterized by steep waves with sharp crests.
-\cite{course:simulatingocean} presents an algorithm which overcomes this
-specific issue by allowing the waves to take a form similar to Gerstner waves,
-with deep troughs and sharp crests, see Figure~\ref{fig:tessendorf_choppy_waves}.
+\cite{course:simulatingocean} presents the~\emph{choppy wave} algorithm which
+overcomes this specific issue by allowing the waves to take a form similar to
+Gerstner waves, with deep troughs and sharp crests, see Figure
+\ref{fig:tessendorf_choppy_waves}.
+Section \ref{sec:phillips_spectrum} gives a detailed discussion of the Phillips
+spectrum and its shortcomings compared to wave spectra from oceanographic
+research. Section \ref{sec:displacements} on the other hand describes the choppy
+wave algorithm.
 %Tessendorf - Simulating Ocean Water \cite{course:simulatingocean}
 
 \subsection{Hybrid Approaches}
 Hybrid\\
-Thon - Ocean waves synthesis using a spectrum based turbulence function \cite{thon:2000} \cite{Hughes:1984}\\
-Lee - Real-Time Simulation of Surface Gravity Ocean Waves Based on the TMA Spectrum\cite{lee:2007}
+Thon - Ocean waves synthesis using a spectrum based turbulence function \cite{Thon:2000}\\
+Thon - Ocean waves synthesis and animation using real world information \cite{Thon:2002}\\
+Lee - Real-Time Simulation of Surface Gravity Ocean Waves Based on the TMA Spectrum\cite{lee:2007} \cite{Hughes:1984}
 
 \section{Rendering}
 %
@@ -452,35 +479,23 @@ Foam, Sprays
 
 
 
-\begin{figure}
- \centering
- \subtop
- {
-  \includegraphics[scale=0.125]{figures/Simulating_Ocean_Water-012.png}
- }
- \subtop
- {
-  \includegraphics[scale=0.125]{figures/Simulating_Ocean_Water-013.png}
- }
- \caption{Source: \cite{course:simulatingocean}}
-\label{fig:tessendorf_choppy_waves}
-\end{figure}
 
-\begin{figure}
- \centering
- \subtop
- {
-  \includegraphics[scale=0.145]{figures/Simulating_Ocean_Water-008.png}
- }
- \hfill
- \subtop
- {
-  \includegraphics[scale=0.145]{figures/Simulating_Ocean_Water-009.png}
- }
- \hfill
- \subtop
- {
-  \includegraphics[scale=0.145]{figures/Simulating_Ocean_Water-010.png}
- }
- \caption{Tessendorf 1999}
-\end{figure}
+
+%\begin{figure}
+ %\centering
+ %\subtop
+ %{
+  %\includegraphics[scale=0.145]{figures/Simulating_Ocean_Water-008.png}
+ %}
+ %\hfill
+ %\subtop
+ %{
+  %\includegraphics[scale=0.145]{figures/Simulating_Ocean_Water-009.png}
+ %}
+ %\hfill
+ %\subtop
+ %{
+  %\includegraphics[scale=0.145]{figures/Simulating_Ocean_Water-010.png}
+ %}
+ %\caption{Tessendorf 1999}
+%\end{figure}
