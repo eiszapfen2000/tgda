@@ -207,7 +207,8 @@ See Figure~\ref{fig:trochoid:crests} for waves with different $kA$.
 \addplot[samples=300,domain=0:40] ({x+1.3*sin(deg(1*x-sqrt(9.81*1)*0))}, { 0-1.3*cos(deg(1*x-sqrt(9.81*1)*0))});
 \end{axis}
 \end{tikzpicture}
-\caption{Example waves with different $kA$. One can see that the wave crest gets more pronounced as $kA$ grows.}
+\caption{Example waves with different $kA$. One can see that the wave crest gets more pronounced as $kA$ grows,
+with the wave intersecting itself when $kA > 1$.}
 \label{fig:trochoid:crests}
 \end{figure}
 %
@@ -349,15 +350,17 @@ approaches, then one needs to generate different wave spectra and interpolate
 between them.
 
 Second, wave spectra are compact models which require only a small
-number of input parameters defining the desired sea state. Wave spectra assume
-the ocean surface to be dominated by the interplay of wind and gravity, hence
-wind speed is the parameter common to all models. Another well established
-parameter is~\emph{fetch}, which is the distance over which the wind blows
-before it reaches the ocean patch the wave spectrum simulates. Water depth,
-if supported by the wave spectrum model, is uniform, hence the sea bed is
-assumed planar and parallel to the ocean surface at rest. It follows that no
-wave transitions from one water depth to another, therefore no wave refraction
-may take place.
+number of input parameters defining the desired sea state. Since wave spectra
+are homogeneous models, all parameters are uniform for the entire ocean surface,
+there is no room for local variations as parametric models would allow. Wave
+spectra assume the ocean surface to be dominated by the interplay of wind and
+gravity, hence wind speed is the parameter common to all models. Another well
+established parameter is~\emph{fetch}, which is the distance over which the wind
+blows before it reaches the ocean patch the wave spectrum simulates. Water
+depth, if supported by the wave spectrum model, like all other parameters is
+uniform, hence the sea bed is assumed planar and parallel to the ocean surface
+at rest. It follows that no wave transitions from one water depth to another,
+therefore no wave refraction may take place.
 
 Third, the inverse Discrete Fourier Transform may leverage the
 Fast Fourier Transform algorithm, which makes the computation of
@@ -372,6 +375,42 @@ parametric models we are neither able to cherry-pick certain wave vectors,
 nor to omit a range of wave vectors, nor to to exert some form of local control
 where we modify the set of wave vectors based on location $\mvec{x}$.\\
 
+%
+\begin{figure}
+ \centering
+ \subtop[]
+ {
+  \includegraphics[scale=0.1125]{figures/Fourier_Synthesis_of_Ocean_Scenes_-_Mastin_1987-005_1.png}
+	\label{fig:mastin_waves:1}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[scale=0.1125]{figures/Fourier_Synthesis_of_Ocean_Scenes_-_Mastin_1987-005_2.png}
+	\label{fig:mastin_waves:2}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[scale=0.1125]{figures/Fourier_Synthesis_of_Ocean_Scenes_-_Mastin_1987-005_3.png}
+	\label{fig:mastin_waves:3}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[scale=0.1125]{figures/Fourier_Synthesis_of_Ocean_Scenes_-_Mastin_1987-007_1.png}
+	\label{fig:mastin_waves:4}
+ }
+ \caption{
+\subcaptionref{fig:mastin_waves:1} White noise.
+\subcaptionref{fig:mastin_waves:2} The Pierson-Moskowitz spectrum combined with the directional spreading function.
+\subcaptionref{fig:mastin_waves:3} The synthesized heightfield.
+\subcaptionref{fig:mastin_waves:4} Rendering of the sea surface.
+Source: \cite{Mastin:1987}
+}
+\label{fig:mastin_waves}
+\end{figure}
+%
 \cite{Mastin:1987} introduced wave spectra to computer graphics. Their approach
 is a simple one: generate white noise to represent random amplitudes and phases,
 then filter it with the Pierson-Moskowitz spectrum
