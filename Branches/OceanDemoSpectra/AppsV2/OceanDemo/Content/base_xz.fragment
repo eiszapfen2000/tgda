@@ -93,13 +93,12 @@ void main()
     //vec3 specular_term = vec3(0.0);
     vec3 L_zero = (diffuse_term + specular_term) * (c_light * n_dot_l);
 
-    
-    if (any(isnan(D_bm)))
+    if (isnan(D_bm))
     {
         L_zero = vec3(10.0, 0.0, 0.0);
     }
 
-    if (any(isinf(D_bm)))
+    if (isinf(D_bm))
     {
         L_zero = vec3(0.0, 10.0, 0.0);    
     }
