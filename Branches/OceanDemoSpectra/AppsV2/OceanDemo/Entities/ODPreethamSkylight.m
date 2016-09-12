@@ -76,7 +76,9 @@ static const double lambda_micrometer[NUMBER_OF_SPECTRAL_COMPONENTS] =
 
 static const double xyz_matching_functions[3][NUMBER_OF_SPECTRAL_COMPONENTS] =
 {
-{0.000159952,0.0023616,0.0191097,0.084736,0.204492,0.314679,0.383734,0.370702,0.302273,0.195618,0.080507,0.016172,0.003816,0.037465,0.117749,0.236491,0.376772,0.529826,0.705224,0.878655,1.01416,1.11852,1.12399,1.03048,0.856297,0.647467,0.431567,0.268329,0.152568,0.0812606,0.0408508,0.0199413,0.00957688,0.00455263,0.00217496,0.00104476,0.000508258,0.000250969,0.00012639,6.45258E-05,3.34117E-05},																   {1.7364e-05,0.0002534,0.0020044,0.008756,0.021391,0.038676,0.062077,0.089456,0.128201,0.18519,0.253589,0.339133,0.460777,0.606741,0.761757,0.875211,0.961988,0.991761,0.99734,0.955552,0.868934,0.777405,0.658341,0.527963,0.398057,0.283493,0.179828,0.107633,0.060281,0.0318004,0.0159051,0.0077488,0.00371774,0.00176847,0.00084619,0.00040741,0.00019873,9.8428e-05,4.9737e-05,2.5486e-05,1.3249e-05},																		   {0.000704776,0.0104822,0.0860109,0.389366,0.972542,1.55348,1.96728,1.9948,1.74537,1.31756,0.772125,0.415254,0.218502,0.112044,0.060709,0.030451,0.013676,0.003988,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+{0.000159952,0.0023616,0.0191097,0.084736,0.204492,0.314679,0.383734,0.370702,0.302273,0.195618,0.080507,0.016172,0.003816,0.037465,0.117749,0.236491,0.376772,0.529826,0.705224,0.878655,1.01416,1.11852,1.12399,1.03048,0.856297,0.647467,0.431567,0.268329,0.152568,0.0812606,0.0408508,0.0199413,0.00957688,0.00455263,0.00217496,0.00104476,0.000508258,0.000250969,0.00012639,6.45258E-05,3.34117E-05},
+{1.7364e-05,0.0002534,0.0020044,0.008756,0.021391,0.038676,0.062077,0.089456,0.128201,0.18519,0.253589,0.339133,0.460777,0.606741,0.761757,0.875211,0.961988,0.991761,0.99734,0.955552,0.868934,0.777405,0.658341,0.527963,0.398057,0.283493,0.179828,0.107633,0.060281,0.0318004,0.0159051,0.0077488,0.00371774,0.00176847,0.00084619,0.00040741,0.00019873,9.8428e-05,4.9737e-05,2.5486e-05,1.3249e-05},
+{0.000704776,0.0104822,0.0860109,0.389366,0.972542,1.55348,1.96728,1.9948,1.74537,1.31756,0.772125,0.415254,0.218502,0.112044,0.060709,0.030451,0.013676,0.003988,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 };
 
 static Vector3 preetham_zenith_color(double turbidity, double thetaSun)
@@ -131,16 +133,14 @@ static double digamma(double theta, double gamma, double ABCDE[5])
     return term_one * term_two;
 }
 
-static Vector3 sun_color(double turbidity, double thetaSun)
+static Vector3 compute_sun_color(double turbidity, double thetaSun)
 {
     // transmittance computation
     // A Practical Analytic Model for Daylight                              
     // page 21 
 
-    const double thetaSunDegrees = MAX(1.0, MIN(MATH_RAD_TO_DEG * thetaSun, 90.0));
-    const double m = 1.0 / (thetaSunDegrees + 0.15 * pow(93.885 - thetaSunDegrees, -1.253));
-
-    // NSLog(@"%f %f", thetaSunDegrees, m);
+    const double thetaSunDegrees = MATH_RAD_TO_DEG * thetaSun;
+    double m = 1.0 / (cos(thetaSun) + 0.15 * pow(93.885 - thetaSunDegrees, -1.253));
 
     const double beta = 0.04608 * turbidity - 0.04586;
     const double l = 0.35;
@@ -158,13 +158,13 @@ static Vector3 sun_color(double turbidity, double thetaSun)
         double exponent = 0.0;
 
 		//Rayleigh
-		exponent += -0.008735 * pow(lambda, -4.08 * m);
+		exponent += (-0.008735 * pow(lambda, -4.08 * m));
 
 		//Angstrom
-		exponent += -beta * powf (lambda, - alpha * m);
+		exponent += (-beta * pow(lambda, - alpha * m));
 
 		//ozone
-		exponent += -sun_spectral_k_o[i] * l * m;
+		exponent += (-sun_spectral_k_o[i] * l * m);
 
 		//mixed gases absorption
 		const double k_g = sun_spectral_k_g[i];
@@ -186,7 +186,7 @@ static Vector3 sun_color(double turbidity, double thetaSun)
 
     Vector3 XYZ = v3_zero();
 	
-	double delta = 10000.0 * 0.01;	
+	double delta = 10000.0 * 0.001 * 10.0;
 
 	for ( int32_t i = 0; i < NUMBER_OF_SPECTRAL_COMPONENTS; i++ )
     {
@@ -386,30 +386,6 @@ static Vector3 sun_color(double turbidity, double thetaSun)
     return sunColor;
 }
 
-static Vector3 xyY_to_XYZ(Vector3 xyY)
-{
-    assert(xyY.z > 0.0);
-
-    Vector3 XYZ;
-    XYZ.x = (xyY.x / xyY.y) * xyY.z;        
-    XYZ.y = xyY.z;
-    XYZ.z = ((1.0 - xyY.x - xyY.y) / xyY.y) * xyY.z;
-
-    return XYZ;
-}
-
-static Vector3 XYZ_to_xyY(Vector3 XYZ)
-{
-    assert(!(XYZ.x == 0.0 && XYZ.y == 0.0 && XYZ.z ));
-
-    Vector3 xyY;
-    xyY.x = XYZ.x / (XYZ.x + XYZ.y + XYZ.z);
-    xyY.y = XYZ.y / (XYZ.x + XYZ.y + XYZ.z);
-    xyY.z = XYZ.y;
-
-    return xyY;
-}
-
 - (void) update:(double)frameTime
 {
     [ self processInput:frameTime ];
@@ -452,7 +428,7 @@ static Vector3 XYZ_to_xyY(Vector3 XYZ)
 
         Vector3 zenithColor = preetham_zenith_color(turbidity, thetaSun);
 
-        Vector3 sunXYZ = sun_color(turbidity, thetaSun);
+        Vector3 sunXYZ = compute_sun_color(turbidity, thetaSun);
         sunColor = m3_mv_multiply(&lsRGB, &sunXYZ);
 
         Vector3 denominator;
@@ -509,10 +485,11 @@ static Vector3 XYZ_to_xyY(Vector3 XYZ)
 
                 double n_dot_v = v3_vv_dot_product(NP_WORLD_Z_AXIS, &v);
 
-                Vector3 XYZ = xyY_to_XYZ(xyY);
-                irradianceXYZ.x += XYZ.x * phiStep * thetaStep * n_dot_v;
-                irradianceXYZ.y += XYZ.y * phiStep * thetaStep * n_dot_v;
-                irradianceXYZ.z += XYZ.z * phiStep * thetaStep * n_dot_v;
+	            Vector3 XYZ;
+                xyY_to_XYZ(&xyY, &XYZ);
+	            irradianceXYZ.x += XYZ.x * phiStep * thetaStep * n_dot_v;
+	            irradianceXYZ.y += XYZ.y * phiStep * thetaStep * n_dot_v;
+	            irradianceXYZ.z += XYZ.z * phiStep * thetaStep * n_dot_v;
             }
         }
 
