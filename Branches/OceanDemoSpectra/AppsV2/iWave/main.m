@@ -15,6 +15,7 @@
 #import "Graphics/Buffer/NPCPUBuffer.h"
 #import "Graphics/Geometry/NPCPUVertexArray.h"
 #import "Graphics/Geometry/NPVertexArray.h"
+#import "Graphics/Geometry/NPFullscreenQuad.h"
 #import "Graphics/Model/NPSUX2Model.h"
 #import "Graphics/Texture/NPTexture2D.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
@@ -199,8 +200,8 @@ int main (int argc, char **argv)
     glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
     glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
     // glew needs compatibility profile
-    glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_FALSE);
+    glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
     
     // Open a window and create its OpenGL context
     if( !glfwOpenWindow( 800, 600, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
@@ -350,6 +351,8 @@ int main (int argc, char **argv)
 
     NPRenderTargetConfiguration * rtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC" ];
     NPRenderTargetConfiguration * rtcCopy = [[ NPRenderTargetConfiguration alloc ] initWithName:@"RTC Copy" ];
+
+    NPFullscreenQuad * fquad = [[ NPFullscreenQuad alloc ] init ];
 
     BOOL allok
         = [ kernelBuffer
@@ -670,6 +673,7 @@ int main (int argc, char **argv)
             [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
 
             [[ effect techniqueWithName:@"source_and_obstruction" ] activate ];
+            /*
             glBegin(GL_QUADS);
                 glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
                 glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
@@ -680,6 +684,8 @@ int main (int argc, char **argv)
                 glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
                 glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
             glEnd();
+            */
+            [ fquad render ];
 
             [ tempTarget detach:NO ];
 
@@ -696,6 +702,7 @@ int main (int argc, char **argv)
 
                 [[ effect techniqueWithName:@"convolution"] activate ];
 
+                /*
                 glBegin(GL_QUADS);
                     glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
                     glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
@@ -706,6 +713,9 @@ int main (int argc, char **argv)
                     glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
                     glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
                 glEnd();
+                */
+
+                [ fquad render ];
 
                 [ depthDerivativeTarget detach:NO ];
 
@@ -725,6 +735,7 @@ int main (int argc, char **argv)
 
             [[ effect techniqueWithName:@"convolution_shallow"] activate ];
 
+            /*
             glBegin(GL_QUADS);
                 glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
                 glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
@@ -735,6 +746,9 @@ int main (int argc, char **argv)
                 glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
                 glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
             glEnd();
+            */
+
+            [ fquad render ];
 
             [ derivativeTarget detach:NO ];
 
@@ -758,6 +772,7 @@ int main (int argc, char **argv)
             
             [[ effect techniqueWithName:@"propagation"] activate ];
 
+            /*
             glBegin(GL_QUADS);
                 glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
                 glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
@@ -768,6 +783,9 @@ int main (int argc, char **argv)
                 glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
                 glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
             glEnd();
+            */
+
+            [ fquad render ];
 
             [ heightsTarget detach:NO ];
            
@@ -800,6 +818,7 @@ int main (int argc, char **argv)
 
             [[[ NP Graphics ] textureBindingState ] clear ];
 
+            /*
             glBindFramebufferEXT(GL_READ_FRAMEBUFFER, [rtc glID]);
             glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, [rtc glID]);
 
@@ -819,6 +838,29 @@ int main (int argc, char **argv)
 
             glReadBuffer(GL_BACK);
             glDrawBuffer(GL_BACK);
+            */
+
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, [rtc glID]);
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, [rtc glID]);
+
+            glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, [[ tempTarget        texture ] glID], 0);
+            glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, [[ prevHeightsTarget texture ] glID], 0);
+
+            glReadBuffer(GL_COLOR_ATTACHMENT0);
+            glDrawBuffer(GL_COLOR_ATTACHMENT1);
+
+            glBlitFramebuffer(0, 0, gridWidth, gridHeight, 0, 0, gridWidth, gridHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+            glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+            glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, 0, 0);
+
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+            glReadBuffer(GL_BACK);
+            glDrawBuffer(GL_BACK);
+
+            deltaTime = 0.0;
         }
 
         const int32_t size = gridWidth * gridHeight;
@@ -849,6 +891,7 @@ int main (int argc, char **argv)
         [[[ NPEngineGraphics instance ] textureBindingState ] activate ];
         [[ effect techniqueWithName:@"fluid"] activate ];
 
+        /*
         glBegin(GL_QUADS);
             glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 0.0f);
             glVertex4f(-1.0f, -1.0f, 0.0f, 1.0f);
@@ -859,6 +902,8 @@ int main (int argc, char **argv)
             glVertexAttrib2f(NpVertexStreamTexCoords0, 0.0f, 1.0f);
             glVertex4f(-1.0f,  1.0f, 0.0f, 1.0f);
         glEnd();
+        */
+        [ fquad render ];
 
 
         /*
@@ -937,6 +982,8 @@ int main (int argc, char **argv)
     DESTROY(depthTexture);
     DESTROY(kernelTexture);
     DESTROY(kernelBuffer);
+
+    DESTROY(fquad);
 
     FREE(source);
     FREE(obstruction);
