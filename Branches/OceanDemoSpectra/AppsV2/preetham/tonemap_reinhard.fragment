@@ -4,8 +4,13 @@ in vec2 out_texcoords;
 
 void main()
 {
+    /*
     float averageLogLuminance
          = texelFetch(logLuminance, ivec2(0, 0), averageLuminanceLevel).r;
+    */
+
+    float averageLogLuminance
+         = textureLod(logLuminance, vec2(0.5, 0.5), averageLuminanceLevel).r;
 
     float averageLuminance = exp(averageLogLuminance);
 
