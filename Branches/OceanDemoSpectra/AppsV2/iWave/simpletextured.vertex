@@ -5,5 +5,5 @@ out vec2 out_texcoords;
 void main()
 {
     out_texcoords = in_texcoords;
-	gl_Position = np_modelviewprojectionmatrix * in_position;
+	gl_Position = np_modelviewprojectionmatrix * vec4(in_position, 0.0, 1.0);
 }

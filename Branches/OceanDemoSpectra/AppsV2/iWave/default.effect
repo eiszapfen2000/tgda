@@ -13,7 +13,7 @@ technique "texture"
     };
 
     # vertex streams
-    in vec4 in_position : 0;
+    in vec2 in_position : 0;
     in vec2 in_texcoords : 3;
 
     # fragment streams
@@ -51,14 +51,14 @@ technique "source_and_obstruction"
     };
 
     # vertex streams
-    in vec4 in_position : 0;
+    in vec2 in_position : 0;
     in vec2 in_texcoords : 3;
 
     # fragment streams
     out vec4 target : 0;
 
     # shaders
-    set vertex shader "source_and_obstruction.vertex"
+    set vertex shader "simpletextured.vertex"
     set fragment shader "source_and_obstruction.fragment"
 }
 
@@ -76,12 +76,12 @@ technique "convolution"
     uniform samplerBuffer kernel;
     uniform int kernelRadius;
     # vertex streams
-    in vec4 in_position : 0;
+    in vec2 in_position : 0;
     in vec2 in_texcoords : 3;
     # fragment streams
     out vec4 target : 0;
     # shaders
-    set vertex shader "convolution.vertex"
+    set vertex shader "simpletextured.vertex"
     set fragment shader "convolution.fragment"
 }
 
@@ -106,12 +106,12 @@ technique "convolution_shallow"
     };
     uniform int kernelRadius;
     # vertex streams
-    in vec4 in_position : 0;
+    in vec2 in_position : 0;
     in vec2 in_texcoords : 3;
     # fragment streams
     out vec4 target : 0;
     # shaders
-    set vertex shader "convolution.vertex"
+    set vertex shader "simpletextured.vertex"
     set fragment shader "convolution_shallow.fragment"
 }
 
@@ -142,12 +142,12 @@ technique "propagation"
     };
     uniform vec2 parameters;
     # vertex streams
-    in vec4 in_position  : 0;
+    in vec2 in_position  : 0;
     in vec2 in_texcoords : 3;
     # fragment streams
     out vec4 target : 0;
     # shaders
-    set vertex shader "propagation.vertex"
+    set vertex shader "simpletextured.vertex"
     set fragment shader "propagation.fragment"
 }
 
@@ -186,12 +186,12 @@ technique "fluid"
 
 
     # vertex streams
-    in vec4 in_position : 0;
+    in vec2 in_position : 0;
     in vec2 in_texcoords : 3;
     # fragment streams
     out vec4 target : 0;
     # shaders
-    set vertex shader "fluid.vertex"
+    set vertex shader "simpletextured.vertex"
     set fragment shader "fluid.fragment"
 }
 
