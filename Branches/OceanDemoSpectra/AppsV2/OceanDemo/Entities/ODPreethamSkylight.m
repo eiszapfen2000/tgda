@@ -231,12 +231,12 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
 
     thetaSun = MIN(MAX(0.0, thetaSun), MATH_PI_DIV_2);
 
-    if ( phiSun > MATH_2_MUL_PI )
+    while ( phiSun > MATH_2_MUL_PI )
     {
         phiSun -= MATH_2_MUL_PI;
     }
 
-    if ( phiSun < 0.0f )
+    while ( phiSun < 0.0f )
     {
         phiSun += MATH_2_MUL_PI;
     }
@@ -395,17 +395,6 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
          || lastSunDiskA != sunDiskA || lastSunDiskB != sunDiskB
          || lastSunDiskC != sunDiskC )
     {
-        Matrix3 lsRGB;
-        M_EL(lsRGB, 0, 0) =  3.1338561;
-        M_EL(lsRGB, 0, 1) = -0.9787684;
-        M_EL(lsRGB, 0, 2) =  0.0719453;
-        M_EL(lsRGB, 1, 0) = -1.6168667;
-        M_EL(lsRGB, 1, 1) =  1.9161415;
-        M_EL(lsRGB, 1, 2) = -0.2289914;
-        M_EL(lsRGB, 2, 0) = -0.4906146;
-        M_EL(lsRGB, 2, 1) =  0.0334540;
-        M_EL(lsRGB, 2, 2) =  1.4052427;
-
 	    double ABCDE_x[5], ABCDE_y[5], ABCDE_Y[5];
 
 	    ABCDE_x[0] = -0.01925 * turbidity - 0.25922;
@@ -429,7 +418,7 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
         Vector3 zenithColor = preetham_zenith_color(turbidity, thetaSun);
 
         Vector3 sunXYZ = compute_sun_color(turbidity, thetaSun);
-        sunColor = m3_mv_multiply(&lsRGB, &sunXYZ);
+        sunColor = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D50, &sunXYZ);
 
         Vector3 denominator;
         denominator.x = digamma(0.0, thetaSun, ABCDE_x);
@@ -493,7 +482,7 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
             }
         }
 
-        irradianceRGB = m3_mv_multiply(&lsRGB, &irradianceXYZ);
+        irradianceRGB = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D50, &irradianceXYZ);
 
         /*
         Vector3 nominatorSun;
