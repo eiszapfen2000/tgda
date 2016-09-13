@@ -138,7 +138,7 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
 {
     // transmittance computation
     // A Practical Analytic Model for Daylight                              
-    // page 21 
+    // page 21
 
     const double thetaSunDegrees = MATH_RAD_TO_DEG * thetaSun;
     double m = 1.0 / (cos(thetaSun) + 0.15 * pow(93.885 - thetaSunDegrees, -1.253));
@@ -545,7 +545,7 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
         [ sunHalfApparentAngle_P setValue:sunHalfApparentAngle ];
         [ sunDisk_abc_P setValue:abc ];
         [ directionToSun_P setValue:localDirectionToSun ];
-        [ sunColor_P setValue:sunColor ];
+        [ sunColor_P setValue:sunXYZ ];
         [ zenithColor_P setValue:zenithColor ];
         [ denominator_P setValue:denominator ];
 
