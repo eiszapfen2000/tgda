@@ -369,8 +369,8 @@
             Position = ("20", "95" );
             Size = ( "50", "1" );
             TextSize = "16";
-            MinimumValue = "-1.0";
-            MaximumValue = "2.0";
+            MinimumValue = "0.0";
+            MaximumValue = "1.0";
             LineSize = ("85", "3");
             HeadSize = ("3", "21");
             TargetObject = "Scene";
@@ -486,7 +486,7 @@
         PSliderWhiteLuminance =
         {
             Type = "ODSliderItem";
-            Label = "Key";
+            Label = "Reference White";
             Alignment = "BottomLeft";
             Position = ("20", "200" );
             Size = ( "50", "1" );
