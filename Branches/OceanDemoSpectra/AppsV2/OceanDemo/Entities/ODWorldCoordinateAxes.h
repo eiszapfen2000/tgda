@@ -12,7 +12,9 @@
 - (void) dealloc;
 
 - (float) axisLength;
+- (float) colorMultiplier;
 - (void) setAxisLength:(float)newAxisLength;
+- (void) setColorMultiplier:(float)newColorMultiplier;
 
 - (void) update:(double)frameTime;
 - (void) render;

@@ -28,9 +28,19 @@
     return axisLength;
 }
 
+- (float) colorMultiplier
+{
+    return colorMultiplier;
+}
+
 - (void) setAxisLength:(float)newAxisLength
 {
     axisLength = newAxisLength;
+}
+
+- (void) setColorMultiplier:(float)newColorMultiplier
+{
+    colorMultiplier = newColorMultiplier;
 }
 
 - (void) update:(double)frameTime
