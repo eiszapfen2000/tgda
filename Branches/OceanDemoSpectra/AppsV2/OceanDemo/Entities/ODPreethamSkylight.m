@@ -485,25 +485,6 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
         irradianceRGB = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D50, &irradianceXYZ);
 
         /*
-        Vector3 nominatorSun;
-        nominatorSun.x = digamma(thetaSun, 0.0, ABCDE_x);
-        nominatorSun.y = digamma(thetaSun, 0.0, ABCDE_y);
-        nominatorSun.z = digamma(thetaSun, 0.0, ABCDE_Y);
-
-        Vector3 xyY;
-        xyY.x = zenithColor.x * (nominatorSun.x / denominator.x);
-        xyY.y = zenithColor.y * (nominatorSun.y / denominator.y);
-        xyY.z = zenithColor.z * (nominatorSun.z / denominator.z);
-
-        Vector3 XYZ;
-        XYZ.x = (xyY.x / xyY.y) * xyY.z;        
-        XYZ.y = xyY.z;
-        XYZ.z = ((1.0 - xyY.x - xyY.y) / xyY.y) * xyY.z;
-
-        Vector3 sColor = m3_mv_multiply(&lsRGB, &XYZ);
-        */
-
-        /*
         http://en.wikipedia.org/wiki/Solid_angle#Sun_and_Moon
 
         avg sun diameter 9.35×10−3 radians
