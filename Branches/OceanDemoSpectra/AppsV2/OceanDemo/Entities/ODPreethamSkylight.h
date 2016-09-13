@@ -56,10 +56,8 @@
     NPEffectVariableFloat3 * directionToSun_P;
     NPEffectVariableFloat3 * sunColor_P;
     NPEffectVariableFloat3 * denominator_P;
-    NPEffectVariableFloat  * radiusInPixel_P;
     NPEffectVariableFloat  * sunHalfApparentAngle_P;
     NPEffectVariableFloat3 * sunDisk_abc_P;
-    NPEffectVariableFloat3 * irradiance_P;
 }
 
 - (id) init;

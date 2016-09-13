@@ -329,7 +329,6 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
     preetham = [ effect techniqueWithName:@"preetham" ];
     ASSERT_RETAIN(preetham);
 
-    radiusInPixel_P        = [ effect variableWithName:@"radiusInPixel" ];
     sunHalfApparentAngle_P = [ effect variableWithName:@"sunHalfApparentAngle" ];
     sunDisk_abc_P          = [ effect variableWithName:@"sunDiskABC" ];
 
@@ -337,7 +336,6 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
     sunColor_P       = [ effect variableWithName:@"sunColor"       ];
     zenithColor_P    = [ effect variableWithName:@"zenithColor"    ];
     denominator_P    = [ effect variableWithName:@"denominator"    ];
-    irradiance_P     = [ effect variableWithName:@"irradiance"     ];
 
     A_xyY_P = [ effect variableWithName:@"A" ];
     B_xyY_P = [ effect variableWithName:@"B" ];
@@ -345,8 +343,8 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
     D_xyY_P = [ effect variableWithName:@"D" ];
     E_xyY_P = [ effect variableWithName:@"E" ];
 
-    NSAssert(radiusInPixel_P != nil && sunHalfApparentAngle_P != nil && sunDisk_abc_P != nil
-             && directionToSun_P != nil && sunColor_P != nil && irradiance_P != nil
+    NSAssert(sunHalfApparentAngle_P != nil && sunDisk_abc_P != nil
+             && directionToSun_P != nil && sunColor_P != nil
              && zenithColor_P != nil && denominator_P != nil && A_xyY_P != nil
              && B_xyY_P != nil && C_xyY_P != nil && D_xyY_P != nil && E_xyY_P != nil, @"");
 
@@ -544,14 +542,12 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
         //NSLog(@"%f %f %f", zenithColor.x, zenithColor.y, zenithColor.z);
         //NSLog(@"%f %f %f", sunColor.x, sunColor.y, sunColor.z);
 
-        [ radiusInPixel_P setFValue:halfSkyResolution ];
         [ sunHalfApparentAngle_P setValue:sunHalfApparentAngle ];
         [ sunDisk_abc_P setValue:abc ];
         [ directionToSun_P setValue:localDirectionToSun ];
         [ sunColor_P setValue:sunColor ];
         [ zenithColor_P setValue:zenithColor ];
         [ denominator_P setValue:denominator ];
-        [ irradiance_P setValue:irradianceXYZ ];
 
         [ A_xyY_P setValue:A ];
         [ B_xyY_P setValue:B ];
