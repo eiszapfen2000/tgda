@@ -603,18 +603,27 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
         [ rtc activateDrawBuffers ];
         [ rtc activateViewport ];
 
-        [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+        //[[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
+        const float avgFresnel = 0.17;
+        Vector3 averageReflectance_XYZ = v3_sv_scaled(avgFresnel / MATH_PI, &irradianceXYZ);
+        Vector3 averageReflectance_LinearsRGB = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D50, &averageReflectance_XYZ);
+
+        const FVector4 clearColor 
+            = {
+                .x = averageReflectance_LinearsRGB.x,
+                .y = averageReflectance_LinearsRGB.y,
+                .z = averageReflectance_LinearsRGB.z,
+                .w = 0.0f
+              };
+
+        [[ NP Graphics ] clearDrawBuffer:0 color:clearColor ];
 
         [ preetham activate ];
 
         glBegin(GL_QUADS);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, cStart, cStart);
             glVertexAttrib2f(NpVertexStreamPositions, -1.0f, -1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, cEnd, cStart);
             glVertexAttrib2f(NpVertexStreamPositions,  1.0f, -1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, cEnd,  cEnd);
             glVertexAttrib2f(NpVertexStreamPositions,  1.0f,  1.0f);
-            glVertexAttrib2f(NpVertexStreamTexCoords0, cStart,  cEnd);
             glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
         glEnd();
 
