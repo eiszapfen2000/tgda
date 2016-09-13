@@ -605,15 +605,6 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
 
         [ preetham activate ];
 
-        /*
-        glBegin(GL_QUADS);
-            glVertexAttrib2f(NpVertexStreamPositions, -1.0f, -1.0f);
-            glVertexAttrib2f(NpVertexStreamPositions,  1.0f, -1.0f);
-            glVertexAttrib2f(NpVertexStreamPositions,  1.0f,  1.0f);
-            glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
-        glEnd();
-        */
-
         [ fullscreenQuad render ];
 
         [ skylightTarget detach:NO ];
