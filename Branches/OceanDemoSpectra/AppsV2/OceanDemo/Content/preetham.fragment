@@ -50,7 +50,7 @@ void main()
     XYZ.y = xyY.z;
     XYZ.z = ((1.0f - xyY.x - xyY.y) / xyY.y) * xyY.z;
 
-    /*
+
     float f = gamma - sunHalfApparentAngle;
 
     float a = sunDiskABC.x;
@@ -60,13 +60,15 @@ void main()
     float falloff = (1.0 / exp(a * f)) + b * (1.0 / exp(c * f));
     falloff = clamp(falloff, 0.0, 1.0);
 
-    XYZ += falloff * sunColor;
 
     if ( cosGamma >= cos(sunHalfApparentAngle) )
     {
         XYZ += sunColor;
     }
-    */
+	else
+	{
+	    XYZ += falloff * sunColor;
+	}
 
     target = vec4(XYZ2LinearsRGB * XYZ, 1.0);
 }
