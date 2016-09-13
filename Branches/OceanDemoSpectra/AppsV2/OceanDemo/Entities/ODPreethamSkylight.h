@@ -5,6 +5,7 @@
 @class NPEffectTechnique;
 @class NPEffectVariableFloat;
 @class NPEffectVariableFloat3;
+@class NPFullscreenQuad;
 @class NPRenderTargetConfiguration;
 @class NPTexture2D;
 @class NPRenderTexture;
@@ -39,6 +40,7 @@
     NPRenderTargetConfiguration * rtc;
     NPRenderTexture * skylightTarget;
     NPRenderTexture * sunlightTarget;
+    NPFullscreenQuad * fullscreenQuad;
 
     int32_t lastSkylightResolution;
     int32_t skylightResolution;

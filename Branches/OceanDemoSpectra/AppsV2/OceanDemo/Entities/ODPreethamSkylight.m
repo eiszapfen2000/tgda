@@ -8,6 +8,7 @@
 #import "Graphics/Effect/NPEffect.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffectVariableFloat.h"
+#import "Graphics/Geometry/NPFullscreenQuad.h"
 #import "Graphics/Texture/NPTexture2D.h"
 #import "Graphics/Texture/NPTextureBindingState.h"
 #import "Graphics/RenderTarget/NPRenderTargetConfiguration.h"
@@ -318,6 +319,8 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
     skylightTarget = [[ NPRenderTexture alloc ] initWithName:@"Skylight Target" ];
     sunlightTarget = [[ NPRenderTexture alloc ] initWithName:@"Sunlight Target" ];
 
+    fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
+
     lastSkylightResolution = INT_MAX;
     skylightResolution = 1024;
 
@@ -352,6 +355,7 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
 
 - (void) dealloc
 {
+    DESTROY(fullscreenQuad);
     DESTROY(sunlightTarget);
     DESTROY(skylightTarget);
     DESTROY(rtc);
@@ -601,15 +605,18 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
 
         [ preetham activate ];
 
+        /*
         glBegin(GL_QUADS);
             glVertexAttrib2f(NpVertexStreamPositions, -1.0f, -1.0f);
             glVertexAttrib2f(NpVertexStreamPositions,  1.0f, -1.0f);
             glVertexAttrib2f(NpVertexStreamPositions,  1.0f,  1.0f);
             glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
         glEnd();
+        */
+
+        [ fullscreenQuad render ];
 
         [ skylightTarget detach:NO ];
-
         [ rtc deactivate ];
 
         [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ skylightTarget texture ]];
