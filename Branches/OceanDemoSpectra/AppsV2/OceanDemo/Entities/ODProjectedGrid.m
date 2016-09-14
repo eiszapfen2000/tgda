@@ -53,39 +53,6 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
     return result;
 }
 
-static FVector3 computeBasePlanePositionF(const FMatrix4 * const inverseViewProjection,
-                                          FPlane basePlane,
-                                          FVector2 postProjectionVertex)
-{
-    const FVector4 nearPlaneVertex
-        = {postProjectionVertex.x, postProjectionVertex.y, -1.0, 1.0};
-
-    const FVector4 farPlaneVertex
-        = {postProjectionVertex.x, postProjectionVertex.y, 1.0, 1.0};
-
-    const FVector4 resultN = fm4_mv_multiply(inverseViewProjection, &nearPlaneVertex);
-    const FVector4 resultF = fm4_mv_multiply(inverseViewProjection, &farPlaneVertex);
-
-    FRay ray;
-    ray.point.x = resultN.x / resultN.w;
-    ray.point.y = resultN.y / resultN.w;
-    ray.point.z = resultN.z / resultN.w;
-
-    ray.direction.x = (resultF.x / resultF.w) - ray.point.x;
-    ray.direction.y = (resultF.y / resultF.w) - ray.point.y;
-    ray.direction.z = (resultF.z / resultF.w) - ray.point.z;
-
-    FVector3 intersection;
-    int32_t r = fplane_pr_intersect_with_ray_v(&basePlane, &ray, &intersection);
-
-    FVector3 result;
-    result.x = intersection.x;
-    result.y = intersection.y;
-    result.z = intersection.z;
-
-    return result;
-}
-
 @interface ODProjectedGrid (Private)
 
 - (void) computeBasePlaneCornerVertices;
