@@ -21,7 +21,6 @@
 @class NPEffectVariableMatrix4x4;
 @class NPFullscreenQuad;
 @class ODBasePlane;
-@class ODIWave;
 @class ODWorldCoordinateAxes;
 
 @interface ODScene : NPObject < NPPPersistentObject >
@@ -32,7 +31,6 @@
     // enitities
     ODCamera * camera;
     ODFrustum * cameraFrustum;
-    ODIWave * iwave;
     ODOceanEntity * ocean;
     ODProjectedGrid * projectedGrid;
     ODPreethamSkylight * skylight;
