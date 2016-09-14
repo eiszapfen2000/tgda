@@ -20,6 +20,7 @@
 #import "ODProjector.h"
 #import "ODProjectedGrid.h"
 
+/*
 static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjection,
                                          Plane basePlane,
                                          Vector2 postProjectionVertex)
@@ -52,16 +53,17 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
 
     return result;
 }
+*/
 
 @interface ODProjectedGrid (Private)
 
-- (void) computeBasePlaneCornerVertices;
 - (void) updateResolution;
 
 @end
 
 @implementation ODProjectedGrid (Private)
 
+/*
 - (void) computeBasePlaneCornerVertices
 {
     const Vector2 upperLeft  = {-1.0,  1.0};
@@ -76,6 +78,7 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
     cornerVertices[2] = computeBasePlanePosition(invViewProjection, basePlane, upperRight);
     cornerVertices[3] = computeBasePlanePosition(invViewProjection, basePlane, upperLeft);  
 }
+*/
 
 - (void) updateResolution
 {
@@ -230,16 +233,6 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
     // y = 0 plane
     plane_pssss_init_with_components(&basePlane, 0.0, 1.0, 0.0, 0.0);
 
-    // resolution independent
-    cornerVertices = ALLOC_ARRAY(FVertex3, 4);
-    cornerIndices  = ALLOC_ARRAY(uint16_t, 6);
-    cornerIndices[0] = 0;
-    cornerIndices[1] = 1;
-    cornerIndices[2] = 2;
-    cornerIndices[3] = 2;
-    cornerIndices[4] = 3;
-    cornerIndices[5] = 0;
-
     nearPlanePostProjectionPositions = NULL;
     gridIndices = NULL;
 
@@ -248,46 +241,9 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
     gridVertexStream = [[ NPBufferObject alloc ] initWithName:@"gridVertexStream" ];
     gridIndexStream  = [[ NPBufferObject alloc ] initWithName:@"gridIndexStream"  ];
 
-    cornerVertexArray  = [[ NPCPUVertexArray alloc ] init ];
-    cornerVertexStream = [[ NPCPUBuffer alloc ] initWithName:@"cornerVertexStream" ];
-    cornerIndexStream  = [[ NPCPUBuffer alloc ] initWithName:@"cornerIndexStream" ];
-
     transformedVertexStream = [[ NPBufferObject alloc ] initWithName:@"transformedVertexStream" ];
     transformedNonDisplacedVertexStream
         = [[ NPBufferObject alloc ] initWithName:@"transformedNonDisplacedVertexStream" ];
-
-    NSData * cornerVertexData
-        = [ NSData dataWithBytesNoCopyNoFree:cornerVertices
-                                      length:sizeof(FVertex3) * 4 ];
-
-    NSData * cornerIndexData
-        = [ NSData dataWithBytesNoCopyNoFree:cornerIndices
-                                      length:sizeof(uint16_t) * 6 ];
-
-    BOOL result
-        = [ cornerVertexStream generate:NpCPUBufferTypeGeometry
-                             dataFormat:NpBufferDataFormatFloat32
-                             components:3
-                                   data:cornerVertexData
-                                  error:NULL ];
-
-    result
-        = result && [ cornerIndexStream generate:NpCPUBufferTypeIndices
-                                      dataFormat:NpBufferDataFormatUInt16
-                                      components:1
-                                            data:cornerIndexData
-                                           error:NULL ];
-
-    result
-        = result && [ cornerVertexArray setVertexStream:cornerVertexStream 
-                                             atLocation:NpVertexStreamPositions
-                                                  error:NULL ];
-
-    result
-        = result && [ cornerVertexArray setIndexStream:cornerIndexStream 
-                                                 error:NULL ];
-
-    NSAssert(result, @"");
 
     glGenQueries(1, &query);
 
@@ -301,9 +257,6 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
     SAFE_DESTROY(gridVertexArray);
     DESTROY(gridVertexStream);
     DESTROY(gridIndexStream);
-    DESTROY(cornerVertexArray);
-    DESTROY(cornerIndexStream);
-    DESTROY(cornerVertexStream);
     DESTROY(transformTarget);
     DESTROY(transformedVertexStream);
     DESTROY(transformedNonDisplacedVertexStream);
@@ -311,9 +264,7 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
     SAFE_DESTROY(projector);
 
     SAFE_FREE(nearPlanePostProjectionPositions);
-    FREE(cornerVertices);
     SAFE_FREE(gridIndices);
-    FREE(cornerIndices);
 
     [ super dealloc ];
 }
@@ -349,8 +300,6 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
 
         resolutionLastFrame = resolution;
     }
-
-    [ self computeBasePlaneCornerVertices ];
 }
 
 - (void) renderTFTransform
