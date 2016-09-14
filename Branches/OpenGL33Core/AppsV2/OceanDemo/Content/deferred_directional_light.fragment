@@ -1,0 +1,15 @@
+#version 150
+
+in vec2 out_texcoords;
+
+void main()
+{
+    vec4 position = textureLod(positions, out_texcoords.xy, 0);
+    vec4 normal   = textureLod(normals,   out_texcoords.xy, 0);
+
+    float diffuse = dot(lightDirection, normal.xyz);
+
+    //target = vec4(normal.xyz, 1.0);
+    target = vec4(diffuse * vec3(1.0), 1.0);
+}
+

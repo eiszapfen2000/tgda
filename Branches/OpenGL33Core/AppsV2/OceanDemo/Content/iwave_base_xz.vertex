@@ -1,0 +1,7 @@
+#version 150
+
+void main()
+{
+    vec3 pos = vec3(in_position.x, in_height, in_position.y);
+	gl_Position = np_modelviewprojectionmatrix * vec4(pos, 1.0);
+}

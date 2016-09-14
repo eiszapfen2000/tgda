@@ -1,0 +1,8 @@
+{
+    Type = "ODPreethamSkylight";
+    Name = "Preetham Skylight";
+    Model = "sky.model";
+    States = "preetham.stateset";
+    Position = ( "0.0", "0.0", "0.0" );
+}
+ 

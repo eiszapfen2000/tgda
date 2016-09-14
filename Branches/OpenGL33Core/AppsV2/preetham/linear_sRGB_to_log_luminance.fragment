@@ -1,0 +1,10 @@
+#version 150
+
+in vec2 out_texcoords;
+
+void main()
+{
+    vec4 c = texture(linearsRGB, out_texcoords);
+    vec3 XYZ = linearsRGBToXYZ * c.rgb;
+    target = max(log(XYZ.y), 0.0);
+}

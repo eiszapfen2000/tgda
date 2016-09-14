@@ -1,0 +1,272 @@
+#version 150
+
+in vec3 out_ws_position;
+in vec2 out_ws_non_disp_position;
+
+#define MATH_PI      3.141592653
+#define MATH_SQRT_PI 1.772453851
+
+float blinn_phong_distribution(vec3 n, vec3 h, float alpha_p)
+{
+    float specular_normalization = (alpha_p + 2.0) / (2.0 * MATH_PI);
+    float n_dot_h = clamp(dot(n, h), 0.0, 1.0);
+    float power = pow(n_dot_h, alpha_p);
+
+    return specular_normalization * power;
+}
+
+float beckmann_distribution(vec3 n, vec3 h, float m)
+{
+    float n_dot_h = clamp(dot(n, h), 0.001, 1.0);
+    float n_dot_h_square = n_dot_h * n_dot_h;
+
+    float exponent = (n_dot_h_square - 1.0) / (m * m * n_dot_h_square);
+    float power = exp(exponent);
+
+    return power / (MATH_PI * m * m * n_dot_h_square * n_dot_h_square);
+}
+
+float geometry_implicit(vec3 n, vec3 h, vec3 v, vec3 l)
+{
+    float n_dot_l = clamp(dot(n, l), 0.0, 1.0);
+    float n_dot_v = clamp(dot(n, v), 0.0, 1.0);
+
+    return n_dot_l * n_dot_v;
+}
+
+float geometry_cook_torrance(vec3 n, vec3 h, vec3 v, vec3 l)
+{
+    float n_dot_h = clamp(dot(n, h), 0.001, 1.0);
+    float n_dot_v = clamp(dot(n, v), 0.001, 1.0);
+    float n_dot_l = clamp(dot(n, l), 0.001, 1.0);
+    float v_dot_h = clamp(dot(v, h), 0.001, 1.0);
+
+    float g1 = (2.0 * n_dot_h * n_dot_v) / v_dot_h;
+    float g2 = (2.0 * n_dot_h * n_dot_l) / v_dot_h;
+
+    return min(1.0, min(g1, g2));
+}
+
+float sigma_square(vec3 v_ross, vec3 tx_ross, vec2 sigmaXYSqr)
+{
+    vec3 v_ross_planar = normalize(vec3(v_ross.x, 0.0, v_ross.z));
+
+    float v_ross_cos_phi = dot(v_ross_planar, tx_ross);
+    float v_ross_cos_phi_square = v_ross_cos_phi * v_ross_cos_phi;
+
+    return (sigmaXYSqr.x * v_ross_cos_phi_square) + sigmaXYSqr.y * (1.0 - v_ross_cos_phi_square);
+}
+
+float nu(vec3 v_ross, vec3 tx_ross, vec3 n_ross, vec2 sigmaXYSqr)
+{
+    float v_sigma_square = sigma_square(v_ross, tx_ross, sigmaXYSqr);
+
+    float v_ross_cos_theta = dot(v_ross, n_ross);
+    float v_ross_cos_theta_square = v_ross_cos_theta * v_ross_cos_theta;
+    float v_ross_cot_theta = sqrt(v_ross_cos_theta_square / (1.0 - v_ross_cos_theta_square));
+
+    return v_ross_cot_theta / sqrt( 2.0 * v_sigma_square);
+}
+
+// http://en.wikipedia.org/wiki/Error_function#Approximation_with_elementary_functions
+
+float erf(float x)
+{
+    const float a = 0.140012;
+    float x_sqr = x * x;
+    float a_x_sqr = a * x_sqr;
+
+    float n = (4.0 / MATH_PI) + a_x_sqr;
+    float d = 1.0 + a_x_sqr;
+    float exponent = -x_sqr * (n / d);
+
+    return clamp(sign(x) * sqrt(1.0 - exp(exponent)), -1.0, 1.0);
+}
+
+float erfc(float x)
+{
+    return clamp(1.0 - erf(x), 0.0, 2.0);
+}
+
+float Lambda(float nu)
+{
+    return max(0.0, (exp(-(nu * nu)) - nu * MATH_SQRT_PI * erfc(nu)) / (2.0 * nu * MATH_SQRT_PI));
+}
+
+float p(vec2 sigmaXYSqr, vec2 zeta)
+{
+    float x = (zeta.x * zeta.x) / sigmaXYSqr.x;
+    float y = (zeta.y * zeta.y) / sigmaXYSqr.y;
+    float exponent = -0.5 * (x + y);
+    float probability = exp(exponent) / (2.0 * MATH_PI * sqrt(sigmaXYSqr.x * sigmaXYSqr.y));
+
+    return clamp(probability, 0.0, 1.0);
+}
+
+float H(float x)
+{
+    return x < 0.0 ? 0.0 : 1.0;
+}
+
+float meanFresnel(float cosThetaV, float sigmaV)
+{
+    return pow(1.0 - cosThetaV, 5.0 * exp(-2.69 * sigmaV)) / (1.0 + 22.7 * pow(sigmaV, 1.5));
+}
+
+// V, N in world space
+float meanFresnel(vec3 V, vec3 N, vec2 sigmaSq)
+{
+    // view direction in wind space
+    vec2 v = V.xz;
+    // cos^2 and sin^2 of view direction
+    vec2 t = v * v / (1.0 - V.y * V.y);
+    // slope variance in view direction
+    float sigmaV2 = dot(t, sigmaSq);
+
+    return meanFresnel(dot(V, N), sqrt(sigmaV2));
+}
+
+// V in world space
+vec2 U(vec2 zeta, vec3 v, mat3 TBN)
+{
+    vec3 f = normalize(vec3(-zeta.y, 1.0, -zeta.x)); // tangent space
+    vec3 f_ws = TBN * f; // world space
+    vec3 r = 2.0 * dot(f_ws, v) * f_ws - v;
+    vec2 r_projected = vec2(r.x, -r.z) / clamp(1.0 + r.y, 1.0, 2.0);
+
+    return r_projected;
+}
+
+// V, N, Tx, Ty in world space;
+vec3 meanSkyRadiance(vec3 v, mat3 TBN, vec2 sigmaSq)
+{
+    const float eps = 0.001;
+    vec2 u0 = U(vec2(0.0), v, TBN);
+    vec2 dux = 2.0 * (U(vec2(eps, 0.0), v, TBN) - u0) / eps * sqrt(sigmaSq.x);
+    vec2 duy = 2.0 * (U(vec2(0.0, eps), v, TBN) - u0) / eps * sqrt(sigmaSq.y);
+
+    return textureGrad(skylight, u0 * 0.5 + 0.5, dux * 0.5, duy * 0.5).rgb;
+    //return textureGrad(skylight, u0 * (0.5 / 1.1) + 0.5, dux * (0.5 / 1.1), duy * (0.5 / 1.1)).rgb;
+    //return textureLod(skylight, u0 * 0.5 + 0.5, 0.0).rgb;
+    //result = texture2DGrad(skySampler, u0 * (0.5 / 1.1) + 0.5, dux * (0.5 / 1.1), duy * (0.5 / 1.1));
+}
+
+float whitecapCoverage(float epsilon, float mu, float sigmaSqr)
+{
+    return 0.5 + 0.5 * erf(sqrt(2.0 / (4*sigmaSqr)) * (epsilon - mu));
+}
+
+void main()
+{
+    int numberOfLods = textureSize(sizes);
+
+    float Jxx = dFdx(out_ws_non_disp_position.x);
+    float Jxy = dFdy(out_ws_non_disp_position.x);
+    float Jyx = dFdx(out_ws_non_disp_position.y);
+    float Jyy = dFdy(out_ws_non_disp_position.y);
+    float A = Jxx * Jxx + Jyx * Jyx;
+    float B = Jxx * Jxy + Jyx * Jyy;
+    float C = Jxy * Jxy + Jyy * Jyy;
+    float ua = pow(A, 0.25);
+    float ub = 0.5 + 0.5 * B / sqrt(A * C);
+    float uc = pow(C, 0.25);
+
+    vec2 sigmaSq = texture(variance, vec3(ua, ub, uc)).xy;
+    sigmaSq = max(sigmaSq, 2e-5);
+
+    vec2 grad = vec2(0.0);
+
+    for ( int l = 0; l < numberOfLods; l++ )
+    {
+        vec2 lodSize = texelFetch(sizes, l).xy;
+        vec2 scaledLodSize = areaScale * lodSize;
+        vec2 texcoord = out_ws_non_disp_position / scaledLodSize;
+
+        grad += texture(gradient, vec3(texcoord, l)).xy * heightScale;
+    }
+
+    vec3 normal = vec3(-grad.x, 1.0, -grad.y);
+
+    vec3 lightDir = directionToSun;
+    vec3 viewDir  = cameraPosition - out_ws_position;
+
+    vec3 l = normalize(lightDir);
+    vec3 v = normalize(viewDir);
+
+    if (dot(viewDir, normal) < 0.0)
+    {
+        normal = reflect(normal, v);
+    }
+
+    vec3 n = normalize(normal);
+    vec3 h = normalize(v + l);
+    vec3 r = 2.0 * dot(l, n) * n - l;
+
+    vec3 c_light = sunColor;
+    vec3 c_spec  = vec3(0.02);
+
+    vec3 tx = normalize(vec3(1.0, -normal.x, 0.0));
+    vec3 ty = normalize(vec3(0.0, -normal.z, 1.0));
+
+    // target space
+    // tx = +z
+    // ty = +x
+    // n  = +y
+    mat3 ross = mat3(ty, n, tx);
+
+    vec2 zeta;
+    zeta.x = dot(h, tx) / dot(h, n);
+    zeta.y = dot(h, ty) / dot(h, n);
+
+    float probability = p(sigmaSq, zeta);
+
+    float l_nu = nu(l, tx, n, sigmaSq);
+    float v_nu = nu(v, tx, n, sigmaSq);
+
+    float l_lambda = Lambda(l_nu);
+    float v_lambda = Lambda(v_nu);
+    float l_v_smith = 1.0 + l_lambda + v_lambda;
+
+    float H_ross = H(dot(l, h));
+    float v_dot_f = max(0.0, dot(v, h));
+
+    vec3 f_schlick = c_spec + ((vec3(1.0) - c_spec) * pow(1.0 - clamp(dot(v, h), 0.0, 1.0), 5.0));
+    float denominator = 4.0 * (h.y * h.y * h.y * h.y) * max(0.01, dot(n, v)) * l_v_smith;
+    vec3 rossContribution = c_light * probability * (f_schlick / denominator);
+
+    float f_mean = 0.02 + 0.98 * meanFresnel(v, n, sigmaSq);
+    vec3 meanSky = meanSkyRadiance(v, ross, sigmaSq);
+    vec3 skyContribution = f_mean * meanSky;
+
+    vec3 seaColor = texture(watercolor, waterColorCoordinate).rgb;
+    vec3 seaColorIntensity = texture(watercolorIntensity, waterColorIntensityCoordinate).rgb;
+    seaColor *= seaColorIntensity;
+
+    vec3 Lsea = seaColor.rgb * (skyIrradiance / MATH_PI);
+    vec3 seaContribution = (1.0 - f_mean) * Lsea;
+
+    float jsquaresum = 0.0;
+    vec2 jmeansum = vec2(0.0);
+    for ( int l = 0; l < numberOfLods; l++ )
+    {
+        int layer = l / 2;
+        vec2 lodSize = texelFetch(sizes, l).xy;
+        vec2 scaledLodSize = areaScale * lodSize;
+        vec2 texcoord = out_ws_non_disp_position / scaledLodSize;
+        vec4 j = texture(whitecaps, vec3(texcoord, layer));
+        vec2 jmean = ((l % 2) == 0) ? j.xy : j.zw;
+        jmeansum += jmean;
+        jsquaresum += (jmean.x * jmean.x);
+    }
+
+    float jSigmaSqr = max(jmeansum.y - (jsquaresum), 0.0);
+    float W = whitecapCoverage(jacobianEpsilon, jmeansum.x, jSigmaSqr);
+    // compute and add whitecap radiance
+    vec3 Lfoam = (c_light * (max(dot(n, l), 0.0)) + meanSky) / MATH_PI;
+    vec3 foamContribution = vec3(W * Lfoam * 0.4);
+
+    vec3 L_zero = rossContribution + skyContribution + seaContribution + foamContribution;
+
+    target = vec4(L_zero, 1.0);
+}
+

@@ -1,0 +1,212 @@
+effect "Deferred Effect":
+
+technique "base_xz"
+{
+    # effect variables
+    uniform mat4 np_modelmatrix;
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform vec2 scale;
+    uniform sampler2D supplemental
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
+    uniform vec3 cameraPosition;
+    # vertex streams
+    in vec2 in_position : 0;
+    in float in_height : 1;
+    in vec4 in_supplemental : 2;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "base_xz.vertex"
+    set fragment shader "base_xz.fragment"
+}
+
+technique "color"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform vec4 color;
+    # vertex streams
+    in vec3 in_position : 0;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "color.vertex"
+    set fragment shader "color.fragment"
+}
+
+technique "proj_grid_corners"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform mat4 invMVP;
+    # vertex streams
+    in vec2 in_position : 0;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "proj_grid_corners.vertex"
+    set fragment shader "proj_grid_corners.fragment"
+}
+
+technique "geometry"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform mat4 np_modelviewmatrix;
+    uniform mat4 np_modelmatrix;
+    # vertex streams
+    in vec3 in_position : 0;
+    in vec3 in_normal : 1;
+    # fragment streams
+    out vec4 positions_target : 0;
+    out vec4 normals_target : 1;
+    # shaders
+    set vertex shader "deferred_geometry.vertex"
+    set fragment shader "deferred_geometry.fragment"
+}
+
+technique "texture"
+{
+    # effect variables
+    uniform sampler2D colormap;
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "fullscreen_quad.vertex"
+    set fragment shader "fullscreen_quad.fragment"
+}
+
+technique "linear_sRGB_to_log_luminance"
+{
+    # effect variables
+    uniform sampler2D linearsRGB
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+
+    # fragment streams
+    out float target : 0;
+
+    # shaders
+    set vertex shader "fullscreen_quad.vertex"
+    set fragment shader "linear_sRGB_to_log_luminance.fragment"
+}
+
+technique "tonemap_reinhard"
+{
+    # effect variables
+    uniform sampler2D linearsRGB
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform sampler2D logLuminance
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform float key;
+    uniform int   averageLuminanceLevel;
+    uniform float adaptedAverageLuminance;
+    uniform float whiteLuminance;
+
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+
+    # fragment streams
+    out vec4 target : 0;
+
+    # shaders
+    set vertex shader "fullscreen_quad.vertex"
+    set fragment shader "tonemap_reinhard.fragment"
+}
+
+technique "directional_light"
+{
+    # effect variables
+    uniform vec3 lightDirection;
+    uniform sampler2D positions;
+    uniform sampler2D normals;
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "deferred_directional_light.vertex"
+    set fragment shader "deferred_directional_light.fragment"
+}
+
+technique "variance"
+{
+    # effect variables
+    uniform float layer;
+    uniform float varianceTextureResolution;
+    uniform float deltaVariance;
+    uniform sampler2DArray baseSpectrum;
+    uniform samplerBuffer sizes;
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec2 varianceTarget : 0;
+    # shaders
+    set vertex shader "variance.vertex"
+    set fragment shader "variance.fragment"
+}
+
+technique "v3c3"
+{
+    # effect variables
+    uniform mat4 np_viewprojectionmatrix;
+    # vertex streams
+    in vec3 in_position : 0;
+    in vec3 in_color : 2;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "v3c3.vertex"
+    set fragment shader "v3c3.fragment"
+}
+
+technique "skylight"
+{
+    # effect variables
+    uniform sampler2D skylightTexture
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
+    uniform vec3 cameraPosition;
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec3 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "skylight.vertex"
+    set fragment shader "skylight.fragment"
+}
+

@@ -1,0 +1,13 @@
+#version 150
+
+in vec2 out_texcoords;
+
+void main()
+{
+    float s = texture(source,      out_texcoords).r;
+    float o = texture(obstruction, out_texcoords).r;
+    float h = texture(height,      out_texcoords).r;
+
+    float result = (h + s) * o;
+    target = vec4(result);
+}
