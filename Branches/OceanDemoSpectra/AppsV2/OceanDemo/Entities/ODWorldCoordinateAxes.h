@@ -1,10 +1,15 @@
 #import "Core/Math/NpMath.h"
 #import "Core/NPObject/NPObject.h"
+#import "GL/glew.h"
 
 @interface ODWorldCoordinateAxes : NPObject
 {
     float axisLength;
     float colorMultiplier;
+
+    GLuint vertexArrayID;
+    GLuint vertexStreamID;
+    GLuint colorStreamID;
 }
 
 - (id) init;
