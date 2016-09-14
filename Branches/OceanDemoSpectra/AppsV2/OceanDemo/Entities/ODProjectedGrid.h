@@ -21,21 +21,14 @@
     Plane basePlane;
     // vertices on the near plane in post projection space
     FVertex2 * nearPlanePostProjectionPositions;
-    // near plane corner vertices projected onto basePlane
-    FVertex3 * cornerVertices;
     // mesh indices for rendering
     uint16_t * gridIndices;
-    uint16_t * cornerIndices;
     // the projector we are connected to
     ODProjector * projector;
     // buffers and vertex array for grid based rendering
     NPBufferObject * gridVertexStream;
     NPBufferObject * gridIndexStream;
     NPVertexArray  * gridVertexArray;
-    // buffer and vertex array for GPU interpolation based rendering
-    NPCPUBuffer * cornerVertexStream;
-    NPCPUBuffer * cornerIndexStream;
-    NPCPUVertexArray * cornerVertexArray;
     // query
     GLuint query;
     // transform target buffer
