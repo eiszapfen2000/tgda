@@ -251,7 +251,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     testCameraFrustum = [[ ODFrustum alloc ] initWithName:@"TCFrustum" ];
     testProjectorFrustum = [[ ODFrustum alloc ] initWithName:@"TPFrustum" ];
 
-    iwave = [[ ODIWave alloc ] init ];
     ocean = [[ ODOceanEntity alloc ] initWithName:@"Ocean" ];
     skylight = [[ ODPreethamSkylight alloc ] init ];
     projectedGrid = [[ ODProjectedGrid alloc ] initWithName:@"ProjGrid" ];
@@ -407,10 +406,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     DESTROY(testProjectorFrustum);
     DESTROY(cameraFrustum);
 
-    [ iwave stop ];
     [ ocean stop ];
 
-    DESTROY(iwave);
     SAFE_DESTROY(ocean);
     SAFE_DESTROY(projectedGrid);
     SAFE_DESTROY(skylight);
@@ -497,7 +494,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [ projectedGrid setProjector:[ ocean projector ]];
 
-    [ iwave start ];
     [ ocean start ];
 
     const NSUInteger numberOfEntityFiles = [ entityFiles count ];
