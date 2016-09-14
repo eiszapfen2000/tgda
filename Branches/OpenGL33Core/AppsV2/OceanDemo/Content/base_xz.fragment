@@ -1,0 +1,111 @@
+#version 150
+
+in vec3 out_ws_pos;
+in vec3 out_normal;
+
+#define MATH_PI 3.14159
+
+
+float blinn_phong_distribution(vec3 n, vec3 h, float alpha_p)
+{
+    float specular_normalization = (alpha_p + 2.0) / (2.0 * MATH_PI);
+    float n_dot_h = clamp(dot(n, h), 0.0, 1.0);
+    float power = pow(n_dot_h, alpha_p);
+
+    return specular_normalization * power;
+}
+
+float beckmann_distribution(vec3 n, vec3 h, float m)
+{
+    float n_dot_h = clamp(dot(n, h), 0.001, 1.0);
+    float n_dot_h_square = n_dot_h * n_dot_h;
+
+    float exponent = (n_dot_h_square - 1.0) / (m * m * n_dot_h_square);
+    float power = exp(exponent);
+
+    return power / (MATH_PI * m * m * n_dot_h_square * n_dot_h_square);
+}
+
+float geometry_implicit(vec3 n, vec3 h, vec3 v, vec3 l)
+{
+    float n_dot_l = clamp(dot(n, l), 0.0, 1.0);
+    float n_dot_v = clamp(dot(n, v), 0.0, 1.0);
+
+    return n_dot_l * n_dot_v;
+}
+
+float geometry_cook_torrance(vec3 n, vec3 h, vec3 v, vec3 l)
+{
+    float n_dot_h = clamp(dot(n, h), 0.001, 1.0);
+    float n_dot_v = clamp(dot(n, v), 0.001, 1.0);
+    float n_dot_l = clamp(dot(n, l), 0.001, 1.0);
+    float v_dot_h = clamp(dot(v, h), 0.001, 1.0);
+
+    float g1 = (2.0 * n_dot_h * n_dot_v) / v_dot_h;
+    float g2 = (2.0 * n_dot_h * n_dot_l) / v_dot_h;
+
+    return min(1.0, min(g1, g2));
+}
+
+//float geometry_smith_schlick
+
+void main()
+{
+    vec3 lightDir = vec3(-1.0, 1.0, 0.0);
+    vec3 viewDir  = cameraPosition - out_ws_pos;
+    vec3 l        = normalize(lightDir);
+    vec3 v        = normalize(viewDir);
+    vec3 n        = normalize(out_normal);
+    vec3 h        = normalize(v + l);
+    vec3 r        = 2.0 * dot(l, n) * n - l;
+
+    vec3 c_light = vec3(1.0, 1.0, 1.0);
+    vec3 c_diff  = vec3(0.1, 0.5, 0.9);
+    vec3 c_spec  = vec3(0.2);
+
+    float alpha_p = 12.0;
+    float m_alpha_p = sqrt(2.0 / (alpha_p + 2.0));
+    float specular_normalization = (alpha_p + 2.0) / (2.0 * MATH_PI);
+    float brdf_factor = MATH_PI / 4.0;
+
+    float r_dot_l = clamp(dot(r, l), 0.0, 1.0);
+    float n_dot_l = clamp(dot(n, l), 0.0, 1.0);
+    float n_dot_h = clamp(dot(n, h), 0.0, 1.0);
+    float n_dot_v = clamp(dot(n, v), 0.0, 1.0);
+    float l_dot_h = clamp(dot(l, h), 0.0, 1.0);
+
+    float foreshortening = n_dot_l * n_dot_v;
+
+    vec3 f_schlick = c_spec + ((vec3(1.0) - c_spec) * pow(1.0 - l_dot_h, 5.0));
+
+    float D_bp = blinn_phong_distribution(n, h, alpha_p);
+    float D_bm = beckmann_distribution(n, h, m_alpha_p);
+
+    float G_i  = geometry_implicit(n, h, v, l);
+    float G_ct = geometry_cook_torrance(n, h, v, l);
+
+    vec3 diffuse_term = c_diff;
+    //vec3 specular_term = f_schlick * D_bp * (G_i / foreshortening) * brdf_factor;
+    //vec3 specular_term = f_schlick * D_bp * brdf_factor;
+    vec3 specular_term = f_schlick * D_bm * (max(0.001, G_ct) / max(0.001, foreshortening)) * brdf_factor;
+
+    diffuse_term = vec3(0.0);
+    //vec3 specular_term = vec3(0.0);
+    vec3 L_zero = (diffuse_term + specular_term) * (c_light * n_dot_l);
+
+    if (isnan(D_bm))
+    {
+        L_zero = vec3(10.0, 0.0, 0.0);
+    }
+
+    if (isinf(D_bm))
+    {
+        L_zero = vec3(0.0, 10.0, 0.0);    
+    }
+    
+
+    // from linear to gamma corrected
+    vec3 diffuse = pow(L_zero, vec3(1.0 / 2.2));
+    target = vec4(diffuse, 1.0);
+}
+

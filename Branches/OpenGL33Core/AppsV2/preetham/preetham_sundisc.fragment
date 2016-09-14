@@ -1,0 +1,71 @@
+#version 150
+
+in vec2 out_texcoords;
+
+
+#define MATH_PI         3.1415926536
+#define MATH_PI_DIV_2   1.5707963268
+
+void main()
+{
+    //float radius = length(out_texcoords);
+    vec2 u = out_texcoords;
+    float lMinusOne = dot(u, u);
+
+    vec3 XYZ = vec3(0.0);
+
+    if (lMinusOne > 1.0)
+    {
+        discard;
+    }
+    
+    //  http://en.wikipedia.org/wiki/Stereographic_projection
+    float X = u.x;
+    float Y = u.y;
+    float l = 1.0 + X*X + Y*Y;
+
+    //  stereographic projection using southpole
+    float x = 2*X / l;
+    float y = 2*Y / l;
+    float z = (1.0 - X*X -Y*Y) / l;
+
+    // http://de.wikipedia.org/wiki/Kugelkoordinaten
+    // float phiAngle = atan(y, x);
+    float thetaAngle = MATH_PI_DIV_2 - atan(z / length(vec2(x, y)));
+
+    // convert to OpenGL coord system
+    vec3 v = vec3(x, y, z);
+    v = normalize(v);
+
+    float cosGamma = clamp(dot(v, directionToSun), -1.0, 1.0);
+    float gamma = acos(cosGamma);
+
+    vec3 numerator = (1.0f + A * exp( B / cos(thetaAngle) )) * (1.0f + C * exp( D * gamma ) + (E * cosGamma * cosGamma));
+    vec3 xyY = zenithColor * (numerator / denominator);
+
+    XYZ.x = (xyY.x / xyY.y) * xyY.z;
+    XYZ.y = xyY.z;
+    XYZ.z = ((1.0f - xyY.x - xyY.y) / xyY.y) * xyY.z;
+
+	#ifdef SUNDISK
+    float f = gamma - sunHalfApparentAngle;
+
+    float a = 500.0;
+    float b = 1.0;
+    float c = 750.0;
+
+    float falloff = (1.0 / exp(a * f)) + b * (1.0 / exp(c * f));
+    falloff = clamp(falloff, 0.0, 1.0);
+
+    if ( cosGamma >= cos(sunHalfApparentAngle) )
+    {
+        XYZ += sunColor;
+    }
+    else
+    {
+    	XYZ += falloff * sunColor;
+    }
+	#endif
+
+    target = vec4(XYZToLinearsRGB * XYZ, 1.0);
+}

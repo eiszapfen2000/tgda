@@ -1,0 +1,20 @@
+#version 150
+
+out vec3 out_ws_pos;
+out vec3 out_normal;
+
+void main()
+{
+    vec3 pos = vec3(in_position.x * scale.x, in_height, in_position.y * scale.y);
+    //vec3 pos = vec3(in_position.x * scale.x, 0.0, in_position.y * scale.y);
+    pos.xz -= in_supplemental.zw;
+    out_ws_pos = vec3(np_modelmatrix * vec4(pos, 1.0));
+
+    vec3 normal = normalize(vec3(-in_supplemental.x, 1.0, -in_supplemental.y));
+    //vec3 normal = vec3(0.0, 1.0, 0.0);
+    mat3 normalMatrix = transpose(inverse(mat3(np_modelmatrix)));
+    out_normal = normalize(normalMatrix * normal);
+    //out_normal = normal;
+
+	gl_Position = np_modelviewprojectionmatrix * vec4(pos, 1.0);
+}

@@ -1,0 +1,198 @@
+effect "default":
+
+technique "texture"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform sampler2D colormap
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+
+    # fragment streams
+    out vec4 target : 0;
+
+    # shaders
+    set vertex shader "simpletextured.vertex"
+    set fragment shader "simpletextured.fragment"
+}
+
+technique "source_and_obstruction"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform sampler2D source
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform sampler2D obstruction
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform sampler2D height
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+
+    # fragment streams
+    out vec4 target : 0;
+
+    # shaders
+    set vertex shader "simpletextured.vertex"
+    set fragment shader "source_and_obstruction.fragment"
+}
+
+technique "convolution"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform sampler2D source
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform samplerBuffer kernel;
+    uniform int kernelRadius;
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "simpletextured.vertex"
+    set fragment shader "convolution.fragment"
+}
+
+technique "convolution_shallow"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform sampler2D source
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform samplerBuffer kernel;
+    uniform sampler2D depthDerivative
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform int kernelRadius;
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "simpletextured.vertex"
+    set fragment shader "convolution_shallow.fragment"
+}
+
+technique "propagation"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform sampler2D temp
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform sampler2D prevHeight
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform sampler2D derivative
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform vec2 parameters;
+    # vertex streams
+    in vec2 in_position  : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "simpletextured.vertex"
+    set fragment shader "propagation.fragment"
+}
+
+technique "fluid"
+{
+    # effect variables
+    uniform mat4 np_modelviewprojectionmatrix;
+    uniform sampler2D heightmap
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
+    uniform sampler2D sourcemap
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
+    uniform sampler2D obstructionmap
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
+    uniform sampler2D depthmap
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
+
+
+    # vertex streams
+    in vec2 in_position : 0;
+    in vec2 in_texcoords : 3;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "simpletextured.vertex"
+    set fragment shader "fluid.fragment"
+}
+
+

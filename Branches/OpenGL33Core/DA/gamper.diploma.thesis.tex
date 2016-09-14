@@ -1,0 +1,50 @@
+\documentclass[a4paper,12pt,openany,nocenter,noupper,sfbold,twoside]{thesis}
+\include{user.defined}
+
+\title{Ocean Surface Generation and Rendering}
+\author{Thomas Gamper}
+\institution{Institute of Computer Graphics\\
+            University of Technology\\
+            Vienna~/~Austria}
+\translator{supervised by\\
+						Univ.Prof. Dipl.-Ing. Dr.techn. Werner Purgathofer, \\
+						Univ.Ass. Dipl.-Ing. Andrea Weidlich}
+
+ %%% Begin the paper
+\begin{document}
+\selectlanguage{english}
+
+\include{abstract}
+
+\tableofcontents
+
+\include{01Introduction/Introduction} %% dontee
+\include{02STAR/StateoftheArt}
+\include{03Theory/Theory}
+\include{04Implementation/Implementation}
+\include{05Summary/Summary}
+\appendix
+\include{06AppendixA/AppendixA}
+%\include{08appendixA/appendix_a}
+%\include{09appendixB/appendix_b}
+
+\backmatter
+
+\addcontentsline{toc}{chapter}{List of Figures}
+\listoffigures 
+
+\addcontentsline{toc}{chapter}{List of Tables}
+\listoftables
+
+\addcontentsline{toc}{chapter}{List of Listings}
+\lstlistoflistings
+
+\addcontentsline{toc}{chapter}{Bibliography}
+ %%% The bibliography
+\bibliographystyle{plain}
+\bibliographystyle{alpha}
+\bibliography{cg}
+
+\include{credits}
+
+\end{document}

@@ -1,0 +1,12 @@
+#version 150
+#extension GL_ARB_explicit_attrib_location : enable
+
+in vec2 texcoordsOut;
+layout(location = 0) out vec4 color;
+
+void main()
+{
+//    gl_FragColor = texture2D(colormap, gl_TexCoord[0].st);
+    color = texture2D(colormap, texcoordsOut);
+}
+

@@ -1,0 +1,39 @@
+#version 150
+
+in vec2 out_texcoords;
+
+void main()
+{
+    /*
+    float averageLogLuminance
+         = texelFetch(logLuminance, ivec2(0, 0), averageLuminanceLevel).r;
+    */
+
+    float averageLogLuminance
+         = textureLod(logLuminance, vec2(0.5, 0.5), averageLuminanceLevel).r;
+
+    float averageLuminance = exp(averageLogLuminance);
+
+    vec4 c = texture(linearsRGB, out_texcoords);
+    vec3 XYZ = linearsRGBToXYZ * c.rgb;
+
+    vec3 xyY;
+    xyY.z = XYZ.y;                           // copy luminance Y
+    xyY.x = XYZ.x / (XYZ.x + XYZ.y + XYZ.z); // x = X / (X + Y + Z)
+    xyY.y = XYZ.y / (XYZ.x + XYZ.y + XYZ.z); // y = Y / (X + Y + Z)
+
+    float invWhiteLuminance = 1.0 / (whiteLuminance * whiteLuminance);
+    float L = (key / averageLuminance) * xyY.z;
+    float L_d = (L * ((L * invWhiteLuminance) + 1.0)) / (L + 1.0);
+
+    xyY.z = L_d;
+
+    // xyY -> XYZ conversion
+    XYZ.r = xyY.z * xyY.x / xyY.y;                  // X = Y * x / y
+    XYZ.g = xyY.z;                                  // copy luminance Y
+    XYZ.b = xyY.z * (1.0f - xyY.x - xyY.y) / xyY.y; // Z = Y * (1-x-y) / y
+
+    vec3 lsRGB = XYZToLinearsRGB * XYZ;
+
+    target = vec4(pow(lsRGB, vec3(1/2.2)), 1.0);
+}
