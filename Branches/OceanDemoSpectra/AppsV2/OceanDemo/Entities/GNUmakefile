@@ -12,8 +12,6 @@ ODEntity.h \
 ODCamera.h \
 ODProjector.h \
 ODFrustum.h \
-ODOceanBaseMesh.h \
-ODOceanBaseMeshes.h \
 ODOceanEntity.h \
 ODProjectedGrid.h \
 ODPerlinNoise.h \
@@ -28,8 +26,6 @@ ODEntity.m \
 ODCamera.m \
 ODProjector.m \
 ODFrustum.m \
-ODOceanBaseMesh.m \
-ODOceanBaseMeshes.m \
 ODOceanEntity.m \
 ODProjectedGrid.m \
 ODPerlinNoise.m \
