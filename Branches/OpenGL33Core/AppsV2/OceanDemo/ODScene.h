@@ -37,10 +37,6 @@
     ODWorldCoordinateAxes * axes;
     NSMutableArray * entities;
 
-    ODCamera * testCamera;
-    ODFrustum * testCameraFrustum;
-    ODFrustum * testProjectorFrustum;
-
     // camera animation
     FQuaternion startOrientation;
     FQuaternion endOrientation;
