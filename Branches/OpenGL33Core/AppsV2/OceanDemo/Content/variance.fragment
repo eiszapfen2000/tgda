@@ -37,7 +37,8 @@ void main()
 
                 // switch i and j due to to different memory layout
                 // of fftw and opengl
-                float s = texelFetch(baseSpectrum, ivec3(j, i, l), 0).r;
+                // float s = texelFetch(baseSpectrum, ivec3(j, i, l), 0).r;
+                float s = texture(baseSpectrum, vec3((d + 0.5) / resF, l)).r;
 
                 float w = 1.0f - exp(A * k.x * k.x + B * k.x * k.y + C * k.y * k.y);
                 variance += (k * k) * (w * w) * (dk * dk) * s;
