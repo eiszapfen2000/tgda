@@ -38,16 +38,20 @@ void main()
                 float di = i;
                 float dj = j;
                 
-                float kx = (n + dj) * dk.x;
-                float ky = (m - di) * dk.y;
+                // float kx = (n + dj) * dk.x;
+                // float ky = (m - di) * dk.y;
+                vec2 k = vec2(n + dj, m - di) * dk;
 
                 // switch i and j due to to different memory layout
                 // of fftw and opengl
                 float s = texelFetch(baseSpectrum, ivec3(j, i, l), 0).r;
-                float w = 1.0f - exp(A * kx * kx + B * kx * ky + C * ky * ky);
 
-                variance.x += ((kx * kx * w * w) * (dk.x * dk.x) * s);
-                variance.y += ((ky * ky * w * w) * (dk.y * dk.y) * s);
+                // float w = 1.0f - exp(A * kx * kx + B * kx * ky + C * ky * ky);
+                float w = 1.0f - exp(A * k.x * k.x + B * k.x * k.y + C * k.y * k.y);
+
+                // variance.x += ((kx * kx * w * w) * (dk.x * dk.x) * s);
+                // variance.y += ((ky * ky * w * w) * (dk.y * dk.y) * s);
+                variance += (k * k) * (w * w) * (dk * dk) * s;
             }
         }
     }
