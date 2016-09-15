@@ -1,6 +1,7 @@
 #include <stdint.h>
 #import <Foundation/NSObject.h>
 #import <Foundation/NSString.h>
+#import <Foundation/NSException.h>
 
 #ifndef SAFE_DESTROY
 #define SAFE_DESTROY(_object)\
