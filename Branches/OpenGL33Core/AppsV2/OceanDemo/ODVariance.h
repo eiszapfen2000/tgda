@@ -7,9 +7,11 @@
 @class NPEffectVariableFloat;
 @class NPRenderTexture;
 @class NPRenderTargetConfiguration;
+@class ODOceanEntity;
 
 @interface ODVariance : NPObject
 {
+	ODOceanEntity* ocean;
     // variance LUT for Ross BRDF
     NSUInteger varianceLUTLastResolutionIndex;
     NSUInteger varianceLUTResolutionIndex;
@@ -24,6 +26,13 @@
 
 - (id) init;
 - (id) initWithName:(NSString *)newName;
+- (id) initWithName:(NSString *)newName
+			  ocean:(ODOceanEntity *)newOcean
+			  	   ;
 - (void) dealloc;
+
+- (id < NPPTexture >) texture;
+
+- (void) update;
 
 @end

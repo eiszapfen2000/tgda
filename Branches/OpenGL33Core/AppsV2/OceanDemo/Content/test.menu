@@ -415,7 +415,7 @@
             Spacing = ("5", "5");
             Layout = ("2", "2");
             Labels = ("4", "8", "12", "16");
-            TargetObject = "Scene";
+            TargetObject = "Ocean Variance";
             TargetProperty = "varianceLUTResolutionIndex";
         };
 

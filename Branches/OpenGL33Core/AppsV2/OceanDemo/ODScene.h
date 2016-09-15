@@ -22,6 +22,7 @@
 @class NPFullscreenQuad;
 @class ODBasePlane;
 @class ODWorldCoordinateAxes;
+@class ODVariance;
 
 @interface ODScene : NPObject < NPPPersistentObject >
 {
@@ -102,14 +103,7 @@
     NPEffectVariableFloat2 * feedbackWaterColorIntensityCoordinate;
 
     // variance LUT for Ross BRDF
-    NSUInteger varianceLUTLastResolutionIndex;
-    NSUInteger varianceLUTResolutionIndex;
-    NPRenderTargetConfiguration * varianceRTC;
-    NPRenderTexture * varianceLUT;
-    NPEffectTechnique * variance;
-    NPEffectVariableFloat * layer;
-    NPEffectVariableFloat * varianceTextureResolution;
-    NPEffectVariableFloat * deltaVariance;
+    ODVariance * variance;
 
     // fullscreen quad geometry
     NPFullscreenQuad * fullscreenQuad;
