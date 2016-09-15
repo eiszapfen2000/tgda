@@ -241,20 +241,14 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 {
     self =  [ super initWithName:newName ];
 
-    camera    = [[ ODCamera       alloc ] init ];
     entities  = [[ NSMutableArray alloc ] init ];
 
-    testCamera = [[ ODCamera alloc ] initWithName:@"TestCamera"  movementEvents:testCameraMovementEvents ];
-    [ testCamera setFarPlane:50.0 ];
-
+    camera = [[ ODCamera alloc ] init ];
     cameraFrustum = [[ ODFrustum alloc ] initWithName:@"CFrustum" ];
-    testCameraFrustum = [[ ODFrustum alloc ] initWithName:@"TCFrustum" ];
-    testProjectorFrustum = [[ ODFrustum alloc ] initWithName:@"TPFrustum" ];
-
-    ocean = [[ ODOceanEntity alloc ] initWithName:@"Ocean" ];
-    skylight = [[ ODPreethamSkylight alloc ] init ];
     projectedGrid = [[ ODProjectedGrid alloc ] initWithName:@"ProjGrid" ];
-    axes = [[ ODWorldCoordinateAxes alloc ] init ];
+    ocean = [[ ODOceanEntity alloc ] initWithName:@"Ocean" ];  
+	skylight = [[ ODPreethamSkylight alloc ] init ];
+	axes = [[ ODWorldCoordinateAxes alloc ] init ];    
 
     // camera animation
     fquat_set_identity(&startOrientation);
@@ -401,9 +395,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     DESTROY(camera);
     DESTROY(axes);
 
-    DESTROY(testCamera);
-    DESTROY(testCameraFrustum);
-    DESTROY(testProjectorFrustum);
     DESTROY(cameraFrustum);
 
     [ ocean stop ];
@@ -489,11 +480,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
 
     [ self setName:sceneName ];
 
-    //[ ocean setCamera:testCamera ];
     [ ocean setCamera:camera ];
-
     [ projectedGrid setProjector:[ ocean projector ]];
-
     [ ocean start ];
 
     const NSUInteger numberOfEntityFiles = [ entityFiles count ];
@@ -583,11 +571,8 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
     */
 
     [ camera        update:frameTime ];
-    [ testCamera    update:frameTime ];
-
     [ skylight      update:frameTime ];
     [ ocean         update:frameTime ];
-    //[ iwave         update:frameTime ];
     [ projectedGrid update:frameTime ];
 
     [ cameraFrustum updateWithPosition:[camera position]
@@ -596,20 +581,6 @@ static const OdProjectorRotationEvents testProjectorRotationEvents
                              nearPlane:[camera nearPlane]
                               farPlane:[camera farPlane]
                            aspectRatio:[camera aspectRatio]];
-
-    [ testCameraFrustum updateWithPosition:[testCamera position]
-                               orientation:[testCamera orientation]
-                                       fov:[testCamera fov]
-                                 nearPlane:[testCamera nearPlane]
-                                  farPlane:[testCamera farPlane]
-                               aspectRatio:[testCamera aspectRatio]];
-
-    [ testProjectorFrustum updateWithPosition:[[ ocean projector ] position]
-                                  orientation:[[ ocean projector ] orientation]
-                                          fov:[[ ocean projector ] fov]
-                                    nearPlane:[[ ocean projector ] nearPlane]
-                                     farPlane:[[ ocean projector ] farPlane]
-                                  aspectRatio:[[ ocean projector ] aspectRatio]];
 
     /*
     const NSUInteger numberOfEntities = [ entities count ];
