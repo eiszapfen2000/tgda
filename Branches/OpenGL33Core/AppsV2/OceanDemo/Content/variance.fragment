@@ -7,7 +7,8 @@ in vec2 out_texcoords;
 void main()
 {
     int numberOfLods = textureSize(sizes);
-
+    ivec2 resI = textureSize(baseSpectrum, 0).xy;
+    vec2  resF = vec2(resI);
     float divisor = varianceTextureResolution - 1.0f;
 
     float a = floor(out_texcoords.x);
@@ -20,10 +21,8 @@ void main()
     B = -B;
     C = -0.5f * C;
 
-    ivec3 resolution = textureSize(baseSpectrum, 0);
-
-    float n = -(float(resolution.x) / 2.0f);
-    float m =  (float(resolution.y) / 2.0f);
+    float n = -(resF.x / 2.0f);
+    float m =  (resF.y / 2.0f);
 
     vec2 variance = vec2(deltaVariance);
 
@@ -32,9 +31,9 @@ void main()
         vec2 lodSize = texelFetch(sizes, l).xy;
         vec2 dk = vec2(MATH_2_MUL_PIf) / lodSize;
 
-        for ( int i = 0; i < resolution.y; i++ )
+        for ( int i = 0; i < resI.y; i++ )
         {
-            for ( int j = 0; j < resolution.x; j++ )
+            for ( int j = 0; j < resI.x; j++ )
             {
                 float di = i;
                 float dj = j;
