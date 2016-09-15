@@ -3,13 +3,88 @@
 #import "Graphics/Effect/NPEffectVariableFloat.h"
 #import "Graphics/Effect/NPEffectTechnique.h"
 #import "Graphics/Effect/NPEffect.h"
+#import "Graphics/Geometry/NPIMRendering.h"
 #import "Graphics/RenderTarget/NPRenderTexture.h"
 #import "Graphics/RenderTarget/NPRenderTargetConfiguration.h"
+#import "Graphics/Texture/NPTexture2DArray.h"
+#import "Graphics/Texture/NPTextureBindingState.h"
+#import "Graphics/Texture/NPTextureBuffer.h"
 #import "NP.h"
+#import "Entities/ODOceanEntity.h"
 #import "ODVariance.h"
 
 static const NSUInteger defaultVarianceLUTResolutionIndex = 0;
 static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
+
+@interface ODVariance (Private)
+
+- (BOOL) generateVarianceLUTRenderTarget:(uint32_t)resolution
+                                   error:(NSError **)error
+                                   		;
+
+- (void) updateSlopeVarianceLUT:(uint32_t)resolution;
+
+@end
+
+@implementation ODVariance (Private)
+
+- (BOOL) generateVarianceLUTRenderTarget:(uint32_t)resolution
+                                   error:(NSError **)error
+{
+    return
+        [ varianceLUT generate3D:NpRenderTargetColor
+                           width:resolution
+                          height:resolution
+                           depth:resolution
+                     pixelFormat:NpTexturePixelFormatRG
+                      dataFormat:NpTextureDataFormatFloat16
+                   mipmapStorage:NO
+                           error:error ];
+}
+
+- (void) updateSlopeVarianceLUT:(uint32_t)resolution
+{
+    [ varianceTextureResolution setFValue:(float)resolution ];
+    [ deltaVariance setFValue:[ ocean baseSpectrumDeltaVariance ]];
+
+    [[[ NP Graphics ] textureBindingState ] clear ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean baseSpectrum ] texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]        texelUnit:1 ];
+    [[[ NP Graphics ] textureBindingState ] activate ];
+
+    FRectangle vertices;
+    FRectangle texcoords;
+
+    frectangle_rssss_init_with_min_max(&vertices, -1.0f, -1.0f, 1.0f, 1.0f);
+    frectangle_rssss_init_with_min_max(&texcoords, 0.0f, 0.0f, resolution, resolution);
+
+    [ varianceRTC bindFBO ];
+    [ varianceRTC activateViewport ];
+
+    for ( uint32_t c = 0; c < resolution; c++ )
+    {
+        [ varianceLUT attachLevel:0
+                            layer:c
+        renderTargetConfiguration:varianceRTC
+                 colorBufferIndex:0
+                          bindFBO:NO ];
+
+        if ( c == 0 )
+        {
+            [ varianceRTC activateDrawBuffers ];
+        }
+
+        [ layer setFValue:(float)c ];
+        [ variance activate ];
+        [ NPIMRendering renderFRectangle:vertices
+                               texCoords:texcoords
+                           primitiveType:NpPrimitiveQuads ];
+    }
+
+    [ varianceRTC deactivate ];
+}
+
+@end
 
 @implementation ODVariance
 
@@ -20,7 +95,16 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
 
 - (id) initWithName:(NSString *)newName
 {
+	return [ self initWithName:newName ocean:nil ];
+}
+
+- (id) initWithName:(NSString *)newName
+			  ocean:(ODOceanEntity *)newOcean
+{
 	self = [ super initWithName:newName ];
+
+	ocean = newOcean;
+	ASSERT_RETAIN(ocean);
 
     varianceLUTLastResolutionIndex = ULONG_MAX;
     varianceLUTResolutionIndex = defaultVarianceLUTResolutionIndex;
@@ -53,7 +137,43 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
 	DESTROY(varianceLUT);
 	DESTROY(varianceRTC);
 
+	DESTROY(ocean);
+
 	[ super dealloc ];
+}
+
+- (id < NPPTexture >) texture
+{
+	return [ varianceLUT texture ];
+}
+
+- (void) update
+{
+	    // update slope variance LUT resolution if necessary
+    BOOL forceSlopeVarianceUpdate = NO;
+    const uint32_t varianceLUTResolution
+        = varianceLUTResolutions[varianceLUTResolutionIndex];
+
+    if (varianceLUTResolutionIndex != varianceLUTLastResolutionIndex)
+    {
+        [ varianceRTC setWidth:varianceLUTResolution ];
+        [ varianceRTC setHeight:varianceLUTResolution ];
+
+        NSAssert(
+            ([ self
+                generateVarianceLUTRenderTarget:varianceLUTResolution
+                                          error:NULL ] == YES), @""
+            );
+
+        varianceLUTLastResolutionIndex = varianceLUTResolutionIndex;
+        forceSlopeVarianceUpdate = YES;
+    }
+
+    // update slope variance LUT
+    if ( [ ocean updateSlopeVariance ] == YES || forceSlopeVarianceUpdate == YES )
+    {
+        [ self updateSlopeVarianceLUT:varianceLUTResolution ];
+    }
 }
 
 @end

@@ -38,6 +38,7 @@
 #import "Entities/ODOceanEntity.h"
 #import "Entities/ODEntity.h"
 #import "Entities/ODWorldCoordinateAxes.h"
+#import "ODVariance.h"
 #import "ODScene.h"
 
 static const NSUInteger defaultVarianceLUTResolutionIndex = 0;
@@ -51,12 +52,6 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
                                      ;
 
 - (BOOL) generateRenderTargets:(NSError **)error;
-- (BOOL) generateVarianceLUTRenderTarget:(uint32_t)resolution
-                                   error:(NSError **)error
-                                        ;
-
-- (void) updateSlopeVarianceLUT:(uint32_t)resolution;
-- (void) renderProjectedGrid;
 
 @end
 
@@ -153,66 +148,6 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
                                      error:error ];
 
     return result;
-}
-
-- (BOOL) generateVarianceLUTRenderTarget:(uint32_t)resolution
-                                   error:(NSError **)error
-{
-    return
-        [ varianceLUT generate3D:NpRenderTargetColor
-                           width:resolution
-                          height:resolution
-                           depth:resolution
-                     pixelFormat:NpTexturePixelFormatRG
-                      dataFormat:NpTextureDataFormatFloat16
-                   mipmapStorage:NO
-                           error:error ];
-}
-
-- (void) updateSlopeVarianceLUT:(uint32_t)resolution
-{
-    [ varianceTextureResolution setFValue:(float)resolution ];
-    [ deltaVariance setFValue:[ ocean baseSpectrumDeltaVariance ]];
-
-    [[[ NP Graphics ] textureBindingState ] clear ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean baseSpectrum ] texelUnit:0 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]        texelUnit:1 ];
-    [[[ NP Graphics ] textureBindingState ] activate ];
-
-    FRectangle vertices;
-    FRectangle texcoords;
-
-    frectangle_rssss_init_with_min_max(&vertices, -1.0f, -1.0f, 1.0f, 1.0f);
-    frectangle_rssss_init_with_min_max(&texcoords, 0.0f, 0.0f, resolution, resolution);
-
-    [ varianceRTC bindFBO ];
-    [ varianceRTC activateViewport ];
-
-    for ( uint32_t c = 0; c < resolution; c++ )
-    {
-        [ varianceLUT attachLevel:0
-                            layer:c
-        renderTargetConfiguration:varianceRTC
-                 colorBufferIndex:0
-                          bindFBO:NO ];
-
-        if ( c == 0 )
-        {
-            [ varianceRTC activateDrawBuffers ];
-        }
-
-        [ layer setFValue:(float)c ];
-        [ variance activate ];
-        [ NPIMRendering renderFRectangle:vertices
-                               texCoords:texcoords
-                           primitiveType:NpPrimitiveQuads ];
-    }
-
-    [ varianceRTC deactivate ];
-}
-
-- (void) renderProjectedGrid
-{
 }
 
 @end
@@ -359,20 +294,7 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
              && feedbackWaterColorIntensityCoordinate != nil,
              @"");
 
-    varianceLUTLastResolutionIndex = ULONG_MAX;
-    varianceLUTResolutionIndex = defaultVarianceLUTResolutionIndex;
-    varianceRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Variance RTC" ];
-    varianceLUT = [[ NPRenderTexture alloc ] initWithName:@"Variance LUT" ];
-
-    variance = [ deferredEffect techniqueWithName:@"variance" ];
-    ASSERT_RETAIN(variance);
-
-    layer            = [ deferredEffect variableWithName:@"layer" ];
-    deltaVariance    = [ deferredEffect variableWithName:@"deltaVariance" ];
-    varianceTextureResolution = [ deferredEffect variableWithName:@"varianceTextureResolution" ];
-
-    NSAssert(layer != nil && deltaVariance != nil
-             && varianceTextureResolution != nil, @"");
+    variance = [[ ODVariance alloc ] initWithName:@"Ocean Variance" ocean:ocean ];
 
     // fullscreen quad for render target display
     fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
@@ -397,8 +319,6 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     SAFE_DESTROY(file);
 
     DESTROY(variance);
-    DESTROY(varianceLUT);
-    DESTROY(varianceRTC);
 
     DESTROY(depthBuffer);
     DESTROY(logLuminanceTarget);
@@ -574,6 +494,7 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
                               farPlane:[camera farPlane]
                            aspectRatio:[camera aspectRatio]];
 
+    [ variance update ];
     /*
     const NSUInteger numberOfEntities = [ entities count ];
     for ( NSUInteger i = 0; i < numberOfEntities; i++ )
@@ -595,32 +516,6 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
         NSAssert(([ self generateRenderTargets:NULL ] == YES), @"");
 
         lastFrameResolution = currentResolution;
-    }
-
-    // update sloope variance LUT resolution if necessary
-    BOOL forceSlopeVarianceUpdate = NO;
-    const uint32_t varianceLUTResolution
-        = varianceLUTResolutions[varianceLUTResolutionIndex];
-
-    if (varianceLUTResolutionIndex != varianceLUTLastResolutionIndex)
-    {
-        [ varianceRTC setWidth:varianceLUTResolution ];
-        [ varianceRTC setHeight:varianceLUTResolution ];
-
-        NSAssert(
-            ([ self
-                generateVarianceLUTRenderTarget:varianceLUTResolution
-                                          error:NULL ] == YES), @""
-            );
-
-        varianceLUTLastResolutionIndex = varianceLUTResolutionIndex;
-        forceSlopeVarianceUpdate = YES;
-    }
-
-    // update slope variance LUT
-    if ( [ ocean updateSlopeVariance ] == YES || forceSlopeVarianceUpdate == YES )
-    {
-        [ self updateSlopeVarianceLUT:varianceLUTResolution ];
     }
 
     // update whitecaps target resolution if necessary
@@ -819,7 +714,7 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean waterColor ]          texelUnit:1 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean waterColorIntensity ] texelUnit:2 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]               texelUnit:3 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ varianceLUT texture ]       texelUnit:4 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ variance texture ]			 texelUnit:4 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ skylight skylightTexture ]  texelUnit:5 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ whitecapsTarget texture  ]  texelUnit:6 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
