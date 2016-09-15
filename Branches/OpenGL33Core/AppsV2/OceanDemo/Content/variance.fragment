@@ -22,7 +22,7 @@ void main()
     C = -0.5f * C;
 
     float n = -(resF.x / 2.0f);
-    float m =  (resF.y / 2.0f);
+    float m = -(resF.y / 2.0f);
 
     vec2 variance = vec2(deltaVariance);
 
@@ -31,7 +31,8 @@ void main()
         vec2 lodSize = texelFetch(sizes, l).xy;
         vec2 dk = vec2(MATH_2_MUL_PIf) / lodSize;
 
-        for ( int i = 0; i < resI.y; i++ )
+       // for ( int i = 0; i < resI.y; i++ )
+       for ( int i = resI.y - 1; i > -1; i-- )
         {
             for ( int j = 0; j < resI.x; j++ )
             {
@@ -39,8 +40,8 @@ void main()
                 float dj = j;
                 
                 // float kx = (n + dj) * dk.x;
-                // float ky = (m - di) * dk.y;
-                vec2 k = vec2(n + dj, m - di) * dk;
+                // float ky = (m + di) * dk.y;
+                vec2 k = vec2(n + dj, m + di) * dk;
 
                 // switch i and j due to to different memory layout
                 // of fftw and opengl
