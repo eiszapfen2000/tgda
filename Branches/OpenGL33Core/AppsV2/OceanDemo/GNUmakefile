@@ -7,9 +7,11 @@ OceanDemo_SUBPROJECTS = \
     Menu
 
 OceanDemo_HEADER_FILES = \
+	ODVariance.h \
     ODScene.h
 
 OceanDemo_OBJC_FILES = \
+	ODVariance.m \
     ODScene.m \
     main.m
 
