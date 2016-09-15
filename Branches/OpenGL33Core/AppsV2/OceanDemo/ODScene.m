@@ -217,14 +217,6 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
 
 @end
 
-static const OdCameraMovementEvents testCameraMovementEvents
-    = {.rotate  = NpKeyboardG, .strafe   = NpInputEventUnknown,
-       .forward = NpKeyboardW, .backward = NpKeyboardS };
-
-static const OdProjectorRotationEvents testProjectorRotationEvents
-    = {.pitchMinus = NpInputEventUnknown, .pitchPlus = NpInputEventUnknown,
-       .yawMinus   = NpInputEventUnknown, .yawPlus   = NpInputEventUnknown };
-
 @implementation ODScene
 
 + (void) shutdown
