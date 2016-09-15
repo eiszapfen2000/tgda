@@ -163,7 +163,13 @@ technique "variance"
     uniform float layer;
     uniform float varianceTextureResolution;
     uniform float deltaVariance;
-    uniform sampler2DArray baseSpectrum;
+    uniform sampler2DArray baseSpectrum
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
     uniform samplerBuffer sizes;
     # vertex streams
     in vec2 in_position : 0;
