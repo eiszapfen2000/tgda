@@ -21,8 +21,9 @@ void main()
     B = -B;
     C = -0.5f * C;
 
-    float n = -(resF.x / 2.0f);
-    float m = -(resF.y / 2.0f);
+    // float n = -(resF.x / 2.0f);
+    // float m = -(resF.y / 2.0f);
+    float nm = resF / -2.0f;
 
     vec2 variance = vec2(deltaVariance);
 
@@ -36,22 +37,19 @@ void main()
         {
             for ( int j = 0; j < resI.x; j++ )
             {
-                float di = i;
-                float dj = j;
+                // float di = i;
+                // float dj = j;
+                vec2 d = vec2(j,i);
                 
-                // float kx = (n + dj) * dk.x;
-                // float ky = (m + di) * dk.y;
-                vec2 k = vec2(n + dj, m + di) * dk;
+                // vec2 k = vec2(n + dj, m + di) * dk;
+                vec2 k = (nm + d) * dk;
 
                 // switch i and j due to to different memory layout
                 // of fftw and opengl
                 float s = texelFetch(baseSpectrum, ivec3(j, i, l), 0).r;
 
-                // float w = 1.0f - exp(A * kx * kx + B * kx * ky + C * ky * ky);
                 float w = 1.0f - exp(A * k.x * k.x + B * k.x * k.y + C * k.y * k.y);
 
-                // variance.x += ((kx * kx * w * w) * (dk.x * dk.x) * s);
-                // variance.y += ((ky * ky * w * w) * (dk.y * dk.y) * s);
                 variance += (k * k) * (w * w) * (dk * dk) * s;
             }
         }
