@@ -6,6 +6,7 @@
 #import "Core/Container/NPAssetArray.h"
 #import "Core/Container/NSArray+NPPObject.h"
 #import "Core/Utilities/NSError+NPEngine.h"
+#import "Graphics/Texture/NPTextureBindingState.h"
 #import "Graphics/Texture/NpTextureSamplerParameter.h"
 #import "Graphics/Texture/NPTextureSamplingState.h"
 #import "Graphics/NPEngineGraphics.h"
@@ -630,11 +631,16 @@ static BOOL locked = NO;
 
 - (void) parseEffectVariables:(NPParser *)parser
 {
-    uint32_t texelUnit = 0;
+    const uint32_t nTexelUnits
+        = [[[ NPEngineGraphics instance ] textureBindingState ] numberOfSuppertedTexelUnits ];
+
+    BOOL * texelUnits = ALLOC_ARRAY(BOOL, nTexelUnits);
+    memset(texelUnits, 0, sizeof(BOOL) * nTexelUnits);
+
     NSUInteger numberOfLines = [ parser lineCount ];
     for ( NSUInteger i = 0; i < numberOfLines; i++ )
     {
-        if ( [ parser tokenCountForLine:i ] == 3 
+        if ( [ parser tokenCountForLine:i ] == 3
              && [ parser isLowerCaseTokenFromLine:i atPosition:0 equalToString:@"uniform" ] == YES )
         {
             NSString * uniformType = [ parser getTokenFromLine:i atPosition:1 ];
@@ -642,11 +648,19 @@ static BOOL locked = NO;
 
             if ( [ uniformType hasPrefix:@"sampler" ] == YES )
             {
+                uint32_t texelUnit;
+                for (texelUnit = 0; texelUnit < nTexelUnits; texelUnit++)
+                {
+                    if (texelUnits[texelUnit] == NO)
+                    {
+                        texelUnits[texelUnit] = YES;
+                        break;
+                    }
+                }
+
                 NPEffectVariableSampler * sampler
                     = [ effect registerEffectVariableSampler:uniformName
                                                    texelUnit:texelUnit ];
-
-                texelUnit = texelUnit + 1;
 
                 NSRange lineRange = NSMakeRange(ULONG_MAX, 0);
 
@@ -738,6 +752,8 @@ static BOOL locked = NO;
             }
         }
     }
+
+    FREE(texelUnits);
 }
 
 - (void) clearShaders
