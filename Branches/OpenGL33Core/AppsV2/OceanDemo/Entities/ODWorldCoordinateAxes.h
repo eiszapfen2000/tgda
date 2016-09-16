@@ -24,7 +24,6 @@
 - (void) setColorMultiplier:(float)newColorMultiplier;
 - (void) setDirectionToSun:(Vector3)newDirectionToSun;
 
-- (void) update:(double)frameTime;
 - (void) render;
 
 @end
