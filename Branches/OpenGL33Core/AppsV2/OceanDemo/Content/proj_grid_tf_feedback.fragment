@@ -96,6 +96,7 @@ vec2 U(vec2 zeta, vec3 v, mat3 TBN)
     return r_projected;
 }
 
+#if defined(SKY) || defined(WHITECAPS)
 // V, N, Tx, Ty in world space;
 vec3 meanSkyRadiance(vec3 v, mat3 TBN, vec2 sigmaSq)
 {
@@ -109,6 +110,7 @@ vec3 meanSkyRadiance(vec3 v, mat3 TBN, vec2 sigmaSq)
     //return textureLod(skylight, u0 * 0.5 + 0.5, 0.0).rgb;
     //result = texture2DGrad(skySampler, u0 * (0.5 / 1.1) + 0.5, dux * (0.5 / 1.1), duy * (0.5 / 1.1));
 }
+#endif
 
 float whitecapCoverage(float epsilon, float mu, float sigmaSqr)
 {
@@ -200,9 +202,15 @@ void main()
     rossContribution = c_light * probability * (f_schlick / denominator);
     #endif
 
-    #ifdef SKY
+    #if defined(SKY) || defined(SEA)
     float f_mean = 0.02 + 0.98 * meanFresnel(v, n, sigmaSq);
+    #endif
+
+    #if defined(SKY) || defined(WHITECAPS)
     vec3 meanSky = meanSkyRadiance(v, ross, sigmaSq);
+    #endif
+
+    #ifdef SKY    
     skyContribution = f_mean * meanSky;
     #endif
 
