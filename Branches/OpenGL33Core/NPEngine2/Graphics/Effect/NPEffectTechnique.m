@@ -64,6 +64,7 @@ static BOOL locked = NO;
                                    ;
 
 - (NPStringList *) extractPreprocessorLines:(NPStringList *)stringList;
+- (NPStringList *) extractUniformLines:(NPStringList *)stringList;
 - (NPStringList *) extractStreamLines:(NPStringList *)stringList;
 
 - (void) parseShader:(NPParser *)parser
@@ -240,6 +241,10 @@ static BOOL locked = NO;
     NPStringList * preprocessorLinesStripped
         = [ self extractPreprocessorLines:preprocessorLines ];
 
+    // separate uniform related strings at ":" and append ";"
+    NPStringList * uniformVariableLinesStripped
+        = [ self extractUniformLines:uniformVariableLines ];
+
     // separate stream related strings at ":", trim first component
     // and append ";"
     NPStringList * vertexStreamLinesStripped
@@ -248,24 +253,10 @@ static BOOL locked = NO;
     NPStringList * fragmentStreamLinesStripped
         = [ self extractStreamLines:fragmentStreamLines ];
 
-    // append semicolon if necessary
-    NSUInteger c = [ uniformVariableLines count ];
-    for ( NSUInteger i = 0; i < c; i++ )
-    {
-        NSString * s = [ uniformVariableLines stringAtIndex:i ];
-
-        if ( [ s hasSuffix:@";" ] == NO )
-        {
-            [ uniformVariableLines
-                replaceStringAtIndex:i
-                          withString:[ s stringByAppendingString:@";" ]];
-        }
-    }
-
     // assemble and compile shaders
     [ self parseShader:parser
    preprocessorDefines:preprocessorLinesStripped
-       effectVariables:uniformVariableLines 
+       effectVariables:uniformVariableLinesStripped 
          vertexStreams:vertexStreamLinesStripped
        fragmentStreams:fragmentStreamLinesStripped ];
 
@@ -286,7 +277,6 @@ static BOOL locked = NO;
         return NO;
     }
 
-//    [ parser parse:effectVariableLines ];
     [ self parseEffectVariables:parser ];
     [ self parseActiveVariables ];
 
@@ -518,6 +508,43 @@ static BOOL locked = NO;
     return result;
 }
 
+- (NPStringList *) extractUniformLines:(NPStringList *)stringList
+{
+    NPStringList * result = [ NPStringList stringList ];
+    NSCharacterSet * whitespace = [ NSCharacterSet whitespaceCharacterSet ];
+
+    NSUInteger c = [ stringList count ];
+    for ( NSUInteger i = 0; i < c; i++ )
+    {
+        NSString * s = [ stringList stringAtIndex:i ];
+        NSString * trimmedString
+            = [ s stringByTrimmingCharactersInSet:whitespace ];
+
+        NSMutableArray * components
+            = [[ trimmedString 
+                    componentsSeparatedByCharactersInSet:whitespace ]
+                        mutableCopy ];
+
+        [ components removeObject:@"" ];
+ 
+        if ( [ components count ] > 3 )
+        {
+            NSArray * a = [ components subarrayWithRange:NSMakeRange(0,3) ];
+            s = [ a componentsJoinedByString:@" "];
+        }
+
+        // append semicolon if necessary
+        if ( [ s hasSuffix:@";" ] == NO )
+        {
+            s = [ s stringByAppendingString:@";" ];
+        }
+
+        [ result addString:s ];
+    }
+
+    return result;
+}
+
 - (NPStringList *) extractStreamLines:(NPStringList *)stringList
 {
     NSCharacterSet * whitespace = [ NSCharacterSet whitespaceCharacterSet ];
@@ -640,7 +667,7 @@ static BOOL locked = NO;
     NSUInteger numberOfLines = [ parser lineCount ];
     for ( NSUInteger i = 0; i < numberOfLines; i++ )
     {
-        if ( [ parser tokenCountForLine:i ] == 3
+        if ( [ parser tokenCountForLine:i ] > 2
              && [ parser isLowerCaseTokenFromLine:i atPosition:0 equalToString:@"uniform" ] == YES )
         {
             NSString * uniformType = [ parser getTokenFromLine:i atPosition:1 ];
@@ -657,6 +684,16 @@ static BOOL locked = NO;
                         break;
                     }
                 }
+
+                /*
+                unsigned int tx;
+                if ( [ parser tokenCountForLine:i ] == 5
+                     && [ parser isTokenFromLine:i atPosition:3 equalToString:@":" ] == YES
+                     && [ parser getTokenAsUInt:&tx fromLine:i atPosition:4] == YES)
+                {
+                    NSLog(@"%u", tx);
+                }
+                */
 
                 NPEffectVariableSampler * sampler
                     = [ effect registerEffectVariableSampler:uniformName
