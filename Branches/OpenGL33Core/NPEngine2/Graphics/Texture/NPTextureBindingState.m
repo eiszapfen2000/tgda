@@ -87,6 +87,26 @@
     SAFE_FREE(lockedTexelUnits);
 }
 
+- (uint32_t) numberOfSuppertedTexelUnits
+{
+	return numberOfSuppertedTexelUnits;
+}
+
+- (uint32_t) maximumNumberOfVertexTexelUnits
+{
+	return maximumNumberOfVertexTexelUnits;
+}
+
+- (uint32_t) maximumNumberOfGeometryTexelUnits
+{
+	return maximumNumberOfGeometryTexelUnits;
+}
+
+- (uint32_t) maximumNumberOfFragmentTexelUnits
+{
+	return maximumNumberOfFragmentTexelUnits;
+}
+
 - (void) lock
 {
     locked = YES;
