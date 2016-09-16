@@ -6,47 +6,6 @@ in vec2 out_ws_non_disp_position;
 #define MATH_PI      3.141592653
 #define MATH_SQRT_PI 1.772453851
 
-float blinn_phong_distribution(vec3 n, vec3 h, float alpha_p)
-{
-    float specular_normalization = (alpha_p + 2.0) / (2.0 * MATH_PI);
-    float n_dot_h = clamp(dot(n, h), 0.0, 1.0);
-    float power = pow(n_dot_h, alpha_p);
-
-    return specular_normalization * power;
-}
-
-float beckmann_distribution(vec3 n, vec3 h, float m)
-{
-    float n_dot_h = clamp(dot(n, h), 0.001, 1.0);
-    float n_dot_h_square = n_dot_h * n_dot_h;
-
-    float exponent = (n_dot_h_square - 1.0) / (m * m * n_dot_h_square);
-    float power = exp(exponent);
-
-    return power / (MATH_PI * m * m * n_dot_h_square * n_dot_h_square);
-}
-
-float geometry_implicit(vec3 n, vec3 h, vec3 v, vec3 l)
-{
-    float n_dot_l = clamp(dot(n, l), 0.0, 1.0);
-    float n_dot_v = clamp(dot(n, v), 0.0, 1.0);
-
-    return n_dot_l * n_dot_v;
-}
-
-float geometry_cook_torrance(vec3 n, vec3 h, vec3 v, vec3 l)
-{
-    float n_dot_h = clamp(dot(n, h), 0.001, 1.0);
-    float n_dot_v = clamp(dot(n, v), 0.001, 1.0);
-    float n_dot_l = clamp(dot(n, l), 0.001, 1.0);
-    float v_dot_h = clamp(dot(v, h), 0.001, 1.0);
-
-    float g1 = (2.0 * n_dot_h * n_dot_v) / v_dot_h;
-    float g2 = (2.0 * n_dot_h * n_dot_l) / v_dot_h;
-
-    return min(1.0, min(g1, g2));
-}
-
 float sigma_square(vec3 v_ross, vec3 tx_ross, vec2 sigmaXYSqr)
 {
     vec3 v_ross_planar = normalize(vec3(v_ross.x, 0.0, v_ross.z));
