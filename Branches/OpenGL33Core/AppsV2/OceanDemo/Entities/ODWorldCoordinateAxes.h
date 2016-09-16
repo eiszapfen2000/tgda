@@ -6,6 +6,7 @@
 {
     float axisLength;
     float colorMultiplier;
+    Vector3 directionToSun;
 
     GLuint vertexArrayID;
     GLuint vertexStreamID;
@@ -18,8 +19,10 @@
 
 - (float) axisLength;
 - (float) colorMultiplier;
+- (Vector3) directionToSun;
 - (void) setAxisLength:(float)newAxisLength;
 - (void) setColorMultiplier:(float)newColorMultiplier;
+- (void) setDirectionToSun:(Vector3)newDirectionToSun;
 
 - (void) update:(double)frameTime;
 - (void) render;
