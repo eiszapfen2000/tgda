@@ -59,6 +59,10 @@ technique "proj_grid_tf_transform"
 
 technique "proj_grid_tf_feedback"
 {
+    define ROSS
+    define SEA
+    define SKY
+    define WHITECAPS
     # effect variables
     uniform mat4 np_viewprojectionmatrix;
     uniform float areaScale;
