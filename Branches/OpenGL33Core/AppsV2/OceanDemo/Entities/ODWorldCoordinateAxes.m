@@ -3,62 +3,68 @@
 
 @interface ODWorldCoordinateAxes (Private)
 
-- (void) setup;
+- (void) updateAxes;
+- (void) updateDirectionToSun;
 
 @end
 
 @implementation ODWorldCoordinateAxes (Private)
 
-- (void) setup
+- (void) updateAxes
 {
     FVector3 origin = fv3_zero();
     FVector3 xAxis  = fv3_sv_scaled(axisLength, NP_WORLDF_X_AXIS);
     FVector3 yAxis  = fv3_sv_scaled(axisLength, NP_WORLDF_Y_AXIS);
     FVector3 zAxis  = fv3_sv_scaled(axisLength, NP_WORLDF_Z_AXIS);
 
-    FVector3 dirToSun = fv3_v_from_v3(&directionToSun);
-    FVector3 dir = fv3_sv_scaled(axisLength, &dirToSun);
-
-    const FVector3 black = fv3_zero();
     const FVector3 red   = (FVector3){colorMultiplier, 0.0, 0.0};
     const FVector3 green = (FVector3){0.0, colorMultiplier, 0.0};
     const FVector3 blue  = (FVector3){0.0, 0.0, colorMultiplier};
 
-    FVector3 * vertices = ALLOC_ARRAY(FVector3, 8);
-    FVector3 * colors   = ALLOC_ARRAY(FVector3, 8);
+    FVector3 * vertices = ALLOC_ARRAY(FVector3, 6);
+    FVector3 * colors   = ALLOC_ARRAY(FVector3, 6);
 
-    vertices[0] = vertices[2] = vertices[4] = vertices[6] = origin;
-    vertices[1] = xAxis; vertices[3] = yAxis; vertices[5] = zAxis; vertices[7] = dir;
+    vertices[0] = vertices[2] = vertices[4] = origin;
+    vertices[1] = xAxis; vertices[3] = yAxis; vertices[5] = zAxis;
 
     colors[0] = colors[1] = red;
     colors[2] = colors[3] = green;
     colors[4] = colors[5] = blue;
-    colors[6] = colors[7] = black;
 
     glBindBuffer(GL_ARRAY_BUFFER, vertexStreamID);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(FVector3) * 8, vertices);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(FVector3) * 6, vertices);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, colorStreamID);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(FVector3) * 8, colors);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(FVector3) * 6, colors);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     FREE(colors);
     FREE(vertices);
+}
 
-    glBindVertexArray(vertexArrayID);
+- (void) updateDirectionToSun
+{
+    FVector3 origin = fv3_zero();
+    FVector3 dirToSun = fv3_v_from_v3(&directionToSun);
+    FVector3 dir = fv3_sv_scaled(axisLength, &dirToSun);
+    const FVector3 black = fv3_zero();
 
-        glBindBuffer(GL_ARRAY_BUFFER, vertexStreamID);
-            glVertexAttribPointer(NpVertexStreamPositions, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glEnableVertexAttribArray(NpVertexStreamPositions);
+    FVector3 vertices[2];
+    FVector3 colors[2];
 
-        glBindBuffer(GL_ARRAY_BUFFER, colorStreamID);
-            glVertexAttribPointer(NpVertexStreamColors, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glEnableVertexAttribArray(NpVertexStreamColors);
+    vertices[0] = origin;
+    vertices[1] = dir;
 
-    glBindVertexArray(0);
+    colors[0] = colors[1] = black;
+
+    glBindBuffer(GL_ARRAY_BUFFER, vertexStreamID);
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof(FVector3) * 6, sizeof(FVector3) * 2, vertices);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, colorStreamID);
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof(FVector3) * 6, sizeof(FVector3) * 2, colors);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 @end
@@ -90,7 +96,22 @@
     glBufferData(GL_ARRAY_BUFFER, sizeof(FVector3) * 8, NULL, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    [ self setup ];
+    glBindVertexArray(vertexArrayID);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vertexStreamID);
+            glVertexAttribPointer(NpVertexStreamPositions, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glEnableVertexAttribArray(NpVertexStreamPositions);
+
+        glBindBuffer(GL_ARRAY_BUFFER, colorStreamID);
+            glVertexAttribPointer(NpVertexStreamColors, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glEnableVertexAttribArray(NpVertexStreamColors);
+
+    glBindVertexArray(0);
+
+    [ self updateAxes ];
+    [ self updateDirectionToSun ];
 
     return self;
 }
@@ -123,25 +144,23 @@
 {
     axisLength = newAxisLength;
 
-    [ self setup ];
+    [ self updateAxes ];
+    [ self updateDirectionToSun ];
 }
 
 - (void) setColorMultiplier:(float)newColorMultiplier
 {
     colorMultiplier = newColorMultiplier;
 
-    [ self setup ];
+    [ self updateAxes ];
+    [ self updateDirectionToSun ];
 }
 
 - (void) setDirectionToSun:(Vector3)newDirectionToSun
 {
     directionToSun = newDirectionToSun;
 
-    [ self setup ];
-}
-
-- (void) update:(double)frameTime
-{
+    [ self updateDirectionToSun ];
 }
 
 - (void) render
