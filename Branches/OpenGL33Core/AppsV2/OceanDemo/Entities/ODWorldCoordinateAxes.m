@@ -76,6 +76,7 @@
 
     axisLength = 100.0f;
     colorMultiplier = 10000.0f;
+    directionToSun = v3_zero();
 
     glGenVertexArrays(1, &vertexArrayID);
     glGenBuffers(1, &vertexStreamID);
