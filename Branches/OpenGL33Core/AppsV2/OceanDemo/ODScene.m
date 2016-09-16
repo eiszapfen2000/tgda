@@ -731,18 +731,9 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     [ depthTestState setEnabled:NO ];
     [ stateConfiguration activate ];
 
-    const Vector3 directionToSun = [ skylight directionToSun ];
-    const float length = [ axes axisLength ];
-
-    glLineWidth(4.0);
+    [ axes setDirectionToSun: [ skylight directionToSun ]];
     [[ deferredEffect techniqueWithName:@"v3c3" ] activate ];
     [ axes render ];
-    glBegin(GL_LINES);
-        glVertexAttrib3f(NpVertexStreamColors, 1.0f, 1.0f, 0.0f);
-        glVertexAttrib3f(NpVertexStreamPositions, 0.0f, 0.0f, 0.0f);
-        glVertexAttrib3f(NpVertexStreamPositions, directionToSun.x * length, directionToSun.y * length, directionToSun.z * length);
-    glEnd();
-    glLineWidth(1.0);
 
     [ linearsRGBTarget detach:NO ];
     [ depthBuffer      detach:NO ];
