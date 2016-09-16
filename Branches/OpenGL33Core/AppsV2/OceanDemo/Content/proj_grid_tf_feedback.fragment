@@ -189,21 +189,32 @@ void main()
     float H_ross = H(dot(l, h));
     float v_dot_f = max(0.0, dot(v, h));
 
+    vec3 rossContribution = vec3(0.0f);
+    vec3 skyContribution  = vec3(0.0f);
+    vec3 seaContribution  = vec3(0.0f);
+    vec3 foamContribution = vec3(0.0f);
+
+    #ifdef ROSS
     vec3 f_schlick = c_spec + ((vec3(1.0) - c_spec) * pow(1.0 - clamp(dot(v, h), 0.0, 1.0), 5.0));
     float denominator = 4.0 * (h.y * h.y * h.y * h.y) * max(0.01, dot(n, v)) * l_v_smith;
-    vec3 rossContribution = c_light * probability * (f_schlick / denominator);
+    rossContribution = c_light * probability * (f_schlick / denominator);
+    #endif
 
+    #ifdef SKY
     float f_mean = 0.02 + 0.98 * meanFresnel(v, n, sigmaSq);
     vec3 meanSky = meanSkyRadiance(v, ross, sigmaSq);
-    vec3 skyContribution = f_mean * meanSky;
+    skyContribution = f_mean * meanSky;
+    #endif
 
+    #ifdef SEA
     vec3 seaColor = texture(watercolor, waterColorCoordinate).rgb;
     vec3 seaColorIntensity = texture(watercolorIntensity, waterColorIntensityCoordinate).rgb;
     seaColor *= seaColorIntensity;
-
     vec3 Lsea = seaColor.rgb * (skyIrradiance / MATH_PI);
-    vec3 seaContribution = (1.0 - f_mean) * Lsea;
+    seaContribution = (1.0 - f_mean) * Lsea;
+    #endif
 
+    #ifdef WHITECAPS
     float jsquaresum = 0.0;
     vec2 jmeansum = vec2(0.0);
     for ( int l = 0; l < numberOfLods; l++ )
@@ -222,7 +233,8 @@ void main()
     float W = whitecapCoverage(jacobianEpsilon, jmeansum.x, jSigmaSqr);
     // compute and add whitecap radiance
     vec3 Lfoam = (c_light * (max(dot(n, l), 0.0)) + meanSky) / MATH_PI;
-    vec3 foamContribution = vec3(W * Lfoam * 0.4);
+    foamContribution = vec3(W * Lfoam * 0.4);
+    #endif
 
     vec3 L_zero = rossContribution + skyContribution + seaContribution + foamContribution;
 
