@@ -517,11 +517,11 @@ static BOOL locked = NO;
     for ( NSUInteger i = 0; i < c; i++ )
     {
         NSString * s = [ stringList stringAtIndex:i ];
-        NSString * trimmedString
+        NSString * trimmed
             = [ s stringByTrimmingCharactersInSet:whitespace ];
 
         NSMutableArray * components
-            = [[ trimmedString 
+            = [[ trimmed
                     componentsSeparatedByCharactersInSet:whitespace ]
                         mutableCopy ];
 
@@ -676,24 +676,31 @@ static BOOL locked = NO;
             if ( [ uniformType hasPrefix:@"sampler" ] == YES )
             {
                 uint32_t texelUnit;
-                for (texelUnit = 0; texelUnit < nTexelUnits; texelUnit++)
-                {
-                    if (texelUnits[texelUnit] == NO)
-                    {
-                        texelUnits[texelUnit] = YES;
-                        break;
-                    }
-                }
-
-                /*
-                unsigned int tx;
                 if ( [ parser tokenCountForLine:i ] == 5
                      && [ parser isTokenFromLine:i atPosition:3 equalToString:@":" ] == YES
-                     && [ parser getTokenAsUInt:&tx fromLine:i atPosition:4] == YES)
+                     && [ parser getTokenAsUInt:&texelUnit fromLine:i atPosition:4 ] == YES)
                 {
-                    NSLog(@"%u", tx);
+                    NSAssert3(texelUnit < nTexelUnits,
+                        @"Sampler \"%@\": Texelunit %u exceeds available Texelunits %u",
+                        uniformName, texelUnit, nTexelUnits);
+
+                    NSAssert2(texelUnits[texelUnit] == NO,
+                        @"Sampler \"%@\": Texelunit %u is already in use",
+                        uniformName, texelUnit);
+
+                    texelUnits[texelUnit] = YES;
                 }
-                */
+                else
+                {
+                    for (texelUnit = 0; texelUnit < nTexelUnits; texelUnit++)
+                    {
+                        if (texelUnits[texelUnit] == NO)
+                        {
+                            texelUnits[texelUnit] = YES;
+                            break;
+                        }
+                    }
+                }                
 
                 NPEffectVariableSampler * sampler
                     = [ effect registerEffectVariableSampler:uniformName
