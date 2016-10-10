@@ -4,15 +4,34 @@
 The ocean surface is an intricate phenomenon which owes its complexity
 to its highly dynamic nature. Be it a quiet sea or an agitated one, small
 turbulent waves or huge breaking ones, the underlying mechanisms are manifold
-and act on a variety of scales. Oceanographic research defines the behaviour of
+and act on a variety of scales. Scientists have spent centuries trying to
+understand and explain this mechanisms.
+ %Wind, earth's gravity, the gravitational pull of
+%sun and moon, but also earthquakes and the water's surface tension have an
+%impact on ocean surface waves, where each force or effect governs a different
+%range of wavelengths.
+%For example, ocean surface waves are in large
+%part governed by the forces of wind and gravity, but capillary waves, often
+%referred to as ripples, are dominated by surface tension, whereas tidal waves
+%are caused by the gravitational pull of sun and moon. 
+%with wavelengths less than a few centimeters and governed by surface tension, wind, storm, tsunami caused by earthquake, tidal waves
+%
+Oceanographic researchers define the behaviour of
 an ocean surface based on its location. Water areas far from the coast are
 called~\emph{deep water}, water areas close to shore are called
 \emph{shallow water}, with \emph{intermediate} areas in between. Deep ocean
 surfaces are governed by the interaction of wind and gravity at the interface
 between air and water, whereas shallow water surfaces are characterized by waves
-breaking near the shore. FIXME: give an overview of what is to come.
+breaking near the shore.
+
+The remainder of this chapter is organized as follows:
+Section~\ref{sec:simulation} gives an overview of simulation techniques used in
+computer graphics to synthesize various types of ocean surfaces.
+Section~\ref{sec:rendering} on the other hand discusses a compact set of 
+realtime ocean surface rendering algorithms.
 %
 \section{Simulation}
+\label{sec:simulation}
 %
 To date, computer graphics employs several ocean wave models which may be
 separated roughly into three families: parametric description, spectral
@@ -497,6 +516,7 @@ energy, but wave vectors which are representative for the entire spectrum:
 long waves, short waves and even capillary waves.
 
 \section{Rendering}
+\label{sec:rendering}
 %
 Premoze - Rendering Natural Waters \cite{Premoze:2000}\\
 Schneider - Towards Real-Time Visual Simulation of Water Surfaces \cite{Schneider:2001}\\
