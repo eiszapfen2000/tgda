@@ -5,7 +5,7 @@ The ocean surface is an intricate phenomenon which owes its complexity
 to its highly dynamic nature. Be it a quiet sea or an agitated one, small
 turbulent waves or huge breaking ones, the underlying mechanisms are manifold
 and act on a variety of scales. 
-The water's surface tension, wind, earth's gravity, the gravitational pull of
+Surface tension, wind, earth's gravity, the gravitational pull of
 sun and moon, all have an impact on ocean surface waves, where each force or
 effect governs a different range of wavelengths.
 Scientists have spent centuries trying to understand and explain these mechanisms.
@@ -15,19 +15,18 @@ Scientists have spent centuries trying to understand and explain these mechanism
 %are caused by the gravitational pull of sun and moon. 
 %with wavelengths less than a few centimeters and governed by surface tension, wind, storm, tsunami caused by earthquake, tidal waves
 %
-
 Oceanographic researchers define the behaviour of an ocean surface not based
 on its influencing quantities, but based on its location. Water areas far from the
 coast are called~\emph{deep water}, water areas close to shore are called
 \emph{shallow water}, with \emph{intermediate} areas in between. Different
 water locations are governed by different parameters. Deep ocean surfaces are
-assumed to be dominated by the interaction of wind and gravity at the interface
+dominated by the interaction of wind and gravity at the interface
 between air and water, whereas shallow water surfaces are characterized by waves
 breaking near the shore. Deep water may ignore changes in water depth,
 whereas intermediate and shallow waters need to account for how it affects
 surface waves. Additionally, tidal waves and tsunamis may travel unnoticed
 through deep water, but have a measurable impact on intermediate water areas
-and even more so on shallow water areas.
+and even more so on shallow water areas.\\
 % 
 % The remainder of this chapter is organized as follows:
 % Section~\ref{sec:simulation} gives an overview of simulation techniques used in
@@ -47,12 +46,18 @@ in frequency space \citep{book:kinsman2002wind,article:PiersonMoskowitz1964,
 article:Hasselman1973,article:Donelan1985,article:Elfouhaily1997}.
 Third, computational fluid dynamics in combination with the Navier-Stokes
 equations (NSE) are potentially able to fully describe the dynamics of all kinds of
-fluid, including the ocean.
+fluid, including the ocean. We will omit any further discussion regarding CFD and NSE,
+because, one, those models are the ones with the largest computational cost and therefore
+the least adequate to simulate an entire ocean, and two,
+the low degree of control over the simulation these algorithms allow for
+may result in the user to be unable to get satisfactory results.
+The interested reader may consult \cite{Bridson:2015,egstar:2014} though.
 
-The next sections will give an overview of two families of simulation models,
-the one based on a parametric description of ocean waves and the one based
-on a spectral description. We will omit any discussion regarding CFD and NSE,
-because those models do not fit the the premise of this work.
+
+% The next sections will give an overview of two families of simulation models,
+% the one based on a parametric description of ocean waves and the one based
+% on a spectral description. We will omit any discussion regarding CFD and NSE,
+% because those models do not fit the the premise of this work.
 % and the spectral description
 % We will not discuss CFD and NSE any further, as
 % they are out of scope for this work, for two reasons: first, too little user control
