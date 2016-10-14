@@ -539,13 +539,24 @@ energy, but wave vectors which are representative for the entire spectrum:
 long waves, short waves and even capillary waves.
 
 \section{GPU Implementations}
-To obtain interactive framerates\cite{Schneider:2001} simulate the displacements
+To obtain interactive framerates~\cite{Schneider:2001} simulate the displacements
 caused by wave motion using Perlin noise in a vertex shader on the GPU.
 \cite{Isidoro:2002} on the other hand perturb an existing mesh by means
-of a sum of sinusoids computed on the GPU, whereas \cite{Hinsinger:2002}
-employ Gerstner waves.
-\cite{Chen:2007}\cite{Salgado:2007}\cite{Schneider:2001}\cite{Cui:2004}\cite{Hinsinger:2002}\cite{Chou:2007}
+of a sum of four sinusoids computed on the GPU. In addition ripples are generated
+by a dynamic combination of multiple bumpmaps. In a similar fashion,
+\cite{Chen:2007} employ a sum of four sinusoids to synthesize ripples on
+an existing mesh. \cite{Finch:2004} uses a sum of four Gerstner waves to
+displace an existing mesh, where wavelengths that are too short to be
+represented by the mesh are filtered out automatically. Moreover,
+\citeauthor{Finch:2004} evaluates an additional sum, with more waves involved,
+to generate detailed surface normals.
+
+\cite{Salgado:2007} present a simplified implementation
+of \cite{Fournier:1986} using vertex shaders.
+
+\cite{Kryachko:2005} 
 
 
-\cite{Lee:2006a,Lee:2006b,Chen:2007, Lachman:2007, Finch:2004, Chiu:2006, Salgado:2007, Hu:2006, Cui:2004, Mitchell:2005, Isidoro:2002, Chou:2007, Schneider:2001, Kryachko:2005}
+\cite{Cui:2004}\cite{Hinsinger:2002}\cite{Chou:2007}
+\cite{Lee:2006a,Lee:2006b, Lachman:2007, Finch:2004, Chiu:2006, Hu:2006, Cui:2004, Mitchell:2005, Chou:2007, Kryachko:2005}
 \cite{NVIDIA:WaveWorks, NVIDIA:Ocean}
