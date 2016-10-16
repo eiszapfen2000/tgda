@@ -482,6 +482,7 @@ as well as directional spreading functions is to be found in Section
   \includegraphics[scale=0.125]{figures/Simulating_Ocean_Water-012.png}
 	\label{fig:tessendorf_choppy_waves:1}
  }
+ \hfill
  \subtop[]
  {
   \includegraphics[scale=0.125]{figures/Simulating_Ocean_Water-013.png}
@@ -539,24 +540,117 @@ energy, but wave vectors which are representative for the entire spectrum:
 long waves, short waves and even capillary waves.
 
 \section{GPU Implementations}
-To obtain interactive framerates~\cite{Schneider:2001} simulate the displacements
-caused by wave motion using Perlin noise in a vertex shader on the GPU.
-\cite{Isidoro:2002} on the other hand perturb an existing mesh by means
-of a sum of four sinusoids computed on the GPU. In addition ripples are generated
-by a dynamic combination of multiple bumpmaps. In a similar fashion,
-\cite{Chen:2007} employ a sum of four sinusoids to synthesize ripples on
-an existing mesh. \cite{Finch:2004} uses a sum of four Gerstner waves to
-displace an existing mesh, where wavelengths that are too short to be
-represented by the mesh are filtered out automatically. Moreover,
-\citeauthor{Finch:2004} evaluates an additional sum, with more waves involved,
-to generate detailed surface normals.
+%
+\begin{figure}
+ \centering
+ \subtop[]%[\citeauthor{Schneider:2001}]
+ {
+  \includegraphics[scale=0.175]{figures/Towards_Real-Time_Visual_Simulation_of_Water_Surfaces_-_Schneider_2001-032.png}
+	\label{fig:westermann}
+ }
+ \hfill
+ \subtop[]%[\citeauthor{Isidoro:2002}]
+ {
+  \includegraphics[scale=0.175]{figures/ShaderX_Rendering_Ocean_Water_-_Isidoro_2002-003.png}
+	\label{fig:isidoro}
+ }
+ \hfill
+ \subtop[]%[\citeauthor{Finch:2004}]
+ {
+  \includegraphics[scale=0.175]{figures/Effective_Water_Simulation_from_Physical_Models_-_Finch_2004-003.png}
+	\label{fig:finch}
+ }
+ \caption{
+\subcaptionref{fig:westermann} Source:~\cite{Schneider:2001}.
+\subcaptionref{fig:isidoro} Source:~\cite{Isidoro:2002}.
+\subcaptionref{fig:finch} Source:~\cite{Finch:2004}.
+}
+\label{fig:earlygpu}
+\end{figure}
+%
+The computer graphics community has been, and still is, hard at work to make
+algorithms presented in the previous sections capable to render in real-time.
+The challenge is trifold: first, the synthesis of an animated ocean surface,
+second, efficient rendering of vast ocean surface geometry, and third,
+believable shading of the ocean surface.
 
-\cite{Salgado:2007} present a simplified implementation
-of \cite{Fournier:1986} using vertex shaders.
+\subsection{Early Work}
+Early attempts to generate plausible water surfaces on graphics hardware include
+\cite{Schneider:2001, Isidoro:2002, Finch:2004}. Figure~\ref{fig:earlygpu}
+depicts some of their results.
+To obtain interactive framerates \citeauthor{Schneider:2001} compute the
+displacements caused by wave motion using two octaves of Perlin noise in a
+vertex shader on the GPU.
+\citeauthor{Isidoro:2002} perturb an existing mesh by means of a sum of four
+low-frequency sinusoids computed in a vertex shader on the GPU. Additional
+high-frequency detail is obtained by scrolling static normalmaps across the
+displaced surface.
+%In a similar fashion,
+%\cite{Chen:2007} employ a sum of four sinusoids to displace an existing mesh,
+%and a dynamically generated normalmap to obtain more detailed surface normals.
+\citeauthor{Finch:2004} uses a sum of four Gerstner waves to displace an existing
+mesh, where wavelengths that are too short to be represented by the mesh are
+filtered out automatically. Moreover, \citeauthor{Finch:2004} evaluates an
+additional sum, with more waves involved, to generate better detailed surface
+normals.
 
-\cite{Kryachko:2005} 
+%\cite{Salgado:2007} present a simplified implementation of \cite{Fournier:1986}
+%using vertex shaders.
 
+\subsection{Adaptive Schemes}
+Viewing situations involving an ocean surface are varied, from close-ups where
+one may notice ripples on the surface to views where the water surface may
+span until the horizon. Hence, to improve performance and visual fidelity,
+it is beneficial for rendering algorithms to focus on regions near the camera
+position, minimizing the number of samples according to distance from the
+viewpoint.
+%Given a viewing situation where one observes the ocean reaching the horizon, a
+%meshing scheme with uniformly spaced vertices in world space may do us a
+%disservice. The visible surface area is large and a high resolution is
+%needed in regions close to the camera, thus a very large mesh is required.
+%
+%Minimize the sampling of the geometry according to distance from the viewpoint.
+%Mesh adapts to viewing situation
+%Simulation adapts to viewing situation
+\begin{figure}
+ \centering
+ \subtop[]%[\citeauthor{Schneider:2001}]
+ {
+  \includegraphics[scale=0.175]{figures/Using_Vertex_Texture_Displacement_for_Realistic_Water_Rendering_-_Kryachko_2005-009.png}
+	\label{fig:kryachko:waves}
+ }
+ \hfill
+ \subtop[]%[\citeauthor{Schneider:2001}]
+ {
+  \includegraphics[scale=0.175]{figures/Using_Vertex_Texture_Displacement_for_Realistic_Water_Rendering_-_Kryachko_2005-012.png}
+	\label{fig:kryachko:meshing}
+ }
+ \hfill
+ \subtop[]%[\citeauthor{Isidoro:2002}]
+ {
+  \includegraphics[scale=0.175]{figures/Using_Vertex_Texture_Displacement_for_Realistic_Water_Rendering_-_Kryachko_2005-026.png}
+	\label{fig:kryachko:results}
+ }
+ \caption{
+  \subcaptionref{fig:kryachko:waves} A height map used for water displacement.
+  \subcaptionref{fig:kryachko:meshing} Radial grid centered at the camera position.
+  \subcaptionref{fig:kryachko:results} View with the ocean spanning to the horizon.
+  Source:~\cite{Kryachko:2005}
+}
+\label{fig:kryachko}
+\end{figure}
+%
+\cite{Kryachko:2005}
+\cite{Hinsinger:2002}
+\cite{thesis:johanson} 
+\cite{article:oceanlighting}
 
-\cite{Cui:2004}\cite{Hinsinger:2002}\cite{Chou:2007}
-\cite{Lachman:2007, Finch:2004, Chiu:2006, Hu:2006, Cui:2004, Mitchell:2005, Chou:2007}
+\cite{Cui:2004}\cite{Hinsinger:2002}
+\cite{Lachman:2007, Chiu:2006, Hu:2006,Mitchell:2005}
 \cite{NVIDIA:WaveWorks, NVIDIA:Ocean}
+
+
+\cite{Schneider:2001} vertex shader perlin noise/turbulence, forward differences for normals
+\cite{Isidoro:2002} vertex shader sum of sinusoids to distort geometry and normals, dynamic combination of bumpmaps for ripples
+\cite{Chen:2007} vertex shader sum of sinusoids, dynamically generated bumpmap for more surface detail
+\cite{Finch:2004} vertex shader, sum of Gerstner waves, filter to small wavelengths, additional sum for detailed surface normals
