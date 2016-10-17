@@ -695,19 +695,16 @@ ocean surface at rest, see Figure~\ref{fig:hinsinger:mesh}.
 the vertices represent the sampling points. To reduce aliasing as well as to save
 computation time, wavetrains smaller than a grid quad are removed from the sum
 of waves for that quad.
-
 % Visual artifacts caused by sampling locations changing with camera movement are
 % hidden by the waves animation.
-
- First, quads in screenspace, projected onto undisturbed surface plane
-change mesh in screenspace to focus on details in certain regions
-water animation hides artifacts caused by moving vertices
-sum of gerstner waves, hand picked, not automatically from spectrum
-analytical derivatives for normals
-prune wavetrains smaller than the grid quads, fade them out
-evaluate surface at any deseired location
-no cyclicity, if ratios between wavelengths irrational
-
+% First, quads in screenspace, projected onto undisturbed surface plane
+% change mesh in screenspace to focus on details in certain regions
+% water animation hides artifacts caused by moving vertices
+% sum of gerstner waves, hand picked, not automatically from spectrum
+% analytical derivatives for normals
+% prune wavetrains smaller than the grid quads, fade them out
+% evaluate surface at any deseired location
+% no cyclicity, if ratios between wavelengths irrational
 \cite{thesis:johanson} projected grid, improves upon Hinsinger meshing approach
 by adapting better to viewing conditions
 
