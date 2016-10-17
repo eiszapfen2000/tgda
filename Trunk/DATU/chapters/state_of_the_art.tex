@@ -640,10 +640,28 @@ viewpoint.
 \label{fig:kryachko}
 \end{figure}
 %
-\cite{Kryachko:2005}
-\cite{Hinsinger:2002}
-\cite{thesis:johanson} 
-\cite{article:oceanlighting}
+
+\cite{Kryachko:2005} superposition of handcrafted heightmaps, tiled in space and time
+four heightmaps for lighting, two heightmaps (with largest scale) for displacement, 
+samples heightmaps in vertex shader to compute displacement
+radial grid, centered at the camera position, tesselated such that it provides
+more detail close to the viewer
+still most of the mesh is clipped, because out of frustum
+
+\cite{Hinsinger:2002} quads in screenspace, projected onto undisturbed surface plane
+change mesh in screenspace to focus on details in certain regions
+water animation hides artifacts caused by moving vertices
+sum of gerstner waves, hand picked, not automatically from spectrum
+analytical derivatives for normals
+prune wavetrains smaller than the grid quads, fade them out
+evaluate surface at any deseired location
+no cyclicity, if ratios between wavelengths irrational
+
+\cite{thesis:johanson} projected grid, improves upon Hinsinger meshing approach
+by adapting better to viewing conditions
+
+\cite{article:oceanlighting} sum of gerstner waves
+highly advanced lighting
 
 \cite{Cui:2004}\cite{Hinsinger:2002}
 \cite{Lachman:2007, Chiu:2006, Hu:2006,Mitchell:2005}
