@@ -641,14 +641,65 @@ viewpoint.
 \end{figure}
 %
 
-\cite{Kryachko:2005} superposition of handcrafted heightmaps, tiled in space and time
-four heightmaps for lighting, two heightmaps (with largest scale) for displacement, 
-samples heightmaps in vertex shader to compute displacement
-radial grid, centered at the camera position, tesselated such that it provides
-more detail close to the viewer
-still most of the mesh is clipped, because out of frustum
+\cite{Kryachko:2005} describes the algorithm used in an actual flight simulator.
+The ocean is modeled as a combination of handcrafted heightmaps tiled in space
+and time. Four heightmaps are summed for lighting computations, where the two of them
+with the largest scale are used to displace the ocean surface mesh. The latter is
+organized as a radial grid centered at the camera position, tesselated such that
+it provides more detail close to the viewer, see Figure~\ref{fig:kryachko:meshing}.
+Radial grid positions are calculated in the vertex shader, as are displacements,
+allowing the algorithm to adapt the mesh vertices as well as displacement computations
+to the camera position automatically on the GPU for each frame. Still, one may
+notice that most of the radial mesh always is outside the view frustum,
+causing unnecessary overhead.
+%
+%
+\begin{figure}
+ \centering
+ \subtop[]
+ {
+  \includegraphics[scale=0.425]{figures/ProjectedGrid_UniformWS.pdf}
+  \label{fig:hinsinger:projectedgrid:ws}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[scale=0.425]{figures/ProjectedGrid_UniformSS}
+  \label{fig:hinsinger:projectedgrid:ss}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[scale=0.25]{figures/Interactive_Animation_of_Ocean_Waves_-_Hinsinger_2002-003.png}
+  \label{fig:hinsinger:projectedgrid:mesh}
+ }
+ \caption{
+  \subcaptionref{fig:hinsinger:projectedgrid:ws} Uniformly spaced vertices in world space, their projection onto the screen is not uniformly spaced though.
+  \subcaptionref{fig:hinsinger:projectedgrid:ss} Uniformly spaced vertices in screen space projected onto world space base plane.
+  \subcaptionref{fig:hinsinger:projectedgrid:mesh} The result mesh obtained by projection of the vertices onto the base plane followed by displacement.
+  One can see that the surface patches grow with distance from the viewer.
+  Source:~\cite{Hinsinger:2002}
+}
+\label{fig:hinsinger:mesh}
+\end{figure}
+%
+%
 
-\cite{Hinsinger:2002} quads in screenspace, projected onto undisturbed surface plane
+\cite{Hinsinger:2002} present a more holistic approach, with their contribution
+being twofold. One, an adaptive meshing scheme, and two, an adaptive simulation
+scheme. The basic idea for the adaptive surface mesh is to make sure that every
+surface element at rest covers the same area on screen. Thus, the screen is
+subdivided into quads which are projected onto the plane which represents the
+ocean surface at rest, see Figure~\ref{fig:hinsinger:mesh}.
+\citeauthor{Hinsinger:2002} synthesize waves as a sum of Gerstner waves, where
+the vertices represent the sampling points. To reduce aliasing as well as to save
+computation time, wavetrains smaller than a grid quad are removed from the sum
+of waves for that quad.
+
+% Visual artifacts caused by sampling locations changing with camera movement are
+% hidden by the waves animation.
+
+ First, quads in screenspace, projected onto undisturbed surface plane
 change mesh in screenspace to focus on details in certain regions
 water animation hides artifacts caused by moving vertices
 sum of gerstner waves, hand picked, not automatically from spectrum
