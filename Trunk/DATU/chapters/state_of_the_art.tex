@@ -522,7 +522,7 @@ wave algorithm.
 %Tessendorf - Simulating Ocean Water \cite{course:simulatingocean}
 
 \section{Hybrid Approaches}
-Hybrid approaches combine parametric and spectral models, where wave spectra
+Hybrid approaches combine parametric and spectral models where wave spectra
 provide a realistic description of the wave components, and the parametric part
 allows fine-grained control over the model.
 \citeauthor{Thon:2000}\citep{Thon:2000,Thon:2002} uses a linear superposition
@@ -650,7 +650,7 @@ it provides more detail close to the viewer, see Figure~\ref{fig:kryachko:meshin
 Radial grid positions are calculated in the vertex shader, as are displacements,
 allowing the algorithm to adapt the mesh vertices as well as displacement computations
 to the camera position automatically on the GPU for each frame. Still, one may
-notice that most of the radial mesh always is outside the view frustum,
+notice that most of the radial mesh is alway outside the view frustum,
 causing unnecessary overhead.
 %
 %
@@ -690,11 +690,14 @@ being twofold. One, an adaptive meshing scheme, and two, an adaptive simulation
 scheme. The basic idea for the adaptive surface mesh is to make sure that every
 surface element at rest covers the same area on screen. Thus, the screen is
 subdivided into quads which are projected onto the plane which represents the
-ocean surface at rest, see Figure~\ref{fig:hinsinger:mesh}.
+ocean surface at rest, see Figure~\ref{fig:hinsinger:mesh}. The result is
+a mesh which automatically adapts to the current camera position and gives more
+detail close to the viewer.
 \citeauthor{Hinsinger:2002} synthesize waves as a sum of Gerstner waves, where
-the vertices represent the sampling points. To reduce aliasing as well as to save
-computation time, wavetrains smaller than a grid quad are removed from the sum
-of waves for that quad.
+the vertices represent the sampling points. Derivatives are computed analytically
+for each vertex, resulting in better normal vectors than a finite differences
+approach would produce. To reduce aliasing as well as to save computation time,
+wavetrains smaller than a grid quad are removed from the sum of waves for that quad.
 % Visual artifacts caused by sampling locations changing with camera movement are
 % hidden by the waves animation.
 % First, quads in screenspace, projected onto undisturbed surface plane
@@ -705,18 +708,17 @@ of waves for that quad.
 % prune wavetrains smaller than the grid quads, fade them out
 % evaluate surface at any deseired location
 % no cyclicity, if ratios between wavelengths irrational
-\cite{thesis:johanson} projected grid, improves upon Hinsinger meshing approach
-by adapting better to viewing conditions
-
+\cite{Cui:2004} uses the adaptive mesh by \citeauthor{Hinsinger:2002} for a marine
+simulator with three adjacent viewports, the wave model although is a simple sum
+of sinusoids with a small number of waves picked from a wave spectrum.
+\cite{thesis:johanson} on the other hand improves upon the adaptive mesh of
+\citeauthor{Hinsinger:2002}. First, the projection of the mesh onto the base plane
+is done in a vertex shader on the GPU. Second, \citeauthor{thesis:johanson} makes
+sure that the projection of the vertices works correctly in all possible viewing
+situations.
 \cite{article:oceanlighting} sum of gerstner waves
 highly advanced lighting
 
-\cite{Cui:2004}\cite{Hinsinger:2002}
+
 \cite{Lachman:2007, Chiu:2006, Hu:2006,Mitchell:2005}
 \cite{NVIDIA:WaveWorks, NVIDIA:Ocean}
-
-
-\cite{Schneider:2001} vertex shader perlin noise/turbulence, forward differences for normals
-\cite{Isidoro:2002} vertex shader sum of sinusoids to distort geometry and normals, dynamic combination of bumpmaps for ripples
-\cite{Chen:2007} vertex shader sum of sinusoids, dynamically generated bumpmap for more surface detail
-\cite{Finch:2004} vertex shader, sum of Gerstner waves, filter to small wavelengths, additional sum for detailed surface normals
