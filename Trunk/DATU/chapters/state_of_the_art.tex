@@ -721,22 +721,54 @@ situations.
 \begin{figure}
  \centering
  \includegraphics[scale=0.3]{figures/Seamless_Ocean_Lighting_-_Bruneton_2010-001.png}
- \caption{The displaced surface mesh in screen space. Geometry only. Geometry with per pixel
-normals. Geometry with per pixel normals and BRDF. Source:~\cite{article:oceanlighting}}
+ \caption{From left to right: The displaced surface mesh in screen space, lighting
+ with geometry only, lighting with geometry and per pixel normals, lighting with 
+ geometry and per pixel normals and BRDF.
+ Source:~\cite{article:oceanlighting}}
+\label{fig:bruneton:transitions}
 \end{figure}
 %
 %
 \begin{figure}
  \centering
  \includegraphics[scale=0.25]{figures/Seamless_Ocean_Lighting_-_Bruneton_2010-002.png}
- \caption{Reflected sun light. Reflected sky light. Light refracted from water. Final result.
+ \caption{From left to right: The reflected sun light, the reflected sky light,
+ the light refracted from the water, the final result.
  Source:~\cite{article:oceanlighting}}
+\label{fig:bruneton:lightingterms}
 \end{figure}
 %
 %
-\cite{article:oceanlighting} sum of gerstner waves
-highly advanced lighting
 
+\cite{article:oceanlighting} augment the work of \citeauthor{Hinsinger:2002} in
+various areas, the most prominent improvement being an adaptive lighting scheme.
+The latter is based on a hierarchical representation which combines geometry,
+normals and a BRDF~\citep{Ross:2005}, where the BRDF is specifically tailored to
+the statistical properties of ocean surfaces. Based on distance from the viewer,
+the algorithm transitions seamlessy from lighting computed with geometry and per
+pixel normals to lighting computed based solely on the statistical distribution
+of ocean surface slopes as modeled by the BRDF, see Figure~\ref{fig:bruneton:transitions}.
+To save computation time for vertex positions, wavetrains are filtered according
+to the size of their associated projected grid cell in world space.
+For the gradient computation in the pixel shader there is an additional step,
+where wavetrains are filtered according to the projected size of the current pixel
+in world space. In addition, \citeauthor{article:oceanlighting} show the
+integration of the BRDF by \citeauthor{Ross:2005} into the computation of
+all necessary lighting terms, namely the reflected light from the sun and from
+the skydome, and the refracted light from the water, see
+Figure~\ref{fig:bruneton:lightingterms}.
+ 
+% Realistic animation and rendering of the ocean is an important aspect for simulators, movies and video games.
+% By nature, the ocean is a difficult problem for Computer Graphics: it is a dynamic system, it combines wave trains
+% at all scales, ranging from kilometric to millimetric. Worse, the ocean is usually viewed at several distances, from
+% very close to the viewpoint to the horizon, increasing the multi-scale issue, and resulting in aliasing problems. The
+% illumination comes from natural light sources (the Sun and the sky dome), is also dynamic, and often underlines
+% the aliasing issues. In this paper, we present a new algorithm for modelling, animation, illumination and rendering
+% of the ocean, in real-time, at all scales and for all viewing distances. Our algorithm is based on a hierarchical
+% representation, combining geometry, normals and BRDF. For each viewing distance, we compute a simplified
+% version of the geometry, and encode the missing details into the normal and the BRDF, depending on the level of
+% detail required. We then use this hierarchical representation for illumination and rendering. Our algorithm runs
+% in real-time, and produces highly realistic pictures and animations.
 
 \cite{Lachman:2007, Chiu:2006, Hu:2006,Mitchell:2005}
 \cite{NVIDIA:WaveWorks, NVIDIA:Ocean}
