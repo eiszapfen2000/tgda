@@ -406,7 +406,7 @@ at rest. It follows that no wave transitions from one water depth to another,
 therefore no wave refraction may take place.
 
 Third, the inverse Discrete Fourier Transform may leverage the
-Fast Fourier Transform algorithm, which makes the computation of
+Fast Fourier Transform algorithm~\citep{Cooley:1965}, which makes the computation of
 Equation~\ref{eq:spectral_models} most efficient. Hence, given the same
 computational cost, it is possible for spectral models to involve way more wave
 numbers in the sum of waves than parametric models could. Moreover, thanks to
@@ -733,7 +733,7 @@ situations.
  \centering
  \includegraphics[scale=0.25]{figures/Seamless_Ocean_Lighting_-_Bruneton_2010-002.png}
  \caption{From left to right: The reflected sun light, the reflected sky light,
- the light refracted from the water, the final result.
+ the light refracted from the water, and the final result.
  Source:~\cite{article:oceanlighting}}
 \label{fig:bruneton:lightingterms}
 \end{figure}
@@ -770,6 +770,21 @@ Figure~\ref{fig:bruneton:lightingterms}.
 % detail required. We then use this hierarchical representation for illumination and rendering. Our algorithm runs
 % in real-time, and produces highly realistic pictures and animations.
 
-\cite{Mitchell:2005}
+Parametric approaches in the spatial domain profit from the fact
+that for each frame only visible parts and frequencies of the ocean surface
+are to be evaluated. \cite{Mitchell:2005} and \cite{Thon:2000}
+argue that from an algorithmic point of view one should choose a spectral
+approach and leverage the highly efficient Fast Fourier Transform algorithm
+to compute the sum of waves. \citeauthor{Mitchell:2005} describes a
+GPU implementation of the ocean wave generation method presented in
+\cite{course:simulatingocean}. To improve rendering performance,
+\citeauthor{Mitchell:2005} synthesizes two water surface height maps,
+where one contains low frequency waveforms and the other contains
+low frequency and high frequency waveforms. The low frequency map
+is of low resolution and is used to displace the water surface mesh.
+The high resolution map is used to generate a normal map for shading.
+The result is a detailed ocean surface with coarse underlying geometry.
+
+
 \cite{Lachman:2007, Chiu:2006, Hu:2006}
 \cite{NVIDIA:WaveWorks, NVIDIA:Ocean}
