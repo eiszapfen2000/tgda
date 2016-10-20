@@ -785,9 +785,16 @@ is of low resolution and is used to displace the water surface mesh.
 The high resolution map is used to generate a normal map for shading.
 The result is a detailed ocean surface with coarse underlying geometry.
 
+\cite{misc:oceanlightingfft} combines the adaptive lighting scheme
+from \cite{article:oceanlighting} with an ocean surface synthesized
+from a wave spectrum. Wave heights, gradients, and
+horizontal displacements for the choppy wave algorithm are computed
+entirely on the GPU. In an additional step, \cite{article:whitecaps}
+add whitecaps to the ocean lighting model.
+
 As ocean surfaces generated from wave spectra allow for seamless tiling,
 one may need to make sure to remove tiling artifacts i.e. the viewer
-shall not notice that the ocean surface tile repeats itself in all directions.
+shall not notice that the ocean surface repeats itself in all directions.
 The approach taken by~\cite{Rydahl:2009, NVIDIA:Ocean} is to generate
 additional noise on the ocean surface. \cite{misc:oceanlightingfft,article:whitecaps}
 on the other hand compute not just one ocean surface tile, but up to four,
