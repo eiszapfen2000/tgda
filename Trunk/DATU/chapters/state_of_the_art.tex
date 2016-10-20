@@ -785,6 +785,12 @@ is of low resolution and is used to displace the water surface mesh.
 The high resolution map is used to generate a normal map for shading.
 The result is a detailed ocean surface with coarse underlying geometry.
 
-
-\cite{Lachman:2007, Chiu:2006, Hu:2006}
-\cite{NVIDIA:WaveWorks, NVIDIA:Ocean}
+As ocean surfaces generated from wave spectra allow for seamless tiling,
+one may need to make sure to remove tiling artifacts i.e. the viewer
+shall not notice that the ocean surface tile repeats itself in all directions.
+The approach taken by~\cite{Rydahl:2009, NVIDIA:Ocean} is to generate
+additional noise on the ocean surface. \cite{misc:oceanlightingfft,article:whitecaps}
+on the other hand compute not just one ocean surface tile, but up to four,
+where each one samples a different part of the wave spectrum. Even though
+such an approach is unable to remove periodicity entirely, it is increased
+to the least common multiple of the different tiles.
