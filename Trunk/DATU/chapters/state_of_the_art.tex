@@ -561,9 +561,9 @@ long waves, short waves and even capillary waves.
 	\label{fig:finch}
  }
  \caption{
-\subcaptionref{fig:westermann} Source:~\cite{Schneider:2001}.
-\subcaptionref{fig:isidoro} Source:~\cite{Isidoro:2002}.
-\subcaptionref{fig:finch} Source:~\cite{Finch:2004}.
+\subcaptionref{fig:westermann} Source:~\cite{Schneider:2001}
+\subcaptionref{fig:isidoro} Source:~\cite{Isidoro:2002}
+\subcaptionref{fig:finch} Source:~\cite{Finch:2004}
 }
 \label{fig:earlygpu}
 \end{figure}
@@ -664,7 +664,7 @@ causing unnecessary overhead.
  \hfill
  \subtop[]
  {
-  \includegraphics[scale=0.425]{figures/ProjectedGrid_UniformSS}
+  \includegraphics[scale=0.425]{figures/ProjectedGrid_UniformSS.pdf}
   \label{fig:hinsinger:projectedgrid:ss}
  }
  \hfill
@@ -784,15 +784,46 @@ low frequency and high frequency waveforms. The low frequency map
 is of low resolution and is used to displace the water surface mesh.
 The high resolution map is used to generate a normal map for shading.
 The result is an ocean surface which appears highly detailed
-while the underlying geometry is coarse.
+while the underlying mesh is coarse.
 
+%
+%
+\begin{figure}
+ \centering
+ \renewcommand{\thesubfigure}{}% no subfigure number
+ \tightsubcaptions % we want tight subcaptions
+ \setlength{\subfloatlabelskip}{0pt}% no space between number and caption
+ \subtop[]
+ {
+  \includegraphics[scale=0.125]{figures/Real-time_Animation_and_Rendering_of_Ocean_Whitecaps-000.png}
+  %\label{fig:hinsinger:projectedgrid:ws}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[scale=0.125]{figures/Real-time_Animation_and_Rendering_of_Ocean_Whitecaps-002.png}
+  %\label{fig:hinsinger:projectedgrid:ss}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[scale=0.125]{figures/Real-time_Animation_and_Rendering_of_Ocean_Whitecaps-004.png}
+  %\label{fig:hinsinger:projectedgrid:mesh}
+ }
+\caption{A set of example ocean scenes with whitecaps. Source:~\cite{article:whitecaps}
+}
+\label{fig:dupuy:whitecaps}
+\end{figure}
+%
+%
 \citet{misc:oceanlightingfft} combines the adaptive lighting scheme
 from \citet{article:oceanlighting} with an ocean surface synthesized
-from a wave spectrum~\citep{article:Elfouhaily1997}.
+from the wave spectrum presented in~\citet{article:Elfouhaily1997}.
 Wave heights, gradients, as well as the horizontal displacements
 required for~\citeauthor{course:simulatingocean}'s choppy wave algorithm
 are computed entirely on the GPU. In an additional step,
-\citet{article:whitecaps} add whitecaps to the ocean lighting model.
+\citet{article:whitecaps} add whitecaps to the ocean lighting model,
+see Figure~\ref{fig:dupuy:whitecaps}.
 
 As ocean surfaces generated from wave spectra allow for seamless tiling,
 one may need to make sure to reduce tiling artifacts i.e. the viewer
