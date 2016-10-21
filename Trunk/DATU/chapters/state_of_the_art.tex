@@ -740,7 +740,7 @@ situations.
 %
 %
 
-\cite{article:oceanlighting} augment the work of \citeauthor{Hinsinger:2002} in
+\citet{article:oceanlighting} augment the work of \citeauthor{Hinsinger:2002} in
 various areas, the most prominent improvement being an adaptive lighting scheme.
 The latter is based on a hierarchical representation which combines geometry,
 normals and a BRDF~\citep{Ross:2005}, where the BRDF is specifically tailored to
@@ -772,32 +772,36 @@ Figure~\ref{fig:bruneton:lightingterms}.
 
 Parametric approaches in the spatial domain profit from the fact
 that for each frame only visible parts and frequencies of the ocean surface
-are to be evaluated. \cite{Mitchell:2005} and \cite{Thon:2000}
+are to be evaluated. \citet{Mitchell:2005} and \citet{Thon:2000}
 argue that from an algorithmic point of view one should choose a spectral
 approach and leverage the highly efficient Fast Fourier Transform algorithm
 to compute the sum of waves. \citeauthor{Mitchell:2005} describes a
-GPU implementation of the ocean wave generation method presented in
-\cite{course:simulatingocean}. To improve rendering performance,
+partial GPU implementation of the ocean wave generation method presented in
+\citet{course:simulatingocean}. To improve rendering performance,
 \citeauthor{Mitchell:2005} synthesizes two water surface height maps,
 where one contains low frequency waveforms and the other contains
 low frequency and high frequency waveforms. The low frequency map
 is of low resolution and is used to displace the water surface mesh.
 The high resolution map is used to generate a normal map for shading.
-The result is a detailed ocean surface with coarse underlying geometry.
+The result is an ocean surface which appears highly detailed
+while the underlying geometry is coarse.
 
-\cite{misc:oceanlightingfft} combines the adaptive lighting scheme
-from \cite{article:oceanlighting} with an ocean surface synthesized
-from a wave spectrum. Wave heights, gradients, and
-horizontal displacements for the choppy wave algorithm are computed
-entirely on the GPU. In an additional step, \cite{article:whitecaps}
-add whitecaps to the ocean lighting model.
+\citet{misc:oceanlightingfft} combines the adaptive lighting scheme
+from \citet{article:oceanlighting} with an ocean surface synthesized
+from a wave spectrum~\citep{article:Elfouhaily1997}.
+Wave heights, gradients, as well as the horizontal displacements
+required for~\citeauthor{course:simulatingocean}'s choppy wave algorithm
+are computed entirely on the GPU. In an additional step,
+\citet{article:whitecaps} add whitecaps to the ocean lighting model.
 
 As ocean surfaces generated from wave spectra allow for seamless tiling,
-one may need to make sure to remove tiling artifacts i.e. the viewer
+one may need to make sure to reduce tiling artifacts i.e. the viewer
 shall not notice that the ocean surface repeats itself in all directions.
-The approach taken by~\cite{Rydahl:2009, NVIDIA:Ocean} is to generate
-additional noise on the ocean surface. \cite{misc:oceanlightingfft,article:whitecaps}
+The approach taken by~\citet{Rydahl:2009} and \citet{NVIDIA:Ocean} is to
+generate additional noise on the ocean surface.
+\citet{misc:oceanlightingfft,article:whitecaps}
 on the other hand compute not just one ocean surface tile, but up to four,
-where each one samples a different part of the wave spectrum. Even though
-such an approach is unable to remove periodicity entirely, it is increased
-to the least common multiple of the different tiles.
+where all tiles are of different size and each one samples a different
+part of the wave spectrum. Even though such an approach is unable to
+entirely remove periodicity, the period is increased to the least common
+multiple of the different tile sizes.
