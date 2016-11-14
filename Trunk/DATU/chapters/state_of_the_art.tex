@@ -26,7 +26,7 @@ breaking near the shore. Deep water may ignore changes in water depth,
 whereas intermediate and shallow waters need to account for how it affects
 surface waves. Additionally, tidal waves and tsunamis may travel unnoticed
 through deep water, but have a measurable impact on intermediate water areas
-and even more so on shallow water areas.\\
+and even more so on shallow water areas.
 % 
 % The remainder of this chapter is organized as follows:
 % Section~\ref{sec:simulation} gives an overview of simulation techniques used in
@@ -42,15 +42,14 @@ surface by means of parametric equations which have been derived based on real
 world observations \citep{Gerstner:1809,Rankine:1863,Biesel:1952}.
 The second family approximate the ocean surface using wave spectra which
 simulate the sea as a random process based on the distribution of wave energy
-in frequency space \citep{book:kinsman2002wind,article:PiersonMoskowitz1964,
-article:Hasselman1973,article:Donelan1985,article:Elfouhaily1997}.
+in frequency space \citep{book:kinsman2002wind}.
 Third, computational fluid dynamics in combination with the Navier-Stokes
 equations (NSE) are potentially able to fully describe the dynamics of all kinds of
 fluid, including the ocean. We will omit any further discussion regarding CFD and NSE,
 because, one, those models are the ones with the largest computational cost and therefore
 the least adequate to simulate an entire ocean, and two,
 the low degree of control over the simulation these algorithms allow for
-may result in the user to be unable to get satisfactory results.
+may cause the user to be unable to get the desired results.
 The interested reader may consult \cite{Bridson:2015} and \cite{egstar:2014} though.
 
 
@@ -117,8 +116,8 @@ vector, and $\omega_i$ its angular frequency. The wave vector defines the
 travelling direction of the wave, with the the positive X-axis pointing towards
 the coastline, the Y-axis pointing in the opposite direction of earth's gravity,
 and the Z-axis aligned with the coastline. For the sum of waves to achieve a
-realistic shape, \citeauthor{Max:1981} applies linear wave theory \citep{book:airy1845tides}.
-The waves on the water surface are assumed to be dominated by gravity, the wave
+realistic shape, \citeauthor{Max:1981} applies linear wave theory \citep{book:airy1845tides}:
+the waves on the water surface are assumed to be dominated by gravity, the wave
 amplitudes are assumed to be small in relation to the size of the water body,
 and the water body is assumed to have infinite depth. Then, according to linear
 wave theory it follows that the wave number $k=\norm{\mvec{k}}$ and the angular
@@ -133,11 +132,10 @@ Figure~\ref{fig:max1981}.
 \label{fig:perlin1985}
 \end{figure}
 %
-
-Both,~\cite{Schachter:1980} and~\cite{Perlin:1985}, developed similar approaches,
-where instead of generating any actual geometry they simply distort the normal
-vectors of given surfaces. Results obtained by~\citeauthor{Perlin:1985} are
-shown in Figure \ref{fig:perlin1985}.
+Both~\cite{Schachter:1980} and~\cite{Perlin:1985} developed similar approaches,
+but instead of generating any actual geometry they simply distort the normal
+vectors of given surfaces. Results obtained by~\citeauthor{Perlin:1985} are shown
+in Figure~\ref{fig:perlin1985}.
 %
 \begin{figure}
  \centering
@@ -165,15 +163,15 @@ Source:~\cite{Peachey:1986}}
 \label{fig:peachey1986}
 \end{figure}
 %
+
 The assumption of infinite depth restricts the above methods to deep water, they
 are unable to include phenomena which arise near the shore, such as breaking
 waves and wave refraction. \cite{Peachey:1986}, still in the realm of linear
 wave theory, simulates waves near the shore through the relationship
 $\omega^2=kg\tanh (kh)$, where $h$ is the water depth. Moreover,
-\citeauthor{Peachey:1986} distorts waves approaching the sloping beach so that
-they resemble breaking waves more closely. Additionally, particle systems are
-added to generate spray. Results of \cite{Peachey:1986} are shown in
-Figure~\ref{fig:peachey1986}.
+\citeauthor{Peachey:1986} does not only distort waves approaching the sloping beach
+so that they resemble breaking waves more closely, but also adds particle systems
+to generate spray. Results of \cite{Peachey:1986} are shown in Figure~\ref{fig:peachey1986}.
 %
 \begin{figure}
 \begin{tikzpicture}
