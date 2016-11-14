@@ -111,11 +111,9 @@ the height is computed as a sum of sinusoids:
 h(x,z,t) = y + \sum_{i=1}^N A_i \cos (l_i x + m_i z - \omega_i t)
 \end{equation}
 where $y$ is the mean height of the free surface, $N$ is the number of waves,
-$A_i$ is the amplitude of the $i$th wave, $\mvec{k}_i = (l_i, m_i)$ its wave
-vector, and $\omega_i$ its angular frequency. The wave vector defines the
-travelling direction of the wave, with the the positive X-axis pointing towards
-the coastline, the Y-axis pointing in the opposite direction of earth's gravity,
-and the Z-axis aligned with the coastline. For the sum of waves to achieve a
+$A_i$ is the amplitude of the $i$th wave, $\omega_i$ its angular frequency,
+and $\mvec{k}_i = (l_i, m_i)$ its wave vector which defines the
+travelling direction of the wave. For the sum of waves to achieve a
 realistic shape, \citeauthor{Max:1981} applies linear wave theory \citep{book:airy1845tides}:
 the waves on the water surface are assumed to be dominated by gravity, the wave
 amplitudes are assumed to be small in relation to the size of the water body,
@@ -125,17 +123,17 @@ frequency $\omega$ are related by $\omega^2=kg$, where $g=9.81$ denotes earth's
 gravity. Results obtained by~\citeauthor{Max:1981} are shown in
 Figure~\ref{fig:max1981}.
 %
-\begin{figure}
- \centering
- \includegraphics[scale=0.25]{figures/An_Image_Synthesizer_-_Perlin_1985-021.png}
- \caption{Ocean sunset. Source:~\cite{Perlin:1985}}
-\label{fig:perlin1985}
-\end{figure}
+% \begin{figure}
+%  \centering
+%  \includegraphics[scale=0.25]{figures/An_Image_Synthesizer_-_Perlin_1985-021.png}
+%  \caption{Ocean sunset. Source:~\cite{Perlin:1985}}
+% \label{fig:perlin1985}
+% \end{figure}
 %
 Both~\cite{Schachter:1980} and~\cite{Perlin:1985} developed similar approaches,
 but instead of generating any actual geometry they simply distort the normal
-vectors of given surfaces. Results obtained by~\citeauthor{Perlin:1985} are shown
-in Figure~\ref{fig:perlin1985}.
+vectors of given surfaces.
+% Results obtained by~\citeauthor{Perlin:1985} are shown in Figure~\ref{fig:perlin1985}.
 %
 \begin{figure}
  \centering
@@ -168,10 +166,14 @@ The assumption of infinite depth restricts the above methods to deep water, they
 are unable to include phenomena which arise near the shore, such as breaking
 waves and wave refraction. \cite{Peachey:1986}, still in the realm of linear
 wave theory, simulates waves near the shore through the relationship
-$\omega^2=kg\tanh (kh)$, where $h$ is the water depth. Moreover,
-\citeauthor{Peachey:1986} does not only distort waves approaching the sloping beach
-so that they resemble breaking waves more closely, but also adds particle systems
-to generate spray. Results of \cite{Peachey:1986} are shown in Figure~\ref{fig:peachey1986}.
+$\omega^2=kg\tanh (kh)$, where $h$ is the water depth.
+To resemble breaking waves more closely \citeauthor{Peachey:1986} adds
+particle systems to generate spray, and distorts the form of waves approaching
+the sloping beach. Results of \cite{Peachey:1986} are shown in Figure~\ref{fig:peachey1986}.
+% Moreover,
+% \citeauthor{Peachey:1986} does not only distort waves approaching the sloping beach
+% so that they resemble breaking waves more closely, but also adds particle systems
+% to generate spray. Results of \cite{Peachey:1986} are shown in Figure~\ref{fig:peachey1986}.
 %
 \begin{figure}
 \begin{tikzpicture}
