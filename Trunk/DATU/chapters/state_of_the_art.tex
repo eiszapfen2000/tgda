@@ -170,16 +170,12 @@ $\omega^2=kg\tanh (kh)$, where $h$ is the water depth.
 To resemble breaking waves more closely \citeauthor{Peachey:1986} adds
 particle systems to generate spray, and distorts the form of waves approaching
 the sloping beach. Results of \cite{Peachey:1986} are shown in Figure~\ref{fig:peachey1986}.
-% Moreover,
-% \citeauthor{Peachey:1986} does not only distort waves approaching the sloping beach
-% so that they resemble breaking waves more closely, but also adds particle systems
-% to generate spray. Results of \cite{Peachey:1986} are shown in Figure~\ref{fig:peachey1986}.
 %
-\begin{figure}
+\begin{figure}[!b]
 \begin{tikzpicture}
 \begin{axis}[
 	width=\textwidth,
-	height=0.5\textwidth,
+	height=0.45\textwidth,
 	domain=0:40,
 	%xmin = 0,
 	%xmax = 40,
@@ -219,8 +215,8 @@ crest. With $kA<1$ the wave takes the form of an upside-down trochoid, with
 $kA=1$ the form of an upside-down cycloid, and with $kA>1$ the wave intersects
 itself, an undesireable effect which does not resemble real waves.
 See Figure~\ref{fig:trochoid:crests} for waves with different $kA$.
-%Gerstner waves take the form of an upside-down trochoid.
-The sum of of Gerstner waves is as follows:
+
+We may write a sum of Gerstner waves as follows:
 \begin{align}
 \mvec{x} &= \mvec{x}_0 - \sum_i^N\frac{\mvec{k}_i}{\norm{\mvec{k_i}}} A_i \sin\left(\mvec{k}_i\cdot\mvec{x}_0-\omega t\right)\\
 y &= y_0 - \sum_i^N A_i \cos\left(\mvec{k}_i\cdot\mvec{x}_0-\omega t\right)
@@ -257,7 +253,15 @@ Source:~\cite{Fournier:1986}}
 \label{fig:fournier1986:refraction}
 \end{figure}
 %
-\begin{figure}
+\citeauthor{Fournier:1986} improve upon the above model in two ways. First, wave
+particle motion takes the underlying sea bed into account, allowing for waves
+to be refracted i.e. to change their wavelength, their speed and their direction
+of travel based on water depth, see Figure~\ref{fig:fournier1986:refraction}.
+Second, the circular orbit of Gerstner waves approaching the shore is
+transformed into an elliptical orbit, which allows to approximate the form of
+breaking waves near the beach. 
+%
+\begin{figure}[!b]
  \centering
  \subtop[]
  {
@@ -265,17 +269,17 @@ Source:~\cite{Fournier:1986}}
 	\label{fig:fournier1986:results:1}
  }
  \hfill
- \subtop[]
- {
-  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-010.png}
-	\label{fig:fournier1986:results:2}
- }
- \subtop[]
- {
-  \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-011.png}
-	\label{fig:fournier1986:results:3}
- }
- \hfill
+%  \subtop[]
+%  {
+%   \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-010.png}
+% 	\label{fig:fournier1986:results:2}
+%  }
+%  \subtop[]
+%  {
+%   \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-011.png}
+% 	\label{fig:fournier1986:results:3}
+%  }
+%  \hfill
  \subtop[]
  {
   \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-013.png}
@@ -283,22 +287,15 @@ Source:~\cite{Fournier:1986}}
  }
  \caption{
  \subcaptionref{fig:fournier1986:results:1} Breaking waves on the shore, where the crests take the shape of the shore.
- \subcaptionref{fig:fournier1986:results:2} Wave refraction.
- \subcaptionref{fig:fournier1986:results:3} Waves with spray and foam.
+%  \subcaptionref{fig:fournier1986:results:2} Wave refraction.
+%  \subcaptionref{fig:fournier1986:results:3} Waves with spray and foam.
  \subcaptionref{fig:fournier1986:results:4} A large breaking wave.
  Source:~\cite{Fournier:1986}
  }
  \label{fig:fournier1986:results}
 \end{figure}
 %
-\citeauthor{Fournier:1986} improve upon the above model in two ways. First, wave
-particle motion takes the underlying sea bed into account, allowing for waves
-to be refracted i.e. to change their wavelength, their speed and their direction
-of travel based on water depth, see Figure~\ref{fig:fournier1986:refraction}.
-Second, the circular orbit of Gerstner waves approaching the shore is
-transformed into an elliptical orbit, which allows to approximate the form of
-breaking waves near the beach. Results of \cite{Fournier:1986} are shown in
-Figure~\ref{fig:fournier1986:results}.
+Results of \cite{Fournier:1986} are shown in Figure~\ref{fig:fournier1986:results}.\\
 %
 \begin{figure}
  \centering
@@ -335,6 +332,7 @@ Figure~\ref{fig:fournier1986:results}.
  \label{fig:gonzato1997:results}
 \end{figure}
 %
+
 \cite{Ts'o:1987} implement an algorithm called \emph{wave tracing} which
 launches orthogonal wave rays from the open sea along the direction of wave
 propagation. Wave refraction is computed based on Snell's law, the wave trains
