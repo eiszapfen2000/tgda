@@ -70,25 +70,25 @@ The interested reader may consult \cite{Bridson:2015} and \cite{egstar:2014} tho
 \centering
  \subtop[]
  {
-  \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-006_1.png}
+  \includegraphics[scale=0.185]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-006_1.png}
 	\label{fig:max1981:1}
  }
  \hfill
  \subtop[]
  {
-  \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-007_1.png}
+  \includegraphics[scale=0.185]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-007_1.png}
 	\label{fig:max1981:2}
  }
  \hfill
  \subtop[]
  {
-  \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-006_2.png}
+  \includegraphics[scale=0.185]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-006_2.png}
 	\label{fig:max1981:3}
  }
  \hfill
  \subtop[]
  {
-  \includegraphics[scale=0.25]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-007_2.png}
+  \includegraphics[scale=0.185]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-007_2.png}
 	\label{fig:max1981:4}
  }
 \caption{\subcaptionref{fig:max1981:1}~Still water near sunset.
@@ -125,13 +125,13 @@ h(x,z,t) = y + \sum_{i=1}^N A_i \cos (l_i x + m_i z - \omega_i t)
 \end{equation}
 where $y$ is the mean height of the free surface, $N$ is the number of waves,
 $A_i$ is the amplitude of the $i$th wave, $\omega_i$ its angular frequency,
-and $\mvec{k}_i = (l_i, m_i)$ its wave vector which defines the
+and $\mvec{k}_i = (l_i, m_i)$ its \wavevector which defines the
 travelling direction of the wave. For the sum of waves to achieve a
 realistic shape, \citeauthor{Max:1981} applies linear wave theory \citep{book:airy1845tides}:
 the waves on the water surface are assumed to be dominated by gravity, the wave
 amplitudes are assumed to be small in relation to the size of the water body,
 and the water body is assumed to have infinite depth. Then, according to linear
-wave theory it follows that the wave number $k=\norm{\mvec{k}}$ and the angular
+wave theory it follows that the \wavenumber $k=\norm{\mvec{k}}$ and the angular
 frequency $\omega$ are related by $\omega^2=kg$, where $g=9.81$ denotes earth's
 gravity. Results obtained by~\citeauthor{Max:1981} are shown in
 Figure~\ref{fig:max1981}.
@@ -175,9 +175,19 @@ Source:~\cite{Peachey:1986}}
 \end{figure}
 %
 
-The assumption of infinite depth restricts the above methods to deep water, they
-are unable to include phenomena which arise near the shore, such as breaking
-waves and wave refraction. \cite{Peachey:1986}, still in the realm of linear
+The assumption of infinite depth restricts the above methods to deep water,
+they are unable to mimic the behaviour of waves as they approach the shore.
+Phenomena such as wave refraction, where wavefronts tend to align themselves
+parallel to the sloping beach regardless of their initial orientation,
+as well as the steepening and eventual breaking of waves are caused by the
+waves' transition into shallow water.
+% The propagation speed of waves is dependent on the water's depth, with
+% waves moving more slowly in shallow water.
+% 
+% such as steepening and breaking.
+% they are unable to include phenomena which arise near the shore, such as breaking
+% waves and wave refraction.
+\cite{Peachey:1986}, still in the realm of linear
 wave theory, simulates waves near the shore through the relationship
 $\omega^2=kg\tanh (kh)$, where $h$ is the water depth. To resemble breaking
 waves more closely \citeauthor{Peachey:1986} distorts the form of waves
