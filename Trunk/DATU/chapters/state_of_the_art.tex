@@ -177,33 +177,27 @@ Source:~\cite{Peachey:1986}}
 
 The assumption of infinite depth restricts the above methods to deep water,
 they are unable to mimic the behaviour of waves as they approach the shore.
-Phenomena such as wave refraction, where wavefronts tend to align themselves
-parallel to the sloping beach regardless of their initial orientation,
-as well as the steepening and eventual breaking of waves are caused by the
-waves' transition into shallow water.
-% The propagation speed of waves is dependent on the water's depth, with
-% waves moving more slowly in shallow water.
-% 
-% such as steepening and breaking.
-% they are unable to include phenomena which arise near the shore, such as breaking
-% waves and wave refraction.
+The transition of waves into shallow water is the cause for phenomena such
+as the steepening and eventual breaking of waves, as well as for wave
+refraction. The latter describes the tendency of wavefronts to align themselves
+parallel to the sloping beach regardless of their initial orientation.
+The underlying cause is the dependency of wave propagation speed on water depth,
+where waves move more slowly in shallow water. The part of a wave front which
+enters shallow water first is decelerated, the remainder of the wave still
+in deeper water will move faster, as a result the wave front will be turned
+parallel to the line of transition into shallow water.
+
 \cite{Peachey:1986}, still in the realm of linear
 wave theory, simulates waves near the shore through the relationship
 $\omega^2=kg\tanh (kh)$, where $h$ is the water depth. Waves in shallow
 water increase their steepness with declining water depth, \citeauthor{Peachey:1986}
 therefore interpolates between a gentle sinusoidal wave form with long throughs
-and rounded crests, and short choppy waves with sharp crests. To resemble waves
-near the breaking point more closely, \citeauthor{Peachey:1986} steepens the front
+and rounded crests, and short choppy waves with sharp crests. To recreate the
+appearance of waves near the breaking point, \citeauthor{Peachey:1986} steepens the front
 of the crests of such waves even more, and stretches out the back of the crests,
-giving the wave profiles an asymmetric form.
+giving the wave profile an asymmetric form.
 Additionally, particle systems are added to generate spray wherever waves break or
 collide with partially submerged obstacles.
-% As water depth decreases, so does the speed and wavelength of the waves,
-% but amplitude and frequency remain the same. It follows that waves
-% gain in steepness with declining water depth.
-% To resemble breaking
-% waves more closely \citeauthor{Peachey:1986} distorts the form of waves
-% approaching the sloping beach, and adds particle systems to generate spray.
 Results of \cite{Peachey:1986} are shown in Figure~\ref{fig:peachey1986}.
 %
 \begin{figure}[p]
@@ -231,30 +225,6 @@ Results of \cite{Peachey:1986} are shown in Figure~\ref{fig:peachey1986}.
 with the wave intersecting itself when $kA > 1$.}
 \label{fig:trochoid:crests}
 \end{figure}
-%
-
-\cite{Fournier:1986}, instead of using sinusoids, build on Gerstner's work
-\citep{Gerstner:1809, Rankine:1863} to synthesize waves. Gerstner waves assume
-a water surface dominated by gravity and an incompressible water body of
-infinite depth. A single wave may be written as follows:
-\begin{align}
-\mvec{x} &= \mvec{x}_0 - \frac{\mvec{k}}{\norm{\mvec{k}}} A \sin\left(\mvec{k}\cdot\mvec{x}_0-\omega t\right)\\
-y &= y_0 - A \cos\left(\mvec{k}\cdot\mvec{x}_0-\omega t\right)
-\end{align}
-where $\mvec{x}$ denotes the horizontal coordinate and $y$ the vertical coordinate
-of the wave particle at time $t$, with $\mvec{x}_0$ and $y_0$ its horizontal
-and vertical position at rest respectively. As before, $A$ is the amplitude,
-$\mvec{k}$ the wave vector and $\omega$ the wave's angular frequency. Given the
-wave number $k=\norm{\mvec{k}}$, the term $kA$ defines the sharpness of the wave
-crest. With $kA<1$ the wave takes the form of an upside-down trochoid, with
-$kA=1$ the form of an upside-down cycloid, and with $kA>1$ the wave intersects
-itself, an undesireable effect which does not resemble real waves.
-See Figure~\ref{fig:trochoid:crests} for waves with different $kA$.
-We may write a sum of Gerstner waves as follows:
-\begin{align}
-\mvec{x} &= \mvec{x}_0 - \sum_i^N\frac{\mvec{k}_i}{\norm{\mvec{k_i}}} A_i \sin\left(\mvec{k}_i\cdot\mvec{x}_0-\omega_i t\right)\\
-y &= y_0 - \sum_i^N A_i \cos\left(\mvec{k}_i\cdot\mvec{x}_0-\omega_i t\right)
-\end{align}
 %
 %
 \begin{figure}[p]
@@ -287,14 +257,6 @@ Source:~\cite{Fournier:1986}}
 \label{fig:fournier1986:refraction}
 \end{figure}
 %
-To model waves in shallow water, \citeauthor{Fournier:1986} extend the Gerstner
-wave model in two ways. First, waveparticle motion takes the underlying sea
-bed into account, allowing for waves to be refracted i.e. to change their wavelength,
-their speed and their direction
-of travel based on water depth, see Figure~\ref{fig:fournier1986:refraction}.
-Second, the circular orbit of Gerstner waves approaching the shore is
-transformed into an elliptical orbit, which allows to approximate the form of
-breaking waves near the beach.
 %
 \begin{figure}[p]
  \centering
@@ -330,9 +292,42 @@ breaking waves near the beach.
  \label{fig:fournier1986:results}
 \end{figure}
 %
+%
+
+Instead of using sinusoids,~\cite{Fournier:1986} build on Gerstner's work
+\citep{Gerstner:1809, Rankine:1863} to synthesize waves. Gerstner waves assume
+a water surface dominated by gravity and an incompressible water body of
+infinite depth. A single wave may be written as follows:
+\begin{align}
+\mvec{x} &= \mvec{x}_0 - \frac{\mvec{k}}{\norm{\mvec{k}}} A \sin\left(\mvec{k}\cdot\mvec{x}_0-\omega t\right)\\
+y &= y_0 - A \cos\left(\mvec{k}\cdot\mvec{x}_0-\omega t\right)
+\end{align}
+where $\mvec{x}$ denotes the horizontal coordinate and $y$ the vertical coordinate
+of the wave particle at time $t$, with $\mvec{x}_0$ and $y_0$ its horizontal
+and vertical position at rest respectively. As before, $A$ is the amplitude,
+$\mvec{k}$ the \wavevector and $\omega$ the wave's angular frequency. Given the
+\wavenumber $k=\norm{\mvec{k}}$, the term $kA$ defines the sharpness of the wave
+crest. With $kA<1$ the wave takes the form of an upside-down trochoid, with
+$kA=1$ the form of an upside-down cycloid, and with $kA>1$ the wave intersects
+itself, an undesireable effect which does not resemble real waves.
+See Figure~\ref{fig:trochoid:crests} for waves with different $kA$.
+We may write the sum of Gerstner waves involving $N$ components as follows:
+\begin{align}
+\mvec{x} &= \mvec{x}_0 - \sum_i^N\frac{\mvec{k}_i}{\norm{\mvec{k_i}}} A_i \sin\left(\mvec{k}_i\cdot\mvec{x}_0-\omega_i t\right)\\
+y &= y_0 - \sum_i^N A_i \cos\left(\mvec{k}_i\cdot\mvec{x}_0-\omega_i t\right)
+\end{align}
+%
+
+To model waves in shallow water, \citeauthor{Fournier:1986} extend the Gerstner
+wave model in two ways. First, waveparticle motion takes the underlying sea
+bed into account, allowing for waves to be refracted i.e. to change their wavelength,
+their speed and their direction of travel based on water depth, see Figure~\ref{fig:fournier1986:refraction}.
+Second, the circular orbit of Gerstner waves approaching the shore is
+transformed into an elliptical orbit, which allows to approximate the form of
+steepening and eventually breaking waves.
 Results of \cite{Fournier:1986} are shown in Figure~\ref{fig:fournier1986:results}.
 %
-\begin{figure}
+\begin{figure}[h!]
  \centering
  \subtop[]
  {
@@ -384,8 +379,8 @@ dynamic wave tracing. Moreover,
 waves. Three additional functions achieve said goal.
 First, a stretch function which imitates Biesel law~\citep{Biesel:1952} by
 progressively stretching the wave on the crest along its major axis. Second and
-third, an orientation and a displacement function to rotate the wave's crest
-downwards, towards the water surface below the crest. Later,
+third, an orientation and a displacement function to rotate and translate
+the wave's crest downwards, towards the water surface below the crest. Later,
 \citeauthor{Gonzato:2000} augment their work with the inclusion of wave
 diffraction, see \cite{Gonzato:2000}.\\
 
