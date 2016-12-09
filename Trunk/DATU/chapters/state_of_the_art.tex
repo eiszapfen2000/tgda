@@ -189,9 +189,21 @@ waves' transition into shallow water.
 % waves and wave refraction.
 \cite{Peachey:1986}, still in the realm of linear
 wave theory, simulates waves near the shore through the relationship
-$\omega^2=kg\tanh (kh)$, where $h$ is the water depth. To resemble breaking
-waves more closely \citeauthor{Peachey:1986} distorts the form of waves
-approaching the sloping beach, and adds particle systems to generate spray.
+$\omega^2=kg\tanh (kh)$, where $h$ is the water depth. Waves in shallow
+water increase their steepness with declining water depth, \citeauthor{Peachey:1986}
+therefore interpolates between a gentle sinusoidal wave form with long throughs
+and rounded crests, and short choppy waves with sharp crests. To resemble waves
+near the breaking point more closely, \citeauthor{Peachey:1986} steepens the front
+of the crests of such waves even more, and stretches out the back of the crests,
+giving the wave profiles an asymmetric form.
+Additionally, particle systems are added to generate spray wherever waves break or
+collide with partially submerged obstacles.
+% As water depth decreases, so does the speed and wavelength of the waves,
+% but amplitude and frequency remain the same. It follows that waves
+% gain in steepness with declining water depth.
+% To resemble breaking
+% waves more closely \citeauthor{Peachey:1986} distorts the form of waves
+% approaching the sloping beach, and adds particle systems to generate spray.
 Results of \cite{Peachey:1986} are shown in Figure~\ref{fig:peachey1986}.
 %
 \begin{figure}[p]
