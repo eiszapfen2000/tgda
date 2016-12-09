@@ -380,12 +380,13 @@ waves. Three additional functions achieve said goal.
 First, a stretch function which imitates Biesel law~\citep{Biesel:1952} by
 progressively stretching the wave on the crest along its major axis. Second and
 third, an orientation and a displacement function to rotate and translate
-the wave's crest downwards, towards the water surface below the crest. Later,
-\citeauthor{Gonzato:2000} augment their work with the inclusion of wave
-diffraction, see \cite{Gonzato:2000}.\\
+the wave's crest downwards, towards the water surface below the crest.
+\cite{Gonzato:2000} augment their work with the inclusion of wave diffraction
+caused by jetties, and with the addition of capillary waves which are modeled
+using fractal noise.\\
 
 Parametric models are well suited to model propagating water fronts, where a
-small number of wave numbers may suffice to obtain satisfactory results. 
+small number of wave numbers may suffice to obtain satisfactory results.
 Because one has basically to select the involved wave lengths and amplitudes
 by trial and error, it follows that parametric models are not particularly
 eligible to represent an agitated water surface, as it would involve a
@@ -395,6 +396,42 @@ potentially infeasible because of the accumulated computational cost.
 %
 %
 \section{Spectral Models}
+%
+\begin{figure}
+ \centering
+ \subtop[]
+ {
+  \includegraphics[scale=0.1125]{figures/Fourier_Synthesis_of_Ocean_Scenes_-_Mastin_1987-005_1.png}
+	\label{fig:mastin_waves:1}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[scale=0.1125]{figures/Fourier_Synthesis_of_Ocean_Scenes_-_Mastin_1987-005_2.png}
+	\label{fig:mastin_waves:2}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[scale=0.1125]{figures/Fourier_Synthesis_of_Ocean_Scenes_-_Mastin_1987-005_3.png}
+	\label{fig:mastin_waves:3}
+ }
+ \hfill
+ \subtop[]
+ {
+  \includegraphics[scale=0.1125]{figures/Fourier_Synthesis_of_Ocean_Scenes_-_Mastin_1987-007_1.png}
+	\label{fig:mastin_waves:4}
+ }
+ \caption{
+\subcaptionref{fig:mastin_waves:1} White noise.
+\subcaptionref{fig:mastin_waves:2} The Pierson-Moskowitz spectrum combined with the directional spreading function.
+\subcaptionref{fig:mastin_waves:3} The synthesized heightfield.
+\subcaptionref{fig:mastin_waves:4} Rendering of the sea surface.
+Source: \cite{Mastin:1987}
+}
+\label{fig:mastin_waves}
+\end{figure}
+%
 Oceanographic research employs~\emph{wave spectra} to model the deep ocean. The
 sea is assumed as a linear superposition of sinusoids with many different wave
 lengths, frequencies and phases, travelling in different directions. The wave
@@ -405,8 +442,8 @@ vertical coordinate via an inverse Discrete Fourier Transform as follows:
 h(\mvec{x},t) = \sum_{\mvec{k}}A(\mvec{k},t)\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \label{eq:spectral_models}
 \end{equation}
-where $\mvec{k}$ represent the wave vectors of the most significant frequency
-components, and $A(\mvec{k},t)$ are the amplitudes obtained from the wave
+where $\mvec{k}$ represents the wavevectors of the most significant frequency
+components, and $A(\mvec{k},t)$ the amplitudes obtained from the wave
 spectrum. At this point we refer to Sections \ref{sec:linear_theory_ocean_waves}
 and \ref{sec:random_sea} for a more thorough discussion of the theoretical
 background of wave spectra, whereas Section \ref{sec:random_sea_discretisation}
@@ -445,44 +482,8 @@ density of spatial coordinates $\mvec{x}$ directly defines the set of wave
 vectors $\mvec{k}$ contributing to the sum of waves. In contrast to the
 parametric models we are neither able to cherry-pick certain wave vectors,
 nor to omit a range of wave vectors, nor to to exert some form of local control
-where we modify the set of wave vectors based on location $\mvec{x}$.\\
+where we modify the set of wave vectors based on location $\mvec{x}$.
 
-%
-\begin{figure}
- \centering
- \subtop[]
- {
-  \includegraphics[scale=0.1125]{figures/Fourier_Synthesis_of_Ocean_Scenes_-_Mastin_1987-005_1.png}
-	\label{fig:mastin_waves:1}
- }
- \hfill
- \subtop[]
- {
-  \includegraphics[scale=0.1125]{figures/Fourier_Synthesis_of_Ocean_Scenes_-_Mastin_1987-005_2.png}
-	\label{fig:mastin_waves:2}
- }
- \hfill
- \subtop[]
- {
-  \includegraphics[scale=0.1125]{figures/Fourier_Synthesis_of_Ocean_Scenes_-_Mastin_1987-005_3.png}
-	\label{fig:mastin_waves:3}
- }
- \hfill
- \subtop[]
- {
-  \includegraphics[scale=0.1125]{figures/Fourier_Synthesis_of_Ocean_Scenes_-_Mastin_1987-007_1.png}
-	\label{fig:mastin_waves:4}
- }
- \caption{
-\subcaptionref{fig:mastin_waves:1} White noise.
-\subcaptionref{fig:mastin_waves:2} The Pierson-Moskowitz spectrum combined with the directional spreading function.
-\subcaptionref{fig:mastin_waves:3} The synthesized heightfield.
-\subcaptionref{fig:mastin_waves:4} Rendering of the sea surface.
-Source: \cite{Mastin:1987}
-}
-\label{fig:mastin_waves}
-\end{figure}
-%
 \cite{Mastin:1987} introduced wave spectra to computer graphics. Their approach
 is a simple one: generate white noise to represent random amplitudes and phases,
 then filter it with the Pierson-Moskowitz spectrum
