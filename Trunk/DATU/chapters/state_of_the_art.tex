@@ -386,8 +386,8 @@ caused by jetties, and with the addition of capillary waves which are modeled
 using fractal noise.\\
 
 Parametric models are well suited to model propagating water fronts, where a
-small number of wave numbers may suffice to obtain satisfactory results.
-Because one has basically to select the involved wave lengths and amplitudes
+small number of \wavenumbers may suffice to obtain satisfactory results.
+Because one has basically to select the involved wavelengths and amplitudes
 by trial and error, it follows that parametric models are not particularly
 eligible to represent an agitated water surface, as it would involve a
 significant higher number of waves. The user may have a hard time assembling a
@@ -437,7 +437,8 @@ sea is assumed as a linear superposition of sinusoids with many different wave
 lengths, frequencies and phases, travelling in different directions. The wave
 spectrum gives the distribution of wave energy among different wave frequencies
 or wave lengths. Given horizontal coordinate $\mvec{x}$, we may compute the
-vertical coordinate via an inverse Discrete Fourier Transform as follows:
+vertical coordinate at time $t$ via an inverse Discrete Fourier Transform as
+follows:
 \begin{equation}
 h(\mvec{x},t) = \sum_{\mvec{k}}A(\mvec{k},t)\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \label{eq:spectral_models}
@@ -455,8 +456,8 @@ are static. Static in the sense, that a wave spectrum represents a certain sea
 state based on parameters such as wind speed and the distance from shore. To
 change the sea state requires the synthesis of a new wave spectrum. Thus, for
 example, if one would like to simulate a calm sea which gets agitated as a storm
-approaches, then one needs to generate different wave spectra and interpolate
-between them.
+approaches, then one needs to generate different wave spectra and optionally
+interpolate between them.
 
 Second, wave spectra are compact models which require only a small
 number of input parameters defining the desired sea state. Since wave spectra
