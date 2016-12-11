@@ -511,12 +511,22 @@ shown in Figure~\ref{fig:mastin_waves}.
 \cite{Premoze:2000} on the other hand make use of the JONSWAP spectrum
 \citep{article:Hasselman1973}, as it allows for more varied ocean surfaces than
 the Pierson-Moskowitz spectrum.
-An in-depth discussion of the Pierson-Moskowitz spectrum, the JONSWAP spectrum,
-as well as directional spreading functions is to be found in Section
-\ref{sec:1d_frequency_spectra}.
+% An in-depth discussion of the Pierson-Moskowitz spectrum, the JONSWAP spectrum,
+% as well as directional spreading functions is to be found in Section
+% \ref{sec:1d_frequency_spectra}.
 
+One of the most known works in computer graphics related to wave spectra is
+\cite{course:simulatingocean}. Therein, \citeauthor{course:simulatingocean}
+describes how the ocean was brought to life for productions such as
+\emph{Waterworld} and \emph{Titanic}. In contrast to \citeauthor{Mastin:1987},
+\citeauthor{course:simulatingocean} does not use white noise, but Gaussian
+random numbers, because waves in deep sea areas are often observed to follow a
+Gaussian distribution. Moreover, \citeauthor{course:simulatingocean}
+makes use of the Phillips spectrum, a spectrum devised by himself specifically
+for computer graphics purposes, but loosely based on oceanographic research
+published in \citet{article:Phillips1958,article:Phillips1985}.
 %
-\begin{figure}
+\begin{figure}[h]
  \centering
  \subtop[]
  {
@@ -536,17 +546,7 @@ Source: \cite{course:simulatingocean}
 }
 \label{fig:tessendorf_choppy_waves}
 \end{figure}
-%
-One of the most known works in computer graphics related to wave spectra is
-\cite{course:simulatingocean}. Therein, \citeauthor{course:simulatingocean}
-describes how the ocean was brought to life for productions such as
-\emph{Waterworld} and \emph{Titanic}. In contrast to \citeauthor{Mastin:1987},
-\citeauthor{course:simulatingocean} does not use white noise, but Gaussian
-random numbers, because waves in deep sea areas are often observed to follow a
-Gaussian distribution. Moreover, \citeauthor{course:simulatingocean}
-makes use of the Phillips spectrum, a spectrum not found in oceanographic
-research, but devised by himself specifically for computer graphics purposes.
-%\cite{article:Phillips1958,article:Phillips1985}
+
 Ocean surfaces based on wave spectra all share the same issue, namely the all to
 gentle form of wave troughs and wave crests. Because the surface is computed as
 a linear superposition of sinusoids, it is only natural that the result shares
@@ -556,10 +556,10 @@ winds or even a storm is characterized by steep waves with sharp crests.
 overcomes this specific issue by allowing the waves to take a form similar to
 Gerstner waves, with deep troughs and sharp crests, see Figure
 \ref{fig:tessendorf_choppy_waves}.
-Section \ref{sec:phillips_spectrum} gives a detailed discussion of the Phillips
-spectrum and its shortcomings compared to wave spectra from oceanographic
-research. Section \ref{sec:displacements} on the other hand describes the choppy
-wave algorithm.
+% Section \ref{sec:phillips_spectrum} gives a detailed discussion of the Phillips
+% spectrum and its shortcomings compared to wave spectra from oceanographic
+% research. Section \ref{sec:displacements} on the other hand describes the choppy
+% wave algorithm.
 %Tessendorf - Simulating Ocean Water \cite{course:simulatingocean}
 
 \section{Hybrid Approaches}
@@ -581,6 +581,14 @@ energy, but \wavevectors which are representative for the entire spectrum:
 long waves, short waves and even capillary waves.
 
 \section{GPU Implementations}
+%
+The computer graphics community has been, and still is, hard at work to make
+algorithms presented in the previous sections capable to render in real-time.
+The challenge is trifold: first, the synthesis of an animated ocean surface,
+second, efficient rendering of vast ocean surface geometry, and third,
+believable shading of the ocean surface.
+%
+\subsection{Early Work}
 %
 \begin{figure}
  \centering
@@ -609,13 +617,6 @@ long waves, short waves and even capillary waves.
 \label{fig:earlygpu}
 \end{figure}
 %
-The computer graphics community has been, and still is, hard at work to make
-algorithms presented in the previous sections capable to render in real-time.
-The challenge is trifold: first, the synthesis of an animated ocean surface,
-second, efficient rendering of vast ocean surface geometry, and third,
-believable shading of the ocean surface.
-
-\subsection{Early Work}
 Early attempts to generate plausible water surfaces on graphics hardware include
 \cite{Schneider:2001, Isidoro:2002, Finch:2004}. Figure~\ref{fig:earlygpu}
 depicts some of their results.
@@ -653,7 +654,7 @@ viewpoint.
 %Minimize the sampling of the geometry according to distance from the viewpoint.
 %Mesh adapts to viewing situation
 %Simulation adapts to viewing situation
-\begin{figure}
+\begin{figure}[!b]
  \centering
  \subtop[]%[\citeauthor{Schneider:2001}]
  {
