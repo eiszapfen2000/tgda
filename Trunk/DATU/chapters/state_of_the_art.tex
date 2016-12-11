@@ -397,6 +397,68 @@ potentially infeasible because of the accumulated computational cost.
 %
 \section{Spectral Models}
 %
+Oceanographic research employs~\emph{wave spectra} to model the deep ocean. The
+sea is assumed as a linear superposition of sinusoids with many different wave
+lengths, frequencies and phases, travelling in different directions. The wave
+spectrum gives the distribution of wave energy among different wave frequencies
+or wave lengths. Given horizontal coordinate $\mvec{x}$, we may compute the
+vertical coordinate at time $t$ via an inverse Discrete Fourier Transform as
+follows:
+\begin{equation}
+h(\mvec{x},t) = \sum_{\mvec{k}}A(\mvec{k},t)\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\label{eq:spectral_models}
+\end{equation}
+where $\mvec{k}$ represents the \wavevectors of the most significant frequency
+components, and $A(\mvec{k},t)$ the amplitudes obtained from the wave
+spectrum.
+At this point we refer to Chapter~\ref{ch:background} for a more thorough
+discussion of the theoretical background of wave spectra.
+% At this point we refer to Sections \ref{sec:linear_theory_ocean_waves}
+% and \ref{sec:random_sea} for a more thorough discussion of the theoretical
+% background of wave spectra, whereas Section \ref{sec:random_sea_discretisation}
+% explains Equation~\ref{eq:spectral_models} in detail. 
+For now it shall suffice to give an overview of key properties of wave spectra. 
+
+First, all wave spectra
+are static. Static in the sense, that a wave spectrum represents a certain sea
+state based on parameters such as wind speed and the distance from shore. To
+change the sea state requires the synthesis of a new wave spectrum. Thus, for
+example, if one would like to simulate a calm sea which gets agitated as a storm
+approaches, then one needs to generate a wave spectrum for each specific wind
+speed, and optionally interpolate between those spectra.
+
+Second, wave spectra are compact models which require only a small
+number of input parameters defining the desired sea state. Since wave spectra
+are homogeneous models, all parameters are uniform for the entire ocean surface,
+there is no room for local variations as parametric models would allow. Wave
+spectra assume the ocean surface to be dominated by the interplay of wind and
+gravity, hence wind speed is the parameter common to all models. Another well
+established parameter is~\emph{fetch}, which is the distance over which the wind
+blows before it reaches the ocean patch the wave spectrum simulates. Water
+depth, if supported by the wave spectrum model, like all other parameters is
+uniform, hence the sea bed is assumed planar and parallel to the ocean surface
+at rest. It follows that no wave transitions from one water depth to another,
+therefore no wave refraction may take place.
+
+Third, the inverse Discrete Fourier Transform may leverage the
+Fast Fourier Transform algorithm~\citep{Cooley:1965}, which makes the computation of
+Equation~\ref{eq:spectral_models} most efficient. Hence, given the same
+computational cost, it is possible for spectral models to involve way more wave
+numbers in the sum of waves than parametric models could. Moreover, thanks to
+the Discrete Fourier Transform we get a seamless tileable surface.
+The downside of the Fourier Transform is that the range and uniform sampling
+density of spatial coordinates $\mvec{x}$ directly defines the set of \wavevectors
+$\mvec{k}$ contributing to the sum of waves. In contrast to the
+parametric models we are neither able to cherry-pick certain \wavevectors,
+nor to omit a range of \wavevectors, nor to to exert some form of local control
+where we modify the set of \wavevectors based on location $\mvec{x}$.
+Despite those drawbacks, \citet{Mitchell:2005} and \citet{Thon:2000} still
+argue that from an algorithmic point of view one should choose a spectral
+approach over a parametric one. Only by computing the sum of waves with the
+highly efficient Fast Fourier Transform algorithm, one is able to include the
+vast amount of \wavenumbers necessary to synthesize a strongly agitated ocean
+surface.
+%
 \begin{figure}
  \centering
  \subtop[]
@@ -431,59 +493,7 @@ Source: \cite{Mastin:1987}
 }
 \label{fig:mastin_waves}
 \end{figure}
-%
-Oceanographic research employs~\emph{wave spectra} to model the deep ocean. The
-sea is assumed as a linear superposition of sinusoids with many different wave
-lengths, frequencies and phases, travelling in different directions. The wave
-spectrum gives the distribution of wave energy among different wave frequencies
-or wave lengths. Given horizontal coordinate $\mvec{x}$, we may compute the
-vertical coordinate at time $t$ via an inverse Discrete Fourier Transform as
-follows:
-\begin{equation}
-h(\mvec{x},t) = \sum_{\mvec{k}}A(\mvec{k},t)\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
-\label{eq:spectral_models}
-\end{equation}
-where $\mvec{k}$ represents the \wavevectors of the most significant frequency
-components, and $A(\mvec{k},t)$ the amplitudes obtained from the wave
-spectrum. At this point we refer to Sections \ref{sec:linear_theory_ocean_waves}
-and \ref{sec:random_sea} for a more thorough discussion of the theoretical
-background of wave spectra, whereas Section \ref{sec:random_sea_discretisation}
-explains Equation~\ref{eq:spectral_models} in detail. For now it shall suffice
-to give an overview of key properties of wave spectra. 
 
-First, all wave spectra
-are static. Static in the sense, that a wave spectrum represents a certain sea
-state based on parameters such as wind speed and the distance from shore. To
-change the sea state requires the synthesis of a new wave spectrum. Thus, for
-example, if one would like to simulate a calm sea which gets agitated as a storm
-approaches, then one needs to generate different wave spectra and optionally
-interpolate between them.
-
-Second, wave spectra are compact models which require only a small
-number of input parameters defining the desired sea state. Since wave spectra
-are homogeneous models, all parameters are uniform for the entire ocean surface,
-there is no room for local variations as parametric models would allow. Wave
-spectra assume the ocean surface to be dominated by the interplay of wind and
-gravity, hence wind speed is the parameter common to all models. Another well
-established parameter is~\emph{fetch}, which is the distance over which the wind
-blows before it reaches the ocean patch the wave spectrum simulates. Water
-depth, if supported by the wave spectrum model, like all other parameters is
-uniform, hence the sea bed is assumed planar and parallel to the ocean surface
-at rest. It follows that no wave transitions from one water depth to another,
-therefore no wave refraction may take place.
-
-Third, the inverse Discrete Fourier Transform may leverage the
-Fast Fourier Transform algorithm~\citep{Cooley:1965}, which makes the computation of
-Equation~\ref{eq:spectral_models} most efficient. Hence, given the same
-computational cost, it is possible for spectral models to involve way more wave
-numbers in the sum of waves than parametric models could. Moreover, thanks to
-the Discrete Fourier Transform we get a seamless tileable surface.
-The downside of the Fourier Transform is that the range and uniform sampling
-density of spatial coordinates $\mvec{x}$ directly defines the set of \wavevectors
-$\mvec{k}$ contributing to the sum of waves. In contrast to the
-parametric models we are neither able to cherry-pick certain \wavevectors,
-nor to omit a range of \wavevectors, nor to to exert some form of local control
-where we modify the set of \wavevectors based on location $\mvec{x}$.
 
 \cite{Mastin:1987} introduced wave spectra to computer graphics. Their approach
 is a simple one: generate white noise to represent random amplitudes and phases,
