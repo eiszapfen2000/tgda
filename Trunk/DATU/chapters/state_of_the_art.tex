@@ -327,7 +327,7 @@ transformed into an elliptical orbit, which allows to approximate the form of
 steepening and eventually breaking waves.
 Results of \cite{Fournier:1986} are shown in Figure~\ref{fig:fournier1986:results}.
 %
-\begin{figure}[h!]
+\begin{figure}
  \centering
  \subtop[]
  {
@@ -383,7 +383,7 @@ third, an orientation and a displacement function to rotate and translate
 the wave's crest downwards, towards the water surface below the crest.
 \cite{Gonzato:2000} augment their work with the inclusion of wave diffraction
 caused by jetties, and with the addition of capillary waves which are modeled
-using fractal noise.\\
+using fractal noise.
 
 Parametric models are well suited to model propagating water fronts, where a
 small number of \wavenumbers may suffice to obtain satisfactory results.
@@ -493,7 +493,7 @@ Source: \cite{Mastin:1987}
 }
 \label{fig:mastin_waves}
 \end{figure}
-
+%
 
 \cite{Mastin:1987} introduced wave spectra to computer graphics. Their approach
 is a simple one: generate white noise to represent random amplitudes and phases,
@@ -514,19 +514,8 @@ the Pierson-Moskowitz spectrum.
 % An in-depth discussion of the Pierson-Moskowitz spectrum, the JONSWAP spectrum,
 % as well as directional spreading functions is to be found in Section
 % \ref{sec:1d_frequency_spectra}.
-
-One of the most known works in computer graphics related to wave spectra is
-\cite{course:simulatingocean}. Therein, \citeauthor{course:simulatingocean}
-describes how the ocean was brought to life for productions such as
-\emph{Waterworld} and \emph{Titanic}. In contrast to \citeauthor{Mastin:1987},
-\citeauthor{course:simulatingocean} does not use white noise, but Gaussian
-random numbers, because waves in deep sea areas are often observed to follow a
-Gaussian distribution. Moreover, \citeauthor{course:simulatingocean}
-makes use of the Phillips spectrum, a spectrum devised by himself specifically
-for computer graphics purposes, but loosely based on oceanographic research
-published in \citet{article:Phillips1958,article:Phillips1985}.
 %
-\begin{figure}[h]
+\begin{figure}
  \centering
  \subtop[]
  {
@@ -546,6 +535,18 @@ Source: \cite{course:simulatingocean}
 }
 \label{fig:tessendorf_choppy_waves}
 \end{figure}
+%
+
+One of the most known works in computer graphics related to wave spectra is
+\cite{course:simulatingocean}. Therein, \citeauthor{course:simulatingocean}
+describes how the ocean was brought to life for productions such as
+\emph{Waterworld} and \emph{Titanic}. In contrast to \citeauthor{Mastin:1987},
+\citeauthor{course:simulatingocean} does not use white noise, but Gaussian
+random numbers, because waves in deep sea areas are often observed to follow a
+Gaussian distribution. Moreover, \citeauthor{course:simulatingocean}
+makes use of the Phillips spectrum, a spectrum devised by himself specifically
+for computer graphics purposes, but loosely based on oceanographic research
+published in \citet{article:Phillips1958,article:Phillips1985}.
 
 Ocean surfaces based on wave spectra all share the same issue, namely the all to
 gentle form of wave troughs and wave crests. Because the surface is computed as
@@ -654,7 +655,7 @@ viewpoint.
 %Minimize the sampling of the geometry according to distance from the viewpoint.
 %Mesh adapts to viewing situation
 %Simulation adapts to viewing situation
-\begin{figure}[!b]
+\begin{figure}
  \centering
  \subtop[]%[\citeauthor{Schneider:2001}]
  {
@@ -760,7 +761,7 @@ sure that the projection of the vertices works correctly in all possible viewing
 situations.
 %
 %
-\begin{figure}
+\begin{figure}[p]
  \centering
  \includegraphics[scale=0.3]{figures/Seamless_Ocean_Lighting_-_Bruneton_2010-001.png}
  \caption{From left to right: The displaced surface mesh in screen space, lighting
@@ -771,7 +772,7 @@ situations.
 \end{figure}
 %
 %
-\begin{figure}
+\begin{figure}[p]
  \centering
  \includegraphics[scale=0.25]{figures/Seamless_Ocean_Lighting_-_Bruneton_2010-002.png}
  \caption{From left to right: The reflected sun light, the reflected sky light,
