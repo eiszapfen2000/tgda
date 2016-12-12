@@ -7,7 +7,7 @@ turbulent waves or huge breaking ones, the underlying mechanisms are manifold
 and act on a variety of scales. 
 Surface tension, wind, earth's gravity, the gravitational pull of
 sun and moon, all have an impact on ocean surface waves, where each force or
-effect governs a different range of wavelengths.
+effect governs a different range of \wavelengths.
 Scientists have spent centuries trying to understand and explain these mechanisms.
 %For example, ocean surface waves are in large
 %part governed by the forces of wind and gravity, but capillary waves, often
@@ -248,11 +248,11 @@ with the wave intersecting itself when $kA > 1$.}
  }
  \caption{The refraction of waves.
 \subcaptionref{fig:fournier1986:refraction:1} Two bottoms of constant depth, the
-wavelengths are halved as the waves reach the shallow bottom on the left.
+\wavelengths are halved as the waves reach the shallow bottom on the left.
 \subcaptionref{fig:fournier1986:refraction:2} The beach slopes gently down from
 the left. One can see the wave fronts aligning themselves with the beach.
 \subcaptionref{fig:fournier1986:refraction:3} An undersea valley that affects
-both, the wavelengths as well as the travelling direction of the waves.
+both, the \wavelengths as well as the travelling direction of the waves.
 Source:~\cite{Fournier:1986}}
 \label{fig:fournier1986:refraction}
 \end{figure}
@@ -320,7 +320,7 @@ y &= y_0 - \sum_i^N A_i \cos\left(\mvec{k}_i\cdot\mvec{x}_0-\omega_i t\right)
 
 To model waves in shallow water, \citeauthor{Fournier:1986} extend the Gerstner
 wave model in two ways. First, waveparticle motion takes the underlying sea
-bed into account, allowing for waves to be refracted i.e. to change their wavelength,
+bed into account, allowing for waves to be refracted i.e. to change their \wavelength,
 their speed and their direction of travel based on water depth, see Figure~\ref{fig:fournier1986:refraction}.
 Second, the circular orbit of Gerstner waves approaching the shore is
 transformed into an elliptical orbit, which allows to approximate the form of
@@ -387,7 +387,7 @@ using fractal noise.
 
 Parametric models are well suited to model propagating water fronts, where a
 small number of \wavenumbers may suffice to obtain satisfactory results.
-Because one has basically to select the involved wavelengths and amplitudes
+Because one has basically to select the involved \wavelengths and amplitudes
 by trial and error, it follows that parametric models are not particularly
 eligible to represent an agitated water surface, as it would involve a
 significant higher number of waves. The user may have a hard time assembling a
@@ -398,10 +398,10 @@ potentially infeasible because of the accumulated computational cost.
 \section{Spectral Models}
 %
 Oceanographic research employs~\emph{wave spectra} to model the deep ocean. The
-sea is assumed as a linear superposition of sinusoids with many different wave
-lengths, frequencies and phases, travelling in different directions. The wave
+sea is assumed as a linear superposition of sinusoids with many different
+\wavelengths, frequencies and phases, travelling in different directions. The wave
 spectrum gives the distribution of wave energy among different wave frequencies
-or wave lengths. Given horizontal coordinate $\mvec{x}$, we may compute the
+or \wavelengths. Given horizontal coordinate $\mvec{x}$, we may compute the
 vertical coordinate at time $t$ via an inverse Discrete Fourier Transform as
 follows:
 \begin{equation}
@@ -443,8 +443,8 @@ therefore no wave refraction may take place.
 Third, the inverse Discrete Fourier Transform may leverage the
 Fast Fourier Transform algorithm~\citep{Cooley:1965}, which makes the computation of
 Equation~\ref{eq:spectral_models} most efficient. Hence, given the same
-computational cost, it is possible for spectral models to involve way more wave
-numbers in the sum of waves than parametric models could. Moreover, thanks to
+computational cost, it is possible for spectral models to involve way more
+\wavenumbers in the sum of waves than parametric models could. Moreover, thanks to
 the Discrete Fourier Transform we get a seamless tileable surface.
 The downside of the Fourier Transform is that the range and uniform sampling
 density of spatial coordinates $\mvec{x}$ directly defines the set of \wavevectors
@@ -571,7 +571,7 @@ allows fine-grained control over the model.
 of Gerstner waves, where a small set of \wavevectors and corresponding
 amplitudes is picked from a directional Pierson-Moskowitz spectrum. Said
 \wavevectors need to be representative for a large part of the energy of the
-spectrum, thus it is unlikely for short wavelengths to be selected. As a remedy,
+spectrum, thus it is unlikely for short \wavelengths to be selected. As a remedy,
 a three dimensional turbulence function \citep{Perlin:1985} is added to generate
 small scale details. \cite{lee:2007} improve upon the work of
 \citeauthor{Thon:2000} by using the TMA spectrum~\citep{Hughes:1984} which
@@ -632,7 +632,7 @@ displaced surface.
 %\cite{Chen:2007} employ a sum of four sinusoids to displace an existing mesh,
 %and a dynamically generated normalmap to obtain more detailed surface normals.
 \citeauthor{Finch:2004} uses a sum of four Gerstner waves to displace an existing
-mesh, where wavelengths that are too short to be represented by the mesh are
+mesh, where \wavelengths that are too short to be represented by the mesh are
 filtered out automatically. Moreover, \citeauthor{Finch:2004} evaluates an
 additional sum, with more waves involved, to generate better detailed surface
 normals.
