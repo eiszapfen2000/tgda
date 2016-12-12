@@ -134,7 +134,7 @@ with
  k &= \frac{2\pi}{\lambda} & \omega &= 2\pi f & f &= \frac{1}{T}
 \end{align}
 %
-where $A$ is the amplitude, $k$ is called the~\emph{wave number},~$x$ is the horizontal position,
+where $A$ is the amplitude, $k$ is called the~\emph{\wavenumber},~$x$ is the horizontal position,
 $\omega$ is the~\emph{wave frequency} in radians per second,~$t$ represents the time,
 $\lambda$ is the~\emph{wave length},~$f$ is the~\emph{wave frequency} in Hertz (Hz) and~$T$
 is the wave period in seconds.\\
@@ -189,7 +189,7 @@ differentiation gives us phase speed $c$:
 In the context of water surface waves,~\emph{dispersion} refers to~\emph{frequency dispersion}, which describes
 the effect of waves at different wavelengths travelling at different phase speeds. We have seen that
 phase speed $c = \frac{\lambda}{T}$ involves wave length and frequency, and alternatively $c = \frac{\omega}{k}$
-which includes angular frequency and wave number. We focus on the latter formulation for phase speed, because
+which includes angular frequency and \wavenumber. We focus on the latter formulation for phase speed, because
 linear wave theory defines a functional relationship between the two factors involved:
 %therefore we will start with the functional relationship
 %between angular frequency~$\omega$ and wave number~$k$ as defined by linear wave theory:
@@ -306,12 +306,12 @@ where $p^*$ denotes the~\emph{complex conjugate} of $p$. From now on we will
 omit the explicit $\Re$ in equations expressing $\eta$, because surface
 elevation is a real number.\\
 
-Each combination of amplitude $A$, wave vector $\mvec{k}$ and wave frequency
+Each combination of amplitude $A$, \wavevector $\mvec{k}$ and wave frequency
 $\omega$ identifies one particular wave. As a next step we get rid of the
 restriction of one single amplitude $A$ for all wave components. We replace the
 constant amplitude $A$ with $a(\mvec{k})$ in order to create a dependency
-between wave vector and wave amplitude. Furthermore, because of the dispersion
-relation, we can express frequency as a function of the wave vector, $\omega =
+between \wavevector and wave amplitude. Furthermore, because of the dispersion
+relation, we can express frequency as a function of the \wavevector, $\omega =
 \omega(\mvec{k})$. Now we are able to rewrite
 Equation~\ref{eq:sinusoid_exponential_sa} as follows:
 \begin{equation}
@@ -343,7 +343,7 @@ one time dimension as
 \omega t)}~
 \mathrm{d}\mvec{k}~\mathrm{d}\omega
 \end{equation}
-where the $\mvec{k}$ integration is over all wave-number space and the $\omega$
+where the $\mvec{k}$ integration is over all \wavenumber space and the $\omega$
 integration is over all frequencies. $B(\mvec{k},\omega)$ is called the
 three dimensional amplitude spectrum of $\eta(\mvec{x}, t)$. Notice the missing
 dependency of $\omega$ on $\mvec{k}$ in the exponent, it is the responsibility
@@ -364,7 +364,7 @@ Equation~\ref{eq:surface_elevation_bkwt} as
 \mathrm{d}\mvec{k}
 \end{equation}
 %
-Alternatively, we may integrate over all wave numbers
+Alternatively, we may integrate over all \wavenumbers
 \begin{equation}
  B(\mvec{x}, \omega) = \iint_{\mvec{k}} B(\mvec{k},
 \omega)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}~\mathrm{d}\mvec{k}
@@ -451,14 +451,14 @@ denoted as $\overline{\eta^2}$. Therefore, we may write:
 Later on we will be in need of energy spectrum formulations which have a lower
 dimensionality than the three dimensional $\Theta(\mvec{k},\omega)$. As such,
 we introduce the two dimensional energy spectrum, in literature known
-as~\emph{wave number spectrum}, which is as follows:
+as~\emph{\wavenumber spectrum}, which is as follows:
 \begin{equation}
 \label{eq:energy_spectrum_2d}
  \Theta(\mvec{k}) = \int_{\omega} \Theta(\mvec{k}, \omega)~\mathrm{d}\omega
 \end{equation}
-The wave number spectrum gives the contribution to the wave energy arising from
-wave components with wave number $k$ dependent on wave vector $\mvec{k}$,
-irrespective of the frequencies $\omega$ associated with that wave number. In
+The \wavenumber spectrum gives the contribution to the wave energy arising from
+wave components with \wavenumber $k$ dependent on \wavevector $\mvec{k}$,
+irrespective of the frequencies $\omega$ associated with that \wavenumber. In
 contrast, the one dimensional energy spectrum, in literature known
 as~\emph{frequency spectrum}, is defined as follows:
 \begin{equation}
@@ -466,7 +466,7 @@ as~\emph{frequency spectrum}, is defined as follows:
  \Theta(\omega) = \int_{\mvec{k}} \Theta(\mvec{k}, \omega)~\mathrm{d}\mvec{k}
 \end{equation}
 The frequency spectrum gives the contributions to the energy coming from each
-frequency $\omega$, irrespective of the wave numbers associated with that
+frequency $\omega$, irrespective of the \wavenumbers associated with that
 frequency.\\
 
 The energy spectrum $\Theta$ as presented is severely restricted in its
@@ -537,7 +537,7 @@ parametric one dimensional frequency spectra $\Theta(\omega)$ which we are not
 able to use as-is, because they do not contain any information about the 
 travelling direction of waves, and therefore are not able to simulate 
 surface elevation with two dimensional positions $\mvec{x}$ as input. Hence, we 
-have to settle for the two dimensional wave number spectrum $\Theta(\mvec{k})$ 
+have to settle for the two dimensional \wavenumber spectrum $\Theta(\mvec{k})$ 
 as basis from which we will compute surface elevation. We write surface 
 elevation as follows:
 \begin{equation}
@@ -551,7 +551,7 @@ a Gauss distributed variable with mean $\mathrm{E}[\eta] = 0$ and
 variance $\mathrm{Var}[\eta] = \sigma^2$ defined by the energy spectrum
 $\Theta(\mvec{k})$. Moreover, for animation purposes, we add the term 
 $\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}$ in order to explicitely handle 
-time $t$, because the two dimensional wave number spectrum has no notion of 
+time $t$, because the two dimensional \wavenumber spectrum has no notion of 
 it. Equation~\ref{eq:surface_elevation_gauss_2d} represents a two dimensional 
 \emph{inverse Fourier Transform} of Fourier components 
 $\xi\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}$. For the remainder of the 
@@ -559,7 +559,7 @@ document, Equation~\ref{eq:surface_elevation_gauss_2d} will be the basis for all
 further discussions of specific wave spectrum models. Moreover, in 
 Section~\ref{sec:1d_frequency_spectra} we will discuss the conversion of the 
 more common one dimensional frequency spectra $\Theta(\omega)$ into two 
-dimensional wave number spectra $\Theta(\mvec{k})$ for our practical usage.
+dimensional \wavenumber spectra $\Theta(\mvec{k})$ for our practical usage.
 %
 \section{Discretisation}
 \label{sec:random_sea_discretisation}
@@ -587,13 +587,13 @@ Employing the FFT algorithm may solve our concerns relating to performance, but
 we still have to make sure we compute an as good as possible approximation to 
 Equation~\ref{eq:surface_elevation_gauss_2d}. Since our model for surface 
 elevation is based on wave energy, the best way forward seems to be, that we 
-choose a finite range of wave vectors $\mvec{k}$ such that they are 
+choose a finite range of \wavevectors $\mvec{k}$ such that they are 
 representative of the whole energy $Var[\eta]$ defined by $\Theta(\mvec{k})$. 
-Because wave vectors $\mvec{k}$ are related to wave length, they are also 
+Because \wavevectors $\mvec{k}$ are related to wave length, they are also 
 related to the spatial domain, and as such to positions $\mvec{x}$. Hence, the 
 quality of our approximation depends on how we discretise both the spatial 
-domain into a finite set of positions $\mvec{x}$ and the wave vector domain 
-into a finite set of wave vectors $\mvec{k}$.
+domain into a finite set of positions $\mvec{x}$ and the \wavevector domain 
+into a finite set of \wavevectors $\mvec{k}$.
 %
 \subsection{Domain Discretisation}
 \label{sec:domain_discretisation}
@@ -673,7 +673,7 @@ surface elevation at the following points:
 \end{equation}
 where $\alpha$ and $\beta$ are integers. At first glance the choice of interval
 for positions~$\mvec{x}$ may seem arbitrary, but it will allow us to make a
-direct connection to the wave vector domain later on.\\
+direct connection to the \wavevector domain later on.\\
 
 To simplify matters, from now on we will handle a square area instead of a
 rectangular one, thus
@@ -742,26 +742,26 @@ We may write said minimum and maximum wavelengths as follows:
  %
 \end{axis}
 \end{tikzpicture}
-\caption{The wave vector domain in terms of index pairs $(\alpha,\beta)$ and
+\caption{The \wavevector domain in terms of index pairs $(\alpha,\beta)$ and
 associated coordinate pairs $(\alpha\Delta k_x,\beta\Delta k_y)$.}
 \label{fig:wave_vector_domain}
 \end{figure}
 %
 With $\lambda_{min}$ and $\lambda_{max}$ in our hands we may compute the
-corresponding wave numbers according to Equation~\ref{eq:sinusoid_parameters}:
+corresponding \wavenumbers according to Equation~\ref{eq:sinusoid_parameters}:
 \begin{align}
  k_{min} = \frac{2\pi}{\lambda_{min}} && k_{max} = \frac{2\pi}{\lambda_{max}}
 \end{align}
 %
 Analogous to the spatial domain, we have to define the horizontal and vertical 
-distance between consecutive grid points for the wave vector domain. We denote 
+distance between consecutive grid points for the \wavevector domain. We denote 
 said distances as follows:
 \begin{align}
 \label{eq:delta_kx_delta_ky}
  \Delta k_x = \frac{2\pi}{L} && \Delta k_y = \frac{2\pi}{K}
 \end{align}
 %
-Given $\Delta k_x$ and $\Delta k_y$, we will define wave vectors $\mvec{k}$ in 
+Given $\Delta k_x$ and $\Delta k_y$, we will define \wavevectors $\mvec{k}$ in 
 the same fashion as Equation~\ref{eq:spatial_domain} defines spatial positions 
 $\mvec{x}$:
 \begin{equation}
@@ -770,20 +770,20 @@ $\mvec{x}$:
 -\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}\leq\beta<\frac{M}{2}\}
 \end{equation}
 %
-As one may see in Figure~\ref{fig:wave_vector_domain}, the wave vector domain 
-is centered. Wave number $k = 0$ is at the center, and $|k|$ grows while we 
+As one may see in Figure~\ref{fig:wave_vector_domain}, the \wavevector domain 
+is centered. Wavenumber $k = 0$ is at the center, and $|k|$ grows while we 
 move outwards, towards the domain border. From
 Equation~\ref{eq:sinusoid_parameters} we know that the relation between wave 
-length and wave number is an inverse one, while $|k|$ increases, wave length 
+length and \wavenumber is an inverse one, while $|k|$ increases, wave length 
 decreases. Therefore we find the larger wave lengths near the domain center, 
 and the smaller ones near the domain border. We may ignore the center element 
-with wave number $k = 0$, which maps to wave length $\lambda = \infty$, because 
-$\Theta(\mvec{k})$ is always equal zero for wave vector $\mvec{k} = (0, 0)$.\\
+with \wavenumber $k = 0$, which maps to wave length $\lambda = \infty$, because 
+$\Theta(\mvec{k})$ is always equal zero for \wavevector $\mvec{k} = (0, 0)$.\\
 
 From Figure~\ref{fig:wave_vector_domain} it is easy to see that  
-Equation~\ref{eq:wave_vector_domain} includes wave vectors which are exact 
-representatives for wave number $k_{min}$ and $k_{max}$. We may rewrite wave 
-number $k_{max}$ in terms of Equation~\ref{eq:wave_vector_domain} as follows:
+Equation~\ref{eq:wave_vector_domain} includes \wavevectors which are exact 
+representatives for \wavenumber $k_{min}$ and $k_{max}$. We may rewrite
+\wavenumber $k_{max}$ in terms of Equation~\ref{eq:wave_vector_domain} as follows:
 \begin{equation}
  k_{max} = \sqrt{2}\frac{2\pi}{L} = \sqrt{2}\frac{2\pi}{K}
 \end{equation}
@@ -795,19 +795,19 @@ $k_{min}$ to the following:
 \end{equation}
 With surface dimensions $L$ and $K$ already fixed, we choose the number of 
 samples $N$ and $M$, knowing that they will define the smallest wave length 
-representable by wave vectors $\mvec{k}$. Later on we will see that the 
-distribution of wave energy among wave vectors is highly dependent on the 
+representable by \wavevectors $\mvec{k}$. Later on we will see that the 
+distribution of wave energy among \wavevectors is highly dependent on the 
 actual model employed as well as the input parameters to those models. Wave 
-energy may be focused in a very narrow range of wave vectors, or be wide spread 
-among a large portion of the entire wave vector spectrum. As a consequence, 
-sometimes it is necessary to choose more than one set of wave vectors 
+energy may be focused in a very narrow range of \wavevectors, or be wide spread 
+among a large portion of the entire \wavevector spectrum. As a consequence, 
+sometimes it is necessary to choose more than one set of \wavevectors 
 $\mvec{k}$ which complement one another, and to combine the results in order 
 to get satisfactory results.
 \subsection{Energy Discretisation}
-We have discretised the wave vector domain into a finite set of wave vectors, 
-where $\pm k_{min}$ represent the largest positive and negative wave numbers on 
+We have discretised the \wavevector domain into a finite set of \wavevectors, 
+where $\pm k_{min}$ represent the largest positive and negative \wavenumbers on 
 the horizontal and vertical axes. Since we seek a representative approximation 
-of whole wave energy $Var[\eta]$ based on our finite set of wave vectors, we may 
+of whole wave energy $Var[\eta]$ based on our finite set of \wavevectors, we may 
 start by limiting the respective integral with $\pm k_{min}$:
 \begin{equation}
 \label{eq:variance_int_approx_limited}
@@ -830,7 +830,7 @@ Equation~\ref{eq:wave_vector_domain}, and $\Delta k_x$ and $\Delta k_y$
 represent the distances between grid points as defined by 
 Equation~\ref{eq:delta_kx_delta_ky}. Alternatively, we may compute an 
 approximation of wave energy in a pure discrete way. Let 
-$\mvec{k}_{\alpha,\beta}$ be the wave vectors defined by 
+$\mvec{k}_{\alpha,\beta}$ be the \wavevectors defined by 
 Equation~\ref{eq:wave_vector_domain}, then:
 %
 \begin{equation}
@@ -882,7 +882,7 @@ t}~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}_{\alpha,\beta}}\mvec{x}}
 where $\xi_r$ and $\xi_i$ are Gauss distributed random variables with mean zero 
 and standard deviation one. We will drop indices $\alpha$ and $\beta$ and give 
 a formulation in terms of wave enery $\Theta(\mvec{k})$ and our finite set of 
-wave vectors $\mvec{k}$:
+\wavevectors $\mvec{k}$:
 \begin{equation}
 \label{eq:surface_elevation_discrete}
  \eta(\mvec{x}, t) = 
@@ -894,7 +894,7 @@ wave vectors $\mvec{k}$:
 %
 We have found a discrete approximation of surface elevation which is fast to 
 compute and is able to give satisfactory results as long as we choose one or 
-more sets of wave vectors $\mvec{k}$ wisely. We will now move on and discuss
+more sets of \wavevectors $\mvec{k}$ wisely. We will now move on and discuss
 parametric wave energy models, because those constitute the basis for the
 generation of visually pleasing as well as plausible ocean surfaces.
 %
@@ -1563,24 +1563,24 @@ on dimensionless fetch:
 This completes our conversion of the JONSWAP spectrum to make explicit use of 
 dimensionless peak frequency and dimensionless fetch. Before we move on to 
 two dimensional frequency spectra we may clarify how we intend to convert the 
-presented directional frequency spectra into two dimensional wave number
+presented directional frequency spectra into two dimensional \wavenumber
 spectra.
 %
 \subsection{Integral Domain Conversion}
 %
-Recall that we transform from the Cartesian wave number domain to the spatial 
-one. Thus, as a prerequisite, we are in need of a two dimensional wave number 
+Recall that we transform from the Cartesian \wavenumber domain to the spatial 
+one. Thus, as a prerequisite, we are in need of a two dimensional \wavenumber 
 spectrum $\Theta(\mvec{k})$, but 
 Equation~\ref{eq:directional_frequency_spectrum} 
 gives us a directional frequency spectrum $\Theta(\omega,\theta)$. We will 
 convert one spectrum form to the other according to the substitution rule, with 
 the deep water dispersion relation from Equation~\ref{eq:disp_rel_deep_water} 
-serving as a link between angular frequency $\omega$ and wave number $k$. To 
+serving as a link between angular frequency $\omega$ and \wavenumber $k$. To 
 avoid possible confusion we will add subscripts to each occurence of $\Theta$ 
 in order to explicitely show the parameters it takes as input.\\
 
 As a first step we may transform the one dimensional frequency spectrum 
-$\Theta_{\omega}(\omega)$ to the one dimensional wave number 
+$\Theta_{\omega}(\omega)$ to the one dimensional \wavenumber 
 spectrum $\Theta_k(k)$ as follows:
 \begin{subequations}
 \begin{multline}
@@ -1605,7 +1605,7 @@ which gives us
 		ylabels at=edge left,
 		group name=plots,
 	},
-    xlabel={Wave number $k$~($\text{rad}\cdot\text{m}^{-1}$)},
+    xlabel={Wavenumber $k$~($\text{rad}\cdot\text{m}^{-1}$)},
     ylabel={Energy~$\Theta$~($\text{m}^3\cdot\text{rad}^{-1}$)},
 %     legend columns=-1,
 	width=0.5\textwidth,
@@ -1688,7 +1688,7 @@ which gives us
 \end{groupplot}
 \end{tikzpicture}
 \caption{One dimensional frequency spectra $\Theta_{\omega}(\omega$) converted
-into one dimensional wave number spectra $\Theta_k(k)$. Left: The Pierson 
+into one dimensional \wavenumber spectra $\Theta_k(k)$. Left: The Pierson 
 Moskowitz spectra from Figure~\ref{fig:pm_spectra}(a). Right: The JONSWAP 
 spectra from Figure~\ref{fig:jonswap_spectra}(a).}
 \label{fig:jonswap_spectra_fetches_k}
@@ -1742,7 +1742,7 @@ depicted in Figure~\ref{fig:pm_spectra} and Figure~\ref{fig:jonswap_spectra}.\\
 \caption{The JONSWAP frequency spectrum with wind speed $U_{10} = 15m\cdot 
 s^{-1}$ and fetch $F = 100km$, located in two different domains. Top: The polar
 coordinate domain $\omega \times \theta$, the wind direction points in the
-direction of the positive $\omega$ axis. Bottom: The wave vector domain
+direction of the positive $\omega$ axis. Bottom: The \wavevector domain
 $k_x \times k_y$, the wind direction points in the direction of the positive
 $k_x$ axis. Note the difference in scale between the two vertical axes.}
 \label{fig:jonswap_3d_omega_theta_kx_ky}
@@ -1750,16 +1750,16 @@ $k_x$ axis. Note the difference in scale between the two vertical axes.}
 %
 Given $\Theta_k(k)$ we are able to rewrite the directional frequency spectrum
 $\Theta_{\omega, \theta}(\omega, \theta)$ from
-Equation~\ref{eq:directional_frequency_spectrum} in terms of wave number $k$:
+Equation~\ref{eq:directional_frequency_spectrum} in terms of \wavenumber $k$:
 %
 \begin{equation}
 \label{eq:theta_k_polar}
  \Theta_{k,\theta}(k,\theta) = \Theta_k(k)D(\sqrt{gk},\theta)
 \end{equation}
 %
-where $\Theta_{k,\theta}(k,\theta)$ is called the~\emph{directional wave number 
+where $\Theta_{k,\theta}(k,\theta)$ is called the~\emph{directional \wavenumber 
 spectrum}. As the last step we need to convert from polar coordinate pairs 
-$(k,\theta)$ to cartesian wave number coordinates $\mvec{k}$. Said conversion 
+$(k,\theta)$ to cartesian \wavenumber coordinates $\mvec{k}$. Said conversion 
 is accomplished as follows:
 %
 \begin{equation}
@@ -1769,8 +1769,8 @@ is accomplished as follows:
 \end{equation}
 %
 By combining Equations~\ref{eq:directional_frequency_spectrum}, 
-~\ref{eq:theta_k} and~\ref{eq:theta_cart_to_polar} we get the Cartesian wave 
-number spectrum:
+~\ref{eq:theta_k} and~\ref{eq:theta_cart_to_polar} we get the Cartesian
+\wavenumber spectrum:
 %
 \begin{align}
 \Theta_{\mvec{k}}(\mvec{k}) &= \Theta_{\omega,\theta}(\sqrt{gk}, 
@@ -1780,7 +1780,7 @@ number spectrum:
 \end{align}
 %
 An instance of a directional frequency spectrum as well as its equivalent
-directional wave number spectrum are depicted in Figure
+directional \wavenumber spectrum are depicted in Figure
 \ref{fig:jonswap_3d_omega_theta_kx_ky}.\\
 
 Now we are able to preserve integral equality between different representations 
@@ -1797,8 +1797,8 @@ frequency spectrum with a directional spreading function in order to generate a
 two dimensional frequency spectrum which contains directional information. We 
 have seen that there are different forms of two dimensional frequency spectra, 
 such as the directional frequency spectrum $\Theta(\omega, \theta)$, the 
-directional wave number spectrum $\Theta(k, \theta)$ and the Cartesian wave 
-number spectrum $\Theta(\mvec{k})$. Moreover, given a dispersion relation, we 
+directional \wavenumber spectrum $\Theta(k, \theta)$ and the Cartesian
+\wavenumber spectrum $\Theta(\mvec{k})$. Moreover, given a dispersion relation, we 
 are able to convert between all these different forms of a spectrum. Now, we 
 may move on to frequency spectra which have been explicitely introduced in a two 
 dimensional form by oceanographic research.
@@ -2127,7 +2127,7 @@ inverse wave age, see Figure~\ref{fig:donelan_spectra}.
 		xlabels at=edge bottom,
 		ylabels at=edge left,
 	},
-    xlabel={Wave number~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
+    xlabel={Wavenumber~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
     ylabel={Energy~$\Theta$~($\text{m}^3\cdot\text{rad}^{-1}$)},
 	width=0.5\textwidth,
 	scaled ticks=false,
@@ -2230,14 +2230,14 @@ Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$).
 \label{fig:unified_spectra}
 \end{figure}
 %
-The Unified spectrum is a directional wave number spectrum introduced by
+The Unified spectrum is a directional \wavenumber spectrum introduced by
 Elfouhaily et al. \cite{article:Elfouhaily1997} which consists of a one 
-dimensional wave number spectrum combined with a directional spreading 
+dimensional \wavenumber spectrum combined with a directional spreading 
 function. All of the spectral models which we introduced beforehand focus on 
 the \emph{long-wave regime}, which, according to Elfouhaily et al. 
-\cite{article:Elfouhaily1997}, is defined as the wave number range $k < 
-10\times k_p$, where $k_p$ is the wave number the spectrum has its peak at. The 
-Unified spectrum on the other hand models the~\emph{entire} wave number 
+\cite{article:Elfouhaily1997}, is defined as the \wavenumber range $k < 
+10\times k_p$, where $k_p$ is the \wavenumber the spectrum has its peak at. The 
+Unified spectrum on the other hand models the~\emph{entire} \wavenumber 
 range, including the \emph{short-wave regime}, which is defined as $k >= 
 10\times k_p$. Because the short-wave regime extends into the gravity-capillary
 wave domain, we need a dispersion relation which extends into said domain too.
@@ -2248,7 +2248,7 @@ We may write:
 k_m &= \sqrt{\frac{p_w g}{T}} = 370~\text{rad/m}
 \end{align}
 \end{subequations}
-where $k_m$ is the wavenumber, where gravity-capillary waves on an air-water
+where $k_m$ is the \wavenumber, where gravity-capillary waves on an air-water
 interface have their minimum phase velocity at. The constants $p_w$, $g$ and
 $T$ are water density, acceleration due to gravity, and water surface tension,
 respectively.
@@ -2268,8 +2268,8 @@ al.~\cite{article:Hara1994}). We may write the Unified spectrum as follows:
 \end{equation}
 %
 where $\theta_p$ is the direction of travel of the waves at the spectral peak. 
-Since the Unified spectrum is given in terms of wavenumber, we are in need of a 
-wavenumber based formulation of its foundation, namely the Pierson Moskowitz 
+Since the Unified spectrum is given in terms of \wavenumber, we are in need of a 
+\wavenumber based formulation of its foundation, namely the Pierson Moskowitz 
 spectrum, $L_{PM}$, as well as the peak enhancement factor introduced by 
 Hasselmann et al., $J_p$. We may write:
 %
@@ -2307,7 +2307,7 @@ compared to the spectral models of Hasselmann et al. and Donelan et al., see
 Figure~\ref{fig:unified_spectra}.
 
 With the basic terms at hand, we are able to move on to the one dimensional 
-wavenumber spectrum as given by Elfouhaily et al.:
+\wavenumber spectrum as given by Elfouhaily et al.:
 %
 \begin{subequations}
 \begin{align}
@@ -2335,7 +2335,7 @@ effect function} $F_p$. The latter restricts the energy contribution of the
 $B_l$ term to the low frequency regime. The short wave regime input $B_h$,
 on the other hand, depends on the equilibrium range parameter for short waves,
 $\alpha_m$, the friction velocity at the water surface, $u^{\ast}$, the wave
-phase speed $c$, the minimum phase speed $c_m$ at the wavenumber $k_m$, and
+phase speed $c$, the minimum phase speed $c_m$ at the \wavenumber $k_m$, and
 the \emph{short wave side effect function} $F_m$. The term $F_m$ accounts for
 the bandwidth of gravity-capillary waves as well as for the~\emph{viscous cutoff},
 beyond which there is no wave energy. We may compute the friction velocity
@@ -2367,7 +2367,7 @@ waves, $u/c$, i.e. the \emph{generalized wave age}.
 		%ylabels at=all,
 		horizontal sep=2.0cm,
 	},
-    xlabel={Wave number~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
+    xlabel={Wavenumber~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
 	width=0.5\textwidth,
 	%scaled ticks=false,
 	xmode = log,
@@ -2749,9 +2749,9 @@ yshift=3\pgfkeysvalueof{/pgfplots/every axis title shift}
 ] 
 {\pgfplotslegendfromname{grouplegend}};
 \end{tikzpicture}
-\caption{Unified spectra and Donelan spectra for the full wavenumber range and 
+\caption{Unified spectra and Donelan spectra for the full \wavenumber range and 
 for wind speeds from $3m\cdot s^{-1}$ up to $21m\cdot s^{-1}$ with a $2m\cdot 
-s^{-1}$ step ($F=500km$). Left: One dimensional wavenumber spectra $\Theta(k)$. 
+s^{-1}$ step ($F=500km$). Left: One dimensional \wavenumber spectra $\Theta(k)$. 
 Right: One dimensional curvature spectra $C(k)$. %The Unified spectra's peak to 
 %the right is at $k_m = 370rad\cdot m^{-1}$.
 }
@@ -2767,7 +2767,7 @@ of both spectrum types match rather well up to the spectral peak in the long wav
 but start to differ afterwards. Moreover, one may notice that the Unified spectrum
 does not give any energy beyond the gravity-capillary wave band. In addition, we may
 look at the \emph{curvature spectrum} $C(k) = k^3\Theta(k)$ to see that the Unified 
-spectrum properly models the secondary gravity-capillary peak at wavenumber 
+spectrum properly models the secondary gravity-capillary peak at \wavenumber 
 $k_m = 370~\text{rad}\cdot\text{m}^{-1}$.\\
 
 The Unified spectrum's directional spread is given as follows:
@@ -2850,7 +2850,11 @@ to the upper right.}
 \subsection{Phillips Spectrum}
 \label{sec:phillips_spectrum}
 %
-The Phillips Spectrum, as introduced by Tessendorf~\cite{course:simulatingocean}, is an ad-hoc formulation of a two dimensional wave number spectrum $\Theta(\mvec{k})$. It has been developed with computer graphic purposes in mind, and as such it lacks a solid oceanographic foundation. We may write Tessendorf's formulation of the Phillips Spectrum in a manner consistent with our notation as follows:
+The Phillips Spectrum, as introduced by Tessendorf~\cite{course:simulatingocean},
+is an ad-hoc formulation of a two dimensional \wavenumber spectrum $\Theta(\mvec{k})$.
+It has been developed with computer graphic purposes in mind, and as such it lacks
+a solid oceanographic foundation. We may write Tessendorf's formulation of the
+Phillips Spectrum in a manner consistent with our notation as follows:
 %
 \begin{subequations}
 \begin{gather}
@@ -2869,14 +2873,14 @@ a scaling factor which we will discuss at a later point.  According to
 Tessendorf~\cite{course:simulatingocean}, $L$ defines the largest possible wave
 arising from a continuous wind of speed $\norm{\mvec{w}}$. The parameter $l$ on 
 the other hand acts as a frequency filter, it controls the suppression of energy
-contributed by high wave numbers $k$. In order to accomplish that, it is
+contributed by high \wavenumbers $k$. In order to accomplish that, it is
 mandatory for $l$ to be several orders of magnitude smaller than $L$. We chose
 the following as a default value for $l$:
 \begin{equation}
  l = 10^{-3}L
 \end{equation}
 Moreover, it follows from Equation~\ref{eq:phillips_spectrum} that setting 
-$l = 0$ disables any wave number based suppression of energy.\\
+$l = 0$ disables any \wavenumber based suppression of energy.\\
 
 If we take a closer look at Equation~\ref{eq:phillips_spectrum} one may notice 
 similarities to a one dimensional frequency spectrum in combination with a 
@@ -2884,7 +2888,7 @@ directional spread as seen in Equation~\ref{eq:directional_frequency_spectrum}.
 We may separate the terms involved as follows:
 \begin{equation}
 \label{eq:phillips_spectrum_separated}
- \Theta(\mvec{k}) = \underbrace{A}_{Scale}\underbrace{\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}}_{\substack{one~dimensional\\wave~ number\\spectrum}}\underbrace{\abs*{\transpose{\mvec{k}_n}\mvec{w}_n}^2}_{\substack{directional\\spread}}
+ \Theta(\mvec{k}) = \underbrace{A}_{Scale}\underbrace{\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}}_{\substack{one~dimensional\\wavenumber\\spectrum}}\underbrace{\abs*{\transpose{\mvec{k}_n}\mvec{w}_n}^2}_{\substack{directional\\spread}}
 \end{equation}
 %
 \begin{figure}
@@ -2897,7 +2901,7 @@ We may separate the terms involved as follows:
 		ylabels at=edge left,
 		group name=plots,
 	},
-    xlabel={Wave number~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
+    xlabel={Wavenumber~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
     ylabel={Energy~$\Theta$~($\text{m}^3\cdot\text{rad}^{-1}$)},
 %     legend columns=-1,
 	width=0.5\textwidth,
@@ -2973,7 +2977,7 @@ We may separate the terms involved as follows:
 \addlegendentry{JONSWAP~$\times 10^3$}
 \end{groupplot}
 \end{tikzpicture}
-\caption{Left: The one dimensional wave number spectrum term of the Phillips 
+\caption{Left: The one dimensional \wavenumber spectrum term of the Phillips 
 frequency spectrum with different wind speed values $\norm{\mvec{w}}$. Right: 
 The difference in scale between the Phillips spectrum and both, the Pierson 
 Moskowitz spectrum and the JONSWAP spectrum, amounts to at least a factor of 
@@ -2983,7 +2987,7 @@ $10^3$ ($U_{10}=\norm{\mvec{w}}=12.5m\cdot s^{-1}$, $F=200km$).
 \label{fig:phillips_spectra}
 \end{figure}
 %
-A set of instances of the one dimensional wave number spectrum term is depicted 
+A set of instances of the one dimensional \wavenumber spectrum term is depicted 
 in Figure~\ref{fig:phillips_spectra}. One may see that the shape of the 
 spectrum is similar to the Pierson Moskowitz one in Figure~\ref{fig:pm_spectra}, 
 with the frequency range of the spectrum peak being located at even lower 
@@ -3045,10 +3049,10 @@ centrosymmetrical.}
 %
 \\
 
-Now that we have discussed the one dimensional wave number spectrum and the 
+Now that we have discussed the one dimensional \wavenumber spectrum and the 
 scale factor $A$, we move on to the directional term from 
 Equation~\ref{eq:phillips_spectrum_separated}. Said term is a simple cosinus 
-term raised to the power of two, with normalised wave vector $\mvec{k}$ and 
+term raised to the power of two, with normalised \wavevector $\mvec{k}$ and 
 normalised wind vector $\mvec{w}$ as input. We may increase the exponent in 
 order to make the resulting directional spread more narrow. Moreover, as only
 the  absolute value of the cosinus is taken into account, the result is
@@ -3060,7 +3064,7 @@ centrosymmetrical.
 Figure \ref{fig:phillips_directional_term} gives an illustration of the directional 
 spread with different wind directions and different exponents. Recall that the 
 directional spread $D$ distributes the energy represented by $\Theta(k)$ among 
-all directions, without changing the amount of energy at wave number $k$.  
+all directions, without changing the amount of energy at \wavenumber $k$.  
 Energy is conserved, therefore we may write:
 \begin{subequations}
 \begin{align}
@@ -3077,7 +3081,7 @@ We insert two variants of the Phillips directional spread into the integral:
 \end{subequations}
 As one can see, the results are \emph{not} equal one, therefore energy is 
 \emph{not} conserved. In combination with the unusual magnitude of energy 
-output by the one dimensional Phillips wave number spectrum, it is really 
+output by the one dimensional Phillips \wavenumber spectrum, it is really 
 difficult to find an appropriate scale factor $A$ in order to generate 
 believable ocean surfaces.
 %
