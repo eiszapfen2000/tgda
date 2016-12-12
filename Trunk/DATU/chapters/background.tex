@@ -20,7 +20,7 @@ bands constitutes the spectrum of ocean waves.
 \begin{tabularx}{\textwidth}{X | X X | X X }
  %\hline
   \cline{2-5}
-  & \multicolumn{2}{c}{Period Band Range (sec)} \vline & \multicolumn{2}{c}{Frequency Band Range (Hz)} \\
+  & \multicolumn{2}{c}{Period Band Range (\si{\second})} \vline & \multicolumn{2}{c}{Frequency Band Range (\si{\hertz})} \\
   \hline
   Wave Type & Start & End & Start & End \\
  \hline
@@ -254,8 +254,8 @@ in three dimensional space is defined as follows:
  \eta(\mvec{x}, t) = A\cos(\transpose{\mvec{k}}\mvec{x} - \omega t)
 \end{equation}
 where $\mvec{x} = (x_x, x_z)$ denotes the observed point on a plane and $\mvec{k} = (k_x, k_z)$ represents
-the travelling direction of the wave. The wave number $k$ of~\emph{wave vector} $\mvec{k}$ is determined by
-the wave vector's magnitude
+the travelling direction of the wave. The \wavenumber $k$ of~\emph{\wavevector} $\mvec{k}$ is determined by
+the \wavevector's magnitude
 \begin{equation}
  k = \norm{\mvec{k}}
 \end{equation}
@@ -272,7 +272,7 @@ solution as well.\\
 
 Before we start handling a large number of sinusoids, we will improve our
 notation to make it more compact. In order to do that we employ~\emph{Euler's
-formula}\fxerror{Reference}:
+formula}~\citep{Euler:1748}:
 \begin{align}
 \label{eq:euler_positive} e^{ix} &= \cos{x} + i\sin{x} && x \in \mathbb{R} \\
 \label{eq:euler_negative} e^{-ix} &= \cos{x} - i\sin{x} && x \in \mathbb{R}
