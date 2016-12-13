@@ -174,6 +174,8 @@ is the wave period in seconds.\\
 % 	yticklabels={$-\frac{K}{2}$,0,$\frac{K}{2}$},
 	%xtick=\empty,
 	ytick=\empty,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north west},
+	every axis y label/.style={at={(current axis.above origin)},anchor=north east}
 	]
 \addplot[samples=300,domain=0:4*pi] {2*sin(deg(x))};
 \draw[<->,>=latex] (axis cs:pi/2,0) -- (axis cs:pi/2,2) node [midway,label={[xshift=2mm]left:{$A$}}] {};
