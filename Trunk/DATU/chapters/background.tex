@@ -139,11 +139,51 @@ $\omega$ is the~\emph{wave frequency} in radians per second,~$t$ represents the 
 $\lambda$ is the~\emph{wave length},~$f$ is the~\emph{wave frequency} in Hertz (Hz) and~$T$
 is the wave period in seconds.\\
 
-\begin{figure}[b]
-	\centering
-	\includegraphics[width=\textwidth]{figures/sinusoid}
-	\caption{An example of a sinusoidal wave.}
-	\label{fig:sinusoid}
+% \begin{figure}
+% 	\centering
+% 	\includegraphics[width=\textwidth]{figures/sinusoid}
+% 	\caption{An example of a sinusoidal wave.}
+% 	\label{fig:sinusoid}
+% \end{figure}
+%
+% \begin{figure}
+% \begin{tikzpicture}
+% \begin{axis}[domain=0:4*pi]
+%     \addplot {sin(deg(x))}; 
+%     \end{axis}
+% \end{tikzpicture}
+% \end{figure}
+
+\begin{figure}
+\tikzset{external/force remake}
+\begin{tikzpicture}
+\begin{axis}[
+	axis lines=middle,
+	enlargelimits=true,
+	width=\textwidth,
+	axis equal image,
+	xmin = 0,
+	xmax = 4*pi,
+	ymin = -2,
+	ymax = 2,
+	ylabel = $\eta$,
+	xlabel = $x$/$t$,
+% 	xtick = {1.57079632679, 3.14159265359, ..., 12.5663706144},
+	xtick=\empty,
+%  	xticklabels=\empty,
+% 	yticklabels={$-\frac{K}{2}$,0,$\frac{K}{2}$},
+	%xtick=\empty,
+	ytick=\empty,
+	]
+\addplot[samples=300,domain=0:4*pi] {2*sin(deg(x))};
+\draw[<->,>=latex] (axis cs:pi/2,0) -- (axis cs:pi/2,2) node [midway,label={[xshift=2mm]left:{$A$}}] {};
+\draw[<->,>=latex] (axis cs:7*pi/2,0) -- (axis cs:7*pi/2,-2) node [midway,label={[xshift=2mm]left:{$A$}}] {};
+\draw[<->,>=latex] (axis cs:3*pi/4,2*0.707106781186548) -- (axis cs:11*pi/4,2*0.707106781186548) node [midway,label={[yshift=-2mm]above:{$\lambda$}}] {};
+\draw[<->,>=latex] (axis cs:5*pi/4,-2*0.707106781186548) -- (axis cs:13*pi/4,-2*0.707106781186548) node [midway,label={[yshift=-2mm]above:{$T$}}] {};
+\end{axis}
+\end{tikzpicture}
+\caption{An example of a sinusoidal wave.}
+\label{fig:sinusoid}
 \end{figure}
 %
 We may picture Equation~\ref{eq:sinusoid} in an easy way if we either focus on a
@@ -509,13 +549,12 @@ values of sea surface elevation are drawn from, as follows:
  pr[\eta] = \frac{1}{\sqrt{2\pi\sigma^2}}~\mathrm{e}^{-\frac{\eta^2}{2\sigma^2}}
 \end{equation}
 Note that neither position nor time appear in the distribution, because the
-process is modeled as spatially and temporally invariant.\\
-
-We already mentioned that Pierson-Neumann theory does not represent surface
-elevation $\eta$ as one single function, but as an ensemble of functions
-$\{\eta\}$. The ensemble contains an infinite number of different sea surfaces,
-each with its own probability of actually being realised. As of now, we may
-formulate surface elevation as a realisation of a stochastic process
+process is modeled as spatially and temporally invariant.
+% We already mentioned that Pierson-Neumann theory does not represent surface
+% elevation $\eta$ as one single function, but as an ensemble of functions
+% $\{\eta\}$. The ensemble contains an infinite number of different sea surfaces,
+% each with its own probability of actually being realised.
+As of now, we may formulate surface elevation as a realisation of a stochastic process
 \begin{equation}
 \label{eq:surface_elevation_gauss}
  \eta(\mvec{x}, t) = \iint_{\mvec{k}}\int_{\omega} \xi
