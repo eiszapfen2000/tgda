@@ -155,7 +155,7 @@ The parameters defining the sine wave - amplitude, frequency, length and directi
 To simplify the mathematics we assume a two-dimensional ocean, with one
 dimension representing the wave's direction of travel and the  other the wave's
 vertical displacement. With these assumptions we can describe surface elevation
-as a sinusoid
+as a sinusoid:
 %
 \begin{equation}
 \label{eq:sinusoid}
@@ -326,7 +326,7 @@ in three dimensional space is defined as follows:
 \end{equation}
 where $\mvec{x} = (x_x, x_z)$ denotes the observed point on a plane and $\mvec{k} = (k_x, k_z)$ represents
 the travelling direction of the wave. The \wavenumber $k$ of~\emph{\wavevector} $\mvec{k}$ is determined by
-the \wavevector's magnitude
+the \wavevector's magnitude:
 \begin{equation}
  k = \norm{\mvec{k}}
 \end{equation}
@@ -356,7 +356,7 @@ We may extract both the real and the imaginary part separately:
 \end{align*}
 where $\Re$ denotes the real part of the exponential and $\Im$ the
 complex one. Alternatively we may solve Equations~\ref{eq:euler_positive}
-and~\ref{eq:euler_negative} as a pair in the variables $\cos{x}$ and $\sin{x}$
+and~\ref{eq:euler_negative} as a pair in the variables $\cos{x}$ and $\sin{x}$:
 \begin{align*}
  \cos{x} &= \frac{e^{ix}+e^{-ix}}{2}\\
  \sin{x} &= \frac{e^{ix}-e^{-ix}}{2i}\\
@@ -405,7 +405,7 @@ where $a(\mvec{k})$ is called the~\emph{amplitude spectrum} of
 $\eta(\mvec{x}, t)$. According to \citet{book:kinsman2002wind} it is possible to
 represent the vertical displacement of the water surface by~\emph{Generalized
 Fourier Transforms}. We may write the sea surface in two spatial dimensions and
-one time dimension as
+one time dimension as follows:
 %
 \begin{equation}
 \label{eq:surface_elevation_bkwt}
@@ -419,39 +419,37 @@ integration is over all frequencies. $B(\mvec{k},\omega)$ is called the
 three dimensional amplitude spectrum of $\eta(\mvec{x}, t)$. Notice the missing
 dependency of $\omega$ on $\mvec{k}$ in the exponent, it is the responsibility
 of $B(\mvec{k},\omega)$ to model that relationship.
-
-We may integrate separately over all frequencies
+We may integrate separately over all frequencies to obtain the two dimensional
+amplitude spectrum $B(\mvec{k}, t)$:
 %
 \begin{equation}
  B(\mvec{k}, t) = \int_{\omega} B(\mvec{k},
 \omega)~\mathrm{e}^{-\mathrm{i}\omega t}~\mathrm{d}\omega
 \end{equation}
 %
-to obtain the two dimensional amplitude spectrum $B(\mvec{k}, t)$.
-We rewrite Equation~\ref{eq:surface_elevation_bkwt} as
-%
-\begin{equation}
-\label{eq:surface_elevation_bk}
- \eta(\mvec{x}, t) = \iint_{\mvec{k}} B(\mvec{k},t)
-~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}~
-\mathrm{d}\mvec{k}
-\end{equation}
-%
-Alternatively, we may integrate over all \wavenumbers
+Alternatively, we may integrate over all \wavenumbers to obtain the one dimensional
+amplitude spectrum $B(\mvec{x}, \omega)$:
 %
 \begin{equation}
  B(\mvec{x}, \omega) = \iint_{\mvec{k}} B(\mvec{k},
 \omega)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}~\mathrm{d}\mvec{k}
 \end{equation}
 %
-to obtain the one dimensional amplitude spectrum $B(\mvec{x}, \omega)$.
-We rewrite Equation~\ref{eq:surface_elevation_bkwt} as
+Thus, we may rewrite Equation~\ref{eq:surface_elevation_bkwt} as follows:
 %
 \begin{equation}
-\label{eq:surface_elevation_bw}
-\eta(\mvec{x}, t) = \int_{\omega} B(\mvec{x},\omega)
-~\mathrm{e}^{-\mathrm{i}\omega t}~\mathrm{d}\omega
+\label{eq:surface_elevation_bk}
+  \eta(\mvec{x}, t) = \iint_{\mvec{k}} B(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}~\mathrm{d}\mvec{k}
+  = \int_{\omega} B(\mvec{x},\omega)~\mathrm{e}^{-\mathrm{i}\omega t}~\mathrm{d}\omega
 \end{equation}
+%
+% We rewrite Equation~\ref{eq:surface_elevation_bkwt} as
+% %
+% \begin{equation}
+% \label{eq:surface_elevation_bw}
+% \eta(\mvec{x}, t) = \int_{\omega} B(\mvec{x},\omega)
+% ~\mathrm{e}^{-\mathrm{i}\omega t}~\mathrm{d}\omega
+% \end{equation}
 %
 \section{The Specification of a Random Sea}
 \label{sec:random_sea}
@@ -483,7 +481,7 @@ irrelevant, only time differences matter.
 \label{sec:energy_spectrum}
 Given a spatially homogeneous and temporally stationary wave field, and a
 respective three dimensional amplitude spectrum $B(\mvec{k},\omega)$, then we
-may write
+may write:
 \begin{equation}
 \label{eq:energy_spectrum_3d}
  \Theta(\mvec{k}, \omega) = \frac{B(\mvec{k}, \omega)^2}{2} = 
@@ -589,7 +587,7 @@ process is modeled as spatially and temporally invariant.
 % elevation $\eta$ as one single function, but as an ensemble of functions
 % $\{\eta\}$. The ensemble contains an infinite number of different sea surfaces,
 % each with its own probability of actually being realised.
-As of now, we may formulate surface elevation as a realisation of a stochastic process
+As of now, we may formulate surface elevation as a realisation of a stochastic process:
 \begin{equation}
 \label{eq:surface_elevation_gauss}
  \eta(\mvec{x}, t) = \iint_{\mvec{k}}\int_{\omega} \xi
