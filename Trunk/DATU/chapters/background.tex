@@ -28,8 +28,8 @@ bands constitutes the spectrum of ocean waves.
   Ultragravity & $1\times10^{-1}$   & $1\times10^{0}$    & $1\times10^1$       & $1\times10^0$ \\
   Gravity      & $1\times10^{0}$    & $3\times10^{1}$    & $1\times10^0$       & $3.33\times10^{-2}$ \\
   Infragravity & $3\times10^{1}$    & $3\times10^{2}$    & $3.33\times10^{-2}$ & $3.33\times10^{-3}$ \\
-  Long Period  & $3\times10^{2}$    & $4.32\times10^{4}$ & $3.33\times10^{-3}$ & $2.32\times10^{-4}$ \\
-  Tidal        & $4.32\times10^{4}$ & $8.64\times10^{4}$ & $2.32\times10^{-4}$ & $1.16\times10^{-5}$ \\
+  Long Period  & $3\times10^{2}$    & $4.32\times10^{4}$ & $3.33\times10^{-3}$ & $2.32\times10^{-5}$ \\
+  Tidal        & $4.32\times10^{4}$ & $8.64\times10^{4}$ & $2.32\times10^{-5}$ & $1.16\times10^{-5}$ \\
   Transtidal   & $8.64\times10^{4}$ & $\infty$           & $1.16\times10^{-5}$ & $0$
 \end{tabularx}
 \caption{A classification of ocean surface waves by period and frequency.}
@@ -41,32 +41,62 @@ Table~\ref{tab:ocean_wave_period} gives a compact overview of different kinds
 of ocean surface waves classified by period band as well as the corresponding 
 frequency band. The shortest period waves are the~\emph{capillary waves}, with 
 periods less than $0.1s$. These are the first waves which one is able to notice 
-when the wind starts to blow on the ocean surface. Capillary waves appear like 
-a fine structure of small ripples of nearly capillary dimension, and as such 
-they determine largely the optical effects of the surface. Moreover, they play 
-an important role in the context of energy transfer from the wind to the water.
+when the wind starts to blow on the ocean surface, they appear like a fine
+structure of small ripples of nearly capillary dimension.
 % That is, capillary waves are largely responsible for what might be called the 
 % inherent roughness of the surface, therefore they determine the effectiveness 
 % with which the wind is able to grip the water.
-Next are the~\emph{ultra-gravity waves} with periods ranging from $0.1s$ to 
+Next are the~\emph{ultragravity waves} with periods ranging from $0.1s$ to 
 $1s$. The ordinary~\emph{gravity waves} observed at sea have periods varying 
 from $1s$ to $30s$ and are composed of two types of waves, namely~\emph{sea 
-waves} and~\emph{swell}. When directly generated and affected by local winds, 
-these gravity waves are called sea waves. After the wind ceases to blow they 
-are called swell. More generally, swell consists of wind generated gravity 
-waves that are not significantly affected by the local wind, therefore they have 
-been generated elsewhere or at some time in the past. Beyond the ordinary 
+waves} and~\emph{swell}.
+Sea waves are gravity waves directly generated and affected by local winds,
+and after the wind ceases to blow they are called swell. More generally, swell
+consists of wind generated gravity waves that are not significantly affected
+by the local wind, therefore they have  been generated elsewhere or at some
+time in the past. Beyond the ordinary 
 gravity waves there are~\emph{infragravity waves}, with periods between $30s$ 
 and $5min$. Then there are the~\emph{long period waves} with periods in the 
 range $5min$ to $12h$. Their representatives in the sea are~\emph{tsunamis} 
 and storm surges. The~\emph{ordinary tidal waves} represent the astronomical 
 tides with fixed wave periods of about $12h$ and $24h$. At the end of the 
-spectrum there are the~\emph{trans-tidal waves} with periods greater than 
+spectrum there are the~\emph{transtidal waves} with periods greater than 
 $24h$. These include the longer period components of astronomical tides.
+%
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{figures/SurfaceWavesEnergy}
+  \caption{A tentative overview of which forces influence which wave 
+  frequency band, as well as the relative amount of energy
+  each wave frequency band contains. Source: \citet{article:munkorigin}}
+  \label{fig:surface_waves_energy}
+\end{figure}
+%
 
-Figure~\ref{fig:surface_waves_energy}, inspired by Munk~\cite{article:munkorigin} and Kinsman~\cite{book:kinsman2002wind}, pictures the entire
-spectrum of ocean waves, including the forces responsible for various portions of the
-spectrum.\\
+Ocean surface waves are also classified by their major governing forces.
+One, the disturbing force which causes the actual water displacement,
+such as wind, storms, earthquakes, and the gravity of sun and moon.
+Second, the restoring force which brings the water back to its position at
+rest, such as surface tension, gravity, and coriolis.
+% Winds are responsible for the generation of capillary waves,
+% ultragravity waves, gravity waves and infragravity waves. Storms and
+% earthquakes generate long period waves like tsunamis, whereas the
+% gravitational pull of sun and moon is responsible for ordinary tidal
+% waves. Moreover, storms, sun and moon are the source of trans-tidal
+% waves.
+Figure~\ref{fig:surface_waves_energy} pictures the entire spectrum
+of ocean surface waves and the forces responsible for various portions
+of the spectrum. As one can see, gravity is the main restoring force,
+therefore ocean surface waves are classified as~\emph{surface gravity waves}.
+Moreover, since wind blowing over a vast stretch of the air-sea interface
+is the main force to generate waves on the ocean surface, this kind of
+waves is called~\emph{wind generated waves}, or in short,~\emph{wind waves}.
+Wind waves on the ocean surface represent gravity waves,
+while e.g. tsunamis and ocean tides do not.
+
+% and range from ripples with less than a centimeter in height to huge waves more
+% than thirty meters high.
+
 
 % Given the above classification, the ocean surface waves with the shortest period are the~\emph{capillary waves}. These are the first waves which one is able to notice when the wind starts to blow on the ocean surface. Capillary waves appear like a fine structure of small ripples of nearly capillary dimension, and
 % as such they determine largely the optical effects of the surface. Moreover, they play an important role in the context of energy transfer from the wind to the water. That is, capillary waves are largely responsible
@@ -75,42 +105,38 @@ spectrum.\\
 % tension than by gravity.
 % 
 % Next are \emph{gravity waves}, where the short ones are called \emph{ultra-gravity waves}, and the very long ones are called \emph{infra-gravity waves}.
-Because ocean surface waves are generated and propagate at the interface between the atmosphere
-and the ocean, where the restoring force of gravity is in effect, they are classified as~\emph{surface gravity waves}.
-Moreover, since wind blowing over a vast stretch of the air-sea interface is the main force to generate waves on
-the ocean surface, this kind of waves is called~\emph{wind generated waves},
-or in short,~\emph{wind waves}. Wind waves on the ocean surface represent
-gravity waves, while e.g. tsunamis and ocean tides do not.\\
 
-The process behind surface gravity waves is a simple one - the moment a fluid element at the interface is displaced, gravity
-will try to restore it to equilibrium which results in oscillation of said fluid element. We mentioned before
-that wind is the most prominent force causing displacement on the water surface. As it blows, it causes pressure and friction
-forces which perturb the water surface's equilibrium. Therefore, the combination of wind transferring energy from the air
-to the water and gravitational acceleration cause the formation of waves on the water surface.\\
-
+% Because ocean surface waves are generated and propagate at the interface between the atmosphere
+% and the ocean, where the restoring force of gravity is in effect, they are classified as~\emph{surface gravity waves}.
+% Moreover, since wind blowing over a vast stretch of the air-sea interface is the main force to generate waves on
+% the ocean surface, this kind of waves is called~\emph{wind generated waves},
+% or in short,~\emph{wind waves}. Wind waves on the ocean surface represent
+% gravity waves, while e.g. tsunamis and ocean tides do not.\\
+% 
+% The process behind surface gravity waves is a simple one - the moment a fluid element at the interface is displaced, gravity
+% will try to restore it to equilibrium which results in oscillation of said fluid element. We mentioned before
+% that wind is the most prominent force causing displacement on the water surface. As it blows, it causes pressure and friction
+% forces which perturb the water surface's equilibrium. Therefore, the combination of wind transferring energy from the air
+% to the water and gravitational acceleration cause the formation of waves on the water surface.\\
+% 
 In order to be able to model the surface of such an intricate fluid system as the ocean, one has to reduce complexity.
-Research fields such as ocean engineering or coastal engineering employ the~\emph{Airy wave theory}\cite{book:airy1845tides}
+Research fields such as ocean engineering or coastal engineering employ the~\emph{Airy wave theory}~\citep{book:airy1845tides}
 to model the properties of the sea. Airy wave theory, also known as~\emph{linear wave theory}, describes the propagation of
 gravity waves on the surface of a homogeneous fluid with a set of~\emph{linear} equations. These equations give
 a decent approximation of the wave dynamics and kinematics with enough accuracy to model the state of the sea over a
 limited amount of time.
 
-\begin{figure}[tb]
-	\centering
-	\includegraphics[width=\textwidth]{figures/SurfaceWavesEnergy}
-	\caption{A tentative overview of which forces influence which wave 
-frequency band, as well as the relative amount of energy
-each wave frequency band contains. Source: \citet{article:munkorigin}}
-	\label{fig:surface_waves_energy}
-\end{figure}
+The remainder of this chapter is organized as follows:
+Section~\ref{sec:linear_theory_ocean_waves}
+ first, we will give a short introduction of linear wave theory,
 
 \section{Linear Theory of Ocean Surface Waves}
 \label{sec:linear_theory_ocean_waves}
 Linear wave theory makes a set of assumptions about the properties of the fluid, such as its viscosity,
 compressibility and curl. Because fluid mechanics and fluid dynamics, associated fluid properties, and the derivation
 of the linear wave theory go beyond the scope of this thesis, we will refer the interested reader
-to Airy~\cite{book:airy1845tides}, Batchelor~\cite{book:batchelor2000introduction}
-and Kinsman~\cite{book:kinsman2002wind}, which provide a good starting point for in-depth information.\\
+to \citet{book:airy1845tides}, \citet{book:batchelor2000introduction}
+and \citet{book:kinsman2002wind}, which provide a good starting point for in-depth information.\\
 
 \emph{But} we will mention two core assumptions of the linear wave theory which are easy to picture:
 \begin{itemize}
