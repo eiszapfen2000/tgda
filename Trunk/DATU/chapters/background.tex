@@ -691,7 +691,7 @@ $\xi\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}$, which we are able to compute in
 a very efficient manner by means of the~\emph{Fast Fourier Transform}, 
 ~\emph{FFT} in short. The interested reader may find extensive discussions of 
 the Discrete Fourier Transform and the Fast Fourier algorithm
-in \cite{book:bracewell2000fourier} and \cite{book:numericalrecipes}.\\
+in \cite{book:bracewell2000fourier} and \cite{book:numericalrecipes}.
 
 Employing the FFT algorithm may solve our concerns relating to performance, but 
 we still have to make sure we compute an as good as possible approximation to 
@@ -867,7 +867,7 @@ distance between consecutive grid points for the \wavevector domain. We denote
 said distances as follows:
 \begin{align}
 \label{eq:delta_kx_delta_ky}
- \Delta k_x = \frac{2\pi}{L} && \Delta k_y = \frac{2\pi}{K}
+ \Delta k_x = \Delta k_y = \frac{2\pi}{L} = \frac{2\pi}{K}
 \end{align}
 %
 Given $\Delta k_x$ and $\Delta k_y$, we will define \wavevectors $\mvec{k}$ in 
@@ -881,8 +881,7 @@ $\mvec{x}$:
 %
 As one may see in Figure~\ref{fig:wave_vector_domain}, the \wavevector domain 
 is centered. \Wavenumber $k = 0$ is at the center, and $|k|$ grows while we 
-move outwards, towards the domain border. From
-Equation~\ref{eq:sinusoid_parameters} we know that the relation between wave 
+move outwards, towards the domain border. We know that the relation between wave 
 length and \wavenumber is an inverse one, while $|k|$ increases, wave length 
 decreases. Therefore we find the larger wave lengths near the domain center, 
 and the smaller ones near the domain border. We may ignore the center element 
