@@ -170,12 +170,11 @@ introduced in computer graphics literature.
 \section{Linear Theory of Ocean Surface Waves}
 \label{sec:linear_theory_ocean_waves}
 Linear wave theory makes a set of assumptions about the properties of the fluid, such as its viscosity,
-compressibility and curl. Because fluid mechanics and fluid dynamics, associated fluid properties, and the derivation
+compressibility and curl. Because fluid dynamics, associated fluid properties, and the derivation
 of the linear wave theory go beyond the scope of this thesis, we will refer the interested reader
 to \citet{book:airy1845tides}, \citet{book:batchelor2000introduction}
-and \citet{book:kinsman2002wind}, which provide a good starting point for in-depth information.\\
-
-\emph{But} we will mention two core assumptions of the linear wave theory which are easy to picture:
+and \citet{book:kinsman2002wind}.
+\emph{But} we will mention two core assumptions of linear wave theory which are easy to picture:
 \begin{itemize}
  \item The water body has a uniform mean depth.
  \item The wave amplitudes are small in relation to the size of the water body.
@@ -363,15 +362,8 @@ the \wavevector's magnitude:
 \end{equation}
 Thus, because of the dispersion relation, all waves of same magnitude share the same frequency.
 
-\subsection{Sum of Waves}
-Now that we have a description of waves in three-dimensional space, we need to
-enhance the description of the ocean surface. It is obvious that the ocean does
-not consist of only one wave travelling, but of an infinite number of waves with
-different lengths and directions. Because we still find ourselves in the realm
-of~\emph{linear} wave theory, we may reach an adequate solution
-by~\emph{combination}. A linear combination of solutions constitutes a valid
-solution as well.\\
-
+\subsection{Compley Exponential Wave Form}
+%
 Before we start handling a large number of sinusoids, we will improve our
 notation to make it more compact. In order to do that we employ~\emph{Euler's
 formula}~\citep{Euler:1748}:
@@ -406,7 +398,16 @@ dimensional space from Equation~\ref{eq:sinusoid_3d} as an exponential:
 %
 where $p^*$ denotes the~\emph{complex conjugate} of $p$. From now on we will
 omit the explicit $\Re$ in equations expressing $\eta$, because surface
-elevation is a real number.\\
+elevation is a real number.
+%
+\subsection{Sum of Waves}
+Now that we have a description of waves in three-dimensional space, we need to
+enhance the description of the ocean surface. It is obvious that the ocean does
+not consist of only one wave travelling, but of an infinite number of waves with
+different lengths and directions. Because we still find ourselves in the realm
+of~\emph{linear} wave theory, we may reach an adequate solution
+by~\emph{combination}. A linear combination of solutions constitutes a valid
+solution as well.
 
 Each combination of amplitude $A$, \wavevector $\mvec{k}$ and wave frequency
 $\omega$ identifies one particular wave. As a next step we get rid of the
@@ -493,7 +494,7 @@ points $\mvec{x}$ and times $t$. Fortunately, modern physical oceanography is
 based on exactly such a formulation, which has been developed in the 1950s
 by~\emph{Pierson} and~\emph{von Neumann}~\citep{Neumann:1966}. We will refer to
 said formulation as~\emph{Pierson-Neumann theory} throughout the remainder of
-this document.\\
+this document.
 
 Pierson and von Neumann combine oceanography, physics and stochastics in order
 to describe the ocean surface. A fundamental assumption of their theory is that
