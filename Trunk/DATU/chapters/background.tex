@@ -1092,8 +1092,8 @@ to the upper right.}
 %
 Literature provides us with a large set of different directional spreading
 functions to choose from. We picked a~\emph{Cosine-2s} variant based on the
-work of Mitsuyasu et al.\cite{article:Mitsuyasu1975} and Hasselmann et 
-al\cite{article:Hasselmann1980}. Expressed in terms of angular frequency 
+work of \citet{article:Mitsuyasu1975} and 
+\citet{article:Hasselmann1980}. Expressed in terms of angular frequency 
 $\omega$ it is as follows:
 \begin{subequations}
 \label{eq:directional_spread_mitsuyasu}
@@ -1106,7 +1106,7 @@ $\omega$ it is as follows:
 (\frac{\omega}{\omega_p})^{-2.5} & \omega \geq \omega_p\\
 (\frac{\omega}{\omega_p})^{5} & \omega < \omega_p\\
 \end{cases}
-\intertext{where, according to Hasselmann et al.}
+\intertext{where, according to \citeauthor{article:Hasselmann1980}}
 s_p &= \begin{cases}
 9.77 & \omega \geq \omega_p\\
 6.97 & \omega < \omega_p\\
@@ -1123,11 +1123,10 @@ assumed that $\theta_p$ is equal the wind direction. Figure
 \subsection{Pierson Moskowitz Spectrum}
 \label{sec:pierson_moskowitz}
 %
-The Pierson Moskowitz spectrum~\cite{article:PiersonMoskowitz1964} is a well 
+The Pierson Moskowitz spectrum \citep{article:PiersonMoskowitz1964} is a well 
 known and widely used one dimensional frequency spectrum based on data aquired 
 by weather ships in the North Atlantic Ocean. At the time it was introduced, 
-it was expressed in 
-terms of wind speed as follows:
+it was expressed in terms of wind speed as follows:
 \begin{subequations}
 \label{eq:pierson_moskowitz_old}
 \begin{align}
@@ -1289,7 +1288,7 @@ focus on wave spectra which model~\emph{fetch limited wave growth}, leaving
 aside models which simulate~\emph{duration limited wave growth}. This is a 
 reasonable choice, because the former has been investigated more thoroughly than
 the latter, both in the laboratory and the
-field\cite{book:windgeneratedoceanwaves}.
+field \citep{book:windgeneratedoceanwaves}.
 
 Fetch limited wave growth occurs when a wind of constant magnitude and 
 direction blows perpendicular to a long and straight coastline. The water is 
@@ -1297,8 +1296,7 @@ assumed deep and the wind blows for a sufficiently long time for the wave field
 to reach steady state (independent of time). As a consequence, given wind speed 
 $U_{10}$, the wave spectrum becomes a function of fetch $F$.
 
-Sverdrup and Munk~\cite{report:SverdrupMunk1947} as well as
-Kitaigorodskii~\cite{article:Kitaigorodskii1962}\cite{book:Kitaigorodskii1970} 
+\cite{report:SverdrupMunk1947} as well as \cite{article:Kitaigorodskii1962,book:Kitaigorodskii1970} 
 identified the following quantities to be of importance for fetch limited wave
 growth:
 \begin{itemize}
@@ -1347,13 +1345,12 @@ we may write the peak frequency as follows:
 \subsection{Growth limits}
 %
 The first significant attempts to predict fetch limited waves were ventured by
-Sverdrup and Munk\cite{book:breakersandsurf1944}
-\cite{book:breakersandsurfsupplement1945}, based on data from several sources, 
-including both field and laboratory. Bretschneider 
-\cite{article:Bretschneider1952} augmented said data set and refined the 
+Sverdrup and Munk \citep{book:breakersandsurf1944,book:breakersandsurfsupplement1945},
+based on data from several sources, including both field and laboratory.
+\citet{article:Bretschneider1952} augmented said data set and refined the 
 results. The combined findings of Sverdrup, Munk and Bretschneider, a set of 
 non-dimensional growth curves, are known as the~\emph{SMB growth curves}
-\cite{book:cerc1977}. These curves show that for large values of dimensionless 
+\citep{book:cerc1977}. These curves show that for large values of dimensionless 
 fetch $\chi$ both dimensionless energy $\epsilon$ and dimensionless peak 
 frequency $\nu$ reach asymptotic limits. These limits indicate that all further 
 development ceases at that point, the sea has reached a fully developed state. 
@@ -1507,7 +1504,7 @@ spectrum ($U_{10} = 15m\cdot s^{-1}$, $F=50km$).}
 \end{figure}
 %
 The JONSWAP spectrum is a one dimensional frequency spectrum  which has been 
-developed by Hasselmann et al.\cite{article:Hasselman1973} based on data 
+developed by \citet{article:Hasselman1973} based on data 
 collected during the~\emph{Joint North Sea Wave Project}. The JONSWAP spectrum 
 simulates fetch based wave growth and is expressed as a combination of the 
 Pierson Moskowitz spectrum and an additional~\emph{peak enhancement factor}. A 
@@ -1633,8 +1630,8 @@ s^{-1}$).}
 \\
 
 In contrast to the Pierson Moskowitz spectrum, which exclusively models fully 
-developed seas, the JONSWAP spectrum solely models developing seas. Hasselmann 
-et al. state that in context of their model the sea is never fully developed, 
+developed seas, the JONSWAP spectrum solely models developing seas.
+\citeauthor{article:Hasselman1973} state that in context of their model the sea is never fully developed, 
 the spectrum does not converge to the Pierson Moskowitz spectrum as fetch 
 increases. Figure~\ref{fig:jonswap_spectra} gives a tentative overview of the 
 development of a JONSWAP modeled sea, including a sketch which shows the impact 
@@ -1649,21 +1646,21 @@ Although Equation~\ref{eq:jonswap_omega} is a compact representation of the
 JONSWAP spectrum, it does omit explicit use of dimensionless variables.
 The JONSWAP spectrum simulates fetch limited wave growth, therefore it has to
 specify how dimensionless peak frequency $\nu$ is dependent on dimensionless
-fetch $\chi$. Hasselmann et al. provide the following relationship:
+fetch $\chi$. \citeauthor{article:Hasselman1973} provide the following relationship:
 \begin{equation}
 \label{eq:jonswap_nu}
  \nu = 3.5\chi^{-0.33}
 \end{equation}
 Because Equation\ref{eq:jonswap_nu} does not attempt to accomodate a transition 
 to full development, it is not applicable at large values of $\chi$. Based on 
-the JONSWAP datasets, Hasselmann et al. confined their model to $\chi < 
-1\times10^4$. Given dimensionless peak frequency $\nu$, we may write peak 
-angular frequency $\omega_p$ as follows:
+the JONSWAP datasets, \citeauthor{article:Hasselman1973} confined their model
+to $\chi < 1\times10^4$. Given dimensionless peak frequency $\nu$, we may write
+peak  angular frequency $\omega_p$ as follows:
 \begin{equation}
  \omega_p = 2\pi\frac{g\nu}{U_{10}} = \Omega\frac{g}{U_{10}}
 \end{equation}
-Moreover, Hasselmann et al. also base the equilibrium range parameter $\alpha$ 
-on dimensionless fetch:
+Moreover, \citeauthor{article:Hasselman1973} also base the equilibrium range
+parameter $\alpha$ on dimensionless fetch:
 \begin{equation}
  \alpha = 0.076 \chi^{-0.22}
 \end{equation}
@@ -1676,7 +1673,7 @@ spectra.
 %
 \subsection{Integral Domain Conversion}
 %
-Recall that we transform from the Cartesian \wavenumber domain to the spatial 
+Recall that we transform from the  \wavenumber domain to the spatial 
 one. Thus, as a prerequisite, we are in need of a two dimensional \wavenumber 
 spectrum $\Theta(\mvec{k})$, but 
 Equation~\ref{eq:directional_frequency_spectrum} 
