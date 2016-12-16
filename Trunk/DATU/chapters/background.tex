@@ -1913,10 +1913,8 @@ dimensional form by oceanographic research.
 
 \subsection{Donelan Spectrum}
 %
-% PGF version: \pgfversion
-% 
 The Donelan spectrum is a directional frequency spectrum which has 
-been developed by Donelan et al. \cite{article:Donelan1985} based on data 
+been developed by \citet{article:Donelan1985} based on data 
 collected both on Lake Ontario and at the \emph{Canadian Centre for Inland 
 Waters}'s wind-wave flume. At its core, the Donelan spectrum still is a one 
 dimensional frequency spectrum combined with a directional spreading function, 
@@ -1926,7 +1924,7 @@ Donelan spectrum to model the transition between developing and fully developed
 seas. Other improvements include the possibility for wind direction and peak 
 wave direction to differ, as well as a directional spreading function which both
 matches existing data more closely and is simpler in formulation than the one 
-introduced by Mitsuyasu et al.
+introduced by \citeauthor{article:Mitsuyasu1975}
 
 The energy given by the one dimensional Donelan frequency spectrum depends on 
 the frequency itself, the position of that frequency in the spectrum 
@@ -1974,8 +1972,7 @@ parameter, $\alpha$ the equilibrium range parameter and $\omega_p$ the angular
 frequency of the spectral peak. Moreover, $\Omega_c$, which denotes the inverse 
 wave age based on the component of the wind in the direction of the peak waves,
 is restricted to the interval $\Omega_c \in \interval[open left, open 
-right]{0.83}{5}$.\\
-
+right]{0.83}{5}$.
 %
 \begin{figure}
  \centering
@@ -2110,12 +2107,13 @@ directional spread (bottom row), both generated with the same input data.}
 \end{figure}
 %
 The directional spreading function as introduced by Donelan et al. does 
-not only differ in form from the one proposed by Mitsuyasu et al., see Figure 
+not only differ in form from the one proposed by
+\citeauthor{article:Mitsuyasu1975}, see Figure 
 \ref{fig:donelan_directional_filter}, but also in sensitivity, or rather 
 insensitivity, to wind speed $U_{10}$, see Figure 
 \ref{fig:directional_filter_comp}. That is, because the Donelan formulation 
-employs the ratio $\omega/\omega_p$ whereas Mitsuyasu et al. use comparisons 
-with absolute values.\\
+employs the ratio $\omega/\omega_p$ whereas \citeauthor{article:Mitsuyasu1975}
+use comparisons with absolute values.
 
 %
 \begin{figure}
@@ -2216,15 +2214,15 @@ Pierson Moskowitz spectrum for comparison ($\omega_p = 2.5$).}
 \end{figure}
 %
 In contrast to the JONSWAP spectrum introduced earlier, the one dimensional 
-frequency spectrum as given by Donelan et al. is able to complete a transition 
-to fully developed state, be it with increasing fetch or with decreasing 
-inverse wave age, see Figure~\ref{fig:donelan_spectra}.
+frequency spectrum as given by \citeauthor{article:Donelan1985} is able to
+complete a transition  to fully developed state, be it with increasing fetch
+or with decreasing inverse wave age, see Figure~\ref{fig:donelan_spectra}.
 %
 \subsection{Unified Spectrum}
 \label{sec:unified_spectrum}
 %
 %
-\begin{figure}[h!]
+\begin{figure}
 \centering
 %\tikzset{external/force remake}
 \begin{tikzpicture}
@@ -2339,16 +2337,16 @@ Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$).
 \end{figure}
 %
 The Unified spectrum is a directional \wavenumber spectrum introduced by
-Elfouhaily et al. \cite{article:Elfouhaily1997} which consists of a one 
+\citet{article:Elfouhaily1997} which consists of a one 
 dimensional \wavenumber spectrum combined with a directional spreading 
 function. All of the spectral models which we introduced beforehand focus on 
-the \emph{long-wave regime}, which, according to Elfouhaily et al. 
-\cite{article:Elfouhaily1997}, is defined as the \wavenumber range $k < 
-10\times k_p$, where $k_p$ is the \wavenumber the spectrum has its peak at. The 
-Unified spectrum on the other hand models the~\emph{entire} \wavenumber 
-range, including the \emph{short-wave regime}, which is defined as $k >= 
-10\times k_p$. Because the short-wave regime extends into the gravity-capillary
-wave domain, we need a dispersion relation which extends into said domain too.
+the \emph{long-wave regime}, which, according to \citeauthor{article:Elfouhaily1997},
+is defined as the \wavenumber range $k < 10\times k_p$, where $k_p$ is
+the \wavenumber the spectrum has its peak at. The Unified spectrum on the
+other hand models the~\emph{entire} \wavenumber range, including the
+\emph{short-wave regime}, which is defined as $k >= 10\times k_p$.
+Because the short-wave regime extends into the gravity-capillary wave domain,
+we need a dispersion relation which extends into said domain too.
 We may write:
 \begin{subequations}
 \begin{align}
@@ -2361,25 +2359,22 @@ interface have their minimum phase velocity at. The constants $p_w$, $g$ and
 $T$ are water density, acceleration due to gravity, and water surface tension,
 respectively.
 
-The combined works of Hasselmann et al. \cite{article:Hasselman1973}, Mitsuyasu 
-et al. \cite{article:Mitsuyasu1975}, and Donelan et al. 
-\cite{article:Donelan1985} serve as foundation for the Unified spectrum. 
-Moreover, Elfouhaily et al. did expand their model to the short-wave regime by 
-incorporating related theory (Kitaigorodskii \cite{book:Kitaigorodskii1970}, 
-Phillips \cite{article:Phillips1985}) and observations (Cox and Munk 
-\cite{article:CoxMunk1954}, Jähne and Riemer~\cite{article:Jaehne1990a}, Hara et 
-al.~\cite{article:Hara1994}). We may write the Unified spectrum as follows:
+The combined works of \citet{article:Hasselman1973}, \citet{article:Mitsuyasu1975},
+\citet{article:Donelan1985} serve as foundation for the Unified spectrum. 
+Moreover, \citeauthor{article:Elfouhaily1997} did expand their model to the
+short-wave regime by incorporating related theory \citep{book:Kitaigorodskii1970,
+article:Phillips1985} and observations \citep{article:CoxMunk1954,article:Jaehne1990a,
+article:Hara1994}. We may write the Unified spectrum as follows:
 %
 \begin{equation}
- \Theta(k, \theta) = \frac{1}{2\pi}\Theta(k)\{1 + \Delta(k) + \cos[2(\theta - 
-\theta_p)]\}
+ \Theta(k, \theta) = \frac{1}{2\pi}\Theta(k)\{1 + \Delta(k) + \cos[2(\theta - \theta_p)]\}
 \end{equation}
 %
 where $\theta_p$ is the direction of travel of the waves at the spectral peak. 
 Since the Unified spectrum is given in terms of \wavenumber, we are in need of a 
 \wavenumber based formulation of its foundation, namely the Pierson Moskowitz 
 spectrum, $L_{PM}$, as well as the peak enhancement factor introduced by 
-Hasselmann et al., $J_p$. We may write:
+\citeauthor{article:Hasselman1973}, $J_p$. We may write:
 %
 \begin{subequations}
 \begin{align}
@@ -2391,11 +2386,9 @@ k_p &= g\frac{\Omega_c^2}{U_{10}^2} \\
 	1.7 & 0.84 \leq \Omega_c < 1 \\
 	1.7 + 6.0\lg(\Omega_c) & 1\leq\Omega_c < 5
 	\end{cases} \\
-\Gamma &= \exp\left[-
-\frac{\left(\sqrt{\frac{k}{k_p}}-1\right)^2}{2\sigma^2}\right] \\
+\Gamma &= \exp\left[-\frac{\left(\sqrt{\frac{k}{k_p}}-1\right)^2}{2\sigma^2}\right] \\
 \sigma &= 0.08\left(1 + \frac{4}{\Omega_c^3}\right) \\
-\Omega_c &= 0.84 
-\tanh\left[\left(\frac{\chi}{\chi_0}\right)^{0.4}\right]^{-0.75} \\
+\Omega_c &= 0.84 \tanh\left[\left(\frac{\chi}{\chi_0}\right)^{0.4}\right]^{-0.75} \\
 \chi &= \frac{gF}{U_{10}^{2}} \\
 \chi_0 &= 2.2 \times 10^4
 \end{align}
@@ -2411,8 +2404,8 @@ the range $\Omega_c \in \interval[open right]{0.84}{5}$. As one may see,
 $\Omega_c$ is guaranteed an asymptotic value of $0.84$ for large fetch e.g. 
 fully developed seas. Hence, the Unified spectrum is not prone to 
 overdevelopment with increasining fetch, which is a notable improvement 
-compared to the spectral models of Hasselmann et al. and Donelan et al., see 
-Figure~\ref{fig:unified_spectra}.
+compared to the spectral models of \citeauthor{article:Hasselman1973}
+and \citeauthor{article:Donelan1985}, see Figure~\ref{fig:unified_spectra}.
 
 With the basic terms at hand, we are able to move on to the one dimensional 
 \wavenumber spectrum as given by Elfouhaily et al.:
@@ -2458,9 +2451,10 @@ z_0 &= 3.7 \times 10^{-5}~\frac{U_{10}^2}{g}
 \end{align}
 \end{subequations}
 %
-where $z_0$ is the \emph{roughness parameter} modeled according to Donelan et
-al.\cite{article:Donelan1993}, and $\kappa$ is the \emph{von K\'arm\'an constant}
-~\cite{article:vonKarman1931}. Elfouhaily et al. point out that both wave regimes
+where $z_0$ is the \emph{roughness parameter} modeled according to
+\cite{article:Donelan1993}, and $\kappa$ is the \emph{von K\'arm\'an constant}
+~\citep{article:vonKarman1931}. \citeauthor{article:Elfouhaily1997}
+point out that both wave regimes
 are modeled based on the air-sea interaction process of friction between wind and
 waves, $u/c$, i.e. the \emph{generalized wave age}.
 %
@@ -2876,38 +2870,9 @@ but start to differ afterwards. Moreover, one may notice that the Unified spectr
 does not give any energy beyond the gravity-capillary wave band. In addition, we may
 look at the \emph{curvature spectrum} $C(k) = k^3\Theta(k)$ to see that the Unified 
 spectrum properly models the secondary gravity-capillary peak at \wavenumber 
-$k_m = 370~\text{rad}\cdot\text{m}^{-1}$.\\
+$k_m = 370~\text{rad}\cdot\text{m}^{-1}$.
+%
 
-The Unified spectrum's directional spread is given as follows:
-%
-\begin{subequations}
-\begin{align}
-D(k, \theta) &= \frac{1}{2\pi}\{1 + \Delta(k) + \cos[2(\theta - 
-\theta_p)]\} \\
-\Delta(k) &= \tanh\left[a_0 + a_p\left(\frac{c}{c_p}\right)^{2.5} + 
-a_m\left(\frac{c_m}{c}\right)^{2.5}\right] \\
-a_0 &= \frac{\log(2)}{4} \\
-a_p &= 4 \\
-a_m &= 0.13 \frac{u^{\ast}}{c_m}
-\end{align}
-\end{subequations}
-where $\theta_p$ is the direction of travel of the waves at the spectral peak,
-$c$ is the phase speed, $c_p$ is the phase speed at the spectral peak, $c_m$
-is the minimum phase speed at $k_m$, $a_0$ and $a_p$ are constants, whereas $a_m$
-is a function for high-frequency waves dependent upon the friction velocity
-$u^\ast$ and $c_m$. Figure\ref{fig:unified_directional_filter} depicts example
-instances of the Unified spectrum's directional spread. One can see that the
-directional spread is~\emph{centrosymmetrical}, in short
-$D(k, \theta) = D(k, \theta \pm \pi)$. As a consequence the two dimensional
-spectrum is centrosymmetrical, too. Therefore, the Unified spectrum satisfies
-the following conditions:
-\begin{subequations}
-\begin{align}
-\Theta(k, \theta) &= \Theta(k, \theta \pm \pi) \\
-\Theta(\mvec{k}) &= \Theta(-\mvec{k})
-\end{align}
-\end{subequations}
-%
 \begin{figure}
  \centering
  \subtop[][$U_{10}=\sqrt{2}$]
@@ -2955,14 +2920,44 @@ to the upper right.}
 \label{fig:unified_directional_filter}
 \end{figure}
 %
+The Unified spectrum's directional spread is given as follows:
+%
+\begin{subequations}
+\begin{align}
+D(k, \theta) &= \frac{1}{2\pi}\{1 + \Delta(k) + \cos[2(\theta - 
+\theta_p)]\} \\
+\Delta(k) &= \tanh\left[a_0 + a_p\left(\frac{c}{c_p}\right)^{2.5} + 
+a_m\left(\frac{c_m}{c}\right)^{2.5}\right] \\
+a_0 &= \frac{\log(2)}{4} \\
+a_p &= 4 \\
+a_m &= 0.13 \frac{u^{\ast}}{c_m}
+\end{align}
+\end{subequations}
+where $\theta_p$ is the direction of travel of the waves at the spectral peak,
+$c$ is the phase speed, $c_p$ is the phase speed at the spectral peak, $c_m$
+is the minimum phase speed at $k_m$, $a_0$ and $a_p$ are constants, whereas $a_m$
+is a function for high-frequency waves dependent upon the friction velocity
+$u^\ast$ and $c_m$. Figure\ref{fig:unified_directional_filter} depicts example
+instances of the Unified spectrum's directional spread. One can see that the
+directional spread is~\emph{centrosymmetrical}, in short
+$D(k, \theta) = D(k, \theta \pm \pi)$. As a consequence the two dimensional
+spectrum is centrosymmetrical, too. Therefore, the Unified spectrum satisfies
+the following conditions:
+\begin{subequations}
+\begin{align}
+\Theta(k, \theta) &= \Theta(k, \theta \pm \pi) \\
+\Theta(\mvec{k}) &= \Theta(-\mvec{k})
+\end{align}
+\end{subequations}
+%
 \subsection{Phillips Spectrum}
 \label{sec:phillips_spectrum}
 %
-The Phillips Spectrum, as introduced by Tessendorf~\cite{course:simulatingocean},
+The Phillips Spectrum, as introduced by \cite{course:simulatingocean},
 is an ad-hoc formulation of a two dimensional \wavenumber spectrum $\Theta(\mvec{k})$.
 It has been developed with computer graphic purposes in mind, and as such it lacks
-a solid oceanographic foundation. We may write Tessendorf's formulation of the
-Phillips Spectrum in a manner consistent with our notation as follows:
+a solid oceanographic foundation. We may write \citeauthor{course:simulatingocean}'s
+formulation of the Phillips Spectrum as follows:
 %
 \begin{subequations}
 \begin{gather}
@@ -2978,7 +2973,7 @@ L = \frac{\norm{\mvec{w}}^2}{g}
 where $A$ and $l$ are numeric constants, and $\mvec{w}$ encodes wind 
 direction and wind speed $\norm{\mvec{w}}$. The numeric constant $A$ represents 
 a scaling factor which we will discuss at a later point.  According to 
-Tessendorf~\cite{course:simulatingocean}, $L$ defines the largest possible wave
+\citeauthor{course:simulatingocean}, $L$ defines the largest possible wave
 arising from a continuous wind of speed $\norm{\mvec{w}}$. The parameter $l$ on 
 the other hand acts as a frequency filter, it controls the suppression of energy
 contributed by high \wavenumbers $k$. In order to accomplish that, it is
@@ -2988,7 +2983,7 @@ the following as a default value for $l$:
  l = 10^{-3}L
 \end{equation}
 Moreover, it follows from Equation~\ref{eq:phillips_spectrum} that setting 
-$l = 0$ disables any \wavenumber based suppression of energy.\\
+$l = 0$ disables any \wavenumber based suppression of energy.
 
 If we take a closer look at Equation~\ref{eq:phillips_spectrum} one may notice 
 similarities to a one dimensional frequency spectrum in combination with a 
@@ -3108,10 +3103,11 @@ generate believable results. Therefore we need to rescale the energy obtained
 from the Phillips spectrum into that range. To the author it seems reasonable 
 that that is the purpose of the numeric constant $A$ in 
 Equations~\ref{eq:phillips_spectrum} and \ref{eq:phillips_spectrum_separated}. 
-Since Tessendorf does not give any information about $A$, choosing a value that 
-scales energy appropriately for all reasonable input parametrisations has proven 
-to be difficult. The constant $\alpha = 8.1 \times 10^{-3}$ from Equation
-\ref{eq:pierson_moskowitz_old} seemed to be promising initially, but in the end 
+Since \citeauthor{course:simulatingocean} does not give any information about
+$A$, choosing a value that  scales energy appropriately for all reasonable
+input parametrisations has proven  to be difficult. The constant
+$\alpha = 8.1 \times 10^{-3}$ from Equation \ref{eq:pierson_moskowitz_old}
+seemed to be promising initially, but in the end 
 the author settled for the following more complex solution:
 \begin{align}
  A = \frac{0.81}{LK}B && B \in \interval{0}{1}
@@ -3155,7 +3151,6 @@ centrosymmetrical.}
 \label{fig:phillips_directional_term}
 \end{figure}
 %
-\\
 
 Now that we have discussed the one dimensional \wavenumber spectrum and the 
 scale factor $A$, we move on to the directional term from 
