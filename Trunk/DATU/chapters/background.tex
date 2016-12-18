@@ -1008,9 +1008,29 @@ more sets of \wavevectors $\mvec{k}$ wisely. We will now move on and discuss
 parametric wave energy models, because those constitute the basis for the
 generation of visually pleasing as well as plausible ocean surfaces.
 %
-% \section{Wave Spectra}
-% Oceanographic literature provides a rather large set of different wave spectra
-% to choose from. We will start by discussing two well known one dimensional
+\section{Wave Spectra}
+Oceanographic literature provides us with a large set of different wave spectra
+to choose from.
+We will start with a pair of one dimensional frequency spectra most often found
+and referenced in oceanographic literature. As said frequency spectra are
+one dimensional, we need to convert them into two dimensional wavenumber
+spectra, as only the latter form allows us to actually synthesize a finite area
+of a virtual ocean surface. Thus, first, we follow up with a description of how
+to augment one dimensional frequency spectra with directional information, and
+second, we show how to make sure to preserve integral equality between
+different wave spectrum domains i.e. how to convert from frequency based wave
+energy to wavenumber based energy with correct scaling.
+Last, we discuss three more wave spectra, where each of them already includes a
+distinct model for the directional distribution of wave energy.
+% 
+% we follow up with a description of how to augment them with
+% directional information to obtain two dimensional wavenumber spectra. Only the
+% latter form allows us to actually synthesize a finite area of a virtual ocean
+% surface. Next, we show how to make sure to preserve integral equality between
+% different wave spectrum domains i.e. how to convert from frequency based wave
+% energy to wavenumber based energy with correct scaling.
+% 
+% We will start by discussing two well known one dimensional
 % frequency spectra and how to augment them with directional information to obtain
 % two dimensional wavenumber spectra. Only the latter form allows us to actually
 % synthesize a finite area of a virtual ocean surface.
@@ -1020,118 +1040,6 @@ generation of visually pleasing as well as plausible ocean surfaces.
 % Last, we discuss three more wave spectra, two from oceanographic research and
 % one from computer graphics, where each already includes a model for the
 % directional distribution of wave energy.
-%
-\section{One dimensional Frequency Spectra}
-\label{sec:1d_frequency_spectra}
-Oceanographic literature provides a rather large set of different one
-dimensional frequency spectra. As we have seen in
-Section~\ref{sec:energy_spectrum}, the one dimensional frequency spectrum does
-not hold any positional or directional information, which makes it the most
-easiest one to measure. But in order to be able to synthesize a finite area of a
-virtual ocean surface we depend on directional wave information. We are in need 
-of a~\emph{directional spreading function}, which directionally distributes the
-energy provided by $\Theta(\omega)$ as well as filters wave trains which move in
-the opposite direction of the wind. We may call the product of a normal one
-dimensional frequency spectrum and a directional spreading function
-a~\emph{directional spectrum}. We may write a directional spectrum as follows:
-\begin{subequations}
-%\label{eq:directional_frequency_spectrum}
-\begin{align}
-\label{eq:directional_frequency_spectrum}
- \Theta(\omega, \theta) &= \Theta(\omega)D(\omega,\theta) \\
-\intertext{with}
-\label{eq:int_directional_filter}
-\int_{\theta=-\pi}^{\pi}D(\omega,\theta)~\mathrm{d}\theta &= 1 \\
-D(\omega,\theta) &\geq 0
-\end{align}
-\end{subequations}
-where $\theta$ is the direction of the wave.
-Equation~\ref{eq:int_directional_filter} makes sure the amount of energy per
-frequency does not change. Therefore we are able to write
-\begin{equation}
- \Theta(\omega) = \int_{\theta=-\pi}^{\pi}\Theta(\omega,
-\theta)~\mathrm{d}\theta
-\end{equation}
-
-\subsection{Directional Spreading Function}
-\label{sec:directional_spreading_function}
-%
-\begin{figure}
- \centering
- \subtop[][$U_{10}=\sqrt{2}$]
- {
- \includegraphics[scale=0.25]{figures/dfilt_wr_sqrt2.png}
- }
- \hfill
- \subtop[$U_{10}=\sqrt{8}$]
- {
- \includegraphics[scale=0.25]{figures/dfilt_wr_sqrt8.png}
- }
- \hfill
- \subtop[$U_{10}=\sqrt{50}$]
- {
- \includegraphics[scale=0.25]{figures/dfilt_wr_sqrt50.png}
- }
- \hfill
- \subtop[$U_{10}=\sqrt{200}$]
- {
- \includegraphics[scale=0.25]{figures/dfilt_wr_sqrt200.png}
- }
- \subtop
- {
- \includegraphics[scale=0.25]{figures/dfilt_wur_sqrt2.png}
- }
- \hfill
- \subtop
- {
- \includegraphics[scale=0.25]{figures/dfilt_wur_sqrt8.png}
- }
- \hfill
- \subtop
- {
- \includegraphics[scale=0.25]{figures/dfilt_wur_sqrt50.png}
- }
- \hfill
- \subtop
- {
- \includegraphics[scale=0.25]{figures/dfilt_wur_sqrt200.png}
- }
-\caption{A set of instances of the directional spreading function, each column 
-corresponds to a different wind speed, starting with the weakest one at the 
-left. In the top row, the wind direction points to the right, in the bottom row 
-to the upper right.}
-\label{fig:directional_filter}
-\end{figure}
-%
-Literature provides us with a large set of different directional spreading
-functions to choose from. We picked a~\emph{Cosine-2s} variant based on the
-work of \citet{article:Mitsuyasu1975} and 
-\citet{article:Hasselmann1980}. Expressed in terms of angular frequency 
-$\omega$ it is as follows:
-\begin{subequations}
-\label{eq:directional_spread_mitsuyasu}
-\begin{align}
- D(\omega, \theta) &=
-\frac{2^{2s-1}}{\pi}~\frac{\Gamma^2(s+1)}{\Gamma(2s+1)}
-~\left|\cos\left(\frac{\theta-\theta_{p}}{2}\right)\right|^{2s}
-\intertext{with}
-\frac{s}{s_p} &= \begin{cases}
-(\frac{\omega}{\omega_p})^{-2.5} & \omega \geq \omega_p\\
-(\frac{\omega}{\omega_p})^{5} & \omega < \omega_p\\
-\end{cases}
-\intertext{where, according to \citeauthor{article:Hasselmann1980}}
-s_p &= \begin{cases}
-9.77 & \omega \geq \omega_p\\
-6.97 & \omega < \omega_p\\
-\end{cases}
-\end{align}
-\end{subequations}
-$\Gamma$ is the \emph{gamma function}, $s$ is called the~\emph{spreading 
-factor}, $\omega_p$ represents the angular frequency the frequency spectrum has 
-its peak at and $\theta_p$ is the direction of the waves at said peak. It is 
-assumed that $\theta_p$ is equal the wind direction. Figure
-\ref{fig:directional_filter} depicts example instances of Equation
-\ref{eq:directional_spread_mitsuyasu}.
 %
 \subsection{Pierson Moskowitz Spectrum}
 \label{sec:pierson_moskowitz}
@@ -1679,10 +1587,127 @@ parameter $\alpha$ on dimensionless fetch:
 \end{equation}
 %
 This completes our conversion of the JONSWAP spectrum to make explicit use of 
-dimensionless peak frequency and dimensionless fetch. Before we move on to 
-two dimensional frequency spectra we may clarify how we intend to convert the 
-presented directional frequency spectra into two dimensional \wavenumber
-spectra.
+dimensionless peak frequency and dimensionless fetch.
+Before we move on to other wave spectra, we may clarify how we intend to
+convert the presented one dimensional frequency spectra into two dimensional
+\wavenumber spectra.
+% Before we move on to 
+% two dimensional frequency spectra we may clarify how we intend to convert the 
+% presented directional frequency spectra into two dimensional \wavenumber
+% spectra.
+%
+\subsection{Directional Spreading Function}
+% \section{One dimensional Frequency Spectra}
+% \label{sec:1d_frequency_spectra}
+% Oceanographic literature provides a rather large set of different one
+% dimensional frequency spectra.
+As we have seen in
+Section~\ref{sec:energy_spectrum}, the one dimensional frequency spectrum does
+not hold any positional or directional information, which makes it the most
+easiest one to measure. But in order to be able to synthesize a finite area of a
+virtual ocean surface we depend on directional wave information. We are in need 
+of a~\emph{directional spreading function}, which directionally distributes the
+energy provided by $\Theta(\omega)$ as well as filters wave trains which move in
+the opposite direction of the wind. We may call the product of a normal one
+dimensional frequency spectrum and a directional spreading function
+a~\emph{directional spectrum}. We may write a directional spectrum as follows:
+\begin{subequations}
+%\label{eq:directional_frequency_spectrum}
+\begin{align}
+\label{eq:directional_frequency_spectrum}
+ \Theta(\omega, \theta) &= \Theta(\omega)D(\omega,\theta) \\
+\intertext{with}
+\label{eq:int_directional_filter}
+\int_{\theta=-\pi}^{\pi}D(\omega,\theta)~\mathrm{d}\theta &= 1 \\
+D(\omega,\theta) &\geq 0
+\end{align}
+\end{subequations}
+where $\theta$ is the direction of the wave.
+Equation~\ref{eq:int_directional_filter} makes sure the amount of energy per
+frequency does not change. Therefore we are able to write
+\begin{equation}
+ \Theta(\omega) = \int_{\theta=-\pi}^{\pi}\Theta(\omega,
+\theta)~\mathrm{d}\theta
+\end{equation}
+% \subsection{Directional Spreading Function}
+% \label{sec:directional_spreading_function}
+%
+\begin{figure}
+ \centering
+ \subtop[][$U_{10}=\sqrt{2}$]
+ {
+ \includegraphics[scale=0.25]{figures/dfilt_wr_sqrt2.png}
+ }
+ \hfill
+ \subtop[$U_{10}=\sqrt{8}$]
+ {
+ \includegraphics[scale=0.25]{figures/dfilt_wr_sqrt8.png}
+ }
+ \hfill
+ \subtop[$U_{10}=\sqrt{50}$]
+ {
+ \includegraphics[scale=0.25]{figures/dfilt_wr_sqrt50.png}
+ }
+ \hfill
+ \subtop[$U_{10}=\sqrt{200}$]
+ {
+ \includegraphics[scale=0.25]{figures/dfilt_wr_sqrt200.png}
+ }
+ \subtop
+ {
+ \includegraphics[scale=0.25]{figures/dfilt_wur_sqrt2.png}
+ }
+ \hfill
+ \subtop
+ {
+ \includegraphics[scale=0.25]{figures/dfilt_wur_sqrt8.png}
+ }
+ \hfill
+ \subtop
+ {
+ \includegraphics[scale=0.25]{figures/dfilt_wur_sqrt50.png}
+ }
+ \hfill
+ \subtop
+ {
+ \includegraphics[scale=0.25]{figures/dfilt_wur_sqrt200.png}
+ }
+\caption{A set of instances of the directional spreading function, each column 
+corresponds to a different wind speed, starting with the weakest one at the 
+left. In the top row, the wind direction points to the right, in the bottom row 
+to the upper right.}
+\label{fig:directional_filter}
+\end{figure}
+%
+Literature provides us with a large set of different directional spreading
+functions to choose from. We picked a~\emph{Cosine-2s} variant based on the
+work of \citet{article:Mitsuyasu1975} and 
+\citet{article:Hasselmann1980}. Expressed in terms of angular frequency 
+$\omega$ it is as follows:
+\begin{subequations}
+\label{eq:directional_spread_mitsuyasu}
+\begin{align}
+ D(\omega, \theta) &=
+\frac{2^{2s-1}}{\pi}~\frac{\Gamma^2(s+1)}{\Gamma(2s+1)}
+~\left|\cos\left(\frac{\theta-\theta_{p}}{2}\right)\right|^{2s}
+\intertext{with}
+\frac{s}{s_p} &= \begin{cases}
+(\frac{\omega}{\omega_p})^{-2.5} & \omega \geq \omega_p\\
+(\frac{\omega}{\omega_p})^{5} & \omega < \omega_p\\
+\end{cases}
+\intertext{where, according to \citeauthor{article:Hasselmann1980}}
+s_p &= \begin{cases}
+9.77 & \omega \geq \omega_p\\
+6.97 & \omega < \omega_p\\
+\end{cases}
+\end{align}
+\end{subequations}
+$\Gamma$ is the \emph{gamma function}, $s$ is called the~\emph{spreading 
+factor}, $\omega_p$ represents the angular frequency the frequency spectrum has 
+its peak at and $\theta_p$ is the direction of the waves at said peak. It is 
+assumed that $\theta_p$ is equal the wind direction. Figure
+\ref{fig:directional_filter} depicts example instances of Equation
+\ref{eq:directional_spread_mitsuyasu}.
 %
 \subsection{Integral Domain Conversion}
 %
@@ -1877,7 +1902,7 @@ Equation~\ref{eq:directional_frequency_spectrum} in terms of \wavenumber $k$:
 %
 where $\Theta_{k,\theta}(k,\theta)$ is called the~\emph{directional \wavenumber 
 spectrum}. As the last step we need to convert from polar coordinate pairs 
-$(k,\theta)$ to cartesian \wavenumber coordinates $\mvec{k}$. Said conversion 
+$(k,\theta)$ to Cartesian \wavenumber coordinates $\mvec{k}$. Said conversion 
 is accomplished as follows:
 %
 \begin{equation}
@@ -2116,7 +2141,8 @@ directional spread (bottom row), both generated with the same input data.}
 \label{fig:directional_filter_comp}
 \end{figure}
 %
-The directional spreading function as introduced by Donelan et al. does 
+The directional spreading function as introduced by
+\citeauthor{article:Donelan1985} does 
 not only differ in form from the one proposed by
 \citeauthor{article:Mitsuyasu1975}, see Figure 
 \ref{fig:donelan_directional_filter}, but also in sensitivity, or rather 
