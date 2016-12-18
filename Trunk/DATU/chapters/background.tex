@@ -1609,7 +1609,8 @@ of a~\emph{directional spreading function}, which directionally distributes the
 energy provided by $\Theta(\omega)$ as well as filters wave trains which move in
 the opposite direction of the wind. We may call the product of a normal one
 dimensional frequency spectrum and a directional spreading function
-a~\emph{directional spectrum}. We may write a directional spectrum as follows:
+a~\emph{directional frequency spectrum}. We may write a directional frequency
+spectrum as follows:
 \begin{subequations}
 %\label{eq:directional_frequency_spectrum}
 \begin{align}
@@ -1716,11 +1717,10 @@ spectrum $\Theta(\mvec{k})$, but
 Equation~\ref{eq:directional_frequency_spectrum} 
 gives us a directional frequency spectrum $\Theta(\omega,\theta)$. We will 
 convert one spectrum form to the other according to the substitution rule, with 
-the deep water dispersion relation from Equation~\ref{eq:disp_rel_deep_water} 
+the deep water dispersion relation $\omega^2=gk$
 serving as a link between angular frequency $\omega$ and \wavenumber $k$. To 
 avoid possible confusion we will add subscripts to each occurence of $\Theta$ 
-in order to explicitely show the parameters it takes as input.\\
-
+in order to explicitely show the parameters it takes as input.
 As a first step we may transform the one dimensional frequency spectrum 
 $\Theta_{\omega}(\omega)$ to the one dimensional \wavenumber 
 spectrum $\Theta_k(k)$ as follows:
@@ -1737,110 +1737,109 @@ which gives us
 \end{equation}
 \end{subequations}
 %
-\begin{figure}
-\centering
-\begin{tikzpicture}
-\begin{groupplot}[
-	group style={
-		columns=2,
-		xlabels at=edge bottom,
-		ylabels at=edge left,
-		group name=plots,
-	},
-    xlabel={\Wavenumber $k$~($\text{rad}\cdot\text{m}^{-1}$)},
-    ylabel={Energy~$\Theta$~($\text{m}^3\cdot\text{rad}^{-1}$)},
-%     legend columns=-1,
-	width=0.5\textwidth,
-	]
-\nextgroupplot[
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}},
-	restrict x to domain=0:0.1,
-	scaled ticks=false,
-	xtick = {0,0.05,0.1},
-	xticklabel style={/pgf/number format/fixed},
-	]
-\addplot[
-    color=red,
-    solid,
-	]
-    table [col sep=comma]{figures/pm_10_k.dat};
-	\addlegendentry{$10.0~\text{m}\cdot\text{s}^{-1}$}
-\addplot[
-    color=green,
-    solid,
-	]
-    table [col sep=comma]{figures/pm_12_k.dat};
-	\addlegendentry{$12.5~\text{m}\cdot\text{s}^{-1}$}
-\addplot[
-    color=magenta,
-    solid,
-	]
-    table [col sep=comma]{figures/pm_15_k.dat};
-	\addlegendentry{$15.0~\text{m}\cdot\text{s}^{-1}$}
-\addplot[
-    color=black,
-    solid,
-	]
-    table [col sep=comma]{figures/pm_17_k.dat};
-	\addlegendentry{$17.5~\text{m}\cdot\text{s}^{-1}$}
-\addplot[
-    color=blue,
-    solid,
-	]
-    table [col sep=comma]{figures/pm_20_k.dat};
-	\addlegendentry{$20.0~\text{m}\cdot\text{s}^{-1}$}
-\nextgroupplot[
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}},
-	restrict x to domain=0:0.5,
-	xtick = {0,0.25,0.5},
-	xticklabel style={/pgf/number format/fixed},
-]
-\addplot[
-    color=blue,
-    solid,
-    ]
-    table [col sep=comma]{figures/pm_10_k.dat};
-\addlegendentry{PM}
-\addplot[
-    color=red,
-    solid,
-    ]
-    table [col sep=comma]{figures/j_10_10km_k.dat};
-\addlegendentry{10 km}
-\addplot[
-    color=green,
-    solid,
-    ]
-    table [col sep=comma]{figures/j_10_25km_k.dat};
-\addlegendentry{25 km}
-\addplot[
-    color=magenta,
-    solid,
-    ]
-    table [col sep=comma]{figures/j_10_50km_k.dat};
-\addlegendentry{50 km}
-\addplot[
-    color=black,
-    solid,
-    ]
-    table [col sep=comma]{figures/j_10_75km_k.dat};
-\addlegendentry{75 km}
-\end{groupplot}
-\end{tikzpicture}
-\caption{One dimensional frequency spectra $\Theta_{\omega}(\omega$) converted
-into one dimensional \wavenumber spectra $\Theta_k(k)$. Left: The Pierson 
-Moskowitz spectra from Figure~\ref{fig:pm_spectra}(a). Right: The JONSWAP 
-spectra from Figure~\ref{fig:jonswap_spectra}(a).}
-\label{fig:jonswap_spectra_fetches_k}
-\end{figure}
+% \begin{figure}
+% \centering
+% \begin{tikzpicture}
+% \begin{groupplot}[
+% 	group style={
+% 		columns=2,
+% 		xlabels at=edge bottom,
+% 		ylabels at=edge left,
+% 		group name=plots,
+% 	},
+%     xlabel={\Wavenumber $k$~($\text{rad}\cdot\text{m}^{-1}$)},
+%     ylabel={Energy~$\Theta$~($\text{m}^3\cdot\text{rad}^{-1}$)},
+% %     legend columns=-1,
+% 	width=0.5\textwidth,
+% 	]
+% \nextgroupplot[
+%     legend style={draw=none},
+%     every axis legend/.append style={nodes={right}},
+% 	restrict x to domain=0:0.1,
+% 	scaled ticks=false,
+% 	xtick = {0,0.05,0.1},
+% 	xticklabel style={/pgf/number format/fixed},
+% 	]
+% \addplot[
+%     color=red,
+%     solid,
+% 	]
+%     table [col sep=comma]{figures/pm_10_k.dat};
+% 	\addlegendentry{$10.0~\text{m}\cdot\text{s}^{-1}$}
+% \addplot[
+%     color=green,
+%     solid,
+% 	]
+%     table [col sep=comma]{figures/pm_12_k.dat};
+% 	\addlegendentry{$12.5~\text{m}\cdot\text{s}^{-1}$}
+% \addplot[
+%     color=magenta,
+%     solid,
+% 	]
+%     table [col sep=comma]{figures/pm_15_k.dat};
+% 	\addlegendentry{$15.0~\text{m}\cdot\text{s}^{-1}$}
+% \addplot[
+%     color=black,
+%     solid,
+% 	]
+%     table [col sep=comma]{figures/pm_17_k.dat};
+% 	\addlegendentry{$17.5~\text{m}\cdot\text{s}^{-1}$}
+% \addplot[
+%     color=blue,
+%     solid,
+% 	]
+%     table [col sep=comma]{figures/pm_20_k.dat};
+% 	\addlegendentry{$20.0~\text{m}\cdot\text{s}^{-1}$}
+% \nextgroupplot[
+%     legend style={draw=none},
+%     every axis legend/.append style={nodes={right}},
+% 	restrict x to domain=0:0.5,
+% 	xtick = {0,0.25,0.5},
+% 	xticklabel style={/pgf/number format/fixed},
+% ]
+% \addplot[
+%     color=blue,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/pm_10_k.dat};
+% \addlegendentry{PM}
+% \addplot[
+%     color=red,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/j_10_10km_k.dat};
+% \addlegendentry{10 km}
+% \addplot[
+%     color=green,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/j_10_25km_k.dat};
+% \addlegendentry{25 km}
+% \addplot[
+%     color=magenta,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/j_10_50km_k.dat};
+% \addlegendentry{50 km}
+% \addplot[
+%     color=black,
+%     solid,
+%     ]
+%     table [col sep=comma]{figures/j_10_75km_k.dat};
+% \addlegendentry{75 km}
+% \end{groupplot}
+% \end{tikzpicture}
+% \caption{One dimensional frequency spectra $\Theta_{\omega}(\omega$) converted
+% into one dimensional \wavenumber spectra $\Theta_k(k)$. Left: The Pierson 
+% Moskowitz spectra from Figure~\ref{fig:pm_spectra}(a). Right: The JONSWAP 
+% spectra from Figure~\ref{fig:jonswap_spectra}(a).}
+% \label{fig:jonswap_spectra_fetches_k}
+% \end{figure}
 %
-A set of one dimensional wave spectra $\Theta_k(k)$ may be seen in
-Figure~\ref{fig:jonswap_spectra_fetches_k}. Note the difference in scale on the ordinate
-in comparison to the one dimensional frequency spectra $\Theta_{\omega}(\omega)$
-depicted in Figure~\ref{fig:pm_spectra} and Figure~\ref{fig:jonswap_spectra}.\\
-
+% A set of one dimensional wave spectra $\Theta_k(k)$ may be seen in
+% Figure~\ref{fig:jonswap_spectra_fetches_k}. Note the difference in scale on the ordinate
+% in comparison to the one dimensional frequency spectra $\Theta_{\omega}(\omega)$
+% depicted in Figure~\ref{fig:pm_spectra} and Figure~\ref{fig:jonswap_spectra}.
 %
 \begin{figure}
 \centering
@@ -1890,6 +1889,7 @@ $k_x$ axis. Note the difference in scale between the two vertical axes.}
 \label{fig:jonswap_3d_omega_theta_kx_ky}
 \end{figure}
 %
+
 Given $\Theta_k(k)$ we are able to rewrite the directional frequency spectrum
 $\Theta_{\omega, \theta}(\omega, \theta)$ from
 Equation~\ref{eq:directional_frequency_spectrum} in terms of \wavenumber $k$:
@@ -1899,8 +1899,7 @@ Equation~\ref{eq:directional_frequency_spectrum} in terms of \wavenumber $k$:
  \Theta_{k,\theta}(k,\theta) = \Theta_k(k)D(\sqrt{gk},\theta)
 \end{equation}
 %
-where $\Theta_{k,\theta}(k,\theta)$ is called the~\emph{directional \wavenumber 
-spectrum}. As the last step we need to convert from polar coordinate pairs 
+As the last step we need to convert from polar coordinate pairs 
 $(k,\theta)$ to Cartesian \wavenumber coordinates $\mvec{k}$. Said conversion 
 is accomplished as follows:
 %
@@ -1911,7 +1910,7 @@ is accomplished as follows:
 \end{equation}
 %
 By combining Equations~\ref{eq:directional_frequency_spectrum}, 
-~\ref{eq:theta_k} and~\ref{eq:theta_cart_to_polar} we get the Cartesian
+~\ref{eq:theta_k} and~\ref{eq:theta_cart_to_polar} we get the two dimensional
 \wavenumber spectrum:
 %
 \begin{align}
@@ -1923,7 +1922,7 @@ By combining Equations~\ref{eq:directional_frequency_spectrum},
 %
 An instance of a directional frequency spectrum as well as its equivalent
 directional \wavenumber spectrum are depicted in Figure
-\ref{fig:jonswap_3d_omega_theta_kx_ky}.\\
+\ref{fig:jonswap_3d_omega_theta_kx_ky}.
 
 Now we are able to preserve integral equality between different representations 
 of $\Theta$, as long as we use the deep water dispersion relation. One may do 
