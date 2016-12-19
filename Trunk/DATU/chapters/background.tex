@@ -1961,7 +1961,7 @@ Donelan spectrum to model the transition between developing and fully developed
 seas. Other improvements include the possibility for wind direction and peak 
 wave direction to differ, as well as a directional spreading function which both
 matches existing data more closely and is simpler in formulation than the one 
-introduced by \citeauthor{article:Mitsuyasu1975}
+introduced by \citet{article:Mitsuyasu1975}.
 
 The energy given by the one dimensional Donelan frequency spectrum depends on 
 the frequency itself, the position of that frequency in the spectrum 
@@ -1996,14 +1996,17 @@ r &= \exp\left[-\frac{\left(\omega -
 \omega_p\right)^2}{2\sigma^2\omega_p^2}\right] \\
 \sigma &= 0.08\left(1 + \frac{4}{\Omega_c^3}\right)\\
 \alpha &= 0.006~\Omega_c^{0.55} \\
-\omega_{p} &= \frac{g\Omega_c}{U_{10}}\\
+\omega_{p} &= \frac{g\Omega_c}{U_{c}}\\
 \Omega_c &= 11.6\chi^{-0.23} \\
-\chi &= \frac{gF}{U_{10}^{2}}
+\chi &= \frac{gF}{U_{c}^{2}}
 \end{align}
 \end{subequations}
-where $F$ denotes the fetch in meters, $U_{10}$ denotes the wind speed in 
-meters per second at a height of ten meters above the sea surface, and $\chi$ 
-represents the dimensionless fetch. In lockstep with the JONSWAP spectrum, 
+where $F$ denotes the fetch in meters, $\chi$ represents the dimensionless
+fetch, and $U_{c}$ is the component of the average $U_{10}$ wind in the mean
+direction of the waves at the spectral peak.
+% $U_{c}$ denotes the wind speed in 
+% meters per second at a height of ten meters above the sea surface.
+In lockstep with the JONSWAP spectrum, 
 $\gamma^r$ is called the peak enhancement factor, $\sigma$ the peak width 
 parameter, $\alpha$ the equilibrium range parameter and $\omega_p$ the angular 
 frequency of the spectral peak. Moreover, $\Omega_c$, which denotes the inverse 
