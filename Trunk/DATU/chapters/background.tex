@@ -2009,9 +2009,9 @@ direction of the waves at the spectral peak.
 In lockstep with the JONSWAP spectrum, 
 $\gamma^r$ is called the peak enhancement factor, $\sigma$ the peak width 
 parameter, $\alpha$ the equilibrium range parameter and $\omega_p$ the angular 
-frequency of the spectral peak. Moreover, $\Omega_c$, which denotes the inverse 
+frequency of the spectral peak. Moreover, $\Omega_c$ denotes the inverse 
 wave age based on the component of the wind in the direction of the peak waves,
-is restricted to the interval $\Omega_c \in \interval[open left, open 
+and is restricted to the interval $\Omega_c \in \interval[open left, open 
 right]{0.83}{5}$.
 %
 \begin{figure}[p]
@@ -2194,6 +2194,12 @@ use comparisons with absolute values.
     table [col sep=comma]{figures/d_pm_10.dat};
 \addlegendentry{PM}
 \addplot[
+    color=red,
+    solid,
+    ]
+    table [col sep=comma]{figures/d_10_750km.dat};
+\addlegendentry{750 km}
+\addplot[
     color=black,
     solid,
     ]
@@ -2211,12 +2217,12 @@ use comparisons with absolute values.
     ]
     table [col sep=comma]{figures/d_10_100km.dat};
 \addlegendentry{100 km}
-\addplot[
-    color=red,
-    solid,
-    ]
-    table [col sep=comma]{figures/d_10_50km.dat};
-\addlegendentry{50 km}
+%\addplot[
+    %color=red,
+    %solid,
+    %]
+    %table [col sep=comma]{figures/d_10_50km.dat};
+%\addlegendentry{50 km}
 \nextgroupplot[
 	%title={(b)},
     legend style={draw=none},
@@ -2258,17 +2264,21 @@ use comparisons with absolute values.
 \end{groupplot}
 \end{tikzpicture}
 \caption{Left: Donelan frequency spectra with different fetch values $F$, 
-Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$). Right: 
+Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$). The
+Donelan spectrum converges towards the Pierson Moskowitz spectrum with
+increasing fetch, but overshoots.
+Right: 
 JONSWAP and Donelan spectra with different inverse wave age values $\Omega$, 
-Pierson Moskowitz spectrum for comparison ($\omega_p = 2.5$).}
+Pierson Moskowitz spectrum for comparison ($\omega_p = 2.5$).
+Given specific values for $\Omega$ the Donelan spectrum transitions well
+between a developing and a fully developed sea.}
 \label{fig:donelan_spectra}
 \end{figure}
 %
 
 In contrast to the JONSWAP spectrum introduced earlier, the one dimensional 
 frequency spectrum as given by \citeauthor{article:Donelan1985} is able to
-complete a transition  to fully developed state, be it with increasing fetch
-or with decreasing inverse wave age, see Figure~\ref{fig:donelan_spectra}.
+transition to fully developed state, see Figure~\ref{fig:donelan_spectra}.
 %
 \subsection{Unified Spectrum}
 \label{sec:unified_spectrum}
