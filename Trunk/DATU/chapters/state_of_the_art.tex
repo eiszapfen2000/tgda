@@ -689,14 +689,14 @@ viewpoint.
 
 \cite{Kryachko:2005} describes the algorithm used in an actual flight simulator.
 The ocean is modeled as a combination of handcrafted heightmaps tiled in space
-and time. Four heightmaps are summed for lighting computations, where the two of them
+and time. Four heightmaps are summed for lighting computations, where two of them
 with the largest scale are used to displace the ocean surface mesh. The latter is
 organized as a radial grid centered at the camera position, tesselated such that
 it provides more detail close to the viewer, see Figure~\ref{fig:kryachko:meshing}.
 Radial grid positions are calculated in the vertex shader, as are displacements,
 allowing the algorithm to adapt the mesh vertices as well as displacement computations
 to the camera position automatically on the GPU for each frame. Still, one may
-notice that most of the radial mesh is alway outside the view frustum,
+notice that most of the radial mesh is always outside the view frustum,
 causing unnecessary overhead.
 %
 %
@@ -759,7 +759,7 @@ simulator with three adjacent viewports, the wave model although is a simple sum
 of sinusoids with a small number of waves picked from a wave spectrum.
 \cite{thesis:johanson} on the other hand improves upon the adaptive mesh of
 \citeauthor{Hinsinger:2002}. First, the projection of the mesh onto the base plane
-is done in a vertex shader on the GPU. Second, \citeauthor{thesis:johanson} makes
+is moved from the CPU to a vertex shader on the GPU. Second, \citeauthor{thesis:johanson} makes
 sure that the projection of the vertices works correctly in all possible viewing
 situations.
 %
@@ -801,7 +801,7 @@ where wavetrains are filtered according to the projected size of the current pix
 in world space. In addition, \citeauthor{article:oceanlighting} show the
 integration of the BRDF by \citeauthor{Ross:2005} into the computation of
 all necessary lighting terms, namely the reflected light from the sun and from
-the skydome, and the refracted light from the water, see
+the skydome, and the refracted light from the water, as seen in
 Figure~\ref{fig:bruneton:lightingterms}.
  
 % Realistic animation and rendering of the ocean is an important aspect for simulators, movies and video games.
@@ -823,7 +823,7 @@ are to be evaluated.
 % argue that from an algorithmic point of view one should choose a spectral
 % approach and leverage the highly efficient Fast Fourier Transform algorithm
 % to compute the sum of waves.
-\citeauthor{Mitchell:2005} describes a
+\cite{Mitchell:2005} describes a
 partial GPU implementation of the ocean wave generation method presented in
 \citet{course:simulatingocean}. To improve rendering performance,
 \citeauthor{Mitchell:2005} synthesizes two water surface height maps,
@@ -868,7 +868,7 @@ while the underlying mesh is coarse.
 from \citet{article:oceanlighting} with an ocean surface synthesized
 from the wave spectrum presented in~\citet{article:Elfouhaily1997}.
 Wave heights, gradients, as well as the horizontal displacements
-required for~\citeauthor{course:simulatingocean}'s choppy wave algorithm
+required for~\citet{course:simulatingocean}'s choppy wave algorithm
 are computed entirely on the GPU. In an additional step,
 \citet{article:whitecaps} add whitecaps to the ocean lighting model,
 see Figure~\ref{fig:dupuy:whitecaps}.
@@ -878,7 +878,7 @@ one may need to make sure to reduce tiling artifacts i.e. the viewer
 shall not notice that the ocean surface repeats itself in all directions.
 The approach taken by~\citet{Rydahl:2009} and \citet{NVIDIA:Ocean} is to
 generate additional noise on the ocean surface.
-\citet{misc:oceanlightingfft,article:whitecaps}
+\citet{misc:oceanlightingfft} and \citet{article:whitecaps}
 on the other hand compute not just one ocean surface tile, but up to four,
 where all tiles are of different size and each one samples a different
 part of the wave spectrum. Even though such an approach is unable to
