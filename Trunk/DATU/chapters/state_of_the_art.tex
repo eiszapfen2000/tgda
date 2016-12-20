@@ -305,8 +305,8 @@ infinite depth. A single wave may be written as follows:
 \mvec{x} &= \mvec{x}_0 - \frac{\mvec{k}}{\norm{\mvec{k}}} A \sin\left(\mvec{k}\cdot\mvec{x}_0-\omega t\right)\\
 y &= y_0 - A \cos\left(\mvec{k}\cdot\mvec{x}_0-\omega t\right)
 \end{align}
-where $\mvec{x}$ denotes the horizontal coordinate and $y$ the vertical coordinate
-of the wave particle at time $t$, with $\mvec{x}_0$ and $y_0$ its horizontal
+where $\mvec{x}=(x,z)$ denotes the horizontal coordinate and $y$ the
+vertical coordinate of the wave particle at time $t$, with $\mvec{x}_0$ and $y_0$ its horizontal
 and vertical position at rest respectively. As before, $A$ is the amplitude,
 $\mvec{k}$ the \wavevector and $\omega$ the wave's angular frequency. Given the
 \wavenumber $k=\norm{\mvec{k}}$, the term $kA$ defines the sharpness of the wave
@@ -321,14 +321,14 @@ y &= y_0 - \sum_i^N A_i \cos\left(\mvec{k}_i\cdot\mvec{x}_0-\omega_i t\right)
 \end{align}
 %
 
-To model waves in shallow water, \citeauthor{Fournier:1986} extend the Gerstner
+To model waves in shallow water, \citet{Fournier:1986} extend the Gerstner
 wave model in two ways. First, waveparticle motion takes the underlying sea
 bed into account, allowing for waves to be refracted i.e. to change their \wavelength,
 their speed and their direction of travel based on water depth, see Figure~\ref{fig:fournier1986:refraction}.
 Second, the circular orbit of Gerstner waves approaching the shore is
 transformed into an elliptical orbit, which allows to approximate the form of
 steepening and eventually breaking waves.
-Results of \cite{Fournier:1986} are shown in Figure~\ref{fig:fournier1986:results}.
+Results of \citeauthor{Fournier:1986} are shown in Figure~\ref{fig:fournier1986:results}.
 %
 \begin{figure}
  \centering
@@ -380,9 +380,9 @@ surrounding islands and the water surface inside bays. See Figure
 dynamic wave tracing. Moreover,
 \citeauthor{Gonzato:1997} modify the wave model to include plunging breaking
 waves. Three additional functions achieve said goal.
-First, a stretch function which imitates Biesel law~\citep{Biesel:1952} by
+First, a stretch function imitates Biesel's law~\citep{Biesel:1952} by
 progressively stretching the wave on the crest along its major axis. Second and
-third, an orientation and a displacement function to rotate and translate
+third, an orientation and a displacement function rotate and translate
 the wave's crest downwards, towards the water surface below the crest.
 \cite{Gonzato:2000} augment their work with the inclusion of wave diffraction
 caused by jetties, and with the addition of capillary waves which are modeled
