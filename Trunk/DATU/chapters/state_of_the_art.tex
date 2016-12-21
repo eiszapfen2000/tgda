@@ -52,7 +52,7 @@ because, one, those models are the ones with the largest computational cost and 
 the least adequate to simulate an entire ocean, and two,
 the low degree of control over the simulation these algorithms allow for
 may cause the user to be unable to get the desired results.
-The interested reader may consult \cite{Bridson:2015} and \cite{egstar:2014} though.
+The interested reader may consult \citet{Bridson:2015} and \citet{egstar:2014} though.
 % The next sections will give an overview of two families of simulation models,
 % the one based on a parametric description of ocean waves and the one based
 % on a spectral description. We will omit any discussion regarding CFD and NSE,
@@ -97,7 +97,7 @@ The interested reader may consult \cite{Bridson:2015} and \cite{egstar:2014} tho
 \subcaptionref{fig:max1981:2} One reflection from waves.
 \subcaptionref{fig:max1981:3} Two reflections from waves.
 \subcaptionref{fig:max1981:4} Early afternoon, two reflections from waves.
-Source:~\cite{Max:1981}}
+Source:~\citet{Max:1981}}
 \label{fig:max1981}
 \end{figure}
 %
@@ -145,7 +145,7 @@ Figure~\ref{fig:max1981}.
 % \label{fig:perlin1985}
 % \end{figure}
 %
-Both~\cite{Schachter:1980} and~\cite{Perlin:1985} developed similar approaches,
+Both~\citet{Schachter:1980} and~\citet{Perlin:1985} developed similar approaches,
 but instead of generating any actual geometry they simply distort the normal
 vectors of given surfaces.
 % Results obtained by~\citeauthor{Perlin:1985} are shown in Figure~\ref{fig:perlin1985}.
@@ -172,7 +172,7 @@ vectors of given surfaces.
  \caption{\subcaptionref{fig:peachey1986:1}~Waves on the beach.
 \subcaptionref{fig:peachey1986:2}~Breaking waves on the beach.
 \subcaptionref{fig:peachey1986:3}~Breaking waves with obstacle.
-Source:~\cite{Peachey:1986}}
+Source:~\citet{Peachey:1986}}
 \label{fig:peachey1986}
 \end{figure}
 %
@@ -190,7 +190,7 @@ enters shallow water first is decelerated, the remainder of the wave still
 in deeper water will move faster, as a result the wave front will be turned
 parallel to the line of transition into shallow water.
 
-\cite{Peachey:1986}, still in the realm of linear
+\citet{Peachey:1986}, still in the realm of linear
 wave theory, simulates waves near the shore through the relationship
 $\omega^2=kg\tanh (kh)$, where $h$ is the water depth. Waves in shallow
 water increase their steepness with declining water depth, \citeauthor{Peachey:1986}
@@ -201,7 +201,7 @@ of the crests of such waves even more, and stretches out the back of the crests,
 giving the wave profile an asymmetric form.
 Additionally, particle systems are added to generate spray wherever waves break or
 collide with partially submerged obstacles.
-Results of \cite{Peachey:1986} are shown in Figure~\ref{fig:peachey1986}.
+Results of \citet{Peachey:1986} are shown in Figure~\ref{fig:peachey1986}.
 %
 \begin{figure}[p]
 \begin{tikzpicture}
@@ -256,7 +256,7 @@ with the wave intersecting itself when $kA > 1$.}
 the left. One can see the wave fronts aligning themselves with the beach.
 \subcaptionref{fig:fournier1986:refraction:3} An undersea valley that affects
 both, the \wavelengths as well as the travelling direction of the waves.
-Source:~\cite{Fournier:1986}}
+Source:~\citet{Fournier:1986}}
 \label{fig:fournier1986:refraction}
 \end{figure}
 %
@@ -290,14 +290,14 @@ Source:~\cite{Fournier:1986}}
 %  \subcaptionref{fig:fournier1986:results:2} Wave refraction.
 %  \subcaptionref{fig:fournier1986:results:3} Waves with spray and foam.
  \subcaptionref{fig:fournier1986:results:4} A large breaking wave.
- Source:~\cite{Fournier:1986}
+ Source:~\citet{Fournier:1986}
  }
  \label{fig:fournier1986:results}
 \end{figure}
 %
 %
 
-Instead of using sinusoids,~\cite{Fournier:1986} build on Gerstner's work
+Instead of using sinusoids,~\citet{Fournier:1986} build on Gerstner's work
 \citep{Gerstner:1809, Rankine:1863} to synthesize waves. Gerstner waves assume
 a water surface dominated by gravity and an incompressible water body of
 infinite depth. A single wave may be written as follows:
@@ -360,20 +360,20 @@ Results of \citeauthor{Fournier:1986} are shown in Figure~\ref{fig:fournier1986:
  \subcaptionref{fig:gonzato1997:results:2} Dynamic Wave Trace of the same island.
  \subcaptionref{fig:gonzato1997:results:3} Wave Trace of a bay.
  \subcaptionref{fig:gonzato1997:results:4} Dynamic Wave Trace of the same bay.
- Source:~\cite{Gonzato:1997}
+ Source:~\citet{Gonzato:1997}
  }
  \label{fig:gonzato1997:results}
 \end{figure}
 %
 
-\cite{Ts'o:1987} compute wave propagation near the shore with an algorithm
+\citet{Ts'o:1987} compute wave propagation near the shore with an algorithm
 called \emph{wave tracing}, which launches orthogonal wave rays from the open
 sea along the direction of wave propagation. Wave refraction is computed based
 on Snell's law~\citep{book:huygenstreatiseonlight}, the wave trains are traced
 inside a uniform grid.
 In case rays tracing the waves path diverge
 significantly from a straight line, there may remain undersampled areas,
-leading to parts of the surface lacking detail. \cite{Gonzato:1997} improve
+leading to parts of the surface lacking detail. \citet{Gonzato:1997} improve
 upon this by generating new rays in undersampled areas, allowing their
 \emph{dynamic wave tracing} algorithm to more densely sample the water surface
 surrounding islands and the water surface inside bays. See Figure
@@ -385,7 +385,7 @@ First, a stretch function imitates Biesel's law~\citep{Biesel:1952} by
 progressively stretching the wave on the crest along its major axis. Second and
 third, an orientation and a displacement function rotate and translate
 the wave's crest downwards, towards the water surface below the crest.
-\cite{Gonzato:2000} augment their work with the inclusion of wave diffraction
+\citet{Gonzato:2000} augment their work with the inclusion of wave diffraction
 caused by jetties, and with the addition of capillary waves which are modeled
 using fractal noise.
 
@@ -493,13 +493,13 @@ surface.
 \subcaptionref{fig:mastin_waves:2} The Pierson-Moskowitz spectrum combined with the directional spreading function.
 \subcaptionref{fig:mastin_waves:3} The synthesized heightfield.
 \subcaptionref{fig:mastin_waves:4} Rendering of the sea surface.
-Source: \cite{Mastin:1987}
+Source: \citet{Mastin:1987}
 }
 \label{fig:mastin_waves}
 \end{figure}
 %
 
-\cite{Mastin:1987} introduced wave spectra to computer graphics. Their approach
+\citet{Mastin:1987} introduced wave spectra to computer graphics. Their approach
 is a simple one: generate white noise to represent random amplitudes and phases,
 then filter it with the Pierson-Moskowitz spectrum
 \citep{article:PiersonMoskowitz1964} in frequency space. The Pierson-Moskowitz
@@ -507,12 +507,12 @@ spectrum gives wave energy per \wavenumber, but not its distribution across
 \wavevectors. In short, there is no information telling in which direction the
 waves are moving. Thus, \citeauthor{Mastin:1987} combine the Pierson-Moskowitz
 spectrum with a \emph{directional spreading function}, namely the one proposed
-in \cite{article:Hasselmann1980}. A directional
+in \citet{article:Hasselmann1980}. A directional
 spreading function distributes wave energy across \wavevectors, where
 the energy peak is usually to be found aligned with the wind direction and the
-remaining energy fanning out at its sides. Results of \cite{Mastin:1987} are
+remaining energy fanning out at its sides. Results of \citet{Mastin:1987} are
 shown in Figure~\ref{fig:mastin_waves}.
-\cite{Premoze:2000} on the other hand make use of the JONSWAP spectrum
+\citet{Premoze:2000} on the other hand make use of the JONSWAP spectrum
 \citep{article:Hasselman1973}, as it allows for more varied ocean surfaces than
 the Pierson-Moskowitz spectrum.
 % An in-depth discussion of the Pierson-Moskowitz spectrum, the JONSWAP spectrum,
@@ -535,14 +535,14 @@ the Pierson-Moskowitz spectrum.
  \caption{
 \subcaptionref{fig:tessendorf_choppy_waves:1} Ocean surface sythesized with the Phillips spectrum.
 \subcaptionref{fig:tessendorf_choppy_waves:2} The same surface with the choppy wave algorithm applied.
-Source: \cite{course:simulatingocean}
+Source: \citet{course:simulatingocean}
 }
 \label{fig:tessendorf_choppy_waves}
 \end{figure}
 %
 
 One of the most known works in computer graphics related to wave spectra is
-\cite{course:simulatingocean}. Therein, \citeauthor{course:simulatingocean}
+\citet{course:simulatingocean}. Therein, \citeauthor{course:simulatingocean}
 describes how the ocean was brought to life for productions such as
 \emph{Waterworld} and \emph{Titanic}. In contrast to \citeauthor{Mastin:1987},
 \citeauthor{course:simulatingocean} does not use white noise, but Gaussian
@@ -557,7 +557,7 @@ gentle form of wave troughs and wave crests. Because the surface is computed as
 a linear superposition of sinusoids, it is only natural that the result shares
 the general form of its underlying building blocks. But a sea exposed to strong
 winds or even a storm is characterized by steep waves with sharp crests.
-\cite{course:simulatingocean} presents the~\emph{choppy wave} algorithm which
+\citet{course:simulatingocean} presents the~\emph{choppy wave} algorithm which
 overcomes this specific issue by allowing the waves to take a form similar to
 Gerstner waves, with deep troughs and sharp crests, see Figure
 \ref{fig:tessendorf_choppy_waves}.
@@ -577,7 +577,7 @@ amplitudes is picked from a directional Pierson-Moskowitz spectrum. Said
 \wavevectors need to be representative for a large part of the energy of the
 spectrum, thus it is unlikely for short \wavelengths to be selected. As a remedy,
 a three dimensional turbulence function \citep{Perlin:1985} is added to generate
-small scale details. \cite{lee:2007} improve upon the work of
+small scale details. \citet{lee:2007} improve upon the work of
 \citeauthor{Thon:2000} by using the TMA spectrum~\citep{Hughes:1984} which
 incorporates both, deep water waves and basic support for shallow water waves.
 \cite{article:frechot2007} presents an adaptive sampling scheme, where care is
@@ -615,15 +615,15 @@ believable shading of the ocean surface.
 	\label{fig:finch}
  }
  \caption{
-\subcaptionref{fig:westermann} Source:~\cite{Schneider:2001}
-\subcaptionref{fig:isidoro} Source:~\cite{Isidoro:2002}
-\subcaptionref{fig:finch} Source:~\cite{Finch:2004}
+\subcaptionref{fig:westermann} Source:~\citet{Schneider:2001}
+\subcaptionref{fig:isidoro} Source:~\citet{Isidoro:2002}
+\subcaptionref{fig:finch} Source:~\citet{Finch:2004}
 }
 \label{fig:earlygpu}
 \end{figure}
 %
 Early attempts to generate plausible water surfaces on graphics hardware include
-\cite{Schneider:2001, Isidoro:2002, Finch:2004}. Figure~\ref{fig:earlygpu}
+\citet{Schneider:2001, Isidoro:2002} and \citet{Finch:2004}. Figure~\ref{fig:earlygpu}
 depicts some of their results.
 To obtain interactive framerates \citeauthor{Schneider:2001} compute the
 displacements caused by wave motion using two octaves of Perlin noise in a
@@ -688,9 +688,9 @@ viewpoint.
 \end{figure}
 %
 
-\cite{Kryachko:2005} describes the algorithm used in an actual flight simulator.
+\citet{Kryachko:2005} describes the algorithm used in an actual flight simulator.
 The ocean is modeled as a combination of handcrafted heightmaps tiled in space
-and time. Four heightmaps are summed for lighting computations, where two of them
+and time (Figure~\ref{fig:kryachko:waves}). Four heightmaps are summed for lighting computations, where two of them
 with the largest scale are used to displace the ocean surface mesh. The latter is
 organized as a radial grid centered at the camera position, tesselated such that
 it provides more detail close to the viewer, see Figure~\ref{fig:kryachko:meshing}.
@@ -732,7 +732,7 @@ causing unnecessary overhead.
 %
 %
 
-\cite{Hinsinger:2002} present a more holistic approach, with their contribution
+\citet{Hinsinger:2002} present a more holistic approach, with their contribution
 being twofold. One, an adaptive meshing scheme, and two, an adaptive simulation
 scheme. The basic idea for the adaptive surface mesh is to make sure that every
 surface element at rest covers the same area on screen. Thus, the screen is
@@ -755,10 +755,10 @@ wavetrains smaller than a grid quad are removed from the sum of waves for that q
 % prune wavetrains smaller than the grid quads, fade them out
 % evaluate surface at any deseired location
 % no cyclicity, if ratios between wavelengths irrational
-\cite{Cui:2004} uses the adaptive mesh by \citeauthor{Hinsinger:2002} for a marine
+\citet{Cui:2004} uses the adaptive mesh by \citeauthor{Hinsinger:2002} for a marine
 simulator with three adjacent viewports, the wave model although is a simple sum
 of sinusoids with a small number of waves picked from a wave spectrum.
-\cite{thesis:johanson} on the other hand improves upon the adaptive mesh of
+\citet{thesis:johanson} on the other hand improves upon the adaptive mesh of
 \citeauthor{Hinsinger:2002}. First, the projection of the mesh onto the base plane
 is moved from the CPU to a vertex shader on the GPU. Second, \citeauthor{thesis:johanson} makes
 sure that the projection of the vertices works correctly in all possible viewing
@@ -824,7 +824,7 @@ are to be evaluated.
 % argue that from an algorithmic point of view one should choose a spectral
 % approach and leverage the highly efficient Fast Fourier Transform algorithm
 % to compute the sum of waves.
-\cite{Mitchell:2005} describes a
+\citet{Mitchell:2005} describes a
 partial GPU implementation of the ocean wave generation method presented in
 \citet{course:simulatingocean}. To improve rendering performance,
 \citeauthor{Mitchell:2005} synthesizes two water surface height maps,
