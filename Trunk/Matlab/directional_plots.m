@@ -71,18 +71,18 @@ imwrite(uint8(imadjust(d8 ./ min(high,1),[low; min(high,1)],[0;1]).*255), 'donel
 % imwrite(d6, 'donelan_dfilt_wur_sqrt8.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
 % imwrite(d7, 'donelan_dfilt_wur_sqrt50.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
 % imwrite(d8, 'donelan_dfilt_wur_sqrt200.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
+%
+minU = min(min([u1;u2;u3;u4;u5;u6;u7;u8]));
+maxU = max(max([u1;u2;u3;u4;u5;u6;u7;u8]));
 % 
-% minU = min(min([u1;u2;u3;u4;u5;u6;u7;u8]));
-% maxU = max(max([u1;u2;u3;u4;u5;u6;u7;u8]));
-% 
-% imwrite(imadjust(u1, [minU maxU], [0, 0.6]), 'unified_dfilt_wr_sqrt2.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
-% imwrite(imadjust(u2, [minU maxU], [0, 0.6]), 'unified_dfilt_wr_sqrt8.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
-% imwrite(imadjust(u3, [minU maxU], [0, 0.6]), 'unified_dfilt_wr_sqrt50.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
-% imwrite(imadjust(u4, [minU maxU], [0, 0.6]), 'unified_dfilt_wr_sqrt200.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
-% imwrite(imadjust(u5, [minU maxU], [0, 0.6]), 'unified_dfilt_wur_sqrt2.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
-% imwrite(imadjust(u6, [minU maxU], [0, 0.6]), 'unified_dfilt_wur_sqrt8.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
-% imwrite(imadjust(u7, [minU maxU], [0, 0.6]), 'unified_dfilt_wur_sqrt50.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
-% imwrite(imadjust(u8, [minU maxU], [0, 0.6]), 'unified_dfilt_wur_sqrt200.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
+imwrite(imadjust(u1, [minU maxU], [0; 1]), 'unified_dfilt_wr_sqrt2.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
+imwrite(imadjust(u2, [minU maxU], [0; 1]), 'unified_dfilt_wr_sqrt8.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
+imwrite(imadjust(u3, [minU maxU], [0; 1]), 'unified_dfilt_wr_sqrt50.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
+imwrite(imadjust(u4, [minU maxU], [0; 1]), 'unified_dfilt_wr_sqrt200.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
+imwrite(imadjust(u5, [minU maxU], [0; 1]), 'unified_dfilt_wur_sqrt2.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
+imwrite(imadjust(u6, [minU maxU], [0; 1]), 'unified_dfilt_wur_sqrt8.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
+imwrite(imadjust(u7, [minU maxU], [0; 1]), 'unified_dfilt_wur_sqrt50.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
+imwrite(imadjust(u8, [minU maxU], [0; 1]), 'unified_dfilt_wur_sqrt200.png', 'ResolutionUnit', 'meter', 'XResolution', ppi2meters, 'YResolution', ppi2meters);
 
 
 % 
