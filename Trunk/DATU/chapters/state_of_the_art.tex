@@ -627,19 +627,19 @@ Early attempts to generate plausible water surfaces on graphics hardware include
 depicts some of their results.
 To obtain interactive framerates \citeauthor{Schneider:2001} compute the
 displacements caused by wave motion using two octaves of Perlin noise in a
-vertex shader on the GPU.
+vertex shader on the GPU (Figure~\ref{fig:westermann}).
 \citeauthor{Isidoro:2002} perturb an existing mesh by means of a sum of four
-low-frequency sinusoids computed in a vertex shader on the GPU. Additional
-high-frequency detail is obtained by scrolling static normalmaps across the
-displaced surface.
+low-frequency sinusoids computed in a vertex shader on the GPU
+(Figure~\ref{fig:isidoro}). Additional high-frequency detail is obtained by
+scrolling static normalmaps across the displaced surface.
 %In a similar fashion,
 %\cite{Chen:2007} employ a sum of four sinusoids to displace an existing mesh,
 %and a dynamically generated normalmap to obtain more detailed surface normals.
 \citeauthor{Finch:2004} uses a sum of four Gerstner waves to displace an existing
 mesh, where \wavelengths that are too short to be represented by the mesh are
-filtered out automatically. Moreover, \citeauthor{Finch:2004} evaluates an
-additional sum, with more waves involved, to generate better detailed surface
-normals.
+filtered out automatically (Figure~\ref{fig:finch}). Moreover,
+\citeauthor{Finch:2004} evaluates an additional sum, with more waves involved,
+to generate better detailed surface normals.
 
 %\cite{Salgado:2007} present a simplified implementation of \cite{Fournier:1986}
 %using vertex shaders.
