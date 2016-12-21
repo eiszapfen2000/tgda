@@ -401,13 +401,14 @@ potentially infeasible because of the accumulated computational cost.
 %
 \section{Spectral Models}
 %
-Oceanographic research employs~\emph{wave spectra} to model the deep ocean. The
-sea is assumed as a linear superposition of sinusoids with many different
-\wavelengths, frequencies and phases, travelling in different directions. The wave
-spectrum gives the distribution of wave energy among different wave frequencies
-or \wavelengths. Given horizontal coordinate $\mvec{x}$, we may compute the
-vertical coordinate at time $t$ via an inverse Discrete Fourier Transform as
-follows:
+Oceanographic research employs~\emph{wave spectra} to model the deep ocean
+\citep{book:kinsman2002wind}. The sea is assumed as a linear superposition of
+sinusoids with many different \wavelengths, frequencies and phases, travelling
+in different directions. The wave spectrum gives the distribution of wave energy
+among different wave frequenciesor \wavelengths.
+Given horizontal coordinate $\mvec{x}$, according to
+\citet{course:simulatingocean} we may compute the vertical coordinate
+at time $t$ via an inverse Discrete Fourier Transform as follows:
 \begin{equation}
 h(\mvec{x},t) = \sum_{\mvec{k}}A(\mvec{k},t)\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \label{eq:spectral_models}
@@ -423,8 +424,8 @@ discussion of the theoretical background of wave spectra.
 % explains Equation~\ref{eq:spectral_models} in detail. 
 For now it shall suffice to give an overview of key properties of wave spectra. 
 
-First, all wave spectra
-are static. Static in the sense, that a wave spectrum represents a certain sea
+First, all wave spectra are static \citep{book:kinsman2002wind}.
+Static in the sense, that a wave spectrum represents a certain sea
 state based on parameters such as wind speed and the distance from shore. To
 change the sea state requires the synthesis of a new wave spectrum. Thus, for
 example, if one would like to simulate a calm sea which gets agitated as a storm
@@ -432,7 +433,9 @@ approaches, then one needs to generate a wave spectrum for each specific wind
 speed, and optionally interpolate between those spectra.
 
 Second, wave spectra are compact models which require only a small
-number of input parameters defining the desired sea state. Since wave spectra
+number of input parameters defining the desired sea state
+\citep{book:windgeneratedoceanwaves, book:kinsman2002wind}.
+Since wave spectra
 are homogeneous models, all parameters are uniform for the entire ocean surface,
 there is no room for local variations as parametric models would allow. Wave
 spectra assume the ocean surface to be dominated by the interplay of wind and
@@ -442,7 +445,7 @@ blows before it reaches the ocean patch the wave spectrum simulates. Water
 depth, if supported by the wave spectrum model, like all other parameters is
 uniform, hence the sea bed is assumed planar and parallel to the ocean surface
 at rest. It follows that no wave transitions from one water depth to another,
-therefore no wave refraction may take place.
+therefore no wave refraction may take place \citep{book:mei1989}.
 
 Third, the inverse Discrete Fourier Transform may leverage the
 Fast Fourier Transform algorithm~\citep{Cooley:1965}, which makes the computation of
