@@ -1997,7 +1997,7 @@ r &= \exp\left[-\frac{\left(\omega -
 \sigma &= 0.08\left(1 + \frac{4}{\Omega_c^3}\right)\\
 \alpha &= 0.006~\Omega_c^{0.55} \\
 \omega_{p} &= \frac{g\Omega_c}{U_{c}}\\
-\Omega_c &= 11.6\chi^{-0.23} \\
+\Omega_c &= 11.6\chi^{-0.23} \label{eq:donelan:omegac}\\
 \chi &= \frac{gF}{U_{c}^{2}}
 \end{align}
 \end{subequations}
@@ -2267,9 +2267,9 @@ Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$). The
 Donelan spectrum converges towards the Pierson Moskowitz spectrum with
 increasing fetch, but overshoots.
 Right: 
-JONSWAP and Donelan spectra with different inverse wave age values $\Omega$, 
+JONSWAP and Donelan spectra with different inverse wave age values $\Omega_c$, 
 Pierson Moskowitz spectrum for comparison ($\omega_p = 2.5$).
-Given specific values for $\Omega$ the Donelan spectrum transitions well
+Given specific values for $\Omega_c$ the Donelan spectrum transitions well
 between a developing and a fully developed sea.}
 \label{fig:donelan_spectra}
 \end{figure}
@@ -2277,7 +2277,12 @@ between a developing and a fully developed sea.}
 
 In contrast to the JONSWAP spectrum introduced earlier, the one dimensional 
 frequency spectrum as given by \citeauthor{article:Donelan1985} is able to
-transition to fully developed state, see Figure~\ref{fig:donelan_spectra}.
+transition to fully developed state. As one can see in
+Figure~\ref{fig:donelan_spectra}, said transition does work if inverse wave age
+$\Omega_c$ is given explicitely, instead of being estimated based on fetch.
+We may conclude that Equation~\ref{eq:donelan:omegac} is not that good an
+approximation of inverse wave age $\Omega_c$, especially because it lacks an
+asymptotic value of $\Omega_c=0.84$ for large fetch.
 %
 \subsection{Unified Spectrum}
 \label{sec:unified_spectrum}
