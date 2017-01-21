@@ -389,8 +389,8 @@ dimensional space from Equation~\ref{eq:sinusoid_3d} as an exponential:
 \Re\{A\mathrm{e}^{\mathrm{i}[\transpose{\mvec{k}}\mvec{x} -{\omega}t]}\} \\
 \intertext{or equivalent}
  p &= A\mathrm{e}^{\mathrm{i}[\transpose{\mvec{k}}\mvec{x} -
-{\omega}t]} \\
- \eta(\mvec{x}, t) &= \frac{p+p^*}{2}
+{\omega}t]} \nonumber \\
+ \eta(\mvec{x}, t) &= \frac{p+p^*}{2} \nonumber
 \end{align}
 %
 where $p^*$ denotes the~\emph{complex conjugate} of $p$. From now on we will
@@ -426,15 +426,18 @@ Equation~\ref{eq:sinusoid_exponential_ak_wk} we may express surface
 elevation as an infinite sum of sinusoids:
 \begin{equation}
 \label{eq:surface_elevation_akwt}
- \eta(\mvec{x}, t) = \int_{\mvec{k}}
+ \eta(\mvec{x}, t) = \iint_{\mvec{k}}
 a(\mvec{k})~\mathrm{e}^{\mathrm{i}(\transpose{\mvec{k}}\mvec{x}-
 \omega(\mvec{k})t)}~\mathrm{d}\mvec{k}
 \end{equation}
 where $a(\mvec{k})$ is called the~\emph{amplitude spectrum} of
-$\eta(\mvec{x}, t)$. According to \citet{book:kinsman2002wind} it is possible to
+$\eta(\mvec{x}, t)$.
+According to \citet{book:kinsman2002wind} it is possible to
 represent the vertical displacement of the water surface by~\emph{Generalized
-Fourier Transforms}. We may write the sea surface in two spatial dimensions and
-one time dimension as follows:
+Fourier Transforms}.
+%We may rewrite the sea surface in two spatial dimensions and one time dimension as follows:
+\citet{book:kinsman2002wind} transforms Equation~\ref{eq:surface_elevation_akwt}
+into a sea surface representation with two spatial dimensions and one time dimension:
 %
 \begin{equation}
 \label{eq:surface_elevation_bkwt}
@@ -452,6 +455,7 @@ We may integrate separately over all frequencies to obtain the two dimensional
 amplitude spectrum $B(\mvec{k}, t)$:
 %
 \begin{equation}
+\label{eq:surface_elevation_bkt}
  B(\mvec{k}, t) = \int_{\omega} B(\mvec{k},
 \omega)~\mathrm{e}^{-\mathrm{i}\omega t}~\mathrm{d}\omega
 \end{equation}
@@ -460,11 +464,13 @@ Alternatively, we may integrate over all \wavenumbers to obtain the one dimensio
 amplitude spectrum $B(\mvec{x}, \omega)$:
 %
 \begin{equation}
+\label{eq:surface_elevation_bwt}
  B(\mvec{x}, \omega) = \iint_{\mvec{k}} B(\mvec{k},
 \omega)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}~\mathrm{d}\mvec{k}
 \end{equation}
 %
-Thus, we may rewrite Equation~\ref{eq:surface_elevation_bkwt} as follows:
+Thus, using Equation~\ref{eq:surface_elevation_bkt} and Equation~\ref{eq:surface_elevation_bwt}
+we may rewrite Equation~\ref{eq:surface_elevation_bkwt} as follows:
 %
 \begin{equation}
 \label{eq:surface_elevation_bk}
