@@ -259,10 +259,7 @@ surface elevation is described by a cosinus function, all crests and all troughs
 will have the same elevation. Another effect of the cosinus function is that the
 surface elevation is limited by the amplitude $A$. We will call the difference
 in elevation between crest and trough the~\emph{wave height}. It is easy to see
-that wave height $H$ is defined as follows:
-\begin{equation}
- H = 2A
-\end{equation}
+that wave height $H$ is defined as $H=2A$.
 %
 \subsection{Phase Velocity}
 \label{sec:phase_velocity}
@@ -271,19 +268,19 @@ the~\emph{phase velocity}. The phase velocity is a vector and has an associated 
 the \emph{phase speed} on the other hand refers only to the magnitude of the phase velocity.
 The most comprehensible example of phase speed is the rate of propagation of the wave crest.
 During one wave period $T$ the wave crest travels a distance equal to the wave length $\lambda$.
-We may generalize this to other phases than the wave crest - given a constant phase
-\begin{equation}
+We may generalize this to other phases than the wave crest. Given a constant phase
+\begin{equation*}
   const = kx - \omega t
-\end{equation}
+\end{equation*}
 the surface elevation $\eta$ will always be the same. We rewrite the term to
-\begin{equation}
+\begin{equation*}
   x = \frac{\omega}{k}t + \frac{const}{k}
-\end{equation}
-which gives us all positions $x$ the wave has the same value at. These positions are time dependent,
+\end{equation*}
+which gives us all positions $x$ the wave has the same elevation at. These positions are time dependent,
 differentiation gives us phase speed $c$:
-\begin{equation}
+\begin{equation*}
   c = \frac{\mathrm dx}{\mathrm dt} = \frac{\omega}{k} = \frac{\lambda}{T}
-\end{equation}
+\end{equation*}
 
 \subsection{The Dispersion Relation}
 \label{sec:dispersion_relation}
@@ -311,14 +308,14 @@ There exist two useful approximations of Equation~\ref{eq:dispersion_relation} w
 \end{itemize}
 %
 The reduced dispersion relations are as follows:
-\begin{align}
-\label{eq:disp_rel_shallow_water}
+\begin{align*}
+%\label{eq:disp_rel_shallow_water}
 \omega^2 & = gk^2d && \text{with} & d &< \frac{\lambda}{20}  && \text{Shallow 
 water dispersion relation}\\
-\label{eq:disp_rel_deep_water}
+%\label{eq:disp_rel_deep_water}
 \omega^2 & = gk    && \text{with} & d &> \frac{\lambda}{2} && \text{Deep water 
 dispersion relation}
-\end{align}
+\end{align*}
 %
 Given the dispersion relation approximations for shallow and deep water, the corresponding
 phase speeds are:
@@ -330,8 +327,8 @@ phase speeds are:
 According to Equation~\ref{eq:phase_speed_shallow_water}, in shallow water phase speed depends exclusively
 on water depth and gravitational acceleration, there is no connection to wave length or frequency.
 We may conclude that waves with different wave lengths travel with the same phase speed, it follows that
-~\emph{shallow water is not dispersive}. Phase speed in deep water, on the other hand,
-does not relate to water depth, but to wave length and frequency, which makes~\emph{deep water dispersive}.
+shallow water is not dispersive. Phase speed in deep water, on the other hand,
+does not relate to water depth, but to wave length and frequency, which makes deep water dispersive.
 We can expand Equation~\ref{eq:phase_speed_deep_water} to:
 %
 \begin{equation}
@@ -357,9 +354,9 @@ in three dimensional space is defined as follows:
 where $\mvec{x} = (x_x, x_z)$ denotes the observed point on a plane and $\mvec{k} = (k_x, k_z)$ represents
 the travelling direction of the wave. The \wavenumber $k$ of~\emph{\wavevector} $\mvec{k}$ is determined by
 the \wavevector's magnitude:
-\begin{equation}
+\begin{equation*}
  k = \norm{\mvec{k}}
-\end{equation}
+\end{equation*}
 Thus, because of the dispersion relation, all waves of same magnitude share the same frequency.
 
 \subsection{Compley Exponential Wave Form}
@@ -2491,37 +2488,59 @@ the Unified spectrum is not prone to overdevelopment given large fetch values.
 With the basic terms at hand, we are able to move on to the one dimensional 
 \wavenumber spectrum as given by Elfouhaily et al.:
 %
-\begin{subequations}
-\begin{align}
- \Theta(k) &= k^{-3}(B_l + B_h) \\
-\intertext{with}
- B_l &= \frac{1}{2}\alpha_p\frac{c_p}{c}F_p \\
- B_h &= \frac{1}{2}\alpha_m\frac{c_m}{c}F_m \\
- \alpha_p &= 0.006\sqrt{\Omega_c} \\
- \alpha_m &= 10^{-2}\begin{cases}
-	1 + \log\left(\frac{u^{\ast}}{c_m}\right) & u^{\ast} < c_m \\
-	1 + 3\log\left(\frac{u^{\ast}}{c_m}\right) & u^{\ast} > c_m
-	\end{cases} \\
- F_p &= L_{PM}J_p\exp\left[- 
-\frac{\Omega_c}{\sqrt{10}}\left(\sqrt{\frac{k}{k_p}} - 1\right)\right] \\
- F_m &= L_{PM}J_p\exp\left[- 
-\frac{1}{4}\left(\frac{k}{k_m} - 1\right)^2\right] \\
-c_m &= 0.23
-\end{align}
-\end{subequations}
+% \begin{subequations}
+\begin{equation}
+ \Theta(k) = k^{-3}(B_l + B_h)
+\end{equation}
+% \intertext{with}
+%  B_l &= \frac{1}{2}\alpha_p\frac{c_p}{c}F_p \\
+%  B_h &= \frac{1}{2}\alpha_m\frac{c_m}{c}F_m \\
+%  \alpha_p &= 0.006\sqrt{\Omega_c} \\
+%  \alpha_m &= 10^{-2}\begin{cases}
+% 	1 + \log\left(\frac{u^{\ast}}{c_m}\right) & u^{\ast} < c_m \\
+% 	1 + 3\log\left(\frac{u^{\ast}}{c_m}\right) & u^{\ast} > c_m
+% 	\end{cases} \\
+%  F_p &= L_{PM}J_p\exp\left[- 
+% \frac{\Omega_c}{\sqrt{10}}\left(\sqrt{\frac{k}{k_p}} - 1\right)\right] \\
+%  F_m &= L_{PM}J_p\exp\left[- 
+% \frac{1}{4}\left(\frac{k}{k_m} - 1\right)^2\right] \\
+% c_m &= 0.23
+% \end{align}
+% \end{subequations}
 %
 where $B_l$ represents the low frequency regime and $B_h$ the high frequency
-regime respectively. The long wave regime input $B_l$ depends on the
+regime respectively.
+The long wave regime input $B_l$ depends on the
 equilibrium range parameter for long waves, $\alpha_p$, the wave phase speed
 $c = \omega/k$, the phase speed at the spectral peak $c_p$, and the \emph{long wave side
 effect function} $F_p$. The latter restricts the energy contribution of the
-$B_l$ term to the low frequency regime. The short wave regime input $B_h$,
+$B_l$ term to the low frequency regime.
+We may write:
+\begin{align*}
+ B_l &= \frac{1}{2}\alpha_p\frac{c_p}{c}F_p \\
+ \alpha_p &= 0.006\sqrt{\Omega_c} \\
+ F_p &= L_{PM}J_p\exp\left[- 
+\frac{\Omega_c}{\sqrt{10}}\left(\sqrt{\frac{k}{k_p}} - 1\right)\right] \\
+\end{align*}
+The short wave regime input $B_h$,
 on the other hand, depends on the equilibrium range parameter for short waves,
 $\alpha_m$, the friction velocity at the water surface, $u^{\ast}$, the wave
 phase speed $c$, the minimum phase speed $c_m$ at the \wavenumber $k_m$, and
 the \emph{short wave side effect function} $F_m$. The term $F_m$ accounts for
 the bandwidth of gravity-capillary waves as well as for the~\emph{viscous cutoff},
-beyond which there is no wave energy. We may compute the friction velocity
+beyond which there is no wave energy. 
+\begin{align*}
+ B_h &= \frac{1}{2}\alpha_m\frac{c_m}{c}F_m \\
+ \alpha_m &= 10^{-2}\begin{cases}
+	1 + \log\left(\frac{u^{\ast}}{c_m}\right) & u^{\ast} < c_m \\
+	1 + 3\log\left(\frac{u^{\ast}}{c_m}\right) & u^{\ast} > c_m
+	\end{cases} \\
+ F_m &= L_{PM}J_p\exp\left[- 
+\frac{1}{4}\left(\frac{k}{k_m} - 1\right)^2\right] \\
+c_m &= 0.23
+\end{align*}
+
+We may compute the friction velocity
 $u^{\ast}$ through application of the \emph{law of the wall}~\cite{article:vonKarman1931}:
 %
 \begin{subequations}
