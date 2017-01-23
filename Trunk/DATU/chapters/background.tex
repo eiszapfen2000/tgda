@@ -491,27 +491,30 @@ Equation~\ref{eq:surface_elevation_bkt} and Equation~\ref{eq:surface_elevation_b
 %
 Equation~\ref{eq:surface_elevation_bk} may be able to describe the ocean
 surface, but at the cost of deducing an amplitude spectrum for each observed
-point on the sea surface, which poses a both tedious and unfeasible task. At
-this point we are in need of a general description of $B$ which is valid at all
-points $\mvec{x}$ and times $t$. Fortunately, modern physical oceanography is
-based on exactly such a formulation, which has been developed in the 1950s
-by~\emph{Pierson} and~\emph{von Neumann}~\citep{Neumann:1966}. We will refer to
-said formulation as~\emph{Pierson-Neumann theory} throughout the remainder of
-this document.
+point on the sea surface, a both tedious and unfeasible task. At
+this point we are in need of a general description of the amplitude spectrum
+which is valid at all points $\mvec{x}$ and times $t$.
+Fortunately, modern physical oceanography is
+based on exactly such a formulation, which has been developed \citet{Neumann:1966}.
+% We will refer to said formulation as \emph{Pierson-Neumann theory} throughout
+% the remainder of this document.
 
-Pierson and von Neumann combine oceanography, physics and stochastics in order
+\citeauthor{Neumann:1966} combine oceanography, physics and stochastics in order
 to describe the ocean surface. A fundamental assumption of their theory is that
 surface disturbance is formed from many contributions caused by relatively
 unrelated forces at different times. Therefore it is reasonable to presume that
 the elements in the summation of Equation~\ref{eq:surface_elevation_bk} are
-statistically independent. As a consequence the central limit theorem
-\cite{book:ctm:fischer} with the
-resulting distribution being a Gaussian is applied. The result is
-a~\emph{spatially homogeneous} and~\emph{temporally stationary} Gaussian random
-process which models a wind driven ocean surface. The process is said to be
+statistically independent.
+% As a consequence the central limit theorem \cite{book:ctm:fischer} with the
+% resulting distribution being a Gaussian is applied. The result is
+% a \emph{spatially homogeneous} and \emph{temporally stationary} Gaussian random
+% process which models a wind driven ocean surface.
+\citeauthor{Neumann:1966} model the wind driven ocean surface as a
+\emph{spatially homogeneous} and \emph{temporally stationary} Gaussian random
+process~\citep{book:grimmett2001}. The random process is said to be
 \emph{homogeneous}, because it is independent of the origin selected for
-positions $\mvec{x}$, futhermore it is~\emph{stationary} since absolute time is
-irrelevant, only time differences matter.
+positions $\mvec{x}$, furthermore it is \emph{stationary} since absolute time is
+irrelevant, only time difference matters.
 %
 \subsection{The Energy Spectrum}
 \label{sec:energy_spectrum}
@@ -578,41 +581,41 @@ The frequency spectrum gives the contributions to the energy coming from each
 frequency $\omega$, irrespective of the \wavenumbers associated with that
 frequency.\\
 
-The energy spectrum $\Theta$ as presented is severely restricted in its
+The energy spectrum as presented is severely restricted in its
 capabilities to model a~\emph{dynamic} ocean. Dynamic, in this context, means an
 ocean which may start as a perfectly flat surface, is actuated to a fully
 developed sea by wind, decays back into a near motionless state, and so on and
-so forth. The energy spectrum discussed models waves on an ocean with infinite
-extend over which a uniform wind has been blowing forever. In context of this
-document such a model of the ocean is sufficient, there is no need to simulate
-the actual generation and decay of waves over time.
+so forth. The energy spectrum as discussed only models waves on an ocean with
+infinite extend over which a uniform wind has been blowing forever. In context
+of this document such a model of the ocean is sufficient, there is no need to
+simulate the actual generation and decay of waves over time.
 
 \subsection{The Random Process}
 \label{sec:random_process}
-Pierson-Neumann theory describes the sea surface as a Gaussian random process.
+\citet{Neumann:1966} describe the sea surface as a Gaussian random process.
 As such, we are not dealing with one concrete ocean surface $\eta$, but with an
 \emph{ensemble} of different sea surfaces $\{\eta\}$, each associated with its
-own probabilty to be actually realised. Because the random process is a
+own probability to be actually realised. Because the random process is a
 Gaussian one, it has an associated Gaussian distribution with mean
 $\mathrm{E}[\eta]$ and variance $\mathrm{Var}[\eta] = \sigma^2$. Considering a
 sea surface in combination with linear wave theory, where a symmetry between
-troughs and crests is a given, the mean is easily found
-\begin{equation}
+troughs and crests is a given, the mean is easily found:
+\begin{equation*}
  \mathrm{E}[\eta] = 0
-\end{equation}
+\end{equation*}
 %
 Moreover, all spectral components $B(\mvec{k},\omega)$ are assumed to be
 \emph{statistically independent}, each with mean zero and variance $\Theta(\mvec{k},\omega)$,
-therefore the variance of all components combined is
-\begin{equation}
+therefore the variance of all components combined is:
+\begin{equation*}
 \label{eq:random_process_variance}
 \mathrm{Var}[\eta] = \sigma^2 = \iint_{\mvec{k}}
 \int_{\omega}\Theta(\mvec{k},\omega)~\mathrm{d}\mvec{k}~\mathrm{ d}\omega
-\end{equation}
+\end{equation*}
 which is the same as Equation~\ref{eq:mean_square_eta}. The variance
 $\sigma^2$ is equal the mean square surface elevation $\overline{\eta^2}$. With
-mean and variance in our hands, we may write the Gaussian distribution that the
-values of sea surface elevation are drawn from, as follows:
+mean and variance at hand we may write the Gaussian distribution that the
+values of sea surface elevation are drawn from:
 \begin{equation}
 \label{eq:gaussian_dist}
  pr[\eta] = \frac{1}{\sqrt{2\pi\sigma^2}}~\mathrm{e}^{-\frac{\eta^2}{2\sigma^2}}
@@ -631,12 +634,12 @@ As of now, we may formulate surface elevation as a realisation of a stochastic p
 \omega t)}~
 \mathrm{d}\mvec{k}~\mathrm{d}\omega
 \end{equation}
-where $\xi$ is a Gauss distributed variable with mean $\mathrm{E}[\eta] = 0$ and
-variance $\mathrm{Var}[\eta] = \sigma^2$ defined by the energy spectrum
+where $\xi$ is a Gauss distributed variable with mean $\mathrm{E}[\eta] = 0$,
+and variance $\mathrm{Var}[\eta] = \sigma^2$ as defined by the energy spectrum
 $\Theta(\mvec{k}, \omega)$. One may realize that in context of this formulation
-of sea surface elevation, the energy spectrum $\Theta$ is the key to believable
+of sea surface elevation, the energy spectrum is the key to believable
 ocean surfaces, as it needs to be able to model the underlying physical
-processes to give realistic results.
+processes to give realistic results.\\
 
 % At this point we have to face the reality of oceanographic research, which does 
 % not provide us with any three dimensional energy spectra 
@@ -653,7 +656,7 @@ $\Theta(\omega)$ as-is, because they do not contain any information about
 the  travelling direction of waves, and therefore are not able to compute 
 surface elevation with two dimensional positions $\mvec{x}$ as input.
 Hence, we have to settle for the two dimensional \wavenumber spectrum
-$\Theta(\mvec{k})$ as basis. We write surface elevation as follows:
+$\Theta(\mvec{k})$ as basis. We may write surface elevation as follows:
 \begin{equation}
 \label{eq:surface_elevation_gauss_2d}
  \eta(\mvec{x}, t) = \iint_{\mvec{k}} 
@@ -664,7 +667,7 @@ where, in line with Equation~\ref{eq:surface_elevation_gauss}, $\xi$ is
 a Gauss distributed variable with mean $\mathrm{E}[\eta] = 0$ and
 variance $\mathrm{Var}[\eta] = \sigma^2$ defined by the energy spectrum
 $\Theta(\mvec{k})$. Moreover, for animation purposes, we add the term 
-$\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}$ in order to explicitely handle 
+$\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}$ to explicitely handle 
 time $t$, because the two dimensional \wavenumber spectrum has no notion of 
 it. Equation~\ref{eq:surface_elevation_gauss_2d} represents a two dimensional 
 \emph{Inverse Fourier Transform} of Fourier components 
