@@ -701,12 +701,12 @@ the Discrete Fourier Transform and the Fast Fourier algorithm
 in \cite{book:bracewell2000fourier} and \cite{book:numericalrecipes}.
 
 Employing the FFT algorithm may solve our concerns relating to performance, but 
-we still have to make sure we compute an as good as possible approximation to 
+we still have to make sure we compute an as good as possible approximation of 
 Equation~\ref{eq:surface_elevation_gauss_2d}. Since our model for surface 
-elevation is based on wave energy, the best way forward seems to be, that we 
+elevation is based on wave energy, the best way forward seems to be that we 
 choose a finite range of \wavevectors $\mvec{k}$ such that they are 
-representative of the whole energy $Var[\eta]$ defined by $\Theta(\mvec{k})$. 
-Because \wavevectors $\mvec{k}$ are related to wave length, they are also 
+representative of the whole energy $Var[\eta]$ as defined by $\Theta(\mvec{k})$. 
+Because \wavevectors $\mvec{k}$ are related to \wavelength, they are also 
 related to the spatial domain, and as such to positions $\mvec{x}$. Hence, the 
 quality of our approximation depends on how we discretise both the spatial 
 domain into a finite set of positions $\mvec{x}$ and the \wavevector domain 
@@ -778,28 +778,29 @@ vertical resolution $M$, where both $N$ and $M$ shall be an integer which can
 be represented as a power of two. Therefore we will define sea surface elevation 
 at $N\times M$ discrete points. We will denote the horizontal and vertical
 distance between consecutive grid points as follows:
-\begin{align}
+\begin{align*}
  \Delta x = \frac{L}{N} && \Delta y = \frac{K}{M}
-\end{align}
-We will follow Tessendorf's lead~\cite{course:simulatingocean} and compute
+\end{align*}
+We will follow \citet{course:simulatingocean} and compute
 surface elevation at the following points:
-\begin{equation}
+\begin{equation*}
 \label{eq:spatial_domain}
  \mvec{x} = (x,y)~\in~\{(\alpha\Delta x,\beta\Delta y)|
 -\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}\leq\beta<\frac{M}{2}\}
-\end{equation}
+\end{equation*}
 where $\alpha$ and $\beta$ are integers. At first glance the choice of interval
 for positions~$\mvec{x}$ may seem arbitrary, but it will allow us to make a
 direct connection to the \wavevector domain later on.
-To simplify matters, from now on we will handle a square area instead of a
-rectangular one, thus
-\begin{align}
+To simplify matters we will handle a square area instead of a rectangular one,
+thus:
+\begin{align*}
 \label{eq:square_area}
  N = M && L = K &&\Rightarrow \Delta x = \Delta y
-\end{align}
+\end{align*}
 %
+Figure~\ref{fig:spatial_domain}.
 Based on the~\emph{Nyquist-Shannon sampling
-theorem}\cite{book:bracewell2000fourier} we are able to compute the minimum and
+theorem} \citep{book:bracewell2000fourier} we are able to compute the minimum and
 maximum wavelengths which are reconstructible without loss of information.
 We may write said minimum and maximum wavelengths as follows:
 \begin{align}
