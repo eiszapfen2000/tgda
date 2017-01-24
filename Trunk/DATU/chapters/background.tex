@@ -715,6 +715,41 @@ into a finite set of \wavevectors $\mvec{k}$.
 \subsection{Domain Discretisation}
 \label{sec:domain_discretisation}
 %
+We define the sea surface we want to synthesize as a rectangular area, with $L$
+and $K$ denoting width and height in meters respectively. Moreover, we
+discretise said rectangle into a grid with horizontal resolution $N$ and
+vertical resolution $M$, where both $N$ and $M$ shall be an integer which can
+be represented as a power of two. Therefore we will define sea surface elevation 
+at $N\times M$ discrete points. We will denote the horizontal and vertical
+distance between consecutive grid points as follows:
+\begin{align*}
+ \Delta x = \frac{L}{N} && \Delta y = \frac{K}{M}
+\end{align*}
+We compute surface elevation at the following points:
+\begin{equation*}
+\label{eq:spatial_domain}
+ \mvec{x} = (x,y)~\in~\{(\alpha\Delta x,\beta\Delta y)|
+-\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}<\beta\leq\frac{M}{2}\}
+\end{equation*}
+where $\alpha$ and $\beta$ are integers. At first glance the choice of interval
+for positions~$\mvec{x}$ may seem arbitrary, but it will allow us to make a
+direct connection to the \wavevector domain later on.
+To simplify matters we will handle a square area instead of a rectangular one,
+thus:
+\begin{align*}
+\label{eq:square_area}
+ N = M && L = K &&\Rightarrow \Delta x = \Delta y
+\end{align*}
+%
+Based on the~\emph{Nyquist-Shannon sampling
+theorem} \citep{book:bracewell2000fourier} we are able to compute the minimum and
+maximum \wavelengths which are reconstructible without loss of information.
+We may write said minimum and maximum \wavelengths as follows:
+\begin{align}
+ \lambda_{min} = 2\Delta x && \lambda_{max} = \sqrt{2}~\Delta x~\frac{N}{2}
+\end{align}
+%
+%
 \begin{figure}
 \centering
 \begin{tikzpicture}
@@ -743,7 +778,7 @@ into a finite set of \wavevectors $\mvec{k}$.
     ymin=-5,
     ymax=5,
 ]
-{figures/ifft_spatial_domain};
+{figures/ifft_spatial_domain_odd};
 \end{axis}
 %
 \begin{axis}[
@@ -771,42 +806,11 @@ associated coordinate pairs $(\alpha\Delta x,\beta\Delta y)$.}
 \label{fig:spatial_domain}
 \end{figure}
 %
-We define the sea surface we want to synthesize as a rectangular area, with $L$
-and $K$ denoting width and height in meters respectively. Moreover, we
-discretise said rectangle into a grid with horizontal resolution $N$ and
-vertical resolution $M$, where both $N$ and $M$ shall be an integer which can
-be represented as a power of two. Therefore we will define sea surface elevation 
-at $N\times M$ discrete points. We will denote the horizontal and vertical
-distance between consecutive grid points as follows:
-\begin{align*}
- \Delta x = \frac{L}{N} && \Delta y = \frac{K}{M}
-\end{align*}
-We will follow \citet{course:simulatingocean} and compute
-surface elevation at the following points:
-\begin{equation*}
-\label{eq:spatial_domain}
- \mvec{x} = (x,y)~\in~\{(\alpha\Delta x,\beta\Delta y)|
--\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}\leq\beta<\frac{M}{2}\}
-\end{equation*}
-where $\alpha$ and $\beta$ are integers. At first glance the choice of interval
-for positions~$\mvec{x}$ may seem arbitrary, but it will allow us to make a
-direct connection to the \wavevector domain later on.
-To simplify matters we will handle a square area instead of a rectangular one,
-thus:
-\begin{align*}
-\label{eq:square_area}
- N = M && L = K &&\Rightarrow \Delta x = \Delta y
-\end{align*}
 %
-Figure~\ref{fig:spatial_domain}.
-Based on the~\emph{Nyquist-Shannon sampling
-theorem} \citep{book:bracewell2000fourier} we are able to compute the minimum and
-maximum wavelengths which are reconstructible without loss of information.
-We may write said minimum and maximum wavelengths as follows:
-\begin{align}
- \lambda_{min} = 2\Delta x && \lambda_{max} = \sqrt{2}~\Delta x~\frac{N}{2}
-\end{align}
-%
+Figure~\ref{fig:spatial_domain} depicts the spatial domain as defined
+by resolution and size, including horizontal and vertical grid point distances,
+as well as minimum and maximum \wavelengths.
+
 \begin{figure}
 \centering
 \begin{tikzpicture}
@@ -835,7 +839,7 @@ We may write said minimum and maximum wavelengths as follows:
     ymin=-5,
     ymax=5,
 ]
-{figures/ifft_wave_vector_domain};
+{figures/ifft_wave_vector_domain_odd};
 \end{axis}
 %
 \begin{axis}[
@@ -864,7 +868,7 @@ associated coordinate pairs $(\alpha\Delta k_x,\beta\Delta k_y)$.}
 \label{fig:wave_vector_domain}
 \end{figure}
 %
-With $\lambda_{min}$ and $\lambda_{max}$ in our hands we may compute the
+With $\lambda_{min}$ and $\lambda_{max}$ at hand we may compute the
 corresponding \wavenumbers:
 \begin{align}
  k_{min} = \frac{2\pi}{\lambda_{min}} && k_{max} = \frac{2\pi}{\lambda_{max}}
@@ -884,7 +888,7 @@ $\mvec{x}$:
 \begin{equation}
 \label{eq:wave_vector_domain}
  \mvec{k} = (k_x,k_y)~\in~\{(\alpha\Delta k_x,\beta\Delta k_y)|
--\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}\leq\beta<\frac{M}{2}\}
+-\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}<\beta\leq\frac{M}{2}\}
 \end{equation}
 %
 As one may see in Figure~\ref{fig:wave_vector_domain}, the \wavevector domain 
