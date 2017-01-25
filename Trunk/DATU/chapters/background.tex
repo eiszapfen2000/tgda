@@ -1066,47 +1066,47 @@ The Pierson Moskowitz spectrum \citep{article:PiersonMoskowitz1964} is a well
 known and widely used one dimensional frequency spectrum based on data aquired 
 by weather ships in the North Atlantic Ocean. At the time it was introduced, 
 it was expressed in terms of wind speed as follows:
-\begin{subequations}
-\label{eq:pierson_moskowitz_old}
-\begin{align}
- \Theta(\omega) &= \frac{\alpha
+
+\begin{equation}
+%\label{eq:pierson_moskowitz_old}
+\label{eq:pierson_moskowitz_theta_old}
+ \Theta(\omega) = \frac{\alpha
 g^2}{\omega^5}~\exp\left[-\beta\left(\frac{g}{U_{19.5}}\frac{1}{\omega}
-\right)^4\right ] \label{eq:pierson_moskowitz_theta_old}\\
-\intertext{with}
-\alpha &= 8.1 \times 10^{-3} \label{eq:pierson_moskowitz_alpha} \\
-\beta &= 74 \times 10^{-1} \label{eq:pierson_moskowitz_beta}
-\end{align}
-\end{subequations}
+\right)^4\right ]
+\end{equation}
+with
+\begin{align*}
+\alpha = 8.1 \times 10^{-3} && \beta = 74 \times 10^{-1}
+\end{align*}
 where $U_{19.5}$ is the wind speed at a height of 19.5 meters above the sea
 surface, the height of the anemometers used by Pierson and Moskowitz. Further
-analysis of the data brought to light the subsequent relationship between wind 
-speed and peak frequency $\omega_p$
-\begin{equation}
+analysis of the data \citep{alves:2003} brought to light the subsequent
+relationship between wind speed and peak frequency $\omega_p$:
+\begin{equation*}
  \beta\left(\frac{g}{U_{19.5}}\right)^4 = \frac{5}{4}~\omega_p^4
-\end{equation}
+\end{equation*}
 which lead to a rephrasing of Equation~\ref{eq:pierson_moskowitz_theta_old} in 
 terms of peak frequency:
-\begin{subequations}
-\begin{gather}
+\begin{gather*}
  \Theta(\omega) = \frac{\alpha
 g^2}{\omega^5}~\exp\left[-\frac{5}{4}\left(\frac{\omega_p}{\omega}
 \right)^4\right ] \label{eq:pierson_moskowitz_theta}\\
 \intertext{with}
 \omega_p = \sqrt[4]{\beta~\frac{4}{5}}~\frac{g}{U_{19.5}} \approx
 0.877~\frac{g}{U_{19.5}}
-\end{gather}
-\end{subequations}
+\end{gather*}
 Most spectral models, which were published after the Pierson Moskowitz spectrum,
 use wind speed at ten meters height above the sea surface, $U_{10}$, as a 
-standard. We may convert between $U_{19.5}$ and $U_{10}$ as follows:
+standard. We may convert between $U_{19.5}$ and $U_{10}$ as follows
+\citep{alves:2003}:
 \begin{equation}
  U_{10} \approx 1.026\times U_{19.5}
 \end{equation}
-Now we are able to rewrite peak frequency $\omega_p$ in terms of $U_{10}$
-\begin{equation}
+Now we are able to rewrite peak frequency $\omega_p$ in terms of $U_{10}$:
+\begin{equation*}
 \label{eq:pm_omega_p_u10}
  \omega_p \approx 0.855~\frac{g}{U_{10}}
-\end{equation}
+\end{equation*}
 which completes our conversion of the Pierson Moskowitz model to standard wind 
 speed $U_{10}$.
 Figure~\ref{fig:pm_spectra} depicts how the Pierson Moskowitz 
