@@ -1450,13 +1450,14 @@ simulates fetch based wave growth and is expressed as a combination of the
 Pierson Moskowitz spectrum and an additional~\emph{peak enhancement factor}. A 
 compact form of the JONSWAP spectrum often found in literature looks as follows:
 %
-\begin{subequations}
+\begin{equation}
 \label{eq:jonswap_omega}
-\begin{align}
- \Theta(\omega) &= \frac{\alpha
+ \Theta(\omega) = \frac{\alpha
 g^2}{\omega^5}~\exp\left[-\frac{5}{4}\left(\frac{\omega_p}{\omega}
-\right)^4\right]\gamma^r\\
-\intertext{with}
+\right)^4\right]\gamma^r
+\end{equation}
+with
+\begin{align*}
 r& = \exp\left[-\frac{\left(\omega -
 \omega_p\right)^2}{2\sigma^2\omega_p^2}\right] \\
 \alpha &= 0.076\left(\frac{gF}{U_{10}^2}\right)^{-0.22} \\
@@ -1466,8 +1467,7 @@ r& = \exp\left[-\frac{\left(\omega -
 	0.09 & \omega > \omega_p
     \end{cases} \\
 \gamma &= 3.3
-\end{align}
-\end{subequations}
+\end{align*}
 where $F$ denotes the fetch in meters and $U_{10}$ the wind speed in meters per 
 second at a height of ten meters above the sea surface. Moreover, $\gamma^r$ is 
 called the peak enhancement factor, $\sigma$ the~\emph{peak width parameter}, 
@@ -1595,14 +1595,14 @@ to full development, it is not applicable at large values of $\chi$. Based on
 the JONSWAP datasets, \citeauthor{article:Hasselman1973} confined their model
 to $\chi < 1\times10^4$. Given dimensionless peak frequency $\nu$, we may write
 peak  angular frequency $\omega_p$ as follows:
-\begin{equation}
+\begin{equation*}
  \omega_p = 2\pi\frac{g\nu}{U_{10}} = \Omega\frac{g}{U_{10}}
-\end{equation}
+\end{equation*}
 Moreover, \citeauthor{article:Hasselman1973} also base the equilibrium range
 parameter $\alpha$ on dimensionless fetch:
-\begin{equation}
+\begin{equation*}
  \alpha = 0.076 \chi^{-0.22}
-\end{equation}
+\end{equation*}
 %
 This completes our conversion of the JONSWAP spectrum to make explicit use of 
 dimensionless peak frequency and dimensionless fetch.
