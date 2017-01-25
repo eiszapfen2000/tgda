@@ -1294,10 +1294,10 @@ fetch $\chi$ both dimensionless energy $\epsilon$ and dimensionless peak
 frequency $\nu$ reach asymptotic limits. These limits indicate that all further 
 development ceases at that point, the sea has reached a fully developed state. 
 We may write said limits as follows:
-\begin{alignat}{2}
+\begin{alignat*}{2}
  \epsilon &= 5\times10^{-3} \quad && \text{for large } \chi \\
  \nu &= 0.133 \quad && \text{for large } \chi
-\end{alignat}
+\end{alignat*}
 Pierson and Moskowitz on the other hand provide the limits of dimensionless 
 energy and dimensionless peak frequency based on data retrieved solely from 
 fully developed seas. These limits are as follows:
@@ -1309,13 +1309,13 @@ where $\epsilon$ and $\nu$ are independent of fetch. We may compute the peak
 angular frequency of the Pierson Moskowitz spectrum by combining Equations
 \ref{eq:f_p_from_dimensionless}, \ref{eq:omega_p_from_dimensionless} and
 \ref{eq:pm_nu} as follows:
-\begin{equation}
+\begin{equation*}
  \omega_p = 2\pi\frac{0.13g}{U_{10}}
-\end{equation}
+\end{equation*}
 which matches the Pierson Moskowitz definition of peak angular frequency
-given earlier in Equation \ref{eq:pm_omega_p_u10}.\\
+given earlier in Equation \ref{eq:pm_omega_p_u10}.
 
-Given peak angular frequency $\omega_p$ and a constant wind of speed $U_{10}$, 
+Based on peak angular frequency $\omega_p$ and a constant wind of speed $U_{10}$, 
 we may introduce the~\emph{inverse wave age}, $\Omega$, which describes the 
 state of development of a sea, and is defined as follows:
 \begin{equation}
@@ -1328,19 +1328,20 @@ combining Equations
 \ref{eq:f_p_from_dimensionless},~\ref{eq:omega_p_from_dimensionless} 
 and~\ref{eq:inverse_wave_age_u10_cp} we are able to rewrite the inverse wave 
 age in terms of dimensionless peak frequency:
-\begin{equation}
+\begin{equation*}
  \Omega = \frac{U_{10}}{c_p} = \frac{U_{10}}{\frac{g}{\omega_p}} = 2\pi\nu
-\end{equation}
-Hence, the Pierson Moskowitz spectrum has a constant inverse wave age, $\Omega
+\end{equation*}
+The Pierson Moskowitz spectrum has a constant inverse wave age, $\Omega
 \approx 0.82$, which represents the lower limit of $\Omega$, reached only by a 
 fully developed sea. The upper limit of the inverse wave age for a spectrum 
-which simulates fetch based wave growth, usually is set at $\Omega = 4$ or 
+which simulates fetch based wave growth usually is set at $\Omega = 4$ or 
 $\Omega = 5$. Since the lower limit of the inverse wave age is actually less 
 than one, we conclude that at full development the phase speed of the waves may 
-actually exceed the speed of the generating wind. The general consensus in 
-oceanographic research is that non-linear interactions are able to transfer 
-energy to such waves, making it possible for this limit to growth being such 
-that $\Omega < 1$.
+actually exceed the speed of the generating wind.
+%The general consensus in 
+%oceanographic research is that non-linear interactions are able to transfer 
+%energy to such waves, making it possible for this limit to growth being such 
+%that $\Omega < 1$.
 %
 \subsection{JONSWAP Spectrum}
 \label{sec:jonswap}
