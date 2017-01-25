@@ -588,10 +588,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="132.08946"
-     inkscape:cy="291.93264"
+     inkscape:cx="35.367354"
+     inkscape:cy="150.51128"
      inkscape:document-units="px"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:window-width="1920"
      inkscape:window-height="1138"
@@ -624,7 +624,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -636,7 +636,7 @@
      style="display:inline">
     <path
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
-       d="m 100,32.362183 c 0,120.184807 0,213.166377 0,319.999997"
+       d="m 100,32.362183 c 0,120.184807 0,173.166377 0,279.999997"
        id="path6327-3-5-3"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
@@ -683,7 +683,7 @@
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 380,32.362183 c 0,120.184807 0,213.166377 0,319.999997"
+       d="m 380,32.362183 c 0,120.184807 0,173.166377 0,279.999997"
        id="path6327-3-5"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
@@ -724,17 +724,17 @@
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccccccc" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#EmptyDiamondL);marker-mid:url(#EmptyDiamondL);marker-end:none"
-       d="m 100,32.362183 40,0 40,0 40,0 40,0 40,0 40,0 40,0 40,0"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#EmptyDiamondL);marker-mid:url(#EmptyDiamondL);marker-end:url(#marker6391)"
+       d="m 100,32.362183 40,0 40,0 40,0 40,0 40,0 40,0 40,0"
        id="path4389-4"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccccccc" />
+       sodipodi:nodetypes="cccccccc" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker-start:url(#EmptyDiamondL);marker-mid:url(#EmptyDiamondL);marker-end:none"
-       d="m 100,312.36218 40,0 40,0 40,0 40,0 40,0 40,0 40,0 40,0"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker-start:url(#EmptyDiamondL);marker-mid:url(#EmptyDiamondL);marker-end:url(#marker6391)"
+       d="m 100,312.36218 40,0 40,0 40,0 40,0 40,0 40,0 40,0"
        id="path4389-5-1-7"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccccccc" />
+       sodipodi:nodetypes="cccccccc" />
   </g>
   <g
      inkscape:groupmode="layer"
