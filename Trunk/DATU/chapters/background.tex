@@ -726,18 +726,18 @@ distance between consecutive grid points as follows:
  \Delta x = \frac{L}{N} && \Delta y = \frac{K}{M}
 \end{align*}
 We compute surface elevation at the following points:
-\begin{equation*}
+\begin{equation}
 \label{eq:spatial_domain}
  \mvec{x} = (x,y)~\in~\{(\alpha\Delta x,\beta\Delta y)|
 -\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}<\beta\leq\frac{M}{2}\}
-\end{equation*}
+\end{equation}
 where $\alpha$ and $\beta$ are integers. At first glance the choice of interval
 for positions~$\mvec{x}$ may seem arbitrary, but it will allow us to make a
 direct connection to the \wavevector domain later on.
 To simplify matters we will handle a square area instead of a rectangular one,
 thus:
 \begin{align*}
-\label{eq:square_area}
+%\label{eq:square_area}
  N = M && L = K &&\Rightarrow \Delta x = \Delta y
 \end{align*}
 %
@@ -745,14 +745,15 @@ Based on the~\emph{Nyquist-Shannon sampling
 theorem} \citep{book:bracewell2000fourier} we are able to compute the minimum and
 maximum \wavelengths which are reconstructible without loss of information.
 We may write said minimum and maximum \wavelengths as follows:
-\begin{align}
+\begin{align*}
  \lambda_{min} = 2\Delta x && \lambda_{max} = \sqrt{2}~\Delta x~\frac{N}{2}
-\end{align}
+\end{align*}
 %
 %
 \begin{figure}
 \centering
 \begin{tikzpicture}
+%\tikzset{external/force remake}
 % let both axes use the same layers
 \pgfplotsset{set layers}
 \begin{axis}[
@@ -801,8 +802,8 @@ We may write said minimum and maximum \wavelengths as follows:
     ]
 \end{axis}
 \end{tikzpicture}
-\caption{The spatial domain in terms of index pairs $(\alpha,\beta)$ and
-associated coordinate pairs $(\alpha\Delta x,\beta\Delta y)$.}
+\caption{The spatial domain in terms of index pairs
+$(\alpha,\beta)$ and associated coordinate pairs $(\alpha\Delta x,\beta\Delta y)$.}
 \label{fig:spatial_domain}
 \end{figure}
 %
@@ -813,6 +814,7 @@ as well as minimum and maximum \wavelengths.
 
 \begin{figure}
 \centering
+%\tikzset{external/force remake}
 \begin{tikzpicture}
 % let both axes use the same layers
 \pgfplotsset{set layers}
@@ -871,16 +873,17 @@ associated coordinate pairs $(\alpha\Delta k_x,\beta\Delta k_y)$.}
 With $\lambda_{min}$ and $\lambda_{max}$ at hand we may compute the
 corresponding \wavenumbers:
 \begin{align}
+\label{eq:kmin_kmax}
  k_{min} = \frac{2\pi}{\lambda_{min}} && k_{max} = \frac{2\pi}{\lambda_{max}}
 \end{align}
 %
 Analogous to the spatial domain, we have to define the horizontal and vertical 
 distance between consecutive grid points for the \wavevector domain. We denote 
 said distances as follows:
-\begin{align}
+\begin{align*}
 \label{eq:delta_kx_delta_ky}
  \Delta k_x = \Delta k_y = \frac{2\pi}{L} = \frac{2\pi}{K}
-\end{align}
+\end{align*}
 %
 Given $\Delta k_x$ and $\Delta k_y$, we will define \wavevectors $\mvec{k}$ in 
 the same fashion as Equation~\ref{eq:spatial_domain} defines spatial positions 
@@ -890,37 +893,39 @@ $\mvec{x}$:
  \mvec{k} = (k_x,k_y)~\in~\{(\alpha\Delta k_x,\beta\Delta k_y)|
 -\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}<\beta\leq\frac{M}{2}\}
 \end{equation}
+where $\alpha$ and $\beta$ are integers.
 %
-As one may see in Figure~\ref{fig:wave_vector_domain}, the \wavevector domain 
-is centered. \Wavenumber $k = 0$ is at the center, and $|k|$ grows while we 
-move outwards, towards the domain border. We know that the relation between wave 
-length and \wavenumber is an inverse one, while $|k|$ increases, wave length 
-decreases. Therefore we find the larger wave lengths near the domain center, 
-and the smaller ones near the domain border. We may ignore the center element 
-with \wavenumber $k = 0$, which maps to wave length $\lambda = \infty$, because 
-$\Theta(\mvec{k})$ is always equal zero for \wavevector $\mvec{k} = (0, 0)$.
-
-From Figure~\ref{fig:wave_vector_domain} it is easy to see that  
-Equation~\ref{eq:wave_vector_domain} includes \wavevectors which are exact 
-representatives for \wavenumber $k_{min}$ and $k_{max}$. We may rewrite
-\wavenumber $k_{max}$ in terms of Equation~\ref{eq:wave_vector_domain} as follows:
-\begin{equation}
- k_{max} = \sqrt{2}\frac{2\pi}{L} = \sqrt{2}\frac{2\pi}{K}
-\end{equation}
+%As one may see in Figure~\ref{fig:wave_vector_domain}, the \wavevector domain 
+%is centered. \Wavenumber $k = 0$ is at the center, and $|k|$ grows while we 
+%move outwards, towards the domain border.
+We know that the relation between \wavelength and \wavenumber is an inverse one,
+while $\norm{\mvec{k}}$ increases, \wavelength $\lambda$ decreases. Therefore we find the larger
+\wavelengths near the domain center, and the smaller ones near the domain border.
+%We may ignore the center element 
+%with \wavenumber $k = 0$, which maps to wave length $\lambda = \infty$, because 
+%$\Theta(\mvec{k})$ is always equal zero for \wavevector $\mvec{k} = (0, 0)$.
+Figure~\ref{fig:wave_vector_domain} shows the \wavevector domain as defined
+by Equation~\ref{eq:wave_vector_domain}, including \wavevectors which are exact
+representatives for \wavenumbers $k_{min}$ and $k_{max}$. As expected, $k_{min}$
+is found at the domain border, and $k_{max}$ near the domain center.
+We may rewrite \wavenumbers $k_{min}$ and $k_{max}$ from
+Equation~\ref{eq:kmin_kmax} to the following:
+\begin{align*}
+ k_{max} &= \sqrt{2}\Delta k_x = \sqrt{2}\Delta k_y = \sqrt{2}\frac{2\pi}{L} = \sqrt{2}\frac{2\pi}{K} \\
+ k_{min} &= \frac{\pi N}{L} = \frac{\pi M}{K}
+\end{align*}
 Hence, by choosing surface dimensions $L$ and $K$ we implicitely determine the 
-maximum wave length we are able to include in our computation. Next, we rewrite 
-$k_{min}$ to the following:
-\begin{equation}
- k_{min} = \frac{\pi N}{L} = \frac{\pi M}{K}
-\end{equation}
-With surface dimensions $L$ and $K$ already fixed, we choose the number of 
-samples $N$ and $M$, knowing that they will define the smallest wave length 
-representable by \wavevectors $\mvec{k}$. Later on we will see that the 
+maximum \wavelength we are able to include in our computation.
+With surface dimensions $L$ and $K$ fixed, we choose the number of 
+samples $N$ and $M$, knowing that they will define the smallest \wavelength 
+representable by \wavevectors $\mvec{k}$.
+
+Later on we will see that the 
 distribution of wave energy among \wavevectors is highly dependent on the 
-actual model employed as well as the input parameters to those models. Wave 
-energy may be focused in a very narrow range of \wavevectors, or be wide spread 
+actual wave spectrum, as well as on the input parameters to the wave spectrum.
+Wave energy may be focused in a very narrow range of \wavevectors, or be wide spread 
 among a large portion of the entire \wavevector spectrum. As a consequence, 
-sometimes it is necessary to choose more than one set of \wavevectors 
+sometimes it is necessary to choose multiple sets of \wavevectors 
 $\mvec{k}$ which complement one another, and to combine the results in order 
 to get satisfactory results.
 %
