@@ -880,10 +880,10 @@ corresponding \wavenumbers:
 Analogous to the spatial domain, we have to define the horizontal and vertical 
 distance between consecutive grid points for the \wavevector domain. We denote 
 said distances as follows:
-\begin{align*}
+\begin{align}
 \label{eq:delta_kx_delta_ky}
  \Delta k_x = \Delta k_y = \frac{2\pi}{L} = \frac{2\pi}{K}
-\end{align*}
+\end{align}
 %
 Given $\Delta k_x$ and $\Delta k_y$, we will define \wavevectors $\mvec{k}$ in 
 the same fashion as Equation~\ref{eq:spatial_domain} defines spatial positions 
@@ -985,39 +985,39 @@ Now we may write our approximation of wave energy as a simple sum:
 Recall that wave energy is defined as the mean square of the wave amplitude, so,
 given wave energy $\Theta(\mvec{k})$ we may compute wave amplitude 
 $B(\mvec{k})$ as follows:
-\begin{equation}
+\begin{equation*}
  B(\mvec{k})^2 = 2\Theta(\mvec{k})
-\end{equation}
+\end{equation*}
 We may convert to a discrete formulation based on 
 Equation~\ref{eq:variance_discrete}:
-\begin{equation}
+\begin{equation*}
  B(\mvec{k}_{\alpha,\beta})^2 = 2\Theta(\mvec{k}_{\alpha,\beta})\Delta k_x 
 \Delta k_y
-\end{equation}
+\end{equation*}
 As described in Section~\ref{sec:random_process}, in order to generate random 
 wave amplitudes, we employ a Gauss distribution with mean $\mathrm{E}[\eta] 
 = 0$ and variance $\mathrm{Var}[\eta]$ defined by the energy spectrum
 $\Theta(\mvec{k})$. Since all Gaussian distributions may be written based on 
 the standard normal distribution, we are able to write surface elevation as 
 follows:
-\begin{equation}
+\begin{equation*}
  \eta(\mvec{x}, t) = 
 \sum_{\alpha}\sum_{\beta}\frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)\sqrt{B(\mvec{
 k}_{\alpha,\beta})^2}~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}_{\alpha,\beta}) 
 t}~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}_{\alpha,\beta}}\mvec{x}}
-\end{equation}
+\end{equation*}
 where $\xi_r$ and $\xi_i$ are Gauss distributed random variables with mean zero 
 and standard deviation one. We will drop indices $\alpha$ and $\beta$ and give 
 a formulation in terms of wave enery $\Theta(\mvec{k})$ and our finite set of 
 \wavevectors $\mvec{k}$:
-\begin{equation}
+\begin{equation*}
 \label{eq:surface_elevation_discrete}
  \eta(\mvec{x}, t) = 
 \sum_{\mvec{k}}\frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)
 \sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_y} 
 ~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
 ~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
-\end{equation}
+\end{equation*}
 %
 We have found a discrete approximation of surface elevation which is fast to 
 compute and is able to give satisfactory results as long as we choose one or 
