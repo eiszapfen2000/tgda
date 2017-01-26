@@ -1743,18 +1743,17 @@ in order to explicitely show the parameters it takes as input.
 As a first step we may transform the one dimensional frequency spectrum 
 $\Theta_{\omega}(\omega)$ to the one dimensional \wavenumber 
 spectrum $\Theta_k(k)$ as follows:
-\begin{subequations}
-\begin{multline}
+\begin{equation*}
  \int\Theta_k(k)~\mathrm{d}k = \int\Theta_{\omega}(\omega)~\mathrm{d}\omega\\ = 
 \int\Theta_{\omega}(\omega(k))\frac{\mathrm{d}\omega}{\mathrm{d}k}~\mathrm{d}k
 = \int\Theta_{\omega}(\sqrt{gk})\frac{1}{2}\sqrt{\frac{g}{k}}~\mathrm{d}k
-\end{multline}
+\end{equation*}
 which gives us
 \begin{equation}
 \label{eq:theta_k}
  \Theta_k(k) = \Theta_{\omega}(\sqrt{gk})\frac{1}{2}\sqrt{\frac{g}{k}}
 \end{equation}
-\end{subequations}
+
 %
 % \begin{figure}
 % \centering
@@ -1933,10 +1932,9 @@ By combining Equations~\ref{eq:directional_frequency_spectrum},
 \wavenumber spectrum:
 %
 \begin{align}
-\Theta_{\mvec{k}}(\mvec{k}) &= \Theta_{\omega,\theta}(\sqrt{gk}, 
-\theta)\frac{1}{2k}\sqrt{\frac{g}{k}}\\
-\intertext{where}
-\theta &= \arctan\left(\frac{k_y}{k_x}\right)
+\Theta_{\mvec{k}}(\mvec{k}) = \Theta_{\omega,\theta}(\sqrt{gk}, 
+\theta)\frac{1}{2k}\sqrt{\frac{g}{k}} &&
+\theta = \arctan\left(\frac{k_y}{k_x}\right)
 \end{align}
 %
 An instance of a directional frequency spectrum as well as its equivalent
