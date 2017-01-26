@@ -2361,40 +2361,48 @@ article:Hara1994}. We may write the Unified spectrum as follows:
 where $\theta_p$ is the direction of travel of the waves at the spectral peak. 
 Since the Unified spectrum is given in terms of \wavenumber, we are in need of a 
 \wavenumber based formulation of its foundation, namely the Pierson Moskowitz 
-spectrum, $L_{PM}$, as well as the peak enhancement factor introduced by 
-\citeauthor{article:Hasselman1973}, $J_p$. We may write:
+spectrum \citep{article:PiersonMoskowitz1964}, as well as the peak enhancement
+factor introduced by \citet{article:Hasselman1973}.
+\citeauthor{article:Elfouhaily1997} give the \wavenumber formulation of the
+Pierson Moskowitz spectrum as follows:
 %
-\begin{subequations}
+\begin{equation}
+ L_{PM}(k) = \exp\left[-\frac{5}{4} \left(\frac{k_p}{k}\right)^2 \right]
+\end{equation}
+where $k_p$ denotes the \wavenumber the spectrum has its peak at.
+According to \citeauthor{article:Elfouhaily1997} it is defined as:
 \begin{align}
-L_{PM}(k) &= \exp\left[-\frac{5}{4} \left(\frac{k_p}{k}\right)^2 \right] \\
-\intertext{with}
-k_p &= g\frac{\Omega_c^2}{U_{10}^2} \\
-\Omega_c &= 0.84 \tanh\left[\left(\frac{\chi}{\chi_0}\right)^{0.4}\right]^{-0.75} \\
-\chi &= \frac{gF}{U_{10}^{2}} \\
-\chi_0 &= 2.2 \times 10^4
+\label{eq:unified:k_p} k_p &= g\frac{\Omega_c^2}{U_{10}^2}
 \end{align}
-\end{subequations}
-%
-where $F$ denotes the fetch in meters, $U_{10}$ denotes the wind speed in 
-meters per second at a height of ten meters above the sea surface, and $\chi$ 
-is the dimensionless fetch.
+where $U_{10}$ represents the wind speed in meters per second at a height of ten
+meters above the sea surface, and $\Omega_c$ denotes the inverse wave age based
+on the component of the wind in the direction of the peak waves.
+The latter term is given by \citeauthor{article:Elfouhaily1997} as follows:
+\begin{align}
+\label{eq:unified:omega_c} \Omega_c = 0.84 \tanh\left[\left(\frac{\chi}{\chi_0}\right)^{0.4}\right]^{-0.75} && \chi_0 = 2.2 \times 10^4
+\end{align}
+where $\chi$ is the dimensionless fetch. For simplicity's sake we will replicate
+the definition of dimensionless fetch $\chi$ from before:
+\begin{align*}
+ \chi &= \frac{gF}{U_{10}^{2}}
+\end{align*}
+with $F$ representing the dimensional fetch in meters.
 %In lockstep with the JONSWAP spectrum, $\gamma^r$ is 
 %called the peak enhancement factor and $\sigma$ represents the peak width 
 %parameter.
-Moreover, $\Omega_c$ denotes the inverse wave age based on the 
-component of the wind in the direction of the peak waves,
-and is restricted to 
-the range $\Omega_c \in \interval[open right]{0.84}{5}$. As one may see, 
-$\Omega_c$ is guaranteed an asymptotic value of $0.84$ for large fetch e.g. 
-fully developed seas. Hence, the Unified spectrum is not prone to 
-overdevelopment with increasining fetch, which is a notable improvement 
-compared to the spectral models of \citeauthor{article:Hasselman1973}
-and \citeauthor{article:Donelan1985}, see Figure~\ref{fig:unified_spectra}.
-Based on the terms above, we may write the peak ehancement factor as follows:
-\begin{subequations}
+According to \citeauthor{article:Elfouhaily1997}, the inverse wave age
+should be restricted to the range $\Omega_c \in \interval[open right]{0.84}{5}$.
+From Equation~\ref{eq:unified:omega_c} one may see that $\Omega_c$ is guaranteed
+an asymptotic value of $0.84$ for large fetch e.g. fully developed seas.
+It follows that the Unified spectrum is not prone to overdevelopment with
+increasining fetch, which is a notable improvement 
+compared to the spectral models of \citet{article:Hasselman1973}
+and \citet{article:Donelan1985} (Figure~\ref{fig:unified_spectra}).
+
+\citeauthor{article:Elfouhaily1997} give the \wavenumber formulation of the
+peak ehancement factor ${J_p=\gamma^{\Gamma}}$ with the help of
+Equations~\ref{eq:unified:k_p} and \ref{eq:unified:omega_c} as follows:
 \begin{align}
-J_p &= \gamma^{\Gamma} \\
-\intertext{with}
 \gamma &= \begin{cases}
 	1.7 & 0.84 \leq \Omega_c < 1 \\
 	1.7 + 6.0\lg(\Omega_c) & 1\leq\Omega_c < 5
@@ -2402,7 +2410,6 @@ J_p &= \gamma^{\Gamma} \\
 \Gamma &= \exp\left[-\frac{\left(\sqrt{\frac{k}{k_p}}-1\right)^2}{2\sigma^2}\right] \\
 \sigma &= 0.08\left(1 + \frac{4}{\Omega_c^3}\right)
 \end{align}
-\end{subequations}
 %
 \begin{figure}
 \centering
