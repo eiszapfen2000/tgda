@@ -1985,11 +1985,18 @@ the waves at the spectral peak. The directional spreading on the other hand is
 related only to $\omega/\omega_p$. We may write the directional Donelan 
 frequency spectrum as follows:
 \begin{equation}
+\label{eq:donelan:dfreqspectrum}
  \Theta(\omega, \theta) = \frac{1}{2}\Theta(\omega)\beta\sech^2
 \{\beta[\theta - \theta_p]\}
 \end{equation}
 where $\theta_p$ represents the direction of travel of the waves at the 
-spectral peak, and $\sech$ is the \emph{hyperbolic secant function}.
+spectral peak. From Equation~\ref{eq:donelan:dfreqspectrum} one may see that the
+directional spread is the following:
+\begin{equation}
+\label{eq:donelan:dspread}
+  D(\omega, \theta) = \frac{1}{2}\beta\sech^2\{\beta[\theta - \theta_p]\}
+\end{equation}
+where $\sech$ is the \emph{hyperbolic secant function}.
 The width of the directional spread is determined by the
 parameter $\beta$, which is defined as:
 \begin{align}
@@ -2000,12 +2007,12 @@ parameter $\beta$, which is defined as:
 	1.24 & \text{otherwise}
     \end{cases}
 \end{align}
-Given wind input $U_c$, and the inverse wave age $\Omega_c$ based on
-the component of the wind in the direction of the peak waves, then we may
+Given wind input $U_c$, and the inverse wave age based on the component of the
+wind in the direction of the peak waves, $\Omega_c$, then we may
 write peak angular frequency $\omega_p$ as:
-\begin{equation*}
+\begin{equation}
  \omega_{p} = \frac{g\Omega_c}{U_{c}}
-\end{equation*}
+\end{equation}
 \citeauthor{article:Donelan1985} defines inverse wave age $\Omega_c$ based on
 dimensionless fetch $\chi$ as follows:
 \begin{align}
@@ -2015,7 +2022,7 @@ dimensionless fetch $\chi$ as follows:
 where the inverse wave age is restricted to
 the interval ${\Omega_c\in\interval[open left, open right]{0.83}{5}}$,
 and $F$ denotes the fetch in meters.
-The directional spreading function as introduced by \citeauthor{article:Donelan1985}
+The Donelan directional spreading function from Equation~\ref{eq:donelan:dspread}
 does not only differ in form from the one proposed by
 \citet{article:Mitsuyasu1975} and \citet{article:Hasselmann1980},
 but also in sensitivity, or rather insensitivity, to wind speed, see
@@ -2024,8 +2031,6 @@ formulation in Equation~\ref{eq:donelan:beta} employs the ratio
 $\omega/\omega_p$ whereas
 \citeauthor{article:Mitsuyasu1975} and \citeauthor{article:Hasselmann1980}
 use comparisons with absolute values.
-
-
 
 With the directional spread covered, we move on to the one dimensional frequency
 spectrum as described by \cite{article:Donelan1985}. We may write:
@@ -2333,14 +2338,14 @@ other hand models the~\emph{entire} \wavenumber range, including the
 Because the short-wave regime extends into the gravity-capillary wave domain,
 we need a dispersion relation which extends into said domain too.
 We may write:
-\begin{align}
-\omega^2 &= gk\left[1 + \left(\frac{k}{k_m}\right)^2\right] &
-k_m &= \sqrt{\frac{p_w g}{T}} = 370~\text{rad}\cdot\text{m}^{-1}
-\end{align}
+\begin{align*}
+\omega^2 = gk\left[1 + \left(\frac{k}{k_m}\right)^2\right] &&
+k_m = \sqrt{\frac{p_w g}{T}} = 370~\text{rad}\cdot\text{m}^{-1}
+\end{align*}
 where $k_m$ is the \wavenumber where gravity-capillary waves on an air-water
 interface have their minimum phase velocity at. The constants $p_w$, $g$ and
-$T$ are water density, acceleration due to gravity, and water surface tension,
-respectively.
+$T$ are water density, acceleration due to earth's gravity, and water surface
+tension, respectively.
 
 The combined works of \citet{article:Hasselman1973}, \citet{article:Mitsuyasu1975}
 and \citet{article:Donelan1985} serve as foundation for the Unified spectrum. 
@@ -2578,7 +2583,7 @@ c_m &= 0.23
 \end{align*}
 
 We may compute the friction velocity
-$u^{\ast}$ through application of the \emph{law of the wall}~\cite{article:vonKarman1931}:
+$u^{\ast}$ through application of the \emph{law of the wall}~\citep{article:vonKarman1931}:
 %
 \begin{subequations}
 \begin{align}
