@@ -1630,24 +1630,22 @@ the opposite direction of the wind. We may call the product of a normal one
 dimensional frequency spectrum and a directional spreading function
 a~\emph{directional frequency spectrum}. We may write a directional frequency
 spectrum as follows:
-\begin{subequations}
+\begin{equation*}
 %\label{eq:directional_frequency_spectrum}
+ \Theta(\omega, \theta) = \Theta(\omega)D(\omega,\theta)
+\end{equation*}
+with
 \begin{align}
-\label{eq:directional_frequency_spectrum}
- \Theta(\omega, \theta) &= \Theta(\omega)D(\omega,\theta) \\
-\intertext{with}
 \label{eq:int_directional_filter}
-\int_{\theta=-\pi}^{\pi}D(\omega,\theta)~\mathrm{d}\theta &= 1 \\
-D(\omega,\theta) &\geq 0
+ \int_{\theta=-\pi}^{\pi}D(\omega,\theta)~\mathrm{d}\theta = 1 && D(\omega,\theta) \geq 0
 \end{align}
-\end{subequations}
 where $\theta$ is the direction of the wave.
 Equation~\ref{eq:int_directional_filter} makes sure the amount of energy per
-frequency does not change. Therefore we are able to write
-\begin{equation}
+frequency does not change. Therefore the following relation holds:
+\begin{equation*}
  \Theta(\omega) = \int_{\theta=-\pi}^{\pi}\Theta(\omega,
 \theta)~\mathrm{d}\theta
-\end{equation}
+\end{equation*}
 % \subsection{Directional Spreading Function}
 % \label{sec:directional_spreading_function}
 %
@@ -1705,24 +1703,24 @@ functions to choose from. We picked a~\emph{Cosine-2s} variant based on the
 work of \citet{article:Mitsuyasu1975} and 
 \citet{article:Hasselmann1980}. Expressed in terms of angular frequency 
 $\omega$ it is as follows:
-\begin{subequations}
+\begin{equation}
 \label{eq:directional_spread_mitsuyasu}
-\begin{align}
- D(\omega, \theta) &=
+ D(\omega, \theta) =
 \frac{2^{2s-1}}{\pi}~\frac{\Gamma^2(s+1)}{\Gamma(2s+1)}
 ~\left|\cos\left(\frac{\theta-\theta_{p}}{2}\right)\right|^{2s}
-\intertext{with}
+\end{equation}
+with
+\begin{align*}
 \frac{s}{s_p} &= \begin{cases}
 (\frac{\omega}{\omega_p})^{-2.5} & \omega \geq \omega_p\\
 (\frac{\omega}{\omega_p})^{5} & \omega < \omega_p\\
 \end{cases}
-\intertext{where, according to \citeauthor{article:Hasselmann1980}}
+\intertext{where, according to \cite{article:Hasselmann1980}}
 s_p &= \begin{cases}
 9.77 & \omega \geq \omega_p\\
 6.97 & \omega < \omega_p\\
 \end{cases}
-\end{align}
-\end{subequations}
+\end{align*}
 $\Gamma$ is the \emph{gamma function}, $s$ is called the~\emph{spreading 
 factor}, $\omega_p$ represents the angular frequency the frequency spectrum has 
 its peak at and $\theta_p$ is the direction of the waves at said peak. It is 
