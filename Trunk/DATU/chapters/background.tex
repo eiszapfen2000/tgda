@@ -2366,14 +2366,15 @@ factor introduced by \citet{article:Hasselman1973}.
 \citeauthor{article:Elfouhaily1997} give the \wavenumber formulation of the
 Pierson Moskowitz spectrum as follows:
 %
-\begin{equation}
+\begin{equation*}
  L_{PM}(k) = \exp\left[-\frac{5}{4} \left(\frac{k_p}{k}\right)^2 \right]
-\end{equation}
+\end{equation*}
 where $k_p$ denotes the \wavenumber the spectrum has its peak at.
 According to \citeauthor{article:Elfouhaily1997} it is defined as:
-\begin{align}
-\label{eq:unified:k_p} k_p &= g\frac{\Omega_c^2}{U_{10}^2}
-\end{align}
+\begin{align*}
+%\label{eq:unified:k_p}
+k_p &= g\frac{\Omega_c^2}{U_{10}^2}
+\end{align*}
 where $U_{10}$ represents the wind speed in meters per second at a height of ten
 meters above the sea surface, and $\Omega_c$ denotes the inverse wave age based
 on the component of the wind in the direction of the peak waves.
@@ -2400,16 +2401,21 @@ compared to the spectral models of \citet{article:Hasselman1973}
 and \citet{article:Donelan1985} (Figure~\ref{fig:unified_spectra}).
 
 \citeauthor{article:Elfouhaily1997} give the \wavenumber formulation of the
-peak ehancement factor ${J_p=\gamma^{\Gamma}}$ with the help of
-Equations~\ref{eq:unified:k_p} and \ref{eq:unified:omega_c} as follows:
-\begin{align}
+peak enhancement factor as follows:
+\begin{equation*}
+J_p = \gamma^{\Gamma}
+\end{equation*}
+where base $\gamma$ depends only on inverse wave age $\Omega_c$, and exponent
+$\Gamma$ requires peak \wavenumber $k_p$ and the peak width parameter $\sigma$.
+We may write:
+\begin{align*}
 \gamma &= \begin{cases}
 	1.7 & 0.84 \leq \Omega_c < 1 \\
 	1.7 + 6.0\lg(\Omega_c) & 1\leq\Omega_c < 5
 	\end{cases} \\
 \Gamma &= \exp\left[-\frac{\left(\sqrt{\frac{k}{k_p}}-1\right)^2}{2\sigma^2}\right] \\
 \sigma &= 0.08\left(1 + \frac{4}{\Omega_c^3}\right)
-\end{align}
+\end{align*}
 %
 \begin{figure}
 \centering
@@ -2535,7 +2541,7 @@ the Unified spectrum is not prone to overdevelopment given large fetch values.
 \end{figure}
 %
 With the basic terms at hand, we are able to move on to the one dimensional 
-\wavenumber spectrum as given by Elfouhaily et al.:
+\wavenumber spectrum as given by \citet{article:Elfouhaily1997}:
 %
 % \begin{subequations}
 \begin{equation}
@@ -2557,7 +2563,7 @@ With the basic terms at hand, we are able to move on to the one dimensional
 % \end{align}
 % \end{subequations}
 %
-where $B_l$ represents the low frequency regime and $B_h$ the high frequency
+where $B_l$ represents the low frequency regime, and $B_h$ the high frequency
 regime respectively.
 The long wave regime input $B_l$ depends on the
 equilibrium range parameter for long waves, $\alpha_p$, the wave phase speed
@@ -2576,8 +2582,8 @@ on the other hand, depends on the equilibrium range parameter for short waves,
 $\alpha_m$, the friction velocity at the water surface, $u^{\ast}$, the wave
 phase speed $c$, the minimum phase speed $c_m$ at the \wavenumber $k_m$, and
 the \emph{short wave side effect function} $F_m$. The term $F_m$ accounts for
-the bandwidth of gravity-capillary waves as well as for the~\emph{viscous cutoff},
-beyond which there is no wave energy. 
+the bandwidth of gravity-capillary waves as well as for smooth cutoff of energy
+beyond the gravity-capillary frequency band.
 \begin{align*}
  B_h &= \frac{1}{2}\alpha_m\frac{c_m}{c}F_m \\
  \alpha_m &= 10^{-2}\begin{cases}
@@ -3007,10 +3013,10 @@ s^{-1}$ step ($F=500km$). Left: One dimensional \wavenumber spectra $\Theta(k)$.
 The spectra match in the long-wave regime up to the spectral peak, and diverge
 afterwards. The Unified spectrum does not give energy beyond the
 gravity-capillary wave band.
-Right: One dimensional curvature spectra $C(k)$. The difference in shape of the
-spectra is even more pronounced beyond the spectral peak. The Unified spectrum
-properly models the secondary gravity-capillary peak at
-$k_m = 370~rad\cdot m^{-1}$.
+Right: One dimensional curvature spectra $C(k) = k^3\Theta(k)$. The difference
+in shape of the spectra is even more pronounced beyond the primary spectral
+peak. The Unified spectrum properly models the secondary gravity-capillary peak
+at $k_m = 370~rad\cdot m^{-1}$.
 %The Unified spectra's peak to 
 %the right is at $k_m = 370rad\cdot m^{-1}$.
 }
