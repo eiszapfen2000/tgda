@@ -2355,6 +2355,7 @@ article:Phillips1985} and observations \citep{article:CoxMunk1954,article:Jaehne
 article:Hara1994}. We may write the Unified spectrum as follows:
 %
 \begin{equation}
+\label{eq:unified:theta}
  \Theta(k, \theta) = \frac{1}{2\pi}\Theta(k)\{1 + \Delta(k) + \cos[2(\theta - \theta_p)]\}
 \end{equation}
 %
@@ -2612,20 +2613,21 @@ where $u^{\ast}$ denotes the friction velocity at the water surface.
 We compute friction velocity through application of the
 \emph{law of the wall}~\citep{article:vonKarman1931}:
 %
-\begin{align}
+\begin{align*}
 u^{\ast} = \kappa~U_{10} \left[\ln\left(\frac{10}{z_0}\right)\right]^{-1} && \kappa = 0.41
-\end{align}
-where $\kappa$ is the \emph{von K\'arm\'an constant} ~\citep{article:vonKarman1931},
+\end{align*}
+where $\kappa$ is the \emph{von K\'arm\'an constant}~\citep{article:vonKarman1931},
 and $z_0$ is called the \emph{roughness parameter}.
 \citeauthor{article:Elfouhaily1997} employ \citet{article:Donelan1993} to model
-the roughness parameter:
-\begin{align}
+the roughness parameter as follows:
+\begin{align*}
 z_0 &= 3.7 \times 10^{-5}~\frac{U_{10}^2}{g}
 \left(\frac{U_{10}}{c_p}\right)^{0.9} \label{eq:z_0}
-\end{align}
+\end{align*}
 %
-\citeauthor{article:Elfouhaily1997} point out that both wave regimes are
-modeled based on the air-sea interaction process of friction between wind and
+\citeauthor{article:Elfouhaily1997} point out that both, the low frequency
+and the high frequency wave regime, are modeled based on the air-sea
+interaction process of friction between wind and
 waves, $u/c$, i.e. the \emph{generalized wave age}.
 %
 %
