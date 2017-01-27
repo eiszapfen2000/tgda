@@ -3101,29 +3101,33 @@ to the upper right.}
 \label{fig:unified_directional_filter}
 \end{figure}
 %
-The Unified spectrum's directional spread is given as follows:
+As one may see from Equation~\ref{eq:unified:theta}, the Unified spectrum's
+directional spread is given as follows:
 %
-\begin{subequations}
 \begin{align}
 D(k, \theta) &= \frac{1}{2\pi}\{1 + \Delta(k) + \cos[2(\theta - 
-\theta_p)]\} \\
-\Delta(k) &= \tanh\left[a_0 + a_p\left(\frac{c}{c_p}\right)^{2.5} + 
-a_m\left(\frac{c_m}{c}\right)^{2.5}\right] \\
-a_0 &= \frac{\log(2)}{4} \\
-a_p &= 4 \\
-a_m &= 0.13 \frac{u^{\ast}}{c_m}
+\theta_p)]\}
 \end{align}
-\end{subequations}
-where $\theta_p$ is the direction of travel of the waves at the spectral peak,
-$c$ is the phase speed, $c_p$ is the phase speed at the spectral peak, $c_m$
-is the minimum phase speed at $k_m$, $a_0$ and $a_p$ are constants, whereas $a_m$
-is a function for high-frequency waves dependent upon the friction velocity
-$u^\ast$ and $c_m$. Figure\ref{fig:unified_directional_filter} depicts example
+where $\theta_p$ is the direction of travel of the waves at the spectral peak.
+The remaining terms are:
+\begin{align*}
+\Delta(k) = \tanh\left[a_0 + a_p\left(\frac{c}{c_p}\right)^{2.5} + 
+a_m\left(\frac{c_m}{c}\right)^{2.5}\right]
+\end{align*}
+with
+\begin{align*}
+a_m = 0.13 \frac{u^{\ast}}{c_m} && a_0 = \frac{\log(2)}{4} && a_p = 4
+\end{align*}
+$c$ is the phase speed, $c_p$ is the phase speed at the spectral peak, and $c_m$
+is the minimum phase speed at $k_m$. Moreover, $a_0$ and $a_p$ are constants,
+whereas $a_m$ is a function for high-frequency waves dependent upon the friction
+velocity $u^\ast$ and minimum phase speed $c_m$.
+Figure\ref{fig:unified_directional_filter} depicts example
 instances of the Unified spectrum's directional spread. One can see that the
 directional spread is~\emph{centrosymmetrical}, in short
 $D(k, \theta) = D(k, \theta \pm \pi)$. As a consequence the two dimensional
-spectrum is centrosymmetrical, too. Therefore, the Unified spectrum satisfies
-the following conditions:
+\wavenumber spectrum is centrosymmetrical, too. Therefore, the Unified spectrum
+satisfies the following conditions:
 \begin{align*}
 \Theta(k, \theta) &= \Theta(k, \theta \pm \pi) & \Theta(\mvec{k}) &= \Theta(-\mvec{k})
 \end{align*}
