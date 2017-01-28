@@ -3136,20 +3136,36 @@ satisfies the following conditions:
 %
 The Phillips Spectrum, as introduced by \cite{course:simulatingocean},
 is an ad-hoc formulation of a two dimensional \wavenumber spectrum $\Theta(\mvec{k})$.
-It has been developed with computer graphic purposes in mind, and as such it lacks
-a solid oceanographic foundation. We may write \citeauthor{course:simulatingocean}'s
+It has been developed with computer graphic purposes in mind and is loosely
+based on \citet{article:Phillips1958,article:Phillips1985}.
+We may write \citeauthor{course:simulatingocean}'s
 formulation of the Phillips Spectrum as follows:
 %
-\begin{subequations}
-\begin{gather}
+\begin{equation}
 \label{eq:phillips_spectrum}
- \Theta(\mvec{k}) = A\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}\abs{\transpose{\mvec{k}_n}\mvec{w}_n}^2\\
-\intertext{with}
-\mvec{k}_n = \frac{\mvec{k}}{\norm{\mvec{k}}} = \frac{\mvec{k}}{k}\\
-\mvec{w}_n = \frac{\mvec{w}}{\norm{\mvec{w}}}\\
-L = \frac{\norm{\mvec{w}}^2}{g}
-\end{gather}
-\end{subequations}
+ \Theta(\mvec{k}) = A\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}\abs{\transpose{\mvec{k}_n}\mvec{w}_n}^2
+\end{equation}
+with
+\begin{align*}
+ \mvec{k}_n = \frac{\mvec{k}}{\norm{\mvec{k}}} = \frac{\mvec{k}}{k} && \mvec{w}_n = \frac{\mvec{w}}{\norm{\mvec{w}}}
+\end{align*}
+% where $A$ and $l$ are numeric constants to be chosen by the user. The numeric
+% constant $A$ represents a scaling factor which we will discuss at a later point.
+% The vector $\mvec{k}_n$ is the \wavevector $\mvec{k}$ at unit length:
+% \begin{equation}
+%  \mvec{k}_n = \frac{\mvec{k}}{\norm{\mvec{k}}} = \frac{\mvec{k}}{k}
+% \end{equation}
+% Similarly, $\mvec{w}_n$ is the wind vector $\mvec{w}$ at unit length:
+% \begin{equation}
+%  \mvec{w}_n = \frac{\mvec{w}}{\norm{\mvec{w}}}
+% \end{equation}
+% where $\mvec{w}$ encodes wind direction and wind speed $\norm{\mvec{w}}$.
+% 
+% 
+% \mvec{k}_n = \frac{\mvec{k}}{\norm{\mvec{k}}} = \frac{\mvec{k}}{k}\\
+% \mvec{w}_n = \frac{\mvec{w}}{\norm{\mvec{w}}}\\
+% L = \frac{\norm{\mvec{w}}^2}{g}
+% \end{gather}
 %
 where $A$ and $l$ are numeric constants, and $\mvec{w}$ encodes wind 
 direction and wind speed $\norm{\mvec{w}}$. The numeric constant $A$ represents 
@@ -3160,11 +3176,11 @@ the other hand acts as a frequency filter, it controls the suppression of energy
 contributed by high \wavenumbers $k$. In order to accomplish that, it is
 mandatory for $l$ to be several orders of magnitude smaller than $L$. We chose
 the following as a default value for $l$:
-\begin{equation}
+\begin{equation*}
  l = 10^{-3}L
-\end{equation}
+\end{equation*}
 Moreover, it follows from Equation~\ref{eq:phillips_spectrum} that setting 
-$l = 0$ disables any \wavenumber based suppression of energy.
+${l = 0}$ disables any \wavenumber based suppression of energy.
 
 If we take a closer look at Equation~\ref{eq:phillips_spectrum} one may notice 
 similarities to a one dimensional frequency spectrum in combination with a 
