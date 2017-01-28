@@ -3174,22 +3174,28 @@ a scaling factor which we will discuss at a later point.  According to
 arising from a continuous wind of speed $\norm{\mvec{w}}$. The parameter $l$ on 
 the other hand acts as a frequency filter, it controls the suppression of energy
 contributed by high \wavenumbers $k$. In order to accomplish that, it is
-mandatory for $l$ to be several orders of magnitude smaller than $L$. We chose
-the following as a default value for $l$:
+mandatory for $l$ to be several orders of magnitude smaller than $L$. The author
+chose the following as a default value for $l$:
 \begin{equation*}
  l = 10^{-3}L
 \end{equation*}
 Moreover, it follows from Equation~\ref{eq:phillips_spectrum} that setting 
 ${l = 0}$ disables any \wavenumber based suppression of energy.
 
-If we take a closer look at Equation~\ref{eq:phillips_spectrum} one may notice 
-similarities to a one dimensional frequency spectrum in combination with a 
-directional spread as seen in Equation~\ref{eq:directional_frequency_spectrum}. 
-We may separate the terms involved as follows:
+One may see from Equation~\ref{eq:phillips_spectrum} that \citeauthor{course:simulatingocean}
+employs a one dimensional wavenumber spectrum, which is as follows:
 \begin{equation}
-\label{eq:phillips_spectrum_separated}
- \Theta(\mvec{k}) = \underbrace{A}_{Scale}\underbrace{\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}}_{\substack{one~dimensional\\wavenumber\\spectrum}}\underbrace{\abs{\transpose{\mvec{k}_n}\mvec{w}_n}^2}_{\substack{directional\\spread}}
+\label{eq:phillips_wavenumber_spectrum}
+  \Theta(k) = A\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}
 \end{equation}
+% If we take a closer look at Equation~\ref{eq:phillips_spectrum} one may notice 
+% similarities to a one dimensional frequency spectrum in combination with a 
+% directional spread as seen in Equation~\ref{eq:directional_frequency_spectrum}. 
+% We may separate the terms involved as follows:
+% \begin{equation}
+% \label{eq:phillips_spectrum_separated}
+%  \Theta(\mvec{k}) = \underbrace{A}_{Scale}\underbrace{\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}}_{\substack{one~dimensional\\wavenumber\\spectrum}}\underbrace{\abs{\transpose{\mvec{k}_n}\mvec{w}_n}^2}_{\substack{directional\\spread}}
+% \end{equation}
 %
 \begin{figure}
 \centering
@@ -3287,7 +3293,7 @@ $10^3$ ($U_{10}=\norm{\mvec{w}}=12.5m\cdot s^{-1}$, $F=200km$).
 \label{fig:phillips_spectra}
 \end{figure}
 %
-A set of instances of the one dimensional \wavenumber spectrum term is depicted 
+A set of instances of the one dimensional \wavenumber spectrum term are depicted 
 in Figure~\ref{fig:phillips_spectra}. One may see that the shape of the 
 spectrum is similar to the Pierson Moskowitz one in Figure~\ref{fig:pm_spectra}, 
 with the frequency range of the spectrum peak being located at even lower 
@@ -3299,16 +3305,17 @@ reason that those models give us a value range for energy precise enough to
 generate believable results. Therefore we need to rescale the energy obtained 
 from the Phillips spectrum into that range. To the author it seems reasonable 
 that that is the purpose of the numeric constant $A$ in 
-Equations~\ref{eq:phillips_spectrum} and \ref{eq:phillips_spectrum_separated}. 
+Equations~\ref{eq:phillips_spectrum} and \ref{eq:phillips_wavenumber_spectrum}. 
 Since \citeauthor{course:simulatingocean} does not give any information about
 $A$, choosing a value that  scales energy appropriately for all reasonable
-input parametrisations has proven  to be difficult. The constant
-$\alpha = 8.1 \times 10^{-3}$ from Equation \ref{eq:pierson_moskowitz_old}
-seemed to be promising initially, but in the end 
-the author settled for the following more complex solution:
-\begin{align}
+input parametrisations has proven to be difficult. The constant
+$\alpha = 8.1 \times 10^{-3}$ as given by \citet{article:PiersonMoskowitz1964}
+(Equation~\ref{eq:pierson_moskowitz_theta_old}) seemed to be promising
+initially, but in the end the author settled for the following more complex
+solution:
+\begin{align*}
  A = \frac{0.81}{LK}B && B \in \interval{0}{1}
-\end{align}
+\end{align*}
 where $L$ and $K$ represent side lengths in meters of the rectangular area 
 we want to synthesize.
 %
