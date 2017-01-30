@@ -8,8 +8,11 @@ Actual examples are complex structures which are to be found throughout nature,
 such as mountains, trees and water. The latter is especially interesting
 because of its highly dynamic form which poses a variety of sophisticated problems.
 For computer graphics to reproduce the diverse appearance of ocean surfaces
-represents one such problem. But to cover all the dynamics as well
-as the lighting of an entire ocean would exceed the scope of this work.
+represents one such problem.
+%Figures~\ref{fig:ocean:calm}, \ref{fig:ocean:storm}
+%and \ref{fig:ocean:sunset} give examples of the broad visual nature of oceans.
+But to cover all the dynamics as well as the lighting of an entire ocean would
+exceed the scope of this work.
 We may approach a more specific subject, namely the synthesis of animated ocean
 surfaces which are both believable and computationally feasible.
 Fortunately, the oceanographic research community did already develop models
@@ -40,10 +43,21 @@ research with computer graphics algorithms to complete the task at hand.
 % Our interest focuses on the geometry of ocean surfaces using
 % consolidated findings from the oceanographic research community.
 %
-\begin{figure}
+%
+%
+\begin{figure}[p]
 \centering
-\includegraphics[scale=0.625]{figures/ocean300.jpg}
-\caption{The late afternoon sun illuminating the ocean surface. Source:~\cite{misc:noaa}}
+\includegraphics[scale=0.85]{figures/oceannoaaoceantoday.png}
+\caption{Calm sea under a clear sky. Source:~\cite{misc:noaa:calm}}
+\label{fig:ocean:calm}
+\end{figure}
+%
+%
+\begin{figure}[p]
+\centering
+\includegraphics[scale=0.85]{figures/storm300.jpg}
+\caption{Storm waves in the North Pacific. Source:~\cite{misc:noaa:storm}}
+\label{fig:ocean:storm}
 \end{figure}
 %
 \section{Problem Statement}
@@ -91,6 +105,14 @@ both of which strongly deviate in appearance from the surrounding water surface.
 % Some light is reflected, some is
 % refracted, where the latter may or may not find its way back to the water
 % surface.
+%
+\begin{figure}
+\centering
+\includegraphics[scale=0.625]{figures/ocean300.jpg}
+\caption{The late afternoon sun illuminating the ocean surface. Source:~\cite{misc:noaa:sunset}}
+\label{fig:ocean:sunset}
+\end{figure}
+%
 %
 \section{Scope and Focus of the Work}
 \label{sec:scope_and_focus}
