@@ -9,6 +9,7 @@ such as mountains, trees and water. The latter is especially interesting
 because of its highly dynamic form which poses a variety of sophisticated problems.
 For computer graphics to reproduce the diverse appearance of ocean surfaces
 represents one such problem.
+% Scenery with the ocean as its spotlight is wide in range, 
 %Figures~\ref{fig:ocean:calm}, \ref{fig:ocean:storm}
 %and \ref{fig:ocean:sunset} give examples of the broad visual nature of oceans.
 But to cover all the dynamics as well as the lighting of an entire ocean would
@@ -45,21 +46,22 @@ research with computer graphics algorithms to complete the task at hand.
 %
 %
 %
-\begin{figure}[p]
-\centering
-\includegraphics[scale=0.85]{figures/oceannoaaoceantoday.png}
-\caption{Calm sea under a clear sky. Source:~\cite{misc:noaa:calm}}
-\label{fig:ocean:calm}
-\end{figure}
-%
-%
-\begin{figure}[p]
-\centering
-\includegraphics[scale=0.85]{figures/storm300.jpg}
-\caption{Storm waves in the North Pacific. Source:~\cite{misc:noaa:storm}}
-\label{fig:ocean:storm}
-\end{figure}
-%
+%\begin{figure}
+ %\centering
+ %\subtop
+ %{
+  %\includegraphics[scale=2]{figures/calm300.png}
+  %\label{fig:ocean:calm}
+ %}
+%%\caption{Calm sea under a clear sky. Source:~\cite{misc:noaa:calm}}
+ %\subtop
+ %{
+  %\includegraphics[scale=2]{figures/storm300.png}
+%%\caption{Storm waves in the North Pacific. Source:~\cite{misc:noaa:storm}}
+  %\label{fig:ocean:storm}
+	%}
+%\end{figure}
+%%
 \section{Problem Statement}
 \label{sec:problem_statement}
 %
@@ -106,11 +108,39 @@ both of which strongly deviate in appearance from the surrounding water surface.
 % refracted, where the latter may or may not find its way back to the water
 % surface.
 %
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.75\textwidth]{figures/p1020149.jpg}
+\caption{
+	Karre, Julie (Photographer).
+	(2013, August 7).
+	One of the last sunsets for the first leg of the Oregon II [digital image].
+	Retrieved from~\cite{misc:noaa:sunset}.
+	}
+\label{fig:ocean:sunset}
+\end{figure}
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.75\textwidth]{figures/helen-smith-arcticsea.jpg}
+\caption{
+	Smith, Helen (Photographer).
+	(2013, June 4).
+	A stunningly blue and calm Arctic reflection of sea and sky divided by distant
+	bright white ice and interrupted by ripples created by the ship. 15th June
+	2012 on the RRS James Clark Ross in the Arctic sea ice between Svalbard and
+	Greenland [digital image].
+	Retrieved from~\cite{misc:noaa:arctic}.
+	}
+\end{figure}
 \begin{figure}
 \centering
-\includegraphics[scale=0.625]{figures/ocean300.jpg}
-\caption{The late afternoon sun illuminating the ocean surface. Source:~\cite{misc:noaa:sunset}}
-\label{fig:ocean:sunset}
+\includegraphics[width=0.75\textwidth]{figures/wea00816.jpg}
+\caption{
+	National Oceanic and Atmospheric Administration (Photographer).
+	(1989, Winter).
+	North Pacific storm waves as seen from the M/V NOBLE STAR [digital image].
+	Retrieved from~\cite{misc:noaa:storm}.
+	}
 \end{figure}
 %
 %
