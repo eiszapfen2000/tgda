@@ -351,7 +351,7 @@ in three dimensional space is defined as follows:
 \label{eq:sinusoid_3d}
  \eta(\mvec{x}, t) = A\cos(\transpose{\mvec{k}}\mvec{x} - \omega t)
 \end{equation}
-where $\mvec{x} = (x_x, x_z)$ denotes the observed point on a plane and $\mvec{k} = (k_x, k_z)$ represents
+where $\mvec{x} = (x, z)$ denotes the observed point on a plane and $\mvec{k} = (k_x, k_z)$ represents
 the travelling direction of the wave. The \wavenumber $k$ of~\emph{\wavevector} $\mvec{k}$ is determined by
 the \wavevector's magnitude:
 \begin{equation*}
@@ -723,12 +723,12 @@ be represented as a power of two. Therefore we will define sea surface elevation
 at $N\times M$ discrete points. We will denote the horizontal and vertical
 distance between consecutive grid points as follows:
 \begin{align*}
- \Delta x = \frac{L}{N} && \Delta y = \frac{K}{M}
+ \Delta x = \frac{L}{N} && \Delta z = \frac{K}{M}
 \end{align*}
 We compute surface elevation at the following points:
 \begin{equation}
 \label{eq:spatial_domain}
- \mvec{x} = (x,y)~\in~\{(\alpha\Delta x,\beta\Delta y)|
+ \mvec{x} = (x,z)~\in~\{(\alpha\Delta x,\beta\Delta y)|
 -\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}<\beta\leq\frac{M}{2}\}
 \end{equation}
 where $\alpha$ and $\beta$ are integers. At first glance the choice of interval
@@ -738,7 +738,7 @@ To simplify matters we will handle a square area instead of a rectangular one,
 thus:
 \begin{align*}
 %\label{eq:square_area}
- N = M && L = K &&\Rightarrow \Delta x = \Delta y
+ N = M && L = K &&\Rightarrow \Delta x = \Delta z
 \end{align*}
 %
 Based on the~\emph{Nyquist-Shannon sampling
@@ -752,8 +752,8 @@ We may write said minimum and maximum \wavelengths as follows:
 %
 \begin{figure}
 \centering
+\tikzset{external/force remake}
 \begin{tikzpicture}
-%\tikzset{external/force remake}
 % let both axes use the same layers
 \pgfplotsset{set layers}
 \begin{axis}[
@@ -798,12 +798,12 @@ We may write said minimum and maximum \wavelengths as follows:
     xticklabels={$-\frac{L}{2}$,0,$\frac{L}{2}$},
     yticklabels={$-\frac{K}{2}$,0,$\frac{K}{2}$},
     xlabel = {$\alpha\cdot\Delta x$},
-    ylabel={$\beta\cdot\Delta y$},
+    ylabel={$\beta\cdot\Delta z$},
     ]
 \end{axis}
 \end{tikzpicture}
 \caption{The spatial domain in terms of index pairs
-$(\alpha,\beta)$ and associated coordinate pairs $(\alpha\Delta x,\beta\Delta y)$.}
+$(\alpha,\beta)$ and associated coordinate pairs $(\alpha\Delta x,\beta\Delta z)$.}
 \label{fig:spatial_domain}
 \end{figure}
 %
@@ -814,7 +814,7 @@ as well as minimum and maximum \wavelengths.
 
 \begin{figure}
 \centering
-%\tikzset{external/force remake}
+\tikzset{external/force remake}
 \begin{tikzpicture}
 % let both axes use the same layers
 \pgfplotsset{set layers}
@@ -860,13 +860,13 @@ as well as minimum and maximum \wavelengths.
     xticklabels={$-\frac{\pi N}{L}$,0,$\frac{\pi N}{L}$},
     yticklabels={$-\frac{\pi M}{K}$,0,$\frac{\pi M}{K}$},
     xlabel = {$\alpha\cdot\Delta k_x$},
-    ylabel={$\beta\cdot\Delta k_y$},
+    ylabel={$\beta\cdot\Delta k_z$},
     ]
  %
 \end{axis}
 \end{tikzpicture}
 \caption{The \wavevector domain in terms of index pairs $(\alpha,\beta)$ and
-associated coordinate pairs $(\alpha\Delta k_x,\beta\Delta k_y)$.}
+associated coordinate pairs $(\alpha\Delta k_x,\beta\Delta k_z)$.}
 \label{fig:wave_vector_domain}
 \end{figure}
 %
@@ -882,15 +882,15 @@ distance between consecutive grid points for the \wavevector domain. We denote
 said distances as follows:
 \begin{align}
 \label{eq:delta_kx_delta_ky}
- \Delta k_x = \Delta k_y = \frac{2\pi}{L} = \frac{2\pi}{K}
+ \Delta k_x = \Delta k_z = \frac{2\pi}{L} = \frac{2\pi}{K}
 \end{align}
 %
-Given $\Delta k_x$ and $\Delta k_y$, we will define \wavevectors $\mvec{k}$ in 
+Given $\Delta k_x$ and $\Delta k_z$, we will define \wavevectors $\mvec{k}$ in 
 the same fashion as Equation~\ref{eq:spatial_domain} defines spatial positions 
 $\mvec{x}$:
 \begin{equation}
 \label{eq:wave_vector_domain}
- \mvec{k} = (k_x,k_y)~\in~\{(\alpha\Delta k_x,\beta\Delta k_y)|
+ \mvec{k} = (k_x,k_z)~\in~\{(\alpha\Delta k_x,\beta\Delta k_z)|
 -\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{M}{2}<\beta\leq\frac{M}{2}\}
 \end{equation}
 where $\alpha$ and $\beta$ are integers.
@@ -911,7 +911,7 @@ is found at the domain border, and $k_{max}$ near the domain center.
 We may rewrite \wavenumbers $k_{min}$ and $k_{max}$ from
 Equation~\ref{eq:kmin_kmax} to the following:
 \begin{align*}
- k_{max} &= \sqrt{2}\Delta k_x = \sqrt{2}\Delta k_y = \sqrt{2}\frac{2\pi}{L} = \sqrt{2}\frac{2\pi}{K} \\
+ k_{max} &= \sqrt{2}\Delta k_x = \sqrt{2}\Delta k_z = \sqrt{2}\frac{2\pi}{L} = \sqrt{2}\frac{2\pi}{K} \\
  k_{min} &= \frac{\pi N}{L} = \frac{\pi M}{K}
 \end{align*}
 Hence, by choosing surface dimensions $L$ and $K$ we implicitely determine the 
@@ -949,11 +949,11 @@ Equation~\ref{eq:variance_int_approx_limited} as a sum of integrals:
 \label{eq:variance_int_approx_sums}
  Var[\eta] = \int_{-k_{min}}^{k_{min}}\int_{-k_{min}}^{k_{min}}\Theta(\mvec{k}
 )~\mathrm{d}\mvec{k} = \sum_{\alpha}\sum_{\beta}\int_{\Delta k_x}\int_{\Delta 
-k_y}\Theta(\mvec{k})~\mathrm{d}\mvec{k}
+k_z}\Theta(\mvec{k})~\mathrm{d}\mvec{k}
 \end{equation}
 %
 where $\alpha$ and $\beta$ are the indices from 
-Equation~\ref{eq:wave_vector_domain}, and $\Delta k_x$ and $\Delta k_y$ 
+Equation~\ref{eq:wave_vector_domain}, and $\Delta k_x$ and $\Delta k_z$ 
 represent the distances between grid points as defined by 
 Equation~\ref{eq:delta_kx_delta_ky}. Alternatively, we may compute an 
 approximation of wave energy in a pure discrete way. Let 
@@ -970,14 +970,14 @@ and~\ref{eq:variance_naive_sum} we get:
 %
 \begin{equation}
  \Theta(\mvec{k}_{\alpha,\beta}) = \int_{\Delta k_x}\int_{\Delta 
-k_y}\Theta(\mvec{k})~\mathrm{d}\mvec{k} \approx 
-\Theta(\mvec{k}_{\alpha,\beta})\Delta k_x\Delta k_y
+k_z}\Theta(\mvec{k})~\mathrm{d}\mvec{k} \approx 
+\Theta(\mvec{k}_{\alpha,\beta})\Delta k_x\Delta k_z
 \end{equation}
 Now we may write our approximation of wave energy as a simple sum:
 \begin{equation}
 \label{eq:variance_discrete}
  Var[\eta] = \sum_{\alpha}\sum_{\beta}\Theta(\mvec{k}_{\alpha,\beta})\Delta k_x 
-\Delta k_y
+\Delta k_z
 \end{equation}
 %
 \subsection{Random Amplitudes}
@@ -992,7 +992,7 @@ We may convert to a discrete formulation based on
 Equation~\ref{eq:variance_discrete}:
 \begin{equation*}
  B(\mvec{k}_{\alpha,\beta})^2 = 2\Theta(\mvec{k}_{\alpha,\beta})\Delta k_x 
-\Delta k_y
+\Delta k_z
 \end{equation*}
 As described in Section~\ref{sec:random_process}, in order to generate random 
 wave amplitudes, we employ a Gauss distribution with mean $\mathrm{E}[\eta] 
@@ -1008,13 +1008,13 @@ t}~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}_{\alpha,\beta}}\mvec{x}}
 \end{equation*}
 where $\xi_r$ and $\xi_i$ are Gauss distributed random variables with mean zero 
 and standard deviation one. We will drop indices $\alpha$ and $\beta$ and give 
-a formulation in terms of wave enery $\Theta(\mvec{k})$ and our finite set of 
+a formulation in terms of wave energy $\Theta(\mvec{k})$ and our finite set of 
 \wavevectors $\mvec{k}$:
 \begin{equation*}
 \label{eq:surface_elevation_discrete}
  \eta(\mvec{x}, t) = 
 \sum_{\mvec{k}}\frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)
-\sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_y} 
+\sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_z} 
 ~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
 ~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation*}
@@ -1890,7 +1890,7 @@ which gives us
     xtick = {0,0.1,0.2},
     zlabel={Energy~$\Theta$~($\text{m}^4\cdot\text{rad}^{-2}$)},
     xlabel={$k_x$~($\text{rad}\cdot\text{m}^{-1}$)},
-    ylabel={$k_y$~($\text{rad}\cdot\text{m}^{-1}$)},
+    ylabel={$k_z$~($\text{rad}\cdot\text{m}^{-1}$)},
     ]
 \addplot3[surf,
     ]
@@ -1902,7 +1902,7 @@ which gives us
 s^{-1}$ and fetch $F = 100km$, located in two different domains. Top: The polar
 coordinate domain $\omega \times \theta$, the wind direction points in the
 direction of the positive $\omega$ axis. Bottom: The \wavevector domain
-$k_x \times k_y$, the wind direction points in the direction of the positive
+$k_x \times k_z$, the wind direction points in the direction of the positive
 $k_x$ axis. Note the difference in scale between the two vertical axes.}
 \label{fig:jonswap_3d_omega_theta_kx_ky}
 \end{figure}
@@ -1934,7 +1934,7 @@ By combining Equations~\ref{eq:directional_frequency_spectrum},
 \begin{align}
 \Theta_{\mvec{k}}(\mvec{k}) = \Theta_{\omega,\theta}(\sqrt{gk}, 
 \theta)\frac{1}{2k}\sqrt{\frac{g}{k}} &&
-\theta = \arctan\left(\frac{k_y}{k_x}\right)
+\theta = \arctan\left(\frac{k_z}{k_x}\right)
 \end{align}
 %
 An instance of a directional frequency spectrum as well as its equivalent

@@ -1181,7 +1181,7 @@
      inkscape:cx="181.21388"
      inkscape:cy="208.25244"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer3-1"
      showgrid="true"
      inkscape:window-width="1920"
      inkscape:window-height="1138"
@@ -1448,8 +1448,8 @@
              x="170.5"
              id="tspan8444-2-8-9"
              sodipodi:role="line">∆k<tspan
-   id="tspan3116"
-   style="font-size:65.00091553%;baseline-shift:sub">y</tspan></tspan></text>
+   style="font-size:65%;baseline-shift:sub"
+   id="tspan3216">z</tspan></tspan></text>
         <path
            sodipodi:nodetypes="cc"
            inkscape:connector-curvature="0"
