@@ -1,194 +1,219 @@
 \chapter{Implementation}
 \label{ch:implementation}
+In the previous chapter we discussed the synthesis of ocean surfaces based
+on wave spectra published in oceanographic research.
 
-\section{The Projected Grid}
-\label{sec_projected_grid}
-The projected grid is based on a simple concept: in order to achieve an
-uniform distribution of details on the image plane, a uniformly spaced grid is
-created in post-perspective space and transformed back to world space.
-Figure~\ref{fig:projectedgrid} illustrates the difference between a classic
-world space approach and the projected grid.
-\begin{figure}[h]
-\centering
-\subbottom[Classic]
-{
-\includegraphics[scale=0.75]{figures/ProjectedGridVsWorldSpace.pdf}
-\label{fig:subfigprojgrid1}
-}
-\subbottom[Projected Grid]
-{
-\includegraphics[scale=0.75]{figures/ProjectedGridUniform.pdf}
-\label{fig:subfigprojgrid2}
-}
-\caption{The image on the left shows an uniform grid in worldspace,
-its projection onto the image plane is not uniformly spaced though.
-The image on the right on the other hand depicts an uniform grid on
-the image plane and its associated non-uniform spaced worldspace
-positions.}
-\label{fig:projectedgrid}
-\end{figure}
+At this point we know how to synthesize ocean surfaces based on wave spectra
+from oceanographic research. We may move on to how to optimally employ them in the
+cpntext of computer graphics. 
+representaiotn of wave spectra most suitable for rendering
+obtain all data necessary for rendering from wave spectra
 
-% The algorithm used for the projected grid can be broken down into the following
-% steps:
-% \begin{itemize}
-%  \item create a uniformly spaced grid orthogonal to the viewer using normalised
-% device coordinates
-%  \item transform the grid to worldspace
-%  \item project the grid onto the desired base plane
-%  \item apply height displacement
-%  \item run the grid through the rendering pipeline as usual
-% \end{itemize}
+The remainder of this chapter is organized as follows:
+Section~\ref{sec:discrete_fourier_transform} describes opportunities to optimise
+the computation of the DFT which arise due to specific properties of wave spectra.
+Section~\ref{sec:slopes_and_displacements} discusses additional terms derived
+from the wave spectrum representation to enhance lighting as well as allow for
+more geometrical variety of the ocean surface.
+Section~\ref{sec:level_of_detail} delineates the level of detail
+approach we took to balance model detail and computational workload.
 
-\subsection{Coordinate Systems}
-\label{sec:coordinate_systems}
-Let $\mvec{x}$ be a vector representing the three dimensional carthesian
-world space coordinate of a vertex, then
-\begin{equation}
- \mvec{w} = \transpose{(\mvecx{x}, \mvecy{x}, \mvecz{x}, 1)}
-\end{equation}
-where $\mvec{w}$ is a homogeneous world space coordinate of $\mvec{x}$.
-Let $\mmat{V}$ be the view matrix and $\mmat{P}$ the projection matrix, then
-\begin{equation}
-\label{eq:ws_to_cs}
- \mvec{c} = \mmat{P} \mmat{V} \mvec{w}
-\end{equation}
-where $\mvec{c}$ is the \textit{clip space} coordinate of $\mvec{w}$. For $\mvec{c}$ to
-be inside the view frustum defined by $\mmat{P}$, $\mvec{c}$ is required to
-meet the following condition
-\begin{equation}
-\label{eq:cs_bounds}
- \mvecx{c}, \mvecy{c}, \mvecz{c} \in \interval{-\mvecw{c}}{\mvecw{c}}
-\end{equation}
-where $\mvecw{c}$ is the homogeneous component of $\mvec{c}$. Next, clip space
-vertex $\mvec{c}$ is transformed by the \textit{perspective division} as follows
-\begin{equation}
-\label{eq:cs_to_ndc}
- \mvec{n} = \frac{1}{\mvecw{c}}\transpose{(\mvecx{c}, \mvecy{c}, \mvecz{c})}
-\end{equation}
-where $\mvec{n}$ corresponds to the \textit{normalised device coordinate},
-\textit{NDC} in short, of $\mvec{c}$.
+Section~\ref{sec:level_of_detail} delineates one, the approach we took to assemble the wave spectrum from \wavevector
+domains which complement each other, and two, a simple procedure which allows for
+differing resolutions for all terms related to, and the wave spectrum itself.
+dft and how to exploit it
+spectrum and data derived from it (normals, displacements)
+level of detail (sampling of different parts of spectrum, multi-resolution spectrum)
+%\section{The Projected Grid}
+%\label{sec_projected_grid}
+%The projected grid is based on a simple concept: in order to achieve an
+%uniform distribution of details on the image plane, a uniformly spaced grid is
+%created in post-perspective space and transformed back to world space.
+%Figure~\ref{fig:projectedgrid} illustrates the difference between a classic
+%world space approach and the projected grid.
+%\begin{figure}[h]
+%\centering
+%\subbottom[Classic]
+%{
+%\includegraphics[scale=0.75]{figures/ProjectedGridVsWorldSpace.pdf}
+%\label{fig:subfigprojgrid1}
+%}
+%\subbottom[Projected Grid]
+%{
+%\includegraphics[scale=0.75]{figures/ProjectedGridUniform.pdf}
+%\label{fig:subfigprojgrid2}
+%}
+%\caption{The image on the left shows an uniform grid in worldspace,
+%its projection onto the image plane is not uniformly spaced though.
+%The image on the right on the other hand depicts an uniform grid on
+%the image plane and its associated non-uniform spaced worldspace
+%positions.}
+%\label{fig:projectedgrid}
+%\end{figure}
+%
+%% The algorithm used for the projected grid can be broken down into the following
+%% steps:
+%% \begin{itemize}
+%%  \item create a uniformly spaced grid orthogonal to the viewer using normalised
+%% device coordinates
+%%  \item transform the grid to worldspace
+%%  \item project the grid onto the desired base plane
+%%  \item apply height displacement
+%%  \item run the grid through the rendering pipeline as usual
+%% \end{itemize}
+%
+%\subsection{Coordinate Systems}
+%\label{sec:coordinate_systems}
+%Let $\mvec{x}$ be a vector representing the three dimensional carthesian
+%world space coordinate of a vertex, then
+%\begin{equation}
+ %\mvec{w} = \transpose{(\mvecx{x}, \mvecy{x}, \mvecz{x}, 1)}
+%\end{equation}
+%where $\mvec{w}$ is a homogeneous world space coordinate of $\mvec{x}$.
+%Let $\mmat{V}$ be the view matrix and $\mmat{P}$ the projection matrix, then
+%\begin{equation}
+%\label{eq:ws_to_cs}
+ %\mvec{c} = \mmat{P} \mmat{V} \mvec{w}
+%\end{equation}
+%where $\mvec{c}$ is the \textit{clip space} coordinate of $\mvec{w}$. For $\mvec{c}$ to
+%be inside the view frustum defined by $\mmat{P}$, $\mvec{c}$ is required to
+%meet the following condition
+%\begin{equation}
+%\label{eq:cs_bounds}
+ %\mvecx{c}, \mvecy{c}, \mvecz{c} \in \interval{-\mvecw{c}}{\mvecw{c}}
+%\end{equation}
+%where $\mvecw{c}$ is the homogeneous component of $\mvec{c}$. Next, clip space
+%vertex $\mvec{c}$ is transformed by the \textit{perspective division} as follows
+%\begin{equation}
+%\label{eq:cs_to_ndc}
+ %\mvec{n} = \frac{1}{\mvecw{c}}\transpose{(\mvecx{c}, \mvecy{c}, \mvecz{c})}
+%\end{equation}
+%where $\mvec{n}$ corresponds to the \textit{normalised device coordinate},
+%\textit{NDC} in short, of $\mvec{c}$.
+%%
+%%
+%\begin{figure}
+%\centering
+%\subbottom[View Frustum]
+%{
+%\includegraphics[width=0.4\textwidth]{figures/ProjectiveFrustum.pdf}
+%\label{fig:subfig_proj_frustum}
+%}
+%\subbottom[Canonical view volume]
+%{
+%\includegraphics[width=0.4\textwidth]{figures/CanonicalCube.pdf}
+%\label{fig:subfig_canonical_view_volume}
+%}
+%\caption{Left: An example view frustum in view space. Right: The same view frustum
+%after applying projection and perspective division.}
+%\label{fig:proj_frustum_ndc}
+%\end{figure}
+%%
+%%
+%As one can see, equations~\ref{eq:cs_bounds}
+%and~\ref{eq:cs_to_ndc} imply
+%\begin{equation}
+%\label{eq:ndc_bounds}
+ %\mvecx{n}, \mvecy{n}, \mvecz{n} \in \interval{-1}{1}
+%\end{equation}
+%which defines the space NDC reside in, namely the \textit{canonical view volume},
+%see Figure~\ref{fig:proj_frustum_ndc}.\\
 %
 %
-\begin{figure}
-\centering
-\subbottom[View Frustum]
-{
-\includegraphics[width=0.4\textwidth]{figures/ProjectiveFrustum.pdf}
-\label{fig:subfig_proj_frustum}
-}
-\subbottom[Canonical view volume]
-{
-\includegraphics[width=0.4\textwidth]{figures/CanonicalCube.pdf}
-\label{fig:subfig_canonical_view_volume}
-}
-\caption{Left: An example view frustum in view space. Right: The same view frustum
-after applying projection and perspective division.}
-\label{fig:proj_frustum_ndc}
-\end{figure}
+%The projected grid, on the other hand, starts inside the canonical view volume
+%and needs to transform vertices back to world space. Let $\mvec{n}$ be the
+%normalised device coordinate of a vertex, then
+%\begin{equation}
+%\label{eq:ndc_to_cs}
+ %\mvec{c} = \transpose{(\mvecx{n}, \mvecy{n}, \mvecz{n}, 1)}
+%\end{equation}
+%where $\mvec{c}$ is a valid representation of $\mvec{n}$ in clip space. One may choose
+%a value for $\mvecw{c}$ different from $1$, making it necessary to scale $\mvecx{n}$,
+%$\mvecy{n}$ and $\mvecz{n}$ accordingly. Again, let $\mmat{V}$ be the view matrix and
+%$\mmat{P}$ the projection matrix, then
+%\begin{equation}
+%\label{eq:cs_to_wsh}
+ %\mvec{w} = \inverse{(\mmat{P} \mmat{V})} \mvec{c}
+%\end{equation}
+%where $\mvec{w}$ is a homogeneous world space coordinate of $\mvec{c}$. Conversion
+%to three dimensional carthesian world space is accomplished as follows
+%\begin{equation}
+%\label{eq:wsh_to_ws}
+ %\mvec{x} = \frac{1}{\mvecw{w}}\transpose{(\mvecx{w}, \mvecy{w}, \mvecz{w})}
+%\end{equation}
 %
+%\subsection{Projection onto Plane}
+%As noted before, the vertices of the projected grid are represented as normalised
+%device coordinates. Assuming the plane the grid shall be projected on is specified
+%in world space coordinates, the following steps need to be computed for each vertex:
+%\begin{itemize}
+ %\item Transform vertex from canonical view volume to world space
+ %\item Setup vertex specific ray
+ %\item Intersect ray with target plane to compute actual position
+%\end{itemize}
+%Step one is already covered by Section~\ref{sec:coordinate_systems}. Step two
+%requires to setup a ray for each vertex, which implies both a position and a
+%direction. The position we already have, but to create a direction we need two
+%different positions. The solution is rather straightforward: let $\mvec{n}$ be
+%a \textit{two dimensional} vector representing the \textit{X} and \textit{Y}
+%components of a position in normalised device coordinates, then
+%\begin{align}
+ %\mvec{a} & = (\mvecx{n}, \mvecy{n}, -1, 1)\\
+ %\mvec{b} & = (\mvecx{n}, \mvecy{n}, +1, 1)
+%\end{align}
+%where $\mvec{a}$ corresponds to $\mvec{n}$ on the \textit{near plane} in clip space,
+%and $\mvec{b}$ to $\mvec{n}$ on the \textit{far plane} in clip space. Let $\mvec{d}$
+%and $\mvec{e}$ be the carthesian world space positions of $\mvec{a}$ and $\mvec{b}$
+%respectively, then
+%\begin{equation}
+ %\label{eq:proj_grid_ray}
+ %\mvec{p} = \mvec{d} + t(\mvec{e} - \mvec{d})
+%\end{equation}
+%where $\mvec{p}$ represents a ray starting at point $\mvec{d}$, pointing in direction
+%$(\mvec{e} - \mvec{d})$ with variable parameter $t$ controlling the actual position on
+%the ray.\\
 %
-As one can see, equations~\ref{eq:cs_bounds}
-and~\ref{eq:cs_to_ndc} imply
-\begin{equation}
-\label{eq:ndc_bounds}
- \mvecx{n}, \mvecy{n}, \mvecz{n} \in \interval{-1}{1}
-\end{equation}
-which defines the space NDC reside in, namely the \textit{canonical view volume},
-see Figure~\ref{fig:proj_frustum_ndc}.\\
-
-
-The projected grid, on the other hand, starts inside the canonical view volume
-and needs to transform vertices back to world space. Let $\mvec{n}$ be the
-normalised device coordinate of a vertex, then
-\begin{equation}
-\label{eq:ndc_to_cs}
- \mvec{c} = \transpose{(\mvecx{n}, \mvecy{n}, \mvecz{n}, 1)}
-\end{equation}
-where $\mvec{c}$ is a valid representation of $\mvec{n}$ in clip space. One may choose
-a value for $\mvecw{c}$ different from $1$, making it necessary to scale $\mvecx{n}$,
-$\mvecy{n}$ and $\mvecz{n}$ accordingly. Again, let $\mmat{V}$ be the view matrix and
-$\mmat{P}$ the projection matrix, then
-\begin{equation}
-\label{eq:cs_to_wsh}
- \mvec{w} = \inverse{(\mmat{P} \mmat{V})} \mvec{c}
-\end{equation}
-where $\mvec{w}$ is a homogeneous world space coordinate of $\mvec{c}$. Conversion
-to three dimensional carthesian world space is accomplished as follows
-\begin{equation}
-\label{eq:wsh_to_ws}
- \mvec{x} = \frac{1}{\mvecw{w}}\transpose{(\mvecx{w}, \mvecy{w}, \mvecz{w})}
-\end{equation}
-
-\subsection{Projection onto Plane}
-As noted before, the vertices of the projected grid are represented as normalised
-device coordinates. Assuming the plane the grid shall be projected on is specified
-in world space coordinates, the following steps need to be computed for each vertex:
-\begin{itemize}
- \item Transform vertex from canonical view volume to world space
- \item Setup vertex specific ray
- \item Intersect ray with target plane to compute actual position
-\end{itemize}
-Step one is already covered by Section~\ref{sec:coordinate_systems}. Step two
-requires to setup a ray for each vertex, which implies both a position and a
-direction. The position we already have, but to create a direction we need two
-different positions. The solution is rather straightforward: let $\mvec{n}$ be
-a \textit{two dimensional} vector representing the \textit{X} and \textit{Y}
-components of a position in normalised device coordinates, then
-\begin{align}
- \mvec{a} & = (\mvecx{n}, \mvecy{n}, -1, 1)\\
- \mvec{b} & = (\mvecx{n}, \mvecy{n}, +1, 1)
-\end{align}
-where $\mvec{a}$ corresponds to $\mvec{n}$ on the \textit{near plane} in clip space,
-and $\mvec{b}$ to $\mvec{n}$ on the \textit{far plane} in clip space. Let $\mvec{d}$
-and $\mvec{e}$ be the carthesian world space positions of $\mvec{a}$ and $\mvec{b}$
-respectively, then
-\begin{equation}
- \label{eq:proj_grid_ray}
- \mvec{p} = \mvec{d} + t(\mvec{e} - \mvec{d})
-\end{equation}
-where $\mvec{p}$ represents a ray starting at point $\mvec{d}$, pointing in direction
-$(\mvec{e} - \mvec{d})$ with variable parameter $t$ controlling the actual position on
-the ray.\\
-
-Step three is about intersecting ray $\mvec{p}$ resulting from step two with the target plane.
-We define the target plane using the \textit{Hesse normal form} as follows
-\begin{equation}
-\label{eq:proj_grid_plane}
- \mvec{p}\transpose{\mvec{n}} - d = 0
-\end{equation}
-where $\mvec{n}$ is the plane's normal vector with unit length and $d$ the plane's distance
-from the origin. Next, we insert $\mvec{p}$ from equation~\ref{eq:proj_grid_ray}
-into equation~\ref{eq:proj_grid_plane}, resulting in
+%Step three is about intersecting ray $\mvec{p}$ resulting from step two with the target plane.
+%We define the target plane using the \textit{Hesse normal form} as follows
+%\begin{equation}
+%\label{eq:proj_grid_plane}
+ %\mvec{p}\transpose{\mvec{n}} - d = 0
+%\end{equation}
+%where $\mvec{n}$ is the plane's normal vector with unit length and $d$ the plane's distance
+%from the origin. Next, we insert $\mvec{p}$ from equation~\ref{eq:proj_grid_ray}
+%into equation~\ref{eq:proj_grid_plane}, resulting in
+%%
+%\begin{gather}
+%\label{eq:plane_and_ray_intersection}
+%(\mvec{d} + t(\mvec{e} - \mvec{d})\transpose{\mvec{n}} - d = 0\\
+%\mvec{d}\transpose{\mvec{n}} + t(\mvec{e} - \mvec{d})\transpose{\mvec{n}} - d = 0\\
+%\intertext{solve for $t$}
+%t = \cfrac{d - \mvec{d}\transpose{\mvec{n}}}{(\mvec{e} - \mvec{d})\transpose{\mvec{n}}}
+%\end{gather}
+%%
+%where $t$ in combination with equation~\ref{eq:proj_grid_ray} gives the point of intersection
+%between the ray and the plane. In case $(\mvec{e} - \mvec{d})\transpose{\mvec{n}} = 0$,
+%there is no point of intersection because the ray is parallel to the plane.
 %
-\begin{gather}
-\label{eq:plane_and_ray_intersection}
-(\mvec{d} + t(\mvec{e} - \mvec{d})\transpose{\mvec{n}} - d = 0\\
-\mvec{d}\transpose{\mvec{n}} + t(\mvec{e} - \mvec{d})\transpose{\mvec{n}} - d = 0\\
-\intertext{solve for $t$}
-t = \cfrac{d - \mvec{d}\transpose{\mvec{n}}}{(\mvec{e} - \mvec{d})\transpose{\mvec{n}}}
-\end{gather}
-%
-where $t$ in combination with equation~\ref{eq:proj_grid_ray} gives the point of intersection
-between the ray and the plane. In case $(\mvec{e} - \mvec{d})\transpose{\mvec{n}} = 0$,
-there is no point of intersection because the ray is parallel to the plane.
-
-\subsection{Projector}
-\fxnote*{JÖSSAS}{Backfiring, etc}
+%\subsection{Projector}
+%\fxnote*{JÖSSAS}{Backfiring, etc}
 
 \section{Discrete Fourier Transform}
+\label{sec:discrete_fourier_transform}
 We defined surface elevation as follows in Chapter~\ref{sec:random_amplitudes}:
 \begin{equation}
 \label{eq:dft_surface_elevation}
 \eta(\mvec{x}, t) = 
 \sum_{\mvec{k}}\frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)
-\sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_y} 
+\sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_z} 
 ~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
 ~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation}
 where both the spatial domain $\mvec{x}$ and the wavevector domain $\mvec{k}$ are
 of resolution $N \times N$. $N$ is a natural number, even, and a power of two.
 The latter two requirements are concessions to the~\emph{Fast Fourier Transform}
-algorithm, which works fastest at such resolutions. We may define the following
+algorithm~\citep{Cooley:1965}, which works fastest at such resolutions.
+We may define the following
 two terms based on Equation~\ref{eq:dft_surface_elevation}:
 \begin{align}
 \label{eq:dft_h0_k}
@@ -515,6 +540,8 @@ We may rewrite Equation~\ref{eq:h0_k_complex_conjugate} in terms of indices:
  h_0(i,j) = h_0(m,n)^*
 \end{equation}
 
+\section{Slopes and Displacements}
+\label{sec:slopes_and_displacements}
 \subsection{Derivatives}
 At this point we are able to compute surface elevation by application of the
 inverse Discrete Fourier Transform on a spectrum we generate. For lighting
@@ -789,7 +816,7 @@ Figure~\ref{fig:grid_displaced} shows two profiles of the wave height along one
 direction, where one profile uses displaced coordinates, while the other does 
 not.
 %
-\subsection{Slopes and Displacements}
+\subsection{Slopes after Displacement}
 %
 Based on Figure~\ref{fig:grid_displaced} it is easy to see that the application 
 of displacements does not only alter the underlying grid points, but as a 
@@ -1019,7 +1046,7 @@ Jacobian determinant is negative.
 % \end{tabular}
 
 \section{Level of Detail}
-
+\label{sec:level_of_detail}
 The core of our ocean model are the spectra discussed in 
 Section~\ref{sec:1d_frequency_spectra} and 
 Section~\ref{sec:two_dimensional_frequency_spectra}. We sample the spectra in 
