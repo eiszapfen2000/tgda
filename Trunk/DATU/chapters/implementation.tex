@@ -1,5 +1,14 @@
 \chapter{Implementation}
 \label{ch:implementation}
+
+wave spectrum background
+ocean surface synthesis based on wave spectra
+present various wave spectra
+
+The previous chapter discussed the conceptual background of wave spectra,
+as well as the steps necessary to synthesize ocean surfaces based on wave spectra.
+The previous chapter gave us conceptual background regarding wave spectra,
+
 In the previous chapter we discussed the synthesis of ocean surfaces based
 on wave spectra published in oceanographic research.
 
@@ -9,21 +18,38 @@ cpntext of computer graphics.
 representaiotn of wave spectra most suitable for rendering
 obtain all data necessary for rendering from wave spectra
 
-The remainder of this chapter is organized as follows:
-Section~\ref{sec:discrete_fourier_transform} describes opportunities to optimise
-the computation of the DFT which arise due to specific properties of wave spectra.
-Section~\ref{sec:slopes_and_displacements} discusses additional terms derived
-from the wave spectrum representation to enhance lighting as well as allow for
-more geometrical variety of the ocean surface.
-Section~\ref{sec:level_of_detail} delineates the level of detail
-approach we took to balance model detail and computational workload.
+At this point we are able to generate ocean surfaces in the form of simple
+heightfields animated over time. For rendering purposes we will augment our
+ocean surface representation with high-quality normals (Tessendorf), and
+with the choppy-wave algorithm (Tessendorf).
 
-Section~\ref{sec:level_of_detail} delineates one, the approach we took to assemble the wave spectrum from \wavevector
-domains which complement each other, and two, a simple procedure which allows for
-differing resolutions for all terms related to, and the wave spectrum itself.
-dft and how to exploit it
-spectrum and data derived from it (normals, displacements)
-level of detail (sampling of different parts of spectrum, multi-resolution spectrum)
+The remainder of this chapter is organized as follows:
+Section~\ref{sec:discrete_fourier_transform} describes characteristic properties of
+wave spectra which enable us to accelerate the computation of the inverse DFT.
+Section~\ref{sec:slopes_and_displacements} introduces additional wave spectrum
+based terms which we employ for rendering, whereas
+Section~\ref{sec:level_of_detail} discusses our wave spectrum specific approach
+to level of detail. Last, Section~\ref{sec:demo_application} gives an overview
+of the algorithms and techniques incorporated into our demo application.
+
+%Section~\ref{sec:discrete_fourier_transform} describes opportunities to optimise
+%the computation of the DFT which arise due to specific properties of wave spectra.
+%Section~\ref{sec:slopes_and_displacements} discusses additional terms derived
+%from the wave spectrum representation to enhance lighting as well as allow for
+%more geometrical variety of the ocean surface.
+%Section~\ref{sec:level_of_detail} delineates the level of detail
+%approach we took to balance model detail and computational workload.
+%
+%Section~\ref{sec:level_of_detail} delineates one, the approach we took to assemble the wave spectrum from \wavevector
+%domains which complement each other, and two, a simple procedure which allows for
+%differing resolutions for all terms related to, and the wave spectrum itself.
+%dft and how to exploit it
+%
+%spectrum and data derived from it (normals, displacements)
+%level of detail (sampling of different parts of spectrum, multi-resolution spectrum)
+
+
+
 %\section{The Projected Grid}
 %\label{sec_projected_grid}
 %The projected grid is based on a simple concept: in order to achieve an
@@ -231,6 +257,30 @@ only the exponential responsible for the animation has to be computed for all
 frames.
 %
 \subsection{Zero Frequency}
+%
+%
+%\[ \begin{array}{|c|c|}
+%\hline
+%Q2 & Q1 \\
+%\hline
+%Q3 & Q4 \\
+%\hline \end{array} \]
+%
+%
+\begin{table}[ht]
+\caption{Multi-column and multi-row table}
+\begin{center}
+\begin{tabular}{cccc}
+	\multicolumn{2}{c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c}{\multirow{2}{*}{Q1}} \\
+	\multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c}{\multirow{2}{*}{}} \\
+	\hline
+	\multicolumn{2}{c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c}{\multirow{2}{*}{Q4}} \\
+	\multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c}{\multirow{2}{*}{}} \\
+\end{tabular}
+\end{center}
+\label{tab:multicol}
+\end{table}
+%
 %
 \newcommand{\ccellnum}[2]{\cellcolor{#1}\num{#2}}
 \newcommand{\mcleft}[2]{\multicolumn{1}{!{\color{#1}\vline}S}{#2}}
@@ -2201,6 +2251,7 @@ random surface at different resolutions, the pairing between amplitude and
 wavevector needs to remain the same across resolutions.
 
 \section{Demo Application}
+\label{sec:demo_application}
 For showcasing purposes we implemented a compact demo application on Linux.
 It is written in Objective-C and employs the GNUstep\cite{misc:gnustep}
 Base Library which provides container classes as well as basic algorithms.
