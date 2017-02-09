@@ -357,6 +357,59 @@ of an even one, the zero frequency would be located precisely at the center of t
 \wavevector domain. Actual implementations of the inverse DFT, such as
 \citet{misc:fftw}, expect the zero frequency as the first element i.e. at the
 upper left of the two dimensional input array.
+
+\begin{table}
+%\footnotesize
+\centering
+%
+\sisetup{
+round-mode      = places,
+round-precision = 1,
+explicit-sign = +,
+table-number-alignment=right
+}
+%
+\begin{tabular}{|SS|SS|}
+ \hline
+ \num{3.5886 + 0.0i}     & \num{0.5354 - 0.9111i}  & \num{-8.3447 + 0.0i}   & \num{0.5354 + 0.9111i} \\
+ \num{-2.0288 - 1.4957i} & \num{-0.2199 - 0.7443i} & \num{2.7433 + 2.5938i} & \num{0.1182 + 0.3465i} \\
+ \hline
+ \num{-0.5139 + 0.0i}    & \num{0.5448 - 0.2298i}  & \color{red}\num{0}     & \num{0.5448 + 0.2298i} \\
+ \num{-2.0288 + 1.4957i} & \num{0.1182 - 0.3465i}  & \num{2.7433 - 2.5938i} & \num{-0.2199 + 0.7443i} \\
+ \hline
+\end{tabular}
+%\hfill
+\hspace{1cm}
+\begin{tabular}{cccc}
+ \hline
+ \multicolumn{2}{|c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q1}} \\
+ \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} \\
+ \hline
+ \multicolumn{2}{|c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c|}{\multirow{2}{*}{\color{red}Q4}} \\
+ \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} \\
+ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{cccccccc}
+ \hline
+ \multicolumn{2}{!{\color{blue}\vline}c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q1}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q1}} \\
+ \multicolumn{2}{!{\color{blue}\vline}c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} \\
+ \hline
+ \multicolumn{2}{|c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c|}{\multirow{2}{*}{\color{red}Q4}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c|}{\multirow{2}{*}{\color{red}Q4}} \\
+ \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}}\\
+ \hline
+ \multicolumn{2}{|c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q1}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q1}} \\
+ \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} \\
+ \hline
+ \multicolumn{2}{|c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c|}{\multirow{2}{*}{\color{red}Q4}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c|}{\multirow{2}{*}{\color{red}Q4}} \\
+ \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}}\\
+ \hline
+\end{tabular}
+\end{table}
+
 The \wavevector domain of such implementations is defined as follows:
 \begin{equation*}
 \mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
