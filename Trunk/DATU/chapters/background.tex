@@ -596,7 +596,7 @@ simulate the actual generation and decay of waves over time.
 As such, we are not dealing with one concrete ocean surface $\eta$, but with an
 \emph{ensemble} of different sea surfaces $\{\eta\}$, each associated with its
 own probability to be actually realised. Because the random process is a
-Gaussian one, it has an associated Gaussian distribution with mean
+Gaussian one, it has an associated Gaussian Distribution with mean
 $\mathrm{E}[\eta]$ and variance $\mathrm{Var}[\eta] = \sigma^2$. Considering a
 sea surface in combination with linear wave theory, where a symmetry between
 troughs and crests is a given, the mean is easily found:
@@ -614,7 +614,7 @@ therefore the variance of all components combined is:
 \end{equation*}
 which is the same as Equation~\ref{eq:mean_square_eta}. The variance
 $\sigma^2$ is equal the mean square surface elevation $\overline{\eta^2}$. With
-mean and variance at hand we may write the Gaussian distribution that the
+mean and variance at hand we may write the Gaussian Distribution that the
 values of sea surface elevation are drawn from:
 \begin{equation}
 \label{eq:gaussian_dist}
@@ -995,10 +995,10 @@ Equation~\ref{eq:variance_discrete}:
 \Delta k_z
 \end{equation*}
 As described in Section~\ref{sec:random_process}, in order to generate random 
-wave amplitudes, we employ a Gauss distribution with mean $\mathrm{E}[\eta] 
+wave amplitudes, we employ a Gaussian Distribution with mean $\mathrm{E}[\eta] 
 = 0$ and variance $\mathrm{Var}[\eta]$ defined by the energy spectrum
-$\Theta(\mvec{k})$. Since all Gaussian distributions may be written based on 
-the standard normal distribution, we are able to write surface elevation as 
+$\Theta(\mvec{k})$. Since all Gaussian Distributions may be written based on 
+the Standard Normal Distribution, we are able to write surface elevation as 
 follows:
 \begin{equation*}
  \eta(\mvec{x}, t) = 
@@ -1010,14 +1010,14 @@ where $\xi_r$ and $\xi_i$ are Gauss distributed random variables with mean zero
 and standard deviation one. We will drop indices $\alpha$ and $\beta$ and give 
 a formulation in terms of wave energy $\Theta(\mvec{k})$ and our finite set of 
 \wavevectors $\mvec{k}$:
-\begin{equation*}
+\begin{equation}
 \label{eq:surface_elevation_discrete}
  \eta(\mvec{x}, t) = 
 \sum_{\mvec{k}}\frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)
 \sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_z} 
 ~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
 ~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
-\end{equation*}
+\end{equation}
 %
 We have found a discrete approximation of surface elevation which is fast to 
 compute and is able to give satisfactory results as long as we choose one or 
