@@ -338,22 +338,39 @@ considerable margin.
 \colorlet{Line2Color}{black}
 %
 We compute surface elevation in the form of an inverse Discrete Fourier Transform as follows:
-\begin{align}
+\begin{equation}
 \label{eq:surface_elevation_h0_k_t}
-\eta(\mvec{x}, t) = \sum_{\mvec{k}}~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
-\intertext{with}
-\notag \mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
--\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{N}{2}<\beta\leq\frac{N}{2}\} &&
-\Delta k = \frac{2\pi}{L}&
-\end{align}
-As one can see, the wavevector $\mvec{k} = (0,0)$ lies at the center of the wavevector domain,
-where $\alpha=0$ and $\beta=0$. But actual implementations of the inverse Discrete Fourier Transform
-expect the zero wavevector as the first element i.e. at the upper left. The wavevector domain
-of such implementations is defined as follows:
+\eta(\mvec{x}, t) = \sum_{\mvec{k}}~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\end{equation}
+with
+\begin{equation*}
+\mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
+-\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{N}{2}<\beta\leq\frac{N}{2}\}
+\end{equation*}
+The \wavevector $\mvec{k} = (0,0)$ gives the location of the zero frequency,
+which encodes the average value of the signal in the spatial domain. In our case
+that is the mean surface elevation $\mathrm{E}[\eta] = 0$.
+As one may read off the above definition of the \wavevector domain, the zero
+frequency is located near the center of the \wavevector domain,
+where $\alpha=0$ and $\beta=0$. If we had chosen an odd resolution $N$ instead
+of an even one, the zero frequency would be located precisely at the center of the
+\wavevector domain. Actual implementations of the inverse DFT, such as
+\citet{misc:fftw}, expect the zero frequency as the first element i.e. at the
+upper left of the two dimensional input array.
+The \wavevector domain of such implementations is defined as follows:
 \begin{equation*}
 \mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
 0\leq\alpha,\beta<N-1\}
 \end{equation*}
+%
+%As one can see, the wavevector $\mvec{k} = (0,0)$ lies at the center of the wavevector domain,
+%where $\alpha=0$ and $\beta=0$. But actual implementations of the inverse Discrete Fourier Transform
+%expect the zero wavevector as the first element i.e. at the upper left. The wavevector domain
+%of such implementations is defined as follows:
+%\begin{equation*}
+%\mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
+%0\leq\alpha,\beta<N-1\}
+%\end{equation*}
 We know that the spectrum represents a periodic signal, i.e. it repeats itself at infinity in both directions.
 Hence, independent of where the zero frequency is located inside the wavevector domain, we may write:
 \begin{align*}
