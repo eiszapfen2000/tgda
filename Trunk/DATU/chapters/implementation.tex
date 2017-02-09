@@ -18,19 +18,49 @@ cpntext of computer graphics.
 representaiotn of wave spectra most suitable for rendering
 obtain all data necessary for rendering from wave spectra
 
-At this point we are able to generate ocean surfaces in the form of simple
-heightfields animated over time. For rendering purposes we will augment our
-ocean surface representation with high-quality normals (Tessendorf), and
-with the choppy-wave algorithm (Tessendorf).
+At this point we are able to synthesize ocean surfaces in the form of simple
+heightfields animated over time.
+Although the shape of the ocean surface waves as well as their movement
+may be already sufficiently plausible to the observers eye, 
+%The shape of the ocean surface waves, as well as their
+%movement are sufficiently plausible to the observers eye.
+
+For rendering purposes we will augment our ocean surface representation with
+additional data as described by \citet{course:simulatingocean}.
+
+%One, a displacement vector field which modifies the gentle sinusoidal form of the
+%waves into one with deeper troughs and sharper crests, similar to Gerstner waves.
+%Two, high-quality normals for detailed lighting.
+%Three, the Jacobian matrix of the displacement vector field,
+%
+ %two, a displacement vector field which allows
+%for steep waves with sharp crests, and three, the Jacobian of the displacement
+%vector field
+%\citep{course:simulatingocean}.
+%
+%with the choppy-wave algorithm (Tessendorf).
+%
+%\cite{course:simulatingocean,article:oceanlighting,misc:oceanlightingfft,article:whitecaps}
 
 The remainder of this chapter is organized as follows:
 Section~\ref{sec:discrete_fourier_transform} describes characteristic properties of
 wave spectra which enable us to accelerate the computation of the inverse DFT.
 Section~\ref{sec:slopes_and_displacements} introduces additional wave spectrum
 based terms which we employ for rendering, whereas
-Section~\ref{sec:level_of_detail} discusses our wave spectrum specific approach
-to level of detail. Last, Section~\ref{sec:demo_application} gives an overview
-of the algorithms and techniques incorporated into our demo application.
+Section~\ref{sec:level_of_detail} elaborates on our wave spectrum specific
+approach to level of detail. Last, Section~\ref{sec:demo_application} gives an
+overview of our demo application, and the algorithms and techniques it incorporates.
+
+%Ocean surfaces based on wave spectra all share the same issue, namely the all to
+%gentle form of wave troughs and wave crests. Because the surface is computed as
+%a linear superposition of sinusoids, it is only natural that the result shares
+%the general form of its underlying building blocks. But a sea exposed to strong
+%winds or even a storm is characterized by steep waves with sharp crests.
+%\citet{course:simulatingocean} presents the~\emph{choppy wave} algorithm which
+%overcomes this specific issue by allowing the waves to take a form similar to
+%Gerstner waves, with deep troughs and sharp crests, see Figure
+%\ref{fig:tessendorf_choppy_waves}.
+
 
 %Section~\ref{sec:discrete_fourier_transform} describes opportunities to optimise
 %the computation of the DFT which arise due to specific properties of wave spectra.
@@ -226,7 +256,8 @@ of the algorithms and techniques incorporated into our demo application.
 
 \section{Discrete Fourier Transform}
 \label{sec:discrete_fourier_transform}
-We defined surface elevation as follows in Chapter~\ref{sec:random_amplitudes}:
+Recall Equation~\ref{eq:surface_elevation_discrete} in Chapter~\ref{sec:random_amplitudes},
+where we defined surface elevation as follows:
 \begin{equation}
 \label{eq:dft_surface_elevation}
 \eta(\mvec{x}, t) = 
@@ -235,26 +266,41 @@ We defined surface elevation as follows in Chapter~\ref{sec:random_amplitudes}:
 ~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
 ~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation}
-where both the spatial domain $\mvec{x}$ and the wavevector domain $\mvec{k}$ are
-of resolution $N \times N$. $N$ is a natural number, even, and a power of two.
-The latter two requirements are concessions to the~\emph{Fast Fourier Transform}
-algorithm~\citep{Cooley:1965}, which works fastest at such resolutions.
-We may define the following
-two terms based on Equation~\ref{eq:dft_surface_elevation}:
-\begin{align}
+where $\xi_r$ and $\xi_i$ are Gauss distributed random variables with mean zero 
+and standard deviation one. Both, the \wavevector domain $\mvec{k}$ and the
+spatial domain $\mvec{x}$ are of resolution $N \times N$, where $N$ is a natural
+number, even, and a power of two. The latter two requirements are concessions to
+the~\emph{Fast Fourier Transform} algorithm, which works fastest at such
+resolutions~\citep{Cooley:1965}.
+Moreover, the spatial domain $\mvec{x}$ has an extent of $L \times L$, thus:
+\begin{equation*}
+	\Delta k_x = \Delta k_z = \Delta k = \frac{2\pi}{L}
+\end{equation*}
+We may subsume part of Equation~\ref{eq:dft_surface_elevation} into the
+following:
+\begin{equation}
 \label{eq:dft_h0_k}
-h_0(\mvec{k})   &= \frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)\sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_y} \\
-\label{eq:dft_h0_k_t}
-h_0(\mvec{k},t) &= h_0(\mvec{k})~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
-\end{align}
-The term $h_0(\mvec{k})$ represents a random generated spectrum based on wave
-spectrum $\Theta(\mvec{k})$. The term $h_0(\mvec{k},t)$ takes care of the
-animation over time of $h_0(\mvec{k})$. As long as the spatial domain,
-the wavevector domain, and the wave spectrum do not change, $h_0(\mvec{k})$
-does not change either. Hence, it is necessary to generate $h_0(\mvec{k})$ only once
-for a specific set of parameters such as area, resolution, wind and fetch. Thus,
-only the exponential responsible for the animation has to be computed for all
-frames.
+h_0(\mvec{k}) = \frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)\sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_y}
+\end{equation}
+where $h_0(\mvec{k})$ represents a random generated spectrum based on wave
+spectrum $\Theta(\mvec{k})$. As long as the \wavevector domain and the wave
+spectrum do not change, $h_0$ does not change either. Hence, it is necessary to
+generate $h_0$ only once for a specific set of parameters such as area,
+resolution, wind and fetch. As $h_0$ by itself has no notion of time,
+we still need to take care of animation. Based on Equation~\ref{eq:dft_surface_elevation}
+and \ref{eq:dft_h0_k} we may write:
+\begin{equation}
+\label{eq:dft_h_k_t}
+h(\mvec{k},t) = h_0(\mvec{k})~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
+\end{equation}
+where $t$ denotes the time.
+%The term $h_0(\mvec{k})$ represents a random generated spectrum based on wave
+%spectrum $\Theta(\mvec{k})$. The term $h_0(\mvec{k},t)$ takes care of the
+%animation over time of $h_0(\mvec{k})$.
+Thus, $h$ has to be computed unconditionally for all frames, whereas
+$h_0$ is only synthesized anew in case parameters change.
+%the exponential responsible for the animation has to be computed for all
+%frames.
 %
 \subsection{Zero Frequency}
 %
@@ -267,19 +313,19 @@ frames.
 %\hline \end{array} \]
 %
 %
-\begin{table}[ht]
-\caption{Multi-column and multi-row table}
-\begin{center}
-\begin{tabular}{cccc}
-	\multicolumn{2}{c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c}{\multirow{2}{*}{Q1}} \\
-	\multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c}{\multirow{2}{*}{}} \\
-	\hline
-	\multicolumn{2}{c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c}{\multirow{2}{*}{Q4}} \\
-	\multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c}{\multirow{2}{*}{}} \\
-\end{tabular}
-\end{center}
-\label{tab:multicol}
-\end{table}
+%\begin{table}[ht]
+%\caption{Multi-column and multi-row table}
+%\begin{center}
+%\begin{tabular}{cccc}
+	%\multicolumn{2}{c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c}{\multirow{2}{*}{Q1}} \\
+	%\multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c}{\multirow{2}{*}{}} \\
+	%\hline
+	%\multicolumn{2}{c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c}{\multirow{2}{*}{Q4}} \\
+	%\multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c}{\multirow{2}{*}{}} \\
+%\end{tabular}
+%\end{center}
+%\label{tab:multicol}
+%\end{table}
 %
 %
 \newcommand{\ccellnum}[2]{\cellcolor{#1}\num{#2}}
@@ -299,7 +345,7 @@ We compute surface elevation in the form of an inverse Discrete Fourier Transfor
 \eta(\mvec{x}, t) = \sum_{\mvec{k}}~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
 \intertext{with}
 \notag \mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
--\frac{N}{2}\leq\alpha,\beta<\frac{N}{2}\} &&
+-\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{N}{2}<\beta\leq\frac{N}{2}\} &&
 \Delta k = \frac{2\pi}{L}&
 \end{align}
 As one can see, the wavevector $\mvec{k} = (0,0)$ lies at the center of the wavevector domain,
@@ -1963,7 +2009,7 @@ on which part of the wavenumber profile is being sampled.
   {figures/sampling_multires_scale_06_res_128_8_lod_4.dat};
 \end{groupplot}
 \end{tikzpicture}
-\caption{Reconstructions of one and the same spectrum. Top and bottom row use
+\caption{FIXME: Reconstructions of one and the same spectrum. Top and bottom row use
 equal pattern sizes, it follows that both rows have matching distances between
 subsequent samples. Top row employs half the resolution of bottom row, therefore
 each of its reconstructions is equal the left half of the correspondig
