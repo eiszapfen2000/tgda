@@ -358,22 +358,8 @@ of an even one, the zero frequency would be located precisely at the center of t
 \citet{misc:fftw}, expect the zero frequency as the first element i.e. at the
 upper left of the two dimensional input array.
 %
-\begin {table}
- \caption {Table Title} \label{tab:title} 
- \begin{center}
-  \begin{tabular}{ >{\centering\arraybackslash}m{1.25in}  >{\centering\arraybackslash}m{.85in} >{\centering\arraybackslash}m{.75in} >{\centering\arraybackslash}m{.75in} >{\centering\arraybackslash}m{.75in} >{\centering\arraybackslash}m{.75in}}
-   \toprule
-{Variable Name} & {Regression 1} & {Mean} & {Std. Dev} & {Min} & {Max}\\ 
-   \midrule
-   text        &  text     & text      &  text     &  text     &text\\
-  \bottomrule
-  \end {tabular}
-  \\[1.5cm] %You can adjust how far below the table the text should appear
-  Is just like a caption
- \end{center}
-\end {table}
 %
-\begin{table}
+\begin{figure}
 \centering
 %
 \sisetup{
@@ -383,66 +369,78 @@ explicit-sign = +,
 table-number-alignment=right
 }
 %
-\subtop[]{
-\begin{tabular}{|SS|SS|}
- \hline
- \num{3.5886 + 0.0i}     & \num{0.5354 - 0.9111i}  & \num{-8.3447 + 0.0i}   & \num{0.5354 + 0.9111i} \\
- \num{-2.0288 - 1.4957i} & \num{-0.2199 - 0.7443i} & \num{2.7433 + 2.5938i} & \num{0.1182 + 0.3465i} \\
- \hline
- \num{-0.5139 + 0.0i}    & \num{0.5448 - 0.2298i}  & \color{red}\num{0}     & \num{0.5448 + 0.2298i} \\
- \num{-2.0288 + 1.4957i} & \num{0.1182 - 0.3465i}  & \num{2.7433 - 2.5938i} & \num{-0.2199 + 0.7443i} \\
- \hline
+\begin{tabular}{cc}
+	\subtop[]{
+	\begin{tabular}{|SS|SS|}
+	 \hline
+	 \num{3.5886 + 0.0i}     & \num{0.5354 - 0.9111i}  & \num{-8.3447 + 0.0i}   & \num{0.5354 + 0.9111i} \\
+	 \num{-2.0288 - 1.4957i} & \num{-0.2199 - 0.7443i} & \num{2.7433 + 2.5938i} & \num{0.1182 + 0.3465i} \\
+	 \hline
+	 \num{-0.5139 + 0.0i}    & \num{0.5448 - 0.2298i}  & \color{red}\num{0}     & \num{0.5448 + 0.2298i} \\
+	 \num{-2.0288 + 1.4957i} & \num{0.1182 - 0.3465i}  & \num{2.7433 - 2.5938i} & \num{-0.2199 + 0.7443i} \\
+	 \hline
+	\end{tabular}
+	}
+	&
+	\subtop[]{
+	\begin{tabular}{cccc}
+	 \hline
+	 \multicolumn{2}{|c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q1}} \\
+	 \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} \\
+	 \hline
+	 \multicolumn{2}{|c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c|}{\multirow{2}{*}{\color{red}Q4}} \\
+	 \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} \\
+	 \hline
+	\end{tabular}
+	}
 \end{tabular}
-}
-\hfill
-%\hfill
-%\hspace{1cm}
-\subtop[]{
-\begin{tabular}{cccc}
- \hline
- \multicolumn{2}{|c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q1}} \\
- \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} \\
- \hline
- \multicolumn{2}{|c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c|}{\multirow{2}{*}{\color{red}Q4}} \\
- \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} \\
- \hline
-\end{tabular}
-}
-%\end{table}
 %
-%\begin{table}
-%\centering
-\subtop[]{
-\begin{tabular}{cccccccc}
- \hline
- \multicolumn{2}{!{\color{blue}\vline}c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q1}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q1}} \\
- \multicolumn{2}{!{\color{blue}\vline}c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} \\
- \hline
- \multicolumn{2}{|c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c|}{\multirow{2}{*}{\color{red}Q4}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c|}{\multirow{2}{*}{\color{red}Q4}} \\
- \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}}\\
- \hline
- \multicolumn{2}{|c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q1}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q1}} \\
- \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} \\
- \hline
- \multicolumn{2}{|c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c|}{\multirow{2}{*}{\color{red}Q4}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c|}{\multirow{2}{*}{\color{red}Q4}} \\
- \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}}\\
- \hline
+\begin{tabular}{c}
+	\subtop[]{
+	\begin{tabular}{cccccccc}
+	 \hline
+	 \multicolumn{2}{|c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q1}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q1}} \\
+	 \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} \\
+	 \hline
+	 \multicolumn{2}{|c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c|}{\multirow{2}{*}{\color{red}Q4}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c|}{\multirow{2}{*}{\color{red}Q4}} \\
+	 \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}}\\
+	 \hline
+	 \multicolumn{2}{|c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q1}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q1}} \\
+	 \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} \\
+	 \hline
+	 \multicolumn{2}{|c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c|}{\multirow{2}{*}{\color{red}Q4}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c|}{\multirow{2}{*}{\color{red}Q4}} \\
+	 \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}}\\
+	 \hline
+	\end{tabular}
+	}
 \end{tabular}
-}
-\hfill
 %
-\subtop[]{
-\begin{tabular}{|SS|SS|}
- \hline
- \color{red}\num{0}     & \num{0.5448 + 0.2298i}  & \num{-0.5139 + 0.0i}    & \num{0.5448 - 0.2298i} \\
- \num{2.7433 - 2.5938i} & \num{-0.2199 + 0.7443i} & \num{-2.0288 + 1.4957i} & \num{0.1182 - 0.3465i} \\
- \hline
- \num{-8.3447 + 0.0i}   & \num{0.5354 + 0.9111i}  & \num{3.5886 + 0.0i}     & \num{0.5354 - 0.9111i} \\
- \num{2.7433 + 2.5938i} & \num{0.1182 + 0.3465i}  & \num{-2.0288 - 1.4957i} & \num{-0.2199 - 0.7443i} \\
- \hline
+\begin{tabular}{cc}
+	\subtop[]{
+	\begin{tabular}[b]{cccc}
+	 \hline
+	 \multicolumn{2}{|c|}{\multirow{2}{*}{\color{red}Q4}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q3}} \\
+	 \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} \\
+	 \hline
+	 \multicolumn{2}{|c|}{\multirow{2}{*}{Q1}} & \multicolumn{2}{c|}{\multirow{2}{*}{Q2}} \\
+	 \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} \\
+	 \hline
+	\end{tabular}
+	}
+	&
+	\subtop[]{
+	\begin{tabular}{|SS|SS|}
+	 \hline
+	 \color{red}\num{0}     & \num{0.5448 + 0.2298i}  & \num{-0.5139 + 0.0i}    & \num{0.5448 - 0.2298i} \\
+	 \num{2.7433 - 2.5938i} & \num{-0.2199 + 0.7443i} & \num{-2.0288 + 1.4957i} & \num{0.1182 - 0.3465i} \\
+	 \hline
+	 \num{-8.3447 + 0.0i}   & \num{0.5354 + 0.9111i}  & \num{3.5886 + 0.0i}     & \num{0.5354 - 0.9111i} \\
+	 \num{2.7433 + 2.5938i} & \num{0.1182 + 0.3465i}  & \num{-2.0288 - 1.4957i} & \num{-0.2199 - 0.7443i} \\
+	 \hline
+	\end{tabular}
+	}
 \end{tabular}
-}
-\end{table}
+\end{figure}
 %
 The \wavevector domain of such implementations is defined as follows:
 \begin{equation*}
