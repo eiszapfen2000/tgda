@@ -380,6 +380,7 @@ table-number-alignment=right
 	 \num{-2.0288 + 1.4957i} & \num{0.1182 - 0.3465i}  & \num{2.7433 - 2.5938i} & \num{-0.2199 + 0.7443i} \\
 	 \hline
 	\end{tabular}
+	\label{fig:spectrum:zfreq:center}
 	}
 	&
 	\subtop[]{
@@ -392,6 +393,7 @@ table-number-alignment=right
 	 \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} \\
 	 \hline
 	\end{tabular}
+	\label{fig:zfreq:center}
 	}
 \end{tabular}
 %
@@ -412,6 +414,7 @@ table-number-alignment=right
 	 \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}}\\
 	 \hline
 	\end{tabular}
+	\label{fig:quadrants:periodic}
 	}
 \end{tabular}
 %
@@ -426,6 +429,7 @@ table-number-alignment=right
 	 \multicolumn{2}{|c|}{\multirow{2}{*}{}} & \multicolumn{2}{c|}{\multirow{2}{*}{}} \\
 	 \hline
 	\end{tabular}
+	\label{fig:zfreq:upperleft}
 	}
 	&
 	\subtop[]{
@@ -438,8 +442,18 @@ table-number-alignment=right
 	 \num{2.7433 + 2.5938i} & \num{0.1182 + 0.3465i}  & \num{-2.0288 - 1.4957i} & \num{-0.2199 - 0.7443i} \\
 	 \hline
 	\end{tabular}
+	\label{fig:spectrum:zfreq:upperleft}
 	}
 \end{tabular}
+\caption{
+\subcaptionref{fig:spectrum:zfreq:center} The spectrum of a real-valued signal ($N=4$),
+the zero frequency is highlighted in red.
+\subcaptionref{fig:zfreq:center} Quadrant layout of the spectrum, the quadrant containig the zero frequency is highlighted in red.
+\subcaptionref{fig:quadrants:periodic} The signal is periodic, thus the spectrum is too. We may replicate the spectrum's quadrants along both dimensions, giving us alternative quadrant layouts to choose from.
+\subcaptionref{fig:zfreq:upperleft} The quadrant layout we seek, where the zero frequency is held by the quadrant at the origin. Compared to
+\subcaptionref{fig:zfreq:center} the quadrants have been diagonally swapped.
+\subcaptionref{fig:spectrum:zfreq:upperleft} The spectrum from \subcaptionref{fig:spectrum:zfreq:center}, rearranged so that the zero frequency is located at the origin.
+}
 \end{figure}
 %
 The \wavevector domain of such implementations is defined as follows:
