@@ -397,6 +397,7 @@ the zero frequency component is highlighted in red.
 \subcaptionref{fig:zfreq:upperleft} The quadrant layout we seek, where the zero frequency component is held by the quadrant at the origin. Compared to \subcaptionref{fig:zfreq:center} diagonally opposite quadrants have been swapped.
 \subcaptionref{fig:spectrum:zfreq:upperleft} The spectrum is rearranged according to the quadrant layout from \subcaptionref{fig:zfreq:upperleft}, placing the zero frequency component at the origin.
 }
+\label{fig:quadrant:swapping}
 \end{figure}
 %
 %
@@ -423,37 +424,39 @@ with
 -\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{N}{2}<\beta\leq\frac{N}{2}\}
 \end{equation*}
 The \wavevector $\mvec{k} = (0,0)$ gives the location of the zero frequency component,
-which encodes the average value of the signal in the spatial domain. In our case
-that is the mean surface elevation $\mathrm{E}[\eta] = 0$.
+which encodes the average value of the signal in the spatial domain. In our specific
+case that would be the mean surface elevation $\mathrm{E}[\eta] = 0$.
 As one may read off the above definition of the \wavevector domain, the zero
 frequency component is located near the center of the \wavevector domain,
-where $\alpha=0$ and $\beta=0$. If we had chosen an odd resolution $N$ instead
-of an even one, the zero frequency component would be located precisely at the center of the
-\wavevector domain. Actual implementations of the inverse DFT, such as
-\citet{misc:fftw}, expect the zero frequency component as the first element i.e. at the
+where $\alpha=0$ and $\beta=0$. Actual implementations of the inverse DFT, such as
+\citet{FFTW05}, expect the zero frequency component as the first element i.e. at the
 upper left of the two dimensional input array.
 The \wavevector domain of such implementations is defined as follows:
 \begin{equation*}
 \mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
-0\leq\alpha,\beta<N-1\}
+0\leq\alpha,\beta<N\}
 \end{equation*}
 %
-We know that the spectrum represents a periodic signal, i.e. it repeats itself at infinity in both directions.
-Hence, independent of where the zero frequency is located inside the wavevector domain, we may write:
+We know that the spectrum represents a periodic signal, therefore the spectrum
+repeats itself at infinity in both directions. Hence, independent of where the
+zero frequency is located inside the \wavevector domain, we may write:
+%
 \begin{align*}
- h_0(\mvec{k}(\alpha\Delta k,\beta\Delta k)) &\equiv h_0(\mvec{k}((\alpha\pm N)\Delta k, \beta\Delta k) \\
-					     &\equiv h_0(\mvec{k}(\alpha\Delta k, (\beta\pm N)\Delta k) \\
-					     &\equiv h_0(\mvec{k}((\alpha\pm N)\Delta k, (\beta\pm N)\Delta k)
+ h_0(\mvec{k}(\alpha\Delta k,\beta\Delta k)) = h_0(\mvec{k}((\alpha + lN)\Delta k, (\beta +mN)\Delta k) && l,m \in \mathbb{Z} 
 \end{align*}
 %
-Table~\ref{tab:spectrum_q_repeat} depicts such a periodic spectrum, where each instance
-of the spectrum is divided into four quadrants. The spectrum always consists of those
-four quadrants, independent of where the wavevector domain may begin or end. It is only
-the~\emph{layout} of the four quadrants that changes with the wavevector domain.
-Table~\ref{tab:quadrant_swap} shows that the conversion from a layout
-where the zero frequency is at the center to a layout where the zero
-frequency is at the upper left is accomplished by a swap between
-diagonally opposite quadrants.
+Figure~\ref{fig:quadrant:swapping} shows how we may use the periodical nature
+of the spectrum to convert between the underlying layouts of the two different
+\wavevector domains of interest.
+
+%Table~\ref{tab:spectrum_q_repeat} depicts such a periodic spectrum, where each instance
+%of the spectrum is divided into four quadrants. The spectrum always consists of those
+%four quadrants, independent of where the \wavevector domain may begin or end. It is only
+%the~\emph{layout} of the four quadrants that changes with the \wavevector domain.
+%Table~\ref{tab:quadrant_swap} shows that the conversion from a layout
+%where the zero frequency is at the center to a layout where the zero
+%frequency is at the upper left is accomplished by a swap between
+%diagonally opposite quadrants.
 
 \subsection{Symmetry}
 %
