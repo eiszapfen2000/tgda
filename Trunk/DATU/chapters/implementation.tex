@@ -460,6 +460,55 @@ of the spectrum to convert between the underlying layouts of the two different
 
 \subsection{Symmetry}
 %
+\begin{figure}
+\centering
+\sisetup{
+round-mode      = places,
+round-precision = 1,
+explicit-sign = +,
+table-number-alignment=right
+}
+ \subtop{
+	$\left(\begin{array}{lll}
+	 a   &             b   & c   \\
+	 d   & \color{red} e   & d^* \\
+	 c^* &             b^* & a^* \\
+	\end{array}\right)$
+ }
+ \subtop{
+	%\begin{tabular}{SSS}
+	$\left(\begin{array}{lll}
+	 \num{-0.2199 - 0.7443i} & \num{2.7433 + 2.5938i} & \num{0.1182 + 0.3465i}  \\
+	 \num{0.5448 - 0.2298i}  & \color{red}\num{0}     & \num{0.5448 + 0.2298i}  \\
+	 \num{0.1182 - 0.3465i}  & \num{2.7433 - 2.5938i} & \num{-0.2199 + 0.7443i} \\
+	\end{array}\right)$
+	%\end{tabular}
+ }
+ \subtop{
+	$\left(\begin{array}{llll|l}
+	a   & b   & c             & d   & e   \\
+	f   & g   & h             & i   & j   \\
+	k   & l   & \color{red} m & l^* & k^* \\
+	j^* & i^* & h^*           & g^* & f^* \\
+	\hline
+	e^* & d^* & c^*           & b^* & a^* \\
+	\end{array}\right)$
+ }
+ \subtop{
+	%\begin{tabular}{SSSS|S}
+	$\left(\begin{array}{llll|l}
+	 \num{3.5886 + 0.0i}     & \num{0.5354 - 0.9111i}  & \num{-8.3447 + 0.0i}   & \num{0.5354 + 0.9111i}  & \num{3.5886 + 0.0i} \\
+	 \num{-2.0288 - 1.4957i} & \num{-0.2199 - 0.7443i} & \num{2.7433 + 2.5938i} & \num{0.1182 + 0.3465i}  & \num{-2.0288 - 1.4957i} \\
+	 \num{-0.5139 + 0.0i}    & \num{0.5448 - 0.2298i}  & \color{red}\num{0}     & \num{0.5448 + 0.2298i}  & \num{-0.5139 + 0.0i} \\
+	 \num{-2.0288 + 1.4957i} & \num{0.1182 - 0.3465i}  & \num{2.7433 - 2.5938i} & \num{-0.2199 + 0.7443i} & \num{-2.0288 + 1.4957i} \\
+	 \hline
+	 \num{3.5886 + 0.0i}     & \num{0.5354 - 0.9111i}  & \num{-8.3447 + 0.0i}   & \num{0.5354 + 0.9111i}  & \num{3.5886 + 0.0i} \\
+	\end{array}\right)$
+	%\end{tabular}
+	}
+\end{figure}
+%
+%
 \colorlet{BorderColor}{gray!10}
 \colorlet{CenterColor}{white}
 \colorlet{Brak}{blue!25}
