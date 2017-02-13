@@ -303,62 +303,6 @@ considerable margin.
 \subsection{Zero Frequency}
 %
 %
-%\[ \begin{array}{|c|c|}
-%\hline
-%Q2 & Q1 \\
-%\hline
-%Q3 & Q4 \\
-%\hline \end{array} \]
-%
-%
-%\begin{table}[ht]
-%\caption{Multi-column and multi-row table}
-%\begin{center}
-%\begin{tabular}{cccc}
-	%\multicolumn{2}{c|}{\multirow{2}{*}{Q2}} & \multicolumn{2}{c}{\multirow{2}{*}{Q1}} \\
-	%\multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c}{\multirow{2}{*}{}} \\
-	%\hline
-	%\multicolumn{2}{c|}{\multirow{2}{*}{Q3}} & \multicolumn{2}{c}{\multirow{2}{*}{Q4}} \\
-	%\multicolumn{2}{c|}{\multirow{2}{*}{}} & \multicolumn{2}{c}{\multirow{2}{*}{}} \\
-%\end{tabular}
-%\end{center}
-%\label{tab:multicol}
-%\end{table}
-%
-%
-\newcommand{\ccellnum}[2]{\cellcolor{#1}\num{#2}}
-\newcommand{\mcleft}[2]{\multicolumn{1}{!{\color{#1}\vline}S}{#2}}
-\newcommand{\mcright}[2]{\multicolumn{1}{S !{\color{#1}\vline}}{#2}}
-\newcommand{\mcleftright}[2]{\multicolumn{1}{!{\color{#1}\vline} S !{\color{#1}\vline}}{#2}}
-\colorlet{Q1Color}{cyan!25}
-\colorlet{Q2Color}{NavyBlue!50}
-\colorlet{Q3Color}{violet!45}
-\colorlet{Q4Color}{white}
-\colorlet{Line1Color}{blue}
-\colorlet{Line2Color}{black}
-%
-We compute surface elevation in the form of an inverse Discrete Fourier Transform as follows:
-\begin{equation}
-\label{eq:surface_elevation_h0_k_t}
-\eta(\mvec{x}, t) = \sum_{\mvec{k}}~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
-\end{equation}
-with
-\begin{equation*}
-\mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
--\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{N}{2}<\beta\leq\frac{N}{2}\}
-\end{equation*}
-The \wavevector $\mvec{k} = (0,0)$ gives the location of the zero frequency component,
-which encodes the average value of the signal in the spatial domain. In our case
-that is the mean surface elevation $\mathrm{E}[\eta] = 0$.
-As one may read off the above definition of the \wavevector domain, the zero
-frequency component is located near the center of the \wavevector domain,
-where $\alpha=0$ and $\beta=0$. If we had chosen an odd resolution $N$ instead
-of an even one, the zero frequency component would be located precisely at the center of the
-\wavevector domain. Actual implementations of the inverse DFT, such as
-\citet{misc:fftw}, expect the zero frequency component as the first element i.e. at the
-upper left of the two dimensional input array.
-%
-%
 \begin{figure}
 \centering
 %
@@ -450,25 +394,50 @@ table-number-alignment=right
 the zero frequency component is highlighted in red.
 \subcaptionref{fig:zfreq:center} Quadrant layout of the spectrum, the quadrant containig the zero frequency component is highlighted in red.
 \subcaptionref{fig:quadrants:periodic} The signal is periodic, thus the spectrum is too. We may replicate the spectrum's quadrants along both dimensions, giving us alternative quadrant layouts to choose from.
-\subcaptionref{fig:zfreq:upperleft} The quadrant layout we seek, where the zero frequency component is held by the quadrant at the origin. Compared to \subcaptionref{fig:zfreq:center} the quadrants have been diagonally swapped.
+\subcaptionref{fig:zfreq:upperleft} The quadrant layout we seek, where the zero frequency component is held by the quadrant at the origin. Compared to \subcaptionref{fig:zfreq:center} diagonally opposite quadrants have been swapped.
 \subcaptionref{fig:spectrum:zfreq:upperleft} The spectrum is rearranged according to the quadrant layout from \subcaptionref{fig:zfreq:upperleft}, placing the zero frequency component at the origin.
 }
 \end{figure}
 %
+%
+\newcommand{\ccellnum}[2]{\cellcolor{#1}\num{#2}}
+\newcommand{\mcleft}[2]{\multicolumn{1}{!{\color{#1}\vline}S}{#2}}
+\newcommand{\mcright}[2]{\multicolumn{1}{S !{\color{#1}\vline}}{#2}}
+\newcommand{\mcleftright}[2]{\multicolumn{1}{!{\color{#1}\vline} S !{\color{#1}\vline}}{#2}}
+\colorlet{Q1Color}{cyan!25}
+\colorlet{Q2Color}{NavyBlue!50}
+\colorlet{Q3Color}{violet!45}
+\colorlet{Q4Color}{white}
+\colorlet{Line1Color}{blue}
+\colorlet{Line2Color}{black}
+%
+%
+We compute surface elevation in the form of an inverse Discrete Fourier Transform as follows:
+\begin{equation}
+\label{eq:surface_elevation_h0_k_t}
+\eta(\mvec{x}, t) = \sum_{\mvec{k}}~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\end{equation}
+with
+\begin{equation*}
+\mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
+-\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{N}{2}<\beta\leq\frac{N}{2}\}
+\end{equation*}
+The \wavevector $\mvec{k} = (0,0)$ gives the location of the zero frequency component,
+which encodes the average value of the signal in the spatial domain. In our case
+that is the mean surface elevation $\mathrm{E}[\eta] = 0$.
+As one may read off the above definition of the \wavevector domain, the zero
+frequency component is located near the center of the \wavevector domain,
+where $\alpha=0$ and $\beta=0$. If we had chosen an odd resolution $N$ instead
+of an even one, the zero frequency component would be located precisely at the center of the
+\wavevector domain. Actual implementations of the inverse DFT, such as
+\citet{misc:fftw}, expect the zero frequency component as the first element i.e. at the
+upper left of the two dimensional input array.
 The \wavevector domain of such implementations is defined as follows:
 \begin{equation*}
 \mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
 0\leq\alpha,\beta<N-1\}
 \end{equation*}
 %
-%As one can see, the wavevector $\mvec{k} = (0,0)$ lies at the center of the wavevector domain,
-%where $\alpha=0$ and $\beta=0$. But actual implementations of the inverse Discrete Fourier Transform
-%expect the zero wavevector as the first element i.e. at the upper left. The wavevector domain
-%of such implementations is defined as follows:
-%\begin{equation*}
-%\mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
-%0\leq\alpha,\beta<N-1\}
-%\end{equation*}
 We know that the spectrum represents a periodic signal, i.e. it repeats itself at infinity in both directions.
 Hence, independent of where the zero frequency is located inside the wavevector domain, we may write:
 \begin{align*}
@@ -476,81 +445,6 @@ Hence, independent of where the zero frequency is located inside the wavevector 
 					     &\equiv h_0(\mvec{k}(\alpha\Delta k, (\beta\pm N)\Delta k) \\
 					     &\equiv h_0(\mvec{k}((\alpha\pm N)\Delta k, (\beta\pm N)\Delta k)
 \end{align*}
-%
-%\begin{table}
-%\footnotesize
-%\centering
-%%
-%\sisetup{
-%round-mode      = places,
-%round-precision = 1,
-%explicit-sign = +,
-%table-number-alignment=right
-%}
-%\setlength{\arrayrulewidth}{2pt}
-%\setlength{\tabcolsep}{3pt}
-%%
-%\begin{tabular}{SSSSSSSS}
-%\hhline{>{\arrayrulecolor{Line1Color}}*{4}{-}~~}
-%%
-%\mcleft{Line1Color}{\ccellnum{Q1Color}{1.36+0.00i}} & \ccellnum{Q1Color}{-1.34+1.24i} & \ccellnum{Q2Color}{-1.04+0.00i} & \mcright{Line1Color}{\ccellnum{Q2Color}{-1.34-1.24i}} & \ccellnum{Q1Color}{1.36+0.00i} & \ccellnum{Q1Color}{-1.34+1.24i} & \ccellnum{Q2Color}{-1.04+0.00i} & \ccellnum{Q2Color}{-1.34-1.24i} \\
-%\mcleft{Line1Color}{\ccellnum{Q1Color}{0.67-0.65i}} & \ccellnum{Q1Color}{ 0.07+0.37i} & \ccellnum{Q2Color}{ 0.87+0.03i} & \mcright{Line1Color}{\ccellnum{Q2Color}{ 0.71+0.21i}} & \ccellnum{Q1Color}{0.67-0.65i} & \ccellnum{Q1Color}{ 0.07+0.37i} & \ccellnum{Q2Color}{ 0.87+0.03i} & \ccellnum{Q2Color}{ 0.71+0.21i} \\
-%%
-%\hhline{>{\arrayrulecolor{Line1Color}}|>{\arrayrulecolor{Q1Color}}-->{\arrayrulecolor{Line2Color}}*{4}{-}>{\arrayrulecolor{Q2Color}}--}
-%%
-%\mcleft{Line1Color}{\ccellnum{Q3Color}{1.62+0.00i}} & \ccellnum{Q3Color}{0.04+0.16i} & \mcleft{Line2Color}{\textcolor{red}{\num{9.62+0.0i}}} & \mcright{Line1Color}{\num{0.04-0.16i}} & \ccellnum{Q3Color}{1.62+0.0i} & \mcright{Line2Color}{\ccellnum{Q3Color}{0.04+0.16i}}  & \textcolor{red}{\num{9.62+0.0i}} & \num{0.04-0.16i} \\
-%\mcleft{Line1Color}{\ccellnum{Q3Color}{0.67+0.65i}} & \ccellnum{Q3Color}{0.71-0.21i} & \mcleft{Line2Color}{                \num{0.87-0.03i}} & \mcright{Line1Color}{\num{0.07-0.37i}} & \ccellnum{Q3Color}{0.67+0.65i} & \mcright{Line2Color}{\ccellnum{Q3Color}{0.71-0.21i}} &                 \num{0.87-0.03i} & \num{0.07-0.37i} \\
-%%
-%\hhline{>{\arrayrulecolor{Line1Color}}*{4}{-}>{\arrayrulecolor{Q3Color}}-->{\arrayrulecolor{Line2Color}}|}
-%%
-%\ccellnum{Q1Color}{1.36+0.00i} & \ccellnum{Q1Color}{-1.34+1.24i} & \mcleft{Line2Color}{\ccellnum{Q2Color}{-1.04+0.00i}} & \ccellnum{Q2Color}{-1.34-1.24i} & \ccellnum{Q1Color}{1.36+0.00i} & \mcright{Line2Color}{\ccellnum{Q1Color}{-1.34+1.24i}} & \ccellnum{Q2Color}{-1.04+0.00i} & \ccellnum{Q2Color}{-1.34-1.24i} \\
-%\ccellnum{Q1Color}{0.67-0.65i} & \ccellnum{Q1Color}{ 0.07+0.37i} & \mcleft{Line2Color}{\ccellnum{Q2Color}{ 0.87+0.03i}} & \ccellnum{Q2Color}{ 0.71+0.21i} & \ccellnum{Q1Color}{0.67-0.65i} & \mcright{Line2Color}{\ccellnum{Q1Color}{ 0.07+0.37i}}  & \ccellnum{Q2Color}{ 0.87+0.03i} & \ccellnum{Q2Color}{ 0.71+0.21i} \\
-%%
-%\hhline{>{\arrayrulecolor{Q1Color}}-->{\arrayrulecolor{Line2Color}}*{4}{-}>{\arrayrulecolor{Q2Color}}--}
-%{\ccellnum{Q3Color}{1.62+0.00i}} & \ccellnum{Q3Color}{0.04+0.16i} & {\textcolor{red}{\num{9.62+0.0i}}} & {\num{0.04-0.16i}} & \ccellnum{Q3Color}{1.62+0.0i}  & {\ccellnum{Q3Color}{0.04+0.16i}}  & \textcolor{red}{\num{9.62+0.0i}} & \num{0.04-0.16i} \\
-%{\ccellnum{Q3Color}{0.67+0.65i}} & \ccellnum{Q3Color}{0.71-0.21i} & {                \num{0.87-0.03i}} & {\num{0.07-0.37i}} & \ccellnum{Q3Color}{0.67+0.65i} & {\ccellnum{Q3Color}{0.71-0.21i}} &                  \num{0.87-0.03i} & \num{0.07-0.37i} \\
-%
-%\end{tabular}
-%\caption{Example spectrum ($N = 4$) which consists of four colour-coded quadrants, the zero frequency is in red.
-%The spectrum repeats itself towards the right and the bottom. Blue frame: spectrum where the zero frequency
-%is at the center of the wavevector domain. Black frame: spectrum where the zero frequency is at the
-%upper left of the wavevector domain.}
-%\label{tab:spectrum_q_repeat}
-%\end{table}
-%
-
-%\begin{table}
-%\footnotesize
-%\setlength{\tabcolsep}{3pt}
-%\sisetup{
-%round-mode      = places,
-%round-precision = 1,
-%explicit-sign = +,
-%table-number-alignment=right
-%}
-%\subbottom[Zero frequency at the center.]{%
-%\begin{tabular}{|SSSS|}
-%\hline
-%{\ccellnum{Q1Color}{1.36+0.00i}} & \ccellnum{Q1Color}{-1.34+1.24i} & \ccellnum{Q2Color}{-1.04+0.00i} & {\ccellnum{Q2Color}{-1.34-1.24i}} \\
-%{\ccellnum{Q1Color}{0.67-0.65i}} & \ccellnum{Q1Color}{ 0.07+0.37i} & \ccellnum{Q2Color}{ 0.87+0.03i} & {\ccellnum{Q2Color}{ 0.71+0.21i}} \\
-%{\ccellnum{Q3Color}{1.62+0.00i}} & \ccellnum{Q3Color}{0.04+0.16i}  & {\textcolor{red}{\num{9.62+0.0i}}} & {\num{0.04-0.16i}} \\
-%{\ccellnum{Q3Color}{0.67+0.65i}} & \ccellnum{Q3Color}{0.71-0.21i}  & {                \num{0.87-0.03i}} & {\num{0.07-0.37i}} \\
-%\hline
-%\end{tabular}
-%}
-%\subbottom[Zero frequency at the upper left.]{%
-%\begin{tabular}{|SSSS|}
-%\hline
-%{\textcolor{red}{\num{9.62+0.0i}}} & {\num{0.04-0.16i}} & {\ccellnum{Q3Color}{1.62+0.00i}} & \ccellnum{Q3Color}{0.04+0.16i} \\
-%{                \num{0.87-0.03i}} & {\num{0.07-0.37i}} & {\ccellnum{Q3Color}{0.67+0.65i}} & \ccellnum{Q3Color}{0.71-0.21i} \\
-%{\ccellnum{Q2Color}{-1.04+0.00i}}  & {\ccellnum{Q2Color}{-1.34-1.24i}} & {\ccellnum{Q1Color}{1.36+0.00i}} & \ccellnum{Q1Color}{-1.34+1.24i} \\
-%{\ccellnum{Q2Color}{ 0.87+0.03i}}  & {\ccellnum{Q2Color}{ 0.71+0.21i}} & {\ccellnum{Q1Color}{0.67-0.65i}} & \ccellnum{Q1Color}{ 0.07+0.37i} \\
-%\hline
-%\end{tabular}
-%}
-%\caption{Swap quadrants diagonally to convert between the two wavevector domains of interest.}
-%\label{tab:quadrant_swap}
-%\end{table}
 %
 Table~\ref{tab:spectrum_q_repeat} depicts such a periodic spectrum, where each instance
 of the spectrum is divided into four quadrants. The spectrum always consists of those
