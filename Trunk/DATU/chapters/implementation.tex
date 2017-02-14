@@ -469,36 +469,45 @@ round-precision = 1,
 explicit-sign = +,
 table-number-alignment=right
 }
+\setlength{\tabcolsep}{0pt}
+\begin{tabular}{cc}
  \subtop[]{
 	$\left(\begin{array}{lll}
 	 a   &             b   & c   \\
 	 d   & \color{red} e   & d^* \\
 	 c^* &             b^* & a^* \\
 	\end{array}\right)$
-	\hfill
+	\label{fig:symmetry:odd:layout}
+ }
+ &
+ \subtop[]{
 	$\left(\begin{array}{lll}
 	 \num{-0.2199 - 0.7443i} & \num{2.7433 + 2.5938i} & \num{0.1182 + 0.3465i}  \\
 	 \num{0.5448 - 0.2298i}  & \color{red}\num{0}     & \num{0.5448 + 0.2298i}  \\
 	 \num{0.1182 - 0.3465i}  & \num{2.7433 - 2.5938i} & \num{-0.2199 + 0.7443i} \\
 	\end{array}\right)$
-	\label{fig:symmetry:odd}
+	\label{fig:symmetry:odd:example}
  }
- \subtop[]{
-	$\left(\begin{array}{llll}
-	 ? & ?   &             ?   & ?   \\
-	 ? & a   &             b   & c   \\
-	 ? & d   & \color{red} e   & d^* \\
-	 ? & c^* &             b^* & a^* \\
-	\end{array}\right)$
-	\hfill
-	$\left(\begin{array}{llll}
-	 \num{3.5886 + 0.0i}     & \num{0.5354 - 0.9111i}  & \num{-8.3447 + 0.0i}   & \num{0.5354 + 0.9111i}  \\
-	 \num{-2.0288 - 1.4957i} & \num{-0.2199 - 0.7443i} & \num{2.7433 + 2.5938i} & \num{0.1182 + 0.3465i}  \\
-	 \num{-0.5139 + 0.0i}    & \num{0.5448 - 0.2298i}  & \color{red}\num{0}     & \num{0.5448 + 0.2298i}  \\
-	 \num{-2.0288 + 1.4957i} & \num{0.1182 - 0.3465i}  & \num{2.7433 - 2.5938i} & \num{-0.2199 + 0.7443i} \\
-	\end{array}\right)$
-	\label{fig:symmetry:even}
- }
+ \\
+ %\subtop[]{
+	%$\left(\begin{array}{llll}
+	 %? & ?   &             ?   & ?   \\
+	 %? & a   &             b   & c   \\
+	 %? & d   & \color{red} e   & d^* \\
+	 %? & c^* &             b^* & a^* \\
+	%\end{array}\right)$
+ %}
+ %&
+ %\subtop[]{
+	%$\left(\begin{array}{llll}
+	 %\num{3.5886 + 0.0i}     & \num{0.5354 - 0.9111i}  & \num{-8.3447 + 0.0i}   & \num{0.5354 + 0.9111i}  \\
+	 %\num{-2.0288 - 1.4957i} & \num{-0.2199 - 0.7443i} & \num{2.7433 + 2.5938i} & \num{0.1182 + 0.3465i}  \\
+	 %\num{-0.5139 + 0.0i}    & \num{0.5448 - 0.2298i}  & \color{red}\num{0}     & \num{0.5448 + 0.2298i}  \\
+	 %\num{-2.0288 + 1.4957i} & \num{0.1182 - 0.3465i}  & \num{2.7433 - 2.5938i} & \num{-0.2199 + 0.7443i} \\
+	%\end{array}\right)$
+	%\label{fig:symmetry:even}
+ %}
+ %\\
  \subtop[]{
 	$\left(\begin{array}{lllll}
 	a   & b   & c             & d   & e   \\
@@ -507,7 +516,10 @@ table-number-alignment=right
 	j^* & i^* & h^*           & g^* & f^* \\
 	e^* & d^* & c^*           & b^* & a^* \\
 	\end{array}\right)$
-	\hfill
+	\label{fig:symmetry:even:layout}
+ }
+ &
+ \subtop[]{
 	$\left(\begin{array}{llll|l}
 	 \num{3.5886 + 0.0i}     & \num{0.5354 - 0.9111i}  & \num{-8.3447 + 0.0i}   & \num{0.5354 + 0.9111i}  & \num{3.5886 + 0.0i} \\
 	 \num{-2.0288 - 1.4957i} & \num{-0.2199 - 0.7443i} & \num{2.7433 + 2.5938i} & \num{0.1182 + 0.3465i}  & \num{-2.0288 - 1.4957i} \\
@@ -516,14 +528,21 @@ table-number-alignment=right
 	 \hline
 	 \num{3.5886 + 0.0i}     & \num{0.5354 - 0.9111i}  & \num{-8.3447 + 0.0i}   & \num{0.5354 + 0.9111i}  & \num{3.5886 + 0.0i} \\
 	\end{array}\right)$
-	\label{fig:symmetry:even:replicated}
+	\label{fig:symmetry:even:example}
  }
+\end{tabular}
 \caption{
-\subcaptionref{fig:symmetry:odd} The spectrum $\mathcal{F}(\mvec{k})$ of an odd-sized ($N = 3$) and real-valued function $f(\mvec{x})$.
-The zero frequency component is located at the center, highlighted in red.
-\subcaptionref{fig:symmetry:even}
-\subcaptionref{fig:symmetry:even:replicated}
+\subcaptionref{fig:symmetry:odd:layout} Hermitian matrix ($N=3$).
+\subcaptionref{fig:symmetry:odd:example} Example spectrum matching the hermitian matrix layout from \subcaptionref{fig:symmetry:odd:layout}.
+The zero frequency component is highlighted in red.
+\subcaptionref{fig:symmetry:even:layout} Hermitian matrix ($N=5$).
+\subcaptionref{fig:symmetry:even:example} An even-sized spectrum ($N=4$), which repeats itself in both directions,
+such as for all elements of the spectrum there is a pair which satisfies $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$,
+matching the hermitian matrix layout from \subcaptionref{fig:symmetry:even:layout}.
+%An even-sized spectrum ($N=4$), which repeats itself in both directions, such as for all elements of the spectrum
+%there is a pair which satisfies $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$.
 }
+\label{fig:symmetry}
 \end{figure}
 %
 %
@@ -532,86 +551,86 @@ The zero frequency component is located at the center, highlighted in red.
 \colorlet{Brak}{blue!25}
 %
 %
-\begin{table}
-\footnotesize
-\centering
+%\begin{table}
+%\footnotesize
+%\centering
+%%
+%\sisetup{
+%round-mode      = places,
+%round-precision = 1,
+%explicit-sign = +,
+%table-number-alignment=right
+%}
+%\setlength{\arrayrulewidth}{.5pt}
+%\setlength{\tabcolsep}{3pt}
+%\subbottom{%
+%\begin{tabular}{SSSS}
+%\textcolor{gray!50}{\ccellnum{BorderColor}{1.36+0.00i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{-1.34+1.24i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{-1.04+0.00i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{-1.34-1.24i}} \\
+%\hhline{>{\arrayrulecolor{BorderColor}}->{\arrayrulecolor{black}}*{3}{-}}
+%\textcolor{gray!50}{\ccellnum{BorderColor}{0.67-0.65i}} & \mcleft{black}{\ccellnum{CenterColor}{0.07+0.37i}} & {\ccellnum{CenterColor}{0.87+0.03i}}                & \mcright{black}{\ccellnum{CenterColor}{0.71+0.21i}} \\
+%\textcolor{gray!50}{\ccellnum{BorderColor}{1.62+0.00i}} & \mcleft{black}{\ccellnum{CenterColor}{0.04+0.16i}} & \textcolor{red}{\ccellnum{CenterColor}{9.62+0.0i }} & \mcright{black}{\ccellnum{CenterColor}{0.04-0.16i}} \\
+%\textcolor{gray!50}{\ccellnum{BorderColor}{0.67+0.65i}} & \mcleft{black}{\ccellnum{CenterColor}{0.71-0.21i}} & {\ccellnum{CenterColor}{0.87-0.03i}}                & \mcright{black}{\ccellnum{CenterColor}{0.07-0.37i}} \\
+%\hhline{>{\arrayrulecolor{BorderColor}}->{\arrayrulecolor{black}}*{3}{-}}
+%\end{tabular}
+%}
+%\subbottom{%
+%\begin{tabular}{SSSS}
+%\textcolor{gray!50}{\ccellnum{BorderColor}{1.36+0.00i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{-1.34+1.24i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{-1.04+0.00i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{-1.34-1.24i}} \\
+%\hhline{>{\arrayrulecolor{BorderColor}}->{\arrayrulecolor{black}}*{3}{-}}
+%\textcolor{gray!50}{\ccellnum{BorderColor}{0.67-0.65i}} & \mcleft{black}{\ccellnum{blue!20}  { 0.07+0.37i}} & {\ccellnum{violet!60}{0.87+0.03i}}                  & \mcright{black}{\ccellnum{violet!20}{0.71+0.21i}} \\
+%\textcolor{gray!50}{\ccellnum{BorderColor}{1.62+0.00i}} & \mcleft{black}{\ccellnum{blue!60}  { 0.04+0.16i}} & \textcolor{red}{\ccellnum{CenterColor}{9.62+0.0i }} & \mcright{black}{\ccellnum{blue!60}  {0.04-0.16i}} \\
+%\textcolor{gray!50}{\ccellnum{BorderColor}{0.67+0.65i}} & \mcleft{black}{\ccellnum{violet!20}{ 0.71-0.21i}} & {\ccellnum{violet!60}{0.87-0.03i}}                  & \mcright{black}{\ccellnum{blue!20}  {0.07-0.37i}} \\
+%\hhline{>{\arrayrulecolor{BorderColor}}->{\arrayrulecolor{black}}*{3}{-}}
+%\end{tabular}
+%}
+%\caption{Left: The spectrum $\mathcal{F}(\mvec{k})$ of an even-sized ($N = 4$) and real-valued function $f(\mvec{x})$.
+%The zero frequency $\mvec{k} = (0,0)$ is at the center, written in red.
+%Right: The matching pairs $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$ of the spectrum are colour-coded. One may notice
+%that the cells in the top row and in the first column to the left lack such pairing.}
+%\label{tab:spectrum_k_minusk}
+%\end{table}
 %
-\sisetup{
-round-mode      = places,
-round-precision = 1,
-explicit-sign = +,
-table-number-alignment=right
-}
-\setlength{\arrayrulewidth}{.5pt}
-\setlength{\tabcolsep}{3pt}
-\subbottom{%
-\begin{tabular}{SSSS}
-\textcolor{gray!50}{\ccellnum{BorderColor}{1.36+0.00i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{-1.34+1.24i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{-1.04+0.00i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{-1.34-1.24i}} \\
-\hhline{>{\arrayrulecolor{BorderColor}}->{\arrayrulecolor{black}}*{3}{-}}
-\textcolor{gray!50}{\ccellnum{BorderColor}{0.67-0.65i}} & \mcleft{black}{\ccellnum{CenterColor}{0.07+0.37i}} & {\ccellnum{CenterColor}{0.87+0.03i}}                & \mcright{black}{\ccellnum{CenterColor}{0.71+0.21i}} \\
-\textcolor{gray!50}{\ccellnum{BorderColor}{1.62+0.00i}} & \mcleft{black}{\ccellnum{CenterColor}{0.04+0.16i}} & \textcolor{red}{\ccellnum{CenterColor}{9.62+0.0i }} & \mcright{black}{\ccellnum{CenterColor}{0.04-0.16i}} \\
-\textcolor{gray!50}{\ccellnum{BorderColor}{0.67+0.65i}} & \mcleft{black}{\ccellnum{CenterColor}{0.71-0.21i}} & {\ccellnum{CenterColor}{0.87-0.03i}}                & \mcright{black}{\ccellnum{CenterColor}{0.07-0.37i}} \\
-\hhline{>{\arrayrulecolor{BorderColor}}->{\arrayrulecolor{black}}*{3}{-}}
-\end{tabular}
-}
-\subbottom{%
-\begin{tabular}{SSSS}
-\textcolor{gray!50}{\ccellnum{BorderColor}{1.36+0.00i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{-1.34+1.24i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{-1.04+0.00i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{-1.34-1.24i}} \\
-\hhline{>{\arrayrulecolor{BorderColor}}->{\arrayrulecolor{black}}*{3}{-}}
-\textcolor{gray!50}{\ccellnum{BorderColor}{0.67-0.65i}} & \mcleft{black}{\ccellnum{blue!20}  { 0.07+0.37i}} & {\ccellnum{violet!60}{0.87+0.03i}}                  & \mcright{black}{\ccellnum{violet!20}{0.71+0.21i}} \\
-\textcolor{gray!50}{\ccellnum{BorderColor}{1.62+0.00i}} & \mcleft{black}{\ccellnum{blue!60}  { 0.04+0.16i}} & \textcolor{red}{\ccellnum{CenterColor}{9.62+0.0i }} & \mcright{black}{\ccellnum{blue!60}  {0.04-0.16i}} \\
-\textcolor{gray!50}{\ccellnum{BorderColor}{0.67+0.65i}} & \mcleft{black}{\ccellnum{violet!20}{ 0.71-0.21i}} & {\ccellnum{violet!60}{0.87-0.03i}}                  & \mcright{black}{\ccellnum{blue!20}  {0.07-0.37i}} \\
-\hhline{>{\arrayrulecolor{BorderColor}}->{\arrayrulecolor{black}}*{3}{-}}
-\end{tabular}
-}
-\caption{Left: The spectrum $\mathcal{F}(\mvec{k})$ of an even-sized ($N = 4$) and real-valued function $f(\mvec{x})$.
-The zero frequency $\mvec{k} = (0,0)$ is at the center, written in red.
-Right: The matching pairs $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$ of the spectrum are colour-coded. One may notice
-that the cells in the top row and in the first column to the left lack such pairing.}
-\label{tab:spectrum_k_minusk}
-\end{table}
 %
-%
-\begin{table}
-\footnotesize
-%
-\sisetup{
-round-mode      = places,
-round-precision = 1,
-explicit-sign = +,
-table-number-alignment=right
-}
-\setlength{\arrayrulewidth}{.5pt}
-\setlength{\tabcolsep}{3pt}
-\subbottom{%
-\begin{tabular}{S|SSS}
-{\ccellnum{CenterColor}{1.36+0.00i}} & {\ccellnum{blue!20}{-1.34+1.24i}}                       & \ccellnum{CenterColor}{-1.04+0.00i}                     & {\ccellnum{blue!20}{-1.34-1.24i}} \\
-\hline
-{\ccellnum{violet!20}{0.67-0.65i}}   & \textcolor{gray!50}{\ccellnum{BorderColor}{0.07+0.37i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.87+0.03i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.71+0.21i}} \\
-{\ccellnum{CenterColor}{1.62+0.00i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.04+0.16i}} & \textcolor{red!50} {\ccellnum{BorderColor}{9.62+0.0i }} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.04-0.16i}} \\
-{\ccellnum{violet!20}{0.67+0.65i}}   & \textcolor{gray!50}{\ccellnum{BorderColor}{0.71-0.21i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.87-0.03i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.07-0.37i}} \\
-\multicolumn{1}{S}{}                 &                                                         &                                                         &                                                         \\
-\end{tabular}
-}
-\subbottom{%
-\begin{tabular}{S|SSS|S}
-{\ccellnum{red!40}{1.36+0.00i}}    & {\ccellnum{blue!20}{-1.34+1.24i}}                       & \ccellnum{violet!60}{-1.04+0.00i}                       & {\ccellnum{blue!40}{-1.34-1.24i}}                       & {\ccellnum{white}{1.36+0.00i}} \\
-\hline
-{\ccellnum{violet!20}{0.67-0.65i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.07+0.37i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.87+0.03i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.71+0.21i}} & {\ccellnum{violet!40}{0.67-0.65i}} \\
-{\ccellnum{blue!60}{1.62+0.00i}}   & \textcolor{gray!50}{\ccellnum{BorderColor}{0.04+0.16i}} & \textcolor{red!50} {\ccellnum{BorderColor}{9.62+0.0i }} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.04-0.16i}} & {\ccellnum{blue!60}{1.62+0.00i}} \\
-{\ccellnum{violet!40}{0.67+0.65i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.71-0.21i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.87-0.03i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.07-0.37i}} & {\ccellnum{violet!20}{0.67+0.65i}} \\
-\hline
-{\ccellnum{white}{1.36+0.00i}}     & {\ccellnum{blue!40}{-1.34+1.24i}}                       & \ccellnum{violet!60}{-1.04+0.00i}                       & {\ccellnum{blue!20}{-1.34-1.24i}}                       & {\ccellnum{red!40}{1.36+0.00i}} \\
-\end{tabular}
-}
-\caption{Left: The spectrum $\mathcal{F}(\mvec{k})$ of an even-sized ($N = 4$) and real-valued function $f(\mvec{x})$.
-The zero frequency is at the center, written in red. The first row as well as the first column to the
-left each contain a colour-coded complex conjugate pair. At first glance, the relation 
-$\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$ does not seem to hold for these two pairs.
-Right: The spectrum repeats itself in both directions, such as for all elements of the spectrum
-there is a pair which satisfies $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$.}
-\label{tab:spectrum_k_minusk_border}
-\end{table}
+%\begin{table}
+%\footnotesize
+%%
+%\sisetup{
+%round-mode      = places,
+%round-precision = 1,
+%explicit-sign = +,
+%table-number-alignment=right
+%}
+%\setlength{\arrayrulewidth}{.5pt}
+%\setlength{\tabcolsep}{3pt}
+%\subbottom{%
+%\begin{tabular}{S|SSS}
+%{\ccellnum{CenterColor}{1.36+0.00i}} & {\ccellnum{blue!20}{-1.34+1.24i}}                       & \ccellnum{CenterColor}{-1.04+0.00i}                     & {\ccellnum{blue!20}{-1.34-1.24i}} \\
+%\hline
+%{\ccellnum{violet!20}{0.67-0.65i}}   & \textcolor{gray!50}{\ccellnum{BorderColor}{0.07+0.37i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.87+0.03i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.71+0.21i}} \\
+%{\ccellnum{CenterColor}{1.62+0.00i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.04+0.16i}} & \textcolor{red!50} {\ccellnum{BorderColor}{9.62+0.0i }} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.04-0.16i}} \\
+%{\ccellnum{violet!20}{0.67+0.65i}}   & \textcolor{gray!50}{\ccellnum{BorderColor}{0.71-0.21i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.87-0.03i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.07-0.37i}} \\
+%\multicolumn{1}{S}{}                 &                                                         &                                                         &                                                         \\
+%\end{tabular}
+%}
+%\subbottom{%
+%\begin{tabular}{S|SSS|S}
+%{\ccellnum{red!40}{1.36+0.00i}}    & {\ccellnum{blue!20}{-1.34+1.24i}}                       & \ccellnum{violet!60}{-1.04+0.00i}                       & {\ccellnum{blue!40}{-1.34-1.24i}}                       & {\ccellnum{white}{1.36+0.00i}} \\
+%\hline
+%{\ccellnum{violet!20}{0.67-0.65i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.07+0.37i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.87+0.03i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.71+0.21i}} & {\ccellnum{violet!40}{0.67-0.65i}} \\
+%{\ccellnum{blue!60}{1.62+0.00i}}   & \textcolor{gray!50}{\ccellnum{BorderColor}{0.04+0.16i}} & \textcolor{red!50} {\ccellnum{BorderColor}{9.62+0.0i }} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.04-0.16i}} & {\ccellnum{blue!60}{1.62+0.00i}} \\
+%{\ccellnum{violet!40}{0.67+0.65i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.71-0.21i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.87-0.03i}} & \textcolor{gray!50}{\ccellnum{BorderColor}{0.07-0.37i}} & {\ccellnum{violet!20}{0.67+0.65i}} \\
+%\hline
+%{\ccellnum{white}{1.36+0.00i}}     & {\ccellnum{blue!40}{-1.34+1.24i}}                       & \ccellnum{violet!60}{-1.04+0.00i}                       & {\ccellnum{blue!20}{-1.34-1.24i}}                       & {\ccellnum{red!40}{1.36+0.00i}} \\
+%\end{tabular}
+%}
+%\caption{Left: The spectrum $\mathcal{F}(\mvec{k})$ of an even-sized ($N = 4$) and real-valued function $f(\mvec{x})$.
+%The zero frequency is at the center, written in red. The first row as well as the first column to the
+%left each contain a colour-coded complex conjugate pair. At first glance, the relation 
+%$\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$ does not seem to hold for these two pairs.
+%Right: The spectrum repeats itself in both directions, such as for all elements of the spectrum
+%there is a pair which satisfies $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$.}
+%\label{tab:spectrum_k_minusk_border}
+%\end{table}
 %
 %https://www.cv.nrao.edu/course/astr534/FourierTransforms.html
 %https://ccrma.stanford.edu/~jos/mdft/Even_Odd_Functions.html
@@ -646,12 +665,16 @@ too. We may write
 \end{equation}
 where finding $h_0(\mvec{k},t)$ for its counterpart $h_0(-\mvec{k},t)$ has proven to be non-trivial
 for even-sized spectra.
-Let the discretised wavevector domain be zero centered and of even size in both dimensions,
-then there is one row and one column of the spectrum which lacks
-matching complex conjugate elements inside said domain, see the example spectrum in Table~\ref{tab:spectrum_k_minusk}.
-Again, it is the periodic nature of the spectrum that gives us the solution. If we replicate
-the spectrum in both directions, we obtain an additional row and an additional column which
-allows us to find matching pairs for all elements of the spectrum, see Table~\ref{tab:spectrum_k_minusk_border}.\\
+Figure~\ref{fig:symmetry} shows that, again, it is the periodic nature of the spectrum that gives us the solution.
+If we replicate the spectrum in both directions, we obtain an additional row and an additional column, which
+allows us to find matching complex conjugate pairs for all elements of the spectrum.
+
+%Let the discretised wavevector domain be zero centered and of even size in both dimensions,
+%then there is one row and one column of the spectrum which lacks
+%matching complex conjugate elements inside said domain, see the example spectrum in Table~\ref{tab:spectrum_k_minusk}.
+%Again, it is the periodic nature of the spectrum that gives us the solution. If we replicate
+%the spectrum in both directions, we obtain an additional row and an additional column, which
+%allows us to find matching pairs for all elements of the spectrum, see Table~\ref{tab:spectrum_k_minusk_border}.\\
 
 
 The spectrum $h_0(\mvec{k},t)$ as we generate it with Equation~\ref{eq:dft_h0_k_t} is~\emph{not}
