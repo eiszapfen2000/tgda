@@ -394,8 +394,9 @@ table-number-alignment=right
 the zero frequency component is highlighted in red.
 \subcaptionref{fig:zfreq:center} Quadrant layout of the spectrum, the quadrant containig the zero frequency component is highlighted in red.
 \subcaptionref{fig:quadrants:periodic} The signal is periodic, thus the spectrum is too. We may replicate the spectrum's quadrants along both dimensions, giving us alternative quadrant layouts to choose from.
-\subcaptionref{fig:zfreq:upperleft} The quadrant layout we seek, where the zero frequency component is held by the quadrant at the origin. Compared to \subcaptionref{fig:zfreq:center} diagonally opposite quadrants have been swapped.
-\subcaptionref{fig:spectrum:zfreq:upperleft} The spectrum is rearranged according to the quadrant layout from \subcaptionref{fig:zfreq:upperleft}, placing the zero frequency component at the origin.
+\subcaptionref{fig:zfreq:upperleft} The quadrant layout we seek, where the zero frequency component is held by the quadrant at the origin. Compared to the
+original layout, diagonally opposite quadrants have been swapped.
+\subcaptionref{fig:spectrum:zfreq:upperleft} The spectrum is rearranged according to the modified quadrant layout, placing the zero frequency component at the origin.
 }
 \label{fig:quadrant:swapping}
 \end{figure}
@@ -536,9 +537,9 @@ The center element and the zero frequency component are highlighted in red respe
 \subcaptionref{fig:symmetry:odd:layout} Hermitian matrix ($N=3$).
 \subcaptionref{fig:symmetry:odd:example} Example spectrum matching the hermitian matrix layout.
 \subcaptionref{fig:symmetry:even:layout} Hermitian matrix ($N=5$).
-\subcaptionref{fig:symmetry:even:example} An even-sized spectrum ($N=4$), which repeats itself in both directions,
-such as for all elements of the spectrum there is a pair which satisfies $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$,
-matching the hermitian matrix layout.
+\subcaptionref{fig:symmetry:even:example} An even-sized spectrum ($N=4$). If replicated in both dimensions,
+one can see that for all elements of the spectrum there is a pair which satisfies the hermitian
+condition $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$.
 %An even-sized spectrum ($N=4$), which repeats itself in both directions, such as for all elements of the spectrum
 %there is a pair which satisfies $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$.
 }
@@ -665,7 +666,7 @@ too. We may write
 \label{eq:h0_k_complex_conjugate}
  h(\mvec{-k},t) = h(\mvec{k},t)^*
 \end{equation}
-where finding $h(\mvec{k},t)$ for its counterpart $h(-\mvec{k},t)$ has proven to be non-trivial
+where finding $h(\mvec{k},t)^*$ for its counterpart $h(-\mvec{k},t)$ has proven to be non-trivial
 for even-sized spectra.
 Figure~\ref{fig:symmetry} shows that, again, it is the periodic nature of the spectrum that gives us the solution.
 If we replicate the spectrum in both directions, we obtain an additional row and an additional column, which
