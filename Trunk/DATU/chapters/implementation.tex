@@ -294,8 +294,8 @@ and \ref{eq:dft_h0_k} we may write:
 h(\mvec{k},t) = h_0(\mvec{k})~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
 \end{equation}
 where $t$ denotes the time.
-Thus, $h$ as defined by Equation~\ref{eq:dft_h_k_t} has to be computed
-whenever one requires a new keyframe for the animated ocean surface.
+Thus, $h$ as defined by Equation~\ref{eq:dft_h_k_t} has to be computed whenever
+one requires a new keyframe for the animated ocean surface.
 Equation~\ref{eq:dft_h0_k} on the other hand is only to be evaluated anew in
 case parameters change, easing the computational workload by a
 considerable margin.
@@ -416,7 +416,7 @@ the zero frequency component is highlighted in red.
 We compute surface elevation in the form of an inverse Discrete Fourier Transform as follows:
 \begin{equation}
 \label{eq:surface_elevation_h0_k_t}
-\eta(\mvec{x}, t) = \sum_{\mvec{k}}~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\eta(\mvec{x}, t) = \sum_{\mvec{k}}~h(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation}
 with
 \begin{equation*}
@@ -442,7 +442,7 @@ repeats itself at infinity in both directions. Hence, independent of where the
 zero frequency is located inside the \wavevector domain, we may write:
 %
 \begin{align*}
- h_0(\mvec{k}(\alpha\Delta k,\beta\Delta k)) = h_0(\mvec{k}((\alpha + lN)\Delta k, (\beta +mN)\Delta k) && l,m \in \mathbb{Z} 
+ h(\mvec{k}(\alpha\Delta k,\beta\Delta k),t) = h(\mvec{k}((\alpha + lN)\Delta k, (\beta +mN)\Delta k),t) && l,m \in \mathbb{Z}
 \end{align*}
 %
 Figure~\ref{fig:quadrant:swapping} shows how we may use the periodical nature
@@ -532,13 +532,13 @@ table-number-alignment=right
  }
 \end{tabular}
 \caption{
+The center element and the zero frequency component are highlighted in red respectively.
 \subcaptionref{fig:symmetry:odd:layout} Hermitian matrix ($N=3$).
-\subcaptionref{fig:symmetry:odd:example} Example spectrum matching the hermitian matrix layout from \subcaptionref{fig:symmetry:odd:layout}.
-The zero frequency component is highlighted in red.
+\subcaptionref{fig:symmetry:odd:example} Example spectrum matching the hermitian matrix layout.
 \subcaptionref{fig:symmetry:even:layout} Hermitian matrix ($N=5$).
 \subcaptionref{fig:symmetry:even:example} An even-sized spectrum ($N=4$), which repeats itself in both directions,
 such as for all elements of the spectrum there is a pair which satisfies $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$,
-matching the hermitian matrix layout from \subcaptionref{fig:symmetry:even:layout}.
+matching the hermitian matrix layout.
 %An even-sized spectrum ($N=4$), which repeats itself in both directions, such as for all elements of the spectrum
 %there is a pair which satisfies $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$.
 }
@@ -637,7 +637,8 @@ matching the hermitian matrix layout from \subcaptionref{fig:symmetry:even:layou
 %https://ccrma.stanford.edu/~jos/mdft/mdft.html
 %https://web.eecs.umich.edu/~fessler/course/451/l/pdf/c5.pdf
 The Fourier Transform of real-valued input is~\emph{hermitian} - the real part of the resulting spectrum
-is an~\emph{even} function and the imaginary part is~\emph{odd}. A function $f(n)$ is said to be even if
+is an~\emph{even} function and the imaginary part is~\emph{odd}~\citep{book:bracewell2000fourier}.
+A function $f(n)$ is said to be even if
 $f(-n) = f(n)$. On the other hand, a function $f(n)$ is said to be odd if $f(-n) = -f(n)$,
 with $f(0) = 0$. Let $\mathcal{F}(k)$ be the Fourier Transform of a real-valued function $f(n)$, then
 the following is true:
@@ -647,23 +648,24 @@ the following is true:
 \end{equation}
 where $*$ denotes the complex conjugate operator. The relation is similar to a centrosymmetric one,
 $\mathcal{F}(-k) = \mathcal{F}(k)$, with $\mathcal{F}(0)$ as a fixpoint at the center. The only
-difference is the complex conjugation. Fourier Transform implementations may take advantage of
+difference is the complex conjugation. Fourier Transform implementations \citep{misc:fftw,FFTW05}
+may take advantage of
 Equation~\ref{eq:dft_real_complex_conjugate} to be able to provide optimised transform functionality 
 for real-valued data. For example, for a forward Fourier Transform of real-valued data it is
 necessary to compute only half of the spectrum, since the other half is implicitely given as the
 complex conjugate of the first half. Likewise, for the inverse Fourier Transform only half of the
 spectrum is necessary, the other half is implicitely given. Such optimised transforms provide
 gain in performance memory-wise, the spectrum's size is halved, as well as computation-wise, only
-half the data is actually processed.\\
+half the data is actually processed.
 
 
-Surface elevation $\eta$ is a real-valued function, therefore we assume $h_0$ must be hermitian,
+Surface elevation $\eta$ is a real-valued function, therefore we assume $h$ must be hermitian,
 too. We may write
 \begin{equation}
 \label{eq:h0_k_complex_conjugate}
- h_0(\mvec{-k},t) = h_0(\mvec{k},t)^*
+ h(\mvec{-k},t) = h(\mvec{k},t)^*
 \end{equation}
-where finding $h_0(\mvec{k},t)$ for its counterpart $h_0(-\mvec{k},t)$ has proven to be non-trivial
+where finding $h(\mvec{k},t)$ for its counterpart $h(-\mvec{k},t)$ has proven to be non-trivial
 for even-sized spectra.
 Figure~\ref{fig:symmetry} shows that, again, it is the periodic nature of the spectrum that gives us the solution.
 If we replicate the spectrum in both directions, we obtain an additional row and an additional column, which
@@ -696,7 +698,7 @@ Equation~\ref{eq:dft_h0_k_t} as follows:
 \end{equation}
 %
 which gives us a hermitian spectrum, independent both of the generated random numbers and 
-whether the wave energy spectrum is an even function or not.\\
+whether the wave energy spectrum is an even function or not.
 
 
 Note that surface elevation $\eta$ as computed by Equation~\ref{eq:surface_elevation_h0_k_t}
