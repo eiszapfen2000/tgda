@@ -687,7 +687,7 @@ allows us to find matching complex conjugate pairs for all elements of an even-s
 %allows us to find matching pairs for all elements of the spectrum, see Table~\ref{tab:spectrum_k_minusk_border}.\\
 
 
-The spectrum $h_0(\mvec{k},t)$ as we generate it with Equation~\ref{eq:dft_h0_k_t} is~\emph{not}
+The spectrum $h(\mvec{k},t)$ as we generate it with Equation~\ref{eq:dft_h_k_t} is~\emph{not}
 hermitian, mainly because of two reasons. First, the wave energy spectrum $\Theta(\mvec{k})$ would need
 to be an even function, which is only the case if the directional spread employed by
 the wave energy spectrum is centrosymmetric. Only two of the directional spreading functions
@@ -696,11 +696,11 @@ Second, each element of $h_0(\mvec{k})$ is generated in combination with a pair 
 which makes it close to impossible to end up with matching pairs $h_0(-\mvec{k})=h_0(\mvec{k})^*$.
 As we would like to profit from the performance gains an optimised inverse Fourier Transform
 for real-valued functions offers, we are in need of a hermitian spectrum. We may rewrite
-Equation~\ref{eq:dft_h0_k_t} as follows:
+Equation~\ref{eq:dft_h_k_t} as follows:
 %
 \begin{equation}
-\label{eq:dft_h0_k_t_hermitian}
- h_0(\mvec{k}, t) =
+\label{eq:dft_h_k_t_hermitian}
+ h(\mvec{k}, t) =
  \frac{1}{2} h_0(\mvec{k})\mathrm{e}^{-\mathrm{i}\omega(\mvec{k})t}
  + \frac{1}{2} h_0(\mvec{-k})^*\mathrm{e}^{\mathrm{i}\omega(\mvec{k})t}
 \end{equation}
@@ -711,7 +711,7 @@ whether the wave energy spectrum is an even function or not.
 
 Note that surface elevation $\eta$ as computed by Equation~\ref{eq:surface_elevation_h0_k_t}
 gives the same results for both variants of the spectrum, the default one given by
-Equation~\ref{eq:dft_h0_k_t} as well as the hermitian given by Equation~\ref{eq:dft_h0_k_t_hermitian}.
+Equation~\ref{eq:dft_h_k_t} as well as the hermitian given by Equation~\ref{eq:dft_h_k_t_hermitian}.
 The actual difference is that the former demands a standard inverse Fourier Transform with
 a complete complex-valued source spectrum and a complex-valued result the same size. The real part
 of the result represents the surface elevation, the imaginary part is to be discarded.
@@ -719,7 +719,7 @@ The latter on the other hand allows for two different kinds of optimisation. We 
 the first kind of optimisation already, a inverse Fourier Transform for real-valued
 functions which needs less memory and less time for the computation itself. The second kind
 of optimisation allows us to combine two inverse Fourier Transforms into one. Let $a(\mvec{k})$
-and $b(\mvec{k})$ be hermitian spectra with the same wavevector domain $\mvec{k}$. Let $c(\mvec{x})$
+and $b(\mvec{k})$ be hermitian spectra with the same \wavevector domain $\mvec{k}$. Let $c(\mvec{x})$
 and $d(\mvec{x})$ be the corresponding real-valued functions of $a(\mvec{k})$ and $b(\mvec{k})$,
 then we may write:
 \begin{align}
@@ -730,7 +730,7 @@ then we may write:
 \end{align}
 where $\mathrm{IFT}$ is shorthand for the standard inverse Fourier Transform. In short, we combine
 two complex-valued hermitian spectra to obtain two real-valued results with just one transformation.
-We will make heavy use of this kind of optimisation later on.\\
+We will make heavy use of this kind of optimisation later on.
 
 \subsection{Complex conjugate indices}
 
