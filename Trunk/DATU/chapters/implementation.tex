@@ -659,15 +659,23 @@ spectrum is necessary, the other half is implicitely given. Such optimised trans
 gain in performance memory-wise, the spectrum's size is halved, as well as computation-wise, only
 half the data is actually processed.
 
-
-Surface elevation $\eta$ is a real-valued function, therefore we assume $h$ must be hermitian,
-too. We may write
+Surface elevation $\eta$ is a real-valued function, therefore its Fourier Transform must be hermitian,
+too. Let $\mathcal{F}(\mvec{k})$ be the Fourier Transform of surface elevation $\eta$, then
+we may write:
 \begin{equation}
 \label{eq:h0_k_complex_conjugate}
- h(\mvec{-k},t) = h(\mvec{k},t)^*
+ \mathcal{F}(-\mvec{k}) = \mathcal{F}(\mvec{k})^*
 \end{equation}
-where finding $h(\mvec{k},t)^*$ for its counterpart $h(-\mvec{k},t)$ has proven to be non-trivial
-for even-sized spectra.
+where finding $\mathcal{F}(\mvec{k})^*$ for its counterpart $\mathcal{F}(-\mvec{k})$
+has proven to be non-trivial for even-sized spectra.
+%Surface elevation $\eta$ is a real-valued function, therefore we assume $h$ must be hermitian,
+%too.
+%\begin{equation}
+%\label{eq:h0_k_complex_conjugate}
+ %h(\mvec{-k},t) = h(\mvec{k},t)^*
+%\end{equation}
+%where finding $h(\mvec{k},t)^*$ for its counterpart $h(-\mvec{k},t)$ has proven to be non-trivial
+%for even-sized spectra.
 Figure~\ref{fig:symmetry} shows that, again, it is the periodic nature of the spectrum that gives us the solution.
 If we replicate the spectrum in both directions, we obtain an additional row and an additional column, which
 allows us to find matching complex conjugate pairs for all elements of the spectrum.
