@@ -537,8 +537,9 @@ The center element and the zero frequency component are highlighted in red respe
 \subcaptionref{fig:symmetry:odd:layout} Hermitian matrix ($N=3$).
 \subcaptionref{fig:symmetry:odd:example} Example spectrum matching the hermitian matrix layout.
 \subcaptionref{fig:symmetry:even:layout} Hermitian matrix ($N=5$).
-\subcaptionref{fig:symmetry:even:example} An even-sized spectrum ($N=4$). If replicated in both dimensions,
-one can see that for all elements of the spectrum there is a pair which satisfies the hermitian
+\subcaptionref{fig:symmetry:even:example} An even-sized spectrum ($N=4$).
+If we replicate the spectrum until both its dimensions have an odd-numbered size ($N=5$),
+then one can see that for all elements of the spectrum there is a pair which satisfies the hermitian
 condition $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$.
 %An even-sized spectrum ($N=4$), which repeats itself in both directions, such as for all elements of the spectrum
 %there is a pair which satisfies $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$.
@@ -668,16 +669,12 @@ we may write:
 \end{equation}
 where finding $\mathcal{F}(\mvec{k})^*$ for its counterpart $\mathcal{F}(-\mvec{k})$
 has proven to be non-trivial for even-sized spectra.
-%Surface elevation $\eta$ is a real-valued function, therefore we assume $h$ must be hermitian,
-%too.
-%\begin{equation}
-%\label{eq:h0_k_complex_conjugate}
- %h(\mvec{-k},t) = h(\mvec{k},t)^*
-%\end{equation}
-%where finding $h(\mvec{k},t)^*$ for its counterpart $h(-\mvec{k},t)$ has proven to be non-trivial
-%for even-sized spectra.
+%Let the spectrum $\mathcal{F}(\mvec{k})$
+%be of even size in both dimensions, with the zero frequency component in the lower
+%right quadrant. Then the elements of the first row and the first column of the spectrum
+%lack their complex conjugate counterparts.
 Figure~\ref{fig:symmetry} shows that it is the periodic nature of the spectrum that
-allows us to find matching complex conjugate pairs for all elements of an even-sized the spectrum.
+allows us to find matching complex conjugate pairs for all elements of an even-sized spectrum.
 
 %Let the discretised wavevector domain be zero centered and of even size in both dimensions,
 %then there is one row and one column of the spectrum which lacks
