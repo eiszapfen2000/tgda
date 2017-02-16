@@ -653,10 +653,9 @@ the following is true:
 \end{equation}
 where $*$ denotes the complex conjugate operator. The relation is similar to a centrosymmetric one,
 $\mathcal{F}(-k) = \mathcal{F}(k)$, with $\mathcal{F}(0)$ as a fixpoint at the center. The only
-difference is the complex conjugation. Fourier Transform implementations \citep{misc:fftw,FFTW05}
-may take advantage of
-Equation~\ref{eq:dft_real_complex_conjugate} to be able to provide optimised transform functionality 
-for real-valued data. For example, for a forward Fourier Transform of real-valued data it is
+difference is the complex conjugation. Fourier Transform implementations such as FFTW~\citep{FFTW05}
+take advantage of Equation~\ref{eq:dft_real_complex_conjugate} to be able to provide optimised
+transform functionality for real-valued data. For example, for a forward Fourier Transform of real-valued data it is
 necessary to compute only half of the spectrum, since the other half is implicitely given as the
 complex conjugate of the first half. Likewise, for the inverse Fourier Transform only half of the
 spectrum is necessary, the other half is implicitely given. Such optimised transforms provide
@@ -721,7 +720,7 @@ optimised for hermitian spectra, improving computation speed and memory usage
 roughly by a factor of two~\citep{fftw:manual}.
 %
 \subsection{Combined DFT}
-
+\citet{fft:handbook}
 %Note that surface elevation $\eta$ as computed by Equation~\ref{eq:surface_elevation_h_k_t}
 %gives the same results for both variants of the spectrum, the default one given by
 %Equation~\ref{eq:dft_h_k_t} as well as the hermitian given by Equation~\ref{eq:dft_h_k_t_hermitian}.
