@@ -416,7 +416,7 @@ original layout, diagonally opposite quadrants have been swapped.
 %
 We compute surface elevation in the form of an inverse Discrete Fourier Transform as follows:
 \begin{equation}
-\label{eq:surface_elevation_h0_k_t}
+\label{eq:surface_elevation_h_k_t}
 \eta(\mvec{x}, t) = \sum_{\mvec{k}}~h(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation}
 with
@@ -537,10 +537,13 @@ The center element and the zero frequency component are highlighted in red respe
 \subcaptionref{fig:symmetry:odd:layout} Hermitian matrix ($N=3$).
 \subcaptionref{fig:symmetry:odd:example} Example spectrum matching the hermitian matrix layout.
 \subcaptionref{fig:symmetry:even:layout} Hermitian matrix ($N=5$).
-\subcaptionref{fig:symmetry:even:example} An even-sized spectrum ($N=4$).
-If we replicate the spectrum until both its dimensions have an odd-numbered size ($N=5$),
-then one can see that for all elements of the spectrum there is a pair which satisfies the hermitian
+\subcaptionref{fig:symmetry:even:example} An even-sized spectrum ($N=4$), the elements of
+the first row and column lack their complex conjugate counterparts.
+Only after we replicate the spectrum until both its dimensions have an odd-numbered size ($N=5$),
+we may find that for all elements of the spectrum there is a pair which satisfies the hermitian
 condition $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$.
+%then for all elements of the spectrum there is a pair which satisfies the hermitian
+%condition $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$.
 %An even-sized spectrum ($N=4$), which repeats itself in both directions, such as for all elements of the spectrum
 %there is a pair which satisfies $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$.
 }
@@ -685,8 +688,9 @@ allows us to find matching complex conjugate pairs for all elements of an even-s
 
 
 The spectrum $h(\mvec{k},t)$ as we generate it with Equation~\ref{eq:dft_h_k_t} is~\emph{not}
-hermitian, mainly because of two reasons. First, the wave energy spectrum $\Theta(\mvec{k})$ would need
-to be an even function, which is only the case if the directional spread employed by
+hermitian for two reasons. First, the real-valued part of the spectrum, namely
+the wave energy spectrum $\Theta(\mvec{k})$, would need to be an even function,
+which is only the case if the directional spread employed by
 the wave energy spectrum is centrosymmetric. Only two of the directional spreading functions
 presented in this work are centrosymmetric, the Unified spectrum's and the Phillips spectrum's.
 Second, each element of $h_0(\mvec{k})$ is generated in combination with a pair of random numbers,
@@ -705,13 +709,25 @@ Equation~\ref{eq:dft_h_k_t} as follows:
 which gives us a hermitian spectrum, independent both of the generated random numbers and 
 whether the wave energy spectrum is an even function or not.
 
+\emph{Note}: Surface elevation $\eta$ as computed by Equation~\ref{eq:surface_elevation_h_k_t}
+gives the same results for both,
+Equation~\ref{eq:dft_h_k_t} as well as Equation~\ref{eq:dft_h_k_t_hermitian}.
+The former demands a standard inverse
+Fourier Transform with a complete complex-valued source spectrum and a
+complex-valued result the same size. The real part of the result represents
+the surface elevation, the imaginary part is to be discarded. The latter,
+on the other hand, allows for the aforementioned inverse Fourier Transform
+optimised for hermitian spectra, improving computation speed and memory usage
+roughly by a factor of two~\citep{fftw:manual}.
+%
+\subsection{Combined DFT}
 
-Note that surface elevation $\eta$ as computed by Equation~\ref{eq:surface_elevation_h0_k_t}
-gives the same results for both variants of the spectrum, the default one given by
-Equation~\ref{eq:dft_h_k_t} as well as the hermitian given by Equation~\ref{eq:dft_h_k_t_hermitian}.
-The actual difference is that the former demands a standard inverse Fourier Transform with
-a complete complex-valued source spectrum and a complex-valued result the same size. The real part
-of the result represents the surface elevation, the imaginary part is to be discarded.
+%Note that surface elevation $\eta$ as computed by Equation~\ref{eq:surface_elevation_h_k_t}
+%gives the same results for both variants of the spectrum, the default one given by
+%Equation~\ref{eq:dft_h_k_t} as well as the hermitian given by Equation~\ref{eq:dft_h_k_t_hermitian}.
+%The actual difference is that the former demands a standard inverse Fourier Transform with
+%a complete complex-valued source spectrum and a complex-valued result the same size. The real part
+%of the result represents the surface elevation, the imaginary part is to be discarded.
 The latter on the other hand allows for two different kinds of optimisation. We did discuss
 the first kind of optimisation already, a inverse Fourier Transform for real-valued
 functions which needs less memory and less time for the computation itself. The second kind
