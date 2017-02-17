@@ -256,6 +256,18 @@ overview of our demo application, and the algorithms and techniques it incorpora
 
 \section{Discrete Fourier Transform}
 \label{sec:discrete_fourier_transform}
+The synthesis of ocean surfaces by means of wave spectra and the inverse Fourier
+Transform is expensive in terms of computational cost. To reduce the latter we
+take a number of steps delineated in the remainder of this section.
+Moreover, we need to make sure to adapt our data to the format required by the
+Fourier Transform implementation of our choice, namely FFTW~\citep{FFTW05}.
+% \begin{itemize}
+% \item first, reduce the amount of data to synthesize per frame to a minimum
+% \item adapt data so that it fits the best case for the FFT algorithm
+% \item second, FOurier Transform at half the cost
+% \item third, two Fourier Transforms at the cost of one
+% \end{itemize}
+\subsection{Spectrum Synthesis}
 Recall Equation~\ref{eq:surface_elevation_discrete} in Chapter~\ref{sec:random_amplitudes},
 where we defined surface elevation as follows:
 \begin{equation}
@@ -429,9 +441,9 @@ which encodes the average value of the signal in the spatial domain. In our spec
 case that would be the mean surface elevation $\mathrm{E}[\eta] = 0$.
 As one may read off the above definition of the \wavevector domain, the zero
 frequency component is located near the center of the \wavevector domain,
-where $\alpha=0$ and $\beta=0$. Actual implementations of the inverse DFT, such as
-\citet{FFTW05}, expect the zero frequency component as the first element i.e. at the
-upper left of the two dimensional input array.
+where $\alpha=0$ and $\beta=0$. Actual implementations of the inverse Fourier Trasform,
+such as FFTW~\citep{FFTW05}, expect the zero frequency component as the first element
+i.e. at the upper left of the two dimensional input array.
 The \wavevector domain of such implementations is defined as follows:
 \begin{equation*}
 \mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
@@ -719,6 +731,30 @@ on the other hand, allows for the aforementioned inverse Fourier Transform
 optimised for hermitian spectra, improving computation speed and memory usage
 roughly by a factor of two~\citep{fftw:manual}.
 %
+\subsection{Combined Inverse Fourier Transform}
+Given one hermitian spectrum, one may apply a specialized inverse Fourier Transform
+which requires only half of the actual spectrum. Given \emph{two} hermitian spectra,
+one may combine them into a single spectrum and apply a standard inverse Fourier Transform
+to retrieve both real-valued signals at once \citep{fft:handbook}.
+%The latter on the other hand allows for two different kinds of optimisation. We did discuss
+%the first kind of optimisation already, a inverse Fourier Transform for real-valued
+%functions which needs less memory and less time for the computation itself. The second kind
+%of optimisation allows us to combine two inverse Fourier Transforms into one.
+Let $a$ and $b$ be real-valued signals with identical underlying spatial domains.
+Let us denote the Fourier Transform with $\mathcal{F}$, and the inverse Fourier
+Transform with $\mathcal{F}^{-1}$, then we may write:
+%Let $\mathcal{F}(a)$ and $\mathcal{F}(b)$ be the Fourier Transforms of $a$ and
+%$b$. Then we may write:
+\begin{equation}
+c = \mathcal{F}^{-1}(\mathcal{F}(a)+\mathrm{i}\mathcal{F}(b))
+\end{equation}
+where $c$ is complex-valued. We obtain the original real-valued signals as follows:
+\begin{align*}
+a &= \Re(c) & b &= \Im(c)
+\end{align*}
+%
+We will make heavy use of this kind of optimisation later on, because most
+of our additional data required for rendering comes in pairs of hermitian spectra.
 \subsection{Complex Conjugate Indices}
 %
 %To implement Equation~\ref{eq:dft_h_k_t_hermitian} we need to be able to retrieve
@@ -746,27 +782,7 @@ with $h_0(\mvec{k}) = h_0(i,j)$. Then, we may employ Equation~\ref{eq:complex:co
 to retrieve $h_0(-\mvec{k})^*=h_0(m,n)^*$ as required by
 Equation~\ref{eq:dft_h_k_t_hermitian}.
 %
-\subsection{Combined Inverse Fourier Transform}
-Given one hermitian spectrum, one may apply a specialized inverse Fourier Transform
-which requires only half of the actual spectrum. Given \emph{two} hermitian spectra,
-one may combine them into a single spectrum and apply a standard inverse Fourier Transform
-to retrieve both real-valued signals at once \citep{fft:handbook}.
-%The latter on the other hand allows for two different kinds of optimisation. We did discuss
-%the first kind of optimisation already, a inverse Fourier Transform for real-valued
-%functions which needs less memory and less time for the computation itself. The second kind
-%of optimisation allows us to combine two inverse Fourier Transforms into one.
-Let $a$ and $b$ be real-valued signals with identical underlying spatial domains.
-Let us denote the Fourier Transform with $\mathcal{F}$, and the inverse Fourier
-Transform with $\mathcal{F}^{-1}$, then we may write:
-%Let $\mathcal{F}(a)$ and $\mathcal{F}(b)$ be the Fourier Transforms of $a$ and
-%$b$. Then we may write:
-\begin{equation}
-c = \mathcal{F}^{-1}(\mathcal{F}(a)+\mathrm{i}\mathcal{F}(b))
-\end{equation}
-where $c$ is complex-valued. We obtain the original real-valued signals as follows:
-\begin{align*}
-a &= \Re(c) & b &= \Im(c)
-\end{align*}
+
 %
 %Let $a(\mvec{k})$
 %and $b(\mvec{k})$ be hermitian spectra with the same \wavevector domain $\mvec{k}$. Let $c(\mvec{x})$
@@ -779,8 +795,7 @@ a &= \Re(c) & b &= \Im(c)
  %d(\mvec{x}) &= \Im(e(\mvec{x})) 
 %\end{align}
 %where $\mathrm{IFT}$ is shorthand for the standard inverse Fourier Transform.
-We will make heavy use of this kind of optimisation later on, because most
-of our additional data required for rendering comes in pairs of hermitian spectra.
+
 %
 \section{Slopes and Displacements}
 \label{sec:slopes_and_displacements}
