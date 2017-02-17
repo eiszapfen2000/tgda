@@ -719,6 +719,20 @@ on the other hand, allows for the aforementioned inverse Fourier Transform
 optimised for hermitian spectra, improving computation speed and memory usage
 roughly by a factor of two~\citep{fftw:manual}.
 %
+\subsection{Complex Conjugate Indices}
+%
+Let us view the hermitian spectrum $h$ as a two dimensional array with size $N \times N$.
+Each element of $h$ is identified by a pair of indices $(i,j)$, with $0\leq i,j <N$. Then, for
+an element at index $(i,j)$, we may compute the index $(m,n)$ of the corresponding complex
+conjugate element as follows:
+\begin{align*}
+m &= (N - i)\bmod N & n &= (N - j)\bmod N
+\end{align*}
+We may rewrite Equation~\ref{eq:h0_k_complex_conjugate} in terms of indices:
+\begin{equation}
+ h(i,j) = h(m,n)^*
+\end{equation}
+%
 \subsection{Combined Inverse Fourier Transform}
 Given one hermitian spectrum, one may apply a specialized inverse Fourier Transform
 which requires only half of the actual spectrum. Given \emph{two} hermitian spectra,
@@ -738,7 +752,7 @@ c = \mathcal{F}^{-1}(\mathcal{F}(a)+\mathrm{i}\mathcal{F}(b))
 \end{equation}
 where $c$ is complex-valued. We obtain the original real-valued signals as follows:
 \begin{align*}
-a = \Re(c) && b = \Im(c)
+a &= \Re(c) & b &= \Im(c)
 \end{align*}
 %
 %Let $a(\mvec{k})$
@@ -752,23 +766,9 @@ a = \Re(c) && b = \Im(c)
  %d(\mvec{x}) &= \Im(e(\mvec{x})) 
 %\end{align}
 %where $\mathrm{IFT}$ is shorthand for the standard inverse Fourier Transform.
-We will make heavy use of this kind of optimisation later on, because all
-our additional data required for rendering comes in pairs of hermitian spectra.
-
-\subsection{Complex conjugate indices}
-
-Let us view the hermitian spectrum $h_0$ as a two dimensional array with size $N \times N$.
-Each element of $h_0$ is identified by a pair of indices $(i,j)$, with $0\leq i,j <N$. Then, for
-an element at index $(i,j)$, we may compute the index $(m,n)$ of the corresponding complex
-conjugate element as follows:
-\begin{align}
-m &= (N - i)\bmod N & n &= (N - j)\bmod N
-\end{align}
-We may rewrite Equation~\ref{eq:h0_k_complex_conjugate} in terms of indices:
-\begin{equation}
- h_0(i,j) = h_0(m,n)^*
-\end{equation}
-
+We will make heavy use of this kind of optimisation later on, because most
+of our additional data required for rendering comes in pairs of hermitian spectra.
+%
 \section{Slopes and Displacements}
 \label{sec:slopes_and_displacements}
 \subsection{Derivatives}
