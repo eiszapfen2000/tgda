@@ -721,17 +721,30 @@ roughly by a factor of two~\citep{fftw:manual}.
 %
 \subsection{Complex Conjugate Indices}
 %
-Let us view the hermitian spectrum $h$ as a two dimensional array with size $N \times N$.
+%To implement Equation~\ref{eq:dft_h_k_t_hermitian} we need to be able to retrieve
+%matching pairs $(h_0(\mvec{k}),h_0(-\mvec{k}))$.
+%Let us view $h_0$ as a two dimensional array with size $N \times N$, where $N$ is an even number.
+%Each element of $h_0$ is identified by a pair of indices $(i,j)$, with $0\leq i,j <N$. Then, for
+%an element at index $(i,j)$, we may compute the index $(m,n)$ of the corresponding complex
+%conjugate element as follows:
+For implementation purposes, let us view the two dimensional hermitian spectrum $h$
+as a two dimensional array with size $N \times N$.
 Each element of $h$ is identified by a pair of indices $(i,j)$, with $0\leq i,j <N$. Then, for
 an element at index $(i,j)$, we may compute the index $(m,n)$ of the corresponding complex
 conjugate element as follows:
-\begin{align*}
+\begin{align}
+\label{eq:complex:conjugate:indices}
 m &= (N - i)\bmod N & n &= (N - j)\bmod N
-\end{align*}
-We may rewrite Equation~\ref{eq:h0_k_complex_conjugate} in terms of indices:
-\begin{equation}
+\end{align}
+We may write the hermitian property in terms of indices:
+\begin{equation*}
  h(i,j) = h(m,n)^*
-\end{equation}
+\end{equation*}
+%
+Moreover, let us view $h_0$ as a two dimensional array with size $N \times N$,
+with $h_0(\mvec{k}) = h_0(i,j)$. Then, we may employ Equation~\ref{eq:complex:conjugate:indices}
+to retrieve $h_0(-\mvec{k})^*=h_0(m,n)^*$ as required by
+Equation~\ref{eq:dft_h_k_t_hermitian}.
 %
 \subsection{Combined Inverse Fourier Transform}
 Given one hermitian spectrum, one may apply a specialized inverse Fourier Transform
