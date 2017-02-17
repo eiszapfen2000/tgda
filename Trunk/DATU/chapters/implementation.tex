@@ -722,24 +722,24 @@ roughly by a factor of two~\citep{fftw:manual}.
 \subsection{Combined Inverse Fourier Transform}
 Given one hermitian spectrum, one may apply a specialized inverse Fourier Transform
 which requires only half of the actual spectrum. Given \emph{two} hermitian spectra,
-one may combine them into one spectrum and apply a standard inverse Fourier Transform
+one may combine them into a single spectrum and apply a standard inverse Fourier Transform
 to retrieve both real-valued signals at once \citep{fft:handbook}.
 %The latter on the other hand allows for two different kinds of optimisation. We did discuss
 %the first kind of optimisation already, a inverse Fourier Transform for real-valued
 %functions which needs less memory and less time for the computation itself. The second kind
 %of optimisation allows us to combine two inverse Fourier Transforms into one.
-Let $a$ and $b$ be real-valued signals with an identical underlying spatial domain.
+Let $a$ and $b$ be real-valued signals with identical underlying spatial domains.
 Let us denote the Fourier Transform with $\mathcal{F}$, and the inverse Fourier
 Transform with $\mathcal{F}^{-1}$, then we may write:
 %Let $\mathcal{F}(a)$ and $\mathcal{F}(b)$ be the Fourier Transforms of $a$ and
 %$b$. Then we may write:
 \begin{equation}
-c &= \mathcal{F}^{-1}(\mathcal{F}(a)+\mathrm{i}\mathcal{F}(b))
+c = \mathcal{F}^{-1}(\mathcal{F}(a)+\mathrm{i}\mathcal{F}(b))
 \end{equation}
 where $c$ is complex-valued. We obtain the original real-valued signals as follows:
-\begin{align}
+\begin{align*}
 a = \Re(c) && b = \Im(c)
-\end{align}
+\end{align*}
 %
 %Let $a(\mvec{k})$
 %and $b(\mvec{k})$ be hermitian spectra with the same \wavevector domain $\mvec{k}$. Let $c(\mvec{x})$
@@ -752,9 +752,8 @@ a = \Re(c) && b = \Im(c)
  %d(\mvec{x}) &= \Im(e(\mvec{x})) 
 %\end{align}
 %where $\mathrm{IFT}$ is shorthand for the standard inverse Fourier Transform.
-In short, we combine
-two complex-valued hermitian spectra to obtain two real-valued results with just one transformation.
-We will make heavy use of this kind of optimisation later on.
+We will make heavy use of this kind of optimisation later on, because all
+our additional data required for rendering comes in pairs of hermitian spectra.
 
 \subsection{Complex conjugate indices}
 
