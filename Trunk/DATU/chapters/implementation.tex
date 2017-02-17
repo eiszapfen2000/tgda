@@ -719,28 +719,40 @@ on the other hand, allows for the aforementioned inverse Fourier Transform
 optimised for hermitian spectra, improving computation speed and memory usage
 roughly by a factor of two~\citep{fftw:manual}.
 %
-\subsection{Combined DFT}
-\citet{fft:handbook}
-%Note that surface elevation $\eta$ as computed by Equation~\ref{eq:surface_elevation_h_k_t}
-%gives the same results for both variants of the spectrum, the default one given by
-%Equation~\ref{eq:dft_h_k_t} as well as the hermitian given by Equation~\ref{eq:dft_h_k_t_hermitian}.
-%The actual difference is that the former demands a standard inverse Fourier Transform with
-%a complete complex-valued source spectrum and a complex-valued result the same size. The real part
-%of the result represents the surface elevation, the imaginary part is to be discarded.
-The latter on the other hand allows for two different kinds of optimisation. We did discuss
-the first kind of optimisation already, a inverse Fourier Transform for real-valued
-functions which needs less memory and less time for the computation itself. The second kind
-of optimisation allows us to combine two inverse Fourier Transforms into one. Let $a(\mvec{k})$
-and $b(\mvec{k})$ be hermitian spectra with the same \wavevector domain $\mvec{k}$. Let $c(\mvec{x})$
-and $d(\mvec{x})$ be the corresponding real-valued functions of $a(\mvec{k})$ and $b(\mvec{k})$,
-then we may write:
+\subsection{Combined Inverse Fourier Transform}
+Given one hermitian spectrum, one may apply a specialized inverse Fourier Transform
+which requires only half of the actual spectrum. Given \emph{two} hermitian spectra,
+one may combine them into one spectrum and apply a standard inverse Fourier Transform
+to retrieve both real-valued signals at once \citep{fft:handbook}.
+%The latter on the other hand allows for two different kinds of optimisation. We did discuss
+%the first kind of optimisation already, a inverse Fourier Transform for real-valued
+%functions which needs less memory and less time for the computation itself. The second kind
+%of optimisation allows us to combine two inverse Fourier Transforms into one.
+Let $a$ and $b$ be real-valued signals with an identical underlying spatial domain.
+Let us denote the Fourier Transform with $\mathcal{F}$, and the inverse Fourier
+Transform with $\mathcal{F}^{-1}$, then we may write:
+%Let $\mathcal{F}(a)$ and $\mathcal{F}(b)$ be the Fourier Transforms of $a$ and
+%$b$. Then we may write:
+\begin{equation}
+c &= \mathcal{F}^{-1}(\mathcal{F}(a)+\mathrm{i}\mathcal{F}(b))
+\end{equation}
+where $c$ is complex-valued. We obtain the original real-valued signals as follows:
 \begin{align}
-\label{eq:idft_combined}
- e(\mvec{x}) &= \mathrm{IFT}(a(\mvec{k})+\mathrm{i}b(\mvec{k})) \\
- c(\mvec{x}) &= \Re(e(\mvec{x})) \\
- d(\mvec{x}) &= \Im(e(\mvec{x})) 
+a = \Re(c) && b = \Im(c)
 \end{align}
-where $\mathrm{IFT}$ is shorthand for the standard inverse Fourier Transform. In short, we combine
+%
+%Let $a(\mvec{k})$
+%and $b(\mvec{k})$ be hermitian spectra with the same \wavevector domain $\mvec{k}$. Let $c(\mvec{x})$
+%and $d(\mvec{x})$ be the corresponding real-valued signal of $a(\mvec{k})$ and $b(\mvec{k})$,
+%then we may write:
+%\begin{align}
+%\label{eq:idft_combined}
+ %e(\mvec{x}) &= \mathrm{IFT}(a(\mvec{k})+\mathrm{i}b(\mvec{k})) \\
+ %c(\mvec{x}) &= \Re(e(\mvec{x})) \\
+ %d(\mvec{x}) &= \Im(e(\mvec{x})) 
+%\end{align}
+%where $\mathrm{IFT}$ is shorthand for the standard inverse Fourier Transform.
+In short, we combine
 two complex-valued hermitian spectra to obtain two real-valued results with just one transformation.
 We will make heavy use of this kind of optimisation later on.
 
