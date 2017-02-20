@@ -1174,11 +1174,11 @@ waves the surface actually passes through itself, and as a consequence inverts,
 with the surface normal pointing inwards instead of outwards. We may get rid of 
 this undesired side-effect in a rather simple way: reduce the magnitude of 
 displacement scaling parameter $u$.
-On the other hand, \citeauhor{course:simulatingocean} suggests that we use
+On the other hand, \citeauthor{course:simulatingocean} suggests that we use
 said self-intersections to our advantage, because they may be able to signal
 the breaking of waves, as well as the production of foam and spray. Hence, we
 need to be able to test for such self-intersections in an efficient manner.
-\citeauhor{course:simulatingocean} recommends to 
+\citeauthor{course:simulatingocean} recommends to 
 compute the determinant of the~\emph{Jacobian matrix} of the transformation 
 from grid point $\mvec{x}$ to displaced grid point 
 $\mvec{x}+u\mvec{D}(\mvec{x},t)$. Based on the determinant we may decide if 
@@ -1266,8 +1266,8 @@ the Jacobian matrix of transformation $\mvec{y}$, then we may write:
  \label{eq:jacobian_of_displacement}
  \mvec{J}(\mvec{x},t) =
  \begin{bmatrix}
- J_{xx} & J_{xy} \\
- J_{yx} & J_{yy}
+ J_{xx} & J_{xz} \\
+ J_{zx} & J_{zz}
  \end{bmatrix}
  =
  \begin{bmatrix}
@@ -1277,7 +1277,7 @@ the Jacobian matrix of transformation $\mvec{y}$, then we may write:
 \end{equation}
 Next, we compute the determinant of the Jacobian matrix:
 \begin{equation}
- det(\mvec{J}(\mvec{x},t)) = J_{xx}J_{yy}-J_{yx}J_{xy}
+ det(\mvec{J}(\mvec{x},t)) = J_{xx}J_{zz}-J_{zx}J_{xz}
 \end{equation}
 %
 If the Jacobian determinant at $\mvec{x}$ is positive, then $\mvec{y}$ 
