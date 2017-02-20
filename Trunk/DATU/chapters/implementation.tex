@@ -1256,11 +1256,11 @@ accompanied by negative Jacobian determinants.}
 \end{figure}
 %
 First, we need the Jacobian matrix of the grid point transformation 
-$\mvec{y}(\mvec{x},t)=\mvec{x}+u\mvec{D}(\mvec{x},t)$. The Jacobian matrix is 
+$\mvec{g}(\mvec{x},t)=\mvec{x}+u\mvec{D}(\mvec{x},t)$. The Jacobian matrix is 
 the matrix of all first order partial derivatives of a vector valued function. 
-As grid point transformation $\mvec{y}$ maps from $\mathbb{R}^2$ to 
+As grid point transformation $\mvec{g}$ maps from $\mathbb{R}^2$ to 
 $\mathbb{R}^2$, the Jacobian matrix is $2\times 2$ in size. Let $\mvec{J}$ be 
-the Jacobian matrix of transformation $\mvec{y}$, then we may write:
+the Jacobian matrix of transformation $\mvec{g}$, then we may write:
 %
 \begin{equation}
  \label{eq:jacobian_of_displacement}
@@ -1334,19 +1334,19 @@ computations to incorporate not just one perturbation pattern, but a set of
 patterns. Let $l \in \mathbb{N}^+$ represent the number of different patterns,
 then we may compute the combined surface elevation as follows:
 \begin{equation}
- z(\mvec{x},t) = \sum\limits_{i=0}^{l-1}\eta_i(\mvec{x},t)
+ y(\mvec{x},t) = \sum\limits_{i=0}^{l-1}\eta_i(\mvec{x},t)
 \end{equation}
 Furthermore, we may extend the horizontal grid point transformation to the
 following:
 \begin{equation}
-\mvec{y}(\mvec{x},t) = \mvec{x}+\sum\limits_{i=0}^{l-1}u_i\mvec{D}_i(\mvec{x},t) 
+\mvec{g}(\mvec{x},t) = \mvec{x}+\sum\limits_{i=0}^{l-1}u_i\mvec{D}_i(\mvec{x},t) 
 \end{equation}
 In lockstep with the above we compute the slope of the combined surface elevation:
 \begin{equation}
-\mvec{s}(\mvec{x},t) = \left[\dpd{z(\mvec{x},t)}{x},\dpd{z(\mvec{x},t)}{y}\right] = \left[\frac{\sum\limits_i \dpd{\eta_i(\mvec{x},t)}{x}}{1 
+\mvec{s}(\mvec{x},t) = \left[\dpd{y(\mvec{x},t)}{x},\dpd{y(\mvec{x},t)}{z}\right] = \left[\frac{\sum\limits_i \dpd{\eta_i(\mvec{x},t)}{x}}{1 
 + \sum\limits_i u_i \dpd{D_{xi}(\mvec{x},t)}{x}}, \frac{\sum\limits_i 
-\dpd{\eta_i(\mvec{x},t)}{y}}{1 + \sum\limits_i 
-u_i\dpd{D_{yi}(\mvec{x},t)}{y}}\right]
+\dpd{\eta_i(\mvec{x},t)}{z}}{1 + \sum\limits_i 
+u_i\dpd{D_{zi}(\mvec{x},t)}{z}}\right]
 \end{equation}
 Given the new grid point transformation, we are in need of the corresponding
 Jacobian matrix to be able to locate surface self-intersections. We may write:
@@ -1354,13 +1354,13 @@ Jacobian matrix to be able to locate surface self-intersections. We may write:
 \label{eq:jacobian_of_displacement_multi}
  \mvec{J}(\mvec{x},t) =
  \begin{bmatrix}
- J_{xx} & J_{xy} \\
- J_{yx} & J_{yy}
+ J_{xx} & J_{xz} \\
+ J_{zx} & J_{zz}
  \end{bmatrix}
  =
  \begin{bmatrix}
-   1 + \sum\limits_i u_i\dpd{D_{xi}(\mvec{x},t)}{x} & \sum\limits_i u_i\dpd{D_{xi}(\mvec{x},t)}{y} \\
-   \sum\limits_i u_i\dpd{D_{yi}(\mvec{x},t)}{x} & 1 + \sum\limits_i u_i\dpd{D_{yi}(\mvec{x},t)}{y}
+   1 + \sum\limits_i u_i\dpd{D_{xi}(\mvec{x},t)}{x} & \sum\limits_i u_i\dpd{D_{xi}(\mvec{x},t)}{z} \\
+   \sum\limits_i u_i\dpd{D_{zi}(\mvec{x},t)}{x} & 1 + \sum\limits_i u_i\dpd{D_{zi}(\mvec{x},t)}{z}
  \end{bmatrix}
 \end{equation}
 %
