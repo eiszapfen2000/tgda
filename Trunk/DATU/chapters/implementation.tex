@@ -1081,21 +1081,20 @@ of displacements does not only alter the underlying grid points, but as a
 direct consequence the surface's slopes, too. Hence, we need to adjust our 
 computation of the slope vector to the new circumstances. Given surface 
 elevation $\eta(\mvec{x},t)$, displacement vector $\mvec{D}(\mvec{x},t)$,
-and grid point transformation  $\mvec{x} + u\mvec{D}(\mvec{x},t)$, we obtain the
-two dimensional surface slope
-$\mvec{s}$ as follows:
+and grid point transformation $\mvec{x} + u\mvec{D}(\mvec{x},t)$,
+according to \citet[private communication]{article:whitecaps} we obtain the
+two dimensional surface slope $\mvec{s}$ as follows:
 \begin{equation}
 \mvec{s}(\mvec{x},t) = \left[\frac{\dpd{\eta(\mvec{x},t)}{x}}{1 + u 
-\dpd{D_x(\mvec{x},t)}{x}}, \frac{\dpd{\eta(\mvec{x},t)}{y}}{1 + u 
-\dpd{D_y(\mvec{x},t)}{y}}\right]
+\dpd{D_x(\mvec{x},t)}{x}}, \frac{\dpd{\eta(\mvec{x},t)}{z}}{1 + u 
+\dpd{D_z(\mvec{x},t)}{z}}\right]
 \end{equation}
-where $u$ is the displacement scale parameter, and $D_x$ and $D_y$ denote the X-
-and Y-component of displacement vector $\mvec{D}$ respectively. Now, in addition
+where $u$ is the displacement scale parameter. Now, in addition
 to surface height $\eta$, the first order partial derivatives of $\eta$, and
 displacement vector $\mvec{D}$, we also need to compute a partial derivative of
-$D_x$ and $D_y$ each. Again, we may compute the latter two by means of spectral
+$D_x$ and $D_z$ each. Again, we may compute the latter two by means of spectral
 differentiation, see Equation~\ref{eq:dft_derivates_2d}. Morever, we are again
-able to apply the optimisation from Equation~\ref{eq:idft_combined} which allows
+able to apply the optimisation from Equation~\ref{eq:idft:combined} which allows
 us to transform the spectra of the two partial derivatives as one.
 %
 \subsection{Self-Intersections}
@@ -1167,7 +1166,7 @@ self-intersection.}
 \label{fig:grid_displaced_self_intersection}
 \end{figure}
 %
-The method by Tessendorf~\cite{course:simulatingocean} we use to generate 
+The method by \citet{course:simulatingocean} we use to generate 
 choppy waves is not devoid of drawbacks. Some of the displacement vectors we 
 compute may be large enough to cause the displaced geometry to self-intersect, 
 see Figure~\ref{fig:grid_displaced_self_intersection}. Near the top of some 
@@ -1175,10 +1174,11 @@ waves the surface actually passes through itself, and as a consequence inverts,
 with the surface normal pointing inwards instead of outwards. We may get rid of 
 this undesired side-effect in a rather simple way: reduce the magnitude of 
 displacement scaling parameter $u$.
-On the other hand, Tessendorf suggests that we use said self-intersections to 
-our advantage, because they may be able to signal the breaking of waves, as 
-well as the production of foam and spray. Hence, we need to be able to test
-for such self-intersections in an efficient manner. Tessendorf recommends to 
+On the other hand, \citeauhor{course:simulatingocean} suggests that we use
+said self-intersections to our advantage, because they may be able to signal
+the breaking of waves, as well as the production of foam and spray. Hence, we
+need to be able to test for such self-intersections in an efficient manner.
+\citeauhor{course:simulatingocean} recommends to 
 compute the determinant of the~\emph{Jacobian matrix} of the transformation 
 from grid point $\mvec{x}$ to displaced grid point 
 $\mvec{x}+u\mvec{D}(\mvec{x},t)$. Based on the determinant we may decide if 
@@ -1271,12 +1271,10 @@ the Jacobian matrix of transformation $\mvec{y}$, then we may write:
  \end{bmatrix}
  =
  \begin{bmatrix}
-   1 + u\dpd{D_x(\mvec{x},t)}{x} & u\dpd{D_x(\mvec{x},t)}{y} \\
-   u\dpd{D_y(\mvec{x},t)}{x} & 1 + u\dpd{D_y(\mvec{x},t)}{y}
+   1 + u\dpd{D_x(\mvec{x},t)}{x} & u\dpd{D_x(\mvec{x},t)}{z} \\
+   u\dpd{D_z(\mvec{x},t)}{x} & 1 + u\dpd{D_z(\mvec{x},t)}{z}
  \end{bmatrix}
 \end{equation}
-where $u$ is the displacement scale parameter, and $D_x$ and $D_y$ denote the X-
-and Y-component of displacement vector $\mvec{D}$ respectively.
 Next, we compute the determinant of the Jacobian matrix:
 \begin{equation}
  det(\mvec{J}(\mvec{x},t)) = J_{xx}J_{yy}-J_{yx}J_{xy}
