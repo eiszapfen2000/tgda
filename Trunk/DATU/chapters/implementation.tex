@@ -746,6 +746,7 @@ Transform with $\mathcal{F}^{-1}$, then we may write:
 %Let $\mathcal{F}(a)$ and $\mathcal{F}(b)$ be the Fourier Transforms of $a$ and
 %$b$. Then we may write:
 \begin{equation}
+\label{eq:idft:combined}
 c = \mathcal{F}^{-1}(\mathcal{F}(a)+\mathrm{i}\mathcal{F}(b))
 \end{equation}
 where $c$ is complex-valued. We obtain the original real-valued signals as follows:
@@ -813,11 +814,11 @@ the derivatives of a function via the Fourier Transform.\\
 
 
 First we will look at the more simple, one-dimensional case of spectral
-differentation. We reduce the spatial domain as well as the wavevector domain
+differentation. We reduce the spatial domain as well as the \wavevector domain
 from beforehand to one dimension. Let $N$ be the resolution of the spatial
-and wavenumber domains, and $L$ the size of the spatial domain. Moreover, let
-$\alpha \in \mathbb{N}$ with $\ceil{-\frac{N}{2}} \leq \alpha < \floor{\frac{N}{2}}$,
-let the spatial domain be $x \in \alpha \frac{L}{N}$, and let the wavenumber
+and \wavenumber domains, and $L$ the size of the spatial domain. Moreover, let
+$\alpha \in \mathbb{N}$ with $-\frac{N}{2} \leq \alpha < \frac{N}{2}$,
+let the spatial domain be $x \in \alpha \frac{L}{N}$, and let the \wavenumber
 domain be $k \in \alpha \frac{2\pi}{L}$. Let $g(k)$ be the Discrete Fourier
 Transform of $f(x)$, then we may write the inverse Discrete Fourier Transform
 as follows:
@@ -826,14 +827,14 @@ as follows:
 \end{equation}
 Note, that we omit the scaling factors involved in the standard Fourier Transform
 because in the context of this work they are not needed. If we follow the
-lead of the continuous Fourier Transform, then we may compute the $n$th
-derivative of $f(x)$ as follows:
+lead of the continuous Fourier Transform~\citep{book:bracewell2000fourier},
+then we may compute the $n$th derivative of $f(x)$ as follows:
 \begin{equation}
+\label{eq:dft:derivative:naive}
   \dod[n]{f(x)}{x} = \sum_{k}(\mathrm{i}k)^n~g(k)~\mathrm{e}^{\mathrm{i}kx}
 \end{equation}
-Due to aliasing issues the above is not correct for odd $n$ in combination
-with even $N$, see~\cite{Johnson:2011}. For example, if $f(x)$ is a real
-function, then $g(k)$ is hermitian.
+\citet{Johnson:2011} shows that Equation~\ref{eq:dft:derivative:naive} is not correct for odd $n$ in
+combination with even $N$. For example, if $f(x)$ is a real function, then $g(k)$ is hermitian.
 But $\mathrm{i}k~g(k)$ is~\emph{not} hermitian for even $N$, therefore the first
 order derivative of $f(x)$ would end up a complex function instead of a real one.
 To get correct results for all $n$ and $N$, we rewrite the above equation as follows:
@@ -842,7 +843,7 @@ To get correct results for all $n$ and $N$, we rewrite the above equation as fol
   \dod[n]{f(x)}{x} &= \sum_{k}d(k, n)~g(k)~\mathrm{e}^{\mathrm{i}kx} \\
 \label{eq:dft_derivative_correction}
   d(k, n) &= \begin{cases}
-                   0 &\text{if $n$ odd, $N$ even, and $\abs{k} 
+                   0 &\text{if $n$ odd, and $N$ even, and $\abs{k}
 = \frac{N}{2}\frac{2\pi}{L}$,} \\
                    (\mathrm{i}k)^n &\text{else.}
                    \end{cases}
@@ -870,8 +871,8 @@ To get correct results for all $n$ and $N$, we rewrite the above equation as fol
 \caption{\subcaptionref{sfig:derivative_heights} An example
 surface wave height realization, displayed in greyscale (Unified spectrum, 
 $U_{10}=30m\cdot s^{-1}$, $F=500km$). \subcaptionref{sfig:derivative_x} The 
-X-component of the slope vector.\subcaptionref{sfig:derivative_z} The 
-Y-component of the slope vector.
+first component of the slope vector.\subcaptionref{sfig:derivative_z} The 
+second component of the slope vector.
 }
 \label{fig:derivatives}
 \end{figure}
@@ -888,16 +889,17 @@ Based on Equation~\ref{eq:dft_derivative}, and by reusing Equation~\ref{eq:dft_d
 because $N$ and $L$ are equal for both dimensions, we find the derivatives of $f(\mvec{x})$:
 \begin{equation}
 \label{eq:dft_derivates_2d}
- \dmd{f(\mvec{x})}{n+m}{x}{n}{y}{m} = \sum_{\mvec{k}}d(k_{x}, n)d(k_{y}, m)~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+ \dmd{f(\mvec{x})}{n+m}{x}{n}{z}{m} = \sum_{\mvec{k}}d(k_{x}, n)d(k_{z}, m)~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation}
-where $k_x$ and $k_y$ denote the X- and Y-component of wave vector $\mvec{k}$ 
-respectively. As we need to find the surface slope vector, we need to compute 
+where $x$ and $z$ denote the two components of vector $\mvec{x}$, and $k_x$ and $k_z$ 
+the two components of \wavevector $\mvec{k}$ respectively.
+As we need to find the surface slope vector, we need to compute 
 the surface elevation's first order partial derivatives. Given surface 
 elevation $\eta(\mvec{x},t)$, we obtain the two dimensional surface slope 
 vector $\mvec{s}$ as follows:
 \begin{equation}
 \label{eq:dft_slope_2d}
- \mvec{s}(\mvec{x},t) = \left[\dpd{\eta(\mvec{x},t)}{x}, \dpd{\eta(\mvec{x},t)}{y}\right]
+ \mvec{s}(\mvec{x},t) = \left[\dpd{\eta(\mvec{x},t)}{x}, \dpd{\eta(\mvec{x},t)}{z}\right]
 \end{equation}
 We leave it as an exercise for the reader to substitute the terms $\eta(\mvec{x},t)$
 and $h_0(\mvec{k},t)$ into Equation~\ref{eq:dft_derivates_2d} to be able to
@@ -912,20 +914,21 @@ other hand, are more easily identified as water waves by the human eye.\\
 
 The two spectra which constitute the surface slope vector in the wavevector domain
 are hermitian. Therefore we are able to apply the optimisation from
-Equation~\ref{eq:idft_combined} which allows us to combine both spectra into one,
+Equation~\ref{eq:idft:combined} which allows us to combine both spectra into one,
 obtaining both components of the surface slope vector with just one inverse Fourier transform.
 %
 \subsection{Normals}
 %
 In this work we employ a right-handed Carthesian coordinate system where the positive
-Y-axis points up. The two dimensional surface slope vector $\mvec{s}$ lies in the
-coordinate system's XZ-plane. Based on the surface slope vector we may find the unit
+Y-axis points in the opposite direction of earth's gravity.
+The two dimensional surface slope vector lies in the XZ-plane of the world space
+coordinate system. Based on the surface slope vector we may find the unit
 length surface normal vector $\mvec{n}$ as follows:
-\begin{equation}
- \mvec{n} = \frac{(-s_x, 1, -s_y)}{\norm{(-s_x, 1, -s_y)}}
-\end{equation}
-where $s_x$ and $s_y$ denote the X- and Y-component of slope vector $\mvec{s}$ 
-respectively.
+\begin{equation*}
+ \mvec{n} = \frac{(-s_x, 1, -s_z)}{\norm{(-s_x, 1, -s_z)}}
+\end{equation*}
+where $s_x$ and $s_z$ denote the two components of slope vector $\mvec{s}$
+as obtained by Equation~\ref{eq:dft_slope_2d}.
 %
 \subsection{Displacements}
 \label{sec:displacements}
