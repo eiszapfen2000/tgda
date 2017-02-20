@@ -810,8 +810,7 @@ approach is efficient memory- and computation-wise, but may lack quality,
 because it can be a poor approximation to the slope of waves with small
 wavelengths. We are able to obtain more precise slope vectors by employing
 \emph{spectral differentation}. Spectral differentiation allows us to find
-the derivatives of a function via the Fourier Transform.\\
-
+the derivatives of a function via the Fourier Transform.
 
 First we will look at the more simple, one-dimensional case of spectral
 differentation. We reduce the spatial domain as well as the \wavevector domain
@@ -822,9 +821,9 @@ let the spatial domain be $x \in \alpha \frac{L}{N}$, and let the \wavenumber
 domain be $k \in \alpha \frac{2\pi}{L}$. Let $g(k)$ be the Discrete Fourier
 Transform of $f(x)$, then we may write the inverse Discrete Fourier Transform
 as follows:
-\begin{equation}
+\begin{equation*}
  f(x) = \sum_{k}g(k)~\mathrm{e}^{\mathrm{i}kx}
-\end{equation}
+\end{equation*}
 Note, that we omit the scaling factors involved in the standard Fourier Transform
 because in the context of this work they are not needed. If we follow the
 lead of the continuous Fourier Transform~\citep{book:bracewell2000fourier},
@@ -863,7 +862,7 @@ To get correct results for all $n$ and $N$, we rewrite the above equation as fol
  \includegraphics[scale=0.34]{figures/u_30_500km_gradient_x.png}
  }
  \hfill
- \subtop[$\dpd{\eta(\mvec{x},t)}{y}$]
+ \subtop[$\dpd{\eta(\mvec{x},t)}{z}$]
  {
  \label{sfig:derivative_z}
  \includegraphics[scale=0.34]{figures/u_30_500km_gradient_z.png}
@@ -871,7 +870,7 @@ To get correct results for all $n$ and $N$, we rewrite the above equation as fol
 \caption{\subcaptionref{sfig:derivative_heights} An example
 surface wave height realization, displayed in greyscale (Unified spectrum, 
 $U_{10}=30m\cdot s^{-1}$, $F=500km$). \subcaptionref{sfig:derivative_x} The 
-first component of the slope vector.\subcaptionref{sfig:derivative_z} The 
+first component of the slope vector. \subcaptionref{sfig:derivative_z} The 
 second component of the slope vector.
 }
 \label{fig:derivatives}
@@ -882,9 +881,9 @@ domains $\mvec{x}$ and $\mvec{k}$. The resolution of said domains is $N \times N
 the size of the spatial domain is $L \times L$. Let $g(\mvec{k})$ be the Discrete
 Fourier Transform of $f(\mvec{x})$, then we may write the inverse Discrete Fourier
 Transform in two dimensions as follows:
-\begin{equation}
+\begin{equation*}
  f(\mvec{x}) = \sum_{\mvec{k}}g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
-\end{equation}
+\end{equation*}
 Based on Equation~\ref{eq:dft_derivative}, and by reusing Equation~\ref{eq:dft_derivative_correction}
 because $N$ and $L$ are equal for both dimensions, we find the derivatives of $f(\mvec{x})$:
 \begin{equation}
@@ -910,7 +909,7 @@ means larger values, darker means lower values. One may notice that
 Figure~\ref{sfig:derivative_heights}, without prior knowledge, is not 
 recognizable as a wave heightfield. The wave heightfield's gradients in
 Figure~\ref{sfig:derivative_x} and \subcaptionref{sfig:derivative_z}, on the 
-other hand, are more easily identified as water waves by the human eye.\\
+other hand, are more easily identified as water waves by the human eye.
 
 The two spectra which constitute the surface slope vector in the wavevector domain
 are hermitian. Therefore we are able to apply the optimisation from
@@ -947,34 +946,35 @@ as obtained by Equation~\ref{eq:dft_slope_2d}.
  \includegraphics[scale=0.34]{figures/u_30_500km_displacement_x.png}
  }
  \hfill
- \subtop[$D_y(\mvec{x},t)$]
+ \subtop[$D_z(\mvec{x},t)$]
  {
  \label{sfig:displacement_z}
  \includegraphics[scale=0.34]{figures/u_30_500km_displacement_z.png}
  }
 \caption{\subcaptionref{sfig:displacement_heights}The heightfield from 
-Figure~\ref{sfig:derivative_heights}.\subcaptionref{sfig:displacement_x} The 
-X-component of the displacement vector.\subcaptionref{sfig:displacement_z} The 
-Y-component of the displacement vector.}
+Figure~\ref{sfig:derivative_heights}. \subcaptionref{sfig:displacement_x} The 
+first component of the displacement vector. \subcaptionref{sfig:displacement_z} The 
+second component of the displacement vector.}
 \label{fig:displacements}
 \end{figure}
 %
 The waves generated with the methods presented up to now tend to have rounded peaks and throughs,
 which is typical for fair weather conditions. But we also would like to be able to synthesize waves
 matching poor weather conditions, such as strong winds or even storms. During such weather, ocean waves
-are sharply peaked at their tops and flattened at the bottoms. Tessendorf\cite{course:simulatingocean}
+are sharply peaked at their tops and flattened at the bottoms. \citet{course:simulatingocean}
 describes a Fourier Transform based method to produce such choppy waves. The concept is simple: displace
 the grid points of the spatial domain in the XZ-plane, with the displacement varying locally with the waves.
 Note that the displacement is a two-dimensional vector, therefore we end up computing a vector field.
-Similar to spectral differentiation, we compute an inverse Fourier transform of the spectrum $h_0$
+Similar to spectral differentiation, we compute an inverse Fourier transform of the spectrum $h$
 modified with an additional term. We may write the displacement vector field as follows:
 \begin{align}
 %\label{eq:dft_displacement}
- \mvec{D}(\mvec{x},t) &= \left[D_x(\mvec{x},t), D_y(\mvec{x},t)\right]\\
+ \mvec{D}(\mvec{x},t) &= \left[D_x(\mvec{x},t), D_z(\mvec{x},t)\right]\\
+\intertext{with}
 \label{eq:displacement_x} D_x(\mvec{x},t) &= \sum_{\mvec{k}}d(k_x, 
-k)~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
-\label{eq:displacement_z} D_y(\mvec{x},t) &= \sum_{\mvec{k}}d(k_y, 
-k)~h_0(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+k)~h(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
+\label{eq:displacement_z} D_z(\mvec{x},t) &= \sum_{\mvec{k}}d(k_z, 
+k)~h(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
 %\label{eq:dft_displacement_correction}
  d(l, k) &= \begin{cases}
              0 &\text{if $N$ even, and $k = 0$ or $\abs{l} = 
@@ -989,7 +989,7 @@ $\eta$ as well as its associated displacements in greyscale. As before,
 brighter means larger values, darker means lower values. 
 Because the spectra on the righthand side of Equations~\ref{eq:displacement_x} 
 and~\ref{eq:displacement_z} are hermitian, we are again able to apply 
-Equation~\ref{eq:idft_combined} and obtain both components of the displacement 
+Equation~\ref{eq:idft:combined} and obtain both components of the displacement 
 vector field with just one inverse Fourier Transform.\\
 
 % The grid points of the spatial domain are two dimensional, $\mvec{x} = [x_x, 
@@ -998,24 +998,22 @@ vector field with just one inverse Fourier Transform.\\
 % [x_x, 0, x_y]$. We may add surface elevation $\eta$ $[x_x, \eta(\mvec{x},t), 
 % x_y]$
 
-Given grid point $\mvec{x} = \left[ \begin{smallmatrix} x_x \\ x_y 
-\end{smallmatrix}\right]$, time $t$ and surface elevation $\eta(\mvec{x},t)$, 
+Given grid point $\mvec{x} = (x,z)$, time $t$ and surface elevation $\eta(\mvec{x},t)$, 
 we may write the corresponding three dimensional, non-displaced vertex 
 coordinate as follows:
 \begin{equation}
- \mvec{v}(\mvec{x},t) = \begin{bmatrix}x_x\\ \eta(\mvec{x},t)\\ x_y 
-\end{bmatrix} 
+ \mvec{v}(\mvec{x},t) = \begin{bmatrix}x\\ \eta(\mvec{x},t)\\ z\end{bmatrix} 
 \end{equation}
 With displacement vector $\mvec{D}(\mvec{x},t)$ at hand, according to 
-Tessendorf we may compute the three dimensional, displaced vertex coordinate as 
-follows:
+\citet{course:simulatingocean} we may compute the three dimensional,
+displaced vertex coordinate as follows:
 \begin{equation}
 \label{eq:displacement_gridpoints}
  \mvec{w}(\mvec{x},t) =
  \begin{bmatrix}
-  x_x + u D_x(\mvec{x},t)\\ 
+  x + u D_x(\mvec{x},t)\\ 
   \eta(\mvec{x},t)\\
-  x_y + u D_y(\mvec{x},t)
+  z + u D_z(\mvec{x},t)
  \end{bmatrix}
 \end{equation}
 where $u\in\mathbb{R}$ is a user-controlled parameter to scale the importance of the
