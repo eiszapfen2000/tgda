@@ -1,32 +1,40 @@
 \chapter{Implementation}
 \label{ch:implementation}
 
-wave spectrum background
-ocean surface synthesis based on wave spectra
-present various wave spectra
+\citet{course:simulatingocean}
+\citet{article:oceanlighting}
+\citet{misc:oceanlightingfft}
+\citet{article:whitecaps}
+\citet{Trefethen:2000}
+%wave spectrum background
+%ocean surface synthesis based on wave spectra
+%present various wave spectra
 
 The previous chapter discussed the conceptual background of wave spectra,
 as well as the steps necessary to synthesize ocean surfaces based on wave spectra.
-The previous chapter gave us conceptual background regarding wave spectra,
+%The previous chapter gave us conceptual background regarding wave spectra,
+Although the general shape and movement of the ocean surface waves may be already
+sufficiently plausible to the observer's eye, there is still room for improvement.
 
-In the previous chapter we discussed the synthesis of ocean surfaces based
-on wave spectra published in oceanographic research.
 
-At this point we know how to synthesize ocean surfaces based on wave spectra
-from oceanographic research. We may move on to how to optimally employ them in the
-cpntext of computer graphics. 
-representaiotn of wave spectra most suitable for rendering
-obtain all data necessary for rendering from wave spectra
+%In the previous chapter we discussed the synthesis of ocean surfaces based
+%on wave spectra published in oceanographic research.
+%
+%At this point we know how to synthesize ocean surfaces based on wave spectra
+%from oceanographic research. We may move on to how to optimally employ them in the
+%cpntext of computer graphics. 
+%representaiotn of wave spectra most suitable for rendering
+%obtain all data necessary for rendering from wave spectra
 
-At this point we are able to synthesize ocean surfaces in the form of simple
-heightfields animated over time.
-Although the shape of the ocean surface waves as well as their movement
-may be already sufficiently plausible to the observers eye, 
+%At this point we are able to synthesize ocean surfaces in the form of simple
+%heightfields animated over time.
+%Although the shape of the ocean surface waves as well as their movement
+%may be already sufficiently plausible to the observers eye, 
 %The shape of the ocean surface waves, as well as their
 %movement are sufficiently plausible to the observers eye.
 
-For rendering purposes we will augment our ocean surface representation with
-additional data as described by \citet{course:simulatingocean}.
+%For rendering purposes we will augment our ocean surface representation with
+%additional data as described by \citet{course:simulatingocean}.
 
 %One, a displacement vector field which modifies the gentle sinusoidal form of the
 %waves into one with deeper troughs and sharper crests, similar to Gerstner waves.
@@ -44,7 +52,7 @@ additional data as described by \citet{course:simulatingocean}.
 
 The remainder of this chapter is organized as follows:
 Section~\ref{sec:discrete_fourier_transform} describes characteristic properties of
-wave spectra which enable us to accelerate the computation of the inverse DFT.
+wave spectra which enable us to accelerate the computation of the inverse Fourier Transform.
 Section~\ref{sec:slopes_and_displacements} introduces additional wave spectrum
 based terms which we employ for rendering, whereas
 Section~\ref{sec:level_of_detail} elaborates on our wave spectrum specific
