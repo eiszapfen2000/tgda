@@ -808,7 +808,6 @@ Equation~\ref{eq:dft_h_k_t_hermitian}.
 %
 \section{Slopes and Displacements}
 \label{sec:slopes_and_displacements}
-\subsection{Derivatives}
 At this point we are able to compute surface elevation by application of the
 inverse Discrete Fourier Transform on a spectrum we generate. For lighting
 purposes we also need to find the surface's slope vectors to be able to compute
@@ -816,9 +815,10 @@ the surface's normal vectors. The most simple way to compute the slope is
 through finite differences in the spatial domain of the surface. Such an
 approach is efficient memory- and computation-wise, but may lack quality,
 because it can be a poor approximation to the slope of waves with small
-wavelengths. We are able to obtain more precise slope vectors by employing
-\emph{spectral differentation}. Spectral differentiation allows us to find
-the derivatives of a function via the Fourier Transform.
+wavelengths~\citep{course:simulatingocean}. We are able to obtain more precise
+slope vectors by employing \emph{spectral differentation}. Spectral
+differentiation allows us to find the derivatives of a function via the
+Fourier Transform.
 
 First we will look at the more simple, one-dimensional case of spectral
 differentation. We reduce the spatial domain as well as the \wavevector domain
@@ -843,7 +843,7 @@ then we may compute the $n$th derivative of $f(x)$ as follows:
 \citet{Johnson:2011} shows that Equation~\ref{eq:dft:derivative:naive} is not correct for odd $n$ in
 combination with even $N$. For example, if $f(x)$ is a real function, then $g(k)$ is hermitian.
 But $\mathrm{i}k~g(k)$ is~\emph{not} hermitian for even $N$, therefore the first
-order derivative of $f(x)$ would end up a complex function instead of a real one.
+order derivative of $f(x)$ would end up a complex-valued function instead of a real-valued one.
 To get correct results for all $n$ and $N$, we rewrite the above equation as follows:
 \begin{align}
 \label{eq:dft_derivative}
@@ -875,7 +875,8 @@ To get correct results for all $n$ and $N$, we rewrite the above equation as fol
  \label{sfig:derivative_z}
  \includegraphics[scale=0.34]{figures/u_30_500km_gradient_z.png}
  }
-\caption{\subcaptionref{sfig:derivative_heights} An example
+\caption{Brighter means larger values, darker means lower values.
+\subcaptionref{sfig:derivative_heights} An example
 surface wave height realization, displayed in greyscale (Unified spectrum, 
 $U_{10}=30m\cdot s^{-1}$, $F=500km$). \subcaptionref{sfig:derivative_x} The 
 first component of the slope vector. \subcaptionref{sfig:derivative_z} The 
@@ -912,9 +913,8 @@ We leave it as an exercise for the reader to substitute the terms $\eta(\mvec{x}
 and $h_0(\mvec{k},t)$ into Equation~\ref{eq:dft_derivates_2d} to be able to
 compute the surface slope vector as given in Equation~\ref{eq:dft_slope_2d}.
 Figure~\ref{fig:derivatives} depicts an example instance of surface 
-elevation $\eta$ as well as its associated slopes in greyscale. Brighter 
-means larger values, darker means lower values. One may notice that 
-Figure~\ref{sfig:derivative_heights}, without prior knowledge, is not 
+elevation $\eta$ as well as its associated slopes in greyscale. One may notice
+that Figure~\ref{sfig:derivative_heights}, without prior knowledge, is not 
 recognizable as a wave heightfield. The wave heightfield's gradients in
 Figure~\ref{sfig:derivative_x} and \subcaptionref{sfig:derivative_z}, on the 
 other hand, are more easily identified as water waves by the human eye.
@@ -924,7 +924,7 @@ are hermitian. Therefore we are able to apply the optimisation from
 Equation~\ref{eq:idft:combined} which allows us to combine both spectra into one,
 obtaining both components of the surface slope vector with just one inverse Fourier transform.
 %
-\subsection{Normals}
+\subsection{Normal Vectors}
 %
 In this work we employ a right-handed Carthesian coordinate system where the positive
 Y-axis points in the opposite direction of earth's gravity.
