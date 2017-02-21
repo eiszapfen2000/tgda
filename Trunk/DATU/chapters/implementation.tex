@@ -11,10 +11,18 @@
 %present various wave spectra
 
 The previous chapter discussed the conceptual background of wave spectra,
-as well as the steps necessary to synthesize ocean surfaces based on wave spectra.
+as well as the steps necessary to synthesize ocean surface heightfields based
+on wave spectra. Now we may move the focus to computer graphics algorithms in
+conjunction with wave spectra. As described by \citet{course:simulatingocean},
+we may capitalize on the spectral representation of ocean waves to obtain
+additional high quality data to improve the geometry of the ocean surface.
+Moreover, \citet{misc:oceanlightingfft} implements a wave spectrum based
+version of \citet{article:oceanlighting}, serving us as lighting algorithm.
+\citet{article:whitecaps}
+
 %The previous chapter gave us conceptual background regarding wave spectra,
-Although the general shape and movement of the ocean surface waves may be already
-sufficiently plausible to the observer's eye, there is still room for improvement.
+%Although the general shape and movement of the ocean surface waves may be already
+%sufficiently plausible to the observer's eye, there is still room for improvement.
 
 
 %In the previous chapter we discussed the synthesis of ocean surfaces based
@@ -818,7 +826,7 @@ because it can be a poor approximation to the slope of waves with small
 wavelengths~\citep{course:simulatingocean}. We are able to obtain more precise
 slope vectors by employing \emph{spectral differentation}. Spectral
 differentiation allows us to find the derivatives of a function via the
-Fourier Transform.
+Fourier Transform~\citep{Trefethen:2000}.
 
 First we will look at the more simple, one-dimensional case of spectral
 differentation. We reduce the spatial domain as well as the \wavevector domain
