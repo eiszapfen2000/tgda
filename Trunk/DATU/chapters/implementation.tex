@@ -14,11 +14,30 @@ The previous chapter discussed the conceptual background of wave spectra,
 as well as the steps necessary to synthesize ocean surface heightfields based
 on wave spectra. Now we may move the focus to computer graphics algorithms in
 conjunction with wave spectra. As described by \citet{course:simulatingocean},
-we may capitalize on the spectral representation of ocean waves to obtain
+we may capitalize on the spectral representation of ocean waves on three fronts.
+First, we may obtain high quality normal vectors by deriving the ocean surface's
+slope vectors in frequency space. Second, the choppy wave algorithm may add
+displacements to the ocean surface for it to better resemble an agitated sea
+where the waves have deep throughs and sharp crests. Third, based on the 
+first-order partial derivatives of aforementioned displacements one may be able
+to derive the locations on the ocean surface where whitecaps may arise. All three
+points lead to additional spectra, all derived directly from the ocean surface
+elevation spectrum, burdening us with additional Fourier Transforms.
+
+But a sea exposed to strong
+winds or even a storm is characterized by steep waves with sharp crests.
+\citet{course:simulatingocean} presents the~\emph{choppy wave} algorithm which
+overcomes this specific issue by allowing the waves to take a form similar to
+Gerstner waves, with deep troughs and sharp crests, see Figure
+\ref{fig:tessendorf_choppy_waves}.
+to obtain
 additional high quality data to improve the geometry of the ocean surface.
 Moreover, \citet{misc:oceanlightingfft} implements a wave spectrum based
 version of \citet{article:oceanlighting}, serving us as lighting algorithm.
 \citet{article:whitecaps}
+
+All additional data is derived directly from the ocean surface elevation
+spectrum in frequency space, burdening us with additional Fourier Transforms.
 
 %The previous chapter gave us conceptual background regarding wave spectra,
 %Although the general shape and movement of the ocean surface waves may be already
@@ -661,7 +680,7 @@ of our additional data required for rendering comes in pairs of hermitian spectr
 %Each element of $h_0$ is identified by a pair of indices $(i,j)$, with $0\leq i,j <N$. Then, for
 %an element at index $(i,j)$, we may compute the index $(m,n)$ of the corresponding complex
 %conjugate element as follows:
-For implementation purposes, let us view the two dimensional hermitian spectrum $h$
+For implementation purposes let us view the two dimensional hermitian spectrum $h$
 as a two dimensional array with size $N \times N$.
 Each element of $h$ is identified by a pair of indices $(i,j)$, with $0\leq i,j <N$. Then, for
 an element at index $(i,j)$, we may compute the index $(m,n)$ of the corresponding complex
@@ -1209,8 +1228,8 @@ Transform, the resulting data can be seamlessy tiled on the ocean surface.
 However, tiling a single perturbation pattern either leads to repetitive 
 artifacts if the tile's footprint in world space is small, or to lack of detail 
 if the tile's footprint in world space is large. We chose to tackle this 
-issue similar to Bruneton et al.\cite{misc:oceanlightingfft} and Dupuy et 
-al.\cite{article:whitecaps}, which do compute not only one perturbation 
+issue similar to \citet{misc:oceanlightingfft} and \citet{article:whitecaps},
+which do compute not only one perturbation 
 pattern, but a set of perturbation patterns, where each pattern samples a 
 different part of the spectrum. Although we are not able to remove periodicity 
 from the wave field, we may increase it to the least common multiple of the
@@ -1822,7 +1841,7 @@ smaller wavenumber range.
 that it would be beneficial to employ an adaptive sampling scheme which allows
 for tight sampling in the low wavenumber range, especially near the peak
 wavenumber, and sparse sampling in the high wavenumber range, see
-Fr\'{e}chot~\cite{article:frechot2007}. Because we employ a Discrete Fourier
+\citet{article:frechot2007}. Because we employ a Discrete Fourier
 Transform to compute the sum of waves, we are subject to its constraints. One of
 those constraints is that the spacing between subsequent coordinates is constant,
 namely $\Delta k$. Hence, in combination with a Discrete Fourier Transform, we
