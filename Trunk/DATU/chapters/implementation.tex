@@ -477,17 +477,33 @@ zero frequency is located inside the \wavevector domain, we may write:
 Figure~\ref{fig:quadrant:swapping} shows how we may use the periodical nature
 of the spectrum to convert between the underlying layouts of the two different
 \wavevector domains of interest.
-
-%Table~\ref{tab:spectrum_q_repeat} depicts such a periodic spectrum, where each instance
-%of the spectrum is divided into four quadrants. The spectrum always consists of those
-%four quadrants, independent of where the \wavevector domain may begin or end. It is only
-%the~\emph{layout} of the four quadrants that changes with the \wavevector domain.
-%Table~\ref{tab:quadrant_swap} shows that the conversion from a layout
-%where the zero frequency is at the center to a layout where the zero
-%frequency is at the upper left is accomplished by a swap between
-%diagonally opposite quadrants.
-
+%
+%
 \subsection{Symmetry}
+%https://www.cv.nrao.edu/course/astr534/FourierTransforms.html
+%https://ccrma.stanford.edu/~jos/mdft/Even_Odd_Functions.html
+%https://ccrma.stanford.edu/~jos/mdft/mdft.html
+%https://web.eecs.umich.edu/~fessler/course/451/l/pdf/c5.pdf
+The Fourier Transform of real-valued input is~\emph{hermitian} - the real part of the resulting spectrum
+is an~\emph{even} function and the imaginary part is~\emph{odd}~\citep{book:bracewell2000fourier}.
+A function $f(n)$ is said to be even if
+$f(-n) = f(n)$. On the other hand, a function $f(n)$ is said to be odd if $f(-n) = -f(n)$,
+with $f(0) = 0$. Let $\mathcal{F}(k)$ be the Fourier Transform of a real-valued function $f(n)$, then
+the following is true:
+\begin{equation}
+\label{eq:dft_real_complex_conjugate}
+ \mathcal{F}(-k) = \mathcal{F}(k)^*
+\end{equation}
+where $*$ denotes the complex conjugate operator. The relation is similar to a centrosymmetric one,
+$\mathcal{F}(-k) = \mathcal{F}(k)$, with $\mathcal{F}(0)$ as a fixpoint at the center. The only
+difference is the complex conjugation. Fourier Transform implementations such as FFTW~\citep{FFTW05}
+take advantage of Equation~\ref{eq:dft_real_complex_conjugate} to be able to provide optimised
+transform functionality for real-valued data. For example, for a forward Fourier Transform of real-valued data it is
+necessary to compute only half of the spectrum, since the other half is implicitely given as the
+complex conjugate of the first half. Likewise, for the inverse Fourier Transform only half of the
+spectrum is necessary, the other half is implicitely given. Such optimised transforms provide
+gain in performance memory-wise, the spectrum's size is halved, as well as computation-wise, only
+half the data is actually processed.
 %
 \begin{figure}
 \footnotesize
@@ -558,30 +574,7 @@ condition $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$.
 }
 \label{fig:symmetry}
 \end{figure}
-%https://www.cv.nrao.edu/course/astr534/FourierTransforms.html
-%https://ccrma.stanford.edu/~jos/mdft/Even_Odd_Functions.html
-%https://ccrma.stanford.edu/~jos/mdft/mdft.html
-%https://web.eecs.umich.edu/~fessler/course/451/l/pdf/c5.pdf
-The Fourier Transform of real-valued input is~\emph{hermitian} - the real part of the resulting spectrum
-is an~\emph{even} function and the imaginary part is~\emph{odd}~\citep{book:bracewell2000fourier}.
-A function $f(n)$ is said to be even if
-$f(-n) = f(n)$. On the other hand, a function $f(n)$ is said to be odd if $f(-n) = -f(n)$,
-with $f(0) = 0$. Let $\mathcal{F}(k)$ be the Fourier Transform of a real-valued function $f(n)$, then
-the following is true:
-\begin{equation}
-\label{eq:dft_real_complex_conjugate}
- \mathcal{F}(-k) = \mathcal{F}(k)^*
-\end{equation}
-where $*$ denotes the complex conjugate operator. The relation is similar to a centrosymmetric one,
-$\mathcal{F}(-k) = \mathcal{F}(k)$, with $\mathcal{F}(0)$ as a fixpoint at the center. The only
-difference is the complex conjugation. Fourier Transform implementations such as FFTW~\citep{FFTW05}
-take advantage of Equation~\ref{eq:dft_real_complex_conjugate} to be able to provide optimised
-transform functionality for real-valued data. For example, for a forward Fourier Transform of real-valued data it is
-necessary to compute only half of the spectrum, since the other half is implicitely given as the
-complex conjugate of the first half. Likewise, for the inverse Fourier Transform only half of the
-spectrum is necessary, the other half is implicitely given. Such optimised transforms provide
-gain in performance memory-wise, the spectrum's size is halved, as well as computation-wise, only
-half the data is actually processed.
+%
 
 Surface elevation $\eta$ is a real-valued function, therefore its Fourier Transform must be hermitian,
 too. Let $\mathcal{F}(\mvec{k})$ be the Fourier Transform of surface elevation $\eta$, then
@@ -592,10 +585,6 @@ we may write:
 \end{equation}
 where finding $\mathcal{F}(\mvec{k})^*$ for its counterpart $\mathcal{F}(-\mvec{k})$
 has proven to be non-trivial for even-sized spectra.
-%Let the spectrum $\mathcal{F}(\mvec{k})$
-%be of even size in both dimensions, with the zero frequency component in the lower
-%right quadrant. Then the elements of the first row and the first column of the spectrum
-%lack their complex conjugate counterparts.
 Figure~\ref{fig:symmetry} shows that it is the periodic nature of the spectrum that
 allows us to find matching complex conjugate pairs for all elements of an even-sized spectrum.
 
@@ -605,7 +594,6 @@ allows us to find matching complex conjugate pairs for all elements of an even-s
 %Again, it is the periodic nature of the spectrum that gives us the solution. If we replicate
 %the spectrum in both directions, we obtain an additional row and an additional column, which
 %allows us to find matching pairs for all elements of the spectrum, see Table~\ref{tab:spectrum_k_minusk_border}.\\
-
 
 The spectrum $h(\mvec{k},t)$ as we generate it with Equation~\ref{eq:dft_h_k_t} is~\emph{not}
 hermitian for two reasons. First, the real-valued part of the spectrum, namely
