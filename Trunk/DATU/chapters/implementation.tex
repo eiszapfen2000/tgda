@@ -12,32 +12,37 @@
 
 The previous chapter discussed the conceptual background of wave spectra,
 as well as the steps necessary to synthesize ocean surface heightfields based
-on wave spectra. Now we may move the focus to computer graphics algorithms in
-conjunction with wave spectra. As described by \citet{course:simulatingocean},
+on such. From now on we may focus on computer graphics algorithms in conjunction
+with wave spectra. As described by \citet{course:simulatingocean},
 we may capitalize on the spectral representation of ocean waves on three fronts.
-First, we may obtain high quality normal vectors by deriving the ocean surface's
-slope vectors in frequency space. Second, the choppy wave algorithm may add
-displacements to the ocean surface for it to better resemble an agitated sea
-where the waves have deep throughs and sharp crests. Third, based on the 
-first-order partial derivatives of aforementioned displacements one may be able
-to derive the locations on the ocean surface where whitecaps may arise. All three
-points lead to additional spectra, all derived directly from the ocean surface
-elevation spectrum, burdening us with additional Fourier Transforms.
+First, for lighting purposes we may obtain high quality normal vectors by
+deriving the ocean surface's slope vectors in frequency space.
+Second, the choppy wave algorithm may add displacements to the ocean surface for
+it to better resemble an agitated sea where the waves have deep troughs and
+sharp crests.
+Third, based on the first-order partial derivatives of aforementioned
+displacements one may be able to derive the locations on the ocean surface where
+whitecaps may arise.
+Each of the three points requires us to construct additional spectra,
+all derived directly from the ocean surface elevation spectrum,
+and burdening us with additional Fourier Transforms.
+%All three points lead to additional spectra, all derived directly from the ocean
+%surface elevation spectrum, burdening us with additional Fourier Transforms.
 
-But a sea exposed to strong
-winds or even a storm is characterized by steep waves with sharp crests.
-\citet{course:simulatingocean} presents the~\emph{choppy wave} algorithm which
-overcomes this specific issue by allowing the waves to take a form similar to
-Gerstner waves, with deep troughs and sharp crests, see Figure
-\ref{fig:tessendorf_choppy_waves}.
-to obtain
-additional high quality data to improve the geometry of the ocean surface.
-Moreover, \citet{misc:oceanlightingfft} implements a wave spectrum based
-version of \citet{article:oceanlighting}, serving us as lighting algorithm.
-\citet{article:whitecaps}
-
-All additional data is derived directly from the ocean surface elevation
-spectrum in frequency space, burdening us with additional Fourier Transforms.
+%But a sea exposed to strong
+%winds or even a storm is characterized by steep waves with sharp crests.
+%\citet{course:simulatingocean} presents the~\emph{choppy wave} algorithm which
+%overcomes this specific issue by allowing the waves to take a form similar to
+%Gerstner waves, with deep troughs and sharp crests, see Figure
+%\ref{fig:tessendorf_choppy_waves}.
+%to obtain
+%additional high quality data to improve the geometry of the ocean surface.
+%Moreover, \citet{misc:oceanlightingfft} implements a wave spectrum based
+%version of \citet{article:oceanlighting}, serving us as lighting algorithm.
+%\citet{article:whitecaps}
+%
+%All additional data is derived directly from the ocean surface elevation
+%spectrum in frequency space, burdening us with additional Fourier Transforms.
 
 %The previous chapter gave us conceptual background regarding wave spectra,
 %Although the general shape and movement of the ocean surface waves may be already
