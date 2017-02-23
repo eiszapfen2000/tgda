@@ -1,11 +1,11 @@
 \chapter{Implementation}
 \label{ch:implementation}
 
-\citet{course:simulatingocean}
-\citet{article:oceanlighting}
-\citet{misc:oceanlightingfft}
-\citet{article:whitecaps}
-\citet{Trefethen:2000}
+%\citet{course:simulatingocean}
+%\citet{article:oceanlighting}
+%\citet{misc:oceanlightingfft}
+%\citet{article:whitecaps}
+%\citet{Trefethen:2000}
 %wave spectrum background
 %ocean surface synthesis based on wave spectra
 %present various wave spectra
@@ -14,18 +14,40 @@ The previous chapter discussed the conceptual background of wave spectra,
 as well as the steps necessary to synthesize ocean surface heightfields based
 on such. From now on we may focus on computer graphics algorithms in conjunction
 with wave spectra. As described by \citet{course:simulatingocean},
-we may capitalize on the spectral representation of ocean waves on three fronts.
+we are able to capitalize on the spectral representation of ocean waves on three fronts.
 First, for lighting purposes we may obtain high quality normal vectors by
 deriving the ocean surface's slope vectors in frequency space.
-Second, the choppy wave algorithm may add displacements to the ocean surface for
-it to better resemble an agitated sea where the waves have deep troughs and
-sharp crests.
+Second, we may add displacements to the ocean surface for it to better resemble
+an agitated sea, where the waves have deep troughs and sharp crests.
 Third, based on the first-order partial derivatives of aforementioned
-displacements one may be able to derive the locations on the ocean surface where
+displacements one may be able to deduce the locations on the ocean surface where
 whitecaps may arise.
 Each of the three points requires us to construct additional spectra,
-all derived directly from the ocean surface elevation spectrum,
-and burdening us with additional Fourier Transforms.
+all derived directly from the ocean surface elevation spectrum. 
+Furthermore, to add level of detail and to reduce tiling artifacts,
+we adopt the approach taken by \citet{misc:oceanlightingfft} and
+\citet{article:whitecaps}. We compute and combine a set of ocean surface tiles
+of differing size, where each tile samples a different part of the wave energy
+spectrum.
+Thus, we are potentially burdened with a significant number of additional
+Fourier Transforms, based on both the number of additional spectra per tile,
+and the number of different tiles.
+
+%up to four, where all tiles are of different size and each one samples a different
+%part of the wave spectrum.
+
+%As ocean surfaces generated from wave spectra allow for seamless tiling,
+%one may need to make sure to reduce tiling artifacts i.e. the viewer
+%shall not notice that the ocean surface repeats itself in all directions.
+%The approach taken by~\citet{Rydahl:2009} and \citet{NVIDIA:Ocean} is to
+%generate additional noise on the ocean surface.
+%\citet{misc:oceanlightingfft} and \citet{article:whitecaps}
+%on the other hand compute not just one ocean surface tile, but up to four,
+%where all tiles are of different size and each one samples a different
+%part of the wave spectrum. Even though such an approach is unable to
+%entirely remove periodicity, the period is increased to the least common
+%multiple of the different tile sizes.
+
 %All three points lead to additional spectra, all derived directly from the ocean
 %surface elevation spectrum, burdening us with additional Fourier Transforms.
 
