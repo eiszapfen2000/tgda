@@ -10,20 +10,71 @@
 %ocean surface synthesis based on wave spectra
 %present various wave spectra
 
-The previous chapter discussed the conceptual background of wave spectra,
-as well as the steps necessary to synthesize ocean surface heightfields based
-on such. From now on we may focus on computer graphics algorithms in conjunction
-with wave spectra. As described by \citet{course:simulatingocean},
-we are able to capitalize on the spectral representation of ocean waves on three fronts.
-First, for lighting purposes we may obtain high quality normal vectors by
-deriving the ocean surface's slope vectors in frequency space.
-Second, we may add displacements to the ocean surface for it to better resemble
-an agitated sea, where the waves have deep troughs and sharp crests.
-Third, based on the first-order partial derivatives of aforementioned
-displacements one may be able to deduce the locations on the ocean surface where
+Specific properties of said models allow for
+easy addition and reduction of detail, as well as for a range of algorithmic
+optimisations. The former combined with the latter gives us the opportunity to
+strike a well-adjusted balance between model detail and computational workload,
+and thereby to improve upon the status quo of current implementations.
+
+The remainder of this work is organized as follows: Chapter
+\ref{ch:state_of_the_art} gives a survey of existing ocean simulation and
+rendering methods. Chapter~\ref{ch:background} elaborates on the theoretical
+background the oceanographic models are based on, as well as on the models
+themselves. Chapter~\ref{ch:implementation} describes in detail the
+synthesis of all data related to the ocean surface, including both the algorithmic
+optimisations and the level of detail mechanism. Furthermore, we give an overview
+of the rendering algorithms adopted for our implementation.
+
+The previous chapter discussed the wave spectrum concept, a mathematical
+framework developed by oceanographic research to describe the distribution of
+wave energy among ocean surface waves exposed to identical conditions, such as
+wind speed and distance to shore~\citep{Neumann:1966}.
+%Several wave spectrum models were introduced, where each comes with a set of conditions
+%it functions under.
+Based on wave spectra we are able to synthesize ocean surfaces of great variety:
+from a perfectly calm sea, over one slightly agitated by the wind, to one with
+massive waves caused by a storm overhead.
+But to be able to visualize such diverse seas in a convincing manner we are dependent on more data
+than surface elevation alone. Therefore, as described by \citet{course:simulatingocean},
+we may capitalize on the spectral representation of ocean waves to obtain
+three distinct additional datasets.
+One, high quality normal vectors by deriving the ocean surface's slope vectors in frequency space.
+Two, displacements to transform the gentle sinusoidal form of the sea into a more agitated one, similar to Gerstner waves.
+Three, the first-order partial derivatives of aforementioned displacements, as they allow us to deduce the locations on the ocean surface where
 whitecaps may arise.
+%Given a wave spectrum, one is able to synthesize a heightfield taking the form of an
+%animated ocean surface. Still surface elevation alone 
+%The choice of wave spectrum model defines what kind of
+%sea one may simulate, e.g. whether it is a fully developed sea or a developing sea,
+%or whether it includes capillary waves or not.
+%
+%
+%The previous chapter discussed the steps necessary to synthesize ocean surface
+%heightfields based on wave spectra, where the latter represent an oceanographic
+%framework to describe the distribution of wave energy among ocean surface waves
+%dependent on parameters such as wind speed and distance from shore.
+%From now on we may focus on how to best embed wave spectra into computer graphics
+%algorithms.
+%Now we may focus on integrating wave spectra into computer graphics algorithms.
+%The previous chapter discussed the conceptual background of wave spectra,
+%as well as the steps necessary to synthesize ocean surface heightfields based
+%on such. From now on we may focus on computer graphics algorithms in conjunction
+%with wave spectra.
+%
+%As described by \citet{course:simulatingocean},
+%we are able to capitalize on the spectral representation of ocean waves on three fronts.
+%First, for lighting purposes we may obtain high quality normal vectors by
+%deriving the ocean surface's slope vectors in frequency space.
+%Second, we may add displacements to the ocean surface for it to better resemble
+%an agitated sea, where the waves have deep troughs and sharp crests.
+%Third, based on the first-order partial derivatives of aforementioned
+%displacements one may be able to deduce the locations on the ocean surface where
+%whitecaps may arise.
 Each of the three points requires us to construct additional spectra,
-all derived directly from the ocean surface elevation spectrum. 
+all derived directly from the ocean surface elevation spectrum.
+
+
+
 Furthermore, to add level of detail and to reduce tiling artifacts,
 we adopt the approach taken by \citet{misc:oceanlightingfft} and
 \citet{article:whitecaps}. We compute and combine a set of ocean surface tiles
