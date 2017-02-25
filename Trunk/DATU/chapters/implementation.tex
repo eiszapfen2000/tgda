@@ -1,30 +1,6 @@
 \chapter{Implementation}
 \label{ch:implementation}
-
-%\citet{course:simulatingocean}
-%\citet{article:oceanlighting}
-%\citet{misc:oceanlightingfft}
-%\citet{article:whitecaps}
-%\citet{Trefethen:2000}
-%wave spectrum background
-%ocean surface synthesis based on wave spectra
-%present various wave spectra
-
-Specific properties of said models allow for
-easy addition and reduction of detail, as well as for a range of algorithmic
-optimisations. The former combined with the latter gives us the opportunity to
-strike a well-adjusted balance between model detail and computational workload,
-and thereby to improve upon the status quo of current implementations.
-
-The remainder of this work is organized as follows: Chapter
-\ref{ch:state_of_the_art} gives a survey of existing ocean simulation and
-rendering methods. Chapter~\ref{ch:background} elaborates on the theoretical
-background the oceanographic models are based on, as well as on the models
-themselves. Chapter~\ref{ch:implementation} describes in detail the
-synthesis of all data related to the ocean surface, including both the algorithmic
-optimisations and the level of detail mechanism. Furthermore, we give an overview
-of the rendering algorithms adopted for our implementation.
-
+%
 The previous chapter discussed the wave spectrum concept, a mathematical
 framework developed by oceanographic research to describe the distribution of
 wave energy among ocean surface waves exposed to identical conditions, such as
@@ -42,38 +18,31 @@ One, high quality normal vectors by deriving the ocean surface's slope vectors i
 Two, displacements to transform the gentle form of the sea into a more agitated one, where the waves are more similar to Gerstner waves than to sinusoids.
 Three, the first-order partial derivatives of aforementioned displacements, as they allow us to deduce the locations on the ocean surface where
 whitecaps may arise.
-%Given a wave spectrum, one is able to synthesize a heightfield taking the form of an
-%animated ocean surface. Still surface elevation alone 
-%The choice of wave spectrum model defines what kind of
-%sea one may simulate, e.g. whether it is a fully developed sea or a developing sea,
-%or whether it includes capillary waves or not.
-%
-%
-%The previous chapter discussed the steps necessary to synthesize ocean surface
-%heightfields based on wave spectra, where the latter represent an oceanographic
-%framework to describe the distribution of wave energy among ocean surface waves
-%dependent on parameters such as wind speed and distance from shore.
-%From now on we may focus on how to best embed wave spectra into computer graphics
-%algorithms.
-%Now we may focus on integrating wave spectra into computer graphics algorithms.
-%The previous chapter discussed the conceptual background of wave spectra,
-%as well as the steps necessary to synthesize ocean surface heightfields based
-%on such. From now on we may focus on computer graphics algorithms in conjunction
-%with wave spectra.
-%
-%As described by \citet{course:simulatingocean},
-%we are able to capitalize on the spectral representation of ocean waves on three fronts.
-%First, for lighting purposes we may obtain high quality normal vectors by
-%deriving the ocean surface's slope vectors in frequency space.
-%Second, we may add displacements to the ocean surface for it to better resemble
-%an agitated sea, where the waves have deep troughs and sharp crests.
-%Third, based on the first-order partial derivatives of aforementioned
-%displacements one may be able to deduce the locations on the ocean surface where
-%whitecaps may arise.
-Each of the three points requires us to construct additional spectra,
+Each of the three datasets requires us to construct additional spectra,
 all derived directly from the ocean surface elevation spectrum.
+Thus, we may be burdened with a significant number of additional Fourier Transforms,
+increasing the computational workload considerably.
 
-
+Alongside data synthesis, it is the rendering of a water body as large as the ocean
+that poses a challenge. The variety of possible viewing situations
+may range from closeups of the water surface to vistas with the sea spanning all
+the way to the horizon.
+In the former case one should be able to observe small scale detail such as
+ripples on the water surface, where in the latter case the viewer
+shall not be able to notice that the ocean surface repeats itself in all directions.
+To tackle both issues at once, we adopt the approach taken by \citet{misc:oceanlightingfft}
+and \citet{article:whitecaps}.
+We compute a set of ocean surface tiles of differing size, where each tile samples a
+different part of the wave energy spectrum. By combining the tiles we may
+extend the sum of waves as far as into the gravity-capillary wave domain.
+And, even though we are unable to entirely remove periodicity, the period is
+increased to the least common multiple of the different tile sizes.
+% In the former
+% case one should be able to observe small scale detail on the water surface, therefore
+% it is beneficial for the wave spectrum to extend even as far as into the
+% gravity-capillary wave domain. In principle, we are able to handle the latter case
+% without issues, because the data we synthesize is seamlessy tileable. Still, one
+% should not be able to notice that the ocean surface repeats itself in all directions.
 
 Furthermore, to add level of detail and to reduce tiling artifacts,
 we adopt the approach taken by \citet{misc:oceanlightingfft} and
@@ -83,6 +52,25 @@ spectrum.
 Thus, we are potentially burdened with a significant number of additional
 Fourier Transforms, based on both the number of additional spectra per tile,
 and the number of different tiles.
+
+Specific properties of said models allow for
+easy addition and reduction of detail, as well as for a range of algorithmic
+optimisations. The former combined with the latter gives us the opportunity to
+strike a well-adjusted balance between model detail and computational workload,
+and thereby to improve upon the status quo of current implementations.
+
+Rendering an ocean is a demanding task for several reasons. First, consider the
+sheer size of a water body as large as an ocean, which in numerous viewing
+situations will be visible all the way to the horizon.
+
+The remainder of this work is organized as follows: Chapter
+\ref{ch:state_of_the_art} gives a survey of existing ocean simulation and
+rendering methods. Chapter~\ref{ch:background} elaborates on the theoretical
+background the oceanographic models are based on, as well as on the models
+themselves. Chapter~\ref{ch:implementation} describes in detail the
+synthesis of all data related to the ocean surface, including both the algorithmic
+optimisations and the level of detail mechanism. Furthermore, we give an overview
+of the rendering algorithms adopted for our implementation.
 
 %up to four, where all tiles are of different size and each one samples a different
 %part of the wave spectrum.
