@@ -20,23 +20,53 @@ Three, the first-order partial derivatives of aforementioned displacements, as t
 whitecaps may arise.
 Each of the three datasets requires us to construct additional spectra,
 all derived directly from the ocean surface elevation spectrum.
-Thus, we may be burdened with a significant number of additional Fourier Transforms,
-increasing the computational workload considerably.
+%Thus, we may be burdened with a significant number of additional Fourier Transforms,
+%increasing the computational workload considerably.
 
 Alongside data synthesis, it is the rendering of a water body as large as the ocean
-that poses a challenge. The variety of possible viewing situations
-may range from closeups of the water surface to vistas with the sea spanning all
+that poses a challenge. The variety of possible camera views
+may range from closeups of the water surface to vistas where the sea spans all
 the way to the horizon.
-In the former case one should be able to observe small scale detail such as
-ripples on the water surface, where in the latter case the viewer
-shall not be able to notice that the ocean surface repeats itself in all directions.
-To tackle both issues at once, we adopt the approach taken by \citet{misc:oceanlightingfft}
-and \citet{article:whitecaps}.
+In the former case we would like to be able to observe small scale detail on the
+water surface, such as ripples caused by capillary waves.
+The latter case is not difficult to handle in principle, because the ocean surface
+data we synthesize is seamlessly tileable. Still, we would prefer that the viewer
+may not be able to notice that the ocean surface repeats itself in all directions.
+To tackle both issues at once, we adopt the level-of-detail approach taken by
+\citet{misc:oceanlightingfft} and \citet{article:whitecaps}.
 We compute a set of ocean surface tiles of differing size, where each tile samples a
 different part of the wave energy spectrum. By combining the tiles we may
 extend the sum of waves as far as into the gravity-capillary wave domain.
-And, even though we are unable to entirely remove periodicity, the period is
-increased to the least common multiple of the different tile sizes.
+As for the tiling artifacts, even though we are unable to entirely remove periodicity
+by combing multiple tiles, we are at least able to increase the period to the
+least common multiple of the different tile sizes.
+
+As one may already guess, we are burdened with a significant number of
+Fourier Transforms, based on both the number of spectra per tile (surface elevation,
+slopes, displacements, first order derivatives of the displacements),
+and the number of different tiles.
+Thus, we need to make sure to keep computational workload on an acceptable level
+for realtime display of the ocean. We chose to go about the issue at hand in a
+twofold manner.
+First, key properties of the ocean surface spectrum allow us to accelerate the
+computation of its inverse Fourier Transform considerably.
+Second, we reduce the amount of spectral data to transform. We achieve the
+latter by implementing a multi-resolution scheme on top of
+\citet{misc:oceanlightingfft} and \citet{article:whitecaps}.
+%, where certain spectra are of lower resolution than others.
+%Twofold, first accelerate Fourier Transform, second, multiresolution approahc for ocean data.
+
+%In the former case one should be able to observe small scale detail such as
+%ripples on the water surface, where in the latter case the viewer
+%shall not be able to notice that the ocean surface repeats itself in all directions.
+%To tackle both issues at once, we adopt the approach taken by \citet{misc:oceanlightingfft}
+%and \citet{article:whitecaps}.
+%We compute a set of ocean surface tiles of differing size, where each tile samples a
+%different part of the wave energy spectrum. By combining the tiles we may
+%extend the sum of waves as far as into the gravity-capillary wave domain.
+%And, even though we are unable to entirely remove periodicity, the period is
+%increased to the least common multiple of the different tile sizes.
+
 % In the former
 % case one should be able to observe small scale detail on the water surface, therefore
 % it is beneficial for the wave spectrum to extend even as far as into the
@@ -44,33 +74,33 @@ increased to the least common multiple of the different tile sizes.
 % without issues, because the data we synthesize is seamlessy tileable. Still, one
 % should not be able to notice that the ocean surface repeats itself in all directions.
 
-Furthermore, to add level of detail and to reduce tiling artifacts,
-we adopt the approach taken by \citet{misc:oceanlightingfft} and
-\citet{article:whitecaps}. We compute and combine a set of ocean surface tiles
-of differing size, where each tile samples a different part of the wave energy
-spectrum.
-Thus, we are potentially burdened with a significant number of additional
-Fourier Transforms, based on both the number of additional spectra per tile,
-and the number of different tiles.
+%Furthermore, to add level of detail and to reduce tiling artifacts,
+%we adopt the approach taken by \citet{misc:oceanlightingfft} and
+%\citet{article:whitecaps}. We compute and combine a set of ocean surface tiles
+%of differing size, where each tile samples a different part of the wave energy
+%spectrum.
+%Thus, we are potentially burdened with a significant number of additional
+%Fourier Transforms, based on both the number of additional spectra per tile,
+%and the number of different tiles.
 
-Specific properties of said models allow for
-easy addition and reduction of detail, as well as for a range of algorithmic
-optimisations. The former combined with the latter gives us the opportunity to
-strike a well-adjusted balance between model detail and computational workload,
-and thereby to improve upon the status quo of current implementations.
-
-Rendering an ocean is a demanding task for several reasons. First, consider the
-sheer size of a water body as large as an ocean, which in numerous viewing
-situations will be visible all the way to the horizon.
-
-The remainder of this work is organized as follows: Chapter
-\ref{ch:state_of_the_art} gives a survey of existing ocean simulation and
-rendering methods. Chapter~\ref{ch:background} elaborates on the theoretical
-background the oceanographic models are based on, as well as on the models
-themselves. Chapter~\ref{ch:implementation} describes in detail the
-synthesis of all data related to the ocean surface, including both the algorithmic
-optimisations and the level of detail mechanism. Furthermore, we give an overview
-of the rendering algorithms adopted for our implementation.
+%Specific properties of said models allow for
+%easy addition and reduction of detail, as well as for a range of algorithmic
+%optimisations. The former combined with the latter gives us the opportunity to
+%strike a well-adjusted balance between model detail and computational workload,
+%and thereby to improve upon the status quo of current implementations.
+%
+%Rendering an ocean is a demanding task for several reasons. First, consider the
+%sheer size of a water body as large as an ocean, which in numerous viewing
+%situations will be visible all the way to the horizon.
+%
+%The remainder of this work is organized as follows: Chapter
+%\ref{ch:state_of_the_art} gives a survey of existing ocean simulation and
+%rendering methods. Chapter~\ref{ch:background} elaborates on the theoretical
+%background the oceanographic models are based on, as well as on the models
+%themselves. Chapter~\ref{ch:implementation} describes in detail the
+%synthesis of all data related to the ocean surface, including both the algorithmic
+%optimisations and the level of detail mechanism. Furthermore, we give an overview
+%of the rendering algorithms adopted for our implementation.
 
 %up to four, where all tiles are of different size and each one samples a different
 %part of the wave spectrum.
