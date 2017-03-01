@@ -437,20 +437,50 @@ considerable margin.
 
 \section{Discrete Fourier Transform}
 \label{sec:discrete_fourier_transform}
-The synthesis of ocean surfaces by means of wave spectra and the inverse Fourier
-Transform is expensive in terms of computational cost. To reduce the latter we
-take a number of steps delineated in the remainder of this section.
-Moreover, we need to make sure to adapt our data to the format required by the
-Fourier Transform implementation of our choice, namely FFTW~\citep{FFTW05}.
-% \begin{itemize}
-% \item first, reduce the amount of data to synthesize per frame to a minimum
-% \item adapt data so that it fits the best case for the FFT algorithm
-% \item second, FOurier Transform at half the cost
-% \item third, two Fourier Transforms at the cost of one
-% \end{itemize}
-
 %
-\subsection{Zero Frequency}
+\newcommand{\ccellnum}[2]{\cellcolor{#1}\num{#2}}
+\newcommand{\mcleft}[2]{\multicolumn{1}{!{\color{#1}\vline}S}{#2}}
+\newcommand{\mcright}[2]{\multicolumn{1}{S !{\color{#1}\vline}}{#2}}
+\newcommand{\mcleftright}[2]{\multicolumn{1}{!{\color{#1}\vline} S !{\color{#1}\vline}}{#2}}
+\colorlet{Q1Color}{cyan!25}
+\colorlet{Q2Color}{NavyBlue!50}
+\colorlet{Q3Color}{violet!45}
+\colorlet{Q4Color}{white}
+\colorlet{Line1Color}{blue}
+\colorlet{Line2Color}{black}
+%
+%
+We compute surface elevation in the form of an inverse Discrete Fourier Transform as follows:
+\begin{equation}
+\label{eq:surface_elevation_h_k_t}
+\eta(\mvec{x}, t) = \sum_{\mvec{k}}~h(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
+\end{equation}
+with
+\begin{equation*}
+\mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
+-\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{N}{2}<\beta\leq\frac{N}{2}\}
+\end{equation*}
+The \wavevector $\mvec{k} = (0,0)$ gives the location of the zero frequency component,
+which encodes the average value of the signal in the spatial domain. In our specific
+case that would be the mean surface elevation $\mathrm{E}[\eta] = 0$.
+As one may read off the above definition of the \wavevector domain, the zero
+frequency component is located near the center of the \wavevector domain,
+where $\alpha=0$ and $\beta=0$. Actual implementations of the inverse Fourier Trasform,
+such as FFTW~\citep{FFTW05}, expect the zero frequency component as the first element
+i.e. at the upper left of the two dimensional input array.
+The \wavevector domain of such implementations is defined as follows:
+\begin{equation*}
+\mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
+0\leq\alpha,\beta<N\}
+\end{equation*}
+%
+We know that the spectrum represents a periodic signal, therefore the spectrum
+repeats itself at infinity in both directions. Hence, independent of where the
+zero frequency is located inside the \wavevector domain, we may write:
+%
+\begin{align*}
+ h(\mvec{k}(\alpha\Delta k,\beta\Delta k),t) = h(\mvec{k}((\alpha + lN)\Delta k, (\beta +mN)\Delta k),t) && l,m \in \mathbb{Z}
+\end{align*}
 %
 %
 \begin{figure}
@@ -550,51 +580,6 @@ original layout, diagonally opposite quadrants have been swapped.
 }
 \label{fig:quadrant:swapping}
 \end{figure}
-%
-%
-\newcommand{\ccellnum}[2]{\cellcolor{#1}\num{#2}}
-\newcommand{\mcleft}[2]{\multicolumn{1}{!{\color{#1}\vline}S}{#2}}
-\newcommand{\mcright}[2]{\multicolumn{1}{S !{\color{#1}\vline}}{#2}}
-\newcommand{\mcleftright}[2]{\multicolumn{1}{!{\color{#1}\vline} S !{\color{#1}\vline}}{#2}}
-\colorlet{Q1Color}{cyan!25}
-\colorlet{Q2Color}{NavyBlue!50}
-\colorlet{Q3Color}{violet!45}
-\colorlet{Q4Color}{white}
-\colorlet{Line1Color}{blue}
-\colorlet{Line2Color}{black}
-%
-%
-We compute surface elevation in the form of an inverse Discrete Fourier Transform as follows:
-\begin{equation}
-\label{eq:surface_elevation_h_k_t}
-\eta(\mvec{x}, t) = \sum_{\mvec{k}}~h(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
-\end{equation}
-with
-\begin{equation*}
-\mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
--\frac{N}{2}\leq\alpha<\frac{N}{2},-\frac{N}{2}<\beta\leq\frac{N}{2}\}
-\end{equation*}
-The \wavevector $\mvec{k} = (0,0)$ gives the location of the zero frequency component,
-which encodes the average value of the signal in the spatial domain. In our specific
-case that would be the mean surface elevation $\mathrm{E}[\eta] = 0$.
-As one may read off the above definition of the \wavevector domain, the zero
-frequency component is located near the center of the \wavevector domain,
-where $\alpha=0$ and $\beta=0$. Actual implementations of the inverse Fourier Trasform,
-such as FFTW~\citep{FFTW05}, expect the zero frequency component as the first element
-i.e. at the upper left of the two dimensional input array.
-The \wavevector domain of such implementations is defined as follows:
-\begin{equation*}
-\mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
-0\leq\alpha,\beta<N\}
-\end{equation*}
-%
-We know that the spectrum represents a periodic signal, therefore the spectrum
-repeats itself at infinity in both directions. Hence, independent of where the
-zero frequency is located inside the \wavevector domain, we may write:
-%
-\begin{align*}
- h(\mvec{k}(\alpha\Delta k,\beta\Delta k),t) = h(\mvec{k}((\alpha + lN)\Delta k, (\beta +mN)\Delta k),t) && l,m \in \mathbb{Z}
-\end{align*}
 %
 Figure~\ref{fig:quadrant:swapping} shows how we may use the periodical nature
 of the spectrum to convert between the underlying layouts of the two different
@@ -1011,7 +996,7 @@ $\eta$ as well as its associated displacements in greyscale.
 Because the spectra on the righthand side of Equations~\ref{eq:displacement_x} 
 and~\ref{eq:displacement_z} are hermitian, we are again able to apply 
 Equation~\ref{eq:idft:combined} and obtain both components of the displacement 
-vector field with just one inverse Fourier Transform.\\
+vector field with just one inverse Fourier Transform.
 
 % The grid points of the spatial domain are two dimensional, $\mvec{x} = [x_x, 
 % x_y]$, and lie in the XZ-plane of our three dimensional space. Embedded into 
