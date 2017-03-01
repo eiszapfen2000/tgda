@@ -970,10 +970,13 @@ as obtained by Equation~\ref{eq:dft_slope_2d}.
  \label{sfig:displacement_z}
  \includegraphics[scale=0.34]{figures/u_30_500km_displacement_z.png}
  }
-\caption{\subcaptionref{sfig:displacement_heights}The heightfield from 
-Figure~\ref{sfig:derivative_heights}. \subcaptionref{sfig:displacement_x} The 
-first component of the displacement vector. \subcaptionref{sfig:displacement_z} The 
-second component of the displacement vector.}
+\caption{
+Brighter means larger values, darker means lower values.
+\subcaptionref{sfig:displacement_heights} An example surface wave height
+realization, displayed in greyscale (Unified spectrum, $U_{10}=30m\cdot s^{-1}$, $F=500km$).
+\subcaptionref{sfig:displacement_x} The first component of the displacement vector.
+\subcaptionref{sfig:displacement_z} The second component of the displacement vector.
+}
 \label{fig:displacements}
 \end{figure}
 %
@@ -1004,8 +1007,7 @@ k)~h(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
 where the term $d(l, k)$, in addition to make sure the resulting spectrum is 
 hermitian, also avoids a division by zero at $k = 0$. 
 Figure~\ref{fig:displacements} shows an example instance of surface elevation 
-$\eta$ as well as its associated displacements in greyscale. As before, 
-brighter means larger values, darker means lower values. 
+$\eta$ as well as its associated displacements in greyscale.
 Because the spectra on the righthand side of Equations~\ref{eq:displacement_x} 
 and~\ref{eq:displacement_z} are hermitian, we are again able to apply 
 Equation~\ref{eq:idft:combined} and obtain both components of the displacement 
