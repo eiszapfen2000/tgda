@@ -51,8 +51,10 @@ twofold manner.
 First, key properties of the ocean surface spectrum allow us to accelerate the
 computation of its inverse Fourier Transform considerably.
 Second, we reduce the amount of spectral data to transform. We achieve the
-latter by implementing a multi-resolution scheme on top of
-\citet{misc:oceanlightingfft} and \citet{article:whitecaps}.
+latter by improving upon the level-of-detail approach by \citet{misc:oceanlightingfft}
+and \citet{article:whitecaps} with a multi-resolution scheme, where surface
+elevation and displacements are generated at a lower resolution
+than their respective first-order derivates.
 %, where certain spectra are of lower resolution than others.
 %Twofold, first accelerate Fourier Transform, second, multiresolution approahc for ocean data.
 
@@ -174,6 +176,8 @@ latter by implementing a multi-resolution scheme on top of
 %\cite{course:simulatingocean,article:oceanlighting,misc:oceanlightingfft,article:whitecaps}
 
 The remainder of this chapter is organized as follows:
+Section~\ref{sec:spectrum_synthesis} gives a compact summary of ocean surface
+synthesis by means of a wave energy spectrum.
 Section~\ref{sec:discrete_fourier_transform} describes characteristic properties of
 wave spectra which enable us to accelerate the computation of the inverse Fourier Transform.
 Section~\ref{sec:slopes_and_displacements} introduces additional wave spectrum
@@ -385,20 +389,8 @@ overview of our demo application and the algorithms it incorporates.
 %\subsection{Projector}
 %\fxnote*{JÖSSAS}{Backfiring, etc}
 
-\section{Discrete Fourier Transform}
-\label{sec:discrete_fourier_transform}
-The synthesis of ocean surfaces by means of wave spectra and the inverse Fourier
-Transform is expensive in terms of computational cost. To reduce the latter we
-take a number of steps delineated in the remainder of this section.
-Moreover, we need to make sure to adapt our data to the format required by the
-Fourier Transform implementation of our choice, namely FFTW~\citep{FFTW05}.
-% \begin{itemize}
-% \item first, reduce the amount of data to synthesize per frame to a minimum
-% \item adapt data so that it fits the best case for the FFT algorithm
-% \item second, FOurier Transform at half the cost
-% \item third, two Fourier Transforms at the cost of one
-% \end{itemize}
-\subsection{Spectrum Synthesis}
+\section{Spectrum Synthesis}
+\label{sec:spectrum_synthesis}
 Recall Equation~\ref{eq:surface_elevation_discrete} in Chapter~\ref{sec:random_amplitudes},
 where we defined surface elevation as follows:
 \begin{equation}
@@ -412,7 +404,7 @@ where we defined surface elevation as follows:
 where $\xi_r$ and $\xi_i$ are Gauss distributed random variables with mean zero 
 and standard deviation one. Both, the \wavevector domain $\mvec{k}$ and the
 spatial domain $\mvec{x}$ are of resolution $N \times N$, where $N$ is a natural
-number, even, and a power of two. The latter two requirements are concessions to
+number, and a power of two. The latter requirement is a concession to
 the~\emph{Fast Fourier Transform} algorithm, which works fastest at such
 resolutions~\citep{Cooley:1965}.
 Moreover, the spatial domain $\mvec{x}$ has an extent of $L \times L$, thus:
@@ -423,13 +415,13 @@ We may subsume part of Equation~\ref{eq:dft_surface_elevation} into the
 following:
 \begin{equation}
 \label{eq:dft_h0_k}
-h_0(\mvec{k}) = \frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)\sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_y}
+h_0(\mvec{k}) = \frac{1}{\sqrt{2}}(\xi_r+\mathrm{i}\xi_i)\sqrt{2\Theta(\mvec{k})\Delta k_x \Delta k_z}
 \end{equation}
 where $h_0(\mvec{k})$ represents a random generated spectrum based on wave
-spectrum $\Theta(\mvec{k})$. As long as the \wavevector domain and the wave
-spectrum do not change, $h_0$ does not change either. Hence, it is necessary to
-generate $h_0$ only once for a specific set of parameters such as area,
-resolution, wind and fetch. As $h_0$ by itself has no notion of time,
+energy spectrum $\Theta(\mvec{k})$. As long as the \wavevector domain and the
+wave energy spectrum do not change, $h_0$ does not change either. Hence, it is
+necessary to generate $h_0$ only once for a specific set of parameters such as
+area, resolution, wind and fetch. As $h_0$ by itself has no notion of time,
 we still need to take care of animation. Based on Equation~\ref{eq:dft_surface_elevation}
 and \ref{eq:dft_h0_k} we may write:
 \begin{equation}
@@ -442,6 +434,21 @@ one requires a new keyframe for the animated ocean surface.
 Equation~\ref{eq:dft_h0_k} on the other hand is only to be evaluated anew in
 case parameters change, easing the computational workload by a
 considerable margin.
+
+\section{Discrete Fourier Transform}
+\label{sec:discrete_fourier_transform}
+The synthesis of ocean surfaces by means of wave spectra and the inverse Fourier
+Transform is expensive in terms of computational cost. To reduce the latter we
+take a number of steps delineated in the remainder of this section.
+Moreover, we need to make sure to adapt our data to the format required by the
+Fourier Transform implementation of our choice, namely FFTW~\citep{FFTW05}.
+% \begin{itemize}
+% \item first, reduce the amount of data to synthesize per frame to a minimum
+% \item adapt data so that it fits the best case for the FFT algorithm
+% \item second, FOurier Transform at half the cost
+% \item third, two Fourier Transforms at the cost of one
+% \end{itemize}
+
 %
 \subsection{Zero Frequency}
 %
@@ -838,8 +845,8 @@ as follows:
 \end{equation*}
 Note, that we omit the scaling factors involved in the standard Fourier Transform
 because in the context of this work they are not needed. If we follow the
-lead of the continuous Fourier Transform~\citep{book:bracewell2000fourier},
-then we may compute the $n$th derivative of $f(x)$ as follows:
+lead of the continuous Fourier Transform~\citep{Trefethen:2000},
+then, in the discrete case, we may compute the $n$th derivative of $f(x)$ as follows:
 \begin{equation}
 \label{eq:dft:derivative:naive}
   \dod[n]{f(x)}{x} = \sum_{k}(\mathrm{i}k)^n~g(k)~\mathrm{e}^{\mathrm{i}kx}
@@ -926,7 +933,7 @@ other hand, are more easily identified as water waves by the human eye.
 The two spectra which constitute the surface slope vector in the wavevector domain
 are hermitian. Therefore we are able to apply the optimisation from
 Equation~\ref{eq:idft:combined} which allows us to combine both spectra into one,
-obtaining both components of the surface slope vector with just one inverse Fourier transform.
+obtaining both components of the surface slope vector with just one inverse Fourier Transform.
 %
 \subsection{Normal Vectors}
 %
