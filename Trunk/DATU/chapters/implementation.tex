@@ -180,8 +180,8 @@ Section~\ref{sec:spectrum_synthesis} gives a compact summary of ocean surface
 synthesis by means of a wave energy spectrum.
 Section~\ref{sec:discrete_fourier_transform} describes characteristic properties of
 wave spectra which enable us to accelerate the computation of the inverse Fourier Transform.
-Section~\ref{sec:slopes_and_displacements} introduces additional wave spectrum
-based terms which we employ for rendering, whereas
+Section~\ref{sec:slopes_and_displacements} introduces the additional wave spectrum
+based datasets which we employ for rendering, whereas
 Section~\ref{sec:level_of_detail} elaborates on our wave spectrum specific
 approach to level of detail. Last, Section~\ref{sec:demo_application} gives an
 overview of our demo application and the algorithms it incorporates.
@@ -1096,8 +1096,8 @@ two dimensional surface slope $\mvec{s}$ as follows:
 \dpd{D_z(\mvec{x},t)}{z}}\right]
 \end{equation}
 where $u$ is the displacement scale parameter. Now, in addition
-to surface height $\eta$, the first order partial derivatives of $\eta$, and
-displacement vector $\mvec{D}$, we also need to compute a partial derivative of
+to surface height $\eta$, displacement vector $\mvec{D}$, and the first order
+partial derivatives of $\eta$, we also need to compute a partial derivative of
 $D_x$ and $D_z$ each. Again, we may compute the latter two by means of spectral
 differentiation, see Equation~\ref{eq:dft_derivates_2d}. Morever, we are again
 able to apply the optimisation from Equation~\ref{eq:idft:combined} which allows
@@ -1324,7 +1324,7 @@ pattern, but a set of perturbation patterns, where each pattern samples a
 different part of the spectrum. Although we are not able to remove periodicity 
 from the wave field, we may increase it to the least common multiple of the
 pattern periods. In practice, four different perturbation patterns suffice to
-obtain satisfactory results.
+obtain satisfactory results. FIXME: level of detail, shorter wavelengths
 
 In the remainder of this section we upgrade our equations to handle more than
 one perturbation pattern, we explain how to parametrize the different pattern
@@ -1334,7 +1334,7 @@ data synthesis.
 \subsection{Equations}
 At this point, one perturbation pattern consists of surface
 elevation $\eta$, displacement vector $\mvec{D}$, and the first order partial
-derivatives of $\eta$, $D_x$ and $D_y$. Because we compute the surface
+derivatives of $\eta$, $D_x$ and $D_z$. Because we compute the surface
 displacements as a sum of waves, it is straightforward to extend our
 computations to incorporate not just one perturbation pattern, but a set of
 patterns. Let $l \in \mathbb{N}^+$ represent the number of different patterns,
@@ -1974,6 +1974,14 @@ on which part of the wavenumber profile is being sampled.
   ]
   {figures/sampling_multires_scale_06_res_128_8_lod_1.dat};
 \addplot[
+  ycomb,
+  color=red,
+  ]
+  table [
+    col sep=comma, 
+  ]
+  {figures/sampling_multires_scale_06_res_64_8_lod_1.dat};
+\addplot[
   color=red,
   %draw=red,
   fill,
@@ -1983,14 +1991,6 @@ on which part of the wavenumber profile is being sampled.
     col sep=comma, 
   ]
   {figures/sampling_multires_scale_06_res_64_8_lod_1.dat} \closedcycle;
-\addplot[
-  ycomb,
-  color=red,
-  ]
-  table [
-    col sep=comma, 
-  ]
-  {figures/sampling_multires_scale_06_res_64_8_lod_1.dat};
 \nextgroupplot[
 	ytick=\empty,
 	axis y line=none,
