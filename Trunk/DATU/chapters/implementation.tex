@@ -586,7 +586,7 @@ of the spectrum to convert between the underlying layouts of the two different
 \wavevector domains of interest.
 %
 %
-\subsection{Symmetry}
+\subsection{Hermitian Spectrum}
 %https://www.cv.nrao.edu/course/astr534/FourierTransforms.html
 %https://ccrma.stanford.edu/~jos/mdft/Even_Odd_Functions.html
 %https://ccrma.stanford.edu/~jos/mdft/mdft.html
@@ -701,7 +701,7 @@ allows us to find matching complex conjugate pairs for all elements of an even-s
 %Again, it is the periodic nature of the spectrum that gives us the solution. If we replicate
 %the spectrum in both directions, we obtain an additional row and an additional column, which
 %allows us to find matching pairs for all elements of the spectrum, see Table~\ref{tab:spectrum_k_minusk_border}.\\
-
+\subsection{Hermitian Wave Spectrum}
 The spectrum $h(\mvec{k},t)$ as we generate it with Equation~\ref{eq:dft_h_k_t} is~\emph{not}
 hermitian for two reasons. First, the real-valued part of the spectrum, namely
 the wave energy spectrum $\Theta(\mvec{k})$, would need to be an even function,
@@ -909,13 +909,13 @@ We leave it as an exercise for the reader to substitute the terms $\eta(\mvec{x}
 and $h_0(\mvec{k},t)$ into Equation~\ref{eq:dft_derivates_2d} to be able to
 compute the surface slope vector as given in Equation~\ref{eq:dft_slope_2d}.
 Figure~\ref{fig:derivatives} depicts an example instance of surface 
-elevation $\eta$ as well as its associated slopes in greyscale. One may notice
-that Figure~\ref{sfig:derivative_heights}, without prior knowledge, is not 
-recognizable as a wave heightfield. The wave heightfield's gradients in
-Figure~\ref{sfig:derivative_x} and \subcaptionref{sfig:derivative_z}, on the 
-other hand, are more easily identified as water waves by the human eye.
+elevation $\eta$ as well as its associated slopes in greyscale.
+%One may notice that Figure~\ref{sfig:derivative_heights}, without prior
+%knowledge, is not  recognizable as a wave heightfield. The wave heightfield's
+%gradients in Figure~\ref{sfig:derivative_x} and \subcaptionref{sfig:derivative_z},
+%on the other hand, are more easily identified as water waves by the human eye.
 
-The two spectra which constitute the surface slope vector in the wavevector domain
+The two spectra which constitute the surface slope vector in the \wavevector domain
 are hermitian. Therefore we are able to apply the optimisation from
 Equation~\ref{eq:idft:combined} which allows us to combine both spectra into one,
 obtaining both components of the surface slope vector with just one inverse Fourier Transform.
@@ -1173,9 +1173,10 @@ self-intersection.}
 \end{figure}
 %
 The method by \citet{course:simulatingocean} we use to generate 
-choppy waves is not devoid of drawbacks. Some of the displacement vectors we 
-compute may be large enough to cause the displaced geometry to self-intersect, 
-see Figure~\ref{fig:grid_displaced_self_intersection}. Near the top of some 
+choppy waves is not devoid of drawbacks.
+As shown in Figure~\ref{fig:grid_displaced_self_intersection}, some of the
+displacement vectors we compute may be large enough to cause the displaced
+geometry to self-intersect. Near the top of some 
 waves the surface actually passes through itself, and as a consequence inverts, 
 with the surface normal pointing inwards instead of outwards. We may get rid of 
 this undesired side-effect in a rather simple way: reduce the magnitude of 
@@ -1277,7 +1278,7 @@ the Jacobian matrix of transformation $\mvec{g}$, then we may write:
  \end{bmatrix}
  =
  \begin{bmatrix}
-   1 + u\dpd{D_x(\mvec{x},t)}{x} & u\dpd{D_x(\mvec{x},t)}{z} \\
+   1 + u\dpd{D_x(\mvec{x},t)}{x} & u\dpd{D_x(\mvec{x},t)}{z} \\[1em]
    u\dpd{D_z(\mvec{x},t)}{x} & 1 + u\dpd{D_z(\mvec{x},t)}{z}
  \end{bmatrix}
 \end{equation}
@@ -1286,8 +1287,8 @@ Next, we compute the determinant of the Jacobian matrix:
  det(\mvec{J}(\mvec{x},t)) = J_{xx}J_{zz}-J_{zx}J_{xz}
 \end{equation}
 %
-If the Jacobian determinant at $\mvec{x}$ is positive, then $\mvec{y}$ 
-preserves orientation near $\mvec{x}$. If it is negative, $\mvec{y}$ reverses 
+If the Jacobian determinant at $\mvec{x}$ is positive, then $\mvec{g}$ 
+preserves orientation near $\mvec{x}$. If it is negative, $\mvec{g}$ reverses 
 orientation. We are interested in the latter case, because wherever the 
 surface self-intersects, it actually folds back on itself via a loop, and a 
 loop requires a reversal of orientation. Figure~\ref{fig:grid_displaced_j} 
