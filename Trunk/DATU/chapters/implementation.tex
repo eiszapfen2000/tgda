@@ -1166,9 +1166,15 @@ us to transform the spectra of the two partial derivatives as one.
 \spy [black, size=2cm] on (spypoint3) in node[fill=white] at (magnifyglass3);
 \spy [black, size=2cm] on (spypoint4) in node[fill=white] at (magnifyglass4);
 \end{tikzpicture}
-\caption{The wave profile from Figure~\ref{fig:grid_displaced}, but with 
-displacement scaling parameter $u=-7.5$ to better emphasize the effect of 
-self-intersection.}
+\caption{
+Background: the original wave profile.
+Foreground: the displaced wave profile, with some of the self-intersections
+highlighted. We chose a large displacement scaling parameter ($u=-7.5$) to
+better emphasize the effect of self-intersection.
+%The wave profile from Figure~\ref{fig:grid_displaced}, but with 
+%displacement scaling parameter $u=-7.5$ to better emphasize the effect of 
+%self-intersection. The non-displaced wave profile is shown in the background.
+}
 \label{fig:grid_displaced_self_intersection}
 \end{figure}
 %
@@ -1220,17 +1226,17 @@ self-intersection is taking place.
     ((-7.5*\thisrowno{5}) * (-7.5*\thisrowno{4})),
   ]
   {figures/u_30_500km_x_dx_h_dxx_dxz_dzx_dzz.dat};
-\addplot[
-  color=red!15!white,
-  solid,
-  forget plot
-  ]
-  table [
-    col sep=comma, 
-    x expr=\thisrowno{0},
-    y expr=\thisrowno{2},
-    ]
-  {figures/u_30_500km_x_dx_h_dxx_dxz_dzx_dzz.dat};
+%\addplot[
+  %color=red!15!white,
+  %solid,
+  %forget plot
+  %]
+  %table [
+    %col sep=comma, 
+    %x expr=\thisrowno{0},
+    %y expr=\thisrowno{2},
+    %]
+  %{figures/u_30_500km_x_dx_h_dxx_dxz_dzx_dzz.dat};
 %\addlegendentry{$x$}
 \addplot[
   color=blue,
