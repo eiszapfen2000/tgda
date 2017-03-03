@@ -1342,9 +1342,9 @@ does not prevent us to keep realtime framerates.
 Thus, we may extend the level-of-detail approach by \citet{misc:oceanlightingfft} and
 \citet{article:whitecaps} with a multi-resolution scheme, where specific pattern
 datasets, such as surface elevation and displacements, are generated at a lower
-resolution than the other datasets. We conclude, that the potential reduction of
-computational workload is solely dependent on the actual difference between
-the two resolutions.
+resolution than the other datasets. 
+Consequentially, the potential reduction of computational workload is solely
+dependent on the actual difference between the two resolutions.
 %We may conclude that, based on the number of patterns and the resolution(s) of pattern data,
 %we are able to strike a well-adjusted balance between model detail and computational workload.
 
@@ -1358,6 +1358,7 @@ In the remainder of this section we upgrade our equations to handle more than
 one perturbation pattern, we explain how to parametrize the different pattern
 periods to be able to sample as much of the spectrum as possible, and last we
 discuss our multi-resolution approach.
+%
 \subsection{Equations}
 At this point, one perturbation pattern consists of surface
 elevation $\eta$, displacement vector $\mvec{D}$, the slopes of $\eta$,
@@ -1370,12 +1371,17 @@ then we may compute the combined surface elevation as follows:
 \begin{equation}
  y(\mvec{x},t) = \sum\limits_{i=0}^{l-1}\eta_i(\mvec{x},t)
 \end{equation}
+In lockstep with the above we compute the slope of the combined surface elevation:
+\begin{equation}
+ \mvec{s}(\mvec{x},t) = \left[\dpd{y(\mvec{x},t)}{x},\dpd{y(\mvec{x},t)}{z}\right]
+ = \left[\sum\limits_i \dpd{\eta_i(\mvec{x},t)}{x}, \sum\limits_i \dpd{\eta_i(\mvec{x},t)}{z}\right]
+\end{equation}
 Furthermore, we may extend the horizontal grid point transformation required by
 the choppy wave algorithm to the following:
 \begin{equation}
 \mvec{g}(\mvec{x},t) = \mvec{x}+\sum\limits_{i=0}^{l-1}u_i\mvec{D}_i(\mvec{x},t) 
 \end{equation}
-In lockstep with the above we compute the slope of the combined surface elevation:
+Thus, we may write the slope of the combined displaced surface elevation as follows:
 \begin{equation}
 \mvec{s}(\mvec{x},t) = \left[\dpd{y(\mvec{x},t)}{x},\dpd{y(\mvec{x},t)}{z}\right] = \left[\frac{\sum\limits_i \dpd{\eta_i(\mvec{x},t)}{x}}{1 
 + \sum\limits_i u_i \dpd{D_{xi}(\mvec{x},t)}{x}}, \frac{\sum\limits_i 
