@@ -1383,7 +1383,7 @@ the choppy wave algorithm to the following:
 \end{equation}
 Thus, we may write the slope of the combined displaced surface elevation as follows:
 \begin{equation}
-\mvec{s}(\mvec{x},t) = \left[\dpd{y(\mvec{x},t)}{x},\dpd{y(\mvec{x},t)}{z}\right] = \left[\frac{\sum\limits_i \dpd{\eta_i(\mvec{x},t)}{x}}{1 
+\mvec{s}(\mvec{x},t) = \left[\frac{\sum\limits_i \dpd{\eta_i(\mvec{x},t)}{x}}{1 
 + \sum\limits_i u_i \dpd{D_{xi}(\mvec{x},t)}{x}}, \frac{\sum\limits_i 
 \dpd{\eta_i(\mvec{x},t)}{z}}{1 + \sum\limits_i 
 u_i\dpd{D_{zi}(\mvec{x},t)}{z}}\right]
@@ -1409,29 +1409,29 @@ simply fall back to the original ones.
 \subsection{Sampling}
 %
 For us to generate a believable, as well as visually pleasing ocean surface, we
-are required to include into our sum of waves a finite set of wavenumbers such
+are required to include into our sum of waves a finite set of \wavenumbers such
 that it is representative of the whole energy. If we generate only one pattern,
 based on size and resolution, we either sparsely sample inside a large
-wavenumber range, or we densely sample inside a small wavenumber range. The
+\wavenumber range, or we densely sample inside a small \wavenumber range. The
 former results in a poor reconstruction of a larger part of the spectrum, the
 latter in a better reconstruction of a smaller part of the spectrum, but
 possibly missing other relevant parts of the spectrum. Thus, we generate more
 than one pattern, where the goal is for each pattern to sample as many distinct
-wavenumbers as possible.
+\wavenumbers as possible.
 
-Recall that both, the spatial domain and the wavevector domain, are defined
-entirely by size $L$ and resolution $N$. The smallest wavenumber
-$k = \norm{\mvec{k}}$, where $k > 0$, representable by the wavevector domain is
+Recall that both, the spatial domain and the \wavevector domain, are defined
+entirely by size $L$ and resolution $N$. The smallest \wavenumber
+$k = \norm{\mvec{k}}$, where $k > 0$, representable by the \wavevector domain is
 $k = 2\pi/L$, it depends only on size. Moreover, the distance between subsequent
 sample points in both dimensions, $\Delta k$, is defined as $\Delta k = 2\pi/L$.
 Hence, $\Delta k$ depends only on size. Therefore, by choosing size $L$, we do
-not only define the minimal wavenumber we are able to sample, but also define
-how densely we are able to sample the spectrum. The largest wavenumber contained
-in the wavevector domain is $k = \sqrt{2}\pi N/L$. So, given size $L$,
-resolution $N$ defines how large the wavenumbers are allowed to grow, giving us
-an upper limit of the wavenumbers involved in the sum of waves. In short, with
+not only define the minimal \wavenumber we are able to sample, but also define
+how densely we are able to sample the spectrum. The largest \wavenumber contained
+in the \wavevector domain is $k = \sqrt{2}\pi N/L$. So, given size $L$,
+resolution $N$ defines how large the \wavenumbers are allowed to grow, giving us
+an upper limit of the \wavenumbers involved in the sum of waves. In short, with
 size $L$ and resolution $N$ specified for a pattern, we are able to compute the
-pattern's wavenumber range.
+pattern's \wavenumber range.
 %
 \begin{figure}
 \centering
@@ -1551,12 +1551,12 @@ pattern's wavenumber range.
 \end{groupplot}
 \end{tikzpicture}
 \caption{Red: Equal resolution, different size $L$. Both, (a) and (b), consist
-of the same number of samples, $N=12$. (a) covers a smaller wavenumber range
+of the same number of samples, $N=12$. (a) covers a smaller \wavenumber range
 than (b) because the former employs a smaller distance between consecutive
 sample points.
 Blue: Equal size, $L=100m$, different resolution $N$. The distance between
 consecutive sample points is equivalent in (c) and (d). (d) covers a larger
-wavenumber range because it contains more samples than (c).}
+\wavenumber range because it contains more samples than (c).}
 \label{fig:sampling_area_vs_res}
 \end{figure}
 %
@@ -1577,7 +1577,9 @@ size to reduce wavenumber overlap. We need at least one large pattern size, to
 avoid repetitive artifacts as much as possible, and one small pattern size for
 closeup detail. In addition, we have to look out for the different sizes not to
 be integral multiples of each other, otherwise the surface may seem repetitive
-at a smaller scale than expected. We chose to tackle both requirements by
+at a smaller scale than expected. 
+FIXME: irrational number
+We chose to tackle both requirements by
 employing multiples based on the golden ratio $\varphi = (1 + \sqrt{5})/2$. The
 user sets the largest desired pattern size, each following pattern size is
 reduced by the same multiplicative factor $f$, where $f \in \{\varphi^{-1},
