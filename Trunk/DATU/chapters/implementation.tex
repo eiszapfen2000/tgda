@@ -1333,8 +1333,8 @@ As each pattern samples a different part of the spectrum, we are able
 to extend the sum of waves to include shorter wavelengths, even as far as into the
 gravity-capillary wave domain. Thus, we may even reproduce detail on a small
 scale, such as ripples on the water surface.
-In practice, four different perturbation patterns suffice to obtain satisfactory
-results \citep{article:whitecaps}.
+In practice, up to four different perturbation patterns suffice to obtain
+satisfactory results \citep{article:whitecaps}.
 
 Since we position this work in the context of realtime rendering,
 we need to make sure that the accumulated cost of pattern data synthesis
@@ -1356,8 +1356,8 @@ dependent on the actual difference between the two resolutions.
 
 In the remainder of this section we upgrade our equations to handle more than
 one perturbation pattern, we explain how to parametrize the different pattern
-periods to be able to sample as much of the spectrum as possible, and last we
-discuss our multi-resolution approach.
+periods to be able to reduce tiling artifacts and sample as much of the spectrum
+as possible, and last we discuss our multi-resolution approach.
 %
 \subsection{Equations}
 At this point, one perturbation pattern consists of surface
@@ -1406,6 +1406,7 @@ Jacobian matrix to be able to locate surface self-intersections. We may write:
 %
 One can see that in case the number of patterns equals one, the new equations
 simply fall back to the original ones.
+%
 \subsection{Sampling}
 %
 For us to generate a believable, as well as visually pleasing ocean surface, we
@@ -1416,7 +1417,7 @@ based on size and resolution, we either sparsely sample inside a large
 former results in a poor reconstruction of a larger part of the spectrum, the
 latter in a better reconstruction of a smaller part of the spectrum, but
 possibly missing other relevant parts of the spectrum. Thus, we generate more
-than one pattern, where the goal is for each pattern to sample as many distinct
+than one pattern, where the goal is to sample as many distinct
 \wavenumbers as possible.
 
 Recall that both, the spatial domain and the \wavevector domain, are defined
@@ -1975,10 +1976,10 @@ are not allowed to employ a sampling scheme where $\Delta k$ changes dependent
 on which part of the wavenumber profile is being sampled.
 
 
-\subsection{Resolutions}
+\subsection{Multiple Resolutions}
 %
 %
-\begin{figure}
+\begin{figure}[p]
 \centering
 \begin{tikzpicture}
 \begin{groupplot}[
@@ -2221,14 +2222,14 @@ reconstruction in bottom row.}
 %
 %
 Recall, that one perturbation pattern consists of surface elevation $\eta$,
-displacement vector $\mvec{D}$, and the first order partial derivatives of
-$\eta$ and $\mvec{D}$. Moreover, we have a set of such patterns. The
+displacement vector $\mvec{D}$, the slopes of $\eta$, and the first order
+partial derivatives of $\mvec{D}$. Moreover, we have a set of such patterns. The
 computational load to synthesize all the cumulated pattern data has proven to be
 substantial. To improve upon the status quo, we chose to implement an approach
 common in computer graphics: augment low resolution geometry with high resolution
 surface information to generate detailed lighting. For our specific case, that
 means we may synthesize vertical and horizontal displacements at a lower
-resolution than the associated first order partial derivatives.
+resolution than the associated derivatives.
 %
 %
 Given pattern size $L$, grid point spacing $\Delta k = 2\pi/L$, pattern
@@ -2236,24 +2237,26 @@ resolutions $N_h,N_l \in \mathbb{N}$ with $N_l < N_h$, then we may define the
 two following wavevector domains:
 %
 \begin{align}
-\mvec{h} = (k_x,k_y)~&\in~\{(\alpha\Delta k,\alpha\Delta k)|-\frac{N_h}{2}\leq\alpha<\frac{N_h}{2}\}\\
-\mvec{l} = (k_x,k_y)~&\in~\{(\alpha\Delta k,\alpha\Delta k)|-\frac{N_l}{2}\leq\alpha<\frac{N_l}{2}\}
+\mvec{h} = (k_x,k_z)~&\in~\{(\alpha\Delta k,\beta\Delta k)|-\frac{N_h}{2}\leq\alpha<\frac{N_h}{2},-\frac{N_h}{2}<\beta\leq\frac{N_h}{2}\}\\
+\mvec{l} = (k_x,k_z)~&\in~\{(\alpha\Delta k,\beta\Delta k)|-\frac{N_l}{2}\leq\alpha<\frac{N_l}{2},-\frac{N_l}{2}<\beta\leq\frac{N_l}{2}\}
 \end{align}
-where $\mvec{h}$ is based on the higher resolution $N_h$ and therefore contains
-more pairs $(k_x, k_y)$ than $\mvec{l}$. One may notice that $\mvec{l}$ is a
-subset of $\mvec{h}$, all pairs $(k_x, k_y)$ in $\mvec{l}$ are also to be found
-in $\mvec{h}$. Hence, there is no need to generate two separate instances of the
-wave energy spectrum with differing resolutions.
-As long as the two different wavevector domains are based on
-the same pattern size, $\mvec{l}$ is a subset of $\mvec{h}$, it follows that
-$\Theta(\mvec{l})$ is a subset of $\Theta(\mvec{h})$. In short, the low
-resolution variant of the wave energy spectrum is already embedded inside the
+where \wavevector domain $\mvec{h}$ is based on the higher resolution $N_h$ and therefore contains
+more pairs $(k_x, k_z)$ than \wavevector domain $\mvec{l}$. One may notice that $\mvec{l}$ is a
+subset of $\mvec{h}$ as long as both \wavevector domains share the same grid point
+spacing, and thus the same underlying pattern size. Because all pairs $(k_x, k_z)$ in $\mvec{l}$ are also to be found
+in $\mvec{h}$, it follows that wave energy $\Theta(\mvec{l})$ is a subset of
+$\Theta(\mvec{h})$. Hence, there is no need to generate two separate instances
+of the wave energy spectrum with differing resolutions,
+% As long as the two different wavevector domains are based on
+% the same pattern size, $\mvec{l}$ is a subset of $\mvec{h}$, it follows that
+% $\Theta(\mvec{l})$ is a subset of $\Theta(\mvec{h})$. In short, 
+the low resolution variant of the wave energy spectrum is already embedded inside the
 high resolution variant. See Figure~\ref{fig:sampling_different_resolutions} for
 a display of the relation between two reconstructions of the same one
 dimensional wavenumber spectrum with different resolutions, but the same size.
 %
 %
-\begin{figure}
+\begin{figure}[p]
 \centering
 \begin{tikzpicture}
 \begin{groupplot}[
