@@ -405,7 +405,7 @@ Oceanographic research employs~\emph{wave spectra} to model the deep ocean
 \citep{book:kinsman2002wind}. The sea is assumed as a linear superposition of
 sinusoids with many different \wavelengths, frequencies and phases, travelling
 in different directions. The wave spectrum gives the distribution of wave energy
-among different wave frequenciesor \wavelengths.
+among different wave frequencies or \wavelengths.
 Given horizontal coordinate $\mvec{x}$, according to
 \citet{course:simulatingocean} we may compute the vertical coordinate
 at time $t$ via an inverse Discrete Fourier Transform as follows:
@@ -442,8 +442,8 @@ spectra assume the ocean surface to be dominated by the interplay of wind and
 gravity, hence wind speed is the parameter common to all models. Another well
 established parameter is~\emph{fetch}, which is the distance over which the wind
 blows before it reaches the ocean patch the wave spectrum simulates. Water
-depth, if supported by the wave spectrum model, like all other parameters is
-uniform, hence the sea bed is assumed planar and parallel to the ocean surface
+depth, if supported by the wave spectrum model, is uniform like all other
+parameters hence the sea bed is assumed planar and parallel to the ocean surface
 at rest. It follows that no wave transitions from one water depth to another,
 therefore no wave refraction may take place \citep{book:mei1989}.
 
@@ -555,7 +555,7 @@ makes use of the Phillips spectrum, a spectrum devised by himself specifically
 for computer graphics purposes, but loosely based on oceanographic research
 published in \citet{article:Phillips1958,article:Phillips1985}.
 
-Ocean surfaces based on wave spectra all share the same issue, namely the all to
+Ocean surfaces based on wave spectra all share the same issue, namely the all too
 gentle form of wave troughs and wave crests. Because the surface is computed as
 a linear superposition of sinusoids, it is only natural that the result shares
 the general form of its underlying building blocks. But a sea exposed to strong
@@ -618,9 +618,10 @@ believable shading of the ocean surface.
 	\label{fig:finch}
  }
  \caption{
-\subcaptionref{fig:westermann} Source:~\citet{Schneider:2001}
-\subcaptionref{fig:isidoro} Source:~\citet{Isidoro:2002}
-\subcaptionref{fig:finch} Source:~\citet{Finch:2004}
+  Examples of early attempts to generate plausible water surfaces on graphics hardware.
+  \subcaptionref{fig:westermann} Source:~\citet{Schneider:2001}
+  \subcaptionref{fig:isidoro} Source:~\citet{Isidoro:2002}
+  \subcaptionref{fig:finch} Source:~\citet{Finch:2004}
 }
 \label{fig:earlygpu}
 \end{figure}
@@ -628,7 +629,7 @@ believable shading of the ocean surface.
 Early attempts to generate plausible water surfaces on graphics hardware include
 \citet{Schneider:2001, Isidoro:2002} and \citet{Finch:2004}. Figure~\ref{fig:earlygpu}
 depicts some of their results.
-To obtain interactive framerates \citeauthor{Schneider:2001} compute the
+To obtain interactive framerates, \citeauthor{Schneider:2001} compute the
 displacements caused by wave motion using two octaves of Perlin noise in a
 vertex shader on the GPU (Figure~\ref{fig:westermann}).
 \citeauthor{Isidoro:2002} perturb an existing mesh by means of a sum of four
@@ -648,11 +649,11 @@ to generate better detailed surface normals.
 %using vertex shaders.
 
 \subsection{Adaptive Schemes}
-Viewing situations involving an ocean surface are varied, from close-ups where
-one may notice ripples on the surface to views where the water surface may
+Viewing situations involving an ocean surface are varied: from close-ups where
+one may notice ripples on the surface, to views where the water surface may
 span until the horizon. Hence, to improve performance and visual fidelity,
 it is beneficial for rendering algorithms to focus on regions near the camera
-position, minimizing the number of samples according to distance from the
+position, minimizing the number of samples according to the distance from the
 viewpoint.
 %Given a viewing situation where one observes the ocean reaching the horizon, a
 %meshing scheme with uniformly spaced vertices in world space may do us a
@@ -872,7 +873,7 @@ while the underlying mesh is coarse.
 from \citet{article:oceanlighting} with an ocean surface synthesized
 from the wave spectrum presented in~\citet{article:Elfouhaily1997}.
 Wave heights, gradients, as well as the horizontal displacements
-required for~\citet{course:simulatingocean}'s choppy wave algorithm
+required for the choppy wave algorithm by \citet{course:simulatingocean}
 are computed entirely on the GPU. In an additional step,
 \citet{article:whitecaps} add whitecaps to the ocean lighting model,
 see Figure~\ref{fig:dupuy:whitecaps}.
