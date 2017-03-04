@@ -40,16 +40,16 @@ bands constitutes the spectrum of ocean waves.
 Table~\ref{tab:ocean_wave_period} gives a compact overview of different kinds 
 of ocean surface waves classified by period band as well as the corresponding 
 frequency band. The shortest period waves are the~\emph{capillary waves}, with 
-periods less than $0.1s$. These are the first waves which one is able to notice 
+periods less than \SI{0.1}{\second}. These are the first waves which one is able to notice 
 when the wind starts to blow on the ocean surface, they appear like a fine
 structure of small ripples of nearly capillary dimension.
 % That is, capillary waves are largely responsible for what might be called the 
 % inherent roughness of the surface, therefore they determine the effectiveness 
 % with which the wind is able to grip the water.
-Next are the~\emph{ultragravity waves} with periods ranging from $0.1s$ to 
-$1s$. The ordinary~\emph{gravity waves} observed at sea have periods varying 
-from $1s$ to $30s$ and are composed of two types of waves, namely~\emph{sea 
-waves} and~\emph{swell}.
+Next are the~\emph{ultragravity waves} with periods ranging from \SI{0.1}{\second}
+to \SI{1}{\second}. The ordinary~\emph{gravity waves} observed at sea have periods
+varying from \SI{1}{\second} to \SI{30}{\second} and are composed of two types
+of waves, namely~\emph{sea waves} and~\emph{swell}.
 Sea waves are gravity waves directly generated and affected by local winds,
 and after the wind ceases to blow they are called swell.
 More generally, swell
@@ -57,13 +57,13 @@ consists of wind generated gravity waves that are not significantly affected
 by the local wind, therefore they have  been generated elsewhere or at some
 time in the past.
 Beyond the ordinary 
-gravity waves there are~\emph{infragravity waves}, with periods between $30s$ 
-and $5min$. Then there are the~\emph{long period waves} with periods in the 
-range $5min$ to $12h$. Their representatives in the sea are~\emph{tsunamis} 
+gravity waves there are~\emph{infragravity waves}, with periods between \SI{30}{\second} 
+and \SI{5}{\minute}. Then there are the~\emph{long period waves} with periods in the 
+range \SI{5}{\minute} to \SI{12}{\hour}. Their representatives in the sea are tsunamis 
 and storm surges. The~\emph{ordinary tidal waves} represent the astronomical 
-tides with fixed wave periods of about $12h$ and $24h$. At the end of the 
+tides with fixed wave periods of about \SI{12}{\hour} and \SI{24}{\hour}. At the end of the 
 spectrum there are the~\emph{transtidal waves} with periods greater than 
-$24h$. These include the longer period components of astronomical tides.
+\SI{24}{\hour}. These include the longer period components of astronomical tides.
 %
 \begin{figure}
   \centering
@@ -198,7 +198,7 @@ with
 %
 where $A$ is the amplitude, $k$ is called the~\emph{\wavenumber},~$x$ is the horizontal position,
 $\omega$ is the~\emph{wave frequency} in radians per second,~$t$ represents the time,
-$\lambda$ is the~\emph{wave length},~$f$ is the~\emph{wave frequency} in Hertz (Hz) and~$T$
+$\lambda$ is the~\emph{\wavelength},~$f$ is the~\emph{wave frequency} in Hertz (\si{\hertz}) and~$T$
 is the wave period in seconds.
 % \begin{figure}
 % 	\centering
@@ -245,7 +245,7 @@ is the wave period in seconds.
 \draw[<->,>=latex] (axis cs:5*pi/4,-2*0.707106781186548) -- (axis cs:13*pi/4,-2*0.707106781186548) node [midway,label={[yshift=-2mm]above:{$T$}}] {};
 \end{axis}
 \end{tikzpicture}
-\caption{An example of a sinusoidal wave.}
+\caption{An example of a sinusoidal wave with amplitude $A$, \wavelength $\lambda$, and wave period $T$.}
 \label{fig:sinusoid}
 \end{figure}
 %
@@ -276,8 +276,8 @@ the surface elevation $\eta$ will always be the same. We rewrite the term to
 \begin{equation*}
   x = \frac{\omega}{k}t + \frac{const}{k}
 \end{equation*}
-which gives us all positions $x$ the wave has the same elevation at. These positions are time dependent,
-differentiation gives us phase speed $c$:
+which gives us all positions $x$ where the wave has the same elevation. These
+positions are time-dependent, differentiation gives us phase speed $c$:
 \begin{equation*}
   c = \frac{\mathrm dx}{\mathrm dt} = \frac{\omega}{k} = \frac{\lambda}{T}
 \end{equation*}
@@ -299,7 +299,7 @@ linear wave theory defines a functional relationship between the two factors inv
 %
 where $g$ is the acceleration of earth's gravity and $d$ is the water depth. Equation~\ref{eq:dispersion_relation}
 is called the~\emph{dispersion relation}.
-There exist two useful approximations of Equation~\ref{eq:dispersion_relation} which do not involve the $\tanh$ term:
+There exist two useful approximations of the equation which do not involve the $\tanh$ term:
 \begin{itemize}
  \item \emph{Shallow water approximation} - the water depth $d$ is much smaller than the wave length $\lambda$.
  Assume $d \ll \lambda$, then $0 \leq kd \ll 1$ and $\tanh(kd) \approx kd$.
@@ -324,7 +324,7 @@ phase speeds are:
   \label{eq:phase_speed_deep_water}   c &= \sqrt{\frac{g}{k}} = \frac{g}{\omega} && \text{Deep water phase speed}
 \end{align}
 %
-According to Equation~\ref{eq:phase_speed_shallow_water}, in shallow water phase speed depends exclusively
+According to Equation~\ref{eq:phase_speed_shallow_water}, the phase speed in shallow water depends exclusively
 on water depth and gravitational acceleration, there is no connection to wave length or frequency.
 We may conclude that waves with different wave lengths travel with the same phase speed, it follows that
 shallow water is not dispersive. Phase speed in deep water, on the other hand,
@@ -342,8 +342,8 @@ travel faster than those with smaller ones.
 %
 \subsection{Three Dimensional Wave}
 Until now we were discussing a two dimensional ocean defined by exactly one sinus wave. As a first
-step to get to a more realistic ocean surface representation we will extend equation~\ref{eq:sinusoid}
-to form a wave in three dimensional space. In contrast to equation~\ref{eq:sinusoid}, where the wave's
+step to get to a more realistic ocean surface representation we will extend Equation~\ref{eq:sinusoid}
+to form a wave in three dimensional space. In contrast to Equation~\ref{eq:sinusoid}, where the wave's
 travelling direction is fixed, the wave has to be able to travel in an arbitrary direction on a plane.
 Moreover, we need to handle two dimensional input positions. The sinusoid describing surface elevation
 in three dimensional space is defined as follows:
@@ -357,7 +357,7 @@ the \wavevector's magnitude:
 \begin{equation*}
  k = \norm{\mvec{k}}
 \end{equation*}
-Because of the dispersion relation all waves of same magnitude $k$ share the same angular frequency $\omega$.
+Because of the dispersion relation, all waves of same magnitude $k$ share the same angular frequency $\omega$.
 
 \subsection{Complex Exponential Wave Form}
 %
@@ -432,11 +432,11 @@ a(\mvec{k})~\mathrm{e}^{\mathrm{i}(\transpose{\mvec{k}}\mvec{x}-
 \end{equation}
 where $a(\mvec{k})$ is called the~\emph{amplitude spectrum} of
 $\eta(\mvec{x}, t)$.
-According to \citet{book:kinsman2002wind} it is possible to
+According to \citet{book:kinsman2002wind} it is more expedient to
 represent the vertical displacement of the water surface by~\emph{Generalized
 Fourier Transforms} \citep{book:lighthill1958}.
 %We may rewrite the sea surface in two spatial dimensions and one time dimension as follows:
-\citeauthor{book:kinsman2002wind} transforms Equation~\ref{eq:surface_elevation_akwt}
+Thus, \citeauthor{book:kinsman2002wind} transforms Equation~\ref{eq:surface_elevation_akwt}
 into a sea surface representation with two spatial dimensions and one time dimension:
 %
 \begin{equation}
@@ -495,7 +495,7 @@ point on the sea surface, a both tedious and unfeasible task. At
 this point we are in need of a general description of the amplitude spectrum
 which is valid at all points $\mvec{x}$ and times $t$.
 Fortunately, modern physical oceanography is
-based on exactly such a formulation, which has been developed \citet{Neumann:1966}.
+based on exactly such a formulation, which has been developed by \citet{Neumann:1966}.
 % We will refer to said formulation as \emph{Pierson-Neumann theory} throughout
 % the remainder of this document.
 
@@ -563,7 +563,7 @@ denoted as $\overline{\eta^2}$. Therefore, we may write:
 Later on we will be in need of energy spectrum formulations which have a lower
 dimensionality than the three dimensional $\Theta(\mvec{k},\omega)$. As such,
 we introduce the two dimensional energy spectrum, in literature known
-as~\emph{\wavenumber spectrum}, which is as follows:
+as~\emph{\wavenumber spectrum}, which is defined as follows:
 \begin{equation}
 \label{eq:energy_spectrum_2d}
  \Theta(\mvec{k}) = \int_{\omega} \Theta(\mvec{k}, \omega)~\mathrm{d}\omega
@@ -649,7 +649,7 @@ processes to give realistic results.\\
 % travelling direction of waves, and therefore are not able to simulate 
 % surface elevation with two dimensional positions $\mvec{x}$ as input.
 From an algorithmic point of view we should not use three dimensional
-energy spectra $\Theta(\mvec{k},\omega)$, the computational cost of
+energy spectra $\Theta(\mvec{k},\omega)$, as the computational cost of
 Fourier Transforms in three dimensions would simply be too high.
 On the other hand, we are unable to employ one dimensional frequency spectra
 $\Theta(\omega)$ as-is, because they do not contain any information about
@@ -705,7 +705,7 @@ we still have to make sure we compute an as good as possible approximation of
 Equation~\ref{eq:surface_elevation_gauss_2d}. Since our model for surface 
 elevation is based on wave energy, the best way forward seems to be that we 
 choose a finite range of \wavevectors $\mvec{k}$ such that they are 
-representative of the whole energy $Var[\eta]$ as defined by $\Theta(\mvec{k})$. 
+representative of the whole energy $\mathrm{Var}[\eta]$ as defined by $\Theta(\mvec{k})$. 
 Because \wavevectors $\mvec{k}$ are related to \wavelength, they are also 
 related to the spatial domain, and as such to positions $\mvec{x}$. Hence, the 
 quality of our approximation depends on how we discretise both the spatial 
@@ -934,11 +934,11 @@ to get satisfactory results.
 We have discretised the \wavevector domain into a finite set of \wavevectors, 
 where $\pm k_{min}$ represent the largest positive and negative \wavenumbers on 
 the horizontal and vertical axes. Since we seek a representative approximation 
-of whole wave energy $Var[\eta]$ based on our finite set of \wavevectors, we may 
+of whole wave energy $\mathrm{Var}[\eta]$ based on our finite set of \wavevectors, we may 
 start by limiting the respective integral with $\pm k_{min}$:
 \begin{equation}
 \label{eq:variance_int_approx_limited}
-Var[\eta] = \int\int_{\mvec{k}}\Theta(\mvec{k})~\mathrm{d}\mvec{k}
+\mathrm{Var}[\eta] = \int\int_{\mvec{k}}\Theta(\mvec{k})~\mathrm{d}\mvec{k}
 \approx\int_{-k_{min}}^{k_{min}}\int_{-k_{min}}^{k_{min}}\Theta(\mvec{k}
 )~\mathrm{d}\mvec{k}
 \end{equation}
@@ -947,7 +947,7 @@ Equation~\ref{eq:variance_int_approx_limited} as a sum of integrals:
 %
 \begin{equation}
 \label{eq:variance_int_approx_sums}
- Var[\eta] = \int_{-k_{min}}^{k_{min}}\int_{-k_{min}}^{k_{min}}\Theta(\mvec{k}
+ \mathrm{Var}[\eta] = \int_{-k_{min}}^{k_{min}}\int_{-k_{min}}^{k_{min}}\Theta(\mvec{k}
 )~\mathrm{d}\mvec{k} = \sum_{\alpha}\sum_{\beta}\int_{\Delta k_x}\int_{\Delta 
 k_z}\Theta(\mvec{k})~\mathrm{d}\mvec{k}
 \end{equation}
@@ -962,7 +962,7 @@ Equation~\ref{eq:wave_vector_domain}, then:
 %
 \begin{equation}
 \label{eq:variance_naive_sum}
- Var[\eta] = \sum_{\alpha}\sum_{\beta}\Theta(\mvec{k}_{\alpha,\beta})
+ \mathrm{Var}[\eta] = \sum_{\alpha}\sum_{\beta}\Theta(\mvec{k}_{\alpha,\beta})
 \end{equation}
 %
 By combining Equation~\ref{eq:variance_int_approx_sums} 
@@ -976,14 +976,14 @@ k_z}\Theta(\mvec{k})~\mathrm{d}\mvec{k} \approx
 Now we may write our approximation of wave energy as a simple sum:
 \begin{equation}
 \label{eq:variance_discrete}
- Var[\eta] = \sum_{\alpha}\sum_{\beta}\Theta(\mvec{k}_{\alpha,\beta})\Delta k_x 
+ \mathrm{Var}[\eta] = \sum_{\alpha}\sum_{\beta}\Theta(\mvec{k}_{\alpha,\beta})\Delta k_x 
 \Delta k_z
 \end{equation}
 %
 \subsection{Random Amplitudes}
 \label{sec:random_amplitudes}
 Recall that wave energy is defined as the mean square of the wave amplitude, so,
-given wave energy $\Theta(\mvec{k})$ we may compute wave amplitude 
+given wave energy $\Theta(\mvec{k})$, we may compute wave amplitude 
 $B(\mvec{k})$ as follows:
 \begin{equation*}
  B(\mvec{k})^2 = 2\Theta(\mvec{k})
@@ -1006,8 +1006,8 @@ follows:
 k}_{\alpha,\beta})^2}~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}_{\alpha,\beta}) 
 t}~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}_{\alpha,\beta}}\mvec{x}}
 \end{equation*}
-where $\xi_r$ and $\xi_i$ are Gauss distributed random variables with mean zero 
-and standard deviation one. We will drop indices $\alpha$ and $\beta$ and give 
+where $\xi_r$ and $\xi_i$ are random scalars drawn from the Standard Normal Distribution.
+We will drop indices $\alpha$ and $\beta$ and give 
 a formulation in terms of wave energy $\Theta(\mvec{k})$ and our finite set of 
 \wavevectors $\mvec{k}$:
 \begin{equation}
@@ -1036,7 +1036,7 @@ spectra, as only the latter form allows us to actually synthesize a finite area
 of a virtual ocean surface. Thus, first, we follow up with a description of how
 to augment one dimensional frequency spectra with directional information, and
 second, we show how to make sure to preserve integral equality between
-different wave spectrum domains i.e. how to convert from frequency based wave
+different wave spectrum domains, i.e. how to convert from frequency based wave
 energy to wavenumber based energy with correct scaling.
 Last, we discuss three more wave spectra, where each of them already includes a
 distinct model for the directional distribution of wave energy.
