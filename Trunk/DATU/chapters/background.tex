@@ -263,6 +263,9 @@ will have the same elevation. Another effect of the cosinus function is that the
 surface elevation is limited by the amplitude $A$. We will call the difference
 in elevation between crest and trough the~\emph{wave height}. It is easy to see
 that wave height $H$ is defined as $H=2A$.
+% Next, we will look at the
+% interdependency between \wavenumber $k$, wave frequency $\omega$, and the
+% propagation speed of the wave.
 %
 \subsection{Phase Velocity}
 \label{sec:phase_velocity}
@@ -941,7 +944,7 @@ of whole wave energy $\mathrm{Var}[\eta]$ based on our finite set of \wavevector
 start by limiting the respective integral with $\pm k_{min}$:
 \begin{equation}
 \label{eq:variance_int_approx_limited}
-\mathrm{Var}[\eta] = \int\int_{\mvec{k}}\Theta(\mvec{k})~\mathrm{d}\mvec{k}
+\mathrm{Var}[\eta] = \iint_{\mvec{k}}\Theta(\mvec{k})~\mathrm{d}\mvec{k}
 \approx\int_{-k_{min}}^{k_{min}}\int_{-k_{min}}^{k_{min}}\Theta(\mvec{k}
 )~\mathrm{d}\mvec{k}
 \end{equation}
@@ -976,7 +979,7 @@ and~\ref{eq:variance_naive_sum} we get:
 k_z}\Theta(\mvec{k})~\mathrm{d}\mvec{k} \approx 
 \Theta(\mvec{k}_{\alpha,\beta})\Delta k_x\Delta k_z
 \end{equation}
-Now we may write our approximation of wave energy as a simple sum:
+Now we may write our approximation of the whole wave energy as a simple sum:
 \begin{equation}
 \label{eq:variance_discrete}
  \mathrm{Var}[\eta] = \sum_{\alpha}\sum_{\beta}\Theta(\mvec{k}_{\alpha,\beta})\Delta k_x 
