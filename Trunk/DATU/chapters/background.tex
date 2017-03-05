@@ -1739,8 +1739,8 @@ one. Thus, as a prerequisite, we are in need of a two dimensional \wavenumber
 spectrum $\Theta(\mvec{k})$, but 
 Equation~\ref{eq:directional_frequency_spectrum} 
 gives us a directional frequency spectrum $\Theta(\omega,\theta)$. We will 
-convert one spectrum form to the other according to the substitution rule, with 
-the deep water dispersion relation $\omega^2=gk$
+convert one spectrum form to the other according to the change of variables
+theorem, with the deep water dispersion relation $\omega^2=gk$
 serving as a link between angular frequency $\omega$ and \wavenumber $k$. To 
 avoid possible confusion we will add subscripts to each occurence of $\Theta$ 
 in order to explicitely show the parameters it takes as input.
@@ -1912,7 +1912,7 @@ $k_x$ axis. Note the difference in scale between the two vertical axes.}
 \end{figure}
 %
 
-Given $\Theta_k(k)$ we are able to rewrite the directional frequency spectrum
+Given $\Theta_k(k)$, we are able to rewrite the directional frequency spectrum
 $\Theta_{\omega, \theta}(\omega, \theta)$ from
 Equation~\ref{eq:directional_frequency_spectrum} in terms of \wavenumber $k$:
 %
@@ -1954,7 +1954,7 @@ in deep water.
 \subsection{Two Dimensional Wave Spectra}
 % \label{subsec:two_dimensional_frequency_spectra}
 %
-Beforehand we did introduce the combination of a one dimensional 
+Beforehand we introduced the combination of a one dimensional 
 frequency spectrum with a directional spreading function in order to generate a 
 two dimensional frequency spectrum. We have seen that there are different forms
 of two dimensional wave spectra, such as the directional frequency spectrum
@@ -1982,7 +1982,7 @@ introduced by \citet{article:Mitsuyasu1975}.
 
 The energy given by the one dimensional Donelan frequency spectrum depends on 
 the frequency itself, the position of that frequency in the spectrum 
-($(\omega/\omega_p)$ and on the intensity of wind input $\Omega_c = U_c/c_p$, 
+$(\omega/\omega_p)$ and on the intensity of wind input $\Omega_c = U_c/c_p$, 
 where $U_c$ is the component of the wind in the direction 
 of travel of the waves at the spectral peak, and $c_p$ is the phase velocity of 
 the waves at the spectral peak. The directional spreading on the other hand is 
@@ -2007,12 +2007,12 @@ parameter $\beta$, which is defined as:
 \label{eq:donelan:beta}
 \beta &= \begin{cases}
 	2.61(\omega/\omega_p)^{1.3} & 0.56 < \omega/\omega_p < 0.95\\
-	2.28(\omega/\omega_p)^{-1.3} & 0.95 < \omega/\omega_p < 1.6\\
+	2.28(\omega/\omega_p)^{-1.3} & 0.95 \leq \omega/\omega_p < 1.6\\
 	1.24 & \text{otherwise}
     \end{cases}
 \end{align}
-Given wind input $U_c$, and the inverse wave age based on the component of the
-wind in the direction of the peak waves, $\Omega_c$, then we may
+Given wind input $U_c$, and the inverse wave age $\Omega_c$ based on the
+component of the wind in the direction of the peak waves, then we may
 write peak angular frequency $\omega_p$ as:
 \begin{equation}
  \omega_{p} = \frac{g\Omega_c}{U_{c}}
@@ -2313,7 +2313,7 @@ increasing fetch, but overshoots.
 Right: 
 JONSWAP and Donelan spectra with different inverse wave age values $\Omega_c$, 
 Pierson Moskowitz spectrum for comparison ($\omega_p = 2.5$).
-Given specific values for $\Omega_c$ the Donelan spectrum transitions well
+Given specific values for $\Omega_c$, the Donelan spectrum transitions well
 between a developing and a fully developed sea.}
 \label{fig:donelan_spectra}
 \end{figure}
@@ -2324,14 +2324,14 @@ transition to fully developed state. As one can see in
 Figure~\ref{fig:donelan_spectra}, said transition does work if inverse wave age
 $\Omega_c$ is given explicitely, instead of being estimated based on fetch.
 We may conclude that Equation~\ref{eq:donelan:omegac} is not that good an
-approximation of inverse wave age $\Omega_c$, especially because it lacks an
-asymptotic value of ${\Omega_c=0.83}$ for large fetch.
+approximation of inverse wave age $\Omega_c$, especially because it does not
+ensure a lower limit of ${\Omega_c=0.83}$ for large fetch.
 %
 \subsection{Unified Spectrum}
 \label{sec:unified_spectrum}
 %
 The Unified spectrum is a directional \wavenumber spectrum introduced by
-\citet{article:Elfouhaily1997} which consists of a one 
+\citet{article:Elfouhaily1997}. It consists of a one 
 dimensional \wavenumber spectrum combined with a directional spreading 
 function. All of the spectral models which we introduced beforehand focus on 
 the \emph{long-wave regime}, which, according to \citeauthor{article:Elfouhaily1997},
@@ -2346,8 +2346,8 @@ We may write:
 \omega^2 = gk\left[1 + \left(\frac{k}{k_m}\right)^2\right] &&
 k_m = \sqrt{\frac{p_w g}{T}} = 370~\text{rad}\cdot\text{m}^{-1}
 \end{align*}
-where $k_m$ is the \wavenumber where gravity-capillary waves on an air-water
-interface have their minimum phase velocity at~\citep{lamb:1945}.
+where $k_m$ is the \wavenumber at which gravity-capillary waves on an air-water
+interface have their minimum phase velocity~\citep{lamb:1945}.
 The constants $p_w$, $g$ and $T$ are water density, acceleration due to
 earth's gravity, and water surface tension, respectively.
 
@@ -2365,7 +2365,7 @@ article:Hara1994}. We may write the Unified spectrum as follows:
 %
 where $\theta_p$ is the direction of travel of the waves at the spectral peak. 
 Since the Unified spectrum is given in terms of \wavenumber, we are in need of a 
-\wavenumber based formulation of its foundation, namely the Pierson Moskowitz 
+\wavenumber-based formulation of its foundation, namely the Pierson Moskowitz 
 spectrum \citep{article:PiersonMoskowitz1964}, as well as the peak enhancement
 factor introduced by \citet{article:Hasselman1973}.
 \citeauthor{article:Elfouhaily1997} give the \wavenumber formulation of the
@@ -2610,7 +2610,7 @@ The equilibrium range parameter for short waves, $\alpha_m$, is given as:
 \begin{align*}
  \alpha_m &= 10^{-2}\begin{cases}
 	1 + \ln\left(\frac{u^{\ast}}{c_m}\right) & u^{\ast} < c_m \\
-	1 + 3\ln\left(\frac{u^{\ast}}{c_m}\right) & u^{\ast} > c_m
+	1 + 3\ln\left(\frac{u^{\ast}}{c_m}\right) & u^{\ast} \geq c_m
 	\end{cases} \\
 \end{align*}
 where $u^{\ast}$ denotes the friction velocity at the water surface.
@@ -3043,9 +3043,10 @@ at $k_m = 370~rad\cdot m^{-1}$.
 \label{fig:unified_log}
 \end{figure}
 %
-At this point we may look at both, the low and the high frequency regime of the 
-Unified spectrum. See Figure~\ref{fig:unified_log}, which includes the Donelan
-spectrum for comparison, and employs logarithmic scaling to better emphasise
+% At this point we may look at both, the low and the high frequency regime of the 
+% Unified spectrum.
+Figure~\ref{fig:unified_log} depicts a comparison between the Unified spectrum
+and the Donelan spectrum. The scaling is logarithmic to better emphasise the
 differences in the high frequency regime.
 %One can see that the shapes
 %of both spectrum types match rather well up to the spectral peak in the long wave regime,
@@ -3184,10 +3185,9 @@ chose the following as a default value for $l$:
  l = 10^{-3}L
 \end{equation*}
 Moreover, it follows from Equation~\ref{eq:phillips_spectrum} that setting 
-${l = 0}$ disables any \wavenumber based suppression of energy.
-
-One may see from Equation~\ref{eq:phillips_spectrum} that \citeauthor{course:simulatingocean}
-employs a one dimensional wavenumber spectrum, which is as follows:
+${l = 0}$ disables any \wavenumber based suppression of energy. Additionally,
+one may see that \citeauthor{course:simulatingocean} employs a one dimensional
+wavenumber spectrum, which is as follows:
 \begin{equation}
 \label{eq:phillips_wavenumber_spectrum}
   \Theta(k) = A\frac{\exp\left(-(kL)^{-2}-(kl)^2\right)}{k^4}
@@ -3307,7 +3307,7 @@ by at least a factor of $10^3$. Recall that both the Pierson Moskowitz and the
 JONSWAP model are based on real world data aquired on the ocean, then we may 
 reason that those models give us a value range for energy precise enough to 
 generate believable results. Therefore we need to rescale the energy obtained 
-from the Phillips spectrum into that range. To the author it seems reasonable 
+from the Phillips spectrum into that range. It seemed reasonable to us
 that that is the purpose of the numeric constant $A$ in 
 Equations~\ref{eq:phillips_spectrum} and \ref{eq:phillips_wavenumber_spectrum}. 
 Since \citeauthor{course:simulatingocean} does not give any information about
@@ -3353,8 +3353,8 @@ exponents $2$ and $4$. For~\subcaptionref{subfig:directional_spread_cos2_r} and
 \subcaptionref{subfig:directional_spread_cos4_r} the wind direction poins to 
 the right, for \subcaptionref{subfig:directional_spread_cos2_ur} and
 \subcaptionref{subfig:directional_spread_cos4_ur} it points to the upper right. 
-The directional spread with an exponent equal $4$ is distinctly more narrow 
-than the one with an exponent equal $2$. Moreover, all instances are
+The directional spread with an exponent of $4$ is distinctly more narrow 
+than the one with an exponent of $2$. Moreover, all instances are
 centrosymmetrical.}
 \label{fig:phillips_directional_term}
 \end{figure}
