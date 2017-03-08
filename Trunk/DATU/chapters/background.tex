@@ -164,7 +164,7 @@ and its capability to model the ocean surface. Section~\ref{sec:random_sea}
 presents the wave spectrum concept, whereas Section~\ref{sec:random_sea_discretisation}
 outlines the steps necessary to synthesize an ocean surface based on
 a wave spectrum.
-Last, Section~\ref{sec:wave_spectra} discusses the wave spectra which were
+Last, Section~\ref{sec:wave_spectra} discusses the wave spectra which we
 implemented as part of this work.
 % Last, Section~\ref{sec:wave_spectra} discusses various
 % wave spectra obtained from oceanographic research, and one wave spectrum
@@ -263,6 +263,9 @@ will have the same elevation. Another effect of the cosinus function is that the
 surface elevation is limited by the amplitude $A$. We will call the difference
 in elevation between crest and trough the~\emph{wave height}. It is easy to see
 that wave height $H$ is defined as $H=2A$.
+%Before we move on to waves in three dimensions, we may elaborate on the
+%functional relationship between \wavenumber $k$ and angular wave frequency
+%$\omega$ as defined by linear wave theory.
 % Next, we will look at the
 % interdependency between \wavenumber $k$, wave frequency $\omega$, and the
 % propagation speed of the wave.
@@ -273,7 +276,7 @@ In linear wave theory, the rate at which a particular phase of a wave propagates
 the~\emph{phase velocity}. The phase velocity is a vector and has an associated direction,
 the \emph{phase speed} on the other hand refers only to the magnitude of the phase velocity.
 The most comprehensible example of phase speed is the rate of propagation of the wave crest.
-During one wave period $T$ the wave crest travels a distance equal to the wave length $\lambda$.
+During one wave period $T$ the wave crest travels a distance equal to the \wavelength $\lambda$.
 We may generalize this to other phases than the wave crest. Given a constant phase
 \begin{equation*}
   const = kx - \omega t
@@ -293,7 +296,7 @@ positions are time-dependent, differentiation gives us phase speed $c$:
 
 In the context of water surface waves,~\emph{dispersion} refers to~\emph{frequency dispersion}, which describes
 the effect of waves at different wavelengths travelling at different phase speeds. We have seen that
-phase speed $c = \frac{\lambda}{T}$ involves wave length and frequency, and alternatively $c = \frac{\omega}{k}$
+phase speed $c = \frac{\lambda}{T}$ involves \wavelength and frequency, and alternatively $c = \frac{\omega}{k}$
 which includes angular frequency and \wavenumber. We focus on the latter formulation for phase speed, because
 linear wave theory defines a functional relationship between the two factors involved:
 %therefore we will start with the functional relationship
@@ -331,10 +334,10 @@ phase speeds are:
 \end{align}
 %
 According to Equation~\ref{eq:phase_speed_shallow_water}, the phase speed in shallow water depends exclusively
-on water depth and gravitational acceleration, there is no connection to wave length or frequency.
-We may conclude that waves with different wave lengths travel with the same phase speed, it follows that
+on water depth and gravitational acceleration, there is no connection to \wavelength or frequency.
+We may conclude that waves with different \wavelengths travel with the same phase speed, it follows that
 shallow water is not dispersive. Phase speed in deep water, on the other hand,
-does not relate to water depth, but to wave length and frequency, which makes deep water dispersive.
+does not relate to water depth, but to \wavelength and frequency, which makes deep water dispersive.
 We can expand Equation~\ref{eq:phase_speed_deep_water} to:
 %
 \begin{equation}
@@ -343,7 +346,7 @@ We can expand Equation~\ref{eq:phase_speed_deep_water} to:
 \end{equation}
 %
 Looking at Equation~\ref{eq:phase_speed_deep_water_l} we can conclude that phase speed in deep water increases
-with wave length $\lambda$ ~\emph{and} with wave period $T$. Waves in deep water with large wavelengths/periods
+with \wavelength $\lambda$ ~\emph{and} with wave period $T$. Waves in deep water with large \wavelengths/periods
 travel faster than those with smaller ones.
 %
 \subsection{Three Dimensional Wave}
@@ -495,6 +498,7 @@ Equation~\ref{eq:surface_elevation_bkt} and Equation~\ref{eq:surface_elevation_b
 \section{The Specification of a Random Sea}
 \label{sec:random_sea}
 %
+FIXME: Make clear that this is required for ocean surface synthesis.
 Equation~\ref{eq:surface_elevation_bk} may be able to describe the ocean
 surface, but at the cost of deducing an amplitude spectrum for each observed
 point on the sea surface, a both tedious and unfeasible task. At
