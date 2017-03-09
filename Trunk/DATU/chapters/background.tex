@@ -499,7 +499,6 @@ Equation~\ref{eq:surface_elevation_bkt} and Equation~\ref{eq:surface_elevation_b
 \section{The Specification of a Random Sea}
 \label{sec:random_sea}
 %
-FIXME: Make clear that this is required for ocean surface synthesis.
 Equation~\ref{eq:surface_elevation_bk} may be able to describe the ocean
 surface, but at the cost of deducing an amplitude spectrum for each observed
 point on the sea surface, a both tedious and unfeasible task. At
@@ -662,8 +661,9 @@ processes to give realistic results.\\
 % travelling direction of waves, and therefore are not able to simulate 
 % surface elevation with two dimensional positions $\mvec{x}$ as input.
 From an algorithmic point of view we should not use three dimensional
-energy spectra $\Theta(\mvec{k},\omega)$, as the computational cost of
-Fourier Transforms in three dimensions would simply be too high.
+energy spectra $\Theta(\mvec{k},\omega)$ to synthesize the ocean surface, as
+the computational cost of Fourier Transforms in three dimensions would simply
+be too high.
 On the other hand, we are unable to employ one dimensional frequency spectra
 $\Theta(\omega)$ as-is, because they do not contain any information about
 the  travelling direction of waves, and therefore are not able to compute 
@@ -1041,16 +1041,16 @@ generation of visually pleasing as well as plausible ocean surfaces.
 \section{Wave Spectra}
 \label{sec:wave_spectra}
 Oceanographic literature provides us with a large set of different wave spectra
-to choose from.
+to choose from \citep{Komen:1996}.
 We will start with a pair of one dimensional frequency spectra most often found
 and referenced in oceanographic literature. As said frequency spectra are
-one dimensional, we need to convert them into two dimensional wavenumber
+one dimensional, we need to convert them into two dimensional \wavenumber
 spectra, as only the latter form allows us to actually synthesize a finite area
 of a virtual ocean surface. Thus, first, we follow up with a description of how
 to augment one dimensional frequency spectra with directional information, and
 second, we show how to make sure to preserve integral equality between
 different wave spectrum domains, i.e. how to convert from frequency based wave
-energy to wavenumber based energy with correct scaling.
+energy to \wavenumber based energy with correct scaling.
 Last, we discuss three more wave spectra, where each of them already includes a
 distinct model for the directional distribution of wave energy.
 % 
