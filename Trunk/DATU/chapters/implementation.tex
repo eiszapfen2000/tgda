@@ -906,7 +906,7 @@ vector $\mvec{s}$ as follows:
  \mvec{s}(\mvec{x},t) = \left[\dpd{\eta(\mvec{x},t)}{x}, \dpd{\eta(\mvec{x},t)}{z}\right]
 \end{equation}
 We leave it as an exercise for the reader to substitute the terms $\eta(\mvec{x},t)$
-and $h_0(\mvec{k},t)$ into Equation~\ref{eq:dft_derivates_2d} to be able to
+and $h(\mvec{k},t)$ into Equation~\ref{eq:dft_derivates_2d} to be able to
 compute the surface slope vector as given in Equation~\ref{eq:dft_slope_2d}.
 Figure~\ref{fig:derivatives} depicts an example instance of surface 
 elevation $\eta$ as well as its associated slopes in greyscale.
@@ -972,7 +972,7 @@ are sharply peaked at their tops and flattened at the bottoms. \citet{course:sim
 describes a Fourier Transform based method to produce such choppy waves. The concept is simple: displace
 the grid points of the spatial domain in the XZ-plane, with the displacement varying locally with the waves.
 Note that the displacement is a two-dimensional vector, therefore we end up computing a vector field.
-Similar to spectral differentiation, we compute an inverse Fourier transform of the spectrum $h$
+Similar to spectral differentiation, we compute an inverse Fourier Transform of the spectrum $h$
 modified with an additional term. We may write the displacement vector field as follows:
 \begin{align}
 %\label{eq:dft_displacement}
@@ -1023,9 +1023,9 @@ displaced vertex coordinate as follows:
  \end{bmatrix}
 \end{equation}
 where $u\in\mathbb{R}$ is a user-controlled parameter to scale the importance of the
-displacement vector. The author of this work has found that the above formula
-is correct as long as $u \leq 0$, otherwise the effect is the opposite of 
-what we want to achieve. Looking at Equation~\ref{eq:displacement_gridpoints},
+displacement vector. We have found that the above formula is correct as long as
+$u \leq 0$, otherwise the effect is the opposite of what we want to achieve.
+Looking at Equation~\ref{eq:displacement_gridpoints},
 one can see that it is not the wave heights that are altered, but instead the grid
 points on the XZ-plane are transformed based on the spatial structure of the
 height field. This particular transformation accomplishes the effects we sought:
@@ -1096,9 +1096,9 @@ two dimensional surface slope $\mvec{s}$ as follows:
 \dpd{D_z(\mvec{x},t)}{z}}\right]
 \end{equation}
 where $u$ is the displacement scale parameter. Now, in addition
-to surface height $\eta$, displacement vector $\mvec{D}$, and the first order
-partial derivatives of $\eta$, we also need to compute a partial derivative of
-$D_x$ and $D_z$ each. Again, we may compute the latter two by means of spectral
+to surface height $\eta$, displacement vector $\mvec{D}$, and the slopes of $\eta$,
+we also need to compute a partial derivative of $D_x$ and $D_z$ each.
+Again, we may compute the latter two by means of spectral
 differentiation, see Equation~\ref{eq:dft_derivates_2d}. Morever, we are again
 able to apply the optimisation from Equation~\ref{eq:idft:combined} which allows
 us to transform the spectra of the two partial derivatives as one.
@@ -2481,7 +2481,7 @@ ranges, therefore the transitions may take place at different wavenumbers. Figur
 assembly of the spectral data from Figure
 \ref{fig:sampling_different_resolutions}.\\
 
-Recall Equation~\ref{eq:dft_surface_elevation}, where we synthesize a random
+Recall Equation~\ref{eq:dft_h0_k}, where we synthesize a random
 surface based on wavevector domain $\mvec{k}$. For each wavevector we compute
 wave energy $\Theta(\mvec{k})$ and generate a pair of standard normal
 distributed random numbers $(\xi_r,\xi_i)$. Now, if we would like to generate
