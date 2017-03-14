@@ -712,8 +712,8 @@ presented in this work are centrosymmetric, the Unified spectrum's and the Phill
 Second, each element of $h_0(\mvec{k})$ is generated in combination with a pair of random numbers,
 which makes it close to impossible to end up with matching pairs $h_0(-\mvec{k})=h_0(\mvec{k})^*$.
 As we would like to profit from the performance gains an optimized inverse Fourier Transform
-for real-valued functions offers, we are in need of a hermitian spectrum. We may rewrite
-Equation~\ref{eq:dft_h_k_t} as follows:
+for real-valued functions offers, we are in need of a hermitian spectrum. Thus, we may
+rewrite Equation~\ref{eq:dft_h_k_t} as follows:
 %
 \begin{equation}
 \label{eq:dft_h_k_t_hermitian}
@@ -726,12 +726,11 @@ which gives us a hermitian spectrum, independent both of the generated random nu
 whether the wave energy spectrum is an even function or not.
 
 \emph{Note}: Surface elevation $\eta$ as computed by Equation~\ref{eq:surface_elevation_h_k_t}
-gives the same results for both,
-Equation~\ref{eq:dft_h_k_t} as well as Equation~\ref{eq:dft_h_k_t_hermitian}.
-The former demands a standard inverse
+gives the same results for Equation~\ref{eq:dft_h_k_t} and Equation~\ref{eq:dft_h_k_t_hermitian}.
+Still, Equation~\ref{eq:dft_h_k_t} requires a standard inverse
 Fourier Transform with a complete complex-valued source spectrum and a
-complex-valued result the same size. The real part of the result represents
-the surface elevation, the imaginary part is to be discarded. The latter,
+complex-valued result array of the same size. The real part of the result represents
+the surface elevation, the imaginary part is to be discarded. Equation~\ref{eq:dft_h_k_t_hermitian},
 on the other hand, allows for the aforementioned inverse Fourier Transform
 optimized for hermitian spectra, improving computation speed and memory usage
 roughly by a factor of two~\citep{fftw:manual}.
