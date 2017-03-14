@@ -2673,7 +2673,7 @@ waves, $u/c$, i.e. the \emph{generalized wave age}.
 		%ylabels at=all,
 		horizontal sep=2.0cm,
 	},
-    xlabel={\Wavenumber~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
+  xlabel={\Wavenumber~$k$~(\si{\radian\per\meter})},
 	width=0.5\textwidth,
 	%scaled ticks=false,
 	xmode = log,
@@ -2684,7 +2684,7 @@ waves, $u/c$, i.e. the \emph{generalized wave age}.
 	legend style={/tikz/every even column/.append style={column sep=0.5cm}},
 	]
 \nextgroupplot[
-    ylabel={Energy~$\Theta$~($\text{m}^3\cdot\text{rad}^{-1}$)},
+    ylabel={Energy~$\Theta$~(\si{\cubic\meter\per\radian})},
 % 	legend columns=-1,
 	legend to name=grouplegend,
 	xmin = 10^-3,
@@ -2825,7 +2825,7 @@ waves, $u/c$, i.e. the \emph{generalized wave age}.
 	%xtick = {0.01, 0.1, 1, 10, 100, 1000},
 	%restrict x to domain=-2:4,
 	%restrict y to domain=-4:1,
-	ylabel={Curvature B~($\text{rad}^{2}$)},
+	ylabel={Curvature~(\si{\square\radian})},
 	%ytick pos=right,	
 	]
 \addplot[
@@ -3056,15 +3056,16 @@ yshift=3\pgfkeysvalueof{/pgfplots/every axis title shift}
 {\pgfplotslegendfromname{grouplegend}};
 \end{tikzpicture}
 \caption{Unified spectra and Donelan spectra for the full \wavenumber range and 
-for wind speeds from $3m\cdot s^{-1}$ up to $21m\cdot s^{-1}$ with a $2m\cdot 
-s^{-1}$ step ($F=500km$). Left: One dimensional \wavenumber spectra $\Theta(k)$.
+for wind speeds from \SI{3}{\meter\per\second} up to \SI{21}{\meter\per\second}
+with a \SI{2}{\meter\per\second} step ($F=\SI{500}{\km}$).
+Left: One dimensional \wavenumber spectra $\Theta(k)$.
 The spectra match in the long-wave regime up to the spectral peak, and diverge
 afterwards. The Unified spectrum does not give energy beyond the
 gravity-capillary wave band.
 Right: One dimensional curvature spectra $C(k) = k^3\Theta(k)$. The difference
 in shape of the spectra is even more pronounced beyond the primary spectral
 peak. The Unified spectrum properly models the secondary gravity-capillary peak
-at $k_m = 370~rad\cdot m^{-1}$.
+at $k_m = \SI{370}{\radian\per\meter}$.
 %The Unified spectra's peak to 
 %the right is at $k_m = 370rad\cdot m^{-1}$.
 }
