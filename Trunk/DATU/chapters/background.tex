@@ -2247,8 +2247,8 @@ form with increasing wind speed $U_{c}$.}
 		xlabels at=edge bottom,
 		ylabels at=edge left,
 	},
-    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
-    ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+    xlabel={Frequency~$\omega$~(\si{\radian\per\second})},
+    ylabel={Energy~$\Theta$~(\si{\square\meter\second})},
 	width=0.5\textwidth,
 	scaled ticks=false,
 	]
@@ -2269,25 +2269,25 @@ form with increasing wind speed $U_{c}$.}
     solid,
     ]
     table [col sep=comma]{figures/d_10_750km.dat};
-\addlegendentry{750 km}
+\addlegendentry{\SI{750}{\km}}
 \addplot[
     color=black,
     solid,
     ]
     table [col sep=comma]{figures/d_10_500km.dat};
-\addlegendentry{500 km}
+\addlegendentry{\SI{500}{\km}}
 \addplot[
     color=magenta,
     solid,
     ]
     table [col sep=comma]{figures/d_10_250km.dat};
-\addlegendentry{250 km}
+\addlegendentry{\SI{250}{\km}}
 \addplot[
     color=green,
     solid,
     ]
     table [col sep=comma]{figures/d_10_100km.dat};
-\addlegendentry{100 km}
+\addlegendentry{\SI{100}{\km}}
 %\addplot[
     %color=red,
     %solid,
@@ -2335,7 +2335,7 @@ form with increasing wind speed $U_{c}$.}
 \end{groupplot}
 \end{tikzpicture}
 \caption{Left: Donelan frequency spectra with different fetch values $F$, 
-Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$). The
+Pierson Moskowitz spectrum for comparison ($U_{10} = \SI{10}{\meter\per\second}$). The
 Donelan spectrum converges towards the Pierson Moskowitz spectrum with
 increasing fetch, but overshoots.
 Right: 
@@ -2461,8 +2461,8 @@ We may write:
 		xlabels at=edge bottom,
 		ylabels at=edge left,
 	},
-    xlabel={\Wavenumber~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
-    ylabel={Energy~$\Theta$~($\text{m}^3\cdot\text{rad}^{-1}$)},
+    xlabel={\Wavenumber~$k$~(\si{\radian\per\meter})},
+    ylabel={Energy~$\Theta$~(\si{\cubic\meter\per\radian})},
 	width=0.5\textwidth,
 	scaled ticks=false,
 	]
@@ -2482,25 +2482,25 @@ We may write:
     solid,
     ]
     table [col sep=comma]{figures/u_10_750km_k.dat};
-\addlegendentry{750 km}
+\addlegendentry{\SI{750}{\km}}
 \addplot[
     color=black,
     solid,
     ]
     table [col sep=comma]{figures/u_10_500km_k.dat};
-\addlegendentry{500 km}
+\addlegendentry{\SI{500}{\km}}
 \addplot[
     color=magenta,
     solid,
     ]
     table [col sep=comma]{figures/u_10_250km_k.dat};
-\addlegendentry{250 km}
+\addlegendentry{\SI{250}{\km}}
 \addplot[
     color=green,
     solid,
     ]
     table [col sep=comma]{figures/u_10_100km_k.dat};
-\addlegendentry{100 km}
+\addlegendentry{\SI{100}{\km}}
 %\addplot[
     %color=red,
     %solid,
@@ -2563,11 +2563,11 @@ We may write:
 \end{groupplot}
 \end{tikzpicture}
 \caption{Left: Unified frequency spectra with different fetch values $F$, 
-Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$).
+Pierson Moskowitz spectrum for comparison ($U_{10} = \SI{10}{\meter\per\second}$).
 The Unified spectrum converges towards the Pierson Moskowitz spectrum with
 increasing fetch. Right: Fetch limited spectral models, each with a fetch of
-$1000km$ and $1500km$, Pierson Moskowitz spectrum for comparison
-($U_{10} = 10m\cdot s^{-1}$). In contrast to the JONSWAP and Donelan spectra,
+\SI{1000}{\km} and \SI{1500}{\km}, Pierson Moskowitz spectrum for comparison
+($U_{10} = \SI{10}{\meter\per\second}$). In contrast to the JONSWAP and Donelan spectra,
 the Unified spectrum is not prone to overdevelopment given large fetch values.
 }
 \label{fig:unified_spectra}
