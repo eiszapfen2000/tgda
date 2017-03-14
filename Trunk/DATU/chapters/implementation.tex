@@ -197,7 +197,7 @@ overview of our demo application and the algorithms it incorporates.
 %\ref{fig:tessendorf_choppy_waves}.
 
 
-%Section~\ref{sec:discrete_fourier_transform} describes opportunities to optimise
+%Section~\ref{sec:discrete_fourier_transform} describes opportunities to optimize
 %the computation of the DFT which arise due to specific properties of wave spectra.
 %Section~\ref{sec:slopes_and_displacements} discusses additional terms derived
 %from the wave spectrum representation to enhance lighting as well as allow for
@@ -605,11 +605,11 @@ the following is true:
 where $*$ denotes the complex conjugate operator. The relation is similar to a centrosymmetric one,
 $\mathcal{F}(-k) = \mathcal{F}(k)$, with $\mathcal{F}(0)$ as a fixpoint at the center. The only
 difference is the complex conjugation. Fourier Transform implementations such as FFTW~\citep{FFTW05}
-take advantage of Equation~\ref{eq:dft_real_complex_conjugate} to be able to provide optimised
+take advantage of Equation~\ref{eq:dft_real_complex_conjugate} to be able to provide optimized
 transform functionality for real-valued data. For example, for a forward Fourier Transform of real-valued data it is
 necessary to compute only half of the spectrum, since the other half is implicitely given as the
 complex conjugate of the first half. Likewise, for the inverse Fourier Transform only half of the
-spectrum is necessary, the other half is implicitely given. Such optimised transforms provide
+spectrum is necessary, the other half is implicitely given. Such optimized transforms provide
 gain in performance memory-wise, the spectrum's size is halved, as well as computation-wise, only
 half the data is actually processed.
 %
@@ -711,7 +711,7 @@ the wave energy spectrum is centrosymmetric. Only two of the directional spreadi
 presented in this work are centrosymmetric, the Unified spectrum's and the Phillips spectrum's.
 Second, each element of $h_0(\mvec{k})$ is generated in combination with a pair of random numbers,
 which makes it close to impossible to end up with matching pairs $h_0(-\mvec{k})=h_0(\mvec{k})^*$.
-As we would like to profit from the performance gains an optimised inverse Fourier Transform
+As we would like to profit from the performance gains an optimized inverse Fourier Transform
 for real-valued functions offers, we are in need of a hermitian spectrum. We may rewrite
 Equation~\ref{eq:dft_h_k_t} as follows:
 %
@@ -733,7 +733,7 @@ Fourier Transform with a complete complex-valued source spectrum and a
 complex-valued result the same size. The real part of the result represents
 the surface elevation, the imaginary part is to be discarded. The latter,
 on the other hand, allows for the aforementioned inverse Fourier Transform
-optimised for hermitian spectra, improving computation speed and memory usage
+optimized for hermitian spectra, improving computation speed and memory usage
 roughly by a factor of two~\citep{fftw:manual}.
 %
 \subsection{Combined Inverse Fourier Transform}
