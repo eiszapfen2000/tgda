@@ -3240,8 +3240,8 @@ wavenumber spectrum, which is as follows:
 		ylabels at=edge left,
 		group name=plots,
 	},
-    xlabel={\Wavenumber~$k$~($\text{rad}\cdot\text{m}^{-1}$)},
-    ylabel={Energy~$\Theta$~($\text{m}^3\cdot\text{rad}^{-1}$)},
+    xlabel={\Wavenumber~$k$~(\si{\radian\per\second})},
+    ylabel={Energy~$\Theta$~(\si{\cubic\meter\per\radian})},
 %     legend columns=-1,
 	width=0.5\textwidth,
 	]
@@ -3256,31 +3256,31 @@ wavenumber spectrum, which is as follows:
     solid,
 	]
     table [col sep=comma]{figures/phillips_10_k.dat};
-	\addlegendentry{$10.0~\text{m}\cdot\text{s}^{-1}$}
+	\addlegendentry{\SI{10.0}{\meter\per\second}}
 \addplot[
     color=green,
     solid,
 	]
     table [col sep=comma]{figures/phillips_12_k.dat};
-	\addlegendentry{$12.5~\text{m}\cdot\text{s}^{-1}$}
+	\addlegendentry{\SI{12.5}{\meter\per\second}}
 \addplot[
     color=magenta,
     solid,
 	]
     table [col sep=comma]{figures/phillips_15_k.dat};
-	\addlegendentry{$15.0~\text{m}\cdot\text{s}^{-1}$}
+	\addlegendentry{\SI{15.0}{\meter\per\second}}
 \addplot[
     color=black,
     solid,
 	]
     table [col sep=comma]{figures/phillips_17_k.dat};
-	\addlegendentry{$17.5~\text{m}\cdot\text{s}^{-1}$}
+	\addlegendentry{\SI{17.5}{\meter\per\second}}
 \addplot[
     color=blue,
     solid,
 	]
     table [col sep=comma]{figures/phillips_20_k.dat};
-	\addlegendentry{$20.0~\text{m}\cdot\text{s}^{-1}$}
+	\addlegendentry{\SI{20.0}{\meter\per\second}}
 \nextgroupplot[
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
@@ -3320,7 +3320,7 @@ wavenumber spectrum, which is as follows:
 frequency spectrum with different wind speed values $\norm{\mvec{w}}$. Right: 
 The difference in scale between the Phillips spectrum and both, the Pierson 
 Moskowitz spectrum and the JONSWAP spectrum, amounts to at least a factor of 
-$10^3$ ($U_{10}=\norm{\mvec{w}}=12.5m\cdot s^{-1}$, $F=200km$).
+$10^3$ ($U_{10}=\norm{\mvec{w}}=\SI{12.5}{\meter\per\second}$, $F=\SI{200}{\km}$).
 % The shape of the spectrum resembles the Pierson Moskowitz spectrum.
 }
 \label{fig:phillips_spectra}
