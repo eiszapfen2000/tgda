@@ -1143,8 +1143,8 @@ $\omega_p$ as well as numeric constant $\alpha$.
 		xlabels at=edge bottom,
 		ylabels at=edge left,
 	},
-    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
-    ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+	xlabel={Frequency~$\omega$~(\si{\radian\per\second})},
+	ylabel={Energy~$\Theta$~(\si{\square\meter\second})},
 	width=0.5\textwidth,
 	]
 \nextgroupplot[
@@ -1158,31 +1158,32 @@ $\omega_p$ as well as numeric constant $\alpha$.
     solid,
 	]
     table [col sep=comma]{figures/pm_10.dat};
-	\addlegendentry{$10.0~\text{m}\cdot\text{s}^{-1}$}
+	%\addlegendentry{$10.0~\text{m}\cdot\text{s}^{-1}$}
+	\addlegendentry{\SI{10.0}{\meter\per\second}}
 \addplot[
     color=green,
     solid,
 	]
     table [col sep=comma]{figures/pm_12.dat};
-	\addlegendentry{$12.5~\text{m}\cdot\text{s}^{-1}$}
+	\addlegendentry{\SI{12.5}{\meter\per\second}}
 \addplot[
     color=magenta,
     solid,
 	]
     table [col sep=comma]{figures/pm_15.dat};
-	\addlegendentry{$15.0~\text{m}\cdot\text{s}^{-1}$}
+	\addlegendentry{\SI{15.0}{\meter\per\second}}
 \addplot[
     color=black,
     solid,
 	]
     table [col sep=comma]{figures/pm_17.dat};
-	\addlegendentry{$17.5~\text{m}\cdot\text{s}^{-1}$}
+	\addlegendentry{\SI{17.5}{\meter\per\second}}
 \addplot[
     color=blue,
     solid,
 	]
     table [col sep=comma]{figures/pm_20.dat};
-	\addlegendentry{$20.0~\text{m}\cdot\text{s}^{-1}$}
+	\addlegendentry{\SI{20.0}{\meter\per\second}}
 \nextgroupplot[
 	title={(b)},
     legend style={draw=none},
@@ -1226,7 +1227,7 @@ speed values $U_{10}$. As the wind speed increases, the spectral peak grows and
 moves to lower frequencies.
 (b) Influence of the constant $\alpha$ and
 the peak frequency $\omega_p$ on the resulting spectrum ($U_{10} = 
-15.0~\text{m}\cdot\text{s}^{-1}$). The parameter $\omega_p$ represents the
+\SI{15.0}{\meter\per\second}$). The parameter $\omega_p$ represents the
 frequency where the spectrum has its peak, while the constant $\alpha$ affects
 the magnitude of the entire spectrum.}
 \label{fig:pm_spectra}
@@ -1382,8 +1383,8 @@ actually exceed the speed of the generating wind.
 		ylabels at=edge left,
 		% group name=plots,
 	},
-    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
-    ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+    xlabel={Frequency~$\omega$~(\si{\radian\per\second})},
+    ylabel={Energy~$\Theta$~(\si{\square\meter\second})},
  %   legend columns=-1,
 	width=0.5\textwidth,
 	]
@@ -1404,25 +1405,25 @@ actually exceed the speed of the generating wind.
     solid,
     ]
     table [col sep=comma]{figures/j_10_10km.dat};
-\addlegendentry{10 km}
+\addlegendentry{\SI{10}{\km}}
 \addplot[
     color=green,
     solid,
     ]
     table [col sep=comma]{figures/j_10_25km.dat};
-\addlegendentry{25 km}
+\addlegendentry{\SI{25}{\km}}
 \addplot[
     color=magenta,
     solid,
     ]
     table [col sep=comma]{figures/j_10_50km.dat};
-\addlegendentry{50 km}
+\addlegendentry{\SI{50}{\km}}
 \addplot[
     color=black,
     solid,
     ]
     table [col sep=comma]{figures/j_10_75km.dat};
-\addlegendentry{75 km}
+\addlegendentry{\SI{75}{\km}}
 \nextgroupplot[
 	title={(b)},
     legend style={draw=none},
@@ -1462,9 +1463,9 @@ actually exceed the speed of the generating wind.
 \end{groupplot}
 \end{tikzpicture}
 \caption{(a) JONSWAP frequency spectra with different fetch values $F$, 
-Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$).
+Pierson Moskowitz spectrum for comparison ($U_{10} = \SI{10}{\meter\per\second}$).
 (b) Influence of the involved parameters on the resulting JONSWAP spectrum
-($U_{10} = 15m\cdot s^{-1}$, $F=50km$).}
+($U_{10} = \SI{15}{\meter\per\second}$, $F=\SI{50}{\km}$).}
 \label{fig:jonswap_spectra}
 \end{figure}
 %
@@ -1510,8 +1511,8 @@ frequency of the spectral peak.
 		ylabels at=edge left,
 		% group name=plots,
 	},
-    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
-    ylabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
+    xlabel={Frequency~$\omega$~(\si{\radian\per\second})},
+    ylabel={Energy~$\Theta$~(\si{\square\meter\second})},
  %   legend columns=-1,
 	width=0.5\textwidth,
 	]
@@ -1564,25 +1565,25 @@ frequency of the spectral peak.
     solid,
     ]
     table [col sep=comma]{figures/j_10_100km.dat};
-\addlegendentry{100 km}
+\addlegendentry{\SI{100}{\km}}
 \addplot[
     color=green,
     solid,
     ]
     table [col sep=comma]{figures/j_10_200km.dat};
-\addlegendentry{200 km}
+\addlegendentry{\SI{200}{\km}}
 \addplot[
     color=magenta,
     solid,
     ]
     table [col sep=comma]{figures/j_10_300km.dat};
-\addlegendentry{300 km}
+\addlegendentry{\SI{300}{\km}}
 \addplot[
     color=black,
     solid,
     ]
     table [col sep=comma]{figures/j_10_400km.dat};
-\addlegendentry{400 km}
+\addlegendentry{\SI{400}{\km}}
 \end{groupplot}
 \end{tikzpicture}
 \caption{
@@ -1594,7 +1595,7 @@ by the Pierson Moskowitz spectrum, neither based on inverse wave age, nor based 
 (a) Influence of inverse wave age $\Omega$ on the resulting 
 JONSWAP spectrum, Pierson Moskowitz spectrum for comparison ($\omega_p=2.5$).
 (b) JONSWAP frequency spectra with large fetch values $F$, Pierson 
-Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$).
+Moskowitz spectrum for comparison ($U_{10} = \SI{10}{\meter\per\second}$).
 }
 \label{fig:jonswap_spectra_mismatch}
 \end{figure}
@@ -1900,9 +1901,9 @@ which gives us
     width=0.5\paperwidth,
     view={-20}{30},
     mesh/ordering=y varies,
-    zlabel={Energy~$\Theta$~($\text{m}^2\cdot\text{s}$)},
-    xlabel={Frequency~$\omega$~($\text{rad}\cdot\text{s}^{-1}$)},
-    ylabel={Direction~$\theta$~($\text{rad}$)},
+    zlabel={Energy~$\Theta$~(\si{\square\meter\second})},
+    xlabel={Frequency~$\omega$~(\si{\radian\per\second})},
+    ylabel={Direction~$\theta$~(\si{\radian})},
     ]
 \addplot3[surf,
     ]
@@ -1919,9 +1920,9 @@ which gives us
     view={-20}{30},
     mesh/ordering=y varies,
     xtick = {0,0.1,0.2},
-    zlabel={Energy~$\Theta$~($\text{m}^4\cdot\text{rad}^{-2}$)},
-    xlabel={$k_x$~($\text{rad}\cdot\text{m}^{-1}$)},
-    ylabel={$k_z$~($\text{rad}\cdot\text{m}^{-1}$)},
+    zlabel={Energy~$\Theta$~(\si{\raiseto{4}\meter\per\square\radian})},
+    xlabel={$k_x$~(\si{\radian\per\second})},
+    ylabel={$k_z$~(\si{\radian\per\second})},
     ]
 \addplot3[surf,
     ]
@@ -1929,8 +1930,8 @@ which gives us
 \end{axis}
 \end{tikzpicture}
 }
-\caption{The JONSWAP frequency spectrum with wind speed $U_{10} = 15m\cdot 
-s^{-1}$ and fetch $F = 100km$, located in two different domains. Top: The polar
+\caption{The JONSWAP frequency spectrum with wind speed $U_{10} = \SI{15}{\meter\per\second}$
+and fetch $F = \SI{100}{\km}$, located in two different domains. Top: The polar
 coordinate domain $\omega \times \theta$, the wind direction points in the
 direction of the positive $\omega$ axis. Bottom: The \wavevector domain
 $k_x \times k_z$, the wind direction points in the direction of the positive
