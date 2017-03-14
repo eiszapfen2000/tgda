@@ -1046,8 +1046,7 @@ small number of wave spectrum models which, one, are well established in
 oceanographic research, and, two, allow us to reproduce a wide variety of ocean
 surfaces. We will elaborate on the latter point in Chapter~\ref{ch:summary},
 where we discuss the visual results obtained by the different wave spectra.
-But for now let us focus on the models themselves.
-
+For now let us focus on the models themselves.
 %We will elaborate on the visual results obtained by the different
 %wave spectra in Chapter~\ref{ch:summary}. For now let us focus on the models
 %themselves.
@@ -1125,10 +1124,10 @@ standard. We may convert between $U_{19.5}$ and $U_{10}$ as follows
  U_{10} \approx 1.026\times U_{19.5}
 \end{equation}
 Now we are able to rewrite peak frequency $\omega_p$ in terms of $U_{10}$:
-\begin{equation*}
+\begin{equation}
 \label{eq:pm_omega_p_u10}
  \omega_p \approx 0.855~\frac{g}{U_{10}}
-\end{equation*}
+\end{equation}
 which completes our conversion of the Pierson Moskowitz model to standard wind 
 speed $U_{10}$.
 Figure~\ref{fig:pm_spectra} depicts how the Pierson Moskowitz 
@@ -1462,10 +1461,10 @@ actually exceed the speed of the generating wind.
 \addlegendentry{$\omega_p \times 1.2$}
 \end{groupplot}
 \end{tikzpicture}
-\caption{Left: JONSWAP frequency spectra with different fetch values $F$, 
-Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$). Right: 
-Influence of the involved parameters on the resulting JONSWAP 
-spectrum ($U_{10} = 15m\cdot s^{-1}$, $F=50km$).}
+\caption{(a) JONSWAP frequency spectra with different fetch values $F$, 
+Pierson Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$).
+(b) Influence of the involved parameters on the resulting JONSWAP spectrum
+($U_{10} = 15m\cdot s^{-1}$, $F=50km$).}
 \label{fig:jonswap_spectra}
 \end{figure}
 %
@@ -1517,9 +1516,9 @@ frequency of the spectral peak.
 	width=0.5\textwidth,
 	]
 \nextgroupplot[
-%	title={(b)},
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}},
+	title={(a)},
+  legend style={draw=none},
+  every axis legend/.append style={nodes={right}},
 	scaled ticks=false,
 	yticklabel style={/pgf/number format/fixed},
 	restrict x to domain=1:5,
@@ -1549,9 +1548,9 @@ frequency of the spectral peak.
     table [col sep=comma]{figures/j_wp_25_wc_083.dat};
 \addlegendentry{$\Omega=0.83$}
 \nextgroupplot[
-%	title={(b)},
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}},
+	title={(b)},
+  legend style={draw=none},
+  every axis legend/.append style={nodes={right}},
 	restrict x to domain=0.25:1.57,
 	]
 \addplot[
@@ -1586,11 +1585,17 @@ frequency of the spectral peak.
 \addlegendentry{400 km}
 \end{groupplot}
 \end{tikzpicture}
-\caption{Left: Influence of inverse wave age $\Omega$ on the resulting 
-JONSWAP spectrum, Pierson Moskowitz spectrum for comparison ($\omega_p=2.5$). 
-Right: JONSWAP frequency spectra with large fetch values $F$, Pierson 
-Moskowitz spectrum for comparison ($U_{10} = 10m\cdot 
-s^{-1}$).}
+\caption{
+%The JONSWAP spectrum is unable to reach fully-developed state,
+%be it with decreasing inverse wave age or with increasing fetch, it does not converge
+%towards the Pierson Moskowitz spectrum.
+The JONSWAP spectrum does not converge towards a fully-developed sea as represented
+by the Pierson Moskowitz spectrum, neither based on inverse wave age, nor based on fetch.
+(a) Influence of inverse wave age $\Omega$ on the resulting 
+JONSWAP spectrum, Pierson Moskowitz spectrum for comparison ($\omega_p=2.5$).
+(b) JONSWAP frequency spectra with large fetch values $F$, Pierson 
+Moskowitz spectrum for comparison ($U_{10} = 10m\cdot s^{-1}$).
+}
 \label{fig:jonswap_spectra_mismatch}
 \end{figure}
 
