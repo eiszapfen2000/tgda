@@ -1,7 +1,7 @@
 \chapter{Implementation}
 \label{ch:implementation}
 %
-The previous chapter discussed the wave spectrum concept, a mathematical
+The previous chapter discussed the wave spectrum concept, a theoretical
 framework developed by oceanographic research to describe the distribution of
 wave energy among ocean surface waves exposed to identical conditions, such as
 wind speed and distance to shore~\citep{Neumann:1966}.
@@ -42,14 +42,14 @@ by combing multiple tiles, we are at least able to increase the period to the
 least common multiple of the different tile sizes.
 
 As one may already guess, we are burdened with a significant number of
-Fourier Transforms, based on both the number of spectra per tile (surface elevation,
+\FourierTransforms, based on both the number of spectra per tile (surface elevation,
 slopes, displacements, first order derivatives of the displacements),
 and the number of different tiles.
 Thus, we need to make sure to keep computational workload on an acceptable level
 for realtime display of the ocean. We chose to go about the issue at hand in a
 twofold manner.
 First, key properties of the ocean surface spectrum allow us to accelerate the
-computation of its inverse Fourier Transform considerably.
+computation of its \InvFourierTransform considerably.
 Second, we reduce the amount of spectral data to transform. We achieve the
 latter by improving upon the level-of-detail approach by \citet{misc:oceanlightingfft}
 and \citet{article:whitecaps} with a multi-resolution scheme, where surface
@@ -179,7 +179,7 @@ The remainder of this chapter is organized as follows:
 Section~\ref{sec:spectrum_synthesis} gives a compact summary of ocean surface
 synthesis by means of a wave energy spectrum.
 Section~\ref{sec:discrete_fourier_transform} describes characteristic properties of
-wave spectra which enable us to accelerate the computation of the inverse Fourier Transform.
+wave spectra which enable us to accelerate the computation of the \InvFourierTransform.
 Section~\ref{sec:slopes_and_displacements} introduces the additional wave spectrum
 based datasets which we employ for rendering, whereas
 Section~\ref{sec:level_of_detail} elaborates on our wave spectrum specific
@@ -405,7 +405,7 @@ where $\xi_r$ and $\xi_i$ are random scalars drawn from the Standard Normal
 Distribution. Both, the \wavevector domain $\mvec{k}$ and the
 spatial domain $\mvec{x}$ are of resolution $N \times N$, where $N$ is a natural
 number, and a power of two. The latter requirement is a concession to
-the~\emph{Fast Fourier Transform} algorithm, which works fastest at such
+the \FastFourierTransform algorithm, which works fastest at such
 resolutions~\citep{Cooley:1965}.
 Moreover, the spatial domain $\mvec{x}$ has an extent of $L \times L$, thus the
 grid point spacing of the \wavevector domain is as follows:
@@ -436,7 +436,7 @@ Equation~\ref{eq:dft_h0_k} on the other hand is only to be evaluated anew in
 case parameters change, easing the computational workload by a
 considerable margin.
 
-\section{Discrete Fourier Transform}
+\section{\DiscreteFourierTransform}
 \label{sec:discrete_fourier_transform}
 %
 \newcommand{\ccellnum}[2]{\cellcolor{#1}\num{#2}}
@@ -451,7 +451,7 @@ considerable margin.
 \colorlet{Line2Color}{black}
 %
 %
-We compute surface elevation in the form of an inverse Discrete Fourier Transform as follows:
+We compute surface elevation in the form of an \InvDiscreteFourierTransform as follows:
 \begin{equation}
 \label{eq:surface_elevation_h_k_t}
 \eta(\mvec{x}, t) = \sum_{\mvec{k}}~h(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
@@ -466,7 +466,7 @@ which encodes the average value of the signal in the spatial domain. In our spec
 case that would be the mean surface elevation $\mathrm{E}[\eta] = 0$.
 As one may read off the above definition of the \wavevector domain, the zero
 frequency component is located near the center of the \wavevector domain,
-where $\alpha=0$ and $\beta=0$. Actual implementations of the inverse Fourier Trasform,
+where $\alpha=0$ and $\beta=0$. Actual implementations of the \InvFourierTransform,
 such as FFTW~\citep{FFTW05}, expect the zero frequency component as the first element
 i.e. at the upper left of the two-dimensional input array.
 The \wavevector domain of such implementations is defined as follows:
@@ -592,11 +592,11 @@ of the spectrum to convert between the underlying layouts of the two different
 %https://ccrma.stanford.edu/~jos/mdft/Even_Odd_Functions.html
 %https://ccrma.stanford.edu/~jos/mdft/mdft.html
 %https://web.eecs.umich.edu/~fessler/course/451/l/pdf/c5.pdf
-The Fourier Transform of real-valued input is~\emph{hermitian} - the real part of the resulting spectrum
+The \FourierTransform of real-valued input is~\emph{hermitian} - the real part of the resulting spectrum
 is an~\emph{even} function and the imaginary part is~\emph{odd}~\citep{book:bracewell2000fourier}.
 A function $f(n)$ is said to be even if
 $f(-n) = f(n)$. On the other hand, a function $f(n)$ is said to be odd if $f(-n) = -f(n)$,
-with $f(0) = 0$. Let $\mathcal{F}(k)$ be the Fourier Transform of a real-valued function $f(n)$, then
+with $f(0) = 0$. Let $\mathcal{F}(k)$ be the \FourierTransform of a real-valued function $f(n)$, then
 the following is true:
 \begin{equation}
 \label{eq:dft_real_complex_conjugate}
@@ -604,11 +604,11 @@ the following is true:
 \end{equation}
 where $*$ denotes the complex conjugate operator. The relation is similar to a centrosymmetric one,
 $\mathcal{F}(-k) = \mathcal{F}(k)$, with $\mathcal{F}(0)$ as a fixpoint at the center. The only
-difference is the complex conjugation. Fourier Transform implementations such as FFTW~\citep{FFTW05}
+difference is the complex conjugation. \FourierTransform implementations such as FFTW~\citep{FFTW05}
 take advantage of Equation~\ref{eq:dft_real_complex_conjugate} to be able to provide optimized
-transform functionality for real-valued data. For example, for a forward Fourier Transform of real-valued data it is
+transform functionality for real-valued data. For example, for a forward \FourierTransform of real-valued data it is
 necessary to compute only half of the spectrum, since the other half is implicitely given as the
-complex conjugate of the first half. Likewise, for the inverse Fourier Transform only half of the
+complex conjugate of the first half. Likewise, for the \InvFourierTransform only half of the
 spectrum is necessary, the other half is implicitely given. Such optimized transforms provide
 gain in performance memory-wise, the spectrum's size is halved, as well as computation-wise, only
 half the data is actually processed.
@@ -684,8 +684,8 @@ condition $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$.
 \end{figure}
 %
 
-Surface elevation $\eta$ is a real-valued function, therefore its Fourier Transform must be hermitian,
-too. Let $\mathcal{F}(\mvec{k})$ be the Fourier Transform of surface elevation $\eta$, then
+Surface elevation $\eta$ is a real-valued function, therefore its \FourierTransform must be hermitian,
+too. Let $\mathcal{F}(\mvec{k})$ be the \FourierTransform of surface elevation $\eta$, then
 we may write:
 \begin{equation}
 \label{eq:h0_k_complex_conjugate}
@@ -711,7 +711,7 @@ the wave energy spectrum is centrosymmetric. Only two of the directional spreadi
 presented in this work are centrosymmetric, the Unified spectrum's and the Phillips spectrum's.
 Second, each element of $h_0(\mvec{k})$ is generated in combination with a pair of random numbers,
 which makes it close to impossible to end up with matching pairs $h_0(-\mvec{k})=h_0(\mvec{k})^*$.
-As we would like to profit from the performance gains an optimized inverse Fourier Transform
+As we would like to profit from the performance gains an optimized \InvFourierTransform
 for real-valued functions offers, we are in need of a hermitian spectrum. Thus, we may
 rewrite Equation~\ref{eq:dft_h_k_t} as follows:
 %
@@ -727,26 +727,26 @@ whether the wave energy spectrum is an even function or not.
 
 \emph{Note}: Surface elevation $\eta$ as computed by Equation~\ref{eq:surface_elevation_h_k_t}
 gives the same results for Equation~\ref{eq:dft_h_k_t} and Equation~\ref{eq:dft_h_k_t_hermitian}.
-Still, Equation~\ref{eq:dft_h_k_t} requires a standard inverse
-Fourier Transform with a complete complex-valued source spectrum and a
+Still, Equation~\ref{eq:dft_h_k_t} requires a standard \InvFourierTransform
+with a complete complex-valued source spectrum and a
 complex-valued result array of the same size. The real part of the result represents
 the surface elevation, the imaginary part is to be discarded. Equation~\ref{eq:dft_h_k_t_hermitian},
-on the other hand, allows for the aforementioned inverse Fourier Transform
+on the other hand, allows for the aforementioned \InvFourierTransform
 optimized for hermitian spectra, improving computation speed and memory usage
 roughly by a factor of two~\citep{fftw:manual}.
 %
-\subsection{Combined Inverse Fourier Transform}
-Given one hermitian spectrum, one may apply a specialized inverse Fourier Transform
+\subsection{Combined \InvFourierTransform}
+Given one hermitian spectrum, one may apply a specialized \InvFourierTransform
 which requires only half of the actual spectrum. Given \emph{two} hermitian spectra,
-one may combine them into a single spectrum and apply a standard inverse Fourier Transform
+one may combine them into a single spectrum and apply a standard \InvFourierTransform
 to retrieve both real-valued signals at once \citep{fft:handbook}.
 %The latter on the other hand allows for two different kinds of optimisation. We did discuss
 %the first kind of optimisation already, a inverse Fourier Transform for real-valued
 %functions which needs less memory and less time for the computation itself. The second kind
 %of optimisation allows us to combine two inverse Fourier Transforms into one.
 Let $a$ and $b$ be real-valued signals with identical underlying spatial domains.
-Let us denote the Fourier Transform with $\mathcal{F}$, and the inverse Fourier
-Transform with $\mathcal{F}^{-1}$, then we may write:
+Let us denote the \FourierTransform with $\mathcal{F}$, and the \InvFourierTransform
+with $\mathcal{F}^{-1}$, then we may write:
 %Let $\mathcal{F}(a)$ and $\mathcal{F}(b)$ be the Fourier Transforms of $a$ and
 %$b$. Then we may write:
 \begin{equation}
@@ -806,7 +806,7 @@ Equation~\ref{eq:dft_h_k_t_hermitian}.
 \section{Slopes and Displacements}
 \label{sec:slopes_and_displacements}
 At this point we are able to compute surface elevation by application of the
-inverse Discrete Fourier Transform on a spectrum we generate. For lighting
+\InvDiscreteFourierTransform on a spectrum we generate. For lighting
 purposes we also need to find the surface's slope vectors to be able to compute
 the surface's normal vectors. The most simple way to compute the slope is
 through finite differences in the spatial domain of the surface. Such an
@@ -815,23 +815,22 @@ because it can be a poor approximation to the slope of waves with small
 wavelengths~\citep{course:simulatingocean}. We are able to obtain more precise
 slope vectors by employing \emph{spectral differentation}. Spectral
 differentiation allows us to find the derivatives of a function via the
-Fourier Transform~\citep{Trefethen:2000}.
+\FourierTransform~\citep{Trefethen:2000}.
 
 First we will look at the more simple, one-dimensional case of spectral
-differentation. We reduce the spatial domain as well as the \wavevector domain
+differentiation. We reduce the spatial domain as well as the \wavevector domain
 from beforehand to one dimension. Let $N$ be the resolution of the spatial
 and \wavenumber domains, and $L$ the size of the spatial domain. Moreover, let
 $\alpha \in \mathbb{N}$ with $-\frac{N}{2} \leq \alpha < \frac{N}{2}$,
 let the spatial domain be $x \in \alpha \frac{L}{N}$, and let the \wavenumber
-domain be $k \in \alpha \frac{2\pi}{L}$. Let $g(k)$ be the Discrete Fourier
-Transform of $f(x)$, then we may write the inverse Discrete Fourier Transform
-as follows:
+domain be $k \in \alpha \frac{2\pi}{L}$. Let $g(k)$ be the \DiscreteFourierTransform
+of $f(x)$, then we may write the \InvDiscreteFourierTransform as follows:
 \begin{equation*}
  f(x) = \sum_{k}g(k)~\mathrm{e}^{\mathrm{i}kx}
 \end{equation*}
-Note, that we omit the scaling factors involved in the standard Fourier Transform
+Note, that we omit the scaling factors involved in the standard \FourierTransform
 because in the context of this work they are not needed. If we follow the
-lead of the continuous Fourier Transform~\citep{Trefethen:2000},
+lead of the continuous \FourierTransform~\citep{Trefethen:2000},
 then, in the discrete case, we may compute the $n$th derivative of $f(x)$ as follows:
 \begin{equation}
 \label{eq:dft:derivative:naive}
@@ -884,9 +883,9 @@ second component of the slope vector.
 %
 Now we may go back to the two-dimensional case, with our original two-dimensional
 domains $\mvec{x}$ and $\mvec{k}$. The resolution of said domains is $N \times N$,
-the size of the spatial domain is $L \times L$. Let $g(\mvec{k})$ be the Discrete
-Fourier Transform of $f(\mvec{x})$, then we may write the inverse Discrete Fourier
-Transform in two dimensions as follows:
+the size of the spatial domain is $L \times L$. Let $g(\mvec{k})$ be the
+\DiscreteFourierTransform of $f(\mvec{x})$, then we may write the
+\InvDiscreteFourierTransform in two dimensions as follows:
 \begin{equation*}
  f(\mvec{x}) = \sum_{\mvec{k}}g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation*}
@@ -919,7 +918,7 @@ elevation $\eta$ as well as its associated slopes in greyscale.
 The two spectra which constitute the surface slope vector in the \wavevector domain
 are hermitian. Therefore we are able to apply the optimisation from
 Equation~\ref{eq:idft:combined} which allows us to combine both spectra into one,
-obtaining both components of the surface slope vector with just one inverse Fourier Transform.
+obtaining both components of the surface slope vector with just one \InvFourierTransform.
 %
 \subsection{Normal Vectors}
 %
@@ -970,10 +969,10 @@ The waves generated with the methods presented up to now tend to have rounded pe
 which is typical for fair weather conditions. But we also would like to be able to synthesize waves
 matching poor weather conditions, such as strong winds or even storms. During such weather, ocean waves
 are sharply peaked at their tops and flattened at the bottoms. \citet{course:simulatingocean}
-describes a Fourier Transform based method to produce such choppy waves. The concept is simple: displace
+describes a \FourierTransform based method to produce such choppy waves. The concept is simple: displace
 the grid points of the spatial domain in the XZ-plane, with the displacement varying locally with the waves.
 Note that the displacement is a two-dimensional vector, therefore we end up computing a vector field.
-Similar to spectral differentiation, we compute an inverse Fourier Transform of the spectrum $h$
+Similar to spectral differentiation, we compute an \InvFourierTransform of the spectrum $h$
 modified with an additional term. We may write the displacement vector field as follows:
 \begin{align}
 %\label{eq:dft_displacement}
@@ -997,7 +996,7 @@ $\eta$ as well as its associated displacements in greyscale.
 Because the spectra on the righthand side of Equations~\ref{eq:displacement_x} 
 and~\ref{eq:displacement_z} are hermitian, we are again able to apply 
 Equation~\ref{eq:idft:combined} and obtain both components of the displacement 
-vector field with just one inverse Fourier Transform.
+vector field with just one \InvFourierTransform.
 
 % The grid points of the spatial domain are two-dimensional, $\mvec{x} = [x_x, 
 % x_y]$, and lie in the XZ-plane of our three dimensional space. Embedded into 
@@ -1320,8 +1319,8 @@ Jacobian determinant is negative.
 The core of our ocean model are the spectra discussed in 
 Section~\ref{sec:wave_spectra}. We sample the spectra in 
 frequency space to obtain vertical and horizontal displacements produced by 
-ocean waves. Because the sampling process is done by means of a Fourier 
-Transform, the resulting data can be seamlessly tiled on the ocean surface. 
+ocean waves. Because the sampling process is done by means of a \FourierTransform,
+the resulting data can be seamlessly tiled on the ocean surface. 
 However, tiling a single perturbation pattern either leads to repetitive 
 artifacts if the tile's footprint in world space is small, or to lack of detail 
 if the tile's footprint in world space is large. We chose to tackle these 
@@ -1970,12 +1969,12 @@ smaller wavenumber range.
 that it would be beneficial to employ an adaptive sampling scheme which allows
 for tight sampling in the low wavenumber range, especially near the peak
 wavenumber, and sparse sampling in the high wavenumber range, see
-\citet{article:frechot2007}. Because we employ a Discrete Fourier
-Transform to compute the sum of waves, we are subject to its constraints. One of
+\citet{article:frechot2007}. Because we employ a \DiscreteFourierTransform to
+compute the sum of waves, we are subject to its constraints. One of
 those constraints is that the spacing between subsequent coordinates is constant,
 namely $\Delta k$. Hence, in combination with a Discrete Fourier Transform, we
 are not allowed to employ a sampling scheme where $\Delta k$ changes dependent
-on which part of the wavenumber profile is being sampled.
+on which part of the \wavenumber profile is being sampled.
 
 
 \subsection{Multiple Resolutions}
@@ -2517,9 +2516,9 @@ implemented in MATLAB\cite{misc:matlab}. This allowed for easy analysis,
 debugging and visualisation. Only in a second step did we integrate the energy
 spectra into the demo application, making sure the results match the ones of
 the MATLAB version. In addition, we chose to employ the same library for
-Fast Fourier Transforms as MATLAB, namely FFTW\cite{misc:fftw}. FFTW does
-not only provide a standard complex-to-complex DFT, but also a more specialised
-complex-to-real DFT, which proves to be beneficial for our use case.
+\FastFourierTransforms as MATLAB, namely FFTW\cite{misc:fftw}. FFTW does
+not only provide a standard complex-to-complex \DFT, but also a more specialized
+complex-to-real \DFT, which proves to be beneficial for our use case.
 
 The application consists of three running threads: the first thread continuously
 generates frequency spectra for the desired number of patterns, then hands them

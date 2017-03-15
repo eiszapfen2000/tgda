@@ -662,7 +662,7 @@ processes to give realistic results.\\
 % surface elevation with two-dimensional positions $\mvec{x}$ as input.
 From an algorithmic point of view we should not use three dimensional
 energy spectra $\Theta(\mvec{k},\omega)$ to synthesize the ocean surface, as
-the computational cost of Fourier Transforms in three dimensions would simply
+the computational cost of \FourierTransforms in three dimensions would simply
 be too high.
 On the other hand, we are unable to employ one dimensional frequency spectra
 $\Theta(\omega)$ as-is, because they do not contain any information about
@@ -683,7 +683,7 @@ $\Theta(\mvec{k})$. Moreover, for animation purposes, we add the term
 $\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}$ to explicitely handle 
 time $t$, because the two-dimensional \wavenumber spectrum has no notion of 
 it. Equation~\ref{eq:surface_elevation_gauss_2d} represents a two-dimensional 
-\emph{Inverse Fourier Transform} of Fourier components 
+\InvFourierTransform of Fourier components 
 $\xi\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}$. For the remainder of the 
 document, Equation~\ref{eq:surface_elevation_gauss_2d} will be the basis for all 
 further discussions of specific wave spectrum models. Moreover, in 
@@ -705,12 +705,11 @@ the following:
 \xi~\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}
 ~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation}
-Equation~\ref{eq:surface_elevation_sketch} represents a Discrete Inverse 
-Fourier Transform of Fourier components 
+Equation~\ref{eq:surface_elevation_sketch} represents a \InvDiscreteFourierTransform of Fourier components 
 $\xi\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}$, which we are able to compute in 
-a very efficient manner by means of the~\emph{Fast Fourier Transform}, 
-~\emph{FFT} in short. The interested reader may find extensive discussions of 
-the Discrete Fourier Transform and the Fast Fourier algorithm
+a very efficient manner by means of the \FastFourierTransform, 
+~\emph{\FFT} in short. The interested reader may find extensive discussions of 
+the \DiscreteFourierTransform and the Fast Fourier algorithm
 in \cite{book:bracewell2000fourier} and \cite{book:numericalrecipes}.
 
 Employing the FFT algorithm may ease our concerns with regard to performance, but 
