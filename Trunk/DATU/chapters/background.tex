@@ -1770,7 +1770,7 @@ s_p &= \begin{cases}
 \end{align*}
 $\Gamma$ is the \emph{gamma function}, $s$ is called the~\emph{spreading 
 factor}, $\omega_p$ represents the angular frequency the frequency spectrum has 
-its peak at and $\theta_p$ is the direction of the waves at said peak. It is 
+its peak at, and $\theta_p$ is the direction of the waves at said peak. It is 
 assumed that $\theta_p$ is equal the wind direction. Figure
 \ref{fig:directional_filter} depicts example instances of Equation
 \ref{eq:directional_spread_mitsuyasu}.
@@ -1990,9 +1990,9 @@ directional \wavenumber spectrum are depicted in Figure
 
 Now we are able to preserve integral equality between different representations 
 of $\Theta$, as long as we use the deep water dispersion relation. One may do 
-the math for another dispersion relation, now that the path to walk is laid 
-out. Still, in the context of this work, we only concern ourselves with waves 
-in deep water.
+the math for another dispersion relation, given that we have laid out the path
+one has to take. Still, in the context of this work, we only concern ourselves
+with waves in deep water.
 %
 \subsection{Two-dimensional Wave Spectra}
 % \label{subsec:two_dimensional_frequency_spectra}
@@ -2387,7 +2387,7 @@ we need a dispersion relation which extends into said domain too.
 We may write:
 \begin{align*}
 \omega^2 = gk\left[1 + \left(\frac{k}{k_m}\right)^2\right] &&
-k_m = \sqrt{\frac{p_w g}{T}} = 370~\text{rad}\cdot\text{m}^{-1}
+k_m = \sqrt{\frac{p_w g}{T}} = \SI{370}{\radian\per\meter}
 \end{align*}
 where $k_m$ is the \wavenumber at which gravity-capillary waves on an air-water
 interface have their minimum phase velocity~\citep{lamb:1945}.
@@ -2640,8 +2640,8 @@ is defined as follows:
 \begin{align*}
  B_h = \frac{1}{2}\alpha_m\frac{c_m}{c}F_m
 \end{align*}
-where ${c_m=0.23~\text{m}\cdot\text{s}^{-1}}$ is the minimum phase speed at
-\wavenumber ${k_m=370~\text{rad}\cdot\text{m}^{-1}}$ \citep{lamb:1945}.
+where ${c_m=\SI{0.23}{\meter\per\second}}$ is the minimum phase speed at
+\wavenumber ${k_m=\SI{370}{\radian\per\meter}}$ \citep{lamb:1945}.
 The \emph{short wave side effect function} $F_m$ accounts for the bandwidth of
 gravity-capillary waves as well as for a smooth cutoff of energy beyond the
 gravity-capillary frequency band. We may write:
