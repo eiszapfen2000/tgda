@@ -346,7 +346,7 @@ overview of our demo application and the algorithms it incorporates.
 %requires to setup a ray for each vertex, which implies both a position and a
 %direction. The position we already have, but to create a direction we need two
 %different positions. The solution is rather straightforward: let $\mvec{n}$ be
-%a \textit{two dimensional} vector representing the \textit{X} and \textit{Y}
+%a \textit{two-dimensional} vector representing the \textit{X} and \textit{Y}
 %components of a position in normalised device coordinates, then
 %\begin{align}
  %\mvec{a} & = (\mvecx{n}, \mvecy{n}, -1, 1)\\
@@ -468,7 +468,7 @@ As one may read off the above definition of the \wavevector domain, the zero
 frequency component is located near the center of the \wavevector domain,
 where $\alpha=0$ and $\beta=0$. Actual implementations of the inverse Fourier Trasform,
 such as FFTW~\citep{FFTW05}, expect the zero frequency component as the first element
-i.e. at the upper left of the two dimensional input array.
+i.e. at the upper left of the two-dimensional input array.
 The \wavevector domain of such implementations is defined as follows:
 \begin{equation*}
 \mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
@@ -753,23 +753,24 @@ Transform with $\mathcal{F}^{-1}$, then we may write:
 \label{eq:idft:combined}
 c = \mathcal{F}^{-1}(\mathcal{F}(a)+\mathrm{i}\mathcal{F}(b))
 \end{equation}
-where $c$ is complex-valued. We obtain the original real-valued signals as follows:
+where $c$ is complex-valued. We are able to retrieve the original real-valued
+signals from the real and imaginary components of $c$ respectively:
 \begin{align*}
 a &= \Re(c) & b &= \Im(c)
 \end{align*}
 %
-We will make heavy use of this kind of optimisation later on, because most
+We will make heavy use of this kind of optimization later on, because most
 of our additional data required for rendering comes in pairs of hermitian spectra.
 \subsection{Complex Conjugate Indices}
 %
 %To implement Equation~\ref{eq:dft_h_k_t_hermitian} we need to be able to retrieve
 %matching pairs $(h_0(\mvec{k}),h_0(-\mvec{k}))$.
-%Let us view $h_0$ as a two dimensional array with size $N \times N$, where $N$ is an even number.
+%Let us view $h_0$ as a two-dimensional array with size $N \times N$, where $N$ is an even number.
 %Each element of $h_0$ is identified by a pair of indices $(i,j)$, with $0\leq i,j <N$. Then, for
 %an element at index $(i,j)$, we may compute the index $(m,n)$ of the corresponding complex
 %conjugate element as follows:
-For implementation purposes let us view the two dimensional hermitian spectrum $h$
-as a two dimensional array with size $N \times N$.
+For implementation purposes, let us view the two-dimensional hermitian spectrum $h$
+as a two-dimensional array with size $N \times N$.
 Each element of $h$ is identified by a pair of indices $(i,j)$, with $0\leq i,j <N$. Then, for
 an element at index $(i,j)$, we may compute the index $(m,n)$ of the corresponding complex
 conjugate element as follows:
@@ -782,7 +783,7 @@ We may write the hermitian property in terms of indices:
  h(i,j) = h(m,n)^*
 \end{equation*}
 %
-Moreover, let us view $h_0$ as a two dimensional array with size $N \times N$,
+Moreover, let us view $h_0$ as a two-dimensional array with size $N \times N$,
 with $h_0(\mvec{k}) = h_0(i,j)$. Then, we may employ Equation~\ref{eq:complex:conjugate:indices}
 to retrieve $h_0(-\mvec{k})^*=h_0(m,n)^*$ as required by
 Equation~\ref{eq:dft_h_k_t_hermitian}.
@@ -881,7 +882,7 @@ second component of the slope vector.
 \label{fig:derivatives}
 \end{figure}
 %
-Now we may go back to the two dimensional case, with our original two dimensional
+Now we may go back to the two-dimensional case, with our original two-dimensional
 domains $\mvec{x}$ and $\mvec{k}$. The resolution of said domains is $N \times N$,
 the size of the spatial domain is $L \times L$. Let $g(\mvec{k})$ be the Discrete
 Fourier Transform of $f(\mvec{x})$, then we may write the inverse Discrete Fourier
@@ -899,7 +900,7 @@ where $x$ and $z$ denote the two components of vector $\mvec{x}$, and $k_x$ and 
 the two components of \wavevector $\mvec{k}$ respectively.
 As we need to find the surface slope vector, we need to compute 
 the surface elevation's first order partial derivatives. Given surface 
-elevation $\eta(\mvec{x},t)$, we obtain the two dimensional surface slope 
+elevation $\eta(\mvec{x},t)$, we obtain the two-dimensional surface slope 
 vector $\mvec{s}$ as follows:
 \begin{equation}
 \label{eq:dft_slope_2d}
@@ -924,7 +925,7 @@ obtaining both components of the surface slope vector with just one inverse Four
 %
 In this work we employ a right-handed Carthesian coordinate system where the positive
 Y-axis points in the opposite direction of earth's gravity.
-The two dimensional surface slope vector lies in the XZ-plane of the world space
+The two-dimensional surface slope vector lies in the XZ-plane of the world space
 coordinate system. Based on the surface slope vector we may find the unit
 length surface normal vector $\mvec{n}$ as follows:
 \begin{equation*}
@@ -998,7 +999,7 @@ and~\ref{eq:displacement_z} are hermitian, we are again able to apply
 Equation~\ref{eq:idft:combined} and obtain both components of the displacement 
 vector field with just one inverse Fourier Transform.
 
-% The grid points of the spatial domain are two dimensional, $\mvec{x} = [x_x, 
+% The grid points of the spatial domain are two-dimensional, $\mvec{x} = [x_x, 
 % x_y]$, and lie in the XZ-plane of our three dimensional space. Embedded into 
 % three dimensional space, they represent the ocean plane at rest, $\mvec{p} = 
 % [x_x, 0, x_y]$. We may add surface elevation $\eta$ $[x_x, \eta(\mvec{x},t), 
@@ -1089,7 +1090,7 @@ computation of the slope vector to the new circumstances. Given surface
 elevation $\eta(\mvec{x},t)$, displacement vector $\mvec{D}(\mvec{x},t)$,
 and grid point transformation $\mvec{x} + u\mvec{D}(\mvec{x},t)$,
 according to \citet[private communication]{article:whitecaps} we obtain the
-two dimensional surface slope $\mvec{s}$ as follows:
+two-dimensional surface slope $\mvec{s}$ as follows:
 \begin{equation}
 \mvec{s}(\mvec{x},t) = \left[\frac{\dpd{\eta(\mvec{x},t)}{x}}{1 + u 
 \dpd{D_x(\mvec{x},t)}{x}}, \frac{\dpd{\eta(\mvec{x},t)}{z}}{1 + u 
