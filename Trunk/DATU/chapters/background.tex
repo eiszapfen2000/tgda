@@ -350,11 +350,11 @@ with \wavelength $\lambda$ ~\emph{and} with wave period $T$. Waves in deep water
 travel faster than those with smaller ones.
 %
 \subsection{Three Dimensional Wave}
-Until now we were discussing a two dimensional ocean defined by exactly one sinus wave. As a first
+Until now we were discussing a two-dimensional ocean defined by exactly one sinus wave. As a first
 step to get to a more realistic ocean surface representation we will extend Equation~\ref{eq:sinusoid}
 to form a wave in three dimensional space. In contrast to Equation~\ref{eq:sinusoid}, where the wave's
 travelling direction is fixed, the wave has to be able to travel in an arbitrary direction on a plane.
-Moreover, we need to handle two dimensional input positions. The sinusoid describing surface elevation
+Moreover, we need to handle two-dimensional input positions. The sinusoid describing surface elevation
 in three dimensional space is defined as follows:
 \begin{equation}
 \label{eq:sinusoid_3d}
@@ -461,7 +461,7 @@ integration is over all frequencies. $B(\mvec{k},\omega)$ is called the
 three dimensional amplitude spectrum of $\eta(\mvec{x}, t)$. Notice the missing
 dependency of $\omega$ on $\mvec{k}$ in the exponent, it is the responsibility
 of $B(\mvec{k},\omega)$ to model that relationship.
-We may integrate separately over all frequencies to obtain the two dimensional
+We may integrate separately over all frequencies to obtain the two-dimensional
 amplitude spectrum $B(\mvec{k}, t)$:
 %
 \begin{equation}
@@ -572,7 +572,7 @@ denoted as $\overline{\eta^2}$. Therefore, we may write:
 \\
 Later on we will be in need of energy spectrum formulations which have a lower
 dimensionality than the three dimensional $\Theta(\mvec{k},\omega)$. As such,
-we introduce the two dimensional energy spectrum, in literature known
+we introduce the two-dimensional energy spectrum, in literature known
 as~\emph{\wavenumber spectrum}, which is defined as follows:
 \begin{equation}
 \label{eq:energy_spectrum_2d}
@@ -659,7 +659,7 @@ processes to give realistic results.\\
 % parametric one dimensional frequency spectra $\Theta(\omega)$ which we are not 
 % able to use as-is, because they do not contain any information about the 
 % travelling direction of waves, and therefore are not able to simulate 
-% surface elevation with two dimensional positions $\mvec{x}$ as input.
+% surface elevation with two-dimensional positions $\mvec{x}$ as input.
 From an algorithmic point of view we should not use three dimensional
 energy spectra $\Theta(\mvec{k},\omega)$ to synthesize the ocean surface, as
 the computational cost of Fourier Transforms in three dimensions would simply
@@ -667,8 +667,8 @@ be too high.
 On the other hand, we are unable to employ one dimensional frequency spectra
 $\Theta(\omega)$ as-is, because they do not contain any information about
 the  travelling direction of waves, and therefore are not able to compute 
-surface elevation with two dimensional positions $\mvec{x}$ as input.
-Hence, we have to settle for the two dimensional \wavenumber spectrum
+surface elevation with two-dimensional positions $\mvec{x}$ as input.
+Hence, we have to settle for the two-dimensional \wavenumber spectrum
 $\Theta(\mvec{k})$ as basis. We may write surface elevation as follows:
 \begin{equation}
 \label{eq:surface_elevation_gauss_2d}
@@ -681,8 +681,8 @@ a Gauss distributed variable with mean $\mathrm{E}[\eta] = 0$ and
 variance $\mathrm{Var}[\eta] = \sigma^2$ defined by the energy spectrum
 $\Theta(\mvec{k})$. Moreover, for animation purposes, we add the term 
 $\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}$ to explicitely handle 
-time $t$, because the two dimensional \wavenumber spectrum has no notion of 
-it. Equation~\ref{eq:surface_elevation_gauss_2d} represents a two dimensional 
+time $t$, because the two-dimensional \wavenumber spectrum has no notion of 
+it. Equation~\ref{eq:surface_elevation_gauss_2d} represents a two-dimensional 
 \emph{Inverse Fourier Transform} of Fourier components 
 $\xi\mathrm{e}^{-\mathrm{i}\omega(\mvec{k}) t}$. For the remainder of the 
 document, Equation~\ref{eq:surface_elevation_gauss_2d} will be the basis for all 
@@ -1052,7 +1052,7 @@ For now let us focus on the models themselves.
 %themselves.
 We will start with a pair of one dimensional frequency spectra most often found
 and referenced in oceanographic literature. As said frequency spectra are
-one dimensional, we need to convert them into two dimensional \wavenumber
+one dimensional, we need to convert them into two-dimensional \wavenumber
 spectra, as only the latter form allows us to actually synthesize a finite area
 of a virtual ocean surface. Thus, first, we follow up with a description of how
 to augment one dimensional frequency spectra with directional information, and
@@ -1063,7 +1063,7 @@ Last, we discuss three more wave spectra, where each of them already includes a
 distinct model for the directional distribution of wave energy.
 % 
 % we follow up with a description of how to augment them with
-% directional information to obtain two dimensional wavenumber spectra. Only the
+% directional information to obtain two-dimensional wavenumber spectra. Only the
 % latter form allows us to actually synthesize a finite area of a virtual ocean
 % surface. Next, we show how to make sure to preserve integral equality between
 % different wave spectrum domains i.e. how to convert from frequency based wave
@@ -1071,7 +1071,7 @@ distinct model for the directional distribution of wave energy.
 % 
 % We will start by discussing two well known one dimensional
 % frequency spectra and how to augment them with directional information to obtain
-% two dimensional wavenumber spectra. Only the latter form allows us to actually
+% two-dimensional wavenumber spectra. Only the latter form allows us to actually
 % synthesize a finite area of a virtual ocean surface.
 % Next, we show how to make sure to preserve integral equality between
 % different wave spectrum domains i.e. how to convert from frequency based wave
@@ -1641,11 +1641,11 @@ parameter $\alpha$ on dimensionless fetch:
 This completes our conversion of the JONSWAP spectrum to make explicit use of 
 dimensionless peak frequency and dimensionless fetch.
 Before we move on to other wave spectra, we may clarify how we intend to
-convert the presented one dimensional frequency spectra into two dimensional
+convert the presented one dimensional frequency spectra into two-dimensional
 \wavenumber spectra.
 % Before we move on to 
-% two dimensional frequency spectra we may clarify how we intend to convert the 
-% presented directional frequency spectra into two dimensional \wavenumber
+% two-dimensional frequency spectra we may clarify how we intend to convert the 
+% presented directional frequency spectra into two-dimensional \wavenumber
 % spectra.
 %
 \subsection{Directional Spreading Function}
@@ -1765,7 +1765,7 @@ assumed that $\theta_p$ is equal the wind direction. Figure
 \subsection{Integral Domain Conversion}
 %
 Recall that we transform from the  \wavenumber domain to the spatial 
-one. Thus, as a prerequisite, we are in need of a two dimensional \wavenumber 
+one. Thus, as a prerequisite, we are in need of a two-dimensional \wavenumber 
 spectrum $\Theta(\mvec{k})$, but 
 Equation~\ref{eq:directional_frequency_spectrum} 
 gives us a directional frequency spectrum $\Theta(\omega,\theta)$. We will 
@@ -1962,7 +1962,7 @@ is accomplished as follows:
 \end{equation}
 %
 By combining Equations~\ref{eq:directional_frequency_spectrum}, 
-~\ref{eq:theta_k} and~\ref{eq:theta_cart_to_polar} we get the two dimensional
+~\ref{eq:theta_k} and~\ref{eq:theta_cart_to_polar} we get the two-dimensional
 \wavenumber spectrum:
 %
 \begin{align}
@@ -1981,13 +1981,13 @@ the math for another dispersion relation, now that the path to walk is laid
 out. Still, in the context of this work, we only concern ourselves with waves 
 in deep water.
 %
-\subsection{Two Dimensional Wave Spectra}
+\subsection{two-dimensional Wave Spectra}
 % \label{subsec:two_dimensional_frequency_spectra}
 %
 Beforehand we introduced the combination of a one dimensional 
 frequency spectrum with a directional spreading function in order to generate a 
-two dimensional frequency spectrum. We have seen that there are different forms
-of two dimensional wave spectra, such as the directional frequency spectrum
+two-dimensional frequency spectrum. We have seen that there are different forms
+of two-dimensional wave spectra, such as the directional frequency spectrum
 $\Theta(\omega, \theta)$, the \wavenumber spectrum in polar form
 $\Theta(k, \theta)$, and the \wavenumber spectrum in Cartesian form
 $\Theta(\mvec{k})$. Moreover, given a dispersion relation, we 
@@ -3160,7 +3160,7 @@ velocity $u^\ast$ and minimum phase speed $c_m$.
 Figure\ref{fig:unified_directional_filter} depicts example
 instances of the Unified spectrum's directional spread. One can see that the
 directional spread is~\emph{centrosymmetrical}, in short
-$D(k, \theta) = D(k, \theta \pm \pi)$. As a consequence the two dimensional
+$D(k, \theta) = D(k, \theta \pm \pi)$. As a consequence the two-dimensional
 \wavenumber spectrum is centrosymmetrical, too. Therefore, the Unified spectrum
 satisfies the following conditions:
 \begin{align*}
@@ -3171,7 +3171,7 @@ satisfies the following conditions:
 \label{sec:phillips_spectrum}
 %
 The Phillips Spectrum, as introduced by \cite{course:simulatingocean},
-is an ad-hoc formulation of a two dimensional \wavenumber spectrum $\Theta(\mvec{k})$.
+is an ad-hoc formulation of a two-dimensional \wavenumber spectrum $\Theta(\mvec{k})$.
 It has been developed with computer graphic purposes in mind and is loosely
 based on \citet{article:Phillips1958,article:Phillips1985}.
 We may write \citeauthor{course:simulatingocean}'s
