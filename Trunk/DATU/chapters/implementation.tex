@@ -1728,15 +1728,15 @@ reduced by $\varphi^{-1}$.}
 
 In case we choose $f = 1-\varphi^{-1} \approx 0.382$, the combined patterns
 allow for tight sampling around the spectral peak as well as in the high
-wavenumber range. Hence, the sum of waves includes both, large wavelengths which
+\wavenumber range. Hence, the sum of waves includes both, large wavelengths which
 give the overall surface its shape, and small wavelengths for close-up detail.
 The drawback of this choice are the smaller pattern sizes, which results in
 repetitive artifacts at a smaller scale than expected. In case we choose
 $f = \varphi^{-1} \approx 0.618$, the combined patterns allow for even more
 tight sampling around the spectral peak, but missing most of the energy in the
-high wavenumber range. Thus, it is the large wavelengths we are able to
+high \wavenumber range. Thus, it is the large wavelengths we are able to
 reconstruct, but missing close-up detail. On the other hand, we have less issues
-with repetitve artifacts. The two rows in Figure~\ref{fig:sampling_pattern_size_reduction}
+with repetitive artifacts. The two rows in Figure~\ref{fig:sampling_pattern_size_reduction}
 depict the reconstructions of one and the same spectrum, based on patterns with
 the same resolution $N$, but initial size $L$ reduced by the two different
 factors.
@@ -1955,20 +1955,20 @@ factors.
 \end{figure}
 %
 Care has to be taken not to sample the same part of the spectrum multiple times.
-Not doing so, would imply including the same wavenumber(s) multiple times in the
+Not doing so, would imply including the same \wavenumber(s) multiple times in the
 sum of waves. Thus, if the spectrum of one pattern already covers a specific
-wavenumber range, a second spectrum covering parts or the entirety of that same
+\wavenumber range, a second spectrum covering parts or the entirety of that same
 range, has to be zeroed in the region of overlap.
 Figure~\ref{fig:sampling_pattern_assembly} shows the assembly of the overlapping
 spectra from Figure~\ref{fig:sampling_pattern_size_reduction} into one coherent
 spectrum. The transition from data from one spectrum to data from the next
-spectrum always happens at the maximum wavenumber of the spectrum with the
-smaller wavenumber range.
+spectrum always happens at the maximum \wavenumber of the spectrum with the
+smaller \wavenumber range.
 
-\emph{Note}: The typical profile of a one dimensional wavenumber spectrum suggests
+\emph{Note}: The typical profile of a one dimensional \wavenumber spectrum suggests
 that it would be beneficial to employ an adaptive sampling scheme which allows
-for tight sampling in the low wavenumber range, especially near the peak
-wavenumber, and sparse sampling in the high wavenumber range, see
+for tight sampling in the low \wavenumber range, especially near the peak
+\wavenumber, and sparse sampling in the high \wavenumber range, see
 \citet{article:frechot2007}. Because we employ a \DiscreteFourierTransform to
 compute the sum of waves, we are subject to its constraints. One of
 those constraints is that the spacing between subsequent coordinates is constant,
@@ -2235,7 +2235,7 @@ resolution than the associated derivatives.
 %
 Given pattern size $L$, grid point spacing $\Delta k = 2\pi/L$, pattern
 resolutions $N_h,N_l \in \mathbb{N}$ with $N_l < N_h$, then we may define the
-two following wavevector domains:
+two following \wavevector domains:
 %
 \begin{align}
 \mvec{h} = (k_x,k_z)~&\in~\{(\alpha\Delta k,\beta\Delta k)|-\frac{N_h}{2}\leq\alpha<\frac{N_h}{2},-\frac{N_h}{2}<\beta\leq\frac{N_h}{2}\}\\
@@ -2254,7 +2254,7 @@ of the wave energy spectrum with differing resolutions,
 the low resolution variant of the wave energy spectrum is already embedded inside the
 high resolution variant. See Figure~\ref{fig:sampling_different_resolutions} for
 a display of the relation between two reconstructions of the same one
-dimensional wavenumber spectrum with different resolutions, but the same size.
+dimensional \wavenumber spectrum with different resolutions, but the same size.
 %
 %
 \begin{figure}[p]
@@ -2465,7 +2465,7 @@ dimensional wavenumber spectrum with different resolutions, but the same size.
 \end{tikzpicture}
 \caption{Gradual assembly of the reconstructed spectra from Figure
 \ref{fig:sampling_different_resolutions}. Top row and bottom row transition
-between two subsequent reconstructions at different wavenumbers.}
+between two subsequent reconstructions at different \wavenumbers.}
 \label{fig:sampling_different_resolutions_pattern_assembly}
 \end{figure}
 %
@@ -2474,33 +2474,33 @@ between two subsequent reconstructions at different wavenumbers.}
 At this point we have two sets of reconstructions of the same spectrum, based on
 two different resolutions. For each set, we need to assemble the overlapping
 spectral data into one coherent spectrum. As before, the transition from one
-reconstruction to the next takes place at the maximum wavenumber of the
-reconstruction with the smaller wavenumber range. In addition, we must take
-into consideration that the two sets of spectral data have different wavenumber
-ranges, therefore the transitions may take place at different wavenumbers. Figure
+reconstruction to the next takes place at the maximum \wavenumber of the
+reconstruction with the smaller \wavenumber range. In addition, we must take
+into consideration that the two sets of spectral data have different \wavenumber
+ranges, therefore the transitions may take place at different \wavenumbers. Figure
 \ref{fig:sampling_different_resolutions_pattern_assembly} depicts the gradual
 assembly of the spectral data from Figure
 \ref{fig:sampling_different_resolutions}.\\
 
 Recall Equation~\ref{eq:dft_h0_k}, where we synthesize a random
-surface based on wavevector domain $\mvec{k}$. For each wavevector we compute
+surface based on \wavevector domain $\mvec{k}$. For each \wavevector we compute
 wave energy $\Theta(\mvec{k})$ and generate a pair of standard normal
 distributed random numbers $(\xi_r,\xi_i)$. Now, if we would like to generate
 an instance of the same surface at a lower resolution, we need to take the
 following steps:
 \begin{itemize}
- \item Define a wavevector domain $\mvec{l}$ with a lower resolution than
- wavevector domain $\mvec{k}$, but the same underlying size $L$.
+ \item Define a \wavevector domain $\mvec{l}$ with a lower resolution than
+ \wavevector domain $\mvec{k}$, but the same underlying size $L$.
  \item Extract subset $\Theta(\mvec{l})$ from $\Theta(\mvec{k})$.
  \item For each extracted element of $\Theta(\mvec{k})$, also copy its
  associated random number pair $(\xi_r,\xi_i)$.
 \end{itemize}
-The last step makes sure that each wavevector is associated with one specific
+The last step makes sure that each \wavevector is associated with one specific
 pair of random numbers, be it as part of the low resolution surface as well as
 part of the high resolution surface. The random number pair basically defines
-the amplitude associated with a wavevector. To be able to reproduce the same
+the amplitude associated with a \wavevector. To be able to reproduce the same
 random surface at different resolutions, the pairing between amplitude and
-wavevector needs to remain the same across resolutions.
+\wavevector needs to remain the same across resolutions.
 
 \section{Demo Application}
 \label{sec:demo_application}
