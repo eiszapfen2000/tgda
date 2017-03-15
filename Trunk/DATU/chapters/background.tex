@@ -202,7 +202,10 @@ with
 where $A$ is the amplitude, $k$ is called the~\emph{\wavenumber},~$x$ is the horizontal position,
 $\omega$ is the~\emph{wave frequency} in radians per second,~$t$ represents the time,
 $\lambda$ is the~\emph{\wavelength},~$f$ is the~\emph{wave frequency} in Hertz (\si{\hertz}) and~$T$
-is the wave period in seconds.
+is the wave period in seconds. According to Airy wave theory, \wavenumber $k$
+and angular frequency $\omega$ are not independent parameters, but are coupled
+by the \emph{dispersion relation}. We will elaborate on the dispersion relation
+at a later point, though.
 % \begin{figure}
 % 	\centering
 % 	\includegraphics[width=\textwidth]{figures/sinusoid}
@@ -248,12 +251,14 @@ is the wave period in seconds.
 \draw[<->,>=latex] (axis cs:5*pi/4,-2*0.707106781186548) -- (axis cs:13*pi/4,-2*0.707106781186548) node [midway,label={[yshift=-2mm]above:{$T$}}] {};
 \end{axis}
 \end{tikzpicture}
-\caption{An example of a sinusoidal wave with amplitude $A$, \wavelength $\lambda$, and wave period $T$.}
+\caption{A sinusoidal wave with amplitude $A$, \wavelength $\lambda$, and wave period $T$.}
 \label{fig:sinusoid}
 \end{figure}
 %
-We may picture Equation~\ref{eq:sinusoid} in an easy way if we either focus on a
-fixed position $x$ or a fixed point in time $t$, see Figure~\ref{fig:sinusoid}.
+
+We may picture the wave form as defined by Equation~\ref{eq:sinusoid} in an easy
+way if we either focus on a fixed position $x$ or a fixed point in time $t$,
+see Figure~\ref{fig:sinusoid}.
 If we assume a fixed position, we can see the surface elevation evolve through
 time at that position. On the other hand, if we assume a fixed point in time, we
 can observe surface elevation at all positions at that specific time. The wave's
@@ -296,7 +301,7 @@ positions are time-dependent, differentiation gives us phase speed $c$:
 
 In the context of water surface waves,~\emph{dispersion} refers to~\emph{frequency dispersion}, which describes
 the effect of waves at different wavelengths travelling at different phase speeds. We have seen that
-phase speed $c = \frac{\lambda}{T}$ involves \wavelength and frequency, and alternatively $c = \frac{\omega}{k}$
+phase speed $c = \lambda/T$ involves \wavelength and frequency, and alternatively $c = \omega/k$
 which includes angular frequency and \wavenumber. We focus on the latter formulation for phase speed, because
 linear wave theory defines a functional relationship between the two factors involved:
 %therefore we will start with the functional relationship
@@ -348,6 +353,12 @@ We can expand Equation~\ref{eq:phase_speed_deep_water} to:
 Looking at Equation~\ref{eq:phase_speed_deep_water_l} we can conclude that phase speed in deep water increases
 with \wavelength $\lambda$ ~\emph{and} with wave period $T$. Waves in deep water with large \wavelengths/periods
 travel faster than those with smaller ones.
+
+\emph{Note}: In the context of this work we concern ourselves only with the
+open ocean, where the water is assumed to be deep. Should occasions arise where
+we are required to derive terms and formulas based on phase speed or the
+dispersion relation, then we will rely exclusively on the deep water phase speed
+and the deep water dispersion relation.
 %
 \subsection{Three Dimensional Wave}
 Until now we were discussing a two-dimensional ocean defined by exactly one sinus wave. As a first
@@ -1980,7 +1991,7 @@ the math for another dispersion relation, now that the path to walk is laid
 out. Still, in the context of this work, we only concern ourselves with waves 
 in deep water.
 %
-\subsection{two-dimensional Wave Spectra}
+\subsection{Two-dimensional Wave Spectra}
 % \label{subsec:two_dimensional_frequency_spectra}
 %
 Beforehand we introduced the combination of a one dimensional 
