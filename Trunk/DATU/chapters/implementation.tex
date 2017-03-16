@@ -974,10 +974,12 @@ the grid points of the spatial domain in the XZ-plane, with the displacement var
 Note that the displacement is a two-dimensional vector, therefore we end up computing a vector field.
 Similar to spectral differentiation, we compute an \InvFourierTransform of the spectrum $h$
 modified with an additional term. We may write the displacement vector field as follows:
-\begin{align}
+\begin{equation}
 %\label{eq:dft_displacement}
- \mvec{D}(\mvec{x},t) &= \left[D_x(\mvec{x},t), D_z(\mvec{x},t)\right]\\
-\intertext{with}
+ \mvec{D}(\mvec{x},t) = \left[D_x(\mvec{x},t), D_z(\mvec{x},t)\right]
+\end{equation}
+with
+\begin{align}
 \label{eq:displacement_x} D_x(\mvec{x},t) &= \sum_{\mvec{k}}d(k_x, 
 k)~h(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
 \label{eq:displacement_z} D_z(\mvec{x},t) &= \sum_{\mvec{k}}d(k_z, 
@@ -1043,8 +1045,8 @@ the waves' peaks are sharpened and the waves' valleys are broadened.
 	legend cell align=left,
 	xtick = {-50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50},
 	ytick = {-0.5, 0, 0.5},
-    xlabel={Spatial domain coordinate~$x$~($\text{m}$)},
-    ylabel={Surface height~$\eta$~($\text{m}$)},
+    xlabel={Spatial domain coordinate~$x$~(\si{\metre})},
+    ylabel={Surface height~$\eta$~(\si{\metre})},
 	%enlarge y limits = 0.2,
 ]
 \addplot[
