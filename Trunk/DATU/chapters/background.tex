@@ -1994,7 +1994,7 @@ the math for another dispersion relation, given that we have laid out the path
 one has to take. Still, in the context of this work, we only concern ourselves
 with waves in deep water.
 %
-\subsection{Two-dimensional Wave Spectra}
+\subsection{Two-Dimensional Wave Spectra}
 % \label{subsec:two_dimensional_frequency_spectra}
 %
 Beforehand we introduced the combination of a one dimensional 
@@ -2005,7 +2005,7 @@ $\Theta(\omega, \theta)$, the \wavenumber spectrum in polar form
 $\Theta(k, \theta)$, and the \wavenumber spectrum in Cartesian form
 $\Theta(\mvec{k})$. Moreover, given a dispersion relation, we 
 are able to convert between all these different forms of a spectrum. Now, we 
-may move on to wave spectra which have been explicitely introduced in a two 
+may move on to wave spectra which have been explicitly introduced in a two 
 dimensional form by oceanographic research.
 
 \subsection{Donelan Spectrum}
@@ -2029,16 +2029,22 @@ $(\omega/\omega_p)$ and on the intensity of wind input $\Omega_c = U_c/c_p$,
 where $U_c$ is the component of the wind in the direction 
 of travel of the waves at the spectral peak, and $c_p$ is the phase velocity of 
 the waves at the spectral peak. The directional spreading on the other hand is 
-related only to $\omega/\omega_p$. We may write the directional Donelan 
-frequency spectrum as follows:
+related only to $\omega/\omega_p$.
+According to \citeauthor{article:Donelan1985}, wind component $U_c$ is defined
+based on wind speed $U_{10}$:
+\begin{align}
+ U_c = U_{10}\cos(\upsilon-\theta_p) && \abs{\upsilon-\theta_p}\leq\SI{15}{\degree}
+\end{align}
+where $\upsilon$ is the direction of wind speed $U_{10}$, and $\theta_p$
+represents the direction of travel of the waves at the spectral peak.
+We may move on to the directional Donelan frequency spectrum,
+which is as follows:
 \begin{equation}
 \label{eq:donelan:dfreqspectrum}
  \Theta(\omega, \theta) = \frac{1}{2}\Theta(\omega)\beta\sech^2
 \{\beta[\theta - \theta_p]\}
 \end{equation}
-where $\theta_p$ represents the direction of travel of the waves at the 
-spectral peak. From Equation~\ref{eq:donelan:dfreqspectrum} one may see that the
-directional spread is the following:
+From the equation one may see that the directional spread is the following:
 \begin{equation}
 \label{eq:donelan:dspread}
   D(\omega, \theta) = \frac{1}{2}\beta\sech^2\{\beta[\theta - \theta_p]\}
@@ -2055,10 +2061,11 @@ parameter $\beta$, which is defined as:
     \end{cases}
 \end{align}
 Given wind input $U_c$, and the inverse wave age $\Omega_c$ based on the
-component of the wind in the direction of the peak waves, then we may
-write peak angular frequency $\omega_p$ as:
+component of the wind in the direction of the peak waves, then, assuming deep
+water, we may write peak angular frequency $\omega_p$ in step with
+Equation~\ref{eq:inverse_wave_age_deep_water}:
 \begin{equation}
- \omega_{p} = \frac{g\Omega_c}{U_{c}}
+ \omega_{p} = \Omega_c\frac{g}{U_{c}}
 \end{equation}
 \citeauthor{article:Donelan1985} defines inverse wave age $\Omega_c$ based on
 dimensionless fetch $\chi$ as follows:
