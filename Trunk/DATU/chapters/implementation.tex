@@ -1327,26 +1327,29 @@ However, tiling a single perturbation pattern either leads to repetitive
 artifacts if the tile's footprint in world space is small, or to lack of detail 
 if the tile's footprint in world space is large. We chose to tackle these 
 issues like \citet{misc:oceanlightingfft} and \citet{article:whitecaps},
-which do compute not only one perturbation pattern, but a set of perturbation
-patterns, where each pattern samples a different part of the spectrum.
-Although we are not able to entirely remove periodicity from the wave field, we
-may increase it to the least common multiple of the pattern periods.
-As each pattern samples a different part of the spectrum, we are able
-to extend the sum of waves to include shorter wavelengths, even as far as into the
-gravity-capillary wave domain. Thus, we may even reproduce detail on a small
-scale, such as ripples on the water surface.
+which compute not only one perturbation pattern, but a set of perturbation
+patterns, where each pattern is different in size and therefore samples a different
+part of the spectrum.
+The superposition of patterns of different size is not able to entirely remove
+periodicity from the wave field, but still, periodicity is reduced to the least
+common multiple of the pattern periods.
+Moreover, as each pattern samples a different part of the spectrum, we are able
+to extend the sum of waves to include shorter wavelengths, even as far as into
+the gravity-capillary wave domain. Thus, given a sufficient number of patterns,
+we may be able to consistently reproduce small-scale detail for closeups of the
+water surface.
 In practice, up to four different perturbation patterns suffice to obtain
 satisfactory results \citep{article:whitecaps}.
 
-Since we position this work in the context of realtime rendering,
+Since we position this work in the context of real-time rendering,
 we need to make sure that the accumulated cost of pattern data synthesis
-does not prevent us to keep realtime framerates. 
+does not prevent us to keep real-time framerates. 
 Thus, we may extend the level-of-detail approach by \citet{misc:oceanlightingfft} and
 \citet{article:whitecaps} with a multi-resolution scheme, where specific pattern
 datasets, such as surface elevation and displacements, are generated at a lower
 resolution than the other datasets. 
-Consequentially, the potential reduction of computational workload is solely
-dependent on the actual difference between the two resolutions.
+%Consequentially, the potential reduction of computational workload is exclusively
+%dependent on the actual difference between the two resolutions.
 %We may conclude that, based on the number of patterns and the resolution(s) of pattern data,
 %we are able to strike a well-adjusted balance between model detail and computational workload.
 
@@ -1358,8 +1361,8 @@ dependent on the actual difference between the two resolutions.
 
 In the remainder of this section we upgrade our equations to handle more than
 one perturbation pattern, we explain how to parametrize the different pattern
-periods to be able to reduce tiling artifacts and sample as much of the spectrum
-as possible, and last we discuss our multi-resolution approach.
+periods to be able to reduce tiling artifacts as well as sample as much of the
+spectrum as possible, and last we discuss our multi-resolution approach.
 %
 \subsection{Equations}
 At this point, one perturbation pattern consists of surface
@@ -1570,18 +1573,23 @@ With the \wavenumber set $k_d$ at hand we may sample a one-dimensional
 reconstructions of one specific one-dimensional \wavenumber spectrum, where one
 can see the effects of size $L$ and resolution $N$ on the \wavenumber set $k_d$,
 and thus on the reconstructed pattern.
-
+%
+\subsection{Pattern Sizes}
+%
 With size $L$ and resolution $N$ specified for a pattern, we may compute the
 pattern's \wavenumber range. Since we would like to sample the spectrum at as
 many \wavenumbers as possible, we need to minimize overlap of the \wavenumber
 ranges of different patterns.
-For now, in our implementation each dataset shares the same resolution across
-all patterns, therefore we focus on pattern size to reduce \wavenumber overlap.
+Because our implementation shares the same dataset resolution(s) across all
+patterns, we are required to exclusively focus on pattern size to reduce
+\wavenumber overlap.
+%In our implementation each dataset shares the same resolution across
+%all patterns, therefore we focus on pattern size to reduce \wavenumber overlap.
 We need at least one large pattern size, to avoid repetitive artifacts as much
 as possible, and one small pattern size for closeup detail.
 In addition, we have to make sure that the different sizes are not integral
 multiples of each other, otherwise the surface may seem repetitive at a smaller
-scale than expected.
+scale than expected. 
 FIXME: irrational number
 We chose to tackle both requirements by
 employing multiples based on the golden ratio $\varphi = (1 + \sqrt{5})/2$. The
