@@ -1328,17 +1328,22 @@ artifacts if the tile's footprint in world space is small, or to lack of detail
 if the tile's footprint in world space is large. We chose to tackle these 
 issues like \citet{misc:oceanlightingfft} and \citet{article:whitecaps},
 which compute not only one perturbation pattern, but a set of perturbation
-patterns, where each pattern is different in size and therefore samples a different
-part of the spectrum.
-The superposition of patterns of different size is not able to entirely remove
-periodicity from the wave field, but still, periodicity is reduced to the least
-common multiple of the pattern periods.
-Moreover, as each pattern samples a different part of the spectrum, we are able
-to extend the sum of waves to include shorter wavelengths, even as far as into
-the gravity-capillary wave domain. Thus, given a sufficient number of patterns,
+patterns of different size, which are then superimposed over each other.
+%, where each pattern is different in size and therefore may sample
+%a different part of the spectrum.
+Although this approach is not able to entirely remove the tiling artifacts from
+the wave field, it is still able to reduce periodicity to the least common
+multiple of the pattern periods.
+Moreover, as the \wavenumber ranges of the different patterns complement each
+other, we are able to extend the sum of waves to include shorter wavelengths,
+even as far as into the gravity-capillary wave domain.
+%each pattern samples a different part of the spectrum, we are able
+%to extend the sum of waves to include shorter wavelengths, even as far as into
+%the gravity-capillary wave domain.
+Thus, given a sufficient number of patterns,
 we may be able to consistently reproduce small-scale detail for closeups of the
 water surface.
-In practice, up to four different perturbation patterns suffice to obtain
+In practice, up to four different perturbation patterns may suffice to obtain
 satisfactory results \citep{article:whitecaps}.
 
 Since we position this work in the context of real-time rendering,
@@ -1361,8 +1366,8 @@ resolution than the other datasets.
 
 In the remainder of this section we upgrade our equations to handle more than
 one perturbation pattern, we explain how to parametrize the different pattern
-periods to be able to reduce tiling artifacts as well as sample as much of the
-spectrum as possible, and last we discuss our multi-resolution approach.
+periods to be able to reduce tiling artifacts as well as reproduce as much
+detail as possible, and last we discuss our multi-resolution approach.
 %
 \subsection{Equations}
 At this point, one perturbation pattern consists of surface
@@ -1412,26 +1417,15 @@ Jacobian matrix to be able to locate surface self-intersections. We may write:
 One can see that in case the number of patterns equals one, the new equations
 simply fall back to the original ones.
 %
-\subsection{Sampling}
+\subsection{\Wavenumber Range}
 %
-For us to generate a believable, as well as visually pleasing ocean surface, we
-are required to include into our sum of waves a finite set of \wavenumbers such
-that it is representative of the whole energy. If we generate only one pattern,
-based on size and resolution, we either sparsely sample inside a large
-\wavenumber range, or we densely sample inside a small \wavenumber range. The
-former results in a poor reconstruction of a larger part of the spectrum, the
-latter in a better reconstruction of a smaller part of the spectrum, but
-possibly missing other relevant parts of the spectrum. Thus, we generate more
-than one pattern, where the goal is to sample as many distinct
-\wavenumbers as possible.
-
 Recall that both, the spatial domain and the \wavevector domain, are defined
 entirely by size $L$ and resolution $N$. The smallest \wavenumber
 $k = \norm{\mvec{k}}$, where $k > 0$, representable by the \wavevector domain is
 $k = 2\pi/L$, it depends only on size. Moreover, the distance between subsequent
 sample points in both dimensions, $\Delta k$, is defined as $\Delta k = 2\pi/L$.
 Hence, $\Delta k$ depends only on size. Therefore, by choosing size $L$, we do
-not only define the minimal \wavenumber we are able to sample, but also define
+not only define the minimal \wavenumber we are able to sample, but also
 how densely we are able to sample the spectrum. The largest \wavenumber contained
 in the \wavevector domain is $k = \sqrt{2}\pi N/L$. So, given size $L$,
 resolution $N$ defines how large the \wavenumbers are allowed to grow, giving us
@@ -1570,9 +1564,53 @@ consecutive sample points is equivalent in (c) and (d). (d) covers a larger
 Let $k_d$ be a set of distinct \wavenumbers based on parameters $L$ and $N$.
 With the \wavenumber set $k_d$ at hand we may sample a one-dimensional
 \wavenumber spectrum. Figure~\ref{fig:sampling_area_vs_res} depicts a set of
-reconstructions of one specific one-dimensional \wavenumber spectrum, where one
+reconstructions of the same one-dimensional \wavenumber spectrum, where one
 can see the effects of size $L$ and resolution $N$ on the \wavenumber set $k_d$,
 and thus on the reconstructed pattern.
+%
+\subsection{Tiling}
+We have already mentioned that we reduce tiling artifacts as much as possible
+by superimposing a set of patterns of different size \citep{misc:oceanlightingfft,
+article:whitecaps}. To be able to do so we require at least two patterns, a
+large one which defines the general shape of the ocean surface, and a small one
+for closeup detail.
+\citet{Bridson:2015} argues that if one takes such an approach to reduce
+periodicity, then it would be best for the different pattern sizes to be related
+to each other by an irrational number, because only then one may be able to
+generate an aperiodic signal. In short, given pattern size $L$, then we may
+obtain the next tile size as $\alpha L$, where $\alpha$ is an irrational number.
+\citeauthor{Bridson:2015} goes even further, and states that it would
+be best to choose scaling factor $\alpha$ based on the~\emph{golden ratio}
+$\varphi = (1 + \sqrt{5})/2$.
+Thus, we devised a simple automatism, where the user specifies the size of the
+largest pattern, and then each subsequent pattern is automatically shrunk in
+size by factor $f$, where $f \in \{\varphi^{-1}, 1 - \varphi^{-1}\}$.
+Given initial pattern size $L$, we may compute size $L_i$ of the successive
+patterns as follows:
+\begin{align}
+ L_i = f^{i} L && 0 < i < l
+\end{align}
+where $l$ is the number of patterns.
+
+%\citet{Bridson:2015} argues that if one wants to reduce periodicity by
+%superimposing two tiling patterns with different size, then one should employ
+%irrational numbers as scaling factors. In short, given pattern size $L$, then
+%we may obtain the next tile size as $\alpha L$, where $\alpha$ is an irrational
+%number. \citeauthor{Bridson:2015} goes even further, and states that it would
+%be best to choose scaling factor $\alpha$ based on the~\emph{golden ratio}
+%$\varphi = (1 + \sqrt{5})/2$.
+
+%\subsection{Sampling}
+%For us to generate a believable, as well as visually pleasing ocean surface, we
+%are required to include into our sum of waves a finite set of \wavenumbers such
+%that it is representative of the whole energy. If we generate only one pattern,
+%based on size and resolution, we either sparsely sample inside a large
+%\wavenumber range, or we densely sample inside a small \wavenumber range. The
+%former results in a poor reconstruction of a larger part of the spectrum, the
+%latter in a better reconstruction of a smaller part of the spectrum, but
+%possibly missing other relevant parts of the spectrum. Thus, we generate more
+%than one pattern, where the goal is to sample as many distinct
+%\wavenumbers as possible.
 %
 \subsection{Pattern Sizes}
 %
