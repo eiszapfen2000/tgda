@@ -1417,6 +1417,38 @@ Jacobian matrix to be able to locate surface self-intersections. We may write:
 One can see that in case the number of patterns equals one, the new equations
 simply fall back to the original ones.
 %
+\subsection{Tiling}
+As mentioned before, we aim to reduce tiling artifacts as much as possible
+by superimposing a set of patterns of different size \citep{misc:oceanlightingfft}.
+To be able to do so we require a minumum of two patterns: a large one which defines
+the general shape of the ocean surface, and a small one for closeup detail.
+\citet{Bridson:2015} argues that if one takes such an approach to reduce
+periodicity, then it would be best for the different pattern sizes to be related
+to each other by an irrational number, because only then one may be able to
+generate an aperiodic signal. In short, given pattern size $L$, then we may
+obtain the next tile size as $\alpha L$, where $\alpha$ is an irrational number.
+\citeauthor{Bridson:2015} goes even further, and states that it would
+be best to choose scaling factor $\alpha$ based on the~\emph{golden ratio}
+$\varphi = (1 + \sqrt{5})/2$.
+Thus, we devised a simple automatism where the user specifies the size of the
+largest pattern, and then each subsequent pattern is automatically shrunk in
+size by factor $f$, with $f \in \{\varphi^{-1}, 1 - \varphi^{-1}\}$. The two
+choices for $f$ represent the length of the parts one obtains if a line of
+length one is split in two based on the golden ratio.
+Let $L$ be the size of the largest pattern, then we may compute sizes $L_i$ of
+the successive patterns as follows:
+\begin{align}
+\label{eq:pattern_size_i}
+ L_i = f^{i} L && 0 < i < l
+\end{align}
+where $l$ is the number of patterns.
+
+\emph{Note}: If one deems it necessary, he or she may always choose pattern
+sizes via a different mechanism, or based on other irrational numbers, or even by
+hand as \citeauthor{article:whitecaps} did.
+Still, we have found Equation~\ref{eq:pattern_size_i} to be a surprisingly simple
+as well as adequate solution to the issue at hand.
+
 \subsection{\Wavenumber Range}
 %
 Recall that both, the spatial domain and the \wavevector domain, are defined
@@ -1567,30 +1599,6 @@ With the \wavenumber set $k_d$ at hand we may sample a one-dimensional
 reconstructions of the same one-dimensional \wavenumber spectrum, where one
 can see the effects of size $L$ and resolution $N$ on the \wavenumber set $k_d$,
 and thus on the reconstructed pattern.
-%
-\subsection{Tiling}
-We have already mentioned that we reduce tiling artifacts as much as possible
-by superimposing a set of patterns of different size \citep{misc:oceanlightingfft,
-article:whitecaps}. To be able to do so we require at least two patterns, a
-large one which defines the general shape of the ocean surface, and a small one
-for closeup detail.
-\citet{Bridson:2015} argues that if one takes such an approach to reduce
-periodicity, then it would be best for the different pattern sizes to be related
-to each other by an irrational number, because only then one may be able to
-generate an aperiodic signal. In short, given pattern size $L$, then we may
-obtain the next tile size as $\alpha L$, where $\alpha$ is an irrational number.
-\citeauthor{Bridson:2015} goes even further, and states that it would
-be best to choose scaling factor $\alpha$ based on the~\emph{golden ratio}
-$\varphi = (1 + \sqrt{5})/2$.
-Thus, we devised a simple automatism, where the user specifies the size of the
-largest pattern, and then each subsequent pattern is automatically shrunk in
-size by factor $f$, where $f \in \{\varphi^{-1}, 1 - \varphi^{-1}\}$.
-Given initial pattern size $L$, we may compute size $L_i$ of the successive
-patterns as follows:
-\begin{align}
- L_i = f^{i} L && 0 < i < l
-\end{align}
-where $l$ is the number of patterns.
 
 %\citet{Bridson:2015} argues that if one wants to reduce periodicity by
 %superimposing two tiling patterns with different size, then one should employ
@@ -2023,8 +2031,8 @@ smaller \wavenumber range.
 \emph{Note}: The typical profile of a one dimensional \wavenumber spectrum suggests
 that it would be beneficial to employ an adaptive sampling scheme which allows
 for tight sampling in the low \wavenumber range, especially near the peak
-\wavenumber, and sparse sampling in the high \wavenumber range, see
-\citet{article:frechot2007}. Because we employ a \DiscreteFourierTransform to
+\wavenumber, and sparse sampling in the high \wavenumber range
+\citep{article:frechot2007}. Because we employ a \DiscreteFourierTransform to
 compute the sum of waves, we are subject to its constraints. One of
 those constraints is that the spacing between subsequent coordinates is constant,
 namely $\Delta k$. Hence, in combination with a Discrete Fourier Transform, we
