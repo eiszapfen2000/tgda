@@ -1615,48 +1615,30 @@ and thus on the reconstructed spectrum.
 %$\varphi = (1 + \sqrt{5})/2$.
 
 \subsection{\Wavenumber Sampling}
-%For us to generate a believable, as well as visually pleasing ocean surface, we
-%are required to include into our sum of waves a finite set of \wavenumbers such
-%that it is representative of the whole energy. If we generate only one pattern,
-%based on size and resolution, we either sparsely sample inside a large
-%\wavenumber range, or we densely sample inside a small \wavenumber range. The
+%
+For us to generate a believable, as well as visually pleasing ocean surface, we
+are required to include into our sum of waves a finite set of distinct
+\wavenumbers such that it is representative of the whole energy.
+If we generate only one pattern, based on size and resolution, we either
+sparsely sample inside a large \wavenumber range, or we densely sample inside a
+small \wavenumber range.
+If, on the other hand, we generate multiple patterns, then the patterns'
+\wavenumbers ranges complement each other. Thus, we may be able to sample
+a large \wavenumber range at a varying but reasonable density.
+%include a larger number of distinct \wavenumbers into the sum of waves
+compared to a single pattern.
+%The
 %former results in a poor reconstruction of a larger part of the spectrum, the
 %latter in a better reconstruction of a smaller part of the spectrum, but
-%possibly missing other relevant parts of the spectrum. Thus, we generate more
-%than one pattern, where the goal is to sample as many distinct
-%\wavenumbers as possible.
+%possibly missing other relevant parts of the spectrum. 
+%Fortunately, we already generate more than one pattern 
+%Thus, if we generate more
+%than one pattern, then we may be able to sample as many distinct \wavenumbers as
+%possible. As explained before, each pattern has its specific \wavenumber range
+%based on pattern resolution and pattern size.
+%For simplicity's sake our implementation uses the same resolution for a dataset across all patterns.
 %
-\subsection{Pattern Sizes}
-%
-We would like to sample the spectrum at as many \wavenumbers as possible,
-therefore we need to minimize overlap of the \wavenumber ranges of different
-patterns. Because our implementation shares the same dataset resolution(s) $N$
-across all patterns, we are forced to focus on pattern size $L$ to reduce
-\wavenumber overlap.
-%In our implementation each dataset shares the same resolution across
-%all patterns, therefore we focus on pattern size to reduce \wavenumber overlap.
-We need at least one large pattern size, to avoid repetitive artifacts as much
-as possible, and one small pattern size for closeup detail.
-\citet{Bridson:2015} argues that if one wants to reduce periodicity by
-superimposing two tiling patterns with different size, then one should employ
-irrational numbers as scaling factors. In short, given pattern size $L$, then
-we may obtain the next tile size as $\alpha L$, where $\alpha$ is an irrational
-number. \citeauthor{Bridson:2015} goes even further, and states that it would
-be best to choose scaling factor $\alpha$ based on the~\emph{golden ratio}
-$\varphi = (1 + \sqrt{5})/2$.
-
-
-In addition, we have to make sure that the different sizes are not integral
-multiples of each other, otherwise the surface may seem repetitive at a smaller
-scale than expected. 
-FIXME: irrational number~\citet{Bridson:2015}
-We chose to tackle both requirements by
-employing multiples based on the golden ratio $\varphi = (1 + \sqrt{5})/2$. The
-user sets the largest desired pattern size, each following pattern size is
-reduced by the same multiplicative factor $f$, where $f \in \{\varphi^{-1},
-1 - \varphi^{-1}\}$.
-%
-\begin{figure}
+\begin{figure}[p]
 \centering
 \begin{tikzpicture}
 \begin{groupplot}[
@@ -1794,25 +1776,8 @@ reduced by $\varphi^{-1}$.}
 \label{fig:sampling_pattern_size_reduction}
 \end{figure}
 %
-
-In case we choose $f = 1-\varphi^{-1} \approx 0.382$, the combined patterns
-allow for tight sampling around the spectral peak as well as in the high
-\wavenumber range. Hence, the sum of waves includes both, large wavelengths which
-give the overall surface its shape, and small wavelengths for close-up detail.
-The drawback of this choice are the smaller pattern sizes, which results in
-repetitive artifacts at a smaller scale than expected. In case we choose
-$f = \varphi^{-1} \approx 0.618$, the combined patterns allow for even more
-tight sampling around the spectral peak, but missing most of the energy in the
-high \wavenumber range. Thus, it is the large wavelengths we are able to
-reconstruct, but missing close-up detail. On the other hand, we have less issues
-with repetitive artifacts. The two rows in Figure~\ref{fig:sampling_pattern_size_reduction}
-depict the reconstructions of one and the same spectrum, based on patterns with
-the same resolution $N$, but initial size $L$ reduced by the two different
-factors.
-
 %
-%
-\begin{figure}
+\begin{figure}[p]
 \centering
 \begin{tikzpicture}
 \begin{groupplot}[
@@ -2023,6 +1988,67 @@ factors.
 \label{fig:sampling_pattern_assembly}
 \end{figure}
 %
+%
+%
+%For us to generate a believable, as well as visually pleasing ocean surface, we
+%are required to include into our sum of waves a finite set of \wavenumbers such
+%that it is representative of the whole energy. If we generate only one pattern,
+%based on size and resolution, we either sparsely sample inside a large
+%\wavenumber range, or we densely sample inside a small \wavenumber range. The
+%former results in a poor reconstruction of a larger part of the spectrum, the
+%latter in a better reconstruction of a smaller part of the spectrum, but
+%possibly missing other relevant parts of the spectrum. Thus, we generate more
+%than one pattern, where the goal is to sample as many distinct
+%\wavenumbers as possible.
+%
+\subsection{Pattern Sizes}
+%
+We would like to sample the spectrum at as many \wavenumbers as possible,
+therefore we need to minimize overlap of the \wavenumber ranges of different
+patterns. Because our implementation shares the same dataset resolution(s) $N$
+across all patterns, we are forced to focus on pattern size $L$ to reduce
+\wavenumber overlap.
+%In our implementation each dataset shares the same resolution across
+%all patterns, therefore we focus on pattern size to reduce \wavenumber overlap.
+We need at least one large pattern size, to avoid repetitive artifacts as much
+as possible, and one small pattern size for closeup detail.
+\citet{Bridson:2015} argues that if one wants to reduce periodicity by
+superimposing two tiling patterns with different size, then one should employ
+irrational numbers as scaling factors. In short, given pattern size $L$, then
+we may obtain the next tile size as $\alpha L$, where $\alpha$ is an irrational
+number. \citeauthor{Bridson:2015} goes even further, and states that it would
+be best to choose scaling factor $\alpha$ based on the~\emph{golden ratio}
+$\varphi = (1 + \sqrt{5})/2$.
+
+
+In addition, we have to make sure that the different sizes are not integral
+multiples of each other, otherwise the surface may seem repetitive at a smaller
+scale than expected. 
+FIXME: irrational number~\citet{Bridson:2015}
+We chose to tackle both requirements by
+employing multiples based on the golden ratio $\varphi = (1 + \sqrt{5})/2$. The
+user sets the largest desired pattern size, each following pattern size is
+reduced by the same multiplicative factor $f$, where $f \in \{\varphi^{-1},
+1 - \varphi^{-1}\}$.
+
+
+In case we choose $f = 1-\varphi^{-1} \approx 0.382$, the combined patterns
+allow for tight sampling around the spectral peak as well as in the high
+\wavenumber range. Hence, the sum of waves includes both, large wavelengths which
+give the overall surface its shape, and small wavelengths for close-up detail.
+The drawback of this choice are the smaller pattern sizes, which results in
+repetitive artifacts at a smaller scale than expected. In case we choose
+$f = \varphi^{-1} \approx 0.618$, the combined patterns allow for even more
+tight sampling around the spectral peak, but missing most of the energy in the
+high \wavenumber range. Thus, it is the large wavelengths we are able to
+reconstruct, but missing close-up detail. On the other hand, we have less issues
+with repetitive artifacts. The two rows in Figure~\ref{fig:sampling_pattern_size_reduction}
+depict the reconstructions of one and the same spectrum, based on patterns with
+the same resolution $N$, but initial size $L$ reduced by the two different
+factors.
+
+%
+
 Care has to be taken not to sample the same part of the spectrum multiple times.
 FIXME: Double negative. Not doing so, would imply including the same \wavenumber(s) multiple times in the
 sum of waves. Thus, if the spectrum of one pattern already covers a specific
