@@ -1451,10 +1451,16 @@ as well as adequate solution to the issue at hand.
 
 \subsection{\Wavenumber Range}
 %
+We employ multiple patterns of different size to reduce tiling artifacts. A
+convenient side-effect of such an approach is that the combination of multiple
+patterns includes more distinct \wavenumbers into the sum of waves than a single
+pattern does. However, before we elaborate on the effect of
+multiple patterns on \wavenumber sampling, we may concern ourselves with the
+\wavenumbers sampled by a single pattern.
 Recall that both, the spatial domain and the \wavevector domain, are defined
-entirely by size $L$ and resolution $N$. The smallest \wavenumber
-$k = \norm{\mvec{k}}$, where $k > 0$, representable by the \wavevector domain is
-$k = 2\pi/L$, it depends only on size. Moreover, the distance between subsequent
+entirely by size $L$ and resolution $N$. The minimal, non-zero \wavenumber
+representable by the \wavevector domain is $k = 2\pi/L$, it depends only on
+size. Moreover, the distance between subsequent
 sample points in both dimensions, $\Delta k$, is defined as $\Delta k = 2\pi/L$.
 Hence, $\Delta k$ depends only on size. Therefore, by choosing size $L$, we do
 not only define the minimal \wavenumber we are able to sample, but also
@@ -1598,7 +1604,7 @@ With the \wavenumber set $k_d$ at hand we may sample a one-dimensional
 \wavenumber spectrum. Figure~\ref{fig:sampling_area_vs_res} depicts a set of
 reconstructions of the same one-dimensional \wavenumber spectrum, where one
 can see the effects of size $L$ and resolution $N$ on the \wavenumber set $k_d$,
-and thus on the reconstructed pattern.
+and thus on the reconstructed spectrum.
 
 %\citet{Bridson:2015} argues that if one wants to reduce periodicity by
 %superimposing two tiling patterns with different size, then one should employ
@@ -1608,7 +1614,7 @@ and thus on the reconstructed pattern.
 %be best to choose scaling factor $\alpha$ based on the~\emph{golden ratio}
 %$\varphi = (1 + \sqrt{5})/2$.
 
-%\subsection{Sampling}
+\subsection{\Wavenumber Sampling}
 %For us to generate a believable, as well as visually pleasing ocean surface, we
 %are required to include into our sum of waves a finite set of \wavenumbers such
 %that it is representative of the whole energy. If we generate only one pattern,
