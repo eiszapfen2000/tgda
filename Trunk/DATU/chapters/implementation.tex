@@ -2378,9 +2378,13 @@ of the wave energy spectrum with differing resolutions.
 % the same pattern size, $\mvec{l}$ is a subset of $\mvec{h}$, it follows that
 % $\Theta(\mvec{l})$ is a subset of $\Theta(\mvec{h})$. In short, 
 The low resolution variant of the wave energy spectrum is already embedded inside the
-high resolution variant. See Figure~\ref{fig:sampling_different_resolutions} for
-a display of the relation between two reconstructions of the same one
-dimensional \wavenumber spectrum with different resolutions, but the same size.
+high resolution variant, see Figure~\ref{fig:sampling_different_resolutions}.
+The same applies to the random ocean surface spectrum $h_0$ as defined by
+Equation~\ref{eq:dft_h0_k}, and to $h$ as defined by Equation~\ref{eq:dft_h_k_t},
+which animates said surface spectrum.
+If we compute $h_0(\mvec{h})$ as well as $h(\mvec{h},t)$ and store the results,
+then we may generate a low-resolution variant of the surface simply by
+extracting the respective subsets $h_0(\mvec{l})$ and $h(\mvec{l},t)$.
 %
 %
 \begin{figure}[p]
@@ -2624,26 +2628,39 @@ ranges, therefore the transitions may take place at different \wavenumbers. Figu
 \ref{fig:sampling_different_resolutions_pattern_assembly} depicts the gradual
 assembly of the spectral data from Figure
 \ref{fig:sampling_different_resolutions}.
+%
+%Recall Equation~\ref{eq:dft_h0_k}, which synthesizes a random ocean surface
+%based on a wave spectrum, and Equation~\ref{eq:dft_h_k_t}, which animates said
+%surface. Let us compute the two equations for the high-resolution \wavevector
+%domain $\mvec{h}$ and store the results. Now, if we would like to generate an
+%instance of the same surface at a lower resolution, we need to take the
+%following steps:
+%\begin{itemize}
+%\item Define a \wavevector domain $\mvec{l}$ with a lower resolution than
+ %\wavevector domain $\mvec{h}$, but the same underlying size $L$.
+%\item Extract subset $h(\mvec{l},t)$ from $h(\mvec{h},t)$.
+%\end{itemize}
 
-Recall Equation~\ref{eq:dft_h0_k}, where we synthesize a random
-surface based on \wavevector domain $\mvec{k}$. For each \wavevector we compute
-wave energy $\Theta(\mvec{k})$ and generate a pair of standard normal
-distributed random numbers $(\xi_r,\xi_i)$. Now, if we would like to generate
-an instance of the same surface at a lower resolution, we need to take the
-following steps:
-\begin{itemize}
- \item Define a \wavevector domain $\mvec{l}$ with a lower resolution than
- \wavevector domain $\mvec{k}$, but the same underlying size $L$.
- \item Extract subset $\Theta(\mvec{l})$ from $\Theta(\mvec{k})$.
- \item For each extracted element of $\Theta(\mvec{k})$, also copy its
- associated random number pair $(\xi_r,\xi_i)$.
-\end{itemize}
-The last step makes sure that each \wavevector is associated with one specific
-pair of random numbers, be it as part of the low resolution surface as well as
-part of the high resolution surface. The random number pair basically defines
-the amplitude associated with a \wavevector. To be able to reproduce the same
-random surface at different resolutions, the pairing between amplitude and
-\wavevector needs to remain the same across resolutions.
+
+
+%based on \wavevector domain $\mvec{k}$. For each \wavevector we compute
+%wave energy $\Theta(\mvec{k})$ and generate a pair of standard normal
+%distributed random numbers $(\xi_r,\xi_i)$. Now, if we would like to generate
+%an instance of the same surface at a lower resolution, we need to take the
+%following steps:
+%\begin{itemize}
+ %\item Define a \wavevector domain $\mvec{l}$ with a lower resolution than
+ %\wavevector domain $\mvec{k}$, but the same underlying size $L$.
+ %\item Extract subset $\Theta(\mvec{l})$ from $\Theta(\mvec{k})$.
+ %\item For each extracted element of $\Theta(\mvec{k})$, also copy its
+ %associated random number pair $(\xi_r,\xi_i)$.
+%\end{itemize}
+%The last step makes sure that each \wavevector is associated with one specific
+%pair of random numbers, be it as part of the low resolution surface as well as
+%part of the high resolution surface. The random number pair basically defines
+%the amplitude associated with a \wavevector. To be able to reproduce the same
+%random surface at different resolutions, the pairing between amplitude and
+%\wavevector needs to remain the same across resolutions.
 
 \section{Demo Application}
 \label{sec:demo_application}
