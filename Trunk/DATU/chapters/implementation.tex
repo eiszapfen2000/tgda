@@ -2353,7 +2353,7 @@ displacement vector $\mvec{D}$, the slopes of $\eta$, and the first order
 partial derivatives of $\mvec{D}$. Moreover, we have a set of such patterns. The
 computational load to synthesize all the cumulated pattern data has proven to be
 substantial. To improve upon the status quo, we chose to implement an approach
-common in computer graphics: augment low resolution geometry with high resolution
+common in computer graphics: augment low-resolution geometry with high-resolution
 surface information to generate detailed lighting. For our specific case, that
 means we may synthesize vertical and horizontal displacements at a lower
 resolution than the associated derivatives.
@@ -2379,12 +2379,17 @@ of the wave energy spectrum with differing resolutions.
 % $\Theta(\mvec{l})$ is a subset of $\Theta(\mvec{h})$. In short, 
 The low resolution variant of the wave energy spectrum is already embedded inside the
 high resolution variant, see Figure~\ref{fig:sampling_different_resolutions}.
-The same applies to the random ocean surface spectrum $h_0$ as defined by
-Equation~\ref{eq:dft_h0_k}, and to $h$ as defined by Equation~\ref{eq:dft_h_k_t},
-which animates said surface spectrum.
-If we compute $h_0(\mvec{h})$ as well as $h(\mvec{h},t)$ and store the results,
-then we may generate a low-resolution variant of the surface simply by
-extracting the respective subsets $h_0(\mvec{l})$ and $h(\mvec{l},t)$.
+The same applies to the surface elevation spectrum $h$ as defined
+by Equation~\ref{eq:dft_h_k_t}, as well as to the spectra of all derived datasets.
+If the high-resolution spectrum $ds(\mvec{h})$ of any dataset has been computed and stored,
+then we may generate a low-resolution spectrum of said dataset simply by extracting
+the respective subset $ds(\mvec{l})$ from $ds(\mvec{h})$. However, as stated before,
+we are content with a low-resolution variant of surface elevation $\eta$ and
+displacement vectors $\mvec{D}$ respectively.
+
+%If we compute $h(\mvec{h},t)$ and store the results,
+%then we may generate a low-resolution variant of the surface simply by
+%extracting the subset $h(\mvec{l},t)$ from the stored results.
 %
 %
 \begin{figure}[p]
@@ -2617,17 +2622,16 @@ of the entire spectrum.
 \end{figure}
 %
 %
-
-At this point we have two sets of reconstructions of the same spectrum, based on
-two different resolutions. For each set, we need to assemble the overlapping
-spectral data into one coherent spectrum. As before, the transition from one
+Because of our multi-resolution approach, we now have two sets of
+reconstructions of the wave energy spectrum, based on the two different
+dataset resolutions. For each set of reconstructions we still need to assemble
+the overlapping spectral data into one coherent spectrum. As before, the
+transition from one
 reconstruction to the next takes place at the maximum \wavenumber of the
-reconstruction with the smaller \wavenumber range. In addition, we must take
+reconstruction with the smaller \wavenumber range. In addition, as shown in
+Figure \ref{fig:sampling_different_resolutions_pattern_assembly}, we must take
 into consideration that the two sets of spectral data have different \wavenumber
-ranges, therefore the transitions may take place at different \wavenumbers. Figure
-\ref{fig:sampling_different_resolutions_pattern_assembly} depicts the gradual
-assembly of the spectral data from Figure
-\ref{fig:sampling_different_resolutions}.
+ranges, therefore the transitions may take place at different \wavenumbers.
 %
 %Recall Equation~\ref{eq:dft_h0_k}, which synthesizes a random ocean surface
 %based on a wave spectrum, and Equation~\ref{eq:dft_h_k_t}, which animates said
