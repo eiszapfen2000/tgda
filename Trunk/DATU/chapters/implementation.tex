@@ -1984,12 +1984,15 @@ sparsely sample inside a large \wavenumber range, or we densely sample inside a
 small \wavenumber range.
 If, on the other hand, we generate multiple patterns of differing size, then
 the patterns' \wavenumbers ranges complement each other, see
-Figure~\ref{fig:sampling_pattern_size_reduction}. Thus, we may be able
-to sample a large \wavenumber range at a varying, but reasonable density.
-Varying, because the sampling density changes from pattern to pattern based on
-pattern size.
+Figure~\ref{fig:sampling_pattern_size_reduction}. Thus, we are able
+to sample a significantly larger \wavenumber range at a varying, but reasonable
+density. Varying, because the sampling density changes from pattern to pattern
+based on pattern size. Given the enlarged \wavenumber range we may include
+shorter \wavelengths into the sum of waves, allowing us to reproduce sufficient
+detail for close-ups of the water surface.
 
-The \wavenumber ranges of the different patterns are partially overlapping,
+Figure~\ref{fig:sampling_pattern_size_reduction} shows that the \wavenumber
+ranges of the different patterns are partially overlapping,
 therefore we need to make sure to sample each \wavenumber only once.
 Thus, if the spectrum of one pattern already covers a specific
 \wavenumber range, a second spectrum covering parts or the entirety of that same
@@ -2364,11 +2367,11 @@ subset of $\mvec{h}$ as long as both \wavevector domains share the same grid poi
 spacing, and thus the same underlying pattern size. Because all pairs $(k_x, k_z)$ in $\mvec{l}$ are also to be found
 in $\mvec{h}$, it follows that wave energy $\Theta(\mvec{l})$ is a subset of
 $\Theta(\mvec{h})$. Hence, there is no need to generate two separate instances
-of the wave energy spectrum with differing resolutions,
+of the wave energy spectrum with differing resolutions.
 % As long as the two different wavevector domains are based on
 % the same pattern size, $\mvec{l}$ is a subset of $\mvec{h}$, it follows that
 % $\Theta(\mvec{l})$ is a subset of $\Theta(\mvec{h})$. In short, 
-the low resolution variant of the wave energy spectrum is already embedded inside the
+The low resolution variant of the wave energy spectrum is already embedded inside the
 high resolution variant. See Figure~\ref{fig:sampling_different_resolutions} for
 a display of the relation between two reconstructions of the same one
 dimensional \wavenumber spectrum with different resolutions, but the same size.
@@ -2597,7 +2600,7 @@ into consideration that the two sets of spectral data have different \wavenumber
 ranges, therefore the transitions may take place at different \wavenumbers. Figure
 \ref{fig:sampling_different_resolutions_pattern_assembly} depicts the gradual
 assembly of the spectral data from Figure
-\ref{fig:sampling_different_resolutions}.\\
+\ref{fig:sampling_different_resolutions}.
 
 Recall Equation~\ref{eq:dft_h0_k}, where we synthesize a random
 surface based on \wavevector domain $\mvec{k}$. For each \wavevector we compute
