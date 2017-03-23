@@ -1987,7 +1987,7 @@ the patterns' \wavenumbers ranges complement each other, see
 Figure~\ref{fig:sampling_pattern_size_reduction}. Thus, we are able
 to sample a significantly larger \wavenumber range at a varying, but reasonable
 density. Varying, because the sampling density changes from pattern to pattern
-based on pattern size. Given the enlarged \wavenumber range we may include
+based on pattern size. Given the enlarged \wavenumber range, we may include
 shorter \wavelengths into the sum of waves, allowing us to reproduce sufficient
 detail for close-ups of the water surface.
 
@@ -2333,11 +2333,17 @@ on which part of the \wavenumber profile is being sampled.
   {figures/sampling_multires_scale_06_res_128_8_lod_4.dat};
 \end{groupplot}
 \end{tikzpicture}
-\caption{FIXME: Reconstructions of one and the same spectrum. Top and bottom row use
-equal pattern sizes, it follows that both rows have matching distances between
-subsequent samples. Top row employs half the resolution of bottom row, therefore
-each of its reconstructions is equal the left half of the correspondig
-reconstruction in bottom row.}
+\caption{A one-dimensional \wavenumber spectrum as reconstructed by multiple
+patterns of different size.
+Pattern size $L$ shrinks with each consecutive column, it follows that both rows have
+matching distances between successive samples. Top row uses resolution $N = 8$,
+whereas bottom row uses $N = 16$. One can see that each reconstruction in top
+row is a subset of the reconstruction in bottom row.
+%Top and bottom row use equal pattern sizes, it follows that both rows have matching distances between
+%subsequent samples. Top row employs half the resolution of bottom row, therefore
+%each of its reconstructions is equal the left half of the correspondig
+%reconstruction in bottom row.
+}
 \label{fig:sampling_different_resolutions}
 \end{figure}
 %
@@ -2398,6 +2404,8 @@ dimensional \wavenumber spectrum with different resolutions, but the same size.
 \nextgroupplot[
 	ytick=\empty,
 	axis y line=none,
+	xmin = 0,
+	xmax = 0.74,
 	]
 \addplot[
   color=red,
@@ -2420,6 +2428,8 @@ dimensional \wavenumber spectrum with different resolutions, but the same size.
 \nextgroupplot[
 	ytick=\empty,
 	axis y line=none,
+	xmin = 0,
+	xmax = 1.2,
 	]
 \addplot[
   color=red,
@@ -2451,6 +2461,8 @@ dimensional \wavenumber spectrum with different resolutions, but the same size.
 \nextgroupplot[
 	ytick=\empty,
 	axis y line=none,
+	xmin = 0,
+	xmax = 1.94,
 	]
 \addplot[
   color=red,
@@ -2491,6 +2503,8 @@ dimensional \wavenumber spectrum with different resolutions, but the same size.
 \nextgroupplot[
 	ytick=\empty,
 	axis y line=none,
+	xmin = 0,
+	xmax = 0.74,
 	]
 \addplot[
   color=red,
@@ -2513,6 +2527,8 @@ dimensional \wavenumber spectrum with different resolutions, but the same size.
 \nextgroupplot[
 	ytick=\empty,
 	axis y line=none,
+	xmin = 0,
+	xmax = 1.2,
 	]
 \addplot[
   color=red,
@@ -2544,6 +2560,8 @@ dimensional \wavenumber spectrum with different resolutions, but the same size.
 \nextgroupplot[
 	ytick=\empty,
 	axis y line=none,
+	xmin = 0,
+	xmax = 1.94,
 	]
 \addplot[
   color=red,
@@ -2584,8 +2602,13 @@ dimensional \wavenumber spectrum with different resolutions, but the same size.
 \end{groupplot}
 \end{tikzpicture}
 \caption{Gradual assembly of the reconstructed spectra from Figure
-\ref{fig:sampling_different_resolutions}. Top row and bottom row transition
-between two subsequent reconstructions at different \wavenumbers.}
+\ref{fig:sampling_different_resolutions} into one coherent spectrum.
+Due to the difference in resolution it follows that top row and bottom row
+transition between two successive reconstructions at different \wavenumbers.
+One can see that the low-resolution variant of the spectrum in top row is still
+able to adequately sample the low \wavenumbers which contain most of the energy
+of the entire spectrum.
+}
 \label{fig:sampling_different_resolutions_pattern_assembly}
 \end{figure}
 %
