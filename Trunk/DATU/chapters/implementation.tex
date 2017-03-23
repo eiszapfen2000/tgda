@@ -1615,29 +1615,6 @@ and thus on the reconstructed spectrum.
 %$\varphi = (1 + \sqrt{5})/2$.
 
 \subsection{\Wavenumber Sampling}
-%
-For us to generate a believable, as well as visually pleasing ocean surface, we
-are required to include into our sum of waves a finite set of distinct
-\wavenumbers such that it is representative of the whole energy.
-If we generate only one pattern, based on size and resolution, we either
-sparsely sample inside a large \wavenumber range, or we densely sample inside a
-small \wavenumber range.
-If, on the other hand, we generate multiple patterns, then the patterns'
-\wavenumbers ranges complement each other. Thus, we may be able to sample
-a large \wavenumber range at a varying but reasonable density.
-%include a larger number of distinct \wavenumbers into the sum of waves
-compared to a single pattern.
-%The
-%former results in a poor reconstruction of a larger part of the spectrum, the
-%latter in a better reconstruction of a smaller part of the spectrum, but
-%possibly missing other relevant parts of the spectrum. 
-%Fortunately, we already generate more than one pattern 
-%Thus, if we generate more
-%than one pattern, then we may be able to sample as many distinct \wavenumbers as
-%possible. As explained before, each pattern has its specific \wavenumber range
-%based on pattern resolution and pattern size.
-%For simplicity's sake our implementation uses the same resolution for a dataset across all patterns.
-%
 \begin{figure}[p]
 \centering
 \begin{tikzpicture}
@@ -1770,9 +1747,14 @@ compared to a single pattern.
   {figures/sampling_scale_06_lod_4.dat} \closedcycle;
 \end{groupplot}
 \end{tikzpicture}
-\caption{Top row: reconstructed spectra of patterns with sizes reduced by
- $1-\varphi^{-1}$. Bottom row: reconstructed spectra of patterns with sizes
-reduced by $\varphi^{-1}$.}
+\caption{
+A one-dimensional \wavenumber spectrum reconstructed at resolution $N = 128$,
+with initial pattern size $L = \SI{1750}{\metre}$, and subsequent, reduced
+pattern sizes obtained by Equation~\ref{eq:pattern_size_i}.
+Top row: pattern sizes are reduced by factor $f=1-\varphi^{-1}$.
+Bottom row: pattern sizes are reduced by factor $f = \varphi^{-1}$.
+Note the difference in \wavenumber range between top and bottom row.
+}
 \label{fig:sampling_pattern_size_reduction}
 \end{figure}
 %
@@ -1988,6 +1970,39 @@ reduced by $\varphi^{-1}$.}
 \label{fig:sampling_pattern_assembly}
 \end{figure}
 %
+For us to generate a believable, as well as visually pleasing ocean surface, we
+are required to include into our sum of waves a finite set of distinct
+\wavenumbers such that it is representative of the whole energy.
+If we generate only one pattern, based on size and resolution, we either
+sparsely sample inside a large \wavenumber range, or we densely sample inside a
+small \wavenumber range.
+If, on the other hand, we generate multiple patterns, then the patterns'
+\wavenumbers ranges complement each other. Thus, we may be able to sample
+a large \wavenumber range at a varying, but reasonable density.
+%include a larger number of distinct \wavenumbers into the sum of waves
+%compared to a single pattern.
+%The
+%former results in a poor reconstruction of a larger part of the spectrum, the
+%latter in a better reconstruction of a smaller part of the spectrum, but
+%possibly missing other relevant parts of the spectrum. 
+%Fortunately, we already generate more than one pattern 
+%Thus, if we generate more
+%than one pattern, then we may be able to sample as many distinct \wavenumbers as
+%possible. As explained before, each pattern has its specific \wavenumber range
+%based on pattern resolution and pattern size.
+%For simplicity's sake our implementation uses the same resolution for a dataset across all patterns.
+%
+
+\emph{Note}: The typical profile of a one dimensional \wavenumber spectrum suggests
+that it would be beneficial to employ an adaptive sampling scheme which allows
+for tight sampling in the low \wavenumber range, especially near the peak
+\wavenumber, and sparse sampling in the high \wavenumber range
+\citep{article:frechot2007}. Because we employ a \DiscreteFourierTransform to
+compute the sum of waves, we are subject to its constraints. One of
+those constraints is that the spacing between subsequent coordinates is constant,
+namely $\Delta k$. Hence, in combination with a Discrete Fourier Transform, we
+are not allowed to employ a sampling scheme where $\Delta k$ changes dependent
+on which part of the \wavenumber profile is being sampled.
 %
 %
 %For us to generate a believable, as well as visually pleasing ocean surface, we
@@ -2059,19 +2074,7 @@ spectra from Figure~\ref{fig:sampling_pattern_size_reduction} into one coherent
 spectrum. The transition from data from one spectrum to data from the next
 spectrum always happens at the maximum \wavenumber of the spectrum with the
 smaller \wavenumber range.
-
-\emph{Note}: The typical profile of a one dimensional \wavenumber spectrum suggests
-that it would be beneficial to employ an adaptive sampling scheme which allows
-for tight sampling in the low \wavenumber range, especially near the peak
-\wavenumber, and sparse sampling in the high \wavenumber range
-\citep{article:frechot2007}. Because we employ a \DiscreteFourierTransform to
-compute the sum of waves, we are subject to its constraints. One of
-those constraints is that the spacing between subsequent coordinates is constant,
-namely $\Delta k$. Hence, in combination with a Discrete Fourier Transform, we
-are not allowed to employ a sampling scheme where $\Delta k$ changes dependent
-on which part of the \wavenumber profile is being sampled.
-
-
+%
 \subsection{Multiple Resolutions}
 %
 %
