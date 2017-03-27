@@ -1321,7 +1321,7 @@ Jacobian determinant is negative.
 The core of our ocean model are the spectra discussed in 
 Section~\ref{sec:wave_spectra}. We sample the spectra in 
 frequency space to obtain vertical and horizontal displacements produced by 
-ocean waves. Because the sampling process is done by means of a \FourierTransform,
+ocean waves. Because the sampling process is done by means of a \DiscreteFourierTransform,
 the resulting data can be seamlessly tiled on the ocean surface. 
 However, tiling a single perturbation pattern either leads to repetitive 
 artifacts if the tile's footprint in world space is small, or to lack of detail 
@@ -1420,7 +1420,7 @@ simply fall back to the original ones.
 \subsection{Tiling}
 As mentioned before, we aim to reduce tiling artifacts as much as possible
 by superimposing a set of patterns of different size \citep{misc:oceanlightingfft}.
-To be able to do so we require a minumum of two patterns: a large one which defines
+To be able to do so we require a minimum of two patterns: a large one which defines
 the general shape of the ocean surface, and a small one for closeup detail.
 \citet{Bridson:2015} argues that if one takes such an approach to reduce
 periodicity, then it would be best for the different pattern sizes to be related
@@ -1461,7 +1461,7 @@ Recall that both, the spatial domain and the \wavevector domain, are defined
 entirely by size $L$ and resolution $N$. The minimal, non-zero \wavenumber
 representable by the \wavevector domain is $k = 2\pi/L$, it depends only on
 size. Moreover, the distance between subsequent
-sample points in both dimensions, $\Delta k$, is defined as $\Delta k = 2\pi/L$.
+sample points in both dimensions is defined as $\Delta k = 2\pi/L$.
 Hence, $\Delta k$ depends only on size. Therefore, by choosing size $L$, we do
 not only define the minimal \wavenumber we are able to sample, but also
 how densely we are able to sample the spectrum. The largest \wavenumber contained
@@ -1983,13 +1983,12 @@ If we generate only one pattern, based on size and resolution, we either
 sparsely sample inside a large \wavenumber range, or we densely sample inside a
 small \wavenumber range.
 If, on the other hand, we generate multiple patterns of differing size, then
-the patterns' \wavenumbers ranges complement each other, see
-Figure~\ref{fig:sampling_pattern_size_reduction}. Thus, we are able
+the patterns' \wavenumbers ranges complement each other. Thus, we are able
 to sample a significantly larger \wavenumber range at a varying, but reasonable
 density. Varying, because the sampling density changes from pattern to pattern
-based on pattern size. Given the enlarged \wavenumber range, we may include
-shorter \wavelengths into the sum of waves, allowing us to reproduce sufficient
-detail for close-ups of the water surface.
+based on pattern size. Given the enlarged \wavenumber range, we are able to
+include shorter \wavelengths into the sum of waves, allowing us to reproduce
+sufficient detail for close-ups of the water surface.
 
 Figure~\ref{fig:sampling_pattern_size_reduction} shows that the \wavenumber
 ranges of the different patterns are partially overlapping,
@@ -2034,8 +2033,8 @@ for tight sampling in the low \wavenumber range, especially near the peak
 \wavenumber, and sparse sampling in the high \wavenumber range
 \citep{article:frechot2007}. Because we employ a \DiscreteFourierTransform to
 compute the sum of waves, we are subject to its constraints. One of
-those constraints is that the spacing between subsequent coordinates is constant,
-namely $\Delta k$. Hence, in combination with a Discrete Fourier Transform, we
+those constraints is that the spacing between successive coordinates is constant,
+namely $\Delta k$. Hence, in combination with a \DiscreteFourierTransform, we
 are not allowed to employ a sampling scheme where $\Delta k$ changes dependent
 on which part of the \wavenumber profile is being sampled.
 %
