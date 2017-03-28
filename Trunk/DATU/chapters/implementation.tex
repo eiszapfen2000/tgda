@@ -1449,7 +1449,7 @@ the human observer is still able to recognize that the underlying dominant
 structure, as represented by the largest pattern, appears multiple times.
 Still, we have found Equation~\ref{eq:pattern_size_i} to be a surprisingly
 simple as well as adequate solution to the issue at hand.
-And should one deem it necessary, he or she may always choose pattern
+Should one deem it necessary, he or she may always choose pattern
 sizes via a different mechanism, based on other irrational numbers, or even by
 hand as \citeauthor{article:whitecaps} did.
 
@@ -1983,16 +1983,29 @@ smaller \wavenumber range.
 For us to generate a believable, as well as visually pleasing ocean surface, we
 are required to include into our sum of waves a finite set of distinct
 \wavenumbers such that it is representative of the whole energy.
-If we generate only one pattern, based on size and resolution, we either
-sparsely sample inside a large \wavenumber range, or we densely sample inside a
-small \wavenumber range.
+We have seen in Figure~\ref{fig:sampling_area_vs_res} that if we generate only
+one pattern, based on size and resolution, we either sparsely sample inside a
+large \wavenumber range, or we densely sample inside a small \wavenumber range.
 If, on the other hand, we generate multiple patterns of differing size, then
 the patterns' \wavenumbers ranges complement each other. Thus, we are able
 to sample a significantly larger \wavenumber range at a varying, but reasonable
 density. Varying, because the sampling density changes from pattern to pattern
-based on pattern size. Given the enlarged \wavenumber range, we are able to
-include shorter \wavelengths into the sum of waves, allowing us to reproduce
-sufficient detail for close-ups of the water surface.
+based on pattern size.
+The enlarged \wavenumber range may contain short \wavelengths up to, and
+including the gravity-capillary wave domain, which represents waves with a
+length from one to several centimeters. With such short waves involved in the
+sum of waves we have no difficulties to reproduce sufficient detail for
+close-ups of the water surface. Still, we need to make sure to set a lower
+limit of $\lambda_{min} = \SI{1.73}{\centi\metre}$ for the \wavelengths included
+by any of the patterns, because for waves shorter than $\lambda_{min}$ gravity is
+replaced by surface tension as the major restoring force, making them
+capillary waves. The latter are not modeled correctly by any of the wave
+spectra presented in Section~\ref{sec:wave_spectra}, because those wave spectra
+concern themselves exclusively with gravity waves.
+
+%Given the enlarged \wavenumber range, we are able to
+%include shorter \wavelengths into the sum of waves, allowing us to reproduce
+%sufficient detail for close-ups of the water surface.
 
 Figure~\ref{fig:sampling_pattern_size_reduction} shows that the \wavenumber
 ranges of the different patterns are partially overlapping,
