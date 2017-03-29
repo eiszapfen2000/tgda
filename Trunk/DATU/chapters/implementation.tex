@@ -2652,7 +2652,7 @@ In addition, as to be seen in Figure \ref{fig:sampling_different_resolutions_pat
 we must take into consideration that the two sets of
 spectral data have different \wavenumber ranges, therefore the transitions from
 one reconstruction to the next may take place at different \wavenumbers for
-each set. 
+each set.
 %
 %Recall Equation~\ref{eq:dft_h0_k}, which synthesizes a random ocean surface
 %based on a wave spectrum, and Equation~\ref{eq:dft_h_k_t}, which animates said
@@ -2689,13 +2689,17 @@ each set.
 
 \section{Demo Application}
 \label{sec:demo_application}
-For showcasing purposes we implemented a compact demo application on Linux.
-It is written in Objective-C and employs the \citet{misc:gnustep}
-Base Library which provides container classes as well as basic algorithms.
-We use the compatibility profile of OpenGL 3.3 \citep{misc:opengl,misc:opengl33}
-for rendering, where the GLFW library~\citep{misc:glfw}
+At this point we have all building blocks of our work in place, therefore we
+may proceed with an overview of our showcasing application which puts all the
+constituent parts into a coherent whole. We implemented a compact demo
+application on Linux, it is written in Objective-C and employs the
+\citet{misc:gnustep} Base Library, where the latter provides container classes
+as well as basic algorithms.
+For rendering we use the compatibility profile of OpenGL 3.3 \citep{misc:opengl,misc:opengl33},
+where the GLFW library~\citep{misc:glfw}
 handles the creation of a window with the desired OpenGL context. Moreover,
 it is GLFW which gives us the means to handle mouse and keyboard input.
+
 All of the ocean energy spectra presented in this work were, in a first step,
 implemented in \citet{misc:matlab}. This allowed for easy analysis,
 debugging and visualization. Only in a second step did we integrate the wave
@@ -2717,44 +2721,45 @@ largest pattern, and fetch $F$.
 
 \subsubsection{Surface Mesh}
 %
-%\ref{sec:problem_statement}
+\begin{figure}
+\centering
+\subtop[Classic Grid]
+{
+\includegraphics[scale=0.75]{figures/ProjectedGrid_UniformWS.pdf}
+\label{fig:subfigprojgrid1}
+}
+\subtop[Projected Grid]
+{
+\includegraphics[scale=0.75]{figures/ProjectedGrid_UniformSS.pdf}
+\label{fig:subfigprojgrid2}
+}
+\caption{
+\subcaptionref{fig:subfigprojgrid1}
+A uniform grid in world space, its projection onto the image plane is not
+uniformly spaced though.
+\subcaptionref{fig:subfigprojgrid2}
+A uniform grid on the image plane, its associated world space positions
+are not uniformly spaced, though.
+}
+\label{fig:dprojectedgrid}
+\end{figure}
 %
 The ocean surface requires a meshing scheme which is able to adapt to highly
 distinct viewing situations, such as closeups of the water surface as well as
 views with the ocean spanning to the horizon. We chose to employ the projected
 grid~\citep{Hinsinger:2002,thesis:johanson}, which is based on a simple
-concept: in order to achieve an uniform distribution of details on the image
+concept: to achieve a uniform distribution of detail on the image
 plane, a uniformly spaced grid is created in post-perspective space,
 transformed to world space and projected onto the $y=0$ plane, see
 Figure~\ref{fig:dprojectedgrid}. Thus, we have
-constant memory consumption, as the resolution of the grid in screen-space is
-constant, and we have adaptive level of detail, because all screen-space
+constant memory consumption, as the resolution of the grid in screen space is
+constant, and we have adaptive level of detail, because all screen space
 grid points are projected to points inside the view frustum, independent of the
 actual viewing situation. The vertices projected onto the $y=0$ plane are
 displaced vertically and horizontally by surface elevation $y(\mvec{x},t)$
 and displacement $\mvec{D}(\mvec{x},t)$ respectively. After that, all vertices
 are projected normally on the screen via the viewing pipeline.
-%
-\begin{figure}[h]
-\centering
-\subbottom[Classic]
-{
-\includegraphics[scale=0.75]{figures/ProjectedGrid_UniformWS.pdf}
-\label{fig:subfigprojgrid1}
-}
-\subbottom[Projected Grid]
-{
-\includegraphics[scale=0.75]{figures/ProjectedGrid_UniformSS.pdf}
-\label{fig:subfigprojgrid2}
-}
-\caption{The image on the left shows an uniform grid in worldspace,
-its projection onto the image plane is not uniformly spaced though.
-The image on the right on the other hand depicts an uniform grid on
-the image plane and its associated non-uniform spaced worldspace
-positions.}
-\label{fig:dprojectedgrid}
-\end{figure}
-%
+
 
 \subsubsection{Skylight}
 %
@@ -2858,7 +2863,11 @@ positions.}
  {
  \includegraphics[scale=0.125]{figures/preetham_sRGB_D65_turbidity_6_thetaSun_90.png}
  }
-\caption{Columns: increasing solar zenith angle. Rows: increasing turbidity.}
+\caption{
+Example instances of the Preetham skylight model: the solar zenith angle
+$\theta_{sun}$ increases from left to right, turbidity $T$ increases from top
+to bottom.
+}
 \label{fig:preetham}
 \end{figure}
 %
