@@ -965,15 +965,15 @@ realization, displayed in greyscale (Unified spectrum, $U_{10}=30m\cdot s^{-1}$,
 \label{fig:displacements}
 \end{figure}
 %
-The waves generated with the methods presented up to now tend to have rounded peaks and throughs,
+The waves generated with the methods presented up to now tend to have rounded peaks and troughs,
 which is typical for fair weather conditions. But we also would like to be able to synthesize waves
 matching poor weather conditions, such as strong winds or even storms. During such weather, ocean waves
 are sharply peaked at their tops and flattened at the bottoms. \citet{course:simulatingocean}
-describes a \FourierTransform based method to produce such choppy waves. The concept is simple: displace
+describes a method based on the \FourierTransform to produce such choppy waves. The concept is simple: displace
 the grid points of the spatial domain in the XZ-plane, with the displacement varying locally with the waves.
 Note that the displacement is a two-dimensional vector, therefore we end up computing a vector field.
-Similar to spectral differentiation, we compute an \InvFourierTransform of the spectrum $h$
-modified with an additional term. We may write the displacement vector field as follows:
+Similar to spectral differentiation, we compute an \InvFourierTransform of the spectrum $h$,
+where the latter is modified by an additional term. We may write the displacement vector field as follows:
 \begin{equation}
 %\label{eq:dft_displacement}
  \mvec{D}(\mvec{x},t) = \left[D_x(\mvec{x},t), D_z(\mvec{x},t)\right]
@@ -1007,14 +1007,14 @@ vector field with just one \InvFourierTransform.
 % x_y]$
 
 Given grid point $\mvec{x} = (x,z)$, time $t$ and surface elevation $\eta(\mvec{x},t)$, 
-we may write the corresponding three dimensional, non-displaced vertex 
+we may write the corresponding three dimensional, vertically displaced vertex 
 coordinate as follows:
-\begin{equation*}
+\begin{equation}
  \mvec{v}(\mvec{x},t) = \begin{bmatrix}x\\ \eta(\mvec{x},t)\\ z\end{bmatrix} 
-\end{equation*}
+\end{equation}
 With displacement vector $\mvec{D}(\mvec{x},t)$ at hand, according to 
 \citet{course:simulatingocean} we may compute the three dimensional,
-displaced vertex coordinate as follows:
+vertically and horizontally displaced vertex coordinate as follows:
 \begin{equation}
 \label{eq:displacement_gridpoints}
  \mvec{w}(\mvec{x},t) =
@@ -2640,14 +2640,17 @@ of the entire spectrum.
 %
 Because of our multi-resolution approach, we now have two sets of
 reconstructions of the wave energy spectrum, based on the two different
-dataset resolutions. For each set of reconstructions we still need to assemble
-the overlapping spectral data into one coherent spectrum. As before, the
-transition from one
-reconstruction to the next takes place at the maximum \wavenumber of the
-reconstruction with the smaller \wavenumber range. In addition, as shown in
-Figure \ref{fig:sampling_different_resolutions_pattern_assembly}, we must take
-into consideration that the two sets of spectral data have different \wavenumber
-ranges, therefore the transitions may take place at different \wavenumbers.
+dataset resolutions.
+As shown in Figure \ref{fig:sampling_different_resolutions_pattern_assembly},
+it follows that the two sets of reconstructions are assembled into two
+different coherent spectra.
+%For each set of reconstructions we still need to assemble
+%the overlapping spectral data into one coherent spectrum.
+As before, the transition from one reconstruction to the next takes place at
+the maximum \wavenumber of the reconstruction with the smaller \wavenumber
+range. In addition, we must take into consideration that the two sets of
+spectral data have different \wavenumber ranges, therefore the transitions may
+take place at different \wavenumbers.
 
 %As one may already guess, the improvement in computational load is dependent on
 %the reduction in resolution. Moreover, 
