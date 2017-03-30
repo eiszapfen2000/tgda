@@ -2716,9 +2716,11 @@ data is then given to the main thread for rendering.
 The user is given a wide range of control over frequency spectrum generation:
 he or she may configure the number of patterns, the resolution of the vertical
 and horizontal displacements, the resolution of the first order partial
-derivatives, the spectrum type, wind velocity $U_{10}$, the size $L$ of the
-largest pattern, and fetch $F$.
-
+derivatives, wind velocity $U_{10}$, fetch $F$, size $L$ of the largest pattern,
+and scaling factor $f$ for the automatic pattern size reduction.
+Moreover, the user may select the wave energy spectrum model, where all
+of the spectra presented in Section~\ref{sec:wave_spectra} are available.
+%
 \subsubsection{Surface Mesh}
 %
 \begin{figure}
@@ -2744,24 +2746,29 @@ are not uniformly spaced, though.
 \label{fig:dprojectedgrid}
 \end{figure}
 %
-The ocean surface requires a meshing scheme which is able to adapt to highly
-distinct viewing situations, such as closeups of the water surface as well as
-views with the ocean spanning to the horizon. We chose to employ the projected
-grid~\citep{Hinsinger:2002,thesis:johanson}, which is based on a simple
-concept: to achieve a uniform distribution of detail on the image
-plane, a uniformly spaced grid is created in post-perspective space,
-transformed to world space and projected onto the $y=0$ plane, see
-Figure~\ref{fig:dprojectedgrid}. Thus, we have
-constant memory consumption, as the resolution of the grid in screen space is
-constant, and we have adaptive level of detail, because all screen space
-grid points are projected to points inside the view frustum, independent of the
-actual viewing situation. The vertices projected onto the $y=0$ plane are
-displaced vertically and horizontally by surface elevation $y(\mvec{x},t)$
-and displacement $\mvec{D}(\mvec{x},t)$ respectively. After that, all vertices
-are projected normally on the screen via the viewing pipeline.
-
-
-\subsubsection{Skylight}
+With all the ocean data synthesized, we may proceed to actually visualize it.
+First and foremost we need to take care of the mesh representation of the ocean
+surface.
+We have already seen that the ocean surface requires a meshing scheme which is
+able to automatically adapt to highly distinct viewing situations, such as
+closeups of the water surface as well as views with the ocean spanning to the
+horizon.
+Based on these criteria, we chose to employ the projected grid
+~\citep{Hinsinger:2002,thesis:johanson}. The projected grid is based on a
+simple concept: to achieve a uniform distribution of detail on the image plane,
+a uniformly spaced grid is created in post-perspective space, transformed to
+world space and projected onto the $y=0$ plane, see
+Figure~\ref{fig:dprojectedgrid}.
+Thus, we have constant memory consumption, as the resolution of the grid in
+screen space is constant, and we have adaptive level of detail, because all
+screen space grid points are projected to points inside the view frustum,
+independent of the actual viewing situation. The vertices projected onto the
+$y=0$ plane are displaced vertically and horizontally by surface elevation
+$y(\mvec{x},t)$ and displacement $\mvec{D}(\mvec{x},t)$ respectively. After
+that, all vertices are projected normally on the screen via the viewing
+pipeline.
+%
+\subsubsection{Ocean Lighting}
 %
 % \begin{figure}
 %  \centering
@@ -2871,13 +2878,17 @@ to bottom.
 \label{fig:preetham}
 \end{figure}
 %
+We concern ourselves only with deep water, allowing us to make a number of
+assumptions about the interaction of light with the water body.
+We concern ourselves only with deep water, therefore we may assume no light is
+reflected from the bottom of the ocean to the ocean surface. It follows that
+the only light exiting the ocean surface from within has previously entered the
+water body via refraction, and leaves it due to scattering.
 Deep water, no light reflected from the ground, only scattering allows for refracted light to reach the surface. Therefore, the appearance of deep water depends largely on the part of the
 incoming light that gets reflected. And most of the incoming light consists of
 direct sunlight and sunlight inscattered via the sky. Therefore we are in need
 of a skylight model. We chose to implement the Preetham Skylight model
 \cite{Preetham:1999}.
-\subsubsection{Ocean Lighting}
-\cite{article:oceanlighting}
 \subsubsection{Whitecaps}
 The ocean lighting scheme by Bruneton et al. \cite{article:oceanlighting} does
 not account for the breaking of waves on the open ocean. Neither the geometric
