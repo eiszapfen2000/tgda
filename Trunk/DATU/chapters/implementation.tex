@@ -2878,6 +2878,47 @@ to bottom.
 \label{fig:preetham}
 \end{figure}
 %
+Now that we have dealt with the ocean surface mesh, we may move on to the next
+aspect of ocean surface rendering, namely the illumination of the water surface.
+We chose to implement the illumination model introduced by
+\citet{article:oceanlighting}, because it gives believable as well as
+visually pleasing results. Moreover, it has not only been adapted to work
+with a wave spectrum \citep{misc:oceanlightingfft}, the wave spectrum itself
+represents an integral part of the illumination model.
+
+\citet{article:oceanlighting} augment the work of \citeauthor{Hinsinger:2002} in
+various areas, the most prominent improvement being an adaptive lighting scheme.
+The latter is based on a hierarchical representation which combines geometry,
+normals and a BRDF~\citep{Ross:2005}, where the BRDF is specifically tailored to
+the statistical properties of ocean surfaces. Based on distance from the viewer,
+the algorithm transitions seamlessy from lighting computed with geometry and per
+pixel normals to lighting computed based solely on the statistical distribution
+of ocean surface slopes as modeled by the BRDF, see Figure~\ref{fig:bruneton:transitions}.
+To save computation time for vertex positions, wavetrains are filtered according
+to the size of their associated projected grid cell in world space.
+For the gradient computation in the pixel shader there is an additional step,
+where wavetrains are filtered according to the projected size of the current pixel
+in world space. In addition, \citeauthor{article:oceanlighting} show the
+integration of the BRDF by \citeauthor{Ross:2005} into the computation of
+all necessary lighting terms, namely the reflected light from the sun and from
+the skydome, and the refracted light from the water, as seen in
+Figure~\ref{fig:bruneton:lightingterms}.
+
+\citet{misc:oceanlightingfft} combines the adaptive lighting scheme
+from \citet{article:oceanlighting} with an ocean surface synthesized
+from the wave spectrum presented in~\citet{article:Elfouhaily1997}.
+Wave heights, gradients, as well as the horizontal displacements
+required for the choppy wave algorithm by \citet{course:simulatingocean}
+are computed entirely on the GPU. In an additional step,
+\citet{article:whitecaps} add whitecaps to the ocean lighting model,
+see Figure~\ref{fig:dupuy:whitecaps}.
+
+At this point we make a number of assumptions about the interaction of light
+with the ocean surface, which in part are attributed to the fact that we concern
+ourselves exclusively with deep water. First, the water is deep, therefore no
+light is reflected from the bottom of the ocean back to the surface. Second,
+there are no light sources within the water body.
+
 We concern ourselves only with deep water, allowing us to make a number of
 assumptions about the interaction of light with the water body.
 We concern ourselves only with deep water, therefore we may assume no light is
