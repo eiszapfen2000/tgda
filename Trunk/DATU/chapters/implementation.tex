@@ -2881,10 +2881,30 @@ to bottom.
 Now that we have dealt with the ocean surface mesh, we may move on to the next
 aspect of ocean surface rendering, namely the illumination of the water surface.
 We chose to implement the illumination model introduced by
-\citet{article:oceanlighting}, because it gives believable as well as
-visually pleasing results. Moreover, it has not only been adapted to work
-with a wave spectrum \citep{misc:oceanlightingfft}, the wave spectrum itself
-represents an integral part of the illumination model.
+\citet{article:oceanlighting} for two reasons. First, it gives visually
+pleasing as well as believable results. Second, it has been adapted in such a
+way that wave spectra become an integral part of the model
+\citep{misc:oceanlightingfft}.
+
+%That is, because 
+%\citeauthor{article:oceanlighting} employ an approximation of the BRDF presented
+%by \citet{Ross:2005}, where said BRDF is specifically tailored to the
+%statistical properties of ocean surfaces. And we have seen in
+%Section~\ref{sec:random_sea} that the wave spectrum itself is a statistical
+%description of the ocean surface, and thus may provide all data the Ross
+%BRDF requires.
+%
+%which has been adapted for wave spectra by
+%\cite{misc:oceanlightingfft}. \citeauthor{article:oceanlighting} employ
+%an approximation of the BRDF presented by \citet{Ross:2005}, where said BRDF is
+%specifically tailored to the statistical properties of ocean surfaces. And since
+%the wave spectrum itself represents a statistical description of the ocean surface,
+%it fits very well with said BRDF.
+%
+%in because it gives believable as well as
+%visually pleasing results. Moreover, it has not only been adapted to work
+%with a wave spectrum \citep{misc:oceanlightingfft}, the wave spectrum itself
+%represents an integral part of the illumination model.
 
 \citet{article:oceanlighting} augment the work of \citeauthor{Hinsinger:2002} in
 various areas, the most prominent improvement being an adaptive lighting scheme.
