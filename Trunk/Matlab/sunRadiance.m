@@ -47,9 +47,18 @@ xyz_matching_functions = [...
 0.000704776,0.0104822,0.0860109,0.389366,0.972542,1.55348,1.96728,1.9948,1.74537,1.31756,0.772125,0.415254,0.218502,0.112044,0.060709,0.030451,0.013676,0.003988,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ...
 ];
 
+% https://pvlib-python.readthedocs.io/en/latest/_modules/pvlib/atmosphere.html
 radiansToDegree = 180 / pi;
+degreeToRadians = pi / 180;
 thetaSunDegrees = thetaSun * radiansToDegree;
+% simple
+% m = 1.0 / cos(thetaSun);
+% kasten 1966
 m = 1.0 / (cos(thetaSun) + 0.15 * power(93.885 - thetaSunDegrees, -1.253));
+% kasten young 1989
+% m = 1.0 / (cos(thetaSun) + 0.50572 * power((6.07995 + (90 - thetaSunDegrees)), - 1.6364));
+% pickering 2002
+% m = 1.0 / sin(degreeToRadians*(90 - thetaSunDegrees + 244 / (power(165 + 47.0 * (90 - thetaSunDegrees), 1.1))));
 beta = 0.04608 * turbidity - 0.04586;
 l = 0.35;
 alpha = 1.3;
