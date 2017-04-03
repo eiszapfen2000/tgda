@@ -2703,8 +2703,8 @@ it is GLFW which gives us the means to handle mouse and keyboard input.
 All of the ocean energy spectra presented in this work were, in a first step,
 implemented in \citet{misc:matlab}. This allowed for easy analysis,
 debugging and visualization. Only in a second step did we integrate the wave
-energy spectra into the demo application, making sure the results match the ones
-of the MATLAB version. In addition, we chose to employ the same library for
+energy spectra into the demo application, making sure the results matched the
+ones of the MATLAB version. In addition, we chose to employ the same library for
 \FastFourierTransforms as MATLAB, namely \citet{misc:fftw}. FFTW does
 not only provide a standard complex-to-complex \DFT, but also a more specialized
 complex-to-real \DFT, which proves to be beneficial for our use case.
@@ -2763,11 +2763,11 @@ Figure~\ref{fig:dprojectedgrid}.
 Thus, we have constant memory consumption, as the resolution of the grid in
 screen space is constant, and we have adaptive level of detail, because all
 screen space grid points are projected to points inside the view frustum,
-independent of the actual viewing situation. The vertices projected onto the
-$y=0$ plane are displaced vertically and horizontally by surface elevation
-$y(\mvec{x},t)$ and displacement $\mvec{D}(\mvec{x},t)$ respectively. After
-that, all vertices are projected normally on the screen via the viewing
-pipeline.
+independent of the actual viewing situation. After the vertices have been
+projected onto the $y=0$ plane, they are displaced vertically and horizontally
+by surface elevation $y(\mvec{x},t)$ and displacement $\mvec{D}(\mvec{x},t)$,
+respectively. Last, all vertices are projected normally on the screen via the
+viewing pipeline.
 %
 \subsubsection{Ocean Lighting}
 %
@@ -2883,19 +2883,36 @@ Now that we have dealt with the ocean surface mesh, we may move on to the next
 aspect of ocean surface rendering, namely the illumination of the water surface.
 We chose to implement the illumination model introduced by
 \citet{article:oceanlighting} for three reasons. First, it gives visually
-pleasing as well as convincing results. Second, in step with our work
+pleasing as well as convincing results. Second, in step with our work,
 it is tailored to the deep water of the open ocean. Third, it has been adapted by
 \citet{misc:oceanlightingfft} in such a way, that the wave energy spectrum has
 become an integral part of the lighting model itself.
+
 The lighting term for the water surface, as presented by
 \citeauthor{article:oceanlighting} consists of three parts:
 reflected light from the sun, reflected light from the sky dome, and refracted
 light from the water. The latter term describes the fraction of light from
 the sun and sky which has entered the water due to refraction, and leaves it
-again due to multiple scattering. Because we are in deep water,
-\citeauthor{article:oceanlighting} assume that no light is reflected from the
-sea bed back to the water surface.
-\citet{Bruneton:2008}
+again due to multiple scattering.
+%Because we are in deep water,
+%\citeauthor{article:oceanlighting} assume that no light which has entered the
+%water body is reflected from the sea bed back to the water surface.
+To model the sky dome and the sun \citeauthor{article:oceanlighting} employ the
+work of \citet{Bruneton:2008}, where the latter compute the interaction of
+light and the atmosphere in its entirety. We, on the other hand, chose not to
+extend the scope of this thesis any further with such a complex technique, and
+therefore opted for the well-established work of \citet{Preetham:1999}, which
+is easy to implement and requires no preprocessing steps.
+The Preetham skylight model, as presented in \citet[Section 3.1]{Preetham:1999},
+takes only two parameters: one, the position of the sun on the hemisphere, and two,
+the haziness of the atmosphere i.e. turbidity.
+Figure~\ref{fig:preetham} depicts the effect of the two parameters on
+the resulting sky dome.
+With the skylight taken care of, we may turn towards the sunlight. We assume
+the sun to be a directional light source, which is uniform in color and
+intensity for the entire scene. \cite[Section 3.2]{Preetham:1999} gives us
+intensity and color of the sunlight based on the position of the sun, where
+the result is consistent with the corresponding skylight.
 %That is, because 
 %\citeauthor{article:oceanlighting} employ an approximation of the BRDF presented
 %by \citet{Ross:2005}, where said BRDF is specifically tailored to the
@@ -2916,50 +2933,50 @@ sea bed back to the water surface.
 %with a wave spectrum \citep{misc:oceanlightingfft}, the wave spectrum itself
 %represents an integral part of the illumination model.
 
-\citet{article:oceanlighting} augment the work of \citeauthor{Hinsinger:2002} in
-various areas, the most prominent improvement being an adaptive lighting scheme.
-The latter is based on a hierarchical representation which combines geometry,
-normals and a BRDF~\citep{Ross:2005}, where the BRDF is specifically tailored to
-the statistical properties of ocean surfaces. Based on distance from the viewer,
-the algorithm transitions seamlessy from lighting computed with geometry and per
-pixel normals to lighting computed based solely on the statistical distribution
-of ocean surface slopes as modeled by the BRDF, see Figure~\ref{fig:bruneton:transitions}.
-To save computation time for vertex positions, wavetrains are filtered according
-to the size of their associated projected grid cell in world space.
-For the gradient computation in the pixel shader there is an additional step,
-where wavetrains are filtered according to the projected size of the current pixel
-in world space. In addition, \citeauthor{article:oceanlighting} show the
-integration of the BRDF by \citeauthor{Ross:2005} into the computation of
-all necessary lighting terms, namely the reflected light from the sun and from
-the skydome, and the refracted light from the water, as seen in
-Figure~\ref{fig:bruneton:lightingterms}.
-
-\citet{misc:oceanlightingfft} combines the adaptive lighting scheme
-from \citet{article:oceanlighting} with an ocean surface synthesized
-from the wave spectrum presented in~\citet{article:Elfouhaily1997}.
-Wave heights, gradients, as well as the horizontal displacements
-required for the choppy wave algorithm by \citet{course:simulatingocean}
-are computed entirely on the GPU. In an additional step,
-\citet{article:whitecaps} add whitecaps to the ocean lighting model,
-see Figure~\ref{fig:dupuy:whitecaps}.
-
-At this point we make a number of assumptions about the interaction of light
-with the ocean surface, which in part are attributed to the fact that we concern
-ourselves exclusively with deep water. First, the water is deep, therefore no
-light is reflected from the bottom of the ocean back to the surface. Second,
-there are no light sources within the water body.
-
-We concern ourselves only with deep water, allowing us to make a number of
-assumptions about the interaction of light with the water body.
-We concern ourselves only with deep water, therefore we may assume no light is
-reflected from the bottom of the ocean to the ocean surface. It follows that
-the only light exiting the ocean surface from within has previously entered the
-water body via refraction, and leaves it due to scattering.
-Deep water, no light reflected from the ground, only scattering allows for refracted light to reach the surface. Therefore, the appearance of deep water depends largely on the part of the
-incoming light that gets reflected. And most of the incoming light consists of
-direct sunlight and sunlight inscattered via the sky. Therefore we are in need
-of a skylight model. We chose to implement the Preetham Skylight model
-\cite{Preetham:1999}.
+%\citet{article:oceanlighting} augment the work of \citeauthor{Hinsinger:2002} in
+%various areas, the most prominent improvement being an adaptive lighting scheme.
+%The latter is based on a hierarchical representation which combines geometry,
+%normals and a BRDF~\citep{Ross:2005}, where the BRDF is specifically tailored to
+%the statistical properties of ocean surfaces. Based on distance from the viewer,
+%the algorithm transitions seamlessy from lighting computed with geometry and per
+%pixel normals to lighting computed based solely on the statistical distribution
+%of ocean surface slopes as modeled by the BRDF, see Figure~\ref{fig:bruneton:transitions}.
+%To save computation time for vertex positions, wavetrains are filtered according
+%to the size of their associated projected grid cell in world space.
+%For the gradient computation in the pixel shader there is an additional step,
+%where wavetrains are filtered according to the projected size of the current pixel
+%in world space. In addition, \citeauthor{article:oceanlighting} show the
+%integration of the BRDF by \citeauthor{Ross:2005} into the computation of
+%all necessary lighting terms, namely the reflected light from the sun and from
+%the skydome, and the refracted light from the water, as seen in
+%Figure~\ref{fig:bruneton:lightingterms}.
+%
+%\citet{misc:oceanlightingfft} combines the adaptive lighting scheme
+%from \citet{article:oceanlighting} with an ocean surface synthesized
+%from the wave spectrum presented in~\citet{article:Elfouhaily1997}.
+%Wave heights, gradients, as well as the horizontal displacements
+%required for the choppy wave algorithm by \citet{course:simulatingocean}
+%are computed entirely on the GPU. In an additional step,
+%\citet{article:whitecaps} add whitecaps to the ocean lighting model,
+%see Figure~\ref{fig:dupuy:whitecaps}.
+%
+%At this point we make a number of assumptions about the interaction of light
+%with the ocean surface, which in part are attributed to the fact that we concern
+%ourselves exclusively with deep water. First, the water is deep, therefore no
+%light is reflected from the bottom of the ocean back to the surface. Second,
+%there are no light sources within the water body.
+%
+%We concern ourselves only with deep water, allowing us to make a number of
+%assumptions about the interaction of light with the water body.
+%We concern ourselves only with deep water, therefore we may assume no light is
+%reflected from the bottom of the ocean to the ocean surface. It follows that
+%the only light exiting the ocean surface from within has previously entered the
+%water body via refraction, and leaves it due to scattering.
+%Deep water, no light reflected from the ground, only scattering allows for refracted light to reach the surface. Therefore, the appearance of deep water depends largely on the part of the
+%incoming light that gets reflected. And most of the incoming light consists of
+%direct sunlight and sunlight inscattered via the sky. Therefore we are in need
+%of a skylight model. We chose to implement the Preetham Skylight model
+%\cite{Preetham:1999}.
 \subsubsection{Whitecaps}
 The ocean lighting scheme by Bruneton et al. \cite{article:oceanlighting} does
 not account for the breaking of waves on the open ocean. Neither the geometric
