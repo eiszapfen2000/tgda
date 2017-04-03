@@ -2978,12 +2978,12 @@ the result is consistent with the corresponding skylight.
 %of a skylight model. We chose to implement the Preetham Skylight model
 %\cite{Preetham:1999}.
 \subsubsection{Whitecaps}
-The ocean lighting scheme by Bruneton et al. \cite{article:oceanlighting} does
-not account for the breaking of waves on the open ocean. Neither the geometric
-deformations, nor the changes in reflectance caused by foam and spray, so called
-\emph{whitecaps}, are incorporated in their model. Dupuy et al.\cite{article:whitecaps},
-on the other hand, extend the FFT version of Bruneton et al.\cite{misc:oceanlightingfft}
-to include whitecaps. Their work is based on Tessendorf's approach\cite{course:simulatingocean}
+The ocean lighting scheme by \citet{article:oceanlighting} does not account for
+the breaking of waves on the open ocean. Neither the geometric deformations,
+nor the changes in reflectance caused by foam and spray, so called
+\emph{whitecaps}, are incorporated in their model. \citet{article:whitecaps},
+on the other hand, extend the work of \citet{misc:oceanlightingfft}
+to include whitecaps. Their approach is based on the method by \citet{course:simulatingocean}
 to locate self intersections on the ocean surface, see the discussion in Section~\ref{sec:self_intersections}. Given the location of a self intersection,
 the reflectance at that surface position may be modified to account for foam
 and spray.
