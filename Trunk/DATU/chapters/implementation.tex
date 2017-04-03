@@ -2719,7 +2719,8 @@ and horizontal displacements, the resolution of the first order partial
 derivatives, wind velocity $U_{10}$, fetch $F$, size $L$ of the largest pattern,
 and scaling factor $f$ for the automatic pattern size reduction.
 Moreover, the user may select the wave energy spectrum model, where all
-of the spectra presented in Section~\ref{sec:wave_spectra} are available.
+of the spectra presented in Section~\ref{sec:wave_spectra} are available
+options.
 %
 \subsubsection{Surface Mesh}
 %
@@ -2741,7 +2742,7 @@ A uniform grid in world space, its projection onto the image plane is not
 uniformly spaced though.
 \subcaptionref{fig:subfigprojgrid2}
 A uniform grid on the image plane, its associated world space positions
-are not uniformly spaced, though.
+are not uniformly spaced.
 }
 \label{fig:dprojectedgrid}
 \end{figure}
@@ -2881,11 +2882,20 @@ to bottom.
 Now that we have dealt with the ocean surface mesh, we may move on to the next
 aspect of ocean surface rendering, namely the illumination of the water surface.
 We chose to implement the illumination model introduced by
-\citet{article:oceanlighting} for two reasons. First, it gives visually
-pleasing as well as believable results. Second, it has been adapted in such a
-way that wave spectra become an integral part of the model
-\citep{misc:oceanlightingfft}.
-
+\citet{article:oceanlighting} for three reasons. First, it gives visually
+pleasing as well as convincing results. Second, in step with our work
+it is tailored to the deep water of the open ocean. Third, it has been adapted by
+\citet{misc:oceanlightingfft} in such a way, that the wave energy spectrum has
+become an integral part of the lighting model itself.
+The lighting term for the water surface, as presented by
+\citeauthor{article:oceanlighting} consists of three parts:
+reflected light from the sun, reflected light from the sky dome, and refracted
+light from the water. The latter term describes the fraction of light from
+the sun and sky which has entered the water due to refraction, and leaves it
+again due to multiple scattering. Because we are in deep water,
+\citeauthor{article:oceanlighting} assume that no light is reflected from the
+sea bed back to the water surface.
+\citet{Bruneton:2008}
 %That is, because 
 %\citeauthor{article:oceanlighting} employ an approximation of the BRDF presented
 %by \citet{Ross:2005}, where said BRDF is specifically tailored to the
