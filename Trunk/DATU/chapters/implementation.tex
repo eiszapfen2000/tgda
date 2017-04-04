@@ -2981,12 +2981,20 @@ the result is consistent with the corresponding skylight.
 The ocean lighting scheme by \citet{article:oceanlighting} does not account for
 the breaking of waves on the open ocean. Neither the geometric deformations,
 nor the changes in reflectance caused by foam and spray, so called
-\emph{whitecaps}, are incorporated in their model. \citet{article:whitecaps},
+whitecaps, are incorporated in their model. \citet{article:whitecaps},
 on the other hand, extend the work of \citet{misc:oceanlightingfft}
-to include whitecaps. Their approach is based on the method by \citet{course:simulatingocean}
-to locate self intersections on the ocean surface, see the discussion in Section~\ref{sec:self_intersections}. Given the location of a self intersection,
-the reflectance at that surface position may be modified to account for foam
-and spray.
+to include whitecaps. Their approach is based on the method by
+\citet{course:simulatingocean} to locate self intersections on the ocean
+surface, see the discussion in Section~\ref{sec:self_intersections}. Given the
+location of a self intersection, the reflectance at that surface position may
+be modified to account for foam and spray.
+
+\citeauthor{article:whitecaps} contribute an optimized algorithm to compute
+the whitecap fractional coverage inside a pixel. Said coverage depends on the
+amount of self intersections which take place inside the world space footprint
+of the pixel on the ocean plane. The algorithm is based on fast linear
+prefiltering methods \citep{Bruneton:2012}, allowing it to leverage the
+hardware accelerated mipmap generator on modern GPUs.
 
 We may generate whitecaps whenever the following function gives a result equal
 one:
