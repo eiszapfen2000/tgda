@@ -17,7 +17,7 @@ three distinct additional datasets.
 One, high quality normal vectors by deriving the ocean surface's slope vectors in frequency space.
 Two, displacements to transform the gentle form of the sea into a more agitated one, where the waves are more similar to Gerstner waves than to sinusoids.
 Three, the first-order partial derivatives of aforementioned displacements, as they allow us to deduce the locations on the ocean surface where
-whitecaps may arise.
+foam and spray may arise.
 Each of the three datasets requires us to construct additional spectra,
 all derived directly from the ocean surface elevation spectrum.
 %Thus, we may be burdened with a significant number of additional Fourier Transforms,
@@ -28,7 +28,7 @@ that poses a challenge. The variety of possible camera views
 may range from closeups of the water surface to vistas where the sea spans all
 the way to the horizon.
 In the former case we would like to be able to observe small scale detail on the
-water surface, such as ripples caused by capillary waves.
+water surface, such as ripples caused by gravity-capillary waves.
 The latter case is not difficult to handle in principle, because the ocean surface
 data we synthesize is seamlessly tileable. Still, we would prefer that the viewer
 may not be able to notice that the ocean surface repeats itself in all directions.
@@ -52,9 +52,8 @@ First, key properties of the ocean surface spectrum allow us to accelerate the
 computation of its \InvFourierTransform considerably.
 Second, we reduce the amount of spectral data to transform. We achieve the
 latter by improving upon the level-of-detail approach by \citet{misc:oceanlightingfft}
-and \citet{article:whitecaps} with a multi-resolution scheme, where surface
-elevation and displacements are generated at a lower resolution
-than their respective first-order derivates.
+and \citet{article:whitecaps} with a multi-resolution scheme, where specific
+datasets are generated at a lower resolution than the other ones.
 %, where certain spectra are of lower resolution than others.
 %Twofold, first accelerate Fourier Transform, second, multiresolution approahc for ocean data.
 
@@ -684,9 +683,9 @@ condition $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$.
 \end{figure}
 %
 
-Surface elevation $\eta$ is a real-valued function, therefore its \FourierTransform must be hermitian,
+Surface elevation $\eta$ is a real-valued function, therefore its spectrum must be hermitian,
 too. Let $\mathcal{F}(\mvec{k})$ be the \FourierTransform of surface elevation $\eta$, then
-we may write:
+we may write the hermitian property as follows:
 \begin{equation}
 \label{eq:h0_k_complex_conjugate}
  \mathcal{F}(-\mvec{k}) = \mathcal{F}(\mvec{k})^*
@@ -1980,9 +1979,9 @@ smaller \wavenumber range.
 \label{fig:sampling_pattern_assembly}
 \end{figure}
 %
-For us to generate a believable, as well as visually pleasing ocean surface, we
-are required to include into our sum of waves a finite set of distinct
-\wavenumbers such that it is representative of the whole energy.
+% For us to generate a believable, as well as visually pleasing ocean surface, we
+% are required to include into our sum of waves a finite set of distinct
+% \wavenumbers such that it is representative of the whole energy.
 We have seen in Figure~\ref{fig:sampling_area_vs_res} that if we generate only
 one pattern, based on size and resolution, we either sparsely sample inside a
 large \wavenumber range, or we densely sample inside a small \wavenumber range.
@@ -1994,7 +1993,7 @@ based on pattern size.
 The enlarged \wavenumber range may contain short \wavelengths up to, and
 including the gravity-capillary wave domain, which represents waves with a
 length from one to several centimeters. With such short waves involved in the
-sum of waves we have no difficulties to reproduce sufficient detail for
+sum of waves we have the opportunity to reproduce sufficient detail for
 close-ups of the water surface. Still, we need to make sure to set a lower
 limit of $\lambda_{min} = \SI{1.73}{\centi\metre}$ for the \wavelengths included
 by any of the patterns, because for waves shorter than $\lambda_{min}$ gravity is
@@ -2652,7 +2651,7 @@ In addition, as to be seen in Figure \ref{fig:sampling_different_resolutions_pat
 we must take into consideration that the two sets of
 spectral data have different \wavenumber ranges, therefore the transitions from
 one reconstruction to the next may take place at different \wavenumbers for
-each set.
+each set.\\
 
 The goal of our multi-resolution approach is to reduce the computational
 workload of pattern data synthesis. One can see that the improvement we are
@@ -2660,8 +2659,8 @@ able to achieve is directly dependent upon the reduction in resolution
 of the horizontal and vertical displacements. Thus, we seek to make do with
 a minimum of data for surface elevation $\eta$ and displacement vectors
 $\mvec{D}$, without compromising the visual end result. Chapter~\ref{ch:summary}
-will elaborate on the equilibrium we found between resolution and visual
-fidelity of the resulting ocean surface.
+will elaborate on the equilibrium we found between the dataset resolutions and
+the visual fidelity of the resulting ocean surface.
 %
 %Recall Equation~\ref{eq:dft_h0_k}, which synthesizes a random ocean surface
 %based on a wave spectrum, and Equation~\ref{eq:dft_h_k_t}, which animates said
@@ -2921,9 +2920,9 @@ Figure~\ref{fig:preetham} depicts the effect of the two parameters on
 the resulting sky dome.
 With the skylight taken care of, we may turn towards the sunlight. We assume
 the sun to be a directional light source, which is uniform in color and
-intensity for the entire scene. \cite[Section 3.2]{Preetham:1999} gives us
+intensity for the entire scene. \citet[Section 3.2]{Preetham:1999} gives us
 intensity and color of the sunlight based on the position of the sun, where
-the result is consistent with the corresponding skylight.
+the result is consistent with the corresponding Preetham skylight.
 %That is, because 
 %\citeauthor{article:oceanlighting} employ an approximation of the BRDF presented
 %by \citet{Ross:2005}, where said BRDF is specifically tailored to the
@@ -3057,7 +3056,7 @@ allowing it to leverage the hardware accelerated mipmap generator of modern GPUs
 % horizontal displacement $\mvec{x}+u\mvec{D}(\mvec{x},t)$.
 
 \subsubsection{Tonemapping}
-Rendering the ocean illuminated by the Preetham sunlight and skylight results
+Rendering the ocean illuminated by the Preetham sun- and skylight results
 in an image with a high dynamic range. For proper display of the image, we
 need to map it to the lower dynamic range of a standard monitor by means of
 a tonemapping operator. We chose to employ the global tonemapping operator
