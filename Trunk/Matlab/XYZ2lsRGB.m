@@ -11,6 +11,12 @@ XYZ2sRGBD65 = [...
     0.0556434 -0.2040259  1.0572252;...
     ];
 
+XYZ2sRGBD50 = [...
+	 3.1338561 -1.6168667 -0.4906146;...
+	-0.9787684  1.9161415  0.0334540;...
+	 0.0719453 -0.2289914  1.4052427;...
+	 ];
+
 if nargin > 1
     conversionMatrix = varargin{1};
 else
@@ -25,13 +31,29 @@ if size(XYZ,3) == 3
     lsRGB_vectors = conversionMatrix * XYZ_vectors;
     
     % make sure linear RGB values are in range [0,1]
-    max_lsRGB = max(max(max(lsRGB_vectors)),1);
-    lsRGB_vectors = lsRGB_vectors ./ max_lsRGB;
+%     max_lsRGB = max(max(max(lsRGB_vectors)),1);
+%     lsRGB_vectors = lsRGB_vectors ./ max_lsRGB;
 
     lsRGB(:,:,1) = reshape(lsRGB_vectors(1,:), size(XYZ,1), []);
     lsRGB(:,:,2) = reshape(lsRGB_vectors(2,:), size(XYZ,1), []);
     lsRGB(:,:,3) = reshape(lsRGB_vectors(3,:), size(XYZ,1), []);
 else
-    error('Problem?');
+	if size(XYZ,2) == 3
+		XYZ_vectors(1,:) = reshape(XYZ(:,1), 1, numel(XYZ(:,1)));
+		XYZ_vectors(2,:) = reshape(XYZ(:,2), 1, numel(XYZ(:,2)));
+		XYZ_vectors(3,:) = reshape(XYZ(:,3), 1, numel(XYZ(:,3)));
+		
+		lsRGB_vectors = conversionMatrix * XYZ_vectors;
+		
+		lsRGB(:,1) = reshape(lsRGB_vectors(1,:), size(XYZ,1), []);
+		lsRGB(:,2) = reshape(lsRGB_vectors(2,:), size(XYZ,1), []);
+		lsRGB(:,3) = reshape(lsRGB_vectors(3,:), size(XYZ,1), []);
+	else
+		if size(XYZ,1) == 3
+			lsRGB = conversionMatrix * XYZ;
+		else
+			error('Problem?');
+		end
+	end
 end
 end
