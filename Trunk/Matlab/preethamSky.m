@@ -148,7 +148,7 @@ if nargout > 5
     sunHalfApparentAngle = max(sunHalfApparentAngle,atan2(normRotAxes, dot(s, directionOnDiskN, 2)));
     
     f = gammaAngle - sunHalfApparentAngle;
-    a = 200; b = 0.1; c = 150;
+    a = 200; b = 1 - cos(thetaSun); c = 50;
     falloff = (1 ./ exp(a .* f)) + b .* (1 ./ exp(c .* f));
     falloff(falloff < 0) = 0;
     falloff(falloff > 1) = 1;
@@ -156,27 +156,72 @@ if nargout > 5
     sunDiskPixels = cos(gammaAngle) >= cos(sunHalfApparentAngle);
     falloffPixels = falloff > 0;
     falloffWithoutSunDiskPixels = falloffPixels & ~sunDiskPixels;
-    
-    skyXYZ = xyY2XYZ(xyY);
-    sunXYZ = xyY2XYZ(sunRadiance(thetaSun, turbidity));
-    
+	
+    % compute preetham model at sun position
+    nominatorSun_x = digamma(thetaSun, 0, Ax);
+    nominatorSun_y = digamma(thetaSun, 0, Ay);
+    nominatorSun_Y = digamma(thetaSun, 0, AY);
+
+    sun_xyY_preetham = zeros(3,1);
+    sun_xyY_preetham(1) = xz * (nominatorSun_x / denominator_x);
+    sun_xyY_preetham(2) = yz * (nominatorSun_y / denominator_y);
+    sun_xyY_preetham(3) = Yz * (nominatorSun_Y / denominator_Y);
+	sun_XYZ_preetham = xyY2XYZ(sun_xyY_preetham);
+	
+	% compute sun radiance via scattering
+	sun_xyY_scattering = sunRadiance(max(0,thetaSun - 20 * (pi / 180)), turbidity);
+	sun_XYZ_scattering = xyY2XYZ(sun_xyY_scattering);
+	
+	sundisk_xyY = zeros(size(xyY));
+	sundisk_xyY(:,:,1) = sun_xyY_scattering(1);
+	sundisk_xyY(:,:,2) = sun_xyY_scattering(2);
+	sundisk_xyY(:,:,3) = falloff .* sun_xyY_scattering(3);
+	
+	skyXYZ = xyY2XYZ(xyY);
+	sundiskXYZ = xyY2XYZ(sundisk_xyY);
+	
     skyX = skyXYZ(:,:,1);
     skyY = skyXYZ(:,:,2);
     skyZ = skyXYZ(:,:,3);
-    
-    skyX(sunDiskPixels) = skyX(sunDiskPixels) + sunXYZ(1);
-    skyY(sunDiskPixels) = skyY(sunDiskPixels) + sunXYZ(2);
-    skyZ(sunDiskPixels) = skyZ(sunDiskPixels) + sunXYZ(3);
-
-    skyX(falloffWithoutSunDiskPixels) = skyX(falloffWithoutSunDiskPixels) + falloff(falloffWithoutSunDiskPixels) .* sunXYZ(1);
-    skyY(falloffWithoutSunDiskPixels) = skyY(falloffWithoutSunDiskPixels) + falloff(falloffWithoutSunDiskPixels) .* sunXYZ(2);
-    skyZ(falloffWithoutSunDiskPixels) = skyZ(falloffWithoutSunDiskPixels) + falloff(falloffWithoutSunDiskPixels) .* sunXYZ(3);
-    
+	
+	sundiskX = sundiskXYZ(:,:,1);
+    sundiskY = sundiskXYZ(:,:,2);
+    sundiskZ = sundiskXYZ(:,:,3);
+	
+    skyX(sunDiskPixels) = skyX(sunDiskPixels) + sun_XYZ_scattering(1);
+    skyY(sunDiskPixels) = skyY(sunDiskPixels) + sun_XYZ_scattering(2);
+    skyZ(sunDiskPixels) = skyZ(sunDiskPixels) + sun_XYZ_scattering(3);
+	
+	skyX(falloffWithoutSunDiskPixels) = skyX(falloffWithoutSunDiskPixels) + sundiskX(falloffWithoutSunDiskPixels);
+    skyY(falloffWithoutSunDiskPixels) = skyY(falloffWithoutSunDiskPixels) + sundiskY(falloffWithoutSunDiskPixels);
+    skyZ(falloffWithoutSunDiskPixels) = skyZ(falloffWithoutSunDiskPixels) + sundiskZ(falloffWithoutSunDiskPixels);
+	
     skyXYZ(:,:,1) = skyX;
     skyXYZ(:,:,2) = skyY;
     skyXYZ(:,:,3) = skyZ;
-    
-    varargout{5} = XYZ2xyY(skyXYZ);
+	
+	varargout{5} = XYZ2xyY(skyXYZ);
+
+%     skyXYZ = xyY2XYZ(xyY);
+%     sunXYZ = xyY2XYZ(sun_xyY_scattering);
+%     
+%     skyX = skyXYZ(:,:,1);
+%     skyY = skyXYZ(:,:,2);
+%     skyZ = skyXYZ(:,:,3);
+%     
+%     skyX(sunDiskPixels) = skyX(sunDiskPixels) + sunXYZ(1);
+%     skyY(sunDiskPixels) = skyY(sunDiskPixels) + sunXYZ(2);
+%     skyZ(sunDiskPixels) = skyZ(sunDiskPixels) + sunXYZ(3);
+% 
+%     skyX(falloffWithoutSunDiskPixels) = skyX(falloffWithoutSunDiskPixels) + falloff(falloffWithoutSunDiskPixels) .* sunXYZ(1);
+%     skyY(falloffWithoutSunDiskPixels) = skyY(falloffWithoutSunDiskPixels) + falloff(falloffWithoutSunDiskPixels) .* sunXYZ(2);
+%     skyZ(falloffWithoutSunDiskPixels) = skyZ(falloffWithoutSunDiskPixels) + falloff(falloffWithoutSunDiskPixels) .* sunXYZ(3);
+%     
+%     skyXYZ(:,:,1) = skyX;
+%     skyXYZ(:,:,2) = skyY;
+%     skyXYZ(:,:,3) = skyZ;
+%     
+%     varargout{5} = XYZ2xyY(skyXYZ);
 end
 
 end
