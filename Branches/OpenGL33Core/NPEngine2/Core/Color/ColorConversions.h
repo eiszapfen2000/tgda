@@ -13,9 +13,14 @@ extern Matrix3 * NP_XYZ_TO_LINEAR_sRGB_D50;
 
 void xyY_to_XYZ(const Vector3 * const xyY, Vector3 * XYZ);
 void xyY_to_XYZ_safe(const Vector3 * const xyY, Vector3 * XYZ);
+
 void XYZ_to_xyY(const Vector3 * const XYZ, Vector3 * xyY);
 void XYZ_to_xyY_safe(const Vector3 * const XYZ, const Vector3 * const Whitepoint, Vector3 * xyY);
+
 void Lab_to_XYZ(const Vector3 * const Lab, const Vector3 * const RefWhiteXYZ, Vector3 * XYZ);
 void XYZ_to_Lab(const Vector3 * const XYZ, const Vector3 * const RefWhiteXYZ, Vector3 * Lab);
+
+void XYZ_to_linear_RGB(const Vector3 * const XYZ, const Matrix3 * const InvM, Vector3 * RGB);
+void linear_RGB_to_XYZ(const Vector3 * const RGB, const Matrix3 * const M, Vector3 * XYZ);
 
 #endif
