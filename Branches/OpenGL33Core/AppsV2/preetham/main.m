@@ -488,7 +488,7 @@ int main (int argc, char **argv)
     double thetaSun = MATH_PI_DIV_4;
 
     // tonemap
-    double a = 0.05;
+    double a = 0.18;
     double L_white = 2.0;
 
     const float halfSkyResolution = ((float)skyResolution) / (2.0f);
@@ -674,44 +674,46 @@ int main (int argc, char **argv)
 		{
 			irradiance_XYZ = v3_zero();
 
-		    const double phiStep   = 1.0 * MATH_DEG_TO_RAD;
-		    const double thetaStep = 1.0 * MATH_DEG_TO_RAD;
+			const double phiStep   = 1.0 * MATH_DEG_TO_RAD;
+			const double thetaStep = 1.0 * MATH_DEG_TO_RAD;
 
-		    for (double phi = 0.0; phi < MATH_2_MUL_PI; phi += phiStep)
-		    {
-		        for (double theta = 0.0; theta < MATH_PI_DIV_4; theta += thetaStep)
-		        {
-		            const double sinTheta = sin(theta);
-		            const double cosTheta = cos(theta);
-		            const double sinPhi = sin(phi);
-		            const double cosPhi = cos(phi);
+			double accumulatedAngleDifference = 0.0;
+			for (double phi = 0.0; phi < MATH_2_MUL_PI; phi += phiStep)
+			{
+				for (double theta = 0.0; theta < MATH_PI_DIV_4; theta += thetaStep)
+				{
+					const double sinTheta = sin(theta);
+					const double cosTheta = cos(theta);
+					const double sinPhi = sin(phi);
+					const double cosPhi = cos(phi);
 
-		            Vector3 v;
-		            v.x = sinTheta * cosPhi;
-		            v.y = sinTheta * sinPhi;
-		            v.z = cosTheta;
-		            // float cosGamma = clamp(dot(v, directionToSun), -1.0, 1.0);
-		            double cosGamma = v3_vv_dot_product(&directionToSun, &v);
-		            cosGamma = MAX(MIN(cosGamma, 1.0), -1.0);
-		            double gamma = acos(cosGamma);
+					Vector3 v;
+					v.x = sinTheta * cosPhi;
+					v.y = sinTheta * sinPhi;
+					v.z = cosTheta;
+					//angle = atan2(norm(cross(a,b)),dot(a,b));
+					double cosGamma = v3_vv_dot_product(&directionToSun, &v);
+					Vector3 rotationAxis = v3_vv_cross_product(&directionToSun, &v);
+					double rotationAxisLength = v3_v_length(&rotationAxis);
+					double gamma = atan2(rotationAxisLength, cosGamma);
 
-		            Vector3 nominator;
-		            nominator.x = preetham_digamma(theta, gamma, ABCDE_x);
-		            nominator.y = preetham_digamma(theta, gamma, ABCDE_y);
-		            nominator.z = preetham_digamma(theta, gamma, ABCDE_Y);
+					Vector3 nominator;
+					nominator.x = preetham_digamma(theta, gamma, ABCDE_x);
+					nominator.y = preetham_digamma(theta, gamma, ABCDE_y);
+					nominator.z = preetham_digamma(theta, gamma, ABCDE_Y);
 
-		            Vector3 xyY;
-		            xyY.x = zenithColor_xyY.x * (nominator.x / denominator.x);
-		            xyY.y = zenithColor_xyY.y * (nominator.y / denominator.y);
-		            xyY.z = zenithColor_xyY.z * (nominator.z / denominator.z);
+					Vector3 xyY;
+					xyY.x = zenithColor_xyY.x * (nominator.x / denominator.x);
+					xyY.y = zenithColor_xyY.y * (nominator.y / denominator.y);
+					xyY.z = zenithColor_xyY.z * (nominator.z / denominator.z);
 
-		            double n_dot_v = v3_vv_dot_product(NP_WORLD_Z_AXIS, &v);
+					double n_dot_v = v3_vv_dot_product(NP_WORLD_Z_AXIS, &v);
 
-		            Vector3 XYZ;
-                    xyY_to_XYZ(&xyY, &XYZ);
-		            irradiance_XYZ.x += XYZ.x * sinTheta * phiStep * thetaStep * n_dot_v;
-		            irradiance_XYZ.y += XYZ.y * sinTheta * phiStep * thetaStep * n_dot_v;
-		            irradiance_XYZ.z += XYZ.z * sinTheta * phiStep * thetaStep * n_dot_v;
+					Vector3 XYZ;
+					xyY_to_XYZ(&xyY, &XYZ);
+					irradiance_XYZ.x += XYZ.x * sinTheta * phiStep * thetaStep * n_dot_v;
+					irradiance_XYZ.y += XYZ.y * sinTheta * phiStep * thetaStep * n_dot_v;
+					irradiance_XYZ.z += XYZ.z * sinTheta * phiStep * thetaStep * n_dot_v;
 		        }
 		    }
 		}
@@ -770,7 +772,7 @@ int main (int argc, char **argv)
         [ sunHalfApparentAngle_P setValue:sunHalfApparentAngle ];
         [ zenithColor_P setValue:zenithColor_xyY ];
         [ denominator_P setValue:denominator ];
-        [ XYZToLinearsRGB_P setValue:NP_XYZ_TO_LINEAR_sRGB_D50 ];
+        [ XYZToLinearsRGB_P setValue:NP_XYZ_TO_LINEAR_sRGB_D65 ];
 
         // clear preetham target
         [ rtc bindFBO ];
@@ -785,7 +787,7 @@ int main (int argc, char **argv)
 
         const float avgFresnel = 0.17;
         Vector3 averageReflectance_XYZ = v3_sv_scaled(avgFresnel / MATH_PI, &irradiance_XYZ);
-        Vector3 averageReflectance_LinearsRGB = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D50, &averageReflectance_XYZ);
+        Vector3 averageReflectance_LinearsRGB = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D65, &averageReflectance_XYZ);
 
 		const FVector4 clearColor 
 			= {
@@ -854,7 +856,7 @@ int main (int argc, char **argv)
         const int32_t numberOfLevels
             = 1 + (int32_t)floor(logb(skyResolution));
 
-        [ linearsRGBToXYZ_P setValue:NP_LINEAR_sRGB_D50_TO_XYZ ];
+        [ linearsRGBToXYZ_P setValue:NP_LINEAR_sRGB_D65_TO_XYZ ];
         [ key_P setValue:a ];
         [ whiteLuminance_P setValue:L_white ];
         [ averageLuminanceLevel_P setValue:(numberOfLevels - 1) ];
