@@ -412,8 +412,6 @@ int main (int argc, char **argv)
     NPEffectVariableFloat3 * D_xyY_P = [ effect variableWithName:@"D" ];
     NPEffectVariableFloat3 * E_xyY_P = [ effect variableWithName:@"E" ];
 
-    NPEffectVariableFloat3 * irradiance_P = [ effect variableWithName:@"irradiance" ];
-
     NPEffectVariableMatrix3x3 * linearsRGBToXYZ_P = [ effect variableWithName:@"linearsRGBToXYZ" ];
     NPEffectVariableMatrix3x3 * XYZToLinearsRGB_P = [ effect variableWithName:@"XYZToLinearsRGB" ];
     NPEffectVariableFloat * key_P = [ effect variableWithName:@"key" ];
@@ -423,7 +421,7 @@ int main (int argc, char **argv)
     assert(A_xyY_P != nil && B_xyY_P != nil && C_xyY_P != nil && D_xyY_P != nil
            && E_xyY_P != nil && radiusInPixel_P != nil && directionToSun_P != nil
            && sunColor_P != nil && sunHalfApparentAngle_P != nil
-           && zenithColor_P != nil && denominator_P != nil && irradiance_P != nil
+           && zenithColor_P != nil && denominator_P != nil
            && linearsRGBToXYZ_P != nil && XYZToLinearsRGB_P != nil
            && key_P != nil && averageLuminanceLevel_P != nil
            && whiteLuminance_P != nil);
@@ -762,7 +760,6 @@ int main (int argc, char **argv)
         [ C_xyY_P setFValue:C ];
         [ D_xyY_P setFValue:D ];
         [ E_xyY_P setFValue:E ];
-        [ irradiance_P setValue:irradiance_XYZ ];
 
         [ radiusInPixel_P setFValue:halfSkyResolution ];
         [ directionToSun_P setValue:directionToSun ];
