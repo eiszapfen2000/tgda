@@ -23,4 +23,9 @@ void XYZ_to_Lab(const Vector3 * const XYZ, const Vector3 * const RefWhiteXYZ, Ve
 void XYZ_to_linear_RGB(const Vector3 * const XYZ, const Matrix3 * const InvM, Vector3 * RGB);
 void linear_RGB_to_XYZ(const Vector3 * const RGB, const Matrix3 * const M, Vector3 * XYZ);
 
+double gamma_companding(double LinearValue, double Gamma);
+double gamma_inverse_companding(double Value, double Gamma);
+double sRGB_companding(double LinearValue);
+double sRGB_inverse_companding(double Value);
+
 #endif

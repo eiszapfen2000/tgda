@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <math.h>
 #include "ColorConversions.h"
 
@@ -156,4 +157,32 @@ void XYZ_to_linear_RGB(const Vector3 * const XYZ, const Matrix3 * const InvM, Ve
 void linear_RGB_to_XYZ(const Vector3 * const RGB, const Matrix3 * const M, Vector3 * XYZ)
 {
 	m3_mv_multiply_v(M, RGB, XYZ);
+}
+
+double gamma_companding(double LinearValue, double Gamma)
+{
+	assert(LinearValue >= 0.0 && LinearValue <= 1.0 && Gamma > 0.0);
+
+	return pow(LinearValue, 1.0/Gamma);
+}
+
+double gamma_inverse_companding(double Value, double Gamma)
+{
+	assert(Value >= 0.0 && Value <= 1.0 && Value > 0.0);
+
+	return pow(Value, Gamma);
+}
+
+double sRGB_companding(double LinearValue)
+{
+	assert(LinearValue >= 0.0 && LinearValue <= 1.0);
+
+	return (LinearValue > 0.0031308) ? (1.055 * pow(LinearValue, 1.0/2.4) - 0.055) : (12.92 * LinearValue);
+}
+
+double sRGB_inverse_companding(double Value)
+{
+	assert(Value >= 0.0 && Value <= 1.0);
+
+	return (Value > 0.04045) ? pow((Value + 0.055) / 1.055, 2.4) : (Value / 12.92);
 }
