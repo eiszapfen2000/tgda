@@ -709,9 +709,9 @@ int main (int argc, char **argv)
 
 		            Vector3 XYZ;
                     xyY_to_XYZ(&xyY, &XYZ);
-		            irradiance_XYZ.x += XYZ.x * phiStep * thetaStep * n_dot_v;
-		            irradiance_XYZ.y += XYZ.y * phiStep * thetaStep * n_dot_v;
-		            irradiance_XYZ.z += XYZ.z * phiStep * thetaStep * n_dot_v;
+		            irradiance_XYZ.x += XYZ.x * sinTheta * phiStep * thetaStep * n_dot_v;
+		            irradiance_XYZ.y += XYZ.y * sinTheta * phiStep * thetaStep * n_dot_v;
+		            irradiance_XYZ.z += XYZ.z * sinTheta * phiStep * thetaStep * n_dot_v;
 		        }
 		    }
 		}
