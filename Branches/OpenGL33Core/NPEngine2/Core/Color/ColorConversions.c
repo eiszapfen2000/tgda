@@ -108,7 +108,7 @@ void XYZ_to_xyY_safe(const Vector3 * const XYZ, const Vector3 * const Whitepoint
 	}	
 }
 
-void Lab_to_XYZ(const Vector3 * Lab, const Vector3 * RefWhiteXYZ, Vector3 * XYZ)
+void Lab_to_XYZ(const Vector3 * const Lab, const Vector3 * const RefWhiteXYZ, Vector3 * XYZ)
 {
 	const double epsilon = 216.0 / 24389.0;
 	const double kappa = 24389.0 / 27.0;
@@ -130,7 +130,7 @@ void Lab_to_XYZ(const Vector3 * Lab, const Vector3 * RefWhiteXYZ, Vector3 * XYZ)
 	XYZ->z = zr * RefWhiteXYZ->z;
 }
 
-void XYZ_to_Lab(const Vector3 * XYZ, const Vector3 * RefWhiteXYZ, Vector3 * Lab)
+void XYZ_to_Lab(const Vector3 * const XYZ, const Vector3 * const RefWhiteXYZ, Vector3 * Lab)
 {
 	const double epsilon = 216.0 / 24389.0;
 	const double kappa = 24389.0 / 27.0;
