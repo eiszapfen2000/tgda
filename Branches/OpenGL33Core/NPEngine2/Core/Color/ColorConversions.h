@@ -28,4 +28,8 @@ double gamma_inverse_companding(double Value, double Gamma);
 double sRGB_companding(double LinearValue);
 double sRGB_inverse_companding(double Value);
 
+void linear_RGB_to_sRGB(const Vector3 * const RGB, Vector3 * sRGB);
+void linear_RGB_to_sRGB_safe(const Vector3 * const RGB, Vector3 * sRGB);
+void sRGB_to_linear_RGB(const Vector3 * const sRGB, Vector3 * RGB);
+
 #endif

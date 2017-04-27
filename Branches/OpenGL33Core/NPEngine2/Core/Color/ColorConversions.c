@@ -65,6 +65,8 @@ void npcolor_colorconversions_initialise(void)
 
 void xyY_to_XYZ(const Vector3 * const xyY, Vector3 * XYZ)
 {
+	assert(xyY->y > 0.0);
+
 	XYZ->x = (xyY->x * xyY->z) / xyY->y;
 	XYZ->y = xyY->z;
 	XYZ->z = ((1.0 - (xyY->x + xyY->y)) * xyY->z) / xyY->y;
@@ -83,6 +85,9 @@ void xyY_to_XYZ_safe(const Vector3 * const xyY, Vector3 * XYZ)
 void XYZ_to_xyY(const Vector3 * const XYZ, Vector3 * xyY)
 {
 	double s = (XYZ->x + XYZ->y + XYZ->z);
+
+	assert(s > 0.0);
+
 	xyY->x = XYZ->x / s;
 	xyY->y = XYZ->y / s;
 	xyY->z = XYZ->y;
@@ -185,4 +190,48 @@ double sRGB_inverse_companding(double Value)
 	assert(Value >= 0.0 && Value <= 1.0);
 
 	return (Value > 0.04045) ? pow((Value + 0.055) / 1.055, 2.4) : (Value / 12.92);
+}
+
+void linear_RGB_to_sRGB(const Vector3 * const RGB, Vector3 * sRGB)
+{
+	sRGB->x = sRGB_companding(RGB->x);
+	sRGB->y = sRGB_companding(RGB->y);
+	sRGB->z = sRGB_companding(RGB->z);
+}
+
+#ifndef MIN
+#define MIN(_a,_b) ((_a < _b )? _a:_b)
+#endif
+
+#ifndef MAX
+#define MAX(_a,_b) ((_a > _b )? _a:_b)
+#endif
+
+void linear_RGB_to_sRGB_safe(const Vector3 * const RGB, Vector3 * sRGB)
+{
+	// clamp negative values
+	Vector3 rgb;
+	rgb.x = MAX(0.0, RGB->x);
+	rgb.y = MAX(0.0, RGB->y);
+	rgb.z = MAX(0.0, RGB->z);
+
+	// scale into range [0...1]
+	double maxValue = MAX(MAX(rgb.x, rgb.y), rgb.z);
+
+	if (maxValue > 1.0)
+	{
+		rgb.x = MIN(1.0, rgb.x / maxValue);
+		rgb.y = MIN(1.0, rgb.y / maxValue);
+		rgb.z = MIN(1.0, rgb.z / maxValue);
+	}
+
+	// convert
+	linear_RGB_to_sRGB(&rgb, sRGB);
+}
+
+void sRGB_to_linear_RGB(const Vector3 * const sRGB, Vector3 * RGB)
+{
+	RGB->x = sRGB_inverse_companding(sRGB->x);
+	RGB->y = sRGB_inverse_companding(sRGB->y);
+	RGB->z = sRGB_inverse_companding(sRGB->z);
 }
