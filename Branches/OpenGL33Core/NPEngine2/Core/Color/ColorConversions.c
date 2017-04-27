@@ -147,3 +147,13 @@ void XYZ_to_Lab(const Vector3 * const XYZ, const Vector3 * const RefWhiteXYZ, Ve
 	Lab->y = 500.0 * (fx - fy);
 	Lab->z = 200.0 * (fy - fz);
 }
+
+void XYZ_to_linear_RGB(const Vector3 * const XYZ, const Matrix3 * const InvM, Vector3 * RGB)
+{
+	m3_mv_multiply_v(InvM, XYZ, RGB);
+}
+
+void linear_RGB_to_XYZ(const Vector3 * const RGB, const Matrix3 * const M, Vector3 * XYZ)
+{
+	m3_mv_multiply_v(M, RGB, XYZ);
+}
