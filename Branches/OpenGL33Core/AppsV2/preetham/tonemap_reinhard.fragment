@@ -9,7 +9,7 @@ void main()
 
     float averageLuminance = exp(averageLogLuminance);
 
-    vec3 XYZ = texture(linearsRGB, out_texcoords).xyz;
+    vec3 XYZ = texture(XYZColor, out_texcoords).xyz;
 
     vec3 xyY;
     xyY.z = XYZ.y;                           // copy luminance Y

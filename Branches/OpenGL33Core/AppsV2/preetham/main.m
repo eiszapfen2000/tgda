@@ -376,7 +376,7 @@ int main (int argc, char **argv)
     NPEffectTechnique * texture  = [ effect techniqueWithName:@"texture"  ];
 
     NPEffectTechnique * logLuminance
-        = [ effect techniqueWithName:@"linear_sRGB_to_log_luminance" ];
+        = [ effect techniqueWithName:@"XYZ_to_log_luminance" ];
 
     NPEffectTechnique * tonemap
         = [ effect techniqueWithName:@"tonemap_reinhard" ];
@@ -412,7 +412,6 @@ int main (int argc, char **argv)
     NPEffectVariableFloat3 * D_xyY_P = [ effect variableWithName:@"D" ];
     NPEffectVariableFloat3 * E_xyY_P = [ effect variableWithName:@"E" ];
 
-    NPEffectVariableMatrix3x3 * linearsRGBToXYZ_P = [ effect variableWithName:@"linearsRGBToXYZ" ];
     NPEffectVariableMatrix3x3 * XYZToLinearsRGB_P = [ effect variableWithName:@"XYZToLinearsRGB" ];
     NPEffectVariableFloat * key_P = [ effect variableWithName:@"key" ];
     NPEffectVariableInt   * averageLuminanceLevel_P = [ effect variableWithName:@"averageLuminanceLevel" ];
@@ -422,7 +421,7 @@ int main (int argc, char **argv)
            && E_xyY_P != nil && radiusInPixel_P != nil && directionToSun_P != nil
            && sunColor_P != nil && sunHalfApparentAngle_P != nil
            && zenithColor_P != nil && denominator_P != nil
-           && linearsRGBToXYZ_P != nil && XYZToLinearsRGB_P != nil
+		   && XYZToLinearsRGB_P != nil
            && key_P != nil && averageLuminanceLevel_P != nil
            && whiteLuminance_P != nil);
 
@@ -829,7 +828,6 @@ int main (int argc, char **argv)
         const int32_t numberOfLevels
             = 1 + (int32_t)floor(logb(skyResolution));
 
-        [ linearsRGBToXYZ_P setValue:NP_LINEAR_sRGB_D65_TO_XYZ ];
         [ key_P setValue:a ];
         [ whiteLuminance_P setValue:L_white ];
         [ averageLuminanceLevel_P setValue:(numberOfLevels - 1) ];

@@ -27,7 +27,6 @@ technique "texture"
 technique "preetham"
 {
     # effect variables
-	uniform mat3 XYZToLinearsRGB;
     uniform float radiusInPixel;
     uniform vec3 directionToSun;
     uniform vec3 zenithColor;
@@ -53,7 +52,6 @@ technique "preetham_sundisc"
 {
 	define SUNDISK
     # effect variables
-	uniform mat3 XYZToLinearsRGB;
     uniform float radiusInPixel;
     uniform vec3 directionToSun;
     uniform vec3 zenithColor;
@@ -77,12 +75,11 @@ technique "preetham_sundisc"
     set fragment shader "preetham_sundisc.fragment"
 }
 
-technique "linear_sRGB_to_log_luminance"
+technique "XYZ_to_log_luminance"
 {
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
-    uniform mat3 linearsRGBToXYZ;
-    uniform sampler2D linearsRGB
+    uniform sampler2D XYZColor
     {
         WrapS = ClampToBorder;
         WrapT = ClampToBorder;
@@ -99,16 +96,15 @@ technique "linear_sRGB_to_log_luminance"
 
     # shaders
     set vertex shader "simpletextured.vertex"
-    set fragment shader "linear_sRGB_to_log_luminance.fragment"
+    set fragment shader "XYZ_to_log_luminance.fragment"
 }
 
 technique "tonemap_reinhard"
 {
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
-	uniform mat3 linearsRGBToXYZ;
 	uniform mat3 XYZToLinearsRGB;
-    uniform sampler2D linearsRGB
+    uniform sampler2D XYZColor
     {
         WrapS = ClampToBorder;
         WrapT = ClampToBorder;
