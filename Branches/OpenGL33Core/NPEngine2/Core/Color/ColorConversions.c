@@ -64,22 +64,48 @@ void npcolor_colorconversions_initialise(void)
 
 void xyY_to_XYZ(const Vector3 * const xyY, Vector3 * XYZ)
 {
+	XYZ->x = (xyY->x * xyY->z) / xyY->y;
+	XYZ->y = xyY->z;
+	XYZ->z = ((1.0 - (xyY->x + xyY->y)) * xyY->z) / xyY->y;
+}
+
+void xyY_to_XYZ_safe(const Vector3 * const xyY, Vector3 * XYZ)
+{
 	XYZ->x = XYZ->y = XYZ->z = 0.0;
 
 	if (xyY->y > 0.0)
 	{
-		XYZ->x = (xyY->x * xyY->z) / xyY->y;
-		XYZ->y = xyY->z;
-		XYZ->z = ((1.0 - xyY->x - xyY->y) * xyY->z) / xyY->y;
+		xyY_to_XYZ(xyY, XYZ);
 	}
 }
 
 void XYZ_to_xyY(const Vector3 * const XYZ, Vector3 * xyY)
 {
-	double d = 1.0 / (XYZ->x + XYZ->y + XYZ->z);
-	xyY->x = XYZ->x * d;
-	xyY->y = XYZ->y * d;
+	double s = (XYZ->x + XYZ->y + XYZ->z);
+	xyY->x = XYZ->x / s;
+	xyY->y = XYZ->y / s;
 	xyY->z = XYZ->y;
+}
+
+void XYZ_to_xyY_safe(const Vector3 * const XYZ, const Vector3 * const WhitepointXYZ, Vector3 * xyY)
+{
+	// convert whitepoint XYZ to xyY
+	Vector3 whitepoint_xyY;
+	XYZ_to_xyY(WhitepointXYZ, &whitepoint_xyY);
+
+	// set result to whitepoint chroma and XYZ input luminance
+	xyY->x = whitepoint_xyY.x;
+	xyY->y = whitepoint_xyY.y;
+	xyY->z = XYZ->y;
+
+	double s = (XYZ->x + XYZ->y + XYZ->z);
+
+	// only convert iff XYZ is not zero
+	if (s > 0.0)
+	{
+		xyY->x = XYZ->x / s;
+		xyY->y = XYZ->y / s;
+	}	
 }
 
 void Lab_to_XYZ(const Vector3 * Lab, const Vector3 * RefWhiteXYZ, Vector3 * XYZ)
