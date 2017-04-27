@@ -37,7 +37,6 @@ technique "preetham"
     uniform vec3 C;
     uniform vec3 D;
     uniform vec3 E;
-    uniform vec3 irradiance;
 
     # vertex streams
     in vec2 in_position : 0;
@@ -64,7 +63,6 @@ technique "preetham_sundisc"
     uniform vec3 C;
     uniform vec3 D;
     uniform vec3 E;
-    uniform vec3 irradiance;
     uniform vec3 sunColor;
     uniform float sunHalfApparentAngle;
 
