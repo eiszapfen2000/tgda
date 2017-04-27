@@ -4,7 +4,8 @@ in vec2 out_texcoords;
 
 void main()
 {
-    vec4 result = texture(colormap, out_texcoords);
+    vec3 XYZ = texture(colormap, out_texcoords).xyz;
+    vec3 lsRGB = XYZToLinearsRGB * XYZ;
 
-    target = vec4(pow(result.rgb / 50000, vec3(1/2.2)), 1.0);
+    target = vec4(pow(lsRGB / 50000, vec3(1/2.2)), 1.0);
 }

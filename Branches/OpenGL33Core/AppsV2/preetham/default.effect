@@ -4,6 +4,7 @@ technique "texture"
 {
     # effect variables
     uniform mat4 np_modelviewprojectionmatrix;
+    uniform mat3 XYZToLinearsRGB;
     uniform sampler2D colormap
     {
         WrapS = ClampToBorder;
