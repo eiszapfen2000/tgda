@@ -4,7 +4,6 @@ in vec2 out_texcoords;
 
 void main()
 {
-    vec4 c = texture(linearsRGB, out_texcoords);
-    vec3 XYZ = linearsRGBToXYZ * c.rgb;
-    target = max(log(XYZ.y), 0.0);
+    float Y = texture(linearsRGB, out_texcoords).y;
+    target = max(log(Y), 0.0);
 }

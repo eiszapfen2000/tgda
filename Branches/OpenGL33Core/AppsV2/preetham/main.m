@@ -728,27 +728,6 @@ int main (int argc, char **argv)
         sun_xyY.y = zenithColor_xyY.y * (nominatorSun.y / denominator.y);
         sun_xyY.z = zenithColor_xyY.z * (nominatorSun.z / denominator.z);
 
-        Vector3 sun_XYZ;
-        xyY_to_XYZ(&sun_xyY, &sun_XYZ);
-
-		Vector3 sun_Lab;
-        XYZ_to_Lab(&sun_XYZ, NP_WHITEPOINT_XYZ_CIE_D50, &sun_Lab);
-
-		Vector3 sun_XYZ_from_Lab;
-        Lab_to_XYZ(&sun_Lab, NP_WHITEPOINT_XYZ_CIE_D50, &sun_XYZ_from_Lab);
-
-		Vector3 sunColor_Lab;
-        XYZ_to_Lab(&sunColor_XYZ, NP_WHITEPOINT_XYZ_CIE_D50, &sunColor_Lab);
-
-		Vector3 combined_Lab;
-		//combined_Lab.x = MAX(sunColor_Lab.x, sun_Lab.x*2.0);
-		combined_Lab.x = MAX(sun_Lab.x, sunColor_Lab.x);
-		combined_Lab.y = sun_Lab.y;
-		combined_Lab.z = sun_Lab.z;
-
-		Vector3 combined_XYZ;
-        Lab_to_XYZ(&combined_Lab, NP_WHITEPOINT_XYZ_CIE_D50, &combined_XYZ);
-
         const FVector3 A = { ABCDE_x[0], ABCDE_y[0], ABCDE_Y[0] };
         const FVector3 B = { ABCDE_x[1], ABCDE_y[1], ABCDE_Y[1] };
         const FVector3 C = { ABCDE_x[2], ABCDE_y[2], ABCDE_Y[2] };
@@ -764,8 +743,6 @@ int main (int argc, char **argv)
         [ radiusInPixel_P setFValue:halfSkyResolution ];
         [ directionToSun_P setValue:directionToSun ];
         [ sunColor_P setValue:sunColor_XYZ ];
-		//[ sunColor_P setValue:sun_XYZ ];
-		//[ sunColor_P setValue:combined_XYZ ];
         [ sunHalfApparentAngle_P setValue:sunHalfApparentAngle ];
         [ zenithColor_P setValue:zenithColor_xyY ];
         [ denominator_P setValue:denominator ];
@@ -784,13 +761,12 @@ int main (int argc, char **argv)
 
         const float avgFresnel = 0.17;
         Vector3 averageReflectance_XYZ = v3_sv_scaled(avgFresnel / MATH_PI, &irradiance_XYZ);
-        Vector3 averageReflectance_LinearsRGB = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D65, &averageReflectance_XYZ);
 
 		const FVector4 clearColor 
 			= {
-				.x = averageReflectance_LinearsRGB.x,
-			    .y = averageReflectance_LinearsRGB.y,
-			    .z = averageReflectance_LinearsRGB.z,
+				.x = averageReflectance_XYZ.x,
+			    .y = averageReflectance_XYZ.y,
+			    .z = averageReflectance_XYZ.z,
 			    .w = 0.0f
 			  };
 
