@@ -369,8 +369,7 @@ static size_t index_for_resolution(int32_t resolution)
 
 
             [ timer update ];
-            const double genTime = [ timer frameTime ];
-            //NSLog(@"%lf", genTime);
+            //NSLog(@"Gen Time %f", [ timer frameTime ]);
 
             generationTime += OneDivSixty;
 
@@ -672,7 +671,10 @@ static size_t index_for_resolution(int32_t resolution)
                                 &item.geometry,
                                 item.options);
 
+                    [ timer update ];
                     [ self transformSpectra:&item into:&result ];
+                    [ timer update ];
+                    //NSLog(@"Transform: %f", [timer frameTime]);
 
                     NSUInteger queueCount = 0;
 
@@ -1194,6 +1196,12 @@ static NSUInteger od_variance_size(const void * item)
             {
                 hf = [ resultQueue heightfieldAtIndex:0 ];
                 variance = [ varianceQueue pointerAtIndex:0 ];
+
+                /*
+                NSRange range = NSMakeRange(1, resultQueueCount - 1);
+                [ varianceQueue removePointersInRange:range ];
+                [ resultQueue removeHeightfieldsInRange:range ];
+                */
             }
             
             //hf = [ resultQueue heightfieldAtIndex:0 ];
