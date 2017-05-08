@@ -127,6 +127,10 @@ typedef struct OdFrequencySpectrumFloat
     fftwf_complex * displacement;
     fftwf_complex * displacementXdXdZ;
     fftwf_complex * displacementZdXdZ;
+
+    double H0Time;
+    double HTime;
+    double quadrantSwapTime;
 }
 OdFrequencySpectrumFloat;
 

@@ -1055,7 +1055,7 @@ static NPTimer * timer = nil;
 
                 //if ( indexForK >= geometryStartIndex && indexForK <= geometryEndIndex )
                 if ( result.height != NULL
-                     &&  j > geometryXRange.x && j < geometryXRange.y
+                     && j > geometryXRange.x && j < geometryXRange.y
                      && i > geometryYRange.x && i < geometryYRange.y )
                 {
                     result.height[geometryIndex][0] = geometryhTilde[0];
@@ -1262,9 +1262,20 @@ right way.
     geometry_copy(&geometry, &currentGeometry);
     currentGeneratorSettings = generatorSettings;
 
+    // static spectrum generation
+    [ timer update ];
     [ self generateH0:generateBaseGeometry ];
+    [ timer update ];
+    const double H0Time = [ timer frameTime ];
 
+    // animated spectrum generation
+    [ timer update ];
     OdFrequencySpectrumFloat result = [ self generateHAtTime:time ];
+    [ timer update ];
+    const double HTime =  [ timer frameTime ];
+
+    // quadrant swapping
+    [ timer update ];
 
     if ( result.height != NULL )
     {
@@ -1331,7 +1342,12 @@ right way.
                            quadrants:ODQuadrant_2_4 ];
     }
 
-    //NSLog(@"H0: %f H:%f Swap:%f", h0time, htime, swaptime);
+    [ timer update ];
+    const double quadrantSwapTime = [ timer frameTime ];
+
+    result.H0Time = H0Time;
+    result.HTime  = HTime;
+    result.quadrantSwapTime = quadrantSwapTime;
 
     if ( baseSpectrum != NULL )
     {
