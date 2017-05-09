@@ -388,9 +388,6 @@ int main (int argc, char **argv)
     RETAIN(logLuminance);
     RETAIN(tonemap);
 
-    NPEffectVariableFloat * radiusInPixel_P
-        = [ effect variableWithName:@"radiusInPixel" ];
-
     NPEffectVariableFloat3 * directionToSun_P
         = [ effect variableWithName:@"directionToSun" ];
 
@@ -418,7 +415,7 @@ int main (int argc, char **argv)
     NPEffectVariableFloat * whiteLuminance_P = [ effect variableWithName:@"whiteLuminance" ];
 
     assert(A_xyY_P != nil && B_xyY_P != nil && C_xyY_P != nil && D_xyY_P != nil
-           && E_xyY_P != nil && radiusInPixel_P != nil && directionToSun_P != nil
+           && E_xyY_P != nil && directionToSun_P != nil
            && sunColor_P != nil && sunHalfApparentAngle_P != nil
            && zenithColor_P != nil && denominator_P != nil
 		   && XYZToLinearsRGB_P != nil
@@ -739,7 +736,6 @@ int main (int argc, char **argv)
         [ D_xyY_P setFValue:D ];
         [ E_xyY_P setFValue:E ];
 
-        [ radiusInPixel_P setFValue:halfSkyResolution ];
         [ directionToSun_P setValue:directionToSun ];
         [ sunColor_P setValue:sunColor_XYZ ];
         [ sunHalfApparentAngle_P setValue:sunHalfApparentAngle ];
