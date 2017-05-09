@@ -6,6 +6,15 @@
 
 typedef OdSpectrumGeometry OdHeightfieldGeometry;
 
+#define NUMBER_OF_FFT_TIMINGS       4
+#define HEIGHTS_FFT_TIMING          (NUMBER_OF_GEN_TIMINGS + 0)
+#define DISPLACEMENTS_FFT_TIMING    (NUMBER_OF_GEN_TIMINGS + 1)
+#define GRADIENTS_FFT_TIMING        (NUMBER_OF_GEN_TIMINGS + 2)
+#define DISP_DERIVATIVES_FFT_TIMING (NUMBER_OF_GEN_TIMINGS + 3)
+
+#define NUMBER_OF_TIMINGS (NUMBER_OF_GEN_TIMINGS + NUMBER_OF_FFT_TIMINGS)
+
+
 typedef struct OdHeightfieldData
 {
     float timeStamp;
@@ -15,6 +24,7 @@ typedef struct OdHeightfieldData
     FVector2 * gradients32f; // x = gradient x, y = gradient z
     FVector4 * displacementDerivatives32f; // x = dx_x , y = dx_z, z = dz_x, w = dz_z
     FVector2 * ranges;
+    double timings[NUMBER_OF_TIMINGS];
 }
 OdHeightfieldData;
 
