@@ -812,8 +812,8 @@ ODQuadrants;
             const size_t n
                 = necessaryResolution.x * necessaryResolution.y * currentGeometry.numberOfLods;
 
-	        H0 = fftwf_alloc_complex(n);
-	        randomNumbers = ALLOC_ARRAY(double, 2 * n);
+            H0 = fftwf_alloc_complex(n);
+            randomNumbers = ALLOC_ARRAY(double, 2 * n);
 
             H0Lods = currentGeometry.numberOfLods;
             H0Resolution = necessaryResolution;
@@ -1345,9 +1345,9 @@ right way.
     [ timer update ];
     const double quadrantSwapTime = [ timer frameTime ];
 
-    result.H0Time = H0Time;
-    result.HTime  = HTime;
-    result.quadrantSwapTime = quadrantSwapTime;
+    result.timings[H0_GEN_TIMING] = H0Time;
+    result.timings[H_GEN_TIMING]  = HTime;
+    result.timings[QSWAP_TIMING] = quadrantSwapTime;
 
     if ( baseSpectrum != NULL )
     {
