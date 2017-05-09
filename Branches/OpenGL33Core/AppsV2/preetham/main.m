@@ -4,6 +4,7 @@
 #import <math.h>
 #import <stdlib.h>
 #import <time.h>
+#include <unistd.h>
 #import <Foundation/NSException.h>
 #import <Foundation/NSPointerArray.h>
 #import <Foundation/Foundation.h>
@@ -491,6 +492,8 @@ int main (int argc, char **argv)
 	BOOL tonemapping = YES;
 	Vector3 irradiance_XYZ = v3_zero();
 
+    float* screenShotBuffer = ALLOC_ARRAY(float, skyResolution * skyResolution * 3);
+
     NPFullscreenQuad * fsQuad = [[ NPFullscreenQuad alloc ] init ];
 
     // run loop
@@ -831,7 +834,47 @@ int main (int argc, char **argv)
 		if ( [screenShot deactivated] == YES )
 		{
 			NSLog(@"CHeeeers");
-			ilutGLScreenie();
+			//ilutGLScreenie();
+
+            NPTexture2D * tex = [ preethamTarget texture ];
+            [[[ NP Graphics ] textureBindingState ] setTextureImmediately:tex ];
+
+            uint32_t texWidth = [ tex width ];
+            uint32_t texHeight = [ tex height ];
+            glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, screenShotBuffer);
+
+            [[ NP Graphics ] checkForGLErrors ];
+            [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
+
+            const char * screenshotFilePattern = "Preetham_XXXXXX.pfm";
+            char buffer[strlen(screenshotFilePattern) + 1];
+            strcpy(buffer, screenshotFilePattern);
+
+            errno = 0;
+            int screenshotFile = mkstemps(buffer, 4);
+
+            if (screenshotFile != -1)
+            {
+                errno = 0;
+                FILE * pfm = fdopen(screenshotFile, "wb");
+
+                if (pfm != NULL)
+                {
+                    // RGB
+                    fprintf(pfm, "PF\n");
+                    // resolution
+                    fprintf(pfm, "%u %u\n", texWidth, texHeight);
+                    // little endian
+                    fprintf(pfm, "-1.0\n");
+
+                    size_t bufferSize = sizeof(float) * (size_t)texWidth * (size_t)texHeight * (size_t)3;
+                    size_t lolz = fwrite(screenShotBuffer, 1, bufferSize, pfm);
+
+                    printf("%lu bytes written to %s\n", lolz, buffer); fflush(stdout);
+
+                    fclose(pfm);
+                }
+            }
 		}
 
         // swap front and back rendering buffers
@@ -849,6 +892,8 @@ int main (int argc, char **argv)
         // kill autorelease pool
         DESTROY(innerPool);
     }
+
+    FREE(screenShotBuffer);
 
     DESTROY(fsQuad);
 
