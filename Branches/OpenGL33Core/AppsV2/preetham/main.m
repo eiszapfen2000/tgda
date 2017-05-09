@@ -714,16 +714,6 @@ int main (int argc, char **argv)
 
 		modified = NO;
 
-        Vector3 nominatorSun;
-        nominatorSun.x = preetham_digamma(thetaSun, 0.0, ABCDE_x);
-        nominatorSun.y = preetham_digamma(thetaSun, 0.0, ABCDE_y);
-        nominatorSun.z = preetham_digamma(thetaSun, 0.0, ABCDE_Y);
-
-        Vector3 sun_xyY;
-        sun_xyY.x = zenithColor_xyY.x * (nominatorSun.x / denominator.x);
-        sun_xyY.y = zenithColor_xyY.y * (nominatorSun.y / denominator.y);
-        sun_xyY.z = zenithColor_xyY.z * (nominatorSun.z / denominator.z);
-
         const FVector3 A = { ABCDE_x[0], ABCDE_y[0], ABCDE_Y[0] };
         const FVector3 B = { ABCDE_x[1], ABCDE_y[1], ABCDE_Y[1] };
         const FVector3 C = { ABCDE_x[2], ABCDE_y[2], ABCDE_Y[2] };
