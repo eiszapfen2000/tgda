@@ -483,12 +483,7 @@ int main (int argc, char **argv)
 
     // tonemap
     double a = 0.18;
-    double L_white = 2.0;
-
-    const float halfSkyResolution = ((float)skyResolution) / (2.0f);
-
-    const float cStart = -halfSkyResolution;
-    const float cEnd   =  halfSkyResolution;
+    double L_white = 4.0;
 
     BOOL modified = YES;
 	BOOL useIrradiance = YES;
@@ -635,7 +630,8 @@ int main (int argc, char **argv)
 
         // Preetham Skylight sun disc color
         // XYZ
-        Vector3 sunColor_XYZ = compute_sun_color(turbidity, thetaSun);
+        //Vector3 sunColor_XYZ = compute_sun_color(turbidity, thetaSun);
+        Vector3 sunColor_XYZ = compute_sun_color(turbidity, MAX(0, thetaSun - (MATH_DEG_TO_RAD * 25)));
 
         // Page 22/23 compute coefficients
 	    double ABCDE_x[5], ABCDE_y[5], ABCDE_Y[5];
