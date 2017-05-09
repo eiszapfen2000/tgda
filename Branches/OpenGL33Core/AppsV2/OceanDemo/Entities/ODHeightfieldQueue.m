@@ -56,6 +56,7 @@ void heightfield_hf_init_with_geometry_and_options(
 
     heightfield->ranges = ALLOC_ARRAY(FVector2, NUMBER_OF_RANGES * numberOfLods);
     memset(heightfield->ranges, 0, sizeof(FVector2) * NUMBER_OF_RANGES * numberOfLods);
+    memset(heightfield->timings, 0, sizeof(heightfield->timings));
 }
 
 void heightfield_hf_clear(OdHeightfieldData * heightfield)

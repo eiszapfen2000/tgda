@@ -403,6 +403,8 @@ static size_t index_for_resolution(int32_t resolution)
     DESTROY(pool);
 }
 
+static NPTimer * transformTimer = nil;
+
 - (void) transformSpectra:(const OdFrequencySpectrumFloat *)item
                      into:(OdHeightfieldData *)result
 {
@@ -422,6 +424,11 @@ static size_t index_for_resolution(int32_t resolution)
 
     result->timeStamp = item->timestamp;
 
+    double heightTime = 0.0;
+    double displacementTime = 0.0;
+    double gradientTime = 0.0;
+    double dispDerivativesTime = 0.0;
+
     fftwf_complex * complexHeights = NULL;
     fftwf_complex * complexDisplacement = NULL;
     fftwf_complex * complexGradient = NULL;
@@ -431,6 +438,8 @@ static size_t index_for_resolution(int32_t resolution)
     if ( item->height != NULL )
     {
         complexHeights = fftwf_alloc_complex(lodCount * numberOfGeometryElements);
+
+        [ transformTimer update ];
 
         for ( int32_t l = 0; l < lodCount; l++ )
         {
@@ -442,11 +451,16 @@ static size_t index_for_resolution(int32_t resolution)
                 complexHeights + offset
                 );
         }
+
+        [ transformTimer update ];
+        heightTime = [ transformTimer frameTime ];
     }
 
     if ( item->displacement != NULL )
     {
         complexDisplacement = fftwf_alloc_complex(lodCount * numberOfGeometryElements);
+
+        [ transformTimer update ];
 
         for ( int32_t l = 0; l < lodCount; l++ )
         {
@@ -458,11 +472,16 @@ static size_t index_for_resolution(int32_t resolution)
                 complexDisplacement + offset
                 );
         }
+
+        [ transformTimer update ];
+        displacementTime = [ transformTimer frameTime ];
     }
 
     if ( item->gradient != NULL )
     {
         complexGradient = fftwf_alloc_complex(lodCount * numberOfGradientElements);
+
+        [ transformTimer update ];
 
         for ( int32_t l = 0; l < lodCount; l++ )
         {
@@ -474,12 +493,17 @@ static size_t index_for_resolution(int32_t resolution)
                 complexGradient + offset
                 );
         }
+
+        [ transformTimer update ];
+        gradientTime = [ transformTimer frameTime ];
     }
 
     if ( item->displacementXdXdZ != NULL && item->displacementZdXdZ != NULL )
     {
         complexDisplacementXdXdZ = fftwf_alloc_complex(lodCount * numberOfGradientElements);
         complexDisplacementZdXdZ = fftwf_alloc_complex(lodCount * numberOfGradientElements);
+
+        [ transformTimer update ];
 
         for ( int32_t l = 0; l < lodCount; l++ )
         {
@@ -497,6 +521,9 @@ static size_t index_for_resolution(int32_t resolution)
                 complexDisplacementZdXdZ + offset
                 );
         }
+
+        [ transformTimer update ];
+        dispDerivativesTime = [ transformTimer frameTime ];
     }
 
     if ( item->height != NULL )
@@ -593,6 +620,14 @@ static size_t index_for_resolution(int32_t resolution)
     heightfield_hf_compute_min_max_displacements(result);
     heightfield_hf_compute_min_max_gradients(result);
     heightfield_hf_compute_min_max_displacement_derivatives(result);
+
+    result->timings[H0_GEN_TIMING] = item->timings[H0_GEN_TIMING];
+    result->timings[H_GEN_TIMING] = item->timings[H_GEN_TIMING];
+    result->timings[QSWAP_TIMING] = item->timings[QSWAP_TIMING];
+    result->timings[HEIGHTS_FFT_TIMING] = heightTime;
+    result->timings[DISPLACEMENTS_FFT_TIMING] = displacementTime;
+    result->timings[GRADIENTS_FFT_TIMING] = gradientTime;
+    result->timings[DISP_DERIVATIVES_FFT_TIMING] = dispDerivativesTime;
 }
 
 - (void) transform:(id)argument
@@ -600,7 +635,6 @@ static size_t index_for_resolution(int32_t resolution)
     feenableexcept(FE_DIVBYZERO | FE_INVALID);
 
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
-    NPTimer * timer = [[ NPTimer alloc ] initWithName:@"Transform Timer" ];
 
     while ( [[ NSThread currentThread ] isCancelled ] == NO )
     {    
@@ -671,10 +705,7 @@ static size_t index_for_resolution(int32_t resolution)
                                 &item.geometry,
                                 item.options);
 
-                    [ timer update ];
                     [ self transformSpectra:&item into:&result ];
-                    [ timer update ];
-                    //NSLog(@"Transform: %f", [timer frameTime]);
 
                     {
                         [ heightfieldQueueMutex lock ];
@@ -704,7 +735,6 @@ static size_t index_for_resolution(int32_t resolution)
         DESTROY(innerPool);
     }
 
-    DESTROY(timer);
     DESTROY(pool);
 }
 
@@ -721,6 +751,11 @@ static NSUInteger od_variance_size(const void * item)
 }
 
 @implementation ODOceanEntity
+
++ (void) initialize
+{
+    transformTimer = [[ NPTimer alloc ] initWithName:@"Transform Timer" ];
+}
 
 - (id) init
 {
