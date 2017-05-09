@@ -103,6 +103,12 @@ bool generator_settings_equal(const OdGeneratorSettings * pOne, const OdGenerato
 OdGeneratorSettings generator_settings_zero();
 OdGeneratorSettings generator_settings_max();
 
+#define NUMBER_OF_GEN_TIMINGS 3
+
+#define H0_GEN_TIMING   0
+#define H_GEN_TIMING    1
+#define QSWAP_TIMING    2
+
 typedef struct OdFrequencySpectrumFloat
 {
     // corresponds to the time parameter used in
@@ -128,9 +134,7 @@ typedef struct OdFrequencySpectrumFloat
     fftwf_complex * displacementXdXdZ;
     fftwf_complex * displacementZdXdZ;
 
-    double H0Time;
-    double HTime;
-    double quadrantSwapTime;
+    double timings[NUMBER_OF_GEN_TIMINGS];
 }
 OdFrequencySpectrumFloat;
 
