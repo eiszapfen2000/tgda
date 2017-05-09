@@ -57,18 +57,18 @@
         // compute difference using same types
         // convert to double afterwards
 
-	    struct timespec diff;
+        struct timespec diff;
 
-	    if ( (updateTime.tv_nsec - lastUpdate.tv_nsec) < 0 )
+        if ( (updateTime.tv_nsec - lastUpdate.tv_nsec) < 0 )
         {
-		    diff.tv_sec  = updateTime.tv_sec - lastUpdate.tv_sec - 1;
-		    diff.tv_nsec = 1000000000 + updateTime.tv_nsec - lastUpdate.tv_nsec;
-	    }
+            diff.tv_sec  = updateTime.tv_sec - lastUpdate.tv_sec - 1;
+            diff.tv_nsec = 1000000000 + updateTime.tv_nsec - lastUpdate.tv_nsec;
+        }
         else
         {
-		    diff.tv_sec  = updateTime.tv_sec  - lastUpdate.tv_sec;
-		    diff.tv_nsec = updateTime.tv_nsec - lastUpdate.tv_nsec;
-	    }
+            diff.tv_sec  = updateTime.tv_sec  - lastUpdate.tv_sec;
+            diff.tv_nsec = updateTime.tv_nsec - lastUpdate.tv_nsec;
+        }
 
         frameTime = ((double)(diff.tv_sec)) + ((double)(diff.tv_nsec) / 1000000000.0);
         lastUpdate = updateTime;
@@ -106,7 +106,7 @@
     secondsPassed = 0;
     fps = 0;
     fpsThisSecond = 0;
-   	clock_gettime(CLOCK_MONOTONIC, &lastUpdate);
+    clock_gettime(CLOCK_MONOTONIC, &lastUpdate);
 }
 
 - (void) pause
