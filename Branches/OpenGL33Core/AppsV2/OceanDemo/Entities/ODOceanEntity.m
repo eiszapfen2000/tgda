@@ -676,8 +676,6 @@ static size_t index_for_resolution(int32_t resolution)
                     [ timer update ];
                     //NSLog(@"Transform: %f", [timer frameTime]);
 
-                    NSUInteger queueCount = 0;
-
                     {
                         [ heightfieldQueueMutex lock ];
 
@@ -689,7 +687,6 @@ static size_t index_for_resolution(int32_t resolution)
                         [ varianceQueue addPointer:&variance ];
                         [ resultQueue addHeightfield:&result ];
 
-                        queueCount = [ resultQueue count ];
 
                         [ heightfieldQueueMutex unlock ];
                     }
