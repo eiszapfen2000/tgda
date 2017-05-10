@@ -420,7 +420,7 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
         Vector3 zenithColor = preetham_zenith_color(turbidity, thetaSun);
 
         Vector3 sunXYZ = compute_sun_color(turbidity, thetaSun);
-        sunColor = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D50, &sunXYZ);
+        sunColor = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D65, &sunXYZ);
 
         Vector3 denominator;
         denominator.x = preetham_digamma(0.0, thetaSun, ABCDE_x);
@@ -486,7 +486,7 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
             }
         }
 
-        irradianceRGB = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D50, &irradianceXYZ);
+        irradianceRGB = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D65, &irradianceXYZ);
 
         /*
         http://en.wikipedia.org/wiki/Solid_angle#Sun_and_Moon
@@ -584,7 +584,7 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
         //[[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
         const float avgFresnel = 0.17;
         Vector3 averageReflectance_XYZ = v3_sv_scaled(avgFresnel / MATH_PI, &irradianceXYZ);
-        Vector3 averageReflectance_LinearsRGB = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D50, &averageReflectance_XYZ);
+        Vector3 averageReflectance_LinearsRGB = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D65, &averageReflectance_XYZ);
 
         const FVector4 clearColor 
             = {
