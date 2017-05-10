@@ -423,6 +423,10 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
         Vector3 sunXYZ = compute_sun_color(turbidity, MAX(0, thetaSun - (MATH_DEG_TO_RAD * 30)));
         sunColor = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D65, &sunXYZ);
 
+        sunDiskA = 100.0 + cos(thetaSun) * 100;
+        sunDiskB = 0.0;
+        sunDiskC = 100.0 + cos(thetaSun) * 50;
+
         Vector3 denominator;
         denominator.x = preetham_digamma(0.0, thetaSun, ABCDE_x);
         denominator.y = preetham_digamma(0.0, thetaSun, ABCDE_y);
