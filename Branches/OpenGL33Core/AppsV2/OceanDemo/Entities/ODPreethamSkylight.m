@@ -419,7 +419,8 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
 
         Vector3 zenithColor = preetham_zenith_color(turbidity, thetaSun);
 
-        Vector3 sunXYZ = compute_sun_color(turbidity, thetaSun);
+        //Vector3 sunXYZ = compute_sun_color(turbidity, thetaSun);
+        Vector3 sunXYZ = compute_sun_color(turbidity, MAX(0, thetaSun - (MATH_DEG_TO_RAD * 30)));
         sunColor = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D65, &sunXYZ);
 
         Vector3 denominator;
