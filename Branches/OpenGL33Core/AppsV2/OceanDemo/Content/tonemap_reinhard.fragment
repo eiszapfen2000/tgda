@@ -2,15 +2,25 @@
 
 in vec2 out_texcoords;
 
-const mat3 LinearsRGBToXYZ
+const mat3 LinearsRGBToXYZ_D50
     = mat3(0.4360747, 0.2225045, 0.0139322,
            0.3850649, 0.7168786, 0.0971045,
            0.1430804, 0.0606169, 0.7141733);
 
-const mat3 XYZ2LinearsRGB
+const mat3 LinearsRGBToXYZ_D65
+    = mat3(0.4124564, 0.2126729, 0.0193339,
+           0.3575761, 0.7151522, 0.1191920,
+           0.1804375, 0.0721750, 0.9503041);
+
+const mat3 XYZ2LinearsRGB_D50
     = mat3(3.1338561, -0.9787684,  0.0719453,
            -1.6168667, 1.9161415, -0.2289914,
             -0.4906146, 0.0334540, 1.4052427);
+
+const mat3 XYZ2LinearsRGB_D65
+	= mat3(3.2404542, -0.9692660, 0.0556434,
+		   -1.5371385, 1.8760108, -0.2040259,
+		   -0.4985314, 0.0415560, 1.0572252);
 
 void main()
 {
@@ -24,7 +34,7 @@ void main()
     float averageLuminance = adaptedAverageLuminance;
 
     vec4 c = texture(linearsRGB, out_texcoords);
-    vec3 XYZ = LinearsRGBToXYZ * c.rgb;
+    vec3 XYZ = LinearsRGBToXYZ_D65 * c.rgb;
 
     vec3 xyY;
     xyY.z = XYZ.y;                           // copy luminance Y
@@ -42,7 +52,7 @@ void main()
     XYZ.g = xyY.z;                                  // copy luminance Y
     XYZ.b = xyY.z * (1.0f - xyY.x - xyY.y) / xyY.y; // Z = Y * (1-x-y) / y
 
-    vec3 lsRGB = XYZ2LinearsRGB * XYZ;
+    vec3 lsRGB = XYZ2LinearsRGB_D65 * XYZ;
 
     //target = vec4(lsRGB, 1.0);
     target = vec4(pow(lsRGB, vec3(1/2.2)), 1.0);
