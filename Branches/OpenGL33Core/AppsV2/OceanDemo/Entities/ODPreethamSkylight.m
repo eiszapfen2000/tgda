@@ -123,7 +123,7 @@ static Vector3 preetham_zenith_color(double turbidity, double thetaSun)
     return zenithColor;
 }
 
-static double digamma(double theta, double gamma, double ABCDE[5])
+static double preetham_digamma(double theta, double gamma, double ABCDE[5])
 {
     const double cosTheta = cos(theta);
     const double cosGamma = cos(gamma);
@@ -423,9 +423,9 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
         sunColor = m3_mv_multiply(NP_XYZ_TO_LINEAR_sRGB_D50, &sunXYZ);
 
         Vector3 denominator;
-        denominator.x = digamma(0.0, thetaSun, ABCDE_x);
-        denominator.y = digamma(0.0, thetaSun, ABCDE_y);
-        denominator.z = digamma(0.0, thetaSun, ABCDE_Y);
+        denominator.x = preetham_digamma(0.0, thetaSun, ABCDE_x);
+        denominator.y = preetham_digamma(0.0, thetaSun, ABCDE_y);
+        denominator.z = preetham_digamma(0.0, thetaSun, ABCDE_Y);
 
         const double sinThetaSun = sin(thetaSun);
         const double cosThetaSun = cos(thetaSun);
@@ -460,14 +460,16 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
                 v.x = sinTheta * cosPhi;
                 v.y = sinTheta * sinPhi;
                 v.z = cosTheta;
+                //angle = atan2(norm(cross(a,b)),dot(a,b));
                 double cosGamma = v3_vv_dot_product(&localDirectionToSun, &v);
-                cosGamma = MAX(MIN(cosGamma, 1.0), -1.0);
-                double gamma = acos(cosGamma);
+                Vector3 rotationAxis = v3_vv_cross_product(&localDirectionToSun, &v);
+                double rotationAxisLength = v3_v_length(&rotationAxis);
+                double gamma = atan2(rotationAxisLength, cosGamma);
 
                 Vector3 nominator;
-                nominator.x = digamma(theta, gamma, ABCDE_x);
-                nominator.y = digamma(theta, gamma, ABCDE_y);
-                nominator.z = digamma(theta, gamma, ABCDE_Y);
+                nominator.x = preetham_digamma(theta, gamma, ABCDE_x);
+                nominator.y = preetham_digamma(theta, gamma, ABCDE_y);
+                nominator.z = preetham_digamma(theta, gamma, ABCDE_Y);
 
                 Vector3 xyY;
                 xyY.x = zenithColor.x * (nominator.x / denominator.x);
@@ -497,11 +499,6 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
         double sunHalfApparentAngle = 0.00935 * 0.5;
         double sunDiskRadius = tan(sunHalfApparentAngle);
         double sunSolidAngle = sunDiskRadius * sunDiskRadius * MATH_PI;
-
-        const float halfSkyResolution = ((float)skylightResolution) / (2.0f);
-
-        const float cStart = -halfSkyResolution;
-        const float cEnd   =  halfSkyResolution;
 
         const Vector3 A = { ABCDE_x[0], ABCDE_y[0], ABCDE_Y[0] };
         const Vector3 B = { ABCDE_x[1], ABCDE_y[1], ABCDE_Y[1] };
