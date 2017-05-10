@@ -11,6 +11,7 @@
 #import "Log/NPLogFile.h"
 #import "Core/Math/FRectangle.h"
 #import "Core/Container/NPAssetArray.h"
+#import "Core/File/NPFile.h"
 #import "Core/Thread/NPSemaphore.h"
 #import "Core/Timer/NPTimer.h"
 #import "Graphics/Buffer/NPBufferObject.h"
@@ -492,8 +493,6 @@ int main (int argc, char **argv)
     BOOL tonemapping = YES;
     Vector3 irradiance_XYZ = v3_zero();
 
-    float* screenShotBuffer = ALLOC_ARRAY(float, skyResolution * skyResolution * 3);
-
     NPFullscreenQuad * fsQuad = [[ NPFullscreenQuad alloc ] init ];
 
     // run loop
@@ -833,14 +832,17 @@ int main (int argc, char **argv)
 
         if ( [screenShot deactivated] == YES )
         {
-            NSLog(@"CHeeeers");
             //ilutGLScreenie();
 
             NPTexture2D * tex = [ preethamTarget texture ];
+
+            const uint32_t width  = [ tex width  ];
+            const uint32_t height = [ tex height ];
+
+            float* screenShotBuffer = ALLOC_ARRAY(float, width * height * 3);
+
             [[[ NP Graphics ] textureBindingState ] setTextureImmediately:tex ];
 
-            uint32_t texWidth = [ tex width ];
-            uint32_t texHeight = [ tex height ];
             glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, screenShotBuffer);
 
             [[ NP Graphics ] checkForGLErrors ];
@@ -864,19 +866,20 @@ int main (int argc, char **argv)
                 // RGB
                 fprintf(pfm, "PF\n");
                 // resolution
-                fprintf(pfm, "%u %u\n", texWidth, texHeight);
+                fprintf(pfm, "%u %u\n", width, height);
                 // little endian
                 fprintf(pfm, "-1.0\n");
 
-                size_t bufferSize = sizeof(float) * (size_t)texWidth * (size_t)texHeight * (size_t)3;
+                size_t bufferSize = sizeof(float) * (size_t)width * (size_t)height * (size_t)3;
                 written = fwrite(screenShotBuffer, 1, bufferSize, pfm);
 
                 printf("%lu Bytes written\n", written);
 
                 fclose(pfm);
             }
-
-             fflush(stdout);
+            
+            fflush(stdout);
+            FREE(screenShotBuffer);
         }
 
         // swap front and back rendering buffers
@@ -894,8 +897,6 @@ int main (int argc, char **argv)
         // kill autorelease pool
         DESTROY(innerPool);
     }
-
-    FREE(screenShotBuffer);
 
     DESTROY(fsQuad);
 
