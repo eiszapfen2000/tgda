@@ -1,9 +1,9 @@
 #define _GNU_SOURCE
-#import <assert.h>
-#import <fenv.h>
-#import <math.h>
-#import <stdlib.h>
-#import <time.h>
+#include <assert.h>
+#include <fenv.h>
+#include <math.h>
+#include <stdlib.h>
+#include <time.h>
 #include <unistd.h>
 #import <Foundation/NSException.h>
 #import <Foundation/NSPointerArray.h>
@@ -148,8 +148,8 @@ static Vector3 preetham_zenith(double turbidity, double thetaSun)
     // A Practical Analytic Model for Daylight                              
     // page 22/23    
 
-    #define CBQ(X)		((X) * (X) * (X))
-    #define SQR(X)		((X) * (X))
+    #define CBQ(X)      ((X) * (X) * (X))
+    #define SQR(X)      ((X) * (X))
 
     Vector3 zenithColor;
 
@@ -215,41 +215,41 @@ static Vector3 compute_sun_color(double turbidity, double thetaSun)
     {
         const double lambda = lambda_micrometer[i];
 
-		//apply each transmittance function, no particular order.
+        //apply each transmittance function, no particular order.
         double exponent = 0.0;
 
-		//Rayleigh
-		exponent += (-0.008735 * pow(lambda, -4.08 * m));
+        //Rayleigh
+        exponent += (-0.008735 * pow(lambda, -4.08 * m));
 
-		//Angstrom
-		exponent += (-beta * pow(lambda, - alpha * m));
+        //Angstrom
+        exponent += (-beta * pow(lambda, - alpha * m));
 
-		//ozone
-		exponent += (-sun_spectral_k_o[i] * l * m);
+        //ozone
+        exponent += (-sun_spectral_k_o[i] * l * m);
 
-		//mixed gases absorption
-		const double k_g = sun_spectral_k_g[i];
-		exponent += (-1.41 * k_g * m) / pow(1.0 + 118.93 * k_g * m, 0.45);
+        //mixed gases absorption
+        const double k_g = sun_spectral_k_g[i];
+        exponent += (-1.41 * k_g * m) / pow(1.0 + 118.93 * k_g * m, 0.45);
 
-		//water vapor absorption
-		const double k_wa = sun_spectral_k_wa[i];
-		exponent += (-0.2385 * k_wa * w * m) / pow(1.0 + 20.07 * k_wa * w * m, 0.45);
+        //water vapor absorption
+        const double k_wa = sun_spectral_k_wa[i];
+        exponent += (-0.2385 * k_wa * w * m) / pow(1.0 + 20.07 * k_wa * w * m, 0.45);
 
-		spectralRadiance[i] = sun_spectral_radiance[i] * exp(exponent);
+        spectralRadiance[i] = sun_spectral_radiance[i] * exp(exponent);
     }
 
-	//the sun spectral radiances are expressed in cm^{-2} => we have to scale it by 10000 to obtain
-	//the spectral radiance in W.m^{-2}.um^{-1}.sr^{-1},
-	
-	//the sun spectral radiances have wavelengthes expressed in micro-meters => we first have to convert it to wavelengthes
-	//expressed in nanometers, as the color matching functions are expressed with wavelengthes in nanometers => we scale the
-	//spectral radiance by 0.001. The delta_lambda is 10nm => the scaling factor for the wavelength change of unit is 0.01f	
+    //the sun spectral radiances are expressed in cm^{-2} => we have to scale it by 10000 to obtain
+    //the spectral radiance in W.m^{-2}.um^{-1}.sr^{-1},
+    
+    //the sun spectral radiances have wavelengthes expressed in micro-meters => we first have to convert it to wavelengthes
+    //expressed in nanometers, as the color matching functions are expressed with wavelengthes in nanometers => we scale the
+    //spectral radiance by 0.001. The delta_lambda is 10nm => the scaling factor for the wavelength change of unit is 0.01f 
 
     Vector3 XYZ = v3_zero();
-	
-	double delta = 10000.0 * 0.001 * 10.0;
+    
+    double delta = 10000.0 * 0.001 * 10.0;
 
-	for ( int32_t i = 0; i < NUMBER_OF_SPECTRAL_COMPONENTS; i++ )
+    for ( int32_t i = 0; i < NUMBER_OF_SPECTRAL_COMPONENTS; i++ )
     {
         XYZ.x += spectralRadiance[i] * xyz_matching_functions[0][i] * delta;
         XYZ.y += spectralRadiance[i] * xyz_matching_functions[1][i] * delta;
@@ -419,7 +419,7 @@ int main (int argc, char **argv)
            && E_xyY_P != nil && directionToSun_P != nil
            && sunColor_P != nil && sunHalfApparentAngle_P != nil
            && zenithColor_P != nil && denominator_P != nil
-		   && XYZToLinearsRGB_P != nil
+           && XYZToLinearsRGB_P != nil
            && key_P != nil && averageLuminanceLevel_P != nil
            && whiteLuminance_P != nil);
 
@@ -462,16 +462,16 @@ int main (int argc, char **argv)
         = [[[ NP Input ] inputActions ] 
                 addInputActionWithName:@"Screenshot"
                             inputEvent:NpKeyboardS ];
-	
+    
 
     RETAIN(leftClick);
     RETAIN(rightClick);
     RETAIN(wheelUp);
     RETAIN(wheelDown);
-	RETAIN(irradiance);
-	RETAIN(sunDisc);
-	RETAIN(tmap);
-	RETAIN(screenShot);
+    RETAIN(irradiance);
+    RETAIN(sunDisc);
+    RETAIN(tmap);
+    RETAIN(screenShot);
 
     DESTROY(rPool);
 
@@ -487,10 +487,10 @@ int main (int argc, char **argv)
     double L_white = 4.0;
 
     BOOL modified = YES;
-	BOOL useIrradiance = YES;
-	BOOL renderSunDisc = YES;
-	BOOL tonemapping = YES;
-	Vector3 irradiance_XYZ = v3_zero();
+    BOOL useIrradiance = YES;
+    BOOL renderSunDisc = YES;
+    BOOL tonemapping = YES;
+    Vector3 irradiance_XYZ = v3_zero();
 
     float* screenShotBuffer = ALLOC_ARRAY(float, skyResolution * skyResolution * 3);
 
@@ -564,19 +564,19 @@ int main (int argc, char **argv)
 
         if ([ irradiance deactivated ] == YES )
         {
-	        useIrradiance = !useIrradiance;
-	        irradiance_XYZ = v3_zero();
-	        modified = YES;
+            useIrradiance = !useIrradiance;
+            irradiance_XYZ = v3_zero();
+            modified = YES;
         }
 
         if ([ sunDisc deactivated ] == YES )
         {
-	        renderSunDisc = !renderSunDisc;
+            renderSunDisc = !renderSunDisc;
         }
 
         if ([ tmap deactivated ] == YES )
         {
-	        tonemapping = !tonemapping;
+            tonemapping = !tonemapping;
         }
 
         thetaSun = MIN(thetaSun, MATH_PI_DIV_2);
@@ -589,7 +589,7 @@ int main (int argc, char **argv)
 
         double sunHalfApparentAngle = 0.00935 * 0.5;
         //double sunHalfApparentAngle = 0.25 * MATH_PI / 360.0;
-		//double sunHalfApparentAngle = 0.25 * MATH_DEG_TO_RAD;
+        //double sunHalfApparentAngle = 0.25 * MATH_DEG_TO_RAD;
         double sunDiskRadius = tan(sunHalfApparentAngle);
 
         //
@@ -637,25 +637,25 @@ int main (int argc, char **argv)
         Vector3 sunColor_XYZ = compute_sun_color(turbidity, MAX(0, thetaSun - (MATH_DEG_TO_RAD * 25)));
 
         // Page 22/23 compute coefficients
-	    double ABCDE_x[5], ABCDE_y[5], ABCDE_Y[5];
+        double ABCDE_x[5], ABCDE_y[5], ABCDE_Y[5];
 
-	    ABCDE_x[0] = -0.01925 * turbidity - 0.25922;
-	    ABCDE_x[1] = -0.06651 * turbidity + 0.00081;
-	    ABCDE_x[2] = -0.00041 * turbidity + 0.21247;
-	    ABCDE_x[3] = -0.06409 * turbidity - 0.89887;
-	    ABCDE_x[4] = -0.00325 * turbidity + 0.04517;
+        ABCDE_x[0] = -0.01925 * turbidity - 0.25922;
+        ABCDE_x[1] = -0.06651 * turbidity + 0.00081;
+        ABCDE_x[2] = -0.00041 * turbidity + 0.21247;
+        ABCDE_x[3] = -0.06409 * turbidity - 0.89887;
+        ABCDE_x[4] = -0.00325 * turbidity + 0.04517;
 
-	    ABCDE_y[0] = -0.01669 * turbidity - 0.26078;
-	    ABCDE_y[1] = -0.09495 * turbidity + 0.00921;
-	    ABCDE_y[2] = -0.00792 * turbidity + 0.21023;
-	    ABCDE_y[3] = -0.04405 * turbidity - 1.65369;
-	    ABCDE_y[4] = -0.01092 * turbidity + 0.05291;
+        ABCDE_y[0] = -0.01669 * turbidity - 0.26078;
+        ABCDE_y[1] = -0.09495 * turbidity + 0.00921;
+        ABCDE_y[2] = -0.00792 * turbidity + 0.21023;
+        ABCDE_y[3] = -0.04405 * turbidity - 1.65369;
+        ABCDE_y[4] = -0.01092 * turbidity + 0.05291;
 
-	    ABCDE_Y[0] =  0.17872 * turbidity - 1.46303;
-	    ABCDE_Y[1] = -0.35540 * turbidity + 0.42749;
-	    ABCDE_Y[2] = -0.02266 * turbidity + 5.32505;
-	    ABCDE_Y[3] =  0.12064 * turbidity - 2.57705;
-	    ABCDE_Y[4] = -0.06696 * turbidity + 0.37027;
+        ABCDE_Y[0] =  0.17872 * turbidity - 1.46303;
+        ABCDE_Y[1] = -0.35540 * turbidity + 0.42749;
+        ABCDE_Y[2] = -0.02266 * turbidity + 5.32505;
+        ABCDE_Y[3] =  0.12064 * turbidity - 2.57705;
+        ABCDE_Y[4] = -0.06696 * turbidity + 0.37027;
 
         // Page 9 eq. 4, precompute F(0, thetaSun)
         Vector3 denominator;
@@ -664,54 +664,54 @@ int main (int argc, char **argv)
         denominator.z = preetham_digamma(0.0, thetaSun, ABCDE_Y);
 
         if ( useIrradiance == YES && modified == YES)
-		{
-			irradiance_XYZ = v3_zero();
+        {
+            irradiance_XYZ = v3_zero();
 
-			const double phiStep   = 1.0 * MATH_DEG_TO_RAD;
-			const double thetaStep = 1.0 * MATH_DEG_TO_RAD;
+            const double phiStep   = 1.0 * MATH_DEG_TO_RAD;
+            const double thetaStep = 1.0 * MATH_DEG_TO_RAD;
 
-			double accumulatedAngleDifference = 0.0;
-			for (double phi = 0.0; phi < MATH_2_MUL_PI; phi += phiStep)
-			{
-				for (double theta = 0.0; theta < MATH_PI_DIV_4; theta += thetaStep)
-				{
-					const double sinTheta = sin(theta);
-					const double cosTheta = cos(theta);
-					const double sinPhi = sin(phi);
-					const double cosPhi = cos(phi);
+            double accumulatedAngleDifference = 0.0;
+            for (double phi = 0.0; phi < MATH_2_MUL_PI; phi += phiStep)
+            {
+                for (double theta = 0.0; theta < MATH_PI_DIV_4; theta += thetaStep)
+                {
+                    const double sinTheta = sin(theta);
+                    const double cosTheta = cos(theta);
+                    const double sinPhi = sin(phi);
+                    const double cosPhi = cos(phi);
 
-					Vector3 v;
-					v.x = sinTheta * cosPhi;
-					v.y = sinTheta * sinPhi;
-					v.z = cosTheta;
-					//angle = atan2(norm(cross(a,b)),dot(a,b));
-					double cosGamma = v3_vv_dot_product(&directionToSun, &v);
-					Vector3 rotationAxis = v3_vv_cross_product(&directionToSun, &v);
-					double rotationAxisLength = v3_v_length(&rotationAxis);
-					double gamma = atan2(rotationAxisLength, cosGamma);
+                    Vector3 v;
+                    v.x = sinTheta * cosPhi;
+                    v.y = sinTheta * sinPhi;
+                    v.z = cosTheta;
+                    //angle = atan2(norm(cross(a,b)),dot(a,b));
+                    double cosGamma = v3_vv_dot_product(&directionToSun, &v);
+                    Vector3 rotationAxis = v3_vv_cross_product(&directionToSun, &v);
+                    double rotationAxisLength = v3_v_length(&rotationAxis);
+                    double gamma = atan2(rotationAxisLength, cosGamma);
 
-					Vector3 nominator;
-					nominator.x = preetham_digamma(theta, gamma, ABCDE_x);
-					nominator.y = preetham_digamma(theta, gamma, ABCDE_y);
-					nominator.z = preetham_digamma(theta, gamma, ABCDE_Y);
+                    Vector3 nominator;
+                    nominator.x = preetham_digamma(theta, gamma, ABCDE_x);
+                    nominator.y = preetham_digamma(theta, gamma, ABCDE_y);
+                    nominator.z = preetham_digamma(theta, gamma, ABCDE_Y);
 
-					Vector3 xyY;
-					xyY.x = zenithColor_xyY.x * (nominator.x / denominator.x);
-					xyY.y = zenithColor_xyY.y * (nominator.y / denominator.y);
-					xyY.z = zenithColor_xyY.z * (nominator.z / denominator.z);
+                    Vector3 xyY;
+                    xyY.x = zenithColor_xyY.x * (nominator.x / denominator.x);
+                    xyY.y = zenithColor_xyY.y * (nominator.y / denominator.y);
+                    xyY.z = zenithColor_xyY.z * (nominator.z / denominator.z);
 
-					double n_dot_v = v3_vv_dot_product(NP_WORLD_Z_AXIS, &v);
+                    double n_dot_v = v3_vv_dot_product(NP_WORLD_Z_AXIS, &v);
 
-					Vector3 XYZ;
-					xyY_to_XYZ(&xyY, &XYZ);
-					irradiance_XYZ.x += XYZ.x * sinTheta * phiStep * thetaStep * n_dot_v;
-					irradiance_XYZ.y += XYZ.y * sinTheta * phiStep * thetaStep * n_dot_v;
-					irradiance_XYZ.z += XYZ.z * sinTheta * phiStep * thetaStep * n_dot_v;
-		        }
-		    }
-		}
+                    Vector3 XYZ;
+                    xyY_to_XYZ(&xyY, &XYZ);
+                    irradiance_XYZ.x += XYZ.x * sinTheta * phiStep * thetaStep * n_dot_v;
+                    irradiance_XYZ.y += XYZ.y * sinTheta * phiStep * thetaStep * n_dot_v;
+                    irradiance_XYZ.z += XYZ.z * sinTheta * phiStep * thetaStep * n_dot_v;
+                }
+            }
+        }
 
-		modified = NO;
+        modified = NO;
 
         const FVector3 A = { ABCDE_x[0], ABCDE_y[0], ABCDE_Y[0] };
         const FVector3 B = { ABCDE_x[1], ABCDE_y[1], ABCDE_Y[1] };
@@ -746,24 +746,24 @@ int main (int argc, char **argv)
         const float avgFresnel = 0.17;
         Vector3 averageReflectance_XYZ = v3_sv_scaled(avgFresnel / MATH_PI, &irradiance_XYZ);
 
-		const FVector4 clearColor 
-			= {
-				.x = averageReflectance_XYZ.x,
-			    .y = averageReflectance_XYZ.y,
-			    .z = averageReflectance_XYZ.z,
-			    .w = 0.0f
-			  };
+        const FVector4 clearColor 
+            = {
+                .x = averageReflectance_XYZ.x,
+                .y = averageReflectance_XYZ.y,
+                .z = averageReflectance_XYZ.z,
+                .w = 0.0f
+              };
 
         [[ NP Graphics ] clearDrawBuffer:0 color:clearColor ];
 
-		if ( renderSunDisc == YES )
-		{
-			[ preethamSunDisc activate ];
-		}
-		else
-		{
-	        [ preetham activate ];
-		}
+        if ( renderSunDisc == YES )
+        {
+            [ preethamSunDisc activate ];
+        }
+        else
+        {
+            [ preetham activate ];
+        }
 
         [ fsQuad render ];
         [ preethamTarget detach:NO ];
@@ -817,24 +817,24 @@ int main (int argc, char **argv)
         [ whiteLuminance_P setValue:L_white ];
         [ averageLuminanceLevel_P setValue:(numberOfLevels - 1) ];
 
-		if ( tonemapping == YES )
-		{
-			[ tonemap activate ];
-		}
-		else
-		{
-	        [ texture activate ];
-		}
+        if ( tonemapping == YES )
+        {
+            [ tonemap activate ];
+        }
+        else
+        {
+            [ texture activate ];
+        }
 
         [ fsQuad render ];
 
         // check for GL errors
         [[ NP Graphics ] checkForGLErrors ];
 
-		if ( [screenShot deactivated] == YES )
-		{
-			NSLog(@"CHeeeers");
-			//ilutGLScreenie();
+        if ( [screenShot deactivated] == YES )
+        {
+            NSLog(@"CHeeeers");
+            //ilutGLScreenie();
 
             NPTexture2D * tex = [ preethamTarget texture ];
             [[[ NP Graphics ] textureBindingState ] setTextureImmediately:tex ];
@@ -846,36 +846,38 @@ int main (int argc, char **argv)
             [[ NP Graphics ] checkForGLErrors ];
             [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
 
-            const char * screenshotFilePattern = "Preetham_XXXXXX.pfm";
-            char buffer[strlen(screenshotFilePattern) + 1];
-            strcpy(buffer, screenshotFilePattern);
+            time_t t = time(NULL);
+            struct tm * now = localtime(&t);
 
-            errno = 0;
-            int screenshotFile = mkstemps(buffer, 4);
+            char dateBuffer[64] = {0};
+            size_t written = strftime(dateBuffer, sizeof(dateBuffer), "%d-%m-%Y_%H-%M-%S", now);
 
-            if (screenshotFile != -1)
+            char filename[written + 4 + 1];
+            written = sprintf(filename, "%s.pfm", dateBuffer);
+
+            printf("%s ", filename);
+
+            FILE * pfm = fopen(filename, "wb");
+
+            if (pfm != NULL)
             {
-                errno = 0;
-                FILE * pfm = fdopen(screenshotFile, "wb");
+                // RGB
+                fprintf(pfm, "PF\n");
+                // resolution
+                fprintf(pfm, "%u %u\n", texWidth, texHeight);
+                // little endian
+                fprintf(pfm, "-1.0\n");
 
-                if (pfm != NULL)
-                {
-                    // RGB
-                    fprintf(pfm, "PF\n");
-                    // resolution
-                    fprintf(pfm, "%u %u\n", texWidth, texHeight);
-                    // little endian
-                    fprintf(pfm, "-1.0\n");
+                size_t bufferSize = sizeof(float) * (size_t)texWidth * (size_t)texHeight * (size_t)3;
+                written = fwrite(screenShotBuffer, 1, bufferSize, pfm);
 
-                    size_t bufferSize = sizeof(float) * (size_t)texWidth * (size_t)texHeight * (size_t)3;
-                    size_t lolz = fwrite(screenShotBuffer, 1, bufferSize, pfm);
+                printf("%lu Bytes written\n", written);
 
-                    printf("%lu bytes written to %s\n", lolz, buffer); fflush(stdout);
-
-                    fclose(pfm);
-                }
+                fclose(pfm);
             }
-		}
+
+             fflush(stdout);
+        }
 
         // swap front and back rendering buffers
         glfwSwapBuffers();
@@ -901,10 +903,10 @@ int main (int argc, char **argv)
     DESTROY(rightClick);
     DESTROY(wheelUp);
     DESTROY(wheelDown);
-	DESTROY(irradiance);
-	DESTROY(sunDisc);
-	DESTROY(tmap);
-	DESTROY(screenShot);
+    DESTROY(irradiance);
+    DESTROY(sunDisc);
+    DESTROY(tmap);
+    DESTROY(screenShot);
 
     DESTROY(tonemap);
     DESTROY(logLuminance);
