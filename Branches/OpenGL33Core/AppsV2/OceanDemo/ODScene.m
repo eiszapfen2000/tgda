@@ -675,9 +675,6 @@ static bool texture_to_pfm(NPTexture2D * texture)
     [ depthTestState setEnabled:NO ];
     [ stateConfiguration activate ];
 
-    // reset all matrices
-    [[[ NP Core ] transformationState ] reset ];
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // generate whitecaps related data
@@ -710,6 +707,8 @@ static bool texture_to_pfm(NPTexture2D * texture)
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // reset all matrices
+    [[[ NP Core ] transformationState ] reset ];
 
     // setup linear sRGB target
     [ rtc bindFBO ];
@@ -726,7 +725,7 @@ static bool texture_to_pfm(NPTexture2D * texture)
     [ rtc activateDrawBuffers ];
     [ rtc activateViewport ];
 
-    // clear color and depth buffer
+    // make depth buffer writeable, otherwise we cannot clear it
     [ depthTestState setWriteEnabled:YES ];
     [ stateConfiguration activate ];
     [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:YES stencilBuffer:NO ];
