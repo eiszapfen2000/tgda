@@ -105,8 +105,8 @@ vec3 meanSkyRadiance(vec3 v, mat3 TBN, vec2 sigmaSq)
     vec2 dux = 2.0 * (U(vec2(eps, 0.0), v, TBN) - u0) / eps * sqrt(sigmaSq.x);
     vec2 duy = 2.0 * (U(vec2(0.0, eps), v, TBN) - u0) / eps * sqrt(sigmaSq.y);
 
-    return textureGrad(skylight, u0 * 0.5 + 0.5, dux * 0.5, duy * 0.5).rgb;
-    //return textureGrad(skylight, u0 * (0.5 / 1.1) + 0.5, dux * (0.5 / 1.1), duy * (0.5 / 1.1)).rgb;
+    //return textureGrad(skylight, u0 * 0.5 + 0.5, dux * 0.5, duy * 0.5).rgb;
+    return textureGrad(skylight, u0 * (0.5 / 1.1) + 0.5, dux * (0.5 / 1.1), duy * (0.5 / 1.1)).rgb;
     //return textureLod(skylight, u0 * 0.5 + 0.5, 0.0).rgb;
     //result = texture2DGrad(skySampler, u0 * (0.5 / 1.1) + 0.5, dux * (0.5 / 1.1), duy * (0.5 / 1.1));
 }
