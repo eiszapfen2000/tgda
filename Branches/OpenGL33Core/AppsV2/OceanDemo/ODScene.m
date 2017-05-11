@@ -627,12 +627,14 @@ static bool texture_to_pfm(NPTexture2D * texture)
                       mipmapStorage:YES
                               error:NULL ];
 
-        NSAssert(result == YES, @"KABUMM");
+        NSAssert(result == YES, @"");
 
         [ whitecapsRtc setWidth:dispDerivativesWidth ];
         [ whitecapsRtc setHeight:dispDerivativesHeight ];
         [ whitecapsRtc bindFBO ];
 
+        // Attach each layer as a render target, so we can clear
+        // all layers at one
         for (uint32_t l = 0; l < 2; l++)
         {
             [ whitecapsTarget attachLevel:0
@@ -645,6 +647,12 @@ static bool texture_to_pfm(NPTexture2D * texture)
 
         [ whitecapsRtc activateDrawBuffers ];
         [ whitecapsRtc activateViewport ];
+
+        NSError * wce = nil;
+        if ( [ whitecapsRtc checkFrameBufferCompleteness:&wce ] == NO )
+        {
+            NPLOG_ERROR(wce);
+        }
 
         [[ NP Graphics ] clearFrameBuffer:YES depthBuffer:NO stencilBuffer:NO ];
 
