@@ -20,6 +20,7 @@
 @class NPEffectVariableFloat3;
 @class NPEffectVariableMatrix4x4;
 @class NPFullscreenQuad;
+@class NPInputAction;
 @class ODBasePlane;
 @class ODWorldCoordinateAxes;
 @class ODVariance;
@@ -107,6 +108,9 @@
 
     // fullscreen quad geometry
     NPFullscreenQuad * fullscreenQuad;
+
+    // screenshot
+    NPInputAction * screenshotAction;
 }
 
 + (void) shutdown;
