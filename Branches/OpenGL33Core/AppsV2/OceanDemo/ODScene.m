@@ -581,9 +581,8 @@ static bool texture_to_pfm(NPTexture2D * texture)
     return true;
 }
 
-- (void) render
+- (void) updateMainRenderTargetResolution
 {
-    // update main render target resolution
     if (( currentResolution.x != lastFrameResolution.x )
           || ( currentResolution.y != lastFrameResolution.y ))
     {
@@ -593,9 +592,11 @@ static bool texture_to_pfm(NPTexture2D * texture)
         NSAssert(([ self generateRenderTargets:NULL ] == YES), @"");
 
         lastFrameResolution = currentResolution;
-    }
+    }    
+}
 
-    // update whitecaps target resolution if necessary
+- (void) updateWhitecapsRenderTargetResolution
+{
     NPTexture2DArray * dispDerivatives = [ ocean displacementDerivatives ];
     const uint32_t dispDerivativesWidth  = [ dispDerivatives width  ];
     const uint32_t dispDerivativesHeight = [ dispDerivatives height ];
@@ -658,7 +659,47 @@ static bool texture_to_pfm(NPTexture2D * texture)
 
         [ whitecapsRtc deactivate ];
     }
+}
 
+- (void) whitecapsPrecompute
+{
+    NPTexture2DArray * dispDerivatives = [ ocean displacementDerivatives ];
+    const uint32_t dispDerivativesWidth  = [ dispDerivatives width  ];
+    const uint32_t dispDerivativesHeight = [ dispDerivatives height ];
+
+    if ( dispDerivativesWidth == 0 || dispDerivativesHeight == 0 )
+    {
+        return;
+    }
+
+    // precompute whitecaps derivative stuff
+    [ whitecapsRtc activate ];
+
+    NSError * wce = nil;
+    if ( [ whitecapsRtc checkFrameBufferCompleteness:&wce ] == NO )
+    {
+        NPLOG_ERROR(wce);
+    }
+
+    [[[ NP Graphics ] textureBindingState ] clear ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:dispDerivatives texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] activate ];
+
+    [ transformDisplacementScale setValue:[ocean displacementScale ]];
+
+    [ whitecapsPrecompute activate ];
+    [ fullscreenQuad render ];
+
+    [ whitecapsRtc deactivate ];
+
+    // Generate whhitecaps derivative stuff mipmaps
+    [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ whitecapsTarget texture ] ];
+    glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+    [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
+}
+
+- (void) render
+{
     // get state related objects for later use
     NPStateConfiguration * stateConfiguration = [[ NP Graphics ] stateConfiguration ];
 
@@ -675,38 +716,15 @@ static bool texture_to_pfm(NPTexture2D * texture)
     [ depthTestState setEnabled:NO ];
     [ stateConfiguration activate ];
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // update main render target resolution
+    [ self updateMainRenderTargetResolution ];
+
+    // update whitecaps target resolution if necessary
+    [ self updateWhitecapsRenderTargetResolution ];
 
     // generate whitecaps related data
-    if ( dispDerivativesWidth != 0 && dispDerivativesHeight != 0 )
-    {
-        // precompute whitecaps derivative stuff
-        [ whitecapsRtc activate ];
+    [ self whitecapsPrecompute ];
 
-        NSError * wce = nil;
-        if ( [ whitecapsRtc checkFrameBufferCompleteness:&wce ] == NO )
-        {
-            NPLOG_ERROR(wce);
-        }
-
-        [[[ NP Graphics ] textureBindingState ] clear ];
-        [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacementDerivatives ] texelUnit:0 ];
-        [[[ NP Graphics ] textureBindingState ] activate ];
-
-        [ transformDisplacementScale setValue:[ocean displacementScale ]];
-
-        [ whitecapsPrecompute activate ];
-        [ fullscreenQuad render ];
-
-        [ whitecapsRtc deactivate ];
-
-        // Generate whhitecaps derivative stuff mipmaps
-        [[[ NP Graphics ] textureBindingState ] setTextureImmediately:[ whitecapsTarget texture ] ];
-        glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
-        [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
-    }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // reset all matrices
     [[[ NP Core ] transformationState ] reset ];
 
