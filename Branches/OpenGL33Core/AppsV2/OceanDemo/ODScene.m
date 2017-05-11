@@ -539,7 +539,7 @@ static NSString * date_string()
     return [ NSString stringWithUTF8String:dateBuffer ];
 }
 
-static bool texture_to_pfm(NPTexture2D * texture)
+static bool texture_to_pfm(NPTexture2D * texture, NSString * suffix)
 {
     const uint32_t width  = [ texture width  ];
     const uint32_t height = [ texture height ];
@@ -557,7 +557,8 @@ static bool texture_to_pfm(NPTexture2D * texture)
         return false;
     }
 
-    NSString * filename = [ dateString stringByAppendingPathExtension:@"pfm" ];
+    NSString * filename = [[ dateString stringByAppendingString:suffix ] stringByAppendingPathExtension:@"pfm" ];
+    NSLog(filename);
     FILE * pfm = fopen([ filename UTF8String ], "wb");
 
     if (pfm == NULL)
@@ -936,10 +937,35 @@ static bool texture_to_pfm(NPTexture2D * texture)
 
     if ([ screenshotAction deactivated ] == YES )
     {
-        if (!texture_to_pfm([ linearsRGBTarget texture ]))
-        {
-            NSLog(@"Screenshot Failed");
-        }
+        texture_to_pfm([ linearsRGBTarget texture ], @"_complete");
+
+        // setup linear sRGB target
+        [ rtc bindFBO ];
+        [ linearsRGBTarget
+                attachToRenderTargetConfiguration:rtc
+                                 colorBufferIndex:0
+                                          bindFBO:NO ];
+
+        [ depthBuffer
+                attachToRenderTargetConfiguration:rtc
+                                 colorBufferIndex:0
+                                          bindFBO:NO ];
+
+        [ rtc activateDrawBuffers ];
+        [ rtc activateViewport ];
+
+        [ self renderScene:[ projectedGridEffect techniqueWithName:@"ross" ]];
+        texture_to_pfm([ linearsRGBTarget texture ], @"_ross");
+        [ self renderScene:[ projectedGridEffect techniqueWithName:@"sky" ]];
+        texture_to_pfm([ linearsRGBTarget texture ], @"_sky");
+        [ self renderScene:[ projectedGridEffect techniqueWithName:@"sea" ]];
+        texture_to_pfm([ linearsRGBTarget texture ], @"_sea");
+        [ self renderScene:[ projectedGridEffect techniqueWithName:@"whitecaps" ]];
+        texture_to_pfm([ linearsRGBTarget texture ], @"_whitecaps");
+
+        // detach targets
+        [ linearsRGBTarget detach:NO ];
+        [ depthBuffer      detach:NO ];
     }
 }
 
