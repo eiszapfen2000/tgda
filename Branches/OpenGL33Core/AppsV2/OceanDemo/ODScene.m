@@ -698,7 +698,7 @@ static bool texture_to_pfm(NPTexture2D * texture)
     [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
 }
 
-- (void) render
+- (void) renderScene:(NPEffectTechnique *) oceanTechnique
 {
     // get state related objects for later use
     NPStateConfiguration * stateConfiguration = [[ NP Graphics ] stateConfiguration ];
@@ -709,39 +709,8 @@ static bool texture_to_pfm(NPTexture2D * texture)
     NPPolygonFillState * fillState        = [ stateConfiguration polygonFillState ];
     NPStencilTestState * stencilTestState = [ stateConfiguration stencilTestState ];
 
-    // deactivate culling, depth write and depth test
-    [ blendingState  setEnabled:NO ];
-    [ cullingState   setEnabled:NO ];
-    [ depthTestState setWriteEnabled:NO ];
-    [ depthTestState setEnabled:NO ];
-    [ stateConfiguration activate ];
-
-    // update main render target resolution
-    [ self updateMainRenderTargetResolution ];
-
-    // update whitecaps target resolution if necessary
-    [ self updateWhitecapsRenderTargetResolution ];
-
-    // generate whitecaps related data
-    [ self whitecapsPrecompute ];
-
     // reset all matrices
     [[[ NP Core ] transformationState ] reset ];
-
-    // setup linear sRGB target
-    [ rtc bindFBO ];
-    [ linearsRGBTarget
-            attachToRenderTargetConfiguration:rtc
-                             colorBufferIndex:0
-                                      bindFBO:NO ];
-
-    [ depthBuffer
-            attachToRenderTargetConfiguration:rtc
-                             colorBufferIndex:0
-                                      bindFBO:NO ];
-
-    [ rtc activateDrawBuffers ];
-    [ rtc activateViewport ];
 
     // make depth buffer writeable, otherwise we cannot clear it
     [ depthTestState setWriteEnabled:YES ];
@@ -816,13 +785,13 @@ static bool texture_to_pfm(NPTexture2D * texture)
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean waterColor ]          texelUnit:1 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean waterColorIntensity ] texelUnit:2 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]               texelUnit:3 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ variance texture ]			 texelUnit:4 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ variance texture ]          texelUnit:4 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ skylight skylightTexture ]  texelUnit:5 ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ whitecapsTarget texture  ]  texelUnit:6 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
     // feedback step
-    [ projectedGridTFFeedback activate ];
+    [ oceanTechnique activate ];
     [ projectedGrid renderTFFeedback  ];
 
     // render world coordinate system axes
@@ -833,14 +802,61 @@ static bool texture_to_pfm(NPTexture2D * texture)
     [ depthTestState setEnabled:NO ];
     [ stateConfiguration activate ];
 
-    /*
     [ axes setDirectionToSun: [ skylight directionToSun ]];
     [[ deferredEffect techniqueWithName:@"v3c3" ] activate ];
     [ axes render ];
-    */
+}
 
+- (void) render
+{
+    // get state related objects for later use
+    NPStateConfiguration * stateConfiguration = [[ NP Graphics ] stateConfiguration ];
+
+    NPCullingState * cullingState         = [ stateConfiguration cullingState     ];
+    NPBlendingState * blendingState       = [ stateConfiguration blendingState    ];
+    NPDepthTestState * depthTestState     = [ stateConfiguration depthTestState   ];
+    NPPolygonFillState * fillState        = [ stateConfiguration polygonFillState ];
+    NPStencilTestState * stencilTestState = [ stateConfiguration stencilTestState ];
+
+    // deactivate culling, depth write and depth test
+    [ blendingState  setEnabled:NO ];
+    [ cullingState   setEnabled:NO ];
+    [ depthTestState setWriteEnabled:NO ];
+    [ depthTestState setEnabled:NO ];
+    [ stateConfiguration activate ];
+
+    // update main render target resolution
+    [ self updateMainRenderTargetResolution ];
+
+    // update whitecaps target resolution if necessary
+    [ self updateWhitecapsRenderTargetResolution ];
+
+    // generate whitecaps related data
+    [ self whitecapsPrecompute ];
+
+    // setup linear sRGB target
+    [ rtc bindFBO ];
+    [ linearsRGBTarget
+            attachToRenderTargetConfiguration:rtc
+                             colorBufferIndex:0
+                                      bindFBO:NO ];
+
+    [ depthBuffer
+            attachToRenderTargetConfiguration:rtc
+                             colorBufferIndex:0
+                                      bindFBO:NO ];
+
+    [ rtc activateDrawBuffers ];
+    [ rtc activateViewport ];
+
+    // render sky, ocean, world space coordinate axes
+    [ self renderScene:projectedGridTFFeedback ];
+
+    // detach targets
     [ linearsRGBTarget detach:NO ];
     [ depthBuffer      detach:NO ];
+
+    // Tone mapping
 
     [ logLuminanceTarget
             attachToRenderTargetConfiguration:rtc
