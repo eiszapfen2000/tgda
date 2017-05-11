@@ -26,6 +26,9 @@
 #import "Graphics/State/NPStencilTestState.h"
 #import "Graphics/State/NPStateConfiguration.h"
 #import "Graphics/NPViewport.h"
+#import "Input/NPInputAction.h"
+#import "Input/NPInputActions.h"
+#import "Input/NPEngineInput.h"
 #import "NP.h"
 #import "Entities/ODBasePlane.h"
 #import "Entities/ODPEntity.h"
@@ -299,6 +302,10 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     // fullscreen quad for render target display
     fullscreenQuad = [[ NPFullscreenQuad alloc ] init ];
 
+    screenshotAction
+        = [[[ NP Input ] inputActions ]
+                addInputActionWithName:@"Screenshot" inputEvent:NpKeyboardS ];
+
     return self;
 }
 
@@ -336,6 +343,8 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     DESTROY(tonemap);
     DESTROY(deferredEffect);
     DESTROY(projectedGridEffect);
+
+    [[[ NP Input ] inputActions ] removeInputAction:screenshotAction ];
 
     [ super dealloc ];
 }
@@ -731,9 +740,11 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     [ depthTestState setEnabled:NO ];
     [ stateConfiguration activate ];
 
+    /*
     [ axes setDirectionToSun: [ skylight directionToSun ]];
     [[ deferredEffect techniqueWithName:@"v3c3" ] activate ];
     [ axes render ];
+    */
 
     [ linearsRGBTarget detach:NO ];
     [ depthBuffer      detach:NO ];
@@ -813,6 +824,55 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     [ fullscreenQuad render ];
 
     [ stateConfiguration deactivate ];
+
+    if ([ screenshotAction deactivated ] == YES )
+    {
+        NPTexture2D * textureToStore = [ linearsRGBTarget texture ];
+
+        const uint32_t width  = [ textureToStore width  ];
+        const uint32_t height = [ textureToStore height ];
+
+        float* screenShotBuffer = ALLOC_ARRAY(float, width * height * 3);
+
+        [[[ NP Graphics ] textureBindingState ] setTextureImmediately:textureToStore ];
+        glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, screenShotBuffer);
+
+        [[ NP Graphics ] checkForGLErrors ];
+        [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
+
+        time_t t = time(NULL);
+        struct tm * now = localtime(&t);
+
+        char dateBuffer[64] = {0};
+        size_t written = strftime(dateBuffer, sizeof(dateBuffer), "%d-%m-%Y_%H-%M-%S", now);
+
+        char filename[written + 4 + 1];
+        written = sprintf(filename, "%s.pfm", dateBuffer);
+
+        printf("%s ", filename);
+
+        FILE * pfm = fopen(filename, "wb");
+
+        if (pfm != NULL)
+        {
+            // RGB
+            fprintf(pfm, "PF\n");
+            // resolution
+            fprintf(pfm, "%u %u\n", width, height);
+            // little endian
+            fprintf(pfm, "-1.0\n");
+
+            size_t bufferSize = sizeof(float) * (size_t)width * (size_t)height * (size_t)3;
+            written = fwrite(screenShotBuffer, 1, bufferSize, pfm);
+
+            printf("%lu Bytes written\n", written);
+
+            fclose(pfm);
+        }
+        
+        fflush(stdout);
+        FREE(screenShotBuffer);
+    }
 }
 
 @end
