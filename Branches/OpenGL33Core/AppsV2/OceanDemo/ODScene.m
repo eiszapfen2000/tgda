@@ -513,6 +513,74 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     */
 }
 
+static NSString * date_string()
+{
+    tzset();
+    time_t t = time(NULL);
+
+    if (t == ((time_t)-1))
+    {
+        return nil;
+    }
+
+    struct tm now;
+    if (localtime_r(&t, &now) == NULL)
+    {
+        return nil;
+    }
+
+    char dateBuffer[256] = {0};
+
+    if (strftime(dateBuffer, sizeof(dateBuffer), "%d-%m-%Y_%H-%M-%S", &now) == 0)
+    {
+        return nil;
+    }
+
+    return [ NSString stringWithUTF8String:dateBuffer ];
+}
+
+static bool texture_to_pfm(NPTexture2D * texture)
+{
+    const uint32_t width  = [ texture width  ];
+    const uint32_t height = [ texture height ];
+
+    float* screenShotBuffer = ALLOC_ARRAY(float, width * height * 3);
+
+    [[[ NP Graphics ] textureBindingState ] setTextureImmediately:texture ];
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, screenShotBuffer);
+    [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
+
+    NSString * dateString = date_string();
+
+    if (dateString == nil)
+    {
+        return false;
+    }
+
+    NSString * filename = [ dateString stringByAppendingPathExtension:@"pfm" ];
+    FILE * pfm = fopen([ filename UTF8String ], "wb");
+
+    if (pfm == NULL)
+    {
+        return false;
+    }
+
+    // RGB
+    fprintf(pfm, "PF\n");
+    // resolution
+    fprintf(pfm, "%u %u\n", width, height);
+    // little endian
+    fprintf(pfm, "-1.0\n");
+
+    size_t bufferSize = sizeof(float) * (size_t)width * (size_t)height * (size_t)3;
+    size_t written = fwrite(screenShotBuffer, 1, bufferSize, pfm);
+
+    fclose(pfm);
+    FREE(screenShotBuffer);
+
+    return true;
+}
+
 - (void) render
 {
     // update main render target resolution
@@ -827,51 +895,10 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
 
     if ([ screenshotAction deactivated ] == YES )
     {
-        NPTexture2D * textureToStore = [ linearsRGBTarget texture ];
-
-        const uint32_t width  = [ textureToStore width  ];
-        const uint32_t height = [ textureToStore height ];
-
-        float* screenShotBuffer = ALLOC_ARRAY(float, width * height * 3);
-
-        [[[ NP Graphics ] textureBindingState ] setTextureImmediately:textureToStore ];
-        glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, screenShotBuffer);
-
-        [[ NP Graphics ] checkForGLErrors ];
-        [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
-
-        time_t t = time(NULL);
-        struct tm * now = localtime(&t);
-
-        char dateBuffer[64] = {0};
-        size_t written = strftime(dateBuffer, sizeof(dateBuffer), "%d-%m-%Y_%H-%M-%S", now);
-
-        char filename[written + 4 + 1];
-        written = sprintf(filename, "%s.pfm", dateBuffer);
-
-        printf("%s ", filename);
-
-        FILE * pfm = fopen(filename, "wb");
-
-        if (pfm != NULL)
+        if (!texture_to_pfm([ linearsRGBTarget texture ]))
         {
-            // RGB
-            fprintf(pfm, "PF\n");
-            // resolution
-            fprintf(pfm, "%u %u\n", width, height);
-            // little endian
-            fprintf(pfm, "-1.0\n");
-
-            size_t bufferSize = sizeof(float) * (size_t)width * (size_t)height * (size_t)3;
-            written = fwrite(screenShotBuffer, 1, bufferSize, pfm);
-
-            printf("%lu Bytes written\n", written);
-
-            fclose(pfm);
+            NSLog(@"Screenshot Failed");
         }
-        
-        fflush(stdout);
-        FREE(screenShotBuffer);
     }
 }
 
