@@ -753,11 +753,17 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString * suffix)
     [ depthTestState setEnabled:YES ];
     [ stateConfiguration activate ];
     
-    // bind ocean geometry data: heights, displacements and LOD areas
+    // bind all ocean data necessary for per-vertex and for per-pixel computations
     [[[ NP Graphics ] textureBindingState ] clear ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]        texelUnit:0 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean heightfield  ] texelUnit:1 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacement ] texelUnit:2 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]               texelUnit:0 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean heightfield  ]        texelUnit:1 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacement ]        texelUnit:2 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean gradient ]            texelUnit:3 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean waterColor ]          texelUnit:4 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean waterColorIntensity ] texelUnit:5 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ variance texture ]          texelUnit:6 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ skylight skylightTexture ]  texelUnit:7 ];
+    [[[ NP Graphics ] textureBindingState ] setTexture:[ whitecapsTarget texture  ]  texelUnit:8 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
     [ transformAreaScale setValue:[ocean areaScale ]];
@@ -779,19 +785,6 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString * suffix)
     // transform step
     [ projectedGridTFTransform activate ];
     [ projectedGrid renderTFTransform ];
-
-    // bind all ocean data necessary for per-pixel computations
-    [[[ NP Graphics ] textureBindingState ] clear ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]               texelUnit:0 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean heightfield  ]        texelUnit:1 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean displacement ]        texelUnit:2 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean gradient ]            texelUnit:3 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean waterColor ]          texelUnit:4 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean waterColorIntensity ] texelUnit:5 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ variance texture ]          texelUnit:6 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ skylight skylightTexture ]  texelUnit:7 ];
-    [[[ NP Graphics ] textureBindingState ] setTexture:[ whitecapsTarget texture  ]  texelUnit:8 ];
-    [[[ NP Graphics ] textureBindingState ] activate ];
 
     // feedback step
     [ oceanTechnique activate ];
