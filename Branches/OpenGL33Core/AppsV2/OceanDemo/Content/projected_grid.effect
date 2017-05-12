@@ -2,7 +2,6 @@ effect "Projected Grid":
 
 technique "whitecaps_precompute"
 {
-	define BRAK 1
     # effect variables
     uniform float displacementScale;
     uniform sampler2DArray displacementDerivatives
@@ -32,7 +31,7 @@ technique "proj_grid_tf_transform"
     uniform float areaScale;
     uniform float displacementScale;
     uniform float heightScale;
-    uniform vec2     vertexStep;
+    uniform vec2  vertexStep;
     uniform samplerBuffer sizes : 0
     uniform sampler2DArray heightmap : 1
     {
@@ -65,8 +64,11 @@ technique "proj_grid_tf_feedback"
     define WHITECAPS
     # effect variables
     uniform mat4 np_viewprojectionmatrix;
+    uniform mat4 invMVP;
     uniform float areaScale;
+    uniform float displacementScale;
     uniform float heightScale;
+    uniform vec2  vertexStep;
     uniform float jacobianEpsilon;
     uniform vec3 cameraPosition;
     uniform vec3 directionToSun;
