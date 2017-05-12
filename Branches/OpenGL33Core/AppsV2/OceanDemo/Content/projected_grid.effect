@@ -33,7 +33,7 @@ technique "proj_grid_tf_transform"
     uniform float displacementScale;
     uniform float heightScale;
     uniform vec2     vertexStep;
-    uniform sampler2DArray heightmap
+    uniform sampler2DArray heightmap : 0
     {
         WrapS = Repeat;
         WrapT = Repeat;
@@ -41,7 +41,7 @@ technique "proj_grid_tf_transform"
         MagFilter = Linear;
         Anisotropy = 4;
     };
-    uniform sampler2DArray displacement
+    uniform sampler2DArray displacement : 1
     {
         WrapS = Repeat;
         WrapT = Repeat;
@@ -49,7 +49,7 @@ technique "proj_grid_tf_transform"
         MagFilter = Linear;
         Anisotropy = 4;
     };
-    uniform samplerBuffer tsizes;
+    uniform samplerBuffer sizes : 3
 
     # vertex streams
     in vec2 in_position : 0;
