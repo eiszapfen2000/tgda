@@ -484,7 +484,7 @@ int main (int argc, char **argv)
     double thetaSun = MATH_PI_DIV_4;
 
     // tonemap
-    double a = 0.18;
+    double a = 0.36;
     double L_white = 4.0;
 
     BOOL modified = YES;
@@ -669,7 +669,6 @@ int main (int argc, char **argv)
             const double phiStep   = 1.0 * MATH_DEG_TO_RAD;
             const double thetaStep = 1.0 * MATH_DEG_TO_RAD;
 
-            double accumulatedAngleDifference = 0.0;
             for (double phi = 0.0; phi < MATH_2_MUL_PI; phi += phiStep)
             {
                 for (double theta = 0.0; theta < MATH_PI_DIV_4; theta += thetaStep)
