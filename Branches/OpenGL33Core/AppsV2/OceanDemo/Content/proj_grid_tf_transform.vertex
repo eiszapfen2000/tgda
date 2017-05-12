@@ -26,7 +26,7 @@ vec3 world_space_position(in vec2 position)
 
 void main()
 {
-    int numberOfLods = textureSize(tsizes);
+    int numberOfLods = textureSize(sizes);
 
     vec3 intersection = world_space_position(in_position.xy);
     vec3 intersection_dx = world_space_position(in_position.xy + vec2(vertexStep.x, 0.0));
@@ -37,7 +37,7 @@ void main()
 
     for ( int l = 0; l < numberOfLods; l++ )
     {
-        vec2 lodSize = texelFetch(tsizes, l).xy;
+        vec2 lodSize = texelFetch(sizes, l).xy;
         vec2 scaledLodSize = areaScale * lodSize;
         vec2 texcoord = intersection.xz / scaledLodSize;
 
