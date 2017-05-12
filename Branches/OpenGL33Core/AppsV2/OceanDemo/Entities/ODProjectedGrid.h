@@ -52,6 +52,7 @@
 
 - (void) renderTFTransform;
 - (void) renderTFFeedback;
+- (void) render;
 
 @end
 

@@ -328,5 +328,10 @@ static FVector3 computeBasePlanePosition(const Matrix4 * const inverseViewProjec
                       lastIndex:(primitivesWritten * 3) - 1];
 }
 
+- (void) render
+{
+    [ gridVertexArray renderWithPrimitiveType:NpPrimitiveTriangles ];
+}
+
 @end
 
