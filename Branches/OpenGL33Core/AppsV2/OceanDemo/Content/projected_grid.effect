@@ -33,7 +33,8 @@ technique "proj_grid_tf_transform"
     uniform float displacementScale;
     uniform float heightScale;
     uniform vec2     vertexStep;
-    uniform sampler2DArray heightmap : 0
+    uniform samplerBuffer sizes : 0
+    uniform sampler2DArray heightmap : 1
     {
         WrapS = Repeat;
         WrapT = Repeat;
@@ -41,7 +42,7 @@ technique "proj_grid_tf_transform"
         MagFilter = Linear;
         Anisotropy = 4;
     };
-    uniform sampler2DArray displacement : 1
+    uniform sampler2DArray displacement : 2
     {
         WrapS = Repeat;
         WrapT = Repeat;
@@ -49,7 +50,6 @@ technique "proj_grid_tf_transform"
         MagFilter = Linear;
         Anisotropy = 4;
     };
-    uniform samplerBuffer sizes : 3
 
     # vertex streams
     in vec2 in_position : 0;
@@ -74,7 +74,24 @@ technique "proj_grid_tf_feedback"
     uniform vec3 skyIrradiance;
     uniform vec2 waterColorCoordinate;
     uniform vec2 waterColorIntensityCoordinate;
-    uniform sampler2DArray gradient : 0
+    uniform samplerBuffer sizes : 0
+    uniform sampler2DArray heightmap : 1
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = TriLinear;
+        MagFilter = Linear;
+        Anisotropy = 4;
+    };
+    uniform sampler2DArray displacement : 2
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = TriLinear;
+        MagFilter = Linear;
+        Anisotropy = 4;
+    };
+    uniform sampler2DArray gradient : 3
     {
         WrapS = Repeat;
         WrapT = Repeat;
@@ -82,29 +99,28 @@ technique "proj_grid_tf_feedback"
         MagFilter = Linear;
         Anisotropy = 16;
     };
-    uniform sampler2D watercolor : 1
+    uniform sampler2D watercolor : 4
     {
         WrapS = ClampToEdge;
         WrapT = ClampToEdge;
         MinFilter = Nearest;
         MagFilter = Nearest;
     };
-    uniform sampler2D watercolorIntensity : 2
+    uniform sampler2D watercolorIntensity : 5
     {
         WrapS = ClampToEdge;
         WrapT = ClampToEdge;
         MinFilter = Nearest;
         MagFilter = Nearest;
     };
-    uniform samplerBuffer sizes : 3
-    uniform sampler3D variance : 4
+    uniform sampler3D variance : 6
     {
         WrapS = ClampToEdge;
         WrapT = ClampToEdge;
         MinFilter = Linear;
         MagFilter = Linear;
     };
-    uniform sampler2D skylight : 5
+    uniform sampler2D skylight : 7
     {
         WrapS = ClampToBorder;
         WrapT = ClampToBorder;
@@ -112,7 +128,7 @@ technique "proj_grid_tf_feedback"
         MagFilter = Linear;
         Anisotropy = 16;
     };
-    uniform sampler2DArray whitecaps : 6
+    uniform sampler2DArray whitecaps : 8
     {
         WrapS = Repeat;
         WrapT = Repeat;
@@ -142,7 +158,8 @@ technique "ross"
     uniform vec3 directionToSun;
     uniform vec3 sunColor;
 
-    uniform sampler2DArray gradient : 0
+    uniform samplerBuffer sizes : 0
+    uniform sampler2DArray gradient : 3
     {
         WrapS = Repeat;
         WrapT = Repeat;
@@ -150,8 +167,7 @@ technique "ross"
         MagFilter = Linear;
         Anisotropy = 16;
     };
-    uniform samplerBuffer sizes : 3
-    uniform sampler3D variance : 4
+    uniform sampler3D variance : 6
     {
         WrapS = ClampToEdge;
         WrapT = ClampToEdge;
@@ -182,7 +198,9 @@ technique "sea"
     uniform vec3 skyIrradiance;
     uniform vec2 waterColorCoordinate;
     uniform vec2 waterColorIntensityCoordinate;
-    uniform sampler2DArray gradient : 0
+
+    uniform samplerBuffer sizes : 0
+    uniform sampler2DArray gradient : 3
     {
         WrapS = Repeat;
         WrapT = Repeat;
@@ -190,22 +208,21 @@ technique "sea"
         MagFilter = Linear;
         Anisotropy = 16;
     };
-    uniform sampler2D watercolor : 1
+    uniform sampler2D watercolor : 4
     {
         WrapS = ClampToEdge;
         WrapT = ClampToEdge;
         MinFilter = Nearest;
         MagFilter = Nearest;
     };
-    uniform sampler2D watercolorIntensity : 2
+    uniform sampler2D watercolorIntensity : 5
     {
         WrapS = ClampToEdge;
         WrapT = ClampToEdge;
         MinFilter = Nearest;
         MagFilter = Nearest;
     };
-    uniform samplerBuffer sizes : 3
-    uniform sampler3D variance : 4
+    uniform sampler3D variance : 6
     {
         WrapS = ClampToEdge;
         WrapT = ClampToEdge;
@@ -233,7 +250,9 @@ technique "sky"
     uniform vec3 cameraPosition;
     uniform vec3 directionToSun;
     uniform vec3 sunColor;
-    uniform sampler2DArray gradient : 0
+
+    uniform samplerBuffer sizes : 0
+    uniform sampler2DArray gradient : 3
     {
         WrapS = Repeat;
         WrapT = Repeat;
@@ -241,15 +260,14 @@ technique "sky"
         MagFilter = Linear;
         Anisotropy = 16;
     };
-    uniform samplerBuffer sizes : 3
-    uniform sampler3D variance : 4
+    uniform sampler3D variance : 6
     {
         WrapS = ClampToEdge;
         WrapT = ClampToEdge;
         MinFilter = Linear;
         MagFilter = Linear;
     };
-    uniform sampler2D skylight : 5
+    uniform sampler2D skylight : 7
     {
         WrapS = ClampToBorder;
         WrapT = ClampToBorder;
@@ -279,7 +297,9 @@ technique "whitecaps"
     uniform vec3 cameraPosition;
     uniform vec3 directionToSun;
     uniform vec3 sunColor;
-    uniform sampler2DArray gradient : 0
+
+    uniform samplerBuffer sizes : 0
+    uniform sampler2DArray gradient : 3
     {
         WrapS = Repeat;
         WrapT = Repeat;
@@ -287,15 +307,14 @@ technique "whitecaps"
         MagFilter = Linear;
         Anisotropy = 16;
     };
-    uniform samplerBuffer sizes : 3
-    uniform sampler3D variance : 4
+    uniform sampler3D variance : 6
     {
         WrapS = ClampToEdge;
         WrapT = ClampToEdge;
         MinFilter = Linear;
         MagFilter = Linear;
     };
-    uniform sampler2D skylight : 5
+    uniform sampler2D skylight : 7
     {
         WrapS = ClampToBorder;
         WrapT = ClampToBorder;
@@ -303,7 +322,7 @@ technique "whitecaps"
         MagFilter = Linear;
         Anisotropy = 16;
     };
-    uniform sampler2DArray whitecaps : 6
+    uniform sampler2DArray whitecaps : 8
     {
         WrapS = Repeat;
         WrapT = Repeat;
