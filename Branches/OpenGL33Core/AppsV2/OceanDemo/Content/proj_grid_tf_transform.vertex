@@ -52,5 +52,5 @@ void main()
     out_position.xz = intersection.xz - displacementScale * d.xy;
     out_position.y  = h * heightScale;
 
-    gl_Position = np_modelviewprojectionmatrix * vec4(intersection, 1.0);
+    gl_Position = np_viewprojectionmatrix * vec4(intersection, 1.0);
 }
