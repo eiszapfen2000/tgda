@@ -249,8 +249,8 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     ASSERT_RETAIN(projectedGridTFFeedback);
 
     // transform feedback setup
-    const char * tfposition = "out_position";
-    const char * tfndposition = "out_non_disp_position";
+    const char * tfposition = "out_ws_position";
+    const char * tfndposition = "out_ws_non_disp_position";
     const char * varyings[2] = {tfposition, tfndposition};
 
     glTransformFeedbackVaryings([ projectedGridTFTransform glID ], 2, (const char **)(&varyings), GL_SEPARATE_ATTRIBS);

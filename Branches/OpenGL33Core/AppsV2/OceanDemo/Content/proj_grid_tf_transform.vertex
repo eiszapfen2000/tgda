@@ -1,7 +1,7 @@
 #version 150
 
-out vec3 out_position;
-out vec2 out_non_disp_position;
+out vec3 out_ws_position;
+out vec2 out_ws_non_disp_position;
 
 vec3 world_space_position(in vec2 position)
 {
@@ -48,9 +48,9 @@ void main()
         d += textureGrad(displacement, vec3(texcoord, l), d_dx, d_dy).xy;
     }
 
-    out_non_disp_position = intersection.xz;
-    out_position.xz = intersection.xz - displacementScale * d.xy;
-    out_position.y  = h * heightScale;
+    out_ws_non_disp_position = intersection.xz;
+    out_ws_position.xz = intersection.xz - displacementScale * d.xy;
+    out_ws_position.y  = h * heightScale;
 
-    gl_Position = np_viewprojectionmatrix * vec4(intersection, 1.0);
+    gl_Position = np_viewprojectionmatrix * vec4(out_ws_position, 1.0);
 }

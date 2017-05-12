@@ -140,8 +140,8 @@ technique "proj_grid_tf_feedback"
     };
 
     # vertex streams
-    in vec3 in_position : 0;
-    in vec2 in_non_disp_position : 1;
+    in vec3 in_ws_position : 0;
+    in vec2 in_ws_non_disp_position : 1;
     # fragment streams
     out vec4 target : 0;
     # shaders
@@ -178,8 +178,8 @@ technique "ross"
     };
 
     # vertex streams
-    in vec3 in_position : 0;
-    in vec2 in_non_disp_position : 1;
+    in vec3 in_ws_position : 0;
+    in vec2 in_ws_non_disp_position : 1;
     # fragment streams
     out vec4 target : 0;
     # shaders
@@ -233,8 +233,8 @@ technique "sea"
     };
 
     # vertex streams
-    in vec3 in_position : 0;
-    in vec2 in_non_disp_position : 1;
+    in vec3 in_ws_position : 0;
+    in vec2 in_ws_non_disp_position : 1;
     # fragment streams
     out vec4 target : 0;
     # shaders
@@ -279,8 +279,8 @@ technique "sky"
     };
 
     # vertex streams
-    in vec3 in_position : 0;
-    in vec2 in_non_disp_position : 1;
+    in vec3 in_ws_position : 0;
+    in vec2 in_ws_non_disp_position : 1;
     # fragment streams
     out vec4 target : 0;
     # shaders
@@ -334,8 +334,8 @@ technique "whitecaps"
     };
 
     # vertex streams
-    in vec3 in_position : 0;
-    in vec2 in_non_disp_position : 1;
+    in vec3 in_ws_position : 0;
+    in vec2 in_ws_non_disp_position : 1;
     # fragment streams
     out vec4 target : 0;
     # shaders
