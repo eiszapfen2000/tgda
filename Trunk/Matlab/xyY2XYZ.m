@@ -6,7 +6,7 @@ if size(xyY,3) == 3
     nzero = y > 0;
     
     X(nzero) = (x(nzero) ./ y(nzero)) .* Y(nzero);
-    Z(nzero) = ((1.0 - x(nzero) - y(nzero)) ./ y(nzero)) .* Y(nzero);
+    Z(nzero) = ((1.0 - (x(nzero) + y(nzero))) ./ y(nzero)) .* Y(nzero);
     
     XYZ(:,:,1) = X; XYZ(:,:,2) = Y; XYZ(:,:,3) = Z;
 else
@@ -26,7 +26,7 @@ else
             nzero = y > 0;
 
             X(nzero) = (x(nzero) ./ y(nzero)) .* Y(nzero);
-            Z(nzero) = ((1.0 - x(nzero) - y(nzero)) ./ y(nzero)) .* Y(nzero);
+            Z(nzero) = ((1.0 - (x(nzero) + y(nzero))) ./ y(nzero)) .* Y(nzero);
             
             XYZ(1,:) = X; XYZ(2,:) = Y; XYZ(3,:) = Z;
         else
