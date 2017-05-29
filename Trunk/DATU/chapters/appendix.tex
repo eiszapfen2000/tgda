@@ -13,7 +13,20 @@ model over the entire hemisphere.
 \begin{equation}
 \int_{0}^{2\pi}\int_{0}^{\pi/2} f(\varphi,\theta) \sin{\theta}\mathrm{d}\theta\mathrm{d}\varphi
 \end{equation}
+%
+%
 \section{Mean Square Slope}
+%
+The ocean lighting algorithm by \cite{misc:oceanlightingfft} requires us to compute
+the mean square slopes of the wave energy spectrum $\Theta(\mvec{k})$.
+Let $\mvec{k} = (k_x, k_z)$ be the \wavevector, then the mean square slope
+for each direction is defined as follows:
+\begin{align}
+mss_x = \iint_{\mvec{k}} k_x^2 \Theta(\mvec{k}) \mathrm{d}\mvec{k} &&
+mss_y = \iint_{\mvec{k}} k_z^2 \Theta(\mvec{k}) \mathrm{d}\mvec{k}
+\end{align}
+%
+whereas the total mean square slope is defined as:
 \begin{equation}
-\iint_{\mvec{k}} \norm{\mvec{k}}^2 \Theta(\mvec{k}) \mathrm{d}\mvec{k} = \int_{0}^{\infty} \int_{-\pi}^{\pi} k^2 \Theta(k,\varphi) k \mathrm{d}k\mathrm{d}\varphi =  \int_{0}^{\infty}k^2 \Theta(k)\mathrm{d}k
+mss = mss_x + mss_z = \iint_{\mvec{k}} \norm{\mvec{k}}^2 \Theta(\mvec{k}) \mathrm{d}\mvec{k} = \int_{0}^{\infty}k^2 \Theta(k)\mathrm{d}k
 \end{equation}
