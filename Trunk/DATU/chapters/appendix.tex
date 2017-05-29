@@ -1,0 +1,19 @@
+\chapter{Appendix}
+\section{Integrating over the Hemisphere}
+To compute the irradiance of the skydome we need to integrate the Preetham skylight
+model over the entire hemisphere.
+
+\begin{figure}
+\centering
+\def\svgwidth{0.5\textwidth}
+\input{figures/hemispherical-coordinates.pdf_tex}
+\caption{Hemispherical coordinates}
+\end{figure}
+
+\begin{equation}
+\int_{0}^{2\pi}\int_{0}^{\pi/2} f(\varphi,\theta) \sin{\theta}\mathrm{d}\theta\mathrm{d}\varphi
+\end{equation}
+\section{Mean Square Slope}
+\begin{equation}
+\iint_{\mvec{k}} \norm{\mvec{k}}^2 \Theta(\mvec{k}) \mathrm{d}\mvec{k} = \int_{0}^{\infty} \int_{-\pi}^{\pi} k^2 \Theta(k,\varphi) k \mathrm{d}k\mathrm{d}\varphi =  \int_{0}^{\infty}k^2 \Theta(k)\mathrm{d}k
+\end{equation}
