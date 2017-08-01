@@ -44,8 +44,26 @@ result.
 \label{fig:results}
 \end{figure}
 %
+Before we delve into details, one may look at Figure~\ref{fig:results} which
+depicts all componenents which are part of our ocean lighting implementation.
 
 compare lighting of all spectrum types (same parameters)
+
+\section{Fourier Transform}
+We did not reproduce the current state of art with regard to the \FourierTransform,
+i.e. compute the \IDFT on the GPU (GPGPU, CUDA, clfft). The reasons are varying,
+but the most compelling is debugging. We have found it difficult to make sure
+that the spectrum is synthesized correctly, because it is essentially gaussian noise,
+thus deviations caused by a faulty implementation still lead to results which hold
+up to casual scrutiny. Thus, keeping all spectrum related computation on the
+CPU side allowed us to assert corretness more easily.
+As we already did a MATLAB implementation and a native one
+in ObjC, an additional one would have expanded the scope of this work unreasonably.
+Still, FFTW does an acceptable job performancewise. Note, that we employed the
+float precision variant of FFTW, since it has proven to provide sufficient
+numerical accuracy for our use case, and outperforms the double precision variant
+by a factor of 1.5.
+
 
 \section{Performance}
 
