@@ -1,43 +1,49 @@
 \chapter{Results}
 \label{ch:results}
-
+%
 \begin{figure}
 \centering
- \subtop[Final Result]
+ \subtop[Sun Contribution]
  {
-  \includegraphics[width=\textwidth]{figures/31-07-2017_10-47-08_complete.png}
-	%\label{fig:max1981:1}
+  \includegraphics[width=0.48\textwidth]{figures/31-07-2017_10-47-08_ross.png}
+	\label{fig:results:ross}
  }
- \subtop[Ross BRDF Contribution]
+ \hfill
+ \subtop[Sky Contribution]
  {
-  \includegraphics[width=0.45\textwidth]{figures/31-07-2017_10-47-08_ross.png}
-	%\label{fig:max1981:2}
+  \includegraphics[width=0.48\textwidth]{figures/31-07-2017_10-47-08_sky.png}
+	\label{fig:results:sky}
  }
  \hfill
  \subtop[Sea Contribution]
  {
-  \includegraphics[width=0.45\textwidth]{figures/31-07-2017_10-47-08_sea.png}
-	%\label{fig:max1981:3}
- }
-  \subtop[Sky Contribution]
- {
-  \includegraphics[width=0.45\textwidth]{figures/31-07-2017_10-47-08_sky.png}
-	%\label{fig:max1981:4}
+  \includegraphics[width=0.48\textwidth]{figures/31-07-2017_10-47-08_sea.png}
+	\label{fig:results:sea}
  }
  \hfill
  \subtop[Whitecaps Contribution]
  {
-  \includegraphics[width=0.45\textwidth]{figures/31-07-2017_10-47-08_whitecaps.png}
-	%\label{fig:max1981:4}
+  \includegraphics[width=0.48\textwidth]{figures/31-07-2017_10-47-08_whitecaps.png}
+	\label{fig:results:whitecaps}
  }
-\caption{
-%\subcaptionref{fig:max1981:1}~Still water near sunset.
-%\subcaptionref{fig:max1981:2} One reflection from waves.
-%\subcaptionref{fig:max1981:3} Two reflections from waves.
-%\subcaptionref{fig:max1981:4} Early afternoon, two reflections from waves.
+ \hfill
+ \subtop[Final Result]
+ {
+  \includegraphics[width=\textwidth]{figures/31-07-2017_10-47-08_complete.png}
+	\label{fig:results:complete}
+ }
+\caption{An overview of all ocean lighting terms involved in our implementation
+of \citet{article:oceanlighting,misc:oceanlightingfft} and \citet{article:whitecaps}.
+\subcaptionref{fig:results:ross} Sun light reflected by the water surface.
+\subcaptionref{fig:results:sky} Sky light reflected by the water surface.
+\subcaptionref{fig:results:sea} Light refracted from the water body.
+\subcaptionref{fig:results:whitecaps} Whitecap foam.
+\subcaptionref{fig:results:complete} All previous terms combined into the final
+result.
 }
 \label{fig:results}
 \end{figure}
+%
 
 \section{Performance}
 
