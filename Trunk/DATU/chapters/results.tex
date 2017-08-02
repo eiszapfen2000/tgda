@@ -1,6 +1,55 @@
 \chapter{Results}
 \label{ch:results}
 %
+
+%
+In this chapter we will discuss the results we were able to achieve.
+
+Before we delve into details, one may look at Figure~\ref{fig:results} which
+depicts all componenents which are part of our ocean lighting implementation.
+
+compare lighting of all spectrum types (same parameters)
+
+\section{Fourier Transform}
+We did not reproduce the current state of art with regard to the \FourierTransform,
+i.e. compute the \IDFT on the GPU (GPGPU, CUDA, clfft). The reasons are varying,
+but the most compelling is debugging. We have found it difficult to make sure
+that the spectrum is synthesized correctly, because it is essentially gaussian noise,
+thus deviations caused by a faulty implementation still lead to results which hold
+up to casual scrutiny. Thus, keeping all spectrum related computation on the
+CPU side allowed us to assert corretness more easily.
+As we already did a MATLAB implementation and a native one
+in ObjC, an additional one would have expanded the scope of this work unreasonably.
+Still, FFTW does an acceptable job performancewise. Note, that we employed the
+float precision variant of FFTW, since it has proven to provide sufficient
+numerical accuracy for our use case, and outperforms the double precision variant
+by a factor of 1.5.
+
+Simple \InvFourierTransform vs \InvFourierTransform of two hermitian spectra
+Pattern synthesis at full resolution for all datasets
+Pattern synthesis with our multi-resolution approach
+
+\section{Pattern Synthesis}
+Although all spectrum types give convincing results geometry-wise, it is the
+Preetham spectrum and the Unified spectrum that work best with the lighting
+algorithm by \cite{article:oceanlighting}. Probable cause is that the JONSWAP
+spectrum and the Donelan spectrum give not that good an approximation of the
+ocean surface's mean square slope (\ref{app:mss}). The mean square slope is a
+core component of the lighting model by \cite{article:oceanlighting}, and thus
+has large influence on the result.
+
+In the beginning we needed several fudge factors to generate acceptable results,
+specifically, we were always required to add some scaling factor in the XZ plane
+or in the Y direction. And the fudge factors needed to change if spectrum
+parameters changed.
+Only after implementing correct integral domain conversion for the different
+spectra did we obtain consistent results across all spectrum models. It made all
+the difference, since now we get consistent, believable as well as
+comprehensible results for all spectra. No fudge factors are required anymore,
+everything works out of the box.
+
+\section{Visual Fidelity}
+%
 \begin{figure}
 \centering
  \subtop[Sun Contribution]
@@ -44,35 +93,6 @@ result.
 \label{fig:results}
 \end{figure}
 %
-Before we delve into details, one may look at Figure~\ref{fig:results} which
-depicts all componenents which are part of our ocean lighting implementation.
-
-compare lighting of all spectrum types (same parameters)
-
-\section{Fourier Transform}
-We did not reproduce the current state of art with regard to the \FourierTransform,
-i.e. compute the \IDFT on the GPU (GPGPU, CUDA, clfft). The reasons are varying,
-but the most compelling is debugging. We have found it difficult to make sure
-that the spectrum is synthesized correctly, because it is essentially gaussian noise,
-thus deviations caused by a faulty implementation still lead to results which hold
-up to casual scrutiny. Thus, keeping all spectrum related computation on the
-CPU side allowed us to assert corretness more easily.
-As we already did a MATLAB implementation and a native one
-in ObjC, an additional one would have expanded the scope of this work unreasonably.
-Still, FFTW does an acceptable job performancewise. Note, that we employed the
-float precision variant of FFTW, since it has proven to provide sufficient
-numerical accuracy for our use case, and outperforms the double precision variant
-by a factor of 1.5.
-
-
-\section{Performance}
-
-Simple \InvFourierTransform vs \InvFourierTransform of two hermitian spectra
-Pattern synthesis at full resolution for all datasets
-Pattern synthesis with our multi-resolution approach
-
-\section{Visual Fidelity}
-
 Images of all partial terms involved in ocean lighting (specular by sun,
 reflection of sky, refracted light, whitecaps)
 
