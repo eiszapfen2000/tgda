@@ -1,15 +1,15 @@
 filename_prefix = '31-07-2017_10-47-08';
-filename_complete = [ filename_prefix '_complete.pfm' ];
-filename_ross = [ filename_prefix '_ross.pfm' ];
-filename_sea = [ filename_prefix '_sea.pfm' ];
-filename_sky = [ filename_prefix '_sky.pfm' ];
-filename_whitecaps = [ filename_prefix '_whitecaps.pfm' ];
+filename_complete = [ filename_prefix '_complete' ];
+filename_ross = [ filename_prefix '_ross' ];
+filename_sea = [ filename_prefix '_sea' ];
+filename_sky = [ filename_prefix '_sky' ];
+filename_whitecaps = [ filename_prefix '_whitecaps' ];
 
-lsRGB_complete = readPFM(filename_complete);
-lsRGB_ross = readPFM(filename_ross);
-lsRGB_sea = readPFM(filename_sea);
-lsRGB_sky = readPFM(filename_sky);
-lsRGB_whitecaps = readPFM(filename_whitecaps);
+lsRGB_complete = readPFM([filename_complete '.pfm']);
+lsRGB_ross = readPFM([filename_ross '.pfm']);
+lsRGB_sea = readPFM([filename_sea '.pfm']);
+lsRGB_sky = readPFM([filename_sky '.pfm']);
+lsRGB_whitecaps = readPFM([filename_whitecaps '.pfm']);
 
 xyY_complete = XYZ2xyY(lsRGB2XYZ(lsRGB_complete));
 xyY_ross = XYZ2xyY(lsRGB2XYZ(lsRGB_ross));
