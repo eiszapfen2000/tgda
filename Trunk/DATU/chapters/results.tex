@@ -1,9 +1,23 @@
 \chapter{Results}
 \label{ch:results}
 %
+% The scope of this thesis includes the generation, animation and rendering of the
+% surface of an open ocean in real-time. We focus our interest on the synthesis of
+% animated ocean surface geometry, for which we will adopt a set of models from
+% oceanographic research.
 
-%
-In this chapter we will discuss the results we were able to achieve.
+The previous chapter discussed in detail the approach we took to synthesize
+the animated ocean surface, including, one, a number of optimizations to reduce
+the computational workload, and, two, a level of detail mechanism which does
+not only give us fine-grained control over model detail, but also allows us to
+reduce potential tiling artifacts. In addition, we gave an overview of our demo
+application, which integrates our approach to ocean surface synthesis
+with real-time rendering algorithms tailored specifically for display of
+the open ocean.
+Thus, with our demo application at hand, we may move on to discuss the
+actual results we were able to achieve.
+Section \label{sec:results:fft}
+
 
 Before we delve into details, one may look at Figure~\ref{fig:results} which
 depicts all componenents which are part of our ocean lighting implementation.
@@ -11,6 +25,7 @@ depicts all componenents which are part of our ocean lighting implementation.
 compare lighting of all spectrum types (same parameters)
 
 \section{Fourier Transform}
+\label{sec:results:fft}
 We did not reproduce the current state of art with regard to the \FourierTransform,
 i.e. compute the \IDFT on the GPU (GPGPU, CUDA, clfft). The reasons are varying,
 but the most compelling is debugging. We have found it difficult to make sure
