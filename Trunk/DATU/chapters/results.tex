@@ -10,16 +10,17 @@ The previous chapter discussed in detail the approach we took to synthesize
 the animated ocean surface, including, one, a number of optimizations to reduce
 the computational workload, and, two, a level of detail mechanism which does
 not only give us fine-grained control over model detail, but also allows us to
-reduce potential tiling artifacts. In addition, we gave an overview of our demo
+reduce potential tiling artifacts. Additionally, we gave an overview of our demo
 application, which integrates our approach to ocean surface synthesis
-with real-time rendering algorithms tailored specifically for display of
-the open ocean.
+with real-time rendering algorithms which have been developed specifically for
+the display of the open ocean.
 Thus, with our demo application at hand, we may move on to discuss the
 actual results we were able to achieve.
 
 The remainder of this chapter is organized as follows:
 Section \ref{sec:results:fft} gives a compact overview of the performance
-improvements which we were able to attain for the \InvFourierTransform.
+improvements which we were able to attain for the computation of the sum
+of waves via the \InvFourierTransform.
 Section \ref{sec:results:synthesis} delineates the pitfalls we encountered
 in the context of ocean surface synthesis with wave spectra, and what measures
 we took to either overcome or sidestep them.
