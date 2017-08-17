@@ -18,6 +18,18 @@ ODPFrequencySpectrumGeneration.m \
 ODFrequencySpectrum.m \
 ODFrequencySpectrumFloat.m
 
+TOOL_NAME=benchmark
+
+benchmark_C_FILES = \
+ODGaussianRNG.c \
+ODEnergy.c
+
+benchmark_OBJC_FILES = \
+benchmark.m
+
+ADDITIONAL_TOOL_LIBS += -lprng -lfftw3f
+
 include $(TGDA_DIR)/GNUmakefile.flags
+include $(GNUSTEP_MAKEFILES)/tool.make
 include $(GNUSTEP_MAKEFILES)/subproject.make
 
