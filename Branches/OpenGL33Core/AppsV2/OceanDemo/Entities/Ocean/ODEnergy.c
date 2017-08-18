@@ -79,9 +79,12 @@ float energy_jonswap_wave_frequency(float omega, float U10, float fetch)
     const float r_exponent = (omegaDiff*omegaDiff) / (2.0f * sigma * sigma * omega_p * omega_p);
     const float r = expf(-r_exponent);
     const float gamma_r = powf(3.3f, r);
-    const float exponent = (-5.0f/4.0f) * powf(omega_p / omega, 4.0f);
-    const float Theta = ((alpha*g*g) / powf(omega, 5.0f)) * expf(exponent) * gamma_r;
-
+    //const float exponent = (-5.0f/4.0f) * powf(omega_p / omega, 4.0f);
+    //const float Theta = ((alpha*g*g) / powf(omega, 5.0f)) * expf(exponent) * gamma_r;
+    const float omega_ratio = omega_p / omega;
+    const float exponent = (-5.0f/4.0f) * (omega_ratio * omega_ratio * omega_ratio * omega_ratio);
+    const float Theta = ((alpha*g*g) / (omega * omega * omega * omega * omega)) * expf(exponent) * gamma_r;
+    
     return Theta;    
 }
 
