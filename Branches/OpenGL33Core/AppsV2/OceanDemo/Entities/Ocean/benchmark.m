@@ -249,6 +249,89 @@ static void generateJONSWAP(
     }	
 }
 
+static void generateDonelan(
+	const SpectrumGeometry * const geometry,
+	const DonelanGeneratorSettings * const settings,
+	const double * const randomNumbers,
+	fftwf_complex * const H0
+	)
+{
+    const int resolution  = MAX(geometry->geometryResolution, geometry->gradientResolution);
+    const float fresolution = (float)resolution;
+
+    const int numberOfLods = geometry->numberOfLods;
+    const int numberOfLodElements = resolution * resolution;
+
+    const float U10   = settings->U10;
+    const float fetch = settings->fetch;
+
+    const float n = -(fresolution / 2.0f);
+    const float m =  (fresolution / 2.0f);
+
+    const float omega_p = peak_energy_wave_frequency_donelan(U10, fetch);
+
+    for ( int l = 0; l < numberOfLods; l++ )
+    {
+        const float lastSize = ( l == 0 ) ? 0.0f : geometry->sizes[l - 1];
+        const float currentSize = geometry->sizes[l];
+
+        const float dkx = MATH_2_MUL_PIf / currentSize;
+        const float dky = MATH_2_MUL_PIf / currentSize;
+
+        const float kMinX = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
+        const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
+        const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
+
+        const int offset = l * numberOfLodElements;
+
+        for ( int i = 0; i < resolution; i++ )
+        {
+            for ( int j = 0; j < resolution; j++ )
+            {
+                const int index = offset + j + resolution * i;
+
+                const float xi_r = (float)randomNumbers[2 * index    ];
+                const float xi_i = (float)randomNumbers[2 * index + 1];
+
+                const float di = i;
+                const float dj = j;
+
+                // wave vector
+                const float kx = (n + dj) * dkx;
+                const float ky = (m - di) * dky;
+
+                // wave number
+                const float k = sqrtf(kx*kx + ky*ky);
+
+                // deep water dispersion relation
+                const float omega = sqrtf(k * EARTH_ACCELERATIONf);
+
+                // Theta in wave vector domain
+                float Theta_complete = 0.0f;
+
+                if (k > kMin)
+                {
+                    // Theta in wave frequency domain
+                    const float Theta = energy_donelan_wave_frequency(omega, U10, fetch);
+                    // convert Theta from wave frequency domain to wave number domain
+                    const float Theta_wavenumber = Theta * 0.5f * (EARTH_ACCELERATIONf / omega);
+                    // convert Theta from wave number domain to wave vector domain
+                    const float Theta_wavevector = Theta_wavenumber / k;
+
+                    const float directionalSpread
+                        = directional_spreading_mitsuyasu_hasselmann(omega_p, omega, 0.0f, atan2f(ky, kx));
+
+                    Theta_complete = Theta_wavevector * directionalSpread;
+                }
+
+                const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
+                H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
+                H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
+            }
+        }
+    }	
+}
+
 static void print_complex_spectrum(int resolution, fftwf_complex * spectrum)
 {
     printf("Complex spectrum\n");
@@ -278,8 +361,8 @@ int main (int argc, char **argv)
 
 	SpectrumGeometry geometry;
 	geometry.numberOfLods = 1;
-	geometry.geometryResolution = 256;
-	geometry.gradientResolution = 256;
+	geometry.geometryResolution = 512;
+	geometry.gradientResolution = 512;
 	geometry.sizes = malloc(sizeof(double)*geometry.numberOfLods);
 	geometry.sizes[0] = maxSize;
 
@@ -299,8 +382,8 @@ int main (int argc, char **argv)
 
     GeneratorSettings settings;
     settings.generatorType = JONSWAP;
-    settings.jonswap.U10 = 10.0;
-    settings.jonswap.fetch = 5000.0;
+    settings.donelan.U10 = 10.0;
+    settings.donelan.fetch = 5000.0;
 
     double accumulatedTime = 0.0;
     const int nIterations = 100;
@@ -310,7 +393,7 @@ int main (int argc, char **argv)
 	    fftwf_complex * H0 = fftwf_alloc_complex(n);
 	    double * randomNumbers = malloc(sizeof(double) * 2 * n);
 	    odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * geometry.numberOfLods * necessaryResolution * necessaryResolution);
-	    generateJONSWAP(&geometry, &(settings.jonswap), randomNumbers, H0);
+	    generateDonelan(&geometry, &(settings.donelan), randomNumbers, H0);
 	    free(randomNumbers);
     	fftwf_free(H0);	    
 		[ timer update ];
