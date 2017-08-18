@@ -42,51 +42,24 @@ enum
 
 typedef NSUInteger GeneratorOptions;
 
-typedef struct PiersonMoskowitzGeneratorSettings
-{
-    double U10;
-}
-PiersonMoskowitzGeneratorSettings;
-
-typedef struct JONSWAPGeneratorSettings
+typedef struct SpectrumParameters
 {
     double U10;
     double fetch;
 }
-JONSWAPGeneratorSettings;
-
-typedef struct DonelanGeneratorSettings
-{
-    double U10;
-    double fetch;
-}
-DonelanGeneratorSettings;
-
-typedef struct UnifiedGeneratorSettings
-{
-    double U10;
-    double fetch;
-}
-UnifiedGeneratorSettings;
-
+SpectrumParameters;
 
 typedef struct GeneratorSettings
 {
-    SpectrumGenerator generatorType;
-    GeneratorOptions  options;
-    union
-    {
-        PiersonMoskowitzGeneratorSettings piersonmoskowitz;
-        JONSWAPGeneratorSettings jonswap;
-        DonelanGeneratorSettings donelan;
-        UnifiedGeneratorSettings unified;
-    };
+    SpectrumGenerator  generatorType;
+    SpectrumParameters parameters;
+    GeneratorOptions   options;
 }
 GeneratorSettings;
 
 static void generatePM(
 	const SpectrumGeometry * const geometry,
-	const PiersonMoskowitzGeneratorSettings * const settings,
+	const SpectrumParameters * const settings,
 	const double * const randomNumbers,
 	fftwf_complex * const H0
 	)
@@ -168,7 +141,7 @@ static void generatePM(
 
 static void generateJONSWAP(
 	const SpectrumGeometry * const geometry,
-	const JONSWAPGeneratorSettings * const settings,
+	const SpectrumParameters * const settings,
 	const double * const randomNumbers,
 	fftwf_complex * const H0
 	)
@@ -251,7 +224,7 @@ static void generateJONSWAP(
 
 static void generateDonelan(
 	const SpectrumGeometry * const geometry,
-	const DonelanGeneratorSettings * const settings,
+	const SpectrumParameters * const settings,
 	const double * const randomNumbers,
 	fftwf_complex * const H0
 	)
@@ -334,7 +307,7 @@ static void generateDonelan(
 
 static void generateUnified(
 	const SpectrumGeometry * const geometry,
-	const UnifiedGeneratorSettings * const settings,
+	const SpectrumParameters * const settings,
 	const double * const randomNumbers,
 	fftwf_complex * const H0
 	)
@@ -458,8 +431,8 @@ int main (int argc, char **argv)
 
     GeneratorSettings settings;
     settings.generatorType = Unified;
-    settings.unified.U10 = 10.0;
-    settings.unified.fetch = 5000.0;
+    settings.parameters.U10 = 10.0;
+    settings.parameters.fetch = 500000.0;
 
     double accumulatedTime = 0.0;
     const int nIterations = 100;
@@ -469,7 +442,7 @@ int main (int argc, char **argv)
 	    fftwf_complex * H0 = fftwf_alloc_complex(n);
 	    double * randomNumbers = malloc(sizeof(double) * 2 * n);
 	    odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * geometry.numberOfLods * necessaryResolution * necessaryResolution);
-	    generateUnified(&geometry, &(settings.unified), randomNumbers, H0);
+	    generateUnified(&geometry, &(settings.parameters), randomNumbers, H0);
 	    free(randomNumbers);
     	fftwf_free(H0);	    
 		[ timer update ];
