@@ -397,27 +397,26 @@ static void print_complex_spectrum(int resolution, fftwf_complex * spectrum)
     printf("\n");
 }
 
-static const int resolutions[] = {8, 16, 32, 64, 128, 256, 512, 1024};
+#define N_RESOLUTIONS	8
+static const int resolutions[N_RESOLUTIONS] = {8, 16, 32, 64, 128, 256, 512, 1024};
 
 int main (int argc, char **argv)
 {
+	const double goldenRatio = (1.0 + sqrt(5.0)) / 2.0;
+	const double goldenRatioLong = 1.0 / goldenRatio;
+	const double goldenRatioShort = 1.0 - (1.0 / goldenRatio);
+
 	NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
 	NPTimer * timer = [[ NPTimer alloc ] init ];
 	OdGaussianRng * gaussianRNG = odgaussianrng_alloc_init();
-
-	double maxSize = 100; // metre
+	
+	double maxSize = 1000; // metre
 
 	SpectrumGeometry geometry;
 	geometry.numberOfLods = 1;
-	geometry.geometryResolution = 512;
-	geometry.gradientResolution = 512;
 	geometry.sizes = malloc(sizeof(double)*geometry.numberOfLods);
 	geometry.sizes[0] = maxSize;
-
-	const double goldenRatio = (1.0 + sqrt(5.0)) / 2.0;
-	const double goldenRatioLong = 1.0 / goldenRatio;
-	const double goldenRatioShort = 1.0 - (1.0 / goldenRatio);
 
 	for ( int i = 1; i < geometry.numberOfLods; i++ )
 	{
@@ -425,34 +424,39 @@ int main (int argc, char **argv)
 		geometry.sizes[i] = s * goldenRatioShort;
 	}
 
-    int necessaryResolution = MAX(geometry.geometryResolution, geometry.gradientResolution);
-    const size_t n
-        = necessaryResolution * necessaryResolution * geometry.numberOfLods;
-
     GeneratorSettings settings;
-    settings.generatorType = Unified;
     settings.parameters.U10 = 10.0;
     settings.parameters.fetch = 500000.0;
 
-    double accumulatedTime = 0.0;
-    const int nIterations = 100;
-    for ( int i = 0; i < nIterations; i++)
-    {
-		[ timer update ];
-	    fftwf_complex * H0 = fftwf_alloc_complex(n);
-	    double * randomNumbers = malloc(sizeof(double) * 2 * n);
-	    odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * geometry.numberOfLods * necessaryResolution * necessaryResolution);
-	    generateUnified(&geometry, &(settings.parameters), randomNumbers, H0);
-	    free(randomNumbers);
-    	fftwf_free(H0);	    
-		[ timer update ];
-		accumulatedTime += [timer frameTime];
+    double avgTimes[N_RESOLUTIONS] = {0.0};
+	for ( int r = 0; r < N_RESOLUTIONS; r++ )
+	{
+		geometry.geometryResolution = resolutions[r];
+		geometry.gradientResolution = resolutions[r];
+
+	    int necessaryResolution = MAX(geometry.geometryResolution, geometry.gradientResolution);
+	    const size_t n
+    	    = necessaryResolution * necessaryResolution * geometry.numberOfLods;
+
+
+	    double accumulatedTime = 0.0;
+	    const int nIterations = 10;
+	    for ( int i = 0; i < nIterations; i++)
+	    {
+			[ timer update ];
+		    fftwf_complex * H0 = fftwf_alloc_complex(n);
+		    double * randomNumbers = malloc(sizeof(double) * 2 * n);
+		    odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * n);
+		    generateUnified(&geometry, &(settings.parameters), randomNumbers, H0);
+		    free(randomNumbers);
+	    	fftwf_free(H0);	    
+			[ timer update ];
+			accumulatedTime += [timer frameTime];
+		}
+
+		avgTimes[r] = accumulatedTime / (double)nIterations;
+		NSLog(@"%.14f sec", avgTimes[r]);
 	}
-	NSLog(@"%f sec", accumulatedTime / (double)nIterations);
-
-    //print_complex_spectrum(necessaryResolution, H0);
-
-
 
     odgaussianrng_free(gaussianRNG);
     DESTROY(timer);
