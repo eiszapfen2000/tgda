@@ -55,8 +55,11 @@ float energy_pm_wave_frequency(float omega, float U10)
     const float alpha = PIERSON_MOSKOWITZ_alphaf;
 
     const float omega_p = (0.855f * g / U10);
-    const float exponent = (-5.0f/4.0f) * powf(omega_p / omega, 4.0f);
-    const float Theta = ((alpha*g*g) / powf(omega, 5.0f)) * expf(exponent);
+    // const float exponent = (-5.0f/4.0f) * powf(omega_p / omega, 4.0f);
+    // const float Theta = ((alpha*g*g) / powf(omega, 5.0f)) * expf(exponent);
+    const float omega_ratio = omega_p / omega;
+    const float exponent = (-5.0f/4.0f) * (omega_ratio * omega_ratio * omega_ratio * omega_ratio);
+    const float Theta = ((alpha*g*g) / (omega * omega * omega * omega * omega)) * expf(exponent);
 
     return Theta;
 }
@@ -154,12 +157,14 @@ float energy_unified_wave_number(float k, float U10, float fetch)
 float directional_spreading_mitsuyasu_hasselmann(float omega_p, float omega, float theta_p, float theta)
 {
     const float s_p = (omega >= omega_p) ? 9.77f : 6.97f;
-    const float omega_div_omega_p = (omega >= omega_p) ? powf(omega / omega_p, -2.5f) : powf(omega / omega_p, 5.0f);
+    // const float omega_div_omega_p = (omega >= omega_p) ? powf(omega / omega_p, -2.5f) : powf(omega / omega_p, 5.0f);
+    const float omega_ratio = omega / omega_p;
+    const float omega_div_omega_p = (omega >= omega_p) ? powf(omega_ratio, -2.5f) : (omega_ratio * omega_ratio * omega_ratio * omega_ratio * omega_ratio);
     const float s = s_p * omega_div_omega_p;
 
     const float numerator = tgammaf(s + 1.0f);
     const float numeratorSquare = numerator * numerator;
-    const float denominator = tgamma(2.0f * s + 1.0f);
+    const float denominator = tgammaf(2.0f * s + 1.0f);
 
     const float term_one = powf(2.0f, 2.0f * s - 1.0f) / MATH_PIf;
     const float term_two = numeratorSquare / denominator;
