@@ -58,11 +58,11 @@ typedef struct GeneratorSettings
 GeneratorSettings;
 
 static void generatePM(
-	const SpectrumGeometry * const geometry,
-	const SpectrumParameters * const settings,
-	const double * const randomNumbers,
-	fftwf_complex * const H0
-	)
+    const SpectrumGeometry * const geometry,
+    const SpectrumParameters * const settings,
+    const double * const randomNumbers,
+    fftwf_complex * const H0
+    )
 {
     const int resolution  = MAX(geometry->geometryResolution, geometry->gradientResolution);
     const float fresolution = (float)resolution;
@@ -136,15 +136,15 @@ static void generatePM(
                 H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
             }
         }
-    }	
+    }   
 }
 
 static void generateJONSWAP(
-	const SpectrumGeometry * const geometry,
-	const SpectrumParameters * const settings,
-	const double * const randomNumbers,
-	fftwf_complex * const H0
-	)
+    const SpectrumGeometry * const geometry,
+    const SpectrumParameters * const settings,
+    const double * const randomNumbers,
+    fftwf_complex * const H0
+    )
 {
     const int resolution  = MAX(geometry->geometryResolution, geometry->gradientResolution);
     const float fresolution = (float)resolution;
@@ -219,15 +219,15 @@ static void generateJONSWAP(
                 H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
             }
         }
-    }	
+    }   
 }
 
 static void generateDonelan(
-	const SpectrumGeometry * const geometry,
-	const SpectrumParameters * const settings,
-	const double * const randomNumbers,
-	fftwf_complex * const H0
-	)
+    const SpectrumGeometry * const geometry,
+    const SpectrumParameters * const settings,
+    const double * const randomNumbers,
+    fftwf_complex * const H0
+    )
 {
     const int resolution  = MAX(geometry->geometryResolution, geometry->gradientResolution);
     const float fresolution = (float)resolution;
@@ -302,15 +302,15 @@ static void generateDonelan(
                 H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
             }
         }
-    }	
+    }   
 }
 
 static void generateUnified(
-	const SpectrumGeometry * const geometry,
-	const SpectrumParameters * const settings,
-	const double * const randomNumbers,
-	fftwf_complex * const H0
-	)
+    const SpectrumGeometry * const geometry,
+    const SpectrumParameters * const settings,
+    const double * const randomNumbers,
+    fftwf_complex * const H0
+    )
 {
     const int resolution  = MAX(geometry->geometryResolution, geometry->gradientResolution);
     const float fresolution = (float)resolution;
@@ -324,7 +324,7 @@ static void generateUnified(
     const float n = -(fresolution / 2.0f);
     const float m =  (fresolution / 2.0f);
 
-	const float k_p = peak_energy_wave_number_unified(U10, fetch);
+    const float k_p = peak_energy_wave_number_unified(U10, fetch);
 
     for ( int l = 0; l < numberOfLods; l++ )
     {
@@ -378,7 +378,7 @@ static void generateUnified(
                 H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
             }
         }
-    }	
+    }   
 }
 
 static void print_complex_spectrum(int resolution, fftwf_complex * spectrum)
@@ -397,65 +397,63 @@ static void print_complex_spectrum(int resolution, fftwf_complex * spectrum)
     printf("\n");
 }
 
-#define N_RESOLUTIONS	8
+#define N_RESOLUTIONS   8
 static const int resolutions[N_RESOLUTIONS] = {8, 16, 32, 64, 128, 256, 512, 1024};
 
-#define N_GENERATORS	4
+#define N_GENERATORS    4
 static const char * names[N_GENERATORS] = {"PM", "JONSWAP", "Donelan", "Unified"};
 
  typedef void (*GenFunction)(
-    	const SpectrumGeometry * const,
-		const SpectrumParameters * const,
-		const double * const,
-		fftwf_complex * const
-		);
+        const SpectrumGeometry * const,
+        const SpectrumParameters * const,
+        const double * const,
+        fftwf_complex * const
+        );
 
 static const GenFunction calls[N_GENERATORS] = {&generatePM, &generateJONSWAP,  &generateDonelan, &generateUnified};
 
 static void GenPerformance(
-	SpectrumGeometry * const geometry,
-	const GeneratorSettings * const settings,
-	int nIterations
-	)
+    SpectrumGeometry * const geometry,
+    const GeneratorSettings * const settings,
+    int nIterations
+    )
 {
-	NPTimer * timer = [[ NPTimer alloc ] init ];
-	OdGaussianRng * gaussianRNG = odgaussianrng_alloc_init();
+    NPTimer * timer = [[ NPTimer alloc ] init ];
+    OdGaussianRng * gaussianRNG = odgaussianrng_alloc_init();
 
-	for ( int g = 0; g < N_GENERATORS; g++)
-	{
-		fprintf(stdout, "%s ", names[g]);
+    for ( int g = 0; g < N_GENERATORS; g++)
+    {
+        fprintf(stdout, "%s ", names[g]);
 
-		for ( int r = 0; r < N_RESOLUTIONS; r++ )
-		{
-			geometry->geometryResolution = resolutions[r];
-			geometry->gradientResolution = resolutions[r];
+        for ( int r = 0; r < N_RESOLUTIONS; r++ )
+        {
+            geometry->geometryResolution = resolutions[r];
+            geometry->gradientResolution = resolutions[r];
 
-		    int necessaryResolution = MAX(geometry->geometryResolution, geometry->gradientResolution);
-		    const size_t n
-	    	    = necessaryResolution * necessaryResolution * geometry->numberOfLods;
+            int necessaryResolution = MAX(geometry->geometryResolution, geometry->gradientResolution);
+            const size_t n
+                = necessaryResolution * necessaryResolution * geometry->numberOfLods;
 
-		    fftwf_complex * H0 = fftwf_alloc_complex(n);
-		    double * randomNumbers = malloc(sizeof(double) * 2 * n);
-		    odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * n);
+            fftwf_complex * H0 = fftwf_alloc_complex(n);
+            double * randomNumbers = malloc(sizeof(double) * 2 * n);
+            odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * n);
 
-			[ timer update ];
-		    for ( int i = 0; i < nIterations; i++)
-		    {
+            [ timer update ];
+            for ( int i = 0; i < nIterations; i++)
+            {
+                (*calls[g])(geometry, &(settings->parameters), randomNumbers, H0);
+            }
+            [ timer update ];
+            const double accumulatedTime = [timer frameTime];
 
-			    (*calls[g])(geometry, &(settings->parameters), randomNumbers, H0);
-				
-			}
-			[ timer update ];
-			const double accumulatedTime = [timer frameTime];
+            fprintf(stdout, "%f ", (accumulatedTime / (double)nIterations) * 1000.0);
 
-			fprintf(stdout, "%.9f ", accumulatedTime / (double)nIterations);
+            free(randomNumbers);
+            fftwf_free(H0);
+        }
 
-		    free(randomNumbers);
-	    	fftwf_free(H0);
-		}
-
-		fprintf(stdout, "\n");
-	}
+        fprintf(stdout, "\n");
+    }
 
     odgaussianrng_free(gaussianRNG);
     DESTROY(timer);
@@ -463,40 +461,40 @@ static void GenPerformance(
 
 int main (int argc, char **argv)
 {
-	const double goldenRatio = (1.0 + sqrt(5.0)) / 2.0;
-	const double goldenRatioLong = 1.0 / goldenRatio;
-	const double goldenRatioShort = 1.0 - (1.0 / goldenRatio);
+    const double goldenRatio = (1.0 + sqrt(5.0)) / 2.0;
+    const double goldenRatioLong = 1.0 / goldenRatio;
+    const double goldenRatioShort = 1.0 - (1.0 / goldenRatio);
 
-	NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
+    NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
-	
-	double maxSize = 1000; // metre
+    
+    double maxSize = 1000; // metre
 
-	SpectrumGeometry geometry;
-	geometry.numberOfLods = 1;
-	geometry.sizes = malloc(sizeof(double)*geometry.numberOfLods);
-	geometry.sizes[0] = maxSize;
+    SpectrumGeometry geometry;
+    geometry.numberOfLods = 1;
+    geometry.sizes = malloc(sizeof(double)*geometry.numberOfLods);
+    geometry.sizes[0] = maxSize;
 
-	for ( int i = 1; i < geometry.numberOfLods; i++ )
-	{
-		const double s = geometry.sizes[i-1];
-		geometry.sizes[i] = s * goldenRatioShort;
-	}
+    for ( int i = 1; i < geometry.numberOfLods; i++ )
+    {
+        const double s = geometry.sizes[i-1];
+        geometry.sizes[i] = s * goldenRatioShort;
+    }
 
     GeneratorSettings settings;
     settings.parameters.U10 = 10.0;
-    settings.parameters.fetch = 500000.0;
+    settings.parameters.fetch = 100000.0;
 
     fprintf(stdout, "Spectrum ");
     for ( int r = 0; r < N_RESOLUTIONS; r++)
     {
-    	fprintf(stdout, "%d ", resolutions[r]);
+        fprintf(stdout, "%d ", resolutions[r]);
     }
     fprintf(stdout, "\n");
 
-	GenPerformance(&geometry, &settings, 1);
+    GenPerformance(&geometry, &settings, 10);
 
-	free(geometry.sizes);
+    free(geometry.sizes);
     DESTROY(pool);
 
     return EXIT_SUCCESS;
