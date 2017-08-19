@@ -400,6 +400,67 @@ static void print_complex_spectrum(int resolution, fftwf_complex * spectrum)
 #define N_RESOLUTIONS	8
 static const int resolutions[N_RESOLUTIONS] = {8, 16, 32, 64, 128, 256, 512, 1024};
 
+#define N_GENERATORS	4
+static const char * names[N_GENERATORS] = {"PM", "JONSWAP", "Donelan", "Unified"};
+
+ typedef void (*GenFunction)(
+    	const SpectrumGeometry * const,
+		const SpectrumParameters * const,
+		const double * const,
+		fftwf_complex * const
+		);
+
+static const GenFunction calls[N_GENERATORS] = {&generatePM, &generateJONSWAP,  &generateDonelan, &generateUnified};
+
+static void GenPerformance(
+	SpectrumGeometry * const geometry,
+	const GeneratorSettings * const settings,
+	int nIterations
+	)
+{
+	NPTimer * timer = [[ NPTimer alloc ] init ];
+	OdGaussianRng * gaussianRNG = odgaussianrng_alloc_init();
+
+	for ( int g = 0; g < N_GENERATORS; g++)
+	{
+		fprintf(stdout, "%s ", names[g]);
+
+		for ( int r = 0; r < N_RESOLUTIONS; r++ )
+		{
+			geometry->geometryResolution = resolutions[r];
+			geometry->gradientResolution = resolutions[r];
+
+		    int necessaryResolution = MAX(geometry->geometryResolution, geometry->gradientResolution);
+		    const size_t n
+	    	    = necessaryResolution * necessaryResolution * geometry->numberOfLods;
+
+		    fftwf_complex * H0 = fftwf_alloc_complex(n);
+		    double * randomNumbers = malloc(sizeof(double) * 2 * n);
+		    odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * n);
+
+			[ timer update ];
+		    for ( int i = 0; i < nIterations; i++)
+		    {
+
+			    (*calls[g])(geometry, &(settings->parameters), randomNumbers, H0);
+				
+			}
+			[ timer update ];
+			const double accumulatedTime = [timer frameTime];
+
+			fprintf(stdout, "%.9f ", accumulatedTime / (double)nIterations);
+
+		    free(randomNumbers);
+	    	fftwf_free(H0);
+		}
+
+		fprintf(stdout, "\n");
+	}
+
+    odgaussianrng_free(gaussianRNG);
+    DESTROY(timer);
+}
+
 int main (int argc, char **argv)
 {
 	const double goldenRatio = (1.0 + sqrt(5.0)) / 2.0;
@@ -408,8 +469,6 @@ int main (int argc, char **argv)
 
 	NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
-	NPTimer * timer = [[ NPTimer alloc ] init ];
-	OdGaussianRng * gaussianRNG = odgaussianrng_alloc_init();
 	
 	double maxSize = 1000; // metre
 
@@ -428,38 +487,16 @@ int main (int argc, char **argv)
     settings.parameters.U10 = 10.0;
     settings.parameters.fetch = 500000.0;
 
-    double avgTimes[N_RESOLUTIONS] = {0.0};
-	for ( int r = 0; r < N_RESOLUTIONS; r++ )
-	{
-		geometry.geometryResolution = resolutions[r];
-		geometry.gradientResolution = resolutions[r];
+    fprintf(stdout, "Spectrum ");
+    for ( int r = 0; r < N_RESOLUTIONS; r++)
+    {
+    	fprintf(stdout, "%d ", resolutions[r]);
+    }
+    fprintf(stdout, "\n");
 
-	    int necessaryResolution = MAX(geometry.geometryResolution, geometry.gradientResolution);
-	    const size_t n
-    	    = necessaryResolution * necessaryResolution * geometry.numberOfLods;
+	GenPerformance(&geometry, &settings, 1);
 
-
-	    double accumulatedTime = 0.0;
-	    const int nIterations = 10;
-	    for ( int i = 0; i < nIterations; i++)
-	    {
-			[ timer update ];
-		    fftwf_complex * H0 = fftwf_alloc_complex(n);
-		    double * randomNumbers = malloc(sizeof(double) * 2 * n);
-		    odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * n);
-		    generateUnified(&geometry, &(settings.parameters), randomNumbers, H0);
-		    free(randomNumbers);
-	    	fftwf_free(H0);	    
-			[ timer update ];
-			accumulatedTime += [timer frameTime];
-		}
-
-		avgTimes[r] = accumulatedTime / (double)nIterations;
-		NSLog(@"%.14f sec", avgTimes[r]);
-	}
-
-    odgaussianrng_free(gaussianRNG);
-    DESTROY(timer);
+	free(geometry.sizes);
     DESTROY(pool);
 
     return EXIT_SUCCESS;
