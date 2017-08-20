@@ -446,7 +446,7 @@ static void GenPerformance(
             [ timer update ];
             const double accumulatedTime = [timer frameTime];
 
-            fprintf(stdout, "%f ", (accumulatedTime / (double)nIterations) * 1000.0);
+            fprintf(stdout, "%.2f ", (accumulatedTime / (double)nIterations) * 1000.0);
 
             free(randomNumbers);
             fftwf_free(H0);
