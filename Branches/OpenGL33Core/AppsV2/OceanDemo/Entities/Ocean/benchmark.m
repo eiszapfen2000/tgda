@@ -412,7 +412,7 @@ static const char * names[N_GENERATORS] = {"PM", "JONSWAP", "Donelan", "Unified"
 
 static const GenFunction calls[N_GENERATORS] = {&generatePM, &generateJONSWAP,  &generateDonelan, &generateUnified};
 
-static void GenPerformance(
+static void GenH0Performance(
     SpectrumGeometry * const geometry,
     const GeneratorSettings * const settings,
     int nIterations
@@ -492,7 +492,7 @@ int main (int argc, char **argv)
     }
     fprintf(stdout, "\n");
 
-    GenPerformance(&geometry, &settings, 10);
+    GenH0Performance(&geometry, &settings, 10);
 
     free(geometry.sizes);
     DESTROY(pool);
