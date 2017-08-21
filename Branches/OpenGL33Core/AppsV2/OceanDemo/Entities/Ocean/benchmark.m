@@ -732,16 +732,13 @@ static FrequencySpectrum generateHAtTime(
 
 /*===============================================================================================*/
 
-int main (int argc, char **argv)
+static void H0Benchmark()
 {
     const double goldenRatio = (1.0 + sqrt(5.0)) / 2.0;
     const double goldenRatioLong = 1.0 / goldenRatio;
     const double goldenRatioShort = 1.0 - (1.0 / goldenRatio);
 
-    NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
-
-    
-    double maxSize = 1000; // metre
+    const double maxSize = 1000; // metre
 
     SpectrumGeometry geometry;
     geometry.numberOfLods = 1;
@@ -768,6 +765,14 @@ int main (int argc, char **argv)
     GenH0Performance(&geometry, &settings, 10);
 
     free(geometry.sizes);
+}
+
+int main(int argc, char **argv)
+{
+    NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
+
+    H0Benchmark();
+
     DESTROY(pool);
 
     return EXIT_SUCCESS;
