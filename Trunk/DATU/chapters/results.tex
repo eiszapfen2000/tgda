@@ -35,17 +35,27 @@ our level of detail approach.
 \section{Fourier Transform}
 \label{sec:results:fft}
 %
+
 \begin{table}[]
 \centering
-\begin{tabular}{@{}lccccc@{}}
+%
+% Spectrum 8    16   32   64  128   256    512    1024 
+% PM      0.02 0.13 0.62 2.64  9.64 30.67 109.74 424.49 
+% JONSWAP 0.04 0.16 0.81 3.59 14.63 50.19 166.96 629.05 
+% Donelan 0.04 0.16 0.72 3.46 14.87 59.52 208.73 721.69 
+% Unified 0.06 0.24 0.93 3.78 14.69 59.07 235.65 904.22 
+%
+\begin{tabular}{@{}l*2{S[table-format=1.2]}*2{S[table-format=2.2]}*2{S[table-format=3.2]}@{}}
 \toprule
-Spectrum & \multicolumn{5}{c}{Time}       \\ \midrule
-         & \multicolumn{5}{c}{Resolution} \\ \cmidrule(l){2-6} 
-         & $64\times64$  & $128\times128$  & $256\times256$  & $512\times512$ & $1024\times1024$ \\ \midrule
-PM       & 0   & 0    & 0    & 0   & 0    \\
-JONSWAP  & 0   & 0    & 0    & 0   & 0    \\
-Unified  & 0   & 0    & 0    & 0   & 0    \\
-Donelan  & 0   & 0    & 0    & 0   & 0    \\ \bottomrule
+Spectrum & \multicolumn{6}{c}{Time [\si{\ms}]}       \\ \midrule
+         & \multicolumn{6}{c}{Resolution} \\ \cmidrule(l){2-7} 
+         & {$32\times32$} & {$64\times64$}  & {$128\times128$}  & {$256\times256$}  & {$512\times512$} & {$1024\times1024$} \\
+\midrule
+Pierson-Moskowitz & 0.62  & 2.64   &  9.64    & 30.67    & 109.74   & 424.49    \\
+JONSWAP           & 0.81  & 3.59   & 14.63    & 50.19    & 166.96   & 629.05    \\
+Donelan           & 0.72  & 3.46   & 14.87    & 59.52    & 208.73   & 721.69    \\
+Unified           & 0.93  & 3.78   & 14.69    & 59.07    & 235.65   & 904.22    \\
+\bottomrule
 \end{tabular}
 \caption{My caption}
 % \label{my-label}
