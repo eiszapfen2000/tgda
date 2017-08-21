@@ -767,11 +767,64 @@ static void H0Benchmark()
     free(geometry.sizes);
 }
 
+static void HBenchmark()
+{
+    const double goldenRatio = (1.0 + sqrt(5.0)) / 2.0;
+    const double goldenRatioLong = 1.0 / goldenRatio;
+    const double goldenRatioShort = 1.0 - (1.0 / goldenRatio);
+
+    const double maxSize = 10; // metre
+
+    SpectrumGeometry geometry;
+    geometry.numberOfLods = 1;
+    geometry.sizes = malloc(sizeof(double)*geometry.numberOfLods);
+    geometry.sizes[0] = maxSize;
+
+    for ( int i = 1; i < geometry.numberOfLods; i++ )
+    {
+        const double s = geometry.sizes[i-1];
+        geometry.sizes[i] = s * goldenRatioShort;
+    }
+
+    GeneratorSettings settings;
+    settings.parameters.U10 = 10.0;
+    settings.parameters.fetch = 100000.0;
+
+    NPTimer * timer = [[ NPTimer alloc ] init ];
+    OdGaussianRng * gaussianRNG = odgaussianrng_alloc_init();
+
+    geometry.geometryResolution = 8;
+    geometry.gradientResolution = 8;
+
+    int necessaryResolution = MAX(geometry.geometryResolution, geometry.gradientResolution);
+    const size_t n
+        = necessaryResolution * necessaryResolution * geometry.numberOfLods;
+
+    fftwf_complex * H0 = fftwf_alloc_complex(n);
+    double * randomNumbers = malloc(sizeof(double) * 2 * n);
+    odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * n);
+
+    generateUnified(&geometry, &(settings.parameters), randomNumbers, H0);
+    FrequencySpectrum fs = generateHAtTime(1.0f, &geometry, H0);
+
+    print_complex_spectrum(necessaryResolution, fs.height);
+
+    free(randomNumbers);
+    fftwf_free(H0);
+
+
+    odgaussianrng_free(gaussianRNG);
+    DESTROY(timer);
+
+    free(geometry.sizes);	
+}
+
 int main(int argc, char **argv)
 {
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
-    H0Benchmark();
+    //H0Benchmark();
+    HBenchmark();
 
     DESTROY(pool);
 
