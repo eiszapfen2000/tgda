@@ -5,6 +5,7 @@
 #import <time.h>
 #import <Foundation/Foundation.h>
 #import <Foundation/NSString.h>
+#import <complex.h>
 #import "fftw3.h"
 #import "Core/Basics/NpBasics.h"
 #import "Core/Math/NpMath.h"
@@ -110,6 +111,7 @@ static void generatePM(
 
                 const float xi_r = (float)randomNumbers[2 * index    ];
                 const float xi_i = (float)randomNumbers[2 * index + 1];
+                const float complex xi = xi_r + I * xi_i;
 
                 const float di = i;
                 const float dj = j;
@@ -143,11 +145,12 @@ static void generatePM(
                 }
 
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
-                H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
-                H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
+                // H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
+                // H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
+                H0[index] = (MATH_1_DIV_SQRT_2f * amplitude * 0.5) * xi;
             }
         }
-    }   
+    }
 }
 
 static void generateJONSWAP(
@@ -193,6 +196,7 @@ static void generateJONSWAP(
 
                 const float xi_r = (float)randomNumbers[2 * index    ];
                 const float xi_i = (float)randomNumbers[2 * index + 1];
+                const float complex xi = xi_r + I * xi_i;
 
                 const float di = i;
                 const float dj = j;
@@ -226,8 +230,9 @@ static void generateJONSWAP(
                 }
 
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
-                H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
-                H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
+                // H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
+                // H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
+                H0[index] = (MATH_1_DIV_SQRT_2f * amplitude * 0.5) * xi;
             }
         }
     }   
@@ -276,6 +281,7 @@ static void generateDonelan(
 
                 const float xi_r = (float)randomNumbers[2 * index    ];
                 const float xi_i = (float)randomNumbers[2 * index + 1];
+                const float complex xi = xi_r + I * xi_i;
 
                 const float di = i;
                 const float dj = j;
@@ -309,8 +315,9 @@ static void generateDonelan(
                 }
 
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
-                H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
-                H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
+                // H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
+                // H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
+                H0[index] = (MATH_1_DIV_SQRT_2f * amplitude * 0.5) * xi;
             }
         }
     }   
@@ -359,6 +366,7 @@ static void generateUnified(
 
                 const float xi_r = (float)randomNumbers[2 * index    ];
                 const float xi_i = (float)randomNumbers[2 * index + 1];
+                const float complex xi = xi_r + I * xi_i;
 
                 const float di = i;
                 const float dj = j;
@@ -385,8 +393,9 @@ static void generateUnified(
                 }
 
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
-                H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
-                H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
+                // H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
+                // H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
+                H0[index] = (MATH_1_DIV_SQRT_2f * amplitude * 0.5) * xi;
             }
         }
     }   
@@ -399,7 +408,7 @@ static void print_complex_spectrum(int resolution, fftwf_complex * spectrum)
     {
         for ( int k = 0; k < resolution; k++ )
         {
-            printf("%+f %+fi ", spectrum[j * resolution + k][0], spectrum[j * resolution + k][1]);
+            printf("%+f %+fi ", crealf(spectrum[j * resolution + k]), cimagf(spectrum[j * resolution + k]));
         }
 
         printf("\n");
@@ -472,6 +481,7 @@ static void GenH0Performance(
 
 /*===============================================================================================*/
 
+/*
 static void generateHAtTime(
     const SpectrumGeometry * const geometry,
     const fftwf_complex * const H0,
@@ -664,6 +674,7 @@ static void generateHAtTime(
         }
     }
 }
+*/
 
 /*===============================================================================================*/
 
@@ -697,7 +708,7 @@ static void H0Benchmark()
     }
     fprintf(stdout, "\n");
 
-    GenH0Performance(&geometry, &settings, 10);
+    GenH0Performance(&geometry, &settings, 50);
 
     free(geometry.sizes);
 }
@@ -723,7 +734,7 @@ static void GenHPerformance(
         fftwf_complex * H0 = fftwf_alloc_complex(n);
         double * randomNumbers = malloc(sizeof(double) * 2 * n);
         odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * n);
-        generateUnified(geometry, &(settings->parameters), randomNumbers, H0);
+        generatePM(geometry, &(settings->parameters), randomNumbers, H0);
 
         const int numberOfLods = geometry->numberOfLods;
         const int numberOfGeometryElements = geometry->geometryResolution * geometry->geometryResolution;
@@ -787,7 +798,7 @@ static void HBenchmark()
     settings.parameters.U10 = 10.0;
     settings.parameters.fetch = 100000.0;
 
-    GenHPerformance(&geometry, &settings, 1000);
+    GenHPerformance(&geometry, &settings, 1000                      );
 
     free(geometry.sizes);   
 }
@@ -796,8 +807,8 @@ int main(int argc, char **argv)
 {
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
-    //H0Benchmark();
-    HBenchmark();
+    H0Benchmark();
+    //HBenchmark();
 
     DESTROY(pool);
 
