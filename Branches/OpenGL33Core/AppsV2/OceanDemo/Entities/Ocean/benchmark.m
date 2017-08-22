@@ -472,12 +472,13 @@ static void GenH0Performance(
 
 /*===============================================================================================*/
 
-//- (OdFrequencySpectrumFloat) generateHAtTime:(const float)time
-static FrequencySpectrum generateHAtTime(
-	float time,
-	const SpectrumGeometry * const geometry,
-	const fftwf_complex * const H0)
+static void generateHAtTime(
+    const SpectrumGeometry * const geometry,
+    const fftwf_complex * const H0,
+    FrequencySpectrum * const result)
 {
+    const float time = result->timestamp;
+
     const int resolution  = MAX(geometry->geometryResolution, geometry->gradientResolution);
     const float fresolution = resolution;
 
@@ -489,14 +490,6 @@ static FrequencySpectrum generateHAtTime(
 
     const int numberOfGeometryElements = geometryResolution * geometryResolution;
     const int numberOfGradientElements = gradientResolution * gradientResolution;
-
-    FrequencySpectrum result;
-    result.height = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
-    result.gradient = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
-    result.displacement = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
-    result.displacementXdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
-    result.displacementZdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
-    result.timestamp = time;
 
     const int geometryPadding = (resolution - geometryResolution) / 2;
     const int gradientPadding = (resolution - gradientResolution) / 2;
@@ -556,26 +549,6 @@ static FrequencySpectrum generateHAtTime(
                 // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
                 const fftwf_complex expMinusOmega = { expOmega[0], -expOmega[1] };
 
-                //printf("%+f %+fi ", expOmega[0], expOmega[1]);
-
-                /* complex multiplication
-                   x = a + i*b
-                   y = c + i*d
-                   xy = (ac-bd) + i(ad+bc)
-
-                   b = 0
-                   x = a + i*0
-                   y = c + i*d
-                   xy = (ac-0d) + i(ad+0c)
-                      = ac + i(ad)
-
-                   a = 0
-                   x = 0 + i*b
-                   y = c + i*d
-                   xy = (0c-bd) + i(0d+bc)
-                      = (-bd) + i(bc)
-                */
-
                 // H0[indexForK] * exp(-i*omega*t)
                 const fftwf_complex H0expMinusOmega
                     = { H0[indexForK][0] * expMinusOmega[0] - H0[indexForK][1] * expMinusOmega[1],
@@ -597,12 +570,6 @@ static FrequencySpectrum generateHAtTime(
                     = { gradientH0conjugate[0] * expOmega[0] - gradientH0conjugate[1] * expOmega[1],
                         gradientH0conjugate[0] * expOmega[1] + gradientH0conjugate[1] * expOmega[0] };
 
-                /* complex addition
-                   x = a + i*b
-                   y = c + i*d
-                   x+y = (a+c)+i(b+d)
-                */
-
                 // hTilde = H0expOmega + H0expMinusomega            
                 const fftwf_complex geometryhTilde
                     = { H0expMinusOmega[0] + geometryH0expOmega[0],
@@ -612,32 +579,13 @@ static FrequencySpectrum generateHAtTime(
                     = { H0expMinusOmega[0] + gradientH0expOmega[0],
                         H0expMinusOmega[1] + gradientH0expOmega[1] };
 
-                //printf("%+f %+fi ", geometryhTilde[0], geometryhTilde[1]);
-
-
-                //if ( indexForK >= geometryStartIndex && indexForK <= geometryEndIndex )
-                if ( result.height != NULL
+                if ( result->height != NULL
                      && j > geometryXRange.x && j < geometryXRange.y
                      && i > geometryYRange.x && i < geometryYRange.y )
                 {
-                    result.height[geometryIndex][0] = geometryhTilde[0];
-                    result.height[geometryIndex][1] = geometryhTilde[1];
+                    result->height[geometryIndex][0] = geometryhTilde[0];
+                    result->height[geometryIndex][1] = geometryhTilde[1];
                 }
-
-                // i * kx
-                /*
-                x = 0  + i*1
-                y = kx + i*0
-                xy = (0*k - 1*0) + i*(0*0+1*kx)
-                   = 0 + i*kx
-                */
-
-                // i * kx * H
-                /*
-                x = 0 + i*kx
-                H = c + i*d
-                xH = (0*c - kx*d) + i*(0*d+kx*c)
-                */
 
                 // first column of a derivative in X direction has to be zero
                 // first row of a derivative in Z direction has to be zero
@@ -651,7 +599,7 @@ static FrequencySpectrum generateHAtTime(
                 if ( j > gradientXRange.x && j < gradientXRange.y
                      && i > gradientYRange.x && i < gradientYRange.y )
                 {
-                    if ( result.gradient != NULL )
+                    if ( result->gradient != NULL )
                     {
                         const fftwf_complex gx
                             = {-kx * gradienthTilde[1] * derivativeXScale, kx * gradienthTilde[0] * derivativeXScale};
@@ -660,11 +608,11 @@ static FrequencySpectrum generateHAtTime(
                             = {-ky * gradienthTilde[1] * derivativeZScale, ky * gradienthTilde[0] * derivativeZScale};
 
                         // gx + i*gz
-                        result.gradient[gradientIndex][0] = gx[0] - gz[1];
-                        result.gradient[gradientIndex][1] = gx[1] + gz[0];
+                        result->gradient[gradientIndex][0] = gx[0] - gz[1];
+                        result->gradient[gradientIndex][1] = gx[1] + gz[0];
                     }
 
-                    if ( result.displacementXdXdZ != NULL && result.displacementZdXdZ != NULL )
+                    if ( result->displacementXdXdZ != NULL && result->displacementZdXdZ != NULL )
                     {
                         // partial derivatives of dx and dz
                         const float dx_x_term = kx * kx * factor * derivativeXScale;
@@ -688,24 +636,15 @@ static FrequencySpectrum generateHAtTime(
                             = { dz_z_term * derivativeZScale * gradienthTilde[0],
                                 dz_z_term * derivativeZScale * gradienthTilde[1] };
 
-                        result.displacementXdXdZ[gradientIndex][0] = dx_x[0] - dx_z[1];
-                        result.displacementXdXdZ[gradientIndex][1] = dx_x[1] + dx_z[0];
+                        result->displacementXdXdZ[gradientIndex][0] = dx_x[0] - dx_z[1];
+                        result->displacementXdXdZ[gradientIndex][1] = dx_x[1] + dx_z[0];
 
-                        result.displacementZdXdZ[gradientIndex][0] = dz_x[0] - dz_z[1];
-                        result.displacementZdXdZ[gradientIndex][1] = dz_x[1] + dz_z[0];
+                        result->displacementZdXdZ[gradientIndex][0] = dz_x[0] - dz_z[1];
+                        result->displacementZdXdZ[gradientIndex][1] = dz_x[1] + dz_z[0];
                     }
                 }
 
-                // -i * kx/|k| * H
-                /*
-                x  = 0 + i*(-kx/|k|)
-                H  = c + i*d
-                xH = (0*c - (-kx/|k| * d)) + i*(0*d + (-kx/|k| * c))
-                   = d*kx/|k| + i*(-c*kx/|k|)
-                */
-
-                
-                if ( result.displacement != NULL
+                if ( result->displacement != NULL
                      && j > geometryXRange.x && j < geometryXRange.y
                      && i > geometryYRange.x && i < geometryYRange.y )
                 {
@@ -718,16 +657,12 @@ static FrequencySpectrum generateHAtTime(
                             displacementZScale * factor * ky * geometryhTilde[0] * -1.0f };
 
                     // dx + i*dz
-                    result.displacement[geometryIndex][0] = dx[0] - dz[1];
-                    result.displacement[geometryIndex][1] = dx[1] + dz[0];
+                    result->displacement[geometryIndex][0] = dx[0] - dz[1];
+                    result->displacement[geometryIndex][1] = dx[1] + dz[0];
                 }
             }
-
-            //printf("\n");
         }
     }
-
-    return result;
 }
 
 /*===============================================================================================*/
@@ -793,7 +728,7 @@ static void HBenchmark()
     NPTimer * timer = [[ NPTimer alloc ] init ];
     OdGaussianRng * gaussianRNG = odgaussianrng_alloc_init();
 
-    geometry.geometryResolution = 8;
+    geometry.geometryResolution = 4;
     geometry.gradientResolution = 8;
 
     int necessaryResolution = MAX(geometry.geometryResolution, geometry.gradientResolution);
@@ -805,18 +740,35 @@ static void HBenchmark()
     odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * n);
 
     generateUnified(&geometry, &(settings.parameters), randomNumbers, H0);
-    FrequencySpectrum fs = generateHAtTime(1.0f, &geometry, H0);
 
-    print_complex_spectrum(necessaryResolution, fs.height);
+    const int numberOfLods = geometry.numberOfLods;
+    const int numberOfGeometryElements = geometry.geometryResolution * geometry.geometryResolution;
+    const int numberOfGradientElements = geometry.gradientResolution * geometry.gradientResolution;
 
+    FrequencySpectrum result;
+    result.height = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
+    result.gradient = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+    result.displacement = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
+    result.displacementXdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+    result.displacementZdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+    result.timestamp = 1.0f;
+
+    generateHAtTime(&geometry, H0, &result);
+
+    print_complex_spectrum(geometry.geometryResolution, result.height);
+
+    fftwf_free(result.height);
+    fftwf_free(result.gradient);
+    fftwf_free(result.displacement);
+    fftwf_free(result.displacementXdXdZ);
+    fftwf_free(result.displacementZdXdZ);
     free(randomNumbers);
     fftwf_free(H0);
-
 
     odgaussianrng_free(gaussianRNG);
     DESTROY(timer);
 
-    free(geometry.sizes);	
+    free(geometry.sizes);   
 }
 
 int main(int argc, char **argv)
