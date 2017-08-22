@@ -5,7 +5,6 @@
 #import <time.h>
 #import <Foundation/Foundation.h>
 #import <Foundation/NSString.h>
-#import <complex.h>
 #import "fftw3.h"
 #import "Core/Basics/NpBasics.h"
 #import "Core/Math/NpMath.h"
@@ -111,7 +110,6 @@ static void generatePM(
 
                 const float xi_r = (float)randomNumbers[2 * index    ];
                 const float xi_i = (float)randomNumbers[2 * index + 1];
-                const float complex xi = xi_r + I * xi_i;
 
                 const float di = i;
                 const float dj = j;
@@ -145,9 +143,8 @@ static void generatePM(
                 }
 
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
-                // H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
-                // H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
-                H0[index] = (MATH_1_DIV_SQRT_2f * amplitude * 0.5) * xi;
+                H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
+                H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
             }
         }
     }
@@ -196,7 +193,6 @@ static void generateJONSWAP(
 
                 const float xi_r = (float)randomNumbers[2 * index    ];
                 const float xi_i = (float)randomNumbers[2 * index + 1];
-                const float complex xi = xi_r + I * xi_i;
 
                 const float di = i;
                 const float dj = j;
@@ -230,9 +226,8 @@ static void generateJONSWAP(
                 }
 
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
-                // H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
-                // H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
-                H0[index] = (MATH_1_DIV_SQRT_2f * amplitude * 0.5) * xi;
+                H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
+                H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
             }
         }
     }   
@@ -281,7 +276,6 @@ static void generateDonelan(
 
                 const float xi_r = (float)randomNumbers[2 * index    ];
                 const float xi_i = (float)randomNumbers[2 * index + 1];
-                const float complex xi = xi_r + I * xi_i;
 
                 const float di = i;
                 const float dj = j;
@@ -315,9 +309,8 @@ static void generateDonelan(
                 }
 
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
-                // H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
-                // H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
-                H0[index] = (MATH_1_DIV_SQRT_2f * amplitude * 0.5) * xi;
+                H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
+                H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
             }
         }
     }   
@@ -366,7 +359,6 @@ static void generateUnified(
 
                 const float xi_r = (float)randomNumbers[2 * index    ];
                 const float xi_i = (float)randomNumbers[2 * index + 1];
-                const float complex xi = xi_r + I * xi_i;
 
                 const float di = i;
                 const float dj = j;
@@ -393,9 +385,8 @@ static void generateUnified(
                 }
 
                 const float amplitude = sqrtf(2.0f * Theta_complete * dkx * dky);
-                // H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
-                // H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
-                H0[index] = (MATH_1_DIV_SQRT_2f * amplitude * 0.5) * xi;
+                H0[index][0] = MATH_1_DIV_SQRT_2f * xi_r * amplitude * 0.5f;
+                H0[index][1] = MATH_1_DIV_SQRT_2f * xi_i * amplitude * 0.5f;
             }
         }
     }   
@@ -408,7 +399,8 @@ static void print_complex_spectrum(int resolution, fftwf_complex * spectrum)
     {
         for ( int k = 0; k < resolution; k++ )
         {
-            printf("%+f %+fi ", crealf(spectrum[j * resolution + k]), cimagf(spectrum[j * resolution + k]));
+            //printf("%+f %+fi ", crealf(spectrum[j * resolution + k]), cimagf(spectrum[j * resolution + k]));
+            printf("%+f %+fi ", spectrum[j * resolution + k][0], spectrum[j * resolution + k][1]);
         }
 
         printf("\n");
@@ -553,57 +545,46 @@ static void generateHAtTime(
                 const float omegaT = fmodf(omega * time, MATH_2_MUL_PIf);
 
                 // exp(i*omega*t) = (cos(omega*t) + i*sin(omega*t))
-                // const fftwf_complex expOmega = { cosf(omegaT), sinf(omegaT) };
-                const fftwf_complex expOmega = cexpf(I * omegaT);
+                const fftwf_complex expOmega = { cosf(omegaT), sinf(omegaT) };
 
                 // exp(-i*omega*t) = (cos(omega*t) - i*sin(omega*t))
-                // const fftwf_complex expMinusOmega = { expOmega[0], -expOmega[1] };
-                const fftwf_complex expMinusOmega = conjf(expOmega);
+                const fftwf_complex expMinusOmega = { expOmega[0], -expOmega[1] };
 
                 // H0[indexForK] * exp(-i*omega*t)
-                // const fftwf_complex H0expMinusOmega
-                //    = { H0[indexForK][0] * expMinusOmega[0] - H0[indexForK][1] * expMinusOmega[1],
-                //        H0[indexForK][0] * expMinusOmega[1] + H0[indexForK][1] * expMinusOmega[0] };
-                const fftwf_complex H0expMinusOmega = H0[indexForK] * expMinusOmega;
+                const fftwf_complex H0expMinusOmega
+                    = { H0[indexForK][0] * expMinusOmega[0] - H0[indexForK][1] * expMinusOmega[1],
+                        H0[indexForK][0] * expMinusOmega[1] + H0[indexForK][1] * expMinusOmega[0] };
 
-                // const fftwf_complex geometryH0conjugate
-                //    = { H0[indexForConjugateGeometry][0], -H0[indexForConjugateGeometry][1] };
-                const fftwf_complex geometryH0conjugate = conjf(H0[indexForConjugateGeometry]);
+                const fftwf_complex geometryH0conjugate
+                    = { H0[indexForConjugateGeometry][0], -H0[indexForConjugateGeometry][1] };
 
-                // const fftwf_complex gradientH0conjugate
-                //    = { H0[indexForConjugateGradient][0], -H0[indexForConjugateGradient][1] };
-                const fftwf_complex gradientH0conjugate = conjf(H0[indexForConjugateGradient]);
-
+                const fftwf_complex gradientH0conjugate
+                    = { H0[indexForConjugateGradient][0], -H0[indexForConjugateGradient][1] };
 
                 // H0[indexForConjugate] * exp(i*omega*t)
-                // const fftwf_complex geometryH0expOmega
-                //    = { geometryH0conjugate[0] * expOmega[0] - geometryH0conjugate[1] * expOmega[1],
-                //        geometryH0conjugate[0] * expOmega[1] + geometryH0conjugate[1] * expOmega[0] };
-                const fftwf_complex geometryH0expOmega = geometryH0conjugate * expOmega;
+                const fftwf_complex geometryH0expOmega
+                    = { geometryH0conjugate[0] * expOmega[0] - geometryH0conjugate[1] * expOmega[1],
+                        geometryH0conjugate[0] * expOmega[1] + geometryH0conjugate[1] * expOmega[0] };
 
-                // const fftwf_complex gradientH0expOmega
-                //    = { gradientH0conjugate[0] * expOmega[0] - gradientH0conjugate[1] * expOmega[1],
-                //        gradientH0conjugate[0] * expOmega[1] + gradientH0conjugate[1] * expOmega[0] };
-                const fftwf_complex gradientH0expOmega = gradientH0conjugate * expOmega;
+                const fftwf_complex gradientH0expOmega
+                    = { gradientH0conjugate[0] * expOmega[0] - gradientH0conjugate[1] * expOmega[1],
+                        gradientH0conjugate[0] * expOmega[1] + gradientH0conjugate[1] * expOmega[0] };
 
                 // hTilde = H0expOmega + H0expMinusomega            
-                // const fftwf_complex geometryhTilde
-                //    = { H0expMinusOmega[0] + geometryH0expOmega[0],
-                //        H0expMinusOmega[1] + geometryH0expOmega[1] };
-                const fftwf_complex geometryhTilde = H0expMinusOmega + geometryH0expOmega;
+                const fftwf_complex geometryhTilde
+                    = { H0expMinusOmega[0] + geometryH0expOmega[0],
+                        H0expMinusOmega[1] + geometryH0expOmega[1] };
 
-                // const fftwf_complex gradienthTilde
-                //    = { H0expMinusOmega[0] + gradientH0expOmega[0],
-                //        H0expMinusOmega[1] + gradientH0expOmega[1] };
-                const fftwf_complex gradienthTilde = H0expMinusOmega + gradientH0expOmega;
+                const fftwf_complex gradienthTilde
+                    = { H0expMinusOmega[0] + gradientH0expOmega[0],
+                        H0expMinusOmega[1] + gradientH0expOmega[1] };
 
                 if ( result->height != NULL
                      && j > geometryXRange.x && j < geometryXRange.y
                      && i > geometryYRange.x && i < geometryYRange.y )
                 {
-                    //result->height[geometryIndex][0] = geometryhTilde[0];
-                    //result->height[geometryIndex][1] = geometryhTilde[1];
-                    result->height[geometryIndex] = geometryhTilde;
+                    result->height[geometryIndex][0] = geometryhTilde[0];
+                    result->height[geometryIndex][1] = geometryhTilde[1];
                 }
 
                 // first column of a derivative in X direction has to be zero
@@ -620,18 +601,15 @@ static void generateHAtTime(
                 {
                     if ( result->gradient != NULL )
                     {
-                        // const fftwf_complex gx
-                        //    = {-kx * gradienthTilde[1] * derivativeXScale, kx * gradienthTilde[0] * derivativeXScale};
-                        const fftwf_complex gx = (kx * derivativeXScale * I) * gradienthTilde;
+                        const fftwf_complex gx
+                            = {-kx * gradienthTilde[1] * derivativeXScale, kx * gradienthTilde[0] * derivativeXScale};
 
-                        // const fftwf_complex gz
-                        //    = {-ky * gradienthTilde[1] * derivativeZScale, ky * gradienthTilde[0] * derivativeZScale};
-                        const fftwf_complex gz = (ky * derivativeZScale * I) * gradienthTilde;
+                        const fftwf_complex gz
+                            = {-ky * gradienthTilde[1] * derivativeZScale, ky * gradienthTilde[0] * derivativeZScale};
 
                         // gx + i*gz
-                        // result->gradient[gradientIndex][0] = gx[0] - gz[1];
-                        // result->gradient[gradientIndex][1] = gx[1] + gz[0];
-                        result->gradient[gradientIndex] = gx + I * gz;
+                        result->gradient[gradientIndex][0] = gx[0] - gz[1];
+                        result->gradient[gradientIndex][1] = gx[1] + gz[0];
                     }
 
                     if ( result->displacementXdXdZ != NULL && result->displacementZdXdZ != NULL )
@@ -642,35 +620,27 @@ static void generateHAtTime(
                         const float dx_z_term = ky * kx * factor * derivativeXScale;
                         const float dz_x_term = kx * ky * factor * derivativeZScale;
 
-                        // const fftwf_complex dx_x
-                        //    = { dx_x_term * derivativeXScale * gradienthTilde[0],
-                        //        dx_x_term * derivativeXScale * gradienthTilde[1] };
+                        const fftwf_complex dx_x
+                            = { dx_x_term * derivativeXScale * gradienthTilde[0],
+                                dx_x_term * derivativeXScale * gradienthTilde[1] };
 
-                        // const fftwf_complex dx_z
-                        //    = { dx_z_term * derivativeZScale * gradienthTilde[0],
-                        //        dx_z_term * derivativeZScale * gradienthTilde[1] };
+                        const fftwf_complex dx_z
+                            = { dx_z_term * derivativeZScale * gradienthTilde[0],
+                                dx_z_term * derivativeZScale * gradienthTilde[1] };
 
-                        // const fftwf_complex dz_x
-                        //    = { dz_x_term * derivativeXScale * gradienthTilde[0],
-                        //        dz_x_term * derivativeXScale * gradienthTilde[1] };
+                        const fftwf_complex dz_x
+                            = { dz_x_term * derivativeXScale * gradienthTilde[0],
+                                dz_x_term * derivativeXScale * gradienthTilde[1] };
 
-                        // const fftwf_complex dz_z
-                        //    = { dz_z_term * derivativeZScale * gradienthTilde[0],
-                        //        dz_z_term * derivativeZScale * gradienthTilde[1] };
+                        const fftwf_complex dz_z
+                            = { dz_z_term * derivativeZScale * gradienthTilde[0],
+                                dz_z_term * derivativeZScale * gradienthTilde[1] };
 
-                        const fftwf_complex dx_x = dx_x_term * derivativeXScale * gradienthTilde;
-                        const fftwf_complex dx_z = dx_z_term * derivativeZScale * gradienthTilde;
-                        const fftwf_complex dz_x = dz_x_term * derivativeXScale * gradienthTilde;
-                        const fftwf_complex dz_z = dz_z_term * derivativeZScale * gradienthTilde;
+                        result->displacementXdXdZ[gradientIndex][0] = dx_x[0] - dx_z[1];
+                        result->displacementXdXdZ[gradientIndex][1] = dx_x[1] + dx_z[0];
 
-                        // result->displacementXdXdZ[gradientIndex][0] = dx_x[0] - dx_z[1];
-                        // result->displacementXdXdZ[gradientIndex][1] = dx_x[1] + dx_z[0];
-
-                        // result->displacementZdXdZ[gradientIndex][0] = dz_x[0] - dz_z[1];
-                        // result->displacementZdXdZ[gradientIndex][1] = dz_x[1] + dz_z[0];
-
-                        result->displacementXdXdZ[gradientIndex] = dx_x + I * dx_z;
-                        result->displacementZdXdZ[gradientIndex] = dz_x + I * dz_z;
+                        result->displacementZdXdZ[gradientIndex][0] = dz_x[0] - dz_z[1];
+                        result->displacementZdXdZ[gradientIndex][1] = dz_x[1] + dz_z[0];
                     }
                 }
 
@@ -678,21 +648,17 @@ static void generateHAtTime(
                      && j > geometryXRange.x && j < geometryXRange.y
                      && i > geometryYRange.x && i < geometryYRange.y )
                 {
-                    // const fftwf_complex dx
-                    //    = { displacementXScale * factor * kx * geometryhTilde[1],
-                    //        displacementXScale * factor * kx * geometryhTilde[0] * -1.0f };
-                    const fftwf_complex dx = -(displacementXScale * factor * kx) * I * geometryhTilde;
+                    const fftwf_complex dx
+                        = { displacementXScale * factor * kx * geometryhTilde[1],
+                            displacementXScale * factor * kx * geometryhTilde[0] * -1.0f };
 
-
-                    // const fftwf_complex dz
-                    //     = { displacementZScale * factor * ky * geometryhTilde[1],
-                    //        displacementZScale * factor * ky * geometryhTilde[0] * -1.0f };
-                    const fftwf_complex dz = -(displacementZScale * factor * ky) * I * geometryhTilde;
+                    const fftwf_complex dz
+                         = { displacementZScale * factor * ky * geometryhTilde[1],
+                            displacementZScale * factor * ky * geometryhTilde[0] * -1.0f };
 
                     // dx + i*dz
-                    // result.displacement[geometryIndex][0] = dx[0] - dz[1];
-                    // result.displacement[geometryIndex][1] = dx[1] + dz[0];
-                    result->displacement[geometryIndex] = dx + I * dz;
+                    result->displacement[geometryIndex][0] = dx[0] - dz[1];
+                    result->displacement[geometryIndex][1] = dx[1] + dz[0];
                 }
             }
         }
