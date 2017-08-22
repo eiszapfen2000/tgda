@@ -705,58 +705,66 @@ static void H0Benchmark()
 static void GenHPerformance(
     SpectrumGeometry * geometry,
     const GeneratorSettings * const settings,
-    int nIterations
+    int nLods, int nIterations
     )
 {
     NPTimer * timer = [[ NPTimer alloc ] init ];
     OdGaussianRng * gaussianRNG = odgaussianrng_alloc_init();
 
-    for ( int r = 0; r < N_RESOLUTIONS; r++ )
+    for ( int l = 1; l <= nLods; l++ )
     {
-        geometry->geometryResolution = resolutions[r];
-        geometry->gradientResolution = resolutions[r];
+        geometry->numberOfLods = l;
+        fprintf(stdout, "%d ", l);
 
-        int necessaryResolution = MAX(geometry->geometryResolution, geometry->gradientResolution);
-        const size_t n
-            = necessaryResolution * necessaryResolution * geometry->numberOfLods;
-
-        fftwf_complex * H0 = fftwf_alloc_complex(n);
-        double * randomNumbers = malloc(sizeof(double) * 2 * n);
-        odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * n);
-        generatePM(geometry, &(settings->parameters), randomNumbers, H0);
-
-        const int numberOfLods = geometry->numberOfLods;
-        const int numberOfGeometryElements = geometry->geometryResolution * geometry->geometryResolution;
-        const int numberOfGradientElements = geometry->gradientResolution * geometry->gradientResolution;
-
-        FrequencySpectrum result;
-        result.height = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
-        result.gradient = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
-        result.displacement = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
-        result.displacementXdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
-        result.displacementZdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
-        result.timestamp = 0.0f;
-
-        [ timer update ];
-        for ( int i = 0; i < nIterations; i++)
+        for ( int r = 0; r < N_RESOLUTIONS; r++ )
         {
-            generateHAtTime(geometry, H0, &result);
-            result.timestamp += ((float)rand()/(float)(RAND_MAX));
+            geometry->geometryResolution = resolutions[r];
+            geometry->gradientResolution = resolutions[r];
+
+            int necessaryResolution = MAX(geometry->geometryResolution, geometry->gradientResolution);
+            const size_t n
+                = necessaryResolution * necessaryResolution * geometry->numberOfLods;
+
+            fftwf_complex * H0 = fftwf_alloc_complex(n);
+            double * randomNumbers = malloc(sizeof(double) * 2 * n);
+            odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * n);
+            generatePM(geometry, &(settings->parameters), randomNumbers, H0);
+
+            const int numberOfLods = geometry->numberOfLods;
+            const int numberOfGeometryElements = geometry->geometryResolution * geometry->geometryResolution;
+            const int numberOfGradientElements = geometry->gradientResolution * geometry->gradientResolution;
+
+            FrequencySpectrum result;
+            result.height = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
+            result.gradient = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+            result.displacement = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
+            result.displacementXdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+            result.displacementZdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+            result.timestamp = 0.0f;
+
+            [ timer update ];
+            for ( int i = 0; i < nIterations; i++)
+            {
+                generateHAtTime(geometry, H0, &result);
+                result.timestamp += ((float)rand()/(float)(RAND_MAX));
+            }
+            [ timer update ];
+            const double accumulatedTime = [timer frameTime];
+
+            //print_complex_spectrum(geometry->geometryResolution, result.height);
+
+            fprintf(stdout, "%.3f ", (accumulatedTime / (double)nIterations) * 1000.0);
+
+            fftwf_free(result.height);
+            fftwf_free(result.gradient);
+            fftwf_free(result.displacement);
+            fftwf_free(result.displacementXdXdZ);
+            fftwf_free(result.displacementZdXdZ);
+            free(randomNumbers);
+            fftwf_free(H0);
         }
-        [ timer update ];
-        const double accumulatedTime = [timer frameTime];
 
-        //print_complex_spectrum(geometry->geometryResolution, result.height);
-
-        fprintf(stdout, "%.2f \n", (accumulatedTime / (double)nIterations) * 1000.0);
-
-        fftwf_free(result.height);
-        fftwf_free(result.gradient);
-        fftwf_free(result.displacement);
-        fftwf_free(result.displacementXdXdZ);
-        fftwf_free(result.displacementZdXdZ);
-        free(randomNumbers);
-        fftwf_free(H0);
+        fprintf(stdout, "\n");
     }
 
     odgaussianrng_free(gaussianRNG);
@@ -769,7 +777,7 @@ static void HBenchmark()
     const double goldenRatioLong = 1.0 / goldenRatio;
     const double goldenRatioShort = 1.0 - (1.0 / goldenRatio);
 
-    const double maxSize = 10; // metre
+    const double maxSize = 1000; // metre
 
     SpectrumGeometry geometry;
     geometry.numberOfLods = 1;
@@ -787,7 +795,7 @@ static void HBenchmark()
     settings.parameters.U10 = 10.0;
     settings.parameters.fetch = 100000.0;
 
-    GenHPerformance(&geometry, &settings, 100);
+    GenHPerformance(&geometry, &settings, 4, 100);
 
     free(geometry.sizes);   
 }
