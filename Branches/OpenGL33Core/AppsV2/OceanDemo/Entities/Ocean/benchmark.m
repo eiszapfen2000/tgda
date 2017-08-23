@@ -68,6 +68,34 @@ typedef struct FrequencySpectrum
 }
 FrequencySpectrum;
 
+typedef enum Quadrants
+{
+    Quadrant_1_3 =  1,
+    Quadrant_2_4 = -1
+}
+Quadrants;
+
+/*===============================================================================================*/
+
+static void print_complex_spectrum(int resolution, fftwf_complex * spectrum)
+{
+    printf("Complex spectrum\n");
+    for ( int j = 0; j < resolution; j++ )
+    {
+        for ( int k = 0; k < resolution; k++ )
+        {
+            //printf("%+f %+fi ", crealf(spectrum[j * resolution + k]), cimagf(spectrum[j * resolution + k]));
+            printf("%+f %+fi ", spectrum[j * resolution + k][0], spectrum[j * resolution + k][1]);
+        }
+
+        printf("\n");
+    }
+
+    printf("\n");
+}
+
+/*===============================================================================================*/
+
 static void generatePM(
     const SpectrumGeometry * const geometry,
     const SpectrumParameters * const settings,
@@ -392,23 +420,6 @@ static void generateUnified(
     }   
 }
 
-static void print_complex_spectrum(int resolution, fftwf_complex * spectrum)
-{
-    printf("Complex spectrum\n");
-    for ( int j = 0; j < resolution; j++ )
-    {
-        for ( int k = 0; k < resolution; k++ )
-        {
-            //printf("%+f %+fi ", crealf(spectrum[j * resolution + k]), cimagf(spectrum[j * resolution + k]));
-            printf("%+f %+fi ", spectrum[j * resolution + k][0], spectrum[j * resolution + k][1]);
-        }
-
-        printf("\n");
-    }
-
-    printf("\n");
-}
-
 #define N_RESOLUTIONS   8
 static const int resolutions[N_RESOLUTIONS] = {8, 16, 32, 64, 128, 256, 512, 1024};
 
@@ -469,6 +480,41 @@ static void GenH0Performance(
 
     odgaussianrng_free(gaussianRNG);
     DESTROY(timer);
+}
+
+static void H0Benchmark()
+{
+    const double goldenRatio = (1.0 + sqrt(5.0)) / 2.0;
+    const double goldenRatioLong = 1.0 / goldenRatio;
+    const double goldenRatioShort = 1.0 - (1.0 / goldenRatio);
+
+    const double maxSize = 1000; // metre
+
+    SpectrumGeometry geometry;
+    geometry.numberOfLods = 1;
+    geometry.sizes = malloc(sizeof(double)*geometry.numberOfLods);
+    geometry.sizes[0] = maxSize;
+
+    for ( int i = 1; i < geometry.numberOfLods; i++ )
+    {
+        const double s = geometry.sizes[i-1];
+        geometry.sizes[i] = s * goldenRatioShort;
+    }
+
+    GeneratorSettings settings;
+    settings.parameters.U10 = 10.0;
+    settings.parameters.fetch = 100000.0;
+
+    fprintf(stdout, "Spectrum ");
+    for ( int r = 0; r < N_RESOLUTIONS; r++)
+    {
+        fprintf(stdout, "%d ", resolutions[r]);
+    }
+    fprintf(stdout, "\n");
+
+    GenH0Performance(&geometry, &settings, 50);
+
+    free(geometry.sizes);
 }
 
 /*===============================================================================================*/
@@ -665,43 +711,6 @@ static void generateHAtTime(
     }
 }
 
-/*===============================================================================================*/
-
-static void H0Benchmark()
-{
-    const double goldenRatio = (1.0 + sqrt(5.0)) / 2.0;
-    const double goldenRatioLong = 1.0 / goldenRatio;
-    const double goldenRatioShort = 1.0 - (1.0 / goldenRatio);
-
-    const double maxSize = 1000; // metre
-
-    SpectrumGeometry geometry;
-    geometry.numberOfLods = 1;
-    geometry.sizes = malloc(sizeof(double)*geometry.numberOfLods);
-    geometry.sizes[0] = maxSize;
-
-    for ( int i = 1; i < geometry.numberOfLods; i++ )
-    {
-        const double s = geometry.sizes[i-1];
-        geometry.sizes[i] = s * goldenRatioShort;
-    }
-
-    GeneratorSettings settings;
-    settings.parameters.U10 = 10.0;
-    settings.parameters.fetch = 100000.0;
-
-    fprintf(stdout, "Spectrum ");
-    for ( int r = 0; r < N_RESOLUTIONS; r++)
-    {
-        fprintf(stdout, "%d ", resolutions[r]);
-    }
-    fprintf(stdout, "\n");
-
-    GenH0Performance(&geometry, &settings, 50);
-
-    free(geometry.sizes);
-}
-
 static void GenHPerformance(
     SpectrumGeometry * geometry,
     const GeneratorSettings * const settings,
@@ -806,6 +815,8 @@ static void HBenchmark()
 
     free(geometry.sizes);   
 }
+
+/*===============================================================================================*/
 
 int main(int argc, char **argv)
 {
