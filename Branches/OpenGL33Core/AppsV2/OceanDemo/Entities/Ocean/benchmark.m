@@ -711,6 +711,67 @@ static void generateHAtTime(
     }
 }
 
+static void swapFrequencySpectrum(
+    fftwf_complex * const spectrum,
+    int resolution,
+    int numberOfLods,
+    Quadrants quadrants
+    )
+{
+    fftwf_complex tmp;
+    int index, oppositeQuadrantIndex;
+
+    int startX = 0;
+    int endX = resolution / 2;
+    int startY = 0;
+    int endY   = 0;
+
+    switch ( quadrants )
+    {
+        case Quadrant_1_3:
+        {
+            startY = 0;
+            endY = resolution/2;
+            break;
+        }
+
+        case Quadrant_2_4:
+        {
+            startY = resolution/2;
+            endY = resolution;
+            break;
+        }
+    }
+
+    const int halfResX = resolution / 2;
+    const int halfResY = resolution / 2;
+
+    const int numberOfLodElements = resolution * resolution;
+
+    for ( int l = 0; l < numberOfLods; l++ )
+    {
+        const int offset = l * numberOfLodElements;
+
+        for ( int i = startX; i < endX; i++ )
+        {
+            for ( int j = startY; j < endY; j++ )
+            {
+                index = offset + j + resolution * i;
+                oppositeQuadrantIndex = offset + (j + (halfResY * quadrants)) + resolution * (i + halfResX);
+
+                tmp[0] = spectrum[index][0];
+                tmp[1] = spectrum[index][1];
+
+                spectrum[index][0] = spectrum[oppositeQuadrantIndex][0];
+                spectrum[index][1] = spectrum[oppositeQuadrantIndex][1];
+
+                spectrum[oppositeQuadrantIndex][0] = tmp[0];
+                spectrum[oppositeQuadrantIndex][1] = tmp[1];
+            }
+        }
+    }
+}
+
 static void GenHPerformance(
     SpectrumGeometry * geometry,
     const GeneratorSettings * const settings,
@@ -755,11 +816,26 @@ static void GenHPerformance(
             for ( int i = 0; i < nIterations; i++)
             {
                 generateHAtTime(geometry, H0, &result);
+
+                /*
+                swapFrequencySpectrum(result.height, geometry->geometryResolution, l, Quadrant_1_3);
+                swapFrequencySpectrum(result.height, geometry->geometryResolution, l, Quadrant_2_4);
+                swapFrequencySpectrum(result.displacement, geometry->geometryResolution, l, Quadrant_1_3);
+                swapFrequencySpectrum(result.displacement, geometry->geometryResolution, l, Quadrant_2_4);
+                swapFrequencySpectrum(result.gradient, geometry->gradientResolution, l, Quadrant_1_3);
+                swapFrequencySpectrum(result.gradient, geometry->gradientResolution, l, Quadrant_2_4);
+                swapFrequencySpectrum(result.displacementXdXdZ, geometry->gradientResolution, l, Quadrant_1_3);
+                swapFrequencySpectrum(result.displacementXdXdZ, geometry->gradientResolution, l, Quadrant_2_4);
+                swapFrequencySpectrum(result.displacementZdXdZ, geometry->gradientResolution, l, Quadrant_1_3);
+                swapFrequencySpectrum(result.displacementZdXdZ, geometry->gradientResolution, l, Quadrant_2_4);
+                */
+
                 result.timestamp += ((float)rand()/(float)(RAND_MAX));
             }
             [ timer update ];
             const double accumulatedTime = [timer frameTime];
 
+            //print_complex_spectrum(geometry->geometryResolution, result.height);
             //print_complex_spectrum(geometry->geometryResolution, result.height);
 
             fprintf(stdout, "%.3f ", (accumulatedTime / (double)nIterations) * 1000.0);
