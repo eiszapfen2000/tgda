@@ -725,7 +725,7 @@ static void GenHPerformance(
             const size_t n
                 = necessaryResolution * necessaryResolution * geometry->numberOfLods;
 
-            fftwf_complex * H0 = fftwf_alloc_complex(n);
+            fftwf_complex * const H0 = fftwf_alloc_complex(n);
             double * randomNumbers = malloc(sizeof(double) * 2 * n);
             odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * n);
             generatePM(geometry, &(settings->parameters), randomNumbers, H0);
@@ -794,6 +794,13 @@ static void HBenchmark()
     settings.generatorType = PiersonMoskowitz;
     settings.parameters.U10 = 10.0;
     settings.parameters.fetch = 100000.0;
+
+    fprintf(stdout, "#Lods ");
+    for ( int r = 0; r < N_RESOLUTIONS; r++)
+    {
+        fprintf(stdout, "%d ", resolutions[r]);
+    }
+    fprintf(stdout, "\n");
 
     GenHPerformance(&geometry, &settings, 4, 100);
 
