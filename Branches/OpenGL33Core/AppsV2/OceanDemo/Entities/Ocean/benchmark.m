@@ -894,12 +894,55 @@ static void HBenchmark()
 
 /*===============================================================================================*/
 
+static const char * wisdomFilename = "benchmark.wisdom";
+
 int main(int argc, char **argv)
 {
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
     //H0Benchmark();
-    HBenchmark();
+    //HBenchmark();
+
+    fftwf_plan complexPlans[N_RESOLUTIONS];
+    const int wisdomFound = fftwf_import_wisdom_from_filename(wisdomFilename);
+
+    for ( int i = 0; i < N_RESOLUTIONS; i++)
+    {
+        const size_t arraySize = resolutions[i] * resolutions[i];
+
+        fftwf_complex * source = fftwf_alloc_complex(arraySize);
+        fftwf_complex * target = fftwf_alloc_complex(arraySize);
+
+        memset(source, 0, sizeof(fftwf_complex) * arraySize);
+        memset(target, 0, sizeof(fftwf_complex) * arraySize);
+
+        complexPlans[i]
+            = fftwf_plan_dft_2d(resolutions[i],
+                                resolutions[i],
+                                source,
+                                target,
+                                FFTW_BACKWARD,
+                                FFTW_EXHAUSTIVE);
+
+        fftwf_free(source);
+        fftwf_free(target);
+    }
+
+    if (!wisdomFound)
+    {
+        fftwf_export_wisdom_to_filename(wisdomFilename);
+    }
+
+    for ( int i = 0; i < N_RESOLUTIONS; i++ )
+    {
+        if ( complexPlans[i] != NULL )
+        {
+            fftwf_destroy_plan(complexPlans[i]);
+        }
+    }
+
+    fftwf_forget_wisdom();
+    fftwf_cleanup();
 
     DESTROY(pool);
 
