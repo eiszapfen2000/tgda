@@ -865,7 +865,7 @@ static void HBenchmark()
     const double maxSize = 1000; // metre
 
     SpectrumGeometry geometry;
-    geometry.numberOfLods = 1;
+    geometry.numberOfLods = 4;
     geometry.sizes = malloc(sizeof(double)*geometry.numberOfLods);
     geometry.sizes[0] = maxSize;
 
@@ -892,17 +892,52 @@ static void HBenchmark()
     free(geometry.sizes);   
 }
 
-/*===============================================================================================*/
+static void FFTWPerformance(
+    fftwf_plan * plans,
+    int nIterations
+    )
+{
+    NPTimer * timer = [[ NPTimer alloc ] init ];
+
+    for ( int r = 0; r < N_RESOLUTIONS; r++ )
+    {
+        const size_t numberOfElements = resolutions[r] * resolutions[r];
+
+        fftwf_complex * source = fftwf_alloc_complex(numberOfElements);
+        fftwf_complex * target = fftwf_alloc_complex(numberOfElements);
+
+        memset(source, 0, sizeof(fftwf_complex) * numberOfElements);
+        memset(target, 0, sizeof(fftwf_complex) * numberOfElements);
+
+        [ timer update ];
+
+        for ( int i = 0; i < nIterations; i++ )
+        {
+            fftwf_execute_dft(
+                plans[r],
+                source,
+                target
+                );
+        }
+
+        [ timer update ];
+        const double accumulatedTime = [timer frameTime];
+
+        fprintf(stdout, "%.4f ", (accumulatedTime / (double)nIterations) * 1000.0);
+
+        fftwf_free(target);
+        fftwf_free(source);
+    }
+
+    fprintf(stdout, "\n");
+
+    DESTROY(timer);
+}
 
 static const char * wisdomFilename = "benchmark.wisdom";
 
-int main(int argc, char **argv)
+static void FFTWBenchmark()
 {
-    NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
-
-    //H0Benchmark();
-    //HBenchmark();
-
     fftwf_plan complexPlans[N_RESOLUTIONS];
     const int wisdomFound = fftwf_import_wisdom_from_filename(wisdomFilename);
 
@@ -913,8 +948,8 @@ int main(int argc, char **argv)
         fftwf_complex * source = fftwf_alloc_complex(arraySize);
         fftwf_complex * target = fftwf_alloc_complex(arraySize);
 
-        memset(source, 0, sizeof(fftwf_complex) * arraySize);
-        memset(target, 0, sizeof(fftwf_complex) * arraySize);
+        memset(source, rand(), sizeof(fftwf_complex) * arraySize);
+        memset(target, rand(), sizeof(fftwf_complex) * arraySize);
 
         complexPlans[i]
             = fftwf_plan_dft_2d(resolutions[i],
@@ -933,6 +968,8 @@ int main(int argc, char **argv)
         fftwf_export_wisdom_to_filename(wisdomFilename);
     }
 
+    FFTWPerformance(complexPlans, 10000);
+
     for ( int i = 0; i < N_RESOLUTIONS; i++ )
     {
         if ( complexPlans[i] != NULL )
@@ -943,6 +980,17 @@ int main(int argc, char **argv)
 
     fftwf_forget_wisdom();
     fftwf_cleanup();
+}
+
+/*===============================================================================================*/
+
+int main(int argc, char **argv)
+{
+    NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
+
+    //H0Benchmark();
+    //HBenchmark();
+    FFTWBenchmark();
 
     DESTROY(pool);
 
