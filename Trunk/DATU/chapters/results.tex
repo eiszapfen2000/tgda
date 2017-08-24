@@ -61,8 +61,28 @@ Unified           & 0.93  & 3.78   & 14.69    & 59.07    & 235.65   & 904.22    
 % \label{my-label}
 \end{table}
 %
+\citet{misc:fftw,misc:fftw:speed,fftw:manual}
+
 \ref{sec:spectrum_synthesis}
 \ref{sec:discrete_fourier_transform}
+
+% H generation
+% #Lods 8 16 32 64 128 256 512 1024 
+% 1 0.007 0.028 0.111 0.391 1.158 3.816 15.127 60.455 
+% 2 0.008 0.030 0.124 0.476 1.909 7.555 30.485 123.181 
+% 3 0.012 0.045 0.188 0.718 2.856 11.421 46.510 185.626 
+% 4 0.016 0.062 0.253 0.977 3.866 15.554 62.240 255.806 
+
+% H generation with quadrant swapping
+% #Lods 8 16 32 64 128 256 512 1024 
+% 1 0.006 0.023 0.092 0.327 1.052 3.887 16.270 66.586 
+% 2 0.008 0.031 0.125 0.489 1.962 7.894 32.982 134.580 
+% 3 0.012 0.047 0.188 0.741 2.937 11.872 50.384 200.404 
+% 4 0.017 0.064 0.255 1.001 3.978 16.508 67.825 271.930 
+
+% FFTW
+% 8 16 32 64 128 256 512 1024 
+% 0.0002 0.0006 0.0027 0.0108 0.0487 0.2644 1.2451 6.6849
 
 We did not reproduce the current state of art with regard to the \FourierTransform,
 i.e. compute the \IDFT on the GPU (GPGPU, CUDA, clfft). The reasons are varying,
