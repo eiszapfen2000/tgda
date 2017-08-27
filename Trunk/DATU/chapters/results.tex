@@ -18,7 +18,7 @@ Thus, with our demo application at hand, we may move on to discuss the
 actual results we were able to achieve.
 
 The remainder of this chapter is organized as follows:
-Section \ref{sec:results:fft} gives a compact overview of the performance
+Section \ref{sec:results:performance} gives a compact overview of the performance
 improvements which we were able to attain for the computation of the sum
 of waves via the \InvFourierTransform.
 Section \ref{sec:results:synthesis} delineates the pitfalls we encountered
@@ -32,8 +32,8 @@ our level of detail approach.
 % depicts all componenents which are part of our ocean lighting implementation.
 % compare lighting of all spectrum types (same parameters)
 
-\section{Fourier Transform}
-\label{sec:results:fft}
+\section{Performance}
+\label{sec:results:performance}
 %
 
 \begin{table}[]
@@ -57,13 +57,36 @@ Donelan           & 0.72  & 3.46   & 14.87    & 59.52    & 208.73   & 721.69    
 Unified           & 0.93  & 3.78   & 14.69    & 59.07    & 235.65   & 904.22    \\
 \bottomrule
 \end{tabular}
-\caption{My caption}
-% \label{my-label}
+\caption{Computation times for different wave energy spectra at various resolutions.}
+\label{tab:results:h0}
 \end{table}
 %
-\citet{misc:fftw,misc:fftw:speed,fftw:manual}
+%\citet{misc:fftw,misc:fftw:speed,fftw:manual}
+We have seen in Section~\ref{sec:spectrum_synthesis} that the underlying spectrum
+of the animated ocean surface consists of two parts, a static part and a time-dependent
+part.
+% It is the static part, as defined by Equation~\ref{eq:dft_h0_k}, that incorporates
+% the wave energy spectrum.
+Given a \wavevector domain as well as wave energy spectrum parameters of our
+choice, the static part of the spectrum has to be computed only once for the
+entire lifetime of the animated ocean surface.
+Moreover, as it is the static part of the spectrum that incorporates the wave
+energy spectrum, we are relieved of a significant computational burden.
+That is because evaluating the wave energy spectrum for a large set of
+\wavevectors has proven to be extensive in terms of computational complexity.
+See Table~\ref{tab:results:h0}, which gives an overview of measurements we have
+taken for the computation time of the static part of the spectrum.
 
-\ref{sec:spectrum_synthesis}
+The static part has to be recomputed only in
+case the \wavevector domain or parameters for the wave energy spectrum change.
+
+as long parameters do
+not change, the spectrum is static, except for the animation term. Thus, we are
+able to lighten the computational load significantly, because evaluating the
+wave energy at a large number of \wavenumbers is expensive.
+\ref{eq:dft_h0_k}
+\ref{eq:dft_h_k_t_hermitian}
+
 \ref{sec:discrete_fourier_transform}
 
 % H generation
