@@ -70,9 +70,9 @@ of the animated ocean surface consists of two parts, a static part and a time-de
 part.
 % It is the static part, as defined by Equation~\ref{eq:dft_h0_k}, that incorporates
 % the wave energy spectrum.
-Given a \wavevector domain as well as wave energy spectrum parameters of our
-choice, the static part of the spectrum has to be computed only once for the
-entire lifetime of the animated ocean surface.
+As long as the \wavevector domain and the wave energy spectrum parameters do not change,
+the static part of the spectrum has to be computed only once for the entire lifetime
+of the animated ocean surface.
 Moreover, as it is the static part of the spectrum that incorporates the wave
 energy spectrum, we are relieved of a significant computational burden.
 That is because evaluating the wave energy spectrum for a large set of
@@ -103,11 +103,14 @@ level of detail.
 \bottomrule
 \end{tabular}
 \caption{}
-\label{tab:results:h}
+\label{tab:results:h:equal:resolution}
 \end{table}
 %
 %
-
+Table~\ref{tab:results:h:equal:resolution} timings for spectrum synthesis
+(geometry, displacements, gradients, displacement derivatives) with
+different number of level of detail. Then a table with FFTW timings.
+Then a H generation table where geometry resolution lower than gradient resolution.
 % The static part has to be recomputed only in
 % case the \wavevector domain or parameters for the wave energy spectrum change.
 % 
