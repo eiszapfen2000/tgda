@@ -64,6 +64,31 @@ a second, much less so in case of more than one level of detail.}
 \label{tab:results:h0}
 \end{table}
 %
+\begin{table}
+\centering
+\begin{tabular}{@{}l*2{S[table-format=1.2]}*2{S[table-format=2.2]}*2{S[table-format=3.2]}@{}}
+\toprule
+Spectrum & \multicolumn{6}{c}{Time [\si{\ms}]}       \\ \midrule
+         & \multicolumn{6}{c}{Resolution} \\ \cmidrule(l){2-7} 
+         & {$32\times32$} & {$64\times64$}  & {$128\times128$}  & {$256\times256$}  & {$512\times512$} & {$1024\times1024$} \\
+\midrule
+Heights         & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
++ Displacements & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
++ Gradients     & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
++ Displ Deriv   & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
+\bottomrule
+\end{tabular}
+\caption{Computation times for a single pattern at various resolutions, where
+each row adds the spectra of the respective dataset to the pattern. Thus, at
+first we have one pattern with only the height spectrum, and in the final row
+we have one pattern with all nine spectra: one for height, two for displacements,
+two for gradients, and four for displacement derivatives.
+As all datasets share most of the arithmetic, it is the extra stores to memory
+that require the bulk of the additional CPU time.}
+\label{tab:results:all}
+\end{table}
+%
+%
 %\citet{misc:fftw,misc:fftw:speed,fftw:manual}
 We have seen in Section~\ref{sec:spectrum_synthesis} that the underlying spectrum
 of the animated ocean surface consists of two parts, a static part and a time-dependent
