@@ -519,7 +519,7 @@ static void H0Benchmark()
 
 /*===============================================================================================*/
 
-static void generateHAtTime(
+static void generateCenteredHAtTime(
     const SpectrumGeometry * const geometry,
     const fftwf_complex * const H0,
     FrequencySpectrum * const result)
@@ -772,7 +772,39 @@ static void swapFrequencySpectrum(
     }
 }
 
-static void GenHPerformance(
+static void swapResultQuadrants(
+    const SpectrumGeometry * const geometry,
+    FrequencySpectrum * const result
+    )
+{
+    if (result->height != NULL)
+    {
+        swapFrequencySpectrum(result->height, geometry->geometryResolution, geometry->numberOfLods, Quadrant_1_3);
+        swapFrequencySpectrum(result->height, geometry->geometryResolution, geometry->numberOfLods, Quadrant_2_4);
+    }
+
+    if (result->displacement != NULL)
+    {
+        swapFrequencySpectrum(result->displacement, geometry->geometryResolution, geometry->numberOfLods, Quadrant_1_3);
+        swapFrequencySpectrum(result->displacement, geometry->geometryResolution, geometry->numberOfLods, Quadrant_2_4);
+    }
+
+    if (result->gradient != NULL)
+    {
+        swapFrequencySpectrum(result->gradient, geometry->gradientResolution, geometry->numberOfLods, Quadrant_1_3);
+        swapFrequencySpectrum(result->gradient, geometry->gradientResolution, geometry->numberOfLods, Quadrant_2_4);
+    }
+
+    if (result->displacementXdXdZ != NULL && result->displacementZdXdZ != NULL)
+    {
+        swapFrequencySpectrum(result->displacementXdXdZ, geometry->gradientResolution, geometry->numberOfLods, Quadrant_1_3);
+        swapFrequencySpectrum(result->displacementXdXdZ, geometry->gradientResolution, geometry->numberOfLods, Quadrant_2_4);
+        swapFrequencySpectrum(result->displacementZdXdZ, geometry->gradientResolution, geometry->numberOfLods, Quadrant_1_3);
+        swapFrequencySpectrum(result->displacementZdXdZ, geometry->gradientResolution, geometry->numberOfLods, Quadrant_2_4);
+    }
+}
+
+static void GenLodsPerformance(
     SpectrumGeometry * geometry,
     const GeneratorSettings * const settings,
     int nLods, int nIterations
@@ -810,25 +842,15 @@ static void GenHPerformance(
             result.displacement = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
             result.displacementXdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
             result.displacementZdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
-            result.timestamp = 0.0f;
+
+            // the compiler has proven to be too smart, we have to randomize timestamps
+            result.timestamp = ((float)rand()/(float)(RAND_MAX));
 
             [ timer update ];
             for ( int i = 0; i < nIterations; i++)
             {
-                generateHAtTime(geometry, H0, &result);
-
-                /*
-                swapFrequencySpectrum(result.height, geometry->geometryResolution, l, Quadrant_1_3);
-                swapFrequencySpectrum(result.height, geometry->geometryResolution, l, Quadrant_2_4);
-                swapFrequencySpectrum(result.displacement, geometry->geometryResolution, l, Quadrant_1_3);
-                swapFrequencySpectrum(result.displacement, geometry->geometryResolution, l, Quadrant_2_4);
-                swapFrequencySpectrum(result.gradient, geometry->gradientResolution, l, Quadrant_1_3);
-                swapFrequencySpectrum(result.gradient, geometry->gradientResolution, l, Quadrant_2_4);
-                swapFrequencySpectrum(result.displacementXdXdZ, geometry->gradientResolution, l, Quadrant_1_3);
-                swapFrequencySpectrum(result.displacementXdXdZ, geometry->gradientResolution, l, Quadrant_2_4);
-                swapFrequencySpectrum(result.displacementZdXdZ, geometry->gradientResolution, l, Quadrant_1_3);
-                swapFrequencySpectrum(result.displacementZdXdZ, geometry->gradientResolution, l, Quadrant_2_4);
-                */
+                generateCenteredHAtTime(geometry, H0, &result);
+                swapResultQuadrants(geometry, &result);
 
                 result.timestamp += ((float)rand()/(float)(RAND_MAX));
             }
@@ -856,7 +878,7 @@ static void GenHPerformance(
     DESTROY(timer);
 }
 
-static void HBenchmark()
+static void LodBenchmark()
 {
     const double goldenRatio = (1.0 + sqrt(5.0)) / 2.0;
     const double goldenRatioLong = 1.0 / goldenRatio;
@@ -887,7 +909,7 @@ static void HBenchmark()
     }
     fprintf(stdout, "\n");
 
-    GenHPerformance(&geometry, &settings, 4, 100);
+    GenLodsPerformance(&geometry, &settings, 4, 100);
 
     free(geometry.sizes);   
 }
@@ -995,8 +1017,8 @@ int main(int argc, char **argv)
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
     //H0Benchmark();
-    //HBenchmark();
-    FFTWBenchmark();
+    LodBenchmark();
+    //FFTWBenchmark();
 
     DESTROY(pool);
 
