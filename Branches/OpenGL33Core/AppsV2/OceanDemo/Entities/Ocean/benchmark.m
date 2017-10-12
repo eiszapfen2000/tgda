@@ -968,6 +968,12 @@ static void FFTWBenchmark()
         fftwf_export_wisdom_to_filename(wisdomFilename);
     }
 
+    for ( int r = 0; r < N_RESOLUTIONS; r++)
+    {
+        fprintf(stdout, "%d ", resolutions[r]);
+    }
+    fprintf(stdout, "\n");
+
     FFTWPerformance(complexPlans, 10000);
 
     for ( int i = 0; i < N_RESOLUTIONS; i++ )
