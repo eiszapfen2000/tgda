@@ -804,6 +804,132 @@ static void swapResultQuadrants(
     }
 }
 
+static void GenHPerformance(
+    SpectrumGeometry * geometry,
+    const GeneratorSettings * const settings,
+    int nIterations
+    )
+{
+    NPTimer * timer = [[ NPTimer alloc ] init ];
+    OdGaussianRng * gaussianRNG = odgaussianrng_alloc_init();
+
+    for ( int d = 0; d < 4; d++ )
+    {
+        for ( int r = 0; r < N_RESOLUTIONS; r++ )
+        {
+            geometry->geometryResolution = resolutions[r];
+            geometry->gradientResolution = resolutions[r];
+
+            int necessaryResolution = MAX(geometry->geometryResolution, geometry->gradientResolution);
+            const size_t n
+                = necessaryResolution * necessaryResolution * geometry->numberOfLods;
+
+            fftwf_complex * const H0 = fftwf_alloc_complex(n);
+            double * randomNumbers = malloc(sizeof(double) * 2 * n);
+            odgaussianrng_get_array(gaussianRNG, randomNumbers, 2 * n);
+            generatePM(geometry, &(settings->parameters), randomNumbers, H0);
+
+            const int numberOfLods = geometry->numberOfLods;
+            const int numberOfGeometryElements = geometry->geometryResolution * geometry->geometryResolution;
+            const int numberOfGradientElements = geometry->gradientResolution * geometry->gradientResolution;
+
+            fftwf_complex * height = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
+            fftwf_complex * gradient = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+            fftwf_complex * displacement = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
+            fftwf_complex * displacementXdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+            fftwf_complex * displacementZdXdZ = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
+
+            FrequencySpectrum result;
+            memset(&result, 0, sizeof(result));
+
+            result.height = height;
+
+            if (d > 0)
+            {
+                result.gradient = gradient;
+            }
+
+            if (d > 1)
+            {
+                result.displacement = displacement;
+            }
+
+            if (d > 2)
+            {
+                result.displacementXdXdZ = displacementXdXdZ;
+                result.displacementZdXdZ = displacementZdXdZ;
+            }
+
+            // the compiler has proven to be too smart, we have to randomize timestamps
+            result.timestamp = ((float)rand()/(float)(RAND_MAX));
+
+            [ timer update ];
+            for ( int i = 0; i < nIterations; i++)
+            {
+                generateCenteredHAtTime(geometry, H0, &result);
+                swapResultQuadrants(geometry, &result);
+
+                result.timestamp += ((float)rand()/(float)(RAND_MAX));
+            }
+            [ timer update ];
+            const double accumulatedTime = [timer frameTime];
+
+            //print_complex_spectrum(geometry->geometryResolution, result.height);
+            //print_complex_spectrum(geometry->geometryResolution, result.height);
+
+            fprintf(stdout, "%.3f ", (accumulatedTime / (double)nIterations) * 1000.0);
+
+            fftwf_free(height);
+            fftwf_free(gradient);
+            fftwf_free(displacement);
+            fftwf_free(displacementXdXdZ);
+            fftwf_free(displacementZdXdZ);
+            free(randomNumbers);
+            fftwf_free(H0);
+        }
+
+        fprintf(stdout, "\n");
+    }
+
+    odgaussianrng_free(gaussianRNG);
+    DESTROY(timer);
+}
+
+static void HBenchmark()
+{
+    const double goldenRatio = (1.0 + sqrt(5.0)) / 2.0;
+    const double goldenRatioLong = 1.0 / goldenRatio;
+    const double goldenRatioShort = 1.0 - (1.0 / goldenRatio);
+
+    const double maxSize = 1000; // metre
+
+    SpectrumGeometry geometry;
+    geometry.numberOfLods = 1;
+    geometry.sizes = malloc(sizeof(double)*geometry.numberOfLods);
+    geometry.sizes[0] = maxSize;
+
+    for ( int i = 1; i < geometry.numberOfLods; i++ )
+    {
+        const double s = geometry.sizes[i-1];
+        geometry.sizes[i] = s * goldenRatioShort;
+    }
+
+    GeneratorSettings settings;
+    settings.generatorType = PiersonMoskowitz;
+    settings.parameters.U10 = 10.0;
+    settings.parameters.fetch = 100000.0;
+
+    for ( int r = 0; r < N_RESOLUTIONS; r++)
+    {
+        fprintf(stdout, "%d ", resolutions[r]);
+    }
+    fprintf(stdout, "\n");
+
+    GenHPerformance(&geometry, &settings, 100);
+
+    free(geometry.sizes);   
+}
+
 static void GenLodsPerformance(
     SpectrumGeometry * geometry,
     const GeneratorSettings * const settings,
@@ -1017,7 +1143,8 @@ int main(int argc, char **argv)
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
     //H0Benchmark();
-    LodBenchmark();
+    HBenchmark();
+    //LodBenchmark();
     //FFTWBenchmark();
 
     DESTROY(pool);
