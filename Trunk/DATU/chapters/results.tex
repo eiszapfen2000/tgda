@@ -35,27 +35,15 @@ our level of detail approach.
 \section{Performance}
 \label{sec:results:performance}
 %
-
-\begin{table}[]
+\begin{table}
 \centering
-%
-% Spectrum 8    16   32   64   128   256   512    1024 
-% PM      0.03 0.19 0.79 2.68  9.81 30.66 109.58 422.05 
-% JONSWAP 0.03 0.15 0.77 3.40 13.86 47.32 155.18 581.49 
-% Donelan 0.04 0.15 0.68 3.28 14.18 56.61 196.61 671.80 
-% Unified 0.05 0.22 0.88 3.49 13.83 55.24 220.62 866.17  
-%
 \begin{tabular}{@{}l*2{S[table-format=1.2]}*2{S[table-format=2.2]}*2{S[table-format=3.2]}@{}}
 \toprule
 Spectrum & \multicolumn{6}{c}{Time [\si{\ms}]}       \\ \midrule
          & \multicolumn{6}{c}{Resolution} \\ \cmidrule(l){2-7} 
          & {$32\times32$} & {$64\times64$}  & {$128\times128$}  & {$256\times256$}  & {$512\times512$} & {$1024\times1024$} \\
 \midrule
-Pierson-Moskowitz & 0.79  & 2.68   &  9.81    & 30.66    & 109.58   & 422.05    \\
-JONSWAP           & 0.77  & 3.40   & 13.86    & 47.32    & 155.18   & 581.49    \\
-Donelan           & 0.68  & 3.28   & 14.18    & 56.61    & 196.61   & 671.80    \\
-Unified           & 0.88  & 3.49   & 13.83    & 55.24    & 220.62   & 866.17    \\
-\bottomrule
+\csvreader[late after line=\\,late after last line=\\\bottomrule]{figures/benchmark_H0_i5_5300u.csv}{}{\csvcoli & \csvcoliv & \csvcolv & \csvcolvi & \csvcolvii & \csvcolviii & \csvcolix}
 \end{tabular}
 \caption{Computation times for the static part of the spectrum at various resolutions
 with different underlying wave energy spectra. One can see that at larger resolutions
@@ -63,6 +51,7 @@ we would be unable to synthesize the static part of the spectrum more than a few
 a second, much less so in case of more than one level of detail.}
 \label{tab:results:h0}
 \end{table}
+
 %
 \begin{table}
 \centering
