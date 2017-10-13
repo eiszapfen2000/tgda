@@ -948,7 +948,7 @@ static void GenLodsPerformance(
     for ( int l = 1; l <= nLods; l++ )
     {
         geometry->numberOfLods = l;
-        fprintf(stdout, "%d ", l);
+        fprintf(stdout, "%d", l);
 
         for ( int r = 0; r < N_RESOLUTIONS; r++ )
         {
@@ -992,7 +992,7 @@ static void GenLodsPerformance(
             //print_complex_spectrum(geometry->geometryResolution, result.height);
             //print_complex_spectrum(geometry->geometryResolution, result.height);
 
-            fprintf(stdout, "%.3f ", (accumulatedTime / (double)nIterations) * 1000.0);
+            fprintf(stdout, ", %.3f", (accumulatedTime / (double)nIterations) * 1000.0);
 
             fftwf_free(result.height);
             fftwf_free(result.gradient);
@@ -1034,10 +1034,10 @@ static void LodBenchmark()
     settings.parameters.U10 = 10.0;
     settings.parameters.fetch = 100000.0;
 
-    fprintf(stdout, "#Lods ");
+    fprintf(stdout, "#Lods");
     for ( int r = 0; r < N_RESOLUTIONS; r++)
     {
-        fprintf(stdout, "%d ", resolutions[r]);
+        fprintf(stdout, ", %d", resolutions[r]);
     }
     fprintf(stdout, "\n");
 
@@ -1149,8 +1149,8 @@ int main(int argc, char **argv)
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
     //H0Benchmark();
-    HBenchmark();
-    //LodBenchmark();
+    //HBenchmark();
+    LodBenchmark();
     //FFTWBenchmark();
 
     DESTROY(pool);
