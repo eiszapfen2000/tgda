@@ -424,7 +424,7 @@ static void generateUnified(
 static const int resolutions[N_RESOLUTIONS] = {8, 16, 32, 64, 128, 256, 512, 1024};
 
 #define N_GENERATORS    4
-static const char * names[N_GENERATORS] = {"PM", "JONSWAP", "Donelan", "Unified"};
+static const char * names[N_GENERATORS] = {"Pierson-Moskowitz", "JONSWAP", "Donelan", "Unified"};
 
  typedef void (*GenFunction)(
         const SpectrumGeometry * const,
