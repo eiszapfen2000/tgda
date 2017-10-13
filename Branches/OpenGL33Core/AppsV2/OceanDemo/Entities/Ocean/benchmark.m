@@ -804,6 +804,9 @@ static void swapResultQuadrants(
     }
 }
 
+#define N_DATASETS    4
+static const char * datasets[N_DATASETS] = {"Heights", "Gradients", "Displacements", "Displacement Derivatives"};
+
 static void GenHPerformance(
     SpectrumGeometry * geometry,
     const GeneratorSettings * const settings,
@@ -815,6 +818,8 @@ static void GenHPerformance(
 
     for ( int d = 0; d < 4; d++ )
     {
+        fprintf(stdout, "%s", datasets[d]);
+
         for ( int r = 0; r < N_RESOLUTIONS; r++ )
         {
             geometry->geometryResolution = resolutions[r];
@@ -877,7 +882,7 @@ static void GenHPerformance(
             //print_complex_spectrum(geometry->geometryResolution, result.height);
             //print_complex_spectrum(geometry->geometryResolution, result.height);
 
-            fprintf(stdout, "%.3f ", (accumulatedTime / (double)nIterations) * 1000.0);
+            fprintf(stdout, ", %.3f", (accumulatedTime / (double)nIterations) * 1000.0);
 
             fftwf_free(height);
             fftwf_free(gradient);
@@ -919,13 +924,14 @@ static void HBenchmark()
     settings.parameters.U10 = 10.0;
     settings.parameters.fetch = 100000.0;
 
+    fprintf(stdout, "Dataset");
     for ( int r = 0; r < N_RESOLUTIONS; r++)
     {
-        fprintf(stdout, "%d ", resolutions[r]);
+        fprintf(stdout, ", %d", resolutions[r]);
     }
     fprintf(stdout, "\n");
 
-    GenHPerformance(&geometry, &settings, 100);
+    GenHPerformance(&geometry, &settings, 1000);
 
     free(geometry.sizes);   
 }
@@ -1142,8 +1148,8 @@ int main(int argc, char **argv)
 {
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
-    H0Benchmark();
-    //HBenchmark();
+    //H0Benchmark();
+    HBenchmark();
     //LodBenchmark();
     //FFTWBenchmark();
 
