@@ -446,7 +446,7 @@ static void GenH0Performance(
 
     for ( int g = 0; g < N_GENERATORS; g++)
     {
-        fprintf(stdout, "%s ", names[g]);
+        fprintf(stdout, "%s", names[g]);
 
         for ( int r = 0; r < N_RESOLUTIONS; r++ )
         {
@@ -469,7 +469,7 @@ static void GenH0Performance(
             [ timer update ];
             const double accumulatedTime = [timer frameTime];
 
-            fprintf(stdout, "%.2f ", (accumulatedTime / (double)nIterations) * 1000.0);
+            fprintf(stdout, ", %.2f", (accumulatedTime / (double)nIterations) * 1000.0);
 
             free(randomNumbers);
             fftwf_free(H0);
@@ -505,14 +505,14 @@ static void H0Benchmark()
     settings.parameters.U10 = 10.0;
     settings.parameters.fetch = 100000.0;
 
-    fprintf(stdout, "Spectrum ");
+    fprintf(stdout, "Spectrum");
     for ( int r = 0; r < N_RESOLUTIONS; r++)
     {
-        fprintf(stdout, "%d ", resolutions[r]);
+        fprintf(stdout, ", %d", resolutions[r]);
     }
     fprintf(stdout, "\n");
 
-    GenH0Performance(&geometry, &settings, 50);
+    GenH0Performance(&geometry, &settings, 10);
 
     free(geometry.sizes);
 }
@@ -1142,8 +1142,8 @@ int main(int argc, char **argv)
 {
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
-    //H0Benchmark();
-    HBenchmark();
+    H0Benchmark();
+    //HBenchmark();
     //LodBenchmark();
     //FFTWBenchmark();
 
