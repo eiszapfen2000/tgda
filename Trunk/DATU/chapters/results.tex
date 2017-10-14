@@ -35,22 +35,58 @@ our level of detail approach.
 \section{Performance}
 \label{sec:results:performance}
 %
-\begin{table}
+\begin{figure}
 \centering
-\begin{tabular}{@{}l*2{S[table-format=1.2]}*2{S[table-format=2.2]}*2{S[table-format=3.2]}@{}}
-\toprule
-Spectrum & \multicolumn{6}{c}{Time [\si{\ms}]}       \\ \midrule
-         & \multicolumn{6}{c}{Resolution} \\ \cmidrule(l){2-7} 
-         & {$32\times32$} & {$64\times64$}  & {$128\times128$}  & {$256\times256$}  & {$512\times512$} & {$1024\times1024$} \\
-\midrule
-\csvreader[late after line=\\,late after last line=\\\bottomrule]{figures/benchmark_H0_i5_5300u.csv}{}{\csvcoli & \csvcoliv & \csvcolv & \csvcolvi & \csvcolvii & \csvcolviii & \csvcolix}
-\end{tabular}
+\tikzset{external/force remake}
+\pgfplotstableread[col sep = comma]{figures/benchmark_H0_i5_5300u.dat}\mydata
+\begin{tikzpicture}
+  \begin{axis}[
+    legend pos = north west,
+    xticklabels from table={\mydata}{Resolution},
+    xtick=data,
+    xlabel={Resolution [\si{\pixel}]},
+    ylabel={Time [\si{\ms}]},
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+    ]
+    \addplot [color=blue] table[x expr=\coordindex, y index = {1}]{\mydata};
+    \addplot [color=green] table[x expr=\coordindex, y index = {2}]{\mydata};
+    \addplot [color=black] table[x expr=\coordindex, y index = {3}]{\mydata};
+    \addplot [color=red] table[x expr=\coordindex, y index = {4}]{\mydata};
+%     \addplot[dashed,mark=none, magenta] coordinates {(0,40) (5,40)};
+%     \addplot[mark=none, magenta] coordinates {(0,16.7) (5,16.7)};
+    \foreach \n in {1,2,3,4} {
+%       \addplot[mark=*] table[x expr=\coordindex,y index=\n]{\mydata};
+      \pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
+      \addlegendentryexpanded{\colname}
+    }%
+%     \legend{Actual}
+  \end{axis}
+\end{tikzpicture}
 \caption{Computation times for the static part of the spectrum at various resolutions
 with different underlying wave energy spectra. One can see that at larger resolutions
 we would be unable to synthesize the static part of the spectrum more than a few times
 a second, much less so in case of more than one level of detail.}
-\label{tab:results:h0}
-\end{table}
+\label{fig:results:h0}
+\end{figure}
+%
+%
+% \begin{table}
+% \centering
+% \begin{tabular}{@{}l*2{S[table-format=1.2]}*2{S[table-format=2.2]}*2{S[table-format=3.2]}@{}}
+% \toprule
+% Spectrum & \multicolumn{6}{c}{Time [\si{\ms}]}       \\ \midrule
+%          & \multicolumn{6}{c}{Resolution} \\ \cmidrule(l){2-7} 
+%          & {$32\times32$} & {$64\times64$}  & {$128\times128$}  & {$256\times256$}  & {$512\times512$} & {$1024\times1024$} \\
+% \midrule
+% \csvreader[late after line=\\,late after last line=\\\bottomrule]{figures/benchmark_H0_i5_5300u.csv}{}{\csvcoli & \csvcoliv & \csvcolv & \csvcolvi & \csvcolvii & \csvcolviii & \csvcolix}
+% \end{tabular}
+% \caption{Computation times for the static part of the spectrum at various resolutions
+% with different underlying wave energy spectra. One can see that at larger resolutions
+% we would be unable to synthesize the static part of the spectrum more than a few times
+% a second, much less so in case of more than one level of detail.}
+% \label{tab:results:h0}
+% \end{table}
 
 %
 \begin{table}
@@ -91,7 +127,7 @@ Moreover, as it is the static part of the spectrum that incorporates the wave
 energy spectrum, we are relieved of a significant computational burden.
 That is because evaluating the wave energy spectrum for a large set of
 \wavevectors has proven to be extensive in terms of computational complexity.
-See Table~\ref{tab:results:h0}, which gives an overview of measurements we have
+See Figure~\ref{fig:results:h0}, which gives an overview of measurements we have
 taken for the computation time of the static part of the spectrum for one single
 level of detail.
 
