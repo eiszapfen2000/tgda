@@ -3,13 +3,13 @@
 %
 The previous chapter discussed the wave spectrum concept, a theoretical
 framework developed by oceanographic research to describe the distribution of
-wave energy among ocean surface waves exposed to identical conditions, such as
-wind speed and distance to shore~\citep{Neumann:1966}.
+wave energy among ocean surface waves which have been exposed to identical
+conditions, such as wind speed and distance to shore~\citep{Neumann:1966}.
 %Several wave spectrum models were introduced, where each comes with a set of conditions
 %it functions under.
 Based on wave spectra we are able to synthesize ocean surfaces of great variety:
 from a perfectly calm sea, over one slightly agitated by the wind, to one with
-massive waves caused by a storm overhead.
+massive waves caused by a storm. % overhead.
 But to be able to visualize such diverse seas in a convincing manner we are dependent on more data
 than surface elevation alone. Therefore, as described by \citet{course:simulatingocean},
 we may capitalize on the spectral representation of ocean waves to obtain
@@ -45,8 +45,8 @@ As one may already guess, we are burdened with a significant number of
 \FourierTransforms, based on both the number of spectra per tile (surface elevation,
 slopes, displacements, first order derivatives of the displacements),
 and the number of different tiles.
-Thus, we need to make sure to keep computational workload on an acceptable level
-for realtime display of the ocean. We chose to go about the issue at hand in a
+Thus, we need to make sure to keep the computational workload on an acceptable
+level for realtime display. We chose to tackle the issue at hand in a
 twofold manner.
 First, key properties of the ocean surface spectrum allow us to accelerate the
 computation of its \InvFourierTransform considerably.
@@ -182,7 +182,7 @@ wave spectra which enable us to accelerate the computation of the \InvFourierTra
 Section~\ref{sec:slopes_and_displacements} introduces the additional wave spectrum
 based datasets which we employ for rendering, whereas
 Section~\ref{sec:level_of_detail} elaborates on our wave spectrum specific
-approach to level of detail. Last, Section~\ref{sec:demo_application} gives an
+level of detail approach. Last, Section~\ref{sec:demo_application} gives an
 overview of our demo application and the algorithms it incorporates.
 
 %Ocean surfaces based on wave spectra all share the same issue, namely the all to
@@ -401,7 +401,7 @@ where we defined surface elevation as follows:
 ~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation}
 where $\xi_r$ and $\xi_i$ are random scalars drawn from the Standard Normal
-Distribution. Both, the \wavevector domain $\mvec{k}$ and the
+Distribution. Both the \wavevector domain $\mvec{k}$ and the
 spatial domain $\mvec{x}$ are of resolution $N \times N$, where $N$ is a natural
 number, and a power of two. The latter requirement is a concession to
 the \FastFourierTransform algorithm, which works fastest at such
