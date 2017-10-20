@@ -466,12 +466,12 @@ case that would be the mean surface elevation $\mathrm{E}[\eta] = 0$.
 As one may read off the above definition of the \wavevector domain, the zero
 frequency component is located near the center of the \wavevector domain,
 where $\alpha=0$ and $\beta=0$. Actual implementations of the \InvFourierTransform,
-such as FFTW~\citep{FFTW05}, expect the zero frequency component as the first element
-i.e. at the upper left of the two-dimensional input array.
+such as FFTW~\citep{FFTW05}, expect the zero frequency component as the first
+element, i.e., at the upper left of the two-dimensional input array.
 The \wavevector domain of such implementations is defined as follows:
 \begin{equation*}
 \mvec{k} = (x,y)\in\{(\alpha\Delta k,\beta\Delta k)|
-0\leq\alpha,\beta<N\}
+0\leq\alpha<N,0\leq\beta<N\}
 \end{equation*}
 %
 We know that the spectrum represents a periodic signal, therefore the spectrum
@@ -609,7 +609,7 @@ transform functionality for real-valued data. For example, for a forward \Fourie
 necessary to compute only half of the spectrum, since the other half is implicitely given as the
 complex conjugate of the first half. Likewise, for the \InvFourierTransform only half of the
 spectrum is necessary, the other half is implicitely given. Such optimized transforms provide
-gain in performance memory-wise, the spectrum's size is halved, as well as computation-wise, only
+gain in performance memory-wise, as the spectrum's size is halved, as well as computation-wise, as only
 half the data is actually processed.
 %
 \begin{figure}
@@ -702,12 +702,12 @@ allows us to find matching complex conjugate pairs for all elements of an even-s
 %the spectrum in both directions, we obtain an additional row and an additional column, which
 %allows us to find matching pairs for all elements of the spectrum, see Table~\ref{tab:spectrum_k_minusk_border}.\\
 \subsection{Hermitian Wave Spectrum}
-The spectrum $h(\mvec{k},t)$ as we generate it with Equation~\ref{eq:dft_h_k_t} is~\emph{not}
+The spectrum $h(\mvec{k},t)$ from Equation~\ref{eq:dft_h_k_t} is~\emph{not}
 hermitian for two reasons. First, the real-valued part of the spectrum, namely
 the wave energy spectrum $\Theta(\mvec{k})$, would need to be an even function,
 which is only the case if the directional spread employed by
 the wave energy spectrum is centrosymmetric. Only two of the directional spreading functions
-presented in this work are centrosymmetric, the Unified spectrum's and the Phillips spectrum's.
+presented in this work are centrosymmetric: the Unified spectrum's and the Phillips spectrum's.
 Second, each element of $h_0(\mvec{k})$ is generated in combination with a pair of random numbers,
 which makes it close to impossible to end up with matching pairs $h_0(-\mvec{k})=h_0(\mvec{k})^*$.
 As we would like to profit from the performance gains an optimized \InvFourierTransform
@@ -721,18 +721,19 @@ rewrite Equation~\ref{eq:dft_h_k_t} as follows:
  + \frac{1}{2} h_0(\mvec{-k})^*\mathrm{e}^{\mathrm{i}\omega(\mvec{k})t}
 \end{equation}
 %
-which gives us a hermitian spectrum, independent both of the generated random numbers and 
+which gives us a hermitian spectrum, independent of both the generated random numbers and 
 whether the wave energy spectrum is an even function or not.
 
 \emph{Note}: Surface elevation $\eta$ as computed by Equation~\ref{eq:surface_elevation_h_k_t}
 gives the same results for Equation~\ref{eq:dft_h_k_t} and Equation~\ref{eq:dft_h_k_t_hermitian}.
 Still, Equation~\ref{eq:dft_h_k_t} requires a standard \InvFourierTransform
 with a complete complex-valued source spectrum and a
-complex-valued result array of the same size. The real part of the result represents
-the surface elevation, the imaginary part is to be discarded. Equation~\ref{eq:dft_h_k_t_hermitian},
-on the other hand, allows for the aforementioned \InvFourierTransform
-optimized for hermitian spectra, improving computation speed and memory usage
-roughly by a factor of two~\citep{fftw:manual}.
+complex-valued result array of the same size. The real-valued part of the result array
+represents the surface elevation, whereas the imaginary-valued part is a by-product
+which holds no relevant information and is thefore to be discarded.
+Equation~\ref{eq:dft_h_k_t_hermitian}, on the other hand, allows to apply
+aforementioned \InvFourierTransform optimized for hermitian spectra, improving
+computation speed and memory usage roughly by a factor of two~\citep{fftw:manual}.
 %
 \subsection{Combined \InvFourierTransform}
 Given one hermitian spectrum, one may apply a specialized \InvFourierTransform
@@ -827,8 +828,9 @@ of $f(x)$, then we may write the \InvDiscreteFourierTransform as follows:
 \begin{equation*}
  f(x) = \sum_{k}g(k)~\mathrm{e}^{\mathrm{i}kx}
 \end{equation*}
-Note, that we omit the scaling factors involved in the standard \FourierTransform
-because in the context of this work they are not needed. If we follow the
+% Note, that we omit the scaling factors involved in the standard \FourierTransform
+% because in the context of this work they are not needed.
+If we follow the
 lead of the continuous \FourierTransform~\citep{Trefethen:2000},
 then, in the discrete case, we may compute the $n$th derivative of $f(x)$ as follows:
 \begin{equation}
@@ -838,7 +840,7 @@ then, in the discrete case, we may compute the $n$th derivative of $f(x)$ as fol
 \citet{Johnson:2011} shows that Equation~\ref{eq:dft:derivative:naive} is not correct for odd $n$ in
 combination with even $N$. For example, if $f(x)$ is a real function, then $g(k)$ is hermitian.
 But $\mathrm{i}k~g(k)$ is~\emph{not} hermitian for even $N$, therefore the first
-order derivative of $f(x)$ would end up a complex-valued function instead of a real-valued one.
+order derivative of $f(x)$ would end up being a complex-valued function instead of a real-valued one.
 To get correct results for all $n$ and $N$, we rewrite the above equation as follows:
 \begin{align}
 \label{eq:dft_derivative}
@@ -889,7 +891,7 @@ the size of the spatial domain is $L \times L$. Let $g(\mvec{k})$ be the
  f(\mvec{x}) = \sum_{\mvec{k}}g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
 \end{equation*}
 Based on Equation~\ref{eq:dft_derivative}, and by reusing Equation~\ref{eq:dft_derivative_correction}
-because $N$ and $L$ are equal for both dimensions, we find the derivatives of $f(\mvec{x})$:
+for both dimensions ($N$ and $L$ are equal for both dimensions), we find the derivatives of $f(\mvec{x})$:
 \begin{equation}
 \label{eq:dft_derivates_2d}
  \dmd{f(\mvec{x})}{n+m}{x}{n}{z}{m} = \sum_{\mvec{k}}d(k_{x}, n)d(k_{z}, m)~g(\mvec{k})~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}}
@@ -916,7 +918,7 @@ elevation $\eta$ as well as its associated slopes in greyscale.
 
 The two spectra which constitute the surface slope vector in the \wavevector domain
 are hermitian. Therefore we are able to apply the optimisation from
-Equation~\ref{eq:idft:combined} which allows us to combine both spectra into one,
+Equation~\ref{eq:idft:combined}, which allows us to combine both spectra into one,
 obtaining both components of the surface slope vector with just one \InvFourierTransform.
 %
 \subsection{Normal Vectors}
@@ -1101,7 +1103,7 @@ to surface height $\eta$, displacement vector $\mvec{D}$, and the slopes of $\et
 we also need to compute a partial derivative of $D_x$ and $D_z$ each.
 Again, we may compute the latter two by means of spectral
 differentiation, see Equation~\ref{eq:dft_derivates_2d}. Morever, we are again
-able to apply the optimisation from Equation~\ref{eq:idft:combined} which allows
+able to apply the optimisation from Equation~\ref{eq:idft:combined}, which allows
 us to transform the spectra of the two partial derivatives as one.
 %
 \subsection{Self-Intersections}
