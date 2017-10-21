@@ -1209,12 +1209,12 @@ self-intersection is taking place.
   height=10cm,
   legend style={draw=none},
   %legend/.append style={nodes={right}},
-  legend pos= south west,
+  legend pos= north east,
   legend cell align=left,
   xtick = {-50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50},
   %ytick = {-0.5, 0, 0.5},
   xlabel={Spatial domain coordinate~$x$~($\text{m}$)},
-  ylabel={Surface height~$\eta$~($\text{m}$)},
+  %ylabel={Surface height~$\eta$~($\text{m}$)},
   %axis lines = left,
   %enlarge y limits = 0.3,
 ]
@@ -1229,6 +1229,7 @@ self-intersection is taking place.
     ((-7.5*\thisrowno{5}) * (-7.5*\thisrowno{4})),
   ]
   {figures/u_30_500km_x_dx_h_dxx_dxz_dzx_dzz.dat};
+  \addlegendentry{Jacobian determinant $det(\mvec{J})$}
 %\addplot[
   %color=red!15!white,
   %solid,
@@ -1251,6 +1252,7 @@ self-intersection is taking place.
     y expr=\thisrowno{2},
     ]
   {figures/u_30_500km_x_dx_h_dxx_dxz_dzx_dzz.dat};
+  \addlegendentry{Surface height~$\eta$}
 %\addlegendentry{$x + u D_x(x,t)$}
 \addplot[
   color=black,
