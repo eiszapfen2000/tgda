@@ -1215,7 +1215,7 @@ self-intersection is taking place.
   %ytick = {-0.5, 0, 0.5},
   xlabel={Spatial domain coordinate~$x$~($\text{m}$)},
   ylabel={Surface height~$\eta$~($\text{m}$)},
-  axis lines = left,
+  %axis lines = left,
   %enlarge y limits = 0.3,
 ]
 \addplot[
@@ -1258,7 +1258,7 @@ self-intersection is taking place.
   ]
   table [
     col sep=comma, 
-    x expr=\thisrowno{0},
+    x expr=\thisrowno{0} - 7.5*\thisrowno{1},
     y expr=0,
     ]
   {figures/u_30_500km_x_dx_h_dxx_dxz_dzx_dzz.dat};
@@ -1325,8 +1325,8 @@ frequency space to obtain vertical and horizontal displacements produced by
 ocean waves. Because the sampling process is done by means of a \DiscreteFourierTransform,
 the resulting data can be seamlessly tiled on the ocean surface. 
 However, tiling a single perturbation pattern either leads to repetitive 
-artifacts if the tile's footprint in world space is small, or to lack of detail 
-if the tile's footprint in world space is large. We chose to tackle these 
+artifacts or to lack of detail, depending on whether the tile's footprint in
+world space is small or large. We chose to tackle these 
 issues like \citet{misc:oceanlightingfft} and \citet{article:whitecaps},
 which compute not only one perturbation pattern, but a set of perturbation
 patterns of different size, which are then superimposed over each other.
@@ -1367,7 +1367,7 @@ resolution than the other datasets.
 
 In the remainder of this section we upgrade our equations to handle more than
 one perturbation pattern, we explain how to parametrize the different pattern
-periods to be able to reduce tiling artifacts as well as reproduce as much
+periods to be able to reduce tiling artifacts as well as to reproduce as much
 detail as possible, and last we discuss our multi-resolution approach.
 %
 \subsection{Equations}
@@ -1464,10 +1464,10 @@ multiple patterns on \wavenumber sampling, we may concern ourselves with the
 \wavenumbers sampled by a single pattern.
 Recall that both, the spatial domain and the \wavevector domain, are defined
 entirely by size $L$ and resolution $N$. The minimal, non-zero \wavenumber
-representable by the \wavevector domain is $k = 2\pi/L$, it depends only on
+representable by the \wavevector domain is $k = 2\pi/L$, which depends only on
 size. Moreover, the distance between subsequent
 sample points in both dimensions is defined as $\Delta k = 2\pi/L$.
-Hence, $\Delta k$ depends only on size. Therefore, by choosing size $L$, we do
+Hence, also $\Delta k$ depends only on size. By choosing size $L$, we do
 not only define the minimal \wavenumber we are able to sample, but also
 how densely we are able to sample the spectrum. The largest \wavenumber contained
 in the \wavevector domain is $k = \sqrt{2}\pi N/L$. So, given size $L$,
@@ -1991,7 +1991,7 @@ If, on the other hand, we generate multiple patterns of differing size, then
 the patterns' \wavenumbers ranges complement each other. Thus, we are able
 to sample a significantly larger \wavenumber range at a varying, but reasonable
 density. Varying, because the sampling density changes from pattern to pattern
-based on pattern size.
+based on their size.
 The enlarged \wavenumber range may contain short \wavelengths up to, and
 including the gravity-capillary wave domain, which represents waves with a
 length from one to several centimeters. With such short waves involved in the
@@ -2901,7 +2901,7 @@ it is tailored to the deep water of the open ocean. Third, it has been adapted b
 become an integral part of the lighting model itself.
 
 The lighting term for the water surface, as presented by
-\citeauthor{article:oceanlighting} consists of three parts:
+\citeauthor{article:oceanlighting}, consists of three parts:
 reflected light from the sun, reflected light from the sky dome, and refracted
 light from the water. The latter term describes the fraction of light from
 the sun and sky which has entered the water due to refraction, and leaves it
@@ -2909,7 +2909,7 @@ again due to multiple scattering.
 %Because we are in deep water,
 %\citeauthor{article:oceanlighting} assume that no light which has entered the
 %water body is reflected from the sea bed back to the water surface.
-To model the sky dome and the sun \citeauthor{article:oceanlighting} employ the
+To model the sky dome and the sun, \citeauthor{article:oceanlighting} employ the
 work of \citet{Bruneton:2008}, where the latter compute the interaction of
 light and the atmosphere in its entirety. We, on the other hand, chose not to
 extend the scope of this thesis any further with such a complex technique, and
