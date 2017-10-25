@@ -1,4 +1,4 @@
-Resolution,Heights,Gradients,Displacements,Displacement Derivatives
+Resolution,Heights,Slopes,Displacements,Displacement Derivatives
 $32^2$,0.051,0.002,0.002,0.008
 $64^2$,0.201,0.01,0.008,0.03
 $128^2$,0.796,0.041,0.036,0.134

@@ -71,7 +71,7 @@ a second, much less so in case of more than one level of detail.}
 
 \begin{figure}
 \centering
-%\tikzset{external/force remake}
+\tikzset{external/force remake}
 \pgfplotstableread[col sep = comma]{figures/benchmark_H_i5_5300u.dat}\mydata
 \begin{tikzpicture}
   \begin{axis}[
@@ -87,17 +87,12 @@ a second, much less so in case of more than one level of detail.}
 %     log basis y=10,
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
-    enlargelimits=false,
     ]
     \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=Heights] from \mydata \closedcycle; 
-    \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=Gradients] from \mydata \closedcycle;
+    \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=Slopes] from \mydata \closedcycle;
     \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=Displacements] from \mydata \closedcycle;
     \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=Displacement Derivatives] from \mydata \closedcycle;
-%     \addplot [color=blue] table[x expr=\coordindex, y index = {1}]{\mydata};
-%     \addplot [color=green] table[x expr=\coordindex, y index = {2}]{\mydata};
-%     \addplot [color=black] table[x expr=\coordindex, y index = {3}]{\mydata};
-%     \addplot [color=red] table[x expr=\coordindex, y index = {4}]{\mydata};
-    assemble legend
+%     assemble legend
     \pgfplotstablegetcolsof{\mydata}
     \pgfmathparse{\pgfplotsretval-1}
     \foreach \n in {1,...,\pgfmathresult} {
@@ -106,7 +101,13 @@ a second, much less so in case of more than one level of detail.}
     }%
   \end{axis}
 \end{tikzpicture}
-\caption{Brak.}
+\caption{Computation times for the generation of spectra at various resolutions
+for one single ocean surface pattern. We begin with the height spectrum, and
+step by step add additional datasets. One can see that the generation of the
+height spectrum alone takes the better part of the required computation time.
+That is because all datasets share most of the arithmetic, thus we may conclude
+that the bulk of the CPU time spent on the supplemental datasets is caused by
+all the additional stores to memory.}
 \end{figure}
 
 %
