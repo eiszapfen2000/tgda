@@ -53,14 +53,13 @@ our level of detail approach.
     \addplot [color=green] table[x expr=\coordindex, y index = {2}]{\mydata};
     \addplot [color=black] table[x expr=\coordindex, y index = {3}]{\mydata};
     \addplot [color=red] table[x expr=\coordindex, y index = {4}]{\mydata};
-%     \addplot[dashed,mark=none, magenta] coordinates {(0,40) (5,40)};
-%     \addplot[mark=none, magenta] coordinates {(0,16.7) (5,16.7)};
-    \foreach \n in {1,2,3,4} {
-%       \addplot[mark=*] table[x expr=\coordindex,y index=\n]{\mydata};
+    % assemble legend
+    \pgfplotstablegetcolsof{\mydata}
+    \pgfmathparse{\pgfplotsretval-1}
+    \foreach \n in {1,...,\pgfmathresult} {
       \pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
       \addlegendentryexpanded{\colname}
     }%
-%     \legend{Actual}
   \end{axis}
 \end{tikzpicture}
 \caption{Computation times for the static part of the spectrum at various resolutions
