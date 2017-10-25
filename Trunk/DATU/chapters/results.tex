@@ -89,10 +89,10 @@ a second, much less so in case of more than one level of detail.}
     every axis legend/.append style={nodes={right}},
     enlargelimits=false,
     ]
-    \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=Heights] from \mydata \closedcycle; 
+    \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=Heights] from \mydata \closedcycle; 
     \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=Gradients] from \mydata \closedcycle;
-    \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=Displacements] from \mydata \closedcycle;
-    \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=Displacement Derivatives] from \mydata \closedcycle;
+    \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=Displacements] from \mydata \closedcycle;
+    \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=Displacement Derivatives] from \mydata \closedcycle;
 %     \addplot [color=blue] table[x expr=\coordindex, y index = {1}]{\mydata};
 %     \addplot [color=green] table[x expr=\coordindex, y index = {2}]{\mydata};
 %     \addplot [color=black] table[x expr=\coordindex, y index = {3}]{\mydata};
