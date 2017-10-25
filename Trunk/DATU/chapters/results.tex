@@ -37,7 +37,7 @@ our level of detail approach.
 %
 \begin{figure}
 \centering
-\tikzset{external/force remake}
+%\tikzset{external/force remake}
 \pgfplotstableread[col sep = comma]{figures/benchmark_H0_i5_5300u.dat}\mydata
 \begin{tikzpicture}
   \begin{axis}[
@@ -68,6 +68,47 @@ we would be unable to synthesize the static part of the spectrum more than a few
 a second, much less so in case of more than one level of detail.}
 \label{fig:results:h0}
 \end{figure}
+
+\begin{figure}
+\centering
+%\tikzset{external/force remake}
+\pgfplotstableread[col sep = comma]{figures/benchmark_H_i5_5300u.dat}\mydata
+\begin{tikzpicture}
+  \begin{axis}[
+    legend pos = north west,
+    stack plots = y,
+    area style,
+%     const plot,
+    xticklabels from table={\mydata}{Resolution},
+    xtick=data,
+    xlabel={Resolution [\si{\pixel}]},
+    ylabel={Time [\si{\ms}]},
+%     ymode = log,
+%     log basis y=10,
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+    enlargelimits=false,
+    ]
+    \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=Heights] from \mydata \closedcycle; 
+    \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=Gradients] from \mydata \closedcycle;
+    \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=Displacements] from \mydata \closedcycle;
+    \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=Displacement Derivatives] from \mydata \closedcycle;
+%     \addplot [color=blue] table[x expr=\coordindex, y index = {1}]{\mydata};
+%     \addplot [color=green] table[x expr=\coordindex, y index = {2}]{\mydata};
+%     \addplot [color=black] table[x expr=\coordindex, y index = {3}]{\mydata};
+%     \addplot [color=red] table[x expr=\coordindex, y index = {4}]{\mydata};
+    assemble legend
+    \pgfplotstablegetcolsof{\mydata}
+    \pgfmathparse{\pgfplotsretval-1}
+    \foreach \n in {1,...,\pgfmathresult} {
+      \pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
+      \addlegendentryexpanded{\colname}
+    }%
+  \end{axis}
+\end{tikzpicture}
+\caption{Brak.}
+\end{figure}
+
 %
 %
 % \begin{table}
