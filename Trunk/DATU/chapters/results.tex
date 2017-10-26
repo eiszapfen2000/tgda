@@ -111,6 +111,40 @@ Thus we may conclude that the bulk of the CPU time spent on the supplemental
 datasets is caused by the additional stores to memory.}
 \end{figure}
 
+\begin{figure}
+\centering
+\tikzset{external/force remake}
+\pgfplotstableread[col sep = comma]{figures/benchmark_lods_i5_5300u.dat}\mydata
+\begin{tikzpicture}
+  \begin{axis}[
+    legend pos = north west,
+    stack plots = y,
+    area style,
+%     const plot,
+    xticklabels from table={\mydata}{Resolution},
+    xtick=data,
+    xlabel={Resolution [\si{\pixel}]},
+    ylabel={Time [\si{\ms}]},
+%     ymode = log,
+%     log basis y=10,
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+    ]
+    \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=1] from \mydata \closedcycle; 
+    \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=2] from \mydata \closedcycle;
+    \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=3] from \mydata \closedcycle;
+    \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=4] from \mydata \closedcycle;
+%     assemble legend
+    \pgfplotstablegetcolsof{\mydata}
+    \pgfmathparse{\pgfplotsretval-1}
+    \foreach \n in {1,...,\pgfmathresult} {
+      \pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
+      \addlegendentryexpanded{LOD~\colname}
+    }%
+  \end{axis}
+\end{tikzpicture}
+\caption{Brak.}
+\end{figure}
 %
 %
 % \begin{table}
