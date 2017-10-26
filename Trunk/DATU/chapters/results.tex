@@ -39,7 +39,7 @@ our level of detail approach.
 \centering
 %\tikzset{external/force remake}
 \pgfplotstableread[col sep = comma]{figures/benchmark_H0_i5_5300u.dat}\mydata
-\begin{tikzpicture}
+\begin{tikzpicture}[trim axis left]
   \begin{axis}[
     legend pos = north west,
     xticklabels from table={\mydata}{Resolution},
@@ -59,7 +59,7 @@ our level of detail approach.
     \foreach \n in {1,...,\pgfmathresult} {
       \pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
       \addlegendentryexpanded{\colname}
-    }%
+    }
   \end{axis}
 \end{tikzpicture}
 \caption{Computation times for the static part of the spectrum at various resolutions
@@ -67,83 +67,6 @@ with different underlying wave energy spectra. One can see that at larger resolu
 we would be unable to synthesize the static part of the spectrum more than a few times
 a second, much less so in case of more than one level of detail.}
 \label{fig:results:h0}
-\end{figure}
-
-\begin{figure}
-\centering
-\tikzset{external/force remake}
-\pgfplotstableread[col sep = comma]{figures/benchmark_H_i5_5300u.dat}\mydata
-\begin{tikzpicture}
-  \begin{axis}[
-    legend pos = north west,
-    stack plots = y,
-    area style,
-%     const plot,
-    xticklabels from table={\mydata}{Resolution},
-    xtick=data,
-    xlabel={Resolution [\si{\pixel}]},
-    ylabel={Time [\si{\ms}]},
-%     ymode = log,
-%     log basis y=10,
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}},
-    ]
-    \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=Heights] from \mydata \closedcycle; 
-    \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=Slopes] from \mydata \closedcycle;
-    \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=Displacements] from \mydata \closedcycle;
-    \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=Displacement Derivatives] from \mydata \closedcycle;
-%     assemble legend
-    \pgfplotstablegetcolsof{\mydata}
-    \pgfmathparse{\pgfplotsretval-1}
-    \foreach \n in {1,...,\pgfmathresult} {
-      \pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
-      \addlegendentryexpanded{\colname}
-    }%
-  \end{axis}
-\end{tikzpicture}
-\caption{Stacked computation times for the generation of spectra at various
-resolutions for one single ocean surface pattern. We begin at the bottom with
-the height spectrum, and step by step add additional datasets.
-One can see that the generation of the height spectrum alone takes the better
-part of the accumulated computation time.
-That is because all datasets share most of the arithmetic operations.
-Thus we may conclude that the bulk of the CPU time spent on the supplemental
-datasets is caused by the additional stores to memory.}
-\end{figure}
-
-\begin{figure}
-\centering
-\tikzset{external/force remake}
-\pgfplotstableread[col sep = comma]{figures/benchmark_lods_i5_5300u.dat}\mydata
-\begin{tikzpicture}
-  \begin{axis}[
-    legend pos = north west,
-    stack plots = y,
-    area style,
-%     const plot,
-    xticklabels from table={\mydata}{Resolution},
-    xtick=data,
-    xlabel={Resolution [\si{\pixel}]},
-    ylabel={Time [\si{\ms}]},
-%     ymode = log,
-%     log basis y=10,
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}},
-    ]
-    \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=1] from \mydata \closedcycle; 
-    \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=2] from \mydata \closedcycle;
-    \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=3] from \mydata \closedcycle;
-    \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=4] from \mydata \closedcycle;
-%     assemble legend
-    \pgfplotstablegetcolsof{\mydata}
-    \pgfmathparse{\pgfplotsretval-1}
-    \foreach \n in {1,...,\pgfmathresult} {
-      \pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
-      \addlegendentryexpanded{LOD~\colname}
-    }%
-  \end{axis}
-\end{tikzpicture}
-\caption{Brak.}
 \end{figure}
 %
 %
@@ -163,79 +86,149 @@ datasets is caused by the additional stores to memory.}
 % a second, much less so in case of more than one level of detail.}
 % \label{tab:results:h0}
 % \end{table}
-
 %
-\begin{table}
-\centering
-\begin{tabular}{@{}l*2{S[table-format=1.2]}*2{S[table-format=2.2]}*2{S[table-format=3.2]}@{}}
-\toprule
-Spectrum & \multicolumn{6}{c}{Time [\si{\ms}]}       \\ \midrule
-         & \multicolumn{6}{c}{Resolution} \\ \cmidrule(l){2-7} 
-         & {$32\times32$} & {$64\times64$}  & {$128\times128$}  & {$256\times256$}  & {$512\times512$} & {$1024\times1024$} \\
-\midrule
-Heights         & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
-+ Displacements & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
-+ Gradients     & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
-+ Displ Deriv   & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
-\bottomrule
-\end{tabular}
-\caption{Computation times for a single pattern at various resolutions, where
-each row adds the spectra of the respective dataset to the pattern. Thus, at
-first we have one pattern with only the height spectrum, and in the final row
-we have one pattern with all nine spectra: one for height, two for displacements,
-two for gradients, and four for displacement derivatives.
-As all datasets share most of the arithmetic, it is the extra stores to memory
-that require the bulk of the additional CPU time.}
-\label{tab:results:all}
-\end{table}
+% \begin{table}
+% \centering
+% \begin{tabular}{@{}l*2{S[table-format=1.2]}*2{S[table-format=2.2]}*2{S[table-format=3.2]}@{}}
+% \toprule
+% Spectrum & \multicolumn{6}{c}{Time [\si{\ms}]}       \\ \midrule
+%          & \multicolumn{6}{c}{Resolution} \\ \cmidrule(l){2-7} 
+%          & {$32\times32$} & {$64\times64$}  & {$128\times128$}  & {$256\times256$}  & {$512\times512$} & {$1024\times1024$} \\
+% \midrule
+% Heights         & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
+% + Displacements & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
+% + Gradients     & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
+% + Displ Deriv   & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
+% \bottomrule
+% \end{tabular}
+% \caption{Computation times for a single pattern at various resolutions, where
+% each row adds the spectra of the respective dataset to the pattern. Thus, at
+% first we have one pattern with only the height spectrum, and in the final row
+% we have one pattern with all nine spectra: one for height, two for displacements,
+% two for gradients, and four for displacement derivatives.
+% As all datasets share most of the arithmetic, it is the extra stores to memory
+% that require the bulk of the additional CPU time.}
+% \label{tab:results:all}
+% \end{table}
 %
-%
-%\citet{misc:fftw,misc:fftw:speed,fftw:manual}
-We have seen in Section~\ref{sec:spectrum_synthesis} that the underlying spectrum
-of the animated ocean surface consists of two parts, a static part and a time-dependent
-part.
-% It is the static part, as defined by Equation~\ref{eq:dft_h0_k}, that incorporates
-% the wave energy spectrum.
-As long as the \wavevector domain and the wave energy spectrum parameters do not change,
-the static part of the spectrum has to be computed only once for the entire lifetime
-of the animated ocean surface.
+We have seen in Section~\ref{sec:spectrum_synthesis} that the underlying
+spectrum of the animated ocean surface consists of two parts, a static part
+and a time-dependent part.
+As long as the \wavevector domain and the wave energy spectrum parameters do
+not change, the static part of the spectrum has to be computed only once for
+the entire lifetime of the animated ocean surface.
 Moreover, as it is the static part of the spectrum that incorporates the wave
 energy spectrum, we are relieved of a significant computational burden.
 That is because evaluating the wave energy spectrum for a large set of
 \wavevectors has proven to be extensive in terms of computational complexity.
-See Figure~\ref{fig:results:h0}, which gives an overview of measurements we have
-taken for the computation time of the static part of the spectrum for one single
-level of detail.
+See Figure~\ref{fig:results:h0}, which gives an overview of measurements we
+have taken for the computation time of the static part of the spectrum for one
+single level of detail.
+%
+\begin{figure}
+\centering
+\tikzset{external/force remake}
+\pgfplotstableread[col sep = comma]{figures/benchmark_H_i5_5300u.dat}\mydata
+\begin{tikzpicture}[trim axis left]
+  \begin{axis}[
+    legend pos = north west,
+    stack plots = y,
+    area style,
+    xticklabels from table={\mydata}{Resolution},
+    xtick=data,
+    xlabel={Resolution [\si{\pixel}]},
+    ylabel={Time [\si{\ms}]},
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+    ]
+    \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=Heights] from \mydata \closedcycle; 
+    \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=Slopes] from \mydata \closedcycle;
+    \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=Displacements] from \mydata \closedcycle;
+    \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=Displacement Derivatives] from \mydata \closedcycle;
+%     assemble legend
+    \pgfplotstablegetcolsof{\mydata}
+    \pgfmathparse{\pgfplotsretval-1}
+    \foreach \n in {1,...,\pgfmathresult} {
+      \pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
+      \addlegendentryexpanded{\colname}
+    }
+  \end{axis}
+\end{tikzpicture}
+\caption{Accumulated computation times for the generation of spectra at various
+resolutions for one single ocean surface pattern. We begin at the bottom with
+the height spectrum, and step by step add the remaining datasets.
+One can see that the generation of the height spectrum alone takes the better
+part of the entire computation time.
+That is because all datasets share most of the arithmetic operations.
+Thus we may conclude that the bulk of the CPU time spent on the supplemental
+datasets is caused by the additional stores to memory.}
+\label{fig:results:h}
+\end{figure}
+%
 
 With the static part of the spectrum on hand in a precomputed form, we are able
-to compute the spectra of all datasets within a fraction of time so
-short that we may synthesize the animated ocean surface in real-time on the CPU.
+to compute the spectra of all datasets within a fraction of time so short that
+we may synthesize the animated ocean surface in real-time on the CPU.
+Figure~\ref{fig:results:h}
 % described in Section~\ref{sec:discrete_fourier_transform}\ref{sec:slopes_and_displacements}
 %
-%
-\begin{table}[]
+\begin{figure}
 \centering
-% H generation with quadrant swapping
-% #Lods   8     16    32    64   128   256    512    1024 
-%     1 0.006 0.024 0.080 0.280 1.124  4.511 18.301  75.322 
-%     2 0.009 0.036 0.141 0.581 2.336  9.274 38.325 153.983 
-%     3 0.014 0.054 0.216 0.879 3.523 14.222 58.711 234.903 
-%     4 0.018 0.073 0.294 1.207 4.798 19.733 80.774 319.490
-\begin{tabular}{@{}c*2{S[table-format=1.2]}*2{S[table-format=2.2]}*2{S[table-format=3.2]}@{}}
-\toprule
-\#Lods & \multicolumn{6}{c}{Time [\si{\ms}]}       \\ \midrule
-         & \multicolumn{6}{c}{Resolution} \\ \cmidrule(l){2-7} 
-         & {$32\times32$} & {$64\times64$}  & {$128\times128$}  & {$256\times256$}  & {$512\times512$} & {$1024\times1024$} \\
-\midrule
-1 & 0.080  & 0.280   & 1.124    &  4.511    & 18.301   &  75.322    \\
-2 & 0.141  & 0.581   & 2.336    &  9.274    & 38.325   & 153.983    \\
-3 & 0.216  & 0.879   & 3.523    & 14.222    & 58.711   & 234.903    \\
-4 & 0.294  & 1.207   & 4.798    & 19.733    & 80.774   & 319.490    \\
-\bottomrule
-\end{tabular}
-\caption{}
-\label{tab:results:h:equal:resolution}
-\end{table}
+\tikzset{external/force remake}
+\pgfplotstableread[col sep = comma]{figures/benchmark_lods_i5_5300u.dat}\mydata
+\begin{tikzpicture}
+  \begin{axis}[
+    legend pos = north west,
+    stack plots = y,
+    area style,
+    xticklabels from table={\mydata}{Resolution},
+    xtick=data,
+    xlabel={Resolution [\si{\pixel}]},
+    ylabel={Time [\si{\ms}]},
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+    ]
+    \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=1] from \mydata \closedcycle; 
+    \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=2] from \mydata \closedcycle;
+    \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=3] from \mydata \closedcycle;
+    \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=4] from \mydata \closedcycle;
+%     assemble legend
+    \pgfplotstablegetcolsof{\mydata}
+    \pgfmathparse{\pgfplotsretval-1}
+    \foreach \n in {1,...,\pgfmathresult} {
+      \pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
+      \addlegendentryexpanded{LOD~\colname}
+    }
+  \end{axis}
+\end{tikzpicture}
+\caption{Brak.}
+\end{figure}
+
+
+%
+% \begin{table}[]
+% \centering
+% % H generation with quadrant swapping
+% % #Lods   8     16    32    64   128   256    512    1024 
+% %     1 0.006 0.024 0.080 0.280 1.124  4.511 18.301  75.322 
+% %     2 0.009 0.036 0.141 0.581 2.336  9.274 38.325 153.983 
+% %     3 0.014 0.054 0.216 0.879 3.523 14.222 58.711 234.903 
+% %     4 0.018 0.073 0.294 1.207 4.798 19.733 80.774 319.490
+% \begin{tabular}{@{}c*2{S[table-format=1.2]}*2{S[table-format=2.2]}*2{S[table-format=3.2]}@{}}
+% \toprule
+% \#Lods & \multicolumn{6}{c}{Time [\si{\ms}]}       \\ \midrule
+%          & \multicolumn{6}{c}{Resolution} \\ \cmidrule(l){2-7} 
+%          & {$32\times32$} & {$64\times64$}  & {$128\times128$}  & {$256\times256$}  & {$512\times512$} & {$1024\times1024$} \\
+% \midrule
+% 1 & 0.080  & 0.280   & 1.124    &  4.511    & 18.301   &  75.322    \\
+% 2 & 0.141  & 0.581   & 2.336    &  9.274    & 38.325   & 153.983    \\
+% 3 & 0.216  & 0.879   & 3.523    & 14.222    & 58.711   & 234.903    \\
+% 4 & 0.294  & 1.207   & 4.798    & 19.733    & 80.774   & 319.490    \\
+% \bottomrule
+% \end{tabular}
+% \caption{}
+% \label{tab:results:h:equal:resolution}
+% \end{table}
 %
 %
 Table~\ref{tab:results:h:equal:resolution} timings for spectrum synthesis
