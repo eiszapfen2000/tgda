@@ -969,6 +969,7 @@ static void GenLodsPerformance(
             const int numberOfGradientElements = geometry->gradientResolution * geometry->gradientResolution;
 
             FrequencySpectrum result;
+            memset(&result,0,sizeof(result));
             result.height = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
             result.gradient = fftwf_alloc_complex(numberOfLods * numberOfGradientElements);
             result.displacement = fftwf_alloc_complex(numberOfLods * numberOfGeometryElements);
@@ -1046,7 +1047,7 @@ static void LodBenchmark()
     free(geometry.sizes);   
 }
 
-static void FFTWPerformance(
+static void FFTWFPerformance(
     fftwf_plan * plans,
     int nIterations
     )
@@ -1088,9 +1089,52 @@ static void FFTWPerformance(
     DESTROY(timer);
 }
 
-static const char * wisdomFilename = "benchmark.wisdom";
+static void FFTWPerformance(
+    fftw_plan * plans,
+    int nIterations
+    )
+{
+    NPTimer * timer = [[ NPTimer alloc ] init ];
 
-static void FFTWBenchmark()
+    for ( int r = 0; r < N_RESOLUTIONS; r++ )
+    {
+        const size_t numberOfElements = resolutions[r] * resolutions[r];
+
+        fftw_complex * source = fftw_alloc_complex(numberOfElements);
+        fftw_complex * target = fftw_alloc_complex(numberOfElements);
+
+        memset(source, 0, sizeof(fftw_complex) * numberOfElements);
+        memset(target, 0, sizeof(fftw_complex) * numberOfElements);
+
+        [ timer update ];
+
+        for ( int i = 0; i < nIterations; i++ )
+        {
+            fftw_execute_dft(
+                plans[r],
+                source,
+                target
+                );
+        }
+
+        [ timer update ];
+        const double accumulatedTime = [timer frameTime];
+
+        fprintf(stdout, "%.4f ", (accumulatedTime / (double)nIterations) * 1000.0);
+
+        fftw_free(target);
+        fftw_free(source);
+    }
+
+    fprintf(stdout, "\n");
+
+    DESTROY(timer);
+}
+
+static const char * wisdomFilename = "benchmark.wisdom";
+static const char * wisdomFilenameD = "benchmarkD.wisdom";
+
+static void FFTWFBenchmark()
 {
     fftwf_plan complexPlans[N_RESOLUTIONS];
     const int wisdomFound = fftwf_import_wisdom_from_filename(wisdomFilename);
@@ -1128,7 +1172,7 @@ static void FFTWBenchmark()
     }
     fprintf(stdout, "\n");
 
-    FFTWPerformance(complexPlans, 10000);
+    FFTWFPerformance(complexPlans, 1000);
 
     for ( int i = 0; i < N_RESOLUTIONS; i++ )
     {
@@ -1140,6 +1184,58 @@ static void FFTWBenchmark()
 
     fftwf_forget_wisdom();
     fftwf_cleanup();
+}
+
+static void FFTWBenchmark()
+{
+    fftw_plan complexPlans[N_RESOLUTIONS];
+    const int wisdomFound = fftw_import_wisdom_from_filename(wisdomFilenameD);
+
+    for ( int i = 0; i < N_RESOLUTIONS; i++)
+    {
+        const size_t arraySize = resolutions[i] * resolutions[i];
+
+        fftw_complex * source = fftw_alloc_complex(arraySize);
+        fftw_complex * target = fftw_alloc_complex(arraySize);
+
+        memset(source, rand(), sizeof(fftw_complex) * arraySize);
+        memset(target, rand(), sizeof(fftw_complex) * arraySize);
+
+        complexPlans[i]
+            = fftw_plan_dft_2d(resolutions[i],
+                                resolutions[i],
+                                source,
+                                target,
+                                FFTW_BACKWARD,
+                                FFTW_EXHAUSTIVE);
+
+        fftw_free(source);
+        fftw_free(target);
+    }
+
+    if (!wisdomFound)
+    {
+        fftw_export_wisdom_to_filename(wisdomFilenameD);
+    }
+
+    for ( int r = 0; r < N_RESOLUTIONS; r++)
+    {
+        fprintf(stdout, "%d ", resolutions[r]);
+    }
+    fprintf(stdout, "\n");
+
+    FFTWPerformance(complexPlans, 1000);
+
+    for ( int i = 0; i < N_RESOLUTIONS; i++ )
+    {
+        if ( complexPlans[i] != NULL )
+        {
+            fftw_destroy_plan(complexPlans[i]);
+        }
+    }
+
+    fftw_forget_wisdom();
+    fftw_cleanup();
 }
 
 /*===============================================================================================*/
