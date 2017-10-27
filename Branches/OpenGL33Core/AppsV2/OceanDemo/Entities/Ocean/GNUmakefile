@@ -27,7 +27,7 @@ ODEnergy.c
 benchmark_OBJC_FILES = \
 benchmark.m
 
-ADDITIONAL_TOOL_LIBS += -lNPEngine2 -lGLEW -lGL -lprng -lfftw3f
+ADDITIONAL_TOOL_LIBS += -lNPEngine2 -lGLEW -lGL -lprng -lfftw3f -lfftw3
 
 include $(TGDA_DIR)/GNUmakefile.flags
 include $(GNUSTEP_MAKEFILES)/tool.make
