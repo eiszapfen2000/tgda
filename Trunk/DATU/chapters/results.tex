@@ -53,6 +53,20 @@ our level of detail approach.
     \addplot [color=green] table[x expr=\coordindex, y index = {2}]{\mydata};
     \addplot [color=black] table[x expr=\coordindex, y index = {3}]{\mydata};
     \addplot [color=red] table[x expr=\coordindex, y index = {4}]{\mydata};
+    
+    \addplot[color=black,dashed] coordinates {
+    (0,200)
+    (5,200)
+    }
+    node[below,pos=0.5] {5 fps};
+    
+    \addplot[color=black,dotted] coordinates {
+    (0,400)
+    (5,400)
+    }
+    node[below,pos=0.5] {2.5 fps};
+
+
     % assemble legend
     \pgfplotstablegetcolsof{\mydata}
     \pgfmathparse{\pgfplotsretval-1}
@@ -65,10 +79,12 @@ our level of detail approach.
 \caption{Computation times for the static part of the spectrum at various
 resolutions with different underlying wave energy spectra.
 One can see that at higher resolutions we would be unable to synthesize the
-static part of the spectrum more than a few times a second, much less so in
-case of more than one level of detail.}
+static part of the spectrum more than a few times a second, much less so if
+we would employ more than one level of detail.}
 \label{fig:results:h0}
 \end{figure}
+
+
 %
 %
 % \begin{table}
@@ -146,6 +162,17 @@ single level of detail.
     \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=Slopes] from \mydata \closedcycle;
     \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=Displacements] from \mydata \closedcycle;
     \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=Displacement Derivatives] from \mydata \closedcycle;
+    
+    \addplot[color=black,dashed] coordinates {
+      (0,20)
+      (5,20)
+      }
+      node[below,pos=0.5] {50 fps};
+    \addplot[color=black,dotted] coordinates {
+      (0,20)
+      (5,20)
+      }
+    node[below,pos=0.5] {25 fps};
 %     assemble legend
     \pgfplotstablegetcolsof{\mydata}
     \pgfmathparse{\pgfplotsretval-1}
@@ -156,13 +183,18 @@ single level of detail.
   \end{axis}
 \end{tikzpicture}
 \caption{Accumulated computation times for the generation of spectra at various
-resolutions for one single ocean surface pattern. We begin at the bottom with
-the height spectrum, and step by step add the remaining datasets.
+resolutions for a single ocean surface pattern. We start at the bottom with
+the computation times we measured for the height spectrum, and step by step add
+the timings of the remaining datasets.
 One can see that the generation of the height spectrum alone takes the better
 part of the entire computation time.
 That is because all datasets share most of the arithmetic operations.
 The bulk of the CPU time spent on the supplemental datasets is caused by the
-additional stores to memory.}
+additional stores to memory.
+Moreover, one can see that for all resolutions in question, except the highest
+one, we are able to generate all spectra of the ocean surface pattern in
+real-time.
+}
 \label{fig:results:h}
 \end{figure}
 %
@@ -177,8 +209,8 @@ one single ocean surface pattern.
 %
 \begin{figure}
 \centering
-%\tikzset{external/force remake}
-\pgfplotstableread[col sep = comma]{figures/benchmark_lods_i5_5300u.dat}\mydata
+% \tikzset{external/force remake}
+\pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_d_dd_i5_5300u.dat}\mydata
 \begin{tikzpicture}
   \begin{axis}[
     legend pos = north west,
@@ -208,7 +240,37 @@ one single ocean surface pattern.
 ocean surface patterns at various resolutions.}
 \end{figure}
 
-
+\begin{figure}
+\centering
+% \tikzset{external/force remake}
+\pgfplotstableread[col sep = comma]{figures/benchmark_fftwf_i5_5300u.dat}\fftwf
+\pgfplotstableread[col sep = comma]{figures/benchmark_fftw_i5_5300u.dat}\fftw
+\begin{tikzpicture}[trim axis left]
+  \begin{axis}[
+    legend pos = north west,
+    xticklabels from table={\fftw}{Resolution},
+    xtick=data,
+    xlabel={Resolution [\si{\pixel}]},
+    ylabel={Time [\si{\ms}]},
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+    ]
+    \addplot [color=blue] table[x expr=\coordindex, y index = {1}]{\fftwf};
+    \addlegendentry{Single Precision}
+    \addplot [color=red] table[x expr=\coordindex, y index = {1}]{\fftw};
+    \addlegendentry{Double Precision}
+    \addplot [color=black,loosely dashed] table[x expr=\coordindex, y expr = \thisrowno{1}*2]{\fftwf};
+    % assemble legend
+%     \pgfplotstablegetcolsof{\fftw}
+%     \pgfmathparse{\pgfplotsretval-1}
+%     \foreach \n in {1,...,\pgfmathresult} {
+%       \pgfplotstablegetcolumnnamebyindex{\n}\of{\fftw}\to{\colname}
+%       \addlegendentryexpanded{\colname}
+%     }
+  \end{axis}
+\end{tikzpicture}
+\caption{}
+\end{figure}
 %
 % \begin{table}[]
 % \centering
