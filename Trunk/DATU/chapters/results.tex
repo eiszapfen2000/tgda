@@ -53,19 +53,17 @@ our level of detail approach.
     \addplot [color=green] table[x expr=\coordindex, y index = {2}]{\mydata};
     \addplot [color=black] table[x expr=\coordindex, y index = {3}]{\mydata};
     \addplot [color=red] table[x expr=\coordindex, y index = {4}]{\mydata};
-    
+
     \addplot[color=black,dashed] coordinates {
     (0,200)
     (5,200)
     }
     node[below,pos=0.5] {5 fps};
-    
     \addplot[color=black,dotted] coordinates {
     (0,400)
     (5,400)
     }
     node[below,pos=0.5] {2.5 fps};
-
 
     % assemble legend
     \pgfplotstablegetcolsof{\mydata}
@@ -207,38 +205,112 @@ have taken for the accumulated computation time of all spectral datasets for
 one single ocean surface pattern.
 % described in Section~\ref{sec:discrete_fourier_transform}\ref{sec:slopes_and_displacements}
 %
+
 \begin{figure}
 \centering
-% \tikzset{external/force remake}
-\pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_d_dd_i5_5300u.dat}\mydata
+\tikzset{external/force remake}
+\pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_i5_5300u.dat}\lodsh
+\pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_i5_5300u.dat}\lodshg
+\pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_d_i5_5300u.dat}\lodshgd
+\pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_d_dd_i5_5300u.dat}\lodshgddd
+
 \begin{tikzpicture}
-  \begin{axis}[
-    legend pos = north west,
+\begin{groupplot}[
+	group style={
+	  columns=2,
+	},
+% 	xlabel={\Wavenumber~$k$~(\si{\radian\per\meter})},
+	width=0.5\textwidth,
+	%scaled ticks=false,
+	legend columns=-1,
+	legend style={/tikz/every even column/.append style={column sep=0.5cm}},
+	]
+\nextgroupplot[
+%     legend pos = north west,
+    legend to name=grouplegend,
     stack plots = y,
     area style,
-    xticklabels from table={\mydata}{Resolution},
+    xticklabels from table={\lodsh}{Resolution},
     xtick=data,
     xlabel={Resolution [\si{\pixel}]},
     ylabel={Time [\si{\ms}]},
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}},
+    ymax = 295,
+    title = {Heights},
+%     legend style={draw=none},
+%     every axis legend/.append style={nodes={right}},
     ]
-    \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=1] from \mydata \closedcycle; 
-    \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=2] from \mydata \closedcycle;
-    \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=3] from \mydata \closedcycle;
-    \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=4] from \mydata \closedcycle;
-%     assemble legend
-    \pgfplotstablegetcolsof{\mydata}
+    \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=1] from \lodsh \closedcycle; 
+    \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=2] from \lodsh \closedcycle;
+    \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=3] from \lodsh \closedcycle;
+    \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=4] from \lodsh \closedcycle;
+    
+    %     assemble legend
+    \pgfplotstablegetcolsof{\lodsh}
     \pgfmathparse{\pgfplotsretval-1}
     \foreach \n in {1,...,\pgfmathresult} {
-      \pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
+      \pgfplotstablegetcolumnnamebyindex{\n}\of{\lodsh}\to{\colname}
       \addlegendentryexpanded{LOD~\colname}
     }
-  \end{axis}
+\nextgroupplot[
+%     legend pos = north west,
+    stack plots = y,
+    area style,
+    xticklabels from table={\lodshgddd}{Resolution},
+    xtick=data,
+    xlabel={Resolution [\si{\pixel}]},
+    ymax = 295,
+    title = {All Datasets},
+%     ylabel={Time [\si{\ms}]},
+%     legend style={draw=none},
+%     every axis legend/.append style={nodes={right}},
+    ]
+    \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=1] from \lodshgddd \closedcycle; 
+    \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=2] from \lodshgddd \closedcycle;
+    \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=3] from \lodshgddd \closedcycle;
+    \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=4] from \lodshgddd \closedcycle;
+\end{groupplot}
+\node at ($(group c1r1.south)!0.5!(group c2r1.south)$)
+[below,
+yshift=-3\pgfkeysvalueof{/pgfplots/every axis title shift}
+] 
+{\pgfplotslegendfromname{grouplegend}};
 \end{tikzpicture}
-\caption{Accumulated computation times for the generation of up to four
-ocean surface patterns at various resolutions.}
+\caption{KABUMM.}
 \end{figure}
+
+
+% \begin{figure}
+% \centering
+% % \tikzset{external/force remake}
+% \pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_d_dd_i5_5300u.dat}\mydata
+% \begin{tikzpicture}
+%   \begin{axis}[
+%     legend pos = north west,
+%     stack plots = y,
+%     area style,
+%     xticklabels from table={\mydata}{Resolution},
+%     xtick=data,
+%     xlabel={Resolution [\si{\pixel}]},
+%     ylabel={Time [\si{\ms}]},
+%     legend style={draw=none},
+%     every axis legend/.append style={nodes={right}},
+%     ]
+%     \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=1] from \mydata \closedcycle; 
+%     \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=2] from \mydata \closedcycle;
+%     \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=3] from \mydata \closedcycle;
+%     \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=4] from \mydata \closedcycle;
+% %     assemble legend
+%     \pgfplotstablegetcolsof{\mydata}
+%     \pgfmathparse{\pgfplotsretval-1}
+%     \foreach \n in {1,...,\pgfmathresult} {
+%       \pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
+%       \addlegendentryexpanded{LOD~\colname}
+%     }
+%   \end{axis}
+% \end{tikzpicture}
+% \caption{Accumulated computation times for the generation of up to four
+% ocean surface patterns at various resolutions.}
+% \end{figure}
 
 \begin{figure}
 \centering
