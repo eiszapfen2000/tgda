@@ -202,7 +202,7 @@ to compute the spectra of all datasets within a fraction of time so short that
 we may synthesize the animated ocean surface in real-time on the CPU.
 See Figure~\ref{fig:results:h}, which gives an overview of measurements we
 have taken for the accumulated computation time of all spectral datasets for
-one single ocean surface pattern.
+a single ocean surface pattern, i.e., one level of detail.
 % described in Section~\ref{sec:discrete_fourier_transform}\ref{sec:slopes_and_displacements}
 %
 
@@ -236,6 +236,7 @@ one single ocean surface pattern.
     ylabel={Time [\si{\ms}]},
     ymax = 295,
     title = {Heights},
+%     y post scale = 1.5,
 %     legend style={draw=none},
 %     every axis legend/.append style={nodes={right}},
     ]
@@ -260,6 +261,7 @@ one single ocean surface pattern.
     xlabel={Resolution [\si{\pixel}]},
     ymax = 295,
     title = {All Datasets},
+%     y post scale = 1.5,
 %     ylabel={Time [\si{\ms}]},
 %     legend style={draw=none},
 %     every axis legend/.append style={nodes={right}},
@@ -419,6 +421,11 @@ by a factor of 1.5.
 Simple \InvFourierTransform vs \InvFourierTransform of two hermitian spectra
 Pattern synthesis at full resolution for all datasets
 Pattern synthesis with our multi-resolution approach
+
+\emph{Note}: All measurements of computation time have been taken on an Intel
+Core i5 5300U Mobile Processor. All our benchmarking code runs single-threaded
+and gives the average computation time after running the desired task for a
+thousand iterations.
 
 \section{Pattern Synthesis}
 \label{sec:results:synthesis}
