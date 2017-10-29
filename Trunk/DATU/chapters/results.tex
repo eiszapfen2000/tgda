@@ -78,7 +78,7 @@ our level of detail approach.
 resolutions with different underlying wave energy spectra.
 One can see that at higher resolutions we would be unable to synthesize the
 static part of the spectrum more than a few times a second, much less so if
-we would employ more than one level of detail.}
+we would employ more than one perturbation pattern.}
 \label{fig:results:h0}
 \end{figure}
 
@@ -138,7 +138,7 @@ That is because evaluating the wave energy spectrum for a large set of
 \wavevectors has proven to be extensive in terms of computational complexity.
 See Figure~\ref{fig:results:h0}, which gives an overview of measurements we
 have taken for the computation time of the static part of the spectrum for a
-single ocean surface tile.
+single ocean surface perturbation pattern.
 %
 \begin{figure}
 \centering
@@ -199,151 +199,154 @@ real-time.
 
 With the static part of the spectrum on hand in a precomputed form, we are able
 to compute the spectra of all datasets within a fraction of time so short that
-we may synthesize the animated ocean surface tile in real-time on the CPU.
-Figure~\ref{fig:results:h} gives an overview of measurements we have taken for
-the accumulated computation time of all spectral datasets for a single ocean
-surface tile.
-% described in Section~\ref{sec:discrete_fourier_transform}\ref{sec:slopes_and_displacements}
+we may synthesize at least one animated ocean surface pattern in real-time on
+the CPU.
+% As a first step, let us compute all datasets of a \emph{single} ocean surface
+% pattern.
+Figure~\ref{fig:results:h} gives an overview of the measurements we have taken
+for the accumulated computation time of all spectral datasets for a single
+ocean surface pattern. Based on said measurements, one can see that, depending
+on pattern resolution, there may be computational resources left at our
+disposal.
+We employ those to generate additional ocean surface patterns, i.e.,
+levels of detail.
+% depending on pattern resolution, we still have computation time at our disposal
+
 %
-
-\begin{figure}
-\centering
-\tikzset{external/force remake}
-\pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_i5_5300u.dat}\lodsh
-\pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_i5_5300u.dat}\lodshg
-\pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_d_i5_5300u.dat}\lodshgd
-\pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_d_dd_i5_5300u.dat}\lodshgddd
-
-\begin{tikzpicture}
-\begin{groupplot}[
-	group style={
-	  columns=2,
-	},
-% 	xlabel={\Wavenumber~$k$~(\si{\radian\per\meter})},
-	width=0.5\textwidth,
-	%scaled ticks=false,
-	legend columns=-1,
-	legend style={/tikz/every even column/.append style={column sep=0.5cm}},
-	]
-\nextgroupplot[
-%     legend pos = north west,
-    legend to name=grouplegend,
-    stack plots = y,
-    area style,
-    xticklabels from table={\lodsh}{Resolution},
-    xtick=data,
-    xlabel={Resolution [\si{\pixel}]},
-    ylabel={Time [\si{\ms}]},
-    ymax = 295,
-    title = {Heights},
-%     y post scale = 1.5,
-%     legend style={draw=none},
-%     every axis legend/.append style={nodes={right}},
-    ]
-    \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=1] from \lodsh \closedcycle; 
-    \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=2] from \lodsh \closedcycle;
-    \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=3] from \lodsh \closedcycle;
-    \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=4] from \lodsh \closedcycle;
-    
-    %     assemble legend
-    \pgfplotstablegetcolsof{\lodsh}
-    \pgfmathparse{\pgfplotsretval-1}
-    \foreach \n in {1,...,\pgfmathresult} {
-      \pgfplotstablegetcolumnnamebyindex{\n}\of{\lodsh}\to{\colname}
-      \addlegendentryexpanded{LOD~\colname}
-    }
-\nextgroupplot[
-%     legend pos = north west,
-    stack plots = y,
-    area style,
-    xticklabels from table={\lodshgddd}{Resolution},
-    xtick=data,
-    xlabel={Resolution [\si{\pixel}]},
-    ymax = 295,
-    title = {All Datasets},
-%     y post scale = 1.5,
-%     ylabel={Time [\si{\ms}]},
-%     legend style={draw=none},
-%     every axis legend/.append style={nodes={right}},
-    ]
-    \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=1] from \lodshgddd \closedcycle; 
-    \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=2] from \lodshgddd \closedcycle;
-    \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=3] from \lodshgddd \closedcycle;
-    \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=4] from \lodshgddd \closedcycle;
-\end{groupplot}
-\node at ($(group c1r1.south)!0.5!(group c2r1.south)$)
-[below,
-yshift=-3\pgfkeysvalueof{/pgfplots/every axis title shift}
-] 
-{\pgfplotslegendfromname{grouplegend}};
-\end{tikzpicture}
-\caption{KABUMM.}
-\end{figure}
-
-
 % \begin{figure}
 % \centering
 % % \tikzset{external/force remake}
-% \pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_d_dd_i5_5300u.dat}\mydata
-% \begin{tikzpicture}
+% \pgfplotstableread[col sep = comma]{figures/benchmark_fftwf_i5_5300u.dat}\fftwf
+% \pgfplotstableread[col sep = comma]{figures/benchmark_fftw_i5_5300u.dat}\fftw
+% \begin{tikzpicture}[trim axis left]
 %   \begin{axis}[
 %     legend pos = north west,
-%     stack plots = y,
-%     area style,
-%     xticklabels from table={\mydata}{Resolution},
+%     xticklabels from table={\fftw}{Resolution},
 %     xtick=data,
 %     xlabel={Resolution [\si{\pixel}]},
 %     ylabel={Time [\si{\ms}]},
 %     legend style={draw=none},
 %     every axis legend/.append style={nodes={right}},
 %     ]
-%     \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=1] from \mydata \closedcycle; 
-%     \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=2] from \mydata \closedcycle;
-%     \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=3] from \mydata \closedcycle;
-%     \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=4] from \mydata \closedcycle;
-% %     assemble legend
-%     \pgfplotstablegetcolsof{\mydata}
-%     \pgfmathparse{\pgfplotsretval-1}
-%     \foreach \n in {1,...,\pgfmathresult} {
-%       \pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
-%       \addlegendentryexpanded{LOD~\colname}
-%     }
+%     \addplot [color=blue] table[x expr=\coordindex, y index = {1}]{\fftwf};
+%     \addlegendentry{Single Precision}
+%     \addplot [color=red] table[x expr=\coordindex, y index = {1}]{\fftw};
+%     \addlegendentry{Double Precision}
+% %     \addplot [color=black,loosely dashed] table[x expr=\coordindex, y expr = \thisrowno{1}*2]{\fftwf};
 %   \end{axis}
 % \end{tikzpicture}
-% \caption{Accumulated computation times for the generation of up to four
-% ocean surface patterns at various resolutions.}
+% \caption{}
 % \end{figure}
+%
+% described in Section~\ref{sec:discrete_fourier_transform}\ref{sec:slopes_and_displacements}
+%
+
+% \begin{figure}
+% \centering
+% \tikzset{external/force remake}
+% \pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_i5_5300u.dat}\lodsh
+% \pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_i5_5300u.dat}\lodshg
+% \pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_d_i5_5300u.dat}\lodshgd
+% \pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_d_dd_i5_5300u.dat}\lodshgddd
+% 
+% \begin{tikzpicture}
+% \begin{groupplot}[
+% 	group style={
+% 	  columns=2,
+% 	},
+% % 	xlabel={\Wavenumber~$k$~(\si{\radian\per\meter})},
+% 	width=0.5\textwidth,
+% 	%scaled ticks=false,
+% 	legend columns=-1,
+% 	legend style={/tikz/every even column/.append style={column sep=0.5cm}},
+% 	]
+% \nextgroupplot[
+% %     legend pos = north west,
+%     legend to name=grouplegend,
+%     stack plots = y,
+%     area style,
+%     xticklabels from table={\lodsh}{Resolution},
+%     xtick=data,
+%     xlabel={Resolution [\si{\pixel}]},
+%     ylabel={Time [\si{\ms}]},
+%     ymax = 295,
+%     title = {Heights},
+% %     y post scale = 1.5,
+% %     legend style={draw=none},
+% %     every axis legend/.append style={nodes={right}},
+%     ]
+%     \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=1] from \lodsh \closedcycle; 
+%     \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=2] from \lodsh \closedcycle;
+%     \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=3] from \lodsh \closedcycle;
+%     \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=4] from \lodsh \closedcycle;
+%     
+%     %     assemble legend
+%     \pgfplotstablegetcolsof{\lodsh}
+%     \pgfmathparse{\pgfplotsretval-1}
+%     \foreach \n in {1,...,\pgfmathresult} {
+%       \pgfplotstablegetcolumnnamebyindex{\n}\of{\lodsh}\to{\colname}
+%       \addlegendentryexpanded{LOD~\colname}
+%     }
+% \nextgroupplot[
+% %     legend pos = north west,
+%     stack plots = y,
+%     area style,
+%     xticklabels from table={\lodshgddd}{Resolution},
+%     xtick=data,
+%     xlabel={Resolution [\si{\pixel}]},
+%     ymax = 295,
+%     title = {All Datasets},
+% %     y post scale = 1.5,
+% %     ylabel={Time [\si{\ms}]},
+% %     legend style={draw=none},
+% %     every axis legend/.append style={nodes={right}},
+%     ]
+%     \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=1] from \lodshgddd \closedcycle; 
+%     \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=2] from \lodshgddd \closedcycle;
+%     \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=3] from \lodshgddd \closedcycle;
+%     \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=4] from \lodshgddd \closedcycle;
+% \end{groupplot}
+% \node at ($(group c1r1.south)!0.5!(group c2r1.south)$)
+% [below,
+% yshift=-3\pgfkeysvalueof{/pgfplots/every axis title shift}
+% ] 
+% {\pgfplotslegendfromname{grouplegend}};
+% \end{tikzpicture}
+% \caption{KABUMM.}
+% \end{figure}
+
 
 \begin{figure}
 \centering
 % \tikzset{external/force remake}
-\pgfplotstableread[col sep = comma]{figures/benchmark_fftwf_i5_5300u.dat}\fftwf
-\pgfplotstableread[col sep = comma]{figures/benchmark_fftw_i5_5300u.dat}\fftw
-\begin{tikzpicture}[trim axis left]
+\pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_d_dd_i5_5300u.dat}\mydata
+\begin{tikzpicture}
   \begin{axis}[
     legend pos = north west,
-    xticklabels from table={\fftw}{Resolution},
+    stack plots = y,
+    area style,
+    xticklabels from table={\mydata}{Resolution},
     xtick=data,
     xlabel={Resolution [\si{\pixel}]},
     ylabel={Time [\si{\ms}]},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
     ]
-    \addplot [color=blue] table[x expr=\coordindex, y index = {1}]{\fftwf};
-    \addlegendentry{Single Precision}
-    \addplot [color=red] table[x expr=\coordindex, y index = {1}]{\fftw};
-    \addlegendentry{Double Precision}
-    \addplot [color=black,loosely dashed] table[x expr=\coordindex, y expr = \thisrowno{1}*2]{\fftwf};
-    % assemble legend
-%     \pgfplotstablegetcolsof{\fftw}
-%     \pgfmathparse{\pgfplotsretval-1}
-%     \foreach \n in {1,...,\pgfmathresult} {
-%       \pgfplotstablegetcolumnnamebyindex{\n}\of{\fftw}\to{\colname}
-%       \addlegendentryexpanded{\colname}
-%     }
+    \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=1] from \mydata \closedcycle; 
+    \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=2] from \mydata \closedcycle;
+    \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=3] from \mydata \closedcycle;
+    \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=4] from \mydata \closedcycle;
+%     assemble legend
+    \pgfplotstablegetcolsof{\mydata}
+    \pgfmathparse{\pgfplotsretval-1}
+    \foreach \n in {1,...,\pgfmathresult} {
+      \pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
+      \addlegendentryexpanded{LOD~\colname}
+    }
   \end{axis}
 \end{tikzpicture}
-\caption{}
+\caption{Accumulated computation times for the generation of up to four
+ocean surface patterns at various resolutions.}
 \end{figure}
 %
 % \begin{table}[]
