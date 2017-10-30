@@ -19,8 +19,9 @@ actual results we were able to achieve.
 
 The remainder of this chapter is organized as follows:
 Section \ref{sec:results:performance} gives a compact overview of the performance
-improvements which we were able to attain for the computation of the sum
-of waves via the \InvFourierTransform.
+improvements which we were able to attain for the generation of the ocean
+surface spectra as well as for the computation of the sum of waves via the
+\InvFourierTransform.
 Section \ref{sec:results:synthesis} delineates the pitfalls we encountered
 in the context of ocean surface synthesis with wave spectra, and what measures
 we took to either overcome or sidestep them.
@@ -200,7 +201,7 @@ real-time.
 With the static part of the spectrum on hand in a precomputed form, we are able
 to compute the spectra of all datasets within a fraction of time so short that
 we may synthesize at least one animated ocean surface pattern in real-time on
-the CPU.
+a single CPU thread.
 % As a first step, let us compute all datasets of a \emph{single} ocean surface
 % pattern.
 Figure~\ref{fig:results:h} gives an overview of the measurements we have taken
@@ -211,13 +212,25 @@ disposal.
 We may employ those resources to generate additional ocean surface patterns,
 i.e., levels of detail.
 
-Because ocean surface patterns are independent of each
-other, we may conclude that the computational cost to generate $l$ patterns of
-the same resolution roughly equals the computational cost to generate one
-pattern, multiplied by $l$. TODO: Explain independence better, each pattern
-stands on its own, all knowledge they reuire to share are the wavenumber ranges,
-and thats only relevant for the static part of the spectrum.
-Figure~\ref{fig:results:lods}
+As all of our ocean surface patterns are self-contained, we may assume
+that the computation time to generate $l$ patterns of the same resolution
+roughly matches the computation time to generate one pattern, multiplied by
+$l$. Figure~\ref{fig:results:lods} corroborates our assumption in that regard.
+Thus, we are given an easy mean to estimate the number of patterns we are able
+to generate in real-time on a single CPU thread for a specific pattern
+resolution.
+
+%We have seen in Section~\ref{sec:level_of_detail} that all our ocean surface
+%patterns are self-contained, 
+%
+%because each pattern employs a unique
+%set of \wavenumbers for the sum of waves. Although \Wavenumber overlap
+%we may conclude that the computational cost to generate $l$ patterns of
+%the same resolution roughly equals the computational cost to generate one
+%pattern, multiplied by $l$. TODO: Explain independence better, each pattern
+%stands on its own, all knowledge they reuire to share are the wavenumber ranges,
+%and thats only relevant for the static part of the spectrum.
+
 % depending on pattern resolution, we still have computation time at our disposal
 
 %
@@ -365,9 +378,16 @@ Figure~\ref{fig:results:lods}
   \end{axis}
 \end{tikzpicture}
 \caption{Accumulated computation times for the generation of up to four
-ocean surface patterns at various resolutions. Each pattern consists of all
-four datasets. One can see that for each resolution, the computation times among
-different LODs diverge only by a small margin.}
+ocean surface patterns at various resolutions, where each pattern consists of
+all four datasets.
+%Each pattern consists of all four datasets.
+One can see that for each resolution, the computation times among
+different LODs diverge only by a small margin.
+Moreover, up to a resolution of $256 \times 256$ we are able to generate four
+ocean surface patterns at a rate of 50 fps, whereas at a resolution of
+$512 \times 512$ we have to reduce the number of patterns to two, and still
+only reach 25 fps.
+}
 \label{fig:results:lods}
 \end{figure}
 %
@@ -396,10 +416,10 @@ different LODs diverge only by a small margin.}
 % \end{table}
 %
 %
-Table~\ref{tab:results:h:equal:resolution} timings for spectrum synthesis
-(geometry, displacements, gradients, displacement derivatives) with
-different number of level of detail. Then a table with FFTW timings.
-Then a H generation table where geometry resolution lower than gradient resolution.
+%Table~\ref{tab:results:h:equal:resolution} timings for spectrum synthesis
+%(geometry, displacements, gradients, displacement derivatives) with
+%different number of level of detail. Then a table with FFTW timings.
+%Then a H generation table where geometry resolution lower than gradient resolution.
 % The static part has to be recomputed only in
 % case the \wavevector domain or parameters for the wave energy spectrum change.
 % 
@@ -429,23 +449,23 @@ Then a H generation table where geometry resolution lower than gradient resoluti
 % 8 16 32 64 128 256 512 1024 
 % 0.0002 0.0008 0.0036 0.0129 0.0500 0.2640 1.2314 7.0269
 
-We did not reproduce the current state of art with regard to the \FourierTransform,
-i.e. compute the \IDFT on the GPU (GPGPU, CUDA, clfft). The reasons are varying,
-but the most compelling is debugging. We have found it difficult to make sure
-that the spectrum is synthesized correctly, because it is essentially gaussian noise,
-thus deviations caused by a faulty implementation still lead to results which hold
-up to casual scrutiny. Thus, keeping all spectrum related computation on the
-CPU side allowed us to assert corretness more easily.
-As we already did a MATLAB implementation and a native one
-in ObjC, an additional one would have expanded the scope of this work unreasonably.
-Still, FFTW does an acceptable job performancewise. Note, that we employed the
-float precision variant of FFTW, since it has proven to provide sufficient
-numerical accuracy for our use case, and outperforms the double precision variant
-by a factor of 1.5.
-
-Simple \InvFourierTransform vs \InvFourierTransform of two hermitian spectra
-Pattern synthesis at full resolution for all datasets
-Pattern synthesis with our multi-resolution approach
+%We did not reproduce the current state of art with regard to the \FourierTransform,
+%i.e. compute the \IDFT on the GPU (GPGPU, CUDA, clfft). The reasons are varying,
+%but the most compelling is debugging. We have found it difficult to make sure
+%that the spectrum is synthesized correctly, because it is essentially gaussian noise,
+%thus deviations caused by a faulty implementation still lead to results which hold
+%up to casual scrutiny. Thus, keeping all spectrum related computation on the
+%CPU side allowed us to assert corretness more easily.
+%As we already did a MATLAB implementation and a native one
+%in ObjC, an additional one would have expanded the scope of this work unreasonably.
+%Still, FFTW does an acceptable job performancewise. Note, that we employed the
+%float precision variant of FFTW, since it has proven to provide sufficient
+%numerical accuracy for our use case, and outperforms the double precision variant
+%by a factor of 1.5.
+%
+%Simple \InvFourierTransform vs \InvFourierTransform of two hermitian spectra
+%Pattern synthesis at full resolution for all datasets
+%Pattern synthesis with our multi-resolution approach
 
 \emph{Note}: All measurements of computation time have been taken on an Intel
 Core i5 5300U Mobile Processor. All our benchmarking code runs single-threaded
