@@ -208,8 +208,16 @@ for the accumulated computation time of all spectral datasets for a single
 ocean surface pattern. Based on said measurements, one can see that, depending
 on pattern resolution, there may be computational resources left at our
 disposal.
-We employ those resources to generate additional ocean surface patterns, i.e.,
-levels of detail.
+We may employ those resources to generate additional ocean surface patterns,
+i.e., levels of detail.
+
+Because ocean surface patterns are independent of each
+other, we may conclude that the computational cost to generate $l$ patterns of
+the same resolution roughly equals the computational cost to generate one
+pattern, multiplied by $l$. TODO: Explain independence better, each pattern
+stands on its own, all knowledge they reuire to share are the wavenumber ranges,
+and thats only relevant for the static part of the spectrum.
+Figure~\ref{fig:results:lods}
 % depending on pattern resolution, we still have computation time at our disposal
 
 %
@@ -357,7 +365,10 @@ levels of detail.
   \end{axis}
 \end{tikzpicture}
 \caption{Accumulated computation times for the generation of up to four
-ocean surface patterns at various resolutions.}
+ocean surface patterns at various resolutions. Each pattern consists of all
+four datasets. One can see that for each resolution, the computation times among
+different LODs diverge only by a small margin.}
+\label{fig:results:lods}
 \end{figure}
 %
 % \begin{table}[]
