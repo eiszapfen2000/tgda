@@ -58,12 +58,12 @@ our level of detail approach.
     (0,200)
     (5,200)
     }
-    node[below,pos=0.5] {5 fps};
+    node[below,pos=0.5] {$5$ fps};
     \addplot[color=black,dotted] coordinates {
     (0,400)
     (5,400)
     }
-    node[below,pos=0.5] {2.5 fps};
+    node[below,pos=0.5] {$2.5$ fps};
 
     % assemble legend
     \pgfplotstablegetcolsof{\mydata}
@@ -165,12 +165,12 @@ single ocean surface perturbation pattern.
       (0,20)
       (5,20)
       }
-      node[below,pos=0.5] {50 fps};
+      node[below,pos=0.5] {$50$ fps};
     \addplot[color=black,dotted] coordinates {
       (0,20)
       (5,20)
       }
-    node[below,pos=0.5] {25 fps};
+    node[below,pos=0.5] {$25$ fps};
 %     assemble legend
     \pgfplotstablegetcolsof{\mydata}
     \pgfmathparse{\pgfplotsretval-1}
@@ -208,7 +208,7 @@ for the accumulated computation time of all spectral datasets for a single
 ocean surface pattern. Based on said measurements, one can see that, depending
 on pattern resolution, there may be computational resources left at our
 disposal.
-We employ those to generate additional ocean surface patterns, i.e.,
+We employ those resources to generate additional ocean surface patterns, i.e.,
 levels of detail.
 % depending on pattern resolution, we still have computation time at our disposal
 
@@ -336,6 +336,17 @@ levels of detail.
     \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=2] from \mydata \closedcycle;
     \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=3] from \mydata \closedcycle;
     \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=4] from \mydata \closedcycle;
+
+    \addplot[color=black,dashed] coordinates {
+      (1,20)
+      (5,20)
+      }
+    node[centered,pos=-0.15] {\small{$50$ fps}};
+    \addplot[color=black,dotted] coordinates {
+      (1,20)
+      (5,20)
+      }
+    node[centered,pos=-0.15] {\small{$25$ fps}};
 %     assemble legend
     \pgfplotstablegetcolsof{\mydata}
     \pgfmathparse{\pgfplotsretval-1}
