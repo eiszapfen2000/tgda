@@ -188,8 +188,8 @@ the timings of the remaining datasets.
 One can see that the generation of the height spectrum alone takes the better
 part of the entire computation time.
 That is because all datasets share most of the arithmetic operations.
-The bulk of the CPU time spent on the supplemental datasets is caused by the
-additional stores to memory.
+% The bulk of the CPU time spent on the supplemental datasets is caused by the
+% additional stores to memory.
 Moreover, one can see that for all resolutions in question, except the highest
 one, we are able to generate all spectra of the ocean surface pattern in
 real-time.
@@ -216,9 +216,48 @@ As all of our ocean surface patterns are self-contained, we may assume
 that the computation time to generate $l$ patterns of the same resolution
 roughly matches the computation time to generate one pattern, multiplied by
 $l$. Figure~\ref{fig:results:lods} corroborates our assumption in that regard.
-Thus, we are given an easy mean to estimate the number of patterns we are able
-to generate in real-time on a single CPU thread for a specific pattern
-resolution.
+Thus, given the computation time of a single pattern, we may easily estimate
+the maximum number of such patterns we are able to generate in real-time on a
+single CPU thread.
+At this point, we must admit that initially we were not content with the
+results of our estimates, as they were correctly telling us that we are unable
+to generate four fully-fledged ocean surface patterns in real-time at a
+resolution of $512 \times 512$.
+Still, that realization has been part of our  motivation to develop the
+multi-resolution approach as presented in Section~\ref{sec:level_of_detail}.
+But it turns out that said approach does very little to ease the computational
+workload for the spectrum generation thread, even though it brings distinct
+performance improvements for both the \FourierTransform thread and the
+rendering thread.
+The underlying cause is twofold. First, the static part of the spectrum is required
+to be available at the largest desired resolution, it follows that the
+necessary memory reads maintain the same pattern for all spectra, independent
+of their resolution. Moreover, as all datasets share most of their arithmetic
+operations, only a small portion of the latter are actually skipped for spectra
+with a lower resolution. Therefore we may conclude that if any non-negligible gain
+in computation time occurs at all, then it is due to the reduced amount of
+stores to memory.
+% the larger of the spectrum resolutions
+% completely dominates the actual computation
+% The underlying cause is simple: when generating the spectra
+% for the ocean surface pattern, the larger resolution dominates the
+% actual computation.
+% First, all datasets share the same underlying static
+% spectrum, which needs to be generated for the larger resolution. Second,
+% all datasets share most of the arithmetic operations, thus they are
+% executed for the larger resolution anyways. The only gain in computation time
+% is caused by the reduced amount of stores to memory.
+% We must admit that we would have preferred to be able to compute
+% four fully-fledged ocean surface patterns 
+
+% Unfortunately it turns out, that our multi-resolution approach contributes
+% only near-negligible improvements when it comes to ocean surface pattern
+% generation. As described in Section~\ref{sec:level_of_detail}, the static
+% spectrum has to be genereated for the larger of the resolutions of our choosing.
+% Moreover, all datasets share most of the arithmetic operations, thus they have
+% to be executed for the larger resolution, no savings there. The only real gain
+% is a reduction of stores to memory.
+
 
 %We have seen in Section~\ref{sec:level_of_detail} that all our ocean surface
 %patterns are self-contained, 
@@ -385,8 +424,8 @@ One can see that for each resolution, the computation times among
 different LODs diverge only by a small margin.
 Moreover, up to a resolution of $256 \times 256$ we are able to generate four
 ocean surface patterns at a rate of 50 fps, whereas at a resolution of
-$512 \times 512$ we have to reduce the number of patterns to two, and still
-only reach 25 fps.
+$512 \times 512$ we already have to reduce the number of patterns to two, and
+still only reach 25 fps.
 }
 \label{fig:results:lods}
 \end{figure}
