@@ -217,26 +217,27 @@ that the computation time to generate $l$ patterns of the same resolution
 roughly matches the computation time to generate one pattern, multiplied by
 $l$. Figure~\ref{fig:results:lods} corroborates our assumption in that regard.
 Thus, given the computation time of a single pattern, we may easily estimate
-the maximum number of such patterns we are able to generate in real-time on a
+the maximum number of patterns we are able to generate in real-time on a
 single CPU thread.
-At this point, we must admit that initially we were not content with the
-results of our estimates, as they were correctly telling us that we are unable
-to generate four fully-fledged ocean surface patterns in real-time at a
-resolution of $512 \times 512$.
-Still, that realization has been part of our  motivation to develop the
-multi-resolution approach as presented in Section~\ref{sec:level_of_detail}.
-But it turns out that said approach does very little to ease the computational
-workload for the spectrum generation thread, even though it brings distinct
-performance improvements for both the \FourierTransform thread and the
-rendering thread.
-The underlying cause is twofold. First, the static part of the spectrum is required
-to be available at the largest desired resolution, it follows that the
-necessary memory reads maintain the same pattern for all spectra, independent
-of their resolution. Moreover, as all datasets share most of their arithmetic
-operations, only a small portion of the latter are actually skipped for spectra
-with a lower resolution. Therefore we may conclude that if any non-negligible gain
-in computation time occurs at all, then it is due to the reduced amount of
-stores to memory.
+% Initially we were dissatisfied with the resulting estimates, as they were
+% correct in telling us that we are unable to generate four fully-fledged ocean
+% surface patterns in real-time at a resolution larger than $256 \times 256$.
+% Still, that realization has been part of our  motivation to develop the
+% multi-resolution approach as presented in Section~\ref{sec:level_of_detail}.
+% But it turns out that said approach does very little to ease the computational
+% workload for the spectrum generation thread, even though it brings distinct
+% performance improvements for both the \FourierTransform thread and the
+% rendering thread.
+% The underlying cause is twofold. First, the static part of the spectrum is
+% required to be available at the largest desired resolution, it follows that the
+% necessary memory reads maintain the same access pattern for all spectra,
+% independent of their resolution.
+% Moreover, as all datasets share most of their arithmetic operations, only a
+% small portion of the latter are actually skipped for spectra
+% with a lower resolution. Therefore we may conclude that if any non-negligible gain
+% in computation time occurs at all, then it is due to the reduced amount of
+% stores to memory.
+\subsubsection{Fourier Transform}
 % the larger of the spectrum resolutions
 % completely dominates the actual computation
 % The underlying cause is simple: when generating the spectra
@@ -273,30 +274,30 @@ stores to memory.
 % depending on pattern resolution, we still have computation time at our disposal
 
 %
-% \begin{figure}
-% \centering
-% % \tikzset{external/force remake}
-% \pgfplotstableread[col sep = comma]{figures/benchmark_fftwf_i5_5300u.dat}\fftwf
-% \pgfplotstableread[col sep = comma]{figures/benchmark_fftw_i5_5300u.dat}\fftw
-% \begin{tikzpicture}[trim axis left]
-%   \begin{axis}[
-%     legend pos = north west,
-%     xticklabels from table={\fftw}{Resolution},
-%     xtick=data,
-%     xlabel={Resolution [\si{\pixel}]},
-%     ylabel={Time [\si{\ms}]},
-%     legend style={draw=none},
-%     every axis legend/.append style={nodes={right}},
-%     ]
-%     \addplot [color=blue] table[x expr=\coordindex, y index = {1}]{\fftwf};
-%     \addlegendentry{Single Precision}
-%     \addplot [color=red] table[x expr=\coordindex, y index = {1}]{\fftw};
-%     \addlegendentry{Double Precision}
-% %     \addplot [color=black,loosely dashed] table[x expr=\coordindex, y expr = \thisrowno{1}*2]{\fftwf};
-%   \end{axis}
-% \end{tikzpicture}
-% \caption{}
-% \end{figure}
+\begin{figure}
+\centering
+% \tikzset{external/force remake}
+\pgfplotstableread[col sep = comma]{figures/benchmark_fftwf_i5_5300u.dat}\fftwf
+\pgfplotstableread[col sep = comma]{figures/benchmark_fftw_i5_5300u.dat}\fftw
+\begin{tikzpicture}[trim axis left]
+  \begin{axis}[
+    legend pos = north west,
+    xticklabels from table={\fftw}{Resolution},
+    xtick=data,
+    xlabel={Resolution [\si{\pixel}]},
+    ylabel={Time [\si{\ms}]},
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+    ]
+    \addplot [color=blue] table[x expr=\coordindex, y index = {1}]{\fftwf};
+    \addlegendentry{Single Precision}
+    \addplot [color=red] table[x expr=\coordindex, y index = {1}]{\fftw};
+    \addlegendentry{Double Precision}
+%     \addplot [color=black,loosely dashed] table[x expr=\coordindex, y expr = \thisrowno{1}*2]{\fftwf};
+  \end{axis}
+\end{tikzpicture}
+\caption{}
+\end{figure}
 %
 % described in Section~\ref{sec:discrete_fourier_transform}\ref{sec:slopes_and_displacements}
 %
