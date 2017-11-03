@@ -274,6 +274,8 @@ $l$. Figure~\ref{fig:results:lods} corroborates our assumption in that regard.
 Thus, given the computation time of a single pattern, we may easily estimate
 the maximum number of patterns we are able to generate in real-time on a
 single CPU thread.
+
+\emph{Note}: \cite{IEEE:754}
 % Initially we were dissatisfied with the resulting estimates, as they were
 % correct in telling us that we are unable to generate four fully-fledged ocean
 % surface patterns in real-time at a resolution larger than $256 \times 256$.
@@ -333,17 +335,17 @@ single CPU thread.
     ylabel={Time [\si{\ms}]},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
-    enlarge y limits = false,
+    enlarge y limits = upper,
     bar width = 6pt,
     %nodes near coords,
     ]
     \addplot [color=red,fill=red]     table[x expr=\coordindex, y expr = \thisrowno{1}*9]{\fftw};
     \addlegendentry{$\text{Double Precision} \times 9$}
-    \addplot [color=blue,fill=blue]    table[x expr=\coordindex, y expr = \thisrowno{1}*5]{\fftw};
+    \addplot [color=green,fill=green]    table[x expr=\coordindex, y expr = \thisrowno{1}*5]{\fftw};
     \addlegendentry{$\text{Double Precision} \times 5$}
-    \addplot [color=black,fill=black]   table[x expr=\coordindex, y expr = \thisrowno{1}*9]{\fftwf};
+    \addplot [color=blue,fill=blue]   table[x expr=\coordindex, y expr = \thisrowno{1}*9]{\fftwf};
     \addlegendentry{$\text{Single Precision} \times 9$}
-    \addplot [color=magenta,fill=magenta] table[x expr=\coordindex, y expr = \thisrowno{1}*5]{\fftwf};
+    \addplot [color=black,fill=black] table[x expr=\coordindex, y expr = \thisrowno{1}*5]{\fftwf};
     \addlegendentry{$\text{Single Precision} \times 5$}
     
     %\addplot[sharp plot,color=black,dashed,stack plots=false] coordinates {
@@ -358,19 +360,20 @@ single CPU thread.
     %node[below,pos=0.5] {$25$ fps};
     \draw[dashed] ({rel axis cs:0,0}|-{axis cs:0,20}) -- ({rel axis cs:1,0}|-{axis cs:0,20}) node[above,pos=0.5] {$50$ fps};
     \draw[dotted] ({rel axis cs:0,0}|-{axis cs:0,40}) -- ({rel axis cs:1,0}|-{axis cs:0,40}) node[above,pos=0.5] {$25$ fps};
-    
-    %\addlegendentry{Single Precision}
-    %\addlegendentry{Single Precision $\times 2$}
-    
-    %color=red!15!white,
-    %\addlegendentry{Double Precision}
-    %\addplot [color=black!15!white] table[x expr=\coordindex, y expr = \thisrowno{1}*2]{\fftwf};
-    
   \end{axis}
 \end{tikzpicture}
 \caption{}
 \end{figure}
 %
+Recall, that a single ocean surface pattern consists of up to nine spectra:
+one for surface elevation $\eta$, two for displacement vector $\mvec{D}$,
+two for the slopes of $\eta$, and four for the first order partial derivatives
+of $\mvec{D}$. Moreover, we employ up to four distinct ocean surface patterns.
+It follows that in the worst case we are required to apply the
+\InvFourierTransform on thirty-six spectra.
+Section~\ref{sec:discrete_fourier_transform}
+Therefore we are able to apply the optimisation from
+Equation~\ref{eq:idft:combined}, which allows us to combine both spectra into one,
 % described in Section~\ref{sec:discrete_fourier_transform}\ref{sec:slopes_and_displacements}
 %
 
