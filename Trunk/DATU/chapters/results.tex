@@ -256,10 +256,10 @@ i.e., levels of detail.
 ocean surface patterns at various resolutions, where each pattern consists of
 all four datasets.
 %Each pattern consists of all four datasets.
-One can see that for each resolution, the computation times among
-different LODs diverge only by a small margin.
-Moreover, up to a resolution of $256 \times 256$ we are able to generate four
-ocean surface patterns at a rate of 50 fps, whereas at a resolution of
+For each resolution, the computation times among different LODs diverge only
+by a small margin.
+One can see that up to a resolution of $256 \times 256$ we are able to generate
+four ocean surface patterns at a rate of 50 fps, whereas at a resolution of
 $512 \times 512$ we already have to reduce the number of patterns to two, and
 still only reach 25 fps.
 }
@@ -323,7 +323,9 @@ single CPU thread.
 \pgfplotstableread[col sep = comma]{figures/benchmark_fftw_i5_5300u.dat}\fftw
 \begin{tikzpicture}[trim axis left]
   \begin{axis}[
-    %ybar,
+    width = \textwidth,
+    ybar,
+    %bar width=32pt,
     legend pos = north west,
     xticklabels from table={\fftw}{Resolution},
     xtick=data,
@@ -331,14 +333,36 @@ single CPU thread.
     ylabel={Time [\si{\ms}]},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
+    %nodes near coords,
     ]
-    \addplot [color=blue] table[x expr=\coordindex, y index = {1}]{\fftwf};
-    \addlegendentry{Single Precision}
+    \addplot [color=red,fill=red]     table[x expr=\coordindex, y expr = \thisrowno{1}*9]{\fftw};
+    \addlegendentry{$\text{Double Precision} \times 9$}
+    \addplot [color=blue,fill=blue]    table[x expr=\coordindex, y expr = \thisrowno{1}*5]{\fftw};
+    \addlegendentry{$\text{Double Precision} \times 5$}
+    \addplot [color=black,fill=black]   table[x expr=\coordindex, y expr = \thisrowno{1}*9]{\fftwf};
+    \addlegendentry{$\text{Single Precision} \times 9$}
+    \addplot [color=magenta,fill=magenta] table[x expr=\coordindex, y expr = \thisrowno{1}*5]{\fftwf};
+    \addlegendentry{$\text{Single Precision} \times 5$}
+    
+    %\addplot[sharp plot,color=black,dashed,stack plots=false] coordinates {
+      %(0,20)
+      %(5,20)
+      %}
+      %node[below,pos=0.5] {$50$ fps};
+    %\addplot[sharp plot,color=black,dotted,stack plots=false] coordinates {
+      %(0,40)
+      %(5,40)
+      %}
+    %node[below,pos=0.5] {$25$ fps};
+    \draw[dashed] ({rel axis cs:0,0}|-{axis cs:0,20}) -- ({rel axis cs:1,0}|-{axis cs:0,20}) node[above,pos=0.5] {$50$ fps};
+    \draw[dotted] ({rel axis cs:0,0}|-{axis cs:0,40}) -- ({rel axis cs:1,0}|-{axis cs:0,40}) node[above,pos=0.5] {$25$ fps};
+    
+    %\addlegendentry{Single Precision}
     %\addlegendentry{Single Precision $\times 2$}
-    \addplot [color=red] table[x expr=\coordindex, y index = {1}]{\fftw};
+    
     %color=red!15!white,
-    \addlegendentry{Double Precision}
-    \addplot [color=black!15!white] table[x expr=\coordindex, y expr = \thisrowno{1}*2]{\fftwf};
+    %\addlegendentry{Double Precision}
+    %\addplot [color=black!15!white] table[x expr=\coordindex, y expr = \thisrowno{1}*2]{\fftwf};
     
   \end{axis}
 \end{tikzpicture}
@@ -500,12 +524,12 @@ single CPU thread.
 %Simple \InvFourierTransform vs \InvFourierTransform of two hermitian spectra
 %Pattern synthesis at full resolution for all datasets
 %Pattern synthesis with our multi-resolution approach
-
+%
 \emph{Note}: All measurements of computation time have been taken on an Intel
-Core i5 5300U Mobile Processor. All our benchmarking code runs single-threaded
-and gives the average computation time after running the desired task for a
-thousand iterations.
-
+Core i5 5300U Mobile Processor. All our benchmarking code runs on a single
+CPU thread and gives the average computation time after repeating the desired
+task for a thousand iterations.
+%
 \section{Pattern Synthesis}
 \label{sec:results:synthesis}
 Although all spectrum types give convincing results geometry-wise, it is the
