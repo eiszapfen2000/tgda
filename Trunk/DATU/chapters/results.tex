@@ -162,14 +162,14 @@ single ocean surface perturbation pattern.
     \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=Displacements] from \mydata \closedcycle;
     \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=Displacement Derivatives] from \mydata \closedcycle;
     
-    \addplot[color=black,dashed] coordinates {
+    \addplot[color=black,dashed,stack plots=false] coordinates {
       (0,20)
       (5,20)
       }
       node[below,pos=0.5] {$50$ fps};
-    \addplot[color=black,dotted] coordinates {
-      (0,20)
-      (5,20)
+    \addplot[color=black,dotted,stack plots=false] coordinates {
+      (0,40)
+      (5,40)
       }
     node[below,pos=0.5] {$25$ fps};
 %     assemble legend
@@ -211,6 +211,61 @@ on pattern resolution, there may be computational resources left at our
 disposal.
 We may employ those resources to generate additional ocean surface patterns,
 i.e., levels of detail.
+%
+\begin{figure}
+\centering
+% \tikzset{external/force remake}
+\pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_d_dd_i5_5300u.dat}\mydata
+\begin{tikzpicture}
+  \begin{axis}[
+    legend pos = north west,
+    stack plots = y,
+    area style,
+    xticklabels from table={\mydata}{Resolution},
+    xtick=data,
+    xlabel={Resolution [\si{\pixel}]},
+    ylabel={Time [\si{\ms}]},
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+    ]
+    \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=1] from \mydata \closedcycle; 
+    \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=2] from \mydata \closedcycle;
+    \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=3] from \mydata \closedcycle;
+    \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=4] from \mydata \closedcycle;
+
+    \addplot[color=black,dashed,stack plots=false] coordinates {
+      (1,20)
+      (5,20)
+      }
+    node[centered,pos=-0.15] {\small{$50$ fps}};
+    \addplot[color=black,dotted,stack plots=false] coordinates {
+      (1,40)
+      (5,40)
+      }
+    node[centered,pos=-0.15] {\small{$25$ fps}};
+%     assemble legend
+    \pgfplotstablegetcolsof{\mydata}
+    \pgfmathparse{\pgfplotsretval-1}
+    \foreach \n in {1,...,\pgfmathresult} {
+      \pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
+      \addlegendentryexpanded{LOD~\colname}
+    }
+  \end{axis}
+\end{tikzpicture}
+\caption{Accumulated computation times for the generation of up to four
+ocean surface patterns at various resolutions, where each pattern consists of
+all four datasets.
+%Each pattern consists of all four datasets.
+One can see that for each resolution, the computation times among
+different LODs diverge only by a small margin.
+Moreover, up to a resolution of $256 \times 256$ we are able to generate four
+ocean surface patterns at a rate of 50 fps, whereas at a resolution of
+$512 \times 512$ we already have to reduce the number of patterns to two, and
+still only reach 25 fps.
+}
+\label{fig:results:lods}
+\end{figure}
+%
 
 As all of our ocean surface patterns are self-contained, we may assume
 that the computation time to generate $l$ patterns of the same resolution
@@ -237,20 +292,7 @@ single CPU thread.
 % with a lower resolution. Therefore we may conclude that if any non-negligible gain
 % in computation time occurs at all, then it is due to the reduced amount of
 % stores to memory.
-\subsubsection{Fourier Transform}
-% the larger of the spectrum resolutions
-% completely dominates the actual computation
-% The underlying cause is simple: when generating the spectra
-% for the ocean surface pattern, the larger resolution dominates the
-% actual computation.
-% First, all datasets share the same underlying static
-% spectrum, which needs to be generated for the larger resolution. Second,
-% all datasets share most of the arithmetic operations, thus they are
-% executed for the larger resolution anyways. The only gain in computation time
-% is caused by the reduced amount of stores to memory.
-% We must admit that we would have preferred to be able to compute
-% four fully-fledged ocean surface patterns 
-
+%
 % Unfortunately it turns out, that our multi-resolution approach contributes
 % only near-negligible improvements when it comes to ocean surface pattern
 % generation. As described in Section~\ref{sec:level_of_detail}, the static
@@ -272,7 +314,7 @@ single CPU thread.
 %and thats only relevant for the static part of the spectrum.
 
 % depending on pattern resolution, we still have computation time at our disposal
-
+\subsubsection{Fourier Transform}
 %
 \begin{figure}
 \centering
@@ -281,6 +323,7 @@ single CPU thread.
 \pgfplotstableread[col sep = comma]{figures/benchmark_fftw_i5_5300u.dat}\fftw
 \begin{tikzpicture}[trim axis left]
   \begin{axis}[
+    %ybar,
     legend pos = north west,
     xticklabels from table={\fftw}{Resolution},
     xtick=data,
@@ -291,9 +334,12 @@ single CPU thread.
     ]
     \addplot [color=blue] table[x expr=\coordindex, y index = {1}]{\fftwf};
     \addlegendentry{Single Precision}
+    %\addlegendentry{Single Precision $\times 2$}
     \addplot [color=red] table[x expr=\coordindex, y index = {1}]{\fftw};
+    %color=red!15!white,
     \addlegendentry{Double Precision}
-%     \addplot [color=black,loosely dashed] table[x expr=\coordindex, y expr = \thisrowno{1}*2]{\fftwf};
+    \addplot [color=black!15!white] table[x expr=\coordindex, y expr = \thisrowno{1}*2]{\fftwf};
+    
   \end{axis}
 \end{tikzpicture}
 \caption{}
@@ -377,59 +423,7 @@ single CPU thread.
 % \end{figure}
 
 
-\begin{figure}
-\centering
-% \tikzset{external/force remake}
-\pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_d_dd_i5_5300u.dat}\mydata
-\begin{tikzpicture}
-  \begin{axis}[
-    legend pos = north west,
-    stack plots = y,
-    area style,
-    xticklabels from table={\mydata}{Resolution},
-    xtick=data,
-    xlabel={Resolution [\si{\pixel}]},
-    ylabel={Time [\si{\ms}]},
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}},
-    ]
-    \addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=1] from \mydata \closedcycle; 
-    \addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=2] from \mydata \closedcycle;
-    \addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=3] from \mydata \closedcycle;
-    \addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=4] from \mydata \closedcycle;
 
-    \addplot[color=black,dashed] coordinates {
-      (1,20)
-      (5,20)
-      }
-    node[centered,pos=-0.15] {\small{$50$ fps}};
-    \addplot[color=black,dotted] coordinates {
-      (1,20)
-      (5,20)
-      }
-    node[centered,pos=-0.15] {\small{$25$ fps}};
-%     assemble legend
-    \pgfplotstablegetcolsof{\mydata}
-    \pgfmathparse{\pgfplotsretval-1}
-    \foreach \n in {1,...,\pgfmathresult} {
-      \pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
-      \addlegendentryexpanded{LOD~\colname}
-    }
-  \end{axis}
-\end{tikzpicture}
-\caption{Accumulated computation times for the generation of up to four
-ocean surface patterns at various resolutions, where each pattern consists of
-all four datasets.
-%Each pattern consists of all four datasets.
-One can see that for each resolution, the computation times among
-different LODs diverge only by a small margin.
-Moreover, up to a resolution of $256 \times 256$ we are able to generate four
-ocean surface patterns at a rate of 50 fps, whereas at a resolution of
-$512 \times 512$ we already have to reduce the number of patterns to two, and
-still only reach 25 fps.
-}
-\label{fig:results:lods}
-\end{figure}
 %
 % \begin{table}[]
 % \centering
