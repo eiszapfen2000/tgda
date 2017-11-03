@@ -323,7 +323,7 @@ single CPU thread.
 \pgfplotstableread[col sep = comma]{figures/benchmark_fftw_i5_5300u.dat}\fftw
 \begin{tikzpicture}[trim axis left]
   \begin{axis}[
-    width = \textwidth,
+    width = 0.75\textwidth,
     ybar,
     %bar width=32pt,
     legend pos = north west,
@@ -334,6 +334,7 @@ single CPU thread.
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
     enlarge y limits = false,
+    bar width = 6pt,
     %nodes near coords,
     ]
     \addplot [color=red,fill=red]     table[x expr=\coordindex, y expr = \thisrowno{1}*9]{\fftw};
