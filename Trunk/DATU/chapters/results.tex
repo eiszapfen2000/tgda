@@ -333,6 +333,7 @@ single CPU thread.
     ylabel={Time [\si{\ms}]},
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
+    enlarge y limits = false,
     %nodes near coords,
     ]
     \addplot [color=red,fill=red]     table[x expr=\coordindex, y expr = \thisrowno{1}*9]{\fftw};
