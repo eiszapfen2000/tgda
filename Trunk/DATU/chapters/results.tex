@@ -28,63 +28,12 @@ we took to either overcome or sidestep them.
 Last, Section \ref{sec:results:fidelity} discusses the level of visual fidelity
 we were able to obtain, with focus on the different wave spectra, as well as
 our level of detail approach.
-
 % Before we delve into details, one may look at Figure~\ref{fig:results} which
 % depicts all componenents which are part of our ocean lighting implementation.
 % compare lighting of all spectrum types (same parameters)
-
+%
 \section{Performance}
 \label{sec:results:performance}
-%
-\begin{figure}
-\centering
-%\tikzset{external/force remake}
-\pgfplotstableread[col sep = comma]{figures/benchmark_H0_i5_5300u.dat}\mydata
-\begin{tikzpicture}[trim axis left]
-  \begin{axis}[
-    legend pos = north west,
-    xticklabels from table={\mydata}{Resolution},
-    xtick=data,
-    xlabel={Resolution [\si{\pixel}]},
-    ylabel={Time [\si{\ms}]},
-    legend style={draw=none},
-    every axis legend/.append style={nodes={right}},
-    ]
-    \addplot [color=blue] table[x expr=\coordindex, y index = {1}]{\mydata};
-    \addplot [color=green] table[x expr=\coordindex, y index = {2}]{\mydata};
-    \addplot [color=black] table[x expr=\coordindex, y index = {3}]{\mydata};
-    \addplot [color=red] table[x expr=\coordindex, y index = {4}]{\mydata};
-
-    \addplot[color=black,dashed] coordinates {
-    (0,200)
-    (5,200)
-    }
-    node[below,pos=0.5] {$5$ fps};
-    \addplot[color=black,dotted] coordinates {
-    (0,400)
-    (5,400)
-    }
-    node[below,pos=0.5] {$2.5$ fps};
-
-    % assemble legend
-    \pgfplotstablegetcolsof{\mydata}
-    \pgfmathparse{\pgfplotsretval-1}
-    \foreach \n in {1,...,\pgfmathresult} {
-      \pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
-      \addlegendentryexpanded{\colname}
-    }
-  \end{axis}
-\end{tikzpicture}
-\caption{Computation times for the static part of the spectrum at various
-resolutions with different underlying wave energy spectra.
-One can see that at higher resolutions we would be unable to synthesize the
-static part of the spectrum more than a few times a second, much less so if
-we would employ more than one perturbation pattern.}
-\label{fig:results:h0}
-\end{figure}
-
-
-%
 %
 % \begin{table}
 % \centering
@@ -130,16 +79,70 @@ we would employ more than one perturbation pattern.}
 We have seen in Section~\ref{sec:spectrum_synthesis} that the underlying
 spectrum of the animated ocean surface consists of two parts, a static part
 and a time-dependent part.
-As long as the \wavevector domain and the wave energy spectrum parameters do
+As long as the \wavevector domain and the wave energy spectrum's parameters do
 not change, the static part of the spectrum has to be computed only once for
 the entire lifetime of the animated ocean surface.
 Moreover, as it is the static part of the spectrum that incorporates the wave
 energy spectrum, we are relieved of a significant computational burden.
 That is because evaluating the wave energy spectrum for a large set of
 \wavevectors has proven to be extensive in terms of computational complexity.
+%
+\begin{figure}
+\centering
+%\tikzset{external/force remake}
+\pgfplotstableread[col sep = comma]{figures/benchmark_H0_i5_5300u.dat}\mydata
+\begin{tikzpicture}[trim axis left]
+  \begin{axis}[
+    legend pos = north west,
+    xticklabels from table={\mydata}{Resolution},
+    xtick=data,
+    xlabel={Resolution [\si{\pixel}]},
+    ylabel={Time [\si{\ms}]},
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}},
+    ]
+    \addplot [color=blue] table[x expr=\coordindex, y index = {1}]{\mydata};
+    \addplot [color=green] table[x expr=\coordindex, y index = {2}]{\mydata};
+    \addplot [color=black] table[x expr=\coordindex, y index = {3}]{\mydata};
+    \addplot [color=red] table[x expr=\coordindex, y index = {4}]{\mydata};
+
+    \addplot[color=black,dashed] coordinates {
+    (0,200)
+    (5,200)
+    }
+    node[below,pos=0.5] {$5$ fps};
+    \addplot[color=black,dotted] coordinates {
+    (0,400)
+    (5,400)
+    }
+    node[below,pos=0.5] {$2.5$ fps};
+
+    % assemble legend
+    \pgfplotstablegetcolsof{\mydata}
+    \pgfmathparse{\pgfplotsretval-1}
+    \foreach \n in {1,...,\pgfmathresult} {
+      \pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
+      \addlegendentryexpanded{\colname}
+    }
+  \end{axis}
+\end{tikzpicture}
+\caption{Computation times for the static part of the spectrum at various
+resolutions with different underlying wave energy spectra.
+One can see that at higher resolutions we would be unable to synthesize the
+static part of the spectrum more than a few times a second, much less so if
+we would employ more than one ocean surface pattern.}
+\label{fig:results:h0}
+\end{figure}
+%
 See Figure~\ref{fig:results:h0}, which gives an overview of measurements we
 have taken for the computation time of the static part of the spectrum for a
-single ocean surface perturbation pattern.
+single ocean surface pattern.
+
+With the static part of the spectrum on hand in a precomputed form, we are able
+to compute the spectra of all datasets within a fraction of time so short that
+we may synthesize at least one animated ocean surface pattern in real-time on
+a single CPU thread.
+%
 %
 \begin{figure}
 \centering
@@ -181,29 +184,23 @@ single ocean surface perturbation pattern.
     }
   \end{axis}
 \end{tikzpicture}
-\caption{Accumulated computation times for the generation of spectra at various
-resolutions for a single ocean surface pattern. We start at the bottom with
-the computation times we measured for the height spectrum, and step by step add
-the timings of the remaining datasets.
-One can see that the generation of the height spectrum alone takes the better
+\caption{
+Accumulated computation times for the generation of spectral datasets at
+various resolutions for a single ocean surface pattern.
+We start at the bottom with the computation times we measured for the height
+spectrum, and step by step add the timings of the remaining datasets.
+One can see that the height spectrum alone takes the better
 part of the entire computation time.
 That is because all datasets share most of the arithmetic operations.
-% The bulk of the CPU time spent on the supplemental datasets is caused by the
-% additional stores to memory.
+The bulk of the CPU time spent on the supplemental datasets is caused by the
+additional stores to memory.
 Moreover, one can see that for all resolutions in question, except the highest
-one, we are able to generate all spectra of the ocean surface pattern in
-real-time.
-}
+one, we are able to generate all spectral datasets of the ocean surface pattern
+in real-time.}
 \label{fig:results:h}
 \end{figure}
 %
-
-With the static part of the spectrum on hand in a precomputed form, we are able
-to compute the spectra of all datasets within a fraction of time so short that
-we may synthesize at least one animated ocean surface pattern in real-time on
-a single CPU thread.
-% As a first step, let us compute all datasets of a \emph{single} ocean surface
-% pattern.
+%
 Figure~\ref{fig:results:h} gives an overview of the measurements we have taken
 for the accumulated computation time of all spectral datasets for a single
 ocean surface pattern. Based on said measurements, one can see that, depending
@@ -255,27 +252,36 @@ i.e., levels of detail.
 \caption{Accumulated computation times for the generation of up to four
 ocean surface patterns at various resolutions, where each pattern consists of
 all four datasets.
-%Each pattern consists of all four datasets.
 For each resolution, the computation times among different LODs diverge only
 by a small margin.
 One can see that up to a resolution of $256 \times 256$ we are able to generate
-four ocean surface patterns at a rate of 50 fps, whereas at a resolution of
-$512 \times 512$ we already have to reduce the number of patterns to two, and
-still only reach 25 fps.
-}
+four ocean surface patterns at a rate of fifty times per second, whereas at a
+resolution of $512 \times 512$ we already have to reduce the number of patterns
+to two, and still only reach a rate of twenty-five times per second.}
 \label{fig:results:lods}
 \end{figure}
 %
-
 As all of our ocean surface patterns are self-contained, we may assume
 that the computation time to generate $l$ patterns of the same resolution
 roughly matches the computation time to generate one pattern, multiplied by
-$l$. Figure~\ref{fig:results:lods} corroborates our assumption in that regard.
+$l$. Figure~\ref{fig:results:lods} corroborates said assumption.
 Thus, given the computation time of a single pattern, we may easily estimate
 the maximum number of patterns we are able to generate in real-time on a
-single CPU thread.
+single CPU thread. Still, we are content with a maximum of four patterns.
 
-\emph{Note}: \cite{IEEE:754}
+Due to performance considerations, we chose the IEEE 754 single-precision
+floating-point format \citep{IEEE:754} as the underlying data type for
+the implementation of our spectrum generation code. Compared to the
+double-precision format, it simultaneously allowed us to cut our memory
+requirements in half, as well as accelerate arithmetic operations by taking
+advantage of the C99 \citep{C99} math library functions tailored to
+single-precision floating point numbers.
+%
+%\emph{Note}: For our implementation of the spectrum generation code we chose
+%to perform all computations in . Thus, compared to double precision, we were able to
+%cut our requirements regarding memory in half.
+%Besides, take advantage of the C99 \citep{C99} math library functions tailored to
+%single-precision floats \citep{loosemore:glibc}
 % Initially we were dissatisfied with the resulting estimates, as they were
 % correct in telling us that we are unable to generate four fully-fledged ocean
 % surface patterns in real-time at a resolution larger than $256 \times 256$.
@@ -530,10 +536,12 @@ Equation~\ref{eq:idft:combined}, which allows us to combine both spectra into on
 %Pattern synthesis at full resolution for all datasets
 %Pattern synthesis with our multi-resolution approach
 %
-\emph{Note}: All measurements of computation time have been taken on an Intel
-Core i5 5300U Mobile Processor. All our benchmarking code runs on a single
-CPU thread and gives the average computation time after repeating the desired
-task for a thousand iterations.
+%
+\emph{Note}: All results of benchmarking shown throughout this section
+have been collected on an off-the-shelf laptop running an Intel\textregistered
+Core\texttrademark i5-5300U Mobile Processor \citep{intel:5300u}.
+All our benchmarking code runs on a single CPU thread and gives the average
+computation time after repeating the desired task for a thousand iterations.
 %
 \section{Pattern Synthesis}
 \label{sec:results:synthesis}
