@@ -368,16 +368,30 @@ single-precision floating point numbers.
     \draw[dotted] ({rel axis cs:0,0}|-{axis cs:0,40}) -- ({rel axis cs:1,0}|-{axis cs:0,40}) node[above,pos=0.5] {$25$ fps};
   \end{axis}
 \end{tikzpicture}
-\caption{}
+\caption{Comparison of computation times for the \InvDiscreteFourierTransform
+for all nine spectra of a single ocean surface pattern at various resolutions.
+One can see that the single precision variant of the
+\InvDiscreteFourierTransform already reduces the computational workload roughly
+by a factor of two compared to the double precision variant. Moreover, if we
+transform pairs of hermitian spectra at once, we are able to cut the number
+of required \InvDiscreteFourierTransforms from nine to five, reducing the
+computational workload by about forty-five percent.}
 \end{figure}
 %
 Recall, that a single ocean surface pattern consists of up to nine spectra:
 one for surface elevation $\eta$, two for displacement vector $\mvec{D}$,
 two for the slopes of $\eta$, and four for the first order partial derivatives
-of $\mvec{D}$. Moreover, we employ up to four distinct ocean surface patterns.
-It follows that in the worst case we are required to apply the
-\InvFourierTransform on thirty-six spectra.
-Section~\ref{sec:discrete_fourier_transform}
+of $\mvec{D}$.
+%Depending on resolution, the computational workload caused by
+%nine distinct \InvDiscreteFourierTransforms may already be significant.
+%Even more so in case of more than one 
+Moreover, we employ up to four distinct ocean surface patterns.
+It follows that in the worst case we have to compute the
+\InvDiscreteFourierTransform for thirty-six spectra.
+We have seen in Section~\ref{sec:discrete_fourier_transform} that we may apply
+the \InvFourierTransform on two hermitian spectra at once. Therefore the
+maximum number of required \InvFourierTransforms for a single ocean surface pattern drops from
+nine to five, a reduction of nearly forty-five percent.
 Therefore we are able to apply the optimisation from
 Equation~\ref{eq:idft:combined}, which allows us to combine both spectra into one,
 % described in Section~\ref{sec:discrete_fourier_transform}\ref{sec:slopes_and_displacements}
