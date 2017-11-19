@@ -89,10 +89,12 @@ That is because evaluating the wave energy spectrum for a large set of
 %
 \begin{figure}
 \centering
-%\tikzset{external/force remake}
+\tikzset{external/force remake}
 \pgfplotstableread[col sep = comma]{figures/benchmark_H0_i5_5300u.dat}\mydata
 \begin{tikzpicture}[trim axis left]
   \begin{axis}[
+%     ybar,
+%     bar width = 6pt,
     legend pos = north west,
     xticklabels from table={\mydata}{Resolution},
     xtick=data,
@@ -102,18 +104,18 @@ That is because evaluating the wave energy spectrum for a large set of
     every axis legend/.append style={nodes={right}},
     ]
     \addplot [color=blue] table[x expr=\coordindex, y index = {1}]{\mydata};
-    \addplot [color=green] table[x expr=\coordindex, y index = {2}]{\mydata};
+    \addplot [color=green!70!black] table[x expr=\coordindex, y index = {2}]{\mydata};
     \addplot [color=black] table[x expr=\coordindex, y index = {3}]{\mydata};
     \addplot [color=red] table[x expr=\coordindex, y index = {4}]{\mydata};
 
     \addplot[color=black,dashed] coordinates {
     (0,200)
-    (5,200)
+    (4,200)
     }
     node[below,pos=0.5] {$5$ fps};
     \addplot[color=black,dotted] coordinates {
     (0,400)
-    (5,400)
+    (4,400)
     }
     node[below,pos=0.5] {$2.5$ fps};
 
@@ -129,8 +131,12 @@ That is because evaluating the wave energy spectrum for a large set of
 \caption{Computation times for the static part of the spectrum at various
 resolutions with different underlying wave energy spectra.
 One can see that at higher resolutions we would be unable to synthesize the
-static part of the spectrum more than a few times a second, much less so if
-we would employ more than one ocean surface pattern.}
+static part of the spectrum more than a few times a second, much less so if we
+would employ more than one ocean surface pattern.
+Moreover, one may notice that the computation times of the different wave
+energy spectra diverge significantly. That is expected, considering
+the difference in complexity of the wave energy models in question.
+}
 \label{fig:results:h0}
 \end{figure}
 %
@@ -146,7 +152,7 @@ a single CPU thread.
 %
 \begin{figure}
 \centering
-%\tikzset{external/force remake}
+% \tikzset{external/force remake}
 \pgfplotstableread[col sep = comma]{figures/benchmark_H_i5_5300u.dat}\mydata
 \begin{tikzpicture}[trim axis left]
   \begin{axis}[
@@ -167,12 +173,12 @@ a single CPU thread.
     
     \addplot[color=black,dashed,stack plots=false] coordinates {
       (0,20)
-      (5,20)
+      (4,20)
       }
       node[below,pos=0.5] {$50$ fps};
     \addplot[color=black,dotted,stack plots=false] coordinates {
       (0,40)
-      (5,40)
+      (4,40)
       }
     node[below,pos=0.5] {$25$ fps};
 %     assemble legend
@@ -232,12 +238,12 @@ i.e., levels of detail.
 
     \addplot[color=black,dashed,stack plots=false] coordinates {
       (1,20)
-      (5,20)
+      (4,20)
       }
     node[centered,pos=-0.15] {\small{$50$ fps}};
     \addplot[color=black,dotted,stack plots=false] coordinates {
       (1,40)
-      (5,40)
+      (4,40)
       }
     node[centered,pos=-0.15] {\small{$25$ fps}};
 %     assemble legend
@@ -333,7 +339,7 @@ single-precision floating point numbers.
   \begin{axis}[
     width = 0.75\textwidth,
     ybar,
-    %bar width=32pt,
+    bar width = 6pt,
     legend pos = north west,
     xticklabels from table={\fftw}{Resolution},
     xtick=data,
@@ -342,7 +348,6 @@ single-precision floating point numbers.
     legend style={draw=none},
     every axis legend/.append style={nodes={right}},
     enlarge y limits = upper,
-    bar width = 6pt,
     %nodes near coords,
     ]
     \addplot [color=red,fill=red]     table[x expr=\coordindex, y expr = \thisrowno{1}*9]{\fftw};
