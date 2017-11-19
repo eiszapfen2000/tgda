@@ -392,13 +392,19 @@ of $\mvec{D}$.
 %Even more so in case of more than one 
 Moreover, we employ up to four distinct ocean surface patterns.
 It follows that in the worst case we have to compute the
-\InvDiscreteFourierTransform for thirty-six spectra.
-We have seen in Section~\ref{sec:discrete_fourier_transform} that we may apply
-the \InvFourierTransform on two hermitian spectra at once. Therefore the
-maximum number of required \InvFourierTransforms for a single ocean surface pattern drops from
-nine to five, a reduction of nearly forty-five percent.
-Therefore we are able to apply the optimisation from
-Equation~\ref{eq:idft:combined}, which allows us to combine both spectra into one,
+\InvDiscreteFourierTransform for thirty-six spectra. Depending on pattern
+resolution, such a number of \IDFTs may represent a massive computational
+burden, especially because all \IDFTs have to be computed for each keyframe
+of the animated ocean surface.
+Fortunately, all our spectra are hermitian, and as we have seen in
+Section~\ref{sec:discrete_fourier_transform}, we may apply the
+\InvDiscreteFourierTransform on two hermitian spectra at once.
+Therefore the maximum number of required \IDFTs for a single ocean surface
+pattern drops from nine to five: two for the displacement derivatives,
+one for the displacements, one for the slopes, and one for surface elevation.
+A reduction of nearly forty-five percent.
+% Therefore we are able to apply the optimisation from
+% Equation~\ref{eq:idft:combined}, which allows us to combine both spectra into one,
 % described in Section~\ref{sec:discrete_fourier_transform}\ref{sec:slopes_and_displacements}
 %
 
