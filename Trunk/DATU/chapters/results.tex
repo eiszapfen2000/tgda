@@ -369,8 +369,8 @@ single-precision floating point numbers.
       %(5,40)
       %}
     %node[below,pos=0.5] {$25$ fps};
-    \draw[dashed] ({rel axis cs:0,0}|-{axis cs:0,20}) -- ({rel axis cs:1,0}|-{axis cs:0,20}) node[above,pos=0.5] {$50$ fps};
-    \draw[dotted] ({rel axis cs:0,0}|-{axis cs:0,40}) -- ({rel axis cs:1,0}|-{axis cs:0,40}) node[above,pos=0.5] {$25$ fps};
+    \draw[dashed] ({rel axis cs:0.025,0}|-{axis cs:0,20}) -- ({rel axis cs:0.975,0}|-{axis cs:0,20}) node[above,pos=0.5] {$50$ fps};
+    \draw[dotted] ({rel axis cs:0.025,0}|-{axis cs:0,40}) -- ({rel axis cs:0.975,0}|-{axis cs:0,40}) node[above,pos=0.5] {$25$ fps};
   \end{axis}
 \end{tikzpicture}
 \caption{Comparison of computation times for the \InvDiscreteFourierTransform
@@ -402,7 +402,9 @@ Section~\ref{sec:discrete_fourier_transform}, we may apply the
 Therefore the maximum number of required \IDFTs for a single ocean surface
 pattern drops from nine to five: two for the displacement derivatives,
 one for the displacements, one for the slopes, and one for surface elevation.
-A reduction of nearly forty-five percent.
+It follows that for four distinct ocean surface patterns we have to compute
+only twenty \IDFTs instead of the full thirty-six, which represents a decrease
+of nearly forty-five percent.
 % Therefore we are able to apply the optimisation from
 % Equation~\ref{eq:idft:combined}, which allows us to combine both spectra into one,
 % described in Section~\ref{sec:discrete_fourier_transform}\ref{sec:slopes_and_displacements}
@@ -561,7 +563,7 @@ A reduction of nearly forty-five percent.
 %Pattern synthesis at full resolution for all datasets
 %Pattern synthesis with our multi-resolution approach
 %
-%
+\subsection{Multi-Resolution}
 \emph{Note}: All results of benchmarking shown throughout this section
 have been collected on an off-the-shelf laptop running an Intel\textregistered
 Core\texttrademark i5-5300U Mobile Processor \citep{intel:5300u}.
