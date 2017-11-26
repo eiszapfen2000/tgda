@@ -405,6 +405,30 @@ one for the displacements, one for the slopes, and one for surface elevation.
 It follows that for four distinct ocean surface patterns we have to compute
 only twenty \IDFTs instead of the full thirty-six, which represents a decrease
 of nearly forty-five percent.
+
+%We did not reproduce the current state of art with regard to the \FourierTransform,
+%i.e. compute the \IDFT on the GPU (GPGPU, CUDA, clfft). The reasons are varying,
+%but the most compelling is debugging. We have found it difficult to make sure
+%that the spectrum is synthesized correctly, because it is essentially gaussian noise,
+%thus deviations caused by a faulty implementation still lead to results which hold
+%up to casual scrutiny. Thus, keeping all spectrum related computation on the
+%CPU side allowed us to assert corretness more easily.
+%As we already did a MATLAB implementation and a native one
+%in ObjC, an additional one would have expanded the scope of this work unreasonably.
+%Still, FFTW does an acceptable job performancewise. Note, that we employed the
+%float precision variant of FFTW, since it has proven to provide sufficient
+%numerical accuracy for our use case, and outperforms the double precision variant
+%by a factor of 1.5.
+We have already mentioned that we employ FFTW~\cite{FFTW05} to compute the
+\IDFT.
+Initially we employed the standard version of , which works
+exclusively with floating point numbers in the IEEE 754 double-precision format
+\citep{IEEE:754}.
+After careful testing we switched to FFTWF, which uses
+single-precision floating point arithmetic. Thus, we were able to cut the memeory
+requirements of our spectra into half, and improved computation times by nearly
+a factor of two.
+\cite{misc:fftw:speed}\cite{misc:cudafft}\cite{misc:clfft}
 % Therefore we are able to apply the optimisation from
 % Equation~\ref{eq:idft:combined}, which allows us to combine both spectra into one,
 % described in Section~\ref{sec:discrete_fourier_transform}\ref{sec:slopes_and_displacements}
@@ -545,19 +569,6 @@ of nearly forty-five percent.
 % 8 16 32 64 128 256 512 1024 
 % 0.0002 0.0008 0.0036 0.0129 0.0500 0.2640 1.2314 7.0269
 
-%We did not reproduce the current state of art with regard to the \FourierTransform,
-%i.e. compute the \IDFT on the GPU (GPGPU, CUDA, clfft). The reasons are varying,
-%but the most compelling is debugging. We have found it difficult to make sure
-%that the spectrum is synthesized correctly, because it is essentially gaussian noise,
-%thus deviations caused by a faulty implementation still lead to results which hold
-%up to casual scrutiny. Thus, keeping all spectrum related computation on the
-%CPU side allowed us to assert corretness more easily.
-%As we already did a MATLAB implementation and a native one
-%in ObjC, an additional one would have expanded the scope of this work unreasonably.
-%Still, FFTW does an acceptable job performancewise. Note, that we employed the
-%float precision variant of FFTW, since it has proven to provide sufficient
-%numerical accuracy for our use case, and outperforms the double precision variant
-%by a factor of 1.5.
 %
 %Simple \InvFourierTransform vs \InvFourierTransform of two hermitian spectra
 %Pattern synthesis at full resolution for all datasets
