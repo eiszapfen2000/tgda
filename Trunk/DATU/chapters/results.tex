@@ -419,15 +419,19 @@ of nearly forty-five percent.
 %float precision variant of FFTW, since it has proven to provide sufficient
 %numerical accuracy for our use case, and outperforms the double precision variant
 %by a factor of 1.5.
-We have already mentioned that we employ FFTW~\cite{FFTW05} to compute the
-\IDFT.
-Initially we employed the standard version of , which works
+We did already mention beforehand that we employ FFTW~\cite{FFTW05} to compute
+the \InvDiscreteFourierTransform.
+Initially we used the standard version of FFTW, which works
 exclusively with floating point numbers in the IEEE 754 double-precision format
 \citep{IEEE:754}.
-After careful testing we switched to FFTWF, which uses
-single-precision floating point arithmetic. Thus, we were able to cut the memeory
-requirements of our spectra into half, and improved computation times by nearly
-a factor of two.
+But according to FFTW's documentation \cite{misc:fftw:speed}, the
+single-precision variant of FFTW, in short ~\emph{FFTWF}, outperforms the
+double-precision variant by an overall factor of 1.5. Thus, after careful
+testing, we switched to FFTWF. We found that for our specific use case, where
+all spectra have a power-of-two resolution, FFTWF consistently outperforms
+FFTW roughly by a factor of two. Thus, by switching to FFTWF, we were not only
+able to double performance, but also to reduce the memory requirements of our
+spectra by half.
 \cite{misc:fftw:speed}\cite{misc:cudafft}\cite{misc:clfft}
 % Therefore we are able to apply the optimisation from
 % Equation~\ref{eq:idft:combined}, which allows us to combine both spectra into one,
