@@ -381,6 +381,7 @@ by a factor of two compared to the double precision variant. Moreover, if we
 transform pairs of hermitian spectra at once, we are able to cut the number
 of required \IDFTs from nine to five, reducing the
 computational workload by about forty-five percent.}
+\label{fig:idft}
 \end{figure}
 %
 Recall, that a single ocean surface pattern consists of up to nine spectra:
@@ -438,6 +439,8 @@ double the computational performance of the \IDFT, but also to keep the low
 memory requirements of single-precision floating point numbers throughout the
 entire process of ocean surface synthesis.
 
+Figure~\ref{fig:idft} gives an overview of the performance improvements
+we have been able to achieve for the \IDFTs of a single ocean surface pattern.
 
 %Initially we used the standard version of FFTW, which works
 %exclusively with floating point numbers in the IEEE 754 double-precision format
