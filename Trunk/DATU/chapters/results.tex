@@ -379,7 +379,7 @@ One can see that the single precision variant of the
 \InvDiscreteFourierTransform already reduces the computational workload roughly
 by a factor of two compared to the double precision variant. Moreover, if we
 transform pairs of hermitian spectra at once, we are able to cut the number
-of required \InvDiscreteFourierTransforms from nine to five, reducing the
+of required \IDFTs from nine to five, reducing the
 computational workload by about forty-five percent.}
 \end{figure}
 %
@@ -419,20 +419,38 @@ of nearly forty-five percent.
 %float precision variant of FFTW, since it has proven to provide sufficient
 %numerical accuracy for our use case, and outperforms the double precision variant
 %by a factor of 1.5.
-We did already mention beforehand that we employ FFTW~\cite{FFTW05} to compute
-the \InvDiscreteFourierTransform.
-Initially we used the standard version of FFTW, which works
-exclusively with floating point numbers in the IEEE 754 double-precision format
-\citep{IEEE:754}.
-But according to FFTW's documentation \cite{misc:fftw:speed}, the
-single-precision variant of FFTW, in short ~\emph{FFTWF}, outperforms the
-double-precision variant by an overall factor of 1.5. Thus, after careful
-testing, we switched to FFTWF. We found that for our specific use case, where
-all spectra have a power-of-two resolution, FFTWF consistently outperforms
-FFTW roughly by a factor of two. Thus, by switching to FFTWF, we were not only
-able to double performance, but also to reduce the memory requirements of our
-spectra by half.
-\cite{misc:fftw:speed}\cite{misc:cudafft}\cite{misc:clfft}
+With the large number of \InvDiscreteFourierTransforms taken care of, we had to
+focus on the \IDFT itself to improve performance even further.
+As stated earlier in Section~\ref{sec:demo_application}, we employ the FFTW
+library~\cite{FFTW05} to compute the \InvDiscreteFourierTransform.
+FFTW has support for different floating point
+precisions, such as IEEE 754~\citep{IEEE:754} single-precision,
+double-precision, as well as quad-precision. Initially we used the standard
+version of FFTW, which works with double-precision, but later on we switched
+to the single-precision variant, FFTWF. That is because, one, our spectra
+already are generated and stored in memory with single-precision, and two, the
+FFTW documentation~\citep{misc:fftw:speed} states that FFTWF outperforms
+the double-precision variant by a factor of 1.5.
+Moreover, we found that for our specific use case, where all spectra have
+power-of-two resolutions, FFTWF consistently outperforms FFTW by an even larger
+factor of two. Thus, by switching to single-precision, we were not only able to
+double the computational performance of the \IDFT, but also to keep the low
+memory requirements of single-precision floating point numbers throughout the
+entire process of ocean surface synthesis.
+
+
+%Initially we used the standard version of FFTW, which works
+%exclusively with floating point numbers in the IEEE 754 double-precision format
+%\citep{IEEE:754}.
+%But according to FFTW's documentation , the
+%single-precision variant of FFTW, in short ~\emph{FFTWF}, outperforms the
+%double-precision variant by an overall factor of 1.5. Thus, after careful
+%testing, we switched to FFTWF. We found that for our specific use case, where
+%all spectra have a power-of-two resolution, FFTWF consistently outperforms
+%FFTW roughly by a factor of two. Thus, by switching to FFTWF, we were not only
+%able to double performance, but also to reduce the memory requirements of our
+%spectra by half.
+%\cite{misc:fftw:speed}\cite{misc:cudafft}\cite{misc:clfft}
 % Therefore we are able to apply the optimisation from
 % Equation~\ref{eq:idft:combined}, which allows us to combine both spectra into one,
 % described in Section~\ref{sec:discrete_fourier_transform}\ref{sec:slopes_and_displacements}
