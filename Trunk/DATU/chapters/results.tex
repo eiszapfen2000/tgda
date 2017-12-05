@@ -381,6 +381,7 @@ computational workload by about forty-five percent.}
 \pgfplotstableread[col sep = comma]{figures/benchmark_fftwf_i5_5300u.dat}\fftwf
 \begin{tikzpicture}
   \begin{axis}[
+    %set layers,
     ybar stacked,
     bar shift = -6pt,
     bar width = 6pt,
@@ -397,6 +398,7 @@ computational workload by about forty-five percent.}
     \addplot [color=violet!25!white,fill=violet!25!white, forget plot] table[x expr=\coordindex, y=4]{\lods};
   \end{axis}
   \begin{axis}[
+    %set layers,
     ybar stacked,
     bar shift = 6pt,
     bar width = 6pt,
@@ -419,10 +421,10 @@ computational workload by about forty-five percent.}
     \addlegendimage{ybar stacked, color=violet, fill=violet} \addlegendentry{Generation}
     \addlegendimage{ybar stacked, color=blue, fill=blue} \addlegendentry{\IDFT}
     
-    %\pgfonlayer{main}
+    %\pgfplotsextra{\begin{scope}[on layer=axis foreground]
     \draw[dashed] ({rel axis cs:0.2,0}|-{axis cs:0,20}) -- ({rel axis cs:1,0}|-{axis cs:0,20}) node[centered,pos=-0.1] {\small{$50$ fps}};
     \draw[dotted] ({rel axis cs:0.2,0}|-{axis cs:0,40}) -- ({rel axis cs:1,0}|-{axis cs:0,40}) node[centered,pos=-0.1] {\small{$25$ fps}};    
-    %\endpgfonlayer
+    %\end{scope}}
   \end{axis}
 \end{tikzpicture}
 \caption{BRAK}
