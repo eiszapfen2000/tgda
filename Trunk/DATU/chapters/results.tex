@@ -359,16 +359,6 @@ single-precision floating point numbers.
     \addplot [color=black,fill=black] table[x expr=\coordindex, y expr = \thisrowno{1}*5]{\fftwf};
     \addlegendentry{$\text{Single Precision} \times 5$}
     
-    %\addplot[sharp plot,color=black,dashed,stack plots=false] coordinates {
-      %(0,20)
-      %(5,20)
-      %}
-      %node[below,pos=0.5] {$50$ fps};
-    %\addplot[sharp plot,color=black,dotted,stack plots=false] coordinates {
-      %(0,40)
-      %(5,40)
-      %}
-    %node[below,pos=0.5] {$25$ fps};
     \draw[dashed] ({rel axis cs:0.025,0}|-{axis cs:0,20}) -- ({rel axis cs:0.975,0}|-{axis cs:0,20}) node[above,pos=0.5] {$50$ fps};
     \draw[dotted] ({rel axis cs:0.025,0}|-{axis cs:0,40}) -- ({rel axis cs:0.975,0}|-{axis cs:0,40}) node[above,pos=0.5] {$25$ fps};
   \end{axis}
