@@ -427,7 +427,18 @@ computational workload by about forty-five percent.}
     %\end{scope}}
   \end{axis}
 \end{tikzpicture}
-\caption{BRAK}
+\caption{Accumulated computation times for up to four ocean surface patterns at
+various resolutions. For each pattern, all datasets are generated with
+single-precision and packed into five spectra. Said spectra are then
+transformed with the \IDFT, again with single-precision. One can see that the
+generation of the spectra actually takes more time than the transformation of
+the spectra via the \IDFT. Still, up to a resolution of $256 \times 256$ we are
+able to keep real-time framerates for both the generation and the transformation
+of four ocean surface patterns. Although at the next higher resolution,
+$512 \times 512$, only the transformation stage is able to keep real-time
+framerates for four patterns.
+}
+\label{fig:gen:idft}
 \end{figure}
 %
 Recall, that a single ocean surface pattern consists of up to nine spectra:
@@ -487,6 +498,8 @@ entire process of ocean surface synthesis.
 
 Figure~\ref{fig:idft} gives an overview of the performance improvements
 we have been able to achieve for the \IDFTs of a single ocean surface pattern.
+Figure~\ref{fig:gen:idft}, on the other hand, compares the performance of
+the ocean surface pattern generation stage with that of the \IDFT stage.
 
 %Initially we used the standard version of FFTW, which works
 %exclusively with floating point numbers in the IEEE 754 double-precision format
