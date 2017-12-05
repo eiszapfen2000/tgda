@@ -374,6 +374,60 @@ computational workload by about forty-five percent.}
 \label{fig:idft}
 \end{figure}
 %
+\begin{figure}
+\centering
+\tikzset{external/force remake}
+\pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_d_dd_i5_5300u.dat}\lods
+\pgfplotstableread[col sep = comma]{figures/benchmark_fftwf_i5_5300u.dat}\fftwf
+\begin{tikzpicture}
+  \begin{axis}[
+    ybar stacked,
+    bar shift = -6pt,
+    bar width = 6pt,
+    xticklabels from table={\lods}{Resolution},
+    xtick=data,
+    enlarge y limits = upper,
+    enlarge x limits,
+    ymin = 0,
+    ymax = 260,
+    ]
+    \addplot [color=violet,fill=violet, forget plot] table[x expr=\coordindex, y=1]{\lods};
+    \addplot [color=violet!75!white,fill=violet!75!white, forget plot] table[x expr=\coordindex, y=2]{\lods};
+    \addplot [color=violet!50!white,fill=violet!50!white, forget plot] table[x expr=\coordindex, y=3]{\lods};
+    \addplot [color=violet!25!white,fill=violet!25!white, forget plot] table[x expr=\coordindex, y=4]{\lods};
+  \end{axis}
+  \begin{axis}[
+    ybar stacked,
+    bar shift = 6pt,
+    bar width = 6pt,
+    xticklabels from table={\fftwf}{Resolution},
+    xtick=data,
+    xlabel={Resolution [\si{\pixel}]},
+    ylabel={Time [\si{\ms}]},
+    legend style={draw=none},
+    every axis legend/.append style={nodes={right}, at={(0.05,0.95)}, anchor=north west},
+    enlarge y limits = upper,
+    enlarge x limits,
+    ymin = 0,
+    ymax = 260,
+    ]
+    
+    \addplot [color=blue,fill=blue, forget plot] table[x expr=\coordindex, y expr = \thisrowno{1}*5]{\fftwf};
+    \addplot [color=blue!75!white,fill=blue!75!white, forget plot] table[x expr=\coordindex, y expr = \thisrowno{1}*5]{\fftwf};
+    \addplot [color=blue!50!white,fill=blue!50!white, forget plot] table[x expr=\coordindex, y expr = \thisrowno{1}*5]{\fftwf};
+    \addplot [color=blue!25!white,fill=blue!25!white, forget plot] table[x expr=\coordindex, y expr = \thisrowno{1}*5]{\fftwf};
+    \addlegendimage{ybar stacked, color=violet, fill=violet} \addlegendentry{Generation}
+    \addlegendimage{ybar stacked, color=blue, fill=blue} \addlegendentry{\IDFT}
+    
+    %\pgfonlayer{main}
+    \draw[dashed] ({rel axis cs:0.2,0}|-{axis cs:0,20}) -- ({rel axis cs:1,0}|-{axis cs:0,20}) node[centered,pos=-0.1] {\small{$50$ fps}};
+    \draw[dotted] ({rel axis cs:0.2,0}|-{axis cs:0,40}) -- ({rel axis cs:1,0}|-{axis cs:0,40}) node[centered,pos=-0.1] {\small{$25$ fps}};    
+    %\endpgfonlayer
+  \end{axis}
+\end{tikzpicture}
+\caption{BRAK}
+\end{figure}
+%
 Recall, that a single ocean surface pattern consists of up to nine spectra:
 one for surface elevation $\eta$, two for displacement vector $\mvec{D}$,
 two for the slopes of $\eta$, and four for the first order partial derivatives
