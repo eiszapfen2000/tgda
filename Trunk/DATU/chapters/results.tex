@@ -89,7 +89,7 @@ That is because evaluating the wave energy spectrum for a large set of
 %
 \begin{figure}
 \centering
-\tikzset{external/force remake}
+%\tikzset{external/force remake}
 \pgfplotstableread[col sep = comma]{figures/benchmark_H0_i5_5300u.dat}\mydata
 \begin{tikzpicture}[trim axis left]
   \begin{axis}[
@@ -429,9 +429,9 @@ precisions, such as IEEE 754~\citep{IEEE:754} single-precision,
 double-precision, as well as quad-precision. Initially we used the standard
 version of FFTW, which works with double-precision, but later on we switched
 to the single-precision variant, FFTWF. That is because, one, our spectra
-already are generated and stored in memory with single-precision, and two, the
+are generated and stored in memory with single-precision, and two, the
 FFTW documentation~\citep{misc:fftw:speed} states that FFTWF outperforms
-the double-precision variant by a factor of 1.5.
+the double-precision variant roughly by a factor of 1.5.
 Moreover, we found that for our specific use case, where all spectra have
 power-of-two resolutions, FFTWF consistently outperforms FFTW by an even larger
 factor of two. Thus, by switching to single-precision, we were not only able to
