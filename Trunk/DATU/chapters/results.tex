@@ -431,11 +431,11 @@ computational workload by about forty-five percent.}
 various resolutions. For each pattern, all datasets are generated with
 single-precision and packed into five spectra. Said spectra are then
 transformed with the \IDFT, again with single-precision. One can see that the
-generation of the spectra actually takes more time than the transformation of
-the spectra via the \IDFT. Still, up to a resolution of $256 \times 256$ we are
+generation of the spectra actually takes more time than their transformation
+via the \IDFT. Still, up to a resolution of $256 \times 256$ we are
 able to keep real-time framerates for both the generation and the transformation
-of four ocean surface patterns. Although at the next higher resolution,
-$512 \times 512$, only the transformation stage is able to keep real-time
+of four ocean surface patterns. Whereas at the next higher resolution,
+$512 \times 512$, only the transformation stage is close to real-time
 framerates for four patterns.
 }
 \label{fig:gen:idft}
@@ -498,9 +498,9 @@ entire process of ocean surface synthesis.
 
 For a compact overview of the performance improvements we have been able to
 achieve for the \IDFTs of a single ocean surface pattern, one may look at
-Figure~\ref{fig:idft}. For a performance comparison between the ocean surface
-pattern generation stage and the \InvDiscreteFourierTransform stage, on the other
-hand, one may inspect Figure~\ref{fig:gen:idft}.
+Figure~\ref{fig:idft}. Furthermore, one may inspect Figure~\ref{fig:gen:idft}
+for a performance comparison between the pattern generation stage and the
+\InvDiscreteFourierTransform stage.
 
 %Figure~\ref{fig:idft} gives an overview of the performance improvements
 %we have been able to achieve for the \IDFTs of a single ocean surface pattern.
