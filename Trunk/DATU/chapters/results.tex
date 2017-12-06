@@ -477,7 +477,7 @@ of nearly forty-five percent.
 %float precision variant of FFTW, since it has proven to provide sufficient
 %numerical accuracy for our use case, and outperforms the double precision variant
 %by a factor of 1.5.
-With the large number of \InvDiscreteFourierTransforms taken care of, we had to
+With the large number of \InvDiscreteFourierTransforms taken care of, we have to
 focus on the \IDFT itself to improve performance even further.
 As stated earlier in Section~\ref{sec:demo_application}, we employ the FFTW
 library~\cite{FFTW05} to compute the \InvDiscreteFourierTransform.
@@ -491,7 +491,7 @@ FFTW documentation~\citep{misc:fftw:speed} states that FFTWF outperforms
 the double-precision variant roughly by a factor of 1.5.
 Moreover, we found that for our specific use case, where all spectra have
 power-of-two resolutions, FFTWF consistently outperforms FFTW by an even larger
-factor of two. Thus, by switching to single-precision, we were not only able to
+factor of two. Thus, by switching to single-precision, we are not only able to
 double the computational performance of the \IDFT, but also to keep the low
 memory requirements of single-precision floating point numbers throughout the
 entire process of ocean surface synthesis.
