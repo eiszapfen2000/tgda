@@ -666,6 +666,11 @@ for a performance comparison between the pattern generation stage and the
 %Pattern synthesis with our multi-resolution approach
 %
 \subsection{Multi-Resolution}
+We have seen in Section\ref{sec:level_of_detail}
+Little to no performance gain for spectrum generation, way more for \IDFT.
+Indirect profits, because of less upload bandwith to GPU, faster texture sampling
+with reduced resolution.
+
 \emph{Note}: All results of benchmarking shown throughout this section
 have been collected on an off-the-shelf laptop running an Intel\textregistered
 Core\texttrademark i5-5300U Mobile Processor \citep{intel:5300u}.
