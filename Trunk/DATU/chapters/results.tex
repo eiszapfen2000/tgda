@@ -498,7 +498,10 @@ entire process of ocean surface synthesis.
 
 For a compact overview of the performance improvements we have been able to
 achieve for the \IDFTs of a single ocean surface pattern, one may look at
-Figure~\ref{fig:idft}. Furthermore, one may inspect Figure~\ref{fig:gen:idft}
+Figure~\ref{fig:idft}. It is important to note that said improvements take
+effect equally for all the ocean surface patterns we generate, independent of
+their number.
+Furthermore, one may inspect Figure~\ref{fig:gen:idft}
 for a performance comparison between the pattern generation stage and the
 \InvDiscreteFourierTransform stage.
 
@@ -666,6 +669,9 @@ for a performance comparison between the pattern generation stage and the
 %Pattern synthesis with our multi-resolution approach
 %
 \subsection{Multi-Resolution}
+% with a multi-resolution scheme, where specific pattern
+% datasets, such as surface elevation and displacements, are generated at a lower
+% resolution than the other datasets
 We have seen in Section\ref{sec:level_of_detail}
 Little to no performance gain for spectrum generation, way more for \IDFT.
 Indirect profits, because of less upload bandwith to GPU, faster texture sampling
