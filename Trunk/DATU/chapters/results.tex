@@ -672,7 +672,22 @@ for a performance comparison between the pattern generation stage and the
 % with a multi-resolution scheme, where specific pattern
 % datasets, such as surface elevation and displacements, are generated at a lower
 % resolution than the other datasets
-We have seen in Section\ref{sec:level_of_detail}
+We have seen in Section~\ref{sec:level_of_detail} that in the context of our
+level-of-detail approach we may generate surface elevation $\eta$ and
+displacement vector $\mvec{D}$ at a lower resolution than their respective
+derivatives. We expected the resulting performance gains to be threefold: one,
+less data to generate, two, less data to transform via the \IDFT, and three,
+less data to transfer to the GPU. The latter two points take effect as expected,
+but the first does not. That is because spectrum generation performance is
+dominated by arithmetic operations, which are shared by all datasets. As all
+arithmetic has to be computed for the datasets with the higher resolution
+anyway, there is no cutback on arithmetic operations. Thus, the only gain in
+spectrum generation performance arises from a reduction in memory operations.
+According to our measurements, said reduction improves spectrum generation
+performance by at most five percent.
+% one for surface elevation $\eta$, two for displacement vector $\mvec{D}$,
+% two for the slopes of $\eta$, and four for the first order partial derivatives
+% of $\mvec{D}$.
 Little to no performance gain for spectrum generation, way more for \IDFT.
 Indirect profits, because of less upload bandwith to GPU, faster texture sampling
 with reduced resolution.
