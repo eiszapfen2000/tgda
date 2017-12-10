@@ -352,11 +352,11 @@ single-precision floating point numbers.
     ]
     \addplot [color=red,fill=red]     table[x expr=\coordindex, y expr = \thisrowno{1}*9]{\fftw};
     \addlegendentry{$\text{Double Precision} \times 9$}
-    \addplot [color=green,fill=green]    table[x expr=\coordindex, y expr = \thisrowno{1}*5]{\fftw};
-    \addlegendentry{$\text{Double Precision} \times 5$}
-    \addplot [color=blue,fill=blue]   table[x expr=\coordindex, y expr = \thisrowno{1}*9]{\fftwf};
+%     \addplot [color=green,fill=green]    table[x expr=\coordindex, y expr = \thisrowno{1}*5]{\fftw};
+%     \addlegendentry{$\text{Double Precision} \times 5$}
+    \addplot [color=black,fill=black]   table[x expr=\coordindex, y expr = \thisrowno{1}*9]{\fftwf};
     \addlegendentry{$\text{Single Precision} \times 9$}
-    \addplot [color=black,fill=black] table[x expr=\coordindex, y expr = \thisrowno{1}*5]{\fftwf};
+    \addplot [color=blue,fill=blue] table[x expr=\coordindex, y expr = \thisrowno{1}*5]{\fftwf};
     \addlegendentry{$\text{Single Precision} \times 5$}
     
     \draw[dashed] ({rel axis cs:0.025,0}|-{axis cs:0,20}) -- ({rel axis cs:0.975,0}|-{axis cs:0,20}) node[above,pos=0.5] {$50$ fps};
@@ -369,14 +369,14 @@ One can see that the single precision variant of the
 \InvDiscreteFourierTransform already reduces the computational workload roughly
 by a factor of two compared to the double precision variant. Moreover, if we
 transform pairs of hermitian spectra at once, we are able to cut the number
-of required \IDFTs from nine to five, reducing the
+of required \IDFTs from nine to five, further reducing the
 computational workload by about forty-five percent.}
 \label{fig:idft}
 \end{figure}
 %
 \begin{figure}
 \centering
-\tikzset{external/force remake}
+% \tikzset{external/force remake}
 \pgfplotstableread[col sep = comma]{figures/benchmark_lods_h_g_d_dd_i5_5300u.dat}\lods
 \pgfplotstableread[col sep = comma]{figures/benchmark_fftwf_i5_5300u.dat}\fftwf
 \begin{tikzpicture}
@@ -675,22 +675,44 @@ for a performance comparison between the pattern generation stage and the
 We have seen in Section~\ref{sec:level_of_detail} that in the context of our
 level-of-detail approach we may generate surface elevation $\eta$ and
 displacement vector $\mvec{D}$ at a lower resolution than their respective
-derivatives. We expected the resulting performance gains to be threefold: one,
-less data to generate, two, less data to transform via the \IDFT, and three,
-less data to transfer to the GPU. The latter two points take effect as expected,
-but the first does not. That is because spectrum generation performance is
+derivatives. We expected the resulting performance gains to be twofold: one,
+less data to generate, and two, less data to transform via the \IDFT.
+The latter point takes effect as expected, but the former does not.
+That is because spectrum generation performance is
 dominated by arithmetic operations, which are shared by all datasets. As all
 arithmetic has to be computed for the datasets with the higher resolution
-anyway, there is no cutback on arithmetic operations. Thus, the only gain in
-spectrum generation performance arises from a reduction in memory operations.
-According to our measurements, said reduction improves spectrum generation
-performance by at most five percent.
+anyway, the only gain in performance arises from a cutback in memory operations.
+We found that said cutback improves spectrum generation performance by at most
+ten percent, where the actual improvement is dependent on the difference between
+the two resolutions of choice. We must admit, that ten percent are far from
+enough to allow us to generate the ocean surface patterns at a significantly
+higher rate than before, or at least to use the next-higher resolution for the
+derivative datasets. But still, it is a betterment, and the reduced resolution
+eases the strain on the subsequent tranformation stage considerably.
+% That is
+% because the \FastFourierTransform algorithm is $O(n\log{}n)$ \citep{Cooley:1965},
+% which means for each time we lower the resolution to the
+% next-smaller power-of-two, runtime improves by a factor a bit larger than four.
+One can see in Figure~\ref{fig:idft} that at a resolution of $128\times128$,
+or less, the computation time of a single \IDFT becomes basically negligible.
+Thus, in case we employ such a low resolution for surface elevation $\eta$ and
+displacements $\mvec{D}$, then we are left with the computation time required
+by three \IDFTs instead of five, which represents an improvement of forty percent.
+% In short, dependening on the choice of lower resolution, we may further improve
+% spectrum transformation performance by up to forty percent.
+% surface synthesis and rendering.
+% the derivative datasets at the next-higher resolution, or to significantly
+% improve the rate at which we generate the coean surface patterns.
+% Still, given two datasets of lower resolution,
+% $\eta$ and $\mvec{D}$, which are packed into two spectra, 
+% which still represents an adequate betterment.
+% \IDFT performance on the other hand scales linearly, $O(n\log{}n)$
 % one for surface elevation $\eta$, two for displacement vector $\mvec{D}$,
 % two for the slopes of $\eta$, and four for the first order partial derivatives
 % of $\mvec{D}$.
-Little to no performance gain for spectrum generation, way more for \IDFT.
-Indirect profits, because of less upload bandwith to GPU, faster texture sampling
-with reduced resolution.
+% Little to no performance gain for spectrum generation, way more for \IDFT.
+% Indirect profits, because of less upload bandwith to GPU, faster texture sampling
+% with reduced resolution.
 
 \emph{Note}: All results of benchmarking shown throughout this section
 have been collected on an off-the-shelf laptop running an Intel\textregistered
