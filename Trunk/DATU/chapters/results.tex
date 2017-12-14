@@ -693,11 +693,18 @@ eases the strain on the subsequent tranformation stage considerably.
 % because the \FastFourierTransform algorithm is $O(n\log{}n)$ \citep{Cooley:1965},
 % which means for each time we lower the resolution to the
 % next-smaller power-of-two, runtime improves by a factor a bit larger than four.
-One can see in Figure~\ref{fig:idft} that at a resolution of $128\times128$,
+As one may surmise from Figure~\ref{fig:idft}, at a resolution of $128\times128$
 or less, the computation time of a single \IDFT becomes basically negligible.
 Thus, in case we employ such a low resolution for surface elevation $\eta$ and
 displacements $\mvec{D}$, then we are left with the computation time required
 by three \IDFTs instead of five, which represents an improvement of forty percent.
+Nevertheless, such an improvement to the transformation stage does not change
+the fact that spectrum generation is the bottleneck of our implementation, but
+it still frees up resources which may be employed elsewhere.
+Furthermore, with two datasets on hand at a lower resolution, we may obtain some
+gain in rendering performance because less data needs to be transfered from the
+CPU to the GPU.
+
 % In short, dependening on the choice of lower resolution, we may further improve
 % spectrum transformation performance by up to forty percent.
 % surface synthesis and rendering.
