@@ -727,15 +727,10 @@ Core\texttrademark i5-5300U Mobile Processor \citep{intel:5300u}.
 All our benchmarking code runs on a single CPU thread and gives the average
 computation time after repeating the desired task for a thousand iterations.
 %
-\section{Pattern Synthesis}
+\section{Ocean Surface Synthesis}
 \label{sec:results:synthesis}
-Although all spectrum types give convincing results geometry-wise, it is the
-Preetham spectrum and the Unified spectrum that work best with the lighting
-algorithm by \cite{article:oceanlighting}. Probable cause is that the JONSWAP
-spectrum and the Donelan spectrum give not that good an approximation of the
-ocean surface's mean square slope (\ref{app:mss}). The mean square slope is a
-core component of the lighting model by \cite{article:oceanlighting}, and thus
-has large influence on the result.
+We started this work with an implementation of \citeauthor{course:simulatingocean}'s
+Phillips spectrum.
 
 In the beginning we needed several fudge factors to generate acceptable results,
 specifically, we were always required to add some scaling factor in the XZ plane
@@ -746,6 +741,14 @@ spectra did we obtain consistent results across all spectrum models. It made all
 the difference, since now we get consistent, believable as well as
 comprehensible results for all spectra. No fudge factors are required anymore,
 everything works out of the box.
+
+Although all spectrum types give convincing results geometry-wise, it is the
+Preetham spectrum and the Unified spectrum that work best with the lighting
+algorithm by \cite{article:oceanlighting}. Probable cause is that the JONSWAP
+spectrum and the Donelan spectrum give not that good an approximation of the
+ocean surface's mean square slope (\ref{app:mss}). The mean square slope is a
+core component of the lighting model by \cite{article:oceanlighting}, and thus
+has large influence on the result.
 
 \section{Visual Fidelity}
 \label{sec:results:fidelity}
