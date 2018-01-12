@@ -729,8 +729,17 @@ computation time after repeating the desired task for a thousand iterations.
 %
 \section{Ocean Surface Synthesis}
 \label{sec:results:synthesis}
-We started this work with an implementation of \citeauthor{course:simulatingocean}'s
-Phillips spectrum.
+Initially, after having implemented all the wave energy spectra presented in
+this work, we were dissatisfied with the results. There was always something
+\emph{off} about the wave geometry and the wave motion. We tried to mitigate
+the issue by introducing several fudge factors, such as a scaling factor for
+wave energy, one for the ocean surface's XZ coordinates, and one for the ocean
+surface's Y coordinates. Moreover, as suggested by
+\citet{course:simulatingocean} we allowed for the suppression of waves smaller
+than a given \wavelength. Thus, by careful tuning, we were at least able to
+obtain acceptable result. Still, if any of the parameters involved in ocean
+surface synthesis changed, we had to adapt our fudge factors.
+
 
 In the beginning we needed several fudge factors to generate acceptable results,
 specifically, we were always required to add some scaling factor in the XZ plane
