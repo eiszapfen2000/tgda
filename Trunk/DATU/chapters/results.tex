@@ -731,14 +731,24 @@ computation time after repeating the desired task for a thousand iterations.
 \label{sec:results:synthesis}
 Initially, after having implemented all the wave energy spectra presented in
 this work, we were dissatisfied with the results. There was always something
-\emph{off} about the wave geometry and the wave motion. We tried to mitigate
-the issue by introducing several fudge factors, such as a scaling factor for
-wave energy, one for the ocean surface's XZ coordinates, and one for the ocean
-surface's Y coordinates. Moreover, as suggested by
-\citet{course:simulatingocean} we allowed for the suppression of waves smaller
-than a given \wavelength. Thus, by careful tuning, we were at least able to
-obtain acceptable result. Still, if any of the parameters involved in ocean
-surface synthesis changed, we had to adapt our fudge factors.
+\emph{off} about the resulting ocean surface geometry and its animation. Most
+of the time it seemed like a mismatch in scale between the ocean surfaces'
+base plane and its elevation. In a first step we tried to mitigate the issue
+by introducing several fudge factors, such as a scaling factor for wave energy,
+one for the ocean surface's XZ coordinates, and one for the ocean surface's Y
+coordinates. Moreover, as suggested by \citet{course:simulatingocean} we
+allowed for the suppression of waves smaller than a certain \wavelength.
+Thus, by carefully tuning our fudge factors, we were at least able to obtain
+acceptable results. Still, every time any of the parameters involved in the
+synthesis of the ocean surface changed, we had to adapt our fudge factors.
+It was only later on that we found the actual cause of the issue at hand:
+we were missing the proper integral domain conversions for our wave energy
+spectra. After implementing said conversions
+(Section \ref{subsec:integral_domain_conversion}), we were able to drop all
+of the fudge factors and still obtain not only acceptable results, but
+actually believable ones. Except for \citeauthor{course:simulatingocean}'s
+Phillips spectrum, which in its ad-hoc nature is unable to model the underlying
+physical processes in an appropriate manner (Section \ref{sec:phillips_spectrum}).
 
 
 In the beginning we needed several fudge factors to generate acceptable results,
