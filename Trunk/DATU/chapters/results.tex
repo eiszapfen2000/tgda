@@ -731,24 +731,43 @@ computation time after repeating the desired task for a thousand iterations.
 \label{sec:results:synthesis}
 Initially, after having implemented all the wave energy spectra presented in
 this work, we were dissatisfied with the results. There was always something
-\emph{off} about the resulting ocean surface geometry and its animation. Most
-of the time it seemed like a mismatch in scale between the ocean surfaces'
-base plane and its elevation. In a first step we tried to mitigate the issue
-by introducing several fudge factors, such as a scaling factor for wave energy,
-one for the ocean surface's XZ coordinates, and one for the ocean surface's Y
-coordinates. Moreover, as suggested by \citet{course:simulatingocean} we
-allowed for the suppression of waves smaller than a certain \wavelength.
-Thus, by carefully tuning our fudge factors, we were at least able to obtain
-acceptable results. Still, every time any of the parameters involved in the
-synthesis of the ocean surface changed, we had to adapt our fudge factors.
-It was only later on that we found the actual cause of the issue at hand:
+\emph{off} about the resulting ocean surface, more specifically, there seemed
+to be a mismatch in scale between the length of the waves and their respective
+amplitudes. As a consequence, neither the geometry nor the animation of the
+ocean surface looked believable to any observer. Hence, in a first step we
+tried to mitigate the issue by introducing several fudge factors which allowed
+us, one, to rescale the ocean surface's geometry during rendering, and two,
+to directly influence the magnitude of the spectrum's energy output. 
+By carefully tuning said fudge factors, we were at least able to obtain
+acceptable results. Still, each time we switched to a different wave energy
+spectrum or changed any of the other parameters involved
+in the synthesis of the ocean surface we had to adapt our fudge factors, too.
+It was only later on that we found the underlying cause of the issue:
 we were missing the proper integral domain conversions for our wave energy
 spectra. After implementing said conversions
-(Section \ref{subsec:integral_domain_conversion}), we were able to drop all
-of the fudge factors and still obtain not only acceptable results, but
-actually believable ones. Except for \citeauthor{course:simulatingocean}'s
-Phillips spectrum, which in its ad-hoc nature is unable to model the underlying
-physical processes in an appropriate manner (Section \ref{sec:phillips_spectrum}).
+(Section \ref{subsec:integral_domain_conversion}),
+we finally got consistent, believable as well as comprehensible results for all
+of the wave energy spectra presented in this work, except for the Phillips
+spectrum by \citet{course:simulatingocean}. But we have already seen in
+Section \ref{sec:phillips_spectrum} that the Phillips spectrum does not
+model the ocean surfaces' underlying physical processes in an appropriate
+manner, and therefore it will never be able to give results as good as 
+wave energy spectra that stem from oceanographic research. Thus,
+we decided to drop the Phillips spectrum, and since it was the only spectrum
+left which still required the fudge factors, we were able to drop all of our
+fudge factors, too.
+
+
+
+%to model the ocean surfaces' underlying physical processes in an appropriate
+%manner.
+%drop all of the fudge factors as they were not needed anymore. 
+%That is because from then on  except
+%
+%and still obtain not only acceptable results, but
+%actually believable ones. Except for \citeauthor{course:simulatingocean}'s
+%Phillips spectrum, which in its ad-hoc nature is unable to model the underlying
+%physical processes in an appropriate manner (Section \ref{sec:phillips_spectrum}).
 
 
 In the beginning we needed several fudge factors to generate acceptable results,
