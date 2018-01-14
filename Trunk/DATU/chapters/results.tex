@@ -734,28 +734,32 @@ this work, we were dissatisfied with the results. There was always something
 \emph{off} about the resulting ocean surface, more specifically, there seemed
 to be a mismatch in scale between the length of the waves and their respective
 amplitudes. As a consequence, neither the geometry nor the animation of the
-ocean surface looked believable to any observer. Hence, in a first step we
+ocean surface looked believable to the observer. Hence, in a first step we
 tried to mitigate the issue by introducing several fudge factors which allowed
 us, one, to rescale the ocean surface's geometry during rendering, and two,
 to directly influence the magnitude of the spectrum's energy output. 
 By carefully tuning said fudge factors, we were at least able to obtain
 acceptable results. Still, each time we switched to a different wave energy
-spectrum or changed any of the other parameters involved
-in the synthesis of the ocean surface we had to adapt our fudge factors, too.
+spectrum or modified any of the parameters involved
+in the synthesis of the ocean surface, we had to adapt our fudge factors too.
+A most cumbersome and error-prone task for the user.
 It was only later on that we found the underlying cause of the issue:
-we were missing the proper integral domain conversions for our wave energy
-spectra. After implementing said conversions
-(Section \ref{subsec:integral_domain_conversion}),
-we finally got consistent, believable as well as comprehensible results for all
-of the wave energy spectra presented in this work, except for the Phillips
-spectrum by \citet{course:simulatingocean}. But we have already seen in
-Section \ref{sec:phillips_spectrum} that the Phillips spectrum does not
-model the ocean surfaces' underlying physical processes in an appropriate
-manner, and therefore it will never be able to give results as good as 
-wave energy spectra that stem from oceanographic research. Thus,
-we decided to drop the Phillips spectrum, and since it was the only spectrum
-left which still required the fudge factors, we were able to drop all of our
-fudge factors, too.
+we were missing the proper integral domain conversions for all of our wave energy
+spectra. After implementing said conversions,
+%according to Section \ref{subsec:integral_domain_conversion},
+we finally got believable, comprehensible as well as consistent results across
+all wave energy spectra presented in this work. Except for the Phillips
+spectrum, which in its ad-hoc nature does not model the ocean surfaces'
+underlying physical processes in an appropriate manner. As such it is neither
+consistent with the other spectra, nor does it give acceptable results without
+significant tuning of the fudge factors. Thus, we decided to drop the Phillips
+spectrum from our implementation, and all of the fudge factors with it.
+% and therefore is unable
+%to give results up to par with the wave energy spectra that stem from oceanographic
+%research.
+%Given that the Phillips spectrum is neither consistent with the other spectra, nor
+%does it give acceptable results without significant tuning of the fudge factors,
+%we decided to drop it, and all of the fudge factors with it.
 
 
 
@@ -770,15 +774,15 @@ fudge factors, too.
 %physical processes in an appropriate manner (Section \ref{sec:phillips_spectrum}).
 
 
-In the beginning we needed several fudge factors to generate acceptable results,
-specifically, we were always required to add some scaling factor in the XZ plane
-or in the Y direction. And the fudge factors needed to change if spectrum
-parameters changed.
-Only after implementing correct integral domain conversion for the different
-spectra did we obtain consistent results across all spectrum models. It made all
-the difference, since now we get consistent, believable as well as
-comprehensible results for all spectra. No fudge factors are required anymore,
-everything works out of the box.
+%In the beginning we needed several fudge factors to generate acceptable results,
+%specifically, we were always required to add some scaling factor in the XZ plane
+%or in the Y direction. And the fudge factors needed to change if spectrum
+%parameters changed.
+%Only after implementing correct integral domain conversion for the different
+%spectra did we obtain consistent results across all spectrum models. It made all
+%the difference, since now we get consistent, believable as well as
+%comprehensible results for all spectra. No fudge factors are required anymore,
+%everything works out of the box.
 
 Although all spectrum types give convincing results geometry-wise, it is the
 Preetham spectrum and the Unified spectrum that work best with the lighting
