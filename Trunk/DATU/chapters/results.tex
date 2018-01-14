@@ -705,6 +705,10 @@ Furthermore, with two datasets on hand at a lower resolution, we may obtain some
 gain in rendering performance because less data needs to be transfered from the
 CPU to the GPU.
 
+TODO Summing up: we got performance to the point where we are able to synthesize four
+distinct levels of detail at a resolution of 256 x 256 in real-time with two
+cpu threads. 
+
 % In short, dependening on the choice of lower resolution, we may further improve
 % spectrum transformation performance by up to forty percent.
 % surface synthesis and rendering.
@@ -725,16 +729,20 @@ CPU to the GPU.
 have been collected on an off-the-shelf laptop running an Intel\textregistered
 Core\texttrademark i5-5300U Mobile Processor \citep{intel:5300u}.
 All our benchmarking code runs on a single CPU thread and gives the average
-computation time after repeating the desired task for a thousand iterations.
+computation time after repeating the desired task for several thousand iterations.
 %
 \section{Ocean Surface Synthesis}
 \label{sec:results:synthesis}
-Initially, after having implemented all the wave energy spectra presented in
-this work, we were dissatisfied with the results. There was always something
-\emph{off} about the resulting ocean surface, more specifically, there seemed
-to be a mismatch in scale between the length of the waves and their respective
-amplitudes. As a consequence, neither the geometry nor the animation of the
-ocean surface looked believable to the observer. Hence, in a first step we
+TODO Two issues: one with geometry (integral domains), one with lighting (mss).
+Now that we have discussed at length the quantitative aspects of our approach
+to ocean surface synthesis, we may dedicate ourselves to the qualitative aspects.
+Initially, after having implemented all the wave energy
+spectra presented in this work, we were dissatisfied with the results.
+There was always something \emph{off} about the resulting ocean surface, more
+specifically, there seemed to be a mismatch in scale between the length of the
+waves and their respective amplitudes. Neither the geometry nor the animation of
+the ocean surface looked believable to the observer. It was even worse if we
+applied the choppy-wave algorithm to the ocean surface. Hence, in a first step we
 tried to mitigate the issue by introducing several fudge factors which allowed
 us, one, to rescale the ocean surface's geometry during rendering, and two,
 to directly influence the magnitude of the spectrum's energy output. 
@@ -753,7 +761,7 @@ spectrum, which in its ad-hoc nature does not model the ocean surfaces'
 underlying physical processes in an appropriate manner. As such it is neither
 consistent with the other spectra, nor does it give acceptable results without
 significant tuning of the fudge factors. Thus, we decided to drop the Phillips
-spectrum from our implementation, and all of the fudge factors with it.
+spectrum from our implementation, and all of the now unused fudge factors with it.
 % and therefore is unable
 %to give results up to par with the wave energy spectra that stem from oceanographic
 %research.
