@@ -384,6 +384,8 @@ computational workload by about forty-five percent.}
   \begin{axis}[
     %set layers,
     ybar stacked,
+    xtick pos=left,
+    xtick align=outside,
     bar shift = -6pt,
     bar width = 6pt,
     xticklabels from table={\lods}{Resolution},
@@ -401,6 +403,8 @@ computational workload by about forty-five percent.}
   \begin{axis}[
     %set layers,
     ybar stacked,
+    xtick pos=left,
+    xtick align=outside,    
     bar shift = 6pt,
     bar width = 6pt,
     xticklabels from table={\fftwf}{Resolution},
@@ -706,6 +710,19 @@ Furthermore, with two datasets on hand at a lower resolution, we may obtain some
 gain in rendering performance because less data needs to be transfered from the
 CPU to the GPU.
 \subsection{Conclusions}
+%At this point we may give a short summary of our performance work.
+%We began with a simple proof-of-concept implementation where we
+%were barely able to synthesize a single ocean surface pattern a few times per
+%second.
+Given two CPU threads and given that we precompute the static part of the spectrum,
+we are able to generate the spectra of all datasets for four level of details at a
+resolution of $256\times256$ at a rate of about fifty times per second.
+At a resolution of $512\times512$ we may synthesize one level of detail at fifty
+times per second, or two at 25 times per second. Multiresolution approach may improve
+said rates to an extent of ten percent.
+
+In future, generate static part of the spectrum on the CPU, do further steps on the
+GPU, such as generate the spectra for the animated surface and apply \InvDiscreteFourierTransform. 
 
 TODO Summing up: we got performance to the point where we are able to synthesize four
 distinct levels of detail at a resolution of 256 x 256 in real-time with two
