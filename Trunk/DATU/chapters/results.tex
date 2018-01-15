@@ -335,10 +335,11 @@ single-precision floating point numbers.
 % \tikzset{external/force remake}
 \pgfplotstableread[col sep = comma]{figures/benchmark_fftwf_i5_5300u.dat}\fftwf
 \pgfplotstableread[col sep = comma]{figures/benchmark_fftw_i5_5300u.dat}\fftw
-\begin{tikzpicture}[trim axis left]
+\begin{tikzpicture}
   \begin{axis}[
     width = 0.75\textwidth,
     ybar,
+    xtick pos=left,
     bar width = 6pt,
     legend pos = north west,
     xticklabels from table={\fftw}{Resolution},
@@ -704,6 +705,7 @@ it still frees up resources which may be employed elsewhere.
 Furthermore, with two datasets on hand at a lower resolution, we may obtain some
 gain in rendering performance because less data needs to be transfered from the
 CPU to the GPU.
+\subsection{Conclusions}
 
 TODO Summing up: we got performance to the point where we are able to synthesize four
 distinct levels of detail at a resolution of 256 x 256 in real-time with two
