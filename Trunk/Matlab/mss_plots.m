@@ -60,7 +60,9 @@ k = zeros(numel(k_y), numel(k_x), 2);
 [k(:,:,1), k(:,:,2)] = meshgrid(k_x,k_y);
 kn = sqrt(sum(abs(k).^2, 3));
 
-wind = 0:1:30;
+wind = unique([0:0.25:5 5:0.5:30]);
+wind(1) = eps;
+
 mss_x_pm = zeros(1,numel(wind));
 mss_y_pm = zeros(1,numel(wind));
 mss_x_j = zeros(1,numel(wind));
@@ -96,17 +98,18 @@ end
 
 figure
 hold on
-plot(wind,mss_x_pm,'r');
-plot(wind,mss_y_pm,'r');
-plot(wind,mss_x_j,'g');
-plot(wind,mss_y_j,'g');
-plot(wind,mss_x_d,'b');
-plot(wind,mss_y_d,'b');
-plot(wind,mss_x_u,'k');
-plot(wind,mss_y_u,'k');
-% plot(wind,mss_j,'r');
-% plot(wind,mss_d,'g');
-% plot(wind,mss_u,'k');
+% plot(wind,mss_x_pm,'r');
+% plot(wind,mss_y_pm,'r');
+% plot(wind,mss_x_j,'g');
+% plot(wind,mss_y_j,'g');
+% plot(wind,mss_x_d,'b');
+% plot(wind,mss_y_d,'b');
+% plot(wind,mss_x_u,'k');
+% plot(wind,mss_y_u,'k');
+plot(wind,mss_x_pm + mss_y_pm,'r');
+plot(wind,mss_x_j + mss_y_j,'g');
+plot(wind,mss_x_d + mss_y_d,'b');
+plot(wind,mss_x_u + mss_y_u,'k');
 hold off
 
 % sum(sum((k(:,:,1).^2).*j_2d.*(0.01^2)))
