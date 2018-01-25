@@ -810,7 +810,50 @@ spectrum from our implementation, and all of the now unused fudge factors with i
 %the difference, since now we get consistent, believable as well as
 %comprehensible results for all spectra. No fudge factors are required anymore,
 %everything works out of the box.
-
+\begin{figure}
+\centering
+%\tikzset{external/force remake}
+\begin{tikzpicture}
+\begin{axis}[
+    legend style={draw=none, nodes={right}},
+%	every axis legend/.append style={nodes={right}},
+	legend pos = north west,
+	ylabel = {Mean Square Slope~($\si{\meter\radian}$)},
+	xlabel = {Wind speed~$U_{10}$~(\si{\meter\per\second})},
+%	ymax = 1.65,
+%	ytick = {0,0.5,1},
+%	enlarge y limits=0.2,
+%	every axis legend/.append style={nodes={right}, at={(0.05,0.95)}, anchor=north west},
+]
+\addplot[
+color=red,
+solid,
+]
+table [col sep=comma]{figures/mss_pm.dat};
+\addlegendentry{PM}
+\addplot[
+color=green,
+solid,
+]
+table [col sep=comma]{figures/mss_jonswap_fetch_100km.dat};
+\addlegendentry{JONSWAP}
+\addplot[
+color=blue,
+solid,
+]
+table [col sep=comma]{figures/mss_donelan_fetch_100km.dat};
+\addlegendentry{Donelan}
+\addplot[
+color=black,
+solid,
+]
+table [col sep=comma]{figures/mss_unified_fetch_100km.dat};
+\addlegendentry{Unified}
+\end{axis}
+\end{tikzpicture}
+\caption{}
+\label{fig:mss:donelan}
+\end{figure}
 Although all spectrum types give convincing results geometry-wise, it is the
 Preetham spectrum and the Unified spectrum that work best with the lighting
 algorithm by \cite{article:oceanlighting}. Probable cause is that the JONSWAP
