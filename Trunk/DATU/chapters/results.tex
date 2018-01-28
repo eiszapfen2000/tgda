@@ -849,6 +849,55 @@ table [col sep=comma]{figures/mss_unified_wind_0_30_fetch_250km.dat};
 }
 \label{fig:mss:donelan}
 \end{figure}
+%
+\begin{figure}
+	\centering
+	\tikzset{external/force remake}
+	\begin{tikzpicture}
+	\begin{axis}[
+	legend style={draw=none, nodes={right}},
+	%	every axis legend/.append style={nodes={right}},
+	legend pos = outer north east,
+	ylabel = {Mean Square Slope~($\si{\meter\radian}$)},
+	xlabel = {Fetch~$F$~(\si{\km})},
+	scaled ticks = false,
+	yticklabel style={/pgf/number format/.cd,fixed,fixed zerofill,precision=2},
+	%	ymax = 1.65,
+	%	ytick = {0,0.5,1},
+	%	enlarge y limits=0.2,
+	%	every axis legend/.append style={nodes={right}, at={(0.05,0.95)}, anchor=north west},
+	]
+	\addplot[
+	color=blue,
+	solid,
+	]
+	table [col sep=comma]{figures/mss_pm_fetch_5km_100km_wind_10.dat};
+	\addlegendentry{PM}
+	\addplot[
+	color=green!70!black,
+	solid,
+	]
+	table [col sep=comma]{figures/mss_jonswap_fetch_5km_100km_wind_10.dat};
+	\addlegendentry{JONSWAP}
+	\addplot[
+	color=black,
+	solid,
+	]
+	table [col sep=comma]{figures/mss_donelan_fetch_5km_100km_wind_10.dat};
+	\addlegendentry{Donelan}
+	\addplot[
+	color=red,
+	solid,
+	]
+	table [col sep=comma]{figures/mss_unified_fetch_5km_100km_wind_10.dat};
+	\addlegendentry{Unified}
+	\end{axis}
+	\end{tikzpicture}
+	\caption{The mean square slope over fetch, with wind speed $U_{10} =\SI{10}{\meter\per\second}$.
+	}
+	\label{fig:mss:donelan}
+\end{figure}
+%
 Although all spectrum types give convincing results geometry-wise, it is the
 Preetham spectrum and the Unified spectrum that work best with the lighting
 algorithm by \cite{article:oceanlighting}. Probable cause is that the JONSWAP
