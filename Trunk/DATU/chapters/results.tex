@@ -680,11 +680,11 @@ for a performance comparison between the pattern generation stage and the
 We have seen in Section~\ref{sec:level_of_detail} that in the context of our
 level-of-detail approach we may generate surface elevation $\eta$ and
 displacement vector $\mvec{D}$ at a lower resolution than their respective
-derivatives. We expected the resulting performance gains to be twofold: one,
+first order derivatives. We expected the resulting performance gains to be twofold: one,
 less data to generate, and two, less data to transform via the \IDFT.
 The latter point takes effect as expected, but the former does not.
 That is because spectrum generation performance is dominated by a set of
-arithmetic operations which have to be carried out for all datasets. As said
+arithmetic operations which are shared by all datasets. As said
 arithmetic has to be computed for the datasets with the higher resolution
 anyway, the only gain in performance arises from a cutback in memory operations.
 We found that said cutback improves spectrum generation performance by at most
@@ -703,8 +703,8 @@ or less, the computation time of a single \IDFT becomes basically negligible.
 Thus, in case we employ such a low resolution for surface elevation $\eta$ and
 displacements $\mvec{D}$, then we are left with the computation time required
 by three \IDFTs instead of five, which represents an improvement of forty percent.
-Nevertheless, such an improvement to the transformation stage does not change
-the fact that spectrum generation is the bottleneck of our implementation, but
+Although such an improvement to the transformation stage does not change
+the fact that spectrum generation is the bottleneck of our implementation,
 it still frees up resources which may be employed elsewhere.
 Furthermore, with two datasets on hand at a lower resolution, we may obtain some
 gain in rendering performance because less data needs to be transfered from the
