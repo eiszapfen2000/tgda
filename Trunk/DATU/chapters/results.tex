@@ -708,7 +708,7 @@ the fact that spectrum generation is the bottleneck of our implementation,
 it still frees up resources which may be employed elsewhere.
 Furthermore, with two datasets on hand at a lower resolution, we may obtain some
 gain in rendering performance because less data needs to be transfered to,
-and processed by the GPU for rendering.
+and processed by the GPU.
 %\subsection{Conclusions}
 %At this point we may give a short summary of our performance work.
 %We began with a simple proof-of-concept implementation where we
@@ -752,13 +752,17 @@ computation time after repeating the desired task for several thousand iteration
 %
 \section{Ocean Surface Synthesis}
 \label{sec:results:synthesis}
-Independent of performance, we encountered two major issues with respect to
-the qualitative aspects of ocean surface synthesis: one, wave geometry is
-inadequate, two, ocean surface lighting is inconsistent across different
-wave spectra.
+%Independent of performance, we encountered two major issues with respect to
+%the qualitative aspects of ocean surface synthesis: one, wave geometry is
+%inadequate, two, ocean surface lighting is inconsistent across different
+%wave spectra.
 %TODO Two issues: one with geometry (integral domains), one with lighting (mss).
-%Now that we have discussed at length the quantitative aspects of our approach
-%to ocean surface synthesis, we may dedicate ourselves to the qualitative aspects.
+Now that we have discussed at length the performance aspects of our approach
+to ocean surface synthesis, we may focus on its qualitative aspects.
+Recall, that we set out to generate and render a visually pleasing,
+as well as believable ocean surface. Performance aside, we had to tackle two
+major issues to reach said goal: one, unconvincing wave geometry, and two, 
+implausible ocean surface lighting.
 \subsection{Geometry}
 Initially, after having implemented all the wave energy
 spectra presented in this work, we were dissatisfied with the results.
