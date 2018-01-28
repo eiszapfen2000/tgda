@@ -683,8 +683,8 @@ displacement vector $\mvec{D}$ at a lower resolution than their respective
 derivatives. We expected the resulting performance gains to be twofold: one,
 less data to generate, and two, less data to transform via the \IDFT.
 The latter point takes effect as expected, but the former does not.
-That is because spectrum generation performance is
-dominated by arithmetic operations, which are shared by all datasets. As all
+That is because spectrum generation performance is dominated by a set of
+arithmetic operations which have to be carried out for all datasets. As said
 arithmetic has to be computed for the datasets with the higher resolution
 anyway, the only gain in performance arises from a cutback in memory operations.
 We found that said cutback improves spectrum generation performance by at most
@@ -709,24 +709,24 @@ it still frees up resources which may be employed elsewhere.
 Furthermore, with two datasets on hand at a lower resolution, we may obtain some
 gain in rendering performance because less data needs to be transfered from the
 CPU to the GPU.
-\subsection{Conclusions}
+%\subsection{Conclusions}
 %At this point we may give a short summary of our performance work.
 %We began with a simple proof-of-concept implementation where we
 %were barely able to synthesize a single ocean surface pattern a few times per
 %second.
-Given two CPU threads and given that we precompute the static part of the spectrum,
-we are able to generate the spectra of all datasets for four level of details at a
-resolution of $256\times256$ at a rate of about fifty times per second.
-At a resolution of $512\times512$ we may synthesize one level of detail at fifty
-times per second, or two at 25 times per second. Multiresolution approach may improve
-said rates to an extent of ten percent.
-
-In future, generate static part of the spectrum on the CPU, do further steps on the
-GPU, such as generate the spectra for the animated surface and apply \InvDiscreteFourierTransform. 
-
-TODO Summing up: we got performance to the point where we are able to synthesize four
-distinct levels of detail at a resolution of 256 x 256 in real-time with two
-cpu threads. 
+%Given two CPU threads and given that we precompute the static part of the spectrum,
+%we are able to generate the spectra of all datasets for four level of details at a
+%resolution of $256\times256$ at a rate of about fifty times per second.
+%At a resolution of $512\times512$ we may synthesize one level of detail at fifty
+%times per second, or two at 25 times per second. Multiresolution approach may improve
+%said rates to an extent of ten percent.
+%
+%In future, generate static part of the spectrum on the CPU, do further steps on the
+%GPU, such as generate the spectra for the animated surface and apply \InvDiscreteFourierTransform. 
+%
+%TODO Summing up: we got performance to the point where we are able to synthesize four
+%distinct levels of detail at a resolution of 256 x 256 in real-time with two
+%cpu threads. 
 
 % In short, dependening on the choice of lower resolution, we may further improve
 % spectrum transformation performance by up to forty percent.
@@ -752,9 +752,14 @@ computation time after repeating the desired task for several thousand iteration
 %
 \section{Ocean Surface Synthesis}
 \label{sec:results:synthesis}
-TODO Two issues: one with geometry (integral domains), one with lighting (mss).
-Now that we have discussed at length the quantitative aspects of our approach
-to ocean surface synthesis, we may dedicate ourselves to the qualitative aspects.
+Independent of performance, we encountered two major issues with respect to
+the qualitative aspects of ocean surface synthesis: one, wave geometry is
+inadequate, two, ocean surface lighting is inconsistent across different
+wave spectra.
+%TODO Two issues: one with geometry (integral domains), one with lighting (mss).
+%Now that we have discussed at length the quantitative aspects of our approach
+%to ocean surface synthesis, we may dedicate ourselves to the qualitative aspects.
+\subsection{Geometry}
 Initially, after having implemented all the wave energy
 spectra presented in this work, we were dissatisfied with the results.
 There was always something \emph{off} about the resulting ocean surface, more
@@ -787,9 +792,6 @@ spectrum from our implementation, and all of the now unused fudge factors with i
 %Given that the Phillips spectrum is neither consistent with the other spectra, nor
 %does it give acceptable results without significant tuning of the fudge factors,
 %we decided to drop it, and all of the fudge factors with it.
-
-
-
 %to model the ocean surfaces' underlying physical processes in an appropriate
 %manner.
 %drop all of the fudge factors as they were not needed anymore. 
@@ -799,17 +801,7 @@ spectrum from our implementation, and all of the now unused fudge factors with i
 %actually believable ones. Except for \citeauthor{course:simulatingocean}'s
 %Phillips spectrum, which in its ad-hoc nature is unable to model the underlying
 %physical processes in an appropriate manner (Section \ref{sec:phillips_spectrum}).
-
-
-%In the beginning we needed several fudge factors to generate acceptable results,
-%specifically, we were always required to add some scaling factor in the XZ plane
-%or in the Y direction. And the fudge factors needed to change if spectrum
-%parameters changed.
-%Only after implementing correct integral domain conversion for the different
-%spectra did we obtain consistent results across all spectrum models. It made all
-%the difference, since now we get consistent, believable as well as
-%comprehensible results for all spectra. No fudge factors are required anymore,
-%everything works out of the box.
+\subsection{Lighting}
 \begin{figure}
 \centering
 %\tikzset{external/force remake}
@@ -826,32 +818,35 @@ spectrum from our implementation, and all of the now unused fudge factors with i
 %	every axis legend/.append style={nodes={right}, at={(0.05,0.95)}, anchor=north west},
 ]
 \addplot[
-color=red,
-solid,
-]
-table [col sep=comma]{figures/mss_pm.dat};
-\addlegendentry{PM}
-\addplot[
-color=green,
-solid,
-]
-table [col sep=comma]{figures/mss_jonswap_fetch_100km.dat};
-\addlegendentry{JONSWAP}
-\addplot[
 color=blue,
 solid,
 ]
-table [col sep=comma]{figures/mss_donelan_fetch_100km.dat};
-\addlegendentry{Donelan}
+table [col sep=comma]{figures/mss_pm_wind_0_30_fetch_250km.dat};
+\addlegendentry{PM}
+\addplot[
+color=green!70!black,
+solid,
+]
+table [col sep=comma]{figures/mss_jonswap_wind_0_30_fetch_250km.dat};
+\addlegendentry{JONSWAP}
 \addplot[
 color=black,
 solid,
 ]
-table [col sep=comma]{figures/mss_unified_fetch_100km.dat};
+table [col sep=comma]{figures/mss_donelan_wind_0_30_fetch_250km.dat};
+\addlegendentry{Donelan}
+\addplot[
+color=red,
+solid,
+]
+table [col sep=comma]{figures/mss_unified_wind_0_30_fetch_250km.dat};
 \addlegendentry{Unified}
 \end{axis}
 \end{tikzpicture}
-\caption{}
+\caption{The mean square slope over wind speed, with fetch $F=\SI{250}{\km}$.
+	As one can see, the Donelan spectrum severely overestimates the mean square
+	slope of the ocean surface.
+}
 \label{fig:mss:donelan}
 \end{figure}
 Although all spectrum types give convincing results geometry-wise, it is the
