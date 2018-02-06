@@ -781,12 +781,16 @@ in the synthesis of the ocean surface, we had to adapt our fudge factors too.
 A most cumbersome and error-prone task for the user.
 It was only later on that we found the underlying cause of the issue:
 we were missing the proper integral domain conversions for all of our wave energy
-spectra. After implementing said conversions,
+spectra. After implementing said conversions, the issue simply vanished.
 %according to Section \ref{subsec:integral_domain_conversion},
-we finally got believable, comprehensible as well as consistent results across
-all wave energy spectra presented in this work. Except for the Phillips
-spectrum, which in its ad-hoc nature does not model the ocean surfaces'
-underlying physical processes in an appropriate manner. As such it is neither
+We finally got believable, comprehensible as well as consistent results across
+all wave energy spectra presented in this work, with the only exception being
+the Phillips spectrum. The latter does not model the ocean surfaces'
+underlying physical processes in an appropriate manner
+(Section \ref{sec:phillips_spectrum}), and as a consequence it is neither
+%except for the Phillips
+%spectrum, which in its ad-hoc nature does not model the ocean surfaces'
+%underlying physical processes in an appropriate manner. As such it is neither
 consistent with the other spectra, nor does it give acceptable results without
 significant tuning of the fudge factors. Thus, we decided to drop the Phillips
 spectrum from our implementation, and all of the now unused fudge factors with it.
