@@ -757,13 +757,15 @@ computation time after repeating the desired task for several thousand iteration
 %inadequate, two, ocean surface lighting is inconsistent across different
 %wave spectra.
 %TODO Two issues: one with geometry (integral domains), one with lighting (mss).
-Now that we have discussed at length the performance aspects of our approach
-to ocean surface synthesis, we may focus on its qualitative aspects.
+Now that we have discussed the performance aspects of our approach
+to ocean surface synthesis, we may focus on the qualitative aspects.
 Recall, that we set out to generate and render a visually pleasing,
 as well as believable ocean surface. Performance aside, we had to tackle two
-major issues to reach said goal: one, unconvincing wave geometry, and two, 
-implausible ocean surface lighting.
-\subsection{Geometry}
+major challenges to reach said goal: one, generate convincing wave geometry, and two, 
+render the generated ocean surface in real-time with a lighting algorithm which
+gives plausible results. For each of both tasks we encountered at least one major,
+unforeseen pitfall.
+\subsection{Wave Geometry}
 Initially, after having implemented all the wave energy
 spectra presented in this work, we were dissatisfied with the results.
 There was always something \emph{off} about the resulting ocean surface, more
@@ -851,8 +853,8 @@ table [col sep=comma]{figures/mss_unified_wind_0_30_fetch_250km.dat};
 \addlegendentry{Unified}
 \end{axis}
 \end{tikzpicture}
-\caption{The mean square slope over wind speed, with fetch $F=\SI{250}{\km}$.
-	As one can see, the Donelan spectrum severely overestimates the mean square
+\caption{The mean square slope over wind speed ($F=\SI{250}{\km}$).
+	One can see that the Donelan spectrum severely overestimates the mean square
 	slope of the ocean surface.
 }
 \label{fig:mss:donelan}
