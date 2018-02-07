@@ -887,6 +887,7 @@ color=red,
 solid,
 ]
 table [col sep=comma]{figures/mss_unified_fetch_5km_100km_wind_10.dat};
+%\draw [black, dashed] (axis cs:0,0.035) rectangle (axis cs:40,0.05);
 \end{groupplot}
 \node at ($(group c1r1.north)!0.5!(group c2r1.north)$)
 [below,
@@ -899,8 +900,11 @@ Left: the total mean square slope $mss$ over wind speed $U_{10}$, with constant
 fetch $F=\SI{250}{\km}$. One can see that the Donelan spectrum severely overestimates
 the total mean square slope of the ocean surface.
 Right: the total mean square slope over fetch, with constant wind speed
-$U_{10} =\SI{10}{\meter\per\second}$. One can see that under low fetch conditions
-the JONSWAP spectrum overestimates the total mean square slope too.
+$U_{10} =\SI{10}{\meter\per\second}$. Not only the Donelan spectrum overestimates
+the total mean square slope, under low-fetch conditions the JONSWAP spectrum does
+too.
+%One can see that under low fetch conditions
+%the JONSWAP spectrum overestimates the total mean square slope too.
 }
 \end{figure}
 %
