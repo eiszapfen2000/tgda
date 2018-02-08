@@ -42,17 +42,20 @@ where $P$ denotes the Preetham skylight contribution in terms of CIE XYZ coordin
 \section{Mean Square Slope}
 \label{app:mss}
 %
-The ocean lighting algorithm by \cite{misc:oceanlightingfft} requires us to compute
+The mean square slopes of the ocean surface give a measure of the
+statistical distribution of the surface waves' slopes. The ocean lighting
+algorithm by \cite{misc:oceanlightingfft} requires us to compute
 the mean square slopes of the wave energy spectrum $\Theta(\mvec{k})$.
-Let $\mvec{k} = (k_x, k_z)$ be the \wavevector, then the mean square slope
-in the upwind direction, $mss_x$, and the mean square slope in the crosswind
-direction, $mss_z$, are defined as follows:
+Let $\mvec{k} = (k_x, k_z)$ be the \wavevector,
+then the mean square slope in the upwind direction, $mss_x$, and the mean square
+slope in the crosswind direction, $mss_z$, are defined as follows:
 \begin{align}
 mss_x = \iint_{\mvec{k}} k_x^2 \Theta(\mvec{k}) \mathrm{d}\mvec{k} &&
 mss_z = \iint_{\mvec{k}} k_z^2 \Theta(\mvec{k}) \mathrm{d}\mvec{k}
 \end{align}
 %
-The total mean square slope is defined accordingly:
+The total mean square, on the other hand, is independent of direction
+and defined as follows:
 \begin{equation}
 mss = mss_x + mss_z = \iint_{\mvec{k}} \norm{\mvec{k}}^2 \Theta(\mvec{k}) \mathrm{d}\mvec{k} = \int_{0}^{\infty}k^2 \Theta(k)\mathrm{d}k
 \end{equation}
