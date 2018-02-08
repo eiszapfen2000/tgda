@@ -945,6 +945,7 @@ does.
 %One can see that under low fetch conditions
 %the JONSWAP spectrum overestimates the total mean square slope too.
 }
+\label{fig:mss_wind_fetch}
 \end{figure}
 %
 Now that we have dropped the Phillips spectrum, we are left with four
@@ -953,10 +954,15 @@ geometry-wise. But still, it is the Pierson-Moskowitz spectrum and the
 Unified spectrum that give the best results with the lighting algorithm
 by \cite{article:oceanlighting}. That is because the JONSWAP
 spectrum and the Donelan spectrum give not that good an approximation of the
-ocean surface's \emph{mean square slopes} (\ref{app:mss}).
+ocean surface's \emph{mean square slopes} (Appendix~\ref{app:mss}).
 The latter are a core component of the lighting model by
 \cite{article:oceanlighting}, and thus have a large influence on the
-result.
+result. Figure~\ref{fig:sun_reflectance} depicts a few examples where
+the Donelan spectrum and the JONSWAP spectrum do not give results as good
+as the other two spectra. Figure~\ref{fig:mss_wind_fetch} on the other
+hand shows the different approximations of the total mean square slope
+by the four spectra.
+
 %The mean square slopes are a statistical measure of the ocean surface's
 %wave slopes.
 %Although all spectrum types give convincing results geometry-wise, it is the
