@@ -788,8 +788,8 @@ After implementing said conversions, the issue simply vanished.
 %according to Section \ref{subsec:integral_domain_conversion},
 We finally got believable, comprehensible as well as consistent results across
 all wave energy spectra presented in this work, with the only exception being
-the Phillips spectrum. The latter does not model the ocean surfaces'
-underlying physical processes in an appropriate manner, and as a consequence it
+the Phillips spectrum. Because the latter does not model the ocean surfaces'
+underlying physical processes in an appropriate manner it
 is neither consistent with the other spectra, nor does it give acceptable
 results without significant tuning of the fudge factors. Thus, we decided to
 drop the Phillips spectrum from our implementation, and all of the now unused
@@ -810,6 +810,42 @@ fudge factors with it.
 %Phillips spectrum, which in its ad-hoc nature is unable to model the underlying
 %physical processes in an appropriate manner (Section \ref{sec:phillips_spectrum}).
 \subsection{Ocean Surface Lighting}
+%
+\begin{figure}
+\centering
+\subtop[][Pierson-Moskowitz]
+{
+	\includegraphics[width=0.225\textwidth]{figures/ross_pm.png}
+}
+\hfill
+\subtop[Unified]
+{
+	\includegraphics[width=0.225\textwidth]{figures/ross_unified.png}
+}
+\hfill
+\subtop[Donelan]
+{
+	\includegraphics[width=0.225\textwidth]{figures/ross_donelan.png}
+}
+\hfill
+\subtop[JONSWAP]
+{
+	\includegraphics[width=0.225\textwidth]{figures/ross_jonswap.png}
+}
+\caption{
+	A set of example renderings of the ocean surface's sun reflectance for
+	the four remaining spectra.
+	First row:
+	the sun reflectance of the Donelan spectrum exceeds that of
+	the other spectra by a large amount
+	 ($U_{10}=\SI{10}{\metre\per\second}$, $F=\SI{250}{\km}$).
+	Second row:
+	not only the Donelan spectrum has a too high sun reflectance, but
+	the JONSWAP spectrum too
+	 ($U_{10}=\SI{10}{\metre\per\second}$, $F=\SI{25}{\km}$).
+}
+\label{fig:sun_reflectance}
+\end{figure}
 %
 \begin{figure}
 \centering
