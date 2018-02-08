@@ -948,20 +948,41 @@ does.
 \label{fig:mss_wind_fetch}
 \end{figure}
 %
-Now that we have dropped the Phillips spectrum, we are left with four
-wave energy spectrum models, where all of them give convincing results
-geometry-wise. But still, it is the Pierson-Moskowitz spectrum and the
+Now that we have removed the Phillips spectrum,
+we are left with four wave energy spectrum models, where all of them give
+convincing results geometry-wise. But still, it is the Pierson-Moskowitz spectrum and the
 Unified spectrum that give the best results with the lighting algorithm
-by \cite{article:oceanlighting}. That is because the JONSWAP
-spectrum and the Donelan spectrum give not that good an approximation of the
-ocean surface's \emph{mean square slopes} (Appendix~\ref{app:mss}).
-The latter are a core component of the lighting model by
-\cite{article:oceanlighting}, and thus have a large influence on the
-result. Figure~\ref{fig:sun_reflectance} depicts a few examples where
-the Donelan spectrum and the JONSWAP spectrum do not give results as good
-as the other two spectra. Figure~\ref{fig:mss_wind_fetch} on the other
-hand shows the different approximations of the total mean square slope
-by the four spectra.
+by \cite{article:oceanlighting}.
+%Figure~\ref{fig:sun_reflectance} depicts a few examples where
+%the Donelan spectrum and the JONSWAP spectrum do not give results as good
+%as the other two spectra.
+Figure~\ref{fig:sun_reflectance} depicts a few examples where these two
+spectra give better results than the Donelan spectrum or the JONSWAP
+spectrum.
+The root cause for the shortcomings of the latter two spectra is that
+both do not give that good an approximation of the ocean surface's
+actual \emph{mean square slopes} (Appendix~\ref{app:mss}).
+%
+%That is because the JONSWAP
+%spectrum and the Donelan spectrum do not give that good an approximation
+%of the ocean surface's actual \emph{mean square slopes} (Appendix~\ref{app:mss}).
+The mean square slopes are a core component of the lighting model by
+\cite{article:oceanlighting}, and as such have a large impact on the
+result.
+Therefore it is of advantage to employ a wave energy spectrum which gives
+an as good as possible approximation of the mean square slopes for the
+entire parameter space of wind speed $U_{10}$ and fetch $F$. And as one can
+see in Figure~\ref{fig:mss_wind_fetch}, it is only the Pierson-Moskowitz
+spectrum and the Unified spectrum which are able to meet this specific
+requirement.
+
+%Thus it is favorable for the wave spectrum to give a good
+%approximation of the mean square slopes for as much of the parameter space
+%for wind speed and fetch as possible.
+
+%Figure~\ref{fig:mss_wind_fetch} on the other
+%hand shows the different approximations of the total mean square slope
+%by the four spectra.
 
 %The mean square slopes are a statistical measure of the ocean surface's
 %wave slopes.
