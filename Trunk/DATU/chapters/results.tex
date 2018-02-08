@@ -950,14 +950,24 @@ does.
 %
 Now that we have dropped the Phillips spectrum, we are left with four
 wave energy spectrum models, where all of them give convincing results
-geometry-wise.
-Although all spectrum types give convincing results geometry-wise, it is the
-Preetham spectrum and the Unified spectrum that work best with the lighting
-algorithm by \cite{article:oceanlighting}. Probable cause is that the JONSWAP
+geometry-wise. But still, it is the Pierson-Moskowitz spectrum and the
+Unified spectrum that give the best results with the lighting algorithm
+by \cite{article:oceanlighting}. That is because the JONSWAP
 spectrum and the Donelan spectrum give not that good an approximation of the
-ocean surface's mean square slope (\ref{app:mss}). The mean square slope is a
-core component of the lighting model by \cite{article:oceanlighting}, and thus
-has large influence on the result.
+ocean surface's \emph{mean square slopes} (\ref{app:mss}).
+The latter are a core component of the lighting model by
+\cite{article:oceanlighting}, and thus have a large influence on the
+result.
+%The mean square slopes are a statistical measure of the ocean surface's
+%wave slopes.
+%Although all spectrum types give convincing results geometry-wise, it is the
+%Preetham spectrum and the Unified spectrum that work best with the lighting
+%algorithm by \cite{article:oceanlighting}. Probable cause is that the JONSWAP
+%spectrum and the Donelan spectrum give not that good an approximation of the
+%ocean surface's mean square slope (\ref{app:mss}).
+%The mean square slope is a
+%core component of the lighting model by \cite{article:oceanlighting}, and thus
+%has large influence on the result.
 
 \section{Visual Fidelity}
 \label{sec:results:fidelity}
