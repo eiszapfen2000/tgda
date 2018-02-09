@@ -813,36 +813,51 @@ fudge factors with it.
 %
 \begin{figure}
 \centering
-\subtop[][Pierson-Moskowitz]
+\subtop[Pierson-Moskowitz]
 {
-	\includegraphics[width=0.225\textwidth]{figures/ross_pm.png}
-}
-\hfill
-\subtop[Unified]
-{
-	\includegraphics[width=0.225\textwidth]{figures/ross_unified.png}
-}
-\hfill
-\subtop[Donelan]
-{
-	\includegraphics[width=0.225\textwidth]{figures/ross_donelan.png}
+	\includegraphics[width=0.225\textwidth]{figures/ross_pm_complete.png}
 }
 \hfill
 \subtop[JONSWAP]
 {
+	\includegraphics[width=0.225\textwidth]{figures/ross_jonswap_complete.png}
+}
+\hfill
+\subtop[Unified]
+{
+	\includegraphics[width=0.225\textwidth]{figures/ross_unified_complete.png}
+}
+\hfill
+\subtop[Donelan]
+{
+	\includegraphics[width=0.225\textwidth]{figures/ross_donelan_complete.png}
+}
+\subtop
+{
+	\includegraphics[width=0.225\textwidth]{figures/ross_pm.png}
+}
+\hfill
+\subtop
+{
 	\includegraphics[width=0.225\textwidth]{figures/ross_jonswap.png}
 }
+\hfill
+\subtop
+{
+	\includegraphics[width=0.225\textwidth]{figures/ross_unified.png}
+}
+\hfill
+\subtop
+{
+	\includegraphics[width=0.225\textwidth]{figures/ross_donelan.png}
+}
 \caption{
-	A set of example renderings of the ocean surface's sun reflectance for
-	the four remaining spectra.
-	First row:
-	the sun reflectance of the Donelan spectrum exceeds that of
-	the other spectra by a large amount
-	 ($U_{10}=\SI{10}{\metre\per\second}$, $F=\SI{250}{\km}$).
-	Second row:
-	not only the Donelan spectrum has a too high sun reflectance, but
-	the JONSWAP spectrum too
-	 ($U_{10}=\SI{10}{\metre\per\second}$, $F=\SI{25}{\km}$).
+	Example rendering of the same scene for each of the remaining four spectra
+	($U_{10}=\SI{10}{\metre\per\second}$, $F=\SI{250}{\km}$).
+	First row: the composited end result. Second row: the respective sun
+	reflectance term.
+	One can see that the sun reflectance of the Donelan spectrum significantly
+	exceeds that of the other spectra.
 }
 \label{fig:sun_reflectance}
 \end{figure}
