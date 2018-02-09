@@ -948,17 +948,27 @@ does.
 \label{fig:mss_wind_fetch}
 \end{figure}
 %
-Now that we have removed the Phillips spectrum,
-we are left with four wave energy spectrum models, where all of them give
-convincing results geometry-wise. But still, it is the Pierson-Moskowitz spectrum and the
-Unified spectrum that give the best results with the lighting algorithm
-by \cite{article:oceanlighting}.
+Now that we have dropped the Phillips spectrum, we are left with four wave energy
+spectrum models. Although all of them give convincing results geometry-wise,
+it is only three of them that work well with the lighting algorithm by
+\cite{article:oceanlighting}: the Pierson-Moskowitz spectrum, the JONSWAP
+spectrum, and the Unified spectrum. The remaining spectrum, namely the Donelan
+spectrum, is disqualified because in combination with \cite{article:oceanlighting}
+it results in an ocean surface which reflects too much of the incoming sunlight.
+Figure~\ref{fig:sun_reflectance} depicts an example of said shortcoming.
+%Figure~\ref{fig:sun_reflectance} depicts an example where the shortcoming
+%of the Donelan spectrum is easy to identify.
+%few examples where these three spectra give better results than the Donelan
+%spectrum.
+%
+% where all of them give
+%convincing results geometry-wise. But still, it is the Pierson-Moskowitz spectrum and the
+%Unified spectrum that give the best results with the lighting algorithm
+%by \cite{article:oceanlighting}.
 %Figure~\ref{fig:sun_reflectance} depicts a few examples where
 %the Donelan spectrum and the JONSWAP spectrum do not give results as good
 %as the other two spectra.
-Figure~\ref{fig:sun_reflectance} depicts a few examples where these two
-spectra give better results than the Donelan spectrum or the JONSWAP
-spectrum.
+
 The root cause for the shortcomings of the latter two spectra is that
 both do not give that good an approximation of the ocean surface's
 actual \emph{mean square slopes} (Appendix~\ref{app:mss}).
