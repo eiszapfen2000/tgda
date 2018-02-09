@@ -977,17 +977,22 @@ a good approximation of the ocean surface's actual \emph{mean square slopes}
 (Appendix~\ref{app:mss}).
 The mean square slopes of the ocean surface represent statistical moments
 which describe the distribution of the surface waves' slopes~\citep{Massel:2011},
-and as such may give a measure of the roughness of the ocean surface.
-It turns out that the mean square slopes are an essential component of the
+and as such give a measure of the roughness of the ocean surface.
+Moreover, the mean square slopes are an essential component of the
 lighting model by \cite{article:oceanlighting}, where they are required for
 the computation of the sun reflectance term.
-
-Therefore it is of advantage to employ a wave energy spectrum which gives
-an as good as possible approximation of the mean square slopes for the
-entire parameter space of wind speed $U_{10}$ and fetch $F$. And as one can
-see in Figure~\ref{fig:mss_wind_fetch}, it is only the Pierson-Moskowitz
-spectrum and the Unified spectrum which are able to meet this specific
-requirement.
+Therefore we may conclude that it is best to employ a wave energy
+spectrum which gives an as good as possible approximation of the mean square
+slopes for the entire parameter space of wind speed $U_{10}$ and fetch $F$.
+Figure~\ref{fig:mss_wind_fetch} shows that the Donelan spectrum
+unconditionally fails to meet this specific requirement. The JONSWAP
+spectrum, on the other hand, tends to overestimate the mean square slopes
+only for low fetch conditions, but not by an amount so large that it
+would compromise the plausibility of the end result.
+%
+%it is only the Pierson-Moskowitz
+%spectrum and the Unified spectrum which are able to meet this specific
+%requirement.
 %Figure~\ref{fig:sun_reflectance} depicts an example where the shortcoming
 %of the Donelan spectrum is easy to identify.
 %few examples where these three spectra give better results than the Donelan
