@@ -1232,7 +1232,7 @@ $\omega_p$ as well as numeric constant $\alpha$.
 	\addlegendentry{$\omega_p \times 1.3$}
 \end{groupplot}
 \end{tikzpicture}
-\caption{
+\caption[Example instances of the Pierson Moskowitz frequency spectrum.]{
 Left: The Pierson Moskowitz frequency spectrum with different wind 
 speed values $U_{10}$. As the wind speed increases, the spectral peak grows and
 moves to lower frequencies.
@@ -1474,7 +1474,7 @@ actually exceed the speed of the generating wind.
 \addlegendentry{$\omega_p \times 1.2$}
 \end{groupplot}
 \end{tikzpicture}
-\caption{
+\caption[Example instances of the JONSWAP frequency spectrum.]{
 Left: JONSWAP frequency spectra with different fetch values $F$, 
 Pierson Moskowitz spectrum for comparison ($U_{10} = \SI{10}{\meter\per\second}$).
 Right: Influence of the involved parameters on the resulting JONSWAP spectrum
@@ -1599,7 +1599,8 @@ frequency of the spectral peak.
 \addlegendentry{\SI{400}{\km}}
 \end{groupplot}
 \end{tikzpicture}
-\caption{
+\caption[The JONSWAP spectrum does not converge towards a fully-developed
+sea as represented by the Pierson Moskowitz spectrum.]{
 %The JONSWAP spectrum is unable to reach fully-developed state,
 %be it with decreasing inverse wave age or with increasing fetch, it does not converge
 %towards the Pierson Moskowitz spectrum.
@@ -1736,7 +1737,10 @@ frequency does not change. Therefore the following relation holds:
  {
  \includegraphics[scale=0.25]{figures/mitsuyasu_dfilt_wur_sqrt200.png}
  }
-\caption{A set of example instances of the directional spreading function
+\caption[Example instances of the directional spreading function
+introduced in \citet{article:Mitsuyasu1975} and extended by
+\citet{article:Hasselmann1980}]{
+A set of example instances of the directional spreading function
 introduced in \citet{article:Mitsuyasu1975} and extended by
 \citet{article:Hasselmann1980}.
 Each column corresponds to a different wind speed, starting with the weakest
@@ -1948,7 +1952,9 @@ which gives us
 \end{axis}
 \end{tikzpicture}
 }
-\caption{The JONSWAP frequency spectrum with wind speed $U_{10} = \SI{15}{\meter\per\second}$
+\caption[The JONSWAP frequency spectrum in the polar coordinate domain
+and the \wavevector domain respectively.]{
+The JONSWAP frequency spectrum with wind speed $U_{10} = \SI{15}{\meter\per\second}$
 and fetch $F = \SI{100}{\km}$, located in two different domains. Top: The polar
 coordinate domain $\omega \times \theta$, the wind direction points in the
 direction of the positive $\omega$ axis. Bottom: The \wavevector domain
@@ -2159,7 +2165,9 @@ parameter, and $\alpha$ the equilibrium range parameter.
  {
  \includegraphics[scale=0.25]{figures/donelan_dfilt_wur_sqrt200.png}
  }
-\caption{A set of instances of the directional spreading function intoduced by
+\caption[A set of instances of the directional spreading function introduced by
+\citet{article:Donelan1985}]{
+A set of instances of the directional spreading function introduced by
 \citet{article:Donelan1985}. Each column 
 corresponds to a different wind speed, starting with the weakest one at the 
 left. In the top row, the wind direction points to the right, in the bottom row 
