@@ -93,7 +93,8 @@ The interested reader may consult \citet{Bridson:2015} and \citet{egstar:2014} t
   \includegraphics[scale=0.185]{figures/Vectorized_Procedural_Models_for_Natural_Terrain_-_Max_1981-007_2.png}
 	\label{fig:max1981:4}
  }
-\caption{\subcaptionref{fig:max1981:1}~Still water near sunset.
+\caption[Waves represented as sinusoids by \citet{Max:1981}.]{
+\subcaptionref{fig:max1981:1}~Still water near sunset.
 \subcaptionref{fig:max1981:2} One reflection from waves.
 \subcaptionref{fig:max1981:3} Two reflections from waves.
 \subcaptionref{fig:max1981:4} Early afternoon, two reflections from waves.
@@ -169,7 +170,8 @@ vectors of given surfaces.
   \includegraphics[scale=0.125]{figures/Modeling_Waves_and_Surf_-_Peachey_1986-012.png}
 	\label{fig:peachey1986:3}
  }
- \caption{\subcaptionref{fig:peachey1986:1}~Waves on the beach.
+ \caption[Waves on the beach by \citet{Peachey:1986}.]{
+\subcaptionref{fig:peachey1986:1}~Waves on the beach.
 \subcaptionref{fig:peachey1986:2}~Breaking waves on the beach.
 \subcaptionref{fig:peachey1986:3}~Breaking waves with obstacle.
 Source:~\citet{Peachey:1986}}
@@ -224,7 +226,8 @@ Results of \citet{Peachey:1986} are shown in Figure~\ref{fig:peachey1986}.
 \addplot[samples=300,domain=0:40] ({x+1.3*sin(deg(1*x-sqrt(9.81*1)*0))}, { 0-1.3*cos(deg(1*x-sqrt(9.81*1)*0))});
 \end{axis}
 \end{tikzpicture}
-\caption{Example waves with different $kA$. One can see that the wave crest gets more pronounced as $kA$ grows,
+\caption[Example instances of Gerstner waves.]{
+Example waves with different $kA$. One can see that the wave crest gets more pronounced as $kA$ grows,
 with the wave intersecting itself when $kA > 1$.}
 \label{fig:trochoid:crests}
 \end{figure}
@@ -249,7 +252,7 @@ with the wave intersecting itself when $kA > 1$.}
   \includegraphics[scale=0.175]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-005_1.png}
 	\label{fig:fournier1986:refraction:3}
  }
- \caption[The refraction of waves on the shore. Source:~\citet{Fournier:1986}]{The refraction of waves.
+ \caption[The refraction of waves on the shore by \citet{Fournier:1986}]{The refraction of waves.
 \subcaptionref{fig:fournier1986:refraction:1} Two bottoms of constant depth, the
 \wavelengths are halved as the waves reach the shallow bottom on the left.
 \subcaptionref{fig:fournier1986:refraction:2} The beach slopes gently down from
@@ -285,7 +288,7 @@ Source:~\citet{Fournier:1986}}
   \includegraphics[scale=0.225]{figures/A_Simple_Model_of_Ocean_Waves_-_Fournier_1986-013.png}
 	\label{fig:fournier1986:results:4}
  }
- \caption[Breaking waves on the shore. Source:~\citet{Fournier:1986}]{
+ \caption[Breaking waves on the shore by \citet{Fournier:1986}]{
  \subcaptionref{fig:fournier1986:results:1} Breaking waves on the shore, where the crests take the shape of the shore.
 %  \subcaptionref{fig:fournier1986:results:2} Wave refraction.
 %  \subcaptionref{fig:fournier1986:results:3} Waves with spray and foam.
@@ -491,7 +494,7 @@ surface.
   \includegraphics[scale=0.1125]{figures/Fourier_Synthesis_of_Ocean_Scenes_-_Mastin_1987-007_1.png}
 	\label{fig:mastin_waves:4}
  }
- \caption{
+ \caption[The sea surface generated with wave spectra by \citet{Mastin:1987}.]{
 \subcaptionref{fig:mastin_waves:1} White noise.
 \subcaptionref{fig:mastin_waves:2} The Pierson-Moskowitz spectrum combined with the directional spreading function.
 \subcaptionref{fig:mastin_waves:3} The synthesized heightfield.
@@ -535,7 +538,7 @@ the Pierson-Moskowitz spectrum.
   \includegraphics[scale=0.125]{figures/Simulating_Ocean_Water-013.png}
 	\label{fig:tessendorf_choppy_waves:2}
  }
- \caption{
+ \caption[Choppy waves by \citet{course:simulatingocean}.]{
 \subcaptionref{fig:tessendorf_choppy_waves:1} Ocean surface sythesized with the Phillips spectrum.
 \subcaptionref{fig:tessendorf_choppy_waves:2} The same surface with the choppy wave algorithm applied.
 Source: \citet{course:simulatingocean}
@@ -617,7 +620,7 @@ believable shading of the ocean surface.
   \includegraphics[scale=0.175]{figures/Effective_Water_Simulation_from_Physical_Models_-_Finch_2004-003.png}
 	\label{fig:finch}
  }
- \caption{
+ \caption[Examples of early attempts to generate plausible water surfaces on graphics hardware.]{
   Examples of early attempts to generate plausible water surfaces on graphics hardware.
   \subcaptionref{fig:westermann} Source:~\citet{Schneider:2001}
   \subcaptionref{fig:isidoro} Source:~\citet{Isidoro:2002}
@@ -682,7 +685,7 @@ viewpoint.
   \includegraphics[scale=0.175]{figures/Using_Vertex_Texture_Displacement_for_Realistic_Water_Rendering_-_Kryachko_2005-026.png}
 	\label{fig:kryachko:results}
  }
- \caption{
+ \caption[Adaptive level-of-detail for the ocean surface by \cite{Kryachko:2005}.]{
   \subcaptionref{fig:kryachko:waves} A height map used for water displacement.
   \subcaptionref{fig:kryachko:meshing} Radial grid centered at the camera position.
   \subcaptionref{fig:kryachko:results} View with the ocean spanning to the horizon.
@@ -724,12 +727,12 @@ causing unnecessary overhead.
   \includegraphics[scale=0.25]{figures/Interactive_Animation_of_Ocean_Waves_-_Hinsinger_2002-003.png}
   \label{fig:hinsinger:projectedgrid:mesh}
  }
- \caption{
+ \caption[The projected grid by \citet{Hinsinger:2002}.]{
   \subcaptionref{fig:hinsinger:projectedgrid:ws} Uniformly spaced vertices in world space, their projection onto the screen is not uniformly spaced though.
   \subcaptionref{fig:hinsinger:projectedgrid:ss} Uniformly spaced vertices in screen space projected onto world space base plane.
   \subcaptionref{fig:hinsinger:projectedgrid:mesh} The result mesh obtained by projection of the vertices onto the base plane followed by displacement.
   One can see that the surface patches grow with distance from the viewer.
-  Source:~\cite{Hinsinger:2002}
+  Source:~\citet{Hinsinger:2002}
 }
 \label{fig:hinsinger:mesh}
 \end{figure}
