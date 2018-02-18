@@ -1097,6 +1097,25 @@ result.
 \label{fig:results}
 \end{figure}
 %
+With both performance and major pitfalls taken care of, we may focus on the overall visual quality we were able to achieve for the ocean surface.
+
+For wave geometry it is the Pierson Moskowitz spectrum which
+gives the most calm sea, whereas the JONSWAP spectrum results in a
+more rough and turbulent sea. The Unified spectrum is able to bridge
+those two variants, but never reaching the degree of calmness of the Pierson Moskowitz spectrum. Also for closeups it is the Unified spectrum which gives the best results, as it is the only model to handle really short waves well.
+
+Regarding our multi-resolution approach to level of detail we have seen that we are able to reduce the resolution of the horizontal
+and vertical displacements as far as to $32\times32$ without
+noticing a large drop in visual quality, as long as we keep a
+resolution of $128\times128$ or higher for the slopes and first
+order derivatives.
+
+Morevoer, it is obvious that the whitecaps algorithm takes a huge
+toll on both CPU and GPU side, four spectra at high resolution,
+which then need all to be sampled per pixel to compute the
+whitecpas coverage. Maybe use another, more simpler approach altogether.
+
+Lets discuss our overall results
 Images of all partial terms involved in ocean lighting (specular by sun,
 reflection of sky, refracted light, whitecaps)
 Image of ocean geometry (wireframe)
