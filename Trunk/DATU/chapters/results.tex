@@ -992,14 +992,18 @@ and as such give a measure of the roughness of the ocean surface.
 Moreover, the mean square slopes are an essential component of the
 lighting model by \cite{article:oceanlighting}, where they are required for
 the computation of the sun reflectance term.
-Therefore we may conclude that it is best to employ a wave energy
+Therefore we came to the conclusion that it would be best to employ a wave energy
 spectrum which gives an as good as possible approximation of the mean square
 slopes for the entire parameter space of wind speed $U_{10}$ and fetch $F$.
 Figure~\ref{fig:mss_wind_fetch} shows that the Donelan spectrum
 unconditionally fails to meet this specific requirement. The JONSWAP
 spectrum, on the other hand, tends to overestimate the mean square slopes
 only for low-fetch conditions, but not by an amount so large that it
-would compromise the plausibility of the end result.
+would noticeably compromise the plausibility of the end result.
+But still, that leaves only two of the five wave energy models presented
+in this work to be unconditionally able to measure up to the challenge,
+namely the Pierson-Moskowitz spectrum and the Unified spectrum.
+
 %
 %it is only the Pierson-Moskowitz
 %spectrum and the Unified spectrum which are able to meet this specific
@@ -1095,6 +1099,7 @@ result.
 %
 Images of all partial terms involved in ocean lighting (specular by sun,
 reflection of sky, refracted light, whitecaps)
+Image of ocean geometry (wireframe)
 
 Troubles with reflection vectors below horizon
 Troubles with bright patches caused by reflection
