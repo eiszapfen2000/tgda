@@ -992,9 +992,13 @@ and as such give a measure of the roughness of the ocean surface.
 Moreover, the mean square slopes are an essential component of the
 lighting model by \cite{article:oceanlighting}, where they are required for
 the computation of the sun reflectance term.
-Therefore we came to the conclusion that it would be best to employ a wave energy
-spectrum which gives an as good as possible approximation of the mean square
-slopes for the entire parameter space of wind speed $U_{10}$ and fetch $F$.
+
+Given the importance of the mean square slopes with respect to the
+quality of the visual appearance of the ocean surface, we came to
+the conclusion that it would be best to employ only wave energy
+spectra which give an as good as possible approximation of the mean
+square slopes for the entire parameter space of wind speed $U_{10}$
+and fetch $F$.
 Figure~\ref{fig:mss_wind_fetch} shows that the Donelan spectrum
 unconditionally fails to meet this specific requirement. The JONSWAP
 spectrum, on the other hand, tends to overestimate the mean square slopes
