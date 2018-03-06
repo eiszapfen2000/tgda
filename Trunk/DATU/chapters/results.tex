@@ -1106,17 +1106,26 @@ result.
 Now that we have taken care of the pitfalls which we encountered during
 our work on ocean surface generation and rendering, we may focus on the
 overall visual quality we were able to achieve.
-Let us begin with wave geometry, where we were able to obtain satisfying
-results. Given any one of the wave energy spectra presented in this work
+
+Let us begin with the most fundamental building block, namely wave geometry.
+Given any one of the wave energy spectra presented in this work
 that stem from oceanographic research, one is able to synthesize an ocean
 surface where both the shape and the animation of the surface waves look
-convincing to the observer. If one has a gentle sea in mind, then it would be
+not only plausible, but convincing, to the observer.
+If one wants to generate a gentle sea, then it would be
 best to use the Pierson-Moskowitz spectrum, whereas for highly turbulent seas
-one should prefer the JONSWAP spectrum. For all the kinds of sea that fit
+one should prefer the JONSWAP spectrum. For all the kinds of sea that reside
 between those two extrema, the Unified spectrum is the wave energy model of
-choice. An additional reason to pick the Unified spectrum is that it is
-well suited for closeups, as it is the only spectrum presented in this work
+choice. An additional reason for one to pick the Unified spectrum is that it
+is well suited for closeups, as it is the only spectrum presented in this work
 that is able to handle short waves in a sensible manner.
+
+We have seen that for rendering, wave geometry alone is not sufficient.
+Figure~\ref{fig:results}
+Thus, given all four datasets 
+Given wave geometry data (elevation adn displacements) and its associated datasets
+(slopes and derivatives)
+
 
 %The Unified spectrum covers the
 %remaining ground between those two variants, but is neither able to reach
