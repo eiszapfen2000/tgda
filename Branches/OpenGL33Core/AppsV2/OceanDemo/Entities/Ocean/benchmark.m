@@ -1248,7 +1248,7 @@ int main(int argc, char **argv)
 
     H0Benchmark();
     //HBenchmark();
-    LodBenchmark();
+    //LodBenchmark();
     //FFTWBenchmark();
 
     DESTROY(pool);
