@@ -118,15 +118,15 @@ static void generatePM(
 
     for ( int l = 0; l < numberOfLods; l++ )
     {
-        const float lastSize = ( l == 0 ) ? 0.0f : geometry->sizes[l - 1];
+        // const float lastSize = ( l == 0 ) ? 0.0f : geometry->sizes[l - 1];
         const float currentSize = geometry->sizes[l];
 
         const float dkx = MATH_2_MUL_PIf / currentSize;
         const float dky = MATH_2_MUL_PIf / currentSize;
 
-        const float kMinX = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
-        const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
-        const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
+        // const float kMinX = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
+        // const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
+        // const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
 
         const int offset = l * numberOfLodElements;
 
@@ -155,7 +155,7 @@ static void generatePM(
                 // Theta in wave vector domain
                 float Theta_complete = 0.0f;
 
-                if (k > kMin)
+                if (k != 0.0f)
                 {
                     // Theta in wave frequency domain
                     const float Theta = energy_pm_wave_frequency(omega, U10);
@@ -201,15 +201,15 @@ static void generateJONSWAP(
 
     for ( int l = 0; l < numberOfLods; l++ )
     {
-        const float lastSize = ( l == 0 ) ? 0.0f : geometry->sizes[l - 1];
+        // const float lastSize = ( l == 0 ) ? 0.0f : geometry->sizes[l - 1];
         const float currentSize = geometry->sizes[l];
 
         const float dkx = MATH_2_MUL_PIf / currentSize;
         const float dky = MATH_2_MUL_PIf / currentSize;
 
-        const float kMinX = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
-        const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
-        const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
+        // const float kMinX = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
+        // const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
+        // const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
 
         const int offset = l * numberOfLodElements;
 
@@ -238,7 +238,7 @@ static void generateJONSWAP(
                 // Theta in wave vector domain
                 float Theta_complete = 0.0f;
 
-                if (k > kMin)
+                if (k != 0.0f)
                 {
                     // Theta in wave frequency domain
                     const float Theta = energy_jonswap_wave_frequency(omega, U10, fetch);
@@ -284,15 +284,15 @@ static void generateDonelan(
 
     for ( int l = 0; l < numberOfLods; l++ )
     {
-        const float lastSize = ( l == 0 ) ? 0.0f : geometry->sizes[l - 1];
+        // const float lastSize = ( l == 0 ) ? 0.0f : geometry->sizes[l - 1];
         const float currentSize = geometry->sizes[l];
 
         const float dkx = MATH_2_MUL_PIf / currentSize;
         const float dky = MATH_2_MUL_PIf / currentSize;
 
-        const float kMinX = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
-        const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
-        const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
+        // const float kMinX = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
+        // const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
+        // const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
 
         const int offset = l * numberOfLodElements;
 
@@ -321,7 +321,7 @@ static void generateDonelan(
                 // Theta in wave vector domain
                 float Theta_complete = 0.0f;
 
-                if (k > kMin)
+                if (k != 0.0f)
                 {
                     // Theta in wave frequency domain
                     const float Theta = energy_donelan_wave_frequency(omega, U10, fetch);
@@ -367,15 +367,15 @@ static void generateUnified(
 
     for ( int l = 0; l < numberOfLods; l++ )
     {
-        const float lastSize = ( l == 0 ) ? 0.0f : geometry->sizes[l - 1];
-        const float currentSize = geometry->sizes[l];
+        // const float lastSize = ( l == 0 ) ? 0.0f : geometry->sizes[l - 1];
+         float currentSize = geometry->sizes[l];
 
         const float dkx = MATH_2_MUL_PIf / currentSize;
         const float dky = MATH_2_MUL_PIf / currentSize;
 
-        const float kMinX = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
-        const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
-        const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
+        // const float kMinX = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
+        // const float kMinY = ( l == 0 ) ? 0.0f : (( MATH_PI * fresolution ) / lastSize );
+        // const float kMin = sqrtf(kMinX*kMinX + kMinY*kMinY);
 
         const int offset = l * numberOfLodElements;
 
@@ -401,7 +401,7 @@ static void generateUnified(
                 // Theta in wave vector domain
                 float Theta_complete = 0.0f;
 
-                if (k > kMin)
+                if (k != 0.0f)
                 {
                     const float Theta_wavenumber = energy_unified_wave_number(k, U10, fetch);
                     const float Theta_wavevector = Theta_wavenumber / k;
@@ -470,6 +470,8 @@ static void GenH0Performance(
             const double accumulatedTime = [timer frameTime];
 
             fprintf(stdout, ", %.2f", (accumulatedTime / (double)nIterations) * 1000.0);
+
+            // print_complex_spectrum(resolutions[r], H0);
 
             free(randomNumbers);
             fftwf_free(H0);
@@ -1244,7 +1246,7 @@ int main(int argc, char **argv)
 {
     NSAutoreleasePool * pool = [ NSAutoreleasePool new ];
 
-    //H0Benchmark();
+    H0Benchmark();
     //HBenchmark();
     LodBenchmark();
     //FFTWBenchmark();
