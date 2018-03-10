@@ -530,6 +530,8 @@ static void generateCenteredHAtTime(
 
     const int resolution  = MAX(geometry->geometryResolution, geometry->gradientResolution);
     const float fresolution = resolution;
+    const float fgeometryResolution = geometry->geometryResolution;
+    const float fgradientResolution = geometry->gradientResolution;
 
     const int numberOfLods = geometry->numberOfLods;
     const int numberOfLodElements = resolution * resolution;
@@ -554,10 +556,18 @@ static void generateCenteredHAtTime(
 
     for ( int l = 0; l < numberOfLods; l++ )
     {
+        const float lastSize = ( l == 0 ) ? 0.0f : geometry->sizes[l - 1];
         const float currentSize = geometry->sizes[l];
 
         const float dkx = MATH_2_MUL_PIf / currentSize;
         const float dky = MATH_2_MUL_PIf / currentSize;
+
+        const float kMinGeometryX = ( l == 0 ) ? 0.0f : (( MATH_PIf * fgeometryResolution ) / lastSize );
+        const float kMinGeometryY = ( l == 0 ) ? 0.0f : (( MATH_PIf * fgeometryResolution ) / lastSize );
+        const float kMinGradientX = ( l == 0 ) ? 0.0f : (( MATH_PIf * fgradientResolution ) / lastSize );
+        const float kMinGradientY = ( l == 0 ) ? 0.0f : (( MATH_PIf * fgradientResolution ) / lastSize );
+        const float kMinGeometry = sqrtf(kMinGeometryX*kMinGeometryX + kMinGeometryY*kMinGeometryY);
+        const float kMinGradient = sqrtf(kMinGradientX*kMinGradientX + kMinGradientY*kMinGradientY);
 
         const int offset = l * numberOfLodElements;
         const int geometryOffset = l * numberOfGeometryElements;
@@ -627,14 +637,6 @@ static void generateCenteredHAtTime(
                     = { H0expMinusOmega[0] + gradientH0expOmega[0],
                         H0expMinusOmega[1] + gradientH0expOmega[1] };
 
-                if ( result->height != NULL
-                     && j > geometryXRange.x && j < geometryXRange.y
-                     && i > geometryYRange.x && i < geometryYRange.y )
-                {
-                    result->height[geometryIndex][0] = geometryhTilde[0];
-                    result->height[geometryIndex][1] = geometryhTilde[1];
-                }
-
                 // first column of a derivative in X direction has to be zero
                 // first row of a derivative in Z direction has to be zero
                 const float derivativeXScale   = (j == gradientPadding) ? 0.0f : 1.0f;
@@ -649,64 +651,116 @@ static void generateCenteredHAtTime(
                 {
                     if ( result->gradient != NULL )
                     {
-                        const fftwf_complex gx
-                            = {-kx * gradienthTilde[1] * derivativeXScale, kx * gradienthTilde[0] * derivativeXScale};
+                        float r_r = 0.0f;
+                        float r_i = 0.0f;
 
-                        const fftwf_complex gz
-                            = {-ky * gradienthTilde[1] * derivativeZScale, ky * gradienthTilde[0] * derivativeZScale};
+                        if (lengthK > kMinGradient)
+                        {
+                            const fftwf_complex gx
+                                = {-kx * gradienthTilde[1] * derivativeXScale, kx * gradienthTilde[0] * derivativeXScale};
 
-                        // gx + i*gz
-                        result->gradient[gradientIndex][0] = gx[0] - gz[1];
-                        result->gradient[gradientIndex][1] = gx[1] + gz[0];
+                            const fftwf_complex gz
+                                = {-ky * gradienthTilde[1] * derivativeZScale, ky * gradienthTilde[0] * derivativeZScale};
+
+                            // gx + i*gz
+                            r_r = gx[0] - gz[1];
+                            r_i = gx[1] + gz[0];
+                        }
+
+                        result->gradient[gradientIndex][0] = r_r;
+                        result->gradient[gradientIndex][1] = r_i;
                     }
 
-                    if ( result->displacementXdXdZ != NULL && result->displacementZdXdZ != NULL )
+                    if ( result->displacementXdXdZ != NULL 
+                         && result->displacementZdXdZ != NULL )
                     {
-                        // partial derivatives of dx and dz
-                        const float dx_x_term = kx * kx * factor * derivativeXScale;
-                        const float dz_z_term = ky * ky * factor * derivativeZScale;
-                        const float dx_z_term = ky * kx * factor * derivativeXScale;
-                        const float dz_x_term = kx * ky * factor * derivativeZScale;
+                        float x_r_r = 0.0f;
+                        float x_r_i = 0.0f;
+                        float z_r_r = 0.0f;
+                        float z_r_i = 0.0f;
 
-                        const fftwf_complex dx_x
-                            = { dx_x_term * derivativeXScale * gradienthTilde[0],
-                                dx_x_term * derivativeXScale * gradienthTilde[1] };
+                        if (lengthK > kMinGradient)
+                        {
+                            // partial derivatives of dx and dz
+                            const float dx_x_term = kx * kx * factor * derivativeXScale;
+                            const float dz_z_term = ky * ky * factor * derivativeZScale;
+                            const float dx_z_term = ky * kx * factor * derivativeXScale;
+                            const float dz_x_term = kx * ky * factor * derivativeZScale;
 
-                        const fftwf_complex dx_z
-                            = { dx_z_term * derivativeZScale * gradienthTilde[0],
-                                dx_z_term * derivativeZScale * gradienthTilde[1] };
+                            const fftwf_complex dx_x
+                                = { dx_x_term * derivativeXScale * gradienthTilde[0],
+                                    dx_x_term * derivativeXScale * gradienthTilde[1] };
 
-                        const fftwf_complex dz_x
-                            = { dz_x_term * derivativeXScale * gradienthTilde[0],
-                                dz_x_term * derivativeXScale * gradienthTilde[1] };
+                            const fftwf_complex dx_z
+                                = { dx_z_term * derivativeZScale * gradienthTilde[0],
+                                    dx_z_term * derivativeZScale * gradienthTilde[1] };
 
-                        const fftwf_complex dz_z
-                            = { dz_z_term * derivativeZScale * gradienthTilde[0],
-                                dz_z_term * derivativeZScale * gradienthTilde[1] };
+                            const fftwf_complex dz_x
+                                = { dz_x_term * derivativeXScale * gradienthTilde[0],
+                                    dz_x_term * derivativeXScale * gradienthTilde[1] };
 
-                        result->displacementXdXdZ[gradientIndex][0] = dx_x[0] - dx_z[1];
-                        result->displacementXdXdZ[gradientIndex][1] = dx_x[1] + dx_z[0];
+                            const fftwf_complex dz_z
+                                = { dz_z_term * derivativeZScale * gradienthTilde[0],
+                                    dz_z_term * derivativeZScale * gradienthTilde[1] };
 
-                        result->displacementZdXdZ[gradientIndex][0] = dz_x[0] - dz_z[1];
-                        result->displacementZdXdZ[gradientIndex][1] = dz_x[1] + dz_z[0];
+
+                            x_r_r = dx_x[0] - dx_z[1];
+                            x_r_i = dx_x[1] + dx_z[0];
+
+                            z_r_r = dz_x[0] - dz_z[1];
+                            z_r_i = dz_x[1] + dz_z[0];
+                        }
+
+                        result->displacementXdXdZ[gradientIndex][0] = x_r_r;
+                        result->displacementXdXdZ[gradientIndex][1] = x_r_i;
+
+                        result->displacementZdXdZ[gradientIndex][0] = z_r_r;
+                        result->displacementZdXdZ[gradientIndex][1] = z_r_i;
                     }
                 }
 
-                if ( result->displacement != NULL
-                     && j > geometryXRange.x && j < geometryXRange.y
+
+                if ( j > geometryXRange.x && j < geometryXRange.y
                      && i > geometryYRange.x && i < geometryYRange.y )
                 {
-                    const fftwf_complex dx
-                        = { displacementXScale * factor * kx * geometryhTilde[1],
-                            displacementXScale * factor * kx * geometryhTilde[0] * -1.0f };
+                    if ( result->height != NULL )
+                    {
+                        float r_r = 0.0f;
+                        float r_i = 0.0f;
 
-                    const fftwf_complex dz
-                         = { displacementZScale * factor * ky * geometryhTilde[1],
-                            displacementZScale * factor * ky * geometryhTilde[0] * -1.0f };
+                        if (lengthK > kMinGeometry)
+                        {
+                            r_r = geometryhTilde[0];
+                            r_i = geometryhTilde[1];
+                        }
 
-                    // dx + i*dz
-                    result->displacement[geometryIndex][0] = dx[0] - dz[1];
-                    result->displacement[geometryIndex][1] = dx[1] + dz[0];
+                        result->height[geometryIndex][0] = r_r;
+                        result->height[geometryIndex][1] = r_i;
+                    }
+
+                    if ( result->displacement != NULL )
+                    {
+                        float r_r = 0.0f;
+                        float r_i = 0.0f;
+
+                        if (lengthK > kMinGeometry)
+                        {
+                            const fftwf_complex dx
+                                = { displacementXScale * factor * kx * geometryhTilde[1],
+                                    displacementXScale * factor * kx * geometryhTilde[0] * -1.0f };
+
+                            const fftwf_complex dz
+                                = { displacementZScale * factor * ky * geometryhTilde[1],
+                                    displacementZScale * factor * ky * geometryhTilde[0] * -1.0f };
+
+                            // dx + i*dz
+                            r_r = dx[0] - dz[1];
+                            r_i = dx[1] + dz[0];
+                        }
+
+                        result->displacement[geometryIndex][0] = r_r;
+                        result->displacement[geometryIndex][1] = r_i;
+                    }
                 }
             }
         }
