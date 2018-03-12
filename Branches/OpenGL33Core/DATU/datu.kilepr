@@ -1,10 +1,15 @@
 [General]
+bibliographyBackendAutoDetected=
+bibliographyBackendUserOverride=
 def_graphic_ext=pdf
 img_extIsRegExp=false
 img_extensions=.eps .jpg .jpeg .png .pdf .ps .fig .gif
+kile_livePreviewEnabled=true
+kile_livePreviewStatusUserSpecified=false
+kile_livePreviewTool=LivePreview-PDFLaTeX
 kileprversion=2
 kileversion=2.1.3
-lastDocument=chapters/background.tex
+lastDocument=chapters/summary.tex
 masterDocument=
 name=datu
 pkg_extIsRegExp=false
@@ -19,6 +24,8 @@ QuickBuild=
 [document-settings,item:chapters/acknowledgements.tex]
 Bookmarks=
 Encoding=UTF-8
+FoldedColumns=
+FoldedLines=
 Highlighting=LaTeX
 Indentation Mode=
 Mode=LaTeX
@@ -27,18 +34,38 @@ ReadWrite=true
 [document-settings,item:chapters/background.tex]
 Bookmarks=
 Encoding=UTF-8
+FoldedColumns=
+FoldedLines=
 Highlighting=LaTeX
 Indentation Mode=
 Mode=LaTeX
 ReadWrite=true
 
+[document-settings,item:chapters/implementation.tex]
+Bookmarks=
+Encoding=UTF-8
+FoldedColumns=
+FoldedLines=
+Highlighting=LaTeX
+Indentation Mode=none
+Mode=LaTeX
+
 [document-settings,item:chapters/introduction.tex]
 Bookmarks=
 Encoding=UTF-8
+FoldedColumns=
+FoldedLines=
 Highlighting=LaTeX
 Indentation Mode=
 Mode=LaTeX
 ReadWrite=true
+
+[document-settings,item:chapters/results.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Indentation Mode=normal
+Mode=LaTeX
 
 [document-settings,item:chapters/state_of_the_art.tex]
 Bookmarks=
@@ -48,9 +75,18 @@ Indentation Mode=
 Mode=LaTeX
 ReadWrite=true
 
+[document-settings,item:chapters/summary.tex]
+Bookmarks=
+Encoding=UTF-8
+Highlighting=LaTeX
+Indentation Mode=normal
+Mode=LaTeX
+
 [document-settings,item:references.bib]
 Bookmarks=
 Encoding=UTF-8
+FoldedColumns=
+FoldedLines=
 Highlighting=BibTeX
 Indentation Mode=
 Mode=BibTeX
@@ -59,6 +95,8 @@ ReadWrite=true
 [document-settings,item:thesis.tex]
 Bookmarks=
 Encoding=UTF-8
+FoldedColumns=
+FoldedLines=
 Highlighting=LaTeX
 Indentation Mode=
 Mode=LaTeX
@@ -96,10 +134,10 @@ order=1
 
 [item:chapters/background.tex]
 archive=true
-column=43
+column=71
 encoding=UTF-8
 highlight=LaTeX
-line=125
+line=91
 mode=LaTeX
 open=true
 order=2
@@ -146,33 +184,43 @@ order=-1
 
 [item:chapters/implementation.tex]
 archive=true
-column=3
-encoding=
-highlight=
-line=0
-mode=
-open=false
-order=-1
+column=0
+encoding=UTF-8
+highlight=LaTeX
+line=259
+mode=LaTeX
+open=true
+order=4
 
 [item:chapters/introduction.tex]
 archive=true
-column=25
+column=21
 encoding=UTF-8
 highlight=LaTeX
-line=36
+line=55
 mode=LaTeX
 open=true
 order=3
 
-[item:chapters/state_of_the_art.tex]
+[item:chapters/results.tex]
 archive=true
 column=0
 encoding=UTF-8
 highlight=LaTeX
 line=0
 mode=LaTeX
-open=false
-order=-1
+open=true
+order=7
+
+[item:chapters/state_of_the_art.tex]
+archive=true
+column=37
+encoding=UTF-8
+highlight=LaTeX
+line=182
+mode=LaTeX
+open=true
+order=5
 
 [item:chapters/structure.tex]
 archive=true
@@ -183,6 +231,16 @@ line=0
 mode=
 open=false
 order=-1
+
+[item:chapters/summary.tex]
+archive=true
+column=0
+encoding=UTF-8
+highlight=LaTeX
+line=13
+mode=LaTeX
+open=true
+order=6
 
 [item:datu.kilepr]
 archive=true
@@ -246,12 +304,12 @@ order=-1
 
 [item:references.bib]
 archive=true
-column=18
+column=0
 encoding=UTF-8
 highlight=BibTeX
-line=99
+line=408
 mode=BibTeX
-open=true
+open=false
 order=4
 
 [item:thesis.tex]
@@ -259,7 +317,7 @@ archive=true
 column=0
 encoding=UTF-8
 highlight=LaTeX
-line=53
+line=55
 mode=LaTeX
 open=true
 order=0
@@ -287,23 +345,53 @@ order=-1
 [view-settings,view=0,item:chapters/acknowledgements.tex]
 CursorColumn=44
 CursorLine=4
+JumpList=
+ViMarks=
 
 [view-settings,view=0,item:chapters/background.tex]
-CursorColumn=43
-CursorLine=125
+CursorColumn=71
+CursorLine=91
+JumpList=
+ViMarks=
+
+[view-settings,view=0,item:chapters/implementation.tex]
+CursorColumn=0
+CursorLine=259
+JumpList=
+ViMarks=
 
 [view-settings,view=0,item:chapters/introduction.tex]
-CursorColumn=25
-CursorLine=36
+CursorColumn=21
+CursorLine=55
+JumpList=
+ViMarks=.,55,64,[,55,64,],55,64
 
-[view-settings,view=0,item:chapters/state_of_the_art.tex]
+[view-settings,view=0,item:chapters/results.tex]
 CursorColumn=0
 CursorLine=0
+JumpList=
+ViMarks=
+
+[view-settings,view=0,item:chapters/state_of_the_art.tex]
+CursorColumn=37
+CursorLine=182
+JumpList=
+ViMarks=.,182,37,[,182,37,],182,37
+
+[view-settings,view=0,item:chapters/summary.tex]
+CursorColumn=0
+CursorLine=13
+JumpList=
+ViMarks=
 
 [view-settings,view=0,item:references.bib]
-CursorColumn=18
-CursorLine=99
+CursorColumn=0
+CursorLine=408
+JumpList=
+ViMarks=.,895,26,[,895,26,],895,26
 
 [view-settings,view=0,item:thesis.tex]
 CursorColumn=0
-CursorLine=53
+CursorLine=55
+JumpList=
+ViMarks=.,55,29,[,55,29,],55,29
