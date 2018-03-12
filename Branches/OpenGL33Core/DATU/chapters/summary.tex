@@ -1,0 +1,22 @@
+\chapter{Summary}
+\label{ch:summary}
+
+\section{Future Work}
+The work presented in this thesis leaves room for improvement.
+
+The next step in ocean surface synthesis based on wave energy spectra would be
+to support spectra which are able to model shallow water, such as the
+TMA spectrum \citep{Hughes:1984}.
+Thus, one would be required to incorporate a dispersion relation which models
+shallow as well as deep water. Moreover, one would have
+to adapt the wave energy integral scaling to match said dispersion relation.
+\cite{Horvath:2015}
+
+For performance reasons it would be highly beneficial to follow the lead of
+\cite{misc:oceanlightingfft} and generate all pattern datasets on the GPU,
+as well as compute all \InvDiscreteFourierTransforms on the GPU, while the
+underlying wave energy spectrum Equation~\ref{eq:dft_h0_k} could still be synthesized on the CPU.
+
+Moreover, one could allow for more fine-grained control over pattern resolutions,
+as it may be beneficial to configure resolutions for each dataset and each LOD
+level separately.
