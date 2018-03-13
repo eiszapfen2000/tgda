@@ -424,7 +424,7 @@
             Type = "ODSliderItem";
             Label = "SunDiskA";
             Alignment = "BottomLeft";
-            Position = ("20", "330" );
+            Position = ("20", "360" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "1.0";
@@ -440,7 +440,7 @@
             Type = "ODSliderItem";
             Label = "SunDiskB";
             Alignment = "BottomLeft";
-            Position = ("20", "300" );
+            Position = ("20", "330" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
@@ -456,7 +456,7 @@
             Type = "ODSliderItem";
             Label = "SunDiskC";
             Alignment = "BottomLeft";
-            Position = ("20", "270" );
+            Position = ("20", "300" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "1.0";
@@ -465,6 +465,18 @@
             HeadSize = ("3", "21");
             TargetObject = "ODPreethamSkylight";
             TargetProperty = "sunDiskC";
+        };
+
+        PGrid =
+        {
+            Type = "ODButtonItem";
+            Label = "Grid";
+            Alignment = "BottomLeft";
+            Position = ("20", "270" );
+            Size = ( "85", "20" );
+            TextSize = "16";
+            TargetObject = "Scene";
+            TargetProperty = "oceanAsGrid";
         };
 
         PSliderKey =
