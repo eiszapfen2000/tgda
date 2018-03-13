@@ -964,13 +964,13 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString * suffix)
         [ rtc activateDrawBuffers ];
         [ rtc activateViewport ];
 
-        [ self renderScene:[ projectedGridEffect techniqueWithName:@"ross" ]];
+        [ self renderScene:[ projectedGridEffect techniqueWithName:@"ross" ] lines:NO];
         texture_to_pfm([ linearsRGBTarget texture ], @"_ross");
-        [ self renderScene:[ projectedGridEffect techniqueWithName:@"sky" ]];
+        [ self renderScene:[ projectedGridEffect techniqueWithName:@"sky" ] lines:NO];
         texture_to_pfm([ linearsRGBTarget texture ], @"_sky");
-        [ self renderScene:[ projectedGridEffect techniqueWithName:@"sea" ]];
+        [ self renderScene:[ projectedGridEffect techniqueWithName:@"sea" ] lines:NO];
         texture_to_pfm([ linearsRGBTarget texture ], @"_sea");
-        [ self renderScene:[ projectedGridEffect techniqueWithName:@"whitecaps" ]];
+        [ self renderScene:[ projectedGridEffect techniqueWithName:@"whitecaps" ] lines:NO];
         texture_to_pfm([ linearsRGBTarget texture ], @"_whitecaps");
 
         // detach targets
