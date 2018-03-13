@@ -541,7 +541,7 @@ static NSString * date_string()
     return [ NSString stringWithUTF8String:dateBuffer ];
 }
 
-static bool texture_to_pfm(NPTexture2D * texture, NSString * suffix)
+static bool texture_to_pfm(NPTexture2D * texture, NSString* dateString, NSString * suffix)
 {
     const uint32_t width  = [ texture width  ];
     const uint32_t height = [ texture height ];
@@ -551,13 +551,6 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString * suffix)
     [[[ NP Graphics ] textureBindingState ] setTextureImmediately:texture ];
     glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, screenShotBuffer);
     [[[ NP Graphics ] textureBindingState ] restoreOriginalTextureImmediately ];
-
-    NSString * dateString = date_string();
-
-    if (dateString == nil)
-    {
-        return false;
-    }
 
     NSString * filename = [[ dateString stringByAppendingString:suffix ] stringByAppendingPathExtension:@"pfm" ];
     NSLog(filename);
@@ -947,7 +940,9 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString * suffix)
 
     if ([ screenshotAction deactivated ] == YES )
     {
-        texture_to_pfm([ linearsRGBTarget texture ], @"_complete");
+        NSString * dateString = date_string();
+
+        texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_complete");
 
         // setup linear sRGB target
         [ rtc bindFBO ];
@@ -965,13 +960,15 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString * suffix)
         [ rtc activateViewport ];
 
         [ self renderScene:[ projectedGridEffect techniqueWithName:@"ross" ] lines:NO];
-        texture_to_pfm([ linearsRGBTarget texture ], @"_ross");
+        texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_ross");
         [ self renderScene:[ projectedGridEffect techniqueWithName:@"sky" ] lines:NO];
-        texture_to_pfm([ linearsRGBTarget texture ], @"_sky");
+        texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_sky");
+        [ self renderScene:[ projectedGridEffect techniqueWithName:@"sky" ] lines:YES];
+        texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_grid");
         [ self renderScene:[ projectedGridEffect techniqueWithName:@"sea" ] lines:NO];
-        texture_to_pfm([ linearsRGBTarget texture ], @"_sea");
+        texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_sea");
         [ self renderScene:[ projectedGridEffect techniqueWithName:@"whitecaps" ] lines:NO];
-        texture_to_pfm([ linearsRGBTarget texture ], @"_whitecaps");
+        texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_whitecaps");
 
         // detach targets
         [ linearsRGBTarget detach:NO ];
