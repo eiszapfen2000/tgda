@@ -48,6 +48,9 @@
     BOOL connecting;
     BOOL disconnecting;
 
+    // if true, rasterize ocean only with lines
+    BOOL oceanAsGrid;
+
     // whitecaps threshold
     double jacobianEpsilon;
 

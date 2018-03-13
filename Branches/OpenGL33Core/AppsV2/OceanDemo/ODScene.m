@@ -189,6 +189,8 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     connecting = NO;
     disconnecting = NO;
 
+    oceanAsGrid = NO;
+
     jacobianEpsilon = 0.2;
 
     // tonemapping parameters
@@ -700,6 +702,7 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString * suffix)
 }
 
 - (void) renderScene:(NPEffectTechnique *) oceanTechnique
+               lines:(BOOL) oceanAsLines
 {
     // get state related objects for later use
     NPStateConfiguration * stateConfiguration = [[ NP Graphics ] stateConfiguration ];
@@ -786,9 +789,21 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString * suffix)
     [ projectedGridTFTransform activate ];
     [ projectedGrid renderTFTransform ];
 
+    if ( oceanAsLines == YES )
+    {
+        [ fillState setFrontFaceFill:NpPolygonFillLine ];
+        [ fillState activate ];
+    }
+
     // feedback step
     [ oceanTechnique activate ];
     [ projectedGrid renderTFFeedback  ];
+
+    if (oceanAsLines == YES )
+    {
+        [ fillState setFrontFaceFill:NpPolygonFillFace ];
+        [ fillState activate ];
+    }
 
     // render world coordinate system axes
     [[[ NPEngineCore instance ] transformationState ] resetModelMatrix ];
@@ -846,7 +861,7 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString * suffix)
     [ rtc activateViewport ];
 
     // render sky, ocean, world space coordinate axes
-    [ self renderScene:projectedGridTFFeedback ];
+    [ self renderScene:projectedGridTFFeedback lines:oceanAsGrid ];
 
     // detach targets
     [ linearsRGBTarget detach:NO ];
