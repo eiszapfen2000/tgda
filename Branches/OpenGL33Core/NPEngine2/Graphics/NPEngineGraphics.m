@@ -165,7 +165,7 @@ static NSString * debug_severity_to_string(GLenum debugSeverity)
 
 static void GLAPIENTRY
 debug_callback(GLenum source, GLenum type, GLuint mID, GLenum severity,
-               GLsizei length, const GLchar* message, GLvoid* userParam)
+               GLsizei length, const GLchar* message, const GLvoid* userParam)
 {
     NSString * sourceString = debug_source_to_string(source);
     NSString * typeString = debug_type_to_string(type);
