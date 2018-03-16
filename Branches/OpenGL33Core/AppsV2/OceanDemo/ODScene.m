@@ -949,12 +949,12 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString* dateString, NSString
         [ rtc activateDrawBuffers ];
         [ rtc activateViewport ];
 
+        [ self renderScene:projectedGridTFFeedback lines:YES];
+        texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_grid");
         [ self renderScene:[ projectedGridEffect techniqueWithName:@"ross" ] lines:NO];
         texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_ross");
         [ self renderScene:[ projectedGridEffect techniqueWithName:@"sky" ] lines:NO];
         texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_sky");
-        [ self renderScene:[ projectedGridEffect techniqueWithName:@"sky" ] lines:YES];
-        texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_grid");
         [ self renderScene:[ projectedGridEffect techniqueWithName:@"sea" ] lines:NO];
         texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_sea");
         [ self renderScene:[ projectedGridEffect techniqueWithName:@"whitecaps" ] lines:NO];
