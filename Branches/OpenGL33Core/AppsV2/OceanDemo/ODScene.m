@@ -729,13 +729,7 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString* dateString, NSString
     NPEffectVariableFloat3 * dcp = [ deferredEffect variableWithName:@"cameraPosition"];
     [ dcp setValue:[camera position ]];
     [[ deferredEffect techniqueWithName:@"skylight"] activate ];
-    const FVector3 * const frustumP = [ cameraFrustum frustumCornerPositions ];
-    glBegin(GL_QUADS);
-        glVertexAttrib2f(NpVertexStreamPositions, -1.0f, -1.0f);
-        glVertexAttrib2f(NpVertexStreamPositions,  1.0f, -1.0f);
-        glVertexAttrib2f(NpVertexStreamPositions,  1.0f,  1.0f);
-        glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
-    glEnd();
+    [ fullscreenQuad render ];
 
     // activate culling, depth write and depth test
     [ blendingState  setEnabled:NO ];
