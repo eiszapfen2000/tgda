@@ -49,7 +49,9 @@
     BOOL disconnecting;
 
     // if true, rasterize ocean only with lines
-    BOOL oceanAsGrid;
+    BOOL renderOceanAsLines;
+    // if true, render world space axes
+    BOOL renderWorldSpaceAxes;
 
     // whitecaps threshold
     double jacobianEpsilon;

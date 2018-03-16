@@ -189,7 +189,8 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     connecting = NO;
     disconnecting = NO;
 
-    oceanAsGrid = NO;
+    renderOceanAsLines = NO;
+    renderWorldSpaceAxes = YES;
 
     jacobianEpsilon = 0.2;
 
@@ -696,6 +697,7 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString* dateString, NSString
 
 - (void) renderScene:(NPEffectTechnique *) oceanTechnique
                lines:(BOOL) oceanAsLines
+                axes:(BOOL) renderAxes
 {
     // get state related objects for later use
     NPStateConfiguration * stateConfiguration = [[ NP Graphics ] stateConfiguration ];
@@ -796,9 +798,12 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString* dateString, NSString
     [ depthTestState setEnabled:NO ];
     [ stateConfiguration activate ];
 
-    [ axes setDirectionToSun: [ skylight directionToSun ]];
-    [[ deferredEffect techniqueWithName:@"v3c3" ] activate ];
-    [ axes render ];
+    if ( renderAxes == YES )
+    {
+        [ axes setDirectionToSun: [ skylight directionToSun ]];
+        [[ deferredEffect techniqueWithName:@"v3c3" ] activate ];
+        [ axes render ];
+    }
 }
 
 - (void) render
@@ -844,7 +849,10 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString* dateString, NSString
     [ rtc activateViewport ];
 
     // render sky, ocean, world space coordinate axes
-    [ self renderScene:projectedGridTFFeedback lines:oceanAsGrid ];
+    [ self
+        renderScene:projectedGridTFFeedback
+              lines:renderOceanAsLines
+               axes:renderWorldSpaceAxes ];
 
     // detach targets
     [ linearsRGBTarget detach:NO ];
@@ -949,15 +957,15 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString* dateString, NSString
         [ rtc activateDrawBuffers ];
         [ rtc activateViewport ];
 
-        [ self renderScene:projectedGridTFFeedback lines:YES];
+        [ self renderScene:projectedGridTFFeedback lines:YES axes:NO ];
         texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_grid");
-        [ self renderScene:[ projectedGridEffect techniqueWithName:@"ross" ] lines:NO];
+        [ self renderScene:[ projectedGridEffect techniqueWithName:@"ross" ] lines:NO axes:NO ];
         texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_ross");
-        [ self renderScene:[ projectedGridEffect techniqueWithName:@"sky" ] lines:NO];
+        [ self renderScene:[ projectedGridEffect techniqueWithName:@"sky" ] lines:NO axes:NO ];
         texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_sky");
-        [ self renderScene:[ projectedGridEffect techniqueWithName:@"sea" ] lines:NO];
+        [ self renderScene:[ projectedGridEffect techniqueWithName:@"sea" ] lines:NO axes:NO ];
         texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_sea");
-        [ self renderScene:[ projectedGridEffect techniqueWithName:@"whitecaps" ] lines:NO];
+        [ self renderScene:[ projectedGridEffect techniqueWithName:@"whitecaps" ] lines:NO axes:NO ];
         texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_whitecaps");
 
         // detach targets
