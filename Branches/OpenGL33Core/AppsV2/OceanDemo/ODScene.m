@@ -66,7 +66,7 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     NSAssert(fileName != nil, @"");
 
     NSString * absoluteFileName
-        = [[[ NPEngineCore instance ] 
+        = [[[ NPEngineCore instance ]
                 localPathManager ] getAbsolutePath:fileName ];
 
     if ( absoluteFileName == nil )
@@ -106,7 +106,7 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     entity = [[ entityClass alloc ] initWithName:@"" ];
 
     BOOL result
-        = [ entity loadFromDictionary:entityConfig 
+        = [ entity loadFromDictionary:entityConfig
                                 error:NULL ];
 
     if ( result == YES )
@@ -176,9 +176,9 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     camera = [[ ODCamera alloc ] init ];
     cameraFrustum = [[ ODFrustum alloc ] initWithName:@"CFrustum" ];
     projectedGrid = [[ ODProjectedGrid alloc ] initWithName:@"ProjGrid" ];
-    ocean = [[ ODOceanEntity alloc ] initWithName:@"Ocean" ];  
+    ocean = [[ ODOceanEntity alloc ] initWithName:@"Ocean" ];
 	skylight = [[ ODPreethamSkylight alloc ] init ];
-	axes = [[ ODWorldCoordinateAxes alloc ] init ];    
+	axes = [[ ODWorldCoordinateAxes alloc ] init ];
 
     // camera animation
     fquat_set_identity(&startOrientation);
@@ -206,7 +206,7 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     currentResolution.x = currentResolution.y = 0;
 
     //
-    whitecapsRtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Whitecaps RTC" ];   
+    whitecapsRtc = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Whitecaps RTC" ];
     whitecapsTarget = [[ NPRenderTexture alloc ] init ];
     lastDispDerivativesLayers = UINT_MAX;
 
@@ -361,7 +361,7 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     return file;
 }
 
-- (BOOL) loadFromStream:(id <NPPStream>)stream 
+- (BOOL) loadFromStream:(id <NPPStream>)stream
                   error:(NSError **)error
 {
     if ( error != NULL )
@@ -382,7 +382,7 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     }
 
     NSString * absoluteFileName
-        = [[[ NPEngineCore instance ] 
+        = [[[ NPEngineCore instance ]
                 localPathManager ] getAbsolutePath:fileName ];
 
     if ( absoluteFileName == nil )
@@ -588,7 +588,7 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString* dateString, NSString
         NSAssert(([ self generateRenderTargets:NULL ] == YES), @"");
 
         lastFrameResolution = currentResolution;
-    }    
+    }
 }
 
 - (void) updateWhitecapsRenderTargetResolution
@@ -607,7 +607,7 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString* dateString, NSString
 
     if (( dispDerivativesWidth != 0 && dispDerivativesHeight != 0 )
         && ( dispDerivativesWidth  != whitecapsTargetWidth
-             || dispDerivativesHeight != whitecapsTargetHeight 
+             || dispDerivativesHeight != whitecapsTargetHeight
              || dispDerivativesLayers != lastDispDerivativesLayers ))
     {
         NSAssert(dispDerivativesLayers > 0 && dispDerivativesLayers <= 4, @"");
@@ -723,23 +723,19 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString* dateString, NSString
     [[[ NP Graphics ] textureBindingState ] setTexture:[ skylight skylightTexture ] texelUnit:0 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
+    // now the serious stuff starts
+    [ camera render ];
+
     NPEffectVariableFloat3 * dcp = [ deferredEffect variableWithName:@"cameraPosition"];
     [ dcp setValue:[camera position ]];
     [[ deferredEffect techniqueWithName:@"skylight"] activate ];
     const FVector3 * const frustumP = [ cameraFrustum frustumCornerPositions ];
     glBegin(GL_QUADS);
-        glVertexAttrib3f(NpVertexStreamTexCoords, frustumP[4].x, frustumP[4].y, frustumP[4].z);
         glVertexAttrib2f(NpVertexStreamPositions, -1.0f, -1.0f);
-        glVertexAttrib3f(NpVertexStreamTexCoords, frustumP[5].x, frustumP[5].y, frustumP[5].z);
         glVertexAttrib2f(NpVertexStreamPositions,  1.0f, -1.0f);
-        glVertexAttrib3f(NpVertexStreamTexCoords, frustumP[6].x, frustumP[6].y, frustumP[6].z);
         glVertexAttrib2f(NpVertexStreamPositions,  1.0f,  1.0f);
-        glVertexAttrib3f(NpVertexStreamTexCoords, frustumP[7].x, frustumP[7].y, frustumP[7].z);
         glVertexAttrib2f(NpVertexStreamPositions, -1.0f,  1.0f);
     glEnd();
-
-    // now the serious stuff starts
-    [ camera render ];
 
     // activate culling, depth write and depth test
     [ blendingState  setEnabled:NO ];
@@ -748,7 +744,7 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString* dateString, NSString
     [ depthTestState setWriteEnabled:YES ];
     [ depthTestState setEnabled:YES ];
     [ stateConfiguration activate ];
-    
+
     // bind all ocean data necessary for per-vertex and for per-pixel computations
     [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean sizes ]               texelUnit:0 ];
