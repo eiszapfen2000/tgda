@@ -15,4 +15,3 @@ void main()
 
     target = vec4(color, 1.0);
 }
-

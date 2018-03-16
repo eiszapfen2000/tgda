@@ -206,6 +206,7 @@ technique "skylight"
         MagFilter = Linear;
     };
     uniform vec3 cameraPosition;
+    uniform mat4 np_inverseviewprojectionmatrix;
     # vertex streams
     in vec2 in_position : 0;
     in vec3 in_texcoords : 3;
@@ -215,4 +216,3 @@ technique "skylight"
     set vertex shader "skylight.vertex"
     set fragment shader "skylight.fragment"
 }
-

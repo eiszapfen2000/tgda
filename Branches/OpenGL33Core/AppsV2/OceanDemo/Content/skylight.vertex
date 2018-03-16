@@ -4,6 +4,8 @@ out vec3 ws_position;
 
 void main()
 {
-    ws_position = in_texcoords;
+    vec4 pp_on_far_plane = vec4(in_position,  1.0, 1.0);
+    vec4 ws_on_far_plane = np_inverseviewprojectionmatrix * pp_on_far_plane;
+    ws_position = ws_on_far_plane.xyz / ws_on_far_plane.w;
     gl_Position = vec4(in_position, 1.0, 1.0);
 }
