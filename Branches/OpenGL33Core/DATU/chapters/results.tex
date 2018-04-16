@@ -1168,7 +1168,14 @@ ocean surfaces we are able to synthesize and render.
 %gives the most calm sea, whereas the JONSWAP spectrum results in a
 %more rough and turbulent sea. The Unified spectrum is able to bridge
 %those two variants, but never reaching the degree of calmness of the Pierson-Moskowitz spectrum. Also for closeups it is the Unified spectrum which gives the best results, as it is the only model to handle really short waves well.
-
+We have found that for most viewing conditions two complementary
+ocean surface patterns provide sufficient visual quality for the
+casual observer. For closeups, though, it has proven beneficial to
+include at least one additional pattern which adds short waves to
+the water surface. For wide spanning camera views, where the ocean
+is visible up to the horizon, we settled for three to four patterns
+to keep tiling artifacts in check.
+ 
 Regarding our multi-resolution approach to level of detail we have seen that we are able to reduce the resolution of the horizontal
 and vertical displacements as far as to $32\times32$ without
 noticing a large drop in visual quality, as long as we keep a
