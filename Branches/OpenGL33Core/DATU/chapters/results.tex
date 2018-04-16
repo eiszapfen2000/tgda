@@ -1124,17 +1124,25 @@ result.
 %
 \begin{figure}
 \centering
-\caption[Depiction of ocean surface tiles]{Ocean surface tiles.}
+\caption[Depiction of ocean surface tiles.]{Ocean surface tiles.}
 \label{fig:results:tiling}
 \end{figure}
 %
+%
+\begin{figure}
+\centering
+\caption[Overview of results.]{The ocean surface under a variety of conditions.}
+\label{fig:results:overview}
+\end{figure}
 
 Now, given the wave spectrum of our choosing, we synthesize all of the
 ocean surface datasets and use them to render the ocean surface.
 Figure~\ref{fig:results:lighting} depicts an example rendering, where one
 can see the actual mesh representation of the ocean, all involved lighting
 terms, and the final result. Figure~\ref{fig:results:tiling}, on the other
-hand, shows an example instance of the ocean's tiling pattern.
+hand, shows an example instance of the ocean's tiling pattern. At last,
+Figure~\ref{fig:results:overview} gives examples of the variety of
+ocean surfaces we are able to synthesize and render.
 %Now, given the wave geometry of our choosing, we may move on to the actual
 %process of rendering the ocean surface.
 %We have seen that for rendering, wave geometry alone is not sufficient.
@@ -1165,8 +1173,7 @@ Regarding our multi-resolution approach to level of detail we have seen that we 
 and vertical displacements as far as to $32\times32$ without
 noticing a large drop in visual quality, as long as we keep a
 resolution of $128\times128$ or higher for the slopes and first
-order derivatives. (Figure where mesh is drawn via line, another
-Figure where on sees the tiling pattern)
+order derivatives.
 
 Morevoer, it is obvious that the whitecaps algorithm takes a huge
 toll on both CPU and GPU side, four spectra at high resolution,
