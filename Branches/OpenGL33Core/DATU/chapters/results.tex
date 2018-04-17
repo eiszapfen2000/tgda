@@ -1079,6 +1079,13 @@ best suited for closeups where short waves are visible to the observer.
 %
 \begin{figure}
 \centering
+\caption[Overview of results.]{The ocean surface under a variety of conditions.}
+\label{fig:results:overview}
+\end{figure}
+%
+%
+\begin{figure}
+\centering
  \subtop[Sun Contribution]
  {
   \includegraphics[width=0.48\textwidth]{figures/31-07-2017_10-47-08_ross.png}
@@ -1129,11 +1136,6 @@ result.
 \end{figure}
 %
 %
-\begin{figure}
-\centering
-\caption[Overview of results.]{The ocean surface under a variety of conditions.}
-\label{fig:results:overview}
-\end{figure}
 
 Now, given the wave spectrum of our choosing, we synthesize all datasets
 for the desired number of ocean surface patterns and use them to render
@@ -1157,23 +1159,31 @@ resolution of $256\times256$ for slopes and first order derivatives.
 %
 With surface heights and displacements synthesized at such a low resolution,
 the computational cost required by them shrinks to nearly zero, freeing
-up resources we may employ elsewhere.
+up resources which we may employ elsewhere.
 %
-Still, there are cases where the observer may notice the low resolution: one,
-in closeups, and two, in scenes with highly turbulent seas where the low
-resolution may deny the waves their distinctive narrow peaks.
+Still, there are cases where the observer may notice a significant drop in
+visual quality: one, in closeups, and two, in scenes with highly turbulent
+seas where the low resolution may deny the waves their distinctive narrow
+peaks.
 %
 %But still, with surface heights
 %and displacements synthesized at such a low resolution, the computational cost
 %required by them shrinks to nearly zero.
 
-Bla bla bla.
-For a rough breakdown of our approach to ocean surface lighting, one may look
-at Figure~\ref{fig:results:lighting}, which depicts the actual mesh
-representation of the ocean, all involved lighting terms, and the final result. 
-Figure~\ref{fig:results:tiling}, on the other hand, highlights the ocean's
-tiling pattern. At last, Figure~\ref{fig:results:overview} gives an overview
-of the variety of ocean surfaces we are able to display by means of this work.
+Now that we have discussed the factors which have most impact on the visual
+fidelity of the result, we may give an overview of the variety of
+ocean surfaces we are able to display by means of this work, see
+Figure~\ref{fig:results:overview}.
+For a rough breakdown of our approach to ocean surface lighting,
+one may look at Figure~\ref{fig:results:lighting},
+which depicts the actual mesh representation of the ocean, all involved
+lighting terms, and the final result.
+Figure~\ref{fig:results:tiling}, on the other hand, depicts an example
+instance of the ocean's tiling pattern. At this point we conclude the
+discussion of our results and move on to the next chapter, the summary.
+
+%At last, Figure~\ref{fig:results:overview} gives an overview
+%of the variety of ocean surfaces we are able to display by means of this work.
 
 %Figure~\ref{fig:results:lighting} depicts an example where one
 %can see the actual mesh representation of the ocean, all involved lighting
