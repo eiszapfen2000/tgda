@@ -1135,14 +1135,30 @@ result.
 \label{fig:results:overview}
 \end{figure}
 
-Now, given the wave spectrum of our choosing, we synthesize all of the
-ocean surface datasets and use them to render the ocean surface.
-Figure~\ref{fig:results:lighting} depicts an example where one
-can see the actual mesh representation of the ocean, all involved lighting
-terms, and the final result. Figure~\ref{fig:results:tiling}, on the other
-hand, highlights the ocean's tiling pattern. At last,
-Figure~\ref{fig:results:overview} gives an overview of the variety of
-ocean surfaces we are able to synthesize and render.
+Now, given the wave spectrum of our choosing, we synthesize all datasets
+for the desired number of ocean surface patterns and use them to render
+the ocean. We have found that for most viewing conditions two complementary
+ocean surface patterns provide sufficient visual quality for the
+average observer. For closeups, though, it has proven beneficial to
+include at least one additional pattern which adds short wave detail to
+the water surface. Also for wide spanning camera views, where the ocean
+is visible up to the horizon, we settled not for two, but for three to
+four patterns to keep tiling artifacts in check.
+
+For a rough breakdown of our approach to ocean surface lighting, one may look
+at Figure~\ref{fig:results:lighting}, which depicts the actual mesh
+representation of the ocean, all involved lighting terms, and the final result. 
+Figure~\ref{fig:results:tiling}, on the other hand, highlights the ocean's
+tiling pattern. At last, Figure~\ref{fig:results:overview} gives an overview
+of the variety of ocean surfaces we are able to display by means of this work.
+
+%Figure~\ref{fig:results:lighting} depicts an example where one
+%can see the actual mesh representation of the ocean, all involved lighting
+%terms, and the final result. Figure~\ref{fig:results:tiling}, on the other
+%hand, highlights the ocean's tiling pattern. At last,
+%Figure~\ref{fig:results:overview} gives an overview of the variety of
+%ocean surfaces we are able to synthesize and render using our approach.
+
 %Now, given the wave geometry of our choosing, we may move on to the actual
 %process of rendering the ocean surface.
 %We have seen that for rendering, wave geometry alone is not sufficient.
@@ -1168,13 +1184,7 @@ ocean surfaces we are able to synthesize and render.
 %gives the most calm sea, whereas the JONSWAP spectrum results in a
 %more rough and turbulent sea. The Unified spectrum is able to bridge
 %those two variants, but never reaching the degree of calmness of the Pierson-Moskowitz spectrum. Also for closeups it is the Unified spectrum which gives the best results, as it is the only model to handle really short waves well.
-We have found that for most viewing conditions two complementary
-ocean surface patterns provide sufficient visual quality for the
-casual observer. For closeups, though, it has proven beneficial to
-include at least one additional pattern which adds short wave detail to
-the water surface. Also for wide spanning camera views, where the ocean
-is visible up to the horizon, we settled not for two, but for three to
-four patterns to keep tiling artifacts in check.
+
  
 Regarding our multi-resolution approach to level of detail we have seen that we are able to reduce the resolution of the horizontal
 and vertical displacements as far as to $32\times32$ without
