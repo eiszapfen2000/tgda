@@ -1143,8 +1143,31 @@ average observer. For closeups, though, it has proven beneficial to
 include at least one additional pattern which adds short wave detail to
 the water surface. Also for wide spanning camera views, where the ocean
 is visible up to the horizon, we settled not for two, but for three to
-four patterns to keep tiling artifacts in check.
+four patterns to keep tiling artifacts in check. As for pattern resolution,
+we settle for $256\times256$, because that is the highest resolution which
+still allows us to keep real-time framerates with four active patterns.
 
+Given we are satisfied with the visual appearance of the ocean for a specific
+number of patterns, though, then we may employ our multi-resolution approach
+to lighten the computational load of CPU and GPU. By simple visual inspection
+we have found that for most scenes we are able to reduce the resolution of
+the horizontal and vertical displacements as far as to $32\times32$ without
+noticing a significant drop in visual quality, on condition that we keep the
+resolution of $256\times256$ for slopes and first order derivatives.
+%
+With surface heights and displacements synthesized at such a low resolution,
+the computational cost required by them shrinks to nearly zero, freeing
+up resources we may employ elsewhere.
+%
+Still, there are cases where the observer may notice the low resolution: one,
+for closeups, and two, for scenes with highly turbulent seas where the low
+resolution may deny the waves their distinctive narrow peaks.
+%
+%But still, with surface heights
+%and displacements synthesized at such a low resolution, the computational cost
+%required by them shrinks to nearly zero.
+
+Bla bla bla.
 For a rough breakdown of our approach to ocean surface lighting, one may look
 at Figure~\ref{fig:results:lighting}, which depicts the actual mesh
 representation of the ocean, all involved lighting terms, and the final result. 
@@ -1186,29 +1209,29 @@ of the variety of ocean surfaces we are able to display by means of this work.
 %those two variants, but never reaching the degree of calmness of the Pierson-Moskowitz spectrum. Also for closeups it is the Unified spectrum which gives the best results, as it is the only model to handle really short waves well.
 
  
-Regarding our multi-resolution approach to level of detail we have seen that we are able to reduce the resolution of the horizontal
-and vertical displacements as far as to $32\times32$ without
-noticing a large drop in visual quality, as long as we keep a
-resolution of $128\times128$ or higher for the slopes and first
-order derivatives.
-
-Morevoer, it is obvious that the whitecaps algorithm takes a huge
-toll on both CPU and GPU side, four spectra at high resolution,
-which then need all to be sampled per pixel to compute the
-whitecpas coverage. Maybe use another, more simpler approach altogether.
-
-Lets discuss our overall results
-Images of all partial terms involved in ocean lighting (specular by sun,
-reflection of sky, refracted light, whitecaps)
-Image of ocean geometry (wireframe)
-
-Troubles with reflection vectors below horizon
-Troubles with bright patches caused by reflection
-Troubles with dark patches caused by reflection
-Troubles with sundisk (XYZ to sRGB)
-
-Tiling images
-
-Comparison full resolution patterns vs multi-resolution scheme
-
-Maybe different tonemapping settings
+%Regarding our multi-resolution approach to level of detail we have seen that we are able to reduce the resolution of the horizontal
+%and vertical displacements as far as to $32\times32$ without
+%noticing a large drop in visual quality, as long as we keep a
+%resolution of $128\times128$ or higher for the slopes and first
+%order derivatives.
+%
+%Morevoer, it is obvious that the whitecaps algorithm takes a huge
+%toll on both CPU and GPU side, four spectra at high resolution,
+%which then need all to be sampled per pixel to compute the
+%whitecpas coverage. Maybe use another, more simpler approach altogether.
+%
+%Lets discuss our overall results
+%Images of all partial terms involved in ocean lighting (specular by sun,
+%reflection of sky, refracted light, whitecaps)
+%Image of ocean geometry (wireframe)
+%
+%Troubles with reflection vectors below horizon
+%Troubles with bright patches caused by reflection
+%Troubles with dark patches caused by reflection
+%Troubles with sundisk (XYZ to sRGB)
+%
+%Tiling images
+%
+%Comparison full resolution patterns vs multi-resolution scheme
+%
+%Maybe different tonemapping settings
