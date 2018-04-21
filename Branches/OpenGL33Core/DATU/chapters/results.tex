@@ -1146,22 +1146,22 @@ include at least one additional pattern which adds short wave detail to
 the water surface. Also for wide spanning camera views, where the ocean
 is visible up to the horizon, we settled not for two, but for three to
 four patterns to keep tiling artifacts in check. As for pattern resolution,
-we settle for $256\times256$, because that is the highest resolution which
+we chose $256\times256$ because it is the highest resolution which
 still allows us to keep real-time framerates with four active patterns.
 
 Given we are satisfied with the visual appearance of the ocean for a specific
-number of patterns, though, then we may employ our multi-resolution approach
+number of patterns, then we may employ our multi-resolution approach
 to lighten the computational load of CPU and GPU. By simple visual inspection
 we have found that for most scenes we are able to reduce the resolution of
 the horizontal and vertical displacements as far as to $32\times32$ without
-noticing a significant drop in visual quality, on condition that we keep the
-resolution of $256\times256$ for slopes and first order derivatives.
+noticing a significant drop in visual quality, on condition that we keep a
+resolution of $256\times256$ for the slopes and the first order derivatives.
 %
 With surface heights and displacements synthesized at such a low resolution,
 the computational cost required by them shrinks to nearly zero, freeing
 up resources which we may employ elsewhere.
 %
-Still, there are cases where the observer may notice a significant drop in
+Still, there are cases where the observer may notice a distinct drop in
 visual quality: one, in closeups, and two, in scenes with highly turbulent
 seas where the low resolution may deny the waves their distinctive narrow
 peaks.
@@ -1172,15 +1172,16 @@ peaks.
 
 Now that we have discussed the factors which have most impact on the visual
 fidelity of the result, we may give an overview of the variety of
-ocean surfaces we are able to display by means of this work, see
+ocean surfaces which we are able to display by means of this work, see
 Figure~\ref{fig:results:overview}.
 For a rough breakdown of our approach to ocean surface lighting,
 one may look at Figure~\ref{fig:results:lighting},
-which depicts the actual mesh representation of the ocean, all involved
+which shows the actual mesh representation of the ocean, all involved
 lighting terms, and the final result.
 Figure~\ref{fig:results:tiling}, on the other hand, depicts an example
-instance of the ocean's tiling pattern. At this point we conclude the
-discussion of our results and move on to the next chapter, the summary.
+instance of the ocean's tiling pattern. 
+%At this point we conclude the
+%discussion of our results and move on to the next chapter, the summary.
 
 %At last, Figure~\ref{fig:results:overview} gives an overview
 %of the variety of ocean surfaces we are able to display by means of this work.
