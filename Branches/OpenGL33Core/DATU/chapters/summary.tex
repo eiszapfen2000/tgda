@@ -16,6 +16,7 @@ Ocean lighting scheme tailored to the above (Bruneton, Dupuy).
 
 \section{Future Work}
 The work presented in this thesis leaves room for improvement on several fronts.
+
 One could take the next step in ocean surface synthesis and implement support
 for wave energy spectra which are able to model shallow water, such as the
 TMA spectrum \citep{Hughes:1984}. In that case, one would be required to
@@ -28,15 +29,17 @@ Wave spectra aside, one could significantly improve upon performance by
 following the lead of \cite{misc:oceanlightingfft} and generate all
 pattern datasets on the GPU, as well as compute all \InvDiscreteFourierTransforms
 on the GPU, while the static part of the underlying wave energy spectrum
-could still be synthesized on the CPU. Moreover, one could look for a viable
-alternative to rendering whitecaps, as the approach by \citet{article:whitecaps}
-is computationally highly expensive with regard to pattern dataset synthesis.
+would still be synthesized on the CPU. Additionally, it would beneficial
+to look for a viable alternative to rendering whitecaps, as the approach
+by \citet{article:whitecaps} is computationally highly expensive,
+especially with regard to pattern dataset synthesis.
 
 %For performance reasons it would be highly beneficial to follow the lead of
 %\cite{misc:oceanlightingfft} and generate all pattern datasets on the GPU,
 %as well as compute all \InvDiscreteFourierTransforms on the GPU, while the
 %underlying wave energy spectrum Equation~\ref{eq:dft_h0_k} could still be synthesized on the CPU.
 
-Moreover, one could allow for more fine-grained control over pattern resolutions,
-as it may be beneficial to configure resolutions for each dataset and each LOD
-level separately.
+Last, to better balance performance and visual fidelity, one could allow
+for more fine-grained control over pattern resolutions, as it may be
+of advantage to be able to configure the resolution for each dataset for
+each pattern separately.
