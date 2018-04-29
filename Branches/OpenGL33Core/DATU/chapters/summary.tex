@@ -10,12 +10,27 @@ is able to make good on unrealistic wave shapes.
 For the purpose of ocean surface synthesis we opted for a wave spectrum
 based approach, as oceanographic research provides a wide range of wave
 energy spectra which are tailored to the deep water of the open ocean.
-Since the aforementioned spectra are employed for oceanographic forecasts
-and simulations, they provide a high degree of realism. That allows us to
-attain wave geometry, as well as wave animation, at the level of quality
-we sought after, presupposed that we make sure to convert the wave
-energy spectrum to the correct integral domain.
+Because wave spectra are employed for oceanographic forecasts and
+simulations, they provide a high degree of realism.
+We chose to implement four such wave energy spectra, all well established
+in oceanographic literature, plus one wave spectrum from computer graphics literature. The latter was unable to give results consistent in quality
+with the other four spectra, and thus we dropped it. 
+The remaining four spectra, on the other hand, allowed us to attain
+animated wave geometry at the level of quality we sought after,
+but only after we had made sure that each wave spectrum had been converted
+to the correct integral domain.
+%
 
+Moreover, discretisation of the wave
+spectrum had proven to be an issue, as we were not sampling enough
+distinct \wavenumbers to reproduce a high-quality ocean surface for all
+possible viewing situations. We addressed the matter by using multiple,
+complementary wave patterns which sample different, non-overlapping parts
+of the wave spectrum. 
+
+%but only after we made sure to meet a set of preconditions. First and
+%foremost, we had to ensure that each wave spectrum of interest is
+%converted to the correct integral domain. Second,  
 
 Wave energy spectrum from oceanographic research provides realistic wave geometry
 and animation, given integral domain conversion is done correctly.
