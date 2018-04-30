@@ -37,10 +37,27 @@ surface for all possible viewing situations. Depending on the
 observer's viewpoint, we may be faced with tiling artifacts or lack
 of detail. Therefore we adopted the approach by~\citet{misc:oceanlightingfft},
 which addresses the matter by using multiple, complementary perturbation
-patterns which sample different, non-overlapping parts of the wave spectrum.
+patterns which sample different, non-overlapping parts of the wave spectrum
+(Section~\ref{sec:level_of_detail}).
 
-With only one perturbation pattern at hand, one may be faced with tiling
-artifacts or lack of detail, depending on the observer's viewpoint.
+With multiple patterns at hand, where patterns consist of up to nine separate
+spectra each, pattern generation had become computationally too expensive to
+still allow for real-time framerates. Therefore we took a number of measures
+to restore real-time behaviour. First, we moved pattern spectrum generation
+and transformation via \FFT to separate threads each (Section~\ref{sec:demo_application}).
+Second, we made sure to compute only the time-dependent part of the spectrum
+for each frame (Section~\ref{sec:spectrum_synthesis}).
+Third, as all of our spectra are hermitian, we can compute the \InvFourierTransform
+of two spectra at once (Section~\ref{sec:discrete_fourier_transform}). Hence,
+we were able to reduce the maximum number of \FourierTransforms per pattern
+from nine to five.
+
+%Naturally, multiple patterns imply an increase in computational cost of
+%pattern generation. To still be able to generate the ocean surface in
+%real-time
+%
+%With only one perturbation pattern at hand, one may be faced with tiling
+%artifacts or lack of detail, depending on the observer's viewpoint.
 
 
 First, discretisation and multiple patterns, for proper sampling. Then,
@@ -50,13 +67,13 @@ for performance.
 Ocean lighting scheme tailored to the above (Bruneton, Dupuy), another spectrum
 disqualified.
 
-With our goal being to render the open ocean, we found that discretisation
-of the wave spectrum had proven to be an issue, as we were not sampling enough
-distinct \wavenumbers to reproduce a high-quality ocean surface for all
-possible viewing situations. We addressed the matter by using multiple,
-complementary wave patterns which sample different, non-overlapping parts
-of the wave spectrum. During this work, up to four of such patterns where
-always sufficient.
+%With our goal being to render the open ocean, we found that discretisation
+%of the wave spectrum had proven to be an issue, as we were not sampling enough
+%distinct \wavenumbers to reproduce a high-quality ocean surface for all
+%possible viewing situations. We addressed the matter by using multiple,
+%complementary wave patterns which sample different, non-overlapping parts
+%of the wave spectrum. During this work, up to four of such patterns where
+%always sufficient.
 
 %but only after we made sure to meet a set of preconditions. First and
 %foremost, we had to ensure that each wave spectrum of interest is
