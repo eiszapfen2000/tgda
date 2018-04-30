@@ -31,6 +31,18 @@ but only after we had made sure that each wave spectrum had been converted
 to the correct integral domain (Section~\ref{subsec:integral_domain_conversion}).
 %
 
+We found that with only one perturbation pattern at hand, we may not
+sample enough distinct \wavenumbers to reproduce a high-quality ocean
+surface for all possible viewing situations. Depending on the
+observer's viewpoint, we may be faced with tiling artifacts or lack
+of detail. Therefore we adopted the approach by~\citet{misc:oceanlightingfft},
+which addresses the matter by using multiple, complementary perturbation
+patterns which sample different, non-overlapping parts of the wave spectrum.
+
+With only one perturbation pattern at hand, one may be faced with tiling
+artifacts or lack of detail, depending on the observer's viewpoint.
+
+
 First, discretisation and multiple patterns, for proper sampling. Then,
 hermitian spectra to improve performance. Then multi-resolution, again,
 for performance.
