@@ -7,18 +7,21 @@ look visually pleasing, but also believable to the observer. Given that context,
 we chose to focus our efforts on wave geometry, because no lighting algorithm
 is able to make good on unrealistic wave shapes.
 
-For the purpose of ocean surface synthesis we opted for a wave spectrum
-based approach \citep{course:simulatingocean}, as it allows us to, one,
-leverage the \FastFourierTransform algorithm, and two, seamlessly tile
-the ocean surface. An additional up-side is that oceanographic research
-provides a wide range of wave energy spectra which are specifically
+For the purpose of ocean surface synthesis we opted for the approach by
+\citet{course:simulatingocean}, where the perturbations produced
+by the water surface are approximated by sampling the wave spectrum via
+the \FastFourierTransform algorithm. The \FFT algorithm is highly
+efficient and has the additional advantage of generating a perturbation
+pattern which is able to seamlessly tile the ocean surface.
+An additional upside of the wave spectrum approach is that oceanographic
+research includes a wide range of wave spectra which are specifically
 tailored to the deep water of the open ocean. Said wave spectra are
 employed for oceanographic forecasts and simulations, therefore they
 provide a high degree of realism.
 Thus, we chose to implement four such wave energy spectra
-\citep{article:PiersonMoskowitz1964, article:Hasselman1973, article:Donelan1985, article:Elfouhaily1997}
-, all well established in oceanographic literature, plus one wave
-spectrum from computer graphics literature~\citep{course:simulatingocean}.
+\citep{article:PiersonMoskowitz1964, article:Hasselman1973, article:Donelan1985, article:Elfouhaily1997},
+all well established in oceanographic literature, plus one wave
+spectrum which stems from computer graphics~\citep{course:simulatingocean}.
 The latter spectrum was unable to produce results which meet the high
 standard given by the other spectra, and therefore we dropped it
 (Section \ref{sec:phillips_spectrum} and \ref{sec:results:synthesis}).
@@ -27,6 +30,13 @@ animated wave geometry at the level of quality we sought after,
 but only after we had made sure that each wave spectrum had been converted
 to the correct integral domain (Section~\ref{subsec:integral_domain_conversion}).
 %
+
+First, discretisation and multiple patterns, for proper sampling. Then,
+hermitian spectra to improve performance. Then multi-resolution, again,
+for performance.
+
+Ocean lighting scheme tailored to the above (Bruneton, Dupuy), another spectrum
+disqualified.
 
 With our goal being to render the open ocean, we found that discretisation
 of the wave spectrum had proven to be an issue, as we were not sampling enough
