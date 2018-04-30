@@ -8,14 +8,18 @@ we chose to focus our efforts on wave geometry, because no lighting algorithm
 is able to make good on unrealistic wave shapes.
 
 For the purpose of ocean surface synthesis we opted for a wave spectrum
-based approach, as oceanographic research provides a wide range of wave
-energy spectra which are tailored to the deep water of the open ocean.
+based approach \citep{course:simulatingocean}, as oceanographic research
+provides a wide range of wave energy spectra which are tailored to the
+deep water of the open ocean.
 Because wave spectra are employed for oceanographic forecasts and
 simulations, they provide a high degree of realism.
-We chose to implement four such wave energy spectra, all well established
-in oceanographic literature, plus one wave spectrum from computer graphics literature. The latter was unable to give results consistent in quality
-with the other four spectra, and thus we dropped it. 
-The remaining four spectra, on the other hand, allowed us to attain
+Thus, we chose to implement four such wave energy spectra
+\citep{article:PiersonMoskowitz1964, article:Hasselman1973, article:Donelan1985, article:Elfouhaily1997},
+all well established in oceanographic literature, plus one wave
+spectrum from computer graphics literature~\citep{course:simulatingocean}.
+The latter spectrum was unable to produce results which meet the high
+standard given by the other spectra, and therefore we dropped it.
+The remaining four spectra, on the other hand, allowed us to obtain
 animated wave geometry at the level of quality we sought after,
 but only after we had made sure that each wave spectrum had been converted
 to the correct integral domain.
