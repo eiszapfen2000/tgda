@@ -36,21 +36,49 @@ sample enough distinct \wavenumbers to reproduce a high-quality ocean
 surface for all possible viewing situations. Depending on the
 observer's viewpoint, we may be faced with tiling artifacts or lack
 of detail. Therefore we adopted the approach by~\citet{misc:oceanlightingfft},
-which addresses the matter by using multiple, complementary perturbation
+which addresses the matter by superimposing multiple, complementary perturbation
 patterns which sample different, non-overlapping parts of the wave spectrum
 (Section~\ref{sec:level_of_detail}).
+With multiple patterns at hand, where each pattern consists of up to nine
+separate spectra, pattern generation had become computationally too
+expensive to still allow for real-time framerates.
+Therefore we took a number of measures to restore real-time behaviour.
+First, we split surface synthesis into two separate threads, where the first
+one generates the pattern's actual spectra, and the second one
+applies the \InvDiscreteFourierTransform on said spectra (Section~\ref{sec:demo_application}).
+%First, we moved pattern generation as well as 
+%and transformation via \FFT to separate threads each (Section~\ref{sec:demo_application}).
+Second, as the spectrum consists of a static part and a time-dependent part,
+we made sure to compute only the time-dependent part of the spectrum for each
+frame (Section~\ref{sec:spectrum_synthesis}).
+Third, as all of our spectra are hermitian, we compute the \InvFourierTransform
+of two spectra at once (Section~\ref{sec:discrete_fourier_transform}).
+%Hence,
+%we were able to reduce the maximum number of \InvFourierTransforms per pattern
+%from nine to five.
+Fourth, we switched the \InvFourierTransform from double precision to single
+precision, accelerating its computation by a factor of two
+(Section~\ref{sec:performance:fft}).
 
-With multiple patterns at hand, where patterns consist of up to nine separate
-spectra each, pattern generation had become computationally too expensive to
-still allow for real-time framerates. Therefore we took a number of measures
-to restore real-time behaviour. First, we moved pattern spectrum generation
-and transformation via \FFT to separate threads each (Section~\ref{sec:demo_application}).
-Second, we made sure to compute only the time-dependent part of the spectrum
-for each frame (Section~\ref{sec:spectrum_synthesis}).
-Third, as all of our spectra are hermitian, we can compute the \InvFourierTransform
-of two spectra at once (Section~\ref{sec:discrete_fourier_transform}). Hence,
-we were able to reduce the maximum number of \FourierTransforms per pattern
-from nine to five.
+With performance back to real-time framerates, we enhanced the work by
+\citet{misc:oceanlightingfft} with a multi-resolution variant, where
+the water surface's wave geometry may be synthesized at a lower resolution
+than its respective normal vectors and whitecaps
+(Section~\ref{sec:implementation:multires}).
+The reduced resolution lead to an improvement in performance, and moreover,
+we found that it did not seem to degrade visual quality in a significant way
+for a large range of distinct scenes.
+%For a large range of distinct scenes the reduced resolution did not seem
+%to degrade visual quality in a significant way.
+Thus we decided to stick with the multi-resolution approach, as it allows
+for a more fine-grained balance between model detail and performance.
+%
+%
+%Thus we are given the
+%means to further improve performance by 
+%
+%The latter approach
+%allowed us for a more fine-grained balance between model detail and performance. 
 
 %Naturally, multiple patterns imply an increase in computational cost of
 %pattern generation. To still be able to generate the ocean surface in
@@ -60,9 +88,9 @@ from nine to five.
 %artifacts or lack of detail, depending on the observer's viewpoint.
 
 
-First, discretisation and multiple patterns, for proper sampling. Then,
-hermitian spectra to improve performance. Then multi-resolution, again,
-for performance.
+%First, discretisation and multiple patterns, for proper sampling. Then,
+%hermitian spectra to improve performance. Then multi-resolution, again,
+%for performance.
 
 Ocean lighting scheme tailored to the above (Bruneton, Dupuy), another spectrum
 disqualified.
@@ -78,14 +106,14 @@ disqualified.
 %but only after we made sure to meet a set of preconditions. First and
 %foremost, we had to ensure that each wave spectrum of interest is
 %converted to the correct integral domain. Second,  
-
-Wave energy spectrum from oceanographic research provides realistic wave geometry
-and animation, given integral domain conversion is done correctly.
-Discretisation is an issue, addressed by additional levels of detail.
-Simple solution for tiling via sizes with irrational numbers.
-Multi-resolution approach to reduce performance impact of level-of-detail
-algorithm.
-Ocean lighting scheme tailored to the above (Bruneton, Dupuy).
+%
+%Wave energy spectrum from oceanographic research provides realistic wave geometry
+%and animation, given integral domain conversion is done correctly.
+%Discretisation is an issue, addressed by additional levels of detail.
+%Simple solution for tiling via sizes with irrational numbers.
+%Multi-resolution approach to reduce performance impact of level-of-detail
+%algorithm.
+%Ocean lighting scheme tailored to the above (Bruneton, Dupuy).
 
 \section{Future Work}
 The work presented in this thesis leaves room for improvement on several fronts.
