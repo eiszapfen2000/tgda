@@ -61,14 +61,17 @@ to the correct integral domain (Section~\ref{subsec:integral_domain_conversion})
 %
 
 For the purpose of ocean surface lighting we decided to implement the
-algorithm by \citet{article:whitecaps}, as it gives believable results
-and has been specifically tailored to the open ocean as represented by
-wave spectra. After a successful implementation it turned out that only
-two of our remaining wave spectra were able to unconditionally match
-the algorithms stringent requirements, with a third spectrum keeping
-up under most conditions (Section~\ref{sec:results:lighting}).
+algorithm by \citet{misc:oceanlightingfft} as it gives believable results
+and it has specifically been tailored to the wave spectrum of the open ocean.
+After a successful implementation it turned out that only two of our
+remaining wave spectra were able to unconditionally match the algorithms
+stringent requirements, with a third spectrum keeping up under most
+conditions (Section~\ref{sec:results:lighting}).
+Furthermore, we implemented the work by \citet{article:whitecaps} to
+incorporate whitecaps into the ocean surface's lighting model.
 
-With ocean surface synthesis and lighting at hand, we have found that
+
+With ocean surface synthesis and lighting taken care of, we found that
 as long as we employ only one perturbation pattern, we may not
 be able to reproduce a high-quality ocean surface for all possible
 viewing situations. Depending on the observer's viewpoint, we may be
@@ -76,8 +79,10 @@ faced with tiling artifacts or lack of detail.
 Therefore we adopted the approach by~\citet{misc:oceanlightingfft},
 which addresses the matter by superimposing multiple, complementary perturbation
 patterns of different size (Section~\ref{sec:level_of_detail}).
-With multiple patterns at hand, where each pattern consists of up to nine
-separate spectra, pattern generation had become computationally too
+With multiple patterns at hand, where for each pattern we have to
+generate and Fourier transform up to nine separate spectra (one for vertical
+perturbation, two for horizontal perturbation, two for gradients,
+four for whitecaps), pattern generation had become computationally too
 expensive to still allow for real-time operation.
 Therefore we took a number of measures to restore real-time behaviour.
 First, we split surface synthesis into two separate threads, where the first
@@ -88,8 +93,8 @@ applies the \InvDiscreteFourierTransform on said spectra (Section~\ref{sec:demo_
 Second, as the spectrum consists of a static part and a time-dependent part,
 we made sure to compute only the time-dependent part of the spectrum for each
 frame (Section~\ref{sec:spectrum_synthesis}).
-Third, as all of our spectra are hermitian, we compute the \InvFourierTransform
-of two spectra at once (Section~\ref{sec:discrete_fourier_transform}).
+Third, as all of our spectra are hermitian, we were able to compute the
+\InvFourierTransform of two spectra at once (Section~\ref{sec:discrete_fourier_transform}).
 %Hence,
 %we were able to reduce the maximum number of \InvFourierTransforms per pattern
 %from nine to five.
@@ -103,8 +108,7 @@ the water surface's wave geometry may be synthesized at a lower resolution
 than its respective normal vectors and whitecaps
 (Section~\ref{sec:implementation:multires}).
 The reduced resolution lead to an improvement in performance, but not to a
-significant degradation in visual quality of the result, at least not for
-a large range of distinct scenes (Section~\ref{sec:results:fidelity}).
+significant degradation in visual quality for most scenes (Section~\ref{sec:results:fidelity}).
 %For a large range of distinct scenes the reduced resolution did not seem
 %to degrade visual quality in a significant way.
 Thus we decided to permanently keep the multi-resolution approach, as it
