@@ -13,27 +13,44 @@
 %strike a well-adjusted balance between model detail and computational workload,
 %and thereby to improve upon the status quo of current implementations.
 %
-We stated in the introduction that in this work we seek to generate and render the
-open ocean in real-time. Moreover, we aim for an ocean surface which does not only
-look visually pleasing, but also believable to the observer. Given that context,
-we chose to focus our efforts on wave geometry, because no lighting algorithm
-is able to make good on unrealistic wave shapes.
-
-For the purpose of ocean surface synthesis we opted for the approach by
-\citet{course:simulatingocean}, where the perturbations produced
-by the water surface are approximated by sampling the wave spectrum via
-the \FastFourierTransform algorithm. The \FFT algorithm is highly
-efficient and has the additional advantage of generating a perturbation
-pattern which is able to seamlessly tile the ocean surface.
-An additional upside of the wave spectrum approach is that oceanographic
+We stated in the introduction that in this work we seek to synthesize the open
+ocean in such a manner that it does not only look believable to the observer,
+but is computationally feasible as well.
+%
+%We stated in the introduction that in this work we seek to generate and render the
+%open ocean in real-time. Moreover, we aim for an ocean surface which does not only
+%look visually pleasing, but also believable to the observer. Given that context,
+%we chose to focus our efforts on wave geometry, because no lighting algorithm
+%is able to make good on unrealistic wave shapes.
+To achieve said objective, we picked the approach by \citet{course:simulatingocean},
+which adopts the wave spectrum concept from oceanographic research for
+computer graphics purposes.
+\citeauthor{course:simulatingocean} approximates the
+perturbations produced by the water surface by sampling the wave
+spectrum in frequency space via the \FastFourierTransform algorithm.
+%
+%we adopt the wave spectrum concept from
+%oceanographic research for computer graphics purposes, as shown in
+%\citet{course:simulatingocean}.
+%
+%The latter approximates the
+%perturbations produced by the water surface by sampling the wave
+%spectrum in frequency space via the \FastFourierTransform algorithm.
+%For the purpose of ocean surface synthesis we opted for the approach by
+%\citet{course:simulatingocean}, where the perturbations produced
+%by the water surface are approximated by sampling the wave spectrum via
+%the \FastFourierTransform algorithm.
+The \FFT algorithm is highly efficient and has the additional advantage
+of generating a perturbation pattern which seamlessly tiles the ocean surface.
+A further upside of the wave spectrum approach is that oceanographic
 research includes a wide range of wave spectra which are specifically
 tailored to the deep water of the open ocean. Said wave spectra are
 employed for oceanographic forecasts and simulations, therefore they
 provide a high degree of realism.
 Thus, we chose to implement four such wave energy spectra,
 %\citep{article:PiersonMoskowitz1964, article:Hasselman1973, article:Donelan1985, article:Elfouhaily1997}, \citep{course:simulatingocean}
-all well established in oceanographic literature, plus one wave
-spectrum which stems from computer graphics (Section~\ref{sec:wave_spectra}).
+all well established in oceanographic literature, plus the wave
+spectrum introduced by \citeauthor{course:simulatingocean} (Section~\ref{sec:wave_spectra}).
 The latter spectrum was unable to produce results which meet the high
 standard given by the other spectra, and therefore we dropped it
 (Section \ref{sec:phillips_spectrum} and \ref{sec:results:synthesis}).
