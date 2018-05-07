@@ -87,7 +87,7 @@ expensive to still allow for real-time operation.
 Therefore we took a number of measures to restore real-time behaviour.
 First, we split surface synthesis into two separate threads, where the first
 one generates the pattern's actual spectra, and the second one
-applies the \InvDiscreteFourierTransform on said spectra (Section~\ref{sec:demo_application}).
+applies the \InvFourierTransform on said spectra (Section~\ref{sec:demo_application}).
 %First, we moved pattern generation as well as 
 %and transformation via \FFT to separate threads each (Section~\ref{sec:demo_application}).
 Second, as the spectrum consists of a static part and a time-dependent part,
@@ -104,11 +104,12 @@ precision, accelerating its computation by a factor of two
 
 With performance back to real-time framerates, we enhanced the work by
 \citet{misc:oceanlightingfft} with a multi-resolution variant, where
-the water surface's wave geometry may be synthesized at a lower resolution
+the water surface's wave geometry is synthesized at a lower resolution
 than its respective normal vectors and whitecaps
 (Section~\ref{sec:implementation:multires}).
-The reduced resolution lead to an improvement in performance, but not to a
-significant degradation in visual quality for most scenes (Section~\ref{sec:results:fidelity}).
+The lower resolution lead to a considerable speedup of the \FourierTransform
+stage, but not to a significant degradation in visual quality for most scenes
+(Section~\ref{sec:results:fidelity}).
 %For a large range of distinct scenes the reduced resolution did not seem
 %to degrade visual quality in a significant way.
 Thus we decided to permanently keep the multi-resolution approach, as it
