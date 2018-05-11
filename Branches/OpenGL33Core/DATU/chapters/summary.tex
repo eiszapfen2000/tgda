@@ -70,7 +70,6 @@ conditions (Section~\ref{sec:results:lighting}).
 Furthermore, we implemented the work by \citet{article:whitecaps} to
 incorporate whitecaps into the ocean surface's lighting model.
 
-
 With ocean surface synthesis and lighting taken care of, we found that
 as long as we employ only one perturbation pattern, we may not
 be able to reproduce a high-quality ocean surface for all possible
@@ -102,7 +101,7 @@ Fourth, we switched the \InvFourierTransform from double precision to single
 precision, accelerating its computation by a factor of two
 (Section~\ref{sec:performance:fft}).
 
-With performance back to real-time framerates, we enhanced the work by
+With performance back to real-time framerates, we improved upon the work by
 \citet{misc:oceanlightingfft} with a multi-resolution variant, where
 the water surface's wave geometry is synthesized at a lower resolution
 than its respective normal vectors and whitecaps
@@ -164,30 +163,32 @@ allows for a more fine-grained balance between model detail and performance.
 
 \section{Future Work}
 The work presented in this thesis leaves room for improvement on several fronts.
-
 One could take the next step in ocean surface synthesis and implement support
-for wave energy spectra which are able to model shallow water, such as the
-TMA spectrum \citep{Hughes:1984}. In that case, one would be required to
-incorporate a dispersion relation which models both shallow and deep water,
-including the necessary follow-up work to adapt the wave energy spectrum's
-integral domain conversions to the new dispersion relation~\citep{Horvath:2015}.
+for wave spectra which incorporate shallow water, such as the TMA spectrum
+\citep{Hughes:1984}. In that case, one would be required to use a dispersion
+relation which models both shallow and deep water, including the necessary
+follow-up work to adapt the wave energy spectrum's integral domain conversions
+to the new dispersion relation~\citep{Horvath:2015}.
 %Moreover, one would have to adapt the wave energy integral scaling to match said dispersion relation.
 
 Wave spectra aside, one could significantly improve upon performance by
 following the lead of \cite{misc:oceanlightingfft} and generate all
-pattern datasets on the GPU, as well as compute all \InvDiscreteFourierTransforms
-on the GPU, while the static part of the underlying wave energy spectrum
+surface patterns on the GPU, as well as compute all \FourierTransforms
+on the GPU, while the static part of the underlying wave spectrum
 would still be synthesized on the CPU. Additionally, it would beneficial
 to look for a viable alternative to rendering whitecaps, as the approach
 by \citet{article:whitecaps} is computationally highly expensive,
-especially with regard to pattern dataset synthesis.
+especially with regard to pattern synthesis.
 
 %For performance reasons it would be highly beneficial to follow the lead of
 %\cite{misc:oceanlightingfft} and generate all pattern datasets on the GPU,
 %as well as compute all \InvDiscreteFourierTransforms on the GPU, while the
 %underlying wave energy spectrum Equation~\ref{eq:dft_h0_k} could still be synthesized on the CPU.
 
-Last, to better balance performance and visual fidelity, one could allow
-for more fine-grained control over pattern resolutions, as it may be
-of advantage to be able to configure the resolution for each dataset for
-each pattern separately.
+Last, to better balance performance and visual fidelity, one could
+allow for even more fine-grained control over pattern resolutions,
+as it may be of advantage to be able to configure the resolution for
+each spectrum per pattern.
+
+\section{Concluding Remarks}
+BRAK
