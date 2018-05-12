@@ -170,7 +170,6 @@ relation which models both shallow and deep water, including the necessary
 follow-up work to adapt the wave energy spectrum's integral domain conversions
 to the new dispersion relation~\citep{Horvath:2015}.
 %Moreover, one would have to adapt the wave energy integral scaling to match said dispersion relation.
-
 Wave spectra aside, one could significantly improve upon performance by
 following the lead of \cite{misc:oceanlightingfft} and generate all
 surface patterns on the GPU, as well as compute all \FourierTransforms
@@ -179,16 +178,14 @@ would still be synthesized on the CPU. Additionally, it would beneficial
 to look for a viable alternative to rendering whitecaps, as the approach
 by \citet{article:whitecaps} is computationally highly expensive,
 especially with regard to pattern synthesis.
-
 %For performance reasons it would be highly beneficial to follow the lead of
 %\cite{misc:oceanlightingfft} and generate all pattern datasets on the GPU,
 %as well as compute all \InvDiscreteFourierTransforms on the GPU, while the
 %underlying wave energy spectrum Equation~\ref{eq:dft_h0_k} could still be synthesized on the CPU.
-
-Last, to better balance performance and visual fidelity, one could
-allow for even more fine-grained control over pattern resolutions,
-as it may be of advantage to be able to configure the resolution for
-each spectrum per pattern.
+%Last, to better balance performance and visual fidelity, one could
+%allow for even more fine-grained control over pattern resolutions,
+%as it may be of advantage to be able to configure the resolution for
+%each spectrum per pattern.
 
 \section{Concluding Remarks}
 We have shown the integration of the wave spectrum concept from
