@@ -42,13 +42,13 @@ spectrum in frequency space via the \FastFourierTransform algorithm.
 %\citet{course:simulatingocean}, where the perturbations produced
 %by the water surface are approximated by sampling the wave spectrum via
 %the \FastFourierTransform algorithm.
-The \FFT algorithm is highly efficient and has the additional advantage
-of generating a perturbation pattern which seamlessly tiles the ocean surface.
-A further upside of the wave spectrum approach is that oceanographic
-research includes a wide range of wave spectra which are specifically
+The \FFT algorithm is highly efficient and generates a perturbation
+pattern which seamlessly tiles the ocean surface.
+An additional upside of the wave spectrum approach is that oceanographic
+research provides a wide range of wave spectra which are specifically
 tailored to the deep water of the open ocean. Said wave spectra are
 employed for oceanographic forecasts and simulations, therefore they
-provide a high degree of realism.
+give a high degree of realism.
 Thus, we chose to implement four such wave energy spectra,
 %\citep{article:PiersonMoskowitz1964, article:Hasselman1973, article:Donelan1985, article:Elfouhaily1997}, \citep{course:simulatingocean}
 all well established in oceanographic literature, plus the wave
@@ -197,6 +197,9 @@ coherent framework for the real-time display of believable ocean
 surfaces. Specific properties of the wave spectrum allow us, one,
 to synthesize the water surface with high efficiency, and two, to
 strike a well adjusted balance between model detail and performance.
+Furthermore we have seen that one has to be careful when picking
+a wave spectrum, as not all wave spectrum models are adequate for
+real-time rendering purposes.
 %Furthermore, we have discussed the adequacy of a set of
 %wave spectrum models for real-time rendering purposes. only 
 %We further improved upon said balance
