@@ -52,18 +52,18 @@
     {
         quat_q_forward_vector_v(&orientation, &forward);
 
-        position.x += (forward.x * 2.0);
-        position.y += (forward.y * 2.0);
-        position.z += (forward.z * 2.0);
+        position.x += (forward.x * 20.0);
+        position.y += (forward.y * 20.0);
+        position.z += (forward.z * 20.0);
     }
 
     if (( backwardAction != nil ) && ( [ backwardAction active ] == YES ))
     {
         quat_q_forward_vector_v(&orientation, &forward);
 
-        position.x -= (forward.x * 2.0);
-        position.y -= (forward.y * 2.0);
-        position.z -= (forward.z * 2.0);
+        position.x -= (forward.x * 20.0);
+        position.y -= (forward.y * 20.0);
+        position.z -= (forward.z * 20.0);
     }
 }
 
@@ -185,7 +185,7 @@ static NPInputAction * create_input_action(NSString * cameraName, NSString * act
 
     fov         = 45.0f;
     nearPlane   = 0.1f;
-    farPlane    = 1000.0f;
+    farPlane    = 2500.0f;
     aspectRatio = 1.0f;
 
     yaw   = 0.0;
