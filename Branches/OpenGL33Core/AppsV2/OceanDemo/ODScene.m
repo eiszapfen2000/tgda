@@ -448,8 +448,8 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     currentResolution.y = [ viewport height ];
 
     IVector2 r;
-    r.x = currentResolution.x / 4;
-    r.y = currentResolution.y / 4;
+    r.x = currentResolution.x / 8;
+    r.y = currentResolution.y / 8;
     [ projectedGrid setResolution:r ];
 
     /*
