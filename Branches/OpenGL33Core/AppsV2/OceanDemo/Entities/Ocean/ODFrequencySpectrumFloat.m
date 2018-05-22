@@ -7,6 +7,9 @@
 #define FFTW_FREE(_pointer)        do {void *_ptr=(void *)(_pointer); fftwf_free(_ptr); _pointer=NULL; } while (0)
 #define FFTW_SAFE_FREE(_pointer)   { if ( (_pointer) != NULL ) FFTW_FREE((_pointer)); }
 
+#define GRAVITY_CAPILLARY_PEAK_OMEGA    61.0f  // ceil(sqrt(9.81*((2*pi)/0.017)))
+#define GRAVITY_CAPILLARY_PEAK_K        370.0f // ceil((2*pi)/0.017)
+
 typedef enum ODQuadrants
 {
     ODQuadrant_1_3 =  1,
@@ -127,7 +130,7 @@ ODQuadrants;
     float mss = 0.0f;
 
     /*
-    for ( float k = 0.001f; k < 1000.0f; k = k * 1.001f )
+    for ( float k = 0.001f; k < GRAVITY_CAPILLARY_PEAK_K; k = k * 1.001f )
     {
         // deep water dispersion relation
         const float omega = sqrtf(k * EARTH_ACCELERATIONf);
@@ -143,12 +146,12 @@ ODQuadrants;
         mss += kSquare * sk * dk;
     }
 
-    printf("PM mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+    printf("PM mssx: %f mssy: %f mssxy: %f mss: %f\n", mssX, mssY, mssXY, mss);
 
     mss = 0.0f;
     */
 
-    for ( float omega = 0.001f; omega < 100.0f; omega = omega * 1.001f )
+    for ( float omega = 0.001f; omega < GRAVITY_CAPILLARY_PEAK_OMEGA; omega = omega * 1.001f )
     {
         const float nextOmega = omega * 1.001f;
         // deep water dispersion relation
@@ -167,7 +170,7 @@ ODQuadrants;
     }
 
 
-    printf("PM mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+    printf("PM mssx: %f mssy: %f mssxy: %f mss: %f\n", mssX, mssY, mssXY, mss);
 }
 
 - (void) generateJONSWAPSpectrum
@@ -272,7 +275,7 @@ ODQuadrants;
     float mss = 0.0f;
 
     /*
-    for ( float k = 0.001f; k < 1000.0f; k = k * 1.001f )
+    for ( float k = 0.001f; k < GRAVITY_CAPILLARY_PEAK_K; k = k * 1.001f )
     {
         // deep water dispersion relation
         const float omega = sqrtf(k * EARTH_ACCELERATIONf);
@@ -288,12 +291,12 @@ ODQuadrants;
         mss += kSquare * sk * dk;
     }
 
-    printf("J mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+    printf("J mssx: %f mssy: %f mssxy: %f mss: %f\n", mssX, mssY, mssXY, mss);
 
     mss = 0.0f;
     */
 
-    for ( float omega = 0.001f; omega < 100.0f; omega = omega * 1.001f )
+    for ( float omega = 0.001f; omega < GRAVITY_CAPILLARY_PEAK_OMEGA; omega = omega * 1.001f )
     {
         const float nextOmega = omega * 1.001f;
         // deep water dispersion relation
@@ -311,7 +314,7 @@ ODQuadrants;
         mss += kSquare * sk * dk;
     }
 
-    printf("J  mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+    printf("J  mssx: %f mssy: %f mssxy: %f mss: %f\n", mssX, mssY, mssXY, mss);
 }
 
 - (void) generateDonelanSpectrum
@@ -418,7 +421,7 @@ ODQuadrants;
     float mss = 0.0f;
 
     /*
-    for ( float k = 0.001f; k < 1000.0f; k = k * 1.001f )
+    for ( float k = 0.001f; k < GRAVITY_CAPILLARY_PEAK_K; k = k * 1.001f )
     {
         // deep water dispersion relation
         const float omega = sqrtf(k * EARTH_ACCELERATIONf);
@@ -434,12 +437,12 @@ ODQuadrants;
         mss += kSquare * sk * dk;
     }
 
-    printf("D mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+    printf("D mssx: %f mssy: %f mssxy: %f mss: %f\n", mssX, mssY, mssXY, mss);
 
     mss = 0.0f;
     */
 
-    for ( float omega = 0.001f; omega < 100.0f; omega = omega * 1.001f )
+    for ( float omega = 0.001f; omega < GRAVITY_CAPILLARY_PEAK_OMEGA; omega = omega * 1.001f )
     {
         const float nextOmega = omega * 1.001f;
         // deep water dispersion relation
@@ -458,7 +461,7 @@ ODQuadrants;
     }
 
 
-    printf("D  mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+    printf("D  mssx: %f mssy: %f mssxy: %f mss: %f\n", mssX, mssY, mssXY, mss);
 }
 
 - (void) generateUnifiedSpectrum
@@ -567,7 +570,7 @@ ODQuadrants;
 
     float mss = 0.0f;
 
-    for ( float k = 0.001f; k < 1000.0f; k = k * 1.001f )
+    for ( float k = 0.001f; k < GRAVITY_CAPILLARY_PEAK_K; k = k * 1.001f )
     {
         const float kSquare = k * k;
         const float dk = (k * 1.001f) - k;
@@ -580,7 +583,7 @@ ODQuadrants;
     }
 
     printf("Min k: %f Max k: %f\n", mink, maxk);
-    printf("U  mssx: %f mssy: %f mss: %f mss: %f\n", mssX, mssY, mssXY, mss);
+    printf("U  mssx: %f mssy: %f mssxy: %f mss: %f\n", mssX, mssY, mssXY, mss);
 }
 
 /*
