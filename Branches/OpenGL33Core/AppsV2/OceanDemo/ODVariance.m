@@ -45,7 +45,7 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
 - (void) updateSlopeVarianceLUT:(uint32_t)resolution
 {
     const float baseSpectrumDeltaVariance
-      = useDeltaVariance ? [ ocean baseSpectrumDeltaVariance ] : 0.0f;
+      = useDeltaVariance ? [ ocean baseSpectrumDeltaVariance ] / 2.0f : 0.0f;
 
     [ varianceTextureResolution setFValue:(float)resolution ];
     [ deltaVariance setFValue:baseSpectrumDeltaVariance ];
@@ -129,7 +129,7 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
   NSAssert(layer != nil && deltaVariance != nil
            && varianceTextureResolution != nil, @"");
 
-  useDeltaVariance = NO;
+  useDeltaVariance = lastUseDeltaVariance = NO;
 
   return self;
 }
@@ -159,7 +159,8 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     const uint32_t varianceLUTResolution
         = varianceLUTResolutions[varianceLUTResolutionIndex];
 
-    if (varianceLUTResolutionIndex != varianceLUTLastResolutionIndex)
+    if ((varianceLUTResolutionIndex != varianceLUTLastResolutionIndex)
+        || (useDeltaVariance != lastUseDeltaVariance))
     {
         [ varianceRTC setWidth:varianceLUTResolution ];
         [ varianceRTC setHeight:varianceLUTResolution ];
@@ -171,6 +172,7 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
             );
 
         varianceLUTLastResolutionIndex = varianceLUTResolutionIndex;
+        lastUseDeltaVariance = useDeltaVariance;
         forceSlopeVarianceUpdate = YES;
     }
 
