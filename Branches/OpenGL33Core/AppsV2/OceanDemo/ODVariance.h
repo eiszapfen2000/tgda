@@ -36,6 +36,7 @@
 			  	   ;
 - (void) dealloc;
 
+- (double) inverseKernelExponent;
 - (id < NPPTexture >) texture;
 
 - (void) update;
