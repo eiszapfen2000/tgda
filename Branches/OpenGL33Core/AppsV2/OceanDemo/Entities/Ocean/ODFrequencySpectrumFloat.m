@@ -169,8 +169,10 @@ ODQuadrants;
         mss += kSquare * sk * dk;
     }
 
-
     printf("PM mssx: %f mssy: %f mssxy: %f mss: %f\n", mssX, mssY, mssXY, mss);
+
+    maxMeanSlopeVariance = mss;
+    effectiveMeanSlopeVariance = mssXY;
 }
 
 - (void) generateJONSWAPSpectrum
@@ -315,6 +317,9 @@ ODQuadrants;
     }
 
     printf("J  mssx: %f mssy: %f mssxy: %f mss: %f\n", mssX, mssY, mssXY, mss);
+
+    maxMeanSlopeVariance = mss;
+    effectiveMeanSlopeVariance = mssXY;
 }
 
 - (void) generateDonelanSpectrum
@@ -462,6 +467,9 @@ ODQuadrants;
 
 
     printf("D  mssx: %f mssy: %f mssxy: %f mss: %f\n", mssX, mssY, mssXY, mss);
+
+    maxMeanSlopeVariance = mss;
+    effectiveMeanSlopeVariance = mssXY;
 }
 
 - (void) generateUnifiedSpectrum
@@ -583,6 +591,9 @@ ODQuadrants;
     }
 
     printf("U  mssx: %f mssy: %f mssxy: %f mss: %f\n", mssX, mssY, mssXY, mss);
+
+    maxMeanSlopeVariance = mss;
+    effectiveMeanSlopeVariance = mssXY;
 }
 
 - (void) generateH0:(BOOL)force
