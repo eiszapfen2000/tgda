@@ -157,30 +157,6 @@ technique "directional_light"
     set fragment shader "deferred_directional_light.fragment"
 }
 
-technique "variance"
-{
-    # effect variables
-    uniform float layer;
-    uniform float varianceTextureResolution;
-    uniform float deltaVariance;
-    uniform sampler2DArray baseSpectrum
-    {
-        WrapS = ClampToBorder;
-        WrapT = ClampToBorder;
-        MinFilter = Nearest;
-        MagFilter = Nearest;
-    };
-    uniform samplerBuffer sizes;
-    # vertex streams
-    in vec2 in_position : 0;
-    in vec2 in_texcoords : 3;
-    # fragment streams
-    out vec2 varianceTarget : 0;
-    # shaders
-    set vertex shader "variance.vertex"
-    set fragment shader "variance.fragment"
-}
-
 technique "v3c3"
 {
     # effect variables
