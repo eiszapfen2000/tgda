@@ -107,36 +107,36 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
 - (id) initWithName:(NSString *)newName
 			  ocean:(ODOceanEntity *)newOcean
 {
-	self = [ super initWithName:newName ];
+    self = [ super initWithName:newName ];
 
-	ocean = newOcean;
-	ASSERT_RETAIN(ocean);
+    ocean = newOcean;
+    ASSERT_RETAIN(ocean);
 
-  varianceLUTLastResolutionIndex = ULONG_MAX;
-  varianceLUTResolutionIndex = defaultVarianceLUTResolutionIndex;
-  varianceRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Variance RTC" ];
-  varianceLUT = [[ NPRenderTexture alloc ] initWithName:@"Variance LUT" ];
+    varianceLUTLastResolutionIndex = ULONG_MAX;
+    varianceLUTResolutionIndex = defaultVarianceLUTResolutionIndex;
+    varianceRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Variance RTC" ];
+    varianceLUT = [[ NPRenderTexture alloc ] initWithName:@"Variance LUT" ];
 
-  effect = [[[ NP Graphics ] effects ] getAssetWithFileName:@"variance.effect" ];
-  ASSERT_RETAIN(effect);
+    effect = [[[ NP Graphics ] effects ] getAssetWithFileName:@"variance.effect" ];
+    ASSERT_RETAIN(effect);
 
-  variance = [ effect techniqueWithName:@"variance" ];
-  ASSERT_RETAIN(variance);
+    variance = [ effect techniqueWithName:@"variance" ];
+    ASSERT_RETAIN(variance);
 
-  layer         = [ effect variableWithName:@"layer" ];
-  deltaVariance = [ effect variableWithName:@"deltaVariance" ];
-  gaussExponent = [ effect variableWithName:@"gaussExponent" ];
+    layer         = [ effect variableWithName:@"layer" ];
+    deltaVariance = [ effect variableWithName:@"deltaVariance" ];
+    gaussExponent = [ effect variableWithName:@"gaussExponent" ];
 
-  varianceTextureResolution
-  	= [ effect variableWithName:@"varianceTextureResolution" ];
+    varianceTextureResolution
+    = [ effect variableWithName:@"varianceTextureResolution" ];
 
-  NSAssert(layer != nil && deltaVariance != nil
+    NSAssert(layer != nil && deltaVariance != nil
            && gaussExponent != nil && varianceTextureResolution != nil, @"");
 
-  lastKernelExponent = kernelExponent = 2.0;
-  useDeltaVariance = lastUseDeltaVariance = NO;
+    lastKernelExponent = kernelExponent = 2.0;
+    useDeltaVariance = lastUseDeltaVariance = NO;
 
-  return self;
+    return self;
 }
 
 - (void) dealloc
@@ -150,6 +150,11 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
 	DESTROY(ocean);
 
 	[ super dealloc ];
+}
+
+- (double) inverseKernelExponent
+{
+    return 1.0/ pow(2.0, kernelExponent);
 }
 
 - (id < NPPTexture >) texture
