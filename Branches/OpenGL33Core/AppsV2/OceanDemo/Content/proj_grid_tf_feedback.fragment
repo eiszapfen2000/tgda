@@ -128,9 +128,9 @@ void main()
     float A = Jxx * Jxx + Jyx * Jyx;
     float B = Jxx * Jxy + Jyx * Jyy;
     float C = Jxy * Jxy + Jyy * Jyy;
-    float ua = pow(A, 0.25);
+    float ua = pow(A, invGaussPower);
     float ub = 0.5 + 0.5 * B / sqrt(A * C);
-    float uc = pow(C, 0.25);
+    float uc = pow(C, invGaussPower);
 
     vec2 sigmaSq = texture(variance, vec3(ua, ub, uc)).xy;
     sigmaSq = max(sigmaSq, 2e-5);

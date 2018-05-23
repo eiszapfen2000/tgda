@@ -287,6 +287,7 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     feedbackCameraPosition = [ projectedGridEffect variableWithName:@"cameraPosition" ];
     feedbackDirectionToSun = [ projectedGridEffect variableWithName:@"directionToSun" ];
     feedbackJacobianEpsilon = [ projectedGridEffect variableWithName:@"jacobianEpsilon" ];
+    feedbackInvGaussExponent = [ projectedGridEffect variableWithName:@"invGaussPower" ];
 
     feedbackWaterColorCoordinate
         = [ projectedGridEffect variableWithName:@"waterColorCoordinate" ];
@@ -296,8 +297,8 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
 
     NSAssert(feedbackSunColor != nil && feedbackSkyIrradiance != nil
              && feedbackCameraPosition != nil && feedbackDirectionToSun != nil
-             && feedbackJacobianEpsilon != nil && feedbackWaterColorCoordinate != nil
-             && feedbackWaterColorIntensityCoordinate != nil,
+             && feedbackJacobianEpsilon != nil && feedbackInvGaussExponent != nil
+             && feedbackWaterColorCoordinate != nil && feedbackWaterColorIntensityCoordinate != nil,
              @"");
 
     variance = [[ ODVariance alloc ] initWithName:@"Ocean Variance" ocean:ocean ];
@@ -760,6 +761,7 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString* dateString, NSString
     [ transformVertexStep setValue:[ projectedGrid vertexStep ]];
     [ transformInvMVP setValue:[[ ocean projector ] inverseViewProjection]];
 
+    [ feedbackInvGaussExponent setValue:[variance inverseKernelExponent ]];
     [ feedbackJacobianEpsilon setValue:jacobianEpsilon ];
     [ feedbackCameraPosition setValue:[ camera position ]];
     [ feedbackDirectionToSun setValue:[ skylight directionToSun ]];

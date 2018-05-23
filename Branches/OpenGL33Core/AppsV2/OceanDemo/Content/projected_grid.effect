@@ -68,6 +68,7 @@ technique "proj_grid_tf_feedback"
     uniform float areaScale;
     uniform float displacementScale;
     uniform float heightScale;
+    uniform float invGaussPower;
     uniform vec2  vertexStep;
     uniform float jacobianEpsilon;
     uniform vec3 cameraPosition;
@@ -156,6 +157,7 @@ technique "ross"
     uniform mat4 np_viewprojectionmatrix;
     uniform float areaScale;
     uniform float heightScale;
+    uniform float invGaussPower;
     uniform vec3 cameraPosition;
     uniform vec3 directionToSun;
     uniform vec3 sunColor;
@@ -194,6 +196,7 @@ technique "sea"
     uniform mat4 np_viewprojectionmatrix;
     uniform float areaScale;
     uniform float heightScale;
+    uniform float invGaussPower;
     uniform vec3 cameraPosition;
     uniform vec3 directionToSun;
     uniform vec3 sunColor;
@@ -249,6 +252,7 @@ technique "sky"
     uniform mat4 np_viewprojectionmatrix;
     uniform float areaScale;
     uniform float heightScale;
+    uniform float invGaussPower;
     uniform vec3 cameraPosition;
     uniform vec3 directionToSun;
     uniform vec3 sunColor;
@@ -295,6 +299,7 @@ technique "whitecaps"
     uniform mat4 np_viewprojectionmatrix;
     uniform float areaScale;
     uniform float heightScale;
+    uniform float invGaussPower;
     uniform float jacobianEpsilon;
     uniform vec3 cameraPosition;
     uniform vec3 directionToSun;
