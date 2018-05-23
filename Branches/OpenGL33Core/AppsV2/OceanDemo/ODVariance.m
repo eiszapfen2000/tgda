@@ -47,8 +47,11 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     const float baseSpectrumDeltaVariance
       = useDeltaVariance ? [ ocean baseSpectrumDeltaVariance ] / 2.0f : 0.0f;
 
+    const float gp = pow(2.0, kernelExponent);
+
     [ varianceTextureResolution setFValue:(float)resolution ];
     [ deltaVariance setFValue:baseSpectrumDeltaVariance ];
+    [ gaussExponent setFValue:gp ];
 
     [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean baseSpectrum ] texelUnit:0 ];
@@ -122,13 +125,15 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
 
   layer         = [ effect variableWithName:@"layer" ];
   deltaVariance = [ effect variableWithName:@"deltaVariance" ];
+  gaussExponent = [ effect variableWithName:@"gaussExponent" ];
 
   varianceTextureResolution
   	= [ effect variableWithName:@"varianceTextureResolution" ];
 
   NSAssert(layer != nil && deltaVariance != nil
-           && varianceTextureResolution != nil, @"");
+           && gaussExponent != nil && varianceTextureResolution != nil, @"");
 
+  lastKernelExponent = kernelExponent = 2.0;
   useDeltaVariance = lastUseDeltaVariance = NO;
 
   return self;
@@ -160,7 +165,8 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
         = varianceLUTResolutions[varianceLUTResolutionIndex];
 
     if ((varianceLUTResolutionIndex != varianceLUTLastResolutionIndex)
-        || (useDeltaVariance != lastUseDeltaVariance))
+        || (useDeltaVariance != lastUseDeltaVariance)
+        || (kernelExponent != lastKernelExponent))
     {
         [ varianceRTC setWidth:varianceLUTResolution ];
         [ varianceRTC setHeight:varianceLUTResolution ];
@@ -172,6 +178,7 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
             );
 
         varianceLUTLastResolutionIndex = varianceLUTResolutionIndex;
+        lastKernelExponent = kernelExponent;
         lastUseDeltaVariance = useDeltaVariance;
         forceSlopeVarianceUpdate = YES;
     }

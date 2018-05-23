@@ -22,6 +22,9 @@
     NPEffectVariableFloat * layer;
     NPEffectVariableFloat * varianceTextureResolution;
     NPEffectVariableFloat * deltaVariance;
+    NPEffectVariableFloat * gaussExponent;
+    double lastKernelExponent;
+    double kernelExponent;
     BOOL lastUseDeltaVariance;
     BOOL useDeltaVariance;
 }

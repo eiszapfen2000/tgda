@@ -6,6 +6,7 @@ technique "variance"
     uniform float layer;
     uniform float varianceTextureResolution;
     uniform float deltaVariance;
+    uniform float gaussExponent;
     uniform sampler2DArray baseSpectrum
     {
         WrapS = ClampToBorder;
