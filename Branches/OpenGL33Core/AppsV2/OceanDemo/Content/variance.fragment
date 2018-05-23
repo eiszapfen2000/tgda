@@ -15,8 +15,8 @@ void main()
 
     float a = floor(out_texcoords.x);
     float b = floor(out_texcoords.y);
-    float A = pow(a / divisor, 4.0f);
-    float C = pow(layer / divisor, 4.0f);
+    float A = pow(a / divisor, gaussExponent);
+    float C = pow(layer / divisor, gaussExponent);
     float B = (2.0f * b / divisor - 1.0) * sqrt(A * C);
 
     A = -0.5f * A;
