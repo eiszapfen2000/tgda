@@ -100,6 +100,7 @@
     NPEffectVariableFloat2 * transformVertexStep;
     NPEffectVariableMatrix4x4 * transformInvMVP;
     // projected grid, feedback phase
+    NPEffectVariableFloat  * feedbackInvGaussExponent;
     NPEffectVariableFloat  * feedbackJacobianEpsilon;
     NPEffectVariableFloat3 * feedbackCameraPosition;
     NPEffectVariableFloat3 * feedbackDirectionToSun;
