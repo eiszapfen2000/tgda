@@ -467,12 +467,24 @@
             TargetProperty = "sunDiskC";
         };
 
+        PDeltaVariance =
+        {
+            Type = "ODButtonItem";
+            Label = "DVariance";
+            Alignment = "BottomLeft";
+            Position = ("20", "290" );
+            Size = ( "85", "20" );
+            TextSize = "16";
+            TargetObject = "Ocean Variance";
+            TargetProperty = "useDeltaVariance";
+        };
+
         POceanLines =
         {
             Type = "ODButtonItem";
             Label = "Grid";
             Alignment = "BottomLeft";
-            Position = ("20", "300" );
+            Position = ("20", "260" );
             Size = ( "85", "20" );
             TextSize = "16";
             TargetObject = "Scene";
@@ -484,7 +496,7 @@
             Type = "ODButtonItem";
             Label = "Axes";
             Alignment = "BottomLeft";
-            Position = ("20", "270" );
+            Position = ("20", "230" );
             Size = ( "85", "20" );
             TextSize = "16";
             TargetObject = "Scene";
@@ -496,7 +508,7 @@
             Type = "ODSliderItem";
             Label = "Key";
             Alignment = "BottomLeft";
-            Position = ("20", "230" );
+            Position = ("20", "190" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
@@ -512,7 +524,7 @@
             Type = "ODSliderItem";
             Label = "Reference White";
             Alignment = "BottomLeft";
-            Position = ("20", "200" );
+            Position = ("20", "160" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
