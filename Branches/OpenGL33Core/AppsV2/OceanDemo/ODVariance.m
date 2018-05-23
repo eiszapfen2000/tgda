@@ -44,8 +44,11 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
 
 - (void) updateSlopeVarianceLUT:(uint32_t)resolution
 {
+    const float baseSpectrumDeltaVariance
+      = useDeltaVariance ? [ ocean baseSpectrumDeltaVariance ] : 0.0f;
+
     [ varianceTextureResolution setFValue:(float)resolution ];
-    [ deltaVariance setFValue:[ ocean baseSpectrumDeltaVariance ]];
+    [ deltaVariance setFValue:baseSpectrumDeltaVariance ];
 
     [[[ NP Graphics ] textureBindingState ] clear ];
     [[[ NP Graphics ] textureBindingState ] setTexture:[ ocean baseSpectrum ] texelUnit:0 ];
@@ -106,27 +109,29 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
 	ocean = newOcean;
 	ASSERT_RETAIN(ocean);
 
-    varianceLUTLastResolutionIndex = ULONG_MAX;
-    varianceLUTResolutionIndex = defaultVarianceLUTResolutionIndex;
-    varianceRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Variance RTC" ];
-    varianceLUT = [[ NPRenderTexture alloc ] initWithName:@"Variance LUT" ];
+  varianceLUTLastResolutionIndex = ULONG_MAX;
+  varianceLUTResolutionIndex = defaultVarianceLUTResolutionIndex;
+  varianceRTC = [[ NPRenderTargetConfiguration alloc ] initWithName:@"Variance RTC" ];
+  varianceLUT = [[ NPRenderTexture alloc ] initWithName:@"Variance LUT" ];
 
-    effect = [[[ NP Graphics ] effects ] getAssetWithFileName:@"variance.effect" ];
-	ASSERT_RETAIN(effect);
+  effect = [[[ NP Graphics ] effects ] getAssetWithFileName:@"variance.effect" ];
+  ASSERT_RETAIN(effect);
 
-    variance = [ effect techniqueWithName:@"variance" ];
-    ASSERT_RETAIN(variance);
+  variance = [ effect techniqueWithName:@"variance" ];
+  ASSERT_RETAIN(variance);
 
-    layer         = [ effect variableWithName:@"layer" ];
-    deltaVariance = [ effect variableWithName:@"deltaVariance" ];
+  layer         = [ effect variableWithName:@"layer" ];
+  deltaVariance = [ effect variableWithName:@"deltaVariance" ];
 
-    varianceTextureResolution
-    	= [ effect variableWithName:@"varianceTextureResolution" ];
+  varianceTextureResolution
+  	= [ effect variableWithName:@"varianceTextureResolution" ];
 
-    NSAssert(layer != nil && deltaVariance != nil
-             && varianceTextureResolution != nil, @"");
+  NSAssert(layer != nil && deltaVariance != nil
+           && varianceTextureResolution != nil, @"");
 
-	return self;
+  useDeltaVariance = NO;
+
+  return self;
 }
 
 - (void) dealloc
