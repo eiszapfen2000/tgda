@@ -22,6 +22,7 @@
     NPEffectVariableFloat * layer;
     NPEffectVariableFloat * varianceTextureResolution;
     NPEffectVariableFloat * deltaVariance;
+    BOOL lastUseDeltaVariance;
     BOOL useDeltaVariance;
 }
 
