@@ -1088,44 +1088,51 @@ best suited for closeups where short waves are visible to the observer.
 %
 \begin{figure}
 \centering
+ \subtop[Projected Grid]
+ {
+  \includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_grid.png}
+ \label{fig:results:grid}
+ }
+ \hfill
  \subtop[Sun Contribution]
  {
-  \includegraphics[width=0.48\textwidth]{figures/31-07-2017_10-47-08_ross.png}
+  \includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_ross.png}
 	\label{fig:results:ross}
  }
  \hfill
  \subtop[Sky Contribution]
  {
-  \includegraphics[width=0.48\textwidth]{figures/31-07-2017_10-47-08_sky.png}
+  \includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_sky.png}
 	\label{fig:results:sky}
  }
  \hfill
  \subtop[Sea Contribution]
  {
-  \includegraphics[width=0.48\textwidth]{figures/31-07-2017_10-47-08_sea.png}
+  \includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_sea.png}
 	\label{fig:results:sea}
  }
  \hfill
  \subtop[Whitecaps Contribution]
  {
-  \includegraphics[width=0.48\textwidth]{figures/31-07-2017_10-47-08_whitecaps.png}
+  \includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_whitecaps.png}
 	\label{fig:results:whitecaps}
  }
  \hfill
  \subtop[Final Result]
  {
-  \includegraphics[width=\textwidth]{figures/31-07-2017_10-47-08_complete.png}
+  \includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_complete.png}
 	\label{fig:results:complete}
  }
-\caption[An overview of all ocean lighting terms involved in our implementation.]{
-An overview of all ocean lighting terms involved in our implementation
-of \citet{article:oceanlighting,misc:oceanlightingfft} and \citet{article:whitecaps}.
+\caption[An overview of the meshing scheme and all ocean lighting terms involved
+in our implementation.]{
+An overview of the meshing scheme and all ocean lighting terms involved in our
+implementation.
+\subcaptionref{fig:results:grid} The ocean surface as represented by the projected grid.
 \subcaptionref{fig:results:ross} Sun light reflected by the water surface.
 \subcaptionref{fig:results:sky} Sky light reflected by the water surface.
 \subcaptionref{fig:results:sea} Light refracted from the water body.
 \subcaptionref{fig:results:whitecaps} Whitecap foam.
-\subcaptionref{fig:results:complete} All previous terms combined into the final
-result.
+\subcaptionref{fig:results:complete} The final result.
 }
 \label{fig:results:lighting}
 \end{figure}
