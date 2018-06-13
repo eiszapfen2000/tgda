@@ -8,21 +8,25 @@
 % with wavelengths smaller than a centimeter, the subtle shift in water color depending on the local underwater flora and fauna.
 
 The synthesis of a believable depiction of the ocean surface is a permanent
-topic of interest for computer graphics researchers and enthusiasts. It
-represents even more of a challenge for applications which require the
-real-time display of a water body as large as the ocean.
-%That is because the ocean is a highly dynamic system which combines waves
-%at all scales, ranging from millimeters to kilometers. Furthermore, the
-%ocean is usually  observed from several distances, ranging from closeups
-%to views which reach the horizon.
-We present a framework for the synthesis and rendering of the open ocean
-in real-time. We focus our efforts on the geometry of the animated ocean
-surface, for which we leverage a set of wave spectrum models from
-oceanographic research. We discuss the intricacies of said models,
-as well as their fitness for real-time rendering. Moreover, we delineate
-in detail how to integrate distinct wave spectrum models into a
-coherent framework, where one can obtain believable, consistent and
-coherent results without any need for additional fudge factors.
+topic of interest in computer graphics. It represents even more of a
+challenge for applications which require the real-time display of a water
+body as large as the ocean.
+That is because the ocean is a highly dynamic system which combines waves
+at all scales, ranging from millimetres to kilometres. Moreover, the
+ocean may be observed from several distances, ranging from close-ups
+to views which reach the horizon. 
+%To complicate matters further, the
+%ocean is illuminated by natural light sources, such as the sun and the
+%sky, which are dynamic by nature too.
+We present a framework for the generation and rendering of the
+open ocean in real-time, including waves at all scales, and arbitrary
+viewing distances. We focus our efforts on the geometry of the animated
+ocean surface, for which we leverage a set of wave spectrum models from
+oceanographic research. We discuss the intricacies of
+said models, as well as their fitness for real-time rendering. Moreover,
+we delineate in detail how to integrate distinct wave spectrum models into a
+coherent framework, from which one is able obtain believable, consistent
+and coherent results.
 
 %Realistic animation and rendering of the ocean is an important aspect for simulators, movies and video games.
 %By nature, the ocean is a difficult problem for Computer Graphics: it is a dynamic system, it combines wave trains
@@ -36,8 +40,8 @@ coherent results without any need for additional fudge factors.
 %detail required. We then use this hierarchical representation for illumination and rendering. Our algorithm runs
 %in real-time, and produces highly realistic pictures and animations.
 
-Natural phenomena are a permanent topic of interest for computer graphics researchers and enthusiasts. To synthesise a believable
-depiction of an ocean surface is a complex task, especially in realtime rendering. The first part of our work will discuss the
-challenges posed by the task at hand, and discuss a variety of current approaches to the problem. The second part will present
-our give an
-overview of the underlying wave theory as well as the different oceanographic models employed in this work.
+%Natural phenomena are a permanent topic of interest for computer graphics researchers and enthusiasts. To synthesise a believable
+%depiction of an ocean surface is a complex task, especially in realtime rendering. The first part of our work will discuss the
+%challenges posed by the task at hand, and discuss a variety of current approaches to the problem. The second part will present
+%our give an
+%overview of the underlying wave theory as well as the different oceanographic models employed in this work.
