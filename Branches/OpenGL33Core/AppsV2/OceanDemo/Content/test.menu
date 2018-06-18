@@ -329,38 +329,6 @@
             TargetProperty = "displacementScale";
         };
 
-        PSliderAreaScale =
-        {
-            Type = "ODSliderItem";
-            Label = "Area";
-            Alignment = "TopLeft";
-            Position = ("20", "35" );
-            Size = ( "50", "1" );
-            TextSize = "16";
-            MinimumValue = "1.0";
-            MaximumValue = "10.0";
-            LineSize = ("85", "3");
-            HeadSize = ("3", "21");
-            TargetObject = "Ocean";
-            TargetProperty = "areaScale";
-        };
-
-        PSliderHeightScale =
-        {
-            Type = "ODSliderItem";
-            Label = "Height";
-            Alignment = "TopLeft";
-            Position = ("20", "65" );
-            Size = ( "50", "1" );
-            TextSize = "16";
-            MinimumValue = "1.0";
-            MaximumValue = "10.0";
-            LineSize = ("85", "3");
-            HeadSize = ("3", "21");
-            TargetObject = "Ocean";
-            TargetProperty = "heightScale";
-        };
-
         PSliderJacobianEpsilon =
         {
             Type = "ODSliderItem";
