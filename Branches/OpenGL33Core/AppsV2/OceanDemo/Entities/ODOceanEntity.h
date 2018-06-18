@@ -88,8 +88,6 @@
     Vector2 waterColorIntensityCoordinate;
 
     double displacementScale;
-    double areaScale;
-    double heightScale;
 
     BOOL receivedHeight;
     BOOL receivedDisplacement;
@@ -132,9 +130,7 @@
 - (NPTexture2D *) waterColor;
 - (NPTexture2D *) waterColorIntensity;
 
-- (double) areaScale;
 - (double) displacementScale;
-- (double) heightScale;
 - (Vector2) waterColorCoordinate;
 - (Vector2) waterColorIntensityCoordinate;
 
