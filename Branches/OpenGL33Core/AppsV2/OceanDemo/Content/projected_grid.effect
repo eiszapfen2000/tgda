@@ -62,7 +62,6 @@ technique "proj_grid_tf_feedback"
     define WHITECAPS
     # effect variables
     uniform mat4 np_viewprojectionmatrix;
-    uniform mat4 invMVP;
     uniform float displacementScale;
     uniform float invGaussPower;
     uniform vec2  vertexStep;
