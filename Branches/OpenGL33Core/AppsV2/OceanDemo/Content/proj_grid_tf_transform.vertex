@@ -38,11 +38,10 @@ void main()
     for ( int l = 0; l < numberOfLods; l++ )
     {
         vec2 lodSize = texelFetch(sizes, l).xy;
-        vec2 scaledLodSize = areaScale * lodSize;
-        vec2 texcoord = intersection.xz / scaledLodSize;
+        vec2 texcoord = intersection.xz / lodSize;
 
-        vec2 d_dx = (abs(intersection_dx.xz - intersection.xz) * 2.0) / scaledLodSize.x;
-        vec2 d_dy = (abs(intersection_dy.xz - intersection.xz) * 2.0) / scaledLodSize.y;
+        vec2 d_dx = (abs(intersection_dx.xz - intersection.xz) * 2.0) / lodSize.x;
+        vec2 d_dy = (abs(intersection_dy.xz - intersection.xz) * 2.0) / lodSize.y;
 
         h += textureGrad(heightmap, vec3(texcoord, l), d_dx, d_dy).x;
         d += textureGrad(displacement, vec3(texcoord, l), d_dx, d_dy).xy;
@@ -50,7 +49,7 @@ void main()
 
     out_ws_non_disp_position = intersection.xz;
     out_ws_position.xz = intersection.xz - displacementScale * d.xy;
-    out_ws_position.y  = h * heightScale;
+    out_ws_position.y  = h;
 
     gl_Position = np_viewprojectionmatrix * vec4(out_ws_position, 1.0);
 }
