@@ -94,9 +94,7 @@
     NPEffectTechnique * projectedGridTFTransform;
     NPEffectTechnique * projectedGridTFFeedback;
     // projected grid, transform phase    
-    NPEffectVariableFloat * transformAreaScale;
     NPEffectVariableFloat * transformDisplacementScale;
-    NPEffectVariableFloat * transformHeightScale;
     NPEffectVariableFloat2 * transformVertexStep;
     NPEffectVariableMatrix4x4 * transformInvMVP;
     // projected grid, feedback phase
