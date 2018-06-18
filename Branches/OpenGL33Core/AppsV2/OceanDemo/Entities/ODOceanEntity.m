@@ -110,10 +110,7 @@ static const int32_t resolutions[6] = {8, 16, 32, 64, 128, 256};
 static const NSUInteger defaultGeometryResolutionIndex = 3;
 static const NSUInteger defaultGradientResolutionIndex = 5;
 static const double OneDivSixty = 1.0 / 30.0;
-
-static const double defaultAreaScale = 1.0;
 static const double defaultDisplacementScale = 1.0;
-static const double defaultHeightScale = 1.0;
 
 static size_t index_for_resolution(int32_t resolution)
 {
@@ -865,8 +862,6 @@ static NSUInteger od_variance_size(const void * item)
     [ displacementDerivatives setTextureWrap:NpTextureWrapRepeat   ];
 
     displacementScale = defaultDisplacementScale;
-    areaScale = defaultAreaScale;
-    heightScale = defaultHeightScale;
 
     receivedHeight = NO;
     receivedDisplacement = NO;
@@ -1058,19 +1053,9 @@ static NSUInteger od_variance_size(const void * item)
     return waterColorIntensity;
 }
 
-- (double) areaScale
-{
-    return areaScale;
-}
-
 - (double) displacementScale
 {
     return displacementScale;
-}
-
-- (double) heightScale
-{
-    return heightScale;
 }
 
 - (Vector2) waterColorCoordinate
@@ -1338,8 +1323,8 @@ static NSUInteger od_variance_size(const void * item)
             maxHeight += heightRanges[i].y;
         }
 
-        [ projector setLowerBound:minHeight * heightScale ];
-        [ projector setUpperBound:maxHeight * heightScale ];
+        [ projector setLowerBound:minHeight ];
+        [ projector setUpperBound:maxHeight ];
 
         //---------------------------------------------
 
