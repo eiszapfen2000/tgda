@@ -272,14 +272,12 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
 
     NSAssert(result, @"Transform Feedback setup failed");
 
-    transformAreaScale = [ projectedGridEffect variableWithName:@"areaScale" ];
     transformDisplacementScale = [ projectedGridEffect variableWithName:@"displacementScale" ];
-    transformHeightScale = [ projectedGridEffect variableWithName:@"heightScale" ];
     transformVertexStep = [ projectedGridEffect variableWithName:@"vertexStep" ];
     transformInvMVP = [ projectedGridEffect variableWithName:@"invMVP" ];
 
-    NSAssert(transformAreaScale != nil && transformDisplacementScale != nil
-             && transformHeightScale != nil && transformVertexStep != nil
+    NSAssert(transformDisplacementScale != nil
+             && transformVertexStep != nil
              && transformInvMVP != nil, @"");
 
     feedbackSunColor = [ projectedGridEffect variableWithName:@"sunColor" ];
@@ -755,9 +753,7 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString* dateString, NSString
     [[[ NP Graphics ] textureBindingState ] setTexture:[ whitecapsTarget texture  ]  texelUnit:8 ];
     [[[ NP Graphics ] textureBindingState ] activate ];
 
-    [ transformAreaScale setValue:[ocean areaScale ]];
     [ transformDisplacementScale setValue:[ocean displacementScale ]];
-    [ transformHeightScale setValue:[ocean heightScale ]];
     [ transformVertexStep setValue:[ projectedGrid vertexStep ]];
     [ transformInvMVP setValue:[[ ocean projector ] inverseViewProjection]];
 
