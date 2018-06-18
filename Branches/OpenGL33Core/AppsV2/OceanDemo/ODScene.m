@@ -942,8 +942,6 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString* dateString, NSString
     {
         NSString * dateString = date_string();
 
-        texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_complete");
-
         // setup linear sRGB target
         [ rtc bindFBO ];
         [ linearsRGBTarget
@@ -959,6 +957,8 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString* dateString, NSString
         [ rtc activateDrawBuffers ];
         [ rtc activateViewport ];
 
+        [ self renderScene:projectedGridTFFeedback lines:NO axes:NO ];
+        texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_complete");
         [ self renderScene:projectedGridTFFeedback lines:YES axes:NO ];
         texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_grid");
         [ self renderScene:[ projectedGridEffect techniqueWithName:@"ross" ] lines:NO axes:NO ];
