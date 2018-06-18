@@ -140,10 +140,9 @@ void main()
     for ( int l = 0; l < numberOfLods; l++ )
     {
         vec2 lodSize = texelFetch(sizes, l).xy;
-        vec2 scaledLodSize = areaScale * lodSize;
-        vec2 texcoord = out_ws_non_disp_position / scaledLodSize;
+        vec2 texcoord = out_ws_non_disp_position / lodSize;
 
-        grad += texture(gradient, vec3(texcoord, l)).xy * heightScale;
+        grad += texture(gradient, vec3(texcoord, l)).xy;
     }
 
     vec3 normal = vec3(-grad.x, 1.0, -grad.y);
@@ -229,8 +228,7 @@ void main()
     {
         int layer = l / 2;
         vec2 lodSize = texelFetch(sizes, l).xy;
-        vec2 scaledLodSize = areaScale * lodSize;
-        vec2 texcoord = out_ws_non_disp_position / scaledLodSize;
+        vec2 texcoord = out_ws_non_disp_position / lodSize;
         vec4 j = texture(whitecaps, vec3(texcoord, layer));
         vec2 jmean = ((l % 2) == 0) ? j.xy : j.zw;
         jmeansum += jmean;
