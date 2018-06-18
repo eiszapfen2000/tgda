@@ -28,9 +28,7 @@ technique "proj_grid_tf_transform"
     # effect variables
     uniform mat4 np_viewprojectionmatrix;
     uniform mat4 invMVP;
-    uniform float areaScale;
     uniform float displacementScale;
-    uniform float heightScale;
     uniform vec2  vertexStep;
     uniform samplerBuffer sizes : 0
     uniform sampler2DArray heightmap : 1
@@ -65,9 +63,7 @@ technique "proj_grid_tf_feedback"
     # effect variables
     uniform mat4 np_viewprojectionmatrix;
     uniform mat4 invMVP;
-    uniform float areaScale;
     uniform float displacementScale;
-    uniform float heightScale;
     uniform float invGaussPower;
     uniform vec2  vertexStep;
     uniform float jacobianEpsilon;
@@ -155,8 +151,6 @@ technique "ross"
     define ROSS
     # effect variables
     uniform mat4 np_viewprojectionmatrix;
-    uniform float areaScale;
-    uniform float heightScale;
     uniform float invGaussPower;
     uniform vec3 cameraPosition;
     uniform vec3 directionToSun;
@@ -194,8 +188,6 @@ technique "sea"
     define SEA
     # effect variables
     uniform mat4 np_viewprojectionmatrix;
-    uniform float areaScale;
-    uniform float heightScale;
     uniform float invGaussPower;
     uniform vec3 cameraPosition;
     uniform vec3 directionToSun;
@@ -250,8 +242,6 @@ technique "sky"
     define SKY
     # effect variables
     uniform mat4 np_viewprojectionmatrix;
-    uniform float areaScale;
-    uniform float heightScale;
     uniform float invGaussPower;
     uniform vec3 cameraPosition;
     uniform vec3 directionToSun;
@@ -297,8 +287,6 @@ technique "whitecaps"
     define WHITECAPS
     # effect variables
     uniform mat4 np_viewprojectionmatrix;
-    uniform float areaScale;
-    uniform float heightScale;
     uniform float invGaussPower;
     uniform float jacobianEpsilon;
     uniform vec3 cameraPosition;
