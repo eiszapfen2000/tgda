@@ -334,7 +334,7 @@
             Type = "ODSliderItem";
             Label = "Jacobian Epsilon";
             Alignment = "TopLeft";
-            Position = ("20", "95" );
+            Position = ("20", "35" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
@@ -350,7 +350,7 @@
             Type = "ODWaterColorItem";
             Label = "";
             Alignment = "TopLeft";
-            Position = ("20", "125" );
+            Position = ("20", "70" );
             Size = ( "128", "20" );
             TextSize = "16";
             TextureFilename = "WaterColor.png";
@@ -363,7 +363,7 @@
             Type = "ODWaterColorItem";
             Label = "";
             Alignment = "TopLeft";
-            Position = ("20", "155" );
+            Position = ("20", "95" );
             Size = ( "128", "20" );
             TextSize = "16";
             TextureFilename = "BlackToWhiteRamp.png";
@@ -376,7 +376,7 @@
             Type = "ODSelectionGroupItem";
             Label = "LUT";
             Alignment = "TopLeft";
-            Position = ("20", "195" );
+            Position = ("20", "125" );
             Size = ( "40", "40" );
             TextSize = "16";
             ItemSize = ("40", "40");
