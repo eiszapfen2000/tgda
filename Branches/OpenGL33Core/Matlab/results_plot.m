@@ -2,6 +2,9 @@ function results_plot()
 %%
 filename_prefix = fullfile('N:', 'TG', '28-05-2018_10-56-10');
 results_tonemap(filename_prefix);
+
+% filename_prefix = fullfile('N:', 'TG', '19-06-2018_15-32-46');
+% results_tiles_tonemap(filename_prefix);
 end
 
 function results_tonemap(filename_prefix)
@@ -19,7 +22,12 @@ result_tonemap(filename_ross);
 result_tonemap(filename_sea);
 result_tonemap(filename_sky);
 result_tonemap(filename_whitecaps);
+end
 
+function results_tiles_tonemap(filename_prefix)
+%%
+filename_tiles = [ filename_prefix '_tiles' ];
+result_tonemap(filename_tiles);
 end
 
 function result_tonemap(basename)
