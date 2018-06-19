@@ -391,8 +391,8 @@
         {
             Type = "ODSliderItem";
             Label = "SunDiskA";
-            Alignment = "BottomLeft";
-            Position = ("20", "390" );
+            Alignment = "TopLeft";
+            Position = ("20", "220" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "1.0";
@@ -407,8 +407,8 @@
         {
             Type = "ODSliderItem";
             Label = "SunDiskB";
-            Alignment = "BottomLeft";
-            Position = ("20", "360" );
+            Alignment = "TopLeft";
+            Position = ("20", "250" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
@@ -423,8 +423,8 @@
         {
             Type = "ODSliderItem";
             Label = "SunDiskC";
-            Alignment = "BottomLeft";
-            Position = ("20", "330" );
+            Alignment = "TopLeft";
+            Position = ("20", "280" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "1.0";
@@ -439,8 +439,8 @@
         {
             Type = "ODButtonItem";
             Label = "DVariance";
-            Alignment = "BottomLeft";
-            Position = ("20", "290" );
+            Alignment = "TopLeft";
+            Position = ("20", "310" );
             Size = ( "85", "20" );
             TextSize = "16";
             TargetObject = "Ocean Variance";
@@ -451,8 +451,8 @@
         {
             Type = "ODSliderItem";
             Label = "Gauss Power";
-            Alignment = "BottomLeft";
-            Position = ("20", "260" );
+            Alignment = "TopLeft";
+            Position = ("20", "340" );
             Size = ( "50", "1" );
             TextSize = "16";
             MinimumValue = "0.0";
@@ -468,7 +468,7 @@
             Type = "ODButtonItem";
             Label = "Grid";
             Alignment = "BottomLeft";
-            Position = ("20", "230" );
+            Position = ("20", "260" );
             Size = ( "85", "20" );
             TextSize = "16";
             TargetObject = "Scene";
@@ -480,11 +480,23 @@
             Type = "ODButtonItem";
             Label = "Axes";
             Alignment = "BottomLeft";
-            Position = ("20", "200" );
+            Position = ("20", "230" );
             Size = ( "85", "20" );
             TextSize = "16";
             TargetObject = "Scene";
             TargetProperty = "renderWorldSpaceAxes";
+        };
+
+        POceanTiles =
+        {
+            Type = "ODButtonItem";
+            Label = "Tiles";
+            Alignment = "BottomLeft";
+            Position = ("20", "200" );
+            Size = ( "85", "20" );
+            TextSize = "16";
+            TargetObject = "Scene";
+            TargetProperty = "renderOceanTiles";
         };
 
         PSliderKey =
