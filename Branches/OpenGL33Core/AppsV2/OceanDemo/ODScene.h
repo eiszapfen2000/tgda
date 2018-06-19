@@ -52,6 +52,8 @@
     BOOL renderOceanAsLines;
     // if true, render world space axes
     BOOL renderWorldSpaceAxes;
+    // if true, visualize ocean tiles
+    BOOL renderOceanTiles;
 
     // whitecaps threshold
     double jacobianEpsilon;
@@ -93,6 +95,7 @@
     NPEffectTechnique * whitecapsPrecompute;
     NPEffectTechnique * projectedGridTFTransform;
     NPEffectTechnique * projectedGridTFFeedback;
+    NPEffectTechnique * projectedGridTFFeedbackTiles;
     // projected grid, transform phase    
     NPEffectVariableFloat * transformDisplacementScale;
     NPEffectVariableFloat2 * transformVertexStep;

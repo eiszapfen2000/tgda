@@ -191,6 +191,7 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
 
     renderOceanAsLines = NO;
     renderWorldSpaceAxes = YES;
+    renderOceanTiles = NO;
 
     jacobianEpsilon = 0.2;
 
@@ -246,10 +247,12 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
     whitecapsPrecompute      = [ projectedGridEffect techniqueWithName:@"whitecaps_precompute" ];
     projectedGridTFTransform = [ projectedGridEffect techniqueWithName:@"proj_grid_tf_transform" ];
     projectedGridTFFeedback  = [ projectedGridEffect techniqueWithName:@"proj_grid_tf_feedback"  ];
+    projectedGridTFFeedbackTiles = [ projectedGridEffect techniqueWithName:@"proj_grid_tf_tiles"  ];
 
     ASSERT_RETAIN(whitecapsPrecompute);
     ASSERT_RETAIN(projectedGridTFTransform);
     ASSERT_RETAIN(projectedGridTFFeedback);
+    ASSERT_RETAIN(projectedGridTFFeedbackTiles);
 
     // transform feedback setup
     const char * tfposition = "out_ws_position";
@@ -339,6 +342,7 @@ static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
 
     DESTROY(fullscreenQuad);
     DESTROY(whitecapsPrecompute);
+    DESTROY(projectedGridTFFeedbackTiles);
     DESTROY(projectedGridTFFeedback);
     DESTROY(projectedGridTFTransform);
     DESTROY(logLuminance);
@@ -848,7 +852,7 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString* dateString, NSString
 
     // render sky, ocean, world space coordinate axes
     [ self
-        renderScene:projectedGridTFFeedback
+        renderScene:renderOceanTiles ? projectedGridTFFeedbackTiles : projectedGridTFFeedback
               lines:renderOceanAsLines
                axes:renderWorldSpaceAxes ];
 
