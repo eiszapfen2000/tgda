@@ -54,6 +54,90 @@ technique "proj_grid_tf_transform"
     set vertex shader "proj_grid_tf_transform.vertex"
 }
 
+technique "proj_grid_tf_tiles"
+{
+    define ROSS
+    define SEA
+    define SKY
+    define TILES
+    # effect variables
+    uniform mat4 np_viewprojectionmatrix;
+    uniform float displacementScale;
+    uniform float invGaussPower;
+    uniform vec2  vertexStep;
+    uniform float jacobianEpsilon;
+    uniform vec3 cameraPosition;
+    uniform vec3 directionToSun;
+    uniform vec3 sunColor;
+    uniform vec3 skyIrradiance;
+    uniform vec2 waterColorCoordinate;
+    uniform vec2 waterColorIntensityCoordinate;
+    uniform samplerBuffer sizes : 0
+    uniform sampler2DArray heightmap : 1
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = TriLinear;
+        MagFilter = Linear;
+        Anisotropy = 4;
+    };
+    uniform sampler2DArray displacement : 2
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = TriLinear;
+        MagFilter = Linear;
+        Anisotropy = 4;
+    };
+    uniform sampler2DArray gradient : 3
+    {
+        WrapS = Repeat;
+        WrapT = Repeat;
+        MinFilter = TriLinear;
+        MagFilter = Linear;
+        Anisotropy = 16;
+    };
+    uniform sampler2D watercolor : 4
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform sampler2D watercolorIntensity : 5
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Nearest;
+        MagFilter = Nearest;
+    };
+    uniform sampler3D variance : 6
+    {
+        WrapS = ClampToEdge;
+        WrapT = ClampToEdge;
+        MinFilter = Linear;
+        MagFilter = Linear;
+    };
+    uniform sampler2D skylight : 7
+    {
+        WrapS = ClampToBorder;
+        WrapT = ClampToBorder;
+        MinFilter = Trilinear;
+        MagFilter = Linear;
+        Anisotropy = 16;
+    };
+
+
+    # vertex streams
+    in vec3 in_ws_position : 0;
+    in vec2 in_ws_non_disp_position : 1;
+    # fragment streams
+    out vec4 target : 0;
+    # shaders
+    set vertex shader "proj_grid_tf_feedback.vertex"
+    set fragment shader "proj_grid_tf_feedback.fragment"
+}
+
 technique "proj_grid_tf_feedback"
 {
     define ROSS
