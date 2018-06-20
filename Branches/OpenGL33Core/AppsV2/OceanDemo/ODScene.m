@@ -957,18 +957,26 @@ static bool texture_to_pfm(NPTexture2D * texture, NSString* dateString, NSString
         [ rtc activateDrawBuffers ];
         [ rtc activateViewport ];
 
-        [ self renderScene:projectedGridTFFeedback lines:NO axes:NO ];
-        texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_complete");
-        [ self renderScene:projectedGridTFFeedback lines:YES axes:NO ];
-        texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_grid");
-        [ self renderScene:[ projectedGridEffect techniqueWithName:@"ross" ] lines:NO axes:NO ];
-        texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_ross");
-        [ self renderScene:[ projectedGridEffect techniqueWithName:@"sky" ] lines:NO axes:NO ];
-        texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_sky");
-        [ self renderScene:[ projectedGridEffect techniqueWithName:@"sea" ] lines:NO axes:NO ];
-        texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_sea");
-        [ self renderScene:[ projectedGridEffect techniqueWithName:@"whitecaps" ] lines:NO axes:NO ];
-        texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_whitecaps");
+        if (renderOceanTiles == YES)
+        {
+            [ self renderScene:projectedGridTFFeedbackTiles lines:NO axes:NO ];
+            texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_tiles");
+        }
+        else
+        {
+            [ self renderScene:projectedGridTFFeedback lines:NO axes:NO ];
+            texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_complete");
+            [ self renderScene:projectedGridTFFeedback lines:YES axes:NO ];
+            texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_grid");
+            [ self renderScene:[ projectedGridEffect techniqueWithName:@"ross" ] lines:NO axes:NO ];
+            texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_ross");
+            [ self renderScene:[ projectedGridEffect techniqueWithName:@"sky" ] lines:NO axes:NO ];
+            texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_sky");
+            [ self renderScene:[ projectedGridEffect techniqueWithName:@"sea" ] lines:NO axes:NO ];
+            texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_sea");
+            [ self renderScene:[ projectedGridEffect techniqueWithName:@"whitecaps" ] lines:NO axes:NO ];
+            texture_to_pfm([ linearsRGBTarget texture ], dateString, @"_whitecaps");
+        }
 
         // detach targets
         [ linearsRGBTarget detach:NO ];
