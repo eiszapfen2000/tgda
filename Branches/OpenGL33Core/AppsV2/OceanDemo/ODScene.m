@@ -44,10 +44,6 @@
 #import "ODVariance.h"
 #import "ODScene.h"
 
-static const NSUInteger defaultVarianceLUTResolutionIndex = 0;
-static const uint32_t varianceLUTResolutions[4] = {4, 8, 12, 16};
-
-
 @interface ODScene (Private)
 
 - (id <ODPEntity>) loadEntityFromFile:(NSString *)fileName
