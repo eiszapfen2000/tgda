@@ -1062,7 +1062,7 @@ namely the Pierson-Moskowitz spectrum and the Unified spectrum.
 Now that we have taken care of the pitfalls which we encountered during
 our work on ocean surface generation, we may focus on the overall visual
 quality we were able to achieve.
-
+%
 Let us begin with the most fundamental building block, namely the wave spectrum.
 Given any one of the wave energy spectra presented in this work
 that stem from oceanographic research, one is able to synthesize an ocean
@@ -1075,112 +1075,13 @@ If one has a gentle sea in mind, then it would be best to use the Pierson-Moskow
 one should prefer the JONSWAP spectrum. For all the kinds of sea that reside
 between those two extrema, the Unified spectrum is the wave energy model of
 choice. Even more so, because of the spectra presented in this work it is the
-only one to handle gravity-capillary waves in a sensible manner, and is therefore the one
-best suited for closeups where short waves are visible to the observer.
-%
-%
-\begin{figure}
-\centering
- \subtop[]
- {
-  \includegraphics[width=0.48\textwidth]{figures/20-06-2018_14-49-57_complete.png}
-  \label{fig:results:pm:hover}
- }
- \hfill
-  \subtop[]
-  {
-   \includegraphics[width=0.48\textwidth]{figures/21-06-2018_15-47-53_complete.png}
-  \label{fig:results:unified}
-  }
- \subtop[]
- {
-  \includegraphics[width=0.48\textwidth]{figures/21-06-2018_10-44-51_complete.png}
-  \label{fig:results:jonswap:agitated}
- }
- \hfill
- \subtop[]
- {
-  \includegraphics[width=0.48\textwidth]{figures/21-06-2018_12-48-51_complete.png}
-  \label{fig:results:unified:largewaves}
- }
-\caption[Overview of results.]{The ocean surface under a variety of conditions.
-\subcaptionref{fig:results:pm:hover} A calm sea with the camera looking into the
-sunset (Pierson-Moskowitz).
-\subcaptionref{fig:results:unified} A fully developed sea with medium sized waves. (Unified).
-\subcaptionref{fig:results:jonswap:agitated} A highly agitated developing sea with small waves (JONSWAP).
-\subcaptionref{fig:results:unified:largewaves} A fully developed sea with large, sharp crested waves (Unified).
-}
-\label{fig:results:overview}
-\end{figure}
-%
-%
-\begin{figure}
-\centering
- \subtop[Projected Grid]
- {
-  \includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_grid.png}
- \label{fig:results:grid}
- }
- \hfill
- \subtop[Sun Contribution]
- {
-  \includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_ross.png}
-	\label{fig:results:ross}
- }
- \hfill
- \subtop[Sky Contribution]
- {
-  \includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_sky.png}
-	\label{fig:results:sky}
- }
- \hfill
- \subtop[Sea Contribution]
- {
-  \includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_sea.png}
-	\label{fig:results:sea}
- }
- \hfill
- \subtop[Whitecaps Contribution]
- {
-  \includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_whitecaps.png}
-	\label{fig:results:whitecaps}
- }
- \hfill
- \subtop[Final Result]
- {
-  \includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_complete.png}
-	\label{fig:results:complete}
- }
-\caption[An overview of the meshing scheme and all ocean lighting terms involved
-in our implementation.]{
-An overview of the meshing scheme and all ocean lighting terms involved in our
-implementation.
-\subcaptionref{fig:results:grid} The ocean surface as represented by the projected grid.
-\subcaptionref{fig:results:ross} Sun light reflected by the water surface.
-\subcaptionref{fig:results:sky} Sky light reflected by the water surface.
-\subcaptionref{fig:results:sea} Light refracted from the water body.
-\subcaptionref{fig:results:whitecaps} Whitecap foam.
-\subcaptionref{fig:results:complete} The final result.
-}
-\label{fig:results:lighting}
-\end{figure}
-%
-%
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/19-06-2018_17-10-50_tiles.png}
-\caption[Depiction of ocean surface tiles.]{A top down view of the ocean
-overlayed with a simple depiction of its four pattern sizes.}
-\label{fig:results:tiling}
-\end{figure}
-%
-%
+only one to handle gravity-capillary waves in a sensible manner, and is therefore the one best suited for closeups where short waves are visible to the observer.
 
 Now, given the wave spectrum of our choosing, we synthesize all datasets
 for the desired number of ocean surface patterns and use them to render
-the ocean. We have found that for most viewing conditions two complementary
-ocean surface patterns provide sufficient visual quality for the
-average observer. For closeups, though, it has proven beneficial to
+the ocean. We have found that two complementary ocean surface patterns
+provide sufficient visual quality for most viewing conditions.
+For closeups, though, it has proven beneficial to
 include at least one additional pattern which adds short wave detail to
 the water surface. Also for wide spanning camera views, where the ocean
 is visible up to the horizon, we settled not for two, but for three to
@@ -1208,6 +1109,104 @@ peaks.
 %But still, with surface heights
 %and displacements synthesized at such a low resolution, the computational cost
 %required by them shrinks to nearly zero.
+%
+%
+\begin{figure}
+	\centering
+	\subtop[]
+	{
+		\includegraphics[width=0.48\textwidth]{figures/20-06-2018_14-49-57_complete.png}
+		\label{fig:results:pm:hover}
+	}
+	\hfill
+	\subtop[]
+	{
+		\includegraphics[width=0.48\textwidth]{figures/21-06-2018_15-47-53_complete.png}
+		\label{fig:results:unified}
+	}
+	\subtop[]
+	{
+		\includegraphics[width=0.48\textwidth]{figures/21-06-2018_10-44-51_complete.png}
+		\label{fig:results:jonswap:agitated}
+	}
+	\hfill
+	\subtop[]
+	{
+		\includegraphics[width=0.48\textwidth]{figures/21-06-2018_12-48-51_complete.png}
+		\label{fig:results:unified:largewaves}
+	}
+	\caption[Overview of results.]{The ocean surface under a variety of conditions.
+		\subcaptionref{fig:results:pm:hover} A calm sea with the camera looking into the
+		sunset (Unified spectrum, four patterns).
+		\subcaptionref{fig:results:unified} A fully developed sea with medium sized waves. (Pierson-Moskowitz spectrum, two patterns).
+		\subcaptionref{fig:results:jonswap:agitated} A highly agitated developing sea with small waves (JONSWAP spectrum, three patterns).
+		\subcaptionref{fig:results:unified:largewaves} A fully developed sea with large, sharp crested waves (Unified spectrum, three patterns).
+	}
+	\label{fig:results:overview}
+\end{figure}
+%
+%
+\begin{figure}
+	\centering
+	\subtop[Projected Grid]
+	{
+		\includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_grid.png}
+		\label{fig:results:grid}
+	}
+	\hfill
+	\subtop[Sun Contribution]
+	{
+		\includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_ross.png}
+		\label{fig:results:ross}
+	}
+	\hfill
+	\subtop[Sky Contribution]
+	{
+		\includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_sky.png}
+		\label{fig:results:sky}
+	}
+	\hfill
+	\subtop[Sea Contribution]
+	{
+		\includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_sea.png}
+		\label{fig:results:sea}
+	}
+	\hfill
+	\subtop[Whitecaps Contribution]
+	{
+		\includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_whitecaps.png}
+		\label{fig:results:whitecaps}
+	}
+	\hfill
+	\subtop[Final Result]
+	{
+		\includegraphics[width=0.48\textwidth]{figures/28-05-2018_10-56-10_complete.png}
+		\label{fig:results:complete}
+	}
+	\caption[An overview of the meshing scheme and all ocean lighting terms involved
+	in our implementation.]{
+		An overview of the meshing scheme and all ocean lighting terms involved in our
+		implementation.
+		\subcaptionref{fig:results:grid} The ocean surface as represented by the projected grid.
+		\subcaptionref{fig:results:ross} Sun light reflected by the water surface.
+		\subcaptionref{fig:results:sky} Sky light reflected by the water surface.
+		\subcaptionref{fig:results:sea} Light refracted from the water body.
+		\subcaptionref{fig:results:whitecaps} Whitecap foam.
+		\subcaptionref{fig:results:complete} The final result.
+	}
+	\label{fig:results:lighting}
+\end{figure}
+%
+%
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{figures/19-06-2018_17-10-50_tiles.png}
+	\caption[Depiction of ocean surface tiles.]{A top down view of the ocean
+		overlayed with a simple depiction of its four pattern sizes.}
+	\label{fig:results:tiling}
+\end{figure}
+%
+%
 
 Now that we have discussed the factors which have most impact on the visual
 fidelity of the result, we may give an overview of the variety of
