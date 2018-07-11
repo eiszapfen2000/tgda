@@ -1,0 +1,262 @@
+\documentclass[a4paper,11pt,twoside]{memoir}
+\chapterstyle{plain}
+
+\usepackage{TUINFDA}
+
+\usepackage{url}
+\usepackage{hyperref}					% links in pdf
+\usepackage{graphicx}            			% Figures
+\usepackage{interval}
+\usepackage{verbatim}            			% Code-Environment
+\usepackage[lined,linesnumbered,algochapter]{algorithm2e} % Algorithm-Environment
+\newsubfloat{figure}
+\newsubfloat{table}
+
+\usepackage{booktabs}
+\usepackage{pgf}					
+\usepackage{tikz}					% tikz graphics
+\usetikzlibrary{arrows,automata}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{colortbl}
+\pgfplotsset{compat=newest}
+\usepgfplotslibrary{groupplots}
+\usetikzlibrary{pgfplots.groupplots}
+%\usetikzlibrary{external}
+\usetikzlibrary{matrix}
+\usetikzlibrary{spy}
+%\tikzexternalize[prefix=tikz/]
+%\tikzset{external/up to date check=md5}
+
+\usepackage{ngerman}
+\usepackage[ngerman]{babel}
+\usepackage{bibgerm,cite}       % Deutsche Bezeichnungen, Automatisches Zusammenfassen von Literaturstellen
+\usepackage[ngerman]{varioref}  % Querverweise
+% to use the german charset include cp850 for MS-DOS, ansinew for Windows and latin1 for Linux.
+% \usepackage[latin1]{inputenc}
+\usepackage{mathtools}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{siunitx}
+\usepackage{commath}
+\usepackage{hhline}
+\usepackage{natbib}
+\usepackage{csvsimple}
+
+\DeclareSIUnit\pixel{px}
+
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\newcommand{\mvec}[1]{\mathbf{#1}}
+\newcommand{\mvecx}[1]{\mathbf{#1}_x}
+\newcommand{\mvecy}[1]{\mathbf{#1}_y}
+\newcommand{\mvecz}[1]{\mathbf{#1}_z}
+\newcommand{\mvecw}[1]{\mathbf{#1}_w}
+\newcommand{\mmat}[1]{\mathbf{#1}}
+\newcommand{\transpose}[1]{#1^{\mathsf{T}}}
+\newcommand{\inverse}[1]{#1^{\mathsf{-1}}}
+\newcommand{\normalise}[1]{\frac{#1}{\norm{#1}}}
+
+\newcommand{\wavevector}{wavevector\xspace}
+\newcommand{\wavevectors}{wavevectors\xspace}
+\newcommand{\Wavevector}{Wavevector\xspace}
+\newcommand{\Wavevectors}{Wavevectors\xspace}
+\newcommand{\wavenumber}{wavenumber\xspace}
+\newcommand{\wavenumbers}{wavenumbers\xspace}
+\newcommand{\Wavenumber}{Wavenumber\xspace}
+\newcommand{\Wavenumbers}{Wavenumbers\xspace}
+\newcommand{\wavelength}{wavelength\xspace}
+\newcommand{\wavelengths}{wavelengths\xspace}
+\newcommand{\Wavelength}{Wavelength\xspace}
+\newcommand{\Wavelengths}{Wavelengths\xspace}
+
+\newcommand{\FourierTransform}{Fourier Transform\xspace}
+\newcommand{\FourierTransforms}{Fourier Transforms\xspace}
+\newcommand{\InvFourierTransform}{Inverse Fourier Transform\xspace}
+\newcommand{\InvFourierTransforms}{Inverse Fourier Transforms\xspace}
+\newcommand{\DiscreteFourierTransform}{Discrete Fourier Transform\xspace}
+\newcommand{\DiscreteFourierTransforms}{Discrete Fourier Transforms\xspace}
+\newcommand{\InvDiscreteFourierTransform}{Inverse Discrete Fourier Transform\xspace}
+\newcommand{\InvDiscreteFourierTransforms}{Inverse Discrete Fourier Transforms\xspace}
+\newcommand{\FastFourierTransform}{Fast Fourier Transform\xspace}
+\newcommand{\FastFourierTransforms}{Fast Fourier Transforms\xspace}
+\newcommand{\FT}{FT\xspace}
+\newcommand{\IFT}{IFT\xspace}
+\newcommand{\DFT}{DFT\xspace}
+\newcommand{\IDFT}{IDFT\xspace}
+\newcommand{\IDFTs}{IDFTs\xspace}
+\newcommand{\FFT}{FFT\xspace}
+
+\thesistitle{Ocean Surface Generation and Rendering}
+%\thesissubtitle{Optional Subtitle} % optional
+\thesisdate{11.07.2018}
+
+% all titles and designations have to be gender-related!
+\thesisdegree{Diplom-Ingenieur}{Diplom-Ingenieur}
+\thesiscurriculum{Visual Computing}{Visual Computing} % your study
+\thesisverfassung{Verfasser} % Verfasser
+\thesisauthor{Thomas Gamper} % your name
+\thesisauthoraddress{Lehmanngasse 25/2/12, 1230 Wien} % your address
+\thesismatrikelno{0107543} % your registration number
+
+\thesisbetreins{Associate Prof. Dipl.-Ing. Dipl.-Ing. Dr.techn. Michael Wimmer}
+\thesisbetrzwei{}
+%\thesisbetrdrei{Dr. Vorname Familienname} % optional
+
+% define page numbering styles
+\makepagestyle{numberCorner}
+\makeevenfoot{numberCorner}{\thepage}{}{}
+\makeoddfoot{numberCorner}{}{}{\thepage}
+
+% define custom macros for specific formats or names
+\newcommand{\uml}[1]{\texttt{#1}}
+\newcommand{\cd}{\textsf{Class Diagram}}
+
+\DeclareMathOperator{\sech}{sech}
+
+\intervalconfig{
+soft open fences,
+}
+
+\renewcommand{\thesection}{\arabic{section}}
+\makeatletter
+\let\l@section\l@chapter
+\makeatother
+
+\begin{document}
+\captionnamefont{\bfseries}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   FRONTMATTER    %%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frontmatter
+\pagenumbering{roman}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   TITLEPAGES    %%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% the german title page is required as first page
+\include{titlepage}
+
+% an english translation may follow
+%\include{titlepage_en} % optional
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   ERKLAERUNG DER SELBSTAENDIGKEIT   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\cleardoublepage
+%\selectlanguage{ngerman}
+%\include{chapters/erklaerung}
+%\selectlanguage{english}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   ACKNOWLEDGEMENTS    %%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% optional acknowledgements may be included in german or in english
+%\input{chapters/danksagung} 		% optional
+%\include{chapters/acknowledgements}	% optional
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   ABSTARCT    %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\include{chapters/abstract_en}
+%\cleardoublepage
+%\selectlanguage{ngerman}
+%\include{chapters/abstract_de}
+%\selectlanguage{english}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   CONTENTS    %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% uncomment to set document language to german (results in "Inhaltsverzeichnis", "Kapitel", "Abbildung", etc. instead of "Contents", "Chapter", and "Figure"), otherwise the document's language is english
+%\selectlanguage{ngerman}
+
+\setcounter{tocdepth}{1}
+
+%\cleardoublepage
+%\pagestyle{numberCorner}
+%\tableofcontents*
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   MAINMATTER    %%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mainmatter
+\pagenumbering{arabic}
+\pagestyle{numberCorner}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\include{chapters/introduction}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\include{chapters/state_of_the_art}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\include{chapters/background}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\include{chapters/implementation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\include{chapters/results}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\include{chapters/summary}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\chapter{Structure}
+%\label{ch:structure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\input{chapters/structure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\chapter{Typographic Design}
+%\label{ch:typo}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\input{chapters/design}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\chapter{Bibliographic Issues}
+%\label{ch:bibliographic}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\input{chapters/bibliographic}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% BACKMATTER %%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\appendix
+%\include{chapters/appendix}
+
+\section{Problem Statement}
+\section{Expected Results}
+\section{Methodology}
+\section{State-of-the-Art}
+\section{Relation to Visual Computing}
+
+\backmatter
+%\listoffigures
+%\listoftables
+%\listofalgorithms
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
