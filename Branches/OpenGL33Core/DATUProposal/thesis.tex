@@ -246,9 +246,52 @@ soft open fences,
 %\include{chapters/appendix}
 
 \section{Problem Statement}
-\section{Expected Results}
+Natural phenomena are a challenging topic in the field of computer graphics.
+Actual examples are complex structures which are to be found throughout nature,
+such as mountains, trees and water. The latter is especially interesting
+because of its highly dynamic form which poses a variety of sophisticated problems.
+For computer graphics to reproduce the diverse appearance of ocean surfaces
+represents one such problem.
+Rendering the ocean is a demanding task for several reasons. First, consider the
+sheer size of a water body as large as the ocean, which in numerous viewing
+situations will be visible all the way to the horizon. Second, the ocean surface
+is dynamic, therefore it needs to be constantly updated with the passage of time
+even though the wave interactions that define its shape are huge in terms of complexity.
+% thus we employ approximative models. %published by the oceanographic research community.
+Third, the optics of water are intricate. Incoming light may be reflected at the
+surface or may be refracted into the water body, with some of the refracted light
+possibly finding its way back to the ocean's surface, either by scattering inside the water
+body or by reflection at the sea bottom. Moreover, waves on the ocean surface may
+break and cause surf and foam, both of which strongly deviate in appearance from
+the surrounding water surface.
+But it would not be viable for one work to try to cover all the dynamics, as well
+as the lighting, of the entire ocean. Therefore we may approach a more specific
+subject, namely the synthesis of animated ocean surfaces which are both believable
+and computationally feasible. 
+Fortunately, the oceanographic research community did already develop models
+\citep[e.g.\ ][]{article:PiersonMoskowitz1964, article:Hasselman1973} which satisfy the
+better part of those requirements, as they are essential for oceanographic simulations.
+Still, to integrate said models into a coherent framework for ocean surface
+synthesis may pose a significant challenge.
+Moreover, only a representation of the oceanographic models most adequate for
+computer graphics algorithms would allow us to reduce computational complexity to
+a level where real-time operation may still be possible.
+\section{Aim of the Work}
+The aim of this work is to produce an optimized implementation which is able to generate,
+animate and render the surface of an open ocean in real-time. We focus our interest
+on the synthesis of animated ocean surface geometry, for which we will adopt and compare
+at least two distinct models from oceanographic research. Said models may allow for
+easy addition and reduction of detail, as well as for a range of algorithmic
+optimizations. Thus, we may be able to improve upon the balance between model detail
+and computational workload of current implementations.
+%
+%Whereas for ocean lighting
+%purposes we seek to implement the approach by \citet{article:oceanlighting}, as it
+%has specifically been tailored to the open ocean.
 \section{Methodology}
+BRAAAK
 \section{State-of-the-Art}
+\citep{course:simulatingocean}
 \section{Relation to Visual Computing}
 
 %\backmatter
