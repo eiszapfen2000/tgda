@@ -279,7 +279,7 @@ a level where real-time operation may still be possible.
 \section{Aim of the Work}
 The aim of this work is to produce an optimized implementation which is able to generate,
 animate and render the surface of an open ocean in real-time. We focus our interest
-on the synthesis of animated ocean surface geometry, for which we will adopt and compare
+on the synthesis of animated ocean surface geometry, for which we will adopt
 at least two distinct models from oceanographic research. Said models may allow for
 easy addition and reduction of detail, as well as for a range of algorithmic
 optimizations. Thus, we may be able to improve upon the balance between model detail
@@ -289,10 +289,34 @@ and computational workload of current implementations.
 %purposes we seek to implement the approach by \citet{article:oceanlighting}, as it
 %has specifically been tailored to the open ocean.
 \section{Methodology}
-BRAAAK
+The methodological approach consists of the following steps:
+\begin{itemize}
+\item Investigate existing ocean simulation and rendering methods.
+\item Identify wave spectrum models from oceanographic research suitable for
+ocean surface synthesis.
+\item Research the theoretical background necessary to integrate said models
+into a framework which gives coherent, correct and consistent results.
+\item Based on the work by \citet{course:simulatingocean}, implement a real-time
+ocean surface synthesis algorithm.
+\item Adopt the work by \citet{article:oceanlighting} for real-time ocean surface
+rendering.
+\item Evaluate the obtained results with respect to the current state-of-the-art.
+\end{itemize}
 \section{State-of-the-Art}
-\citep{course:simulatingocean}
+
 \section{Relation to Visual Computing}
+The curriculum for \emph{Visual Computing} touches the topics of natural phenomena,
+water rendering, and real-time rendering in several courses. The most directly
+linked courses are the following:
+\begin{itemize}
+\item 186.101 Rendering
+\item 186.140 Real-Time Rendering
+\item 186.192 Algorithms for Real-Time Rendering
+\item 186.830 Computergraphics
+\item 186.831 Computergraphics 
+\item 186.120 Fractals
+\item 186.186 Fractals
+\end{itemize}
 
 %\backmatter
 %\listoffigures
