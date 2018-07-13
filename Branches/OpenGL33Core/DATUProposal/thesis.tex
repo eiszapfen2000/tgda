@@ -86,7 +86,7 @@
 \newcommand{\IDFT}{IDFT\xspace}
 \newcommand{\IDFTs}{IDFTs\xspace}
 \newcommand{\FFT}{FFT\xspace}
-%\hypersetup{draft}
+\hypersetup{draft}
 
 \thesistitle{Ocean Surface Generation and Rendering}
 %\thesissubtitle{Optional Subtitle} % optional
@@ -250,7 +250,7 @@ soft open fences,
 Natural phenomena are a challenging topic in the field of computer graphics.
 Actual examples are complex structures which are to be found throughout nature,
 such as mountains, trees and water. The latter is especially interesting
-because of its highly dynamic form which poses a variety of sophisticated problems.
+because of its highly dynamic form, which poses a variety of sophisticated problems.
 For computer graphics to reproduce the diverse appearance of ocean surfaces
 represents one such problem.
 Rendering the ocean is a demanding task for several reasons. First, consider the
@@ -269,7 +269,7 @@ But it would not be viable for one work to try to cover all the dynamics, as wel
 as the lighting, of the entire ocean. Therefore we may approach a more specific
 subject, namely the synthesis of animated ocean surfaces which are both believable
 and computationally feasible. 
-Fortunately, the oceanographic research community did already develop models
+Fortunately, the oceanographic research community already developed models
 \citep[e.g.\ ][]{article:PiersonMoskowitz1964, article:Hasselman1973} which satisfy the
 better part of those requirements, as they are essential for oceanographic simulations.
 Still, to integrate said models into a coherent framework for ocean surface
@@ -279,7 +279,7 @@ computer graphics algorithms would allow us to reduce computational complexity t
 a level where real-time operation may still be possible.
 \section{Aim of the Work}
 The aim of this work is to produce an optimized implementation which is able to generate,
-animate and render the surface of an open ocean in real-time. We focus our interest
+animate and render the surface of an open ocean in real time. We focus our interest
 on the synthesis of animated ocean surface geometry, for which we will adopt
 a set of distinct models from oceanographic research. Said models may allow for
 easy addition and reduction of detail, as well as for a range of algorithmic
@@ -315,11 +315,11 @@ graphics. Therein, \citeauthor{course:simulatingocean}
 describes how the ocean was brought to life for productions such as
 \emph{Waterworld} and \emph{Titanic}.
 The computer graphics community has been, and still is, hard at work to make
-the algorithms presented by \citeauthor{course:simulatingocean} capable to render in real-time.
+the algorithms presented by \citeauthor{course:simulatingocean} capable to render in real time.
 The challenge is trifold: first, the synthesis of an animated ocean surface,
 second, efficient rendering of vast ocean surface geometry, and third,
 believable shading of the ocean surface.
-Note, that the spectral description of the ocean is an approximation
+Note that the spectral description of the ocean is an approximation
 which simulates the sea as a random process based on the distribution of wave energy in frequency space. Given the wave spectrum, one is then able to synthesize the ocean surface by means of an \InvFourierTransform. The latter exists
 as a highly optimized algorithm \citep{Cooley:1965} which, depending on
 input resolution, may allow for real-time operation on nowadays hardware
