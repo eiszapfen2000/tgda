@@ -8,7 +8,7 @@
 
 The previous chapter discussed in detail the approach we took to synthesize
 the animated ocean surface, including, one, a number of optimizations to reduce
-the computational workload, and, two, a level of detail mechanism which does
+the computational workload, and, two, a level-of-detail mechanism which does
 not only give us fine-grained control over model detail, but also allows us to
 reduce potential tiling artifacts. Additionally, we gave an overview of our demo
 application, which integrates our approach to ocean surface synthesis
@@ -27,7 +27,7 @@ in the context of ocean surface synthesis with wave spectra, and what measures
 we took to either overcome or sidestep them.
 Last, Section \ref{sec:results:fidelity} discusses the level of visual fidelity
 we were able to obtain, with focus on the different wave spectra, as well as
-our level of detail approach.
+our level-of-detail approach.
 % Before we delve into details, one may look at Figure~\ref{fig:results} which
 % depicts all componenents which are part of our ocean lighting implementation.
 % compare lighting of all spectrum types (same parameters)
@@ -84,7 +84,7 @@ not change, the static part of the spectrum has to be computed only once for
 the entire lifetime of the animated ocean surface.
 Moreover, as it is the static part of the spectrum that incorporates the wave
 energy spectrum, we are relieved of a significant computational burden.
-That is because evaluating the wave energy spectrum for a large set of
+This is because evaluating the wave energy spectrum for a large set of
 \wavevectors has proven to be extensive in terms of computational complexity.
 %
 \begin{figure}
@@ -148,7 +148,7 @@ single ocean surface pattern.
 
 With the static part of the spectrum on hand in a precomputed form, we are able
 to compute the spectra of all datasets within a fraction of time so short that
-we may synthesize at least one animated ocean surface pattern in real-time on
+we may synthesize at least one animated ocean surface pattern in real time on
 a single CPU thread.
 %
 %
@@ -205,7 +205,7 @@ The bulk of the CPU time spent on the supplemental datasets is caused by the
 additional stores to memory.
 Moreover, one can see that for all resolutions in question, except the highest
 one, we are able to generate all spectral datasets of the ocean surface pattern
-in real-time.}
+in real time.}
 \label{fig:results:h}
 \end{figure}
 %
@@ -215,7 +215,7 @@ for the accumulated computation time of all spectral datasets for a single
 ocean surface pattern. Based on said measurements, one can see that, depending
 on pattern resolution, there may be computational resources left at our
 disposal.
-We may employ those resources to generate additional ocean surface patterns,
+We may employ these resources to generate additional ocean surface patterns,
 i.e., levels of detail.
 %
 \begin{figure}
@@ -278,7 +278,7 @@ that the computation time to generate $l$ patterns of the same resolution
 roughly matches the computation time to generate one pattern, multiplied by
 $l$. Figure~\ref{fig:results:lods} corroborates said assumption.
 Thus, given the computation time of a single pattern, we may easily estimate
-the maximum number of patterns we are able to generate in real-time on a
+the maximum number of patterns we are able to generate in real time on a
 single CPU thread. Still, we are content with a maximum of four patterns.
 
 Due to performance considerations, we chose the IEEE 754 single-precision
@@ -501,8 +501,8 @@ FFTW has support for different floating point
 precisions, such as IEEE 754~\citep{IEEE:754} single-precision,
 double-precision, as well as quad-precision. Initially we used the
 double-precision variant of FFTW, but later on we switched to the
-single-precision variant, FFTWF. The reasons are twofold: one, our spectra
-are already on hand in single-precision, and two, the
+single-precision variant, FFTWF. The reasons are twofold: first, our spectra
+are already on hand in single-precision, and second, the
 FFTW documentation~\citep{misc:fftw:speed} states that FFTWF outperforms
 the double-precision variant roughly by a factor of 1.5.
 Moreover, we found that for our specific use case, where all spectra have
@@ -700,11 +700,11 @@ arithmetic has to be computed for the datasets with the higher resolution
 anyway, the only gain in performance arises from a cutback in memory operations.
 We found that said cutback improves spectrum generation performance by at most
 ten percent, where the actual improvement is dependent on the difference between
-the two resolutions of choice. We must admit, that ten percent are far from
+the two resolutions of choice. We must admit that ten percent are far from
 enough to allow us to generate the ocean surface patterns at a significantly
 higher rate than before, or at least to use the next-higher resolution for the
 derivative datasets. But still, it is a betterment, and the reduced resolution
-eases the strain on the subsequent tranformation stage considerably.
+eases the strain on the subsequent transformation stage considerably.
 % That is
 % because the \FastFourierTransform algorithm is $O(n\log{}n)$ \citep{Cooley:1965},
 % which means for each time we lower the resolution to the
@@ -772,7 +772,7 @@ Now that we have discussed the performance aspects of our approach
 to ocean surface synthesis, we may focus on the qualitative aspects.
 Recall, that we set out to generate and render a visually pleasing,
 as well as believable ocean surface. Performance aside, we had to tackle two
-major challenges to reach said goal: one, generate convincing wave geometry, and two, 
+major challenges to reach said goal: first, generate convincing wave geometry, and second, 
 render the generated ocean with a lighting algorithm which gives plausible results.
 For each of the two tasks we encountered at least one major pitfall, which we will
 discuss subsequently.
@@ -785,7 +785,7 @@ waves and their respective amplitudes. Neither the geometry nor the animation of
 the ocean surface looked believable to the observer. It was even worse if we
 applied the choppy-wave algorithm to the ocean surface. Hence, in a first step we
 tried to mitigate the issue by introducing several fudge factors which allowed
-us, one, to rescale the ocean surface's geometry during rendering, and two,
+us, first, to rescale the ocean surface's geometry during rendering, and second,
 to directly influence the magnitude of the spectrum's energy output. 
 By carefully tuning said fudge factors, we were at least able to obtain
 acceptable results. Still, each time we switched to a different wave energy
@@ -1074,7 +1074,7 @@ fit his choice. We may give some direction on that matter.
 If one has a gentle sea in mind, then it would be best to use the Pierson-Moskowitz spectrum, whereas for highly turbulent seas
 one should prefer the JONSWAP spectrum. For all the kinds of sea that reside
 between those two extrema, the Unified spectrum is the wave energy model of
-choice. Even more so, because of the spectra presented in this work it is the
+choice. Even more so, because among the spectra presented in this work it is the
 only one to handle gravity-capillary waves in a sensible manner, and is therefore the one best suited for closeups where short waves are visible to the observer.
 
 Now, given the wave spectrum of our choosing, we synthesize all datasets
@@ -1089,13 +1089,13 @@ four patterns to keep tiling artifacts in check. As for pattern resolution,
 we chose $256\times256$ because it is the highest resolution which
 still allows us to keep real-time framerates with four active patterns.
 
-Given we are satisfied with the visual appearance of the ocean for a specific
-number of patterns, then we may employ our multi-resolution approach
+Once we are satisfied with the visual appearance of the ocean for a specific
+number of patterns, we may employ our multi-resolution approach
 to lighten the computational load of CPU and GPU. By simple visual inspection
 we have found that for most scenes we are able to reduce the resolution of
 the horizontal and vertical displacements as far as to $32\times32$ without
 noticing a significant drop in visual quality, on condition that we keep a
-resolution of $256\times256$ for the slopes and the first order derivatives.
+resolution of $256\times256$ for the slopes and the first-order derivatives.
 %
 With surface heights and displacements synthesized at such a low resolution,
 the computational cost required by them shrinks to nearly zero, freeing
