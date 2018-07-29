@@ -378,7 +378,7 @@ for all nine spectra of a single ocean surface pattern at various resolutions.
 One can see that the single precision variant of the
 \InvDiscreteFourierTransform already reduces the computational workload roughly
 by a factor of two compared to the double precision variant. Moreover, if we
-transform pairs of hermitian spectra at once, we are able to cut the number
+transform pairs of Hermitian spectra at once, we are able to cut the number
 of required \IDFTs from nine to five, further reducing the
 computational workload by about forty-five percent.}
 \label{fig:idft}
@@ -470,9 +470,9 @@ It follows that in the worst case we have to compute the
 resolution, such a number of \IDFTs may represent a massive computational
 burden, especially because all \IDFTs have to be computed for each keyframe
 of the animated ocean surface.
-Fortunately, all our spectra are hermitian, and as we have seen in
+Fortunately, all our spectra are Hermitian, and as we have seen in
 Section~\ref{sec:discrete_fourier_transform}, we may apply the
-\InvDiscreteFourierTransform on two hermitian spectra at once.
+\InvDiscreteFourierTransform on two Hermitian spectra at once.
 Therefore the maximum number of required \IDFTs for a single ocean surface
 pattern drops from nine to five: two for the displacement derivatives,
 one for the displacements, one for the slopes, and one for surface elevation.
