@@ -325,11 +325,11 @@ y &= y_0 - \sum_i^N A_i \cos\left(\mvec{k}_i\cdot\mvec{x}_0-\omega_i t\right)
 %
 
 To model waves in shallow water, \citet{Fournier:1986} extend the Gerstner
-wave model in two ways. First, waveparticle motion takes the underlying sea
-bed into account, allowing for waves to be refracted i.e. to change their \wavelength,
+wave model in two ways. First, wave particle motion takes the underlying sea
+bed into account, allowing for waves to be refracted, i.e., to change their \wavelength,
 their speed and their direction of travel based on water depth, see Figure~\ref{fig:fournier1986:refraction}.
 Second, the circular orbit of Gerstner waves approaching the shore is
-transformed into an elliptical orbit, which allows to approximate the form of
+transformed into an elliptical orbit, which allows approximating the form of
 steepening and eventually breaking waves.
 Results of \citeauthor{Fournier:1986} are shown in Figure~\ref{fig:fournier1986:results}.
 %
@@ -374,7 +374,7 @@ called \emph{wave tracing}, which launches orthogonal wave rays from the open
 sea along the direction of wave propagation. Wave refraction is computed based
 on Snell's law~\citep{book:huygenstreatiseonlight}, the wave trains are traced
 inside a uniform grid.
-In case rays tracing the waves path diverge
+In case rays tracing the waves' path diverge
 significantly from a straight line, there may remain undersampled areas,
 leading to parts of the surface lacking detail. \citet{Gonzato:1997} improve
 upon this by generating new rays in undersampled areas, allowing their
@@ -397,7 +397,7 @@ small number of \wavenumbers may suffice to obtain satisfactory results.
 Because one has basically to select the involved \wavelengths and amplitudes
 by trial and error, it follows that parametric models are not particularly
 eligible to represent an agitated water surface, as it would involve a
-significant higher number of waves. The user may have a hard time assembling a
+significantly higher number of waves. The user may have a hard time assembling a
 meaningful number of \wavenumbers and amplitudes, with the result being
 potentially infeasible because of the accumulated computational cost.
 %
@@ -446,7 +446,7 @@ gravity, hence wind speed is the parameter common to all models. Another well
 established parameter is~\emph{fetch}, which is the distance over which the wind
 blows before it reaches the ocean patch the wave spectrum simulates. Water
 depth, if supported by the wave spectrum model, is uniform like all other
-parameters hence the sea bed is assumed planar and parallel to the ocean surface
+parameters, hence the sea bed is assumed planar and parallel to the ocean surface
 at rest. It follows that no wave transitions from one water depth to another,
 therefore no wave refraction may take place \citep{book:mei1989}.
 
@@ -518,7 +518,7 @@ spreading function distributes wave energy across \wavevectors, where
 the energy peak is usually to be found aligned with the wind direction and the
 remaining energy fanning out at its sides. Results of \citet{Mastin:1987} are
 shown in Figure~\ref{fig:mastin_waves}.
-\citet{Premoze:2000} on the other hand make use of the JONSWAP spectrum
+\citet{Premoze:2000}, on the other hand, make use of the JONSWAP spectrum
 \citep{article:Hasselman1973}, as it allows for more varied ocean surfaces than
 the Pierson-Moskowitz spectrum.
 % An in-depth discussion of the Pierson-Moskowitz spectrum, the JONSWAP spectrum,
@@ -547,8 +547,8 @@ Source: \citet{course:simulatingocean}
 \end{figure}
 %
 
-One of the most known works in computer graphics related to wave spectra is
-\citet{course:simulatingocean}. Therein, \citeauthor{course:simulatingocean}
+One of the most well-known works in computer graphics related to wave spectra is
+by \citet{course:simulatingocean}. Therein, \citeauthor{course:simulatingocean}
 describes how the ocean was brought to life for productions such as
 \emph{Waterworld} and \emph{Titanic}. In contrast to \citeauthor{Mastin:1987},
 \citeauthor{course:simulatingocean} does not use white noise, but Gaussian
@@ -584,8 +584,8 @@ amplitudes is picked from a directional Pierson-Moskowitz spectrum. Said
 spectrum, thus it is unlikely for short \wavelengths to be selected. As a remedy,
 a three dimensional turbulence function \citep{Perlin:1985} is added to generate
 small scale details. \citet{lee:2007} improve upon the work of
-\citeauthor{Thon:2000} by using the TMA spectrum~\citep{Hughes:1984} which
-incorporates both, deep water waves and basic support for shallow water waves.
+\citeauthor{Thon:2000} by using the TMA spectrum~\citep{Hughes:1984}, which
+incorporates both deep water waves and basic support for shallow water waves.
 \cite{article:frechot2007} presents an adaptive sampling scheme, where care is
 taken not only to include \wavevectors with the most contribution to wave
 energy, but \wavevectors which are representative for the entire spectrum:
@@ -594,7 +594,7 @@ long waves, short waves and even capillary waves.
 \section{GPU Implementations}
 %
 The computer graphics community has been, and still is, hard at work to make
-algorithms presented in the previous sections capable to render in real-time.
+algorithms presented in the previous sections capable to render in real time.
 The challenge is trifold: first, the synthesis of an animated ocean surface,
 second, efficient rendering of vast ocean surface geometry, and third,
 believable shading of the ocean surface.
@@ -763,9 +763,9 @@ wavetrains smaller than a grid quad are removed from the sum of waves for that q
 % evaluate surface at any deseired location
 % no cyclicity, if ratios between wavelengths irrational
 \citet{Cui:2004} uses the adaptive mesh by \citeauthor{Hinsinger:2002} for a marine
-simulator with three adjacent viewports, the wave model although is a simple sum
+simulator with three adjacent viewports, the wave model, however, is a simple sum
 of sinusoids with a small number of waves picked from a wave spectrum.
-\citet{thesis:johanson} on the other hand improves upon the adaptive mesh of
+\citet{thesis:johanson}, on the other hand, improves upon the adaptive mesh of
 \citeauthor{Hinsinger:2002}. First, the projection of the mesh onto the base plane
 is moved from the CPU to a vertex shader on the GPU. Second, \citeauthor{thesis:johanson} makes
 sure that the projection of the vertices works correctly in all possible viewing
@@ -885,12 +885,12 @@ are computed entirely on the GPU. In an additional step,
 see Figure~\ref{fig:dupuy:whitecaps}.
 
 As ocean surfaces generated from wave spectra allow for seamless tiling,
-one may need to make sure to reduce tiling artifacts i.e. the viewer
+one may need to make sure to reduce tiling artifacts, i.e., the viewer
 shall not notice that the ocean surface repeats itself in all directions.
 The approach taken by~\citet{Rydahl:2009} and \citet{NVIDIA:Ocean} is to
 generate additional noise on the ocean surface.
-\citet{misc:oceanlightingfft} and \citet{article:whitecaps}
-on the other hand compute not just one ocean surface tile, but up to four,
+\citet{misc:oceanlightingfft} and \citet{article:whitecaps},
+on the other hand, compute not just one ocean surface tile, but up to four,
 where all tiles are of different size and each one samples a different
 part of the wave spectrum. Even though such an approach is unable to
 entirely remove periodicity, the period is increased to the least common
