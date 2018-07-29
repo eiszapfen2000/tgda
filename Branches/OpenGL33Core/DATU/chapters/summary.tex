@@ -49,7 +49,7 @@ research provides a wide range of wave spectra which are specifically
 tailored to the deep water of the open ocean. Said wave spectra are
 employed for oceanographic forecasts and simulations, therefore they
 give a high degree of realism.
-Thus, we chose to implement four such wave energy spectra,
+Thus, we chose to implement four such wave-energy spectra,
 %\citep{article:PiersonMoskowitz1964, article:Hasselman1973, article:Donelan1985, article:Elfouhaily1997}, \citep{course:simulatingocean}
 all well established in oceanographic literature, plus the wave
 spectrum introduced by \citeauthor{course:simulatingocean} (Section~\ref{sec:wave_spectra}).
@@ -62,11 +62,11 @@ but only after we had made sure that each wave spectrum had been converted
 to the correct integral domain (Section~\ref{subsec:integral_domain_conversion}).
 %
 
-For the purpose of ocean surface lighting we decided to implement the
-algorithm by \citet{misc:oceanlightingfft} as it gives believable results
+For the purpose of ocean surface lighting, we decided to implement the
+algorithm by \citet{misc:oceanlightingfft}, as it gives believable results
 and it has specifically been tailored to the wave spectrum of the open ocean.
-After a successful implementation it turned out that only two of our
-four remaining wave spectra were able to unconditionally match the algorithms
+After a successful implementation, it turned out that only two of our
+four remaining wave spectra were able to unconditionally match the algorithm's
 stringent requirements, with a third spectrum keeping up under most
 conditions (Section~\ref{sec:results:lighting}).
 Furthermore, we implemented the work by \citet{article:whitecaps} to
@@ -77,11 +77,11 @@ as long as we employ only one perturbation pattern, we may not
 be able to reproduce a high-quality ocean surface for all possible
 viewing situations. Depending on the observer's viewpoint, we may be
 faced with tiling artifacts or lack of detail.
-Therefore we adopted the approach by~\citet{misc:oceanlightingfft},
+Therefore, we adopted the approach by~\citet{misc:oceanlightingfft},
 which addresses both matters by superimposing multiple, complementary perturbation
 patterns of different size (Section~\ref{sec:level_of_detail}).
 With multiple patterns at hand, where for each pattern we have to
-generate and Fourier transform up to nine separate spectra (one for vertical
+generate and Fourier-transform up to nine separate spectra (one for vertical
 perturbation, two for horizontal perturbation, two for gradients,
 four for whitecaps), pattern generation had become computationally too
 expensive to still allow for real-time operation.
@@ -194,8 +194,8 @@ especially with regard to pattern synthesis.
 \section{Concluding Remarks}
 We have shown the integration of the wave spectrum concept into a
 coherent framework for the real-time display of believable ocean
-surfaces. Specific properties of the wave spectrum allow us, one,
-to synthesize the water surface with high efficiency, and two, to
+surfaces. Specific properties of the wave spectrum allow us, first,
+to synthesize the water surface with high efficiency, and second, to
 strike a well adjusted balance between model detail and performance.
 Still, one has to be careful when picking a specific wave spectrum
 model, as not all models are adequate for real-time rendering purposes.
