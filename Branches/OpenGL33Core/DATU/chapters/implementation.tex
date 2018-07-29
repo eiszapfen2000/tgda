@@ -1009,7 +1009,7 @@ vector field with just one \InvFourierTransform.
 % x_y]$
 
 Given grid point $\mvec{x} = (x,z)$, time $t$ and surface elevation $\eta(\mvec{x},t)$, 
-we may write the corresponding three dimensional, vertically displaced vertex 
+we may write the corresponding three-dimensional, vertically displaced vertex 
 coordinate as follows:
 \begin{equation}
  \mvec{v}(\mvec{x},t) = \begin{bmatrix}x\\ \eta(\mvec{x},t)\\ z\end{bmatrix} 
@@ -2404,8 +2404,8 @@ of the wave energy spectrum with differing resolutions.
 % As long as the two different wavevector domains are based on
 % the same pattern size, $\mvec{l}$ is a subset of $\mvec{h}$, it follows that
 % $\Theta(\mvec{l})$ is a subset of $\Theta(\mvec{h})$. In short, 
-The low resolution variant of the wave energy spectrum is already embedded inside the
-high resolution variant, see Figure~\ref{fig:sampling_different_resolutions}.
+The low-resolution variant of the wave energy spectrum is already embedded inside the
+high-resolution variant, see Figure~\ref{fig:sampling_different_resolutions}.
 The same applies to the surface elevation spectrum $h$ as defined
 by Equation~\ref{eq:dft_h_k_t}, as well as to the spectra of all derived datasets.
 If the high-resolution spectrum $ds(\mvec{h})$ of any dataset has been computed and stored,
@@ -2733,7 +2733,7 @@ complex-to-real \DFT, which has proven to be beneficial for our use case.
 
 The user is given a wide range of control over frequency spectrum generation:
 he or she may configure the number of patterns, the resolution of the vertical
-and horizontal displacements, the resolution of the first order partial
+and horizontal displacements, the resolution of the first-order partial
 derivatives, wind velocity $U_{10}$, fetch $F$, size $L$ of the largest pattern,
 and scaling factor $f$ for the automatic pattern size reduction.
 Moreover, the user may select the wave energy spectrum model, where all
@@ -2909,7 +2909,7 @@ We chose to implement the illumination model introduced by
 \citet{article:oceanlighting} for three reasons. First, it gives visually
 pleasing as well as convincing results. Second, in step with our work,
 it is tailored to the deep water of the open ocean. Third, it has been adapted by
-\citet{misc:oceanlightingfft} in such a way, that the wave energy spectrum has
+\citet{misc:oceanlightingfft} in such a way that the wave energy spectrum has
 become an integral part of the lighting model itself.
 
 The lighting term for the water surface, as presented by
@@ -2929,7 +2929,7 @@ therefore opted for the well-established work of \citet{Preetham:1999}, which
 is easy to implement and requires no preprocessing steps.
 The Preetham skylight model, as presented in \citet[Section 3.1]{Preetham:1999},
 takes only two parameters: one, the position of the sun on the hemisphere, and two,
-the haziness of the atmosphere i.e. turbidity.
+the haziness of the atmosphere, i.e., turbidity.
 Figure~\ref{fig:preetham} depicts the effect of the two parameters on
 the resulting sky dome.
 With the skylight taken care of, we may turn towards the sunlight. We assume
@@ -3004,20 +3004,20 @@ the result is consistent with the corresponding Preetham skylight.
 \subsubsection{Whitecaps}
 The ocean lighting scheme by \citet{article:oceanlighting} does not account for
 the breaking of waves on the open ocean. Neither the geometric deformations,
-nor the changes in reflectance caused by foam and spray, so called
+nor the changes in reflectance caused by foam and spray, so-called
 whitecaps, are incorporated in their model. \citet{article:whitecaps},
 on the other hand, extend the work of \citet{misc:oceanlightingfft}
 to include whitecaps.
 Their contribution is an optimized algorithm to compute for each pixel the
 coverage caused by whitecaps. Said coverage depends on the amount of self
-intersections taking place inside the world space footprint of the pixel on
+intersections taking place inside the world-space footprint of the pixel on
 the ocean surface. With the whitecap coverage at hand,
 \citeauthor{article:whitecaps} then proceed to modify the lighting term at each
 pixel accordingly.
 The aforementioned self intersections are located using the approach by
 \citet{course:simulatingocean}, whereas the computation of the whitecap
 coverage is based on fast linear prefiltering methods \citep{Bruneton:2012},
-allowing it to leverage the hardware accelerated mipmap generator of modern GPUs.
+allowing it to leverage the hardware-accelerated mipmap generator of modern GPUs.
 
 %Their approach is based on the method by
 %\citet{course:simulatingocean} to locate self intersections on the ocean
