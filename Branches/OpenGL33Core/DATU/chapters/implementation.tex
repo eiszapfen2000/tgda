@@ -14,7 +14,7 @@ But to be able to visualize such diverse seas in a convincing manner we are depe
 than surface elevation alone. Therefore, as described by \citet{course:simulatingocean},
 we may capitalize on the spectral representation of ocean waves to obtain
 three distinct additional datasets.
-One, high quality normal vectors by deriving the ocean surface's slope vectors in frequency space.
+One, high-quality normal vectors by deriving the ocean surface's slope vectors in frequency space.
 Two, displacements to transform the gentle form of the sea into a more agitated one, where the waves are more similar to Gerstner waves than to sinusoids.
 Three, the first-order partial derivatives of aforementioned displacements, as they allow us to deduce the locations on the ocean surface where
 foam and spray may arise.
@@ -27,7 +27,7 @@ Alongside data synthesis, it is the rendering of a water body as large as the oc
 that poses a challenge. The variety of possible camera views
 may range from closeups of the water surface to vistas where the sea spans all
 the way to the horizon.
-In the former case we would like to be able to observe small scale detail on the
+In the former case we would like to be able to observe small-scale detail on the
 water surface, such as ripples caused by gravity-capillary waves.
 The latter case is not difficult to handle in principle, because the ocean surface
 data we synthesize is seamlessly tileable. Still, we would prefer that the viewer
@@ -46,7 +46,7 @@ As one may already guess, we are burdened with a significant number of
 slopes, displacements, first order derivatives of the displacements),
 and the number of different tiles.
 Thus, we need to make sure to keep the computational workload on an acceptable
-level for realtime display. We chose to tackle the issue at hand in a
+level for real-time display. We chose to tackle the issue at hand in a
 twofold manner.
 First, key properties of the ocean surface spectrum allow us to accelerate the
 computation of its \InvFourierTransform considerably.
@@ -591,7 +591,7 @@ of the spectrum to convert between the underlying layouts of the two different
 %https://ccrma.stanford.edu/~jos/mdft/Even_Odd_Functions.html
 %https://ccrma.stanford.edu/~jos/mdft/mdft.html
 %https://web.eecs.umich.edu/~fessler/course/451/l/pdf/c5.pdf
-The \FourierTransform of real-valued input is~\emph{hermitian} - the real part of the resulting spectrum
+The \FourierTransform of real-valued input is~\emph{Hermitian} -- the real part of the resulting spectrum
 is an~\emph{even} function and the imaginary part is~\emph{odd}~\citep{book:bracewell2000fourier}.
 A function $f(n)$ is said to be even if
 $f(-n) = f(n)$. On the other hand, a function $f(n)$ is said to be odd if $f(-n) = -f(n)$,
@@ -667,12 +667,12 @@ table-number-alignment=right
 \caption[Hermitian property of even-sized spectra.]{
 The center element and the zero frequency component are highlighted in red respectively.
 \subcaptionref{fig:symmetry:odd:layout} Hermitian matrix ($N=3$).
-\subcaptionref{fig:symmetry:odd:example} Example spectrum matching the hermitian matrix layout.
+\subcaptionref{fig:symmetry:odd:example} Example spectrum matching the Hermitian matrix layout.
 \subcaptionref{fig:symmetry:even:layout} Hermitian matrix ($N=5$).
 \subcaptionref{fig:symmetry:even:example} An even-sized spectrum ($N=4$), the elements of
 the first row and column lack their complex conjugate counterparts.
 Only after we replicate the spectrum until both its dimensions have an odd-numbered size ($N=5$),
-we may find that for all elements of the spectrum there is a pair which satisfies the hermitian
+we may find that for all elements of the spectrum there is a pair which satisfies the Hermitian
 condition $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$.
 %then for all elements of the spectrum there is a pair which satisfies the hermitian
 %condition $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$.
@@ -683,9 +683,9 @@ condition $\mathcal{F}(-\mvec{k})=\mathcal{F}(\mvec{k})^*$.
 \end{figure}
 %
 
-Surface elevation $\eta$ is a real-valued function, therefore its spectrum must be hermitian,
+Surface elevation $\eta$ is a real-valued function, therefore its spectrum must be Hermitian,
 too. Let $\mathcal{F}(\mvec{k})$ be the \FourierTransform of surface elevation $\eta$, then
-we may write the hermitian property as follows:
+we may write the Hermitian property as follows:
 \begin{equation}
 \label{eq:h0_k_complex_conjugate}
  \mathcal{F}(-\mvec{k}) = \mathcal{F}(\mvec{k})^*
@@ -703,7 +703,7 @@ allows us to find matching complex conjugate pairs for all elements of an even-s
 %allows us to find matching pairs for all elements of the spectrum, see Table~\ref{tab:spectrum_k_minusk_border}.\\
 \subsection{Hermitian Wave Spectrum}
 The spectrum $h(\mvec{k},t)$ from Equation~\ref{eq:dft_h_k_t} is~\emph{not}
-hermitian for two reasons. First, the real-valued part of the spectrum, namely
+Hermitian for two reasons. First, the real-valued part of the spectrum, namely
 the wave energy spectrum $\Theta(\mvec{k})$, would need to be an even function,
 which is only the case if the directional spread employed by
 the wave energy spectrum is centrosymmetric. Only two of the directional spreading functions
@@ -711,7 +711,7 @@ presented in this work are centrosymmetric: the Unified spectrum's and the Phill
 Second, each element of $h_0(\mvec{k})$ is generated in combination with a pair of random numbers,
 which makes it close to impossible to end up with matching pairs $h_0(-\mvec{k})=h_0(\mvec{k})^*$.
 As we would like to profit from the performance gains an optimized \InvFourierTransform
-for real-valued functions offers, we are in need of a hermitian spectrum. Thus, we may
+for real-valued functions offers, we are in need of a Hermitian spectrum. Thus, we may
 rewrite Equation~\ref{eq:dft_h_k_t} as follows:
 %
 \begin{equation}
@@ -721,7 +721,7 @@ rewrite Equation~\ref{eq:dft_h_k_t} as follows:
  + \frac{1}{2} h_0(\mvec{-k})^*\mathrm{e}^{\mathrm{i}\omega(\mvec{k})t}
 \end{equation}
 %
-which gives us a hermitian spectrum, independent of both the generated random numbers and 
+which gives us a Hermitian spectrum, independent of both the generated random numbers and 
 whether the wave energy spectrum is an even function or not.
 
 \emph{Note}: Surface elevation $\eta$ as computed by Equation~\ref{eq:surface_elevation_h_k_t}
@@ -732,12 +732,12 @@ complex-valued result array of the same size. The real-valued part of the result
 represents the surface elevation, whereas the imaginary-valued part is a by-product
 which holds no relevant information and is thefore to be discarded.
 Equation~\ref{eq:dft_h_k_t_hermitian}, on the other hand, allows to apply
-aforementioned \InvFourierTransform optimized for hermitian spectra, improving
+aforementioned \InvFourierTransform optimized for Hermitian spectra, improving
 computation speed and memory usage roughly by a factor of two~\citep{fftw:manual}.
 %
 \subsection{Combined \InvFourierTransform}
-Given one hermitian spectrum, one may apply a specialized \InvFourierTransform
-which requires only half of the actual spectrum. Given \emph{two} hermitian spectra,
+Given one Hermitian spectrum, one may apply a specialized \InvFourierTransform
+which requires only half of the actual spectrum. Given \emph{two} Hermitian spectra,
 one may combine them into a single spectrum and apply a standard \InvFourierTransform
 to retrieve both real-valued signals at once \citep{fft:handbook}.
 %The latter on the other hand allows for two different kinds of optimisation. We did discuss
@@ -760,7 +760,7 @@ a &= \Re(c) & b &= \Im(c)
 \end{align*}
 %
 We will make heavy use of this kind of optimization later on, because most
-of our additional data required for rendering comes in pairs of hermitian spectra.
+of our additional data required for rendering comes in pairs of Hermitian spectra.
 \subsection{Complex Conjugate Indices}
 %
 %To implement Equation~\ref{eq:dft_h_k_t_hermitian} we need to be able to retrieve
@@ -769,7 +769,7 @@ of our additional data required for rendering comes in pairs of hermitian spectr
 %Each element of $h_0$ is identified by a pair of indices $(i,j)$, with $0\leq i,j <N$. Then, for
 %an element at index $(i,j)$, we may compute the index $(m,n)$ of the corresponding complex
 %conjugate element as follows:
-For implementation purposes, let us view the two-dimensional hermitian spectrum $h$
+For implementation purposes, let us view the two-dimensional Hermitian spectrum $h$
 as a two-dimensional array with size $N \times N$.
 Each element of $h$ is identified by a pair of indices $(i,j)$, with $0\leq i,j <N$. Then, for
 an element at index $(i,j)$, we may compute the index $(m,n)$ of the corresponding complex
@@ -778,7 +778,7 @@ conjugate element as follows:
 \label{eq:complex:conjugate:indices}
 m &= (N - i)\bmod N & n &= (N - j)\bmod N
 \end{align}
-We may write the hermitian property in terms of indices:
+We may write the Hermitian property in terms of indices:
 \begin{equation*}
  h(i,j) = h(m,n)^*
 \end{equation*}
@@ -838,8 +838,8 @@ then, in the discrete case, we may compute the $n$th derivative of $f(x)$ as fol
   \dod[n]{f(x)}{x} = \sum_{k}(\mathrm{i}k)^n~g(k)~\mathrm{e}^{\mathrm{i}kx}
 \end{equation}
 \citet{Johnson:2011} shows that Equation~\ref{eq:dft:derivative:naive} is not correct for odd $n$ in
-combination with even $N$. For example, if $f(x)$ is a real function, then $g(k)$ is hermitian.
-But $\mathrm{i}k~g(k)$ is~\emph{not} hermitian for even $N$, therefore the first
+combination with even $N$. For example, if $f(x)$ is a real function, then $g(k)$ is Hermitian.
+But $\mathrm{i}k~g(k)$ is~\emph{not} Hermitian for even $N$, therefore the first
 order derivative of $f(x)$ would end up being a complex-valued function instead of a real-valued one.
 To get correct results for all $n$ and $N$, we rewrite the above equation as follows:
 \begin{align}
@@ -918,7 +918,7 @@ elevation $\eta$ as well as its associated slopes in greyscale.
 %on the other hand, are more easily identified as water waves by the human eye.
 
 The two spectra which constitute the surface slope vector in the \wavevector domain
-are hermitian. Therefore we are able to apply the optimisation from
+are Hermitian. Therefore we are able to apply the optimisation from
 Equation~\ref{eq:idft:combined}, which allows us to combine both spectra into one,
 obtaining both components of the surface slope vector with just one \InvFourierTransform.
 %
@@ -994,11 +994,11 @@ k)~h(\mvec{k},t)~\mathrm{e}^{\mathrm{i}\transpose{\mvec{k}}\mvec{x}} \\
             \end{cases}
 \end{align}
 where the term $d(l, k)$, in addition to make sure the resulting spectrum is 
-hermitian, also avoids a division by zero at $k = 0$. 
+Hermitian, also avoids a division by zero at $k = 0$. 
 Figure~\ref{fig:displacements} shows an example instance of surface elevation 
 $\eta$ as well as its associated displacements in greyscale.
 Because the spectra on the righthand side of Equations~\ref{eq:displacement_x} 
-and~\ref{eq:displacement_z} are hermitian, we are again able to apply 
+and~\ref{eq:displacement_z} are Hermitian, we are again able to apply 
 Equation~\ref{eq:idft:combined} and obtain both components of the displacement 
 vector field with just one \InvFourierTransform.
 
