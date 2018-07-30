@@ -302,7 +302,8 @@ Source:~\citet{Fournier:1986}}
 
 \textcolor{changed}{Instead of using sinusoids,~\citet{Fournier:1986} build on
 Gerstner's work \citep{Gerstner:1809, Rankine:1863} to synthesize waves. Gerstner
-waves assume a water surface dominated by gravity and an incompressible water body of infinite depth. Within such a water body, Gerstner waves may take various forms, including waves with a sharp crest, which sinusoids are unable to model.}
+waves assume a water surface dominated by gravity and an incompressible water body of infinite depth. On such a water surface, Gerstner waves may take on more varied
+shapes than sinusoids are able to model, e.g., waves with a sharp crest.}
 A single Gerstner wave may be written as follows:
 \begin{align}
 \mvec{x} &= \mvec{x}_0 - \frac{\mvec{k}}{\norm{\mvec{k}}} A \sin\left(\mvec{k}\cdot\mvec{x}_0-\omega t\right)\\
@@ -706,6 +707,13 @@ allowing the algorithm to adapt the mesh vertices as well as displacement comput
 to the camera position automatically on the GPU for each frame. Still, one may
 notice that most of the radial mesh is always outside the view frustum,
 causing unnecessary overhead.
+
+\textcolor{changed}{Similarly, \cite{Centelles:2014} also outline an adaptive
+meshing scheme which seeks to provide more detail close to the viewer. But
+their approach starts with a coarse mesh in world space, which is then
+dynamically refined dependent on the current camera position and the camera's 
+respective view frustum. The actual refinement is computed inside a geometry shader, adding or removing triangles as needed.}
+
 %
 %
 \begin{figure}
