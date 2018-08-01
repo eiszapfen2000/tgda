@@ -923,11 +923,23 @@ required for the choppy wave algorithm by \citet{course:simulatingocean}
 are computed entirely on the GPU. 
 \textcolor{changed}{In an additional step,
 \citet{article:whitecaps} add whitecaps to the ocean lighting model,
-see Figure~\ref{fig:dupuy:whitecaps}. \citeauthor{article:whitecaps}
-determine the location of the whitecaps on the water surface
-via the Jacobian determinant of the horizontal surface displacements,
-whereas \citet{Chen:2017} employ the vertical acceleration of the wave
-crests.}
+see Figure~\ref{fig:dupuy:whitecaps}.
+The algorithm by \citeauthor{article:whitecaps} is computationally
+expensive, as it additionally requires the four first-order partial
+derivatives of the horizontal displacements to be synthesized. Said
+derivatives are then used to determine the locations of the whitecaps
+on the water surface.
+More recently, \citet{Chen:2017} have shown a computationally less
+expensive approach, where a single additional scalar field, namely
+the vertical acceleration of the wave crests, serves as a criterion
+to locate whitecaps on the water surface.
+%\citeauthor{article:whitecaps}
+%determine the locations of the whitecaps on the water surface
+%via the Jacobian determinants of the horizontal surface displacements.
+%More recently, \citet{Chen:2017} have shown a computationally less expensive
+%approach, where the vertical acceleration of the wave crests serves
+%as a criterion for whitecap generation.
+}
 %\citet{Jeschke:2015}
 
 As ocean surfaces generated from wave spectra allow for seamless tiling,
