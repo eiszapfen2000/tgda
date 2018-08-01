@@ -920,9 +920,15 @@ from \citet{article:oceanlighting} with an ocean surface synthesized
 from the wave spectrum presented in~\citet{article:Elfouhaily1997}.
 Wave heights, gradients, as well as the horizontal displacements
 required for the choppy wave algorithm by \citet{course:simulatingocean}
-are computed entirely on the GPU. In an additional step,
+are computed entirely on the GPU. 
+\textcolor{changed}{In an additional step,
 \citet{article:whitecaps} add whitecaps to the ocean lighting model,
-see Figure~\ref{fig:dupuy:whitecaps}.
+see Figure~\ref{fig:dupuy:whitecaps}. \citeauthor{article:whitecaps}
+determine the location of the whitecaps on the water surface
+via the Jacobian determinant of the horizontal surface displacements.
+\citet{Chen:2017}, on the other hand, employ the vertical acceleration
+of the wave crest.}
+%\citet{Jeschke:2015}
 
 As ocean surfaces generated from wave spectra allow for seamless tiling,
 one may need to make sure to reduce tiling artifacts, i.e., the viewer
@@ -935,3 +941,8 @@ where all tiles are of different size and each one samples a different
 part of the wave spectrum. Even though such an approach is unable to
 entirely remove periodicity, the period is increased to the least common
 multiple of the different tile sizes.
+
+\textcolor{changed}{
+We improve upon \citet{misc:oceanlightingfft} and \citet{article:whitecaps}
+by using \citet{thesis:johanson}.
+}
