@@ -713,24 +713,24 @@ causing unnecessary overhead.
 
 \begin{figure}
 \centering
-\subtop[First tessellation step (598 triangles)]
+\subtop[]
 {
-	\includegraphics[scale=0.25]{figures/View-Dependent_Tessellation_and_Simulation_of_Ocean_Surfaces_-_Puig-Centelles_2014-001.png}
+	\includegraphics[scale=0.125]{figures/View-Dependent_Tessellation_and_Simulation_of_Ocean_Surfaces_-_Puig-Centelles_2014-001.png}
 }
 \hfill
-\subtop[Second tessellation step (1,264 triangles)]
+\subtop[]
 {
-	\includegraphics[scale=0.25]{figures/View-Dependent_Tessellation_and_Simulation_of_Ocean_Surfaces_-_Puig-Centelles_2014-002.png}
+	\includegraphics[scale=0.125]{figures/View-Dependent_Tessellation_and_Simulation_of_Ocean_Surfaces_-_Puig-Centelles_2014-002.png}
 }
 \hfill
-\subtop[Third tessellation step (2,546 triangles)]
+\subtop[]
 {
-	\includegraphics[scale=0.25]{figures/View-Dependent_Tessellation_and_Simulation_of_Ocean_Surfaces_-_Puig-Centelles_2014-003.png}
+	\includegraphics[scale=0.125]{figures/View-Dependent_Tessellation_and_Simulation_of_Ocean_Surfaces_-_Puig-Centelles_2014-003.png}
 }
 \hfill
-\subtop[Fourth tessellation step (5,002 triangles)]
+\subtop[]
 {
-	\includegraphics[scale=0.25]{figures/View-Dependent_Tessellation_and_Simulation_of_Ocean_Surfaces_-_Puig-Centelles_2014-004.png}
+	\includegraphics[scale=0.125]{figures/View-Dependent_Tessellation_and_Simulation_of_Ocean_Surfaces_-_Puig-Centelles_2014-004.png}
 }
 \caption{\textcolor{changed}{
 Sample tessellation guided by a simulated frustum (in red). Source:~\citet{Centelles:2014}
@@ -738,15 +738,32 @@ Sample tessellation guided by a simulated frustum (in red). Source:~\citet{Cente
 \label{fig:centelles:mesh}
 \end{figure}
 %
-\textcolor{changed}{Similarly, \cite{Centelles:2014} outline an adaptive
-meshing scheme which also seeks to provide more detail close to the viewer.
-Their approach starts with a coarse ocean surface mesh in world space, which
-is then dynamically refined dependent on the camera's current position and
-the camera's  respective view frustum. The actual refinement is computed inside a geometry shader, adding or removing triangles as needed. As the mesh refinement
-algorithm is an iterative one, \citeauthor{Centelles:2014} store the results of intermediate iterations to GPU memory. By reusing said results in subsequent frames, the number of iterations required to reach the desired mesh granularity
-can be reduced significantly. Figure~\ref{fig:centelles:mesh} shows an example
-mesh being refined with the algorithm by \citeauthor{Centelles:2014}}
-
+\textcolor{changed}{\cite{Centelles:2014}, outline an algorithm that 
+dynamically refines the ocean surface mesh on the GPU,
+adding and removing triangles as needed.
+A coarse mesh, which covers the entire extent of the water surface, serves
+as a starting point. Said mesh is then iteratively subdivided, dependent
+on the camera's current position and the camera's respective view frustum,
+see Figure~\ref{fig:centelles:mesh}.
+Surface displacements caused by wave motion are generated in the vertex
+shader with Perlin noise, where \citeauthor{Centelles:2014} make sure
+that the actual computation is limited to vertices inside the view
+frustum.
+%As the mesh refinement algorithm is an iterative one,
+%\citeauthor{Centelles:2014} store the results of intermediate iterations
+%to GPU memory.
+%By reusing said results in subsequent frames, the number of iterations
+%required to reach the desired mesh granularity can be reduced significantly.
+}
+%
+%\textcolor{changed}{Similarly, \cite{Centelles:2014} outline an adaptive
+%meshing scheme which also seeks to provide more detail close to the viewer.
+%Their approach starts with a coarse ocean surface mesh in world space, which
+%is then dynamically refined dependent on the camera's current position and
+%the camera's  respective view frustum. The actual refinement is computed inside a geometry shader, adding or removing triangles as needed. As the mesh refinement
+%algorithm is an iterative one, \citeauthor{Centelles:2014} store the results of intermediate iterations to GPU memory. By reusing said results in subsequent frames, the number of iterations required to reach the desired mesh granularity
+%can be reduced significantly. Figure~\ref{fig:centelles:mesh} shows an example
+%mesh being refined with the algorithm by \citeauthor{Centelles:2014}}
 %
 %
 \begin{figure}
