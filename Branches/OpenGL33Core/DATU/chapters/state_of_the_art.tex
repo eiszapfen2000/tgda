@@ -738,16 +738,16 @@ Sample tessellation guided by a simulated frustum (in red). Source:~\citet{Cente
 \label{fig:centelles:mesh}
 \end{figure}
 %
-\textcolor{changed}{\cite{Centelles:2014} outline an algorithm that 
-dynamically refines the ocean surface mesh on the GPU,
-adding and removing triangles as needed.
+\textcolor{changed}{\cite{Centelles:2014}, on the other hand, outline an algorithm that dynamically refines the ocean surface mesh
+on the GPU, adding and removing triangles as needed.
 A coarse mesh, which covers the entire extent of the water surface, serves
 as a starting point. Said mesh is then iteratively subdivided, dependent
 on the camera's current position and the camera's respective view frustum,
 see Figure~\ref{fig:centelles:mesh}.
-Moreover, \citeauthor{Centelles:2014} make sure that in addition to
-the mesh refinement, the computation of the surface displacements is
-limited to the current view frustum, too.
+}
+%Moreover, \citeauthor{Centelles:2014} make sure that in addition to
+%the mesh refinement, the computation of the surface displacements is
+%limited to the current view frustum, too.
 %Surface displacements caused by wave motion are generated in the vertex
 %shader with Perlin noise, where \citeauthor{Centelles:2014} make sure
 %that the actual computation is limited to vertices inside the view
@@ -757,7 +757,6 @@ limited to the current view frustum, too.
 %to GPU memory.
 %By reusing said results in subsequent frames, the number of iterations
 %required to reach the desired mesh granularity can be reduced significantly.
-}
 %
 %\textcolor{changed}{Similarly, \cite{Centelles:2014} outline an adaptive
 %meshing scheme which also seeks to provide more detail close to the viewer.
