@@ -602,10 +602,10 @@ Source: \citet{Horvath:2015}
 \citet{Horvath:2015} improves upon \citeauthor{course:simulatingocean}'s work
 by adding support for \emph{swell}. Swell is defined as waves which have travelled
 out of their generating area. According to \citet{Ochi:2005}, one may
-categorize fairly large waves observed on a sea with minor or even no wind as swell.
-Said waves then run across, or mix, with the local wind-generated waves. \citeauthor{Horvath:2015} explains that the addition of swell allows for the
-synthesis of a sea dominated by elongated, parallel waves. Figure~\ref{fig:horvath_swell}
-depicts an appropriate example thereof.
+categorize fairly large waves that are observed on a sea with minor or
+even no wind as swell.
+Said waves then run across, or mix, with the local wind-generated waves. \citeauthor{Horvath:2015} explains that the addition of swell allows for
+the synthesis of a sea dominated by elongated, parallel waves. Figure~\ref{fig:horvath_swell} depicts an example thereof.
 }
 % Section \ref{sec:phillips_spectrum} gives a detailed discussion of the Phillips
 % spectrum and its shortcomings compared to wave spectra from oceanographic
@@ -630,6 +630,16 @@ incorporates both deep water waves and basic support for shallow water waves.
 taken not only to include \wavevectors with the most contribution to wave
 energy, but \wavevectors which are representative for the entire spectrum:
 long waves, short waves and even capillary waves.
+\textcolor{changed}{
+More recently, \citet{Jeschke:2015} have shown an algorithm which
+generalizes spectrum-based methods to handle varying water depth
+and physically correct interactions with static obstacles, while
+preserving high levels of wave detail. In deep water, and in absence
+of any obstacles, the method by \citeauthor{Jeschke:2015} simply
+reverts to a homogeneous sea as represented by wave spectra.
+%The water waves may reflect, refract, and diffract
+%around objects
+}
 
 \section{GPU Implementations}
 %
@@ -985,7 +995,7 @@ expensive, as it additionally requires the four first-order partial
 derivatives of the horizontal displacements to be synthesized. Said
 derivatives are then used to determine the locations of the whitecaps
 on the water surface.
-More recently, \citet{Chen:2017} have shown a computationally less
+More recently, \citet{Chen:2017} have shown a less
 expensive approach, where a single additional scalar field, namely
 the vertical acceleration of the wave crests, serves as the criterion
 to locate whitecaps on the water surface.
@@ -996,7 +1006,6 @@ to locate whitecaps on the water surface.
 %approach, where the vertical acceleration of the wave crests serves
 %as a criterion for whitecap generation.
 }
-%\citet{Jeschke:2015}
 
 As ocean surfaces generated from wave spectra allow for seamless tiling,
 one may need to make sure to reduce tiling artifacts, i.e., the viewer
@@ -1011,6 +1020,9 @@ entirely remove periodicity, the period is increased to the least common
 multiple of the different tile sizes.
 
 \textcolor{changed}{
-We improve upon \citet{misc:oceanlightingfft} and \citet{article:whitecaps}
-by using \citet{thesis:johanson}.
+\citet{misc:oceanlightingfft} and \citet{article:whitecaps} serve as the foundation
+for our work. We will make two distinct improvements. First, we will use the
+meshing scheme by \citet{thesis:johanson} instead of the one by \citet{Hinsinger:2002},
+allowing for unrestricted camera movement. Second, we will implement
+a multi-resolution variant of the tiling algorithm.
 }
