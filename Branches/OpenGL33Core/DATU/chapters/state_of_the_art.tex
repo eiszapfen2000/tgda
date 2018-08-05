@@ -760,41 +760,41 @@ allowing the algorithm to adapt the mesh vertices as well as displacement comput
 to the camera position automatically on the GPU for each frame. Still, one may
 notice that most of the radial mesh is always outside the view frustum,
 causing unnecessary overhead.
-
-\begin{figure}
-\centering
-\subtop[]
-{
-	\includegraphics[scale=0.125]{figures/View-Dependent_Tessellation_and_Simulation_of_Ocean_Surfaces_-_Puig-Centelles_2014-001.png}
-}
-\hfill
-\subtop[]
-{
-	\includegraphics[scale=0.125]{figures/View-Dependent_Tessellation_and_Simulation_of_Ocean_Surfaces_-_Puig-Centelles_2014-002.png}
-}
-\hfill
-\subtop[]
-{
-	\includegraphics[scale=0.125]{figures/View-Dependent_Tessellation_and_Simulation_of_Ocean_Surfaces_-_Puig-Centelles_2014-003.png}
-}
-\hfill
-\subtop[]
-{
-	\includegraphics[scale=0.125]{figures/View-Dependent_Tessellation_and_Simulation_of_Ocean_Surfaces_-_Puig-Centelles_2014-004.png}
-}
-\caption{\textcolor{changed}{
-Sample tessellation guided by a simulated frustum (in red). Source:~\citet{Centelles:2014}
-}}
-\label{fig:centelles:mesh}
-\end{figure}
 %
-\textcolor{changed}{\cite{Centelles:2014}, on the other hand, outline an algorithm that dynamically refines the ocean surface mesh
-on the GPU, adding and removing triangles as needed.
-A coarse mesh, which covers the entire extent of the water surface, serves
-as a starting point. Said mesh is then iteratively subdivided, dependent
-on the camera's current position and the camera's respective view frustum,
-see Figure~\ref{fig:centelles:mesh}.
-}
+%\begin{figure}
+%\centering
+%\subtop[]
+%{
+%	\includegraphics[scale=0.125]{figures/View-Dependent_Tessellation_and_Simulation_of_Ocean_Surfaces_-_Puig-Centelles_2014-001.png}
+%}
+%\hfill
+%\subtop[]
+%{
+%	\includegraphics[scale=0.125]{figures/View-Dependent_Tessellation_and_Simulation_of_Ocean_Surfaces_-_Puig-Centelles_2014-002.png}
+%}
+%\hfill
+%\subtop[]
+%{
+%	\includegraphics[scale=0.125]{figures/View-Dependent_Tessellation_and_Simulation_of_Ocean_Surfaces_-_Puig-Centelles_2014-003.png}
+%}
+%\hfill
+%\subtop[]
+%{
+%	\includegraphics[scale=0.125]{figures/View-Dependent_Tessellation_and_Simulation_of_Ocean_Surfaces_-_Puig-Centelles_2014-004.png}
+%}
+%\caption{\textcolor{changed}{
+%Sample tessellation guided by a simulated frustum (in red). Source:~\citet{Centelles:2014}
+%}}
+%\label{fig:centelles:mesh}
+%\end{figure}
+%%
+%\textcolor{changed}{\cite{Centelles:2014}, on the other hand, outline an algorithm that dynamically refines the ocean surface mesh
+%on the GPU, adding and removing triangles as needed.
+%A coarse mesh, which covers the entire extent of the water surface, serves
+%as a starting point. Said mesh is then iteratively subdivided, dependent
+%on the camera's current position and the camera's respective view frustum,
+%see Figure~\ref{fig:centelles:mesh}.
+%}
 %Moreover, \citeauthor{Centelles:2014} make sure that in addition to
 %the mesh refinement, the computation of the surface displacements is
 %limited to the current view frustum, too.
@@ -1024,9 +1024,27 @@ entirely remove periodicity, the period is increased to the least common
 multiple of the different tile sizes.
 
 \textcolor{changed}{
-\citet{misc:oceanlightingfft} and \citet{article:whitecaps} serve as the foundation
-for our work. We will make two distinct improvements. First, we will use the
-meshing scheme by \citet{thesis:johanson} instead of the one by \citet{Hinsinger:2002},
-allowing for unrestricted camera movement. Second, we will implement
-a multi-resolution variant of the tiling algorithm.
+Now that we have completed our discussion of related work,
+we may highlight the works we chose to build this thesis upon.
+First and foremost there is the lighting scheme by
+\citet{article:oceanlighting}, which has been specifically tailored
+to the deep water of the open ocean. Second, \citet{misc:oceanlightingfft}
+combines said lighting scheme with \citeauthor{course:simulatingocean}'s choppy wave algorithm, and with the wave spectrum described in \citet{article:Elfouhaily1997}. Third, \citet{article:whitecaps} extend the work of \citet{misc:oceanlightingfft} with whitecaps.
+%We are given a lighting algorithm tailored
+%to the deep water of the open ocean, where the latter is synthesized
+%with the choppy wave algorithm by \citeauthor{course:simulatingocean}.
+All three, \citet{article:oceanlighting, misc:oceanlightingfft}, and \cite{article:whitecaps} employ the meshing scheme by \citet{Hinsinger:2002}. The latter severely restricts the camera's
+freedom of movement, therefore we will use the improved
+version by \citet{thesis:johanson} instead.
+Moreover, we will evaluate additional wave spectra from oceanographic research with regard to their suitability for the lighting
+algorithm in \citet{misc:oceanlightingfft}. Last, to improve upon the
+balance between model detail and computational workload, we will
+implement a multi-resolution variant of the choppy wave algorithm.
+%\citet{misc:oceanlightingfft} and \citet{article:whitecaps}
+%
+%\citet{misc:oceanlightingfft} and \citet{article:whitecaps} serve as the foundation
+%for our work. We will make two distinct improvements. First, we will use the
+%meshing scheme by \citet{thesis:johanson} instead of the one by \citet{Hinsinger:2002},
+%allowing for unrestricted camera movement. Second, we will implement
+%a multi-resolution variant of the tiling algorithm.
 }
