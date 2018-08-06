@@ -1025,21 +1025,28 @@ multiple of the different tile sizes.
 
 \textcolor{changed}{
 Now that we have completed our discussion of related work,
-we may highlight the works we chose to build this thesis upon.
+we may highlight the cornerstones of this thesis.
 First and foremost there is the lighting scheme by
 \citet{article:oceanlighting}, which has been specifically tailored
 to the deep water of the open ocean. Second, \citet{misc:oceanlightingfft}
-combines said lighting scheme with \citeauthor{course:simulatingocean}'s choppy wave algorithm, and with the wave spectrum described in \citet{article:Elfouhaily1997}. Third, \citet{article:whitecaps} extend the work of \citet{misc:oceanlightingfft} with whitecaps.
+combines said lighting scheme with \citeauthor{course:simulatingocean}'s
+choppy wave algorithm. Third, \citet{article:whitecaps} extend the work of
+\citet{misc:oceanlightingfft} with whitecaps.
 %We are given a lighting algorithm tailored
 %to the deep water of the open ocean, where the latter is synthesized
 %with the choppy wave algorithm by \citeauthor{course:simulatingocean}.
-All three, \citet{article:oceanlighting, misc:oceanlightingfft}, and \cite{article:whitecaps} employ the meshing scheme by \citet{Hinsinger:2002}. The latter severely restricts the camera's
-freedom of movement, therefore we will use the improved
-version by \citet{thesis:johanson} instead.
-Moreover, we will evaluate additional wave spectra from oceanographic research with regard to their suitability for the lighting
-algorithm in \citet{misc:oceanlightingfft}. Last, to improve upon the
-balance between model detail and computational workload, we will
-implement a multi-resolution variant of the choppy wave algorithm.
+All three, \citet{article:oceanlighting, misc:oceanlightingfft}, and 
+\cite{article:whitecaps} employ the meshing scheme by \citet{Hinsinger:2002}.
+The latter severely restricts the camera's freedom of movement, therefore
+we will replace it with the improved version by \citet{thesis:johanson}.
+Moreover, as the work by \citet{misc:oceanlightingfft} contains
+only a single wave spectrum \citep{article:Elfouhaily1997}, we will
+evaluate an additional set of wave spectra with regard
+to their suitability for the above lighting scheme.
+Last, to improve upon the balance between model detail and computational
+workload, we will implement a multi-resolution variant of the choppy wave
+algorithm.
+%and with the wave spectrum described in \citet{article:Elfouhaily1997}
 %\citet{misc:oceanlightingfft} and \citet{article:whitecaps}
 %
 %\citet{misc:oceanlightingfft} and \citet{article:whitecaps} serve as the foundation
