@@ -1,3 +1,79 @@
 \chapter*{Kurzfassung}
 
-Hier fügen Sie die Kurzfassung auf Deutsch gemäß den Vorgaben der Fakultät ein.
+% Since the dawn of computer graphics natural phenomena have served as a permanent topic of interest for researchers and enthusiasts.
+% To reproduce nature's elegance and beauty has proven to be a task of immense complexity. Skylight, clouds, a sunset. Water in various environments.
+% Glass of water generating caustics. A child exploring fluid dynamics in the bathtub. A lake at rest, reflecting the surrounding mountains.
+% The endless ocean bearing detail on every scale: the foam and spray caused by breaking waves, the glimmer on the ocean surface caused by waves
+% with wavelengths smaller than a centimeter, the subtle shift in water color depending on the local underwater flora and fauna.
+
+Die realistische Darstellung von Wasseroberflächen ist seit jeher ein beliebtes Forschungsthema in der Computergraphik, und vor allem in
+der Echtzeitgraphik. Den weiten Ozean in Echtzeit darzustellen ist
+eine besondere Herausforderung. Die Gründe hierfür sind vielseitig.
+%Unter anderem ist der Ozean ein riesiges Gewässer, und dem Beobachter
+%ist es möglich rasch zwischen einer Nahaufnahme und einem Panorama
+%zu wechseln.
+Unter anderem ist der Ozean ein riesiges Gewässer, welches wir auf
+sehr unterschiedliche Art und Weise abbilden möchten, von der Nahaufnahme
+bis zum weitläufigen Panorama.
+Weiters ist der Ozean ein sehr komplexes, dynamisches System das aus
+einer riesigen Anzahl Wellen unterschiedlicher Größen besteht, vom
+riesigen Tsunami bis zu millimeterkleinen Kapillarwellen.
+
+Wir präsentieren in dieser Arbeit Algorithmen um den weiten Ozean
+nicht nur in Echtzeit zu rendern, sondern auch alle dafür benötigten
+Daten in Echtzeit zu generieren. Unser Fokus liegt darauf, glaubhafte
+Ozeanoberflächen mittels Wellenspektren zu erzeugen, wobei letztere dem Forschungsbereich der Ozeanographie entspringen.
+Wir untersuchen unterschiedliche Wellenspektren sowohl auf ihre
+Eigenheiten, als auch auf ihre Eignung für die Darstellung mittels Echtzeitgraphik-Algorithmen. Zusätzlich erläutern wir
+die notwendigen Hintergründe um unterschiedlich Wellenspektren sinnvoll
+in eine gemeinsames Grundstruktur zu integrieren. Selbige erlaubt es uns
+schlussendlich, unabhängig vom gewählten Wellenspektrum, nicht nur glaubhafte, sondern auch stimmige Ozeanoberflächen zu erzeugen.
+ 
+%
+%The synthesis of a believable depiction of the ocean surface is a permanent
+%topic of interest in computer graphics. It represents even more of a
+%challenge for applications which require the real-time display of a water
+%body as large as the ocean.
+%That is because the ocean is a highly dynamic system which combines waves
+%at all scales, ranging from millimetres to kilometres. Moreover, the
+%ocean may be observed from several distances, ranging from close-ups
+%to views which reach the horizon. 
+%%To complicate matters further, the
+%%ocean is illuminated by natural light sources, such as the sun and the
+%%sky, which are dynamic by nature too.
+%Thus, we present a framework to generate and render the open ocean in
+%real time, for arbitrary viewing distances and including waves at all
+%scales. We focus our efforts on the geometry of the animated
+%ocean surface, for which we leverage a set of wave spectrum models from
+%oceanographic research. We discuss the intricacies of
+%said models, as well as their fitness for real-time rendering. Moreover,
+%we delineate in detail how to integrate distinct wave spectrum models into a
+%coherent framework, from which one is able obtain believable, consistent
+%and coherent results.
+
+%The scope of this thesis includes the generation, animation and rendering of the
+%surface of an open ocean in real-time. We focus our interest on the synthesis of
+%animated ocean surface geometry, for which we will adopt a set of models from
+%oceanographic research. Specific properties of said models allow for
+%easy addition and reduction of detail, as well as for a range of algorithmic
+%optimizations. The former combined with the latter gives us the opportunity to
+%strike a well-adjusted balance between model detail and computational workload,
+%and thereby to improve upon the status quo of current implementations.
+
+%Realistic animation and rendering of the ocean is an important aspect for simulators, movies and video games.
+%By nature, the ocean is a difficult problem for Computer Graphics: it is a dynamic system, it combines wave trains
+%at all scales, ranging from kilometric to millimetric. Worse, the ocean is usually viewed at several distances, from
+%very close to the viewpoint to the horizon, increasing the multi-scale issue, and resulting in aliasing problems. The
+%illumination comes from natural light sources (the Sun and the sky dome), is also dynamic, and often underlines
+%the aliasing issues. In this paper, we present a new algorithm for modelling, animation, illumination and rendering
+%of the ocean, in real-time, at all scales and for all viewing distances. Our algorithm is based on a hierarchical
+%representation, combining geometry, normals and BRDF. For each viewing distance, we compute a simplified
+%version of the geometry, and encode the missing details into the normal and the BRDF, depending on the level of
+%detail required. We then use this hierarchical representation for illumination and rendering. Our algorithm runs
+%in real-time, and produces highly realistic pictures and animations.
+
+%Natural phenomena are a permanent topic of interest for computer graphics researchers and enthusiasts. To synthesise a believable
+%depiction of an ocean surface is a complex task, especially in realtime rendering. The first part of our work will discuss the
+%challenges posed by the task at hand, and discuss a variety of current approaches to the problem. The second part will present
+%our give an
+%overview of the underlying wave theory as well as the different oceanographic models employed in this work.
