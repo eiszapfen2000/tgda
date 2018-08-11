@@ -2778,8 +2778,13 @@ We have already seen that the ocean surface requires a meshing scheme which is
 able to automatically adapt to highly distinct viewing situations, such as
 closeups of the water surface as well as views with the ocean spanning to the
 horizon.
+\textcolor{changed}{
 Based on these criteria, we chose to employ the projected grid
-~\citep{Hinsinger:2002,thesis:johanson}. The projected grid is based on a
+\citep{Hinsinger:2002,thesis:johanson}. More specifically, we chose the
+variant by \citet{thesis:johanson}, because, in contrast to the variant
+by \citet{Hinsinger:2002}, it does not require to restrict the camera's
+freedom of movement for proper operation.}
+The projected grid is based on a
 simple concept: to achieve a uniform distribution of detail on the image plane,
 a uniformly spaced grid is created in post-perspective space, transformed to
 world space and projected onto the $y=0$ plane, see
