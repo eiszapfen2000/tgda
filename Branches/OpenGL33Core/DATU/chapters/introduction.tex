@@ -162,19 +162,13 @@ easy addition and reduction of detail, as well as for a range of algorithmic
 optimizations. The former combined with the latter gives us the opportunity to
 strike a well-adjusted balance between model detail and computational workload,
 and thereby to improve upon the status quo of current implementations.
-
-\section{Contributions}
 \textcolor{changed}{
-The core of our thesis is built on a real-time capable variant
-\citep{misc:oceanlightingfft} of the seminal \emph{choppy wave algorithm}
-by \citet{course:simulatingocean}.
-%
-We base our thesis mainly on the combined works by
-\citet{article:oceanlighting,misc:oceanlightingfft}, and
-\citet{article:whitecaps}, where each of the latter two incorporates
-a real-time capable implementation of the seminal \emph{choppy wave
-algorithm} by \citet{course:simulatingocean}.
-We contribute the following enhancements:
+The works by \citet{article:oceanlighting,misc:oceanlightingfft}, and
+\citet{article:whitecaps} represent such implementations.
+The latter two incorporate a real-time capable variant of the seminal
+\emph{choppy wave algorithm} by \citet{course:simulatingocean}, therefore
+we chose them as cornerstones for this thesis. With the foundation for
+our work at hand, we may outline the improvements we intend to make:
 \begin{itemize}
 	\item Implement a constant-overhead, adaptive meshing scheme
 	\citep{thesis:johanson} which has been tailored to large,
@@ -184,10 +178,35 @@ We contribute the following enhancements:
 	of the obtained ocean surfaces, and with regard to suitability
 	for the	ocean lighting scheme by \citet{article:oceanlighting}.
 	\item Extend the level-of-detail scheme by
-	\citet{misc:oceanlightingfft} with a multi-resolution variant
-	and evaluate its potential benefits.
+	\citet{misc:oceanlightingfft} with a multi-resolution variant,
+	and evaluate the potential benefits.
 \end{itemize}
 }
+%\section{Contributions}
+%\textcolor{changed}{
+%The core of our thesis is built on a real-time capable variant
+%\citep{misc:oceanlightingfft} of the seminal \emph{choppy wave algorithm}
+%by \citet{course:simulatingocean}.
+%%
+%We base our thesis mainly on the combined works by
+%\citet{article:oceanlighting,misc:oceanlightingfft}, and
+%\citet{article:whitecaps}, where each of the latter two incorporates
+%a real-time capable implementation of the seminal \emph{choppy wave
+%algorithm} by \citet{course:simulatingocean}.
+%We contribute the following enhancements:
+%\begin{itemize}
+%	\item Implement a constant-overhead, adaptive meshing scheme
+%	\citep{thesis:johanson} which has been tailored to large,
+%	animated water surfaces.
+%	\item Implement a set of distinct models from oceanographic
+%	research, and evaluate them with regard to plausibility
+%	of the obtained ocean surfaces, and with regard to suitability
+%	for the	ocean lighting scheme by \citet{article:oceanlighting}.
+%	\item Extend the level-of-detail scheme by
+%	\citet{misc:oceanlightingfft} with a multi-resolution variant
+%	and evaluate its potential benefits.
+%\end{itemize}
+%}
 %
 %We base this work mainly on 
 %\citet{misc:oceanlightingfft}
@@ -196,24 +215,24 @@ We contribute the following enhancements:
 %\citet{course:simulatingocean}
 %\citet{article:whitecaps}
 %\citet{article:oceanlighting}.
-\textcolor{changed}{
-Now that we have completed our discussion of related work,
-we may highlight the works we chose to build this thesis upon.
-First and foremost there is the lighting scheme by
-\citet{article:oceanlighting}, which has been specifically tailored
-to the deep water of the open ocean. Second, \citet{misc:oceanlightingfft}
-combines said lighting scheme with \citeauthor{course:simulatingocean}'s choppy wave algorithm, and with the wave spectrum described in \citet{article:Elfouhaily1997}. Third, \citet{article:whitecaps} extend the work of \citet{misc:oceanlightingfft} with whitecaps.
-%We are given a lighting algorithm tailored
-%to the deep water of the open ocean, where the latter is synthesized
-%with the choppy wave algorithm by \citeauthor{course:simulatingocean}.
-All three, \citet{article:oceanlighting, misc:oceanlightingfft}, and \cite{article:whitecaps} employ the meshing scheme by \citet{Hinsinger:2002}. The latter severely restricts the camera's
-freedom of movement, therefore we will use the improved
-version by \citet{thesis:johanson} instead.
-Moreover, we will evaluate additional wave spectra from oceanographic research with regard to their suitability for the lighting
-algorithm in \citet{misc:oceanlightingfft}. Last, to improve upon the
-balance between model detail and computational workload, we will
-implement a multi-resolution variant of the choppy wave algorithm.
-}
+%\textcolor{changed}{
+%Now that we have completed our discussion of related work,
+%we may highlight the works we chose to build this thesis upon.
+%First and foremost there is the lighting scheme by
+%\citet{article:oceanlighting}, which has been specifically tailored
+%to the deep water of the open ocean. Second, \citet{misc:oceanlightingfft}
+%combines said lighting scheme with \citeauthor{course:simulatingocean}'s choppy wave algorithm, and with the wave spectrum described in \citet{article:Elfouhaily1997}. Third, \citet{article:whitecaps} extend the work of \citet{misc:oceanlightingfft} with whitecaps.
+%%We are given a lighting algorithm tailored
+%%to the deep water of the open ocean, where the latter is synthesized
+%%with the choppy wave algorithm by \citeauthor{course:simulatingocean}.
+%All three, \citet{article:oceanlighting, misc:oceanlightingfft}, and \cite{article:whitecaps} employ the meshing scheme by \citet{Hinsinger:2002}. The latter severely restricts the camera's
+%freedom of movement, therefore we will use the improved
+%version by \citet{thesis:johanson} instead.
+%Moreover, we will evaluate additional wave spectra from oceanographic research with regard to their suitability for the lighting
+%algorithm in \citet{misc:oceanlightingfft}. Last, to improve upon the
+%balance between model detail and computational workload, we will
+%implement a multi-resolution variant of the choppy wave algorithm.
+%}
 \section{Structure of the Work}
 \label{sec:structure}
 The remainder of this work is organized as follows: Chapter
