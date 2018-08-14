@@ -1,0 +1,59 @@
+% $Id: TUINFPST.sty 7657 2011-06-24 13:22:47Z tkren $
+%
+% TU Wien - Faculty of Informatics
+% settings for TUINF poster
+%
+% For questions and comments send an email to
+% Thomas Krennwallner <tkren@kr.tuwien.ac.at>
+%
+\ProvidesPackage{TUINFPST}[2011/06/24 v1.1 TU INF Poster style file]
+\typeout{2011/06/24 v1.1 TU INF Poster style file}
+
+% use Helvetica for \sffamily
+\RequirePackage[T1]{fontenc}
+\RequirePackage[scaled]{helvet}
+\RequirePackage{times}
+
+% load english and ngerman
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[ngerman,english]{babel}
+
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{latexsym}
+
+\RequirePackage{graphicx}
+\graphicspath{{figures/}}
+
+\RequirePackage{tikz}
+
+% setup colors
+\RequirePackage{xcolor}
+\selectcolormodel{cmyk}
+
+\definecolor{DbaiDarkGreen}{cmyk}{0,0,0.2,0.4}
+\definecolor{DbaiBrightGreen}{cmyk}{0.22,0.18,0.36,0}
+\definecolor{ForsyteDarkYellow}{cmyk}{0,0.27,0.94,0.28}
+\definecolor{ForsyteBrightYellow}{cmyk}{0,0.27,0.94,0.28}
+\definecolor{KbsDarkBlue}{cmyk}{0.6,0.4,0,0.4}
+\definecolor{KbsBrightBlue}{cmyk}{0.45,0.28,0,0.28}
+\definecolor{InfosysDarkGrey}{gray}{0.4}
+\definecolor{InfosysLightGrey}{gray}{0.6}
+\definecolor{TuWienBlue}{cmyk}{1,0.38,0,0.15}
+\definecolor{TuInfRed}{cmyk}{0,1,1,0}
+
+% load our theme for the beamer poster
+\mode<presentation>{\usetheme{TUINF}}
+
+% use bold+serif fonts for math
+\usefonttheme[onlymath]{serif}
+\boldmath
+
+% load beamerposter, with 1.5 scaled fontsize
+\RequirePackage[orientation=portrait,scale=1.5,size=a0]{beamerposter}
+
+\endinput
+
+%%% Local Variables:
+%%% mode: latex
+%%% End:
