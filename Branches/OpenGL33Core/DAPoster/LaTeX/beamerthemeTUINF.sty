@@ -1,0 +1,126 @@
+% $Id: beamerthemeTUINF.sty 7657 2011-06-24 13:22:47Z tkren $
+%
+% TU Wien - Faculty of Informatics
+% poster template
+%
+% This template is using the beamer document class and beamerposter package, see
+% <http://www.ctan.org/tex-archive/macros/latex/contrib/beamer/>
+% <http://www.ctan.org/tex-archive/macros/latex/contrib/beamerposter/>
+% <http://www-i6.informatik.rwth-aachen.de/~dreuw/latexbeamerposter.php>
+%
+% For questions and comments send an email to
+% Thomas Krennwallner <tkren@kr.tuwien.ac.at>
+%
+% based on beamerthemerDreuw.sty created by Philippe Dreuw and Thomas Deselaers
+%
+\ProvidesPackage{beamerthemeTUINF}[2011/06/24 v1.1 TU INF Poster beamer theme]
+\typeout{2011/06/24 v1.1 TU INF Poster beamer theme}
+
+\mode<presentation>
+
+%\setbeamersize{text margin left=0cm}
+%\setbeamersize{text margin right=0cm}
+
+\setbeamertemplate{itemize items}[triangle] % triangle items
+\setbeamertemplate{navigation symbols}{}  % no navigation on a poster
+\setbeamertemplate{bibliography item}[triangle] % no bibliography icons
+
+\newlength{\tuinf@headsep}
+\setlength{\tuinf@headsep}{18.5mm}
+
+\newlength{\tuinf@headwidth}
+\setlength{\tuinf@headwidth}{815mm}
+
+\newlength{\tuinf@headheight}
+\setlength{\tuinf@headheight}{190mm}
+
+\newlength{\tuinf@leftheadwidth}
+\setlength{\tuinf@leftheadwidth}{204mm}
+
+\newlength{\tuinf@centerheadwidth}
+\setlength{\tuinf@centerheadwidth}{340mm}
+
+\newlength{\tuinf@rightheadwidth}
+\setlength{\tuinf@rightheadwidth}{204mm}
+
+\newlength{\tuinf@bordersep}
+\setlength{\tuinf@bordersep}{12.7mm}
+
+% headline of the frame
+\setbeamertemplate{headline}{%
+  \leavevmode
+  \vskip\tuinf@bordersep
+  \hskip\tuinf@bordersep
+  \begin{tikzpicture}
+    \node[draw,rectangle,line width=3pt,rounded corners=10pt,inner sep=0pt]{
+      \begin{minipage}[t][\tuinf@headheight]{\tuinf@headwidth}
+        \begin{center}
+          \begin{minipage}[t][\tuinf@headheight]{\tuinf@leftheadwidth}\vspace{\tuinf@headsep}%
+            % some vspace is needed for the top-alignment
+            \begin{minipage}[t][100mm]{\tuinf@leftheadwidth}
+              \includegraphics[height=52mm,width=195.5mm]{INF_Logo_typo_grau}
+            \end{minipage}
+
+            \begin{minipage}[t][30mm]{\tuinf@leftheadwidth}
+              \fontsize{36pt}{43pt}\selectfont%
+              Masterstudium:\\[.5\baselineskip]
+              \insertshorttitle
+            \end{minipage}
+          \end{minipage}
+          \begin{minipage}[t][\tuinf@headheight]{\tuinf@centerheadwidth}\vspace{\tuinf@headsep}
+            % some vspace is needed for the top-alignment
+            \begin{minipage}[t][70mm]{\tuinf@centerheadwidth}
+              \centering{\fontsize{36pt}{43pt}\selectfont Diplomarbeitspr{\"a}sentation}
+            \end{minipage}
+           
+            \begin{minipage}[t][40mm]{\tuinf@centerheadwidth}
+              \centering\textbf{\fontsize{54pt}{65pt}\selectfont\inserttitle}
+            \end{minipage}
+            
+            \begin{minipage}[b][30mm]{\tuinf@centerheadwidth}
+              \centering\fontsize{36pt}{43pt}\selectfont\insertauthor
+            \end{minipage}
+          \end{minipage}
+          \begin{minipage}[t][\tuinf@headheight]{\tuinf@rightheadwidth}\vspace{\tuinf@headsep}
+            % some vspace is needed for the top-alignment
+            \begin{minipage}[t][100mm]{\tuinf@rightheadwidth}
+              \raggedleft\inserttitlegraphic
+            \end{minipage}
+            
+            \begin{minipage}[t][30mm]{\tuinf@rightheadwidth}
+              \raggedleft\fontsize{24pt}{29pt}\selectfont\insertinstitute\\
+            \end{minipage}
+          \end{minipage}
+        \end{center}
+      \end{minipage}
+    };
+  \end{tikzpicture}
+  \hskip\tuinf@bordersep
+}
+
+
+% footline of the frame
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hskip\tuinf@bordersep
+  \begin{minipage}[t]{\tuinf@headwidth}
+    \raggedleft\tikz{
+      \node[draw,rectangle,line width=3pt,inner sep=10pt]{
+        \fontsize{24pt}{29pt}\selectfont Kontakt:~\insertshortauthor
+      };
+    }
+  \end{minipage}
+  \hskip\tuinf@bordersep
+  \vskip\tuinf@bordersep
+}
+
+
+% and we are done
+\mode<all>
+
+
+\endinput
+
+%%% Local Variables:
+%%% mode: latex
+%%% End:

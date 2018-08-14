@@ -1,0 +1,166 @@
+% $Id: INF_Poster_example.tex 7714 2011-08-31 17:34:46Z tkren $
+%
+% TU Wien - Faculty of Informatics
+% poster template
+%
+% This template is using the beamer document class and beamerposter package, see
+% <http://www.ctan.org/tex-archive/macros/latex/contrib/beamer/>
+% <http://www.ctan.org/tex-archive/macros/latex/contrib/beamerposter/>
+% <http://www-i6.informatik.rwth-aachen.de/~dreuw/latexbeamerposter.php>
+%
+% For questions and comments send an email to
+% Thomas Krennwallner <tkren@kr.tuwien.ac.at>
+%
+
+\documentclass[final,hyperref={pdfpagelabels=true}]{beamer}
+
+\usepackage{TUINFPST}
+
+\usepackage{lipsum}
+ 
+%\title[Computational Intelligence]{Interactive Computer Generated Architecture}
+% if you have a long title looking squeezed on the poster, just force
+% some distance:
+\title[Computational Intelligence]{%
+  Integration of Conjunctive Queries over \\[0.2\baselineskip]%
+  Description Logics into HEX-Programs %\\[0.2\baselineskip]%
+}
+\author[martina.muster@alumni.tuwien.ac.at]{Martina Muster}
+\institute[]{%
+  Technische Universit{\"a}t Wien\\[0.25\baselineskip]
+  Institut f{\"u}r Informationssysteme\\[0.25\baselineskip]
+  Arbeitsbereich: Wissensbasierte Systeme\\[0.25\baselineskip]
+  BetreuerIn: Ao.Univ.-Prof. Dr. Maxima Musterfrau
+}
+\titlegraphic{\includegraphics[height=52mm]{logo_KBS_2_CMYK}}
+\date[\today]{\today}
+\subject{epilog}
+\keywords{my kwd1, my kwd2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Display a grid to help align images 
+%\beamertemplategridbackground[12.7mm]
+
+% play around with the background colors
+% \setbeamercolor{background canvas}{bg=yellow}
+
+% use a background picture
+% \usebackgroundtemplate{%
+%   \includegraphics[width=\paperwidth]{logo_KBS_2_CMYK}
+% }
+
+% play around with block colors
+\setbeamercolor{block body}{fg=black,bg=white}
+\setbeamercolor{block title}{fg=TuWienBlue,bg=white}
+
+\setbeamertemplate{block begin}{
+  \begin{beamercolorbox}{block title}%
+    \begin{tikzpicture}%
+      \node[draw,rectangle,line width=3pt,rounded corners=0pt,inner sep=0pt]{%
+        \begin{minipage}[c][2cm]{\linewidth}
+          \centering\textbf{\insertblocktitle}
+        \end{minipage}
+      };
+    \end{tikzpicture}%
+  \end{beamercolorbox}
+  \vspace*{1cm}
+  \begin{beamercolorbox}{block body}%
+}
+
+\setbeamertemplate{block end}{
+  \end{beamercolorbox}
+  \vspace{2cm}
+}
+
+% setup postit
+\setbeamercolor{postit}{fg=black,bg=yellow} 
+\newenvironment{postit}
+{\begin{beamercolorbox}[sep=1em,wd=7cm]{postit}}
+{\end{beamercolorbox}}
+
+
+% for crop marks, uncomment the following line
+\usepackage[cross,width=88truecm,height=123truecm,center]{crop}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+% We have a single poster frame.
+\begin{frame}
+  \begin{columns}[t]
+    % ---------------------------------------------------------%
+    % Set up a column
+    \begin{column}{.45\textwidth}
+      \begin{block}{Block 1}
+        \lipsum[1-3]
+      \end{block}
+
+      \begin{block}{Block 2}
+        \lipsum[3-4]
+      \end{block}
+    \end{column}
+    % ---------------------------------------------------------%
+    % end the column
+
+    % ---------------------------------------------------------%
+    % Set up a column 
+    \begin{column}{.45\textwidth}
+      \begin{block}{Yet another block}
+        \lipsum[5-7]
+      \end{block}
+
+      \begin{block}{Some math block}
+        \begin{equation}
+          a^2+b^2=c^2
+        \end{equation}
+      \end{block}
+
+      \begin{block}{Some citations}
+        \alert{Watch out for } \cite{ff2010}
+      \end{block}
+
+      \begin{block}{References}
+        % this is just an example, use BibTeX!
+        \begin{thebibliography}{999}
+          
+        \bibitem[Foo~and~Fu, 2010]{ff2010}
+          Foo, B.; and Fu, B.
+          2010.
+          \newblock {On logical representations of hackerisms}.
+          {\em J.~Log.~Hack.} 1:1--2.
+          
+        \bibitem[Crock~et~al., 2010]{ck2010}
+          Crock, A; Cruft, B.; and Kludge, C.
+          2010.
+          \newblock {Decomposing junk code}.
+          Manuscript.
+          
+        \end{thebibliography}
+      \end{block}
+    \end{column}
+    % ---------------------------------------------------------%
+    % end the column
+  \end{columns}
+
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[inner sep=0pt,xshift=-30cm,yshift=23cm] at (current page.east) {%
+      \begin{postit}%
+        Post-It time!%
+      \end{postit}%
+    }; 
+  \end{tikzpicture}
+  
+\end{frame}
+
+\end{document}
+
+%%% Local Variables:
+%%% TeX-PDF-mode: t
+%%% TeX-debug-bad-boxes: t
+%%% TeX-master: t
+%%% TeX-parse-self: t
+%%% TeX-auto-save: t
+%%% reftex-plug-into-AUCTeX: t
+%%% End:
