@@ -49,6 +49,7 @@
 \setbeamercolor{block title}{fg=TuWienBlue,bg=white}
 
 \setbeamertemplate{block begin}{
+  \begin{flushright}
   \begin{beamercolorbox}{block title}%
     \begin{tikzpicture}%
       \node[draw,rectangle,line width=3pt,rounded corners,inner sep=0pt]{%
@@ -64,22 +65,23 @@
 
 \setbeamertemplate{block end}{
   \end{beamercolorbox}
+  \end{flushright}
   \vspace{2cm}
 }
 
-\newenvironment<>{varblock}[2][\textwidth]{
-\begin{center}
- \begin{minipage}{#1}
-  \setlength{\textwidth}{#1}
-  \begin{actionenv}#3
-   \def\insertblocktitle{#2}
-   \par
-   \usebeamertemplate{block begin}}
-   {\par
-       \usebeamertemplate{block end}
-     \end{actionenv}
- \end{minipage}
-\end{center}}
+%\newenvironment<>{varblock}[2][\textwidth]{
+%\begin{center}
+% \begin{minipage}{#1}
+%  \setlength{\textwidth}{#1}
+%  \begin{actionenv}#3
+%   \def\insertblocktitle{\centering#2}
+%   \par
+%   \usebeamertemplate{block begin}}
+%   {\par
+%       \usebeamertemplate{block end}
+%     \end{actionenv}
+% \end{minipage}
+%\end{center}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -87,49 +89,55 @@
 
 % We have a single poster frame.
 \begin{frame}
-    \begin{varblock}[0.975\textwidth]{Introduction}
-	\begin{columns}[t]
-	  \begin{column}{0.3\linewidth}
-	  \textbf{Motivation}: \lipsum[1]
-	  \end{column}
-	  \begin{column}{0.3\linewidth}
-	  \textbf{Problem Statement}:
-	  \lipsum[2]
-	  \end{column}	  
-	  \begin{column}{0.3\linewidth}
-	  \lipsum[3]
-	  \end{column}	  
-	  
-	\end{columns}
-    \end{varblock}
-    \begin{varblock}[0.975\textwidth]{Ocean Surface Generation}
-    Brak
-    \end{varblock}
-    \begin{varblock}[0.975\textwidth]{Ocean Surface Rendering}
-    Brak
-    \end{varblock}
-    \begin{varblock}[0.975\textwidth]{Results}
-    Brak
-    \end{varblock}
+    \begin{center}
+	\begin{minipage}{\textwidth}
+		\begin{block}{Introduction}
+			\begin{columns}[t]
+				\begin{column}{0.3\linewidth}
+					\textbf{Motivation}: \lipsum[1]
+				\end{column}
+				\begin{column}{0.3\linewidth}
+					\textbf{Problem Statement}:
+					\lipsum[2]
+				\end{column}	  
+				\begin{column}{0.3\linewidth}
+					\lipsum[3]
+				\end{column}	  
+			\end{columns}
+		\end{block}
+	\end{minipage}
+	\end{center}
+%    \begin{varblock}[0.975\textwidth]{Introduction}
+%    \end{varblock}
+%    \begin{varblock}[0.975\textwidth]{Ocean Surface Generation}
+%    Brak
+%    \end{varblock}
+%    \begin{varblock}[0.975\textwidth]{Ocean Surface Rendering}
+%    Brak
+%    \end{varblock}
+%    \begin{varblock}[0.975\textwidth]{Results}
+%    Brak
+%    \end{varblock}    
     
-    
-  \begin{columns}[t]
-    % ---------------------------------------------------------%
-    % Set up a column
-    \begin{column}{.45\textwidth}
-      
-    \end{column}
-    % ---------------------------------------------------------%
-    % end the column
-
-    % ---------------------------------------------------------%
-    % Set up a column 
-    \begin{column}{.45\textwidth}
-      
-    \end{column}
-    % ---------------------------------------------------------%
-    % end the column
-  \end{columns}
+%  \begin{columns}[t]
+%    % ---------------------------------------------------------%
+%    % Set up a column
+%    \begin{column}{.45\textwidth}
+%      
+%    \end{column}
+%    % ---------------------------------------------------------%
+%    % end the column
+%
+%    % ---------------------------------------------------------%
+%    % Set up a column 
+%    \begin{column}{.45\textwidth}
+%      
+%    \end{column}
+%    % ---------------------------------------------------------%
+%    % end the column
+%  \end{columns}
+%
+%
 \end{frame}
 
 \end{document}
