@@ -16,6 +16,8 @@
 
 \usepackage{TUINFPST}
 \usepackage{lipsum}
+\usepackage[position=bottom]{subfig}
+\usepackage{caption}
 
 \title[Visual Computing]{Ocean Surface Generation and Rendering}
 % if you have a long title looking squeezed on the poster, just force
@@ -84,7 +86,13 @@
 %\end{center}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%\setlength{\abovecaptionskip}{-1cm}
+%\setlength{\floatsep}{-1cm}
+%\setlength{\dblfloatsep}{-1cm}
+%\setlength{\intextsep}{-1cm}
+%\setlength{\abovecaptionskip}{-1cm}
+%\setlength{\belowcaptionskip}{-1cm}
+%\captionsetup{skip=-100pt}
 \begin{document}
 
 % We have a single poster frame.
@@ -140,23 +148,31 @@
 	\end{minipage}
 	\begin{minipage}{\textwidth}
 		\begin{block}{Ocean Surface Rendering}
-			\begin{columns}[t]
-				\begin{column}{0.75\linewidth}
-					\begin{center}
-					\noindent
-					\includegraphics[width=0.225\columnwidth]{figures/28-05-2018_10-56-10_grid}
-					\includegraphics[width=0.225\columnwidth]{figures/28-05-2018_10-56-10_ross}
-					\includegraphics[width=0.225\columnwidth]{figures/28-05-2018_10-56-10_sky}\\[0.025\columnwidth]
-					\includegraphics[width=0.225\columnwidth]{figures/28-05-2018_10-56-10_sea}	
-					\includegraphics[width=0.225\columnwidth]{figures/28-05-2018_10-56-10_whitecaps}	
-					\includegraphics[width=0.225\columnwidth]{figures/28-05-2018_10-56-10_complete}	
-					\end{center}
+			\begin{columns}[T,onlytextwidth]
+				\begin{column}{0.65\linewidth}
+				    \begin{figure}
+%					\centering
+%					\noindent
+					\subfloat[\label{fig:a}]{\includegraphics[width=0.3\columnwidth]{figures/28-05-2018_10-56-10_grid}}
+					\subfloat[\label{fig:b}]{\includegraphics[width=0.3\columnwidth]{figures/28-05-2018_10-56-10_ross}}
+					\subfloat[\label{fig:c}]{\includegraphics[width=0.3\columnwidth]{figures/28-05-2018_10-56-10_sky}}\\[0.0125\columnwidth]
+					\subfloat[\label{fig:d}]{\includegraphics[width=0.3\columnwidth]{figures/28-05-2018_10-56-10_sea}}
+					\subfloat[\label{fig:e}]{\includegraphics[width=0.3\columnwidth]{figures/28-05-2018_10-56-10_whitecaps}}
+					\subfloat[\label{fig:f}]{\includegraphics[width=0.3\columnwidth]{figures/28-05-2018_10-56-10_complete}}
+					\end{figure}
 				\end{column}
-				\begin{column}{0.25\linewidth}
-					Adaptive, constant-overhead mesh
+				\begin{column}{0.35\linewidth}
+					\subref{fig:a} The adaptive, constant-overhead mesh
 					
-					Reflected sun light, reflected sky light, light refracted from the sea,
-					whitecaps, final result
+					\subref{fig:b} Sun light reflected by the water surface
+					
+					\subref{fig:c} Sky light reflected by the water surface
+					
+					\subref{fig:d} Light refracted from the water body				
+					
+					\subref{fig:e} Whitecap foam
+					
+					\subref{fig:f} The final result
 				\end{column}				
 			\end{columns}
 		\end{block}
