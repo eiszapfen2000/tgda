@@ -109,7 +109,14 @@
 				\end{column}
 				\begin{column}{0.45\linewidth}
 					\textbf{Problem Statement}:
-					\lipsum[2]
+					The scope of this thesis includes the generation, animation and rendering of the
+					surface of an open ocean in real time. We focus our interest on the synthesis of
+					animated ocean surface geometry, for which we will adopt a set of models from
+					oceanographic research. Specific properties of said models allow for
+					easy addition and reduction of detail, as well as for a range of algorithmic
+					optimizations. The former combined with the latter gives us the opportunity to
+					strike a well-adjusted balance between model detail and computational workload,
+					and thereby to improve upon the status quo of current implementations.
 				\end{column}	  
 %				\begin{column}{0.3\linewidth}
 %					\lipsum[3]
@@ -119,14 +126,42 @@
 	\end{minipage}
 	\begin{minipage}{\textwidth}
 		\begin{block}{Ocean Surface Generation}	
+			\begin{columns}[t]
+				\begin{column}{0.45\linewidth}
+					\textbf{Wave Spectra}:
+					Phillips, Pierson-Moskowitz, JONSWAP, Donelan, Elfouhaly
+				\end{column}
+				\begin{column}{0.45\linewidth}
+					\textbf{Synthesis}:
+					Horizontal and vertical displacements, slopes, first order partial derivatives of the horizontal displacements.
+				\end{column}	  
+			\end{columns}
 		\end{block}
 	\end{minipage}
 	\begin{minipage}{\textwidth}
-		\begin{block}{Ocean Surface Rendering}	
+		\begin{block}{Ocean Surface Rendering}
+		Adaptive, constant-overhead mesh
+		
+		Reflected sun light, reflected sky light, light refracted from the sea,
+		whitecaps, final result
 		\end{block}
 	\end{minipage}
 	\begin{minipage}{\textwidth}
-		\begin{block}{Results}	
+		\begin{block}{Results}
+			\begin{columns}[t]
+				\begin{column}{0.3\linewidth}
+				TROLOLO
+				\end{column}
+				\begin{column}{0.7\linewidth}
+				\begin{center}
+				\noindent
+				\includegraphics[width=0.3\textwidth]{figures/20-06-2018_14-49-57_complete}\hspace{0.05\textwidth}%
+				\includegraphics[width=0.3\textwidth]{figures/20-06-2018_14-49-57_complete}\\[2em]
+				\includegraphics[width=0.3\textwidth]{figures/20-06-2018_14-49-57_complete}\hspace{0.05\textwidth}%
+				\includegraphics[width=0.3\textwidth]{figures/20-06-2018_14-49-57_complete}	
+				\end{center}
+				\end{column}
+			\end{columns}
 		\end{block}
 	\end{minipage}
 	\end{center}
