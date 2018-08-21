@@ -17,10 +17,12 @@
 \usepackage{TUINFPST}
 \usepackage{lipsum}
 \usepackage[labelformat=empty,position=bottom, font=normalsize]{subfig}
+%\usepackage{natbib}
 %\usepackage[
 % font=footnotesize % or small or scriptsize
 % ]{subfig}
 \usepackage{caption}
+\usepackage{multicol} 
 
 \title[Visual Computing]{Ocean Surface Generation and Rendering}
 % if you have a long title looking squeezed on the poster, just force
@@ -120,6 +122,8 @@
 				\end{column}
 				\begin{column}{0.45\linewidth}
 					\textbf{Problem Statement}:
+					\cite{course:simulatingocean}\cite{article:oceanlighting}\cite{article:whitecaps}
+					\cite{thesis:johanson}
 					The scope of this thesis includes the generation, animation and rendering of the
 					surface of an open ocean in real time. We focus our interest on the synthesis of
 					animated ocean surface geometry, for which we will adopt a set of models from
@@ -208,6 +212,21 @@
 	\end{minipage}
 	\begin{minipage}{\textwidth}
 		\begin{block}{References}
+%			{\small
+%			\setbeamertemplate{bibliography item}[text]
+%			\bibliographystyle{plain}
+%       		\bibliography{references}
+%			}
+%			\begin{center}
+			\small
+			\setbeamertemplate{bibliography item}[text]
+%			\setlength{\columnsep}{0.1\linewidth}
+			\begin{multicols}{2}
+			\centering
+			\bibliographystyle{plain}
+			\bibliography{references}
+			\end{multicols}
+%			\end{center}
 		\end{block}
 	\end{minipage}
 	\end{center}
