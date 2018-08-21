@@ -16,7 +16,10 @@
 
 \usepackage{TUINFPST}
 \usepackage{lipsum}
-\usepackage[position=bottom]{subfig}
+\usepackage[labelformat=empty,position=bottom, font=normalsize]{subfig}
+%\usepackage[
+% font=footnotesize % or small or scriptsize
+% ]{subfig}
 \usepackage{caption}
 
 \title[Visual Computing]{Ocean Surface Generation and Rendering}
@@ -149,20 +152,20 @@
 	\begin{minipage}{\textwidth}
 		\begin{block}{Ocean Surface Rendering}
 			\begin{columns}[t]
-				\begin{column}{\linewidth}
-				    \begin{figure}
+				\begin{column}{0.95\linewidth}
+					\begin{figure}
 					\centering
 %					\noindent
-					\subfloat[\label{fig:a}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_grid}}
-					\subfloat[\label{fig:b}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_ross}}
-					\subfloat[\label{fig:c}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_sky}}
-					\subfloat[\label{fig:d}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_sea}}
-					\subfloat[\label{fig:e}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_whitecaps}}
-					\subfloat[\label{fig:f}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_complete}}
+					\subfloat[Triangle mesh\label{fig:a}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_grid}}
+					\subfloat[Reflected sun light\label{fig:b}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_ross}}
+					\subfloat[Reflected sky light\label{fig:c}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_sky}}
+					\subfloat[Refracted light \label{fig:d}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_sea}}
+					\subfloat[Whitecap foam\label{fig:e}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_whitecaps}}
+					\subfloat[The final result\label{fig:f}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_complete}}
 					\end{figure}
 					\vspace{0.5cm}
 					\begin{center}
-					From left to right: \subref{fig:a}
+%					From left to right: \subref{fig:a}
 					\end{center}
 				\end{column}
 %				\begin{column}{0.35\linewidth}
