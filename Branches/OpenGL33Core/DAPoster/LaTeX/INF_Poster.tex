@@ -22,7 +22,11 @@
 % font=footnotesize % or small or scriptsize
 % ]{subfig}
 \usepackage{caption}
-\usepackage{multicol} 
+\usepackage{multicol}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.15}
+%\usepackage{pgfplotstable}
+%\usepackage{siunitx}
 
 \title[Visual Computing]{Ocean Surface Generation and Rendering}
 % if you have a long title looking squeezed on the poster, just force
@@ -101,16 +105,16 @@
 \begin{document}
 
 % We have a single poster frame.
-\begin{frame}
+\begin{frame}[fragile]
     \begin{center}
 	\begin{minipage}{\textwidth}
 		\begin{block}{Introduction}
 			\begin{columns}[t]
 				\begin{column}{0.45\linewidth}
-					\textbf{Motivation}: For computer graphics to reproduce the diverse appearance of ocean
-					surfaces represents a sophisticated problem, even more so in the context
-					of real-time rendering. The underlying reasons are manifold. First,
-					consider the sheer size of  a water body as large as an ocean, which may
+					\textbf{Motivation}:
+					For computer graphics to reproduce the diverse appearance of ocean
+					surfaces represents a sophisticated problem. First,
+					consider the sheer size of  a water body as large as the ocean, which may
 					be visible all the way to the horizon. Second, the ocean surface is
 					dynamic, therefore it needs to be updated constantly, even though the
 					wave interactions that define its shape are huge in terms of complexity.
@@ -118,7 +122,18 @@
 					reflected at the surface or may be refracted into the water body. Some
 					of the refracted light may even find its way back to the ocean‘s
 					surface. Moreover, waves on the surface may break and cause surf and foam.
-					
+%				
+%					For computer graphics to reproduce the diverse appearance of ocean
+%					surfaces represents a sophisticated problem, even more so in the context
+%					of real-time rendering. The underlying reasons are manifold. First,
+%					consider the sheer size of  a water body as large as an ocean, which may
+%					be visible all the way to the horizon. Second, the ocean surface is
+%					dynamic, therefore it needs to be updated constantly, even though the
+%					wave interactions that define its shape are huge in terms of complexity.
+%					Third, the optics of water are intricate. Incoming light may be
+%					reflected at the surface or may be refracted into the water body. Some
+%					of the refracted light may even find its way back to the ocean‘s
+%					surface. Moreover, waves on the surface may break and cause surf and foam.
 				\end{column}
 				\begin{column}{0.45\linewidth}
 					\textbf{Problem Statement}:
@@ -145,6 +160,29 @@
 				\begin{column}{0.45\linewidth}
 					\textbf{Wave Spectra}:
 					Phillips, Pierson-Moskowitz, JONSWAP, Donelan, Elfouhaly
+%					\begin{figure}
+%					\centering
+					\begin{tikzpicture}
+					\begin{axis}[
+					    width=0.5\columnwidth,
+					    enlargelimits=false,
+					    view={-20}{25},
+					    mesh/ordering=y varies,
+					    xticklabels={},
+					    yticklabels={},
+ 					    zticklabels={},
+					    zlabel={Energy},
+					    xlabel={},
+					    ylabel={},
+					    grid=major,
+					    zlabel shift = -1cm,
+					    ]
+					\addplot3[surf,
+					    ]
+					    table [col sep=comma]{figures/jonswap_w15_f100_kx_ky.dat};
+					\end{axis}
+					\end{tikzpicture}
+%					\end{figure}
 				\end{column}
 				\begin{column}{0.45\linewidth}
 					\textbf{Synthesis}:
@@ -202,9 +240,9 @@
 				\begin{center}
 %				Brak\cite{ff2010}
 				\noindent
-				\includegraphics[width=0.3\columnwidth]{figures/21-06-2018_10-44-51_complete}
-				\includegraphics[width=0.3\columnwidth]{figures/21-06-2018_13-45-06_complete}
-				\includegraphics[width=0.3\columnwidth]{figures/21-06-2018_12-48-51_complete}	
+				\includegraphics[width=0.3135\columnwidth]{figures/21-06-2018_10-44-51_complete}
+				\includegraphics[width=0.3135\columnwidth]{figures/21-06-2018_13-45-06_complete}
+				\includegraphics[width=0.3135\columnwidth]{figures/21-06-2018_12-48-51_complete}	
 				\end{center}
 				\end{column}
 			\end{columns}
