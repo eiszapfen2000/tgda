@@ -27,6 +27,7 @@
 \pgfplotsset{compat=1.15}
 %\usepackage{pgfplotstable}
 %\usepackage{siunitx}
+%\usepackage[export]{adjustbox}
 
 \title[Visual Computing]{Ocean Surface Generation and Rendering}
 % if you have a long title looking squeezed on the poster, just force
@@ -137,8 +138,7 @@
 				\end{column}
 				\begin{column}{0.45\linewidth}
 					\textbf{Problem Statement}:
-					\cite{course:simulatingocean}\cite{article:oceanlighting}\cite{article:whitecaps}
-					\cite{thesis:johanson}
+					\nocite{course:simulatingocean,article:oceanlighting,article:whitecaps,thesis:johanson}
 					The scope of this thesis includes the generation, animation and rendering of the
 					surface of an open ocean in real time. We focus our interest on the synthesis of
 					animated ocean surface geometry, for which we will adopt a set of models from
@@ -256,18 +256,23 @@
 				\begin{column}{0.4\linewidth}
 				\begin{itemize}
 				\item Generate and render the animated ocean surface in real time
-				\item From a calm sea to a highly agitated one
+				\item Supports varied seas, from a calm one to a highly agitated one
 				\item Seamless transition between close-ups and panoramas
 				\end{itemize}
 				\end{column}
 				\begin{column}{0.5\linewidth}
-				\begin{center}
+%				\begin{center}
+				\begin{figure}
+%				\centering
 %				Brak\cite{ff2010}
-				\noindent
-				\includegraphics[width=0.3135\columnwidth]{figures/21-06-2018_10-44-51_complete}
-				\includegraphics[width=0.3135\columnwidth]{figures/21-06-2018_13-45-06_complete}
-				\includegraphics[width=0.3135\columnwidth]{figures/21-06-2018_12-48-51_complete}	
-				\end{center}
+%				\noindent
+				\subfloat{\includegraphics[width=0.3135\columnwidth]{figures/21-06-2018_10-44-51_complete}}
+				\hfill
+				\subfloat{\includegraphics[width=0.3135\columnwidth]{figures/21-06-2018_13-45-06_complete}}
+				\hfill
+				\subfloat{\includegraphics[width=0.3135\columnwidth]{figures/21-06-2018_12-48-51_complete}}
+				\end{figure}
+%				\end{center}
 				\end{column}
 			\end{columns}
 		\end{block}
@@ -280,7 +285,7 @@
 %       		\bibliography{references}
 %			}
 %			\begin{center}
-			\tiny
+			\small
 			\setbeamertemplate{bibliography item}[text]
 %			\setlength{\columnsep}{0.1\linewidth}
 			\begin{multicols}{2}
