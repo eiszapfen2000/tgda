@@ -158,10 +158,12 @@
 		\begin{block}{Ocean Surface Generation}	
 			\begin{columns}[t]
 				\begin{column}{0.45\linewidth}
-					\textbf{Wave Spectra}:
-					Phillips, Pierson-Moskowitz, JONSWAP, Donelan, Elfouhaly
-%					\begin{figure}
-%					\centering
+					The \textbf{wave spectrum} represents the sea as wave energy in frequency space.
+					The only parameters are wind speed and distance from shore.
+%					Compact description of the sea with 
+%					Phillips, Pierson-Moskowitz, JONSWAP, Donelan, Elfouhaly
+					\begin{figure}
+					\centering
 					\begin{tikzpicture}
 					\begin{axis}[
 					    width=0.5\columnwidth,
@@ -175,14 +177,15 @@
 					    xlabel={},
 					    ylabel={},
 					    grid=major,
-					    zlabel shift = -1cm,
+					    zlabel shift = -1.2cm,
 					    ]
 					\addplot3[surf,
 					    ]
 					    table [col sep=comma]{figures/jonswap_w15_f100_kx_ky.dat};
 					\end{axis}
 					\end{tikzpicture}
-%					\end{figure}
+					\end{figure}
+					We employ four distinct wave spectrum models.
 				\end{column}
 				\begin{column}{0.45\linewidth}
 					\textbf{Synthesis}:
@@ -256,7 +259,7 @@
 %       		\bibliography{references}
 %			}
 %			\begin{center}
-			\small
+			\tiny
 			\setbeamertemplate{bibliography item}[text]
 %			\setlength{\columnsep}{0.1\linewidth}
 			\begin{multicols}{2}
