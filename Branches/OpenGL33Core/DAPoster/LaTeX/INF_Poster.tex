@@ -160,8 +160,8 @@
 				\begin{column}{0.45\linewidth}
 					The \textbf{wave spectrum} represents the sea as wave energy in frequency space.
 					The only parameters are wind speed and distance from shore.
-					To obtain variety, we employ four distinct wave spectrum models.
-					
+					To obtain variety, we employ four distinct wave spectrum models from
+					oceanographic research.
 %					Compact description of the sea with 
 %					Phillips, Pierson-Moskowitz, JONSWAP, Donelan, Elfouhaly
 					\begin{figure}
@@ -190,7 +190,25 @@
 				\end{column}
 				\begin{column}{0.45\linewidth}
 					Given the wave spectrum, we \textbf{synthesize} all data for rendering:
-					Horizontal and vertical displacements, slopes, first order partial derivatives of the horizontal displacements.
+					wave heights, horizontal displacements, and all the respective first order
+					partial derivatives.
+					\begin{figure}
+					 \centering
+					 \subfloat[Heights]
+					 {
+					 \includegraphics[width=0.3\columnwidth]{figures/u_30_500km_heights.png}
+					 }
+					 \hfill
+					 \subfloat[Displacement $X$]
+					 {
+					 \includegraphics[width=0.3\columnwidth]{figures/u_30_500km_displacement_x.png}
+					 }
+					 \hfill
+					 \subfloat[Displacement $Z$]
+					 {
+					 \includegraphics[width=0.3\columnwidth]{figures/u_30_500km_displacement_z.png}
+					 }
+					\end{figure}
 				\end{column}	  
 			\end{columns}
 		\end{block}
