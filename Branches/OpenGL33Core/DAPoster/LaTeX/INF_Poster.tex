@@ -106,23 +106,36 @@
 \begin{document}
 
 % We have a single poster frame.
-\begin{frame}[fragile]
+\begin{frame}%[fragile]
     \begin{center}
 	\begin{minipage}{\textwidth}
 		\begin{block}{Introduction}
 			\begin{columns}[t]
 				\begin{column}{0.45\linewidth}
 					\textbf{Motivation}:
+%					The real-time display of ocean surfaces represents a sophisticated
+%					problem for computer graphics.
 					For computer graphics to reproduce the diverse appearance of ocean
-					surfaces represents a sophisticated problem. First,
-					consider the sheer size of  a water body as large as the ocean, which may
-					be visible all the way to the horizon. Second, the ocean surface is
-					dynamic, therefore it needs to be updated constantly, even though the
-					wave interactions that define its shape are huge in terms of complexity.
-					Third, the optics of water are intricate. Incoming light may be
-					reflected at the surface or may be refracted into the water body. Some
-					of the refracted light may even find its way back to the ocean‘s
-					surface. Moreover, waves on the surface may break and cause surf and foam.
+					surfaces in real time represents a sophisticated problem.
+					First, the ocean is huge and may be visible all the way to the horizon.
+					Second, the ocean surface is dynamic and therefore needs to be updated
+					constantly with the passage of time.
+					Third, the optics of water are intricate.
+%					\begin{itemize}
+%					\item The ocean is huge and may be visible all the way to the horizon.
+%					\item The ocean is dynamic
+%					\item The optics of water are intricate
+%					\end{itemize}
+					
+					
+%					First, consider the sheer size of  a water body as large as the ocean, which may
+%					be visible all the way to the horizon. Second, the ocean surface is
+%					dynamic, therefore it needs to be updated constantly, even though the
+%					wave interactions that define its shape are huge in terms of complexity.
+%					Third, the optics of water are intricate. Incoming light may be
+%					reflected at the surface or may be refracted into the water body. Some
+%					of the refracted light may even find its way back to the ocean‘s
+%					surface. Moreover, waves on the surface may break and cause surf and foam.
 %				
 %					For computer graphics to reproduce the diverse appearance of ocean
 %					surfaces represents a sophisticated problem, even more so in the context
@@ -140,13 +153,14 @@
 					\textbf{Problem Statement}:
 					\nocite{course:simulatingocean,article:oceanlighting,article:whitecaps,thesis:johanson}
 					The scope of this thesis includes the generation, animation and rendering of the
-					surface of an open ocean in real time. We focus our interest on the synthesis of
-					animated ocean surface geometry, for which we will adopt a set of models from
-					oceanographic research. Specific properties of said models allow for
-					easy addition and reduction of detail, as well as for a range of algorithmic
-					optimizations. The former combined with the latter gives us the opportunity to
-					strike a well-adjusted balance between model detail and computational workload,
-					and thereby to improve upon the status quo of current implementations.
+					surface of an open ocean in real time. 
+%					We focus our interest on the synthesis of
+%					animated ocean surface geometry, for which we will adopt a set of models from
+%					oceanographic research. Specific properties of said models allow for
+%					easy addition and reduction of detail, as well as for a range of algorithmic
+%					optimizations. The former combined with the latter gives us the opportunity to
+%					strike a well-adjusted balance between model detail and computational workload,
+%					and thereby to improve upon the status quo of current implementations.
 				\end{column}	  
 %				\begin{column}{0.3\linewidth}
 %					\lipsum[3]
