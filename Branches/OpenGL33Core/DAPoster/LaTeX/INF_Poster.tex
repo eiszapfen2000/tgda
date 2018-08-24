@@ -156,7 +156,7 @@
 					open ocean in real time. We combine the seminal work by Tessendorf~\cite{course:simulatingocean}
 					with real-time rendering algorithms which have been tailored specifically to
 					the open ocean~\cite{article:oceanlighting,article:whitecaps,thesis:johanson}.
-					For realism as well as variety we employ models from oceanographic research.
+					For realism as well as variety we employ wave spectrum models from oceanographic research.
 %					The scope of this thesis includes the generation, animation and rendering of the
 %					surface of an open ocean in real time. 
 %					We focus our interest on the synthesis of
@@ -177,10 +177,11 @@
 		\begin{block}{Ocean Surface Generation}	
 			\begin{columns}[t]
 				\begin{column}{0.45\linewidth}
-					The \textbf{wave spectrum} represents the sea as wave energy in frequency space.
+					The \textbf{wave spectrum} represents the sea as wave energy in Fourier space.
 					The only parameters are wind speed and distance from shore.
-					To obtain more varied seas, we employ not one, but four distinct wave spectrum models from
-					oceanographic research.
+					To obtain more varied seas, we employ not just one, but four well-established
+					wave spectrum models.
+%					from oceanographic research.
 %					Compact description of the sea with 
 %					Phillips, Pierson-Moskowitz, JONSWAP, Donelan, Elfouhaly
 					\begin{figure}
@@ -276,7 +277,7 @@
 				\begin{itemize}
 				\item Generate and render the animated ocean surface in real time
 				\item Seamless transition between close-ups and panoramas
-				\item Supports varied seas, from calm to highly agitated
+				\item Supports varied seas, from calm ones to highly agitated ones
 				\item User controlled balance between model detail and performance
 				\end{itemize}
 				\end{column}
