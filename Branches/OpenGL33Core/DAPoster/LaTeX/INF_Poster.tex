@@ -110,6 +110,7 @@
 % We have a single poster frame.
 \begin{frame}%[fragile]
     \begin{center}
+%    \vspace{2cm}
 	\begin{minipage}{0.99\textwidth}
 		\begin{block}{Introduction}
 			\begin{columns}[t]
@@ -252,12 +253,13 @@
 %			\end{columns}
 			\begin{columns}[t]
 				\begin{column}{0.95\linewidth}
-					With wave heights and horizontal displacements at hand, we are able to render the animated
-					ocean surface geometry. Moreover, based on the first order partial derivatives of the wave
-					heights, we compute the reflected sun light, the reflected sky light, and the light refracted
-					from the water. Additionally, based on the first order partial derivatives of the horizontal
-					displacements, we compute light as reflected by whitecap foam. Last, by combining all lighting
-					terms, we obtain the final result.
+					With wave heights and horizontal displacements at hand, we are able to render the
+					animated ocean surface geometry. Moreover, based on the first order partial derivatives of
+					the wave heights, we compute the reflected sun light, the reflected sky light, and the light
+					refracted from the water.
+					Additionally, based on the first order partial derivatives of the horizontal
+					displacements, we compute the light reflected by whitecap foam.
+					Last, by combining all lighting terms, we obtain the final result.
 					\begin{figure}
 					\centering
 %					\noindent
@@ -304,11 +306,17 @@
 				\begin{column}{0.5\linewidth}
 				\begin{figure}
 				\centering
-				\subfloat{\includegraphics[width=0.32\columnwidth]{figures/21-06-2018_10-44-51_complete}}
+				\subfloat[Close-up of the sunset over a serene sea]
+				{\includegraphics[width=0.32\textwidth]{figures/20-06-2018_14-49-57_complete.png}}
 				\hfill
-				\subfloat{\includegraphics[width=0.32\columnwidth]{figures/21-06-2018_13-45-06_complete}}
+				\subfloat[Panorama of a highly agitated sea]
+				{\includegraphics[width=0.32\columnwidth]{figures/21-06-2018_10-44-51_complete}}
 				\hfill
-				\subfloat{\includegraphics[width=0.32\columnwidth]{figures/21-06-2018_12-48-51_complete}}
+%				\subfloat[]
+%				{\includegraphics[width=0.32\columnwidth]{figures/21-06-2018_13-45-06_complete}}
+%				\hfill
+				\subfloat[Large, sharp-crested waves]
+				{\includegraphics[width=0.32\columnwidth]{figures/21-06-2018_12-48-51_complete}}
 				\end{figure}
 %				\begin{center}
 %				\noindent
@@ -316,6 +324,39 @@
 %				\includegraphics[width=0.32\columnwidth]{figures/21-06-2018_13-45-06_complete}
 %				\includegraphics[width=0.32\columnwidth]{figures/21-06-2018_12-48-51_complete}
 %				\end{center}
+%				\begin{figure}
+%					\centering
+%					\subtop[]
+%					{
+%						\includegraphics[width=0.48\textwidth]{figures/20-06-2018_14-49-57_complete.png}
+%						\label{fig:results:pm:hover}
+%					}
+%					\hfill
+%					\subtop[]
+%					{
+%						\includegraphics[width=0.48\textwidth]{figures/21-06-2018_15-47-53_complete.png}
+%						\label{fig:results:unified}
+%					}
+%					\subtop[]
+%					{
+%						\includegraphics[width=0.48\textwidth]{figures/21-06-2018_10-44-51_complete.png}
+%						\label{fig:results:jonswap:agitated}
+%					}
+%					\hfill
+%					\subtop[]
+%					{
+%						\includegraphics[width=0.48\textwidth]{figures/21-06-2018_12-48-51_complete.png}
+%						\label{fig:results:unified:largewaves}
+%					}
+%					\caption[Overview of results.]{The ocean surface under a variety of conditions.
+%						\subcaptionref{fig:results:pm:hover} A calm sea with the camera looking into the
+%						sunset (Unified spectrum, four patterns).
+%						\subcaptionref{fig:results:unified} A fully developed sea with medium sized waves. (Pierson-Moskowitz spectrum, two patterns).
+%						\subcaptionref{fig:results:jonswap:agitated} A highly agitated developing sea with small waves (JONSWAP spectrum, three patterns).
+%						\subcaptionref{fig:results:unified:largewaves} A fully developed sea with large, sharp crested waves (Unified spectrum, three patterns).
+%					}
+%					\label{fig:results:overview}
+%				\end{figure}
 				\end{column}
 			\end{columns}
 		\end{block}
@@ -328,10 +369,10 @@
 %       		\bibliography{references}
 %			}
 %			\begin{center}
-			\tiny
+			\small
 			\setbeamertemplate{bibliography item}[text]
 %			\setlength{\columnsep}{0.1\linewidth}
-			\begin{multicols}{4}
+			\begin{multicols}{2}
 			\centering
 			\bibliographystyle{plain}
 			\bibliography{references}
