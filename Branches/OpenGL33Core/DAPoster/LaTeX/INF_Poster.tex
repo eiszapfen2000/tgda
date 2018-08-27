@@ -16,7 +16,7 @@
 
 \usepackage{TUINFPST}
 \usepackage{lipsum}
-\usepackage[position=bottom, font=normalsize]{subfig}
+\usepackage[labelformat=empty,position=bottom, font=normalsize]{subfig}
 %\usepackage{natbib}
 %\usepackage[
 % font=footnotesize % or small or scriptsize
@@ -188,7 +188,7 @@
 %					Phillips, Pierson-Moskowitz, JONSWAP, Donelan, Elfouhaly
 					\begin{figure}
 					\centering
-					\subfloat[Example wave spectrum]{
+%					\subfloat[Example wave spectrum]{
 					\begin{tikzpicture}
 					\begin{axis}[
 					    width=0.45\columnwidth,
@@ -202,14 +202,14 @@
 					    xlabel={},
 					    ylabel={},
 					    grid=major,
-					    zlabel shift = -1.2cm,
+					    zlabel shift = -1.0cm,
 					    ]
 					\addplot3[surf,
 					    ]
 					    table [col sep=comma]{figures/jonswap_w15_f100_kx_ky.dat};
 					\end{axis}
 					\end{tikzpicture}
-					}
+%					}
 					\end{figure}
 				\end{column}
 				\begin{column}{0.45\linewidth}
@@ -242,7 +242,7 @@
 %	\captionsetup{position=top}
 	\begin{minipage}{0.99\textwidth}
 		\begin{block}{Ocean Surface Rendering}
-		\captionsetup[subfigure]{labelformat=parens}
+%		\captionsetup[subfigure]{labelformat=parens}
 %			\begin{columns}[t]
 %			\begin{column}{0.45\linewidth}
 %			wave heights and horizontal displacements for geometry, first order partial derivatives of wave heights for lighting, first order partial derivatives of the horizontal displacements for whitecap foam.
@@ -252,13 +252,16 @@
 %			\end{columns}
 			\begin{columns}[t]
 				\begin{column}{0.95\linewidth}
-					We render the animated surface geometry with wave heights and horizontal displacements as input. Moreover, based on the first order partial derivatives of the wave heights,
-					we compute the reflected sun light, the reflected sky light, and the light refracted from the water. Last, based on the first order partial derivatives of the horizontal displacements, we compute light as reflected by whitecap foam. By combining all lighting terms we obtain the
-					final result.
+					With wave heights and horizontal displacements at hand, we are able to render the animated
+					ocean surface geometry. Moreover, based on the first order partial derivatives of the wave
+					heights, we compute the reflected sun light, the reflected sky light, and the light refracted
+					from the water. Additionally, based on the first order partial derivatives of the horizontal
+					displacements, we compute light as reflected by whitecap foam. Last, by combining all lighting
+					terms, we obtain the final result.
 					\begin{figure}
 					\centering
 %					\noindent
-					\subfloat[Surface mesh\label{fig:mesh}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_grid}}
+					\subfloat[Surface geometry\label{fig:mesh}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_grid}}
 					\subfloat[Reflected sun light\label{fig:sun}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_ross}}
 					\subfloat[Reflected sky light\label{fig:sky}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_sky}}
 					\subfloat[Refracted light \label{fig:sea}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_sea}}
@@ -328,7 +331,7 @@
 			\tiny
 			\setbeamertemplate{bibliography item}[text]
 %			\setlength{\columnsep}{0.1\linewidth}
-			\begin{multicols}{2}
+			\begin{multicols}{4}
 			\centering
 			\bibliographystyle{plain}
 			\bibliography{references}
