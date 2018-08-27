@@ -252,10 +252,9 @@
 %			\end{columns}
 			\begin{columns}[t]
 				\begin{column}{0.95\linewidth}
-					For the display of the surface mesh we require the wave heights and the horizontal displacements.
-					Whereas the reflected sun light, the reflected sky light, and the light refracted from the water 
-					is computed using the first order partial derivatives of the wave heights.
-					The display of whitecap foam, on the other hand, is based on the first order partial derivatives of the horizontal displacements. By Combining all lighting terms we obtain the final result.
+					We render the animated surface geometry with wave heights and horizontal displacements as input. Moreover, based on the first order partial derivatives of the wave heights,
+					we compute the reflected sun light, the reflected sky light, and the light refracted from the water. Last, based on the first order partial derivatives of the horizontal displacements, we compute light as reflected by whitecap foam. By combining all lighting terms we obtain the
+					final result.
 					\begin{figure}
 					\centering
 %					\noindent
