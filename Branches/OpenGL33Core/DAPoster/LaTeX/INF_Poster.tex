@@ -16,7 +16,7 @@
 
 \usepackage{TUINFPST}
 \usepackage{lipsum}
-\usepackage[labelformat=empty,position=bottom, font=normalsize]{subfig}
+\usepackage[position=bottom, font=normalsize]{subfig}
 %\usepackage{natbib}
 %\usepackage[
 % font=footnotesize % or small or scriptsize
@@ -28,6 +28,8 @@
 %\usepackage{pgfplotstable}
 %\usepackage{siunitx}
 %\usepackage[export]{adjustbox}
+
+%\captionsetup[subfigure]{labelformat=empty}
 
 \title[Visual Computing]{Ocean Surface Generation and Rendering}
 % if you have a long title looking squeezed on the poster, just force
@@ -186,9 +188,10 @@
 %					Phillips, Pierson-Moskowitz, JONSWAP, Donelan, Elfouhaly
 					\begin{figure}
 					\centering
+					\subfloat[Example wave spectrum]{
 					\begin{tikzpicture}
 					\begin{axis}[
-					    width=0.5\columnwidth,
+					    width=0.45\columnwidth,
 					    enlargelimits=false,
 					    view={-20}{25},
 					    mesh/ordering=y varies,
@@ -206,6 +209,7 @@
 					    table [col sep=comma]{figures/jonswap_w15_f100_kx_ky.dat};
 					\end{axis}
 					\end{tikzpicture}
+					}
 					\end{figure}
 				\end{column}
 				\begin{column}{0.45\linewidth}
@@ -216,17 +220,17 @@
 					their respective derivatives.
 					\begin{figure}
 					 \centering
-					 \subfloat[Heights]
+					 \subfloat[Heights\label{fig:heights}]
 					 {
 					 \includegraphics[width=0.3\columnwidth]{figures/u_15_500km_heights.png}
 					 }
 					 \hfill
-					 \subfloat[Displacement $X$]
+					 \subfloat[Displacement $X$\label{fig:dx}]
 					 {
 					 \includegraphics[width=0.3\columnwidth]{figures/u_15_500km_displacement_x.png}
 					 }
 					 \hfill
-					 \subfloat[Displacement $Z$]
+					 \subfloat[Displacement $Z$\label{fig:dz}]
 					 {
 					 \includegraphics[width=0.3\columnwidth]{figures/u_15_500km_displacement_z.png}
 					 }
@@ -235,24 +239,38 @@
 			\end{columns}
 		\end{block}
 	\end{minipage}
+%	\captionsetup{position=top}
 	\begin{minipage}{0.99\textwidth}
 		\begin{block}{Ocean Surface Rendering}
+		\captionsetup[subfigure]{labelformat=parens}
+%			\begin{columns}[t]
+%			\begin{column}{0.45\linewidth}
+%			wave heights and horizontal displacements for geometry, first order partial derivatives of wave heights for lighting, first order partial derivatives of the horizontal displacements for whitecap foam.
+%			\end{column}
+%			\begin{column}{0.45\linewidth}
+%			\end{column}
+%			\end{columns}
 			\begin{columns}[t]
 				\begin{column}{0.95\linewidth}
+					For the display of the surface mesh we require the wave heights and the horizontal displacements.
+					Whereas the reflected sun light, the reflected sky light, and the light refracted from the water 
+					is computed using the first order partial derivatives of the wave heights.
+					The display of foam, on the other hand, requires all first order partial derivatives of the horizontal displacements.
 					\begin{figure}
 					\centering
 %					\noindent
-					\subfloat[Triangle mesh\label{fig:a}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_grid}}
-					\subfloat[Reflected sun light\label{fig:b}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_ross}}
-					\subfloat[Reflected sky light\label{fig:c}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_sky}}
-					\subfloat[Refracted light \label{fig:d}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_sea}}
-					\subfloat[Whitecap foam\label{fig:e}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_whitecaps}}
-					\subfloat[Final result\label{fig:f}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_complete}}
+					\subfloat[Surface mesh\label{fig:mesh}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_grid}}
+					\subfloat[Reflected sun light\label{fig:sun}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_ross}}
+					\subfloat[Reflected sky light\label{fig:sky}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_sky}}
+					\subfloat[Refracted light \label{fig:sea}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_sea}}
+					\subfloat[Whitecap foam\label{fig:foam}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_whitecaps}}
+					\subfloat[Final result\label{fig:final}]{\includegraphics[width=0.165\columnwidth]{figures/28-05-2018_10-56-10_complete}}
 					\end{figure}
 %					\vspace{0.5cm}
 %					\begin{center}
 %					From left to right: \subref{fig:a}
 %					\end{center}
+%				wave heights and horizontal displacements for geometry, first order partial derivatives of wave heights for lighting, first order partial derivatives of the horizontal displacements for whitecap foam.
 				\end{column}
 %				\begin{column}{0.35\linewidth}
 %					\subref{fig:a} The adaptive, constant-overhead mesh
@@ -308,7 +326,7 @@
 %       		\bibliography{references}
 %			}
 %			\begin{center}
-			\small
+			\tiny
 			\setbeamertemplate{bibliography item}[text]
 %			\setlength{\columnsep}{0.1\linewidth}
 			\begin{multicols}{2}
