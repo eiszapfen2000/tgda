@@ -1,0 +1,281 @@
+\documentclass[a4paper,11pt,twoside]{memoir}
+\chapterstyle{veelo}
+
+\usepackage{TUINFDA}
+
+\usepackage{url}
+\usepackage{hyperref}					% links in pdf
+\usepackage{graphicx}            			% Figures
+\usepackage{interval}
+\usepackage{verbatim}            			% Code-Environment
+\usepackage[lined,linesnumbered,algochapter]{algorithm2e} % Algorithm-Environment
+\newsubfloat{figure}
+\newsubfloat{table}
+
+\usepackage{booktabs}
+\usepackage{pgf}					
+\usepackage{tikz}					% tikz graphics
+\usetikzlibrary{arrows,automata}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{colortbl}
+\pgfplotsset{compat=newest}
+\usepgfplotslibrary{groupplots}
+\usetikzlibrary{pgfplots.groupplots}
+\usetikzlibrary{external}
+\usetikzlibrary{matrix}
+\usetikzlibrary{spy}
+\tikzexternalize[prefix=folien/]
+%\tikzset{external/up to date check=md5}
+
+\usepackage{ngerman}
+\usepackage[ngerman]{babel}
+\usepackage{bibgerm,cite}       % Deutsche Bezeichnungen, Automatisches Zusammenfassen von Literaturstellen
+\usepackage[ngerman]{varioref}  % Querverweise
+% to use the german charset include cp850 for MS-DOS, ansinew for Windows and latin1 for Linux.
+% \usepackage[latin1]{inputenc}
+\usepackage{mathtools}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{siunitx}
+\usepackage{commath}
+\usepackage{hhline}
+\usepackage{natbib}
+\usepackage{csvsimple}
+
+\colorlet{changed}{black}
+\colorlet{changed2}{black}
+\DeclareSIUnit\pixel{px}
+
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\newcommand{\mvec}[1]{\mathbf{#1}}
+\newcommand{\mvecx}[1]{\mathbf{#1}_x}
+\newcommand{\mvecy}[1]{\mathbf{#1}_y}
+\newcommand{\mvecz}[1]{\mathbf{#1}_z}
+\newcommand{\mvecw}[1]{\mathbf{#1}_w}
+\newcommand{\mmat}[1]{\mathbf{#1}}
+\newcommand{\transpose}[1]{#1^{\mathsf{T}}}
+\newcommand{\inverse}[1]{#1^{\mathsf{-1}}}
+\newcommand{\normalise}[1]{\frac{#1}{\norm{#1}}}
+
+\newcommand{\wavevector}{wavevector\xspace}
+\newcommand{\wavevectors}{wavevectors\xspace}
+\newcommand{\Wavevector}{Wavevector\xspace}
+\newcommand{\Wavevectors}{Wavevectors\xspace}
+\newcommand{\wavenumber}{wavenumber\xspace}
+\newcommand{\wavenumbers}{wavenumbers\xspace}
+\newcommand{\Wavenumber}{Wavenumber\xspace}
+\newcommand{\Wavenumbers}{Wavenumbers\xspace}
+\newcommand{\wavelength}{wavelength\xspace}
+\newcommand{\wavelengths}{wavelengths\xspace}
+\newcommand{\Wavelength}{Wavelength\xspace}
+\newcommand{\Wavelengths}{Wavelengths\xspace}
+
+\newcommand{\FourierTransform}{Fourier Transform\xspace}
+\newcommand{\FourierTransforms}{Fourier Transforms\xspace}
+\newcommand{\InvFourierTransform}{Inverse Fourier Transform\xspace}
+\newcommand{\InvFourierTransforms}{Inverse Fourier Transforms\xspace}
+\newcommand{\DiscreteFourierTransform}{Discrete Fourier Transform\xspace}
+\newcommand{\DiscreteFourierTransforms}{Discrete Fourier Transforms\xspace}
+\newcommand{\InvDiscreteFourierTransform}{Inverse Discrete Fourier Transform\xspace}
+\newcommand{\InvDiscreteFourierTransforms}{Inverse Discrete Fourier Transforms\xspace}
+\newcommand{\FastFourierTransform}{Fast Fourier Transform\xspace}
+\newcommand{\FastFourierTransforms}{Fast Fourier Transforms\xspace}
+\newcommand{\FT}{FT\xspace}
+\newcommand{\IFT}{IFT\xspace}
+\newcommand{\DFT}{DFT\xspace}
+\newcommand{\IDFT}{IDFT\xspace}
+\newcommand{\IDFTs}{IDFTs\xspace}
+\newcommand{\FFT}{FFT\xspace}
+%\hypersetup{draft}
+\hypersetup{hidelinks}
+
+\thesistitle{Ocean Surface Generation and Rendering}
+%\thesissubtitle{Optional Subtitle} % optional
+\thesisdate{28.08.2018}
+
+% all titles and designations have to be gender-related!
+\thesisdegree{Diplom-Ingenieur}{Diplom-Ingenieur}
+\thesiscurriculum{Visual Computing}{Visual Computing} % your study
+\thesisverfassung{Verfasser} % Verfasser
+\thesisauthor{Thomas Gamper} % your name
+\thesisauthoraddress{Lehmanngasse 25/2/12, 1230 Wien} % your address
+\thesismatrikelno{0107543} % your registration number
+
+\thesisbetreins{Associate Prof. Dipl.-Ing. Dipl.-Ing. Dr.techn. Michael Wimmer}
+\thesisbetrzwei{Mag.rer.soc.oec. Mag.art. Dipl.-Ing. Dr.tech. Andrea Weidlich}
+%\thesisbetrdrei{Dr. Vorname Familienname} % optional
+
+% define page numbering styles
+\makepagestyle{numberCorner}
+\makeevenfoot{numberCorner}{\thepage}{}{}
+\makeoddfoot{numberCorner}{}{}{\thepage}
+
+% define custom macros for specific formats or names
+\newcommand{\uml}[1]{\texttt{#1}}
+\newcommand{\cd}{\textsf{Class Diagram}}
+
+\DeclareMathOperator{\sech}{sech}
+
+\intervalconfig{
+soft open fences,
+}
+
+\hypersetup{
+    pdftitle = {Ocean Surface Generation and Rendering},
+    pdfauthor = {Thomas Gamper},
+}
+
+
+\begin{document}
+\captionnamefont{\bfseries}
+
+\begin{figure}
+	\centering
+	%\tikzset{external/force remake}
+	\begin{tikzpicture}
+	\begin{axis}[
+	xlabel={\Wavenumber~$k$},
+	ylabel={Energy},
+	restrict x to domain=0:0.2,
+	legend style={draw=none},
+    xticklabel style={
+	/pgf/number format/fixed,
+	/pgf/number format/precision=5,
+	},
+	scaled x ticks=false,
+	]
+	\addplot[
+	color=black,
+	solid,
+	]
+	table [col sep=comma]{figures/pm_10_k.dat};
+	\addlegendentry{$\SI{10}{\meter\per\second}$}
+	\addplot[
+	color=red,
+	solid,
+	]
+	table [col sep=comma]{figures/pm_12_k.dat};
+	\addlegendentry{$\SI{12}{\meter\per\second}$}
+	\addplot[
+	color=blue,
+	solid,
+	]
+	table [col sep=comma]{figures/pm_15_k.dat};
+	\addlegendentry{$\SI{15}{\meter\per\second}$}
+	\end{axis}
+	\end{tikzpicture}
+\end{figure}
+%	\begin{groupplot}[
+%	group style={
+%		rows=1,
+%		columns=2,
+%		xlabels at=edge bottom,
+%		ylabels at=edge left,
+%	},
+%	xlabel={\Wavenumber~$k$~(\si{\radian\per\meter})},
+%	ylabel={Energy~$\Theta$~(\si{\cubic\meter\per\radian})},
+%	width=0.5\textwidth,
+%	scaled ticks=false,
+%	]
+%	\nextgroupplot[
+%	legend style={draw=none},
+%	every axis legend/.append style={nodes={right}},
+%	restrict x to domain=0:0.4,
+%	]
+%	\addplot[
+%	color=blue,
+%	solid,
+%	]
+%	table [col sep=comma]{figures/pm_10_k.dat};
+%	\addlegendentry{PM}
+%	\addplot[
+%	color=red,
+%	solid,
+%	]
+%	table [col sep=comma]{figures/u_10_750km_k.dat};
+%	\addlegendentry{\SI{750}{\km}}
+%	\addplot[
+%	color=black,
+%	solid,
+%	]
+%	table [col sep=comma]{figures/u_10_500km_k.dat};
+%	\addlegendentry{\SI{500}{\km}}
+%	\addplot[
+%	color=magenta,
+%	solid,
+%	]
+%	table [col sep=comma]{figures/u_10_250km_k.dat};
+%	\addlegendentry{\SI{250}{\km}}
+%	\addplot[
+%	color=green,
+%	solid,
+%	]
+%	table [col sep=comma]{figures/u_10_100km_k.dat};
+%	\addlegendentry{\SI{100}{\km}}
+%	%\addplot[
+%	%color=red,
+%	%solid,
+%	%]
+%	%table [col sep=comma]{figures/u_10_50km_k.dat};
+%	%\addlegendentry{50 km}
+%	\nextgroupplot[
+%	legend style={draw=none},
+%	every axis legend/.append style={nodes={right}},
+%	xticklabel style={
+%		/pgf/number format/fixed,
+%	},
+%	xmin = 0,
+%	xmax = 0.2,
+%	ymax = 15,
+%	enlarge x limits = true,
+%	]
+%	\addplot[
+%	color=blue,
+%	solid,
+%	]
+%	table [col sep=comma]{figures/pm_10_k.dat};
+%	\addlegendentry{PM}
+%	\addplot[
+%	color=red,
+%	solid,
+%	]
+%	table [col sep=comma]{figures/j_10_1000km_k.dat};
+%	\addlegendentry{JONSWAP}
+%	\addplot[
+%	color=red,
+%	solid,
+%	forget plot,
+%	]
+%	table [col sep=comma]{figures/j_10_1500km_k.dat};
+%	\addplot[
+%	color=black,
+%	solid,
+%	]
+%	table [col sep=comma]{figures/d_10_1000km_k.dat};
+%	\addlegendentry{Donelan}
+%	\addplot[
+%	color=black,
+%	solid,
+%	forget plot,
+%	]
+%	table [col sep=comma]{figures/d_10_1500km_k.dat};
+%	\addplot[
+%	color=green,
+%	solid,
+%	]
+%	table [col sep=comma]{figures/u_10_1000km_k.dat};
+%	\addlegendentry{Unified}
+%	\addplot[
+%	color=green,
+%	solid,
+%	forget plot,
+%	]
+%	table [col sep=comma]{figures/u_10_1500km_k.dat};
+%	\end{groupplot}
+%	\end{tikzpicture}
+%	}
+%\end{figure}
+
+\end{document}
