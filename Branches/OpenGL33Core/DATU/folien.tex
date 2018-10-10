@@ -136,6 +136,8 @@ soft open fences,
 	%\tikzset{external/force remake}
 	\begin{tikzpicture}
 	\begin{axis}[
+%	width=0.5\textwidth,
+	title={Wind speed $(\si{\meter\per\second})$},
 	xlabel={\Wavenumber~$k$},
 	ylabel={Energy},
 	restrict x to domain=0:0.2,
@@ -167,115 +169,44 @@ soft open fences,
 	\end{axis}
 	\end{tikzpicture}
 \end{figure}
-%	\begin{groupplot}[
-%	group style={
-%		rows=1,
-%		columns=2,
-%		xlabels at=edge bottom,
-%		ylabels at=edge left,
-%	},
-%	xlabel={\Wavenumber~$k$~(\si{\radian\per\meter})},
-%	ylabel={Energy~$\Theta$~(\si{\cubic\meter\per\radian})},
-%	width=0.5\textwidth,
-%	scaled ticks=false,
-%	]
-%	\nextgroupplot[
-%	legend style={draw=none},
-%	every axis legend/.append style={nodes={right}},
-%	restrict x to domain=0:0.4,
-%	]
-%	\addplot[
-%	color=blue,
-%	solid,
-%	]
-%	table [col sep=comma]{figures/pm_10_k.dat};
-%	\addlegendentry{PM}
-%	\addplot[
-%	color=red,
-%	solid,
-%	]
-%	table [col sep=comma]{figures/u_10_750km_k.dat};
-%	\addlegendentry{\SI{750}{\km}}
-%	\addplot[
-%	color=black,
-%	solid,
-%	]
-%	table [col sep=comma]{figures/u_10_500km_k.dat};
-%	\addlegendentry{\SI{500}{\km}}
-%	\addplot[
-%	color=magenta,
-%	solid,
-%	]
-%	table [col sep=comma]{figures/u_10_250km_k.dat};
-%	\addlegendentry{\SI{250}{\km}}
-%	\addplot[
-%	color=green,
-%	solid,
-%	]
-%	table [col sep=comma]{figures/u_10_100km_k.dat};
-%	\addlegendentry{\SI{100}{\km}}
-%	%\addplot[
-%	%color=red,
-%	%solid,
-%	%]
-%	%table [col sep=comma]{figures/u_10_50km_k.dat};
-%	%\addlegendentry{50 km}
-%	\nextgroupplot[
-%	legend style={draw=none},
-%	every axis legend/.append style={nodes={right}},
-%	xticklabel style={
-%		/pgf/number format/fixed,
-%	},
-%	xmin = 0,
-%	xmax = 0.2,
-%	ymax = 15,
-%	enlarge x limits = true,
-%	]
-%	\addplot[
-%	color=blue,
-%	solid,
-%	]
-%	table [col sep=comma]{figures/pm_10_k.dat};
-%	\addlegendentry{PM}
-%	\addplot[
-%	color=red,
-%	solid,
-%	]
-%	table [col sep=comma]{figures/j_10_1000km_k.dat};
-%	\addlegendentry{JONSWAP}
-%	\addplot[
-%	color=red,
-%	solid,
-%	forget plot,
-%	]
-%	table [col sep=comma]{figures/j_10_1500km_k.dat};
-%	\addplot[
-%	color=black,
-%	solid,
-%	]
-%	table [col sep=comma]{figures/d_10_1000km_k.dat};
-%	\addlegendentry{Donelan}
-%	\addplot[
-%	color=black,
-%	solid,
-%	forget plot,
-%	]
-%	table [col sep=comma]{figures/d_10_1500km_k.dat};
-%	\addplot[
-%	color=green,
-%	solid,
-%	]
-%	table [col sep=comma]{figures/u_10_1000km_k.dat};
-%	\addlegendentry{Unified}
-%	\addplot[
-%	color=green,
-%	solid,
-%	forget plot,
-%	]
-%	table [col sep=comma]{figures/u_10_1500km_k.dat};
-%	\end{groupplot}
-%	\end{tikzpicture}
-%	}
-%\end{figure}
+
+\begin{figure}
+	\centering
+	%\tikzset{external/force remake}
+	\begin{tikzpicture}
+	\begin{axis}[
+	%	width=0.5\textwidth,
+	title={Distance from shore $(\si{\km})$},
+	xlabel={\Wavenumber~$k$},
+	ylabel={Energy},
+	restrict x to domain=0:0.5,
+	legend style={draw=none},
+	xticklabel style={
+		/pgf/number format/fixed,
+		/pgf/number format/precision=5,
+	},
+	scaled x ticks=false,
+	]
+	\addplot[
+	color=black,
+	solid,
+	]
+	table [col sep=comma]{figures/u_10_100km_k.dat};
+	\addlegendentry{$\SI{100}{\km}$}
+	\addplot[
+	color=red,
+	solid,
+	]
+	table [col sep=comma]{figures/u_10_250km_k.dat};
+	\addlegendentry{$\SI{250}{\km}$}	
+	\addplot[
+	color=blue,
+	solid,
+	]
+	table [col sep=comma]{figures/u_10_500km_k.dat};
+	\addlegendentry{$\SI{500}{\km}$}
+	\end{axis}
+	\end{tikzpicture}
+\end{figure}
 
 \end{document}
