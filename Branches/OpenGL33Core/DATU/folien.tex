@@ -209,4 +209,53 @@ soft open fences,
 	\end{tikzpicture}
 \end{figure}
 
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	%	width=0.5\textwidth,
+%	title={Distance from shore $(\si{\km})$},
+	xlabel={\Wavenumber~$k$},
+	ylabel={Energy},
+	restrict x to domain=0:0.25,
+	legend style={draw=none},
+	every axis legend/.append style={nodes={right}},
+	xticklabel style={
+		/pgf/number format/fixed,
+		/pgf/number format/precision=5,
+	},
+	scaled x ticks=false,
+	]
+	\addplot[
+	color=red,
+	solid,
+	]
+	table [col sep=comma]{figures/phillips_12_k_0_025.dat};
+	\addlegendentry{Phillips}
+	\addplot[
+	color=blue,
+	solid,
+	]
+	table [
+	col sep=comma, 
+	x expr=\thisrowno{0},
+	y expr=\thisrowno{1}*1000,
+	]
+	{figures/pm_12_k.dat};
+	\addlegendentry{PM~\color{red}$\times 10^3$}
+	\addplot[
+	color=black,
+	solid,
+	]
+	table [
+	col sep=comma, 
+	x expr=\thisrowno{0},
+	y expr=\thisrowno{1}*1000,
+	]
+	{figures/j_12_200km_k.dat};
+	\addlegendentry{JONSWAP~\color{red}$\times 10^3$}
+	\end{axis}
+	\end{tikzpicture}
+\end{figure}
+
 \end{document}
