@@ -344,4 +344,46 @@ soft open fences,
 	\end{tikzpicture}
 \end{figure}
 
+\begin{figure}
+	\centering
+	%\tikzset{external/force remake}
+	\pgfplotstableread[col sep = comma]{figures/benchmark_H0_i5_5300u.dat}\mydata
+	\begin{tikzpicture}[trim axis left]
+	\begin{axis}[
+	%     ybar,
+	%     bar width = 6pt,
+	legend pos = north west,
+	xticklabels from table={\mydata}{Resolution},
+	xtick=data,
+	xlabel={Resolution [\si{\pixel}]},
+	ylabel={Time [\si{\ms}]},
+	legend style={draw=none},
+	every axis legend/.append style={nodes={right}},
+	]
+	\addplot [color=blue] table[x expr=\coordindex, y index = {1}]{\mydata};
+	\addplot [color=green!70!black] table[x expr=\coordindex, y index = {2}]{\mydata};
+	\addplot [color=red] table[x expr=\coordindex, y index = {4}]{\mydata};
+	
+	\addplot[color=black,dashed] coordinates {
+		(0,200)
+		(4,200)
+	}
+	node[below,pos=0.5] {$5$ fps};
+	\addplot[color=black,dotted] coordinates {
+		(0,400)
+		(4,400)
+	}
+	node[below,pos=0.5] {$2.5$ fps};
+	
+	% assemble legend
+	\pgfplotstablegetcolsof{\mydata}
+	\pgfmathparse{\pgfplotsretval-1}
+	\foreach \n in {1,2,4} {
+		\pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
+		\addlegendentryexpanded{\colname}
+	}
+	\end{axis}
+	\end{tikzpicture}
+\end{figure}
+
 \end{document}
