@@ -386,4 +386,82 @@ soft open fences,
 	\end{tikzpicture}
 \end{figure}
 
+\begin{figure}
+	\centering
+	% \tikzset{external/force remake}
+	\pgfplotstableread[col sep = comma]{figures/benchmark_H_i5_5300u.dat}\mydata
+	\begin{tikzpicture}[trim axis left]
+	\begin{axis}[
+	legend pos = north west,
+	stack plots = y,
+	area style,
+	xticklabels from table={\mydata}{Resolution},
+	xtick=data,
+	xlabel={Resolution [\si{\pixel}]},
+	ylabel={Time [\si{\ms}]},
+	legend style={draw=none},
+	every axis legend/.append style={nodes={right}},
+	]
+	\addplot [color=black,fill=black,fill opacity=0.25] table [x expr=\coordindex,y=Heights] from \mydata \closedcycle; 
+	\addplot [color=red,fill=red,fill opacity=0.25] table [x expr=\coordindex,y=Slopes] from \mydata \closedcycle;
+	\addplot [color=green,fill=green,fill opacity=0.25] table [x expr=\coordindex,y=Displacements] from \mydata \closedcycle;
+	\addplot [color=blue,fill=blue,fill opacity=0.25] table [x expr=\coordindex,y=Displacement Derivatives] from \mydata \closedcycle;
+	
+	\addplot[color=black,dashed,stack plots=false] coordinates {
+		(0,20)
+		(4,20)
+	}
+	node[below,pos=0.5] {$50$ fps};
+	\addplot[color=black,dotted,stack plots=false] coordinates {
+		(0,40)
+		(4,40)
+	}
+	node[below,pos=0.5] {$25$ fps};
+	%     assemble legend
+	\pgfplotstablegetcolsof{\mydata}
+	\pgfmathparse{\pgfplotsretval-1}
+	\foreach \n in {1,...,\pgfmathresult} {
+		\pgfplotstablegetcolumnnamebyindex{\n}\of{\mydata}\to{\colname}
+		\addlegendentryexpanded{\colname}
+	}
+	\end{axis}
+	\end{tikzpicture}
+\end{figure}
+
+\begin{figure}
+	\centering
+	% \tikzset{external/force remake}
+	\pgfplotstableread[col sep = comma]{figures/benchmark_fftwf_i5_5300u.dat}\fftwf
+	\pgfplotstableread[col sep = comma]{figures/benchmark_fftw_i5_5300u.dat}\fftw
+	\begin{tikzpicture}
+	\begin{axis}[
+	width = 0.75\textwidth,
+	ybar,
+	xtick pos=left,
+	bar width = 6pt,
+	legend pos = north west,
+	xticklabels from table={\fftw}{Resolution},
+	xtick=data,
+	xlabel={Resolution [\si{\pixel}]},
+	ylabel={Time [\si{\ms}]},
+	legend style={draw=none},
+	every axis legend/.append style={nodes={right}},
+	enlarge y limits = upper,
+	%nodes near coords,
+	]
+	\addplot [color=red,fill=red]     table[x expr=\coordindex, y expr = \thisrowno{1}*9]{\fftw};
+	\addlegendentry{$\text{Double Precision} \times 9$}
+	%     \addplot [color=green,fill=green]    table[x expr=\coordindex, y expr = \thisrowno{1}*5]{\fftw};
+	%     \addlegendentry{$\text{Double Precision} \times 5$}
+	\addplot [color=black,fill=black]   table[x expr=\coordindex, y expr = \thisrowno{1}*9]{\fftwf};
+	\addlegendentry{$\text{Single Precision} \times 9$}
+	\addplot [color=blue,fill=blue] table[x expr=\coordindex, y expr = \thisrowno{1}*5]{\fftwf};
+	\addlegendentry{$\text{Single Precision} \times 5$}
+	
+	\draw[dashed] ({rel axis cs:0.025,0}|-{axis cs:0,20}) -- ({rel axis cs:0.975,0}|-{axis cs:0,20}) node[above,pos=0.5] {$50$ fps};
+	\draw[dotted] ({rel axis cs:0.025,0}|-{axis cs:0,40}) -- ({rel axis cs:0.975,0}|-{axis cs:0,40}) node[above,pos=0.5] {$25$ fps};
+	\end{axis}
+	\end{tikzpicture}
+\end{figure}
+
 \end{document}
