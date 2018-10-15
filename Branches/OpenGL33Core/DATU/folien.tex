@@ -475,9 +475,9 @@ soft open fences,
 		xlabels at=all,
 		ylabels at=edge left,
 	},
-	xlabel={$k$},
+	xlabel={\Wavenumber~$k$},
 	ylabel=\empty,
-	width=0.375\textwidth,
+	width=0.4\textwidth,
 	axis x line=bottom,
 	%	ymin = 0,
 	%	ymax = 0.001,
@@ -486,8 +486,24 @@ soft open fences,
 	ytick=\empty,
 	axis y line=none,
 	xmin = 0,
-	xmax = 0.74,
-%	title = {Brak},
+	xmax = 1.2,
+	title = {One LOD},
+	]
+	\addplot[
+	color=red,
+	fill,
+	fill opacity=0.2,
+	]
+	table [
+	col sep=comma, 
+	]
+	{figures/sampling_multires_scale_06_res_128_8_lod_1_capped.dat} \closedcycle;
+	\nextgroupplot[
+	ytick=\empty,
+	axis y line=none,
+	xmin = 0,
+	xmax = 1.2,
+	title = {Two LOD},
 	]
 	\addplot[
 	color=red,
@@ -512,6 +528,7 @@ soft open fences,
 	axis y line=none,
 	xmin = 0,
 	xmax = 1.2,
+	title = {Three LOD},
 	]
 	\addplot[
 	color=red,
@@ -540,48 +557,6 @@ soft open fences,
 	col sep=comma, 
 	]
 	{figures/sampling_multires_scale_06_res_128_8_lod_3_capped.dat} \closedcycle;
-	\nextgroupplot[
-	ytick=\empty,
-	axis y line=none,
-	xmin = 0,
-	xmax = 1.94,
-	]
-	\addplot[
-	color=red,
-	fill,
-	fill opacity=0.2,
-	]
-	table [
-	col sep=comma, 
-	]
-	{figures/sampling_multires_scale_06_res_128_8_lod_1_capped.dat} \closedcycle;
-	\addplot[
-	color=blue,
-	fill,
-	fill opacity=0.2,
-	]
-	table [
-	col sep=comma, 
-	]
-	{figures/sampling_multires_scale_06_res_128_8_lod_2_capped.dat} \closedcycle;
-	\addplot[
-	color=green,
-	fill,
-	fill opacity=0.2,
-	]
-	table [
-	col sep=comma, 
-	]
-	{figures/sampling_multires_scale_06_res_128_8_lod_3_capped.dat} \closedcycle;
-	\addplot[
-	color=orange,
-	fill,
-	fill opacity=0.2,
-	]
-	table [
-	col sep=comma, 
-	]
-	{figures/sampling_multires_scale_06_res_128_8_lod_4_capped.dat} \closedcycle;
 	\end{groupplot}
 	\end{tikzpicture}
 \end{figure}
