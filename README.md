@@ -7,6 +7,8 @@ Oceanographic wave spectra:
 * JONSWAP
 * Donelan
 * Elfouhailly
+
+Tessendorf ad-hoc spectrum:
 * Phillips (deprecated)
 
 Directional distribution Hasselmann 1973 and Mitsuyasu 1980.
