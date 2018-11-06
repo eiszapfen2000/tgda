@@ -28,3 +28,28 @@ Preetham sky light and sun light, where the sun color is computed via full scatt
 
 ## Tonemapping
 Reinhard global tonemapping operator. Color space conversions are done according to http://brucelindbloom.com
+
+## Literature
+[Bruneton2010a] Eric Bruneton, Fabrice Neyret, and Nicolas Holzschuch. Real-time realistic ocean lighting using seamless transitions from geometry to brdf. Computer Graphics Forum, 29(2):487–496, 2010.
+
+[Donelan1985a] M. A. Donelan, J. Hamilton, andW. H. Hui. Directional spectra of wind-generated waves. Phil. Trans. Roy. Soc. London A, 315:509–562, 1985.
+
+[Dupuy2012a] Jonathan Dupuy and Eric Bruneton. Real-time animation and rendering of ocean whitecaps. In SIGGRAPH Asia 2012 Technical Briefs, SA ’12, pages 15:1–15:3. ACM, 2012.
+
+[Elfouhaily1997a] T. Elfouhaily, B. Chapron, K. Katsaros, and D. Vandemark. A unified directional spectrum for long and short wind-driven waves. J. Geophys. Res., 102(C7):15781–15796, 1997.
+
+[Hasselmann1973a] K. Hasselman, T. P. Barnett, E. Bouws, D. E. Carlson, and P. Hasselmann. Measurements of wind-wave growth and swell decay during the joint north sea wave project (jonswap). Deutsche Hydrographische Zeitschrift, 8(12), 1973.
+
+[Hasselmann1980a] D. E. Hasselmann, M. Dunckel, and J. A. Ewing. Directional wave spectra observed during JONSWAP 1973. J. Phys. Oceanogr., 10:1264–1280, 1980.
+
+[Johanson2004a] Claes Johanson. Real-time water rendering - introducing the projected grid concept. Master’s thesis, Department of Computer Science, Lund University, 2004.
+
+[Mitsuyasu1975a] H. Mitsuyasu, F. Tasai, T. Suhara, S. Mizuno, M. Ohkusu, T. Honda, and K. Rikiishi. Observations of the Directional Spectrum of Ocean Waves Using a Cloverleaf Buoy. Journal of Physical Oceanography, 5:750, 1975.
+
+[Pierson1964a] Willard J. Pierson and Lionel Moskowitz. A proposed spectral form for fully developed wind seas based on the similarity theory of S. A. Kitaigorodskii. J. Geophys. Res., 69(24), December 1964.
+
+[Preetham1999a] A. J. Preetham, Peter Shirley, and Brian Smits. A practical analytic model for daylight. In Proceedings of the 26th Annual Conference on Computer Graphics and Interactive Techniques, SIGGRAPH ’99, pages 91–100. ACM Press/Addison-Wesley Publishing Co., 1999.
+
+[Reinhard2002a] Erik Reinhard, Michael Stark, Peter Shirley, and James Ferwerda. Photographic tone reproduction for digital images. In Proceedings of the 29th Annual Conference on Computer Graphics and Interactive Techniques, SIGGRAPH ’02, pages 267–276. ACM, 2002.
+
+[Tessendorf1999a] Jerry Tessendorf. Simulating ocean water. In SIGGRAPH course notes. ACM, 1999.
