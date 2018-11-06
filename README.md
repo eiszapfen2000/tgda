@@ -44,6 +44,8 @@ Reinhard global tonemapping operator. Color space conversions are done according
 
 [Johanson2004a] Claes Johanson. Real-time water rendering - introducing the projected grid concept. Master’s thesis, Department of Computer Science, Lund University, 2004.
 
+[Krawczyk2005a] Grzegorz Krawczyk, Karol Myszkowski, and Hans-Peter Seidel. Perceptual effects in real-time tone mapping. In Proceedings of the 21st Spring Conference on Computer Graphics, SCCG ’05, pages 195–202. ACM, 2005.
+
 [Mitsuyasu1975a] H. Mitsuyasu, F. Tasai, T. Suhara, S. Mizuno, M. Ohkusu, T. Honda, and K. Rikiishi. Observations of the Directional Spectrum of Ocean Waves Using a Cloverleaf Buoy. Journal of Physical Oceanography, 5:750, 1975.
 
 [Pierson1964a] Willard J. Pierson and Lionel Moskowitz. A proposed spectral form for fully developed wind seas based on the similarity theory of S. A. Kitaigorodskii. J. Geophys. Res., 69(24), December 1964.
