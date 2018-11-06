@@ -1,6 +1,8 @@
 # Real-Time Ocean Surface Generation and Rendering
 A real-time capable implementation of Tessendorf's choppy wave algorithm [Tessendorf1999a], augmented with four wave spectrum models from oceanographic research.
 
+## Videos
+
 | Overview  | Lods |
 | ------------- | ------------- |
 | [![Overview](https://img.youtube.com/vi/op_NVMRhpL0/0.jpg)](https://www.youtube.com/watch?v=op_NVMRhpL0) | [![Lods](https://img.youtube.com/vi/RiBrIPSPOxo/0.jpg)](https://www.youtube.com/watch?v=RiBrIPSPOxo) |
@@ -22,7 +24,7 @@ Fourier Transform done with FFTW, single precision variant.
 * Ocean Whitecaps [Dupuy2012a]
 
 ## Skylight
-Preetham sky light and sun light, where the sun color is computed via full scattering.
+Preetham sky light [Preetham1999a, Section 3.1] and sun light [Preetham1999a, Section 3.2].
 
 ## Tonemapping
 Global tonemapping operator by Reinhard et al. [Reinhard2002a, Equation 4], temporal luminance adaptation algorithm by Krawczyk et al. [Krawczyk2005a, Equations 5, 6, 7, 12]. Color space conversions are done according to http://brucelindbloom.com
