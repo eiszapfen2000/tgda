@@ -1,5 +1,5 @@
-# Real-Time Ocean Surface Generation and Rendering
-A real-time capable implementation of Tessendorf's choppy wave algorithm [Tessendorf1999a], augmented with four wave spectrum models from oceanographic research.
+# Ocean Surface Generation and Rendering
+A real-time capable implementation of Tessendorf's choppy wave algorithm [Tessendorf1999a], augmented with wave spectrum models from oceanographic research.
 
 ## Videos
 
