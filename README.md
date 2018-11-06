@@ -27,7 +27,7 @@ We compute the Discrete Fourier Transform with the single precision variant of [
 Preetham sky light [Preetham1999a, Section 3.1] and sun light [Preetham1999a, Section 3.2].
 
 ## Tonemapping
-Global tonemapping operator by Reinhard et al. [Reinhard2002a, Equation 4], temporal luminance adaptation algorithm by Krawczyk et al. [Krawczyk2005a, Equations 5, 6, 7, 12]. Color space conversions are done according to http://brucelindbloom.com
+Global tonemapping operator by Reinhard et al. [Reinhard2002a, Equation 4], temporal luminance adaptation algorithm by Krawczyk et al. [Krawczyk2005a, Equations 5, 6, 7, 12]. Color space conversions are done according to http://www.brucelindbloom.com/Math.html
 
 ## Literature
 [Bruneton2010a] Eric Bruneton, Fabrice Neyret, and Nicolas Holzschuch. Real-time realistic ocean lighting using seamless transitions from geometry to brdf. Computer Graphics Forum, 29(2):487–496, 2010.
