@@ -6,22 +6,19 @@ A real-time capable implementation of Tessendorf's choppy wave algorithm.
 
 ## Ocean Surface Synthesis
 Oceanographic wave spectra:
-* Pierson-Moskowitz
-* JONSWAP
-* Donelan
-* Elfouhailly
+* Pierson-Moskowitz [Pierson1964a]
+* JONSWAP [Hasselmann1973a]
+* Donelan [Donelan1985a]
+* Elfouhaily [Elfouhaily1997a] 
 
-Tessendorf ad-hoc spectrum:
-* Phillips (deprecated)
+Donelan and Elfouhaily incorporate a directional distribution. For Pierson-Moskowitz and JONSWAP we employ [Mitsuyasu1975a, Hasselmann1980a]
 
-Directional distribution Hasselmann 1973 and Mitsuyasu 1980.
-
-Fourier Transform done with FFTW, single precision variant. Initially, complex-to-real transformation, later pack two hermitian spectra into one, and therefore transform both at once.
+Fourier Transform done with FFTW, single precision variant.
 
 ## Ocean Surface Rendering
-* Projected Grid - Johanson
-* Seamless Ocean Surface Lighting - Bruneton, Neyret
-* Ocean Whitecaps - Dupuy, Neyret
+* Projected Grid [Johanson2004a]
+* Seamless Ocean Surface Lighting [Bruneton2010a]
+* Ocean Whitecaps [Dupuy2012a]
 
 ## Skylight
 Preetham sky light and sun light, where the sun color is computed via full scattering.
