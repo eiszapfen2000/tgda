@@ -12,11 +12,11 @@ Oceanographic wave spectra:
 * Pierson-Moskowitz [Pierson1964a]
 * JONSWAP [Hasselmann1973a]
 * Donelan [Donelan1985a]
-* Elfouhaily [Elfouhaily1997a] 
+* Elfouhaily [Elfouhaily1997a]
 
-Donelan and Elfouhaily incorporate a directional distribution. For Pierson-Moskowitz and JONSWAP we employ [Mitsuyasu1975a, Hasselmann1980a]
+Donelan and Elfouhaily each incorporate their own directional distribution. For Pierson-Moskowitz and JONSWAP we employ the directional distribution introduced by Mitsuyasu et al. [Mitsuyasu1975a] and improved by Hasselmann et al. [Hasselmann1980a].
 
-Fourier Transform done with FFTW, single precision variant.
+We compute the Discrete Fourier Transform with the single precision variant of [FFTW](http://www.fftw.org).
 
 ## Ocean Surface Rendering
 * Projected Grid [Johanson2004a]
