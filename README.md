@@ -8,7 +8,7 @@ A real-time capable implementation of Tessendorf's choppy wave algorithm [Tessen
 | [![Overview](https://img.youtube.com/vi/op_NVMRhpL0/0.jpg)](https://www.youtube.com/watch?v=op_NVMRhpL0) | [![Lods](https://img.youtube.com/vi/RiBrIPSPOxo/0.jpg)](https://www.youtube.com/watch?v=RiBrIPSPOxo) |
 
 ## Ocean Surface Synthesis
-Oceanographic wave spectra:
+We implemented the following oceanographic wave spectra:
 * Pierson-Moskowitz [Pierson1964a]
 * JONSWAP [Hasselmann1973a]
 * Donelan [Donelan1985a]
