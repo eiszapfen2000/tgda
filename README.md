@@ -1,8 +1,9 @@
 # Real-Time Ocean Surface Generation and Rendering
-A real-time capable implementation of Tessendorf's choppy wave algorithm.
+A real-time capable implementation of Tessendorf's choppy wave algorithm [Tessendorf1999a].
 
-[![Overview](https://img.youtube.com/vi/op_NVMRhpL0/0.jpg)](https://www.youtube.com/watch?v=op_NVMRhpL0)
-[![Lods](https://img.youtube.com/vi/RiBrIPSPOxo/0.jpg)](https://www.youtube.com/watch?v=RiBrIPSPOxo)
+| Overview  | Lods |
+| ------------- | ------------- |
+| [![Overview](https://img.youtube.com/vi/op_NVMRhpL0/0.jpg)](https://www.youtube.com/watch?v=op_NVMRhpL0) | [![Lods](https://img.youtube.com/vi/RiBrIPSPOxo/0.jpg)](https://www.youtube.com/watch?v=RiBrIPSPOxo) |
 
 ## Ocean Surface Synthesis
 Oceanographic wave spectra:
