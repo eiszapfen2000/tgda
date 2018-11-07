@@ -24,7 +24,7 @@ We implemented the following oceanographic wave spectra:
 For Pierson-Moskowitz and JONSWAP we employ the directional distribution as introduced by Mitsuyasu et al. [Mitsuyasu1975a], and improved by Hasselmann et al. [Hasselmann1980a]. Donelan and Elfouhaily each incorporate their own directional distribution. 
 
 ## Fourier Transform
-We compute the Discrete Fourier Transform with the single precision variant of [FFTW](http://www.fftw.org).
+We compute the Discrete Fourier Transform with the single precision variant of [FFTW](http://www.fftw.org). The Fast Fourier Transform works fastest on power of two resolution, therefore we restrict the ocean's resolution to such resolutions.
 
 ## Ocean Surface Rendering
 * Projected Grid [Johanson2004a]
