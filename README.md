@@ -14,7 +14,7 @@ We implemented the following oceanographic wave spectra:
 * Donelan [Donelan1985a]
 * Elfouhaily [Elfouhaily1997a]
 
-Donelan and Elfouhaily each incorporate their own directional distribution. For Pierson-Moskowitz and JONSWAP we employ the directional distribution introduced by Mitsuyasu et al. [Mitsuyasu1975a] and improved by Hasselmann et al. [Hasselmann1980a].
+For Pierson-Moskowitz and JONSWAP we employ the directional distribution as introduced by Mitsuyasu et al. [Mitsuyasu1975a], and improved by Hasselmann et al. [Hasselmann1980a]. Donelan and Elfouhaily each incorporate their own directional distribution. 
 
 We compute the Discrete Fourier Transform with the single precision variant of [FFTW](http://www.fftw.org).
 
