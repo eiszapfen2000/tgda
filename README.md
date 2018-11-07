@@ -1,6 +1,13 @@
 # Ocean Surface Generation and Rendering
 A real-time capable implementation of Tessendorf's choppy wave algorithm [Tessendorf1999a], augmented with wave spectrum models from oceanographic research. Master's thesis and respective poster are to be found [here](https://www.cg.tuwien.ac.at/research/publications/2018/GAMPER-2018-OSG/).
 
+## Screenshots
+
+|   |   |
+|---|---|
+|![alt text](Branches/OpenGL33Core/DATU/figures/21-06-2018_10-44-51_complete.png)|![alt text](Branches/OpenGL33Core/DATU/figures/21-06-2018_12-48-51_complete.png)|
+|![alt text](Branches/OpenGL33Core/DATU/figures/28-05-2018_10-56-10_complete.png)|![alt text](Branches/OpenGL33Core/DATU/figures/21-06-2018_15-47-53_complete.png)|
+
 ## Videos
 
 | Overview  | Lods |
